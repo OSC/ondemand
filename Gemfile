@@ -3,7 +3,6 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.0'
 
-
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
 
@@ -48,3 +47,4 @@ gem "dotenv-rails", "~> 2.0.0"
 gem "rails_12factor", group: :production
 gem "awesim_rails", "~> 0.6.0"
 gem "awesim_rails_logging", "~> 0.0.3"
+gem "pbs"
