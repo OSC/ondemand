@@ -1,29 +1,32 @@
-<div>Debug: <%= @activejobs.first.to_s %></div>
-
 <h2>Active Jobs</h2>
 
-<div class="col-md-8">
-    <table class="table datatable display">
-        <thead>
+<div class="row">
+    <div class="col-md-8">
+        <table class="table datatable display table-condensed">
+            <thead>
             <tr>
-                <th><span class="headline">ID</span></th>
-                <th><span class="headline">Name</span></th>
-                <th><span class="headline">Owner</span></th>
-                <th><span class="headline">Status</span></th>
-                <th><span class="headline">Cluster</span></th>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Owner</th>
+                <th>Status</th>
+                <th>Cluster</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             <% @activejobs.each do |activejob| %>
                 <tr>
-                    <th class="small"><%= activejob[:name] %></th>
-                    <th class="small"><%= activejob[:attribs][:Job_Name] %></th>
-                    <th class="small"><%= activejob[:attribs][:Job_Owner] %></th>
-                    <th class="small"><%= activejob[:attribs][:job_state] %></th>
-                    <th class="small"><%= activejob[:attribs][:submit_host] %></th>
+                    <td class="small"><%= activejob[:name] %></td>
+                    <td class="small" style="word-break:break-all;" ><%= activejob[:attribs][:Job_Name] %></td>
+                    <td class="small"><%= activejob[:attribs][:Job_Owner] %></td>
+                    <td class="small"><%= activejob[:attribs][:job_state] %></td>
+                    <td class="small"><%= activejob[:attribs][:submit_host] %></td>
                 </tr>
             <% end %>
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="col-md-4">
+    Spacer
 </div>
 <br>
