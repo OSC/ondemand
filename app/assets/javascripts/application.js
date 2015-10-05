@@ -17,8 +17,6 @@
 //= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
 //= require_tree .
 
-
-
 $(document).ready( function() {
 
     $('.datatable').DataTable({
@@ -32,5 +30,5 @@ $(document).ready( function() {
         // Check dataTables documentation to learn more about available options.
         // http://datatables.net/reference/option/pagingType
     });
-    
+
 });

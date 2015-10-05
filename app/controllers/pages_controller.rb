@@ -3,15 +3,23 @@ class PagesController < ApplicationController
 
   def index
 
-    # Get all Oakley jobs
-    c = PBS::Conn.batch 'oakley'
-    q = PBS::Query.new conn: c, type: :job
-    oakleyjobs = q.find
+    o = PBS::Conn.batch 'oakley'
+    oq = PBS::Query.new conn: o, type: :job
 
-    # Get all Ruby jobs
-    c = PBS::Conn.batch 'ruby'
-    q = PBS::Query.new conn: c, type: :job
-    rubyjobs = q.find
+    r = PBS::Conn.batch 'ruby'
+    rq = PBS::Query.new conn: r, type: :job
+
+    if cookies[:getalljobs]
+      # Get all Oakley jobs
+      oakleyjobs = oq.find
+      # Get all Ruby jobs
+      rubyjobs = rq.find
+    else
+      # Get all user Oakley jobs
+      oakleyjobs = oq.where.user(ENV['USER']).find
+      # Get all user Ruby jobs
+      rubyjobs = rq.where.user(ENV['USER']).find
+    end
 
     # Join the arrays
     @activejobs = oakleyjobs.concat rubyjobs
