@@ -19,7 +19,7 @@
                     <td class="small" style="word-break:break-all;" ><%= activejob[:attribs][:Job_Name] %></td>
                     <td class="small"><%= username(activejob[:attribs][:Job_Owner]) %></td>
                     <td class="small"><%= activejob[:attribs][:job_state] %></td>
-                    <td class="small"><%= activejob[:attribs][:submit_host] %></td>
+                    <td class="small"><%= hostname(activejob[:attribs][:submit_host]) %></td>
                 </tr>
             <% end %>
             </tbody>
