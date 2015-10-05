@@ -1,12 +1,29 @@
-<h2>AweSim on Rails</h2>
+<div>Debug: <%= @activejobs.first.to_s %></div>
 
-<p>To get started with your AweSim app:</p>
+<h2>Active Jobs</h2>
 
-<ul>
-<li>run a scaffold to generate a model for your domain object</li>
-<li>use osc-machete to connect that model to submitting a job</li>
-<li>add the associated job template in the <code>jobs/</code> directory</li>
-</ul>
-
-<p>Change the root to point to your model's index action instead of the default <code>pages#index</code>, or add documentation to this page.</p>
-
+<div class="col-md-8">
+    <table class="table datatable display">
+        <thead>
+            <tr>
+                <th><span class="headline">ID</span></th>
+                <th><span class="headline">Name</span></th>
+                <th><span class="headline">Owner</span></th>
+                <th><span class="headline">Status</span></th>
+                <th><span class="headline">Cluster</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            <% @activejobs.each do |activejob| %>
+                <tr>
+                    <th class="small"><%= activejob[:name] %></th>
+                    <th class="small"><%= activejob[:attribs][:Job_Name] %></th>
+                    <th class="small"><%= activejob[:attribs][:Job_Owner] %></th>
+                    <th class="small"><%= activejob[:attribs][:job_state] %></th>
+                    <th class="small"><%= activejob[:attribs][:submit_host] %></th>
+                </tr>
+            <% end %>
+        </tbody>
+    </table>
+</div>
+<br>
