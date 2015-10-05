@@ -49,3 +49,4 @@ gem "awesim_rails", "~> 0.6.0"
 gem "awesim_rails_logging", "~> 0.0.3"
 gem "pbs"
 gem "turbolinks"
+gem "jquery-datatables-rails", '~> 3.3.0'

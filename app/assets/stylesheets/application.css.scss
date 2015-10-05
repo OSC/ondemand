@@ -10,6 +10,7 @@ body {
   @extend .awesim-banner-background-img;
 }
 
-
 // Your custom css styles below (must be manually added)
 @import "pages";
+
+@import "dataTables/bootstrap/3/jquery.dataTables.bootstrap";
