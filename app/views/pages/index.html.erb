@@ -11,15 +11,8 @@
                 </tr>
             </thead>
             <tbody>
-                <% @activejobs.each_with_index do |activejob, i| %>
-                    <tr class="job_row" id="job_row_<%= i %>">
-                        <td class="small"><%= activejob[:name] %></td>
-                        <td class="small" style="word-break:break-all;" ><%= sanitize(activejob[:attribs][:Job_Name]) %></td>
-                        <td class="small"><%= username(activejob[:attribs][:Job_Owner]) %></td>
-                        <td class="small"><%= status_label(activejob[:attribs][:job_state]) %></td>
-                        <td class="small"><%= hostname(activejob[:attribs][:submit_host]) %></td>
-                    </tr>
-                <% end %>
+
+
             </tbody>
         </table>
     </div>

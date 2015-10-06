@@ -20,11 +20,22 @@
 $(document).ready( function() {
 
     $('.datatable').DataTable({
-        // ajax: ...,
-        // autoWidth: true,
-        // pagingType: 'full_numbers',
-        // processing: true,
-        // serverSide: true,
+        ajax: './pages/json',
+        "sAjaxDataProp": "",
+        "bServerSide": true,
+        autoWidth: true,
+        pagingType: 'full_numbers',
+        processing: true,
+        serverSide: true,
+        columns: [
+            { data: "pbsid" },
+            { data: "jobname" },
+            { data: "username" },
+            { data: "status" },
+            { data: "cluster" }
+        ]
+
+
 
         // Optional, if you want full pagination controls.
         // Check dataTables documentation to learn more about available options.
