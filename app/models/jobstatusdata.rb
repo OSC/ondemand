@@ -17,7 +17,7 @@ class Jobstatusdata
     self.jobname = pbs_job[:attribs][:Job_Name]
     self.username = username(pbs_job[:attribs][:Job_Owner])
     self.status = pbs_job[:attribs][:job_state]
-    if self.status == "R"
+    if self.status == "R" || self.status == "C"
       self.nodes = node_array(pbs_job[:attribs][:exec_host])
       self.starttime = pbs_job[:attribs][:start_time]
     end
@@ -25,14 +25,20 @@ class Jobstatusdata
     self
   end
 
+  # Username is returned from pbs as bmcmichael@oakley02.osc.edu. Strip host.
   def username(attribs_Job_Owner)
     attribs_Job_Owner.split('@')[0]
   end
 
   def node_array(attribs_exec_host)
     nodes = Array.new
-    attribs_exec_host.split('+').each do |node|
-      nodes.push(node.split('/')[0])
+    # Some completed jobs will no longer have nodes associated with them
+    # and will return an empty hash. Only process when there are valid nodes.
+    if attribs_exec_host.is_a? String
+      # Create an array of nodes associcated with the job.
+      attribs_exec_host.split('+').each do |node|
+        nodes.push(node.split('/')[0])
+      end
     end
     nodes
   end
