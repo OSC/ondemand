@@ -63,7 +63,7 @@ $(document).ready( function() {
         // http://datatables.net/reference/option/pagingType
 
     // Add event listener for opening and closing details
-    $('#job_status_table tbody').on('click', 'td', function () {
+    $('#job_status_table tbody').on('click', '.details-control', function () {
         var tr = $(this).closest('tr');
         var row = table.row( tr );
 
@@ -83,32 +83,42 @@ $(document).ready( function() {
 /* Formatting function for dropdown row. */
 function format ( d ) {
     // `d` is the original data object for the row
-    return      '<table>' + display_node_rows(d) + '</table>';
+    return      '<table>' +
+                    display_job_info(d) +
+                    display_node_rows(d) +
+                '</table>';
 }
 
+/* A function that builds a job data view */
+function display_job_info( d ) {
+    return          '<div class="col-md-12">' +
+                    '   <h3><strong><span class="pull-right">' + status_label(d.status) + '</span> ' + d.jobname + ' ('+ d.pbsid +')</strong></h3>' +
+                    '</div>';
+}
+
+/* Build the ganglia images view */
 function display_node_rows( d ) {
     var rows = "";
-
     // Ganglia accepts timestamps in seconds, not millis.
-    var now = parseInt(Date.now()/1000);
+    var end = parseInt(Date.now()/1000) || parseInt(Date.now()/1000);
     var start = d.starttime;
     if (d.nodes != null) {
         for (node in d.nodes) {
             var node_num = d.nodes[node];
             rows += '<div class="col-md-12">' +
-                    '<tr>' +
-                    '   <td>' +
-                    '       <div class="panel panel-default">' +
-                    '           <div class="panel-heading"><h3 class="panel-title">' + d.pbsid + ' <span class="pull-right">' + node_num + '.ten.osc.edu</span></h3></div>' +
-                    '           <div class="panel-body">' +
-                    '               <img class="img-responsive col-md-3 col-xs-6" src="'+build_ganglia_link(start, now, 'cpu_report', node_num, 'small')+'" />' +
-                    '               <img class="img-responsive col-md-3 col-xs-6" src="'+build_ganglia_link(start, now, 'load_report', node_num, 'small')+'" />' +
-                    '               <img class="img-responsive col-md-3 col-xs-6" src="'+build_ganglia_link(start, now, 'mem_report', node_num, 'small')+'" />' +
-                    '               <img class="img-responsive col-md-3 col-xs-6" src="'+build_ganglia_link(start, now, 'network_report', node_num, 'small')+'" />' +
+                    '   <tr>' +
+                    '       <td>' +
+                    '           <div class="panel panel-default">' +
+                    '               <div class="panel-heading"><h3 class="panel-title">' + node_num + '.ten.osc.edu <span class="pull-right">' + d.pbsid + '</span></h3></div>' +
+                    '              <div class="panel-body">' +
+                    '                   <img class="img-responsive col-md-3 col-xs-6" src="'+build_ganglia_link(start, end, 'cpu_report', node_num, 'small')+'" />' +
+                    '                   <img class="img-responsive col-md-3 col-xs-6" src="'+build_ganglia_link(start, end, 'load_report', node_num, 'small')+'" />' +
+                    '                   <img class="img-responsive col-md-3 col-xs-6" src="'+build_ganglia_link(start, end, 'mem_report', node_num, 'small')+'" />' +
+                    '                   <img class="img-responsive col-md-3 col-xs-6" src="'+build_ganglia_link(start, end, 'network_report', node_num, 'small')+'" />' +
+                    '              </div>' +
                     '           </div>' +
-                    '       </div>' +
-                    '   </td>' +
-                    '</tr>' +
+                    '       </td>' +
+                    '   </tr>' +
                     '</div>';
         }
     }
