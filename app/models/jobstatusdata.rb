@@ -6,6 +6,7 @@
 # @author Brian L. McMichael
 # @version 0.0.1
 class Jobstatusdata
+  include ActionView::Helpers
 
   attr_reader :pbsid, :jobname, :username, :status, :cluster
 
@@ -15,26 +16,28 @@ class Jobstatusdata
   def initialize(pbs_job)
     self.pbsid = pbs_job[:name]
     self.jobname = pbs_job[:attribs][:Job_Name]
-    self.username = username(pbs_job[:attribs][:Job_Owner])
+    self.username = pbs_job[:attribs][:Job_Owner]
     self.status = pbs_job[:attribs][:job_state]
     self.cluster = hostname(pbs_job[:attribs][:submit_host])
     self
   end
 
+  def username(attribs_Job_Owner)
+    attribs_Job_Owner.split('@')[0]
+  end
+
+  def hostname(attribs_submit_host)
+    #attribs_submit_host.split(/\d+/)[0]
+
+    # We may want to split after the number.
+    # PBS returns jobs running  on Websvcs and N000 nodes,
+    # and the above line cuts the digits and not the number.
+    # Additional handling will be necessary if we want
+    # to avoid displaying 'oakley02', 'ruby01', etc.
+    attribs_submit_host.split('.')[0]
+  end
+
   private
-
-    def username(attribs_Job_Owner)
-      attribs_Job_Owner.split('@')[0]
-    end
-
-    def hostname(attribs_submit_host)
-      attribs_submit_host.split(/\d+/)[0]
-
-      # We may want to split after the number.
-      # PBS returns jobs running  on Websvcs and N000 nodes,
-      # and the above line cuts the digits.
-      #attribs_submit_host.split('.')[0].capitalize
-    end
 
     attr_writer :pbsid, :jobname, :username, :status, :cluster
 
