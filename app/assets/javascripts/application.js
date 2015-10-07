@@ -27,7 +27,7 @@ $(document).ready( function() {
         "aaSorting": [],            // Turn off auto sort.
         // deferRender: true,          // Render the view after the file is downloaded.
         // pagingType: 'full_numbers',
-        // processing: true,           // Add the "processing" while json is being downloaded.
+        processing: true,           // Add the "processing" while json is being downloaded.
         //serverSide: true,
         columns: [
             {
@@ -36,19 +36,26 @@ $(document).ready( function() {
                 "data":             null,
                 "defaultContent":   ''
             },
-            { data: "pbsid" },
+            {
+                data:               "pbsid",
+                className:          "small"
+            },
             {
                 data:               "jobname",
-                css:                "word-wrap: break-word;"
+                css:                "word-wrap: break-word;",
+                className:          "small"
             },
-            { data: "username" },
             {
-                data: "status",
-                "render": function(data,type,row,meta) {
-                         return status_label(data);
-                }
+                data:               "username",
+                className:          "small"
             },
-            { data: "cluster" }
+            {
+                data:               "status",
+                "render":           function(data,type,row,meta) {
+                                        return status_label(data);
+                                    }
+            },
+            { data:                 "cluster" }
         ]
     });
         // Optional, if you want full pagination controls.
@@ -76,22 +83,23 @@ $(document).ready( function() {
 /* Formatting function for dropdown row. */
 function format ( d ) {
     // `d` is the original data object for the row
-    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:250px;">'+
-        '<tr>'+
-        '<td>PBSID:</td>'+
-        '<td>'+d.pbsid+'</td>'+
-        '</tr>'+
-        '<tr>'+
-        '<td>Job Name:</td>'+
-        '<td>'+d.jobname+'</td>'+
-        '</tr>'+
-        '<tr>'+
-        '<td>Cluster:</td>'+
-        '<td>'+d.cluster+'</td>'+
-        '</tr>'+
-        '</table>';
+    return  '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+            '   <tr>'+
+            '       <td>PBSID:</td>'+
+            '       <td>'+d.pbsid+'</td>'+
+            '   </tr>'+
+            '   <tr>'+
+            '       <td>Job Name:</td>'+
+            '       <td>'+d.jobname+'</td>'+
+            '   </tr>'+
+            '   <tr>'+
+            '       <td>Cluster:</td>'+
+            '       <td>'+d.cluster+'</td>'+
+            '   </tr>'+
+            '</table>';
 }
 
+/* Formatting function for the status label. */
 function status_label( status ) {
     var label, labelclass;
     switch( status ) {

@@ -6,7 +6,6 @@
 # @author Brian L. McMichael
 # @version 0.0.1
 class Jobstatusdata
-  include ActionView::Helpers
 
   attr_reader :pbsid, :jobname, :username, :status, :cluster
 
@@ -16,7 +15,7 @@ class Jobstatusdata
   def initialize(pbs_job)
     self.pbsid = pbs_job[:name]
     self.jobname = pbs_job[:attribs][:Job_Name]
-    self.username = pbs_job[:attribs][:Job_Owner]
+    self.username = username(pbs_job[:attribs][:Job_Owner])
     self.status = pbs_job[:attribs][:job_state]
     self.cluster = hostname(pbs_job[:attribs][:submit_host])
     self
