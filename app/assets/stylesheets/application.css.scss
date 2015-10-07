@@ -14,13 +14,3 @@ body {
 @import "pages";
 
 @import "dataTables/bootstrap/3/jquery.dataTables.bootstrap";
-
-td.details-control {
-  background: url(image_path('arrowright.png')) no-repeat center center;
-  background-size: 75%;
-  cursor: pointer;
-}
-tr.shown td.details-control {
-  background: url(image_path('arrowdown.png')) no-repeat center center;
-  background-size: 75%;
-}

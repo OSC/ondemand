@@ -83,20 +83,16 @@ $(document).ready( function() {
 /* Formatting function for dropdown row. */
 function format ( d ) {
     // `d` is the original data object for the row
-    return  '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
-            '   <tr>'+
-            '       <td>PBSID:</td>'+
-            '       <td>'+d.pbsid+'</td>'+
-            '   </tr>'+
-            '   <tr>'+
-            '       <td>Job Name:</td>'+
-            '       <td>'+d.jobname+'</td>'+
-            '   </tr>'+
-            '   <tr>'+
-            '       <td>Cluster:</td>'+
-            '       <td>'+d.cluster+'</td>'+
-            '   </tr>'+
-            '</table>';
+    //return  '<table cellpadding="0" cellspacing="0" border="0">'+
+    //        '   <tr>'+
+    //        '       <td>PBSID:</td>'+
+    //'       <td>'+d.pbsid+'</td>'+
+    //        '   </tr>'+
+    //        '</table>';
+    return      '<div>' +
+                    'https://cts05.osc.edu/od_monitor/graph.php?&r=hour&g=load_report&z=small&openid_identifier=https://openid.awesim.org/openid/bmcmichael&c=Oakley+nodes&timestamp=1444232802' +
+                    d.pbsid + d.jobname + d.username +
+                '</div>'
 }
 
 /* Formatting function for the status label. */

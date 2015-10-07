@@ -2,15 +2,17 @@ class PagesController < ApplicationController
   include ApplicationHelper
 
   def index
-    #get_jobs
   end
 
+  # Used to send the data to the Datatable.
   def json
     render :json => get_data
   end
 
   private
 
+    # Converts the PBS data to Jobstatusdata objects so we
+    # don't send as much data down the pipe to the user.
     def get_data
       data_array = Array.new
       get_jobs.each do |j|
@@ -20,13 +22,15 @@ class PagesController < ApplicationController
     end
 
     def get_jobs
+      # Set up the Oakley Connection
       oc = PBS::Conn.batch 'oakley'
       oq = PBS::Query.new conn: oc, type: :job
 
+      # Set up the Roby Connection
       rc = PBS::Conn.batch 'ruby'
       rq = PBS::Query.new conn: rc, type: :job
 
-      # FIXME: Remove the bang!!! Here for testing.
+      # FIXME: Remove the bang to just show user data!!! Here for testing.
       if !cookies[:getalljobs]
         # Get all Oakley jobs
         oakleyjobs = oq.find
