@@ -51,7 +51,7 @@ $(document).ready( function() {
             },
             {
                 data:               "status",
-                "render":           function(data,type,row,meta) {
+                "render":           function(data) {
                                         return status_label(data);
                                     }
             },
@@ -76,6 +76,9 @@ $(document).ready( function() {
             // Open this row
             row.child( format(row.data()) ).show();
             tr.addClass('shown');
+            $.getJSON('./pages/json', function(data) {
+                $( ".job_data" ).html('<div>test</div>');
+            });
         }
     });
 });
@@ -84,16 +87,21 @@ $(document).ready( function() {
 function format ( d ) {
     // `d` is the original data object for the row
     return      '<table>' +
+                '   <div class="panel panel-default">' +
                     display_job_info(d) +
                     display_node_rows(d) +
+                '   </div>' +
                 '</table>';
 }
 
 /* A function that builds a job data view */
 function display_job_info( d ) {
-    return          '<div class="col-md-12">' +
-                    '   <h3><strong><span class="pull-right">' + status_label(d.status) + '</span> ' + d.jobname + ' ('+ d.pbsid +')</strong></h3>' +
-                    '</div>';
+    return      '<tr class="col-xs-12>' +
+                '   <div class="col-xs-12">' +
+                '       <h3><strong><span class="pull-right">' + status_label(d.status) + '</span> ' + d.jobname + ' ('+ d.pbsid +')</strong></h3>' +
+                '       <tr><div class="job_data"></div></tr>' +
+                '   </div>' +
+                '</tr>';
 }
 
 /* Build the ganglia images view */
