@@ -7,7 +7,7 @@
 # @version 0.0.1
 class Jobstatusdata
 
-  attr_reader :pbsid, :jobname, :username, :status, :cluster, :nodes, :starttime
+  attr_reader :pbsid, :jobname, :username, :group, :status, :cluster, :nodes, :starttime
 
   # Set the object to the server.
   #
@@ -15,7 +15,8 @@ class Jobstatusdata
   def initialize(pbs_job)
     self.pbsid = pbs_job[:name]
     self.jobname = pbs_job[:attribs][:Job_Name]
-    self.username = username(pbs_job[:attribs][:Job_Owner])
+    self.username = pbs_job[:attribs][:euser]
+    self.group = pbs_job[:attribs][:egroup]
     self.status = pbs_job[:attribs][:job_state]
     if self.status == "R" || self.status == "C"
       self.nodes = node_array(pbs_job[:attribs][:exec_host])
@@ -23,11 +24,6 @@ class Jobstatusdata
     end
     self.cluster = hostname(pbs_job[:attribs][:submit_host])
     self
-  end
-
-  # Username is returned from pbs as bmcmichael@oakley02.osc.edu. Strip host.
-  def username(attribs_Job_Owner)
-    attribs_Job_Owner.split('@')[0]
   end
 
   def node_array(attribs_exec_host)
@@ -56,6 +52,6 @@ class Jobstatusdata
 
   private
 
-    attr_writer :pbsid, :jobname, :username, :status, :cluster, :nodes, :starttime
+    attr_writer :pbsid, :jobname, :username, :group, :status, :cluster, :nodes, :starttime
 
 end
