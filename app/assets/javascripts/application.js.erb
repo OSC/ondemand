@@ -50,12 +50,19 @@ $(document).ready( function() {
                 className:          "small"
             },
             {
+                data:               "group",
+                className:          "small"
+            },
+            {
                 data:               "status",
+                className:          "small",
                 "render":           function(data) {
                                         return status_label(data);
                                     }
             },
-            { data:                 "cluster" }
+            {   data:               "cluster",
+                className:          "small"
+            }
         ]
     });
         // Optional, if you want full pagination controls.
@@ -76,8 +83,8 @@ $(document).ready( function() {
             // Open this row
             row.child( format(row.data()) ).show();
             tr.addClass('shown');
-            $.getJSON('./pages/json', function(data) {
-                $( ".job_data" ).html('<div>test</div>');
+            $.getJSON('./pages/json?pbsid='+row.data().pbsid , function(data) {
+                $( ".job_data" ).html(display_enhanced_job_data(data[0]));
             });
         }
     });
@@ -86,28 +93,28 @@ $(document).ready( function() {
 /* Formatting function for dropdown row. */
 function format ( d ) {
     // `d` is the original data object for the row
-    return      '<table>' +
-                '   <div class="panel panel-default">' +
-                    display_job_info(d) +
-                    display_node_rows(d) +
-                '   </div>' +
-                '</table>';
+    return          '<table>' +
+                    '   <div class="panel panel-default">' +
+                        display_job_info(d) +
+                        display_node_rows(d) +
+                    '   </div>' +
+                    '</table>';
 }
 
 /* A function that builds a job data view */
 function display_job_info( d ) {
-    return      '<tr class="col-xs-12>' +
-                '   <div class="col-xs-12">' +
-                '       <h3><strong><span class="pull-right">' + status_label(d.status) + '</span> ' + d.jobname + ' ('+ d.pbsid +')</strong></h3>' +
-                '       <tr><div class="job_data"></div></tr>' +
-                '   </div>' +
-                '</tr>';
+    return          '<tr class="col-xs-12>' +
+                    '   <div class="col-xs-12">' +
+                    '       <tr><div class="job_data" id="'+d.pbsid+'"></div></tr>' +
+                    '   </div>' +
+                    '</tr>';
 }
 
 /* Build the ganglia images view */
 function display_node_rows( d ) {
     var rows = "";
     // Ganglia accepts timestamps in seconds, not millis.
+    // TODO: Use job end time for completed jobs.
     var end = parseInt(Date.now()/1000) || parseInt(Date.now()/1000);
     var start = d.starttime;
     if (d.nodes != null) {
@@ -117,7 +124,7 @@ function display_node_rows( d ) {
                     '   <tr>' +
                     '       <td>' +
                     '           <div class="panel panel-default">' +
-                    '               <div class="panel-heading"><h3 class="panel-title">' + node_num + '.ten.osc.edu <span class="pull-right">' + d.pbsid + '</span></h3></div>' +
+                    '              <div class="panel-heading"><h3 class="panel-title">' + node_num + '.ten.osc.edu <span class="pull-right">' + d.pbsid + '</span></h3></div>' +
                     '              <div class="panel-body">' +
                     '                   <img class="img-responsive col-md-3 col-xs-6" src="'+build_ganglia_link(start, end, 'cpu_report', node_num, 'small')+'" />' +
                     '                   <img class="img-responsive col-md-3 col-xs-6" src="'+build_ganglia_link(start, end, 'load_report', node_num, 'small')+'" />' +
@@ -131,6 +138,21 @@ function display_node_rows( d ) {
         }
     }
     return rows;
+}
+
+function display_enhanced_job_data( d ) {
+
+    return          '<div class="col-md-12">' +
+                    '   <tr>' +
+                    '        <td>' +
+                    '            <div class="panel panel-default">' +
+                    '                    <div class="panel-heading"><h3><strong>' + d.attribs.Job_Name + ' ('+ d.pbsid +')</strong><span class="pull-right">' + status_label(d.attribs.job_state) + '</span></h3></div>' +
+                    '                    <div class="panel-body">' +
+                    '               </div>' +
+                    '            </div>' +
+                    '       </td>' +
+                    '   </tr>' +
+                    '</div>';
 }
 
 function build_ganglia_link( start_seconds, end_seconds, report_type, node_num, size ) {

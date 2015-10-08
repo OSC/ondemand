@@ -64,9 +64,11 @@ class PagesController < ApplicationController
       # Join the arrays
       @activejobs = oakleyjobs.concat rubyjobs
 
-      # Sort the user's jobs to the top
-      @activejobs.sort_by! { |user| [ user[:attribs][:euser] == ENV['USER'] ? 0 : user[:attribs][:egroup] == Etc.getgrgid(Etc.getpwuid.gid).name ?
-      1 : 2] }
+      # Sort the user's jobs to the top, followed by users in the primary group
+      @activejobs.sort_by! {
+          |user| [ user[:attribs][:euser] == ENV['USER'] ? 0 :
+                       user[:attribs][:egroup] == Etc.getgrgid(Etc.getpwuid.gid).name ? 1 :
+                           2] }
 
       # Get user example:
       # q.where.user('username').find
