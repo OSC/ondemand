@@ -6,7 +6,11 @@ class PagesController < ApplicationController
 
   # Used to send the data to the Datatable.
   def json
-    render :json => get_data
+    if params[:pbsid].nil?
+      render :json => get_data
+    else
+      render :json => get_job(params[:pbsid])
+    end
   end
 
   private
@@ -20,6 +24,20 @@ class PagesController < ApplicationController
       end
       data_array
     end
+  
+    def get_job(pbsid)
+      if pbsid.include? 'oak-batch'
+        # Set up the Oakley Connection
+        oc = PBS::Conn.batch 'oakley'
+        oq = PBS::Query.new conn: oc, type: :job
+        oq.find(id: pbsid)
+      else
+        # Set up the Ruby Connection
+        rc = PBS::Conn.batch 'ruby'
+        rq = PBS::Query.new conn: rc, type: :job
+        rq.find(id: pbsid)
+      end
+    end
 
     def get_jobs
       # Set up the Oakley Connection
@@ -31,7 +49,7 @@ class PagesController < ApplicationController
       rq = PBS::Query.new conn: rc, type: :job
 
       # FIXME: Remove the bang to just show user data!!! Here for testing.
-      if !cookies[:getalljobs]
+      if !cookies[:jobfilter]
         # Get all Oakley jobs
         oakleyjobs = oq.find
         # Get all Ruby jobs
@@ -47,7 +65,8 @@ class PagesController < ApplicationController
       @activejobs = oakleyjobs.concat rubyjobs
 
       # Sort the user's jobs to the top
-      @activejobs.sort_by! { |user| [ username(user[:attribs][:Job_Owner]) == ENV['USER'] ? 0 : 1 ] }
+      @activejobs.sort_by! { |user| [ user[:attribs][:euser] == ENV['USER'] ? 0 : user[:attribs][:egroup] == Etc.getgrgid(Etc.getpwuid.gid).name ?
+      1 : 2] }
 
       # Get user example:
       # q.where.user('username').find
