@@ -1,3 +1,15 @@
+<div class="btn-group pull-right" data-toggle="buttons">
+    <label class="btn btn-primary" onclick="docCookies.setItem('jobfilter', 'user'); window.location.reload();">
+        <input type="radio" name="user" id="option_user" > User
+    </label>
+    <label class="btn btn-primary" onclick="docCookies.setItem('jobfilter', 'group'); window.location.reload();">
+        <input type="radio" name="group" id="option_group"> Group
+    </label>
+    <label class="btn btn-primary" onclick="docCookies.setItem('jobfilter', 'all'); window.location.reload();">
+        <input type="radio" name="all" id="option_all" > All
+    </label>
+</div>
+
 <h2>Active Jobs</h2>
     <div class="col-md-12">
         <table id="job_status_table" class="table datatable display" cellspacing="0" width="100%">
