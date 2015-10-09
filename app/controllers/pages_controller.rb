@@ -48,7 +48,7 @@ class PagesController < ApplicationController
       rc = PBS::Conn.batch 'ruby'
       rq = PBS::Query.new conn: rc, type: :job
 
-      # FIXME: Remove the bang to just show user data!!! Here for testing.
+      # Checks the cookies and gets the appropriate job set.
       if cookies[:jobfilter] == 'all'
         # Get all Oakley jobs
         oakleyjobs = oq.find
