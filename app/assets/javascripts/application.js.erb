@@ -146,8 +146,10 @@ function display_enhanced_job_data( d ) {
                     '            <div class="panel panel-default">' +
                     '                <div class="panel-heading"><h3><strong>' + d.attribs.Job_Name + ' ('+ d.name +')</strong><span class="pull-right">' + status_label(d.attribs.job_state) + '</span></h3></div>' +
                     '                <div class="panel-body">' +
-                    '                   <div class="col-md-6">test left</div>' +
-                    '                   <div class="col-md-6">test right</div>' +
+                    '                   <div class="col-md-4"><div class="panel panel-default"><div class="panel-body">test left</div></div></div>' +
+                    '                   <div class="col-md-4"><div class="panel panel-default"><div class="panel-body">test mid</div></div></div>' +
+                    '                   <div class="col-md-4"><div class="panel panel-default"><div class="panel-body">test right</div></div></div>' +
+                    '                   <div class="col-md-12">Output Location: <pre style="display: inline;">'+ d.attribs.Output_Path.split(":")[1]+'</pre></div>' +
                     '                </div>' +
                     '            </div>' +
                     '       </td>' +
