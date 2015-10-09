@@ -49,11 +49,16 @@ class PagesController < ApplicationController
       rq = PBS::Query.new conn: rc, type: :job
 
       # FIXME: Remove the bang to just show user data!!! Here for testing.
-      if !cookies[:jobfilter]
+      if cookies[:jobfilter] == 'all'
         # Get all Oakley jobs
         oakleyjobs = oq.find
         # Get all Ruby jobs
         rubyjobs = rq.find
+      elsif cookies[:jobfilter] == 'group'
+        # Get all group Oakley jobs
+        oakleyjobs = oq.where.is(PBS::ATTR[:egroup] => Etc.getgrgid(Etc.getpwuid.gid).name).find
+        # Get all group Ruby jobs
+        rubyjobs = rq.where.is(PBS::ATTR[:egroup] => Etc.getgrgid(Etc.getpwuid.gid).name).find
       else
         # Get all user Oakley jobs
         oakleyjobs = oq.where.user(ENV['USER']).find

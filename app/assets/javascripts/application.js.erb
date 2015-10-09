@@ -126,10 +126,10 @@ function display_node_rows( d ) {
                     '           <div class="panel panel-default">' +
                     '              <div class="panel-heading"><h3 class="panel-title">' + node_num + '.ten.osc.edu <span class="pull-right">' + d.pbsid + '</span></h3></div>' +
                     '              <div class="panel-body">' +
-                    '                   <img class="img-responsive col-md-3 col-xs-6" src="'+build_ganglia_link(start, end, 'cpu_report', node_num, 'small')+'" />' +
-                    '                   <img class="img-responsive col-md-3 col-xs-6" src="'+build_ganglia_link(start, end, 'load_report', node_num, 'small')+'" />' +
-                    '                   <img class="img-responsive col-md-3 col-xs-6" src="'+build_ganglia_link(start, end, 'mem_report', node_num, 'small')+'" />' +
-                    '                   <img class="img-responsive col-md-3 col-xs-6" src="'+build_ganglia_link(start, end, 'network_report', node_num, 'small')+'" />' +
+                    '                   <img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-12" src="'+build_ganglia_link(start, end, 'cpu_report', node_num, 'small')+'" />' +
+                    '                   <img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-12" src="'+build_ganglia_link(start, end, 'load_report', node_num, 'small')+'" />' +
+                    '                   <img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-12" src="'+build_ganglia_link(start, end, 'mem_report', node_num, 'small')+'" />' +
+                    '                   <img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-12" src="'+build_ganglia_link(start, end, 'network_report', node_num, 'small')+'" />' +
                     '              </div>' +
                     '           </div>' +
                     '       </td>' +
@@ -142,13 +142,15 @@ function display_node_rows( d ) {
 
 function display_enhanced_job_data( d ) {
 
-    return          '<div class="col-md-12">' +
+    return          '<div>' +
                     '   <tr>' +
                     '        <td>' +
                     '            <div class="panel panel-default">' +
-                    '                    <div class="panel-heading"><h3><strong>' + d.attribs.Job_Name + ' ('+ d.pbsid +')</strong><span class="pull-right">' + status_label(d.attribs.job_state) + '</span></h3></div>' +
-                    '                    <div class="panel-body">' +
-                    '               </div>' +
+                    '                <div class="panel-heading"><h3><strong>' + d.attribs.Job_Name + ' ('+ d.name +')</strong><span class="pull-right">' + status_label(d.attribs.job_state) + '</span></h3></div>' +
+                    '                <div class="panel-body">' +
+                    '                   <div class="col-md-6">test left</div>' +
+                    '                   <div class="col-md-6">test right</div>' +
+                    '                </div>' +
                     '            </div>' +
                     '       </td>' +
                     '   </tr>' +
