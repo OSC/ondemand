@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/gavinkflam/lightbox2-rails.git
+  revision: 0f877e66dd35a02dedcaf91c1adba103157fa772
+  specs:
+    lightbox2-rails (2.7.1)
+      railties (>= 3.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -159,6 +166,7 @@ DEPENDENCIES
   jbuilder (~> 1.2)
   jquery-datatables-rails (~> 3.3.0)
   jquery-rails
+  lightbox2-rails!
   osc-machete (~> 0.6.2)
   paperclip (~> 4.2.2)
   pbs
