@@ -26,16 +26,22 @@ class PagesController < ApplicationController
     end
   
     def get_job(pbsid)
-      if pbsid.include? 'oak-batch'
-        # Set up the Oakley Connection
-        oc = PBS::Conn.batch 'oakley'
-        oq = PBS::Query.new conn: oc, type: :job
-        oq.find(id: pbsid)
-      else
-        # Set up the Ruby Connection
-        rc = PBS::Conn.batch 'ruby'
-        rq = PBS::Query.new conn: rc, type: :job
-        rq.find(id: pbsid)
+      begin
+
+        if pbsid.include? 'oak-batch'
+          # Set up the Oakley Connection
+          oc = PBS::Conn.batch 'oakley'
+          oq = PBS::Query.new conn: oc, type: :job
+          oq.find(id: pbsid)
+        else
+          # Set up the Ruby Connection
+          rc = PBS::Conn.batch 'ruby'
+          rq = PBS::Query.new conn: rc, type: :job
+          rq.find(id: pbsid)
+        end
+
+      rescue
+        "[{\"name\":\"#{pbsid}\",\"error\":\"Job data expired or invalid.\"}]"
       end
     end
 

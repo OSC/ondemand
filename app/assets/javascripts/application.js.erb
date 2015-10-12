@@ -139,7 +139,10 @@ function display_node_rows( d ) {
 
 function display_enhanced_job_data( d ) {
 
-    return          '<div>' +
+    if (is_defined(d.error)) {
+        return      '<div><tr><td>'+ d.error +'</td></tr></div>';
+    } else {
+        return      '<div>' +
                     '   <tr>' +
                     '        <td>' +
                     '            <div class="panel panel-default">' +
@@ -154,6 +157,9 @@ function display_enhanced_job_data( d ) {
                     '       </td>' +
                     '   </tr>' +
                     '</div>';
+    }
+
+
 }
 
 function is_defined( object ) {
