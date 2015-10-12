@@ -5,6 +5,13 @@
 
   <title><%= app_title %></title>
 
+    <script>
+      var JobStatusapp = {
+        user: "<%= ENV['REMOTE_USER'] %>",
+        app:  "<%= ENV['APP_TOKEN'] %>"
+      };
+    </script>
+
   <%= stylesheet_link_tag    "application", media: "all" %>
 
   <%= javascript_include_tag "application" %>
