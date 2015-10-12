@@ -11,3 +11,10 @@ tr.shown td.details-control {
   background: url(image_path('arrowdown.png')) no-repeat center center;
   background-size: 75%;
 }
+
+.job_label_data {
+  word-wrap: break-word;
+  bottom: 0;
+  right: 0;
+  height: auto;
+}

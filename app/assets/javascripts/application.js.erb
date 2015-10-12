@@ -40,7 +40,7 @@ $(document).ready( function() {
             },
             {
                 data:               "jobname",
-                css:                "word-wrap: break-word;",
+                css:                "word-wrap: break-word; overflow: scroll;",
                 className:          "small"
             },
             {
@@ -189,26 +189,26 @@ function build_resources_requested_panel( d ) {
     var _processors_per_node = d.attribs.Resource_List.nodes.split("ppn=")[1];
     var _walltime_requested = d.attribs.Resource_List.walltime;
     var _queue = d.attribs.queue;
-    return          label_data("Nodes Requested", _nodes_requested) +
-                    label_data("PPN Requested", _processors_per_node) +
-                    label_data("Total Processors", (_nodes_requested * _processors_per_node)) +
-                    label_data("Walltime Requested", _walltime_requested) +
+    return          label_data("Node Request", _nodes_requested) +
+                    label_data("PPN Request", _processors_per_node) +
+                    label_data("Total CPU", (_nodes_requested * _processors_per_node)) +
+                    label_data("Walltime Request", _walltime_requested) +
                     label_data("Queue", _queue);
 }
 
 function build_resources_used_panel( d ) {
-    var _cput = is_defined(d.attribs.resources_used) ? d.attribs.resources_used.cput : '';
-    var _mem = is_defined(d.attribs.resources_used) ? d.attribs.resources_used.mem : '';
-    var _vmem = is_defined(d.attribs.resources_used) ? d.attribs.resources_used.vmem : '';
-    var _walltime = is_defined(d.attribs.resources_used) ? d.attribs.resources_used.walltime : '';
-    return          label_data("CPU Time Used", _cput) +
-                    label_data("Memory Used", _mem) +
-                    label_data("Virtual Memory Used", _vmem) +
+    var _cput = is_defined(d.attribs.resources_used) ? d.attribs.resources_used.cput : '0';
+    var _mem = is_defined(d.attribs.resources_used) ? d.attribs.resources_used.mem : '0';
+    var _vmem = is_defined(d.attribs.resources_used) ? d.attribs.resources_used.vmem : '0';
+    var _walltime = is_defined(d.attribs.resources_used) ? d.attribs.resources_used.walltime : '0';
+    return          label_data("CPU Time", _cput) +
+                    label_data("Memory", _mem) +
+                    label_data("VMem", _vmem) +
                     label_data("Run Time", _walltime);
 }
 
 function label_data(label, data) {
-    return '<div><strong>'+label+': </strong><span class="pull-right">' + data + '</span></div>';
+    return '<div class="small col-sm-12" style="height: 100%;"><strong class="col-sm-5">'+label+': </strong><span class="job_label_data col-sm-7">' + data + '</span></div>';
 }
 
 function build_ganglia_link( start_seconds, end_seconds, report_type, node_num, size ) {
