@@ -50,7 +50,3 @@ gem "awesim_rails_logging", "~> 0.0.3"
 gem "pbs"
 gem "turbolinks"
 gem "jquery-datatables-rails", '~> 3.3.0'
-
-# Lightbox2
-# https://github.com/gavinkflam/lightbox2-rails
-gem 'lightbox2-rails', :git => 'https://github.com/gavinkflam/lightbox2-rails.git'
