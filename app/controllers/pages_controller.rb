@@ -20,7 +20,10 @@ class PagesController < ApplicationController
     def get_data
       data_array = Array.new
       get_jobs.each do |j|
-        data_array.push(Jobstatusdata.new(j))
+        # don't include completed jobs in the payload.
+        if j[:attribs][:job_state] != 'C'
+          data_array.push(Jobstatusdata.new(j))
+        end
       end
       data_array
     end
