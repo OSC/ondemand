@@ -1,12 +1,12 @@
 <div class="btn-group pull-right" data-toggle="buttons">
     <label class="btn btn-primary  <%= (cookies[:jobfilter] == 'user') || (!cookies[:jobfilter]) ? 'active' : '' %>" onclick="docCookies.setItem('jobfilter', 'user'); window.location.reload();" >
-        <input type="radio" name="user" id="option_user" > User
+        <input type="radio" name="user" id="option_user" > Your Jobs
     </label>
     <label class="btn btn-primary <%= cookies[:jobfilter] == 'group' ? 'active' : '' %>" onclick="docCookies.setItem('jobfilter', 'group'); window.location.reload();">
-        <input type="radio" name="group" id="option_group" > Group
+        <input type="radio" name="group" id="option_group" > Your Group's Jobs (<%= Etc.getgrgid(Etc.getpwuid.gid).name %>)
     </label>
     <label class="btn btn-primary <%= cookies[:jobfilter] == 'all' ? 'active' : '' %>" onclick="docCookies.setItem('jobfilter', 'all'); window.location.reload();">
-        <input type="radio" name="all" id="option_all" > All
+        <input type="radio" name="all" id="option_all" > All Jobs
     </label>
 </div>
 
