@@ -215,7 +215,7 @@ function build_ganglia_link( start_seconds, end_seconds, report_type, node_num, 
         //Oakley
         system = "Oakley+nodes";
     }
-    return 'https://cts05.osc.edu/od_monitor/graph.php?z='+size+'&openid_identifier=<%= ENV['REMOTE_USER'] %>&c='+system+'&cs='+start_seconds+'&ce='+end_seconds+'&g='+report_type+'&h=' + node_num + '.ten.osc.edu';
+    return 'https://cts05.osc.edu/od_monitor/graph.php?z='+size+'&openid_identifier='+JobStatusapp.user+'&c='+system+'&cs='+start_seconds+'&ce='+end_seconds+'&g='+report_type+'&h=' + node_num + '.ten.osc.edu';
 }
 
 /* Formatting function for the status label. */
