@@ -12,7 +12,7 @@ class Jobstatusdata
   # Set the object to the server.
   #
   # @return [Jobstatusdata] self
-  def initialize(pbs_job)
+  def initialize(pbs_job, stat_cluster=hostname(pbs_job[:attribs][:submit_host]))
     self.pbsid = pbs_job[:name]
     self.jobname = pbs_job[:attribs][:Job_Name]
     self.username = pbs_job[:attribs][:euser]
@@ -22,7 +22,7 @@ class Jobstatusdata
       self.nodes = node_array(pbs_job[:attribs][:exec_host])
       self.starttime = pbs_job[:attribs][:start_time]
     end
-    self.cluster = hostname(pbs_job[:attribs][:submit_host])
+    self.cluster = stat_cluster
     self
   end
 
