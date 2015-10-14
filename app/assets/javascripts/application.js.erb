@@ -21,7 +21,7 @@
 $(document).ready( function() {
 
     var table = $('#job_status_table').DataTable({
-        ajax: './pages/json',       // 'pages#json'
+        ajax: './json',             // 'pages#json'
         "sAjaxDataProp": "",        // There's no data header on the json.
         autoWidth: true,
         "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
@@ -93,7 +93,7 @@ $(document).ready( function() {
             // Open this row
             row.child( format(row.data()) ).show();
             tr.addClass('shown');
-            $.getJSON('./pages/json?pbsid='+row.data().pbsid , function(data) {
+            $.getJSON('./json?pbsid='+row.data().pbsid , function(data) {
                 $( "#" + data[0].name.replace(/\./g, '_') ).html(display_enhanced_job_data(data[0]));
             });
         }
