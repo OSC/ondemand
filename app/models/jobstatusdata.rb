@@ -15,8 +15,8 @@ class Jobstatusdata
   def initialize(pbs_job, stat_cluster=hostname(pbs_job[:attribs][:submit_host]))
     self.pbsid = pbs_job[:name]
     self.jobname = pbs_job[:attribs][:Job_Name]
-    self.username = pbs_job[:attribs][:euser]
-    self.group = pbs_job[:attribs][:egroup]
+    self.username = username_format(pbs_job[:attribs][:Job_Owner])
+    self.group = pbs_job[:attribs][:egroup].empty? ? Etc.getgrgid(Etc.getpwnam(self.username).gid).name : pbs_job[:attribs][:egroup]
     self.status = pbs_job[:attribs][:job_state]
     if self.status == "R" || self.status == "C"
       self.nodes = node_array(pbs_job[:attribs][:exec_host])
@@ -50,7 +50,13 @@ class Jobstatusdata
     attribs_submit_host.split('.')[0]
   end
 
+
+
   private
+
+  def username_format(attribs_Job_Owner)
+    attribs_Job_Owner.split('@')[0]
+  end
 
     attr_writer :pbsid, :jobname, :username, :group, :status, :cluster, :nodes, :starttime
 
