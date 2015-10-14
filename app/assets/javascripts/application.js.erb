@@ -27,7 +27,17 @@ $(document).ready( function() {
         "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
         "bStateSave": true,
         "aaSorting": [],            // Turn off auto sort.
-        "pageLength": 50,            // Set the number of rows
+        "pageLength": 50,           // Set the number of rows
+        "fnInitComplete":           function( oSettings ) {
+                                        for ( var i=0, iLen=oSettings.aoData.length ; i<iLen ; i++ )
+                                        {
+                                            if (oSettings.aoData[i]._aData.username == JobStatusapp.username) {
+                                                oSettings.aoData[i].nTr.className += " bg-success";
+                                            } else if (oSettings.aoData[i]._aData.username == JobStatusapp.username) {
+                                                oSettings.aoData[i].nTr.className += " bg-info";
+                                            }
+                                        }
+                                    },
         processing: true,           // Add the "processing" while json is being downloaded.
         columns: [
             {
