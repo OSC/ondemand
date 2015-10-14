@@ -188,10 +188,10 @@ function build_resources_requested_panel( d ) {
     var _processors_per_node = d.attribs.Resource_List.nodes.split("ppn=")[1];
     var _walltime_requested = d.attribs.Resource_List.walltime;
     var _queue = d.attribs.queue;
-    return          label_data("Node Request", _nodes_requested) +
+    return          label_data("Nodes", _nodes_requested) +
                     label_data("PPN Request", _processors_per_node) +
-                    label_data("Total CPU", (_nodes_requested * _processors_per_node)) +
-                    label_data("Walltime Request", _walltime_requested) +
+                    label_data("Total CPU", (_nodes_requested * _processors_per_node.match(/\d+/))) +
+                    label_data("Walltime", _walltime_requested) +
                     label_data("Queue", _queue);
 }
 
