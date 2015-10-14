@@ -13,6 +13,29 @@ class PagesController < ApplicationController
     end
   end
 
+  def delete_job
+    if params[:pbsid]
+      # TODO Get this out of here and set with params
+      if params[:pbsid].include? 'oak-batch'
+        host = 'oakley'
+      else
+        host = 'ruby'
+      end
+
+      begin
+        c = PBS::Conn.batch host
+        j = PBS::Job.new(conn: c, id: params[:pbsid])
+        j.delete
+
+        redirect_to root_url, :alert => "Deleted " + params[:pbsid]
+      rescue
+        redirect_to root_url, :alert => "Unable to delete " + params[:pbsid]
+      end
+    else
+      redirect_to root_url, :alert => "Not Deleted"
+    end
+  end
+
   private
 
   # Converts the PBS data to Jobstatusdata objects so we
