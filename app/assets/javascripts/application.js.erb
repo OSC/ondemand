@@ -31,8 +31,10 @@ $(document).ready( function() {
         "fnInitComplete":           function( oSettings ) {
                                         for ( var i=0, iLen=oSettings.aoData.length ; i<iLen ; i++ )
                                         {
+                                            // Add green background to user rows
                                             if (oSettings.aoData[i]._aData.username == JobStatusapp.username) {
                                                 oSettings.aoData[i].nTr.className += " bg-success";
+                                            // Add blue background to group rows
                                             } else if (oSettings.aoData[i]._aData.username == JobStatusapp.username) {
                                                 oSettings.aoData[i].nTr.className += " bg-info";
                                             }
@@ -124,7 +126,6 @@ function display_job_info( d ) {
 function display_node_rows( d ) {
     var rows = "";
     // Ganglia accepts timestamps in seconds, not millis.
-    var end = parseInt(Date.now()/1000);
     var start = d.starttime;
     if (d.nodes != null) {
         for (node in d.nodes) {
@@ -135,10 +136,10 @@ function display_node_rows( d ) {
                     '           <div class="panel panel-default">' +
                     '              <div class="panel-heading"><h3 class="panel-title">' + node_num + '.ten.osc.edu <span class="pull-right">' + d.pbsid + '</span></h3></div>' +
                     '              <div class="panel-body">' +
-                    '                   <a href="'+ build_ganglia_link(start, end, 'cpu_report', node_num, 'large') +'" data-lightbox="cpu-report" data-title="CPU Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-12" src="'+build_ganglia_link(start, end, 'cpu_report', node_num, 'small')+'" /></a>' +
-                    '                   <a href="'+ build_ganglia_link(start, end, 'load_report', node_num, 'large') +'" data-lightbox="load-report" data-title="Load Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-12" src="'+build_ganglia_link(start, end, 'load_report', node_num, 'small')+'" /></a>' +
-                    '                   <a href="'+ build_ganglia_link(start, end, 'mem_report', node_num, 'large') +'" data-lightbox="mem-report" data-title="Memory Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-12" src="'+build_ganglia_link(start, end, 'mem_report', node_num, 'small')+'" /></a>' +
-                    '                   <a href="'+ build_ganglia_link(start, end, 'network_report', node_num, 'large') +'" data-lightbox="network-report" data-title="Network Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-12" src="'+build_ganglia_link(start, end, 'network_report', node_num, 'small')+'" /></a>' +
+                    '                   <a href="'+ build_ganglia_link(start, 'cpu_report', node_num, 'large') +'" data-lightbox="cpu-report" data-title="CPU Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-12" src="'+build_ganglia_link(start, 'cpu_report', node_num, 'small')+'" /></a>' +
+                    '                   <a href="'+ build_ganglia_link(start, 'load_report', node_num, 'large') +'" data-lightbox="load-report" data-title="Load Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-12" src="'+build_ganglia_link(start, 'load_report', node_num, 'small')+'" /></a>' +
+                    '                   <a href="'+ build_ganglia_link(start, 'mem_report', node_num, 'large') +'" data-lightbox="mem-report" data-title="Memory Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-12" src="'+build_ganglia_link(start, 'mem_report', node_num, 'small')+'" /></a>' +
+                    '                   <a href="'+ build_ganglia_link(start, 'network_report', node_num, 'large') +'" data-lightbox="network-report" data-title="Network Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-12" src="'+build_ganglia_link(start, 'network_report', node_num, 'small')+'" /></a>' +
                     '              </div>' +
                     '           </div>' +
                     '       </td>' +
@@ -183,12 +184,13 @@ function is_defined( object ) {
 
 function build_job_information_panel( d ) {
     var _Job_Name = d.attribs.Job_Name;
+    // TODO: fix to use model data
     var _euser = d.attribs.euser;
     var _egroup = d.attribs.egroup;
     var _walltime_requested = d.attribs.Resource_List.walltime;
     var _walltime_used = (is_defined(d.attribs.resources_used) ? d.attribs.resources_used.walltime : '0');
     return          label_data("Job Name", _Job_Name) +
-                    label_data("User Name", _euser) +
+                    label_data("Username", _euser) +
                     label_data("Group Name", _egroup) +
                     label_data("Walltime", _walltime_used + " / " + _walltime_requested);
 }
@@ -199,7 +201,7 @@ function build_resources_requested_panel( d ) {
     var _walltime_requested = d.attribs.Resource_List.walltime;
     var _queue = d.attribs.queue;
     return          label_data("Nodes", _nodes_requested) +
-                    label_data("PPN Request", _processors_per_node) +
+                    label_data("PPN", _processors_per_node) +
                     label_data("Total CPU", (_nodes_requested * _processors_per_node.match(/\d+/))) +
                     label_data("Walltime", _walltime_requested) +
                     label_data("Queue", _queue);
@@ -213,14 +215,34 @@ function build_resources_used_panel( d ) {
     return          label_data("CPU Time", _cput) +
                     label_data("Memory", _mem) +
                     label_data("VMem", _vmem) +
-                    label_data("Run Time", _walltime);
+                    label_data("Run Time", _walltime) +
+                    delete_button( d.name.replace(/\./g, '_'), d.attribs.euser );
+}
+
+function delete_button( pbsid, user ) {
+    if (user == JobStatusapp.username) {
+        return '<div class="small col-sm-12 pull-right" style="margin-top: 10px;"><button type="button" class="col-sm-12 btn btn-danger"' +
+                ' onClick="delete_job(\''+pbsid+'\')">Delete</button></div>';
+    } else {
+        return '';
+    }
+
+}
+
+function delete_job(pbsid) {
+    if (confirm("Are you sure?")) {
+        window.location = "./delete_job/?pbsid=" + pbsid;
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function label_data(label, data) {
     return '<div class="small col-sm-12" style="height: 100%;"><strong class="col-sm-5">'+label+': </strong><span class="job_label_data col-sm-7">' + data + '</span></div>';
 }
 
-function build_ganglia_link( start_seconds, end_seconds, report_type, node_num, size ) {
+function build_ganglia_link( start_seconds, report_type, node_num, size ) {
     var system;
     if (node_num.startsWith('r')) {
         //Ruby
@@ -230,7 +252,7 @@ function build_ganglia_link( start_seconds, end_seconds, report_type, node_num, 
         //Oakley
         system = "Oakley+nodes";
     }
-    return 'https://cts05.osc.edu/od_monitor/graph.php?z='+size+'&openid_identifier='+JobStatusapp.user+'&c='+system+'&cs='+start_seconds+'&ce='+end_seconds+'&g='+report_type+'&h=' + node_num + '.ten.osc.edu';
+    return 'https://cts05.osc.edu/od_monitor/graph.php?z='+size+'&openid_identifier='+JobStatusapp.user+'&c='+system+'&cs='+start_seconds+'&g='+report_type+'&h=' + node_num + '.ten.osc.edu';
 }
 
 /* Formatting function for the status label. */

@@ -15,8 +15,9 @@ class PagesController < ApplicationController
 
   def delete_job
     if params[:pbsid]
+      job_id = params[:pbsid].gsub!(/_/, '.')
       # TODO Get this out of here and set with params
-      if params[:pbsid].include? 'oak-batch'
+      if job_id.include? 'oak-batch'
         host = 'oakley'
       else
         host = 'ruby'
@@ -24,12 +25,15 @@ class PagesController < ApplicationController
 
       begin
         c = PBS::Conn.batch host
-        j = PBS::Job.new(conn: c, id: params[:pbsid])
+        j = PBS::Job.new(conn: c, id: job_id)
         j.delete
 
-        redirect_to root_url, :alert => "Deleted " + params[:pbsid]
+        # It takes a couple of seconds for the job to clear out
+        # Using the sleep to wait before reload
+        sleep(2.0)
+        redirect_to root_url, :alert => "Deleted " + job_id
       rescue
-        redirect_to root_url, :alert => "Unable to delete " + params[:pbsid]
+        redirect_to root_url, :alert => "Unable to delete " + job_id
       end
     else
       redirect_to root_url, :alert => "Not Deleted"
