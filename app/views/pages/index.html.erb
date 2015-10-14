@@ -3,7 +3,7 @@
         <input type="radio" name="user" id="option_user" > Your Jobs
     </label>
     <label class="btn btn-primary <%= cookies[:jobfilter] == 'group' ? 'active' : '' %>" onclick="docCookies.setItem('jobfilter', 'group'); window.location.reload();">
-        <input type="radio" name="group" id="option_group" > Your Group's Jobs (<%= Etc.getgrgid(Etc.getpwuid.gid).name %>)
+        <input type="radio" name="group" id="option_group" > Your Group's Jobs (<%= get_usergroup %>)
     </label>
     <label class="btn btn-primary <%= cookies[:jobfilter] == 'all' ? 'active' : '' %>" onclick="docCookies.setItem('jobfilter', 'all'); window.location.reload();">
         <input type="radio" name="all" id="option_all" > All Jobs
