@@ -46,28 +46,33 @@ $(document).ready( function() {
                 "className":        'details-control',
                 "orderable":        false,
                 "data":             null,
-                "defaultContent":   ''
+                "defaultContent":   '',
+                "width":            "20px"
             },
             {
                 data:               "pbsid",
-                className:          "small"
+                className:          "small",
+                "autoWidth":          true
             },
             {
                 data:               "jobname",
-                css:                "word-wrap: break-word; overflow: scroll;",
-                className:          "small"
+                className:          "small",
+                "width":              "40%"
             },
             {
                 data:               "username",
-                className:          "small"
+                className:          "small",
+                "autoWidth":          true
             },
             {
                 data:               "group",
-                className:          "small"
+                className:          "small",
+                "autoWidth":          true
             },
             {
                 data:               "status",
                 className:          "small",
+                "autoWidth":          true,
                 "render":           function(data) {
                                         return status_label(data);
                                     }
@@ -136,10 +141,10 @@ function display_node_rows( d ) {
                     '           <div class="panel panel-default">' +
                     '              <div class="panel-heading"><h3 class="panel-title">' + node_num + '.ten.osc.edu <span class="pull-right">' + d.pbsid + '</span></h3></div>' +
                     '              <div class="panel-body">' +
-                    '                   <a href="'+ build_ganglia_link(start, 'cpu_report', node_num, 'large') +'" data-lightbox="cpu-report" data-title="CPU Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-12" src="'+build_ganglia_link(start, 'cpu_report', node_num, 'small')+'" /></a>' +
-                    '                   <a href="'+ build_ganglia_link(start, 'load_report', node_num, 'large') +'" data-lightbox="load-report" data-title="Load Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-12" src="'+build_ganglia_link(start, 'load_report', node_num, 'small')+'" /></a>' +
-                    '                   <a href="'+ build_ganglia_link(start, 'mem_report', node_num, 'large') +'" data-lightbox="mem-report" data-title="Memory Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-12" src="'+build_ganglia_link(start, 'mem_report', node_num, 'small')+'" /></a>' +
-                    '                   <a href="'+ build_ganglia_link(start, 'network_report', node_num, 'large') +'" data-lightbox="network-report" data-title="Network Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-12" src="'+build_ganglia_link(start, 'network_report', node_num, 'small')+'" /></a>' +
+                    '                   <a href="'+ build_ganglia_link(start, 'cpu_report', node_num, 'large') +'" data-lightbox="cpu-report" data-title="CPU Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" src="'+build_ganglia_link(start, 'cpu_report', node_num, 'small')+'" /></a>' +
+                    '                   <a href="'+ build_ganglia_link(start, 'load_report', node_num, 'large') +'" data-lightbox="load-report" data-title="Load Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" src="'+build_ganglia_link(start, 'load_report', node_num, 'small')+'" /></a>' +
+                    '                   <a href="'+ build_ganglia_link(start, 'mem_report', node_num, 'large') +'" data-lightbox="mem-report" data-title="Memory Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" src="'+build_ganglia_link(start, 'mem_report', node_num, 'small')+'" /></a>' +
+                    '                   <a href="'+ build_ganglia_link(start, 'network_report', node_num, 'large') +'" data-lightbox="network-report" data-title="Network Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" src="'+build_ganglia_link(start, 'network_report', node_num, 'small')+'" /></a>' +
                     '              </div>' +
                     '           </div>' +
                     '       </td>' +
@@ -158,14 +163,20 @@ function display_enhanced_job_data( d ) {
         return      '<div>' +
                     '   <tr>' +
                     '        <td>' +
-                    '            <div class="panel panel-default">' +
-                    '                <div class="panel-heading"><h3><strong>' + d.attribs.Job_Name + ' ('+ d.name +')</strong><span class="pull-right">' + status_label(d.attribs.job_state) + '</span></h3></div>' +
+                    '            <div class="panel panel-default container-fluid">' +
+                    '               <div class="panel-heading row clearfix">' +
+                    '                   <strong>' +
+                    '                       <div class="col-md-12" style="word-wrap: break-word;">' + d.attribs.Job_Name + '</div>' +
+                    '                       <div class="col-md-10">('+ d.name +')</div>' +
+                    '                       <div class="col-md-2">' + status_label(d.attribs.job_state) + '</div>' +
+                    '                   </strong>' +
+                    '               </div>' +
                     '                <div class="panel-body">' +
                     '                   <div class="col-md-4"><div class="panel panel-default"><div class="panel-heading">Job Information</div><div class="panel-body">'+build_job_information_panel( d )+'</div></div></div>' +
                     '                   <div class="col-md-4"><div class="panel panel-default"><div class="panel-heading">Resources Requested</div><div class="panel-body">'+build_resources_requested_panel( d )+'</div></div></div>' +
                     '                   <div class="col-md-4"><div class="panel panel-default"><div class="panel-heading">Resources Used</div><div class="panel-body">'+build_resources_used_panel( d )+'</div></div></div>' +
                     '                   <div class="col-md-12"><span class="col-md-2">Submit Args: </span><pre class="col-md-10" style="white-space: pre-wrap;">'+ d.attribs.submit_args +'</pre></div>' +
-                    '                   <div class="col-md-12"><span class="col-md-2">Output Location: </span><pre class="col-md-10" style="display: inline; white-space: pre-wrap;">'+ d.attribs.Output_Path.split(":")[1]+'</pre></span></div>' +
+                    '                   <div class="col-md-12"><span class="col-md-2">Output Location: </span><pre class="col-md-10" style="white-space: pre-wrap;">'+ d.attribs.Output_Path.split(":")[1]+'</pre></span></div>' +
                     '                </div>' +
                     '            </div>' +
                     '       </td>' +
