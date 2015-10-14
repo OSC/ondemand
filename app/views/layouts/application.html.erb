@@ -7,8 +7,10 @@
 
     <script>
       var JobStatusapp = {
-        user: "<%= ENV['REMOTE_USER'] %>",
-        app:  "<%= ENV['APP_TOKEN'] %>"
+        user:     "<%= ENV['REMOTE_USER'] %>",
+        app:      "<%= ENV['APP_TOKEN'] %>",
+        group:    "<%= get_usergroup %>",
+        username: "<%= get_username %>"
       };
     </script>
 

@@ -58,16 +58,16 @@ class PagesController < ApplicationController
         jobs.push(q.find)
       elsif cookies[:jobfilter] == 'group'
         # Get all group jobs
-        jobs.push(q.where.is(PBS::ATTR[:egroup] => Etc.getgrgid(Etc.getpwuid.gid).name).find)
+        jobs.push(q.where.is(PBS::ATTR[:egroup] => get_usergroup).find)
       else
-        jobs.push(q.where.user(ENV['USER']).find)
+        jobs.push(q.where.user(get_username).find)
       end
 
     end
     jobs = jobs.flatten
 
     jobs.sort_by! do |user|
-      user[:attribs][:euser] == ENV['USER'] ? 0 : user[:attribs][:egroup] == Etc.getgrgid(Etc.getpwuid.gid).name ? 1 : 2
+      user[:attribs][:euser] == get_username ? 0 : user[:attribs][:egroup] == get_usergroup ? 1 : 2
     end
   end
 end

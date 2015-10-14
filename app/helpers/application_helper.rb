@@ -1,5 +1,14 @@
 module ApplicationHelper
-  def username(attribs_Job_Owner)
-    attribs_Job_Owner.split('@')[0]
+
+  def get_username
+    ENV['USER']
+  end
+
+  def get_usergroup
+    Etc.getgrgid(Etc.getpwuid.gid).name
+  end
+  
+  def get_remoteuser
+    ENV['REMOTE_USER']
   end
 end
