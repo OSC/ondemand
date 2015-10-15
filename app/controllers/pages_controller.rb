@@ -9,6 +9,7 @@ class PagesController < ApplicationController
     if params[:pbsid].nil?
       render :json => get_jobs
     else
+      #Only allow the configured servers to respond
       if Servers.has_key?(params[:host])
         render :json => get_job(params[:pbsid], params[:host])
       end
@@ -16,6 +17,9 @@ class PagesController < ApplicationController
   end
 
   def delete_job
+
+    # Only delete if the pbsid and host params are present and host is configured in servers.
+    # PBS will prevent a user from deleting a job that is not their own and throw an error.
     if params[:pbsid] && (Servers.has_key?(params[:host]) )
       job_id = params[:pbsid].gsub!(/_/, '.')
 
@@ -38,6 +42,7 @@ class PagesController < ApplicationController
 
   private
 
+  # Get the extended data for a particular job.
   def get_job(pbsid, host)
     begin
       c = PBS::Conn.batch host
@@ -50,6 +55,7 @@ class PagesController < ApplicationController
     end
   end
 
+  # Get a set of jobs defined by the filtering cookie.
   def get_jobs
     jobs = Array.new
     Servers.each do |key, value|

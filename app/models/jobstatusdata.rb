@@ -9,7 +9,9 @@ class Jobstatusdata
 
   attr_reader :pbsid, :jobname, :username, :group, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem
 
-  # Set the object to the server.
+  # Define an object containing only necessary data to send to client.
+  #
+  # Object defaults to condensed data, add extended flag to initializer to include all data used by the application.
   #
   # @return [Jobstatusdata] self
   def initialize(pbs_job, pbs_cluster=Servers.first[0], extended=false)
@@ -29,6 +31,9 @@ class Jobstatusdata
     self
   end
 
+  # Store additional data about the job.
+  #
+  # @return [Jobstatusdata] self
   def extended_data(pbs_job)
     self.walltime = pbs_job[:attribs][:Resource_List][:walltime]
     self.walltime_used = pbs_job[:attribs][:resources_used][:walltime]
@@ -44,6 +49,11 @@ class Jobstatusdata
     self
   end
 
+  # Converts the :exec_host string to an array of node numbers
+  #
+  # @example "n0324/0-11+n0145/0-11+n0144/0-11" => ['n0324', 'n0145', 'n0144']
+  #
+  # @return [Array] the nodes as array
   def node_array(attribs_exec_host)
     nodes = Array.new
     # Some completed jobs will no longer have nodes associated with them
@@ -56,19 +66,6 @@ class Jobstatusdata
     end
     nodes
   end
-
-  def hostname(attribs_submit_host)
-    #attribs_submit_host.split(/\d+/)[0]
-
-    # We may want to split after the number.
-    # PBS returns jobs running  on Websvcs and N000 nodes,
-    # and the above line cuts the digits and not the number.
-    # Additional handling will be necessary if we want
-    # to avoid displaying 'oakley02', 'ruby01', etc.
-    attribs_submit_host.split('.')[0]
-  end
-
-
 
   private
 
