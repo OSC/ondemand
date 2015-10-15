@@ -7,24 +7,18 @@ class PagesController < ApplicationController
   # Used to send the data to the Datatable.
   def json
     if params[:pbsid].nil?
-      render :json => get_data
+      render :json => get_jobs
     else
       render :json => get_job(params[:pbsid])
     end
   end
 
   def delete_job
-    if params[:pbsid]
+    if params[:pbsid] && (params[:host])
       job_id = params[:pbsid].gsub!(/_/, '.')
-      # TODO Get this out of here and set with params
-      if job_id.include? 'oak-batch'
-        host = 'oakley'
-      else
-        host = 'ruby'
-      end
 
       begin
-        c = PBS::Conn.batch host
+        c = PBS::Conn.batch params[:host]
         j = PBS::Job.new(conn: c, id: job_id)
         j.delete
 
@@ -42,20 +36,7 @@ class PagesController < ApplicationController
 
   private
 
-  # Converts the PBS data to Jobstatusdata objects so we
-  # don't send as much data down the pipe to the user.
-  def get_data
-    data_array = Array.new
-    get_jobs.each do |j|
-      # don't include completed jobs in the payload.
-      if j[:attribs][:job_state] != 'C'
-        data_array.push(Jobstatusdata.new(j))
-      end
-    end
-    data_array
-  end
-
-  def get_job(pbsid)
+  def get_job(pbsid, host)
     begin
 
       # TODO Get this out of here and set with params
@@ -67,7 +48,6 @@ class PagesController < ApplicationController
 
       c = PBS::Conn.batch host
       q = PBS::Query.new conn: c, type: :job
-      #q.find(id: pbsid)
 
       Jobstatusdata.new(q.find(id: pbsid).first, host, true)
 
@@ -84,19 +64,24 @@ class PagesController < ApplicationController
 
       # Checks the cookies and gets the appropriate job set.
       if cookies[:jobfilter] == 'all'
-        jobs.push(q.find)
+        result = q.find.each
       elsif cookies[:jobfilter] == 'group'
         # Get all group jobs
-        jobs.push(q.where.is(PBS::ATTR[:egroup] => get_usergroup).find)
+        result = q.where.is(PBS::ATTR[:egroup] => get_usergroup).find
       else
-        jobs.push(q.where.user(get_username).find)
+        result = q.where.user(get_username).find
       end
-
+      result.each do |job|
+        # Only add the running jobs to the list and assign the host to the object.
+        if job[:attribs][:job_state] != 'C'
+          jobs.push(Jobstatusdata.new(job, key))
+        end
+      end
     end
-    jobs = jobs.flatten
 
+    # Sort jobs by username, then group
     jobs.sort_by! do |user|
-      user[:attribs][:euser] == get_username ? 0 : user[:attribs][:egroup] == get_usergroup ? 1 : 2
+      user.username == get_username ? 0 : user.group == get_usergroup ? 1 : 2
     end
   end
 end

@@ -78,8 +78,12 @@ JobStatusapp.group) {
                                         return status_label(data);
                                     }
             },
-            {   data:               "cluster",
-                className:          "small"
+            {
+                data:               "cluster",
+                className:          "small",
+                "render":           function(data) {
+                                        return data.charAt(0).toUpperCase() + data.substr(1);
+                                    }
             }
         ]
     });
@@ -102,8 +106,6 @@ JobStatusapp.group) {
             row.child( format(row.data()) ).show();
             tr.addClass('shown');
             $.getJSON('./json?pbsid='+row.data().pbsid , function(data) {
-
-                alert(JSON.stringify(data));
                 $( "#" + row.data().pbsid.replace(/\./g, '_') ).html(display_enhanced_job_data(data));
             });
         }
@@ -231,22 +233,21 @@ function build_resources_used_panel( d ) {
                     label_data("Memory", _mem) +
                     label_data("VMem", _vmem) +
                     label_data("Run Time", _walltime) +
-                    delete_button( d.pbsid.replace(/\./g, '_'), d.username );
+                    delete_button( d.pbsid.replace(/\./g, '_'), d.cluster, d.username );
 }
 
-function delete_button( pbsid, user ) {
+function delete_button( pbsid, host, user ) {
     if (user == JobStatusapp.username) {
         return '<div class="small col-sm-12 pull-right" style="margin-top: 10px;"><button type="button" class="col-sm-12 btn btn-danger"' +
-                ' onClick="delete_job(\''+pbsid+'\')">Delete</button></div>';
+                ' onClick="delete_job(\''+pbsid+'\',\''+host+'\')">Delete</button></div>';
     } else {
         return '';
     }
-
 }
 
-function delete_job(pbsid) {
+function delete_job(pbsid, host) {
     if (confirm("Are you sure?")) {
-        window.location = "./delete_job/?pbsid=" + pbsid;
+        window.location = "./delete_job/?pbsid=" + pbsid + "&host=" + host;
         return true;
     } else {
         return false;
