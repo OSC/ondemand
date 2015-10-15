@@ -105,7 +105,7 @@ JobStatusapp.group) {
             // Open this row
             row.child( format(row.data()) ).show();
             tr.addClass('shown');
-            $.getJSON('./json?pbsid='+row.data().pbsid , function(data) {
+            $.getJSON('./json?pbsid='+row.data().pbsid+'&host='+row.data().cluster , function(data) {
                 $( "#" + row.data().pbsid.replace(/\./g, '_') ).html(display_enhanced_job_data(data));
             });
         }
@@ -171,9 +171,10 @@ function display_enhanced_job_data( d ) {
                     '            <div class="panel panel-default container-fluid">' +
                     '               <div class="panel-heading row clearfix">' +
                     '                   <strong>' +
-                    '                       <div class="col-md-12" style="word-wrap: break-word;">' + d.jobname + '</div>' +
-                    '                       <div class="col-md-10">('+ d.pbsid +')</div>' +
-                    '                       <div class="col-md-2">' + status_label(d.status) + '</div>' +
+                    '                       <div class="col-xs-1">' + status_label(d.status) + '</div>' +
+                    '                       <div class="col-xs-11" style="word-wrap: break-word;">' + d.jobname +
+                    '                       <div>('+ d.pbsid +')</div></div>' +
+
                     '                   </strong>' +
                     '               </div>' +
                     '                <div class="panel-body">' +

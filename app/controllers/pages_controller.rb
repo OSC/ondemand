@@ -9,12 +9,14 @@ class PagesController < ApplicationController
     if params[:pbsid].nil?
       render :json => get_jobs
     else
-      render :json => get_job(params[:pbsid])
+      if Servers.has_key?(params[:host])
+        render :json => get_job(params[:pbsid], params[:host])
+      end
     end
   end
 
   def delete_job
-    if params[:pbsid] && (params[:host])
+    if params[:pbsid] && (Servers.has_key?(params[:host]) )
       job_id = params[:pbsid].gsub!(/_/, '.')
 
       begin
@@ -38,14 +40,6 @@ class PagesController < ApplicationController
 
   def get_job(pbsid, host)
     begin
-
-      # TODO Get this out of here and set with params
-      if pbsid.include? 'oak-batch'
-        host = 'oakley'
-      else
-        host = 'ruby'
-      end
-
       c = PBS::Conn.batch host
       q = PBS::Query.new conn: c, type: :job
 
@@ -64,15 +58,18 @@ class PagesController < ApplicationController
 
       # Checks the cookies and gets the appropriate job set.
       if cookies[:jobfilter] == 'all'
+        # Get all jobs
         result = q.find.each
       elsif cookies[:jobfilter] == 'group'
         # Get all group jobs
         result = q.where.is(PBS::ATTR[:egroup] => get_usergroup).find
       else
+        # Get all user jobs
         result = q.where.user(get_username).find
       end
+
+      # Only add the running jobs to the list and assign the host to the object.
       result.each do |job|
-        # Only add the running jobs to the list and assign the host to the object.
         if job[:attribs][:job_state] != 'C'
           jobs.push(Jobstatusdata.new(job, key))
         end
