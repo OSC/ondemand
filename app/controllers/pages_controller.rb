@@ -67,7 +67,9 @@ class PagesController < ApplicationController
 
       c = PBS::Conn.batch host
       q = PBS::Query.new conn: c, type: :job
-      q.find(id: pbsid)
+      #q.find(id: pbsid)
+
+      Jobstatusdata.new(q.find(id: pbsid).first, host, true)
 
     rescue
       "[{\"name\":\"#{pbsid}\",\"error\":\"Job data expired or invalid.\"}]"

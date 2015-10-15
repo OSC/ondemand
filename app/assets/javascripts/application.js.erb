@@ -35,7 +35,8 @@ $(document).ready( function() {
                                             if (oSettings.aoData[i]._aData.username == JobStatusapp.username) {
                                                 oSettings.aoData[i].nTr.className += " bg-success";
                                             // Add blue background to group rows
-                                            } else if (oSettings.aoData[i]._aData.username == JobStatusapp.username) {
+                                            } else if (oSettings.aoData[i]._aData.group == 
+JobStatusapp.group) {
                                                 oSettings.aoData[i].nTr.className += " bg-info";
                                             }
                                         }
@@ -52,27 +53,27 @@ $(document).ready( function() {
             {
                 data:               "pbsid",
                 className:          "small",
-                "autoWidth":          true
+                "autoWidth":        true
             },
             {
                 data:               "jobname",
                 className:          "small",
-                "width":              "40%"
+                "width":            "40%"
             },
             {
                 data:               "username",
                 className:          "small",
-                "autoWidth":          true
+                "autoWidth":        true
             },
             {
                 data:               "group",
                 className:          "small",
-                "autoWidth":          true
+                "autoWidth":        true
             },
             {
                 data:               "status",
                 className:          "small",
-                "autoWidth":          true,
+                "autoWidth":        true,
                 "render":           function(data) {
                                         return status_label(data);
                                     }
@@ -101,7 +102,9 @@ $(document).ready( function() {
             row.child( format(row.data()) ).show();
             tr.addClass('shown');
             $.getJSON('./json?pbsid='+row.data().pbsid , function(data) {
-                $( "#" + data[0].name.replace(/\./g, '_') ).html(display_enhanced_job_data(data[0]));
+
+                alert(JSON.stringify(data));
+                $( "#" + row.data().pbsid.replace(/\./g, '_') ).html(display_enhanced_job_data(data));
             });
         }
     });
@@ -166,17 +169,17 @@ function display_enhanced_job_data( d ) {
                     '            <div class="panel panel-default container-fluid">' +
                     '               <div class="panel-heading row clearfix">' +
                     '                   <strong>' +
-                    '                       <div class="col-md-12" style="word-wrap: break-word;">' + d.attribs.Job_Name + '</div>' +
-                    '                       <div class="col-md-10">('+ d.name +')</div>' +
-                    '                       <div class="col-md-2">' + status_label(d.attribs.job_state) + '</div>' +
+                    '                       <div class="col-md-12" style="word-wrap: break-word;">' + d.jobname + '</div>' +
+                    '                       <div class="col-md-10">('+ d.pbsid +')</div>' +
+                    '                       <div class="col-md-2">' + status_label(d.status) + '</div>' +
                     '                   </strong>' +
                     '               </div>' +
                     '                <div class="panel-body">' +
                     '                   <div class="col-md-4"><div class="panel panel-default"><div class="panel-heading">Job Information</div><div class="panel-body">'+build_job_information_panel( d )+'</div></div></div>' +
                     '                   <div class="col-md-4"><div class="panel panel-default"><div class="panel-heading">Resources Requested</div><div class="panel-body">'+build_resources_requested_panel( d )+'</div></div></div>' +
                     '                   <div class="col-md-4"><div class="panel panel-default"><div class="panel-heading">Resources Used</div><div class="panel-body">'+build_resources_used_panel( d )+'</div></div></div>' +
-                    '                   <div class="col-md-12"><span class="col-md-2">Submit Args: </span><pre class="col-md-10" style="white-space: pre-wrap;">'+ d.attribs.submit_args +'</pre></div>' +
-                    '                   <div class="col-md-12"><span class="col-md-2">Output Location: </span><pre class="col-md-10" style="white-space: pre-wrap;">'+ d.attribs.Output_Path.split(":")[1]+'</pre></span></div>' +
+                    '                   <div class="col-md-12"><span class="col-md-2">Submit Args: </span><pre class="col-md-10" style="white-space: pre-wrap;">'+ d.submit_args +'</pre></div>' +
+                    '                   <div class="col-md-12"><span class="col-md-2">Output Location: </span><pre class="col-md-10" style="white-space: pre-wrap;">'+ d.output_path+'</pre></span></div>' +
                     '                </div>' +
                     '            </div>' +
                     '       </td>' +
@@ -194,40 +197,41 @@ function is_defined( object ) {
 }
 
 function build_job_information_panel( d ) {
-    var _Job_Name = d.attribs.Job_Name;
+    var _Job_Name = d.jobname;
     // TODO: fix to use model data
-    var _euser = d.attribs.euser;
-    var _egroup = d.attribs.egroup;
-    var _walltime_requested = d.attribs.Resource_List.walltime;
-    var _walltime_used = (is_defined(d.attribs.resources_used) ? d.attribs.resources_used.walltime : '0');
+    var _username = d.username;
+    var _group = d.group;
+    var _walltime_requested = d.walltime;
+    var _walltime_used = (is_defined(d.walltime_used) ? d.walltime_used : '0');
     return          label_data("Job Name", _Job_Name) +
-                    label_data("Username", _euser) +
-                    label_data("Group Name", _egroup) +
+                    label_data("Username", _username) +
+                    label_data("Group Name", _group) +
                     label_data("Walltime", _walltime_used + " / " + _walltime_requested);
 }
 
 function build_resources_requested_panel( d ) {
-    var _nodes_requested = d.attribs.Resource_List.nodect;
-    var _processors_per_node = d.attribs.Resource_List.nodes.split("ppn=")[1];
-    var _walltime_requested = d.attribs.Resource_List.walltime;
-    var _queue = d.attribs.queue;
+    var _nodes_requested = d['nodect'];
+    var _processors_per_node = d.ppn;
+    var _walltime_requested = d.walltime;
+    var _total_cpu = d.total_cpu;
+    var _queue = d.queue;
     return          label_data("Nodes", _nodes_requested) +
                     label_data("PPN", _processors_per_node) +
-                    label_data("Total CPU", (_nodes_requested * _processors_per_node.match(/\d+/))) +
+                    label_data("Total CPU", _total_cpu) +
                     label_data("Walltime", _walltime_requested) +
                     label_data("Queue", _queue);
 }
 
 function build_resources_used_panel( d ) {
-    var _cput = is_defined(d.attribs.resources_used) ? d.attribs.resources_used.cput : '0';
-    var _mem = is_defined(d.attribs.resources_used) ? d.attribs.resources_used.mem : '0';
-    var _vmem = is_defined(d.attribs.resources_used) ? d.attribs.resources_used.vmem : '0';
-    var _walltime = is_defined(d.attribs.resources_used) ? d.attribs.resources_used.walltime : '0';
+    var _cput = is_defined(d.cput) ? d.cput : '0';
+    var _mem = is_defined(d.mem) ? d.mem : '0';
+    var _vmem = is_defined(d.vmem) ? d.vmem : '0';
+    var _walltime = is_defined(d.walltime) ? d.walltime : '0';
     return          label_data("CPU Time", _cput) +
                     label_data("Memory", _mem) +
                     label_data("VMem", _vmem) +
                     label_data("Run Time", _walltime) +
-                    delete_button( d.name.replace(/\./g, '_'), d.attribs.euser );
+                    delete_button( d.pbsid.replace(/\./g, '_'), d.username );
 }
 
 function delete_button( pbsid, user ) {

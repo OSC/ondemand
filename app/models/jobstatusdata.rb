@@ -7,12 +7,12 @@
 # @version 0.0.1
 class Jobstatusdata
 
-  attr_reader :pbsid, :jobname, :username, :group, :status, :cluster, :nodes, :starttime
+  attr_reader :pbsid, :jobname, :username, :group, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem
 
   # Set the object to the server.
   #
   # @return [Jobstatusdata] self
-  def initialize(pbs_job, stat_cluster=hostname(pbs_job[:attribs][:submit_host]))
+  def initialize(pbs_job, stat_cluster=hostname(pbs_job[:attribs][:submit_host]), extended=false)
     self.pbsid = pbs_job[:name]
     self.jobname = pbs_job[:attribs][:Job_Name]
     self.username = username_format(pbs_job[:attribs][:Job_Owner])
@@ -23,7 +23,25 @@ class Jobstatusdata
       self.starttime = pbs_job[:attribs][:start_time]
     end
     self.cluster = stat_cluster
+    if extended
+      extended_data(pbs_job)
+    end
     self
+  end
+
+  def extended_data(pbs_job)
+    self.walltime = pbs_job[:attribs][:Resource_List][:walltime]
+    self.walltime_used = pbs_job[:attribs][:resources_used][:walltime]
+    self.submit_args = pbs_job[:attribs][:submit_args]
+    self.output_path = pbs_job[:attribs][:Output_Path].split(":").second
+    self.nodect = pbs_job[:attribs][:Resource_List][:nodect]
+    self.ppn = pbs_job[:attribs][:Resource_List][:nodes].split("ppn=").second
+    self.total_cpu = self.ppn[/\d+/].to_i * self.nodect.to_i
+    self.queue = pbs_job[:attribs][:queue]
+    self.cput = pbs_job[:attribs][:resources_used][:cput]
+    self.mem = pbs_job[:attribs][:resources_used][:mem]
+    self.vmem = pbs_job[:attribs][:resources_used][:vmem]
+    #self
   end
 
   def node_array(attribs_exec_host)
@@ -58,6 +76,6 @@ class Jobstatusdata
     attribs_Job_Owner.split('@')[0]
   end
 
-    attr_writer :pbsid, :jobname, :username, :group, :status, :cluster, :nodes, :starttime
+    attr_writer :pbsid, :jobname, :username, :group, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem
 
 end
