@@ -9,3 +9,7 @@ ruby:
   hostname:       ruby.osc.edu
   pbshost:        ruby-batch.ten.osc.edu
   cluster_code:   Ruby
+quick:
+  hostname:       oakley.osc.edu
+  pbshost:        quick-batch.ten.osc.edu
+  cluster_code:   Oakley+nodes
