@@ -27,3 +27,15 @@
         </table>
     </div>
 <br>
+
+<script>
+    function build_ganglia_link( host, start_seconds, report_type, node_num, size ) {
+        var system;
+        <% Servers.each do |key, value| %>
+            if (host == '<%= key %>') {
+                system = '<%= value['cluster_code'] %>';
+            }
+        <% end %>
+        return 'https://cts05.osc.edu/od_monitor/graph.php?z='+size+'&openid_identifier='+JobStatusapp.user+'&c='+system+'&cs='+start_seconds+'&g='+report_type+'&h=' + node_num + '.ten.osc.edu';
+    }
+</script>

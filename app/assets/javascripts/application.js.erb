@@ -146,10 +146,10 @@ function display_node_rows( d ) {
                     '           <div class="panel panel-default">' +
                     '              <div class="panel-heading"><h3 class="panel-title">' + node_num + '.ten.osc.edu <span class="pull-right">' + d.pbsid + '</span></h3></div>' +
                     '              <div class="panel-body">' +
-                    '                   <a href="'+ build_ganglia_link(start, 'cpu_report', node_num, 'large') +'" data-lightbox="cpu-report" data-title="CPU Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" src="'+build_ganglia_link(start, 'cpu_report', node_num, 'small')+'" /></a>' +
-                    '                   <a href="'+ build_ganglia_link(start, 'load_report', node_num, 'large') +'" data-lightbox="load-report" data-title="Load Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" src="'+build_ganglia_link(start, 'load_report', node_num, 'small')+'" /></a>' +
-                    '                   <a href="'+ build_ganglia_link(start, 'mem_report', node_num, 'large') +'" data-lightbox="mem-report" data-title="Memory Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" src="'+build_ganglia_link(start, 'mem_report', node_num, 'small')+'" /></a>' +
-                    '                   <a href="'+ build_ganglia_link(start, 'network_report', node_num, 'large') +'" data-lightbox="network-report" data-title="Network Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" src="'+build_ganglia_link(start, 'network_report', node_num, 'small')+'" /></a>' +
+                    '                   <a href="'+ build_ganglia_link(d.cluster, start, 'cpu_report', node_num, 'large') +'" data-lightbox="cpu-report" data-title="CPU Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" src="'+build_ganglia_link(d.cluster, start, 'cpu_report', node_num, 'small')+'" /></a>' +
+                    '                   <a href="'+ build_ganglia_link(d.cluster, start, 'load_report', node_num, 'large') +'" data-lightbox="load-report" data-title="Load Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" src="'+build_ganglia_link(d.cluster, start, 'load_report', node_num, 'small')+'" /></a>' +
+                    '                   <a href="'+ build_ganglia_link(d.cluster, start, 'mem_report', node_num, 'large') +'" data-lightbox="mem-report" data-title="Memory Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" src="'+build_ganglia_link(d.cluster, start, 'mem_report', node_num, 'small')+'" /></a>' +
+                    '                   <a href="'+ build_ganglia_link(d.cluster, start, 'network_report', node_num, 'large') +'" data-lightbox="network-report" data-title="Network Report '+node_num+'.ten.osc.edu"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" src="'+build_ganglia_link(d.cluster, start, 'network_report', node_num, 'small')+'" /></a>' +
                     '              </div>' +
                     '           </div>' +
                     '       </td>' +
@@ -257,19 +257,6 @@ function delete_job(pbsid, host) {
 
 function label_data(label, data) {
     return '<div class="small col-sm-12" style="height: 100%;"><strong class="col-sm-5">'+label+': </strong><span class="job_label_data col-sm-7">' + data + '</span></div>';
-}
-
-function build_ganglia_link( start_seconds, report_type, node_num, size ) {
-    var system;
-    if (node_num.startsWith('r')) {
-        //Ruby
-        system = "Ruby";
-    }
-    else if (node_num.startsWith('n')) {
-        //Oakley
-        system = "Oakley+nodes";
-    }
-    return 'https://cts05.osc.edu/od_monitor/graph.php?z='+size+'&openid_identifier='+JobStatusapp.user+'&c='+system+'&cs='+start_seconds+'&g='+report_type+'&h=' + node_num + '.ten.osc.edu';
 }
 
 /* Formatting function for the status label. */
