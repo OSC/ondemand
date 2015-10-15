@@ -229,11 +229,11 @@ function build_resources_used_panel( d ) {
     var _cput = is_defined(d.cput) ? d.cput : '0';
     var _mem = is_defined(d.mem) ? d.mem : '0';
     var _vmem = is_defined(d.vmem) ? d.vmem : '0';
-    var _walltime = is_defined(d.walltime) ? d.walltime : '0';
+    var _walltime_used = is_defined(d.walltime_used) ? d.walltime_used : '0';
     return          label_data("CPU Time", _cput) +
                     label_data("Memory", _mem) +
                     label_data("VMem", _vmem) +
-                    label_data("Run Time", _walltime) +
+                    label_data("Run Time", _walltime_used) +
                     delete_button( d.pbsid.replace(/\./g, '_'), d.cluster, d.username );
 }
 
