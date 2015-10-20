@@ -36,6 +36,7 @@
                 system = '<%= value['cluster_code'] %>';
             }
         <% end %>
-        return 'https://cts05.osc.edu/od_monitor/graph.php?z='+size+'&openid_identifier='+JobStatusapp.user+'&c='+system+'&cs='+start_seconds+'&g='+report_type+'&h=' + node_num + '.ten.osc.edu';
+        return 'https://cts05.osc.edu/gweb/graph.php?&z='+size+'&c='+system+'&cs='+start_seconds+'&g='+report_type+'&h=' 
++ node_num + '.ten.osc.edu';
     }
 </script>
