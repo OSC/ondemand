@@ -106,7 +106,7 @@ JobStatusapp.group) {
             row.child( format(row.data()) ).show();
             tr.addClass('shown');
             $.getJSON('./json?pbsid='+row.data().pbsid+'&host='+row.data().cluster , function(data) {
-                $( "#" + row.data().pbsid.replace(/\./g, '_') ).html(display_enhanced_job_data(data));
+                $( "#" + row.data().pbsid.replace(/\./g, '_')).hide().html(display_enhanced_job_data(data)).fadeIn(250);
             });
         }
     });
