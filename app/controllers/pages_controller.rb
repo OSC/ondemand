@@ -20,8 +20,8 @@ class PagesController < ApplicationController
 
     # Only delete if the pbsid and host params are present and host is configured in servers.
     # PBS will prevent a user from deleting a job that is not their own and throw an error.
-    if params[:pbsid] && (Servers.has_key?(params[:host]) )
-      job_id = params[:pbsid].gsub!(/_/, '.')
+    if (params[:pbsid] && Servers.has_key?(params[:host]))
+      job_id = params[:pbsid].to_s.gsub(/_/, '.')
 
       begin
         c = PBS::Conn.batch params[:host]
