@@ -5,7 +5,7 @@ module ApplicationHelper
   end
 
   def get_usergroup
-    Etc.getgrgid(Etc.getpwuid.gid).name
+    Etc.getgrgid(Process.gid).name
   end
 
   def get_remoteuser
