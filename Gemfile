@@ -42,11 +42,11 @@ gem "therubyracer", platforms: :ruby
 gem "paperclip", "~> 4.2.2"
 gem "bootstrap-sass", "~> 3.3.1"
 gem "autoprefixer-rails"
-gem "osc-machete", "~> 0.6.2"
+gem "osc-machete", "~> 0.6.3"
 gem "dotenv-rails", "~> 2.0.0"
 gem "rails_12factor", group: :production
-gem "awesim_rails", "~> 0.6.0"
+gem "awesim_rails", "~> 0.8.0"
 gem "awesim_rails_logging", "~> 0.0.3"
-gem "pbs"
+gem "pbs", "~> 0.4.1"
 gem "turbolinks"
 gem "jquery-datatables-rails", '~> 3.3.0'
