@@ -1,0 +1,62 @@
+env USER=<%= user %>;
+
+worker_processes 1;
+
+error_log   <%= error_log_path %>;
+pid         <%= pid_path %>;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    # Define passenger environment
+    passenger_root <%= NginxStage.passenger_root %>;
+    passenger_ruby <%= NginxStage.passenger_ruby %>;
+    passenger_nodejs <%= NginxStage.passenger_nodejs %>;
+
+    # Set passenger security measures
+    passenger_user_switching off;
+    passenger_default_user <%= user %>;
+    passenger_load_shell_envvars off;
+
+    # Set an array of temp and cache file options for the per-user environment
+    client_body_temp_path   <%= tmp_root %>/client_body;
+    proxy_temp_path         <%= tmp_root %>/proxy_temp;
+    fastcgi_temp_path       <%= tmp_root %>/fastcgi_temp;
+    uwsgi_temp_path         <%= tmp_root %>/uwsgi_temp;
+    scgi_temp_path          <%= tmp_root %>/scgi_temp;
+
+    include         <%= NginxStage.mime_types_path %>;
+    default_type    application/octet-stream;
+
+    log_format  main    '$remote_addr - $remote_user [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  <%= access_log_path %>;
+
+    sendfile    on;
+
+    keepalive_timeout   65;
+
+    server {
+        listen      unix:<%= socket %>;
+        server_name localhost;
+
+        location / {
+            return 302 $scheme://$http_x_forwarded_host/nginx/init?app=$uri;
+        }
+
+        # Include all user's dev apps
+        include <%= NginxStage.app_config_root %>/dev/<%= user %>/*.conf;
+
+        # Include all shared apps
+        include <%= NginxStage.app_config_root %>/shared/*/*.conf;
+
+        # Deny access to .htaccess files
+        location ~ /\.ht {
+            deny all;
+        }
+    }
+}
