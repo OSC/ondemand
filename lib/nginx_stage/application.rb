@@ -29,42 +29,65 @@ module NginxStage
         opts.banner = <<-EOF.gsub(/^ {8}/, '')
         Usage: nginx_stage COMMAND --user=USER [OPTIONS]
 
-        commands:
+        Commands:
          pun    Generate a new per-user nginx config and process
          app    Generate a new nginx app config and reload process
         EOF
 
         opts.separator ""
-        opts.separator "required options:"
+        opts.separator "Required options:"
         opts.on("-u", "--user=USER", "# The USER running the per-user nginx process") do |user|
           options[:user] = user
         end
 
         opts.separator ""
-        opts.separator "pun options:"
+        opts.separator "Pun options:"
         opts.on("-s", "--signal=SIGNAL", NginxStage.nginx_signals, "# Send SIGNAL to per-user nginx process: #{NginxStage.nginx_signals.join('/')}") do |signal|
           options[:signal] = signal
         end
 
         opts.separator ""
-        opts.separator "app options:"
+        opts.separator "App options:"
         opts.on("-r", "--request=REQUEST", "# The REQUEST uri accessed") do |request|
           options[:request] = request
         end
 
         opts.separator ""
-        opts.separator "common options:"
+        opts.separator "Common options:"
         opts.on("-N", "--[no-]skip-nginx", "# Skip executing the per-user nginx process") do |nginx|
           options[:skip_nginx] = nginx
         end
-        opts.on_tail("-h", "--help", "# Show this help message") do
+        opts.on("-h", "--help", "# Show this help message") do
           puts help
           exit
         end
-        opts.on_tail("-v", "--version", "# Show version") do
+        opts.on("-v", "--version", "# Show version") do
           puts "nginx_stage, version #{VERSION}"
           exit
         end
+
+        opts.separator ""
+        opts.separator "Examples:"
+        opts.separator "    To generate a per-user nginx environment & launch nginx:"
+        opts.separator ""
+        opts.separator "        `nginx_stage pun --user=bob`"
+        opts.separator ""
+        opts.separator "    To stop the above nginx process:"
+        opts.separator ""
+        opts.separator "        `nginx_stage pun --user=bob --signal=stop`"
+        opts.separator ""
+        opts.separator "    To generate ONLY the per-user nginx environment:"
+        opts.separator ""
+        opts.separator "        `nginx_stage pun --user=bob --skip-nginx`"
+        opts.separator ""
+        opts.separator "    To generate an app config from a URI request and reload the nginx process:"
+        opts.separator ""
+        opts.separator "        `nginx_stage app --user=bob --request=/pun/shared/jimmy/fillsim/container/13`"
+        opts.separator ""
+        opts.separator "    To generate ONLY the app config from a URI request:"
+        opts.separator ""
+        opts.separator "        `nginx_stage app --user=bob --request=/pun/shared/jimmy/fillsim --skip-nginx`"
+        opts.separator ""
       end
 
       @opts.parse!(args)
