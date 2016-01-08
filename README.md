@@ -96,6 +96,37 @@ To generate ONLY the app config from a URI request:
 
     nginx_stage app --user=bob --request=/pun/shared/jimmy/fillsim --skip-nginx
 
+#### Request URI
+
+The format of a request is different depending if the user is accessing a
+sandbox app or a shared app.
+
+* **sandbox** app (needs to know the USER of the sandbox app)
+
+    ```
+    /pun/dev/<app>
+    ```
+
+    serves up the app in
+
+    ```
+    ~USER/awesim_dev/<app>
+    ```
+
+* **shared** app
+
+    ```
+    /pun/shared/<owner>/<app>
+    ```
+
+    serves up the app in
+
+    ```
+    ~<owner>/awesim_shared_apps/<app>
+    ```
+
+Any remaining structure on the request URI is ignored when building the app
+config.
 
 ## Contributing
 
