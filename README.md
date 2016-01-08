@@ -11,8 +11,8 @@ standard libraries making installation a breeze.
 
 2. Modify permissions for `root`
 
-        sudo chown -R root:root /path/to/nginx_stage
-        sudo chmod -R u+rwX,go+rX,go-w /path/to/nginx_stage
+       sudo chown -R root:root /path/to/nginx_stage
+       sudo chmod -R u+rwX,go+rX,go-w /path/to/nginx_stage
 
 3. Create the following directories `root` owned
 
