@@ -74,34 +74,12 @@ Common options:
 ...
 ```
 
-#### Examples
-
-To generate a per-user nginx environment & launch nginx:
-
-    nginx_stage pun --user=bob
-
-To stop the above nginx process:
-
-    nginx_stage pun --user=bob --signal=stop
-
-To generate ONLY the per-user nginx environment:
-
-    nginx_stage pun --user=bob --skip-nginx
-
-To generate an app config from a URI request and reload the nginx process:
-
-    nginx_stage app --user=bob --request=/pun/shared/jimmy/fillsim/container/13
-
-To generate ONLY the app config from a URI request:
-
-    nginx_stage app --user=bob --request=/pun/shared/jimmy/fillsim --skip-nginx
-
 #### Request URI
 
-The format of a request is different depending if the user is accessing a
-sandbox app or a shared app.
+The format of the `REQUEST` when building an app config is different depending
+if the `USER` is accessing a sandbox app or a shared app.
 
-* **sandbox** app (needs to know the USER of the sandbox app)
+* **sandbox** app (needs to know the `USER` of the sandbox app)
 
     ```
     /pun/dev/<app>
@@ -127,6 +105,28 @@ sandbox app or a shared app.
 
 Any remaining structure on the request URI is ignored when building the app
 config.
+
+#### Examples
+
+To generate a per-user nginx environment & launch nginx:
+
+    nginx_stage pun --user=bob
+
+To stop the above nginx process:
+
+    nginx_stage pun --user=bob --signal=stop
+
+To generate ONLY the per-user nginx environment:
+
+    nginx_stage pun --user=bob --skip-nginx
+
+To generate an app config from a URI request and reload the nginx process:
+
+    nginx_stage app --user=bob --request=/pun/shared/jimmy/fillsim/container/13
+
+To generate ONLY the app config from a URI request:
+
+    nginx_stage app --user=bob --request=/pun/shared/jimmy/fillsim --skip-nginx
 
 ## Contributing
 
