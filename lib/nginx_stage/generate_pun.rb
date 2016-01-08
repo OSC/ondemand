@@ -19,17 +19,29 @@ module NginxStage
       FileUtils.mkdir_p tmp_root
     end
 
+    add_hook :create_log_root do
+      FileUtils.mkdir_p log_root
+    end
+
+    add_hook :create_pid_root do
+      FileUtils.mkdir_p NginxStage.pun_pid_root
+    end
+
     add_hook :create_config do
       template "pun.config.erb", File.join(NginxStage.pun_config_root, "#{user}.config")
     end
 
     private
+      def log_root
+        File.join NginxStage.pun_log_root, user
+      end
+
       def error_log_path
-        File.join NginxStage.pun_log_root, user, 'error.log'
+        File.join log_root, 'error.log'
       end
 
       def access_log_path
-        File.join NginxStage.pun_log_root, user, 'access.log'
+        File.join log_root, 'access.log'
       end
 
       def tmp_root
