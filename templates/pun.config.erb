@@ -1,62 +1,60 @@
+# Setup environment
 env USER=<%= user %>;
 
-worker_processes 1;
-
+# user        <%= user %>;  ## Default: nobody
+worker_processes 1;  ## Default: 1
 error_log   <%= error_log_path %>;
 pid         <%= pid_path %>;
 
 events {
-    worker_connections 1024;
+  worker_connections 1024;  ## Default: 1024
 }
 
 http {
-    # Define passenger environment
-    passenger_root <%= NginxStage.passenger_root %>;
-    passenger_ruby <%= NginxStage.passenger_ruby %>;
-    passenger_nodejs <%= NginxStage.passenger_nodejs %>;
+  include     <%= NginxStage.mime_types_path %>;
 
-    # Set passenger security measures
-    passenger_user_switching off;
-    passenger_default_user <%= user %>;
-    passenger_load_shell_envvars off;
+  # Define passenger environment
+  passenger_root <%= NginxStage.passenger_root %>;
+  passenger_ruby <%= NginxStage.passenger_ruby %>;
+  passenger_nodejs <%= NginxStage.passenger_nodejs %>;
 
-    # Set an array of temp and cache file options for the per-user environment
-    client_body_temp_path   <%= tmp_root %>/client_body;
-    proxy_temp_path         <%= tmp_root %>/proxy_temp;
-    fastcgi_temp_path       <%= tmp_root %>/fastcgi_temp;
-    uwsgi_temp_path         <%= tmp_root %>/uwsgi_temp;
-    scgi_temp_path          <%= tmp_root %>/scgi_temp;
+  # Set passenger security measures
+  passenger_user_switching off;
+  passenger_default_user <%= user %>;
+  passenger_load_shell_envvars off;
 
-    include         <%= NginxStage.mime_types_path %>;
-    default_type    application/octet-stream;
+  # Set an array of temp and cache file options for the per-user environment
+  client_body_temp_path   <%= tmp_root %>/client_body;
+  proxy_temp_path         <%= tmp_root %>/proxy_temp;
+  fastcgi_temp_path       <%= tmp_root %>/fastcgi_temp;
+  uwsgi_temp_path         <%= tmp_root %>/uwsgi_temp;
+  scgi_temp_path          <%= tmp_root %>/scgi_temp;
 
-    log_format  main    '$remote_addr - $remote_user [$time_local] "$request" '
-                        '$status $body_bytes_sent "$http_referer" '
-                        '"$http_user_agent" "$http_x_forwarded_for"';
+  default_type application/octet-stream;
+  log_format   main '$remote_addr - $remote_user [$time_local] "$request" '
+    '$status $body_bytes_sent "$http_referer" '
+    '"$http_user_agent" "$http_x_forwarded_for"';
+  access_log   <%= access_log_path %> main;
+  sendfile     on;
+  tcp_nopush   on;
 
-    access_log  <%= access_log_path %>;
+  server {
+    listen      unix:<%= socket %>;
+    server_name localhost;
 
-    sendfile    on;
-
-    keepalive_timeout   65;
-
-    server {
-        listen      unix:<%= socket %>;
-        server_name localhost;
-
-        location / {
-            return 302 $scheme://$http_x_forwarded_host/nginx/init?app=$uri;
-        }
-
-        # Include all user's dev apps
-        include <%= NginxStage.app_config_root %>/dev/<%= user %>/*.conf;
-
-        # Include all shared apps
-        include <%= NginxStage.app_config_root %>/shared/*/*.conf;
-
-        # Deny access to .htaccess files
-        location ~ /\.ht {
-            deny all;
-        }
+    location / {
+      return 302 $scheme://$http_x_forwarded_host/nginx/init?app=$uri;
     }
+
+    # Include all user's dev apps
+    include <%= NginxStage.app_config_root %>/dev/<%= user %>/*.conf;
+
+    # Include all shared apps
+    include <%= NginxStage.app_config_root %>/shared/*/*.conf;
+
+    # Deny access to .htaccess files
+    location ~ /\.ht {
+      deny all;
+    }
+  }
 }

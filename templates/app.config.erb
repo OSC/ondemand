@@ -1,9 +1,9 @@
 location ~ ^<%= app_uri %>(/.*|$) {
-    alias <%= app_path %>/public$1;
-    passenger_base_uri <%= app_uri %>;
-    passenger_app_root <%= app_path %>;
-    passenger_document_root <%= app_path %>/public;
-    passenger_enabled on;
+  alias <%= app_path %>/public$1;
+  passenger_base_uri <%= app_uri %>;
+  passenger_app_root <%= app_path %>;
+  passenger_document_root <%= app_path %>/public;
+  passenger_enabled on;
 
-    passenger_app_env <%= env == "dev" ? "development" : "production" %>;
+  passenger_app_env <%= env == "dev" ? "development" : "production" %>;
 }
