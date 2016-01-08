@@ -50,7 +50,6 @@ module NginxStage
       File.open(destination, "wb") do |file|
         file.write data
       end
-      destination
     end
 
     add_hook :require_user do

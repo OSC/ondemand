@@ -38,14 +38,15 @@ module NginxStage
     end
 
     add_hook :run_nginx do
-      if skip_nginx
-        pun_config_path
-      else
-        args = ""
-        args << " -c '#{pun_config_path}'"
-        args << " -s '#{signal}'" if signal
-        exec "#{NginxStage.nginx_bin} #{args}"    # exits with nginx's exit code
-      end
+      args = ""
+      args << " -c '#{pun_config_path}'"
+      args << " -s '#{signal}'" if signal
+
+      exec "#{NginxStage.nginx_bin} #{args}" unless skip_nginx
+    end
+
+    add_hook :return_pun_config_path do
+      pun_config_path
     end
 
     private

@@ -57,20 +57,20 @@ module NginxStage
     end
 
     add_hook :run_nginx do
-      if skip_nginx
-        app_config_path
-      else
-        GeneratePunConfig.new(options.merge(signal: :reload)).invoke
-      end
+      GeneratePunConfig.new(options.merge(signal: :reload)).invoke unless skip_nginx
+    end
+
+    add_hook :return_app_config_path do
+      app_config_path
     end
 
     private
-      def request_regex
-        /^#{NginxStage.sub_uri}\/(?<env>[\w-]+)\/(?<owner>[\w-]+)(?:\/(?<app>[\w-]+))?/
-      end
-
       def app_config_path
         File.join(NginxStage.app_config_root, env, owner, "#{app}.conf")
+      end
+
+      def request_regex
+        /^#{NginxStage.sub_uri}\/(?<env>[\w-]+)\/(?<owner>[\w-]+)(?:\/(?<app>[\w-]+))?/
       end
   end
 end
