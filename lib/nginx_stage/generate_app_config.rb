@@ -53,12 +53,24 @@ module NginxStage
     end
 
     add_hook :create_config do
-      template "app.conf.erb", File.join(NginxStage.app_config_root, env, owner, "#{app}.conf")
+      template "app.conf.erb", app_config_path
+    end
+
+    add_hook :run_nginx do
+      if skip_nginx
+        app_config_path
+      else
+        GeneratePunConfig.new(options.merge(signal: :reload)).invoke
+      end
     end
 
     private
       def request_regex
         /^#{NginxStage.sub_uri}\/(?<env>[\w-]+)\/(?<owner>[\w-]+)(?:\/(?<app>[\w-]+))?/
+      end
+
+      def app_config_path
+        File.join(NginxStage.app_config_root, env, owner, "#{app}.conf")
       end
   end
 end

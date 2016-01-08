@@ -19,10 +19,15 @@ module NginxStage
       end
     end
 
+    attr_reader :options
+
     attr_reader :user
+    attr_reader :skip_nginx
 
     def initialize(opts)
-      @user = opts.fetch(:user, nil)
+      @options    = opts.dup
+      @user       = opts.fetch(:user, nil)
+      @skip_nginx = opts.fetch(:skip_nginx, false)
     end
 
     def invoke

@@ -1,5 +1,12 @@
 module NginxStage
   class GeneratePunConfig < Generate
+    attr_reader :signal
+
+    def initialize(opts)
+      super(opts)
+      @signal = opts.fetch(:signal, nil)
+    end
+
     add_hook :create_tmp_root do
       FileUtils.mkdir_p tmp_root
     end
@@ -27,10 +34,25 @@ module NginxStage
     end
 
     add_hook :create_config do
-      template "pun.conf.erb", File.join(NginxStage.pun_config_root, "#{user}.conf")
+      template "pun.conf.erb", pun_config_path
+    end
+
+    add_hook :run_nginx do
+      if skip_nginx
+        pun_config_path
+      else
+        args = ""
+        args << " -c '#{pun_config_path}'"
+        args << " -s '#{signal}'" if signal
+        exec "#{NginxStage.nginx_bin} #{args}"    # exits with nginx's exit code
+      end
     end
 
     private
+      def pun_config_path
+        File.join(NginxStage.pun_config_root, "#{user}.conf")
+      end
+
       def log_root
         File.join NginxStage.pun_log_root, user
       end

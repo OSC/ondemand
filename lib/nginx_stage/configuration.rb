@@ -14,6 +14,8 @@ module NginxStage
     attr_accessor :passenger_ruby
     attr_accessor :passenger_nodejs
     attr_accessor :sub_uri
+    attr_accessor :nginx_signals
+    attr_accessor :nginx_bin
     attr_accessor :socket_group
     attr_accessor :min_uid
 
@@ -40,6 +42,8 @@ module NginxStage
       self.passenger_ruby = '/opt/rh/rh-ruby22/root/usr/bin/ruby'
       self.passenger_nodejs = '/opt/rh/nodejs010/root/usr/bin/node'
       self.sub_uri = '/pun'
+      self.nginx_signals = %i(stop quit reopen reload)
+      self.nginx_bin = '/opt/rh/nginx16/root/usr/sbin/nginx'
       self.socket_group = 'apache'
       self.min_uid = 1000
     end
