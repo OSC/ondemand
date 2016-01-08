@@ -3,16 +3,4 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
 require 'nginx_stage'
 
-NginxStage.configure do |config|
-  root = File.expand_path("/tmp/nginx_stage")
-  config.pun_config_root = File.join(root, 'tmp', 'nginx', 'config')
-  config.pun_log_root = File.join(root, 'log', 'nginx')
-  config.pun_tmp_root = File.join(root, 'tmp', 'nginx', 'cache')
-  config.pun_pid_root = File.join(root, 'run', 'nginx')
-  config.app_config_root = File.join(root, 'tmp', 'nginx', 'app', 'config')
-  config.dev_app_relative_root = File.join('Tests', 'w8', 'nginx', 'awesim_dev')
-  config.passenger_ruby = '/nfs/17/jnicklas/Tests/w8/nginx/rh-ruby22'
-  config.passenger_nodejs = '/nfs/17/jnicklas/Tests/w8/nginx/nodejs010'
-end
-
 NginxStage::Application.start
