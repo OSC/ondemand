@@ -14,8 +14,7 @@ module NginxStage
     attr_accessor :passenger_ruby
     attr_accessor :passenger_nodejs
     attr_accessor :sub_uri
-    attr_accessor :orig_uid
-    attr_accessor :orig_gid
+    attr_accessor :socket_group
     attr_accessor :min_uid
 
     def configure
@@ -41,8 +40,7 @@ module NginxStage
       self.passenger_ruby = '/opt/rh/rh-ruby22/root/usr/bin/ruby'
       self.passenger_nodejs = '/opt/rh/nodejs010/root/usr/bin/node'
       self.sub_uri = '/pun'
-      self.orig_uid = ENV['SUDO_UID'] || Process.uid
-      self.orig_gid = ENV['SUDO_GID'] || Process.gid
+      self.socket_group = 'apache'
       self.min_uid = 1000
     end
   end

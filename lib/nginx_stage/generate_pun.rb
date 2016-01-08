@@ -18,8 +18,12 @@ module NginxStage
 
     add_hook :secure_socket_root do
       target = NginxStage.pun_sck_root
-      FileUtils.chmod 0750, target
-      FileUtils.chown Process.uid, NginxStage.orig_gid, target
+      if Process.uid == 0
+        FileUtils.chmod 0750, target
+        FileUtils.chown 0, NginxStage.socket_group, target
+      else
+        FileUtils.chmod 0700, target
+      end
     end
 
     add_hook :create_config do
