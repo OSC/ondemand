@@ -14,8 +14,9 @@ module NginxStage
     attr_accessor :passenger_ruby
     attr_accessor :passenger_nodejs
     attr_accessor :sub_uri
+    attr_accessor :proc_uid
+    attr_accessor :proc_gid
     attr_accessor :min_uid
-    attr_accessor :whoami
 
     def configure
       yield self
@@ -40,8 +41,9 @@ module NginxStage
       self.passenger_ruby = '/opt/rh/rh-ruby22/root/usr/bin/ruby'
       self.passenger_nodejs = '/opt/rh/nodejs010/root/usr/bin/node'
       self.sub_uri = '/pun'
+      self.proc_uid = ENV['SUDO_UID'] || Process.uid
+      self.proc_gid = ENV['SUDO_GID'] || Process.gid
       self.min_uid = 1000
-      self.whoami = ENV['SUDO_UID'] || Process.uid
     end
   end
 end

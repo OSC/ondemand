@@ -18,8 +18,8 @@ module NginxStage
 
     add_hook :secure_socket_root do
       target = NginxStage.pun_sck_root
-      FileUtils.chown NginxStage.whoami, nil, target
-      FileUtils.chmod 0700, target
+      FileUtils.chmod 0750, target
+      FileUtils.chown nil, NginxStage.proc_gid, target
     end
 
     add_hook :create_config do
