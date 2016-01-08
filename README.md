@@ -7,25 +7,19 @@ standard libraries making installation a breeze.
 
 1. Clone this repo into a standard location
 
-    ```bash
-    git clone <repo> /path/to/nginx_stage
-    ```
+        git clone <repo> /path/to/nginx_stage
 
 2. Modify permissions for `root`
 
-    ```bash
-    sudo chown -R root:root /path/to/nginx_stage
-    sudo chmod -R u+rwX,go+rX,go-w /path/to/nginx_stage
-    ```
+        sudo chown -R root:root /path/to/nginx_stage
+        sudo chmod -R u+rwX,go+rX,go-w /path/to/nginx_stage
 
 3. Create the following directories `root` owned
 
-    ```bash
-    sudo mkdir /var/log/nginx -m 755
-    sudo mkdir /var/run/nginx -m 755
-    sudo mkdir /var/tmp/nginx -m 755
-    sudo mkdir /tmp/nginx -m 755
-    ```
+        sudo mkdir /var/log/nginx -m 755
+        sudo mkdir /var/run/nginx -m 755
+        sudo mkdir /var/tmp/nginx -m 755
+        sudo mkdir /tmp/nginx -m 755
 
     Confirm there were no errors due to pre-existing directories.
 
@@ -36,16 +30,12 @@ standard libraries making installation a breeze.
 5. Give the `httpd` reverse proxy user (i.e., `apache`) `sudo` privileges to
    run:
 
-    ```bash
-    /path/to/nginx_stage/sbin/nginx_stage
-    ```
+        /path/to/nginx_stage/sbin/nginx_stage
 
 6. If a **very trusted** developer wants to work on `nginx_stage` give them
    `sudo` privileges to run:
 
-    ```bash
-    /path/to/nginx_stage/sbin/nginx_stage_dev
-    ```
+        /path/to/nginx_stage/sbin/nginx_stage_dev
 
 ## Usage
 
