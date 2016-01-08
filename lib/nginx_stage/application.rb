@@ -30,8 +30,8 @@ module NginxStage
         Usage: nginx_stage COMMAND --user=USER [OPTIONS]
 
         Commands:
-         pun    Generate a new per-user nginx config and process
-         app    Generate a new nginx app config and reload process
+         pun      # Generate a new per-user nginx config and process
+         app      # Generate a new nginx app config and reload process
         EOF
 
         opts.separator ""
