@@ -1,5 +1,5 @@
 module NginxStage
-  class GeneratePunConfig < Generate
+  class GeneratePunConfig < GenerateBase
     attr_reader :signal
 
     def initialize(opts)

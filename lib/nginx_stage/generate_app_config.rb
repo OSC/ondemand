@@ -1,5 +1,5 @@
 module NginxStage
-  class GenerateAppConfig < Generate
+  class GenerateAppConfig < GenerateBase
     attr_reader :request
 
     attr_reader :env
