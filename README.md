@@ -29,7 +29,8 @@ standard libraries making installation a breeze.
 
     Confirm there were no errors due to pre-existing directories.
 
-    *Recommend*: For the `/tmp` and `/var/tmp` creating those at boot for `root`.
+    *Recommend*: For the `/tmp/nginx` and `/var/tmp/nginx` creating those at
+    boot for `root`.
 
 4. Add or confirm that the `httpd` reverse proxy user (i.e., `apache`) is in
    the group `apache`. This will give them access to connect to the per-user
