@@ -15,6 +15,7 @@ module NginxStage
     attr_accessor :passenger_nodejs
     attr_accessor :sub_uri
     attr_accessor :min_uid
+    attr_accessor :whoami
 
     def configure
       yield self
@@ -40,6 +41,7 @@ module NginxStage
       self.passenger_nodejs = '/opt/rh/nodejs010/root/usr/bin/node'
       self.sub_uri = '/pun'
       self.min_uid = 1000
+      self.whoami = ENV['SUDO_UID'] || Process.uid
     end
   end
 end
