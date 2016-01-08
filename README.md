@@ -49,13 +49,13 @@ standard libraries making installation a breeze.
 
 ## Usage
 
-```
+```shell
 $ sudo nginx_stage --help
 Usage: nginx_stage COMMAND --user=USER [OPTIONS]
 
 Commands:
- pun    Generate a new per-user nginx config and process
- app    Generate a new nginx app config and reload process
+ pun      # Generate a new per-user nginx config and process
+ app      # Generate a new nginx app config and reload process
 
 Required options:
     -u, --user=USER                  # The USER running the per-user nginx process
