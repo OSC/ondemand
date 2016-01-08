@@ -42,9 +42,6 @@ module NginxStage
 
         opts.separator ""
         opts.separator "pun options:"
-        opts.on("-s", "--socket=SOCKET", "The SOCKET file the per-user NGINX process listens on") do |socket|
-          options[:socket] = socket
-        end
 
         opts.separator ""
         opts.separator "app options:"

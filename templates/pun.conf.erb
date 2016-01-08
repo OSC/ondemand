@@ -39,7 +39,7 @@ http {
   tcp_nopush   on;
 
   server {
-    listen      unix:<%= socket %>;
+    listen      unix:<%= socket_path %>;
     server_name localhost;
 
     location / {
