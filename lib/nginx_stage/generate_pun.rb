@@ -28,7 +28,7 @@ module NginxStage
     end
 
     add_hook :create_config do
-      template "pun.config.erb", File.join(NginxStage.pun_config_root, "#{user}.config")
+      template "pun.conf.erb", File.join(NginxStage.pun_config_root, "#{user}.conf")
     end
 
     private

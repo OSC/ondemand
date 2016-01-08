@@ -53,7 +53,7 @@ module NginxStage
     end
 
     add_hook :create_config do
-      template "app.config.erb", File.join(NginxStage.app_config_root, env, owner, "#{app}.config")
+      template "app.conf.erb", File.join(NginxStage.app_config_root, env, owner, "#{app}.conf")
     end
 
     private
