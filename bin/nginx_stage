@@ -4,7 +4,7 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'nginx_stage'
 
 NginxStage.configure do |config|
-  root = File.expand_path("./tmp/nginx_stage")
+  root = File.expand_path("/tmp/nginx_stage")
   config.pun_config_root = File.join(root, 'tmp', 'nginx', 'config')
   config.pun_log_root = File.join(root, 'log', 'nginx')
   config.pun_tmp_root = File.join(root, 'tmp', 'nginx', 'cache')
