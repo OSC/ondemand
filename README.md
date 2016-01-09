@@ -21,10 +21,10 @@ standard libraries making installation a breeze.
 3. Create the following directories `root` owned
 
     ```
-    sudo mkdir /var/log/nginx -m 755
-    sudo mkdir /var/run/nginx -m 755
-    sudo mkdir /var/tmp/nginx -m 755
-    sudo mkdir /tmp/nginx -m 755
+    sudo mkdir /var/log/nginx -m 755    # error/access logs
+    sudo mkdir /var/run/nginx -m 755    # pids, sockets
+    sudo mkdir /var/tmp/nginx -m 755    # pun/app configs
+    sudo mkdir /tmp/nginx -m 755        # cache
     ```
 
     Confirm there were no errors due to pre-existing directories.

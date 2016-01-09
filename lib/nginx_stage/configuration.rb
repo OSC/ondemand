@@ -4,8 +4,8 @@ module NginxStage
     attr_accessor :pun_config_root
     attr_accessor :pun_log_root
     attr_accessor :pun_pid_root
-    attr_accessor :pun_tmp_root
     attr_accessor :pun_sck_root
+    attr_accessor :pun_tmp_root
     attr_accessor :mime_types_path
     attr_accessor :app_config_root
     attr_accessor :dev_app_relative_root
@@ -32,8 +32,8 @@ module NginxStage
       self.pun_config_root = File.join('', 'var', 'tmp', 'nginx', 'config')
       self.pun_log_root = File.join('', 'var', 'log', 'nginx')
       self.pun_pid_root = File.join('', 'var', 'run', 'nginx')
+      self.pun_sck_root = File.join('', 'var', 'run', 'nginx')
       self.pun_tmp_root = File.join('', 'tmp', 'nginx', 'cache')
-      self.pun_sck_root = File.join('', 'tmp', 'nginx', 'socket')
       self.app_config_root = File.join('', 'var', 'tmp', 'nginx', 'app', 'config')
       self.dev_app_relative_root = File.join('awesim_dev')
       self.shr_app_relative_root = File.join('awesim_shared_apps')
