@@ -140,11 +140,11 @@ The following paths are created on demand:
 │       │   └── <user>.conf             # -rw-r--r-- root root
 │       └── tmp                         # drwxr-xr-x root root
 │           └── <user>                  # drwxr-xr-x root root
-│               ├── client_body         # drwx------ root root
-│               ├── fastcgi_temp        # drwx------ root root
-│               ├── proxy_temp          # drwx------ root root
-│               ├── scgi_temp           # drwx------ root root
-│               └── uwsgi_temp          # drwx------ root root
+│               ├── client_body         # drwx------ USER root
+│               ├── fastcgi_temp        # drwx------ USER root
+│               ├── proxy_temp          # drwx------ USER root
+│               ├── scgi_temp           # drwx------ USER root
+│               └── uwsgi_temp          # drwx------ USER root
 ├── log                                 # drwxr-xr-x root root
 │   └── nginx                           # drwxr-xr-x root root
 │       └── <user>                      # drwxr-xr-x root root
