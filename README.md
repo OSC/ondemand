@@ -8,46 +8,37 @@ standard libraries making installation a breeze.
 1. Clone this repo into a standard location
 
     ```
-    git clone <repo> /path/to/nginx_stage
+    git clone <repo> /opt/ood/nginx_stage
     ```
 
 2. Modify permissions for `root`
 
     ```
-    sudo chown -R root:root /path/to/nginx_stage
-    sudo chmod -R u+rwX,go+rX,go-w /path/to/nginx_stage
+    sudo chown -R root:root /opt/ood/nginx_stage
+    sudo chmod -R u+rwX,go+rX,go-w /opt/ood/nginx_stage
     ```
 
-3. Create the following directories `root` owned
+3. Add or confirm that the reverse proxy daemon user is in the group `apache`
 
     ```
-    sudo mkdir /var/log/nginx -m 755    # error/access logs
-    sudo mkdir /var/run/nginx -m 755    # pids, sockets
-    sudo mkdir /var/tmp/nginx -m 755    # pun/app configs
-    sudo mkdir /tmp/nginx -m 755        # cache
+    # Add reverse proxy daemon user to group `apache`
     ```
 
-    Confirm there were no errors due to pre-existing directories.
+    This will give the daemon user permissions to connect to the per-user NGINX
+    unix domain sockets.
 
-    *Recommend*: For the `/tmp/nginx` and `/var/tmp/nginx` creating those at
-    boot for `root` since they are only created on demand.
-
-4. Add or confirm that the `httpd` reverse proxy user (i.e., `apache`) is in
-   the group `apache`. This will give them access to connect to the per-user
-   NGINX unix domain sockets.
-
-5. Give the `httpd` reverse proxy user (i.e., `apache`) `sudo` privileges to
-   run:
+4. Give the reverse proxy daemon user `sudo` privileges to run the following
+   binary
 
     ```
-    /path/to/nginx_stage/sbin/nginx_stage
+    /opt/ood/nginx_stage/sbin/nginx_stage
     ```
 
-6. If a **very trusted** developer wants to work on `nginx_stage` give them
-   `sudo` privileges to run:
+5. If a **very trusted** developer wants to work on `nginx_stage` give them
+   `sudo` privileges to run the following binary
 
     ```
-    /path/to/nginx_stage/sbin/nginx_stage_dev
+    /opt/ood/nginx_stage/sbin/nginx_stage_dev
     ```
 
 ## Usage
@@ -130,6 +121,40 @@ To generate an app config from a URI request and reload the nginx process:
 To generate ONLY the app config from a URI request:
 
     nginx_stage app --user=bob --request=/pun/shared/jimmy/fillsim --skip-nginx
+
+#### Directory Structure
+
+The following paths are created on demand:
+
+```
+/var/rw                                 # drwxr-xr-x root root
+├── lib                                 # drwxr-xr-x root root
+│   └── nginx                           # drwxr-xr-x root root
+│       ├── config                      # drwxr-xr-x root root
+│       │   ├── dev                     # drwxr-xr-x root root
+│       │   │   └── <user>              # drwxr-xr-x root root
+│       │   │       └── <dev_app>.conf  # -rw-r--r-- root root
+│       │   ├── shared                  # drwxr-xr-x root root
+│       │   │   └── <user>              # drwxr-xr-x root root
+│       │   │       └── <app>.conf      # -rw-r--r-- root root
+│       │   └── <user>.conf             # -rw-r--r-- root root
+│       └── tmp                         # drwxr-xr-x root root
+│           └── <user>                  # drwxr-xr-x root root
+│               ├── client_body         # drwx------ root root
+│               ├── fastcgi_temp        # drwx------ root root
+│               ├── proxy_temp          # drwx------ root root
+│               ├── scgi_temp           # drwx------ root root
+│               └── uwsgi_temp          # drwx------ root root
+├── log                                 # drwxr-xr-x root root
+│   └── nginx                           # drwxr-xr-x root root
+│       └── <user>                      # drwxr-xr-x root root
+│           ├── access.log              # -rw-r--r-- root root
+│           └── error.log               # -rw-r--r-- root root
+└── run                                 # drwxr-xr-x root root
+    └── nginx                           # drwxr-x--- root apache
+        ├── <user>.pid                  # -rw-r--r-- root root
+        └── <user>.sock                 # srw-rw-rw- root root
+```
 
 ## Contributing
 
