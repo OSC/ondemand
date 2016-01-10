@@ -35,8 +35,8 @@ module NginxStage
       self.pun_log_root = File.join('', 'var', 'log', 'nginx')
       self.pun_pid_root = File.join('', 'var', 'run', 'nginx')
       self.pun_sck_root = File.join('', 'var', 'run', 'nginx')
-      self.dev_app_relative_root = File.join('awesim_dev')
-      self.shr_app_relative_root = File.join('awesim_shared_apps')
+      self.dev_app_relative_root = File.join('ood_dev')
+      self.shr_app_relative_root = File.join('ood_shared')
       self.mime_types_path = '/opt/rh/nginx16/root/etc/nginx/mime.types'
       self.passenger_root = '/opt/rh/rh-passenger40/root/usr/share/passenger/phusion_passenger/locations.ini'
       self.passenger_ruby = '/opt/rh/rh-ruby22/root/usr/bin/ruby'
