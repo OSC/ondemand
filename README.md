@@ -34,6 +34,14 @@ standard libraries making installation a breeze.
     /opt/ood/nginx_stage/sbin/nginx_stage
     ```
 
+    Also, add the following to the `/etc/sudoers` file
+
+    ```
+    Defaults:<user1>,<user2>     !requiretty, !authenticate
+    ```
+
+    for the daemon user.
+
 5. If a **very trusted** developer wants to work on `nginx_stage` give them
    `sudo` privileges to run the following binary
 
