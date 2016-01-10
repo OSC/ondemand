@@ -2,7 +2,7 @@ require 'erb'
 require 'fileutils'
 
 module NginxStage
-  class Generate
+  class Generator
     def self.add_hook(name, &block)
       self.hooks[name] = block
     end
@@ -12,7 +12,7 @@ module NginxStage
     end
 
     def self.from_superclass(method, default = nil)
-      if self == NginxStage::Generate || !superclass.respond_to?(method, true)
+      if self == NginxStage::Generator || !superclass.respond_to?(method, true)
         default
       else
         superclass.send(method).dup

@@ -1,5 +1,5 @@
 module NginxStage
-  class GenerateBase < Generate
+  class BaseGenerator < Generator
     attr_reader :options
 
     attr_reader :user

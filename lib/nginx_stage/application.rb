@@ -10,9 +10,9 @@ module NginxStage
 
       case command
       when "pun"
-        puts NginxStage::GeneratePunConfig.new(options).invoke
+        puts NginxStage::PunConfigGenerator.new(options).invoke
       when "app"
-        puts NginxStage::GenerateAppConfig.new(options).invoke
+        puts NginxStage::AppConfigGenerator.new(options).invoke
       else
         raise InvalidCommand, "invalid command: #{command}"
       end

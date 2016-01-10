@@ -1,10 +1,10 @@
 require_relative "nginx_stage/version"
 require_relative "nginx_stage/configuration"
 require_relative "nginx_stage/errors"
-require_relative "nginx_stage/generate"
-require_relative "nginx_stage/generate_base"
-require_relative "nginx_stage/generate_pun_config"
-require_relative "nginx_stage/generate_app_config"
+require_relative "nginx_stage/generator"
+require_relative "nginx_stage/base_generator"
+require_relative "nginx_stage/pun_config_generator"
+require_relative "nginx_stage/app_config_generator"
 require_relative "nginx_stage/application"
 
 module NginxStage

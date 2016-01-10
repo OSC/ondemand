@@ -1,5 +1,5 @@
 module NginxStage
-  class GenerateAppConfig < GenerateBase
+  class AppConfigGenerator < BaseGenerator
     attr_reader :sub_uri
     attr_reader :sub_request
 
@@ -47,7 +47,7 @@ module NginxStage
     end
 
     add_hook :run_nginx do
-      GeneratePunConfig.new(options.merge(signal: :reload)).invoke unless skip_nginx
+      PunConfigGenerator.new(options.merge(signal: :reload)).invoke unless skip_nginx
     end
 
     add_hook :return_app_config_path do
