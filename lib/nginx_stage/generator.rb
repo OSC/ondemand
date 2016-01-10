@@ -36,12 +36,10 @@ module NginxStage
 
     def create_file(destination, data = "")
       FileUtils.mkdir_p(File.dirname(destination))
-      File.open(destination, "wb") do |file|
-        file.write data
-      end
+      File.open(destination, "wb") { |f| f.write data }
     end
 
-    def directory(destination, opts = {})
+    def empty_directory(destination, opts = {})
       mode  = opts.fetch(:mode, nil)
       owner = opts.fetch(:owner, nil)
       group = opts.fetch(:group, nil)

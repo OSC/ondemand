@@ -8,15 +8,15 @@ module NginxStage
     end
 
     add_hook :create_tmp_root do
-      directory tmp_root, mode: 0755
+      empty_directory tmp_root, mode: 0755
     end
 
     add_hook :create_log_root do
-      directory log_root, mode: 0755
+      empty_directory log_root, mode: 0755
     end
 
     add_hook :create_run_root do
-      directory NginxStage.pun_run_root, mode: 0700, owner: NginxStage.proxy_user
+      empty_directory NginxStage.pun_run_root, mode: 0700, owner: NginxStage.proxy_user
     end
 
     add_hook :create_config do
