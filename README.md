@@ -66,7 +66,8 @@ Pun options:
     -s, --signal=SIGNAL              # Send SIGNAL to per-user nginx process: stop/quit/reopen/reload
 
 App options:
-    -r, --request=REQUEST            # The REQUEST uri accessed
+    -i, --sub-uri=SUB_URI            # The SUB_URI that requests the per-user nginx
+    -r, --sub-request=SUB_REQUEST    # The SUB_REQUEST that requests the specified app
 
 Common options:
     -N, --[no-]skip-nginx            # Skip executing the per-user nginx process
