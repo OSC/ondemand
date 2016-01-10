@@ -48,8 +48,11 @@ module NginxStage
 
         opts.separator ""
         opts.separator "App options:"
-        opts.on("-r", "--request=REQUEST", "# The REQUEST uri accessed") do |request|
-          options[:request] = request
+        opts.on("-i", "--sub-uri=SUB_URI", "# The SUB_URI that requests the per-user nginx") do |uri|
+          options[:sub_uri] = uri
+        end
+        opts.on("-r", "--sub-request=SUB_REQUEST", "# The SUB_REQUEST that requests the specified app") do |request|
+          options[:sub_request] = request
         end
 
         opts.separator ""
@@ -82,11 +85,11 @@ module NginxStage
         opts.separator ""
         opts.separator "    To generate an app config from a URI request and reload the nginx process:"
         opts.separator ""
-        opts.separator "        `nginx_stage app --user=bob --request=/pun/shared/jimmy/fillsim/container/13`"
+        opts.separator "        `nginx_stage app --user=bob --sub-uri=/pun --sub-request=/shared/jimmy/fillsim/container/13`"
         opts.separator ""
         opts.separator "    To generate ONLY the app config from a URI request:"
         opts.separator ""
-        opts.separator "        `nginx_stage app --user=bob --request=/pun/shared/jimmy/fillsim --skip-nginx`"
+        opts.separator "        `nginx_stage app --user=bob --sub-uri=/pun --sub-request=/shared/jimmy/fillsim --skip-nginx`"
         opts.separator ""
       end
 

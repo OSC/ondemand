@@ -5,5 +5,5 @@ location ~ ^<%= app_uri %>(/.*|$) {
   passenger_document_root <%= app_path %>/public;
   passenger_enabled on;
 
-  passenger_app_env <%= env == "dev" ? "development" : "production" %>;
+  passenger_app_env <%= env == :dev ? "development" : "production" %>;
 }
