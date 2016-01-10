@@ -40,5 +40,16 @@ module NginxStage
         file.write data
       end
     end
+
+    def directory(destination, opts = {})
+      mode  = opts.fetch(:mode, nil)
+      owner = opts.fetch(:owner, nil)
+      group = opts.fetch(:group, nil)
+      if !File.exist?(destination)
+        FileUtils.mkdir_p destination
+        FileUtils.chmod mode, destination if mode
+        FileUtils.chown owner, group, destination if Process.uid == 0
+      end
+    end
   end
 end

@@ -8,20 +8,15 @@ module NginxStage
     end
 
     add_hook :create_tmp_root do
-      FileUtils.mkdir_p tmp_root
+      directory tmp_root, mode: 0755
     end
 
     add_hook :create_log_root do
-      FileUtils.mkdir_p log_root
+      directory log_root, mode: 0755
     end
 
     add_hook :create_run_root do
-      FileUtils.mkdir_p NginxStage.pun_run_root
-    end
-
-    add_hook :secure_run_root do
-      FileUtils.chmod 0700, NginxStage.pun_run_root
-      FileUtils.chown NginxStage.proxy_user, nil, NginxStage.pun_run_root if Process.uid == 0
+      directory NginxStage.pun_run_root, mode: 0700, owner: NginxStage.proxy_user
     end
 
     add_hook :create_config do
