@@ -68,37 +68,37 @@ Common options:
 ...
 ```
 
-#### Request URI
+#### Sub-Request URI
 
-The format of the `REQUEST` when building an app config is different depending
-if the `USER` is accessing a sandbox app or a shared app.
+The format of the `SUB_REQUEST` when building an app config is different
+depending on whether the `USER` is accessing a sandbox app or a shared app.
 
 * **sandbox** app (needs to know the `USER` of the sandbox app)
 
     ```
-    /pun/dev/<app>
+    /dev/<app>/*
     ```
 
     serves up the app in
 
     ```
-    ~USER/awesim_dev/<app>
+    ~USER/ood_dev/<app>
     ```
 
 * **shared** app
 
     ```
-    /pun/shared/<owner>/<app>
+    /shared/<owner>/<app>/*
     ```
 
     serves up the app in
 
     ```
-    ~<owner>/awesim_shared_apps/<app>
+    ~<owner>/ood_shared/<app>
     ```
 
-Any remaining structure on the request URI is ignored when building the app
-config.
+Any remaining structure appended to the sub-request URI is ignored when
+building the app config.
 
 #### Examples
 
@@ -116,11 +116,11 @@ To generate ONLY the per-user nginx environment:
 
 To generate an app config from a URI request and reload the nginx process:
 
-    nginx_stage app --user=bob --request=/pun/shared/jimmy/fillsim/container/13
+    nginx_stage app --user=bob --sub-uri=/pun --sub-request=/shared/jimmy/fillsim/container/13
 
 To generate ONLY the app config from a URI request:
 
-    nginx_stage app --user=bob --request=/pun/shared/jimmy/fillsim --skip-nginx
+    nginx_stage app --user=bob --sub-uri=/pun --sub-request=/shared/jimmy/fillsim --skip-nginx
 
 #### Directory Structure
 
