@@ -15,22 +15,13 @@ module NginxStage
       FileUtils.mkdir_p log_root
     end
 
-    add_hook :create_pid_root do
-      FileUtils.mkdir_p NginxStage.pun_pid_root
+    add_hook :create_run_root do
+      FileUtils.mkdir_p NginxStage.pun_run_root
     end
 
-    add_hook :create_socket_root do
-      FileUtils.mkdir_p NginxStage.pun_sck_root
-    end
-
-    add_hook :secure_socket_root do
-      target = NginxStage.pun_sck_root
-      if Process.uid == 0
-        FileUtils.chmod 0750, target
-        FileUtils.chown 0, NginxStage.socket_group, target
-      else
-        FileUtils.chmod 0700, target
-      end
+    add_hook :secure_run_root do
+      FileUtils.chmod 0700, NginxStage.pun_run_root
+      FileUtils.chown NginxStage.proxy_user, nil, NginxStage.pun_run_root if Process.uid == 0
     end
 
     add_hook :create_config do
@@ -71,11 +62,11 @@ module NginxStage
       end
 
       def pid_path
-        File.join NginxStage.pun_pid_root, "#{user}.pid"
+        File.join NginxStage.pun_run_root, "#{user}.pid"
       end
 
       def socket_path
-        File.join NginxStage.pun_sck_root, "#{user}.sock"
+        File.join NginxStage.pun_run_root, "#{user}.sock"
       end
   end
 end

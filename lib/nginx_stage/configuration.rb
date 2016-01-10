@@ -1,12 +1,12 @@
 module NginxStage
   module Configuration
+    attr_accessor :proxy_user
     attr_accessor :template_root
     attr_accessor :pun_config_root
     attr_accessor :app_config_root
     attr_accessor :pun_tmp_root
     attr_accessor :pun_log_root
-    attr_accessor :pun_pid_root
-    attr_accessor :pun_sck_root
+    attr_accessor :pun_run_root
     attr_accessor :mime_types_path
     attr_accessor :passenger_root
     attr_accessor :passenger_ruby
@@ -16,7 +16,6 @@ module NginxStage
     attr_accessor :app_root
     attr_accessor :app_namespace
     attr_accessor :app_request_regex
-    attr_accessor :socket_group
     attr_accessor :min_uid
 
     def configure
@@ -28,13 +27,13 @@ module NginxStage
     end
 
     def set_default_configuration
+      self.proxy_user = 'apache'
       self.template_root = File.join(root, 'templates')
       self.pun_config_root = File.join('', 'var', 'lib', 'nginx', 'config')
       self.app_config_root = File.join('', 'var', 'lib', 'nginx', 'config')
       self.pun_tmp_root = File.join('', 'var', 'lib', 'nginx', 'tmp')
       self.pun_log_root = File.join('', 'var', 'log', 'nginx')
-      self.pun_pid_root = File.join('', 'var', 'run', 'nginx')
-      self.pun_sck_root = File.join('', 'var', 'run', 'nginx')
+      self.pun_run_root = File.join('', 'var', 'run', 'nginx')
       self.mime_types_path = '/opt/rh/nginx16/root/etc/nginx/mime.types'
       self.passenger_root = '/opt/rh/rh-passenger40/root/usr/share/passenger/phusion_passenger/locations.ini'
       self.passenger_ruby = '/opt/rh/rh-ruby22/root/usr/bin/ruby'
@@ -53,7 +52,6 @@ module NginxStage
         dev: %r[^/(?<app>[\w-]+)],
         shared: %r[^/(?<owner>[\w-]+)/(?<app>[\w-]+)]
       }
-      self.socket_group = 'apache'
       self.min_uid = 1000
     end
   end

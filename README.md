@@ -18,36 +18,29 @@ standard libraries making installation a breeze.
     sudo chmod -R u+rwX,go+rX,go-w /opt/ood/nginx_stage
     ```
 
-3. Add or confirm that the reverse proxy daemon user is in the group `apache`
-
-    ```
-    # Add reverse proxy daemon user to group `apache`
-    ```
+3. Confirm that the reverse proxy daemon is running as `apache`
 
     This will give the daemon user permissions to connect to the per-user NGINX
     unix domain sockets.
 
-4. Give the reverse proxy daemon user `sudo` privileges to run the following
-   binary
+4. Add the reverse proxy daemon user to `/etc/sudoers`
 
     ```
-    /opt/ood/nginx_stage/sbin/nginx_stage
+    Defaults:apache     !requiretty, !authenticate
+
+    apache ALL=/opt/ood/nginx_stage/sbin/nginx_stage
     ```
 
-    Also, add the following to the `/etc/sudoers` file
+5. If a **very trusted** developer wants to work on `nginx_stage` give that
+   user `sudo` privileges for `nginx_stage_dev`
 
     ```
-    Defaults:<user1>,<user2>     !requiretty, !authenticate
+    Defaults:<user>     !requiretty, !authenticate
+
+    <user> ALL=/opt/ood/nginx_stage/sbin/nginx_stage_dev
     ```
 
-    for the daemon user.
-
-5. If a **very trusted** developer wants to work on `nginx_stage` give them
-   `sudo` privileges to run the following binary
-
-    ```
-    /opt/ood/nginx_stage/sbin/nginx_stage_dev
-    ```
+    **Warning**: This user must be very trusted, don't say we didn't warn you.
 
 ## Usage
 
@@ -136,33 +129,33 @@ To generate ONLY the app config from a URI request:
 The following paths are created on demand:
 
 ```
-/var/rw                                 # drwxr-xr-x root root
-├── lib                                 # drwxr-xr-x root root
-│   └── nginx                           # drwxr-xr-x root root
-│       ├── config                      # drwxr-xr-x root root
-│       │   ├── dev                     # drwxr-xr-x root root
-│       │   │   └── <user>              # drwxr-xr-x root root
-│       │   │       └── <dev_app>.conf  # -rw-r--r-- root root
-│       │   ├── shared                  # drwxr-xr-x root root
-│       │   │   └── <user>              # drwxr-xr-x root root
-│       │   │       └── <app>.conf      # -rw-r--r-- root root
-│       │   └── <user>.conf             # -rw-r--r-- root root
-│       └── tmp                         # drwxr-xr-x root root
-│           └── <user>                  # drwxr-xr-x root root
-│               ├── client_body         # drwx------ USER root
-│               ├── fastcgi_temp        # drwx------ USER root
-│               ├── proxy_temp          # drwx------ USER root
-│               ├── scgi_temp           # drwx------ USER root
-│               └── uwsgi_temp          # drwx------ USER root
-├── log                                 # drwxr-xr-x root root
-│   └── nginx                           # drwxr-xr-x root root
-│       └── <user>                      # drwxr-xr-x root root
-│           ├── access.log              # -rw-r--r-- root root
-│           └── error.log               # -rw-r--r-- root root
-└── run                                 # drwxr-xr-x root root
-    └── nginx                           # drwxr-x--- root apache
-        ├── <user>.pid                  # -rw-r--r-- root root
-        └── <user>.sock                 # srw-rw-rw- root root
+/var/rw                                 # drwxr-xr-x root   root
+├── lib                                 # drwxr-xr-x root   root
+│   └── nginx                           # drwxr-xr-x root   root
+│       ├── config                      # drwxr-xr-x root   root
+│       │   ├── dev                     # drwxr-xr-x root   root
+│       │   │   └── <user>              # drwxr-xr-x root   root
+│       │   │       └── <dev_app>.conf  # -rw-r--r-- root   root
+│       │   ├── shared                  # drwxr-xr-x root   root
+│       │   │   └── <user>              # drwxr-xr-x root   root
+│       │   │       └── <app>.conf      # -rw-r--r-- root   root
+│       │   └── <user>.conf             # -rw-r--r-- root   root
+│       └── tmp                         # drwxr-xr-x root   root
+│           └── <user>                  # drwxr-xr-x root   root
+│               ├── client_body         # drwx------ USER   root
+│               ├── fastcgi_temp        # drwx------ USER   root
+│               ├── proxy_temp          # drwx------ USER   root
+│               ├── scgi_temp           # drwx------ USER   root
+│               └── uwsgi_temp          # drwx------ USER   root
+├── log                                 # drwxr-xr-x root   root
+│   └── nginx                           # drwxr-xr-x root   root
+│       └── <user>                      # drwxr-xr-x root   root
+│           ├── access.log              # -rw-r--r-- root   root
+│           └── error.log               # -rw-r--r-- root   root
+└── run                                 # drwxr-xr-x root   root
+    └── nginx                           # drwx------ apache root
+        ├── <user>.pid                  # -rw-r--r-- root   root
+        └── <user>.sock                 # srw-rw-rw- root   root
 ```
 
 ## Contributing
