@@ -20,7 +20,7 @@ standard libraries making installation a breeze.
 
 3. Confirm that the reverse proxy daemon is running as `apache`
 
-    This will give the daemon user permissions to connect to the per-user NGINX
+    This will give the daemon-user permission to connect to the per-user NGINX
     unix domain sockets.
 
 4. Add the reverse proxy daemon user to `/etc/sudoers`
@@ -35,8 +35,9 @@ standard libraries making installation a breeze.
    user `sudo` privileges for `nginx_stage_dev`
 
     ```
-    Defaults:<user>     !requiretty, !authenticate
+    Defaults:apache,<user>     !requiretty, !authenticate
 
+    apache ALL=/opt/ood/nginx_stage/sbin/nginx_stage
     <user> ALL=/opt/ood/nginx_stage/sbin/nginx_stage_dev
     ```
 
