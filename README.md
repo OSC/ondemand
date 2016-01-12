@@ -154,9 +154,10 @@ The following paths are created on demand:
 │           ├── access.log              # -rw-r--r-- root   root
 │           └── error.log               # -rw-r--r-- root   root
 └── run                                 # drwxr-xr-x root   root
-    └── nginx                           # drwx------ apache root
-        ├── <user>.pid                  # -rw-r--r-- root   root
-        └── <user>.sock                 # srw-rw-rw- root   root
+    └── nginx                           # drwxr-xr-x root   root
+        └── <user>                      # drwx------ apache root
+            ├── passenger.pid           # -rw-r--r-- root   root
+            └── passenger.sock          # -rw-r--r-- root   root
 ```
 
 ## Contributing

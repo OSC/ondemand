@@ -7,16 +7,24 @@ module NginxStage
       @signal = opts.fetch(:signal, nil)
     end
 
-    add_hook :create_tmp_root do
-      empty_directory tmp_root, mode: 0755
+    add_hook :create_user_tmp_root do
+      FileUtils.mkdir_p tmp_root, mode: 0755
     end
 
-    add_hook :create_log_root do
-      empty_directory log_root, mode: 0755
+    add_hook :create_user_log_root do
+      FileUtils.mkdir_p log_root, mode: 0755
     end
 
-    add_hook :create_run_root do
-      empty_directory NginxStage.pun_run_root, mode: 0700, owner: NginxStage.proxy_user
+    add_hook :create_pun_run_root do
+      FileUtils.mkdir_p NginxStage.pun_run_root, mode: 0755
+    end
+
+    add_hook :create_user_run_root do
+      begin
+        FileUtils.mkdir run_root, mode: 0700
+        FileUtils.chown NginxStage.proxy_user, nil, run_root if Process.uid == 0
+      rescue Errno::EEXIST
+      end
     end
 
     add_hook :create_config do
@@ -56,12 +64,16 @@ module NginxStage
         File.join NginxStage.pun_tmp_root, user
       end
 
+      def run_root
+        File.join NginxStage.pun_run_root, user
+      end
+
       def pid_path
-        File.join NginxStage.pun_run_root, "#{user}.pid"
+        File.join run_root, 'passenger.pid'
       end
 
       def socket_path
-        File.join NginxStage.pun_run_root, "#{user}.sock"
+        File.join run_root, 'passenger.sock'
       end
   end
 end

@@ -35,19 +35,8 @@ module NginxStage
     end
 
     def create_file(destination, data = "")
-      FileUtils.mkdir_p(File.dirname(destination))
+      FileUtils.mkdir_p File.dirname(destination), mode: 0755
       File.open(destination, "wb") { |f| f.write data }
-    end
-
-    def empty_directory(destination, opts = {})
-      mode  = opts.fetch(:mode, nil)
-      owner = opts.fetch(:owner, nil)
-      group = opts.fetch(:group, nil)
-      if !File.exist?(destination)
-        FileUtils.mkdir_p destination
-        FileUtils.chmod mode, destination if mode
-        FileUtils.chown owner, group, destination if Process.uid == 0
-      end
     end
   end
 end
