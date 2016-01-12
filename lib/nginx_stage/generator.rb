@@ -7,7 +7,7 @@ module NginxStage
   # callback methods in a sequence.
   class Generator
     # Adds a new hook method that is invoked  in the order it is defined
-    # @param [Symbol] name unique key defining callback method
+    # @param name [Symbol] unique key defining callback method
     # @yield The body of the generator's callback
     # @return [void]
     def self.add_hook(name, &block)
@@ -31,8 +31,8 @@ module NginxStage
 
     # Gets an ERB template at the relative source, executes it and makes a copy
     # at the relative destination
-    # @param [String] source the relative path to the source file
-    # @param [String] destination the relative path to the destination file
+    # @param source [String] the relative path to the source file
+    # @param destination [String] the relative path to the destination file
     # @return [void]
     def template(source, destination)
       data = File.read File.join(NginxStage.template_root, source)
@@ -40,13 +40,14 @@ module NginxStage
     end
 
     # Create a new file at the destination path with the given data
-    # @param [String] destination the relative path to the destination file
-    # @param [String] data the given data
+    # @param destination [String] the relative path to the destination file
+    # @param data [String] the given data
     # @return [void]
     def create_file(destination, data = "")
       FileUtils.mkdir_p File.dirname(destination), mode: 0755
       File.open(destination, "wb") { |f| f.write data }
     end
+
 
     private
       # Retrieves a value from superclass. If it reaches the baseclass,

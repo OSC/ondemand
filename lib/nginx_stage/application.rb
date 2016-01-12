@@ -26,7 +26,7 @@ module NginxStage
     end
 
     # Parses user-supplied arguments
-    # @param [Array<String>] args the array of arguments to parse
+    # @param args [Array<String>] the array of arguments to parse
     # @return [OptionParser] the option parser object
     def self.parse!(args)
       options = {}
