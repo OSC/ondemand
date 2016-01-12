@@ -41,7 +41,7 @@ standard libraries making installation a breeze.
     <user> ALL=/opt/ood/nginx_stage/sbin/nginx_stage_dev
     ```
 
-    **Warning**: This user must be very trusted, don't say we didn't warn you.
+    **Warning**: This user must be very trusted! Don't say we didn't warn you.
 
 ## Usage
 
