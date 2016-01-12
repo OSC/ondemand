@@ -7,6 +7,7 @@ require_relative "nginx_stage/pun_config_generator"
 require_relative "nginx_stage/app_config_generator"
 require_relative "nginx_stage/application"
 
+# The main namespace for NginxStage. Provides a global configuration.
 module NginxStage
   def self.root
     File.dirname __dir__
