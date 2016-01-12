@@ -9,6 +9,8 @@ require_relative "nginx_stage/application"
 
 # The main namespace for NginxStage. Provides a global configuration.
 module NginxStage
+  # Root path of this library
+  # @return [String] root path of library
   def self.root
     File.dirname __dir__
   end
