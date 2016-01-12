@@ -1,7 +1,10 @@
 require 'optparse'
 
 module NginxStage
+  # The command line interface for NginxStage
   module Application
+    # Starts the NginxStage workflow
+    # @return [void]
     def self.start
       options = parse!( ARGV )
       command = ARGV.first
@@ -22,6 +25,9 @@ module NginxStage
       exit(false)
     end
 
+    # Parses user-supplied arguments
+    # @param [Array<String>] args the array of arguments to parse
+    # @return [OptionParser] the option parser object
     def self.parse!(args)
       options = {}
 
@@ -98,6 +104,8 @@ module NginxStage
       options
     end
 
+    # Generates the help message
+    # @return [String] the help message
     def self.help
       @opts
     end

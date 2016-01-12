@@ -74,8 +74,9 @@ module NginxStage
     # @return [Integer] minimum user id required to run as user
     attr_accessor :min_uid
 
-    # Modifies the library configuration
-    # @yield The library configuration to the block
+    # Yields the configuration object.
+    # @yieldparam [Configuration] config The library configuration
+    # @return [void]
     def configure
       yield self
     end
@@ -86,6 +87,7 @@ module NginxStage
     end
 
     # Sets the default configuration options
+    # @return [void]
     def set_default_configuration
       self.proxy_user = 'apache'
       self.template_root = File.join(root, 'templates')
