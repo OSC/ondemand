@@ -1,4 +1,8 @@
 module NginxStage
+  # Base generator that all other generators inherit from. {BaseGenerator} has
+  # the common callback methods used in all other generators. In particular it
+  # validates the user and determines whether the NGINX process should be
+  # called.
   class BaseGenerator < Generator
     # The initial options passed into the constructor
     # @return [Hash] the initial options

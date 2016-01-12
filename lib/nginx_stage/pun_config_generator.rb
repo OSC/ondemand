@@ -1,10 +1,12 @@
 module NginxStage
+  # This generator stages and generates the per-user NGINX environment. It also
+  # has the ability to control the corresponding per-user NGINX process.
   class PunConfigGenerator < BaseGenerator
     # The signal to send to the per-user NGINX process
     # @return [String] nginx signal
     attr_reader :signal
 
-    # @param opts [Hash] various options for controlling the hehavior of the generator
+    # @param opts [Hash] various options for controlling the behavior of the generator
     # @option opts [String] :user (nil) the user of the per-user nginx
     # @option opts [Boolean] :skip_nginx (false) whether to skip calling nginx binary
     # @option opts [String] :signal (nil) the signal to send nginx
@@ -58,7 +60,7 @@ module NginxStage
       end
     end
 
-    # Create the per-user NGINX config from the 'pun.conf.erb' template
+    # Generate the per-user NGINX config from the 'pun.conf.erb' template
     add_hook :create_config do
       template "pun.conf.erb", pun_config_path
     end
@@ -78,6 +80,7 @@ module NginxStage
     add_hook :return_pun_config_path do
       pun_config_path
     end
+
 
     private
       # Path to generated per-user NGINX config file
