@@ -167,7 +167,7 @@ The following paths are created on demand:
     └── nginx                           # drwxr-xr-x root   root
         └── <user>                      # drwx------ apache root
             ├── passenger.pid           # -rw-r--r-- root   root
-            └── passenger.sock          # -rw-r--r-- root   root
+            └── passenger.sock          # srw-rw-rw- root   root
 ```
 
 ## Contributing
