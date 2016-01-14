@@ -3,6 +3,16 @@
 Stage and control per-user NGINX processes. Only relies on Ruby core and
 standard libraries making installation a breeze.
 
+## Requirements
+
+### RedHat (Software Collections)
+
+* [Ruby 2.2](https://www.softwarecollections.org/en/scls/rhscl/rh-ruby22/)
+* [nginx 1.6](https://www.softwarecollections.org/en/scls/rhscl/nginx16/)
+* [Phusion Passenger 4.0](https://www.softwarecollections.org/en/scls/rhscl/rh-passenger40/)
+* [Node.js 0.10](https://www.softwarecollections.org/en/scls/rhscl/nodejs010/)
+* [V8 3.14](https://www.softwarecollections.org/en/scls/rhscl/v8314/)
+
 ## Installation
 
 1. Clone this repo into a standard location
