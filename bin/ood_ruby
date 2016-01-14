@@ -1,0 +1,7 @@
+#!/bin/env bash
+source /opt/rh/nginx16/enable
+source /opt/rh/rh-passenger40/enable
+source /opt/rh/rh-ruby22/enable
+source /opt/rh/nodejs010/enable
+source /opt/rh/v8314/enable
+exec ruby "$@"

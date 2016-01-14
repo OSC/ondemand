@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+#!/opt/ood/nginx_stage/bin/ood_ruby
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
 require 'nginx_stage'
