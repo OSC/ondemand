@@ -5,7 +5,7 @@ standard libraries making installation a breeze.
 
 ## Requirements
 
-#### RedHat (Software Collections)
+#### RedHat ([Software Collections](https://www.softwarecollections.org/en/))
 
 * [Ruby 2.2](https://www.softwarecollections.org/en/scls/rhscl/rh-ruby22/)
 * [nginx 1.6](https://www.softwarecollections.org/en/scls/rhscl/nginx16/)
