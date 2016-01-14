@@ -83,6 +83,11 @@ module NginxStage
 
 
     private
+      # Primary group of the user
+      def group
+        get_group(user)
+      end
+
       # Path to generated per-user NGINX config file
       #   /var/lib/nginx/config/<user>.conf
       def pun_config_path

@@ -57,5 +57,11 @@ module NginxStage
         passwd = Etc.getpwnam(user)
         raise InvalidUser, "user is special: #{user} (#{passwd.uid} < #{NginxStage.min_uid})" if passwd.uid < NginxStage.min_uid
       end
+
+      # Get the primary group of the user
+      def get_group(user)
+        passwd = Etc.getpwnam(user)
+        Etc.getgrgid(passwd.gid).name
+      end
   end
 end
