@@ -89,22 +89,23 @@ module NginxStage
     # Sets the default configuration options
     # @return [void]
     def set_default_configuration
-      self.proxy_user = 'apache'
-      self.template_root = File.join(root, 'templates')
-      self.pun_config_root = File.join('', 'var', 'lib', 'nginx', 'config')
-      self.app_config_root = File.join('', 'var', 'lib', 'nginx', 'config')
-      self.pun_tmp_root = File.join('', 'var', 'lib', 'nginx', 'tmp')
-      self.pun_log_root = File.join('', 'var', 'log', 'nginx')
-      self.pun_run_root = File.join('', 'var', 'run', 'nginx')
-      self.mime_types_path = '/opt/rh/nginx16/root/etc/nginx/mime.types'
-      self.passenger_root = '/opt/rh/rh-passenger40/root/usr/share/passenger/phusion_passenger/locations.ini'
-      self.passenger_ruby = '/opt/rh/rh-ruby22/root/usr/bin/ruby'
+      self.proxy_user       = 'apache'
+      self.template_root    = "#{root}/templates"
+      self.pun_config_root  = '/var/lib/nginx/config'
+      self.app_config_root  = '/var/lib/nginx/config'
+      self.pun_tmp_root     = '/var/lib/nginx/tmp'
+      self.pun_log_root     = '/var/log/nginx'
+      self.pun_run_root     = '/var/run/nginx'
+      self.mime_types_path  = '/opt/rh/nginx16/root/etc/nginx/mime.types'
+      self.passenger_root   = '/opt/rh/rh-passenger40/root/usr/share/passenger/phusion_passenger/locations.ini'
+      self.passenger_ruby   = '/opt/rh/rh-ruby22/root/usr/bin/ruby'
       self.passenger_nodejs = '/opt/rh/nodejs010/root/usr/bin/node'
-      self.nginx_bin = '/opt/rh/nginx16/root/usr/sbin/nginx'
-      self.nginx_signals = %i(stop quit reopen reload)
+      self.nginx_bin        = '/opt/rh/nginx16/root/usr/sbin/nginx'
+      self.nginx_signals    = %i(stop quit reopen reload)
+      self.min_uid          = 1000
       self.app_root = {
-        dev: File.join('~%{owner}', 'ood_dev'),
-        shared: File.join('~%{owner}', 'ood_shared')
+        dev: '~%{owner}/ood_dev',
+        shared: '~%{owner}/ood_shared'
       }
       self.app_namespace = {
         dev: '%{app}',
@@ -114,7 +115,6 @@ module NginxStage
         dev: %r[^/(?<app>[\w-]+)],
         shared: %r[^/(?<owner>[\w-]+)/(?<app>[\w-]+)]
       }
-      self.min_uid = 1000
     end
   end
 end
