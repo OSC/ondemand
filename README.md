@@ -67,7 +67,7 @@ Required options:
     -u, --user=USER                  # The USER running the per-user nginx process
 
 Pun options:
-    -a, --app-init-uri=APP_INIT_URI  # The APP_INIT_URI that generates the requested app config
+    -a, --app-init-uri=APP_INIT_URI  # The APP_INIT_URI user is redirected to if app doesn't exist
     -s, --signal=SIGNAL              # Send SIGNAL to per-user nginx process: stop/quit/reopen/reload
 
 App options:

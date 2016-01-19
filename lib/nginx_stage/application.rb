@@ -48,7 +48,7 @@ module NginxStage
 
         opts.separator ""
         opts.separator "Pun options:"
-        opts.on("-a", "--app-init-uri=APP_INIT_URI", "# The APP_INIT_URI that generates the requested app config") do |app_init|
+        opts.on("-a", "--app-init-uri=APP_INIT_URI", "# The APP_INIT_URI user is redirected to if app doesn't exist") do |app_init|
           options[:app_init_uri] = clean_up app_init
         end
         opts.on("-s", "--signal=SIGNAL", NginxStage.nginx_signals, "# Send SIGNAL to per-user nginx process: #{NginxStage.nginx_signals.join('/')}") do |signal|
