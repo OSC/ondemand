@@ -118,7 +118,7 @@ building the app config.
 
 To generate a per-user nginx environment & launch nginx:
 
-    nginx_stage pun --user=bob --app-init-uri=/nginx/init?redir=$http_x_forwarded_escaped_uri
+    nginx_stage pun --user=bob --app-init-uri='/nginx/init?redir=$http_x_forwarded_escaped_uri'
 
 To stop the above nginx process:
 

@@ -82,7 +82,7 @@ module NginxStage
         opts.separator "Examples:"
         opts.separator "    To generate a per-user nginx environment & launch nginx:"
         opts.separator ""
-        opts.separator "        `nginx_stage pun --user=bob --app-init-uri=/nginx/init?redir=$http_x_forwarded_escaped_uri`"
+        opts.separator "        `nginx_stage pun --user=bob --app-init-uri='/nginx/init?redir=$http_x_forwarded_escaped_uri'`"
         opts.separator ""
         opts.separator "    To stop the above nginx process:"
         opts.separator ""
