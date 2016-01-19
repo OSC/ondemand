@@ -42,9 +42,11 @@ http {
     listen      unix:<%= socket_path %>;
     server_name localhost;
 
+    <%- if app_init_uri -%>
     location / {
-      return 302 $scheme://$http_x_forwarded_host/nginx/init?redir=$http_x_forwarded_escaped_uri;
+      return 302 $scheme://$http_x_forwarded_host<%= app_init_uri %>;
     }
+    <%- end -%>
 
     # Include all user's dev apps
     include <%= NginxStage.app_config_root %>/dev/<%= user %>/*.conf;

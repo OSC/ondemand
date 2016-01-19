@@ -67,6 +67,7 @@ Required options:
     -u, --user=USER                  # The USER running the per-user nginx process
 
 Pun options:
+    -a, --app-init-uri=APP_INIT_URI  # The APP_INIT_URI that generates the requested app config
     -s, --signal=SIGNAL              # Send SIGNAL to per-user nginx process: stop/quit/reopen/reload
 
 App options:
@@ -117,7 +118,7 @@ building the app config.
 
 To generate a per-user nginx environment & launch nginx:
 
-    nginx_stage pun --user=bob
+    nginx_stage pun --user=bob --app-init-uri=/nginx/init?redir=$http_x_forwarded_escaped_uri
 
 To stop the above nginx process:
 

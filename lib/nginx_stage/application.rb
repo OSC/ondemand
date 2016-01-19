@@ -48,6 +48,9 @@ module NginxStage
 
         opts.separator ""
         opts.separator "Pun options:"
+        opts.on("-a", "--app-init-uri=APP_INIT_URI", "# The APP_INIT_URI that generates the requested app config") do |app_init|
+          options[:app_init_uri] = clean_up app_init
+        end
         opts.on("-s", "--signal=SIGNAL", NginxStage.nginx_signals, "# Send SIGNAL to per-user nginx process: #{NginxStage.nginx_signals.join('/')}") do |signal|
           options[:signal] = signal
         end
@@ -79,7 +82,7 @@ module NginxStage
         opts.separator "Examples:"
         opts.separator "    To generate a per-user nginx environment & launch nginx:"
         opts.separator ""
-        opts.separator "        `nginx_stage pun --user=bob`"
+        opts.separator "        `nginx_stage pun --user=bob --app-init-uri=/nginx/init?redir=$http_x_forwarded_escaped_uri`"
         opts.separator ""
         opts.separator "    To stop the above nginx process:"
         opts.separator ""
@@ -113,9 +116,9 @@ module NginxStage
 
     private
       # Cleans up any bad characters received by user input
-      # only accepts: a-z, A-Z, 0-9, _, -, /, .
+      # only accepts: a-z, A-Z, 0-9, _, -, /, ., ?, =, $
       def self.clean_up(string)
-        string.gsub(/[^\w\/.-]/, '')
+        string.gsub(/[^\w\/.?=$-]/, '')
       end
   end
 end

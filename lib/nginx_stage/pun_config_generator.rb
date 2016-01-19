@@ -2,6 +2,11 @@ module NginxStage
   # This generator stages and generates the per-user NGINX environment. It also
   # has the ability to control the corresponding per-user NGINX process.
   class PunConfigGenerator < BaseGenerator
+    # The app initialization URI the user is redirected to if can't find the
+    # app in the per-user NGINX config
+    # @return [String] app init redirect url
+    attr_reader :app_init_uri
+
     # The signal to send to the per-user NGINX process
     # @return [String] nginx signal
     attr_reader :signal
@@ -13,7 +18,8 @@ module NginxStage
     # @see BaseGenerator#initialize
     def initialize(opts)
       super(opts)
-      @signal = opts.fetch(:signal, nil)
+      @app_init_uri = opts.fetch(:app_init_uri, nil)
+      @signal       = opts.fetch(:signal, nil)
     end
 
     #
