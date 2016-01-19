@@ -43,7 +43,7 @@ http {
     server_name localhost;
 
     location / {
-      return 302 $scheme://$http_x_forwarded_host/nginx/init?app=$uri;
+      return 302 $scheme://$http_x_forwarded_host/nginx/init?redir=$http_x_forwarded_escaped_uri;
     }
 
     # Include all user's dev apps
