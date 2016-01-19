@@ -43,7 +43,7 @@ module NginxStage
         opts.separator ""
         opts.separator "Required options:"
         opts.on("-u", "--user=USER", "# The USER running the per-user nginx process") do |user|
-          options[:user] = user
+          options[:user] = clean_up user
         end
 
         opts.separator ""
@@ -55,10 +55,10 @@ module NginxStage
         opts.separator ""
         opts.separator "App options:"
         opts.on("-i", "--sub-uri=SUB_URI", "# The SUB_URI that requests the per-user nginx") do |uri|
-          options[:sub_uri] = uri
+          options[:sub_uri] = clean_up uri
         end
         opts.on("-r", "--sub-request=SUB_REQUEST", "# The SUB_REQUEST that requests the specified app") do |request|
-          options[:sub_request] = request
+          options[:sub_request] = clean_up request
         end
 
         opts.separator ""
@@ -109,5 +109,13 @@ module NginxStage
     def self.help
       @opts
     end
+
+
+    private
+      # Cleans up any bad characters received by user input
+      # only accepts: a-z, A-Z, 0-9, _, -, /, .
+      def self.clean_up(string)
+        string.gsub(/[^\w\/.-]/, '')
+      end
   end
 end
