@@ -62,20 +62,23 @@ Usage: nginx_stage COMMAND --user=USER [OPTIONS]
 Commands:
  pun      # Generate a new per-user nginx config and process
  app      # Generate a new nginx app config and reload process
+ nginx    # Generate/control a per-user nginx process
 
 Required options:
     -u, --user=USER                  # The USER running the per-user nginx process
 
 Pun options:
     -a, --app-init-uri=APP_INIT_URI  # The APP_INIT_URI user is redirected to if app doesn't exist
-    -s, --signal=SIGNAL              # Send SIGNAL to per-user nginx process: stop/quit/reopen/reload
 
 App options:
     -i, --sub-uri=SUB_URI            # The SUB_URI that requests the per-user nginx
     -r, --sub-request=SUB_REQUEST    # The SUB_REQUEST that requests the specified app
 
+Nginx options:
+    -s, --signal=SIGNAL              # Send SIGNAL to per-user nginx process: stop/quit/reopen/reload
+
 Common options:
-    -N, --[no-]skip-nginx            # Skip executing the per-user nginx process
+    -N, --[no-]skip-nginx            # Skip execution of the per-user nginx process
     -h, --help                       # Show this help message
     -v, --version                    # Show version
 
@@ -120,13 +123,20 @@ To generate a per-user nginx environment & launch nginx:
 
     nginx_stage pun --user=bob --app-init-uri='/nginx/init?redir=$http_x_forwarded_escaped_uri'
 
-To stop the above nginx process:
-
-    nginx_stage pun --user=bob --signal=stop
+this will add a URI redirect if the user accesses an app that doesn't exist.
 
 To generate ONLY the per-user nginx environment:
 
     nginx_stage pun --user=bob --skip-nginx
+
+this will return the per-user nginx config path and won't run nginx. In addition
+it will remove the URI redirect from the config unless we specify `--app-init-uri`.
+
+To stop the above nginx process:
+
+    nginx_stage nginx --user=bob --signal=stop
+
+this is equivalent to sending `nginx -c USER_CONFIG -s SIGNAL`
 
 To generate an app config from a URI request and reload the nginx process:
 
@@ -135,6 +145,8 @@ To generate an app config from a URI request and reload the nginx process:
 To generate ONLY the app config from a URI request:
 
     nginx_stage app --user=bob --sub-uri=/pun --sub-request=/shared/jimmy/fillsim --skip-nginx
+
+this will return the app config path and won't run nginx.
 
 #### Directory Structure
 

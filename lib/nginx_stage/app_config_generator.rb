@@ -91,10 +91,9 @@ module NginxStage
       template "app.conf.erb", app_config_path
     end
 
-    # Reload the per-user NGINX process through `exec` (so we capture return
-    # code) if we don't :skip_nginx
+    # Run the per-user NGINX process through `exec` (so we capture return code)
     add_hook :run_nginx do
-      PunConfigGenerator.new(options.merge(signal: :reload)).invoke unless skip_nginx
+      exec_nginx(pun_config_path, :reload) unless skip_nginx
     end
 
     # If we skip nginx, then return the path to the generated NGINX app config

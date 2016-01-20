@@ -1,25 +1,18 @@
 module NginxStage
-  # This generator stages and generates the per-user NGINX environment. It also
-  # has the ability to control the corresponding per-user NGINX process.
+  # This generator stages and generates the per-user NGINX environment.
   class PunConfigGenerator < BaseGenerator
     # The app initialization URI the user is redirected to if can't find the
     # app in the per-user NGINX config
     # @return [String] app init redirect url
     attr_reader :app_init_uri
 
-    # The signal to send to the per-user NGINX process
-    # @return [String] nginx signal
-    attr_reader :signal
-
     # @param opts [Hash] various options for controlling the behavior of the generator
     # @option opts [String] :user (nil) the user of the per-user nginx
     # @option opts [Boolean] :skip_nginx (false) whether to skip calling nginx binary
-    # @option opts [String] :signal (nil) the signal to send nginx
     # @see BaseGenerator#initialize
     def initialize(opts)
       super(opts)
       @app_init_uri = opts.fetch(:app_init_uri, nil)
-      @signal       = opts.fetch(:signal, nil)
     end
 
     #
@@ -72,13 +65,8 @@ module NginxStage
     end
 
     # Run the per-user NGINX process through `exec` (so we capture return code)
-    # if we don't :skip_nginx
     add_hook :run_nginx do
-      args = ""
-      args << " -c '#{pun_config_path}'"
-      args << " -s '#{signal}'" if signal
-
-      exec "#{NginxStage.nginx_bin} #{args}" unless skip_nginx
+      exec_nginx(pun_config_path) unless skip_nginx
     end
 
     # If we skip nginx, then return the path to the generated per-user NGINX
@@ -92,12 +80,6 @@ module NginxStage
       # Primary group of the user
       def group
         get_group(user)
-      end
-
-      # Path to generated per-user NGINX config file
-      #   /var/lib/nginx/config/<user>.conf
-      def pun_config_path
-        File.join(NginxStage.pun_config_root, "#{user}.conf")
       end
 
       # Path to user's personal log root

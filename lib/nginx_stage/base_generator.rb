@@ -45,6 +45,12 @@ module NginxStage
 
 
     private
+      # Path to generated per-user NGINX config file
+      #   /var/lib/nginx/config/<user>.conf
+      def pun_config_path
+        File.join(NginxStage.pun_config_root, "#{user}.conf")
+      end
+
       # Check that user exists on local system
       def check_user_exists(user)
         Etc.getpwnam(user)
@@ -62,6 +68,15 @@ module NginxStage
       def get_group(user)
         passwd = Etc.getpwnam(user)
         Etc.getgrgid(passwd.gid).name
+      end
+
+      # Execute nginx with given config and signal. Use `exec` so we capture
+      # exit code.
+      def exec_nginx(config, signal = nil, skip = false)
+        args = "-c '#{config}'"
+        args << " -s '#{signal}'" if signal
+        cmd = "#{NginxStage.nginx_bin} #{args}"
+        skip ? cmd : exec(cmd)
       end
   end
 end

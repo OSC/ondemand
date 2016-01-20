@@ -16,6 +16,8 @@ module NginxStage
         puts NginxStage::PunConfigGenerator.new(options).invoke
       when "app"
         puts NginxStage::AppConfigGenerator.new(options).invoke
+      when "nginx"
+        puts NginxStage::NginxProcessGenerator.new(options).invoke
       else
         raise InvalidCommand, "invalid command: #{command}"
       end
@@ -38,6 +40,7 @@ module NginxStage
         Commands:
          pun      # Generate a new per-user nginx config and process
          app      # Generate a new nginx app config and reload process
+         nginx    # Generate/control a per-user nginx process
         EOF
 
         opts.separator ""
@@ -51,9 +54,6 @@ module NginxStage
         opts.on("-a", "--app-init-uri=APP_INIT_URI", "# The APP_INIT_URI user is redirected to if app doesn't exist") do |app_init|
           options[:app_init_uri] = clean_up app_init
         end
-        opts.on("-s", "--signal=SIGNAL", NginxStage.nginx_signals, "# Send SIGNAL to per-user nginx process: #{NginxStage.nginx_signals.join('/')}") do |signal|
-          options[:signal] = signal
-        end
 
         opts.separator ""
         opts.separator "App options:"
@@ -65,8 +65,14 @@ module NginxStage
         end
 
         opts.separator ""
+        opts.separator "Nginx options:"
+        opts.on("-s", "--signal=SIGNAL", NginxStage.nginx_signals, "# Send SIGNAL to per-user nginx process: #{NginxStage.nginx_signals.join('/')}") do |signal|
+          options[:signal] = signal
+        end
+
+        opts.separator ""
         opts.separator "Common options:"
-        opts.on("-N", "--[no-]skip-nginx", "# Skip executing the per-user nginx process") do |nginx|
+        opts.on("-N", "--[no-]skip-nginx", "# Skip execution of the per-user nginx process") do |nginx|
           options[:skip_nginx] = nginx
         end
         opts.on("-h", "--help", "# Show this help message") do
@@ -84,13 +90,20 @@ module NginxStage
         opts.separator ""
         opts.separator "        `nginx_stage pun --user=bob --app-init-uri='/nginx/init?redir=$http_x_forwarded_escaped_uri'`"
         opts.separator ""
-        opts.separator "    To stop the above nginx process:"
-        opts.separator ""
-        opts.separator "        `nginx_stage pun --user=bob --signal=stop`"
+        opts.separator "    this will add a URI redirect if the user accesses an app that doesn't exist."
         opts.separator ""
         opts.separator "    To generate ONLY the per-user nginx environment:"
         opts.separator ""
         opts.separator "        `nginx_stage pun --user=bob --skip-nginx`"
+        opts.separator ""
+        opts.separator "    this will return the per-user nginx config path and won't run nginx. In addition"
+        opts.separator "    it will remove the URI redirect from the config unless we specify `--app-init-uri`."
+        opts.separator ""
+        opts.separator "    To stop the above nginx process:"
+        opts.separator ""
+        opts.separator "        `nginx_stage nginx --user=bob --signal=stop`"
+        opts.separator ""
+        opts.separator "    this is equivalent to sending `nginx -c USER_CONFIG -s SIGNAL`"
         opts.separator ""
         opts.separator "    To generate an app config from a URI request and reload the nginx process:"
         opts.separator ""
@@ -99,6 +112,8 @@ module NginxStage
         opts.separator "    To generate ONLY the app config from a URI request:"
         opts.separator ""
         opts.separator "        `nginx_stage app --user=bob --sub-uri=/pun --sub-request=/shared/jimmy/fillsim --skip-nginx`"
+        opts.separator ""
+        opts.separator "    this will return the app config path and won't run nginx."
         opts.separator ""
       end
 
