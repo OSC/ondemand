@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = NginxStage::VERSION
   spec.authors       = ["Jeremy Nicklas"]
   spec.email         = ["jnicklas@osc.edu"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
+  spec.summary       = %q{Stage and control per-user NGINX processes.}
+  spec.description   = %q{Command line interface to generating per-user NGINX configurations as well as launching and controlling the nginx process.}
+  spec.homepage      = "https://www.osc.edu"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
