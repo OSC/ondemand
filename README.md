@@ -15,18 +15,41 @@ standard libraries making installation a breeze.
 
 ## Installation
 
-1. Clone this repo into a standard location
+1. Clone/pull this repo onto the local file system
+
+    * first time installation
+
+        ```
+        git clone <repo> /path/to/repo
+        ```
+
+    * updating
+
+        ```
+        cd /path/to/repo
+        git pull
+        ```
+
+2. Install a specific version in default location
 
     ```
-    git clone <repo> /opt/ood/nginx_stage
+    cd /path/to/repo
+    sudo rake install tag=<tag>
     ```
 
-2. Modify permissions for `root`
+    this will install the specifed version `<tag>` in `/opt/ood/nginx_stage`
+
+    Examples:
 
     ```
-    sudo chown -R root:root /opt/ood/nginx_stage
-    sudo chmod -R u+rwX,go+rX,go-w /opt/ood/nginx_stage
+    # Install v1.0.0 of nginx_stage to /opt/ood/nginx_stage
+    sudo rake install tag=v1.0.0
+
+    # Install v2.0.0 of nginx_stage to /tmp/nginx_stage-v2.0.0
+    sudo rake install tag=v2.0.0 prefix=/tmp/nginx_stage-v2.0.0
     ```
+
+    Note: This will overwrite existing files.
 
 3. Confirm that the reverse proxy daemon is running as `apache`
 
