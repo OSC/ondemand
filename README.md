@@ -16,13 +16,11 @@ standard libraries making installation a breeze.
 ## Installation
 
 1. Clone/pull this repo onto the local file system
-
     * first time installation
 
         ```
         git clone <repo> /path/to/repo
         ```
-
     * updating
 
         ```
@@ -49,7 +47,7 @@ standard libraries making installation a breeze.
     sudo rake install tag=v2.0.0 prefix=/tmp/nginx_stage-v2.0.0
     ```
 
-    Note: This will overwrite existing files.
+    **Warning**: This will overwrite existing files.
 
 3. Confirm that the reverse proxy daemon is running as `apache`
 
