@@ -78,35 +78,91 @@ standard libraries making installation a breeze.
 
 ```shell
 $ sudo nginx_stage --help
-Usage: nginx_stage COMMAND --user=USER [OPTIONS]
+Usage: nginx_stage COMMAND [OPTIONS]
 
 Commands:
- pun      # Generate a new per-user nginx config and process
- app      # Generate a new nginx app config and reload process
- nginx    # Generate/control a per-user nginx process
+ pun            # Generate a new per-user nginx config and process
+ app            # Generate a new nginx app config and reload process
+ nginx          # Generate/control a per-user nginx process
 
-Required options:
-    -u, --user=USER                  # The USER running the per-user nginx process
-
-Pun options:
-    -a, --app-init-uri=APP_INIT_URI  # The APP_INIT_URI user is redirected to if app doesn't exist
-
-App options:
-    -i, --sub-uri=SUB_URI            # The SUB_URI that requests the per-user nginx
-    -r, --sub-request=SUB_REQUEST    # The SUB_REQUEST that requests the specified app
-
-Nginx options:
-    -s, --signal=SIGNAL              # Send SIGNAL to per-user nginx process: stop/quit/reopen/reload
-
-Common options:
-    -N, --[no-]skip-nginx            # Skip execution of the per-user nginx process
+General options:
     -h, --help                       # Show this help message
     -v, --version                    # Show version
 
-...
+All commands can be run with -h (or --help) for more information.
 ```
 
-#### Sub-Request URI
+### PUN Command
+
+```shell
+$ sudo nginx_stage pun --help
+Usage: nginx_stage pun [OPTIONS]
+
+Required options:
+    -u, --user=USER                  # The USER of the per-user nginx process
+
+General options:
+    -a, --app-init-uri=APP_INIT_URI  # The user is redirected to the APP_INIT_URI if app doesn't exist
+                                     # Default: ''
+    -N, --[no-]skip-nginx            # Skip execution of the per-user nginx process
+                                     # Default: false
+
+Common options:
+    -h, --help                       # Show this help message
+    -v, --version                    # Show version
+
+Examples:
+    To generate a per-user nginx environment & launch nginx:
+
+        nginx_stage pun --user=bob --app-init-uri='/nginx/init?redir=$http_x_forwarded_escaped_uri'
+
+    this will add a URI redirect if the user accesses an app that doesn't exist.
+
+    To generate ONLY the per-user nginx environment:
+
+        nginx_stage pun --user=bob --skip-nginx
+
+    this will return the per-user nginx config path and won't run nginx. In addition
+    it will remove the URI redirect from the config unless we specify `--app-init-uri`.
+```
+
+If a user visits a URL and the per-user NGINX config does not find a location
+that maps to this URL, it will redirect the user to the relative URI supplied
+in `APP_INIT_URI`. If none is supplied, then the user will receive a 503 status
+code by the server.
+
+### APP Command
+
+```shell
+$ sudo nginx_stage app --help
+Usage: nginx_stage app [OPTIONS]
+
+Required options:
+    -u, --user=USER                  # The USER of the per-user nginx process
+    -r, --sub-request=SUB_REQUEST    # The SUB_REQUEST that requests the specified app
+
+General options:
+    -i, --sub-uri=SUB_URI            # The SUB_URI that requests the per-user nginx
+                                     # Default: ''
+    -N, --[no-]skip-nginx            # Skip execution of the per-user nginx process
+                                     # Default: false
+
+Common options:
+    -h, --help                       # Show this help message
+    -v, --version                    # Show version
+
+Examples:
+    To generate an app config from a URI request and reload the nginx
+    process:
+
+        nginx_stage app --user=bob --sub-uri=/pun --sub-request=/shared/jimmy/fillsim/container/13
+
+    To generate ONLY the app config from a URI request:
+
+        nginx_stage app --user=bob --sub-uri=/pun --sub-request=/shared/jimmy/fillsim --skip-nginx
+
+    this will return the app config path and won't run nginx.
+```
 
 The format of the `SUB_REQUEST` when building an app config is different
 depending on whether the `USER` is accessing a sandbox app or a shared app.
@@ -138,38 +194,42 @@ depending on whether the `USER` is accessing a sandbox app or a shared app.
 Any remaining structure appended to the sub-request URI is ignored when
 building the app config.
 
-#### Examples
+The `SUB_URI` corresponds to any reverse proxy specific namespace that denotes
+the request should be proxied to the backend per-user NGINX server.
 
-To generate a per-user nginx environment & launch nginx:
+### NGINX Command
 
-    nginx_stage pun --user=bob --app-init-uri='/nginx/init?redir=$http_x_forwarded_escaped_uri'
+```shell
+$ sudo nginx_stage app --help
+Usage: nginx_stage nginx [OPTIONS]
 
-this will add a URI redirect if the user accesses an app that doesn't exist.
+Required options:
+    -u, --user=USER                  # The USER of the per-user nginx process
 
-To generate ONLY the per-user nginx environment:
+General options:
+    -s, --signal=SIGNAL              # Send SIGNAL to per-user nginx process: stop/quit/reopen/reload
+                                     # Default: none
+    -N, --[no-]skip-nginx            # Skip execution of the per-user nginx process
+                                     # Default: false
 
-    nginx_stage pun --user=bob --skip-nginx
+Common options:
+    -h, --help                       # Show this help message
+    -v, --version                    # Show version
 
-this will return the per-user nginx config path and won't run nginx. In addition
-it will remove the URI redirect from the config unless we specify `--app-init-uri`.
+Examples:
+    To stop Bob's nginx process:
 
-To stop the above nginx process:
+        nginx_stage nginx --user=bob --signal=stop
 
-    nginx_stage nginx --user=bob --signal=stop
+    which sends a `stop` signal to Bob's per-user NGINX process.
 
-this is equivalent to sending `nginx -c USER_CONFIG -s SIGNAL`
+    If `--skip-nginx` is supplied it returns the system-level command
+    that would have been called.
+```
 
-To generate an app config from a URI request and reload the nginx process:
+The `SIGNAL` is what is sent to the per-user NGINX process for the specified user.
 
-    nginx_stage app --user=bob --sub-uri=/pun --sub-request=/shared/jimmy/fillsim/container/13
-
-To generate ONLY the app config from a URI request:
-
-    nginx_stage app --user=bob --sub-uri=/pun --sub-request=/shared/jimmy/fillsim --skip-nginx
-
-this will return the app config path and won't run nginx.
-
-#### Directory Structure
+### Directory Structure
 
 The following paths are created on demand:
 
