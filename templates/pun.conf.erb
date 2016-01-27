@@ -49,10 +49,10 @@ http {
     <%- end -%>
 
     # Include all user's dev apps
-    include <%= NginxStage.app_config_root %>/dev/<%= user %>/*.conf;
+    include <%= app_dev_configs %>;
 
     # Include all shared apps
-    include <%= NginxStage.app_config_root %>/shared/*/*.conf;
+    include <%= app_shared_configs %>;
 
     # Deny access to .htaccess files
     location ~ /\.ht {

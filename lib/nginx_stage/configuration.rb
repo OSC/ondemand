@@ -54,25 +54,25 @@ module NginxStage
     # @return [Array<Symbol>] whitelist of NGINX process signals
     attr_accessor :nginx_signals
 
-    # @return [Hash] relative path wrt app root for given app environment
-    # @see #app_config_root
-    attr_accessor :app_root
-
-    # App namespace that depends on the corresponding environment
-    # @return [Hash] app namespace for given app environment
-    attr_accessor :app_namespace
-
-    # Regex that converts an app namespace to a corresponding app for the
-    # corresponding environment
-    # @see #app_namespace
-    # @return [Hash] regex to determine app from app namespace for given
-    #   environment
-    attr_accessor :app_request_regex
-
     # Minimum user id required to run the per-user NGINX as this user. This
     # restricts running processes as special users (i.e., 'root')
     # @return [Integer] minimum user id required to run as user
     attr_accessor :min_uid
+
+    # @return [Hash] relative path wrt app root for given app environment
+    # @see #app_config_root
+    attr_accessor :app_root
+
+    # App URI request format that depends on the corresponding environment
+    # @return [Hash] app request format for given app environment
+    attr_accessor :app_request_format
+
+    # Regex that converts an app namespace to a corresponding app for the
+    # corresponding environment
+    # @see #app_request_format
+    # @return [Hash] regex to determine app from app namespace for given
+    #   environment
+    attr_accessor :app_request_regex
 
     # Yields the configuration object.
     # @yieldparam [Configuration] config The library configuration
@@ -104,16 +104,16 @@ module NginxStage
       self.nginx_signals    = %i(stop quit reopen reload)
       self.min_uid          = 1000
       self.app_root = {
-        dev: '~%{owner}/ood_dev',
-        shared: '~%{owner}/ood_shared'
+        dev: '~%{owner}/ood_dev/%{name}',
+        shared: '~%{owner}/ood_shared/%{name}'
       }
-      self.app_namespace = {
-        dev: '%{app}',
-        shared: '%{owner}/%{app}'
+      self.app_request_format = {
+        dev: '/dev/%{name}',
+        shared: '/shared/%{owner}/%{name}'
       }
       self.app_request_regex = {
-        dev: %r[^/(?<app>[\w-]+)],
-        shared: %r[^/(?<owner>[\w-]+)/(?<app>[\w-]+)]
+        dev: %r[^/dev/(?<name>[\w-]+)],
+        shared: %r[^/shared/(?<owner>[\w-]+)/(?<name>[\w-]+)]
       }
     end
   end
