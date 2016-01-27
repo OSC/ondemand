@@ -1,7 +1,8 @@
 require 'forwardable'
 
 module NginxStage
-  # Class used to describe a user found on the local system.
+  # A String-like Class that includes helper methods to better describe the
+  # user on the local system.
   class User
     extend Forwardable
 

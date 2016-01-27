@@ -26,7 +26,7 @@ module NginxStage
   # @example User Bob's nginx config
   #   pun_config_path(user: bob)
   #   #=> "/var/log/nginx/config/bob.conf"
-  # @param user [User] the user of the nginx process
+  # @param user [String] the user of the nginx process
   # @return [String] the path to the per-user nginx config file
   def self.pun_config_path(user:)
     File.join pun_config_root, "#{user}.conf"
@@ -36,7 +36,7 @@ module NginxStage
   # @example User Bob's nginx error log
   #   error_log_path(user: bob)
   #   #=> "/var/log/nginx/bob/error.log"
-  # @param user [User] the user of the nginx process
+  # @param user [String] the user of the nginx process
   # @return [String] the path to the nginx error log
   def self.error_log_path(user:)
     File.join pun_log_root, user, 'error.log'
@@ -46,7 +46,7 @@ module NginxStage
   # @example User Bob's nginx access log
   #   access_log_path(user: bob)
   #   #=> "/var/log/nginx/bob/access.log"
-  # @param user [User] the user of the nginx process
+  # @param user [String] the user of the nginx process
   # @return [String] the path to the nginx access log
   def self.access_log_path(user:)
     File.join pun_log_root, user, 'access.log'
@@ -56,7 +56,7 @@ module NginxStage
   # @example User Bob's nginx tmp root
   #   tmp_root(user: bob)
   #   #=> "/var/lib/nginx/tmp/bob"
-  # @param user [User] the user of the nginx process
+  # @param user [String] the user of the nginx process
   # @return [String] the path to the tmp root
   def self.tmp_root(user:)
     File.join pun_tmp_root, user
@@ -67,7 +67,7 @@ module NginxStage
   # @example User Bob's pid file
   #   pid_path(user: bob)
   #   #=> "/var/run/nginx/bob/passenger.pid"
-  # @param user [User] the user of nginx process
+  # @param user [String] the user of nginx process
   # @return [String] the path to the pid file
   def self.pid_path(user:)
     File.join pun_run_root, user, 'passenger.pid'
@@ -77,7 +77,7 @@ module NginxStage
   # @example User Bob's socket file
   #   socket_path(user: bob)
   #   #=> "/var/run/nginx/bob/passenger.sock"
-  # @param user [User] the user of nginx process
+  # @param user [String] the user of nginx process
   # @return [String] the path to the socket file
   def self.socket_path(user:)
     File.join pun_run_root, user, 'passenger.sock'
@@ -95,7 +95,7 @@ module NginxStage
   #   app_config_path(env: :dev, owner: dan, name: 'fillsim')
   #   #=> "/var/lib/nginx/config/shared/dan/fillsim.conf"
   # @param env [Symbol] environment the app is run under
-  # @param owner [User] the owner of the app
+  # @param owner [String] the owner of the app
   # @param name [String] the name of the app
   # @return [String] the path to the nginx app config on the local filesystem
   def self.app_config_path(env:, owner:, name:)
@@ -110,7 +110,7 @@ module NginxStage
   #   get_app_path(env: :shared, owner: dan, name: 'fillsim')
   #   #=> "~dan/ood_shared/fillsim"
   # @param env [Symbol] environment the app is run under
-  # @param owner [User] the owner of the app
+  # @param owner [String] the owner of the app
   # @param name [String] the name of the app
   # @return [String] the path to the app root on the local filesystem
   # @raise [InvalidRequest] if the environment specified doesn't exist
@@ -129,7 +129,7 @@ module NginxStage
   #   get_app_request(env: :dev, owner: dan, name: 'fillsim')
   #   #=> "/shared/dan/fillsim"
   # @param env [Symbol] environment the app is run under
-  # @param owner [User] the owner of the app
+  # @param owner [String] the owner of the app
   # @param name [String] the name of the app
   # @return [String] the URI used to access a given app
   # @raise [InvalidRequest] if the environment specified doesn't exist
@@ -169,7 +169,7 @@ module NginxStage
   # Command used to execute the per-user NGINX
   # @example Start the per-user NGINX for user
   #   nginx_cmd(user: bob) #=> "/usr/bin/nginx -c /var/lib/nginx/config/bob.conf"
-  # @param user [User] the owner of the nginx process
+  # @param user [String] the owner of the nginx process
   # @param signal [Symbol] the signal sent to the nginx process
   # @return [String] the shell command used to execute the nginx process
   def self.nginx_cmd(user:, signal: nil)
