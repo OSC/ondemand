@@ -76,7 +76,7 @@ standard libraries making installation a breeze.
 
 ## Usage
 
-```shell
+```
 $ sudo nginx_stage --help
 Usage: nginx_stage COMMAND [OPTIONS]
 
@@ -94,7 +94,7 @@ All commands can be run with -h (or --help) for more information.
 
 ### PUN Command
 
-```shell
+```
 $ sudo nginx_stage pun --help
 Usage: nginx_stage pun [OPTIONS]
 
@@ -133,7 +133,7 @@ code by the server.
 
 ### APP Command
 
-```shell
+```
 $ sudo nginx_stage app --help
 Usage: nginx_stage app [OPTIONS]
 
@@ -199,8 +199,8 @@ the request should be proxied to the backend per-user NGINX server.
 
 ### NGINX Command
 
-```shell
-$ sudo nginx_stage app --help
+```
+$ sudo nginx_stage nginx --help
 Usage: nginx_stage nginx [OPTIONS]
 
 Required options:
@@ -227,7 +227,8 @@ Examples:
     that would have been called.
 ```
 
-The `SIGNAL` is what is sent to the per-user NGINX process for the specified user.
+The `SIGNAL` is what is sent to the per-user NGINX process for the specified
+user. If no signal is specified, it will try to start the NGINX process.
 
 ### Directory Structure
 
