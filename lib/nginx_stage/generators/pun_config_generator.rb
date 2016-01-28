@@ -25,9 +25,8 @@ module NginxStage
     #   @raise [MissingOption] if user isn't supplied
     add_option :user,
       opt_args: ["-u", "--user=USER", "# The USER of the per-user nginx process"],
-      required: true do |user|
-        User.new user
-      end
+      required: true,
+      before_init: -> user { User.new user }
 
     # @!method skip_nginx
     #   Whether we skip calling the NGINX process

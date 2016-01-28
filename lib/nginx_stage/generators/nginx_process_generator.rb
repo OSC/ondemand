@@ -21,9 +21,8 @@ module NginxStage
     #   @raise [MissingOption] if user isn't supplied
     add_option :user,
       opt_args: ["-u", "--user=USER", "# The USER of the per-user nginx process"],
-      required: true do |user|
-        User.new user
-      end
+      required: true,
+      before_init: -> user { User.new user }
 
     # @!method signal
     #   The signal to send to the per-user NGINX process

@@ -29,18 +29,18 @@ module NginxStage
 
     # Adds a new option expected from CLI and treats it as an attribute
     # @param name [Symbol] unique key defining option
-    # @param opt_args [Array, #call] the arguments describing this option for {OptionParser}
-    # @param default [String] the default option if none supplied by CLI
+    # @param opt_args [Array, Proc] the arguments describing this option for {OptionParser}
+    # @param default [Object] the default option if none supplied by CLI
     # @param required [Boolean] whether this option is required
-    # @yield [option] Optional block that operates on option when it is initialized
+    # @param before_init [Proc] Optional proc that operates on option before it is initialized
     # @return [void]
-    def self.add_option(name, opt_args:, default: nil, required: false, &block)
+    def self.add_option(name, opt_args:, default: nil, required: false, before_init: nil)
       attr_reader name
       self.options[name] = {
         opt_args: opt_args,
         default: default,
         required: required,
-        block: block
+        before_init: before_init
       }
     end
 
@@ -77,7 +77,7 @@ module NginxStage
           raise MissingOption, "missing option: #{k}" if v[:required]
           v[:default]
         end
-        value = v[:block].call(value) if v[:block]
+        value = v[:before_init].call(value) if v[:before_init]
         instance_variable_set("@#{k}", value)
       end
     end
