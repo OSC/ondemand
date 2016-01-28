@@ -1,24 +1,48 @@
 module NginxStage
   # This generator stages and generates the per-user NGINX environment.
   class PunConfigGenerator < Generator
+    desc 'Generate a new per-user nginx config and process'
+
+    footer <<-EOF.gsub(/^ {4}/, '')
+    Examples:
+        To generate a per-user nginx environment & launch nginx:
+
+            nginx_stage pun --user=bob --app-init-uri='/nginx/init?redir=$http_x_forwarded_escaped_uri'
+
+        this will add a URI redirect if the user accesses an app that doesn't exist.
+
+        To generate ONLY the per-user nginx environment:
+
+            nginx_stage pun --user=bob --skip-nginx
+
+        this will return the per-user nginx config path and won't run nginx. In addition
+        it will remove the URI redirect from the config unless we specify `--app-init-uri`.
+    EOF
+
     # @!method user
     #   The user that the per-user NGINX will run as
     #   @return [User] the user of the nginx process
     #   @raise [MissingOption] if user isn't supplied
-    add_option :user do
-      raise MissingOption, "missing option: --user=USER"
-    end
+    add_option :user,
+      opt_args: ["-u", "--user=USER", "# The USER of the per-user nginx process"],
+      required: true do |user|
+        User.new user
+      end
 
     # @!method skip_nginx
     #   Whether we skip calling the NGINX process
     #   @return [Boolean] if true, skip calling the nginx binary
-    add_option :skip_nginx, false
+    add_option :skip_nginx,
+      opt_args: ["-N", "--[no-]skip-nginx", "# Skip execution of the per-user nginx process", "# Default: false"],
+      default: false
 
     # @!method app_init_uri
     #   The app initialization URI the user is redirected to if can't find the
     #   app in the per-user NGINX config
     #   @return [String] app init redirect url
-    add_option :app_init_uri, nil
+    add_option :app_init_uri,
+      opt_args: ["-a", "--app-init-uri=APP_INIT_URI", "# The user is redirected to the APP_INIT_URI if app doesn't exist"],
+      default: nil
 
     # Validate that the user isn't a special user (i.e., `root`)
     add_hook :validate_user_not_special do

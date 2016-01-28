@@ -29,12 +29,19 @@ module NginxStage
 
     # Adds a new option expected from CLI and treats it as an attribute
     # @param name [Symbol] unique key defining option
-    # @param default [Object] default value used if no option supplied by CLI
-    # @yield Optional code block used if no option supplied by CLI (priority over `default`)
+    # @param opt_args [Array] the arguments describing this option for {OptionParser}
+    # @param default [String] the default option if none supplied by CLI
+    # @param required [String] whether this option is required
+    # @yield [option] Optional block that operates on option when it is initialized
     # @return [void]
-    def self.add_option(name, default = nil, &block)
+    def self.add_option(name, opt_args:, default: nil, required: false, &block)
       attr_reader name
-      self.options[name] = block || Proc.new { default }
+      self.options[name] = {
+        opt_args: opt_args,
+        default: default,
+        required: required,
+        block: block
+      }
     end
 
     # Removes an option expected from the CLI and removes attribute method
@@ -51,10 +58,27 @@ module NginxStage
       @options ||= from_superclass(:options, {})
     end
 
+    # Returns the description of generator
+    # @return [String] description of generator
+    def self.desc(desc = nil)
+      @desc ||= desc
+    end
+
+    # Returns the footer description of generator
+    # @return [String] footer description of generator
+    def self.footer(footer = nil)
+      @footer ||= footer
+    end
+
     # @param opts [Hash] various options for controlling the behavior of the generator
     def initialize(opts = {})
       self.class.options.each do |k,v|
-        instance_variable_set("@#{k}", opts.fetch(k, &v))
+        value = opts.fetch(k) do
+          raise MissingOption, "missing option: #{k}" if v[:required]
+          v[:default]
+        end
+        value = v[:block].call(value) if v[:block]
+        instance_variable_set("@#{k}", value)
       end
     end
 

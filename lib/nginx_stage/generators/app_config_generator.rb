@@ -3,25 +3,31 @@ module NginxStage
   # responsible for reloading the per-user NGINX process after updating the app
   # config.
   class AppConfigGenerator < Generator
+    desc 'Generate a new nginx app config and reload process'
+
+    footer <<-EOF.gsub(/^ {4}/, '')
+    Examples:
+        To generate an app config from a URI request and reload the nginx
+        process:
+
+            nginx_stage app --user=bob --sub-uri=/pun --sub-request=/shared/jimmy/fillsim/container/13
+
+        To generate ONLY the app config from a URI request:
+
+            nginx_stage app --user=bob --sub-uri=/pun --sub-request=/shared/jimmy/fillsim --skip-nginx
+
+        this will return the app config path and won't run nginx.
+    EOF
+
     # @!method user
     #   The user that the per-user NGINX will run as
     #   @return [User] the user of the nginx process
     #   @raise [MissingOption] if user isn't supplied
-    add_option :user do
-      raise MissingOption, "missing option: --user=USER"
-    end
-
-    # @!method skip_nginx
-    #   Whether we skip calling the NGINX process
-    #   @return [Boolean] if true, skip calling the nginx binary
-    add_option :skip_nginx, false
-
-    # @!method sub_uri
-    #   The sub-uri that distinguishes the per-user NGINX process
-    #   @example An app is requested through '/pun/shared/user/appname/...'
-    #     sub_uri #=> "/pun"
-    #   @return [String] the sub-uri for nginx
-    add_option :sub_uri, nil
+    add_option :user,
+      opt_args: ["-u", "--user=USER", "# The USER of the per-user nginx process"],
+      required: true do |user|
+        User.new user
+      end
 
     # @!method sub_request
     #   The remainder of the request after the sub-uri used to determine the
@@ -30,9 +36,25 @@ module NginxStage
     #     sub_request #=> "/shared/user/appname/..."
     #   @return [String] the remainder of the request after sub-uri
     #   @raise [MissingOption] if sub_request isn't supplied
-    add_option :sub_request do
-      raise MissingOption, "missing option: --sub-request=SUB_REQUEST"
-    end
+    add_option :sub_request,
+      opt_args: ["-r", "--sub-request=SUB_REQUEST", "# The SUB_REQUEST that requests the specified app"],
+      required: true
+
+    # @!method sub_uri
+    #   The sub-uri that distinguishes the per-user NGINX process
+    #   @example An app is requested through '/pun/shared/user/appname/...'
+    #     sub_uri #=> "/pun"
+    #   @return [String] the sub-uri for nginx
+    add_option :sub_uri,
+      opt_args: ["-i", "--sub-uri=SUB_URI", "# The SUB_URI that requests the per-user nginx", "# Default: ''"],
+      default: ''
+
+    # @!method skip_nginx
+    #   Whether we skip calling the NGINX process
+    #   @return [Boolean] if true, skip calling the nginx binary
+    add_option :skip_nginx,
+      opt_args: ["-N", "--[no-]skip-nginx", "# Skip execution of the per-user nginx process", "# Default: false"],
+      default: false
 
     # Parse the sub_request for the environment, owner, and app name
     add_hook :parse_sub_request do
