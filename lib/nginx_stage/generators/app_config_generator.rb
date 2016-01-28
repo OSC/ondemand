@@ -56,6 +56,14 @@ module NginxStage
       opt_args: ["-N", "--[no-]skip-nginx", "# Skip execution of the per-user nginx process", "# Default: false"],
       default: false
 
+    # Validate that the user isn't a special user (i.e., `root`)
+    add_hook :validate_user_not_special do
+      min_uid = NginxStage.min_uid
+      if user.uid < min_uid
+        raise InvalidUser, "user is special: #{user} (#{user.uid} < #{min_uid})"
+      end
+    end
+
     # Parse the sub_request for the environment, owner, and app name
     add_hook :parse_sub_request do
       info = NginxStage.parse_app_request(request: sub_request)

@@ -29,9 +29,9 @@ module NginxStage
 
     # Adds a new option expected from CLI and treats it as an attribute
     # @param name [Symbol] unique key defining option
-    # @param opt_args [Array] the arguments describing this option for {OptionParser}
+    # @param opt_args [Array, #call] the arguments describing this option for {OptionParser}
     # @param default [String] the default option if none supplied by CLI
-    # @param required [String] whether this option is required
+    # @param required [Boolean] whether this option is required
     # @yield [option] Optional block that operates on option when it is initialized
     # @return [void]
     def self.add_option(name, opt_args:, default: nil, required: false, &block)

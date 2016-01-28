@@ -1,4 +1,12 @@
+require_relative "nginx_stage/version"
 require_relative "nginx_stage/configuration"
+require_relative "nginx_stage/errors"
+require_relative "nginx_stage/user"
+require_relative "nginx_stage/generator"
+require_relative "nginx_stage/generators/pun_config_generator"
+require_relative "nginx_stage/generators/app_config_generator"
+require_relative "nginx_stage/generators/nginx_process_generator"
+require_relative "nginx_stage/application"
 
 # The main namespace for NginxStage. Provides a global configuration.
 module NginxStage
@@ -170,12 +178,3 @@ module NginxStage
     "#{nginx_bin} #{args}"
   end
 end
-
-require_relative "nginx_stage/version"
-require_relative "nginx_stage/errors"
-require_relative "nginx_stage/user"
-require_relative "nginx_stage/generator"
-require_relative "nginx_stage/generators/pun_config_generator"
-require_relative "nginx_stage/generators/app_config_generator"
-require_relative "nginx_stage/generators/nginx_process_generator"
-require_relative "nginx_stage/application"

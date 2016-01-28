@@ -29,7 +29,7 @@ module NginxStage
     #   The signal to send to the per-user NGINX process
     #   @return [String] nginx signal
     add_option :signal,
-      opt_args: ["-s", "--signal=SIGNAL", NginxStage.nginx_signals, "# Send SIGNAL to per-user nginx process: #{NginxStage.nginx_signals.join('/')}"],
+      opt_args: -> { ["-s", "--signal=SIGNAL", NginxStage.nginx_signals, "# Send SIGNAL to per-user nginx process: #{NginxStage.nginx_signals.join('/')}"] },
       default: nil
 
     # @!method skip_nginx
@@ -38,6 +38,14 @@ module NginxStage
     add_option :skip_nginx,
       opt_args: ["-N", "--[no-]skip-nginx", "# Skip execution of the per-user nginx process", "# Default: false"],
       default: false
+
+    # Validate that the user isn't a special user (i.e., `root`)
+    add_hook :validate_user_not_special do
+      min_uid = NginxStage.min_uid
+      if user.uid < min_uid
+        raise InvalidUser, "user is special: #{user} (#{user.uid} < #{min_uid})"
+      end
+    end
 
     # Run the per-user NGINX process through `exec` (so we capture return code)
     add_hook :exec_nginx do
