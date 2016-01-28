@@ -1,11 +1,15 @@
 require 'erb'
 require 'fileutils'
 
+require_relative "generator_helpers"
+
 module NginxStage
   # Base class for objects that add new sub-commands to NginxStage. {Generator}
   # is basically a class with helper methods and the ability to invoke all
   # callback methods in a sequence.
   class Generator
+    extend GeneratorHelpers
+
     # Adds a new hook method that is invoked in the order it is defined
     # @param name [Symbol] unique key defining callback method
     # @yield The body of the generator's callback
@@ -29,19 +33,11 @@ module NginxStage
 
     # Adds a new option expected from CLI and treats it as an attribute
     # @param name [Symbol] unique key defining option
-    # @param opt_args [Array, Proc] the arguments describing this option for {OptionParser}
-    # @param default [Object] the default option if none supplied by CLI
-    # @param required [Boolean] whether this option is required
-    # @param before_init [Proc] Optional proc that operates on option before it is initialized
+    # @yield The body of the option's callback which should return a hash
     # @return [void]
-    def self.add_option(name, opt_args:, default: nil, required: false, before_init: nil)
+    def self.add_option(name, &block)
       attr_reader name
-      self.options[name] = {
-        opt_args: opt_args,
-        default: default,
-        required: required,
-        before_init: before_init
-      }
+      self._options[name] = block
     end
 
     # Removes an option expected from the CLI and removes attribute method
@@ -49,13 +45,20 @@ module NginxStage
     # @return [void]
     def self.rem_option(name)
       undef name
-      self.options.delete(name)
+      self._options.delete(name)
     end
 
-    # Returns a hash of options
-    # @return [Hash] the options treated as attributes
+    # Returns a hash of options with callbacks that return a hash of their
+    # attributes
+    # @return [Hash] a hash of options with the corresponding callback
+    def self._options
+      @options ||= from_superclass(:_options, {})
+    end
+
+    # Returns a hash of options that point to a hash of their attributes
+    # @return [Hash] a hash of options with the corresponding hash of attributes
     def self.options
-      @options ||= from_superclass(:options, {})
+      Hash[self._options.map { |k,v| [k, v.call] }]
     end
 
     # Returns the description of generator

@@ -78,8 +78,7 @@ module NginxStage
         opts.separator ""
         opts.separator "Required options:"
         generator.options.select {|k,v| v[:required]}.each do |k, v|
-          args = v[:opt_args].respond_to?(:call) ? v[:opt_args].call : v[:opt_args]
-          opts.on(*args) do |input|
+          opts.on(*v[:opt_args]) do |input|
             options[k] = sanitize input
           end
         end
@@ -87,8 +86,7 @@ module NginxStage
         opts.separator ""
         opts.separator "General options:"
         generator.options.select {|k,v| !v[:required]}.each do |k, v|
-          args = v[:opt_args].respond_to?(:call) ? v[:opt_args].call : v[:opt_args]
-          opts.on(*args) do |input|
+          opts.on(*v[:opt_args]) do |input|
             options[k] = sanitize input
           end
         end

@@ -15,35 +15,20 @@ module NginxStage
         that would have been called.
     EOF
 
-    # @!method user
-    #   The user that the per-user NGINX will run as
-    #   @return [User] the user of the nginx process
-    #   @raise [MissingOption] if user isn't supplied
-    add_option :user,
-      opt_args: ["-u", "--user=USER", "# The USER of the per-user nginx process"],
-      required: true,
-      before_init: -> user { User.new user }
+    # Accepts `user` as an option and validates user
+    add_user_support
+
+    # Accepts `skip_nginx` as an option
+    add_skip_nginx_support
 
     # @!method signal
     #   The signal to send to the per-user NGINX process
     #   @return [String] nginx signal
-    add_option :signal,
-      opt_args: -> { ["-s", "--signal=SIGNAL", NginxStage.nginx_signals, "# Send SIGNAL to per-user nginx process: #{NginxStage.nginx_signals.join('/')}"] },
-      default: nil
-
-    # @!method skip_nginx
-    #   Whether we skip calling the NGINX process
-    #   @return [Boolean] if true, skip calling the nginx binary
-    add_option :skip_nginx,
-      opt_args: ["-N", "--[no-]skip-nginx", "# Skip execution of the per-user nginx process", "# Default: false"],
-      default: false
-
-    # Validate that the user isn't a special user (i.e., `root`)
-    add_hook :validate_user_not_special do
-      min_uid = NginxStage.min_uid
-      if user.uid < min_uid
-        raise InvalidUser, "user is special: #{user} (#{user.uid} < #{min_uid})"
-      end
+    add_option :signal do
+      {
+        opt_args: ["-s", "--signal=SIGNAL", NginxStage.nginx_signals, "# Send SIGNAL to per-user nginx process: #{NginxStage.nginx_signals.join('/')}"],
+        default: nil
+      }
     end
 
     # Run the per-user NGINX process through `exec` (so we capture return code)

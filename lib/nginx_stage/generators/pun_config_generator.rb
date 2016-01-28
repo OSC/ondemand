@@ -19,36 +19,21 @@ module NginxStage
         it will remove the URI redirect from the config unless we specify `--app-init-uri`.
     EOF
 
-    # @!method user
-    #   The user that the per-user NGINX will run as
-    #   @return [User] the user of the nginx process
-    #   @raise [MissingOption] if user isn't supplied
-    add_option :user,
-      opt_args: ["-u", "--user=USER", "# The USER of the per-user nginx process"],
-      required: true,
-      before_init: -> user { User.new user }
+    # Accepts `user` as an option and validates user
+    add_user_support
 
-    # @!method skip_nginx
-    #   Whether we skip calling the NGINX process
-    #   @return [Boolean] if true, skip calling the nginx binary
-    add_option :skip_nginx,
-      opt_args: ["-N", "--[no-]skip-nginx", "# Skip execution of the per-user nginx process", "# Default: false"],
-      default: false
+    # Accepts `skip_nginx` as an option
+    add_skip_nginx_support
 
     # @!method app_init_uri
     #   The app initialization URI the user is redirected to if can't find the
     #   app in the per-user NGINX config
     #   @return [String] app init redirect url
-    add_option :app_init_uri,
-      opt_args: ["-a", "--app-init-uri=APP_INIT_URI", "# The user is redirected to the APP_INIT_URI if app doesn't exist"],
-      default: nil
-
-    # Validate that the user isn't a special user (i.e., `root`)
-    add_hook :validate_user_not_special do
-      min_uid = NginxStage.min_uid
-      if user.uid < min_uid
-        raise InvalidUser, "user is special: #{user} (#{user.uid} < #{min_uid})"
-      end
+    add_option :app_init_uri do
+      {
+        opt_args: ["-a", "--app-init-uri=APP_INIT_URI", "# The user is redirected to the APP_INIT_URI if app doesn't exist"],
+        default: nil
+      }
     end
 
     # Create the user's personal per-user NGINX `/tmp` location for the various
