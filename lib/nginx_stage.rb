@@ -166,15 +166,15 @@ module NginxStage
   # NGINX helper methods
   #
 
-  # Command used to execute the per-user NGINX
+  # Arguments used during execution of nginx binary
   # @example Start the per-user NGINX for user
   #   nginx_cmd(user: bob) #=> "/usr/bin/nginx -c /var/lib/nginx/config/bob.conf"
   # @param user [String] the owner of the nginx process
   # @param signal [Symbol] the signal sent to the nginx process
   # @return [String] the shell command used to execute the nginx process
-  def self.nginx_cmd(user:, signal: nil)
-    args = "-c '#{pun_config_path(user: user)}'"
-    args << " -s '#{signal}'" if signal
-    "#{nginx_bin} #{args}"
+  def self.nginx_args(user:, signal: nil)
+    args = ['-c', pun_config_path(user: user)]
+    args.push('-s', signal.to_s) if signal
+    args
   end
 end

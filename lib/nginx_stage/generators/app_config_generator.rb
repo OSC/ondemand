@@ -71,7 +71,7 @@ module NginxStage
 
     # Run the per-user NGINX process through `exec` (so we capture return code)
     add_hook :exec_nginx do
-      exec(NginxStage.nginx_cmd(user: user, signal: :reload)) unless skip_nginx
+      exec([NginxStage.nginx_bin, "nginx: #{user}"], *NginxStage.nginx_args(user: user, signal: :reload)) unless skip_nginx
     end
 
     # If we skip nginx, then return the path to the generated NGINX app config
