@@ -74,9 +74,9 @@ module NginxStage
       exec([NginxStage.nginx_bin, "nginx: #{user}"], *NginxStage.nginx_args(user: user, signal: :reload)) unless skip_nginx
     end
 
-    # If we skip nginx, then return the path to the generated NGINX app config
-    add_hook :return_app_config_path do
-      app_config_path
+    # If we skip nginx, then output the path to the generated NGINX app config
+    add_hook :output_app_config_path do
+      puts app_config_path
     end
 
     private

@@ -87,11 +87,9 @@ module NginxStage
 
     # Invokes all the callbacks in the order they are defined in the {hooks}
     # hash
-    # @return [Object] returns what is returned from last callback
+    # @return [void]
     def invoke
-      output = nil
-      self.class.hooks.each {|k,v| output = self.instance_eval(&v)}
-      output
+      self.class.hooks.each {|k,v| self.instance_eval(&v)}
     end
 
     # Gets an ERB template at the relative source, executes it and makes a copy

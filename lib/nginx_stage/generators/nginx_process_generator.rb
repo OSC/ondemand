@@ -36,9 +36,9 @@ module NginxStage
       exec([NginxStage.nginx_bin, "nginx: #{user}"], *NginxStage.nginx_args(user: user, signal: signal)) unless skip_nginx
     end
 
-    # If skip nginx, then return nginx command
-    add_hook :return_nginx_cmd do
-      "#{NginxStage.nginx_bin} #{NginxStage.nginx_args(user: user, signal: signal).join(' ')}"
+    # If skip nginx, then output nginx command
+    add_hook :output_nginx_cmd do
+      puts "#{NginxStage.nginx_bin} #{NginxStage.nginx_args(user: user, signal: signal).join(' ')}"
     end
   end
 end

@@ -30,8 +30,7 @@ module NginxStage
 
       parser = generator ? cmd_parser(command, generator) : default_parser
       parser.parse!( ARGV )
-
-      puts generator.new(options).invoke if generator
+      generator.new(options).invoke if generator
     rescue
       $stderr.puts "#{$!.to_s}"
       $stderr.puts "Run 'nginx_stage --help' to see a full list of available command line options."
@@ -47,7 +46,7 @@ module NginxStage
         opts.separator ""
         opts.separator "Commands:"
         commands.each do |cmd, klass|
-          opts.separator " #{cmd}\t\t# #{klass.desc}"
+          opts.separator sprintf(" %-20s# %s", cmd, klass.desc)
         end
 
         opts.separator ""

@@ -73,9 +73,9 @@ module NginxStage
       exec([NginxStage.nginx_bin, "nginx: #{user}"], *NginxStage.nginx_args(user: user)) unless skip_nginx
     end
 
-    # If skip nginx, then return path to the generated per-user NGINX config
-    add_hook :return_pun_config_path do
-      pun_config_path
+    # If skip nginx, then output path to the generated per-user NGINX config
+    add_hook :output_pun_config_path do
+      puts pun_config_path
     end
 
 
