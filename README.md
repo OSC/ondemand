@@ -1,2 +1,2 @@
-# mod_ood
-The Open OnDemand httpd module project
+# mod_lua_proxy
+The Open OnDemand Lua module project
