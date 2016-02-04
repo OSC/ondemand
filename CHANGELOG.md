@@ -1,3 +1,17 @@
+## Unreleased
+
+  - refactoring & internal cleanup
+
+Features:
+
+  - added `rake install` for simpler installation
+  - options for a command are now specified in the corresponding generator
+  - user can now get individualized help messages corresponding to a command
+
+Bugfixes:
+
+  - the `exec` call is made more secure
+
 ## 0.0.2 (2016-01-20)
 
 Features:
