@@ -33,7 +33,7 @@ module NginxStage
 
     # Run the per-user NGINX process through `exec` (so we capture return code)
     add_hook :exec_nginx do
-      exec([NginxStage.nginx_bin, "nginx: #{user}"], *NginxStage.nginx_args(user: user, signal: signal)) unless skip_nginx
+      exec([NginxStage.nginx_bin, "(#{user})"], *NginxStage.nginx_args(user: user, signal: signal)) unless skip_nginx
     end
 
     # If skip nginx, then output nginx command
