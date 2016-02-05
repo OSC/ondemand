@@ -1,0 +1,123 @@
+LoadModule auth_openidc_module /nfs/17/jnicklas/Tests/w8/mod_auth_openidc/src/.libs/mod_auth_openidc.so
+
+OIDCProviderMetadataURL https://accounts.google.com/.well-known/openid-configuration
+OIDCClientID 980425349856-fmp4jvujo1hfcnl1dot8jan9hmi8a0bm.apps.googleusercontent.com
+OIDCClientSecret CVgrZYtAkZALspkKDSlLtByn
+
+OIDCRedirectURI http://websvcs08.osc.edu:5000/redirect_uri
+OIDCCryptoPassphrase badpassword
+
+# Lua script settings
+Define LUA_ROOT         '/nfs/17/jnicklas/Tests/w8/httpd/root_mod/lua/scripts'
+Define USER_MAP_SCRIPT  '/nfs/17/jnicklas/Tests/w8/httpd/mapper'
+Define PROXY_DATA_ROOT  '/nfs/17/jnicklas/Tests/w8/httpd/proxy-data'
+Define PROXY_SERVERS    'websvcs08.osc.edu:5001,websvcs08.osc.edu:5002'
+Define OOD_NGINX_BINARY 'sudo /opt/ood/nginx_stage/sbin/nginx_stage_dev --config /nfs/17/jnicklas/Development/nginx_stage/config.yml --'
+Define OOD_NGINX_RUN_ROOT '/var/tmp/nginx_stage0/var/run/nginx'
+
+# URI settings
+Define PUN_URI   '/pun'
+Define NGINX_URI '/nginx'
+Define PROXY_URI '/proxy'
+
+Define PUBLIC_URI  '/public'
+Define PUBLIC_ROOT '/tmp/public'
+
+#
+# devapps.awesim.org
+#
+Listen 5000
+<VirtualHost *:5000>
+    ServerName devapps.awesim.org
+
+    LuaRoot "${LUA_ROOT}"
+    SetEnv USER_MAP_SCRIPT "${USER_MAP_SCRIPT}"
+
+    Alias "${PUBLIC_URI}" "${PUBLIC_ROOT}"
+    <Directory "${PUBLIC_ROOT}">
+        Options Indexes FollowSymLinks
+        AllowOverride None
+        Require all granted
+    </Directory>
+
+    <Location "/redirect_uri">
+        AuthType openid-connect
+        Require valid-user
+    </Location>
+
+    <Location "${PROXY_URI}">
+        AuthType openid-connect
+        Require valid-user
+
+        SetEnv SUB_URI "${PROXY_URI}"
+        SetEnv PROXY_DATA_ROOT "${PROXY_DATA_ROOT}"
+        SetEnv PROXY_SERVERS "${PROXY_SERVERS}"
+        LuaHookFixups generic_proxy.lua proxy_server_handler
+    </Location>
+
+    <Location "${PUN_URI}">
+        AuthType openid-connect
+        Require valid-user
+
+        SetEnv OOD_NGINX_RUN_ROOT "${OOD_NGINX_RUN_ROOT}"
+        LuaHookFixups generic_proxy.lua unix_proxy_handler
+    </Location>
+
+    <Location "${NGINX_URI}">
+        AuthType openid-connect
+        Require valid-user
+
+        SetEnv SUB_URI "${NGINX_URI}"
+        SetEnv OOD_NGINX_SUB_URI "${PUN_URI}"
+        SetEnv OOD_NGINX_BINARY "${OOD_NGINX_BINARY}"
+        LuaHookFixups nginx_controller.lua nginx_handler
+    </Location>
+</VirtualHost>
+
+#
+# server1
+#
+Listen 5001
+<VirtualHost *:5001>
+    ServerName server1
+
+    LuaRoot "${LUA_ROOT}"
+    SetEnv USER_MAP_SCRIPT "${USER_MAP_SCRIPT}"
+
+    DirectoryIndex disabled
+
+    LuaAuthzProvider sys-user authz_sys_user.lua authz_check_sys_user
+    <Location "/">
+        AuthType openid-connect
+        Require sys-user "${USER_MAP_SCRIPT}"   # called before SetEnv
+
+        Header edit Location "(^(http|ws)[s]?://)([^/]+)" ""
+
+        SetEnv PROXY_DATA_ROOT "${PROXY_DATA_ROOT}"
+        LuaHookFixups generic_proxy.lua proxy_handler
+    </Location>
+</VirtualHost>
+
+#
+# server2
+#
+Listen 5002
+<VirtualHost *:5002>
+    ServerName server2
+
+    LuaRoot "${LUA_ROOT}"
+    SetEnv USER_MAP_SCRIPT "${USER_MAP_SCRIPT}"
+
+    DirectoryIndex disabled
+
+    LuaAuthzProvider sys-user authz_sys_user.lua authz_check_sys_user
+    <Location "/">
+        AuthType openid-connect
+        Require sys-user "${USER_MAP_SCRIPT}"   # called before SetEnv
+
+        Header edit Location "(^http[s]?://)([^/]+)" ""
+
+        SetEnv PROXY_DATA_ROOT "${PROXY_DATA_ROOT}"
+        LuaHookFixups generic_proxy.lua proxy_handler
+    </Location>
+</VirtualHost>
