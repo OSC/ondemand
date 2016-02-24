@@ -18,14 +18,18 @@
 //= require lightbox2/javascripts/lightbox
 //= require_tree .
 
+// A variable with a trailing slash to the window location if it does not exist.
+// Required for ajax requests.
+var APP_PATH = window.location.href.replace(/\/?(\?|#|$)/, '/$1');
+
 $(document).ready( function() {
 
     var table = $('#job_status_table').DataTable({
-        ajax: './json',             // 'pages#json'
+        ajax: APP_PATH + 'json',    // 'pages#json'
         "sAjaxDataProp": "",        // There's no data header on the json.
-        autoWidth: true,
-        "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
-        "bStateSave": true,
+        autoWidth: true,            // Automatically calculate column width
+        "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ], // Manually set size of particular columns
+        "bStateSave": true,         // Save user selected table state
         "aaSorting": [],            // Turn off auto sort.
         "pageLength": 50,           // Set the number of rows
         "fnInitComplete":           function( oSettings ) {
@@ -105,7 +109,7 @@ JobStatusapp.group) {
             // Open this row
             row.child( format(row.data()) ).show();
             tr.addClass('shown');
-            $.getJSON('./json?pbsid='+row.data().pbsid+'&host='+row.data().cluster , function(data) {
+            $.getJSON(APP_PATH + 'json?pbsid='+row.data().pbsid+'&host='+row.data().cluster , function(data) {
               $( "#" + EncodeCSS(row.data().pbsid)).hide().html(display_enhanced_job_data(data)).fadeIn(250);
             });
         }
@@ -255,7 +259,7 @@ function delete_button( pbsid, host, user ) {
 
 function delete_job(pbsid, host) {
     if (confirm("Are you sure?")) {
-        window.location = "./delete_job/?pbsid=" + pbsid + "&host=" + host;
+        window.location = APP_PATH + "delete_job/?pbsid=" + pbsid + "&host=" + host;
         return true;
     } else {
         return false;
