@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 gem 'rails', '4.0.0'
 
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 4.0.0'
+gem 'sass-rails', '~> 5.0.0'
 
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
@@ -40,13 +40,13 @@ end
 
 gem "therubyracer", platforms: :ruby
 gem "paperclip", "~> 4.2.2"
-gem "bootstrap-sass", "~> 3.3.1"
+gem "bootstrap-sass", "3.3.5"
 gem "autoprefixer-rails"
-gem "osc-machete", "~> 0.6.3"
+gem "osc-machete", :git => "git@github.com:AweSim-OSC/osc-machete.git"
 gem "dotenv-rails", "~> 2.0.0"
 gem "rails_12factor", group: :production
-gem "awesim_rails", "~> 0.8.0"
-gem "awesim_rails_logging", "~> 0.0.3"
-gem "pbs", "~> 0.4.1"
+gem "awesim_rails", :git => "git@github.com:AweSim-OSC/awesim_rails.git"
+gem "awesim_rails_logging", :git => "git@github.com:AweSim-OSC/awesim_rails_logging.git"
+gem "pbs", :git => "git@github.com:AweSim-OSC/pbs-ruby.git"
 gem "turbolinks"
 gem "jquery-datatables-rails", '~> 3.3.0'
