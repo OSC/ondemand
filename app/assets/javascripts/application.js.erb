@@ -20,12 +20,12 @@
 
 // A variable with a trailing slash to the window location if it does not exist.
 // Required for ajax requests.
-var APP_PATH = window.location.href.replace(/\/?(\?|#|$)/, '/$1');
+var APP_PATH = window.location.pathname;
 
 $(document).ready( function() {
 
     var table = $('#job_status_table').DataTable({
-        ajax: APP_PATH + 'json',    // 'pages#json'
+        ajax: APP_PATH + '/json',    // 'pages#json'
         "sAjaxDataProp": "",        // There's no data header on the json.
         autoWidth: true,            // Automatically calculate column width
         "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ], // Manually set size of particular columns
@@ -109,7 +109,7 @@ JobStatusapp.group) {
             // Open this row
             row.child( format(row.data()) ).show();
             tr.addClass('shown');
-            $.getJSON(APP_PATH + 'json?pbsid='+row.data().pbsid+'&host='+row.data().cluster , function(data) {
+            $.getJSON(APP_PATH + '/json?pbsid='+row.data().pbsid+'&host='+row.data().cluster , function(data) {
               $( "#" + EncodeCSS(row.data().pbsid)).hide().html(display_enhanced_job_data(data)).fadeIn(250);
             });
         }
@@ -186,7 +186,6 @@ function display_enhanced_job_data( d ) {
                     '                       <div class="col-xs-1">' + status_label(d.status) + '</div>' +
                     '                       <div class="col-xs-11" style="word-wrap: break-word;">' + d.jobname +
                     '                       <div>('+ d.pbsid +')</div></div>' +
-
                     '                   </strong>' +
                     '               </div>' +
                     '                <div class="panel-body">' +
@@ -259,7 +258,7 @@ function delete_button( pbsid, host, user ) {
 
 function delete_job(pbsid, host) {
     if (confirm("Are you sure?")) {
-        window.location = APP_PATH + "delete_job/?pbsid=" + pbsid + "&host=" + host;
+        window.location = APP_PATH + "/delete_job/?pbsid=" + pbsid + "&host=" + host;
         return true;
     } else {
         return false;
