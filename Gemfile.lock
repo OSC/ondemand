@@ -23,7 +23,7 @@ GIT
 
 GIT
   remote: git@github.com:AweSim-OSC/pbs-ruby.git
-  revision: 7ea346465113dbf528a55a37b58d4cb0058a9ee3
+  revision: ca6060258b1887561e0127988c6b8be21b8524bc
   specs:
     pbs (1.1.0)
       ffi (~> 1.9, >= 1.9.6)
