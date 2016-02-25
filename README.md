@@ -1,3 +1,15 @@
+```
+mkdir cloudcmd
+cd cloudcmd
+npm install --save cloudcmd
+npm install --save express
+npm install --save socket.io
+npm install --save os-homedir
+```
+
+Create `app.js` and configure as middleware.
+
+```
 var http        = require('http'),
     cloudcmd    = require('cloudcmd'),
     express     = require('express'),
@@ -24,3 +36,35 @@ app.use(cloudcmd({
 }));
 
 server.listen(PORT);
+```
+
+
+package.json
+```
+{
+  "name": "osc-cloudcmd",
+  "version": "0.0.1",
+  "description": "OSC File Management App",
+  "author": "Brian McMichael <bmcmichael@osc.edu>",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "Soon"
+  },
+  "keywords": [
+    "file manager",
+    "ohio supercomputer center"
+  ],
+  "dependencies": {
+    "cloudcmd": "^5.1.4",
+    "express": "^4.13.4",
+    "os-homedir": "^1.0.1",
+    "socket.io": "^1.4.5"
+  },
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "test": "test"
+  }
+}
+```
