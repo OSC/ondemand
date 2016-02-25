@@ -1,0 +1,26 @@
+{
+  "name": "osc-cloudcmd",
+  "version": "0.0.1",
+  "description": "OSC File Management App",
+  "author": "Brian McMichael <bmcmichael@osc.edu>",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "Soon"
+  },
+  "keywords": [
+    "file_manger",
+    "ohio supercomputer center"
+  ],
+  "dependencies": {
+    "cloudcmd": "^5.1.4",
+    "express": "^4.13.4",
+    "os-homedir": "^1.0.1",
+    "socket.io": "^1.4.5"
+  },
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "test": "test"
+  }
+}
