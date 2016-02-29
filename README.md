@@ -38,8 +38,11 @@ app.use(cloudcmd({
 server.listen(PORT);
 ```
 
+Be sure to modify the `PREFIX` var to the hosted prefix of the app.
 
-package.json
+Ex. `/pun/shared/bmcmichael` if deploying to the shared environment.
+
+# add `package.json`
 ```
 {
   "name": "osc-cloudcmd",
@@ -56,7 +59,7 @@ package.json
     "ohio supercomputer center"
   ],
   "dependencies": {
-    "cloudcmd": "^5.1.4",
+    "cloudcmd": "^5.1.5",
     "express": "^4.13.4",
     "os-homedir": "^1.0.1",
     "socket.io": "^1.4.5"
@@ -67,4 +70,31 @@ package.json
     "test": "test"
   }
 }
+```
+
+The app.json currently uses hardcoded version dependencies. The node versioning system allows Major, Minor, and Patch level versioning updates (like bundler), but this is all in such a state of flux right now.
+
+### Install dependencies
+
+Use `npm` to install the dependencies defined in the `package.json`
+
+```
+$ npm i
+```
+
+### Remove undesirable features
+
+Find and remove the following lines from `node_modules/cloudcmd/html/index.html`
+
+```
+<button id=~       class="cmd-button reduce-text icon-console"   title="Console"         >~</button>
+<button id=contact class="cmd-button reduce-text icon-contact"   title="Contact"         ></button>
+```
+
+### Add wetty link
+
+Add this line to the bottom of the button list `node_modules/cloudcmd/html/index.html`
+
+```
+<a href="http://websvcs08.osc.edu:5000/pun/shared/jnicklas/wetty/ssh/" target="_blank"><button id=wetty class="cmd-button reduce-text icon-console" title="Wetty">~</button></a>
 ```
