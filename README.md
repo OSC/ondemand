@@ -82,7 +82,17 @@ Use `npm` to install the dependencies defined in the `package.json`
 $ npm i
 ```
 
-### Remove undesirable features
+### Copy the custom `views/index.html` to `node_modules/cloudcmd/html/index.html`
+
+```
+$ cp views/index.html node_modules
+```
+
+Currently, this removes the Contact option and replaces the Console functionality with a link to the Wetty app.
+
+Manual Instructions:
+
+##### Remove undesirable features
 
 Find and remove the following lines from `node_modules/cloudcmd/html/index.html`
 
@@ -91,7 +101,7 @@ Find and remove the following lines from `node_modules/cloudcmd/html/index.html`
 <button id=contact class="cmd-button reduce-text icon-contact"   title="Contact"         ></button>
 ```
 
-### Add wetty link
+##### Add wetty link
 
 Add this line to the bottom of the button list `node_modules/cloudcmd/html/index.html`
 

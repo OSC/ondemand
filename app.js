@@ -9,7 +9,7 @@ var http        = require('http'),
                                                  *        This needs to be updated to ex: 
                                                  *        '/pun/shared/bmcmichael/cloudcmd',
                                                  *        when used on the shared environment.
-                                                 */       
+                                                 */
     server,
     socket;
 
@@ -25,5 +25,6 @@ app.use(cloudcmd({
         prefix: PREFIX,             /* base URL or function which returns base URL (optional)   */
     }
 }));
+
 
 server.listen(PORT);
