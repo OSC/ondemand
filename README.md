@@ -85,7 +85,7 @@ $ npm i
 ### Copy the custom `views/index.html` to `node_modules/cloudcmd/html/index.html`
 
 ```
-$ cp views/index.html node_modules
+$ cp views/index.html node_modules/cloudcmd/html/index.html
 ```
 
 Currently, this removes the Contact option and replaces the Console functionality with a link to the Wetty app.
