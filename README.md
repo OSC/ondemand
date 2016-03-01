@@ -1,10 +1,8 @@
+# Getting started
+
 ```
 mkdir cloudcmd
 cd cloudcmd
-npm install --save cloudcmd
-npm install --save express
-npm install --save socket.io
-npm install --save os-homedir
 ```
 
 Create `app.js` and configure as middleware.
