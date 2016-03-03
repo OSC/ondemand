@@ -24,7 +24,7 @@ app.use(cloudcmd({
     socket: socket,                   /* used by Config, Edit (optional) and Console (required)   */
     config: {                         /* config data (optional)                                   */
         auth: false,                  /* this is the default setting, but using it here to reset  */
-        root: HOME,                   /* set the root path to the logged in user's HOME           */
+        root: '/',                    /* set the root path. change to HOME to use homedir         */
         prefix: PREFIX,               /* base URL or function which returns base URL (optional)   */
     }
 }));
