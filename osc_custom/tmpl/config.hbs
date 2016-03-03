@@ -1,6 +1,30 @@
 <ul class="list" >
     <li>
         <label>
+            <input data-name="js-auth" type="checkbox" false disabled>
+            Auth
+        </label>
+    </li>
+    <li>
+        <input
+                data-name="js-username"
+                type="text"
+                class="form-control"
+                placeholder="username"
+                value="{{ username }}"
+                title="Username">
+    </li>
+    <li>
+        <input
+                data-name="js-password"
+                type="password"
+                class="form-control"
+                placeholder="password"
+                value="{{ password }}"
+                title="Password">
+    </li>
+    <li>
+        <label>
             <input
                     data-name="js-diff"
                     type="checkbox"
@@ -84,6 +108,17 @@
                 title="Root"
                 value="{{ root }}"
                 placeholder="root"
+                class="form-control">
+    </li>
+    <li>
+        <input
+                data-name="js-port"
+                min="0"
+                max="65535"
+                title="Port"
+                type="number"
+                value="{{ port }}"
+                placeholder="Port"
                 class="form-control">
     </li>
     <li>
