@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+
+  <title><%= app_title %></title>
+  <%= favicon_link_tag 'favicon.ico' %>
+
+  <%= stylesheet_link_tag    "application", media: "all" %>
+
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+<%= awesim_banner app_title %>
+
+<header>
+  <!-- navbar  -->
+  <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <%= awesim_breadcrumbs app_title %>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse navbar-responsive-collapse">
+        <ul class="nav navbar-nav">
+          <li>
+            <%= link_to '<span class="glyphicon glyphicon-plus"></span> Add Simulation'.html_safe, "#" %>
+          </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <% if File.exist?(File.join(AwesimRails.docs.path, 'Home.md')) %>
+          <li>
+            <%= link_to "Documentation", docs_path('Home') %>
+          </li>
+          <% end %>
+          <li>
+            <%= link_to "My Simulations", root_path %>
+          </li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+</header>
+
+<div class="container" role="main">
+
+  <% if alert %>
+  <div class="alert alert-danger alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+      <span aria-hidden="true">&times;</span>
+      <span class="sr-only">Close</span>
+    </button>
+    <%= alert %>
+  </div>
+  <% end %>
+
+  <% if notice %>
+  <div class="alert alert-success" role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+      <span aria-hidden="true">&times;</span>
+      <span class="sr-only">Close</span>
+    </button>
+    <%= notice %>
+  </div>
+  <% end %>
+  
+  <%= yield %>
+
+</div><!-- /.container -->
+
+<footer>
+  <div class="container">
+    <hr>
+    <p>&copy; AweSim 2014 - <%= DateTime.now.year %></p>
+  </div>
+</footer>
+
+</body>
+</html>
