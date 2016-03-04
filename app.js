@@ -16,18 +16,12 @@ var http        = require('http'),
 
 server = http.createServer(app);
 
-app.use(function(req, res, next) {
-    // FIXME: Should this be "*" ? Can we limit this to only our OAuth provider, or does this refer to any client?
-    // http://enable-cors.org/server_expressjs.html
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
-
+// Set up the socket
 socket = io.listen(server, {
     path: PREFIX + '/socket.io'
 });
 
+// Load cloudcmd
 app.use(cloudcmd({
     socket: socket,                   /* used by Config, Edit (optional) and Console (required)   */
     config: {                         /* config data (optional)                                   */
