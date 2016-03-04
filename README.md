@@ -12,24 +12,42 @@ var http        = require('http'),
     cloudcmd    = require('cloudcmd'),
     express     = require('express'),
     io          = require('socket.io'),
-    homeDir     = require('os-homedir'),
+    HOME        = require('os-homedir')(),
     app         = express(),
     PORT        = 9001,
     PREFIX      = '/pun/dev/cloudcmd',
-
+                                                /* FIXME: Find a way to make this dynamic based on the system
+                                                 *        This needs to be updated to ex:
+                                                 *        '/pun/shared/bmcmichael/cloudcmd',
+                                                 *        when used on the shared environment.
+                                                 */
     server,
     socket;
 
 server = http.createServer(app);
-socket = io.listen(server, {
-  path: PREFIX + '/socket.io'
+
+// Enable CORS for use with OAuth2
+// https://www.w3.org/TR/cors/
+app.use(function(req, res, next) {
+    // FIXME: Should this be "*" ? Can we limit this to only our OAuth provider, or does this refer to any client?
+    // http://enable-cors.org/server_expressjs.html
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
 });
 
+// Set up the socket
+socket = io.listen(server, {
+    path: PREFIX + '/socket.io'
+});
+
+// Load cloudcmd
 app.use(cloudcmd({
-    socket: socket,                 /* used by Config, Edit (optional) and Console (required)   */
-    config: {                       /* config data (optional)                                   */
-      root: homeDir(),              /* set the root path to the logged in user's HOME           */
-      prefix: PREFIX,               /* base URL or function which returns base URL (optional)   */
+    socket: socket,                   /* used by Config, Edit (optional) and Console (required)   */
+    config: {                         /* config data (optional)                                   */
+        auth: false,                  /* this is the default setting, but using it here to reset  */
+        root: '/',                    /* set the root path. change to HOME to use homedir         */
+        prefix: PREFIX,               /* base URL or function which returns base URL (optional)   */
     }
 }));
 
@@ -80,15 +98,15 @@ Use `npm` to install the dependencies defined in the `package.json`
 $ npm i
 ```
 
-### Copy the custom `views/index.html` to `node_modules/cloudcmd/html/index.html`
+### Copy the custom osc code to cloudcmd
 
 ```
-$ cp views/index.html node_modules/cloudcmd/html/index.html
+$ cp -r osc_custom/* node_modules/cloudcmd/
 ```
 
 Currently, this removes the Contact option and replaces the Console functionality with a link to the Wetty app.
 
-Manual Instructions:
+## (Optional) Manual Instructions:
 
 ##### Remove undesirable features
 
@@ -101,8 +119,18 @@ Find and remove the following lines from `node_modules/cloudcmd/html/index.html`
 
 ##### Add wetty link
 
-Add this line to the bottom of the button list `node_modules/cloudcmd/html/index.html`
+Add this line with the appropriate to the bottom of the button list at `node_modules/cloudcmd/html/index.html`
 
 ```
 <a href="http://websvcs08.osc.edu:5000/pun/shared/jnicklas/wetty/ssh/" target="_blank"><button id=wetty class="cmd-button reduce-text icon-console" title="Wetty">~</button></a>
 ```
+
+##### Disable authentication checkbox
+
+Add `false` and `disabled` to checkbox in `node_modules/cloudcmd/tmpl/config.hbs`
+
+```
+<input data-name="js-auth" type="checkbox" false disabled>
+```
+
+
