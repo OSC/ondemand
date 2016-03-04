@@ -26,16 +26,6 @@ var http        = require('http'),
 
 server = http.createServer(app);
 
-// Enable CORS for use with OAuth2
-// https://www.w3.org/TR/cors/
-app.use(function(req, res, next) {
-    // FIXME: Should this be "*" ? Can we limit this to only our OAuth provider, or does this refer to any client?
-    // http://enable-cors.org/server_expressjs.html
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
-
 // Set up the socket
 socket = io.listen(server, {
     path: PREFIX + '/socket.io'
