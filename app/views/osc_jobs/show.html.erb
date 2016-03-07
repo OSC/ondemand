@@ -1,0 +1,16 @@
+<div class="page-header">
+    <h2>Showing Osc Job</h2>
+</div>
+
+<p>
+  <strong>Name:</strong>
+  <%= @osc_job.name %>
+</p>
+
+<p>
+  <strong>Batch host:</strong>
+  <%= @osc_job.batch_host %>
+</p>
+
+<%= link_to 'Back', osc_jobs_path, class: 'btn btn-default' %>
+<%= link_to 'Edit', edit_osc_job_path(@osc_job), class: 'btn btn-default' %>

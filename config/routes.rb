@@ -1,4 +1,11 @@
 JobConstructor::Application.routes.draw do
+  resources :osc_jobs do
+    member do
+      put 'submit'
+      put 'copy'
+    end
+  end
+
   root "pages#index"
   get "pages/index"
   get "pages/about"

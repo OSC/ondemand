@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  batch_host: MyString
+  staged_dir: MyString
+
+two:
+  name: MyString
+  batch_host: MyString
+  staged_dir: MyString
