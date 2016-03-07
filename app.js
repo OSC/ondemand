@@ -4,15 +4,20 @@ var http        = require('http'),
     io          = require('socket.io'),
     HOME        = require('os-homedir')(),
     app         = express(),
+    dirArray    = __dirname.split('/'),
     PORT        = 9001,
-    PREFIX      = '/pun/dev/cloudcmd',
-                                                /* FIXME: Find a way to make this dynamic based on the system
-                                                 *        This needs to be updated to ex: 
-                                                 *        '/pun/shared/bmcmichael/cloudcmd',
-                                                 *        when used on the shared environment.
-                                                 */
+    PREFIX      = '',
     server,
     socket;
+
+// Remap prefixes for dev and shared environments
+var appName = dirArray[dirArray.length-1];
+if (dirArray.indexOf("ood_dev") > -1) {
+    PREFIX = "/pun/dev/" + appName;
+} else if (dirArray.indexOf("ood_shared") > -1) {
+    var appHostUser = dirArray[dirArray.indexOf("ood_shared") - 1];
+    PREFIX = "/pun/shared/" + appHostUser + "/" + appName;
+}
 
 server = http.createServer(app);
 
@@ -31,4 +36,4 @@ app.use(cloudcmd({
     }
 }));
 
-server.listen(PORT);
+ server.listen(PORT);
