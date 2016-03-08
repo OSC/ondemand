@@ -1,39 +1,90 @@
-<div class="page-header">
-  <h2>Listing Osc Jobs</h2>
+<div class="page-header" xmlns="http://www.w3.org/1999/html">
+  <h2>Listing OSC Jobs</h2>
+
+  <%= link_to 'New Osc Job', new_osc_job_path %>
+  <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" title="Create a new job from a template"><span class="glyphicon glyphicon-plus" aria-hidden="true"</span> New From Template</button>
 </div>
 
-<table class="table data-table">
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>Status</th>
-      <th>Name</th>
-      <th>Batch host</th>
-      <th class="no-sort"></th>
-      <th class="no-sort"></th>
-      <th class="no-sort"></th>
-      <th class="no-sort"></th>
-      <th class="no-sort"></th>
-    </tr>
-  </thead>
+<div class="panel panel-default col-md-7">
+  <div class="panel-body">
+    <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" title="Open Directory in File Manager"><span class="glyphicon glyphicon-new-window" aria-hidden="true"</span></button>
+    <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" title="Set as Template"><span class="glyphicon glyphicon-star-empty" aria-hidden="true"</span></button>
+    <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" title="Clone Job"><span class="glyphicon glyphicon-share-alt" aria-hidden="true"</span></button>
+    <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" title="Stop Job"><span class="glyphicon glyphicon-stop" aria-hidden="true"</span></button>
+    <button type="button" class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete Job"><span class="glyphicon glyphicon-trash" aria-hidden="true"</span></button>
+  </div>
+</div>
 
-  <tbody>
-    <% @osc_jobs.each do |osc_job| %>
+<div class="panel panel-default col-md-5">
+    <div class="panel-body">
+      {{ Placeholder }}
+    </div>
+</div>
+
+<div id="jobListView" class="panel panel-default col-md-7">
+
+  <div class="panel-body">
+
+    <table class="table data-table">
+      <thead>
       <tr>
-        <td><%= osc_job.id %></td>
-        <td><%= status_label(osc_job) %></td>
-        <td><%= osc_job.name %></td>
-        <td><%= osc_job.batch_host %></td>
-        <td><%= link_to 'Submit', submit_osc_job_path(osc_job), method: :put, class: 'btn btn-success btn-sm' unless osc_job.submitted? %></td>
-        <td><%= link_to 'Show', osc_job, class: 'btn btn-primary btn-sm' %></td>
-        <td><%= link_to 'Edit', edit_osc_job_path(osc_job), class: 'btn btn-default btn-sm' unless osc_job.submitted? %></td>
-        <td><%= link_to 'Copy', copy_osc_job_path(osc_job), method: :put, class: 'btn btn-default btn-sm' %></td>
-        <td><%= link_to 'Destroy', osc_job, method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: 'Are you sure?' } %></td>
+        <th>Name</th>
+        <th>PBS ID</th>
+        <th>Cluster</th>
+        <th>Status</th>
+        <th class="no-sort"></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+      </thead>
+
+      <tbody>
+      <% @osc_jobs.each do |osc_job| %>
+          <tr>
+            <td><%= osc_job.name %></td>
+            <td><%= osc_job.id %></td>
+            <td><%= osc_job.batch_host %></td>
+            <td><%= status_label(osc_job) %></td>
+            <td><%= link_to 'Submit', submit_osc_job_path(osc_job), method: :put, class: 'btn btn-success btn-sm' unless osc_job.submitted? %></td>
+            <td><%= link_to 'Show', osc_job, class: 'btn btn-primary btn-sm' %></td>
+            <td><%= link_to 'Edit', edit_osc_job_path(osc_job), class: 'btn btn-default btn-sm' unless osc_job.submitted? %></td>
+            <td><%= link_to 'Copy', copy_osc_job_path(osc_job), method: :put, class: 'btn btn-default btn-sm' %></td>
+            <td><%= link_to 'Destroy', osc_job, method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: 'Are you sure?' } %></td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<div id="jobDetailsView" class="panel panel-default col-md-5">
+
+  <div class="panel-body">
+
+    <h3>Details: {{ JOB DETAILS }}</h3>
+    <table class="table">
+      <thead>
+      <tr>
+        <th>1</th>
+        <th>2</th>
+        <th>3</th>
+        <th>4</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr>
+        <td>1a</td>
+        <td>2b</td>
+        <td>3c</td>
+        <td>4d</td>
+      </tr>
+      </tbody>
+
+    </table>
+  </div>
+
+
+</div>
+
 
 <br>
-
-<%= link_to 'New Osc Job', new_osc_job_path %>
