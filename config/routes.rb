@@ -6,9 +6,8 @@ JobConstructor::Application.routes.draw do
     end
   end
 
-  root "pages#index"
-  get "pages/index"
-  get "pages/about"
+  root "osc_jobs#index"
+  
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
