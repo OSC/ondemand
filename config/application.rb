@@ -6,6 +6,9 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env)
 
+# Load in the server configurations
+Servers = YAML.load(File.read(File.expand_path('..//servers.yml', __FILE__)))
+
 module JobConstructor
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
