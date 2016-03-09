@@ -8,6 +8,9 @@ Bundler.require(:default, Rails.env)
 
 # Load in the server configurations
 Servers = HashWithIndifferentAccess.new(YAML.load(File.read(File.expand_path('..//servers.yml', __FILE__))))
+
+# Load the app configurations
+# FIXME Error handling, what to do if these don't exist?
 FileManager = HashWithIndifferentAccess.new(YAML.load(File.read(File.expand_path('..//apps.yml', __FILE__))))[:file_manager]
 Terminal = HashWithIndifferentAccess.new(YAML.load(File.read(File.expand_path('..//apps.yml', __FILE__))))[:terminal]
 
