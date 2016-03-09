@@ -26,3 +26,6 @@
 # awesim-rails uses separately versioned wiki repositories
 # do not include those in the app repo
 /docs
+
+# do not version the bundled gems
+vendor/bundle

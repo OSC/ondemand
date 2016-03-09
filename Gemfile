@@ -7,7 +7,7 @@ gem 'rails', '4.0.0'
 gem 'sqlite3'
 
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 4.0.0'
+gem 'sass-rails', '~> 5.0.0'
 
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
@@ -45,14 +45,16 @@ end
 # gem 'debugger', group: [:development, :test]
 
 gem "autoprefixer-rails"
-gem "bootstrap-sass", "~> 3.3.1"
+gem "bootstrap-sass", "3.3.5"
 gem "bootstrap_form", "~> 2.3.0"
 gem "font-awesome-sass", "~> 4.4.0"
 gem "dotenv-rails", "~> 2.0.0"
 gem "paperclip", "~> 4.2.2"
 gem "jquery-datatables-rails", "~> 3.3.0"
 gem "rails_12factor", group: :production
-gem "osc-machete", "~> 1.0"
-gem "osc_machete_rails", "~> 1.0"
-gem "awesim_rails", "~> 1.0"
-gem "awesim_rails_logging", "~> 0.0", group: :production
+gem "pbs", "~> 1.0", :git => "https://github.com/AweSim-OSC/pbs-ruby.git"
+gem "osc-machete", "~> 1.0", :git => "https://github.com/AweSim-OSC/osc-machete.git"
+gem "osc_machete_rails", "~> 1.0", :git => "https://github.com/AweSim-OSC/osc_machete_rails.git"
+gem "awesim_rails", "~> 1.0", :git => "https://github.com/AweSim-OSC/awesim_rails.git"
+gem "awesim_rails_logging", "~> 1.0", group: :production, git: "https://github.com/AweSim-OSC/awesim_rails_logging.git"
+gem "rake"
