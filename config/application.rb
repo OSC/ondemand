@@ -7,7 +7,9 @@ require 'rails/all'
 Bundler.require(:default, Rails.env)
 
 # Load in the server configurations
-Servers = YAML.load(File.read(File.expand_path('..//servers.yml', __FILE__)))
+Servers = HashWithIndifferentAccess.new(YAML.load(File.read(File.expand_path('..//servers.yml', __FILE__))))
+FileManager = HashWithIndifferentAccess.new(YAML.load(File.read(File.expand_path('..//apps.yml', __FILE__))))[:file_manager]
+Terminal = HashWithIndifferentAccess.new(YAML.load(File.read(File.expand_path('..//apps.yml', __FILE__))))[:terminal]
 
 module JobConstructor
   class Application < Rails::Application
