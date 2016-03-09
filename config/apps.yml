@@ -2,9 +2,7 @@
 # provides the paths to the external apps used by the Job Constructor
 #
 file_manager:
-  cloudcmd:
-    path:     http://websvcs08.osc.edu:5000/pun/shared/bmcmichael/cloudcmd/
-    api:      http://websvcs08.osc.edu:5000/pun/shared/bmcmichael/cloudcmd/api/v1/fs/
+  path:     http://websvcs08.osc.edu:5000/pun/shared/bmcmichael/cloudcmd/
+  api:      http://websvcs08.osc.edu:5000/pun/shared/bmcmichael/cloudcmd/api/v1/fs/
 terminal:
-  wetty:
-    path:     http://websvcs08.osc.edu:5000/pun/shared/jnicklas/wetty/ssh/
+  path:     http://websvcs08.osc.edu:5000/pun/shared/jnicklas/wetty/ssh/
