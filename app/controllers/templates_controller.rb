@@ -1,10 +1,13 @@
 class TemplatesController < ApplicationController
   before_action :set_template, only: [:show, :edit, :update, :destroy]
 
+  # TODO Move this to a config location or to the model
+  TEMPLATE_PATH = '/nfs/01/wiag/PZS0645/ood/jobconstructor/templates'
+
   # GET /templates
   # GET /templates.json
   def index
-    @templates = Template.all
+    @templates = Template.all.concat(system_templates)
   end
 
   # GET /templates/1
@@ -62,6 +65,21 @@ class TemplatesController < ApplicationController
   end
 
   private
+
+    def system_templates
+      templates = Array.new
+      folders = Dir.entries(TEMPLATE_PATH)
+      # Remove "." and ".."
+      folders.shift(2)
+      folders.each do |folder|
+        template = Template.new
+        template.name = folder.titleize
+        template.path = "#{TEMPLATE_PATH}/#{folder}/"
+        templates.push(template)
+      end
+      templates
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_template
       @template = Template.find(params[:id])
