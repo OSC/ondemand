@@ -7,6 +7,7 @@ class TemplatesController < ApplicationController
   # GET /templates
   # GET /templates.json
   def index
+    # Append the system templates to the end of the user defined templates for usability.
     @templates = Template.all.concat(system_templates)
   end
 
@@ -66,6 +67,8 @@ class TemplatesController < ApplicationController
 
   private
 
+
+    # Creates an array of template objects based on template folders in TEMPLATE_PATH.
     def system_templates
       templates = Array.new
       folders = Dir.entries(TEMPLATE_PATH)
@@ -82,6 +85,7 @@ class TemplatesController < ApplicationController
 
     # Use callbacks to share common setup or constraints between actions.
     def set_template
+      # TODO What if this folder is empty? What if it doesn't exist?
       @template = Template.find(params[:id])
     end
 
