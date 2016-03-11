@@ -23,7 +23,7 @@
       </div>
 
       <div class="panel-body">
-        <table class="table data-table">
+        <table id="jobListTable" class="table data-table">
           <thead>
           <tr>
             <th>Name</th>
@@ -41,10 +41,6 @@
                 <td><%= osc_job.id %></td>
                 <td><%= osc_job.batch_host %></td>
                 <td><%= status_label(osc_job) %></td>
-                <td><%= link_to 'Submit', submit_osc_job_path(osc_job), method: :put, class: 'btn btn-success btn-sm' unless osc_job.submitted? %></td>
-                <td><%= link_to 'Show', osc_job, class: 'btn btn-primary btn-sm' %></td>
-                <td><%= link_to 'Edit', edit_osc_job_path(osc_job), class: 'btn btn-default btn-sm' unless osc_job.submitted? %></td>
-                <td><%= link_to 'Copy', copy_osc_job_path(osc_job), method: :put, class: 'btn btn-default btn-sm' %></td>
                 <td><%= link_to 'Destroy', osc_job, method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: 'Are you sure?' } %></td>
               </tr>
           <% end %>
