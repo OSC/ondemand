@@ -19,4 +19,16 @@
 
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
+
+    var table = $('#jobListTable').DataTable();
+
+    $('#jobListTable tbody').on( 'click', 'tr', function () {
+        if ( $(this).hasClass('active') ) {
+            $(this).removeClass('active');
+        }
+        else {
+            table.$('tr.active').removeClass('active');
+            $(this).addClass('active');
+        }
+    });
 });
