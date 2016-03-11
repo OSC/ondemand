@@ -1,7 +1,5 @@
 /* global Util */
 /* global DOM */
-/* global CloudFunc */
-/* global CloudCmd */
 /* global Emitify */
 
 (function (Util, DOM) {
@@ -194,12 +192,12 @@
             else
                 data    = p.data;
 
-            Events.add('readystatechange', xhr, function(event) {
+            xhr.onreadystatechange = function(event) {
                 var TYPE_JSON, type, data, isContain, notText,
                     xhr = event.target,
                     OK  = 200;
 
-                if (xhr.readyState === 4 /* Complete */) {
+                if (xhr.readyState === xhr.DONE) {
                     Images.clearProgress();
                     TYPE_JSON   = 'application/json';
                     type        = xhr.getResponseHeader('content-type');
@@ -217,23 +215,19 @@
                         Util.exec(p.success, data, xhr.statusText, xhr);
                     }
                 }
-            });
+            };
 
             xhr.send(data);
         };
 
         load.put = function(url, body) {
             var emitter = Emitify(),
-                prefix  = CloudCmd.PREFIX,
-                apiURL  = CloudFunc.apiURL,
-
-                api     = prefix + apiURL + '/fs',
                 xhr     = new XMLHttpRequest();
 
             url     = encodeURI(url);
             url     = url.replace('#', '%23');
 
-            xhr.open('put', api + url, true);
+            xhr.open('put', url, true);
 
             // OSC_CUSTOM_CODE
             // Add this so that mod_auth_openidc knows it's an XMLHttpRequest
@@ -251,6 +245,7 @@
                 }
 
             };
+
             xhr.onreadystatechange = function() {
                 var error,
                     over    = xhr.readyState === xhr.DONE,

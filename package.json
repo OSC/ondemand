@@ -13,7 +13,7 @@
     "ohio supercomputer center"
   ],
   "dependencies": {
-    "cloudcmd": "^5.2.1",
+    "cloudcmd": "^5.2.2",
     "express": "^4.13.4",
     "os-homedir": "^1.0.1",
     "socket.io": "^1.4.5"
