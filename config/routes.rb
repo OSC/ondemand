@@ -1,4 +1,6 @@
 JobConstructor::Application.routes.draw do
+  resources :templates
+
   resources :osc_jobs do
     member do
       put 'submit'
