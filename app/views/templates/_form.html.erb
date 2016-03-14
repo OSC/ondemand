@@ -1,4 +1,4 @@
-<%= form_for(@template) do |f| %>
+<%= bootstrap_form_for(@template) do |f| %>
   <% if @template.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@template.errors.count, "error") %> prohibited this template from being saved:</h2>
@@ -12,14 +12,15 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :name %><br>
     <%= f.text_field :name %>
   </div>
   <div class="field">
-    <%= f.label :path %><br>
     <%= f.text_field :path %>
   </div>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit "Save" %>
+    <%= link_to "Cancel", :osc_jobs, :class => "btn btn-default" %>
+    <%= link_to "<span class='glyphicon glyphicon-trash' aria-hidden='true'></span> Delete".html_safe, @template, method: :delete, :class => "btn btn-danger pull-right" unless @template.new_record? %>
+
   </div>
 <% end %>
