@@ -3,6 +3,7 @@
 #
 file_manager:
   path:     http://websvcs08.osc.edu:5000/pun/shared/bmcmichael/cloudcmd/
+  fs:       http://websvcs08.osc.edu:5000/pun/shared/bmcmichael/cloudcmd/fs/
   api:      http://websvcs08.osc.edu:5000/pun/shared/bmcmichael/cloudcmd/api/v1/fs/
 terminal:
   path:     http://websvcs08.osc.edu:5000/pun/shared/jnicklas/wetty/ssh/
