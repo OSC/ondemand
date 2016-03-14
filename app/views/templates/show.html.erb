@@ -10,5 +10,10 @@
   <%= @template.path %>
 </p>
 
-<%= link_to 'Edit', edit_template_path(@template) %> |
+<p>
+  <strong>File Manager Path:</strong>
+  <%= link_to @template.file_manager_path, @template.file_manager_path %>
+</p>
+
+<%= link_to 'Edit', edit_template_path(@template) unless @template.system? %> |
 <%= link_to 'Back', templates_path %>
