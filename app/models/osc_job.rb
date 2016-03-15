@@ -1,5 +1,6 @@
 class OscJob < ActiveRecord::Base
   has_many :osc_job_jobs, dependent: :destroy
+  has_one :template
   has_machete_workflow_of :osc_job_jobs
 
 
