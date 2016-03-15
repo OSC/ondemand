@@ -16,7 +16,7 @@
   <div id="jobListView" class="panel panel-default">
     <div class="panel-body">
       <div class="panel-body">
-        <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Copy Job" role="button"><span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span> Copy</a>
+        <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Copy Job" role="button" onclick="copy_job($('tr.active').attr('id'))"><span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span> Copy</a>
         <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Stop Job" role="button"><span class="glyphicon glyphicon-stop" aria-hidden="true"></span> Stop</a>
         <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Set as Template" role="button"><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Set Template</a>
         <a class="btn btn-danger btn-sm" data-toggle="tooltip" title="Delete Job" role="button"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
@@ -36,7 +36,7 @@
 
           <tbody>
           <% @osc_jobs.each do |osc_job| %>
-              <tr>
+              <tr class="job_row" id="<%=osc_job.id %>">
                 <td><%= osc_job.name %></td>
                 <td><%= osc_job.id %></td>
                 <td><%= osc_job.batch_host %></td>
