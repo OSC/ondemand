@@ -17,5 +17,13 @@
   <%= @osc_job.staged_dir %>
 </p>
 
+<p>
+  <ul>
+  <% @folder_contents.each do |content| %>
+    <li><%= content %></li>
+  <% end %>
+  </ul>
+</p>
+
 <%= link_to 'Back', osc_jobs_path, class: 'btn btn-default' %>
 <%= link_to 'Edit', edit_osc_job_path(@osc_job), class: 'btn btn-default' %>

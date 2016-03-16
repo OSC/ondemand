@@ -10,6 +10,7 @@ class OscJobsController < ApplicationController
   # GET /osc_jobs/1
   # GET /osc_jobs/1.json
   def show
+    @folder_contents = Dir.glob("#{OscJob.find(params[:id]).staged_dir}/*").sort
   end
 
   # GET /osc_jobs/new
