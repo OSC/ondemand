@@ -1,4 +1,5 @@
 class Template < ActiveRecord::Base
+  has_many :osc_jobs
 
   TEMPLATE_PATH = '/nfs/01/wiag/PZS0645/ood/jobconstructor/templates'
 
