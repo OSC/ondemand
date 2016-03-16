@@ -1,5 +1,6 @@
 class OscJobsController < ApplicationController
   before_action :set_osc_job, only: [:show, :edit, :update, :destroy, :submit, :copy]
+  has_one :template
 
   # GET /osc_jobs
   # GET /osc_jobs.json
