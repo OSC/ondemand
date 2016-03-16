@@ -1,5 +1,5 @@
 <div class="page-header">
-    <h2>Showing Osc Job</h2>
+    <h3>Showing Osc Job</h3>
 </div>
 
 <p>
@@ -10,6 +10,11 @@
 <p>
   <strong>Batch host:</strong>
   <%= @osc_job.batch_host %>
+</p>
+
+<p>
+  <strong>Staged Dir:</strong>
+  <%= @osc_job.staged_dir %>
 </p>
 
 <%= link_to 'Back', osc_jobs_path, class: 'btn btn-default' %>
