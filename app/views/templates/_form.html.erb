@@ -17,10 +17,16 @@
   <div class="field">
     <%= f.text_field :path %>
   </div>
+  <div class="field">
+    <%= f.select :host, Servers, { label: "Default Batch Server:" }, { class: "selectpicker" } %>
+  </div>
+  <div class="field">
+    <%= f.text_area :notes %>
+  </div>
   <div class="actions">
-    <%= f.submit "Save" %>
-    <%= link_to "Cancel", :osc_jobs, :class => "btn btn-default" %>
-    <%= link_to "<span class='glyphicon glyphicon-trash' aria-hidden='true'></span> Delete".html_safe, @template, method: :delete, :class => "btn btn-danger pull-right" unless @template.new_record? %>
+  <%= f.submit "Save" %>
+  <%= link_to "Cancel", :osc_jobs, :class => "btn btn-default" %>
+  <%= link_to "<span class='glyphicon glyphicon-trash' aria-hidden='true'></span> Delete".html_safe, @template, method: :delete, :class => "btn btn-danger pull-right" unless @template.new_record? %>
 
   </div>
 <% end %>
