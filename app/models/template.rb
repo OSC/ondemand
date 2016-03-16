@@ -1,5 +1,7 @@
 class Template < ActiveRecord::Base
 
+  TEMPLATE_PATH = '/nfs/01/wiag/PZS0645/ood/jobconstructor/templates'
+
   # If the template exists but has no id, treat is as one of the system templates.
   def system?
     id.nil?
@@ -11,5 +13,20 @@ class Template < ActiveRecord::Base
     # TODO: Refactor FileManager into an initializer or helper class.
     #       This will be used elsewhere and often.
     File.join(FileManager[:fs], path)
+  end
+
+  # Creates an array of template objects based on template folders in TEMPLATE_PATH.
+  def system_templates
+    templates = Array.new
+    folders = Dir.entries(TEMPLATE_PATH)
+    # Remove "." and ".."
+    folders.shift(2)
+    folders.each do |folder|
+      template = Template.new
+      template.name = folder.titleize
+      template.path = "#{TEMPLATE_PATH}/#{folder}/"
+      templates.push(template)
+    end
+    templates
   end
 end
