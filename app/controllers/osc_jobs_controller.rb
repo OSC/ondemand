@@ -10,17 +10,18 @@ class OscJobsController < ApplicationController
   # GET /osc_jobs/1
   # GET /osc_jobs/1.json
   def show
-    @folder_contents = Dir.glob("#{OscJob.find(params[:id]).staged_dir}/*").sort
+    @folder_contents = Dir.glob("#{OscJob.find(params[:id]).script_path}*").sort
   end
 
   # GET /osc_jobs/new
   def new
     @osc_job = OscJob.new
-    @templates = Template.all
+    @templates = Template.all.concat(Template.new.system_templates)
   end
 
   # GET /osc_jobs/1/edit
   def edit
+    @templates = Template.all.concat(Template.new.system_templates)
   end
 
   # POST /osc_jobs

@@ -4,6 +4,7 @@
 
   <%= f.text_field :name %>
   <%= f.select :batch_host, Servers, { label: "Batch Server:" }, { class: "selectpicker" } %>
+  <%= f.select :script_path, @templates.map { |t| t.path }, { label: "Script:" }, { class: "selectpicker" } %>
 
   <%= f.submit 'Save', class: 'btn btn-primary' %>
   <%= f.button 'Reset', type: :reset, class: 'btn btn-default' %>
