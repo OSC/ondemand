@@ -5,7 +5,7 @@
 jQuery ->
   # Set up datatable
   $('.data-table').DataTable
-    order: [0, 'desc']
+    order: [1, 'desc']
     columnDefs: [{
       orderable: false
       targets: 'no-sort'
