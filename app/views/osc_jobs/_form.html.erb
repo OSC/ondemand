@@ -3,7 +3,8 @@
   <%= f.alert_message "Please fix the errors below." %>
 
   <%= f.text_field :name %>
-  <%= f.text_field :batch_host %>
+  <%= f.select :batch_host, Servers, { label: "Batch Server:" }, { class: "selectpicker" } %>
+  
 
   <%= f.submit 'Save', class: 'btn btn-primary' %>
   <%= f.button 'Reset', type: :reset, class: 'btn btn-default' %>
