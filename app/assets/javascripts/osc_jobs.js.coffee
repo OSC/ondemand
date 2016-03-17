@@ -4,6 +4,7 @@
 
 @update_display = (id) ->
   update_copy_button(id)
+  request_job_data(id)
 
 @update_copy_button = (id) ->
   if id?
@@ -12,4 +13,19 @@
   else
     $("#copy_button").attr("href", '#')
     $("#copy_button").data("method", "get")
+
+@request_job_data = (id) ->
+  data = ""
+  if id?
+    $.ajax
+      type: 'GET'
+      url: '.' + Routes.osc_job_path(id)
+      contentType: "application/json; charset=utf-8"
+      dataType: "json"
+      error: (jqXHR, textStatus, errorThrown) ->
+        console.log jqXHR
+      success: (data, textStatus, jqXHR) ->
+        # TODO add display method
+        console.log data
+
 
