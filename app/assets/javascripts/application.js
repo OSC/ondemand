@@ -25,6 +25,11 @@ active_var = function() {
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
 
+    $("#copy_button").bind('click', false);
+    $("#stop_button").bind('click', false);
+    $("#template_button").bind('click', false);
+    $("#destroy_button").bind('click', false);
+
     var table = $('#jobListTable').DataTable();
 
     $('#jobListTable tbody').on( 'click', 'tr', function () {
