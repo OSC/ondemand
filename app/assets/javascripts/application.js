@@ -18,6 +18,10 @@
 //= require js-routes
 //= require_tree .
 
+active_var = function() {
+    return $('tr.active').attr('id');
+}
+
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
 
