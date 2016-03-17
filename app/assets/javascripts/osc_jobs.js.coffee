@@ -2,13 +2,14 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
-$(document).ajaxStop ->
-  window.location.reload()
+@update_display = (id) ->
+  update_copy_button(id)
 
-@copy_job = (id) ->
+@update_copy_button = (id) ->
   if id?
-    $.ajax
-      type: 'PUT'
-      url: '.' + Routes.copy_osc_job_path(id)
-      contentType: "application/json; charset=utf-8"
-      dataType: "json"
+    $("#copy_button").attr("href", '.' + Routes.copy_osc_job_path(id))
+    $("#copy_button").data("method", "put")
+  else
+    $("#copy_button").attr("href", '#')
+    $("#copy_button").data("method", "get")
+
