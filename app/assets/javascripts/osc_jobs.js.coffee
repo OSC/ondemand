@@ -22,14 +22,22 @@
 
 @update_copy_button = (id) ->
   if id?
-    $("#copy_button").attr("href", '.' + Routes.copy_osc_job_path(id))
-    $("#copy_button").data("method", "put")
+    $("#copy_button").attr('href', '.' + Routes.copy_osc_job_path(id))
+    $("#copy_button").data('method', 'put')
   else
-    $("#copy_button").attr("href", '#')
-    $("#copy_button").data("method", "get")
+    $("#copy_button").attr('href', '#')
+    $("#copy_button").data('method', 'get')
 
 @show_job_panel = (id) ->
   if id?
     $("#jobDetailsPanel").fadeIn(200)
   else
     $("#jobDetailsPanel").fadeOut(200)
+
+
+@update_stop = (running) ->
+  if running?
+    # TODO Create a route that will stop a running job.
+    $("stop_button").attr('href', ' TODO ')
+  else
+    $("stop_button").removeAttr('href')
