@@ -16,6 +16,10 @@ class TemplatesController < ApplicationController
   # GET /templates/new
   def new
     @template = Template.new
+    if params[:path]
+        # TODO Perform some sort of error checking or validation
+        @template.path = params[:path]
+    end
   end
 
   # GET /templates/1/edit
