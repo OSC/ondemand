@@ -5,7 +5,6 @@
 @update_display = (id) ->
   request_job_data(id)
   update_copy_button(id)
-  update_template_button(id)
   update_destroy_button(id)
   show_job_panel(id)
 
@@ -20,6 +19,7 @@
         console.log jqXHR
       success: (data, textStatus, jqXHR) ->
         # TODO add display method
+        update_template_button(data.script_path, data.batch_host)
         console.log data
 
 @show_job_panel = (id) ->
@@ -50,9 +50,9 @@
     $("#stop_button").attr("disabled", true)
     $("#stop_button").bind('click', false)
 
-@update_template_button = (id) ->
-  if id?
-    $("#template_button").attr("href", ' TODO ')
+@update_template_button = (path, host) ->
+  if path?
+    $("#template_button").attr("href", "." + Routes.new_template_path({ path: path, host: host }))
     $("#template_button").removeAttr("disabled")
     $("#template_button").unbind('click', false)
   else
