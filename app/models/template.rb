@@ -13,7 +13,7 @@ class Template < ActiveRecord::Base
     # Use File.join because URI.join does not respect relative urls
     # TODO: Refactor FileManager into an initializer or helper class.
     #       This will be used elsewhere and often.
-    File.join(FileManager[:fs], path)
+    File.join(FileManager[:fs], script_dir)
   end
 
   def script_dir
