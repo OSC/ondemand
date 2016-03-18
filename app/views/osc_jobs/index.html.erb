@@ -30,7 +30,6 @@
             <th>PBS ID</th>
             <th>Cluster</th>
             <th>Status</th>
-            <th class="no-sort"></th>
           </tr>
           </thead>
 
@@ -41,7 +40,6 @@
                 <td><%= osc_job.id %></td>
                 <td><%= osc_job.batch_host %></td>
                 <td><%= status_label(osc_job) %></td>
-                <td><%= link_to 'Destroy', osc_job, method: :delete, class: 'btn btn-danger btn-sm', data: { confirm: 'Are you sure?' } %></td>
               </tr>
           <% end %>
           </tbody>
