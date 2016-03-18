@@ -14,7 +14,7 @@
 
 <p>
   <strong>Staged Dir:</strong>
-  <%= @osc_job.staged_dir %>
+  <%= link_to(@osc_job.staged_dir, Filesystem.new.fs(@osc_job.staged_dir)) %>
 </p>
 
 <p>
