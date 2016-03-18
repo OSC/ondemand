@@ -25,7 +25,9 @@ class Template < ActiveRecord::Base
     folders.each do |folder|
       template = Template.new
       template.name = folder.titleize
-      template.path = "#{TEMPLATE_PATH}/#{folder}/"
+      # Grab the first file name ending in .sh
+      scriptname = Dir.entries("#{TEMPLATE_PATH}/#{folder}/").select{ |f| f =~ /\.sh$/i }.first
+      template.path = "#{TEMPLATE_PATH}/#{folder}/#{scriptname}"
       templates.push(template)
     end
     templates
