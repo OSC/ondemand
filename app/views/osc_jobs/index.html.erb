@@ -54,7 +54,7 @@
     <div class="panel-body">
       <p>Name: <span id="jobDetailsName"></span></p>
       <p>Submit to:
-        <select id="submitHost">
+        <select id="jobDetailsServerSelect">
           <% Servers.each do |s| %>
               <option id="<%= s.first %>" value="<%= s.first %>"><%= s.first.titleize %></option>
           <% end %>
