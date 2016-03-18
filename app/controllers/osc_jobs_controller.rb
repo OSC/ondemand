@@ -28,6 +28,7 @@ class OscJobsController < ApplicationController
   # POST /osc_jobs.json
   def create
     @osc_job = OscJob.new(osc_job_params)
+    @osc_job.staged_dir = @osc_job.stage.to_s
 
     respond_to do |format|
       if @osc_job.save
