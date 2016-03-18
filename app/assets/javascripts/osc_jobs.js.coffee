@@ -21,6 +21,8 @@
         # TODO add display method
         update_template_button(data.script_path, data.batch_host)
         console.log data
+  else
+    update_template_button()
 
 @show_job_panel = (id) ->
   if id?
