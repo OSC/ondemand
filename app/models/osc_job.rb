@@ -1,6 +1,6 @@
 class OscJob < ActiveRecord::Base
   has_many :jobs, class_name: "OscJobJob", dependent: :destroy
-  has_machete_workflow_of :osc_job_jobs
+  has_machete_workflow_of :jobs
 
 
   # Name that defines the template/target dirs

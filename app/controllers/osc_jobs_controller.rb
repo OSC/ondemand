@@ -4,7 +4,7 @@ class OscJobsController < ApplicationController
   # GET /osc_jobs
   # GET /osc_jobs.json
   def index
-    @osc_jobs = OscJob.preload(:osc_job_jobs)
+    @osc_jobs = OscJob.preload(:jobs)
   end
 
   # GET /osc_jobs/1
@@ -104,7 +104,7 @@ class OscJobsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_osc_job
-      @osc_job = OscJob.preload(:osc_job_jobs).find(params[:id])
+      @osc_job = OscJob.preload(:jobs).find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.
