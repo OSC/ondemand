@@ -16,6 +16,10 @@ class Template < ActiveRecord::Base
     File.join(FileManager[:fs], path)
   end
 
+  def script_dir
+    File.dirname(path)
+  end
+
   # Creates an array of template objects based on template folders in TEMPLATE_PATH.
   def system_templates
     templates = Array.new
