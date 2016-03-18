@@ -6,10 +6,10 @@
   request_job_data(id)
   update_copy_button(id)
   update_destroy_button(id)
-  show_job_panel(id)
 
 @request_job_data = (id) ->
   if id?
+    show_job_panel()
     $.ajax
       type: 'GET'
       url: '.' + Routes.osc_job_path(id)
@@ -19,16 +19,28 @@
         console.log jqXHR
       success: (data, textStatus, jqXHR) ->
         # TODO add display method
+        update_job_details_panel(data)
         update_template_button(data.script_path, data.batch_host)
+        # TODO remove the console.log, this is for devving
         console.log data
   else
+    update_job_details_panel()
     update_template_button()
 
-@show_job_panel = (id) ->
-  if id?
+@show_job_panel = (show) ->
+  if show?
     $("#jobDetailsPanel").fadeIn(200)
   else
     $("#jobDetailsPanel").fadeOut(200)
+
+@update_job_details_panel = (data) ->
+  if data?
+    $("#jobDetailsName").text(data.name)
+    show_job_panel(true)
+  else
+    show_job_panel()
+
+
 
 @update_copy_button = (id) ->
   if id?
