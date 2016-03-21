@@ -12,7 +12,7 @@
     show_job_panel()
     $.ajax
       type: 'GET'
-      url: '.' + Routes.osc_job_path(id)
+      url: window.location + Routes.osc_job_path(id)
       contentType: "application/json; charset=utf-8"
       dataType: "json"
       error: (jqXHR, textStatus, errorThrown) ->
@@ -37,7 +37,7 @@
   if show?
     $("#jobDetailsPanel").fadeIn(200)
   else
-    $("#jobDetailsPanel").fadeOut(200)
+    $("#jobDetailsPanel").fadeOut(100)
 
 @update_job_details_panel = (data) ->
   if data?

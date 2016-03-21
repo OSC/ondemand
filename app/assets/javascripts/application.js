@@ -22,6 +22,8 @@ active_var = function() {
     return $('tr.active').attr('id');
 }
 
+
+
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
 
@@ -39,4 +41,6 @@ $(document).ready(function(){
         update_display(active_var());
     });
 });
+
+
 
