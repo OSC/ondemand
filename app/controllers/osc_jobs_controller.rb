@@ -102,6 +102,22 @@ class OscJobsController < ApplicationController
     end
   end
 
+  # PUT /osc_jobs/1/submit
+  def submit
+    respond_to do |format|
+      if @osc_job.submitted?
+        format.html { redirect_to osc_jobs_url, alert: 'Job has already been submitted!' }
+        format.json { head :no_content }
+      elsif @osc_job.submit
+        format.html { redirect_to osc_jobs_url, notice: 'Job was successfully submitted.' }
+        format.json { head :no_content }
+      else
+        format.html { redirect_to osc_jobs_url, alert: "Job failed to be submitted: #{@osc_job.errors.to_a}" }
+        format.json { render json: @osc_job.errors, status: :internal_server_error }
+      end
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_osc_job
