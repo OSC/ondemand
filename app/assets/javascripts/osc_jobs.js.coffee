@@ -19,6 +19,7 @@
         console.log jqXHR
       success: (data, textStatus, jqXHR) ->
         update_job_details_panel(data)
+        update_stop_button(data)
         update_template_button(data.script_path, data.batch_host)
         # TODO remove the console.log, this is for devving
         console.log data
@@ -37,9 +38,11 @@
     $("#jobDetailsName").text(data.name)
     # TODO On selected change, do an ajax call to change it on the object
     $("#jobDetailsServerSelect option[value=#{data.batch_host}]").prop("selected", "selected")
+    $("#jobDetailsStagedDir").text(abs_path(data.script_path))
     show_job_panel(true)
   else
     show_job_panel()
+    
 
 @update_copy_button = (id) ->
   if id?
@@ -84,4 +87,8 @@
     $("#destroy_button").attr("disabled", true)
     $("#destroy_button").bind('click', false)
 
-
+# Return the directory path of a file path
+abs_path = (filepath) ->
+  f = filepath.split('/')
+  f.pop()
+  f.join('/')
