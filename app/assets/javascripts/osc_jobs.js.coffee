@@ -22,6 +22,7 @@
         console.log data
 
         update_job_details_panel(data)
+        update_submit_button(id, data.status.char)
         update_stop_button(data)
         update_open_dir_button(data.fs_root)
         update_template_button(data.script_path, data.batch_host)
@@ -29,6 +30,8 @@
 
   else
     update_job_details_panel()
+    update_submit_button()
+    update_stop_button()
     update_template_button()
     update_open_dir_button()
     list_folder_contents()
@@ -61,7 +64,7 @@
 
 @update_copy_button = (id) ->
   if id?
-    $("#copy_button").attr("href", "." + Routes.copy_osc_job_path(id))
+    $("#copy_button").attr("href", window.location + Routes.copy_osc_job_path(id))
     $("#copy_button").data("method", "PUT")
     $("#copy_button").removeAttr("disabled")
     $("#copy_button").unbind('click', false)
@@ -69,6 +72,17 @@
     $("#copy_button").attr("href", "#")
     $("#copy_button").attr("disabled", true)
     $("#copy_button").bind('click', false)
+
+@update_submit_button = (id, status_char) ->
+  if id? && !status_char?
+      $("#submit_button").attr("href", window.location + Routes.submit_osc_job_path(id))
+      $("#submit_button").data("method", "PUT")
+      $("#submit_button").removeAttr("disabled")
+      $("#submit_button").unbind('click', false)
+  else
+    $("#submit_button").removeAttr("href")
+    $("#submit_button").attr("disabled", true)
+    $("#submit_button").bind('click', false)
 
 @update_stop_button = (running) ->
   if running?
@@ -83,7 +97,7 @@
 
 @update_template_button = (path, host) ->
   if path?
-    $("#template_button").attr("href", "." + Routes.new_template_path({ path: path, host: host }))
+    $("#template_button").attr("href", window.location + Routes.new_template_path({ path: path, host: host }))
     $("#template_button").removeAttr("disabled")
     $("#template_button").unbind('click', false)
   else
@@ -93,7 +107,7 @@
 
 @update_destroy_button = (id) ->
   if id?
-    $("#destroy_button").attr("href", "." + Routes.osc_job_path(id))
+    $("#destroy_button").attr("href", window.location + Routes.osc_job_path(id))
     $("#destroy_button").data("method", "DELETE")
     $("#destroy_button").removeAttr("disabled")
     $("#destroy_button").unbind('click', false)
