@@ -39,6 +39,7 @@
     # TODO On selected change, do an ajax call to change it on the object
     $("#jobDetailsServerSelect option[value=#{data.batch_host}]").prop("selected", "selected")
     $("#jobDetailsStagedDir").text(abs_path(data.script_path))
+    $("#jobDetailsOpenDirButton").attr("href", abs_path(data.fs_root))
     show_job_panel(true)
   else
     show_job_panel()
