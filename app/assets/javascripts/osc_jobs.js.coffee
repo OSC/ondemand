@@ -104,6 +104,7 @@ abs_path = (filepath) ->
     for content in data.folder_contents
       formatted_path = content.path.replace(data.staged_dir, "")
       formatted_path = "<strong>#{formatted_path}</strong>" if content.name == data.staged_script_name
+      formatted_path = "<a href=\"#{content.fsurl}\" target='_blank'>#{formatted_path}</a>" if content.type == "dir"
       list += "<li>#{formatted_path}</li>"
     list += "</ul>"
     $("#jobDetailsStagedDirContents").html(list)
