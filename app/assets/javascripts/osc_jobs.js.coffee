@@ -101,7 +101,10 @@ abs_path = (filepath) ->
 @list_folder_contents = (data) ->
   if data?
     list = "<ul>"
-    list += "<li>#{content.content}</li>" for content in data.folder_contents
+    for content in data.folder_contents
+      formatted_path = content.path.replace(data.staged_dir, "")
+      formatted_path = "<strong>#{formatted_path}</strong>" if content.name == data.staged_script_name
+      list += "<li>#{formatted_path}</li>"
     list += "</ul>"
     $("#jobDetailsStagedDirContents").html(list)
   else
