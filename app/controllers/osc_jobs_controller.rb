@@ -89,6 +89,7 @@ class OscJobsController < ApplicationController
   # PUT /osc_jobs/1/copy
   def copy
     @osc_job = @osc_job.copy
+    @osc_job.staged_dir = @osc_job.stage.to_s
 
     respond_to do |format|
       if @osc_job.save
