@@ -18,14 +18,17 @@
       error: (jqXHR, textStatus, errorThrown) ->
         console.log jqXHR
       success: (data, textStatus, jqXHR) ->
+        # TODO remove the console.log, this is for devving
+        console.log data
+
         update_job_details_panel(data)
         update_stop_button(data)
         update_template_button(data.script_path, data.batch_host)
-        # TODO remove the console.log, this is for devving
-        console.log data
+        list_folder_contents(data)
   else
     update_job_details_panel()
     update_template_button()
+    list_folder_contents()
 
 @show_job_panel = (show) ->
   if show?
@@ -90,6 +93,16 @@
 
 # Return the directory path of a file path
 abs_path = (filepath) ->
-  f = filepath.split('/')
-  f.pop()
-  f.join('/')
+  if filepath?
+    f = filepath.split('/')
+    f.pop()
+    f.join('/')
+
+@list_folder_contents = (data) ->
+  if data?
+    list = "<ul>"
+    list += "<li>#{content.content}</li>" for content in data.folder_contents
+    list += "</ul>"
+    $("#jobDetailsStagedDirContents").html(list)
+  else
+    $("#jobDetailsStagedDirContents").html("")
