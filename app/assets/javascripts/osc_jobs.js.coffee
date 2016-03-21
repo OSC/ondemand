@@ -23,11 +23,14 @@
 
         update_job_details_panel(data)
         update_stop_button(data)
+        update_open_dir_button(data.fs_root)
         update_template_button(data.script_path, data.batch_host)
         list_folder_contents(data)
+
   else
     update_job_details_panel()
     update_template_button()
+    update_open_dir_button()
     list_folder_contents()
 
 @show_job_panel = (show) ->
@@ -42,11 +45,19 @@
     # TODO On selected change, do an ajax call to change it on the object
     $("#jobDetailsServerSelect option[value=#{data.batch_host}]").prop("selected", "selected")
     $("#jobDetailsStagedDir").text(abs_path(data.script_path))
-    $("#jobDetailsOpenDirButton").attr("href", data.fs_root)
     show_job_panel(true)
   else
     show_job_panel()
-    
+
+@update_open_dir_button = (path) ->
+  if path?
+    $("#open_dir_button").attr("href", path)
+    $("#open_dir_button").removeAttr("disabled")
+    $("#open_dir_button").unbind('click', false)
+  else
+    $("#open_dir_button").attr("href", "#")
+    $("#open_dir_button").attr("disabled", true)
+    $("#open_dir_button").bind('click', false)
 
 @update_copy_button = (id) ->
   if id?
