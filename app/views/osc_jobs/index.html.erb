@@ -41,7 +41,7 @@
                 <td><%= osc_job.name %></td>
                 <td><%= osc_job.id %></td>
                 <td><%= osc_job.batch_host %></td>
-                <td><%= status_label(osc_job) %></td>
+                <td id="status_label_<%= osc_job.id %>"><%= status_label(osc_job) %></td>
               </tr>
           <% end %>
           </tbody>
