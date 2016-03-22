@@ -27,7 +27,11 @@ group :doc do
   gem 'sdoc', require: false
 end
 
+gem 'autoprefixer-rails'
 gem 'bootstrap-sass', '3.3.5'
+gem 'font-awesome-sass', '~> 4.4.0'
+gem 'dotenv-rails', '~> 2.0.0'
+gem 'rails_12factor', group: :production
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
