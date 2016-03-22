@@ -21,6 +21,7 @@
         # TODO remove the console.log, this is for devving
         console.log data
 
+        update_status_label(id, data.status_label)
         update_job_details_panel(data)
         update_submit_button(id, data.status.char)
         update_stop_button(id, data.status.char)
@@ -41,6 +42,10 @@
     $("#jobDetailsPanel").fadeIn(200)
   else
     $("#jobDetailsPanel").fadeOut(100)
+
+@update_status_label = (id, label) ->
+  if label? && id?
+    $("#status_label_#{id}").html(label)
 
 @update_job_details_panel = (data) ->
   if data?
