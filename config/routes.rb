@@ -4,6 +4,7 @@ JobConstructor::Application.routes.draw do
   resources :osc_jobs do
     member do
       put 'submit'
+      put 'stop'
       put 'copy'
     end
   end
