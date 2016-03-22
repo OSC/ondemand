@@ -55,6 +55,26 @@ class OscJobsController < ApplicationController
     end
   end
 
+  # PUT /osc_jobs/1/stop
+  def stop
+    respond_to do |format|
+      if !@osc_job.submitted?
+        format.html { redirect_to osc_jobs_url, alert: 'Job has not been submitted.' }
+        format.json { head :no_content }
+      elsif @osc_job.stop
+        set_session
+        format.html { redirect_to osc_jobs_url, notice: 'Job was successfully stopped.' }
+        format.js   { render :show }
+        format.json { head :no_content }
+      else
+        @errors = @osc_job.errors
+        set_session
+        format.html { redirect_to osc_jobs_url, alert: "Job failed to be stopped: #{@osc_job.errors.to_a}" }
+        format.json { render json: @osc_job.errors, status: :internal_server_error }
+      end
+    end
+  end
+
   # DELETE /osc_jobs/1
   # DELETE /osc_jobs/1.json
   def destroy
@@ -98,22 +118,6 @@ class OscJobsController < ApplicationController
       else
         format.html { redirect_to osc_jobs_url, alert: "Osc job failed to be copied: #{@osc_job.errors.to_a}" }
         format.json { render json: @osc_job.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PUT /osc_jobs/1/submit
-  def submit
-    respond_to do |format|
-      if @osc_job.submitted?
-        format.html { redirect_to osc_jobs_url, alert: 'Job has already been submitted!' }
-        format.json { head :no_content }
-      elsif @osc_job.submit
-        format.html { redirect_to osc_jobs_url, notice: 'Job was successfully submitted.' }
-        format.json { head :no_content }
-      else
-        format.html { redirect_to osc_jobs_url, alert: "Job failed to be submitted: #{@osc_job.errors.to_a}" }
-        format.json { render json: @osc_job.errors, status: :internal_server_error }
       end
     end
   end
