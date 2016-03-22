@@ -1,0 +1,21 @@
+// Load bootstrap/font-awesome sprockets first
+@import "bootstrap-sprockets";
+@import "font-awesome-sprockets";
+//@import "awesim";
+
+
+// overrides for navbar
+$navbar-height: 40px;
+$navbar-inverse-bg:  rgb(207,16, 45);
+$navbar-inverse-link-color: rgb(255, 255, 255);
+
+// Load up bootstrap/font-awesome style sheet
+@import "bootstrap";
+@import "font-awesome";
+
+// Load up dataTables bootstrap specific styles
+// @import "dataTables/bootstrap/3/jquery.dataTables.bootstrap";
+
+
+// Your custom css styles below (must be manually added)
+@import "dashboard";
