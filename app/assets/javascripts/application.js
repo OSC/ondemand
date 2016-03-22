@@ -22,19 +22,6 @@ active_var = function() {
     return $('tr.active').attr('id');
 }
 
-app_root = function() {
-    var prefix = "";
-    var dirArray = RAILS_ROOT.split('/');
-    var appName = dirArray[dirArray.length-1];
-    if (dirArray.indexOf("ood_dev") > -1) {
-        prefix = "/pun/dev/" + appName;
-    } else if (dirArray.indexOf("ood_shared") > -1) {
-        var appHostUser = dirArray[dirArray.indexOf("ood_shared") - 1];
-        prefix = "/pun/shared/" + appHostUser + "/" + appName;
-    }
-    return prefix;
-}
-
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
 
