@@ -22,6 +22,15 @@ active_var = function() {
     return $('tr.active').attr('id');
 }
 
+function joinRoot(route){
+    var arr = []
+    arr.push(ROOT_PATH)
+    arr.push(route)
+    var separator = '/';
+    var replace   = new RegExp(separator+'{1,}', 'g');
+    return arr.join(separator).replace(replace, separator);
+}
+
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
 

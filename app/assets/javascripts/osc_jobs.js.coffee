@@ -12,7 +12,7 @@
     show_job_panel()
     $.ajax
       type: 'GET'
-      url: ROOT_PATH + Routes.osc_job_path(id)
+      url: joinRoot(Routes.osc_job_path(id))
       contentType: "application/json; charset=utf-8"
       dataType: "json"
       error: (jqXHR, textStatus, errorThrown) ->
@@ -64,7 +64,7 @@
 
 @update_copy_button = (id) ->
   if id?
-    $("#copy_button").attr("href", ROOT_PATH + Routes.copy_osc_job_path(id))
+    $("#copy_button").attr("href", joinRoot(Routes.copy_osc_job_path(id)))
     $("#copy_button").data("method", "PUT")
     $("#copy_button").removeAttr("disabled")
     $("#copy_button").unbind('click', false)
@@ -75,7 +75,7 @@
 
 @update_submit_button = (id, status_char) ->
   if id? && !status_char?
-      $("#submit_button").attr("href", ROOT_PATH + Routes.submit_osc_job_path(id))
+      $("#submit_button").attr("href", joinRoot(Routes.submit_osc_job_path(id)))
       $("#submit_button").data("method", "PUT")
       $("#submit_button").removeAttr("disabled")
       $("#submit_button").unbind('click', false)
@@ -97,7 +97,7 @@
 
 @update_template_button = (path, host) ->
   if path?
-    $("#template_button").attr("href", ROOT_PATH + Routes.new_template_path({ path: path, host: host }))
+    $("#template_button").attr("href", joinRoot(Routes.new_template_path({ path: path, host: host })))
     $("#template_button").removeAttr("disabled")
     $("#template_button").unbind('click', false)
   else
@@ -107,7 +107,7 @@
 
 @update_destroy_button = (id) ->
   if id?
-    $("#destroy_button").attr("href", ROOT_PATH + Routes.osc_job_path(id))
+    $("#destroy_button").attr("href", joinRoot(Routes.osc_job_path(id)))
     $("#destroy_button").data("method", "DELETE")
     $("#destroy_button").removeAttr("disabled")
     $("#destroy_button").unbind('click', false)
