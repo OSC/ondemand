@@ -23,7 +23,7 @@
 
         update_job_details_panel(data)
         update_submit_button(id, data.status.char)
-        update_stop_button(data)
+        update_stop_button(id, data.status.char)
         update_open_dir_button(data.fs_root)
         update_template_button(data.script_path, data.batch_host)
         list_folder_contents(data)
@@ -84,10 +84,10 @@
     $("#submit_button").attr("disabled", true)
     $("#submit_button").bind('click', false)
 
-@update_stop_button = (running) ->
-  if running?
-    # TODO Create a route that will stop a running job.
-    $("#stop_button").attr("href", ' TODO ')
+@update_stop_button = (id, status_char) ->
+  if id? && status_char? && (status_char == "R" || status_char == "Q")
+    $("#stop_button").attr("href", joinRoot(Routes.stop_osc_job_path(id)))
+    $("#stop_button").data("method", "PUT")
     $("#stop_button").removeAttr("disabled")
     $("#stop_button").unbind('click', false)
   else
