@@ -1,0 +1,25 @@
+{
+  "name": "osc-shell",
+  "version": "0.0.1",
+  "description": "OSC Shell. Shell access in the browser to OSC login nodes.",
+  "author": "Jeremy Nicklas <jnicklas@osc.edu>",
+  "license": "MIT",
+  "main": "app.js",
+  "homepage": "https://github.com/AweSim-OSC/osc-shell",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/AweSim-OSC/osc-shell.git",
+  },
+  "bugs": {
+    "url": "https://github.com/AweSim-OSC/osc-shell/issues"
+  },
+  "keywords": [
+    "shell access",
+    "ohio supercomputer center",
+    "osc"
+  ],
+  "dependencies": {
+    "wetty": "^0.2.0"
+  },
+  "private": true
+}
