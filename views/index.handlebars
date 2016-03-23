@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Wetty - The WebTTY Terminal Emulator</title>
+
+  <base href="{{{baseURI}}}/" />
+
+  <script src="wetty/hterm_all.js"></script>
+  <script src="socket.io/socket.io.js"></script>
+  <script>
+    // ugly monkey patch to add sub-uri support to wetty.js
+    var _io = io;
+    var io = function(uri, opts) {
+      opts.path = '{{{baseURI}}}/socket.io';
+      return _io(uri, opts);
+    }
+  </script>
+  <script src="wetty/wetty.js"></script>
+  <style>
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+      margin: 0px;
+    }
+    #terminal {
+      display: block;
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="terminal"></div>
+</body>
+
+</html>

@@ -8,7 +8,7 @@
   "homepage": "https://github.com/AweSim-OSC/osc-shell",
   "repository": {
     "type": "git",
-    "url": "git://github.com/AweSim-OSC/osc-shell.git",
+    "url": "git://github.com/AweSim-OSC/osc-shell.git"
   },
   "bugs": {
     "url": "https://github.com/AweSim-OSC/osc-shell/issues"
@@ -19,7 +19,9 @@
     "osc"
   ],
   "dependencies": {
-    "wetty": "^0.2.0"
+    "wetty": "^0.2.0",
+    "base-uri": "^1.0.1",
+    "express-handlebars": "^3.0.0"
   },
   "private": true
 }
