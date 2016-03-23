@@ -1,9 +1,6 @@
-<h1>Dashboard#index</h1>
-
-
-<h2>Disk quota</h2>
+<h3>Disk quota</h3>
 <p>TODO</p>
 
 
-<h2>MOTD</h2>
-<p>TODO</p>
+<%= render partial: "motd", locals: { motd: MotdFile.new(update_user_view_timestamp: true) } %>
+
