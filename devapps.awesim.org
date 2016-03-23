@@ -7,6 +7,15 @@ OIDCClientSecret CVgrZYtAkZALspkKDSlLtByn
 OIDCRedirectURI http://websvcs08.osc.edu:5000/redirect_uri
 OIDCCryptoPassphrase badpassword
 
+# Interval in seconds after which the session will be invalidated when no interaction has occurred.
+# When not defined, the default is 300 seconds.
+OIDCSessionInactivityTimeout 28800
+
+# Maximum duration of the application session
+# When not defined the default is 8 hours (3600 * 8 seconds).
+# When set to 0, the session duration will be set equal to the expiry time of the ID token.
+OIDCSessionMaxDuration 28800
+
 # Lua script settings
 Define LUA_ROOT         '/nfs/17/jnicklas/Tests/w8/httpd/root_mod/lua/scripts'
 Define USER_MAP_SCRIPT  '/nfs/17/jnicklas/Tests/w8/httpd/mapper'
@@ -21,7 +30,7 @@ Define NGINX_URI '/nginx'
 Define PROXY_URI '/proxy'
 
 Define PUBLIC_URI  '/public'
-Define PUBLIC_ROOT '/tmp/public'
+Define PUBLIC_ROOT '/nfs/gpfs/PZS0645/www/public'
 
 #
 # devapps.awesim.org
