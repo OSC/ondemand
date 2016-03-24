@@ -2,13 +2,13 @@ require 'user_map'
 require 'proxy_helpers'
 
 --[[
-  pun_handler
+  pun_proxy_handler
 
   Maps an authenticated user to a system user. Then proxies user's traffic to
   user's backend PUN through a Unix domain socket. If the backend PUN is down,
   then launch the user's PUN through a redirect.
 --]]
-function pun_handler(r)
+function pun_proxy_handler(r)
   -- read in OOD specific settings defined in Apache config
   local user_map_cmd     = r.subprocess_env['OOD_USER_MAP_CMD']
   local pun_socket_root  = r.subprocess_env['OOD_PUN_SOCKET_ROOT']
