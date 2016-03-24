@@ -7,7 +7,7 @@
     <%= f.form_group :script_path, label: { text: "Specify job script:" } do %>
         <% osc_job.folder_contents.each do |content| %>
             <% if File.file?(content) %>
-              <%= f.radio_button :script_path, content, label: content, checked: (content == osc_job.script_path) %>
+              <%= f.radio_button :script_path, content, label: content.gsub(osc_job.staged_dir, ""), checked: (content == osc_job.script_path) %>
             <% end %>
         <% end %>
     <% end %>
