@@ -30,6 +30,8 @@ class OscJobsController < ApplicationController
   def create
     @osc_job = OscJob.new(osc_job_params)
     @osc_job.staged_dir = @osc_job.stage.to_s
+    new_script_path = Pathname.new(@osc_job.staged_dir).join(@osc_job.staged_script_name).to_s
+    @osc_job.script_path = new_script_path
 
     respond_to do |format|
       if @osc_job.save
