@@ -30,21 +30,21 @@ function nginx_handler(r)
   -- generate shell command from requested task
   -- please see `nginx_stage` documentation for explanation of shell command
   local pun_stage_subcmd
-  local pun_stage_args = "-u '" .. user .. "'"
+  local pun_stage_args = "-u '" .. r:escape(user) .. "'"
   if task == "init" then
     -- initialize app based on "redir" param
     pun_stage_subcmd = "app"
     local pun_app_request = redir:match("^" .. pun_uri .. "(/.+)$")
-    pun_stage_args = pun_stage_args .. " -i '" .. pun_uri .. "' -r '" .. pun_app_request .. "'"
+    pun_stage_args = pun_stage_args .. " -i '" .. r:escape(pun_uri) .. "' -r '" .. r:escape(pun_app_request) .. "'"
   else
     if task == "start" then
       -- start PUN process
       pun_stage_subcmd = "pun"
-      pun_stage_args = pun_stage_args .. " -a '" .. nginx_uri .. "/init?redir=$http_x_forwarded_escaped_uri'"
+      pun_stage_args = pun_stage_args .. " -a '" .. r:escape(nginx_uri .. "/init?redir=$http_x_forwarded_escaped_uri") .. "'"
     else
       -- send task as signal to PUN process
       pun_stage_subcmd = "nginx"
-      pun_stage_args = pun_stage_args .. " -s '" .. task .. "'"
+      pun_stage_args = pun_stage_args .. " -s '" .. r:escape(task) .. "'"
     end
   end
 
