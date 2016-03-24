@@ -2,6 +2,7 @@ class OscJob < ActiveRecord::Base
   has_many :jobs, class_name: "OscJobJob", dependent: :destroy
   has_machete_workflow_of :jobs
 
+  attr_accessor :name, :batch_host, :script_path
 
   # Name that defines the template/target dirs
   def staging_template_name
@@ -18,7 +19,8 @@ class OscJob < ActiveRecord::Base
   end
 
   def folder_contents
-    Dir.glob("#{staged_dir}/*").sort
+    dir = staged_dir || Dir.home
+    Dir.glob("#{dir}/*").sort
   end
 
   # Define tasks to do after staging template directory typically copy over
