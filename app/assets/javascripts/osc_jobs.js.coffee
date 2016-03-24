@@ -23,18 +23,20 @@
 
         update_status_label(id, data.status_label)
         update_job_details_panel(data)
+        update_open_dir_button(data.fs_root)
+        update_edit_button(id)
         update_submit_button(id, data.status.char)
         update_stop_button(id, data.status.char)
-        update_open_dir_button(data.fs_root)
         update_template_button(data.script_path, data.batch_host)
         list_folder_contents(data)
 
   else
     update_job_details_panel()
+    update_open_dir_button()
+    update_edit_button()
     update_submit_button()
     update_stop_button()
     update_template_button()
-    update_open_dir_button()
     list_folder_contents()
 
 @show_job_panel = (show) ->
@@ -52,7 +54,7 @@
     $("#jobDetailsName").text(data.name)
     # TODO On selected change, do an ajax call to change it on the object
     $("#jobDetailsServerSelect option[value=#{data.batch_host}]").prop("selected", "selected")
-    $("#jobDetailsStagedDir").text(abs_path(data.script_path))
+    $("#jobDetailsStagedDir").text(data.staged_dir)
     show_job_panel(true)
   else
     show_job_panel()
@@ -77,6 +79,16 @@
     $("#copy_button").attr("href", "#")
     $("#copy_button").attr("disabled", true)
     $("#copy_button").bind('click', false)
+
+@update_edit_button = (id) ->
+  if id?
+    $("#edit_button").attr("href", joinRoot(Routes.edit_osc_job_path(id)))
+    $("#edit_button").removeAttr("disabled")
+    $("#edit_button").unbind('click', false)
+  else
+    $("#edit_button").removeAttr("href")
+    $("#edit_button").attr("disabled", true)
+    $("#edit_button").bind('click', false)
 
 @update_submit_button = (id, status_char) ->
   if id? && !status_char?
