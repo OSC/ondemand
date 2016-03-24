@@ -2,8 +2,6 @@ class OscJob < ActiveRecord::Base
   has_many :jobs, class_name: "OscJobJob", dependent: :destroy
   has_machete_workflow_of :jobs
 
-  attr_accessor :name, :batch_host, :script_path
-
   # Name that defines the template/target dirs
   def staging_template_name
     "osc_job"
