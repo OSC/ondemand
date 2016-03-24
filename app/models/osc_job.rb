@@ -21,7 +21,7 @@ class OscJob < ActiveRecord::Base
     dir = self.staged_dir || Dir.home
     file_paths = []
     Find.find(dir) do |path|
-      file_paths << path
+      file_paths << path unless path == dir
     end
     file_paths
   end
