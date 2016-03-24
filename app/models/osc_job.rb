@@ -17,6 +17,10 @@ class OscJob < ActiveRecord::Base
     File.dirname(self.script_path)
   end
 
+  def folder_contents
+    Dir.glob("#{staged_dir}/*").sort
+  end
+
   # Define tasks to do after staging template directory typically copy over
   # uploaded files here
   # def after_stage(staged_dir)

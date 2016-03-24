@@ -12,7 +12,6 @@ class OscJobsController < ApplicationController
   def show
     @osc_job = OscJob.find(params[:id])
     @osc_job.jobs.last.update_status! unless @osc_job.jobs.last.nil?
-    @folder_contents = Dir.glob("#{OscJob.find(params[:id]).staged_dir}/*").sort
   end
 
   # GET /osc_jobs/new
