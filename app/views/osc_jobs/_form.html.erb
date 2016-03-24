@@ -3,7 +3,7 @@
   <%= f.alert_message "Please fix the errors below." %>
 
   <%= f.text_field :name %>
-  <%= f.select :batch_host, Servers, { label: "Batch Server:" }, { class: "selectpicker" } %>
+  <%= f.select :batch_host, Servers.map { |key, val| [ "#{key.titleize} (#{val[:pbshost]})", key ] }, { label: "Batch Server:" }, { class: "selectpicker" } %>
   <%= f.select :script_path, @templates.map { |t| [ "#{t.name}: #{t.path}".html_safe, t.path] }, { label: "Template:" }, { class: "selectpicker", id: "templateSelector", onchange: 'console.log(this)', required: true } %>
 
   <%= f.submit 'Save', class: 'btn btn-primary' %>
