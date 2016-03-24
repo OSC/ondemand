@@ -35,7 +35,7 @@ class OscJobsController < ApplicationController
 
     respond_to do |format|
       if @osc_job.save
-        format.html { redirect_to @osc_job, notice: 'Osc job was successfully created.' }
+        format.html { redirect_to @osc_job, notice: 'Job was successfully created.' }
         format.json { render :show, status: :created, location: @osc_job }
       else
         format.html { render :new }
@@ -49,7 +49,7 @@ class OscJobsController < ApplicationController
   def update
     respond_to do |format|
       if @osc_job.update(osc_job_params)
-        format.html { redirect_to @osc_job, notice: 'Osc job was successfully updated.' }
+        format.html { redirect_to osc_jobs_path, notice: 'Job was successfully updated.' }
         format.json { render :show, status: :ok, location: @osc_job }
       else
         format.html { render :edit }
