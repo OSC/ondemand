@@ -1,14 +1,15 @@
+require 'find'
+
 class OscJob < ActiveRecord::Base
   has_many :jobs, class_name: "OscJobJob", dependent: :destroy
   has_machete_workflow_of :jobs
 
   # Name that defines the template/target dirs
-  def staging_template_name
-    "osc_job"
-  end
+  #def staging_template_name
+  #  "osc_jobs"
+  #end
 
   def staged_script_name
-    # TODO allow set this to something else
     File.basename(self.script_path)
   end
 
@@ -17,8 +18,12 @@ class OscJob < ActiveRecord::Base
   end
 
   def folder_contents
-    dir = staged_dir || Dir.home
-    Dir.glob("#{dir}/*").sort
+    dir = self.staged_dir || Dir.home
+    file_paths = []
+    Find.find(dir) do |path|
+      file_paths << path
+    end
+    file_paths
   end
 
   # Define tasks to do after staging template directory typically copy over
