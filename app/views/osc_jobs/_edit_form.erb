@@ -1,0 +1,20 @@
+<%# Uses rails_bootstrap_form gem. API at: https://github.com/bootstrap-ruby/rails-bootstrap-forms %>
+<%= bootstrap_form_for(osc_job) do |f| %>
+    <%= f.alert_message "Please fix the errors below." %>
+
+    <%= f.text_field :name %>
+    <%= f.select :batch_host, Servers.map { |key, val| [ "#{key.titleize} (#{val[:pbshost]})", key ] }, { label: "Batch Server:" }, { class: "selectpicker" } %>
+    <%= f.form_group :script_path, label: { text: "Specify job script:" } do %>
+        <% osc_job.folder_contents.each do |content| %>
+            <% if File.file?(content) %>
+              <%= f.radio_button :script_path, content, label: File.basename(content), checked: (content == osc_job.script_path) %>
+            <% end %>
+        <% end %>
+    <% end %>
+
+    <%= f.submit 'Save', class: 'btn btn-primary' %>
+    <%= f.button 'Reset', type: :reset, class: 'btn btn-default' %>
+
+    <%= link_to 'Back', osc_jobs_path, class: 'btn btn-default' %>
+    <%= link_to 'Show', osc_job, class: 'btn btn-primary' unless osc_job.new_record? %>
+<% end %>
