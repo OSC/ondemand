@@ -12,7 +12,10 @@ module NginxStage
         {
           opt_args: ["-u", "--user=USER", "# The USER of the per-user nginx process"],
           required: true,
-          before_init: -> user { User.new user }
+          before_init: -> (user) do
+            raise InvalidUser, "invalid user name syntax: #{user}" if user =~ /[^\w]/
+            User.new user
+          end
         }
       end
 

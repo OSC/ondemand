@@ -36,6 +36,7 @@ module NginxStage
       {
         opt_args: ["-r", "--sub-request=SUB_REQUEST", "# The SUB_REQUEST that requests the specified app"],
         required: true
+        # sub-request is validated in `NginxStage::parse_app_request`
       }
     end
 
@@ -47,7 +48,11 @@ module NginxStage
     add_option :sub_uri do
       {
         opt_args: ["-i", "--sub-uri=SUB_URI", "# The SUB_URI that requests the per-user nginx", "# Default: ''"],
-        default: ''
+        default: '',
+        before_init: -> (sub_uri) do
+          raise InvalidSubUri, "invalid sub-uri syntax: #{sub_uri}" if sub_uri =~ /[^-\w\/]/
+          sub_uri
+        end
       }
     end
 

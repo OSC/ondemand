@@ -32,7 +32,11 @@ module NginxStage
     add_option :app_init_uri do
       {
         opt_args: ["-a", "--app-init-uri=APP_INIT_URI", "# The user is redirected to the APP_INIT_URI if app doesn't exist"],
-        default: nil
+        default: nil,
+        before_init: -> (uri) do
+          raise InvalidAppInitUri, "invalid app-init-uri syntax: #{uri}" if uri =~ /[^-\w\/?$=&]/
+          uri
+        end
       }
     end
 

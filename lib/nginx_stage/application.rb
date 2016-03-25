@@ -1,4 +1,5 @@
 require 'optparse'
+require 'cgi'
 
 module NginxStage
   # The command line interface for NginxStage
@@ -78,7 +79,7 @@ module NginxStage
         opts.separator "Required options:"
         generator.options.select {|k,v| v[:required]}.each do |k, v|
           opts.on(*v[:opt_args]) do |input|
-            options[k] = sanitize input
+            options[k] = unescape(input)
           end
         end
 
@@ -86,7 +87,7 @@ module NginxStage
         opts.separator "General options:"
         generator.options.select {|k,v| !v[:required]}.each do |k, v|
           opts.on(*v[:opt_args]) do |input|
-            options[k] = sanitize input
+            options[k] = unescape(input)
           end
         end
 
@@ -109,14 +110,9 @@ module NginxStage
 
 
     private
-      # Sanitizes any bad characters received by user input
-      # only accepts: a-z, A-Z, 0-9, _, -, /, ., ?, =, $
-      def self.sanitize(input)
-        if input.respond_to?(:gsub)
-          input.gsub(/[^\w\/.?=$-]/, '')
-        else
-          input
-        end
+      # Unescape string
+      def self.unescape(value)
+        value.respond_to?(:gsub) ? CGI::unescape(value) : value
       end
   end
 end
