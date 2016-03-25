@@ -44,7 +44,7 @@ module NginxStage
     # Members of user's primary group
     # @return [Array<String>] list of users in primary group
     def group_mem
-      @group_mem
+      @group.mem
     end
 
     # Convert object to string using user name as string value
