@@ -69,8 +69,9 @@ module NginxStage
     # @return [Array<String>, nil] white-list of groups required for owners of apps
     attr_accessor :owner_groups
 
+    # Hash of locations on the file system where apps reside for a given
+    # environment
     # @return [Hash] relative path wrt app root for given app environment
-    # @see #app_config_root
     attr_accessor :app_root
 
     # App URI request format that depends on the corresponding environment
