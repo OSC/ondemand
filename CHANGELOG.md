@@ -3,6 +3,15 @@
 Features:
 
   - display user name in process information
+  - set maximum upload file size to 10 GB in nginx config
+  - uses unix group whitelists for consumers and publishers of apps
+  - sys admins can now define configuration options in `config/nginx_stage.yml`
+
+Bugfixes:
+
+  - uses URL escaped strings for CLI arguments (security fix)
+  - app requests with periods in the app name now work
+  - fixed code typo in `User` class
 
 ## 0.0.3 (2016-02-04)
 
