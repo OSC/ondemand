@@ -3,17 +3,16 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
 require 'yaml'
 require 'optparse'
-
 require 'nginx_stage'
 
-# Grab a user specified yaml configuration file
+# Read in a user specified configuration file as an argument
 config_file = nil
 OptionParser.new do |opts|
   opts.banner = "Usage: nginx_stage_dev --config=CONFIG -- COMMAND [OPTIONS]"
 
   opts.separator ""
   opts.on("-c", "--config=CONFIG", "The yaml CONFIG file used to set up nginx_stage") do |c|
-    config_file = c
+    config_file = File.expand_path(c)
   end
   opts.on_tail("-h", "--help", "Show this help message") do
     puts opts
@@ -22,10 +21,12 @@ OptionParser.new do |opts|
 end.parse!
 raise OptionParser::MissingArgument, "--config=CONFIG" unless config_file
 
-# Set up nginx_stage configuration from yaml file
-config_hash = YAML.load_file(File.expand_path(config_file))
-NginxStage.configure do |config|
-  config_hash.each { |k, v| config.send("#{k}=", v) }
+# Read in yaml configuration file if exists
+if File.file? config_file
+  config_hash = YAML.load_file(config_file)
+  NginxStage.configure do |config|
+    config_hash.each { |k,v| config.send("#{k}=", v) }
+  end
 end
 
 # Start up nginx_stage application

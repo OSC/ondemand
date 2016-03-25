@@ -1,6 +1,17 @@
 #!/opt/ood/nginx_stage/bin/ood_ruby
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
+require 'yaml'
 require 'nginx_stage'
 
+# Read in yaml configuration file if exists
+config_file = File.expand_path('../../config/nginx_stage.yml', __FILE__)
+if File.file? config_file
+  config_hash = YAML.load_file(config_file)
+  NginxStage.configure do |config|
+    config_hash.each { |k,v| config.send("#{k}=", v) }
+  end
+end
+
+# Start up the nginx_stage application
 NginxStage::Application.start

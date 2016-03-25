@@ -1,0 +1,108 @@
+#
+# This is an example NginxStage CLI configuration file. It contains the
+# configuration options that can be specified to meet your system requirements.
+# See https://code.osu.edu/open-ondemand/nginx_stage/blob/master/README.md for
+# detailed information about NginxStage. In particular see
+# https://code.osu.edu/open-ondemand/nginx_stage/blob/master/lib/nginx_stage/configuration.rb
+# for a detailed list of all possible configuration options and their default
+# settings.
+#
+# Below you can find the default values for each configuration option commented
+# out. Feel free to uncomment it and make modifications or write your
+# modifications directly below the commented defaults.
+#
+
+---
+
+# The reverse proxy daemon user used to access the Unix domain sockets
+#
+#proxy_user: 'apache'
+
+# Location of the ERB templates used in the generation of the NGINX configs
+#
+#template_root: '/opt/ood/nginx_stage/templates'
+
+# Root location of per-user NGINX configs
+#
+#pun_config_root: '/var/lib/nginx/config'
+
+# Root location of per-user NGINX app configs
+#
+#app_config_root: '/var/lib/nginx/config'
+
+# Root location of per-user NGINX tmp dirs
+#
+#pun_tmp_root: '/var/lib/nginx/tmp'
+
+# Root location of per-user NGINX logs
+#
+#pun_log_root: '/var/log/nginx'
+
+# Root location of per-user NGINX pid/socket files
+#
+#pun_run_root: '/var/run/nginx'
+
+# Path to system-installed NGINX 'mime.types' file
+#
+#mime_types_path: '/opt/rh/nginx16/root/etc/nginx/mime.types'
+
+# Path to system-installed Passenger 'locations.ini' file
+#
+#passenger_root: '/opt/rh/rh-passenger40/root/usr/share/passenger/phusion_passenger/locations.ini'
+
+# Path to system-installed Ruby binary
+#
+#passenger_ruby: '/opt/rh/rh-ruby22/root/usr/bin/ruby'
+
+# Path to system-installed Node.js binary
+#
+#passenger_nodejs: '/opt/rh/nodejs010/root/usr/bin/node'
+
+# Path to system-installed NGINX binary
+#
+#nginx_bin: '/opt/rh/nginx16/root/usr/sbin/nginx'
+
+# White-list of signals that can be sent to the NGINX process, must be
+# expressed as Ruby symbols
+#
+#nginx_signals:
+#  - :stop
+#  - :quit
+#  - :reopen
+#  - :reload
+
+# Minimum user id required to generate per-user NGINX server as the requested
+# user
+#
+#min_uid: 1000
+
+# White-list of groups user must be part of to generate per-user NGINX server
+# as. If set to `nil` then allow all users irrespective of what groups they are
+# in.
+#
+#user_groups: nil
+
+# White-list of groups that owner of app must be part of in order for his/her
+# app to be launched by another user's PUN. If set to `nil` then allow all
+# users to publish apps.
+#
+#owner_groups: nil
+
+# A hash detailing the locations on the file system where apps reside for the
+# corresponding environment
+#
+#app_root:
+#  dev: '~%{owner}/ood_dev/%{name}'
+#  shared: '~%{owner}/ood_shared/%{name}'
+
+# Hash of app URI request formats for a corresponding environment
+#
+#app_request_format:
+#  dev: '/dev/%{name}'
+#  shared: '/shared/%{owner}/%{name}'
+
+# Hash of regular expressions used to define app namespace from a URI request
+#
+#app_request_regex:
+#  dev: !ruby/regexp '/^\/dev\/(?<name>[-\w.]+)/'
+#  shared: !ruby/regexp '/^\/shared\/(?<owner>[\w]+)\/(?<name>[-\w.]+)/'

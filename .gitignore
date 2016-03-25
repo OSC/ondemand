@@ -13,3 +13,4 @@
 *.a
 mkmf.log
 /*.yml
+/config/nginx_stage.yml

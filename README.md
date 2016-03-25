@@ -83,7 +83,40 @@ standard libraries making installation a breeze.
 
     **Warning**: This user must be very trusted! Don't say we didn't warn you.
 
+## Configuration
+
+After installing in your preferred `prefix`, change your working directory to
+this location.
+
+```
+cd /opt/ood/nginx_stage
+```
+
+The binary `sbin/nginx_stage` will always look for a configuration file located
+at:
+
+```
+config/nginx_stage.yml
+```
+
+If this file does not exist it will fallback to the default configuration
+values for all options. A list of configuration options as well as their
+corresponding defaults can be found in:
+
+```
+config/nginx_stage.default.yml
+```
+
+We recommend copying the above file to `config/nginx_stage.yml` and modifying
+it to meet your needs.
+
+Note: Future installations/upgrades of `nginx_stage` will not write over this
+`config/nginx_stage.yml` file.
+
 ## Usage
+
+Note: The `nginx_stage` CLI options can be specified as URL encoded strings to
+avoid having to escape special characters in the shell.
 
 ```
 $ sudo nginx_stage --help
