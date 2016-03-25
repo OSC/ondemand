@@ -112,8 +112,8 @@ module NginxStage
         shared: '/shared/%{owner}/%{name}'
       }
       self.app_request_regex = {
-        dev: %r[^/dev/(?<name>[\w-]+)],
-        shared: %r[^/shared/(?<owner>[\w-]+)/(?<name>[\w-]+)]
+        dev: %r[^/dev/(?<name>[-\w.]+)],
+        shared: %r[^/shared/(?<owner>[\w]+)/(?<name>[-\w.]+)]
       }
     end
   end
