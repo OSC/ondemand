@@ -26,11 +26,16 @@ module NginxStage
     #   @return [String] the shell
     delegate [:name, :uid, :gid, :gecos, :dir, :shell] => :@passwd
 
+    # List of all groups that user belongs to
+    # @return [Array<String>] list of groups user is in
+    attr_reader :groups
+
     # @param user [String] the user name defining this object
     # @raise [InvalidUser] if user doesn't exist on local system
     def initialize(user)
       @passwd = Etc.getpwnam user
       @group = Etc.getgrgid gid
+      @groups = get_groups
     rescue ArgumentError
       raise InvalidUser, "user doesn't exist: #{user}"
     end
@@ -59,5 +64,12 @@ module NginxStage
     def to_str
       @passwd.name
     end
+
+    private
+      # Use `id` to get list of groups as the /etc/group file can give
+      # erroneous results
+      def get_groups
+        `id -nG #{name}`.split(' ')
+      end
   end
 end

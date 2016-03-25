@@ -59,6 +59,16 @@ module NginxStage
     # @return [Integer] minimum user id required to run as user
     attr_accessor :min_uid
 
+    # Allowed groups that user must be part of to be able to access apps. If
+    # the list is nil, then allow all users access to apps.
+    # @return [Array<String>, nil] white-list of groups required for users
+    attr_accessor :user_groups
+
+    # Allowed groups that owner of apps must be part of if apps are to be
+    # shared. If the list is nil, then allow all users to publish apps.
+    # @return [Array<String>, nil] white-list of groups required for owners of apps
+    attr_accessor :owner_groups
+
     # @return [Hash] relative path wrt app root for given app environment
     # @see #app_config_root
     attr_accessor :app_root
@@ -103,6 +113,8 @@ module NginxStage
       self.nginx_bin        = '/opt/rh/nginx16/root/usr/sbin/nginx'
       self.nginx_signals    = %i(stop quit reopen reload)
       self.min_uid          = 1000
+      self.user_groups      = nil
+      self.owner_groups     = nil
       self.app_root = {
         dev: '~%{owner}/ood_dev/%{name}',
         shared: '~%{owner}/ood_shared/%{name}'
