@@ -37,6 +37,15 @@ standard libraries making installation a breeze.
 
     this will install the specifed version `<tag>` in `/opt/ood/nginx_stage`
 
+    Note: Running `sudo` will sanitize your current environment. For the case
+    of RHEL using Software Collections it is recommended to load the
+    environment inside the `sudo` process:
+
+    ```
+    cd /path/to/repo
+    sudo scl enable rh-ruby22 -- rake install tag=<tag>
+    ```
+
     Examples:
 
     ```
