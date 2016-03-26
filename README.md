@@ -1,2 +1,3 @@
 # mod_lua_proxy
-The Open OnDemand Lua module project
+
+An Apache httpd module implementing the Open OnDemand proxy API.
