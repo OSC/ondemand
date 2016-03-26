@@ -1,3 +1,3 @@
-# Open OnDemand httpd Configs
+# httpd-ood-portal
 
-TODO...
+Deployment Apache httpd configs for an Open OnDemand portal.
