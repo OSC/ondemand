@@ -1,5 +1,5 @@
-require 'user_map'
-require 'proxy_helpers'
+local user_map = require 'ood.user_map'
+local proxy    = require 'ood.proxy'
 
 --[[
   pun_proxy_handler
@@ -14,7 +14,7 @@ function pun_proxy_handler(r)
   local pun_socket_root  = r.subprocess_env['OOD_PUN_SOCKET_ROOT']
 
   -- get the system-level user name
-  local user = user_map(r, user_map_cmd)
+  local user = user_map.map(r, user_map_cmd)
 
   -- generate connection object used in setting the reverse proxy
   local conn = {}
@@ -23,7 +23,7 @@ function pun_proxy_handler(r)
   conn.uri = r.unparsed_uri
 
   -- setup request for reverse proxy
-  set_reverse_proxy(r, conn)
+  proxy.set_reverse_proxy(r, conn)
 
   -- handle if backend server is down
   r:custom_response(503, "/nginx/start?redir=" .. r:escape(conn.uri))

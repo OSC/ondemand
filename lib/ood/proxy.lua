@@ -23,3 +23,7 @@ function set_reverse_proxy(r, conn)
   r.headers_in['X-Forwarded-User'] = conn.user or ""            -- provide authenticated user name
   r.headers_in['X-Forwarded-Escaped-Uri'] = r:escape(conn.uri)  -- **required** by PUN when initializing app
 end
+
+return {
+  set_reverse_proxy = set_reverse_proxy
+}

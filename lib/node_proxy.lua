@@ -1,5 +1,5 @@
-require 'user_map'
-require 'proxy_helpers'
+local user_map = require 'ood.user_map'
+local proxy    = require 'ood.proxy'
 
 --[[
   node_proxy_handler
@@ -13,7 +13,7 @@ function node_proxy_handler(r)
   local node_uri     = r.subprocess_env['OOD_NODE_URI']
 
   -- get the system-level user name
-  local user = user_map(r, user_map_cmd)
+  local user = user_map.map(r, user_map_cmd)
 
   -- get the host & port of webserver on backend node from request
   local host, port = r.uri:match("^" .. node_uri .. "/([^/]+)/([^/]+)")
@@ -25,7 +25,7 @@ function node_proxy_handler(r)
   conn.uri = r.unparsed_uri
 
   -- setup request for reverse proxy
-  set_reverse_proxy(r, conn)
+  proxy.set_reverse_proxy(r, conn)
 
   -- handle if backend server is down
   r:custom_response(503, "Failed to connect to " .. conn.server)

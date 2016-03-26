@@ -1,4 +1,4 @@
-require 'user_map'
+local user_map = require 'ood.user_map'
 
 --[[
   nginx_handler
@@ -18,7 +18,7 @@ function nginx_handler(r)
   local pun_stage_cmd = r.subprocess_env['OOD_PUN_STAGE_CMD']
 
   -- get the system-level user name
-  local user = user_map(r, user_map_cmd)
+  local user = user_map.map(r, user_map_cmd)
 
   -- grab "redir" query param
   local GET, GETMULTI = r:parseargs()

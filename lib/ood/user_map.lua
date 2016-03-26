@@ -1,10 +1,10 @@
 --[[
-  user_map
+  map
 
   Given a request and authenticated user, map this user to a system-level user
   using the supplied shell command.
 --]]
-function user_map(r, user_map_cmd)
+function map(r, user_map_cmd)
   -- read in authenticated user
   local auth_user = r.user
 
@@ -24,3 +24,7 @@ function user_map(r, user_map_cmd)
 
   return sys_user
 end
+
+return {
+  map = map
+}
