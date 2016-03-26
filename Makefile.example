@@ -1,0 +1,61 @@
+###########################
+# Build options
+###########################
+
+PREFIX   := /opt/rh/httpd24/root/etc/httpd/conf.d
+TMPLDIR  := templates
+BUILDDIR := build
+CONFFILE := ood-portal.conf
+RENDERER := envsubst
+
+###########################
+# Server specific options
+###########################
+
+# IP used for Open OnDemand portal
+export OOD_IP := *:7000
+
+# Subdomain used for the Open OnDemand portal
+export OOD_SUBDOMAIN := apps.ondemand.org
+
+###########################
+# System specific options
+###########################
+
+# Path to the Open OnDemand Lua scripts
+export OOD_LUA_ROOT := /nfs/17/jnicklas/Development/mod_ood_proxy/lib
+
+# Command used to stage PUNs
+export OOD_PUN_STAGE_CMD := sudo /opt/ood/nginx_stage/sbin/nginx_stage_dev --config /nfs/17/jnicklas/Development/nginx_stage/config.yml --
+
+# Command used to map users to system level users
+export OOD_USER_MAP_CMD := /nfs/17/jnicklas/Development/osc-user-map/bin/osc-user-map
+
+# Path to the root location of PUN socket files
+export OOD_PUN_SOCKET_ROOT := /var/tmp/nginx_stage0/var/run/nginx
+
+# Path to publicly available assets
+export OOD_PUBLIC_ROOT := /nfs/gpfs/PZS0645/www/public
+
+###########################
+# OOD Portal URIs
+###########################
+
+# Reverse proxy to backend PUNs
+export OOD_PUN_URI := /pun
+
+# Reverse proxy to backend nodes
+export OOD_NODE_URI := /node
+
+# Control the backend PUN (e.g., start, stop, reload, ...)
+export OOD_NGINX_URI := /nginx
+
+# Serve up publicly available assets
+export OOD_PUBLIC_URI := /public
+
+
+###########################
+# Do not modify below
+###########################
+
+include base.mk
