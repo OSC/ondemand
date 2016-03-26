@@ -21,7 +21,10 @@ Listen "${OOD_IP}"
   #
   SetEnv OOD_USER_MAP_CMD "${OOD_USER_MAP_CMD}"
 
-  # Serve up publicly available assets
+  # Serve up publicly available assets from local file system:
+  #
+  #    https://${OOD_SUBDOMAIN}${OOD_PUBLIC_URI}/assets/images/osc-logo.png
+  #    #=> ${OOD_PUBLIC_ROOT}/assets/images/osc-logo.png
   #
   Alias "${OOD_PUBLIC_URI}" "${OOD_PUBLIC_ROOT}"
   <Directory "${OOD_PUBLIC_ROOT}">
@@ -30,7 +33,13 @@ Listen "${OOD_IP}"
     Require all granted
   </Directory>
 
-  # Reverse proxy to web servers on backend nodes using IP sockets
+  # Reverse proxy traffic to backend webserver through IP sockets:
+  #
+  #    https://${OOD_SUBDOMAIN}${OOD_NODE_URI}/HOST/PORT/index.html
+  #    #=> http://HOST:PORT/HOST/PORT/index.html
+  #
+  #    wss://${OOD_SUBDOMAIN}${OOD_NODE_URI}/HOST/PORT/socket.io
+  #    #=> ws://HOST:PORT/HOST/PORT/socket.io
   #
   <Location "${OOD_NODE_URI}">
     AuthType openid-connect
@@ -40,7 +49,13 @@ Listen "${OOD_IP}"
     LuaHookFixups node_proxy.lua node_proxy_handler
   </Location>
 
-  # Reverse proxy to backend PUNs using unix sockets
+  # Reverse proxy traffic to backend PUNs through Unix domain sockets:
+  #
+  #    https://${OOD_SUBDOMAIN}${OOD_PUN_URI}/dev/app/simulations/1
+  #    #=> unix:/path/to/socket|http://localhost${OOD_PUN_URI}/dev/app/simulations/1
+  #
+  #    wss://${OOD_SUBDOMAIN}${OOD_PUN_URI}/shared/bob/app/socket
+  #    #=> unix:/path/to/socket|ws://localhost${OOD_PUN_URI}/shared/bob/app/socket
   #
   <Location "${OOD_PUN_URI}">
     AuthType openid-connect
@@ -50,7 +65,12 @@ Listen "${OOD_IP}"
     LuaHookFixups pun_proxy.lua pun_proxy_handler
   </Location>
 
-  # Control backend PUN for specific user
+  # Control backend PUN for authenticated user:
+  #
+  #    https://${OOD_SUBDOMAIN}${OOD_NGINX_URI}/stop
+  #    #=> stops the authenticated user's PUN
+  #
+  # See mod_ood_proxy for more details.
   #
   <Location "${OOD_NGINX_URI}">
     AuthType openid-connect
