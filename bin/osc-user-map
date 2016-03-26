@@ -1,0 +1,14 @@
+#!/bin/bash
+
+declare -A users
+users["111507243067931506567@accounts.google.com"]="jnicklas"
+users["102555136695940613292@accounts.google.com"]="jnicklas"
+users["113597325271288644620@accounts.google.com"]="efranz"
+users["112387922473213146150@accounts.google.com"]="bmcmichael"
+users["112840957665765361885@accounts.google.com"]="bmcmichael"
+users["100407568355706659061@accounts.google.com"]="bmcmichael"
+users["116681954918771948545@accounts.google.com"]="bgohar"
+#users["111507243067931506567@accounts.google.com"]="awe0010"
+#users["102555136695940613292@accounts.google.com"]="awe0010"
+echo "${users["$1"]:-$1}"
+exit 0
