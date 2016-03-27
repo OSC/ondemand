@@ -47,7 +47,7 @@ Generates an Open OnDemand portal config for an Apache server.
     sudo make install
     ```
 
-5.  Restart your apache server.
+5.  Restart your Apache server.
 
 ## Version
 
