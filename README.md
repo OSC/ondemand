@@ -48,3 +48,14 @@ Generates an Open OnDemand portal config for an Apache server.
     ```
 
 5.  Restart your apache server.
+
+## Version
+
+To list the current version being used when building an OOD Portal config file,
+use:
+
+```
+make version
+```
+
+For individual configs, the version is listed in the header of the file.

@@ -58,4 +58,4 @@ export OOD_PUBLIC_URI := /public
 # Do not modify below
 ###########################
 
-include base.mk
+include targets.mk
