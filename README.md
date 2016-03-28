@@ -56,7 +56,25 @@ end
 
 ### nginx_handler
 
-Todo...
+This handler stages & controls the per-user NGINX process for the authenticated
+user. It is also responsible for staging the application configuration files,
+reloading the PUN process, and re-directing the user to the application.
+
+Arguments required by the handler:
+
+Argument          | Definition
+----------------- | ----------
+OOD_USER_MAP_CMD  | Full path to binary that maps the authenticated user name to the system-level user name. See `osc-user-map` as example.
+OOD_NGINX_URI     | The sub-URI that namespaces this handler from the other handlers [`/nginx`].
+OOD_PUN_URI       | The sub-URI that namespaces the PUN proxy handler [`/pun`].
+OOD_PUN_STAGE_CMD | Full path to the binary that stages/controls the per-user NGINX processes. See `nginx_stage` for further details on this binary.
+
+The following sub-URIs are introduced assuming `OOD_NGINX_URI` is `/nginx` and
+`OOD_PUN_URI` is `/pun`:
+
+sub-URI | Action
+------- | ------
+`/nginx/init?redir=<URL encoded PUN app URI>` | Calls `nginx_stage app -u <user> -i /pun -r <redir URI w/o /pun>` (which generates an app config for the user and reloads his/her PUN). If successful, the user's browser is redirected to `<redir URI>`.
 
 ### pun_proxy_handler
 
