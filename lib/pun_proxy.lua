@@ -10,8 +10,9 @@ local proxy    = require 'ood.proxy'
 --]]
 function pun_proxy_handler(r)
   -- read in OOD specific settings defined in Apache config
-  local user_map_cmd     = r.subprocess_env['OOD_USER_MAP_CMD']
-  local pun_socket_root  = r.subprocess_env['OOD_PUN_SOCKET_ROOT']
+  local user_map_cmd    = r.subprocess_env['OOD_USER_MAP_CMD']
+  local pun_socket_root = r.subprocess_env['OOD_PUN_SOCKET_ROOT']
+  local nginx_uri       = r.subprocess_env['OOD_NGINX_URI']
 
   -- get the system-level user name
   local user = user_map.map(r, user_map_cmd)
@@ -26,7 +27,7 @@ function pun_proxy_handler(r)
   proxy.set_reverse_proxy(r, conn)
 
   -- handle if backend server is down
-  r:custom_response(503, "/nginx/start?redir=" .. r:escape(conn.uri))
+  r:custom_response(503, nginx_uri .. "/start?redir=" .. r:escape(conn.uri))
 
   -- let the proxy handler do this instead
   return apache2.DECLINED
