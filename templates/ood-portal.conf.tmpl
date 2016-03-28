@@ -39,10 +39,10 @@ Listen "${OOD_IP}"
   # Reverse proxy traffic to backend webserver through IP sockets:
   #
   #    https://${OOD_SUBDOMAIN}${OOD_NODE_URI}/HOST/PORT/index.html
-  #    #=> http://HOST:PORT/HOST/PORT/index.html
+  #    #=> http://HOST:PORT${OOD_NODE_URI}/HOST/PORT/index.html
   #
   #    wss://${OOD_SUBDOMAIN}${OOD_NODE_URI}/HOST/PORT/socket.io
-  #    #=> ws://HOST:PORT/HOST/PORT/socket.io
+  #    #=> ws://HOST:PORT${OOD_NODE_URI}/HOST/PORT/socket.io
   #
   <Location "${OOD_NODE_URI}">
     AuthType "${OOD_AUTH_TYPE}"
