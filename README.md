@@ -60,7 +60,7 @@ This handler stages & controls the per-user NGINX process for the authenticated
 user. It is also responsible for staging the application configuration files,
 reloading the PUN process, and re-directing the user to the application.
 
-Arguments required by the handler:
+#### Required Arguments
 
 Argument          | Definition
 ----------------- | ----------
@@ -68,6 +68,8 @@ OOD_USER_MAP_CMD  | Full path to binary that maps the authenticated user name to
 OOD_PUN_STAGE_CMD | Full path to the binary that stages/controls the per-user NGINX processes. See `nginx_stage` for further details on this binary.
 OOD_NGINX_URI     | The sub-URI that namespaces this handler from the other handlers [`/nginx`].
 OOD_PUN_URI       | The sub-URI that namespaces the PUN proxy handler [`/pun`].
+
+#### Usage
 
 A typical Apache config will look like...
 
@@ -95,6 +97,30 @@ sub-URI example                 | Action
 This handler proxies the authenticated user's traffic to his/her backend PUN
 through a Unix domain socket. If the user's PUN is down, then the user will be
 redirected to `OOD_NGINX_URI/start?redir=<redir>` to start up their PUN.
+
+#### Required Arguments
+
+Argument            | Definition
+-----------------   | ----------
+OOD_USER_MAP_CMD    | Full path to binary that maps the authenticated user name to the system-level user name. See `osc-user-map` as example.
+OOD_PUN_SOCKET_ROOT | Full path to the root location where all the PUNs keep their sockets. In most typical installations this will be `/var/run/nginx`.
+OOD_NGINX_URI       | The sub-URI that namespaces this handler from the other handlers [`/nginx`].
+
+#### Usage
+
+A typical Apache config will look like...
+
+```
+SetEnv OOD_USER_MAP_CMD "/path/to/user-map-cmd"
+SetEnv OOD_NGINX_URI "/nginx"
+SetEnv OOD_PUN_SOCKET_ROOT "/path/to/nginx/sockets"
+
+LuaHookFixups pun_proxy.lua pun_proxy_handler
+```
+
+All requests underneath this sub-URI are proxied to the backend PUN. Very
+little logic is handled in this handler aside from connecting the authenticated
+user to their correct Unix domain socket.
 
 ### node_proxy_handler
 
