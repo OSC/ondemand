@@ -87,7 +87,7 @@ Todo...
 
 Todo...
 
-## OOD_USER_MAP_CMD Details
+## `OOD_USER_MAP_CMD` Details
 
 All of the above API handlers make use of the `OOD_USER_MAP_CMD` to map the
 authenticated user to the system-level user. Whatever binary or script that is
