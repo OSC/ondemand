@@ -176,7 +176,7 @@ Note: The backend web server will need to use `/node/HOST/PORT` as its base
 URI. This should be programmatically determined before the backed web server is
 started depending on the host and port it will listen on.
 
-## `OOD_USER_MAP_CMD` Details
+## `OOD_USER_MAP_CMD` Specification
 
 All of the above API handlers make use of the `OOD_USER_MAP_CMD` to map the
 authenticated user to the system-level user. Whatever binary or script that is
