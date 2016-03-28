@@ -2,7 +2,7 @@
 <%= bootstrap_form_for(osc_job) do |f| %>
   <%= f.alert_message "Please fix the errors below." %>
 
-  <%= f.text_field :name %>
+  <%= f.text_field :name, required: true %>
   <%= f.select :batch_host, Servers.map { |key, val| [ "#{key.titleize} (#{val[:pbshost]})", key ] }, { label: "Batch Server:" }, { class: "selectpicker" } %>
   <%= f.select :script_path, @templates.map { |t| [ "#{t.name}: #{t.path}".html_safe, t.path] }, { label: "Template:" }, { class: "selectpicker", id: "templateSelector", onchange: 'console.log(this)', required: true } %>
 
