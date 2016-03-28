@@ -1,4 +1,5 @@
 local user_map = require 'ood.user_map'
+local http     = require 'ood.http'
 
 --[[
   nginx_handler
@@ -19,11 +20,7 @@ function nginx_handler(r)
 
   -- get the system-level user name
   local user = user_map.map(r, user_map_cmd)
-  if not user then
-    r.status = 404
-    r:write("Error -- failed to map user " .. r.user)
-    return apache2.DONE
-  end
+  if not user then return http.http404(r, "failed to map user (" .. r.user .. ")") end
 
   -- grab "redir" query param
   local GET, GETMULTI = r:parseargs()
@@ -37,20 +34,20 @@ function nginx_handler(r)
   local pun_stage_subcmd
   local pun_stage_args = "-u '" .. r:escape(user) .. "'"
   if task == "init" then
-    -- initialize app based on "redir" param
+    -- initialize app based on "redir" param (require a valid redir parameter)
     pun_stage_subcmd = "app"
+    if not redir then return http.http404(r, 'requires a `redir` query parameter') end
     local pun_app_request = redir:match("^" .. pun_uri .. "(/.+)$")
+    if not pun_app_request then return http.http404(r, "bad `redir` request (" .. redir .. ")") end
     pun_stage_args = pun_stage_args .. " -i '" .. r:escape(pun_uri) .. "' -r '" .. r:escape(pun_app_request) .. "'"
+  elseif task == "start" then
+    -- start PUN process
+    pun_stage_subcmd = "pun"
+    pun_stage_args = pun_stage_args .. " -a '" .. r:escape(nginx_uri .. "/init?redir=$http_x_forwarded_escaped_uri") .. "'"
   else
-    if task == "start" then
-      -- start PUN process
-      pun_stage_subcmd = "pun"
-      pun_stage_args = pun_stage_args .. " -a '" .. r:escape(nginx_uri .. "/init?redir=$http_x_forwarded_escaped_uri") .. "'"
-    else
-      -- send task as signal to PUN process
-      pun_stage_subcmd = "nginx"
-      pun_stage_args = pun_stage_args .. " -s '" .. r:escape(task) .. "'"
-    end
+    -- send task as signal to PUN process
+    pun_stage_subcmd = "nginx"
+    pun_stage_args = pun_stage_args .. " -s '" .. r:escape(task) .. "'"
   end
 
   -- run shell command and read in stdout/stderr
@@ -68,17 +65,13 @@ function nginx_handler(r)
       -- success & redirect
       r.status = 302
       r.headers_out['Location'] = redir
+      return apache2.DONE  -- skip remaining handlers
     else
       -- success, so inform the user
-      r.status = 200
-      r:write("Success")
+      return http.http200(r)
     end
   else
     -- something bad happened, so inform the user
-    r.status = 404
-    r:write("Error -- " .. pun_stage_output)
+    return http.http404(r, pun_stage_output)
   end
-
-  -- skip remaining handlers
-  return apache2.DONE
 end

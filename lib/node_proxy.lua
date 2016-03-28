@@ -1,5 +1,6 @@
 local user_map = require 'ood.user_map'
 local proxy    = require 'ood.proxy'
+local http     = require 'ood.http'
 
 --[[
   node_proxy_handler
@@ -14,11 +15,7 @@ function node_proxy_handler(r)
 
   -- get the system-level user name
   local user = user_map.map(r, user_map_cmd)
-  if not user then
-    r.status = 404
-    r:write("Error -- failed to map user " .. r.user)
-    return apache2.DONE
-  end
+  if not user then return http.http404(r, "failed to map user (" .. r.user .. ")") end
 
   -- get the host & port of webserver on backend node from request
   local host, port = r.uri:match("^" .. node_uri .. "/([^/]+)/([^/]+)")
