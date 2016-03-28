@@ -95,7 +95,8 @@ used must follow the below guidelines for it to work with `mod_ood_proxy`.
 
 1.  Must accept a single argument that is URL encoded
 
-    Example:
+    **Example:**
+
     User is authenticated as `383927209823098423@accounts.google.com`.
 
     The below command will be called:
@@ -106,7 +107,7 @@ used must follow the below guidelines for it to work with `mod_ood_proxy`.
 
 2.  If successfully mapped to a system-level user, must return only the user name to `stdout`.
 
-    Example:
+    **Example:**
 
     ```
     $ OOD_USER_MAP_CMD '383927209823098423%40accounts.google.com'
@@ -115,7 +116,7 @@ used must follow the below guidelines for it to work with `mod_ood_proxy`.
 
 3.  If unsuccessful at mapping to a system-level user, must return an empty string to `stdout`.
 
-    Example:
+    **Example:**
 
     ```
     $ OOD_USER_MAP_CMD '383927209823098423%40accounts.google.com'
