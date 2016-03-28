@@ -65,12 +65,23 @@ Arguments required by the handler:
 Argument          | Definition
 ----------------- | ----------
 OOD_USER_MAP_CMD  | Full path to binary that maps the authenticated user name to the system-level user name. See `osc-user-map` as example.
+OOD_PUN_STAGE_CMD | Full path to the binary that stages/controls the per-user NGINX processes. See `nginx_stage` for further details on this binary.
 OOD_NGINX_URI     | The sub-URI that namespaces this handler from the other handlers [`/nginx`].
 OOD_PUN_URI       | The sub-URI that namespaces the PUN proxy handler [`/pun`].
-OOD_PUN_STAGE_CMD | Full path to the binary that stages/controls the per-user NGINX processes. See `nginx_stage` for further details on this binary.
 
-The following sub-URIs are introduced assuming `OOD_NGINX_URI` is `/nginx` and
-`OOD_PUN_URI` is `/pun`:
+A typical Apache config will look like...
+
+```
+SetEnv OOD_USER_MAP_CMD "/path/to/user-map-cmd"
+SetEnv OOD_PUN_STAGE_CMD "/path/to/nginx_stage"
+SetEnv OOD_NGINX_URI "/nginx"
+SetEnv OOD_PUN_URI "/pun"
+
+LuaHookFixups nginx.lua nginx_handler
+```
+
+Assuming you define `OOD_NGINX_URI` as `/nginx` and `OOD_PUN_URI` as `/pun`,
+the `nginx_handler` implements the following sub-URIs:
 
 sub-URI example                 | Action
 ------------------------------- | ------
@@ -81,7 +92,9 @@ sub-URI example                 | Action
 
 ### pun_proxy_handler
 
-Todo...
+This handler proxies the authenticated user's traffic to his/her backend PUN
+through a Unix domain socket. If the user's PUN is down, then the user will be
+redirected to `OOD_NGINX_URI/start?redir=<redir>` to start up their PUN.
 
 ### node_proxy_handler
 
