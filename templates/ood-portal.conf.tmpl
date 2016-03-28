@@ -64,6 +64,7 @@ Listen "${OOD_IP}"
     AuthType openid-connect
     Require valid-user
 
+    SetEnv OOD_NGINX_URI "${OOD_NGINX_URI}"
     SetEnv OOD_PUN_SOCKET_ROOT "${OOD_PUN_SOCKET_ROOT}"
     LuaHookFixups pun_proxy.lua pun_proxy_handler
   </Location>
