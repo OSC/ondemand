@@ -45,7 +45,7 @@ Listen "${OOD_IP}"
   #    #=> ws://HOST:PORT/HOST/PORT/socket.io
   #
   <Location "${OOD_NODE_URI}">
-    AuthType openid-connect
+    AuthType "${OOD_AUTH_TYPE}"
     Require valid-user
 
     SetEnv OOD_NODE_URI "${OOD_NODE_URI}"
@@ -61,7 +61,7 @@ Listen "${OOD_IP}"
   #    #=> unix:/path/to/socket|ws://localhost${OOD_PUN_URI}/shared/bob/app/socket
   #
   <Location "${OOD_PUN_URI}">
-    AuthType openid-connect
+    AuthType "${OOD_AUTH_TYPE}"
     Require valid-user
 
     SetEnv OOD_NGINX_URI "${OOD_NGINX_URI}"
@@ -77,7 +77,7 @@ Listen "${OOD_IP}"
   # See mod_ood_proxy for more details.
   #
   <Location "${OOD_NGINX_URI}">
-    AuthType openid-connect
+    AuthType "${OOD_AUTH_TYPE}"
     Require valid-user
 
     SetEnv OOD_NGINX_URI "${OOD_NGINX_URI}"
