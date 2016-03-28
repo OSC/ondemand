@@ -101,7 +101,7 @@ redirected to `OOD_NGINX_URI/start?redir=<redir>` to start up their PUN.
 #### Required Arguments
 
 Argument            | Definition
------------------   | ----------
+------------------- | ----------
 OOD_USER_MAP_CMD    | Full path to binary that maps the authenticated user name to the system-level user name. See `osc-user-map` as example.
 OOD_PUN_SOCKET_ROOT | Full path to the root location where all the PUNs keep their sockets. In most typical installations this will be `/var/run/nginx`.
 OOD_NGINX_URI       | The sub-URI that namespaces this handler from the other handlers [`/nginx`].
@@ -124,7 +124,43 @@ user to their correct Unix domain socket.
 
 ### node_proxy_handler
 
-Todo...
+This handler proxies the authenticated user's traffic to a backend node web
+server though an IP socket. The backend node webserver is defined by a hostname
+and port that is specified in the URL request.
+
+#### Required Arguments
+
+Argument         | Definition
+---------------- | ----------
+OOD_USER_MAP_CMD | Full path to binary that maps the authenticated user name to the system-level user name. See `osc-user-map` as example.
+OOD_NODE_URI     | The sub-URI that namespaces this handler from the other handlers [`/node`].
+
+#### Usage
+
+A typical Apache config will look like...
+
+```
+SetEnv OOD_USER_MAP_CMD "/path/to/user-map-cmd"
+SetEnv OOD_NODE_URI "/node"
+SetEnv OOD_USER_MAP_CMD "/path/to/user-map-cmd"
+
+LuaHookFixups node_proxy.lua node_proxy_handler
+```
+
+Assuming you define `OOD_NODE_URI` as `/node`, the `node_proxy_handler`
+implements the following sub-URI strategy:
+
+```
+https://apps.ondemand.org/node/HOST/PORT/index.html
+#=> http://HOST:PORT/node/HOST/PORT/index.html
+
+wss://apps.ondemand.org/node/HOST/PORT/socket.io
+#=> ws://HOST:PORT/node/HOST/PORT/socket.io
+```
+
+Note: The backend web server will need to use `/node/HOST/PORT` as its base
+URI. This should be programmatically determined before the backed web server is
+started depending on the host and port it will listen on.
 
 ## `OOD_USER_MAP_CMD` Details
 
