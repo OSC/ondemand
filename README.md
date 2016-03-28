@@ -72,9 +72,12 @@ OOD_PUN_STAGE_CMD | Full path to the binary that stages/controls the per-user NG
 The following sub-URIs are introduced assuming `OOD_NGINX_URI` is `/nginx` and
 `OOD_PUN_URI` is `/pun`:
 
-sub-URI | Action
-------- | ------
+sub-URI example                 | Action
+------------------------------- | ------
 `/nginx/init?redir=/pun/my/app` | Calls `nginx_stage app -u <user> -i /pun -r /my/app` (which generates an app config for the user and reloads his/her PUN). If successful, the user's browser is redirected to `/pun/my/app`.
+`/nginx/start[?redir=<redir>]`  | Calls `nginx_stage pun -u <user> -a /init?redir=$http_x_forwarded_escaped_uri` (which generates a PUN config and starts his/her PUN). The final argument in the command is used in NGINX to redirect the user if the request app doesn't exist (i.e., it sends them to the URI listed above). A `<redir>` URL is optional.
+`/nginx/reload[?redir=<redir>]` | Calls `nginx_stage nginx -u <user> -s reload` (which sends the `reload` signal to the PUN process). A `<redir>` URL is optional.
+`/nginx/stop[?redir=<redir>]`   | Calls `nginx_stage nginx -u <user> -s stop` (which sends the `stop` signal to the PUN process). A `<redir>` URL is optional.
 
 ### pun_proxy_handler
 
