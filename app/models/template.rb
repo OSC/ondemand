@@ -20,20 +20,39 @@ class Template < ActiveRecord::Base
     File.dirname(path)
   end
 
+
+
   # Creates an array of template objects based on template folders in TEMPLATE_PATH.
   def system_templates
     templates = Array.new
     folders = Dir.entries(TEMPLATE_PATH)
+
     # Remove "." and ".."
     folders.shift(2)
     folders.each do |folder|
+      template = File.exists?(File.join(TEMPLATE_PATH, folder, 'manifest.yml')) ? manifest_template(folder) : non_manifest_template(folder)
+      templates.push(template)
+    end
+    templates
+  end
+
+  private
+
+    def manifest_template(folder)
+      template = Template.new
+      manifest = HashWithIndifferentAccess.new(YAML.load(File.read(File.expand_path("#{TEMPLATE_PATH}/#{folder}/manifest.yml", __FILE__))))
+      template.name = manifest[:name]
+      template.path = "#{TEMPLATE_PATH}/#{folder}/#{manifest[:script]}"
+      template.notes = manifest[:notes]
+      template
+    end
+
+    def non_manifest_template(folder)
       template = Template.new
       template.name = folder.titleize
       # Grab the first file name ending in .sh
       scriptname = Dir.entries("#{TEMPLATE_PATH}/#{folder}/").select{ |f| f =~ /\.sh$/i }.first
       template.path = "#{TEMPLATE_PATH}/#{folder}/#{scriptname}"
-      templates.push(template)
+      template
     end
-    templates
-  end
 end
