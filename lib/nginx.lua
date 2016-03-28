@@ -19,6 +19,11 @@ function nginx_handler(r)
 
   -- get the system-level user name
   local user = user_map.map(r, user_map_cmd)
+  if not user then
+    r.status = 404
+    r:write("Error -- failed to map user " .. r.user)
+    return apache2.DONE
+  end
 
   -- grab "redir" query param
   local GET, GETMULTI = r:parseargs()

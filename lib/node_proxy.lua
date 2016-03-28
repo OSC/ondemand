@@ -14,6 +14,11 @@ function node_proxy_handler(r)
 
   -- get the system-level user name
   local user = user_map.map(r, user_map_cmd)
+  if not user then
+    r.status = 404
+    r:write("Error -- failed to map user " .. r.user)
+    return apache2.DONE
+  end
 
   -- get the host & port of webserver on backend node from request
   local host, port = r.uri:match("^" .. node_uri .. "/([^/]+)/([^/]+)")

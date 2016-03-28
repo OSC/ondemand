@@ -16,6 +16,11 @@ function pun_proxy_handler(r)
 
   -- get the system-level user name
   local user = user_map.map(r, user_map_cmd)
+  if not user then
+    r.status = 404
+    r:write("Error -- failed to map user " .. r.user)
+    return apache2.DONE
+  end
 
   -- generate connection object used in setting the reverse proxy
   local conn = {}
