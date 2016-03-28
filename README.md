@@ -74,7 +74,7 @@ The following sub-URIs are introduced assuming `OOD_NGINX_URI` is `/nginx` and
 
 sub-URI | Action
 ------- | ------
-`/nginx/init?redir=<URL encoded PUN app URI>` | Calls `nginx_stage app -u <user> -i /pun -r <redir URI w/o /pun>` (which generates an app config for the user and reloads his/her PUN). If successful, the user's browser is redirected to `<redir URI>`.
+`/nginx/init?redir=<redir>` | Calls `nginx_stage app -u <user> -i /pun -r <redir w/o /pun>` (which generates an app config for the user and reloads his/her PUN). If successful, the user's browser is redirected to `<redir>`.
 
 ### pun_proxy_handler
 
