@@ -74,12 +74,17 @@ OOD_PUN_URI       | The sub-URI that namespaces the PUN proxy handler [`/pun`].
 A typical Apache config will look like...
 
 ```
-SetEnv OOD_USER_MAP_CMD "/path/to/user-map-cmd"
-SetEnv OOD_PUN_STAGE_CMD "/path/to/nginx_stage"
-SetEnv OOD_NGINX_URI "/nginx"
-SetEnv OOD_PUN_URI "/pun"
+<Location "/nginx">
+  AuthType openid-connect
+  Require valid-user
 
-LuaHookFixups nginx.lua nginx_handler
+  SetEnv OOD_USER_MAP_CMD "/path/to/user-map-cmd"
+  SetEnv OOD_PUN_STAGE_CMD "/path/to/nginx_stage"
+  SetEnv OOD_NGINX_URI "/nginx"
+  SetEnv OOD_PUN_URI "/pun"
+
+  LuaHookFixups nginx.lua nginx_handler
+</Location>
 ```
 
 Assuming you define `OOD_NGINX_URI` as `/nginx` and `OOD_PUN_URI` as `/pun`,
@@ -111,11 +116,16 @@ OOD_NGINX_URI       | The sub-URI that namespaces this handler from the other ha
 A typical Apache config will look like...
 
 ```
-SetEnv OOD_USER_MAP_CMD "/path/to/user-map-cmd"
-SetEnv OOD_NGINX_URI "/nginx"
-SetEnv OOD_PUN_SOCKET_ROOT "/path/to/nginx/sockets"
+<Location "/pun">
+  AuthType openid-connect
+  Require valid-user
 
-LuaHookFixups pun_proxy.lua pun_proxy_handler
+  SetEnv OOD_USER_MAP_CMD "/path/to/user-map-cmd"
+  SetEnv OOD_PUN_SOCKET_ROOT "/path/to/nginx/sockets"
+  SetEnv OOD_NGINX_URI "/nginx"
+
+  LuaHookFixups pun_proxy.lua pun_proxy_handler
+</Location>
 ```
 
 All requests underneath this sub-URI are proxied to the backend PUN. Very
@@ -140,11 +150,15 @@ OOD_NODE_URI     | The sub-URI that namespaces this handler from the other handl
 A typical Apache config will look like...
 
 ```
-SetEnv OOD_USER_MAP_CMD "/path/to/user-map-cmd"
-SetEnv OOD_NODE_URI "/node"
-SetEnv OOD_USER_MAP_CMD "/path/to/user-map-cmd"
+<Location "/node">
+  AuthType openid-connect
+  Require valid-user
 
-LuaHookFixups node_proxy.lua node_proxy_handler
+  SetEnv OOD_USER_MAP_CMD "/path/to/user-map-cmd"
+  SetEnv OOD_NODE_URI "/node"
+
+  LuaHookFixups node_proxy.lua node_proxy_handler
+</Location>
 ```
 
 Assuming you define `OOD_NODE_URI` as `/node`, the `node_proxy_handler`
