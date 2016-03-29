@@ -211,4 +211,4 @@ used must follow the below guidelines for it to work with `mod_ood_proxy`.
     <blank>
     ```
 
-    Note: Can return error message to `stderr`.
+    Note: Can return error message to `stderr` for debugging purposes as it is ignored in production.
