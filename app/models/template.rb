@@ -39,8 +39,9 @@ class Template < ActiveRecord::Base
     def manifest_template(folder)
       template = Template.new
       manifest = HashWithIndifferentAccess.new(YAML.load(File.read(File.expand_path("#{TEMPLATE_PATH}/#{folder}/manifest.yml", __FILE__))))
-      template.name = manifest[:name]
-      template.path = "#{TEMPLATE_PATH}/#{folder}/#{manifest[:script]}"
+      template.name = manifest[:name] || folder
+      template.path = "#{TEMPLATE_PATH}/#{folder}/#{manifest[:script]}" # TODO Figure out what to do if this is null or does not exist.
+      template.host = manifest[:host] || Servers.first[0]
       template.notes = manifest[:notes]
       template
     end
@@ -51,6 +52,7 @@ class Template < ActiveRecord::Base
       # Grab the first file name ending in .sh
       scriptname = Dir.entries("#{TEMPLATE_PATH}/#{folder}/").select{ |f| f =~ /\.sh$/i }.first
       template.path = "#{TEMPLATE_PATH}/#{folder}/#{scriptname}"
+      template.host = Servers.first[0]
       template
     end
 end
