@@ -6,10 +6,9 @@ local http     = require 'ood.http'
 
   Controls the authenticated user's PUN and/or PUN related operations using the
   Apache configured pun stage command. The relevant tasks are:
-    1. 'init' = initialize PUN app and redirect user to it
+    1. 'init'  = initialize PUN app and redirect user to it
     2. 'start' = initialize PUN and start PUN process
-    3. ... = all remainder tasks are sent to the PUN process as a signal
-             Examples: 'stop', 'quit', 'reopen', 'reload'
+    3. 'stop'  = send `stop` signal to PUN process
 --]]
 function nginx_handler(r)
   -- read in OOD specific settings defined in Apache config
@@ -44,10 +43,12 @@ function nginx_handler(r)
     -- start PUN process
     pun_stage_subcmd = "pun"
     pun_stage_args = pun_stage_args .. " -a '" .. r:escape(nginx_uri .. "/init?redir=$http_x_forwarded_escaped_uri") .. "'"
-  else
+  elseif task == "stop" then
     -- send task as signal to PUN process
     pun_stage_subcmd = "nginx"
-    pun_stage_args = pun_stage_args .. " -s '" .. r:escape(task) .. "'"
+    pun_stage_args = pun_stage_args .. " -s 'stop'"
+  else
+    return http.http404(r, "invalid nginx task")
   end
 
   -- run shell command and read in stdout/stderr
