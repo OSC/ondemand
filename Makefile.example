@@ -1,0 +1,13 @@
+###########################
+# Build options
+###########################
+
+PREFIX := /opt/ood/mod_ood_proxy
+
+###########################
+# Do not modify below
+###########################
+
+.PHONY: install
+install:
+	git checkout-index --prefix=$(DESTDIR)$(PREFIX)/ -a -f
