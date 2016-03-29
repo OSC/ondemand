@@ -45,6 +45,9 @@ An Apache httpd module implementing the Open OnDemand proxy API.
     sudo make install
     ```
 
+    This will install the specified version `X.Y.Z` in
+    `/opt/ood/mod_ood_proxy`.
+
 5.  Restart your Apache server.
 
 ## API
