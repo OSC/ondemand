@@ -35,8 +35,6 @@ An Apache httpd module implementing the Open OnDemand proxy API.
 
 3.  Modify the variables in the Makefile to match the setup of your system.
 
-    Default: `PREFIX := /opt/ood/mod_ood_proxy`
-
 4.  Install a specific version in the default location
 
     ```
