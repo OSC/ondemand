@@ -14,7 +14,38 @@ An Apache httpd module implementing the Open OnDemand proxy API.
 
 ## Installation
 
-Todo...
+1.  Clone/pull this repo onto the local file system
+    - first time installation
+
+        ```
+        git clone <repo> /path/to/repo
+        ```
+    - updating
+
+        ```
+        cd /path/to/repo
+        git pull
+        ```
+
+2.  If you haven't already done before, copy the example Makefile
+
+    ```
+    cp Makefile.example Makefile
+    ```
+
+3.  Modify the variables in the Makefile to match the setup of your system.
+
+    Default: `PREFIX := /opt/ood/mod_ood_proxy`
+
+4.  Install a specific version in the default location
+
+    ```
+    cd /path/to/repo
+    git checkout tag/vX.Y.Z
+    sudo make install
+    ```
+
+5.  Restart your Apache server.
 
 ## API
 
