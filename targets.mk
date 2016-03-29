@@ -23,7 +23,7 @@ vars := $$version $$OOD_IP $$OOD_SUBDOMAIN $$OOD_LUA_ROOT $$OOD_PUN_STAGE_CMD \
 # Targets below here
 
 $(BUILDDIR)/$(CONFFILE): $(TMPLDIR)/$(CONFFILE).tmpl | $(BUILDDIR)
-	$(RENDERER) '$(vars)' < $^ > $@
+	envsubst '$(vars)' < $^ > $@
 
 $(BUILDDIR):
 	mkdir -p $@

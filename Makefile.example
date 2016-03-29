@@ -6,7 +6,6 @@ PREFIX   := /opt/rh/httpd24/root/etc/httpd/conf.d
 TMPLDIR  := templates
 BUILDDIR := build
 CONFFILE := ood-portal.conf
-RENDERER := envsubst
 
 ###########################
 # Server specific options
