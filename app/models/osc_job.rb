@@ -26,6 +26,10 @@ class OscJob < ActiveRecord::Base
     file_paths
   end
 
+  def pbsid
+    jobs.last.pbsid unless jobs.last.nil?
+  end
+
   # Define tasks to do after staging template directory typically copy over
   # uploaded files here
   # def after_stage(staged_dir)
