@@ -1,5 +1,6 @@
 require 'erb'
 require 'fileutils'
+require 'open3'
 
 require_relative "generator_helpers"
 

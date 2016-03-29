@@ -82,9 +82,16 @@ module NginxStage
       template "app.conf.erb", app_config_path
     end
 
-    # Run the per-user NGINX process through `exec` (so we capture return code)
+    # Restart the per-user NGINX process (exit quietly on success)
     add_hook :exec_nginx do
-      exec([NginxStage.nginx_bin, "(#{user})"], *NginxStage.nginx_args(user: user, signal: :reload)) unless skip_nginx
+      if !skip_nginx
+        if File.file? NginxStage.pid_path(user: user)
+          o, s = Open3.capture2e([NginxStage.nginx_bin, "(#{user})"], *NginxStage.nginx_args(user: user, signal: :stop))
+          abort(o) unless s.success?
+        end
+        o, s = Open3.capture2e([NginxStage.nginx_bin, "(#{user})"], *NginxStage.nginx_args(user: user))
+        s.success? ? exit : abort(o)
+      end
     end
 
     # If we skip nginx, then output the path to the generated NGINX app config

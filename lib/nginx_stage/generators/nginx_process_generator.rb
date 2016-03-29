@@ -31,9 +31,12 @@ module NginxStage
       }
     end
 
-    # Run the per-user NGINX process through `exec` (so we capture return code)
+    # Run the per-user NGINX process (exit quietly on success)
     add_hook :exec_nginx do
-      exec([NginxStage.nginx_bin, "(#{user})"], *NginxStage.nginx_args(user: user, signal: signal)) unless skip_nginx
+      if !skip_nginx
+        o, s = Open3.capture2e([NginxStage.nginx_bin, "(#{user})"], *NginxStage.nginx_args(user: user, signal: signal))
+        s.success? ? exit : abort(o)
+      end
     end
 
     # If skip nginx, then output nginx command
