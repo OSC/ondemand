@@ -194,7 +194,8 @@ used must follow the below guidelines for it to work with `mod_ood_proxy`.
     OOD_USER_MAP_CMD '383927209823098423%40accounts.google.com'
     ```
 
-2.  If successfully mapped to a system-level user, must return only the user name to `stdout`.
+2.  If successfully mapped to a system-level user, must return only the user
+    name to `stdout` in the first line.
 
     **Example:**
 
@@ -203,7 +204,8 @@ used must follow the below guidelines for it to work with `mod_ood_proxy`.
     bob123
     ```
 
-3.  If unsuccessful at mapping to a system-level user, must return an empty string to `stdout`.
+3.  If unsuccessful at mapping to a system-level user, must return an empty
+    string to `stdout` in the first line.
 
     **Example:**
 
