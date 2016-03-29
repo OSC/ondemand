@@ -1,0 +1,31 @@
+#!/bin/env bash
+
+# Open OnDemand Ruby wrapper script
+#
+# The purpose of this script is to wrap up the necessary environment for the
+# per-user NGINX (PUN) processes to run under. The PUN requires the following
+# software in its environment:
+#
+# - nginx 1.6
+# - passenger 4.0
+# - ruby 2.2
+# - node.js 0.10
+#
+
+# If the necessary libraries and PATH environment variable are loaded by
+# default in a sudo environment, then no modifications are necessary to this
+# file.
+
+# If using RHEL 6 with Software Collections 2.0 please uncomment the following
+# block of lines:
+#source /opt/rh/nginx16/enable
+#source /opt/rh/rh-passenger40/enable
+#source /opt/rh/rh-ruby22/enable
+#source /opt/rh/nodejs010/enable
+#source /opt/rh/v8314/enable
+
+#
+# Do not touch below!
+#
+
+exec /bin/env ruby "$@"

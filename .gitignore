@@ -14,3 +14,4 @@
 mkmf.log
 /*.yml
 /config/nginx_stage.yml
+/bin/ood_ruby
