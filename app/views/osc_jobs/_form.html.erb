@@ -2,14 +2,25 @@
 <%= bootstrap_form_for(osc_job) do |f| %>
   <%= f.alert_message "Please fix the errors below." %>
 
-  <%= f.text_field :name, required: true %>
-  <%= f.select :batch_host, Servers.map { |key, val| [ "#{key.titleize} (#{val[:pbshost]})", key ] }, { label: "Batch Server:" }, { class: "selectpicker" } %>
-  <%= f.select :script_path, @templates.map { |t| [ "#{t.name}: #{t.path}".html_safe, t.path] }, { label: "Template:" }, { class: "selectpicker", id: "templateSelector", onchange: 'console.log(this)', required: true } %>
-  <%= link_to '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Template'.html_safe, new_template_path, { class: 'btn btn-default pull-right', title: "Create a new template", 'data-toggle': 'tooltip', role: 'button' } %>
+  <div class="form-group">
+    <label class="control-label">Template:</label>
+    <select class="form-control selectpicker" id="new_job_template_selectpicker">
+      <option disabled selected value> -- select a template -- </option>
+      <% @templates.each do |template| %>
+          <option value="<%= template.to_json %>"><%= template.name %> -- <%= template.notes || template.path %></option>
+      <% end %>
+    </select>
+  </div>
+
+  <%= f.text_field :name, required: true, id: 'name_field' %>
+  <%= f.select :batch_host, Servers.map { |key, val| [ "#{key.titleize} (#{val[:pbshost]})", key ] }, { label: "Batch Server:" }, { class: "selectpicker", id: "batch_host_select", required: true } %>
+  <%= f.text_field :script_path, required: true, id: "script_path_field" %>
 
   <%= f.submit 'Save', class: 'btn btn-primary' %>
   <%= f.button 'Reset', type: :reset, class: 'btn btn-default' %>
 
   <%= link_to 'Back', osc_jobs_path, class: 'btn btn-default' %>
   <%= link_to 'Show', osc_job, class: 'btn btn-primary' unless osc_job.new_record? %>
+
+    <%= link_to '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Template'.html_safe, new_template_path, { class: 'btn btn-default pull-right', title: "Create a new template", 'data-toggle': 'tooltip', role: 'button' } %>
 <% end %>

@@ -20,8 +20,6 @@ class Template < ActiveRecord::Base
     File.dirname(path)
   end
 
-
-
   # Creates an array of template objects based on template folders in TEMPLATE_PATH.
   def system_templates
     templates = Array.new

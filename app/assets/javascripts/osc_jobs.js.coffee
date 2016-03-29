@@ -152,3 +152,12 @@ abs_path = (filepath) ->
     $("#jobDetailsStagedDirContents").html(list)
   else
     $("#jobDetailsStagedDirContents").html("")
+
+$ ->
+  $('#new_job_template_selectpicker').on 'change', ->
+    selected = JSON.parse($(this).find('option:selected').val())
+    $("#script_path_field").val("#{selected.path}")
+    $("#name_field").val("#{selected.name}")
+    $("#batch_host_select").val("#{selected.host}")
+    return
+  return
