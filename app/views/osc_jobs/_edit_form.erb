@@ -5,11 +5,19 @@
     <%= f.text_field :name %>
     <%= f.select :batch_host, Servers.map { |key, val| [ "#{key.titleize} (#{val[:pbshost]})", key ] }, { label: "Batch Server:" }, { class: "selectpicker" } %>
     <%= f.form_group :script_path, label: { text: "Specify job script:" } do %>
-        <% osc_job.folder_contents.each do |content| %>
-            <% if File.file?(content) %>
-              <%= f.radio_button :script_path, content, label: content.gsub(osc_job.staged_dir, ""), checked: (content == osc_job.script_path) %>
+        <table class="table table-condensed">
+          <tbody>
+            <% osc_job.folder_contents.each do |content| %>
+              <tr>
+                <td>
+                  <% if File.file?(content) %>
+                      <%= f.radio_button :script_path, content, label: content.gsub(osc_job.staged_dir, ""), checked: (content == osc_job.script_path), class: 'radio' %>
+                  <% end %>
+                </td>
+              </tr>
             <% end %>
-        <% end %>
+          </tbody>
+        </table>
     <% end %>
 
     <%= f.submit 'Save', class: 'btn btn-primary' %>
