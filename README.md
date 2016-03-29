@@ -104,11 +104,16 @@ values for all options. A list of configuration options as well as their
 corresponding defaults can be found in:
 
 ```
-config/nginx_stage.default.yml
+config/nginx_stage.yml.example
 ```
 
 We recommend copying the above file to `config/nginx_stage.yml` and modifying
 it to meet your needs.
+
+```
+cp config/nginx_stage.yml.example config/nginx_stage.yml
+# Modify config/nginx_stage.yml
+```
 
 Note: Future installations/upgrades of `nginx_stage` will not write over this
 `config/nginx_stage.yml` file.
