@@ -277,7 +277,7 @@ user. If no signal is specified, it will try to start the NGINX process.
 The following paths are created on demand:
 
 ```
-/var/rw                                 # drwxr-xr-x root   root
+/var                                    # drwxr-xr-x root   root
 ├── lib                                 # drwxr-xr-x root   root
 │   └── nginx                           # drwxr-xr-x root   root
 │       ├── config                      # drwxr-xr-x root   root
