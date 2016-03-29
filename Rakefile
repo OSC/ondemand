@@ -6,16 +6,18 @@ end
 
 task :default => :test
 
-desc %q{Install nginx_stage (Defaults: prefix=/opt/ood/nginx_stage tag=HEAD)}
+desc <<-DESC
+Install nginx_stage into env var PREFIX
+Default: PREFIX=/opt/ood/nginx_stage
+DESC
 task :install do
-  tag = ENV['tag']
-  prefix = File.expand_path(ENV['prefix'] || '/opt/ood/nginx_stage')
+  prefix = File.expand_path(ENV['PREFIX'] || '/opt/ood/nginx_stage')
   Dir.chdir(__dir__) do
-    sh("git read-tree #{tag}") if tag
-    begin
-      sh("git checkout-index --prefix=#{prefix}/ -a -f")
-    ensure
-      sh("git read-tree HEAD") if tag
-    end
+    # copy over git committed files
+    sh("git checkout-index --prefix=#{prefix}/ -a -f")
+
+    # copy over an example config file if config doesn't exist
+    config = "#{prefix}/config/nginx_stage.yml"
+    cp 'config/nginx_stage.yml.example', config unless File.exist?(config)
   end
 end

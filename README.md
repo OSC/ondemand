@@ -32,10 +32,11 @@ standard libraries making installation a breeze.
 
     ```
     cd /path/to/repo
-    sudo rake install tag=<tag>
+    git checkout tags/vX.Y.Z
+    sudo rake install
     ```
 
-    this will install the specifed version `<tag>` in `/opt/ood/nginx_stage`
+    this will install the specifed version `X.Y.Z` in `/opt/ood/nginx_stage`
 
     Note: Running `sudo` will sanitize your current environment. For the case
     of RHEL using Software Collections it is recommended to load the
@@ -43,20 +44,23 @@ standard libraries making installation a breeze.
 
     ```
     cd /path/to/repo
-    sudo scl enable rh-ruby22 -- rake install tag=<tag>
+    git checkout tags/vX.Y.Z
+    sudo scl enable rh-ruby22 -- rake install
     ```
 
     Examples:
 
     ```
     # Install v1.0.0 of nginx_stage to /opt/ood/nginx_stage
-    sudo rake install tag=v1.0.0
+    git checkout tags/v1.0.0
+    sudo rake install
 
     # Install v2.0.0 of nginx_stage to /tmp/nginx_stage-v2.0.0
-    sudo rake install tag=v2.0.0 prefix=/tmp/nginx_stage-v2.0.0
+    git checkout tags/v2.0.0
+    sudo rake install PREFIX=/tmp/nginx_stage-v2.0.0
     ```
 
-    **Warning**: This will overwrite existing files.
+    **Warning**: This will overwrite git-committed existing files.
 
 3. Confirm that the reverse proxy daemon is running as `apache`
 
@@ -85,7 +89,7 @@ standard libraries making installation a breeze.
 
 ## Configuration
 
-After installing in your preferred `prefix`, change your working directory to
+After installing in your preferred `PREFIX`, change your working directory to
 this location.
 
 ```
