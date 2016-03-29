@@ -87,40 +87,38 @@ standard libraries making installation a breeze.
 
     **Warning**: This user must be very trusted! Don't say we didn't warn you.
 
-## Configuration
+## Post-installation
 
-After installing in your preferred `PREFIX`, change your working directory to
-this location.
+After the first-time install you may need to modify both the configuration file
+and/or Ruby wrapper script.
 
-```
-cd /opt/ood/nginx_stage
-```
+### Configuration
 
-The binary `sbin/nginx_stage` will always look for a configuration file located
-at:
+After the installation procedure it is recommended you configure `nginx_stage`
+for your system. You can do so by modifying:
 
 ```
-config/nginx_stage.yml
+PREFIX/config/nginx_stage.yml
 ```
 
-If this file does not exist it will fallback to the default configuration
-values for all options. A list of configuration options as well as their
-corresponding defaults can be found in:
+For any of the configuration options if not defined they will fall back to
+their default values.
+
+### Ruby wrapper
+
+Another file you may need to modify is the Ruby wrapper script found here:
 
 ```
-config/nginx_stage.yml.example
+PREFIX/bin/ood_ruby
 ```
 
-We recommend copying the above file to `config/nginx_stage.yml` and modifying
-it to meet your needs.
+The responsibility of the Ruby wrapper script is to load the necessary
+environment (e.g., libraries and binary paths) for the Open OnDemand per-user
+Nginx process to successfully run under. By default it assumes your environment
+is properly loaded in the `sudo` configuration.
 
-```
-cp config/nginx_stage.yml.example config/nginx_stage.yml
-# Modify config/nginx_stage.yml
-```
-
-Note: Future installations/upgrades of `nginx_stage` will not write over this
-`config/nginx_stage.yml` file.
+**Note:** If you are using Software Collections, it is recommended you
+uncomment the code block specified in the script.
 
 ## Usage
 
