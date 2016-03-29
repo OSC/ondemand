@@ -17,7 +17,18 @@ task :install do
     sh("git checkout-index --prefix=#{prefix}/ -a -f")
 
     # copy over an example config file if config doesn't exist
-    config = "#{prefix}/config/nginx_stage.yml"
-    cp 'config/nginx_stage.yml.example', config unless File.exist?(config)
+    config = 'config/nginx_stage.yml'
+    unless File.exist?("#{prefix}/#{config}")
+      cp "#{config}.example", "#{prefix}/#{config}"
+      puts <<-EOF.gsub(/^\s{8}/, '')
+        #
+        # Created initial `#{config}`
+        #
+        # Please modify:
+        #
+        #     #{prefix}/#{config}
+        #
+      EOF
+    end
   end
 end
