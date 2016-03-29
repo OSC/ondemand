@@ -6,12 +6,17 @@ Features:
   - set maximum upload file size to 10 GB in nginx config
   - uses unix group whitelists for consumers and publishers of apps
   - sys admins can now define configuration options in `config/nginx_stage.yml`
+  - sys admins can now define PUN environment in `bin/ood_ruby` wrapper script
 
 Bugfixes:
 
   - uses URL escaped strings for CLI arguments (security fix)
   - app requests with periods in the app name now work
   - fixed code typo in `User` class
+  - use "restart" (stop + start) instead of "reload" after generating app
+    config (takes advantage of `Open3` for executing nginx binary)
+  - `rake install` now only installs git version checked out (fixes strange
+    behavior with older versions)
 
 ## 0.0.3 (2016-02-04)
 
