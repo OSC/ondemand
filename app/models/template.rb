@@ -20,6 +20,15 @@ class Template < ActiveRecord::Base
     File.dirname(path)
   end
 
+  def folder_contents
+    dir = File.dirname(self.path)
+    file_paths = []
+    Find.find(dir) do |path|
+      file_paths << path unless path == dir
+    end
+    file_paths
+  end
+
   # Creates an array of template objects based on template folders in TEMPLATE_PATH.
   def system_templates
     templates = Array.new
