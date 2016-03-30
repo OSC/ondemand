@@ -44,8 +44,8 @@
             <tbody>
             <% @osc_jobs.each do |osc_job| %>
                 <tr class="job-row" id="<%=osc_job.id %>">
-                  <td data-sort="<%= osc_job.id %>"><%= osc_job.created_at.strftime('%F %T') %></td>
-                  <td><%= osc_job.name %></td>
+                  <td data-sort="<%= osc_job.id %>"><small><%= osc_job.created_at.strftime('%F %T') %></small></td>
+                  <td><strong><%= osc_job.name %></strong></td>
                   <td><%= osc_job.pbsid %></td>
                   <td><%= osc_job.batch_host.titleize %></td>
                   <td id="status_label_<%= osc_job.id %>"><%= status_label(osc_job) %></td>
