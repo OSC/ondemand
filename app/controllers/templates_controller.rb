@@ -5,7 +5,7 @@ class TemplatesController < ApplicationController
   # GET /templates.json
   def index
     # Append the system templates to the end of the user defined templates for usability.
-    @templates = Template.all.concat(Template.new.system_templates)
+    @templates = Template.all.reverse.concat(Template.new.system_templates)
   end
 
   # GET /templates/1
