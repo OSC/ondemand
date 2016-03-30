@@ -1,29 +1,32 @@
-<p id="notice"><%= notice %></p>
+<div class="container">
+  <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Name:</strong>
-  <%= @template.name %>
-</p>
+  <p>
+    <strong>Name:</strong>
+    <%= @template.name %>
+  </p>
 
-<p>
-  <strong>Path:</strong>
-  <%= @template.path %>
-</p>
+  <p>
+    <strong>Path:</strong>
+    <%= @template.path %>
+  </p>
 
-<p>
-  <strong>Host:</strong>
-  <%= @template.host %>
-</p>
+  <p>
+    <strong>Host:</strong>
+    <%= @template.host %>
+  </p>
 
-<p>
-  <strong>Notes:</strong>
-  <%= @template.notes %>
-</p>
+  <p>
+    <strong>Notes:</strong>
+    <%= @template.notes %>
+  </p>
 
-<p>
-  <strong>File Manager Path:</strong>
-  <%= link_to @template.file_manager_path, @template.file_manager_path %>
-</p>
+  <p>
+    <strong>File Manager Path:</strong>
+    <%= link_to @template.file_manager_path, @template.file_manager_path %>
+  </p>
 
-<%= link_to 'Edit', edit_template_path(@template) unless @template.system? %> |
-<%= link_to 'Back', templates_path %>
+  <%= link_to 'Edit', edit_template_path(@template) unless @template.system? %> |
+  <%= link_to 'Back', templates_path %>
+</div>
+
