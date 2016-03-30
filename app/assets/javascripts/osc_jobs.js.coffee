@@ -45,6 +45,12 @@
   else
     $("#job-details-panel").fadeOut(100)
 
+@show_script_details_panel = (show) ->
+  if show?
+    $("#script-details-panel").fadeIn(200)
+  else
+    $("#script-details-panel").fadeOut(100)
+
 @update_status_label = (id, label) ->
   if label? && id?
     $("#status_label_#{id}").html(label)
@@ -52,12 +58,14 @@
 @update_job_details_panel = (data) ->
   if data?
     $("#job-details-name").text(data.name)
-    # TODO On selected change, do an ajax call to change it on the object
     $("#job-details-server-select option[value=#{data.batch_host}]").prop("selected", "selected")
     $("#job-details-staged-dir").text(data.staged_dir)
     show_job_panel(true)
+
+    show_script_details_panel(true)
   else
     show_job_panel()
+    show_script_details_panel()
 
 @update_open_dir_button = (path) ->
   if path?
