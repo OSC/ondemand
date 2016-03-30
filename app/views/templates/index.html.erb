@@ -1,9 +1,13 @@
-<h3>Listing templates</h3>
+<div class="container">
 
-<%= link_to '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add a New Template'.html_safe, new_template_path, :class => "btn btn-default" %>
+  <div class="page-header" xmlns="http://www.w3.org/1999/html">
+    <h3>Listing templates</h3>
+  </div>
 
-<table class="table">
-  <thead>
+  <%= link_to '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add a New Template'.html_safe, new_template_path, :class => "btn btn-default" %>
+
+  <table class="table">
+    <thead>
     <tr>
       <th>ID</th>
       <th>Name</th>
@@ -14,22 +18,25 @@
       <th></th>
       <th></th>
     </tr>
-  </thead>
-  <tbody>
+    </thead>
+    <tbody>
     <% @templates.each do |template| %>
-      <tr>
-        <td><%= template.id %></td>
-        <td><%= template.name %></td>
-        <td><%= template.notes %></td>
-        <td><%= template.host.titleize unless template.host.nil? %></td>
-        <td><pre><%= template.path %></pre></td>
-        <td><%= link_to 'Show', template_path(template), class: 'btn btn-default' unless template.system? %></td>
-        <td><%= link_to 'Edit', edit_template_path(template), class: 'btn btn-default' unless template.system? %></td>
-        <td><%= link_to 'Destroy', template, method: :delete, class: 'btn btn-danger' unless template.system? %></td>
-      </tr>
+        <tr>
+          <td><%= template.id %></td>
+          <td><%= template.name %></td>
+          <td><%= template.notes %></td>
+          <td><%= template.host.titleize unless template.host.nil? %></td>
+          <td><pre><%= template.path %></pre></td>
+          <td><%= link_to 'Open Dir', Filesystem.new.fs(File.dirname(template.path)), class: 'btn btn-default' unless template.system? %></td>
+          <td><%= link_to 'Edit', edit_template_path(template), class: 'btn btn-default' unless template.system? %></td>
+          <td><%= link_to 'Destroy', template, method: :delete, class: 'btn btn-danger' unless template.system? %></td>
+        </tr>
     <% end %>
-  </tbody>
-</table>
+    </tbody>
+  </table>
+</div>
+
+
 
 
 
