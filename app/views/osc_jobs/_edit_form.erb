@@ -1,4 +1,5 @@
 <%# Uses rails_bootstrap_form gem. API at: https://github.com/bootstrap-ruby/rails-bootstrap-forms %>
+
 <%= bootstrap_form_for(osc_job) do |f| %>
     <%= f.alert_message "Please fix the errors below." %>
 
@@ -20,9 +21,11 @@
         </table>
     <% end %>
 
+
     <%= f.submit 'Save', class: 'btn btn-primary' %>
     <%= f.button 'Reset', type: :reset, class: 'btn btn-default' %>
 
     <%= link_to 'Back', osc_jobs_path, class: 'btn btn-default' %>
     <%= link_to 'Show', osc_job, class: 'btn btn-primary' unless osc_job.new_record? %>
 <% end %>
+
