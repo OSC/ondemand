@@ -15,7 +15,7 @@
 <div class="row">
 
   <div class="col-md-7">
-    <div id="jobListView" class="panel panel-default">
+    <div id="job-list-view" class="panel panel-default">
       <div class="panel-body">
         <div class="panel-body">
           <a class="btn btn-default btn-sm" id="open_dir_button" target="_blank" data-toggle="tooltip" title="Open Directory in File Manager" role="button" disabled><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span> Open Dir</a>
@@ -29,7 +29,7 @@
         </div>
 
         <div class="panel-body">
-          <table id="jobListTable" class="table data-table">
+          <table id="job-list-table" class="table data-table">
             <thead>
             <tr>
               <th>Id</th>
@@ -42,7 +42,7 @@
 
             <tbody>
             <% @osc_jobs.each do |osc_job| %>
-                <tr class="job_row" id="<%=osc_job.id %>">
+                <tr class="job-row" id="<%=osc_job.id %>">
                   <td><%= osc_job.id %></td>
                   <td><%= osc_job.name %></td>
                   <td><%= osc_job.pbsid %></td>
@@ -58,22 +58,23 @@
   </div>
 
   <div class="col-md-5">
-    <div class="panel panel-default" id="jobDetailsPanel" hidden>
+    <div class="panel panel-default" id="job-details-panel" hidden>
       <div class="panel-body">
-        <p>Name: <strong><span id="jobDetailsName"></span></strong></p>
-        <p>Submit to:
-          <select class="form-control" id="jobDetailsServerSelect">
+        <p>Job Name: <strong><span id="job-details-name"></span></strong></p>
+        <p>Submit to:</p>
+          <select class="form-control" id="job-details-server-select">
             <% Servers.each do |s| %>
                 <option id="<%= s.first %>" value="<%= s.first %>"><%= s.first.titleize %></option>
             <% end %>
           </select>
-        </p>
       </div>
 
-      <div id="jobDetailsView" class="panel-body">
+      <div id="job-details-view" class="panel-body">
         <!-- TODO : Iterate over the directories and create <th> tags for each subdir. -->
-        <p id="jobDetailsStagedDir"></p>
-        <span id="jobDetailsStagedDirContents"></span>
+        <p>Script location:</p>
+        <pre id="job-details-staged-dir"></pre>
+        <p>Folder Contents:</p>
+        <span id="job-details-staged-dir-contents"></span>
       </div>
     </div>
   </div>

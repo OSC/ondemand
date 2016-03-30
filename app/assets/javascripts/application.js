@@ -34,9 +34,9 @@ function joinRoot(route){
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
 
-    var table = $('#jobListTable').DataTable();
+    var table = $('#job-list-table').DataTable();
 
-    $('#jobListTable tbody').on( 'click', 'tr', function () {
+    $('#job-list-table tbody').on( 'click', 'tr', function () {
         if ( $(this).hasClass('active') ) {
             $(this).removeClass('active');
         }

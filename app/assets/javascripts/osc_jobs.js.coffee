@@ -41,9 +41,9 @@
 
 @show_job_panel = (show) ->
   if show?
-    $("#jobDetailsPanel").fadeIn(200)
+    $("#job-details-panel").fadeIn(200)
   else
-    $("#jobDetailsPanel").fadeOut(100)
+    $("#job-details-panel").fadeOut(100)
 
 @update_status_label = (id, label) ->
   if label? && id?
@@ -51,10 +51,10 @@
 
 @update_job_details_panel = (data) ->
   if data?
-    $("#jobDetailsName").text(data.name)
+    $("#job-details-name").text(data.name)
     # TODO On selected change, do an ajax call to change it on the object
-    $("#jobDetailsServerSelect option[value=#{data.batch_host}]").prop("selected", "selected")
-    $("#jobDetailsStagedDir").text(data.staged_dir)
+    $("#job-details-server-select option[value=#{data.batch_host}]").prop("selected", "selected")
+    $("#job-details-staged-dir").text(data.staged_dir)
     show_job_panel(true)
   else
     show_job_panel()
@@ -149,9 +149,9 @@ abs_path = (filepath) ->
       formatted_path = "<a href='#{content.fsurl}' target='_blank'>#{formatted_path}</a>" if content.type is "dir"
       list += "<li>#{formatted_path}</li>"
     list += "</ul>"
-    $("#jobDetailsStagedDirContents").html(list)
+    $("#job-details-staged-dir-contents").html(list)
   else
-    $("#jobDetailsStagedDirContents").html("")
+    $("#job-details-staged-dir-contents").html("")
 
 $ ->
   $('#new_job_template_selectpicker').on 'change', ->
