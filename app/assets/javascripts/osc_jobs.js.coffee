@@ -47,25 +47,39 @@
 
 @show_script_details_panel = (show) ->
   if show?
-    $("#script-details-panel").fadeIn(200)
+    $("#script-text-panel").fadeIn(200)
   else
-    $("#script-details-panel").fadeOut(100)
+    $("#script-text-panel").fadeOut(100)
 
 @update_status_label = (id, label) ->
   if label? && id?
     $("#status_label_#{id}").html(label)
 
 @update_job_details_panel = (data) ->
+  show_job_panel()
   if data?
     $("#job-details-name").text(data.name)
     $("#job-details-server-select option[value=#{data.batch_host}]").prop("selected", "selected")
     $("#job-details-staged-dir").text(data.staged_dir)
     show_job_panel(true)
 
-    show_script_details_panel(true)
-  else
-    show_job_panel()
-    show_script_details_panel()
+
+@update_script_details_panel = (content) ->
+  show_script_details_panel()
+  if content?
+    console.log content
+    $("#script-name").text(content.name)
+    $("#open-script-dir-button").attr("href", "#{content.fs_base}")
+    $.ajax
+      type: 'GET'
+      url: content.apiurl
+      contentType: "application/json; charset=utf-8"
+      dataType: "text"
+      error: (jqXHR, textStatus, errorThrown) ->
+        console.log jqXHR
+      success: (filedata, textStatus, jqXHR) ->
+        $("#script-text-data").text(filedata)
+        show_script_details_panel(true)
 
 @update_open_dir_button = (path) ->
   if path?
@@ -149,17 +163,22 @@ abs_path = (filepath) ->
     f.join('/')
 
 @list_folder_contents = (data) ->
+  submit_script = null
   if data?
     list = "<ul>"
     for content in data.folder_contents
       formatted_path = content.path.replace(data.staged_dir, "")
-      formatted_path = "<strong>#{formatted_path}</strong>" if content.name == data.staged_script_name
+      if content.name == data.staged_script_name
+        formatted_path = "<strong>#{formatted_path}</strong>"
+        submit_script = content
       formatted_path = "<a href='#{content.fsurl}' target='_blank'>#{formatted_path}</a>" if content.type is "dir"
       list += "<li>#{formatted_path}</li>"
     list += "</ul>"
     $("#job-details-staged-dir-contents").html(list)
   else
     $("#job-details-staged-dir-contents").html("")
+  update_script_details_panel(submit_script)
+
 
 $ ->
   $('#new_job_template_selectpicker').on 'change', ->

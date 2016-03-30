@@ -6,5 +6,6 @@ json.folder_contents (@osc_job.folder_contents) do |content|
   json.set! 'name', Pathname(content).basename.to_s
   json.set! 'type', Pathname(content).file? ? 'file' : 'dir'
   json.set! 'fsurl', Filesystem.new.fs(content)
+  json.set! 'fs_base', Filesystem.new.fs(File.dirname(content))
   json.set! 'apiurl', Filesystem.new.api(content)
 end
