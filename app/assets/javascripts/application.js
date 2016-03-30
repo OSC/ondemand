@@ -22,6 +22,10 @@ active_var = function() {
     return $('tr.active').attr('id');
 }
 
+template_path = function() {
+    return $('tr.active').data('path');
+}
+
 function joinRoot(route){
     var arr = []
     arr.push(ROOT_PATH)
@@ -46,6 +50,19 @@ $(document).ready(function(){
 
         }
         update_display(active_var());
+    });
+
+    var template_table = $('#new-job-template-table').DataTable();
+
+    $('#new-job-template-table tbody').on( 'click', 'tr', function () {
+        if ( $(this).hasClass('active') ) {
+            $(this).removeClass('active');
+        }
+        else {
+            template_table.$('tr.active').removeClass('active');
+            $(this).addClass('active');
+
+        }
     });
 
     table.$('tr:first').click();

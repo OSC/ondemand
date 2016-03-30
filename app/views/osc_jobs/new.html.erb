@@ -3,7 +3,53 @@
     <h3>Create a New Job</h3>
   </div>
 
-  <%= render 'form', osc_job: @osc_job %>
+  <%# render 'form', osc_job: @osc_job %>
+
+  <div class="row">
+
+    <div class="col-md-7">
+      <div id="job-list-view" class="panel panel-default">
+        <div class="panel-body">
+
+          <div class="panel-body">
+            <table id="new-job-template-table" class="table data-table-new-job">
+              <thead>
+              <tr>
+                <th>Name</th>
+                <th>Notes</th>
+                <th>Cluster</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              <% @templates.each do |template| %>
+                  <tr class="job-row" data-path="<%= template.path %>" id="<%= template.id unless template.id.nil? %>" >
+                    <td><%= template.name %></td>
+                    <td><%= template.notes %></td>
+                    <td><%= template.host %></td>
+                  </tr>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-5">
+      <div class="panel panel-default" id="job-details-panel">
+        <div class="panel-body">
+          <p>Job Name: <h4><strong><span id="job-details-name"></span></strong></h4></p>
+          <p>Submit to:</p>
+          <select class="form-control" id="job-details-server-select">
+            <% Servers.each do |s| %>
+                <option id="<%= s.first %>" value="<%= s.first %>" disabled><%= s.first.titleize %></option>
+            <% end %>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </div>
 

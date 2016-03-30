@@ -179,7 +179,6 @@ abs_path = (filepath) ->
     $("#job-details-staged-dir-contents").html("")
   update_script_details_panel(submit_script)
 
-
 $ ->
   $('#new_job_template_selectpicker').on 'change', ->
     selected = JSON.parse($(this).find('option:selected').val())

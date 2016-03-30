@@ -10,4 +10,14 @@ jQuery ->
       orderable: false
       targets: 'no-sort'
     }]
-    iDisplayLength: 50
+    iDisplayLength: 20
+
+jQuery ->
+# Set up datatable
+  $('.data-table-new-job').DataTable
+    order: [0, 'desc']
+    columnDefs: [{
+      orderable: false
+      targets: 'no-sort'
+    }]
+    iDisplayLength: 20
