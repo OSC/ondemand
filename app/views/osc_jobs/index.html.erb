@@ -64,7 +64,7 @@
         <p>Submit to:</p>
           <select class="form-control" id="job-details-server-select">
             <% Servers.each do |s| %>
-                <option id="<%= s.first %>" value="<%= s.first %>"><%= s.first.titleize %></option>
+                <option id="<%= s.first %>" value="<%= s.first %>" disabled><%= s.first.titleize %></option>
             <% end %>
           </select>
       </div>
