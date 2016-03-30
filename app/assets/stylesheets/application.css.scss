@@ -5,12 +5,8 @@
 
 
 // overrides for navbar
-$navbar-height: 40px;
 $navbar-inverse-bg:  rgb(207,16, 45);
 $navbar-inverse-link-color: rgb(255, 255, 255);
-body {
-  padding-top: 40px;
-}
 
 // Load up bootstrap/font-awesome style sheet
 @import "bootstrap";
@@ -19,6 +15,10 @@ body {
 // Load up dataTables bootstrap specific styles
 // @import "dataTables/bootstrap/3/jquery.dataTables.bootstrap";
 
+// add space for fixed navbar
+body {
+  padding-top: $navbar-height;
+}
 
 // Your custom css styles below (must be manually added)
 @import "dashboard";
