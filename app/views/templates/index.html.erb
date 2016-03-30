@@ -8,6 +8,7 @@
       <th>ID</th>
       <th>Name</th>
       <th>Path</th>
+      <th>Host</th>
       <th>Notes</th>
       <th></th>
       <th></th>
@@ -20,6 +21,7 @@
         <td><%= template.id %></td>
         <td><%= template.name %></td>
         <td><%= template.path %></td>
+        <td><%= template.host.titleize unless template.host.nil? %></td>
         <td><%= template.notes %></td>
         <td><%= link_to 'Show', template_path(template), class: 'btn btn-default' unless template.system? %></td>
         <td><%= link_to 'Edit', edit_template_path(template), class: 'btn btn-default' unless template.system? %></td>
