@@ -47,6 +47,8 @@ $(document).ready(function(){
         }
         update_display(active_var());
     });
+
+    table.$('tr:first').click();
 });
 
 
