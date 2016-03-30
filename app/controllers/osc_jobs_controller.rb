@@ -22,7 +22,6 @@ class OscJobsController < ApplicationController
 
   # GET /osc_jobs/1/edit
   def edit
-    @templates = Template.all.concat(Template.new.system_templates)
   end
 
   # POST /osc_jobs
