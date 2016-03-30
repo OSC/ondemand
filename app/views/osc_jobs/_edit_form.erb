@@ -8,13 +8,13 @@
         <table class="table table-condensed">
           <tbody>
             <% osc_job.folder_contents.each do |content| %>
-              <tr>
-                <td>
-                  <% if File.file?(content) %>
-                      <%= f.radio_button :script_path, content, label: content.gsub(osc_job.staged_dir, ""), checked: (content == osc_job.script_path), class: 'radio' %>
-                  <% end %>
-                </td>
-              </tr>
+              <% if File.file?(content) %>
+                <tr>
+                  <td>
+                    <%= f.radio_button :script_path, content, label: content.gsub(osc_job.staged_dir, ""), checked: (content == osc_job.script_path), class: 'radio' %>
+                  </td>
+                </tr>
+              <% end %>
             <% end %>
           </tbody>
         </table>
