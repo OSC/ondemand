@@ -8,6 +8,7 @@
       <th>ID</th>
       <th>Name</th>
       <th>Path</th>
+      <th>Notes</th>
       <th></th>
       <th></th>
       <th></th>
@@ -19,6 +20,7 @@
         <td><%= template.id %></td>
         <td><%= template.name %></td>
         <td><%= template.path %></td>
+        <td><%= template.notes %></td>
         <td><%= link_to 'Show', template_path(template), class: 'btn btn-default' unless template.system? %></td>
         <td><%= link_to 'Edit', edit_template_path(template), class: 'btn btn-default' unless template.system? %></td>
         <td><%= link_to 'Destroy', template, method: :delete, class: 'btn btn-danger' unless template.system? %></td>
