@@ -33,8 +33,7 @@
           <table id="job-list-table" class="table data-table">
             <thead>
             <tr>
-              <th>Id</th>
-              <th>Create Time</th>
+              <th>Created</th>
               <th>Name</th>
               <th>PBS ID</th>
               <th>Cluster</th>
@@ -45,8 +44,7 @@
             <tbody>
             <% @osc_jobs.each do |osc_job| %>
                 <tr class="job-row" id="<%=osc_job.id %>">
-                  <td><%= osc_job.id %></td>
-                  <td><%= osc_job.created_at.strftime('%F %T') %></td>
+                  <td data-sort="<%= osc_job.id %>"><%= osc_job.created_at.strftime('%F %T') %></td>
                   <td><%= osc_job.name %></td>
                   <td><%= osc_job.pbsid %></td>
                   <td><%= osc_job.batch_host.titleize %></td>
