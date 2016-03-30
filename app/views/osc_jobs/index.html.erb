@@ -1,9 +1,10 @@
 <div class="page-header" xmlns="http://www.w3.org/1999/html">
+  <h2>Listing OSC Jobs</h2>
 </div>
 
 <div class="col-md-7">
   <div class="panel">
-    <h2>Listing OSC Jobs</h2>
+
     <a class="btn btn-default btn-sm" href="<%= new_osc_job_path %>" data-toggle="tooltip" title="Create a new job from a template" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New From Template</a>
   </div>
 </div>
@@ -60,7 +61,7 @@
   <div class="col-md-5">
     <div class="panel panel-default" id="job-details-panel" hidden>
       <div class="panel-body">
-        <p>Job Name: <strong><span id="job-details-name"></span></strong></p>
+        <p>Job Name: <h4><strong><span id="job-details-name"></span></strong></h4></p>
         <p>Submit to:</p>
           <select class="form-control" id="job-details-server-select">
             <% Servers.each do |s| %>
@@ -70,11 +71,19 @@
       </div>
 
       <div id="job-details-view" class="panel-body">
-        <!-- TODO : Iterate over the directories and create <th> tags for each subdir. -->
         <p>Script location:</p>
         <pre id="job-details-staged-dir"></pre>
         <p>Folder Contents:</p>
         <span id="job-details-staged-dir-contents"></span>
+      </div>
+    </div>
+
+    <div class="panel panel-default" id="script-details-panel" hidden>
+      <div id="script-text-panel" class="panel-body">
+        <p>Script:</p>
+        <h4 id="script-name"></h4>
+        <p>Script contents:</p>
+        <pre id="script-text-data"></pre>
       </div>
     </div>
   </div>
