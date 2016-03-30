@@ -34,6 +34,7 @@
             <thead>
             <tr>
               <th>Id</th>
+              <th>Create Time</th>
               <th>Name</th>
               <th>PBS ID</th>
               <th>Cluster</th>
@@ -45,6 +46,7 @@
             <% @osc_jobs.each do |osc_job| %>
                 <tr class="job-row" id="<%=osc_job.id %>">
                   <td><%= osc_job.id %></td>
+                  <td><%= osc_job.created_at.strftime('%F %T') %></td>
                   <td><%= osc_job.name %></td>
                   <td><%= osc_job.pbsid %></td>
                   <td><%= osc_job.batch_host.titleize %></td>
