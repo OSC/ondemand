@@ -35,7 +35,7 @@ class OscJobsController < ApplicationController
 
     respond_to do |format|
       if @osc_job.save
-        format.html { redirect_to @osc_job, notice: 'Job was successfully created.' }
+        format.html { redirect_to osc_jobs_url, notice: 'Job was successfully created.' }
         format.json { render :show, status: :created, location: @osc_job }
       else
         format.html { render :new }
@@ -84,10 +84,10 @@ class OscJobsController < ApplicationController
   def destroy
     respond_to do |format|
       if @osc_job.destroy
-        format.html { redirect_to osc_jobs_url, notice: 'Osc job was successfully destroyed.' }
+        format.html { redirect_to osc_jobs_url, notice: 'Job was successfully destroyed.' }
         format.json { head :no_content }
       else
-        format.html { redirect_to osc_jobs_url, alert: "Osc job failed to be destroyed: #{@osc_job.errors.to_a}" }
+        format.html { redirect_to osc_jobs_url, alert: "Job failed to be destroyed: #{@osc_job.errors.to_a}" }
         format.json { render json: @osc_job.errors, status: :internal_server_error }
       end
     end
@@ -98,13 +98,13 @@ class OscJobsController < ApplicationController
   def submit
     respond_to do |format|
       if @osc_job.submitted?
-        format.html { redirect_to osc_jobs_url, alert: 'Osc job has already been submitted.' }
+        format.html { redirect_to osc_jobs_url, alert: 'Job has already been submitted.' }
         format.json { head :no_content }
       elsif @osc_job.submit
-        format.html { redirect_to osc_jobs_url, notice: 'Osc job was successfully submitted.' }
+        format.html { redirect_to osc_jobs_url, notice: 'Job was successfully submitted.' }
         format.json { head :no_content }
       else
-        format.html { redirect_to osc_jobs_url, alert: "Osc job failed to be submitted: #{@osc_job.errors.to_a}" }
+        format.html { redirect_to osc_jobs_url, alert: "Job failed to be submitted: #{@osc_job.errors.to_a}" }
         format.json { render json: @osc_job.errors, status: :internal_server_error }
       end
     end
@@ -117,10 +117,10 @@ class OscJobsController < ApplicationController
 
     respond_to do |format|
       if @osc_job.save
-        format.html { redirect_to @osc_job, notice: 'Osc job was successfully copied.' }
+        format.html { redirect_to @osc_job, notice: 'Job was successfully copied.' }
         format.json { render :show, status: :created, location: @osc_job }
       else
-        format.html { redirect_to osc_jobs_url, alert: "Osc job failed to be copied: #{@osc_job.errors.to_a}" }
+        format.html { redirect_to osc_jobs_url, alert: "Job failed to be copied: #{@osc_job.errors.to_a}" }
         format.json { render json: @osc_job.errors, status: :unprocessable_entity }
       end
     end
