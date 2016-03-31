@@ -15,11 +15,10 @@ class TemplatesController < ApplicationController
 
   # GET /templates/new
   def new
-    @template = Template.new
-    # TODO Perform some sort of error checking or validation on params
-    if params[:path]
-      @template.path = params[:path]
-    end
+    pathdir = params[:path] || ""
+    pathdir = File.file?(pathdir) ? File.dirname(pathdir) : pathdir
+    @template = Template.new( pathdir )
+
     if params[:host]
       @template.host = params[:host]
     end
@@ -32,25 +31,36 @@ class TemplatesController < ApplicationController
   # POST /templates
   # POST /templates.json
   def create
-    @template = Template.new(template_params)
+    @template = Template.new(template_params[:path])
+    @template.name = template_params[:name]
+    @template.host = template_params[:host]
+    @template.notes = template_params[:notes]
 
     # TODO this can be cleaned up
-    template_location = Pathname.new(@template.path).dirname.cleanpath
-    # TODO how to prevent uniques <name>/<number>?
-    data_location = AwesimRails.dataroot.join('templates').join(@template.name)
-    FileUtils.mkdir_p(data_location)
+    template_location = Pathname.new(@template.path)
 
-    if template_location.exist?
-      copy_dir(template_location, data_location)
-      @template.path = data_location.to_s
+    data_location = AwesimRails.dataroot.join('templates').join(@template.name)
+
+    unless data_location.exist?
+      if template_location.exist?
+        FileUtils.mkdir_p(data_location)
+        copy_dir(template_location, data_location)
+        @template.path = data_location.to_s
+
+        saved = true
+      else
+        @template.errors.add(:path, "does not exist.")
+      end
+    else
+      @template.errors.add(:name, "must be unique.")
     end
 
     respond_to do |format|
-      if @template.save
-        format.html { redirect_to @template, notice: 'Template was successfully created.' }
+      if saved
+        format.html { redirect_to templates_path }
         format.json { render action: 'show', status: :created, location: @template }
       else
-        format.html { render action: 'new' }
+        format.html { render action: 'new', notice: "error creating template" }
         format.json { render json: @template.errors, status: :unprocessable_entity }
       end
     end
@@ -100,7 +110,7 @@ class TemplatesController < ApplicationController
   def copy_dir(src, dest)
     # @path has / auto-dropped, so we add it to make sure we copy everything
     # in the old directory to the new
-    `rsync -r --exclude='.svn' --exclude='.git' --exclude='.gitignore' --filter=':- .gitignore' #{src.to_s}/ #{dest.to_s}`
+    `rsync -r --exclude='.svn' --exclude='.git' --exclude='.gitignore' --filter=':- .gitignore' '#{src.to_s}/' '#{dest.to_s}'`
 
     # return target location so we can chain method
     dest

@@ -47,7 +47,6 @@ $(document).ready(function(){
         else {
             table.$('tr.active').removeClass('active');
             $(this).addClass('active');
-
         }
         update_display(active_var());
     });
@@ -61,7 +60,6 @@ $(document).ready(function(){
         else {
             template_table.$('tr.active').removeClass('active');
             $(this).addClass('active');
-
         }
     });
 

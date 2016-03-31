@@ -1,6 +1,13 @@
+require 'active_model'
+
 class Template
+  include ActiveModel::Model
   attr_accessor :path
-  delegate :name, :notes, :host, :script_path, to: :manifest
+  delegate :name, :'name=', :notes, :'notes=',:host, :'host=',:script_path, :'script=',to: :manifest
+
+  def persisted?
+    false
+  end
 
   def self.all
     Source.my.templates.concat(Source.osc.templates)

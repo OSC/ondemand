@@ -1,5 +1,5 @@
 class Manifest
-  attr_reader :name, :path, :host, :notes, :script
+  attr_accessor :name, :path, :host, :notes, :script
 
   # path - Pathname object to manifest file
   def self.load(path)
