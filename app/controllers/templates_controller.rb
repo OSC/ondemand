@@ -34,6 +34,17 @@ class TemplatesController < ApplicationController
   def create
     @template = Template.new(template_params)
 
+    # TODO this can be cleaned up
+    template_location = Pathname.new(@template.path).dirname.cleanpath
+    # TODO how to prevent uniques <name>/<number>?
+    data_location = AwesimRails.dataroot.join('templates').join(@template.name)
+    FileUtils.mkdir_p(data_location)
+
+    if template_location.exist?
+      copy_dir(template_location, data_location)
+      @template.path = data_location.to_s
+    end
+
     respond_to do |format|
       if @template.save
         format.html { redirect_to @template, notice: 'Template was successfully created.' }
@@ -81,4 +92,17 @@ class TemplatesController < ApplicationController
     def template_params
       params.require(:template).permit(:name, :path, :host, :notes)
     end
+
+  # Copies the data in a Location to a destination path using rsync.
+  #
+  # @param [String, Pathname] dest The target location path.
+  # @return [Location] The target location path wrapped by Location instance.
+  def copy_dir(src, dest)
+    # @path has / auto-dropped, so we add it to make sure we copy everything
+    # in the old directory to the new
+    `rsync -r --exclude='.svn' --exclude='.git' --exclude='.gitignore' --filter=':- .gitignore' #{src.to_s}/ #{dest.to_s}`
+
+    # return target location so we can chain method
+    dest
+  end
 end
