@@ -10,7 +10,7 @@ jQuery ->
       orderable: false
       targets: 'no-sort'
     }]
-    iDisplayLength: 20
+    iDisplayLength: 25
 
 jQuery ->
 # Set up datatable
@@ -20,4 +20,4 @@ jQuery ->
       orderable: false
       targets: 'no-sort'
     }]
-    iDisplayLength: 20
+    iDisplayLength: 10
