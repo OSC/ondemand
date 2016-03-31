@@ -31,6 +31,7 @@ class TemplatesController < ApplicationController
   # POST /templates
   # POST /templates.json
   def create
+
     @template = Template.new(template_params[:path])
     @template.name = template_params[:name]
     @template.host = template_params[:host]
@@ -46,6 +47,11 @@ class TemplatesController < ApplicationController
         FileUtils.mkdir_p(data_location)
         copy_dir(template_location, data_location)
         @template.path = data_location.to_s
+
+        yaml = { 'name' => @template.name, 'host' => @template.host, 'notes' => @template.notes, 'script' => @template.script_path }
+        File.open(data_location.join('manifest.yml'), 'w') do |file|
+          file.write(yaml.to_yaml)
+        end
 
         saved = true
       else
