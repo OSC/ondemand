@@ -9,7 +9,6 @@
   <table class="table">
     <thead>
     <tr>
-      <th>ID</th>
       <th>Name</th>
       <th>Description</th>
       <th>Host</th>
@@ -22,12 +21,11 @@
     <tbody>
     <% @templates.each do |template| %>
         <tr>
-          <td><%= template.id %></td>
           <td><%= template.name %></td>
           <td><%= template.notes %></td>
           <td><%= template.host.titleize unless template.host.nil? %></td>
           <td><pre><%= template.path %></pre></td>
-          <td><%= link_to 'Open Dir', Filesystem.new.fs(File.dirname(template.path)), target: '_blank', class: 'btn btn-default' unless template.system? %></td>
+          <td><%= link_to 'Open Dir', Filesystem.new.fs(template.path), target: '_blank', class: 'btn btn-default' %></td>
           <td><%= link_to 'Edit', edit_template_path(template), class: 'btn btn-default' unless template.system? %></td>
           <td><%= link_to 'Destroy', template, method: :delete, class: 'btn btn-danger' unless template.system? %></td>
         </tr>
