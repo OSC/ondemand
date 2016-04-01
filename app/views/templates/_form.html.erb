@@ -18,7 +18,7 @@
     <%= f.text_field :path %>
   </div>
   <div class="field">
-    <%= f.select :host, Servers, { selected: @template.host, label: "Default Batch Server:" }, { class: "selectpicker" } %>
+    <%= f.select :host, Servers.map { |key, val| [ "#{key.titleize} (#{val[:pbshost]})", key ] }, { selected: @template.host, label: "Default Batch Server:" }, { class: "selectpicker" } %>
   </div>
   <div class="field">
     <%= f.text_area :notes %>
