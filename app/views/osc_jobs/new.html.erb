@@ -46,7 +46,7 @@
               <%= f.text_field :name, required: true, id: 'name-field' %>
 
               <%= f.select :batch_host, Servers.map { |key, val| [ "#{key.titleize} (#{val[:pbshost]})", key ] }, { label: "Batch Server:" }, { class: "selectpicker", id: "batch-host-select", required: true } %>
-              <%= f.text_field :script_path, required: true, id: "script-path-field" %>
+              <%= f.text_field :script_name, required: true, id: "script-path-field" %>
 
               <%= f.submit 'Create New Job', class: 'btn btn-primary' %>
               <%= f.button 'Reset', type: :reset, class: 'btn btn-default' %>
