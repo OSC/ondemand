@@ -12,12 +12,16 @@ class OscJob < ActiveRecord::Base
   #end
 
   def staged_script_name
-    File.basename(self.script_path)
+    self.script_name
   end
 
-#  def staging_template_dir
-#    File.dirname(self.script_path)
-#  end
+  def script_path
+    Pathname.new(self.staged_dir).join(self.script_name)
+  end
+
+  # def staging_template_dir
+  #   File.dirname(self.script_path)
+  # end
 
   def folder_contents
     dir = self.staged_dir || Dir.home
