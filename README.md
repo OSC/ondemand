@@ -47,6 +47,12 @@ Generates an Open OnDemand portal config for an Apache server.
     sudo make install
     ```
 
+    Default install location (`PREFIX`) is
+
+    ```
+    /opt/rh/httpd24/root/etc/httpd/conf.d
+    ```
+
 5.  Restart your Apache server.
 
 ## Version
