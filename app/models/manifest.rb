@@ -24,9 +24,7 @@ class Manifest
   end
 
   def script_path
-    #Pathname.new(@path).join(@script).to_s
-    # FIXME The above is null
-    'script.sh'
+    path.dirname.join(script).to_s
   end
 
   # all based on path
@@ -47,7 +45,6 @@ class Manifest
     Dir.entries(@path).select{ |f| f =~ /\.sh$/i  }.first if Pathname.new(@path).directory?
   end
 end
-
 
 class InvalidManifest < Manifest
   attr_reader :exception
