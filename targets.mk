@@ -11,6 +11,7 @@ export OOD_PUN_SOCKET_ROOT ?= /var/run/nginx
 export OOD_PUBLIC_ROOT ?= /var/www
 export OOD_PUN_URI ?= /pun
 export OOD_NODE_URI ?= /node
+export OOD_RNODE_URI ?= /rnode
 export OOD_NGINX_URI ?= /nginx
 export OOD_PUBLIC_URI ?= /public
 export OOD_AUTH_TYPE ?= openid-connect
@@ -18,7 +19,7 @@ export OOD_AUTH_TYPE ?= openid-connect
 # Available environment variables when substituting in template
 vars := $$version $$OOD_IP $$OOD_SUBDOMAIN $$OOD_LUA_ROOT $$OOD_PUN_STAGE_CMD \
 	$$OOD_USER_MAP_CMD $$OOD_PUN_SOCKET_ROOT $$OOD_PUBLIC_ROOT $$OOD_PUN_URI \
-	$$OOD_NODE_URI $$OOD_NGINX_URI $$OOD_PUBLIC_URI $$OOD_AUTH_TYPE
+	$$OOD_NODE_URI $$OOD_RNODE_URI $$OOD_NGINX_URI $$OOD_PUBLIC_URI $$OOD_AUTH_TYPE
 
 # Targets below here
 

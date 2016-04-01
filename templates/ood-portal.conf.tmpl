@@ -64,6 +64,7 @@ Listen "${OOD_IP}"
     AuthType "${OOD_AUTH_TYPE}"
     Require valid-user
 
+    SetEnv OOD_NODE_URI "${OOD_RNODE_URI}"
     SetEnv OOD_IS_RELATIVE "true"
     LuaHookFixups node_proxy.lua node_proxy_handler
   </Location>
