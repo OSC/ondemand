@@ -197,6 +197,7 @@ $ ->
   update_name(row.data("name"))
   update_host(row.data("host"))
   update_path(row.data("path"))
+  get_folder_contents_from_api(row.data("api"))
 
 @update_notes = (notes) ->
   $("#notes-field").val("#{notes}")
@@ -209,3 +210,15 @@ $ ->
 
 @update_path = (path) ->
   $("#script-path-field").val("#{path}")
+
+# TODO can probably refactor to use this on the index as well
+@get_folder_contents_from_api = (apiurl) ->
+  $.ajax
+    type: 'GET'
+    url: apiurl
+    contentType: "application/json; charset=utf-8"
+    dataType: "text"
+    error: (jqXHR, textStatus, errorThrown) ->
+      console.log jqXHR
+    success: (filedata, textStatus, jqXHR) ->
+      console.log filedata
