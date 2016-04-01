@@ -63,7 +63,6 @@
 @update_script_details_panel = (content) ->
   show_script_details_panel()
   if content?
-    console.log content
     $("#script-name").text(content.name)
     $("#open-script-dir-button").attr("href", "#{content.fs_base}")
     $.ajax
