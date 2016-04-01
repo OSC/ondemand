@@ -175,6 +175,7 @@ Argument         | Definition
 ---------------- | ----------
 OOD_USER_MAP_CMD | Full path to binary that maps the authenticated user name to the system-level user name. See `osc-user-map` as example.
 OOD_NODE_URI     | The sub-URI that namespaces this handler from the other handlers [`/node`].
+OOD_IS_RELATIVE  | Whether the base sub-URI (`/node/HOST/PORT`) should be stripped off when sent to backend proxy.
 
 #### Usage
 
@@ -187,6 +188,7 @@ A typical Apache config will look like...
 
   SetEnv OOD_USER_MAP_CMD "/path/to/user-map-cmd"
   SetEnv OOD_NODE_URI "/node"
+  #SetEnv OOD_IS_RELATIVE "true"
 
   LuaHookFixups node_proxy.lua node_proxy_handler
 </Location>
@@ -203,9 +205,31 @@ wss://apps.ondemand.org/node/HOST/PORT/socket.io
 #=> ws://HOST:PORT/node/HOST/PORT/socket.io
 ```
 
-Note: The backend web server will need to use `/node/HOST/PORT` as its base
-URI. This should be programmatically determined before the backed web server is
-started depending on the host and port it will listen on.
+The backend web server will need to use `/node/HOST/PORT` as its base URI. This
+should be programmatically determined before the backed web server is started
+depending on the host and port it will listen on.
+
+If you define `OOD_IS_RELATIVE` to any value, the following sub-URI strategy is
+used instead:
+
+
+```
+https://apps.ondemand.org/node/HOST/PORT/index.html
+#=> http://HOST:PORT/index.html
+
+wss://apps.ondemand.org/node/HOST/PORT/socket.io
+#=> ws://HOST:PORT/socket.io
+```
+
+Any links on the backend web server must be relative links for this to work:
+
+```html
+<!-- this will WORK -->
+<img src="images/header.png">
+
+<!-- this will FAIL -->
+<img src="/images/header.png">
+```
 
 ## `OOD_USER_MAP_CMD` Specification
 
