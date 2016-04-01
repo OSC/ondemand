@@ -17,7 +17,7 @@ class Source
   def templates
     return [] unless Pathname.new(path).directory?
 
-    folders = Dir.entries(path)
+    folders = Dir.entries(path).sort
     # Remove "." and ".."
     folders.shift(2)
 
