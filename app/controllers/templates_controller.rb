@@ -37,10 +37,10 @@ class TemplatesController < ApplicationController
     @template.host = template_params[:host]
     @template.notes = template_params[:notes]
 
-    # TODO this can be cleaned up
+    # TODO this whole create method can be cleaned up
     template_location = Pathname.new(@template.path)
 
-    data_location = AwesimRails.dataroot.join('templates').join(@template.name)
+    data_location = AwesimRails.dataroot.join('templates').join(@template.name.underscore)
 
     unless data_location.exist?
       if template_location.exist?
