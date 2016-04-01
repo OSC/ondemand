@@ -187,3 +187,13 @@ $ ->
     $("#batch_host_select").val("#{selected.host}")
     return
   return
+
+
+  #######  NEW JOB  ########
+
+@update_new_job_display = (row) ->
+  console.log row
+  update_notes(row.data("notes"))
+
+@update_notes = (notes) ->
+  $("#name-field").val("#{notes}")

@@ -23,7 +23,7 @@ active_var = function() {
 }
 
 template_path = function() {
-    return $('tr.active').data('path');
+    return $('tr.active');
 }
 
 function joinRoot(route){
@@ -61,6 +61,8 @@ $(document).ready(function(){
             template_table.$('tr.active').removeClass('active');
             $(this).addClass('active');
         }
+
+        update_new_job_display(template_path());
     });
 
     table.$('tr:first').click();
