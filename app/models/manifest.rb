@@ -24,12 +24,13 @@ class Manifest
   end
 
   def script_path
+    # manifest path includes the manifest.yml
     path.dirname.join(script).to_s
   end
 
   # all based on path
   def default_name
-    Pathname.new(@path).dirname.basename.to_s
+    Pathname.new(path).dirname.basename.to_s
   end
 
   def default_host
@@ -42,7 +43,7 @@ class Manifest
 
   # Grab the first file name ending in .sh
   def default_script
-    Dir.entries(@path).select{ |f| f =~ /\.sh$/i  }.first if Pathname.new(@path).directory?
+    Dir.entries(path.dirname).select{ |f| f =~ /\.sh$/i  }.first if Pathname.new(path.dirname).directory?
   end
 end
 
