@@ -4,6 +4,8 @@ class OscJob < ActiveRecord::Base
   has_many :jobs, class_name: "OscJobJob", dependent: :destroy
   has_machete_workflow_of :jobs
 
+  attr_accessor :staging_template_dir
+
   # Name that defines the template/target dirs
   #def staging_template_name
   #  "osc_jobs"
@@ -13,9 +15,9 @@ class OscJob < ActiveRecord::Base
     File.basename(self.script_path)
   end
 
-  def staging_template_dir
-    File.dirname(self.script_path)
-  end
+#  def staging_template_dir
+#    File.dirname(self.script_path)
+#  end
 
   def folder_contents
     dir = self.staged_dir || Dir.home
