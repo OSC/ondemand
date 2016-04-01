@@ -194,6 +194,18 @@ $ ->
 @update_new_job_display = (row) ->
   console.log row
   update_notes(row.data("notes"))
+  update_name(row.data("name"))
+  update_host(row.data("host"))
+  update_path(row.data("path"))
 
 @update_notes = (notes) ->
-  $("#name-field").val("#{notes}")
+  $("#notes-field").val("#{notes}")
+
+@update_name = (name) ->
+  $("#name-field").val("#{name}")
+
+@update_host = (host) ->
+  $("#batch-host-select").val("#{host}")
+
+@update_path = (path) ->
+  $("#script-path-field").val("#{path}")

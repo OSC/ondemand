@@ -22,7 +22,7 @@
 
               <tbody>
               <% @templates.each do |template| %>
-                  <tr class="job-row" data-path="<%= template.path %>" data-api="<%= Filesystem.new.api(template.path) %>" data-notes="<%= template.notes %>" >
+                  <tr class="job-row" data-name="<%= template.name %>" data-host="<%= template.host %>" data-path="<%= template.path %>" data-api="<%= Filesystem.new.api(template.path) %>" data-notes="<%= template.notes %>" >
                     <td><%= template.name %></td>
                     <td><%= template.host.titleize %></td>
                   </tr>
@@ -38,15 +38,15 @@
       <div class="panel panel-default" id="job-details-panel">
         <div class="panel-body">
           <div class="form-group">
-            <label class="control-label">Template Notes</label><textarea class="form-control" id="name-field" disabled></textarea></div>
+            <label class="control-label">Template Notes</label><textarea class="form-control" id="notes-field" disabled></textarea></div>
 
           <%= bootstrap_form_for(@osc_job) do |f| %>
               <%= f.alert_message "Please fix the errors below." %>
 
-              <%= f.text_field :name, required: true, id: 'name_field' %>
+              <%= f.text_field :name, required: true, id: 'name-field' %>
 
-              <%= f.select :batch_host, Servers.map { |key, val| [ "#{key.titleize} (#{val[:pbshost]})", key ] }, { label: "Batch Server:" }, { class: "selectpicker", id: "batch_host_select", required: true } %>
-              <%= f.text_field :script_path, required: true, id: "script_path_field" %>
+              <%= f.select :batch_host, Servers.map { |key, val| [ "#{key.titleize} (#{val[:pbshost]})", key ] }, { label: "Batch Server:" }, { class: "selectpicker", id: "batch-host-select", required: true } %>
+              <%= f.text_field :script_path, required: true, id: "script-path-field" %>
 
               <%= f.submit 'Create New Job', class: 'btn btn-primary' %>
               <%= f.button 'Reset', type: :reset, class: 'btn btn-default' %>
