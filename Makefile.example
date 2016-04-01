@@ -12,7 +12,7 @@ CONFFILE := ood-portal.conf
 ###########################
 
 # IP used for Open OnDemand portal
-OOD_IP := *:7000
+OOD_IP := *:5000
 
 # Subdomain used for the Open OnDemand portal
 OOD_SUBDOMAIN := apps.ondemand.org
