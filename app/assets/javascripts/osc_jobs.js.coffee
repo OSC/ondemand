@@ -161,14 +161,14 @@ abs_path = (filepath) ->
 @list_folder_contents = (data) ->
   submit_script = null
   if data?
-    list = "<ul>"
+    list = "<ul class='list-group'>"
     for content in data.folder_contents
       formatted_path = content.path.replace(data.staged_dir, "")
       if content.name == data.staged_script_name
         formatted_path = "<strong>#{formatted_path}</strong>"
         submit_script = content
       formatted_path = "<a href='#{content.fsurl}' target='_blank'>#{formatted_path}</a>" if content.type is "dir"
-      list += "<li>#{formatted_path}</li>"
+      list += "<li class='list-group-item'>#{formatted_path}</li>"
     list += "</ul>"
     $("#job-details-staged-dir-contents").html(list)
   else
@@ -244,8 +244,8 @@ $ ->
     $("#template-details-view").removeAttr("hidden")
 
 @format_files_from_json = (dir, files) ->
-  list = "<ul>"
+  list = "<ul class='list-group'>"
   for content in files
-    list += "<li>#{content.name}</li>"
+    list += "<li class='list-group-item'>#{content.name}</li>"
   list += "</ul>"
   $("#template-folder-contents").html("#{list}")
