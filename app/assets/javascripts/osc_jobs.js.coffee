@@ -186,35 +186,54 @@ $ ->
   #######  NEW JOB  ########
 
 @update_new_job_display = (row) ->
-  update_notes(row.data("notes"))
-  update_name(row.data("name"))
-  update_host(row.data("host"))
-  update_path(row.data("path"))
-  get_folder_contents_from_api(row.data("api"))
+  if row?
+    update_notes(row.data("notes"))
+    update_name(row.data("name"))
+    update_host(row.data("host"))
+    update_script(row.data("script"))
+    update_staging_template_dir(row.data("path"))
+    get_folder_contents_from_api(row.data("api"))
 
 @update_notes = (notes) ->
-  $("#notes-field").val("#{notes}")
+  if notes?
+    $("#notes-field").val("#{notes}")
+  else
+    $("#notes-field").val("")
 
 @update_name = (name) ->
-  $("#name-field").val("#{name}")
+  if name?
+    $("#name-field").val("#{name}")
+  else
+    $("#name-field").val("")
 
 @update_host = (host) ->
   $("#batch-host-select").val("#{host}")
 
-@update_path = (path) ->
-  $("#script-path-field").val("#{path}")
+@update_script = (script) ->
+  if script?
+    $("#script-path-field").val("#{script}")
+  else
+    $("#script-path-field").val("")
+
+@update_staging_template_dir = (template) ->
+  if template?
+    $("#staging-template-dir").val("#{template}")
+  else
+    $("#staging-template-dir").val("")
 
 # TODO can probably refactor to use this on the index as well
 @get_folder_contents_from_api = (apiurl) ->
-  $.ajax
-    type: 'GET'
-    url: apiurl
-    contentType: "application/json; charset=utf-8"
-    dataType: "json"
-    error: (jqXHR, textStatus, errorThrown) ->
-      console.log jqXHR
-    success: (filedata, textStatus, jqXHR) ->
-      update_folder_contents(filedata)
+  update_folder_contents()
+  if apiurl?
+    $.ajax
+      type: 'GET'
+      url: apiurl
+      contentType: "application/json; charset=utf-8"
+      dataType: "json"
+      error: (jqXHR, textStatus, errorThrown) ->
+        console.log jqXHR
+      success: (filedata, textStatus, jqXHR) ->
+        update_folder_contents(filedata)
 
 @update_folder_contents = (data) ->
   $("#template-details-view").attr("hidden", true)
