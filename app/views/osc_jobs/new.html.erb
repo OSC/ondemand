@@ -22,7 +22,7 @@
 
               <tbody>
               <% @templates.each do |template| %>
-                  <tr class="job-row" data-name="<%= template.name %>" data-host="<%= template.host %>" data-path="<%= template.path %>" data-api="<%= Filesystem.new.api(template.path) %>" data-notes="<%= template.notes %>" >
+                  <tr class="job-row" data-name="<%= template.name %>" data-host="<%= template.host %>" data-path="<%= template.path %>" data-script="<%= template.manifest.script %>" data-api="<%= Filesystem.new.api(template.path) %>" data-notes="<%= template.notes %>" >
                     <td><%= template.name %></td>
                     <td><%= template.host.titleize %></td>
                   </tr>
@@ -47,6 +47,8 @@
 
               <%= f.select :batch_host, Servers.map { |key, val| [ "#{key.titleize} (#{val[:pbshost]})", key ] }, { label: "Batch Server:" }, { class: "selectpicker", id: "batch-host-select", required: true } %>
               <%= f.text_field :script_name, required: true, id: "script-path-field" %>
+
+              <%= f.hidden_field :staging_template_dir, required: true, id: 'staging-template-dir' %>
 
               <%= f.submit 'Create New Job', class: 'btn btn-primary' %>
               <%= f.button 'Reset', type: :reset, class: 'btn btn-default' %>
