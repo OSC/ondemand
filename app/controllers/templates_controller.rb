@@ -15,12 +15,16 @@ class TemplatesController < ApplicationController
 
   # GET /templates/new
   def new
-    pathdir = params[:path] || ""
-    pathdir = File.file?(pathdir) ? File.dirname(pathdir) : pathdir
-    @template = Template.new( pathdir )
-
-    if params[:host]
-      @template.host = params[:host]
+    @template = Template.new("")
+    if params[:jobid]
+      job = OscJob.find(params[:jobid])
+      @template = Template.new(job.staged_dir)
+      @template.host = job.batch_host
+    elsif params[:path]
+      @template = Template.new(params[:path])
+      if params[:host]
+        @template.host = params[:host]
+      end
     end
   end
 
@@ -40,7 +44,7 @@ class TemplatesController < ApplicationController
     # TODO this whole create method can be cleaned up
     template_location = Pathname.new(@template.path)
 
-    data_location = AwesimRails.dataroot.join('templates').join(@template.name.underscore)
+    data_location = AwesimRails.dataroot.join('templates').join(@template.name.parameterize.underscore)
 
     unless data_location.exist?
       if template_location.exist?

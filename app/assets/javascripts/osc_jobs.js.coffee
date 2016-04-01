@@ -24,7 +24,7 @@
         update_edit_button(id)
         update_submit_button(id, data.status.char)
         update_stop_button(id, data.status.char)
-        update_template_button(data.script_path, data.batch_host)
+        update_template_button(id)
         list_folder_contents(data)
 
   else
@@ -129,9 +129,10 @@
     $("#stop_button").attr("disabled", true)
     $("#stop_button").bind('click', false)
 
-@update_template_button = (path, host) ->
-  if path?
-    $("#template_button").attr("href", joinRoot(Routes.new_template_path({ path: path, host: host })))
+@update_template_button = (id) ->
+  if id?
+    params = { jobid: "#{id}" }
+    $("#template_button").attr("href", joinRoot(Routes.new_template_path( params )))
     $("#template_button").removeAttr("disabled")
     $("#template_button").unbind('click', false)
   else
