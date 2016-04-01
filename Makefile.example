@@ -49,6 +49,9 @@ OOD_PUN_URI := /pun
 # Reverse proxy to backend nodes
 OOD_NODE_URI := /node
 
+# "Relative" reverse proxy to backend nodes
+OOD_RNODE_URI := /rnode
+
 # Control the backend PUN (e.g., start, stop, reload, ...)
 OOD_NGINX_URI := /nginx
 

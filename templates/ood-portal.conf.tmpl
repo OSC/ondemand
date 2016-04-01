@@ -52,6 +52,22 @@ Listen "${OOD_IP}"
     LuaHookFixups node_proxy.lua node_proxy_handler
   </Location>
 
+  # Reverse "relative" proxy traffic to backend webserver through IP sockets:
+  #
+  #    https://${OOD_SUBDOMAIN}${OOD_NODE_URI}/HOST/PORT/index.html
+  #    #=> http://HOST:PORT/index.html
+  #
+  #    wss://${OOD_SUBDOMAIN}${OOD_NODE_URI}/HOST/PORT/socket.io
+  #    #=> ws://HOST:PORT/socket.io
+  #
+  <Location "${OOD_RNODE_URI}">
+    AuthType "${OOD_AUTH_TYPE}"
+    Require valid-user
+
+    SetEnv OOD_IS_RELATIVE "true"
+    LuaHookFixups node_proxy.lua node_proxy_handler
+  </Location>
+
   # Reverse proxy traffic to backend PUNs through Unix domain sockets:
   #
   #    https://${OOD_SUBDOMAIN}${OOD_PUN_URI}/dev/app/simulations/1
