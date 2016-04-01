@@ -25,6 +25,9 @@ class TemplatesController < ApplicationController
       if params[:host]
         @template.host = params[:host]
       end
+    else
+      # Template name is a '.' otherwise
+      @template.name = ""
     end
   end
 
