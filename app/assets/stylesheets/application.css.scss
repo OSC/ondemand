@@ -17,3 +17,9 @@ body {
 
 // Your custom css styles below (must be manually added)
 @import "pages";
+
+.table {
+  width: 100%;
+  table-layout: fixed;
+  word-wrap: break-word;
+}
