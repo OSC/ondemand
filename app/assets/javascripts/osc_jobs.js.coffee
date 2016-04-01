@@ -18,9 +18,6 @@
       error: (jqXHR, textStatus, errorThrown) ->
         console.log jqXHR
       success: (data, textStatus, jqXHR) ->
-        # TODO remove the console.log, this is for devving
-        console.log data
-
         update_status_label(id, data.status_label)
         update_job_details_panel(data)
         update_open_dir_button(data.fs_root)
@@ -62,7 +59,6 @@
     $("#job-details-server-select option[value=#{data.batch_host}]").prop("selected", "selected")
     $("#job-details-staged-dir").text(data.staged_dir)
     show_job_panel(true)
-
 
 @update_script_details_panel = (content) ->
   show_script_details_panel()
@@ -188,11 +184,9 @@ $ ->
     return
   return
 
-
   #######  NEW JOB  ########
 
 @update_new_job_display = (row) ->
-  console.log row
   update_notes(row.data("notes"))
   update_name(row.data("name"))
   update_host(row.data("host"))
@@ -217,8 +211,22 @@ $ ->
     type: 'GET'
     url: apiurl
     contentType: "application/json; charset=utf-8"
-    dataType: "text"
+    dataType: "json"
     error: (jqXHR, textStatus, errorThrown) ->
       console.log jqXHR
     success: (filedata, textStatus, jqXHR) ->
-      console.log filedata
+      update_folder_contents(filedata)
+
+@update_folder_contents = (data) ->
+  $("#template-details-view").attr("hidden", true)
+  if data?
+    $("#template-location").html("#{data.path}")
+    format_files_from_json(data.path, data.files)
+    $("#template-details-view").removeAttr("hidden")
+
+@format_files_from_json = (dir, files) ->
+  list = "<ul>"
+  for content in files
+    list += "<li>#{content.name}</li>"
+  list += "</ul>"
+  $("#template-folder-contents").html("#{list}")
