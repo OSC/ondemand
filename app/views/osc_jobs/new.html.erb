@@ -22,7 +22,7 @@
 
               <tbody>
               <% @templates.each do |template| %>
-                  <tr class="job-row" data-path="<%= template.path %>" data-api="<%= Filesystem.new.api(template.path) %>" >
+                  <tr class="job-row" data-path="<%= template.path %>" data-api="<%= Filesystem.new.api(template.path) %>" data-notes="<%= template.notes %>" >
                     <td><%= template.name %></td>
                     <td><%= template.host.titleize %></td>
                   </tr>
