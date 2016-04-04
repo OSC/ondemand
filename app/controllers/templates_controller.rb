@@ -51,16 +51,20 @@ class TemplatesController < ApplicationController
 
     unless data_location.exist?
       if template_location.exist?
-        FileUtils.mkdir_p(data_location)
-        copy_dir(template_location, data_location)
-        @template.path = data_location.to_s
+        if Filesystem.new.safe_path? template_location.to_s
+          FileUtils.mkdir_p(data_location)
+          copy_dir(template_location, data_location)
+          @template.path = data_location.to_s
 
-        yaml = { 'name' => @template.name, 'host' => @template.host, 'notes' => @template.notes, 'script' => @template.script_path }
-        File.open(data_location.join('manifest.yml'), 'w') do |file|
-          file.write(yaml.to_yaml)
+          yaml = { 'name' => @template.name, 'host' => @template.host, 'notes' => @template.notes, 'script' => @template.script_path }
+          File.open(data_location.join('manifest.yml'), 'w') do |file|
+            file.write(yaml.to_yaml)
+          end
+
+          saved = true
+        else
+          @template.errors.add(:path, "invalid path.")
         end
-
-        saved = true
       else
         @template.errors.add(:path, "does not exist.")
       end
