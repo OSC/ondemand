@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.0.4 (2016-04-04)
+
 Features:
 
   - display user name in process information
