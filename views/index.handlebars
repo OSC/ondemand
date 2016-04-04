@@ -5,10 +5,8 @@
   <meta charset="UTF-8">
   <title>Wetty - The WebTTY Terminal Emulator</title>
 
-  <base href="{{{baseURI}}}/" />
-
-  <script src="wetty/hterm_all.js"></script>
-  <script src="socket.io/socket.io.js"></script>
+  <script src="{{{baseURI}}}/wetty/hterm_all.js"></script>
+  <script src="{{{baseURI}}}/socket.io/socket.io.js"></script>
   <script>
     // ugly monkey patch to add sub-uri support to wetty.js
     var _io = io;
@@ -17,7 +15,7 @@
       return _io(uri, opts);
     }
   </script>
-  <script src="wetty/wetty.js"></script>
+  <script src="{{{baseURI}}}/wetty/wetty.js"></script>
   <style>
     html,
     body {
