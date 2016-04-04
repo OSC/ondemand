@@ -56,7 +56,7 @@ class TemplatesController < ApplicationController
           copy_dir(template_location, data_location)
           @template.path = data_location.to_s
 
-          yaml = { 'name' => @template.name, 'host' => @template.host, 'notes' => @template.notes, 'script' => @template.script_path }
+          yaml = { 'name' => @template.name, 'host' => @template.host, 'notes' => @template.notes, 'script' => File.basename(@template.script_path) }
           File.open(data_location.join('manifest.yml'), 'w') do |file|
             file.write(yaml.to_yaml)
           end
