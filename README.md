@@ -12,11 +12,11 @@
     we need a newer version of `npm` in order to install this code:
 
     ```
-    scl enable v8314 nodejs010 "npm install npm"
+    scl enable v8314 nodejs010 -- npm install npm
     ```
 
 3. Install required packages using this newer `npm` package:
 
     ```
-    scl enable v8314 nodejs010 "node_modules/.bin/npm install"
+    scl enable v8314 nodejs010 -- node_modules/.bin/npm install
     ```
