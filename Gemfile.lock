@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/AweSim-OSC/awesim_rails.git
-  revision: 9777d2deef1e29590c018a16d2c6fd995bd7797c
+  revision: 27f84d5790b8e89a258570aff1bc5cf51e46181a
   specs:
-    awesim_rails (1.0.0)
+    awesim_rails (1.1.0)
       rails (~> 4.0.0)
       redcarpet (~> 3.2.2)
 
@@ -188,7 +188,7 @@ PLATFORMS
 
 DEPENDENCIES
   autoprefixer-rails
-  awesim_rails (~> 1.0)!
+  awesim_rails (~> 1.1.0)!
   awesim_rails_logging (~> 1.0)!
   bootstrap-sass (= 3.3.5)
   bootstrap_form (~> 2.3.0)

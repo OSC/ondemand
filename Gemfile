@@ -56,6 +56,6 @@ gem "rails_12factor", group: :production
 gem "pbs", "~> 1.0", :git => "https://github.com/AweSim-OSC/pbs-ruby.git"
 gem "osc-machete", "~> 1.0", :git => "https://github.com/AweSim-OSC/osc-machete.git"
 gem "osc_machete_rails", "~> 1.0", :git => "https://github.com/AweSim-OSC/osc_machete_rails.git"
-gem "awesim_rails", "~> 1.0", :git => "https://github.com/AweSim-OSC/awesim_rails.git"
+gem "awesim_rails", "~> 1.1.0", :git => "https://github.com/AweSim-OSC/awesim_rails.git"
 gem "awesim_rails_logging", "~> 1.0", group: :production, git: "https://github.com/AweSim-OSC/awesim_rails_logging.git"
 gem "rake"
