@@ -1,5 +1,9 @@
 ## Unreleased
 
+Features:
+
+  - move config file parsing from binary to library
+
 ## 0.0.4 (2016-04-04)
 
 Features:
