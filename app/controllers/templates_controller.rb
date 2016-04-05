@@ -95,7 +95,10 @@ class TemplatesController < ApplicationController
   # DELETE /templates/1
   # DELETE /templates/1.json
   def destroy
-    @template.destroy
+    # Only delete templates inside the app
+    if @template.path.to_s.start_with?(AwesimRails.dataroot.join('templates').to_s)
+      FileUtils.rm_r @template.path
+    end
     respond_to do |format|
       format.html { redirect_to templates_url }
       format.json { head :no_content }
@@ -107,7 +110,7 @@ class TemplatesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_template
       # TODO What if this folder is empty? What if it doesn't exist?
-      @template = Template.find(params[:id])
+      @template = Template.new(params[:path])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
