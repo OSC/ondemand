@@ -49,27 +49,21 @@ class TemplatesController < ApplicationController
 
     data_location = AwesimRails.dataroot.join('templates').join(@template.name.parameterize.underscore)
 
-    unless data_location.exist?
-      if template_location.exist?
-        if Filesystem.new.safe_path? template_location.to_s
-          FileUtils.mkdir_p(data_location)
-          copy_dir(template_location, data_location)
-          @template.path = data_location.to_s
+    if data_location.exist? then @template.errors.add(:name, "must be unique.") end
+    unless template_location.exist? then @template.errors.add(:path, "does not exist.") end
+    unless Filesystem.new.safe_path? template_location.to_s then @template.errors.add(:path, "invalid path.") end
 
-          yaml = { 'name' => @template.name, 'host' => @template.host, 'notes' => @template.notes, 'script' => File.basename(@template.script_path) }
-          File.open(data_location.join('manifest.yml'), 'w') do |file|
-            file.write(yaml.to_yaml)
-          end
+    if @template.errors.empty?
+      FileUtils.mkdir_p(data_location)
+      copy_dir(template_location, data_location)
+      @template.path = data_location.to_s
 
-          saved = true
-        else
-          @template.errors.add(:path, "invalid path.")
-        end
-      else
-        @template.errors.add(:path, "does not exist.")
+      yaml = { 'name' => @template.name, 'host' => @template.host, 'notes' => @template.notes, 'script' => File.basename(@template.script_path) }
+      File.open(data_location.join('manifest.yml'), 'w') do |file|
+        file.write(yaml.to_yaml)
       end
-    else
-      @template.errors.add(:name, "must be unique.")
+      
+      saved = true
     end
 
     respond_to do |format|
@@ -131,5 +125,11 @@ class TemplatesController < ApplicationController
 
     # return target location so we can chain method
     dest
+  end
+
+  def location_exists_error?(location)
+    if location.exist?
+
+    end
   end
 end
