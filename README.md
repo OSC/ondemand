@@ -1,11 +1,6 @@
 # Getting started
 
-```
-mkdir cloudcmd
-cd cloudcmd
-```
-
-Clone `osc-fileexplorer`
+Git clone `osc-fileexplorer`
 
 ### Install dependencies
 

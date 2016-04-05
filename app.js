@@ -24,7 +24,7 @@ app.use(cloudcmd({
     config: {                         /* config data (optional)                                   */
         auth: false,                  /* this is the default setting, but using it here to reset  */
         root: '/',                    /* set the root path. change to HOME to use homedir         */
-        prefix: BASE_URI,               /* base URL or function which returns base URL (optional)   */
+        prefix: BASE_URI,             /* base URL or function which returns base URL (optional)   */
     }
 }));
 
