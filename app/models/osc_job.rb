@@ -19,6 +19,14 @@ class OscJob < ActiveRecord::Base
     Pathname.new(self.staged_dir).join(self.script_name)
   end
 
+  def script_path=(new_path)
+    unless self.staged_dir.nil?
+      path = Pathname.new(new_path)
+      staged = Pathname.new(self.staged_dir)
+      self.script_name = path.relative_path_from(staged).to_s
+    end
+  end
+
   # def staging_template_dir
   #   File.dirname(self.script_path)
   # end
