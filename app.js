@@ -58,7 +58,7 @@ io.on('connection', function(socket) {
   var term = pty.spawn('ssh', [sshhost, '-p', sshport, '-o', 'PreferredAuthentications=' + sshauth], {
     name: 'xterm-256color',
     cols: 80,
-    ros: 30
+    rows: 30
   });
   console.log((new Date()) + " PID=" + term.pid + " STARTED on behalf of user");
 
