@@ -1,4 +1,5 @@
 Dashboard::Application.routes.draw do
+  get "apps/:owner/:app_name" => "app#show"
   get "dashboard/index"
   root "dashboard#index"
 
