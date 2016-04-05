@@ -52,6 +52,7 @@ class TemplatesController < ApplicationController
     if data_location.exist? then @template.errors.add(:name, "must be unique.") end
     unless template_location.exist? then @template.errors.add(:path, "does not exist.") end
     unless Filesystem.new.safe_path? template_location.to_s then @template.errors.add(:path, "invalid path.") end
+    if template_location.file? then @template.errors.add(:path, "must point to a directory.") end
 
     if @template.errors.empty?
       FileUtils.mkdir_p(data_location)
@@ -62,7 +63,7 @@ class TemplatesController < ApplicationController
       File.open(data_location.join('manifest.yml'), 'w') do |file|
         file.write(yaml.to_yaml)
       end
-      
+
       saved = true
     end
 
