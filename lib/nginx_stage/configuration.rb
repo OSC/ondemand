@@ -1,3 +1,5 @@
+require 'yaml'
+
 module NginxStage
   # An object that stores the configuration options to control NginxStage's
   # behavior.
@@ -128,6 +130,27 @@ module NginxStage
         dev: %r[^/dev/(?<name>[-\w.]+)],
         shared: %r[^/shared/(?<owner>[\w]+)/(?<name>[-\w.]+)]
       }
+      read_configuration(default_config_path) if File.file?(default_config_path)
+    end
+
+  # Default configuration file
+  # @return [String] path to default yaml configuration file
+  def default_config_path
+    File.join root, 'config', 'nginx_stage.yml'
+  end
+
+    # Read in a configuration from a file
+    # @param file [String] path to the yaml configuration file
+    # @return [void]
+    def read_configuration(file)
+      config_hash = YAML.load_file(file)
+      config_hash.each do |k,v|
+        if instance_variable_defined? "@#{k}"
+          self.send("#{k}=", v)
+        else
+          raise InvalidConfigOption, "invalid configuration option: #{k}"
+        end
+      end
     end
   end
 end

@@ -1,7 +1,6 @@
 #!/opt/ood/nginx_stage/bin/ood_ruby
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
-require 'yaml'
 require 'optparse'
 require 'nginx_stage'
 
@@ -23,10 +22,9 @@ raise OptionParser::MissingArgument, "--config=CONFIG" unless config_file
 
 # Read in yaml configuration file if exists
 if File.file? config_file
-  config_hash = YAML.load_file(config_file)
-  NginxStage.configure do |config|
-    config_hash.each { |k,v| config.send("#{k}=", v) }
-  end
+  NginxStage.read_configuration(config_file)
+else
+  abort("Unable to find file: #{config_file}")
 end
 
 # Start up nginx_stage application

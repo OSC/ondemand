@@ -2,6 +2,9 @@ module NginxStage
   # The root exception class that all NginxStage-specific exceptions inherit from
   class Error < StandardError; end
 
+  # An exception raised when attempting to set an invalid configuration option
+  class InvalidConfigOption < Error; end
+
   # An exception raised when attempting to resolve an option that doesn't exist
   class MissingOption < Error; end
 
