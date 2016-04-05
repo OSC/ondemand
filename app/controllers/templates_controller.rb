@@ -127,10 +127,4 @@ class TemplatesController < ApplicationController
     # return target location so we can chain method
     dest
   end
-
-  def location_exists_error?(location)
-    if location.exist?
-
-    end
-  end
 end
