@@ -14,19 +14,22 @@
       <th>Host</th>
       <th>Path</th>
       <th></th>
+      <th></th>
     </tr>
     </thead>
     <tbody>
-    <% @templates.each do |template| %>
+    <% @templates.each_with_index do |template, index| %>
         <tr>
           <td><%= template.name %></td>
           <td><%= template.notes %></td>
           <td><%= template.host.titleize unless template.host.nil? %></td>
           <td><pre><%= template.path %></pre></td>
           <% if template.writable? %>
-              <td><%= link_to '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit Dir'.html_safe, Filesystem.new.fs(template.path), target: '_blank', class: 'btn btn-primary' %></td>
+              <td><%= link_to '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit Template'.html_safe, Filesystem.new.fs(template.path), target: '_blank', class: 'btn btn-primary' %></td>
+              <td><%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete Template Folder'.html_safe, template_path(index, path: template.path.to_s), method: 'delete', data: { confirm: 'Are you certain you want to delete this?' }, class: 'btn btn-danger' %></td>
           <% else %>
               <td><%= link_to '<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span> View Dir'.html_safe, Filesystem.new.fs(template.path), target: '_blank', class: 'btn btn-default' %></td>
+              <td></td>
           <% end %>
 
         </tr>
