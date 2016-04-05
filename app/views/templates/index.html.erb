@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container-fluid">
 
   <div class="page-header" xmlns="http://www.w3.org/1999/html">
     <h3>Listing templates</h3>
@@ -9,12 +9,12 @@
   <table class="table">
     <thead>
     <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Host</th>
-      <th>Path</th>
-      <th></th>
-      <th></th>
+      <th width="10%">Name</th>
+      <th width="25%">Description</th>
+      <th width="10%">Host</th>
+      <th width="35%">Path</th>
+      <th width="10%"></th>
+      <th width="10%"></th>
     </tr>
     </thead>
     <tbody>
@@ -26,7 +26,7 @@
           <td><pre><%= template.path %></pre></td>
           <% if template.writable? %>
               <td><%= link_to '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit Template'.html_safe, Filesystem.new.fs(template.path), target: '_blank', class: 'btn btn-primary' %></td>
-              <td><%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete Template Folder'.html_safe, template_path(index, path: template.path.to_s), method: 'delete', data: { confirm: 'Are you certain you want to delete this?' }, class: 'btn btn-danger' %></td>
+              <td><%= link_to '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete Folder'.html_safe, template_path(index, path: template.path.to_s), method: 'delete', data: { confirm: 'Are you certain you want to delete this?' }, class: 'btn btn-danger' %></td>
           <% else %>
               <td><%= link_to '<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span> View Dir'.html_safe, Filesystem.new.fs(template.path), target: '_blank', class: 'btn btn-default' %></td>
               <td></td>
