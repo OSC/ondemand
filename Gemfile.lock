@@ -1,8 +1,9 @@
 GIT
   remote: git@github.com:AweSim-OSC/awesim_rails.git
-  revision: 9777d2deef1e29590c018a16d2c6fd995bd7797c
+  revision: 7cab66da60a161abab865b06a8ab9ff0b1d7cf82
+  tag: v1.1.0
   specs:
-    awesim_rails (1.0.0)
+    awesim_rails (1.1.0)
       rails (~> 4.0.0)
       redcarpet (~> 3.2.2)
 
@@ -192,6 +193,3 @@ DEPENDENCIES
   therubyracer
   turbolinks
   uglifier (>= 1.3.0)
-
-BUNDLED WITH
-   1.11.2
