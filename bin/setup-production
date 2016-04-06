@@ -1,0 +1,52 @@
+#!/usr/bin/env ruby
+
+require 'pathname'
+require 'fileutils'
+require 'dotenv'
+
+include FileUtils
+
+# if this returns with error
+# we can handle that appropriately
+
+# abort if cmd fails
+def `(cmd)
+  output = super
+  abort "'#{cmd}' failed with output: #{output}" unless $?.success?
+end
+
+# path to your application root
+APP_ROOT = Pathname.new File.expand_path('../../', __FILE__)
+
+chdir APP_ROOT do
+  # get env vars for DATABASE and DATAROOT
+  envs = Dotenv.load(".env.production")
+
+  `mkdir -p $RAILS_DATAROOT` if envs.has_key?("RAILS_DATAROOT")
+
+  # currently SQLite-specific
+  if envs.has_key?("DATABASE_PATH")
+    unless File.exist?(envs["DATABASE_PATH"])
+      `RAILS_ENV=production ruby bin/rake db:setup`
+    else
+      # Get a list of all migration for this app
+      app_migrations = Dir.glob("#{APP_ROOT}/db/migrate/*").map {|v| File.basename(v).split("_").first}
+
+      # Read in current migrations from database
+      require 'sqlite3'
+      begin
+        db = SQLite3::Database.new envs["DATABASE_PATH"]
+        db_migrations = db.execute("SELECT * FROM schema_migrations").map {|v| v.first}
+      rescue SQLite3::Exception => e
+        abort "Exception occurred: #{e}"
+      ensure
+        db.close if db
+      end
+
+      # Compare the two arrays of migrations
+      unless app_migrations.sort == db_migrations.sort
+        abort "Your database differs significantly from the app's schema"
+      end
+    end
+  end
+end
