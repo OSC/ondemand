@@ -114,7 +114,7 @@ class OscJobsController < ApplicationController
 
     respond_to do |format|
       if @osc_job.save
-        format.html { redirect_to @osc_job, notice: 'Job was successfully copied.' }
+        format.html { redirect_to osc_jobs_url, notice: 'Job was successfully copied.' }
         format.json { render :show, status: :created, location: @osc_job }
       else
         format.html { redirect_to osc_jobs_url, alert: "Job failed to be copied: #{@osc_job.errors.to_a}" }
