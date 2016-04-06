@@ -6,7 +6,7 @@
 AwesimRails.configure do |config|
   # The app title used in the layout
   # Default: Rails.application.class.parent_name.titleize
-  #config.app_title = 'New Title Here'
+  config.app_title = 'My Jobs'
 
   # Whether dynamic routing is used to host local files under `AwesimRails.dataroot`
   # Default: true
