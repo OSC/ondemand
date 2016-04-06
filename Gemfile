@@ -34,6 +34,7 @@ gem 'dotenv-rails', '~> 2.0.0'
 gem 'rails_12factor', group: :production
 gem 'redcarpet', '~> 3.2.2'
 gem 'rouge', '~> 1.9.0'
+gem 'awesim', :git => 'git@github.com:AweSim-OSC/awesim-cli.git', :tag => 'v0.11.0'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
