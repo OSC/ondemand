@@ -27,6 +27,20 @@ class OscJob < ActiveRecord::Base
     end
   end
 
+  # Override of OSC::Machete#stage
+  # Creates a new staging target job directory on the system
+  # Copies the staging template directory to the staging target job directory
+  #
+  # @return [Pathname] The staged directory path.
+  def stage
+    unless self.staged_dir
+      self.staged_dir = OSC::Machete::JobDir.new(staging_target_dir).new_jobdir
+      FileUtils.mkdir_p self.staged_dir
+      FileUtils.cp_r staging_template_dir.to_s + "/.", self.staged_dir
+    end
+    Pathname.new(self.staged_dir)
+  end
+
   # def staging_template_dir
   #   File.dirname(self.script_path)
   # end
