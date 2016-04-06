@@ -14,7 +14,7 @@
   ],
   "dependencies": {
     "base-uri": "^1.0.1",
-    "cloudcmd": "^5.2.2",
+    "cloudcmd": "^5.3.1",
     "express": "^4.13.4",
     "os-homedir": "^1.0.1",
     "socket.io": "^1.4.5"
