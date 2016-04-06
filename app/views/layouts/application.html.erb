@@ -18,7 +18,7 @@
         <li><a href="/pun/shared/bmcmichael/cloudcmd/fs<%= User.new.home %>" target="_blank">Files</a></li>
         <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Jobs<span class="caret"></span></a>
         <ul class="dropdown-menu">
-          <li class="disabled"><a href="#">My Jobs</a></li>
+          <li><%= link_to "My Jobs", app_path("efranz", "jobs") %></li>
           <li><a href="/pun/shared/bmcmichael/osc-jobstatus">Active Jobs</a>
           </li>
         </ul>
