@@ -38,6 +38,7 @@
               <th>PBS ID</th>
               <th>Cluster</th>
               <th>Status</th>
+              <th>Size</th>
             </tr>
             </thead>
 
@@ -49,6 +50,7 @@
                   <td><%= osc_job.pbsid %></td>
                   <td><%= osc_job.batch_host.titleize %></td>
                   <td id="status_label_<%= osc_job.id %>"><%= status_label(osc_job) %></td>
+                  <td><%= number_to_human_size(Filesystem.new.path_size(osc_job.staged_dir)) %></td>
                 </tr>
             <% end %>
             </tbody>
