@@ -18,31 +18,31 @@
         <li><a href="/pun/shared/bmcmichael/cloudcmd/fs<%= User.new.home %>" target="_blank">Files</a></li>
         <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Jobs<span class="caret"></span></a>
         <ul class="dropdown-menu">
-          <li><%= link_to "My Jobs", app_path("efranz", "myjobs") %></li>
-          <li><a href="/pun/shared/bmcmichael/activejobs">Active Jobs</a>
+          <li><%= link_to "<i class=\"fa fa-tasks\"></i> My Jobs".html_safe, app_path("efranz", "myjobs") %></li>
+          <li><a href="/pun/shared/bmcmichael/activejobs"><i class="fa fa-clock-o"></i> Active Jobs</a>
           </li>
         </ul>
         </li>
         <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Clusters<span class="caret"></span></a>
         <ul class="dropdown-menu">
-          <li><a href="/pun/shared/jnicklas/osc-shell/ssh/oakley" target="_blank">Oakley Shell Access</a>
+          <li><a href="/pun/shared/jnicklas/osc-shell/ssh/oakley" target="_blank"><i class="fa fa-terminal"></i> Oakley Shell Access</a>
           </li>
-          <li><a href="/pun/shared/jnicklas/osc-shell/ssh/ruby" target="_blank">Ruby Shell Access</a>
+          <li><a href="/pun/shared/jnicklas/osc-shell/ssh/ruby" target="_blank"><i class="fa fa-terminal"></i> Ruby Shell Access</a>
           </li>
           <li role="separator" class="divider"></li>
-          <li><a href="/pun/shared/bmcmichael/osc-systemstatus">System Status</a></li>
+          <li><a href="/pun/shared/bmcmichael/osc-systemstatus"><i class="fa fa-tachometer"></i> System Status</a></li>
         </ul>
         </li>
         <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Apps<span class="caret"></span></a>
         <ul class="dropdown-menu">
           <li class="dropdown-header">Virtual Desktop Interface</li>
-          <li><a href="/pun/shared/efranz/oakley_desktop_vdi">Oakley Desktop</a></li>
-          <li><a href="/pun/shared/efranz/ruby_desktop_vdi">Ruby Desktop</a></li>
+          <li><a href="/pun/shared/efranz/oakley_desktop_vdi"><i class="fa fa-desktop"></i> Oakley Desktop</a></li>
+          <li><a href="/pun/shared/efranz/ruby_desktop_vdi"><i class="fa fa-desktop"></i> Ruby Desktop</a></li>
           <li><a href="/pun/shared/jnicklas/paraview">Paraview</a></li>
           <li role="separator" class="divider"></li>
           <li class="dropdown-header">Compute Node Session</li>
-          <li><a href="/pun/shared/jnicklas/oakley_desktop">Oakley Desktop</a></li>
-          <li><a href="/pun/shared/jnicklas/ruby_desktop" >Ruby Desktop</a>
+          <li><a href="/pun/shared/jnicklas/oakley_desktop"><i class="fa fa-desktop"></i> Oakley Desktop</a></li>
+          <li><a href="/pun/shared/jnicklas/ruby_desktop" ><i class="fa fa-desktop"></i> Ruby Desktop</a>
           <li><a href="/pun/shared/jnicklas/abaqus_cae">Abaqus/CAE</a>
           <li><a href="/pun/shared/jnicklas/ansys_workbench">ANSYS Workbench</a>
           <li><a href="/pun/shared/jnicklas/comsol">COMSOL</a>
@@ -51,7 +51,7 @@
 
         <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Develop<span class="caret"></span></a>
         <ul class="dropdown-menu">
-          <li><a href="/nginx/stop?redir=<%= root_path %>">Restart Web Server</a></li>
+          <li><a href="/nginx/stop?redir=<%= root_path %>"><i class="fa fa-refresh"></i> Restart Web Server</a></li>
         </ul>
 
       </ul>
@@ -59,15 +59,15 @@
         <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Help<span class="caret"></span></a>
         <ul class="dropdown-menu">
           <%# <li class="disabled"><a href="#">Online Documentation</a></li> %>
-          <li><a href="https://www.osc.edu/contact/supercomputing_support">Contact Support</a></li>
+          <li><a href="https://www.osc.edu/contact/supercomputing_support"><i class="fa fa-question-circle"></i> Contact Support</a></li>
         </ul>
         </li>
         <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Logged in as <%= User.new.name %><span class="caret"></span></a>
         <ul class="dropdown-menu">
-          <li><a href="https://my.osc.edu">Change OSC Password</a>
+          <li><a href="https://my.osc.edu"><i class="fa fa-gear"></i> Change OSC Password</a>
           </li>
           <li role="separator" class="divider"></li>
-          <li class="disabled"><a href="#">Logout</a>
+          <li class="disabled"><a href="#"><i class="fa fa-power-off"></i> Logout</a>
           </li>
         </ul>
         </li>

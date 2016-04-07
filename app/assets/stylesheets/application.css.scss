@@ -1,6 +1,6 @@
 // Load bootstrap/font-awesome sprockets first
 @import "bootstrap-sprockets";
-// @import "font-awesome-sprockets";
+@import "font-awesome-sprockets";
 //@import "awesim";
 
 
@@ -10,7 +10,7 @@ $navbar-inverse-link-color: rgb(255, 255, 255);
 
 // Load up bootstrap/font-awesome style sheet
 @import "bootstrap";
-// @import "font-awesome";
+@import "font-awesome";
 
 // Load up dataTables bootstrap specific styles
 // @import "dataTables/bootstrap/3/jquery.dataTables.bootstrap";
