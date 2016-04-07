@@ -12,7 +12,7 @@
         <div class="panel-body">
 
           <div class="panel-body">
-            <table id="new-job-template-table" class="table data-table-new-job">
+            <table id="new-job-template-table" class="table data-table-new-job" style="width:100%">
               <thead>
               <tr>
                 <th>Name</th>
@@ -38,15 +38,15 @@
       <div class="panel panel-default" id="job-details-panel">
         <div class="panel-body">
           <div class="form-group">
-            <label class="control-label">Template Notes</label><textarea class="form-control" id="notes-field" rows="6" disabled></textarea></div>
+            <label class="control-label">Template Notes:</label><textarea class="form-control" id="notes-field" rows="6" disabled></textarea></div>
 
           <%= bootstrap_form_for(@osc_job) do |f| %>
               <%= f.alert_message "Please fix the errors below." %>
 
-              <%= f.text_field :name, required: true, id: 'name-field' %>
+              <%= f.text_field :name, label: 'Job Name:', required: true, id: 'name-field' %>
 
               <%= f.select :batch_host, Servers.map { |key, val| [ "#{key.titleize} (#{val[:pbshost]})", key ] }, { label: "Batch Server:" }, { class: "selectpicker", id: "batch-host-select", required: true } %>
-              <%= f.text_field :script_name, required: true, id: "script-path-field" %>
+              <%= f.text_field :script_name, label: 'Script Name:', required: true, id: "script-path-field" %>
 
               <%= f.hidden_field :staging_template_dir, required: true, id: 'staging-template-dir' %>
 
