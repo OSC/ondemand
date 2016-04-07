@@ -71,7 +71,13 @@ class OscJob < ActiveRecord::Base
 
   # Make copy of workflow
   def copy
-    self.dup
+    new_osc_job = OscJob.new
+    new_osc_job.name = self.name
+    new_osc_job.staging_template_dir = self.staged_dir
+    new_osc_job.batch_host = self.batch_host
+    new_osc_job.script_name = self.script_name
+    new_osc_job.staged_dir = new_osc_job.stage.to_s
+    new_osc_job
   end
 
 end
