@@ -29,7 +29,7 @@ class Filesystem
   # Get the disk usage of a path in bytes, nil if path is invalid
   def path_size (path)
     if Dir.exist? path
-      Integer(`du -s #{path}`.split('/')[0]) * 1024
+      Integer(`du -s -b #{path}`.split('/')[0])
     end
   end
 end

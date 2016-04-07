@@ -17,7 +17,7 @@
 
   <div class="col-md-7">
     <div id="job-list-view" class="panel panel-default">
-      <div class="panel-body">
+
         <div class="panel-body">
           <a class="btn btn-default btn-sm" id="open_dir_button" target="_blank" data-toggle="tooltip" title="Open Directory in File Manager" role="button" disabled><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span> Open Dir</a>
           <a class="btn btn-default btn-sm" id="copy_button" data-toggle="tooltip" title="Copy Job" role="button" data-method="get" disabled><span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span></a>
@@ -29,7 +29,7 @@
           <a class="btn btn-danger btn-sm" id="destroy_button" data-toggle="tooltip" title="Delete Job" data-method="get" data-confirm="Are you sure?" role="button" disabled><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
         </div>
 
-        <div class="panel-body col-sm-12"  style="overflow-x: auto;">
+        <div class="panel-body" style="overflow-x: auto;">
           <table id="job-list-table" class="table data-table">
             <thead>
             <tr>
@@ -38,7 +38,9 @@
               <th>PBS ID</th>
               <th>Cluster</th>
               <th>Status</th>
+              <!-- FILE_SIZE_FEATURE
               <th>Size</th>
+              -->
             </tr>
             </thead>
 
@@ -50,13 +52,15 @@
                   <td><%= osc_job.pbsid %></td>
                   <td><%= osc_job.batch_host.titleize %></td>
                   <td id="status_label_<%= osc_job.id %>"><%= status_label(osc_job) %></td>
-                  <td><%= number_to_human_size(Filesystem.new.path_size(osc_job.staged_dir)) %></td>
+                  <!-- FILE_SIZE_FEATURE
+                    <td><%# number_to_human_size(Filesystem.new.path_size(osc_job.staged_dir)) %></td>
+                    -->
                 </tr>
             <% end %>
             </tbody>
           </table>
         </div>
-      </div>
+
     </div>
   </div>
 
