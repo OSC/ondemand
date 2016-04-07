@@ -147,7 +147,10 @@ var CloudCmd, Util, DOM, CloudFunc, MenuIO;
                 'Upload'        : function() {
                     CloudCmd.Upload.show();
                 },
+                // OSC_CUSTOM_CODE
+                // Comment out 'Upload from cloud' because it doesn't work
                 //'Upload From Cloud': uploadFromCloud,
+                // end OSC_CUSTOM_CODE
                 '(Un)Select All': DOM.toggleAllSelectedFiles
             };
 
@@ -188,7 +191,10 @@ var CloudCmd, Util, DOM, CloudFunc, MenuIO;
                             CloudCmd.Operation.show('extract');
                         },
                         'Download'      : download,
+                        // OSC_CUSTOM_CODE
+                        // Comment out 'upload to cloud because it does not work'
                         //'Upload To Cloud': curry(uploadTo, 'Cloud'),
+                        // end OSC_CUSTOM_CODE
                         'Cut'           : function() {
                             isCurrent(Buffer.cut, function() {
                                 Dialog.alert.noFiles(TITLE);
