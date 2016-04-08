@@ -39,10 +39,10 @@
         </li>
         <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Clusters<span class="caret"></span></a>
         <ul class="dropdown-menu">
-          <li><a href="/pun/shared/jnicklas/osc-shell/ssh/oakley" target="_blank"><i class="fa fa-terminal"></i> Oakley Shell Access</a>
-          </li>
-          <li><a href="/pun/shared/jnicklas/osc-shell/ssh/ruby" target="_blank"><i class="fa fa-terminal"></i> Ruby Shell Access</a>
-          </li>
+          <li><a href="/pun/shared/jnicklas/osc-shell/ssh/oakley" target="_blank"><i class="fa fa-terminal"></i> Oakley Shell Access</a></li>
+          <% if @user.has_ruby_access? %>
+            <li><a href="/pun/shared/jnicklas/osc-shell/ssh/ruby" target="_blank"><i class="fa fa-terminal"></i> Ruby Shell Access</a></li>
+          <% end %>
           <li role="separator" class="divider"></li>
           <li><a href="/pun/shared/bmcmichael/osc-systemstatus"><i class="fa fa-tachometer"></i> System Status</a></li>
         </ul>
@@ -51,22 +51,28 @@
         <ul class="dropdown-menu">
           <li class="dropdown-header">Virtual Desktop Interface</li>
           <li><a href="/pun/shared/efranz/oakley_vdi"><i class="fa fa-desktop"></i> Oakley VDI</a></li>
-          <li><a href="/pun/shared/efranz/ruby_vdi"><i class="fa fa-desktop"></i> Ruby VDI</a></li>
+          <% if @user.has_ruby_access? %>
+            <li><a href="/pun/shared/efranz/ruby_vdi"><i class="fa fa-desktop"></i> Ruby VDI</a></li>
+          <% end %>
           <li><a href="/pun/shared/jnicklas/paraview"><%= image_tag "logo-14x14-paraview.png" %> Paraview</a></li>
           <li role="separator" class="divider"></li>
           <li class="dropdown-header">Compute Node Session</li>
           <li><a href="/pun/shared/jnicklas/oakley_desktop"><i class="fa fa-desktop"></i> Oakley Desktop</a></li>
-          <li><a href="/pun/shared/jnicklas/ruby_desktop" ><i class="fa fa-desktop"></i> Ruby Desktop</a>
+          <% if @user.has_ruby_access? %>
+            <li><a href="/pun/shared/jnicklas/ruby_desktop" ><i class="fa fa-desktop"></i> Ruby Desktop</a>
+          <% end %>
           <li><a href="/pun/shared/jnicklas/abaqus_cae"><%= image_tag "logo-14x14-abaqus.png" %> Abaqus/CAE</a>
           <li><a href="/pun/shared/jnicklas/ansys_workbench"><%= image_tag "logo-14x14-ansys.png" %> ANSYS Workbench</a>
           <li><a href="/pun/shared/jnicklas/comsol"><%= image_tag "logo-14x14-comsol.png" %> COMSOL</a>
         </ul>
         </li>
 
+        <% if @user.developer? %>
         <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Develop<span class="caret"></span></a>
         <ul class="dropdown-menu">
           <li><a href="/nginx/stop?redir=<%= root_path %>"><i class="fa fa-refresh"></i> Restart Web Server</a></li>
         </ul>
+        <% end %>
 
       </ul>
       <ul class="nav navbar-nav navbar-right">
