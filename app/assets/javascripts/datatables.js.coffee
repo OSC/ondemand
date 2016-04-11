@@ -5,7 +5,8 @@
 jQuery ->
   # Set up datatable
   $('.data-table').DataTable
-    order: [0, 'desc']
+    order: [0, 'desc'],
+    stateSave: true,
     columnDefs: [{
       orderable: false
       targets: 'no-sort'
@@ -15,7 +16,8 @@ jQuery ->
 jQuery ->
 # Set up datatable
   $('.data-table-new-job').DataTable
-    order: [0, 'desc']
+    order: [0, 'desc'],
+    stateSave: true,
     columnDefs: [{
       orderable: false
       targets: 'no-sort'
