@@ -288,13 +288,15 @@ The following paths are created on demand:
 ├── lib                                 # drwxr-xr-x root   root
 │   └── nginx                           # drwxr-xr-x root   root
 │       ├── config                      # drwxr-xr-x root   root
-│       │   ├── dev                     # drwxr-xr-x root   root
-│       │   │   └── <user>              # drwxr-xr-x root   root
-│       │   │       └── <dev_app>.conf  # -rw-r--r-- root   root
-│       │   ├── shared                  # drwxr-xr-x root   root
-│       │   │   └── <user>              # drwxr-xr-x root   root
-│       │   │       └── <app>.conf      # -rw-r--r-- root   root
-│       │   └── <user>.conf             # -rw-r--r-- root   root
+│       │   ├── apps                    # drwxr-xr-x root   root
+│       │   │   ├── dev                 # drwxr-xr-x root   root
+│       │   │   │   └── <user>          # drwxr-xr-x root   root
+│       │   │   │       └── <app>.conf  # -rw-r--r-- root   root
+│       │   │   └── shared              # drwxr-xr-x root   root
+│       │   │       └── <user>          # drwxr-xr-x root   root
+│       │   │           └── <app>.conf  # -rw-r--r-- root   root
+│       │   └── puns                    # -rw-r--r-- root   root
+│       │       └── <user>.conf         # -rw-r--r-- root   root
 │       └── tmp                         # drwxr-xr-x root   root
 │           └── <user>                  # drwxr-xr-x root   root
 │               ├── client_body         # drwx------ USER   root

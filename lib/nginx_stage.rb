@@ -25,7 +25,7 @@ module NginxStage
   # Path to generated per-user NGINX config file
   # @example User Bob's nginx config
   #   pun_config_path(user: bob)
-  #   #=> "/var/log/nginx/config/bob.conf"
+  #   #=> "/var/log/nginx/config/puns/bob.conf"
   # @param user [String] the user of the nginx process
   # @return [String] the path to the per-user nginx config file
   def self.pun_config_path(user:)
@@ -90,10 +90,10 @@ module NginxStage
   # Path to generated NGINX app config
   # @example Dev app owned by Bob
   #   app_config_path(env: :dev, owner: bob, name: 'rails1')
-  #   #=> "/var/lib/nginx/config/dev/bob/rails1.conf"
+  #   #=> "/var/lib/nginx/config/apps/dev/bob/rails1.conf"
   # @example Shared app owned by Dan
   #   app_config_path(env: :dev, owner: dan, name: 'fillsim')
-  #   #=> "/var/lib/nginx/config/shared/dan/fillsim.conf"
+  #   #=> "/var/lib/nginx/config/apps/shared/dan/fillsim.conf"
   # @param env [Symbol] environment the app is run under
   # @param owner [String] the owner of the app
   # @param name [String] the name of the app
@@ -168,7 +168,7 @@ module NginxStage
 
   # Arguments used during execution of nginx binary
   # @example Start the per-user NGINX for user
-  #   nginx_cmd(user: bob) #=> "/usr/bin/nginx -c /var/lib/nginx/config/bob.conf"
+  #   nginx_cmd(user: bob) #=> "/usr/bin/nginx -c /var/lib/nginx/config/puns/bob.conf"
   # @param user [String] the owner of the nginx process
   # @param signal [Symbol] the signal sent to the nginx process
   # @return [String] the shell command used to execute the nginx process

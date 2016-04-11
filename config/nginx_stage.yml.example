@@ -24,11 +24,11 @@
 
 # Root location of per-user NGINX configs
 #
-#pun_config_root: '/var/lib/nginx/config'
+#pun_config_root: '/var/lib/nginx/config/puns'
 
 # Root location of per-user NGINX app configs
 #
-#app_config_root: '/var/lib/nginx/config'
+#app_config_root: '/var/lib/nginx/config/apps'
 
 # Root location of per-user NGINX tmp dirs
 #

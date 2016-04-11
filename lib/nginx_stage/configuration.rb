@@ -104,8 +104,8 @@ module NginxStage
     def set_default_configuration
       self.proxy_user       = 'apache'
       self.template_root    = "#{root}/templates"
-      self.pun_config_root  = '/var/lib/nginx/config'
-      self.app_config_root  = '/var/lib/nginx/config'
+      self.pun_config_root  = '/var/lib/nginx/config/puns'
+      self.app_config_root  = '/var/lib/nginx/config/apps'
       self.pun_tmp_root     = '/var/lib/nginx/tmp'
       self.pun_log_root     = '/var/log/nginx'
       self.pun_run_root     = '/var/run/nginx'
