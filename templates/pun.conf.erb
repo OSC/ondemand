@@ -23,6 +23,16 @@ http {
   passenger_default_user <%= user %>;
   passenger_load_shell_envvars off;
 
+  # Kill all apps after they idle timeout
+  passenger_min_instances 0;
+
+  # Take advantage of Ruby preloader
+  #passenger_spawn_method smart;
+  #passenger_max_preloader_idle_time 0;
+
+  # Load all apps directly
+  passenger_spawn_method direct;
+
   # Set an array of temp and cache file options for the per-user environment
   client_body_temp_path   <%= tmp_root %>/client_body;
   proxy_temp_path         <%= tmp_root %>/proxy_temp;
