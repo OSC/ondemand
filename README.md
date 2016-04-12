@@ -46,10 +46,10 @@ Generates an Open OnDemand portal config for an Apache server.
 
     ```bash
     # Generate Apache config in `/build`
-    rake OOD_PUBLIC_ROOT=/var/www/docroot OOD_PUBLIC_URI=/public
+    rake OOD_PUBLIC_ROOT='/var/www/docroot' OOD_PUBLIC_URI='/public'
 
     # If using Software Collections, set Ruby environment
-    #scl enable rh-ruby22 -- rake OOD_AUTH_TYPE=openid-connect
+    #scl enable rh-ruby22 -- rake OOD_AUTH_TYPE='openid-connect'
     ```
 
 3.  Verify that the Apache config file is generated correctly in
@@ -79,7 +79,7 @@ Generates an Open OnDemand portal config for an Apache server.
 
     ```bash
     # Install Apache config in different PREFIX
-    sudo rake install PREFIX=/etc/httpd/conf.d
+    sudo rake install PREFIX='/etc/httpd/conf.d'
     ```
 
 ## Rake Tasks
