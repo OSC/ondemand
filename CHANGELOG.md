@@ -17,6 +17,7 @@ Features:
 Bugfixes:
 
   - `rake install` doesn't depend on `git` anymore
+  - fixed crash when config file was empty
 
 ## 0.0.4 (2016-04-04)
 
