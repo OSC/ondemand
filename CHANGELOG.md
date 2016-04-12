@@ -1,8 +1,22 @@
 ## Unreleased
 
+  - refactored Configuration module to reduce duplication
+
 Features:
 
   - move config file parsing from binary to library
+  - separated paths where pun and app configs are stored for easier config
+    cleanup
+  - directly spawn Rails apps to keep all apps under parent process
+  - removed unix group whitelists as this should be responsibility of apps and
+    file permissions (provides greater flexibility)
+  - set Nginx tmp root to user's home directory to allow for larger file
+    uploads
+  - introduced/renamed possible app environments to: `dev`, `usr`, and `sys`
+
+Bugfixes:
+
+  - `rake install` doesn't depend on `git` anymore
 
 ## 0.0.4 (2016-04-04)
 
