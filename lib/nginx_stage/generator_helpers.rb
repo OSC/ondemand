@@ -26,14 +26,6 @@ module NginxStage
           raise InvalidUser, "user is special: #{user} (#{user.uid} < #{min_uid})"
         end
       end
-
-      # Validate that user is in a white-listed group for running apps
-      self.add_hook :validate_user_group do
-        if valid_groups = NginxStage.user_groups
-          found = valid_groups & user.groups
-          raise InvalidUser, "user (#{user}) not in valid groups: #{valid_groups.join(', ')}" if found.empty?
-        end
-      end
     end
 
     # Add support for accepting SKIP_NGINX as an option

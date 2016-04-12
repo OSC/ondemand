@@ -69,7 +69,7 @@ module NginxStage
 
     # Generate the per-user NGINX config from the 'pun.conf.erb' template
     add_hook :create_config do
-      template "pun.conf.erb", pun_config_path
+      template "pun.conf.erb", config_path
     end
 
     # Run the per-user NGINX process (exit quietly on success)
@@ -82,13 +82,13 @@ module NginxStage
 
     # If skip nginx, then output path to the generated per-user NGINX config
     add_hook :output_pun_config_path do
-      puts pun_config_path
+      puts config_path
     end
 
 
     private
       # per-user NGINX config path
-      def pun_config_path
+      def config_path
         NginxStage.pun_config_path(user: user)
       end
 
@@ -99,37 +99,34 @@ module NginxStage
 
       # Path to the user's personal error.log
       def error_log_path
-        NginxStage.error_log_path(user: user)
+        NginxStage.pun_error_log_path(user: user)
       end
 
       # Path to the user's personal access.log
       def access_log_path
-        NginxStage.access_log_path(user: user)
+        NginxStage.pun_access_log_path(user: user)
       end
 
       # Path to user's personal tmp root
       def tmp_root
-        NginxStage.tmp_root(user: user)
+        NginxStage.pun_tmp_root(user: user)
       end
 
       # Path to the user's per-user NGINX pid file
       def pid_path
-        NginxStage.pid_path(user: user)
+        NginxStage.pun_pid_path(user: user)
       end
 
       # Path to the user's per-user NGINX socket file
       def socket_path
-        NginxStage.socket_path(user: user)
+        NginxStage.pun_socket_path(user: user)
       end
 
-      # Wildcard path to user's dev apps
-      def app_dev_configs
-        NginxStage.app_config_path(env: :dev, owner: user, name: '*')
-      end
-
-      # Wildcard path to ALL shared apps
-      def app_shared_configs
-        NginxStage.app_config_path(env: :shared, owner: '*', name: '*')
+      # Array of wildcard paths to app configs user has access to
+      def app_configs
+        NginxStage.pun_app_configs(user: user).map do |envmt|
+          NginxStage.app_config_path envmt
+        end
       end
   end
 end

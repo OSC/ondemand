@@ -121,6 +121,24 @@ module NginxStage
 
     attr_writer :pun_socket_path
 
+    # List of hashes that help define the location of the app configs for the
+    # per-user NGINX config. These will be arguments for {#app_config_path}.
+    # @example User Bob's app configs
+    #   pun_app_configs(user: 'bob')
+    #   #=> [ {env: :dev, owner: 'bob', name: '*'},
+    #         {env: :shared, owner: '*', name: '*'} ]
+    # @param user [String] the user of the nginx process
+    # @return [Array<Hash>] list of hashes detailing app config locations
+    def pun_app_configs(user:)
+      @pun_app_configs.map do |envmt|
+        envmt.each_with_object({}) do |(k, v), h|
+          h[k] = v.respond_to?(:%) ? (v % {user: user}) : v
+        end
+      end
+    end
+
+    attr_writer :pun_app_configs
+
     #
     # per-user NGINX app configuration options
     #
@@ -245,10 +263,14 @@ module NginxStage
       self.pun_error_log_path  = '/var/log/nginx/%{user}/error.log'
       self.pun_pid_path        = '/var/run/nginx/%{user}/passenger.pid'
       self.pun_socket_path     = '/var/run/nginx/%{user}/passenger.sock'
+      self.pun_app_configs     = [
+        {env: :dev, owner: '%{user}', name: '*'},
+        {env: :shared, owner: '*', name: '*'}
+      ]
 
       self.app_config_path   = {
-        dev:    '/var/lib/nginx/config/apps/%{env}/%{user}/%{name}.conf',
-        shared: '/var/lib/nginx/config/apps/%{env}/%{user}/%{name}.conf'
+        dev:    '/var/lib/nginx/config/apps/%{env}/%{owner}/%{name}.conf',
+        shared: '/var/lib/nginx/config/apps/%{env}/%{owner}/%{name}.conf'
       }
       self.app_root          = {
         dev:    '~%{owner}/ood_%{env}/%{name}',

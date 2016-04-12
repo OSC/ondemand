@@ -59,11 +59,10 @@ http {
     }
     <%- end -%>
 
-    # Include all user's dev apps
-    include <%= app_dev_configs %>;
-
-    # Include all shared apps
-    include <%= app_shared_configs %>;
+    # Include all app configs user has access to
+    <%- app_configs.each do |app_config| -%>
+    include <%= app_config %>;
+    <%- end -%>
 
     # Deny access to .htaccess files
     location ~ /\.ht {

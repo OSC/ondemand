@@ -32,10 +32,10 @@ module NginxStage
       parser = generator ? cmd_parser(command, generator) : default_parser
       parser.parse!( ARGV )
       generator.new(options).invoke if generator
-    rescue
-      $stderr.puts "#{$!.to_s}"
-      $stderr.puts "Run 'nginx_stage --help' to see a full list of available command line options."
-      exit(false)
+    # rescue
+      # $stderr.puts "#{$!.to_s}"
+      # $stderr.puts "Run 'nginx_stage --help' to see a full list of available command line options."
+      # exit(false)
     end
 
     # Parses user-supplied arguments

@@ -75,11 +75,23 @@
 #
 #pun_socket_path: '/var/run/nginx/%{user}/passenger.sock'
 
+# List of hashes helping define wildcard app config locations. These are the
+# arguments for {#app_config_path}.
+#pun_app_configs:
+#  -
+#    :env: :dev
+#    :owner: '%{user}'
+#    :name: '*'
+#  -
+#    :env: :shared
+#    :owner: '*'
+#    :name: '*'
+
 # A hash detailing the path to the per-user NGINX app configs
 #
 #app_config_path:
-#  :dev:    '/var/lib/nginx/config/apps/%{env}/%{user}/%{name}.conf'
-#  :shared: '/var/lib/nginx/config/apps/%{env}/%{user}/%{name}.conf'
+#  :dev:    '/var/lib/nginx/config/apps/%{env}/%{owner}/%{name}.conf'
+#  :shared: '/var/lib/nginx/config/apps/%{env}/%{owner}/%{name}.conf'
 
 # A hash detailing the locations on the file system where apps reside for the
 # corresponding environment
