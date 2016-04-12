@@ -77,7 +77,7 @@ module NginxStage
     # Restart the per-user NGINX process (exit quietly on success)
     add_hook :exec_nginx do
       if !skip_nginx
-        if File.file? NginxStage.pid_path(user: user)
+        if File.file? NginxStage.pun_pid_path(user: user)
           o, s = Open3.capture2e([NginxStage.nginx_bin, "(#{user})"], *NginxStage.nginx_args(user: user, signal: :stop))
           abort(o) unless s.success?
         end
