@@ -240,6 +240,18 @@ depending on whether the `USER` is accessing a sandbox app or a user app.
     ~<owner>/ood_usr/<app>
     ```
 
+* **system** app
+
+    ```
+    /sys/<app>/*
+    ```
+
+    serves up the app in
+
+    ```
+    /var/www/docroot/ood/apps/sys/<app>
+    ```
+
 Any remaining structure appended to the sub-request URI is ignored when
 building the app config.
 

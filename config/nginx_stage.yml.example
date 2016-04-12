@@ -87,12 +87,17 @@
 #    :env: :usr
 #    :owner: '*'
 #    :name: '*'
+#  -
+#    :env: :sys
+#    :owner: ''
+#    :name: '*'
 
 # A hash detailing the path to the per-user NGINX app configs
 #
 #app_config_path:
 #  :dev: '/var/lib/nginx/config/apps/%{env}/%{owner}/%{name}.conf'
 #  :usr: '/var/lib/nginx/config/apps/%{env}/%{owner}/%{name}.conf'
+#  :sys: '/var/lib/nginx/config/apps/%{env}/%{name}.conf'
 
 # A hash detailing the locations on the file system where apps reside for the
 # corresponding environment
@@ -100,12 +105,14 @@
 #app_root:
 #  :dev: '~%{owner}/ood_%{env}/%{name}'
 #  :usr: '~%{owner}/ood_%{env}/%{name}'
+#  :sys: '/var/www/docroot/ood/apps/%{env}/%{name}'
 
 # A hash detailing the app's request URI not including the base-URI
 #
 #app_request_uri:
 #  :dev: '/dev/%{name}'
 #  :usr: '/usr/%{owner}/%{name}'
+#  :sys: '/sys/%{name}'
 
 # A hash detailing the regular expressions used to define the app namespace
 # from a given URI request. Should match {#app_request_uri}.
@@ -113,6 +120,7 @@
 #app_request_regex:
 #  :dev: '^/dev/(?<name>[-\w.]+)'
 #  :usr: '^/usr/(?<owner>[\w]+)\/(?<name>[-\w.]+)'
+#  :sys: '^/sys/(?<name>[-\w.]+)'
 
 # A hash detailing the Passenger environment to run the app under within the
 # PUN
@@ -120,6 +128,7 @@
 #app_passenger_env:
 #  :dev: 'development'
 #  :usr: 'production'
+#  :sys: 'production'
 
 # Minimum user id required to generate per-user NGINX server as the requested
 # user

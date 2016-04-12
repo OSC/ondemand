@@ -282,28 +282,34 @@ module NginxStage
       self.pun_socket_path     = '/var/run/nginx/%{user}/passenger.sock'
       self.pun_app_configs     = [
         {env: :dev, owner: '%{user}', name: '*'},
-        {env: :usr, owner: '*',       name: '*'}
+        {env: :usr, owner: '*',       name: '*'},
+        {env: :sys, owner: '',        name: '*'}
       ]
 
       self.app_config_path   = {
         dev: '/var/lib/nginx/config/apps/%{env}/%{owner}/%{name}.conf',
-        usr: '/var/lib/nginx/config/apps/%{env}/%{owner}/%{name}.conf'
+        usr: '/var/lib/nginx/config/apps/%{env}/%{owner}/%{name}.conf',
+        sys: '/var/lib/nginx/config/apps/%{env}/%{name}.conf'
       }
       self.app_root          = {
         dev: '~%{owner}/ood_%{env}/%{name}',
-        usr: '~%{owner}/ood_%{env}/%{name}'
+        usr: '~%{owner}/ood_%{env}/%{name}',
+        sys: '/var/www/docroot/ood/apps/%{env}/%{name}'
       }
       self.app_request_uri   = {
         dev: '/dev/%{name}',
-        usr: '/usr/%{owner}/%{name}'
+        usr: '/usr/%{owner}/%{name}',
+        sys: '/sys/%{name}'
       }
       self.app_request_regex = {
         dev: '^/dev/(?<name>[-\w.]+)',
-        usr: '^/usr/(?<owner>[\w]+)/(?<name>[-\w.]+)'
+        usr: '^/usr/(?<owner>[\w]+)/(?<name>[-\w.]+)',
+        sys: '^/sys/(?<name>[-\w.]+)'
       }
       self.app_passenger_env = {
         dev: 'development',
-        usr: 'production'
+        usr: 'production',
+        sys: 'production'
       }
 
       self.min_uid = 1000
