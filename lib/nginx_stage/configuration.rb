@@ -321,7 +321,7 @@ module NginxStage
     # @param file [String] path to the yaml configuration file
     # @return [void]
     def read_configuration(file)
-      config_hash = YAML.load_file(file)
+      config_hash = YAML.load_file(file) || {}
       config_hash.each do |k,v|
         if instance_variable_defined? "@#{k}"
           self.send("#{k}=", v)
