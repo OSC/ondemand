@@ -26,7 +26,6 @@
         update_stop_button(id, data.status.char)
         update_template_button(id)
         list_folder_contents(data)
-
   else
     update_job_details_panel()
     update_open_dir_button()
@@ -44,9 +43,9 @@
 
 @show_script_details_panel = (show) ->
   if show?
-    $("#script-text-panel").fadeIn(200)
+    $("#script-details-panel").fadeIn(200)
   else
-    $("#script-text-panel").fadeOut(100)
+    $("#script-details-panel").fadeOut(100)
 
 @update_status_label = (id, label) ->
   if label? && id?
