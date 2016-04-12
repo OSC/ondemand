@@ -1,0 +1,4 @@
+name: Simple Parallel Job
+host: oakley
+script: parallel_job.pbs
+notes: A very basic template for a parallel job

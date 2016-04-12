@@ -1,0 +1,4 @@
+name: Simple Abaqus Job
+host: oakley
+script: abaqus_job.pbs
+notes: A Simple Abaqus Job

@@ -1,0 +1,4 @@
+name: Hello OpenMP World in C
+host: oakley
+script: omp-hello.pbs
+notes: Hello OpenMP World prints the number of threads and the current thread id

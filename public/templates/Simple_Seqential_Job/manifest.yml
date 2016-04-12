@@ -1,0 +1,4 @@
+name: Simple Sequential Job
+host: oakley
+script: sequential_job.pbs
+notes: A very basic template for a sequential job
