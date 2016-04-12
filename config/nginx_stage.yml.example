@@ -14,33 +14,26 @@
 
 ---
 
-# The reverse proxy daemon user used to access the Unix domain sockets
-#
-#proxy_user: 'apache'
-
 # Location of the ERB templates used in the generation of the NGINX configs
 #
 #template_root: '/opt/ood/nginx_stage/templates'
 
-# Root location of per-user NGINX configs
+# The reverse proxy daemon user used to access the Unix domain sockets
 #
-#pun_config_root: '/var/lib/nginx/config/puns'
+#proxy_user: 'apache'
 
-# Root location of per-user NGINX app configs
+# Path to system-installed NGINX binary
 #
-#app_config_root: '/var/lib/nginx/config/apps'
+#nginx_bin: '/opt/rh/nginx16/root/usr/sbin/nginx'
 
-# Root location of per-user NGINX tmp dirs
+# White-list of signals that can be sent to the NGINX process, must be
+# expressed as Ruby symbols
 #
-#pun_tmp_root: '/var/lib/nginx/tmp'
-
-# Root location of per-user NGINX logs
-#
-#pun_log_root: '/var/log/nginx'
-
-# Root location of per-user NGINX pid/socket files
-#
-#pun_run_root: '/var/run/nginx'
+#nginx_signals:
+#  - :stop
+#  - :quit
+#  - :reopen
+#  - :reload
 
 # Path to system-installed NGINX 'mime.types' file
 #
@@ -58,51 +51,57 @@
 #
 #passenger_nodejs: '/opt/rh/nodejs010/root/usr/bin/node'
 
-# Path to system-installed NGINX binary
+# Root location of per-user NGINX configs
 #
-#nginx_bin: '/opt/rh/nginx16/root/usr/sbin/nginx'
+#pun_config_path: '/var/lib/nginx/config/puns/%{user}.conf'
 
-# White-list of signals that can be sent to the NGINX process, must be
-# expressed as Ruby symbols
+# Root location of per-user NGINX tmp dirs
 #
-#nginx_signals:
-#  - :stop
-#  - :quit
-#  - :reopen
-#  - :reload
+#pun_tmp_root: '/var/lib/nginx/tmp/%{user}'
 
-# Minimum user id required to generate per-user NGINX server as the requested
-# user
+# Path to the per-user NGINX access log
 #
-#min_uid: 1000
+#pun_access_log_path: '/var/log/nginx/%{user}/access.log'
 
-# White-list of groups user must be part of to generate per-user NGINX server
-# as. If set to `nil` then allow all users irrespective of what groups they are
-# in.
+# Path to the per-user NGINX error log
 #
-#user_groups: nil
+#pun_error_log_path: '/var/log/nginx/%{user}/error.log'
 
-# White-list of groups that owner of app must be part of in order for his/her
-# app to be launched by another user's PUN. If set to `nil` then allow all
-# users to publish apps.
+# Path to the per-user NGINX pid file
 #
-#owner_groups: nil
+#pun_pid_path: '/var/run/nginx/%{user}/passenger.pid'
+
+# Path to the per-user NGINX socket file
+#
+#pun_socket_path: '/var/run/nginx/%{user}/passenger.sock'
+
+# A hash detailing the path to the per-user NGINX app configs
+#
+#app_config_path:
+#  :dev:    '/var/lib/nginx/config/apps/%{env}/%{user}/%{name}.conf'
+#  :shared: '/var/lib/nginx/config/apps/%{env}/%{user}/%{name}.conf'
 
 # A hash detailing the locations on the file system where apps reside for the
 # corresponding environment
 #
 #app_root:
-#  dev: '~%{owner}/ood_dev/%{name}'
-#  shared: '~%{owner}/ood_shared/%{name}'
+#  :dev:    '~%{owner}/ood_%{env}/%{name}'
+#  :shared: '~%{owner}/ood_%{env}/%{name}'
 
-# Hash of app URI request formats for a corresponding environment
+# A hash detailing the app's request URI not including the base-URI
 #
-#app_request_format:
-#  dev: '/dev/%{name}'
-#  shared: '/shared/%{owner}/%{name}'
+#app_request_uri:
+#  :dev:    '/dev/%{name}'
+#  :shared: '/shared/%{owner}/%{name}'
 
-# Hash of regular expressions used to define app namespace from a URI request
+# A hash detailing the regular expressions used to define the app namespace
+# from a given URI request
 #
 #app_request_regex:
-#  dev: !ruby/regexp '/^\/dev\/(?<name>[-\w.]+)/'
-#  shared: !ruby/regexp '/^\/shared\/(?<owner>[\w]+)\/(?<name>[-\w.]+)/'
+#  :dev:    '^/dev/(?<name>[-\w.]+)'
+#  :shared: '^/shared/(?<owner>[\w]+)\/(?<name>[-\w.]+)'
+
+# Minimum user id required to generate per-user NGINX server as the requested
+# user
+#
+#min_uid: 1000
