@@ -77,6 +77,7 @@
 
 # List of hashes helping define wildcard app config locations. These are the
 # arguments for {#app_config_path}.
+#
 #pun_app_configs:
 #  -
 #    :env: :dev
@@ -112,6 +113,13 @@
 #app_request_regex:
 #  :dev: '^/dev/(?<name>[-\w.]+)'
 #  :usr: '^/usr/(?<owner>[\w]+)\/(?<name>[-\w.]+)'
+
+# A hash detailing the Passenger environment to run the app under within the
+# PUN
+#
+#app_passenger_env:
+#  :dev: 'development'
+#  :usr: 'production'
 
 # Minimum user id required to generate per-user NGINX server as the requested
 # user

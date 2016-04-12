@@ -110,7 +110,7 @@ module NginxStage
 
       # The Passenger environment to run app under
       def env
-        @app_env == :dev ? "development" : "production"
+        NginxStage.app_passenger_env(env: @app_env, owner: @app_owner, name: @app_name)
       end
   end
 end

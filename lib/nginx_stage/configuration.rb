@@ -213,6 +213,23 @@ module NginxStage
 
     attr_writer :app_request_regex
 
+    # The passenger environment used for the given app environment
+    # @example Dev app owned by Bob
+    #   app_passenger_env(env: :dev, owner: 'bob', name: 'rails1')
+    #   #=> "development"
+    # @example User app owned by Dan
+    #   app_passenger_env(env: :usr, owner: 'dan', name: 'fillsim')
+    #   #=> "production"
+    # @param env [Symbol] environment the app is run under
+    # @param owner [String] the owner of the app
+    # @param name [String] the name of the app
+    # @return [String] the passenger environment to run app with in PUN
+    def app_passenger_env(env:, owner:, name:)
+      @app_passenger_env.fetch(env, "production")
+    end
+
+    attr_writer :app_passenger_env
+
     #
     # Validation configuration options
     #
@@ -283,6 +300,10 @@ module NginxStage
       self.app_request_regex = {
         dev: '^/dev/(?<name>[-\w.]+)',
         usr: '^/usr/(?<owner>[\w]+)/(?<name>[-\w.]+)'
+      }
+      self.app_passenger_env = {
+        dev: 'development',
+        usr: 'production'
       }
 
       self.min_uid = 1000
