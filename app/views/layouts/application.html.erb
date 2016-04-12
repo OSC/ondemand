@@ -99,6 +99,16 @@
 
 <div class="container" role="main">
 
+  <script type="text/coffee-script-template" id="js-alert-danger-template">
+    <div class="alert alert-danger alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+      </button>
+      ALERT_MSG
+    </div>
+  </script>
+
   <% if alert %>
     <div class="alert alert-danger alert-dismissible" role="alert">
       <button type="button" class="close" data-dismiss="alert">
@@ -108,6 +118,9 @@
       <%= alert %>
     </div>
   <% end %>
+
+
+
 
   <% if notice %>
     <div class="alert alert-success" role="alert">
