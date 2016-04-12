@@ -22,9 +22,9 @@ module NginxStage
   # @example Dev app request
   #   parse_app_request(request: '/dev/rails1/structure/1')
   #   #=> {env: :dev, name: 'rails1'}
-  # @example Shared app request with owner Bob
-  #   parse_app_request(request: '/shared/bob/fillsim/containers')
-  #   #=> {env: :shared, owner: 'bob', name: 'fillsim'}
+  # @example User app request with owner Bob
+  #   parse_app_request(request: '/usr/bob/fillsim/containers')
+  #   #=> {env: :usr, owner: 'bob', name: 'fillsim'}
   # @param request [String] the URI request used to access app
   # @return [Hash] hash containing parsed information
   # @raise [InvalidRequest] if the environment specified doesn't exist

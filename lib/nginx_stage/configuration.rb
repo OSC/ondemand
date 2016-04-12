@@ -126,7 +126,7 @@ module NginxStage
     # @example User Bob's app configs
     #   pun_app_configs(user: 'bob')
     #   #=> [ {env: :dev, owner: 'bob', name: '*'},
-    #         {env: :shared, owner: '*', name: '*'} ]
+    #         {env: :usr, owner: '*', name: '*'} ]
     # @param user [String] the user of the nginx process
     # @return [Array<Hash>] list of hashes detailing app config locations
     def pun_app_configs(user:)
@@ -147,9 +147,9 @@ module NginxStage
     # @example Dev app owned by Bob
     #   app_config_path(env: :dev, owner: 'bob', name: 'rails1')
     #   #=> "/var/lib/nginx/config/apps/dev/bob/rails1.conf"
-    # @example Shared app owned by Dan
-    #   app_config_path(env: :shared, owner: 'dan', name: 'fillsim')
-    #   #=> "/var/lib/nginx/config/apps/shared/dan/fillsim.conf"
+    # @example User app owned by Dan
+    #   app_config_path(env: :usr, owner: 'dan', name: 'fillsim')
+    #   #=> "/var/lib/nginx/config/apps/usr/dan/fillsim.conf"
     # @param env [Symbol] environment the app is run under
     # @param owner [String] the owner of the app
     # @param name [String] the name of the app
@@ -164,9 +164,9 @@ module NginxStage
     # @example App root for dev app owned by Bob
     #   app_root(env: :dev, owner: 'bob', name: 'rails1')
     #   #=> "~bob/ood_dev/rails1"
-    # @example App root for shared app owned by Dan
-    #   app_root(env: :shared, owner: 'dan', name: 'fillsim')
-    #   #=> "~dan/ood_shared/fillsim"
+    # @example App root for user app owned by Dan
+    #   app_root(env: :usr, owner: 'dan', name: 'fillsim')
+    #   #=> "~dan/ood_usr/fillsim"
     # @param env [Symbol] environment the app is run under
     # @param owner [String] the owner of the app
     # @param name [String] the name of the app
@@ -186,9 +186,9 @@ module NginxStage
     # @example URI for dev app owned by Bob
     #   app_request_uri(env: :dev, owner: 'bob', name: 'rails1')
     #   #=> "/dev/rails1"
-    # @example URI for shared app owned by Dan
+    # @example URI for user app owned by Dan
     #   app_request_uri(env: :dev, owner: 'dan', name: 'fillsim')
-    #   #=> "/shared/dan/fillsim"
+    #   #=> "/usr/dan/fillsim"
     # @param env [Symbol] environment the app is run under
     # @param owner [String] the owner of the app
     # @param name [String] the name of the app
@@ -265,24 +265,24 @@ module NginxStage
       self.pun_socket_path     = '/var/run/nginx/%{user}/passenger.sock'
       self.pun_app_configs     = [
         {env: :dev, owner: '%{user}', name: '*'},
-        {env: :shared, owner: '*', name: '*'}
+        {env: :usr, owner: '*',       name: '*'}
       ]
 
       self.app_config_path   = {
-        dev:    '/var/lib/nginx/config/apps/%{env}/%{owner}/%{name}.conf',
-        shared: '/var/lib/nginx/config/apps/%{env}/%{owner}/%{name}.conf'
+        dev: '/var/lib/nginx/config/apps/%{env}/%{owner}/%{name}.conf',
+        usr: '/var/lib/nginx/config/apps/%{env}/%{owner}/%{name}.conf'
       }
       self.app_root          = {
-        dev:    '~%{owner}/ood_%{env}/%{name}',
-        shared: '~%{owner}/ood_%{env}/%{name}'
+        dev: '~%{owner}/ood_%{env}/%{name}',
+        usr: '~%{owner}/ood_%{env}/%{name}'
       }
       self.app_request_uri   = {
-        dev:    '/dev/%{name}',
-        shared: '/shared/%{owner}/%{name}'
+        dev: '/dev/%{name}',
+        usr: '/usr/%{owner}/%{name}'
       }
       self.app_request_regex = {
-        dev:    '^/dev/(?<name>[-\w.]+)',
-        shared: '^/shared/(?<owner>[\w]+)/(?<name>[-\w.]+)'
+        dev: '^/dev/(?<name>[-\w.]+)',
+        usr: '^/usr/(?<owner>[\w]+)/(?<name>[-\w.]+)'
       }
 
       self.min_uid = 1000

@@ -83,35 +83,35 @@
 #    :owner: '%{user}'
 #    :name: '*'
 #  -
-#    :env: :shared
+#    :env: :usr
 #    :owner: '*'
 #    :name: '*'
 
 # A hash detailing the path to the per-user NGINX app configs
 #
 #app_config_path:
-#  :dev:    '/var/lib/nginx/config/apps/%{env}/%{owner}/%{name}.conf'
-#  :shared: '/var/lib/nginx/config/apps/%{env}/%{owner}/%{name}.conf'
+#  :dev: '/var/lib/nginx/config/apps/%{env}/%{owner}/%{name}.conf'
+#  :usr: '/var/lib/nginx/config/apps/%{env}/%{owner}/%{name}.conf'
 
 # A hash detailing the locations on the file system where apps reside for the
 # corresponding environment
 #
 #app_root:
-#  :dev:    '~%{owner}/ood_%{env}/%{name}'
-#  :shared: '~%{owner}/ood_%{env}/%{name}'
+#  :dev: '~%{owner}/ood_%{env}/%{name}'
+#  :usr: '~%{owner}/ood_%{env}/%{name}'
 
 # A hash detailing the app's request URI not including the base-URI
 #
 #app_request_uri:
-#  :dev:    '/dev/%{name}'
-#  :shared: '/shared/%{owner}/%{name}'
+#  :dev: '/dev/%{name}'
+#  :usr: '/usr/%{owner}/%{name}'
 
 # A hash detailing the regular expressions used to define the app namespace
-# from a given URI request
+# from a given URI request. Should match {#app_request_uri}.
 #
 #app_request_regex:
-#  :dev:    '^/dev/(?<name>[-\w.]+)'
-#  :shared: '^/shared/(?<owner>[\w]+)\/(?<name>[-\w.]+)'
+#  :dev: '^/dev/(?<name>[-\w.]+)'
+#  :usr: '^/usr/(?<owner>[\w]+)\/(?<name>[-\w.]+)'
 
 # Minimum user id required to generate per-user NGINX server as the requested
 # user

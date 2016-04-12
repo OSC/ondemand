@@ -10,11 +10,11 @@ module NginxStage
         To generate an app config from a URI request and reload the nginx
         process:
 
-            nginx_stage app --user=bob --sub-uri=/pun --sub-request=/shared/jimmy/fillsim/container/13
+            nginx_stage app --user=bob --sub-uri=/pun --sub-request=/usr/jimmy/fillsim/container/13
 
         To generate ONLY the app config from a URI request:
 
-            nginx_stage app --user=bob --sub-uri=/pun --sub-request=/shared/jimmy/fillsim --skip-nginx
+            nginx_stage app --user=bob --sub-uri=/pun --sub-request=/usr/jimmy/fillsim --skip-nginx
 
         this will return the app config path and won't run nginx.
     EOF
@@ -28,8 +28,8 @@ module NginxStage
     # @!method sub_request
     #   The remainder of the request after the sub-uri used to determine the
     #   environment and app
-    #   @example An app is requested through '/pun/shared/user/appname/...'
-    #     sub_request #=> "/shared/user/appname/..."
+    #   @example An app is requested through '/pun/usr/user/appname/...'
+    #     sub_request #=> "/usr/user/appname/..."
     #   @return [String] the remainder of the request after sub-uri
     #   @raise [MissingOption] if sub_request isn't supplied
     add_option :sub_request do
@@ -42,7 +42,7 @@ module NginxStage
 
     # @!method sub_uri
     #   The sub-uri that distinguishes the per-user NGINX process
-    #   @example An app is requested through '/pun/shared/user/appname/...'
+    #   @example An app is requested through '/pun/usr/user/appname/...'
     #     sub_uri #=> "/pun"
     #   @return [String] the sub-uri for nginx
     add_option :sub_uri do

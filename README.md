@@ -204,17 +204,17 @@ Examples:
     To generate an app config from a URI request and reload the nginx
     process:
 
-        nginx_stage app --user=bob --sub-uri=/pun --sub-request=/shared/jimmy/fillsim/container/13
+        nginx_stage app --user=bob --sub-uri=/pun --sub-request=/usr/jimmy/fillsim/container/13
 
     To generate ONLY the app config from a URI request:
 
-        nginx_stage app --user=bob --sub-uri=/pun --sub-request=/shared/jimmy/fillsim --skip-nginx
+        nginx_stage app --user=bob --sub-uri=/pun --sub-request=/usr/jimmy/fillsim --skip-nginx
 
     this will return the app config path and won't run nginx.
 ```
 
 The format of the `SUB_REQUEST` when building an app config is different
-depending on whether the `USER` is accessing a sandbox app or a shared app.
+depending on whether the `USER` is accessing a sandbox app or a user app.
 
 * **sandbox** app (needs to know the `USER` of the sandbox app)
 
@@ -228,16 +228,16 @@ depending on whether the `USER` is accessing a sandbox app or a shared app.
     ~USER/ood_dev/<app>
     ```
 
-* **shared** app
+* **user** app
 
     ```
-    /shared/<owner>/<app>/*
+    /usr/<owner>/<app>/*
     ```
 
     serves up the app in
 
     ```
-    ~<owner>/ood_shared/<app>
+    ~<owner>/ood_usr/<app>
     ```
 
 Any remaining structure appended to the sub-request URI is ignored when
@@ -292,7 +292,7 @@ The following paths are created on demand:
 │       │   │   ├── dev                 # drwxr-xr-x root   root
 │       │   │   │   └── <user>          # drwxr-xr-x root   root
 │       │   │   │       └── <app>.conf  # -rw-r--r-- root   root
-│       │   │   └── shared              # drwxr-xr-x root   root
+│       │   │   └── usr                 # drwxr-xr-x root   root
 │       │   │       └── <user>          # drwxr-xr-x root   root
 │       │   │           └── <app>.conf  # -rw-r--r-- root   root
 │       │   └── puns                    # -rw-r--r-- root   root
