@@ -1,0 +1,34 @@
+$comment
+ethene
+$end
+
+$molecule
+0 1
+  C   -2.3620772    0.9207308    0.2821606
+  C   -1.0130626    0.5278664   -0.2865418
+  H   -2.6220345    1.9481860   -0.0474867
+  H   -3.1392310    0.2143160   -0.0767561
+  H   -0.7529560   -0.4993875    0.0434971
+  H   -0.2358785    1.2345592    0.0718086
+$end
+
+$rem
+   BASIS  =  6-31G*
+   EXCHANGE  =  HF
+   GUI  =  2
+   JOB_TYPE  =  Optimization
+   PURECART  =  2222
+$end
+
+@@@
+
+$molecule
+read
+$end
+
+$rem
+basis   6-31G*
+exchange   hf
+molden_format true
+print_orbitals true
+$end
