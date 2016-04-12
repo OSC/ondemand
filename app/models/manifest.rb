@@ -41,9 +41,9 @@ class Manifest
     @path
   end
 
-  # Grab the first file name ending in .sh
+  # Grab the first file name ending in .pbs or .sh
   def default_script
-    Dir.entries(path.dirname).select{ |f| f =~ /\.sh$/i  }.first if Pathname.new(path.dirname).directory?
+    (Dir.entries(path.dirname).select{ |f| f =~ /\.pbs$/i  }.first || Dir.entries(path.dirname).select{ |f| f =~ /\.sh$/i  }.first) if Pathname.new(path.dirname).directory?
   end
 end
 
