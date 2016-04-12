@@ -287,23 +287,16 @@ The following paths are created on demand:
 /var                                    # drwxr-xr-x root   root
 ├── lib                                 # drwxr-xr-x root   root
 │   └── nginx                           # drwxr-xr-x root   root
-│       ├── config                      # drwxr-xr-x root   root
-│       │   ├── apps                    # drwxr-xr-x root   root
-│       │   │   ├── dev                 # drwxr-xr-x root   root
-│       │   │   │   └── <user>          # drwxr-xr-x root   root
-│       │   │   │       └── <app>.conf  # -rw-r--r-- root   root
-│       │   │   └── usr                 # drwxr-xr-x root   root
-│       │   │       └── <user>          # drwxr-xr-x root   root
-│       │   │           └── <app>.conf  # -rw-r--r-- root   root
-│       │   └── puns                    # -rw-r--r-- root   root
-│       │       └── <user>.conf         # -rw-r--r-- root   root
-│       └── tmp                         # drwxr-xr-x root   root
-│           └── <user>                  # drwxr-xr-x root   root
-│               ├── client_body         # drwx------ USER   root
-│               ├── fastcgi_temp        # drwx------ USER   root
-│               ├── proxy_temp          # drwx------ USER   root
-│               ├── scgi_temp           # drwx------ USER   root
-│               └── uwsgi_temp          # drwx------ USER   root
+│       └── config                      # drwxr-xr-x root   root
+│           ├── apps                    # drwxr-xr-x root   root
+│           │   ├── dev                 # drwxr-xr-x root   root
+│           │   │   └── <user>          # drwxr-xr-x root   root
+│           │   │       └── <app>.conf  # -rw-r--r-- root   root
+│           │   └── usr                 # drwxr-xr-x root   root
+│           │       └── <user>          # drwxr-xr-x root   root
+│           │           └── <app>.conf  # -rw-r--r-- root   root
+│           └── puns                    # -rw-r--r-- root   root
+│               └── <user>.conf         # -rw-r--r-- root   root
 ├── log                                 # drwxr-xr-x root   root
 │   └── nginx                           # drwxr-xr-x root   root
 │       └── <user>                      # drwxr-xr-x root   root
@@ -314,6 +307,14 @@ The following paths are created on demand:
         └── <user>                      # drwx------ apache root
             ├── passenger.pid           # -rw-r--r-- root   root
             └── passenger.sock          # srw-rw-rw- root   root
+
+~<user>                                 # drwxr-xr-x USER   GROUP
+└── .nginx                              # drwxr-xr-x USER   GROUP
+    ├── client_body                     # drwx------ USER   root
+    ├── fastcgi_temp                    # drwx------ USER   root
+    ├── proxy_temp                      # drwx------ USER   root
+    ├── scgi_temp                       # drwx------ USER   root
+    └── uwsgi_temp                      # drwx------ USER   root
 ```
 
 ## Contributing
