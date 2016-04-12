@@ -1,6 +1,6 @@
-location ~ ^<%= app_uri %>(/.*|$) {
+location ~ ^<%= app_request_uri %>(/.*|$) {
   alias <%= app_root %>/public$1;
-  passenger_base_uri <%= app_uri %>;
+  passenger_base_uri <%= app_request_uri %>;
   passenger_app_root <%= app_root %>;
   passenger_document_root <%= app_root %>/public;
   passenger_enabled on;

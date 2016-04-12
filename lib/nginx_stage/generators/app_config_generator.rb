@@ -10,11 +10,11 @@ module NginxStage
         To generate an app config from a URI request and reload the nginx
         process:
 
-            nginx_stage app --user=bob --sub-uri=/pun --sub-request=/shared/jimmy/fillsim/container/13
+            nginx_stage app --user=bob --sub-uri=/pun --sub-request=/usr/jimmy/fillsim/container/13
 
         To generate ONLY the app config from a URI request:
 
-            nginx_stage app --user=bob --sub-uri=/pun --sub-request=/shared/jimmy/fillsim --skip-nginx
+            nginx_stage app --user=bob --sub-uri=/pun --sub-request=/usr/jimmy/fillsim --skip-nginx
 
         this will return the app config path and won't run nginx.
     EOF
@@ -28,8 +28,8 @@ module NginxStage
     # @!method sub_request
     #   The remainder of the request after the sub-uri used to determine the
     #   environment and app
-    #   @example An app is requested through '/pun/shared/user/appname/...'
-    #     sub_request #=> "/shared/user/appname/..."
+    #   @example An app is requested through '/pun/usr/user/appname/...'
+    #     sub_request #=> "/usr/user/appname/..."
     #   @return [String] the remainder of the request after sub-uri
     #   @raise [MissingOption] if sub_request isn't supplied
     add_option :sub_request do
@@ -42,7 +42,7 @@ module NginxStage
 
     # @!method sub_uri
     #   The sub-uri that distinguishes the per-user NGINX process
-    #   @example An app is requested through '/pun/shared/user/appname/...'
+    #   @example An app is requested through '/pun/usr/user/appname/...'
     #     sub_uri #=> "/pun"
     #   @return [String] the sub-uri for nginx
     add_option :sub_uri do
@@ -64,14 +64,6 @@ module NginxStage
       @app_name  = info.fetch(:name, nil)
     end
 
-    # Validate that the owner is in a white-listed group for sharing apps
-    add_hook :validate_owner_group do
-      if valid_groups = NginxStage.owner_groups
-        found = valid_groups & @app_owner.groups
-        raise InvalidRequest, "owner (#{@app_owner}) not in valid groups: #{valid_groups.join(', ')}" if found.empty?
-      end
-    end
-
     # Validate that the path to the app exists on the local filesystem
     add_hook :validate_app_root do
       raise InvalidRequest, "invalid app root: #{app_root}" unless File.directory?(app_root)
@@ -85,7 +77,7 @@ module NginxStage
     # Restart the per-user NGINX process (exit quietly on success)
     add_hook :exec_nginx do
       if !skip_nginx
-        if File.file? NginxStage.pid_path(user: user)
+        if File.file? NginxStage.pun_pid_path(user: user)
           o, s = Open3.capture2e([NginxStage.nginx_bin, "(#{user})"], *NginxStage.nginx_args(user: user, signal: :stop))
           abort(o) unless s.success?
         end
@@ -107,18 +99,18 @@ module NginxStage
 
       # Path to the app root on the local filesystem
       def app_root
-        NginxStage.get_app_root(env: @app_env, owner: @app_owner, name: @app_name)
+        NginxStage.app_root(env: @app_env, owner: @app_owner, name: @app_name)
       end
 
       # The URI used to access the app from the browser
-      def app_uri
-        app_request = NginxStage.get_app_request(env: @app_env, owner: @app_owner, name: @app_name)
-        "#{sub_uri}#{app_request}"
+      def app_request_uri
+        uri = sub_uri
+        uri << NginxStage.app_request_uri(env: @app_env, owner: @app_owner, name: @app_name)
       end
 
       # The Passenger environment to run app under
       def env
-        @app_env == :dev ? "development" : "production"
+        NginxStage.app_passenger_env(env: @app_env, owner: @app_owner, name: @app_name)
       end
   end
 end
