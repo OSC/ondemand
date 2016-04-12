@@ -1,4 +1,4 @@
 name: MPI Hello World
 host: oakley
-script: mpi-hello.pbs
+script: mpi-hello.sh
 notes: Hello MPI World in C

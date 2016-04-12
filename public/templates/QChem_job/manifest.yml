@@ -1,4 +1,4 @@
 name: Sample QChem Job
 host: oakley
-script: sample.pbs
+script: sample.sh
 notes: This is a sample script for running a basic Q-Chem job. Replace 'sample' with the actual name of your input file.

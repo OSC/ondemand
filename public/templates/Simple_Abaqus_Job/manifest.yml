@@ -1,4 +1,4 @@
 name: Simple Abaqus Job
 host: oakley
-script: abaqus_job.pbs
+script: abaqus_job.sh
 notes: A Simple Abaqus Job
