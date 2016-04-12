@@ -69,9 +69,9 @@
       <div class="panel-body">
         <p>Job Name: <h4><strong><span id="job-details-name"></span></strong></h4></p>
         <p>Submit to:</p>
-          <select class="form-control" id="job-details-server-select">
+          <select class="form-control" id="job-details-server-select" disabled>
             <% Servers.each do |s| %>
-                <option id="<%= s.first %>" value="<%= s.first %>" disabled><%= s.first.titleize %></option>
+                <option id="<%= s.first %>" value="<%= s.first %>"><%= s.first.titleize %></option>
             <% end %>
           </select>
       </div>
