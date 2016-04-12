@@ -2,7 +2,7 @@
 
 <%= bootstrap_form_for(osc_job) do |f| %>
     <%= f.alert_message "Please fix the errors below." %>
-
+    
     <%= f.text_field :name %>
     <%= f.select :batch_host, Servers.map { |key, val| [ "#{key.titleize} (#{val[:pbshost]})", key ] }, { label: "Batch Server:" }, { class: "selectpicker" } %>
     <%= f.form_group :script_path, label: { text: "Specify job script:" } do %>
@@ -12,7 +12,8 @@
               <% if File.file?(content) %>
                 <tr>
                   <td>
-                    <%= f.radio_button :script_path, content, label: content.gsub(osc_job.staged_dir, ""), checked: (content == osc_job.script_path), class: 'radio' %>
+                    <% is_selected_file = (content == osc_job.script_path.to_s) %>
+                    <%= f.radio_button :script_path, content, label: is_selected_file ? "<strong>#{content.gsub(osc_job.staged_dir, "")}</strong>".html_safe : content.gsub(osc_job.staged_dir, ""), checked: is_selected_file, class: 'radio' %>
                   </td>
                 </tr>
               <% end %>
