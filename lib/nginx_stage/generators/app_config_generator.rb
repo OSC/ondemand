@@ -64,14 +64,6 @@ module NginxStage
       @app_name  = info.fetch(:name, nil)
     end
 
-    # Validate that the owner is in a white-listed group for sharing apps
-    add_hook :validate_owner_group do
-      if valid_groups = NginxStage.owner_groups
-        found = valid_groups & @app_owner.groups
-        raise InvalidRequest, "owner (#{@app_owner}) not in valid groups: #{valid_groups.join(', ')}" if found.empty?
-      end
-    end
-
     # Validate that the path to the app exists on the local filesystem
     add_hook :validate_app_root do
       raise InvalidRequest, "invalid app root: #{app_root}" unless File.directory?(app_root)
@@ -107,13 +99,13 @@ module NginxStage
 
       # Path to the app root on the local filesystem
       def app_root
-        NginxStage.get_app_root(env: @app_env, owner: @app_owner, name: @app_name)
+        NginxStage.app_root(env: @app_env, owner: @app_owner, name: @app_name)
       end
 
       # The URI used to access the app from the browser
-      def app_uri
-        app_request = NginxStage.get_app_request(env: @app_env, owner: @app_owner, name: @app_name)
-        "#{sub_uri}#{app_request}"
+      def app_request_uri
+        uri = sub_uri
+        uri << NginxStage.app_request_uri(env: @app_env, owner: @app_owner, name: @app_name)
       end
 
       # The Passenger environment to run app under
