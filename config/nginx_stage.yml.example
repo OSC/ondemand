@@ -57,7 +57,7 @@
 
 # Root location of per-user NGINX tmp dirs
 #
-#pun_tmp_root: '/var/lib/nginx/tmp/%{user}'
+#pun_tmp_root: '~%{user}/.nginx'
 
 # Path to the per-user NGINX access log
 #

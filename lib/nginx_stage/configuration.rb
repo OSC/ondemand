@@ -64,7 +64,7 @@ module NginxStage
     # Path to user's personal tmp root (this root will be owned by the user)
     # @example User Bob's nginx tmp root
     #   pun_tmp_root(user: 'bob')
-    #   #=> "/var/lib/nginx/tmp/bob"
+    #   #=> "~bob/.nginx"
     # @param user [String] the user of the nginx process
     # @return [String] the path to the tmp root
     def pun_tmp_root(user:)
@@ -258,7 +258,7 @@ module NginxStage
       self.passenger_nodejs = '/opt/rh/nodejs010/root/usr/bin/node'
 
       self.pun_config_path     = '/var/lib/nginx/config/puns/%{user}.conf'
-      self.pun_tmp_root        = '/var/lib/nginx/tmp/%{user}'
+      self.pun_tmp_root        = '~%{user}/.nginx'
       self.pun_access_log_path = '/var/log/nginx/%{user}/access.log'
       self.pun_error_log_path  = '/var/log/nginx/%{user}/error.log'
       self.pun_pid_path        = '/var/run/nginx/%{user}/passenger.pid'
