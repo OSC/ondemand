@@ -1,5 +1,2 @@
 # Build directory
 /build/
-
-# User configuration file
-/Makefile
