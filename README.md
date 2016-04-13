@@ -6,7 +6,7 @@ Generates an Open OnDemand portal config for an Apache server.
 
 ### Generate OOD Portal config
 
-- `rake` gem >= 10.0.0
+- Ruby >= 1.9
 
 ### Run OOD Portal config
 
