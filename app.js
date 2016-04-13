@@ -55,6 +55,7 @@ io.on('connection', function(socket) {
   }
 
   // launch an ssh session
+  process.env.LANG = 'en_US.UTF-8'; // fixes strange character issues
   var term = pty.spawn('ssh', [sshhost, '-p', sshport, '-o', 'PreferredAuthentications=' + sshauth], {
     name: 'xterm-256color',
     cols: 80,
