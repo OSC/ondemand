@@ -192,6 +192,7 @@ $ ->
     update_host(row.data("host"))
     update_script(row.data("script"))
     update_staging_template_dir(row.data("path"))
+    update_open_template_button(row.data("fs"))
     get_folder_contents_from_api(row.data("api"))
 
 @update_notes = (notes) ->
@@ -220,6 +221,16 @@ $ ->
     $("#staging-template-dir").val("#{template}")
   else
     $("#staging-template-dir").val("")
+
+ @update_open_template_button = (path) ->
+   if path?
+     $("#open-template-dir-button").attr("href", path)
+     $("#open-template-dir-button").removeAttr("disabled")
+     $("#open-template-dir-button").unbind('click', false)
+   else
+     $("#open-template-dir-button").attr("href", "#")
+     $("#open-template-dir-button").attr("disabled", true)
+     $("#open-template-dir-button").bind('click', false)
 
 # TODO can probably refactor to use this on the index as well
 @get_folder_contents_from_api = (apiurl) ->
