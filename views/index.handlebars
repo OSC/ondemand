@@ -12,6 +12,7 @@
     // must be called after socket.io javascript
     var _io = io;
     var io = function(uri, opts) {
+      console.log('Overriding: io(' + uri + ', ' + opts + ')');
       opts.path = '{{{baseURI}}}/socket.io';
       return _io(uri, opts);
     }
@@ -20,8 +21,8 @@
     // must be called after hterm javascript
     lib.PreferenceManager.prototype._set = lib.PreferenceManager.prototype.set;
     lib.PreferenceManager.prototype.set = function(name, newValue) {
-      // Don't let Wetty set any preferences
-      return;
+      console.log('Overriding: lib.PreferenceManager.set(' + name + ', ' + newValue + ')');
+      return; // use wetty defaults only
 
       // Run original function
       //this._set(name, newValue);
