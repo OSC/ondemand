@@ -31,8 +31,8 @@ Generates an Open OnDemand portal config for an Apache server.
         git pull
         ```
 
-2.  Build the Apache config from environment variables outlined below. To use
-    the defaults:
+2.  Build the Apache config from **environment variables** outlined below. To
+    use the defaults:
 
     ```bash
     # Generate Apache config in `/build`
