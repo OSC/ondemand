@@ -17,6 +17,7 @@
               <tr>
                 <th>Name</th>
                 <th>Cluster</th>
+                <th>Source</th>
               </tr>
               </thead>
 
@@ -25,6 +26,7 @@
                   <tr class="job-row" data-name="<%= template.name %>" data-host="<%= template.host %>" data-path="<%= template.path %>" data-script="<%= template.manifest.script %>" data-api="<%= Filesystem.new.api(template.path) %>" data-fs="<%= Filesystem.new.fs(template.path) %>" data-notes="<%= template.notes %>" >
                     <td><%= template.name %></td>
                     <td><%= template.host.titleize %></td>
+                    <td><%= Source.source_name template.path.to_s %></td>
                   </tr>
               <% end %>
               </tbody>

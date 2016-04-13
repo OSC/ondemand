@@ -16,7 +16,7 @@ jQuery ->
 jQuery ->
 # Set up datatable
   $('.data-table-new-job').DataTable
-    order: [0, 'desc'],
+    order: [2, 'desc'],
     stateSave: true,
     columnDefs: [{
       orderable: false
