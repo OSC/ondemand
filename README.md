@@ -96,7 +96,9 @@ rake -T
 
 ## Default Options
 
-The default options used to generate the Apache config are listed as such
+The default options used to generate the Apache config are listed below. You
+can modify any of these by setting the corresponding environment variable when
+calling the `rake` task.
 
 #### Build Options
 
