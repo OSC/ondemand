@@ -194,17 +194,17 @@ OOD_PUBLIC_URI='/public'
 ## Configuration File
 
 If you don't find the default options or setting environment variables
-satisfactory, then you can specify the configuration options in `rake.env` as
-such
+satisfactory, then you can specify the configuration options in `config.rake`
+as such
 
 ```ruby
-# rake.env
+# config.rake
 
 OOD_USER_MAP_COMMAND = '/usr/local/bin/my-usr-map'
 OOD_PUBLIC_ROOT = '/var/www/docroot'
 ```
 
-Options specified in `rake.env` take precendence over the corresponding
+Options specified in `config.rake` take precendence over the corresponding
 environment variable set.
 
 ## Version
