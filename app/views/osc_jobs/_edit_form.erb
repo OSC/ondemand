@@ -5,22 +5,17 @@
 
     <%= f.text_field :name %>
     <%= f.select :batch_host, Servers.map { |key, val| [ "#{key.titleize} (#{val[:pbshost]})", key ] }, { label: "Batch Server:" }, { class: "selectpicker" } %>
-    <%= f.form_group :script_path, label: { text: "Specify job script:" } do %>
-        <table class="table table-condensed">
-          <tbody>
-            <% osc_job.folder_contents.each do |content| %>
-              <% if File.file?(content) %>
-                <tr>
-                  <td>
-                    <% is_selected_file = (content == osc_job.script_path.to_s) %>
-                    <%= f.radio_button :script_path, content, label: is_selected_file ? "<strong>#{content.gsub(osc_job.staged_dir, "")}</strong>".html_safe : content.gsub(osc_job.staged_dir, ""), checked: is_selected_file, class: 'radio' %>
-                  </td>
-                </tr>
-              <% end %>
-            <% end %>
-          </tbody>
-        </table>
-    <% end %>
+
+    <div class="form-group">
+      <label class="control-label" for="osc_job_script_path">Specify job script:</label>
+      <select class="form-control selectpicker" id="osc_job_script_path" name="osc_job[script_path]">
+        <% osc_job.folder_contents.each do |content| %>
+          <% if File.file? content %>
+            <%= "<option #{"selected" if (content == osc_job.script_path.to_s)} val=\"#{content}\">#{content.gsub(osc_job.staged_dir, "")}</option>".html_safe %>
+          <% end %>
+        <% end %>
+      </select>
+    </div>
 
 
     <%= f.submit 'Save', class: 'btn btn-primary' %>
@@ -29,4 +24,3 @@
     <%= link_to 'Back', osc_jobs_path, class: 'btn btn-default' %>
     <%= link_to 'Show', osc_job, class: 'btn btn-primary' unless osc_job.new_record? %>
 <% end %>
-
