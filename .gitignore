@@ -1,2 +1,5 @@
 # Build directory
 /build/
+
+# Environment variables
+/rake.env
