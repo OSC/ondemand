@@ -2,9 +2,9 @@ require 'erb'
 
 VERSION = 'v0.0.1'
 
-if File.file?('rake.env') && !ENV["SKIP_ENV_FILE"]
-  puts "reading variables from 'rake.env'"
-  load 'rake.env'
+if File.file?('env.rake') && !ENV["SKIP_ENV_FILE"]
+  puts "reading variables from 'env.rake'"
+  load 'env.rake'
 end
 
 # Build options

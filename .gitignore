@@ -2,4 +2,4 @@
 /build/
 
 # Environment variables
-/rake.env
+/env.rake
