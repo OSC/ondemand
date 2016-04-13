@@ -104,15 +104,19 @@ calling the `rake` task.
 
 ```bash
 # Path for installation in `rake install`
+#
 PREFIX='/opt/rh/httpd24/root/etc/httpd/conf.d'
 
 # Directory with ERB templates
+#
 SRCDIR='templates'
 
 # Directory for temporary rendered configs
+#
 OBJDIR='build'
 
 # Filename of rendered config
+#
 OBJFILE='ood-portal.conf'
 ```
 
