@@ -120,12 +120,17 @@ OBJFILE='ood-portal.conf'
 
 ```bash
 # IP used for Open OnDemand portal
+# Blank: Remove `Listen` & `<VirtualHost>` directives
+#
 OOD_IP='*:5000'
 
 # Subdomain used for the Open OnDemand portal
+# Blank: Remove `ServerName` directive
+#
 OOD_SUBDOMAIN='apps.ondemand.org'
 
 # Type of user authentication used for Open OnDemand portal
+#
 OOD_AUTH_TYPE='openid-connect'
 ```
 
@@ -133,18 +138,24 @@ OOD_AUTH_TYPE='openid-connect'
 
 ```bash
 # Path to the Open OnDemand Lua scripts
+# Blank: Remove `LuaRoot` directive
+#
 OOD_LUA_ROOT='/nfs/17/jnicklas/Development/mod_ood_proxy/lib'
 
 # Command used to stage PUNs
+#
 OOD_PUN_STAGE_CMD='sudo /opt/ood/nginx_stage/sbin/nginx_stage_dev --config /nfs/17/jnicklas/Development/nginx_stage/config.yml --'
 
 # Command used to map users to system level users
+#
 OOD_USER_MAP_CMD='/nfs/17/jnicklas/Development/osc-user-map/bin/osc-user-map'
 
 # Path to the root location of PUN socket files
+#
 OOD_PUN_SOCKET_ROOT='/var/tmp/nginx_stage0/var/run/nginx'
 
 # Path to publicly available assets
+#
 OOD_PUBLIC_ROOT='/nfs/gpfs/PZS0645/www/public'
 ```
 
@@ -152,18 +163,28 @@ OOD_PUBLIC_ROOT='/nfs/gpfs/PZS0645/www/public'
 
 ```bash
 # Reverse proxy to backend PUNs
+# Blank: Removes the availability of this URI in the config
+#
 OOD_PUN_URI='/pun'
 
 # Reverse proxy to backend nodes
+# Blank: Removes the availability of this URI in the config
+#
 OOD_NODE_URI='/node'
 
 # "Relative" reverse proxy to backend nodes
+# Blank: Removes the availability of this URI in the config
+#
 OOD_RNODE_URI='/rnode'
 
 # Control the backend PUN (e.g., start, stop, reload, ...)
+# Blank: Removes the availability of this URI in the config
+#
 OOD_NGINX_URI='/nginx'
 
 # Serve up publicly available assets
+# Blank: Removes the availability of this URI in the config
+#
 OOD_PUBLIC_URI='/public'
 ```
 
