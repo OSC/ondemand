@@ -14,16 +14,16 @@ OBJDIR  ||= ENV['OBJDIR']  || 'build'
 OBJFILE ||= ENV['OBJFILE'] || 'ood-portal.conf'
 
 # Server options
-OOD_IP        ||= ENV['OOD_IP']        || '*:5000'
-OOD_SUBDOMAIN ||= ENV['OOD_SUBDOMAIN'] || 'apps.ondemand.org'
+OOD_IP        ||= ENV['OOD_IP']        || ''
+OOD_SUBDOMAIN ||= ENV['OOD_SUBDOMAIN'] || ''
 OOD_AUTH_TYPE ||= ENV['OOD_AUTH_TYPE'] || 'openid-connect'
 
 # System options
-OOD_LUA_ROOT        ||= ENV['OOD_LUA_ROOT']        || '/nfs/17/jnicklas/Development/mod_ood_proxy/lib'
-OOD_PUN_STAGE_CMD   ||= ENV['OOD_PUN_STAGE_CMD']   || 'sudo /opt/ood/nginx_stage/sbin/nginx_stage_dev --config /nfs/17/jnicklas/Development/nginx_stage/config.yml --'
-OOD_USER_MAP_CMD    ||= ENV['OOD_USER_MAP_CMD']    || '/nfs/17/jnicklas/Development/osc-user-map/bin/osc-user-map'
-OOD_PUN_SOCKET_ROOT ||= ENV['OOD_PUN_SOCKET_ROOT'] || '/var/tmp/nginx_stage0/var/run/nginx'
-OOD_PUBLIC_ROOT     ||= ENV['OOD_PUBLIC_ROOT']     || '/nfs/gpfs/PZS0645/www/public'
+OOD_LUA_ROOT        ||= ENV['OOD_LUA_ROOT']        || '/opt/ood/mod_ood_proxy/lib'
+OOD_PUN_STAGE_CMD   ||= ENV['OOD_PUN_STAGE_CMD']   || 'sudo /opt/ood/nginx_stage/sbin/nginx_stage'
+OOD_USER_MAP_CMD    ||= ENV['OOD_USER_MAP_CMD']    || '/opt/ood/osc-user-map/bin/osc-user-map'
+OOD_PUN_SOCKET_ROOT ||= ENV['OOD_PUN_SOCKET_ROOT'] || '/var/run/nginx'
+OOD_PUBLIC_ROOT     ||= ENV['OOD_PUBLIC_ROOT']     || '/var/www/docroot/ood/public'
 
 # OOD Portal URIs
 OOD_PUN_URI    ||= ENV['OOD_PUN_URI']    || '/pun'
