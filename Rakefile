@@ -2,12 +2,11 @@ require 'erb'
 
 VERSION = 'v0.0.1'
 
-task :default => :build
-
 # Build options
-PREFIX    = ENV['PREFIX']    || '/opt/rh/httpd24/root/etc/httpd/conf.d'
-TEMPLATES = ENV['TEMPLATES'] || 'templates'
-OBJDIR    = ENV['OBJDIR']    || 'build'
+PREFIX  = ENV['PREFIX']  || '/opt/rh/httpd24/root/etc/httpd/conf.d'
+SRCDIR  = ENV['SRCDIR']  || 'templates'
+OBJDIR  = ENV['OBJDIR']  || 'build'
+OBJFILE = ENV['OBJFILE'] || 'ood-portal.conf'
 
 # Server options
 OOD_IP        = ENV['OOD_IP']        || '*:5000'
@@ -28,40 +27,37 @@ OOD_RNODE_URI  = ENV['OOD_RNODE_URI']  || '/rnode'
 OOD_NGINX_URI  = ENV['OOD_NGINX_URI']  || '/nginx'
 OOD_PUBLIC_URI = ENV['OOD_PUBLIC_URI'] || '/public'
 
-SRC_FILES = Rake::FileList.new("#{TEMPLATES}/*.erb")
-OBJ_FILES = SRC_FILES.pathmap("%{^#{TEMPLATES}/,#{OBJDIR}/}X")
+#
+# Tasks
+#
+
+task :default => "#{OBJDIR}/#{OBJFILE}"
+
+directory OBJDIR
+
+desc "Render the ERB template config file"
+file "#{OBJDIR}/#{OBJFILE}" => ["#{SRCDIR}/#{OBJFILE}.erb", OBJDIR] do |task|
+  source = task.prerequisites.first
+  target = task.name
+  puts "rendering #{source} => #{target}"
+  data = File.read source
+  result = ERB.new(data, nil, '-').result(binding)
+  File.open(target, 'w') { |f| f.write(result) }
+end
+
+directory PREFIX
+
+desc "Install rendered config file into PREFIX"
+task :install => ["#{OBJDIR}/#{OBJFILE}", PREFIX] do |task|
+  cp task.prerequisites.first, "#{PREFIX}/"
+end
+
+desc "Clean up all temporary rendered configs"
+task :clean do |t|
+  rm_f "#{OBJDIR}/#{OBJFILE}"
+end
 
 desc "Get version of `ood-portal-generator`"
 task :version do
   puts "ood-portal-generator #{VERSION}"
-end
-
-desc "Build the templates in '#{OBJDIR}/'"
-task :build => OBJ_FILES
-
-directory "#{OBJDIR}/"
-
-directory "#{PREFIX}/"
-
-rule %r[^#{OBJDIR}/] => [->(f){source_file(f)}, "#{OBJDIR}/"] do |t|
-  puts "rendering #{t.source} => #{t.name}"
-  data = File.read t.source
-  result = ERB.new(data, nil, '-').result(binding)
-  File.open(t.name, 'w') { |f| f.write(result) }
-end
-
-def source_file(file)
-  SRC_FILES.detect do |f|
-    f.ext == file.pathmap("%{^#{OBJDIR}/,#{TEMPLATES}/}p")
-  end || ""
-end
-
-desc "Install rendered files into PREFIX"
-task :install => [:build, "#{PREFIX}/"] do
-  OBJ_FILES.each { |file| cp file, PREFIX }
-end
-
-desc "Clean up rendered files in '#{OBJDIR}/'"
-task :clean do |t|
-  OBJ_FILES.each { |file| rm_f file }
 end

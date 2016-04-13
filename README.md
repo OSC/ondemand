@@ -105,10 +105,13 @@ The default options used to generate the Apache config are listed as such
 PREFIX='/opt/rh/httpd24/root/etc/httpd/conf.d'
 
 # Directory with ERB templates
-TEMPLATES='templates'
+SRCDIR='templates'
 
-# Directory for rendered config files after `rake build`
+# Directory for temporary rendered configs
 OBJDIR='build'
+
+# Filename of rendered config
+OBJFILE='ood-portal.conf'
 ```
 
 #### Server Options
