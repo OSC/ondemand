@@ -27,6 +27,10 @@
       // Run original function
       //this._set(name, newValue);
     }
+
+    // ugly monkey patch to override wetty's storage preference
+    lib.Storage._Local = lib.Storage.Local;
+    lib.Storage.Local = lib.Storage.Memory;
   </script>
   <script src="{{{baseURI}}}/wetty/wetty.js"></script>
   <style>
