@@ -7,7 +7,7 @@ class Source
   end
 
   def self.osc
-    Source.new("OSC's Templates", "/nfs/01/wiag/PZS0645/ood/jobconstructor/templates")
+    Source.new("OSC's Templates", Rails.root.join('templates').to_s)
   end
 
   def self.my
