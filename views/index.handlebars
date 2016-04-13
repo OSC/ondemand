@@ -9,10 +9,22 @@
   <script src="{{{baseURI}}}/socket.io/socket.io.js"></script>
   <script>
     // ugly monkey patch to add sub-uri support to wetty.js
+    // must be called after socket.io javascript
     var _io = io;
     var io = function(uri, opts) {
       opts.path = '{{{baseURI}}}/socket.io';
       return _io(uri, opts);
+    }
+
+    // ugly monkey patch to override wetty's hterm settings
+    // must be called after hterm javascript
+    lib.PreferenceManager.prototype._set = lib.PreferenceManager.prototype.set;
+    lib.PreferenceManager.prototype.set = function(name, newValue) {
+      // Don't let Wetty set any preferences
+      return;
+
+      // Run original function
+      //this._set(name, newValue);
     }
   </script>
   <script src="{{{baseURI}}}/wetty/wetty.js"></script>
