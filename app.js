@@ -10,7 +10,6 @@ var BASE_URI = require('base-uri');
 var PORT     = 1337;
 
 var sshport  = 22;
-var sshauth  = 'password';
 var sshhosts = {
   oakley: 'oakley.osc.edu',
   ruby:   'ruby.osc.edu'
@@ -56,7 +55,7 @@ io.on('connection', function(socket) {
 
   // launch an ssh session
   process.env.LANG = 'en_US.UTF-8'; // fixes strange character issues
-  var term = pty.spawn('ssh', [sshhost, '-p', sshport, '-o', 'PreferredAuthentications=' + sshauth], {
+  var term = pty.spawn('ssh', [sshhost, '-p', sshport], {
     name: 'xterm-256color',
     cols: 80,
     rows: 30
