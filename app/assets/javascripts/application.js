@@ -18,13 +18,13 @@
 //= require js-routes
 //= require_tree .
 
-active_var = function() {
-    return $('tr.active').attr('id');
-}
+var active_var = function() {
+    return template_path().attr('id');
+};
 
-template_path = function() {
+var template_path = function() {
     return $('tr.active');
-}
+};
 
 function joinRoot(route){
     var arr = []

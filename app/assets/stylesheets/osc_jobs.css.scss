@@ -1,3 +1,8 @@
 // Place all the styles related to the OscJobs controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+#job-details-view {
+  max-height: 250px;
+  overflow-y: scroll;
+}
