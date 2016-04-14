@@ -1,27 +1,21 @@
 class Source
   attr_accessor :path, :name
 
-  OSC_NAME = "OSC's Templates"
-  OSC_SOURCE = Rails.root.join('templates').to_s
-
-  MY_NAME = "My Templates"
-  MY_SOURCE = AwesimRails.dataroot.join("templates").to_s
-
   def initialize(name, path)
     @name = name
     @path = path
   end
 
   def self.osc
-    Source.new(OSC_NAME, OSC_SOURCE)
+    Source.new("OSC's Templates", Rails.root.join('templates').to_s)
   end
 
   def self.my
-    Source.new(MY_NAME, MY_SOURCE)
+    Source.new("My Templates", AwesimRails.dataroot.join("templates").to_s)
   end
 
   def self.default
-    Pathname.new(OSC_SOURCE).join("default").to_s
+    Pathname.new(Rails.root.join('templates').to_s).join("default").to_s
   end
 
   def templates
