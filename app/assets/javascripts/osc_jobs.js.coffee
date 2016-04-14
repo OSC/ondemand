@@ -222,15 +222,15 @@ $ ->
   else
     $("#staging-template-dir").val("")
 
- @update_open_template_button = (path) ->
-   if path?
-     $("#open-template-dir-button").attr("href", path)
-     $("#open-template-dir-button").removeAttr("disabled")
-     $("#open-template-dir-button").unbind('click', false)
-   else
-     $("#open-template-dir-button").attr("href", "#")
-     $("#open-template-dir-button").attr("disabled", true)
-     $("#open-template-dir-button").bind('click', false)
+@update_open_template_button = (path) ->
+  if path?
+    $("#open-template-dir-button").attr("href", path)
+    $("#open-template-dir-button").removeAttr("disabled")
+    $("#open-template-dir-button").unbind('click', false)
+  else
+    $("#open-template-dir-button").attr("href", "#")
+    $("#open-template-dir-button").attr("disabled", true)
+    $("#open-template-dir-button").bind('click', false)
 
 # TODO can probably refactor to use this on the index as well
 @get_folder_contents_from_api = (apiurl) ->
@@ -259,3 +259,7 @@ $ ->
     list += "<li class='list-group-item'>#{content.name}</li>"
   list += "</ul>"
   $("#template-folder-contents").html("#{list}")
+
+$ ->
+  $('#reset-template-data').on 'click', ->
+    update_new_job_display(template_path())
