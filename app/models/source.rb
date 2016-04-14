@@ -20,6 +20,10 @@ class Source
     Source.new(MY_NAME, MY_SOURCE)
   end
 
+  def self.default
+    Pathname.new(OSC_SOURCE).join("default").to_s
+  end
+
   def self.source_name(path)
     (path.include? OSC_SOURCE) ? OSC_NAME : MY_NAME
   end

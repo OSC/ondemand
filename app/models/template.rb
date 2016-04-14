@@ -13,6 +13,10 @@ class Template
     Source.my.templates.concat(Source.osc.templates)
   end
 
+  def self.default
+    Source.default
+  end
+
   def initialize(path)
     @path = Pathname.new(path)
   end
