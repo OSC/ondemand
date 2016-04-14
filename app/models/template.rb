@@ -2,7 +2,7 @@ require 'active_model'
 
 class Template
   include ActiveModel::Model
-  attr_accessor :path
+  attr_accessor :path, :source
   delegate :name, :'name=', :notes, :'notes=',:host, :'host=',:script_path, :'script=',to: :manifest
 
   def persisted?
@@ -17,8 +17,9 @@ class Template
     Source.default
   end
 
-  def initialize(path)
+  def initialize(path, source = Source.new("", Pathname.new("")))
     @path = Pathname.new(path)
+    @source = source
   end
 
   def manifest

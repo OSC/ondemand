@@ -24,10 +24,6 @@ class Source
     Pathname.new(OSC_SOURCE).join("default").to_s
   end
 
-  def self.source_name(path)
-    (path.include? OSC_SOURCE) ? OSC_NAME : MY_NAME
-  end
-
   def templates
     return [] unless Pathname.new(path).directory?
 
@@ -36,6 +32,6 @@ class Source
     folders.shift(2)
 
     # create a template for each folder
-    folders.map {|f| Template.new(Pathname.new(path).join(f)) }
+    folders.map {|f| Template.new(Pathname.new(path).join(f), self) }
   end
 end
