@@ -4,7 +4,7 @@ class Filesystem
   # /nfs/07 => false
   # /nfs/gpfs/UNAME/template => true
   # /nfs/08/bmcmichael/ood_templ/5/ => true
-  BASE_PATTERN = /\/nfs\/([0-9]{2}|gpfs)\/\w+\/\w+/
+  BASE_PATTERN = %r{^/nfs/([0-9]{2}|gpfs)/\w+/.+}
 
   def initialize
     @fs = FileManager[:fs]
