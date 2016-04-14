@@ -1,8 +1,6 @@
 class AppController < ApplicationController
 
   def show
-    @user = User.new
-
     owner = params[:owner]
     app_name = params[:app_name]
     path = params[:path]
