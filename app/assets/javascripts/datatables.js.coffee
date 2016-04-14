@@ -28,7 +28,6 @@ jQuery ->
 # Set up datatable
   $('.data-table-templates').DataTable
     order: [0, 'desc'],
-    stateSave: true,
     columnDefs: [{
       orderable: false
       targets: 'no-sort'
