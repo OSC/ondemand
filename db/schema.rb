@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160401162942) do
+ActiveRecord::Schema.define(version: 20160414163741) do
 
   create_table "osc_job_jobs", force: true do |t|
     t.integer  "osc_job_id"
@@ -24,12 +24,9 @@ ActiveRecord::Schema.define(version: 20160401162942) do
   add_index "osc_job_jobs", ["osc_job_id"], name: "index_osc_job_jobs_on_osc_job_id"
 
   create_table "osc_jobs", force: true do |t|
-    t.string   "name"
-    t.string   "batch_host"
-    t.string   "staged_dir"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "script_name"
+    t.string   "job_attrs"
   end
 
   create_table "templates", force: true do |t|
