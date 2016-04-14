@@ -11,21 +11,32 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.text_field :name %>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="field">
+        <%= f.text_field :path, label: "Path (template will be created by recursively copying files from this path)" %>
+      </div>
+      <div>
+        * If left blank, a default job script will be added to your new template.
+      </div>
+    </div>
   </div>
-  <div class="field">
-    <%= f.text_field :path, label: "Path (template will be created by recursively copying files from this path)" %>
-  </div>
-  <div class="field">
-    <%= f.select :host, Servers.map { |key, val| [ "#{key.titleize} (#{val[:pbshost]})", key ] }, { selected: @template.host, label: "Default Batch Server" }, { class: "selectpicker" } %>
-  </div>
-  <div class="field">
-    <%= f.text_area :notes %>
-  </div>
-  <div class="actions">
-  <%= f.submit "Save" %>
-  <%= link_to "Cancel", :osc_jobs, :class => "btn btn-default" %>
 
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="field">
+        <%= f.text_field :name %>
+      </div>
+      <div class="field">
+        <%= f.select :host, Servers.map { |key, val| [ "#{key.titleize} (#{val[:pbshost]})", key ] }, { selected: @template.host, label: "Default Batch Server" }, { class: "selectpicker" } %>
+      </div>
+      <div class="field">
+        <%= f.text_area :notes %>
+      </div>
+      <div class="actions">
+        <%= f.submit "Save" %>
+        <%= link_to "Cancel", :osc_jobs, :class => "btn btn-default" %>
+      </div>
+    </div>
   </div>
 <% end %>
