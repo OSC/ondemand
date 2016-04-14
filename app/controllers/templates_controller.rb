@@ -5,7 +5,7 @@ class TemplatesController < ApplicationController
   # GET /templates.json
   def index
     # Append the system templates to the end of the user defined templates for usability.
-    @templates = Template.all
+    @templates = Source.my.templates
   end
 
   # GET /templates/1
