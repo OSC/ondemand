@@ -55,7 +55,7 @@ $(document).ready(function(){
 
     $('#new-job-template-table tbody').on( 'click', 'tr', function () {
         if ( $(this).hasClass('active') ) {
-            $(this).removeClass('active');
+            // do nothing
         }
         else {
             template_table.$('tr.active').removeClass('active');
@@ -66,6 +66,7 @@ $(document).ready(function(){
     });
 
     table.$('tr:first').click();
+    template_table.$('tr:first').click();
 });
 
 
