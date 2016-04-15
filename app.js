@@ -47,8 +47,11 @@ io.on('connection', function(socket) {
   console.log((new Date()) + ' Connection accepted.');
 
   // find user requested host from white list of hosts
-  var sshhost = sshhosts[default_host];
-  if (match = request.headers.referer.match(/\/ssh\/([^\/]+)(.*)$/)) {
+  var sshhost = sshhosts[default_host],
+      //FIXME: might be better to use escape-string-regexp node module
+      // https://www.npmjs.com/package/escape-string-regexp
+      rx = new RegExp(BASE_URI.replace(/\//g, "\\/") + "\\/ssh\\/([^\\/]+)(.*)$");
+  if (match = request.headers.referer.match(rx)) {
     if (match[1] in sshhosts) {
       sshhost = sshhosts[match[1]];
     }
