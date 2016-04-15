@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.0.5 (2016-04-15)
+
   - refactored Configuration module to reduce duplication
 
 Features:
