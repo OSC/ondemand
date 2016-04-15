@@ -42,31 +42,33 @@ var io = server(httpserv, {
 });
 
 io.on('connection', function(socket) {
-  var request = socket.request,
-      go_to_cwd = null;
+  var request = socket.request;
   console.log((new Date()) + ' Connection accepted.');
 
   // find user requested host from white list of hosts
   var sshhost = sshhosts[default_host],
+      go_to_cwd = null,
       //FIXME: might be better to use escape-string-regexp node module
       // https://www.npmjs.com/package/escape-string-regexp
       rx = new RegExp(BASE_URI.replace(/\//g, "\\/") + "\\/ssh\\/([^\\/]+)(.*)$");
+
   if (match = request.headers.referer.match(rx)) {
     if (match[1] in sshhosts) {
       sshhost = sshhosts[match[1]];
     }
-    if (match[2]){
-      go_to_cwd = match[2];
-    }
+
+    go_to_cwd = match[2];
   }
 
   // launch an ssh session
   process.env.LANG = 'en_US.UTF-8'; // fixes strange character issues
 
-  // This works: var term = pty.spawn('ssh', [ sshhost,'-t','-p', sshport, "cd /nfs/17/efranz/ood_shared ; bash"], {
   var term_args = [ sshhost,'-t','-p', sshport];
+
+  // if go_to_cwd set, add cd command to run after login
   if(go_to_cwd != null && go_to_cwd != "")
     term_args.push("cd " + go_to_cwd + " ; bash");
+
   var term = pty.spawn('ssh', term_args, {
     name: 'xterm-256color',
     cols: 80,
