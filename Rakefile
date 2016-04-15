@@ -1,4 +1,5 @@
 require "rake/testtask"
+require 'yaml'
 
 #
 # Define tasks for `rake test`
@@ -37,7 +38,7 @@ end
 # Generate default config yaml file
 file "#{PREFIX}/config/nginx_stage.yml" => 'config/nginx_stage.yml.example' do |task|
   target = task.name
-  unless File.exists? target
+  if !File.exists?(target) || !YAML.load_file(target)
     mkdir_p File.dirname(target) unless File.directory? File.dirname(target)
     cp task.prerequisites.first, target
     puts <<-EOF.gsub(/^\s{6}/, '')
