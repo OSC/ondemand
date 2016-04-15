@@ -1,5 +1,12 @@
 #!/bin/env ruby
 
+VERSION = '0.0.1'
+
+if ARGV[0] == "-v"
+  puts "osc-user-map v#{VERSION}"
+  exit
+end
+
 #
 # osc-user-map
 #
