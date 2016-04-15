@@ -47,7 +47,7 @@ io.on('connection', function(socket) {
 
   // find user requested host from white list of hosts
   var sshhost = sshhosts[default_host],
-      go_to_cwd = null,
+      cwd = null,
       //FIXME: might be better to use escape-string-regexp node module
       // https://www.npmjs.com/package/escape-string-regexp
       rx = new RegExp(BASE_URI.replace(/\//g, "\\/") + "\\/ssh\\/([^\\/]+)(.*)$");
@@ -57,7 +57,7 @@ io.on('connection', function(socket) {
       sshhost = sshhosts[match[1]];
     }
 
-    go_to_cwd = match[2];
+    cwd = match[2];
   }
 
   // launch an ssh session
@@ -65,9 +65,9 @@ io.on('connection', function(socket) {
 
   var term_args = [ sshhost,'-t','-p', sshport];
 
-  // if go_to_cwd set, add cd command to run after login
-  if(go_to_cwd != null && go_to_cwd != "")
-    term_args.push("cd " + go_to_cwd + " ; bash");
+  // if cwd set, add cd command to run after login
+  if(cwd != null && cwd != "")
+    term_args.push("cd " + cwd + " ; bash");
 
   var term = pty.spawn('ssh', term_args, {
     name: 'xterm-256color',
