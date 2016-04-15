@@ -42,20 +42,29 @@ var io = server(httpserv, {
 });
 
 io.on('connection', function(socket) {
-  var request = socket.request;
+  var request = socket.request,
+      go_to_cwd = null;
   console.log((new Date()) + ' Connection accepted.');
 
   // find user requested host from white list of hosts
   var sshhost = sshhosts[default_host];
-  if (match = request.headers.referer.match(/\/ssh\/([^\/]+)$/)) {
+  if (match = request.headers.referer.match(/\/ssh\/([^\/]+)(.*)$/)) {
     if (match[1] in sshhosts) {
       sshhost = sshhosts[match[1]];
+    }
+    if (match[2]){
+      go_to_cwd = match[2];
     }
   }
 
   // launch an ssh session
   process.env.LANG = 'en_US.UTF-8'; // fixes strange character issues
-  var term = pty.spawn('ssh', [sshhost, '-p', sshport], {
+
+  // This works: var term = pty.spawn('ssh', [ sshhost,'-t','-p', sshport, "cd /nfs/17/efranz/ood_shared ; bash"], {
+  var term_args = [ sshhost,'-t','-p', sshport];
+  if(go_to_cwd != null && go_to_cwd != "")
+    term_args.push("cd " + go_to_cwd + " ; bash");
+  var term = pty.spawn('ssh', term_args, {
     name: 'xterm-256color',
     cols: 80,
     rows: 30
