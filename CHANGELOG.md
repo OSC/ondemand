@@ -13,6 +13,7 @@ Features:
   - set Nginx tmp root to user's home directory to allow for larger file
     uploads
   - introduced/renamed possible app environments to: `dev`, `usr`, and `sys`
+  - regenerates default config file if doesn't exist or nothing set in it
 
 Bugfixes:
 
