@@ -67,7 +67,7 @@ io.on('connection', function(socket) {
 
   // if cwd set, add cd command to run after login
   if(cwd != null && cwd != "")
-    term_args.push("cd " + cwd + " ; bash");
+    term_args.push("cd " + cwd + " ; bash -l");
 
   var term = pty.spawn('ssh', term_args, {
     name: 'xterm-256color',
