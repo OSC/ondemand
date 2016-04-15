@@ -19,7 +19,7 @@ function map(r, user_map_cmd)
     handle:close()
 
     -- failed to map if returns empty string
-    if sys_user == "" then
+    if not sys_user or sys_user == "" then
       return nil
     end
 
