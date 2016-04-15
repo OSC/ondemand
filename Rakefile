@@ -1,6 +1,6 @@
 require 'erb'
 
-VERSION = 'v0.0.1'
+VERSION = '0.0.1'
 
 if File.file?('config.rake') && !ENV["SKIP_CONFIG"]
   puts "reading variables from 'config.rake'"
@@ -64,5 +64,5 @@ end
 
 desc "Get version of `ood-portal-generator`"
 task :version do
-  puts "ood-portal-generator #{VERSION}"
+  puts "ood-portal-generator v#{VERSION}"
 end
