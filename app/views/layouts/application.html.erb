@@ -17,14 +17,14 @@
       <ul class="nav navbar-nav">
 
         <% if @user.project_space_paths.empty? %>
-          <li><a href="/pun/shared/bmcmichael/cloudcmd/fs<%= @user.home %>" target="_blank">Files</a></li>
+          <li><a href="/pun/sys/cloudcmd/fs<%= @user.home %>" target="_blank">Files</a></li>
         <% else %>
           <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Files<span class="caret"></span></a>
             <ul class="dropdown-menu">
-              <li><a href="/pun/shared/bmcmichael/cloudcmd/fs<%= @user.home %>" target="_blank"><i class="fa fa-home"></i> Home Directory</a></li>
+              <li><a href="/pun/sys/cloudcmd/fs<%= @user.home %>" target="_blank"><i class="fa fa-home"></i> Home Directory</a></li>
               <li role="separator" class="divider"></li>
               <% @user.project_space_paths.each do |p| %>
-                <li><a href="/pun/shared/bmcmichael/cloudcmd/fs<%= p.to_s %>" target="_blank"><i class="fa fa-folder"></i> <%= p.to_s %></a></li>
+                <li><a href="/pun/sys/cloudcmd/fs<%= p.to_s %>" target="_blank"><i class="fa fa-folder"></i> <%= p.to_s %></a></li>
               <% end %>
             </ul>
           </li>
@@ -32,38 +32,38 @@
 
         <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Jobs<span class="caret"></span></a>
         <ul class="dropdown-menu">
-          <li><%= link_to "<i class=\"fa fa-tasks\"></i> My Jobs".html_safe, app_path("efranz", "myjobs") %></li>
-          <li><a href="/pun/shared/bmcmichael/activejobs"><i class="fa fa-clock-o"></i> Active Jobs</a>
+          <li class="disabled"><%= link_to "<i class=\"fa fa-tasks\"></i> My Jobs".html_safe, app_path("efranz", "myjobs") %></li>
+          <li><a href="/pun/sys/activejobs"><i class="fa fa-clock-o"></i> Active Jobs</a>
           </li>
         </ul>
         </li>
         <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Clusters<span class="caret"></span></a>
         <ul class="dropdown-menu">
-          <li><a href="/pun/shared/jnicklas/osc-shell/ssh/oakley" target="_blank"><i class="fa fa-terminal"></i> Oakley Shell Access</a></li>
+          <li><a href="/pun/sys/osc-shell/ssh/oakley" target="_blank"><i class="fa fa-terminal"></i> Oakley Shell Access</a></li>
           <% if @user.has_ruby_access? %>
-            <li><a href="/pun/shared/jnicklas/osc-shell/ssh/ruby" target="_blank"><i class="fa fa-terminal"></i> Ruby Shell Access</a></li>
+            <li><a href="/pun/sys/osc-shell/ssh/ruby" target="_blank"><i class="fa fa-terminal"></i> Ruby Shell Access</a></li>
           <% end %>
           <li role="separator" class="divider"></li>
-          <li><a href="/pun/shared/bmcmichael/osc-systemstatus"><i class="fa fa-tachometer"></i> System Status</a></li>
+          <li><a href="/pun/sys/osc-systemstatus"><i class="fa fa-tachometer"></i> System Status</a></li>
         </ul>
         </li>
         <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Apps<span class="caret"></span></a>
         <ul class="dropdown-menu">
           <li class="dropdown-header">Virtual Desktop Interface</li>
-          <li><a href="/pun/shared/efranz/oakley_vdi"><i class="fa fa-desktop"></i> Oakley VDI</a></li>
+          <li><a href="/pun/sys/oakley_vdi"><i class="fa fa-desktop"></i> Oakley VDI</a></li>
           <% if @user.has_ruby_access? %>
-            <li><a href="/pun/shared/efranz/ruby_vdi"><i class="fa fa-desktop"></i> Ruby VDI</a></li>
+            <li><a href="/pun/sys/ruby_vdi"><i class="fa fa-desktop"></i> Ruby VDI</a></li>
           <% end %>
-          <li><a href="/pun/shared/jnicklas/paraview"><%= image_tag "logo-14x14-paraview.png" %> Paraview</a></li>
+          <li><a href="/pun/sys/paraview"><%= image_tag "logo-14x14-paraview.png" %> Paraview</a></li>
           <li role="separator" class="divider"></li>
           <li class="dropdown-header">Compute Node Session</li>
-          <li><a href="/pun/shared/jnicklas/oakley_desktop"><i class="fa fa-desktop"></i> Oakley Desktop</a></li>
+          <li><a href="/pun/sys/oakley_desktop"><i class="fa fa-desktop"></i> Oakley Desktop</a></li>
           <% if @user.has_ruby_access? %>
-            <li><a href="/pun/shared/jnicklas/ruby_desktop" ><i class="fa fa-desktop"></i> Ruby Desktop</a>
+            <li><a href="/pun/sys/ruby_desktop" ><i class="fa fa-desktop"></i> Ruby Desktop</a>
           <% end %>
-          <li><a href="/pun/shared/jnicklas/abaqus_cae"><%= image_tag "logo-14x14-abaqus.png" %> Abaqus/CAE</a>
-          <li><a href="/pun/shared/jnicklas/ansys_workbench"><%= image_tag "logo-14x14-ansys.png" %> ANSYS Workbench</a>
-          <li><a href="/pun/shared/jnicklas/comsol"><%= image_tag "logo-14x14-comsol.png" %> COMSOL</a>
+          <li><a href="/pun/sys/abaqus_cae"><%= image_tag "logo-14x14-abaqus.png" %> Abaqus/CAE</a>
+          <li><a href="/pun/sys/ansys_workbench"><%= image_tag "logo-14x14-ansys.png" %> ANSYS Workbench</a>
+          <li><a href="/pun/sys/comsol"><%= image_tag "logo-14x14-comsol.png" %> COMSOL</a>
         </ul>
         </li>
 
