@@ -1,14 +1,30 @@
-#!/bin/bash
+#!/bin/env ruby
 
-declare -A users
-users["111507243067931506567%40accounts.google.com"]="jnicklas"
-users["102555136695940613292%40accounts.google.com"]="jnicklas"
-users["113597325271288644620%40accounts.google.com"]="efranz"
-users["109838079349976181632%40accounts.google.com"]="an0047"
-users["111644294145564711835%40accounts.google.com"]="dhudak"
-users["112387922473213146150%40accounts.google.com"]="bmcmichael"
-users["112840957665765361885%40accounts.google.com"]="bmcmichael"
-users["100407568355706659061%40accounts.google.com"]="bmcmichael"
-users["116681954918771948545%40accounts.google.com"]="bgohar"
-echo "${users["$1"]:-""}"
-exit 0
+#
+# osc-user-map
+#
+# Specification
+# 1. Must accept a single argument that is URL encoded.
+# 2. If successful at mapping user, must return ONLY the user name to `stdout`.
+# 3. If unsuccessful at mapping, must return empty string to `stdout`.
+#
+
+require 'uri'
+
+auth_user = URI.unescape ARGV[0]
+
+GOOGLE_USERS = {
+  "111507243067931506567@accounts.google.com" => "jnicklas",
+  "102555136695940613292@accounts.google.com" => "jnicklas",
+  "113597325271288644620@accounts.google.com" => "efranz",
+  "109838079349976181632@accounts.google.com" => "an0047",
+  "111644294145564711835@accounts.google.com" => "dhudak",
+  "112387922473213146150@accounts.google.com" => "bmcmichael",
+  "112840957665765361885@accounts.google.com" => "bmcmichael",
+  "100407568355706659061@accounts.google.com" => "bmcmichael",
+  "116681954918771948545@accounts.google.com" => "bgohar"
+}
+
+sys_user = GOOGLE_USERS[auth_user]
+
+puts sys_user || ""
