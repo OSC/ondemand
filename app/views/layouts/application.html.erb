@@ -17,7 +17,7 @@
       <ul class="nav navbar-nav">
 
         <% if @user.project_space_paths.empty? %>
-          <li><a href="/pun/sys/cloudcmd/fs<%= @user.home %>" target="_blank">Files</a></li>
+          <li><a href="/pun/sys/files/fs<%= @user.home %>" target="_blank">Files</a></li>
         <% else %>
           <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Files<span class="caret"></span></a>
             <ul class="dropdown-menu">
@@ -39,12 +39,12 @@
         </li>
         <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Clusters<span class="caret"></span></a>
         <ul class="dropdown-menu">
-          <li><a href="/pun/sys/osc-shell/ssh/oakley" target="_blank"><i class="fa fa-terminal"></i> Oakley Shell Access</a></li>
+          <li><a href="/pun/sys/shell/ssh/oakley" target="_blank"><i class="fa fa-terminal"></i> Oakley Shell Access</a></li>
           <% if @user.has_ruby_access? %>
-            <li><a href="/pun/sys/osc-shell/ssh/ruby" target="_blank"><i class="fa fa-terminal"></i> Ruby Shell Access</a></li>
+            <li><a href="/pun/sys/shell/ssh/ruby" target="_blank"><i class="fa fa-terminal"></i> Ruby Shell Access</a></li>
           <% end %>
           <li role="separator" class="divider"></li>
-          <li><a href="/pun/sys/osc-systemstatus"><i class="fa fa-tachometer"></i> System Status</a></li>
+          <li><a href="/pun/sys/systemstatus"><i class="fa fa-tachometer"></i> System Status</a></li>
         </ul>
         </li>
         <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Apps<span class="caret"></span></a>
