@@ -6,7 +6,7 @@ Generates an Open OnDemand portal config for an Apache server.
 
 ### Generate OOD Portal config
 
-- Ruby >= 1.9
+- Ruby 1.9 or newer
 
 ### Run OOD Portal config
 
