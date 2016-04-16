@@ -19,7 +19,7 @@ class AppController < ApplicationController
 
   # initialize app and return the app_url to access
   def initialize_app_access(owner, app_name, path)
-    router = ::AppRouter.new(owner)
+    router = ::AppRouter.for(owner)
     myrouter = ::AppRouter.new
 
     app = AweSim::App.at(path: router.path_for(app: app_name))
@@ -38,7 +38,7 @@ class AppController < ApplicationController
 
   # get app_url for path to app
   def app_url(owner, app_name, path)
-    router = ::AppRouter.new(owner)
+    router = ::AppRouter.for(owner)
     app_url = router.url_for(app: app_name)
 
     # if a path in the app is provided, append this to the URL
