@@ -8,6 +8,14 @@ class SysRouter < AweSim::Router
 
   # given app string "dashboard"
   # and owner "efranz" return the url
+  # FIXME: we could have /pun/sys be /pun/#{user} and then use the
+  # nginx_config to determine whether the apps are user specific or fixed
+  # deployment locations so that if later we had a /pun/totalsim that would
+  # be fixed like /pun/sys but separate from a user's shared apps i.e. /pun/usr
+  # or better... each router is for a single set of apps.
+  # So instead of having a router define both shared and dev apps, you have 2
+  # routers: one for user shared apps, one for dev apps, one for system
+  # installed apps. This is actually a better approach
   def url_for_shared_app(app)
     "/pun/sys/#{app}"
   end
