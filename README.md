@@ -126,12 +126,12 @@ OBJFILE='ood-portal.conf'
 # IP used for Open OnDemand portal
 # Blank: Remove `Listen` & `<VirtualHost>` directives
 #
-OOD_IP='*:5000'
+OOD_IP=''
 
 # Subdomain used for the Open OnDemand portal
 # Blank: Remove `ServerName` directive
 #
-OOD_SUBDOMAIN='apps.ondemand.org'
+OOD_SUBDOMAIN=''
 
 # Type of user authentication used for Open OnDemand portal
 #
@@ -144,23 +144,23 @@ OOD_AUTH_TYPE='openid-connect'
 # Path to the Open OnDemand Lua scripts
 # Blank: Remove `LuaRoot` directive
 #
-OOD_LUA_ROOT='/nfs/17/jnicklas/Development/mod_ood_proxy/lib'
+OOD_LUA_ROOT='/opt/ood/mod_ood_proxy/lib'
 
 # Command used to stage PUNs
 #
-OOD_PUN_STAGE_CMD='sudo /opt/ood/nginx_stage/sbin/nginx_stage_dev --config /nfs/17/jnicklas/Development/nginx_stage/config.yml --'
+OOD_PUN_STAGE_CMD='sudo /opt/ood/nginx_stage/sbin/nginx_stage'
 
 # Command used to map users to system level users
 #
-OOD_USER_MAP_CMD='/nfs/17/jnicklas/Development/osc-user-map/bin/osc-user-map'
+OOD_USER_MAP_CMD='/opt/ood/osc-user-map/bin/osc-user-map'
 
 # Path to the root location of PUN socket files
 #
-OOD_PUN_SOCKET_ROOT='/var/tmp/nginx_stage0/var/run/nginx'
+OOD_PUN_SOCKET_ROOT='/var/run/nginx'
 
 # Path to publicly available assets
 #
-OOD_PUBLIC_ROOT='/nfs/gpfs/PZS0645/www/public'
+OOD_PUBLIC_ROOT='/var/www/docroot/ood/public'
 ```
 
 #### OOD Portal URIs
