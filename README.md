@@ -27,26 +27,41 @@ An Apache httpd module implementing the Open OnDemand proxy API.
         git pull
         ```
 
-2.  If you haven't already done before, copy the example Makefile
-
-    ```
-    cp Makefile.example Makefile
-    ```
-
-3.  Modify the variables in the Makefile to match the setup of your system.
-
-4.  Install a specific version in the default location
+2.  Install a specific version in default location
 
     ```
     cd /path/to/repo
-    git checkout tag/vX.Y.Z
-    sudo make install
+    git checkout tags/vX.Y.Z
+    sudo rake install
     ```
 
-    This will install the specified version `X.Y.Z` in
-    `/opt/ood/mod_ood_proxy`.
+    this will install the specifed version `X.Y.Z` in `/opt/ood/mod_ood_proxy`
 
-5.  Restart your Apache server.
+    Note: Running `sudo` will sanitize your current environment. For the case
+    of RHEL using Software Collections it is recommended to load the
+    environment inside the `sudo` process:
+
+    ```
+    cd /path/to/repo
+    git checkout tags/vX.Y.Z
+    sudo scl enable rh-ruby22 -- rake install
+    ```
+
+    Examples:
+
+    ```
+    # Install v1.0.0 of mod_ood_proxy to /opt/ood/mod_ood_proxy
+    git checkout tags/v1.0.0
+    sudo rake install
+
+    # Install v2.0.0 of mod_ood_proxy to /tmp/mod_ood_proxy-v2.0.0
+    git checkout tags/v2.0.0
+    sudo rake install PREFIX=/tmp/mod_ood_proxy-v2.0.0
+    ```
+
+    **Warning**: This will overwrite git-committed existing files.
+
+3.  Restart your Apache server.
 
 ## API
 
