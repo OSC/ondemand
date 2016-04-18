@@ -11,11 +11,11 @@ Generates an Open OnDemand portal config for an Apache server.
 ### Run OOD Portal config
 
 - Apache httpd 2.4 or newer (and the following modules)
-  - mod_ood_proxy (and its requirements)
-    - mod_lua
-    - mod_env
-    - mod_proxy (mod_proxy_connect + mod_proxy_wstunnel)
-    - mod_auth_* (e.g., mod_auth_openidc)
+    - mod_ood_proxy (and its requirements)
+        - mod_lua
+        - mod_env
+        - mod_proxy (mod_proxy_connect + mod_proxy_wstunnel)
+        - mod_auth_* (e.g., mod_auth_openidc)
 
 ## Installation
 
