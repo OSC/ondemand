@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/AweSim-OSC/awesim_rails.git
-  revision: 27f84d5790b8e89a258570aff1bc5cf51e46181a
+  revision: 9ab5ee2b617cbb6ea41d3a3d24764ccb2babcb9b
   specs:
     awesim_rails (1.1.0)
       rails (~> 4.0.0)
@@ -144,7 +144,7 @@ GEM
       activesupport (= 4.0.0)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
-    rake (11.0.1)
+    rake (11.1.2)
     rdoc (4.2.2)
       json (~> 1.4)
     redcarpet (3.2.3)
@@ -178,7 +178,7 @@ GEM
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
-    tzinfo (0.3.46)
+    tzinfo (0.3.48)
     uglifier (2.7.2)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
