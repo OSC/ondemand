@@ -84,7 +84,7 @@ Generates an Open OnDemand portal config for an Apache server.
     #scl enable rh-ruby22 -- rake clean
     ```
 
-    and re-build the config file from step #3 with the desired configuration
+    and re-build the config file from step \#3 with the desired configuration
     options.
 
 5.  Install the Apache config that defines the OOD portal
