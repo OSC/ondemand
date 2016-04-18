@@ -47,7 +47,7 @@ if sys_user
   exit
 end
 
-# Use Grid Mapfile for production server
+# Use grid-mapfile for production server
 #
 
 GRID_MAPFILE='/etc/grid-security/grid-mapfile'
