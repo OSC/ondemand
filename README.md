@@ -12,8 +12,12 @@
     we need a newer version of `npm` in order to install this code:
 
     ```
-    scl enable v8314 nodejs010 -- npm install npm
+    mkdir -p ./bin/npm/node_modules
+    scl enable v8314 nodejs010 -- npm install --prefix ./bin/npm npm
+    ./bin/npm/node_modules/.bin/npm install
     ```
+
+    * You can also install the newer version of npm locally i.e. in your home directory. Then you can do `~/.npm-packages/bin/npm`
 
 3. Install required packages using this newer `npm` package:
 
