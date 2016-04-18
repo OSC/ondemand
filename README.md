@@ -32,8 +32,22 @@ Generates an Open OnDemand portal config for an Apache server.
         git pull
         ```
 
-2.  Build the Apache config from **environment variables** outlined below. To
-    use the defaults:
+2.  Checkout a specific version of the `ood-portal-generator`
+
+    ```bash
+    git checkout tags/vX.Y.Z
+    ```
+
+    where `X.Y.Z` is the version number. For example
+
+    ```bash
+    git checkout tags/v1.0.0
+    ```
+
+    will checkout `v1.0.0` of the `ood-portal-generator`.
+
+3.  Build the Apache config using the default **environment variables**
+    outlined [below](#default-options).
 
     ```bash
     # Generate Apache config in `/build`
@@ -43,7 +57,8 @@ Generates an Open OnDemand portal config for an Apache server.
     #scl enable rh-ruby22 -- rake
     ```
 
-    To modify any configuration options from the default, run it as
+    To modify any configuration options from the default, specify it after the
+    `rake` command
 
     ```bash
     # Generate Apache config in `/build`
@@ -53,13 +68,26 @@ Generates an Open OnDemand portal config for an Apache server.
     #scl enable rh-ruby22 -- rake OOD_AUTH_TYPE='openid-connect'
     ```
 
-3.  Verify that the Apache config file is generated correctly in
+4.  Verify that the Apache config file is generated correctly in
 
     ```
     build/ood-portal.conf
     ```
 
-4.  Install the Apache config that defines the OOD portal
+    If you'd like to make a change to the above file, then run
+
+    ```
+    # Clean up config file
+    rake clean
+
+    # If using Software Collections, set Ruby environment
+    #scl enable rh-ruby22 -- rake clean
+    ```
+
+    and re-build the config file from step #3 with the desired configuration
+    options.
+
+5.  Install the Apache config that defines the OOD portal
 
     ```bash
     # Install Apache config in default PREFIX
@@ -82,18 +110,6 @@ Generates an Open OnDemand portal config for an Apache server.
     # Install Apache config in different PREFIX
     sudo rake install PREFIX='/etc/httpd/conf.d'
     ```
-
-## Rake Tasks
-
-To view the available rake tasks you'd run:
-
-```bash
-# List available rake tasks
-rake -T
-
-# Using Software Collections, use this instead
-#scl enable rh-ruby22 -- rake -T
-```
 
 ## Default Options
 
@@ -194,9 +210,9 @@ OOD_PUBLIC_URI='/public'
 ```
 ## Configuration File
 
-If you don't find the default options or setting environment variables
-satisfactory, then you can specify the configuration options in `config.rake`
-as such
+If the default options or using environment variables to make changes do not
+meet your needs, then you can specify the configuration options in
+`config.rake` as such
 
 ```ruby
 # config.rake
