@@ -8,7 +8,8 @@ system-level username.
 - Ruby 1.8.7 or newer
 - A plain text grid-mapfile located at `/etc/grid-security/grid-mapfile`
 
-For installation we use a `Rakefile` so `rake` is necessary for Ruby.
+For installation we use a `Rakefile` so `rake` is necessary only for the
+installation process.
 
 ## Installation
 
