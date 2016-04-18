@@ -16,7 +16,12 @@ http {
   # Define passenger environment
   passenger_root <%= NginxStage.passenger_root %>;
   passenger_ruby <%= NginxStage.passenger_ruby %>;
+  <%- if NginxStage.passenger_nodejs -%>
   passenger_nodejs <%= NginxStage.passenger_nodejs %>;
+  <%- end -%>
+  <%- if NginxStage.passenger_python -%>
+  passenger_python <%= NginxStage.passenger_python %>;
+  <%- end -%>
 
   # Set passenger security measures
   passenger_user_switching off;

@@ -5,13 +5,20 @@ standard libraries making installation a breeze.
 
 ## Requirements
 
-#### RedHat ([Software Collections](https://www.softwarecollections.org/en/))
+- nginx 1.6 or newer
+- Phusion Passenger 4.0 or newer
+- Ruby 2.2 or newer
 
-* [Ruby 2.2](https://www.softwarecollections.org/en/scls/rhscl/rh-ruby22/)
-* [nginx 1.6](https://www.softwarecollections.org/en/scls/rhscl/nginx16/)
-* [Phusion Passenger 4.0](https://www.softwarecollections.org/en/scls/rhscl/rh-passenger40/)
-* [Node.js 0.10](https://www.softwarecollections.org/en/scls/rhscl/nodejs010/)
-* [V8 3.14](https://www.softwarecollections.org/en/scls/rhscl/v8314/)
+#### Optional
+
+For Node.js apps:
+
+- Node.js 0.10 or newer
+- V8 3.14 or newer
+
+For Python apps:
+
+- Python 2.7 or newer
 
 ## Installation
 

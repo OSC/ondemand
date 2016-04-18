@@ -48,8 +48,14 @@
 #passenger_ruby: '/opt/rh/rh-ruby22/root/usr/bin/ruby'
 
 # Path to system-installed Node.js binary
+# Set to `false` if you don't want this specified in nginx config
 #
 #passenger_nodejs: '/opt/rh/nodejs010/root/usr/bin/node'
+
+# Path to system-installed Python binary
+# Set to `false` if you don't want this specified in nginx config
+#
+#passenger_python: false
 
 # Root location of per-user NGINX configs
 #

@@ -1,5 +1,10 @@
 ## Unreleased
 
+Features:
+
+  - added Python as a configuration option
+  - set Node.js and Python binary paths as optional
+
 ## 0.0.5 (2016-04-15)
 
   - refactored Configuration module to reduce duplication

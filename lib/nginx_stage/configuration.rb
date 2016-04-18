@@ -44,6 +44,10 @@ module NginxStage
     # @return [String] the system-installed NodeJS binary
     attr_accessor :passenger_nodejs
 
+    # Path to system-installed python binary
+    # @return [String] the system-installed python binary
+    attr_accessor :passenger_python
+
     #
     # per-user NGINX configuration options
     #
@@ -273,6 +277,7 @@ module NginxStage
       self.passenger_root   = '/opt/rh/rh-passenger40/root/usr/share/passenger/phusion_passenger/locations.ini'
       self.passenger_ruby   = '/opt/rh/rh-ruby22/root/usr/bin/ruby'
       self.passenger_nodejs = '/opt/rh/nodejs010/root/usr/bin/node'
+      self.passenger_python = nil
 
       self.pun_config_path     = '/var/lib/nginx/config/puns/%{user}.conf'
       self.pun_tmp_root        = '~%{user}/.nginx'
