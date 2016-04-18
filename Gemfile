@@ -45,7 +45,7 @@ gem "autoprefixer-rails"
 gem "osc-machete", :git => "git@github.com:AweSim-OSC/osc-machete.git"
 gem "dotenv-rails", "~> 2.0.0"
 gem "rails_12factor", group: :production
-gem "awesim_rails", :git => "git@github.com:AweSim-OSC/awesim_rails.git", :tag => 'v1.1.0'
+gem "awesim_rails", :git => "git@github.com:AweSim-OSC/awesim_rails.git", :tag => 'v1.2.0'
 gem "awesim_rails_logging", :git => "git@github.com:AweSim-OSC/awesim_rails_logging.git"
 gem "pbs", :git => "git@github.com:AweSim-OSC/pbs-ruby.git"
 gem "turbolinks"
