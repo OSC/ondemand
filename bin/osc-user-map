@@ -61,7 +61,7 @@ GRID_MAPFILE='/etc/grid-security/grid-mapfile'
 
 # Don't slurp file
 File.foreach(GRID_MAPFILE) do |line|
-  if matches = %r{^"#{auth_user}" (\w+)$}.match(line)
+  if matches = %r{^"#{Regexp.quote auth_user}" (\w+)$}.match(line)
     sys_user = matches[1]
     break
   end
