@@ -4,13 +4,15 @@ An Apache httpd module implementing the Open OnDemand proxy API.
 
 ## Requirements
 
-- Apache httpd 2.4 [[Documentation](https://httpd.apache.org/docs/2.4/)]
-- mod_lua [[Documentation](https://httpd.apache.org/docs/2.4/mod/mod_lua.html)]
-- mod_env [[Documentaiton](https://httpd.apache.org/docs/2.4/mod/mod_env.html)]
-- mod_proxy [[Documentation](https://httpd.apache.org/docs/2.4/mod/mod_proxy.html)]
-    - mod_proxy_connect
-    - mod_proxy_wstunnel
-- mod_auth_*
+- Apache httpd 2.4 or newer (and the following modules)
+    - mod_lua
+    - mod_env
+    - mod_proxy
+        - mod_proxy_connect
+        - mod_proxy_wstunnel
+    - mod_auth_*
+
+Installation uses a `Rakefile` so `rake` is required for installation only.
 
 ## Installation
 
