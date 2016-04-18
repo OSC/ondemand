@@ -1,9 +1,5 @@
 #!/bin/env ruby
 
-module OscUserMap
-  VERSION = '0.0.1'
-end
-
 #
 # osc-user-map
 #
@@ -15,6 +11,14 @@ end
 
 require 'uri'
 
+module OscUserMap
+  VERSION = '0.0.1'
+end
+
+#
+# Parse arguments
+#
+
 if ARGV[0] == "-v"
   puts "osc-user-map v#{OscUserMap::VERSION}"
   exit
@@ -24,6 +28,7 @@ else
   abort 'No arguments supplied!'
 end
 
+#
 # Use Google authentication for development server
 #
 
@@ -44,9 +49,11 @@ sys_user = GOOGLE_USERS[auth_user]
 # We found the system user!
 if sys_user
   puts sys_user
+  STDERR.puts %{osc-user-map: Successfully mapped "#{auth_user}" => "#{sys_user}"}
   exit
 end
 
+#
 # Use grid-mapfile for production server
 #
 
@@ -61,4 +68,10 @@ File.foreach(GRID_MAPFILE) do |line|
 end
 
 # Print sys_user or empty string
-puts sys_user || ""
+if sys_user
+  puts sys_user
+  STDERR.puts %{osc-user-map: Successfully mapped "#{auth_user}" => "#{sys_user}"}
+else
+  puts ""
+  STDERR.puts %{osc-user-map: Failed to map "#{auth_user}"}
+end
