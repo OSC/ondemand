@@ -92,6 +92,12 @@ osc-user-map v1.0.0
 $
 ```
 
+## grid-mapfile
+
+The `grid-mapfile` must conform to the format specified at
+
+http://toolkit.globus.org/toolkit/docs/2.4/gsi/grid-mapfile_v11.html
+
 ## Contributing
 
 1. Fork it ( https://github.com/[my-github-username]/osc-user-map/fork )
