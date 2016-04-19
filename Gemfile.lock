@@ -1,21 +1,24 @@
 GIT
   remote: https://github.com/AweSim-OSC/awesim_rails.git
-  revision: 27f84d5790b8e89a258570aff1bc5cf51e46181a
+  revision: bc46cbf0a9398c59d75f37cd34cb51b5c8dcf6c5
+  tag: v1.2.0
   specs:
-    awesim_rails (1.1.0)
+    awesim_rails (1.2.0)
       rails (~> 4.0.0)
       redcarpet (~> 3.2.2)
 
 GIT
   remote: https://github.com/AweSim-OSC/awesim_rails_logging.git
-  revision: 2d43c23b8916658bcfaf38b448ffeca59f83a8da
+  revision: 1b0417280df2c9b2a63af090a146322124e744fd
+  tag: v1.0.0
   specs:
     awesim_rails_logging (1.0.0)
       rails (~> 4.0.0)
 
 GIT
   remote: https://github.com/AweSim-OSC/osc-machete.git
-  revision: c0fe844c63a733a5cf6b8333d1a12fc0e895b2b5
+  revision: dcf1a45d01ca7a0d1b49d23d45c4108a0b72c0a2
+  tag: v1.1.1
   specs:
     osc-machete (1.1.1)
       mustache
@@ -23,7 +26,8 @@ GIT
 
 GIT
   remote: https://github.com/AweSim-OSC/osc_machete_rails.git
-  revision: 71418f257ec67eb23a936edd79f749f60cf968d8
+  revision: af1e0a213a6fa19430fe37bf3f0e3bf30d831b8d
+  tag: v1.1.0
   specs:
     osc_machete_rails (1.1.0)
       awesim_rails (~> 1.0)
@@ -32,7 +36,8 @@ GIT
 
 GIT
   remote: https://github.com/AweSim-OSC/pbs-ruby.git
-  revision: 72856d0aceaae388ee6a4c725c75a4c5d68f0b41
+  revision: fb6f43e6e492e4af137df2bdb1059cf342cf1912
+  tag: v1.1.0
   specs:
     pbs (1.1.0)
       ffi (~> 1.9, >= 1.9.6)
@@ -116,7 +121,7 @@ GEM
     mime-types (1.25.1)
     minitest (4.7.5)
     multi_json (1.11.2)
-    mustache (1.0.2)
+    mustache (1.0.3)
     paperclip (4.2.4)
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
@@ -144,7 +149,7 @@ GEM
       activesupport (= 4.0.0)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
-    rake (11.0.1)
+    rake (11.1.2)
     rdoc (4.2.2)
       json (~> 1.4)
     redcarpet (3.2.3)
@@ -178,7 +183,7 @@ GEM
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
-    tzinfo (0.3.46)
+    tzinfo (0.3.48)
     uglifier (2.7.2)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
@@ -188,8 +193,8 @@ PLATFORMS
 
 DEPENDENCIES
   autoprefixer-rails
-  awesim_rails (~> 1.1.0)!
-  awesim_rails_logging (~> 1.0)!
+  awesim_rails!
+  awesim_rails_logging!
   bootstrap-sass (= 3.3.5)
   bootstrap_form (~> 2.3.0)
   coffee-rails (~> 4.0.0)
@@ -199,10 +204,10 @@ DEPENDENCIES
   jquery-datatables-rails (~> 3.3.0)
   jquery-rails
   js-routes (~> 1.2.4)
-  osc-machete (~> 1.0)!
-  osc_machete_rails (~> 1.0)!
+  osc-machete!
+  osc_machete_rails!
   paperclip (~> 4.2.2)
-  pbs (~> 1.0)!
+  pbs!
   rails (= 4.0.0)
   rails_12factor
   rake
