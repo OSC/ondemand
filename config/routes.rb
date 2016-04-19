@@ -1,7 +1,7 @@
 JobConstructor::Application.routes.draw do
   resources :templates
 
-  resources :osc_jobs do
+  resources :workflows do
     member do
       put 'submit'
       put 'stop'
@@ -9,7 +9,7 @@ JobConstructor::Application.routes.draw do
     end
   end
 
-  root "osc_jobs#index"
+  root "workflows#index"
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -3,7 +3,7 @@
     <h3>Create a New Job</h3>
   </div>
 
-  <%# render 'form', osc_job: @osc_job %>
+  <%# render 'form', workflow: @workflow %>
 
   <div class="row">
 
@@ -42,7 +42,7 @@
           <div class="form-group">
             <label class="control-label">Template Notes:</label><textarea class="form-control" id="notes-field" rows="6" disabled></textarea></div>
 
-          <%= bootstrap_form_for(@osc_job) do |f| %>
+          <%= bootstrap_form_for(@workflow) do |f| %>
               <%= f.alert_message "Please fix the errors below." %>
 
               <%= f.text_field :name, label: 'Job Name:', required: true, id: 'name-field' %>

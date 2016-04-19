@@ -5,29 +5,29 @@
 
   <p>
     <strong>Name:</strong>
-    <%= @osc_job.name %>
+    <%= @workflow.name %>
   </p>
 
   <p>
     <strong>Batch host:</strong>
-    <%= @osc_job.batch_host %>
+    <%= @workflow.batch_host %>
   </p>
 
   <p>
     <strong>Staged Dir:</strong>
-    <%= link_to(@osc_job.staged_dir, Filesystem.new.fs(@osc_job.staged_dir), target: "_blank") %>
+    <%= link_to(@workflow.staged_dir, Filesystem.new.fs(@workflow.staged_dir), target: "_blank") %>
   </p>
 
   <p>
     <strong>Directory Contents:</strong>
   <ul>
-    <% @osc_job.folder_contents.each do |content| %>
+    <% @workflow.folder_contents.each do |content| %>
         <li><%= content %></li>
     <% end %>
   </ul>
   </p>
 
-  <%= link_to 'Back', osc_jobs_path, class: 'btn btn-default' %>
-  <%= link_to 'Edit', edit_osc_job_path(@osc_job), class: 'btn btn-default' %>
+  <%= link_to 'Back', workflows_path, class: 'btn btn-default' %>
+  <%= link_to 'Edit', edit_workflow_path(@workflow), class: 'btn btn-default' %>
 </div>
 
