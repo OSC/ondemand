@@ -1,7 +1,7 @@
-class OscJobJob < ActiveRecord::Base
+class Job < ActiveRecord::Base
   include OscMacheteRails::Statusable
 
-  belongs_to :osc_job
+  belongs_to :workflow
 
   # Determine if the results are valid
   # def results_valid?

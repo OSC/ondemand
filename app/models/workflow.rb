@@ -1,7 +1,7 @@
 require 'find'
 
-class OscJob < ActiveRecord::Base
-  has_many :jobs, class_name: "OscJobJob", dependent: :destroy
+class Workflow < ActiveRecord::Base
+  has_many :jobs, class_name: "Job", dependent: :destroy
   has_machete_workflow_of :jobs
 
   store :job_attrs, accessors: [ :name, :batch_host, :staged_dir, :script_name ], coder: JSON
