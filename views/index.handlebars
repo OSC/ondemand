@@ -13,7 +13,13 @@
     var _io = io;
     var io = function(uri, opts) {
       console.log('Overriding: io(' + uri + ', ' + opts + ')');
+
+      // override path supplied by wetty
       opts.path = '{{{baseURI}}}/socket.io';
+
+      // use proper headers for xhr (doesn't work due to socket.io)
+      opts.extraHeaders = {'X-Requested-With': 'XMLHttpRequest'};
+
       return _io(uri, opts);
     }
 
