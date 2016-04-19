@@ -1,3 +1,8 @@
+// Monkey patch Regexp because Javascript is sad
+RegExp.escape = function(s) {
+  return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+};
+
 var express  = require('express');
 var exphbs   = require('express-handlebars');
 var http     = require('http');
@@ -6,8 +11,13 @@ var server   = require('socket.io');
 var pty      = require('pty.js');
 var fs       = require('fs');
 
-var BASE_URI = require('base-uri');
-var PORT     = 1337;
+var BASE_URI  = require('base-uri');
+var SSH_URI   = "/ssh"
+var PORT      = 1337;
+var URI_REGEX = RegExp.escape(BASE_URI) +
+                RegExp.escape(SSH_URI) +
+                '\\/([^\\/]+)' +
+                '(.*)$';
 
 var sshport  = 22;
 var sshhosts = {
@@ -24,7 +34,7 @@ app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
 
 // Set up the routes
-app.get(BASE_URI + '/ssh/*', function(req, res) {
+app.get(BASE_URI + SSH_URI + '/*', function(req, res) {
   res.render('index', {
     baseURI: BASE_URI
   });
@@ -45,17 +55,36 @@ io.on('connection', function(socket) {
   var request = socket.request;
   console.log((new Date()) + ' Connection accepted.');
 
-  // find user requested host from white list of hosts
+  // find user requested host from white list of hosts as well as user
+  // requested cwd
   var sshhost = sshhosts[default_host];
-  if (match = request.headers.referer.match(/\/ssh\/([^\/]+)$/)) {
+  var cwd = null;
+  if (match = request.headers.referer.match(URI_REGEX)) {
+    // check if host exists
     if (match[1] in sshhosts) {
       sshhost = sshhosts[match[1]];
     }
+    // check if dir exists and user has access to it
+    var tmpdir = process.cwd();
+    try {
+      process.chdir(match[2]);
+      cwd = match[2];
+    } catch (err) {
+      // ignore
+    }
+    process.chdir(tmpdir);
+  }
+
+  process.env.LANG = 'en_US.UTF-8'; // fixes strange character issues
+
+  // set up arguments for launching ssh session
+  var term_args = [sshhost, '-p', sshport];
+  if (cwd !== null) {
+    term_args.push('-t', 'cd ' + cwd + ' ; exec bash -l');
   }
 
   // launch an ssh session
-  process.env.LANG = 'en_US.UTF-8'; // fixes strange character issues
-  var term = pty.spawn('ssh', [sshhost, '-p', sshport], {
+  var term = pty.spawn('ssh', term_args, {
     name: 'xterm-256color',
     cols: 80,
     rows: 30
