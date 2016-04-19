@@ -17,7 +17,7 @@ var PORT      = 1337;
 var URI_REGEX = RegExp.escape(BASE_URI) +
                 RegExp.escape(SSH_URI) +
                 '\\/([^\\/]+)' +
-                '(.*)';
+                '(.*)$';
 
 var sshport  = 22;
 var sshhosts = {
@@ -78,9 +78,9 @@ io.on('connection', function(socket) {
   process.env.LANG = 'en_US.UTF-8'; // fixes strange character issues
 
   // set up arguments for launching ssh session
-  var term_args = [sshhost, '-t', '-p', sshport];
+  var term_args = [sshhost, '-p', sshport];
   if (cwd !== null) {
-    term_args.push('cd ' + cwd + ' ; bash -l');
+    term_args.push('-t', 'cd ' + cwd + ' ; exec bash -l');
   }
 
   // launch an ssh session
