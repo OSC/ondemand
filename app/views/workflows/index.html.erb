@@ -5,7 +5,7 @@
 <div class="col-md-7">
   <div class="panel">
 
-    <a class="btn btn-default btn-sm" href="<%= new_osc_job_path %>" data-toggle="tooltip" title="Create a new job from a template" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New From Template</a>
+    <a class="btn btn-default btn-sm" href="<%= new_workflow_path %>" data-toggle="tooltip" title="Create a new job from a template" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New From Template</a>
   </div>
 </div>
 
@@ -45,15 +45,15 @@
             </thead>
 
             <tbody>
-            <% @osc_jobs.each do |osc_job| %>
-                <tr class="job-row" id="<%=osc_job.id %>">
-                  <td data-sort="<%= osc_job.id %>"><small><%= osc_job.created_at.strftime('%F %T') %></small></td>
-                  <td><strong><%= osc_job.name %></strong></td>
-                  <td><%= osc_job.pbsid %></td>
-                  <td><%= osc_job.batch_host.titleize %></td>
-                  <td id="status_label_<%= osc_job.id %>"><%= status_label(osc_job) %></td>
+            <% @workflows.each do |workflow| %>
+                <tr class="job-row" id="<%=workflow.id %>">
+                  <td data-sort="<%= workflow.id %>"><small><%= workflow.created_at.strftime('%F %T') %></small></td>
+                  <td><strong><%= workflow.name %></strong></td>
+                  <td><%= workflow.pbsid %></td>
+                  <td><%= workflow.batch_host.titleize %></td>
+                  <td id="status_label_<%= workflow.id %>"><%= status_label(workflow) %></td>
                   <!-- FILE_SIZE_FEATURE
-                    <td><%# number_to_human_size(Filesystem.new.path_size(osc_job.staged_dir)) %></td>
+                    <td><%# number_to_human_size(Filesystem.new.path_size(workflow.staged_dir)) %></td>
                     -->
                 </tr>
             <% end %>

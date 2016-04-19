@@ -10,7 +10,7 @@ class Workflow < ActiveRecord::Base
 
   # Name that defines the template/target dirs
   #def staging_template_name
-  #  "osc_jobs"
+  #  "workflows"
   #end
 
   def staged_script_name

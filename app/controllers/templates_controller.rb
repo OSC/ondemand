@@ -17,7 +17,7 @@ class TemplatesController < ApplicationController
   def new
     @template = Template.new("")
     if params[:jobid]
-      job = OscJob.find(params[:jobid])
+      job = Workflow.find(params[:jobid])
       @template = Template.new(job.staged_dir)
       @template.host = job.batch_host
     elsif params[:path]

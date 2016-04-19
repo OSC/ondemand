@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class OscJobTest < ActiveSupport::TestCase
+class WorkflowTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

@@ -1,2 +1,2 @@
-module OscJobsHelper
+module WorkflowsHelper
 end
