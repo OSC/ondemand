@@ -1,20 +1,21 @@
 {
-  "name": "osc-cloudcmd",
+  "name": "osc-fileexplorer",
   "version": "0.0.1",
   "description": "OSC File Management App",
   "author": "Brian McMichael <bmcmichael@osc.edu>",
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "Soon"
+    "url": "https://github.com/AweSim-OSC/osc-fileexplorer"
   },
   "keywords": [
     "file_manger",
-    "ohio supercomputer center"
+    "ohio supercomputer center",
+    "open ondemand"
   ],
   "dependencies": {
     "base-uri": "^1.0.1",
-    "cloudcmd": "5.3.1",
+    "cloudcmd": "git://github.com/OSC/cloudcmd.git#v5.3.1-osc.1",
     "express": "^4.13.4",
     "os-homedir": "^1.0.1",
     "socket.io": "^1.4.5"
