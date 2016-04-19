@@ -18,7 +18,7 @@
     <body>
         <div class=fm>{{ fm }}</div>
         <div id="js-keyspanel" class="keyspanel">
-            <button id=f1      class="cmd-button reduce-text icon-help"      title="Help"            >F1</button>
+            <!-- OSC_CUSTOM_CODE remove this button >> <button id=f1      class="cmd-button reduce-text icon-help"      title="Help"            >F1</button> -->
             <button id=f2      class="cmd-button reduce-text icon-rename"    title="Rename"          >F2</button>
             <button id=f3      class="cmd-button reduce-text icon-view"      title="View"            >F3</button>
             <button id=f4      class="cmd-button reduce-text icon-edit "     title="Edit"            >F4</button>
@@ -28,8 +28,10 @@
             <button id=f8      class="cmd-button reduce-text icon-delete"    title="Delete"          >F8</button>
             <button id=f9      class="cmd-button reduce-text icon-menu"      title="Menu"            >F9</button>
             <button id=f10     class="cmd-button reduce-text icon-config"    title="Config"          >F10</button>
+            <!-- OSC_CUSTOM_CODE Convert console button to a link to wetty and remove the original defaults -->
+            <a href="http://websvcs08.osc.edu:5000/pun/shared/jnicklas/osc-shell/ssh/oakley" target="_blank"><button id=wetty       class="cmd-button reduce-text icon-console"   title="Wetty">~</button></a>
             <button id=~       class="cmd-button reduce-text icon-console"   title="Console"         >~</button>
-            <button id=contact class="cmd-button reduce-text icon-contact"   title="Contact"         ></button>
+            <!-- OSC_CUSTOM_CODE remove this button >> <button id=contact class="cmd-button reduce-text icon-contact"   title="Contact"         ></button> -->
         </div>
         <script src="{{ prefix }}/cloudcmd.js"></script>
         <script>
