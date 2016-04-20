@@ -29,7 +29,7 @@
             <button id=f9      class="cmd-button reduce-text icon-menu"      title="Menu"            >F9</button>
             <button id=f10     class="cmd-button reduce-text icon-config"    title="Config"          >F10</button>
             <!-- OSC_CUSTOM_CODE Convert console button to a link to wetty and remove the original defaults -->
-            <a href="http://websvcs08.osc.edu:5000/pun/shared/jnicklas/osc-shell/ssh/oakley" target="_blank"><button id=wetty       class="cmd-button reduce-text icon-console"   title="Wetty">~</button></a>
+            <a onclick='window.open(CloudFunc.getWettyLink(CloudFunc.Path))' target="_blank"><button id=wetty       class="cmd-button reduce-text icon-console"   title="Wetty">~</button></a>
             <!-- OSC_CUSTOM_CODE remove this button >> <button id=contact class="cmd-button reduce-text icon-contact"   title="Contact"         ></button> -->
         </div>
         <script src="{{ prefix }}/cloudcmd.js"></script>
