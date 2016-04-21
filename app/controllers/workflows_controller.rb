@@ -58,7 +58,7 @@ class WorkflowsController < ApplicationController
   # PUT /workflows/1/stop
   def stop
     @workflow = Workflow.find(params[:id])
-    @workflow.jobs.last.update_status!
+    @workflow.jobs.last.update_status! unless @workflow.jobs.last.nil?
 
     respond_to do |format|
       if !@workflow.submitted?
