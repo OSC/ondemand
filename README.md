@@ -24,3 +24,24 @@
     ```
     scl enable v8314 nodejs010 -- node_modules/.bin/npm install
     ```
+
+## Usage
+
+Assume the base URL for the app is /pun/sys/shell.
+
+To open a new terminal to default host (Oakley), go to:
+
+* /pun/sys/shell/ssh or /pun/sys/shell/ssh/default
+
+To specify Oakley or Ruby:
+
+* /pun/sys/shell/ssh/oakley
+* /pun/sys/shell/ssh/ruby
+
+To specify another directory besides the home directory to start in, append the
+full path of that directory to the URL. In this case, we go to
+/nfs/17/efranz/ood_dev:
+
+* /pun/sys/shell/ssh/default/nfs/17/efranz/ood_dev
+* /pun/sys/shell/ssh/oakley/nfs/17/efranz/ood_dev
+* /pun/sys/shell/ssh/ruby/nfs/17/efranz/ood_dev
