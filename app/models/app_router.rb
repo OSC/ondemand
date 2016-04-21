@@ -9,11 +9,11 @@ class AppRouter < AweSim::Router
   # given app string "dashboard"
   # and owner "efranz" return the url
   def url_for_shared_app(app)
-    "/pun/shared/#{user}/#{app}"
+    "/pun/usr/#{user}/#{app}"
   end
 
   def shared_apps_path
-    "#{Dir.home(user)}/ood_shared"
+    "#{Dir.home(user)}/ood_usr"
   end
 
   def dev_apps_path
