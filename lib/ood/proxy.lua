@@ -19,9 +19,15 @@ function set_reverse_proxy(r, conn)
   end
 
   -- include useful information for the backend server
-  r.headers_in['Host'] = r.hostname .. ":" .. r.port            -- force it to include port along with host
-  r.headers_in['X-Forwarded-User'] = conn.user or ""            -- provide authenticated user name
-  r.headers_in['X-Forwarded-Escaped-Uri'] = r:escape(conn.uri)  -- **required** by PUN when initializing app
+
+  -- provide the protocol used
+  r.headers_in['X-Forwarded-Proto'] = r.is_https and "https" or "http"
+
+  -- provide the authenticated user name
+  r.headers_in['X-Forwarded-User'] = conn.user or ""
+
+  -- **required** by PUN when initializing app
+  r.headers_in['X-Forwarded-Escaped-Uri'] = r:escape(conn.uri)
 end
 
 return {
