@@ -104,8 +104,7 @@ module NginxStage
 
       # The URI used to access the app from the browser
       def app_request_uri
-        uri = sub_uri
-        uri << NginxStage.app_request_uri(env: @app_env, owner: @app_owner, name: @app_name)
+        "#{sub_uri}#{NginxStage.app_request_uri(env: @app_env, owner: @app_owner, name: @app_name)}"
       end
 
       # The Passenger environment to run app under
