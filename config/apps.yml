@@ -2,8 +2,8 @@
 # provides the paths to the external apps used by the Job Constructor
 #
 file_manager:
-  path:     http://websvcs08.osc.edu:5000/pun/usr/bmcmichael/cloudcmd/
-  fs:       http://websvcs08.osc.edu:5000/pun/usr/bmcmichael/cloudcmd/fs/
-  api:      http://websvcs08.osc.edu:5000/pun/usr/bmcmichael/cloudcmd/api/v1/fs/
+  path:     /pun/usr/bmcmichael/cloudcmd/
+  fs:       /pun/usr/bmcmichael/cloudcmd/fs/
+  api:      /pun/usr/bmcmichael/cloudcmd/api/v1/fs/
 terminal:
-  path:     http://websvcs08.osc.edu:5000/pun/usr/jnicklas/osc-shell/ssh/default
+  path:     /pun/usr/jnicklas/osc-shell/ssh/default
