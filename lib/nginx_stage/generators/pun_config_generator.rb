@@ -7,7 +7,7 @@ module NginxStage
     Examples:
         To generate a per-user nginx environment & launch nginx:
 
-            nginx_stage pun --user=bob --app-init-uri='/nginx/init?redir=$http_x_forwarded_escaped_uri'
+            nginx_stage pun --user=bob --app-init-url='http://www.ood.com/nginx/init?redir=$http_x_forwarded_escaped_uri'
 
         this will add a URI redirect if the user accesses an app that doesn't exist.
 
@@ -16,7 +16,7 @@ module NginxStage
             nginx_stage pun --user=bob --skip-nginx
 
         this will return the per-user nginx config path and won't run nginx. In addition
-        it will remove the URI redirect from the config unless we specify `--app-init-uri`.
+        it will remove the URI redirect from the config unless we specify `--app-init-url`.
     EOF
 
     # Accepts `user` as an option and validates user
@@ -31,10 +31,10 @@ module NginxStage
     #   @return [String] app init redirect url
     add_option :app_init_uri do
       {
-        opt_args: ["-a", "--app-init-uri=APP_INIT_URI", "# The user is redirected to the APP_INIT_URI if app doesn't exist"],
+        opt_args: ["-a", "--app-init-url=APP_INIT_URL", "# The user is redirected to the APP_INIT_URL if app doesn't exist"],
         default: nil,
         before_init: -> (uri) do
-          raise InvalidAppInitUri, "invalid app-init-uri syntax: #{uri}" if uri =~ /[^-\w\/?$=&]/
+          raise InvalidAppInitUri, "invalid app-init-url syntax: #{uri}" if uri =~ /[^-\w\/?$=&.:]/
           uri
         end
       }

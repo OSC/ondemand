@@ -60,7 +60,7 @@ http {
 
     <%- if app_init_uri -%>
     location / {
-      return 302 $scheme://$http_x_forwarded_host<%= app_init_uri %>;
+      return 302 <%= app_init_uri %>;
     }
     <%- end -%>
 

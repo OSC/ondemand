@@ -158,7 +158,7 @@ Required options:
     -u, --user=USER                  # The USER of the per-user nginx process
 
 General options:
-    -a, --app-init-uri=APP_INIT_URI  # The user is redirected to the APP_INIT_URI if app doesn't exist
+    -a, --app-init-url=APP_INIT_URL  # The user is redirected to the APP_INIT_URL if app doesn't exist
                                      # Default: ''
     -N, --[no-]skip-nginx            # Skip execution of the per-user nginx process
                                      # Default: false
@@ -170,7 +170,7 @@ Common options:
 Examples:
     To generate a per-user nginx environment & launch nginx:
 
-        nginx_stage pun --user=bob --app-init-uri='/nginx/init?redir=$http_x_forwarded_escaped_uri'
+        nginx_stage pun --user=bob --app-init-url='https://www.ood.com/nginx/init?redir=$http_x_forwarded_escaped_uri'
 
     this will add a URI redirect if the user accesses an app that doesn't exist.
 
@@ -179,12 +179,12 @@ Examples:
         nginx_stage pun --user=bob --skip-nginx
 
     this will return the per-user nginx config path and won't run nginx. In addition
-    it will remove the URI redirect from the config unless we specify `--app-init-uri`.
+    it will remove the URI redirect from the config unless we specify `--app-init-url`.
 ```
 
 If a user visits a URL and the per-user NGINX config does not find a location
-that maps to this URL, it will redirect the user to the relative URI supplied
-in `APP_INIT_URI`. If none is supplied, then the user will receive a 503 status
+that maps to this URL, it will redirect the user to the URL supplied in
+`APP_INIT_URL`. If none is supplied, then the user will receive a 503 status
 code by the server.
 
 ### APP Command

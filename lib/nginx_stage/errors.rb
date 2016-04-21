@@ -26,6 +26,6 @@ module NginxStage
   # An exception raised when attempting to resolve an invalid sub-uri option
   class InvalidSubUri < Error; end
 
-  # An exception raised when attempting to resolve an invalid app-init-uri option
-  class InvalidAppInitUri < Error; end
+  # An exception raised when attempting to resolve an invalid app-init-url option
+  class InvalidAppInitUrl < Error; end
 end
