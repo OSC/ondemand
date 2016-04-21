@@ -100,7 +100,7 @@ Generates an Open OnDemand portal config for an Apache server.
     The default install location is
 
     ```
-    /opt/rh/http24/root/etc/httpd/conf.d
+    /opt/rh/httpd24/root/etc/httpd/conf.d
     ```
 
     To change this run
