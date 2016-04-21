@@ -127,3 +127,9 @@
     font-family : 'Fontello';
     content     : '\e81a  ';
 }
+
+/* OSC_CUSTOM_CODE add an icon to the menu for the terminal */
+.icon-open-path-in-terminal::before {
+    font-family : 'Fontello';
+    content     : '\e80b  ';
+}
