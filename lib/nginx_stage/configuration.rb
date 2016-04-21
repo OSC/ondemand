@@ -65,10 +65,10 @@ module NginxStage
 
     attr_writer :pun_config_path
 
-    # Path to user's personal tmp root (this root will be owned by the user)
+    # Path to user's personal tmp root
     # @example User Bob's nginx tmp root
     #   pun_tmp_root(user: 'bob')
-    #   #=> "~bob/.nginx"
+    #   #=> "/var/lib/nginx/tmp/bob"
     # @param user [String] the user of the nginx process
     # @return [String] the path to the tmp root
     def pun_tmp_root(user:)
@@ -280,7 +280,7 @@ module NginxStage
       self.passenger_python = nil
 
       self.pun_config_path     = '/var/lib/nginx/config/puns/%{user}.conf'
-      self.pun_tmp_root        = '~%{user}/.nginx'
+      self.pun_tmp_root        = '/var/lib/nginx/tmp/%{user}'
       self.pun_access_log_path = '/var/log/nginx/%{user}/access.log'
       self.pun_error_log_path  = '/var/log/nginx/%{user}/error.log'
       self.pun_pid_path        = '/var/run/nginx/%{user}/passenger.pid'

@@ -41,10 +41,9 @@ module NginxStage
     end
 
     # Create the user's personal per-user NGINX `/tmp` location for the various
-    # nginx cache directories, and give ownership to user
+    # nginx cache directories
     add_hook :create_user_tmp_root do
       empty_directory tmp_root
-      FileUtils.chown user, group, tmp_root if Process.uid == 0
     end
 
     # Create the user's personal per-user NGINX `/log` location for the various
