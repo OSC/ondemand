@@ -40,9 +40,11 @@ function nginx_handler(r)
     if not pun_app_request then return http.http404(r, "bad `redir` request (" .. redir .. ")") end
     pun_stage_args = pun_stage_args .. " -i '" .. r:escape(pun_uri) .. "' -r '" .. r:escape(pun_app_request) .. "'"
   elseif task == "start" then
+    local redir_url = r.is_https and "https://" or "http://"
+    redir_url = redir_url .. r.hostname .. ":" .. r.port .. nginx_uri .. "/init?redir=$http_x_forwarded_escaped_uri"
     -- start PUN process
     pun_stage_subcmd = "pun"
-    pun_stage_args = pun_stage_args .. " -a '" .. r:escape(nginx_uri .. "/init?redir=$http_x_forwarded_escaped_uri") .. "'"
+    pun_stage_args = pun_stage_args .. " -a '" .. r:escape(redir_url) .. "'"
   elseif task == "stop" then
     -- send task as signal to PUN process
     pun_stage_subcmd = "nginx"
