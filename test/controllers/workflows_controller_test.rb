@@ -18,7 +18,7 @@ class WorkflowssControllerTest < ActionController::TestCase
 
   test "should create workflow" do
     assert_difference('Workflow.count') do
-      post :create, workflow: { batch_host: @oworkflow.batch_host, name: @workflowb.name }
+      post :create, workflow: { batch_host: @oworkflow.batch_host, name: @workflow.name }
     end
 
     assert_redirected_to osc_job_path(assigns(:workflow))
