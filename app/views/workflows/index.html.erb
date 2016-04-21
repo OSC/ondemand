@@ -50,7 +50,7 @@
                   <td data-sort="<%= workflow.id %>"><small><%= workflow.created_at.strftime('%F %T') %></small></td>
                   <td><strong><%= workflow.name %></strong></td>
                   <td><%= workflow.pbsid %></td>
-                  <td><%= workflow.batch_host.titleize %></td>
+                  <td><%= workflow.batch_host.titleize if workflow.batch_host %></td>
                   <td id="status_label_<%= workflow.id %>"><%= status_label(workflow) %></td>
                   <!-- FILE_SIZE_FEATURE
                     <td><%# number_to_human_size(Filesystem.new.path_size(workflow.staged_dir)) %></td>
@@ -71,7 +71,7 @@
         <p>Submit to:</p>
           <select class="form-control" id="job-details-server-select" disabled>
             <% Servers.each do |s| %>
-                <option id="<%= s.first %>" value="<%= s.first %>"><%= s.first.titleize %></option>
+                <option id="<%= s.first %>" value="<%= s.first %>"><%= s.first.titleize if s.first %></option>
             <% end %>
           </select>
       </div>
