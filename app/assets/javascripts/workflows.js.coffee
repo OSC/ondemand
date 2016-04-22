@@ -64,6 +64,7 @@
   if content?
     $("#script-name").text(content.name)
     $("#open-script-dir-button").attr("href", "#{content.fs_base}")
+    $("#open-terminal-dir-button").attr("href", "#{content.terminal_base}")
     $.ajax
       type: 'GET'
       url: content.apiurl
