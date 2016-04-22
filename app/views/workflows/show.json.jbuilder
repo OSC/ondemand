@@ -7,5 +7,6 @@ json.folder_contents (@workflow.folder_contents) do |content|
   json.set! 'type', Pathname(content).file? ? 'file' : 'dir'
   json.set! 'fsurl', Filesystem.new.fs(content)
   json.set! 'fs_base', Filesystem.new.fs(File.dirname(content))
+  json.set! 'terminal_base', File.join(Terminal[:path], File.dirname(content))
   json.set! 'apiurl', Filesystem.new.api(content)
 end
