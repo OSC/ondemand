@@ -13,6 +13,10 @@ Bundler.require(:default, Rails.env)
 
 Servers = YAML.load(File.read(File.expand_path('..//servers.yml', __FILE__)))
 
+# Load the app configurations
+FileManager = HashWithIndifferentAccess.new(YAML.load(File.read(File.expand_path('..//apps.yml', __FILE__))))[:file_manager]
+Terminal = HashWithIndifferentAccess.new(YAML.load(File.read(File.expand_path('..//apps.yml', __FILE__))))[:terminal]
+
 module JobStatus
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
