@@ -7,7 +7,7 @@
 # @version 0.0.1
 class Jobstatusdata
 
-  attr_reader :pbsid, :jobname, :username, :group, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem
+  attr_reader :pbsid, :jobname, :username, :group, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :terminal_path, :fs_path
 
   # Define an object containing only necessary data to send to client.
   #
@@ -46,6 +46,9 @@ class Jobstatusdata
     self.cput = pbs_job[:attribs][:resources_used][:cput].presence || 0
     self.mem = pbs_job[:attribs][:resources_used][:mem].presence || 0
     self.vmem = pbs_job[:attribs][:resources_used][:vmem].presence || 0
+    output_pathname = Pathname.new(self.output_path).dirname
+    self.terminal_path = output_pathname.writable? ? File.join(Terminal[:path], output_pathname).to_s : File.join(Terminal[:path], ENV["HOME"]).to_s
+    self.fs_path = output_pathname.writable? ? File.join(FileManager[:fs], output_pathname).to_s : File.join(FileManager[:fs], ENV["HOME"]).to_s
     self
   end
 
@@ -73,6 +76,6 @@ class Jobstatusdata
     attribs_Job_Owner.split('@')[0]
   end
 
-    attr_writer :pbsid, :jobname, :username, :group, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem
+    attr_writer :pbsid, :jobname, :username, :group, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :terminal_path, :fs_path
 
 end
