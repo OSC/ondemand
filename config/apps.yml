@@ -2,8 +2,8 @@
 # provides the paths to the external apps used by JobStatus
 #
 file_manager:
-  path:     /pun/usr/bmcmichael/cloudcmd/
-  fs:       /pun/usr/bmcmichael/cloudcmd/fs/
-  api:      /pun/usr/bmcmichael/cloudcmd/api/v1/fs/
+  path:     /pun/usr/bmcmichael/cloudcmd
+  fs:       /pun/usr/bmcmichael/cloudcmd/fs
+  api:      /pun/usr/bmcmichael/cloudcmd/api/v1/fs
 terminal:
   path:     /pun/usr/jnicklas/osc-shell/ssh/default
