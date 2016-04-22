@@ -109,6 +109,7 @@ JobStatusapp.group) {
             row.child( format(row.data()) ).show();
             tr.addClass('shown');
             $.getJSON(APP_PATH + '/json?pbsid='+row.data().pbsid+'&host='+row.data().cluster , function(data) {
+              console.log(data);
               $( "#" + EncodeCSS(row.data().pbsid)).hide().html(display_enhanced_job_data(data)).fadeIn(250);
             });
         }
@@ -193,7 +194,11 @@ function display_enhanced_job_data( d ) {
                     '                   <div class="col-md-4"><div class="panel panel-default"><div class="panel-heading">Resources Used</div><div class="panel-body">'+build_resources_used_panel( d )+'</div></div></div>' +
                     '                   <div class="col-md-12"><span class="col-md-2">Submit Args: </span><pre class="col-md-10" style="white-space: pre-wrap;">'+ d.submit_args +'</pre></div>' +
                     '                   <div class="col-md-12"><span class="col-md-2">Output Location: </span><pre class="col-md-10" style="white-space: pre-wrap;">'+ d.output_path+'</pre></span></div>' +
-                                        delete_button( d.pbsid.replace(/\./g, '_'), d.cluster, d.username ); +
+                    '                   <div class="col-md-12">' +
+                                        filesystem_button( d.fs_path, d.username ) +
+                                        terminal_button( d.terminal_path, d.username ) +
+                                        delete_button( d.pbsid.replace(/\./g, '_'), d.cluster, d.username ) +
+                    '                   </div>' +
                     '                </div>' +
                     '            </div>' +
                     '       </td>' +
@@ -246,10 +251,25 @@ function build_resources_used_panel( d ) {
                     label_data("Run Time", _walltime_used);
 }
 
+function filesystem_button( url, user ) {
+  if (user == JobStatusapp.username) {
+    return '<a type="button" class="btn btn-default" style="margin: 10px;" href="'+url+'" target="_blank"><span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span> Open in File Manager</a>';
+  } else {
+    return '';
+  }
+}
+
+function terminal_button( url, user ) {
+  if (user == JobStatusapp.username) {
+    return '<a type="button" class="btn btn-default" style="margin: 10px;" href="'+url+'" target="_blank"><span class="glyphicon glyphicon-console" aria-hidden="true"></span> Open in Terminal</a>';
+  } else {
+    return '';
+  }
+}
+
 function delete_button( pbsid, host, user ) {
     if (user == JobStatusapp.username) {
-        return '<div class="small pull-right" style="margin-top: 10px;"><button type="button" class="col-sm-12 btn btn-danger"' +
-                ' onClick="delete_job(\''+pbsid+'\',\''+host+'\')">Delete</button></div>';
+        return '<button type="button" class="btn btn-danger pull-right" style="margin: 10px;" onClick="delete_job(\''+pbsid+'\',\''+host+'\')"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</button></div>';
     } else {
         return '';
     }
