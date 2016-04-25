@@ -24,7 +24,7 @@ chdir APP_ROOT do
 
   if envs.has_key?("OOD_DATAROOT")
     `mkdir -p $OOD_DATAROOT`
-  elsif envs.has_key("RAILS_DATAROOT")
+  elsif envs.has_key?("RAILS_DATAROOT")
     `mkdir -p $RAILS_DATAROOT`
   end
 
