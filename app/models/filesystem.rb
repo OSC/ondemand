@@ -6,19 +6,14 @@ class Filesystem
   # /nfs/08/bmcmichael/ood_templ/5/ => true
   BASE_PATTERN = %r{^/nfs/([0-9]{2}|gpfs)/\w+/.+}
 
-  def initialize
-    @fs = FileManager[:fs]
-    @api = FileManager[:api]
-  end
-
   # Returns an http URI path to the cloudcmd filesystem link
   def fs(path)
-    File.join(@fs, path)
+    OodApp.files.url(path: path)
   end
 
   # Returns an http URI path to the cloudcmd api link
   def api(path)
-    File.join(@api, path)
+    File.join(OodApp.files.base_api_url, path)
   end
 
   # Matches a pathname on the system to prevent root file system copies.
