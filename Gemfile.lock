@@ -16,6 +16,13 @@ GIT
       rails (~> 4.0.0)
 
 GIT
+  remote: https://github.com/AweSim-OSC/ood_app.git
+  revision: 07e9c861b7cb9664a80958011630b157b455722b
+  specs:
+    ood_app (0.0.1)
+      rails (~> 4.0.0)
+
+GIT
   remote: https://github.com/AweSim-OSC/osc-machete.git
   revision: dcf1a45d01ca7a0d1b49d23d45c4108a0b72c0a2
   tag: v1.1.1
@@ -204,6 +211,7 @@ DEPENDENCIES
   jquery-datatables-rails (~> 3.3.0)
   jquery-rails
   js-routes (~> 1.2.4)
+  ood_app!
   osc-machete!
   osc_machete_rails!
   paperclip (~> 4.2.2)
