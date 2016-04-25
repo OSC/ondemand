@@ -22,7 +22,11 @@ chdir APP_ROOT do
   # get env vars for DATABASE and DATAROOT
   envs = Dotenv.load(".env.production")
 
-  `mkdir -p $RAILS_DATAROOT` if envs.has_key?("RAILS_DATAROOT")
+  if envs.has_key?("OOD_DATAROOT")
+    `mkdir -p $OOD_DATAROOT`
+  elsif envs.has_key("RAILS_DATAROOT")
+    `mkdir -p $RAILS_DATAROOT`
+  end
 
   # currently SQLite-specific
   if envs.has_key?("DATABASE_PATH")
