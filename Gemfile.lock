@@ -1,9 +1,9 @@
 GIT
   remote: git@github.com:AweSim-OSC/awesim_rails.git
-  revision: bc46cbf0a9398c59d75f37cd34cb51b5c8dcf6c5
-  tag: v1.2.0
+  revision: 64fbd75dcb1c61e26d4658e1ae3c8f0b94fd7e8c
+  tag: v1.2.1
   specs:
-    awesim_rails (1.2.0)
+    awesim_rails (1.2.1)
       rails (~> 4.0.0)
       redcarpet (~> 3.2.2)
 
