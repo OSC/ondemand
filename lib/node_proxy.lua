@@ -13,10 +13,17 @@ function node_proxy_handler(r)
   local user_map_cmd = r.subprocess_env['OOD_USER_MAP_CMD']
   local node_uri     = r.subprocess_env['OOD_NODE_URI']
   local is_relative  = r.subprocess_env['OOD_IS_RELATIVE']
+  local map_fail_uri = r.subprocess_env['OOD_MAP_FAIL_URI']
 
   -- get the system-level user name
   local user = user_map.map(r, user_map_cmd)
-  if not user then return http.http404(r, "failed to map user (" .. r.user .. ")") end
+  if not user then
+    if map_fail_uri then
+      return http.http302(r, map_fail_uri)
+    else
+      return http.http404(r, "failed to map user (" .. r.user .. ")")
+    end
+  end
 
   -- get the host & port of webserver on backend node from request
   local host, port, rel_uri = r.unparsed_uri:match("^" .. node_uri .. "/([^/]+)/([^/]+)(.*)")

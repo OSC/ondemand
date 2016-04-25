@@ -28,7 +28,19 @@ function http404(r, msg)
   return apache2.DONE  -- skip remaining handlers
 end
 
+--[[
+--http302
+
+  Returns a 302 response with a location.
+--]]
+function http302(r, loc)
+  r.status = 302
+  r.headers_out['Location'] = loc
+  return apache2.DONE  -- skip remaining handlers
+end
+
 return {
   http200 = http200,
-  http404 = http404
+  http404 = http404,
+  http302 = http302
 }
