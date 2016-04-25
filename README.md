@@ -114,6 +114,7 @@ reloading the PUN process, and re-directing the user to the application.
 Argument          | Definition
 ----------------- | ----------
 OOD_USER_MAP_CMD  | Full path to binary that maps the authenticated user name to the system-level user name. See `osc-user-map` as example.
+OOD_MAP_FAIL_URI  | URI the user is redirected to if it fails to map to a system level user. If not specified then return 404 with error message.
 OOD_PUN_STAGE_CMD | Full path to the binary that stages/controls the per-user NGINX processes. See `nginx_stage` for further details on this binary.
 OOD_NGINX_URI     | The sub-URI that namespaces this handler from the other handlers [`/nginx`].
 OOD_PUN_URI       | The sub-URI that namespaces the PUN proxy handler [`/pun`].
@@ -156,6 +157,7 @@ redirected to `OOD_NGINX_URI/start?redir=<redir>` to start up their PUN.
 Argument            | Definition
 ------------------- | ----------
 OOD_USER_MAP_CMD    | Full path to binary that maps the authenticated user name to the system-level user name. See `osc-user-map` as example.
+OOD_MAP_FAIL_URI    | URI the user is redirected to if it fails to map to a system level user. If not specified then return 404 with error message.
 OOD_PUN_SOCKET_ROOT | Full path to the root location where all the PUNs keep their sockets. In most typical installations this will be `/var/run/nginx`.
 OOD_NGINX_URI       | The sub-URI that namespaces this handler from the other handlers [`/nginx`].
 
@@ -191,6 +193,7 @@ and port that is specified in the URL request.
 Argument         | Definition
 ---------------- | ----------
 OOD_USER_MAP_CMD | Full path to binary that maps the authenticated user name to the system-level user name. See `osc-user-map` as example.
+OOD_MAP_FAIL_URI | URI the user is redirected to if it fails to map to a system level user. If not specified then return 404 with error message.
 OOD_NODE_URI     | The sub-URI that namespaces this handler from the other handlers [`/node`].
 OOD_IS_RELATIVE  | Whether the base sub-URI (`/node/HOST/PORT`) should be stripped off when sent to backend proxy.
 
