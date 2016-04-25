@@ -170,7 +170,7 @@ module NginxStage
     #   #=> "~bob/ood_dev/rails1"
     # @example App root for user app owned by Dan
     #   app_root(env: :usr, owner: 'dan', name: 'fillsim')
-    #   #=> "~dan/ood_usr/fillsim"
+    #   #=> "/var/www/ood/apps/usr/dan/gateway/fillsim"
     # @param env [Symbol] environment the app is run under
     # @param owner [String] the owner of the app
     # @param name [String] the name of the app
@@ -298,8 +298,8 @@ module NginxStage
       }
       self.app_root          = {
         dev: '~%{owner}/ood_%{env}/%{name}',
-        usr: '~%{owner}/ood_%{env}/%{name}',
-        sys: '/var/www/docroot/ood/apps/%{env}/%{name}'
+        usr: '/var/www/ood/apps/%{env}/%{owner}/gateway/%{name}',
+        sys: '/var/www/ood/apps/%{env}/%{name}'
       }
       self.app_request_uri   = {
         dev: '/dev/%{name}',

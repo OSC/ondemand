@@ -244,7 +244,7 @@ depending on whether the `USER` is accessing a sandbox app or a user app.
     serves up the app in
 
     ```
-    ~<owner>/ood_usr/<app>
+    /var/www/ood/apps/usr/<owner>/gateway/<app>
     ```
 
 * **system** app
@@ -256,7 +256,7 @@ depending on whether the `USER` is accessing a sandbox app or a user app.
     serves up the app in
 
     ```
-    /var/www/docroot/ood/apps/sys/<app>
+    /var/www/ood/apps/sys/<app>
     ```
 
 Any remaining structure appended to the sub-request URI is ignored when

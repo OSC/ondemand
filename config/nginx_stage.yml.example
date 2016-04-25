@@ -110,8 +110,8 @@
 #
 #app_root:
 #  :dev: '~%{owner}/ood_%{env}/%{name}'
-#  :usr: '~%{owner}/ood_%{env}/%{name}'
-#  :sys: '/var/www/docroot/ood/apps/%{env}/%{name}'
+#  :usr: '/var/www/ood/apps/%{env}/%{owner}/gateway/%{name}'
+#  :sys: '/var/www/ood/apps/%{env}/%{name}'
 
 # A hash detailing the app's request URI not including the base-URI
 #
