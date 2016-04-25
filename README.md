@@ -209,6 +209,7 @@ OOD_NGINX_URI='/nginx'
 OOD_PUBLIC_URI='/public'
 
 # Redirect user to this URI if fail to map to system level user
+# Blank: Removes the redirection upon a failed user mapping
 #
 OOD_MAP_FAIL_URI='/efranz'
 ```
