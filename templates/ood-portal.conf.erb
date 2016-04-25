@@ -17,6 +17,7 @@
 #   OOD_RNODE_URI='<%= OOD_RNODE_URI %>'
 #   OOD_NGINX_URI='<%= OOD_NGINX_URI %>'
 #   OOD_PUBLIC_URI='<%= OOD_PUBLIC_URI %>'
+#   OOD_MAP_FAIL_URI='<%= OOD_MAP_FAIL_URI %>'
 #
 
 <%- unless OOD_IP.empty? -%>
@@ -44,6 +45,11 @@ Listen "<%= OOD_IP %>"
   # Command used to map authenticated user to system user
   #
   SetEnv OOD_USER_MAP_CMD "<%= OOD_USER_MAP_CMD %>"
+
+  <%- unless OOD_MAP_FAIL_URI.empty? -%>
+  # Redirect user to this URI if fail to map to system user
+  SetEnv OOD_MAP_FAIL_URI "<%= OOD_MAP_FAIL_URI %>"
+  <%- end %>
 
   <%- unless OOD_PUBLIC_URI.empty? -%>
   # Serve up publicly available assets from local file system:

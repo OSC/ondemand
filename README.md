@@ -207,6 +207,10 @@ OOD_NGINX_URI='/nginx'
 # Blank: Removes the availability of this URI in the config
 #
 OOD_PUBLIC_URI='/public'
+
+# Redirect user to this URI if fail to map to system level user
+#
+OOD_MAP_FAIL_URI='/efranz'
 ```
 ## Configuration File
 
