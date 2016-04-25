@@ -58,9 +58,9 @@ http {
     listen      unix:<%= socket_path %>;
     server_name localhost;
 
-    <%- if app_init_uri -%>
+    <%- if app_init_url -%>
     location / {
-      return 302 <%= app_init_uri %>;
+      return 302 <%= app_init_url %>;
     }
     <%- end -%>
 

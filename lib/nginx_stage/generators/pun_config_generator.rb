@@ -25,11 +25,11 @@ module NginxStage
     # Accepts `skip_nginx` as an option
     add_skip_nginx_support
 
-    # @!method app_init_uri
-    #   The app initialization URI the user is redirected to if can't find the
+    # @!method app_init_url
+    #   The app initialization URL the user is redirected to if can't find the
     #   app in the per-user NGINX config
     #   @return [String] app init redirect url
-    add_option :app_init_uri do
+    add_option :app_init_url do
       {
         opt_args: ["-a", "--app-init-url=APP_INIT_URL", "# The user is redirected to the APP_INIT_URL if app doesn't exist"],
         default: nil,
