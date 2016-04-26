@@ -47,8 +47,8 @@ class Jobstatusdata
     self.mem = pbs_job[:attribs][:resources_used][:mem].presence || 0
     self.vmem = pbs_job[:attribs][:resources_used][:vmem].presence || 0
     output_pathname = Pathname.new(self.output_path).dirname
-    self.terminal_path = output_pathname.writable? ? File.join(Terminal[:path], output_pathname).to_s : File.join(Terminal[:path], ENV["HOME"]).to_s
-    self.fs_path = output_pathname.writable? ? File.join(FileManager[:fs], output_pathname).to_s : File.join(FileManager[:fs], ENV["HOME"]).to_s
+    self.terminal_path = OodApp.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
+    self.fs_path = OodApp.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
     self
   end
 
