@@ -37,6 +37,7 @@ gem 'rouge', '~> 1.9.0'
 gem 'awesim', :git => 'git@github.com:AweSim-OSC/awesim-cli.git', :tag => 'v0.11.0'
 gem 'pbs', :git => 'git@github.com:AweSim-OSC/pbs-ruby.git', :tag => 'v1.1.0'
 gem 'osc-machete', :git => 'git@github.com:AweSim-OSC/osc-machete.git', :tag => 'v1.1.1'
+gem 'ood_app', :git => 'git@github.com:AweSim-OSC/ood_app.git'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
