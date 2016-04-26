@@ -48,5 +48,6 @@ gem "rails_12factor", group: :production
 gem "awesim_rails", :git => "git@github.com:AweSim-OSC/awesim_rails.git", :tag => 'v1.2.1'
 gem "awesim_rails_logging", :git => "git@github.com:AweSim-OSC/awesim_rails_logging.git"
 gem "pbs", :git => "git@github.com:AweSim-OSC/pbs-ruby.git"
+gem "ood_app", :git => "https://github.com/AweSim-OSC/ood_app.git"
 gem "turbolinks"
 gem "jquery-datatables-rails", '~> 3.3.0'

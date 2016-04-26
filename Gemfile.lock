@@ -29,6 +29,13 @@ GIT
     pbs (1.1.0)
       ffi (~> 1.9, >= 1.9.6)
 
+GIT
+  remote: https://github.com/AweSim-OSC/ood_app.git
+  revision: 07e9c861b7cb9664a80958011630b157b455722b
+  specs:
+    ood_app (0.0.1)
+      rails (~> 4.0.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -183,6 +190,7 @@ DEPENDENCIES
   jbuilder (~> 1.2)
   jquery-datatables-rails (~> 3.3.0)
   jquery-rails
+  ood_app!
   osc-machete!
   paperclip (~> 4.2.2)
   pbs!
