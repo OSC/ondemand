@@ -15,6 +15,13 @@ GIT
       rails (~> 4.0.0)
 
 GIT
+  remote: git@github.com:AweSim-OSC/ood_app.git
+  revision: 07e9c861b7cb9664a80958011630b157b455722b
+  specs:
+    ood_app (0.0.1)
+      rails (~> 4.0.0)
+
+GIT
   remote: git@github.com:AweSim-OSC/osc-machete.git
   revision: 094f74c6d646207268ffd43abdff5d52c0c0f432
   specs:
@@ -28,13 +35,6 @@ GIT
   specs:
     pbs (1.1.0)
       ffi (~> 1.9, >= 1.9.6)
-
-GIT
-  remote: https://github.com/AweSim-OSC/ood_app.git
-  revision: 07e9c861b7cb9664a80958011630b157b455722b
-  specs:
-    ood_app (0.0.1)
-      rails (~> 4.0.0)
 
 GEM
   remote: https://rubygems.org/
