@@ -10,6 +10,13 @@ GIT
       thor (~> 0.19.1)
 
 GIT
+  remote: git@github.com:AweSim-OSC/ood_app.git
+  revision: 07e9c861b7cb9664a80958011630b157b455722b
+  specs:
+    ood_app (0.0.1)
+      rails (~> 4.0.0)
+
+GIT
   remote: git@github.com:AweSim-OSC/osc-machete.git
   revision: dcf1a45d01ca7a0d1b49d23d45c4108a0b72c0a2
   tag: v1.1.1
@@ -741,6 +748,7 @@ DEPENDENCIES
   font-awesome-sass (~> 4.4.0)
   jbuilder (~> 1.2)
   jquery-rails
+  ood_app!
   osc-machete!
   pbs!
   rails (= 4.0.0)
