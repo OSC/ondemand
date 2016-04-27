@@ -56,13 +56,18 @@ function nginx_handler(r)
     -- send task as signal to PUN process
     pun_stage_subcmd = "nginx"
     pun_stage_args = pun_stage_args .. " -s 'stop'"
+  elseif task == "noop" then
+    -- do nothing
   else
     return http.http404(r, "invalid nginx task")
   end
 
   -- run shell command and read in stdout/stderr
-  local handle = io.popen(pun_stage_cmd .. " " .. pun_stage_subcmd .. " " .. pun_stage_args .. " 2>&1", "r")
-  local pun_stage_output = handle:read("*a"); handle:close()
+  local pun_stage_output = ""
+  if task ~= "noop" then
+    local handle = io.popen(pun_stage_cmd .. " " .. pun_stage_subcmd .. " " .. pun_stage_args .. " 2>&1", "r")
+    pun_stage_output = handle:read("*a"); handle:close()
+  end
 
   -- properly handle pun_stage_cmd output
   -- note: pun_stage_cmd should not return any output upon successful
