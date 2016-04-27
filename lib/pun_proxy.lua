@@ -38,6 +38,10 @@ function pun_proxy_handler(r)
   -- handle if backend server is down
   r:custom_response(503, nginx_uri .. "/start?redir=" .. r:escape(conn.uri))
 
+  -- to allow HTML injection for google analytics, remove content encoding
+  -- (e.g., gzip)
+  r.headers_in['Accept-Encoding'] = ""
+
   -- let the proxy handler do this instead
   return apache2.DECLINED
 end
