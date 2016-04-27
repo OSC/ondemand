@@ -6,4 +6,6 @@ location ~ ^<%= app_request_uri %>(/.*|$) {
   passenger_enabled on;
 
   passenger_app_env <%= env %>;
+
+  sub_filter '</body>' '<%= google_analytics %></body>';
 }

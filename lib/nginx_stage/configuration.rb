@@ -217,6 +217,26 @@ module NginxStage
 
     attr_writer :app_request_regex
 
+    # Token used to identify a given app from the other apps
+    # @example app token for dev app owned by Bob
+    #   app_token(env: :dev, owner: 'bob', name: 'rails1')
+    #   #=> "dev/bob/rails1"
+    # @example app token for user app owned by Dan
+    #   app_request_uri(env: :dev, owner: 'dan', name: 'fillsim')
+    #   #=> "usr/dan/fillsim"
+    # @param env [Symbol] environment the app is run under
+    # @param owner [String] the owner of the app
+    # @param name [String] the name of the app
+    # @return [String] the token identifying the app
+    # @raise [InvalidRequest] if the environment specified doesn't exist
+    def app_token(env:, owner:, name:)
+      @app_token.fetch(env) do
+        raise InvalidRequest, "invalid request environment: #{env}"
+      end % {env: env, owner: owner, name: name}
+    end
+
+    attr_writer :app_token
+
     # The passenger environment used for the given app environment
     # @example Dev app owned by Bob
     #   app_passenger_env(env: :dev, owner: 'bob', name: 'rails1')
@@ -310,6 +330,11 @@ module NginxStage
         dev: '^/dev/(?<name>[-\w.]+)',
         usr: '^/usr/(?<owner>[\w]+)/(?<name>[-\w.]+)',
         sys: '^/sys/(?<name>[-\w.]+)'
+      }
+      self.app_token = {
+        dev: '%{env}/%{owner}/%{name}',
+        usr: '%{env}/%{owner}/%{name}',
+        sys: '%{env}/%{name}'
       }
       self.app_passenger_env = {
         dev: 'development',
