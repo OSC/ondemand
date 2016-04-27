@@ -64,9 +64,6 @@ function nginx_handler(r)
   local handle = io.popen(pun_stage_cmd .. " " .. pun_stage_subcmd .. " " .. pun_stage_args .. " 2>&1", "r")
   local pun_stage_output = handle:read("*a"); handle:close()
 
-  -- give the PUN process sufficient time to accomplish task (0.5 sec)
-  r.usleep(500000)
-
   -- properly handle pun_stage_cmd output
   -- note: pun_stage_cmd should not return any output upon successful
   --       completion
