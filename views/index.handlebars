@@ -37,6 +37,15 @@
     // ugly monkey patch to override wetty's storage preference
     lib.Storage._Local = lib.Storage.Local;
     lib.Storage.Local = lib.Storage.Memory;
+
+    // ugly monkey patch to add headers to all AJAX requests
+    XMLHttpRequest.prototype._open = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function() {
+      console.log('Overriding: XMLHttpRequest.open(' + [].slice.call(arguments) + ')');
+      var _return = this._open.apply(this, arguments);
+      this.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+      return _return;
+    }
   </script>
   <script src="{{{baseURI}}}/wetty/wetty.js"></script>
   <style>
