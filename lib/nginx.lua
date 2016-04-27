@@ -16,13 +16,13 @@ function nginx_handler(r)
   local nginx_uri     = r.subprocess_env['OOD_NGINX_URI']
   local pun_uri       = r.subprocess_env['OOD_PUN_URI']
   local pun_stage_cmd = r.subprocess_env['OOD_PUN_STAGE_CMD']
-  local map_fail_uri = r.subprocess_env['OOD_MAP_FAIL_URI']
+  local map_fail_uri  = r.subprocess_env['OOD_MAP_FAIL_URI']
 
   -- get the system-level user name
   local user = user_map.map(r, user_map_cmd)
   if not user then
     if map_fail_uri then
-      return http.http302(r, map_fail_uri)
+      return http.http302(r, map_fail_uri .. "?redir=" .. r:escape(r.unparsed_uri))
     else
       return http.http404(r, "failed to map user (" .. r.user .. ")")
     end

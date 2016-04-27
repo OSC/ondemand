@@ -19,7 +19,7 @@ function node_proxy_handler(r)
   local user = user_map.map(r, user_map_cmd)
   if not user then
     if map_fail_uri then
-      return http.http302(r, map_fail_uri)
+      return http.http302(r, map_fail_uri .. "?redir=" .. r:escape(r.unparsed_uri))
     else
       return http.http404(r, "failed to map user (" .. r.user .. ")")
     end
