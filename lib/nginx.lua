@@ -73,9 +73,7 @@ function nginx_handler(r)
   if pun_stage_output == "" then
     if redir then
       -- success & redirect
-      r.status = 302
-      r.headers_out['Location'] = redir
-      return apache2.DONE  -- skip remaining handlers
+      return http.http302(r, redir)
     else
       -- success, so inform the user
       return http.http200(r)
