@@ -53,10 +53,12 @@ end
 
 directory PREFIX
 
-desc "Install rendered config file into PREFIX"
-task :install => ["#{OBJDIR}/#{OBJFILE}", PREFIX] do |task|
-  cp task.prerequisites.first, "#{PREFIX}/"
+file "#{PREFIX}/#{OBJFILE}" => ["#{OBJDIR}/#{OBJFILE}", PREFIX] do |task|
+  cp task.prerequisites.first, task.name
 end
+
+desc "Install rendered config file into PREFIX"
+task :install => "#{PREFIX}/#{OBJFILE}"
 
 desc "Clean up all temporary rendered configs"
 task :clean do |t|
