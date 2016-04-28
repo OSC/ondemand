@@ -24,7 +24,7 @@ class SysRouter < AweSim::Router
   # we could just specify the "shared apps path" as being the parent
   # directory of the Rails.root directory for the dashboard
   def shared_apps_path
-    "/var/www/docroot/ood/apps/sys"
+    "/var/www/ood/apps/sys"
   end
 
   def dev_apps_path
