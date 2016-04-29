@@ -1,4 +1,8 @@
 class AppRouter < AweSim::Router
+  def self.for(owner)
+    owner == "sys" ? ::SysRouter.new(owner) : ::AppRouter.new(owner)
+  end
+
   # given app string "dashboard"
   # return url for app to access
   # FIXME: we should derive this from the nginx_stage gem
