@@ -17,7 +17,7 @@ class AppRouter < AweSim::Router
   end
 
   def shared_apps_path
-    "#{Dir.home(user)}/ood_shared"
+    "#{Dir.home(user)}/ood_usr"
   end
 
   def dev_apps_path
