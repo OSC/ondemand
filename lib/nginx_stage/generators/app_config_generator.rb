@@ -124,14 +124,16 @@ module NginxStage
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
             m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+            })(window,document,'script','https://www.google-analytics.com/analytics.js','_gaOodMetrics');
 
-            ga('create', 'UA-66793213-1', 'auto');
-            ga('set', 'anonymizeIP', 'true');
-            ga('set', '&uid', '#{user.name}');
-            ga('set', 'dimension1', '#{app_token}');
-            ga('set', 'dimension2', '#{user.name}');
-            ga('send', 'pageview');
+            _gaOodMetrics('create', 'UA-66793213-1', 'auto', {
+              'cookieName': '_gaOodMetrics'
+            });
+            _gaOodMetrics('set', 'anonymizeIP', 'true');
+            _gaOodMetrics('set', '&uid', '#{user.name}');
+            _gaOodMetrics('set', 'dimension1', '#{app_token}');
+            _gaOodMetrics('set', 'dimension2', '#{user.name}');
+            _gaOodMetrics('send', 'pageview');
           </script>
         EOF
       end
