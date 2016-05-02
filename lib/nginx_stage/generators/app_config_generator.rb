@@ -133,6 +133,7 @@ module NginxStage
             _gaOodMetrics('set', '&uid', '#{user.name}');
             _gaOodMetrics('set', 'dimension1', '#{app_token}');
             _gaOodMetrics('set', 'dimension2', '#{user.name}');
+            _gaOodMetrics('set', 'dimension3', '$http_x_forwarded_proto://$http_x_forwarded_host');
             _gaOodMetrics('send', 'pageview');
           </script>
         EOF
