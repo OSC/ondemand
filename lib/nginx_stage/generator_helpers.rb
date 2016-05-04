@@ -2,8 +2,9 @@ module NginxStage
   # Module that adds common options to generators.
   module GeneratorHelpers
     # Add support for accepting USER as an option
+    # @param required [Boolean] whether user option is required
     # @return [void]
-    def add_user_support
+    def add_user_support(required: true)
       # @!method user
       #   The user that the per-user NGINX will run as
       #   @return [User] the user of the nginx process
@@ -11,7 +12,7 @@ module NginxStage
       self.add_option :user do
         {
           opt_args: ["-u", "--user=USER", "# The USER of the per-user nginx process"],
-          required: true,
+          required: required,
           before_init: -> (user) do
             raise InvalidUser, "invalid user name syntax: #{user}" if user =~ /[^\w]/
             User.new user

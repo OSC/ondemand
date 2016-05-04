@@ -2,10 +2,15 @@ require_relative "nginx_stage/version"
 require_relative "nginx_stage/configuration"
 require_relative "nginx_stage/errors"
 require_relative "nginx_stage/user"
+require_relative "nginx_stage/pid_file"
+require_relative "nginx_stage/socket_file"
 require_relative "nginx_stage/generator"
 require_relative "nginx_stage/generators/pun_config_generator"
 require_relative "nginx_stage/generators/app_config_generator"
 require_relative "nginx_stage/generators/nginx_process_generator"
+require_relative "nginx_stage/generators/show_pun_generator"
+require_relative "nginx_stage/generators/list_puns_generator"
+require_relative "nginx_stage/generators/clean_puns_generator"
 require_relative "nginx_stage/application"
 
 # The main namespace for NginxStage. Provides a global configuration.
@@ -55,5 +60,11 @@ module NginxStage
     args = ['-c', pun_config_path(user: user)]
     args.push('-s', signal.to_s) if signal
     args
+  end
+
+  # List of users with nginx processes running
+  # @return [Array<User>] the list of users with running nginx processes
+  def self.active_users
+    Dir[pun_pid_path(user: '*')].map{|v| User.new v[/#{pun_pid_path(user: '(.+)')}/, 1]}
   end
 end
