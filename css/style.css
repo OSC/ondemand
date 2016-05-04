@@ -113,8 +113,10 @@ body, pre, code {
     outline: 0;
 }
 
+/* OSC_CUSTOM_CODE replace link color with bootstrap blue */
 .links a {
-    color: red;
+    /* color: red; */
+    color: #337ab7;
 }
 
 .mini-icon {
