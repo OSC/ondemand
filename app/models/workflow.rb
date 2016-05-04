@@ -82,4 +82,21 @@ class Workflow < ActiveRecord::Base
     new_workflow
   end
 
+  # FIXME: replace with fix to osc-machete to not delete staged dir on failed submit
+  #
+  # - Set the workflow staged_dir at the beginning so other methods can use it
+  # - Override Machete Workflow submit so that it doesn't delete the staged_dir
+  #   when job submission fails
+  def submit(template_view=self)
+    self.staged_dir = stage   # set staged_dir
+    render_mustache_files(staged_dir, template_view)
+    after_stage(staged_dir)
+    jobs = build_jobs(staged_dir)
+    if submit_jobs(jobs)
+      save_jobs(jobs, staged_dir)
+    else
+      # FileUtils.rm_rf staged_dir.to_s
+      false
+    end
+  end
 end
