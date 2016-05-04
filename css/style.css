@@ -35,7 +35,14 @@ body, pre, code {
     user-select         : text;
 }
 
+/* OSC_CUSTOM_CODE remove the .panel border
 .panel, .cmd-button {
+     border: 1.5px solid;
+     border-color: rgb(49, 123, 249);
+     border-color: rgba(49, 123, 249, 0.4);
+ }
+*/
+.cmd-button {
     border: 1.5px solid;
     border-color: rgb(49, 123, 249);
     border-color: rgba(49, 123, 249, 0.4);
