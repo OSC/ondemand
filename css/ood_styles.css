@@ -7,3 +7,23 @@ div.fm ul.menu {
     color: #333;
     background-color: white;
 }
+
+
+/* these styles control the selection style of a currently selected file */
+.current-file {
+    /*FIXME: background-color: rgb(0,75,135); - OH-TECH blue does look sharp */
+    background-color: #08C;
+}
+
+.current-file, .current-file a{
+    color: white;
+}
+
+.selected-file {
+    /*FIXME: background-color: rgb(0,75,135); - OH-TECH blue does look sharp */
+    background-color: #08C;
+}
+
+.selected-file, .selected-file .name > a {
+      color: white;
+}
