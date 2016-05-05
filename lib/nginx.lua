@@ -1,5 +1,6 @@
-local user_map = require 'ood.user_map'
-local http     = require 'ood.http'
+local user_map    = require 'ood.user_map'
+local http        = require 'ood.http'
+local nginx_stage = require 'ood.nginx_stage'
 
 --[[
   nginx_handler
@@ -37,51 +38,36 @@ function nginx_handler(r)
 
   -- generate shell command from requested task
   -- please see `nginx_stage` documentation for explanation of shell command
-  local pun_stage_subcmd
-  local pun_stage_args = "-u '" .. r:escape(user) .. "'"
+  local err = nil
   if task == "init" then
     -- initialize app based on "redir" param (require a valid redir parameter)
-    pun_stage_subcmd = "app"
     if not redir then return http.http404(r, 'requires a `redir` query parameter') end
     local pun_app_request = redir:match("^" .. pun_uri .. "(/.+)$")
     if not pun_app_request then return http.http404(r, "bad `redir` request (" .. redir .. ")") end
-    pun_stage_args = pun_stage_args .. " -i '" .. r:escape(pun_uri) .. "' -r '" .. r:escape(pun_app_request) .. "'"
+    -- generate app config & restart PUN process
+    err = nginx_stage.app(r, pun_stage_cmd, user, pun_app_request, pun_uri)
   elseif task == "start" then
-    local redir_url = r.is_https and "https://" or "http://"
-    redir_url = redir_url .. r.hostname .. ":" .. r.port .. nginx_uri .. "/init?redir=$http_x_forwarded_escaped_uri"
-    -- start PUN process
-    pun_stage_subcmd = "pun"
-    pun_stage_args = pun_stage_args .. " -a '" .. r:escape(redir_url) .. "'"
+    local app_fail_url = r.is_https and "https://" or "http://"
+    app_fail_url = app_fail_url .. r.hostname .. ":" .. r.port .. nginx_uri .. "/init?redir=$http_x_forwarded_escaped_uri"
+    -- generate user config & start PUN process
+    err = nginx_stage.pun(r, pun_stage_cmd, user, app_fail_url)
   elseif task == "stop" then
-    -- send task as signal to PUN process
-    pun_stage_subcmd = "nginx"
-    pun_stage_args = pun_stage_args .. " -s 'stop'"
+    -- stop PUN process
+    err = nginx_stage.nginx(r, pun_stage_cmd, user, "stop")
   elseif task == "noop" then
     -- do nothing
   else
     return http.http404(r, "invalid nginx task")
   end
 
-  -- run shell command and read in stdout/stderr
-  local pun_stage_output = ""
-  if task ~= "noop" then
-    local handle = io.popen(pun_stage_cmd .. " " .. pun_stage_subcmd .. " " .. pun_stage_args .. " 2>&1", "r")
-    pun_stage_output = handle:read("*a"); handle:close()
-  end
-
-  -- properly handle pun_stage_cmd output
-  -- note: pun_stage_cmd should not return any output upon successful
-  --       completion
-  if pun_stage_output == "" then
+  -- properly handle errors
+  if not err then
     if redir then
-      -- success & redirect
-      return http.http307(r, redir)
+      return http.http307(r, redir)  -- success & redirect
     else
-      -- success, so inform the user
-      return http.http200(r)
+      return http.http200(r)         -- success
     end
   else
-    -- something bad happened, so inform the user
-    return http.http404(r, pun_stage_output)
+    return http.http404(r, err)      -- error, throw 404
   end
 end
