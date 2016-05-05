@@ -101,3 +101,9 @@ ul.files {
 .name {
    width: 57%;
 }
+
+
+/* hide mode and owner columns in files*/
+span.owner, span.mode {
+   display: none;
+}
