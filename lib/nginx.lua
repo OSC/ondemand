@@ -47,10 +47,10 @@ function nginx_handler(r)
     -- generate app config & restart PUN process
     err = nginx_stage.app(r, pun_stage_cmd, user, pun_app_request, pun_uri)
   elseif task == "start" then
-    local app_fail_url = r.is_https and "https://" or "http://"
-    app_fail_url = app_fail_url .. r.hostname .. ":" .. r.port .. nginx_uri .. "/init?redir=$http_x_forwarded_escaped_uri"
+    local app_init_url = r.is_https and "https://" or "http://"
+    app_init_url = app_init_url .. r.hostname .. ":" .. r.port .. nginx_uri .. "/init?redir=$http_x_forwarded_escaped_uri"
     -- generate user config & start PUN process
-    err = nginx_stage.pun(r, pun_stage_cmd, user, app_fail_url)
+    err = nginx_stage.pun(r, pun_stage_cmd, user, app_init_url)
   elseif task == "stop" then
     -- stop PUN process
     err = nginx_stage.nginx(r, pun_stage_cmd, user, "stop")

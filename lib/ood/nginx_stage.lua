@@ -3,10 +3,10 @@
 
   Start PUN process for given user
 --]]
-function pun(r, bin, user, app_fail_url)
+function pun(r, bin, user, app_init_url)
   local cmd = bin .. " pun -u '" .. r:escape(user) .. "'"
-  if app_fail_url then
-    cmd = cmd .. " -a '" .. r:escape(app_fail_url) .. "'"
+  if app_init_url then
+    cmd = cmd .. " -a '" .. r:escape(app_init_url) .. "'"
   end
 
   local err = capture2e(cmd)
