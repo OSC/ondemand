@@ -1,7 +1,7 @@
 module NginxStage
   # This generator cleans all running per-user NGINX processes that are
   # inactive (i.e., not active connections).
-  class CleanPunsGenerator < Generator
+  class NginxCleanGenerator < Generator
     desc 'Clean all user running PUNs with no active connections'
 
     footer <<-EOF.gsub(/^ {4}/, '')

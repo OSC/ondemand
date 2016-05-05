@@ -1,6 +1,6 @@
 module NginxStage
   # This generator lists all running per-user NGINX processes.
-  class ListPunsGenerator < Generator
+  class NginxListGenerator < Generator
     desc 'List all user running PUNs'
 
     footer <<-EOF.gsub(/^ {4}/, '')

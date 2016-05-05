@@ -1,6 +1,6 @@
 module NginxStage
   # This generator shows the state of the running per-user NGINX process.
-  class ShowPunGenerator < Generator
+  class NginxShowGenerator < Generator
     desc 'Show the details for a given per-user nginx process'
 
     footer <<-EOF.gsub(/^ {4}/, '')
@@ -17,9 +17,9 @@ module NginxStage
 
     # Check that pid is valid & clean up any stale files
     add_hook :check_pid_is_process do
-      pid = PidFile.new pid_path
-      raise StalePidFile, "stale pid file: #{pid_path}" unless pid.running_process?
-      puts "Instance: #{pid}"
+      pid_file = PidFile.new pid_path
+      raise StalePidFile, "stale pid file: #{pid_path}" unless pid_file.running_process?
+      puts "Instance: #{pid_file.pid}"
     end
 
     # Check for active sessions on Unix domain socket

@@ -8,9 +8,9 @@ require_relative "nginx_stage/generator"
 require_relative "nginx_stage/generators/pun_config_generator"
 require_relative "nginx_stage/generators/app_config_generator"
 require_relative "nginx_stage/generators/nginx_process_generator"
-require_relative "nginx_stage/generators/show_pun_generator"
-require_relative "nginx_stage/generators/list_puns_generator"
-require_relative "nginx_stage/generators/clean_puns_generator"
+require_relative "nginx_stage/generators/nginx_show_generator"
+require_relative "nginx_stage/generators/nginx_list_generator"
+require_relative "nginx_stage/generators/nginx_clean_generator"
 require_relative "nginx_stage/application"
 
 # The main namespace for NginxStage. Provides a global configuration.

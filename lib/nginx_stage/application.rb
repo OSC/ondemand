@@ -14,12 +14,12 @@ module NginxStage
     # @return [Hash] hash of commands and their attributes
     def self.commands
       {
-        'pun'   => NginxStage::PunConfigGenerator,
-        'app'   => NginxStage::AppConfigGenerator,
-        'nginx' => NginxStage::NginxProcessGenerator,
-        'show'  => NginxStage::ShowPunGenerator,
-        'list'  => NginxStage::ListPunsGenerator,
-        'clean' => NginxStage::CleanPunsGenerator,
+        'pun'         => NginxStage::PunConfigGenerator,
+        'app'         => NginxStage::AppConfigGenerator,
+        'nginx'       => NginxStage::NginxProcessGenerator,
+        'nginx_show'  => NginxStage::NginxShowGenerator,
+        'nginx_list'  => NginxStage::NginxListGenerator,
+        'nginx_clean' => NginxStage::NginxCleanGenerator,
       }
     end
 
