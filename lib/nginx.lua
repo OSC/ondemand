@@ -75,7 +75,7 @@ function nginx_handler(r)
   if pun_stage_output == "" then
     if redir then
       -- success & redirect
-      return http.http302(r, redir)
+      return http.http307(r, redir)
     else
       -- success, so inform the user
       return http.http200(r)
