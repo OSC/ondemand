@@ -39,8 +39,20 @@ function http302(r, loc)
   return apache2.DONE  -- skip remaining handlers
 end
 
+--[[
+--http307
+
+  Returns a 307 response with a location.
+--]]
+function http307(r, loc)
+  r.status = 307
+  r.headers_out['Location'] = loc
+  return apache2.DONE  -- skip remaining handlers
+end
+
 return {
   http200 = http200,
-  http404 = http404,
-  http302 = http302
+  http302 = http302,
+  http307 = http307,
+  http404 = http404
 }
