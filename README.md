@@ -129,9 +129,10 @@ A typical Apache config will look like...
   Require valid-user
 
   SetEnv OOD_USER_MAP_CMD "/path/to/user-map-cmd"
+  SetEnv OOD_MAP_FAIL_URI "/register"
   SetEnv OOD_PUN_STAGE_CMD "/path/to/nginx_stage"
-  SetEnv OOD_NGINX_URI "/nginx"
   SetEnv OOD_PUN_URI "/pun"
+  SetEnv OOD_NGINX_URI "/nginx"
 
   LuaHookFixups nginx.lua nginx_handler
 </Location>
@@ -149,8 +150,9 @@ sub-URI example                 | Action
 ### pun_proxy_handler
 
 This handler proxies the authenticated user's traffic to his/her backend PUN
-through a Unix domain socket. If the user's PUN is down, then the user will be
-redirected to `OOD_NGINX_URI/start?redir=<redir>` to start up their PUN.
+through a Unix domain socket. If the user's PUN is down, then this handler will
+try to start up their PUN using the same procedure outlined in the previous
+section for the `/nginx/start` sub-URI.
 
 #### Required Arguments
 
@@ -158,7 +160,9 @@ Argument            | Definition
 ------------------- | ----------
 OOD_USER_MAP_CMD    | Full path to binary that maps the authenticated user name to the system-level user name. See `osc-user-map` as example.
 OOD_MAP_FAIL_URI    | URI the user is redirected to if it fails to map to a system level user. If not specified then return 404 with error message.
+OOD_PUN_STAGE_CMD   | Full path to the binary that stages/controls the per-user NGINX processes. See `nginx_stage` for further details on this binary.
 OOD_PUN_SOCKET_ROOT | Full path to the root location where all the PUNs keep their sockets. In most typical installations this will be `/var/run/nginx`.
+OOD_PUN_MAX_RETRIES | Maximum number of retries when trying to start up PUN. (Must be integer)
 OOD_NGINX_URI       | The sub-URI that namespaces this handler from the other handlers [`/nginx`].
 
 #### Usage
@@ -171,7 +175,10 @@ A typical Apache config will look like...
   Require valid-user
 
   SetEnv OOD_USER_MAP_CMD "/path/to/user-map-cmd"
+  SetEnv OOD_MAP_FAIL_URI "/register"
+  SetEnv OOD_PUN_STAGE_CMD "/path/to/nginx_stage"
   SetEnv OOD_PUN_SOCKET_ROOT "/path/to/nginx/sockets"
+  SetEnv OOD_PUN_MAX_RETRIES "5"
   SetEnv OOD_NGINX_URI "/nginx"
 
   LuaHookFixups pun_proxy.lua pun_proxy_handler
@@ -207,6 +214,7 @@ A typical Apache config will look like...
   Require valid-user
 
   SetEnv OOD_USER_MAP_CMD "/path/to/user-map-cmd"
+  SetEnv OOD_MAP_FAIL_URI "/register"
   SetEnv OOD_NODE_URI "/node"
   #SetEnv OOD_IS_RELATIVE "true"
 
