@@ -44,10 +44,10 @@ div.fm ul.menu {
   border-bottom: 0px;
 }
 
-/* FIXME: tried to use .panel-heading 
- * but updating the path.hbs file modified the original template but not
- * templates when navigating to other pages; so this is pure css - no html
- * required
+/* FIXME: tried using .panel-heading in path.hbs but the caching of the join.js
+ * in the browser which somehow embeds the path.hbs template in it threw me off.
+ * That said, having a pure CSS solution might be preferable to modifying the
+ * templates, so we can leave it with this for now.
  * */
 .panel-default div:first-child{
   padding: 10px 15px;
