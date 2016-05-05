@@ -32,8 +32,8 @@ div.fm ul.menu {
 
 /* bootstrap-esque panel styling applied to cloud commander's panels
  * */
-.panel-default {
-  /*here we take both bootstrap .panel & .panel-default and put into .panel-default*/
+.panel {
+  /*here we take both bootstrap .panel & .panel-default and put into .panel*/
   border: 1px solid #ddd;
   border-radius: 4px;
 
@@ -49,7 +49,7 @@ div.fm ul.menu {
  * That said, having a pure CSS solution might be preferable to modifying the
  * templates, so we can leave it with this for now.
  * */
-.panel-default div:first-child{
+.panel div:first-child{
   padding: 10px 15px;
   border-bottom: 1px solid transparent;
   border-top-left-radius: 3px;
