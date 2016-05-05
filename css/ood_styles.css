@@ -91,3 +91,13 @@ div.fm-header {
 ul.files {
   padding: 15px;
 }
+
+
+/* originally, name was at 26%
+ * and mode and owner were 13% and 18%
+ * so we add both to the name since we are hiding
+ * the other two columns
+ * */
+.name {
+   width: 57%;
+}
