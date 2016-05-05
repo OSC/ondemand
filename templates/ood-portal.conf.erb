@@ -9,6 +9,7 @@
 #   OOD_AUTH_TYPE='<%= OOD_AUTH_TYPE %>'
 #   OOD_LUA_ROOT='<%= OOD_LUA_ROOT %>'
 #   OOD_PUN_STAGE_CMD='<%= OOD_PUN_STAGE_CMD %>'
+#   OOD_PUN_MAX_RETRIES='<%= OOD_PUN_MAX_RETRIES %>'
 #   OOD_USER_MAP_CMD='<%= OOD_USER_MAP_CMD %>'
 #   OOD_PUN_SOCKET_ROOT='<%= OOD_PUN_SOCKET_ROOT %>'
 #   OOD_PUBLIC_ROOT='<%= OOD_PUBLIC_ROOT %>'
@@ -45,6 +46,10 @@ Listen "<%= OOD_IP %>"
   # Command used to map authenticated user to system user
   #
   SetEnv OOD_USER_MAP_CMD "<%= OOD_USER_MAP_CMD %>"
+
+  # Command used to stage & control PUNs (runs as sudo)
+  #
+  SetEnv OOD_PUN_STAGE_CMD "<%= OOD_PUN_STAGE_CMD %>"
 
   <%- unless OOD_MAP_FAIL_URI.empty? -%>
   # Redirect user to this URI if fail to map to system user
@@ -117,6 +122,7 @@ Listen "<%= OOD_IP %>"
 
     SetEnv OOD_NGINX_URI "<%= OOD_NGINX_URI %>"
     SetEnv OOD_PUN_SOCKET_ROOT "<%= OOD_PUN_SOCKET_ROOT %>"
+    SetEnv OOD_PUN_MAX_RETRIES "<%= OOD_PUN_MAX_RETRIES %>"
     LuaHookFixups pun_proxy.lua pun_proxy_handler
   </Location>
   <%- end -%>
@@ -135,7 +141,6 @@ Listen "<%= OOD_IP %>"
 
     SetEnv OOD_NGINX_URI "<%= OOD_NGINX_URI %>"
     SetEnv OOD_PUN_URI "<%= OOD_PUN_URI %>"
-    SetEnv OOD_PUN_STAGE_CMD "<%= OOD_PUN_STAGE_CMD %>"
     LuaHookFixups nginx.lua nginx_handler
   </Location>
   <%- end -%>

@@ -167,6 +167,10 @@ OOD_LUA_ROOT='/opt/ood/mod_ood_proxy/lib'
 #
 OOD_PUN_STAGE_CMD='sudo /opt/ood/nginx_stage/sbin/nginx_stage'
 
+# Maximum number of retries when trying to start the PUN
+#
+OOD_PUN_MAX_RETRIES='5'
+
 # Command used to map users to system level users
 #
 OOD_USER_MAP_CMD='/opt/ood/osc-user-map/bin/osc-user-map'
