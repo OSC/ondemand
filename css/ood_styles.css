@@ -95,46 +95,38 @@ ul.files {
 
 /* hide 2 columns */
 span.owner, span.mode {
-   display: none;
+  display: none;
 }
 
-/* originally, name was at 26%
- * and mode and owner were 13% and 18%
- * so we add both to the name since we are hiding
- * the other two columns
- * */
-.name{
-   width: 57%;
+.files li {
+  display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+  display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+  display: -ms-flexbox;      /* TWEENER - IE 10 */
+  display: -webkit-flex;     /* NEW - Chrome */
+  display: flex;
 }
 
-/* FIXME: this feels like semantically the wrong approach;
- * if we want to force an element on separate lines, shouldn't we
- * force a line break, for example, by using <br>?
- *
- * by forcing the header and the body of the files to be very wide
- * we ensure they stay on separate lines*/
 .fm-header {
-  width: 90%;
-}
-ul.files {
-  width: 95%;
-}
-
-
-/* Help Text 
- * position right above the panel
- * the actual text is embeded inside the panel
- *   * */
-.panel {
-  /* so we can absolutely position elements inside this panel*/
-  position: relative;
+  width: auto;
+  display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+  display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+  display: -ms-flexbox;      /* TWEENER - IE 10 */
+  display: -webkit-flex;     /* NEW - Chrome */
+  display: flex;
 }
 
-.panel h6.help {
-  /* position is in respect to panel*/
-  position: absolute;
-  top: -40px;
-  right: 0px;
+.name {
+  -webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
+  -moz-box-flex: 1;         /* OLD - Firefox 19- */
+  width: auto;
+  -webkit-flex: 1;          /* Chrome */
+  -ms-flex: 1;              /* IE 10 */
 
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  flex-grow: 1;
 }
+
+.date, .size {
+  width: 100px;
+  flex-basis: 100px;
+}
+
