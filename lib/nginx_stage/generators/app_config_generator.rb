@@ -60,7 +60,7 @@ module NginxStage
     add_hook :parse_sub_request do
       info = NginxStage.parse_app_request(request: sub_request)
       @app_env   = info.fetch(:env)
-      @app_owner = User.new info.fetch(:owner, user.name)
+      @app_owner = User.new info.fetch(:owner, user)
       @app_name  = info.fetch(:name, nil)
     end
 
