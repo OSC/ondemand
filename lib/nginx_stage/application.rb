@@ -17,6 +17,7 @@ module NginxStage
         'pun'         => NginxStage::PunConfigGenerator,
         'app'         => NginxStage::AppConfigGenerator,
         'app_list'    => NginxStage::AppListGenerator,
+        'app_clean'   => NginxStage::AppCleanGenerator,
         'app_reset'   => NginxStage::AppResetGenerator,
         'nginx'       => NginxStage::NginxProcessGenerator,
         'nginx_show'  => NginxStage::NginxShowGenerator,
