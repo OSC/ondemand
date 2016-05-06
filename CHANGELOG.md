@@ -4,6 +4,20 @@ Features:
 
   - added Python as a configuration option
   - set Node.js and Python binary paths as optional
+  - uses a full URL now in PUN config for redirection when app doesn't exist
+  - added Google analytics (metrics reporting required by project)
+  - added `nginx_show` command (lists details of currently running PUN)
+  - added `nginx_list` command (lists all users with running PUNs)
+  - added `nginx_clean` command (stops all running PUNs w/ no active connections)
+  - added `app_reset` command (resets all app configs using current template)
+
+Bugfixes:
+
+  - fixed string concatenation bug (e867eacb31bfe1f7b03e614bd38ede1dd151ca8a)
+  - set Nginx tmp root back to local disk (1be2542a249c112d12eba469281147fa6be64cd5)
+  - use local disk paths for staging location of user shared apps (7546c036fc2c458b9d3f60ec2412bd26a43081e2)
+  - can create `User` object from any string-like object (26ad291bf9b93e9371826e207936bf2edbf2c12a)
+
 
 ## 0.0.5 (2016-04-15)
 
