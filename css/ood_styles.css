@@ -93,19 +93,24 @@ ul.files {
 }
 
 
-/* FIXME: below was for hiding the owner and mode - but this failed in Firefox
- * and Safari! Must find a better solution! */
+/* hide 2 columns */
+span.owner, span.mode {
+   display: none;
+}
 
 /* originally, name was at 26%
  * and mode and owner were 13% and 18%
  * so we add both to the name since we are hiding
  * the other two columns
  * */
-/* .name { */
-/*    width: 57%; */
-/* } */
-/* hide mode and owner columns in files*/
-/* span.owner, span.mode { */
-/*    display: none; */
-/* } */
-/* visibility: hidden; might be better */
+.name{
+   width: 57%;
+}
+
+/* FIXME: programming by coincidence a really odd error but when margin:0px 
+ * in Safari and Firefox the entire ul of files groups to the far right of the 
+ * first row - like its an inline block and there was no newline...
+ * below seems to fix it */
+.files {
+  margin: 5px; 
+}
