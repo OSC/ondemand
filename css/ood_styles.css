@@ -119,3 +119,22 @@ span.owner, span.mode {
 ul.files {
   width: 95%;
 }
+
+
+/* Help Text 
+ * position right above the panel
+ * the actual text is embeded inside the panel
+ *   * */
+.panel {
+  /* so we can absolutely position elements inside this panel*/
+  position: relative;
+}
+
+.panel h6.help {
+  /* position is in respect to panel*/
+  position: absolute;
+  top: -40px;
+  right: 0px;
+
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
