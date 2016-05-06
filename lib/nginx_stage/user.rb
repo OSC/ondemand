@@ -33,7 +33,7 @@ module NginxStage
     # @param user [String] the user name defining this object
     # @raise [InvalidUser] if user doesn't exist on local system
     def initialize(user)
-      @passwd = Etc.getpwnam user
+      @passwd = Etc.getpwnam user.to_s
       @group = Etc.getgrgid gid
       @groups = get_groups
     rescue ArgumentError
