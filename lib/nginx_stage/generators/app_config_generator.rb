@@ -19,6 +19,20 @@ module NginxStage
         this will return the app config path and won't run nginx.
     EOF
 
+    include AppConfigView
+
+    # The environment the app is run under (parsed from sub_request)
+    # @return [Symbol] environment app is run under
+    attr_accessor :env
+
+    # The owner of the app (parsed from sub_request or assume it is user)
+    # @return [String] owner of app
+    attr_accessor :owner
+
+    # The name of the app
+    # @return [String] name of app
+    attr_accessor :name
+
     # Accepts `user` as an option and validates user
     add_user_support
 
@@ -59,9 +73,9 @@ module NginxStage
     # Parse the sub_request for the environment, owner, and app name
     add_hook :parse_sub_request do
       info = NginxStage.parse_app_request(request: sub_request)
-      @app_env   = info.fetch(:env)
-      @app_owner = User.new info.fetch(:owner, user)
-      @app_name  = info.fetch(:name, nil)
+      self.env   = info.fetch(:env)
+      self.owner = info.fetch(:owner, user)
+      self.name  = info.fetch(:name, nil)
     end
 
     # Validate that the path to the app exists on the local filesystem
@@ -94,49 +108,7 @@ module NginxStage
     private
       # NGINX app config path
       def app_config_path
-        NginxStage.app_config_path(env: @app_env, owner: @app_owner, name: @app_name)
-      end
-
-      # Path to the app root on the local filesystem
-      def app_root
-        NginxStage.app_root(env: @app_env, owner: @app_owner, name: @app_name)
-      end
-
-      # The URI used to access the app from the browser
-      def app_request_uri
-        "#{sub_uri}#{NginxStage.app_request_uri(env: @app_env, owner: @app_owner, name: @app_name)}"
-      end
-
-      # The Passenger environment to run app under
-      def env
-        NginxStage.app_passenger_env(env: @app_env, owner: @app_owner, name: @app_name)
-      end
-
-      # The token used to identify an app
-      def app_token
-        NginxStage.app_token(env: @app_env, owner: @app_owner, name: @app_name)
-      end
-
-      # Have all apps phone home for analytics (required by OOD proposal)
-      def google_analytics
-        <<-EOF.gsub("'", %q{\\\'})
-          <script>
-            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','https://www.google-analytics.com/analytics.js','_gaOodMetrics');
-
-            _gaOodMetrics('create', 'UA-66793213-1', 'auto', {
-              'cookieName': '_gaOodMetrics'
-            });
-            _gaOodMetrics('set', 'anonymizeIP', 'true');
-            _gaOodMetrics('set', '&uid', '$http_x_forwarded_user');
-            _gaOodMetrics('set', 'dimension1', '#{app_token}');
-            _gaOodMetrics('set', 'dimension2', '$http_x_forwarded_user');
-            _gaOodMetrics('set', 'dimension3', '$http_x_forwarded_proto://$http_x_forwarded_host');
-            _gaOodMetrics('send', 'pageview');
-          </script>
-        EOF
+        NginxStage.app_config_path(env: env, owner: owner, name: name)
       end
   end
 end

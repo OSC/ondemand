@@ -11,16 +11,16 @@ events {
 }
 
 http {
-  include     <%= NginxStage.mime_types_path %>;
+  include     <%= mime_types_path %>;
 
   # Define passenger environment
-  passenger_root <%= NginxStage.passenger_root %>;
-  passenger_ruby <%= NginxStage.passenger_ruby %>;
-  <%- if NginxStage.passenger_nodejs -%>
-  passenger_nodejs <%= NginxStage.passenger_nodejs %>;
+  passenger_root <%= passenger_root %>;
+  passenger_ruby <%= passenger_ruby %>;
+  <%- if passenger_nodejs -%>
+  passenger_nodejs <%= passenger_nodejs %>;
   <%- end -%>
-  <%- if NginxStage.passenger_python -%>
-  passenger_python <%= NginxStage.passenger_python %>;
+  <%- if passenger_python -%>
+  passenger_python <%= passenger_python %>;
   <%- end -%>
 
   # Set passenger security measures

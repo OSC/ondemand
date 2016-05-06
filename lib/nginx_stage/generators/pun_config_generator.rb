@@ -19,6 +19,8 @@ module NginxStage
         it will remove the URI redirect from the config unless we specify `--app-init-url`.
     EOF
 
+    include PunConfigView
+
     # Accepts `user` as an option and validates user
     add_user_support
 
@@ -90,43 +92,6 @@ module NginxStage
       # per-user NGINX config path
       def config_path
         NginxStage.pun_config_path(user: user)
-      end
-
-      # Primary group of the user
-      def group
-        user.group
-      end
-
-      # Path to the user's personal error.log
-      def error_log_path
-        NginxStage.pun_error_log_path(user: user)
-      end
-
-      # Path to the user's personal access.log
-      def access_log_path
-        NginxStage.pun_access_log_path(user: user)
-      end
-
-      # Path to user's personal tmp root
-      def tmp_root
-        NginxStage.pun_tmp_root(user: user)
-      end
-
-      # Path to the user's per-user NGINX pid file
-      def pid_path
-        NginxStage.pun_pid_path(user: user)
-      end
-
-      # Path to the user's per-user NGINX socket file
-      def socket_path
-        NginxStage.pun_socket_path(user: user)
-      end
-
-      # Array of wildcard paths to app configs user has access to
-      def app_configs
-        NginxStage.pun_app_configs(user: user).map do |envmt|
-          NginxStage.app_config_path envmt
-        end
       end
   end
 end
