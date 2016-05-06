@@ -39,7 +39,7 @@ module NginxStage
     end
 
     add_hook :blah do
-      NginxStage.active_apps.each do |env, apps|
+      NginxStage.staged_apps.each do |env, apps|
         apps.each do |h|
           self.env = env
           self.owner = h[:owner]

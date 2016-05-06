@@ -71,9 +71,9 @@ module NginxStage
     Dir[pun_pid_path(user: '*')].map{|v| User.new v[/#{pun_pid_path(user: '(.+)')}/, 1]}
   end
 
-  # Get a hash of all the accessible app configs
-  # @example List of all active app configs
-  #   active_apps
+  # Get a hash of all the staged app configs
+  # @example List of all staged app configs
+  #   staged_apps
   #   #=> {
   #         dev: [
   #           {owner: 'bob', name: 'rails1'},
@@ -84,10 +84,10 @@ module NginxStage
   #         ]
   #       }
   # @return [Hash] the hash of app environments with list of corresponding apps
-  def self.active_apps
-    active_apps = {}
+  def self.staged_apps
+    staged_apps = {}
     @app_config_path.each do |env, path|
-      active_apps[env] = Dir[app_config_path(env: env, owner: '*', name: '*')].map do |v|
+      staged_apps[env] = Dir[app_config_path(env: env, owner: '*', name: '*')].map do |v|
         matches = /#{app_config_path(env: env, owner: '(?<owner>.+)', name: '(?<name>.+)')}/.match(v)
         {
           owner: matches.names.include?('owner') ? matches[:owner] : "",
@@ -95,6 +95,6 @@ module NginxStage
         }
       end
     end
-    active_apps
+    staged_apps
   end
 end
