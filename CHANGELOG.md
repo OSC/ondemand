@@ -10,6 +10,8 @@ Features:
   - added `nginx_list` command (lists all users with running PUNs)
   - added `nginx_clean` command (stops all running PUNs w/ no active connections)
   - added `app_reset` command (resets all app configs using current template)
+  - added `app_list` command (lists all staged app configs)
+  - added `app_clean` command (deletes all stale app configs)
 
 Bugfixes:
 
