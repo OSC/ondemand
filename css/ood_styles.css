@@ -107,10 +107,15 @@ span.owner, span.mode {
    width: 57%;
 }
 
-/* FIXME: programming by coincidence a really odd error but when margin:0px 
- * in Safari and Firefox the entire ul of files groups to the far right of the 
- * first row - like its an inline block and there was no newline...
- * below seems to fix it */
-.files {
-  margin: 5px; 
+/* FIXME: this feels like semantically the wrong approach;
+ * if we want to force an element on separate lines, shouldn't we
+ * force a line break, for example, by using <br>?
+ *
+ * by forcing the header and the body of the files to be very wide
+ * we ensure they stay on separate lines*/
+.fm-header {
+  width: 90%;
+}
+ul.files {
+  width: 95%;
 }
