@@ -130,3 +130,12 @@ span.owner, span.mode {
   flex-basis: 100px;
 }
 
+
+/* always show scrollbars so that the headers always line up */
+.fm-header, .files {
+     overflow-y:scroll
+}
+
+.fm-header {
+    border-bottom: 1px solid #ddd;
+}
