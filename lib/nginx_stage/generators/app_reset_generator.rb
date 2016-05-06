@@ -6,6 +6,12 @@ module NginxStage
 
     footer <<-EOF.gsub(/^ {4}/, '')
     Examples:
+        To reset all staged app configs using the currently available app
+        config template:
+
+            nginx_stage app_reset --sub_uri=/pun
+
+        this will return the paths to the newly updated app configs.
     EOF
 
     include AppConfigView
@@ -38,7 +44,9 @@ module NginxStage
       }
     end
 
-    add_hook :blah do
+    # Updates all staged app configs with current template and displays paths
+    # to user
+    add_hook :update_app_configs do
       NginxStage.staged_apps.each do |env, apps|
         apps.each do |h|
           self.env = env
