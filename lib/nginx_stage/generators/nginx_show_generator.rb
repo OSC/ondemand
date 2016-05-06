@@ -5,6 +5,11 @@ module NginxStage
 
     footer <<-EOF.gsub(/^ {4}/, '')
     Examples:
+        To display the details of a running per-user nginx process:
+
+            nginx_stage nginx_show --user=bob
+
+        this also displays the number of active sessions connected to this PUN.
     EOF
 
     # Accepts 'user' as an option and validates user

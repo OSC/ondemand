@@ -6,6 +6,12 @@ module NginxStage
 
     footer <<-EOF.gsub(/^ {4}/, '')
     Examples:
+        To clean up any running per-user nginx process with no active
+        connections:
+
+            nginx_stage nginx_clean
+
+        this displays the users who had their PUNs shutdown.
     EOF
 
     # Accepts `skip_nginx` as an option

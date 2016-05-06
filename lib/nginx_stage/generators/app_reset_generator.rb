@@ -2,7 +2,7 @@ module NginxStage
   # This generator resets all app configs with the most current app config
   # template.
   class AppResetGenerator < Generator
-    desc 'Reset all app configs with the current template'
+    desc 'Reset all staged app configs with the current template'
 
     footer <<-EOF.gsub(/^ {4}/, '')
     Examples:
