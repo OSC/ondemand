@@ -12,6 +12,12 @@ module NginxStage
             nginx_stage nginx_clean
 
         this displays the users who had their PUNs shutdown.
+
+        To ONLY display the users with inactive PUNs:
+
+            nginx_stage nginx_clean --skip-nginx
+
+        this won't terminate their per-user nginx process.
     EOF
 
     # Accepts `skip_nginx` as an option

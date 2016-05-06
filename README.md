@@ -265,6 +265,78 @@ building the app config.
 The `SUB_URI` corresponds to any reverse proxy specific namespace that denotes
 the request should be proxied to the backend per-user NGINX server.
 
+### APP_RESET Command
+
+```
+$ sudo nginx_stage app_reset --help
+Usage: nginx_stage app_reset [OPTIONS]
+
+Required options:
+
+General options:
+    -i, --sub-uri=SUB_URI            # The SUB_URI that requests the per-user nginx
+                                     # Default: ''
+
+Common options:
+    -h, --help                       # Show this help message
+    -v, --version                    # Show version
+
+Examples:
+    To reset all staged app configs using the currently available app
+    config template:
+
+        nginx_stage app_reset --sub_uri=/pun
+
+    this will return the paths to the newly updated app configs.
+```
+
+The `SUB_URI` should be set to whatever was used previously when the app
+configs were first created.
+
+### APP_LIST Command
+
+```
+$ sudo nginx_stage app_list --help
+Usage: nginx_stage app_list [OPTIONS]
+
+Required options:
+
+General options:
+
+Common options:
+    -h, --help                       # Show this help message
+    -v, --version                    # Show version
+
+Examples:
+    To list all staged app configs:
+
+        nginx_stage app_list
+
+    this will return the paths to all the staged app configs.
+```
+
+### APP_CLEAN Command
+
+```
+$ sudo nginx_stage app_clean --help
+Usage: nginx_stage app_clean [OPTIONS]
+
+Required options:
+
+General options:
+
+Common options:
+    -h, --help                       # Show this help message
+    -v, --version                    # Show version
+
+Examples:
+    To clean up all stale app configs:
+
+        nginx_stage app_clean
+
+    this displays the paths of the app configs it deleted.
+```
+
 ### NGINX Command
 
 ```
@@ -333,6 +405,95 @@ The following paths are created on demand:
         └── <user>                      # drwx------ apache root
             ├── passenger.pid           # -rw-r--r-- root   root
             └── passenger.sock          # srw-rw-rw- root   root
+```
+
+### NGINX_SHOW Command
+
+```
+$ sudo nginx_stage nginx_show --help
+Usage: nginx_stage nginx_show [OPTIONS]
+
+Required options:
+    -u, --user=USER                  # The USER of the per-user nginx process
+
+General options:
+
+Common options:
+    -h, --help                       # Show this help message
+    -v, --version                    # Show version
+
+Examples:
+    To display the details of a running per-user nginx process:
+
+        nginx_stage nginx_show --user=bob
+
+    this also displays the number of active sessions connected to this PUN.
+```
+
+An example:
+
+```
+$ sudo nginx_stage nginx_show --user=jnicklas
+User: jnicklas
+Instance: 24214
+Socket: /var/run/nginx/jnicklas/passenger.sock
+Sessions: 1
+```
+
+The `Sessions: 1` means there is one active connection to the `jnicklas` PUN
+server.
+
+### NGINX_LIST Command
+
+```
+$ sudo nginx_stage nginx_list --help
+Usage: nginx_stage nginx_list [OPTIONS]
+
+Required options:
+
+General options:
+
+Common options:
+    -h, --help                       # Show this help message
+    -v, --version                    # Show version
+
+Examples:
+    To list all active per-user nginx processes:
+
+        nginx_stage nginx_list
+
+    this lists all users who have actively running PUNs.
+```
+
+### NGINX_CLEAN Command
+
+```
+$ sudo nginx_stage nginx_list --help
+Usage: nginx_stage nginx_clean [OPTIONS]
+
+Required options:
+
+General options:
+    -N, --[no-]skip-nginx            # Skip execution of the per-user nginx process
+                                     # Default: false
+
+Common options:
+    -h, --help                       # Show this help message
+    -v, --version                    # Show version
+
+Examples:
+    To clean up any running per-user nginx process with no active
+    connections:
+
+        nginx_stage nginx_clean
+
+    this displays the users who had their PUNs shutdown.
+
+    To ONLY display the users with inactive PUNs:
+
+        nginx_stage nginx_clean --skip-nginx
+
+    this won't terminate their per-user nginx process.
 ```
 
 ## Contributing
