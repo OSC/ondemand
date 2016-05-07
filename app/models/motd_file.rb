@@ -1,5 +1,17 @@
 class MotdFile
-  
+  Message = Struct.new :date, :title, :body do
+    def self.from(str)
+      if str =~ /(\d+[-\/\.]\d+[-\/\.]\d+)\n--- ([ \S ]*)\n(.*)/m
+        MotdFile::Message.new(Date.parse($1), $2, $3)
+      else
+        nil
+      end
+    rescue ArgumentError => e
+      Rails.logger.warn("MOTD message poorly formatted: #{e} => #{e.message}")
+
+      nil
+    end
+  end
   # Initialize the Motd Controller object based on the current user.
   #
   # @param [boolean] update_user_view_timestamp True to update the last viewed timestamp. (Default: false)
@@ -7,8 +19,12 @@ class MotdFile
     touch if update_user_view_timestamp
   end
 
+  # An empty file whose modification timestamp indicates the last time the user
+  # viewed the motd messages. This is useful for when we want to use the file
+  # system to determine when new messages the user has not seen have been
+  # added to the motd.
   def motd_config_file
-    @motd_config_file ||= "#{ENV['HOME']}/ood_data/.motd"
+    @motd_config_file ||= OodApp.dataroot.join(".motd")
   end
 
   def motd_system_file
@@ -23,41 +39,14 @@ class MotdFile
 
   # Create an array of message objects based on the current message of the day.
   def messages
-
     f = File.read motd_system_file
 
-    # get array of sections
+    # get array of sections which are delimited by a row of ******
     sections = f.split(/^\*+$/).map(&:strip).select { |x| ! x.empty?  }
-
-    # first section is the welcome that never changes
-    welcome = sections.shift
-
-    sections_in_markdown = []
-
-    # all other sections follow specific format (we could validate this with regex)
-    sections.each do |s|
-      # match and capture date,
-      # then newline, then three dashes,
-      # then capture title with spaces,
-      # then newline
-      # then capture rest of message
-      if s =~ /(\d+\/\d+\/\d+)\n--- ([ \S ]*)\n(.*)/m
-
-        section_object = MotdMessage.new
-        section_object.date = $~[1]
-        section_object.title = $~[2]
-        section_object.body = $~[3]
-
-        sections_in_markdown << section_object
-      else
-        # not properly formatted
-      end
-    end
-
-    sections_in_markdown.reverse
+    sections.map! { |s| MotdFile::Message.from(s) }.compact!.sort_by! {|s| s.date }.reverse!
   rescue Errno::ENOENT
     # The messages file does not exist on the system.
-    # FIXME: Log this somewhere once we port to rails.
+    logger.warn "MOTD File is missing; it was expected at #{motd_system_file}"
     []
   end
 
