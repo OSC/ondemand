@@ -25,6 +25,12 @@ module NginxStage
       NginxStage.app_token(env: env, owner: owner, name: name)
     end
 
+    # Wether the sys admin opts in to metrics collection
+    # @return [Boolean] whether metrics should be collected
+    def opt_in
+      NginxStage.opt_in
+    end
+
     # Have all apps phone home for analytics (required by OOD proposal)
     # @return [String] google analytics script
     def google_analytics

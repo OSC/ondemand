@@ -7,5 +7,7 @@ location ~ ^<%= app_request_uri %>(/.*|$) {
 
   passenger_app_env <%= app_passenger_env %>;
 
+  <%- if opt_in -%>
   sub_filter '</body>' '<%= google_analytics %></body>';
+  <%- end -%>
 }
