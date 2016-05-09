@@ -18,6 +18,13 @@ socket = io.listen(server, {
     path: BASE_URI + '/socket.io'
 });
 
+app.use(function(req, res, next) {
+    res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+    res.header('Expires', '-1');
+    res.header('Pragma', 'no-cache');
+    next();
+});
+
 // Load cloudcmd
 app.use(cloudcmd({
     socket: socket,                   /* used by Config, Edit (optional) and Console (required)   */
