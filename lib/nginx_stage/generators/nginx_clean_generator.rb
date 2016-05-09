@@ -23,28 +23,22 @@ module NginxStage
     # Accepts `skip_nginx` as an option
     add_skip_nginx_support
 
-    # Find users with PUNs that have no active sessions
-    add_hook :find_users_with_no_sessions do
-      @users = []
+    # Find users with PUNs that have no active sessions and kill the process
+    add_hook :delete_puns_of_users_with_no_sessions do
       NginxStage.active_users.each do |u|
         begin
-          pid_path = PidFile.new    NginxStage.pun_pid_path(user: u)
+          pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
           raise StalePidFile, "stale pid file: #{pid_path}" unless pid_path.running_process?
-          socket   = SocketFile.new NginxStage.pun_socket_path(user: u)
-          @users << u if socket.sessions == 0
+          socket = SocketFile.new NginxStage.pun_socket_path(user: u)
+          if socket.sessions.zero?
+            puts u
+            if !skip_nginx
+              o, s = Open3.capture2e(NginxStage.nginx_bin, *NginxStage.nginx_args(user: u, signal: :stop))
+              $stderr.puts o unless s.success?
+            end
+          end
         rescue
           $stderr.puts "#{$!.to_s}"
-        end
-      end
-    end
-
-    # Kill the per-user NGINX processes (unless skipped)
-    add_hook :kill_nginx_pids do
-      @users.each do |u|
-        puts u
-        if !skip_nginx
-          o, s = Open3.capture2e(NginxStage.nginx_bin, *NginxStage.nginx_args(user: u, signal: :stop))
-          $stderr.puts o unless s.success?
         end
       end
     end
