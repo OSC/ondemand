@@ -1,7 +1,7 @@
 #!/bin/env ruby
 
 #
-# osc-user-map
+# ood_auth_map
 #
 # Specification
 # 1. Must accept a single argument that is URL encoded.
@@ -11,7 +11,7 @@
 
 require 'uri'
 
-module OscUserMap
+module OodAuthMap
   VERSION = '0.0.1'
 end
 
@@ -20,7 +20,7 @@ end
 #
 
 if ARGV[0] == "-v"
-  puts "osc-user-map v#{OscUserMap::VERSION}"
+  puts "ood_auth_map v#{OodAuthMap::VERSION}"
   exit
 elsif ARGV[0]
   auth_user = URI.unescape ARGV[0]
@@ -45,8 +45,8 @@ end
 # Print sys_user or empty string
 if sys_user
   puts sys_user
-  STDERR.puts %{osc-user-map: Successfully mapped "#{auth_user}" => "#{sys_user}"}
+  STDERR.puts %{ood_auth_map: Successfully mapped "#{auth_user}" => "#{sys_user}"}
 else
   puts ""
-  STDERR.puts %{osc-user-map: Failed to map "#{auth_user}"}
+  STDERR.puts %{ood_auth_map: Failed to map "#{auth_user}"}
 end
