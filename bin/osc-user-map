@@ -29,32 +29,7 @@ else
 end
 
 #
-# Use Google authentication for development server
-#
-
-GOOGLE_USERS = {
-  '111507243067931506567@accounts.google.com' => 'jnicklas',
-  '102555136695940613292@accounts.google.com' => 'jnicklas',
-  '113597325271288644620@accounts.google.com' => 'efranz',
-  '109838079349976181632@accounts.google.com' => 'an0047',
-  '111644294145564711835@accounts.google.com' => 'dhudak',
-  '112387922473213146150@accounts.google.com' => 'bmcmichael',
-  '112840957665765361885@accounts.google.com' => 'bmcmichael',
-  '100407568355706659061@accounts.google.com' => 'bmcmichael',
-  '116681954918771948545@accounts.google.com' => 'bgohar'
-}
-
-sys_user = GOOGLE_USERS[auth_user]
-
-# We found the system user!
-if sys_user
-  puts sys_user
-  STDERR.puts %{osc-user-map: Successfully mapped "#{auth_user}" => "#{sys_user}"}
-  exit
-end
-
-#
-# Use grid-mapfile for production server
+# Use grid-mapfile
 #
 
 GRID_MAPFILE='/etc/grid-security/grid-mapfile'
