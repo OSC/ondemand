@@ -22,6 +22,7 @@
 #   OOD_NGINX_URI='<%= OOD_NGINX_URI %>'
 #   OOD_PUBLIC_URI='<%= OOD_PUBLIC_URI %>'
 #   OOD_MAP_FAIL_URI='<%= OOD_MAP_FAIL_URI %>'
+#   OOD_ROOT_URI='<%= OOD_ROOT_URI %>'
 #
 
 <%- if !OOD_IP.empty? && !OOD_SERVER_NAME.empty? -%>
@@ -160,6 +161,10 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL && OOD_PORT != '443
     SetEnv OOD_PUN_URI "<%= OOD_PUN_URI %>"
     LuaHookFixups nginx.lua nginx_handler
   </Location>
+  <%- end -%>
+
+  <%- unless OOD_ROOT_URI.empty? %>
+  RedirectMatch ^/$ "<%= OOD_ROOT_URI %>"
   <%- end -%>
 
 <%- if !OOD_IP.empty? && !OOD_SERVER_NAME.empty? -%>

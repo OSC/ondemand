@@ -227,6 +227,11 @@ OOD_PUBLIC_URI='/public'
 # Blank: Removes the redirection upon a failed user mapping
 #
 OOD_MAP_FAIL_URI='/efranz'
+
+# Redirect root URI "/" to this URI
+# Blank: Removes this redirection
+#
+OOD_ROOT_URI='/pun/sys/dashboard'
 ```
 ## Configuration File
 

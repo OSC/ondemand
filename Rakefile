@@ -45,6 +45,7 @@ OOD_RNODE_URI    ||= ENV['OOD_RNODE_URI']    || '/rnode'
 OOD_NGINX_URI    ||= ENV['OOD_NGINX_URI']    || '/nginx'
 OOD_PUBLIC_URI   ||= ENV['OOD_PUBLIC_URI']   || '/public'
 OOD_MAP_FAIL_URI ||= ENV['OOD_MAP_FAIL_URI'] || '/register'
+OOD_ROOT_URI     ||= ENV['OOD_ROOT_URI']     || '/pun/sys/dashboard'
 
 #
 # Tasks
