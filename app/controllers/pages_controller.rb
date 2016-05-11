@@ -75,8 +75,12 @@ class PagesController < ApplicationController
       end
 
       # Only add the running jobs to the list and assign the host to the object.
+      #
+      # There is also curently a bug in the system where jobs with an empty array
+      # (ex. 6407991[].oak-batch.osc.edu) are not stattable, so we do a not-match
+      # for those jobs and don't display them.
       result.each do |job|
-        if job[:attribs][:job_state] != 'C'
+        if job[:attribs][:job_state] != 'C' && job[:name] !~ /\[\]/
           jobs.push(Jobstatusdata.new(job, key))
         end
       end
