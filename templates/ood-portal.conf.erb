@@ -1,3 +1,4 @@
+<%- use_virtual_host = !OOD_IP.empty? && !OOD_SERVER_NAME.empty? -%>
 #
 # Open OnDemand Portal
 #
@@ -33,7 +34,7 @@
 #   OOD_MAP_FAIL_URI='<%= OOD_MAP_FAIL_URI %>'
 #
 
-<%- if !OOD_IP.empty? && !OOD_SERVER_NAME.empty? -%>
+<%- if use_virtual_host -%>
 <%- if OOD_SSL && OOD_SSL_REDIRECT -%>
 # Redirect http traffic to https
 #
@@ -217,6 +218,6 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
   </Directory>
   <%- end -%>
 
-<%- if !OOD_IP.empty? && !OOD_SERVER_NAME.empty? -%>
+<%- if use_virtual_host -%>
 </VirtualHost>
 <%- end %>
