@@ -8,14 +8,13 @@ div.fm ul.menu {
     background-color: white;
 }
 
-
 /* these styles control the selection style of a currently selected file */
 .current-file {
     /*FIXME: background-color: rgb(0,75,135); - OH-TECH blue does look sharp */
     background-color: #08C;
 }
 
-.current-file, .current-file a{
+.current-file, .current-file a {
     color: white;
 }
 
@@ -25,23 +24,21 @@ div.fm ul.menu {
 }
 
 .selected-file, .selected-file .name > a {
-      color: white;
+    color: white;
 }
-
-
 
 /* bootstrap-esque panel styling applied to cloud commander's panels
  * */
 .panel {
-  /*here we take both bootstrap .panel & .panel-default and put into .panel*/
-  border: 1px solid #ddd;
-  border-radius: 4px;
+    /*here we take both bootstrap .panel & .panel-default and put into .panel*/
+    border: 1px solid #ddd;
+    border-radius: 4px;
 
-  /*FIXME: temporary fix - the panel heights are all messed up so for now just
-   * hide the bottom border and the box shadows */
-  /* -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05); */
-  /* box-shadow: 0 1px 1px rgba(0,0,0,.05); */
-  border-bottom: 0px;
+    /*FIXME: temporary fix - the panel heights are all messed up so for now just
+     * hide the bottom border and the box shadows */
+    /* -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05); */
+    /* box-shadow: 0 1px 1px rgba(0,0,0,.05); */
+    border-bottom: 0px;
 }
 
 /* FIXME: tried using .panel-heading in path.hbs but the caching of the join.js
@@ -49,17 +46,16 @@ div.fm ul.menu {
  * That said, having a pure CSS solution might be preferable to modifying the
  * templates, so we can leave it with this for now.
  * */
-.panel div:first-child{
-  padding: 10px 15px;
-  border-bottom: 1px solid transparent;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
+.panel div:first-child {
+    padding: 10px 15px;
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
 
-  background-color: #f5f5f5;
-  border-color: #ddd;
-  color: #333;
+    background-color: #f5f5f5;
+    border-color: #ddd;
+    color: #333;
 }
-
 
 /** Below are the original bootstrap classes - we apply similar styles to the
  * actual divs and classes cloud commander offers us
@@ -81,61 +77,88 @@ div.fm ul.menu {
 /* } */
 
 .panel {
-  padding: 0px;
+    padding: 0px;
 }
 
 div.fm-header {
-  padding: 15px;
+    padding: 15px;
 }
 
 ul.files {
-  padding: 15px;
+    padding: 15px;
 }
-
 
 /* hide 2 columns */
 span.owner, span.mode {
-  display: none;
+    display: none;
 }
 
 .files li {
-  display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
-  display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
-  display: -ms-flexbox;      /* TWEENER - IE 10 */
-  display: -webkit-flex;     /* NEW - Chrome */
-  display: flex;
+    display: -webkit-box; /* OLD - iOS 6-, Safari 3.1-6 */
+    display: -moz-box; /* OLD - Firefox 19- (buggy but mostly works) */
+    display: -ms-flexbox; /* TWEENER - IE 10 */
+    display: -webkit-flex; /* NEW - Chrome */
+    display: flex;
 }
 
 .fm-header {
-  width: auto;
-  display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
-  display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
-  display: -ms-flexbox;      /* TWEENER - IE 10 */
-  display: -webkit-flex;     /* NEW - Chrome */
-  display: flex;
+    width: auto;
+    display: -webkit-box; /* OLD - iOS 6-, Safari 3.1-6 */
+    display: -moz-box; /* OLD - Firefox 19- (buggy but mostly works) */
+    display: -ms-flexbox; /* TWEENER - IE 10 */
+    display: -webkit-flex; /* NEW - Chrome */
+    display: flex;
 }
 
 .name {
-  -webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
-  -moz-box-flex: 1;         /* OLD - Firefox 19- */
-  width: auto;
-  -webkit-flex: 1;          /* Chrome */
-  -ms-flex: 1;              /* IE 10 */
+    -webkit-box-flex: 1; /* OLD - iOS 6-, Safari 3.1-6 */
+    -moz-box-flex: 1; /* OLD - Firefox 19- */
+    width: auto;
+    -webkit-flex: 1; /* Chrome */
+    -ms-flex: 1; /* IE 10 */
 
-  flex-grow: 1;
+    flex-grow: 1;
 }
 
 .date, .size {
-  width: 100px;
-  flex-basis: 100px;
+    width: 100px;
+    flex-basis: 100px;
 }
-
 
 /* always show scrollbars so that the headers always line up */
 .fm-header, .files {
-     overflow-y:scroll
+    overflow-y: scroll
 }
 
 .fm-header {
     border-bottom: 1px solid #ddd;
+}
+
+/* Top buttons
+ * position right above the panel
+ * the actual buttons are embeded inside the panel
+ */
+.panel {
+    /* so we can absolutely position elements inside this panel*/
+    position: relative;
+    margin-top: 40px;
+}
+
+.panel h6.help {
+    /* position is in respect to panel*/
+    position: absolute;
+    top: -40px;
+    right: 0px;
+
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.menu-buttons {
+    margin: 15px;
+}
+
+.panel-btns {
+    position: absolute;
+    top: -40px;
+    right: 0px;
 }
