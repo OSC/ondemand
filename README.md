@@ -160,10 +160,6 @@ OOD_SSL_REDIRECT='true'
 # ServerName used for the Open OnDemand portal
 #
 OOD_SERVER_NAME='www.example.com'
-
-# Type of user authentication used for Open OnDemand portal
-#
-OOD_AUTH_TYPE='openid-connect'
 ```
 
 #### System Options
@@ -223,16 +219,70 @@ OOD_NGINX_URI='/nginx'
 #
 OOD_PUBLIC_URI='/public'
 
-# Redirect user to this URI if fail to map to system level user
-# Blank: Removes the redirection upon a failed user mapping
-#
-OOD_MAP_FAIL_URI='/efranz'
-
 # Redirect root URI "/" to this URI
 # Blank: Removes this redirection
 #
 OOD_ROOT_URI='/pun/sys/dashboard'
 ```
+
+#### OOD Authentication Options
+
+**Use Recommended OOD Authentication Setup**
+
+This authentication mechanism takes advantage of:
+
+- `mod_auth_openidc` for the authentication handler in Apache
+- CILogon for the OpenID Connect Identity Provider
+- PHP for handling discovery and registration
+- `grid-mapfile` for mapping authenticated user to system user
+- LDAP for authenticating system user in PHP
+
+```bash
+# Whether you want to use OOD recommended authentication
+#
+OOD_AUTH_SETUP='true'
+
+# The mod_auth_openidc redirect URI
+#
+OOD_AUTH_OIDC_URI='/oidc'
+
+# Path to OpenID Connect discovery php scripts
+#
+OOD_AUTH_DISCOVER_ROOT='/var/www/ood/discover'
+
+# The mod_auth_openidc discovery URI
+#
+OOD_AUTH_DISCOVER_URI='/discover'
+
+# Path to the registration php scripts
+#
+OOD_AUTH_REGISTER_ROOT='/var/www/ood/register'
+
+# The URI user is redirected to if they aren't registered in grid-mapfile
+#
+OOD_AUTH_REGISTER_URI='/register'
+```
+
+**System Specific Authentication Setup**
+
+This is used if admin provides their own authentication mechanism.
+
+```bash
+# Whether you want to use OOD recommended authentication
+# Default: 'true'
+#
+OOD_AUTH_SETUP='false'
+
+# Type of user authentication used for Open OnDemand portal
+#
+OOD_AUTH_TYPE='Basic'
+
+# Redirect user to this URI if fail to map to system level user
+# Blank: Removes the redirection upon a failed user mapping
+#
+OOD_MAP_FAIL_URI=''
+```
+
 ## Configuration File
 
 If the default options or using environment variables to make changes do not

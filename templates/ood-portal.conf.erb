@@ -9,7 +9,6 @@
 #   OOD_SSL='<%= OOD_SSL %>'
 #   OOD_SSL_REDIRECT='<%= OOD_SSL_REDIRECT %>'
 #   OOD_SERVER_NAME='<%= OOD_SERVER_NAME %>'
-#   OOD_AUTH_TYPE='<%= OOD_AUTH_TYPE %>'
 #   OOD_LUA_ROOT='<%= OOD_LUA_ROOT %>'
 #   OOD_PUN_STAGE_CMD='<%= OOD_PUN_STAGE_CMD %>'
 #   OOD_PUN_MAX_RETRIES='<%= OOD_PUN_MAX_RETRIES %>'
@@ -21,8 +20,17 @@
 #   OOD_RNODE_URI='<%= OOD_RNODE_URI %>'
 #   OOD_NGINX_URI='<%= OOD_NGINX_URI %>'
 #   OOD_PUBLIC_URI='<%= OOD_PUBLIC_URI %>'
-#   OOD_MAP_FAIL_URI='<%= OOD_MAP_FAIL_URI %>'
 #   OOD_ROOT_URI='<%= OOD_ROOT_URI %>'
+#   OOD_AUTH_SETUP='<%= OOD_AUTH_SETUP %>'
+<%- if OOD_AUTH_SETUP -%>
+#   OOD_AUTH_OIDC_URI='<%= OOD_AUTH_OIDC_URI %>'
+#   OOD_AUTH_DISOVER_ROOT='<%= OOD_AUTH_DISCOVER_ROOT %>'
+#   OOD_AUTH_DISOVER_URI='<%= OOD_AUTH_DISCOVER_URI %>'
+#   OOD_AUTH_REGISTER_ROOT='<%= OOD_AUTH_REGISTER_ROOT %>'
+#   OOD_AUTH_REGISTER_URI='<%= OOD_AUTH_REGISTER_URI %>'
+<%- end -%>
+#   OOD_AUTH_TYPE='<%= OOD_AUTH_TYPE %>'
+#   OOD_MAP_FAIL_URI='<%= OOD_MAP_FAIL_URI %>'
 #
 
 <%- if !OOD_IP.empty? && !OOD_SERVER_NAME.empty? -%>
@@ -164,7 +172,49 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
   <%- end -%>
 
   <%- unless OOD_ROOT_URI.empty? %>
+  # Redirect root URI to specified URI
+  #
+  #    https://<%= OOD_SERVER_NAME %>/
+  #    #=> https://<%= OOD_SERVER_NAME %><%= OOD_ROOT_URI %>
+  #
   RedirectMatch ^/$ "<%= OOD_ROOT_URI %>"
+  <%- end -%>
+
+  <%- if OOD_AUTH_SETUP -%>
+  # OpenID Connect redirect URI:
+  #
+  #    https://<%= OOD_SERVER_NAME %><%= OOD_AUTH_OIDC_URI %>
+  #    #=> handled by mod_auth_openidc
+  #
+  <Location "<%= OOD_AUTH_OIDC_URI %>">
+    AuthType "<%= OOD_AUTH_TYPE %>"
+    Require valid-user
+  </Location>
+
+  # Discover URI for OpenID Connect (used for multiple Id Providers):
+  #
+  #    https://<%= OOD_SERVER_NAME %><%= OOD_AUTH_DISCOVER_URI %>
+  #    #=> <%= OOD_AUTH_DISCOVER_ROOT %>/
+  #
+  Alias "<%= OOD_AUTH_DISCOVER_URI %>" "<%= OOD_AUTH_DISCOVER_ROOT %>"
+  <Directory "<%= OOD_AUTH_DISCOVER_ROOT %>">
+    Options Indexes FollowSymLinks
+    AllowOverride None
+    Require all granted
+  </Directory>
+
+  # Register unmapped user to grid-mapfile here:
+  #
+  #    https://<%= OOD_SERVER_NAME %><%= OOD_AUTH_REGISTER_URI %>
+  #    #=> <%= OOD_AUTH_REGISTER_ROOT %>/
+  #
+  Alias "<%= OOD_AUTH_REGISTER_URI %>" "<%= OOD_AUTH_REGISTER_ROOT %>"
+  <Directory "<%= OOD_AUTH_REGISTER_ROOT %>">
+    Options Indexes FollowSymLinks
+    AllowOverride None
+    AuthType "<%= OOD_AUTH_TYPE %>"
+    Require valid-user
+  </Directory>
   <%- end -%>
 
 <%- if !OOD_IP.empty? && !OOD_SERVER_NAME.empty? -%>

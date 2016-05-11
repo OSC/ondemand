@@ -28,7 +28,6 @@ OOD_PORT         ||= ENV['OOD_PORT']          || '443'
 OOD_SSL          ||= (ENV['OOD_SSL']          || 'true').to_bool
 OOD_SSL_REDIRECT ||= (ENV['OOD_SSL_REDIRECT'] || 'true').to_bool
 OOD_SERVER_NAME  ||= ENV['OOD_SERVER_NAME']   || 'www.example.com'
-OOD_AUTH_TYPE    ||= ENV['OOD_AUTH_TYPE']     || 'openid-connect'
 
 # System options
 OOD_LUA_ROOT        ||= ENV['OOD_LUA_ROOT']        || '/opt/ood/mod_ood_proxy/lib'
@@ -39,13 +38,28 @@ OOD_PUN_SOCKET_ROOT ||= ENV['OOD_PUN_SOCKET_ROOT'] || '/var/run/nginx'
 OOD_PUBLIC_ROOT     ||= ENV['OOD_PUBLIC_ROOT']     || '/var/www/ood/public'
 
 # OOD Portal URIs
-OOD_PUN_URI      ||= ENV['OOD_PUN_URI']      || '/pun'
-OOD_NODE_URI     ||= ENV['OOD_NODE_URI']     || '/node'
-OOD_RNODE_URI    ||= ENV['OOD_RNODE_URI']    || '/rnode'
-OOD_NGINX_URI    ||= ENV['OOD_NGINX_URI']    || '/nginx'
-OOD_PUBLIC_URI   ||= ENV['OOD_PUBLIC_URI']   || '/public'
-OOD_MAP_FAIL_URI ||= ENV['OOD_MAP_FAIL_URI'] || '/register'
-OOD_ROOT_URI     ||= ENV['OOD_ROOT_URI']     || '/pun/sys/dashboard'
+OOD_PUN_URI    ||= ENV['OOD_PUN_URI']      || '/pun'
+OOD_NODE_URI   ||= ENV['OOD_NODE_URI']     || '/node'
+OOD_RNODE_URI  ||= ENV['OOD_RNODE_URI']    || '/rnode'
+OOD_NGINX_URI  ||= ENV['OOD_NGINX_URI']    || '/nginx'
+OOD_PUBLIC_URI ||= ENV['OOD_PUBLIC_URI']   || '/public'
+OOD_ROOT_URI   ||= ENV['OOD_ROOT_URI']     || '/pun/sys/dashboard'
+
+# OOD Auth Setup
+OOD_AUTH_SETUP ||= (ENV['OOD_AUTH_SETUP'] || 'true').to_bool
+if OOD_AUTH_SETUP
+  OOD_AUTH_OIDC_URI      ||= ENV['OOD_AUTH_OIDC_URI']      || '/oidc'
+  OOD_AUTH_DISCOVER_ROOT ||= ENV['OOD_AUTH_DISCOVER_ROOT'] || '/var/www/ood/discover'
+  OOD_AUTH_DISCOVER_URI  ||= ENV['OOD_AUTH_DISCOVER_URI']  || '/discover'
+  OOD_AUTH_REGISTER_ROOT ||= ENV['OOD_AUTH_REGISTER_ROOT'] || '/var/www/ood/register'
+  OOD_AUTH_REGISTER_URI  ||= ENV['OOD_AUTH_REGISTER_URI']  || '/register'
+
+  OOD_AUTH_TYPE    = 'openid-connect'
+  OOD_MAP_FAIL_URI = OOD_AUTH_REGISTER_URI
+else
+  OOD_AUTH_TYPE    ||= ENV['OOD_AUTH_TYPE']    || 'Basic'
+  OOD_MAP_FAIL_URI ||= ENV['OOD_MAP_FAIL_URI'] || ''
+end
 
 #
 # Tasks
