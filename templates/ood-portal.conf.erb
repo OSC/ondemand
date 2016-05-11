@@ -1,3 +1,4 @@
+<%- OOD_HOST = OOD_SERVER_NAME.empty? ? '_default_' : OOD_SERVER_NAME -%>
 #
 # Open OnDemand Portal
 #
@@ -5,7 +6,7 @@
 #
 # Using the following options:
 #   OOD_IP='<%= OOD_IP %>'
-#   OOD_SUBDOMAIN='<%= OOD_SUBDOMAIN %>'
+#   OOD_SERVER_NAME='<%= OOD_SERVER_NAME %>'
 #   OOD_AUTH_TYPE='<%= OOD_AUTH_TYPE %>'
 #   OOD_LUA_ROOT='<%= OOD_LUA_ROOT %>'
 #   OOD_PUN_STAGE_CMD='<%= OOD_PUN_STAGE_CMD %>'
@@ -31,10 +32,10 @@ Listen "<%= OOD_IP %>"
 <VirtualHost "<%= OOD_IP %>">
 <%- end -%>
 
-  <%- unless OOD_SUBDOMAIN.empty? -%>
+  <%- unless OOD_SERVER_NAME.empty? -%>
   # Name that the server uses to identify itself
   #
-  ServerName "<%= OOD_SUBDOMAIN %>"
+  ServerName "<%= OOD_SERVER_NAME %>"
   <%- end -%>
 
   <%- unless OOD_LUA_ROOT.empty? -%>
@@ -59,7 +60,7 @@ Listen "<%= OOD_IP %>"
   <%- unless OOD_PUBLIC_URI.empty? -%>
   # Serve up publicly available assets from local file system:
   #
-  #    https://<%= OOD_SUBDOMAIN %><%= OOD_PUBLIC_URI %>/assets/images/osc-logo.png
+  #    https://<%= OOD_HOST %><%= OOD_PUBLIC_URI %>/assets/images/osc-logo.png
   #    #=> <%= OOD_PUBLIC_ROOT %>/assets/images/osc-logo.png
   #
   Alias "<%= OOD_PUBLIC_URI %>" "<%= OOD_PUBLIC_ROOT %>"
@@ -73,10 +74,10 @@ Listen "<%= OOD_IP %>"
   <%- unless OOD_NODE_URI.empty? -%>
   # Reverse proxy traffic to backend webserver through IP sockets:
   #
-  #    https://<%= OOD_SUBDOMAIN %><%= OOD_NODE_URI %>/HOST/PORT/index.html
+  #    https://<%= OOD_HOST %><%= OOD_NODE_URI %>/HOST/PORT/index.html
   #    #=> http://HOST:PORT<%= OOD_NODE_URI %>/HOST/PORT/index.html
   #
-  #    wss://<%= OOD_SUBDOMAIN %><%= OOD_NODE_URI %>/HOST/PORT/socket.io
+  #    wss://<%= OOD_HOST %><%= OOD_NODE_URI %>/HOST/PORT/socket.io
   #    #=> ws://HOST:PORT<%= OOD_NODE_URI %>/HOST/PORT/socket.io
   #
   <Location "<%= OOD_NODE_URI %>">
@@ -91,10 +92,10 @@ Listen "<%= OOD_IP %>"
   <%- unless OOD_RNODE_URI.empty? -%>
   # Reverse "relative" proxy traffic to backend webserver through IP sockets:
   #
-  #    https://<%= OOD_SUBDOMAIN %><%= OOD_RNODE_URI %>/HOST/PORT/index.html
+  #    https://<%= OOD_HOST %><%= OOD_RNODE_URI %>/HOST/PORT/index.html
   #    #=> http://HOST:PORT/index.html
   #
-  #    wss://<%= OOD_SUBDOMAIN %><%= OOD_RNODE_URI %>/HOST/PORT/socket.io
+  #    wss://<%= OOD_HOST %><%= OOD_RNODE_URI %>/HOST/PORT/socket.io
   #    #=> ws://HOST:PORT/socket.io
   #
   <Location "<%= OOD_RNODE_URI %>">
@@ -110,10 +111,10 @@ Listen "<%= OOD_IP %>"
   <%- unless OOD_PUN_URI.empty? -%>
   # Reverse proxy traffic to backend PUNs through Unix domain sockets:
   #
-  #    https://<%= OOD_SUBDOMAIN %><%= OOD_PUN_URI %>/dev/app/simulations/1
+  #    https://<%= OOD_HOST %><%= OOD_PUN_URI %>/dev/app/simulations/1
   #    #=> unix:/path/to/socket|http://localhost<%= OOD_PUN_URI %>/dev/app/simulations/1
   #
-  #    wss://<%= OOD_SUBDOMAIN %><%= OOD_PUN_URI %>/shared/bob/app/socket
+  #    wss://<%= OOD_HOST %><%= OOD_PUN_URI %>/shared/bob/app/socket
   #    #=> unix:/path/to/socket|ws://localhost<%= OOD_PUN_URI %>/shared/bob/app/socket
   #
   <Location "<%= OOD_PUN_URI %>">
@@ -130,7 +131,7 @@ Listen "<%= OOD_IP %>"
   <%- unless OOD_NGINX_URI.empty? -%>
   # Control backend PUN for authenticated user:
   #
-  #    https://<%= OOD_SUBDOMAIN %><%= OOD_NGINX_URI %>/stop
+  #    https://<%= OOD_HOST %><%= OOD_NGINX_URI %>/stop
   #    #=> stops the authenticated user's PUN
   #
   # See mod_ood_proxy for more details.

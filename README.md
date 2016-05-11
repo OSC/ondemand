@@ -145,10 +145,10 @@ OBJFILE='ood-portal.conf'
 #
 OOD_IP=''
 
-# Subdomain used for the Open OnDemand portal
+# ServerName used for the Open OnDemand portal
 # Blank: Remove `ServerName` directive
 #
-OOD_SUBDOMAIN=''
+OOD_SERVER_NAME=''
 
 # Type of user authentication used for Open OnDemand portal
 #

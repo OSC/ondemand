@@ -14,9 +14,9 @@ OBJDIR  ||= ENV['OBJDIR']  || 'build'
 OBJFILE ||= ENV['OBJFILE'] || 'ood-portal.conf'
 
 # Server options
-OOD_IP        ||= ENV['OOD_IP']        || ''
-OOD_SUBDOMAIN ||= ENV['OOD_SUBDOMAIN'] || ''
-OOD_AUTH_TYPE ||= ENV['OOD_AUTH_TYPE'] || 'openid-connect'
+OOD_IP          ||= ENV['OOD_IP']          || ''
+OOD_SERVER_NAME ||= ENV['OOD_SERVER_NAME'] || ''
+OOD_AUTH_TYPE   ||= ENV['OOD_AUTH_TYPE']   || 'openid-connect'
 
 # System options
 OOD_LUA_ROOT        ||= ENV['OOD_LUA_ROOT']        || '/opt/ood/mod_ood_proxy/lib'
