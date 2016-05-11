@@ -8,8 +8,13 @@ div.fm ul.menu {
     background-color: white;
 }
 
+.selected-file {
+    /*FIXME: background-color: rgb(0,75,135); - OH-TECH blue does look sharp */
+    background-color: rgb(71,10,104);
+}
+
 /* these styles control the selection style of a currently selected file */
-.current-file {
+.current-file, .selected-file.current-file {
     /*FIXME: background-color: rgb(0,75,135); - OH-TECH blue does look sharp */
     background-color: #08C;
 }
@@ -18,10 +23,6 @@ div.fm ul.menu {
     color: white;
 }
 
-.selected-file {
-    /*FIXME: background-color: rgb(0,75,135); - OH-TECH blue does look sharp */
-    background-color: #08C;
-}
 
 .selected-file, .selected-file .name > a {
     color: white;
