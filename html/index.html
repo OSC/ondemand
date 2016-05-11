@@ -38,15 +38,13 @@
         <script>
             CloudCmd('{{ prefix }}');
 
-            CloudCmd('{{ prefix }}');
-
             function terminal() {
                 var terminal_path = '/pun/sys/shell/ssh/oakley';
                 window.open(terminal_path + DOM.getCurrentDirPath());
             }
 
             // OSC_CUSTOM_CODE publicize download method from lib/client/menu.js
-            function download()  {
+            function download() {
                 var TIME        = 30 * 1000,
                         prefixUr    = CloudCmd.PREFIX_URL,
                         FS          = CloudFunc.FS,
