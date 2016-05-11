@@ -38,7 +38,7 @@ Listen <%= "#{OOD_IP}:80" %>
 
 # Listen on specified ip and port
 #
-Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL && OOD_PORT != '443' %>
+Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
 
 # Generate OOD Portal VirutalHost
 #
