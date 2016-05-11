@@ -70,7 +70,7 @@ file "#{PREFIX}/#{OBJFILE}" => ["#{OBJDIR}/#{OBJFILE}", PREFIX] do |task|
   cp task.prerequisites.first, task.name
 end
 
-desc "Install rendered config file into PREFIX"
+desc "Install rendered config file into PREFIX=#{PREFIX}"
 task :install => "#{PREFIX}/#{OBJFILE}"
 
 desc "Clean up all temporary rendered configs"
