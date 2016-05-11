@@ -36,7 +36,7 @@
 
 <%- if use_virtual_host -%>
 <%- if OOD_SSL && OOD_SSL_REDIRECT -%>
-# Redirect http traffic to https
+# Redirect http => https
 #
 Listen <%= "#{OOD_IP}:80" %>
 <VirtualHost "<%= "#{OOD_IP}:80" %>">
