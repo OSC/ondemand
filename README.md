@@ -145,10 +145,21 @@ OBJFILE='ood-portal.conf'
 #
 OOD_IP=''
 
-# ServerName used for the Open OnDemand portal
-# Blank: Remove `ServerName` directive
+# Port used for Open OnDemand portal
 #
-OOD_SERVER_NAME=''
+OOD_PORT='443'
+
+# Whether SSL is used [Boolean]
+#
+OOD_SSL='true'
+
+# Whether http traffic is redirected to https [Boolean]
+#
+OOD_SSL_REDIRECT='true'
+
+# ServerName used for the Open OnDemand portal
+#
+OOD_SERVER_NAME='www.example.com'
 
 # Type of user authentication used for Open OnDemand portal
 #

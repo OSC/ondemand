@@ -1,4 +1,3 @@
-<%- OOD_HOST = OOD_SERVER_NAME.empty? ? '_default_' : OOD_SERVER_NAME -%>
 #
 # Open OnDemand Portal
 #
@@ -6,6 +5,9 @@
 #
 # Using the following options:
 #   OOD_IP='<%= OOD_IP %>'
+#   OOD_PORT='<%= OOD_PORT %>'
+#   OOD_SSL='<%= OOD_SSL %>'
+#   OOD_SSL_REDIRECT='<%= OOD_SSL_REDIRECT %>'
 #   OOD_SERVER_NAME='<%= OOD_SERVER_NAME %>'
 #   OOD_AUTH_TYPE='<%= OOD_AUTH_TYPE %>'
 #   OOD_LUA_ROOT='<%= OOD_LUA_ROOT %>'
@@ -22,21 +24,35 @@
 #   OOD_MAP_FAIL_URI='<%= OOD_MAP_FAIL_URI %>'
 #
 
-<%- unless OOD_IP.empty? -%>
+<%- if !OOD_IP.empty? && !OOD_SERVER_NAME.empty? -%>
+<%- if OOD_SSL && OOD_SSL_REDIRECT -%>
+# Redirect http traffic to https
+#
+Listen <%= "#{OOD_IP}:80" %>
+<VirtualHost "<%= "#{OOD_IP}:80" %>">
+  ServerName "<%= OOD_SERVER_NAME %>"
+  Redirect permanent / https://<%= OOD_SERVER_NAME %><%= ":#{OOD_PORT}" if OOD_PORT != '443' %>/
+</VirtualHost>
+<%- end -%>
+
 # Listen on specified ip and port
 #
-Listen "<%= OOD_IP %>"
+Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL && OOD_PORT != '443' %>
 
 # Generate OOD Portal VirutalHost
 #
-<VirtualHost "<%= OOD_IP %>">
-<%- end -%>
+<VirtualHost "<%= "#{OOD_IP}:#{OOD_PORT}" %>">
 
-  <%- unless OOD_SERVER_NAME.empty? -%>
   # Name that the server uses to identify itself
   #
   ServerName "<%= OOD_SERVER_NAME %>"
+
+  <%- if OOD_SSL %>
+  # Enable SSL support
+  #
+  SSLEngine On
   <%- end -%>
+<%- end -%>
 
   <%- unless OOD_LUA_ROOT.empty? -%>
   # Location of OOD Lua scripts
@@ -60,7 +76,7 @@ Listen "<%= OOD_IP %>"
   <%- unless OOD_PUBLIC_URI.empty? -%>
   # Serve up publicly available assets from local file system:
   #
-  #    https://<%= OOD_HOST %><%= OOD_PUBLIC_URI %>/assets/images/osc-logo.png
+  #    https://<%= OOD_SERVER_NAME %><%= OOD_PUBLIC_URI %>/assets/images/osc-logo.png
   #    #=> <%= OOD_PUBLIC_ROOT %>/assets/images/osc-logo.png
   #
   Alias "<%= OOD_PUBLIC_URI %>" "<%= OOD_PUBLIC_ROOT %>"
@@ -74,10 +90,10 @@ Listen "<%= OOD_IP %>"
   <%- unless OOD_NODE_URI.empty? -%>
   # Reverse proxy traffic to backend webserver through IP sockets:
   #
-  #    https://<%= OOD_HOST %><%= OOD_NODE_URI %>/HOST/PORT/index.html
+  #    https://<%= OOD_SERVER_NAME %><%= OOD_NODE_URI %>/HOST/PORT/index.html
   #    #=> http://HOST:PORT<%= OOD_NODE_URI %>/HOST/PORT/index.html
   #
-  #    wss://<%= OOD_HOST %><%= OOD_NODE_URI %>/HOST/PORT/socket.io
+  #    wss://<%= OOD_SERVER_NAME %><%= OOD_NODE_URI %>/HOST/PORT/socket.io
   #    #=> ws://HOST:PORT<%= OOD_NODE_URI %>/HOST/PORT/socket.io
   #
   <Location "<%= OOD_NODE_URI %>">
@@ -92,10 +108,10 @@ Listen "<%= OOD_IP %>"
   <%- unless OOD_RNODE_URI.empty? -%>
   # Reverse "relative" proxy traffic to backend webserver through IP sockets:
   #
-  #    https://<%= OOD_HOST %><%= OOD_RNODE_URI %>/HOST/PORT/index.html
+  #    https://<%= OOD_SERVER_NAME %><%= OOD_RNODE_URI %>/HOST/PORT/index.html
   #    #=> http://HOST:PORT/index.html
   #
-  #    wss://<%= OOD_HOST %><%= OOD_RNODE_URI %>/HOST/PORT/socket.io
+  #    wss://<%= OOD_SERVER_NAME %><%= OOD_RNODE_URI %>/HOST/PORT/socket.io
   #    #=> ws://HOST:PORT/socket.io
   #
   <Location "<%= OOD_RNODE_URI %>">
@@ -111,10 +127,10 @@ Listen "<%= OOD_IP %>"
   <%- unless OOD_PUN_URI.empty? -%>
   # Reverse proxy traffic to backend PUNs through Unix domain sockets:
   #
-  #    https://<%= OOD_HOST %><%= OOD_PUN_URI %>/dev/app/simulations/1
+  #    https://<%= OOD_SERVER_NAME %><%= OOD_PUN_URI %>/dev/app/simulations/1
   #    #=> unix:/path/to/socket|http://localhost<%= OOD_PUN_URI %>/dev/app/simulations/1
   #
-  #    wss://<%= OOD_HOST %><%= OOD_PUN_URI %>/shared/bob/app/socket
+  #    wss://<%= OOD_SERVER_NAME %><%= OOD_PUN_URI %>/shared/bob/app/socket
   #    #=> unix:/path/to/socket|ws://localhost<%= OOD_PUN_URI %>/shared/bob/app/socket
   #
   <Location "<%= OOD_PUN_URI %>">
@@ -131,7 +147,7 @@ Listen "<%= OOD_IP %>"
   <%- unless OOD_NGINX_URI.empty? -%>
   # Control backend PUN for authenticated user:
   #
-  #    https://<%= OOD_HOST %><%= OOD_NGINX_URI %>/stop
+  #    https://<%= OOD_SERVER_NAME %><%= OOD_NGINX_URI %>/stop
   #    #=> stops the authenticated user's PUN
   #
   # See mod_ood_proxy for more details.
@@ -146,6 +162,6 @@ Listen "<%= OOD_IP %>"
   </Location>
   <%- end -%>
 
-<%- unless OOD_IP.empty? -%>
+<%- if !OOD_IP.empty? && !OOD_SERVER_NAME.empty? -%>
 </VirtualHost>
 <%- end %>
