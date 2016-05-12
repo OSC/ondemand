@@ -13,12 +13,12 @@ Generates an Open OnDemand portal config for an Apache server.
 - Apache httpd 2.4.12 or newer (and the following modules)
     - mod_ood_proxy (and its requirements)
 
-        mod_ood_proxy requirements
-        --------------------------
-        mod_lua
-        mod_env
-        mod_proxy (mod_proxy_connect + mod_proxy_wstunnel)
-        mod_auth_* (e.g., mod_auth_openidc)
+        | mod_ood_proxy requirements                         |
+        | -------------------------------------------------- |
+        | mod_lua                                            |
+        | mod_env                                            |
+        | mod_proxy (mod_proxy_connect + mod_proxy_wstunnel) |
+        | mod_auth_* (e.g., mod_auth_openidc)                |
 
 If using OOD recommended authentication (built with `OOD_AUTH_SETUP='true'`):
 
