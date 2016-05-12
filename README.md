@@ -17,6 +17,19 @@ Generates an Open OnDemand portal config for an Apache server.
         - mod_proxy (mod_proxy_connect + mod_proxy_wstunnel)
         - mod_auth_* (e.g., mod_auth_openidc)
 
+If using OOD recommended authentication (built with `OOD_AUTH_SETUP='true'`):
+
+- mod_auth_openidc
+- CILogon Client ID and Client Secret
+- ood_auth_discovery (PHP scripts)
+- ood_auth_registration (PHP scripts)
+- ood_auth_map (ruby CLI script)
+- mapdn (also relevant python scripts)
+
+Note: The above authentication setup utilizes a `grid-mapfile` for
+storing/accessing the mapping of the authenticated user to the system-level
+user.
+
 ## Installation
 
 1.  Clone/pull this repo onto the local file system
@@ -100,7 +113,7 @@ Generates an Open OnDemand portal config for an Apache server.
     The default install location is
 
     ```
-    /opt/rh/httpd24/root/etc/httpd/conf.d
+    PREFIX=/opt/rh/httpd24/root/etc/httpd/conf.d
     ```
 
     To change this run
@@ -149,11 +162,11 @@ OOD_IP=''
 #
 OOD_PORT='443'
 
-# Whether SSL is used [Boolean]
+# Whether SSL is used
 #
 OOD_SSL='true'
 
-# Whether http traffic is redirected to https [Boolean]
+# Whether http traffic is redirected to https
 #
 OOD_SSL_REDIRECT='true'
 
@@ -263,7 +276,7 @@ OOD_AUTH_REGISTER_ROOT='/var/www/ood/register'
 OOD_AUTH_REGISTER_URI='/register'
 ```
 
-**System Specific Authentication Setup**
+**Custom Authentication Setup**
 
 This is used if admin provides their own authentication mechanism.
 
