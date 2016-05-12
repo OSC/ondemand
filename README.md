@@ -12,7 +12,7 @@ Generates an Open OnDemand portal config for an Apache server.
 
 - Apache httpd 2.4.12 or newer (and the following modules)
 
-| module requirements                                |
+| modules required                                   |
 | -------------------------------------------------- |
 | mod_ood_proxy                                      |
 | mod_lua                                            |
