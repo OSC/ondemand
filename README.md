@@ -312,6 +312,65 @@ OOD_PUBLIC_ROOT = '/var/www/docroot'
 Options specified in `config.rake` take precendence over the corresponding
 environment variable set.
 
+## CILogon Setup
+
+If using the OOD recommended authentication scheme, you will need an
+appropriate Apache config that specifies the global `mod_auth_openidc` settings
+you want. An example of such is given here:
+
+```
+# /path/to/httpd/conf.d/auth_openidc.conf
+
+OIDCMetadataDir      /path/to/oidc/metadata
+OIDCDiscoverURL      https://www.example.com/discover
+OIDCRedirectURI      https://www.example.com/oidc
+OIDCCryptoPassphrase "<Chosen Passphrase>"
+
+# Keep sessions alive for 8 hours
+OIDCSessionInactivityTimeout 28800
+OIDCSessionMaxDuration 28800
+```
+
+This sets the global `mod_auth_openidc` settings used by all IdP's. Now we
+setup the CILogon IdP specific settings in three separate json files:
+
+- `/path/to/oidc/metadata/cilogon.org.provider`
+
+    ```json
+    {
+      "issuer": "https://cilogon.org",
+      "authorization_endpoint": "https://cilogon.org/authorize",
+      "token_endpoint": "https://cilogon.org/oauth2/token",
+      "userinfo_endpoint": "https://cilogon.org/oauth2/userinfo",
+      "response_types_supported": [
+        "code"
+      ],
+      "token_endpoint_auth_methods_supported": [
+        "client_secret_post"
+      ]
+    }
+    ```
+
+- `/path/to/oidc/metadata/cilogon.org.client`
+
+    ```json
+    {
+      "client_id": "<CLIENT ID>",
+      "client_secret": "<CLIENT SECRET>"
+    }
+    ```
+
+- `/path/to/oidc/metadata/cilogon.org.conf`
+
+    ```json
+    {
+      "scope": "openid email profile org.cilogon.userinfo",
+      "response_type": "code",
+      "auth_request_params": "skin=default"
+    }
+    ```
+
+
 ## Version
 
 To list the current version being used when building an OOD Portal config file,
