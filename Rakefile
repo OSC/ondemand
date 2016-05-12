@@ -85,7 +85,10 @@ file "#{PREFIX}/#{OBJFILE}" => ["#{OBJDIR}/#{OBJFILE}", PREFIX] do |task|
   cp task.prerequisites.first, task.name
 end
 
-desc "Install rendered config file into PREFIX=#{PREFIX}"
+desc <<-DESC
+Install rendered config file into PREFIX
+Default: PREFIX=/opt/rh/httpd24/root/etc/httpd/conf.d
+DESC
 task :install => "#{PREFIX}/#{OBJFILE}"
 
 desc "Clean up all temporary rendered configs"
