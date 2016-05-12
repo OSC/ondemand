@@ -20,7 +20,7 @@ Generates an Open OnDemand portal config for an Apache server.
 If using OOD recommended authentication (built with `OOD_AUTH_SETUP='true'`):
 
 - mod_auth_openidc
-- CILogon Client ID and Client Secret
+- CILogon Client ID and Client Secret ([Discussed Here](#cilogon-setup))
 - ood_auth_discovery (PHP scripts)
 - ood_auth_registration (PHP scripts)
 - ood_auth_map (ruby CLI script)
