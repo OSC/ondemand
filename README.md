@@ -12,7 +12,7 @@ Generates an Open OnDemand portal config for an Apache server.
 
 - Apache httpd 2.4.12 or newer (and the following modules)
 
-| **modules required**                                   |
+| **modules required**                               |
 | -------------------------------------------------- |
 | mod_ood_proxy                                      |
 | mod_lua                                            |
@@ -22,7 +22,7 @@ Generates an Open OnDemand portal config for an Apache server.
 
 If using OOD recommended authentication (built with `OOD_AUTH_SETUP='true'`):
 
-- mod_auth_openidc / CILogon Client ID and Client Secret ([Discussed Here](#cilogon-setup))
+- mod_auth_openidc / CILogon client information ([Discussed Here](#cilogon-setup))
 - ood_auth_discovery (PHP scripts)
 - ood_auth_registration (PHP scripts)
 - ood_auth_map (ruby CLI script)
