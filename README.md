@@ -474,6 +474,8 @@ Usage: nginx_stage nginx_clean [OPTIONS]
 Required options:
 
 General options:
+    -f, --[no-]force                 # Force clean ALL per-user nginx processes
+                                     # Default: false
     -N, --[no-]skip-nginx            # Skip execution of the per-user nginx process
                                      # Default: false
 
@@ -488,6 +490,13 @@ Examples:
         nginx_stage nginx_clean
 
     this displays the users who had their PUNs shutdown.
+
+    To clean up ALL running per-user nginx processes whether it has an
+    active connection or not:
+
+        nginx_stage nginx_clean --force
+
+    this also displays the users who had their PUNs shutdown.
 
     To ONLY display the users with inactive PUNs:
 
