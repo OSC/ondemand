@@ -153,3 +153,9 @@
 # user
 #
 #min_uid: 1000
+
+# Restrict starting up per-user NGINX process as user with this shell.
+# NB: This only affects the `pun` command, you are still able to start or stop
+#     the PUN using other commands (e.g., `nginx`, `nginx_clean`, ...)
+#
+#disabled_shell: '/access/denied'
