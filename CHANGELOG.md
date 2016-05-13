@@ -12,6 +12,7 @@ Features:
   - added `app_reset` command (resets all app configs using current template)
   - added `app_list` command (lists all staged app configs)
   - added `app_clean` command (deletes all stale app configs)
+  - check if user has disabled shell when starting PUN with `pun` command
 
 Bugfixes:
 
