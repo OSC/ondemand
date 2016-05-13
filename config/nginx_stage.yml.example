@@ -22,7 +22,7 @@
 # Whether you agree to opt in to the collection of useful metrics for the
 # Open OnDemand project
 #
-#opt_in: false
+#opt_in_metrics: false
 
 # The reverse proxy daemon user used to access the Unix domain sockets
 #

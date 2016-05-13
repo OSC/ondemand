@@ -27,8 +27,8 @@ module NginxStage
 
     # Wether the sys admin opts in to metrics collection
     # @return [Boolean] whether metrics should be collected
-    def opt_in
-      NginxStage.opt_in
+    def opt_in_metrics
+      NginxStage.opt_in_metrics
     end
 
     # Have all apps phone home for analytics (required by OOD proposal)

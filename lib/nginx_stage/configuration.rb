@@ -15,7 +15,7 @@ module NginxStage
     # Whether you agree to opt in to the collection of useful metrics for the
     # Open OnDemand project
     # @return [Boolean] whether you opt into metrics collection
-    attr_accessor :opt_in
+    attr_accessor :opt_in_metrics
 
     #
     # NGINX-specific configuration options
@@ -293,8 +293,8 @@ module NginxStage
     # Sets the default configuration options
     # @return [void]
     def set_default_configuration
-      self.template_root = "#{root}/templates"
-      self.opt_in        = false
+      self.template_root  = "#{root}/templates"
+      self.opt_in_metrics = false
 
       self.proxy_user       = 'apache'
       self.nginx_bin        = '/opt/rh/nginx16/root/usr/sbin/nginx'
