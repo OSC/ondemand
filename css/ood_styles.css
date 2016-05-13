@@ -143,6 +143,7 @@ span.owner, span.mode {
     /* so we can absolutely position elements inside this panel*/
     position: relative;
     margin-top: 40px;
+    width: 100%;
 }
 
 .panel h6.help {
