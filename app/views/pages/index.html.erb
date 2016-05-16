@@ -18,17 +18,24 @@
 <script src="<%= "#{ENV['RAILS_RELATIVE_URL_ROOT']}/ace-src-min-noconflict/ace.js" %>" type="text/javascript" charset="utf-8"></script>
 <script>
   var editor = ace.edit("editor");
-  editor.setTheme("ace/theme/twilight");
+  editor.setTheme( "ace/theme/solarized_light" );
   editor.session.setMode("ace/mode/javascript");
 
   // Change the font size
   $( "#fontsize" ).change(function() {
-    editor.setFontSize($( "#fontsize option:selected" ).val())
+    editor.setFontSize( $( "#fontsize option:selected" ).val() );
+    // TODO Save setting to cookie
   });
 
   // Change the key bindings
   $( "#keybindings" ).change(function() {
-    editor.setKeyboardHandler("ace/keyboard/" + $( "#keybindings option:selected" ).val())
+    editor.setKeyboardHandler( $( "#keybindings option:selected" ).val() );
+    // TODO Save setting to cookie
+  });
+
+  $( "#theme" ).change(function() {
+    editor.setTheme( $( "#theme option:selected" ).val() );
+    // TODO Save setting to cookie
   });
 </script>
 
