@@ -37,5 +37,10 @@
     editor.setTheme( $( "#theme option:selected" ).val() );
     // TODO Save setting to cookie
   });
+
+  $( "#mode" ).change(function() {
+    editor.session.setMode( "ace/mode/" + $( "#mode option:selected" ).val() );
+    // TODO Save setting to cookie
+  });
 </script>
 
