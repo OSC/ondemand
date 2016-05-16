@@ -21,8 +21,14 @@
   editor.setTheme("ace/theme/twilight");
   editor.session.setMode("ace/mode/javascript");
 
+  // Change the font size
   $( "#fontsize" ).change(function() {
     editor.setFontSize($( "#fontsize option:selected" ).val())
+  });
+
+  // Change the key bindings
+  $( "#keybindings" ).change(function() {
+    editor.setKeyboardHandler("ace/keyboard/" + $( "#keybindings option:selected" ).val())
   });
 </script>
 
