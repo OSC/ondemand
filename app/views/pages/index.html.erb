@@ -9,12 +9,9 @@
   }
 </style>
 
-<pre id="editor">function foo(items) {
-    var i;
-    for (i = 0; i &lt; items.length; i++) {
-        alert("Ace Rocks " + items[i]);
-    }
-}</pre>
+<pre id="editor">
+  <%= @editor_content %>
+</pre>
 
 
 <script src="<%= "#{ENV['RAILS_RELATIVE_URL_ROOT']}/ace-src-min-noconflict/ace.js" %>" type="text/javascript" charset="utf-8"></script>
