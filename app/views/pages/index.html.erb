@@ -8,9 +8,6 @@
     right: 0;
   }
 
-  #editorsubnav {
-    top: -5px;
-  }
 </style>
 
 <pre id="editor">
@@ -23,5 +20,9 @@
   var editor = ace.edit("editor");
   editor.setTheme("ace/theme/twilight");
   editor.session.setMode("ace/mode/javascript");
+
+  $( "#fontsize" ).change(function() {
+    editor.setFontSize($( "#fontsize option:selected" ).val())
+  });
 </script>
 
