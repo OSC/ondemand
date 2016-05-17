@@ -51,6 +51,30 @@
 
   $( "#reset-button" ).click(function() {
     editor.setValue(loadedContent, -1);
-  })
+    // TODO Should reset go back to the loaded file? Or the last saved file?
+  });
+
+  // TODO remove the console logging
+  $( "#save-button" ).click(function() {
+    if (apiUrl !== "") {
+      $.ajax({
+        url: apiUrl,
+        type: 'PUT',
+        data: editor.getValue(),
+        success: function (data) {
+          console.log(data);
+          // TODO add a visible indicator that it saved
+        },
+        error: function (request, status, error) {
+          console.log(request);
+          console.log(status);
+          console.log(error);
+        } 
+      })
+    } else {
+      console.log("Not valid");
+    }
+  });
+
 </script>
 
