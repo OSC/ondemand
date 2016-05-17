@@ -10,13 +10,12 @@
 
 </style>
 
-<pre id="editor">
-  <%= @editor_content %>
-</pre>
+<pre id="editor"><%= @editor_content %></pre>
 
 
 <script src="<%= "#{ENV['RAILS_RELATIVE_URL_ROOT']}/ace-src-min-noconflict/ace.js" %>" type="text/javascript" charset="utf-8"></script>
 <script>
+  var resetContent = '<%= @editor_content %>';
   var editor = ace.edit("editor");
   editor.setTheme( "ace/theme/solarized_light" );
   editor.session.setMode("ace/mode/javascript");
@@ -39,8 +38,17 @@
   });
 
   $( "#mode" ).change(function() {
-    editor.session.setMode( "ace/mode/" + $( "#mode option:selected" ).val() );
+    editor.getSession().setMode( "ace/mode/" + $( "#mode option:selected" ).val() );
     // TODO Save setting to cookie
   });
+
+  $( "#wordwrap" ).change(function() {
+    editor.getSession().setUseWrapMode(this.checked);
+    // TODO Save setting to cookie
+  });
+
+  $( "#reset-button" ).click(function() {
+    editor.setValue(unescape(resetContent));
+  })
 </script>
 
