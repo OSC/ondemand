@@ -17,6 +17,7 @@
 <script>
   var loadedContent = $( "#code-content" ).val();
   var editor = ace.edit("editor");
+  var apiUrl = "<%= @file_api_url %>";
   editor.setTheme( $( "#theme option:selected" ).val() );
   editor.session.setMode( "ace/mode/" + $( "#mode option:selected" ).val() );
   editor.setValue(loadedContent);
