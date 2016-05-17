@@ -63,10 +63,10 @@
         data: editor.getValue(),
         success: function (data) {
           $( "#save-button" ).fadeOut(function() {
-            $( "#save-button" ).html('<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Save').fadeIn();
+            $( "#save-button" ).html('<span class="glyphicon glyphicon-saved" aria-hidden="true"></span> Saved!').fadeIn();
             setTimeout(function() {
               $( "#save-button" ).fadeOut(function() {
-                $("#save-button").html('<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Saved').fadeIn();
+                $("#save-button").html('<span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save').fadeIn();
               })
             }, 2000);
           });
