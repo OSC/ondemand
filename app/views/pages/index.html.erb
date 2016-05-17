@@ -10,15 +10,16 @@
 
 </style>
 
-<pre id="editor"><%= @editor_content %></pre>
-
+<pre id="editor"></pre>
+<textarea id="code-content" name="code-content" hidden><%= @editor_content %></textarea>
 
 <script src="<%= "#{ENV['RAILS_RELATIVE_URL_ROOT']}/ace-src-min-noconflict/ace.js" %>" type="text/javascript" charset="utf-8"></script>
 <script>
-  var resetContent = '<%= @editor_content %>';
+  var loadedContent = $( "#code-content" ).val();
   var editor = ace.edit("editor");
-  editor.setTheme( "ace/theme/solarized_light" );
-  editor.session.setMode("ace/mode/javascript");
+  editor.setTheme( $( "#theme option:selected" ).val() );
+  editor.session.setMode( "ace/mode/" + $( "#mode option:selected" ).val() );
+  editor.setValue(loadedContent);
 
   // Change the font size
   $( "#fontsize" ).change(function() {
@@ -48,7 +49,7 @@
   });
 
   $( "#reset-button" ).click(function() {
-    editor.setValue(unescape(resetContent));
+    editor.setValue(loadedContent);
   })
 </script>
 
