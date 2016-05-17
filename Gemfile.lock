@@ -8,23 +8,43 @@ GIT
       redcarpet (~> 3.2.2)
 
 GIT
-  remote: git@github.com:AweSim-OSC/awesim_rails_logging.git
-  revision: 2d43c23b8916658bcfaf38b448ffeca59f83a8da
+  remote: https://github.com/AweSim-OSC/awesim_rails_logging.git
+  revision: 1b0417280df2c9b2a63af090a146322124e744fd
+  tag: v1.0.0
   specs:
     awesim_rails_logging (1.0.0)
       rails (~> 4.0.0)
 
 GIT
-  remote: git@github.com:AweSim-OSC/osc-machete.git
-  revision: 814c8d9313a9968a2027e8325211cafaf7b84fda
+  remote: https://github.com/AweSim-OSC/ood_app.git
+  revision: 07e9c861b7cb9664a80958011630b157b455722b
   specs:
-    osc-machete (1.0.1)
+    ood_app (0.0.1)
+      rails (~> 4.0.0)
+
+GIT
+  remote: https://github.com/AweSim-OSC/osc-machete.git
+  revision: dcf1a45d01ca7a0d1b49d23d45c4108a0b72c0a2
+  tag: v1.1.1
+  specs:
+    osc-machete (1.1.1)
       mustache
       pbs (~> 1.1)
 
 GIT
-  remote: git@github.com:AweSim-OSC/pbs-ruby.git
-  revision: 7ea346465113dbf528a55a37b58d4cb0058a9ee3
+  remote: https://github.com/AweSim-OSC/osc_machete_rails.git
+  revision: af1e0a213a6fa19430fe37bf3f0e3bf30d831b8d
+  tag: v1.1.0
+  specs:
+    osc_machete_rails (1.1.0)
+      awesim_rails (~> 1.0)
+      osc-machete (~> 1.0)
+      rails (~> 4.0.0)
+
+GIT
+  remote: https://github.com/AweSim-OSC/pbs-ruby.git
+  revision: 72856d0aceaae388ee6a4c725c75a4c5d68f0b41
+  tag: v1.1.1
   specs:
     pbs (1.1.0)
       ffi (~> 1.9, >= 1.9.6)
@@ -57,9 +77,8 @@ GEM
       thread_safe (~> 0.1)
       tzinfo (~> 0.3.37)
     arel (4.0.2)
-    autoprefixer-rails (6.3.3)
+    autoprefixer-rails (6.3.6.1)
       execjs
-      json
     bootstrap-sass (3.3.5)
       autoprefixer-rails (>= 5.0.0.1)
       sass (>= 3.2.19)
@@ -82,7 +101,7 @@ GEM
     erubis (2.7.0)
     execjs (2.6.0)
     ffi (1.9.10)
-    font-awesome-sass (4.5.0)
+    font-awesome-sass (4.6.2)
       sass (>= 3.2)
     hike (1.2.3)
     i18n (0.7.0)
@@ -93,15 +112,15 @@ GEM
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
     json (1.8.3)
-    libv8 (3.16.14.13)
+    libv8 (3.16.14.15)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.25.1)
     mini_portile2 (2.0.0)
     minitest (4.7.5)
-    multi_json (1.11.2)
-    mustache (1.0.2)
+    multi_json (1.12.0)
+    mustache (1.0.3)
     nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
     paperclip (4.2.4)
@@ -127,7 +146,7 @@ GEM
     rails_autolink (1.1.6)
       rails (> 3.1)
     rails_serve_static_assets (0.0.5)
-    rails_stdout_logging (0.0.4)
+    rails_stdout_logging (0.0.5)
     railties (4.0.0)
       actionpack (= 4.0.0)
       activesupport (= 4.0.0)
@@ -138,7 +157,7 @@ GEM
       json (~> 1.4)
     redcarpet (3.2.3)
     ref (2.0.0)
-    sass (3.4.21)
+    sass (3.4.22)
     sass-rails (5.0.4)
       railties (>= 4.0.0, < 5.0)
       sass (~> 3.1)
@@ -166,10 +185,9 @@ GEM
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
-    tzinfo (0.3.48)
-    uglifier (2.7.2)
-      execjs (>= 0.3.0)
-      json (>= 1.8.0)
+    tzinfo (0.3.49)
+    uglifier (3.0.0)
+      execjs (>= 0.3.0, < 3)
 
 PLATFORMS
   ruby
@@ -185,7 +203,9 @@ DEPENDENCIES
   jbuilder (~> 1.2)
   jquery-rails
   nokogiri
+  ood_app!
   osc-machete!
+  osc_machete_rails!
   paperclip (~> 4.2.2)
   pbs!
   rails (= 4.0.0)
