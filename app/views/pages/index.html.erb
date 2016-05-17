@@ -62,8 +62,16 @@
         type: 'PUT',
         data: editor.getValue(),
         success: function (data) {
-          console.log(data);
-          // TODO add a visible indicator that it saved
+          $( "#save-button" ).fadeOut(function() {
+            $( "#save-button" ).html('<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Save').fadeIn();
+            setTimeout(function() {
+              $( "#save-button" ).fadeOut(function() {
+                $("#save-button").html('<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Saved').fadeIn();
+              })
+            }, 2000);
+          });
+
+
         },
         error: function (request, status, error) {
           console.log(request);
