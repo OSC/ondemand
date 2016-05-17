@@ -1,6 +1,6 @@
 ---
-name: OSC System Status
+name: osc-editor
 description: |-
-  System Status of Oakley/Ruby Clusters
+  A text editor for files on OSC systems
 documentation: |-
 
