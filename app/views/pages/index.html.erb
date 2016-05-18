@@ -30,26 +30,28 @@
 <script src="<%= "#{ENV['RAILS_RELATIVE_URL_ROOT']}/ace-src-min-noconflict/ace.js" %>" type="text/javascript" charset="utf-8"></script>
 <script>
   var editorContent = "";
-  var editor = ace.edit("editor");
   var apiUrl = "<%= @file_api_url %>";
-  editor.setTheme( $( "#theme option:selected" ).val() );
-  editor.session.setMode( "ace/mode/" + $( "#mode option:selected" ).val() );
-  //editor.setValue(loadedContent, -1);
 
-  var loadedContent = $.ajax({
-    url: apiUrl,
-    type: 'GET',
-    success: function (data) {
-      console.log(data);
-      editorContent = data;
-      editor.setValue(editorContent, -1);
-    },
-    error: function (request, status, error) {
-      console.log(request);
-      console.log(status);
-      console.log(error);
-    }
-  });
+  <% if @editor_content %>
+    var editor = ace.edit("editor");
+    editor.setTheme( $( "#theme option:selected" ).val() );
+    editor.session.setMode( "ace/mode/" + $( "#mode option:selected" ).val() );
+
+    var loadedContent = $.ajax({
+      url: apiUrl,
+      type: 'GET',
+      success: function (data) {
+        console.log(data);
+        editorContent = data;
+        editor.setValue(editorContent, -1);
+      },
+      error: function (request, status, error) {
+        console.log(request);
+        console.log(status);
+        console.log(error);
+      }
+    });
+  <% end %>
 
   // Change the font size
   $( "#fontsize" ).change(function() {
