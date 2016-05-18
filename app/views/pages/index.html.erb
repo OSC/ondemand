@@ -17,7 +17,7 @@
     <h3>Select a file to edit:</h3>
     <h4><%= @pathname %></h4>
     <ul class="list-group">
-      <%= "<li class='list-group-item small'><a href='#{File.join(@file_edit_url, @pathname.dirname)}'>..</a></li>".html_safe unless @pathname.dirname.to_s == "/" %>
+      <%= "<li class='list-group-item small'><a href='#{File.join(@file_edit_url, @pathname.dirname)}'>..</a></li>".html_safe unless @pathname.to_s == "/" %>
       <% @directory_content.each do |path| %>
           <li class="list-group-item small">
             <%= "<a href='#{File.join(@file_edit_url, path)}'>#{Pathname.new(path).basename}</a>".html_safe %>
