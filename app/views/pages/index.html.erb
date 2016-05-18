@@ -12,14 +12,15 @@
 
 <% if @editor_content %>
   <pre id="editor"></pre>
-  <textarea id="code-content" name="code-content" hidden><%= @editor_content %></textarea>
+
 <% elsif @directory_content %>
     <h3>Select a file to edit:</h3>
+    <h4><%= Pathname.new(@directory_content.first).dirname %></h4>
     <ul class="list-group">
-      <%= "<li class='list-group-item'><a href='#{File.join(@file_edit_url, Pathname.new(@directory_content.first).dirname.dirname)}'>..</a></li>".html_safe unless Pathname.new(@directory_content.first).dirname.to_s == "/" %>
+      <%= "<li class='list-group-item small'><a href='#{File.join(@file_edit_url, Pathname.new(@directory_content.first).dirname.dirname)}'>..</a></li>".html_safe unless Pathname.new(@directory_content.first).dirname.to_s == "/" %>
       <% @directory_content.each do |path| %>
-          <li class="list-group-item">
-            <%= "<a href='#{File.join(@file_edit_url, path)}'>#{path}</a>".html_safe %>
+          <li class="list-group-item small">
+            <%= "<a href='#{File.join(@file_edit_url, path)}'>#{Pathname.new(path).basename}</a>".html_safe %>
           </li>
       <% end %>
     </ul>
@@ -28,12 +29,27 @@
 
 <script src="<%= "#{ENV['RAILS_RELATIVE_URL_ROOT']}/ace-src-min-noconflict/ace.js" %>" type="text/javascript" charset="utf-8"></script>
 <script>
-  var loadedContent = $( "#code-content" ).val();
+  var editorContent = "";
   var editor = ace.edit("editor");
   var apiUrl = "<%= @file_api_url %>";
   editor.setTheme( $( "#theme option:selected" ).val() );
   editor.session.setMode( "ace/mode/" + $( "#mode option:selected" ).val() );
-  editor.setValue(loadedContent, -1);
+  //editor.setValue(loadedContent, -1);
+
+  var loadedContent = $.ajax({
+    url: apiUrl,
+    type: 'GET',
+    success: function (data) {
+      console.log(data);
+      editorContent = data;
+      editor.setValue(editorContent, -1);
+    },
+    error: function (request, status, error) {
+      console.log(request);
+      console.log(status);
+      console.log(error);
+    }
+  });
 
   // Change the font size
   $( "#fontsize" ).change(function() {
@@ -63,8 +79,7 @@
   });
 
   $( "#reset-button" ).click(function() {
-    editor.setValue(loadedContent, -1);
-    // TODO Should reset go back to the loaded file? Or the last saved file?
+    editor.setValue(editorContent, -1);
   });
 
   // TODO remove the console logging
