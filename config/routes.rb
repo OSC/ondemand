@@ -1,6 +1,7 @@
 OODApp::Application.routes.draw do
   root "pages#index"
   match "edit/*path" => "pages#index", :via => [:get], :constraints => { :id => /.*/ }
+  get "edit" => "pages#index"
   get "pages/index"
   get "pages/about"
 
