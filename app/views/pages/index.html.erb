@@ -41,14 +41,11 @@
       url: apiUrl,
       type: 'GET',
       success: function (data) {
-        console.log(data);
         editorContent = data;
         editor.setValue(editorContent, -1);
       },
       error: function (request, status, error) {
-        console.log(request);
-        console.log(status);
-        console.log(error);
+        alert("An error occured attempting to load this file!\n" + error);
       }
     });
   <% end %>
@@ -84,7 +81,6 @@
     editor.setValue(editorContent, -1);
   });
 
-  // TODO remove the console logging
   $( "#save-button" ).click(function() {
     if (apiUrl !== "") {
       $.ajax({
@@ -104,13 +100,11 @@
 
         },
         error: function (request, status, error) {
-          console.log(request);
-          console.log(status);
-          console.log(error);
+          alert("An error occured attempting to save this file!\n" + error);
         } 
       })
     } else {
-      console.log("Not valid");
+      console.log("Can't save this!");
     }
   });
 
