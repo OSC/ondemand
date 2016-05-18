@@ -8,13 +8,13 @@ class PagesController < ApplicationController
       @editor_content = pathname.read
       @file_api_url = OodApp.files.api(path: pathname)
     elsif pathname.directory?
-      # TODO make these into links and display a separate view
       @directory_content = Dir.glob(pathname + "*").sort
       @file_edit_url = Pathname.new(ENV['RAILS_RELATIVE_URL_ROOT']).join('edit')
     else
-      # TODO make an error page
-      @editor_content = pathname
+      @directory_content = Dir.glob(ENV['HOME'] + "*").sort
+      @file_edit_url = Pathname.new(ENV['RAILS_RELATIVE_URL_ROOT']).join('edit')
     end
+
   end
 
   def about
