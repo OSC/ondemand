@@ -1,11 +1,15 @@
 class PagesController < ApplicationController
 
   def index
-    path = "/#{params[:path]}"
-    path += params.has_key?(:format) ? ".#{params[:format]}" : ""
+
+    path = params[:path] || "/"
+    path = "/" + path unless path.start_with?("/")
+
+    # path = "/#{params[:path]}"
+    # path += params.has_key?(:format) ? ".#{params[:format]}" : ""
     pathname = Pathname.new(path)
     if pathname.file? && pathname.readable?
-      @editor_content = pathname.read
+      @editor_content = ""
       @file_api_url = OodApp.files.api(path: pathname)
     elsif pathname.directory?
       @directory_content = Dir.glob(pathname + "*").sort
