@@ -16,9 +16,17 @@
         <noscript>
             <link rel=stylesheet href="{{ prefix }}/css/nojs.css">
         </noscript>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+<script>
+$.noConflict();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+
     </head>
     <body>
-        <div class=fm>{{ fm }}</div>
+        <div class="fm">{{ fm }}</div>
         <div id="js-keyspanel" class="keyspanel">
             <!-- OSC_CUSTOM_CODE remove this button >> <button id=f1      class="cmd-button reduce-text icon-help"      title="Help"            >F1</button> -->
             <button id=f2      class="cmd-button reduce-text icon-rename"    title="Rename"          >F2</button>
@@ -85,6 +93,33 @@
                             DOM.toggleSelectedFile(file);
                     });
             }
+// not sure how to style yet as icon: "mini-icon directory" works...
+// but doesn't
+jQuery('#directory-tree').jstree({
+    'core' : {
+    'data' : [
+      {text: "Node One"},
+      {text: "Node Two",
+       children: [
+         {text: "busy"},
+         {text: "body"},
+         {text: "two",
+          children: [
+            {text: "busy"},
+            {text: "body"},
+            {text: "two",
+              children: [
+                {text: "busy"},
+                {text: "body"},
+                {text: "two"}
+                ]
+            }],
+         }
+       ]
+      },
+    ]
+    }
+});
         </script>
     </body>
 </html>

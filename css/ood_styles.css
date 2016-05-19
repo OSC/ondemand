@@ -164,3 +164,17 @@ span.owner, span.mode {
     top: -40px;
     right: 0px;
 }
+
+/* align tree and panel side by side using flex */
+div.fm {
+   display: flex;
+}
+
+.directory-explorer h2{
+  font-size: 16px;
+}
+
+.directory-explorer {
+   width: 200px;
+   padding-top: 38px;
+}
