@@ -154,6 +154,10 @@ jQuery('.panel.panel-left').on('panel_dir_updated', function(e){
     updateTreeSelection();
 });
 
+jQuery('#directory-tree').on('after_open.jstree', function(){
+    console.log("after_open.jstree event fired");
+    updateTreeSelection();
+});
         </script>
     </body>
 </html>
