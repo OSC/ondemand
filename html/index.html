@@ -141,11 +141,18 @@ jQuery('#directory-tree').on('changed.jstree', function(e, data){
   });
 });
 
-window.updateTreeSelection = function(){
+updateTreeSelection = function(){
   var tree = jQuery('#directory-tree').jstree(true);
   tree.deselect_all(true);
   tree.select_node(DOM.getCurrentDirPath().slice(0,-1), true);
 };
+
+// in client.js in the "createFileTable" function we trigger an event
+// on the panel after updating the panel's current directory
+// here we update the tree selection accordingly
+jQuery('.panel.panel-left').on('panel_dir_updated', function(e){
+    updateTreeSelection();
+});
 
         </script>
     </body>
