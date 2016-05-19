@@ -123,27 +123,30 @@ jQuery('#directory-tree').jstree({
     }
 });
 
-jQuery('#directory-tree').on('select_node.jstree', function(e, data){
-     console.log(data.node.id);
+jQuery('#directory-tree').on('changed.jstree', function(e, data){
+  console.log("select_node.jstree event fired: ");
+  console.log(e);
+  console.log(data.node.id);
 
-     //TODO: may have to massage data.node.id
-     // in lib/client/listeners.js this was done:
-     //
-     // link        = link.replace('%%', '%25%');
-     // link        = decodeURI(link);
-     // link        = link.replace(RegExp('^' + prefix + fs), '') || '/';
-     CloudCmd.loadDir({
-         path: data.node.id,
-         isRefresh: false,
-         panel: DOM.getByDataName('js-left')
-     });
+  //TODO: may have to massage data.node.id
+  // in lib/client/listeners.js this was done:
+  //
+  // link        = link.replace('%%', '%25%');
+  // link        = decodeURI(link);
+  // link        = link.replace(RegExp('^' + prefix + fs), '') || '/';
+  CloudCmd.loadDir({
+    path: data.node.id,
+    isRefresh: false,
+    panel: DOM.getByDataName('js-left')
+  });
 });
 
 window.updateTreeSelection = function(){
   var tree = jQuery('#directory-tree').jstree(true);
-  tree.deselect_all();
-  tree.select_node(DOM.getCurrentDirPath().slice(0,-1));
+  tree.deselect_all(true);
+  tree.select_node(DOM.getCurrentDirPath().slice(0,-1), true);
 };
+
         </script>
     </body>
 </html>
