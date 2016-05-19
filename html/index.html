@@ -97,27 +97,29 @@ $.noConflict();
 // but doesn't
 jQuery('#directory-tree').jstree({
     'core' : {
-    'data' : [
-      {text: "Node One"},
-      {text: "Node Two",
-       children: [
-         {text: "busy"},
-         {text: "body"},
-         {text: "two",
-          children: [
-            {text: "busy"},
-            {text: "body"},
-            {text: "two",
-              children: [
-                {text: "busy"},
-                {text: "body"},
-                {text: "two"}
-                ]
-            }],
-         }
-       ]
-      },
-    ]
+      'multiple' : false,
+      'data' : {
+        url: function(node){
+          console.log(node);
+          if(node.id == "#")
+            return "https://websvcs08.osc.edu/pun/dev/files/api/v1/fs/nfs/17/efranz";
+          else
+            return "https://websvcs08.osc.edu/pun/dev/files/api/v1/fs" + node.id;
+        },
+        dataFilter: function(data, type){
+          var parsed_data = JSON.parse(data);
+          return JSON.stringify(parsed_data.files.filter(function(arg){
+              return (! arg.name.startsWith(".")) && arg.size == "dir";
+          }).map(function(arg){
+              // how do we know if it is a leaf node? we do not :-(
+              // solution - we need to have a CUSTOM request that actually
+              // returns whether or not the directory CONTAINS any subdirectories
+              // THUS our own request/response in front of the api request/response
+              // but this works well now...
+              return {text: arg.name, children: true, id: parsed_data.path + arg.name}; // add id or attribute for full path
+          }));
+        }
+      }
     }
 });
         </script>
