@@ -122,6 +122,12 @@ jQuery('#directory-tree').jstree({
       }
     }
 });
+
+window.updateTreeSelection = function(){
+  var tree = jQuery('#directory-tree').jstree(true);
+  tree.deselect_all();
+  tree.select_node(DOM.getCurrentDirPath().slice(0,-1));
+};
         </script>
     </body>
 </html>
