@@ -127,6 +127,14 @@ var initTree = function(){
   });
 };
 
+var load_directory = function(dir){
+  CloudCmd.loadDir({
+    path: dir,
+    isRefresh: false,
+    panel: DOM.getByDataName('js-left')
+  });
+}
+
 jQuery('#directory-tree').on('changed.jstree', function(e, data){
   console.log("select_node.jstree event fired: ");
   console.log(e);
@@ -138,17 +146,29 @@ jQuery('#directory-tree').on('changed.jstree', function(e, data){
   // link        = link.replace('%%', '%25%');
   // link        = decodeURI(link);
   // link        = link.replace(RegExp('^' + prefix + fs), '') || '/';
-  CloudCmd.loadDir({
-    path: data.node.id,
-    isRefresh: false,
-    panel: DOM.getByDataName('js-left')
-  });
+  load_directory(data.node.id);
+});
+
+jQuery('.directory-explorer .home a').click(function(e){
+    load_directory(jQuery(this).attr('href'))
+    e.preventDefault();
+    return false;
 });
 
 var updateTreeSelection = function(){
-  var tree = jQuery('#directory-tree').jstree(true);
+  var tree = jQuery('#directory-tree').jstree(true),
+      dir  = DOM.getCurrentDirPath().slice(0,-1),
+      home = jQuery('.directory-explorer .home a');
+
   tree.deselect_all(true);
-  tree.select_node(DOM.getCurrentDirPath().slice(0,-1), true);
+  home.parent().removeClass('selected');
+
+  if(dir === home.attr('href')){
+    home.parent().addClass("selected");
+  }
+  else{
+    tree.select_node(dir, true);
+  }
 };
 
 // in client.js in the "createFileTable" function we trigger an event
