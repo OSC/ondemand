@@ -20,7 +20,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
 <script>
-// $.noConflict();
+var jQuery12 = $.noConflict(true);
 
 // replace this with shim: https://github.com/mathiasbynens/String.prototype.startsWith
 // http://stackoverflow.com/questions/646628/how-to-check-if-a-string-startswith-another-string
@@ -105,7 +105,7 @@ if(typeof String.prototype.startsWith === "undefined"){
 
 <script src="{{ prefix }}/lib/client/ood_tree.js"></script>
 <script>
-jQuery('.panel.panel-left').on('panel_initialized', function(e){
+jQuery12('.panel.panel-left').on('panel_initialized', function(e){
     initTree("{{ treeroot }}");
 });
 </script>
