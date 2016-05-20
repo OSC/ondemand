@@ -95,7 +95,8 @@ $.noConflict();
             }
 
 
-var initTree = function(){
+var initTree = function(treeroot){
+  // var self = this;
   // not sure how to style yet as icon: "mini-icon directory" works...
   // but doesn't
   jQuery('#directory-tree').jstree({
@@ -105,9 +106,9 @@ var initTree = function(){
           url: function(node){
             console.log(node);
             if(node.id == "#")
-              return "https://websvcs08.osc.edu/pun/dev/files/api/v1/fs/nfs/17/efranz";
+              return CloudCmd.PREFIX_URL + "/fs" + treeroot;
             else
-              return "https://websvcs08.osc.edu/pun/dev/files/api/v1/fs" + node.id;
+              return CloudCmd.PREFIX_URL + "/fs" + node.id;
           },
           dataFilter: function(data, type){
             var parsed_data = JSON.parse(data);
@@ -183,14 +184,13 @@ jQuery('#directory-tree').on('ready.jstree', function(){
 });
 
 jQuery('.panel.panel-left').on('panel_initialized', function(e){
-    initTree();
+    initTree("{{ treeroot }}");
 });
 
 jQuery('#directory-tree').on('after_open.jstree', function(){
     updateTreeSelection();
 });
+</script>
 
-
-        </script>
-    </body>
+</body>
 </html>
