@@ -144,7 +144,13 @@ span.owner, span.mode {
     position: relative;
     margin-top: 40px;
 
-    flex-grow: 1;
+    -webkit-box-flex: 3; /* OLD - iOS 6-, Safari 3.1-6 */
+    -moz-box-flex: 3; /* OLD - Firefox 19- */
+    width: auto;
+    -webkit-flex: 3; /* Chrome */
+    -ms-flex: 3; /* IE 10 */
+
+    flex-grow: 3;
 }
 
 .panel h6.help {
@@ -168,7 +174,11 @@ span.owner, span.mode {
 
 /* align tree and panel side by side using flex */
 div.fm {
-   display: flex;
+  display: -webkit-box; /* OLD - iOS 6-, Safari 3.1-6 */
+  display: -moz-box; /* OLD - Firefox 19- (buggy but mostly works) */
+  display: -ms-flexbox; /* TWEENER - IE 10 */
+  display: -webkit-flex; /* NEW - Chrome */
+  display: flex;
 }
 
 .directory-explorer {
@@ -183,8 +193,13 @@ div.fm {
   font-size:14px;
   line-height:1.42857143;
 
-  flex-grow: 0;
-  max-width: 50%;
+  -webkit-box-flex: 1; /* OLD - iOS 6-, Safari 3.1-6 */
+  -moz-box-flex: 1; /* OLD - Firefox 19- */
+  width: auto;
+  -webkit-flex: 1; /* Chrome */
+  -ms-flex: 1; /* IE 10 */
+
+  flex-grow: 1;
 }
 
 .directory-explorer .home {
