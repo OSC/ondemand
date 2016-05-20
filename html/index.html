@@ -20,7 +20,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
 <script>
-$.noConflict();
+// $.noConflict();
 
 // replace this with shim: https://github.com/mathiasbynens/String.prototype.startsWith
 // http://stackoverflow.com/questions/646628/how-to-check-if-a-string-startswith-another-string
@@ -30,7 +30,7 @@ if(typeof String.prototype.startsWith === "undefined"){
   }
 }
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+<script src="{{ prefix }}/lib/client/jstree/jstree.js"></script>
 
     </head>
     <body>
