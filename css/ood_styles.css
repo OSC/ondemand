@@ -179,11 +179,12 @@ div.fm {
   display: -ms-flexbox; /* TWEENER - IE 10 */
   display: -webkit-flex; /* NEW - Chrome */
   display: flex;
+
+  margin: 26px;
 }
 
 .directory-explorer {
   margin-top: 40px;
-  height: 100%;
   overflow: scroll;
   background-color: #f5f5f5;
   border: 1px solid #ddd;
@@ -198,16 +199,73 @@ div.fm {
   width: auto;
   -webkit-flex: 0; /* Chrome */
   -ms-flex: 0; /* IE 10 */
-
   flex-grow: 0;
+
   -ms-flex-preferred-size: auto; /* IE10 */
   -webkit-flex-basis: auto; /* Safari 8 */
   flex-basis: auto;
+
+
+  // For children */
+  display: -webkit-box; /* OLD - iOS 6-, Safari 3.1-6 */
+  display: -moz-box; /* OLD - Firefox 19- (buggy but mostly works) */
+  display: -ms-flexbox; /* TWEENER - IE 10 */
+  display: -webkit-flex; /* NEW - Chrome */
+  display: flex;
+
+  -webkit-flex-direction: column;
+  -moz-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
 }
 
 .directory-explorer .home {
   font-size: 16px;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.panel {
+  // For children */
+  display: -webkit-box; /* OLD - iOS 6-, Safari 3.1-6 */
+  display: -moz-box; /* OLD - Firefox 19- (buggy but mostly works) */
+  display: -ms-flexbox; /* TWEENER - IE 10 */
+  display: -webkit-flex; /* NEW - Chrome */
+  display: flex;
+
+  -webkit-flex-direction: column;
+  -moz-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.panel > div {
+  -webkit-box-flex: 0; /* OLD - iOS 6-, Safari 3.1-6 */
+  -moz-box-flex: 0; /* OLD - Firefox 19- */
+  width: auto;
+  -webkit-flex: 0; /* Chrome */
+  -ms-flex: 0; /* IE 10 */
+  flex-grow: 0;
+
+  -ms-flex-preferred-size: auto; /* IE10 */
+  -webkit-flex-basis: auto; /* Safari 8 */
+  flex-basis: auto;
+}
+
+.panel .files {
+  -webkit-box-flex: 1; /* OLD - iOS 6-, Safari 3.1-6 */
+  -moz-box-flex: 1; /* OLD - Firefox 19- */
+  width: auto;
+  -webkit-flex: 1; /* Chrome */
+  -ms-flex: 1; /* IE 10 */
+  flex-grow: 1;
+}
+
+.directory-explorer {
+}
+
+.fm {
+   height: 80vh;
+   outline: 3px dotted red;
 }
 
 .directory-explorer .home a:visited, .directory-explorer .home a {
