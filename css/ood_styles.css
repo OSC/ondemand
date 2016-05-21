@@ -264,8 +264,15 @@ div.fm {
 }
 
 .fm {
-   height: 80vh;
-   outline: 3px dotted red;
+   height: 100vh;
+   margin: 0px;
+   padding: 26px;
+   box-sizing: border-box;
+   padding-bottom: 36px;
+}
+
+body {
+  overflow: hidden;
 }
 
 .directory-explorer .home a:visited, .directory-explorer .home a {
