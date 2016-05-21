@@ -48,3 +48,7 @@
 .loading-gif {
     background      : url(../img/spinner.gif);
 }
+
+.directory-explorer a i.jstree-icon.jstree-themeicon {
+  background-image: url(../img/dir.png);
+}

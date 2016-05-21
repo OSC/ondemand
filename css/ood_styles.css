@@ -299,3 +299,10 @@ body {
    background-color: #08C !important;
    color: white !important;
 }
+
+.directory-explorer a i.jstree-icon.jstree-themeicon {
+  background-position: inherit;
+  position: relative;
+  left: 4px;
+  top: 4px;
+}
