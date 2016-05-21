@@ -231,7 +231,7 @@ div.fm {
   flex-grow: 0;
 
   -ms-flex-preferred-size: auto; /* IE10 */
-  -webkit-flex-basis: 80px; /* Safari 8 */
+  -webkit-flex-basis: 40px; /* Safari 8 */
   flex-basis: auto;
 }
 
