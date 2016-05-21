@@ -222,6 +222,17 @@ div.fm {
 .directory-explorer .home {
   font-size: 16px;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  -webkit-box-flex: 0; /* OLD - iOS 6-, Safari 3.1-6 */
+  -moz-box-flex: 0; /* OLD - Firefox 19- */
+  height: auto;
+  -webkit-flex: 0; /* Chrome */
+  -ms-flex: 0; /* IE 10 */
+  flex-grow: 0;
+
+  -ms-flex-preferred-size: auto; /* IE10 */
+  -webkit-flex-basis: 80px; /* Safari 8 */
+  flex-basis: auto;
 }
 
 .panel {
