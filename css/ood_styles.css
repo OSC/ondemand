@@ -274,12 +274,11 @@ div.fm {
 .directory-explorer {
 }
 
-.fm {
+div.fm {
    height: 100vh;
    margin: 0px;
-   padding: 26px;
+   padding: 5px 26px 5px 26px;
    box-sizing: border-box;
-   padding-bottom: 36px;
 }
 
 body {
