@@ -23,7 +23,6 @@ div.fm ul.menu {
     color: white;
 }
 
-
 .selected-file, .selected-file .name > a {
     color: white;
 }
@@ -168,8 +167,7 @@ span.owner, span.mode {
 
 .panel-btns {
     position: absolute;
-    top: -40px;
-    right: 0px;
+    right: 30px;
 }
 
 /* align tree and panel side by side using flex */
