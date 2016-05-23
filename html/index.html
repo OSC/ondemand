@@ -58,11 +58,13 @@
 <script>
     CloudCmd('{{ prefix }}');
 
+    // Launch the OSC terminal app in a new window
     function terminal() {
         var terminal_path = '/pun/sys/shell/ssh/oakley';
         window.open(terminal_path + DOM.getCurrentDirPath());
     }
 
+    // Update the css display tags on hidden files to hide or display
     function dotfiles() {
         if (document.getElementById("checkbox-dotfiles").checked) {
             $( ".files li.dotfile" ).css('display', '');
@@ -71,12 +73,15 @@
         }
     }
 
+    // On page load, get the cookie and set the checkbox to the appropriate state
+    // then, call dotfiles() to update the css
     window.onload = function() {
         document.getElementById("checkbox-dotfiles").checked = ( getCookie('dotfiles') === 'true' );
         dotfiles();
     };
 
     // Sets the cookie when the dotfiles box is checked
+    // then, call dotfiles() to update the css
     function dotfilesChecked() {
         if (document.getElementById("checkbox-dotfiles").checked) {
             setCookie('dotfiles', true, 9999);
@@ -86,6 +91,8 @@
         dotfiles();
     }
 
+    // OSC_CUSTOM_CODE getCookie and setCookie methods borrowed from
+    // http://www.w3schools.com/js/js_cookies.asp
     function setCookie(cname, cvalue, exdays) {
         var d = new Date();
         d.setTime(d.getTime() + (exdays*24*60*60*1000));
@@ -93,6 +100,8 @@
         document.cookie = cname + "=" + cvalue + "; " + expires;
     }
 
+    // OSC_CUSTOM_CODE getCookie and setCookie methods borrowed from
+    // http://www.w3schools.com/js/js_cookies.asp
     function getCookie(cname) {
         var name = cname + "=";
         var ca = document.cookie.split(';');
