@@ -66,11 +66,16 @@
 
     // Update the css display tags on hidden files to hide or display
     function dotfiles() {
-        if (document.getElementById("checkbox-dotfiles").checked) {
+        if (isDotfilesChecked()) {
             jQuery12( ".files li.dotfile" ).css('display', '');
         } else {
             jQuery12( ".files li.dotfile" ).css('display', 'none');
         }
+    }
+
+    // Return state of dotfiles checkbox
+    function isDotfilesChecked() {
+        return document.getElementById("checkbox-dotfiles").checked;
     }
 
     // On page load, get the cookie and set the checkbox to the appropriate state
@@ -83,7 +88,7 @@
     // Sets the cookie when the dotfiles box is checked
     // then, call dotfiles() to update the css
     function dotfilesChecked() {
-        if (document.getElementById("checkbox-dotfiles").checked) {
+        if (isDotfilesChecked()) {
             setCookie('dotfiles', true, 9999);
         } else {
             setCookie('dotfiles', false, 9999);
