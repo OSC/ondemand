@@ -31,8 +31,6 @@
         }
     </script>
     <script src="{{ prefix }}/lib/client/jstree/jstree.js"></script>
-    <script src="{{ prefix }}/lib/client/ood_tree.js"></script>
-    <script src="{{ prefix }}/lib/client/ood.js"></script>
 </head>
 <body class="hide-owner-mode">
     <div class="bootstrap panel-btns">
@@ -60,27 +58,20 @@
         <a onclick='window.open(CloudFunc.getWettyLink(CloudFunc.Path))' target="_blank"><button id=wetty       class="cmd-button reduce-text icon-console"   title="Wetty">~</button></a>
         <!-- OSC_CUSTOM_CODE remove this button >> <button id=contact class="cmd-button reduce-text icon-contact"   title="Contact"         ></button> -->
     </div>
+
+<script src="{{ prefix }}/lib/client/ood_tree.js"></script>
+<script src="{{ prefix }}/lib/client/ood.js"></script>
+<script>
+    // Event handler activates on page load
+    jQuery12('body').on('panel_initialized', function(e){
+        initTree("{{ treeroot }}");
+    });
+</script>
+
 </body>
 
 <script src="{{ prefix }}/cloudcmd.js"></script>
 <script>
 CloudCmd('{{ prefix }}');
-
-// Event handler activates on page load
-jQuery12('body').on('panel_initialized', function(e){
-    initTree("{{ treeroot }}");
-    document.getElementById("checkbox-dotfiles").checked = ( getCookie('dotfiles') === 'true' );
-    dotfiles();
-    document.getElementById("checkbox-ownermode").checked = ( getCookie('ownermode') === 'true' );
-    ownerMode();
-});
-
-// Event handler activates after the panel update
-jQuery12('body').on('panel_dir_updated', function(e){
-    document.getElementById("checkbox-dotfiles").checked = ( getCookie('dotfiles') === 'true' );
-    dotfiles();
-    document.getElementById("checkbox-ownermode").checked = ( getCookie('ownermode') === 'true' );
-    ownerMode();
-});
 </script>
 </html>
