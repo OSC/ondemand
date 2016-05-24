@@ -166,42 +166,11 @@ body, pre, code {
     text-align: center;
 }
 
-.name {
-    float: left;
-    width: 26%;
-}
 
 .name a:hover {
     cursor: default;
 }
 
-.size {
-    float: left;
-    width: 12%;
-    margin-right: 27px;
-    text-align: right;
-}
-
-.date {
-    float: left;
-    width: 19%;
-}
-
-.owner {
-    display         : inline-block;
-    width           : 13%;
-    /* when inline-block
-     * vertical align should be
-     * set top to prevent additional
-     * spaces behind lines
-     */
-    vertical-align  : top;
-}
-
-.mode {
-    float: right;
-    width: 18%;
-}
 
 .reduce-text {
     text-overflow   : ellipsis;

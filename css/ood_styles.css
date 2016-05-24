@@ -89,7 +89,7 @@ ul.files {
 }
 
 /* hide 2 columns */
-span.owner, span.mode {
+.hide-owner-mode span.owner, .hide-owner-mode span.mode {
     display: none;
 }
 
@@ -120,9 +120,20 @@ span.owner, span.mode {
     flex-grow: 1;
 }
 
-.date, .size {
+.date, .size, .owner, .mode {
     width: 100px;
     flex-basis: 100px;
+    text-align: right;
+    margin-right: 20px;
+}
+
+
+.files .mode {
+   font-family: 'Droid Sans Mono', 'Ubuntu Mono', Consolas, monospace;
+}
+
+.mode {
+  text-align: center;
 }
 
 /* always show scrollbars so that the headers always line up */
