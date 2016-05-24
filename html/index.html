@@ -88,15 +88,21 @@ if(typeof String.prototype.startsWith === "undefined"){
         </div>
 
 <script src="{{ prefix }}/lib/client/ood_tree.js"></script>
-<script>
-jQuery12('body').on('panel_initialized', function(e){
-    initTree("{{ treeroot }}");
-});
-</script>
 
         <script src="{{ prefix }}/cloudcmd.js"></script>
         <script>
+
             CloudCmd('{{ prefix }}');
+
+            // Event handler activates on page load
+            jQuery12('body').on('panel_initialized', function(e){
+                initTree("{{ treeroot }}");
+            });
+
+            // Event handler activates after the panel update
+            jQuery12('body').on('panel_dir_updated', function(e){
+
+            });
 
             function terminal() {
                 var terminal_path = '/pun/sys/shell/ssh/oakley';
@@ -131,6 +137,7 @@ jQuery12('body').on('panel_initialized', function(e){
                     path        = prefixUr + PACK + path + '.tar.gz';
                 else
                     path        = prefixUr + FS + path + '?download';
+
 
 </body>
 </html>
