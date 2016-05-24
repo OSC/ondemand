@@ -70,6 +70,15 @@ if(typeof String.prototype.startsWith === "undefined"){
 
     </head>
     <body class="hide-owner-mode">
+    <div class="bootstrap panel-btns">
+        <button type="button" class="bootstrap icon icon-console btn btn-default btn-sm" onclick="terminal()">Open in Terminal</button>
+        <button type="button" class="bootstrap icon icon-paste btn btn-default btn-sm" onclick="DOM.Buffer.paste()">Paste</button>
+        <button type="button" class="bootstrap icon icon-file btn btn-default btn-sm" onclick="DOM.promptNewFile()">New File</button>
+        <button type="button" class="bootstrap icon icon-directory btn btn-default btn-sm" onclick="DOM.promptNewDir()">New Dir</button>
+        <button type="button" class="bootstrap icon icon-upload btn btn-default btn-sm" onclick="CloudCmd.Upload.show();">Upload</button>
+        <label class="bootstrap checkbox-inline"><input type="checkbox" class="bootstrap" id="checkbox-dotfiles" onclick="dotfilesChecked()" value="">Show Dotfiles</label>
+        <label class="bootstrap checkbox-inline"><input type="checkbox" class="bootstrap" id="checkbox-ownermode" onclick="ownerModeChecked()" value="">Show File Details</label>
+    </div>
         <div class="fm">{{ fm }}</div>
         <div id="js-keyspanel" class="keyspanel">
             <!-- OSC_CUSTOM_CODE remove this button >> <button id=f1      class="cmd-button reduce-text icon-help"      title="Help"            >F1</button> -->
@@ -88,94 +97,145 @@ if(typeof String.prototype.startsWith === "undefined"){
         </div>
 
 <script src="{{ prefix }}/lib/client/ood_tree.js"></script>
+<script src="{{ prefix }}/cloudcmd.js"></script>
+<script>
 
-        <script src="{{ prefix }}/cloudcmd.js"></script>
-        <script>
+    CloudCmd('{{ prefix }}');
 
-            CloudCmd('{{ prefix }}');
+    // Event handler activates on page load
+    jQuery12('body').on('panel_initialized', function(e){
+        initTree("{{ treeroot }}");
+        document.getElementById("checkbox-dotfiles").checked = ( getCookie('dotfiles') === 'true' );
+        dotfiles();
+        document.getElementById("checkbox-ownermode").checked = ( getCookie('ownermode') === 'true' );
+        ownerMode();
+    });
 
-            // Event handler activates on page load
-            jQuery12('body').on('panel_initialized', function(e){
-                initTree("{{ treeroot }}");
-                document.getElementById("checkbox-dotfiles").checked = ( getCookie('dotfiles') === 'true' );
-                dotfiles();
-            });
+    // Event handler activates after the panel update
+    jQuery12('body').on('panel_dir_updated', function(e){
+        document.getElementById("checkbox-dotfiles").checked = ( getCookie('dotfiles') === 'true' );
+        dotfiles();
+        document.getElementById("checkbox-ownermode").checked = ( getCookie('ownermode') === 'true' );
+        ownerMode();
+    });
 
-            // Event handler activates after the panel update
-            jQuery12('body').on('panel_dir_updated', function(e){
-                document.getElementById("checkbox-dotfiles").checked = ( getCookie('dotfiles') === 'true' );
-                dotfiles();
-            });
+    // display the osc terminal in a new window
+    function terminal() {
+        var terminal_path = '/pun/sys/shell/ssh/oakley';
+        window.open(terminal_path + DOM.getCurrentDirPath());
+    }
 
-            function terminal() {
-                var terminal_path = '/pun/sys/shell/ssh/oakley';
-                window.open(terminal_path + DOM.getCurrentDirPath());
+    // Update the css display tags on hidden files to hide or display
+    function dotfiles() {
+        if (!isDotfilesChecked()) {
+            jQuery12( ".files li.dotfile" ).remove();
+        }
+    }
+
+    // Show the owner and mode details when the box is checked.
+    function ownerMode() {
+        jQuery12('body').toggleClass('hide-owner-mode', !isOwnerModeChecked());
+    }
+
+    // Return state of dotfiles checkbox
+    function isDotfilesChecked() {
+        return document.getElementById("checkbox-dotfiles").checked;
+    }
+
+    // Return state of file details checkbox
+    function isOwnerModeChecked() {
+        return document.getElementById("checkbox-ownermode").checked;
+    }
+
+    // Sets the cookie when the dotfiles box is checked
+    // then, call dotfiles() to update the css
+    // since we're deleting the dotfiles when we hide them, we need to refresh when the user clicks
+    function dotfilesChecked() {
+        if (isDotfilesChecked()) {
+            setCookie('dotfiles', true, 9999);
+            CloudCmd.refresh();
+        } else {
+            setCookie('dotfiles', false, 9999);
+        }
+        dotfiles();
+    }
+
+    // Sets the cookie when the owner/mode box is checked
+    function ownerModeChecked() {
+        isOwnerModeChecked() ? setCookie('ownermode', true, 9999) : setCookie('ownermode', false, 9999);
+        ownerMode();
+    }
+    
+    // OSC_CUSTOM_CODE getCookie and setCookie methods borrowed from
+    // http://www.w3schools.com/js/js_cookies.asp
+    function setCookie(cname, cvalue, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        var expires = "expires="+d.toUTCString();
+        document.cookie = cname + "=" + cvalue + "; " + expires;
+    }
+
+    // OSC_CUSTOM_CODE getCookie and setCookie methods borrowed from
+    // http://www.w3schools.com/js/js_cookies.asp
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
             }
-
-            // Update the css display tags on hidden files to hide or display
-            function dotfiles() {
-                if (!isDotfilesChecked()) {
-                    jQuery12( ".files li.dotfile" ).remove();
-                }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
             }
+        }
+        return "";
+    }
 
-            // Return state of dotfiles checkbox
-            function isDotfilesChecked() {
-                return document.getElementById("checkbox-dotfiles").checked;
-            }
+    // OSC_CUSTOM_CODE publicize download method from lib/client/menu.js
+    function download() {
+        var TIME        = 30 * 1000,
+                prefixUr    = CloudCmd.PREFIX_URL,
+                FS          = CloudFunc.FS,
+                PACK        = '/pack',
+                date        = Date.now(),
+                files       = DOM.getActiveFiles();
 
-            // Sets the cookie when the dotfiles box is checked
-            // then, call dotfiles() to update the css
-            // since we're deleting the dotfiles when we hide them, we need to refresh when the user clicks
-            function dotfilesChecked() {
-                if (isDotfilesChecked()) {
-                    setCookie('dotfiles', true, 9999);
-                    CloudCmd.refresh();
-                } else {
-                    setCookie('dotfiles', false, 9999);
-                }
-                dotfiles();
-            }
+        if (!files.length)
+            DOM.Dialog.alert.noFiles();
+        else
+            files.forEach(function(file) {
+                var element,
+                        selected    = DOM.isSelected(file),
+                        path        = DOM.getCurrentPath(file),
+                        id          = DOM.load.getIdBySrc(path),
+                        isDir       = DOM.isCurrentIsDir(file);
 
-            // OSC_CUSTOM_CODE getCookie and setCookie methods borrowed from
-            // http://www.w3schools.com/js/js_cookies.asp
-            function setCookie(cname, cvalue, exdays) {
-                var d = new Date();
-                d.setTime(d.getTime() + (exdays*24*60*60*1000));
-                var expires = "expires="+d.toUTCString();
-                document.cookie = cname + "=" + cvalue + "; " + expires;
-            }
+                CloudCmd.log('downloading file ' + path + '...');
 
-            // OSC_CUSTOM_CODE getCookie and setCookie methods borrowed from
-            // http://www.w3schools.com/js/js_cookies.asp
-            function getCookie(cname) {
-                var name = cname + "=";
-                var ca = document.cookie.split(';');
-                for(var i = 0; i < ca.length; i++) {
-                    var c = ca[i];
-                    while (c.charAt(0) == ' ') {
-                        c = c.substring(1);
-                    }
-                    if (c.indexOf(name) == 0) {
-                        return c.substring(name.length, c.length);
-                    }
-                }
-                return "";
-            }
-
-            // OSC_CUSTOM_CODE publicize download method from lib/client/menu.js
-            function download() {
-                var TIME        = 30 * 1000,
-                        prefixUr    = CloudCmd.PREFIX_URL,
-                        FS          = CloudFunc.FS,
-                        PACK        = '/pack',
-                        date        = Date.now(),
-                        files       = DOM.getActiveFiles();
-
-                if (!files.length)
-                    DOM.Dialog.alert.noFiles();
+                if (isDir)
+                    path        = prefixUr + PACK + path + '.tar.gz';
                 else
                     path        = prefixUr + FS + path + '?download';
+
+                element     = DOM.load({
+                    id          : id + '-' + date,
+                    name        : 'iframe',
+                    async       : false,
+                    className   : 'hidden',
+                    src         : path
+                });
+
+                setTimeout(function() {
+                    document.body.removeChild(element);
+                }, TIME);
+
+                if (selected)
+                    DOM.toggleSelectedFile(file);
+            });
+    }
+</script>
+</head>
 
 
 </body>
