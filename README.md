@@ -82,18 +82,6 @@ For Python apps:
     apache ALL=/opt/ood/nginx_stage/sbin/nginx_stage
     ```
 
-5. If a **very trusted** developer wants to work on `nginx_stage` give that
-   user `sudo` privileges for `nginx_stage_dev`
-
-    ```
-    Defaults:apache,<user>     !requiretty, !authenticate
-
-    apache ALL=/opt/ood/nginx_stage/sbin/nginx_stage
-    <user> ALL=/opt/ood/nginx_stage/sbin/nginx_stage_dev
-    ```
-
-    **Warning**: This user must be very trusted! Don't say we didn't warn you.
-
 ## Post-installation
 
 After the first-time install you may need to modify both the configuration file
