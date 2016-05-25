@@ -285,7 +285,7 @@ Examples:
     To reset all staged app configs using the currently available app
     config template:
 
-        nginx_stage app_reset --sub_uri=/pun
+        nginx_stage app_reset --sub-uri=/pun
 
     this will return the paths to the newly updated app configs.
 ```
