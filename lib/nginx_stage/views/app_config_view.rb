@@ -45,7 +45,7 @@ module NginxStage
             'cookieName': '_gaOodMetrics'
           });
           _gaOodMetrics('set', 'anonymizeIP', 'true');
-          _gaOodMetrics('set', '&uid', '$http_x_forwarded_user');
+          _gaOodMetrics('set', 'userId', '$http_x_forwarded_user');
           _gaOodMetrics('set', 'dimension1', '#{app_token}');
           _gaOodMetrics('set', 'dimension2', '$http_x_forwarded_user');
           _gaOodMetrics('set', 'dimension3', '$http_x_forwarded_proto://$http_x_forwarded_host');
