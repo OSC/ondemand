@@ -29,7 +29,7 @@ $( document ).ready(function () {
         // This will show a popup when the user tries to leave the page if there are changes.
         $(window).bind('beforeunload', function(){
             if (!editor.session.getUndoManager().isClean()) {
-                return 'Are you sure you want to leave?';
+                return 'You have unsaved changes!';
             }
         });
 
