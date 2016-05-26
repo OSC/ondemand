@@ -30,7 +30,7 @@ end
 gem 'autoprefixer-rails'
 gem 'bootstrap-sass', '3.3.5'
 gem 'font-awesome-sass', '~> 4.4.0'
-gem 'dotenv-rails', '~> 2.0.0'
+gem 'dotenv-rails', '~> 2.0.0', :require => 'dotenv/rails-now'
 gem 'rails_12factor', group: :production
 gem 'redcarpet', '~> 3.2.2'
 gem 'rouge', '~> 1.9.0'
