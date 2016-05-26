@@ -21,21 +21,7 @@
   var apiUrl = "<%= @file_api_url %>";
 
   <% if @editor_content %>
-    var editor = ace.edit("editor");
-    editor.setTheme( $( "#theme option:selected" ).val() );
-    editor.session.setMode( "ace/mode/" + $( "#mode option:selected" ).val() );
 
-    var loadedContent = $.ajax({
-      url: apiUrl,
-      type: 'GET',
-      success: function (data) {
-        editorContent = data;
-        editor.setValue(editorContent, -1);
-      },
-      error: function (request, status, error) {
-        alert("An error occured attempting to load this file!\n" + error);
-      }
-    });
   <% end %>
 
 </script>
