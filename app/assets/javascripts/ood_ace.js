@@ -1,9 +1,11 @@
 $( document ).ready(function () {
 
+    // Initialize the ace editor
     var editor = ace.edit("editor");
     editor.setTheme( $( "#theme option:selected" ).val() );
     editor.session.setMode( "ace/mode/" + $( "#mode option:selected" ).val() );
 
+    // Load the file via ajax
     var loadedContent = $.ajax({
         url: apiUrl,
         type: 'GET',
@@ -33,25 +35,26 @@ $( document ).ready(function () {
         // TODO Save setting to cookie
     });
 
+    // Change the theme
     $( "#theme" ).change(function() {
         editor.setTheme( $( "#theme option:selected" ).val() );
         // TODO Save setting to cookie
     });
 
+    // Change the mode
     $( "#mode" ).change(function() {
         editor.getSession().setMode( "ace/mode/" + $( "#mode option:selected" ).val() );
         // TODO Save setting to cookie
     });
 
+    // Change the word wrap setting
     $( "#wordwrap" ).change(function() {
         editor.getSession().setUseWrapMode(this.checked);
         // TODO Save setting to cookie
     });
 
-    $( "#reset-button" ).click(function() {
-        editor.setValue(editorContent, -1);
-    });
-
+    // Save button onclick handler
+    // sends the content to the cloudcmd api via PUT request
     $( "#save-button" ).click(function() {
         if (apiUrl !== "") {
             $.ajax({
@@ -79,6 +82,9 @@ $( document ).ready(function () {
         }
     });
 
+    // Disable the save button after the initial load
+    // Modifying settings makes the UndoManager "dirty"
+    // so we have to explicitly re-disable it.
     $( "#save-button" ).prop("disabled", true);
 
 })
