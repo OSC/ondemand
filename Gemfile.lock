@@ -22,33 +22,6 @@ GIT
     ood_app (0.0.1)
       rails (~> 4.0.0)
 
-GIT
-  remote: https://github.com/AweSim-OSC/osc-machete.git
-  revision: dcf1a45d01ca7a0d1b49d23d45c4108a0b72c0a2
-  tag: v1.1.1
-  specs:
-    osc-machete (1.1.1)
-      mustache
-      pbs (~> 1.1)
-
-GIT
-  remote: https://github.com/AweSim-OSC/osc_machete_rails.git
-  revision: af1e0a213a6fa19430fe37bf3f0e3bf30d831b8d
-  tag: v1.1.0
-  specs:
-    osc_machete_rails (1.1.0)
-      awesim_rails (~> 1.0)
-      osc-machete (~> 1.0)
-      rails (~> 4.0.0)
-
-GIT
-  remote: https://github.com/AweSim-OSC/pbs-ruby.git
-  revision: 72856d0aceaae388ee6a4c725c75a4c5d68f0b41
-  tag: v1.1.1
-  specs:
-    pbs (1.1.0)
-      ffi (~> 1.9, >= 1.9.6)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -83,10 +56,6 @@ GEM
       autoprefixer-rails (>= 5.0.0.1)
       sass (>= 3.2.19)
     builder (3.1.4)
-    climate_control (0.0.3)
-      activesupport (>= 3.0)
-    cocaine (0.5.8)
-      climate_control (>= 0.0.3, < 1.0)
     coffee-rails (4.0.1)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0, < 5.0)
@@ -100,7 +69,6 @@ GEM
       railties (~> 4.0)
     erubis (2.7.0)
     execjs (2.6.0)
-    ffi (1.9.10)
     font-awesome-sass (4.6.2)
       sass (>= 3.2)
     hike (1.2.3)
@@ -117,17 +85,8 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.25.1)
-    mini_portile2 (2.0.0)
     minitest (4.7.5)
     multi_json (1.12.0)
-    mustache (1.0.3)
-    nokogiri (1.6.7.2)
-      mini_portile2 (~> 2.0.0.rc2)
-    paperclip (4.2.4)
-      activemodel (>= 3.2.0)
-      activesupport (>= 3.2.0)
-      cocaine (~> 0.5.5)
-      mime-types
     polyglot (0.3.5)
     rack (1.5.5)
     rack-test (0.6.3)
@@ -143,8 +102,6 @@ GEM
     rails_12factor (0.0.3)
       rails_serve_static_assets
       rails_stdout_logging
-    rails_autolink (1.1.6)
-      rails (> 3.1)
     rails_serve_static_assets (0.0.5)
     rails_stdout_logging (0.0.5)
     railties (4.0.0)
@@ -202,15 +159,9 @@ DEPENDENCIES
   font-awesome-sass
   jbuilder (~> 1.2)
   jquery-rails
-  nokogiri
   ood_app!
-  osc-machete!
-  osc_machete_rails!
-  paperclip (~> 4.2.2)
-  pbs!
   rails (= 4.0.0)
   rails_12factor
-  rails_autolink
   sass-rails (~> 5.0.0)
   sdoc
   therubyracer
