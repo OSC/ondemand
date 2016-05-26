@@ -58,7 +58,7 @@
 
   // Change the key bindings
   $( "#keybindings" ).change(function() {
-    editor.setKeyboardHandler( $( "#keybindings option:selected" ).val() );
+    editor.setKeyboardHandler( "ace/keyboard/" + $( "#keybindings option:selected" ).val() );
     // TODO Save setting to cookie
   });
 
