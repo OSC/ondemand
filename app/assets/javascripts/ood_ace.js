@@ -3,7 +3,6 @@ $( document ).ready(function () {
     // Do not load the ace editor if the element is not available
     // ex. for directory views
     if ( $( "#editor" ).length ) {
-
         // Initialize the ace editor
         var editor = ace.edit("editor");
         editor.setTheme( $( "#theme option:selected" ).val() );
@@ -25,6 +24,13 @@ $( document ).ready(function () {
         // Disables/enables the save button
         editor.on("change", function () {
             $( "#save-button" ).prop("disabled", editor.session.getUndoManager().isClean());
+        });
+
+        // This will show a popup when the user tries to leave the page if there are changes.
+        $(window).bind('beforeunload', function(){
+            if (!editor.session.getUndoManager().isClean()) {
+                return 'Are you sure you want to leave?';
+            }
         });
 
         // Change the font size
@@ -85,11 +91,12 @@ $( document ).ready(function () {
                 console.log("Can't save this!");
             }
         });
+
+        // Mark the editor as clean after load.
+        editor.session.getUndoManager().markClean();
     }
 
     // Disable the save button after the initial load
     // Modifying settings makes the UndoManager "dirty"
     // so we have to explicitly re-disable it.
-    $( "#save-button" ).prop("disabled", true);
-});
-
+    $( "#save-button" ).prop("disabled", true);});
