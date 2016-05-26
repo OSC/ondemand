@@ -12,8 +12,7 @@ class PagesController < ApplicationController
       @directory_content = Dir.glob(@pathname + "*").sort
       @file_edit_url = Pathname.new(ENV['RAILS_RELATIVE_URL_ROOT']).join('edit')
     else
-      @directory_content = Dir.glob(ENV['HOME'] + "/*").sort
-      @file_edit_url = Pathname.new(ENV['RAILS_RELATIVE_URL_ROOT']).join('edit')
+      @not_found = true
     end
 
   end

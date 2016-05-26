@@ -13,6 +13,12 @@
           </li>
       <% end %>
     </ul>
+
+<% elsif @not_found %>
+    <h2><span class="label label-danger">File Not Found!</span></h2>
+    <h3>The file or folder could not be found.</h3>
+    <h4><pre><%= @pathname %></pre></h4>
+
 <% end %>
 
 <script src="<%= "#{ENV['RAILS_RELATIVE_URL_ROOT']}/ace-src-min-noconflict/ace.js" %>" type="text/javascript" charset="utf-8"></script>
