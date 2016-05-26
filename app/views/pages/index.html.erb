@@ -14,6 +14,10 @@
       <% end %>
     </ul>
 
+<% elsif @invalid_file_type %>
+    <h2><span class="label label-danger">File Not Editable!</span></h2>
+    <h3>The file you are attempting to edit is not in plain text format.</h3>
+    <h4><pre><%= @invalid_file_type %></pre></h4>
 <% elsif @not_found %>
     <h2><span class="label label-danger">File Not Found!</span></h2>
     <h3>The file or folder could not be found.</h3>
