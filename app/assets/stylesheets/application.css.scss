@@ -3,14 +3,30 @@
 @import "font-awesome-sprockets";
 //@import "awesim";
 
+@import "ood_app/bootstrap-overrides";
 
-// overrides for navbar
-$navbar-inverse-bg:  rgb(200,16,46);
-$navbar-inverse-link-color: rgb(255, 255, 255);
+//TODO:
+// overrides for navbar-default to get the same look and feel
+// this way we could have 2 different navbars on the same app
+// one that is styled darker and tiny (navbar-inverse) and one 
+// that is red:
+// $navbar-default-bg:  rgb(200,16,46);
+// $navbar-default-color: rgb(255, 255, 255);
+// $navbar-default-link-color: rgb(255, 255, 255);
+// $navbar-default-link-hover-color: rgb(255, 255, 255);
+// $navbar-default-brand-hover-color: rgb(255, 255, 255);
+// $navbar-default-link-active-color: rgb(255, 255, 255);
+
+//TODO: consider this to be the default height to use on other pages
+// then make the navbar larger on the main pages where the larger navbar doesn't
+// get in the way
+// $navbar-height: 20px;
 
 // Load up bootstrap/font-awesome style sheet
 @import "bootstrap";
 @import "font-awesome";
+
+@import "ood_app";
 
 // Load up dataTables bootstrap specific styles
 // @import "dataTables/bootstrap/3/jquery.dataTables.bootstrap";
