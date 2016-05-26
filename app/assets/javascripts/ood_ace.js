@@ -1,6 +1,6 @@
 $( document ).ready(function () {
 
-    // Do not load the ace editor if the class is not available
+    // Do not load the ace editor if the element is not available
     // ex. for directory views
     if ( $( "#editor" ).length ) {
 
