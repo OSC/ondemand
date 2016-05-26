@@ -128,8 +128,8 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
     AuthType "<%= OOD_AUTH_TYPE %>"
     Require valid-user
 
-    SetEnv OOD_NODE_URI "<%= OOD_RNODE_URI %>"
     SetEnv OOD_IS_RELATIVE "true"
+    SetEnv OOD_NODE_URI "<%= OOD_RNODE_URI %>"
     LuaHookFixups node_proxy.lua node_proxy_handler
   </Location>
   <%- end -%>
@@ -143,11 +143,11 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
   #    wss://<%= OOD_SERVER_NAME %><%= OOD_PUN_URI %>/shared/bob/app/socket
   #    #=> unix:/path/to/socket|ws://localhost<%= OOD_PUN_URI %>/shared/bob/app/socket
   #
+  SetEnv OOD_PUN_URI "<%= OOD_PUN_URI %>"
   <Location "<%= OOD_PUN_URI %>">
     AuthType "<%= OOD_AUTH_TYPE %>"
     Require valid-user
 
-    SetEnv OOD_NGINX_URI "<%= OOD_NGINX_URI %>"
     SetEnv OOD_PUN_SOCKET_ROOT "<%= OOD_PUN_SOCKET_ROOT %>"
     SetEnv OOD_PUN_MAX_RETRIES "<%= OOD_PUN_MAX_RETRIES %>"
     LuaHookFixups pun_proxy.lua pun_proxy_handler
@@ -162,12 +162,11 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
   #
   # See mod_ood_proxy for more details.
   #
+  SetEnv OOD_NGINX_URI "<%= OOD_NGINX_URI %>"
   <Location "<%= OOD_NGINX_URI %>">
     AuthType "<%= OOD_AUTH_TYPE %>"
     Require valid-user
 
-    SetEnv OOD_NGINX_URI "<%= OOD_NGINX_URI %>"
-    SetEnv OOD_PUN_URI "<%= OOD_PUN_URI %>"
     LuaHookFixups nginx.lua nginx_handler
   </Location>
   <%- end -%>
