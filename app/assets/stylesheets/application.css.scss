@@ -16,7 +16,7 @@
 #editor {
   margin: 0;
   position: absolute;
-  top: 26px;
+  top: 24px;
   bottom: 0;
   left: 0;
   right: 0;
@@ -37,6 +37,10 @@
   font-size: 11px;
   height: 20px;
   padding-top: 0px;
+}
+
+.navbar .control-label {
+  font-size: 11px;
 }
 
 // Custom Callouts
