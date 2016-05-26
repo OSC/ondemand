@@ -66,6 +66,7 @@ GEM
     bootstrap-sass (3.3.5)
       autoprefixer-rails (>= 5.0.0.1)
       sass (>= 3.2.19)
+    browser (2.1.0)
     builder (3.1.4)
     coffee-rails (4.0.1)
       coffee-script (>= 2.2.0)
@@ -743,6 +744,7 @@ DEPENDENCIES
   autoprefixer-rails
   awesim!
   bootstrap-sass (= 3.3.5)
+  browser (~> 2.1)
   coffee-rails (~> 4.0.0)
   dotenv-rails (~> 2.0.0)
   font-awesome-sass (~> 4.4.0)
