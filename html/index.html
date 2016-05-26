@@ -34,9 +34,10 @@
 </head>
 <body class="hide-owner-mode">
     <div class="bootstrap panel-btns">
+        <button type="button" class="bootstrap icon icon-directory btn btn-default btn-sm" onclick="DOM.goToDirectory()">Go To...</button>
         <button type="button" class="bootstrap icon icon-console btn btn-default btn-sm" onclick="terminal()">Open in Terminal</button>
         <button type="button" class="bootstrap icon icon-paste btn btn-default btn-sm" onclick="DOM.Buffer.paste()">Paste</button>
-        <button type="button" class="bootstrap icon icon-file btn btn-default btn-sm" onclick="DOM.promptNewFile()">New File</button>
+        <button type="button" class="bootstrap icon icon-new btn btn-default btn-sm" onclick="DOM.promptNewFile()">New File</button>
         <button type="button" class="bootstrap icon icon-directory btn btn-default btn-sm" onclick="DOM.promptNewDir()">New Dir</button>
         <button type="button" class="bootstrap icon icon-upload btn btn-default btn-sm" onclick="CloudCmd.Upload.show();">Upload</button>
         <label class="bootstrap checkbox-inline"><input type="checkbox" class="bootstrap" id="checkbox-dotfiles" onclick="dotfilesChecked()" value="">Show Dotfiles</label>
