@@ -7,17 +7,20 @@ $( document ).ready(function () {
         var editor = ace.edit("editor");
         editor.setTheme( $( "#theme option:selected" ).val() );
         editor.session.setMode( "ace/mode/" + $( "#mode option:selected" ).val() );
-
+        $( "#loading-notice" ).toggle();
         // Load the file via ajax
         var loadedContent = $.ajax({
+
             url: apiUrl,
             type: 'GET',
             success: function (data) {
                 editorContent = data;
                 editor.setValue(editorContent, -1);
+                $( "#loading-notice" ).toggle();
             },
             error: function (request, status, error) {
                 alert("An error occured attempting to load this file!\n" + error);
+                $( "#loading-notice" ).toggle();
             }
         });
 
