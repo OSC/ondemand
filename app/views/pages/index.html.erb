@@ -13,16 +13,15 @@
           </li>
       <% end %>
     </ul>
-
 <% elsif @invalid_file_type %>
     <h2><span class="label label-danger">File Not Editable!</span></h2>
     <h3>The file you are attempting to edit is not in plain text format.</h3>
     <h4><pre><%= @invalid_file_type %></pre></h4>
+    <h4><a href="?force">I understand the risks and would like to edit the file anyway.</a></h4>
 <% elsif @not_found %>
     <h2><span class="label label-danger">File Not Found!</span></h2>
     <h3>The file or folder could not be found.</h3>
     <h4><pre><%= @pathname %></pre></h4>
-
 <% end %>
 
 <script src="<%= "#{ENV['RAILS_RELATIVE_URL_ROOT']}/ace-src-min-noconflict/ace.js" %>" type="text/javascript" charset="utf-8"></script>
