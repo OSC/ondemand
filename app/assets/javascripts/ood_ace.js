@@ -31,7 +31,7 @@ $( document ).ready(function () {
         // Disables/enables the save button and binds the window popup if there are changes
         editor.on("change", function () {
             $( "#save-button" ).prop("disabled", editor.session.getUndoManager().isClean());
-            if (editor.session.getUndoManager().isClean() && !loading) {
+            if (!editor.session.getUndoManager().isClean() && !loading) {
                 $(window).on('beforeunload', function(){
                     return 'You have unsaved changes!';
                 });
