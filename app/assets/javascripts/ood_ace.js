@@ -87,6 +87,7 @@ $( document ).ready(function () {
         // sends the content to the cloudcmd api via PUT request
         $( "#save-button" ).click(function() {
             if (apiUrl !== "") {
+                $( "#save-button" ).prop("disabled", true);
                 toggleSaveSpinner();
                 $.ajax({
                     url: apiUrl,
