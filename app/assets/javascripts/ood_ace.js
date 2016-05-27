@@ -33,6 +33,19 @@ $( document ).ready(function () {
             }
         });
 
+        // Toggles a spinner in place of the save icon
+        function toggleSaveSpinner() {
+            $( "#save-icon" ).toggleClass("glyphicon-save");
+            $( "#save-icon" ).toggleClass("glyphicon-refresh");
+            $( "#save-icon" ).toggleClass("glyphicon-spin");
+        }
+
+        // Toggles a checkbox in place of the save icon
+        function toggleSaveConfirmed() {
+            $( "#save-icon" ).toggleClass("glyphicon-save");
+            $( "#save-icon" ).toggleClass("glyphicon-saved");
+        }
+
         // Change the font size
         $( "#fontsize" ).change(function() {
             editor.setFontSize( $( "#fontsize option:selected" ).val() );
@@ -67,26 +80,27 @@ $( document ).ready(function () {
         // sends the content to the cloudcmd api via PUT request
         $( "#save-button" ).click(function() {
             if (apiUrl !== "") {
+                toggleSaveSpinner();
                 $.ajax({
                     url: apiUrl,
                     type: 'PUT',
                     data: editor.getValue(),
                     success: function (data) {
-                        $( "#save-button" ).fadeOut(function() {
-                            $( "#save-button" ).html('<span class="glyphicon glyphicon-saved" aria-hidden="true"></span> Saved!').fadeIn();
-                            setTimeout(function() {
-                                $( "#save-button" ).fadeOut(function() {
-                                    $("#save-button").html('<span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save').fadeIn();
-                                })
-                            }, 1000);
-                        });
+                        toggleSaveSpinner();
+                        toggleSaveConfirmed();
+                        setTimeout(function () {
+                          toggleSaveConfirmed();
+                        }, 2000);
+
                         editor.session.getUndoManager().markClean();
                         $( "#save-button" ).prop("disabled", editor.session.getUndoManager().isClean());
                     },
                     error: function (request, status, error) {
                         alert("An error occured attempting to save this file!\n" + error);
+                        toggleSaveSpinner();
                     }
                 })
+
             } else {
                 console.log("Can't save this!");
             }
@@ -97,6 +111,6 @@ $( document ).ready(function () {
     }
 
     // Disable the save button after the initial load
-    // Modifying settings makes the UndoManager "dirty"
-    // so we have to explicitly re-disable it.
+    // Modifying settings and adding data to the editor makes the UndoManager "dirty"
+    // so we have to explicitly re-disable it on page ready.
     $( "#save-button" ).prop("disabled", true);});
