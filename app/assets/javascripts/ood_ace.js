@@ -8,6 +8,7 @@ $( document ).ready(function () {
         editor.setTheme( $( "#theme option:selected" ).val() );
         editor.session.setMode( "ace/mode/" + $( "#mode option:selected" ).val() );
         $( "#loading-notice" ).toggle();
+        var loading = true;
         // Load the file via ajax
         var loadedContent = $.ajax({
 
@@ -17,22 +18,25 @@ $( document ).ready(function () {
                 editorContent = data;
                 editor.setValue(editorContent, -1);
                 $( "#loading-notice" ).toggle();
+                editor.session.getUndoManager().markClean();
+                loading = false;
             },
             error: function (request, status, error) {
                 alert("An error occured attempting to load this file!\n" + error);
                 $( "#loading-notice" ).toggle();
+                loading = false;
             }
         });
 
-        // Disables/enables the save button
+        // Disables/enables the save button and binds the window popup if there are changes
         editor.on("change", function () {
             $( "#save-button" ).prop("disabled", editor.session.getUndoManager().isClean());
-        });
-
-        // This will show a popup when the user tries to leave the page if there are changes.
-        $(window).bind('beforeunload', function(){
-            if (!editor.session.getUndoManager().isClean()) {
-                return 'You have unsaved changes!';
+            if (editor.session.getUndoManager().isClean() && !loading) {
+                $(window).on('beforeunload', function(){
+                    return 'You have unsaved changes!';
+                });
+            } else {
+                $(window).unbind('beforeunload');
             }
         });
 
@@ -116,4 +120,5 @@ $( document ).ready(function () {
     // Disable the save button after the initial load
     // Modifying settings and adding data to the editor makes the UndoManager "dirty"
     // so we have to explicitly re-disable it on page ready.
-    $( "#save-button" ).prop("disabled", true);});
+    $( "#save-button" ).prop("disabled", true);
+});
