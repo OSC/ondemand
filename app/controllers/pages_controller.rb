@@ -6,8 +6,8 @@ class PagesController < ApplicationController
 
     @pathname = Pathname.new(path)
     if @pathname.file? && @pathname.readable?
-      fileinfo = %x[ file -i #{@pathname} ]
-      if fileinfo.include?("text/plain") || fileinfo.include?("application/x-empty")
+      fileinfo = %x[ file -b --mime-type #{@pathname} ]
+      if fileinfo =~ /text\/|application\/x-empty/
         @editor_content = ""
         @file_api_url = OodApp.files.api(path: @pathname)
       else
