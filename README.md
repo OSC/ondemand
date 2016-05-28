@@ -11,8 +11,6 @@ An Apache httpd module implementing the Open OnDemand proxy API.
         - mod_proxy_connect
         - mod_proxy_wstunnel
     - mod_auth_*
-- LuaFileSystem (Lua library)
-    - required to check if socket file exists before connecting to it
 
 Installation uses a `Rakefile` so `rake` is required for installation only.
 

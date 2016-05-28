@@ -3,8 +3,6 @@ local proxy       = require 'ood.proxy'
 local http        = require 'ood.http'
 local nginx_stage = require 'ood.nginx_stage'
 
-local lfs = require 'lfs'
-
 --[[
   pun_proxy_handler
 
@@ -40,7 +38,7 @@ function pun_proxy_handler(r)
   -- start up PUN if socket doesn't exist
   local err = nil
   local count = 0
-  while not lfs.attributes(conn.socket) and count < pun_max_retries do
+  while not r:stat(conn.socket) and count < pun_max_retries do
     local app_init_url = r.is_https and "https://" or "http://"
     app_init_url = app_init_url .. r.hostname .. ":" .. r.port .. nginx_uri .. "/init?redir=$http_x_forwarded_escaped_uri"
     -- generate user config & start PUN process
