@@ -168,7 +168,7 @@ abs_path = (filepath) ->
       if content.name == data.staged_script_name
         formatted_path = "<strong>#{formatted_path}</strong>"
         submit_script = content
-      formatted_path = "<a href='#{content.fsurl}' target='_blank'>#{formatted_path}</a>" if content.type is "dir"
+      formatted_path = "<a href='#{if content.type is "dir" then content.fsurl else content.editor_url}' target='_blank'>#{formatted_path}</a>"
       list += "<li class='list-group-item'>#{formatted_path}</li>"
     list += "</ul>"
     $("#job-details-staged-dir-contents").html(list)
