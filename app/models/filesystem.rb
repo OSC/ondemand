@@ -16,6 +16,11 @@ class Filesystem
     File.join(OodApp.files.base_api_url, path)
   end
 
+  def editor(path)
+    # TODO UPDATE THIS WHEN ADDED TO GEM
+    File.join("/pun/dev/osc-editor/edit", path)
+  end
+
   # Matches a pathname on the system to prevent root file system copies.
   def safe_path? (path)
     path =~ BASE_PATTERN ? true : false
