@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160419145803) do
+ActiveRecord::Schema.define(version: 20160531150155) do
 
   create_table "jobs", force: true do |t|
     t.integer  "workflow_id"
@@ -27,6 +27,10 @@ ActiveRecord::Schema.define(version: 20160419145803) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "job_attrs"
+    t.string   "name"
+    t.string   "batch_host"
+    t.string   "staged_dir"
+    t.string   "script_name"
   end
 
 end
