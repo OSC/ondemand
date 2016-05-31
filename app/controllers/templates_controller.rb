@@ -47,7 +47,7 @@ class TemplatesController < ApplicationController
     # TODO this whole create method can be cleaned up
     template_location = Pathname.new(@template.path)
 
-    data_location = AwesimRails.dataroot.join('templates').join(@template.name.parameterize.underscore)
+    data_location = OodAppkit.dataroot.join('templates').join(@template.name.parameterize.underscore)
 
     if data_location.exist? then @template.errors.add(:name, "must be unique.") end
     unless template_location.exist? then @template.errors.add(:path, "does not exist.") end

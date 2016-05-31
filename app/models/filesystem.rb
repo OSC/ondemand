@@ -8,12 +8,12 @@ class Filesystem
 
   # Returns an http URI path to the cloudcmd filesystem link
   def fs(path)
-    OodApp.files.url(path: path)
+    OodAppkit.files.url(path: path).to_s
   end
 
   # Returns an http URI path to the cloudcmd api link
   def api(path)
-    File.join(OodApp.files.base_api_url, path)
+    OodAppkit.files.api(path: path).to_s
   end
 
   # Matches a pathname on the system to prevent root file system copies.
