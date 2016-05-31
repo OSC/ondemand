@@ -13,6 +13,12 @@ class Workflow < ActiveRecord::Base
   #  "workflows"
   #end
 
+  # Override of osc_machete_rails
+  # places jobs into the 'projects/default' folder
+  def staging_target_dir_name
+    "projects/default"
+  end
+
   def staged_script_name
     self.script_name
   end
