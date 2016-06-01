@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160531155335) do
+ActiveRecord::Schema.define(version: 20160601203013) do
 
   create_table "jobs", force: true do |t|
     t.integer  "workflow_id"
@@ -24,8 +24,10 @@ ActiveRecord::Schema.define(version: 20160531155335) do
   add_index "jobs", ["workflow_id"], name: "index_jobs_on_workflow_id"
 
   create_table "json_stores", force: true do |t|
-    t.text   "json_attrs"
-    t.string "type"
+    t.text     "json_attrs"
+    t.string   "type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "json_stores", ["type"], name: "index_json_stores_on_type"
