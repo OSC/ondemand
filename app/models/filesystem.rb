@@ -5,10 +5,16 @@ class Filesystem
 
   class << self
     attr_accessor :max_copy_safe_dir_size, :max_copy_safe_du_timeout_seconds
+
+    def max_copy_safe_dir_size 
+      @max_copy_safe_dir_size ||= 1024*1024*1024
+    end
+
+    def max_copy_safe_du_timeout_seconds
+      @max_copy_safe_du_timeout_seconds ||= 10
+    end
   end
 
-  max_copy_safe_dir_size = 1024*1024*1024
-  max_copy_safe_du_timeout_seconds = 10
 
   MAX_COPY_TIMEOUT_MESSAGE = "Timeout occurred when trying to determine directory size. " \
     "Size must be computable in less than #{max_copy_safe_du_timeout_seconds} seconds. " \
@@ -32,7 +38,7 @@ class Filesystem
   # directory are two very different things and so naming is confusing...
   def validate_path_is_copy_safe(path)
     # FIXME: consider using http://ruby-doc.org/stdlib-2.2.0/libdoc/timeout/rdoc/Timeout.html
-    stdout, stderr, status = Open3.capture3 "timeout #{max_copy_safe_du_timeout_seconds}s du -cbs #{Shellwords.escape(path)}"
+    stdout, stderr, status = du(path, self.class.max_copy_safe_du_timeout_seconds)
     return false, MAX_COPY_TIMEOUT_MESSAGE if status.exitstatus == 124
     return false, "Error with status #{status} occurred when trying to determine directory size: #{stderr}" unless status.success?
 
@@ -41,13 +47,20 @@ class Filesystem
 
     if size.blank?
       safe, error = false, "Failed to properly parse the output of the du command."
-    elsif size.to_i > max_copy_safe_dir_size
-      safe, error = false, "The directory is too large to copy. The directory should be less than #{max_copy_safe_dir_size} bytes."
+    elsif size.to_i > self.class.max_copy_safe_dir_size
+      safe, error = false, "The directory is too large to copy. The directory should be less than #{self.class.max_copy_safe_dir_size} bytes."
     end
 
     return safe, error
   end
 
+  def du(path, timeout)
+    Open3.capture3 "timeout #{timeout}s du -cbs #{Shellwords.escape(path)}"
+  end
+
+  # FIXME: some duplication here between du command above and this; we probably
+  # want to use the above
+  #
   # Get the disk usage of a path in bytes, nil if path is invalid
   def path_size (path)
     if Dir.exist? path
