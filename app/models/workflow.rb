@@ -4,7 +4,10 @@ class Workflow < ActiveRecord::Base
   has_many :jobs, class_name: "Job", dependent: :destroy
   has_machete_workflow_of :jobs
 
-  store :job_attrs, accessors: [ :name, :batch_host, :staged_dir, :script_name ], coder: JSON
+  # add accessors: [ :attr1, :attr2 ] etc. when you want to add getters and
+  # setters to add new attributes stored in the JSON store
+  # don't remove attributes from this list going forward! only deprecate
+  store :job_attrs, coder: JSON
 
   attr_accessor :staging_template_dir
 
