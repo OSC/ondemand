@@ -43,7 +43,10 @@ app.use(cloudcmd({
         // treeroot: "/nfs/gpfs/PZS0530",
         // treeroottitle: "Project Space"
         treeroot: HOME,
-        treeroottitle: "Home Directory"
+        treeroottitle: "Home Directory",
+
+        file_editor: "/pun/dev/osc-editor/edit",
+        shell: "/pun/sys/shell/ssh/oakley"
     }
 }));
 
