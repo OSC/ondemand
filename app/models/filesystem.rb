@@ -16,8 +16,13 @@ class Filesystem
     OodAppkit.files.api(path: path).to_s
   end
 
-  # Matches a pathname on the system to prevent root file system copies.
-  def safe_path? (path)
+  # Verify that this path is safe to copy recursively from
+  #
+  # Matches a pathname on the system to prevent root file system copiesa
+  # FIXME: this should be a validation on template when creating a new template
+  # unfortunately the template's source path and @source for the template Source
+  # directory are two very different things and so naming is confusing...
+  def validate_path_is_copy_safe(path)
     if path =~ BASE_PATTERN
       return true, nil
     else

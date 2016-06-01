@@ -53,8 +53,8 @@ class TemplatesController < ApplicationController
     unless template_location.exist? then @template.errors.add(:path, "does not exist.") end
 
     # validate path we are copying from. safe_path is a boolean, error contains the error string if false
-    safe_path, error = Filesystem.new.safe_path? template_location.to_s
-    @template.errors.add(:path, error) unless safe_path
+    copy_safe, error = Filesystem.new.validate_path_is_copy_safe(template_location.to_s)
+    @template.errors.add(:path, error) unless copy_safe
 
     if template_location.file? then @template.errors.add(:path, "must point to a directory.") end
 
