@@ -19,6 +19,7 @@ $( document ).ready(function () {
                 $( "#loading-notice" ).toggle();
                 editor.session.getUndoManager().markClean();
                 loading = false;
+                setBeforeUnloadState();
             },
             error: function (request, status, error) {
                 alert("An error occured attempting to load this file!\n" + error);
@@ -28,16 +29,20 @@ $( document ).ready(function () {
         });
 
         // Disables/enables the save button and binds the window popup if there are changes
-        editor.on("change", function () {
+        editor.on("change", function() {
+            setBeforeUnloadState();
+        });
+
+        function setBeforeUnloadState() {
             $( "#save-button" ).prop("disabled", editor.session.getUndoManager().isClean());
             if (!editor.session.getUndoManager().isClean() && !loading) {
                 $(window).on('beforeunload', function(){
                     return 'You have unsaved changes!';
                 });
             } else {
-                $(window).unbind('beforeunload');
+                $(window).off('beforeunload');
             }
-        });
+        }
 
         // Toggles a spinner in place of the save icon
         function toggleSaveSpinner() {
@@ -101,6 +106,7 @@ $( document ).ready(function () {
 
                         editor.session.getUndoManager().markClean();
                         $( "#save-button" ).prop("disabled", editor.session.getUndoManager().isClean());
+                        setBeforeUnloadState();
                     },
                     error: function (request, status, error) {
                         alert("An error occured attempting to save this file!\n" + error);
