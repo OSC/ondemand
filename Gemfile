@@ -32,11 +32,11 @@ end
 gem "therubyracer", platforms: :ruby
 gem "bootstrap-sass", "3.3.5"
 gem "autoprefixer-rails"
-gem "dotenv-rails", "~> 2.0.0"
+gem 'dotenv-rails', '~> 2.0', require: 'dotenv/rails-now'
 gem "rails_12factor", group: :production
 gem "font-awesome-sass"
 
 # OSC Gems
 gem "awesim_rails", :git => "git@github.com:AweSim-OSC/awesim_rails.git", :tag => 'v1.2.1'
 gem "awesim_rails_logging", :group => :production, :git => "https://github.com/AweSim-OSC/awesim_rails_logging.git", :tag => 'v1.0.0'
-gem "ood_app", :git => "https://github.com/AweSim-OSC/ood_app.git"
+gem "ood_appkit", :git => "https://github.com/AweSim-OSC/ood_appkit.git"
