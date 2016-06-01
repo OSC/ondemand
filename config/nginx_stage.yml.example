@@ -115,7 +115,7 @@
 # corresponding environment
 #
 #app_root:
-#  :dev: '~%{owner}/ood_%{env}/%{name}'
+#  :dev: '~%{owner}/ondemand/%{env}/%{name}'
 #  :usr: '/var/www/ood/apps/%{env}/%{owner}/gateway/%{name}'
 #  :sys: '/var/www/ood/apps/%{env}/%{name}'
 

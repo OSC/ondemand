@@ -220,7 +220,7 @@ depending on whether the `USER` is accessing a sandbox app or a user app.
     serves up the app in
 
     ```
-    ~USER/ood_dev/<app>
+    ~USER/ondemand/dev/<app>
     ```
 
 * **user** app

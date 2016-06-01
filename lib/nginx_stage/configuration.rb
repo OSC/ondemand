@@ -172,7 +172,7 @@ module NginxStage
     # Path to the app root on the local filesystem
     # @example App root for dev app owned by Bob
     #   app_root(env: :dev, owner: 'bob', name: 'rails1')
-    #   #=> "~bob/ood_dev/rails1"
+    #   #=> "~bob/ondemand/dev/rails1"
     # @example App root for user app owned by Dan
     #   app_root(env: :usr, owner: 'dan', name: 'fillsim')
     #   #=> "/var/www/ood/apps/usr/dan/gateway/fillsim"
@@ -330,7 +330,7 @@ module NginxStage
         sys: '/var/lib/nginx/config/apps/%{env}/%{name}.conf'
       }
       self.app_root          = {
-        dev: '~%{owner}/ood_%{env}/%{name}',
+        dev: '~%{owner}/ondemand/%{env}/%{name}',
         usr: '/var/www/ood/apps/%{env}/%{owner}/gateway/%{name}',
         sys: '/var/www/ood/apps/%{env}/%{name}'
       }
