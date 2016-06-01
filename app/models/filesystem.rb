@@ -3,10 +3,15 @@ require 'shellwords'
 
 class Filesystem
 
-  MAX_COPY_SAFE_DIR_SIZE = 1024*1024*1024
-  MAX_COPY_SAFE_DU_TIMEOUT_SECONDS = 10
+  class << self
+    attr_accessor :max_copy_safe_dir_size, :max_copy_safe_du_timeout_seconds
+  end
+
+  max_copy_safe_dir_size = 1024*1024*1024
+  max_copy_safe_du_timeout_seconds = 10
+
   MAX_COPY_TIMEOUT_MESSAGE = "Timeout occurred when trying to determine directory size. " \
-    "Size must be computable in less than #{MAX_COPY_SAFE_DU_TIMEOUT_SECONDS} seconds. " \
+    "Size must be computable in less than #{max_copy_safe_du_timeout_seconds} seconds. " \
     "Either directory has too many files or the file system is currently slow (if so, please try again later)."
 
   # Returns an http URI path to the cloudcmd filesystem link
@@ -27,7 +32,7 @@ class Filesystem
   # directory are two very different things and so naming is confusing...
   def validate_path_is_copy_safe(path)
     # FIXME: consider using http://ruby-doc.org/stdlib-2.2.0/libdoc/timeout/rdoc/Timeout.html
-    stdout, stderr, status = Open3.capture3 "timeout #{MAX_COPY_SAFE_DU_TIMEOUT_SECONDS}s du -cbs #{Shellwords.escape(path)}"
+    stdout, stderr, status = Open3.capture3 "timeout #{max_copy_safe_du_timeout_seconds}s du -cbs #{Shellwords.escape(path)}"
     return false, MAX_COPY_TIMEOUT_MESSAGE if status.exitstatus == 124
     return false, "Error with status #{status} occurred when trying to determine directory size: #{stderr}" unless status.success?
 
@@ -36,8 +41,8 @@ class Filesystem
 
     if size.blank?
       safe, error = false, "Failed to properly parse the output of the du command."
-    elsif size.to_i > MAX_COPY_SAFE_DIR_SIZE
-      safe, error = false, "The directory is too large to copy. The directory should be less than #{MAX_COPY_SAFE_DIR_SIZE} bytes."
+    elsif size.to_i > max_copy_safe_dir_size
+      safe, error = false, "The directory is too large to copy. The directory should be less than #{max_copy_safe_dir_size} bytes."
     end
 
     return safe, error
