@@ -47,11 +47,15 @@ class TemplatesController < ApplicationController
     # TODO this whole create method can be cleaned up
     template_location = Pathname.new(@template.path)
 
-    data_location = AwesimRails.dataroot.join('templates').join(@template.name.parameterize.underscore)
+    data_location = OodAppkit.dataroot.join('templates').join(@template.name.parameterize.underscore)
 
     if data_location.exist? then @template.errors.add(:name, "must be unique.") end
     unless template_location.exist? then @template.errors.add(:path, "does not exist.") end
-    unless Filesystem.new.safe_path? template_location.to_s then @template.errors.add(:path, "invalid path.") end
+
+    # validate path we are copying from. safe_path is a boolean, error contains the error string if false
+    copy_safe, error = Filesystem.new.validate_path_is_copy_safe(template_location.to_s)
+    @template.errors.add(:path, error) unless copy_safe
+
     if template_location.file? then @template.errors.add(:path, "must point to a directory.") end
 
     if @template.errors.empty?

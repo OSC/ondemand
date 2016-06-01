@@ -10,7 +10,7 @@ AwesimRails.configure do |config|
 
   # Whether dynamic routing is used to host local files under `AwesimRails.dataroot`
   # Default: true
-  #config.routes = false
+  config.routes = false
 
   # Set the URL route used for hosting of local files
   # Default: '/files'

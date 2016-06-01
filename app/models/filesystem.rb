@@ -1,26 +1,66 @@
+require 'open3'
+require 'shellwords'
+
 class Filesystem
 
-  # TODO Move this to a config file?
-  # /nfs/07 => false
-  # /nfs/gpfs/UNAME/template => true
-  # /nfs/08/bmcmichael/ood_templ/5/ => true
-  BASE_PATTERN = %r{^/nfs/([0-9]{2}|gpfs)/\w+/.+}
+  class << self
+    attr_accessor :max_copy_safe_dir_size, :max_copy_safe_du_timeout_seconds
+
+    def max_copy_safe_dir_size 
+      @max_copy_safe_dir_size ||= 1024*1024*1024
+    end
+
+    def max_copy_safe_du_timeout_seconds
+      @max_copy_safe_du_timeout_seconds ||= 10
+    end
+  end
+
+
+  MAX_COPY_TIMEOUT_MESSAGE = "Timeout occurred when trying to determine directory size. " \
+    "Size must be computable in less than #{max_copy_safe_du_timeout_seconds} seconds. " \
+    "Either directory has too many files or the file system is currently slow (if so, please try again later)."
 
   # Returns an http URI path to the cloudcmd filesystem link
   def fs(path)
-    OodApp.files.url(path: path)
+    OodAppkit.files.url(path: path).to_s
   end
 
   # Returns an http URI path to the cloudcmd api link
   def api(path)
-    File.join(OodApp.files.base_api_url, path)
+    OodAppkit.files.api(path: path).to_s
   end
 
-  # Matches a pathname on the system to prevent root file system copies.
-  def safe_path? (path)
-    path =~ BASE_PATTERN ? true : false
+  # Verify that this path is safe to copy recursively from
+  #
+  # Matches a pathname on the system to prevent root file system copiesa
+  # FIXME: this should be a validation on template when creating a new template
+  # unfortunately the template's source path and @source for the template Source
+  # directory are two very different things and so naming is confusing...
+  def validate_path_is_copy_safe(path)
+    # FIXME: consider using http://ruby-doc.org/stdlib-2.2.0/libdoc/timeout/rdoc/Timeout.html
+    stdout, stderr, status = du(path, self.class.max_copy_safe_du_timeout_seconds)
+    return false, MAX_COPY_TIMEOUT_MESSAGE if status.exitstatus == 124
+    return false, "Error with status #{status} occurred when trying to determine directory size: #{stderr}" unless status.success?
+
+    safe, error = true, nil
+    size = stdout.split.first
+
+    if size.blank?
+      safe, error = false, "Failed to properly parse the output of the du command."
+    elsif size.to_i > self.class.max_copy_safe_dir_size
+      safe, error = false, "The directory is too large to copy. The directory should be less than #{self.class.max_copy_safe_dir_size} bytes."
+    end
+
+    return safe, error
   end
 
+  def du(path, timeout)
+    Open3.capture3 "timeout #{timeout}s du -cbs #{Shellwords.escape(path)}"
+  end
+
+  # FIXME: some duplication here between du command above and this; we probably
+  # want to use the above
+  #
   # Get the disk usage of a path in bytes, nil if path is invalid
   def path_size (path)
     if Dir.exist? path
