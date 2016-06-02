@@ -57,8 +57,6 @@ gem "pbs", :git => "git@github.com:AweSim-OSC/pbs-ruby.git", :tag => 'v1.1.1'
 gem "osc-machete", :git => "git@github.com:AweSim-OSC/osc-machete.git", :tag => 'v1.1.1'
 gem "osc_machete_rails", :git => "git@github.com:AweSim-OSC/osc_machete_rails.git", :tag => 'v1.1.0'
 
-# TODO: remove after osc_machete_rails is modified to depend on ood_appkit
-gem "awesim_rails", :git => "git@github.com:AweSim-OSC/awesim_rails.git", :tag => 'v1.2.1'
 gem "awesim_rails_logging", :group => :production, :git => "git@github.com:AweSim-OSC/awesim_rails_logging.git", :tag => 'v1.0.0'
 gem "ood_appkit", :git => "git@github.com:AweSim-OSC/ood_appkit.git"
 gem "rake"
