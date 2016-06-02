@@ -1,12 +1,4 @@
 GIT
-  remote: git@github.com:AweSim-OSC/awesim_rails_logging.git
-  revision: 1b0417280df2c9b2a63af090a146322124e744fd
-  tag: v1.0.0
-  specs:
-    awesim_rails_logging (1.0.0)
-      rails (~> 4.0.0)
-
-GIT
   remote: git@github.com:AweSim-OSC/ood_appkit.git
   revision: 2179354e7a69672352a926e6eae11d95c264a9e8
   specs:
@@ -192,7 +184,6 @@ PLATFORMS
 
 DEPENDENCIES
   autoprefixer-rails
-  awesim_rails_logging!
   bootstrap-sass (= 3.3.5)
   bootstrap_form (~> 2.3.0)
   coffee-rails (~> 4.0.0)
