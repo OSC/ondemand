@@ -1,13 +1,4 @@
 GIT
-  remote: git@github.com:AweSim-OSC/awesim_rails.git
-  revision: 64fbd75dcb1c61e26d4658e1ae3c8f0b94fd7e8c
-  tag: v1.2.1
-  specs:
-    awesim_rails (1.2.1)
-      rails (~> 4.0.0)
-      redcarpet (~> 3.2.2)
-
-GIT
   remote: git@github.com:AweSim-OSC/awesim_rails_logging.git
   revision: 1b0417280df2c9b2a63af090a146322124e744fd
   tag: v1.0.0
@@ -35,11 +26,10 @@ GIT
 
 GIT
   remote: git@github.com:AweSim-OSC/osc_machete_rails.git
-  revision: af1e0a213a6fa19430fe37bf3f0e3bf30d831b8d
-  tag: v1.1.0
+  revision: 9e956fc62913b5fc682cad32cbe9f7e714e281cc
+  tag: v1.1.1
   specs:
     osc_machete_rails (1.1.0)
-      awesim_rails (~> 1.0)
       osc-machete (~> 1.0)
       rails (~> 4.0.0)
 
@@ -120,7 +110,7 @@ GEM
     jquery-rails (3.1.4)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
-    js-routes (1.2.5)
+    js-routes (1.2.6)
       railties (>= 3.2)
       sprockets-rails
     json (1.8.3)
@@ -162,7 +152,7 @@ GEM
     rake (11.1.2)
     rdoc (4.2.2)
       json (~> 1.4)
-    redcarpet (3.2.3)
+    redcarpet (3.3.4)
     ref (2.0.0)
     sass (3.4.22)
     sass-rails (5.0.4)
@@ -202,7 +192,6 @@ PLATFORMS
 
 DEPENDENCIES
   autoprefixer-rails
-  awesim_rails!
   awesim_rails_logging!
   bootstrap-sass (= 3.3.5)
   bootstrap_form (~> 2.3.0)
