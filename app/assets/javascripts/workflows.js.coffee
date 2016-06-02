@@ -12,7 +12,7 @@
     show_job_panel()
     $.ajax
       type: 'GET'
-      url: joinRoot(Routes.workflow_path(id))
+      url: Routes.workflow_path(id)
       contentType: "application/json; charset=utf-8"
       dataType: "json"
       error: (jqXHR, textStatus, errorThrown) ->
@@ -88,7 +88,7 @@
 
 @update_copy_button = (id) ->
   if id?
-    $("#copy_button").attr("href", joinRoot(Routes.copy_workflow_path(id)))
+    $("#copy_button").attr("href", Routes.copy_workflow_path(id))
     $("#copy_button").data("method", "PUT")
     $("#copy_button").removeAttr("disabled")
     $("#copy_button").unbind('click', false)
@@ -99,7 +99,7 @@
 
 @update_edit_button = (id) ->
   if id?
-    $("#edit_button").attr("href", joinRoot(Routes.edit_workflow_path(id)))
+    $("#edit_button").attr("href", Routes.edit_workflow_path(id))
     $("#edit_button").removeAttr("disabled")
     $("#edit_button").unbind('click', false)
   else
@@ -109,7 +109,7 @@
 
 @update_submit_button = (id, status_char) ->
   if id? && !status_char?
-      $("#submit_button").attr("href", joinRoot(Routes.submit_workflow_path(id)))
+      $("#submit_button").attr("href", Routes.submit_workflow_path(id))
       $("#submit_button").data("method", "PUT")
       $("#submit_button").removeAttr("disabled")
       $("#submit_button").unbind('click', false)
@@ -120,7 +120,7 @@
 
 @update_stop_button = (id, status_char) ->
   if id? && status_char? && (status_char == "R" || status_char == "Q")
-    $("#stop_button").attr("href", joinRoot(Routes.stop_workflow_path(id)))
+    $("#stop_button").attr("href", Routes.stop_workflow_path(id))
     $("#stop_button").data("method", "PUT")
     $("#stop_button").removeAttr("disabled")
     $("#stop_button").unbind('click', false)
@@ -132,7 +132,7 @@
 @update_template_button = (id) ->
   if id?
     params = { jobid: "#{id}" }
-    $("#template_button").attr("href", joinRoot(Routes.new_template_path( params )))
+    $("#template_button").attr("href", Routes.new_template_path( params ))
     $("#template_button").removeAttr("disabled")
     $("#template_button").unbind('click', false)
   else
@@ -142,7 +142,7 @@
 
 @update_destroy_button = (id) ->
   if id?
-    $("#destroy_button").attr("href", joinRoot(Routes.workflow_path(id)))
+    $("#destroy_button").attr("href", Routes.workflow_path(id))
     $("#destroy_button").data("method", "DELETE")
     $("#destroy_button").removeAttr("disabled")
     $("#destroy_button").unbind('click', false)
