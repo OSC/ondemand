@@ -1,13 +1,4 @@
 GIT
-  remote: git@github.com:AweSim-OSC/awesim_rails.git
-  revision: 64fbd75dcb1c61e26d4658e1ae3c8f0b94fd7e8c
-  tag: v1.2.1
-  specs:
-    awesim_rails (1.2.1)
-      rails (~> 4.0.0)
-      redcarpet (~> 3.2.2)
-
-GIT
   remote: git@github.com:AweSim-OSC/awesim_rails_logging.git
   revision: 33e5c288a82b01dcd10265aeb2cbd24aae1e2e04
   specs:
@@ -143,7 +134,7 @@ GEM
     rake (11.1.2)
     rdoc (4.2.2)
       json (~> 1.4)
-    redcarpet (3.2.3)
+    redcarpet (3.3.4)
     ref (2.0.0)
     sass (3.4.22)
     sass-rails (5.0.4)
@@ -184,7 +175,6 @@ PLATFORMS
 
 DEPENDENCIES
   autoprefixer-rails
-  awesim_rails!
   awesim_rails_logging!
   bootstrap-sass (= 3.3.5)
   coffee-rails (~> 4.0.0)
