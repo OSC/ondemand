@@ -37,6 +37,6 @@ gem "rails_12factor", group: :production
 gem "font-awesome-sass"
 
 # OSC Gems
-gem "awesim_rails", :git => "git@github.com:AweSim-OSC/awesim_rails.git", :tag => 'v1.2.1'
-gem "awesim_rails_logging", :group => :production, :git => "https://github.com/AweSim-OSC/awesim_rails_logging.git", :tag => 'v1.0.0'
-gem "ood_appkit", :git => "https://github.com/AweSim-OSC/ood_appkit.git"
+# gem "awesim_rails", :git => "git@github.com:AweSim-OSC/awesim_rails.git", :tag => 'v1.2.1'
+# gem "awesim_rails_logging", :group => :production, :git => "https://github.com/AweSim-OSC/awesim_rails_logging.git", :tag => 'v1.0.0'
+gem "ood_appkit", :git => "git@github.com:AweSim-OSC/ood_appkit.git"

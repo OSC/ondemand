@@ -9,7 +9,7 @@ class PagesController < ApplicationController
       fileinfo = %x[ file -b --mime-type #{@pathname} ]
       if fileinfo =~ /text\/|application\/x-empty/ || params.has_key?(:force)
         @editor_content = ""
-        @file_api_url = OodApp.files.api(path: @pathname)
+        @file_api_url = OodAppkit.files.api(path: @pathname).to_s
       else
         @invalid_file_type = fileinfo
         render status: 404
