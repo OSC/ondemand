@@ -5,7 +5,7 @@ Paperclip.options[:content_type_mappings] = {
 }
 
 # We use ":class/:id/:created_at/" to specify path uniqueness
-Paperclip::Attachment.default_options[:path] = "#{AwesimRails.dataroot}/uploads/:class/:id/:created_at/:attachment/:filename"
+Paperclip::Attachment.default_options[:path] = "#{OodAppkit.dataroot}/uploads/:class/:id/:created_at/:attachment/:filename"
 
 # URL location points to file mount in routes called "/files"
 # therefore this mirrors ':path' to some extent
