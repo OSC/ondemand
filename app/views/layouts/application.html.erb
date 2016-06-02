@@ -42,11 +42,6 @@
           </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <% if File.exist?(File.join(AwesimRails.docs.path, 'Home.md')) %>
-          <li>
-            <%= link_to "Documentation", docs_path('Home') %>
-          </li>
-          <% end %>
           <li>
             <%= link_to "My Jobs", root_path %>
           </li>
