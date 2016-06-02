@@ -22,6 +22,10 @@ class Workflow < ActiveRecord::Base
     "projects/default"
   end
 
+  def staging_target_dir
+    OodAppkit.dataroot.join(staging_target_dir_name)
+  end
+
   def staged_script_name
     self.script_name
   end
