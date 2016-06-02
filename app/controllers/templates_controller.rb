@@ -100,7 +100,7 @@ class TemplatesController < ApplicationController
   # DELETE /templates/1.json
   def destroy
     # Only delete templates inside the app
-    if @template.path.to_s.start_with?(AwesimRails.dataroot.join('templates').to_s)
+    if @template.path.to_s.start_with?(OodAppkit.dataroot.join('templates').to_s)
       FileUtils.rm_r @template.path
     end
     respond_to do |format|

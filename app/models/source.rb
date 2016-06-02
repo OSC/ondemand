@@ -11,7 +11,7 @@ class Source
   end
 
   def self.my
-    Source.new("My Templates", AwesimRails.dataroot.join("templates").to_s)
+    Source.new("My Templates", OodAppkit.dataroot.join("templates").to_s)
   end
 
   def self.default
