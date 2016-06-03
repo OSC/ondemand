@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.0.6 (2016-06-03)
+
 Features:
 
   - added Python as a configuration option
