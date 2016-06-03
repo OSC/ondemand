@@ -14,5 +14,8 @@ file "#{PREFIX}/bin/ood_auth_map" => ['bin/ood_auth_map', PREFIX] do |t|
   cp t.prerequisites.first, t.name
 end
 
-desc "Install ood_auth_map into PREFIX"
+desc <<-DESC
+Install ood_auth_map into env var PREFIX
+Default: PREFIX=/opt/ood/ood_auth_map
+DESC
 task :install => "#{PREFIX}/bin/ood_auth_map"
