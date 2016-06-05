@@ -4,7 +4,7 @@ require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
-Bundler.require(:default, Rails.env)
+Bundler.require(*Rails.groups)
 
 # Load in the server configurations
 Servers = HashWithIndifferentAccess.new(YAML.load(File.read(File.expand_path('..//servers.yml', __FILE__))))
