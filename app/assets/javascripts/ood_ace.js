@@ -29,10 +29,14 @@ $( document ).ready(function () {
 
         // Disables/enables the save button and binds the window popup if there are changes
         editor.on("change", function() {
+            // The dirtyCounter is an undocumented array in the UndoManager
+            // Changing the editor only modifies the dirtyCounter after the event is over,
+            // so we set it manually on change to apply the proper unload state
+            // https://github.com/ajaxorg/ace/blob/4a55188fdb0eee9e2d3854f175e67408a1e47655/lib/ace/undomanager.js#L164
             editor.session.getUndoManager().dirtyCounter++;
             setBeforeUnloadState();
         });
-
+        
         function setBeforeUnloadState() {
             $( "#save-button" ).prop("disabled", editor.session.getUndoManager().isClean());
             if ( loading ) {
