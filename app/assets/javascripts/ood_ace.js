@@ -17,9 +17,8 @@ $( document ).ready(function () {
                 editorContent = data;
                 editor.setValue(editorContent, -1);
                 $( "#loading-notice" ).toggle();
-                editor.session.getUndoManager().markClean();
-                loading = false;
                 setBeforeUnloadState();
+                loading = false;
             },
             error: function (request, status, error) {
                 alert("An error occured attempting to load this file!\n" + error);
@@ -30,32 +29,46 @@ $( document ).ready(function () {
 
         // Disables/enables the save button and binds the window popup if there are changes
         editor.on("change", function() {
+            // The dirtyCounter is an undocumented array in the UndoManager
+            // Changing the editor only modifies the dirtyCounter after the event is over,
+            // so we set it manually on change to apply the proper unload state
+            // https://github.com/ajaxorg/ace/blob/4a55188fdb0eee9e2d3854f175e67408a1e47655/lib/ace/undomanager.js#L164
+            editor.session.getUndoManager().dirtyCounter++;
             setBeforeUnloadState();
         });
 
-        function setBeforeUnloadState() {
+        function setSaveButtonState() {
             $( "#save-button" ).prop("disabled", editor.session.getUndoManager().isClean());
-            if (!editor.session.getUndoManager().isClean() && !loading) {
-                $(window).on('beforeunload', function(){
+        };
+
+        function setBeforeUnloadState() {
+            if ( loading ) {
+                editor.session.getUndoManager().markClean();
+            };
+
+            setSaveButtonState();
+
+            window.onbeforeunload = function (e) {
+                if (!editor.session.getUndoManager().isClean()) {
                     return 'You have unsaved changes!';
-                });
-            } else {
-                $(window).off('beforeunload');
-            }
-        }
+                } else {
+                    // return nothing
+                }
+            };
+        };
 
         // Toggles a spinner in place of the save icon
         function toggleSaveSpinner() {
             $( "#save-icon" ).toggleClass("glyphicon-save");
             $( "#save-icon" ).toggleClass("glyphicon-refresh");
             $( "#save-icon" ).toggleClass("glyphicon-spin");
-        }
+        };
 
         // Toggles a checkbox in place of the save icon
         function toggleSaveConfirmed() {
             $( "#save-icon" ).toggleClass("glyphicon-save");
             $( "#save-icon" ).toggleClass("glyphicon-saved");
-        }
+        };
 
         // Change the font size
         $( "#fontsize" ).change(function() {
