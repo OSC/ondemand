@@ -17,9 +17,8 @@ $( document ).ready(function () {
                 editorContent = data;
                 editor.setValue(editorContent, -1);
                 $( "#loading-notice" ).toggle();
-                editor.session.getUndoManager().markClean();
-                loading = false;
                 setBeforeUnloadState();
+                loading = false;
             },
             error: function (request, status, error) {
                 alert("An error occured attempting to load this file!\n" + error);
@@ -35,12 +34,17 @@ $( document ).ready(function () {
 
         function setBeforeUnloadState() {
             $( "#save-button" ).prop("disabled", editor.session.getUndoManager().isClean());
-            if (!editor.session.getUndoManager().isClean() && !loading) {
-                $(window).on('beforeunload', function(){
+            if ( loading ) {
+                editor.session.getUndoManager().markClean();
+            }
+            if (!editor.session.getUndoManager().isClean()) {
+                window.onbeforeunload = function (e) {
                     return 'You have unsaved changes!';
-                });
+                }
             } else {
-                $(window).off('beforeunload');
+                window.onbeforeunload = function (e) {
+                    // return nothing
+                };
             }
         }
 
