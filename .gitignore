@@ -23,7 +23,7 @@
 
 # files used for deployment should not be versioned
 /public/.htaccess
-/.env.production
+# /.env.production
 /.env.local
 
 RAILS_DATAROOT=$PWD/data
