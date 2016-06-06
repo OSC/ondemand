@@ -23,7 +23,11 @@ $( document ).ready(function () {
                 loading = false;
             },
             error: function (request, status, error) {
-                alert("An error occured attempting to load this file!\n" + error);
+                var errorMessage = "An error occured attempting to load this file!\n" + error;
+                alert(errorMessage);
+                $("#editor").text(errorMessage);
+                editor.destroy();
+                editor = ace.edit("editor");
                 $( "#loading-notice" ).toggle();
                 loading = false;
             }
