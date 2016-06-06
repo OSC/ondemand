@@ -1,10 +1,10 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.0.0'
+gem 'rails', '4.1.15'
 
 # Use sqlite3 as the database for Active Record
-gem 'sqlite3'
+gem 'sqlite3', '~> 1.3.11'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0.0'
@@ -55,7 +55,7 @@ gem "js-routes", "~> 1.2.4"
 gem "rails_12factor", group: :production
 gem "pbs", :git => "git@github.com:AweSim-OSC/pbs-ruby.git", :tag => 'v1.1.1'
 gem "osc-machete", :git => "git@github.com:AweSim-OSC/osc-machete.git", :tag => 'v1.1.1'
-gem "osc_machete_rails", :git => "git@github.com:AweSim-OSC/osc_machete_rails.git", :tag => 'v1.1.1'
+gem "osc_machete_rails", :git => "git@github.com:AweSim-OSC/osc_machete_rails.git"#:tag => 'v1.1.1'
 
 #gem "awesim_rails_logging", :group => :production, :git => "git@github.com:AweSim-OSC/awesim_rails_logging.git", :tag => 'v1.0.0'
 gem "ood_appkit", :git => "git@github.com:AweSim-OSC/ood_appkit.git"
