@@ -56,17 +56,12 @@ class Workflow < ActiveRecord::Base
     Pathname.new(self.staged_dir)
   end
 
-  # def staging_template_dir
-  #   File.dirname(self.script_path)
-  # end
-
+  # Get an array of all the files of a directory
+  #
+  # Find.find returns an enumerator - the first path is always the initial directory
+  # so we return the array with the first item omitted
   def folder_contents
-    dir = self.staged_dir || Dir.home
-    file_paths = []
-    Find.find(dir) do |path|
-      file_paths << path unless path == dir
-    end
-    file_paths
+    File.directory?(staged_dir) ? Find.find(staged_dir).to_a[1..-1] : []
   end
 
   def pbsid
