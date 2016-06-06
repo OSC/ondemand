@@ -36,9 +36,13 @@ $( document ).ready(function () {
             editor.session.getUndoManager().dirtyCounter++;
             setBeforeUnloadState();
         });
-        
-        function setBeforeUnloadState() {
+
+        function setSaveButtonState() {
             $( "#save-button" ).prop("disabled", editor.session.getUndoManager().isClean());
+        }
+
+        function setBeforeUnloadState() {
+            setSaveButtonState();
             if ( loading ) {
                 editor.session.getUndoManager().markClean();
             }
