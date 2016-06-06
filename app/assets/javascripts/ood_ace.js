@@ -39,36 +39,36 @@ $( document ).ready(function () {
 
         function setSaveButtonState() {
             $( "#save-button" ).prop("disabled", editor.session.getUndoManager().isClean());
-        }
+        };
 
         function setBeforeUnloadState() {
             setSaveButtonState();
             if ( loading ) {
                 editor.session.getUndoManager().markClean();
-            }
+            };
             if (!editor.session.getUndoManager().isClean()) {
                 window.onbeforeunload = function (e) {
                     return 'You have unsaved changes!';
-                }
+                };
             } else {
                 window.onbeforeunload = function (e) {
                     // return nothing
                 };
-            }
-        }
+            };
+        };
 
         // Toggles a spinner in place of the save icon
         function toggleSaveSpinner() {
             $( "#save-icon" ).toggleClass("glyphicon-save");
             $( "#save-icon" ).toggleClass("glyphicon-refresh");
             $( "#save-icon" ).toggleClass("glyphicon-spin");
-        }
+        };
 
         // Toggles a checkbox in place of the save icon
         function toggleSaveConfirmed() {
             $( "#save-icon" ).toggleClass("glyphicon-save");
             $( "#save-icon" ).toggleClass("glyphicon-saved");
-        }
+        };
 
         // Change the font size
         $( "#fontsize" ).change(function() {
