@@ -10,12 +10,13 @@ $( document ).ready(function () {
         var loading = true;
         // Load the file via ajax
         var loadedContent = $.ajax({
-
             url: apiUrl,
             type: 'GET',
             success: function (data) {
                 editorContent = data;
-                editor.setValue(editorContent, -1);
+                $("#editor").text(editorContent);
+                editor.destroy();
+                editor = ace.edit("editor");
                 $( "#loading-notice" ).toggle();
                 editor.session.getUndoManager().markClean();
                 loading = false;
