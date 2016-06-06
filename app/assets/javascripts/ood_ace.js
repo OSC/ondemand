@@ -45,17 +45,15 @@ $( document ).ready(function () {
             if ( loading ) {
                 editor.session.getUndoManager().markClean();
             };
-            
+
             setSaveButtonState();
 
-            if (!editor.session.getUndoManager().isClean()) {
-                window.onbeforeunload = function (e) {
+            window.onbeforeunload = function (e) {
+                if (!editor.session.getUndoManager().isClean()) {
                     return 'You have unsaved changes!';
-                };
-            } else {
-                window.onbeforeunload = function (e) {
+                } else {
                     // return nothing
-                };
+                }
             };
         };
 
