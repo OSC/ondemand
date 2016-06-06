@@ -13,13 +13,14 @@
 
 # Ignore all logfiles and tempfiles.
 /log/*.log
-/tmp
+/tmp/*
+!/tmp/.keep
 # data to store simulations and file uploads for development
 /data
 
 # files used for deployment should not be versioned
 /public/.htaccess
-/.env.production
+# /.env.production
 /.env.local
 /vendor/bundle
 

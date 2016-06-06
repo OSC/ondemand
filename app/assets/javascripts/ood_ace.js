@@ -19,9 +19,8 @@ $( document ).ready(function () {
                 editor = ace.edit("editor");
                 initializeEditor();
                 $( "#loading-notice" ).toggle();
-                editor.session.getUndoManager().markClean();
-                loading = false;
                 setBeforeUnloadState();
+                loading = false;
             },
             error: function (request, status, error) {
                 alert("An error occured attempting to load this file!\n" + error);
@@ -29,27 +28,44 @@ $( document ).ready(function () {
                 loading = false;
             }
         });
-
         function initializeEditor() {
 
             // Disables/enables the save button and binds the window popup if there are changes
             editor.on("change", function() {
+                // The dirtyCounter is an undocumented array in the UndoManager
+                // Changing the editor only modifies the dirtyCounter after the event is over,
+                // so we set it manually on change to apply the proper unload state
+                // https://github.com/ajaxorg/ace/blob/4a55188fdb0eee9e2d3854f175e67408a1e47655/lib/ace/undomanager.js#L164
+                editor.session.getUndoManager().dirtyCounter++;
                 setBeforeUnloadState();
             });
 
             // Mark the editor as clean after load.
             editor.session.getUndoManager().markClean();
 
+            // Disable the save button after the initial load
+            // Modifying settings and adding data to the editor makes the UndoManager "dirty"
+            // so we have to explicitly re-disable it on page ready.
+            $( "#save-button" ).prop("disabled", true);
+        };
+
+        function setSaveButtonState() {
+            $( "#save-button" ).prop("disabled", editor.session.getUndoManager().isClean());
         };
 
         function setBeforeUnloadState() {
-            $( "#save-button" ).prop("disabled", editor.session.getUndoManager().isClean());
-            if (!editor.session.getUndoManager().isClean() && !loading) {
-                $(window).on('beforeunload', function(){
+            if ( loading ) {
+                editor.session.getUndoManager().markClean();
+            };
+
+            setSaveButtonState();
+
+            window.onbeforeunload = function (e) {
+                if (!editor.session.getUndoManager().isClean()) {
                     return 'You have unsaved changes!';
-                });
-            } else {
-                $(window).off('beforeunload');
+                } else {
+                    // return nothing
+                };
             };
         };
 
@@ -142,9 +158,4 @@ $( document ).ready(function () {
 
         initializeEditor();
     }
-
-    // Disable the save button after the initial load
-    // Modifying settings and adding data to the editor makes the UndoManager "dirty"
-    // so we have to explicitly re-disable it on page ready.
-    $( "#save-button" ).prop("disabled", true);
 });
