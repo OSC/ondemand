@@ -17,6 +17,7 @@ $( document ).ready(function () {
                 $("#editor").text(editorContent);
                 editor.destroy();
                 editor = ace.edit("editor");
+                initializeEditor();
                 $( "#loading-notice" ).toggle();
                 editor.session.getUndoManager().markClean();
                 loading = false;
@@ -29,10 +30,17 @@ $( document ).ready(function () {
             }
         });
 
-        // Disables/enables the save button and binds the window popup if there are changes
-        editor.on("change", function() {
-            setBeforeUnloadState();
-        });
+        function initializeEditor() {
+
+            // Disables/enables the save button and binds the window popup if there are changes
+            editor.on("change", function() {
+                setBeforeUnloadState();
+            });
+
+            // Mark the editor as clean after load.
+            editor.session.getUndoManager().markClean();
+
+        };
 
         function setBeforeUnloadState() {
             $( "#save-button" ).prop("disabled", editor.session.getUndoManager().isClean());
@@ -42,21 +50,21 @@ $( document ).ready(function () {
                 });
             } else {
                 $(window).off('beforeunload');
-            }
-        }
+            };
+        };
 
         // Toggles a spinner in place of the save icon
         function toggleSaveSpinner() {
             $( "#save-icon" ).toggleClass("glyphicon-save");
             $( "#save-icon" ).toggleClass("glyphicon-refresh");
             $( "#save-icon" ).toggleClass("glyphicon-spin");
-        }
+        };
 
         // Toggles a checkbox in place of the save icon
         function toggleSaveConfirmed() {
             $( "#save-icon" ).toggleClass("glyphicon-save");
             $( "#save-icon" ).toggleClass("glyphicon-saved");
-        }
+        };
 
         // Change the font size
         $( "#fontsize" ).change(function() {
@@ -113,11 +121,10 @@ $( document ).ready(function () {
                         alert("An error occured attempting to save this file!\n" + error);
                         toggleSaveSpinner();
                     }
-                })
-
+                });
             } else {
                 console.log("Can't save this!");
-            }
+            };
         });
 
         function setOptions() {
@@ -131,10 +138,9 @@ $( document ).ready(function () {
             editor.setTheme( $( "#theme option:selected" ).val() );
             $( "#wordwrap" ).prop("checked", getCookie('wordwrap') === "true");
             editor.getSession().setUseWrapMode( $( "#wordwrap" ).is(':checked'));
-        }
+        };
 
-        // Mark the editor as clean after load.
-        editor.session.getUndoManager().markClean();
+        initializeEditor();
     }
 
     // Disable the save button after the initial load
