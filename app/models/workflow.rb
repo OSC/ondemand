@@ -42,13 +42,16 @@ class Workflow < ActiveRecord::Base
     end
   end
 
+  class StagingTemplateDirMissing < StandardError; end
   # Override of OSC::Machete#stage
   # Creates a new staging target job directory on the system
   # Copies the staging template directory to the staging target job directory
   #
   # @return [Pathname] The staged directory path.
   def stage
-    unless self.staged_dir
+    if self.staged_dir.nil?
+      raise StagingTemplateDirMissing unless staging_template_dir && File.directory?(staging_template_dir)
+
       self.staged_dir = OSC::Machete::JobDir.new(staging_target_dir).new_jobdir
       FileUtils.mkdir_p self.staged_dir
       FileUtils.cp_r staging_template_dir.to_s + "/.", self.staged_dir
@@ -87,6 +90,10 @@ class Workflow < ActiveRecord::Base
     new_workflow.batch_host = self.batch_host
     new_workflow.script_name = self.script_name
     new_workflow.staged_dir = new_workflow.stage.to_s
+    new_workflow
+  rescue StagingTemplateDirMissing
+    new_workflow = Workflow.new
+    new_workflow.errors[:base] << "Cannot copy job because job directory is missing"
     new_workflow
   end
 

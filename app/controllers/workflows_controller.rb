@@ -112,7 +112,7 @@ class WorkflowsController < ApplicationController
     @workflow = @workflow.copy
 
     respond_to do |format|
-      if @workflow.save
+      if @workflow.errors.empty? && @workflow.save
         format.html { redirect_to workflows_url, notice: 'Job was successfully copied.' }
         format.json { render :show, status: :created, location: @workflow }
       else
