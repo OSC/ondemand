@@ -42,10 +42,12 @@ $( document ).ready(function () {
         };
 
         function setBeforeUnloadState() {
-            setSaveButtonState();
             if ( loading ) {
                 editor.session.getUndoManager().markClean();
             };
+            
+            setSaveButtonState();
+
             if (!editor.session.getUndoManager().isClean()) {
                 window.onbeforeunload = function (e) {
                     return 'You have unsaved changes!';
