@@ -65,7 +65,7 @@ $( document ).ready(function () {
 
         // Change the key bindings
         $( "#keybindings" ).change(function() {
-            editor.setKeyboardHandler( "ace/keyboard/" + $( "#keybindings option:selected" ).val() );
+            editor.setKeyboardHandler( $( "#keybindings option:selected" ).val() );
             setCookie( 'keybindings', $( "#keybindings option:selected" ).val(), 9999 );
         });
 
@@ -121,7 +121,7 @@ $( document ).ready(function () {
 
         function setOptions() {
             $( "#keybindings" ).val(getCookie('keybindings') || 'ace');
-            editor.setKeyboardHandler( "ace/keyboard/" + $( "#keybindings option:selected" ).val() );
+            editor.setKeyboardHandler( $( "#keybindings option:selected" ).val() );
             $( "#fontsize" ).val(getCookie('fontsize') || '12px');
             editor.setFontSize( $( "#fontsize option:selected" ).val() );
             $( "#mode" ).val(getCookie('mode') || "text");
