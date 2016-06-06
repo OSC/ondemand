@@ -29,7 +29,6 @@ $( document ).ready(function () {
                 editor.destroy();
                 editor = ace.edit("editor");
                 $( "#loading-notice" ).toggle();
-                loading = false;
             }
         });
         function initializeEditor() {
