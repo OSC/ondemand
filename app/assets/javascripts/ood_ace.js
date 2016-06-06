@@ -29,6 +29,7 @@ $( document ).ready(function () {
 
         // Disables/enables the save button and binds the window popup if there are changes
         editor.on("change", function() {
+            editor.session.getUndoManager().dirtyCounter++;
             setBeforeUnloadState();
         });
 
