@@ -3,8 +3,8 @@
 Log in as `wiag` user
 
 ```
-$ cd /nfs/01/wiag/PZS0645/ood/apps/sys/files
-$ git clone https://github.com/AweSim-OSC/osc-fileexplorer.git
+$ cd /nfs/01/wiag/PZS0645/ood/apps/sys
+$ git clone https://github.com/AweSim-OSC/osc-fileexplorer.git files
 $ npm i
 ```
 
