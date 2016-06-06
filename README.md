@@ -77,9 +77,10 @@ For Python apps:
 4. Add the reverse proxy daemon user to `/etc/sudoers`
 
     ```
-    Defaults:apache     !requiretty, !authenticate
+    # /etc/sudoers
 
-    apache ALL=/opt/ood/nginx_stage/sbin/nginx_stage
+    Defaults:apache     !requiretty, !authenticate
+    apache ALL=(ALL) NOPASSWD: /opt/ood/nginx_stage/sbin/nginx_stage
     ```
 
 ## Post-installation
