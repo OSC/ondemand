@@ -14,20 +14,20 @@
   <div class="container-fluid">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-9" aria-expanded="false"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
-      <a class="navbar-brand" href="<%= root_path %>"><%= OodApp.dashboard.title %></a>
+      <a class="navbar-brand" href="<%= root_path %>"><%= OodAppkit.dashboard.title %></a>
     </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
       <ul class="nav navbar-nav">
 
         <% if @user.project_space_paths.empty? %>
-          <li><a href="<%= OodApp.files.url(path: @user.home) %>" target="_blank">Files</a></li>
+          <li><a href="<%= OodAppkit.files.url(path: @user.home) %>" target="_blank">Files</a></li>
         <% else %>
           <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Files<span class="caret"></span></a>
             <ul class="dropdown-menu">
-              <li><a href="<%= OodApp.files.url(path: @user.home) %>" target="_blank"><i class="fa fa-home"></i> Home Directory</a></a></li>
+              <li><a href="<%= OodAppkit.files.url(path: @user.home) %>" target="_blank"><i class="fa fa-home"></i> Home Directory</a></a></li>
               <li role="separator" class="divider"></li>
               <% @user.project_space_paths.each do |path| %>
-                <li><a href="<%= OodApp.files.url(path: path) %>" target="_blank"><i class="fa fa-folder"></i> <%= path.to_s %></a></li>
+                <li><a href="<%= OodAppkit.files.url(path: path) %>" target="_blank"><i class="fa fa-folder"></i> <%= path.to_s %></a></li>
               <% end %>
             </ul>
           </li>
@@ -41,9 +41,9 @@
         </li>
         <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Clusters<span class="caret"></span></a>
         <ul class="dropdown-menu">
-          <li><a href="<%= OodApp.shell.url(host: "oakley") %>" target="_blank"><i class="fa fa-terminal"></i> Oakley Shell Access</a></li>
+          <li><a href="<%= OodAppkit.shell.url(host: "oakley") %>" target="_blank"><i class="fa fa-terminal"></i> Oakley Shell Access</a></li>
           <% if @user.has_ruby_access? %>
-            <li><a href="<%= OodApp.shell.url(host: "ruby") %>" target="_blank"><i class="fa fa-terminal"></i> Ruby Shell Access</a></li>
+            <li><a href="<%= OodAppkit.shell.url(host: "ruby") %>" target="_blank"><i class="fa fa-terminal"></i> Ruby Shell Access</a></li>
           <% end %>
           <li role="separator" class="divider"></li>
           <li><a href="/pun/sys/systemstatus"><i class="fa fa-tachometer"></i> System Status</a></li>

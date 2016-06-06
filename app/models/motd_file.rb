@@ -24,7 +24,7 @@ class MotdFile
   # system to determine when new messages the user has not seen have been
   # added to the motd.
   def motd_config_file
-    @motd_config_file ||= OodApp.dataroot.join(".motd")
+    @motd_config_file ||= OodAppkit.dataroot.join(".motd")
   end
 
   def motd_system_file
