@@ -6,6 +6,7 @@ $( document ).ready(function () {
         // Initialize the ace editor
         var editor = ace.edit("editor");
         setOptions();
+        editor.setReadOnly(true);
         $( "#loading-notice" ).toggle();
         var loading = true;
         // Load the file via ajax
@@ -23,11 +24,7 @@ $( document ).ready(function () {
                 loading = false;
             },
             error: function (request, status, error) {
-                var errorMessage = "An error occured attempting to load this file!\n" + error;
-                alert(errorMessage);
-                $("#editor").text(errorMessage);
-                editor.destroy();
-                editor = ace.edit("editor");
+                alert("An error occured attempting to load this file!\n" + error);
                 $( "#loading-notice" ).toggle();
             }
         });
