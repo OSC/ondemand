@@ -26,7 +26,7 @@ $( document ).ready(function () {
             error: function (request, status, error) {
                 alert("An error occured attempting to load this file!\n" + error);
                 editor.destroy();
-                $( '.container[role="main"]').html(ajaxErrorMessage);
+                $( '.container[role="main"]' ).html(ajaxErrorMessage);
                 $( "#loading-notice" ).toggle();
             }
         });
