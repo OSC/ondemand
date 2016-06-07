@@ -103,15 +103,29 @@ class Workflow < ActiveRecord::Base
   # - Override Machete Workflow submit so that it doesn't delete the staged_dir
   #   when job submission fails
   def submit(template_view=self)
+    success = false
+
     self.staged_dir = stage   # set staged_dir
-    render_mustache_files(staged_dir, template_view)
-    after_stage(staged_dir)
-    jobs = build_jobs(staged_dir)
-    if submit_jobs(jobs)
-      save_jobs(jobs, staged_dir)
+
+    #FIXME: we should add to osc_machete a job directory missing exception
+    if ! staged_dir.directory?
+      errors[:base] << "Job directory is missing: #{staged_dir.to_s}"
     else
-      # FileUtils.rm_rf staged_dir.to_s
-      false
+      render_mustache_files(staged_dir, template_view)
+      after_stage(staged_dir)
+      jobs = build_jobs(staged_dir)
+      if submit_jobs(jobs)
+        success = save_jobs(jobs, staged_dir)
+      else
+        # FIXME: we should let the developer disable removing the job directory
+        # after a submission fails
+        #
+        # Don't remove the directory here
+        # FileUtils.rm_rf staged_dir.to_s
+      end
     end
+
+    success
+
   end
 end
