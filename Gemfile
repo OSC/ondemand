@@ -38,15 +38,14 @@ end
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
-gem "therubyracer", platforms: :ruby
-gem "paperclip", "~> 4.2.2"
-gem "bootstrap-sass", "3.3.5"
-gem "autoprefixer-rails"
-gem "osc-machete", :git => "git@github.com:AweSim-OSC/osc-machete.git"
+gem 'therubyracer', platforms: :ruby
+gem 'paperclip', '~> 4.2.2'
+gem 'bootstrap-sass', '3.3.5'
+gem 'autoprefixer-rails'
+gem 'osc-machete', '~> 1.1'
 gem 'dotenv-rails', '~> 2.0', require: 'dotenv/rails-now'
-gem "rails_12factor", group: :production
-gem "awesim_rails_logging", :git => "git@github.com:AweSim-OSC/awesim_rails_logging.git"
-gem "pbs", :git => "git@github.com:AweSim-OSC/pbs-ruby.git"
-gem "ood_appkit", :git => "git@github.com:AweSim-OSC/ood_appkit.git"
+gem 'rails_12factor', group: :production
+gem 'pbs', '~> 1.1'
+gem "ood_appkit", '~> 0.0'
 gem "turbolinks"
 gem "jquery-datatables-rails", '~> 3.3.0'

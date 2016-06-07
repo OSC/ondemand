@@ -1,34 +1,3 @@
-GIT
-  remote: git@github.com:AweSim-OSC/awesim_rails_logging.git
-  revision: 33e5c288a82b01dcd10265aeb2cbd24aae1e2e04
-  specs:
-    awesim_rails_logging (1.0.0)
-      rails (~> 4.0.0)
-
-GIT
-  remote: git@github.com:AweSim-OSC/ood_appkit.git
-  revision: 2179354e7a69672352a926e6eae11d95c264a9e8
-  specs:
-    ood_appkit (0.0.1)
-      addressable (~> 2.4)
-      rails (~> 4.0.0)
-      redcarpet (~> 3.2)
-
-GIT
-  remote: git@github.com:AweSim-OSC/osc-machete.git
-  revision: d124db819b596f49abec12b4783293e39ebf2919
-  specs:
-    osc-machete (1.1.1)
-      mustache
-      pbs (~> 1.1)
-
-GIT
-  remote: git@github.com:AweSim-OSC/pbs-ruby.git
-  revision: 870fc6e4d8e075b5b5cf744e29a81bbe3caa511b
-  specs:
-    pbs (1.1.1)
-      ffi (~> 1.9, >= 1.9.6)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -104,11 +73,20 @@ GEM
     minitest (4.7.5)
     multi_json (1.12.1)
     mustache (1.0.3)
+    ood_appkit (0.0.2)
+      addressable (~> 2.4)
+      rails (~> 4.0)
+      redcarpet (~> 3.2)
+    osc-machete (1.1.3)
+      mustache
+      pbs (~> 1.1)
     paperclip (4.2.4)
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
       cocaine (~> 0.5.5)
       mime-types
+    pbs (1.1.4)
+      ffi (~> 1.9, >= 1.9.6)
     polyglot (0.3.5)
     rack (1.5.5)
     rack-test (0.6.3)
@@ -175,17 +153,16 @@ PLATFORMS
 
 DEPENDENCIES
   autoprefixer-rails
-  awesim_rails_logging!
   bootstrap-sass (= 3.3.5)
   coffee-rails (~> 4.0.0)
   dotenv-rails (~> 2.0)
   jbuilder (~> 1.2)
   jquery-datatables-rails (~> 3.3.0)
   jquery-rails
-  ood_appkit!
-  osc-machete!
+  ood_appkit (~> 0.0)
+  osc-machete (~> 1.1)
   paperclip (~> 4.2.2)
-  pbs!
+  pbs (~> 1.1)
   rails (= 4.0.0)
   rails_12factor
   sass-rails (~> 5.0.0)
