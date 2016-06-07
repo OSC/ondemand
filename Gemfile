@@ -34,10 +34,12 @@ gem 'dotenv-rails', '~> 2.0.0', :require => 'dotenv/rails-now'
 gem 'rails_12factor', group: :production
 gem 'redcarpet', '~> 3.2.2'
 gem 'rouge', '~> 1.9.0'
+
 gem 'awesim', :git => 'git@github.com:AweSim-OSC/awesim-cli.git', :tag => 'v0.11.0'
-gem 'pbs', :git => 'git@github.com:AweSim-OSC/pbs-ruby.git', :tag => 'v1.1.0'
-gem 'osc-machete', :git => 'git@github.com:AweSim-OSC/osc-machete.git', :tag => 'v1.1.1'
-gem 'ood_appkit', :git => 'git@github.com:AweSim-OSC/ood_appkit.git'
+
+gem 'pbs', '~> 1.1'
+gem 'osc-machete', '~> 1.1'
+gem 'ood_appkit', '~> 0.0'
 gem 'browser', '~> 2.1'
 
 # Use ActiveModel has_secure_password
