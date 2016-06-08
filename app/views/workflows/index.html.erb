@@ -4,8 +4,10 @@
 
 <div class="col-md-7">
   <div class="panel">
+    <a class="btn btn-default btn-sm btn-info" href="<%= new_workflow_path %>" data-toggle="tooltip" title="Create a new job from a template" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Job</a>
+    <a class="btn btn-default btn-sm btn-info" id="copy_button" data-toggle="tooltip" title="Copy Job" role="button" data-method="get" disabled><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> Copy Job</a>
 
-    <a class="btn btn-default btn-sm" href="<%= new_workflow_path %>" data-toggle="tooltip" title="Create a new job from a template" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New From Template</a>
+    <a class="pull-right btn btn-default btn-sm btn-templates" id="template_button" data-toggle="tooltip" title="Create template from selected job" data-method="get" role="button" disabled><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Create Template</a>
   </div>
 </div>
 
@@ -19,13 +21,12 @@
     <div id="job-list-view" class="panel panel-default">
 
         <div class="panel-body">
-          <a class="btn btn-default btn-sm" id="open_dir_button" target="_blank" data-toggle="tooltip" title="Open Directory in File Manager" role="button" disabled><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span> Open Dir</a>
-          <a class="btn btn-default btn-sm" id="copy_button" data-toggle="tooltip" title="Copy Job" role="button" data-method="get" disabled><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span></a>
+          <a class="btn btn-default btn-sm btn-primary" id="open_dir_button" target="_blank" data-toggle="tooltip" title="Open Directory in File Manager" role="button" disabled><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span> Edit Files</a>
           <!-- <a class="btn btn-default btn-sm" id="view_button" data-toggle="tooltip" title="View Job" role="button" data-method="get" disabled><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a> -->
-          <a class="btn btn-default btn-sm" id="edit_button" data-toggle="tooltip" title="Edit Job" role="button" data-method="get" disabled><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+          <a class="btn btn-default btn-sm btn-primary" id="edit_button" data-toggle="tooltip" title="Specify Job Host and Script" role="button" data-method="get" disabled><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Specify Script</a>
+
           <a class="btn btn-success btn-sm" id="submit_button" data-toggle="tooltip" title="Submit Job" role="button" data-method="get" disabled><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a>
-          <a class="btn btn-default btn-sm" id="stop_button" data-toggle="tooltip" title="Stop Job" role="button" data-method="get" disabled><span class="glyphicon glyphicon-stop" aria-hidden="true"></span></a>
-          <a class="btn btn-default btn-sm" id="template_button" data-toggle="tooltip" title="Create template from selected job" data-method="get" role="button" disabled><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Create Template</a>
+          <a class="btn btn-default btn-sm btn-warning" id="stop_button" data-toggle="tooltip" title="Stop Job" role="button" data-method="get" disabled><span class="glyphicon glyphicon-stop" aria-hidden="true"></span></a>
           <a class="btn btn-danger btn-sm pull-right" id="destroy_button" data-toggle="tooltip" title="Delete Job" data-method="get" data-confirm="Are you sure?" role="button" disabled><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
         </div>
 
