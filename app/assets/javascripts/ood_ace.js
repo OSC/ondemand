@@ -1,8 +1,9 @@
 $( document ).ready(function () {
-
+    
     // Do not load the ace editor if the element is not available
     // ex. for directory views
-    if ( $( "#editor" ).length ) {
+    if ( $( '#editor' ).length ) {
+        $( '#error' ).hide();
         // Initialize the ace editor
         var editor = ace.edit("editor");
         setOptions();
@@ -24,9 +25,10 @@ $( document ).ready(function () {
                 loading = false;
             },
             error: function (request, status, error) {
-                // alert("An error occured attempting to load this file!\n" + error);
+                $( '#error' ).show();
                 editor.destroy();
-                $( '.container[role="main"]' ).html(ajaxErrorMessage);
+                $( '#editor' ).remove();
+                $( '#ajaxErrorResponse' ).text(error);
                 $( "#loading-notice" ).toggle();
             }
         });
