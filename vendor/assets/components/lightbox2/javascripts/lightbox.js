@@ -20,12 +20,12 @@
   var LightboxOptions = (function() {
     function LightboxOptions() {
       this.alwaysShowNavOnTouchDevices = false;
-      this.fadeDuration                = 500;
+      this.fadeDuration                = 20;
       this.fitImagesInViewport         = true;
       // this.maxWidth                    = 800;
       // this.maxHeight                   = 600;
       this.positionFromTop             = 50;
-      this.resizeDuration              = 700;
+      this.resizeDuration              = 20;
       this.showImageNumberLabel        = true;
       this.wrapAround                  = false;
     }
