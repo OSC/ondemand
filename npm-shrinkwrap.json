@@ -1731,9 +1731,9 @@
           "resolved": "https://registry.npmjs.org/pipe-io/-/pipe-io-1.2.1.tgz"
         },
         "ponse": {
-          "version": "1.4.1",
+          "version": "1.4.2",
           "from": "ponse@>=1.4.0 <1.5.0",
-          "resolved": "https://registry.npmjs.org/ponse/-/ponse-1.4.1.tgz",
+          "resolved": "https://registry.npmjs.org/ponse/-/ponse-1.4.2.tgz",
           "dependencies": {
             "debug": {
               "version": "2.2.0",
