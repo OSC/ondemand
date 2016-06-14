@@ -1,9 +1,12 @@
 var http        = require('http'),
+    fs          = require('fs'),
+    path        = require('path'),
     cloudcmd    = require('cloudcmd'),
     express     = require('express'),
     io          = require('socket.io'),
     HOME        = require('os-homedir')(),
     BASE_URI    = require('base-uri'),
+    packer      = require('zip-stream'),
     app         = express(),
     dirArray    = __dirname.split('/'),
     PORT        = 9001,
@@ -26,6 +29,59 @@ app.use(function(req, res, next) {
     res.header('Expires', '-1');
     res.header('Pragma', 'no-cache');
     next();
+});
+
+app.use(function (req, res, next) {
+    var cmd, p = req.url;
+
+    if (p[0] === '/')
+        cmd = p.replace(BASE_URI, '');
+
+    if (/oodzip/.test(cmd)) {
+        cmd = cmd.replace('oodzip/', '');
+        var fileinfo;
+        try {
+            fileinfo = fs.lstatSync(cmd);
+            if (fileinfo.isDirectory()) {
+
+                var spawn = require('child_process').spawn;
+
+                // Options -r recursive -j ignore directory info - redirect to stdout
+                var zip = spawn('zip', ['-rj', '-', cmd]);
+
+                res.contentType('zip');
+
+                // Keep writing stdout to res
+                zip.stdout.on('data', function (data) {
+                    res.write(data);
+                });
+
+                zip.stderr.on('data', function (data) {
+                    // Uncomment to see the files being added
+                    //console.log('zip stderr: ' + data);
+                });
+
+                // End the response on zip exit
+                zip.on('exit', function (code) {
+                    if(code !== 0) {
+                        res.statusCode = 500;
+                        console.log('zip process exited with code ' + code);
+                        res.end();
+                    } else {
+                        res.end();
+                    }
+                });
+
+
+            } else {
+                res.send(cmd + " is not dir");
+            }
+        } catch (e) {
+            next();
+        }
+    } else {
+        next();
+    }
 });
 
 // Load cloudcmd
