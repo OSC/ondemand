@@ -6,7 +6,7 @@ var http        = require('http'),
     io          = require('socket.io'),
     HOME        = require('os-homedir')(),
     BASE_URI    = require('base-uri'),
-    packer      = require('zip-stream'),
+    archiver    = require('archiver'),
     app         = express(),
     dirArray    = __dirname.split('/'),
     PORT        = 9001,
@@ -31,53 +31,46 @@ app.use(function(req, res, next) {
     next();
 });
 
+// Custom middleware to zip and send a directory to a browser.
+// Access at http://PREFIX/oodzip/PATH
 app.use(function (req, res, next) {
-    var cmd, p = req.url;
+    var paramPath, p = req.url;
 
     if (p[0] === '/')
-        cmd = p.replace(BASE_URI, '');
+        paramPath = p.replace(BASE_URI, '');
 
-    if (/oodzip/.test(cmd)) {
-        cmd = cmd.replace('oodzip/', '');
+    if (/oodzip/.test(paramPath)) {
+        paramPath = paramPath.replace('oodzip/', '');
         var fileinfo;
+
         try {
-            fileinfo = fs.lstatSync(cmd);
+            fileinfo = fs.lstatSync(paramPath);
             if (fileinfo.isDirectory()) {
 
-                var spawn = require('child_process').spawn;
+                var archive     = archiver('zip');
+                var fileName    = path.basename(paramPath) + ".zip";
+                var output      = res.attachment(fileName);
 
-                // Options -r recursive -j ignore directory info - redirect to stdout
-                var zip = spawn('zip', ['-rj', '-', cmd]);
-
-                res.contentType('zip');
-
-                // Keep writing stdout to res
-                zip.stdout.on('data', function (data) {
-                    res.write(data);
+                output.on('close', function () {
+                    // Uncomment for logging
+                    // console.log(archive.pointer() + ' total bytes');
+                    // console.log('archiver has been finalized and the output file descriptor has closed.');
                 });
 
-                zip.stderr.on('data', function (data) {
-                    // Uncomment to see the files being added
-                    //console.log('zip stderr: ' + data);
+                archive.on('error', function(err){
+                    throw err;
                 });
 
-                // End the response on zip exit
-                zip.on('exit', function (code) {
-                    if(code !== 0) {
-                        res.statusCode = 500;
-                        console.log('zip process exited with code ' + code);
-                        res.end();
-                    } else {
-                        res.end();
-                    }
-                });
-
+                archive.pipe(output);
+                archive.directory(paramPath, '');
+                archive.finalize();
 
             } else {
-                res.send(cmd + " is not dir");
+                // Not a directory
+                next();
             }
-        } catch (e) {
-            next();
+        } catch (error) {
+            res.send(error);
         }
     } else {
         next();
