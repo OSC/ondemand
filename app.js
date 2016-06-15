@@ -42,11 +42,12 @@ app.use(function (req, res, next) {
     if (paramURL[0] === '/')
         paramPath = paramURL.replace(BASE_URI, '');
 
-
+    // If the requested path begins with '/oodzip', send the contents as zip
     if (/^\/oodzip/.test(paramPath)) {
-        paramPath = paramPath.replace('oodzip/', '');
+        paramPath = paramPath.replace('/oodzip', '');
         var fileinfo;
 
+        // Create and send the archive
         try {
             fileinfo = fs.lstatSync(paramPath);
             if (fileinfo.isDirectory()) {
