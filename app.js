@@ -7,6 +7,7 @@ var http        = require('http'),
     HOME        = require('os-homedir')(),
     BASE_URI    = require('base-uri'),
     archiver    = require('archiver'),
+    queryString = require('querystring'),
     app         = express(),
     dirArray    = __dirname.split('/'),
     PORT        = 9001,
@@ -36,7 +37,7 @@ app.use(function(req, res, next) {
 // Uses `archiver` https://www.npmjs.com/package/archiver to stream the contents of a file to the browser.
 app.use(function (req, res, next) {
     var paramPath,
-        paramURL    = req.url;
+        paramURL    = queryString.unescape(req.url);
 
     // Remove the prefix to isolate the requested path.
     if (paramURL[0] === '/')
