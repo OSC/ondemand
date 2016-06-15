@@ -33,13 +33,17 @@ app.use(function(req, res, next) {
 
 // Custom middleware to zip and send a directory to a browser.
 // Access at http://PREFIX/oodzip/PATH
+// Uses `archiver` https://www.npmjs.com/package/archiver to stream the contents of a file to the browser.
 app.use(function (req, res, next) {
-    var paramPath, p = req.url;
+    var paramPath,
+        paramURL    = req.url;
 
-    if (p[0] === '/')
-        paramPath = p.replace(BASE_URI, '');
+    // Remove the prefix to isolate the requested path.
+    if (paramURL[0] === '/')
+        paramPath = paramURL.replace(BASE_URI, '');
 
-    if (/oodzip/.test(paramPath)) {
+
+    if (/^\/oodzip/.test(paramPath)) {
         paramPath = paramPath.replace('oodzip/', '');
         var fileinfo;
 
