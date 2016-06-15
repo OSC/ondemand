@@ -35,8 +35,6 @@ gem 'rails_12factor', group: :production
 gem 'redcarpet', '~> 3.2.2'
 gem 'rouge', '~> 1.9.0'
 
-gem 'awesim', :git => 'git@github.com:AweSim-OSC/awesim-cli.git', :tag => 'v0.11.0'
-
 gem 'pbs', '~> 1.1'
 gem 'osc-machete', '~> 1.1'
 gem 'ood_appkit', '~> 0.0'

@@ -8,7 +8,7 @@ class AppController < ApplicationController
     initialize_app_access(owner, app_name, path)
     redirect_to app_url(owner, app_name, path)
 
-  rescue AweSim::App::SetupScriptFailed => e
+  rescue ::OodApp::SetupScriptFailed => e
     #FIXME: should this be 500 error?
     @app_url = app_url(owner, app_name, path)
     @exception = e
@@ -20,17 +20,12 @@ class AppController < ApplicationController
   # initialize app and return the app_url to access
   def initialize_app_access(owner, app_name, path)
     router = ::AppRouter.for(owner)
-    myrouter = ::AppRouter.new
 
-    app = AweSim::App.at(path: router.path_for(app: app_name))
+    app = ::OodApp.at(path: router.path_for(app: app_name))
 
     # app doesn't exist or you do not have access:
     raise ActionController::RoutingError.new('Not Found') unless app
 
-
-    # follow app owner and run setup - both idempotent actions that are safe to
-    # run many times
-    myrouter.setup_access_to_apps_of(user: owner)
 
     # run idempotent setup script to setup data for user and handle any errors
     app.run_setup_production

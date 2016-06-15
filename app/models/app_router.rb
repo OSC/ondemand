@@ -1,30 +1,21 @@
-class AppRouter < AweSim::Router
+class AppRouter
+  attr_reader :owner
+
   def self.for(owner)
-    owner == "sys" ? ::SysRouter.new(owner) : ::AppRouter.new(owner)
+    owner == "sys" ? ::SysRouter.new : ::AppRouter.new(owner)
   end
 
-  # given app string "dashboard"
-  # return url for app to access
-  # FIXME: we should derive this from the nginx_stage gem
-  def url_for_dev_app(app)
-    "/pun/dev/#{app}"
+  #FIXME: implement UsrRouter, DevRouter to replace this class
+  #FIXME: these should ultimately go into OodAppkit
+  def initialize(owner)
+    @owner = owner
   end
 
-  # given app string "dashboard"
-  # and owner "efranz" return the url
-  def url_for_shared_app(app)
-    "/pun/usr/#{user}/#{app}"
+  def url_for(app: app_name)
+    "/pun/usr/#{owner}/#{app}"
   end
 
-  def shared_apps_path
-    "#{Dir.home(user)}/ood_usr"
-  end
-
-  def dev_apps_path
-    "#{Dir.home(user)}/ood_dev"
-  end
-
-  def setup_access_to_apps_of(user: nil)
-    # nothing to do here!
+  def path_for(app: app_name)
+    "/var/www/ood/apps/usr/#{owner}/gateway/#{app}"
   end
 end
