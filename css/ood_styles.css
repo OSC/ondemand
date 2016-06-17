@@ -291,6 +291,10 @@ div.fm {
   flex-basis: auto;
 }
 
+.panel div:first-child {
+    min-height: 21px;
+}
+
 .panel .files {
   -webkit-box-flex: 1; /* OLD - iOS 6-, Safari 3.1-6 */
   -moz-box-flex: 1; /* OLD - Firefox 19- */
