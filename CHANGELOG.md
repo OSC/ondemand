@@ -1,5 +1,11 @@
 ## Unreleased
 
+## 0.0.7 (2016-06-17)
+
+Bugfixes:
+
+  - updated Google Analytics account number used in metrics reporting
+
 ## 0.0.6 (2016-06-03)
 
 Features:
