@@ -41,7 +41,7 @@ module NginxStage
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
           })(window,document,'script','https://www.google-analytics.com/analytics.js','_gaOodMetrics');
 
-          _gaOodMetrics('create', 'UA-66793213-1', 'auto', {
+          _gaOodMetrics('create', 'UA-79331310-2', 'auto', {
             'cookieName': '_gaOodMetrics'
           });
           _gaOodMetrics('set', 'anonymizeIP', 'true');
