@@ -295,6 +295,10 @@ div.fm {
     min-height: 21px;
 }
 
+.panel .menu-buttons {
+    min-height: 30px;
+}
+
 .panel .files {
   -webkit-box-flex: 1; /* OLD - iOS 6-, Safari 3.1-6 */
   -moz-box-flex: 1; /* OLD - Firefox 19- */
