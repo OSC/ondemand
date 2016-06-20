@@ -53,7 +53,9 @@ app.use(function (req, res, next) {
             fileinfo = fs.lstatSync(paramPath);
             if (fileinfo.isDirectory()) {
 
-                var archive     = archiver('zip');
+                var archive     = archiver('zip', {
+                    store: true
+                });
                 var fileName    = path.basename(paramPath) + ".zip";
                 var output      = res.attachment(fileName);
 
