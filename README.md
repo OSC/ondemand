@@ -12,23 +12,14 @@ A `sudo` user will then need to copy this folder to the production environment.
 
 ## Updating after modifications to OSC/cloudcmd dependency
 
-After updates to OSC/cloudcmd are made, tag a release version and update the `package.json` file in the root of the `osc-fileexplorer` repository.
+After updates to OSC/cloudcmd are made, tag a release version to OSC/cloudcmd (tag off of the osc-5.3.1 branch in the format v5.3.1-osc.7 where 7 is replaced with a number representing the latest version).
 
-`package.json`
+Then checkout the latest commit of the osc-fileexplorer master and update it to use the latest version:
 
+```bash
+npm install # install current versions being used
+npm install git://github.com/osc/cloudcmd#v5.3.1-osc.7 --save # install the version you want
+npm shrinkwrap
 ```
-  "dependencies": {
-    ...
-    "cloudcmd": "git://github.com/OSC/cloudcmd.git#v5.3.1-osc.5",
-    ...
-```
 
-Where `v5.3.1-osc-5` is the current release tag of the OSC/cloudcmd repo.
-
-Then to update you will need to remove the node shrinkwrap and update the dependencies:
-
-```
-$ rm npm-shrinkwrap.json
-$ npm update
-$ npm shrinkwrap
-```
+Both the npm-shrinkwrap.json and the package.json files should be updated. Commit those to osc-fileexplorer, then add a new release tag to osc-fileexplorer.
