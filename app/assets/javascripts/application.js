@@ -36,9 +36,15 @@ function joinRoot(route){
 }
 
 $(document).ready(function(){
+
     $('[data-toggle="tooltip"]').tooltip();
 
     var table = $('#job-list-table').DataTable();
+
+    // Disable the buttons programatically on load
+    if ($('#job-list-table').length > 0) {
+        update_display();
+    };
 
     $('#job-list-table tbody').on( 'click', 'tr', function () {
         if ( $(this).hasClass('active') ) {
