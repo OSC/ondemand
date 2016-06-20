@@ -37,7 +37,7 @@ gem 'rouge', '~> 1.9.0'
 
 gem 'pbs', '~> 1.1'
 gem 'osc-machete', '~> 1.1'
-gem 'ood_appkit', '~> 0.0'
+gem 'ood_appkit', '~> 0.1'
 gem 'browser', '~> 2.1'
 
 # Use ActiveModel has_secure_password
