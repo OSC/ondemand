@@ -112,7 +112,6 @@
 @update_terminal_button = (path) ->
   if path?
     $("#terminal_button").attr("href", path)
-    $("#terminal_button").data("method", "GET")
     $("#terminal_button").removeAttr("disabled")
     $("#terminal_button").unbind('click', false)
   else
