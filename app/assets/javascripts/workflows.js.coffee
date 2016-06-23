@@ -26,6 +26,12 @@
         update_stop_button(id, data.status.char)
         update_template_button(id)
         list_folder_contents(data)
+        if missing_data_path()
+          # If the template folder does not exist we need to disable certain buttons.
+          update_open_dir_button()
+          update_edit_button()
+          update_submit_button()
+          update_copy_button()
   else
     update_job_details_panel()
     update_open_dir_button()
@@ -272,6 +278,19 @@ $ ->
     list += "<li class='list-group-item'>#{content.name}</li>"
   list += "</ul>"
   $("#template-folder-contents").html("#{list}")
+
+@missing_data_path = ->
+  active_row().hasClass('missing')
+
+@update_missing_data_path_view = ->  
+  if (missing_data_path())
+    $('#script-details-view').css('color', 'red');
+    $('#job-details-staged-dir').css('border-color', 'red');
+    $('#missing-path-note').show();
+  else
+    $('#script-details-view').css('color', 'black');
+    $('#job-details-staged-dir').css('border-color', 'black');
+    $('#missing-path-note').hide();  
 
 $ ->
   $('#reset-template-data').on 'click', ->
