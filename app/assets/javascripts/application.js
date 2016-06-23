@@ -47,39 +47,44 @@ $(document).ready(function(){
 
     $('[data-toggle="tooltip"]').tooltip();
 
-    var table = $('#job-list-table').DataTable();
+    var table;
 
-    // Disable the buttons programatically on load
-    if ($('.job-row').length == 0) {
-        update_display();
-        start_joyride();
+    if ($('#job-list-table').length) {
+        table = $('#job-list-table').DataTable();
+        if (($('.job-row').length == 0)) {
+            update_display();
+            start_joyride();
+        };
+
+        $('#job-list-table tbody').on( 'click', 'tr', function () {
+            if ( $(this).hasClass('active') ) {
+                $(this).removeClass('active');
+            }
+            else {
+                table.$('tr.active').removeClass('active');
+                $(this).addClass('active');
+            }
+            update_display(active_var());
+        });
     };
 
-    $('#job-list-table tbody').on( 'click', 'tr', function () {
-        if ( $(this).hasClass('active') ) {
-            $(this).removeClass('active');
-        }
-        else {
-            table.$('tr.active').removeClass('active');
-            $(this).addClass('active');
-        }
-        update_display(active_var());
-    });
+    if ($('#new-job-template-table').length) {
+        table = $('#new-job-template-table').DataTable();
 
-    var template_table = $('#new-job-template-table').DataTable();
+        $('#new-job-template-table tbody').on( 'click', 'tr', function () {
+            if ( $(this).hasClass('active') ) {
+                // do nothing
+            }
+            else {
+                table.$('tr.active').removeClass('active');
+                $(this).addClass('active');
+            }
 
-    $('#new-job-template-table tbody').on( 'click', 'tr', function () {
-        if ( $(this).hasClass('active') ) {
-            // do nothing
-        }
-        else {
-            template_table.$('tr.active').removeClass('active');
-            $(this).addClass('active');
-        }
+            update_new_job_display(template_path());
+        });
+    };
 
-        update_new_job_display(template_path());
-    });
-
-    table.$('tr:first').click();
-    template_table.$('tr:first').click();
+    if (table) {
+        table.$('tr:first').click();
+    }
 });
