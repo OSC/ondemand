@@ -12,18 +12,19 @@
         <div class="panel-body">
 
           <div class="panel-body">
+            <div id="joyride-table-stop"></div>
             <table id="new-job-template-table" class="table data-table-new-job" style="width:100%">
               <thead>
               <tr>
-                <th>Name</th>
+                <th id="name-label">Name</th>
                 <th>Cluster</th>
                 <th>Source</th>
               </tr>
               </thead>
 
               <tbody>
-              <% @templates.each do |template| %>
-                  <tr class="job-row" data-name="<%= template.name %>" data-host="<%= template.host %>" data-path="<%= template.path %>" data-script="<%= template.manifest.script %>" data-api="<%= Filesystem.new.api(template.path) %>" data-fs="<%= Filesystem.new.fs(template.path) %>" data-notes="<%= template.notes %>" >
+              <% @templates.each_with_index do |template, index| %>
+                  <tr class="job-row" data-name="<%= template.name %>" data-host="<%= template.host %>" data-path="<%= template.path %>" data-script="<%= template.manifest.script %>" data-api="<%= Filesystem.new.api(template.path) %>" data-fs="<%= Filesystem.new.fs(template.path) %>" data-notes="<%= template.notes %>">
                     <td><%= template.name %></td>
                     <td><%= template.host.titleize %></td>
                     <td><%= template.source.name %></td>
@@ -52,7 +53,7 @@
 
               <%= f.hidden_field :staging_template_dir, required: true, id: 'staging-template-dir' %>
 
-              <%= f.submit 'Create New Job', class: 'btn btn-primary' %>
+              <%= f.submit 'Create New Job', class: 'btn btn-primary', id: 'create-job-button' %>
 
               <a class="btn btn-default" id="reset-template-data" data-toggle="tooltip" title="Reset fields to template default" role="button">Reset</a>
 
@@ -76,3 +77,31 @@
     </div>
   </div>
 </div>
+
+<ol id="joyride" style="display: none;" data-joyride>
+  <li data-id="name-label">
+    <p>
+      First, select a template that will be used to create a new job.
+    </p>
+  </li>
+  <li data-id="name-field">
+    <p>
+      Enter a name for the job you wish to create.
+    </p>
+  </li>
+  <li data-id="batch-host-select">
+    <p>
+      Select the cluster where the job will be submitted.
+    </p>
+  </li>
+  <li data-id="script-path-field">
+    <p>
+      Enter the name of the script that will be submitted to the batch server. (If different from default)
+    </p>
+  </li>
+  <li data-id="create-job-button">
+    <p>
+      Finally, click "Create Job" to add this to your list of jobs.
+    </p>
+  </li>
+</ol>
