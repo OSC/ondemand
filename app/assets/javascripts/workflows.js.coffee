@@ -2,7 +2,8 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 @start_joyride = ->
-  $('#joyride').joyride {}
+  if $('#joyride').length
+    $('#joyride').joyride {}
   return
 
 @update_display = (id) ->
