@@ -47,7 +47,7 @@
             <%= link_to "My Jobs", root_path %>
           </li>
           <li>
-            <%= link_to "My Templates", templates_path %>
+            <%= link_to "My Templates", templates_path, :id => 'templates_navbar_link' %>
           </li>
           <li>
             <%= link_to '<span class="glyphicon glyphicon-question-sign"></span> Help'.html_safe, "#", :onclick => 'start_joyride();' %>
