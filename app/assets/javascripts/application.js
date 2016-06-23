@@ -37,13 +37,20 @@ function joinRoot(route){
 
 $(document).ready(function(){
 
+    if ($("#joyride").length) {
+        $("#joyride").joyride({
+            /* Options will go here */
+        });
+    }
+
     $('[data-toggle="tooltip"]').tooltip();
 
     var table = $('#job-list-table').DataTable();
 
     // Disable the buttons programatically on load
-    if ($('#job-list-table').length > 0) {
+    if ($('.job-row').length == 0) {
         update_display();
+        start_joyride();
     };
 
     $('#job-list-table tbody').on( 'click', 'tr', function () {
@@ -74,13 +81,3 @@ $(document).ready(function(){
     table.$('tr:first').click();
     template_table.$('tr:first').click();
 });
-
-$(window).load(function() {
-    if ($("#joyride").length) {
-        $("#joyride").joyride({
-            /* Options will go here */
-        });
-    }
-});
-
-
