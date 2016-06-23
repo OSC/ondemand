@@ -6,7 +6,7 @@
 
   <div>
     <p>
-      <%= link_to '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add a New Template'.html_safe, new_template_path, :class => "btn btn-default" %>
+      <%= link_to '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add a New Template'.html_safe, new_template_path, :class => "btn btn-default", :id => "new_template" %>
     </p>
   </div>
 
@@ -41,6 +41,14 @@
     </tbody>
   </table>
 </div>
+
+<ol id="joyride" style="display: none;" data-joyride>
+  <li data-id="new_template">
+    <p>
+      Begin by adding a new template.
+    </p>
+  </li>
+</ol>
 
 
 
