@@ -74,3 +74,12 @@ $(document).ready(function(){
     table.$('tr:first').click();
     template_table.$('tr:first').click();
 });
+
+$(window).load(function() {
+    $("#joyride").joyride({
+        /* Options will go here */
+        autoStart: true
+    });
+});
+
+
