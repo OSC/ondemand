@@ -33,15 +33,17 @@ function joinRoot(route){
     var separator = '/';
     var replace   = new RegExp(separator+'{1,}', 'g');
     return arr.join(separator).replace(replace, separator);
+};
+
+function start_joyride() {
+    if ($('#joyride').length) {
+        $('#joyride').joyride();
+    }
 }
 
 $(document).ready(function(){
 
-    if ($("#joyride").length) {
-        $("#joyride").joyride({
-            /* Options will go here */
-        });
-    }
+    start_joyride();
 
     $('[data-toggle="tooltip"]').tooltip();
 

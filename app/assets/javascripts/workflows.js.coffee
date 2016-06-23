@@ -1,10 +1,6 @@
 # Place all the behaviors and hooks related to the matching controller here.
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
-@start_joyride = ->
-  if $('#joyride').length
-    $('#joyride').joyride {}
-  return
 
 @update_display = (id) ->
   request_job_data(id)
