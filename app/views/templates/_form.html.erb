@@ -14,7 +14,7 @@
   <div class="panel panel-default">
     <div class="panel-body">
       <div class="field">
-        <%= f.text_field :path, label: "Path (the template will be created by copying files from this source path)" %>
+        <%= f.text_field :path, label: "Path (the template will be created by copying files from this source path)", :id => "path_field" %>
       </div>
       <div>
         <p class="small">&bull; If left blank, a default job script will be added to your new template.</p>
@@ -25,18 +25,47 @@
   <div class="panel panel-default">
     <div class="panel-body">
       <div class="field">
-        <%= f.text_field :name %>
+        <%= f.text_field :name, :id => "name_field" %>
       </div>
       <div class="field">
-        <%= f.select :host, Servers.map { |key, val| [ "#{key.titleize} (#{val[:pbshost]})", key ] }, { selected: @template.host, label: "Default Batch Server" }, { class: "selectpicker" } %>
+        <%= f.select :host, Servers.map { |key, val| [ "#{key.titleize} (#{val[:pbshost]})", key ] }, { selected: @template.host, label: "Default Batch Server" }, { class: "selectpicker", id: "server_picker" } %>
       </div>
       <div class="field">
-        <%= f.text_area :notes %>
+        <%= f.text_area :notes, :id => "notes_field" %>
       </div>
       <div class="actions">
-        <%= f.submit "Save" %>
+        <%= f.submit "Save", :id => "save_button" %>
         <%= link_to "Cancel", :workflows, :class => "btn btn-default" %>
       </div>
     </div>
   </div>
 <% end %>
+
+
+<ol id="joyride" style="display: none;" data-joyride>
+  <li data-id="path_field">
+    <p>
+      Enter the full path to the system location to be used as a template.
+    </p>
+  </li>
+  <li data-id="name_field">
+    <p>
+      Name your template here. This will be used to easily identify the template in the future.
+    </p>
+  </li>
+  <li data-id="server_picker">
+    <p>
+      Select the cluster that your job will be submitted to.
+    </p>
+  </li>
+  <li data-id="notes_field">
+    <p>
+      Add some notes about your template.
+    </p>
+  </li>
+  <li data-id="save_button">
+    <p>
+      Finally, click here to save your template.
+    </p>
+  </li>
+</ol>
