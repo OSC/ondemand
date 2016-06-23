@@ -78,7 +78,6 @@ $(document).ready(function(){
 $(window).load(function() {
     $("#joyride").joyride({
         /* Options will go here */
-        autoStart: true
     });
 });
 
