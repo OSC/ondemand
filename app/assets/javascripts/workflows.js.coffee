@@ -30,6 +30,7 @@
     update_job_details_panel()
     update_open_dir_button()
     update_edit_button()
+    update_terminal_button()
     update_submit_button()
     update_stop_button()
     update_template_button()
@@ -65,6 +66,7 @@
     $("#script-name").text(content.name)
     $("#open-script-dir-button").attr("href", "#{content.fs_base}")
     $("#open-terminal-dir-button").attr("href", "#{content.terminal_base}")
+    update_terminal_button(content.terminal_base)
     $.ajax
       type: 'GET'
       url: content.apiurl
@@ -106,6 +108,16 @@
     $("#edit_button").removeAttr("href")
     $("#edit_button").attr("disabled", true)
     $("#edit_button").bind('click', false)
+
+@update_terminal_button = (path) ->
+  if path?
+    $("#terminal_button").attr("href", path)
+    $("#terminal_button").removeAttr("disabled")
+    $("#terminal_button").unbind('click', false)
+  else
+    $("#terminal_button").removeAttr("href")
+    $("#terminal_button").attr("disabled", true)
+    $("#terminal_button").bind('click', false)
 
 @update_submit_button = (id, status_char) ->
   if id? && !status_char?
