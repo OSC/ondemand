@@ -7,8 +7,8 @@
   overflow-y: auto;
 }
 
-.missing {
-  background-color: #ffdfea;
+tr.missing {
+  @extend .bg-danger;
 }
 
 #job-details-container {
