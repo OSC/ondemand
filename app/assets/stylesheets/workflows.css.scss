@@ -14,3 +14,17 @@ tr.missing {
 #job-details-container {
   min-height: 100vh;
 }
+
+#script-details-view .help-block {
+  display: none;
+}
+
+#script-details-view.missing {
+  color: #a94442;
+
+  .help-block {
+    color: #a94442;
+    display: block;
+    font-style: italic;
+  }
+}
