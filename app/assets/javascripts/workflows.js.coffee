@@ -282,15 +282,8 @@ $ ->
 @missing_data_path = ->
   active_row().hasClass('missing')
 
-@update_missing_data_path_view = ->  
-  if (missing_data_path())
-    $('#script-details-view').css('color', 'red');
-    $('#job-details-staged-dir').css('border-color', 'red');
-    $('#missing-path-note').show();
-  else
-    $('#script-details-view').css('color', 'black');
-    $('#job-details-staged-dir').css('border-color', 'black');
-    $('#missing-path-note').hide();  
+@update_missing_data_path_view = ->
+  $('#script-details-view').toggleClass("missing", missing_data_path());
 
 $ ->
   $('#reset-template-data').on 'click', ->
