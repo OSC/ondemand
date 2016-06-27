@@ -11,12 +11,11 @@
       <select class="form-control selectpicker" id="workflow_script_path" name="workflow[script_path]">
         <% workflow.folder_contents.each do |content| %>
           <% if File.file? content %>
-            <%= "<option #{"selected" if (content == workflow.script_path.to_s)} val=\"#{content}\">#{content.gsub(workflow.staged_dir, "")}</option>".html_safe %>
+            <%= "<option #{"selected" if (content == workflow.script_path.to_s)} value=\"#{content}\">#{content.gsub(workflow.staged_dir, "").sub!(/^\//, '')}</option>".html_safe %>
           <% end %>
         <% end %>
       </select>
     </div>
-
 
     <%= f.submit 'Save', class: 'btn btn-primary' %>
     <%= f.button 'Reset', type: :reset, class: 'btn btn-default' %>
