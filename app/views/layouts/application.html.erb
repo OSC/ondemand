@@ -11,7 +11,6 @@
     var ROOT_PATH = "<%= root_path %>";
   </script>
   <%= javascript_include_tag "application" %>
-
   <%= csrf_meta_tags %>
 </head>
 <body>
@@ -46,7 +45,10 @@
             <%= link_to "My Jobs", root_path %>
           </li>
           <li>
-            <%= link_to "My Templates", templates_path %>
+            <%= link_to "My Templates", templates_path, :id => 'templates_navbar_link' %>
+          </li>
+          <li>
+            <%= link_to '<span class="glyphicon glyphicon-question-sign"></span> Help'.html_safe, "#", :onclick => 'start_joyride();' %>
           </li>
         </ul>
       </div><!-- /.navbar-collapse -->

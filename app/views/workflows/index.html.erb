@@ -4,7 +4,7 @@
 
 <div class="col-md-7">
   <div class="panel">
-    <a class="btn btn-default btn-sm btn-info" href="<%= new_workflow_path %>" data-toggle="tooltip" title="Create a new job from a template" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Job</a>
+    <a class="btn btn-default btn-sm btn-info" id="new_job_button" href="<%= new_workflow_path %>" data-toggle="tooltip" title="Create a new job from a template" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Job</a>
     <a class="btn btn-default btn-sm btn-info" id="copy_button" data-toggle="tooltip" title="Copy Job" role="button" data-method="get" disabled><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> Copy Job</a>
 
     <a class="pull-right btn btn-default btn-sm btn-templates" id="template_button" data-toggle="tooltip" title="Create template from selected job" data-method="get" role="button" disabled><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Create Template</a>
@@ -117,6 +117,79 @@
       </div>
     </div>
   </div>
+
+  <!-- Joyride steps -->
+  <ol id="joyride" style="display: none;" data-joyride>
+    <li>
+      <ol>
+        <h4>
+          Steps to create a job:
+        </h4>
+        <li>
+          <b>Create</b> a new job by copying from an existing job template directory or a previously run job directory.
+        </li>
+        <li>
+          <b>Edit</b> the files in the job via the file explorer.
+        </li>
+        <li>
+          <b>Submit</b> the job and monitor the progress from the "My Jobs" page.
+        </li>
+      </ol>
+    </li>
+    <li data-id="new_job_button">
+      <p>
+        1. Create: Begin by creating a new job from an existing template.
+      </p>
+    </li>
+    <li data-id="copy_button">
+      <p>
+        1. Create: you can also create a new job by copying an existing job. Select the job to copy below and clicking here.
+      </p>
+    </li>
+    <li data-id="open_dir_button">
+      <p>
+        2. Edit: Select a job and click here to open the path in the file explorer so you can edit the job's files.
+      </p>
+    </li>
+    <li data-id="edit_button">
+      <p>
+        2. Edit: Select an existing job and click here to specify the jobs's server and submit script.
+      </p>
+    </li>
+    <li data-id="terminal_button">
+      <p>
+        2. Edit: Select an existing job and click here to open a new terminal to the job path.
+      </p>
+    </li>
+    <li data-id="submit_button">
+      <p>
+        3. Submit: Select an existing job and click here to submit the job to the batch queue.
+      </p>
+    </li>
+    <li data-id="stop_button">
+      <p>
+        Select a running or queued job and click here to stop the job.
+      </p>
+    </li>
+    <li data-id="destroy_button">
+      <p>
+        Select an existing job and click here to remove the job from the list.
+      </p>
+    </li>
+    <li data-id="template_button" data-button="Close">
+      <p>
+        You can also create new job templates from existing jobs. This way, you can use that job as a template for future jobs. Select the job in the table to copy, then click "Create Template" to initiate the template creation process.
+      </p>
+    </li>
+<!--
+    <li data-id="templates_navbar_link">
+      <p>
+        Click here to view and manage your existing templates.
+      </p>
+    </li>
+-->
+  </ol>
+
 </div>
 
 

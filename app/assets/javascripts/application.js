@@ -33,47 +33,60 @@ function joinRoot(route){
     var separator = '/';
     var replace   = new RegExp(separator+'{1,}', 'g');
     return arr.join(separator).replace(replace, separator);
+};
+
+function start_joyride() {
+    if ($('#joyride').length) {
+        $('#joyride').joyride();
+    }
 }
 
 $(document).ready(function(){
 
+    start_joyride();
+
     $('[data-toggle="tooltip"]').tooltip();
 
-    var table = $('#job-list-table').DataTable();
+    var table;
 
-    // Disable the buttons programatically on load
-    if ($('#job-list-table').length > 0) {
-        update_display();
+    if ($('#job-list-table').length) {
+        table = $('#job-list-table').DataTable();
+        if (($('.job-row').length == 0)) {
+            update_display();
+            start_joyride();
+        }
+
+        $('#job-list-table tbody').on('click', 'tr', function () {
+
+            if ($(this).hasClass('active')) {
+                $(this).removeClass('active');
+            }
+            else {
+                table.$('tr.active').removeClass('active');
+                $(this).addClass('active');
+            }
+            update_missing_data_path_view();
+            update_display(active_var());
+        });
+    }
+
+    if ($('#new-job-template-table').length) {
+        table = $('#new-job-template-table').DataTable();
+
+
+        $('#new-job-template-table tbody').on('click', 'tr', function () {
+            if ($(this).hasClass('active')) {
+                // do nothing
+            }
+            else {
+                table.$('tr.active').removeClass('active');
+                $(this).addClass('active');
+            }
+            update_new_job_display(active_row());
+        });
+    }
+
+    if (table) {
+        table.$('tr:first').click();
     };
-
-    $('#job-list-table tbody').on( 'click', 'tr', function () {
-        
-        if ( $(this).hasClass('active') ) {
-            $(this).removeClass('active');
-        }
-        else {
-            table.$('tr.active').removeClass('active');
-            $(this).addClass('active');
-        }
-        update_missing_data_path_view();
-        update_display(active_var());
-    });
-
-    var template_table = $('#new-job-template-table').DataTable();
-
-    $('#new-job-template-table tbody').on( 'click', 'tr', function () {
-        if ( $(this).hasClass('active') ) {
-            // do nothing
-        }
-        else {
-            template_table.$('tr.active').removeClass('active');
-            $(this).addClass('active');
-        }
-        update_new_job_display(active_row());
-    });
-
-    table.$('tr:first').click();
-    template_table.$('tr:first').click();
 });
-
-
