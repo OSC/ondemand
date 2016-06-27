@@ -9,4 +9,5 @@ json.folder_contents (@workflow.folder_contents) do |content|
   json.set! 'fs_base', Filesystem.new.fs(File.dirname(content))
   json.set! 'terminal_base', OodAppkit.shell.url(path: File.dirname(content)).to_s
   json.set! 'apiurl', Filesystem.new.api(content)
+  json.set! 'editor_url', Filesystem.new.editor(content)
 end

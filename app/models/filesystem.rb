@@ -57,6 +57,11 @@ class Filesystem
   def du(path, timeout)
     Open3.capture3 "timeout #{timeout}s du -cbs #{Shellwords.escape(path)}"
   end
+  
+  def editor(path)
+    # TODO UPDATE THIS WHEN ADDED TO GEM
+    File.join("/pun/sys/file-editor/edit", path)
+  end
 
   # FIXME: some duplication here between du command above and this; we probably
   # want to use the above
