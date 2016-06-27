@@ -56,6 +56,15 @@ class Filesystem
 
   def du(path, timeout)
     Open3.capture3 "timeout #{timeout}s du -cbs #{Shellwords.escape(path)}"
+
+  def editor(path)
+    # TODO UPDATE THIS WHEN ADDED TO GEM
+    File.join("/pun/dev/osc-editor/edit", path)
+  end
+
+  # Matches a pathname on the system to prevent root file system copies.
+  def safe_path? (path)
+    path =~ BASE_PATTERN ? true : false
   end
 
   # FIXME: some duplication here between du command above and this; we probably
