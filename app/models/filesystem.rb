@@ -60,7 +60,7 @@ class Filesystem
   
   def editor(path)
     # TODO UPDATE THIS WHEN ADDED TO GEM
-    File.join("/pun/sys/editor/edit", path)
+    File.join("/pun/sys/file-editor/edit", path)
   end
 
   # Matches a pathname on the system to prevent root file system copies.
