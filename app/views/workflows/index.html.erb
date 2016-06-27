@@ -28,9 +28,11 @@
           <a class="btn btn-default btn-sm btn-primary" id="edit_button" data-toggle="tooltip" title="Specify Job Host and Script" role="button" data-method="get" disabled>
             <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Job Options
           </a>
+          <!-- FIXME: hiding button for now till we address enabling defect
           <a class="btn btn-default btn-sm btn-primary" id="terminal_button" target="_blank" data-toggle="tooltip" title="Open Selected Job in the Terminal" role="button" disabled>
             <span class="glyphicon glyphicon-console" aria-hidden="true"></span> Open Terminal
           </a>
+          -->
 
           <a class="btn btn-success btn-sm" id="submit_button" data-toggle="tooltip" title="Submit Job" role="button" data-method="get" disabled>
             <span class="glyphicon glyphicon-play" aria-hidden="true"></span> Submit
@@ -60,7 +62,7 @@
 
             <tbody>
             <% @workflows.each do |workflow| %>
-                <tr class="job-row" id="<%=workflow.id %>">
+                <tr class="job-row <%= "missing" unless workflow.staged_dir_exists? %>" id="<%=workflow.id %>">
                   <td data-sort="<%= workflow.id %>"><small><%= workflow.created_at.strftime('%F %T') %></small></td>
                   <td><strong><%= workflow.name %></strong></td>
                   <td><%= workflow.pbsid %></td>
@@ -93,6 +95,7 @@
       <div id="script-details-view" class="panel-body">
         <p>Script location:</p>
         <pre id="job-details-staged-dir"></pre>
+        <p class="help-block"><i>Job Directory is missing!</i></p>
       </div>
 
       <div id="job-details-view" class="panel-body folder-content-view">

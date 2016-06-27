@@ -19,10 +19,10 @@
 //= require_tree .
 
 var active_var = function() {
-    return template_path().attr('id');
+    return active_row().attr('id');
 };
 
-var template_path = function() {
+var active_row = function() {
     return $('tr.active');
 };
 
@@ -54,37 +54,39 @@ $(document).ready(function(){
         if (($('.job-row').length == 0)) {
             update_display();
             start_joyride();
-        };
+        }
 
-        $('#job-list-table tbody').on( 'click', 'tr', function () {
-            if ( $(this).hasClass('active') ) {
+        $('#job-list-table tbody').on('click', 'tr', function () {
+
+            if ($(this).hasClass('active')) {
                 $(this).removeClass('active');
             }
             else {
                 table.$('tr.active').removeClass('active');
                 $(this).addClass('active');
             }
+            update_missing_data_path_view();
             update_display(active_var());
         });
-    };
+    }
 
     if ($('#new-job-template-table').length) {
         table = $('#new-job-template-table').DataTable();
 
-        $('#new-job-template-table tbody').on( 'click', 'tr', function () {
-            if ( $(this).hasClass('active') ) {
+
+        $('#new-job-template-table tbody').on('click', 'tr', function () {
+            if ($(this).hasClass('active')) {
                 // do nothing
             }
             else {
                 table.$('tr.active').removeClass('active');
                 $(this).addClass('active');
             }
-
-            update_new_job_display(template_path());
+            update_new_job_display(active_row());
         });
-    };
+    }
 
     if (table) {
         table.$('tr:first').click();
-    }
+    };
 });

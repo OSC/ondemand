@@ -26,6 +26,10 @@ class Workflow < ActiveRecord::Base
     OodAppkit.dataroot.join(staging_target_dir_name)
   end
 
+  def staged_dir_exists?
+    staged_dir && File.directory?(staged_dir)
+  end
+
   def staged_script_name
     self.script_name
   end
