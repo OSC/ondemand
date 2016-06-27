@@ -69,7 +69,7 @@ $(document).ready(function(){
             template_table.$('tr.active').removeClass('active');
             $(this).addClass('active');
         }
-        update_new_job_display(template_path());
+        update_new_job_display(active_row());
     });
 
     table.$('tr:first').click();
