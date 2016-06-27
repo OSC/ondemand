@@ -63,11 +63,6 @@ class Filesystem
     File.join("/pun/sys/file-editor/edit", path)
   end
 
-  # Matches a pathname on the system to prevent root file system copies.
-  def safe_path? (path)
-    path =~ BASE_PATTERN ? true : false
-  end
-
   # FIXME: some duplication here between du command above and this; we probably
   # want to use the above
   #
