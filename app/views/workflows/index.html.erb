@@ -62,7 +62,7 @@
 
             <tbody>
             <% @workflows.each do |workflow| %>
-                <tr class="job-row" id="<%=workflow.id %>">
+                <tr class="job-row <%= "missing" unless workflow.staged_dir_exists? %>" id="<%=workflow.id %>">
                   <td data-sort="<%= workflow.id %>"><small><%= workflow.created_at.strftime('%F %T') %></small></td>
                   <td><strong><%= workflow.name %></strong></td>
                   <td><%= workflow.pbsid %></td>
@@ -95,6 +95,7 @@
       <div id="script-details-view" class="panel-body">
         <p>Script location:</p>
         <pre id="job-details-staged-dir"></pre>
+        <p class="help-block"><i>Job Directory is missing!</i></p>
       </div>
 
       <div id="job-details-view" class="panel-body folder-content-view">
