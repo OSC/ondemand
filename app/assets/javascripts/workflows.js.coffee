@@ -288,4 +288,4 @@ $ ->
 
 $ ->
   $('#reset-template-data').on 'click', ->
-    update_new_job_display(template_path())
+    update_new_job_display(active_row())
