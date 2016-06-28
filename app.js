@@ -32,6 +32,14 @@ app.use(function(req, res, next) {
     next();
 });
 
+// This is an IE fix for downloading files.
+app.use(function(req, res, next) {
+    if(req.originalUrl.match(/\?download/) ) {
+        res.set('Content-Disposition', 'attachment;');
+    }
+    next();
+});
+
 // Custom middleware to zip and send a directory to a browser.
 // Access at http://PREFIX/oodzip/PATH
 // Uses `archiver` https://www.npmjs.com/package/archiver to stream the contents of a file to the browser.
