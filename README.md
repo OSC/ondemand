@@ -5,12 +5,26 @@ Log in as `wiag` user
 ```
 $ cd /nfs/01/wiag/PZS0645/ood/apps/sys
 $ git clone git@github.com:AweSim-OSC/osc-fileexplorer.git files
+$ git checkout v1.0.0 # or whatever the lastest release tag is
 $ npm install
 $ mkdir tmp
 $ touch tmp/restart.txt
 ```
 
 A `sudo` user will then need to copy this folder to the production environment.
+
+## Deployment (Update) directions
+
+When updating a deployed instance of the file explorer - you will have already check out a tag:
+
+```
+$ cd /nfs/01/wiag/PZS0645/ood/apps/sys/files
+$ git pull # this will pull updated tags etc but not modify current working directory if current directory is a tag
+$ git checkout v1.0.3 # checkout lastest tag
+$ rm -rf node_modules
+$ npm install
+$ touch tmp/restart.txt
+```
 
 ## Updating after modifications to OSC/cloudcmd dependency
 
