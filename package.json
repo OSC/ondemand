@@ -16,7 +16,7 @@
   "dependencies": {
     "archiver": "^1.0.0",
     "base-uri": "^1.0.1",
-    "cloudcmd": "git://github.com/osc/cloudcmd.git#v5.3.1-osc.8",
+    "cloudcmd": "git://github.com/osc/cloudcmd.git#v5.3.1-osc.9",
     "express": "^4.13.4",
     "os-homedir": "^1.0.1",
     "socket.io": "^1.4.5"
