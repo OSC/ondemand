@@ -13,7 +13,7 @@ $ touch tmp/restart.txt
 
 A `sudo` user will then need to copy this folder to the production environment.
 
-## Deployment (Update) directions
+## Deployment directions - updating a deployed instance
 
 When updating a deployed instance of the file explorer - you will have already check out a tag:
 
