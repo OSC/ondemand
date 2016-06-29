@@ -58,7 +58,9 @@ class Workflow < ActiveRecord::Base
 
       self.staged_dir = OSC::Machete::JobDir.new(staging_target_dir).new_jobdir
       FileUtils.mkdir_p self.staged_dir
-      FileUtils.cp_r staging_template_dir.to_s + "/.", self.staged_dir
+
+      # rsync to ignore manifest.yml
+      `rsync -r --exclude='manifest.yml' #{staging_template_dir.to_s}/ #{self.staged_dir}`
     end
     Pathname.new(self.staged_dir)
   end
