@@ -2,6 +2,9 @@
 @import "bootstrap-sprockets";
 @import "ood_appkit/bootstrap-overrides";
 
+// never allow the collapsed menu to display
+$grid-float-breakpoint: 10px;
+
 // Load up bootstrap style sheet
 @import "bootstrap";
 
@@ -18,7 +21,7 @@
 #editor {
   margin: 0;
   position: absolute;
-  top: 24px;
+  top: 25px;
   bottom: 0;
   left: 0;
   right: 0;
@@ -28,6 +31,10 @@
   margin-bottom: 5px;
   min-height: 0;
   padding: 1px 3px 1px 3px;
+
+  /* keep the navbar from expanding on multiple lines */
+  max-height: 25px;
+  overflow: hidden;
 }
 
 .navbar li {
