@@ -35,7 +35,7 @@ app.use(function(req, res, next) {
 // This is an IE fix for downloading files.
 app.use(function(req, res, next) {
     if(req.originalUrl.match(/\?download/) ) {
-        res.set('Content-Disposition', 'attachment;');
+        res.set('Content-Disposition', 'attachment');
     }
     next();
 });
