@@ -33,7 +33,6 @@ gem 'font-awesome-sass', '~> 4.4.0'
 gem 'dotenv-rails', '~> 2.0.0', :require => 'dotenv/rails-now'
 gem 'rails_12factor', group: :production
 gem 'redcarpet', '~> 3.2.2'
-gem 'rouge', '~> 1.9.0'
 
 gem 'pbs', '~> 1.1'
 gem 'osc-machete', '~> 1.1'
