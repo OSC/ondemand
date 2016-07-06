@@ -1,8 +1,8 @@
-class AppRouter
+class UsrRouter
   attr_reader :owner
 
   def self.for(owner)
-    owner == "sys" ? ::SysRouter.new : ::AppRouter.new(owner)
+    owner == "sys" ? ::SysRouter.new : ::UsrRouter.new(owner)
   end
 
   #FIXME: implement UsrRouter, DevRouter to replace this class
