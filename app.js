@@ -16,15 +16,10 @@ var SSH_URI   = "/ssh"
 var PORT      = 1337;
 var URI_REGEX = RegExp.escape(BASE_URI) +
                 RegExp.escape(SSH_URI) +
-                '\\/([^\\/]+)' +
+                '\\/([\\w\\-.]+)' +
                 '(.*)$';
 
-var sshport  = 22;
-var sshhosts = {
-  oakley: 'oakley.osc.edu',
-  ruby:   'ruby.osc.edu'
-};
-var default_host = 'oakley';
+var sshport = 22;
 
 // Use express to handle the routes and rendering
 var app = express();
@@ -57,13 +52,11 @@ io.on('connection', function(socket) {
 
   // find user requested host from white list of hosts as well as user
   // requested cwd
-  var sshhost = sshhosts[default_host];
+  var sshhost = null;
   var cwd = null;
   if (match = request.headers.referer.match(URI_REGEX)) {
-    // check if host exists
-    if (match[1] in sshhosts) {
-      sshhost = sshhosts[match[1]];
-    }
+    sshhost = match[1]
+
     // check if dir exists and user has access to it
     var tmpdir = process.cwd();
     try {
