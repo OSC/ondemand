@@ -1,3 +1,6 @@
+// Set dotenv as early as possible
+require('dotenv').config();
+
 // Monkey patch Regexp because Javascript is sad
 RegExp.escape = function(s) {
   return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
@@ -66,6 +69,11 @@ io.on('connection', function(socket) {
       // ignore
     }
     process.chdir(tmpdir);
+  }
+
+  // Use default ssh host if "default" specified
+  if (sshhost == null || sshhost == "default" && process.env.DEFAULT_SSHHOST != null) {
+    sshhost = process.env.DEFAULT_SSHHOST;
   }
 
   process.env.LANG = 'en_US.UTF-8'; // fixes strange character issues

@@ -12,36 +12,41 @@
     we need a newer version of `npm` in order to install this code:
 
     ```
-    mkdir -p ./bin/npm/node_modules
-    scl enable v8314 nodejs010 -- npm install --prefix ./bin/npm npm
-    ./bin/npm/node_modules/.bin/npm install
+    mkdir tmp
+    scl enable v8314 nodejs010 -- npm install --prefix tmp npm
     ```
-
-    * You can also install the newer version of npm locally i.e. in your home directory. Then you can do `~/.npm-packages/bin/npm`
 
 3. Install required packages using this newer `npm` package:
 
     ```
-    scl enable v8314 nodejs010 -- node_modules/.bin/npm install
+    scl enable v8314 nodejs010 -- tmp/node_modules/.bin/npm install
+    ```
+
+4. Create a `.env` file specifying the default ssh host:
+
+    ```
+    # .env
+
+    DEFAULT_SSHHOST='oakley.osc.edu'
     ```
 
 ## Usage
 
-Assume the base URL for the app is /pun/sys/shell.
+Assume the base URL for the app is `/pun/sys/shell`.
 
 To open a new terminal to default host (Oakley), go to:
 
-* /pun/sys/shell/ssh or /pun/sys/shell/ssh/default
+* `/pun/sys/shell/ssh/` or `/pun/sys/shell/ssh/default`
 
-To specify Oakley or Ruby:
+To specify the host:
 
-* /pun/sys/shell/ssh/oakley
-* /pun/sys/shell/ssh/ruby
+* `/pun/sys/shell/ssh/<host>`
 
 To specify another directory besides the home directory to start in, append the
-full path of that directory to the URL. In this case, we go to
-/nfs/17/efranz/ood_dev:
+full path of that directory to the URL. In this case, we want to navigate to
+the path `/path/to/my/directory`:
 
-* /pun/sys/shell/ssh/default/nfs/17/efranz/ood_dev
-* /pun/sys/shell/ssh/oakley/nfs/17/efranz/ood_dev
-* /pun/sys/shell/ssh/ruby/nfs/17/efranz/ood_dev
+To open the shell in a specified directory path:
+
+* `/pun/sys/shell/ssh/default/<path>`
+* `/pun/sys/shell/ssh/<host>/<path>`

@@ -14,3 +14,9 @@ results
 
 npm-debug.log
 node_modules/*
+
+# local copy of newer `npm`
+/npm
+
+# ignore env vars
+/.env
