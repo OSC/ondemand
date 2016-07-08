@@ -8,7 +8,9 @@ $ git clone git@github.com:AweSim-OSC/osc-fileexplorer.git files
 $ git checkout v1.0.0 # or whatever the lastest release tag is
 $ touch .env
 ```
+
 Edit the `.env` file and add paths for the following environment variables, replace paths with appropriate values.
+
 ```
 OOD_FILE_EDITOR='/pun/sys/file-editor/edit'
 OOD_SHELL='/pun/sys/shell/ssh/default'
