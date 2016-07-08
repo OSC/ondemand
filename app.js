@@ -111,7 +111,7 @@ app.use(cloudcmd({
         treeroottitle: "Home Directory",
 
         file_editor: "/pun/sys/file-editor/edit",
-        shell: "/pun/sys/shell/ssh/oakley"
+        shell: "/pun/sys/shell/ssh/default"
     }
 }));
 
