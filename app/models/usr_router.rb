@@ -19,11 +19,15 @@ class UsrRouter
     @owner = owner
   end
 
+  def base_path
+    "/var/www/ood/apps/usr/#{owner}/gateway"
+  end
+
   def url_for(app: app_name)
     "/pun/usr/#{owner}/#{app}"
   end
 
   def path_for(app: app_name)
-    "/var/www/ood/apps/usr/#{owner}/gateway/#{app}"
+    "#{base_path}/#{app}"
   end
 end
