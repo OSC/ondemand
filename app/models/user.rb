@@ -23,22 +23,20 @@ class User < OSC::Machete::User
     @project_space_paths ||= projects.map { |p| Pathname.new("/fs/project/#{p}") }.select {|p| p.directory? && p.readable? && p.executable? }
   end
 
-  #TODO: it might be a nice feature, but websvcs08 does not have access to /fs/lustre
   # return [] or paths to directories recommended by users to create i.e.
-  # /fs/lustre/PROJECTNAME or /fs/lustre/username
-  # def lustre_user_paths
-  #   @lustre_user_paths ||= get_lustre_user_paths
-  # end
+  # /fs/scratch/PROJECTNAME or /fs/scratch/username
+  def scratch_user_paths
+    @scratch_user_paths ||= get_scratch_user_paths
+  end
 
-  # private
+  private
 
-  # def get_lustre_user_paths
-  #   paths = projects.map { |p| Pathname.new("/fs/lustre/#{p}") }.select {|p| p.directory? && p.readable? && p.executable? }
+  def get_scratch_user_paths
+    paths = projects.map { |p| Pathname.new("/fs/scratch/#{p}") }.select {|p| p.directory? && p.readable? && p.executable? }
 
-  #   userdir = Pathname.new("/fs/lustre/#{name}")
-  #   paths << userdir if userdir.directory? && userdir.readable? && userdir.executable?
+    userdir = Pathname.new("/fs/scratch/#{name}")
+    paths << userdir if userdir.directory? && userdir.readable? && userdir.executable?
 
-  #   paths
-  # end
-
+    paths
+  end
 end
