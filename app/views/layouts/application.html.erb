@@ -41,9 +41,8 @@
         </li>
         <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Clusters<span class="caret"></span></a>
         <ul class="dropdown-menu">
-          <li><a href="<%= OodAppkit.shell.url(host: "oakley") %>" target="_blank"><i class="fa fa-terminal"></i> Oakley Shell Access</a></li>
-          <% if @user.has_ruby_access? %>
-            <li><a href="<%= OodAppkit.shell.url(host: "ruby") %>" target="_blank"><i class="fa fa-terminal"></i> Ruby Shell Access</a></li>
+          <% OodAppkit.clusters.hpc.select {|k,c| c.login_server? }.each do |k,c| %>
+            <li><a href="<%= OodAppkit.shell.url(host: c.login_server.host) %>" target="_blank"><i class="fa fa-terminal"></i> <%= c.title %> Shell Access</a></li>
           <% end %>
           <li role="separator" class="divider"></li>
           <li><a href="/pun/sys/systemstatus"><i class="fa fa-tachometer"></i> System Status</a></li>
