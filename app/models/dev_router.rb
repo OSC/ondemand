@@ -7,8 +7,7 @@ class DevRouter
   end
 
   def base_path
-    #FIXME: for ondemand its ondemand/dev; for awesim its awesim/dev
-    "#{Dir.home(owner)}/ondemand/dev"
+    "#{Dir.home(owner)}/#{ENV['OOD_PORTAL']}/dev"
   end
 
   def initialize(owner=OodSupport::Process.user.name)
