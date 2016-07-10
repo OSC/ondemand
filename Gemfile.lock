@@ -70,7 +70,7 @@ GEM
     minitest (4.7.5)
     multi_json (1.12.1)
     mustache (1.0.3)
-    ood_appkit (0.2.3)
+    ood_appkit (0.2.5)
       addressable (~> 2.4)
       lograge (~> 0.3)
       ood_support (~> 0.0)
@@ -150,7 +150,7 @@ DEPENDENCIES
   font-awesome-sass (~> 4.4.0)
   jbuilder (~> 1.2)
   jquery-rails
-  ood_appkit (~> 0.1)
+  ood_appkit (~> 0.2)
   osc-machete (~> 1.1)
   pbs (~> 1.1)
   rails (= 4.0.0)
