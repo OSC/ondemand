@@ -1,4 +1,6 @@
 class MotdFile
+  attr_reader :motd_system_file
+
   Message = Struct.new :date, :title, :body do
     def self.from(str)
       if str =~ /(\d+[-\/\.]\d+[-\/\.]\d+)\n--- ([ \S ]*)\n(.*)/m
@@ -15,7 +17,9 @@ class MotdFile
   # Initialize the Motd Controller object based on the current user.
   #
   # @param [boolean] update_user_view_timestamp True to update the last viewed timestamp. (Default: false)
-  def initialize(update_user_view_timestamp: false)
+  def initialize(path = ENV['MOTD_PATH'], update_user_view_timestamp: false)
+    @motd_system_file = path
+
     touch if update_user_view_timestamp
   end
 
@@ -27,8 +31,8 @@ class MotdFile
     @motd_config_file ||= OodAppkit.dataroot.join(".motd")
   end
 
-  def motd_system_file
-    @motd_system_file ||= "/etc/motd"
+  def exist?
+    motd_system_file && File.file?(motd_system_file)
   end
 
   # If the motd file hasn't been created on the system, or if the system motd is newer than the user's file, return true.
