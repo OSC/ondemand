@@ -20,7 +20,7 @@ class User < OSC::Machete::User
   # project space is in /nfs/gpfs/PZS0645 where the directory name is the name
   # of the project; so return paths to directories that the user has rx to
   def project_space_paths
-    @project_space_paths ||= projects.map { |p| Pathname.new("/nfs/gpfs/#{p}") }.select {|p| p.directory? && p.readable? && p.executable? }
+    @project_space_paths ||= projects.map { |p| Pathname.new("/fs/project/#{p}") }.select {|p| p.directory? && p.readable? && p.executable? }
   end
 
   #TODO: it might be a nice feature, but websvcs08 does not have access to /fs/lustre
