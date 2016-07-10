@@ -15,6 +15,8 @@ var http        = require('http'),
     server,
     socket;
 
+require('dotenv').config();    
+
 server = http.createServer(app);
 
 // Set up the socket
@@ -110,8 +112,8 @@ app.use(cloudcmd({
         treeroot: HOME,
         treeroottitle: "Home Directory",
 
-        file_editor: "/pun/sys/file-editor/edit",
-        shell: "/pun/sys/shell/ssh/default"
+        file_editor: process.env.OOD_FILE_EDITOR,
+        shell: process.env.OOD_SHELL
     }
 }));
 

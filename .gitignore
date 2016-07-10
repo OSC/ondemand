@@ -1,2 +1,5 @@
 # Don't include the node modules
 /node_modules/
+
+# ignore env vars
+/.env
