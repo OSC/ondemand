@@ -38,6 +38,7 @@ gem 'pbs', '~> 1.1'
 gem 'osc-machete', '~> 1.1'
 gem 'ood_appkit', '~> 0.2'
 gem 'browser', '~> 2.1'
+gem 'addressable', '~> 2.4'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'

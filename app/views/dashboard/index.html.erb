@@ -1,4 +1,4 @@
-<img alt="Logo" class="<%=raw 'hidden' unless ENV['OOD_DASHBOARD_LOGO']%>" src="<%= ENV['OOD_DASHBOARD_LOGO'] %>" />
+<%= logo_image_tag(ENV['OOD_DASHBOARD_LOGO']) %>
 
 <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>
 <br>
