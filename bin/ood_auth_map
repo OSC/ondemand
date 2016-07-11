@@ -11,6 +11,7 @@
 
 require 'uri'
 require 'date'
+require 'benchmark'
 
 module OodAuthMap
   VERSION = '0.0.1'
@@ -37,18 +38,20 @@ GRID_MAPFILE='/etc/grid-security/grid-mapfile'
 
 # Don't slurp file
 sys_user = nil
-File.foreach(GRID_MAPFILE) do |line|
-  if matches = %r[^"#{Regexp.quote auth_user}" (\w+)$].match(line)
-    sys_user = matches[1]
-    break
+bm = Benchmark.measure do
+  File.foreach(GRID_MAPFILE) do |line|
+    if matches = %r[^"#{Regexp.quote auth_user}" (\w+)$].match(line)
+      sys_user = matches[1]
+      break
+    end
   end
 end
 
 # Print sys_user or empty string
 if sys_user
   puts sys_user
-  STDERR.puts %[#{DateTime.now} - ood_auth_map: Successfully mapped "#{auth_user}" => "#{sys_user}"]
+  STDERR.puts %(#{DateTime.now} - ood_auth_map: Successfully mapped "#{auth_user}" => "#{sys_user}" #{bm.format('[user=%u system=%y total=%t real=%r]')})
 else
   puts ""
-  STDERR.puts %[#{DateTime.now} - ood_auth_map: Failed to map "#{auth_user}"]
+  STDERR.puts %(#{DateTime.now} - ood_auth_map: Failed to map "#{auth_user}" #{bm.format('[user=%u system=%y total=%t real=%r]')})
 end
