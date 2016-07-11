@@ -10,7 +10,7 @@ class PagesController < ApplicationController
       render :json => get_jobs
     else
       #Only allow the configured servers to respond
-      if Servers.has_key?(params[:host])
+      if OODClusters.has_key?(params[:host].to_sym)
         render :json => get_job(params[:pbsid], params[:host])
       end
     end
@@ -20,7 +20,7 @@ class PagesController < ApplicationController
 
     # Only delete if the pbsid and host params are present and host is configured in servers.
     # PBS will prevent a user from deleting a job that is not their own and throw an error.
-    if (params[:pbsid] && Servers.has_key?(params[:host]))
+    if (params[:pbsid] && OODClusters.has_key?(params[:host].to_sym))
       job_id = params[:pbsid].to_s.gsub(/_/, '.')
 
       begin
