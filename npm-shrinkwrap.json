@@ -288,8 +288,8 @@
     },
     "cloudcmd": {
       "version": "5.3.1",
-      "from": "git://github.com/osc/cloudcmd.git#v5.3.1-osc.10",
-      "resolved": "git://github.com/osc/cloudcmd.git#618be3e1bab37edf29b77e32f07e77b4b3aaea27",
+      "from": "git://github.com/osc/cloudcmd.git#v5.3.1-osc.12",
+      "resolved": "git://github.com/osc/cloudcmd.git#ae6da40d0b7664d96629079f10a0b2a639c51f57",
       "dependencies": {
         "chalk": {
           "version": "1.1.3",
@@ -2713,7 +2713,7 @@
                               "dependencies": {
                                 "align-text": {
                                   "version": "0.1.4",
-                                  "from": "align-text@>=0.1.3 <0.2.0",
+                                  "from": "align-text@>=0.1.1 <0.2.0",
                                   "resolved": "https://registry.npmjs.org/align-text/-/align-text-0.1.4.tgz",
                                   "dependencies": {
                                     "kind-of": {
