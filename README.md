@@ -1,8 +1,15 @@
 # OSC OnDemand Dashboard
 
-PUN based Rails app.
+This app is a PUN based Rails app for Open OnDemand that serves as a gateway to launching all the other apps.
 
+## Install
 
-Questions:
+**TODO**
 
-1. If we want to have shared/cached data between multiple instances of a PUN, what is the best way to do that? A separate shared webservice?
+## Configuration
+
+**TODO**
+
+## Branding
+
+**TODO**
