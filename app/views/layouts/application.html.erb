@@ -19,56 +19,52 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
       <ul class="nav navbar-nav">
 
-        <% if @user.project_space_paths.empty? %>
-          <li><a href="<%= OodAppkit.files.url(path: @user.home) %>" target="_blank">Files</a></li>
-        <% else %>
+        <% if @paths.count == 1 %>
+          <li><a href="<%= OodAppkit.files.url(path: @paths.first) %>" target="_blank">Files</a></li>
+        <% elsif @paths.count > 1 %>
           <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Files<span class="caret"></span></a>
             <ul class="dropdown-menu">
-              <li><a href="<%= OodAppkit.files.url(path: @user.home) %>" target="_blank"><i class="fa fa-home"></i> Home Directory</a></a></li>
+              <li><a href="<%= OodAppkit.files.url(path: @paths.first) %>" target="_blank"><i class="fa fa-home"></i> Home Directory</a></a></li>
               <li role="separator" class="divider"></li>
-              <% @user.project_space_paths.each do |path| %>
+              <% @paths[1..-1].each do |path| %>
                 <li><a href="<%= OodAppkit.files.url(path: path) %>" target="_blank"><i class="fa fa-folder"></i> <%= path.to_s %></a></li>
               <% end %>
             </ul>
           </li>
         <% end %>
 
+        <% if NAV.jobs %>
         <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Jobs<span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><%= link_to "<i class=\"fa fa-tasks\"></i> My Jobs".html_safe, app_path("sys", "myjobs") %></li>
             <li><a href="/pun/sys/activejobs"><i class="fa fa-clock-o"></i> Active Jobs</a></li>
           </ul>
         </li>
+        <% end %>
+
+
+        <% if NAV.shells || NAV.systemstatus %>
         <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Clusters<span class="caret"></span></a>
         <ul class="dropdown-menu">
-          <% OodAppkit.clusters.hpc.select {|k,c| c.login_server? }.each do |k,c| %>
-            <li><a href="<%= OodAppkit.shell.url(host: c.login_server.host) %>" target="_blank"><i class="fa fa-terminal"></i> <%= c.title %> Shell Access</a></li>
+          <% if NAV.shells %>
+            <% OodAppkit.clusters.hpc.select {|k,c| c.login_server? }.each do |k,c| %>
+              <li><a href="<%= OodAppkit.shell.url(host: c.login_server.host) %>" target="_blank"><i class="fa fa-terminal"></i> <%= c.title %> Shell Access</a></li>
+            <% end %>
           <% end %>
+
+          <% if NAV.systemstatus %>
           <li role="separator" class="divider"></li>
           <li><a href="/pun/sys/systemstatus"><i class="fa fa-tachometer"></i> System Status</a></li>
+          <% end %>
         </ul>
         </li>
-        <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Apps<span class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <li class="dropdown-header">Virtual Desktop Interface</li>
-          <li><a href="/pun/sys/oakley_vdi"><i class="fa fa-desktop"></i> Oakley VDI</a></li>
-          <% if @user.has_ruby_access? %>
-            <li><a href="/pun/sys/ruby_vdi"><i class="fa fa-desktop"></i> Ruby VDI</a></li>
-          <% end %>
-          <li><a href="/pun/sys/paraview"><%= image_tag "logo-14x14-paraview.png" %> Paraview</a></li>
-          <li role="separator" class="divider"></li>
-          <li class="dropdown-header">Compute Node Session</li>
-          <li><a href="/pun/sys/oakley_desktop"><i class="fa fa-desktop"></i> Oakley Desktop</a></li>
-          <% if @user.has_ruby_access? %>
-            <li><a href="/pun/sys/ruby_desktop" ><i class="fa fa-desktop"></i> Ruby Desktop</a>
-          <% end %>
-          <li><a href="/pun/sys/abaqus_cae"><%= image_tag "logo-14x14-abaqus.png" %> Abaqus/CAE</a>
-          <li><a href="/pun/sys/ansys_workbench"><%= image_tag "logo-14x14-ansys.png" %> ANSYS Workbench</a>
-          <li><a href="/pun/sys/comsol"><%= image_tag "logo-14x14-comsol.png" %> COMSOL</a>
-        </ul>
-        </li>
+        <% end %>
 
-        <% if @user.developer? %>
+        <% if NAV.desktops %>
+        <%= render partial: "layouts/nav/desktops" %>
+        <% end %>
+
+        <% if NAV.osc && @user.developer? %>
         <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Develop<span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="/nginx/stop?redir=<%= root_path %>"><i class="fa fa-refresh"></i> Restart Web Server</a></li>
