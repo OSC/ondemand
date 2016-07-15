@@ -37,7 +37,7 @@
                     // TODO Remove the ten.osc.edu once it's available in OodAppkit
                     system_uri = '<%= value.servers[:ganglia].uri.to_s %>&z='+size+'&cs='+start_seconds+'&g='+report_type+'&h='+node_num+'.ten.osc.edu';
                 <% else %>
-                    system_uri = '#';
+                    system_uri = '<%= image_path('unavailable.png') %>';
                 <% end %>
             }
         <% end %>
