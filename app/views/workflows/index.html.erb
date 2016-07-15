@@ -86,8 +86,8 @@
         <p>Job Name: <h4><strong><span id="job-details-name"></span></strong></h4></p>
         <p>Submit to:</p>
           <select class="form-control" id="job-details-server-select" disabled>
-            <% Servers.each do |s| %>
-                <option id="<%= s.first %>" value="<%= s.first %>"><%= s.first.titleize if s.first %></option>
+            <% OODClusters.each do |key, value| %>
+                <option id="<%= value.id %>" value="<%= value.id %>"><%= value.title %></option>
             <% end %>
           </select>
       </div>
