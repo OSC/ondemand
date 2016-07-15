@@ -30,18 +30,17 @@
 
 <script>
     function build_ganglia_link( host, start_seconds, report_type, node_num, size ) {
-        var system_uri;
+        var ganglia_uri;
         <% OODClusters.each do |key, value| %>
             if (host == '<%= key %>') {
                 <% if value.ganglia_server? %>
-                    // TODO Remove the ten.osc.edu once it's available in OodAppkit
-                    system_uri = '<%= value.servers[:ganglia].uri.to_s %>&z='+size+'&cs='+start_seconds+'&g='+report_type+'&h='+node_num+'.ten.osc.edu';
+                    ganglia_uri = '<%= value.servers[:ganglia].uri.to_s %>&z='+size+'&cs='+start_seconds+'&g='+report_type+'&h='+node_num+'<%= value.servers[:ganglia].opt_query.fetch(:h, '') % {h: nil} %>';
                 <% else %>
-                    system_uri = '<%= image_path('unavailable.png') %>';
+                    ganglia_uri = '<%= image_path('unavailable.png') %>';
                 <% end %>
             }
         <% end %>
-        return system_uri;
+        return ganglia_uri;
     }
 
     function has_ganglia(host) {
