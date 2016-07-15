@@ -58,8 +58,8 @@ class PagesController < ApplicationController
   # Get a set of jobs defined by the filtering cookie.
   def get_jobs
     jobs = Array.new
-    Servers.each do |key, value|
-      c = PBS::Conn.batch key
+    OODClusters.each do |key, value|
+      c = PBS::Conn.batch key.to_s
       q = PBS::Query.new conn: c, type: :job
 
       # Checks the cookies and gets the appropriate job set.
