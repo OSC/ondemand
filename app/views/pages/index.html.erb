@@ -30,13 +30,28 @@
 
 <script>
     function build_ganglia_link( host, start_seconds, report_type, node_num, size ) {
-        var system;
-        <% Servers.each do |key, value| %>
+        var system_uri;
+        <% OODClusters.each do |key, value| %>
             if (host == '<%= key %>') {
-                system = '<%= value['cluster_code'] %>';
+                <% if value.ganglia_server? %>
+                    // TODO Remove the ten.osc.edu once it's available in OodAppkit
+                    system_uri = '<%= value.servers[:ganglia].uri.to_s %>&z='+size+'&cs='+start_seconds+'&g='+report_type+'&h='+node_num+'.ten.osc.edu';
+                <% else %>
+                    system_uri = '#';
+                <% end %>
             }
         <% end %>
-        return 'https://cts05.osc.edu/gweb/graph.php?&z='+size+'&c='+system+'&cs='+start_seconds+'&g='+report_type+'&h=' 
-+ node_num + '.ten.osc.edu';
+        return system_uri;
+    }
+
+    function has_ganglia(host) {
+        <% OODClusters.each do |key, value| %>
+        if (host == '<%= key %>') {
+            <% if value.ganglia_server? %>
+                return true;
+            <% end %>
+        }
+        <% end %>
+        return false;
     }
 </script>
