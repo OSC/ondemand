@@ -18,35 +18,7 @@
     </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
       <ul class="nav navbar-nav">
-
-        <%= render partial: "layouts/nav/files_dropdown" if @router.app_exists?("files") %>
-
-        <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Jobs<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><%= link_to "<i class=\"fa fa-tasks\"></i> My Jobs".html_safe, app_path("sys", "myjobs") %></li>
-            <li><a href="/pun/sys/activejobs"><i class="fa fa-clock-o"></i> Active Jobs</a></li>
-          </ul>
-        </li>
-
-        <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Clusters<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <% OodAppkit.clusters.hpc.select {|k,c| c.login_server? }.each do |k,c| %>
-              <li><a href="<%= OodAppkit.shell.url(host: c.login_server.host) %>" target="_blank"><i class="fa fa-terminal"></i> <%= c.title %> Shell Access</a></li>
-            <% end %>
-            <li role="separator" class="divider"></li>
-            <li><a href="/pun/sys/systemstatus"><i class="fa fa-tachometer"></i> System Status</a></li>
-          </ul>
-        </li>
-
-        <%= render partial: "layouts/nav/desktops" %>
-
-        <% if @user.developer? %>
-        <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Develop<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="/nginx/stop?redir=<%= root_path %>"><i class="fa fa-refresh"></i> Restart Web Server</a></li>
-          </ul>
-        </li>
-        <% end %>
+        <%= render_nav  %>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <%= render partial: "layouts/nav/help_dropdown" %>

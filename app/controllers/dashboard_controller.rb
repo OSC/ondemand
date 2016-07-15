@@ -4,6 +4,5 @@ class DashboardController < ApplicationController
     flash.now[:alert] = "OnDemand is not yet optimized for mobile use." if view_context.browser.device.mobile?
 
     @motd_file = MotdFile.new
-    @router = SysRouter.new
   end
 end
