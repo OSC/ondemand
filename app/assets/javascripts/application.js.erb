@@ -149,7 +149,7 @@ function display_node_rows( d ) {
     var rows = "";
     // Ganglia accepts timestamps in seconds, not millis.
     var start = d.starttime;
-    if (d.nodes != null) {
+    if (d.nodes != null && has_ganglia(d.cluster)) {
         for (node in d.nodes) {
             var node_num = d.nodes[node];
             rows += '<div class="col-md-12">' +
