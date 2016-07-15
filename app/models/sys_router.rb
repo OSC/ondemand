@@ -7,8 +7,8 @@ class SysRouter
   # TODO: consider memoizing this for the duration of the request
   # one way would be to instantiate a new SysRouter and then use that same
   # instance
-  def self.app_exists?(appname)
-    Pathname.new(SysRouter.new.path_for(app: appname)).directory?
+  def app_exists?(appname)
+    Pathname.new(path_for(app: appname)).directory?
   end
 
   def base_path
