@@ -5,7 +5,7 @@
 1.  Clone repo to local directory
 
     ```
-    git clone git@github.com:AweSim-OSC/osc-shell.git osc-shell
+    git clone git@github.com:OSC/osc-shell.git shell
     ```
 
 2.  Due to limitations in Node.js installed through RedHat Software Collections,
