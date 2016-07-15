@@ -34,7 +34,7 @@ class Manifest
   end
 
   def default_host
-    Servers.first[0]
+    OODClusters.first[0]
   end
 
   def default_notes
