@@ -20,14 +20,19 @@ class Filesystem
     "Size must be computable in less than #{max_copy_safe_du_timeout_seconds} seconds. " \
     "Either directory has too many files or the file system is currently slow (if so, please try again later)."
 
-  # Returns an http URI path to the cloudcmd filesystem link
+  # Returns a http URI path to the cloudcmd filesystem link
   def fs(path)
     OodAppkit.files.url(path: path).to_s
   end
 
-  # Returns an http URI path to the cloudcmd api link
+  # Returns a http URI path to the cloudcmd api link
   def api(path)
     OodAppkit.files.api(path: path).to_s
+  end
+
+  # Returns a http URI path the the file editor link
+  def editor(path)
+    OodAppkit.editor.edit(path: path).to_s
   end
 
   # Verify that this path is safe to copy recursively from
@@ -56,11 +61,6 @@ class Filesystem
 
   def du(path, timeout)
     Open3.capture3 "timeout #{timeout}s du -cbs #{Shellwords.escape(path)}"
-  end
-  
-  def editor(path)
-    # TODO UPDATE THIS WHEN ADDED TO GEM
-    File.join("/pun/sys/file-editor/edit", path)
   end
 
   # FIXME: some duplication here between du command above and this; we probably
