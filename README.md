@@ -1,6 +1,6 @@
 # OSC OnDemand Dashboard
 
-This app is a PUN based Rails app for Open OnDemand that serves as a gateway to launching other Open OnDemand apps.
+This app is a Rails app for Open OnDemand that serves as a gateway to launching other Open OnDemand apps. It is meant to be run as the user (and on behalf of the user) using the app. Thus, at an HPC center if I log into OnDemand using the `efranz` account, this app should run as `efranz`.
 
 ## Install
 
