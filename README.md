@@ -67,4 +67,17 @@ BOOTSTRAP_NAVBAR_INVERSE_LINK_COLOR='rgb(255,255,255)'
 
 ## Message Of The Day
 
-* **TODO**
+If `MOTD_PATH="/etc/motd"` is set, the message of the day file will be parsed and displayed on the front page of the dashboard. This assumes the MOTD file is formatted like this:
+
+1. split messages using a line of multiple `**********`
+2. each message starts with a single line like this: `2016/03/01`
+3. title follows this format on the following line: `--- SYSTEM DOWNTIME RESCHEDULED: JULY 12TH 7AM-5PM`
+4. after that the message body follows markdown rules for formatting, and is parsed using a markdown parser
+
+Messages that do not match this formatting will be omitted.
+
+In the future, we hope to:
+
+* support more flexible formats for MOTD based on feedback
+* support parsing an RSS feed instead of an MOTD formatted file by letting the admin provide a system path or a URL to the RSS feed
+
