@@ -1,4 +1,10 @@
-## Deployment directions
+# OOD File Explorer
+
+A Node.js web based file explorer that is a modification of [CloudCommander](http://cloudcmd.io/) with a focus on a user friendly interface for file uploads, downloads, editing, renaming and copying. It is an Open OnDemand app that is meant to be run as the user.
+
+## Install
+
+**NOTE: these are OSC specific installation directions. Directions more appropriate for Open OnDemand will be added soon.**
 
 Log in as `wiag` user
 
