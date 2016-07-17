@@ -48,23 +48,12 @@ When updating a deployed version of the Open OnDemand dashboard:
 
 Configuration is done within the .env file. Look at the .env file to see an example configuration for OSC.
 
-Here are some example configuration values:
-
-```
-OOD_DASHBOARD_TITLE="OSC OnDemand <sup>beta</sub>"
-OOD_PORTAL="ondemand"
-MOTD_PATH="/etc/motd"
-OOD_DASHBOARD_SUPPORT_URL="https://www.osc.edu/contact/supercomputing_support"
-OOD_DASHBOARD_DOCS_URL="https://www.osc.edu/ondemand"
-OOD_DASHBOARD_PASSWD_URL="https://my.osc.edu"
-OOD_DASHBOARD_SHOW_ALL_APPS=true
-```
-
 * `OOD_PORTAL="ondemand"` - the lowercase portal name that matches the name of the installation directory and the data directory created in the user's home directory; this should also be set in the path for `OOD_DATAROOT` in the `.env.production` file
 * `MOTD_PATH="/etc/motd"` - optional: the message of the day, if you have one (see below)
 * `OOD_DASHBOARD_DOCS_URL` - URL to access OnDemand documentation for users
 * `OOD_DASHBOARD_PASSWD_URL` - URL to access page to change your HPC password
 * `OOD_DASHBOARD_SUPPORT_URL` - URL for users to get HPC support
+* `OOD_DASHBOARD_SHOW_ALL_APPS=false` - for OSC OnDemand this is currently set to true - for other Open OnDemand instances this should be set to false; this is a temporary solution to switch between showing only the Files and/or Clusters dropdowns in the menu (for shell access) versus showing all the applications currently deployed in OSC OnDemand, but not yet available in Open Source. This will soon be replaced by a more flexible solution for controlling the applicaiton menu hierarchy.
 
 To brand the site, you can change the title, colors, and logo of the dashboard app:
 
@@ -75,7 +64,6 @@ To brand the site, you can change the title, colors, and logo of the dashboard a
 BOOTSTRAP_NAVBAR_INVERSE_BG='rgb(200,16,46)'
 BOOTSTRAP_NAVBAR_INVERSE_LINK_COLOR='rgb(255,255,255)'
 ```
-
 
 ## Message Of The Day
 
