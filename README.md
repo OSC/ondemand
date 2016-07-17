@@ -4,7 +4,7 @@ A simple Rails web app that uses https://ace.c9.io/ for editing files. It is mea
 
 ## Install
 
-**TOOD**
+**TODO**
 
 ## Usage
 
