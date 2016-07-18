@@ -50,9 +50,10 @@ After updates to OSC/cloudcmd are made, tag a release version to OSC/cloudcmd (t
 Then checkout the latest commit of the osc-fileexplorer master and update it to use the latest version:
 
 ```bash
+rm npm-shrinkwrap.json # remove the old shrinkwrap file that locks the dependency versions
 npm install # install current versions being used
-npm install git://github.com/osc/cloudcmd#v5.3.1-osc.7 --save # install the version you want
-npm shrinkwrap
+npm install git://github.com/osc/cloudcmd#v5.3.1-osc.12 --save # install the version you want
+npm shrinkwrap # re-write the npm shrinkwrap file
 ```
 
 Both the npm-shrinkwrap.json and the package.json files should be updated. Commit those to osc-fileexplorer, then add a new release tag to osc-fileexplorer.
@@ -73,7 +74,7 @@ For general usage instructions see: https://www.osc.edu/supercomputing/ondemand/
 
 ### API
 
-The File Explorer contains a node-js file API based on the [`node-restafary`](https://github.com/coderaiser/node-restafary) package, which can be used by other applications in the OnDemand Environment.
+The File Explorer contains a node-js REST API based on the [`node-restafary`](https://github.com/coderaiser/node-restafary) package, which can be used by other applications in the OnDemand Environment.
 
 |Name         |Method   |Query          |Body               |Description                    |
 |:------------|:--------|:--------------|:------------------|:------------------------------|
@@ -84,3 +85,15 @@ The File Explorer contains a node-js file API based on the [`node-restafary`](ht
 |             |`PATCH`  |               |diff               |patch file                     |
 |             |`DELETE` |               |                   |delete file                    |
 |             |         |`files`        |Array of names     |delete files                   |
+
+#### Example:
+
+GET requests will follow the pattern `App Root` + `fs/` + `File Path`, where File Path will be the absolute path of a file on the system.
+
+* To GET a file named `/users/appl/bmcmichael/.gitconfig` at the OSC deployment of OnDemand, the link would be:
+  * `https://ondemand3.osc.edu/pun/sys/files/fs/users/appl/bmcmichael/.gitconfig`
+  * App Root: `https://ondemand3.osc.edu/pun/sys/files/`
+  * API Route: `fs/`
+  * File Path: `/users/appl/bmcmichael/.gitconfig`
+
+Since the application is running as the logged in user, the application will only have access to the files that the user actually has access to within the file system.
