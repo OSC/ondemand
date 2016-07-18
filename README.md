@@ -13,7 +13,7 @@ A simple Rails web app that uses https://ace.c9.io/ for editing files. It is mea
 5. Run bundle install, use path `vendor/bundle`
   * `bin/bundle install --path=vendor/bundle`
 6. Build the assets
-  * RAILS_ENV=production bin/rake assets:precompile
+  * `RAILS_ENV=production bin/rake assets:precompile`
 7. Clear the cache
   * `bin/rake tmp:clear`
  
