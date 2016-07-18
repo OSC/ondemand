@@ -11,11 +11,11 @@ Log in as `wiag` user
 ```
 $ cd /nfs/01/wiag/PZS0645/ood/apps/sys
 $ git clone git@github.com:AweSim-OSC/osc-fileexplorer.git files
-$ git checkout v1.0.0 # or whatever the lastest release tag is
+$ git checkout v1.0.5 # or whatever the lastest release tag is
 $ touch .env
 ```
 
-Edit the `.env` file and add paths for the following environment variables, replace paths with appropriate values.
+Rename the `.env.ondemand` file to `.env` and modify paths for the following environment variables with appropriate values.
 
 ```
 OOD_FILE_EDITOR='/pun/sys/file-editor/edit'
