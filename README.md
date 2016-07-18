@@ -56,3 +56,36 @@ npm shrinkwrap
 ```
 
 Both the npm-shrinkwrap.json and the package.json files should be updated. Commit those to osc-fileexplorer, then add a new release tag to osc-fileexplorer.
+
+## Usage
+
+### General
+
+The OOD File Explorer is the web-based file management solution for the Open Ondemand Project.
+
+* View/Edit Files
+* Upload/Download Files
+* Create/Delete Files/Directories
+* Terminal Access
+* Editor Access
+
+For general usage instructions see: https://www.osc.edu/supercomputing/ondemand/file-transfer-and-management
+
+### API
+
+The File Explorer contains a node-js file API based on the [`node-restafary`](https://github.com/coderaiser/node-restafary) package, which can be used by other applications in the OnDemand Environment.
+
+|Name         |Method   |Query          |Body               |Description                    |
+|:------------|:--------|:--------------|:------------------|:------------------------------|
+|`fs`         |`GET`    |               |                   |get file or dir content        |
+|             |         |`size`         |                   |get file or dir size           |
+|             |         |`time`         |                   |get time of file change        |
+|             |         |`hash`         |                   |get file hash                  |
+|             |         |`beautify`     |                   |beautify js, html, css         |
+|             |         |`minify`       |                   |minify js, html, css           |
+|             |`PUT`    |               |file content       |create/write file              |
+|             |         | `unzip`       |file content       |unzip and create/write file    |
+|             |         | `dir`         |                   |create dir                     |
+|             |`PATCH`  |               |diff               |patch file                     |
+|             |`DELETE` |               |                   |delete file                    |
+|             |         |`files`        |Array of names     |delete files                   |
