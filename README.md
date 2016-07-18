@@ -4,13 +4,22 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
 
 ## Install
 
-**NOTE: these are OSC specific installation directions. Directions more appropriate for Open OnDemand will be added soon.**
+1. Navigate to the OOD apps staged deployment path.
+2. Clone the `OSC/ood-fileexplorer.git` reposititory.
+3. `git checkout` the latest [release tag](https://github.com/OSC/ood-fileexplorer/releases)
+4. Create a `.env` file or rename `.env.ondemand` to `.env` and modify environment variables.
+5. Run `npm install`
+6. `mkdir tmp`
+7. `touch tmp/restart.txt`
+8. Copy the project to the production space.
+ 
+### OSC Specific Installation
 
 Log in as `wiag` user
 
 ```
 $ cd /nfs/01/wiag/PZS0645/ood/apps/sys
-$ git clone git@github.com:AweSim-OSC/osc-fileexplorer.git files
+$ git clone git@github.com:OSC/ood-fileexplorer.git files
 $ git checkout v1.0.5 # or whatever the lastest release tag is
 $ touch .env
 ```
@@ -37,7 +46,7 @@ When updating a deployed instance of the file explorer - you will have already c
 ```
 $ cd /nfs/01/wiag/PZS0645/ood/apps/sys/files
 $ git pull # this will pull updated tags etc but not modify current working directory if current directory is a tag
-$ git checkout v1.0.3 # checkout lastest tag
+$ git checkout v1.0.5 # checkout lastest tag
 $ rm -rf node_modules
 $ npm install
 $ touch tmp/restart.txt
@@ -45,18 +54,18 @@ $ touch tmp/restart.txt
 
 ## Updating after modifications to OSC/cloudcmd dependency
 
-After updates to OSC/cloudcmd are made, tag a release version to OSC/cloudcmd (tag off of the osc-5.3.1 branch in the format v5.3.1-osc.7 where 7 is replaced with a number representing the latest version).
+After updates to OSC/cloudcmd are made, tag a release version to OSC/cloudcmd (tag off of the osc-5.3.1 branch in the format v5.3.1-osc.12 where 12 is replaced with a number representing the latest version).
 
-Then checkout the latest commit of the osc-fileexplorer master and update it to use the latest version:
+Then checkout the latest commit of the ood-fileexplorer master and update it to use the latest version:
 
 ```bash
 rm npm-shrinkwrap.json # remove the old shrinkwrap file that locks the dependency versions
 npm install # install current versions being used
-npm install git://github.com/osc/cloudcmd#v5.3.1-osc.12 --save # install the version you want
+npm install git://github.com/OSC/cloudcmd#v5.3.1-osc.12 --save # install the version you want
 npm shrinkwrap # re-write the npm shrinkwrap file
 ```
 
-Both the npm-shrinkwrap.json and the package.json files should be updated. Commit those to osc-fileexplorer, then add a new release tag to osc-fileexplorer.
+Both the npm-shrinkwrap.json and the package.json files should be updated. Commit those to ood-fileexplorer, then add a new release tag to ood-fileexplorer.
 
 ## Usage
 
