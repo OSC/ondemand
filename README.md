@@ -87,15 +87,15 @@ For general usage instructions see: https://www.osc.edu/supercomputing/ondemand/
 
 The File Explorer contains a node-js REST API based on the [`node-restafary`](https://github.com/coderaiser/node-restafary) package, which can be used by other applications in the OnDemand Environment.
 
-|Name         |Method   |Query          |Body               |Description                    |
-|:------------|:--------|:--------------|:------------------|:------------------------------|
-|`fs`         |`GET`    |               |                   |get file or dir content        |
-|             |`PUT`    |               |file content       |create/write file              |
-|             |         | `unzip`       |file content       |unzip and create/write file    |
-|             |         | `dir`         |                   |create dir                     |
-|             |`PATCH`  |               |diff               |patch file                     |
-|             |`DELETE` |               |                   |delete file                    |
-|             |         |`files`        |Array of names     |delete files                   |
+|URL                            |HTTP Verb   |Body               |Description                    |
+|:------------------------------|:-----------|:------------------|:------------------------------|
+|`/fs/<path>`                   |`GET`       |                   | get file or dir content       |
+|`/fs/<path>`                   |`PUT`       | file content      | create/write file             |
+|`/fs/<path>?unzip`             |`PUT`       |                   | unzip and create/write file   |
+|`/fs/<path>?dir`               |`PUT`       |                   | create dir                    |
+|`/fs/<path>`                   |`PATCH`     | diff              | patch file                    |
+|`/fs/<path>`                   |`DELETE`    |                   | delete file                   |
+|`/fs/<path>?files`             |`DELETE`    |                   | delete files                  |
 
 #### Example:
 
