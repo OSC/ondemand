@@ -78,11 +78,6 @@ The File Explorer contains a node-js file API based on the [`node-restafary`](ht
 |Name         |Method   |Query          |Body               |Description                    |
 |:------------|:--------|:--------------|:------------------|:------------------------------|
 |`fs`         |`GET`    |               |                   |get file or dir content        |
-|             |         |`size`         |                   |get file or dir size           |
-|             |         |`time`         |                   |get time of file change        |
-|             |         |`hash`         |                   |get file hash                  |
-|             |         |`beautify`     |                   |beautify js, html, css         |
-|             |         |`minify`       |                   |minify js, html, css           |
 |             |`PUT`    |               |file content       |create/write file              |
 |             |         | `unzip`       |file content       |unzip and create/write file    |
 |             |         | `dir`         |                   |create dir                     |
