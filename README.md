@@ -92,7 +92,7 @@ The File Explorer contains a node-js REST API based on the [`node-restafary`](ht
 |`/api/v1/fs/<path>`            |`GET`       |                   | get file or dir content       |
 |`/api/v1/fs/<path>?size`       |`GET`       |                   | get file or dir size          |
 |`/api/v1/fs/<path>?time`       |`GET`       |                   | get time of file or dir change|
-|`/api/v1/fs/<path>?hash`       |`GET`       |                   | get file hash                 |
+|`/api/v1/fs/<path>?hash`       |`GET`       |                   | get file hash (SHA-1)         |
 |`/api/v1/fs/<path>?beautify`   |`GET`       |                   | beautify js, html, css        |
 |`/api/v1/fs/<path>?minify`     |`GET`       |                   | minify js, html, css          |
 |`/api/v1/fs/<path>`            |`PUT`       | file content      | create/write file             |
