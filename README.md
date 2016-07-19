@@ -89,22 +89,27 @@ The File Explorer contains a node-js REST API based on the [`node-restafary`](ht
 
 |URL                            |HTTP Verb   |Body               |Description                    |
 |:------------------------------|:-----------|:------------------|:------------------------------|
-|`/fs/<path>`                   |`GET`       |                   | get file or dir content       |
-|`/fs/<path>`                   |`PUT`       | file content      | create/write file             |
-|`/fs/<path>?unzip`             |`PUT`       |                   | unzip and create/write file   |
-|`/fs/<path>?dir`               |`PUT`       |                   | create dir                    |
-|`/fs/<path>`                   |`PATCH`     | diff              | patch file                    |
-|`/fs/<path>`                   |`DELETE`    |                   | delete file                   |
-|`/fs/<path>?files`             |`DELETE`    |                   | delete files                  |
+|`/api/v1/fs/<path>`            |`GET`       |                   | get file or dir content       |
+|`/api/v1/fs/<path>?size`       |`GET`       |                   | get file or dir size          |
+|`/api/v1/fs/<path>?time`       |`GET`       |                   | get time of file or dir change|
+|`/api/v1/fs/<path>?hash`       |`GET`       |                   | get file hash                 |
+|`/api/v1/fs/<path>?beautify`   |`GET`       |                   | beautify js, html, css        |
+|`/api/v1/fs/<path>?minify`     |`GET`       |                   | minify js, html, css          |
+|`/api/v1/fs/<path>`            |`PUT`       | file content      | create/write file             |
+|`/api/v1/fs/<path>?unzip`      |`PUT`       |                   | unzip and create/write file   |
+|`/api/v1/fs/<path>?dir`        |`PUT`       |                   | create dir                    |
+|`/api/v1/fs/<path>`            |`PATCH`     | diff              | patch file                    |
+|`/api/v1/fs/<path>`            |`DELETE`    |                   | delete file                   |
+|`/api/v1/fs/<path>?files`      |`DELETE`    |                   | delete files                  |
 
 #### Example:
 
-GET requests will follow the pattern `App Root` + `fs/` + `File Path`, where File Path will be the absolute path of a file on the system.
+GET requests will follow the pattern `App Root` + `api/v1/fs/` + `File Path`, where File Path will be the absolute path of a file on the system.
 
 * To GET a file named `/users/appl/bmcmichael/.gitconfig` at the OSC deployment of OnDemand, the link would be:
-  * `https://ondemand3.osc.edu/pun/sys/files/fs/users/appl/bmcmichael/.gitconfig`
-  * App Root: `https://ondemand3.osc.edu/pun/sys/files/`
-  * API Route: `fs/`
-  * File Path: `/users/appl/bmcmichael/.gitconfig`
+  * `https://ondemand3.osc.edu/pun/sys/files/api/v1/fs/users/appl/bmcmichael/.gitconfig`
+    * App Root: `https://ondemand3.osc.edu/pun/sys/files/`
+    * API Route: `api/v1/fs/`
+    * File Path: `/users/appl/bmcmichael/.gitconfig`
 
 Since the application is running as the logged in user, the application will only have access to the files that the user actually has access to within the file system.
