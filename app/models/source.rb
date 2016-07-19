@@ -6,7 +6,7 @@ class Source
     @path = path
   end
 
-  def self.osc
+  def self.system
     Source.new("System Templates", Rails.root.join('templates').to_s)
   end
 
