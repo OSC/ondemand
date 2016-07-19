@@ -96,11 +96,11 @@ The File Explorer contains a node-js REST API based on the [`node-restafary`](ht
 |`/api/v1/fs/<path>?beautify`   |`GET`       |                   | beautify js, html, css        |
 |`/api/v1/fs/<path>?minify`     |`GET`       |                   | minify js, html, css          |
 |`/api/v1/fs/<path>`            |`PUT`       | file content      | create/write file             |
-|`/api/v1/fs/<path>?unzip`      |`PUT`       |                   | unzip and create/write file   |
+|`/api/v1/fs/<path>?unzip`      |`PUT`       | file content      | unzip and create/write file   |
 |`/api/v1/fs/<path>?dir`        |`PUT`       |                   | create dir                    |
 |`/api/v1/fs/<path>`            |`PATCH`     | diff              | patch file                    |
 |`/api/v1/fs/<path>`            |`DELETE`    |                   | delete file                   |
-|`/api/v1/fs/<path>?files`      |`DELETE`    |                   | delete files                  |
+|`/api/v1/fs/<path>?files`      |`DELETE`    | array of names    | delete files                  |
 
 #### Example:
 
