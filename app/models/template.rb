@@ -10,7 +10,7 @@ class Template
   end
 
   def self.all
-    Source.my.templates.concat(Source.osc.templates)
+    Source.my.templates.concat(Source.system.templates)
   end
 
   def self.default

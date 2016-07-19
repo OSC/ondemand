@@ -28,7 +28,7 @@
         <%= f.text_field :name, :id => "name_field" %>
       </div>
       <div class="field">
-        <%= f.select :host, Servers.map { |key, val| [ "#{key.titleize} (#{val[:pbshost]})", key ] }, { selected: @template.host, label: "Default Batch Server" }, { class: "selectpicker", id: "server_picker" } %>
+        <%= f.select :host, OODClusters.map { |key, val| [ "#{val.title} (#{val.servers[:resource_mgr].host})", key ] }, { selected: @template.host, label: "Default Batch Server" }, { class: "selectpicker", id: "server_picker" } %>
       </div>
       <div class="field">
         <%= f.text_area :notes, :id => "notes_field" %>
