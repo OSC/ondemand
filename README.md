@@ -4,6 +4,16 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
 
 ![File Explorer Interface](docs/img/001_interface.png)
 
+## Features
+
+* Create Files/Folders
+* View Files
+* Edit Files (with [OOD File Editor](https://github.com/OSC/ood-fileeditor) configured)
+* Rename/Copy/Paste/Delete Files
+* Upload large files
+* Download files
+* Launch Terminal in location (with [OOD Shell](https://github.com/OSC/ood-shell) configured)
+
 ## Install
 
 1. Navigate to the OOD apps staged deployment path.
