@@ -36,20 +36,27 @@ module NginxStage
     def google_analytics
       <<-EOF.gsub("'", %q{\\\'})
         <script>
-          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-          })(window,document,'script','https://www.google-analytics.com/analytics.js','_gaOodMetrics');
+          (function() {
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','https://www.google-analytics.com/analytics.js','_gaOodMetrics');
 
-          _gaOodMetrics('create', 'UA-79331310-2', 'auto', {
-            'cookieName': '_gaOodMetrics'
-          });
-          _gaOodMetrics('set', 'anonymizeIP', 'true');
-          _gaOodMetrics('set', 'userId', '$http_x_forwarded_user');
-          _gaOodMetrics('set', 'dimension1', '#{app_token}');
-          _gaOodMetrics('set', 'dimension2', '$http_x_forwarded_user');
-          _gaOodMetrics('set', 'dimension3', '$http_x_forwarded_proto://$http_x_forwarded_host');
-          _gaOodMetrics('send', 'pageview');
+            var uniqueId = function() {
+              return new Date().getTime() + '.' + Math.random().toString(36).substring(5);
+            };
+
+            _gaOodMetrics('create', 'UA-79331310-2', 'auto', {
+              'cookieName': '_gaOodMetrics'
+            });
+            _gaOodMetrics('set', 'anonymizeIP', 'true');
+            _gaOodMetrics('set', 'userId', '$http_x_forwarded_user');
+            _gaOodMetrics('set', 'dimension1', '#{app_token}');
+            _gaOodMetrics('set', 'dimension2', '$http_x_forwarded_user');
+            _gaOodMetrics('set', 'dimension3', '$http_x_forwarded_proto://$http_x_forwarded_host');
+            _gaOodMetrics('set', 'dimension4', uniqueId());
+            _gaOodMetrics('send', 'pageview');
+          })();
         </script>
       EOF
     end
