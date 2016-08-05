@@ -1,5 +1,13 @@
 ## Unreleased
 
+Features:
+
+  - added session id tracking in Google Analytics
+
+Bugfixes:
+
+  - moved GA to end of `<head>` tag from `<body>`
+
 ## 0.0.7 (2016-06-17)
 
 Bugfixes:
