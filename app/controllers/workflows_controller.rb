@@ -4,6 +4,8 @@ class WorkflowsController < ApplicationController
   # GET /workflows
   # GET /workflows.json
   def index
+    @selected_id = session[:selected_id]
+    session[:selected_id] = nil
     @workflows = Workflow.preload(:jobs)
   end
 
@@ -32,6 +34,7 @@ class WorkflowsController < ApplicationController
 
     respond_to do |format|
       if @workflow.save
+        session[:selected_id] = @workflow.id
         format.html { redirect_to workflows_url, notice: 'Job was successfully created.' }
         format.json { render :show, status: :created, location: @workflow }
       else
@@ -46,6 +49,7 @@ class WorkflowsController < ApplicationController
   def update
     respond_to do |format|
       if @workflow.update(workflow_params)
+        session[:selected_id] = @workflow.id
         format.html { redirect_to workflows_path, notice: 'Job was successfully updated.' }
         format.json { render :show, status: :ok, location: @workflow }
       else
@@ -59,6 +63,7 @@ class WorkflowsController < ApplicationController
   def stop
     @workflow = Workflow.find(params[:id])
     @workflow.jobs.last.update_status! unless @workflow.jobs.last.nil?
+    session[:selected_id] = @workflow.id
 
     respond_to do |format|
       if !@workflow.submitted?
@@ -95,9 +100,11 @@ class WorkflowsController < ApplicationController
   def submit
     respond_to do |format|
       if @workflow.submitted?
+        session[:selected_id] = @workflow.id
         format.html { redirect_to workflows_url, alert: 'Job has already been submitted.' }
         format.json { head :no_content }
       elsif @workflow.submit
+        session[:selected_id] = @workflow.id
         format.html { redirect_to workflows_url, notice: 'Job was successfully submitted.' }
         format.json { head :no_content }
       else
@@ -113,6 +120,7 @@ class WorkflowsController < ApplicationController
 
     respond_to do |format|
       if @workflow.errors.empty? && @workflow.save
+        session[:selected_id] = @workflow.id
         format.html { redirect_to workflows_url, notice: 'Job was successfully copied.' }
         format.json { render :show, status: :created, location: @workflow }
       else
