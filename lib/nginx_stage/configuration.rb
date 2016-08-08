@@ -308,9 +308,9 @@ module NginxStage
       self.nginx_signals    = %i(stop quit reopen reload)
       self.mime_types_path  = '/opt/rh/nginx16/root/etc/nginx/mime.types'
       self.passenger_root   = '/opt/rh/rh-passenger40/root/usr/share/passenger/phusion_passenger/locations.ini'
-      self.passenger_ruby   = '/opt/rh/rh-ruby22/root/usr/bin/ruby'
-      self.passenger_nodejs = '/opt/rh/nodejs010/root/usr/bin/node'
-      self.passenger_python = nil
+      self.passenger_ruby   = "#{root}/bin/ruby"
+      self.passenger_nodejs = "#{root}/bin/node"
+      self.passenger_python = "#{root}/bin/python"
 
       self.pun_config_path     = '/var/lib/nginx/config/puns/%{user}.conf'
       self.pun_tmp_root        = '/var/lib/nginx/tmp/%{user}'

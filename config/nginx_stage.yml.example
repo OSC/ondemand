@@ -51,17 +51,17 @@
 
 # Path to system-installed Ruby binary
 #
-#passenger_ruby: '/opt/rh/rh-ruby22/root/usr/bin/ruby'
+#passenger_ruby: '/opt/ood/nginx_stage/bin/ruby'
 
 # Path to system-installed Node.js binary
 # Set to `false` if you don't want this specified in nginx config
 #
-#passenger_nodejs: '/opt/rh/nodejs010/root/usr/bin/node'
+#passenger_nodejs: '/opt/ood/nginx_stage/bin/node'
 
 # Path to system-installed Python binary
 # Set to `false` if you don't want this specified in nginx config
 #
-#passenger_python: false
+#passenger_python: '/opt/ood/nginx_stage/bin/python'
 
 # Root location of per-user NGINX configs
 #

@@ -3,6 +3,8 @@
 Features:
 
   - added session id tracking in Google Analytics
+  - use wrappers for Passenger binaries (ruby/node/python), allows apps to
+    override system-installed binary
 
 Bugfixes:
 

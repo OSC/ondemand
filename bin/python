@@ -1,0 +1,15 @@
+#!/bin/env bash
+
+#
+# Passenger `python` wrapper script
+#
+# Tries to run the developer specified version of python for the requested app
+# before running system default binary (specified in the `bin/ood_ruby` wrapper
+# that stages the PUN)
+#
+
+if [[ -x "${PWD}/bin/python" ]]; then
+  exec "${PWD}/bin/python" "$@"
+else
+  exec python "$@"
+fi
