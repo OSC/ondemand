@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.0.8 (2016-08-09)
+
 Features:
 
   - added session id tracking in Google Analytics
