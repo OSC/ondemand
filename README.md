@@ -298,3 +298,118 @@ used must follow the below guidelines for it to work with `mod_ood_proxy`.
     ```
 
     Note: Can return error message to `stderr` for debugging purposes.
+
+## Workflow Description
+
+A detailed overview of a typical user request to access a per-user NGINX server
+located behind the Apache reverse proxy is described in the figure below:
+
+![Workflow Description](https://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgQSBHbGltcHNlIGludG8gYSBQVU4gUmVxdWVzdAoKcGFydGljaXBhbnQgQWxpY2UABQ1Qcm94eQoKABQFLT4rAAoFOiBHRVQgaHR0cHM6Ly93ZWJub2RlL3B1bi88YXBwPlxuKnNlbmQgb3BlbmlkYyBzZXNzaW9uIGNvb2tpZSoKCgBPBS0-AEUHdXNlIDxMb2NhdGlvbiAiL3B1biI-IGluIGNvbmZpZwphY3RpdmF0ZQCBBAdkZQACDwBHCCsqaG9vazogY2FsbCBob29rCm5vdGUgb3ZlcgAKBTogbW9kX2F1dGhfAIETBwpob29rLT4AMQZzY3J1YiBhbnkgT0lEQ18gcgCCGgYgaGVhZGVycwB9CgBWBQB7CwBmBQA-DHZhbGlkYXRlAIFqDwAXK3NldACAfwcAdwcgYW5kIFJFTU9URV9VU0VSAGMraW4AgQcJYW55IGV4cGlyZWQgc3RhdGUAgwwHAIE4JQCDJwllbmQAgl4GdG8AggQIc3Ryb3kAgm4GAIJgLmVudgCBaBFDR0kgdmFyaWFibGVzIHNwZWNpZmllZCBpbiBhcGFjaGVcbgCEFAYgdXNlZCBieQCDUwVvb2RfcHJveHlcbihlLmcuLCBPT0QAgicFX01BUF9DTUQpAG15AIETCQCEZA1jaGVjayBwZXItcHJvY2VzcyBjYWNoZSBmb3JcbgCDYQsgbWFwcGluAIV-CwCEbRVvcHQgbm90AD8GZAogAIV-BQCFVQhydW4AgX8RCiAgAIVGDiAgAIVGEAA3DnNldACBHRIAIyNlbmQAgRkFAIFBByBmYWlscwCBGQgAh34Jc3RvcCBmdXJ0aGVyAIc_BXMAhFkIc1xucmV0dXJuIFszMDJdIHJlZGlyZWN0IHRvAINgBU1BUF9GQUlMX1VSSQogAIksBi0tPgCJRwU6ABAkZW5kAIMHE2lmIFVuaXggc29ja2V0IGV4aXN0AIdnIG9wdAAoCGRvZXNuJwAxBwogIGxvb3AgdW50aWwARAcgfHwAhR8FUFVOX01BWF9SRVRSSUVTCiAgAIMmFlBVTl9TVEFHRV9DTUQgdG8gc3RhcnQgUFVOAC4FAIM8EACDOhQgIG9wdCBlcnJvcgBiBQCDUQ9sZWVwIDEgc2Vjb25kABoHAEUSAEMWZQAtBWVuZACDZgkAgjEHc3RpbGwAgX0RAINJMzQwNF0gdy8AgTkGIG1zZwCDWRMAEhIAg0wQAItdCidBY2NlcHQtRW5jb2RpbmcnAIs4O3NldCBjdXN0b20gcmVzcG9ucwCHQwUgWzUwMl0gdG9cbgCFLAliYWNrIHRvIGFwcACLUQV0cnkgYWdhaW4Ai3EvZmlsZQCEAQVlcnZlIHVwID1cbnVuaXg6L3BhdGgvdG8vAIUzBnwoaHR0cHx3cyk6Ly9sb2NhbGhvc3QvLi4uAD00aGFuZGxlciB0bwCOSQUAiVAGAItfXwBtDACPPxUAilAMK1BVTjogZm9yd2FyZACPPAl0byAAgggPAIorBVtubyBtYXRjaGluZyAibACQfQciIACIWgZpdmVdCiAgUFVOLQCQHQgAiG8SYXBwIGluaXQgdXJsAIlDEQCJHhkAJw8AiRIhAFkNZW5kClBVTi0-K0FwcACBWxEKQXBwLT4AFQUAjFAIABIIAJJBCUFwcACSPAxBcHAAMQUtPi0AgjkFWzIwMF0AhUAJAGcFLT4tAIF7BwAODgCBWhYAMg4AkAwULT4tAIsYCABfDg&s=qsd)
+
+```sequence
+title A Glimpse into a PUN Request
+
+participant Alice
+participant Proxy
+
+Alice->+Proxy: GET https://webnode/pun/<app>\n*send openidc session cookie*
+
+Proxy->Proxy: use <Location "/pun"> in config
+activate Proxy
+deactivate Proxy
+
+Proxy->+*hook: call hook
+note over hook: mod_auth_openidc
+hook->hook: scrub any OIDC_ request headers
+activate hook
+deactivate hook
+hook->hook: validate session cookie
+activate hook
+deactivate hook
+hook->hook: set OIDC_ headers and REMOTE_USER
+activate hook
+deactivate hook
+hook->hook: invalidate any expired state cookies
+activate hook
+deactivate hook
+hook-->Proxy: end call to hook
+destroy hook
+
+Proxy->+*hook: call hook
+note over hook: mod_env
+hook->hook: set CGI variables specified in apache\nconfig used by mod_ood_proxy\n(e.g., OOD_USER_MAP_CMD)
+activate hook
+deactivate hook
+hook-->Proxy: end call to hook
+destroy hook
+
+Proxy->+*hook: call hook
+note over hook: mod_ood_proxy
+hook->hook: check per-process cache for\nREMOTE_USER mapping
+activate hook
+deactivate hook
+opt not cached
+  hook->hook: run OOD_USER_MAP_CMD
+  activate hook
+  deactivate hook
+  hook->hook: set per-process cache
+  activate hook
+  deactivate hook
+end
+opt mapping fails
+  hook-->Proxy: stop further calls to hooks\nreturn [302] redirect to OOD_MAP_FAIL_URI
+  Proxy-->Alice: [302] redirect to OOD_MAP_FAIL_URI
+end
+hook->hook: check if Unix socket exists
+activate hook
+deactivate hook
+opt socket doesn't exist
+  loop until exists || OOD_PUN_MAX_RETRIES
+    hook->hook: run OOD_PUN_STAGE_CMD to start PUN
+    activate hook
+    deactivate hook
+    opt error
+      hook->hook: sleep 1 second
+      activate hook
+      deactivate hook
+    end
+  end
+end
+opt socket still doesn't exist
+  hook-->Proxy: stop further calls to hooks\nreturn [404] w/ error msg
+  Proxy-->Alice: [404] w/ error msg
+end
+hook->hook: scrub any 'Accept-Encoding' request headers
+activate hook
+deactivate hook
+hook->hook: set custom response for [502] to\nredirect back to app and try again
+activate hook
+deactivate hook
+hook->hook: set file to serve up =\nunix:/path/to/socket|(http|ws)://localhost/...
+activate hook
+deactivate hook
+hook->hook: set file handler to mod_proxy
+activate hook
+deactivate hook
+hook-->Proxy: end call to hook
+destroy hook
+
+Proxy->+*hook: call file handler
+note over hook: mod_proxy
+hook->+PUN: forward request to /path/to/socket
+opt [no matching "location" directive]
+  PUN-->hook: [302] redirect to app init url
+  hook-->Proxy: return [302] redirect to app init url
+  Proxy-->Alice: [302] redirect to app init url
+end
+PUN->+App: forward request
+App->App: process request
+activate App
+deactivate App
+App-->-PUN: [200] response
+PUN-->-hook: [200] response
+hook-->Proxy: return [200] response
+destroy hook
+
+Proxy-->-Alice: [200] response
+```
