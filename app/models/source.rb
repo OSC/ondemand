@@ -1,17 +1,28 @@
 class Source
   attr_accessor :path, :name
 
+  SYSTEM_PATH = Rails.root.join('templates').to_s
+  MY_PATH = OodAppkit.dataroot.join("templates").to_s
+
   def initialize(name, path)
     @name = name
     @path = path
   end
 
   def self.system
-    Source.new("System Templates", Rails.root.join('templates').to_s)
+    Source.new("System Templates", SYSTEM_PATH)
+  end
+
+  def system?
+    @path == SYSTEM_PATH
   end
 
   def self.my
-    Source.new("My Templates", OodAppkit.dataroot.join("templates").to_s)
+    Source.new("My Templates", MY_PATH)
+  end
+
+  def my?
+    @path == MY_PATH
   end
 
   def self.default
