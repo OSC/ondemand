@@ -3,11 +3,6 @@
     <div id="error_explanation">
       <h4><%= pluralize(@template.errors.count, "error") %> prohibited this template from being saved:</h4>
 
-      <ul>
-      <% @template.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
     </div>
   <% end %>
 
