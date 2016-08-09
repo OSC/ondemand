@@ -49,3 +49,6 @@ gem 'pbs', '~> 1.1'
 gem "ood_appkit", '~> 0.2'
 gem "turbolinks"
 gem "jquery-datatables-rails", '~> 3.3.0'
+
+# For pretty-printing memory values
+gem "filesize"
