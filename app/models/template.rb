@@ -10,7 +10,7 @@ class Template
   end
 
   def self.all
-    Source.my.templates.concat(Source.system.templates)
+    Source.my.templates.concat(Source.system.templates).sort
   end
 
   def self.default
@@ -52,5 +52,28 @@ class Template
 
   def script_dir
     path.to_s
+  end
+
+  # Custom sort for templates.
+  #   1. Default Template First
+  #   2. My templates, alphabetically
+  #   3. System templates, alphabetically
+  def <=>(o)
+    # Default template goes first (there should only be one)
+    if self.path == Pathname.new(Template.default)
+      return -1
+    elsif o.path == Pathname.new(Template.default)
+      return 1
+    end
+
+    # Sort the remaining templates My > System
+    if self.source.my? && o.source.system?
+      return -1
+    elsif self.source.system? && o.source.my?
+      return 1
+    end
+
+    # Sort templates by name
+    self.name.upcase <=> o.name.upcase
   end
 end
