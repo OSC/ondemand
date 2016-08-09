@@ -44,9 +44,9 @@ class Jobstatusdata
     self.total_cpu = self.ppn[/\d+/].to_i * self.nodect.to_i
     self.queue = pbs_job[:attribs][:queue]
     self.cput = pbs_job[:attribs][:resources_used][:cput].presence || 0
-    mem = pbs_job[:attribs][:resources_used][:mem].presence || 0
+    mem = pbs_job[:attribs][:resources_used][:mem].presence || "0 b"
     self.mem = Filesize.from(mem).pretty
-    vmem = pbs_job[:attribs][:resources_used][:vmem].presence || 0
+    vmem = pbs_job[:attribs][:resources_used][:vmem].presence || "0 b"
     self.vmem = Filesize.from(vmem).pretty
     output_pathname = Pathname.new(self.output_path).dirname
     self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
