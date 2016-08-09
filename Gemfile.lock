@@ -165,7 +165,7 @@ DEPENDENCIES
   bootstrap-sass (= 3.3.5)
   coffee-rails (~> 4.0.0)
   dotenv-rails (~> 2.0)
-  filesize
+  filesize (~> 0.1.1)
   jbuilder (~> 1.2)
   jquery-datatables-rails (~> 3.3.0)
   jquery-rails

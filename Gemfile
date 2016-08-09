@@ -51,4 +51,4 @@ gem "turbolinks"
 gem "jquery-datatables-rails", '~> 3.3.0'
 
 # For pretty-printing memory values
-gem "filesize"
+gem "filesize", '~> 0.1.1'
