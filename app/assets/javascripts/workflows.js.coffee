@@ -29,6 +29,7 @@
         if missing_data_path()
           # If the template folder does not exist we need to disable certain buttons.
           update_open_dir_button()
+          update_terminal_button()
           update_edit_button()
           update_submit_button()
           update_copy_button()
