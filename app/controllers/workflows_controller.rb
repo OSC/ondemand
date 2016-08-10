@@ -41,6 +41,28 @@ class WorkflowsController < ApplicationController
     end
   end
 
+  def create_default
+    default_template = Template.all.find { |t| t.path.to_s == Template.default }
+
+    @workflow = Workflow.new
+    @workflow.name = default_template.name
+    @workflow.staging_template_dir = default_template.path.to_s
+    @workflow.batch_host = default_template.host
+    @workflow.script_name = default_template.manifest.script
+    @workflow.staged_dir = @workflow.stage.to_s
+
+    respond_to do |format|
+      if @workflow.save
+        format.html { redirect_to workflows_url, notice: 'Job was successfully created.' }
+        format.json { render :show, status: :created, location: @workflow }
+      else
+        format.html { render :new }
+        format.json { render json: @workflow.errors, status: :unprocessable_entity }
+      end
+    end
+
+  end
+
   # PATCH/PUT /workflows/1
   # PATCH/PUT /workflows/1.json
   def update
