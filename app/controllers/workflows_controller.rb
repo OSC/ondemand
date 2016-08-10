@@ -44,6 +44,10 @@ class WorkflowsController < ApplicationController
   def create_default
     default_template = Template.all.find { |t| t.path.to_s == Template.default }
 
+    if default_template.nil?
+      redirect_to new_workflow_url and return
+    end
+
     @workflow = Workflow.new
     @workflow.name = default_template.name
     @workflow.staging_template_dir = default_template.path.to_s
