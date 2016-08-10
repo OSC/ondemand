@@ -28,7 +28,11 @@ class WorkflowsController < ApplicationController
   # POST /workflows.json
   def create
     @workflow = Workflow.new(workflow_params)
-    @workflow.staged_dir = @workflow.stage.to_s
+    begin
+      @workflow.staged_dir = @workflow.stage.to_s
+    rescue Exception
+      redirect_to new_workflow_url, alert: "Cannot copy job because of an error copying the folder, check that you have adequate read permissions to the source folder and that the source folder exists." and return
+    end
 
     respond_to do |format|
       if @workflow.save
