@@ -60,7 +60,8 @@ class Workflow < ActiveRecord::Base
       FileUtils.mkdir_p self.staged_dir
 
       # rsync to ignore manifest.yml
-      `rsync -r --exclude='manifest.yml' #{staging_template_dir.to_s}/ #{self.staged_dir}`
+      stdout, stderr, status = Open3.capture3 "rsync -r --exclude='manifest.yml' #{Shellwords.escape(staging_template_dir.to_s)}/ #{Shellwords.escape(self.staged_dir)}"
+      raise IOError unless stderr.empty?
     end
     Pathname.new(self.staged_dir)
   end
@@ -100,6 +101,10 @@ class Workflow < ActiveRecord::Base
   rescue StagingTemplateDirMissing
     new_workflow = Workflow.new
     new_workflow.errors[:base] << "Cannot copy job because job directory is missing"
+    new_workflow
+  rescue IOError
+    new_workflow = Workflow.new
+    new_workflow.errors[:base] << "Cannot copy job because of an error copying the folder"
     new_workflow
   end
 
