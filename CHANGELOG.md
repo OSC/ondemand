@@ -1,5 +1,10 @@
 ## Unreleased
 
+Features:
+
+  - added timestamp (hit scope) dimension in Google Analytics
+  - added user id (user scope) dimension in Google Analytics
+
 ## 0.0.8 (2016-08-09)
 
 Features:

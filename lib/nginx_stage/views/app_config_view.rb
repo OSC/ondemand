@@ -46,15 +46,24 @@ module NginxStage
               return new Date().getTime() + '.' + Math.random().toString(36).substring(5);
             };
 
+            // polyfill for older browsers
+            if (!Date.now) {
+              Date.now = function now() {
+                return new Date().getTime();
+              }
+            }
+
             _gaOodMetrics('create', 'UA-79331310-2', 'auto', {
               'cookieName': '_gaOodMetrics'
             });
             _gaOodMetrics('set', 'anonymizeIP', 'true');
             _gaOodMetrics('set', 'userId', '$http_x_forwarded_user');
-            _gaOodMetrics('set', 'dimension1', '#{app_token}');
-            _gaOodMetrics('set', 'dimension2', '$http_x_forwarded_user');
-            _gaOodMetrics('set', 'dimension3', '$http_x_forwarded_proto://$http_x_forwarded_host');
-            _gaOodMetrics('set', 'dimension4', uniqueId());
+            _gaOodMetrics('set', 'dimension1', '#{app_token}'); // AppName
+            _gaOodMetrics('set', 'dimension2', '$http_x_forwarded_user'); // UserName
+            _gaOodMetrics('set', 'dimension3', '$http_x_forwarded_proto://$http_x_forwarded_host'); // HostName
+            _gaOodMetrics('set', 'dimension4', uniqueId()); // Session ID
+            _gaOodMetrics('set', 'dimension5', Date.now()); // Timestamp
+            _gaOodMetrics('set', 'dimension6', '$http_x_forwarded_user'); // User ID
             _gaOodMetrics('send', 'pageview');
           })();
         </script>
