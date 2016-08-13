@@ -17,16 +17,6 @@ class OodApp
     end
   end
 
-  # is the directory specified an app dir that the user has access to?
-  def self.valid_app_dir?(dir)
-    dir = Pathname.new(dir.to_s)
-
-    dir.directory? &&
-    ! self::PROTECTED_NAMES.include?(dir.basename.to_s) &&
-    dir.extname != ".git" &&
-    dir.executable? && dir.readable?
-  end
-
   # FIXME: should we be making clear which methods of App
   # require accessible? true i.e. rx access to 
   def accessible?
@@ -62,15 +52,6 @@ class OodApp
 
   def path
     @workdir
-  end
-
-  # detect if this is a passenger app i.e. does it have
-  # config.ru + tmp/ + public/
-  def passenger_rack_app?
-    workdir.directory? &&
-    workdir.join("config.ru").file? &&
-    workdir.join("tmp").directory? &&
-    workdir.join("public").directory?
   end
 
   def has_gemfile?
