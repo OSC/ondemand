@@ -1,17 +1,17 @@
 class OodApp
-  attr_reader :workdir
+  attr_reader :workdir, :router
 
   PROTECTED_NAMES = ["shared_apps", "cgi-bin", "tmp"]
 
   # FIXME: still returns nil sometimes yuck
-  def self.at(path: path)
-    app = self.new(workdir: path)
+  def self.at(path: path, router: PathRouter.new)
+    app = self.new(workdir: path, router: router)
     app if app.valid_dir? && (app.accessible? || app.manifest.exist?)
   end
 
-  def self.all_at(path: path)
+  def self.all_at(path: path, router: PathRouter.new)
     Dir.glob("#{path}/**").sort.reduce([]) do |apps, appdir|
-      app = self.at(path: appdir)
+      app = self.at(path: appdir, router: router)
       apps << app unless app.nil?
       apps
     end
@@ -30,24 +30,37 @@ class OodApp
       workdir.extname != ".git")
   end
 
-  def initialize(workdir: nil)
+  def initialize(workdir: nil, router: PathRouter.new)
     # TODO: add gitdir and other properties
     @workdir = Pathname.new(workdir.to_s)
+    @router = router
   end
 
   def name
     @workdir.basename
   end
 
-  # FIXME: this is a little bit crossing concerns between
-  # the router and the app...
-  # let the app owner be the owner of the directory
+  # router based methods
+  # #######################################################
+
   def owner
-    Etc.getpwuid(workdir.stat.uid).name
+    if router.respond_to?(:owner)
+      router.owner
+    else
+      # let the app owner be the owner of the directory
+      Etc.getpwuid(workdir.stat.uid).name
+    end
   end
 
+  def url
+    router.url_for(name)
+  end
+
+  # end router based methods
+  # #######################################################
+
   def title
-    name # TODO: name.titleize
+    name.titlelize
   end
 
   def path
