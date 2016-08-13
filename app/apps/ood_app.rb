@@ -42,16 +42,11 @@ class OodApp
   # #######################################################
 
   def owner
-    if router.respond_to?(:owner)
-      router.owner
-    else
-      # let the app owner be the owner of the directory
-      Etc.getpwuid(path.stat.uid).name
-    end
+    router.owner
   end
 
   def url
-    router.url_for(name)
+    router.url
   end
 
   # end router based methods
