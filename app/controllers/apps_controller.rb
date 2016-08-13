@@ -1,4 +1,4 @@
-class AppController < ApplicationController
+class AppsController < ApplicationController
 
   def show
     owner = params[:owner]
