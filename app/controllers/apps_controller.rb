@@ -1,4 +1,25 @@
+require 'ostruct'
+
 class AppsController < ApplicationController
+
+  def index
+    @owner = params[:owner] || "all"
+    @apps = []
+
+    # once these work, we can decide what to do
+    # as far as mixing and matching lists of apps
+    if @owner == "dev"
+      # set apps here
+      # fact: we have owner and name
+      # so we can use the template for this
+      # does the app have owner in it?
+      # @apps << OpenStruct.new(name: "weld_predictor")
+    elsif @owner == "usr"
+    elsif @owner == "sys"
+    else
+      # user apps
+    end
+  end
 
   def show
     owner = params[:owner]

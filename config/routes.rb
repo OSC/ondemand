@@ -5,6 +5,8 @@ Dashboard::Application.routes.draw do
   root "dashboard#index"
 
   get "apps/:owner/:app_name" => "apps#show", as: "app"
+  get "apps/:owner" => "apps#index", as: "apps"
+  get "apps" => "apps#index"
 
   match "/404", :to => "errors#not_found", :via => :all
   match "/500", :to => "errors#internal_server_error", :via => :all
