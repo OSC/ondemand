@@ -1,43 +1,41 @@
 class OodApp
-  attr_reader :workdir, :router
+  attr_reader :router
 
   PROTECTED_NAMES = ["shared_apps", "cgi-bin", "tmp"]
 
   # FIXME: still returns nil sometimes yuck
-  def self.at(path: path, router: PathRouter.new)
-    app = self.new(workdir: path, router: router)
-    app if app.valid_dir? && (app.accessible? || app.manifest.exist?)
-  end
+  # def self.at(path: path, router: PathRouter.new)
+  #   app = self.new(path: path, router: router)
+  #   app if app.valid_dir? && (app.accessible? || app.manifest.exist?)
+  # end
 
-  def self.all_at(path: path, router: PathRouter.new)
-    Dir.glob("#{path}/**").sort.reduce([]) do |apps, appdir|
-      app = self.at(path: appdir, router: router)
-      apps << app unless app.nil?
-      apps
-    end
-  end
+  # def self.all_at(path: path, router: PathRouter.new)
+  #   Dir.glob("#{path}/**").sort.reduce([]) do |apps, appdir|
+  #     app = self.at(path: appdir, router: router)
+  #     apps << app unless app.nil?
+  #     apps
+  #   end
+  # end
 
   # FIXME: should we be making clear which methods of App
   # require accessible? true i.e. rx access to 
   def accessible?
-    workdir.executable? && workdir.readable?
+    path.executable? && path.readable?
   end
   alias_method :rx?, :accessible?
 
   def valid_dir?
-    (workdir.directory? &&
-      ! self.class::PROTECTED_NAMES.include?(workdir.basename.to_s) &&
-      workdir.extname != ".git")
+    (path.directory? &&
+      ! self.class::PROTECTED_NAMES.include?(path.basename.to_s) &&
+      path.extname != ".git")
   end
 
-  def initialize(workdir: nil, router: PathRouter.new)
-    # TODO: add gitdir and other properties
-    @workdir = Pathname.new(workdir.to_s)
+  def initialize(router)
     @router = router
   end
 
   def name
-    @workdir.basename
+    path.basename
   end
 
   # router based methods
@@ -48,7 +46,7 @@ class OodApp
       router.owner
     else
       # let the app owner be the owner of the directory
-      Etc.getpwuid(workdir.stat.uid).name
+      Etc.getpwuid(path.stat.uid).name
     end
   end
 
@@ -64,15 +62,15 @@ class OodApp
   end
 
   def path
-    @workdir
+    router.path
   end
 
   def has_gemfile?
-    workdir.join("Gemfile").file? && workdir.join("Gemfile.lock").file?
+    path.join("Gemfile").file? && path.join("Gemfile.lock").file?
   end
 
   def bundler_helper
-    @bundler_helper ||= BundlerHelper.new(workdir)
+    @bundler_helper ||= BundlerHelper.new(path)
   end
 
   def manifest
@@ -86,11 +84,11 @@ class OodApp
   def run_setup_production
     Bundler.with_clean_env do
       setup = "./bin/setup-production"
-      Dir.chdir(workdir) do
+      Dir.chdir(path) do
         if File.exist?(setup) && File.executable?(setup)
           output = `bundle exec #{setup} 2>&1`
           unless $?.success?
-            msg = "Per user setup failed for script at #{workdir}/#{setup} "
+            msg = "Per user setup failed for script at #{path}/#{setup} "
             msg += "for user #{Etc.getpwuid.name} with output: #{output}"
             raise SetupScriptFailed, msg
           end
@@ -102,8 +100,8 @@ class OodApp
   private
 
   def load_manifest
-    default = workdir.join("manifest.yml")
-    alt = workdir.dirname.join("#{workdir.basename}.yml")
+    default = path.join("manifest.yml")
+    alt = path.dirname.join("#{path.basename}.yml")
     alt.exist? ? Manifest.load(alt) : Manifest.load(default)
   end
 end
