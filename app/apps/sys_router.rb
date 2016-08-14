@@ -1,26 +1,37 @@
 class SysRouter
-  # returns list of apps with this router injected into it
-  def self.apps
-    # TODO:
-  end
+  attr_reader :name
+
+  #TODO: consider making SysRouter a subclass of
+  # OodAppkit::Url
 
   # TODO: consider memoizing this for the duration of the request
   # one way would be to instantiate a new SysRouter and then use that same
   # instance
-  def self.app_exists?(appname)
-    Pathname.new(SysRouter.new.path_for(app: appname)).directory?
+  def self.app_exists?(name)
+    OodApp.new(SysRouter.new(name)).valid_dir?
+  end
+
+  def initialize(name)
+    @name = name
   end
 
   def base_path
-    "/var/www/ood/apps/sys"
+    Pathname.new "/var/www/ood/apps/sys"
   end
 
-  def url_for(app: app_name)
-    "/pun/sys/#{app}"
+  def type
+    :sys
   end
 
-  #FIXME: is this method required?
-  def path_for(app: app_name)
-    "#{base_path}/#{app}"
+  def owner
+    :sys
+  end
+
+  def url
+    "/pun/sys/#{name}"
+  end
+
+  def path
+    @path ||= base_path.join(name)
   end
 end

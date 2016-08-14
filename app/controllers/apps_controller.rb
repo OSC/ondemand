@@ -38,14 +38,35 @@ class AppsController < ApplicationController
 
   private
 
+  # keyword args?
+  def router_for_type(type, owner, app_name, path)
+    if owner.to_sym == :sys
+      ::SysRouter.new(app_name)
+    elsif owner.to_sym == :usr
+      ::UsrRouter.new(app_name, owner)
+    elsif owner.to_sym == :dev
+      # FIXME: right now just return my dev apps router
+      ::DevRouter.new(app_name)
+    else
+      #FIXME: app type doesn't exit
+      raise ActionController::RoutingError.new('Not Found')
+    end
+  end
+
+  def router_for_owner(owner, app_name, path)
+    # TODO
+  end
+
+
   # initialize app and return the app_url to access
   def initialize_app_access(owner, app_name, path)
-    router = ::UsrRouter.for(owner)
-
-    app = ::OodApp.at(path: router.path_for(app: app_name))
+    # FIXME: change to pass in type
+    type = owner.to_sym == :sys ? :sys : :usr
+    router = router_for_type(type, owner, app_name, path)
+    app = ::OodApp.new(router)
 
     # app doesn't exist or you do not have access:
-    raise ActionController::RoutingError.new('Not Found') unless app
+    raise ActionController::RoutingError.new('Not Found') unless app.accessible?
 
 
     # run idempotent setup script to setup data for user and handle any errors
@@ -54,8 +75,12 @@ class AppsController < ApplicationController
 
   # get app_url for path to app
   def app_url(owner, app_name, path)
-    router = ::UsrRouter.for(owner)
-    app_url = router.url_for(app: app_name)
+    type = owner.to_sym == :sys ? :sys : :usr
+    router = router_for_type(type, owner, app_name, path)
+    app = ::OodApp.new(router)
+
+
+    app_url = app.url
 
     # if a path in the app is provided, append this to the URL
     if path
