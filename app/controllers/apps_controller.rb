@@ -23,13 +23,25 @@ class AppsController < ApplicationController
   end
 
   def show
-    type = params[:type]
-    owner = params[:owner]
-    app_name = params[:name]
-    path = params[:path]
+    app = ::OodApp.new(router_for_type(params[:type], params[:owner], params[:name], params[:path]))
 
-    initialize_app_access(type, owner, app_name, path)
-    redirect_to app_url(type, owner, app_name, path)
+    raise ActionController::RoutingError.new('Not Found') unless app.accessible?
+
+    #FIXME: the only thing about this action that feels wrong
+    #is it is a GET and we are doing a setup (changing something) in response to
+    #this request
+    app.run_setup_production
+
+    app_url = app.url
+
+    if params[:path]
+      # if a path in the app is provided, append this to the url
+      app_uri = uri(app_url)
+      app_uri.path = Pathname.new(app_uri.path).join(params[:path]).to_s
+      app_url = app_uri.to_s
+    end
+
+    redirect_to app_url
 
   rescue ::OodApp::SetupScriptFailed => e
     #FIXME: should this be 500 error?
@@ -53,41 +65,5 @@ class AppsController < ApplicationController
       #FIXME: app type doesn't exit
       raise ActionController::RoutingError.new('Not Found')
     end
-  end
-
-  def router_for_owner(owner, app_name, path)
-    # TODO
-  end
-
-
-  # initialize app and return the app_url to access
-  def initialize_app_access(type, owner, app_name, path)
-    router = router_for_type(type, owner, app_name, path)
-    app = ::OodApp.new(router)
-
-    # app doesn't exist or you do not have access:
-    raise ActionController::RoutingError.new('Not Found') unless app.accessible?
-
-
-    # run idempotent setup script to setup data for user and handle any errors
-    app.run_setup_production
-  end
-
-  # get app_url for path to app
-  def app_url(type, owner, app_name, path)
-    router = router_for_type(type, owner, app_name, path)
-    app = ::OodApp.new(router)
-
-
-    app_url = app.url
-
-    # if a path in the app is provided, append this to the URL
-    if path
-      app_uri = URI(app_url)
-      app_uri.path = Pathname.new(app_uri.path).join(path).to_s
-      app_url = app_uri.to_s
-    end
-
-    app_url
   end
 end
