@@ -15,7 +15,11 @@ class Source
   end
 
   def self.default
-    Pathname.new(Rails.root.join('templates').to_s).join("default").to_s
+    Source.new("Default Templates", Rails.root.join('templates').join("default").to_s)
+  end
+
+  def self.default_template
+    Source.default.templates.first
   end
 
   def templates
