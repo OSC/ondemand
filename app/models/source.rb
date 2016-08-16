@@ -21,12 +21,12 @@ class Source
 
   # @return [Source] A source that has been initialized to the default path.
   def self.default
-    Source.new("Default Templates", Rails.root.join('templates').join("default").to_s)
+    Source.new("Default Template", Rails.root.join('templates').join("default").to_s)
   end
 
   # @return [Template] The default template.
   def self.default_template
-    Source.default.templates.first
+    Template.new(Source.default.path, Source.default)
   end
 
   # @return [Array<Template>] The templates available on the path.
