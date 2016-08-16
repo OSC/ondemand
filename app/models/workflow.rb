@@ -26,7 +26,6 @@ class Workflow < ActiveRecord::Base
     workflow.staging_template_dir = template.path
     workflow.batch_host = template.manifest.host
     workflow.script_name = template.manifest.script
-    workflow.staged_dir = workflow.stage.to_s
     workflow
   rescue StagingTemplateDirMissing
     workflow = Workflow.new
