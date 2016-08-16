@@ -1,14 +1,16 @@
 <%= bootstrap_form_for(@template) do |f| %>
   <% if @template.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@template.errors.count, "error") %> prohibited this template from being saved:</h2>
+        
+    <script type="text/javascript">
+      $( document ).ready(function() {
+        $(".has-error input").first().focus();
+      });
+    </script>
 
-      <ul>
-      <% @template.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
+    <div id="error_explanation">
+      <h4><%= pluralize(@template.errors.count, "error") %> prohibited this template from being saved:</h4>
     </div>
+
   <% end %>
 
   <div class="panel panel-default">
