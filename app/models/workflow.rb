@@ -16,6 +16,28 @@ class Workflow < ActiveRecord::Base
   #  "workflows"
   #end
 
+  # @param [Template] template A template to generate a workflow from.
+  # @return [Workflow] Return a new workflow based on the template
+  def self.new_from_template(template)
+    raise NotImplementedError if template.source.nil?
+
+    workflow = Workflow.new
+    workflow.name = template.manifest.name
+    workflow.staging_template_dir = template.path
+    workflow.batch_host = template.manifest.host
+    workflow.script_name = template.manifest.script
+    workflow.staged_dir = workflow.stage.to_s
+    workflow
+  rescue StagingTemplateDirMissing
+    workflow = Workflow.new
+    workflow.errors[:base] << "Cannot copy job because job directory is missing"
+    workflow
+  rescue NotImplementedError
+    workflow = Workflow.new
+    workflow.errors[:base] << "The template has not been initialized"
+    workflow
+  end
+
   # Override of osc_machete_rails
   # places jobs into the 'projects/default' folder
   def staging_target_dir_name

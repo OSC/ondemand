@@ -27,25 +27,6 @@ class Template
     @source = source
   end
 
-  # @return [Workflow] Return a new workflow based on the template
-  def new_workflow
-    workflow = Workflow.new
-    workflow.name = self.manifest.name
-    workflow.staging_template_dir = self.path
-    workflow.batch_host = self.manifest.host
-    workflow.script_name = self.manifest.script
-    workflow.staged_dir = workflow.stage.to_s
-    workflow
-  rescue StagingTemplateDirMissing
-    workflow = Workflow.new
-    workflow.errors[:base] << "Cannot copy job because job directory is missing"
-    workflow
-  rescue NotImplementedError
-    workflow = Workflow.new
-    workflow.errors[:base] << "The template has not been initialized"
-    workflow
-  end
-
   def manifest
     @manifest ||= Manifest.load(path.join("manifest.yml"))
   end
