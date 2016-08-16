@@ -4,12 +4,17 @@ Dashboard::Application.routes.draw do
   get "dashboard/index"
   root "dashboard#index"
 
-  get "apps/:owner/:app_name" => "apps#show", as: "app"
-  get "apps/:owner" => "apps#index", as: "apps"
-  get "apps" => "apps#index"
+  # just make it longer :-P
+  # get "apps/:owner/:app_name" => "apps#show", as: "app"
+  # get "apps/:owner" => "apps#index", as: "apps"
+  # get "apps" => "apps#index"
+
+  get "apps(/index(/:type(/:owner)))" => "apps#index", as: "apps", defaults: { type: :sys }
+  get "apps/show/:name(/:type(/:owner))" => "apps#show", as: "app", defaults: { type: :sys }
 
   match "/404", :to => "errors#not_found", :via => :all
   match "/500", :to => "errors#internal_server_error", :via => :all
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

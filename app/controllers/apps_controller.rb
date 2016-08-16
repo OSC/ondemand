@@ -3,7 +3,8 @@ require 'ostruct'
 class AppsController < ApplicationController
 
   def index
-    @owner = params[:owner] || "all"
+    @type = params[:type]
+    @owner = params[:owner]
     @apps = []
 
     # once these work, we can decide what to do
@@ -22,12 +23,13 @@ class AppsController < ApplicationController
   end
 
   def show
+    type = params[:type]
     owner = params[:owner]
-    app_name = params[:app_name]
+    app_name = params[:name]
     path = params[:path]
 
-    initialize_app_access(owner, app_name, path)
-    redirect_to app_url(owner, app_name, path)
+    initialize_app_access(type, owner, app_name, path)
+    redirect_to app_url(type, owner, app_name, path)
 
   rescue ::OodApp::SetupScriptFailed => e
     #FIXME: should this be 500 error?
@@ -40,11 +42,11 @@ class AppsController < ApplicationController
 
   # keyword args?
   def router_for_type(type, owner, app_name, path)
-    if owner.to_sym == :sys
+    if type.to_sym == :sys
       ::SysRouter.new(app_name)
-    elsif owner.to_sym == :usr
+    elsif type.to_sym == :usr
       ::UsrRouter.new(app_name, owner)
-    elsif owner.to_sym == :dev
+    elsif type.to_sym == :dev
       # FIXME: right now just return my dev apps router
       ::DevRouter.new(app_name)
     else
@@ -59,9 +61,7 @@ class AppsController < ApplicationController
 
 
   # initialize app and return the app_url to access
-  def initialize_app_access(owner, app_name, path)
-    # FIXME: change to pass in type
-    type = owner.to_sym == :sys ? :sys : :usr
+  def initialize_app_access(type, owner, app_name, path)
     router = router_for_type(type, owner, app_name, path)
     app = ::OodApp.new(router)
 
@@ -74,8 +74,7 @@ class AppsController < ApplicationController
   end
 
   # get app_url for path to app
-  def app_url(owner, app_name, path)
-    type = owner.to_sym == :sys ? :sys : :usr
+  def app_url(type, owner, app_name, path)
     router = router_for_type(type, owner, app_name, path)
     app = ::OodApp.new(router)
 
