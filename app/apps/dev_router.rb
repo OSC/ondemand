@@ -7,7 +7,7 @@ class DevRouter
   end
 
   def self.apps(owner: OodSupport::Process.user.name)
-    base_path.children.map { |d|
+    base_path(owner: owner).children.map { |d|
       ::OodApp.new(self.new(d.basename, owner))
     }.select(&:valid_dir?).select(&:accessible?)
   end

@@ -6,6 +6,12 @@ class UsrRouter
     @owner = owner
   end
 
+  def self.apps(owner:)
+    base_path(owner: owner).children.map { |d|
+      ::OodApp.new(self.new(d.basename, owner))
+    }.select(&:valid_dir?).select(&:accessible?)
+  end
+
   def self.base_path(owner:)
     Pathname.new "/var/www/ood/apps/usr/#{owner}/gateway"
   end
