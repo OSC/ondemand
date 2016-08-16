@@ -4,11 +4,6 @@ Dashboard::Application.routes.draw do
   get "dashboard/index"
   root "dashboard#index"
 
-  # just make it longer :-P
-  # get "apps/:owner/:app_name" => "apps#show", as: "app"
-  # get "apps/:owner" => "apps#index", as: "apps"
-  # get "apps" => "apps#index"
-
   get "apps(/index(/:type(/:owner)))" => "apps#index", as: "apps", defaults: { type: :sys }
   get "apps/show/:name(/:type(/:owner))" => "apps#show", as: "app", defaults: { type: :sys }
 
