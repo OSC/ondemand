@@ -6,8 +6,12 @@ class UsrRouter
     @owner = owner
   end
 
-  def base_path
+  def self.base_path(owner:)
     Pathname.new "/var/www/ood/apps/usr/#{owner}/gateway"
+  end
+
+  def base_path
+    self.class.base_path(owner: owner)
   end
 
   def url

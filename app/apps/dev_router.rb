@@ -6,8 +6,12 @@ class DevRouter
     @owner = owner
   end
 
-  def base_path
+  def self.base_path(owner: OodSupport::Process.user.name)
     Pathname.new "#{Dir.home(owner)}/#{ENV['OOD_PORTAL']}/dev"
+  end
+
+  def base_path
+    self.class.base_path(owner: owner)
   end
 
   def type

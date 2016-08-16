@@ -15,7 +15,7 @@ class SysRouter
     @name = name
   end
 
-  def base_path
+  def self.base_path
     Pathname.new "/var/www/ood/apps/sys"
   end
 
@@ -32,6 +32,6 @@ class SysRouter
   end
 
   def path
-    @path ||= base_path.join(name)
+    @path ||= self.class.base_path.join(name)
   end
 end
