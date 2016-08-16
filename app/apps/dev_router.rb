@@ -6,6 +6,12 @@ class DevRouter
     @owner = owner
   end
 
+  def self.apps(owner: OodSupport::Process.user.name)
+    base_path.children.map { |d|
+      ::OodApp.new(self.new(d.basename, owner))
+    }.select(&:valid_dir?).select(&:accessible?)
+  end
+
   def self.base_path(owner: OodSupport::Process.user.name)
     Pathname.new "#{Dir.home(owner)}/#{ENV['OOD_PORTAL']}/dev"
   end

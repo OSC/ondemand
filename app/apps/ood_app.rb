@@ -26,6 +26,8 @@ class OodApp
 
   def valid_dir?
     (path.directory? &&
+
+     #FIXME: is this still necessary?
       ! self.class::PROTECTED_NAMES.include?(path.basename.to_s) &&
       path.extname != ".git")
   end
@@ -35,7 +37,7 @@ class OodApp
   end
 
   def name
-    path.basename
+    path.basename.to_s
   end
 
   # router based methods
