@@ -1,10 +1,6 @@
 class UsrRouter
   attr_reader :name, :owner
 
-  def self.for(owner)
-    owner == "sys" ? ::SysRouter.new : ::UsrRouter.new(owner)
-  end
-
   def initialize(name, owner)
     @name = name
     @owner = owner
