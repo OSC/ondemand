@@ -51,6 +51,18 @@ class OodApp
     router.url
   end
 
+  def type
+    router.type
+  end
+
+  def description
+    manifest.description
+  end
+
+  def documentation
+    manifest.description
+  end
+
   # end router based methods
   # #######################################################
 
