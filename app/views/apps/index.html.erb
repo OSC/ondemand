@@ -1,1 +1,15 @@
 <h2>Showing <%= "#{@type}/#{@owner}" %> Apps</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Provider</th>
+      <th>App</th>
+      <th>Description</th>
+      <th>Documentation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= render partial: "app", collection: @apps %>
+  </tbody>
+</table>

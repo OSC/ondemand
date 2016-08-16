@@ -9,16 +9,14 @@ class AppsController < ApplicationController
 
     # once these work, we can decide what to do
     # as far as mixing and matching lists of apps
-    if @owner == "dev"
-      # set apps here
-      # fact: we have owner and name
-      # so we can use the template for this
-      # does the app have owner in it?
-      # @apps << OpenStruct.new(name: "weld_predictor")
-    elsif @owner == "usr"
-    elsif @owner == "sys"
+    if @type == "dev"
+      @apps += DevRouter.apps
+    elsif @type == "usr"
+      @apps += UsrRouter.apps(owner: @owner)
+    elsif @type == "sys"
+      @apps += SysRouter.apps
     else
-      # user apps
+      raise ActionController::RoutingError.new('Not Found') unless app.accessible?
     end
   end
 
