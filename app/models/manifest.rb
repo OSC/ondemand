@@ -1,7 +1,7 @@
 class Manifest
   attr_accessor :name, :path, :host, :notes, :script
 
-  # path - Pathname object to manifest file
+  # @param [Pathname] path - Pathname object of the location of the manifest file
   def self.load(path)
     if path.file?
       Manifest.new(path, YAML.load_file(path.to_s))
@@ -12,6 +12,13 @@ class Manifest
     InvalidManifest.new(e)
   end
 
+  # Constructor
+  # @param [Pathname] path A Pathname object representing the manifest location
+  # @param [Hash] opts The options associated with the manifest
+  # @option opts [String] "name" The name of the templated workflow
+  # @option opts [String] "host" The name of the compute host that the job has been optimized for
+  # @option opts [String] "notes" Notes associated with the templated workflow
+  # @oprion opts [String] "script" The relative path of the submit script in the templated workflow
   def initialize(path, opts)
     raise InvalidContentError.new unless(opts && opts.is_a?(Hash))
 
