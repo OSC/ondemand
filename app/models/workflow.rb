@@ -62,7 +62,7 @@ class Workflow < ActiveRecord::Base
 
       # rsync to ignore manifest.yml
       stdout, stderr, status = Open3.capture3 "rsync -r --exclude='manifest.yml' #{Shellwords.escape(staging_template_dir.to_s)}/ #{Shellwords.escape(self.staged_dir)}"
-      raise IOError unless stderr.empty?
+      raise IOError if status.exitstatus != 0
     end
     Pathname.new(self.staged_dir)
   end
