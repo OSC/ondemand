@@ -27,4 +27,8 @@ class UsrRouter
   def path
     @path ||= base_path.join(name)
   end
+
+  def type
+    :usr
+  end
 end
