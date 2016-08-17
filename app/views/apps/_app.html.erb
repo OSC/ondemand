@@ -1,8 +1,8 @@
 <tr>
-  <td style="font-weight: bold;">
+  <td class="provider">
   <% if app_counter == 0 %>
     <%= app.provider_title %>
-    <%= "<br><span class=\"text-muted\" style=\"font-weight: normal;\">(#{app.provider_username})</span>".html_safe if app.provider_username %>
+    <%= content_tag :div, "(#{app.provider_username})", class: "text-muted" if app.provider_username %>
   <% end %>
   </td>
   <td><%= link_to app.name, app_path(app.name, app.type, app.owner) %></td>
