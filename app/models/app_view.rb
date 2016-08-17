@@ -11,6 +11,21 @@ class AppView
     @view_context = view_context
   end
 
+  # FIXME:
+  def provider_title
+    type == :sys ? "OSC" : provider.title
+  end
+
+  def provider_username
+    type == :sys ? nil : provider.username
+  end
+
+  #FIXME: in the manifest we have support for provider
+  # but was this ever used? peek at all the shared apps
+  def provider
+    @provider ||= UserWithSharedApps.new(owner)
+  end
+
   def name
     app.manifest.name.empty? ? app.name : app.manifest.name
   end

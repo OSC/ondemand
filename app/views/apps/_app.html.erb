@@ -1,5 +1,10 @@
 <tr>
-  <td><%= app.owner unless app_counter > 0 %></td>
+  <td style="font-weight: bold;">
+  <% if app_counter == 0 %>
+    <%= app.provider_title %>
+    <%= "<br><span class=\"text-muted\" style=\"font-weight: normal;\">(#{app.provider_username})</span>".html_safe if app.provider_username %>
+  <% end %>
+  </td>
   <td><%= link_to app.name, app_path(app.name, app.type, app.owner) %></td>
   <td><%= app.description %></td>
   <td><%= app.documentation %></td>
