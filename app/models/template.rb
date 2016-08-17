@@ -42,6 +42,10 @@ class Template
     true
   end
 
+  def default?
+    self.path == Pathname.new(Template.default)
+  end
+
   # Provide the http path to the file manager
   def file_manager_path
     # Use File.join because URI.join does not respect relative urls
@@ -60,9 +64,9 @@ class Template
   #   3. System templates, alphabetically
   def <=>(o)
     # Default template goes first (there should only be one)
-    if self.path == Pathname.new(Template.default)
+    if self.default?
       return -1
-    elsif o.path == Pathname.new(Template.default)
+    elsif o.default?
       return 1
     end
 
