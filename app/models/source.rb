@@ -19,14 +19,9 @@ class Source
     Source.new("My Templates", OodAppkit.dataroot.join("templates").to_s)
   end
 
-  # @return [Source] A source that has been initialized to the default path.
-  def self.default
-    Source.new("Default Template", Rails.root.join('templates').join("default").to_s)
-  end
-
   # @return [Template] The default template.
   def self.default_template
-    Template.new(Source.default.path, Source.default)
+    Template.new(Rails.root.join('templates').join("default").to_s, Source.system)
   end
 
   # @return [Array<Template>] The templates available on the path.
