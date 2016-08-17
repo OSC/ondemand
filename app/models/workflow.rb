@@ -3,6 +3,7 @@ require 'find'
 class Workflow < ActiveRecord::Base
   has_many :jobs, class_name: "Job", dependent: :destroy
   has_machete_workflow_of :jobs
+  before_create :stage_workflow
 
   # add accessors: [ :attr1, :attr2 ] etc. when you want to add getters and
   # setters to add new attributes stored in the JSON store
@@ -139,4 +140,14 @@ class Workflow < ActiveRecord::Base
     success
 
   end
+
+  private
+
+    def stage_workflow
+      begin
+        self.staged_dir = self.stage.to_s
+      rescue
+        return false
+      end
+    end
 end
