@@ -9,7 +9,7 @@ JobConstructor::Application.routes.draw do
     end
   end
 
-  get "create_default" => "workflows#create_default"
+  post "create_default" => "workflows#create_default"
   root "workflows#index"
 
   # The priority is based upon order of creation: first created -> highest priority.

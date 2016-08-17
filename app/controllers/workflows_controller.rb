@@ -41,7 +41,7 @@ class WorkflowsController < ApplicationController
     end
   end
 
-  # GET /create_default
+  # POST /create_default
   def create_default
     @workflow = Workflow.new_from_template(Template.default)
     @workflow.staged_dir = @workflow.stage.to_s
