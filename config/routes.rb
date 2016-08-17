@@ -4,8 +4,8 @@ Dashboard::Application.routes.draw do
   get "dashboard/index"
   root "dashboard#index"
 
-  get "apps(/index(/:type(/:owner)))" => "apps#index", as: "apps", defaults: { type: :sys }
-  get "apps/show/:name(/:type(/:owner))" => "apps#show", as: "app", defaults: { type: :sys }
+  get "apps(/index(/:type(/:owner)))" => "apps#index", as: "apps", defaults: { type: "sys" }
+  get "apps/show/:name(/:type(/:owner))" => "apps#show", as: "app", defaults: { type: "sys" }
 
   match "/404", :to => "errors#not_found", :via => :all
   match "/500", :to => "errors#internal_server_error", :via => :all
