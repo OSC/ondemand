@@ -18,6 +18,8 @@ class AppsController < ApplicationController
     else
       raise ActionController::RoutingError.new('Not Found') unless app.accessible?
     end
+
+    @apps.map! {|a| AppView.new(a, view_context) }
   end
 
   def show
