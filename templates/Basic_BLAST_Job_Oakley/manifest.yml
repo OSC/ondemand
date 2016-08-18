@@ -1,0 +1,6 @@
+name: Basic BLAST Job - Oakley
+host: oakley
+script: blast.sh
+notes: |
+  A Basic BLAST Job for the OSC Oakley Cluster
+  https://www.osc.edu/supercomputing/software/blast
