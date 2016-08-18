@@ -1,19 +1,21 @@
-#PBS -N star-ccm_test  
-#PBS -l walltime=10:00:00  
-#PBS -l nodes=1:ppn=1  
-#PBS -l software=starccm+1
+#PBS -N starccm_test 
+#PBS -l walltime=3:00:00 
+#PBS -l nodes=2:ppn=12
+#PBS -W x=GRES:starccm+1%starccmpar+24
 #PBS -j oe
 #PBS -S /bin/bash
 
 #   A Basic Star-CCM+ Parallel Job for the OSC Oakley Cluster
 #   https://www.osc.edu/supercomputing/software/star_ccm
 
-cd $TMPDIR  
+cd $PBS_0_WORKDIR
 
-cp $PBS_O_WORKDIR/starccm.sim . 
+cp starccm.sim $TMPDIR
 
-module load starccm  
+cd $TMPDIR
 
-starccm+ -batch starccm.sim >&output.txt  
+module load starccm
 
-cp output.txt $PBS_O_WORKDIR
+starccm+ -np 24 -batch -machinefile $PBS_NODEFILE starccm.sim >&output.txt
+
+cp output.txt $PBS_0_WORKDIR
