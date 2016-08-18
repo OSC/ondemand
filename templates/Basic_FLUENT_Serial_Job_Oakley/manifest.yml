@@ -1,6 +1,6 @@
-name: Basic Fluent Sequential Job - Oakley
+name: Basic Fluent Serial Job - Oakley
 host: oakley
 script: fluent.sh
 notes: |
-  A Basic Fluent Sequential Job for the OSC Oakley Cluster
+  A Basic Fluent Serial Job for the OSC Oakley Cluster
   https://www.osc.edu/supercomputing/software/fluent
