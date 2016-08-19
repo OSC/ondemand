@@ -4,12 +4,12 @@
 
 @update_display = (id) ->
   request_job_data(id)
-  update_copy_button(id)
   update_destroy_button(id)
 
 @request_job_data = (id) ->
   if id?
     show_job_panel()
+    disable_all_buttons()
     $.ajax
       type: 'GET'
       url: Routes.workflow_path(id)
@@ -22,6 +22,7 @@
         update_job_details_panel(data)
         update_open_dir_button(data.fs_root)
         update_edit_button(id)
+        update_copy_button(id)
         update_submit_button(id, data.status.char)
         update_stop_button(id, data.status.char)
         update_template_button(id)
@@ -29,18 +30,24 @@
         if missing_data_path()
           # If the template folder does not exist we need to disable certain buttons.
           update_open_dir_button()
+          update_terminal_button()
           update_edit_button()
           update_submit_button()
           update_copy_button()
   else
-    update_job_details_panel()
-    update_open_dir_button()
-    update_edit_button()
-    update_terminal_button()
-    update_submit_button()
-    update_stop_button()
-    update_template_button()
-    list_folder_contents()
+    disable_all_buttons()
+
+@disable_all_buttons = ->
+  update_job_details_panel()
+  update_open_dir_button()
+  update_edit_button()
+  update_terminal_button()
+  update_submit_button()
+  update_stop_button()
+  update_template_button()
+  update_copy_button()
+  update_destroy_button()
+  list_folder_contents()
 
 @show_job_panel = (show) ->
   if show?
