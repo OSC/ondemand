@@ -14,4 +14,9 @@ class TemplateTest < ActiveSupport::TestCase
     assert_equal( @template_bad.path.to_s, "./test/test_templates/template_two_broken" )
     assert @template_bad.path.exist?
   end
+
+  test "can_create_template" do
+    assert_nothing_raised { Template.new('./test/test_templates/template_one') }
+  end
+
 end
