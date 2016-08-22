@@ -1,20 +1,21 @@
 require 'test_helper'
 
 class TemplatesControllerTest < ActionController::TestCase
-  #setup do
-  #  @template = templates(:one)
-  #end
+  setup do
+    @template = Template.new('../test_templates/template_one')
+    @template_bad = Template.new('../test_templates/template_two_broken')
+  end
 
-  #test "should get index" do
-  #  get :index
-  #  assert_response :success
-  #  assert_not_nil assigns(:templates)
-  #end
+  test "should get index" do
+    get :index
+    assert_response :success
+    assert_not_nil assigns(:templates)
+  end
 
-  #test "should get new" do
-  #  get :new
-  #  assert_response :success
-  #end
+  test "should get new" do
+    get :new
+    assert_response :success
+  end
 
   #test "should create template" do
   #  assert_difference('Template.count') do
