@@ -16,7 +16,6 @@ class WorkflowsControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  # TODO Fix StagingTemplateDirMissing
   test "should create workflow" do
     assert_difference('Workflow.count') do
       post :create, workflow: { batch_host: @workflow.batch_host, name: @workflow.name, staging_template_dir: "/users/appl/bmcmichael/ondemand/dev/osc-jobconstructor/data/projects/default/6" }
@@ -35,7 +34,6 @@ class WorkflowsControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  # TODO Fix undefined method 'osc_job_path'
   test "should update workflow" do
     patch :update, id: @workflow, workflow: { batch_host: @workflow.batch_host, name: @workflow.name }
     assert_redirected_to workflows_path
