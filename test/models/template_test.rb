@@ -19,4 +19,12 @@ class TemplateTest < ActiveSupport::TestCase
     assert_nothing_raised { Template.new('./test/test_templates/template_one') }
   end
 
+  test "valid_manifest" do
+    assert_kind_of( Manifest, @template.manifest )
+  end
+
+  test "malformed_manifest" do
+    assert_kind_of( Manifest, @template_bad.manifest )
+  end
+
 end
