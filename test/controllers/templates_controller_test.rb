@@ -2,8 +2,17 @@ require 'test_helper'
 
 class TemplatesControllerTest < ActionController::TestCase
   setup do
-    @template = Template.new('../test_templates/template_one')
-    @template_bad = Template.new('../test_templates/template_two_broken')
+    @template = Template.new('./test/test_templates/template_one')
+    @template_bad = Template.new('./test/test_templates/template_two_broken')
+  end
+
+  # Verify the templates are loaded properly.
+  test "valid_template" do
+    assert_equal( @template.path.to_s, "./test/test_templates/template_one" )
+    assert @template.path.exist?
+
+    assert_equal( @template_bad.path.to_s, "./test/test_templates/template_two_broken" )
+    assert @template_bad.path.exist?
   end
 
   test "should get index" do
@@ -25,16 +34,6 @@ class TemplatesControllerTest < ActionController::TestCase
   #  assert_redirected_to template_path(assigns(:template))
   #end
 
-  #test "should show template" do
-  #  get :show, id: @template
-  #  assert_response :success
-  #end
-
-  #test "should get edit" do
-  #  get :edit, id: @template
-  #  assert_response :success
-  #end
-
   #test "should update template" do
   #  patch :update, id: @template, template: { name: @template.name, path: @template.path }
   #  assert_redirected_to template_path(assigns(:template))
@@ -45,6 +44,4 @@ class TemplatesControllerTest < ActionController::TestCase
   #    delete :destroy, id: @template
   #  end
 
-  #  assert_redirected_to templates_path
-  #end
 end
