@@ -36,8 +36,8 @@ gem 'redcarpet', '~> 3.2.2'
 
 gem 'pbs', '~> 1.1'
 gem 'osc-machete', '~> 1.1'
-# gem 'ood_appkit', '~> 0.2'
-gem 'ood_appkit', :git => 'git@github.com:OSC/ood_appkit.git'
+gem 'ood_appkit', '~> 0.2'
+# gem 'ood_appkit', :git => 'git@github.com:OSC/ood_appkit.git'
 gem 'browser', '~> 2.1'
 gem 'addressable', '~> 2.4'
 

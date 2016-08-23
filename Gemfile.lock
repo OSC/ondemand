@@ -1,14 +1,3 @@
-GIT
-  remote: git@github.com:OSC/ood_appkit.git
-  revision: e48f1d983896d148c131516320aac596f8725990
-  specs:
-    ood_appkit (0.2.6)
-      addressable (~> 2.4)
-      lograge (~> 0.3)
-      ood_support (~> 0.0)
-      rails (~> 4.0)
-      redcarpet (~> 3.2)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -81,6 +70,12 @@ GEM
     minitest (4.7.5)
     multi_json (1.12.1)
     mustache (1.0.3)
+    ood_appkit (0.2.8)
+      addressable (~> 2.4)
+      lograge (~> 0.3)
+      ood_support (~> 0.0)
+      rails (~> 4.0)
+      redcarpet (~> 3.2)
     ood_support (0.0.1)
     osc-machete (1.1.3)
       mustache
@@ -156,7 +151,7 @@ DEPENDENCIES
   font-awesome-sass (~> 4.4.0)
   jbuilder (~> 1.2)
   jquery-rails
-  ood_appkit!
+  ood_appkit (~> 0.2)
   osc-machete (~> 1.1)
   pbs (~> 1.1)
   rails (= 4.0.0)
