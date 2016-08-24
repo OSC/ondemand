@@ -1,0 +1,4 @@
+name: Parallel job with MPI and OpenMP
+host: oakley
+script: pbs_script.sh
+notes: This example is a hybrid MPI/OpenMP job.
