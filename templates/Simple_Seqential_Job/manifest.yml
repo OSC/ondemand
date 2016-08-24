@@ -1,4 +1,5 @@
 name: Simple Sequential Job
 host: oakley
 script: sequential_job.sh
-notes: A very basic template for a sequential job
+notes: >
+        The following is an example of a single-processor sequential job that uses $TMPDIR as its working area. It assumes that the program mysci has already been built. The script copies its input file from the directory the qsub command was called from into $TMPDIR, runs the code in $TMPDIR, and copies the output files back to the original directory.
