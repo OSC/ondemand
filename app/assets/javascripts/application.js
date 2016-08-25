@@ -87,6 +87,10 @@ $(document).ready(function(){
     }
 
     if (table) {
-        table.$('tr:first').click();
+        if (table.$('#' + selected_id).length > 0) {
+            table.$('#' + selected_id).click();
+        } else {
+            table.$('tr:first').click();
+        }
     };
 });

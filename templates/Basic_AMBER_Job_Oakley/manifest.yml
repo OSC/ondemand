@@ -1,0 +1,6 @@
+name: Basic AMBER Job - Oakley
+host: oakley
+script: basic_amber.sh
+notes: |
+  A Basic Amber Job for the OSC Oakley Cluster
+  https://www.osc.edu/supercomputing/software/amber

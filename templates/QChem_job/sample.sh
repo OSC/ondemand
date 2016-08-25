@@ -9,13 +9,21 @@
 #
 setenv JOBNAME sample
 #
-# replacing 'sample' with the actual name of your input file.
+# replace 'sample' with the actual name of your input file.
 #
-module load qchem
-cd $PBS_O_WORKDIR
-#
-# save input files:
-#qchem -save $NAME.inp $NAME.out $NAME
-# do not save input files:
-qchem $JOBNAME.inp $JOBNAME.out 
 
+module load qchem
+
+# copy the contents to TMPDIR
+cp $PBS_O_WORKDIR/* $TMPDIR
+cd $TMPDIR
+
+# QChem guide at
+#   http://www.q-chem.com/qchem-website/manual/qchem43_manual/sect-running.html
+
+# save input files:
+# qchem -save $JOBNAME.inp $JOBNAME.out $JOBNAME
+# do not save input files:
+qchem $JOBNAME.inp $JOBNAME.out
+
+cp $TMPDIR/* $PBS_O_WORKDIR

@@ -1,0 +1,6 @@
+name: Basic MATLAB Job - Oakley
+host: oakley
+script: pbs_script.sh
+notes: |
+  A Basic MATLAB Job for the OSC Oakley Cluster
+  https://www.osc.edu/supercomputing/software/matlab

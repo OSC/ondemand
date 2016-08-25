@@ -1,0 +1,6 @@
+name: Basic Abaqus Job - Oakley
+host: oakley
+script: basic_abaqus.sh
+notes: |
+  A Basic Abaqus Job for the OSC Oakley Cluster
+  https://www.osc.edu/supercomputing/software/abaqus

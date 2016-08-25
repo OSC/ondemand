@@ -1,7 +1,7 @@
 class Manifest
   attr_accessor :name, :path, :host, :notes, :script
 
-  # @param [Pathname] path - Pathname object of the location of the manifest file
+  # @param [Pathname] path Pathname object pointing to manifest file
   def self.load(path)
     if path.file?
       Manifest.new(path, YAML.load_file(path.to_s))
@@ -12,6 +12,8 @@ class Manifest
     InvalidManifest.new(e)
   end
 
+  class InvalidContentError < ArgumentError; end
+
   # Constructor
   # @param [Pathname] path A Pathname object representing the manifest location
   # @param [Hash] opts The options associated with the manifest
@@ -20,9 +22,9 @@ class Manifest
   # @option opts [String] "notes" Notes associated with the templated workflow
   # @oprion opts [String] "script" The relative path of the submit script in the templated workflow
   def initialize(path, opts)
-    raise InvalidContentError.new unless(opts && opts.is_a?(Hash))
+    raise InvalidContentError.new("Invalid Content in manifest.yml") unless(opts && opts.is_a?(Hash))
 
-    @path = path
+    @path = Pathname.new(path)
 
     @name = opts.fetch("name", default_name)
     @host = opts.fetch("host", default_host)
@@ -37,20 +39,20 @@ class Manifest
 
   # all based on path
   def default_name
-    Pathname.new(path).dirname.basename.to_s
+    path.dirname.basename.to_s
   end
 
   def default_host
-    OODClusters.first[0]
+    OODClusters.first[0].to_s
   end
 
   def default_notes
-    @path
+    @path.to_s
   end
 
   # Grab the first file name ending in .pbs or .sh
   def default_script
-    (Dir.entries(path.dirname).select{ |f| f =~ /\.pbs$/i  }.first || Dir.entries(path.dirname).select{ |f| f =~ /\.sh$/i  }.first) if Pathname.new(path.dirname).directory?
+    (Dir.entries(path.dirname).select{ |f| f =~ /\.pbs$/i  }.first || Dir.entries(path.dirname).select{ |f| f =~ /\.sh$/i  }.first) if path.dirname.directory?
   end
 end
 
@@ -58,7 +60,7 @@ class InvalidManifest < Manifest
   attr_reader :exception
 
   def initialize(exception)
-    super("", {name: "InvalidManifest", notes: exception.message })
+    super("", { "name" => "Invalid Manifest", "notes" => exception})
 
     @exception = exception
   end

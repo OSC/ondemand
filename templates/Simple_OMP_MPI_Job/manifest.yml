@@ -1,0 +1,5 @@
+name: Parallel job with MPI and OpenMP
+host: oakley
+script: pbs_script.sh
+notes: >
+        This example is a hybrid MPI/OpenMP job. It runs one MPI process per node with 12 threads per process. The assumption here is that the code was written to support multilevel parallelism. The executable is named hybridprogram.
