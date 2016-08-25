@@ -48,7 +48,7 @@ class Template
   end
 
   def default?
-    self.path == Pathname.new(Template.default)
+    self.path.to_s == Template.default.path.to_s
   end
 
   # Provide the http path to the file manager
