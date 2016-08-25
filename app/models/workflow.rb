@@ -3,6 +3,7 @@ require 'find'
 class Workflow < ActiveRecord::Base
   has_many :jobs, class_name: "Job", dependent: :destroy
   has_machete_workflow_of :jobs
+  before_create :stage_workflow
 
   # add accessors: [ :attr1, :attr2 ] etc. when you want to add getters and
   # setters to add new attributes stored in the JSON store
@@ -58,7 +59,10 @@ class Workflow < ActiveRecord::Base
 
       self.staged_dir = OSC::Machete::JobDir.new(staging_target_dir).new_jobdir
       FileUtils.mkdir_p self.staged_dir
-      FileUtils.cp_r staging_template_dir.to_s + "/.", self.staged_dir
+
+      # rsync to ignore manifest.yml
+      stdout, stderr, status = Open3.capture3 "rsync -r --exclude='manifest.yml' #{Shellwords.escape(staging_template_dir.to_s)}/ #{Shellwords.escape(self.staged_dir)}"
+      raise IOError if status.exitstatus != 0
     end
     Pathname.new(self.staged_dir)
   end
@@ -93,11 +97,14 @@ class Workflow < ActiveRecord::Base
     new_workflow.staging_template_dir = self.staged_dir
     new_workflow.batch_host = self.batch_host
     new_workflow.script_name = self.script_name
-    new_workflow.staged_dir = new_workflow.stage.to_s
     new_workflow
   rescue StagingTemplateDirMissing
     new_workflow = Workflow.new
     new_workflow.errors[:base] << "Cannot copy job because job directory is missing"
+    new_workflow
+  rescue IOError
+    new_workflow = Workflow.new
+    new_workflow.errors[:base] << "Cannot copy job because of an error copying the folder"
     new_workflow
   end
 
@@ -132,4 +139,15 @@ class Workflow < ActiveRecord::Base
     success
 
   end
+
+  private
+
+    def stage_workflow
+      begin
+        self.staged_dir = self.stage.to_s
+      rescue
+        self.errors[:base] << "Cannot copy job because of an error copying the folder, check that you have adequate read permissions to the source folder and that the source folder exists."
+        return false
+      end
+    end
 end

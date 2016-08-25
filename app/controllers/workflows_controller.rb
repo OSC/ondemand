@@ -30,7 +30,6 @@ class WorkflowsController < ApplicationController
   # POST /workflows.json
   def create
     @workflow = Workflow.new(workflow_params)
-    @workflow.staged_dir = @workflow.stage.to_s
 
     respond_to do |format|
       if @workflow.save
