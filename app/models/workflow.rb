@@ -167,7 +167,7 @@ class Workflow < ActiveRecord::Base
       begin
         self.staged_dir = self.stage.to_s
       rescue
-        self.errors[:base] << "Cannot copy job because of an error copying the folder, check that you have adequate read permissions to the source folder and that the source folder exists."
+        self.errors[:base] << "Cannot stage job because of an error copying the folder, check that you have adequate read permissions to the source folder and that the source folder exists."
         return false
       end
     end
