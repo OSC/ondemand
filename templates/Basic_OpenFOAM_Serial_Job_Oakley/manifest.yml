@@ -1,0 +1,6 @@
+name: Basic OpenFOAM Serial Job - Oakley
+host: oakley
+script: pbs_script.sh
+notes: |
+  A Basic OpenFOAM Serial Job for the OSC Oakley Cluster
+  https://www.osc.edu/supercomputing/software/openfoam

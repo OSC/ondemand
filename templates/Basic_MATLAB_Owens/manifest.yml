@@ -1,0 +1,6 @@
+name: Basic MATLAB Job - Owens
+host: owens
+script: pbs_script.sh
+notes: |
+  A Basic MATLAB Job for the OSC Owens Cluster
+  https://www.osc.edu/supercomputing/software/matlab

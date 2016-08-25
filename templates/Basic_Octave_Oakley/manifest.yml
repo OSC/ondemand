@@ -1,0 +1,6 @@
+name: Basic Octave Job - Oakley
+host: oakley
+script: pbs_script.sh
+notes: |
+  A Basic Octave Job for the OSC Oakley Cluster
+  https://www.osc.edu/supercomputing/software/octave

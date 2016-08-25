@@ -1,0 +1,6 @@
+name: Basic CFX Job - Oakley
+host: oakley
+script: basic_cfx.sh
+notes: |
+  A Basic CFX Job for the OSC Oakley Cluster
+  https://www.osc.edu/supercomputing/software/cfx

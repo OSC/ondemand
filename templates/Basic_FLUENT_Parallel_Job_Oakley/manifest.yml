@@ -1,0 +1,6 @@
+name: Basic Fluent Parallel Job - Oakley
+host: oakley
+script: fluent.sh
+notes: |
+  A Basic Fluent Parallel Job for the OSC Oakley Cluster
+  https://www.osc.edu/supercomputing/software/fluent
