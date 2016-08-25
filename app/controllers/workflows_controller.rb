@@ -46,7 +46,6 @@ class WorkflowsController < ApplicationController
   # POST /create_default
   def create_default
     @workflow = Workflow.new_from_template(Template.default)
-    @workflow.staged_dir = @workflow.stage.to_s
 
     respond_to do |format|
       if @workflow.save
