@@ -3,11 +3,13 @@
 #PBS -l nodes=4:ppn=12
 #PBS -j oe
 
-cp $PBS_O_WORKDIR/* $TMPDIR
-cd $TMPDIR
+cd $PBS_O_WORKDIR
 
 mpicc -O2 mpi-hello.c -o mpi-hello
 
+cp $PBS_O_WORKDIR/* $PFSDIR
+cd $PFSDIR
+
 mpiexec ./mpi-hello
 
-cp $TMPDIR/* $PBS_O_WORKDIR
+cp $PFSDIR/* $PBS_O_WORKDIR
