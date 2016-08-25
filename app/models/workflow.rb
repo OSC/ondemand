@@ -28,14 +28,6 @@ class Workflow < ActiveRecord::Base
     workflow.batch_host = template.manifest.host
     workflow.script_name = template.manifest.script
     workflow
-  rescue StagingTemplateDirMissing
-    workflow = Workflow.new
-    workflow.errors[:base] << "Cannot copy job because job directory is missing"
-    workflow
-  rescue NotImplementedError
-    workflow = Workflow.new
-    workflow.errors[:base] << "The template has not been initialized"
-    workflow
   end
 
   # Override of osc_machete_rails
@@ -118,14 +110,6 @@ class Workflow < ActiveRecord::Base
     new_workflow.staging_template_dir = self.staged_dir
     new_workflow.batch_host = self.batch_host
     new_workflow.script_name = self.script_name
-    new_workflow
-  rescue StagingTemplateDirMissing
-    new_workflow = Workflow.new
-    new_workflow.errors[:base] << "Cannot copy job because job directory is missing"
-    new_workflow
-  rescue IOError
-    new_workflow = Workflow.new
-    new_workflow.errors[:base] << "Cannot copy job because of an error copying the folder"
     new_workflow
   end
 
