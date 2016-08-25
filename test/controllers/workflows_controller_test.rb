@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class WorkflowssControllerTest < ActionController::TestCase
+class WorkflowsControllerTest < ActionController::TestCase
   setup do
     @workflow = workflows(:one)
   end
@@ -18,25 +18,25 @@ class WorkflowssControllerTest < ActionController::TestCase
 
   test "should create workflow" do
     assert_difference('Workflow.count') do
-      post :create, workflow: { batch_host: @oworkflow.batch_host, name: @workflow.name }
+      post :create, workflow: { batch_host: @workflow.batch_host, name: @workflow.name, staging_template_dir: "/users/appl/bmcmichael/ondemand/dev/osc-jobconstructor/data/projects/default/6" }
     end
 
-    assert_redirected_to osc_job_path(assigns(:workflow))
+    assert_redirected_to workflows_path
   end
 
   test "should show workflow" do
-    get :show, id: @oworkflow
+    get :show, id: @workflow
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, id: @oworkflow
+    get :edit, id: @workflow
     assert_response :success
   end
 
   test "should update workflow" do
     patch :update, id: @workflow, workflow: { batch_host: @workflow.batch_host, name: @workflow.name }
-    assert_redirected_to osc_job_path(assigns(:workflow))
+    assert_redirected_to workflows_path
   end
 
   test "should destroy workflow" do
