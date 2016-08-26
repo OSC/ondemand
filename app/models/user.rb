@@ -25,11 +25,6 @@ class User < OodSupport::User
     @scratch_user_paths ||= get_scratch_user_paths
   end
 
-  # FIXME: wish this was a Pathname object... alias to go to OodSupport::User
-  def home
-    dir
-  end
-
   private
 
   def projects

@@ -105,7 +105,7 @@ GEM
     nokogiri (1.6.8)
       mini_portile2 (~> 2.1.0)
       pkg-config (~> 1.1.7)
-    ood_support (0.0.1)
+    ood_support (0.0.2)
     pbs (2.0.2)
       ffi (~> 1.9, >= 1.9.6)
     pkg-config (1.1.7)
@@ -175,7 +175,7 @@ DEPENDENCIES
   ood_appkit!
   ood_cluster!
   ood_reservations!
-  ood_support (~> 0.0)
+  ood_support (~> 0.0.2)
   rails (= 4.0.13)
   rails_12factor
   redcarpet (~> 3.2.2)
