@@ -14,6 +14,13 @@ class Manifest
 
   class InvalidContentError < ArgumentError; end
 
+  # Constructor
+  # @param [Pathname] path A Pathname object representing the manifest location
+  # @param [Hash] opts The options associated with the manifest
+  # @option opts [String] "name" The name of the templated workflow
+  # @option opts [String] "host" The name of the compute host that the job has been optimized for
+  # @option opts [String] "notes" Notes associated with the templated workflow
+  # @oprion opts [String] "script" The relative path of the submit script in the templated workflow
   def initialize(path, opts)
     raise InvalidContentError.new("Invalid Content in manifest.yml") unless(opts && opts.is_a?(Hash))
 

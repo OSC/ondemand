@@ -4,11 +4,15 @@ class Source
   SYSTEM_PATH = Rails.root.join('templates').to_s
   MY_PATH = OodAppkit.dataroot.join("templates").to_s
 
+  # Constructor
+  # @param [String] name the human readable name of the source
+  # @param [String] path the path to the source
   def initialize(name, path)
     @name = name
     @path = path
   end
 
+  # @return [Source] A source that has been initialized to the system path.
   def self.system
     Source.new("System Templates", SYSTEM_PATH)
   end
@@ -17,6 +21,7 @@ class Source
     @path == SYSTEM_PATH
   end
 
+  # @return [Source] A source that has been initialized to the user template path.
   def self.my
     Source.new("My Templates", MY_PATH)
   end
@@ -25,10 +30,12 @@ class Source
     @path == MY_PATH
   end
 
-  def self.default
-    Pathname.new(Rails.root.join('templates').to_s).join("default").to_s
+  # @return [Template] The default template.
+  def self.default_template
+    Template.new(Rails.root.join('templates').join("default").to_s, Source.system)
   end
 
+  # @return [Array<Template>] The templates available on the path.
   def templates
     return [] unless Pathname.new(path).directory?
 

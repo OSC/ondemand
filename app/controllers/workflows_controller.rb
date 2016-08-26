@@ -43,6 +43,22 @@ class WorkflowsController < ApplicationController
     end
   end
 
+  # POST /create_default
+  def create_default
+    @workflow = Workflow.new_from_template(Template.default)
+
+    respond_to do |format|
+      if @workflow.save
+        format.html { redirect_to workflows_url, notice: 'Job was successfully created.' }
+        format.json { render :show, status: :created, location: @workflow }
+      else
+        format.html { render :new }
+        format.json { render json: @workflow.errors, status: :unprocessable_entity }
+      end
+    end
+
+  end
+
   # PATCH/PUT /workflows/1
   # PATCH/PUT /workflows/1.json
   def update

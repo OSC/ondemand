@@ -17,6 +17,19 @@ class Workflow < ActiveRecord::Base
   #  "workflows"
   #end
 
+  # @param [Template] template A template to generate a workflow from.
+  # @return [Workflow] Return a new workflow based on the template
+  def self.new_from_template(template)
+    raise NotImplementedError if template.source.nil?
+
+    workflow = Workflow.new
+    workflow.name = template.manifest.name
+    workflow.staging_template_dir = template.path
+    workflow.batch_host = template.manifest.host
+    workflow.script_name = template.manifest.script
+    workflow
+  end
+
   # Override of osc_machete_rails
   # places jobs into the 'projects/default' folder
   def staging_target_dir_name
@@ -98,14 +111,6 @@ class Workflow < ActiveRecord::Base
     new_workflow.batch_host = self.batch_host
     new_workflow.script_name = self.script_name
     new_workflow
-  rescue StagingTemplateDirMissing
-    new_workflow = Workflow.new
-    new_workflow.errors[:base] << "Cannot copy job because job directory is missing"
-    new_workflow
-  rescue IOError
-    new_workflow = Workflow.new
-    new_workflow.errors[:base] << "Cannot copy job because of an error copying the folder"
-    new_workflow
   end
 
   # FIXME: replace with fix to osc-machete to not delete staged dir on failed submit
@@ -146,7 +151,7 @@ class Workflow < ActiveRecord::Base
       begin
         self.staged_dir = self.stage.to_s
       rescue
-        self.errors[:base] << "Cannot copy job because of an error copying the folder, check that you have adequate read permissions to the source folder and that the source folder exists."
+        self.errors[:base] << "Cannot stage job because of an error copying the folder, check that you have adequate read permissions to the source folder and that the source folder exists."
         return false
       end
     end

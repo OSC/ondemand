@@ -9,14 +9,19 @@ class Template
     false
   end
 
+  # @return [Array<Template>] Returns an array of available templates.
   def self.all
     Source.my.templates.concat(Source.system.templates).sort
   end
 
+  # @return [Template] Return the default template.
   def self.default
-    Source.default
+    Source.default_template
   end
 
+  # Constructor
+  # @param [String] path The template base path.
+  # @param [optional, Source] source A Source object based on the template's location.
   def initialize(path, source = Source.new("", Pathname.new("")))
     @path = Pathname.new(path)
     @source = source
@@ -43,7 +48,7 @@ class Template
   end
 
   def default?
-    self.path == Pathname.new(Template.default)
+    self.path.to_s == Template.default.path.to_s
   end
 
   # Provide the http path to the file manager

@@ -4,7 +4,7 @@
     <%= f.alert_message "Please fix the errors below." %>
 
     <%= f.text_field :name %>
-    <%= f.select :batch_host, OODClusters.map { |key, val| [ "#{val.title} (#{val.servers[:resource_mgr].host})", key ] }, { selected: @workflow.batch_host, label: "Batch Server:" }, { class: "selectpicker" } %>
+    <%= f.select :batch_host, OODClusters.map { |key, val| [ "#{val.title} (#{val.resource_mgr_server.host})", key ] }, { selected: @workflow.batch_host, label: "Batch Server:" }, { class: "selectpicker" } %>
 
     <div class="form-group">
       <label class="control-label" for="workflow_script_path">Specify job script:</label>

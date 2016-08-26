@@ -48,7 +48,7 @@
 
               <%= f.text_field :name, label: 'Job Name:', required: true, id: 'name-field' %>
 
-              <%= f.select :batch_host, OODClusters.map { |key, val| [ "#{val.title} (#{val.servers[:resource_mgr].host})", key ] }, { label: "Batch Server:" }, { class: "selectpicker", id: "batch-host-select", required: true } %>
+              <%= f.select :batch_host, OODClusters.map { |key, val| [ "#{val.title} (#{val.resource_mgr_server.host})", key ] }, { label: "Batch Server:" }, { class: "selectpicker", id: "batch-host-select", required: true } %>
               <%= f.text_field :script_name, label: 'Script Name:', required: true, id: "script-path-field" %>
 
               <%= f.hidden_field :staging_template_dir, required: true, id: 'staging-template-dir' %>
