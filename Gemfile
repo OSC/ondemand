@@ -34,8 +34,7 @@ gem 'dotenv-rails', '~> 2.0.0', :require => 'dotenv/rails-now'
 gem 'rails_12factor', group: :production
 gem 'redcarpet', '~> 3.2.2'
 
-gem 'pbs', '~> 1.1'
-gem 'osc-machete', '~> 1.1'
+gem 'ood_support', '~> 0.0'
 gem 'ood_appkit', '~> 0.2'
 # gem 'ood_appkit', :git => 'git@github.com:OSC/ood_appkit.git'
 gem 'browser', '~> 2.1'

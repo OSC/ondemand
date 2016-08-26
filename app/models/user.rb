@@ -1,12 +1,8 @@
-#FIXME: temporary till we can include osc-machete gem in this dashboard
-# Class that maintains the name and home identifiers of a User.
-# Helper methods provided use the Etc module underneath.
-#
-class User < OSC::Machete::User
+class User < OodSupport::User
 
   # currently, only wiag user's are developers
   def developer?
-    @developer ||= member_of_group?("wiag")
+    @developer ||= in_group?("wiag")
   end
 
   # FIXME: apps that display should display based on whether the user has access
@@ -14,7 +10,7 @@ class User < OSC::Machete::User
   # any other app, instead of calling out those who have ruby access by
   # explicitly checking if they are in the ruby group.
   def has_ruby_access?
-    @has_ruby_access ||= member_of_group?("ruby")
+    @has_ruby_access ||= in_group?("ruby")
   end
 
   # project space is in /nfs/gpfs/PZS0645 where the directory name is the name
@@ -29,6 +25,11 @@ class User < OSC::Machete::User
   def scratch_user_paths
     # @scratch_user_paths ||= get_scratch_user_paths
     []
+  end
+
+  # FIXME: wish this was a Pathname object... alias to go to OodSupport::User
+  def home
+    dir
   end
 
   private
