@@ -16,15 +16,13 @@ class User < OodSupport::User
   # project space is in /nfs/gpfs/PZS0645 where the directory name is the name
   # of the project; so return paths to directories that the user has rx to
   def project_space_paths
-    # @project_space_paths ||= projects.map { |p| Pathname.new("/fs/project/#{p}") }.select {|p| p.directory? && p.readable? && p.executable? }
-    []
+    @project_space_paths ||= projects.map { |p| Pathname.new("/fs/project/#{p}") }.select {|p| p.directory? && p.readable? && p.executable? }
   end
 
   # return [] or paths to directories recommended by users to create i.e.
   # /fs/scratch/PROJECTNAME or /fs/scratch/username
   def scratch_user_paths
-    # @scratch_user_paths ||= get_scratch_user_paths
-    []
+    @scratch_user_paths ||= get_scratch_user_paths
   end
 
   # FIXME: wish this was a Pathname object... alias to go to OodSupport::User
