@@ -35,8 +35,8 @@ gem 'rails_12factor', group: :production
 gem 'redcarpet', '~> 3.2.2'
 
 gem 'ood_support', '~> 0.0'
-gem 'ood_appkit', '~> 0.2'
-# gem 'ood_appkit', :git => 'git@github.com:OSC/ood_appkit.git'
+# gem 'ood_appkit', '~> 0.2'
+gem 'ood_appkit', :git => 'git@github.com:OSC/ood_appkit.git', :branch => 'global-config'
 gem 'browser', '~> 2.1'
 gem 'addressable', '~> 2.4'
 
@@ -51,3 +51,8 @@ gem 'addressable', '~> 2.4'
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
+
+#FIXME:
+# temporary for now
+gem 'ood_cluster', git: 'https://github.com/OSC/ood_cluster.git'
+gem 'ood_reservations', git: 'https://github.com/OSC/ood_reservations.git'
