@@ -32,6 +32,10 @@ class User < OodSupport::User
 
   private
 
+  def projects
+    groups.map(&:name).grep(/^P./)
+  end
+
   def get_scratch_user_paths
     paths = projects.map { |p| Pathname.new("/fs/scratch/#{p}") }.select {|p| p.directory? && p.readable? && p.executable? }
 
