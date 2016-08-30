@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.0.9 (2016-08-30)
+
 Features:
 
   - added timestamp (hit scope) dimension in Google Analytics

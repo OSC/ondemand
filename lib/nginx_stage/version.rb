@@ -1,4 +1,4 @@
 module NginxStage
   # The current version of NginxStage
-  VERSION = "0.0.8"
+  VERSION = "0.0.9"
 end
