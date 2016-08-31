@@ -6,7 +6,7 @@ standard libraries making installation a breeze.
 ## Requirements
 
 - nginx 1.6 or newer
-- Phusion Passenger 4.0 or newer
+- Phusion Passenger 4.0.55 or newer
 - Ruby 2.2 or newer
 
 #### Optional
