@@ -457,7 +457,7 @@ Examples:
 ### NGINX_CLEAN Command
 
 ```
-$ sudo nginx_stage nginx_list --help
+$ sudo nginx_stage nginx_clean --help
 Usage: nginx_stage nginx_clean [OPTIONS]
 
 Required options:
