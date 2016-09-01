@@ -1,4 +1,13 @@
 module ApplicationHelper
+  def clusters
+    OodAppkit::Clusters.new(OodAppkit.clusters.select(&:valid?).select(&:hpc_cluster?))
+  end
+
+  def login_clusters
+    OodAppkit::Clusters.new(clusters.select(&:login_server?))
+  end
+
+
   def support_url
     ENV['OOD_DASHBOARD_SUPPORT_URL'] || "#"
   end

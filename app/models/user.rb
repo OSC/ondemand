@@ -1,7 +1,3 @@
-#FIXME: temporary till we can include osc-machete gem in this dashboard
-# Class that maintains the name and home identifiers of a User.
-# Helper methods provided use the Etc module underneath.
-#
 class User < OodSupport::User
 
   # currently, only wiag user's are developers
@@ -40,6 +36,10 @@ class User < OodSupport::User
   end
 
   private
+
+  def projects
+    groups.map(&:name).grep(/^P./)
+  end
 
   def get_scratch_user_paths
     paths = projects.map { |p| Pathname.new("/fs/scratch/#{p}") }.select {|p| p.directory? && p.readable? && p.executable? }

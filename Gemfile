@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.0.0'
+gem 'rails', '4.0.13'
 
 
 # Use SCSS for stylesheets
@@ -34,8 +34,8 @@ gem 'dotenv-rails', '~> 2.0.0', :require => 'dotenv/rails-now'
 gem 'rails_12factor', group: :production
 gem 'redcarpet', '~> 3.2.2'
 
-gem 'ood_support', '~> 0.0.1'
-gem 'ood_appkit', '~> 0.2'
+gem 'ood_support', '~> 0.0.2'
+gem 'ood_appkit', '~> 0.3'
 gem 'browser', '~> 2.1'
 gem 'addressable', '~> 2.4'
 
