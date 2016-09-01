@@ -10,8 +10,8 @@ class PagesController < ApplicationController
       render :json => get_jobs
     else
       #Only allow the configured servers to respond
-      if OODClusters.has_key?(params[:host].to_sym)
-        render :json => get_job(params[:pbsid], params[:host])
+      if cluster = OODClusters[params[:host].to_sym]
+        render :json => get_job(params[:pbsid], cluster)
       end
     end
   end
@@ -20,13 +20,18 @@ class PagesController < ApplicationController
 
     # Only delete if the pbsid and host params are present and host is configured in servers.
     # PBS will prevent a user from deleting a job that is not their own and throw an error.
-    if (params[:pbsid] && OODClusters.has_key?(params[:host].to_sym))
+    cluster = OODClusters[params[:host].to_sym]
+    if (params[:pbsid] && cluster)
       job_id = params[:pbsid].to_s.gsub(/_/, '.')
 
       begin
-        c = PBS::Conn.batch params[:host]
-        j = PBS::Job.new(conn: c, id: job_id)
-        j.delete
+        server = cluster.resource_mgr_server
+        b = PBS::Batch.new(
+          host: server.host,
+          lib: server.lib,
+          bin: server.bin
+        )
+        b.delete_job(job_id)
 
         # It takes a couple of seconds for the job to clear out
         # Using the sleep to wait before reload
@@ -43,12 +48,17 @@ class PagesController < ApplicationController
   private
 
   # Get the extended data for a particular job.
-  def get_job(pbsid, host)
+  def get_job(pbsid, cluster)
     begin
-      c = PBS::Conn.batch host
-      q = PBS::Query.new conn: c, type: :job
+      server = cluster.resource_mgr_server
+      b = PBS::Batch.new(
+        host: server.host,
+        lib: server.lib,
+        bin: server.bin
+      )
 
-      Jobstatusdata.new(q.find(id: pbsid).first, host, true)
+      name, attribs = b.get_job(pbsid).first
+      Jobstatusdata.new({name: name, attribs: attribs}, cluster.id, true)
 
     rescue
       "[{\"name\":\"#{pbsid}\",\"error\":\"Job data expired or invalid.\"}]"
@@ -59,19 +69,23 @@ class PagesController < ApplicationController
   def get_jobs
     jobs = Array.new
     OODClusters.each do |key, value|
-      c = PBS::Conn.batch key.to_s
-      q = PBS::Query.new conn: c, type: :job
+      server = value.resource_mgr_server
+      b = PBS::Batch.new(
+        host: server.host,
+        lib: server.lib,
+        bin: server.bin
+      )
 
       # Checks the cookies and gets the appropriate job set.
       if cookies[:jobfilter] == 'all'
         # Get all jobs
-        result = q.find.each
+        result = b.get_jobs
       elsif cookies[:jobfilter] == 'group'
         # Get all group jobs
-        result = q.where.is(PBS::ATTR[:egroup] => get_usergroup).find
+        result = b.get_jobs.select { |id, attr| attr[:egroup] == get_usergroup }
       else
         # Get all user jobs
-        result = q.where.user(get_username).find
+        result = b.get_jobs.select { |id, attr| attr[:Job_Owner] =~ /^#{get_username}@/ }
       end
 
       # Only add the running jobs to the list and assign the host to the object.
@@ -79,9 +93,9 @@ class PagesController < ApplicationController
       # There is also curently a bug in the system where jobs with an empty array
       # (ex. 6407991[].oak-batch.osc.edu) are not stattable, so we do a not-match
       # for those jobs and don't display them.
-      result.each do |job|
-        if job[:attribs][:job_state] != 'C' && job[:name] !~ /\[\]/
-          jobs.push(Jobstatusdata.new(job, key))
+      result.each do |id, attr|
+        if attr[:job_state] != 'C' && id !~ /\[\]/
+          jobs.push(Jobstatusdata.new({name: id, attribs: attr}, key))
         end
       end
     end

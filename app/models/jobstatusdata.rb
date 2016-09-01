@@ -36,17 +36,17 @@ class Jobstatusdata
   # @return [Jobstatusdata] self
   def extended_data(pbs_job)
     self.walltime = pbs_job[:attribs][:Resource_List][:walltime]
-    self.walltime_used = pbs_job[:attribs][:resources_used][:walltime].presence || 0
+    self.walltime_used = pbs_job[:attribs].fetch(:resources_used, {})[:walltime].presence || 0
     self.submit_args = pbs_job[:attribs][:submit_args].presence || "None"
     self.output_path = pbs_job[:attribs][:Output_Path].split(":").second
     self.nodect = pbs_job[:attribs][:Resource_List][:nodect]
     self.ppn = pbs_job[:attribs][:Resource_List][:nodes].split("ppn=").second
     self.total_cpu = self.ppn[/\d+/].to_i * self.nodect.to_i
     self.queue = pbs_job[:attribs][:queue]
-    self.cput = pbs_job[:attribs][:resources_used][:cput].presence || 0
-    mem = pbs_job[:attribs][:resources_used][:mem].presence || "0 b"
+    self.cput = pbs_job[:attribs].fetch(:resources_used, {})[:cput].presence || 0
+    mem = pbs_job[:attribs].fetch(:resources_used, {})[:mem].presence || "0 b"
     self.mem = Filesize.from(mem).pretty
-    vmem = pbs_job[:attribs][:resources_used][:vmem].presence || "0 b"
+    vmem = pbs_job[:attribs].fetch(:resources_used, {})[:vmem].presence || "0 b"
     self.vmem = Filesize.from(vmem).pretty
     output_pathname = Pathname.new(self.output_path).dirname
     self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
