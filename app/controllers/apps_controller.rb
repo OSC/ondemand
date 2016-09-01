@@ -5,16 +5,20 @@ class AppsController < ApplicationController
   def index
     @type = params[:type]
     @owner = params[:owner]
+    @title = nil
     @apps = []
 
     # once these work, we can decide what to do
     # as far as mixing and matching lists of apps
     if @type == "dev"
       @apps += DevRouter.apps
+      @title = "Your Dev"
     elsif @type == "usr"
       @apps += UsrRouter.apps(owner: @owner)
+      @title = @owner
     elsif @type == "sys"
       @apps += SysRouter.apps
+      @title = "OSC's"
     else
       raise ActionController::RoutingError.new('Not Found') unless app.accessible?
     end
