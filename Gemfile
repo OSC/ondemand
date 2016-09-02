@@ -55,4 +55,4 @@ gem "js-routes", "~> 1.2.4"
 gem "rails_12factor", group: :production
 gem 'osc-machete', '~> 2.0.0.pre'
 gem 'osc_machete_rails', '~> 2.0.0.pre'
-gem 'ood_appkit', '~> 0.3'
+gem 'ood_appkit', '~> 0.3.0'
