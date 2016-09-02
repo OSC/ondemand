@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.0.0'
+gem 'rails', '~> 4.0.0'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0.0'
@@ -42,11 +42,10 @@ gem 'therubyracer', platforms: :ruby
 gem 'paperclip', '~> 4.2.2'
 gem 'bootstrap-sass', '3.3.5'
 gem 'autoprefixer-rails'
-gem 'osc-machete', '~> 1.1'
 gem 'dotenv-rails', '~> 2.0', require: 'dotenv/rails-now'
 gem 'rails_12factor', group: :production
-gem 'pbs', '~> 1.1'
-gem "ood_appkit", '~> 0.2'
+gem "ood_appkit", '~> 0.3.0'
+gem 'pbs', '~> 2.0'
 gem "turbolinks"
 gem "jquery-datatables-rails", '~> 3.3.0'
 
