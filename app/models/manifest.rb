@@ -44,6 +44,11 @@ class Manifest
 
   def default_host
     OODClusters.first[0].to_s
+  rescue
+    # If no clusters are configured, OODClusters will be nil and above will throw exception.
+    # TODO throw a proper exception instead here, the user won't be able to create a job if
+    #      the clusters are not configured.
+    ""
   end
 
   def default_notes
