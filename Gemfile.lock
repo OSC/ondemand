@@ -29,7 +29,7 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.4.0)
     arel (5.0.1.20140414130214)
-    autoprefixer-rails (6.4.0.3)
+    autoprefixer-rails (6.4.1)
       execjs
     bootstrap-sass (3.3.5)
       autoprefixer-rails (>= 5.0.0.1)

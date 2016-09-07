@@ -43,7 +43,7 @@ class Manifest
   end
 
   def default_host
-    OODClusters.first[0].to_s
+    OODClusters.first ? OODClusters.first[0].to_s : ""
   end
 
   def default_notes
