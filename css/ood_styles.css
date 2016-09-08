@@ -233,7 +233,7 @@ div.fm {
   flex-basis: auto;
 
 
-  // For children */
+  /* For children */
   display: -webkit-box; /* OLD - iOS 6-, Safari 3.1-6 */
   display: -moz-box; /* OLD - Firefox 19- (buggy but mostly works) */
   display: -ms-flexbox; /* TWEENER - IE 10 */
@@ -265,7 +265,7 @@ div.fm {
 }
 
 .panel {
-  // For children */
+  /* For children */
   display: -webkit-box; /* OLD - iOS 6-, Safari 3.1-6 */
   display: -moz-box; /* OLD - Firefox 19- (buggy but mostly works) */
   display: -ms-flexbox; /* TWEENER - IE 10 */
@@ -329,7 +329,7 @@ body {
 
 
 .jstree-default .jstree-clicked,
-.directory-explorer .home.selected, 
+.directory-explorer .home.selected,
 .directory-explorer .home.selected a,
 .directory-explorer .home.selected a:visited
 {
