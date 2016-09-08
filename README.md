@@ -20,7 +20,7 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
 2. Clone the `OSC/ood-fileexplorer.git` reposititory.
 3. `git checkout` the latest [release tag](https://github.com/OSC/ood-fileexplorer/releases)
 4. Create a `.env` file or rename `.env.ondemand` to `.env` and modify environment variables.
-5. Run `npm install`
+5. Run `scl enable nodejs010 -- npm install`
 6. `mkdir tmp`
 7. `touch tmp/restart.txt`
 8. Copy the project to the production space.
@@ -44,7 +44,7 @@ OOD_SHELL='/pun/sys/shell/ssh/default'
 ```
 
 ```
-$ npm install
+$ scl enable nodejs010 -- npm install
 $ mkdir tmp
 $ touch tmp/restart.txt
 ```
@@ -60,7 +60,7 @@ $ cd /nfs/01/wiag/PZS0645/ood/apps/sys/files
 $ git fetch
 $ git checkout v1.0.5 # checkout lastest tag
 $ rm -rf node_modules
-$ npm install
+$ scl enable nodejs010 -- npm install
 $ touch tmp/restart.txt
 ```
 
