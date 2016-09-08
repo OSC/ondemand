@@ -56,11 +56,11 @@
         shell: "{{ shell }}"
     };
 </script>
+<script src="{{ prefix }}/cloudcmd.js"></script>
+<script>
+    CloudCmd('{{ prefix }}');
+</script>
 
 </body>
 
-<script src="{{ prefix }}/cloudcmd.js"></script>
-<script>
-CloudCmd('{{ prefix }}');
-</script>
 </html>
