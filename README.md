@@ -57,7 +57,7 @@ When updating a deployed instance of the file explorer - you will have already c
 
 ```
 $ cd /nfs/01/wiag/PZS0645/ood/apps/sys/files
-$ git pull # this will pull updated tags etc but not modify current working directory if current directory is a tag
+$ git fetch
 $ git checkout v1.0.5 # checkout lastest tag
 $ rm -rf node_modules
 $ npm install
