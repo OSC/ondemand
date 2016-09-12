@@ -74,6 +74,8 @@ GEM
       sprockets-rails
     json (1.8.3)
     libv8 (3.16.14.15)
+    local_time (1.0.3)
+      coffee-rails
     lograge (0.4.1)
       actionpack (>= 4, < 5.1)
       activesupport (>= 4, < 5.1)
@@ -180,6 +182,7 @@ DEPENDENCIES
   jquery-datatables-rails (~> 3.3.0)
   jquery-rails
   js-routes (~> 1.2.4)
+  local_time (~> 1.0.3)
   ood_appkit (~> 0.3.0)
   osc_machete_rails (~> 1.2.2)
   paperclip (~> 4.2.2)

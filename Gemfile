@@ -48,6 +48,7 @@ gem "autoprefixer-rails"
 gem "bootstrap-sass", "3.3.5"
 gem "bootstrap_form", "~> 2.3.0"
 gem "font-awesome-sass", "~> 4.4.0"
+gem "local_time", "~> 1.0.3"
 gem 'dotenv-rails', '~> 2.0', require: 'dotenv/rails-now'
 gem "paperclip", "~> 4.2.2"
 gem "jquery-datatables-rails", "~> 3.3.0"
@@ -55,3 +56,4 @@ gem "js-routes", "~> 1.2.4"
 gem "rails_12factor", group: :production
 gem 'osc_machete_rails', '~> 1.2.2'
 gem 'ood_appkit', '~> 0.3.0'
+
