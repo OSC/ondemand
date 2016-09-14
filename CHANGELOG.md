@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.0.10 (2016-09-14)
+
 Features:
 
   - removed javascript dependency when setting GA dimensions
