@@ -29,6 +29,7 @@ module NginxStage
     # Starts the NginxStage workflow
     # @return [void]
     def self.start
+      ARGV << "--help" if ARGV.empty?
       command = ARGV.first[0] != '-' ? ARGV.shift : nil
 
       generator = commands.fetch(command) do
