@@ -1,5 +1,9 @@
 ## Unreleased
 
+Bugfixes:
+
+  - small fixes to default yaml configuration file
+
 ## 0.0.10 (2016-09-14)
 
 Features:
