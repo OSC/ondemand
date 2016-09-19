@@ -2,7 +2,8 @@
 
 Bugfixes:
 
-  - small fixes to default yaml configuration file
+  - fixes/simplifications to default yaml configuration file
+  - display help msg by default if CLI called with no arguments
 
 ## 0.0.10 (2016-09-14)
 
