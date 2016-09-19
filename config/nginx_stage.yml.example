@@ -136,8 +136,8 @@
 # A hash detailing the tokens used to identify individual apps
 #
 #app_token:
-#  :dev: '%{env}/%{owner}/%{name}',
-#  :usr: '%{env}/%{owner}/%{name}',
+#  :dev: '%{env}/%{owner}/%{name}'
+#  :usr: '%{env}/%{owner}/%{name}'
 #  :sys: '%{env}/%{name}'
 
 # A hash detailing the Passenger environment to run the app under within the
