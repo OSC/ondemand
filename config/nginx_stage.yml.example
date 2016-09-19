@@ -32,14 +32,13 @@
 #
 #nginx_bin: '/opt/rh/nginx16/root/usr/sbin/nginx'
 
-# White-list of signals that can be sent to the NGINX process, must be
-# expressed as Ruby symbols
+# White-list of signals that can be sent to the NGINX process
 #
 #nginx_signals:
-#  - :stop
-#  - :quit
-#  - :reopen
-#  - :reload
+#  - stop
+#  - quit
+#  - reopen
+#  - reload
 
 # Path to system-installed NGINX 'mime.types' file
 #
