@@ -1,9 +1,9 @@
 #
 # This is an example NginxStage CLI configuration file. It contains the
 # configuration options that can be specified to meet your system requirements.
-# See https://code.osu.edu/open-ondemand/nginx_stage/blob/master/README.md for
-# detailed information about NginxStage. In particular see
-# https://code.osu.edu/open-ondemand/nginx_stage/blob/master/lib/nginx_stage/configuration.rb
+# See https://github.com/OSC/nginx_stage for detailed information about
+# NginxStage. In particular see
+# https://github.com/OSC/nginx_stage/blob/master/lib/nginx_stage/configuration.rb
 # for a detailed list of all possible configuration options and their default
 # settings.
 #
