@@ -142,6 +142,7 @@ module NginxStage
       @pun_app_configs.map do |envmt|
         envmt.each_with_object({}) do |(k, v), h|
           h[k] = v.respond_to?(:%) ? (v % {user: user}) : v
+          h[k] = v.to_sym if k == :env
         end
       end
     end
@@ -365,7 +366,7 @@ module NginxStage
     # @param file [String] path to the yaml configuration file
     # @return [void]
     def read_configuration(file)
-      config_hash = YAML.load_file(file) || {}
+      config_hash = symbolize(YAML.load_file(file)) || {}
       config_hash.each do |k,v|
         if instance_variable_defined? "@#{k}"
           self.send("#{k}=", v)
@@ -374,5 +375,13 @@ module NginxStage
         end
       end
     end
+
+    private
+      # Recursively symbolize keys in hash
+      def symbolize(obj)
+        return obj.each_with_object({}) {|(k, v), h| h[k.to_sym] =  symbolize(v)} if obj.is_a? Hash
+        return obj.each_with_object([]) {|v, a|      a           << symbolize(v)} if obj.is_a? Array
+        return obj
+      end
   end
 end
