@@ -4,6 +4,7 @@ Bugfixes:
 
   - fixes/simplifications to default yaml configuration file
   - display help msg by default if CLI called with no arguments
+  - added back javascript dependency for GA due to caching issues
 
 ## 0.0.10 (2016-09-14)
 
