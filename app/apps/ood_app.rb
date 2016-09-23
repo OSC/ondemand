@@ -25,14 +25,6 @@ class OodApp
     path.basename.to_s
   end
 
-  def description
-    manifest.description
-  end
-
-  def documentation
-    manifest.description
-  end
-
   def title
     name.titlelize
   end
