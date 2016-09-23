@@ -23,14 +23,19 @@ OBJDIR  ||= ENV['OBJDIR']  || 'build'
 OBJFILE ||= ENV['OBJFILE'] || 'ood-portal.conf'
 
 # Server options
-OOD_IP           ||= ENV['OOD_IP']            || ''
-OOD_PORT         ||= ENV['OOD_PORT']          || '443'
-OOD_SSL          ||= (ENV['OOD_SSL']          || 'true').to_bool
-OOD_SSL_REDIRECT ||= (ENV['OOD_SSL_REDIRECT'] || 'true').to_bool
-OOD_SERVER_NAME  ||= ENV['OOD_SERVER_NAME']   || 'www.example.com'
+OOD_IP             ||= ENV['OOD_IP']             || ''
+OOD_PORT           ||= ENV['OOD_PORT']           || '443'
+OOD_SERVER_NAME    ||= ENV['OOD_SERVER_NAME']    || ''
+OOD_LOGS           ||= (ENV['OOD_LOGS']          || 'true').to_bool
+OOD_SSL            ||= (ENV['OOD_SSL']           || 'true').to_bool
+OOD_SSL_REDIRECT   ||= (ENV['OOD_SSL_REDIRECT']  || 'true').to_bool
+OOD_SSL_CERT_FILE  ||= ENV['OOD_SSL_CERT_FILE']  || ''
+OOD_SSL_KEY_FILE   ||= ENV['OOD_SSL_KEY_FILE']   || ''
+OOD_SSL_CHAIN_FILE ||= ENV['OOD_SSL_CHAIN_FILE'] || ''
 
 # System options
 OOD_LUA_ROOT        ||= ENV['OOD_LUA_ROOT']        || '/opt/ood/mod_ood_proxy/lib'
+OOD_LUA_LOG_LEVEL   ||= ENV['OOD_LUA_LOG_LEVEL']   || 'info'
 OOD_PUN_STAGE_CMD   ||= ENV['OOD_PUN_STAGE_CMD']   || 'sudo /opt/ood/nginx_stage/sbin/nginx_stage'
 OOD_PUN_MAX_RETRIES ||= ENV['OOD_PUN_MAX_RETRIES'] || '5'
 OOD_USER_MAP_CMD    ||= ENV['OOD_USER_MAP_CMD']    || '/opt/ood/ood_auth_map/bin/ood_auth_map'

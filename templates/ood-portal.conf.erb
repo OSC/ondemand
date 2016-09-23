@@ -57,10 +57,26 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
   #
   ServerName "<%= OOD_SERVER_NAME %>"
 
-  <%- if OOD_SSL %>
+  <%- if OOD_LOGS -%>
+  # Enable custom server logs
+  #
+  ErrorLog "logs/<%= OOD_SERVER_NAME %>_error.log"
+  CustomLog "logs/<%= OOD_SERVER_NAME %>_access.log" combined
+  <%- end -%>
+
+  <%- if OOD_SSL -%>
   # Enable SSL support
   #
   SSLEngine On
+  <%- unless OOD_SSL_CERT_FILE.empty? -%>
+  SSLCertificateFile "<%= OOD_SSL_CERT_FILE %>"
+  <%- end -%>
+  <%- unless OOD_SSL_KEY_FILE.empty? -%>
+  SSLCertificateKeyFile "<%= OOD_SSL_KEY_FILE %>"
+  <%- end -%>
+  <%- unless OOD_SSL_CHAIN_FILE.empty? -%>
+  SSLCertificateChainFile "<%= OOD_SSL_CHAIN_FILE %>"
+  <%- end -%>
   <%- end -%>
 <%- end -%>
 
@@ -68,7 +84,13 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
   # Location of OOD Lua scripts
   #
   LuaRoot "<%= OOD_LUA_ROOT %>"
-  <%- end %>
+  <%- end -%>
+
+  <%- unless OOD_LUA_LOG_LEVEL.empty? -%>
+  # Log level for OOD Lua scripts
+  #
+  LogLevel lua_module:<%= OOD_LUA_LOG_LEVEL %>
+  <%- end -%>
 
   # Command used to map authenticated user to system user
   #
@@ -81,7 +103,7 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
   <%- unless OOD_MAP_FAIL_URI.empty? -%>
   # Redirect user to this URI if fail to map to system user
   SetEnv OOD_MAP_FAIL_URI "<%= OOD_MAP_FAIL_URI %>"
-  <%- end %>
+  <%- end -%>
 
   <%- unless OOD_PUBLIC_URI.empty? -%>
   # Serve up publicly available assets from local file system:
@@ -95,7 +117,7 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
     AllowOverride None
     Require all granted
   </Directory>
-  <%- end %>
+  <%- end -%>
 
   <%- unless OOD_NODE_URI.empty? -%>
   # Reverse proxy traffic to backend webserver through IP sockets:
@@ -219,4 +241,4 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
 
 <%- if use_virtual_host -%>
 </VirtualHost>
-<%- end %>
+<%- end -%>

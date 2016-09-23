@@ -164,6 +164,14 @@ OOD_IP=''
 #
 OOD_PORT='443'
 
+# ServerName used for the Open OnDemand portal
+#
+OOD_SERVER_NAME='www.example.com'
+
+# Whether we use custom server logs for this server
+#
+OOD_LOGS='true'
+
 # Whether SSL is used
 #
 OOD_SSL='true'
@@ -172,9 +180,21 @@ OOD_SSL='true'
 #
 OOD_SSL_REDIRECT='true'
 
-# ServerName used for the Open OnDemand portal
+# Path to the SSL certificate file for the server
+# Blank: Remove `SSLCertificateFile` directive
 #
-OOD_SERVER_NAME='www.example.com'
+OOD_SSL_CERT_FILE=''
+
+# Path to the SSL private key file for the server
+# Blank: Remove `SSLCertificateKeyFile` directive
+#
+OOD_SSL_KEY_FILE=''
+
+# Path to the SSL all-in-one file which forms the certificate chain of the
+# server certificate
+# Blank: Remove `SSLCertificateChainFile` directive
+#
+OOD_SSL_CHAIN_FILE=''
 ```
 
 #### System Options
@@ -184,6 +204,12 @@ OOD_SERVER_NAME='www.example.com'
 # Blank: Remove `LuaRoot` directive
 #
 OOD_LUA_ROOT='/opt/ood/mod_ood_proxy/lib'
+
+# Log level used for Lua scripts when logging their output
+# NB: https://httpd.apache.org/docs/2.4/mod/core.html#loglevel
+# Blank: Remove `LogLevel` directive
+#
+OOD_LUA_LOG_LEVEL='info'
 
 # Command used to stage PUNs
 #
