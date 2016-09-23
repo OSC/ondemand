@@ -4,22 +4,6 @@ class OodApp
 
   PROTECTED_NAMES = ["shared_apps", "cgi-bin", "tmp"]
 
-  # FIXME: still returns nil sometimes yuck
-  # def self.at(path: path, router: PathRouter.new)
-  #   app = self.new(path: path, router: router)
-  #   app if app.valid_dir? && (app.accessible? || app.manifest.exist?)
-  # end
-
-  # def self.all_at(path: path, router: PathRouter.new)
-  #   Dir.glob("#{path}/**").sort.reduce([]) do |apps, appdir|
-  #     app = self.at(path: appdir, router: router)
-  #     apps << app unless app.nil?
-  #     apps
-  #   end
-  # end
-
-  # FIXME: should we be making clear which methods of App
-  # require accessible? true i.e. rx access to 
   def accessible?
     path.executable? && path.readable?
   end
