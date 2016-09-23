@@ -12,6 +12,6 @@ class AppRouter
   end
 
   def owner
-    @owner ||= Etc.getpwuid(workdir.stat.uid).name
+    @owner ||= Etc.getpwuid(path.stat.uid).name
   end
 end
