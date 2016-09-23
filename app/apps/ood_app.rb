@@ -1,5 +1,6 @@
 class OodApp
   attr_reader :router
+  delegate :owner, :url, :type, :path, to: :router
 
   PROTECTED_NAMES = ["shared_apps", "cgi-bin", "tmp"]
 
@@ -40,21 +41,6 @@ class OodApp
     path.basename.to_s
   end
 
-  # router based methods
-  # #######################################################
-
-  def owner
-    router.owner
-  end
-
-  def url
-    router.url
-  end
-
-  def type
-    router.type
-  end
-
   def description
     manifest.description
   end
@@ -63,15 +49,8 @@ class OodApp
     manifest.description
   end
 
-  # end router based methods
-  # #######################################################
-
   def title
     name.titlelize
-  end
-
-  def path
-    router.path
   end
 
   def has_gemfile?
