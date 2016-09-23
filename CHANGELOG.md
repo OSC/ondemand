@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.0.3 (2016-09-23)
+
 Features:
 
   - added sequence diagram to `README.md`
