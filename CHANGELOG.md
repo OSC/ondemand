@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.0.2 (2016-09-23)
+
 Features:
 
   - added more SSL options
