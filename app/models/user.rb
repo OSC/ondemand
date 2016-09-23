@@ -13,16 +13,6 @@ class User < OodSupport::User
     @has_ruby_access ||= in_group?("ruby")
   end
 
-  # FIXME: belongs on OodSupport::User
-  def home
-    Dir.home(name)
-  end
-
-  # OSC specific
-  def projects
-    groups.map(&:name).grep(/^P./)
-  end
-
   # project space is in /nfs/gpfs/PZS0645 where the directory name is the name
   # of the project; so return paths to directories that the user has rx to
   def project_space_paths
