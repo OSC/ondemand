@@ -61,11 +61,14 @@ if OOD_AUTH_SETUP
   OOD_AUTH_REGISTER_URI  ||= ENV['OOD_AUTH_REGISTER_URI']  || '/register'
 
   OOD_AUTH_TYPE    = 'openid-connect'
+  OOD_AUTH_EXTEND  = ''
   OOD_MAP_FAIL_URI = OOD_AUTH_REGISTER_URI
 else
   OOD_AUTH_TYPE    ||= ENV['OOD_AUTH_TYPE']    || 'Basic'
+  OOD_AUTH_EXTEND  ||= ENV['OOD_AUTH_EXTEND']  || ''
   OOD_MAP_FAIL_URI ||= ENV['OOD_MAP_FAIL_URI'] || ''
 end
+
 
 #
 # Tasks

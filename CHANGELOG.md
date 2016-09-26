@@ -3,6 +3,7 @@
 Features:
 
   - added server aliases option for redirection
+  - added extended authentication options
 
 ## 0.0.3 (2016-09-23)
 

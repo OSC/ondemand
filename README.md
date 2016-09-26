@@ -325,6 +325,11 @@ OOD_AUTH_SETUP='false'
 #
 OOD_AUTH_TYPE='Basic'
 
+# Any extended authentication Apache directives separated by newlines
+# Example: OOD_AUTH_EXTEND='AuthName "private"\nAuthBasicProvider ldap\nAuthLDAPURL ldap://ldap.host/o=ctx'
+# Blank: No extended directives will be added to the config
+OOD_AUTH_EXTEND=''
+
 # Redirect user to this URI if fail to map to system level user
 # Blank: Removes the redirection upon a failed user mapping
 #

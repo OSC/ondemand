@@ -38,6 +38,7 @@
 #   OOD_AUTH_REGISTER_URI='<%= OOD_AUTH_REGISTER_URI %>'
 <%- end -%>
 #   OOD_AUTH_TYPE='<%= OOD_AUTH_TYPE %>'
+#   OOD_AUTH_EXTEND='<%= OOD_AUTH_EXTEND.gsub("\n", '\n') %>'
 #   OOD_MAP_FAIL_URI='<%= OOD_MAP_FAIL_URI %>'
 #
 
@@ -174,6 +175,7 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
   <Location "<%= OOD_NODE_URI %>">
     AuthType "<%= OOD_AUTH_TYPE %>"
     Require valid-user
+    <%- %><%= OOD_AUTH_EXTEND.gsub('\n', "\n").gsub(/^(?=[^$])/, " "*4) %>
 
     SetEnv OOD_NODE_URI "<%= OOD_NODE_URI %>"
     LuaHookFixups node_proxy.lua node_proxy_handler
@@ -192,6 +194,7 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
   <Location "<%= OOD_RNODE_URI %>">
     AuthType "<%= OOD_AUTH_TYPE %>"
     Require valid-user
+    <%- %><%= OOD_AUTH_EXTEND.gsub('\n', "\n").gsub(/^(?=[^$])/, " "*4) %>
 
     SetEnv OOD_IS_RELATIVE "true"
     SetEnv OOD_NODE_URI "<%= OOD_RNODE_URI %>"
@@ -212,6 +215,7 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
   <Location "<%= OOD_PUN_URI %>">
     AuthType "<%= OOD_AUTH_TYPE %>"
     Require valid-user
+    <%- %><%= OOD_AUTH_EXTEND.gsub('\n', "\n").gsub(/^(?=[^$])/, " "*4) %>
 
     SetEnv OOD_PUN_SOCKET_ROOT "<%= OOD_PUN_SOCKET_ROOT %>"
     SetEnv OOD_PUN_MAX_RETRIES "<%= OOD_PUN_MAX_RETRIES %>"
@@ -231,6 +235,7 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
   <Location "<%= OOD_NGINX_URI %>">
     AuthType "<%= OOD_AUTH_TYPE %>"
     Require valid-user
+    <%- %><%= OOD_AUTH_EXTEND.gsub('\n', "\n").gsub(/^(?=[^$])/, " "*4) %>
 
     LuaHookFixups nginx.lua nginx_handler
   </Location>
@@ -254,6 +259,7 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
   <Location "<%= OOD_AUTH_OIDC_URI %>">
     AuthType "<%= OOD_AUTH_TYPE %>"
     Require valid-user
+    <%- %><%= OOD_AUTH_EXTEND.gsub('\n', "\n").gsub(/^(?=[^$])/, " "*4) %>
   </Location>
 
   # Discover URI for OpenID Connect (used for multiple Id Providers):
@@ -279,6 +285,7 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
     AllowOverride None
     AuthType "<%= OOD_AUTH_TYPE %>"
     Require valid-user
+    <%- %><%= OOD_AUTH_EXTEND.gsub('\n', "\n").gsub(/^(?=[^$])/, " "*4) %>
   </Directory>
   <%- end -%>
 
