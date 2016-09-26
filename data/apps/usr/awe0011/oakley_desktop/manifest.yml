@@ -1,0 +1,9 @@
+name: Oakley Desktop
+description: |
+  Provides an interactive HPC Oakley desktop experience.
+
+  Features:
+
+  * an Oakley desktop
+  * dedicated multi-node compute desktop
+  * ability to work on multiple desktops simultaneously
