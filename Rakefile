@@ -1,6 +1,6 @@
 require 'erb'
 
-VERSION = '0.0.3'
+VERSION = '0.0.4'
 
 class String
   # Nice monkey patch that type casts a string to a boolean
