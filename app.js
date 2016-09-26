@@ -15,7 +15,7 @@ var http        = require('http'),
     server,
     socket;
 
-require('dotenv').config();    
+require('dotenv').config();
 
 server = http.createServer(app);
 
@@ -30,7 +30,6 @@ socket = io.listen(server, {
 app.use(function(req, res, next) {
     res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
     res.header('Expires', '-1');
-    res.header('Pragma', 'no-cache');
     next();
 });
 
