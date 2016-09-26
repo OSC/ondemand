@@ -168,6 +168,13 @@ OOD_PORT='443'
 #
 OOD_SERVER_NAME='www.example.com'
 
+# Any aliases for ServerName that you intend to redirect to the Open OnDemand
+# portal
+# NB: Must be a colon delimited list of aliases
+# Example: 'test1.osc.edu:test2.osc.edu:test3.osc.edu'
+# Blank: No alias redirects
+OOD_SERVER_ALIASES=''
+
 # Whether we use custom server logs for this server
 #
 OOD_LOGS='true'

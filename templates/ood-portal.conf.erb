@@ -1,4 +1,5 @@
 <%- use_virtual_host = !OOD_IP.empty? && !OOD_SERVER_NAME.empty? -%>
+<%- aliases = OOD_SERVER_ALIASES.split(":") -%>
 #
 # Open OnDemand Portal
 #
@@ -8,6 +9,7 @@
 #   OOD_IP='<%= OOD_IP %>'
 #   OOD_PORT='<%= OOD_PORT %>'
 #   OOD_SERVER_NAME='<%= OOD_SERVER_NAME %>'
+#   OOD_SERVER_ALIASES='<%= OOD_SERVER_ALIASES %>'
 #   OOD_LOGS='<%= OOD_LOGS %>'
 #   OOD_SSL='<%= OOD_SSL %>'
 #   OOD_SSL_REDIRECT='<%= OOD_SSL_REDIRECT %>'
@@ -41,12 +43,18 @@
 
 <%- if use_virtual_host -%>
 <%- if OOD_SSL && OOD_SSL_REDIRECT -%>
-# Redirect http => https
+# Redirect http://<%= OOD_SERVER_NAME %> => https://<%= "#{OOD_SERVER_NAME}:#{OOD_PORT}" %>
+<%- aliases.each do |a| -%>
+# Redirect http://<%= a %> => https://<%= "#{OOD_SERVER_NAME}:#{OOD_PORT}" %>
+<%- end -%>
 #
 Listen <%= "#{OOD_IP}:80" %>
 <VirtualHost "<%= "#{OOD_IP}:80" %>">
   ServerName "<%= OOD_SERVER_NAME %>"
-  Redirect permanent / https://<%= OOD_SERVER_NAME %><%= ":#{OOD_PORT}" if OOD_PORT != '443' %>/
+  <%- aliases.each do |a| -%>
+  ServerAlias "<%= a %>"
+  <%- end -%>
+  Redirect permanent / https://<%= "#{OOD_SERVER_NAME}:#{OOD_PORT}" %>/
 </VirtualHost>
 <%- end -%>
 
@@ -54,7 +62,37 @@ Listen <%= "#{OOD_IP}:80" %>
 #
 Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
 
-# Generate OOD Portal VirutalHost
+<%- if !aliases.empty? -%>
+<%- aliases.each do |a| -%>
+# Redirect <%= OOD_SSL ? "https" : "http" %>://<%= "#{a}:#{OOD_PORT}" %> => <%= OOD_SSL ? "https" : "http" %>://<%= "#{OOD_SERVER_NAME}:#{OOD_PORT}" %>
+<%- end -%>
+#
+<VirtualHost "<%= "#{OOD_IP}:#{OOD_PORT}" %>">
+  ServerName "<%= aliases.first %>"
+  <%- aliases[1..-1].each do |a| -%>
+  ServerAlias "<%= a %>"
+  <%- end -%>
+  Redirect permanent / <%= OOD_SSL ? "https" : "http"%>://<%= "#{OOD_SERVER_NAME}:#{OOD_PORT}" %>/
+
+  <%- if OOD_SSL -%>
+  # Enable SSL support
+  #
+  SSLEngine On
+  <%- unless OOD_SSL_CERT_FILE.empty? -%>
+  SSLCertificateFile "<%= OOD_SSL_CERT_FILE %>"
+  <%- end -%>
+  <%- unless OOD_SSL_KEY_FILE.empty? -%>
+  SSLCertificateKeyFile "<%= OOD_SSL_KEY_FILE %>"
+  <%- end -%>
+  <%- unless OOD_SSL_CHAIN_FILE.empty? -%>
+  SSLCertificateChainFile "<%= OOD_SSL_CHAIN_FILE %>"
+  <%- end -%>
+  <%- end -%>
+</VirtualHost>
+<%- end -%>
+
+# Generate OOD Portal VirtualHost
+# <%= OOD_SSL ? "https" : "http" %>://<%= "#{OOD_SERVER_NAME}:#{OOD_PORT}" %>
 #
 <VirtualHost "<%= "#{OOD_IP}:#{OOD_PORT}" %>">
 

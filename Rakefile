@@ -26,6 +26,7 @@ OBJFILE ||= ENV['OBJFILE'] || 'ood-portal.conf'
 OOD_IP             ||= ENV['OOD_IP']             || ''
 OOD_PORT           ||= ENV['OOD_PORT']           || '443'
 OOD_SERVER_NAME    ||= ENV['OOD_SERVER_NAME']    || ''
+OOD_SERVER_ALIASES ||= ENV['OOD_SERVER_ALIASES'] || ''
 OOD_LOGS           ||= (ENV['OOD_LOGS']          || 'true').to_bool
 OOD_SSL            ||= (ENV['OOD_SSL']           || 'true').to_bool
 OOD_SSL_REDIRECT   ||= (ENV['OOD_SSL_REDIRECT']  || 'true').to_bool

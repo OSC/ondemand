@@ -1,5 +1,9 @@
 ## Unreleased
 
+Features:
+
+  - added server aliases option for redirection
+
 ## 0.0.3 (2016-09-23)
 
 Bugfixes:
