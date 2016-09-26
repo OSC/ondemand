@@ -37,7 +37,7 @@ class RenderManifestMarkdown < Redcarpet::Render::HTML
       content
     else
       # "<a href=\"#{DashboardRouter.normalize(link)}\" target=\"_top\">#{content}</a>"
-      "<a href=\"#{link}\" target=\"_top\">#{content}</a>"
+      "<a href=\"#{link}\">#{content}</a>"
     end
   end
 

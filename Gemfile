@@ -50,3 +50,5 @@ gem 'addressable', '~> 2.4'
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
+
+gem 'mocha', '~> 1.1.0', group: [:test]
