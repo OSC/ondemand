@@ -15,7 +15,7 @@ var http        = require('http'),
     server,
     socket;
 
-require('dotenv').config();    
+require('dotenv').config();
 
 server = http.createServer(app);
 
@@ -28,9 +28,8 @@ socket = io.listen(server, {
 // Since the caching is being performed in the browser, we set several headers to
 // get the client to respect our intentions.
 app.use(function(req, res, next) {
-    res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+    res.header('Cache-Control', 'private, no-cache, must-revalidate');
     res.header('Expires', '-1');
-    res.header('Pragma', 'no-cache');
     next();
 });
 
