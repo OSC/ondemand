@@ -7,15 +7,18 @@ PREFIX ||= ENV['PREFIX'] || '/opt/ood/ood_auth_map'
 
 task :default => :install
 
-directory PREFIX
-
-file "#{PREFIX}/bin/ood_auth_map" => ['bin/ood_auth_map', PREFIX] do |t|
-  mkdir_p File.dirname(t.name) unless File.directory? File.dirname(t.name)
-  cp t.prerequisites.first, t.name
-end
-
 desc <<-DESC
 Install ood_auth_map into env var PREFIX
 Default: PREFIX=/opt/ood/ood_auth_map
 DESC
-task :install => "#{PREFIX}/bin/ood_auth_map"
+task :install => [:required_files]
+
+# Dynamically generate tasks for copying required files
+FileList['bin/ood_auth_map.mapfile', 'bin/ood_auth_map.regex', 'lib/**/*.rb'].each do |source|
+  target = "#{PREFIX}/#{source}"
+  file target => [source] do
+    mkdir_p File.dirname(target) unless File.directory?(File.dirname(target))
+    cp source, target
+  end
+  task :required_files => target
+end
