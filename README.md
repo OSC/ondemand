@@ -15,19 +15,19 @@ installation process.
 1. Clone/pull this repo onto the local file system
     * first time installation
 
-        ```
-        git clone <repo> /path/to/repo
-        ```
+    ```bash
+    git clone <repo> /path/to/repo
+    ```
     * updating
 
-        ```
-        cd /path/to/repo
-        git pull
-        ```
+    ```bash
+    cd /path/to/repo
+    git pull
+    ```
 
 2. Install a specific version in the default location
 
-    ```
+    ```bash
     cd /path/to/repo
     git checkout tags/vX.Y.Z
     sudo rake install
@@ -39,7 +39,7 @@ installation process.
     of RHEL using Software Collections it is recommended to load the
     environment inside the `sudo` process:
 
-    ```
+    ```bash
     cd /path/to/repo
     git checkout tags/vX.Y.Z
     sudo scl enable rh-ruby22 -- rake install
@@ -47,7 +47,7 @@ installation process.
 
     Examples:
 
-    ```
+    ```bash
     # Install v1.0.0 of ood_auth_map to /opt/ood/ood_auth_map
     git checkout tags/v1.0.0
     sudo rake install
@@ -101,7 +101,7 @@ This script parses a `grid-mapfile` defined in
 http://toolkit.globus.org/toolkit/docs/2.4/gsi/grid-mapfile_v11.html for a
 mapping of the authenticated username to a system-level username.
 
-```bash
+```
 $ /opt/ood/ood_auth_map/bin/ood_auth_map.mapfile --help
 Usage: ood_auth_map.mapfile [options] <authenticated_user>
 
@@ -139,7 +139,7 @@ expression if none is defined just echos back the authenticated username. If
 nothing matches the defined regular expression pattern, a blank string is
 returned indicated no match was found.
 
-```bash
+```
 $ /opt/ood/ood_auth_map/bin/ood_auth_map.regex --help
 Usage: ood_auth_map.regex [options] <authenticated_user>
 
