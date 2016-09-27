@@ -1,5 +1,9 @@
 ## Unreleased
 
+Bugfixes:
+
+  - `ood_auth_map` path changed
+
 ## 0.0.4 (2016-09-26)
 
 Features:

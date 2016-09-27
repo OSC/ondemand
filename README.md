@@ -228,7 +228,7 @@ OOD_PUN_MAX_RETRIES='5'
 
 # Command used to map users to system level users
 #
-OOD_USER_MAP_CMD='/opt/ood/osc-user-map/bin/osc-user-map'
+OOD_USER_MAP_CMD='/opt/ood/ood_auth_map/bin/ood_auth_map.mapfile'
 
 # Path to the root location of PUN socket files
 #
