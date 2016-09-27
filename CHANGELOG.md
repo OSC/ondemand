@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.0.3 (2016-09-27)
+
 Features:
 
   - complete rewrite to make it more generalized
