@@ -10,11 +10,9 @@ class OodApp
   alias_method :rx?, :accessible?
 
   def valid_dir?
-    (path.directory? &&
-
-     #FIXME: is this still necessary?
-      ! self.class::PROTECTED_NAMES.include?(path.basename.to_s) &&
-      path.extname != ".git")
+    path.directory? &&
+    ! self.class::PROTECTED_NAMES.include?(path.basename.to_s) &&
+    ! path.basename.to_s.start_with?(".")
   end
 
   def initialize(router)
