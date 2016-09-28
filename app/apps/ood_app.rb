@@ -26,7 +26,7 @@ class OodApp
   end
 
   def title
-    name.titlelize
+    manifest.name.empty? ? name.titleize : manifest.name
   end
 
   def has_gemfile?
