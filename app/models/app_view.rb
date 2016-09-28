@@ -38,11 +38,6 @@ class AppView
     markdown(app.manifest.description)
   end
 
-  def documentation
-    markdown(app.manifest.documentation)
-  end
-
-
   private
 
   def markdown(text, show_errors: false)
