@@ -2,6 +2,6 @@
   <td>
     <img src="https://placehold.it/100x100">
   </td>
-  <td><%= link_to app.name, app_path(app.name, app.type, app.owner) %></td>
-  <td><%= app.description %></td>
+  <td><%= link_to app.title, app_path(app.name, app.type, app.owner) %></td>
+  <td><%= manifest_markdown(app.manifest.description) %></td>
 </tr>
