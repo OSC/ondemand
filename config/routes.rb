@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   if ENV['OOD_APP_SHARING'].present?
     # TODO:
     # is there a cleaner approach to this? an app should be a resource
-    get "apps(/index(/:type(/:owner)))" => "apps#index", as: "apps", defaults: { type: "sys" }
+    get "apps(/index(/:type(/:owner)))" => "apps#index", as: "apps", defaults: { type: "usr" }
     get "apps/show/:name(/:type(/:owner))" => "apps#show", as: "app", defaults: { type: "sys" }
     get "apps/icon/:name(/:type(/:owner))" => "apps#icon", as: "app_icon", defaults: { type: "sys" }
   end
