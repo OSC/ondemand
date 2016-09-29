@@ -4,10 +4,6 @@ Dashboard::Application.routes.draw do
   get "dashboard/index"
   root "dashboard#index"
 
-  get "apps(/index(/:type(/:owner)))" => "apps#index", as: "apps", defaults: { type: "sys" }
-  get "apps/show/:name(/:type(/:owner))" => "apps#show", as: "app", defaults: { type: "sys" }
-  get "apps/icon/:name(/:type(/:owner))" => "apps#icon", as: "app_icon", defaults: { type: "sys" }
-
   #FIXME: undo when ready to deploy app sharing to production
   unless Rails.env.production?
     # TODO:
