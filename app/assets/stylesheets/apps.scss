@@ -13,11 +13,37 @@
 .apps-section-header {
   font-size: 24px;
 
-  background: rgb(86, 44, 135);
   color: #fff;
   font-weight: 300;
 
   padding-left: 105px;
   padding-top: 5px;
   padding-bottom: 10px;
+
+  // awesim grey
+  background-color: rgb(128, 130, 133);
+
+}
+
+// awesim colors - FIXME: aweful lot for a list of colors to cycle through
+// would be better to gave a default grey and then cycle based on a list in an
+// initializer
+.apps-section-header-blue {
+  @extend .apps-section-header;
+  background-color: rgb(0, 95, 133);
+}
+
+.apps-section-header-red {
+  @extend .apps-section-header;
+  background-color: rgb(196, 32, 50);
+}
+
+.apps-section-header-teal {
+  @extend .apps-section-header;
+  background-color: rgb(28, 115, 127);
+}
+
+.apps-section-header-purple {
+  @extend .apps-section-header;
+  background-color: rgb(86, 44, 135);
 }
