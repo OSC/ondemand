@@ -4,8 +4,8 @@ Rails.application.routes.draw do
   get "dashboard/index"
   root "dashboard#index"
 
-  #FIXME: undo when ready to deploy app sharing to production
-  unless Rails.env.production?
+  #FIXME: undo when ready to deploy app sharing to production, remove?
+  if ENV['OOD_APP_SHARING'].present?
     # TODO:
     # is there a cleaner approach to this? an app should be a resource
     get "apps(/index(/:type(/:owner)))" => "apps#index", as: "apps", defaults: { type: "sys" }
