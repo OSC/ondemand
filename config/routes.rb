@@ -1,4 +1,4 @@
-Dashboard::Application.routes.draw do
+Rails.application.routes.draw do
   get "errors/not_found"
   get "errors/internal_server_error"
   get "dashboard/index"
@@ -15,7 +15,6 @@ Dashboard::Application.routes.draw do
 
   match "/404", :to => "errors#not_found", :via => :all
   match "/500", :to => "errors#internal_server_error", :via => :all
-
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -57,7 +56,7 @@ Dashboard::Application.routes.draw do
   #       get 'recent', on: :collection
   #     end
   #   end
-  
+
   # Example resource route with concerns:
   #   concern :toggleable do
   #     post 'toggle'
