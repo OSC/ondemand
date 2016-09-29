@@ -4,9 +4,18 @@ Dashboard::Application.routes.draw do
   get "dashboard/index"
   root "dashboard#index"
 
-  # TODO:
   get "apps(/index(/:type(/:owner)))" => "apps#index", as: "apps", defaults: { type: "sys" }
   get "apps/show/:name(/:type(/:owner))" => "apps#show", as: "app", defaults: { type: "sys" }
+  get "apps/icon/:name(/:type(/:owner))" => "apps#icon", as: "app_icon", defaults: { type: "sys" }
+
+  #FIXME: undo when ready to deploy app sharing to production
+  unless Rails.env.production?
+    # TODO:
+    # is there a cleaner approach to this? an app should be a resource
+    get "apps(/index(/:type(/:owner)))" => "apps#index", as: "apps", defaults: { type: "sys" }
+    get "apps/show/:name(/:type(/:owner))" => "apps#show", as: "app", defaults: { type: "sys" }
+    get "apps/icon/:name(/:type(/:owner))" => "apps#icon", as: "app_icon", defaults: { type: "sys" }
+  end
 
   match "/404", :to => "errors#not_found", :via => :all
   match "/500", :to => "errors#internal_server_error", :via => :all

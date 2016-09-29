@@ -25,16 +25,16 @@ class AppsController < ApplicationController
   end
 
   def show
-    app = ::OodApp.new(router_for_type(params[:type], params[:owner], params[:name], params[:path]))
+    set_app
 
-    raise ActionController::RoutingError.new('Not Found') unless app.accessible?
+    raise ActionController::RoutingError.new('Not Found') unless @app.accessible?
 
     #FIXME: the only thing about this action that feels wrong
     #is it is a GET and we are doing a setup (changing something) in response to
     #this request
-    app.run_setup_production
+    @app.run_setup_production
 
-    app_url = app.url
+    app_url = @app.url
 
     if params[:path]
       # if a path in the app is provided, append this to the url
@@ -47,12 +47,26 @@ class AppsController < ApplicationController
 
   rescue ::OodApp::SetupScriptFailed => e
     #FIXME: should this be 500 error?
-    @app_url = app_url(owner, app_name, path)
+    #FIXME: how we handle setup script failure (etc.) needs rethough and tested
+    @app_url = @app.url
     @exception = e
     render "setup_failed"
   end
 
+  def icon
+    set_app
+
+    # raise ActionController::RoutingError.new('Not Found') unless @app.icon_path.file?
+    # TODO: if icon file doesn't exist, return default image instead
+
+    send_file @app.icon_path, :type => 'image/png', :disposition => 'inline'
+  end
+
   private
+
+  def set_app
+    @app = ::OodApp.new(router_for_type(params[:type], params[:owner], params[:name], params[:path]))
+  end
 
   # keyword args?
   def router_for_type(type, owner, app_name, path)
