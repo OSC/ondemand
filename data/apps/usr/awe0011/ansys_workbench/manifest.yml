@@ -1,0 +1,13 @@
+name: ANSYS Workbench
+description: |
+  Provides the ANSYS workbench in a multi-node environment.
+
+  Currently it is setup to run:
+
+  * **CFX** - an advanced computational fluid dynamics (CFD) solver that comes
+  with CFX-Pre pre-processing GUI
+  * **Fluent** - another CFD solver incorporated into the ANSYS workbench
+  * **CFD-Post** - a post-processor used to further analyze results from either
+  CFX or Fluent
+documentation: |
+  [Ansys Website](http://www.ansys.com/)

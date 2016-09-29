@@ -9,7 +9,9 @@ class UsrRouter
   def self.apps(owner:)
     base_path(owner: owner).children.map { |d|
       ::OodApp.new(self.new(d.basename, owner))
-    }.select(&:valid_dir?).select(&:accessible?)
+    }.select { |d|
+      d.valid_dir? && d.accessible? && d.manifest.valid?
+    }
   end
 
   def self.base_path(owner:)

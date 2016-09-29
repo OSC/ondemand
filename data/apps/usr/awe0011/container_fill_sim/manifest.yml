@@ -1,0 +1,6 @@
+name: FillSim
+description: |
+  FillSim is an interactive and easy to use web app that models complex fluid
+  dynamics in a user-supplied container.
+documentation: |
+  [Tutorial](/awesim_dev/shared_apps/awe0011/container_fill_sim/docs/Home)

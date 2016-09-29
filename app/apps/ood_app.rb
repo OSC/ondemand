@@ -10,11 +10,9 @@ class OodApp
   alias_method :rx?, :accessible?
 
   def valid_dir?
-    (path.directory? &&
-
-     #FIXME: is this still necessary?
-      ! self.class::PROTECTED_NAMES.include?(path.basename.to_s) &&
-      path.extname != ".git")
+    path.directory? &&
+    ! self.class::PROTECTED_NAMES.include?(path.basename.to_s) &&
+    ! path.basename.to_s.start_with?(".")
   end
 
   def initialize(router)
@@ -26,7 +24,7 @@ class OodApp
   end
 
   def title
-    name.titlelize
+    manifest.name.empty? ? name.titleize : manifest.name
   end
 
   def has_gemfile?
@@ -39,6 +37,13 @@ class OodApp
 
   def manifest
     @manifest ||= load_manifest
+  end
+
+  def icon_path
+    # TODO:
+    # maybe support icon in different formats? optional.
+    # path.children.select { |p| p.basename.to_s =~ /icon\.(png|jpg|svg)/  }.first
+    path.join("icon.png")
   end
 
   class SetupScriptFailed < StandardError; end

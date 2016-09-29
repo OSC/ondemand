@@ -1,12 +1,12 @@
 require 'yaml'
 
 class Manifest
-  attr_reader :name, :provider, :description, :documentation
+  attr_reader :name, :provider, :description
 
   class InvalidContentError < StandardError
     def initialize
       super %q(Manifest is not formatted correctly! 
-Manifest should be in YAML format with markdown for description and documentation:
+Manifest should be in YAML format with markdown for description
 ---
 name: Container Fill Sim
 description: |
@@ -20,8 +20,7 @@ description: |
     * sub2
   * list
 
-documentation: |
-  Links to support docs should go here.
+  Support:
 
   * [Company Website](https://www.osc.edu)
 
@@ -50,7 +49,7 @@ documentation: |
   end
 
   def defaults
-    {"name" => "", "provider" => "", "description" => "", "documentation" => ""}
+    {"name" => "", "provider" => "", "description" => ""}
   end
 
   def initialize(opts)
@@ -62,7 +61,6 @@ documentation: |
     @name = opts.fetch("name")
     @provider = opts.fetch("provider")
     @description = opts.fetch("description")
-    @documentation = opts.fetch("documentation")
   end
 
   def valid?

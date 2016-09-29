@@ -1,11 +1,7 @@
 <tr>
-  <td class="provider">
-  <% if app_counter == 0 %>
-    <%= app.provider_title %>
-    <%= content_tag :div, "(#{app.provider_username})", class: "text-muted" if app.provider_username %>
-  <% end %>
+  <td>
+    <%= image_tag app_icon_path(app.name, app.type, app.owner), size: '50x50' %>
   </td>
-  <td><%= link_to app.name, app_path(app.name, app.type, app.owner) %></td>
-  <td><%= app.description %></td>
-  <td><%= app.documentation %></td>
+  <td><%= link_to app.title, app_path(app.name, app.type, app.owner) %></td>
+  <td><%= manifest_markdown(app.manifest.description) %></td>
 </tr>
