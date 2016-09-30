@@ -23,8 +23,4 @@ class Product
   def id
     app.name
   end
-
-  def type
-    app.type
-  end
 end
