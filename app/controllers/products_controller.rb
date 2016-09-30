@@ -10,30 +10,31 @@ class ProductsController < ApplicationController
   # GET /products/1.json
   def show
     @type = params[:type].to_sym
-    @product = Product.find(@type, params[:id])
+    @product = Product.find(@type, params[:name])
   end
 
   # GET /products/new
   def new
     @type = params[:type].to_sym
-    @product = Product.new
+    @product = Product.new(type: @type)
   end
 
   # GET /products/1/edit
   def edit
     @type = params[:type].to_sym
-    @product = Product.find(@type, params[:id])
+    @product = Product.find(@type, params[:name])
   end
 
   # POST /products
   # POST /products.json
   def create
     @type = params[:type].to_sym
-    @product = Product.new(product_params)
+    @product = Product.new(product_params.merge(type: @type))
+    def @product.persisted?; false; end  # make it seem like a new record, so user can change name of dir
 
     respond_to do |format|
       if @product.save
-        format.html { redirect_to @product, notice: 'Product was successfully created.' }
+        format.html { redirect_to products_url(type: @type), notice: 'Product was successfully created.' }
         format.json { render :show, status: :created, location: @product }
       else
         format.html { render :new }
@@ -46,11 +47,11 @@ class ProductsController < ApplicationController
   # PATCH/PUT /products/1.json
   def update
     @type = params[:type].to_sym
-    @product = Product.find(@type, params[:id])
+    @product = Product.find(@type, params[:name])
 
     respond_to do |format|
       if @product.update(product_params)
-        format.html { redirect_to @product, notice: 'Product was successfully updated.' }
+        format.html { redirect_to products_url(type: @type), notice: 'Product was successfully updated.' }
         format.json { render :show, status: :ok, location: @product }
       else
         format.html { render :edit }
@@ -63,11 +64,11 @@ class ProductsController < ApplicationController
   # DELETE /products/1.json
   def destroy
     @type = params[:type].to_sym
-    @product = Product.find(@type, params[:id])
+    @product = Product.find(@type, params[:name])
 
     @product.destroy
     respond_to do |format|
-      format.html { redirect_to products_url, notice: 'Product was successfully destroyed.' }
+      format.html { redirect_to products_url(type: @type), notice: 'Product was successfully destroyed.' }
       format.json { head :no_content }
     end
   end

@@ -1,5 +1,5 @@
 <h1>New Product</h1>
 
-<%= render 'form' %>
+<%= render 'form', form_url: products_path(type: @type) %>
 
-<%= link_to 'Back', products_path %>
+<%= link_to 'Back', products_path(type: @type) %>

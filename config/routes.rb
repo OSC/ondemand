@@ -21,7 +21,7 @@ Rails.application.routes.draw do
   match "/500", :to => "errors#internal_server_error", :via => :all
 
   scope 'admin/:type' do
-    resources :products, constraints: { type: /dev|usr/ } do
+    resources :products, param: :name, constraints: { type: /dev|usr/ } do
       member do
         get 'preview'
       end
