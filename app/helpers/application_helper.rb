@@ -22,7 +22,9 @@ module ApplicationHelper
 
   # FIXME: temporary solution
   def render_nav
-    if ENV['OOD_DASHBOARD_SHOW_ALL_APPS']
+    if ENV['OOD_APP_SHARING'].present?
+      render partial: "layouts/nav/app_sharing_nav"
+    elsif ENV['OOD_DASHBOARD_SHOW_ALL_APPS'].present?
       render partial: "layouts/nav/nav"
     else
       render partial: "layouts/nav/simple_nav"
