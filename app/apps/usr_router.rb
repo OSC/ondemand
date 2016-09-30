@@ -15,7 +15,25 @@ class UsrRouter
   end
 
   def self.base_path(owner:)
+    # ood
     Pathname.new "/var/www/ood/apps/usr/#{owner}/gateway"
+
+    # dev
+    # Pathname.new Rails.root.join("data", "apps","usr", owner)
+
+    # awesim
+    # Pathname.new(Dir.home).join("awesim_shared_apps")
+  end
+
+  def self.owners
+    # ood
+    Pathname.new("/var/www/ood/apps/usr").children(false).map(&:to_s)
+
+    # dev
+    # Rails.root.join("data", "apps","usr").children(false).map(&:to_s)
+
+    # awesim
+    # ["awe0011", "efranz", "jnicklas"]
   end
 
   def base_path

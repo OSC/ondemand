@@ -6,19 +6,22 @@ class AppsController < ApplicationController
     @type = params[:type]
     @owner = params[:owner]
     @title = nil
-    @apps = []
+    @groups = []
 
     # once these work, we can decide what to do
     # as far as mixing and matching lists of apps
     if @type == "dev"
-      @apps += DevRouter.apps
-      @title = "Your Dev"
+      @groups << OodAppGroup.new.tap { |g|
+        g.apps += DevRouter.apps
+        g.title = "Your Dev Apps"
+      }
     elsif @type == "usr"
-      @apps += UsrRouter.apps(owner: @owner)
-      @title = @owner
+      @groups += OodAppGroup.usr_groups(@owner || UsrRouter.owners)
     elsif @type == "sys"
-      @apps += SysRouter.apps
-      @title = "OSC's"
+      @groups << OodAppGroup.new.tap { |g|
+        g.apps += SysRouter.apps
+        g.title = "System Installed Apps"
+      }
     else
       raise ActionController::RoutingError.new('Not Found') unless app.accessible?
     end

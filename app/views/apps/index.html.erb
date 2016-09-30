@@ -1,14 +1,1 @@
-<h2 class="apps-section-header"><%= @title %> Apps <%= "(#{@owner})" if @owner %></h2>
-
-<table class="table">
-  <thead>
-    <tr>
-      <th>Icon</th>
-      <th>App</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <%= render partial: "app", collection: @apps %>
-  </tbody>
-</table>
+<%= render partial: "group", collection: @groups %>

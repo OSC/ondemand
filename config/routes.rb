@@ -2,15 +2,19 @@ Rails.application.routes.draw do
   get "errors/not_found"
   get "errors/internal_server_error"
   get "dashboard/index"
-  root "dashboard#index"
 
-  #FIXME: undo when ready to deploy app sharing to production
-  unless Rails.env.production?
+  get "apps/show/:name(/:type(/:owner))" => "apps#show", as: "app", defaults: { type: "sys" }
+
+  #FIXME: undo when ready to deploy app sharing to production, remove?
+  if ENV['OOD_APP_SHARING'].present?
     # TODO:
     # is there a cleaner approach to this? an app should be a resource
-    get "apps(/index(/:type(/:owner)))" => "apps#index", as: "apps", defaults: { type: "sys" }
-    get "apps/show/:name(/:type(/:owner))" => "apps#show", as: "app", defaults: { type: "sys" }
+    get "apps(/index(/:type(/:owner)))" => "apps#index", as: "apps", defaults: { type: "usr" }
     get "apps/icon/:name(/:type(/:owner))" => "apps#icon", as: "app_icon", defaults: { type: "sys" }
+
+    root "apps#index", defaults: { type: "usr" }
+  else
+    root "dashboard#index"
   end
 
   match "/404", :to => "errors#not_found", :via => :all
