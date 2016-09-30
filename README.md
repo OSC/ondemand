@@ -18,7 +18,7 @@ git checkout v1.0.3 # latest version
 bin/bundle install --path vendor/bundle
 ```
 
-2\. At this point, configure the app and its branding by copying .env to .env.local and modifying the values of the environment variables. See below for details on configuration and branding.
+2\. At this point, configure the app and its branding by creating a .env.local (or copying from a .env.local template i.e. .env.local.osc) and modifying the values of the environment variables. See below for details on configuration and branding.
 
 Update the dataroot of the `.env.production` file. This tells the production instance where to write user data - which is the user's home directory. By convention, it is `~/<PORTAL>/data`. So for OSC's OnDemand instance, our portal name is "ondemand" and thus the .env.production file has this line:
 
