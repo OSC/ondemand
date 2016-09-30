@@ -1,0 +1,17 @@
+<p>
+<strong>Icon:</strong>
+<%= image_tag app_icon_path(@product.app.name, @product.app.type, @product.app.owner), size: '50x50' %>
+</p>
+
+<p>
+<strong>Name:</strong>
+<%= link_to @product.app.title, app_path(@product.app.name, @product.app.type, @product.app.owner) %>
+</p>
+
+<p>
+<strong>Description:</strong>
+<%= manifest_markdown(@product.app.manifest.description) %>
+</p>
+
+<%= link_to 'Edit', edit_product_path(@product.id, type: @type) %> |
+<%= link_to 'Back', products_path(type: @type) %>

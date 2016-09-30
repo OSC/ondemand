@@ -1,12 +1,12 @@
 class UsrRouter
   attr_reader :name, :owner
 
-  def initialize(name, owner)
+  def initialize(name, owner=OodSupport::Process.user.name)
     @name = name
     @owner = owner
   end
 
-  def self.apps(owner:)
+  def self.apps(owner: OodSupport::Process.user.name)
     base_path(owner: owner).children.map { |d|
       ::OodApp.new(self.new(d.basename, owner))
     }.select { |d|
@@ -14,7 +14,7 @@ class UsrRouter
     }
   end
 
-  def self.base_path(owner:)
+  def self.base_path(owner: OodSupport::Process.user.name)
     # ood
     Pathname.new "/var/www/ood/apps/usr/#{owner}/gateway"
 

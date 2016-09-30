@@ -20,6 +20,14 @@ Rails.application.routes.draw do
   match "/404", :to => "errors#not_found", :via => :all
   match "/500", :to => "errors#internal_server_error", :via => :all
 
+  scope ':type' do
+    resources :products, constraints: { type: /dev|usr/ } do
+      member do
+        get 'preview'
+      end
+    end
+  end
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

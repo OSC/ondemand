@@ -1,0 +1,19 @@
+<h2 class="apps-section-header"><%= products_title(@type) %></h2>
+
+<%= link_to 'New Product', new_product_path(type: @type) %>
+<br>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Icon</th>
+      <th>App</th>
+      <th>Description</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <%= render partial: "product", collection: @products %>
+  </tbody>
+</table>
