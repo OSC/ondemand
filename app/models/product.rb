@@ -17,6 +17,7 @@ class Product
 
   validate :app_does_not_exist, on: :create_app
   validates :name, presence: true
+  validates :git_remote, presence: true, if: "type == :usr", on: :create_app
 
   def app_does_not_exist
     errors.add(:name, "already exists as an app") if !name.empty? && router.path.exist?
@@ -139,20 +140,20 @@ class Product
           'name' => title,
           'description' => description
         }.to_yaml)
-      end if !title.blank? || !description.blank?
+      end if (!title.blank? || !description.blank?) || !router.path.join('manifest.yml').exist?
       true
     end
 
     def get_git_remote
-      `cd #{router.path} 2> /dev/null && git config --get remote.origin.url 2> /dev/null`.strip
+      `cd #{router.path} 2> /dev/null && HOME="" git config --get remote.origin.url 2> /dev/null`.strip
     end
 
     def set_git_remote
-      `cd #{router.path} 2> /dev/null && git remote set-url origin #{git_remote} 2> /dev/null`
+      `cd #{router.path} 2> /dev/null && HOME="" git remote set-url origin #{git_remote} 2> /dev/null`
     end
 
     def clone_git_repo(target)
-      o, s = Open3.capture2e("git", "clone", git_remote, target.to_s)
+      o, s = Open3.capture2e({"HOME" => ""}, "git", "clone", git_remote, target.to_s)
       unless s.success?
         errors.add(:git_remote, "was unable to be cloned")
         Rails.logger.error(o)

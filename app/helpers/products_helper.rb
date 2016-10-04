@@ -12,23 +12,23 @@ module ProductsHelper
   def git_prompt(path)
     Dir.chdir(path) do
       # get reference
-      out = `git symbolic-ref -q HEAD 2> /dev/null`.strip
+      out = `HOME="" git symbolic-ref -q HEAD 2> /dev/null`.strip
       unless out.empty?
         /^(refs\/heads\/)?(?<ref>.+)$/ =~ out
       else
-        out = `git describe --tags --exact-match 2> /dev/null`.strip
+        out = `HOME="" git describe --tags --exact-match 2> /dev/null`.strip
         unless out.empty?
           ref = "tag:#{out}"
         else
-          out = `git describe --contains --all HEAD 2> /dev/null`.strip
+          out = `HOME="" git describe --contains --all HEAD 2> /dev/null`.strip
           /^(remotes\/)?(?<ref>.+)$/ =~ out
-          ref = `git rev-parse --short HEAD 2> /dev/null`.strip unless ref
+          ref = `HOME="" git rev-parse --short HEAD 2> /dev/null`.strip unless ref
           ref = "detached:#{ref}"
         end
       end
 
       # get file info
-      files = `git status --porcelain`.split("\n")
+      files = `HOME="" git status --porcelain`.split("\n")
       unstaged  = files.select {|v| /^\s\w .+$/ =~ v}.size
       staged    = files.select {|v| /^\w\s .+$/ =~ v}.size
       untracked = files.select {|v| /^\?\? .+$/ =~ v}.size
