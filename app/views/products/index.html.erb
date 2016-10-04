@@ -1,16 +1,27 @@
-<h2 class="apps-section-header"><%= products_title(@type) %></h2>
+<h2 class="apps-section-header">
+  <%= products_title(@type) %>
+</h2>
 
-<%= link_to 'New Product', new_product_path(type: @type) %>
-<br>
+<p>
+  <%= link_to 'New Product', new_product_path(type: @type), class: 'btn btn-default' %>
+  <span class="pull-right">
+    <%= link_to 'Launch Shell', OodAppkit.shell.url(path: @type == :dev ? DevRouter.base_path : UsrRouter.base_path.realpath).to_s, target: '_blank', class: 'btn btn-default' %>
+    <%= link_to 'Launch Files', OodAppkit.files.url(path: @type == :dev ? DevRouter.base_path : UsrRouter.base_path.realpath).to_s, target: '_blank', class: 'btn btn-default' %>
+  </span>
+</p>
 
-<table class="table">
+<hr />
+
+<table id="productTable" class="table table-striped" data-state-save="true" data-page-length="50" data-order="<%= %([4, "desc"]) %>">
   <thead>
     <tr>
-      <th>Id</th>
-      <th>Icon</th>
-      <th>Title</th>
-      <th>Description</th>
-      <th colspan="3"></th>
+      <th data-orderable="false" data-searchable="false"></th>
+      <th>Directory Name</th>
+      <th>App Details</th>
+      <th>Last Modified</th>
+      <th data-orderable="false" data-searchable="false"></th>
+      <th data-orderable="false" data-searchable="false"></th>
+      <th data-orderable="false" data-searchable="false"></th>
     </tr>
   </thead>
 

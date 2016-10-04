@@ -1,0 +1,23 @@
+// Load bootstrap/font-awesome sprockets first
+@import "bootstrap-sprockets";
+@import "font-awesome-sprockets";
+@import "awesim";
+
+// Load up bootstrap/font-awesome style sheet
+@import "bootstrap";
+@import "font-awesome";
+
+// Load up dataTables bootstrap specific styles
+@import "dataTables/bootstrap/3/jquery.dataTables.bootstrap";
+
+// display header at top of app layout
+body {
+  @extend .awesim-banner-background-img;
+}
+
+// Your custom css styles below (must be manually added)
+@import "pages";
+
+.navbar-inverse .navbar-text {
+  color: #ccc;
+}

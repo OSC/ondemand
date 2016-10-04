@@ -1,0 +1,7 @@
+<h1>New Permission</h1>
+
+<%= render 'form', form_url: product_permissions_path(type: @type, product_name: @product.name, context: @context) %>
+
+<hr />
+
+<%= link_to 'Back', product_path(@product.name, type: @type), class: 'btn btn-default' %>

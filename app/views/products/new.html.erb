@@ -2,4 +2,6 @@
 
 <%= render 'form', form_url: products_path(type: @type) %>
 
-<%= link_to 'Back', products_path(type: @type) %>
+<hr />
+
+<%= link_to 'Back', products_path(type: @type), class: 'btn btn-default' %>

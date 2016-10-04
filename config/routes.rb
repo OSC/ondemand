@@ -22,8 +22,13 @@ Rails.application.routes.draw do
 
   scope 'admin/:type' do
     resources :products, param: :name, constraints: { type: /dev|usr/ } do
+      nested do
+        scope ':context' do
+          resources :permissions, only: [:index, :new, :create, :destroy], param: :name
+        end
+      end
       member do
-        get 'preview'
+        patch 'restart'
       end
     end
   end
