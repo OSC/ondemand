@@ -39,7 +39,7 @@ OOD_LUA_ROOT        ||= ENV['OOD_LUA_ROOT']        || '/opt/ood/mod_ood_proxy/li
 OOD_LUA_LOG_LEVEL   ||= ENV['OOD_LUA_LOG_LEVEL']   || 'info'
 OOD_PUN_STAGE_CMD   ||= ENV['OOD_PUN_STAGE_CMD']   || 'sudo /opt/ood/nginx_stage/sbin/nginx_stage'
 OOD_PUN_MAX_RETRIES ||= ENV['OOD_PUN_MAX_RETRIES'] || '5'
-OOD_USER_MAP_CMD    ||= ENV['OOD_USER_MAP_CMD']    || '/opt/ood/ood_auth_map/bin/ood_auth_map.mapfile'
+OOD_USER_MAP_CMD    ||= ENV['OOD_USER_MAP_CMD']    || '/opt/ood/ood_auth_map/bin/ood_auth_map.regex'
 OOD_PUN_SOCKET_ROOT ||= ENV['OOD_PUN_SOCKET_ROOT'] || '/var/run/nginx'
 OOD_PUBLIC_ROOT     ||= ENV['OOD_PUBLIC_ROOT']     || '/var/www/ood/public'
 
@@ -52,7 +52,7 @@ OOD_PUBLIC_URI ||= ENV['OOD_PUBLIC_URI']   || '/public'
 OOD_ROOT_URI   ||= ENV['OOD_ROOT_URI']     || '/pun/sys/dashboard'
 
 # OOD Auth Setup
-OOD_AUTH_SETUP ||= (ENV['OOD_AUTH_SETUP'] || 'true').to_bool
+OOD_AUTH_SETUP ||= (ENV['OOD_AUTH_SETUP'] || 'false').to_bool
 if OOD_AUTH_SETUP
   OOD_AUTH_OIDC_URI      ||= ENV['OOD_AUTH_OIDC_URI']      || '/oidc'
   OOD_AUTH_DISCOVER_ROOT ||= ENV['OOD_AUTH_DISCOVER_ROOT'] || '/var/www/ood/discover'
@@ -65,7 +65,7 @@ if OOD_AUTH_SETUP
   OOD_MAP_FAIL_URI = OOD_AUTH_REGISTER_URI
 else
   OOD_AUTH_TYPE    ||= ENV['OOD_AUTH_TYPE']    || 'Basic'
-  OOD_AUTH_EXTEND  ||= ENV['OOD_AUTH_EXTEND']  || ''
+  OOD_AUTH_EXTEND  ||= ENV['OOD_AUTH_EXTEND']  || 'AuthName "private"\nAuthUserFile "/opt/rh/httpd24/root/etc/httpd/htpasswd"'
   OOD_MAP_FAIL_URI ||= ENV['OOD_MAP_FAIL_URI'] || ''
 end
 

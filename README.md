@@ -228,7 +228,7 @@ OOD_PUN_MAX_RETRIES='5'
 
 # Command used to map users to system level users
 #
-OOD_USER_MAP_CMD='/opt/ood/ood_auth_map/bin/ood_auth_map.mapfile'
+OOD_USER_MAP_CMD='/opt/ood/ood_auth_map/bin/ood_auth_map.regex'
 
 # Path to the root location of PUN socket files
 #
@@ -275,7 +275,32 @@ OOD_ROOT_URI='/pun/sys/dashboard'
 
 #### OOD Authentication Options
 
-**Use Recommended OOD Authentication Setup**
+**Default Authentication Setup**
+
+This is used if admin provides their own authentication mechanism.
+
+```bash
+# Whether you want to use OOD recommended authentication
+# Default: 'false'
+#
+OOD_AUTH_SETUP='false'
+
+# Type of user authentication used for Open OnDemand portal
+#
+OOD_AUTH_TYPE='Basic'
+
+# Any extended authentication Apache directives separated by newlines
+# Example: OOD_AUTH_EXTEND='AuthName "private"\nAuthBasicProvider ldap\nAuthLDAPURL ldap://ldap.host/o=ctx'
+# Blank: No extended directives will be added to the config
+OOD_AUTH_EXTEND='AuthName "private"\nAuthUserFile "/opt/rh/httpd24/root/etc/httpd/htpasswd"'
+
+# Redirect user to this URI if fail to map to system level user
+# Blank: Removes the redirection upon a failed user mapping
+#
+OOD_MAP_FAIL_URI=''
+```
+
+**Recommended OOD Authentication Setup**
 
 This authentication mechanism takes advantage of:
 
@@ -309,31 +334,6 @@ OOD_AUTH_REGISTER_ROOT='/var/www/ood/register'
 # The URI user is redirected to if they aren't registered in grid-mapfile
 #
 OOD_AUTH_REGISTER_URI='/register'
-```
-
-**Custom Authentication Setup**
-
-This is used if admin provides their own authentication mechanism.
-
-```bash
-# Whether you want to use OOD recommended authentication
-# Default: 'true'
-#
-OOD_AUTH_SETUP='false'
-
-# Type of user authentication used for Open OnDemand portal
-#
-OOD_AUTH_TYPE='Basic'
-
-# Any extended authentication Apache directives separated by newlines
-# Example: OOD_AUTH_EXTEND='AuthName "private"\nAuthBasicProvider ldap\nAuthLDAPURL ldap://ldap.host/o=ctx'
-# Blank: No extended directives will be added to the config
-OOD_AUTH_EXTEND=''
-
-# Redirect user to this URI if fail to map to system level user
-# Blank: Removes the redirection upon a failed user mapping
-#
-OOD_MAP_FAIL_URI=''
 ```
 
 ## Configuration File
