@@ -31,7 +31,7 @@
     <%= link_to 'Files', OodAppkit.files.url(path: @product.router.path).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
   </div><!-- /.col-sm-2 -->
   <div class="col-sm-2">
-    <button class="btn btn-default btn-block" data-toggle="cli" data-target="<%= cli_product_path('bi, name: @product.name, type: @type) %>" data-title="<code>scl enable rh-ruby22 nodejs010 -- bin/bundle install --path=vendor/bundle</code>">
+    <button class="btn btn-default btn-block" data-toggle="cli" data-target="<%= cli_product_path('bi', name: @product.name, type: @type) %>" data-title="<code>scl enable rh-ruby22 nodejs010 -- bin/bundle install --path=vendor/bundle</code>">
       Bundle Install
     </button>
     <%= link_to 'Restart App',restart_product_path(@product.name, type: @type), method: :patch, class: 'btn btn-default btn-block' %>
