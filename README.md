@@ -277,7 +277,7 @@ OOD_ROOT_URI='/pun/sys/dashboard'
 
 **Default Authentication Setup**
 
-This is used if admin provides their own authentication mechanism.
+This uses Apache Basic Auth as the default authentication mechanism:
 
 ```bash
 # Whether you want to use OOD recommended authentication
@@ -292,13 +292,35 @@ OOD_AUTH_TYPE='Basic'
 # Any extended authentication Apache directives separated by newlines
 # Example: OOD_AUTH_EXTEND='AuthName "private"\nAuthBasicProvider ldap\nAuthLDAPURL ldap://ldap.host/o=ctx'
 # Blank: No extended directives will be added to the config
-OOD_AUTH_EXTEND='AuthName "private"\nAuthUserFile "/opt/rh/httpd24/root/etc/httpd/htpasswd"'
+OOD_AUTH_EXTEND='AuthName "private"\nAuthUserFile "/opt/rh/httpd24/root/etc/httpd/.htpasswd"'
 
 # Redirect user to this URI if fail to map to system level user
 # Blank: Removes the redirection upon a failed user mapping
 #
 OOD_MAP_FAIL_URI=''
 ```
+
+The default location for the `.htpasswd` file is:
+
+```
+# Assumes you are using RH Software Collections
+/opt/rh/httpd24/root/etc/httpd/.htpasswd
+```
+
+After the Open OnDemand Portal is deployed and you access the server from your
+browser, you will be presented with an authentication dialog box. Currently
+there are no accounts specified in the `.htpasswd` file, so you will need to
+add a few accounts first:
+
+```
+# First we create the password file
+scl enable httpd24 -- htpasswd -c /opt/rh/httpd24/root/etc/httpd/.htpasswd <username>
+
+# Afterwards we add accounts to the file
+scl enable httpd24 -- htpasswd /opt/rh/httpd24/root/etc/httpd/.htpasswd <another username>
+```
+
+If you continue to use Basic Auth, we recommend using the LDAP module.
 
 **Recommended OOD Authentication Setup**
 
