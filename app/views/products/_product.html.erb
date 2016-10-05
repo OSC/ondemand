@@ -6,7 +6,26 @@
   <td><%= product.name %></td>
   <td>
     <%= link_to product.title, app_path(product.app.name, product.app.type, product.app.owner) %>
-    <p><%= manifest_markdown(product.description) %></p>
+    <p>
+    <% if product.app.manifest.is_a?(MissingManifest) %>
+      <div class="alert alert-danger">
+        <p>
+          You are missing a <code>manifest.yml</code>, please
+          <strong>Edit</strong> this app and add a title and description to fix
+          this.
+        </p>
+      </div>
+    <% elsif product.app.manifest.is_a?(InvalidManifest) %>
+      <div class="alert alert-danger">
+        <p>
+          Your <code>manifest.yml</code> is corrupt, please edit this file to
+          fix this.
+        </p>
+      </div>
+    <% else %>
+      <%= manifest_markdown(product.description) %>
+    <% end %>
+    </p>
   </td>
   <td data-order="<%= modified_time.to_i %>"><%= modified_time.strftime("%m/%d/%y") %></td>
   <td>

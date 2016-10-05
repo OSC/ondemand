@@ -1,7 +1,7 @@
 class UsrProduct < Product
   class << self
     def all
-      UsrRouter.apps.map {|a| new(name: a.name, found: true)}
+      UsrRouter.apps(require_manifest: false).map {|a| new(name: a.name, found: true)}
     end
 
     def find(name)

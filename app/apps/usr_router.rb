@@ -6,11 +6,11 @@ class UsrRouter
     @owner = owner
   end
 
-  def self.apps(owner: OodSupport::Process.user.name)
+  def self.apps(owner: OodSupport::Process.user.name, require_manifest: true)
     base_path(owner: owner).children.map { |d|
       ::OodApp.new(self.new(d.basename, owner))
     }.select { |d|
-      d.valid_dir? && d.accessible? && d.manifest.valid?
+      d.valid_dir? && d.accessible? && (!require_manifest || d.manifest.valid?)
     }
   end
 
