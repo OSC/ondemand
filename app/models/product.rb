@@ -119,8 +119,7 @@ class Product
       target = router.path
       target.mkpath
       if git_remote.blank?
-        FileUtils.cp_r Rails.root.join("vendor/new_app/."), target
-        FileUtils.mv target.join("dotgit"), target.join(".git")
+        FileUtils.cp_r Rails.root.join("vendor/my_app/."), target
       else
         unless clone_git_repo(target)
           target.rmtree if target.exist?
