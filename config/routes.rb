@@ -13,26 +13,27 @@ Rails.application.routes.draw do
     get "apps/icon/:name(/:type(/:owner))" => "apps#icon", as: "app_icon", defaults: { type: "sys" }
 
     root "apps#index", defaults: { type: "usr" }
+
+    # App administration
+    scope 'admin/:type' do
+      resources :products, param: :name, constraints: { type: /dev|usr/ } do
+        nested do
+          scope ':context' do
+            resources :permissions, only: [:index, :new, :create, :destroy], param: :name
+          end
+        end
+        member do
+          patch 'restart'
+          patch 'cli/:cmd', to: 'products#cli', as: 'cli'
+        end
+      end
+    end
   else
     root "dashboard#index"
   end
 
   match "/404", :to => "errors#not_found", :via => :all
   match "/500", :to => "errors#internal_server_error", :via => :all
-
-  scope 'admin/:type' do
-    resources :products, param: :name, constraints: { type: /dev|usr/ } do
-      nested do
-        scope ':context' do
-          resources :permissions, only: [:index, :new, :create, :destroy], param: :name
-        end
-      end
-      member do
-        patch 'restart'
-        patch 'cli/:cmd', to: 'products#cli', as: 'cli'
-      end
-    end
-  end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
