@@ -1,5 +1,9 @@
 ## Unreleased
 
+Features:
+
+  - simplified default authentication to basic auth
+
 Bugfixes:
 
   - `ood_auth_map` path changed
