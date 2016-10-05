@@ -85,6 +85,35 @@ class ProductsController < ApplicationController
     end
   end
 
+  # PATCH/PUT /products/1/cli/bi
+  CMDS = {
+    bi: [{"HOME" => ""}, "bin/bundle", "install", "--path=vendor/bundle"]
+  }
+  def cli
+    cmd = CMDS[params[:cmd].to_sym]
+    raise ActionController::RoutingError.new('Not Found') unless cmd
+    @type = params[:type].to_sym
+    @product = Product.find(@type, params[:name])
+
+    response.headers['Content-Type'] = 'text/plain'
+    Dir.chdir(@product.router.path) do
+      Bundler.with_clean_env do
+        Open3.popen2e(*cmd) do |i, o, t|
+          o.each do |line|
+            response.stream.write line
+          end
+        end
+      end
+    end
+  ensure
+    response.stream.close
+  end
+
+  def dispatch(name, *args)
+    extend ActionController::Live if name.to_s == 'bundle'
+    super
+  end
+
   private
     # Never trust parameters from the scary internet, only allow the white list through.
     def product_params
