@@ -13,6 +13,8 @@
 //= require jquery
 //= require jquery_ujs
 //= require bootstrap-sprockets
+//= require dataTables/jquery.dataTables
+//= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
 //= require_tree .
 
 //FIXME: move to coffescript
@@ -28,4 +30,8 @@ $(function(){
     content: "An Interactive HPC session gives you dedicated access to one or more nodes on the cluster. This is similar to an interactive batch session with an accessible desktop on the primary node. Use this for heavyweight jobs such as long-running compute tasks or where you need dedicated resources.",
     title: function(){ return $(this).text() }
   });
+});
+
+$(document).ready(function(){
+  $('[data-toggle="popover"]').popover();
 });

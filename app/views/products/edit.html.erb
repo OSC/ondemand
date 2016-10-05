@@ -1,0 +1,8 @@
+<h1>Editing Product</h1>
+
+<%= render 'form', form_url: product_path(@product.name, type: @type) %>
+
+<hr />
+
+<%= link_to 'Show', product_path(@product.name, type: @type), class: 'btn btn-default' %>
+<%= link_to 'Back', products_path(type: @type), class: 'btn btn-default' %>

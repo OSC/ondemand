@@ -1,0 +1,19 @@
+<%= bootstrap_form_for(@product, as: :product, url: form_url) do |f| %>
+  <% if @product.new_record? %>
+  <div class="field">
+    <%= f.text_field :name, label: "Directory name" %>
+  </div>
+  <% end %>
+  <div class="field">
+    <%= f.text_field :git_remote, help: "Example: <code>git@github.com:Example/example.git</code> (<a href='https://help.github.com/articles/generating-an-ssh-key/'>requires SSH key installed</a>)<br/>Leave <strong>empty</strong> if you will supply your own from the shell.".html_safe %>
+  </div>
+  <div class="field">
+    <%= f.text_field :title, placeholder: "My OnDemand App" %>
+  </div>
+  <div class="field">
+    <%= f.text_area :description, placeholder: "Description should go here.\n\nFormat using **markdown**.", help: "Format using <a href='https://guides.github.com/features/mastering-markdown/' target='_blank'>markdown</a>".html_safe, rows: 10 %>
+  </div>
+  <div class="actions">
+    <%= f.submit 'Submit' %>
+  </div>
+<% end %>
