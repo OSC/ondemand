@@ -110,7 +110,7 @@ class ProductsController < ApplicationController
   end
 
   def dispatch(name, *args)
-    extend ActionController::Live if name.to_s == 'bundle'
+    extend ActionController::Live if name.to_s == 'cli'
     super
   end
 
