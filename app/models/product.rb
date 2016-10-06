@@ -21,14 +21,26 @@ class Product
   validates :git_remote, presence: true, if: "type == :usr", on: :create_app
 
   validate :manifest_is_valid, on: [:show_app, :list_apps]
+  validate :gemfile_is_valid, on: :show_app
 
   def app_does_not_exist
     errors.add(:name, "already exists as an app") if !name.empty? && router.path.exist?
   end
 
   def manifest_is_valid
-    errors.add(:manifest, "is missing, add a title and description to fix this.") unless app.manifest.exist?
-    errors.add(:manifest, "is corrupt, please edit the file to fix this.") if app.manifest.exist? && !app.manifest.valid?
+    errors.add(:manifest, "is missing, add a title and description to fix this") unless app.manifest.exist?
+    errors.add(:manifest, "is corrupt, please edit the file to fix this") if app.manifest.exist? && !app.manifest.valid?
+  end
+
+  def gemfile_is_valid
+    unless gemfile.exist? || gemfile_lock.exist?
+      errors.add(:base, "App is missing <code>Gemfile</code>") unless gemfile.exist?
+      errors.add(:base, "App is missing <code>Gemfile.lock</code>") unless gemfile_lock.exist?
+      return
+    end
+    errors.add(:base, "Gemfile missing <code>rails_12factor</code> gem") unless gemfile_specs.detect {|s| s.name == "rails_12factor"}
+    errors.add(:base, "Gemfile missing <code>dotenv-rails</code> gem") unless gemfile_specs.detect {|s| s.name == "dotenv-rails"}
+    errors.add(:base, "Gemfile missing <code>ood_appkit</code> gem") unless gemfile_specs.detect {|s| s.name == "ood_appkit"}
   end
 
   class NotFound < StandardError; end
@@ -51,6 +63,18 @@ class Product
 
   def app
     OodApp.new(router)
+  end
+
+  def gemfile
+    router.path.join("Gemfile")
+  end
+
+  def gemfile_lock
+    router.path.join("Gemfile.lock")
+  end
+
+  def gemfile_specs
+    @gemfile_specs ||= Bundler::LockfileParser.new(File.read(gemfile_lock)).specs
   end
 
   def persisted?
