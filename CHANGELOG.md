@@ -1,5 +1,9 @@
 ## Unreleased
 
+Bugfixes:
+
+  - fix for modifying `Location` header on a redirect from PUN
+
 ## 0.0.5 (2016-10-05)
 
 Features:

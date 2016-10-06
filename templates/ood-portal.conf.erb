@@ -220,6 +220,7 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
     SetEnv OOD_PUN_SOCKET_ROOT "<%= OOD_PUN_SOCKET_ROOT %>"
     SetEnv OOD_PUN_MAX_RETRIES "<%= OOD_PUN_MAX_RETRIES %>"
     LuaHookFixups pun_proxy.lua pun_proxy_handler
+    ProxyPassReverse "http://localhost<%= OOD_PUN_URI %>"
   </Location>
   <%- end -%>
 
