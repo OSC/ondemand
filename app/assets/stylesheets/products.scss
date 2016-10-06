@@ -3,7 +3,7 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 #productCliModal {
-  pre {
+  .product-cli-body {
     height: calc(100vh - 212px);
     overflow-y: scroll;
     overflow-x: auto;
