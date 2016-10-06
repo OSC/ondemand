@@ -39,6 +39,17 @@
 
 </div><!-- /.row -->
 
+<% unless @product.valid?(:show_app) %>
+<div class="alert alert-danger">
+  <p>Please fix the errors below:</p>
+  <ul class="rails-bootstrap-forms-error-summary">
+    <% @product.errors.full_messages.each do |msg| %>
+    <li><%= msg.html_safe %></li>
+    <% end %>
+  </ul>
+</div>
+<% end %>
+
 <hr />
 
 <% if @product.permissions? %>

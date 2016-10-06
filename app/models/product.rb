@@ -15,12 +15,20 @@ class Product
   attr_accessor :description
   attr_accessor :git_remote
 
-  validate :app_does_not_exist, on: :create_app
   validates :name, presence: true
+
+  validate :app_does_not_exist, on: :create_app
   validates :git_remote, presence: true, if: "type == :usr", on: :create_app
+
+  validate :manifest_is_valid, on: [:show_app, :list_apps]
 
   def app_does_not_exist
     errors.add(:name, "already exists as an app") if !name.empty? && router.path.exist?
+  end
+
+  def manifest_is_valid
+    errors.add(:manifest, "is missing, add a title and description to fix this.") unless app.manifest.exist?
+    errors.add(:manifest, "is corrupt, please edit the file to fix this.") if app.manifest.exist? && !app.manifest.valid?
   end
 
   class NotFound < StandardError; end
