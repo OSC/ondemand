@@ -130,6 +130,27 @@ module NginxStage
 
     attr_writer :pun_socket_path
 
+    # Path to the local filesystem root from where the user can download files
+    # from
+    # @example Filesystem root for user Bob
+    #   pun_download_root(user: 'bob')
+    #   #=> "/"
+    # @param user [String] the user of the nginx process
+    # @return [String] the path to the filesystem root that is served
+    def pun_download_root(user:)
+      File.expand_path @pun_download_root % {user: user}
+    end
+
+    attr_writer :pun_download_root
+
+    # The URI used to access the filesystem for downloading files from the
+    # browser, not including any base-uri
+    # @example
+    #   pun_download_uri
+    #   #=> "/download"
+    # @return [String] the URI used to access filesystem
+    attr_accessor :pun_download_uri
+
     # List of hashes that help define the location of the app configs for the
     # per-user NGINX config. These will be arguments for {#app_config_path}.
     # @example User Bob's app configs
@@ -319,6 +340,8 @@ module NginxStage
       self.pun_error_log_path  = '/var/log/nginx/%{user}/error.log'
       self.pun_pid_path        = '/var/run/nginx/%{user}/passenger.pid'
       self.pun_socket_path     = '/var/run/nginx/%{user}/passenger.sock'
+      self.pun_download_root   = '/'
+      self.pun_download_uri    = '/download'
       self.pun_app_configs     = [
         {env: :dev, owner: '%{user}', name: '*'},
         {env: :usr, owner: '*',       name: '*'},

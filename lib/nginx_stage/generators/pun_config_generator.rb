@@ -7,13 +7,13 @@ module NginxStage
     Examples:
         To generate a per-user nginx environment & launch nginx:
 
-            nginx_stage pun --user=bob --app-init-url='http://www.ood.com/nginx/init?redir=$http_x_forwarded_escaped_uri'
+            nginx_stage pun --user=bob --sub-uri=/pun --app-init-url='http://www.ood.com/nginx/init?redir=$http_x_forwarded_escaped_uri'
 
         this will add a URI redirect if the user accesses an app that doesn't exist.
 
         To generate ONLY the per-user nginx environment:
 
-            nginx_stage pun --user=bob --skip-nginx
+            nginx_stage pun --user=bob --sub-uri=/pun --skip-nginx
 
         this will return the per-user nginx config path and won't run nginx. In addition
         it will remove the URI redirect from the config unless we specify `--app-init-url`.
@@ -31,6 +31,9 @@ module NginxStage
 
     # Accepts `skip_nginx` as an option
     add_skip_nginx_support
+
+    # Accepts `sub_uri` as an option
+    add_sub_uri_support
 
     # @!method app_init_url
     #   The app initialization URL the user is redirected to if can't find the

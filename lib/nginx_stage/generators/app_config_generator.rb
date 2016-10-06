@@ -39,6 +39,9 @@ module NginxStage
     # Accepts `skip_nginx` as an option
     add_skip_nginx_support
 
+    # Accepts `sub_uri` as an option
+    add_sub_uri_support
+
     # @!method sub_request
     #   The remainder of the request after the sub-uri used to determine the
     #   environment and app
@@ -51,22 +54,6 @@ module NginxStage
         opt_args: ["-r", "--sub-request=SUB_REQUEST", "# The SUB_REQUEST that requests the specified app"],
         required: true
         # sub-request is validated in `NginxStage::parse_app_request`
-      }
-    end
-
-    # @!method sub_uri
-    #   The sub-uri that distinguishes the per-user NGINX process
-    #   @example An app is requested through '/pun/usr/user/appname/...'
-    #     sub_uri #=> "/pun"
-    #   @return [String] the sub-uri for nginx
-    add_option :sub_uri do
-      {
-        opt_args: ["-i", "--sub-uri=SUB_URI", "# The SUB_URI that requests the per-user nginx", "# Default: ''"],
-        default: '',
-        before_init: -> (sub_uri) do
-          raise InvalidSubUri, "invalid sub-uri syntax: #{sub_uri}" if sub_uri =~ /[^-\w\/]/
-          sub_uri
-        end
       }
     end
 

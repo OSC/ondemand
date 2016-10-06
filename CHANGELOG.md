@@ -1,5 +1,9 @@
 ## Unreleased
 
+Features
+
+  - added a download uri that serves files directly off of the filesystem
+
 ## 0.0.11 (2016-09-22)
 
 Bugfixes:

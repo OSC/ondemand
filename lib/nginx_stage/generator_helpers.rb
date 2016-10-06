@@ -44,5 +44,25 @@ module NginxStage
         }
       end
     end
+
+    # Add support for accepting SUB_URI as an option
+    # @return [void]
+    def add_sub_uri_support
+      # @!method sub_uri
+      #   The sub-uri that distinguishes the per-user NGINX process
+      #   @example An app is requested through '/pun/usr/user/appname/...'
+      #     sub_uri #=> "/pun"
+      #   @return [String] the sub-uri for nginx
+      add_option :sub_uri do
+        {
+          opt_args: ["-i", "--sub-uri=SUB_URI", "# The SUB_URI that requests the per-user nginx", "# Default: ''"],
+          default: '',
+          before_init: -> (sub_uri) do
+            raise InvalidSubUri, "invalid sub-uri syntax: #{sub_uri}" if sub_uri =~ /[^-\w\/]/
+            sub_uri
+          end
+        }
+      end
+    end
   end
 end

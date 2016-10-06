@@ -67,6 +67,18 @@ module NginxStage
       NginxStage.pun_socket_path(user: user)
     end
 
+    # URI used to access filesystem from the browser
+    # @return [String] the filesystem URI
+    def download_uri
+      "#{sub_uri}#{NginxStage.pun_download_uri}" if NginxStage.pun_download_uri
+    end
+
+    # Path to the filesystem root where files are served from
+    # @return [String] path to filesystem root
+    def download_root
+      NginxStage.pun_download_root(user: user)
+    end
+
     # Array of wildcard paths to app configs user has access to
     # @return [Array<String>] list of wildcard app config paths
     def app_configs

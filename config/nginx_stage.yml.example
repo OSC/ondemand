@@ -86,6 +86,17 @@
 #
 #pun_socket_path: '/var/run/nginx/%{user}/passenger.sock'
 
+# Path to the local filesystem root where files are served from for the given
+# user
+#
+#pun_download_root: '/'
+
+# The URI used to access the local filesystem for downloading files from the
+# browser, not including any base-uri
+# Set to `false` if you don't want this specified in nginx config
+#
+#pun_download_uri: '/download'
+
 # List of hashes helping define wildcard app config locations. These are the
 # arguments for {#app_config_path}.
 #
