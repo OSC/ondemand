@@ -33,19 +33,21 @@ RAILS_ENV=production bin/rake assets:precompile
 bin/rake tmp:clear
 ```
 
-4\. Next we need to build our staging app:
+4\. Next we need to build our staging app (change `OOD_PORTAL` to match the portal this dashboard is setup for):
 
-```
-scl enable git19 rh-ruby22 nodejs010 - <<\EOF
-  cd $(mktemp -d) &&
+```sh
+OOD_APP=my_app OOD_PORTAL=ondemand scl enable git19 rh-ruby22 nodejs010 -- /bin/bash <(cat <<\EOF
+  dir=$(mktemp -d) &&
+  cd ${dir} &&
   gem install -N -i . rails -v '~> 4.2' &&
-  GEM_HOME=${PWD} bin/rails new ${OLDPWD}/vendor/my_app \
+  GEM_HOME=${PWD} bin/rails new ${OLDPWD}/vendor/${OOD_APP} \
     -m https://raw.githubusercontent.com/AweSim-OSC/rails-application-template/remote_source/awesim.rb \
     --skip-turbolinks \
     --skip-bundle \
     --skip-spring &&
-  rm -fr ${PWD}
+  rm -fr ${dir}
 EOF
+)
 ```
 
 5\. At this point, you should copy the directory to the deployment directory, if that location is not the same place as the build directory. For more explanation of how this is done, see https://github.com/OSC/Open-OnDemand#app-deployment-strategy.
