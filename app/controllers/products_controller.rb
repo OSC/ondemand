@@ -72,22 +72,11 @@ class ProductsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /products/1/restart
-  # PATCH/PUT /products/1/restart.json
-  def restart
-    @type = params[:type].to_sym
-    @product = Product.find(@type, params[:name])
-
-    @product.restart
-    respond_to do |format|
-      format.html { redirect_to product_url(@product.name, type: @type), notice: 'Product was successfully restarted.' }
-      format.json { head :no_content }
-    end
-  end
-
-  # PATCH/PUT /products/1/cli/bi
+  # PATCH/PUT /products/1/cli/bundle_install
   CMDS = {
-    bi: [{"HOME" => ""}, "bin/bundle", "install", "--path=vendor/bundle"]
+    bundle_install:    [{"HOME" => ""}, "bin/bundle install --path=vendor/bundle"],
+    precompile_assets: [{"RAILS_ENV" => "production"}, "bin/rake assets:clobber && bin/rake assets:precompile && bin/rake tmp:clear"],
+    restart_app:       ["mkdir -p tmp && touch tmp/restart.txt && echo 'Done!'"]
   }
   def cli
     cmd = CMDS[params[:cmd].to_sym]

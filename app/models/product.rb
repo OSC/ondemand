@@ -116,11 +116,6 @@ class Product
     end
   end
 
-  def restart
-    router.path.join("tmp").mkpath
-    FileUtils.touch router.path.join("tmp", "restart.txt")
-  end
-
   def destroy
     `kill -9 $(lsof -t #{router.path}) && sleep 1`
     FileUtils.rm_rf(router.path)
