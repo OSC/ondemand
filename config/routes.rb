@@ -23,7 +23,6 @@ Rails.application.routes.draw do
           end
         end
         member do
-          patch 'restart'
           patch 'cli/:cmd', to: 'products#cli', as: 'cli'
         end
       end
