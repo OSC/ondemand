@@ -31,11 +31,6 @@
     <%= link_to 'Files', OodAppkit.files.url(path: @product.router.path).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
   </div><!-- /.col-sm-2 -->
   <div class="col-sm-2">
-    <% if @type == :usr %>
-    <button class="btn btn-default btn-block" data-toggle="cli" data-target="<%= cli_product_path('se', name: @product.name, type: @type) %>" data-title="Stage Environment" data-cmd="I need help">
-      Stage Env
-    </button>
-    <% end %>
     <button class="btn btn-default btn-block" data-toggle="cli" data-target="<%= cli_product_path('bi', name: @product.name, type: @type) %>" data-title="Bundle Install" data-cmd="<code>scl enable rh-ruby22 nodejs010 -- bin/bundle install --path=vendor/bundle</code>">
       Bundle Install
     </button>
