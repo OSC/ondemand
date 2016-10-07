@@ -89,7 +89,7 @@ class ProductsController < ApplicationController
   CMDS = {
     bi: [{"HOME" => ""}, "bin/bundle install --path=vendor/bundle"],
     pa: [{"RAILS_ENV" => "production"}, "bin/rake assets:clobber && bin/rake assets:precompile && bin/rake tmp:clear"],
-    ra: ["mkdir -p tmp && touch tmp/restart.txt && echo 'Done, but please wait up to a minute for the shared filesystem to sync up.'"]
+    ra: ["mkdir -p tmp && touch tmp/restart.txt && echo 'Done!'"]
   }
   def cli
     cmd = CMDS[params[:cmd].to_sym]
