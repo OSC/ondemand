@@ -35,7 +35,7 @@ module ProductsHelper
       total = unstaged + staged + untracked
 
       html = "<span data-toggle='popover' data-trigger='hover' data-placement='bottom' title='Git Status' data-content='<strong>Staged:</strong> #{staged}<br><strong>Unstaged:</strong> #{unstaged}<br><strong>Untracked:</strong> #{untracked}#{"<br>Please commit any changes or add necessary files to <code>.gitignore</code>" if total != 0}' data-html='true'>"
-      html += "<code>[#{ref} S:#{staged} U:#{unstaged} ?:#{untracked}]</code> "
+      html += "<small>[#{ref} S:#{staged} U:#{unstaged} ?:#{untracked}]</small> "
       if total == 0
         html += "<span class='text-success'>#{icon('check')}</span>"
       else
