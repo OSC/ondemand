@@ -170,6 +170,12 @@ class Product
       true
     end
 
+    end
+
+    def gemfile_specs
+      @gemfile_specs ||= Bundler::LockfileParser.new(File.read(gemfile_lock)).specs
+    end
+
     def get_git_remote
       `cd #{router.path} 2> /dev/null && HOME="" git config --get remote.origin.url 2> /dev/null`.strip
     end
