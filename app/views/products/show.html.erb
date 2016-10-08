@@ -15,7 +15,7 @@
   <div class="col-sm-6">
     <p>
       <strong>Title:</strong>
-      <%= link_to @product.app.title, app_path(@product.app.name, @product.app.type, @product.app.owner) %>
+      <%= link_to @product.app.title, app_path(@product.app.name, @product.app.type, @product.app.owner), target: '_blank'%>
     </p>
     <p>
       <strong>Git remote:</strong>
