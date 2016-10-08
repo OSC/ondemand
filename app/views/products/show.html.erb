@@ -1,21 +1,26 @@
 <div class="page-header">
   <h2>
-    <%= @product.name %> <%= git_prompt @product.router.path %>
+    <%= @product.name %>
+    <%= git_prompt @product.router.path %>
   </h2>
 </div>
 
 <h3>Details</h3>
 
 <div class="row">
-  <div class="col-sm-2">
+  <div class="col-md-2 col-xs-3">
     <p>
       <%= image_tag app_icon_path(@product.app.name, @product.app.type, @product.app.owner), size: '100x100' %>
     </p>
-  </div><!-- /.col-sm-2 -->
-  <div class="col-sm-6">
+  </div><!-- /.col-md-2 -->
+  <div class="col-md-6 col-xs-9">
     <p>
       <strong>Title:</strong>
       <%= link_to @product.app.title, app_path(@product.app.name, @product.app.type, @product.app.owner), target: '_blank'%>
+    </p>
+    <p>
+      <strong>Directory:</strong>
+      <%= @product.router.path.realpath %>
     </p>
     <p>
       <strong>Git remote:</strong>
@@ -25,24 +30,24 @@
       <strong>Description:</strong><br/>
       <%= manifest_markdown(@product.app.manifest.description) %>
     </p>
-  </div><!-- /.col-sm-6 -->
-  <div class="col-sm-2">
+  </div><!-- /.col-md-6 -->
+  <div class="col-md-2 col-xs-6">
     <%= link_to 'Shell', OodAppkit.shell.url(path: @product.router.path).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
     <%= link_to 'Files', OodAppkit.files.url(path: @product.router.path).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
-  </div><!-- /.col-sm-2 -->
-  <div class="col-sm-2">
+  </div><!-- /.col-md-2 -->
+  <div class="col-md-2 col-xs-6">
     <button class="btn btn-default btn-block" data-toggle="cli" data-target="<%= cli_product_path('bundle_install', name: @product.name, type: @type) %>" data-title="Bundle Install" data-cmd="<code>scl enable rh-ruby22 nodejs010 -- bin/bundle install --path=vendor/bundle</code>">
       Bundle Install
     </button>
     <% if @type == :usr %>
     <button class="btn btn-default btn-block" data-toggle="cli" data-target="<%= cli_product_path('precompile_assets', name: @product.name, type: @type) %>" data-title="Precompile Assets" data-cmd="RAILS_ENV=production scl enable rh-ruby22 nodejs010 -- <<< 'bin/rake assets:clobber && bin/rake assets:precompile && bin/rake tmp:clear'">
-      Precompile Assets
+      Build Assets
     </button>
     <% end %>
     <button class="btn btn-default btn-block" data-toggle="cli" data-target="<%= cli_product_path('restart_app', name: @product.name, type: @type) %>" data-title="Restart App" data-cmd="mkdir -p tmp && touch tmp/restart.txt">
       Restart App
     </button>
-  </div><!-- /.col-sm-2 -->
+  </div><!-- /.col-md-2 -->
 
 </div><!-- /.row -->
 
