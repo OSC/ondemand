@@ -22,6 +22,7 @@ class Product
 
   validate :manifest_is_valid, on: [:show_app, :list_apps]
   validate :gemfile_is_valid, on: :show_app
+  validate :gems_installed, on: :show_app
 
   def app_does_not_exist
     errors.add(:name, "already exists as an app") if !name.empty? && router.path.exist?
@@ -41,6 +42,15 @@ class Product
     errors.add(:base, "Gemfile missing <code>rails_12factor</code> gem") unless gemfile_specs.detect {|s| s.name == "rails_12factor"}
     errors.add(:base, "Gemfile missing <code>dotenv-rails</code> gem") unless gemfile_specs.detect {|s| s.name == "dotenv-rails"}
     errors.add(:base, "Gemfile missing <code>ood_appkit</code> gem") unless gemfile_specs.detect {|s| s.name == "ood_appkit"}
+  end
+
+  def gems_installed
+    Dir.chdir(router.path) do
+      Bundler.with_clean_env do
+        _, s = Open3.capture2e("bin/bundle", "check")
+        errors.add(:base, "Install missing gems with <strong>Bundle Install</strong>") unless s.success?
+      end
+    end
   end
 
   class NotFound < StandardError; end
@@ -67,14 +77,6 @@ class Product
 
   def gemfile
     router.path.join("Gemfile")
-  end
-
-  def gemfile_lock
-    router.path.join("Gemfile.lock")
-  end
-
-  def gemfile_specs
-    @gemfile_specs ||= Bundler::LockfileParser.new(File.read(gemfile_lock)).specs
   end
 
   def persisted?
@@ -170,6 +172,8 @@ class Product
       true
     end
 
+    def gemfile_lock
+      router.path.join("Gemfile.lock")
     end
 
     def gemfile_specs
