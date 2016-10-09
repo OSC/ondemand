@@ -7,11 +7,16 @@ class UsrRouter
   end
 
   def self.apps(owner: OodSupport::Process.user.name, require_manifest: true)
-    base_path(owner: owner).children.map { |d|
-      ::OodApp.new(self.new(d.basename, owner))
-    }.select { |d|
-      d.valid_dir? && d.accessible? && (!require_manifest || d.manifest.valid?)
-    }
+    target = base_path(owner: owner)
+    if target.directory? && target.executable? && target.readable?
+      target.children.map { |d|
+        ::OodApp.new(self.new(d.basename, owner))
+      }.select { |d|
+        d.valid_dir? && d.accessible? && (!require_manifest || d.manifest.valid?)
+      }
+    else
+      []
+    end
   end
 
   def self.base_path(owner: OodSupport::Process.user.name)
