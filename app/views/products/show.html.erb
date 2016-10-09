@@ -8,12 +8,12 @@
 <h3>Details</h3>
 
 <div class="row">
-  <div class="col-md-2 col-xs-3">
+  <div class="col-md-2 col-sm-2 col-xs-12">
     <p>
       <%= image_tag app_icon_path(@product.app.name, @product.app.type, @product.app.owner), size: '100x100' %>
     </p>
   </div><!-- /.col-md-2 -->
-  <div class="col-md-6 col-xs-9">
+  <div class="col-md-6 col-sm-10 col-xs-12">
     <p>
       <strong>Title:</strong>
       <%= link_to @product.app.title, app_path(@product.app.name, @product.app.type, @product.app.owner), target: '_blank'%>
