@@ -29,7 +29,7 @@ jQuery ->
           <button class="close pull-right" data-dismiss="modal">&times;</button>
         """
         if @status != 200
-          $("#{id} .product-cli-body").html 'Error'
+          $("#{id} .product-cli-body").html "#{header}A fatal error has occurred"
       xhr.open 'PATCH', target
       xhr.setRequestHeader 'X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')
       xhr.setRequestHeader 'X-Requested-With', 'XMLHttpRequest'
