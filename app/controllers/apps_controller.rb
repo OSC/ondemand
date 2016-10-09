@@ -62,7 +62,8 @@ class AppsController < ApplicationController
     # raise ActionController::RoutingError.new('Not Found') unless @app.icon_path.file?
     # TODO: if icon file doesn't exist, return default image instead
 
-    send_file @app.icon_path, :type => 'image/png', :disposition => 'inline'
+    img = @app.icon_path.file? ? @app.icon_path : Rails.root.join("app", "assets", "images", "cogs-512x512.png")
+    send_file img, :type => 'image/png', :disposition => 'inline'
   end
 
   private
