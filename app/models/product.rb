@@ -45,6 +45,10 @@ class Product
   end
 
   def gems_installed
+    unless router.path.join("bin", "bundle").exist?
+      errors.add(:base, "App is missing <code>bin/bundle</code>")
+      return
+    end
     Dir.chdir(router.path) do
       Bundler.with_clean_env do
         _, s = Open3.capture2e("bin/bundle", "check")
