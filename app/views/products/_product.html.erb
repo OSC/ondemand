@@ -11,12 +11,7 @@
     </p>
     <% unless product.valid?(:list_apps) %>
     <div class="alert alert-danger">
-      <p>Some errors were detected after a quick scan:</p>
-      <ul class="rails-bootstrap-forms-error-summary">
-        <% product.errors.full_messages.each do |msg| %>
-        <li><%= msg.html_safe %></li>
-        <% end %>
-      </ul>
+      <p>Manifest <%= product.errors[:manifest].first %></p>
     </div>
     <% end %>
   </td>
