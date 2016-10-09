@@ -1,7 +1,7 @@
 <% modified_time = File.mtime(product.router.path) %>
 <tr>
   <td>
-    <%= image_tag app_icon_path(product.app.name, product.app.type, product.app.owner), size: '100x100' %>
+    <%= image_tag app_icon_path(product.app.name, product.app.type, product.app.owner), size: '100x100', title: product.app.icon_path %>
   </td>
   <td><%= product.name %></td>
   <td>
