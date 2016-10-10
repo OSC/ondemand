@@ -6,10 +6,17 @@ class DevRouter
     @owner = owner
   end
 
-  def self.apps(owner: OodSupport::Process.user.name)
-    base_path(owner: owner).children.map { |d|
-      ::OodApp.new(self.new(d.basename, owner))
-    }.select(&:valid_dir?).select(&:accessible?)
+  def self.apps(owner: OodSupport::Process.user.name, require_manifest: true)
+    target = base_path(owner: owner)
+    if target.directory? && target.executable? && target.readable?
+      target.children.map { |d|
+        ::OodApp.new(self.new(d.basename, owner))
+      }.select { |d|
+        d.valid_dir? && d.accessible? && (!require_manifest || d.manifest.valid?)
+      }
+    else
+      []
+    end
   end
 
   def self.base_path(owner: OodSupport::Process.user.name)
