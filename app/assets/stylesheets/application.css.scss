@@ -22,6 +22,14 @@
 // get in the way
 // $navbar-height: 20px;
 
+// styles to make a logo fill the navbar height if using a logo for the navbar title
+.navbar-brand.navbar-brand-logo{
+  padding: 0px;
+}
+.navbar-brand.navbar-brand-logo img{
+  height: 100%;
+}
+
 // Load up bootstrap/font-awesome style sheet
 @import "bootstrap";
 @import "font-awesome";
