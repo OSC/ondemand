@@ -19,7 +19,7 @@ class AppsController < ApplicationController
       @groups += OodAppGroup.usr_groups(@owner || UsrRouter.owners)
     elsif @type == "sys"
       @groups << OodAppGroup.new.tap { |g|
-        g.apps += SysRouter.apps
+        g.apps += SysRouter.apps(require_manifest: false)
         g.title = "System Installed Apps"
       }
     else
