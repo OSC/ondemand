@@ -6,8 +6,7 @@ class Product
     usr: UsrProduct
   }
 
-  # TEMPLATE = "https://raw.githubusercontent.com/AweSim-OSC/rails-application-template/remote_source/awesim.rb"
-  TEMPLATE = "/users/appl/jnicklas/Development/rails-application-template/awesim.rb"
+  TEMPLATE = "https://raw.githubusercontent.com/AweSim-OSC/rails-application-template/remote_source/awesim.rb"
 
   attr_accessor :name
   attr_accessor :found
