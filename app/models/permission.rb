@@ -1,11 +1,6 @@
 class Permission
   include ActiveModel::Model
 
-  PERMISSION_TYPES = {
-    user: UserPermission,
-    group: GroupPermission
-  }
-
   attr_accessor :product
   attr_accessor :name
   attr_accessor :owner
@@ -37,18 +32,25 @@ class Permission
   class NotFound < StandardError; end
 
   class << self
+    def permission_types
+      {
+        user: UserPermission,
+        group: GroupPermission
+      }
+    end
+
     def build(arguments = {})
       context = arguments.delete(:context)
       raise ArgumentError, "Need to specify context of permission" unless context
-      PERMISSION_TYPES[context].new arguments
+      permission_types[context].new arguments
     end
 
     def all(context, product)
-      PERMISSION_TYPES[context].all(product)
+      permission_types[context].all(product)
     end
 
     def find(context, product, name)
-      PERMISSION_TYPES[context].find(product, name)
+      permission_types[context].find(product, name)
     end
   end
 

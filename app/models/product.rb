@@ -1,11 +1,6 @@
 class Product
   include ActiveModel::Model
 
-  PRODUCT_TYPES = {
-    dev: DevProduct,
-    usr: UsrProduct
-  }
-
   TEMPLATE = "https://raw.githubusercontent.com/AweSim-OSC/rails-application-template/remote_source/awesim.rb"
 
   attr_accessor :name
@@ -59,18 +54,25 @@ class Product
   class NotFound < StandardError; end
 
   class << self
+    def product_types
+      {
+        dev: DevProduct,
+        usr: UsrProduct
+      }
+    end
+
     def build(arguments = {})
       type = arguments.delete(:type)
       raise ArgumentError, "Need to specify type of product" unless type
-      PRODUCT_TYPES[type].new arguments
+      product_types[type].new arguments
     end
 
     def all(type)
-      PRODUCT_TYPES[type].all
+      product_types[type].all
     end
 
     def find(type, name)
-      PRODUCT_TYPES[type].find(name)
+      product_types[type].find(name)
     end
   end
 
