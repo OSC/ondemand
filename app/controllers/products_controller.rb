@@ -4,6 +4,13 @@ class ProductsController < ApplicationController
   def index
     @type = params[:type].to_sym
     @products = Product.all(@type)
+
+    unless Product.stage(@type)
+      respond_to do |format|
+        format.html { render :register }
+        format.json { head :no_content }
+      end
+    end
   end
 
   # GET /products/1

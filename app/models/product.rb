@@ -74,6 +74,13 @@ class Product
     def find(type, name)
       product_types[type].find(name)
     end
+
+    def stage(type)
+      product_types[type].router.base_path.realdirpath.mkpath
+      true
+    rescue Errno::EACCES
+      false
+    end
   end
 
   def app

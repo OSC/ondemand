@@ -1,12 +1,16 @@
 class DevProduct < Product
   class << self
     def all
-      DevRouter.apps(require_manifest: false).map {|a| new(name: a.name, found: true)}
+      router.apps(require_manifest: false).map {|a| new(name: a.name, found: true)}
     end
 
     def find(name)
-      raise Product::NotFound unless DevRouter.new(name).path.exist?
+      raise Product::NotFound unless router.new(name).path.exist?
       new(name: name, found: true)
+    end
+
+    def router
+      DevRouter
     end
   end
 
@@ -15,7 +19,7 @@ class DevProduct < Product
   end
 
   def router
-    DevRouter.new(name) if name
+    self.class.router.new(name) if name
   end
 
   def permissions?

@@ -1,12 +1,16 @@
 class UsrProduct < Product
   class << self
     def all
-      UsrRouter.apps(require_manifest: false).map {|a| new(name: a.name, found: true)}
+      router.apps(require_manifest: false).map {|a| new(name: a.name, found: true)}
     end
 
     def find(name)
-      raise Product::NotFound unless UsrRouter.new(name).path.exist?
+      raise Product::NotFound unless router.new(name).path.exist?
       new(name: name, found: true)
+    end
+
+    def router
+      UsrRouter
     end
   end
 
@@ -15,6 +19,6 @@ class UsrProduct < Product
   end
 
   def router
-    UsrRouter.new(name) if name
+    self.class.router.new(name) if name
   end
 end
