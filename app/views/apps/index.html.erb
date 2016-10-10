@@ -1,1 +1,12 @@
-<%= render partial: "group", collection: @groups %>
+<% if @motd_file.exist? %>
+  <div class="row">
+    <div class="col-md-9">
+      <%= render partial: "group", collection: @groups %>
+    </div>
+    <div class="col-md-3">
+      <%= render partial: "dashboard/motd", locals: { motd: @motd_file  } %>
+    </div>
+  </div>
+<% else %>
+    <%= render partial: "group", collection: @groups %>
+<% end %>

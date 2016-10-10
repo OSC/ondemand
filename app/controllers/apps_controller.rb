@@ -25,6 +25,8 @@ class AppsController < ApplicationController
     else
       raise ActionController::RoutingError.new('Not Found') unless app.accessible?
     end
+
+    @motd_file = MotdFile.new
   end
 
   def show
