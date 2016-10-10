@@ -32,7 +32,8 @@ class UsrRouter
 
   def self.owners
     # ood
-    Pathname.new("/var/www/ood/apps/usr").children(false).map(&:to_s)
+    target = Pathname.new("/var/www/ood/apps/usr")
+    target.children(false).map(&:to_s) if target.directory? && target.executable? && target.readable?
 
     # dev
     # Rails.root.join("data", "apps","usr").children(false).map(&:to_s)
