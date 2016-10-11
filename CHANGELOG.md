@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.0.13 (2016-10-11)
+
 Features:
 
   - add query parameter that forces file to be downloaded by browser
