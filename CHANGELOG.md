@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.0.4 (2016-10-11)
+
 Bugfixes:
 
   - fixed `nginx_stage pun` call with included `sub_uri` option
