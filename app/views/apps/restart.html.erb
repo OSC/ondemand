@@ -1,0 +1,10 @@
+<% content_for(:head) do %>
+  <meta http-equiv="refresh" content="5;url=<%= restart_url %>">
+<% end %>
+
+<h2>Restart Web Server</h2>
+
+<p class="lead">
+Your group membership has changed, which affects your access to apps. Your dashboard should restart automatically.
+If it doesn't please, click: <%= link_to "restart web server", restart_url %>.
+</p>

@@ -75,6 +75,7 @@ Configuration is done within the .env file. Look at the .env file to see an exam
 To brand the site, you can change the title, colors, and logo of the dashboard app:
 
 * `OOD_DASHBOARD_TITLE="OSC OnDemand <sup>beta</sub>"` - set the title of the dashboard; this can include HTML tags, such as superscript text "beta" or "1.0"
+* `OOD_DASHBOARD_HEADER_IMG_LOGO=/public/logo.png"` - use a logo instead of text for the nav bar title
 * Bootstrap variables are overridden using OodAppkit (https://github.com/OSC/ood_appkit#override-bootstrap-variables) so the nav bar colors can be modified to match the brand of the site. This is an example of changing the nav bar color to OH-TECH colors:
 
     ```

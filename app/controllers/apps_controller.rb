@@ -3,28 +3,37 @@ require 'ostruct'
 class AppsController < ApplicationController
 
   def index
-    @type = params[:type]
-    @owner = params[:owner]
-    @title = nil
-    @groups = []
-
-    # once these work, we can decide what to do
-    # as far as mixing and matching lists of apps
-    if @type == "dev"
-      @groups << OodAppGroup.new.tap { |g|
-        g.apps += DevRouter.apps
-        g.title = "Your Dev Apps"
-      }
-    elsif @type == "usr"
-      @groups += OodAppGroup.usr_groups(@owner || UsrRouter.owners)
-    elsif @type == "sys"
-      @groups << OodAppGroup.new.tap { |g|
-        g.apps += SysRouter.apps
-        g.title = "System Installed Apps"
-      }
+    if OodSupport::Process.groups_changed?
+      redirect_to apps_restart_url
     else
-      raise ActionController::RoutingError.new('Not Found') unless app.accessible?
+      @type = params[:type]
+      @owner = params[:owner]
+      @title = nil
+      @groups = []
+
+      # once these work, we can decide what to do
+      # as far as mixing and matching lists of apps
+      if @type == "dev"
+        @groups << OodAppGroup.new.tap { |g|
+          g.apps += DevRouter.apps
+          g.title = "Your Dev Apps"
+        }
+      elsif @type == "usr"
+        @groups += OodAppGroup.usr_groups(@owner || UsrRouter.owners)
+      elsif @type == "sys"
+        @groups << OodAppGroup.new.tap { |g|
+          g.apps += SysRouter.apps(require_manifest: false)
+          g.title = "System Installed Apps"
+        }
+      else
+        raise ActionController::RoutingError.new('Not Found') unless app.accessible?
+      end
+
+      @motd_file = MotdFile.new
     end
+  end
+
+  def restart
   end
 
   def show

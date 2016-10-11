@@ -6,6 +6,8 @@
   <%= stylesheet_link_tag    'application', media: 'all' %>
   <%= javascript_include_tag 'application' %>
   <%= csrf_meta_tags %>
+
+  <%= yield :head %>
 </head>
 <body>
   <header>
@@ -13,7 +15,11 @@
     <div class="container-fluid">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-9" aria-expanded="false"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
-        <a class="navbar-brand" href="<%= root_path %>"><%= OodAppkit.dashboard.title.html_safe %></a>
+        <% if ENV['OOD_DASHBOARD_HEADER_IMG_LOGO'].present? %>
+          <a class="navbar-brand navbar-brand-logo" href="<%= root_path %>"><img src="<%= ENV['OOD_DASHBOARD_HEADER_IMG_LOGO'] %>"></a>
+        <% else %>
+          <a class="navbar-brand" href="<%= root_path %>"><%= OodAppkit.dashboard.title.html_safe %></a>
+        <% end %>
       </div>
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
         <ul class="nav navbar-nav">

@@ -11,11 +11,17 @@ class SysRouter
     OodApp.new(SysRouter.new(name)).valid_dir?
   end
 
-  def self.apps
-    base_path.children.map { |d|
-      # ::OodApp.new(self.new(d.basename, owner))
-      ::OodApp.new(self.new(d.basename))
-    }.select(&:valid_dir?).select(&:accessible?)
+  def self.apps(require_manifest: true)
+    target = base_path
+    if target.directory? && target.executable? && target.readable?
+      base_path.children.map { |d|
+        ::OodApp.new(self.new(d.basename))
+      }.select { |d|
+        d.valid_dir? && d.accessible? && (!require_manifest || d.manifest.valid?)
+      }
+    else
+      []
+    end
   end
 
   def initialize(name)
