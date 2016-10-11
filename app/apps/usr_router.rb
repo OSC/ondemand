@@ -31,15 +31,19 @@ class UsrRouter
   end
 
   def self.owners
+    owners = []
+
     # ood
     target = Pathname.new("/var/www/ood/apps/usr")
-    target.children(false).map(&:to_s) if target.directory? && target.executable? && target.readable?
+    owners = target.children(false).map(&:to_s) if target.directory? && target.executable? && target.readable?
 
     # dev
-    # Rails.root.join("data", "apps","usr").children(false).map(&:to_s)
+    # owners = Rails.root.join("data", "apps","usr").children(false).map(&:to_s)
 
     # awesim
-    # ["awe0011", "efranz", "jnicklas"]
+    # owners = ["awe0011", "efranz", "jnicklas"]
+
+    owners
   end
 
   def base_path
