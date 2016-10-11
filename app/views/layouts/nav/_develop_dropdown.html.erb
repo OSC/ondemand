@@ -4,9 +4,9 @@
 
     <% if ENV['OOD_APP_SHARING'].present? %>
     <li><a href="<%= wiki_path('Home') %>"><i class="fa fa-book"></i> Developer Documentation</a></li>
-    <li><a href="<%=  products_path(type: "dev") %>"><i class="fa fa-gear"></i> Your Dev Apps</a></li>
+    <li><a href="<%=  products_path(type: "dev") %>"><i class="fa fa-gear"></i> My Sandbox Apps (Development)</a></li>
     <%# FIXME: apps_path helper ! work... but linking to other location anyways in future... %>
-    <li><a href="<%= products_path(type: "usr") %>"><i class="fa fa-share-alt"></i> Your Shared Apps</a></li>
+    <li><a href="<%= products_path(type: "usr") %>"><i class="fa fa-share-alt"></i> My Shared Apps (Production)</a></li>
     <% end %>
   </ul>
 </li>
