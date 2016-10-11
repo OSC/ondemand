@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     # is there a cleaner approach to this? an app should be a resource
     get "apps(/index(/:type(/:owner)))" => "apps#index", as: "apps", defaults: { type: "usr" }
     get "apps/icon/:name(/:type(/:owner))" => "apps#icon", as: "app_icon", defaults: { type: "sys" }
+    get "apps/restart" => "apps#restart"
 
     root "apps#index", defaults: { type: "usr" }
 

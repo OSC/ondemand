@@ -29,6 +29,9 @@ class AppsController < ApplicationController
     @motd_file = MotdFile.new
   end
 
+  def restart
+  end
+
   def show
     set_app
 
