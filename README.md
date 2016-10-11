@@ -41,6 +41,7 @@ Rename the `.env.ondemand` file to `.env` and modify paths for the following env
 ```
 OOD_FILE_EDITOR='/pun/sys/file-editor/edit'
 OOD_SHELL='/pun/sys/shell/ssh/default'
+OOD_DOWNLOAD='pun/download'
 ```
 
 ```
