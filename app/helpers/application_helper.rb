@@ -7,6 +7,10 @@ module ApplicationHelper
     OodAppkit::Clusters.new(clusters.select(&:login_server?))
   end
 
+  def restart_url
+    "/nginx/stop?redir=#{root_path}"
+  end
+
 
   def support_url
     ENV['OOD_DASHBOARD_SUPPORT_URL'] || "#"
