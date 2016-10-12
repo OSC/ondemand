@@ -30,9 +30,9 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
 Log in as `wiag` user
 
 ```
-$ cd /nfs/01/wiag/PZS0645/ood/apps/sys
+$ cd ~wiag/ood_portals/ondemand/sys
 $ git clone git@github.com:OSC/ood-fileexplorer.git files
-$ git checkout v1.0.5 # or whatever the lastest release tag is
+$ git checkout v1.1.1 # or whatever the lastest release tag is
 $ touch .env
 ```
 
