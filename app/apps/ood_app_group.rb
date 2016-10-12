@@ -9,13 +9,12 @@ class OodAppGroup
     apps.count > 0
   end
 
-  # TODO: write lots of tests so we can refactor this well...
+  # Givin a list of owners, we will build a list of AppGroups
+  # where each app group is a list of apps that user has shared
   def self.usr_groups(owners)
-    # TODO: this gets much more complex when we have apps specifying
-    # which groups they should be filtered under
     Array(owners).map do |o|
       g = OodAppGroup.new
-      g.title = o
+      g.title = (Etc.getpwnam(o).gecos || o)
       g.subtitle = o
       g.apps = UsrRouter.apps(owner: o)
       g
