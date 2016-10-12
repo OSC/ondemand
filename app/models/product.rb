@@ -131,8 +131,9 @@ class Product
   end
 
   def destroy
-    `kill -9 $(lsof -t #{router.path}) && sleep 1`
-    FileUtils.rm_rf(router.path)
+    trash_path = self.class.router.base_path.join(".trash")
+    trash_path.mkpath
+    FileUtils.mv router.path, trash_path.join("#{Time.now.localtime.strftime('%Y%m%dT%H%M%S')}_#{name}")
   end
 
   def permissions?
