@@ -27,6 +27,11 @@ class OodApp
     manifest.name.empty? ? name.titleize : manifest.name
   end
 
+  # returns app group title or nil if no group
+  def group
+    # TODO: delegate to manifest(?)
+  end
+
   def has_gemfile?
     path.join("Gemfile").file? && path.join("Gemfile.lock").file?
   end
