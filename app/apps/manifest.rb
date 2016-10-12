@@ -1,7 +1,7 @@
 require 'yaml'
 
 class Manifest
-  attr_reader :name, :provider, :description
+  attr_reader :name, :provider, :description, :group
 
   class InvalidContentError < StandardError
     def initialize
@@ -49,7 +49,7 @@ description: |
   end
 
   def defaults
-    {"name" => "", "provider" => "", "description" => ""}
+    {"name" => "", "provider" => "", "description" => "", "group" => ""}
   end
 
   def initialize(opts)
@@ -61,6 +61,7 @@ description: |
     @name = opts.fetch("name")
     @provider = opts.fetch("provider")
     @description = opts.fetch("description")
+    @group = opts.fetch("group")
   end
 
   def valid?

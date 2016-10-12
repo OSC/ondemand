@@ -29,7 +29,7 @@ class OodApp
 
   # returns app group title or nil if no group
   def group
-    # TODO: delegate to manifest(?)
+    manifest.group
   end
 
   def has_gemfile?
