@@ -9,13 +9,11 @@ This Rails app doesn't use a database.
 1\. First enable software collections, checkout the code, and install the dependencies:
 
 ```
-scl enable nodejs010 rh-ruby22 bash
-
 cd /path/to/build/directory/sys
 git clone https://github.com/OSC/ood-ondemand.git dashboard
 cd dashboard
 git checkout tags/v1.0.3 # latest version
-bin/bundle install --path vendor/bundle
+scl enable nodejs010 rh-ruby22 -- bin/bundle install --path vendor/bundle
 ```
 
 2\. At this point, configure the app and its branding by creating a .env.local (or copying from a .env.local template i.e. .env.local.osc) and modifying the values of the environment variables. See below for details on configuration and branding.
@@ -29,14 +27,14 @@ OOD_DATAROOT=$HOME/ondemand/data/$APP_TOKEN
 3\. After updating the .env.local file, build the assets to complete the installation. Make sure that `RAILS_RELATIVE_URL_ROOT` is unset before running this command, as this will then be set by the `dot-env` gem, as `RAILS_RELATIVE_URL_ROOT` is set in `.env.production`.
 
 ```
-RAILS_ENV=production bin/rake assets:precompile
-bin/rake tmp:clear
+scl enable nodejs010 rh-ruby22 -- RAILS_ENV=production bin/rake assets:precompile
+scl enable nodejs010 rh-ruby22 -- bin/rake tmp:clear
 ```
 
 4\. Next we need to build our staging app (change `OOD_PORTAL` to match the portal this dashboard is setup for):
 
 ```sh
-OOD_APP=my_app OOD_PORTAL=ondemand scl enable git19 rh-ruby22 nodejs010 -- /bin/bash <(cat <<\EOF
+OOD_APP=my_app OOD_PORTAL=ondemand scl enable rh-ruby22 nodejs010 -- /bin/bash <(cat <<\EOF
   dir=$(mktemp -d) &&
   cd ${dir} &&
   gem install -N -i . rails -v '~> 4.2' &&
