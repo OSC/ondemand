@@ -19,7 +19,7 @@ class AppsController < ApplicationController
           g.title = "Your Dev Apps"
         }
       elsif @type == "usr"
-        @groups += OodAppGroup.usr_groups(@owner || UsrRouter.owners)
+        @groups += OodAppGroup.groups_for(apps: UsrRouter.all_apps(owners: @owner || UsrRouter.owners))
       elsif @type == "sys"
         @groups << OodAppGroup.new.tap { |g|
           g.apps += SysRouter.apps(require_manifest: false)

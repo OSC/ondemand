@@ -1,6 +1,6 @@
 class OodApp
   attr_reader :router
-  delegate :owner, :url, :type, :path, to: :router
+  delegate :owner, :caption, :url, :type, :path, to: :router
 
   PROTECTED_NAMES = ["shared_apps", "cgi-bin", "tmp"]
 
@@ -29,6 +29,10 @@ class OodApp
 
   def has_gemfile?
     path.join("Gemfile").file? && path.join("Gemfile.lock").file?
+  end
+
+  def category
+    manifest.category.empty? ? router.category : manifest.category
   end
 
   def bundler_helper

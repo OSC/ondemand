@@ -3,5 +3,8 @@
     <%= image_tag app_icon_path(app.name, app.type, app.owner), size: '100x100' %>
   </td>
   <td><%= link_to app.title, app_path(app.name, app.type, app.owner) %></td>
-  <td><%= manifest_markdown(app.manifest.description) %></td>
+  <td>
+    <%= content_tag(:p, content_tag(:strong, app.caption)) if app.caption %>
+    <%= manifest_markdown(app.manifest.description) %>
+  </td>
 </tr>
