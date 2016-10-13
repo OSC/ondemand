@@ -40,6 +40,10 @@ class SysRouter
     :sys
   end
 
+  def caption
+    "System Installed App"
+  end
+
   def url
     "/pun/sys/#{name}"
   end

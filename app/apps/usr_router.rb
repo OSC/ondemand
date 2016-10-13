@@ -6,6 +6,14 @@ class UsrRouter
     @owner = owner
   end
 
+  def caption
+    "Shared by #{owner_title} (#{owner})"
+  end
+
+  def owner_title
+    @owner_title ||= (Etc.getpwnam(owner).gecos || owner)
+  end
+
   def self.apps(owner: OodSupport::Process.user.name, require_manifest: true)
     target = base_path(owner: owner)
     if target.directory? && target.executable? && target.readable?

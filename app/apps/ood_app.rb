@@ -1,6 +1,6 @@
 class OodApp
   attr_reader :router
-  delegate :owner, :url, :type, :path, to: :router
+  delegate :owner, :caption, :url, :type, :path, to: :router
 
   PROTECTED_NAMES = ["shared_apps", "cgi-bin", "tmp"]
 
