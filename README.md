@@ -9,12 +9,12 @@ This Rails app doesn't use a database.
 1\. First enable software collections, checkout the code, and install the dependencies:
 
 ```
-scl enable nodejs010 rh-ruby22 git19 bash
+scl enable nodejs010 rh-ruby22 bash
 
 cd /path/to/build/directory/sys
-git clone clone git@github.com:OSC/ood-ondemand.git dashboard
+git clone https://github.com/OSC/ood-ondemand.git dashboard
 cd dashboard
-git checkout v1.0.3 # latest version
+git checkout tags/v1.0.3 # latest version
 bin/bundle install --path vendor/bundle
 ```
 
