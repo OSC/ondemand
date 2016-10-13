@@ -27,7 +27,7 @@ class UsrRouter
   #
   # @param owners [String, Array<String>] owner or owners to get apps for
   # @return [Array<OodApp>] array of apps that the specified owner(s) have
-  def self.all_apps(owners: owners)
+  def self.all_apps(owners:)
     Array(owners).map { |o| UsrRouter.apps(owner: o) }.flatten
   end
 
