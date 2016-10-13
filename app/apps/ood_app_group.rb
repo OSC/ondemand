@@ -1,8 +1,9 @@
 class OodAppGroup
   attr_accessor :apps, :title, :subtitle
 
-  def initialize
-    @apps = []
+  def initialize(title: "", apps: [])
+    @apps = apps
+    @title = title
   end
 
   def has_apps?
