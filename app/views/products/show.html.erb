@@ -19,8 +19,10 @@
       <%= link_to @product.app.title, app_path(@product.app.name, @product.app.type, @product.app.owner), target: '_blank'%>
     </p>
     <p>
-      <strong>Active users:</strong>
-      <%= @product.running_users.size %>
+      <span data-toggle="popover" data-trigger="hover" data-placement="bottom" title="Active Users" data-content="<%= @product.active_users.join("<br />") %>" data-html="true">
+        <strong>Active users:</strong>
+        <%= @product.active_users.size %>
+      </span>
     </p>
     <p>
       <strong>Directory:</strong>

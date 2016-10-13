@@ -6,6 +6,9 @@
   <td><%= product.name %></td>
   <td>
     <%= link_to product.title, app_path(product.app.name, product.app.type, product.app.owner) %>
+    <% unless product.active_users.empty? %>
+      <span class="label label-default pull-right"><%= pluralize product.active_users.size, "active user" %></span>
+    <% end %>
     <p>
       <%= manifest_markdown(product.description) %>
     </p>

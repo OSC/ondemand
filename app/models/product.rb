@@ -156,9 +156,8 @@ class Product
     permissions(:group)
   end
 
-  def running_users
-    out = `ps -o uid= -p $(pgrep -f '^Passenger .*#{Regexp.quote(router.path.realdirpath.to_s)}') 2> /dev/null | sort | uniq`
-    out.split.map(&:to_i).map do |id|
+  def active_users
+    @active_users ||= `ps -o uid= -p $(pgrep -f '^Passenger .*#{Regexp.quote(router.path.realdirpath.to_s)}') 2> /dev/null | sort | uniq`.split.map(&:to_i).map do |id|
       OodSupport::User.new id
     end
   end
