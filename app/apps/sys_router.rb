@@ -44,6 +44,10 @@ class SysRouter
     "System Installed App"
   end
 
+  def category
+    "System Installed Apps"
+  end
+
   def url
     "/pun/sys/#{name}"
   end

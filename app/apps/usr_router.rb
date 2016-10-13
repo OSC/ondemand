@@ -10,6 +10,10 @@ class UsrRouter
     "Shared by #{owner_title} (#{owner})"
   end
 
+  def category
+    owner_title
+  end
+
   def owner_title
     @owner_title ||= (Etc.getpwnam(owner).gecos || owner)
   end

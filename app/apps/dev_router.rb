@@ -1,10 +1,11 @@
 class DevRouter
-  attr_reader :name, :owner, :caption
+  attr_reader :name, :owner, :caption, :category
 
   def initialize(name, owner=OodSupport::Process.user.name)
     @name = name
     @owner = owner
     @caption = "Sandbox App"
+    @category = "Sandbox Apps"
   end
 
   def self.apps(owner: OodSupport::Process.user.name, require_manifest: true)
