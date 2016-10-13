@@ -27,13 +27,12 @@ class OodApp
     manifest.name.empty? ? name.titleize : manifest.name
   end
 
-  # returns app group title or nil if no group
-  def group
-    manifest.group
-  end
-
   def has_gemfile?
     path.join("Gemfile").file? && path.join("Gemfile.lock").file?
+  end
+
+  def category
+    manifest.category.empty? ? router.category : manifest.category
   end
 
   def bundler_helper

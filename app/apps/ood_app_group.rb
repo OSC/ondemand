@@ -29,7 +29,7 @@ class OodAppGroup
     groups = {}
 
     apps.each do |app|
-      key = app.group
+      key = app.category
       key = nil if key == "" # group "" and nil together
 
       unless groups.has_key?(key)

@@ -1,7 +1,7 @@
 require 'yaml'
 
 class Manifest
-  attr_reader :name, :provider, :description, :group
+  attr_reader :name, :description, :category, :subcategory
 
   class InvalidContentError < StandardError
     def initialize
@@ -24,6 +24,7 @@ description: |
 
   * [Company Website](https://www.osc.edu)
 
+category: OSC
       )
     end
   end
@@ -49,7 +50,7 @@ description: |
   end
 
   def defaults
-    {"name" => "", "provider" => "", "description" => "", "group" => ""}
+    {"name" => "", "description" => "", "category" => "", "subcategory" => ""}
   end
 
   def initialize(opts)
@@ -59,9 +60,9 @@ description: |
     opts = defaults.merge(opts) { |key, oldval, newval| newval || oldval  }
 
     @name = opts.fetch("name")
-    @provider = opts.fetch("provider")
     @description = opts.fetch("description")
-    @group = opts.fetch("group")
+    @category = opts.fetch("category")
+    @subcategory = opts.fetch("subcategory")
   end
 
   def valid?
