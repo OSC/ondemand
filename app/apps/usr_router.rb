@@ -18,6 +18,10 @@ class UsrRouter
     @owner_title ||= (Etc.getpwnam(owner).gecos || owner)
   end
 
+  def self.all_apps(owners: owners)
+    Array(owners).map { |o| UsrRouter.apps(owner: o) }.flatten
+  end
+
   def self.apps(owner: OodSupport::Process.user.name, require_manifest: true)
     target = base_path(owner: owner)
     if target.directory? && target.executable? && target.readable?

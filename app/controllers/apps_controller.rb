@@ -19,8 +19,7 @@ class AppsController < ApplicationController
           g.title = "Your Dev Apps"
         }
       elsif @type == "usr"
-        @groups += OodAppGroup.usr_groups(@owner || UsrRouter.owners)
-        @groups = @groups.map(&:split).flatten.sort_by { |g| g.title  }
+        @groups += OodAppGroup.groups_for(apps: UsrRouter.all_apps(owners: @owner || UsrRouter.owners))
       elsif @type == "sys"
         @groups << OodAppGroup.new.tap { |g|
           g.apps += SysRouter.apps(require_manifest: false)
