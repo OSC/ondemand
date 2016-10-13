@@ -1,5 +1,5 @@
 class OodAppGroup
-  attr_accessor :apps, :title, :subtitle
+  attr_accessor :apps, :title
 
   def initialize(title: "", apps: [])
     @apps = apps
