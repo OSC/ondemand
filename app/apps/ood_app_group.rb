@@ -15,6 +15,6 @@ class OodAppGroup
       app.category
     }.map { |k,v|
       OodAppGroup.new(title: k, apps: v)
-    }
+    }.sort_by { |g| g.title }
   end
 end
