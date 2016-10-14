@@ -66,6 +66,7 @@ Configuration is done within the .env file. Look at the .env file to see an exam
 * `OOD_PORTAL="ondemand"` - the lowercase portal name that matches the name of the installation directory and the data directory created in the user's home directory; this should also be set in the path for `OOD_DATAROOT` in the `.env.production` file
 * `MOTD_PATH="/etc/motd"` - optional: the message of the day, if you have one (see below)
 * `OOD_DASHBOARD_DOCS_URL` - URL to access OnDemand documentation for users
+* `OOD_DASHBOARD_DEV_DOCS_URL` - URL to access OnDemand Developer documentation for app developers
 * `OOD_DASHBOARD_PASSWD_URL` - URL to access page to change your HPC password
 * `OOD_DASHBOARD_SUPPORT_URL` - URL for users to get HPC support
 * `OOD_DASHBOARD_SHOW_ALL_APPS=false` - for OSC OnDemand this is currently set to true - for other Open OnDemand instances this should be set to false; this is a temporary solution to switch between showing only the Files and/or Clusters dropdowns in the menu (for shell access) versus showing all the applications currently deployed in OSC OnDemand, but not yet available in Open Source. This will soon be replaced by a more flexible solution for controlling the applicaiton menu hierarchy.
