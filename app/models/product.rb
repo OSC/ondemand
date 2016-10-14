@@ -139,8 +139,8 @@ class Product
   end
 
   def destroy
-    trash_path.mkpath
-    FileUtils.mv router.path, trash_path.join("#{Time.now.localtime.strftime('%Y%m%dT%H%M%S')}_#{name}")
+    self.class.trash_path.mkpath
+    FileUtils.mv router.path, self.class.trash_path.join("#{Time.now.localtime.strftime('%Y%m%dT%H%M%S')}_#{name}")
   end
 
   def permissions?
