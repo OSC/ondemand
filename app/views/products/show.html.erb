@@ -126,7 +126,7 @@
 
 <%= link_to 'Edit', edit_product_path(@product.name, type: @type), class: 'btn btn-default' %>
 <%= link_to 'Back', products_path(type: @type), class: 'btn btn-default' %>
-<%= link_to 'Delete App', product_path(@product.name, type: @type), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger pull-right' %>
+<%= link_to 'Delete App', product_path(@product.name, type: @type), method: :delete, data: { confirm: 'This will move the product to the trash. Any data users may have from this app will become inaccessible after this. Be sure you know what you are doing!' }, class: 'btn btn-danger pull-right' %>
 
 <div class="modal fade" id="productCliModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-lg" role="document">

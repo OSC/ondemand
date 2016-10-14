@@ -1,3 +1,5 @@
+<% product_class = Product.product_types[@type] %>
+
 <h2 class="apps-section-header">
   <%= products_title(@type) %>
 </h2>
@@ -5,8 +7,15 @@
 <p>
   <%= link_to 'New Product', new_product_path(type: @type), class: 'btn btn-default' %>
   <span class="pull-right">
-    <%= link_to 'Launch Shell', OodAppkit.shell.url(path: @type == :dev ? DevRouter.base_path : UsrRouter.base_path.realpath).to_s, target: '_blank', class: 'btn btn-default' %>
-    <%= link_to 'Launch Files', OodAppkit.files.url(path: @type == :dev ? DevRouter.base_path : UsrRouter.base_path.realpath).to_s, target: '_blank', class: 'btn btn-default' %>
+    <%= link_to 'Launch Shell', OodAppkit.shell.url(path: product_class.router.base_path.realpath).to_s, target: '_blank', class: 'btn btn-default' %>
+    <%= link_to 'Launch Files', OodAppkit.files.url(path: product_class.router.base_path.realpath).to_s, target: '_blank', class: 'btn btn-default' %>
+    <% unless product_class.trash_contents.empty? %>
+      <%= link_to "Open Trash <span class=\"badge\">#{product_class.trash_contents.size}</span>".html_safe,
+          OodAppkit.files.url(path: product_class.trash_path.realpath).to_s,
+          target: '_blank',
+          class: 'btn btn-default'
+      %>
+    <% end %>
   </span>
 </p>
 

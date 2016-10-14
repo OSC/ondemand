@@ -27,5 +27,5 @@
     <%= link_to 'Details', product_path(product.name, type: @type), class: 'btn btn-info btn-block' %>
     <%= link_to 'Edit', edit_product_path(product.name, type: @type), class: 'btn btn-default btn-block' %>
   </td>
-  <td><%= link_to 'Delete', product_path(product.name, type: @type), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger pull-right' %></td>
+  <td><%= link_to 'Delete', product_path(product.name, type: @type), method: :delete, data: { confirm: 'This will move the product to the trash. Any data users may have from this app will become inaccessible after this. Be sure you know what you are doing!' }, class: 'btn btn-danger pull-right' %></td>
 </tr>

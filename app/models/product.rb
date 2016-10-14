@@ -81,6 +81,14 @@ class Product
     rescue Errno::EACCES
       false
     end
+
+    def trash_path
+      router.base_path.join(".trash")
+    end
+
+    def trash_contents
+      trash_path.directory? ? trash_path.children : []
+    end
   end
 
   def app
@@ -131,7 +139,6 @@ class Product
   end
 
   def destroy
-    trash_path = self.class.router.base_path.join(".trash")
     trash_path.mkpath
     FileUtils.mv router.path, trash_path.join("#{Time.now.localtime.strftime('%Y%m%dT%H%M%S')}_#{name}")
   end
