@@ -10,7 +10,10 @@ class ApplicationController < ActionController::Base
   end
 
   def set_logout_url
-    @logout_url = "/oidc?logout="
-    @logout_url = @logout_url + ERB::Util.u(request.base_url)
+    if ENV['OOD_DASHBOARD_LOGOUT_URL'].present?
+      @logout_url = (ENV['OOD_DASHBOARD_LOGOUT_URL'] % { login: ERB::Util.u(request.base_url) })
+    else
+      @logout_url = nil
+    end
   end
 end
