@@ -81,6 +81,14 @@ class Product
     rescue Errno::EACCES
       false
     end
+
+    def trash_path
+      router.base_path.join(".trash")
+    end
+
+    def trash_contents
+      trash_path.directory? ? trash_path.children : []
+    end
   end
 
   def app
@@ -131,8 +139,8 @@ class Product
   end
 
   def destroy
-    `kill -9 $(lsof -t #{router.path}) && sleep 1`
-    FileUtils.rm_rf(router.path)
+    self.class.trash_path.mkpath
+    FileUtils.mv router.path, self.class.trash_path.join("#{Time.now.localtime.strftime('%Y%m%dT%H%M%S')}_#{name}")
   end
 
   def permissions?
@@ -153,6 +161,12 @@ class Product
 
   def groups
     permissions(:group)
+  end
+
+  def active_users
+    @active_users ||= `ps -o uid= -p $(pgrep -f '^Passenger .*#{Regexp.quote(router.path.realdirpath.to_s)}') 2> /dev/null | sort | uniq`.split.map(&:to_i).map do |id|
+      OodSupport::User.new id
+    end
   end
 
   private

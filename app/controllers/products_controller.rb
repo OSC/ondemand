@@ -74,7 +74,7 @@ class ProductsController < ApplicationController
 
     @product.destroy
     respond_to do |format|
-      format.html { redirect_to products_url(type: @type), notice: 'Product was successfully destroyed.' }
+      format.html { redirect_to products_url(type: @type), notice: 'Product was successfully moved to the trash.' }
       format.json { head :no_content }
     end
   end

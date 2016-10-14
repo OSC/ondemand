@@ -19,6 +19,12 @@
       <%= link_to @product.app.title, app_path(@product.app.name, @product.app.type, @product.app.owner), target: '_blank'%>
     </p>
     <p>
+      <span data-toggle="popover" data-trigger="hover" data-placement="bottom" title="Active Users" data-content="<%= @product.active_users.join("<br />") %>" data-html="true">
+        <strong>Active users:</strong>
+        <%= @product.active_users.size %>
+      </span>
+    </p>
+    <p>
       <strong>Directory:</strong>
       <%= @product.router.path.realpath %>
     </p>
@@ -32,7 +38,7 @@
     </p>
   </div><!-- /.col-md-6 -->
   <div class="col-md-2 col-xs-6">
-    <%= link_to 'Shell', OodAppkit.shell.url(path: @product.router.path).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
+    <%= link_to 'Shell', OodAppkit.shell.url(host: ENV['OOD_DEV_SSH_HOST'], path: @product.router.path).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
     <%= link_to 'Files', OodAppkit.files.url(path: @product.router.path).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
   </div><!-- /.col-md-2 -->
   <div class="col-md-2 col-xs-6">
@@ -120,7 +126,20 @@
 
 <%= link_to 'Edit', edit_product_path(@product.name, type: @type), class: 'btn btn-default' %>
 <%= link_to 'Back', products_path(type: @type), class: 'btn btn-default' %>
-<%= link_to 'Delete App', product_path(@product.name, type: @type), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger pull-right' %>
+<%= link_to 'Delete App',
+  product_path(@product.name, type: @type),
+  method: :delete,
+  data: {
+    original_title: 'Are you ABSOLUTELY sure?',
+    confirm: '<div class="alert alert-warning">Unexpected bad things will happen if you don\'t read this!</div><p>This will move the product to the trash. Any users currently running this app will experience breaking behavior. Any past or present users of this app will be unable to access their data for this app. Be sure you know what you are doing!</p>'.html_safe,
+    verify: @product.name,
+    verify_text: 'Please type in the directory name of the app to confirm.',
+    commit: 'I understand the consequences, delete this app',
+    commit_class: 'btn-danger btn-block',
+    cancel_class: 'hide'
+  },
+  class: 'btn btn-danger pull-right'
+%>
 
 <div class="modal fade" id="productCliModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-lg" role="document">

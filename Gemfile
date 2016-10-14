@@ -47,6 +47,7 @@ gem 'browser', '~> 2.2'
 gem 'addressable', '~> 2.4'
 gem 'bootstrap_form', '~> 2.4'
 gem 'jquery-datatables-rails', '~> 3.4'
+gem 'data-confirm-modal', '~> 1.2'
 gem 'rails_12factor', group: :production
 gem 'mocha', '~> 1.1', group: :test
 

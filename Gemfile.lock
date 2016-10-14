@@ -55,6 +55,8 @@ GEM
       execjs
     coffee-script-source (1.10.0)
     concurrent-ruby (1.0.2)
+    data-confirm-modal (1.2.0)
+      railties (>= 3.0)
     dotenv (2.1.1)
     dotenv-rails (2.1.1)
       dotenv (= 2.1.1)
@@ -181,6 +183,7 @@ DEPENDENCIES
   browser (~> 2.2)
   byebug
   coffee-rails (~> 4.1.0)
+  data-confirm-modal (~> 1.2)
   dotenv-rails (~> 2.0)
   font-awesome-sass (~> 4.6)
   jbuilder (~> 2.0)
