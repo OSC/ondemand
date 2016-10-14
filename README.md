@@ -83,7 +83,7 @@ BOOTSTRAP_NAVBAR_INVERSE_BG='rgb(200,16,46)'
 BOOTSTRAP_NAVBAR_INVERSE_LINK_COLOR='rgb(255,255,255)'
 ```
 
-When changing these, you will need to clear assets, even in development by running `bin/rake assets:clobber` or `RAILS_ENV=production bin/rake assets:clobber`, as these are set in a SSCSS file that is also an erb file, and Sprockets will not recognize when the dotenv files are modified.
+* When changing these, you will need to clear assets, even in development by running `bin/rake assets:clobber` or `RAILS_ENV=production bin/rake assets:clobber`, as these are set in a SSCSS file that is also an erb file, and Sprockets will not recognize when the dotenv files are modified.
 
 ## Message Of The Day
 
