@@ -20,7 +20,7 @@
   </td>
   <td data-order="<%= modified_time.to_i %>"><%= modified_time.strftime("%m/%d/%y") %></td>
   <td>
-    <%= link_to 'Shell', OodAppkit.shell.url(host: ENV['OOD_DEV_SSH_HOST'] || 'default', path: product.router.path).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
+    <%= link_to 'Shell', OodAppkit.shell.url(host: ENV['OOD_DEV_SSH_HOST'], path: product.router.path).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
     <%= link_to 'Files', OodAppkit.files.url(path: product.router.path).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
   </td>
   <td>
