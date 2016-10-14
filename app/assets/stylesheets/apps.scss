@@ -2,11 +2,12 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-.provider {
-  font-weight: bold;
-
-  .text-muted {
-    font-weight: normal;
+tr.app {
+  td.icon {
+    width: 100px;
+  }
+  td.title {
+    width: 200px;
   }
 }
 
