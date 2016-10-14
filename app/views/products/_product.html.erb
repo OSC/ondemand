@@ -27,5 +27,20 @@
     <%= link_to 'Details', product_path(product.name, type: @type), class: 'btn btn-info btn-block' %>
     <%= link_to 'Edit', edit_product_path(product.name, type: @type), class: 'btn btn-default btn-block' %>
   </td>
-  <td><%= link_to 'Delete', product_path(product.name, type: @type), method: :delete, data: { confirm: 'This will move the product to the trash. Any data users may have from this app will become inaccessible after this. Be sure you know what you are doing!' }, class: 'btn btn-danger pull-right' %></td>
+  <td>
+    <%= link_to 'Delete',
+      product_path(product.name, type: @type),
+      method: :delete,
+      data: {
+        original_title: 'Are you ABSOLUTELY sure?',
+        confirm: '<div class="alert alert-warning">Unexpected bad things will happen if you don\'t read this!</div><p>This will move the product to the trash. Any users currently running this app will experience breaking behavior. Any past or present users of this app will be unable to access their data for this app. Be sure you know what you are doing!</p>'.html_safe,
+        verify: product.name,
+        verify_text: 'Please type in the name of the app to confirm.',
+        commit: 'I understand the consequences, delete this app',
+        commit_class: 'btn-danger btn-block',
+        cancel_class: 'hide'
+      },
+      class: 'btn btn-danger pull-right'
+    %>
+  </td>
 </tr>
