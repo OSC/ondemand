@@ -70,7 +70,7 @@ Configuration is done within the .env file. Look at the .env file to see an exam
 * `OOD_DASHBOARD_PASSWD_URL` - URL to access page to change your HPC password
 * `OOD_DASHBOARD_SUPPORT_URL` - URL for users to get HPC support
 * `OOD_DASHBOARD_SHOW_ALL_APPS=false` - for OSC OnDemand this is currently set to true - for other Open OnDemand instances this should be set to false; this is a temporary solution to switch between showing only the Files and/or Clusters dropdowns in the menu (for shell access) versus showing all the applications currently deployed in OSC OnDemand, but not yet available in Open Source. This will soon be replaced by a more flexible solution for controlling the applicaiton menu hierarchy.
-* `OOD_DASHBOARD_LOGOUT_URL` - [temporary till Apache can handle logout](https://github.com/OSC/ood-dashboard/issues/31#issuecomment-253916825) specify the logout URL; its a sprintf string, so if `%{login}` is provided, this will be substituted with the original login domain
+* `OOD_DASHBOARD_LOGOUT_URL` - [temporary till Apache can handle logout](https://github.com/OSC/ood-dashboard/issues/34) specify the logout URL; its a sprintf string, so if `%{login}` is provided, this will be substituted with the original login domain
 
 To brand the site, you can change the title, colors, and logo of the dashboard app:
 
