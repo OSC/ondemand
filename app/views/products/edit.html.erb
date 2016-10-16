@@ -1,6 +1,14 @@
-<h1>Editing Product</h1>
+<div class="page-header">
+  <h2>
+    <%= @product.name %>
+  </h2>
+</div>
 
-<%= render 'form', form_url: product_path(@product.name, type: @type) %>
+<%= render 'form',
+  form_url: product_path(@product.name, type: @type),
+  show_git: true,
+  show_manifest: true
+%>
 
 <hr />
 

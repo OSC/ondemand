@@ -1,0 +1,37 @@
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <h2 class="text-center">
+         Build a new app
+        </h2>
+        <p class="new-product-body">
+          Build a new app from one of our working templates. This copies over a
+          pre-initialized app that will require you to add workflows to it. It
+          is recommended you version this with a Git repository such as GitHub.
+        </p>
+        <div class="text-center">
+          <%= link_to 'Build New App', new_product_path(type: @type, new_method: 'template'), class: 'btn btn-primary' %>
+        </div><!-- /.text-center -->
+      </div><!-- /.panel-body -->
+    </div><!-- /.panel -->
+  </div><!-- /.col-md-6 -->
+
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <h2 class="text-center">
+          Clone an existing app
+        </h2>
+        <p class="new-product-body">
+          Have an existing app that you versioned with a Git repository? Have
+          you properly installed SSH keys for this Git repository? You can easily
+          clone an existing project and begin development locally.
+        </p>
+        <div class="text-center">
+          <%= link_to 'Clone Existing App', new_product_path(type: @type, new_method: 'git'), class: 'btn btn-primary' %>
+        </div><!-- /.text-center -->
+      </div><!-- /.panel-body -->
+    </div><!-- /.panel -->
+  </div><!-- /.col-md-6 -->
+</div><!-- /.row -->

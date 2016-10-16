@@ -24,6 +24,7 @@ class ProductsController < ApplicationController
   def new
     @type = params[:type].to_sym
     @product = Product.build(type: @type)
+    @new_method = @type == :usr ? 'git' : params[:new_method]
   end
 
   # GET /products/1/edit

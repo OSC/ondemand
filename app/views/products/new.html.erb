@@ -1,6 +1,16 @@
-<h1>New Product</h1>
+<h2 class="apps-section-header">
+  <%= products_title(@type) %>
+</h2>
 
-<%= render 'form', form_url: products_path(type: @type) %>
+<% if @new_method %>
+  <%= render 'form',
+    form_url: products_path(type: @type),
+    show_git: @new_method == 'git',
+    show_manifest: @new_method == 'template'
+  %>
+<% else %>
+  <%= render 'new_choose_method' %>
+<% end %>
 
 <hr />
 
