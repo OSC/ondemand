@@ -38,6 +38,7 @@ class ProductsController < ApplicationController
   def create
     @type = params[:type].to_sym
     @product = Product.build(product_params.merge(type: @type))
+    @new_method = @type == :usr ? 'git' : params[:new_method]
 
     respond_to do |format|
       if @product.save

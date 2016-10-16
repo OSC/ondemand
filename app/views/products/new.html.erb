@@ -4,7 +4,7 @@
 
 <% if @new_method %>
   <%= render 'form',
-    form_url: products_path(type: @type),
+    form_url: products_path(type: @type, new_method: @new_method),
     show_git: @new_method == 'git',
     show_manifest: @new_method == 'template'
   %>
