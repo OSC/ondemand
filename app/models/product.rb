@@ -76,7 +76,7 @@ class Product
     end
 
     def stage(type)
-      product_types[type].router.base_path.realdirpath.mkpath
+      product_types[type].router.base_path.mkpath
       true
     rescue Errno::EACCES
       false
