@@ -164,7 +164,7 @@ class Product
   end
 
   def active_users
-    @active_users ||= `ps -o uid= -p $(pgrep -f '^Passenger .*#{Regexp.quote(router.path.realdirpath.to_s)}') 2> /dev/null | sort | uniq`.split.map(&:to_i).map do |id|
+    @active_users ||= `ps -o uid= -p $(pgrep -f '^Passenger .*#{Regexp.quote(router.path.to_s)}') 2> /dev/null | sort | uniq`.split.map(&:to_i).map do |id|
       OodSupport::User.new id
     end
   end
