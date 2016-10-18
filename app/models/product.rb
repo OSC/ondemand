@@ -171,6 +171,14 @@ class Product
     end
   end
 
+  def version
+    git_describe
+  end
+
+  def uncommitted_files
+    git_status
+  end
+
   private
     def stage
       target = router.path
@@ -224,5 +232,36 @@ class Product
         return false
       end
       true
+    end
+
+    def git_describe
+      target = router.path
+      Dir.chdir(target) do
+        # get reference
+        out = `HOME="" git symbolic-ref -q HEAD 2> /dev/null`.strip
+        unless out.empty?
+          /^(refs\/heads\/)?(?<ref>.+)$/ =~ out
+        else
+          out = `HOME="" git describe --tags --exact-match 2> /dev/null`.strip
+          unless out.empty?
+            ref = "tag:#{out}"
+          else
+            out = `HOME="" git describe --contains --all HEAD 2> /dev/null`.strip
+            /^(remotes\/)?(?<ref>.+)$/ =~ out
+            ref = `HOME="" git rev-parse --short HEAD 2> /dev/null`.strip unless ref
+            ref = "detached:#{ref}"
+          end
+        end
+      ref
+      end
+    end
+
+    def git_status
+      files = `cd #{router.path} 2> /dev/null && HOME="" git status --porcelain 2> /dev/null`.split("\n")
+      results = {}
+      results[:unstaged]  = files.select {|v| /^\s\w .+$/ =~ v}
+      results[:staged]    = files.select {|v| /^\w\s .+$/ =~ v}
+      results[:untracked] = files.select {|v| /^\?\? .+$/ =~ v}
+      results
     end
 end
