@@ -139,7 +139,7 @@ class Product
     @git_remote = attributes[:git_remote] if attributes[:git_remote]
     if self.valid?
       write_manifest
-      set_git_remote if git_remote != get_git_remote
+      set_git_remote
       true
     else
       false
@@ -231,7 +231,10 @@ class Product
     end
 
     def set_git_remote
-      `cd #{router.path} 2> /dev/null && HOME="" git remote set-url origin #{git_remote} 2> /dev/null`
+      target = router.path
+      Dir.chdir(target) do
+        `HOME="" git config --get remote.origin.url 2>/dev/null && HOME="" git remote set-url origin #{git_remote} 2> /dev/null || HOME="" git remote add origin #{git_remote} 2> /dev/null`
+      end
     end
 
     def clone_git_repo(target)
