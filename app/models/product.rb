@@ -76,10 +76,12 @@ class Product
     end
 
     def stage(type)
-      product_types[type].router.base_path.mkpath
+      target = product_types[type].router.base_path
+      target = target.realdirpath if target.symlink?
+      target.mkpath
       true
     rescue Errno::EACCES
-      false
+      false # user does not have permission to create this directory
     end
 
     def trash_path
