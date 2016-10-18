@@ -81,6 +81,32 @@ class ProductsController < ApplicationController
     end
   end
 
+  # POST /create_key
+  # POST /create_key.json
+  def create_key
+    @type = params[:type].to_sym
+
+    target = Pathname.new("~/.ssh/id_rsa").expand_path
+
+    if !target.file?
+      o, s = Open3.capture2e("ssh-keygen", "-t", "rsa", "-b", "4096", "-N", "", "-f", "#{ENV['HOME']}/.ssh/id_rsa")
+      success = s.success?
+    else
+      o = "SSH key already exists"
+      success = false
+    end
+
+    respond_to do |format|
+      if success
+        format.html { redirect_to products_url(type: @type), notice: 'SSH key was successfully created.' }
+        format.json { head :no_content }
+      else
+        format.html { redirect_to products_url(type: @type), alert: "SSH key failed to be created: #{o}"  }
+        format.json { render json: o, status: :internal_server_error }
+      end
+    end
+  end
+
   # PATCH/PUT /products/1/cli/bundle_install
   CMDS = {
     bundle_install:    [{"HOME" => ""}, "bin/bundle install --path=vendor/bundle"],

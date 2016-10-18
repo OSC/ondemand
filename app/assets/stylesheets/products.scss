@@ -14,3 +14,13 @@
   padding: 10px;
   min-height: 120px;
 }
+
+.alert-ssh-key {
+  position: relative;
+
+  .pull-left {
+    transform: translateY(-50%);
+    position: absolute;
+    top: 50%;
+  }
+}

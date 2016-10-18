@@ -8,7 +8,7 @@
   <div class="field">
     <%= f.text_field :git_remote, help: "Example: <strong>git@github.com:Example/example.git</strong> (<a href='https://help.github.com/articles/generating-an-ssh-key/' target='_blank'>requires SSH key installed</a>)".html_safe %>
   </div>
-  <div class="alert alert-<%= ssh_key ? "success" : "danger" %>">
+  <div class="alert alert-<%= ssh_key ? "success" : "danger" %> clearfix alert-ssh-key">
   <% if ssh_key %>
     <a class="text-success" role="button" data-toggle="collapse" href="#sshKeyValue" aria-expanded="false" aria-controls="collapseSshKeyValue">
       <i class="fa fa-check"></i> Detected locally generated SSH key
@@ -20,7 +20,10 @@
       </p>
     </div>
   <% else %>
-    <i class="fa fa-times"></i> No SSH key was found, you will need to generate a locally installed SSH key
+    <div class="pull-left">
+      <i class="fa fa-times"></i> No SSH key was found, you will need to generate a locally installed SSH key
+    </div>
+    <%= link_to 'Generate SSH Key', create_key_path(type: @type), class: 'btn btn-default pull-right' %>
   <% end %>
   </div>
   <% end %>

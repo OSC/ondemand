@@ -27,6 +27,7 @@ Rails.application.routes.draw do
           patch 'cli/:cmd', to: 'products#cli', as: 'cli'
         end
       end
+      get 'create_key' => 'products#create_key'
     end
   else
     root "dashboard#index"
