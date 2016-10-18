@@ -100,6 +100,11 @@ class ProductsController < ApplicationController
           o.each do |line|
             response.stream.write line
           end
+          if t.value.success?
+            response.stream.write %Q(<code><p class="text-success"><i class="fa fa-check"></i> Ran successfully!</p></code>)
+          else
+            response.stream.write %Q(<code><p class="text-danger"><i class="fa fa-times"></i> Something bad happened (exit code = #{t.value.exitstatus})</p></code>)
+          end
         end
       end
     end
