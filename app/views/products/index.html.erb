@@ -1,8 +1,6 @@
 <% product_class = Product.product_types[@type] %>
 
-<h2 class="apps-section-header">
-  <%= products_title(@type) %>
-</h2>
+<%= render 'header' %>
 
 <p>
   <%= link_to 'New Product', new_product_path(type: @type), class: 'btn btn-default' %>
