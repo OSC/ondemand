@@ -77,7 +77,7 @@ class Product
 
     def stage(type)
       target = product_types[type].router.base_path
-      target = target.realdirpath if target.symlink?
+      target = target.readlink if target.symlink?
       target.mkpath
       true
     rescue Errno::EACCES
