@@ -3,7 +3,7 @@
 <div class="page-header">
   <h2>
     <%= @product.name %>
-    <%= git_prompt @product %>
+    <%= git_prompt(@product) if @product.git_repo? %>
   </h2>
 </div>
 
@@ -30,10 +30,12 @@
       <strong>Directory:</strong>
       <%= @product.router.path.realpath %>
     </p>
+    <% if @product.git_repo? %>
     <p>
       <strong>Git remote:</strong>
       <%= @product.git_remote %>
     </p>
+    <% end %>
     <p>
       <strong>Description:</strong><br/>
       <%= manifest_markdown(@product.app.manifest.description) %>

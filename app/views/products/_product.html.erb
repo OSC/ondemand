@@ -6,7 +6,9 @@
   <td><%= product.name %></td>
   <td>
     <%= link_to product.title, app_path(product.app.name, product.app.type, product.app.owner) %>
-    <span class="text-muted">[<%= product.version %>]</span>
+    <% if product.git_repo? %>
+      <span class="text-muted">[<%= product.version %>]</span>
+    <% end %>
     <% unless product.active_users.empty? %>
       <span class="label label-default pull-right"><%= pluralize product.active_users.size, "active user" %></span>
     <% end %>

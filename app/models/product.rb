@@ -14,9 +14,11 @@ class Product
   validate :app_does_not_exist, on: :create_app
   validates :git_remote, presence: true, if: "type == :usr", on: :create_app
 
+  # lint a given app
   validate :manifest_is_valid, on: [:show_app, :list_apps]
   validate :gemfile_is_valid, on: :show_app
   validate :gems_installed, on: :show_app
+  validate :is_git_repo, on: :show_app
 
   def app_does_not_exist
     errors.add(:name, "already exists as an app") if !name.empty? && router.path.exist?
@@ -49,6 +51,10 @@ class Product
         errors.add(:base, "Install missing gems with <strong>Bundle Install</strong>") unless s.success?
       end
     end
+  end
+
+  def is_git_repo
+    errors.add(:base, "Not a valid git repo") unless git_repo?
   end
 
   class NotFound < StandardError; end
@@ -169,6 +175,10 @@ class Product
     @active_users ||= `ps -o uid= -p $(pgrep -f '^Passenger .*#{Regexp.quote(router.path.to_s)}') 2> /dev/null | sort | uniq`.split.map(&:to_i).map do |id|
       OodSupport::User.new id
     end
+  end
+
+  def git_repo?
+    router.path.join(".git", "HEAD").file?
   end
 
   def version

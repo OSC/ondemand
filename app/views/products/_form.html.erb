@@ -4,7 +4,7 @@
     <%= f.text_field :name, label: "Directory name" %>
   </div>
   <% end %>
-  <% if show_git %>
+  <% if show_git && (@product.new_record? || @product.git_repo?) %>
   <div class="field">
     <%= f.text_field :git_remote, help: "Example: <strong>git@github.com:Example/example.git</strong> (<a href='https://help.github.com/articles/generating-an-ssh-key/' target='_blank'>requires SSH key installed</a>)".html_safe %>
   </div>
