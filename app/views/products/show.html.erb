@@ -40,8 +40,8 @@
     </p>
   </div><!-- /.col-md-6 -->
   <div class="col-md-2 col-xs-6">
-    <%= link_to 'Shell', OodAppkit.shell.url(host: ENV['OOD_DEV_SSH_HOST'], path: @product.router.path).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
-    <%= link_to 'Files', OodAppkit.files.url(path: @product.router.path).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
+    <%= link_to 'Shell', OodAppkit.shell.url(host: ENV['OOD_DEV_SSH_HOST'], path: @product.router.path.realdirpath).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
+    <%= link_to 'Files', OodAppkit.files.url(path: @product.router.path.realdirpath).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
   </div><!-- /.col-md-2 -->
   <div class="col-md-2 col-xs-6">
     <button class="btn btn-default btn-block" data-toggle="cli" data-target="<%= cli_product_path('bundle_install', name: @product.name, type: @type) %>" data-title="Bundle Install" data-cmd="<code>scl enable rh-ruby22 nodejs010 -- bin/bundle install --path=vendor/bundle</code>">
