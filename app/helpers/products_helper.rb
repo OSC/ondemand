@@ -45,4 +45,9 @@ module ProductsHelper
       html.html_safe
     end
   end
+
+  def ssh_key
+    target = Pathname.new("~/.ssh/id_rsa.pub").expand_path
+    File.read(target) if target.file?
+  end
 end
