@@ -6,20 +6,21 @@
   <% end %>
   <% if show_git %>
   <div class="field">
-    <%= f.text_field :git_remote, help: "Example: <code>git@github.com:Example/example.git</code> (<a href='https://help.github.com/articles/generating-an-ssh-key/' target='_blank'>requires SSH key installed</a>)".html_safe %>
+    <%= f.text_field :git_remote, help: "Example: <strong>git@github.com:Example/example.git</strong> (<a href='https://help.github.com/articles/generating-an-ssh-key/' target='_blank'>requires SSH key installed</a>)".html_safe %>
   </div>
   <div class="alert alert-<%= ssh_key ? "success" : "danger" %>">
   <% if ssh_key %>
     <a class="text-success" role="button" data-toggle="collapse" href="#sshKeyValue" aria-expanded="false" aria-controls="collapseSshKeyValue">
-      Detected locally generated SSH key
+      <i class="fa fa-check"></i> Detected locally generated SSH key
     </a>
     <div class="collapse" id="sshKeyValue">
       <p>
         <pre><%= ssh_key %></pre>
+        Copy and add the above SSH key into a Git service provider of your choosing (e.g., GitHub, Bitbucket, ...)
       </p>
     </div>
   <% else %>
-    No SSH key was found, you will need to generate a locally installed SSH key
+    <i class="fa fa-times"></i> No SSH key was found, you will need to generate a locally installed SSH key
   <% end %>
   </div>
   <% end %>
