@@ -127,8 +127,7 @@ app.use(cloudcmd({
         treeroottitle: "Home Directory",
 
         file_editor: process.env.OOD_FILE_EDITOR,
-        shell: process.env.OOD_SHELL,
-        ood_download: process.env.OOD_DOWNLOAD
+        shell: process.env.OOD_SHELL
     }
 }));
 
