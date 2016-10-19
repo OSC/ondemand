@@ -1,7 +1,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
     aria-haspopup="true" aria-expanded="false">
-    <i class="fa fa-user"></i> Logged in as <%= @user.name %><span class="caret"></span>
+    <i class="fa fa-user"></i><span class="hidden-xs hidden-sm"> Logged in as <%= @user.name %></span><span class="caret"></span>
   </a>
   <ul class="dropdown-menu">
     <li><a href="<%= passwd_url %>"><i class="fa fa-gear"></i> Change HPC Password</a>
