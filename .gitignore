@@ -15,11 +15,16 @@
 /log/*.log
 /tmp/*
 !/tmp/.keep
+
+# Ignore any user pre-compiled assets
+/public/assets
+
 # data to store simulations and file uploads for development
 /data
 
 # files used for deployment should not be versioned
 /public/.htaccess
+
 # /.env.production
 /.env.local
 /vendor/bundle
