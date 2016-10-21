@@ -31,6 +31,11 @@ $(document).ready( function() {
         "bStateSave": true,         // Save user selected table state
         "aaSorting": [],            // Turn off auto sort.
         "pageLength": 50,           // Set the number of rows
+        "fnCreatedRow": function( nRow, aData, iDataIndex ) {
+          $(nRow).children("td").css("overflow", "hidden");
+          $(nRow).children("td").css("white-space", "nowrap");
+          $(nRow).children("td").css("text-overflow", "ellipsis");
+        },
         "fnInitComplete":           function( oSettings ) {
                                         for ( var i=0, iLen=oSettings.aoData.length ; i<iLen ; i++ )
                                         {
@@ -38,7 +43,7 @@ $(document).ready( function() {
                                             if (oSettings.aoData[i]._aData.username == JobStatusapp.username) {
                                                 oSettings.aoData[i].nTr.className += " bg-success";
                                             // Add blue background to group rows
-                                            } else if (oSettings.aoData[i]._aData.group == 
+                                            } else if (oSettings.aoData[i]._aData.group ==
 JobStatusapp.group) {
                                                 oSettings.aoData[i].nTr.className += " bg-info";
                                             }
@@ -56,7 +61,7 @@ JobStatusapp.group) {
             {
                 data:               "pbsid",
                 className:          "small",
-                "autoWidth":        true
+                "width":            "15%"
             },
             {
                 data:               "jobname",
@@ -328,5 +333,5 @@ function status_label( status ) {
             label = "Not Submitted";
             labelclass = "label-default";
     }
-    return "<span class='label "+labelclass+"'>"+label+"</span>";
+    return "<div style='white-space: nowrap;'><span class='label "+labelclass+"'>"+label+"</span></div>";
 }
