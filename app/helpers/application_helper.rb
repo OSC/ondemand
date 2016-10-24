@@ -37,13 +37,8 @@ module ApplicationHelper
 
   def app_icon_tag(app)
     if app.icon_path.file?
-      # image_tag "/pun/download#{app.icon_path}", size: '100x100'
       image_tag app_icon_path(app.name, app.type, app.owner), size: '100x100', title: app.icon_path
     else
-      # TODO: better organize styles, then you could do
-      # color: rgb(0, 95, 133); for shared apps on front dashboard
-      # color: rgb(28, 115, 127); for your shared apps
-      # color: rgb(128, 130, 133); for your dev apps
       content_tag(:i, "", class: ["fa", "fa-gear"], style: 'font-size: 100px;', title: app.icon_path)
     end
   end
