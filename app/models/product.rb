@@ -30,7 +30,7 @@ class Product
   end
 
   def gemfile_is_valid
-    unless gemfile.exist? || gemfile_lock.exist?
+    if !gemfile.exist? || !gemfile_lock.exist?
       errors.add(:base, "App is missing <code>Gemfile</code>") unless gemfile.exist?
       errors.add(:base, "App is missing <code>Gemfile.lock</code>") unless gemfile_lock.exist?
       return
