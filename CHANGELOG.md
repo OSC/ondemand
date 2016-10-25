@@ -1,5 +1,9 @@
 ## Unreleased
 
+Features:
+
+  - implement nginx sendfile feature for optimal static file downloads
+
 Bugfixes:
 
   - fix for app checks under restrictive NFS permissions as `root`
