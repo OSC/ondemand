@@ -44,7 +44,7 @@ class AppsController < ApplicationController
     #FIXME: the only thing about this action that feels wrong
     #is it is a GET and we are doing a setup (changing something) in response to
     #this request
-    @app.run_setup_production
+    @app.run_setup_production unless @app.type == :dev
 
     app_url = @app.url
 
