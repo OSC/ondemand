@@ -34,4 +34,12 @@ module ApplicationHelper
       render partial: "layouts/nav/simple_nav"
     end
   end
+
+  def app_icon_tag(app)
+    if app.icon_path.file?
+      image_tag app_icon_path(app.name, app.type, app.owner), size: '100x100', title: app.icon_path
+    else
+      content_tag(:i, "", class: ["fa", "fa-gear"], style: 'font-size: 100px;', title: app.icon_path)
+    end
+  end
 end

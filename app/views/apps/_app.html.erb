@@ -1,6 +1,6 @@
 <tr class="app">
   <td class="icon">
-    <%= image_tag app_icon_path(app.name, app.type, app.owner), size: '100x100' %>
+    <%= app_icon_tag(app) %>
   </td>
   <td class="title"><%= link_to app.title, app_path(app.name, app.type, app.owner) %></td>
   <td>
