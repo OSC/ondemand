@@ -25,6 +25,20 @@ module NginxStage
       NginxStage.app_token(env: env, owner: owner, name: name)
     end
 
+    # URI used to access filesystem from the browser
+    # @return [String] the filesystem URI
+    def download_uri
+      "#{sub_uri}#{NginxStage.pun_download_uri}" if NginxStage.pun_download_uri
+    end
+
+    # Path to the filesystem root where files are served from
+    # NB: Need to use a regular expression for user as this will be in a global
+    # app config that all users share
+    # @return [String] path to filesystem root
+    def download_root
+      NginxStage.pun_download_root(user: "[\w-]+")
+    end
+
     # Wether the sys admin opts in to metrics collection
     # @return [Boolean] whether metrics should be collected
     def opt_in_metrics
