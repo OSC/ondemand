@@ -1,5 +1,9 @@
 ## Unreleased
 
+Bugfixes:
+
+  - fix for app checks under restrictive NFS permissions as `root`
+
 ## 0.0.13 (2016-10-11)
 
 Features:

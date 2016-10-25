@@ -99,4 +99,14 @@ module NginxStage
     end
     staged_apps
   end
+
+  # Run Ruby code as a different user
+  # @param user [String, Fixnum] the user or user id to switch to
+  # @yield [] Block to run as given user
+  def self.su(user)
+    Process::UID.grant_privilege(user) if Process.uid == 0
+    yield
+  ensure
+    Process::UID.grant_privilege(0) if Process.uid == 0
+  end
 end
