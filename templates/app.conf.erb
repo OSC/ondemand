@@ -7,12 +7,10 @@ location ~ ^<%= app_request_uri %>(/.*|$) {
 
   passenger_app_env <%= app_passenger_env %>;
 
-  <% if download_uri %>
   # Give ability to download files from filesystem
   passenger_set_cgi_param HTTP_X_SENDFILE_TYPE X-Accel-Redirect;
   passenger_set_cgi_param HTTP_X_ACCEL_MAPPING "<%= download_root %>=<%= download_uri %>"; # Passenger 4
   # passenger_set_header X-Accel-Mapping "<%= download_root %>=<%= download_uri %>"; # Passenger 5
-  <% end %>
 
   <%- if opt_in_metrics -%>
   sub_filter '</head>' '<%= google_analytics %></head>';

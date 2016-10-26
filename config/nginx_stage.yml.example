@@ -86,16 +86,15 @@
 #
 #pun_socket_path: '/var/run/nginx/%{user}/passenger.sock'
 
-# Path to the local filesystem root where files are served from for the given
-# user
+# Path to the local filesystem root where the per-user NGINX process serves
+# files from for the user making use of the sendfile feature in NGINX
 #
-#pun_download_root: '/'
+#pun_sendfile_root: '/'
 
-# The URI used to access the local filesystem for downloading files from the
-# browser, not including any base-uri
-# Set to `false` if you don't want this specified in nginx config
+# The internal URI used to access the local filesystem for downloading files
+# from the apps (not accessible directly by client browser)
 #
-#pun_download_uri: '/download'
+#pun_sendfile_uri: '/sendfile'
 
 # List of hashes helping define wildcard app config locations. These are the
 # arguments for {#app_config_path}.

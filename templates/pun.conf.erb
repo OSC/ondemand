@@ -64,16 +64,11 @@ http {
     }
     <%- end -%>
 
-    <%- if download_uri -%>
     # Give ability to download files from filesystem
     location <%= download_uri %> {
+      internal;
       alias "<%= download_root %>";
-      index nothing_will_match;
-      autoindex on;
-      autoindex_exact_size off;
-      autoindex_localtime on;
     }
-    <%- end -%>
 
     # Include all app configs user has access to
     <%- app_configs.each do |app_config| -%>
