@@ -64,10 +64,10 @@ http {
     }
     <%- end -%>
 
-    # Give ability to download files from filesystem
-    location <%= download_uri %> {
+    # Give apps the ability to download files from filesystem
+    location <%= sendfile_uri %> {
       internal;
-      alias "<%= download_root %>";
+      alias "<%= sendfile_root %>";
     }
 
     # Include all app configs user has access to
