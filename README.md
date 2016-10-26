@@ -358,6 +358,33 @@ OOD_AUTH_REGISTER_ROOT='/var/www/ood/register'
 OOD_AUTH_REGISTER_URI='/register'
 ```
 
+#### OOD Analytics Options
+
+It is highly recommended you enable analytics reporting to help further improve
+the Open OnDemand project. This can be enabled by specifying the environment
+variable:
+
+```bash
+export OOD_ANALYTICS_OPT_IN='true'
+```
+
+The options set are:
+
+```bash
+# Whether you want to opt in to analytics reporting
+# Default: 'false'
+#
+OOD_ANALYTICS_OPT_IN='false'
+
+# The URL used that analytics reporting is sent to
+#
+OOD_ANALYTICS_TRACKING_URL='http://www.google-analytics.com/collect'
+
+# The analytics reporting id
+#
+OOD_ANALYTICS_TRACKING_ID='UA-79331310-3'
+```
+
 ## Configuration File
 
 If the default options or using environment variables to make changes do not
