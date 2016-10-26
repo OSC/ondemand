@@ -13,13 +13,16 @@ function map(r, user_map_cmd)
   local handle = io.popen(user_map_cmd .. " '" .. auth_user .. "'")
   sys_user = handle:read()
   handle:close()
-  r:info("Mapped '" .. r.user .. "' => '" .. (sys_user or "") .. "' [" .. (r:clock() - now)/1000.0 .. " ms]")
+  time_user_map = (r:clock() - now)/1000.0
+  r:info("Mapped '" .. r.user .. "' => '" .. (sys_user or "") .. "' [" .. time_user_map .. " ms]")
 
   -- failed to map if returns empty string
   if not sys_user or sys_user == "" then
     return nil
   end
 
+  r.subprocess_env['MAPPED_USER'] = sys_user -- set as CGI variable for later hooks (i.e., analytics)
+  r.subprocess_env['OOD_TIME_USER_MAP'] = time_user_map -- set as CGI variable for later hooks (i.e., analytics)
   return sys_user
 end
 

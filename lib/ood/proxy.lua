@@ -28,6 +28,9 @@ function set_reverse_proxy(r, conn)
 
   -- **required** by PUN when initializing app
   r.headers_in['X-Forwarded-Escaped-Uri'] = r:escape(conn.uri)
+
+  -- set timestamp of reverse proxy initialization as CGI variable for later hooks (i.e., analytics)
+  r.subprocess_env['OOD_TIME_BEGIN_PROXY'] = r:clock()
 end
 
 return {
