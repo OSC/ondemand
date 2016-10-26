@@ -3,11 +3,8 @@
 
   Start PUN process for given user
 --]]
-function pun(r, bin, user, sub_uri, app_init_url)
+function pun(r, bin, user, app_init_url)
   local cmd = bin .. " pun -u '" .. r:escape(user) .. "'"
-  if sub_uri then
-    cmd = cmd .. " -i '" .. r:escape(sub_uri) .. "'"
-  end
   if app_init_url then
     cmd = cmd .. " -a '" .. r:escape(app_init_url) .. "'"
   end

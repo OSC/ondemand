@@ -1,5 +1,9 @@
 ## Unreleased
 
+Bugfixes:
+
+  - reverted the `sub-uri` option when staging a PUN
+
 ## 0.0.4 (2016-10-11)
 
 Bugfixes:
