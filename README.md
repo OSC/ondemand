@@ -259,6 +259,42 @@ Any links on the backend web server must be relative links for this to work:
 <img src="/images/header.png">
 ```
 
+### analytics_handler
+
+This handler builds an analytics report for the given request/response and
+submits it to the appropriate analytics server. This should be handled after
+the response is generated as it parses the headers of the response for some
+data. It also **requires** the user is authenticated and properly mapped to a
+system-level user. It will skip any requests from unauthenticated users as well
+as requests for non-HTML resources.
+
+#### Required Arguments
+
+Argument                   | Definition
+-------------------------- | ----------
+OOD_ANALYTICS_TRACKING URL | Full URL used to submit the analytics report to
+OOD_ANALYTICS_TRACKING_ID  | The registered tracking id that reports correspond to
+
+#### Usage
+
+A typical Apache config will look like...
+
+```
+<Location "/pun">
+  AuthType openid-connect
+  Require valid-user
+  ...
+
+  SetEnv OOD_ANALYTICS_TRACKING_URL "http://www.google-analytics.com/collect"
+  SetEnv OOD_ANALYTICS_TRACKING_ID "UA-79331310-3"
+  LuaHookLog analytics.lua analytics_handler
+</Location>
+```
+
+Note: We use the `LuaHookLog` as it occurs **after** the response is handled
+from the reverse proxy and also occurs after the client browser has received
+the response. So this will not affect the page load time for the client.
+
 ## `OOD_USER_MAP_CMD` Specification
 
 All of the above API handlers make use of the `OOD_USER_MAP_CMD` to map the
