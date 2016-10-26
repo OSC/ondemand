@@ -41,7 +41,7 @@ app.get(BASE_URI + CloudFunc.apiURL + CloudFunc.FS + ':path(*)', function(req, r
         path     = req.params.path,
         pattern,
         redirect;
-    if (req.query.download) {
+    if (sendfile && mapping && req.query.download) {
         // generate redirect uri from file path
         mapping = mapping.split('=');
         pattern = '^' + mapping[0];
