@@ -8,6 +8,7 @@ Features:
 Bugfixes:
 
   - fix for app checks under restrictive NFS permissions as `root`
+  - forgot to copy over example ruby wrapper
 
 ## 0.0.13 (2016-10-11)
 
