@@ -71,7 +71,7 @@
     <%= notice %>
   </div>
   <% end %>
-  
+
   <%= yield %>
 
 </div><!-- /.container -->
@@ -79,7 +79,14 @@
 <footer>
   <div class="container">
     <hr>
-    <p>Copyright &copy; <%= DateTime.now.year %> by the Ohio Supercomputer Center.</p>
+    <div class="row">
+      <div class="col-md-6 col-sm-6">
+        <p>&copy; <%= link_to 'Ohio Supercomputer Center (OSC)', 'https://www.osc.edu' %> 2014 - <%= Date.today.year %></p>
+      </div>
+      <div class="col-md-6 col-sm-6">
+        <p id="app_version" class="pull-right"><%= ENV['VERSION'] %></p>
+      </div>
+    </div>
   </div>
 </footer>
 
