@@ -2,6 +2,7 @@ var http        = require('http'),
     fs          = require('fs'),
     path        = require('path'),
     cloudcmd    = require('cloudcmd'),
+    CloudFunc   = require('cloudcmd/lib/cloudfunc'),
     express     = require('express'),
     io          = require('socket.io'),
     HOME        = require('os-homedir')(),
@@ -34,11 +35,25 @@ app.use(function(req, res, next) {
 });
 
 // This is an IE fix for downloading files.
-app.use(function(req, res, next) {
-    if(req.originalUrl.match(/\?download/) ) {
-        res.set('Content-Disposition', 'attachment');
+app.get(BASE_URI + CloudFunc.apiURL + CloudFunc.FS + ':path(*)', function(req, res, next) {
+    var sendfile = req.get('X-Sendfile-Type'),
+        mapping  = req.get('X-Accel-Mapping'),
+        path     = req.params.path,
+        pattern,
+        redirect;
+    if (sendfile && mapping && req.query.download) {
+        // generate redirect uri from file path
+        mapping = mapping.split('=');
+        pattern = '^' + mapping[0];
+        redirect = path.replace(new RegExp(pattern), mapping[1]);
+
+        // send attachment with redirect
+        res.attachment(path);
+        res.set(sendfile, redirect);
+        res.end();
+    } else {
+        next();
     }
-    next();
 });
 
 // Custom middleware to zip and send a directory to a browser.
@@ -112,8 +127,7 @@ app.use(cloudcmd({
         treeroottitle: "Home Directory",
 
         file_editor: process.env.OOD_FILE_EDITOR,
-        shell: process.env.OOD_SHELL,
-        ood_download: process.env.OOD_DOWNLOAD
+        shell: process.env.OOD_SHELL
     }
 }));
 
