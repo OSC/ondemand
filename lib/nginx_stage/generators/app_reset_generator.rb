@@ -28,21 +28,8 @@ module NginxStage
     # @return [String] name of app
     attr_accessor :name
 
-    # @!method sub_uri
-    #   The sub-uri that distinguishes the per-user NGINX process
-    #   @example An app is requested through '/pun/usr/user/appname/...'
-    #     sub_uri #=> "/pun"
-    #   @return [String] the sub-uri for nginx
-    add_option :sub_uri do
-      {
-        opt_args: ["-i", "--sub-uri=SUB_URI", "# The SUB_URI that requests the per-user nginx", "# Default: ''"],
-        default: '',
-        before_init: -> (sub_uri) do
-          raise InvalidSubUri, "invalid sub-uri syntax: #{sub_uri}" if sub_uri =~ /[^-\w\/]/
-          sub_uri
-        end
-      }
-    end
+    # Accepts `sub_uri` as an option
+    add_sub_uri_support
 
     # Updates all staged app configs with current template and displays paths
     # to user

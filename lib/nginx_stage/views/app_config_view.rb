@@ -25,6 +25,20 @@ module NginxStage
       NginxStage.app_token(env: env, owner: owner, name: name)
     end
 
+    # Internal URI used to access filesystem from apps
+    # @return [String] the filesystem URI
+    def sendfile_uri
+      NginxStage.pun_sendfile_uri
+    end
+
+    # Path to the filesystem root where files are served from
+    # NB: Need to use a regular expression for user as this will be in a global
+    # app config that all users share
+    # @return [String] path to filesystem root
+    def sendfile_root
+      NginxStage.pun_sendfile_root(user: "[\w-]+")
+    end
+
     # Wether the sys admin opts in to metrics collection
     # @return [Boolean] whether metrics should be collected
     def opt_in_metrics

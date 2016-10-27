@@ -54,13 +54,6 @@ http {
   tcp_nopush   on;
   client_max_body_size 10G;
 
-  <% if download_uri %>
-  map $arg_download $disposition {
-    default "inline";
-    ~^.+$   "attachment";
-  }
-  <% end %>
-
   server {
     listen      unix:<%= socket_path %>;
     server_name localhost;
@@ -71,18 +64,11 @@ http {
     }
     <%- end -%>
 
-    <% if download_uri %>
-    # Give ability to download files from filesystem
-    location <%= download_uri %> {
-      alias <%= download_root %>;
-      expires -1;
-      index nothing_will_match;
-      autoindex on;
-      autoindex_exact_size off;
-      autoindex_localtime on;
-      add_header Content-Disposition $disposition;
+    # Give apps the ability to download files from filesystem
+    location <%= sendfile_uri %> {
+      internal;
+      alias "<%= sendfile_root %>";
     }
-    <% end %>
 
     # Include all app configs user has access to
     <%- app_configs.each do |app_config| -%>
