@@ -1,5 +1,9 @@
 ## Unreleased
 
+Features:
+
+  - added server side analytics feature
+
 Bugfixes:
 
   - reverted the `sub-uri` option when staging a PUN
