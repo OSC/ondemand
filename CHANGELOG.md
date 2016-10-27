@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.1.0 (2016-10-27)
+
 Features:
 
   - implement nginx sendfile feature for optimal static file downloads
