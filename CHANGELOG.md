@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.0.5 (2016-10-27)
+
 Features:
 
   - added server side analytics feature
