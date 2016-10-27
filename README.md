@@ -34,7 +34,7 @@ scl enable nodejs010 rh-ruby22 -- bin/rake tmp:clear
 4\. Next we need to build our staging app (change `OOD_PORTAL` to match the portal this dashboard is setup for):
 
 ```sh
-OOD_APP=my_app OOD_PORTAL=ondemand scl enable git19 rh-ruby22 nodejs010 -- /bin/bash <(cat <<\EOF
+OOD_APP=my_app OOD_PORTAL=ondemand scl enable rh-ruby22 nodejs010 -- /bin/bash <(cat <<\EOF
   dir=$(mktemp -d) &&
   cd ${dir} &&
   gem install -N -i . rails -v '~> 4.2' &&
@@ -46,18 +46,6 @@ OOD_APP=my_app OOD_PORTAL=ondemand scl enable git19 rh-ruby22 nodejs010 -- /bin/
   rm -fr ${dir}
 EOF
 )
-```
-
-Go into this directory:
-
-```sh
-cd vendor/my_app
-```
-
-Bundle install the gems:
-
-```sh
-scl enable git19 rh-ruby22 nodejs010 -- bin/bundle install --path=vendor/bundle
 ```
 
 5\. At this point, you should copy the directory to the deployment directory, if that location is not the same place as the build directory. For more explanation of how this is done, see https://github.com/OSC/Open-OnDemand#app-deployment-strategy.
