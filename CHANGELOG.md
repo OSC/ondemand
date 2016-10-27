@@ -3,6 +3,7 @@
 Features:
 
   - implement nginx sendfile feature for optimal static file downloads
+  - made git 1.9+ a requirement for the dashboard app
 
 Bugfixes:
 

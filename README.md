@@ -11,7 +11,7 @@ standard libraries making installation a breeze.
 
 #### Optional
 
-For Node.js apps:
+For Node.js apps (ood-fileexplorer, ood-shell):
 
 - Node.js 0.10 or newer
 - V8 3.14 or newer
@@ -19,6 +19,10 @@ For Node.js apps:
 For Python apps:
 
 - Python 2.7 or newer
+
+For apps that have Git integration (ood-dashboard):
+
+- Git 1.9 or newer
 
 ## Installation
 

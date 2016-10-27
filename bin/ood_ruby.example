@@ -10,6 +10,7 @@
 # - passenger 4.0
 # - ruby 2.2
 # - node.js 0.10
+# - git 1.9
 #
 
 # If the necessary libraries and PATH environment variable are loaded by
@@ -18,7 +19,7 @@
 
 # Uncomment the following line if using RHEL 6 with Software Collections 2.0
 #
-#exec scl enable nginx16 rh-passenger40 rh-ruby22 nodejs010 v8314 -- exec /bin/env ruby "$@"
+#exec scl enable nginx16 rh-passenger40 rh-ruby22 nodejs010 git19 -- exec /bin/env ruby "$@"
 
 # Use default environment
 #
