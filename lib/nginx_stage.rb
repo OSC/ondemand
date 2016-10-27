@@ -18,6 +18,8 @@ require_relative "nginx_stage/generators/nginx_list_generator"
 require_relative "nginx_stage/generators/nginx_clean_generator"
 require_relative "nginx_stage/application"
 
+require 'etc'
+
 # The main namespace for NginxStage. Provides a global configuration.
 module NginxStage
   # Root path of this library
@@ -92,21 +94,34 @@ module NginxStage
       staged_apps[env] = Dir[app_config_path(env: env, owner: '*', name: '*')].map do |v|
         matches = /#{app_config_path(env: env, owner: '(?<owner>.+)', name: '(?<name>.+)')}/.match(v)
         {
-          owner: matches.names.include?('owner') ? matches[:owner] : "",
-          name:  matches.names.include?('name')  ? matches[:name]  : ""
+          owner: matches.names.include?('owner') ? matches[:owner] : nil,
+          name:  matches.names.include?('name')  ? matches[:name]  : nil
         }
       end
     end
     staged_apps
   end
 
-  # Run Ruby code as a different user
-  # @param user [String, Fixnum] the user or user id to switch to
+  # Run Ruby block as a different user if possible
+  # NB: Will forego user switching if current process is not root-owned
+  # @param user [String, Fixnum, nil] the user or user id to switch to
   # @yield [] Block to run as given user
-  def self.su(user)
-    Process::UID.grant_privilege(user) if Process.uid == 0
-    yield
-  ensure
-    Process::UID.grant_privilege(0) if Process.uid == 0
+  def self.as_user(user, &block)
+    (Process.uid == 0) && user ? sudo(user, &block) : block.call
   end
+
+  private
+    # Switch user/group effective id's as well as secondary groups
+    def self.sudo(user, &block)
+      passwd = (user.is_a? Fixnum) ? Etc.getpwuid(user) : Etc.getpwnam(user)
+      name, uid, gid = passwd.name, passwd.uid, passwd.gid
+      Process.initgroups(name, gid)
+      Process::GID.grant_privilege(gid)
+      Process::UID.grant_privilege(uid)
+      block.call
+    ensure
+      Process::UID.grant_privilege(0)
+      Process::GID.grant_privilege(0)
+      Process.initgroups('root', 0)
+    end
 end

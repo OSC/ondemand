@@ -67,7 +67,7 @@ module NginxStage
 
     # Validate that the path to the app exists on the local filesystem
     add_hook :validate_app_root do
-      raise InvalidRequest, "invalid app root: #{app_root}" unless NginxStage.su(owner) { File.directory?(app_root) }
+      raise InvalidRequest, "invalid app root: #{app_root}" unless NginxStage.as_user(user) { File.directory?(app_root) }
     end
 
     # Generate the NGINX app config from the 'app.conf.erb' template

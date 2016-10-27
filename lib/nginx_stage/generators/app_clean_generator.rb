@@ -23,7 +23,7 @@ module NginxStage
           name  = h[:name]
           app_config = NginxStage.app_config_path(env: env, owner: owner, name: name)
           app_root   = NginxStage.app_root(env: env, owner: owner, name: name)
-          unless NginxStage.su(owner) { File.directory?(app_root) }
+          unless NginxStage.as_user(owner) { File.directory?(app_root) }
             begin
               File.delete app_config
               puts app_config
