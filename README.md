@@ -32,7 +32,7 @@ Log in as `wiag` user
 ```
 $ cd ~wiag/ood_portals/ondemand/sys
 $ git clone git@github.com:OSC/ood-fileexplorer.git files
-$ git checkout v1.1.2 # or whatever the lastest release tag is
+$ git checkout v1.2.0 # or whatever the lastest release tag is
 $ touch .env
 ```
 
