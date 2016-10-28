@@ -114,9 +114,10 @@ module NginxStage
 
     # Create an empty directory if it doesn't already exist
     # @param destination [String] the directory path
+    # @param mode [Fixnum] the mode to set the directory as
     # @return [void]
-    def empty_directory(destination)
-      FileUtils.mkdir_p destination, mode: 0755
+    def empty_directory(destination, mode: 0755)
+      FileUtils.mkdir_p destination, mode: mode
     end
 
     private
