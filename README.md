@@ -27,7 +27,7 @@ OOD_DATAROOT=$HOME/ondemand/data/$APP_TOKEN
 3\. After updating the .env.local file, build the assets to complete the installation. Make sure that `RAILS_RELATIVE_URL_ROOT` is unset before running this command, as this will then be set by the `dot-env` gem, as `RAILS_RELATIVE_URL_ROOT` is set in `.env.production`.
 
 ```
-scl enable nodejs010 rh-ruby22 -- RAILS_ENV=production bin/rake assets:precompile
+scl enable git19 rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=production
 scl enable nodejs010 rh-ruby22 -- bin/rake tmp:clear
 ```
 
