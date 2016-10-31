@@ -39,7 +39,7 @@ module ApplicationHelper
     if app.icon_path.file?
       image_tag app_icon_path(app.name, app.type, app.owner), size: '100x100', title: app.icon_path
     else
-      content_tag(:i, "", class: ["fa", "fa-gear"], style: 'font-size: 100px;', title: app.icon_path)
+      content_tag(:i, "", class: ["fa", "fa-#{app.fa_icon}"], style: 'font-size: 100px;', title: app.icon_path)
     end
   end
 end

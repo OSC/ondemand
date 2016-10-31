@@ -50,6 +50,16 @@ class OodApp
     path.join("icon.png")
   end
 
+  def fa_icon
+    u = manifest.icon_uri
+
+    if u.scheme == "fa"
+      u.host
+    else
+      manifest.default_icon_uri.host
+    end
+  end
+
   class SetupScriptFailed < StandardError; end
   # run the production setup script for setting up the user's
   # dataroot and database for the current app, if the production

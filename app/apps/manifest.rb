@@ -1,7 +1,7 @@
 require 'yaml'
 
 class Manifest
-  attr_reader :name, :description, :category, :subcategory
+  attr_reader :name, :description, :category, :subcategory, :icon
 
   class InvalidContentError < StandardError
     def initialize
@@ -50,7 +50,24 @@ category: OSC
   end
 
   def defaults
-    {"name" => "", "description" => "", "category" => "", "subcategory" => ""}
+    {"name" => "", "description" => "", "category" => "", "subcategory" => "" , "icon" => "fa://gear"}
+  end
+
+  def default_icon_uri
+    URI.parse(defaults["icon"])
+  end
+
+  def icon_uri
+    uri = URI.parse(icon)
+
+    # only support fa scheme for now
+    if uri.scheme != "fa"
+      default_icon_uri
+    else
+      uri
+    end
+  rescue
+    default_icon_uri
   end
 
   def initialize(opts)
@@ -63,6 +80,7 @@ category: OSC
     @description = opts.fetch("description")
     @category = opts.fetch("category")
     @subcategory = opts.fetch("subcategory")
+    @icon = opts.fetch("icon")
   end
 
   def valid?
