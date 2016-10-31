@@ -10,11 +10,11 @@ class ManifestTest < ActiveSupport::TestCase
 
   test "faicon malformed" do
     manifest = Manifest.new("icon" => "fa_wrench")
-    assert_equal "gear", FontAwesomeIcon.new(manifest.icon).icon
+    assert_equal FontAwesomeIcon::DEFAULT, FontAwesomeIcon.new(manifest.icon).icon
   end
 
   test "faicon default" do
     manifest = Manifest.new({})
-    assert_equal "gear", FontAwesomeIcon.new(manifest.icon).icon
+    assert_equal FontAwesomeIcon::DEFAULT, FontAwesomeIcon.new(manifest.icon).icon
   end
 end

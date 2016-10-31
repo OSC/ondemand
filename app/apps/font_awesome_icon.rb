@@ -1,12 +1,11 @@
 class FontAwesomeIcon
   attr_reader :icon
 
+  DEFAULT="gear"
+  DEFAULT_URI_STR="fa://gear"
+
   def initialize(uristr)
     @icon = icon_for_uri(uristr)
-  end
-
-  def default_icon
-    "gear"
   end
 
   def icon_for_uri(uristr)
@@ -15,10 +14,10 @@ class FontAwesomeIcon
     if uri.scheme == "fa"
       uri.host
     else
-      default_icon
+      FontAwesomeIcon::DEFAULT
     end
   rescue
-    default_icon
+    FontAwesomeIcon::DEFAULT
   end
 
   def path
