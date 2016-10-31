@@ -11,6 +11,6 @@ class ImageIcon
   end
 
   def html
-    %Q( <img src="#{url}" width="100" height="100" title="#{path}" ).html_safe
+    %Q( <img class="app-icon" src="#{url}" title="#{path}" ).html_safe
   end
 end

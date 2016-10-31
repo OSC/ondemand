@@ -30,6 +30,6 @@ class FontAwesomeIcon
   end
 
   def html
-    %Q( <i class="fa fa-#{icon}" style="font-size: 100px;"></i>).html_safe
+    %Q( <i class="fa fa-#{icon} app-icon"></i>).html_safe
   end
 end
