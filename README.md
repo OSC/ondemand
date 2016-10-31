@@ -10,9 +10,9 @@ This Rails app doesn't use a database.
 
 ```
 cd /path/to/build/directory/sys
-git clone https://github.com/OSC/ood-ondemand.git dashboard
+git clone https://github.com/OSC/ood-dashboard.git dashboard
 cd dashboard
-git checkout tags/v1.0.3 # latest version
+git checkout tags/v1.0.3 # or whatever the latest version is
 scl enable nodejs010 rh-ruby22 -- bin/bundle install --path vendor/bundle
 ```
 
