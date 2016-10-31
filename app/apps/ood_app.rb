@@ -47,14 +47,6 @@ class OodApp
     path.join("icon.png")
   end
 
-  def icon(context = nil)
-    if icon_path.file?
-      ImageIcon.new(icon_path, context ? context.app_icon_path(name, type, owner) : "#")
-    else
-      FontAwesomeIcon.new(manifest.icon)
-    end
-  end
-
   class SetupScriptFailed < StandardError; end
   # run the production setup script for setting up the user's
   # dataroot and database for the current app, if the production

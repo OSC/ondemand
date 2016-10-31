@@ -35,7 +35,12 @@ module ApplicationHelper
     end
   end
 
+  # TODO: if we keep the separate classes for icons
   def app_icon_tag(app)
-    app.icon(self).html
+    if app.icon_path.file?
+      ImageIcon.new(app.icon_path, app_icon_path(app.name, app.type, app.owner)).html
+    else
+      FontAwesomeIcon.new(app.manifest.icon).html
+    end
   end
 end
