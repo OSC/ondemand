@@ -68,8 +68,8 @@ class AppsController < ApplicationController
   def icon
     set_app
 
-    if @app.icon_path.file?
-      send_file @app.icon_path, :type => 'image/png', :disposition => 'inline'
+    if @app.icon.file?
+      send_file @app.icon.path, :type => 'image/png', :disposition => 'inline'
     else
       raise ActionController::RoutingError.new('Not Found')
     end

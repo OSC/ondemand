@@ -44,19 +44,14 @@ class OodApp
   end
 
   def icon_path
-    # TODO:
-    # maybe support icon in different formats? optional.
-    # path.children.select { |p| p.basename.to_s =~ /icon\.(png|jpg|svg)/  }.first
     path.join("icon.png")
   end
 
-  def fa_icon
-    u = manifest.icon_uri
-
-    if u.scheme == "fa"
-      u.host
+  def icon(context = nil)
+    if icon_path.file?
+      ImageIcon.new(icon_path, context ? context.app_icon_path(name, type, owner) : "#")
     else
-      manifest.default_icon_uri.host
+      FontAwesomeIcon.new(manifest.icon)
     end
   end
 

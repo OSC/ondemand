@@ -53,23 +53,6 @@ category: OSC
     {"name" => "", "description" => "", "category" => "", "subcategory" => "" , "icon" => "fa://gear"}
   end
 
-  def default_icon_uri
-    URI.parse(defaults["icon"])
-  end
-
-  def icon_uri
-    uri = URI.parse(icon)
-
-    # only support fa scheme for now
-    if uri.scheme != "fa"
-      default_icon_uri
-    else
-      uri
-    end
-  rescue
-    default_icon_uri
-  end
-
   def initialize(opts)
     raise InvalidContentError.new unless(opts && opts.is_a?(Hash))
 
