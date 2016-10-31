@@ -36,11 +36,29 @@ module ApplicationHelper
   end
 
   # TODO: if we keep the separate classes for icons
+  # def app_icon_tag(app)
+  #   if app.icon_path.file?
+  #     ImageIcon.new(app.icon_path, app_icon_path(app.name, app.type, app.owner)).html
+  #   else
+  #     FontAwesomeIcon.new(app.manifest.icon).html
+  #   end
+  # end
+
+  # TODO: if we get rid of the separate classes for icons
   def app_icon_tag(app)
     if app.icon_path.file?
-      ImageIcon.new(app.icon_path, app_icon_path(app.name, app.type, app.owner)).html
+      image_tag app_icon_path(app.name, app.type, app.owner), class: 'app-icon', title: app.icon_path
+    elsif(app.manifest.icon =~ /fa:\/\/(.*)/)
+      fa_tag(name: $1, css_class: "app-icon", title: app.icon_path)
+
+      # later we would add multiple formats and templates below
     else
-      FontAwesomeIcon.new(app.manifest.icon).html
+      # default - font awesome gear
+      fa_tag(name: "gear", css_class: "app-icon", title: app.icon_path)
     end
+  end
+
+  def fa_tag(name:, css_class: [], title: "")
+    content_tag(:i, "", class: ["fa", "fa-#{name}"].concat(Array(css_class)) , title: title)
   end
 end
