@@ -1,5 +1,4 @@
 var http        = require('http'),
-    util        = require('util'),
     fs          = require('fs'),
     path        = require('path'),
     cloudcmd    = require('cloudcmd'),
