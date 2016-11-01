@@ -1,4 +1,5 @@
 var http        = require('http'),
+    util        = require('util'),
     fs          = require('fs'),
     path        = require('path'),
     cloudcmd    = require('cloudcmd'),
@@ -9,6 +10,7 @@ var http        = require('http'),
     BASE_URI    = require('base-uri'),
     archiver    = require('archiver'),
     queryString = require('querystring'),
+    gitSync     = require('git-rev-sync'),
     app         = express(),
     dirArray    = __dirname.split('/'),
     PORT        = 9001,
@@ -132,11 +134,12 @@ app.use(cloudcmd({
         // each app instance have a separate treeroot
         // treeroot: "/nfs/gpfs/PZS0530",
         // treeroottitle: "Project Space"
-        treeroot: HOME,
-        treeroottitle: "Home Directory",
+        treeroot:               HOME,
+        treeroottitle:          "Home Directory",
 
-        file_editor: process.env.OOD_FILE_EDITOR,
-        shell: process.env.OOD_SHELL
+        file_editor:            process.env.OOD_FILE_EDITOR,
+        shell:                  process.env.OOD_SHELL,
+        fileexplorer_version:   gitSync.tag()
     }
 }));
 
