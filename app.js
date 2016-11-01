@@ -51,6 +51,11 @@ app.get(BASE_URI + CloudFunc.apiURL + CloudFunc.FS + ':path(*)', function(req, r
         res.attachment(path);
         res.set(sendfile, redirect);
         res.end();
+    // If a download is requested but the headers are not appropriately set, fall back to this block.
+    } else if (req.query.download) {
+        // IE Fix for installations without the nginx stage X-Sendfile modifications
+        res.set('Content-Disposition', 'attachment');
+        next();
     } else {
         next();
     }
