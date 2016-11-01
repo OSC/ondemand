@@ -34,13 +34,17 @@ app.use(function(req, res, next) {
     next();
 });
 
-// This is an IE fix for downloading files.
+// This is a custom middleware to work around Passenger filling up /tmp with the download buffer.
+// nginx-stage sets the X-Sendfile-Type and X-Accel-Mapping headers, which are used to redirect
+//  to the download api configured by nginx-stage and force nginx transfer instead of Passenger.
+// If the headers are not properly configured, fall back to the default behavior.
 app.get(BASE_URI + CloudFunc.apiURL + CloudFunc.FS + ':path(*)', function(req, res, next) {
     var sendfile = req.get('X-Sendfile-Type'),
         mapping  = req.get('X-Accel-Mapping'),
         path     = req.params.path,
         pattern,
         redirect;
+    // If nginx stage has properly set the headers, redirect the download.
     if (sendfile && mapping && req.query.download) {
         // generate redirect uri from file path
         mapping = mapping.split('=');
