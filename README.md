@@ -95,9 +95,3 @@ If `MOTD_PATH="/etc/motd"` is set, the message of the day file will be parsed an
 4. after that the message body follows markdown rules for formatting, and is parsed using a markdown parser
 
 Messages that do not match this formatting will be omitted.
-
-In the future, we hope to:
-
-* support more flexible formats for MOTD based on feedback
-* support parsing an RSS feed instead of an MOTD formatted file by letting the admin provide a system path or a URL to the RSS feed
-
