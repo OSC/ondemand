@@ -31,7 +31,9 @@ scl enable git19 rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=pro
 scl enable nodejs010 rh-ruby22 -- bin/rake tmp:clear
 ```
 
-4\. At this point, you should copy the directory to the deployment directory, if that location is not the same place as the build directory. For more explanation of how this is done, see https://github.com/OSC/Open-OnDemand#app-deployment-strategy.
+4\. If enabling this dashboard for App Sharing, skip to the bottom of this document and [follow the directions there](#app-sharing) before continuing here.
+
+5\. At this point, you should copy the directory to the deployment directory, if that location is not the same place as the build directory. For more explanation of how this is done, see https://github.com/OSC/Open-OnDemand#app-deployment-strategy.
 
 ### Updating to a New Stable Version
 
