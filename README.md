@@ -31,24 +31,7 @@ scl enable git19 rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=pro
 scl enable nodejs010 rh-ruby22 -- bin/rake tmp:clear
 ```
 
-4\. Next we need to build our staging app (change `OOD_PORTAL` to match the portal this dashboard is setup for):
-
-```sh
-OOD_APP=my_app OOD_PORTAL=ondemand scl enable rh-ruby22 nodejs010 -- /bin/bash <(cat <<\EOF
-  dir=$(mktemp -d) &&
-  cd ${dir} &&
-  gem install -N -i . rails -v '~> 4.2' &&
-  GEM_HOME=${PWD} bin/rails new ${OLDPWD}/vendor/${OOD_APP} \
-    -m https://raw.githubusercontent.com/AweSim-OSC/rails-application-template/remote_source/awesim.rb \
-    --skip-turbolinks \
-    --skip-bundle \
-    --skip-spring &&
-  rm -fr ${dir}
-EOF
-)
-```
-
-5\. At this point, you should copy the directory to the deployment directory, if that location is not the same place as the build directory. For more explanation of how this is done, see https://github.com/OSC/Open-OnDemand#app-deployment-strategy.
+4\. At this point, you should copy the directory to the deployment directory, if that location is not the same place as the build directory. For more explanation of how this is done, see https://github.com/OSC/Open-OnDemand#app-deployment-strategy.
 
 ### Updating to a New Stable Version
 
@@ -95,3 +78,27 @@ If `MOTD_PATH="/etc/motd"` is set, the message of the day file will be parsed an
 4. after that the message body follows markdown rules for formatting, and is parsed using a markdown parser
 
 Messages that do not match this formatting will be omitted.
+
+## App Sharing
+
+**This is a feature currently in development. The documentation below is for developers working on this feature.**
+
+
+App sharing features creating a new app from a prebuilt app. In order to provide this feature, we need to prebuild an app in a subdirectory of the dashboard so this can be copied to the user's home directory.
+
+To do this, run the command below in the dashboard directory (change `OOD_PORTAL` to match the portal this dashboard is setup for):
+
+```sh
+OOD_APP=my_app OOD_PORTAL=ondemand scl enable rh-ruby22 nodejs010 -- /bin/bash <(cat <<\EOF
+  dir=$(mktemp -d) &&
+  cd ${dir} &&
+  gem install -N -i . rails -v '~> 4.2' &&
+  GEM_HOME=${PWD} bin/rails new ${OLDPWD}/vendor/${OOD_APP} \
+    -m https://raw.githubusercontent.com/AweSim-OSC/rails-application-template/remote_source/awesim.rb \
+    --skip-turbolinks \
+    --skip-bundle \
+    --skip-spring &&
+  rm -fr ${dir}
+EOF
+)
+```
