@@ -50,7 +50,7 @@ category: OSC
   end
 
   def defaults
-    {"name" => "", "description" => "", "category" => "", "subcategory" => "" , "icon" => FontAwesomeIcon::DEFAULT_URI_STR}
+    {"name" => "", "description" => "", "category" => "", "subcategory" => "" , "icon" => ""}
   end
 
   def initialize(opts)
