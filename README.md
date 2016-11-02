@@ -2,7 +2,7 @@
 
 This app is a Rails app for Open OnDemand that serves as a gateway to launching other Open OnDemand apps. It is meant to be run as the user (and on behalf of the user) using the app. Thus, at an HPC center if I log into OnDemand using the `efranz` account, this app should run as `efranz`.
 
-## Install
+## New Install
 
 This Rails app doesn't use a database.
 
@@ -50,7 +50,7 @@ EOF
 
 5\. At this point, you should copy the directory to the deployment directory, if that location is not the same place as the build directory. For more explanation of how this is done, see https://github.com/OSC/Open-OnDemand#app-deployment-strategy.
 
-### Update
+### Updating to a New Stable Version
 
 When updating a deployed version of the Open OnDemand dashboard: 
 
