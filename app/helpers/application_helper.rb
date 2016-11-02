@@ -37,9 +37,10 @@ module ApplicationHelper
 
   def app_icon_tag(app)
     if app.icon_path.file?
-      image_tag app_icon_path(app.name, app.type, app.owner), size: '100x100', title: app.icon_path
-    else
-      content_tag(:i, "", class: ["fa", "fa-gear"], style: 'font-size: 100px;', title: app.icon_path)
+      image_tag app_icon_path(app.name, app.type, app.owner), class: 'app-icon', title: app.icon_path
+    else # default to font awesome icon
+      icon = (app.manifest.icon =~ /fa:\/\/(.*)/) ? $1 : "gear"
+      content_tag(:i, "", class: ["fa", "fa-#{icon}", "app-icon"] , title: "FontAwesome icon specified: #{icon}")
     end
   end
 end

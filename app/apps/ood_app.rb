@@ -44,9 +44,6 @@ class OodApp
   end
 
   def icon_path
-    # TODO:
-    # maybe support icon in different formats? optional.
-    # path.children.select { |p| p.basename.to_s =~ /icon\.(png|jpg|svg)/  }.first
     path.join("icon.png")
   end
 

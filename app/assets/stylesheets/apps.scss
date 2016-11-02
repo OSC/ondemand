@@ -26,6 +26,12 @@ tr.app {
 
 }
 
+.app-icon {
+  width: 100px;
+  height: 100px;
+  font-size: 100px;
+}
+
 // awesim colors - FIXME: aweful lot for a list of colors to cycle through
 // would be better to gave a default grey and then cycle based on a list in an
 // initializer
