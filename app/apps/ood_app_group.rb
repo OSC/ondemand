@@ -14,7 +14,7 @@ class OodAppGroup
     apps.group_by { |app|
       app.category
     }.map { |k,v|
-      OodAppGroup.new(title: k, apps: v)
+      OodAppGroup.new(title: k, apps: v.sort_by { |a| a.title })
     }.sort_by { |g| g.title }
   end
 end
