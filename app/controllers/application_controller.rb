@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  before_filter :set_user, :set_logout_url
+  before_filter :set_user, :set_logout_url, :set_nav_groups
 
   def set_user
     @user = User.new
@@ -15,5 +15,10 @@ class ApplicationController < ActionController::Base
     else
       @logout_url = nil
     end
+  end
+
+  def set_nav_groups
+    #TODO: for AweSim, what if we added the shared apps here?
+    @nav_groups = OodAppGroup.groups_for(apps: SysRouter.apps)
   end
 end
