@@ -24,6 +24,7 @@
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
         <ul class="nav navbar-nav">
           <%= render partial: 'layouts/nav/group', collection: @nav_groups %>
+          <%= render partial: 'layouts/nav/develop_dropdown' if ENV['OOD_APP_SHARING'].present? %>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <%= render partial: "layouts/nav/help_dropdown" %>
