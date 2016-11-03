@@ -343,3 +343,15 @@ body {
   left: 4px;
   top: 4px;
 }
+
+.fe-version {
+    color: #999;
+    margin: 10px 10px 10px 30px;
+    position: absolute;
+}
+@media (max-width: 982px)
+{
+    .fe-version {
+        display: none;
+    }
+}
