@@ -1,7 +1,4 @@
 ---
 name: Active Jobs
-description: |-
-  User Job Status on Oakley/Ruby Clusters
-documentation: |-
 category: Jobs
 icon: fa://clock-o
