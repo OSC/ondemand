@@ -4,7 +4,7 @@
       <%= content_tag "li", "", class: "divider", role: "separator" if index > 0 %>
       <%= content_tag "li", g.title, class: "dropdown-header" unless g.title.empty? %>
       <% g.apps.each do |app| %>
-        <li><a href="<%= app_path(app.name) %>"><%= app_icon_tag(app) %> <%= app.title %></a></li>
+        <li><a href="<%= app_path(app.name, app.type, app.owner) %>"><%= app_icon_tag(app) %> <%= app.title %></a></li>
       <% end %>
     <% end %>
   </ul>
