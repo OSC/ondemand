@@ -35,6 +35,10 @@ class OodApp
     manifest.category.empty? ? router.category : manifest.category
   end
 
+  def subcategory
+    manifest.subcategory or ""
+  end
+
   def bundler_helper
     @bundler_helper ||= BundlerHelper.new(path)
   end
