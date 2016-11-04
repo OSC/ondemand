@@ -64,6 +64,7 @@ category: OSC
     @category = opts.fetch("category")
     @subcategory = opts.fetch("subcategory")
     @icon = opts.fetch("icon")
+    @role = opts.fetch("role")
   end
 
   def valid?
