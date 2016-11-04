@@ -39,6 +39,10 @@ class OodApp
     manifest.subcategory
   end
 
+  def role
+    manifest.role
+  end
+
   def bundler_helper
     @bundler_helper ||= BundlerHelper.new(path)
   end
