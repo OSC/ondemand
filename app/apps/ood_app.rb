@@ -36,7 +36,7 @@ class OodApp
   end
 
   def subcategory
-    manifest.subcategory or ""
+    manifest.subcategory
   end
 
   def bundler_helper
