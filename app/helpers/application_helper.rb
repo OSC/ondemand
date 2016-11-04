@@ -24,17 +24,6 @@ module ApplicationHelper
     ENV['OOD_DASHBOARD_PASSWD_URL'] || "#"
   end
 
-  # FIXME: temporary solution
-  def render_nav
-    if ENV['OOD_APP_SHARING'].present?
-      render partial: "layouts/nav/app_sharing_nav"
-    elsif ENV['OOD_DASHBOARD_SHOW_ALL_APPS'].present?
-      render partial: "layouts/nav/nav"
-    else
-      render partial: "layouts/nav/simple_nav"
-    end
-  end
-
   def app_icon_tag(app)
     if app.icon_path.file?
       image_tag app_icon_path(app.name, app.type, app.owner), class: 'app-icon', title: app.icon_path
