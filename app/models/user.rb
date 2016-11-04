@@ -13,6 +13,12 @@ class User < OodSupport::User
     @has_ruby_access ||= in_group?("ruby")
   end
 
+  # other paths to provide links to via file explorer
+  # TODO: use this to replace project space and scratch paths
+  def other_paths
+    @other_paths ||= (project_space_paths + scratch_user_paths)
+  end
+
   # project space is in /nfs/gpfs/PZS0645 where the directory name is the name
   # of the project; so return paths to directories that the user has rx to
   def project_space_paths

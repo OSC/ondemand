@@ -4,7 +4,24 @@
       <%= content_tag "li", "", class: "divider", role: "separator" if index > 0 %>
       <%= content_tag "li", g.title, class: "dropdown-header" unless g.title.empty? %>
       <% g.apps.each do |app| %>
-        <li><a href="<%= app_path(app.name, app.type, app.owner) %>"><%= app_icon_tag(app) %> <%= app.title %></a></li>
+
+        <% if app.role == "files" %>
+          <%# FIXME: not using icons specified by app %>
+          <%# FIXME: if we add a subgroups method above, that could handle creating a separate group for "other paths" %>
+          <li><a href="<%= OodAppkit.files.url(path: @user.home) %>" target="_blank"><i class="fa fa-home"></i> Home Directory</a></a></li>
+          <%= content_tag "li", "", class: "divider", role: "separator" unless @user.other_paths.empty? %>
+          <% @user.other_paths.each do |path| %>
+            <li><a href="<%= OodAppkit.files.url(path: path) %>" target="_blank"><i class="fa fa-folder"></i> <%= path.to_s %></a></li>
+          <% end %>
+        <% elsif app.role == "shell" %>
+          <%# FIXME: not using icons specified by app %>
+          <%# FIXME: if we add a subgroups method above, that could handle creating a separate group for Shell Access %>
+          <% login_clusters.each do |c| %>
+            <li><a href="<%= OodAppkit.shell.url(host: c.login_server.host) %>" target="_blank"><i class="fa fa-terminal"></i> <%= c.title %> Shell Access</a></li>
+          <% end %>
+        <% else %>
+          <li><a href="<%= app_path(app.name, app.type, app.owner) %>"><%= app_icon_tag(app) %> <%= app.title %></a></li>
+        <% end %>
       <% end %>
     <% end %>
   </ul>
