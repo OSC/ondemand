@@ -1,0 +1,40 @@
+************************************************************************
+Welcome to the Ohio Supercomputer Center!
+PLEASE SEE THE OSC SUPERCOMPUTING DOCUMENTATION
+FOR ANNOUNCEMENTS/NOTICES AND USER INFORMATION:
+http://www.osc.edu/supercomputing
+For questions or assistance, contact oschelp@osc.edu
+To check for currently known issues, please visit
+https://www.osc.edu/supercomputing/known-issues or follow @HPCNotices
+on Twitter.
+************************************************************************
+2016/09/30
+--- UPDATE ON GPFS SOFTWARE ISSUES
+We are experiencing periodic hangs of the GPFS client file system software
+used with the new storage environment. We have an open support case with
+the vendor, but no solution at this time. This may affect access to the
+/fs/project, and /fs/scratch file systems. Reports of transfer failures
+to these file systems through scp.osc.edu, and sftp.osc.edu
+have been reported.  If you experience any issues with these file systems,
+please contact us at oschelp@osc.edu.
+************************************************************************
+2016/10/21
+--- OUR NEWEST CLUSTER, OWENS, IS NOW OPEN TO ALL USERS
+
+The Owens cluster is now available to all users. It is currently at partial
+capacity as we continue to upgrade the data center. We anticipate the
+cluster will be fully available by early November.
+
+For information on getting started using Owens, please see
+https://www.osc.edu/supercomputing/computing/owens
+************************************************************************
+2016/10/26
+--- OWENS ONLY DOWNTIME FRIDAY, OCTOBER 28 - SUNDAY, OCTOBER 30
+
+On Friday, October 28, a downtime is scheduled for Owens in order
+to benchmark the system. This downtime will only affect the Owens
+cluster. The Oakley and Ruby clusters, web portals and HPC file
+servers will be available.
+
+More details: http://bit.ly/2ev5RfA
+************************************************************************

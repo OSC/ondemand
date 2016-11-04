@@ -47,10 +47,10 @@ class MotdFile
 
     # get array of sections which are delimited by a row of ******
     sections = f.split(/^\*+$/).map(&:strip).select { |x| ! x.empty?  }
-    sections.map! { |s| MotdFile::Message.from(s) }.compact!.sort_by! {|s| s.date }.reverse!
+    sections.map { |s| MotdFile::Message.from(s) }.compact.sort_by {|s| s.date }.reverse
   rescue Errno::ENOENT
     # The messages file does not exist on the system.
-    logger.warn "MOTD File is missing; it was expected at #{motd_system_file}"
+    Rails.logger.warn "MOTD File is missing; it was expected at #{motd_system_file}"
     []
   end
 

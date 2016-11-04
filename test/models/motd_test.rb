@@ -20,4 +20,40 @@ class MotdTest < ActiveSupport::TestCase
     assert_equal nil, MotdFile::Message.from(msg)
   end
 
+  test "test when motd valid" do
+    path = "#{Rails.root}/test/fixtures/files/motd_valid"
+    motd_file = MotdFile.new(path)
+
+    assert_equal true, motd_file.exist?
+    assert_equal path, motd_file.motd_system_file
+    assert_equal 3, motd_file.messages.count
+  end
+
+  test "test when motd invalid" do
+    path = "#{Rails.root}/test/fixtures/files/motd_invalid"
+    motd_file = MotdFile.new(path)
+
+    assert_equal true, motd_file.exist?
+    assert_equal path, motd_file.motd_system_file
+    assert_equal 0, motd_file.messages.count
+  end
+
+  test "test when motd empty" do
+    path = "#{Rails.root}/test/fixtures/files/motd_empty"
+    motd_file = MotdFile.new(path)
+
+    assert_equal true, motd_file.exist?
+    assert_equal path, motd_file.motd_system_file
+    assert_equal 0, motd_file.messages.count
+  end
+
+  test "test when motd missing" do
+    path = "#{Rails.root}/test/fixtures/files/motd_missing"
+    motd_file = MotdFile.new(path)
+
+    assert_equal false, motd_file.exist?
+    assert_equal path, motd_file.motd_system_file
+    assert_equal 0, motd_file.messages.count
+  end
+
 end
