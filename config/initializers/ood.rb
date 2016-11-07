@@ -1,5 +1,3 @@
 Rails.application.configure do
-  config.x.ood.nav_categories = ["Files", "Jobs", "Clusters", "Desktops"]
-  # config.x.ood.nav_categories = ["Files", "Clusters"]
-  # config.x.ood.nav_categories = []
+  config.x.ood.nav_categories = ENV['OOD_NAV_CATEGORIES'] ? ENV['OOD_NAV_CATEGORIES'].split(",") : ["Files", "Jobs", "Clusters", "Desktops"]
 end
