@@ -1,18 +1,5 @@
 class User < OodSupport::User
 
-  # currently, only wiag user's are developers
-  def developer?
-    @developer ||= in_group?("wiag")
-  end
-
-  # FIXME: apps that display should display based on whether the user has access
-  # i.e. rx to the app directory. We should treat "production apps" just like
-  # any other app, instead of calling out those who have ruby access by
-  # explicitly checking if they are in the ruby group.
-  def has_ruby_access?
-    @has_ruby_access ||= in_group?("ruby")
-  end
-
   # other paths to provide links to via file explorer
   # TODO: use this to replace project space and scratch paths
   def other_paths
