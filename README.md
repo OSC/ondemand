@@ -19,7 +19,7 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
 1. Navigate to the OOD apps staged deployment path.
 2. Clone the `OSC/ood-fileexplorer.git` reposititory.
 3. `git checkout` the latest [release tag](https://github.com/OSC/ood-fileexplorer/releases)
-4. Create a `.env` file or rename `.env.ondemand` to `.env` and modify environment variables.
+4. Modify environment variables in `.env` as appropriate.
 5. Run `scl enable nodejs010 -- npm install`
 6. `mkdir tmp`
 7. `touch tmp/restart.txt`
