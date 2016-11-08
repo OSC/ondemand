@@ -1,0 +1,4 @@
+# AweSim OOD config
+
+# don't show any apps in nav
+NavConfig.categories = []
