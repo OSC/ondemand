@@ -10,7 +10,10 @@ class OodFilesApp
   end
 
   def paths_from_templates(templates, filter)
-    #TODO:
-    []
+    return [] if templates.nil?
+
+    templates.split(":").map { |t|
+      Pathname.new(t)
+    }
   end
 end
