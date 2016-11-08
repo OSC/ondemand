@@ -6,6 +6,8 @@ class OodFilesApp
     # set in config/initializers/ood.rb
     attr_accessor :candidate_favorite_paths
   end
+  self.candidate_favorite_paths = []
+
 
   # esure that [] is returned if class variable is not set
   def candidate_favorite_paths
