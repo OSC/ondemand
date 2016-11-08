@@ -23,7 +23,7 @@
       </div>
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
         <ul class="nav navbar-nav">
-          <%= content_tag(:li, class: current_page?(root_path) ? "active" : "") { link_to 'Home', root_path  } %>
+          <%= content_tag(:li, class: current_page?(root_path) ? "active" : "") { link_to 'Home', root_path  } if ENV['OOD_APP_SHARING'].present?%>
           <%= render partial: 'layouts/nav/group', collection: @nav_groups %>
           <%= render partial: 'layouts/nav/develop_dropdown' if ENV['OOD_APP_SHARING'].present? %>
         </ul>
