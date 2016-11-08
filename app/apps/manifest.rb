@@ -1,7 +1,7 @@
 require 'yaml'
 
 class Manifest
-  attr_reader :name, :description, :category, :subcategory, :icon
+  attr_reader :name, :description, :category, :subcategory, :icon, :role
 
   class InvalidContentError < StandardError
     def initialize
@@ -50,7 +50,7 @@ category: OSC
   end
 
   def defaults
-    {"name" => "", "description" => "", "category" => "", "subcategory" => "" , "icon" => ""}
+    {"name" => "", "description" => "", "category" => "", "subcategory" => "" , "icon" => "", "role" => ""}
   end
 
   def initialize(opts)
@@ -64,6 +64,7 @@ category: OSC
     @category = opts.fetch("category")
     @subcategory = opts.fetch("subcategory")
     @icon = opts.fetch("icon")
+    @role = opts.fetch("role")
   end
 
   def valid?

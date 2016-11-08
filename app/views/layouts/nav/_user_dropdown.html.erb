@@ -6,8 +6,11 @@
   <ul class="dropdown-menu">
     <li><a href="<%= passwd_url %>"><i class="fa fa-gear"></i> Change HPC Password</a>
     </li>
+
+    <% if @logout_url %>
     <li role="separator" class="divider"></li>
     <li><a href="<%= @logout_url %>"><i class="fa fa-power-off"></i> Logout</a>
     </li>
+    <% end %>
   </ul>
 </li>
