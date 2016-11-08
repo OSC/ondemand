@@ -1,6 +1,11 @@
 class OodAppGroup
   attr_accessor :apps, :title
 
+  class << self
+    attr_accessor :nav_categories
+  end
+  self.nav_categories = ["Files", "Jobs", "Clusters", "Desktops"]
+
   def initialize(title: "", apps: [])
     @apps = apps
     @title = title

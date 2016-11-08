@@ -19,6 +19,6 @@ class ApplicationController < ActionController::Base
 
   def set_nav_groups
     #TODO: for AweSim, what if we added the shared apps here?
-    @nav_groups = OodAppGroup.select(titles: Rails.application.config.x.ood.nav_categories, groups: OodAppGroup.groups_for(apps: SysRouter.apps))
+    @nav_groups = OodAppGroup.select(titles: OodAppGroup.nav_categories, groups: OodAppGroup.groups_for(apps: SysRouter.apps))
   end
 end
