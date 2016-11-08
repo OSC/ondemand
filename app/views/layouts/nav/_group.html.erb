@@ -21,7 +21,7 @@
           <% end %>
 
         <% else %>
-          <li><a href="<%= app_path(app.name, app.type, app.owner) %>"><%= app_icon_tag(app) %> <%= app.title %></a></li>
+          <li class="<%= app.role %>"><a href="<%= app_path(app.name, app.type, app.owner) %>"><%= app_icon_tag(app) %> <%= app.title %></a></li>
         <% end %>
 
       <% end %>
