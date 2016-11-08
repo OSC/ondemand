@@ -22,24 +22,4 @@ class OodFilesApp
       p.directory? && p.readable? && p.executable?
     }
   end
-
-  # build an array of Pathname objects from the specified template string
-  def paths_from_template(templates, basename_filter: nil )
-    return [] if templates.nil?
-
-    # get array of string paths
-    paths = templates.split(":").map { |t|
-      User.new.groups.map(&:name).map { |g| Pathname.new(t % {group: g}) }
-    }.flatten.uniq
-
-    # filter by regex (if exist)
-    if basename_filter
-      rx = Regexp.new(basename_filter)
-      paths = paths.select { |p|
-        rx.match(p.basename.to_s)
-      }
-    end
-
-    paths
-  end
 end
