@@ -1,6 +1,8 @@
+<% if support_url || docs_url %>
 <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Help<span class="caret"></span></a>
 <ul class="dropdown-menu">
-  <li><a href="<%= support_url %>"><i class="fa fa-question-circle"></i> Contact Support</a></li>
-  <li><a href="<%= docs_url %>"><i class="fa fa-info-circle"></i> Online Documentation</a></li>
+  <%= nav_link("Contact Support", "question-circle", support_url) %>
+  <%= nav_link("Online Documenetation", "info-circle", docs_url) %>
 </ul>
 </li>
+<% end %>

@@ -11,17 +11,20 @@ module ApplicationHelper
     "/nginx/stop?redir=#{root_path}"
   end
 
+  def nav_link(title, icon, url)
+    %Q(<li><a href="#{url}"><i class="fa fa-#{icon}"></i> #{title}</a></li>).html_safe if url
+  end
 
   def support_url
-    ENV['OOD_DASHBOARD_SUPPORT_URL'] || "#"
+    ENV['OOD_DASHBOARD_SUPPORT_URL']
   end
 
   def docs_url
-    ENV['OOD_DASHBOARD_DOCS_URL'] || "#"
+    ENV['OOD_DASHBOARD_DOCS_URL']
   end
 
   def passwd_url
-    ENV['OOD_DASHBOARD_PASSWD_URL'] || "#"
+    ENV['OOD_DASHBOARD_PASSWD_URL']
   end
 
   def app_icon_tag(app)
