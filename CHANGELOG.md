@@ -4,6 +4,10 @@ Features:
 
   - adds analytics reporting feature
 
+Bugfixes:
+
+  - small fix in README
+
 ## 0.0.6 (2016-10-11)
 
 Bugfixes:
