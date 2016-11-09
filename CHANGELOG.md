@@ -1,5 +1,9 @@
 ## Unreleased
 
+Features:
+
+  - adds analytics reporting feature
+
 ## 0.0.6 (2016-10-11)
 
 Bugfixes:

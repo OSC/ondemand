@@ -40,6 +40,11 @@
 #   OOD_AUTH_TYPE='<%= OOD_AUTH_TYPE %>'
 #   OOD_AUTH_EXTEND='<%= OOD_AUTH_EXTEND.gsub("\n", '\n') %>'
 #   OOD_MAP_FAIL_URI='<%= OOD_MAP_FAIL_URI %>'
+#   OOD_ANALYTICS_OPT_IN='<%= OOD_ANALYTICS_OPT_IN %>'
+<%- if OOD_ANALYTICS_OPT_IN -%>
+#   OOD_ANALYTICS_TRACKING_URL='<%= OOD_ANALYTICS_TRACKING_URL %>'
+#   OOD_ANALYTICS_TRACKING_ID='<%= OOD_ANALYTICS_TRACKING_ID %>'
+<%- end -%>
 #
 
 <%- if use_virtual_host -%>
@@ -221,6 +226,12 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
     SetEnv OOD_PUN_MAX_RETRIES "<%= OOD_PUN_MAX_RETRIES %>"
     LuaHookFixups pun_proxy.lua pun_proxy_handler
     ProxyPassReverse "http://localhost<%= OOD_PUN_URI %>"
+
+    <%- if OOD_ANALYTICS_OPT_IN -%>
+    SetEnv OOD_ANALYTICS_TRACKING_URL "<%= OOD_ANALYTICS_TRACKING_URL %>"
+    SetEnv OOD_ANALYTICS_TRACKING_ID "<%= OOD_ANALYTICS_TRACKING_ID %>"
+    LuaHookLog analytics.lua analytics_handler
+    <%- end -%>
   </Location>
   <%- end -%>
 
