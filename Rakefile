@@ -73,7 +73,7 @@ end
 OOD_ANALYTICS_OPT_IN ||= (ENV['OOD_ANALYTICS_OPT_IN'] || 'false').to_bool
 if OOD_ANALYTICS_OPT_IN
   OOD_ANALYTICS_TRACKING_URL = 'http://www.google-analytics.com/collect'
-  OOD_ANALYTICS_TRACKING_ID  = 'UA-79331310-3'
+  OOD_ANALYTICS_TRACKING_ID  = 'UA-79331310-4'
 end
 
 #
