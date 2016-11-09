@@ -6,7 +6,7 @@ Features:
 
 Bugfixes:
 
-  - small fix in README
+  - fixed default location for `.htpasswd`
 
 ## 0.0.6 (2016-10-11)
 
