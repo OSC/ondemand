@@ -20,18 +20,6 @@ Generates an Open OnDemand portal config for an Apache server.
 | mod_proxy (mod_proxy_connect + mod_proxy_wstunnel) |
 | mod_auth_* (e.g., mod_auth_openidc)                |
 
-If using CILogon authentication, built with `OOD_AUTH_CILOGON='true'` (expert mode):
-
-- mod_auth_openidc / CILogon client information ([Discussed Here](#cilogon-setup))
-- ood_auth_discovery (PHP scripts)
-- ood_auth_registration (PHP scripts)
-- ood_auth_map (ruby CLI script)
-- mapdn (also relevant python scripts)
-
-Note: The above authentication setup utilizes a `grid-mapfile` for
-storing/accessing the mapping of the authenticated user to the system-level
-user.
-
 ## Installation
 
 1.  Clone/pull this repo onto the local file system
@@ -348,6 +336,14 @@ If you continue to use Basic Auth, we recommend using the LDAP module.
 
 **CILogon Authentication Setup** (expert mode)
 
+Requirements:
+
+- mod_auth_openidc / CILogon client information ([Discussed Here](#cilogon-setup))
+- ood_auth_discovery (PHP scripts)
+- ood_auth_registration (PHP scripts)
+- ood_auth_map (ruby CLI script)
+- mapdn (also relevant python scripts)
+
 This authentication mechanism takes advantage of:
 
 - `mod_auth_openidc` for the authentication handler in Apache
@@ -358,6 +354,8 @@ This authentication mechanism takes advantage of:
 
 ```bash
 # Whether you want to use CILogon authentication
+#   OOD_AUTH_CILOGON='true'
+#
 # Sets the following variables =>
 #   OOD_AUTH_OIDC_URI      = '/oidc'
 #   OOD_AUTH_DISCOVER_ROOT = '/var/www/ood/discover'
