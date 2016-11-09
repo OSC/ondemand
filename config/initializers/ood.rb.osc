@@ -1,4 +1,5 @@
 # OSC
+NavConfig.categories << "Desktop Apps"
 
 OodFilesApp.candidate_favorite_paths.tap do |paths|
   # add project space directories
