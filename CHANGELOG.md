@@ -3,6 +3,8 @@
 Features:
 
   - adds analytics reporting feature
+  - don't recommend CILogon anymore and allow all of its options to be set
+    individually
 
 Bugfixes:
 
