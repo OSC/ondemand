@@ -29,14 +29,12 @@
 #   OOD_NGINX_URI='<%= OOD_NGINX_URI %>'
 #   OOD_PUBLIC_URI='<%= OOD_PUBLIC_URI %>'
 #   OOD_ROOT_URI='<%= OOD_ROOT_URI %>'
-#   OOD_AUTH_SETUP='<%= OOD_AUTH_SETUP %>'
-<%- if OOD_AUTH_SETUP -%>
+#   OOD_AUTH_CILOGON='<%= OOD_AUTH_CILOGON %>'
 #   OOD_AUTH_OIDC_URI='<%= OOD_AUTH_OIDC_URI %>'
 #   OOD_AUTH_DISOVER_ROOT='<%= OOD_AUTH_DISCOVER_ROOT %>'
 #   OOD_AUTH_DISOVER_URI='<%= OOD_AUTH_DISCOVER_URI %>'
 #   OOD_AUTH_REGISTER_ROOT='<%= OOD_AUTH_REGISTER_ROOT %>'
 #   OOD_AUTH_REGISTER_URI='<%= OOD_AUTH_REGISTER_URI %>'
-<%- end -%>
 #   OOD_AUTH_TYPE='<%= OOD_AUTH_TYPE %>'
 #   OOD_AUTH_EXTEND='<%= OOD_AUTH_EXTEND.gsub("\n", '\n') %>'
 #   OOD_MAP_FAIL_URI='<%= OOD_MAP_FAIL_URI %>'
@@ -253,7 +251,7 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
   </Location>
   <%- end -%>
 
-  <%- unless OOD_ROOT_URI.empty? %>
+  <%- unless OOD_ROOT_URI.empty? -%>
   # Redirect root URI to specified URI
   #
   #    https://<%= OOD_SERVER_NAME %>/
@@ -262,7 +260,7 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
   RedirectMatch ^/$ "<%= OOD_ROOT_URI %>"
   <%- end -%>
 
-  <%- if OOD_AUTH_SETUP -%>
+  <%- unless OOD_AUTH_OIDC_URI.empty? -%>
   # OpenID Connect redirect URI:
   #
   #    https://<%= OOD_SERVER_NAME %><%= OOD_AUTH_OIDC_URI %>
@@ -273,7 +271,9 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
     Require valid-user
     <%- %><%= OOD_AUTH_EXTEND.gsub('\n', "\n").gsub(/^(?=[^$])/, " "*4) %>
   </Location>
+  <%- end -%>
 
+  <%- unless OOD_AUTH_DISCOVER_URI.empty? -%>
   # Discover URI for OpenID Connect (used for multiple Id Providers):
   #
   #    https://<%= OOD_SERVER_NAME %><%= OOD_AUTH_DISCOVER_URI %>
@@ -285,7 +285,9 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
     AllowOverride None
     Require all granted
   </Directory>
+  <%- end -%>
 
+  <%- unless OOD_AUTH_REGISTER_URI.empty? %>
   # Register unmapped user to grid-mapfile here:
   #
   #    https://<%= OOD_SERVER_NAME %><%= OOD_AUTH_REGISTER_URI %>

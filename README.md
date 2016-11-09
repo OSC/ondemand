@@ -20,7 +20,7 @@ Generates an Open OnDemand portal config for an Apache server.
 | mod_proxy (mod_proxy_connect + mod_proxy_wstunnel) |
 | mod_auth_* (e.g., mod_auth_openidc)                |
 
-If using OOD recommended authentication (built with `OOD_AUTH_SETUP='true'`):
+If using CILogon authentication, built with `OOD_AUTH_CILOGON='true'` (expert mode):
 
 - mod_auth_openidc / CILogon client information ([Discussed Here](#cilogon-setup))
 - ood_auth_discovery (PHP scripts)
@@ -280,11 +280,6 @@ OOD_ROOT_URI='/pun/sys/dashboard'
 This uses Apache Basic Auth as the default authentication mechanism:
 
 ```bash
-# Whether you want to use OOD recommended authentication
-# Default: 'false'
-#
-OOD_AUTH_SETUP='false'
-
 # Type of user authentication used for Open OnDemand portal
 #
 OOD_AUTH_TYPE='Basic'
@@ -292,12 +287,41 @@ OOD_AUTH_TYPE='Basic'
 # Any extended authentication Apache directives separated by newlines
 # Example: OOD_AUTH_EXTEND='AuthName "private"\nAuthBasicProvider ldap\nAuthLDAPURL ldap://ldap.host/o=ctx'
 # Blank: No extended directives will be added to the config
+#
 OOD_AUTH_EXTEND='AuthName "private"\nAuthUserFile "/opt/rh/httpd24/root/etc/httpd/.htpasswd"'
 
 # Redirect user to this URI if fail to map to system level user
 # Blank: Removes the redirection upon a failed user mapping
 #
 OOD_MAP_FAIL_URI=''
+
+# Redirect URI for OpenID Connect client
+# Blank: Removes the availability of this URI in the config
+#
+OOD_AUTH_OIDC_URI=''
+
+# URI to access OpenID Connect discovery page
+# Blank: Removes the availability of this URI in the config
+#
+OOD_AUTH_DISCOVER_URI=''
+
+# Path to OpenID Connect discovery page directory
+#
+OOD_AUTH_DISCOVER_ROOT='/var/www/ood/discover'
+
+# URI to access the user mapping registration page
+# Blank: Removes the availability of this URI in the config
+#
+OOD_AUTH_REGISTER_URI=''
+
+# Path to the user mapping registration page directory
+#
+OOD_AUTH_REGISTER_ROOT='/var/www/ood/register'
+
+# Whether you want to use CILogon authentication
+# Default: 'false'
+#
+OOD_AUTH_CILOGON='false'
 ```
 
 The default location for the `.htpasswd` file is:
@@ -322,7 +346,7 @@ scl enable httpd24 -- htpasswd /opt/rh/httpd24/root/etc/httpd/.htpasswd <another
 
 If you continue to use Basic Auth, we recommend using the LDAP module.
 
-**Recommended OOD Authentication Setup**
+**CILogon Authentication Setup** (expert mode)
 
 This authentication mechanism takes advantage of:
 
@@ -333,29 +357,21 @@ This authentication mechanism takes advantage of:
 - LDAP for authenticating system user in PHP
 
 ```bash
-# Whether you want to use OOD recommended authentication
+# Whether you want to use CILogon authentication
+# Sets the following variables =>
+#   OOD_AUTH_OIDC_URI      = '/oidc'
+#   OOD_AUTH_DISCOVER_ROOT = '/var/www/ood/discover'
+#   OOD_AUTH_DISCOVER_URI  = '/discover'
+#   OOD_AUTH_REGISTER_ROOT = '/var/www/ood/register'
+#   OOD_AUTH_REGISTER_URI  = '/register'
+#   OOD_AUTH_TYPE          = 'openid-connect'
+#   OOD_AUTH_EXTEND        = ''
+#   OOD_MAP_FAIL_URI       = OOD_AUTH_REGISTER_URI
 #
-OOD_AUTH_SETUP='true'
-
-# The mod_auth_openidc redirect URI
+# You can override any of the above variables by setting them explicitly in the
+# command below
 #
-OOD_AUTH_OIDC_URI='/oidc'
-
-# Path to OpenID Connect discovery php scripts
-#
-OOD_AUTH_DISCOVER_ROOT='/var/www/ood/discover'
-
-# The mod_auth_openidc discovery URI
-#
-OOD_AUTH_DISCOVER_URI='/discover'
-
-# Path to the registration php scripts
-#
-OOD_AUTH_REGISTER_ROOT='/var/www/ood/register'
-
-# The URI user is redirected to if they aren't registered in grid-mapfile
-#
-OOD_AUTH_REGISTER_URI='/register'
+rake OOD_AUTH_CILOGON='true'
 ```
 
 #### OOD Analytics Options
@@ -403,9 +419,9 @@ environment variable set.
 
 ## CILogon Setup
 
-If using the OOD recommended authentication scheme, you will need an
-appropriate Apache config that specifies the global `mod_auth_openidc` settings
-you want. An example of such is given here:
+If using the CILogon authentication scheme, you will need an appropriate Apache
+config that specifies the global `mod_auth_openidc` settings you want. An
+example of such is given here:
 
 ```
 # /path/to/httpd/conf.d/auth_openidc.conf

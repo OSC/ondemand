@@ -52,8 +52,8 @@ OOD_PUBLIC_URI ||= ENV['OOD_PUBLIC_URI']   || '/public'
 OOD_ROOT_URI   ||= ENV['OOD_ROOT_URI']     || '/pun/sys/dashboard'
 
 # OOD Auth Setup
-OOD_AUTH_SETUP ||= (ENV['OOD_AUTH_SETUP'] || 'false').to_bool
-if OOD_AUTH_SETUP
+OOD_AUTH_CILOGON ||= (ENV['OOD_AUTH_CILOGON'] || 'false').to_bool
+if OOD_AUTH_CILOGON
   OOD_AUTH_OIDC_URI      ||= ENV['OOD_AUTH_OIDC_URI']      || '/oidc'
   OOD_AUTH_DISCOVER_ROOT ||= ENV['OOD_AUTH_DISCOVER_ROOT'] || '/var/www/ood/discover'
   OOD_AUTH_DISCOVER_URI  ||= ENV['OOD_AUTH_DISCOVER_URI']  || '/discover'
@@ -64,6 +64,12 @@ if OOD_AUTH_SETUP
   OOD_AUTH_EXTEND  = ''
   OOD_MAP_FAIL_URI = OOD_AUTH_REGISTER_URI
 else
+  OOD_AUTH_OIDC_URI      ||= ENV['OOD_AUTH_OIDC_URI']      || ''
+  OOD_AUTH_DISCOVER_ROOT ||= ENV['OOD_AUTH_DISCOVER_ROOT'] || '/var/www/ood/discover'
+  OOD_AUTH_DISCOVER_URI  ||= ENV['OOD_AUTH_DISCOVER_URI']  || ''
+  OOD_AUTH_REGISTER_ROOT ||= ENV['OOD_AUTH_REGISTER_ROOT'] || '/var/www/ood/register'
+  OOD_AUTH_REGISTER_URI  ||= ENV['OOD_AUTH_REGISTER_URI']  || ''
+
   OOD_AUTH_TYPE    ||= ENV['OOD_AUTH_TYPE']    || 'Basic'
   OOD_AUTH_EXTEND  ||= ENV['OOD_AUTH_EXTEND']  || 'AuthName "private"\nAuthUserFile "/opt/rh/httpd24/root/etc/httpd/.htpasswd"'
   OOD_MAP_FAIL_URI ||= ENV['OOD_MAP_FAIL_URI'] || ''
