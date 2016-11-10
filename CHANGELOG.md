@@ -1,5 +1,9 @@
 ## Unreleased
 
+Bugfixes:
+
+  - strip off query params in doc referer arg sent to analytics server
+
 ## 0.0.5 (2016-10-27)
 
 Features:

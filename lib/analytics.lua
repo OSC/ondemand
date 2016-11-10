@@ -28,7 +28,7 @@ function analytics_handler(r)
     local user_agent = r.headers_in['User-Agent'] or ''
 
     -- traffic sources
-    local doc_referrer = r.headers_in['Referer'] or ''
+    local doc_referrer = (r.headers_in['Referer'] or ''):match('^([^?]*)')
 
     -- system info
     local doc_encoding  = ((r.headers_out['Content-Type'] or ''):match('charset=([%w-]+)') or ''):lower()
