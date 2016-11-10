@@ -75,7 +75,7 @@ function analytics_handler(r)
       '&cd6=' .. r:escape(cd6) ..
       '&cm1=' .. r:escape(cm1) ..
       '&cm2=' .. r:escape(cm2)
-    local handle = io.popen("wget --post-data='" .. query .. "' " .. tracking_url .. " -O /dev/null --max-redirect 0 -T 1 -nv 2>&1")
+    local handle = io.popen("wget --post-data='" .. query .. "' " .. tracking_url .. " -O /dev/null -T 5 -nv 2>&1")
     output = handle:read('*all'):match('^%s*(.-)%s*$')
     handle:close()
     r:info("Analytics input: '" .. query .. "'")
