@@ -3,6 +3,8 @@
 Bugfixes:
 
   - strip off query params in doc referer arg sent to analytics server
+  - allow redirects in analytics request
+  - increase network timeout of analytics request to 5 seconds
 
 ## 0.0.5 (2016-10-27)
 
