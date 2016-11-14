@@ -12,7 +12,7 @@ This Rails app doesn't use a database.
 cd /path/to/build/directory/sys
 git clone https://github.com/OSC/ood-dashboard.git dashboard
 cd dashboard
-git checkout tags/v1.4.0
+git checkout tags/v1.5.0
 scl enable nodejs010 rh-ruby22 -- bin/bundle install --path vendor/bundle
 ```
 
