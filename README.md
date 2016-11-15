@@ -90,6 +90,8 @@ OOD_SHELL='/pun/sys/shell/ssh/default'
 
 * Update `OOD_SHELL` to the path of the system installed [`ood-shell`](https://github.com/OSC/ood-shell) application. If this value is not configured, the option to open a terminal in the current directory will not be available in the File Explorer.
 
+* Update `FILE_UPLOAD_MAX` to be the maximum allowable upload size (in bytes) for file uploads in the app. If a user attempts to exceed this value, the upload will be blocked. Uploads are processed in `/var/tmp` by the Passenger process, so uploads will be practically limited by the available space in this location. It is recommended that this value be less than half of the available space in `/var/tmp`, or less, to allow for concurrent uploaders. If this value is not configured, the default will be 2 GB.
+
 ### Step Six: Run `scl enable nodejs010 -- npm install`
  
  OOD uses [Software Collections](https://www.softwarecollections.org/en/) to maintain consistency among deployments. Your system administrator will have installed the `nodejs010` package as part of the infrastructure deployment process. We use that package to install the File Explorer dependencies via [`npm`](https://www.npmjs.com/).
