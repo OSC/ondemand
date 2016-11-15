@@ -12,8 +12,8 @@ This app is a Rails app for Open OnDemand that serves as a gateway to launching 
 git clone https://github.com/OSC/ood-dashboard.git dashboard
 cd dashboard
 git checkout tags/v1.5.0
-scl enable nodejs010 rh-ruby22 -- bin/bundle install --path vendor/bundle
-scl enable git19 rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=production
+scl enable git19 nodejs010 rh-ruby22 -- bin/bundle install --path vendor/bundle
+scl enable git19 nodejs010 rh-ruby22 -- bin/rake assets:precompile RAILS_ENV=production
 ```
 
 2. Copy the built app directory to the deployment directory, and start the server.
