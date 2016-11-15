@@ -11,7 +11,7 @@ This app is a Rails app for Open OnDemand that serves as a gateway to launching 
 # start in build directory for all sys apps i.e. cd ~/ood_portals/ondemand/sys
 git clone https://github.com/OSC/ood-dashboard.git dashboard
 cd dashboard
-git checkout tags/v1.5.0
+git checkout tags/v1.5.1
 scl enable git19 nodejs010 rh-ruby22 -- bin/bundle install --path vendor/bundle
 scl enable git19 nodejs010 rh-ruby22 -- bin/rake assets:precompile RAILS_ENV=production
 ```
@@ -31,7 +31,7 @@ When updating a deployed version of the Open OnDemand dashboard.
   ```
 cd dashboard # cd to build directory
 get fetch
-git checkout tags/v1.5.0 # check out latest tag
+git checkout tags/v1.5.1 # check out latest tag
 ```
 
 2. Install gem dependencies and rebuild assets
