@@ -1,60 +1,67 @@
 # OOD Dashboard
 
-This app is a Rails app for Open OnDemand that serves as a gateway to launching other Open OnDemand apps. It is meant to be run as the user (and on behalf of the user) using the app. Thus, at an HPC center if I log into OnDemand using the `efranz` account, this app should run as `efranz`.
+This app is a Rails app for Open OnDemand that serves as a gateway to launching other Open OnDemand apps. It is meant to be run as the user (and on behalf of the user) using the app. Thus, at an HPC center if I log into OnDemand using the `efranz` account, this app should run as `efranz`. This Rails app doesn't use a database.
 
 ## New Install
 
-This Rails app doesn't use a database.
 
-1\. First enable software collections, checkout the code, and install the dependencies:
+1. Check out and build the app:
 
-```
-cd /path/to/build/directory/sys
+  ```
+# start in build directory for all sys apps i.e. cd ~/ood_portals/ondemand/sys
 git clone https://github.com/OSC/ood-dashboard.git dashboard
 cd dashboard
 git checkout tags/v1.5.0
 scl enable nodejs010 rh-ruby22 -- bin/bundle install --path vendor/bundle
-```
-
-2\. At this point, configure the app and its branding by creating a .env.local (or copying from a .env.local template i.e. .env.local.osc) and modifying the values of the environment variables. See below for details on configuration and branding.
-
-Update the dataroot of the `.env.production` file. This tells the production instance where to write user data - which is the user's home directory. By convention, it is `~/<PORTAL>/data`. So for OSC's OnDemand instance, our portal name is "ondemand" and thus the .env.production file has this line:
-
-```
-OOD_DATAROOT=$HOME/ondemand/data/$APP_TOKEN
-```
-
-3\. After updating the .env.local file, build the assets to complete the installation. Make sure that `RAILS_RELATIVE_URL_ROOT` is unset before running this command, as this will then be set by the `dot-env` gem, as `RAILS_RELATIVE_URL_ROOT` is set in `.env.production`.
-
-```
 scl enable git19 rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=production
-scl enable nodejs010 rh-ruby22 -- bin/rake tmp:clear
 ```
 
-4\. If enabling this dashboard for App Sharing, skip to the bottom of this document and [follow the directions there](#app-sharing) before continuing here.
+2. Copy the built app directory to the deployment directory, and start the server.
 
-5\. At this point, you should copy the directory to the deployment directory, if that location is not the same place as the build directory. For more explanation of how this is done, see https://github.com/OSC/Open-OnDemand#app-deployment-strategy.
+3. Access the dashboard by going to /pun/sys/dashboard
+
 
 ### Updating to a New Stable Version
 
-When updating a deployed version of the Open OnDemand dashboard: 
+When updating a deployed version of the Open OnDemand dashboard.
 
-1. do a git fetch
-2. checkout the latest tag
-3. rebuild the assets
-4. clear the cache and touch the tmp/restart.txt file so Passenger reloads the app
+
+1. Fetch and checkout new version of code:
+
+  ```
+cd dashboard # cd to build directory
+get fetch
+git checkout tags/v1.5.0 # check out latest tag
+```
+
+2. Install gem dependencies and rebuild assets
+
+  ```
+scl enable git19 nodejs010 rh-ruby22 -- bin/bundle install --path vendor/bundle
+scl enable git19 nodejs010 rh-ruby22 -- bin/rake tmp:clear
+scl enable git19 rh-ruby22 nodejs010 -- bin/rake assets:clobber RAILS_ENV=production
+scl enable git19 rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=production
+```
+
+3. Restart app
+
+  ```
+scl enable git19 rh-ruby22 nodejs010 -- touch tmp/restart.txt
+```
 
 ## Configuration and Branding
 
-Configuration is done within the .env file. Look at the .env file to see an example configuration for OSC.
+Configuration and branding is done by adding a custom .env.local file to modify
+environment variables and adding a custom config/initializers/ood.rb initializer
+for anything customization requires ruby code.
 
 * `OOD_PORTAL="ondemand"` - the lowercase portal name that matches the name of the installation directory and the data directory created in the user's home directory; this should also be set in the path for `OOD_DATAROOT` in the `.env.production` file
-* `MOTD_PATH="/etc/motd"` - optional: the message of the day, if you have one (see below)
 * `OOD_DASHBOARD_DOCS_URL` - URL to access OnDemand documentation for users
 * `OOD_DASHBOARD_DEV_DOCS_URL` - URL to access OnDemand Developer documentation for app developers
 * `OOD_DASHBOARD_PASSWD_URL` - URL to access page to change your HPC password
 * `OOD_DASHBOARD_SUPPORT_URL` - URL for users to get HPC support
 * `OOD_DASHBOARD_LOGOUT_URL` - [temporary till Apache can handle logout](https://github.com/OSC/ood-dashboard/issues/34) specify the logout URL; its a sprintf string, so if `%{login}` is provided, this will be substituted with the original login domain
+* `MOTD_PATH="/etc/motd"` - optional: the message of the day, if you have one (see below)
 
 To brand the site, you can change the title, colors, and logo of the dashboard app:
 
