@@ -72,8 +72,8 @@ io.on('connection', function(socket) {
   }
 
   // Use default ssh host if "default" specified
-  if (sshhost == null || sshhost == "default" && process.env.DEFAULT_SSHHOST != null) {
-    sshhost = process.env.DEFAULT_SSHHOST;
+  if (sshhost == null || sshhost == "default") { //process.env.DEFAULT_SSHHOST != null) {
+    sshhost = process.env.DEFAULT_SSHHOST || 'localhost';
   }
 
   process.env.LANG = 'en_US.UTF-8'; // fixes strange character issues
