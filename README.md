@@ -49,6 +49,8 @@ scl enable git19 rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=pro
 scl enable git19 rh-ruby22 nodejs010 -- touch tmp/restart.txt
 ```
 
+4. Copy the built app directory to the deployment directory. There is no need to restart the server. Because we touched `tmp/restart.txt` in the app, the next time a user accesses an app Passenger will reload their app.
+
 ## Configuration and Branding
 
 Configuration and branding is done by adding a custom .env.local file to modify
