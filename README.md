@@ -6,32 +6,41 @@ This app is a Node.js app for Open OnDemand providing a web based terminal using
 
 1.  Clone repo to local directory
 
-    ```
+    ```sh
     git clone git@github.com:OSC/osc-shell.git shell
     ```
 
 2.  Due to limitations in Node.js installed through RedHat Software Collections,
     we need a newer version of `npm` in order to install this code:
 
-    ```
+    ```sh
     mkdir tmp
     scl enable nodejs010 -- npm install --prefix tmp npm
     ```
 
 3. Install required packages using this newer `npm` package:
 
-    ```
+    ```sh
     scl enable nodejs010 -- tmp/node_modules/.bin/npm install
     ```
 
 4. (Optional) Create a `.env` file specifying the default ssh host (default:
    `localhost`):
 
-    ```
+    ```sh
     # .env
 
     DEFAULT_SSHHOST='oakley.osc.edu'
     ```
+
+## Update
+
+If you update any of the code or environment variables of this app you must
+restart the app for all the users by:
+
+```sh
+touch tmp/restart.txt
+```
 
 ## Usage
 
