@@ -44,15 +44,16 @@ touch tmp/restart.txt
 
 ## Usage
 
-Assume the base URL for the app is `/pun/sys/shell`.
+Assume the base URL for the app is `https://localhost/pun/sys/shell`.
 
 To open a new terminal to default host (Oakley), go to:
 
-* `/pun/sys/shell/ssh/` or `/pun/sys/shell/ssh/default`
+- `https://localhost/pun/sys/shell/ssh/`
+- `https://localhost/pun/sys/shell/ssh/default`
 
 To specify the host:
 
-* `/pun/sys/shell/ssh/<host>`
+- `https://localhost/pun/sys/shell/ssh/<host>`
 
 To specify another directory besides the home directory to start in, append the
 full path of that directory to the URL. In this case, we want to navigate to
@@ -60,5 +61,5 @@ the path `/path/to/my/directory`:
 
 To open the shell in a specified directory path:
 
-* `/pun/sys/shell/ssh/default/<path>`
-* `/pun/sys/shell/ssh/<host>/<path>`
+- `https://localhost/pun/sys/shell/ssh/default/<path>`
+- `https://localhost/pun/sys/shell/ssh/<host>/<path>`
