@@ -15,16 +15,16 @@ This app is a Node.js app for Open OnDemand providing a web based terminal using
 
     ```
     mkdir tmp
-    scl enable v8314 nodejs010 -- npm install --prefix tmp npm
+    scl enable nodejs010 -- npm install --prefix tmp npm
     ```
 
 3. Install required packages using this newer `npm` package:
 
     ```
-    scl enable v8314 nodejs010 -- tmp/node_modules/.bin/npm install
+    scl enable nodejs010 -- tmp/node_modules/.bin/npm install
     ```
 
-4. (Optional) Create a `.env` file specifying the default ssh host (default =
+4. (Optional) Create a `.env` file specifying the default ssh host (default:
    `localhost`):
 
     ```
