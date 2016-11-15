@@ -46,7 +46,7 @@ touch tmp/restart.txt
 
 Assume the base URL for the app is `https://localhost/pun/sys/shell`.
 
-To open a new terminal to default host (Oakley), go to:
+To open a new terminal to default host, go to:
 
 - `https://localhost/pun/sys/shell/ssh/`
 - `https://localhost/pun/sys/shell/ssh/default`
