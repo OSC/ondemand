@@ -14,6 +14,7 @@ cd dashboard
 git checkout tags/v1.5.1
 scl enable git19 nodejs010 rh-ruby22 -- bin/bundle install --path vendor/bundle
 scl enable git19 nodejs010 rh-ruby22 -- bin/rake assets:precompile RAILS_ENV=production
+scl enable git19 rh-ruby22 nodejs010 -- bin/rake tmp:clear
 ```
 
 2. Copy the built app directory to the deployment directory, and start the server.
