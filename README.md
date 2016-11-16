@@ -5,7 +5,7 @@ This app is a Rails app for Open OnDemand that serves as a gateway to launching 
 ## New Install
 
 
-1. Check out and build the app:
+1. Check out and build the app (make sure the app directory's name is "dashboard"):
 
   ```
 # start in build directory for all sys apps i.e. cd ~/ood_portals/ondemand/sys
