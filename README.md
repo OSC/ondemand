@@ -21,7 +21,7 @@ scl enable git19 nodejs010 rh-ruby22 -- bin/rake assets:precompile RAILS_ENV=pro
 3. Access the dashboard by going to /pun/sys/dashboard
 
 
-### Updating to a New Stable Version
+## Updating to a New Stable Version
 
 When updating a deployed version of the Open OnDemand dashboard.
 
