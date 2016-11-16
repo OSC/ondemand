@@ -28,11 +28,11 @@ When updating a deployed version of the Open OnDemand dashboard.
 
 1. Fetch and checkout new version of code:
 
+  ```sh
+  cd dashboard # cd to build directory
+  get fetch
+  git checkout tags/v1.5.1 # check out latest tag
   ```
-cd dashboard # cd to build directory
-get fetch
-git checkout tags/v1.5.1 # check out latest tag
-```
 
 2. Install gem dependencies and rebuild assets
 
