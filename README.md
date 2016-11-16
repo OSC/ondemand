@@ -28,6 +28,8 @@ A simple Rails web app that uses https://ace.c9.io/ for editing files. It is mea
   
 ## Updating to a new stable version
 
+[_See wiki for OSC specific installation and update instructions_](https://github.com/OSC/ood-fileeditor/wiki)
+
 1. Navigate to the app installation and check out the [latest version]((https://github.com/OSC/ood-fileeditor/releases)).
 
   ```sh
