@@ -2,12 +2,14 @@
 
 This app is a Node.js app for Open OnDemand providing a web based terminal using Chrome OS's hterm. It is meant to be run as the user (and on behalf of the user) using the app. Thus, at an HPC center if I log into OnDemand using the `efranz` account, this app should run as `efranz`.
 
-## Install
+## New Install
 
-1.  Clone repo to local directory
+1.  Starting in the build directory for all sys apps (i.e. cd ~/ood_portals/ondemand/sys), clone and check out the latest version of the shell app (make sure the app directory's name is "shell"):
 
     ```sh
-    git clone git@github.com:OSC/osc-shell.git shell
+    git clone https://github.com/OSC/ood-shell.git shell
+    cd shell
+    git checkout tags/v1.1.1
     ```
 
 2.  Due to limitations in Node.js installed through RedHat Software Collections,
@@ -33,7 +35,7 @@ This app is a Node.js app for Open OnDemand providing a web based terminal using
     DEFAULT_SSHHOST='oakley.osc.edu'
     ```
 
-## Update
+## Updating to a new stable version
 
 If you update any of the code or environment variables of this app you must
 restart the app for all the users by:
