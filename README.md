@@ -39,28 +39,8 @@ A simple Rails web app that uses https://ace.c9.io/ for editing files. It is mea
   * `$ scl enable git19 rh-ruby22 nodejs010 -- bin/rake tmp:clear`
 7. Restart the app  
   * `$ touch tmp/restart.txt`
-  
-  
-## TODO move OSC-specific guide elsewhere 
-#### On OSC Systems, the following commands replicate the above steps.
-
-```bash
-$ cd /nfs/gpfs/PZS0645/ood/apps/sys
-$ git clone git@github.com:OSC/ood-fileeditor.git file-editor
-$ git checkout v1.0.2  # use the latest tag
-$ cd file-editor
-
-# bundle install gems into app subdir
-$ bin/bundle install --path vendor/bundle
-
-# build assets
-$ RAILS_ENV=production bin/rake assets:precompile
-$ bin/rake tmp:clear
-```
 
 ## Usage
-
-
 
 ### File access
     
