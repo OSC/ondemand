@@ -16,8 +16,10 @@
           <% end %>
 
         <% elsif app.role == "shell" %>
+          <%= nav_link("Shell Access", "terminal", OodAppkit.shell.url, target: "_blank") if login_clusters.count == 0 %>
+
           <% login_clusters.each do |c| %>
-            <li><a href="<%= OodAppkit.shell.url(host: c.login_server.host) %>" target="_blank"><i class="fa fa-terminal"></i> <%= c.title %> Shell Access</a></li>
+            <%= nav_link "#{c.title} Shell Access", "terminal", OodAppkit.shell.url(host: c.login_server.host), target: "_blank" %>
           <% end %>
 
         <% else %>

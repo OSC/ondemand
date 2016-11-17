@@ -11,8 +11,8 @@ module ApplicationHelper
     "/nginx/stop?redir=#{root_path}"
   end
 
-  def nav_link(title, icon, url)
-    %Q(<li><a href="#{url}"><i class="fa fa-#{icon}"></i> #{title}</a></li>).html_safe if url
+  def nav_link(title, icon, url, target: "_self")
+    render partial: "layouts/nav/link", locals: { title: title, faicon: icon, url: url.to_s, target: target  } if url
   end
 
   def support_url
