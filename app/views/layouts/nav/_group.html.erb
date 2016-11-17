@@ -19,7 +19,7 @@
           <%= nav_link("Shell Access", "terminal", OodAppkit.shell.url, target: "_blank") if login_clusters.count == 0 %>
 
           <% login_clusters.each do |c| %>
-            <%= nav_link "#{c.title} Shell Access", "terminal", OodAppkit.shell.url(host: c.login_server.host) %>
+            <%= nav_link "#{c.title} Shell Access", "terminal", OodAppkit.shell.url(host: c.login_server.host), target: "_blank" %>
           <% end %>
 
         <% else %>
