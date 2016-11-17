@@ -5,6 +5,7 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
 * [New Install](#new-install)
 * [Updating to a new stable version](#updating-to-a-new-stable-version)
 * [Usage](#usage)
+    * [API](#api)
 
 ## Features
 
@@ -36,7 +37,7 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
     cp .env.example .env
     ```
     
-    * Edit the variables in `.env` as appropriate for your system.
+  * Edit the variables in `.env` as appropriate for your system.
     
     ```sh
     # The uri path to the ood-fileeditor app (if installed) [Default: ""]
@@ -58,9 +59,7 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
 3. Build the app (install dependencies and build assets)
  
   ```sh
-  scl enable git19 rh-ruby22 nodejs010 -- bin/bundle install --path=vendor/bundle
-  scl enable git19 rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=production
-  scl enable git19 rh-ruby22 nodejs010 -- bin/rake tmp:clear
+  scl enable git19 rh-ruby22 nodejs010 -- npm i
   ```
   
 ## Updating to a new stable version
