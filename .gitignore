@@ -1,3 +1,6 @@
+# Don't include the site-configured .env
+.env
+
 # Don't include the node modules
 /node_modules/
 
