@@ -1,5 +1,7 @@
 # OOD File Editor
 
+[![GitHub version](https://badge.fury.io/gh/osc%2Food-fileeditor.svg)](https://badge.fury.io/gh/osc%2Food-fileeditor)
+
 A simple Rails web app that uses https://ace.c9.io/ for editing files. It is meant to be used in conjunction with other Open OnDemand apps, so it provides a URL pattern for opening a file to edit that is exposed via https://github.com/osc/ood_appkit#file-editor-app. Thus, other Open OnDemand apps can easily provide an "open file for editing" link.
 
 * [New Install](#new-install)
