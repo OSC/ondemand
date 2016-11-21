@@ -109,7 +109,7 @@ OOD_APP=my_app OOD_PORTAL=ondemand scl enable rh-ruby22 nodejs010 -- /bin/bash <
   cd ${dir} &&
   gem install -N -i . rails -v '~> 4.2' &&
   GEM_HOME=${PWD} bin/rails new ${OLDPWD}/vendor/${OOD_APP} \
-    -m https://raw.githubusercontent.com/AweSim-OSC/rails-application-template/remote_source/awesim.rb \
+    -m https://raw.githubusercontent.com/AweSim-OSC/rails-application-template/master/awesim.rb \
     --skip-turbolinks \
     --skip-bundle \
     --skip-spring &&
