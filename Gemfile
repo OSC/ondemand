@@ -1,13 +1,13 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.0.0'
+gem 'rails', '4.2.7.1'
 
 # Use sqlite3 as the database for Active Record
 # gem 'sqlite3'
 
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0.0'
+gem 'sass-rails', '~> 5.0'
 
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
@@ -29,9 +29,9 @@ group :doc do
   gem 'sdoc', require: false
 end
 
-gem 'bootstrap-sass', '3.3.5'
+gem 'bootstrap-sass', '~> 3.3'
 gem 'autoprefixer-rails', '~> 6.3'
-gem 'dotenv-rails', '~> 2.0', require: 'dotenv/rails-now'
+gem 'dotenv-rails', '~> 2.1', require: 'dotenv/rails-now'
 gem 'rails_12factor', group: :production
 gem 'font-awesome-sass'
-gem 'ood_appkit', '~> 0.1'
+gem 'ood_appkit', '~> 0.3'
