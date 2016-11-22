@@ -1,6 +1,6 @@
-OODApp::Application.routes.draw do
+Rails.application.routes.draw do
   root "pages#index"
-  
+
   get "edit/*path" => "pages#index", :defaults => { :path => "/" }, format: false
   get "edit" => "pages#index", :defaults => { :path => "/" }, format: false
 
@@ -47,7 +47,7 @@ OODApp::Application.routes.draw do
   #       get 'recent', on: :collection
   #     end
   #   end
-  
+
   # Example resource route with concerns:
   #   concern :toggleable do
   #     post 'toggle'
