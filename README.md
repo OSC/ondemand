@@ -58,30 +58,7 @@ When updating a deployed version of the Open OnDemand dashboard.
 
 ## Configuration and Branding
 
-Configuration and branding is done by adding a custom .env.local file to modify
-environment variables and adding a custom config/initializers/ood.rb initializer
-for anything customization requires ruby code.
-
-* `OOD_PORTAL="ondemand"` - the lowercase portal name that matches the name of the installation directory and the data directory created in the user's home directory; this should also be set in the path for `OOD_DATAROOT` in the `.env.production` file
-* `OOD_DASHBOARD_DOCS_URL` - URL to access OnDemand documentation for users
-* `OOD_DASHBOARD_DEV_DOCS_URL` - URL to access OnDemand Developer documentation for app developers
-* `OOD_DASHBOARD_PASSWD_URL` - URL to access page to change your HPC password
-* `OOD_DASHBOARD_SUPPORT_URL` - URL for users to get HPC support
-* `OOD_DASHBOARD_LOGOUT_URL` - [temporary till Apache can handle logout](https://github.com/OSC/ood-dashboard/issues/34) specify the logout URL; its a sprintf string, so if `%{login}` is provided, this will be substituted with the original login domain
-* `MOTD_PATH="/etc/motd"` - optional: the message of the day, if you have one (see below)
-
-To brand the site, you can change the title, colors, and logo of the dashboard app:
-
-* `OOD_DASHBOARD_TITLE="OSC OnDemand <sup>beta</sub>"` - set the title of the dashboard; this can include HTML tags, such as superscript text "beta" or "1.0"
-* `OOD_DASHBOARD_HEADER_IMG_LOGO=/public/logo.png"` - use a logo instead of text for the nav bar title
-* Bootstrap variables are overridden using OodAppkit (https://github.com/OSC/ood_appkit#override-bootstrap-variables) so the nav bar colors can be modified to match the brand of the site. This is an example of changing the nav bar color to OH-TECH colors:
-
-    ```
-BOOTSTRAP_NAVBAR_INVERSE_BG='rgb(200,16,46)'
-BOOTSTRAP_NAVBAR_INVERSE_LINK_COLOR='rgb(255,255,255)'
-```
-
-* When changing these, you will need to clear assets, even in development by running `bin/rake assets:clobber` or `RAILS_ENV=production bin/rake assets:clobber`, as these are set in a SSCSS file that is also an erb file, and Sprockets will not recognize when the dotenv files are modified.
+See the wiki page https://github.com/OSC/ood-dashboard/wiki/Configuration-and-Branding
 
 ## Message Of The Day
 
