@@ -56,15 +56,15 @@ When updating a deployed version of the Open OnDemand dashboard.
 
 4. Copy the built app directory to the deployment directory. There is no need to restart the server. Because we touched `tmp/restart.txt` in the app, the next time a user accesses an app Passenger will reload their app.
 
-## Configuration and Branding
+## Configuration
 
 See the wiki page https://github.com/OSC/ood-dashboard/wiki/Configuration-and-Branding
 
-## Message Of The Day
+### Message Of The Day
 
 See the wiki page https://github.com/OSC/ood-dashboard/wiki/Message-of-the-Day
 
-## App Sharing
+### App Sharing
 
 **This is a feature currently in development. The documentation below is for developers working on this feature.**
 
