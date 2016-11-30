@@ -85,35 +85,10 @@ BOOTSTRAP_NAVBAR_INVERSE_LINK_COLOR='rgb(255,255,255)'
 
 ## Message Of The Day
 
-If `MOTD_PATH="/etc/motd"` is set, the message of the day file will be parsed and displayed on the front page of the dashboard. This assumes the MOTD file is formatted like this:
-
-1. split messages using a line of multiple `**********`
-2. each message starts with a single line like this: `2016/03/01`
-3. title follows this format on the following line: `--- SYSTEM DOWNTIME RESCHEDULED: JULY 12TH 7AM-5PM`
-4. after that the message body follows markdown rules for formatting, and is parsed using a markdown parser
-
-Messages that do not match this formatting will be omitted.
+See the wiki page https://github.com/OSC/ood-dashboard/wiki/Message-of-the-Day
 
 ## App Sharing
 
 **This is a feature currently in development. The documentation below is for developers working on this feature.**
 
-
-App sharing features creating a new app from a prebuilt app. In order to provide this feature, we need to prebuild an app in a subdirectory of the dashboard so this can be copied to the user's home directory.
-
-To do this, run the command below in the dashboard directory (change `OOD_PORTAL` to match the portal this dashboard is setup for):
-
-```sh
-OOD_APP=my_app OOD_PORTAL=ondemand scl enable rh-ruby22 nodejs010 -- /bin/bash <(cat <<\EOF
-  dir=$(mktemp -d) &&
-  cd ${dir} &&
-  gem install -N -i . rails -v '~> 4.2' &&
-  GEM_HOME=${PWD} bin/rails new ${OLDPWD}/vendor/${OOD_APP} \
-    -m https://raw.githubusercontent.com/AweSim-OSC/rails-application-template/master/awesim.rb \
-    --skip-turbolinks \
-    --skip-bundle \
-    --skip-spring &&
-  rm -fr ${dir}
-EOF
-)
-```
+See the wiki page https://github.com/OSC/ood-dashboard/wiki/App-Sharing
