@@ -1,5 +1,7 @@
 # OOD Shell
 
+[![GitHub version](https://badge.fury.io/gh/OSC%2Food-shell.svg)](https://badge.fury.io/gh/OSC%2Food-shell)
+
 This app is a Node.js app for Open OnDemand providing a web based terminal using Chrome OS's hterm. It is meant to be run as the user (and on behalf of the user) using the app. Thus, at an HPC center if I log into OnDemand using the `efranz` account, this app should run as `efranz`.
 
 ## New Install
