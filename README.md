@@ -1,5 +1,7 @@
 # OOD File Explorer
 
+[![GitHub version](https://badge.fury.io/gh/OSC%2Food-fileexplorer.svg)](https://badge.fury.io/gh/OSC%2Food-fileexplorer)
+
 A Node.js web based file explorer that is a modification of [CloudCommander](http://cloudcmd.io/) with a focus on a user friendly interface for file uploads, downloads, editing, renaming and copying. It is an Open OnDemand app that is meant to be run as the user.
 
 * [New Install](#new-install)
