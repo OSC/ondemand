@@ -72,7 +72,7 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
 
   ```sh
   scl enable git19 rh-ruby22 nodejs010 -- git pull
-  scl enable git19 rh-ruby22 nodejs010 -- git checkout tags/v1.2.2  # use the latest tag
+  scl enable git19 rh-ruby22 nodejs010 -- git checkout tags/v1.3.0  # use the latest tag
   ```
   
 2. Install node dependencies reinstall modules
