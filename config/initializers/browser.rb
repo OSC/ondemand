@@ -10,6 +10,7 @@ Browser.modern_rules.tap do |rules|
 
   # for now, explicitly specify chrome and safari versions but allow
   # other webkit (i.e. mobile)
+  rules << -> (b) { b.ie? && b.version.to_i >= 11 && !b.compatibility_view?  }
   rules << -> (b) { b.chrome? && b.version.to_i >= 34 }
   rules << -> (b) { b.safari? && b.version.to_i >= 8 }
   rules << -> (b) { b.webkit? && !b.chrome? && !b.safari? }
