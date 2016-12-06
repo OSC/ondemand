@@ -91,4 +91,8 @@ class UsrRouter
   def type
     :usr
   end
+
+  def token
+    "#{type}/#{owner}/#{name}"
+  end
 end

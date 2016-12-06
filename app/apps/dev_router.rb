@@ -40,4 +40,8 @@ class DevRouter
   def path
     @path ||= base_path.join(name)
   end
+
+  def token
+    "#{type}/#{name}"
+  end
 end

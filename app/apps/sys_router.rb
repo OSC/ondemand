@@ -28,6 +28,10 @@ class SysRouter
     @name = name
   end
 
+  def token
+    "#{type}/#{name}"
+  end
+
   def self.base_path
     Pathname.new "/var/www/ood/apps/sys"
   end
