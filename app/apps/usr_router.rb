@@ -2,7 +2,7 @@ class UsrRouter
   attr_reader :name, :owner
 
   def initialize(name, owner=OodSupport::Process.user.name)
-    @name = name
+    @name = name.to_s
     @owner = owner
   end
 

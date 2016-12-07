@@ -2,7 +2,7 @@ class DevRouter
   attr_reader :name, :owner, :caption, :category
 
   def initialize(name, owner=OodSupport::Process.user.name)
-    @name = name
+    @name = name.to_s
     @owner = owner
     @caption = "Sandbox App"
     @category = "Sandbox Apps"
