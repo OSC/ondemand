@@ -2,11 +2,16 @@
 
 [![GitHub version](https://badge.fury.io/gh/OSC%2Food-shell.svg)](https://badge.fury.io/gh/OSC%2Food-shell)
 
-This app is a Node.js app for Open OnDemand providing a web based terminal using Chrome OS's hterm. It is meant to be run as the user (and on behalf of the user) using the app. Thus, at an HPC center if I log into OnDemand using the `efranz` account, this app should run as `efranz`.
+This app is a Node.js app for Open OnDemand providing a web based terminal
+using Chrome OS's hterm. It is meant to be run as the user (and on behalf of
+the user) using the app. Thus, at an HPC center if I log into OnDemand using
+the `efranz` account, this app should run as `efranz`.
 
 ## New Install
 
-1.  Starting in the build directory for all sys apps (i.e. cd ~/ood_portals/ondemand/sys), clone and check out the latest version of the shell app (make sure the app directory's name is "shell"):
+1.  Starting in the build directory for all sys apps, clone and check out the
+    latest version of the shell app (make sure the app directory's name is
+    `shell`):
 
     ```sh
     git clone https://github.com/OSC/ood-shell.git shell
@@ -14,18 +19,10 @@ This app is a Node.js app for Open OnDemand providing a web based terminal using
     git checkout tags/v1.1.1
     ```
 
-2.  Due to limitations in Node.js installed through RedHat Software Collections,
-    we need a newer version of `npm` in order to install this code:
+3. Install required packages:
 
     ```sh
-    mkdir tmp
-    scl enable nodejs010 -- npm install --prefix tmp npm
-    ```
-
-3. Install required packages using this newer `npm` package:
-
-    ```sh
-    scl enable nodejs010 -- tmp/node_modules/.bin/npm install
+    npm install
     ```
 
 4. (Optional) Create a `.env` file specifying the default ssh host (default:
@@ -43,6 +40,8 @@ If you update any of the code or environment variables of this app you must
 restart the app for all the users by:
 
 ```sh
+mkdir tmp
+
 touch tmp/restart.txt
 ```
 
