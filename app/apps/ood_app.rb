@@ -1,6 +1,6 @@
 class OodApp
   attr_reader :router
-  delegate :owner, :caption, :url, :type, :path, to: :router
+  delegate :owner, :caption, :type, :path, :name, :token, to: :router
 
   PROTECTED_NAMES = ["shared_apps", "cgi-bin", "tmp"]
 
@@ -19,12 +19,21 @@ class OodApp
     @router = router
   end
 
-  def name
-    path.basename.to_s
-  end
-
   def title
     manifest.name.empty? ? name.titleize : manifest.name
+  end
+
+  def url
+    if manifest.url.empty?
+      router.url
+    else
+      manifest.url % {
+        app_type: type,
+        app_owner: owner,
+        app_name: name,
+        app_token: token
+      }
+    end
   end
 
   def has_gemfile?

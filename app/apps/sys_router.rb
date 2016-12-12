@@ -25,7 +25,11 @@ class SysRouter
   end
 
   def initialize(name)
-    @name = name
+    @name = name.to_s
+  end
+
+  def token
+    "#{type}/#{name}"
   end
 
   def self.base_path
