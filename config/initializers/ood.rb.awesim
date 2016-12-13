@@ -2,3 +2,6 @@
 
 # don't show any apps in nav
 NavConfig.categories = []
+
+# don't show develop dropdown unless you are setup for app sharing
+NavConfig.show_develop_dropdown = UsrRouter.base_path.directory?
