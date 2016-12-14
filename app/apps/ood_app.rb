@@ -105,12 +105,14 @@ class OodApp
   end
 
   def passenger_rails_app?
-    passenger_rack_app? && bundler_helper.has_gem?("rails")
+    return @passenger_rails_app if defined? @passenger_rails_app
+    @passenger_rails_app = (passenger_rack_app? && bundler_helper.has_gem?("rails"))
   end
 
   def passenger_railsdb_app?
     # FIXME: assumes a rails db ood app will always use sqlite3
-    passenger_rails_app? && bundler_helper.has_gem?("sqlite3")
+    return @passenger_railsdb_app if defined? @passenger_railsdb_app
+    @passenger_railsdb_app = (passenger_rails_app? && bundler_helper.has_gem?("sqlite3"))
   end
 
 
