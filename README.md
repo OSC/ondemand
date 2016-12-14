@@ -43,12 +43,12 @@ set on the Gnome desktop include:
   - setting Nautilus to browser window mode
   - disabling any pre-configured `monitors.xml`
   - exporting the `module` function for
-    [lmod](https://www.tacc.utexas.edu/research-development/tacc-projects/lmod)
+    [Lmod](https://www.tacc.utexas.edu/research-development/tacc-projects/lmod)
     support in any terminals launched within the desktop
 
 ## Contributing
 
-1. Fork it ( https://github.com/OSC/bc_desktop/fork  )
+1. Fork it ( https://github.com/OSC/bc_desktop/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
