@@ -1,6 +1,8 @@
 class Product
   include ActiveModel::Model
 
+  delegate :passenger_rack_app?, :passenger_rails_app?, :passenger_app?, to: :app
+
   TEMPLATE = "https://raw.githubusercontent.com/AweSim-OSC/rails-application-template/remote_source/awesim.rb"
 
   attr_accessor :name
@@ -16,8 +18,12 @@ class Product
 
   # lint a given app
   validate :manifest_is_valid, on: [:show_app, :list_apps]
-  validate :gemfile_is_valid, on: :show_app
-  validate :gems_installed, on: :show_app
+
+  with_options if: :passenger_rails_app?, on: :show_app do |app|
+    app.validate :gemfile_is_valid
+    app.validate :gems_installed
+  end
+
   validate :is_git_repo, on: :show_app
 
   def app_does_not_exist

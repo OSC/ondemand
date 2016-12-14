@@ -33,4 +33,15 @@ module ProductsHelper
     target = Pathname.new("~/.ssh/id_rsa.pub").expand_path
     File.read(target) if target.file?
   end
+
+  def command_btn(title:, key:, display:)
+    button_tag(title,
+      class: "btn btn-default btn-block",
+      data: {
+        toggle: "cli",
+        target: cli_product_path(key, name: @product.name, type: @type),
+        title: title,
+        cmd: display
+    })
+  end
 end
