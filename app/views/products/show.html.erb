@@ -46,11 +46,9 @@
     <%= link_to 'Files', OodAppkit.files.url(path: @product.router.path.realdirpath).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
   </div><!-- /.col-md-2 -->
   <div class="col-md-2 col-xs-6">
-    <%= render partial :command, locals: {title: "Bundle Install", key: "bundle_install", display:"<code>scl enable rh-ruby22 nodejs010 -- bin/bundle install --path=vendor/bundle</code>" } %>
-    <% if @type == :usr %>
-      <%= render partial :command, locals: {title: "Precompile Assets", key: "precompile_assets", display: "RAILS_ENV=production scl enable rh-ruby22 nodejs010 -- <<< 'bin/rake assets:clobber && bin/rake assets:precompile && bin/rake tmp:clear'" } %>
-    <% end %>
-    <%= render partial :command, locals: {title: "Restart App", key: "restart_app", display: "<code>mkdir -p tmp && touch tmp/restart.txt</code>" } %>
+    <%= render partial: "command", locals: {title: "Bundle Install", key: "bundle_install", display:"<code>scl enable rh-ruby22 nodejs010 -- bin/bundle install --path=vendor/bundle</code>" } if @product.passenger_rails_app? %>
+    <%= render partial: "command", locals: { title: "Precompile Assets", key: "precompile_assets", display: "RAILS_ENV=production scl enable rh-ruby22 nodejs010 -- <<< 'bin/rake assets:clobber && bin/rake assets:precompile && bin/rake tmp:clear'" } if @type == :usr && @product.passenger_rails_app? %>
+    <%= render partial: "command", locals: {title: "Restart App", key: "restart_app", display: "<code>mkdir -p tmp && touch tmp/restart.txt</code>" } if @product.passenger_app? %>
   </div><!-- /.col-md-2 -->
 
 </div><!-- /.row -->
