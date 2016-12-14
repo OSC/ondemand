@@ -84,6 +84,37 @@ class OodApp
     end
   end
 
+  def passenger_rack_app?
+    path.join("config.ru").file?
+  end
+
+  def passenger_nodejs_app?
+    path.join("app.js").file?
+  end
+
+  def passenger_python_app?
+    path.join("passenger_wsgi.py").file?
+  end
+
+  def passenger_meteor_app?
+    path.join(".meteor").exist?
+  end
+
+  def passenger_app?
+    passenger_rack_app? || passenger_nodejs_app? || passenger_python_app? || passenger_meteor_app?
+  end
+
+  def passenger_rails_app?
+    passenger_rack_app? && bundler_helper.has_gem?("rails")
+  end
+
+  def passenger_railsdb_app?
+    # FIXME: assumes a rails db ood app will always use sqlite3
+    passenger_rails_app? && bundler_helper.has_gem?("sqlite3")
+  end
+
+
+
   private
 
   def load_manifest
