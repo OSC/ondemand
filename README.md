@@ -37,8 +37,8 @@ When updating a deployed version of the Open OnDemand dashboard.
 
   ```sh
   cd dashboard # cd to build directory
-  get fetch
-  git checkout tags/v1.6.1 # check out latest tag
+  scl enable git19 nodejs010 rh-ruby22 -- get fetch
+  scl enable git19 nodejs010 rh-ruby22 -- git checkout tags/v1.6.1 # check out latest tag
   ```
 
 2. Install gem dependencies and rebuild assets
@@ -46,14 +46,14 @@ When updating a deployed version of the Open OnDemand dashboard.
   ```sh
   scl enable git19 nodejs010 rh-ruby22 -- bin/bundle install --path vendor/bundle
   scl enable git19 nodejs010 rh-ruby22 -- bin/rake tmp:clear
-  scl enable git19 rh-ruby22 nodejs010 -- bin/rake assets:clobber RAILS_ENV=production
-  scl enable git19 rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=production
+  scl enable git19 nodejs010 rh-ruby22 -- bin/rake assets:clobber RAILS_ENV=production
+  scl enable git19 nodejs010 rh-ruby22 -- bin/rake assets:precompile RAILS_ENV=production
   ```
 
 3. Restart app
 
   ```sh
-  scl enable git19 rh-ruby22 nodejs010 -- touch tmp/restart.txt
+  touch tmp/restart.txt
   ```
 
 4. Copy the built app directory to the deployment directory. There is no need to restart the server. Because we touched `tmp/restart.txt` in the app, the next time a user accesses an app Passenger will reload their app.
