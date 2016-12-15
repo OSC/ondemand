@@ -10,17 +10,17 @@ This app is a Rails app for Open OnDemand that serves as a gateway to launching 
 1. Starting in the build directory for all sys apps (i.e. `cd ~/ood_portals/ondemand/sys`), clone and check out the latest version of the dashboard (make sure the app directory's name is "dashboard"):
 
   ```sh
-  git clone https://github.com/OSC/ood-dashboard.git dashboard
+  scl enable git19 -- git clone https://github.com/OSC/ood-dashboard.git dashboard
   cd dashboard
-  git checkout tags/v1.6.1
+  scl enable git19 -- git checkout tags/v1.6.1
   ```
 
 2. Build the app (install dependencies and build assets)
 
   ```sh
-  scl enable git19 nodejs010 rh-ruby22 -- bin/bundle install --path vendor/bundle
-  scl enable git19 nodejs010 rh-ruby22 -- bin/rake assets:precompile RAILS_ENV=production
-  scl enable git19 rh-ruby22 nodejs010 -- bin/rake tmp:clear
+  scl enable rh-ruby22 -- bin/bundle install --path vendor/bundle
+  scl enable rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=production
+  scl enable rh-ruby22 -- bin/rake tmp:clear
   ```
 
 3. Copy the built app directory to the deployment directory, and start the server.
@@ -44,10 +44,10 @@ When updating a deployed version of the Open OnDemand dashboard.
 2. Install gem dependencies and rebuild assets
 
   ```sh
-  scl enable git19 nodejs010 rh-ruby22 -- bin/bundle install --path vendor/bundle
-  scl enable git19 nodejs010 rh-ruby22 -- bin/rake tmp:clear
-  scl enable git19 nodejs010 rh-ruby22 -- bin/rake assets:clobber RAILS_ENV=production
-  scl enable git19 nodejs010 rh-ruby22 -- bin/rake assets:precompile RAILS_ENV=production
+  scl enable rh-ruby22 -- bin/bundle install --path vendor/bundle
+  scl enable rh-ruby22 -- bin/rake tmp:clear
+  scl enable rh-ruby22 -- bin/rake assets:clobber RAILS_ENV=production
+  scl enable rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=production
   ```
 
 3. Restart app
