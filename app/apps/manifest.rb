@@ -54,6 +54,11 @@ category: OSC
     {"name" => "", "description" => "", "category" => "", "subcategory" => "" , "icon" => "", "role" => "", "url" => ""}
   end
 
+  # Returns the contents of the Manifest object as YAML without the preceding `!ruby/object:Manifest`
+  def to_yaml
+    self.as_json.to_yaml
+  end
+
   def initialize(opts)
     raise InvalidContentError.new unless(opts && opts.is_a?(Hash))
 
@@ -76,6 +81,7 @@ category: OSC
   def exist?
     true
   end
+
 end
 
 class InvalidManifest < Manifest
