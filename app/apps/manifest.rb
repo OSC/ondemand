@@ -1,7 +1,8 @@
 require 'yaml'
 
 class Manifest
-  attr_reader :name, :description, :category, :subcategory, :icon, :role, :url
+  attr_accessor :name, :description
+  attr_reader :category, :subcategory, :icon, :role, :url
 
   class InvalidContentError < StandardError
     def initialize
