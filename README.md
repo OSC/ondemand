@@ -37,8 +37,8 @@ When updating a deployed version of the Open OnDemand dashboard.
 
   ```sh
   cd dashboard # cd to build directory
-  scl enable git19 nodejs010 rh-ruby22 -- get fetch
-  scl enable git19 nodejs010 rh-ruby22 -- git checkout tags/v1.6.1 # check out latest tag
+  scl enable git19 -- git fetch
+  scl enable git19 -- git checkout tags/v1.6.1 # check out latest tag
   ```
 
 2. Install gem dependencies and rebuild assets
