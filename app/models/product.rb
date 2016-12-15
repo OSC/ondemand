@@ -216,10 +216,11 @@ class Product
 
     def write_manifest
       manifest = Manifest.load( router.path.join('manifest.yml') )
-      if !manifest.is_a?(InvalidManifest)
-        manifest.name = title unless title.blank?
-        manifest.description = description unless description.blank?
+      if manifest.is_a?(InvalidManifest)
+        manifest = Manifest.new({name: ""})
       end
+      manifest.name = title unless title.blank?
+      manifest.description = description unless description.blank?
       File.open(router.path.join('manifest.yml'), 'w') do |f|
         f.write(manifest.to_yaml)
       end if router.path.join('manifest.yml').exist?
