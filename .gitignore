@@ -7,13 +7,16 @@ lib-cov
 *.pid
 *.gz
 
-tmp
 pids
 logs
 results
 
 npm-debug.log
 node_modules/*
+
+# ignore all tempfiles
+/tmp/*
+!/tmp/.keep
 
 # local copy of newer `npm`
 /npm

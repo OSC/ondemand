@@ -40,8 +40,6 @@ If you update any of the code or environment variables of this app you must
 restart the app for all the users by:
 
 ```sh
-mkdir tmp
-
 touch tmp/restart.txt
 ```
 
