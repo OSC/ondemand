@@ -216,7 +216,7 @@ class Product
 
     def write_manifest
       manifest = Manifest.load( router.path.join('manifest.yml') )
-      if manifest.is_a?(InvalidManifest)
+      unless manifest.valid?
         manifest = Manifest.new({name: ""})
       end
       manifest.name = title unless title.blank?
