@@ -29,3 +29,5 @@
 
 RAILS_DATAROOT=$PWD/data
 RAILS_DATABASE=db/development.sqlite3
+
+manifest.yml
