@@ -120,7 +120,15 @@ class OodApp
 
   private
 
+  # Check if Gemfile and Gemfile.lock exists, and if the Gemfile.lock specs
+  # include a gem with the specified name
+  #
+  # @param gemname [String] the name of the gem to check
+  # @return [Boolean] true if Gemfile.lock has specified gem name
   def has_gem?(gemname)
+    # FIXME: we want to make this public, test it, and add functionality to make it
+    # work whether the app has a Gemfile.lock or just a Gemfile. 
+    # see ood_app_test.rb
     has_gemfile? && bundler_helper.has_gem?(gemname)
   end
 
