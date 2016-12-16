@@ -22,6 +22,7 @@
 /data
 
 # files used for deployment should not be versioned
+/public/assets/
 /public/.htaccess
 /.env.production
 /.env.local
