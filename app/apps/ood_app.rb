@@ -52,9 +52,6 @@ class OodApp
     manifest.role
   end
 
-  def bundler_helper
-    @bundler_helper ||= BundlerHelper.new(path)
-  end
 
   def manifest
     @manifest ||= load_manifest
@@ -106,18 +103,26 @@ class OodApp
 
   def passenger_rails_app?
     return @passenger_rails_app if defined? @passenger_rails_app
-    @passenger_rails_app = (passenger_rack_app? && bundler_helper.has_gem?("rails"))
+    @passenger_rails_app = (passenger_rack_app? && has_gem?("rails"))
   end
 
   def passenger_railsdb_app?
     # FIXME: assumes a rails db ood app will always use sqlite3
     return @passenger_railsdb_app if defined? @passenger_railsdb_app
-    @passenger_railsdb_app = (passenger_rails_app? && bundler_helper.has_gem?("sqlite3"))
+    @passenger_railsdb_app = (passenger_rails_app? && has_gem?("sqlite3"))
   end
 
 
 
   private
+
+  def has_gem?(gemname)
+    has_gemfile? && bundler_helper.has_gem?(gemname)
+  end
+
+  def bundler_helper
+    @bundler_helper ||= BundlerHelper.new(path)
+  end
 
   def load_manifest
     default = path.join("manifest.yml")
