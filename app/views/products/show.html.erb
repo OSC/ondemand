@@ -42,7 +42,7 @@
     </p>
   </div><!-- /.col-md-6 -->
   <div class="col-md-2 col-xs-6">
-    <%= command_btn(title: "Bundle Install", key: "bundle_install", display:"<code>scl enable rh-ruby22 nodejs010 -- bin/bundle install --path=vendor/bundle</code>") if @product.passenger_rails_app? %>
+    <%= command_btn(title: "Bundle Install", key: "bundle_install", display:"<code>scl enable rh-ruby22 nodejs010 -- bin/bundle install --path=vendor/bundle</code>") if @product.can_run_bundle_install? %>
     <%= command_btn(title: "Precompile Assets", key: "precompile_assets", display: "RAILS_ENV=production scl enable rh-ruby22 nodejs010 -- <<< 'bin/rake assets:clobber && bin/rake assets:precompile && bin/rake tmp:clear'") if @type == :usr && @product.passenger_rails_app? %>
     <%= command_btn(title: "Restart App", key: "restart_app", display: "<code>mkdir -p tmp && touch tmp/restart.txt</code>") if @product.passenger_app? %>
   </div><!-- /.col-md-2 -->

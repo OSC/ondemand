@@ -40,6 +40,10 @@ class OodApp
     path.join("Gemfile").file? && path.join("Gemfile.lock").file?
   end
 
+  def can_run_bundle_install?
+    passenger_rack_app? && path.join("Gemfile").file?
+  end
+
   def category
     manifest.category.empty? ? router.category : manifest.category
   end

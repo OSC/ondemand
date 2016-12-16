@@ -1,7 +1,7 @@
 class Product
   include ActiveModel::Model
 
-  delegate :passenger_rack_app?, :passenger_rails_app?, :passenger_app?, to: :app
+  delegate :passenger_rack_app?, :passenger_rails_app?, :passenger_app?, :can_run_bundle_install?, to: :app
 
   TEMPLATE = "https://raw.githubusercontent.com/AweSim-OSC/rails-application-template/remote_source/awesim.rb"
 
