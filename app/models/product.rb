@@ -221,7 +221,7 @@ class Product
         manifest.name = title
         manifest.description = description
       else
-        manifest = Manifest.new({name: title, description: description})
+        manifest = Manifest.new({ "name" => title, "description" => description })
       end
 
       File.open(router.path.join('manifest.yml'), 'w') do |f|
