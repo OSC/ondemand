@@ -71,7 +71,7 @@ category: OSC
   # Returns the contents of the object as a YAML string with the empty values removed.
   # @return [String] The populated contents of the object as YAML string.
   def to_yaml
-    self.to_h.delete_if { |k, v| v.empty? }.to_yaml
+    self.to_h.reject { |k, v| v.empty? }.to_yaml
   end
 
   def initialize(opts)
