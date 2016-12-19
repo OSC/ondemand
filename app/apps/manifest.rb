@@ -54,9 +54,24 @@ category: OSC
     {"name" => "", "description" => "", "category" => "", "subcategory" => "" , "icon" => "", "role" => "", "url" => ""}
   end
 
-  # Returns the contents of the Manifest object as YAML without the preceding `!ruby/object:Manifest`
+  # Creates a hash of the object's current state.
+  # @return [Hash] A hash representaion of the Manifest object.
+  def to_h
+    {
+        "name" => name,
+        "description" => description,
+        "category" => category,
+        "subcategory" => subcategory,
+        "icon" => icon,
+        "role" => role,
+        "url" => url
+    }
+  end
+
+  # Returns the contents of the object as a YAML string with the empty values removed.
+  # @return [String] The populated contents of the object as YAML string.
   def to_yaml
-    self.as_json.to_yaml
+    self.to_h.delete_if { |k, v| v.empty? }.to_yaml
   end
 
   def initialize(opts)
