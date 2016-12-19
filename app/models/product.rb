@@ -226,7 +226,7 @@ class Product
 
       File.open(router.path.join('manifest.yml'), 'w') do |f|
         f.write(manifest.to_yaml)
-      end if (!title.blank? || !description.blank?) || !router.path.join('manifest.yml')
+      end if (!title.blank? || !description.blank?) || !router.path.join('manifest.yml').exist?
 
       true
     end
