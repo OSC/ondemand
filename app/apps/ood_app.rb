@@ -40,6 +40,10 @@ class OodApp
     path.join("Gemfile").file? && path.join("Gemfile.lock").file?
   end
 
+  def can_run_bundle_install?
+    passenger_rack_app? && path.join("Gemfile").file?
+  end
+
   def category
     manifest.category.empty? ? router.category : manifest.category
   end
@@ -52,9 +56,6 @@ class OodApp
     manifest.role
   end
 
-  def bundler_helper
-    @bundler_helper ||= BundlerHelper.new(path)
-  end
 
   def manifest
     @manifest ||= load_manifest
@@ -106,18 +107,34 @@ class OodApp
 
   def passenger_rails_app?
     return @passenger_rails_app if defined? @passenger_rails_app
-    @passenger_rails_app = (passenger_rack_app? && bundler_helper.has_gem?("rails"))
+    @passenger_rails_app = (passenger_rack_app? && has_gem?("rails"))
   end
 
   def passenger_railsdb_app?
     # FIXME: assumes a rails db ood app will always use sqlite3
     return @passenger_railsdb_app if defined? @passenger_railsdb_app
-    @passenger_railsdb_app = (passenger_rails_app? && bundler_helper.has_gem?("sqlite3"))
+    @passenger_railsdb_app = (passenger_rails_app? && has_gem?("sqlite3"))
   end
 
 
 
   private
+
+  # Check if Gemfile and Gemfile.lock exists, and if the Gemfile.lock specs
+  # include a gem with the specified name
+  #
+  # @param gemname [String] the name of the gem to check
+  # @return [Boolean] true if Gemfile.lock has specified gem name
+  def has_gem?(gemname)
+    # FIXME: we want to make this public, test it, and add functionality to make it
+    # work whether the app has a Gemfile.lock or just a Gemfile. 
+    # see ood_app_test.rb
+    has_gemfile? && bundler_helper.has_gem?(gemname)
+  end
+
+  def bundler_helper
+    @bundler_helper ||= BundlerHelper.new(path)
+  end
 
   def load_manifest
     default = path.join("manifest.yml")
