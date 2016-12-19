@@ -32,7 +32,7 @@ class Product
 
   def manifest_is_valid
     errors.add(:manifest, "is missing, add a title and description to fix this") unless app.manifest.exist?
-    errors.add(:manifest, "is corrupt, please edit the file to fix this") if app.manifest.exist? && !app.manifest.valid?
+    errors.add(:manifest, "is corrupt, please use the edit button or edit the file to fix this") if app.manifest.exist? && !app.manifest.valid?
   end
 
   def gemfile_is_valid
