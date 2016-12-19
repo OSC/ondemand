@@ -219,11 +219,11 @@ class Product
       unless manifest.valid?
         manifest = Manifest.new({name: ""})
       end
-      manifest.name = title unless title.blank?
-      manifest.description = description unless description.blank?
+      manifest.name = title
+      manifest.description = description
       File.open(router.path.join('manifest.yml'), 'w') do |f|
         f.write(manifest.to_yaml)
-      end if router.path.join('manifest.yml').exist?
+      end if (!title.blank? || !description.blank?) || !router.path.join('manifest.yml').exist?
     end
 
     def gemfile_lock
