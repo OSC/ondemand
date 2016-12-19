@@ -65,7 +65,7 @@ category: OSC
         "icon" => icon,
         "role" => role,
         "url" => url
-    }
+    }.compact
   end
 
   # Returns the contents of the object as a YAML string with the empty values removed.
