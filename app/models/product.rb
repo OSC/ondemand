@@ -246,7 +246,8 @@ class Product
     def clone_git_repo(target)
       o, s = Open3.capture2e({"HOME" => ""}, "git", "clone", git_remote, target.to_s)
       unless s.success?
-        errors.add(:git_remote, "was unable to be cloned")
+        errors.add(:git_remote, "was unable to be cloned:")
+        errors.add(:git_remote_error, o)
         Rails.logger.error(o)
         return false
       end
