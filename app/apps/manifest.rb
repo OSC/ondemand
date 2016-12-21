@@ -142,8 +142,13 @@ category: OSC
     false
   end
 
-  def merge(hash)
+  def merge(opts)
+    raise InvalidContentError.new unless(opts && opts.is_a?(Hash))
 
+    @manifest_options.merge(opts.with_indifferent_access)
+
+    # merge with defaults, ignoring nil
+    # opts = defaults.merge(opts) { |key, oldval, newval| newval || oldval  }
     # TODO
   end
 
@@ -175,6 +180,10 @@ class InvalidManifest < Manifest
   def valid?
     false
   end
+
+  def save(path)
+    false
+  end
 end
 
 class MissingManifest < Manifest
@@ -183,6 +192,10 @@ class MissingManifest < Manifest
   end
 
   def exist?
+    false
+  end
+
+  def save(path)
     false
   end
 end
