@@ -144,7 +144,7 @@ category: OSC
   #
   # @return [String] The populated contents of the object as YAML string.
   def to_yaml
-    self.to_h.as_json.reject { |k, v| v.empty? }.to_yaml
+    self.to_h.as_json.to_yaml
   end
 
 end
