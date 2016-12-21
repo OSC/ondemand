@@ -1,8 +1,6 @@
 require 'yaml'
 
 class Manifest
-  attr_accessor :name, :description
-  attr_reader :category, :subcategory, :icon, :role, :url
 
   class InvalidContentError < StandardError
     def initialize
@@ -50,51 +48,103 @@ category: OSC
     InvalidManifest.new(e)
   end
 
-  def defaults
-    {"name" => "", "description" => "", "category" => "", "subcategory" => "" , "icon" => "", "role" => "", "url" => ""}
-  end
-
-  # Creates a hash of the object's current state.
-  # @return [Hash] A hash representaion of the Manifest object.
-  def to_h
-    {
-        "name" => name,
-        "description" => description,
-        "category" => category,
-        "subcategory" => subcategory,
-        "icon" => icon,
-        "role" => role,
-        "url" => url
-    }.compact
-  end
-
-  # Returns the contents of the object as a YAML string with the empty values removed.
-  # @return [String] The populated contents of the object as YAML string.
-  def to_yaml
-    self.to_h.reject { |k, v| v.empty? }.to_yaml
-  end
-
+  # @param [Hash] opts A hash of the options in the manifest
+  # @option opts [String] :name The name of the application
+  # @option opts [String] :description The description of the application
+  # @option opts [String] :category The category of the application
+  # @option opts [String] :subcategory The subcategory of the application
+  # @option opts [String] :icon The icon used on the dashboard, optionally a Font Awesome tag
+  # @option opts [String] :role Dashboard categorization
+  # @option opts [String] :url An optional redirect URL
   def initialize(opts)
     raise InvalidContentError.new unless(opts && opts.is_a?(Hash))
 
-    # merge with defaults, ignoring nil
-    opts = defaults.merge(opts) { |key, oldval, newval| newval || oldval  }
-
-    @name = opts.fetch("name")
-    @description = opts.fetch("description")
-    @category = opts.fetch("category")
-    @subcategory = opts.fetch("subcategory")
-    @icon = opts.fetch("icon")
-    @role = opts.fetch("role")
-    @url = opts.fetch("url")
+    @manifest_options = opts.with_indifferent_access
   end
 
+  # The name of the application
+  #
+  # @return [String] name as string
+  def name
+    @manifest_options[:name] || ""
+  end
+
+  # The description of the application
+  #
+  # @return [String] name as string
+  def description
+    @manifest_options[:description] || ""
+  end
+
+  # The icon used on the dashboard, optionally a Font Awesome tag
+  #
+  # @return [String, nil]
+  def icon
+    @manifest_options[:icon]
+  end
+
+  # Return the optional redirect URL string
+  #
+  # @return [String, nil]
+  def url
+    @manifest_options[:url]
+  end
+
+  # Return the app category
+  #
+  # @return [String, nil]
+  def category
+    @manifest_options[:category]
+  end
+
+  # Return the app subcategory
+  #
+  # @return [String, nil]
+  def subcategory
+    @manifest_options[:subcategory]
+  end
+
+  # Return the app role
+  #
+  # @return [String, nil]
+  def role
+    @manifest_options[:role]
+  end
+
+  # Manifest objects are valid
+  #
+  # @return [true] Always return true
   def valid?
     true
   end
 
+  # Manifest objects exist
+  #
+  # @return [true] Always return true
   def exist?
     true
+  end
+
+  def save(path)
+    # TODO
+  end
+
+  def merge(hash)
+    # TODO
+  end
+
+  # Creates a hash of the object's current state.
+  #
+  # @return [Hash] A hash representaion of the Manifest object.
+  def to_h
+    @manifest_options.compact
+  end
+
+  # Returns the contents of the object as a YAML string with the empty values removed.
+  #
+  # @return [String] The populated contents of the object as YAML string.
+  def to_yaml
+    self.to_h.as_json.reject { |k, v| v.empty? }.to_yaml
   end
 
 end
