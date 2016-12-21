@@ -125,11 +125,25 @@ category: OSC
     true
   end
 
+  # Save the current manifest to a path.
+  #
+  # @param [String, Pathname] path The full path of the file to be saved as string or Pathname object
+  #
+  # @return [true, false] true if the file is saved successfully
   def save(path)
-    # TODO
+
+    File.open(path.to_s, 'w') do |f|
+      f.write(self.to_yaml)
+    end
+
+    true
+  rescue
+    # TODO Add a custom exception here to track why it erred. IO? Permissions? etc.
+    false
   end
 
   def merge(hash)
+
     # TODO
   end
 
