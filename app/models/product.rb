@@ -220,8 +220,7 @@ class Product
     def write_manifest
       manifest = Manifest.load( router.path.join('manifest.yml') )
 
-      new_attributes = { name: title, description: description }
-      manifest = manifest.merge(new_attributes)
+      manifest = manifest.merge({ name: title, description: description })
 
       manifest.save(router.path.join('manifest.yml')) if (!title.blank? || !description.blank?) || !router.path.join('manifest.yml').exist?
 
