@@ -214,19 +214,16 @@ class Product
       raise
     end
 
+    # Writes out a manifest to the router path unless the repository has been newly cloned.
+    #
+    # @return [true] always returns true
     def write_manifest
       manifest = Manifest.load( router.path.join('manifest.yml') )
 
-      if manifest.valid?
-        manifest.name = title
-        manifest.description = description
-      else
-        manifest = Manifest.new({ "name" => title, "description" => description })
-      end
+      new_attributes = { name: title, description: description }
+      manifest = manifest.valid? ? manifest.merge(new_attributes) : Manifest.new(new_attributes)
 
-      File.open(router.path.join('manifest.yml'), 'w') do |f|
-        f.write(manifest.to_yaml)
-      end if (!title.blank? || !description.blank?) || !router.path.join('manifest.yml').exist?
+      manifest.save(router.path.join('manifest.yml')) if (!title.blank? || !description.blank?) || !router.path.join('manifest.yml').exist?
 
       true
     end
