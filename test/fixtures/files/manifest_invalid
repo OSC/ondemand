@@ -1,6 +1,6 @@
 ---
 name: Ruby VDI
-[ # this line aught to break the YAML parser
+[ # this line ought to break the YAML parser
 description: |-
   **Ruby VDI** provides a remote desktop on an Ruby shared node at the Ohio
   Supercomputer Center (OSC). Care must be taken to avoid heavy computation as
