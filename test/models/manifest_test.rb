@@ -64,7 +64,7 @@ class ManifestTest < ActiveSupport::TestCase
     assert_equal "jeremy", returned_manifest.name, "name string did not update"
     assert_equal "brian", manifest_one.name, "manifest should not update in place"
     assert_equal "", returned_manifest.description, "nil should return empty string for description"
-    assert_nil returned_manifest.url, "manifest url should be nil"
+    assert_equal "", returned_manifest.url, "nil manifest url accessor should return empty string"
     assert_equal "monsignor", returned_manifest.role, "role was not added"
   end
 
@@ -80,7 +80,7 @@ class ManifestTest < ActiveSupport::TestCase
 
     assert_equal "", manifest_three.name, "nil name should return empty string"
     assert_equal "", manifest_three.description, "nil description should return empty string"
-    assert_nil manifest_three.role, "nil role should return nil"
+    assert_equal "", manifest_three.role, "nil role should return empty string"
   end
 
 end

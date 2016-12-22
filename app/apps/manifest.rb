@@ -71,44 +71,44 @@ category: OSC
 
   # The description of the application
   #
-  # @return [String] name as string
+  # @return [String] description as string
   def description
     @manifest_options[:description] || ""
   end
 
   # The icon used on the dashboard, optionally a Font Awesome tag
   #
-  # @return [String, nil]
+  # @return [String] icon as string
   def icon
-    @manifest_options[:icon]
+    @manifest_options[:icon] || ""
   end
 
   # Return the optional redirect URL string
   #
-  # @return [String, nil]
+  # @return [String] url as string
   def url
-    @manifest_options[:url]
+    @manifest_options[:url] || ""
   end
 
   # Return the app category
   #
-  # @return [String, nil]
+  # @return [String] category as string
   def category
-    @manifest_options[:category]
+    @manifest_options[:category] || ""
   end
 
   # Return the app subcategory
   #
-  # @return [String, nil]
+  # @return [String] subcategory as string
   def subcategory
-    @manifest_options[:subcategory]
+    @manifest_options[:subcategory] || ""
   end
 
   # Return the app role
   #
-  # @return [String, nil]
+  # @return [String] role as string
   def role
-    @manifest_options[:role]
+    @manifest_options[:role] || ""
   end
 
   # Manifest objects are valid
