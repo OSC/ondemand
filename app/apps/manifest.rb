@@ -144,29 +144,29 @@ category: OSC
 
   # Merge the contents of a hash into this Manifest's options
   #
-  # @param [Hash] opts The options to update
+  # @param [Hash, Manifest] opts The options to update
   #
   # @return [Manifest] The updated manifest
   def merge(opts)
-    raise InvalidContentError.new unless(opts && opts.is_a?(Hash))
+    raise InvalidContentError.new unless(opts && (opts.is_a?(Hash) || opts.is_a?(Manifest)))
 
-    @manifest_options.merge!(opts)
+    @manifest_options.merge!(opts.to_h)
 
     self
   end
 
   # Creates a hash of the object's current state.
   #
-  # @return [Hash] A hash representaion of the Manifest object.
+  # @return [Hash] A hash representation of the Manifest object.
   def to_h
-    @manifest_options.compact
+    @manifest_options
   end
 
   # Returns the contents of the object as a YAML string with the empty values removed.
   #
   # @return [String] The populated contents of the object as YAML string.
   def to_yaml
-    self.to_h.as_json.to_yaml
+    self.to_h.compact.as_json.to_yaml
   end
 
 end
