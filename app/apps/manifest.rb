@@ -2,6 +2,8 @@ require 'yaml'
 
 class Manifest
 
+  attr_reader :exception
+
   class InvalidContentError < StandardError
     def initialize
       super %q(Manifest is not formatted correctly! 
@@ -170,7 +172,6 @@ category: OSC
 end
 
 class InvalidManifest < Manifest
-  attr_reader :exception
 
   def initialize(exception)
     super({})
