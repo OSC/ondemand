@@ -146,13 +146,13 @@ category: OSC
   #
   # @param [Hash] opts The options to update
   #
-  # @return [Hash] The updated manifest
+  # @return [Manifest] The updated manifest
   def merge(opts)
     raise InvalidContentError.new unless(opts && opts.is_a?(Hash))
 
     @manifest_options.merge!(opts)
 
-    @manifest_options.to_h
+    self
   end
 
   # Creates a hash of the object's current state.
