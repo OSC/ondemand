@@ -24,7 +24,7 @@ class OodApp
   end
 
   def url
-    if manifest.url.blank?
+    if manifest.url.empty?
       router.url
     else
       manifest.url % {
@@ -45,7 +45,7 @@ class OodApp
   end
 
   def category
-    manifest.category.blank? ? router.category : manifest.category
+    manifest.category.empty? ? router.category : manifest.category
   end
 
   def subcategory

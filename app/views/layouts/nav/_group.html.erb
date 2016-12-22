@@ -2,7 +2,7 @@
   <ul class="dropdown-menu">
     <% OodAppGroup.groups_for(apps: group.apps, group_by: :subcategory).each_with_index do |g, index| %>
       <%= content_tag "li", "", class: "divider", role: "separator" if index > 0 %>
-      <%= content_tag "li", g.title, class: "dropdown-header" unless g.title.blank? %>
+      <%= content_tag "li", g.title, class: "dropdown-header" unless g.title.empty? %>
       <% g.apps.each do |app| %>
 
         <% if app.role == "files" %>
