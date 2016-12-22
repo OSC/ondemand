@@ -150,14 +150,14 @@ category: OSC
   #
   # @return [Manifest] A new manifest with the updated options
   def merge(opts)
-    raise InvalidContentError.new unless(opts && (opts.is_a?(Hash) || opts.is_a?(Manifest)))
+    raise InvalidContentError.new unless(opts && opts.respond_to?(:to_h))
 
     Manifest.new(@manifest_options.merge(opts.to_h))
   end
 
   # Creates a hash of the object's current state.
   #
-  # @return [Hash] A hash representation of the Manifest object.
+  # @return [HashWithIndifferentAccess] A hash representation of the Manifest object.
   def to_h
     @manifest_options
   end
