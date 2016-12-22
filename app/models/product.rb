@@ -221,7 +221,7 @@ class Product
       manifest = Manifest.load( router.path.join('manifest.yml') )
 
       new_attributes = { name: title, description: description }
-      manifest = manifest.valid? ? manifest.merge(new_attributes) : Manifest.new(new_attributes)
+      manifest = manifest.merge(new_attributes)
 
       manifest.save(router.path.join('manifest.yml')) if (!title.blank? || !description.blank?) || !router.path.join('manifest.yml').exist?
 

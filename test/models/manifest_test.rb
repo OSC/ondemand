@@ -62,25 +62,25 @@ class ManifestTest < ActiveSupport::TestCase
     returned_manifest = manifest_one.merge manifest_two
     assert_instance_of Manifest, returned_manifest, "Merge did not return a manifest"
     assert_equal "jeremy", returned_manifest.name, "name string did not update"
-    assert_equal "jeremy", manifest_one.name, "name string did not update in place"
-    assert_equal "", manifest_one.description, "nil should return empty string for description"
-    assert_nil manifest_one.url, "manifest url should be nil"
-    assert_equal "monsignor", manifest_one.role, "role was not added"
+    assert_equal "brian", manifest_one.name, "manifest should not update in place"
+    assert_equal "", returned_manifest.description, "nil should return empty string for description"
+    assert_nil returned_manifest.url, "manifest url should be nil"
+    assert_equal "monsignor", returned_manifest.role, "role was not added"
   end
 
   test "merge hash into manifest" do
-    manifest = Manifest.new @@hash4
+    manifest_one = Manifest.new @@hash4
 
-    manifest.merge @@hash3
+    manifest_two = manifest_one.merge @@hash3
 
-    assert_equal @@hash3[:role], manifest.role, "role does not match"
-    assert_equal @@hash4[:url], manifest.url, "url does not match"
+    assert_equal @@hash3[:role], manifest_two.role, "role does not match"
+    assert_equal @@hash4[:url], manifest_two.url, "url does not match"
 
-    manifest.merge @@hash4
+    manifest_three = manifest_one.merge @@hash4
 
-    assert_equal "", manifest.name, "nil name should return empty string"
-    assert_equal "", manifest.description, "nil description should return empty string"
-    assert_nil manifest.role, "nil role should return nil"
+    assert_equal "", manifest_three.name, "nil name should return empty string"
+    assert_equal "", manifest_three.description, "nil description should return empty string"
+    assert_nil manifest_three.role, "nil role should return nil"
   end
 
 end
