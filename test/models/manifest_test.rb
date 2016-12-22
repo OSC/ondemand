@@ -9,22 +9,26 @@ class ManifestTest < ActiveSupport::TestCase
 
   test "load a valid manifest" do
     manifest = Manifest.load("test/fixtures/files/manifest_valid")
-    assert_instance_of Manifest, manifest, "Not a Manifest Object"
+    assert manifest.valid?, "manifest should be valid"
+    assert manifest.exist?, "manifest should exist"
   end
 
   test "load an invalid manifest" do
     manifest = Manifest.load("test/fixtures/files/manifest_invalid")
-    assert_instance_of InvalidManifest, manifest, "Not an InvalidManifest Object"
+    assert !manifest.valid?, "manifest should not be valid"
+    assert manifest.exist?, "manifest should exist"
   end
 
   test "load an empty manifest" do
     manifest = Manifest.load("test/fixtures/files/manifest_empty")
-    assert_instance_of InvalidManifest, manifest, "Not an InvalidManifest Object"
+    assert !manifest.valid?, "manifest should not be valid"
+    assert manifest.exist?, "manifest should exist"
   end
 
   test "load a missing manifest" do
     manifest = Manifest.load("test/fixtures/files/manifest_missing")
-    assert_instance_of MissingManifest, manifest, "Not a MissingManifest Object"
+    assert !manifest.valid?, "manifest should not be valid"
+    assert !manifest.exist?, "manifest should not exist"
   end
 
   test "save a valid manifest" do
