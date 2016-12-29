@@ -50,7 +50,7 @@ category: OSC
     InvalidManifest.new(e)
   end
 
-  # @param [Hash] opts A hash of the options in the manifest
+  # @param [Hash, Manifest] opts A hash of the options in the manifest
   # @option opts [String] :name The name of the application
   # @option opts [String] :description The description of the application
   # @option opts [String] :category The category of the application
@@ -59,9 +59,9 @@ category: OSC
   # @option opts [String] :role Dashboard categorization
   # @option opts [String] :url An optional redirect URL
   def initialize(opts)
-    raise InvalidContentError.new unless(opts && opts.is_a?(Hash))
+    raise InvalidContentError.new unless(opts && opts.respond_to?(:to_h))
 
-    @manifest_options = opts.with_indifferent_access
+    @manifest_options = opts.to_h.with_indifferent_access
   end
 
   # The name of the application
