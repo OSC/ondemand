@@ -17,10 +17,10 @@ class Jobstatusdata
   def initialize(pbs_job, pbs_cluster=Servers.first[0], extended=false)
     self.pbsid = pbs_job[:name]
     self.jobname = pbs_job[:attribs][:Job_Name]
+    self.group = pbs_job[:attribs][:Account_Name].blank? ? Etc.getgrgid(Etc.getpwnam(self.username).gid).name : pbs_job[:attribs][:Account_Name]
     self.username = username_format(pbs_job[:attribs][:Job_Owner])
     self.status = pbs_job[:attribs][:job_state]
     if self.status == "R" || self.status == "C"
-      self.group = pbs_job[:attribs][:egroup].blank? ? Etc.getgrgid(Etc.getpwnam(self.username).gid).name : pbs_job[:attribs][:egroup]
       self.nodes = node_array(pbs_job[:attribs][:exec_host])
       self.starttime = pbs_job[:attribs][:start_time]
     end
