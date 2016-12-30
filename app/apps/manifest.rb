@@ -157,16 +157,16 @@ category: OSC
 
   # Creates a hash of the object's current state.
   #
-  # @return [HashWithIndifferentAccess] A hash representation of the Manifest object.
+  # @return [Hash] A hash representation of the Manifest object.
   def to_h
-    @manifest_options
+    @manifest_options.to_h
   end
 
   # Returns the contents of the object as a YAML string with the empty values removed.
   #
   # @return [String] The populated contents of the object as YAML string.
   def to_yaml
-    self.to_h.compact.as_json.to_yaml
+    self.to_h.compact.to_yaml
   end
 
 end
