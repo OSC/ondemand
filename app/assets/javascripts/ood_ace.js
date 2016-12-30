@@ -86,6 +86,15 @@ $( document ).ready(function () {
             $( "#save-icon" ).toggleClass("glyphicon-saved");
         };
 
+        // Sets the key binding to the selected option
+        function setKeyBinding() {
+            var binding = $( "#keybindings option:selected" ).val();
+            if (binding == "default") {
+                binding = null;
+            }
+            editor.setKeyboardHandler( binding );
+        };
+
         // Change the font size
         $( "#fontsize" ).change(function() {
             editor.setFontSize( $( "#fontsize option:selected" ).val() );
@@ -94,7 +103,7 @@ $( document ).ready(function () {
 
         // Change the key bindings
         $( "#keybindings" ).change(function() {
-            editor.setKeyboardHandler( $( "#keybindings option:selected" ).val() );
+            setKeyBinding();
             setCookie( 'keybindings', $( "#keybindings option:selected" ).val(), 9999 );
         });
 
@@ -148,8 +157,8 @@ $( document ).ready(function () {
         });
 
         function setOptions() {
-            $( "#keybindings" ).val(getCookie('keybindings') || 'ace');
-            editor.setKeyboardHandler( $( "#keybindings option:selected" ).val() );
+            $( "#keybindings" ).val(getCookie('keybindings') || "default");
+            setKeyBinding();
             $( "#fontsize" ).val(getCookie('fontsize') || '12px');
             editor.setFontSize( $( "#fontsize option:selected" ).val() );
             $( "#mode" ).val(getCookie('mode') || "text");
