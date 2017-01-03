@@ -134,9 +134,7 @@ category: OSC
   # @return [true, false] true if the file is saved successfully
   def save(path)
 
-    File.open(path.to_s, 'w') do |f|
-      f.write(self.to_yaml)
-    end
+    Pathname.new(path).write(self.to_yaml)
 
     true
   rescue
