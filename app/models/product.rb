@@ -218,11 +218,11 @@ class Product
     #
     # @return [true] always returns true
     def write_manifest
-      manifest = Manifest.load( manifest_path )
+      manifest = Manifest.load( app.manifest_path )
 
       manifest = manifest.merge({ name: title, description: description })
 
-      manifest.save( manifest_path ) if (!title.blank? || !description.blank?) ||  !router.path.join('manifest.yml').exist?
+      manifest.save( app.manifest_path ) if (!title.blank? || !description.blank?) || !app.manifest_path.exist?
 
       true
     end
