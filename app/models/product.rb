@@ -199,7 +199,7 @@ class Product
     def stage
       target = router.path
       target.mkpath
-      if git_remote.blank?
+      if git_remote == "ood_new"
         FileUtils.cp_r Rails.root.join("vendor/my_app/."), target
       else
         unless clone_git_repo(target)
