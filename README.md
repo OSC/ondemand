@@ -1,5 +1,8 @@
 # Batch Connect - Desktop
 
+![GitHub Release](https://img.shields.io/github/release/osc/bc_desktop.svg)
+![GitHub License](https://img.shields.io/github/license/osc/bc_desktop.svg)
+
 A library used for launching a GUI Desktop within a batch job. It is designed to:
 
   - carry over as much of the environment set in the batch job to the desktop
