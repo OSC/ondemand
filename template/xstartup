@@ -1,7 +1,7 @@
 #!/bin/bash -l
 
 # Start up Gnome desktop (only desktop we support so far)
-"${ROOT}/gnome.sh"
+"${ROOT}/desktops/${DESKTOP:-gnome}.sh"
 
 # Kill vncserver when user logs out of desktop
 vncserver -kill ${DISPLAY}

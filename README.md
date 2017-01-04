@@ -34,6 +34,14 @@ BC_DESKTOP_DIR="/path/to/bc_desktop/template"
 ROOT="${BC_DESKTOP_DIR}" ${BC_DESKTOP_DIR}/xstartup
 ```
 
+## DESKTOP
+
+*Optional* (Default: `gnome`)
+
+This environment variable describes the desktop to load (e.g., `gnome`, `mate`,
+...). It will run the corresponding script that can be found in
+[template/desktops](template/desktops).
+
 ## Usage
 
 This will launch a Gnome desktop without hardware rendering support. Features
