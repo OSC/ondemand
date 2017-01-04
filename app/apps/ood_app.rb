@@ -56,9 +56,12 @@ class OodApp
     manifest.role
   end
 
-
   def manifest
-    @manifest ||= load_manifest
+    @manifest ||= Manifest.load(manifest_path)
+  end
+
+  def manifest_path
+    path.join("manifest.yml")
   end
 
   def icon_path
@@ -134,11 +137,5 @@ class OodApp
 
   def bundler_helper
     @bundler_helper ||= BundlerHelper.new(path)
-  end
-
-  def load_manifest
-    default = path.join("manifest.yml")
-    alt = path.dirname.join("#{path.basename}.yml")
-    alt.exist? ? Manifest.load(alt) : Manifest.load(default)
   end
 end
