@@ -1,5 +1,8 @@
 # mod_ood_proxy
 
+![GitHub Release](https://img.shields.io/github/release/osc/mod_ood_proxy.svg)
+![GitHub License](https://img.shields.io/github/license/osc/mod_ood_proxy.svg)
+
 An Apache httpd module implementing the Open OnDemand proxy API.
 
 ## Requirements

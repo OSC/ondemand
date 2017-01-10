@@ -1,5 +1,10 @@
 ## Unreleased
 
+Features:
+
+  - retrieve backend node server info from Apache instead of determining it
+    from within mod
+
 ## 0.0.6 (2016-11-10)
 
 Bugfixes:
