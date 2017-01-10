@@ -45,8 +45,8 @@ OOD_PUBLIC_ROOT     ||= ENV['OOD_PUBLIC_ROOT']     || '/var/www/ood/public'
 
 # OOD Portal URIs
 OOD_PUN_URI    ||= ENV['OOD_PUN_URI']      || '/pun'
-OOD_NODE_URI   ||= ENV['OOD_NODE_URI']     || '/node'
-OOD_RNODE_URI  ||= ENV['OOD_RNODE_URI']    || '/rnode'
+OOD_NODE_URI   ||= ENV['OOD_NODE_URI']     || ''
+OOD_RNODE_URI  ||= ENV['OOD_RNODE_URI']    || ''
 OOD_NGINX_URI  ||= ENV['OOD_NGINX_URI']    || '/nginx'
 OOD_PUBLIC_URI ||= ENV['OOD_PUBLIC_URI']   || '/public'
 OOD_ROOT_URI   ||= ENV['OOD_ROOT_URI']     || '/pun/sys/dashboard'

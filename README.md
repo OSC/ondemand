@@ -237,14 +237,21 @@ OOD_PUBLIC_ROOT='/var/www/docroot/ood/public'
 OOD_PUN_URI='/pun'
 
 # Reverse proxy to backend nodes
+# This is used by web apps that allow their sub-uri to be modified so that it
+# matches the # front-facing sub-uri
+# Note: To provide support for proxying to backend compute nodes it is best to
+# enable this as "/node"
 # Blank: Removes the availability of this URI in the config
 #
-OOD_NODE_URI='/node'
+OOD_NODE_URI=''
 
 # "Relative" reverse proxy to backend nodes
+# This is used by web apps that *only* use relative URL links in their code
+# Note: To provide support for proxying to backend compute nodes it is best to
+# enable this as "/rnode"
 # Blank: Removes the availability of this URI in the config
 #
-OOD_RNODE_URI='/rnode'
+OOD_RNODE_URI=''
 
 # Control the backend PUN (e.g., start, stop, reload, ...)
 # Blank: Removes the availability of this URI in the config
