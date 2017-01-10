@@ -1,5 +1,10 @@
 ## Unreleased
 
+Bugfixes:
+
+  - disabled node/rnode support by default due to security concerns
+  - removed local server information from redirect headers in node/rnode uri's
+
 ## 0.0.7 (2016-11-10)
 
 Features:
