@@ -201,25 +201,26 @@ Argument         | Definition
 ---------------- | ----------
 OOD_USER_MAP_CMD | Full path to binary that maps the authenticated user name to the system-level user name. See `osc-user-map` as example.
 OOD_MAP_FAIL_URI | URI the user is redirected to if it fails to map to a system level user. If not specified then return 404 with error message.
-OOD_NODE_URI     | The sub-URI that namespaces this handler from the other handlers [`/node`].
-OOD_IS_RELATIVE  | Whether the base sub-URI (`/node/HOST/PORT`) should be stripped off when sent to backend proxy.
+MATCH_HOST       | The host address that the user is proxied to.
+MATCH_PORT       | The host port that the user is proxied to.
+MATCH_URI        | The URI path passed to the backend compute node. If not specified then pass the URI path the proxy received instead.
 
 #### Usage
 
 A typical Apache config will look like...
 
 ```
-<Location "/node">
+<LocationMatch "^/node/(?<host>[^/]+)/(?<port>[^/]+)">
   AuthType openid-connect
   Require valid-user
 
+  Header edit Location "^[^/]+//[^/:]+:[^/]+" ""
+
   SetEnv OOD_USER_MAP_CMD "/path/to/user-map-cmd"
   SetEnv OOD_MAP_FAIL_URI "/register"
-  SetEnv OOD_NODE_URI "/node"
-  #SetEnv OOD_IS_RELATIVE "true"
 
   LuaHookFixups node_proxy.lua node_proxy_handler
-</Location>
+</LocationMatch>
 ```
 
 Assuming you define `OOD_NODE_URI` as `/node`, the `node_proxy_handler`
@@ -237,19 +238,26 @@ The backend web server will need to use `/node/HOST/PORT` as its base URI. This
 should be programmatically determined before the backed web server is started
 depending on the host and port it will listen on.
 
-If you define `OOD_IS_RELATIVE` to any value, the following sub-URI strategy is
-used instead:
-
+If `MATCH_URI` is supplied in a form such as:
 
 ```
-https://apps.ondemand.org/node/HOST/PORT/index.html
+<LocationMatch "^/rnode/(?<host>[^/]+)/(?<port>[^/]+)(?<uri>.*)">
+  ...
+</LocationMatch>
+```
+
+then the following sub-URI strategy is used instead:
+
+```
+https://apps.ondemand.org/rnode/HOST/PORT/index.html
 #=> http://HOST:PORT/index.html
 
-wss://apps.ondemand.org/node/HOST/PORT/socket.io
+wss://apps.ondemand.org/rnode/HOST/PORT/socket.io
 #=> ws://HOST:PORT/socket.io
 ```
 
-Any links on the backend web server must be relative links for this to work:
+**All** links on the backend web server must be relative links for this to
+work:
 
 ```html
 <!-- this will WORK -->

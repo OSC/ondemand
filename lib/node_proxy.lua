@@ -11,9 +11,12 @@ local http     = require 'ood.http'
 function node_proxy_handler(r)
   -- read in OOD specific settings defined in Apache config
   local user_map_cmd = r.subprocess_env['OOD_USER_MAP_CMD']
-  local node_uri     = r.subprocess_env['OOD_NODE_URI']
-  local is_relative  = r.subprocess_env['OOD_IS_RELATIVE']
   local map_fail_uri = r.subprocess_env['OOD_MAP_FAIL_URI']
+
+  -- read in <LocationMatch> regular expression captures
+  local host = r.subprocess_env['MATCH_HOST']
+  local port = r.subprocess_env['MATCH_PORT']
+  local uri  = r.subprocess_env['MATCH_URI'] or r.unparsed_uri
 
   -- get the system-level user name
   local user = user_map.map(r, user_map_cmd)
@@ -25,14 +28,11 @@ function node_proxy_handler(r)
     end
   end
 
-  -- get the host & port of webserver on backend node from request
-  local host, port, rel_uri = r.unparsed_uri:match("^" .. node_uri .. "/([^/]+)/([^/]+)(.*)")
-
   -- generate connection object used in setting the reverse proxy
   local conn = {}
   conn.user = user
   conn.server = host .. ":" .. port
-  conn.uri = is_relative and rel_uri or r.unparsed_uri
+  conn.uri = uri
 
   -- setup request for reverse proxy
   proxy.set_reverse_proxy(r, conn)
