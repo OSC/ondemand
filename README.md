@@ -1,5 +1,8 @@
 # ood-portal-generator
 
+![GitHub Release](https://img.shields.io/github/release/osc/ood-portal-generator.svg)
+![GitHub License](https://img.shields.io/github/license/osc/ood-portal-generator.svg)
+
 Generates an Open OnDemand portal config for an Apache server.
 
 ## Requirements
