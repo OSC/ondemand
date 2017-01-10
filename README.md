@@ -17,6 +17,7 @@ Generates an Open OnDemand portal config for an Apache server.
 | mod_ood_proxy                                      |
 | mod_lua                                            |
 | mod_env                                            |
+| mod_headers                                        |
 | mod_proxy (mod_proxy_connect + mod_proxy_wstunnel) |
 | mod_auth_* (e.g., mod_auth_openidc)                |
 

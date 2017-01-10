@@ -175,14 +175,14 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
   #    wss://<%= OOD_SERVER_NAME %><%= OOD_NODE_URI %>/HOST/PORT/socket.io
   #    #=> ws://HOST:PORT<%= OOD_NODE_URI %>/HOST/PORT/socket.io
   #
-  <Location "<%= OOD_NODE_URI %>">
+  <LocationMatch "^<%= OOD_NODE_URI %>/(?<host>[^/]+)/(?<port>[^/]+)">
     AuthType "<%= OOD_AUTH_TYPE %>"
     Require valid-user
     <%- %><%= OOD_AUTH_EXTEND.gsub('\n', "\n").gsub(/^(?=[^$])/, " "*4) %>
 
-    SetEnv OOD_NODE_URI "<%= OOD_NODE_URI %>"
+    Header edit Location "^[^/]+//[^/:]+:[^/]+" ""
     LuaHookFixups node_proxy.lua node_proxy_handler
-  </Location>
+  </LocationMatch>
   <%- end -%>
 
   <%- unless OOD_RNODE_URI.empty? -%>
@@ -194,15 +194,14 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
   #    wss://<%= OOD_SERVER_NAME %><%= OOD_RNODE_URI %>/HOST/PORT/socket.io
   #    #=> ws://HOST:PORT/socket.io
   #
-  <Location "<%= OOD_RNODE_URI %>">
+  <LocationMatch "^<%= OOD_RNODE_URI %>/(?<host>[^/]+)/(?<port>[^/]+)(?<uri>.*)">
     AuthType "<%= OOD_AUTH_TYPE %>"
     Require valid-user
     <%- %><%= OOD_AUTH_EXTEND.gsub('\n', "\n").gsub(/^(?=[^$])/, " "*4) %>
 
-    SetEnv OOD_IS_RELATIVE "true"
-    SetEnv OOD_NODE_URI "<%= OOD_RNODE_URI %>"
+    Header edit Location "^[^/]+//[^/:]+:[^/]+" "/rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
     LuaHookFixups node_proxy.lua node_proxy_handler
-  </Location>
+  </LocationMatch>
   <%- end -%>
 
   <%- unless OOD_PUN_URI.empty? -%>
