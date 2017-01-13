@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.1.0 (2017-01-13)
+
 Features:
 
   - modify redirect headers from backend web servers running on nodes
