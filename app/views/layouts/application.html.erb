@@ -68,6 +68,12 @@
       </div>
     <% end %>
 
+    <% if @announcement %>
+      <div class="alert alert-warning" role="alert">
+        <%=raw markdown(@announcement) %>
+      </div>
+    <% end %>
+
     <%= yield %>
 
   </div><!-- /.container -->
