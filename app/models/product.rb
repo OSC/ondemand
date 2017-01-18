@@ -10,7 +10,6 @@ class Product
   attr_accessor :title
   attr_accessor :description
   attr_accessor :git_remote
-  attr_accessor :create_context
 
   validates :name, presence: true
 
