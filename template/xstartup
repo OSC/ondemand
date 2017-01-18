@@ -1,5 +1,8 @@
 #!/bin/bash -l
 
+# Change working directory to user's home directory
+cd "${HOME}"
+
 # Start up Gnome desktop (only desktop we support so far)
 "${ROOT}/desktops/${DESKTOP:-gnome}.sh"
 
