@@ -32,7 +32,7 @@ class Product
 
   def manifest_is_valid
     errors.add(:manifest, "is missing, add a title and description to fix this") unless app.manifest.exist?
-    errors.add(:manifest, "is corrupt, please edit the file to fix this") if app.manifest.exist? && !app.manifest.valid?
+    errors.add(:manifest, "is corrupt, please use the edit button or edit the file to fix this") if app.manifest.exist? && !app.manifest.valid?
   end
 
   def gemfile_is_valid
@@ -214,13 +214,16 @@ class Product
       raise
     end
 
+    # Writes out a manifest to the router path unless the repository has been newly cloned.
+    #
+    # @return [true] always returns true
     def write_manifest
-      File.open(router.path.join('manifest.yml'), 'w') do |f|
-        f.write({
-          'name' => title,
-          'description' => description
-        }.to_yaml)
-      end if (!title.blank? || !description.blank?) || !router.path.join('manifest.yml').exist?
+      manifest = Manifest.load( app.manifest_path )
+
+      manifest = manifest.merge({ name: title, description: description })
+
+      manifest.save( app.manifest_path ) if (!title.blank? || !description.blank?) || !app.manifest_path.exist?
+
       true
     end
 
