@@ -210,6 +210,9 @@ class Product
       else
         false
       end
+    rescue
+      router.path.rmtree if router.path.exist?
+      raise
     end
 
     def create_from_git_remote
