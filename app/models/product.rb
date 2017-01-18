@@ -10,11 +10,12 @@ class Product
   attr_accessor :title
   attr_accessor :description
   attr_accessor :git_remote
+  attr_accessor :create_context
 
   validates :name, presence: true
 
   validate :app_does_not_exist, on: :create_app
-  validates :git_remote, presence: true, on: :create_app
+  validates :git_remote, presence: true, on: :create_from_git_remote
 
   # lint a given app
   validate :manifest_is_valid, on: [:show_app, :list_apps]
@@ -131,11 +132,14 @@ class Product
     end
   end
 
-  def save
-    if self.valid?(:create_app)
-      stage && write_manifest
-    else
-      false
+  def save(context:)
+    case context.to_sym
+      when :create_from_git_remote
+        create_from_git_remote
+      when :create_from_rails_template
+        create_from_rails_template && write_manifest
+      else
+        raise "Invalid Context"
     end
   end
 
@@ -214,6 +218,36 @@ class Product
       raise
     end
 
+    def create_from_rails_template
+      if self.valid?(:create_from_rails_template)
+        target = router.path
+        target.mkpath
+        FileUtils.cp_r Rails.root.join("vendor/my_app/."), target
+        FileUtils.chmod 0750, target
+        true
+      else
+        false
+      end
+    end
+
+    def create_from_git_remote
+      if self.valid?(:create_from_git_remote)
+        target = router.path
+        target.mkpath
+        unless clone_git_repo(target)
+          target.rmtree if target.exist?
+          return false
+        end
+        FileUtils.chmod 0750, target
+        true
+      else
+        false
+      end
+    rescue
+      router.path.rmtree if router.path.exist?
+      raise
+    end
+
     # Writes out a manifest to the router path unless the repository has been newly cloned.
     #
     # @return [true] always returns true
@@ -256,6 +290,8 @@ class Product
       end
       true
     end
+
+
 
     def git_describe
       target = router.path

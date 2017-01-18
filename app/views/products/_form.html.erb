@@ -26,9 +26,10 @@
       </div>
       <%= link_to 'Generate SSH Key', create_key_path(type: @type), class: 'btn btn-default pull-right' %>
     <% end %>
+      <%= f.hidden_field :create_context, value: "create_from_git_remote" %>
     </div>
   <% else %>
-    <%= f.hidden_field :git_remote, value: "ood_new" %>
+        <%= f.hidden_field :create_context, value: "create_from_rails_template" %>
   <% end %>
   <% if show_manifest %>
   <div class="field">

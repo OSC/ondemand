@@ -41,7 +41,7 @@ class ProductsController < ApplicationController
     @new_method = @type == :usr ? 'git' : params[:new_method]
 
     respond_to do |format|
-      if @product.save
+      if @product.save(context: @product.create_context)
         format.html { redirect_to product_url(@product.name, type: @type), notice: 'Product was successfully created.' }
         format.json { render :show, status: :created, location: @product }
       else
