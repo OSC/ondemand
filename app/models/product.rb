@@ -136,7 +136,7 @@ class Product
       when :create_from_git_remote
         create_from_git_remote
       when :create_from_rails_template
-        create_from_rails_template && write_manifest
+        create_from_rails_template
       else
         raise "Invalid Context"
     end
