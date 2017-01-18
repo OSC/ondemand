@@ -199,23 +199,6 @@ class Product
   end
 
   private
-    def stage
-      target = router.path
-      target.mkpath
-      if git_remote == "ood_new"
-        FileUtils.cp_r Rails.root.join("vendor/my_app/."), target
-      else
-        unless clone_git_repo(target)
-          target.rmtree if target.exist?
-          return false
-        end
-      end
-      FileUtils.chmod 0750, target
-      true
-    rescue
-      router.path.rmtree if router.path.exist?
-      raise
-    end
 
     def create_from_rails_template
       if self.valid?(:create_from_rails_template)
