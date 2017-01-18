@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.0.3 (2017-01-18)
+
 Bugfixes:
 
   - set desktop working dir to user's home dir
