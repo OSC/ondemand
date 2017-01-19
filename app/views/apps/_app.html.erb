@@ -1,10 +1,12 @@
-<tr class="app">
-  <td class="icon">
+<div class="col-sm-3 col-md-3">
+  <div class="thumbnail" style="text-align: center">
     <%= app_icon_tag(app) %>
-  </td>
-  <td class="title"><%= link_to app.title, app_path(app.name, app.type, app.owner) %></td>
-  <td>
-    <%= content_tag(:p, content_tag(:strong, app.caption)) if app.caption %>
-    <%= manifest_markdown(app.manifest.description) %>
-  </td>
-</tr>
+    <div class="center-block" style="text-align: center">
+      <%= link_to app.title, app_path(app.name, app.type, app.owner) %>
+      <%= content_tag(:p, content_tag(:span, app.caption), class: "text-muted", style: "margin-top: 20px") if app.caption %>
+    </div>
+
+    <%# FIXME: below should become popover content %>
+    <%# manifest_markdown(app.manifest.description) %>
+  </div>
+</div>

@@ -1,14 +1,5 @@
 <h2 class="apps-section-header-blue"><%= group.title %></h2>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th></th>
-      <th>App</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <%= render partial: "app", collection: group.apps %>
-  </tbody>
-</table>
+<div class="row">
+  <%= render partial: "app", collection: group.apps %>
+</div>
