@@ -1,12 +1,12 @@
 <div class="col-sm-3 col-md-3">
-  <div class="thumbnail" style="text-align: center">
-    <%= app_icon_tag(app) %>
+  <%= link_to app_path(app.name, app.type, app.owner), class: "thumbnail app" do %>
     <div class="center-block" style="text-align: center">
-      <%= link_to app.title, app_path(app.name, app.type, app.owner) %>
+      <%= app_icon_tag(app) %>
+      <%= content_tag(:p, app.title) %>
       <%= content_tag(:p, content_tag(:span, app.caption), class: "text-muted", style: "margin-top: 20px") if app.caption %>
     </div>
 
     <%# FIXME: below should become popover content %>
     <%# manifest_markdown(app.manifest.description) %>
-  </div>
+  <% end %>
 </div>
