@@ -272,9 +272,36 @@ OOD_PUBLIC_URI='/public'
 OOD_ROOT_URI='/pun/sys/dashboard'
 ```
 
-#### OOD Authentication Options
+#### OOD Analytics Options
 
-**Default Authentication Setup**
+It is highly recommended you enable analytics reporting to help further improve
+the Open OnDemand project. This can be enabled by specifying the environment
+variable:
+
+```bash
+export OOD_ANALYTICS_OPT_IN='true'
+```
+
+The options set are:
+
+```bash
+# Whether you want to opt in to analytics reporting
+# Default: 'false'
+#
+OOD_ANALYTICS_OPT_IN='false'
+
+# The URL used that analytics reporting is sent to
+#
+OOD_ANALYTICS_TRACKING_URL='http://www.google-analytics.com/collect'
+
+# The analytics reporting id
+#
+OOD_ANALYTICS_TRACKING_ID='UA-79331310-3'
+```
+
+## OOD Authentication Options
+
+### Default Authentication Setup
 
 This uses Apache Basic Auth as the default authentication mechanism:
 
@@ -345,11 +372,63 @@ scl enable httpd24 -- htpasswd /opt/rh/httpd24/root/etc/httpd/.htpasswd <another
 
 If you continue to use Basic Auth, we recommend using the LDAP module.
 
-**CILogon Authentication Setup** (expert mode)
+### Shibboleth Authentication Setup (recommended)
+
+*Work in progress*
+
+Assumes you have a Shibboleth IdP already deployed and setup.
 
 Requirements:
 
-- mod_auth_openidc / CILogon client information ([Discussed Here](#cilogon-setup))
+- mod_shib_24
+
+You can then build a portal config as:
+
+```bash
+rake OOD_AUTH_TYPE='shibboleth' OOD_AUTH_EXTEND='ShibRequestSetting requireSession 1\nRequestHeader edit* Cookie "(^_shibsession_[^;]*(;\s*)?|;\s*_shibsession_[^;]*)" ""\nRequestHeader unset Cookie "expr=-z %{req:Cookie}"'
+```
+
+You will then need an appropriate Apache config that specifies the global
+`mod_shib_24` settings you want. An example of such is given here:
+
+```
+# /path/to/httpd/conf.d/auth_shib.conf
+
+#
+# Turn this on to support "require valid-user" rules from other
+# mod_authn_* modules, and use "require shib-session" for anonymous
+# session-based authorization in mod_shib.
+#
+ShibCompatValidUser On
+
+#
+# Ensures handler will be accessible.
+#
+<Location /Shibboleth.sso>
+  AuthType None
+  Require all granted
+</Location>
+
+#
+# Used for example style sheet in error templates.
+#
+<IfModule mod_alias.c>
+  <Location /shibboleth-sp>
+    AuthType None
+    Require all granted
+  </Location>
+  Alias /shibboleth-sp/main.css /usr/share/shibboleth/main.css
+</IfModule>
+```
+
+Note: You must have the setting `ShibCompatValidUser On` for authentication to
+be handled correctly.
+
+### CILogon Authentication Setup (expert)
+
+Requirements:
+
+- mod_auth_openidc / CILogon client information
 - ood_auth_discovery (PHP scripts)
 - ood_auth_registration (PHP scripts)
 - ood_auth_map (ruby CLI script)
@@ -383,54 +462,8 @@ This authentication mechanism takes advantage of:
 rake OOD_AUTH_CILOGON='true'
 ```
 
-#### OOD Analytics Options
-
-It is highly recommended you enable analytics reporting to help further improve
-the Open OnDemand project. This can be enabled by specifying the environment
-variable:
-
-```bash
-export OOD_ANALYTICS_OPT_IN='true'
-```
-
-The options set are:
-
-```bash
-# Whether you want to opt in to analytics reporting
-# Default: 'false'
-#
-OOD_ANALYTICS_OPT_IN='false'
-
-# The URL used that analytics reporting is sent to
-#
-OOD_ANALYTICS_TRACKING_URL='http://www.google-analytics.com/collect'
-
-# The analytics reporting id
-#
-OOD_ANALYTICS_TRACKING_ID='UA-79331310-3'
-```
-
-## Configuration File
-
-If the default options or using environment variables to make changes do not
-meet your needs, then you can specify the configuration options in
-`config.rake` as such
-
-```ruby
-# config.rake
-
-OOD_USER_MAP_COMMAND = '/usr/local/bin/my-usr-map'
-OOD_PUBLIC_ROOT = '/var/www/docroot'
-```
-
-Options specified in `config.rake` take precendence over the corresponding
-environment variable set.
-
-## CILogon Setup
-
-If using the CILogon authentication scheme, you will need an appropriate Apache
-config that specifies the global `mod_auth_openidc` settings you want. An
-example of such is given here:
+You will need an appropriate Apache config that specifies the global
+`mod_auth_openidc` settings you want. An example of such is given here:
 
 ```
 # /path/to/httpd/conf.d/auth_openidc.conf
@@ -487,6 +520,21 @@ setup the CILogon IdP specific settings in three separate json files:
     }
     ```
 
+## Configuration File
+
+If the default options or using environment variables to make changes do not
+meet your needs, then you can specify the configuration options in
+`config.rake` as such
+
+```ruby
+# config.rake
+
+OOD_USER_MAP_COMMAND = '/usr/local/bin/my-usr-map'
+OOD_PUBLIC_ROOT = '/var/www/docroot'
+```
+
+Options specified in `config.rake` take precendence over the corresponding
+environment variable set.
 
 ## Version
 

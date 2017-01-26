@@ -3,6 +3,7 @@
 Features:
 
   - namespace cookies using the `Path` attribute
+  - add documentation for Shibboleth (including filtering session cookie)
 
 Bugfixes:
 
