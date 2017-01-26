@@ -4,6 +4,7 @@ Bugfixes:
 
   - use better regex for modifying `Location` header
   - strip out or replace `Domain` attribute when setting a cookie
+  - fixed hardcoded `/rnode` uri that should have been a variable
 
 ## 0.1.0 (2017-01-13)
 

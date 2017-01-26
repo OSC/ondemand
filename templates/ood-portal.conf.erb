@@ -205,7 +205,7 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
     <%- %><%= OOD_AUTH_EXTEND.gsub('\n', "\n").gsub(/^(?=[^$])/, " "*4) %>
 
     # ProxyPassReverse implementation
-    Header edit Location "^[^/]+//[^/]+" "/rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
+    Header edit Location "^[^/]+//[^/]+" "<%= OOD_RNODE_URI %>/%{MATCH_HOST}e/%{MATCH_PORT}e"
 
     # ProxyPassReverseCookieDomain implemenation
     Header edit* Set-Cookie ";\s*(?i)Domain[^;]*" ""
