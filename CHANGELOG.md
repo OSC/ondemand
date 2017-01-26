@@ -1,5 +1,9 @@
 ## Unreleased
 
+Features:
+
+  - namespace cookies using the `Path` attribute
+
 Bugfixes:
 
   - use better regex for modifying `Location` header
