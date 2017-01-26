@@ -1,5 +1,9 @@
 ## Unreleased
 
+Bugfixes:
+
+  - use better regex for modifying `Location` header
+
 ## 0.1.0 (2017-01-13)
 
 Features:

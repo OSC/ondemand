@@ -180,7 +180,9 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
     Require valid-user
     <%- %><%= OOD_AUTH_EXTEND.gsub('\n', "\n").gsub(/^(?=[^$])/, " "*4) %>
 
-    Header edit Location "^[^/]+//[^/:]+:[^/]+" ""
+    # ProxyPassReverse implementation
+    Header edit Location "^[^/]+//[^/]+" ""
+
     LuaHookFixups node_proxy.lua node_proxy_handler
   </LocationMatch>
   <%- end -%>
@@ -199,7 +201,9 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
     Require valid-user
     <%- %><%= OOD_AUTH_EXTEND.gsub('\n', "\n").gsub(/^(?=[^$])/, " "*4) %>
 
-    Header edit Location "^[^/]+//[^/:]+:[^/]+" "/rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
+    # ProxyPassReverse implementation
+    Header edit Location "^[^/]+//[^/]+" "/rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
+
     LuaHookFixups node_proxy.lua node_proxy_handler
   </LocationMatch>
   <%- end -%>
