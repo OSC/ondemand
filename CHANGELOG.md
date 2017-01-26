@@ -3,6 +3,7 @@
 Bugfixes:
 
   - use better regex for modifying `Location` header
+  - strip out or replace `Domain` attribute when setting a cookie
 
 ## 0.1.0 (2017-01-13)
 

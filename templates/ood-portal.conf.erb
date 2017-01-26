@@ -183,6 +183,9 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
     # ProxyPassReverse implementation
     Header edit Location "^[^/]+//[^/]+" ""
 
+    # ProxyPassReverseCookieDomain implemenation
+    Header edit* Set-Cookie ";\s*(?i)Domain[^;]*" ""
+
     LuaHookFixups node_proxy.lua node_proxy_handler
   </LocationMatch>
   <%- end -%>
@@ -203,6 +206,9 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
 
     # ProxyPassReverse implementation
     Header edit Location "^[^/]+//[^/]+" "/rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
+
+    # ProxyPassReverseCookieDomain implemenation
+    Header edit* Set-Cookie ";\s*(?i)Domain[^;]*" ""
 
     LuaHookFixups node_proxy.lua node_proxy_handler
   </LocationMatch>
@@ -227,6 +233,7 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
     SetEnv OOD_PUN_MAX_RETRIES "<%= OOD_PUN_MAX_RETRIES %>"
     LuaHookFixups pun_proxy.lua pun_proxy_handler
     ProxyPassReverse "http://localhost<%= OOD_PUN_URI %>"
+    ProxyPassReverseCookieDomain "localhost" "<%= OOD_SERVER_NAME %>"
 
     <%- if OOD_ANALYTICS_OPT_IN -%>
     SetEnv OOD_ANALYTICS_TRACKING_URL "<%= OOD_ANALYTICS_TRACKING_URL %>"
