@@ -443,6 +443,9 @@ OIDCCryptoPassphrase "<Chosen Passphrase>"
 # Keep sessions alive for 8 hours
 OIDCSessionInactivityTimeout 28800
 OIDCSessionMaxDuration 28800
+
+# Don't pass claims to backend servers
+OIDCPassClaimsAs environment
 ```
 
 This sets the global `mod_auth_openidc` settings used by all IdP's. Now we
