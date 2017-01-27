@@ -16,7 +16,7 @@ function node_proxy_handler(r)
   -- read in <LocationMatch> regular expression captures
   local host = r.subprocess_env['MATCH_HOST']
   local port = r.subprocess_env['MATCH_PORT']
-  local uri  = r.subprocess_env['MATCH_URI'] or r.unparsed_uri
+  local uri  = r.subprocess_env['MATCH_URI']
 
   -- get the system-level user name
   local user = user_map.map(r, user_map_cmd)
@@ -32,7 +32,7 @@ function node_proxy_handler(r)
   local conn = {}
   conn.user = user
   conn.server = host .. ":" .. port
-  conn.uri = uri
+  conn.uri = uri and (r.args and (uri .. "?" .. r.args) or uri) or r.unparsed_uri
 
   -- setup request for reverse proxy
   proxy.set_reverse_proxy(r, conn)

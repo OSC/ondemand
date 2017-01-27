@@ -4,6 +4,10 @@ Features:
 
   - remove support for client-side analytics (prefer server-side analytics)
 
+Bugfixes:
+
+  - fix query params not being passed with `/rnode`
+
 ## 0.1.0 (2017-01-13)
 
 Features:
