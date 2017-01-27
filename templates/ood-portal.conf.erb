@@ -242,7 +242,9 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
     LuaHookFixups pun_proxy.lua pun_proxy_handler
     ProxyPassReverse "http://localhost<%= OOD_PUN_URI %>"
     ProxyPassReverseCookieDomain "localhost" "<%= OOD_SERVER_NAME %>"
-    ProxyPassReverseCookiePath "/" "<%= OOD_PUN_URI %>"
+
+    # ProxyPassReverseCookiePath implementation (less restrictive)
+    Header edit* Set-Cookie ";\s*(?i)Path\s*=(?-i)(?!\s*<%= OOD_PUN_URI %>)[^;]*" "; Path=<%= OOD_PUN_URI %>"
 
     <%- if OOD_ANALYTICS_OPT_IN -%>
     SetEnv OOD_ANALYTICS_TRACKING_URL "<%= OOD_ANALYTICS_TRACKING_URL %>"
