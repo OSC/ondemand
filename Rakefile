@@ -42,6 +42,7 @@ OOD_PUN_MAX_RETRIES ||= ENV['OOD_PUN_MAX_RETRIES'] || '5'
 OOD_USER_MAP_CMD    ||= ENV['OOD_USER_MAP_CMD']    || '/opt/ood/ood_auth_map/bin/ood_auth_map.regex'
 OOD_PUN_SOCKET_ROOT ||= ENV['OOD_PUN_SOCKET_ROOT'] || '/var/run/nginx'
 OOD_PUBLIC_ROOT     ||= ENV['OOD_PUBLIC_ROOT']     || '/var/www/ood/public'
+OOD_HOST_REGEX      ||= ENV['OOD_HOST_REGEX']      || '[^/]+'
 
 # OOD Portal URIs
 OOD_PUN_URI    ||= ENV['OOD_PUN_URI']      || '/pun'

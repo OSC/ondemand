@@ -229,6 +229,12 @@ OOD_PUN_SOCKET_ROOT='/var/run/nginx'
 # Path to publicly available assets
 #
 OOD_PUBLIC_ROOT='/var/www/docroot/ood/public'
+
+# Regular expression used to parse host from URI used when reverse proxying to
+# a backend node (see: OOD_NODE_URI and OOD_RNODE_URI)
+# Note: To keep all proxying to within your domain, set it to
+#     '[\w.-]+\.domain\.edu'
+# Blank: Matches any characters other than forward slash (Default: '[^/]+')
 ```
 
 #### OOD Portal URIs
