@@ -434,7 +434,7 @@ be handled correctly.
 
 Requirements:
 
-- mod_auth_openidc / CILogon client information
+- mod_auth_openidc v2.0.0+ / CILogon client information
 - ood_auth_discovery (PHP scripts)
 - ood_auth_registration (PHP scripts)
 - ood_auth_map (ruby CLI script)
@@ -485,6 +485,9 @@ OIDCSessionMaxDuration 28800
 
 # Don't pass claims to backend servers
 OIDCPassClaimsAs environment
+
+# Strip out session cookies before passing to backend
+OIDCStripCookies mod_auth_openidc_session mod_auth_openidc_session_chunks mod_auth_openidc_session_0 mod_auth_openidc_session_1
 ```
 
 This sets the global `mod_auth_openidc` settings used by all IdP's. Now we

@@ -62,7 +62,7 @@ if OOD_AUTH_CILOGON
   OOD_AUTH_REGISTER_URI  ||= ENV['OOD_AUTH_REGISTER_URI']  || '/register'
 
   OOD_AUTH_TYPE    = 'openid-connect'
-  OOD_AUTH_EXTEND  = 'RequestHeader edit* Cookie "(^mod_auth_openidc_[^;]*(;\s*)?|;\s*mod_auth_openidc_[^;]*)" ""\nRequestHeader unset Cookie "expr=-z %{req:Cookie}"'
+  OOD_AUTH_EXTEND  = ''
   OOD_MAP_FAIL_URI = OOD_AUTH_REGISTER_URI
 else
   OOD_AUTH_OIDC_URI      ||= ENV['OOD_AUTH_OIDC_URI']      || ''
