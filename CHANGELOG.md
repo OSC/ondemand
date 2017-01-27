@@ -1,5 +1,9 @@
 ## Unreleased
 
+Features:
+
+  - remove support for client-side analytics (prefer server-side analytics)
+
 ## 0.1.0 (2017-01-13)
 
 Features:
