@@ -12,7 +12,6 @@ function node_proxy_handler(r)
   -- read in OOD specific settings defined in Apache config
   local user_map_cmd = r.subprocess_env['OOD_USER_MAP_CMD']
   local map_fail_uri = r.subprocess_env['OOD_MAP_FAIL_URI']
-  local host_regex   = r.subprocess_env['OOD_HOST_REGEX'] or "^.*$"
 
   -- read in <LocationMatch> regular expression captures
   local host = r.subprocess_env['MATCH_HOST']
@@ -27,11 +26,6 @@ function node_proxy_handler(r)
     else
       return http.http404(r, "failed to map user (" .. r.user .. ")")
     end
-  end
-
-  -- confirm host is allowed through regular expression matching
-  if not r:regex(host, host_regex) then
-    return http.http404(r, "invalid host specified (" .. host .. ")")
   end
 
   -- generate connection object used in setting the reverse proxy

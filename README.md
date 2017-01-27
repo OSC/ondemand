@@ -207,7 +207,6 @@ OOD_MAP_FAIL_URI | URI the user is redirected to if it fails to map to a system 
 MATCH_HOST       | The host address that the user is proxied to.
 MATCH_PORT       | The host port that the user is proxied to.
 MATCH_URI        | The URI path passed to the backend compute node. If not specified then pass the URI path the proxy received instead.
-OOD_HOST_REGEX   | The regular expression used for validating the backend host before proxying. If not specified then default ALLOW all hosts.
 
 #### Usage
 
@@ -270,19 +269,6 @@ work:
 <!-- this will FAIL -->
 <img src="/images/header.png">
 ```
-
-> **Security Warning:**
->
-> You should add a `OOD_HOST_REGEX` for whitelisting a set of internal nodes
-> you allow users to proxy to. An example can look like:
->
-> ```
-> <LocationMatch "^/rnode/(?<host>[^/]+)/(?<port>[^/]+)(?<uri>.*)">
->   ...
->
->   SetEnv OOD_HOST_REGEX "^[\w.-]+\.my_center\.edu$"
-> </LocationMatch>
-> ```
 
 ### analytics_handler
 
