@@ -388,7 +388,7 @@ module NginxStage
         if instance_variable_defined? "@#{k}"
           self.send("#{k}=", v)
         else
-          raise InvalidConfigOption, "invalid configuration option: #{k}"
+          $stderr.puts %{Warning: invalid configuration option "#{k}"}
         end
       end
     end

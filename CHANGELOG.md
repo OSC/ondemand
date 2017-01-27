@@ -6,6 +6,10 @@ Features:
 
   - removed client-side analytics (now handled server-side)
 
+Bugfixes:
+
+  - don't crash when config file has invalid option
+
 ## 0.1.0 (2016-10-27)
 
 Features:
