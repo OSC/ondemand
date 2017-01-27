@@ -3,6 +3,7 @@
 Features:
 
   - remove support for client-side analytics (prefer server-side analytics)
+  - add host name validation to backend compute node proxying
 
 ## 0.1.0 (2017-01-13)
 
