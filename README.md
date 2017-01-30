@@ -1,5 +1,8 @@
 # NginxStage
 
+![GitHub Release](https://img.shields.io/github/release/osc/nginx_stage.svg)
+![GitHub License](https://img.shields.io/github/license/osc/nginx_stage.svg)
+
 Stage and control per-user NGINX processes. Only relies on Ruby core and
 standard libraries making installation a breeze.
 
