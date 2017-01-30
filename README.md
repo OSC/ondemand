@@ -8,24 +8,24 @@ standard libraries making installation a breeze.
 
 ## Requirements
 
-- nginx 1.6 or newer
-- Phusion Passenger 4.0.55 or newer
-- Ruby 2.2 or newer
+- nginx v1.6+
+- Phusion Passenger v4.0.55+
+- Ruby v2.2+
 
 #### Optional
 
 For Node.js apps (ood-fileexplorer, ood-shell):
 
-- Node.js 0.10 or newer
-- V8 3.14 or newer
+- Node.js v0.10+
+- V8 v3.14+
 
 For Python apps:
 
-- Python 2.7 or newer
+- Python v2.7+
 
 For apps that have Git integration (ood-dashboard):
 
-- Git 1.9 or newer
+- Git v1.9+
 
 ## Installation
 
