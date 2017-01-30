@@ -166,6 +166,7 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
     Require all granted
   </Directory>
   <%- end -%>
+
   <%- unless OOD_NODE_URI.empty? -%>
   # Reverse proxy traffic to backend webserver through IP sockets:
   #
