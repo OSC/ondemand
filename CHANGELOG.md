@@ -5,6 +5,7 @@
 Features:
 
   - removed client-side analytics (now handled server-side)
+  - provide better default ruby wrapper that doesn't require modifications
 
 Bugfixes:
 

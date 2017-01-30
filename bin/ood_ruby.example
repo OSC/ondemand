@@ -17,9 +17,10 @@
 # default in a sudo environment, then no modifications are necessary to this
 # file.
 
-# Uncomment the following line if using RHEL 6 with Software Collections 2.0
+# Check if using RHEL 6 with Software Collections 2.0
 #
-#exec scl enable nginx16 rh-passenger40 rh-ruby22 nodejs010 git19 -- exec /bin/env ruby "$@"
+SCL_SOURCE=$(command -v scl_source)
+[[ $SCL_SOURCE  ]] && source ${SCL_SOURCE} enable nginx16 rh-passenger40 rh-ruby22 nodejs010 git19
 
 # Use default environment
 #
