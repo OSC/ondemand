@@ -120,9 +120,6 @@ environment (e.g., libraries and binary paths) for the Open OnDemand per-user
 Nginx process to successfully run under. By default it assumes your environment
 is properly loaded in the `sudo` configuration.
 
-**Note:** If you are using Software Collections, it is recommended you
-uncomment the code block specified in the script.
-
 ## Usage
 
 Note: The `nginx_stage` CLI options can be specified as URL encoded strings to
