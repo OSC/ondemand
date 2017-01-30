@@ -302,7 +302,7 @@ OOD_ANALYTICS_TRACKING_URL='http://www.google-analytics.com/collect'
 
 # The analytics reporting id
 #
-OOD_ANALYTICS_TRACKING_ID='UA-79331310-3'
+OOD_ANALYTICS_TRACKING_ID='UA-79331310-4'
 ```
 
 ## OOD Authentication Options
