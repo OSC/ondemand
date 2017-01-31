@@ -317,10 +317,10 @@ This uses Apache Basic Auth as the default authentication mechanism:
 OOD_AUTH_TYPE='Basic'
 
 # Any extended authentication Apache directives separated by newlines
-# Example: OOD_AUTH_EXTEND='AuthName "private"\nAuthBasicProvider ldap\nAuthLDAPURL ldap://ldap.host/o=ctx'
+# Example: OOD_AUTH_EXTEND='AuthName "Private"\nAuthBasicProvider ldap\nAuthLDAPURL ldap://ldap.host/o=ctx\nRequestHeader unset Authorization'
 # Blank: No extended directives will be added to the config
 #
-OOD_AUTH_EXTEND='AuthName "private"\nAuthUserFile "/opt/rh/httpd24/root/etc/httpd/.htpasswd"'
+OOD_AUTH_EXTEND='AuthName "Private"\nAuthUserFile "/opt/rh/httpd24/root/etc/httpd/.htpasswd"\nRequestHeader unset Authorization'
 
 # Redirect user to this URI if fail to map to system level user
 # Blank: Removes the redirection upon a failed user mapping

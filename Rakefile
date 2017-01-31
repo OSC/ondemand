@@ -73,7 +73,7 @@ else
   OOD_USER_MAP_CMD       ||= ENV['OOD_USER_MAP_CMD']       || '/opt/ood/ood_auth_map/bin/ood_auth_map.regex'
 
   OOD_AUTH_TYPE    ||= ENV['OOD_AUTH_TYPE']    || 'Basic'
-  OOD_AUTH_EXTEND  ||= ENV['OOD_AUTH_EXTEND']  || 'AuthName "private"\nAuthUserFile "/opt/rh/httpd24/root/etc/httpd/.htpasswd"'
+  OOD_AUTH_EXTEND  ||= ENV['OOD_AUTH_EXTEND']  || 'AuthName "private"\nAuthUserFile "/opt/rh/httpd24/root/etc/httpd/.htpasswd"\nRequestHeader unset Authorization'
   OOD_MAP_FAIL_URI ||= ENV['OOD_MAP_FAIL_URI'] || ''
 end
 
