@@ -458,6 +458,7 @@ This authentication mechanism takes advantage of:
 #   OOD_AUTH_DISCOVER_URI  = '/discover'
 #   OOD_AUTH_REGISTER_ROOT = '/var/www/ood/register'
 #   OOD_AUTH_REGISTER_URI  = '/register'
+#   OOD_USER_MAP_CMD       = '/opt/ood/ood_auth_map/bin/ood_auth_map.mapfile'
 #   OOD_AUTH_TYPE          = 'openid-connect'
 #   OOD_AUTH_EXTEND        = ''
 #   OOD_MAP_FAIL_URI       = OOD_AUTH_REGISTER_URI

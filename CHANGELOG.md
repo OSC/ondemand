@@ -1,5 +1,9 @@
 ## Unreleased
 
+Bugfixes:
+
+  - fix CILogon default map command to use mapfile instead of regex
+
 ## 0.2.0 (2017-01-30)
 
 Features:

@@ -39,7 +39,6 @@ OOD_LUA_ROOT        ||= ENV['OOD_LUA_ROOT']        || '/opt/ood/mod_ood_proxy/li
 OOD_LUA_LOG_LEVEL   ||= ENV['OOD_LUA_LOG_LEVEL']   || 'info'
 OOD_PUN_STAGE_CMD   ||= ENV['OOD_PUN_STAGE_CMD']   || 'sudo /opt/ood/nginx_stage/sbin/nginx_stage'
 OOD_PUN_MAX_RETRIES ||= ENV['OOD_PUN_MAX_RETRIES'] || '5'
-OOD_USER_MAP_CMD    ||= ENV['OOD_USER_MAP_CMD']    || '/opt/ood/ood_auth_map/bin/ood_auth_map.regex'
 OOD_PUN_SOCKET_ROOT ||= ENV['OOD_PUN_SOCKET_ROOT'] || '/var/run/nginx'
 OOD_PUBLIC_ROOT     ||= ENV['OOD_PUBLIC_ROOT']     || '/var/www/ood/public'
 OOD_HOST_REGEX      ||= ENV['OOD_HOST_REGEX']      || '[^/]+'
@@ -60,6 +59,7 @@ if OOD_AUTH_CILOGON
   OOD_AUTH_DISCOVER_URI  ||= ENV['OOD_AUTH_DISCOVER_URI']  || '/discover'
   OOD_AUTH_REGISTER_ROOT ||= ENV['OOD_AUTH_REGISTER_ROOT'] || '/var/www/ood/register'
   OOD_AUTH_REGISTER_URI  ||= ENV['OOD_AUTH_REGISTER_URI']  || '/register'
+  OOD_USER_MAP_CMD       ||= ENV['OOD_USER_MAP_CMD']       || '/opt/ood/ood_auth_map/bin/ood_auth_map.mapfile'
 
   OOD_AUTH_TYPE    = 'openid-connect'
   OOD_AUTH_EXTEND  = ''
@@ -70,6 +70,7 @@ else
   OOD_AUTH_DISCOVER_URI  ||= ENV['OOD_AUTH_DISCOVER_URI']  || ''
   OOD_AUTH_REGISTER_ROOT ||= ENV['OOD_AUTH_REGISTER_ROOT'] || '/var/www/ood/register'
   OOD_AUTH_REGISTER_URI  ||= ENV['OOD_AUTH_REGISTER_URI']  || ''
+  OOD_USER_MAP_CMD       ||= ENV['OOD_USER_MAP_CMD']       || '/opt/ood/ood_auth_map/bin/ood_auth_map.regex'
 
   OOD_AUTH_TYPE    ||= ENV['OOD_AUTH_TYPE']    || 'Basic'
   OOD_AUTH_EXTEND  ||= ENV['OOD_AUTH_EXTEND']  || 'AuthName "private"\nAuthUserFile "/opt/rh/httpd24/root/etc/httpd/.htpasswd"'
