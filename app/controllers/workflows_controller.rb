@@ -1,4 +1,5 @@
 class WorkflowsController < ApplicationController
+  before_action :update_jobs, only: [:index, :show]
 
   # GET /workflows
   # GET /workflows.json
@@ -164,5 +165,9 @@ class WorkflowsController < ApplicationController
     # Only allow a trusted parameter "white list" through.
     def workflow_params
       params.require(:workflow).permit!
+    end
+
+    def update_jobs
+      Job.active.to_a.each(&:update_status!)
     end
 end
