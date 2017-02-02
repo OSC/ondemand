@@ -121,6 +121,7 @@ class Workflow < ActiveRecord::Base
     new_workflow.staging_template_dir = self.staged_dir
     new_workflow.batch_host = self.batch_host
     new_workflow.script_name = self.script_name
+    new_workflow.job_attrs = self.job_attrs
     new_workflow
   end
 
