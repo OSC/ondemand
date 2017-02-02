@@ -54,7 +54,7 @@ GEM
       railties (>= 4.0, < 5.1)
     erubis (2.7.0)
     execjs (2.7.0)
-    ffi (1.9.14)
+    ffi (1.9.17)
     font-awesome-sass (4.4.0)
       sass (>= 3.2)
     i18n (0.7.0)
@@ -109,7 +109,7 @@ GEM
       activesupport (>= 3.2.0)
       cocaine (~> 0.5.5)
       mime-types
-    pbs (2.0.2)
+    pbs (2.0.3)
       ffi (~> 1.9, >= 1.9.6)
     rack (1.5.5)
     rack-test (0.6.3)
