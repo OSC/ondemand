@@ -1,5 +1,4 @@
 class WorkflowsController < ApplicationController
-  before_action :set_workflow, only: [:show, :edit, :update, :destroy, :submit, :copy]
 
   # GET /workflows
   # GET /workflows.json
@@ -12,6 +11,7 @@ class WorkflowsController < ApplicationController
   # GET /workflows/1
   # GET /workflows/1.json
   def show
+    set_workflow
     @workflow = Workflow.find(params[:id])
     @workflow.jobs.last.update_status! unless @workflow.jobs.last.nil?
   end
@@ -24,6 +24,7 @@ class WorkflowsController < ApplicationController
 
   # GET /workflows/1/edit
   def edit
+    set_workflow
   end
 
   # POST /workflows
@@ -62,6 +63,8 @@ class WorkflowsController < ApplicationController
   # PATCH/PUT /workflows/1
   # PATCH/PUT /workflows/1.json
   def update
+    set_workflow
+
     respond_to do |format|
       if @workflow.update(workflow_params)
         session[:selected_id] = @workflow.id
@@ -76,7 +79,8 @@ class WorkflowsController < ApplicationController
 
   # PUT /workflows/1/stop
   def stop
-    @workflow = Workflow.find(params[:id])
+    set_workflow
+
     @workflow.jobs.last.update_status! unless @workflow.jobs.last.nil?
     session[:selected_id] = @workflow.id
 
@@ -99,6 +103,8 @@ class WorkflowsController < ApplicationController
   # DELETE /workflows/1
   # DELETE /workflows/1.json
   def destroy
+    set_workflow
+
     respond_to do |format|
       if @workflow.destroy
         format.html { redirect_to workflows_url, notice: 'Job was successfully destroyed.' }
@@ -113,6 +119,8 @@ class WorkflowsController < ApplicationController
   # PUT /workflows/1/submit
   # PUT /workflows/1/submit.json
   def submit
+    set_workflow
+
     respond_to do |format|
       if @workflow.submitted?
         session[:selected_id] = @workflow.id
@@ -131,6 +139,8 @@ class WorkflowsController < ApplicationController
 
   # PUT /workflows/1/copy
   def copy
+    set_workflow
+
     @workflow = @workflow.copy
 
     respond_to do |format|
