@@ -4,6 +4,7 @@ Bugfixes:
 
   - fix CILogon default map command to use mapfile instead of regex
   - filter sensitive info for Basic Auth default option
+  - fix missing closing bracket
 
 ## 0.2.0 (2017-01-30)
 

@@ -176,7 +176,7 @@ Listen <%= "#{OOD_IP}:#{OOD_PORT}" %><%= ' https' if OOD_SSL %>
   #    wss://<%= OOD_SERVER_NAME %><%= OOD_NODE_URI %>/HOST/PORT/socket.io
   #    #=> ws://HOST:PORT<%= OOD_NODE_URI %>/HOST/PORT/socket.io
   #
-  <LocationMatch "^<%= OOD_NODE_URI %>/(?<host><%= OOD_HOST_REGEX %>)/(?<port>\d+)"
+  <LocationMatch "^<%= OOD_NODE_URI %>/(?<host><%= OOD_HOST_REGEX %>)/(?<port>\d+)">
     AuthType "<%= OOD_AUTH_TYPE %>"
     Require valid-user
     <%- %><%= OOD_AUTH_EXTEND.gsub('\n', "\n").gsub(/^(?=[^$])/, " "*4) %>
