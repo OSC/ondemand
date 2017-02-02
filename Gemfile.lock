@@ -1,3 +1,11 @@
+GIT
+  remote: https://github.com/OSC/ood_job.git
+  revision: 0f5e06efeb871aaade220b360e4e062f3e23085d
+  specs:
+    ood_job (0.0.1)
+      ood_cluster (~> 0.0.1)
+      pbs (~> 2.0, >= 2.0.3)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -184,6 +192,7 @@ DEPENDENCIES
   js-routes (~> 1.2.4)
   local_time (~> 1.0.3)
   ood_appkit (~> 0.3.0)
+  ood_job!
   osc_machete_rails (~> 1.2.2)
   paperclip (~> 4.2.2)
   rails (= 4.1.15)
