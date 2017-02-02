@@ -133,7 +133,7 @@ class WorkflowsController < ApplicationController
         format.json { head :no_content }
       else
         #FIXME: instead of alert with html, better to have alert and alert_error_output on flash
-        format.html { redirect_to workflows_url, alert: "Job failed to be submitted: <pre>#{@workflow.errors.to_a.join("\n")}</pre>".html_safe }
+        format.html { redirect_to workflows_url, flash: { alert: "Job failed to be submitted:", alert_error: @workflow.errors.to_a.join("\n") }}
         format.json { render json: @workflow.errors, status: :internal_server_error }
       end
     end

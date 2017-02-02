@@ -67,6 +67,7 @@
       <span class="sr-only">Close</span>
     </button>
     <%= alert %>
+    <%= content_tag :pre, flash[:alert_error] if flash[:alert_error] %>
   </div>
   <% end %>
 
