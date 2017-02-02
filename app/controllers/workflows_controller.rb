@@ -168,6 +168,7 @@ class WorkflowsController < ApplicationController
     end
 
     def update_jobs
-      Job.active.to_a.each(&:update_status!)
+      # get all of the active workflows
+      Workflow.preload(:jobs).active.to_a.each(&:update_status!)
     end
 end

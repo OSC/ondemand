@@ -12,6 +12,13 @@ class Workflow < ActiveRecord::Base
 
   attr_accessor :staging_template_dir
 
+  # get all workflows that have active jobs
+  scope :active, -> { joins(:jobs).merge(Job.active) }
+
+  def update_status!
+    jobs.to_a.each(&:update_status!)
+  end
+
   # Name that defines the template/target dirs
   #def staging_template_name
   #  "workflows"
