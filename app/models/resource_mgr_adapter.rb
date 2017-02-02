@@ -28,4 +28,26 @@ class ResourceMgrAdapter
   rescue OodJob::Adapter::Error => e
     raise PBS::Error, e.message
   end
+
+  def qstat(id, host: nil)
+    cluster = cluster_for_host_id(host)
+    status = adapter.new(cluster: cluster).status(id: id)
+
+    # convert OodJobStatus to OSC::Machete::Status
+    status_for_ood_job_status(status)
+  end
+
+  def status_for_ood_job_status(status)
+    case status.to_sym
+    when :undetermined, nil
+      OSC::Machete::Status.passed
+    when :queued
+      OSC::Machete::Status.queued
+    when :queued_held
+      OSC::Machete::Status.held
+    else
+      # all other statuses considerd "running"
+      OSC::Machete::Status.running
+    end
+  end
 end
