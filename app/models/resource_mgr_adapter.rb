@@ -10,6 +10,18 @@ class ResourceMgrAdapter
 
   # returns job id
   def qsub(script_path, host: nil, depends_on: {}, account_string: nil)
+    # FIXME: WARNING!!! BY THE TIME THAT THIS METHOD IS CALLED osc-machete HAS
+    # ALREADY CHECKED FOR THE EXISTENCE OF shell script
+    # ood_job now expects an IO object that responds to read OR a string to get
+    # the script content. It does not check for the existence of this file
+    # THIS IS REDUNDANT CHECK so we remember to do this when moving away from
+    # machete
+    #
+    # the current directory is now the job directory
+    # current_directory but script_path is a STRING and relative
+    script_path = Pathname.new(script_path)
+    raise OSC::Machete::Job::ScriptMissingError, "#{script_path} does not exist or cannot be read" unless script_path.file? && script_path.readable?
+
     cluster = cluster_for_host_id(host)
     script = OodJob::Script.new(content: script_path, accounting_id: account_string)
     adapter.new(cluster: cluster).submit(script: script, **depends_on)
