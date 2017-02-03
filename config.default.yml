@@ -1,0 +1,51 @@
+---
+# Portal configuration
+listen_addr_port: null
+ssl: null
+ip: null
+port: null
+servername: null
+logroot: 'logs'
+lua_root: '/opt/ood/mod_ood_proxy/lib'
+lua_log_level: null
+user_map_cmd: '/opt/ood/ood_auth_map/bin/ood_auth_map.regex'
+map_fail_uri: null
+pun_stage_cmd: 'sudo /opt/ood/nginx_stage/sbin/nginx_stage'
+
+# Portal authentication
+auth:
+  - 'AuthType Basic'
+  - 'AuthName "private"'
+  - 'AuthUserFile "/opt/rh/httpd24/root/etc/httpd/.htpasswd"'
+  - 'RequestHeader unset Authorization'
+  - 'Require valid-user'
+
+# Analytics tracking
+analytics:
+  url: 'http://www.google-analytics.com/collect'
+  id: 'UA-79331310-4'
+
+#
+# Available sub-uri's
+#
+
+public_uri: '/public'
+public_root: '/var/www/ood/public'
+
+root_uri: '/pun/sys/dashboard'
+
+host_regex: null
+node_uri: '/node'
+rnode_uri: '/rnode'
+
+nginx_uri: '/nginx'
+pun_uri: '/pun'
+pun_socket_root: '/var/run/nginx'
+pun_max_retries: null
+
+oidc_uri: null
+oidc_discover_uri: null
+oidc_discover_root: null
+
+register_uri: null
+register_root: null
