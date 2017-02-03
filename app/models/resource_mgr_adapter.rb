@@ -40,6 +40,14 @@ class ResourceMgrAdapter
     raise PBS::Error, e.message
   end
 
+  def qdel(id, host: nil)
+    cluster = cluster_for_host_id(host)
+    adapter.new(cluster: cluster).delete(id: id)
+
+  rescue OodJob::Adapter::Error => e
+    raise PBS::Error, e.message
+  end
+
   def status_for_ood_job_status(status)
     case status.to_sym
     when :undetermined, nil
