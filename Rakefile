@@ -33,10 +33,7 @@ class OodPortalGenerator
     ])
 
     # Portal analytics
-    @analytics = opts.fetch("analytics", {
-      "url" => "http://www.google-analytics.com/collect",
-      "id"  => "UA-79331310-4"
-    })
+    @analytics = opts.fetch("analytics", nil)
 
     # Redirect for the root uri
     @root_uri = opts.fetch("root_uri", "/pun/sys/dashboard")

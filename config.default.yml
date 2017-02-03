@@ -21,9 +21,7 @@ auth:
   - 'Require valid-user'
 
 # Analytics tracking
-analytics:
-  url: 'http://www.google-analytics.com/collect'
-  id: 'UA-79331310-4'
+analytics: null
 
 #
 # Available sub-uri's
