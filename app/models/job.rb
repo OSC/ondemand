@@ -8,14 +8,14 @@ class Job < ActiveRecord::Base
   #   # CODE GOES HERE
   # end
 
-  # TODO: we inline the construction of this job object
+  # we inline the construction of this job object
   # so we can include a custom TorqueAdapter
   def job
-    jobattrs = job_cache.symbolize_keys
-    jobattrs[:host] = workflow.batch_host if jobattrs[:host].nil?
-
-    OSC::Machete::Job.new(jobattrs.merge(
+    OSC::Machete::Job.new(
+      script: script,
+      pbsid: pbsid,
+      host: host || workflow.batch_host,
       torque_helper: ResourceMgrAdapter.new
-    ))
+    )
   end
 end
