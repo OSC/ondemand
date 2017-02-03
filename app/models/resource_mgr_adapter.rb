@@ -35,6 +35,9 @@ class ResourceMgrAdapter
 
     # convert OodJobStatus to OSC::Machete::Status
     status_for_ood_job_status(status)
+
+  rescue OodJob::Adapter::Error => e
+    raise PBS::Error, e.message
   end
 
   def status_for_ood_job_status(status)
