@@ -23,7 +23,7 @@ class ResourceMgrAdapter
     raise OSC::Machete::Job::ScriptMissingError, "#{script_path} does not exist or cannot be read" unless script_path.file? && script_path.readable?
 
     cluster = cluster_for_host_id(host)
-    script = OodJob::Script.new(content: script_path, accounting_id: account_string)
+    script = OodJob::Script.new(content: script_path.read, accounting_id: account_string)
     adapter.new(cluster: cluster).submit(script: script, **depends_on)
 
   rescue OodJob::Adapter::Error => e
