@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/OSC/ood_job.git
-  revision: 0f5e06efeb871aaade220b360e4e062f3e23085d
+  revision: efec52c058bd98eb6ff1ab8a778042d1feb14420
   specs:
     ood_job (0.0.1)
       ood_cluster (~> 0.0.1)
@@ -35,7 +35,8 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
-    addressable (2.4.0)
+    addressable (2.5.0)
+      public_suffix (~> 2.0, >= 2.0.2)
     arel (5.0.1.20140414130214)
     autoprefixer-rails (6.4.1)
       execjs
@@ -119,6 +120,7 @@ GEM
       mime-types
     pbs (2.0.3)
       ffi (~> 1.9, >= 1.9.6)
+    public_suffix (2.0.5)
     rack (1.5.5)
     rack-test (0.6.3)
       rack (>= 1.0)
