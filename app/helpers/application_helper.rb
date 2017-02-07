@@ -1,11 +1,11 @@
 module ApplicationHelper
 
   def get_username
-    ENV['USER']
+    OodSupport::User.new.name
   end
 
   def get_usergroup
-    Etc.getgrgid(Process.gid).name
+    OodSupport::User.new.group.name
   end
 
   def get_remoteuser
