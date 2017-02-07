@@ -18,7 +18,8 @@ class Jobstatusdata
     self.pbsid = pbs_job[:name]
     self.jobname = pbs_job[:attribs][:Job_Name]
     self.username = username_format(pbs_job[:attribs][:Job_Owner])
-    self.group = pbs_job[:attribs][:Account_Name].blank? ? Etc.getgrgid(Etc.getpwnam(self.username).gid).name : pbs_job[:attribs][:Account_Name]
+    # TODO: Change name to 'account'?
+    self.group = pbs_job[:attribs][:Account_Name].blank? ? '' : pbs_job[:attribs][:Account_Name]
     self.status = pbs_job[:attribs][:job_state]
     if self.status == "R" || self.status == "C"
       self.nodes = node_array(pbs_job[:attribs][:exec_host])
