@@ -71,22 +71,16 @@ class PagesController < ApplicationController
     OODClusters.each do |key, value|
       server = value.resource_mgr_server
       b = PBS::Batch.new(
-        host: server.host,
-        lib: server.lib,
-        bin: server.bin
+          host: server.host,
+          lib: server.lib,
+          bin: server.bin
       )
 
       # Checks the cookies and gets the appropriate job set.
-      if cookies[:jobfilter] == 'all'
-        # Get all jobs
-        result = b.get_jobs
-      elsif cookies[:jobfilter] == 'group'
-        # Get all group jobs
-        result = b.get_jobs.select { |id, attr| attr[:egroup] == get_usergroup }
-      else
-        # Get all user jobs
-        result = b.get_jobs.select { |id, attr| attr[:Job_Owner] =~ /^#{get_username}@/ }
-      end
+      # Default to user set on first load
+      cookie = cookies[:jobfilter] || 'user'
+      filter = Filter.list.select { |f| f.cookie_id == cookie }.first
+      result = b.get_jobs.select(&filter.filter_block)
 
       # Only add the running jobs to the list and assign the host to the object.
       #
