@@ -1,6 +1,0 @@
-name: Basic COMSOL Parallel Job - Oakley
-host: oakley
-script: pbs_script.sh
-notes: |
-  A Basic COMSOL Parallel Job for the OSC Oakley Cluster
-  https://www.osc.edu/supercomputing/software/comsol

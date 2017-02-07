@@ -1,6 +1,0 @@
-name: Basic Gaussian Job - Oakley
-host: oakley
-script: pbs_script.sh
-notes: |
-  A Basic Gaussian Job for the OSC Oakley Cluster
-  https://www.osc.edu/supercomputing/software/gaussian

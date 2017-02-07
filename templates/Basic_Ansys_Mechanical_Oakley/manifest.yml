@@ -1,6 +1,0 @@
-name: Basic Ansys Mechanical Job - Oakley
-host: oakley
-script: basic_ansys.sh
-notes: |
-  A Basic Ansys Mechanical Job for the OSC Oakley Cluster
-  https://www.osc.edu/documentation/software_list/ansys_mechanical

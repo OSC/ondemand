@@ -1,5 +1,0 @@
-name: Simple Parallel Job
-host: oakley
-script: parallel_job.sh
-notes: >
-        Here is an example of an MPI job that uses 4 nodes with 12 cores each, running one process per core (48 processes total). This assumes a.out was built with the gnu compiler in order to illustrate the module command. The module swap is necessary on Oakley when running MPI programs built with a compiler other than Intel.
