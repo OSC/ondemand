@@ -5,6 +5,10 @@ class Filter
     attr_accessor :list
   end
 
+  def apply(job_array)
+    self.filter_block ? job_array.select(&filter_block) : job_array
+  end
+
   self.list = []
 
   # Add a filter by user option.
@@ -28,7 +32,6 @@ class Filter
   self.list << Filter.new.tap { |f|
     f.title = "All Jobs"
     f.cookie_id = "all"
-    f.filter_block = Proc.new { |a| a }
   }
 
 end
