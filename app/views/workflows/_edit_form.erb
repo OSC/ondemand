@@ -17,7 +17,7 @@
       </select>
     </div>
 
-    <%= f.text_field :account %>
+    <%= f.text_field :account, help: "Account is optional field. If not set, the account may be auto-set by the submit filter."%>
 
     <%= f.submit 'Save', class: 'btn btn-primary' %>
     <%= f.button 'Reset', type: :reset, class: 'btn btn-default' %>
