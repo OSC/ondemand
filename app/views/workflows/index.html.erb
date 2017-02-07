@@ -4,8 +4,14 @@
 
 <div class="col-md-7">
   <div class="panel">
+    <% if @default_template.exist? %>
     <a class="btn btn-default btn-sm btn-info" id="default_job_button" href="<%= create_default_path %>" data-method="post" data-toggle="tooltip" title="Create a new job from the default template" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Job (Default Template)</a>
+    <% end %>
+
+    <% if @templates.any? %>
     <a class="btn btn-default btn-sm btn-info" id="new_job_button" href="<%= new_workflow_path %>" data-toggle="tooltip" title="Create a new job from a template you choose" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Job (Choose Template)</a>
+    <% end %>
+
     <a class="btn btn-default btn-sm btn-info" id="copy_button" data-toggle="tooltip" title="Copy Job" role="button" data-method="get" disabled><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> Copy Job</a>
 
     <a class="pull-right btn btn-default btn-sm btn-templates" id="template_button" data-toggle="tooltip" title="Create template from selected job" data-method="get" role="button" disabled><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Create Template</a>

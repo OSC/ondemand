@@ -19,6 +19,10 @@ class Template
     Source.default_template
   end
 
+  def exist?
+    path.directory?
+  end
+
   # Constructor
   # @param [String] path The template base path.
   # @param [optional, Source] source A Source object based on the template's location.

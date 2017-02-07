@@ -4,6 +4,9 @@ class WorkflowsController < ApplicationController
   # GET /workflows
   # GET /workflows.json
   def index
+    @default_template = Template.default
+    @templates = Template.all
+
     @selected_id = session[:selected_id]
     session[:selected_id] = nil
     @workflows = Workflow.preload(:jobs)
