@@ -96,7 +96,7 @@ class PagesController < ApplicationController
 
     # Sort jobs by username, then group
     jobs.sort_by! do |user|
-      user.username == get_username ? 0 : user.group == get_usergroup ? 1 : 2
+      user.username == OodSupport::User.new.name ? 0 : 1
     end
   end
 end
