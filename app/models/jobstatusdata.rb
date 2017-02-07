@@ -39,9 +39,9 @@ class Jobstatusdata
     self.walltime = pbs_job[:attribs][:Resource_List][:walltime]
     self.walltime_used = pbs_job[:attribs].fetch(:resources_used, {})[:walltime].presence || 0
     self.submit_args = pbs_job[:attribs][:submit_args].presence || "None"
-    self.output_path = pbs_job[:attribs][:Output_Path].to_s.split(":").second
+    self.output_path = pbs_job[:attribs][:Output_Path].to_s.split(":").second || pbs_job[:attribs][:Output_Path]
     self.nodect = pbs_job[:attribs][:Resource_List][:nodect]
-    self.ppn = pbs_job[:attribs][:Resource_List][:nodes].to_s.split("ppn=").second
+    self.ppn = pbs_job[:attribs][:Resource_List][:nodes].to_s.split("ppn=").second || 0
     self.total_cpu = self.ppn[/\d+/].to_i * self.nodect.to_i
     self.queue = pbs_job[:attribs][:queue]
     self.cput = pbs_job[:attribs].fetch(:resources_used, {})[:cput].presence || 0
