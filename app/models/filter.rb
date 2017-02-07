@@ -14,9 +14,9 @@ class Filter
   }
   self.list << Filter.new.tap { |f|
     group = OodSupport::User.new.group.name
-    f.title = "Your Group's Jobs (#{OodSupport::User.new.group.name})"
+    f.title = "Your Group's Jobs (#{group})"
     f.cookie_id = "group"
-    f.filter_block = Proc.new { |id, attr| attr[:attribs] && attr[:attribs][:Account_Name] == group }
+    f.filter_block = Proc.new { |id, attr| attr[:egroup] == group }
   }
   self.list << Filter.new.tap { |f|
     f.title = "All Jobs"
