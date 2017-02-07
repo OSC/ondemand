@@ -20,6 +20,7 @@ class Filter
     group = OodSupport::User.new.group.name
     f.title = "Your Group's Jobs (#{group})"
     f.cookie_id = "group"
+    # N.B. Need to use :egroup here for now. My Oodsupport group name is 'appl' but job 'Account_Name' is 'PZS0002'
     f.filter_block = Proc.new { |id, attr| attr[:egroup] == group }
   }
   # Add a filter by all jobs option.
