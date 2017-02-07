@@ -39,12 +39,8 @@ $(document).ready( function() {
         "fnInitComplete":           function( oSettings ) {
                                         for ( var i=0, iLen=oSettings.aoData.length ; i<iLen ; i++ )
                                         {
-                                            // Add green background to user rows
+                                            // Add info background to user rows
                                             if (oSettings.aoData[i]._aData.username == JobStatusapp.username) {
-                                                oSettings.aoData[i].nTr.className += " bg-success";
-                                            // Add blue background to group rows
-                                            } else if (oSettings.aoData[i]._aData.group ==
-JobStatusapp.group) {
                                                 oSettings.aoData[i].nTr.className += " bg-info";
                                             }
                                         }
