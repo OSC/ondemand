@@ -36,6 +36,9 @@
         <%= f.text_area :notes, :id => "notes_field" %>
       </div>
       <div class="actions">
+
+        <%= f.hidden_field :script, { value: @template.script } %>
+
         <%= f.submit "Save", :id => "save_button" %>
         <%= link_to "Cancel", :workflows, :class => "btn btn-default" %>
       </div>

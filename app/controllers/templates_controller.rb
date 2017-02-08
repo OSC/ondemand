@@ -20,6 +20,7 @@ class TemplatesController < ApplicationController
       job = Workflow.find(params[:jobid])
       @template = Template.new(job.staged_dir)
       @template.host = job.batch_host
+      @template.script = job.script_name
     elsif params[:path]
       @template = Template.new(params[:path])
       if params[:host]
@@ -40,6 +41,7 @@ class TemplatesController < ApplicationController
   def create
 
     @template = template_params[:path].blank? ? Template.default : Template.new(template_params[:path])
+    @template.script = template_params[:script] if template_params[:script].present?
     @template.name = template_params[:name]
     @template.host = template_params[:host]
     @template.notes = template_params[:notes]
@@ -63,7 +65,7 @@ class TemplatesController < ApplicationController
       copy_dir(template_location, data_location)
       @template.path = data_location.to_s
 
-      yaml = { 'name' => @template.name, 'host' => @template.host, 'notes' => @template.notes, 'script' => File.basename(@template.script_path) }
+      yaml = { 'name' => @template.name, 'host' => @template.host, 'notes' => @template.notes, 'script' => @template.script }
       File.open(data_location.join('manifest.yml'), 'w') do |file|
         file.write(yaml.to_yaml)
       end
@@ -119,7 +121,7 @@ class TemplatesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def template_params
-      params.require(:template).permit(:name, :path, :host, :notes)
+      params.require(:template).permit(:name, :path, :host, :notes, :script)
     end
 
   # Copies the data in a Location to a destination path using rsync.

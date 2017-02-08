@@ -3,7 +3,7 @@ require 'active_model'
 class Template
   include ActiveModel::Model
   attr_accessor :path, :source
-  delegate :name, :'name=', :notes, :'notes=',:host, :'host=',:script_path, :'script=',to: :manifest
+  delegate :name, :'name=', :notes, :'notes=',:host, :'host=',:script_path, :script, :'script=',to: :manifest
 
   def persisted?
     false
