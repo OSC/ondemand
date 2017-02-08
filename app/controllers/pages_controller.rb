@@ -2,6 +2,7 @@ class PagesController < ApplicationController
   include ApplicationHelper
 
   def index
+    cookies[:jobfilter] = cookies[:jobfilter] || Filter.default_id
   end
 
   # Used to send the data to the Datatable.
@@ -71,22 +72,16 @@ class PagesController < ApplicationController
     OODClusters.each do |key, value|
       server = value.resource_mgr_server
       b = PBS::Batch.new(
-        host: server.host,
-        lib: server.lib,
-        bin: server.bin
+          host: server.host,
+          lib: server.lib,
+          bin: server.bin
       )
 
       # Checks the cookies and gets the appropriate job set.
-      if cookies[:jobfilter] == 'all'
-        # Get all jobs
-        result = b.get_jobs
-      elsif cookies[:jobfilter] == 'group'
-        # Get all group jobs
-        result = b.get_jobs.select { |id, attr| attr[:egroup] == get_usergroup }
-      else
-        # Get all user jobs
-        result = b.get_jobs.select { |id, attr| attr[:Job_Owner] =~ /^#{get_username}@/ }
-      end
+      # Default to user set on first load
+      cookie = cookies[:jobfilter] || 'user'
+      filter = Filter.list.find { |f| f.cookie_id == cookie }
+      result = filter ? filter.apply(b.get_jobs) : b.get_jobs
 
       # Only add the running jobs to the list and assign the host to the object.
       #
@@ -102,7 +97,7 @@ class PagesController < ApplicationController
 
     # Sort jobs by username, then group
     jobs.sort_by! do |user|
-      user.username == get_username ? 0 : user.group == get_usergroup ? 1 : 2
+      user.username == OodSupport::User.new.name ? 0 : 1
     end
   end
 end

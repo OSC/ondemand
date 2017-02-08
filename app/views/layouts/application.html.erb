@@ -7,10 +7,8 @@
 
     <script>
       var JobStatusapp = {
-        user:     "<%= get_remoteuser %>",
         app:      "<%= ENV['APP_TOKEN'] %>",
-        group:    "<%= get_usergroup %>",
-        username: "<%= get_username %>"
+        username: "<%= OodSupport::User.new.name %>"
       };
     </script>
 

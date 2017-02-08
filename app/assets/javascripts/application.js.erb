@@ -39,12 +39,8 @@ $(document).ready( function() {
         "fnInitComplete":           function( oSettings ) {
                                         for ( var i=0, iLen=oSettings.aoData.length ; i<iLen ; i++ )
                                         {
-                                            // Add green background to user rows
+                                            // Add info background to user rows
                                             if (oSettings.aoData[i]._aData.username == JobStatusapp.username) {
-                                                oSettings.aoData[i].nTr.className += " bg-success";
-                                            // Add blue background to group rows
-                                            } else if (oSettings.aoData[i]._aData.group ==
-JobStatusapp.group) {
                                                 oSettings.aoData[i].nTr.className += " bg-info";
                                             }
                                         }
@@ -228,7 +224,7 @@ function build_job_information_panel( d ) {
     var _queue = d.queue;
     var _walltime_used = (is_defined(d.walltime_used) ? d.walltime_used : '0');
     return          label_data("Username", _username) +
-                    label_data("Group Name", _group) +
+                    label_data("Account Name", _group) +
                     label_data("Walltime", _walltime_used + " / " + _walltime_requested) +
                     label_data("Queue", _queue);
 }
