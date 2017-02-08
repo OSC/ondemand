@@ -79,7 +79,7 @@ class PagesController < ApplicationController
       # Checks the cookies and gets the appropriate job set.
       # Default to user set on first load
       cookie = cookies[:jobfilter] || 'user'
-      filter = Filter.list.select { |f| f.cookie_id == cookie }.first
+      filter = Filter.list.find { |f| f.cookie_id == cookie }
       result = filter.apply(b.get_jobs)
 
       # Only add the running jobs to the list and assign the host to the object.
