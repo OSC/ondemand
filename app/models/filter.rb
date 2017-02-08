@@ -9,6 +9,11 @@ class Filter
     self.filter_block ? job_array.select(&filter_block) : job_array
   end
 
+  # Provide the cookie_id to be used for the default filter.
+  def self.default_id
+    "user"
+  end
+
   self.list = []
 
   # Add a filter by user option.

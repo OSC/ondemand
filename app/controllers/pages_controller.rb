@@ -2,6 +2,7 @@ class PagesController < ApplicationController
   include ApplicationHelper
 
   def index
+    cookies[:jobfilter] = cookies[:jobfilter] || Filter.default_id
   end
 
   # Used to send the data to the Datatable.
