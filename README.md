@@ -12,7 +12,7 @@ Rails app for Open OnDemand for creating and managing batch jobs from template d
   scl enable git19 -- git checkout tags/LATEST
   ```
 
-**TODO: fix tags/LATEST to whatever the latest tag is**
+  **TODO: fix tags/LATEST to whatever the latest tag is**
 
 2. Build the app
 
