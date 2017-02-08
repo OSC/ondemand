@@ -39,7 +39,7 @@ class TemplatesController < ApplicationController
   # POST /templates.json
   def create
 
-    @template = template_params[:path].blank? ? Template.new(Source.default) : Template.new(template_params[:path])
+    @template = template_params[:path].blank? ? Template.default : Template.new(template_params[:path])
     @template.name = template_params[:name]
     @template.host = template_params[:host]
     @template.notes = template_params[:notes]
