@@ -1,5 +1,5 @@
 class WorkflowsController < ApplicationController
-  before_action :update_jobs, only: [:index, :show]
+  before_action :update_jobs, only: [:index, :show, :destroy]
 
   # GET /workflows
   # GET /workflows.json
