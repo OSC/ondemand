@@ -12,7 +12,7 @@ name: (default) Simple Sequential Job
 notes: A very basic template for a sequential job
 
 # specifies the script that will be submitted to the batch system
-script: main.sh # specify the job script
+script: main_job.sh # specify the job script
 
 # host - specifies the default host cluster id that should be set
 # if this is omitted, the first host found will be used
