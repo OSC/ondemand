@@ -71,6 +71,13 @@
     $("#job-details-name").text(data.name)
     $("#job-details-server-select option[value=#{data.batch_host}]").prop("selected", "selected")
     $("#job-details-staged-dir").text(data.staged_dir)
+    if data.account == null or data.account == ""
+      $("#job-details-account").addClass("text-muted")
+      $("#job-details-account").text("Not specified")
+    else
+      $("#job-details-account").removeClass("text-muted")
+      $("#job-details-account").text(data.account)
+
     show_job_panel(true)
 
 @update_script_details_panel = (content) ->

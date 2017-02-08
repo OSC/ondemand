@@ -8,9 +8,16 @@ class Workflow < ActiveRecord::Base
   # add accessors: [ :attr1, :attr2 ] etc. when you want to add getters and
   # setters to add new attributes stored in the JSON store
   # don't remove attributes from this list going forward! only deprecate
-  store :job_attrs, coder: JSON
+  store :job_attrs, coder: JSON, accessors: [:account]
 
   attr_accessor :staging_template_dir
+
+  # get all workflows that have active jobs
+  scope :active, -> { joins(:jobs).merge(Job.active) }
+
+  def update_status!
+    jobs.to_a.each(&:update_status!)
+  end
 
   # Name that defines the template/target dirs
   #def staging_template_name
@@ -100,7 +107,12 @@ class Workflow < ActiveRecord::Base
 
   # Build an array of Machete jobs that are then submitted to the batch server
   def build_jobs(staged_dir, job_list = [])
-    job_list << OSC::Machete::Job.new(script: staged_dir.join(staged_script_name), host: batch_host)
+    job_list << OSC::Machete::Job.new(
+      script: staged_dir.join(staged_script_name),
+      host: batch_host,
+      account_string: account,
+      torque_helper: ResourceMgrAdapter.new
+    )
   end
 
   # Make copy of workflow
@@ -110,6 +122,7 @@ class Workflow < ActiveRecord::Base
     new_workflow.staging_template_dir = self.staged_dir
     new_workflow.batch_host = self.batch_host
     new_workflow.script_name = self.script_name
+    new_workflow.job_attrs = self.job_attrs
     new_workflow
   end
 

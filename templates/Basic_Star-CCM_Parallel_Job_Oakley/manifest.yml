@@ -1,6 +1,0 @@
-name: Basic Star-CCM+ Parallel Job - Oakley
-host: oakley
-script: pbs_script.sh
-notes: |
-  A Basic Star-CCM+ Parallel Job for the OSC Oakley Cluster
-  https://www.osc.edu/supercomputing/software/star_ccm

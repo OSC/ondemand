@@ -12,27 +12,33 @@ class Source
     @path = path
   end
 
-  # @return [Source] A source that has been initialized to the system path.
-  def self.system
-    Source.new("System Templates", SYSTEM_PATH)
+  class << self
+    # @return [Source] A source that has been initialized to the system path.
+    def system
+      Source.new("System Templates", SYSTEM_PATH)
+    end
+
+    # @return [Source] A source that has been initialized to the user template path.
+    def my
+      Source.new("My Templates", MY_PATH)
+    end
+
+    # @return [Template] The default template.
+    def default_template
+      default = Template.new(Rails.root.join("example_templates", "torque").to_s, Source.new("Examples", Rails.root.join("example_templates").to_s))
+      custom_default = Template.new(Rails.root.join("templates", "default").to_s, Source.system)
+
+      custom_default.exist? ? custom_default : default
+    end
   end
 
   def system?
     @path == SYSTEM_PATH
   end
 
-  # @return [Source] A source that has been initialized to the user template path.
-  def self.my
-    Source.new("My Templates", MY_PATH)
-  end
 
   def my?
     @path == MY_PATH
-  end
-
-  # @return [Template] The default template.
-  def self.default_template
-    Template.new(Rails.root.join('templates').join("default").to_s, Source.system)
   end
 
   # @return [Array<Template>] The templates available on the path.

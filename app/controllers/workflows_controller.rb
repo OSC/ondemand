@@ -1,9 +1,12 @@
 class WorkflowsController < ApplicationController
-  before_action :set_workflow, only: [:show, :edit, :update, :destroy, :submit, :copy]
+  before_action :update_jobs, only: [:index, :show]
 
   # GET /workflows
   # GET /workflows.json
   def index
+    @default_template = Template.default
+    @templates = Template.all
+
     @selected_id = session[:selected_id]
     session[:selected_id] = nil
     @workflows = Workflow.preload(:jobs)
@@ -12,6 +15,7 @@ class WorkflowsController < ApplicationController
   # GET /workflows/1
   # GET /workflows/1.json
   def show
+    set_workflow
     @workflow = Workflow.find(params[:id])
     @workflow.jobs.last.update_status! unless @workflow.jobs.last.nil?
   end
@@ -24,6 +28,7 @@ class WorkflowsController < ApplicationController
 
   # GET /workflows/1/edit
   def edit
+    set_workflow
   end
 
   # POST /workflows
@@ -62,6 +67,8 @@ class WorkflowsController < ApplicationController
   # PATCH/PUT /workflows/1
   # PATCH/PUT /workflows/1.json
   def update
+    set_workflow
+
     respond_to do |format|
       if @workflow.update(workflow_params)
         session[:selected_id] = @workflow.id
@@ -76,7 +83,8 @@ class WorkflowsController < ApplicationController
 
   # PUT /workflows/1/stop
   def stop
-    @workflow = Workflow.find(params[:id])
+    set_workflow
+
     @workflow.jobs.last.update_status! unless @workflow.jobs.last.nil?
     session[:selected_id] = @workflow.id
 
@@ -99,6 +107,8 @@ class WorkflowsController < ApplicationController
   # DELETE /workflows/1
   # DELETE /workflows/1.json
   def destroy
+    set_workflow
+
     respond_to do |format|
       if @workflow.destroy
         format.html { redirect_to workflows_url, notice: 'Job was successfully destroyed.' }
@@ -113,6 +123,8 @@ class WorkflowsController < ApplicationController
   # PUT /workflows/1/submit
   # PUT /workflows/1/submit.json
   def submit
+    set_workflow
+
     respond_to do |format|
       if @workflow.submitted?
         session[:selected_id] = @workflow.id
@@ -123,7 +135,8 @@ class WorkflowsController < ApplicationController
         format.html { redirect_to workflows_url, notice: 'Job was successfully submitted.' }
         format.json { head :no_content }
       else
-        format.html { redirect_to workflows_url, alert: "Job failed to be submitted: #{@workflow.errors.to_a}" }
+        #FIXME: instead of alert with html, better to have alert and alert_error_output on flash
+        format.html { redirect_to workflows_url, flash: { alert: 'Failed to submit batch job:', alert_error: @workflow.errors.to_a.join("\n") }}
         format.json { render json: @workflow.errors, status: :internal_server_error }
       end
     end
@@ -131,6 +144,8 @@ class WorkflowsController < ApplicationController
 
   # PUT /workflows/1/copy
   def copy
+    set_workflow
+
     @workflow = @workflow.copy
 
     respond_to do |format|
@@ -154,5 +169,10 @@ class WorkflowsController < ApplicationController
     # Only allow a trusted parameter "white list" through.
     def workflow_params
       params.require(:workflow).permit!
+    end
+
+    def update_jobs
+      # get all of the active workflows
+      Workflow.preload(:jobs).active.to_a.each(&:update_status!)
     end
 end

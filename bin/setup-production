@@ -13,6 +13,7 @@ include FileUtils
 def `(cmd)
   output = super
   abort "'#{cmd}' failed with output: #{output}" unless $?.success?
+  output
 end
 
 # path to your application root
