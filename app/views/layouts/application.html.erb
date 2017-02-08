@@ -8,8 +8,7 @@
     <script>
       var JobStatusapp = {
         app:      "<%= ENV['APP_TOKEN'] %>",
-        group:    "<%= get_usergroup %>",
-        username: "<%= get_username %>"
+        username: "<%= OodSupport::User.new.name %>"
       };
     </script>
 
