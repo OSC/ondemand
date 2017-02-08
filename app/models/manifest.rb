@@ -34,7 +34,7 @@ class Manifest
 
   def script_path
     # manifest path includes the manifest.yml so use dirname
-    path.dirname.join(script).to_s
+    script ? path.dirname.join(script).to_s : ""
   end
 
   # all based on path
