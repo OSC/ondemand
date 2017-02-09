@@ -1,5 +1,7 @@
 # OOD My Jobs
 
+[![GitHub version](https://badge.fury.io/gh/OSC%2Food-myjobs.svg)](https://badge.fury.io/gh/OSC%2Food-myjobs)
+
 OOD Rails app for Open OnDemand for creating and managing batch jobs from template directories.
 
 ## New Install
@@ -11,18 +13,20 @@ OOD Rails app for Open OnDemand for creating and managing batch jobs from templa
   ```sh
   scl enable git19 -- git clone https://github.com/OSC/ood-myjobs.git myjobs
   cd myjobs
-  scl enable git19 -- git checkout tags/LATEST
+  scl enable git19 -- git checkout tags/v2.0.0
   ```
 
-  **TODO: fix tags/LATEST to whatever the latest tag is**
+2. Build the app (install dependencies and build assets)
 
-2. Build the app
+  ```sh
+  scl enable rh-ruby22 -- bin/bundle install --path vendor/bundle
+  scl enable rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=production
+  scl enable rh-ruby22 -- bin/rake tmp:clear
+  ```
 
-3. Copy the built app directory to the deployment directory, and start the OOD server.
+3. Copy the built app directory to the deployment directory, and start the server.
 
-4. Access My Jobs by going to the dashboard and launching it from there.
-
-5. (optional step): Add a custom default job template and other job templates to `myjobs/templates` **TODO**
+4. Access the app through dashboard by going to /pun/sys/dashboard and then clicking "My Jobs" from the Jobs menu
 
 ## Updating to a New Stable Version
 
