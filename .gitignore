@@ -26,6 +26,7 @@
 /public/.htaccess
 /.env.production
 /.env.local
+/config/initializers/filter.rb
 
 RAILS_DATAROOT=$PWD/data
 RAILS_DATABASE=db/development.sqlite3
