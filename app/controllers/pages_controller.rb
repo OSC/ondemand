@@ -62,7 +62,7 @@ class PagesController < ApplicationController
       Jobstatusdata.new({name: name, attribs: attribs}, cluster.id, true)
 
     rescue
-      "[{\"name\":\"#{pbsid}\",\"error\":\"Job data expired or invalid.\"}]"
+      { name: pbsid, error: "INVALID" }
     end
   end
 
