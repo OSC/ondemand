@@ -1,6 +1,6 @@
 # OSC Job Status for Oakley/Ruby
 
-[![GitHub version](https://badge.fury.io/gh/OSC%2Food-myjobs.svg)](https://badge.fury.io/gh/OSC%2Food-myjobs)
+[![GitHub version](https://badge.fury.io/gh/OSC%2Food-activejobs.svg)](https://badge.fury.io/gh/OSC%2Food-activejobs)
 
 Application displays the current system status of jobs running, queued, and held on the Oakley and Ruby Clusters.
 
