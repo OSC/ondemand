@@ -1,8 +1,10 @@
 # OOD My Jobs
 
-Rails app for Open OnDemand for creating and managing batch jobs from template directories.
+OOD Rails app for Open OnDemand for creating and managing batch jobs from template directories.
 
 ## New Install
+
+**Installation assumptions: you have an Open OnDemand installation with File Explorer and Shell apps installed and a cluster config added to /etc/ood/config/clusters.d directory.**
 
 1. Starting in the build directory for all sys apps (i.e. `cd ~/ood_portals/ondemand/sys`), clone and check out the latest version of myjobs (make sure the app directory's name is "myjobs"):
 
@@ -16,13 +18,11 @@ Rails app for Open OnDemand for creating and managing batch jobs from template d
 
 2. Build the app
 
-3. Add cluster config if not provided. **TODO**
+3. Copy the built app directory to the deployment directory, and start the OOD server.
 
-4. Add extra templates**TODO**
+4. Access My Jobs by going to the dashboard and launching it from there.
 
-5. Copy the built app directory to the deployment directory, and start the OOD server.
-
-6. Access My Jobs by going to the dashboard and launching it from there.
+5. (optional step): Add a custom default job template and other job templates to `myjobs/templates` **TODO**
 
 ## Updating to a New Stable Version
 
