@@ -61,8 +61,10 @@ class PagesController < ApplicationController
       name, attribs = b.get_job(pbsid).first
       Jobstatusdata.new({name: name, attribs: attribs}, cluster.id, true)
 
-    rescue
-      { name: pbsid, error: "INVALID" }
+    rescue PBS::UnkjobidError
+      { name: pbsid, error: "No job details because job has already left the queue." , status: "C" }
+    rescue => e
+      { name: pbsid, error: "No job details available." }
     end
   end
 

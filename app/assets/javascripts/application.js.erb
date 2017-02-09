@@ -175,7 +175,7 @@ function display_node_rows( d ) {
 function display_enhanced_job_data( d ) {
 
     if (is_defined(d.error)) {
-        return      '<div><tr><td><div class="alert alert-warning">No job details because job has already left the queue. </div></td></tr></div>';
+        return      '<div><tr><td><div class="alert alert-warning">' + d.error + '</div></td></tr></div>';
     } else {
 
         return      '<div>' +
