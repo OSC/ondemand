@@ -70,7 +70,7 @@ $(document).ready( function() {
                 width:              "4em"
             },
             {
-                data:               "group",
+                data:               "account",
                 className:          "small",
                 "autoWidth":        true
             },
@@ -219,12 +219,12 @@ function is_defined( object ) {
 function build_job_information_panel( d ) {
     var _Job_Name = d.jobname;
     var _username = d.username;
-    var _group = d.group;
+    var _account= d.account;
     var _walltime_requested = d.walltime;
     var _queue = d.queue;
     var _walltime_used = (is_defined(d.walltime_used) ? d.walltime_used : '0');
     return          label_data("Username", _username) +
-                    label_data("Account Name", _group) +
+                    label_data("Account Name", _account) +
                     label_data("Walltime", _walltime_used + " / " + _walltime_requested) +
                     label_data("Queue", _queue);
 }
