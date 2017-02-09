@@ -1,6 +1,10 @@
-## OSC Job Status for Oakley/Ruby
+# OSC Job Status for Oakley/Ruby
 
 Application displays the current system status of jobs running, queued, and held on the Oakley and Ruby Clusters.
+
+## New Install
+
+**Installation assumptions: you have an Open OnDemand installation with File Explorer and Shell apps installed and a cluster config added to /etc/ood/config/clusters.d directory.**
 
 ### Deployment on OOD
 
