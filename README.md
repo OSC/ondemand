@@ -29,6 +29,13 @@ A simple Rails web app that uses https://ace.c9.io/ for editing files. It is mea
   scl enable git19 rh-ruby22 nodejs010 -- bin/rake tmp:clear
   ```
   
+3. Copy the built app directory to the deployment directory, and start the server. i.e.:
+    
+  ```sh
+  mkdir -p /var/www/ood/apps/sys/file-editor
+  rsync -rlptvu . /var/www/ood/apps/sys/file-editor
+  ```
+  
 ## Updating to a new stable version
 
 [_See wiki for OSC specific installation and update instructions_](https://github.com/OSC/ood-fileeditor/wiki)
