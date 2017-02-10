@@ -71,4 +71,4 @@ When updating a deployed version of the Open OnDemand activejobs app.
 
 ## Configuration
 
-See the wiki page https://github.com/OSC/ood-dashboard/wiki/Configuration-and-Branding
+TODO
