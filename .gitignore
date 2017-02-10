@@ -24,7 +24,7 @@
 # files used for deployment should not be versioned
 /public/assets/
 /public/.htaccess
-/.env.production
+/.env.production.local
 /.env.local
 /config/initializers/filter.rb
 

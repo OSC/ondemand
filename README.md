@@ -15,20 +15,8 @@ Application displays the current system status of jobs running, queued, and held
   cd activejobs
   scl enable git19 -- git checkout tags/v1.2.5
   ```
-  
-2. Copy one of the `env.production` files and make any necessary modifications appropriate for your system.
 
-  ```sh
-  cp .env.production.osc .env.production 
-  ```
-  
-3. Optional: If you'd like for users to be able to sort by their system group, copy the initializer that includes the additional filter.
-
-  ```sh
-  cp config/initializers/filter.rb.osc config/initializers/filter.rb
-  ```
-
-4. Build the app (install dependencies and build assets)
+2. Build the app (install dependencies and build assets)
 
   ```sh
   scl enable rh-ruby22 -- bin/bundle install --path vendor/bundle
@@ -36,9 +24,9 @@ Application displays the current system status of jobs running, queued, and held
   scl enable rh-ruby22 -- bin/rake tmp:clear
   ```
 
-5. Copy the built app directory to the deployment directory, and start the server.
+3. Copy the built app directory to the deployment directory, and start the server.
 
-6. Access the app through dashboard by going to /pun/sys/dashboard and then clicking "Active Jobs" from the Jobs menu
+4. Access the app through dashboard by going to /pun/sys/dashboard and then clicking "Active Jobs" from the Jobs menu
 
 ## Updating to a New Stable Version
 
