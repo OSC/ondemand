@@ -47,6 +47,13 @@ the `efranz` account, this app should run as `efranz`.
 
     DEFAULT_SSHHOST='oakley.osc.edu'
     ```
+    
+6. Copy the built app directory to the deployment directory, and start the server. i.e.:
+    
+  ```sh
+  mkdir -p /var/www/ood/apps/sys/shell
+  rsync -rlptvu . /var/www/ood/apps/sys/shell
+  ```
 
 ## Update
 
