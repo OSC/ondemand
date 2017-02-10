@@ -64,6 +64,13 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
   scl enable git19 rh-ruby22 nodejs010 -- npm i
   ```
   
+4. Copy the built app directory to the deployment directory, and start the server. i.e.:
+    
+  ```sh
+  mkdir -p /var/www/ood/apps/sys/files
+  rsync -rlptvu . /var/www/ood/apps/sys/files
+  ```
+  
 ## Updating to a new stable version
 
 [_See wiki for OSC specific installation and update instructions_](https://github.com/OSC/ood-fileexplorer/wiki)
