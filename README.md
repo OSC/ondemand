@@ -24,7 +24,12 @@ OOD Rails app for Open OnDemand for creating and managing batch jobs from templa
   scl enable rh-ruby22 -- bin/rake tmp:clear
   ```
 
-3. Copy the built app directory to the deployment directory, and start the server.
+3. Copy the built app directory to the deployment directory, and start the server. i.e.:
+    
+  ```sh
+  mkdir -p /var/www/ood/apps/sys/myjobs
+  rsync -rlptvu . /var/www/ood/apps/sys/myjobs
+  ```
 
 4. Access the app through dashboard by going to /pun/sys/dashboard and then clicking "My Jobs" from the Jobs menu
 
