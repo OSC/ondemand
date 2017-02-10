@@ -42,4 +42,33 @@ Application displays the current system status of jobs running, queued, and held
 
 ## Updating to a New Stable Version
 
-**TODO**
+When updating a deployed version of the Open OnDemand activejobs app.
+
+1. Fetch and checkout new version of code:
+
+  ```sh
+  cd dashboard # cd to build directory
+  scl enable git19 -- git fetch
+  scl enable git19 -- git checkout tags/v1.2.5 # check out latest tag
+  ```
+
+2. Install gem dependencies and rebuild assets
+
+  ```sh
+  scl enable rh-ruby22 -- bin/bundle install --path vendor/bundle
+  scl enable rh-ruby22 -- bin/rake tmp:clear
+  scl enable rh-ruby22 -- bin/rake assets:clobber RAILS_ENV=production
+  scl enable rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=production
+  ```
+
+3. Restart app
+
+  ```sh
+  touch tmp/restart.txt
+  ```
+
+4. Copy the built app directory to the deployment directory. There is no need to restart the server. Because we touched `tmp/restart.txt` in the app, the next time a user accesses an app Passenger will reload their app.
+
+## Configuration
+
+See the wiki page https://github.com/OSC/ood-dashboard/wiki/Configuration-and-Branding
