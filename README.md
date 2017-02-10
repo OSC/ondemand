@@ -71,4 +71,6 @@ When updating a deployed version of the Open OnDemand activejobs app.
 
 ## Configuration
 
-TODO
+This application depends on a valid `ood_cluster` configuration. Please see the [ood_cluster](https://github.com/OSC/ood_cluster/blob/master/README.md) README for further details.
+
+This application relies upon the `ood_appkit` dependency for certain branding defaults. You may override these defaults by creating an `.env.local` file in the root folder of this app and adding the variables there. See the documentation at [ood_appkit](https://github.com/OSC/ood_appkit) for further details.
