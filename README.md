@@ -23,7 +23,12 @@ This app is a Rails app for Open OnDemand that serves as a gateway to launching 
   scl enable rh-ruby22 -- bin/rake tmp:clear
   ```
 
-3. Copy the built app directory to the deployment directory, and start the server.
+3. Copy the built app directory to the deployment directory, and start the server. i.e.:
+    
+  ```sh
+  mkdir -p /var/www/ood/apps/sys/dashboard
+  rsync -rlptvu . /var/www/ood/apps/sys/dashboard
+  ```
 
 4. Access the dashboard by going to /pun/sys/dashboard
 
