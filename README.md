@@ -24,7 +24,12 @@ Application displays the current system status of jobs running, queued, and held
   scl enable rh-ruby22 -- bin/rake tmp:clear
   ```
 
-3. Copy the built app directory to the deployment directory, and start the server.
+3. Copy the built app directory to the deployment directory, and start the server. i.e.:
+    
+  ```sh
+  mkdir -p /var/www/ood/apps/sys/activejobs
+  rsync -rlptvu . /var/www/ood/apps/sys/activejobs
+  ```
 
 4. Access the app through dashboard by going to /pun/sys/dashboard and then clicking "Active Jobs" from the Jobs menu
 
