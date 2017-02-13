@@ -13,7 +13,7 @@ OOD Rails app for Open OnDemand for creating and managing batch jobs from templa
   ```sh
   scl enable git19 -- git clone https://github.com/OSC/ood-myjobs.git myjobs
   cd myjobs
-  scl enable git19 -- git checkout tags/v2.0.0
+  scl enable git19 -- git checkout tags/v2.1.0
   ```
 
 2. Build the app (install dependencies and build assets)
@@ -48,7 +48,7 @@ OOD Rails app for Open OnDemand for creating and managing batch jobs from templa
   ```sh
   cd myjobs # cd to build directory
   scl enable git19 -- git fetch
-  scl enable git19 -- git checkout tags/v2.0.0 # check out latest tag
+  scl enable git19 -- git checkout tags/v2.1.0 # check out latest tag
   ```
 
 2. Install gem dependencies and rebuild assets
