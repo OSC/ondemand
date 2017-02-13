@@ -27,8 +27,8 @@ Application displays the current system status of jobs running, queued, and held
 3. Copy the built app directory to the deployment directory, and start the server. i.e.:
 
   ```sh
-  mkdir -p /var/www/ood/apps/sys/activejobs
-  rsync -rlptvu . /var/www/ood/apps/sys/activejobs
+  sudo mkdir -p /var/www/ood/apps/sys/activejobs
+  sudo rsync -rlptvu . /var/www/ood/apps/sys/activejobs
   ```
 
 4. Access the app through dashboard by going to /pun/sys/dashboard and then clicking "Active Jobs" from the Jobs menu
