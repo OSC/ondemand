@@ -12,10 +12,10 @@ class OodPortalGenerator
   def initialize(opts = {})
     # Portal configuration
     @listen_addr_port = opts.fetch("listen_addr_port", nil)
-    @ssl              = opts.fetch("ssl", nil)
+    @servername       = opts.fetch("servername", nil)
     @ip               = opts.fetch("ip", nil)
     @port             = opts.fetch("port", nil)
-    @servername       = opts.fetch("servername", nil)
+    @ssl              = opts.fetch("ssl", nil)
     @logroot          = opts.fetch("logroot", "logs")
     @lua_root         = opts.fetch("lua_root", "/opt/ood/mod_ood_proxy/lib")
     @lua_log_level    = opts.fetch("lua_log_level", nil)
@@ -32,11 +32,11 @@ class OodPortalGenerator
       %q{Require valid-user}
     ])
 
-    # Portal analytics
-    @analytics = opts.fetch("analytics", nil)
-
     # Redirect for the root uri
     @root_uri = opts.fetch("root_uri", "/pun/sys/dashboard")
+
+    # Portal analytics
+    @analytics = opts.fetch("analytics", nil)
 
     #
     # Available sub-uri's and their configurations
