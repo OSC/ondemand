@@ -13,7 +13,7 @@ Application displays the current system status of jobs running, queued, and held
   ```sh
   scl enable git19 -- git clone https://github.com/OSC/ood-activejobs.git activejobs
   cd activejobs
-  scl enable git19 -- git checkout tags/v1.2.5
+  scl enable git19 -- git checkout tags/v1.3.0
   ```
 
 2. Build the app (install dependencies and build assets)
@@ -25,7 +25,7 @@ Application displays the current system status of jobs running, queued, and held
   ```
 
 3. Copy the built app directory to the deployment directory, and start the server. i.e.:
-    
+
   ```sh
   mkdir -p /var/www/ood/apps/sys/activejobs
   rsync -rlptvu . /var/www/ood/apps/sys/activejobs
