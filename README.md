@@ -109,7 +109,7 @@ script: ruby.sh
 notes: Notes about the template, such as content and function.
 ```
 
-In the event that a folder exists in the template source location but no `manifest.yml` is present, or if metadata is missing, "My Jobs" will assign the following default values:
+In the event that a job is created from a template that has no `manifest.yml`, or if metadata is missing, "My Jobs" will assign the following default values:
 
 * `name` The name of the template folder.
 * `host` The cluster id of the first cluster with a valid resource_mgr listed in the OOD cluster config
