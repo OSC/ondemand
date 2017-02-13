@@ -62,7 +62,33 @@ When updating a deployed version of the Open OnDemand activejobs app.
 
 4. Copy the built app directory to the deployment directory. There is no need to restart the server. Because we touched `tmp/restart.txt` in the app, the next time a user accesses an app Passenger will reload their app.
 
+## Usage
+
+- Active Jobs displays in a datatables table formatted output of qstat that is searchable.
+- The app displays a list of filters, one for each tab. Each filter has a title (Your Jobs, All Jobs, etc.) and is applied server side to the results of qstat.
+- The data is retrieved via an Ajax request but to get updated data you must refresh the page.
+- Progressive disclosure is used to show details of a job. Click on the "right arrow" handle to the left of a table row to show details.
+
 ## Configuration
+
+### Custom Filters
+
+More filters can be added (showing more tabs to the user of the app) by
+inserting filters into the filter list in an initializer.
+`config/initializers/filter.rb` has been added to `.gitignore` so this can be
+safely added. An example of a custom filter can be viewed at
+`config/initializers/filter.rb.osc`:
+
+```ruby
+Filter.list.insert(1, Filter.new.tap { |f|
+  group = OodSupport::User.new.group.name
+  f.title = "Your Group's Jobs (#{group})"
+  f.cookie_id = "group"
+  f.filter_block = Proc.new { |id, attr| attr[:egroup] == group }
+})
+```
+
+### Other Configuration
 
 This application depends on a valid `ood_cluster` configuration. Please see the [ood_cluster](https://github.com/OSC/ood_cluster/blob/master/README.md) README for further details.
 
