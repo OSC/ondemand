@@ -67,8 +67,8 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
 4. Copy the built app directory to the deployment directory, and start the server. i.e.:
     
   ```sh
-  mkdir -p /var/www/ood/apps/sys/files
-  rsync -rlptvu . /var/www/ood/apps/sys/files
+  sudo mkdir -p /var/www/ood/apps/sys/files
+  sudo rsync -rlptvu . /var/www/ood/apps/sys/files
   ```
   
 ## Updating to a new stable version
