@@ -72,7 +72,27 @@ OOD Rails app for Open OnDemand for creating and managing batch jobs from templa
 
 ## Usage
 
-**TODO**
+"My Jobs" attempts to model a simple but common workflow. When creating a new batch job to run a simulation a user may:
+
+1. copy the a directory of a job they already ran or an example job
+2. edit the files
+3. submit a new job
+
+"My Jobs" implements these steps by proving the user job template directories and the ability to make copies of them.
+
+1. copy the a directory of a job they already ran or an example job
+
+  1. user can select a directory to copy from a list of "System" templates the admin copied to `/var/www/ood/apps/sys/myjobs/templates` during installation
+  2. user can select a directory to copy from a list of "User" templates that the user has copied to `$HOME/ondemand/data/sys/myjobs/templates`
+  3. user can select a job directory to copy that they already created through "My Jobs" from `$HOME/ondemand/data/sys/myjobs/projects/default`
+
+2. edit the files
+  1. user can open the copied job directory in the File Explorer and edit files using the File Editor
+
+3. submit a new job
+  1. user can use the Job Options form specify which host to submit to, what file is the job script
+  2. user can use the web interface to submit the job to the batch system
+  3. after the job is completed, the user can open the directory in the file explorer to view results
 
 ### Templates
 
@@ -82,10 +102,6 @@ The folder contains files and scripts related to the job.
 
 The manifest contains additional metadata about a job, such as a name, the default host, the submit script file name, and any notes about the template.
 
-### Building a Template
-
-Prepare a manifest with `name` (string), `host` (string \[options: `oakley` or `ruby`\]), `script` (string \[the relative path of the file to be submitted\]), and `notes` (string) variables and name it `manifest.yml`
-
 ```
 name: A Template Name
 host: ruby
@@ -93,11 +109,9 @@ script: ruby.sh
 notes: Notes about the template, such as content and function.
 ```
 
-### Template Defaults
-
-In the event that a folder exists in the template source location but no `manifest.yml` is present, or if the variables missing, the Job Constructor will assign the following default values:
+In the event that a folder exists in the template source location but no `manifest.yml` is present, or if metadata is missing, "My Jobs" will assign the following default values:
 
 * `name` The name of the template folder.
-* `host` The first server listed in `config/servers.yml` (Currently Oakley)
+* `host` The cluster id of the first cluster with a valid resource_mgr listed in the OOD cluster config
 * `script` The first `.sh` file appearing in the template folder.
 * `notes` The path to the location where a template manifest should be located.
