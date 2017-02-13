@@ -43,7 +43,32 @@ OOD Rails app for Open OnDemand for creating and managing batch jobs from templa
 
 ## Updating to a New Stable Version
 
-**TODO**
+1. Fetch and checkout new version of code:
+
+  ```sh
+  cd myjobs # cd to build directory
+  scl enable git19 -- git fetch
+  scl enable git19 -- git checkout tags/v2.0.0 # check out latest tag
+  ```
+
+2. Install gem dependencies and rebuild assets
+
+  ```sh
+  scl enable rh-ruby22 -- bin/bundle install --path vendor/bundle
+  scl enable rh-ruby22 -- bin/rake tmp:clear
+  scl enable rh-ruby22 -- bin/rake assets:clobber RAILS_ENV=production
+  scl enable rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=production
+  scl enable rh-ruby22 -- bin/rake tmp:clear
+  ```
+
+3. Restart app
+
+  ```sh
+  touch tmp/restart.txt
+  ```
+
+4. Copy the built app directory to the deployment directory. There is no need to restart the server. Because we touched `tmp/restart.txt` in the app, the next time a user accesses an app Passenger will reload their app.
+
 
 ## Usage
 
