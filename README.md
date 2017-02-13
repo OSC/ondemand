@@ -1,4 +1,4 @@
-# OSC Job Status for Oakley/Ruby
+# OOD Active Jobs
 
 [![GitHub version](https://badge.fury.io/gh/OSC%2Food-activejobs.svg)](https://badge.fury.io/gh/OSC%2Food-activejobs)
 
