@@ -24,7 +24,7 @@ OOD Rails app for Open OnDemand for creating and managing batch jobs from templa
   scl enable rh-ruby22 -- bin/rake tmp:clear
   ```
 
-3. Copy the built app directory to the deployment directory, and start the server. i.e.:
+3. Copy the built app directory to the deployment directory:
     
   ```sh
   mkdir -p /var/www/ood/apps/sys/myjobs
@@ -33,19 +33,23 @@ OOD Rails app for Open OnDemand for creating and managing batch jobs from templa
 
 4. Access the app through dashboard by going to /pun/sys/dashboard and then clicking "My Jobs" from the Jobs menu
 
+5. (Optional) Add "System" job templates to make available to each user of "My Jobs", i.e.
+
+  ```sh
+  # the templates directory is hidden in the .gitignore,
+  # so we can pull a directory of templates from another source
+  git clone git@github.com:OSC/osc-myjobs-templates.git templates
+  ```
+
 ## Updating to a New Stable Version
 
 **TODO**
 
-# Old documentation
+## Usage
 
-**TODO** - replace with updated documentation
+**TODO**
 
-* default template
-* templates/ directory and osc-myjobs-templates example repo
-* template manifest
-
-## Templates
+### Templates
 
 A template consists of a folder and (optionally) a `manifest.yml` file.
 
@@ -53,7 +57,7 @@ The folder contains files and scripts related to the job.
 
 The manifest contains additional metadata about a job, such as a name, the default host, the submit script file name, and any notes about the template.
 
-## Building a Template
+### Building a Template
 
 Prepare a manifest with `name` (string), `host` (string \[options: `oakley` or `ruby`\]), `script` (string \[the relative path of the file to be submitted\]), and `notes` (string) variables and name it `manifest.yml`
 
@@ -64,7 +68,7 @@ script: ruby.sh
 notes: Notes about the template, such as content and function.
 ```
 
-## Template Defaults
+### Template Defaults
 
 In the event that a folder exists in the template source location but no `manifest.yml` is present, or if the variables missing, the Job Constructor will assign the following default values:
 
