@@ -9,20 +9,20 @@ Generates an Open OnDemand portal config for an Apache server.
 
 ### Generate OOD Portal config
 
-- Ruby 1.9 or newer
+- `ruby` 1.9+
 
 ### Run OOD Portal config
 
-- Apache httpd 2.4.12 or newer (and the following modules)
+- Apache `httpd` 2.4.12+ (and the following modules)
 
-| **modules required**                                   |
-| --------------------------------------------------     |
-| [mod_ood_proxy](https://github.com/OSC/mod_ood_proxy/) |
-| mod_lua                                                |
-| mod_env                                                |
-| mod_headers                                            |
-| mod_proxy (mod_proxy_connect + mod_proxy_wstunnel)     |
-| mod_auth_* (e.g., mod_authnz_ldap)                     |
+  | **modules required**                                   |
+  | --------------------------------------------------     |
+  | [mod_ood_proxy](https://github.com/OSC/mod_ood_proxy/) |
+  | mod_lua                                                |
+  | mod_env                                                |
+  | mod_headers                                            |
+  | mod_proxy (mod_proxy_connect + mod_proxy_wstunnel)     |
+  | mod_auth_* (e.g., mod_authnz_ldap)                     |
 
 ## Installation
 
