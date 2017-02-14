@@ -10,7 +10,9 @@
 #     - <ipv4>:<port>
 #     - <ipv6>:<port>
 #
-Listen <%= @listen_addr_port %>
+<% Array(@listen_addr_port).each do |addr_port| -%>
+Listen <%= addr_port %>
+<% end -%>
 <% end -%>
 
 <%# Set default URI values used for redirecting     -%>
