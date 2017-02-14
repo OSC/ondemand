@@ -9,20 +9,20 @@ Generates an Open OnDemand portal config for an Apache server.
 
 ### Generate OOD Portal config
 
-- Ruby 1.9 or newer
+- `ruby` 1.9+
 
 ### Run OOD Portal config
 
-- Apache httpd 2.4.12 or newer (and the following modules)
+- Apache `httpd` 2.4.12+ (and the following modules)
 
-| **modules required**                               |
-| -------------------------------------------------- |
-| mod_ood_proxy                                      |
-| mod_lua                                            |
-| mod_env                                            |
-| mod_headers                                        |
-| mod_proxy (mod_proxy_connect + mod_proxy_wstunnel) |
-| mod_auth_* (e.g., mod_auth_openidc)                |
+  | **modules required**                                   |
+  | --------------------------------------------------     |
+  | [mod_ood_proxy](https://github.com/OSC/mod_ood_proxy/) |
+  | mod_lua                                                |
+  | mod_env                                                |
+  | mod_headers                                            |
+  | mod_proxy (mod_proxy_connect + mod_proxy_wstunnel)     |
+  | mod_auth_* (e.g., mod_authnz_ldap)                     |
 
 ## Installation
 
@@ -64,15 +64,22 @@ Generates an Open OnDemand portal config for an Apache server.
     #scl enable rh-ruby22 -- rake
     ```
 
-    To modify any configuration options from the default, specify it after the
-    `rake` command
+    To modify any configuration options from the default, copy the default
+    config file and modify the respective options followed by running `rake`
+    again:
 
     ```bash
-    # Generate Apache config in `/build`
-    rake OOD_PUBLIC_ROOT='/var/www/docroot' OOD_PUBLIC_URI='/public'
+    # Copy over the default config
+    cp config.default.yml config.yml
+
+    # Modify the respective options
+    vim config.yml
+
+    # When you are done, then re-compile the config
+    rake
 
     # If using Software Collections, set Ruby environment
-    #scl enable rh-ruby22 -- rake OOD_AUTH_TYPE='openid-connect'
+    # scl enable rh-ruby22 -- rake
     ```
 
 4.  Verify that the Apache config file is generated correctly in
@@ -120,248 +127,283 @@ Generates an Open OnDemand portal config for an Apache server.
 
 ## Default Options
 
-The default options used to generate the Apache config are listed below. You
-can modify any of these by setting the corresponding environment variable when
-calling the `rake` task.
+The default options are all outlined in the included `config.default.yml`:
 
-#### Build Options
-
-```bash
-# Path for installation in `rake install`
+```yaml
+# ./config.default.yml
+---
 #
-PREFIX='/opt/rh/httpd24/root/etc/httpd/conf.d'
-
-# Directory with ERB templates
+# Portal configuration
 #
-SRCDIR='templates'
 
-# Directory for temporary rendered configs
+# The address and port to listen for connections on
+# Example:
+#     listen_addr_port: 443
+# Default: null (don't add any more listen directives)
+listen_addr_port: null
+
+# The server name used for name-based Virtual Host
+# Example:
+#     servername: 'www.example.com'
+# Default: null (don't use name-based Virtual Host)
+servername: null
+
+# The ip address used for ip-based Virtual Host
+# Example:
+#     ip: '55.55.55.55'
+# Default: null (don't use ip-based Virtual Host)
+ip: null
+
+# The port specification for the Virtual Host
+# Example:
+#     port: 8080
+#Default: null (use default port 80 or 443 if SSL enabled)
+port: null
+
+# List of SSL Apache directives
+# Example:
+#     ssl:
+#       - 'SSLCertificateFile "/etc/pki/tls/certs/www.example.com.crt"'
+#       - 'SSLCertificateKeyFile "/etc/pki/tls/private/www.example.com.key"'
+# Default: null (no SSL support)
+ssl: null
+
+# Root directory of log files (can be relative ServerRoot)
+# Example:
+#     logroot: '/path/to/my/logs'
+# Default: 'logs' (this is relative to ServerRoot)
+logroot: 'logs'
+
+# Root directory of the Lua handler code
+# Example:
+#     lua_root: '/path/to/lua/handlers'
+# Default : '/opt/ood/mod_ood_proxy/lib' (default install directory of mod_ood_proxy)
+lua_root: '/opt/ood/mod_ood_proxy/lib'
+
+# Verbosity of the Lua module logging
+# (see https://httpd.apache.org/docs/2.4/mod/core.html#loglevel)
+# Example:
+#     lua_log_level: 'info'
+# Default: null (use default log level)
+lua_log_level: null
+
+# System command used to map authenticated-user to system-user
+# Example:
+#     user_map_cmd: '/opt/ood/ood_auth_map/bin/ood_auth_map.regex --regex=''^(\w+)@example.com$'''
+# Default: '/opt/ood/ood_auth_map/bin/ood_auth_map.regex' (this echo's back auth-user)
+user_map_cmd: '/opt/ood/ood_auth_map/bin/ood_auth_map.regex'
+
+# Redirect user to the following URI if fail to map there authenticated-user to
+# a system-user
+# Example:
+#     map_fail_uri: '/register'
+# Default: null (don't redirect, just display error message)
+map_fail_uri: null
+
+# System command used to run the `nginx_stage` script with sudo privileges
+# Example:
+#     pun_stage_cmd: 'sudo /path/to/nginx_stage'
+# Default: 'sudo /opt/ood/nginx_stage/sbin/nginx_stage' (don't forget sudo)
+pun_stage_cmd: 'sudo /opt/ood/nginx_stage/sbin/nginx_stage'
+
+# List of Apache authentication directives
+# NB: Be sure the appropriate Apache module is installed for this
+# Default: (see below, uses basic auth with an htpasswd file)
+auth:
+  - 'AuthType Basic'
+  - 'AuthName "private"'
+  - 'AuthUserFile "/opt/rh/httpd24/root/etc/httpd/.htpasswd"'
+  - 'RequestHeader unset Authorization'
+  - 'Require valid-user'
+
+# Redirect user to the following URI when accessing root URI
+# Example:
+#     root_uri: '/my_uri'
+#     # https://www.example.com/ => https://www.example.com/my_uri
+# Default: '/pun/sys/dashboard' (default location of the OOD Dashboard app)
+root_uri: '/pun/sys/dashboard'
+
+# Track server-side analytics with a Google Analytics account and property
+# (see https://github.com/OSC/mod_ood_proxy/blob/master/lib/analytics.lua for
+# information on how to setup the GA property)
+# Example:
+#     analytics:
+#       url: 'http://www.google-analytics.com/collect'
+#       id: 'UA-79331310-4'
+# Default: null (do not track)
+analytics: null
+
 #
-OBJDIR='build'
-
-# Filename of rendered config
+# Publicly available assets
 #
-OBJFILE='ood-portal.conf'
-```
 
-#### Server Options
+# Public sub-uri (available to public with no authentication)
+# Example:
+#     public_uri: '/assets'
+# Default: '/public'
+public_uri: '/public'
 
-```bash
-# IP used for Open OnDemand portal
-# Blank: Remove `Listen` & `<VirtualHost>` directives
+# Root directory that serves the public sub-uri (be careful, everything under
+# here is open to the public)
+# Example:
+#     public_root: '/path/to/public/assets'
+# Default: '/var/www/ood/public'
+public_root: '/var/www/ood/public'
+
 #
-OOD_IP=''
-
-# Port used for Open OnDemand portal
-#
-OOD_PORT='443'
-
-# ServerName used for the Open OnDemand portal
-#
-OOD_SERVER_NAME='www.example.com'
-
-# Any aliases for ServerName that you intend to redirect to the Open OnDemand
-# portal
-# NB: Must be a colon delimited list of aliases
-# Example: 'test1.osc.edu:test2.osc.edu:test3.osc.edu'
-# Blank: No alias redirects
-OOD_SERVER_ALIASES=''
-
-# Whether we use custom server logs for this server
-#
-OOD_LOGS='true'
-
-# Whether SSL is used
-#
-OOD_SSL='true'
-
-# Whether http traffic is redirected to https
-#
-OOD_SSL_REDIRECT='true'
-
-# Path to the SSL certificate file for the server
-# Blank: Remove `SSLCertificateFile` directive
-#
-OOD_SSL_CERT_FILE=''
-
-# Path to the SSL private key file for the server
-# Blank: Remove `SSLCertificateKeyFile` directive
-#
-OOD_SSL_KEY_FILE=''
-
-# Path to the SSL all-in-one file which forms the certificate chain of the
-# server certificate
-# Blank: Remove `SSLCertificateChainFile` directive
-#
-OOD_SSL_CHAIN_FILE=''
-```
-
-#### System Options
-
-```bash
-# Path to the Open OnDemand Lua scripts
-# Blank: Remove `LuaRoot` directive
-#
-OOD_LUA_ROOT='/opt/ood/mod_ood_proxy/lib'
-
-# Log level used for Lua scripts when logging their output
-# NB: https://httpd.apache.org/docs/2.4/mod/core.html#loglevel
-# Blank: Remove `LogLevel` directive
-#
-OOD_LUA_LOG_LEVEL='info'
-
-# Command used to stage PUNs
-#
-OOD_PUN_STAGE_CMD='sudo /opt/ood/nginx_stage/sbin/nginx_stage'
-
-# Maximum number of retries when trying to start the PUN
-#
-OOD_PUN_MAX_RETRIES='5'
-
-# Command used to map users to system level users
-#
-OOD_USER_MAP_CMD='/opt/ood/ood_auth_map/bin/ood_auth_map.regex'
-
-# Path to the root location of PUN socket files
-#
-OOD_PUN_SOCKET_ROOT='/var/run/nginx'
-
-# Path to publicly available assets
-#
-OOD_PUBLIC_ROOT='/var/www/docroot/ood/public'
-
-# Regular expression used to parse host from URI used when reverse proxying to
-# a backend node (see: OOD_NODE_URI and OOD_RNODE_URI)
-# Note: To keep all proxying to within your domain, set it to
-#     '[\w.-]+\.domain\.edu'
-# Blank: Matches any characters other than forward slash (Default: '[^/]+')
-```
-
-#### OOD Portal URIs
-
-```bash
-# Reverse proxy to backend PUNs
-# Blank: Removes the availability of this URI in the config
-#
-OOD_PUN_URI='/pun'
-
 # Reverse proxy to backend nodes
-# This is used by web apps that allow their sub-uri to be modified so that it
-# matches the # front-facing sub-uri
-# Note: To provide support for proxying to backend compute nodes it is best to
-# enable this as "/node"
-# Blank: Removes the availability of this URI in the config
 #
-OOD_NODE_URI=''
 
-# "Relative" reverse proxy to backend nodes
-# This is used by web apps that *only* use relative URL links in their code
-# Note: To provide support for proxying to backend compute nodes it is best to
-# enable this as "/rnode"
-# Blank: Removes the availability of this URI in the config
-#
-OOD_RNODE_URI=''
+# Regular expression used for whitelisting allowed hostnames of nodes
+# Example:
+#     host_regex: '[\w.-]+\.example\.com'
+# Default: '[^/]+' (allow reverse proxying to all hosts, this allows external
+# hosts as well)
+host_regex: '[^/]+'
 
-# Control the backend PUN (e.g., start, stop, reload, ...)
-# Blank: Removes the availability of this URI in the config
-#
-OOD_NGINX_URI='/nginx'
+# Sub-uri used to reverse proxy to backend web server running on node that
+# knows the full URI path
+# Example:
+#     node_uri: '/node'
+# Default: null (disable this feature)
+node_uri: null
 
-# Serve up publicly available assets
-# Blank: Removes the availability of this URI in the config
-#
-OOD_PUBLIC_URI='/public'
+# Sub-uri used to reverse proxy to backend web server running on node that
+# ONLY uses *relative* URI paths
+# Example:
+#     rnode_uri: '/rnode'
+# Default: null (disable this feature)
+rnode_uri: null
 
-# Redirect root URI "/" to this URI
-# Blank: Removes this redirection
 #
-OOD_ROOT_URI='/pun/sys/dashboard'
+# Per-user NGINX Passenger apps
+#
+
+# Sub-uri used to control PUN processes
+# Example:
+#     nginx_uri: '/my_pun_controller'
+# Default: '/nginx'
+nginx_uri: '/nginx'
+
+# Sub-uri used to access the PUN processes
+# Example:
+#     pun_uri: '/my_pun_apps'
+# Default: '/pun'
+pun_uri: '/pun'
+
+# Root directory that contains the PUN Unix sockets that the proxy uses to
+# connect to
+# Example:
+#     pun_socket_root: '/path/to/pun/sockets'
+# Default: '/var/run/nginx' (default location set in nginx_stage)
+pun_socket_root: '/var/run/nginx'
+
+# Number of times the proxy attempts to connect to the PUN Unix socket before
+# giving up and displaying an error to the user
+# Example:
+#     pun_max_retries: 25
+# Default: 5 (only try 5 times)
+pun_max_retries: 5
+
+#
+# Support for OpenID Connect
+#
+
+# Sub-uri used by mod_auth_openidc for authentication
+# Example:
+#     oidc_uri: '/oidc'
+# Default: null (disable OpenID Connect support)
+oidc_uri: null
+
+# Sub-uri user is redirected to if they are not authenticated. This is used to
+# *discover* what ID provider the user will login through.
+# Example:
+#     oidc_discover_uri: '/discover'
+# Default: null (disable support for discovering OpenID Connect IdP)
+oidc_discover_uri: null
+
+# Root directory on the filesystem that serves the HTML code used to display
+# the discovery page
+# Example:
+#     oidc_discover_root: '/var/www/ood/discover'
+# Default: null (disable support for discovering OpenID Connect IdP)
+oidc_discover_root: null
+
+#
+# Support for registering unmapped users
+#
+# (Not necessary if using regular expressions for mapping users)
+#
+
+# Sub-uri user is redirected to if unable to map authenticated-user to
+# system-user
+# Example:
+#     register_uri: '/register'
+# Default: null (display error to user if mapping fails)
+register_uri: null
+
+# Root directory on the filesystem that serves the HTML code used to register
+# an unmapped user
+# Example:
+#     register_root: '/var/www/ood/register'
+# Default: null (display error to user if mapping fails)
+register_root: null
 ```
 
-#### OOD Analytics Options
+## OOD Analytics
 
-It is highly recommended you enable analytics reporting to help further improve
-the Open OnDemand project. This can be enabled by specifying the environment
-variable:
+The analytics are generated/submitted during the logging stage after the
+request-response process. Currently they only support submitting data to Google
+Analtyics. For further information on how to set up a Google Analytics property
+please see https://github.com/OSC/mod_ood_proxy/blob/master/lib/analytics.lua
 
-```bash
-export OOD_ANALYTICS_OPT_IN='true'
+To further support this project we recommend submitting your analytics to OSC's
+Google Analytics account, but this is not a requirement:
+
+```yaml
+# ./config.yml
+---
+
+analytics:
+  url: 'http://www.google-analytics.com/collect'
+  id: 'UA-79331310-4'
 ```
 
-The options set are:
+## OOD Authentication
 
-```bash
-# Whether you want to opt in to analytics reporting
-# Default: 'false'
-#
-OOD_ANALYTICS_OPT_IN='false'
-
-# The URL used that analytics reporting is sent to
-#
-OOD_ANALYTICS_TRACKING_URL='http://www.google-analytics.com/collect'
-
-# The analytics reporting id
-#
-OOD_ANALYTICS_TRACKING_ID='UA-79331310-4'
-```
-
-## OOD Authentication Options
+Authentication is not just a requirement for keeping your resources secure, but
+also for proxying the authenticated user to their corresponding per-user NGINX
+instance.
 
 ### Default Authentication Setup
 
-This uses Apache Basic Auth as the default authentication mechanism:
+This uses Apache Basic authentication as the default authentication mechanism,
+utilizing an encrypted password file
+(https://httpd.apache.org/docs/2.4/howto/auth.html#gettingitworking):
 
-```bash
-# Type of user authentication used for Open OnDemand portal
-#
-OOD_AUTH_TYPE='Basic'
+This default configuration is given as:
 
-# Any extended authentication Apache directives separated by newlines
-# Example: OOD_AUTH_EXTEND='AuthName "Private"\nAuthBasicProvider ldap\nAuthLDAPURL ldap://ldap.host/o=ctx\nRequestHeader unset Authorization'
-# Blank: No extended directives will be added to the config
-#
-OOD_AUTH_EXTEND='AuthName "Private"\nAuthUserFile "/opt/rh/httpd24/root/etc/httpd/.htpasswd"\nRequestHeader unset Authorization'
+```yaml
+# ./config.yml
+---
 
-# Redirect user to this URI if fail to map to system level user
-# Blank: Removes the redirection upon a failed user mapping
-#
-OOD_MAP_FAIL_URI=''
-
-# Redirect URI for OpenID Connect client
-# Blank: Removes the availability of this URI in the config
-#
-OOD_AUTH_OIDC_URI=''
-
-# URI to access OpenID Connect discovery page
-# Blank: Removes the availability of this URI in the config
-#
-OOD_AUTH_DISCOVER_URI=''
-
-# Path to OpenID Connect discovery page directory
-#
-OOD_AUTH_DISCOVER_ROOT='/var/www/ood/discover'
-
-# URI to access the user mapping registration page
-# Blank: Removes the availability of this URI in the config
-#
-OOD_AUTH_REGISTER_URI=''
-
-# Path to the user mapping registration page directory
-#
-OOD_AUTH_REGISTER_ROOT='/var/www/ood/register'
-
-# Whether you want to use CILogon authentication
-# Default: 'false'
-#
-OOD_AUTH_CILOGON='false'
+# Use basic authentication with password file
+auth:
+  - 'AuthType Basic'
+  - 'AuthName "private"'
+  - 'AuthUserFile "/opt/rh/httpd24/root/etc/httpd/.htpasswd"'
+  - 'RequestHeader unset Authorization'
+  - 'Require valid-user'
 ```
 
-The default location for the `.htpasswd` file is:
+Where `/opt/rh/httpd/root/etc/httpd/.htpasswd` is the location of the encrypted
+password file. This will need to be generated beforehand for your corresponding
+users. The user passwords do not need to correlate to their system passwords as
+the user mapping will map the authenticated-user to the system-user.
 
-```
-# Assumes you are using RH Software Collections
-/opt/rh/httpd24/root/etc/httpd/.htpasswd
-```
+The option `RequestHeader unset Authorization` is necessary to strip the user's
+web password from the request headers sent to the backend web services. Please
+do not remove this line unless you know what you are doing.
 
 After the Open OnDemand Portal is deployed and you access the server from your
 browser, you will be presented with an authentication dialog box. Currently
@@ -376,26 +418,56 @@ scl enable httpd24 -- htpasswd -c /opt/rh/httpd24/root/etc/httpd/.htpasswd <user
 scl enable httpd24 -- htpasswd /opt/rh/httpd24/root/etc/httpd/.htpasswd <another username>
 ```
 
-If you continue to use Basic Auth, we recommend using the LDAP module.
+If you continue to use Basic authentication, we recommend using the LDAP module
+(`mod_authnz_ldap`) with a configuration along the lines of:
 
-### Shibboleth Authentication Setup (recommended)
+```yaml
+# ./config.yml
+---
+
+# Use LDAP basic authentication
+auth:
+  - 'AuthType Basic'
+  - 'AuthName "private"'
+  - 'AuthBasicProvider ldap'
+  - 'AuthLDAPURL "ldaps://ldap1.example.com:636 ldap2.example.com:636/ou=People,ou=hpc,o=example?uid" SSL'
+  - 'AuthLDAPGroupAttribute memberUid'
+  - 'AuthLDAPGroupAttributeIsDN off'
+  - 'RequestHeader unset Authorization'
+  - 'Require valid-user'
+```
+
+### Shibboleth Authentication Setup
 
 *Work in progress*
 
-Assumes you have a Shibboleth IdP already deployed and setup.
+**Assumes you have a Shibboleth IdP already deployed and setup.**
 
-Requirements:
+Requires the Shibboleth module (`mod_shib_*`) with a configuration along the
+lines of:
 
-- mod_shib_24
+```yaml
+# ./config.yml
+---
 
-You can then build a portal config as:
+# Capture system-username from authenticated-username
+user_map_cmd: '/opt/ood/ood_auth_map/bin/ood_auth_map.regex --regex=''^(\w+)@example.com$'''
 
-```bash
-rake OOD_AUTH_TYPE='shibboleth' OOD_AUTH_EXTEND='ShibRequestSetting requireSession 1\nRequestHeader edit* Cookie "(^_shibsession_[^;]*(;\s*)?|;\s*_shibsession_[^;]*)" ""\nRequestHeader unset Cookie "expr=-z %{req:Cookie}"'
+# Use Shibboleth authentication
+auth:
+  - 'AuthType shibboleth'
+  - 'ShibRequestSetting requireSession 1'
+  - 'RequestHeader edit* Cookie "(^_shibsession_[^;]*(;\s*)?|;\s*_shibsession_[^;]*)" ""'
+  - 'RequestHeader unset Cookie "expr=-z %{req:Cookie}"'
+  - 'Require valid-user'
 ```
 
+The `RequestHeader` settings are used to strip private user information from
+being sent to the backend web services. Please do not remove these lines unless
+you know what you are doing.
+
 You will then need an appropriate Apache config that specifies the global
-`mod_shib_24` settings you want. An example of such is given here:
+`mod_shib_*` settings you want. An example of such is given here:
 
 ```
 # /path/to/httpd/conf.d/auth_shib.conf
@@ -430,15 +502,16 @@ ShibCompatValidUser On
 Note: You must have the setting `ShibCompatValidUser On` for authentication to
 be handled correctly.
 
-### CILogon Authentication Setup (expert)
+### CILogon Authentication Setup (very OSC-specific)
+
+**This is currently very OSC-specific and may not work at all at your center**
 
 Requirements:
 
-- mod_auth_openidc v2.0.0+ / CILogon client information
-- ood_auth_discovery (PHP scripts)
-- ood_auth_registration (PHP scripts)
-- ood_auth_map (ruby CLI script)
-- mapdn (also relevant python scripts)
+- [mod_auth_openidc](https://github.com/pingidentity/mod_auth_openidc) v2.0.0+ / CILogon client information
+- [ood_auth_discovery](ihttps://github.com/OSC/ood_auth_discovery/) (PHP scripts)
+- [ood_auth_registration](https://github.com/OSC/ood_auth_registration/) (PHP scripts)
+- [ood_auth_mapdn](https://github.com/OSC/ood_auth_mapdn/) (Python + MySQL scripts)
 
 This authentication mechanism takes advantage of:
 
@@ -448,25 +521,33 @@ This authentication mechanism takes advantage of:
 - `grid-mapfile` for mapping authenticated user to system user
 - LDAP for authenticating system user in PHP
 
-```bash
-# Whether you want to use CILogon authentication
-#   OOD_AUTH_CILOGON='true'
-#
-# Sets the following variables =>
-#   OOD_AUTH_OIDC_URI      = '/oidc'
-#   OOD_AUTH_DISCOVER_ROOT = '/var/www/ood/discover'
-#   OOD_AUTH_DISCOVER_URI  = '/discover'
-#   OOD_AUTH_REGISTER_ROOT = '/var/www/ood/register'
-#   OOD_AUTH_REGISTER_URI  = '/register'
-#   OOD_USER_MAP_CMD       = '/opt/ood/ood_auth_map/bin/ood_auth_map.mapfile'
-#   OOD_AUTH_TYPE          = 'openid-connect'
-#   OOD_AUTH_EXTEND        = ''
-#   OOD_MAP_FAIL_URI       = OOD_AUTH_REGISTER_URI
-#
-# You can override any of the above variables by setting them explicitly in the
-# command below
-#
-rake OOD_AUTH_CILOGON='true'
+An example configuration file may look like:
+
+```yaml
+# ./config.yml
+---
+
+# Use a grid-mapfile for mapping authenticated-user to system-user
+user_map_cmd: '/opt/ood/ood_auth_map/bin/ood_auth_map.mapfile'
+
+# Use OpenID Connect for authentication
+auth:
+  - 'AuthType openid-connect'
+  - 'Require valid-user'
+
+# OpenID Connect options
+oidc_uri: '/oidc'
+oidc_discover_uri: '/discover'
+oidc_discover_root: '/var/www/ood/discover'
+
+# Allow user to register their authenticated-username to a local
+# system-username
+register_uri: '/register'
+register_root: '/var/www/ood/register'
+
+# If a user can't be mapped to a system-user, then redirect them to the
+# registration page
+map_fail_uri: '/register'
 ```
 
 You will need an appropriate Apache config that specifies the global
@@ -530,29 +611,10 @@ setup the CILogon IdP specific settings in three separate json files:
     }
     ```
 
-## Configuration File
+## Contributing
 
-If the default options or using environment variables to make changes do not
-meet your needs, then you can specify the configuration options in
-`config.rake` as such
-
-```ruby
-# config.rake
-
-OOD_USER_MAP_COMMAND = '/usr/local/bin/my-usr-map'
-OOD_PUBLIC_ROOT = '/var/www/docroot'
-```
-
-Options specified in `config.rake` take precendence over the corresponding
-environment variable set.
-
-## Version
-
-To list the current version being used when building an OOD Portal config file,
-use:
-
-```bash
-rake version
-```
-
-For individual configs, the version is listed in the header of the file.
+1. Fork it ( https://github.com/OSC/ood-portal-generator/fork  )
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create a new Pull Request

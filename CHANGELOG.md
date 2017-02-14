@@ -1,5 +1,10 @@
 ## Unreleased
 
+Features:
+
+  - use a YAML file for overriding default configuration
+  - use a common ERB template with the Puppet project
+
 Bugfixes:
 
   - fix CILogon default map command to use mapfile instead of regex

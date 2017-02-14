@@ -1,5 +1,5 @@
 # Build directory
 /build/
 
-# Environment variables
-/config.rake
+# Configuration file
+/config.yml
