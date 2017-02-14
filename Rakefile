@@ -106,8 +106,3 @@ desc "Clean up all temporary rendered configs"
 task :clean do |t|
   rm_f "#{OBJDIR}/#{OBJFILE}"
 end
-
-desc "Get version of `ood-portal-generator`"
-task :version do
-  puts "ood-portal-generator v#{VERSION}"
-end
