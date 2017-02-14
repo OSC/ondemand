@@ -340,7 +340,7 @@ oidc_discover_root: null
 # Example:
 #     register_uri: '/register'
 # Default: null (display error to user if mapping fails)
-register_ur: null
+register_uri: null
 
 # Root directory on the filesystem that serves the HTML code used to register
 # an unmapped user
