@@ -13,7 +13,7 @@ class OodPortalGenerator
     # Portal configuration
     @listen_addr_port = opts.fetch("listen_addr_port", nil)
     @servername       = opts.fetch("servername", nil)
-    @port             = opts.fetch("port", opts[:ssl] ? "443" : "80")
+    @port             = opts.fetch("port", opts["ssl"] ? "443" : "80")
     @ssl              = opts.fetch("ssl", nil)
     @logroot          = opts.fetch("logroot", "logs")
     @lua_root         = opts.fetch("lua_root", "/opt/ood/mod_ood_proxy/lib")
