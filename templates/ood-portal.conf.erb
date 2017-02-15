@@ -41,8 +41,7 @@ Listen <%= addr_port %>
   CustomLog "<%= @logroot %>/<%= @servername %>_access<%= "_ssl" if @ssl %>.log" combined
 
   RewriteEngine On
-  RewriteCond %{SERVER_NAME} !=<%= @servername %> [NC]
-  RewriteCond %{SERVER_NAME} !=""
+  RewriteCond %{HTTP_HOST} !^(<%= @servername %>(:<%= _port %>)?)?$ [NC]
   RewriteRule ^(.*) <%= _scheme %>://<%= @servername %>:<%= _port %>$1 [R=301,L]
   <%- end -%>
 
