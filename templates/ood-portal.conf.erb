@@ -155,9 +155,9 @@ Listen <%= addr_port %>
     <%- end -%>
 
     ProxyPassReverse "http://localhost<%= @pun_uri %>"
-    <%- if @servername -%>
-    ProxyPassReverseCookieDomain "localhost" "<%= @servername %>"
-    <%- end -%>
+
+    # ProxyPassReverseCookieDomain implementation (strip domain)
+    Header edit* Set-Cookie ";\s*(?i)Domain[^;]*" ""
 
     # ProxyPassReverseCookiePath implementation (less restrictive)
     Header edit* Set-Cookie ";\s*(?i)Path\s*=(?-i)(?!\s*<%= @pun_uri %>)[^;]*" "; Path=<%= @pun_uri %>"
