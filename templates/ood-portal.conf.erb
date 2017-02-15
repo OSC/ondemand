@@ -27,7 +27,7 @@ Listen <%= addr_port %>
 #
 <VirtualHost *:80>
   RewriteEngine On
-  RewriteRule ^(.*) <%= _scheme %>://<%= _host %>:<%= _port %>/$1 [R=301,L]
+  RewriteRule ^(.*) <%= _scheme %>://<%= _host %>:<%= _port %>$1 [R=301,L]
 </VirtualHost>
 <% end -%>
 
