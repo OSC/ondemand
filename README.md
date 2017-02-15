@@ -148,12 +148,6 @@ listen_addr_port: null
 # Default: null (don't use name-based Virtual Host)
 servername: null
 
-# The ip address used for ip-based Virtual Host
-# Example:
-#     ip: '55.55.55.55'
-# Default: null (don't use ip-based Virtual Host)
-ip: null
-
 # The port specification for the Virtual Host
 # Example:
 #     port: 8080

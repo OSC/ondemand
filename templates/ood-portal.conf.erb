@@ -15,10 +15,10 @@ Listen <%= addr_port %>
 <% end -%>
 <% end -%>
 
-<%# Set default URI values used for redirecting     -%>
-<% _scheme = @ssl ? "https" : "http"                -%>
-<% _host   = @servername || @ip || "%{SERVER_NAME}" -%>
-<% _port   = @port || (@ssl ? "443" : "80")         -%>
+<%# Set default URI values used for redirecting -%>
+<% _scheme = @ssl ? "https" : "http"            -%>
+<% _host   = @servername || "localhost"         -%>
+<% _port   = @port || (@ssl ? "443" : "80")     -%>
 
 <% if @ssl -%>
 # Redirect all http traffic to the https Open OnDemand portal URI
@@ -27,56 +27,26 @@ Listen <%= addr_port %>
 #
 <VirtualHost *:80>
   RewriteEngine On
-  RewriteRule ^/?(.*) <%= _scheme %>://<%= _host %>:<%= _port %>/$1 [R=301,L]
-</VirtualHost>
-<% end -%>
-
-<% if @ip || @servername -%>
-# Redirect any traffic on port <%= _port %> to the Open OnDemand portal URI,
-# other than traffic explicitly sent to the portal
-#     <%= _scheme %>://*:<%= _port %>
-#     #=> <%= _scheme %>://<%= _host %>:<%= _port %>
-#
-<VirtualHost *:<%= _port %>>
-  RewriteEngine On
-  RewriteRule ^/?(.*) <%= _scheme %>://<%= _host %>:<%= _port %>/$1 [R=301,L]
-
-  <%- if @ssl -%>
-  SSLEngine On
-  <%- @ssl.each do |line| -%>
-  <%= line %>
-  <%- end -%>
-  <%- end -%>
-</VirtualHost>
-<% end -%>
-
-<% if @ip && @servername -%>
-# Redirect any traffic on <%= @ip %>:<%= _port %> to the Open OnDemand portal URI,
-# other than traffic explicitly sent to the portal
-#     <%= _scheme %>://<%= @ip %>:<%= _port %>
-#     #=> <%= _scheme %>://<%= _host %>:<%= _port %>
-#
-<VirtualHost <%= @ip %>:<%= _port %>>
-  RewriteEngine On
-  RewriteRule ^/?(.*) <%= _scheme %>://<%= _host %>:<%= _port %>/$1 [R=301,L]
-
-  <%- if @ssl -%>
-  SSLEngine On
-  <%- @ssl.each do |line| -%>
-  <%= line %>
-  <%- end -%>
-  <%- end -%>
+  RewriteRule ^(.*) <%= _scheme %>://%{HTTP_HOST}:<%= _port %>/$1 [R=301,L]
 </VirtualHost>
 <% end -%>
 
 # The Open OnDemand portal VirtualHost
 #
-<VirtualHost <%= @ip || "*" %>:<%= _port %>>
+<VirtualHost *:<%= _port %>>
   <%- if @servername -%>
   ServerName <%= @servername %>
 
   ErrorLog  "<%= @logroot %>/<%= @servername %>_error<%= "_ssl" if @ssl %>.log"
   CustomLog "<%= @logroot %>/<%= @servername %>_access<%= "_ssl" if @ssl %>.log" combined
+
+  RewriteEngine On
+  <%- if @ssl -%>
+  RewriteCond %{HTTPS} !=on
+  <%- end -%>
+  RewriteCond %{HTTP_HOST} !=<%= @servername %> [NC]
+  RewriteCond %{HTTP_HOST} !=""
+  RewriteRule ^(.*) <%= _scheme %>://<%= @servername %>:<%= _port %>$1 [R=301,L]
   <%- end -%>
 
   <%- if @ssl -%>
@@ -188,8 +158,8 @@ Listen <%= addr_port %>
     <%- end -%>
 
     ProxyPassReverse "http://localhost<%= @pun_uri %>"
-    <%- if @ip || @servername -%>
-    ProxyPassReverseCookieDomain "localhost" "<%= _host %>"
+    <%- if @servername -%>
+    ProxyPassReverseCookieDomain "localhost" "<%= @servername %>"
     <%- end -%>
 
     # ProxyPassReverseCookiePath implementation (less restrictive)

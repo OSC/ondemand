@@ -13,7 +13,6 @@ class OodPortalGenerator
     # Portal configuration
     @listen_addr_port = opts.fetch("listen_addr_port", nil)
     @servername       = opts.fetch("servername", nil)
-    @ip               = opts.fetch("ip", nil)
     @port             = opts.fetch("port", nil)
     @ssl              = opts.fetch("ssl", nil)
     @logroot          = opts.fetch("logroot", "logs")
