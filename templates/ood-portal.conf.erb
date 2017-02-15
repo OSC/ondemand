@@ -16,18 +16,17 @@ Listen <%= addr_port %>
 <% end -%>
 
 <%# Set default URI values used for redirecting -%>
-<% _scheme = @ssl ? "https" : "http"            -%>
 <% _host   = @servername || "%{SERVER_NAME}"    -%>
 <% _port   = @port || (@ssl ? "443" : "80")     -%>
 
 <% if @ssl -%>
 # Redirect all http traffic to the https Open OnDemand portal URI
 #     http://*:<%= _port %>
-#     #=> <%= _scheme %>://<%= _host %>:<%= _port %>
+#     #=> <%= @ssl ? "https" : "http" %>://<%= _host %>:<%= _port %>
 #
 <VirtualHost *:80>
   RewriteEngine On
-  RewriteRule ^(.*) <%= _scheme %>://<%= _host %>:<%= _port %>$1 [R=301,L]
+  RewriteRule ^(.*) <%= @ssl ? "https" : "http" %>://<%= _host %>:<%= _port %>$1 [R=301,L]
 </VirtualHost>
 <% end -%>
 
@@ -42,7 +41,7 @@ Listen <%= addr_port %>
 
   RewriteEngine On
   RewriteCond %{HTTP_HOST} !^(<%= @servername %>(:<%= _port %>)?)?$ [NC]
-  RewriteRule ^(.*) <%= _scheme %>://<%= @servername %>:<%= _port %>$1 [R=301,L]
+  RewriteRule ^(.*) <%= @ssl ? "https" : "http" %>://<%= @servername %>:<%= _port %>$1 [R=301,L]
   <%- end -%>
 
   <%- if @ssl -%>
@@ -80,7 +79,7 @@ Listen <%= addr_port %>
   <%- if @public_uri && @public_root -%>
   # Serve up publicly available assets from local file system:
   #
-  #     <%= _scheme %>://<%= _host %>:<%= _port %><%= @public_uri %>/favicon.ico
+  #     <%= @ssl ? "https" : "http" %>://<%= _host %>:<%= _port %><%= @public_uri %>/favicon.ico
   #     #=> <%= @public_root %>/favicon.ico
   #
   Alias "<%= @public_uri %>" "<%= @public_root %>"
@@ -94,7 +93,7 @@ Listen <%= addr_port %>
   <%- if @node_uri -%>
   # Reverse proxy traffic to backend webserver through IP sockets:
   #
-  #     <%= _scheme %>://<%= _host %>:<%= _port %><%= @node_uri %>/HOST/PORT/index.html
+  #     <%= @ssl ? "https" : "http" %>://<%= _host %>:<%= _port %><%= @node_uri %>/HOST/PORT/index.html
   #     #=> http://HOST:PORT<%= @node_uri %>/HOST/PORT/index.html
   #
   <LocationMatch "^<%= @node_uri %>/(?<host><%= @host_regex %>)/(?<port>\d+)">
@@ -119,7 +118,7 @@ Listen <%= addr_port %>
   <%- if @rnode_uri -%>
   # Reverse "relative" proxy traffic to backend webserver through IP sockets:
   #
-  #     <%= _scheme %>://<%= _host %>:<%= _port %><%= @rnode_uri %>/HOST/PORT/index.html
+  #     <%= @ssl ? "https" : "http" %>://<%= _host %>:<%= _port %><%= @rnode_uri %>/HOST/PORT/index.html
   #     #=> http://HOST:PORT/index.html
   #
   <LocationMatch "^<%= @rnode_uri %>/(?<host><%= @host_regex || "[^/]+" %>)/(?<port>\d+)(?<uri>/.*|)">
@@ -144,7 +143,7 @@ Listen <%= addr_port %>
   <%- if @pun_uri && @nginx_uri -%>
   # Reverse proxy traffic to backend PUNs through Unix domain sockets:
   #
-  #     <%= _scheme %>://<%= _host %>:<%= _port %><%= @pun_uri %>/dev/app/simulations/1
+  #     <%= @ssl ? "https" : "http" %>://<%= _host %>:<%= _port %><%= @pun_uri %>/dev/app/simulations/1
   #     #=> unix:/path/to/socket|http://localhost<%= @pun_uri %>/dev/app/simulations/1
   #
   SetEnv OOD_PUN_URI "<%= @pun_uri %>"
@@ -175,7 +174,7 @@ Listen <%= addr_port %>
   # Control backend PUN for authenticated user:
   # NB: See mod_ood_proxy for more details.
   #
-  #    <%= _scheme %>://<%= _host %>:<%= _port %><%= @nginx_uri %>/stop
+  #    <%= @ssl ? "https" : "http" %>://<%= _host %>:<%= _port %><%= @nginx_uri %>/stop
   #    #=> stops the authenticated user's PUN
   #
   SetEnv OOD_NGINX_URI "<%= @nginx_uri %>"
@@ -191,8 +190,8 @@ Listen <%= addr_port %>
   <%- if @root_uri -%>
   # Redirect root URI to specified URI
   #
-  #     <%= _scheme %>://<%= _host %>:<%= _port %>/
-  #     #=> <%= _scheme %>://<%= _host %>:<%= _port %><%= @root_uri %>
+  #     <%= @ssl ? "https" : "http" %>://<%= _host %>:<%= _port %>/
+  #     #=> <%= @ssl ? "https" : "http" %>://<%= _host %>:<%= _port %><%= @root_uri %>
   #
   RedirectMatch ^/$ "<%= @root_uri %>"
   <%- end -%>
@@ -200,7 +199,7 @@ Listen <%= addr_port %>
   <%- if @oidc_uri -%>
   # OpenID Connect redirect URI:
   #
-  #     <%= _scheme %>://<%= _host %>:<%= _port %><%= @oidc_uri %>
+  #     <%= @ssl ? "https" : "http" %>://<%= _host %>:<%= _port %><%= @oidc_uri %>
   #     #=> handled by mod_auth_openidc
   #
   <Location "<%= @oidc_uri %>">
@@ -213,7 +212,7 @@ Listen <%= addr_port %>
   <%- if @oidc_discover_uri && @oidc_discover_root -%>
   # Discover URI for OpenID Connect (used for multiple Id Providers):
   #
-  #     <%= _scheme %>://<%= _host %>:<%= _port %><%= @oidc_discover_uri %>
+  #     <%= @ssl ? "https" : "http" %>://<%= _host %>:<%= _port %><%= @oidc_discover_uri %>
   #     #=> <%= @oidc_discover_root %>/
   #
   Alias "<%= @oidc_discover_uri %>" "<%= @oidc_discover_root %>"
@@ -228,7 +227,7 @@ Listen <%= addr_port %>
   # Register and/or unregister the mapping of an authenticated-user to a system-user
   # NB: This is not needed for regular expression mapping
   #
-  #     <%= _scheme %>://<%= _host %>:<%= _port %><%= @register_uri %>
+  #     <%= @ssl ? "https" : "http" %>://<%= _host %>:<%= _port %><%= @register_uri %>
   #     #=> <%= @register_root %>/
   #
   Alias "<%= @register_uri %>" "<%= @register_root %>"
