@@ -20,7 +20,7 @@ class OodPortalGenerator
     @lua_root         = opts.fetch("lua_root", "/opt/ood/mod_ood_proxy/lib")
     @lua_log_level    = opts.fetch("lua_log_level", nil)
     @user_map_cmd     = opts.fetch("user_map_cmd", "/opt/ood/ood_auth_map/bin/ood_auth_map.regex")
-    @map_file_uri     = opts.fetch("map_file_uri", nil)
+    @map_fail_uri     = opts.fetch("map_fail_uri", nil)
     @pun_stage_cmd    = opts.fetch("pun_stage_cmd", "sudo /opt/ood/nginx_stage/sbin/nginx_stage")
 
     # Portal authentication
