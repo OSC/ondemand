@@ -17,7 +17,7 @@ Listen <%= addr_port %>
 
 <%# Set default URI values used for redirecting -%>
 <% _scheme = @ssl ? "https" : "http"            -%>
-<% _host   = @servername || "localhost"         -%>
+<% _host   = @servername || "%{SERVER_NAME}"    -%>
 <% _port   = @port || (@ssl ? "443" : "80")     -%>
 
 <% if @ssl -%>
@@ -27,7 +27,7 @@ Listen <%= addr_port %>
 #
 <VirtualHost *:80>
   RewriteEngine On
-  RewriteRule ^(.*) <%= _scheme %>://%{SERVER_NAME}:<%= _port %>/$1 [R=301,L]
+  RewriteRule ^(.*) <%= _scheme %>://<%= _host %>:<%= _port %>/$1 [R=301,L]
 </VirtualHost>
 <% end -%>
 
