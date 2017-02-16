@@ -192,6 +192,15 @@ Listen <%= addr_port %>
   RedirectMatch ^/$ "<%= @root_uri %>"
   <%- end -%>
 
+  <%- if @logout_uri && @logout_redirect -%>
+  # Redirect logout URI to specified redirect URI
+  #
+  #     <%= @ssl ? "https" : "http" %>://<%= @servername || "localhost" %>:<%= @port %><%= @logout_uri %>
+  #     #=> <%= @ssl ? "https" : "http" %>://<%= @servername || "localhost" %>:<%= @port %><%= @logout_redirect %>
+  #
+  Redirect "<%= @logout_uri %>" "<%= @logout_redirect %>"
+  <%- end -%>
+
   <%- if @oidc_uri -%>
   # OpenID Connect redirect URI:
   #

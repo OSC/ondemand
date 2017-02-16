@@ -112,6 +112,24 @@
 #public_root: '/var/www/ood/public'
 
 #
+# Logout redirect helper
+#
+
+# Logout sub-uri
+# Example
+#     logout_uri: '/log_me_out'
+# NB: If you change this, then modify the Dashboard app with the new sub-uri
+# Default: '/logout' (the Dashboard app is by default going to expect this)
+#logout_uri: '/logout'
+
+# Redirect user to the following URI when accessing logout URI
+# Example:
+#     logout_redirect: '/oidc?logout=https%3A%2F%2Fwww.example.com'
+# Default: '/pun/sys/dashboard/logout' (the Dashboard app provides a simple
+# HTML page explaining logout to the user)
+#logout_redirect: '/pun/sys/dashboard/logout'
+
+#
 # Reverse proxy to backend nodes
 #
 

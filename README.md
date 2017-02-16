@@ -245,6 +245,24 @@ public_uri: '/public'
 public_root: '/var/www/ood/public'
 
 #
+# Logout redirect helper
+#
+
+# Logout sub-uri
+# Example
+#     logout_uri: '/log_me_out'
+# NB: If you change this, then modify the Dashboard app with the new sub-uri
+# Default: '/logout' (the Dashboard app is by default going to expect this)
+#logout_uri: '/logout'
+
+# Redirect user to the following URI when accessing logout URI
+# Example:
+#     logout_redirect: '/oidc?logout=https%3A%2F%2Fwww.example.com'
+# Default: '/pun/sys/dashboard/logout' (the Dashboard app provides a simple
+# HTML page explaining logout to the user)
+#logout_redirect: '/pun/sys/dashboard/logout'
+
+#
 # Reverse proxy to backend nodes
 #
 
@@ -454,11 +472,20 @@ auth:
   - 'RequestHeader edit* Cookie "(^_shibsession_[^;]*(;\s*)?|;\s*_shibsession_[^;]*)" ""'
   - 'RequestHeader unset Cookie "expr=-z %{req:Cookie}"'
   - 'Require valid-user'
+
+# Use Shibboleth logout
+logout_redirect: '/Shibboleth.sso/Logout?return=https%3A%2F%2Fidp.example.com%2Fidp%2Fprofile%2FLogout'
 ```
 
 The `RequestHeader` settings are used to strip private user information from
 being sent to the backend web services. Please do not remove these lines unless
 you know what you are doing.
+
+The `logout_redirect` is set up to not only log out of the Shibboleth service
+on the Open OnDemand portal, but also the Shibboleth IdP server. The query
+parameter `return=...` points to the (URL-encoded) URL of the IdP server used
+to log the user out of in the final step. If instead you `return=...` the user
+to the main site it may auto-login the user again.
 
 You will then need an appropriate Apache config that specifies the global
 `mod_shib_*` settings you want. An example of such is given here:
@@ -542,7 +569,14 @@ register_root: '/var/www/ood/register'
 # If a user can't be mapped to a system-user, then redirect them to the
 # registration page
 map_fail_uri: '/register'
+
+# Use OpenID Connect logout
+logout_redirect: '/oidc?logout=https%3A%2F%2Fwww.example.com'
 ```
+
+The value of the `logout=...` parameter for the `logout_redirect` option
+contains the (URL-encoded) URL where the user will be redirected to after the
+session has been killed. It must contain the full scheme and domain.
 
 You will need an appropriate Apache config that specifies the global
 `mod_auth_openidc` settings you want. An example of such is given here:

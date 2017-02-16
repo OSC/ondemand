@@ -45,6 +45,10 @@ class OodPortalGenerator
     @public_uri  = opts.fetch("public_uri", "/public")
     @public_root = opts.fetch("public_root", "/var/www/ood/public")
 
+    # Logout sub-uri
+    @logout_uri      = opts.fetch("logout_uri", "/logout")
+    @logout_redirect = opts.fetch("logout_redirect", "/pun/sys/dashboard/logout")
+
     # Basic reverse proxy sub-uri
     @host_regex = opts.fetch("host_regex", "[^/]+")
     @node_uri   = opts.fetch("node_uri", nil)
