@@ -49,7 +49,7 @@ module ProductsHelper
         toggle: "cli",
         target: cli_product_path(key, name: @product.name, type: @type),
         title: title,
-        cmd: display
+        cmd: "<code>#{display}</code>"
     })
   end
 end
