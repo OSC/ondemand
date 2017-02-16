@@ -4,6 +4,7 @@ Features:
 
   - use a YAML file for overriding default configuration
   - use a common ERB template with the Puppet project
+  - add logout sub-uri and redirect uri
 
 Bugfixes:
 
