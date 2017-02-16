@@ -11,10 +11,10 @@ CNFFILE ||= ENV['CNFFILE'] || 'config.yml'
 class OodPortalGenerator
   def initialize(opts = {})
     # Portal configuration
+    @ssl              = opts.fetch("ssl", nil)
     @listen_addr_port = opts.fetch("listen_addr_port", nil)
     @servername       = opts.fetch("servername", nil)
-    @port             = opts.fetch("port", opts["ssl"] ? "443" : "80")
-    @ssl              = opts.fetch("ssl", nil)
+    @port             = opts.fetch("port", @ssl ? "443" : "80")
     @logroot          = opts.fetch("logroot", "logs")
     @lua_root         = opts.fetch("lua_root", "/opt/ood/mod_ood_proxy/lib")
     @lua_log_level    = opts.fetch("lua_log_level", nil)
