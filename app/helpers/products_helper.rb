@@ -34,9 +34,17 @@ module ProductsHelper
     File.read(target) if target.file?
   end
 
-  def command_btn(title:, key:, display:)
+  # A custom button helper for command line tools
+  #
+  # @param [String] title: The button label
+  # @param [String] key: The key of the command in the CMDS hash ( See: controllers/products_controller.rb )
+  # @param [String] display: The equivalent command to be displayed to the user
+  # @param [optional, String] help: Tooltip text to be provided on hover. ( Default: none )
+  # @param [optional, String] color: The bootstrap color of the button. Ex. "primary", "info", "success", etc. ( Default: "default" )
+  def command_btn(title:, key:, display:, help: nil, color: "default")
     button_tag(title,
-      class: "btn btn-default btn-block",
+      class: "btn btn-#{color} btn-block",
+      title: help,
       data: {
         toggle: "cli",
         target: cli_product_path(key, name: @product.name, type: @type),
