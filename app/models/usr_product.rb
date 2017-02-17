@@ -1,8 +1,8 @@
 class UsrProduct < Product
-  validate :assets_exist, on: :show_app
+  validate :assets_exist, on: :show_app, if: :passenger_rails_app?
 
   def assets_exist
-    errors.add(:base, "Build missing assets with <strong>Build Assets</strong>") unless router.path.join("public", "assets").directory?
+    errors.add(:base, "Build missing assets with <strong>Precompile Assets</strong>") unless router.path.join("public", "assets").directory?
   end
 
   class << self
