@@ -1,5 +1,5 @@
 <div class="col-sm-3 col-md-3">
-  <%= link_to app_path(app.name, app.type, app.owner), class: "thumbnail app", data: {
+  <%= link_to app_path(app.name, app.type, app.owner), class: "thumbnail app", target: "_blank", data: {
     toggle: "popover",
     content: manifest_markdown(app.manifest.description),
     html: true,
