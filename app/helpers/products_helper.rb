@@ -36,11 +36,11 @@ module ProductsHelper
 
   # A custom button helper for command line tools
   #
-  # @param [String] title: The button label
-  # @param [String] key: The key of the command in the CMDS hash ( See: controllers/products_controller.rb )
-  # @param [String] display: The equivalent command to be displayed to the user
-  # @param [optional, String] help: Tooltip text to be provided on hover. ( Default: none )
-  # @param [optional, String] color: The bootstrap color of the button. Ex. "primary", "info", "success", etc. ( Default: "default" )
+  # @param title [String] The button label
+  # @param key [String] The key of the command in the CMDS hash ( See: controllers/products_controller.rb )
+  # @param display [String] The equivalent command to be displayed to the user
+  # @param help [optional, String] Tooltip text to be provided on hover. ( Default: none )
+  # @param color [optional, String] The bootstrap color of the button. Ex. "primary", "info", "success", etc. ( Default: "default" )
   def command_btn(title:, key:, display:, help: nil, color: "default")
     button_tag(title,
       class: "btn btn-#{color} btn-block",
