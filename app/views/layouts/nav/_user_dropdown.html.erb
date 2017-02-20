@@ -6,7 +6,7 @@
     <i class="fa fa-user"></i><span class="hidden-xs hidden-sm"> Logged in as <%= @user.name %></span><span class="caret"></span>
   </a>
   <ul class="dropdown-menu">
-    <%= nav_link("Change HPC Password", "gear", passwd_url) %>
+    <%= nav_link("Change HPC Password", "gear", passwd_url, target: "_blank") %>
     <%= nav_link("Logout", "power-off", @logout_url) %>
   </ul>
 </li>
