@@ -1,0 +1,7 @@
+<%= render 'header' %>
+
+<%= render 'form_from_git_remote', form_url: create_from_git_remote_path(type: @type, new_method: @new_method) %>
+
+<hr />
+
+<%= link_to 'Back', products_path(type: @type), class: 'btn btn-default' %>

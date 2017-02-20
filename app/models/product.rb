@@ -142,6 +142,39 @@ class Product
     end
   end
 
+  def create_from_rails_template
+    if self.valid?(:create_from_rails_template)
+      target = router.path
+      target.mkpath
+      FileUtils.cp_r Rails.root.join("vendor/my_app/."), target
+      FileUtils.chmod 0750, target
+      true
+    else
+      false
+    end
+  rescue
+    router.path.rmtree if router.path.exist?
+    raise
+  end
+
+  def create_from_git_remote
+    if self.valid?(:create_from_git_remote)
+      target = router.path
+      target.mkpath
+      unless clone_git_repo(target)
+        target.rmtree if target.exist?
+        return false
+      end
+      FileUtils.chmod 0750, target
+      true
+    else
+      false
+    end
+  rescue
+    router.path.rmtree if router.path.exist?
+    raise
+  end
+
   def update(attributes)
     @title = attributes[:title] if attributes[:title]
     @description = attributes[:description] if attributes[:description]
@@ -199,39 +232,6 @@ class Product
   end
 
   private
-
-    def create_from_rails_template
-      if self.valid?(:create_from_rails_template)
-        target = router.path
-        target.mkpath
-        FileUtils.cp_r Rails.root.join("vendor/my_app/."), target
-        FileUtils.chmod 0750, target
-        true
-      else
-        false
-      end
-    rescue
-      router.path.rmtree if router.path.exist?
-      raise
-    end
-
-    def create_from_git_remote
-      if self.valid?(:create_from_git_remote)
-        target = router.path
-        target.mkpath
-        unless clone_git_repo(target)
-          target.rmtree if target.exist?
-          return false
-        end
-        FileUtils.chmod 0750, target
-        true
-      else
-        false
-      end
-    rescue
-      router.path.rmtree if router.path.exist?
-      raise
-    end
 
     # Writes out a manifest to the router path unless the repository has been newly cloned.
     #

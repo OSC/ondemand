@@ -11,7 +11,7 @@
           is recommended you version this with a Git repository such as GitHub.
         </p>
         <div class="text-center">
-          <%= link_to 'Build New App', new_product_path(type: @type, new_method: 'template'), class: 'btn btn-primary' %>
+          <%= link_to 'Build New App', new_from_rails_template_path(type: @type, new_method: 'template'), class: 'btn btn-primary' %>
         </div><!-- /.text-center -->
       </div><!-- /.panel-body -->
     </div><!-- /.panel -->
@@ -29,7 +29,7 @@
           clone an existing project and begin development locally.
         </p>
         <div class="text-center">
-          <%= link_to 'Clone Existing App', new_product_path(type: @type, new_method: 'git'), class: 'btn btn-primary' %>
+          <%= link_to 'Clone Existing App', new_from_git_remote_path(type: @type, new_method: 'git'), class: 'btn btn-primary' %>
         </div><!-- /.text-center -->
       </div><!-- /.panel-body -->
     </div><!-- /.panel -->

@@ -28,6 +28,10 @@ Rails.application.routes.draw do
         end
       end
       get 'create_key' => 'products#create_key'
+      get 'new_from_git_remote' => 'products#new_from_git_remote'
+      get 'new_from_rails_template' => 'products#new_from_rails_template'
+      post 'create_from_git_remote' => 'products#create_from_git_remote'
+      post 'create_from_rails_template' => 'products#create_from_rails_template'
     end
   else
     root "dashboard#index"

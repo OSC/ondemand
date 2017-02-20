@@ -1,15 +1,7 @@
 <%= render 'header' %>
 
-<% if @new_method %>
-  <%= render 'form',
-    form_url: products_path(type: @type, new_method: @new_method),
-    show_git: @new_method == 'git',
-    show_manifest: @new_method == 'template'
-  %>
-<% else %>
-  <%= render 'new_choose_method' %>
-<% end %>
+<%= render 'new_choose_method' %>
 
 <hr />
 
-<%= link_to 'Back', products_path(type: @type), class: 'btn btn-default' %>
+<%= link_to 'Back', products_path, class: 'btn btn-default' %>
