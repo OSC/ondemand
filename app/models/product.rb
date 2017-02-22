@@ -131,17 +131,6 @@ class Product
     end
   end
 
-  def save(context:)
-    case context.to_sym
-      when :create_from_git_remote
-        create_from_git_remote
-      when :create_from_rails_template
-        create_from_rails_template
-      else
-        raise "Invalid Context"
-    end
-  end
-
   def create_from_rails_template
     if self.valid?(:create_from_rails_template)
       target = router.path

@@ -45,26 +45,8 @@ class ProductsController < ApplicationController
     @product = Product.find(@type, params[:name])
   end
 
-  # POST /products
-  # POST /products.json
-  def create
-    @type = params[:type].to_sym
-    @product = Product.build(product_params.merge(type: @type))
-    @new_method = @type == :usr ? 'git' : params[:new_method]
-
-    respond_to do |format|
-      if @product.save(context: params[:create_context])
-        format.html { redirect_to product_url(@product.name, type: @type), notice: 'Product was successfully created.' }
-        format.json { render :show, status: :created, location: @product }
-      else
-        format.html { render :new }
-        format.json { render json: @product.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # POST /products
-  # POST /products.json
+  # POST /create_from_git_remote
+  # POST /create_from_git_remote.json
   def create_from_git_remote
     @type = params[:type].to_sym
     @product = Product.build(product_params.merge(type: @type))
@@ -81,8 +63,8 @@ class ProductsController < ApplicationController
     end
   end
 
-  # POST /products
-  # POST /products.json
+  # POST /create_from_rails_template
+  # POST /create_from_rails_template.json
   def create_from_rails_template
     @type = params[:type].to_sym
     @product = Product.build(product_params.merge(type: @type))
