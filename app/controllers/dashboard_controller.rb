@@ -5,4 +5,7 @@ class DashboardController < ApplicationController
 
     @motd_file = MotdFile.new
   end
+
+  def logout
+  end
 end
