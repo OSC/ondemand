@@ -30,6 +30,13 @@
   height: 100%;
 }
 
+// for inverse, lets make the text slightliy darker so its
+// different than the links
+.navbar.navbar-inverse .navbar-text{
+     color: #ddd;
+}
+
+
 // Load up bootstrap/font-awesome style sheet
 @import "bootstrap";
 @import "font-awesome";
