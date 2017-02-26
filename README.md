@@ -71,6 +71,10 @@ See the wiki page https://github.com/OSC/ood-dashboard/wiki/Configuration-and-Br
 
 See the wiki page https://github.com/OSC/ood-dashboard/wiki/Message-of-the-Day
 
+### Site-wide announcement
+
+See the wiki page https://github.com/OSC/ood-dashboard/wiki/Site-Wide-Announcement
+
 ### App Sharing
 
 **This is a feature currently in development. The documentation below is for developers working on this feature.**
