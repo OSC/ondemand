@@ -36,17 +36,10 @@
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse navbar-responsive-collapse">
         <ul class="nav navbar-nav">
-          <li>
-            <%= link_to '<span class="glyphicon glyphicon-plus"></span> Add Job'.html_safe, new_workflow_path %>
-          </li>
+          <%= content_tag(:li, class: current_page?(root_path) ? "active" : "") { link_to "Jobs", root_path } %>
+          <%= content_tag(:li, class: current_page?(new_workflow_path) ? "active" : "") { link_to "Templates", new_workflow_path } %>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li>
-            <%= link_to "My Jobs", root_path %>
-          </li>
-          <li>
-            <%= link_to "My Templates", templates_path, :id => 'templates_navbar_link' %>
-          </li>
           <li>
             <%= link_to '<span class="glyphicon glyphicon-question-sign"></span> Help'.html_safe, "#", :onclick => 'start_joyride();' %>
           </li>
