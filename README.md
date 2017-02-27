@@ -5,9 +5,9 @@
 This app is a Node.js app for Open OnDemand providing a web based terminal
 using Chrome OS's hterm. It is meant to be run as the user (and on behalf of
 the user) using the app. Thus, at an HPC center if I log into OnDemand using
-the `efranz` account, this app should run as `efranz`.
+the `ood` account, this app should run as `ood`.
 
-## Install
+## New Install
 
 1.  (RHEL Software Collections) First ensure your environment matches the
     environment that the web app runs under. You can do this by running:
@@ -16,10 +16,6 @@ the `efranz` account, this app should run as `efranz`.
     scl enable rh-ruby22 nodejs010 git19 -- bash
     ```
 
-2.  Determine the latest stable version of this app. At the top of this
-    `README.md` you will see it in a green box. Record this `X.X.X` for the
-    next step.
-
 3.  Start in the **build directory** for all sys apps, clone and check out the
     latest version of the shell app (make sure the app directory's name is
     `shell`):
@@ -27,11 +23,8 @@ the `efranz` account, this app should run as `efranz`.
     ```sh
     git clone https://github.com/OSC/ood-shell.git shell
     cd shell
-    git checkout tags/vX.X.X
+    git checkout tags/v1.1.2
     ```
-
-    Don't forget to replace the `X.X.X` above with what you have from step 2.
-    Note that you need the letter `v` preceding the version number.
 
 4.  Install the required packages:
 
@@ -47,15 +40,15 @@ the `efranz` account, this app should run as `efranz`.
 
     DEFAULT_SSHHOST='oakley.osc.edu'
     ```
-    
+
 6. Copy the built app directory to the deployment directory, and start the server. i.e.:
-    
+
   ```sh
   sudo mkdir -p /var/www/ood/apps/sys/shell
   sudo rsync -rlptvu . /var/www/ood/apps/sys/shell
   ```
 
-## Update
+## Updating to a New Stable Version
 
 1.  (RHEL Software Collections) First ensure your environment matches the
     environment that the web app runs under. You can do this by running:
@@ -63,18 +56,17 @@ the `efranz` account, this app should run as `efranz`.
     ```sh
     scl enable rh-ruby22 nodejs010 git19 -- bash
     ```
-
-2.  Determine the latest stable version of this app. At the top of this
-    `README.md` you will see it in a green box. Record this `X.X.X` for the
-    next step.
-
-3.  To update the app you will first go into the build directory from when you
+2.  To update the app you will first go into the build directory from when you
     installed it and fetch the latest changes to the code:
 
     ```sh
     cd shell
     git fetch
     ```
+
+3.  Determine the latest stable version of this app. At the top of this
+    `README.md` you will see it in a green box. Record this `X.X.X` for the
+    next step.
 
 4.  Then you will check out the latest stable version of the code that you took
     note of in step 2:
@@ -86,7 +78,13 @@ the `efranz` account, this app should run as `efranz`.
     Don't forget to replace the `X.X.X` above with what you have from step 2.
     Note that you need the letter `v` preceding the version number.
 
-5.  Finally you will force all Passenger instances of this app to restart so
+5.  You will then update any required packages if necessary:
+
+    ```sh
+    npm install
+    ```
+
+6.  Finally you will force all Passenger instances of this app to restart so
     that the changes are successfully propagated to the users:
 
     ```sh
@@ -97,7 +95,7 @@ the `efranz` account, this app should run as `efranz`.
 
 Assume the base URL for the app is `https://localhost/pun/sys/shell`.
 
-To open a new terminal to default host, go to:
+To open a new terminal to the default host, go to:
 
 - `https://localhost/pun/sys/shell/ssh/`
 - `https://localhost/pun/sys/shell/ssh/default`
