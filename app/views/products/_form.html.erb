@@ -1,6 +1,6 @@
 <%= bootstrap_form_for(@product, as: :product, url: form_url) do |f| %>
-  <%= render partial: "form_git", locals: { f: f, product: @product} if show_git && (@product.new_record? || @product.git_repo?) %>
-  <%= render partial: "form_manifest", locals: { f: f, product: @product} if show_manifest %>
+  <%= render "form_git", f: f, product: @product if show_git && (@product.new_record? || @product.git_repo?) %>
+  <%= render "form_manifest", f: f, product: @product if show_manifest %>
   <div class="actions">
     <%= f.submit 'Submit' %>
   </div>
