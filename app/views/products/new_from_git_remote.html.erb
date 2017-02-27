@@ -1,6 +1,12 @@
 <%= render 'header' %>
 
-<%= render 'form_from_git_remote', form_url: create_from_git_remote_path(type: @type, new_method: @new_method) %>
+<%= bootstrap_form_for(@product, as: :product, url: create_from_git_remote_path(type: @type, new_method: @new_method)) do |f| %>
+    <%= render partial: "form_directory", locals: { f: f } if @product.new_record? %>
+    <%= render partial: "form_git", locals: { f: f, product: @product} if (@product.new_record? || @product.git_repo?) %>
+    <div class="actions">
+      <%= f.submit 'Submit' %>
+    </div>
+<% end %>
 
 <hr />
 
