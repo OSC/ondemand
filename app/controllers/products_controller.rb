@@ -24,24 +24,19 @@ class ProductsController < ApplicationController
   def new
     @type = params[:type].to_sym
     # Only allow user to clone existing apps in shared environment
-    if @type == :usr
-      @new_method = 'git'
-      redirect_to new_from_git_remote_url
-    end
+    redirect_to new_from_git_remote_url if @type == :usr
   end
 
   # GET /products/new_from_git_remote
   def new_from_git_remote
     @type = params[:type].to_sym
     @product = Product.build(type: @type)
-    @new_method = @type == :usr ? 'git' : params[:new_method]
   end
 
   # GET /products/new_from_rails_template
   def new_from_rails_template
     @type = params[:type].to_sym
     @product = Product.build(type: @type)
-    @new_method = @type == :usr ? 'git' : params[:new_method]
   end
 
   # GET /products/1/edit
@@ -55,7 +50,6 @@ class ProductsController < ApplicationController
   def create_from_git_remote
     @type = params[:type].to_sym
     @product = Product.build(product_params.merge(type: @type))
-    @new_method = @type == :usr ? 'git' : params[:new_method]
 
     respond_to do |format|
       if @product.create_from_git_remote
@@ -73,7 +67,6 @@ class ProductsController < ApplicationController
   def create_from_rails_template
     @type = params[:type].to_sym
     @product = Product.build(product_params.merge(type: @type))
-    @new_method = @type == :usr ? 'git' : params[:new_method]
 
     respond_to do |format|
       if @product.create_from_rails_template
