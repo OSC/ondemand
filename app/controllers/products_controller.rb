@@ -29,14 +29,14 @@ class ProductsController < ApplicationController
   def new_from_git_remote
     @type = params[:type].to_sym
     @product = Product.build(type: @type)
-    @new_method = @type == :usr ? 'git' : params[:new_method]
+    @new_method = 'git' if @type == :usr
   end
 
   # GET /products/new_from_rails_template
   def new_from_rails_template
     @type = params[:type].to_sym
     @product = Product.build(type: @type)
-    @new_method = @type == :usr ? 'git' : params[:new_method]
+    @new_method = 'template' if @type == :usr
   end
 
   # GET /products/1/edit
@@ -50,7 +50,7 @@ class ProductsController < ApplicationController
   def create_from_git_remote
     @type = params[:type].to_sym
     @product = Product.build(product_params.merge(type: @type))
-    @new_method = @type == :usr ? 'git' : params[:new_method]
+    @new_method = 'git' if @type == :usr
 
     respond_to do |format|
       if @product.create_from_git_remote
@@ -68,7 +68,7 @@ class ProductsController < ApplicationController
   def create_from_rails_template
     @type = params[:type].to_sym
     @product = Product.build(product_params.merge(type: @type))
-    @new_method = @type == :usr ? 'git' : params[:new_method]
+    @new_method = 'template' if @type == :usr
 
     respond_to do |format|
       if @product.create_from_rails_template
