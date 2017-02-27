@@ -1,7 +1,0 @@
-<%= bootstrap_form_for(@product, as: :product, url: form_url) do |f| %>
-    <%= render partial: "form_directory", locals: { f: f } if @product.new_record? %>
-    <%= render partial: "form_manifest", locals: { f: f, product: @product} %>
-    <div class="actions">
-      <%= f.submit 'Submit' %>
-    </div>
-<% end %>
