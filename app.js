@@ -32,6 +32,9 @@ app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
 
 // Set up the routes
+app.get(BASE_URI, function(req, res) {
+  res.redirect(BASE_URI + SSH_URI + '/default');
+});
 app.get(BASE_URI + SSH_URI + '/*', function(req, res) {
   res.render('index', {
     baseURI: BASE_URI
