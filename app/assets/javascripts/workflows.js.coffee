@@ -120,9 +120,9 @@
     $("#copy_button").attr("disabled", true)
     $("#copy_button").bind('click', false)
 
-@update_copy_template_button = (path, host) ->
-  if path && host?
-    $("#copy_template_button").attr("href", Routes.new_template_path({ path: path, host: host }))
+@update_copy_template_button = (path) ->
+  if path?
+    $("#copy_template_button").attr("href", Routes.new_template_path({ path: path }))
     $("#copy_template_button").data("method", "GET")
     $("#copy_template_button").removeAttr("disabled")
     $("#copy_template_button").unbind('click', false)
@@ -239,7 +239,7 @@ $ ->
     update_staging_template_dir(row.data("path"))
     update_open_template_button(row.data("fs"))
     get_folder_contents_from_api(row.data("api"))
-    update_copy_template_button(row.data("path"), row.data("host"))
+    update_copy_template_button(row.data("path"))
 
 @update_notes = (notes) ->
   if notes?
