@@ -19,7 +19,7 @@ OOD Rails app for Open OnDemand for creating and managing batch jobs from templa
 2. Build the app (install dependencies and build assets)
 
   ```sh
-  scl enable rh-ruby22 -- bin/bundle install --path vendor/bundle
+  scl enable rh-ruby22 git19 -- bin/bundle install --path vendor/bundle
   scl enable rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=production
   scl enable rh-ruby22 -- bin/rake tmp:clear
   ```
