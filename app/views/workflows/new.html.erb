@@ -4,14 +4,14 @@
 
 <div class="col-md-7">
   <div class="panel">
-    <% if @templates.any? %>
-        <a class="btn btn-default btn-sm btn-info" id="new_template_button" href="<%= new_template_path %>" data-toggle="tooltip" title="Create a new template" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Template</a>
-    <% end %>
-
+    <a class="btn btn-default btn-sm btn-info" id="new_template_button" href="<%= new_template_path %>" data-toggle="tooltip" title="Create a new template" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Template</a>
     <a class="btn btn-default btn-sm btn-info" id="copy_template_button" data-toggle="tooltip" title="Copy Template" role="button" data-method="get" disabled><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> Copy Template</a>
-
-    <a class="pull-right btn btn-default btn-sm btn-templates" id="template_button" data-toggle="tooltip" title="Create template from selected job" data-method="get" role="button" disabled><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Create Template</a>
   </div>
+
+</div>
+
+<div class="col-md-5">
+  <!-- placeholder -->
 </div>
 
 <%# render 'form', workflow: @workflow %>
@@ -34,6 +34,7 @@
         <a class="btn btn-danger btn-sm pull-right" id="destroy_template_button" data-toggle="tooltip" title="Delete Job" data-method="get" data-confirm="Are you sure?" role="button" disabled>
           <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
         </a>
+      </div>
 
 
         <div class="panel-body">
@@ -58,7 +59,6 @@
             </tbody>
           </table>
         </div>
-      </div>
     </div>
   </div>
 
