@@ -2,6 +2,18 @@
   <h2>Templates <br><small>To create a new job, select a template to copy, fill out the form to the right, and click "Create New Job".</small></h2>
 </div>
 
+<div class="col-md-7">
+  <div class="panel">
+    <% if @templates.any? %>
+        <a class="btn btn-default btn-sm btn-info" id="new_template_button" href="<%= new_template_path %>" data-toggle="tooltip" title="Create a new template" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Template</a>
+    <% end %>
+
+    <a class="btn btn-default btn-sm btn-info" id="copy_template_button" data-toggle="tooltip" title="Copy Template" role="button" data-method="get" disabled><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> Copy Template</a>
+
+    <a class="pull-right btn btn-default btn-sm btn-templates" id="template_button" data-toggle="tooltip" title="Create template from selected job" data-method="get" role="button" disabled><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Create Template</a>
+  </div>
+</div>
+
 <%# render 'form', workflow: @workflow %>
 
 <div class="row">
@@ -9,6 +21,20 @@
   <div class="col-md-7">
     <div id="job-list-view" class="panel panel-default">
       <div class="panel-body">
+
+        <a class="btn btn-default btn-sm btn-primary" id="open_dir_button" target="_blank" data-toggle="tooltip" title="Open Directory in File Manager" role="button" disabled>
+          <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit Files
+        </a>
+        <a class="btn btn-default btn-sm btn-primary" id="edit_template_button" data-toggle="tooltip" title="Specify Template Options" role="button" data-method="get" disabled>
+          <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Template Default Options
+        </a>
+        <a class="btn btn-default btn-sm btn-primary" id="terminal_button" target="_blank" data-toggle="tooltip" title="Open Selected Template in the Terminal" role="button" disabled>
+          <span class="glyphicon glyphicon-console" aria-hidden="true"></span> Open Terminal
+        </a>
+        <a class="btn btn-danger btn-sm pull-right" id="destroy_template_button" data-toggle="tooltip" title="Delete Job" data-method="get" data-confirm="Are you sure?" role="button" disabled>
+          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
+        </a>
+
 
         <div class="panel-body">
           <div id="joyride-table-stop"></div>
