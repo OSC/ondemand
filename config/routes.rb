@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   get "errors/not_found"
   get "errors/internal_server_error"
   get "dashboard/index"
+  get "logout" => "dashboard#logout"
+
 
   get "apps/show/:name(/:type(/:owner))" => "apps#show", as: "app", defaults: { type: "sys" }
   get "apps/icon/:name(/:type(/:owner))" => "apps#icon", as: "app_icon", defaults: { type: "sys" }
