@@ -75,7 +75,7 @@ class TemplatesController < ApplicationController
 
     respond_to do |format|
       if saved
-        format.html { redirect_to templates_path }
+        format.html { redirect_to new_workflow_path }
         format.json { render action: 'show', status: :created, location: @template }
       else
         format.html { render action: 'new', notice: "error creating template" }
