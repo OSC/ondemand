@@ -9,30 +9,23 @@ the `ood` account, this app should run as `ood`.
 
 ## New Install
 
-1.  (RHEL Software Collections) First ensure your environment matches the
-    environment that the web app runs under. You can do this by running:
-
-    ```sh
-    scl enable rh-ruby22 nodejs010 git19 -- bash
-    ```
-
-3.  Start in the **build directory** for all sys apps, clone and check out the
+1.  Start in the **build directory** for all sys apps, clone and check out the
     latest version of the shell app (make sure the app directory's name is
     `shell`):
 
     ```sh
-    git clone https://github.com/OSC/ood-shell.git shell
+    scl enable git19 -- git clone https://github.com/OSC/ood-shell.git shell
     cd shell
-    git checkout tags/v1.1.2
+    scl enable git19 -- git checkout tags/v1.1.2
     ```
 
-4.  Install the required packages:
+2.  Install the required packages:
 
     ```sh
-    npm install
+    scl enable git19 nodejs010 -- npm install
     ```
 
-5.  (Optional) Create a `.env` file specifying the default ssh host (default:
+3.  (Optional) Create a `.env` file specifying the default ssh host (default:
     `localhost`):
 
     ```sh
@@ -41,7 +34,7 @@ the `ood` account, this app should run as `ood`.
     DEFAULT_SSHHOST='oakley.osc.edu'
     ```
 
-6. Copy the built app directory to the deployment directory, and start the server. i.e.:
+4. Copy the built app directory to the deployment directory, and start the server. i.e.:
 
   ```sh
   sudo mkdir -p /var/www/ood/apps/sys/shell
@@ -50,41 +43,35 @@ the `ood` account, this app should run as `ood`.
 
 ## Updating to a New Stable Version
 
-1.  (RHEL Software Collections) First ensure your environment matches the
-    environment that the web app runs under. You can do this by running:
-
-    ```sh
-    scl enable rh-ruby22 nodejs010 git19 -- bash
-    ```
-2.  To update the app you will first go into the build directory from when you
+1.  To update the app you will first go into the build directory from when you
     installed it and fetch the latest changes to the code:
 
     ```sh
     cd shell
-    git fetch
+    scl enable git19 -- git fetch
     ```
 
-3.  Determine the latest stable version of this app. At the top of this
+2.  Determine the latest stable version of this app. At the top of this
     `README.md` you will see it in a green box. Record this `X.X.X` for the
     next step.
 
-4.  Then you will check out the latest stable version of the code that you took
+3.  Then you will check out the latest stable version of the code that you took
     note of in step 2:
 
     ```sh
-    git checkout tags/vX.X.X
+    scl enable git19 -- git checkout tags/vX.X.X
     ```
 
     Don't forget to replace the `X.X.X` above with what you have from step 2.
     Note that you need the letter `v` preceding the version number.
 
-5.  You will then update any required packages if necessary:
+4.  You will then update any required packages if necessary:
 
     ```sh
-    npm install
+    scl enable nodejs010 -- npm install
     ```
 
-6.  Finally you will force all Passenger instances of this app to restart so
+5.  Finally you will force all Passenger instances of this app to restart so
     that the changes are successfully propagated to the users:
 
     ```sh
