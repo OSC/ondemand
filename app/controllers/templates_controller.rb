@@ -106,7 +106,7 @@ class TemplatesController < ApplicationController
       FileUtils.rm_r @template.path
     end
     respond_to do |format|
-      format.html { redirect_to templates_url }
+      format.html { redirect_to new_workflow_url }
       format.json { head :no_content }
     end
   end

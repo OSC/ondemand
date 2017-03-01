@@ -195,6 +195,17 @@
     $("#destroy_button").attr("disabled", true)
     $("#destroy_button").bind('click', false)
 
+@update_destroy_template_button = (path) ->
+  if path?
+    $("#destroy_template_button").attr("href", Routes.template_path("delete", path: path))
+    $("#destroy_template_button").data("method", "DELETE")
+    $("#destroy_template_button").removeAttr("disabled")
+    $("#destroy_template_button").unbind('click', false)
+  else
+    $("#destroy_template_button").removeAttr("href")
+    $("#destroy_template_button").attr("disabled", true)
+    $("#destroy_template_button").bind('click', false)
+
 # Return the directory path of a file path
 abs_path = (filepath) ->
   if filepath?
@@ -242,6 +253,7 @@ $ ->
     update_copy_template_button(row.data("path"))
     update_open_dir_button(row.data("fs"))
     update_terminal_button(row.data("shell"))
+    update_destroy_template_button(row.data("delete"))
 
 @update_notes = (notes) ->
   if notes?
