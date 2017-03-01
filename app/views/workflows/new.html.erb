@@ -50,7 +50,7 @@
 
             <tbody>
             <% @templates.each_with_index do |template, index| %>
-              <tr class="job-row" data-name="<%= template.name %>" data-host="<%= template.host %>" data-path="<%= template.path %>" data-script="<%= template.manifest.script %>" data-api="<%= Filesystem.new.api(template.path) %>" data-fs="<%= Filesystem.new.fs(template.path) %>" data-notes="<%= template.notes %>">
+              <tr class="job-row" data-name="<%= template.name %>" data-host="<%= template.host %>" data-path="<%= template.path %>" data-script="<%= template.manifest.script %>" data-api="<%= Filesystem.new.api(template.path) %>" <%= "data-fs=#{Filesystem.new.fs(template.path)}" unless template.system? %> data-notes="<%= template.notes %>">
               <td><%= template.name %></td>
               <td><%= template.host.titleize %></td>
               <td><%= template.source.name %></td>
