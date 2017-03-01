@@ -1,9 +1,10 @@
-<% if ENV['OOD_APP_CATALOG_LINK'].present? %>
-<p>If you don't see the app you are looking for, you might need to
-<a href="<%= ENV['OOD_APP_CATALOG_LINK'] %>">request or register for it from the catalog</a>.
-</p>
-<% elsif ENV['OOD_DASHBOARD_SUPPORT_URL'].present? %>
-<p>If you don't see the app you are looking for, please
+<p>
+<% if ENV['OOD_DASHBOARD_SUPPORT_URL'].present? %>
+If you don't see the app you are looking for, please
 <a href="<%= ENV['OOD_DASHBOARD_SUPPORT_URL'] %>">contact support</a>.
-</p>
 <% end %>
+
+<% if ENV['OOD_APP_CATALOG_URL'].present? %>
+<br>A subset of the apps available can be viewed on the <%= link_to 'App Catalog', ENV['OOD_APP_CATALOG_URL'] %>.
+<% end %>
+</p>
