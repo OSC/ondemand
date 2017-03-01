@@ -99,6 +99,10 @@ class Workflow < ActiveRecord::Base
     jobs.last.pbsid unless jobs.last.nil?
   end
 
+  def account
+    job_attrs[:account] unless job_attrs[:account].blank?
+  end
+
   # Define tasks to do after staging template directory typically copy over
   # uploaded files here
   # def after_stage(staged_dir)
