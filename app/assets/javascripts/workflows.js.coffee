@@ -241,6 +241,7 @@ $ ->
     get_folder_contents_from_api(row.data("api"))
     update_copy_template_button(row.data("path"))
     update_open_dir_button(row.data("fs"))
+    update_terminal_button(row.data("shell"))
 
 @update_notes = (notes) ->
   if notes?
