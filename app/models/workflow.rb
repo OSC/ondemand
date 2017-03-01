@@ -95,8 +95,18 @@ class Workflow < ActiveRecord::Base
     File.directory?(staged_dir) ? Find.find(staged_dir).to_a[1..-1] : []
   end
 
+  # Returns the pbsid of the last job in the workflow
+  #
+  # @return [String, nil] the pbsid or nil if no jobs on the workflow
   def pbsid
     jobs.last.pbsid unless jobs.last.nil?
+  end
+
+  # Returns the optional user-entered account string
+  #
+  # @return [String, nil] the account string or nil if blank
+  def account
+    job_attrs[:account] unless job_attrs[:account].blank?
   end
 
   # Define tasks to do after staging template directory typically copy over
