@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.3.0 (2017-03-01)
+
 Features:
 
   - use a YAML file for overriding default configuration
