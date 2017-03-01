@@ -12,7 +12,7 @@ This app is a Rails app for Open OnDemand that serves as a gateway to launching 
   ```sh
   scl enable git19 -- git clone https://github.com/OSC/ood-dashboard.git dashboard
   cd dashboard
-  scl enable git19 -- git checkout tags/v1.6.1
+  scl enable git19 -- git checkout tags/v1.8.0
   ```
 
 2. Build the app (install dependencies and build assets)
@@ -20,10 +20,15 @@ This app is a Rails app for Open OnDemand that serves as a gateway to launching 
   ```sh
   scl enable rh-ruby22 -- bin/bundle install --path vendor/bundle
   scl enable rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=production
-  scl enable rh-ruby22 -- bin/rake tmp:clear
+  scl enable rh-ruby22 nodejs010 -- bin/rake tmp:clear
   ```
 
-3. Copy the built app directory to the deployment directory, and start the server.
+3. Copy the built app directory to the deployment directory, and start the server. i.e.:
+    
+  ```sh
+  mkdir -p /var/www/ood/apps/sys/dashboard
+  rsync -rlptvu . /var/www/ood/apps/sys/dashboard
+  ```
 
 4. Access the dashboard by going to /pun/sys/dashboard
 
@@ -38,7 +43,7 @@ When updating a deployed version of the Open OnDemand dashboard.
   ```sh
   cd dashboard # cd to build directory
   scl enable git19 -- git fetch
-  scl enable git19 -- git checkout tags/v1.6.1 # check out latest tag
+  scl enable git19 -- git checkout tags/v1.8.0 # check out latest tag
   ```
 
 2. Install gem dependencies and rebuild assets
@@ -65,6 +70,10 @@ See the wiki page https://github.com/OSC/ood-dashboard/wiki/Configuration-and-Br
 ### Message Of The Day
 
 See the wiki page https://github.com/OSC/ood-dashboard/wiki/Message-of-the-Day
+
+### Site-wide announcement
+
+See the wiki page https://github.com/OSC/ood-dashboard/wiki/Site-Wide-Announcement
 
 ### App Sharing
 

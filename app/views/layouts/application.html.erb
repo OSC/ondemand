@@ -38,6 +38,12 @@
 
   <div class="container" role="main">
 
+    <% if @announcement %>
+      <div class="alert alert-warning" role="alert">
+        <%=raw markdown(@announcement) %>
+      </div>
+    <% end %>
+
     <script type="text/coffee-script-template" id="js-alert-danger-template">
       <div class="alert alert-danger alert-dismissible" role="alert">
         <button type="button" class="close" data-dismiss="alert">
@@ -65,12 +71,6 @@
           <span class="sr-only">Close</span>
         </button>
         <%= notice %>
-      </div>
-    <% end %>
-
-    <% if @announcement %>
-      <div class="alert alert-warning" role="alert">
-        <%=raw markdown(@announcement) %>
       </div>
     <% end %>
 
