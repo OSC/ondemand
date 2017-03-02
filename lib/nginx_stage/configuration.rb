@@ -343,14 +343,14 @@ module NginxStage
       ]
 
       self.app_config_path   = {
-        dev: '/var/lib/nginx/config/apps/%{env}/%{owner}/%{name}.conf',
-        usr: '/var/lib/nginx/config/apps/%{env}/%{owner}/%{name}.conf',
-        sys: '/var/lib/nginx/config/apps/%{env}/%{name}.conf'
+        dev: '/var/lib/nginx/config/apps/dev/%{owner}/%{name}.conf',
+        usr: '/var/lib/nginx/config/apps/usr/%{owner}/%{name}.conf',
+        sys: '/var/lib/nginx/config/apps/sys/%{name}.conf'
       }
       self.app_root          = {
-        dev: '~%{owner}/ondemand/%{env}/%{name}',
-        usr: '/var/www/ood/apps/%{env}/%{owner}/gateway/%{name}',
-        sys: '/var/www/ood/apps/%{env}/%{name}'
+        dev: '~%{owner}/ondemand/dev/%{name}',
+        usr: '/var/www/ood/apps/usr/%{owner}/gateway/%{name}',
+        sys: '/var/www/ood/apps/sys/%{name}'
       }
       self.app_request_uri   = {
         dev: '/dev/%{name}',
@@ -363,9 +363,9 @@ module NginxStage
         sys: '^/sys/(?<name>[-\w.]+)'
       }
       self.app_token = {
-        dev: '%{env}/%{owner}/%{name}',
-        usr: '%{env}/%{owner}/%{name}',
-        sys: '%{env}/%{name}'
+        dev: 'dev/%{owner}/%{name}',
+        usr: 'usr/%{owner}/%{name}',
+        sys: 'sys/%{name}'
       }
       self.app_passenger_env = {
         dev: 'development',
