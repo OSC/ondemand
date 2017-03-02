@@ -1,7 +1,7 @@
 <%= render 'header' %>
 
 <%= bootstrap_form_for(@product, as: :product, url: create_from_rails_template_path(type: @type)) do |f| %>
-    <%= render "form_directory", f: f if @product.new_record? %>
+    <%= render "form_directory", f: f %>
     <%= render "form_manifest", f: f %>
     <div class="actions">
       <%= f.submit 'Submit' %>
