@@ -56,7 +56,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.10.0)
-    concurrent-ruby (1.0.4)
+    concurrent-ruby (1.0.5)
     dotenv (2.2.0)
     dotenv-rails (2.2.0)
       dotenv (= 2.2.0)
@@ -66,7 +66,7 @@ GEM
     ffi (1.9.17)
     font-awesome-sass (4.4.0)
       sass (>= 3.2)
-    i18n (0.8.0)
+    i18n (0.8.1)
     jbuilder (1.5.3)
       activesupport (>= 3.0.0)
       multi_json (>= 1.2.0)
@@ -97,7 +97,7 @@ GEM
     minitest (5.10.1)
     multi_json (1.12.1)
     mustache (1.0.3)
-    ood_appkit (0.3.3)
+    ood_appkit (0.3.4)
       addressable (~> 2.4)
       lograge (~> 0.3)
       ood_cluster (~> 0.0)
@@ -171,7 +171,7 @@ GEM
       libv8 (~> 3.16.14.0)
       ref
     thor (0.19.4)
-    thread_safe (0.3.5)
+    thread_safe (0.3.6)
     tilt (2.0.5)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
