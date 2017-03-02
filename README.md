@@ -13,7 +13,7 @@ Application displays the current system status of jobs running, queued, and held
   ```sh
   scl enable git19 -- git clone https://github.com/OSC/ood-activejobs.git activejobs
   cd activejobs
-  scl enable git19 -- git checkout tags/v1.3.0
+  scl enable git19 -- git checkout tags/v1.3.1
   ```
 
 2. Build the app (install dependencies and build assets)
@@ -42,7 +42,7 @@ When updating a deployed version of the Open OnDemand activejobs app.
   ```sh
   cd dashboard # cd to build directory
   scl enable git19 -- git fetch
-  scl enable git19 -- git checkout tags/v1.3.0 # check out latest tag
+  scl enable git19 -- git checkout tags/v1.3.1 # check out latest tag
   ```
 
 2. Install gem dependencies and rebuild assets
