@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 0.2.1 (2017-03-02)
+
 Bugfixes:
 
   - removed `%{env}` from config for better readability
