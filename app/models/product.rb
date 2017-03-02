@@ -13,7 +13,7 @@ class Product
 
   validates :name, presence: true
 
-  validate :app_does_not_exist, on: :create_app
+  validate :app_does_not_exist, on: [:create_from_git_remote, :create_from_rails_template]
   validates :git_remote, presence: true, on: :create_from_git_remote
 
   # lint a given app
