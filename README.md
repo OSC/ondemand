@@ -31,32 +31,35 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
   scl enable git19 rh-ruby22 nodejs010 -- git checkout tags/v1.3.0  # use the latest tag
   ```
 
-2. (OPTIONAL) Update the environment variables as appropriate.
+2. (OPTIONAL) Update the application settings via environment variables as appropriate.
 
-  * Copy the `.env.example` to `.env` and configure the environment for the system.
+  * If you wish to Copy the `.env.example` to `.env` and configure the environment for the system.
   
     ```sh
     cp .env.example .env
     ```
     
-  * Edit the variables in `.env` as appropriate for your system.
+  * Uncomment the variables you wish to modify and edit as appropriate for your system.
     
     ```sh
-    # The uri path to the ood-fileeditor app (if installed) [Default: ""]
-    OOD_FILE_EDITOR='/pun/sys/file-editor/edit'
+    # The uri path to the ood-fileeditor app (if installed) [Default: "/pun/sys/file-editor/edit"]
+    # Uncomment the line below to configure the file editor URI path.
+    # OOD_FILE_EDITOR='/pun/sys/file-editor/edit'
     
-    # The uri path to the ood-shell app (if installed) [Default: ""]
-    OOD_SHELL='/pun/sys/shell/ssh/default'
+    # The uri path to the ood-shell app (if installed) [Default: "/pun/sys/shell/ssh/default"]
+    # Uncomment the line below to configure shell URI path.
+    # OOD_SHELL='/pun/sys/shell/ssh/default'
     
-    # The maximum file upload size as integer (in bytes) [Default: 2097152000]
-    FILE_UPLOAD_MAX=10485760000
+    # The maximum file upload size as integer (in bytes) [Default: 10485760000]
+    # Uncomment the line below to configure the maximum upload size.
+    # FILE_UPLOAD_MAX=10485760000
     ```
   
-    * Update `OOD_FILE_EDITOR` to the path of the system installed [`ood-fileeditor`](https://github.com/OSC/ood-fileeditor) application. Setting this value to an empty string will remove the "Edit Files" button and option from the file explorer. (ex. `OOD_FILE_EDITOR=''`)
+    * Uncomment and update `OOD_FILE_EDITOR` to the path of the system installed [`ood-fileeditor`](https://github.com/OSC/ood-fileeditor) application. Setting this value to an empty string will remove the "Edit Files" button and option from the file explorer. (ex. `OOD_FILE_EDITOR=''`)
   
-    * Update `OOD_SHELL` to the path of the system installed [`ood-shell`](https://github.com/OSC/ood-shell) application. Setting this value to an empty string will remove the "Open in Terminal" button and option from the file explorer. (ex. `OOD_SHELL=''`)
+    * Uncomment and update `OOD_SHELL` to the path of the system installed [`ood-shell`](https://github.com/OSC/ood-shell) application. Setting this value to an empty string will remove the "Open in Terminal" button and option from the file explorer. (ex. `OOD_SHELL=''`)
   
-    * Update `FILE_UPLOAD_MAX` to be the maximum allowable upload size (in bytes) for file uploads in the app. If a user attempts to exceed this value, the upload will be blocked. Uploads are processed in `/var/tmp` by the Passenger process, so uploads will be practically limited by the available space in this location. It is recommended that this value be less than half of the available space in `/var/tmp`, or less, to allow for concurrent uploaders. If this value is not configured, the default will be 2 GB.
+    * Uncomment and update `FILE_UPLOAD_MAX` to be the maximum allowable upload size (in bytes) for file uploads in the app. If a user attempts to exceed this value, the upload will be blocked. Uploads are processed in `/var/tmp` by the Passenger process, so uploads will be practically limited by the available space in this location. It is recommended that this value be less than half of the available space in `/var/tmp`, or less, to allow for concurrent uploaders. If this value is not configured, the default will be 10 GB.
   
 3. Build the app (install dependencies and build assets)
  
