@@ -74,11 +74,11 @@ OOD Rails app for Open OnDemand for creating and managing batch jobs from templa
 
 "My Jobs" attempts to model a simple but common workflow. When creating a new batch job to run a simulation a user may:
 
-1. copy the a directory of a job they already ran or an example job
+1. copy the directory of a job they already ran or an example job
 2. edit the files
 3. submit a new job
 
-"My Jobs" implements these steps by proving the user job template directories and the ability to make copies of them.
+"My Jobs" implements these steps by providing the user job template directories and the ability to make copies of them.
 
 1. copy the a directory of a job they already ran or an example job
 
