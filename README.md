@@ -26,8 +26,8 @@ This app is a Rails app for Open OnDemand that serves as a gateway to launching 
 3. Copy the built app directory to the deployment directory, and start the server. i.e.:
     
   ```sh
-  mkdir -p /var/www/ood/apps/sys/dashboard
-  rsync -rlptvu . /var/www/ood/apps/sys/dashboard
+  sudo mkdir -p /var/www/ood/apps/sys/dashboard
+  sudo rsync -rlptvu . /var/www/ood/apps/sys/dashboard
   ```
 
 4. Access the dashboard by going to /pun/sys/dashboard
