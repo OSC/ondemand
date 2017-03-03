@@ -22,6 +22,7 @@
 
 # files used for deployment should not be versioned
 /public/.htaccess
+/public/assets
 /.env.local
 /.env.production.local
 
