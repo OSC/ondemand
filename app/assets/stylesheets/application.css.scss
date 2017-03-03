@@ -51,6 +51,12 @@ body {
   padding-top: $navbar-height + 10;
 }
 
+// Borrowed from bootstrap 4
+// Remove this block if/when upgraded to bootstrap 4
+.mb-2 {
+  margin-bottom: (2rem * .25) !important;
+}
+
 // Your custom css styles below (must be manually added)
 @import "dashboard";
 @import "navbar";
