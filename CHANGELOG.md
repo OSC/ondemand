@@ -1,5 +1,9 @@
 ## Unreleased
 
+Bugfixes:
+
+  - fix double escaping query params on redirect
+
 ## 0.3.0 (2017-03-01)
 
 Features:

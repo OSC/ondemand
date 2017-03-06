@@ -22,7 +22,7 @@ Listen <%= addr_port %>
 #
 <VirtualHost *:80>
   RewriteEngine On
-  RewriteRule ^(.*) <%= @ssl ? "https" : "http" %>://<%= @servername || "%{SERVER_NAME}" %>:<%= @port %>$1 [R=301,L]
+  RewriteRule ^(.*) <%= @ssl ? "https" : "http" %>://<%= @servername || "%{SERVER_NAME}" %>:<%= @port %>$1 [R=301,NE,L]
 </VirtualHost>
 <% end -%>
 
@@ -37,7 +37,7 @@ Listen <%= addr_port %>
 
   RewriteEngine On
   RewriteCond %{HTTP_HOST} !^(<%= @servername %>(:<%= @port %>)?)?$ [NC]
-  RewriteRule ^(.*) <%= @ssl ? "https" : "http" %>://<%= @servername %>:<%= @port %>$1 [R=301,L]
+  RewriteRule ^(.*) <%= @ssl ? "https" : "http" %>://<%= @servername %>:<%= @port %>$1 [R=301,NE,L]
   <%- end -%>
 
   <%- if @ssl -%>
