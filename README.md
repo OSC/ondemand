@@ -68,7 +68,7 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
     
   ```sh
   sudo mkdir -p /var/www/ood/apps/sys/files
-  sudo rsync -rlptvu . /var/www/ood/apps/sys/files
+  sudo rsync -rlptvu --delete . /var/www/ood/apps/sys/files
   ```
   
 ## Updating to a new stable version
