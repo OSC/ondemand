@@ -4,6 +4,6 @@
 # Don't include the node modules
 /node_modules/
 
-#.gitignore
+# ignore everyting in tmp but keep tmp dir around
 /tmp/*
 !/tmp/.keep
