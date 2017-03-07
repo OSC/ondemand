@@ -40,11 +40,11 @@ A simple Rails web app that uses https://ace.c9.io/ for editing files. It is mea
 
 [_See wiki for OSC specific installation and update instructions_](https://github.com/OSC/ood-fileeditor/wiki)
 
-1. Navigate to the app installation and check out the [latest version]((https://github.com/OSC/ood-fileeditor/releases)).
+1. Navigate to the app's build directory and check out the [latest version]((https://github.com/OSC/ood-fileeditor/releases)).
 
   ```sh
-  scl enable git19 rh-ruby22 nodejs010 -- git pull
-  scl enable git19 rh-ruby22 nodejs010 -- git checkout tags/v1.2.3  # use the latest tag
+  scl enable git19 -- git fetch
+  scl enable git19 -- git checkout tags/v1.2.3  # use the latest tag
   ```
   
 2. Install gem dependencies and rebuild assets
@@ -59,7 +59,7 @@ A simple Rails web app that uses https://ace.c9.io/ for editing files. It is mea
 3. Restart the app
   
   ```sh
-  scl enable git19 rh-ruby22 nodejs010 -- touch tmp/restart.txt
+  touch tmp/restart.txt
   ```
   
 ## Usage
