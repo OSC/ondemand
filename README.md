@@ -28,7 +28,7 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
   ```sh
   scl enable git19 -- git clone https://github.com/OSC/ood-fileexplorer.git files
   cd files
-  scl enable git19 -- git checkout tags/v1.3.0
+  scl enable git19 -- git checkout tags/v1.3.1
   ```
 
 
@@ -54,7 +54,7 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
 
   ```sh
   scl enable git19 -- git fetch
-  scl enable git19 -- git checkout tags/v1.3.0  # use the latest tag
+  scl enable git19 -- git checkout tags/v1.3.1
   ```
   
 2. Install node dependencies reinstall modules
