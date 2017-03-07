@@ -28,7 +28,7 @@ Application displays the current system status of jobs running, queued, and held
 
   ```sh
   sudo mkdir -p /var/www/ood/apps/sys/activejobs
-  sudo rsync -rlptvu . /var/www/ood/apps/sys/activejobs
+  sudo rsync -rlptvu --delete . /var/www/ood/apps/sys/activejobs
   ```
 
 4. Access the app through dashboard by going to /pun/sys/dashboard and then clicking "Active Jobs" from the Jobs menu
