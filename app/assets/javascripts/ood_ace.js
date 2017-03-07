@@ -1,5 +1,5 @@
 $( document ).ready(function () {
-    
+
     // Do not load the ace editor if the element is not available
     // ex. for directory views
     if ( $( '#editor' ).length ) {
@@ -14,6 +14,7 @@ $( document ).ready(function () {
         var loadedContent = $.ajax({
             url: apiUrl,
             type: 'GET',
+            dataType: "text",
             success: function (data) {
                 editorContent = data;
                 $("#editor").text(editorContent);
