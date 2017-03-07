@@ -26,9 +26,9 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
 1. Starting in the build directory for all sys apps (i.e. `cd ~/ood_portals/ondemand/sys`), clone and check out the [latest version](https://github.com/OSC/ood-fileexplorer/releases) of the file explorer:
 
   ```sh
-  scl enable git19 rh-ruby22 nodejs010 -- git clone https://github.com/OSC/ood-fileexplorer.git files
-  scl enable git19 rh-ruby22 nodejs010 -- cd files
-  scl enable git19 rh-ruby22 nodejs010 -- git checkout tags/v1.3.0  # use the latest tag
+  scl enable git19 -- git clone https://github.com/OSC/ood-fileexplorer.git files
+  cd files
+  scl enable git19 -- git checkout tags/v1.3.0  # use the latest tag
   ```
 
 2. (OPTIONAL) Update the application settings via environment variables as appropriate.
@@ -71,7 +71,7 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
     
   ```sh
   sudo mkdir -p /var/www/ood/apps/sys/files
-  sudo rsync -rlptvu . /var/www/ood/apps/sys/files
+  sudo rsync -rlptvu --delete . /var/www/ood/apps/sys/files
   ```
   
 ## Updating to a new stable version
