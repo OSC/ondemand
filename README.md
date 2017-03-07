@@ -28,7 +28,7 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
   ```sh
   scl enable git19 -- git clone https://github.com/OSC/ood-fileexplorer.git files
   cd files
-  scl enable git19 -- git checkout tags/v1.3.0  # use the latest tag
+  scl enable git19 -- git checkout tags/v1.3.0
   ```
 
 
@@ -36,7 +36,7 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
 2. Build the app (install dependencies and build assets)
  
   ```sh
-  scl enable git19 rh-ruby22 nodejs010 -- npm i
+  scl enable git19 rh-ruby22 nodejs010 -- npm install
   ```
   
 3. Copy the built app directory to the deployment directory, and start the server. i.e.:
@@ -53,14 +53,14 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
 1. Navigate to the app installation and check out the [latest version]((https://github.com/OSC/ood-fileexplorer/releases)).
 
   ```sh
-  scl enable git19 rh-ruby22 nodejs010 -- git pull
-  scl enable git19 rh-ruby22 nodejs010 -- git checkout tags/v1.3.0  # use the latest tag
+  scl enable git19 -- git fetch
+  scl enable git19 -- git checkout tags/v1.3.0  # use the latest tag
   ```
   
 2. Install node dependencies reinstall modules
 
   ```sh
-  scl enable git19 rh-ruby22 nodejs010 -- npm update
+  scl enable git19 rh-ruby22 nodejs010 -- npm install
   ```
   
 3. Restart the app
@@ -73,13 +73,13 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
   
 (OPTIONAL) Update the application settings via environment variables as appropriate.
 
-  * If you wish to Copy the `.env.example` to `.env` and configure the environment for the system.
+  * Copy the `.env.example` to `.env`
   
     ```sh
     cp .env.example .env
     ```
     
-  * Uncomment the variables you wish to modify and edit as appropriate for your system.
+  * Uncomment the variables you wish to modify
     
     ```sh
     # The uri path to the ood-fileeditor app (if installed) [Default: "/pun/sys/file-editor/edit"]
