@@ -38,7 +38,7 @@ the `ood` account, this app should run as `ood`.
 
   ```sh
   sudo mkdir -p /var/www/ood/apps/sys/shell
-  sudo rsync -rlptvu . /var/www/ood/apps/sys/shell
+  sudo rsync -rlptvu --delete . /var/www/ood/apps/sys/shell
   ```
 
 ## Updating to a New Stable Version
