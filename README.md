@@ -8,7 +8,7 @@ Application displays the current system status of jobs running, queued, and held
 
 **Installation assumptions: you have an Open OnDemand installation with File Explorer and Shell apps installed and a cluster config added to /etc/ood/config/clusters.d directory.**
 
-1. Starting in the build directory for all sys apps (i.e. `cd ~/ood_portals/ondemand/sys`), clone and check out the latest version of activejobs:
+1. Starting in the build directory for all sys apps, clone and check out the latest version of activejobs:
 
   ```sh
   scl enable git19 -- git clone https://github.com/OSC/ood-activejobs.git activejobs
