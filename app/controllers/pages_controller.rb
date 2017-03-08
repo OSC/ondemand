@@ -67,7 +67,7 @@ class PagesController < ApplicationController
     end
   end
 
-  # Get a set of jobs defined by the filtering cookie.
+  # Get a set of jobs defined by the filtering parameter.
   def get_jobs
     jobs = Array.new
     OODClusters.each do |key, value|
@@ -78,10 +78,10 @@ class PagesController < ApplicationController
           bin: server.bin
       )
 
-      # Checks the cookies and gets the appropriate job set.
+      # Checks the params and gets the appropriate job set.
       # Default to user set on first load
       param = params[:jobfilter] || Filter.default_id
-      filter = Filter.list.find { |f| f.cookie_id == param }
+      filter = Filter.list.find { |f| f.filter_id == param }
       result = filter ? filter.apply(b.get_jobs) : b.get_jobs
 
       # Only add the running jobs to the list and assign the host to the object.
