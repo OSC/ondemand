@@ -7,7 +7,7 @@ This app is a Rails app for Open OnDemand that serves as a gateway to launching 
 ## New Install
 
 
-1. Starting in the build directory for all sys apps (i.e. `cd ~/ood_portals/ondemand/sys`), clone and check out the latest version of the dashboard (make sure the app directory's name is "dashboard"):
+1. Starting in the build directory for all sys apps, clone and check out the latest version of the dashboard (make sure the app directory's name is "dashboard"):
 
   ```sh
   scl enable git19 -- git clone https://github.com/OSC/ood-dashboard.git dashboard
