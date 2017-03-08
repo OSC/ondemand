@@ -28,7 +28,7 @@ Application displays the current system status of jobs running, queued, and held
 
   ```sh
   sudo mkdir -p /var/www/ood/apps/sys/activejobs
-  sudo rsync -rlptvu --delete . /var/www/ood/apps/sys/activejobs
+  sudo cp -r . /var/www/ood/apps/sys/activejobs
   ```
 
 4. Access the app through dashboard by going to /pun/sys/dashboard and then clicking "Active Jobs" from the Jobs menu
@@ -61,6 +61,11 @@ When updating a deployed version of the Open OnDemand activejobs app.
   ```
 
 4. Copy the built app directory to the deployment directory. There is no need to restart the server. Because we touched `tmp/restart.txt` in the app, the next time a user accesses an app Passenger will reload their app.
+
+  ```sh
+  sudo mkdir -p /var/www/ood/apps/sys/activejobs
+  sudo rsync -rlptvu --delete . /var/www/ood/apps/sys/activejobs
+  ```
 
 ## Usage
 
