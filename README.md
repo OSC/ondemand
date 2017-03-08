@@ -37,7 +37,7 @@ the `ood` account, this app should run as `ood`.
 4. Copy the built app directory to the deployment directory, and start the server. i.e.:
 
   ```sh
-  sudo cp -r . /var/ww/ood/apps/sys/shell
+  sudo cp -r . /var/www/ood/apps/sys/shell
   ```
 
 ## Updating to a New Stable Version
