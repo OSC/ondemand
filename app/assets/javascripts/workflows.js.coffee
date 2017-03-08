@@ -2,6 +2,10 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
+$(window).focus ->
+  update_display(active_var())
+  return
+
 @update_display = (id) ->
   request_job_data(id)
   update_destroy_button(id)
