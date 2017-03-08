@@ -13,7 +13,7 @@ A simple Rails web app that uses https://ace.c9.io/ for editing files. It is mea
 
 ## New Install
 
-1. Starting in the build directory for all sys apps (i.e. `cd ~/ood_portals/ondemand/sys`), clone and check out the [latest version](https://github.com/OSC/ood-fileeditor/releases) of the file editor:
+1. Starting in the build directory for all sys apps, clone and check out the [latest version](https://github.com/OSC/ood-fileeditor/releases) of the file editor:
 
   ```sh
   scl enable git19 -- git clone https://github.com/OSC/ood-fileeditor.git file-editor
