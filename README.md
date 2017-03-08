@@ -84,7 +84,7 @@ OOD Rails app for Open OnDemand for creating and managing batch jobs from templa
 
   1. User can create a new job from a "default" template.
   
-    1. A custom default template can be defined in `/var/www/ood/apps/sys/myjobs/templates/default`
+    1. A custom default template can be defined at `/var/www/ood/apps/sys/myjobs/templates/default`
     2. If no default template is specified, the default is `/var/www/ood/apps/sys/myjobs/example_templates/torque`
 
   2. user can select a directory to copy from a list of "System" templates the admin copied to `/var/www/ood/apps/sys/myjobs/templates` during installation
