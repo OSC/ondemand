@@ -28,7 +28,7 @@ OOD Rails app for Open OnDemand for creating and managing batch jobs from templa
     
   ```sh
   sudo mkdir -p /var/www/ood/apps/sys/myjobs
-  sudo rsync -rlptvu --delete . /var/www/ood/apps/sys/myjobs
+  sudo cp -r . /var/www/ood/apps/sys/myjobs
   ```
 
 4. Access the app through dashboard by going to /pun/sys/dashboard and then clicking "My Jobs" from the Jobs menu
@@ -70,6 +70,11 @@ OOD Rails app for Open OnDemand for creating and managing batch jobs from templa
   ```
 
 4. Copy the built app directory to the deployment directory. There is no need to restart the server. Because we touched `tmp/restart.txt` in the app, the next time a user accesses an app Passenger will reload their app.
+
+  ```sh
+  sudo mkdir -p /var/www/ood/apps/sys/myjobs
+  sudo rsync -rlptvu --delete . /var/www/ood/apps/sys/myjobs
+  ```
 
 
 ## Usage
