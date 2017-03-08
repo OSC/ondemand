@@ -23,7 +23,7 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
 
 ## New Install
 
-1. Starting in the build directory for all sys apps (i.e. `cd ~/ood_portals/ondemand/sys`), clone and check out the [latest version](https://github.com/OSC/ood-fileexplorer/releases) of the file explorer:
+1. Starting in the build directory for all sys apps, clone and check out the [latest version](https://github.com/OSC/ood-fileexplorer/releases) of the file explorer:
 
   ```sh
   scl enable git19 -- git clone https://github.com/OSC/ood-fileexplorer.git files
