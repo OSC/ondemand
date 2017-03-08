@@ -8,7 +8,7 @@ OOD Rails app for Open OnDemand for creating and managing batch jobs from templa
 
 **Installation assumptions: you have an Open OnDemand installation with File Explorer and Shell apps installed and a cluster config added to /etc/ood/config/clusters.d directory.**
 
-1. Starting in the build directory for all sys apps (i.e. `cd ~/ood_portals/ondemand/sys`), clone and check out the latest version of myjobs (make sure the app directory's name is "myjobs"):
+1. Starting in the build directory for all sys apps, clone and check out the latest version of myjobs (make sure the app directory's name is "myjobs"):
 
   ```sh
   scl enable git19 -- git clone https://github.com/OSC/ood-myjobs.git myjobs
@@ -38,7 +38,9 @@ OOD Rails app for Open OnDemand for creating and managing batch jobs from templa
   ```sh
   # the templates directory is hidden in the .gitignore,
   # so we can pull a directory of templates from another source
+  # this is an example of deploying OSC's templates it provides to its users
   git clone git@github.com:OSC/osc-myjobs-templates.git templates
+  cp -r templates /var/www/ood/apps/sys/myjobs/templates
   ```
 
 ## Updating to a New Stable Version
