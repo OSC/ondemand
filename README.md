@@ -27,7 +27,7 @@ This app is a Rails app for Open OnDemand that serves as a gateway to launching 
     
   ```sh
   sudo mkdir -p /var/www/ood/apps/sys/dashboard
-  sudo rsync -rlptvu --delete . /var/www/ood/apps/sys/dashboard
+  sudo cp -r . /var/www/ood/apps/sys/dashboard
   ```
 
 4. Access the dashboard by going to /pun/sys/dashboard
@@ -62,6 +62,12 @@ When updating a deployed version of the Open OnDemand dashboard.
   ```
 
 4. Copy the built app directory to the deployment directory. There is no need to restart the server. Because we touched `tmp/restart.txt` in the app, the next time a user accesses an app Passenger will reload their app.
+
+  ```sh
+  sudo mkdir -p /var/www/ood/apps/sys/dashboard
+  sudo rsync -rlptvu --delete . /var/www/ood/apps/sys/dashboard
+  ```
+
 
 ## Configuration
 
