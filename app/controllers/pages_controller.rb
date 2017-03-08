@@ -2,7 +2,6 @@ class PagesController < ApplicationController
   include ApplicationHelper
 
   def index
-    cookies[:jobfilter] = cookies[:jobfilter] || Filter.default_id
   end
 
   # Used to send the data to the Datatable.
@@ -81,8 +80,8 @@ class PagesController < ApplicationController
 
       # Checks the cookies and gets the appropriate job set.
       # Default to user set on first load
-      cookie = cookies[:jobfilter] || 'user'
-      filter = Filter.list.find { |f| f.cookie_id == cookie }
+      param = params[:jobfilter] || Filter.default_id
+      filter = Filter.list.find { |f| f.cookie_id == param }
       result = filter ? filter.apply(b.get_jobs) : b.get_jobs
 
       # Only add the running jobs to the list and assign the host to the object.
