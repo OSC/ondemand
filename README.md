@@ -32,8 +32,7 @@ A simple Rails web app that uses https://ace.c9.io/ for editing files. It is mea
 3. Copy the built app directory to the deployment directory, and start the server. i.e.:
     
   ```sh
-  sudo mkdir -p /var/www/ood/apps/sys/file-editor
-  sudo rsync -rlptvu --delete . /var/www/ood/apps/sys/file-editor
+  sudo cp -r . /var/www/ood/apps/sys/file-editor
   ```
   
 ## Updating to a new stable version
