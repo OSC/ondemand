@@ -43,7 +43,7 @@ the `ood` account, this app should run as `ood`.
 
 ## Updating to a New Stable Version
 
-1. Fetch and checkout new version of code:
+1. Navigate to the app's build directory and check out the latest version.
 
   ```sh
   cd shell # cd to build directory
@@ -57,7 +57,7 @@ the `ood` account, this app should run as `ood`.
   scl enable nodejs010 -- npm install
   ```
 
-3. Restart app
+3. Restart the app
 
   ```sh
   touch tmp/restart.txt
