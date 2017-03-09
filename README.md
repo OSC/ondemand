@@ -48,8 +48,6 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
   
 ## Updating to a new stable version
 
-[_See wiki for OSC specific installation and update instructions_](https://github.com/OSC/ood-fileexplorer/wiki)
-
 1. Navigate to the app installation and check out the [latest version]((https://github.com/OSC/ood-fileexplorer/releases)).
 
   ```sh
@@ -68,7 +66,14 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
   ```sh
   scl enable git19 rh-ruby22 nodejs010 -- touch tmp/restart.txt
   ```
-  
+
+4. Copy the built app directory to the deployment directory. There is no need to restart the server. Because we touched `tmp/restart.txt` in the app, the next time a user accesses an app Passenger will reload their app.
+
+  ```sh
+  sudo mkdir -p /var/www/ood/apps/sys/files
+  sudo rsync -rlptvu --delete . /var/www/ood/apps/sys/files
+  ```
+
 ## Configuration
   
 (OPTIONAL) Update the application settings via environment variables as appropriate.
