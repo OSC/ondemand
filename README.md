@@ -43,40 +43,33 @@ the `ood` account, this app should run as `ood`.
 
 ## Updating to a New Stable Version
 
-1.  To update the app you will first go into the build directory from when you
-    installed it and fetch the latest changes to the code:
+1. Fetch and checkout new version of code:
 
-    ```sh
-    cd shell
-    scl enable git19 -- git fetch
-    ```
+  ```sh
+  cd shell # cd to build directory
+  scl enable git19 -- git fetch
+  scl enable git19 -- git checkout tags/v1.1.2
+  ```
 
-2.  Determine the latest stable version of this app. At the top of this
-    `README.md` you will see it in a green box. Record this `X.X.X` for the
-    next step.
+2. Update any required packages:
 
-3.  Then you will check out the latest stable version of the code that you took
-    note of in step 2:
+  ```sh
+  scl enable nodejs010 -- npm install
+  ```
 
-    ```sh
-    scl enable git19 -- git checkout tags/vX.X.X
-    ```
+3. Restart app
 
-    Don't forget to replace the `X.X.X` above with what you have from step 2.
-    Note that you need the letter `v` preceding the version number.
+  ```sh
+  touch tmp/restart.txt
+  ```
 
-4.  You will then update any required packages if necessary:
+4. Copy the built app directory to the deployment directory. There is no need to restart the server. Because we touched `tmp/restart.txt` in the app, the next time a user accesses an app Passenger will reload their app.
 
-    ```sh
-    scl enable nodejs010 -- npm install
-    ```
+  ```sh
+  sudo mkdir -p /var/www/ood/apps/sys/shell
+  sudo rsync -rlptvu --delete . /var/www/ood/apps/sys/shell
+  ```
 
-5.  Finally you will force all Passenger instances of this app to restart so
-    that the changes are successfully propagated to the users:
-
-    ```sh
-    touch tmp/restart.txt
-    ```
 
 ## Usage
 
