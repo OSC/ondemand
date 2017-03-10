@@ -157,6 +157,16 @@ $( document ).ready(function () {
             };
         });
 
+        /**
+         * Returns the correct mode for ace editor according to the file extension of a filename.
+         *
+         * @param path {String} filename or extension (.js, .txt)
+         */
+        function getModeByFileExtension(path){
+            var modelist = ace.require("ace/ext/modelist");
+            return modelist.getModeForPath(path).mode;
+        }
+
         function setOptions() {
             $( "#keybindings" ).val(getCookie('keybindings') || "default");
             setKeyBinding();
