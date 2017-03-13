@@ -52,6 +52,7 @@ When updating a deployed version of the Open OnDemand activejobs app.
   scl enable rh-ruby22 -- bin/rake tmp:clear
   scl enable rh-ruby22 -- bin/rake assets:clobber RAILS_ENV=production
   scl enable rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=production
+  scl enable rh-ruby22 -- bin/rake tmp:clear
   ```
 
 3. Restart app
