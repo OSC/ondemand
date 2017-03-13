@@ -12,7 +12,7 @@ This app is a Rails app for Open OnDemand that serves as a gateway to launching 
   ```sh
   scl enable git19 -- git clone https://github.com/OSC/ood-dashboard.git dashboard
   cd dashboard
-  scl enable git19 -- git checkout tags/v1.9.0
+  scl enable git19 -- git checkout tags/v1.10.0
   ```
 
 2. Build the app (install dependencies and build assets)
@@ -43,7 +43,7 @@ When updating a deployed version of the Open OnDemand dashboard.
   ```sh
   cd dashboard # cd to build directory
   scl enable git19 -- git fetch
-  scl enable git19 -- git checkout tags/v1.9.0 # check out latest tag
+  scl enable git19 -- git checkout tags/v1.10.0 # check out latest tag
   ```
 
 2. Install gem dependencies and rebuild assets
