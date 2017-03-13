@@ -6,12 +6,12 @@
       <% g.apps.each do |app| %>
 
         <% if app.role == "files" %>
-          <li><a href="<%= OodAppkit.files.url(path: @user.home) %>" target="_blank"><i class="fa fa-home"></i> Home Directory</a></a></li>
+          <%= nav_link "Home Directory", "home", OodAppkit.files.url(path: @user.home), target: "_blank" %>
 
           <% OodFilesApp.new.favorite_paths.tap do |paths| %>
             <%= content_tag "li", "", class: "divider", role: "separator" if paths.count > 0 %>
             <% paths.each do |path| %>
-              <li><a href="<%= OodAppkit.files.url(path: path) %>" target="_blank"><i class="fa fa-folder"></i> <%= path.to_s %></a></li>
+              <%= nav_link path.to_s, "folder", OodAppkit.files.url(path: path), target: "_blank" %>
             <% end %>
           <% end %>
 
@@ -23,7 +23,7 @@
           <% end %>
 
         <% else %>
-          <li class="<%= app.role %>"><a href="<%= app_path(app.name, app.type, app.owner) %>"><%= app_icon_tag(app) %> <%= app.title %></a></li>
+          <li class="<%= app.role %>"><a href="<%= app_path(app.name, app.type, app.owner) %>" target="_blank"><%= app_icon_tag(app) %> <%= app.title %></a></li>
         <% end %>
 
       <% end %>

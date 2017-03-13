@@ -1,7 +1,17 @@
 # AweSim OOD config
 
-# don't show any apps in nav
-NavConfig.categories = []
+# FIXME: could omit these links if you are in a particular group i.e. a blacklist
+NavConfig.categories << "Desktop Apps"
+
+OodFilesApp.candidate_favorite_paths.tap do |paths|
+  # add project space directories
+  projects = User.new.groups.map(&:name).grep(/^P./)
+  paths.concat projects.map { |p| Pathname.new("/fs/project/#{p}")  }
+
+  # add scratch space directories
+  paths << Pathname.new("/fs/scratch/#{User.new.name}")
+  paths.concat projects.map { |p| Pathname.new("/fs/scratch/#{p}")  }
+end
 
 # don't show develop dropdown unless you are setup for app sharing
 NavConfig.show_develop_dropdown = UsrRouter.base_path.directory?

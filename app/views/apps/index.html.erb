@@ -1,14 +1,16 @@
-<% if @motd_file.exist? %>
-  <div class="row">
-    <div class="col-md-9">
-      <%= render partial: "group", collection: @groups %>
-      <%= render partial: "catalog_link" %>
-    </div>
-    <div class="col-md-3">
-      <%= render partial: "dashboard/motd", locals: { motd: @motd_file  } %>
-    </div>
-  </div>
-<% else %>
-    <%= render partial: "group", collection: @groups %>
+<div class="row">
+  <div class="col-md-9">
+    <p class="lead">Cluster access applications are available from the dropdown menus in the navbar above.
+    <br>Custom shared apps are available below.</p>
     <%= render partial: "catalog_link" %>
-<% end %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-9">
+    <%= render(partial: "group", collection: @groups) || "<strong>No custom shared apps available.</strong>".html_safe %>
+  </div>
+  <div class="col-md-3">
+    <%= render partial: "dashboard/motd", locals: { motd: @motd_file  } if @motd_file.exist? %>
+  </div>
+</div>

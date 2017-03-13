@@ -60,3 +60,14 @@ tr.app {
   @extend .apps-section-header;
   background-color: rgb(86, 44, 135);
 }
+
+
+a.thumbnail.app {
+  color: black;
+  text-decoration: none;
+
+  &:hover {
+    color: rgb(0, 95, 133);
+    text-decoration: none;
+  }
+}
