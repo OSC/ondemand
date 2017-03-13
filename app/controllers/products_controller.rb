@@ -23,8 +23,20 @@ class ProductsController < ApplicationController
   # GET /products/new
   def new
     @type = params[:type].to_sym
+    # Only allow user to clone existing apps in shared environment
+    redirect_to new_from_git_remote_url if @type == :usr
+  end
+
+  # GET /products/new_from_git_remote
+  def new_from_git_remote
+    @type = params[:type].to_sym
     @product = Product.build(type: @type)
-    @new_method = @type == :usr ? 'git' : params[:new_method]
+  end
+
+  # GET /products/new_from_rails_template
+  def new_from_rails_template
+    @type = params[:type].to_sym
+    @product = Product.build(type: @type)
   end
 
   # GET /products/1/edit
@@ -33,15 +45,31 @@ class ProductsController < ApplicationController
     @product = Product.find(@type, params[:name])
   end
 
-  # POST /products
-  # POST /products.json
-  def create
+  # POST /create_from_git_remote
+  # POST /create_from_git_remote.json
+  def create_from_git_remote
     @type = params[:type].to_sym
     @product = Product.build(product_params.merge(type: @type))
-    @new_method = @type == :usr ? 'git' : params[:new_method]
 
     respond_to do |format|
-      if @product.save
+      if @product.create_from_git_remote
+        format.html { redirect_to product_url(@product.name, type: @type), notice: 'Product was successfully created.' }
+        format.json { render :show, status: :created, location: @product }
+      else
+        format.html { render :new }
+        format.json { render json: @product.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # POST /create_from_rails_template
+  # POST /create_from_rails_template.json
+  def create_from_rails_template
+    @type = params[:type].to_sym
+    @product = Product.build(product_params.merge(type: @type))
+
+    respond_to do |format|
+      if @product.create_from_rails_template
         format.html { redirect_to product_url(@product.name, type: @type), notice: 'Product was successfully created.' }
         format.json { render :show, status: :created, location: @product }
       else

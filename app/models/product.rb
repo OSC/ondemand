@@ -13,8 +13,8 @@ class Product
 
   validates :name, presence: true
 
-  validate :app_does_not_exist, on: :create_app
-  validates :git_remote, presence: true, if: "type == :usr", on: :create_app
+  validate :app_does_not_exist, on: [:create_from_git_remote, :create_from_rails_template]
+  validates :git_remote, presence: true, on: :create_from_git_remote
 
   # lint a given app
   validate :manifest_is_valid, on: [:show_app, :list_apps]
@@ -131,12 +131,37 @@ class Product
     end
   end
 
-  def save
-    if self.valid?(:create_app)
-      stage && write_manifest
+  def create_from_rails_template
+    if self.valid?(:create_from_rails_template)
+      target = router.path
+      target.mkpath
+      FileUtils.cp_r Rails.root.join("vendor/my_app/."), target
+      FileUtils.chmod 0750, target
+      true
     else
       false
     end
+  rescue
+    router.path.rmtree if router.path.exist?
+    raise
+  end
+
+  def create_from_git_remote
+    if self.valid?(:create_from_git_remote)
+      target = router.path
+      target.mkpath
+      unless clone_git_repo(target)
+        target.rmtree if target.exist?
+        return false
+      end
+      FileUtils.chmod 0750, target
+      true
+    else
+      false
+    end
+  rescue
+    router.path.rmtree if router.path.exist?
+    raise
   end
 
   def update(attributes)
@@ -196,23 +221,6 @@ class Product
   end
 
   private
-    def stage
-      target = router.path
-      target.mkpath
-      if git_remote.blank?
-        FileUtils.cp_r Rails.root.join("vendor/my_app/."), target
-      else
-        unless clone_git_repo(target)
-          target.rmtree if target.exist?
-          return false
-        end
-      end
-      FileUtils.chmod 0750, target
-      true
-    rescue
-      router.path.rmtree if router.path.exist?
-      raise
-    end
 
     # Writes out a manifest to the router path unless the repository has been newly cloned.
     #
@@ -256,6 +264,8 @@ class Product
       end
       true
     end
+
+
 
     def git_describe
       target = router.path

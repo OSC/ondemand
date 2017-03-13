@@ -28,8 +28,14 @@ Rails.application.routes.draw do
         member do
           patch 'cli/:cmd', to: 'products#cli', as: 'cli'
         end
+        collection do
+          get 'create_key'
+          get 'new_from_git_remote'
+          get 'new_from_rails_template'
+          post 'create_from_git_remote'
+          post 'create_from_rails_template'
+        end
       end
-      get 'create_key' => 'products#create_key'
     end
   else
     root "dashboard#index"
