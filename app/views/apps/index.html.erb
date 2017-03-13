@@ -10,16 +10,13 @@
 <% if @motd_file.exist? %>
     <div class="col-md-9">
       <%= render partial: "group", collection: @groups %>
-      <%= render partial: "catalog_link" %>
     </div>
     <div class="col-md-3">
       <%= render partial: "dashboard/motd", locals: { motd: @motd_file  } %>
     </div>
 <% else %>
     <div class="col-md-12">
-    <%= render partial: "group", collection: @groups %>
-    <hr>
-    <%= render partial: "catalog_link" %>
+      <%= render partial: "group", collection: @groups %>
     </div>
 <% end %>
 </div>
