@@ -24,7 +24,7 @@ class ProductsController < ApplicationController
   def new
     @type = params[:type].to_sym
     # Only allow user to clone existing apps in shared environment
-    redirect_to new_from_git_remote_url if @type == :usr
+    redirect_to new_from_git_remote_products_url if @type == :usr
   end
 
   # GET /products/new_from_git_remote
