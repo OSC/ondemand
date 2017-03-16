@@ -21,6 +21,7 @@ $( document ).ready(function () {
                 editor.destroy();
                 editor = ace.edit("editor");
                 initializeEditor();
+                setModeFromModelist();
                 $( "#loading-notice" ).toggle();
                 setBeforeUnloadState();
                 loading = false;
@@ -156,6 +157,13 @@ $( document ).ready(function () {
                 console.log("Can't save this!");
             };
         });
+
+        // Automatically Sets the dropdown and mode to the modelist option
+        function setModeFromModelist() {
+            var modelist = ace.require("ace/ext/modelist").getModeForPath(filePath);
+            $( "#mode" ).val(modelist.name);
+            editor.session.setMode(modelist.mode);
+        };
 
         function setOptions() {
             $( "#keybindings" ).val(getCookie('keybindings') || "default");
