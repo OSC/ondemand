@@ -47,7 +47,7 @@ class Manifest
   end
 
   def default_notes
-    @path.to_s
+    return "Change these notes by editing the manifest.yml in this template's directory"
   end
 
   # Grab the first file name ending in .pbs or .sh
