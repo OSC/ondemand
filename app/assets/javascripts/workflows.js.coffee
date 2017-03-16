@@ -264,9 +264,9 @@ $ ->
 
 @update_notes = (notes) ->
   if notes?
-    $("#notes-field").val("#{notes}")
+    $("#notes-field").text("#{notes}")
   else
-    $("#notes-field").val("")
+    $("#notes-field").text("")
 
 @update_name = (name) ->
   if name?
