@@ -2,6 +2,10 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
+$(window).focus ->
+  update_display(active_var())
+  return
+
 @update_display = (id) ->
   request_job_data(id)
   update_destroy_button(id)
@@ -51,15 +55,15 @@
 
 @show_job_panel = (show) ->
   if show?
-    $("#job-details-panel").fadeIn(200)
+    $("#job-details-panel").fadeIn(50)
   else
-    $("#job-details-panel").fadeOut(100)
+    $("#job-details-panel").fadeOut(50)
 
 @show_script_details_panel = (show) ->
   if show?
-    $("#script-details-panel").fadeIn(200)
+    $("#script-details-panel").fadeIn(50)
   else
-    $("#script-details-panel").fadeOut(100)
+    $("#script-details-panel").fadeOut(50)
 
 @update_status_label = (id, label) ->
   if label? && id?
