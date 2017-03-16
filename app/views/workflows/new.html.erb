@@ -85,23 +85,30 @@
         <%= f.submit 'Create New Job', class: 'btn btn-primary', id: 'create-job-button' %>
 
         <a class="btn btn-default" id="reset-template-data" data-toggle="tooltip" title="Reset fields to template default" role="button">Reset</a>
-
-        <a class="btn btn-default pull-right" id="open-template-dir-button" target="_blank" data-toggle="tooltip" title="Open Template Directory in File Manager" role="button" disabled><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span> Open Dir</a>
       <% end %>
       </div>
     </div>
 
-    <div id="template-details-view" hidden>
-      <div  class="panel-body">
-        <p>Template location:</p>
-        <pre id="template-location"></pre>
+    <div class="panel panel-default" id="job-details-panel">
+      <div class="panel-heading">
+        <h3 class="panel-title">Selected Template Details</h3>
       </div>
-      <div class="panel-body folder-content-view">
-        <p>Folder Contents:</p>
-        <span id="template-folder-contents"></span>
+
+      <div class="panel-body">
+        <div id="template-details-view" hidden>
+          <div  class="panel-body">
+            <p>Template location:</p>
+            <pre id="template-location"></pre>
+          </div>
+          <div class="panel-body folder-content-view">
+            <p>Folder Contents:</p>
+            <span id="template-folder-contents"></span>
+            <a class="btn btn-default pull-right" id="open-template-dir-button" target="_blank" data-toggle="tooltip" title="Open Template Directory in File Manager" role="button" disabled><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span> Open Dir</a>
+          </div>
+
+        </div>
       </div>
     </div>
-
   </div>
 </div>
 
