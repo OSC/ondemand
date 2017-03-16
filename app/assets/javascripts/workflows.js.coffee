@@ -243,6 +243,7 @@ $ ->
 
 @update_new_job_display = (row) ->
   if row?
+    update_script_label(row.data("name"))
     update_notes(row.data("notes"))
     update_name(row.data("name"))
     update_host(row.data("host"))
@@ -254,6 +255,12 @@ $ ->
     update_open_dir_button(row.data("fs"))
     update_terminal_button(row.data("shell"))
     update_destroy_template_button(row.data("delete"))
+
+@update_script_label = (label) ->
+  if label?
+    $("#script-name-label").text("#{label}")
+  else
+    $("#script-name-label").text("")
 
 @update_notes = (notes) ->
   if notes?
