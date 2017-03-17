@@ -19,6 +19,7 @@ class TemplatesController < ApplicationController
     if params[:jobid]
       job = Workflow.find(params[:jobid])
       @template = Template.new(job.staged_dir)
+      @template.name = job.name
       @template.host = job.batch_host
       @template.script = job.script_name
     elsif params[:path]
