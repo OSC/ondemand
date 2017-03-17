@@ -1,5 +1,8 @@
 JobConstructor::Application.routes.draw do
-  resources :templates
+  post 'templates', to: 'templates#create'
+  get 'templates/new', to: 'templates#new', as: 'new_template'
+  get 'template/:id', to: 'templates#show', as: 'template'
+  delete 'template/:id', to: 'templates#destroy'
 
   resources :workflows do
     member do

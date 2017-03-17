@@ -1,13 +1,6 @@
 class TemplatesController < ApplicationController
   before_action :set_template, only: [:show, :edit, :update, :destroy]
 
-  # GET /templates
-  # GET /templates.json
-  def index
-    # Append the system templates to the end of the user defined templates for usability.
-    @templates = Source.my.templates
-  end
-
   # GET /templates/1
   # GET /templates/1.json
   def show
@@ -31,10 +24,6 @@ class TemplatesController < ApplicationController
       # Template name is a '.' otherwise
       @template.name = ""
     end
-  end
-
-  # GET /templates/1/edit
-  def edit
   end
 
   # POST /templates
@@ -80,20 +69,6 @@ class TemplatesController < ApplicationController
         format.json { render action: 'show', status: :created, location: @template }
       else
         format.html { render action: 'new', notice: "error creating template" }
-        format.json { render json: @template.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PATCH/PUT /templates/1
-  # PATCH/PUT /templates/1.json
-  def update
-    respond_to do |format|
-      if @template.update(template_params)
-        format.html { redirect_to @template, notice: 'Template was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: 'edit' }
         format.json { render json: @template.errors, status: :unprocessable_entity }
       end
     end
