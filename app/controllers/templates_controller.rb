@@ -1,11 +1,6 @@
 class TemplatesController < ApplicationController
   before_action :set_template, only: [:show, :edit, :update, :destroy]
 
-  # GET /templates/1
-  # GET /templates/1.json
-  def show
-  end
-
   # GET /templates/new
   def new
     @template = Template.new("")
