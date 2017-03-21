@@ -1,17 +1,5 @@
 class TemplatesController < ApplicationController
-  before_action :set_template, only: [:show, :edit, :update, :destroy]
-
-  # GET /templates
-  # GET /templates.json
-  def index
-    # Append the system templates to the end of the user defined templates for usability.
-    @templates = Source.my.templates
-  end
-
-  # GET /templates/1
-  # GET /templates/1.json
-  def show
-  end
+  before_action :set_template, only: [:destroy]
 
   # GET /templates/new
   def new
@@ -19,6 +7,7 @@ class TemplatesController < ApplicationController
     if params[:jobid]
       job = Workflow.find(params[:jobid])
       @template = Template.new(job.staged_dir)
+      @template.name = job.name
       @template.host = job.batch_host
       @template.script = job.script_name
     elsif params[:path]
@@ -30,10 +19,6 @@ class TemplatesController < ApplicationController
       # Template name is a '.' otherwise
       @template.name = ""
     end
-  end
-
-  # GET /templates/1/edit
-  def edit
   end
 
   # POST /templates
@@ -75,24 +60,10 @@ class TemplatesController < ApplicationController
 
     respond_to do |format|
       if saved
-        format.html { redirect_to templates_path }
+        format.html { redirect_to new_workflow_path }
         format.json { render action: 'show', status: :created, location: @template }
       else
         format.html { render action: 'new', notice: "error creating template" }
-        format.json { render json: @template.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PATCH/PUT /templates/1
-  # PATCH/PUT /templates/1.json
-  def update
-    respond_to do |format|
-      if @template.update(template_params)
-        format.html { redirect_to @template, notice: 'Template was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: 'edit' }
         format.json { render json: @template.errors, status: :unprocessable_entity }
       end
     end
@@ -106,7 +77,7 @@ class TemplatesController < ApplicationController
       FileUtils.rm_r @template.path
     end
     respond_to do |format|
-      format.html { redirect_to templates_url }
+      format.html { redirect_to new_workflow_url }
       format.json { head :no_content }
     end
   end

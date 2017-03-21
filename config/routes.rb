@@ -1,5 +1,5 @@
 JobConstructor::Application.routes.draw do
-  resources :templates
+  resources :templates, only: [:new, :create, :destroy]
 
   resources :workflows do
     member do

@@ -124,6 +124,17 @@ $(window).focus ->
     $("#copy_button").attr("disabled", true)
     $("#copy_button").bind('click', false)
 
+@update_copy_template_button = (path) ->
+  if path?
+    $("#copy_template_button").attr("href", Routes.new_template_path({ path: path }))
+    $("#copy_template_button").data("method", "GET")
+    $("#copy_template_button").removeAttr("disabled")
+    $("#copy_template_button").unbind('click', false)
+  else
+    $("#copy_template_button").attr("href", "#")
+    $("#copy_template_button").attr("disabled", true)
+    $("#copy_template_button").bind('click', false)
+
 @update_edit_button = (id) ->
   if id?
     $("#edit_button").attr("href", Routes.edit_workflow_path(id))
@@ -188,6 +199,17 @@ $(window).focus ->
     $("#destroy_button").attr("disabled", true)
     $("#destroy_button").bind('click', false)
 
+@update_destroy_template_button = (path) ->
+  if path?
+    $("#destroy_template_button").attr("href", Routes.template_path("delete", path: path))
+    $("#destroy_template_button").data("method", "DELETE")
+    $("#destroy_template_button").removeAttr("disabled")
+    $("#destroy_template_button").unbind('click', false)
+  else
+    $("#destroy_template_button").removeAttr("href")
+    $("#destroy_template_button").attr("disabled", true)
+    $("#destroy_template_button").bind('click', false)
+
 # Return the directory path of a file path
 abs_path = (filepath) ->
   if filepath?
@@ -225,6 +247,7 @@ $ ->
 
 @update_new_job_display = (row) ->
   if row?
+    update_script_label(row.data("name"))
     update_notes(row.data("notes"))
     update_name(row.data("name"))
     update_host(row.data("host"))
@@ -232,12 +255,22 @@ $ ->
     update_staging_template_dir(row.data("path"))
     update_open_template_button(row.data("fs"))
     get_folder_contents_from_api(row.data("api"))
+    update_copy_template_button(row.data("path"))
+    update_open_dir_button(row.data("fs"))
+    update_terminal_button(row.data("shell"))
+    update_destroy_template_button(row.data("delete"))
+
+@update_script_label = (label) ->
+  if label?
+    $("#script-name-label").text("#{label}")
+  else
+    $("#script-name-label").text("")
 
 @update_notes = (notes) ->
   if notes?
-    $("#notes-field").val("#{notes}")
+    $("#notes-field").text("#{notes}")
   else
-    $("#notes-field").val("")
+    $("#notes-field").text("")
 
 @update_name = (name) ->
   if name?

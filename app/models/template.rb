@@ -48,7 +48,7 @@ class Template
   end
 
   def system?
-    true
+    self.source.system?
   end
 
   def default?
