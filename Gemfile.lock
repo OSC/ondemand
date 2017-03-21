@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/OSC/ood_job.git
-  revision: efec52c058bd98eb6ff1ab8a778042d1feb14420
+  revision: 5f7956436208914647b984b911a662591b9ea9be
   specs:
     ood_job (0.0.1)
       ood_cluster (~> 0.0.1)
@@ -63,7 +63,7 @@ GEM
       railties (>= 3.2, < 5.1)
     erubis (2.7.0)
     execjs (2.7.0)
-    ffi (1.9.17)
+    ffi (1.9.18)
     font-awesome-sass (4.4.0)
       sass (>= 3.2)
     i18n (0.8.1)
