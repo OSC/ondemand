@@ -62,6 +62,10 @@ class ResourceMgrAdapter
     OodJob::Adapters::Torque
   end
 
+  # Returns an OSC::Machete::Status object from an OodJob::Status object
+  #
+  # @param [OodJob::Status] status An OodJob::Status object
+  # @return [OSC::Machete::Status] An OSC::Machete object representing the status
   def status_for_ood_job_status(status)
     case status.to_sym
       when :completed
