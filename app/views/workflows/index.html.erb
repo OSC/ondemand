@@ -2,85 +2,82 @@
   <h2>Jobs</h2>
 </div>
 
-<div class="col-md-7">
-  <div class="panel">
-    <% if @default_template.exist? %>
-    <a class="btn btn-default btn-sm btn-info" id="default_job_button" href="<%= create_default_path %>" data-method="post" data-toggle="tooltip" title="Create a new job from the default template" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Job (Default Template)</a>
-    <% end %>
+<div class="row">
+  <div class="col-md-7">
+    <div cladd="panel panel-thin">
+      <div class="panel-body">
+        <% if @default_template.exist? %>
+            <a class="btn btn-default btn-sm btn-info" id="default_job_button" href="<%= create_default_path %>" data-method="post" data-toggle="tooltip" title="Create a new job from the default template" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Job (Default Template)</a>
+        <% end %>
 
-    <% if @templates.any? %>
-    <a class="btn btn-default btn-sm btn-info" id="new_job_button" href="<%= new_workflow_path %>" data-toggle="tooltip" title="Create a new job from a template you choose" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Job (Choose Template)</a>
-    <% end %>
+        <% if @templates.any? %>
+            <a class="btn btn-default btn-sm btn-info" id="new_job_button" href="<%= new_workflow_path %>" data-toggle="tooltip" title="Create a new job from a template you choose" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Job (Choose Template)</a>
+        <% end %>
 
-    <a class="btn btn-default btn-sm btn-info" id="copy_button" data-toggle="tooltip" title="Copy Job" role="button" data-method="get" disabled><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> Copy Job</a>
+        <a class="btn btn-default btn-sm btn-info" id="copy_button" data-toggle="tooltip" title="Copy Job" role="button" data-method="get" disabled><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> Copy Job</a>
 
-    <a class="pull-right btn btn-default btn-sm btn-templates" id="template_button" data-toggle="tooltip" title="Create template from selected job" data-method="get" role="button" disabled><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Create Template</a>
+        <a class="pull-right btn btn-default btn-sm btn-templates" id="template_button" data-toggle="tooltip" title="Create template from selected job" data-method="get" role="button" disabled><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Create Template</a>
+      </div>
+    </div>
   </div>
 </div>
 
-<div class="col-md-5">
-  <!-- placeholder -->
-</div>
-
 <div class="row">
-
   <div class="col-md-7">
     <div id="job-list-view" class="panel panel-default">
+      <div class="panel-body">
+        <a class="btn btn-default btn-sm btn-primary" id="open_dir_button" target="_blank" data-toggle="tooltip" title="Open Directory in File Manager" role="button" disabled>
+          <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit Files
+        </a>
+        <!-- <a class="btn btn-default btn-sm" id="view_button" data-toggle="tooltip" title="View Job" role="button" data-method="get" disabled><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a> -->
+        <a class="btn btn-default btn-sm btn-primary" id="edit_button" data-toggle="tooltip" title="Specify Job Host and Script" role="button" data-method="get" disabled>
+          <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Job Options
+        </a>
+        <a class="btn btn-default btn-sm btn-primary" id="terminal_button" target="_blank" data-toggle="tooltip" title="Open Selected Job in the Terminal" role="button" disabled>
+          <span class="glyphicon glyphicon-console" aria-hidden="true"></span> Open Terminal
+        </a>
+        <a class="btn btn-success btn-sm" id="submit_button" data-toggle="tooltip" title="Submit Job" role="button" data-method="get" disabled>
+          <span class="glyphicon glyphicon-play" aria-hidden="true"></span> Submit
+        </a>
+        <a class="btn btn-default btn-sm btn-warning" id="stop_button" data-toggle="tooltip" title="Stop Job" role="button" data-method="get" disabled>
+          <span class="glyphicon glyphicon-stop" aria-hidden="true"></span> Stop
+        </a>
+        <a class="btn btn-danger btn-sm pull-right" id="destroy_button" data-toggle="tooltip" title="Delete Job" data-method="get" data-confirm="Are you sure?" role="button" disabled>
+          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
+        </a>
+      </div>
 
-        <div class="panel-body">
-          <a class="btn btn-default btn-sm btn-primary" id="open_dir_button" target="_blank" data-toggle="tooltip" title="Open Directory in File Manager" role="button" disabled>
-            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit Files
-          </a>
-          <!-- <a class="btn btn-default btn-sm" id="view_button" data-toggle="tooltip" title="View Job" role="button" data-method="get" disabled><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a> -->
-          <a class="btn btn-default btn-sm btn-primary" id="edit_button" data-toggle="tooltip" title="Specify Job Host and Script" role="button" data-method="get" disabled>
-            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Job Options
-          </a>
-          <a class="btn btn-default btn-sm btn-primary" id="terminal_button" target="_blank" data-toggle="tooltip" title="Open Selected Job in the Terminal" role="button" disabled>
-            <span class="glyphicon glyphicon-console" aria-hidden="true"></span> Open Terminal
-          </a>
-          <a class="btn btn-success btn-sm" id="submit_button" data-toggle="tooltip" title="Submit Job" role="button" data-method="get" disabled>
-            <span class="glyphicon glyphicon-play" aria-hidden="true"></span> Submit
-          </a>
-          <a class="btn btn-default btn-sm btn-warning" id="stop_button" data-toggle="tooltip" title="Stop Job" role="button" data-method="get" disabled>
-            <span class="glyphicon glyphicon-stop" aria-hidden="true"></span> Stop
-          </a>
-          <a class="btn btn-danger btn-sm pull-right" id="destroy_button" data-toggle="tooltip" title="Delete Job" data-method="get" data-confirm="Are you sure?" role="button" disabled>
-            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
-          </a>
-        </div>
+      <div class="panel-body">
+        <table id="job-list-table" class="table data-table" style="width:100%">
+          <thead>
+          <tr>
+            <th>Created</th>
+            <th>Name</th>
+            <th>PBS ID</th>
+            <th>Cluster</th>
+            <th>Status</th>
+            <!-- FILE_SIZE_FEATURE
+            <th>Size</th>
+            -->
+          </tr>
+          </thead>
 
-        <div class="panel-body">
-          <table id="job-list-table" class="table data-table" style="width:100%">
-            <thead>
-            <tr>
-              <th>Created</th>
-              <th>Name</th>
-              <th>PBS ID</th>
-              <th>Cluster</th>
-              <th>Status</th>
-              <!-- FILE_SIZE_FEATURE
-              <th>Size</th>
-              -->
-            </tr>
-            </thead>
-
-            <tbody>
-            <% @workflows.each do |workflow| %>
-                <tr class="job-row <%= "missing" unless workflow.staged_dir_exists? %>" id="<%=workflow.id %>">
-                  <td data-sort="<%= workflow.id %>"><small><%= local_time(workflow.created_at) %></small></td>
-                  <td><strong><%= workflow.name %></strong></td>
-                  <td><%= workflow.pbsid %></td>
-                  <td><%= workflow.batch_host.titleize if workflow.batch_host %></td>
-                  <td id="status_label_<%= workflow.id %>"><%= status_label(workflow) %></td>
-                  <!-- FILE_SIZE_FEATURE
-                    <td><%# number_to_human_size(Filesystem.new.path_size(workflow.staged_dir)) %></td>
-                    -->
-                </tr>
-            <% end %>
-            </tbody>
-          </table>
-        </div>
-
+          <tbody>
+          <% @workflows.each do |workflow| %>
+              <tr class="job-row <%= "missing" unless workflow.staged_dir_exists? %>" id="<%=workflow.id %>">
+                <td data-sort="<%= workflow.id %>"><small><%= local_time(workflow.created_at) %></small></td>
+                <td><strong><%= workflow.name %></strong></td>
+                <td><%= workflow.pbsid %></td>
+                <td><%= workflow.batch_host.titleize if workflow.batch_host %></td>
+                <td id="status_label_<%= workflow.id %>"><%= status_label(workflow) %></td>
+                <!-- FILE_SIZE_FEATURE
+                  <td><%# number_to_human_size(Filesystem.new.path_size(workflow.staged_dir)) %></td>
+                  -->
+              </tr>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -194,17 +191,5 @@
         You can also create new job templates from existing jobs. This way, you can use that job as a template for future jobs. Select the job in the table to copy, then click "Create Template" to initiate the template creation process.
       </p>
     </li>
-<!--
-    <li data-id="templates_navbar_link">
-      <p>
-        Click here to view and manage your existing templates.
-      </p>
-    </li>
--->
   </ol>
-
 </div>
-
-
-
-
