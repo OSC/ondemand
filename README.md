@@ -65,7 +65,7 @@ When updating a deployed version of the Open OnDemand activejobs app.
 
   ```sh
   sudo mkdir -p /var/www/ood/apps/sys/activejobs
-  sudo rsync -rlptvu --delete . /var/www/ood/apps/sys/activejobs
+  sudo rsync -rlptv --delete . /var/www/ood/apps/sys/activejobs
   ```
 
 ## Usage
