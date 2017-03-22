@@ -3,7 +3,8 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 $(window).focus ->
-  update_display(active_var())
+  if active_var()
+    update_display(active_var())
   return
 
 @update_display = (id) ->
@@ -81,7 +82,6 @@ $(window).focus ->
     else
       $("#job-details-account").removeClass("text-muted")
       $("#job-details-account").text(data.account)
-
     show_job_panel(true)
 
 @update_script_details_panel = (content) ->
