@@ -108,7 +108,7 @@ OOD Rails app for Open OnDemand for creating and managing batch jobs from templa
 
 ### Templates
 
-A template consists of a folder and (optionally) a `manifest.yml` file.
+A template consists of a folder and a `manifest.yml` file.
 
 The folder contains files and scripts related to the job.
 
@@ -121,7 +121,7 @@ script: ruby.sh
 notes: Notes about the template, such as content and function.
 ```
 
-In the event that a job is created from a template that has no `manifest.yml`, or if metadata is missing, "My Jobs" will assign the following default values:
+In the event that a job is created from a template that is missing from the `manifest.yml`, "My Jobs" will assign the following default values:
 
 * `name` The name of the template folder.
 * `host` The cluster id of the first cluster with a valid resource_mgr listed in the OOD cluster config
