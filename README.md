@@ -73,7 +73,7 @@ OOD Rails app for Open OnDemand for creating and managing batch jobs from templa
 
   ```sh
   sudo mkdir -p /var/www/ood/apps/sys/myjobs
-  sudo rsync -rlptvu --delete . /var/www/ood/apps/sys/myjobs
+  sudo rsync -rlptv --delete . /var/www/ood/apps/sys/myjobs
   ```
 
 
