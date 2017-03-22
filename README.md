@@ -65,7 +65,7 @@ When updating a deployed version of the Open OnDemand dashboard.
 
   ```sh
   sudo mkdir -p /var/www/ood/apps/sys/dashboard
-  sudo rsync -rlptvu --delete . /var/www/ood/apps/sys/dashboard
+  sudo rsync -rlptv --delete . /var/www/ood/apps/sys/dashboard
   ```
 
 
