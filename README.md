@@ -13,7 +13,7 @@ OOD Rails app for Open OnDemand for creating and managing batch jobs from templa
   ```sh
   scl enable git19 -- git clone https://github.com/OSC/ood-myjobs.git myjobs
   cd myjobs
-  scl enable git19 -- git checkout tags/v2.1.2
+  scl enable git19 -- git checkout tags/v2.2.0
   ```
 
 2. Build the app (install dependencies and build assets)
@@ -50,7 +50,7 @@ OOD Rails app for Open OnDemand for creating and managing batch jobs from templa
   ```sh
   cd myjobs # cd to build directory
   scl enable git19 -- git fetch
-  scl enable git19 -- git checkout tags/v2.1.2 # check out latest tag
+  scl enable git19 -- git checkout tags/v2.2.0 # check out latest tag
   ```
 
 2. Install gem dependencies and rebuild assets
@@ -108,7 +108,7 @@ OOD Rails app for Open OnDemand for creating and managing batch jobs from templa
 
 ### Templates
 
-A template consists of a folder and (optionally) a `manifest.yml` file.
+A template consists of a folder and a `manifest.yml` file.
 
 The folder contains files and scripts related to the job.
 
@@ -121,7 +121,7 @@ script: ruby.sh
 notes: Notes about the template, such as content and function.
 ```
 
-In the event that a job is created from a template that has no `manifest.yml`, or if metadata is missing, "My Jobs" will assign the following default values:
+In the event that a job is created from a template that is missing from the `manifest.yml`, "My Jobs" will assign the following default values:
 
 * `name` The name of the template folder.
 * `host` The cluster id of the first cluster with a valid resource_mgr listed in the OOD cluster config
