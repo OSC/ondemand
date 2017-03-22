@@ -67,7 +67,7 @@ the `ood` account, this app should run as `ood`.
 
   ```sh
   sudo mkdir -p /var/www/ood/apps/sys/shell
-  sudo rsync -rlptvu --delete . /var/www/ood/apps/sys/shell
+  sudo rsync -rlptv --delete . /var/www/ood/apps/sys/shell
   ```
 
 
