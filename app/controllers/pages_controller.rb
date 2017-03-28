@@ -26,12 +26,7 @@ class PagesController < ApplicationController
       job_id = params[:pbsid].to_s.gsub(/_/, '.')
 
       begin
-        b = PBS::Batch.new(
-            host: cluster.job_config[:host],
-            lib: cluster.job_config[:lib],
-            bin: cluster.job_config[:bin]
-        )
-        b.delete_job(job_id)
+        cluster.job_adapter.delete(id: job_id)
 
         # It takes a couple of seconds for the job to clear out
         # Using the sleep to wait before reload
