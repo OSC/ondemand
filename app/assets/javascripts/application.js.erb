@@ -293,40 +293,28 @@ function label_data(label, data) {
 function status_label( status ) {
     var label, labelclass;
     switch( status ) {
-        case "C":
+        case "completed":
             label = "Completed";
             labelclass = "label-success";
             break;
-        case "R":
+        case "running":
             label = "Running";
             labelclass = "label-primary";
             break;
-        case "Q":
+        case "queued":
             label = "Queued";
             labelclass = "label-info";
             break;
-        case "H":
+        case "queued_held":
             label = "Hold";
             labelclass = "label-warning";
             break;
-        case "E":
-            label = "Exiting";
-            labelclass = "label-info";
-            break;
-        case "S":
+        case "suspended":
             label = "Suspend";
             labelclass = "label-warning";
             break;
-        case "T":
-            label = "Transiting";
-            labelclass = "label-warning";
-            break;
-        case "W":
-            label = "Waiting";
-            labelclass = "label-info";
-            break;
         default:
-            label = "Not Submitted";
+            label = "Undetermined";
             labelclass = "label-default";
     }
     return "<div style='white-space: nowrap;'><span class='label "+labelclass+"'>"+label+"</span></div>";

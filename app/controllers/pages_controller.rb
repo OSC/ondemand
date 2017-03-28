@@ -81,7 +81,6 @@ class PagesController < ApplicationController
       # for those jobs and don't display them.
       result.each do |j|
         if j.status.state != :completed && j.id !~ /\[\]/
-          #jobs.push(Jobstatusdata.new({name: j.id, attribs: j}, cluster.id.to_s))
           jobs.push(Jobstatusdata.new(j, cluster.id.to_s))
         end
       end
