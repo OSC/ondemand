@@ -45,19 +45,14 @@ class PagesController < ApplicationController
   # Get the extended data for a particular job.
   def get_job(pbsid, cluster)
     begin
-      b = PBS::Batch.new(
-          host: cluster.job_config[:host],
-          lib: cluster.job_config[:lib],
-          bin: cluster.job_config[:bin]
-      )
+      b = OODClusters[cluster].job_adapter
 
-      name, attribs = b.get_job(pbsid).first
-      Jobstatusdata.new({name: name, attribs: attribs}, cluster.id, true)
+      Jobstatusdata.new(b.info(id: pbsid), cluster, true)
 
     rescue PBS::UnkjobidError
-      { name: pbsid, error: "No job details because job has already left the queue." , status: "C" }
+      { name: pbsid, error: "No job details because job has already left the queue." , status: "completed" }
     rescue => e
-      { name: pbsid, error: "No job details available." }
+      { name: pbsid, error: "No job details available." + e.backtrace.to_s}
     end
   end
 

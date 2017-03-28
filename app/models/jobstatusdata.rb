@@ -14,12 +14,11 @@ class Jobstatusdata
   # Object defaults to condensed data, add extended flag to initializer to include all data used by the application.
   #
   # @return [Jobstatusdata] self
-  def initialize(info, pbs_cluster=Servers.first[0], extended=false)
+  def initialize(info, cluster=OODClusters.first.id.to_s, extended=false)
     self.pbsid = info.id
     self.jobname = info.job_name
     self.username = info.job_owner
     self.account = info.accounting_id
-    # TODO fix the status display helpers
     self.status = info.status.state
     if self.status == :running || self.status == :completed
       # FIXME :exec_host is torque-specific, IIRC it's used to pre-build the ganglia links and speed up the frontend load
@@ -27,9 +26,13 @@ class Jobstatusdata
       self.nodes = node_array(info.native[:exec_host])
       self.starttime = info.dispatch_time
     end
-    self.cluster = pbs_cluster
+    self.cluster = cluster
     if extended
-      extended_data(info)
+      if OODClusters[cluster].job_config[:adapter] == "torque"
+        extended_data_torque(info)
+      else
+        extended_data_default(info)
+      end
     end
     self
   end
@@ -37,23 +40,43 @@ class Jobstatusdata
   # Store additional data about the job.
   #
   # @return [Jobstatusdata] self
-  def extended_data(pbs_job)
-    self.walltime = pbs_job[:attribs][:Resource_List][:walltime]
-    self.walltime_used = pbs_job[:attribs].fetch(:resources_used, {})[:walltime].presence || 0
-    self.submit_args = pbs_job[:attribs][:submit_args].presence || "None"
-    self.output_path = pbs_job[:attribs][:Output_Path].to_s.split(":").second || pbs_job[:attribs][:Output_Path]
-    self.nodect = pbs_job[:attribs][:Resource_List][:nodect]
-    self.ppn = pbs_job[:attribs][:Resource_List][:nodes].to_s.split("ppn=").second || 0
+  def extended_data_torque(info)
+    self.walltime = info.native[:Resource_List][:walltime]
+    self.walltime_used = info.native.fetch(:resources_used, {})[:walltime].presence || 0
+    self.submit_args = info.native[:submit_args].presence || "None"
+    self.output_path = info.native[:Output_Path].to_s.split(":").second || pbs_job[:attribs][:Output_Path]
+    self.nodect = info.native[:Resource_List][:nodect]
+    self.ppn = info.native[:Resource_List][:nodes].to_s.split("ppn=").second || 0
     self.total_cpu = self.ppn[/\d+/].to_i * self.nodect.to_i
-    self.queue = pbs_job[:attribs][:queue]
-    self.cput = pbs_job[:attribs].fetch(:resources_used, {})[:cput].presence || 0
-    mem = pbs_job[:attribs].fetch(:resources_used, {})[:mem].presence || "0 b"
+    self.queue = info.native[:queue]
+    self.cput = info.native.fetch(:resources_used, {})[:cput].presence || 0
+    mem = info.native.fetch(:resources_used, {})[:mem].presence || "0 b"
     self.mem = Filesize.from(mem).pretty
-    vmem = pbs_job[:attribs].fetch(:resources_used, {})[:vmem].presence || "0 b"
+    vmem = info.native.fetch(:resources_used, {})[:vmem].presence || "0 b"
     self.vmem = Filesize.from(vmem).pretty
     output_pathname = Pathname.new(self.output_path).dirname
     self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
     self.fs_path = OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
+    self
+  end
+
+  def extended_data_default(info)
+    self.walltime = ''
+    self.walltime_used = ''
+    self.submit_args = ''
+    self.output_path = ''
+    self.nodect = ''
+    self.ppn = ''
+    self.total_cpu = info.procs
+    self.queue = info.queue_name
+    self.cput = info.wallclock_time
+    mem = "0 b"
+    self.mem = Filesize.from(mem).pretty
+    vmem = "0 b"
+    self.vmem = Filesize.from(vmem).pretty
+    output_pathname = ENV["HOME"]
+    self.terminal_path = '' #OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
+    self.fs_path = '' #OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
     self
   end
 
