@@ -4,5 +4,5 @@ Filter.list.insert(1, Filter.new.tap { |f|
   f.title = "Your Group's Jobs (#{group})"
   f.cookie_id = "group"
   # N.B. Need to use :egroup here for now. My Oodsupport group name is 'appl' but job 'Account_Name' is 'PZS0002'
-  f.filter_block = Proc.new { |id, attr| attr[:egroup] == group }
+  f.filter_block = Proc.new { |job| job.native[:egroup] == group }
 })
