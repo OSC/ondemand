@@ -1,5 +1,6 @@
 class PagesController < ApplicationController
   include ApplicationHelper
+  require 'pbs'
 
   def index
     cookies[:jobfilter] = cookies[:jobfilter] || Filter.default_id
@@ -26,11 +27,11 @@ class PagesController < ApplicationController
       job_id = params[:pbsid].to_s.gsub(/_/, '.')
 
       begin
-        server = cluster.resource_mgr_server
+        server = cluster.login[:host]
         b = PBS::Batch.new(
-          host: server.host,
-          lib: server.lib,
-          bin: server.bin
+            host: cluster.job_config[:host],
+            lib: cluster.job_config[:lib],
+            bin: cluster.job_config[:bin]
         )
         b.delete_job(job_id)
 
@@ -51,11 +52,11 @@ class PagesController < ApplicationController
   # Get the extended data for a particular job.
   def get_job(pbsid, cluster)
     begin
-      server = cluster.resource_mgr_server
+      server = cluster.login[:host]
       b = PBS::Batch.new(
-        host: server.host,
-        lib: server.lib,
-        bin: server.bin
+          host: cluster.job_config[:host],
+          lib: cluster.job_config[:lib],
+          bin: cluster.job_config[:bin]
       )
 
       name, attribs = b.get_job(pbsid).first
@@ -71,12 +72,12 @@ class PagesController < ApplicationController
   # Get a set of jobs defined by the filtering cookie.
   def get_jobs
     jobs = Array.new
-    OODClusters.each do |key, value|
-      server = value.resource_mgr_server
+    OODClusters.each do |cluster|
+      #server = cluster.login[:host]
       b = PBS::Batch.new(
-          host: server.host,
-          lib: server.lib,
-          bin: server.bin
+          host: cluster.job_config[:host],
+          lib: cluster.job_config[:lib],
+          bin: cluster.job_config[:bin]
       )
 
       # Checks the cookies and gets the appropriate job set.
@@ -92,7 +93,7 @@ class PagesController < ApplicationController
       # for those jobs and don't display them.
       result.each do |id, attr|
         if attr[:job_state] != 'C' && id !~ /\[\]/
-          jobs.push(Jobstatusdata.new({name: id, attribs: attr}, key))
+          jobs.push(Jobstatusdata.new({name: id, attribs: attr}, cluster.id.to_s))
         end
       end
     end
