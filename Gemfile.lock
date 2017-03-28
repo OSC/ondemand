@@ -1,3 +1,11 @@
+GIT
+  remote: git@github.com:OSC/ood_core.git
+  revision: fe1b3a658ac4ffe1db271ad43d149ee02913d080
+  specs:
+    ood_core (0.0.1)
+      ood_support (~> 0.0.2)
+      pbs (~> 2.0, >= 2.0.3)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -62,7 +70,7 @@ GEM
       railties (>= 3.2, < 5.1)
     erubis (2.7.0)
     execjs (2.7.0)
-    ffi (1.9.14)
+    ffi (1.9.18)
     filesize (0.1.1)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
@@ -114,7 +122,7 @@ GEM
       cocaine (~> 0.5.5)
       mime-types
       mimemagic (= 0.3.0)
-    pbs (2.0.2)
+    pbs (2.0.3)
       ffi (~> 1.9, >= 1.9.6)
     public_suffix (2.0.5)
     rack (1.6.5)
@@ -197,9 +205,9 @@ DEPENDENCIES
   jbuilder (~> 1.2)
   jquery-datatables-rails (~> 3.3)
   jquery-rails
-  ood_appkit (~> 0.3.0)
+  ood_appkit (~> 0.3.4)
+  ood_core!
   paperclip (~> 4.2)
-  pbs (~> 2.0)
   rails (~> 4.2.7.1)
   rails_12factor
   sass-rails (~> 5.0)
