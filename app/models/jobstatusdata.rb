@@ -14,19 +14,22 @@ class Jobstatusdata
   # Object defaults to condensed data, add extended flag to initializer to include all data used by the application.
   #
   # @return [Jobstatusdata] self
-  def initialize(pbs_job, pbs_cluster=Servers.first[0], extended=false)
-    self.pbsid = pbs_job[:name]
-    self.jobname = pbs_job[:attribs][:Job_Name]
-    self.username = username_format(pbs_job[:attribs][:Job_Owner])
-    self.account = pbs_job[:attribs][:Account_Name]
-    self.status = pbs_job[:attribs][:job_state]
-    if self.status == "R" || self.status == "C"
-      self.nodes = node_array(pbs_job[:attribs][:exec_host])
-      self.starttime = pbs_job[:attribs][:start_time]
+  def initialize(info, pbs_cluster=Servers.first[0], extended=false)
+    self.pbsid = info.id
+    self.jobname = info.job_name
+    self.username = info.job_owner
+    self.account = info.accounting_id
+    # TODO fix the status display helpers
+    self.status = info.status.state
+    if self.status == :running || self.status == :completed
+      # FIXME :exec_host is torque-specific, IIRC it's used to pre-build the ganglia links and speed up the frontend load
+      # Move this out asap
+      self.nodes = node_array(info.native[:exec_host])
+      self.starttime = info.dispatch_time
     end
     self.cluster = pbs_cluster
     if extended
-      extended_data(pbs_job)
+      extended_data(info)
     end
     self
   end
@@ -73,10 +76,6 @@ class Jobstatusdata
   end
 
   private
-
-  def username_format(attribs_Job_Owner)
-    attribs_Job_Owner.split('@')[0]
-  end
 
     attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :terminal_path, :fs_path
 

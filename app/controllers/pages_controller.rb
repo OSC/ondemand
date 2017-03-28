@@ -65,26 +65,24 @@ class PagesController < ApplicationController
   def get_jobs
     jobs = Array.new
     OODClusters.each do |cluster|
-      b = PBS::Batch.new(
-          host: cluster.job_config[:host],
-          lib: cluster.job_config[:lib],
-          bin: cluster.job_config[:bin]
-      )
+
+      b = cluster.job_adapter
 
       # Checks the cookies and gets the appropriate job set.
       # Default to user set on first load
       cookie = cookies[:jobfilter] || 'user'
       filter = Filter.list.find { |f| f.cookie_id == cookie }
-      result = filter ? filter.apply(b.get_jobs) : b.get_jobs
+      result = filter ? filter.apply(b.info) : b.info
 
       # Only add the running jobs to the list and assign the host to the object.
       #
       # There is also curently a bug in the system where jobs with an empty array
       # (ex. 6407991[].oak-batch.osc.edu) are not stattable, so we do a not-match
       # for those jobs and don't display them.
-      result.each do |id, attr|
-        if attr[:job_state] != 'C' && id !~ /\[\]/
-          jobs.push(Jobstatusdata.new({name: id, attribs: attr}, cluster.id.to_s))
+      result.each do |j|
+        if j.status.state != :completed && j.id !~ /\[\]/
+          #jobs.push(Jobstatusdata.new({name: j.id, attribs: j}, cluster.id.to_s))
+          jobs.push(Jobstatusdata.new(j, cluster.id.to_s))
         end
       end
     end

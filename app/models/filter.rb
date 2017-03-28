@@ -35,7 +35,7 @@ class Filter
     user = OodSupport::User.new.name
     f.title = "Your Jobs"
     f.cookie_id = "user"
-    f.filter_block = Proc.new { |id, attr| attr[:Job_Owner] =~ /^#{user}@/ }
+    f.filter_block = Proc.new { |job| job.job_owner =~ /^#{user}@/ }
   }
 
   # Add a filter by all jobs option.
