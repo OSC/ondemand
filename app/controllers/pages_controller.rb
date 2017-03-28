@@ -1,6 +1,5 @@
 class PagesController < ApplicationController
   include ApplicationHelper
-  require 'pbs'
 
   def index
     cookies[:jobfilter] = cookies[:jobfilter] || Filter.default_id
@@ -27,7 +26,6 @@ class PagesController < ApplicationController
       job_id = params[:pbsid].to_s.gsub(/_/, '.')
 
       begin
-        server = cluster.login[:host]
         b = PBS::Batch.new(
             host: cluster.job_config[:host],
             lib: cluster.job_config[:lib],
@@ -52,7 +50,6 @@ class PagesController < ApplicationController
   # Get the extended data for a particular job.
   def get_job(pbsid, cluster)
     begin
-      server = cluster.login[:host]
       b = PBS::Batch.new(
           host: cluster.job_config[:host],
           lib: cluster.job_config[:lib],
@@ -73,7 +70,6 @@ class PagesController < ApplicationController
   def get_jobs
     jobs = Array.new
     OODClusters.each do |cluster|
-      #server = cluster.login[:host]
       b = PBS::Batch.new(
           host: cluster.job_config[:host],
           lib: cluster.job_config[:lib],
