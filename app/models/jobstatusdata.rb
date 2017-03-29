@@ -24,7 +24,7 @@ class Jobstatusdata
       # FIXME :exec_host is torque-specific, IIRC it's used to pre-build the ganglia links and speed up the frontend load
       # Move this out asap
       self.nodes = node_array(info.native[:exec_host])
-      self.starttime = info.dispatch_time
+      self.starttime = info.dispatch_time.to_i
     end
     self.cluster = cluster
     # TODO Find a better way to distingush
