@@ -20,14 +20,8 @@ class Jobstatusdata
     self.username = info.job_owner
     self.account = info.accounting_id
     self.status = info.status.state
-    if self.status == :running || self.status == :completed
-      # FIXME :exec_host is torque-specific, IIRC it's used to pre-build the ganglia links and speed up the frontend load
-      # Move this out asap
-      self.nodes = node_array(info.native[:exec_host])
-      self.starttime = info.dispatch_time.to_i
-    end
     self.cluster = cluster
-    # TODO Find a better way to distingush
+    # TODO Find a better way to distingush whether a native parser is available. Maybe this is fine?
     self.extended_available = OODClusters[cluster].job_config[:adapter] == "torque"
     if extended
       if OODClusters[cluster].job_config[:adapter] == "torque"
@@ -43,6 +37,12 @@ class Jobstatusdata
   #
   # @return [Jobstatusdata] self
   def extended_data_torque(info)
+    if self.status == :running || self.status == :completed
+      # FIXME :exec_host is torque-specific, IIRC it's used to pre-build the ganglia links and speed up the frontend load
+      # Move this out asap
+      self.nodes = node_array_torque(info.native[:exec_host])
+      self.starttime = info.dispatch_time.to_i
+    end
     self.walltime = info.native[:Resource_List][:walltime]
     self.walltime_used = info.native.fetch(:resources_used, {})[:walltime].presence || 0
     self.submit_args = info.native[:submit_args].presence || "None"
@@ -62,7 +62,12 @@ class Jobstatusdata
     self
   end
 
+  # This should not be called, but it is available as a template for building new native parsers.
   def extended_data_default(info)
+    if self.status == :running || self.status == :completed
+      self.nodes = ''
+      self.starttime = info.dispatch_time.to_i
+    end
     self.walltime = ''
     self.walltime_used = ''
     self.submit_args = ''
@@ -87,7 +92,7 @@ class Jobstatusdata
   # @example "n0324/0-11+n0145/0-11+n0144/0-11" => ['n0324', 'n0145', 'n0144']
   #
   # @return [Array] the nodes as array
-  def node_array(attribs_exec_host)
+  def node_array_torque(attribs_exec_host)
     nodes = Array.new
     # Some completed jobs will no longer have nodes associated with them
     # and will return an empty hash. Only process when there are valid nodes.
