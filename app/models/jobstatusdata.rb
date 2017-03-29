@@ -7,7 +7,7 @@
 # @version 0.0.1
 class Jobstatusdata
 
-  attr_reader :pbsid, :jobname, :username, :account, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :terminal_path, :fs_path
+  attr_reader :pbsid, :jobname, :username, :account, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :terminal_path, :fs_path, :extended_available
 
   # Define an object containing only necessary data to send to client.
   #
@@ -27,6 +27,8 @@ class Jobstatusdata
       self.starttime = info.dispatch_time
     end
     self.cluster = cluster
+    # TODO Find a better way to distingush
+    self.extended_available = OODClusters[cluster].job_config[:adapter] == "torque"
     if extended
       if OODClusters[cluster].job_config[:adapter] == "torque"
         extended_data_torque(info)
@@ -100,6 +102,6 @@ class Jobstatusdata
 
   private
 
-    attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :terminal_path, :fs_path
+    attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :terminal_path, :fs_path, :extended_available
 
 end
