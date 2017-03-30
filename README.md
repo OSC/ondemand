@@ -89,7 +89,7 @@ safely added. An example of a custom filter can be viewed at
 Filter.list.insert(1, Filter.new.tap { |f|
   group = OodSupport::User.new.group.name
   f.title = "Your Group's Jobs (#{group})"
-  f.cookie_id = "group"
+  f.filter_id = "group"
   f.filter_block = Proc.new { |id, attr| attr[:egroup] == group }
 })
 ```
