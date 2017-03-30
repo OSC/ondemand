@@ -54,10 +54,12 @@ $(document).ready( function() {
                 "width":            "20px",
                 "searchable":       false,
                 "fnCreatedCell":    function(nTd, data) {
-                                        $(nTd).text("");
                                         if (data) {
                                             $(nTd).addClass('details-control');
                                         }
+                                    },
+                "render":           function() {
+                                        return "";
                                     }
             },
             {
