@@ -21,6 +21,10 @@ class Jobstatusdata
     self.account = info.accounting_id
     self.status = info.status.state
     self.cluster = cluster
+    if info.status == :running || info.status == :completed
+      self.nodes = node_array(info.allocated_nodes)
+      self.starttime = info.dispatch_time.to_i
+    end
     # TODO Find a better way to distingush whether a native parser is available. Maybe this is fine?
     self.extended_available = OODClusters[cluster].job_config[:adapter] == "torque"
     if extended
@@ -33,21 +37,17 @@ class Jobstatusdata
     self
   end
 
-  # Store additional data about the job.
+  # Store additional data about the job. (Torque-specific)
+  #
+  # Parses the `native` info function for additional information about jobs on Torque systems.
   #
   # @return [Jobstatusdata] self
   def extended_data_torque(info)
-    if self.status == :running || self.status == :completed
-      # FIXME :exec_host is torque-specific, IIRC it's used to pre-build the ganglia links and speed up the frontend load
-      # Move this out asap
-      self.nodes = node_array_torque(info.native[:exec_host])
-      self.starttime = info.dispatch_time.to_i
-    end
     self.walltime = info.native[:Resource_List][:walltime]
     self.walltime_used = info.native.fetch(:resources_used, {})[:walltime].presence || 0
     self.submit_args = info.native[:submit_args].presence || "None"
     self.output_path = info.native[:Output_Path].to_s.split(":").second || pbs_job[:attribs][:Output_Path]
-    self.nodect = info.native[:Resource_List][:nodect]
+    self.nodect = info.allocated_nodes.count
     self.ppn = info.native[:Resource_List][:nodes].to_s.split("ppn=").second || 0
     self.total_cpu = self.ppn[/\d+/].to_i * self.nodect.to_i
     self.queue = info.native[:queue]
@@ -59,24 +59,24 @@ class Jobstatusdata
     output_pathname = Pathname.new(self.output_path).dirname
     self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
     self.fs_path = OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
+    if self.status == :running || self.status == :completed
+      self.nodes = node_array(info.allocated_nodes)
+      self.starttime = info.dispatch_time.to_i
+    end
     self
   end
 
   # This should not be called, but it is available as a template for building new native parsers.
   def extended_data_default(info)
-    if self.status == :running || self.status == :completed
-      self.nodes = ''
-      self.starttime = info.dispatch_time.to_i
-    end
     self.walltime = ''
     self.walltime_used = ''
     self.submit_args = ''
     self.output_path = ''
-    self.nodect = ''
+    self.nodect = info.allocated_nodes.count
     self.ppn = ''
     self.total_cpu = info.procs
     self.queue = info.queue_name
-    self.cput = info.wallclock_time
+    self.cput = ''
     mem = "0 b"
     self.mem = Filesize.from(mem).pretty
     vmem = "0 b"
@@ -84,25 +84,21 @@ class Jobstatusdata
     output_pathname = ENV["HOME"]
     self.terminal_path = '' #OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
     self.fs_path = '' #OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
+    if self.status == :running || self.status == :completed
+      self.nodes = node_array(info.allocated_nodes)
+      self.starttime = info.dispatch_time.to_i
+    end
     self
   end
 
-  # Converts the :exec_host string to an array of node numbers
+  # Converts the `allocated_nodes` object array into an array of node names
   #
-  # @example "n0324/0-11+n0145/0-11+n0144/0-11" => ['n0324', 'n0145', 'n0144']
+  # @example [#<OodCore::Job::NodeInfo:0x00000009d3ff78 @name="n0544", @procs=2>] => ['n0544']
   #
-  # @return [Array] the nodes as array
-  def node_array_torque(attribs_exec_host)
-    nodes = Array.new
-    # Some completed jobs will no longer have nodes associated with them
-    # and will return an empty hash. Only process when there are valid nodes.
-    if attribs_exec_host.is_a? String
-      # Create an array of nodes associcated with the job.
-      attribs_exec_host.split('+').each do |node|
-        nodes.push(node.split('/')[0])
-      end
-    end
-    nodes
+  # @param [Array<OodCore::Job::NodeInfo>]
+  # @return [Array<String>] the nodes as array
+  def node_array(node_info_array)
+    node_info_array.map { |n| n.name }
   end
 
   private
