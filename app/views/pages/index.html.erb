@@ -1,7 +1,7 @@
 <div class="btn-group pull-right" data-toggle="buttons">
     <% Filter.list.each do |filter| %>
-        <label class="btn btn-primary <%= 'active' if cookies[:jobfilter] == filter.cookie_id %>" onclick="docCookies.setItem('jobfilter', '<%= filter.cookie_id %>'); window.location.reload();" >
-          <input type="radio" name="<%= filter.cookie_id %>" id="option_user" > <%= filter.title %>
+        <label id="<%= filter.filter_id %>" class="btn btn-primary" onclick="localStorage.setItem('jobfilter', '<%= filter.filter_id %>'); window.location.reload();" >
+          <input type="radio" name="<%= filter.filter_id %>" id="option_user" > <%= filter.title %>
         </label>
     <% end %>
 </div>
@@ -25,6 +25,8 @@
 <br>
 
 <script>
+    var filter_id = localStorage.getItem("jobfilter") || "<%= Filter.default_id %>";
+
     function build_ganglia_link( host, start_seconds, report_type, node_num, size ) {
         var ganglia_uri;
         <% OODClusters.each do |key, value| %>

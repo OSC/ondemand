@@ -1,5 +1,5 @@
 class Filter
-  attr_accessor :title, :cookie_id, :filter_block
+  attr_accessor :title, :filter_id, :filter_block
 
   class << self
     attr_accessor :list
@@ -12,7 +12,7 @@ class Filter
     self.filter_block ? job_array.select(&filter_block) : job_array
   end
 
-  # Provide the cookie_id to be used for the default filter.
+  # Provide the filter_id to be used for the default filter.
   #
   # @return [String] The id of the default filter
   def self.default_id
@@ -25,7 +25,7 @@ class Filter
   # self.list << Filter.new.tap { |f|
   #   user = OodSupport::User.new.name
   #   f.title = "Your Jobs"
-  #   f.cookie_id = "user"
+  #   f.filter_id = "user"
   #   f.filter_block = Proc.new { |id, attr| attr[:Job_Owner] =~ /^#{user}@/ }
   # }
   self.list = []
@@ -34,13 +34,13 @@ class Filter
   Filter.list << Filter.new.tap { |f|
     user = OodSupport::User.new.name
     f.title = "Your Jobs"
-    f.cookie_id = "user"
+    f.filter_id = "user"
     f.filter_block = Proc.new { |id, attr| attr[:Job_Owner] =~ /^#{user}@/ }
   }
 
   # Add a filter by all jobs option.
   Filter.list << Filter.new.tap { |f|
     f.title = "All Jobs"
-    f.cookie_id = "all"
+    f.filter_id = "all"
   }
 end
