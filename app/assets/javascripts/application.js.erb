@@ -48,19 +48,15 @@ $(document).ready( function() {
         processing: true,           // Add the "processing" while json is being downloaded.
         columns: [
             {
-                "className":        'details-control',
                 "orderable":        false,
                 "data":             "extended_available",
                 "defaultContent":   '',
                 "width":            "20px",
                 "searchable":       false,
                 "fnCreatedCell":    function(nTd, data) {
-                                        // Datatables wants to render the data text, so here we set it to an empty
-                                        // string as a placeholder.
                                         $(nTd).text("");
-                                        // Disable the extended options if the feature is not available.
-                                        if(!data) {
-                                            $(nTd).removeClass('details-control');
+                                        if (data) {
+                                            $(nTd).addClass('details-control');
                                         }
                                     }
             },
