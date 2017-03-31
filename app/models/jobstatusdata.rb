@@ -21,6 +21,8 @@ class Jobstatusdata
     self.account = info.accounting_id
     self.status = info.status.state
     self.cluster = cluster
+    self.walltime_used = info.wallclock_time > 0 ? pretty_time(info.wallclock_time) : ''
+    self.queue = info.queue_name
     if info.status == :running || info.status == :completed
       self.nodes = node_array(info.allocated_nodes)
       self.starttime = info.dispatch_time.to_i
@@ -44,13 +46,11 @@ class Jobstatusdata
   # @return [Jobstatusdata] self
   def extended_data_torque(info)
     self.walltime = info.native[:Resource_List][:walltime]
-    self.walltime_used = info.native.fetch(:resources_used, {})[:walltime].presence || 0
     self.submit_args = info.native[:submit_args].presence || "None"
     self.output_path = info.native[:Output_Path].to_s.split(":").second || pbs_job[:attribs][:Output_Path]
     self.nodect = info.allocated_nodes.count
     self.ppn = info.native[:Resource_List][:nodes].to_s.split("ppn=").second || 0
     self.total_cpu = self.ppn[/\d+/].to_i * self.nodect.to_i
-    self.queue = info.native[:queue]
     self.cput = info.native.fetch(:resources_used, {})[:cput].presence || 0
     mem = info.native.fetch(:resources_used, {})[:mem].presence || "0 b"
     self.mem = Filesize.from(mem).pretty
@@ -69,13 +69,11 @@ class Jobstatusdata
   # This should not be called, but it is available as a template for building new native parsers.
   def extended_data_default(info)
     self.walltime = ''
-    self.walltime_used = ''
     self.submit_args = ''
     self.output_path = ''
     self.nodect = info.allocated_nodes.count
     self.ppn = ''
     self.total_cpu = info.procs
-    self.queue = info.queue_name
     self.cput = ''
     mem = "0 b"
     self.mem = Filesize.from(mem).pretty
@@ -91,17 +89,29 @@ class Jobstatusdata
     self
   end
 
-  # Converts the `allocated_nodes` object array into an array of node names
-  #
-  # @example [#<OodCore::Job::NodeInfo:0x00000009d3ff78 @name="n0544", @procs=2>] => ['n0544']
-  #
-  # @param [Array<OodCore::Job::NodeInfo>]
-  # @return [Array<String>] the nodes as array
-  def node_array(node_info_array)
-    node_info_array.map { |n| n.name }
-  end
-
   private
+
+    # Rails default string formatters only support HH:MM:SS and roll over the days, so we need to create our own.
+    def pretty_time(seconds)
+      duration=Array.new
+      units=[ 24*60*60, 60*60, 60, 1 ]
+      units.each do |value|
+        unit = seconds.divmod(value)
+        duration.push("#{"%02d" % unit[0]}") unless unit[0] == 0
+        seconds = unit[1]
+      end
+      return duration.join(':')
+    end
+
+    # Converts the `allocated_nodes` object array into an array of node names
+    #
+    # @example [#<OodCore::Job::NodeInfo:0x00000009d3ff78 @name="n0544", @procs=2>] => ['n0544']
+    #
+    # @param [Array<OodCore::Job::NodeInfo>]
+    # @return [Array<String>] the nodes as array
+    def node_array(node_info_array)
+      node_info_array.map { |n| n.name }
+    end
 
     attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :terminal_path, :fs_path, :extended_available
 
