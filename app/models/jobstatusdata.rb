@@ -76,14 +76,14 @@ class Jobstatusdata
   def extended_data_slurm(info)
     self.walltime = info.native[:time_limit]
     self.submit_args = info.native[:command]             # FIXME This is the script only, there don't appear to be any provisions for commands
-    self.output_path = info.native[:work_dir]
+    self.output_path = info.native[:work_dir]            # FIXME This is the working directory (i.e. /scratch ) and may not be the output dir
     self.nodect = info.allocated_nodes.count
     self.ppn = info.native[:nodes] / info.native[:cpus]  # FIXME This may not be accurate
     self.total_cpu = info.procs
     self.cput = info.native[:time_used]
     mem = info.native[:min_memory].presence || "0 b"     # FIXME SLURM doesn't have a used mem attribute
     self.mem = Filesize.from(mem).pretty
-    vmem = info.native[:min_memory].presence || "0 b"   # FIXME SLURM doesn't have a vmem attribute
+    vmem = info.native[:min_memory].presence || "0 b"    # FIXME SLURM doesn't have a vmem attribute
     self.vmem = Filesize.from(vmem).pretty
     output_pathname = info.native[:work_dir]
     self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
@@ -122,14 +122,17 @@ class Jobstatusdata
 
     # Rails default string formatters only support HH:MM:SS and roll over the days, so we need to create our own.
     def pretty_time(seconds)
-      duration=Array.new
-      units=[ 24*60*60, 60*60, 60, 1 ]
-      units.each do |value|
-        unit = seconds.divmod(value)
-        duration.push("#{"%02d" % unit[0]}") unless unit[0] == 0
-        seconds = unit[1]
-      end
-      return duration.join(':')
+      #duration=Array.new
+      #units=[ 24*60*60, 60*60, 60, 1 ]
+      #units.each do |value|
+      #  unit = seconds.divmod(value)
+      #  duration.push("#{"%02d" % unit[0]}") unless unit[0] == 0
+      #  seconds = unit[1]
+      #end
+      #return duration.join(':')
+
+      return seconds
+
     end
 
     # Converts the `allocated_nodes` object array into an array of node names
