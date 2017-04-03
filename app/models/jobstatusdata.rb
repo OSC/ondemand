@@ -28,10 +28,12 @@ class Jobstatusdata
       self.starttime = info.dispatch_time.to_i
     end
     # TODO Find a better way to distingush whether a native parser is available. Maybe this is fine?
-    self.extended_available = OODClusters[cluster].job_config[:adapter] == "torque"
+    self.extended_available = OODClusters[cluster].job_config[:adapter] == "torque" || OODClusters[cluster].job_config[:adapter] == "slurm"
     if extended
       if OODClusters[cluster].job_config[:adapter] == "torque"
         extended_data_torque(info)
+      elsif OODClusters[cluster].job_config[:adapter] == "slurm"
+        extended_data_slurm(info)
       else
         extended_data_default(info)
       end
@@ -57,6 +59,33 @@ class Jobstatusdata
     vmem = info.native.fetch(:resources_used, {})[:vmem].presence || "0 b"
     self.vmem = Filesize.from(vmem).pretty
     output_pathname = Pathname.new(self.output_path).dirname
+    self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
+    self.fs_path = OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
+    if self.status == :running || self.status == :completed
+      self.nodes = node_array(info.allocated_nodes)
+      self.starttime = info.dispatch_time.to_i
+    end
+    self
+  end
+
+  # Store additional data about the job. (SLURM-specific)
+  #
+  # Parses the `native` info function for additional information about jobs on SLURM systems.
+  #
+  # @return [Jobstatusdata] self
+  def extended_data_slurm(info)
+    self.walltime = info.native[:time_limit]
+    self.submit_args = info.native[:command]             # FIXME This is the script only, there don't appear to be any provisions for commands
+    self.output_path = info.native[:work_dir]
+    self.nodect = info.allocated_nodes.count
+    self.ppn = info.native[:nodes] / info.native[:cpus]  # FIXME This may not be accurate
+    self.total_cpu = info.procs
+    self.cput = info.native[:time_used]
+    mem = info.native[:min_memory].presence || "0 b"     # FIXME SLURM doesn't have a used mem attribute
+    self.mem = Filesize.from(mem).pretty
+    vmem = info.native.[:min_memory].presence || "0 b"   # FIXME SLURM doesn't have a vmem attribute
+    self.vmem = Filesize.from(vmem).pretty
+    output_pathname = info.native[:work_dir]
     self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
     self.fs_path = OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
     if self.status == :running || self.status == :completed
