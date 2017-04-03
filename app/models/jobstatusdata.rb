@@ -83,7 +83,7 @@ class Jobstatusdata
     self.cput = info.native[:time_used]
     mem = info.native[:min_memory].presence || "0 b"     # FIXME SLURM doesn't have a used mem attribute
     self.mem = Filesize.from(mem).pretty
-    vmem = info.native.[:min_memory].presence || "0 b"   # FIXME SLURM doesn't have a vmem attribute
+    vmem = info.native[:min_memory].presence || "0 b"   # FIXME SLURM doesn't have a vmem attribute
     self.vmem = Filesize.from(vmem).pretty
     output_pathname = info.native[:work_dir]
     self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
