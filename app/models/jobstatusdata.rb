@@ -78,7 +78,7 @@ class Jobstatusdata
     self.submit_args = info.native[:command]             # FIXME This is the script only, there don't appear to be any provisions for commands
     self.output_path = info.native[:work_dir]            # FIXME This is the working directory (i.e. /scratch ) and may not be the output dir
     self.nodect = info.allocated_nodes.count
-    self.ppn = info.native[:nodes] / info.native[:cpus]  # FIXME This may not be accurate
+    self.ppn = info.native[:cpus] / info.native[:nodes]  # FIXME This may not be accurate
     self.total_cpu = info.procs
     self.cput = info.native[:time_used]
     mem = info.native[:min_memory].presence || "0 b"     # FIXME SLURM doesn't have a used mem attribute
