@@ -121,17 +121,19 @@ class Jobstatusdata
   private
 
     # Rails default string formatters only support HH:MM:SS and roll over the days, so we need to create our own.
+    #
+    # @param [Integer] The time in seconds
+    # @return [String] The time as string formatted as "DDd HH:MM"
     def pretty_time(seconds)
-      #duration=Array.new
-      #units=[ 24*60*60, 60*60, 60, 1 ]
-      #units.each do |value|
-      #  unit = seconds.divmod(value)
-      #  duration.push("#{"%02d" % unit[0]}") unless unit[0] == 0
-      #  seconds = unit[1]
-      #end
-      #return duration.join(':')
+      duration=Array.new
+      units=[ ["d ", 24*60*60], [":", 60*60], ["", 60] ]
+      units.each do |value|
+        unit = seconds.divmod(value[1])
+        duration.push("#{"%02d" % unit[0]}#{value[0]}")
+        seconds = unit[1]
+      end
 
-      return seconds
+      return duration.join('')
 
     end
 
