@@ -65,6 +65,8 @@ class JobstatussataTest < ActiveModel::TestCase
 
       test "test walltime #{@test_count}" do
         assert data.walltime.is_a?(String), data.walltime
+
+        assert_match(/\d+:\d+:\d+/, data.walltime)
       end
 
       test "test walltime_used #{@test_count}" do
