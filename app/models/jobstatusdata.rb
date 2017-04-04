@@ -25,7 +25,7 @@ class Jobstatusdata
     self.queue = info.queue_name
     if info.status == :running || info.status == :completed
       self.nodes = node_array(info.allocated_nodes)
-      self.starttime = info.dispatch_time.to_i
+      self.starttime = info.dispatch_time.to_i || 0
     end
     # TODO Find a better way to distingush whether a native parser is available. Maybe this is fine?
     self.extended_available = OODClusters[cluster].job_config[:adapter] == "torque" || OODClusters[cluster].job_config[:adapter] == "slurm"
@@ -51,9 +51,9 @@ class Jobstatusdata
     self.submit_args = info.native[:submit_args].presence || "None"
     self.output_path = info.native[:Output_Path].to_s.split(":").second || info.native[:Output_Path]
     self.nodect = info.allocated_nodes.count
-    self.ppn = info.native[:Resource_List][:nodes].to_s.split("ppn=").second || 0
+    self.ppn = info.native[:Resource_List][:nodes].to_s.split("ppn=").second || '0'
     self.total_cpu = self.ppn[/\d+/].to_i * self.nodect.to_i
-    self.cput = info.native.fetch(:resources_used, {})[:cput].presence || 0
+    self.cput = info.native.fetch(:resources_used, {})[:cput].presence || '0'
     mem = info.native.fetch(:resources_used, {})[:mem].presence || "0 b"
     self.mem = Filesize.from(mem).pretty
     vmem = info.native.fetch(:resources_used, {})[:vmem].presence || "0 b"
