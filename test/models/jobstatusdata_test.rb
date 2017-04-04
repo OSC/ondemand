@@ -83,6 +83,8 @@ class JobstatussataTest < ActiveModel::TestCase
 
       test "test nodect #{@test_count}" do
         assert data.nodect.is_a?(Integer), data.nodect
+
+        assert(true, data.nodect > 0)
       end
 
       test "test ppn #{@test_count}" do
