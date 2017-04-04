@@ -63,6 +63,10 @@ class JobstatussataTest < ActiveModel::TestCase
 
       test "test walltime_used #{@test_count}" do
         assert data.walltime_used.is_a?(String), data.walltime_used
+
+        if data.walltime_used != ""
+          assert_match(/\d+d \d+:\d+/, data.walltime_used)
+        end
       end
 
       test "test submit_args #{@test_count}" do
