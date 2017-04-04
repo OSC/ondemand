@@ -78,16 +78,14 @@ class Jobstatusdata
     self.submit_args = info.native[:command]             # FIXME This is the script only, there don't appear to be any provisions for commands
     self.output_path = info.native[:work_dir]            # FIXME This is the working directory (i.e. /scratch ) and may not be the output dir
     self.nodect = info.allocated_nodes.count
-    self.ppn = info.native[:cpus] / info.native[:nodes]  # FIXME This may not be accurate
+    self.ppn = info.procs / info.native[:nodes].to_i     # FIXME This may not be accurate
     self.total_cpu = info.procs
     self.cput = info.native[:time_used]
-    mem = info.native[:min_memory].presence || "0 b"     # FIXME SLURM doesn't have a used mem attribute
-    self.mem = Filesize.from(mem).pretty
-    vmem = info.native[:min_memory].presence || "0 b"    # FIXME SLURM doesn't have a vmem attribute
-    self.vmem = Filesize.from(vmem).pretty
-    output_pathname = info.native[:work_dir]
-    self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
-    self.fs_path = OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
+    self.mem = info.native[:min_memory].presence || "0 b"
+    self.vmem = info.native[:min_memory].presence || "0 b"
+    output_pathname = Pathname.new(info.native[:work_dir]).dirname
+    self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"])).to_s
+    self.fs_path = OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"])).to_s
     if self.status == :running || self.status == :completed
       self.nodes = node_array(info.allocated_nodes)
       self.starttime = info.dispatch_time.to_i
