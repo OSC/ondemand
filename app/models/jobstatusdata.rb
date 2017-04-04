@@ -49,7 +49,7 @@ class Jobstatusdata
   def extended_data_torque(info)
     self.walltime = info.native[:Resource_List][:walltime]
     self.submit_args = info.native[:submit_args].presence || "None"
-    self.output_path = info.native[:Output_Path].to_s.split(":").second || pbs_job[:attribs][:Output_Path]
+    self.output_path = info.native[:Output_Path].to_s.split(":").second || info.native[:Output_Path]
     self.nodect = info.allocated_nodes.count
     self.ppn = info.native[:Resource_List][:nodes].to_s.split("ppn=").second || 0
     self.total_cpu = self.ppn[/\d+/].to_i * self.nodect.to_i
