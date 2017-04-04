@@ -17,6 +17,8 @@ class JobstatussataTest < ActiveModel::TestCase
 
       test "test job id #{@test_count}" do
         assert data.pbsid.is_a?(String), data.pbsid
+
+        assert data.pbsid.length > 0
       end
 
       test "test jobname #{@test_count}" do
@@ -25,6 +27,8 @@ class JobstatussataTest < ActiveModel::TestCase
 
       test "test username #{@test_count}" do
         assert data.username.is_a?(String), data.username
+
+        assert data.pbsid.length > 0
       end
 
       test "test account #{@test_count}" do
@@ -32,9 +36,9 @@ class JobstatussataTest < ActiveModel::TestCase
       end
 
       test "test status #{@test_count}" do
-        #assert data.status.is_a? OodCore::Job::Status
-        #TODO fix
         assert_not_nil data.status
+
+        assert data.status.is_a?(Symbol), data.status.class.name
       end
 
       test "test cluster #{@test_count}" do
@@ -52,6 +56,8 @@ class JobstatussataTest < ActiveModel::TestCase
       test "test starttime #{@test_count}" do
         if data.status == :running || data.status == :completed
           assert data.starttime.is_a?(Integer), data.starttime
+
+          assert data.starttime >= 0
         else
           assert data.nodes.nil?
         end
@@ -65,7 +71,7 @@ class JobstatussataTest < ActiveModel::TestCase
         assert data.walltime_used.is_a?(String), data.walltime_used
 
         if data.walltime_used != ""
-          assert_match(/\d+d \d+:\d+/, data.walltime_used)
+          assert_match(/\d+:\d+:\d+/, data.walltime_used)
         end
       end
 
@@ -84,7 +90,7 @@ class JobstatussataTest < ActiveModel::TestCase
       test "test nodect #{@test_count}" do
         assert data.nodect.is_a?(Integer), data.nodect
 
-        assert(true, data.nodect > 0)
+        assert data.nodect > 0
       end
 
       test "test ppn #{@test_count}" do

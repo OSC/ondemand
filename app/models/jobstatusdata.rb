@@ -77,7 +77,7 @@ class Jobstatusdata
     self.walltime = info.native[:time_limit]
     self.submit_args = info.native[:command]             # FIXME This is the script only, there don't appear to be any provisions for commands
     self.output_path = info.native[:work_dir]            # FIXME This is the working directory (i.e. /scratch ) and may not be the output dir
-    self.nodect = info.native[:nodes].to_i
+    self.nodect = info.native[:nodes].to_i               # Nodes Requested
     self.ppn = info.procs / self.nodect                  # FIXME This may not be accurate on Slurm systems
     self.total_cpu = info.procs
     self.cput = info.native[:time_used]
@@ -106,7 +106,7 @@ class Jobstatusdata
     self.mem = Filesize.from(mem).pretty
     vmem = "0 b"
     self.vmem = Filesize.from(vmem).pretty
-    output_pathname = ENV["HOME"]
+    output_pathname = Pathname.new(ENV["HOME"])
     self.terminal_path = '' #OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
     self.fs_path = '' #OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
     if self.status == :running || self.status == :completed
@@ -124,7 +124,7 @@ class Jobstatusdata
     # @return [String] The time as string formatted as "DDd HH:MM"
     def pretty_time(seconds)
       duration=Array.new
-      units=[ ["d ", 24*60*60], [":", 60*60], ["", 60] ]
+      units=[ [":", 60*60], [":", 60], ["", 1] ]
       units.each do |value|
         unit = seconds.divmod(value[1])
         duration.push("#{"%02d" % unit[0]}#{value[0]}")
