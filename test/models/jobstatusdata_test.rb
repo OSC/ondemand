@@ -106,13 +106,13 @@ class JobstatussataTest < ActiveModel::TestCase
       end
 
       test "test terminal_path #{@test_count}" do
-        assert data.terminal_path.is_a?(String), data.terminal_path
+        assert data.terminal_path.is_a?(String), "Was #{data.terminal_path.class.name} expecting String"
       end
 
       test "test fs_path #{@test_count}" do
-        assert data.fs_path.is_a?(String), data.fs_path
+        assert data.fs_path.is_a?(String), "Was #{data.fs_path.class.name} expecting String"
       end
-      
+
       @test_count += 1
     end
 
