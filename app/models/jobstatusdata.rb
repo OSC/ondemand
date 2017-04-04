@@ -59,8 +59,8 @@ class Jobstatusdata
     vmem = info.native.fetch(:resources_used, {})[:vmem].presence || "0 b"
     self.vmem = Filesize.from(vmem).pretty
     output_pathname = Pathname.new(self.output_path).dirname
-    self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
-    self.fs_path = OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
+    self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"])).to_s
+    self.fs_path = OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"])).to_s
     if self.status == :running || self.status == :completed
       self.nodes = node_array(info.allocated_nodes)
       self.starttime = info.dispatch_time.to_i
