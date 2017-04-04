@@ -25,7 +25,7 @@ class Jobstatusdata
     self.queue = info.queue_name
     if info.status == :running || info.status == :completed
       self.nodes = node_array(info.allocated_nodes)
-      self.starttime = info.dispatch_time.to_i || 0
+      self.starttime = info.dispatch_time.to_i
     end
     # TODO Find a better way to distingush whether a native parser is available. Maybe this is fine?
     self.extended_available = OODClusters[cluster].job_config[:adapter] == "torque" || OODClusters[cluster].job_config[:adapter] == "slurm"
@@ -47,10 +47,10 @@ class Jobstatusdata
   #
   # @return [Jobstatusdata] self
   def extended_data_torque(info)
-    self.walltime = info.native[:Resource_List][:walltime]
+    self.walltime = info.native.fetch(:Resource_List, {})[:walltime].presence || "00:00:00"
     self.submit_args = info.native[:submit_args].presence || "None"
     self.output_path = info.native[:Output_Path].to_s.split(":").second || info.native[:Output_Path]
-    self.nodect = info.allocated_nodes.count
+    self.nodect = info.native.fetch(:Resource_List, {})[:nodect].to_i
     self.ppn = info.native[:Resource_List][:nodes].to_s.split("ppn=").second || '0'
     self.total_cpu = self.ppn[/\d+/].to_i * self.nodect.to_i
     self.cput = info.native.fetch(:resources_used, {})[:cput].presence || '0'
@@ -78,7 +78,7 @@ class Jobstatusdata
     self.submit_args = info.native[:command]             # FIXME This is the script only, there don't appear to be any provisions for commands
     self.output_path = info.native[:work_dir]            # FIXME This is the working directory (i.e. /scratch ) and may not be the output dir
     self.nodect = info.allocated_nodes.count
-    self.ppn = info.procs / info.native[:nodes].to_i     # FIXME This may not be accurate
+    self.ppn = info.procs / self.nodect                  # FIXME This may not be accurate on Slurm systems
     self.total_cpu = info.procs
     self.cput = info.native[:time_used]
     self.mem = info.native[:min_memory].presence || "0 b"
