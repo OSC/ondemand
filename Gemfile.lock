@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:OSC/ood_core.git
-  revision: 9b197bf9549eca70442a4bbc27c017a94417a805
+  revision: face5b7221686b4c82d37340ee6318d454e8aa5e
   specs:
     ood_core (0.0.1)
       ood_support (~> 0.0.2)
@@ -43,7 +43,7 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
-    addressable (2.5.0)
+    addressable (2.5.1)
       public_suffix (~> 2.0, >= 2.0.2)
     arel (6.0.4)
     autoprefixer-rails (6.7.7.1)
@@ -187,7 +187,7 @@ GEM
     turbolinks-source (5.0.0)
     tzinfo (1.2.3)
       thread_safe (~> 0.1)
-    uglifier (3.1.10)
+    uglifier (3.1.13)
       execjs (>= 0.3.0, < 3)
 
 PLATFORMS
