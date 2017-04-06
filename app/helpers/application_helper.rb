@@ -11,6 +11,14 @@ module ApplicationHelper
     "/nginx/stop?redir=#{root_path}"
   end
 
+  # Render a bootstrap nav link if the url is specified.
+  # Do nothing if the url is nil.
+  #
+  # @param title [String] link text
+  # @param icon [String] favicon icon name (i.e. "refresh" "for "fa "fa-refresh")
+  # @param url [#to_s, nil] url to access
+  # @param role [String] app role i.e. "vdi", "shell", etc.
+  # @return nil if url not set or the HTML string for the bootstrap nav link
   def nav_link(title, icon, url, target: "_self", role: nil)
     render partial: "layouts/nav/link", locals: { title: title, faicon: icon, url: url.to_s, target: target, role: role  } if url
   end

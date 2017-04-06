@@ -1,12 +1,11 @@
-<% if support_url || docs_url || passwd_url %>
-  <li class="dropdown">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-    <i class="fa fa-question-circle"></i><span class="hidden-xs hidden-sm"> Help</span><span class="caret"></span>
-    </a>
-    <ul class="dropdown-menu">
-      <%= nav_link("Contact Support", "question-circle", support_url) %>
-      <%= nav_link("Online Documentation", "info-circle", docs_url) %>
-      <%= nav_link("Change HPC Password", "gear", passwd_url) %>
-    </ul>
-  </li>
-<% end %>
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+  <i class="fa fa-question-circle"></i><span class="hidden-xs hidden-sm"> Help</span><span class="caret"></span>
+</a>
+<ul class="dropdown-menu">
+  <%= nav_link("Contact Support", "question-circle", support_url) %>
+  <%= nav_link("Online Documentation", "info-circle", docs_url) %>
+  <%= nav_link("Change HPC Password", "gear", passwd_url) %>
+  <%= nav_link("Restart Web Server", "refresh", restart_url) %>
+</ul>
+</li>
