@@ -2,6 +2,9 @@ class PagesController < ApplicationController
   include ApplicationHelper
 
   def index
+    if params[:jobfilter] && Filter.list.any? { |f| f.filter_id == params[:jobfilter] }
+      @jobfilter = params[:jobfilter]
+    end
   end
 
   # Used to send the data to the Datatable.

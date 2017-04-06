@@ -1,6 +1,6 @@
 <div class="btn-group pull-right" data-toggle="buttons">
     <% Filter.list.each do |filter| %>
-        <label id="<%= filter.filter_id %>" class="btn btn-primary" onclick="localStorage.setItem('jobfilter', '<%= filter.filter_id %>'); window.location.reload();" >
+        <label id="<%= filter.filter_id %>" class="btn btn-primary" onclick="localStorage.setItem('jobfilter', '<%= filter.filter_id %>'); window.location = '?jobfilter=<%= filter.filter_id %>';" >
           <input type="radio" name="<%= filter.filter_id %>" id="option_user" > <%= filter.title %>
         </label>
     <% end %>
@@ -27,7 +27,7 @@
 <br>
 
 <script>
-    var filter_id = localStorage.getItem("jobfilter") || "<%= Filter.default_id %>";
+    var filter_id = <%= (@jobfilter ? "'#{@jobfilter}'" : "localStorage.getItem('jobfilter') || '#{Filter.default_id}'").html_safe %>;
 
     function build_ganglia_link( host, start_seconds, report_type, node_num, size ) {
         var ganglia_uri;
