@@ -44,7 +44,7 @@ gem 'bootstrap-sass', '3.3'
 gem 'autoprefixer-rails'
 gem 'dotenv-rails', '~> 2.1', require: 'dotenv/rails-now'
 gem 'rails_12factor', group: :production
-gem "ood_appkit", '~> 0.3.4'
+gem "ood_appkit", '~> 0.3.5'
 gem "ood_core", git: "git@github.com:OSC/ood_core.git"
 gem 'pbs', '~> 2.0'
 gem "turbolinks"

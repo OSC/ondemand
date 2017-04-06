@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:OSC/ood_core.git
-  revision: 3a1cfa3ef98e7c9176ef095bce7629f46ec6c7ee
+  revision: d25c46bb53046b6345d02ba4e46bdeab18f4f451
   specs:
     ood_core (0.0.1)
       ood_support (~> 0.0.2)
@@ -104,7 +104,7 @@ GEM
     multi_json (1.12.1)
     nokogiri (1.7.1)
       mini_portile2 (~> 2.1.0)
-    ood_appkit (0.3.4)
+    ood_appkit (0.3.5)
       addressable (~> 2.4)
       lograge (~> 0.3)
       ood_cluster (~> 0.0)
@@ -202,7 +202,7 @@ DEPENDENCIES
   jbuilder (~> 1.2)
   jquery-datatables-rails (~> 3.3)
   jquery-rails
-  ood_appkit (~> 0.3.4)
+  ood_appkit (~> 0.3.5)
   ood_core!
   paperclip (~> 4.2)
   pbs (~> 2.0)
