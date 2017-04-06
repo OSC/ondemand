@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:OSC/ood_core.git
-  revision: face5b7221686b4c82d37340ee6318d454e8aa5e
+  revision: 3a1cfa3ef98e7c9176ef095bce7629f46ec6c7ee
   specs:
     ood_core (0.0.1)
       ood_support (~> 0.0.2)

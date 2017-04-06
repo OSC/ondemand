@@ -46,7 +46,7 @@ class PagesController < ApplicationController
     begin
       b = OODClusters[cluster].job_adapter
 
-      Jobstatusdata.new(b.info(id: pbsid), cluster, true)
+      Jobstatusdata.new(b.info(pbsid), cluster, true)
 
     rescue PBS::UnkjobidError
       { name: pbsid, error: "No job details because job has already left the queue." , status: "completed" }
@@ -66,7 +66,7 @@ class PagesController < ApplicationController
       # Default to user set on first load
       param = params[:jobfilter] || Filter.default_id
       filter = Filter.list.find { |f| f.filter_id == param }
-      result = filter ? filter.apply(b.info) : b.info
+      result = filter ? filter.apply(b.info_all) : b.info_all
 
       # Only add the running jobs to the list and assign the host to the object.
       #
