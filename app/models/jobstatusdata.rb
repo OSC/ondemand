@@ -95,7 +95,7 @@ class Jobstatusdata
 
   # This should not be called, but it is available as a template for building new native parsers.
   def extended_data_default(info)
-    self.walltime = ''
+    self.walltime = '00:00:00'
     self.submit_args = ''
     self.output_path = ''
     self.nodect = 0
