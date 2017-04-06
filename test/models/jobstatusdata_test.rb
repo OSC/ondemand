@@ -8,7 +8,7 @@ class JobstatussataTest < ActiveModel::TestCase
 
   @clusters.each do |cluster|
 
-    jobs = cluster.job_adapter.info
+    jobs = cluster.job_adapter.info_all
 
 
 
