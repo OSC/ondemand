@@ -213,8 +213,8 @@ function display_enhanced_job_data( d ) {
                     '                   <div class="col-md-12"><span class="col-md-2">Submit Args: </span><pre class="col-md-10" style="white-space: pre-wrap;">'+ d.submit_args +'</pre></div>' +
                     '                   <div class="col-md-12"><span class="col-md-2">Output Location: </span><pre class="col-md-10" style="white-space: pre-wrap;">'+ d.output_path+'</pre></span></div>' +
                     '                   <div class="col-md-12">' +
-                                        filesystem_button( d.fs_path.path, d.username ) +
-                                        terminal_button( d.terminal_path.path, d.username ) +
+                                        filesystem_button( d.fs_path, d.username ) +
+                                        terminal_button( d.terminal_path, d.username ) +
                                         delete_button( d.pbsid.replace(/\./g, '_'), d.cluster, d.username ) +
                     '                   </div>' +
                     '                </div>' +
