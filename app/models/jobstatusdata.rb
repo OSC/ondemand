@@ -13,6 +13,9 @@ class Jobstatusdata
   #
   # Object defaults to condensed data, add extended flag to initializer to include all data used by the application.
   #
+  # @param [Hash] info An OodCore.job_adapter.info[_all] response hash
+  # @param [String] cluster The string name of a cluster configured in the OODClusters list (ex. 'oakley')
+  # @param [Boolean, nil] extended If true, included extended data in the response (default: false)
   # @return [Jobstatusdata] self
   def initialize(info, cluster=OODClusters.first.id.to_s, extended=false)
     self.pbsid = info.id

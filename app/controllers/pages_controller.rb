@@ -28,7 +28,7 @@ class PagesController < ApplicationController
       job_id = params[:pbsid].to_s.gsub(/_/, '.')
 
       begin
-        cluster.job_adapter.delete(id: job_id)
+        cluster.job_adapter.delete(job_id)
 
         # It takes a couple of seconds for the job to clear out
         # Using the sleep to wait before reload
@@ -49,7 +49,7 @@ class PagesController < ApplicationController
     begin
       b = OODClusters[cluster].job_adapter
 
-      Jobstatusdata.new(b.info(pbsid), cluster, true)
+      Jobstatusdata.new(b.info(pbsid), cluster.id.to_s, true)
 
     rescue PBS::UnkjobidError
       { name: pbsid, error: "No job details because job has already left the queue." , status: "completed" }
