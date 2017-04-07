@@ -215,7 +215,7 @@ function display_enhanced_job_data( d ) {
                     '                   <div class="col-md-12">' +
                                         filesystem_button( d.fs_path, d.username ) +
                                         terminal_button( d.terminal_path, d.username ) +
-                                        delete_button( d.pbsid.replace(/\./g, '_'), d.cluster, d.username ) +
+                                        delete_button( d.pbsid, d.cluster, d.username ) +
                     '                   </div>' +
                     '                </div>' +
                     '            </div>' +
@@ -287,18 +287,10 @@ function terminal_button( url, user ) {
 
 function delete_button( pbsid, host, user ) {
     if (user == JobStatusapp.username) {
-        return '<button type="button" class="btn btn-danger pull-right" style="margin: 10px;" onClick="delete_job(\''+pbsid+'\',\''+host+'\')"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</button></div>';
+        return '<a type="button" class="btn btn-danger pull-right" data-method="delete" data-confirm="Are you sure you want to delete ' + pbsid + '?" style="margin: 10px;" href="' + APP_PATH + 'delete_job/?pbsid=' + pbsid + '&host=' + host + '">' +
+            '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</a>';
     } else {
         return '';
-    }
-}
-
-function delete_job(pbsid, host) {
-    if (confirm("Are you sure?")) {
-        window.location = APP_PATH + "/delete_job/?pbsid=" + pbsid + "&host=" + host;
-        return true;
-    } else {
-        return false;
     }
 }
 
