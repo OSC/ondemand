@@ -39,7 +39,7 @@
           <span class="glyphicon glyphicon-console" aria-hidden="true"></span><span class="hidden-xs"> Open Terminal</span>
         </a>
         <a class="btn btn-success btn-sm" id="submit_button" data-toggle="tooltip" title="Submit Job" role="button" data-method="get" disabled>
-          <span class="glyphicon glyphicon-play" aria-hidden="true"></span><span class="hidden-xs hidden-md">  submit</span>
+          <span class="glyphicon glyphicon-play" aria-hidden="true"></span><span class="hidden-xs hidden-md">  Submit</span>
         </a>
         <a class="btn btn-default btn-sm btn-warning" id="stop_button" data-toggle="tooltip" title="Stop Job" role="button" data-method="get" disabled>
           <span class="glyphicon glyphicon-stop" aria-hidden="true"></span><span class="hidden-xs hidden-md">  Stop</span>
@@ -92,8 +92,8 @@
         <p>Job Name: <h4><strong><span id="job-details-name"></span></strong></h4></p>
         <p>Submit to:</p>
           <select class="form-control" id="job-details-server-select" disabled>
-            <% OODClusters.each do |key, value| %>
-                <option id="<%= value.id %>" value="<%= value.id %>"><%= value.title %></option>
+            <% OODClusters.each do |cluster| %>
+                <option id="<%= cluster.id %>" value="<%= cluster.id %>"><%= cluster.metadata_config[:title] %></option>
             <% end %>
           </select>
         <p></p>
