@@ -54,7 +54,7 @@ class PagesController < ApplicationController
     rescue PBS::UnkjobidError
       { name: pbsid, error: "No job details because job has already left the queue." , status: "completed" }
     rescue => e
-      { name: pbsid, error: "No job details available." + e.backtrace.to_s}
+      { name: pbsid, error: "No job details available.\n" + e.backtrace.to_s}
     end
   end
 
