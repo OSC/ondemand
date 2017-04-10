@@ -271,7 +271,7 @@ function build_resources_used_panel( d ) {
 
 function filesystem_button( url, user ) {
   if (user == JobStatusapp.username) {
-    return '<a type="button" class="btn btn-default" style="margin: 10px;" href="'+url+'" target="_blank"><span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span> Open in File Manager</a>';
+    return '<a type="button" class="btn btn-default" style="margin: 10px;" href="'+url+'" target="_blank"><i class="fa fa-folder-open"></i> Open in File Manager</a>';
   } else {
     return '';
   }
@@ -279,7 +279,7 @@ function filesystem_button( url, user ) {
 
 function terminal_button( url, user ) {
   if (user == JobStatusapp.username) {
-    return '<a type="button" class="btn btn-default" style="margin: 10px;" href="'+url+'" target="_blank"><span class="glyphicon glyphicon-console" aria-hidden="true"></span> Open in Terminal</a>';
+    return '<a type="button" class="btn btn-default" style="margin: 10px;" href="'+url+'" target="_blank"><i class="fa fa-terminal"></i> Open in Terminal</a>';
   } else {
     return '';
   }
@@ -288,7 +288,7 @@ function terminal_button( url, user ) {
 function delete_button( pbsid, host, user ) {
     if (user == JobStatusapp.username) {
         return '<a type="button" class="btn btn-danger pull-right" data-method="delete" data-confirm="Are you sure you want to delete ' + pbsid + '?" style="margin: 10px;" href="' + APP_PATH + 'delete_job/?pbsid=' + pbsid + '&host=' + host + '">' +
-            '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</a>';
+            '<i class="fa fa-trash-o"></i> Delete</a>';
     } else {
         return '';
     }
