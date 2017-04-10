@@ -40,6 +40,8 @@ chdir APP_ROOT do
     system!("cp config/initializers/ood.rb.#{OOD_SITE}.#{OOD_PORTAL} config/initializers/ood.rb")
   else
     puts "\n== Ignoring portal specific settings =="
+    system!("rm -f .env.local")
+    system!("rm -f config/initializers/ood.rb")
   end
 
   if ENV["RAILS_ENV"] == "production"
