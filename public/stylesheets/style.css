@@ -1,0 +1,12 @@
+html, body {
+  height: 100%;
+  width:  100%;
+  margin: 0;
+}
+
+#terminal {
+  display:  block;
+  position: relative;
+  height:   100%;
+  width:    100%;
+}

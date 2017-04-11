@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <base href="{{baseURI}}/">
+
+  <title>Example</title>
+  <link rel="stylesheet" href="stylesheets/style.css">
+
+  <script src="javascripts/hterm_all.js"></script>
+  <script src="javascripts/ood_shell.js"></script>
+</head>
+
+<body>
+  <div id="terminal"></div>
+</body>
+
+<script>
+  // Global variables that define the terminal
+  var oodShell,
+      terminalContainer = document.getElementById('terminal'),
+      webSocketUrl      = document.URL.replace(/^http/, 'ws').replace(/#.*$/, ''),
+      terminalPrefs     = {
+        'send-encoding': 'raw',
+        'use-default-window-copy': true
+      };
+
+  // hterm default preferences are defined here:
+  // https://chromium.googlesource.com/apps/libapps/+/c277f0aa4c194dae2619e874b74803094e13d1bc/hterm/js/hterm_preference_manager.js#53
+
+  oodShell = new OodShell(terminalContainer, webSocketUrl, terminalPrefs);
+  oodShell.createTerminal();
+</script>
+
+</html>
