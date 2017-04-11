@@ -19,56 +19,48 @@ the `ood` account, this app should run as `ood`.
     scl enable git19 -- git checkout tags/v1.1.2
     ```
 
-2.  Install the required packages:
+2.  Install the app:
 
     ```sh
-    scl enable git19 nodejs010 -- npm install
+    scl enable git19 nodejs010 -- bin/setup
     ```
 
-3.  (Optional) Create a `.env` file specifying the default ssh host (default:
-    `localhost`):
+    this will set the default SSH host to `localhost`. It is **recommended**
+    you change this to one of the login nodes with:
 
     ```sh
-    # .env
-
-    DEFAULT_SSHHOST='oakley.osc.edu'
+    DEFAULT_SSHHOST=login.my_center.edu scl enable git19 nodejs010 -- bin/setup
     ```
 
-4. Copy the built app directory to the deployment directory, and start the server. i.e.:
+3. Copy the built app directory to the deployment directory, and start the
+   server. i.e.:
 
-  ```sh
-  sudo mkdir -p /var/www/ood/apps/sys
-  sudo cp -r . /var/www/ood/apps/sys/shell
-  ```
+   ```sh
+   sudo mkdir -p /var/www/ood/apps/sys
+   sudo cp -r . /var/www/ood/apps/sys/shell
+   ```
 
 ## Updating to a New Stable Version
 
 1. Navigate to the app's build directory and check out the latest version.
 
-  ```sh
-  cd shell # cd to build directory
-  scl enable git19 -- git fetch
-  scl enable git19 -- git checkout tags/v1.1.2
-  ```
+   ```sh
+   cd shell # cd to build directory
+   scl enable git19 -- git fetch
+   scl enable git19 -- git checkout tags/v1.1.2
+   ```
 
-2. Update any required packages:
+2. Update the app:
 
-  ```sh
-  scl enable nodejs010 -- npm install
-  ```
+   ```sh
+   scl enable git19 nodejs010 -- bin/setup
+   ```
 
-3. Restart the app
+3. Copy the built app directory to the deployment directory.
 
-  ```sh
-  touch tmp/restart.txt
-  ```
-
-4. Copy the built app directory to the deployment directory. There is no need to restart the server. Because we touched `tmp/restart.txt` in the app, the next time a user accesses an app Passenger will reload their app.
-
-  ```sh
-  sudo mkdir -p /var/www/ood/apps/sys/shell
-  sudo rsync -rlptv --delete . /var/www/ood/apps/sys/shell
-  ```
+   ```sh
+   sudo rsync -rlptv --delete . /var/www/ood/apps/sys/shell
+   ```
 
 
 ## Usage
