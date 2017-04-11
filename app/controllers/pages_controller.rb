@@ -45,16 +45,17 @@ class PagesController < ApplicationController
   private
 
   # Get the extended data for a particular job.
-  def get_job(pbsid, cluster)
+  def get_job(jobid, cluster)
     begin
-      b = OODClusters[cluster].job_adapter
+      data = OODClusters[cluster].job_adapter.info(jobid)
 
-      Jobstatusdata.new(b.info(pbsid), cluster.id.to_s, true)
+      raise OodCore::JobAdapterError if data.native.nil?
+      Jobstatusdata.new(data, cluster.id.to_s, true)
 
-    rescue PBS::UnkjobidError
-      { name: pbsid, error: "No job details because job has already left the queue." , status: "completed" }
+    rescue OodCore::JobAdapterError
+      { name: jobid, error: "No job details because job has already left the queue." , status: "completed" }
     rescue => e
-      { name: pbsid, error: "No job details available.\n" + e.backtrace.to_s}
+      { name: jobid, error: "No job details available.\n" + e.backtrace.to_s}
     end
   end
 
