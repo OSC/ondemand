@@ -65,32 +65,50 @@ $(document).ready( function() {
             {
                 data:               "pbsid",
                 className:          "small",
-                "width":            "15%"
+                "autoWidth":        true,
+                "render":           function(data) {
+                    return "<span title="+data+">"+data+"</span>";
+                }
             },
             {
                 data:               "jobname",
                 className:          "small",
-                "width":            "40%"
+                width:              '25%',
+                "render":           function(data) {
+                    return "<span title="+data+">"+data+"</span>";
+                }
             },
             {
                 data:               "username",
                 className:          "small",
-                width:              "4em"
+                "autoWidth":        true,
+                "render":           function(data) {
+                    return "<span title="+data+">"+data+"</span>";
+                }
             },
             {
                 data:               "account",
                 className:          "small",
-                "autoWidth":        true
+                "autoWidth":        true,
+                "render":           function(data) {
+                    return "<span title="+data+">"+data+"</span>";
+                }
             },
             {
                 data:               "walltime_used",
                 className:          "small text-right",
-                width:              "4em"
+                "autoWidth":        true,
+                "render":           function(data) {
+                    return "<span title="+data+">"+data+"</span>";
+                }
             },
             {
                 data:               "queue",
                 className:          "small",
-                "autoWidth":        true
+                "autoWidth":        true,
+                "render":           function(data) {
+                    return "<span title="+data+">"+data+"</span>";
+                }
             },
             {
                 data:               "status",
@@ -105,7 +123,8 @@ $(document).ready( function() {
                 className:          "small",
                 "render":           function(data) {
                                         return data.charAt(0).toUpperCase() + data.substr(1);
-                                    }
+                                    },
+                "autoWidth":        true
             }
         ]
     });
@@ -132,6 +151,8 @@ $(document).ready( function() {
             });
         }
     });
+
+    table.columns.adjust().draw();
 });
 
 /* Prepares a CSS class compatible selection string based on a string */
