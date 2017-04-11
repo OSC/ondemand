@@ -25,7 +25,14 @@ class Source
 
     # @return [Template] The default template.
     def default_template
-      default = Template.new(Rails.root.join("example_templates", "torque").to_s, Source.new("Examples", Rails.root.join("example_templates").to_s))
+      # TODO Provide an LSF script and a default in case adapter is something else
+      adapter = OODClusters.find{|x| !x.job_config[:adapter].nil? }.job_config[:adapter] || 'torque'
+      if adapter == 'torque'
+        default = Template.new(Rails.root.join("example_templates", "torque").to_s, Source.new("Examples", Rails.root.join("example_templates").to_s))
+      elsif adapter == 'slurm'
+        default = Template.new(Rails.root.join("example_templates", "slurm").to_s, Source.new("Examples", Rails.root.join("example_templates").to_s))
+      end
+
       custom_default = Template.new(Rails.root.join("templates", "default").to_s, Source.system)
 
       custom_default.exist? ? custom_default : default
