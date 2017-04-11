@@ -24,7 +24,7 @@ class Jobstatusdata
     self.account = info.accounting_id
     self.status = info.status.state
     self.cluster = cluster
-    self.walltime_used = info.wallclock_time > 0 ? pretty_time(info.wallclock_time) : ''
+    self.walltime_used = info.wallclock_time.to_i > 0 ? pretty_time(info.wallclock_time) : ''
     self.queue = info.queue_name
     if info.status == :running || info.status == :completed
       self.nodes = node_array(info.allocated_nodes)
@@ -50,6 +50,7 @@ class Jobstatusdata
   #
   # @return [Jobstatusdata] self
   def extended_data_torque(info)
+    return unless info.native
     self.walltime = info.native.fetch(:Resource_List, {})[:walltime].presence || "00:00:00"
     self.submit_args = info.native[:submit_args].presence || "None"
     self.output_path = info.native[:Output_Path].to_s.split(":").second || info.native[:Output_Path]
@@ -77,6 +78,7 @@ class Jobstatusdata
   #
   # @return [Jobstatusdata] self
   def extended_data_slurm(info)
+    return unless info.native
     self.walltime = info.native[:time_limit]
     self.submit_args = info.native[:command]
     self.output_path = info.native[:work_dir]            # FIXME This is the working directory (i.e. /scratch ) and may not be the output dir
@@ -98,6 +100,7 @@ class Jobstatusdata
 
   # This should not be called, but it is available as a template for building new native parsers.
   def extended_data_default(info)
+    return unless info.native
     self.walltime = '00:00:00'
     self.submit_args = ''
     self.output_path = ''
