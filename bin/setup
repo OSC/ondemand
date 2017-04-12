@@ -4,7 +4,7 @@ require "rake"
 
 include FileUtils
 
-ENV["RAILS_ENV"]               ||= ENV["PASSENGER_APP_ENV"] || "production"
+ENV["RAILS_ENV"]               ||= ENV["PASSENGER_APP_ENV"] || "development"
 ENV["RAILS_RELATIVE_URL_ROOT"] ||= ENV["PASSENGER_BASE_URI"]
 
 # path to your application root.
