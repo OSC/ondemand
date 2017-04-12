@@ -23,7 +23,7 @@ the `ood` account, this app should run as `ood`.
 2.  Install the app:
 
     ```sh
-    scl enable git19 nodejs010 -- bin/setup
+    scl enable git19 rh-ruby22 nodejs010 -- bin/setup
     ```
 
     this will set the default SSH host to `localhost`. It is **recommended**
@@ -54,7 +54,7 @@ the `ood` account, this app should run as `ood`.
 2. Update the app:
 
    ```sh
-   scl enable git19 nodejs010 -- bin/setup
+   scl enable git19 rh-ruby22 nodejs010 -- bin/setup
    ```
 
 3. Copy the built app directory to the deployment directory.
