@@ -77,7 +77,7 @@
 
         <%= f.text_field :name, label: 'Job Name:', required: true, id: 'name-field' %>
 
-        <%= f.select :batch_host, OODClusters.map { |cluster| [ "#{cluster.metadata_config[:title]} (#{cluster.job_config[:host]})", cluster.id ] }, { label: "Batch Server:" }, { class: "selectpicker", id: "batch-host-select", required: true } %>
+        <%= f.select :batch_host, OODClusters.map { |cluster| [ "#{cluster.metadata.title}", cluster.id ] }, { label: "Cluster:" }, { class: "selectpicker", id: "batch-host-select", required: true } %>
 
         <%= f.text_field :script_name, label: 'Script Name:', required: true, id: "script-path-field" %>
 
