@@ -20,11 +20,34 @@ chdir APP_ROOT do
   # This script is a starting point to setup your application.
   # Add necessary setup steps to this file:
 
+  ood_site   = OOD_SITE
+  ood_portal = OOD_PORTAL
+  ood_url    = OOD_URL
+
+  # Read in OOD_SITE and/or OOD_PORTAL if defined in .env.local
+  if File.exist?(".env.local")
+    unless ood_site
+      tmp = `bash -c 'source .env.local && echo $OOD_SITE'`.strip
+      ood_site = tmp unless tmp.empty?
+    end
+
+    unless ood_portal
+      tmp = `bash -c 'source .env.local && echo $OOD_PORTAL'`.strip
+      ood_portal = tmp unless tmp.empty?
+    end
+  end
+
+  # Read in RAILS_RELATIVE_URL_ROOT if defined in .env.production
+  if OOD_ENV == "production" && File.exist?(".env.production")
+    tmp = `bash -c 'source .env.production && echo $RAILS_RELATIVE_URL_ROOT'`.strip
+    ood_url = tmp unless tmp.empty?
+  end
+
   puts "\n== Building Dashboard App =="
   puts "RAILS_ENV               = #{OOD_ENV}"
-  puts "RAILS_RELATIVE_URL_ROOT = #{OOD_URL    || "not set (default: defined in dotenv file)"}"
-  puts "OOD_SITE                = #{OOD_SITE   || "not set (default: none)"}"
-  puts "OOD_PORTAL              = #{OOD_PORTAL || "not set (default: none)"}"
+  puts "RAILS_RELATIVE_URL_ROOT = #{ood_url    || "not set"}"
+  puts "OOD_SITE                = #{ood_site   || "not set (default: none)"}"
+  puts "OOD_PORTAL              = #{ood_portal || "not set (default: none)"}"
 
   unless system("bin/bundle check &> /dev/null")
     puts "\n== Installing dependencies =="
@@ -32,14 +55,28 @@ chdir APP_ROOT do
     sh "bin/bundle clean"
   end
 
-  if OOD_SITE && OOD_PORTAL
+  if ood_site && ood_portal
     puts "\n== Enabling portal specific settings =="
-    cp ".env.local.#{OOD_SITE}.#{OOD_PORTAL}", ".env.local"
-    cp "config/initializers/ood.rb.#{OOD_SITE}.#{OOD_PORTAL}", "config/initializers/ood.rb"
+
+    # .env.local
+    source_file = ".env.local.#{ood_site}.#{ood_portal}"
+    target_file = ".env.local"
+    # Copy source file to target file if it exists or user directly requested
+    # it by setting an environment variable
+    if OOD_SITE || OOD_PORTAL || File.exist?(source_file)
+      cp source_file, target_file unless system("cmp -s #{source_file} #{target_file}")
+    end
+
+    # config/initializers/ood.rb
+    source_file = "config/initializers/ood.rb.#{ood_site}.#{ood_portal}"
+    target_file = "config/initializers/ood.rb"
+    # Copy source file to target file if it exists or user directly requested
+    # it by setting an environment variable
+    if OOD_SITE || OOD_PORTAL || File.exist?(source_file)
+      cp source_file, target_file unless system("cmp -s #{source_file} #{target_file}")
+    end
   else
     puts "\n== Ignoring portal specific settings =="
-    puts "WARNING: found portal specific file .env.local" if File.exist?(".env.local")
-    puts "WARNING: found portal specific file config/initializers/ood.rb" if File.exist?("config/initializers/ood.rb")
   end
 
   if OOD_ENV == "production"
