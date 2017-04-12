@@ -2,72 +2,71 @@
 
 [![GitHub version](https://badge.fury.io/gh/OSC%2Food-dashboard.svg)](https://badge.fury.io/gh/OSC%2Food-dashboard)
 
-This app is a Rails app for Open OnDemand that serves as a gateway to launching other Open OnDemand apps. It is meant to be run as the user (and on behalf of the user) using the app. Thus, at an HPC center if I log into OnDemand using the `efranz` account, this app should run as `efranz`. This Rails app doesn't use a database.
+This app is a Rails app for Open OnDemand that serves as a gateway to launching
+other Open OnDemand apps. It is meant to be run as the user (and on behalf of
+the user) using the app. Thus, at an HPC center if I log into OnDemand using
+the `efranz` account, this app should run as `efranz`. This Rails app doesn't
+use a database.
 
 ## New Install
 
 
-1. Starting in the build directory for all sys apps, clone and check out the latest version of the dashboard (make sure the app directory's name is "dashboard"):
+1. Start in the **build directory** for all sys apps, clone and check out the
+   latest version of the dashboard app (make sure the app directory's name is
+   `dashboard`):
 
-  ```sh
-  scl enable git19 -- git clone https://github.com/OSC/ood-dashboard.git dashboard
-  cd dashboard
-  scl enable git19 -- git checkout tags/v1.10.0
-  ```
+   ```sh
+   scl enable git19 -- git clone https://github.com/OSC/ood-dashboard.git dashboard
+   cd dashboard
+   scl enable git19 -- git checkout tags/v1.10.1
+   ```
 
-2. Build the app (install dependencies and build assets)
+2. Install the app for a production environment:
 
-  ```sh
-  scl enable rh-ruby22 -- bin/bundle install --path vendor/bundle
-  scl enable rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=production
-  scl enable rh-ruby22 nodejs010 -- bin/rake tmp:clear
-  ```
+   ```sh
+   RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+   ```
 
-3. Copy the built app directory to the deployment directory, and start the server. i.e.:
-    
-  ```sh
-  sudo mkdir -p /var/www/ood/apps/sys/dashboard
-  sudo cp -r . /var/www/ood/apps/sys/dashboard
-  ```
+   this will setup a default Open OnDemand install. If you'd like a specific
+   pre-defined portal such as OSC OnDemand you'd specify `OOD_SITE` and
+   `OOD_PORTAL` as:
 
-4. Access the dashboard by going to /pun/sys/dashboard
+   ```sh
+   OOD_SITE=osc OOD_PORTAL=ondemand RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+   ```
 
+3. Copy the built app directory to the deployment directory, and start the
+   server. i.e.:
+
+   ```sh
+   sudo mkdir -p /var/www/ood/apps/sys/dashboard
+   sudo cp -r . /var/www/ood/apps/sys/dashboard
+   ```
 
 ## Updating to a New Stable Version
 
-When updating a deployed version of the Open OnDemand dashboard.
+1. Navigate to the app's build directory and check out the latest version:
 
+   ```sh
+   cd dashboard # cd to build directory
+   scl enable git19 -- git fetch
+   scl enable git19 -- git checkout tags/v1.10.1
+   ```
 
-1. Fetch and checkout new version of code:
+2. Update the app for a production environment:
 
-  ```sh
-  cd dashboard # cd to build directory
-  scl enable git19 -- git fetch
-  scl enable git19 -- git checkout tags/v1.10.0 # check out latest tag
-  ```
+   ```sh
+   RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+   ```
 
-2. Install gem dependencies and rebuild assets
+   You do not need to specify `OOD_SITE` and `OOD_PORTAL` if updating from a
+   previous build.
 
-  ```sh
-  scl enable rh-ruby22 -- bin/bundle install --path vendor/bundle
-  scl enable rh-ruby22 -- bin/rake tmp:clear
-  scl enable rh-ruby22 -- bin/rake assets:clobber RAILS_ENV=production
-  scl enable rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=production
-  ```
+3. Copy the built app directory to the deployment directory:
 
-3. Restart app
-
-  ```sh
-  touch tmp/restart.txt
-  ```
-
-4. Copy the built app directory to the deployment directory. There is no need to restart the server. Because we touched `tmp/restart.txt` in the app, the next time a user accesses an app Passenger will reload their app.
-
-  ```sh
-  sudo mkdir -p /var/www/ood/apps/sys/dashboard
-  sudo rsync -rlptv --delete . /var/www/ood/apps/sys/dashboard
-  ```
-
+   ```sh
+   sudo rsync -rlptv --delete . /var/www/ood/apps/sys/dashboard
+   ```
 
 ## Configuration
 
@@ -86,3 +85,13 @@ See the wiki page https://github.com/OSC/ood-dashboard/wiki/Site-Wide-Announceme
 **This is a feature currently in development. The documentation below is for developers working on this feature.**
 
 See the wiki page https://github.com/OSC/ood-dashboard/wiki/App-Sharing
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at
+https://github.com/OSC/ood-dashboard.
+
+## License
+
+The gem is available as open source under the terms of the [MIT
+License](http://opensource.org/licenses/MIT).
