@@ -13,16 +13,16 @@ $(window).focus ->
 
 @request_job_data = (id) ->
   if id?
-    show_job_panel()
-    disable_all_buttons()
     $.ajax
       type: 'GET'
       url: Routes.workflow_path(id)
       contentType: "application/json; charset=utf-8"
       dataType: "json"
       error: (jqXHR, textStatus, errorThrown) ->
+        show_job_panel()
         console.log jqXHR
       success: (data, textStatus, jqXHR) ->
+        show_job_panel()
         update_status_label(id, data.status_label)
         update_job_details_panel(data)
         update_open_dir_button(data.fs_root)
@@ -40,6 +40,7 @@ $(window).focus ->
           update_submit_button()
           update_copy_button()
   else
+    show_job_panel()
     disable_all_buttons()
 
 @disable_all_buttons = ->
@@ -56,15 +57,15 @@ $(window).focus ->
 
 @show_job_panel = (show) ->
   if show?
-    $("#job-details-panel").fadeIn(50)
+    $("#job-details-panel").show()
   else
-    $("#job-details-panel").fadeOut(50)
+    $("#job-details-panel").hide()
 
 @show_script_details_panel = (show) ->
   if show?
-    $("#script-details-panel").fadeIn(50)
+    $("#script-details-panel").show()
   else
-    $("#script-details-panel").fadeOut(50)
+    $("#script-details-panel").hide()
 
 @update_status_label = (id, label) ->
   if label? && id?
@@ -85,7 +86,6 @@ $(window).focus ->
     show_job_panel(true)
 
 @update_script_details_panel = (content) ->
-  show_script_details_panel()
   if content?
     $("#script-name").text(content.name)
     $("#open-script-dir-button").attr("href", "#{content.fs_base}")
@@ -98,10 +98,15 @@ $(window).focus ->
       contentType: "application/json; charset=utf-8"
       dataType: "text"
       error: (jqXHR, textStatus, errorThrown) ->
+        show_script_details_panel()
         console.log jqXHR
       success: (filedata, textStatus, jqXHR) ->
+        show_script_details_panel()
         $("#script-text-data").text(filedata)
         show_script_details_panel(true)
+  else
+    show_script_details_panel()
+
 
 @update_open_dir_button = (path) ->
   if path?
