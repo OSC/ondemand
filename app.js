@@ -1,114 +1,82 @@
 // Set dotenv as early as possible
 require('dotenv').config();
 
-// Monkey patch Regexp because Javascript is sad
-RegExp.escape = function(s) {
-  return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-};
+var http      = require('http');
+var path      = require('path');
+var WebSocket = require('ws');
+var express   = require('express');
+var pty       = require('pty.js');
+var hbs       = require('hbs');
+var port      = 3000;
 
-var express  = require('express');
-var exphbs   = require('express-handlebars');
-var http     = require('http');
-var path     = require('path');
-var server   = require('socket.io');
-var pty      = require('pty.js');
-var fs       = require('fs');
+// Create all your routes
+var router = express.Router();
+router.get('/', function (req, res) {
+  res.redirect(req.baseUrl + '/ssh');
+});
+router.get('/ssh*', function (req, res) {
+  res.render('index', { baseURI: req.baseUrl });
+});
+router.use(express.static(path.join(__dirname, 'public')));
 
-var BASE_URI  = require('base-uri');
-var SSH_URI   = "/ssh"
-var PORT      = 1337;
-var URI_REGEX = RegExp.escape(BASE_URI) +
-                RegExp.escape(SSH_URI) +
-                '\\/([\\w\\-.]+)' +
-                '(.*)$';
-
-var sshport = 22;
-
-// Use express to handle the routes and rendering
+// Setup app
 var app = express();
 
-// Use handlebars as the renderer
-app.engine('handlebars', exphbs());
-app.set('view engine', 'handlebars');
+// Setup template engine
+app.set('view engine', 'hbs');
+app.set('views', path.join(__dirname, 'views'));
 
-// Set up the routes
-app.get(BASE_URI, function(req, res) {
-  res.redirect(BASE_URI + SSH_URI + '/default');
-});
-app.get(BASE_URI + SSH_URI + '/*', function(req, res) {
-  res.render('index', {
-    baseURI: BASE_URI
-  });
-});
-app.use(BASE_URI + '/wetty', express.static(path.join(__dirname, 'node_modules/wetty/public/wetty')));
+// Mount the routes at the base URI
+app.use(process.env.PASSENGER_BASE_URI || '/', router);
 
-// Start up the http server
-var httpserv = http.createServer(app).listen(PORT, function() {
-  console.log('http on port ' + PORT);
-});
+// Setup websocket server
+var server = new http.createServer(app);
+var wss = new WebSocket.Server({ server: server });
 
-// Start up socket server
-var io = server(httpserv, {
-  path: BASE_URI + '/socket.io'
-});
+wss.on('connection', function connection (ws) {
+  var match;
+  var host = process.env.DEFAULT_SSHHOST || 'localhost';
+  var dir;
+  var term;
+  var args;
 
-io.on('connection', function(socket) {
-  var request = socket.request;
-  console.log((new Date()) + ' Connection accepted.');
+  console.log('Connection established');
 
-  // find user requested host from white list of hosts as well as user
-  // requested cwd
-  var sshhost = null;
-  var cwd = null;
-  if (match = request.headers.referer.match(URI_REGEX)) {
-    sshhost = match[1]
-
-    // check if dir exists and user has access to it
-    var tmpdir = process.cwd();
-    try {
-      process.chdir(match[2]);
-      cwd = match[2];
-    } catch (err) {
-      // ignore
-    }
-    process.chdir(tmpdir);
+  // Determine host and dir from request URL
+  if (match = ws.upgradeReq.url.match(process.env.PASSENGER_BASE_URI + '/ssh/([^\\/]+)(.+)?$')) {
+    if (match[1] !== 'default') host = match[1];
+    if (match[2]) dir = unescape(match[2]).replace(/\'/g, "'\\''"); // POSIX escape dir
   }
 
-  // Use default ssh host if "default" specified
-  if (sshhost == null || sshhost == "default") { //process.env.DEFAULT_SSHHOST != null) {
-    sshhost = process.env.DEFAULT_SSHHOST || 'localhost';
-  }
+  process.env.LANG = 'en_US.UTF-8'; // fix for character issues
 
-  process.env.LANG = 'en_US.UTF-8'; // fixes strange character issues
-
-  // set up arguments for launching ssh session
-  var term_args = [sshhost, '-p', sshport];
-  if (cwd !== null) {
-    term_args.push('-t', 'cd ' + cwd + ' ; exec bash -l');
-  }
-
-  // launch an ssh session
-  var term = pty.spawn('ssh', term_args, {
+  args = dir ? [host, '-t', 'cd \'' + dir + '\' ; exec ${SHELL} -l'] : [host];
+  term = pty.spawn('ssh', args, {
     name: 'xterm-256color',
     cols: 80,
-    rows: 30
-  });
-  console.log((new Date()) + " PID=" + term.pid + " STARTED on behalf of user");
-
-  term.on('data', function(data) {
-    socket.emit('output', data);
-  });
-  term.on('exit', function(code) {
-    console.log((new Date()) + " PID=" + term.pid + " ENDED");
+    rows: 30,
   });
 
-  socket.on('resize', function(data) {
-    term.resize(data.col, data.row);
+  console.log('Opened terminal: ' + term.pid);
+
+  term.on('data', function (data) {
+    ws.send(data, function (error) {
+      if (error) console.log('Send error: ' + error.message);
+    });
   });
-  socket.on('input', function(data) {
-    term.write(data);
+
+  ws.on('message', function (msg) {
+    msg = JSON.parse(msg);
+    if (msg.input)  term.write(msg.input);
+    if (msg.resize) term.resize(parseInt(msg.resize.cols), parseInt(msg.resize.rows));
   });
-  socket.on('disconnect', function() {
+
+  ws.on('close', function () {
     term.end();
+    console.log('Closed terminal: ' + term.pid);
   });
+});
+
+server.listen(port, function () {
+  console.log('Listening on ' + port);
 });

@@ -1,31 +1,24 @@
 {
-  "name": "osc-shell",
-  "version": "0.0.1",
-  "description": "OSC Shell. Shell access in the browser to OSC login nodes.",
+  "name": "ood-shell",
+  "version": "1.1.2",
+  "description": "Open OnDemand app providing web-based shell to a login node.",
   "author": "Jeremy Nicklas <jnicklas@osc.edu>",
   "license": "MIT",
   "main": "app.js",
-  "homepage": "https://github.com/AweSim-OSC/osc-shell",
+  "homepage": "https://github.com/OSC/ood-shell",
   "repository": {
-    "type": "git",
-    "url": "git://github.com/AweSim-OSC/osc-shell.git"
+    "type":  "git",
+    "url":   "git://github.com/OSC/ood-shell.git"
   },
   "bugs": {
-    "url": "https://github.com/AweSim-OSC/osc-shell/issues"
+    "url": "https://github.com/OSC/ood-shell/issues"
   },
-  "keywords": [
-    "shell access",
-    "ohio supercomputer center",
-    "osc"
-  ],
   "dependencies": {
-    "base-uri": "^1.0.1",
-    "dotenv": "^4.0.0",
-    "express-handlebars": "^3.0.0",
-    "express": "^3.5.0",
-    "socket.io": "^1.4.5",
-    "pty.js": "^0.3.1",
-    "wetty": "^0.2.0"
+    "dotenv":   "^4.0.0",
+    "express":  "^4.14.0",
+    "hbs":      "^4.0.1",
+    "pty.js":   "^0.3.1",
+    "ws":       "^1.1.2"
   },
   "private": true
 }

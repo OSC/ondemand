@@ -1,6 +1,7 @@
 # OOD Shell
 
-[![GitHub version](https://badge.fury.io/gh/OSC%2Food-shell.svg)](https://badge.fury.io/gh/OSC%2Food-shell)
+![GitHub Release](https://img.shields.io/github/release/osc/ood-shell.svg)
+![GitHub License](https://img.shields.io/github/license/osc/ood-shell.svg)
 
 This app is a Node.js app for Open OnDemand providing a web based terminal
 using Chrome OS's hterm. It is meant to be run as the user (and on behalf of
@@ -65,22 +66,29 @@ the `ood` account, this app should run as `ood`.
 
 ## Usage
 
-Assume the base URL for the app is `https://localhost/pun/sys/shell`.
+Open a terminal to the default SSH host (`$DEFAULT_SSHHOST` or `localhost`):
 
-To open a new terminal to the default host, go to:
-
-- `https://localhost/pun/sys/shell/ssh/`
-- `https://localhost/pun/sys/shell/ssh/default`
+`http://localhost:3000/`
 
 To specify the host:
 
-- `https://localhost/pun/sys/shell/ssh/<host>`
+`http://localhost:3000/ssh/<host>`
 
-To specify another directory besides the home directory to start in, append the
-full path of that directory to the URL. In this case, we want to navigate to
-the path `/path/to/my/directory`:
+To specify a directory on the default host:
 
-To open the shell in a specified directory path:
+`http://localhost:3000/ssh/default/dir`
 
-- `https://localhost/pun/sys/shell/ssh/default/<path>`
-- `https://localhost/pun/sys/shell/ssh/<host>/<path>`
+To specify a host and directory:
+
+`http://localhost:3000/ssh/<host>/<dir>`
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at
+https://github.com/OSC/ood-shell.
+
+
+## License
+
+The gem is available as open source under the terms of the [MIT
+License](http://opensource.org/licenses/MIT).

@@ -18,8 +18,5 @@ node_modules/*
 /tmp/*
 !/tmp/.keep
 
-# local copy of newer `npm`
-/npm
-
 # ignore env vars
 /.env
