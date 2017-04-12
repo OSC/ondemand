@@ -76,7 +76,7 @@ To specify the host:
 
 To specify a directory on the default host:
 
-`http://localhost:3000/ssh/default/dir`
+`http://localhost:3000/ssh/default/<dir>`
 
 To specify a host and directory:
 
