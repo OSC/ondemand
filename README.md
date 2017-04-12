@@ -43,7 +43,7 @@ the `ood` account, this app should run as `ood`.
 
 ## Updating to a New Stable Version
 
-1. Navigate to the app's build directory and check out the latest version.
+1. Navigate to the app's build directory and check out the latest version:
 
    ```sh
    cd shell # cd to build directory
@@ -57,7 +57,7 @@ the `ood` account, this app should run as `ood`.
    scl enable git19 rh-ruby22 nodejs010 -- bin/setup
    ```
 
-3. Copy the built app directory to the deployment directory.
+3. Copy the built app directory to the deployment directory:
 
    ```sh
    sudo rsync -rlptv --delete . /var/www/ood/apps/sys/shell
@@ -86,7 +86,6 @@ To specify a host and directory:
 
 Bug reports and pull requests are welcome on GitHub at
 https://github.com/OSC/ood-shell.
-
 
 ## License
 
