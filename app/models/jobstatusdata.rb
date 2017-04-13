@@ -22,7 +22,7 @@ class Jobstatusdata
     self.jobname = info.job_name
     self.username = info.job_owner
     self.account = info.accounting_id
-    self.status = info.status.state
+    self.status = info.status.state.to_s
     self.cluster = cluster
     self.walltime_used = info.wallclock_time.to_i > 0 ? pretty_time(info.wallclock_time) : ''
     self.queue = info.queue_name
