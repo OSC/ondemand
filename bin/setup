@@ -38,7 +38,7 @@ chdir APP_ROOT do
   end
 
   # Read in RAILS_RELATIVE_URL_ROOT if defined in .env.production
-  if OOD_ENV == "production" && File.exist?(".env.production")
+  if !OOD_URL && OOD_ENV == "production" && File.exist?(".env.production")
     tmp = `bash -c 'source .env.production && echo $RAILS_RELATIVE_URL_ROOT'`.strip
     ood_url = tmp unless tmp.empty?
   end
