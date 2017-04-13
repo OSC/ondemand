@@ -13,71 +13,21 @@
       </strong>
     </div>
     <div class="panel-body">
-      <div class="col-md-4">
+      <div class="col-md-12">
         <div class="panel panel-default">
-          <div class="panel-heading">Job Information</div>
-          <div class="panel-body"><div class="small col-sm-12" style="height: 100%; white-space: nowrap;">
-            <strong class="col-sm-5">Username: </strong>
-            <span class="job_label_data col-sm-7"><%= data.username %></span></div>
-            <div class="small col-sm-12" style="height: 100%; white-space: nowrap;">
-              <strong class="col-sm-5">Account Name: </strong>
-              <span class="job_label_data col-sm-7"><%= data.account %></span>
-            </div>
-            <div class="small col-sm-12" style="height: 100%; white-space: nowrap;">
-              <strong class="col-sm-5">Walltime: </strong>
-              <span class="job_label_data col-sm-7"><%= data.walltime_used %> / <%= data.walltime %></span>
-            </div>
-            <div class="small col-sm-12" style="height: 100%; white-space: nowrap;">
-              <strong class="col-sm-5">Queue: </strong><span class="job_label_data col-sm-7"><%= data.queue %></span>
-            </div>
-          </div>
+          <table class="table table-condensed table-striped">
+            <tbody>
+            <% data.native_attribs.each do |attrib| %>
+              <tr>
+                <td class="col-xs-2"><strong><%= attrib.name %></strong></td>
+                <td class="col-xs-10"><%= attrib.value %></td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="panel panel-default">
-          <div class="panel-heading">Resources Requested</div>
-          <div class="panel-body">
-            <div class="small col-sm-12" style="height: 100%; white-space: nowrap;">
-              <strong class="col-sm-5">Nodes: </strong>
-              <span class="job_label_data col-sm-7"><%= data.nodect %></span>
-            </div>
-            <div class="small col-sm-12" style="height: 100%; white-space: nowrap;">
-              <strong class="col-sm-5">PPN: </strong>
-              <span class="job_label_data col-sm-7"><%= data.ppn %></span>
-            </div>
-            <div class="small col-sm-12" style="height: 100%; white-space: nowrap;">
-              <strong class="col-sm-5">Total CPU: </strong>
-              <span class="job_label_data col-sm-7"><%= data.total_cpu %></span>
-            </div>
-            <div class="small col-sm-12" style="height: 100%; white-space: nowrap;">
-              <strong class="col-sm-5">Walltime: </strong>
-              <span class="job_label_data col-sm-7"><%= data.walltime %></span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="panel panel-default">
-          <div class="panel-heading">Resources Used</div>
-          <div class="panel-body">
-            <div class="small col-sm-12" style="height: 100%; white-space: nowrap;">
-              <strong class="col-sm-5">CPU Time: </strong>
-              <span class="job_label_data col-sm-7"><%= data.cput %></span>
-            </div>
-            <div class="small col-sm-12" style="height: 100%; white-space: nowrap;">
-              <strong class="col-sm-5">Memory: </strong>
-              <span class="job_label_data col-sm-7"><%= data.mem %></span>
-            </div><div class="small col-sm-12" style="height: 100%; white-space: nowrap;">
-            <strong class="col-sm-5">VMem: </strong>
-            <span class="job_label_data col-sm-7"><%= data.vmem %></span>
-          </div>
-            <div class="small col-sm-12" style="height: 100%; white-space: nowrap;">
-              <strong class="col-sm-5">Run Time: </strong>
-              <span class="job_label_data col-sm-7"><%= data.cput %></span>
-            </div>
-          </div>
-        </div>
-      </div>
+    </div>
       <div class="col-md-12">
         <span class="col-md-2">Submit Args: </span>
         <pre class="col-md-10" style="white-space: pre-wrap;"><%= data.submit_args %></pre>
