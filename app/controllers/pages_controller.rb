@@ -17,7 +17,6 @@ class PagesController < ApplicationController
         respond_to do |format|  ## Add this
           format.json { render '/pages/extended_data', :locals => {:jobstatusdata => get_job(params[:pbsid], cluster)} }
         end
-        ##render :json => get_job(params[:pbsid], cluster)
       end
     end
   end
