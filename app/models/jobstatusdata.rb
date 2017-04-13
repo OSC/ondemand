@@ -85,22 +85,22 @@ class Jobstatusdata
   # @return [Jobstatusdata] self
   def extended_data_slurm(info)
     return unless info.native
-    self.walltime = info.native[:time_limit]
+    attributes = []
+    attributes.push Attribute.new "Queue Reason", info.native[:reason]
+    attributes.push Attribute.new "Priority", info.native[:priority]
+    attributes.push Attribute.new "Nodes Requested", info.native[:nodes]
+    attributes.push Attribute.new "Total CPUs", info.native[:cpus]
+    attributes.push Attribute.new "Time Limit", info.native[:time_limit]
+    attributes.push Attribute.new "Time Used", info.native[:time_used]
+    attributes.push Attribute.new "Memory", info.native[:min_memory].presence || "0 b"
+    self.native_attribs = attributes
+
     self.submit_args = info.native[:command]
-    self.output_path = info.native[:work_dir]            # FIXME This is the working directory (i.e. /scratch ) and may not be the output dir
-    self.nodect = info.native[:nodes].to_i               # Nodes Requested
-    self.ppn = info.procs / self.nodect                  # FIXME This may not be accurate on Slurm systems
-    self.total_cpu = info.procs
-    self.cput = info.native[:time_used]
-    self.mem = info.native[:min_memory].presence || "0 b"
-    self.vmem = info.native[:min_memory].presence || "0 b"
+    self.output_path = info.native[:work_dir]
+
     output_pathname = Pathname.new(info.native[:work_dir]).dirname
     self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"])).to_s
     self.fs_path = OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"])).to_s
-    if self.status == :running || self.status == :completed
-      self.nodes = node_array(info.allocated_nodes)
-      self.starttime = info.dispatch_time.to_i
-    end
     self
   end
 
@@ -108,23 +108,15 @@ class Jobstatusdata
   def extended_data_default(info)
     return unless info.native
     self.walltime = '00:00:00'
+
+    self.native_attribs = []
+
     self.submit_args = ''
     self.output_path = ''
-    self.nodect = 0
-    self.ppn = ''
-    self.total_cpu = info.procs
-    self.cput = ''
-    mem = "0 b"
-    self.mem = Filesize.from(mem).pretty
-    vmem = "0 b"
-    self.vmem = Filesize.from(vmem).pretty
+
     output_pathname = Pathname.new(ENV["HOME"])
-    self.terminal_path = '' #OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
-    self.fs_path = '' #OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
-    if self.status == :running || self.status == :completed
-      self.nodes = node_array(info.allocated_nodes)
-      self.starttime = info.dispatch_time.to_i
-    end
+    self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
+    self.fs_path = OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
     self
   end
 
