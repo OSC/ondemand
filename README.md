@@ -35,6 +35,8 @@ use a database.
    OOD_SITE=osc OOD_PORTAL=ondemand RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
    ```
 
+   assuming the corresponding `.env.local.$OOD_SITE.$OOD_PORTAL` file exists.
+
 3. Copy the built app directory to the deployment directory, and start the
    server. i.e.:
 
@@ -59,8 +61,8 @@ use a database.
    RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
    ```
 
-   You do not need to specify `OOD_SITE` and `OOD_PORTAL` if updating from a
-   previous build.
+   You do not need to specify `OOD_SITE` and `OOD_PORTAL` if they are defined
+   in the `.env.local` file.
 
 3. Copy the built app directory to the deployment directory:
 
