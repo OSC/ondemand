@@ -53,6 +53,10 @@ class JobstatussataTest < ActiveModel::TestCase
         end
       end
 
+      test "test native_attribs #{@test_count}" do
+        assert data.native_attribs.respond_to?('each'), data.native_attribs.inspect
+      end
+
       test "test starttime #{@test_count}" do
         if job.status.state == :running || job.status.state == :completed
           assert data.starttime.is_a?(Integer), data.starttime.inspect
