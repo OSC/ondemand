@@ -145,7 +145,7 @@ $(document).ready( function() {
             tr.addClass('shown');
             $.getJSON(APP_PATH + '/json?pbsid='+row.data().pbsid+'&cluster='+row.data().cluster , function(data) {
                 // Add the data panel to the view
-                $( "#" + EncodeCSS(row.data().pbsid)).hide().html(data.html).fadeIn(250);
+                $( "div[data-jobid='"+row.data().pbsid+"']").hide().html(data.html).fadeIn(250);
                 // Update the status label in the parent row
                 tr.find(".status-label").html(data.status);
             });
@@ -154,14 +154,6 @@ $(document).ready( function() {
 
     table.columns.adjust().draw();
 });
-
-/* Prepares a CSS class compatible selection string based on a string */
-function EncodeCSS(pbsid) {
-  return pbsid
-      .replace(/\[/g, '\\[')
-      .replace(/\]/g, '\\]')
-      .replace(/\./g, '_');
-}
 
 /* Formatting function for dropdown row. */
 function format ( d ) {
@@ -178,7 +170,7 @@ function format ( d ) {
 function display_job_info( d ) {
     return          '<tr class="col-xs-12>' +
                     '   <div class="col-xs-12">' +
-                    '       <tr><div class="job_data" id="'+d.pbsid.replace(/\./g, '_')+'"></div></tr>' +
+                    '       <tr><div class="job_data" data-jobid="' + d.pbsid + '"></div></tr>' +
                     '   </div>' +
                     '</tr>';
 }
@@ -209,143 +201,4 @@ function display_node_rows( d ) {
         }
     }
     return rows;
-}
-
-function display_enhanced_job_data( d ) {
-
-    if (is_defined(d.error)) {
-        return      '<div><tr><td><div class="alert alert-warning">' + d.error + '</div></td></tr></div>';
-    } else {
-        return      '<div>' +
-                    '   <tr>' +
-                    '        <td>' +
-                    '            <div class="panel panel-default container-fluid">' +
-                    '               <div class="panel-heading row clearfix">' +
-                    '                   <strong>' +
-                    '                       <div class="col-xs-1">' + status_label(d.status) + '</div>' +
-                    '                       <div class="col-xs-11" style="word-wrap: break-word;">' + d.jobname +
-                    '                       <div>('+ d.pbsid +')</div></div>' +
-                    '                   </strong>' +
-                    '               </div>' +
-                    '                <div class="panel-body">' +
-                    '                   <div class="col-md-4"><div class="panel panel-default"><div class="panel-heading">Job Information</div><div class="panel-body">'+build_job_information_panel( d )+'</div></div></div>' +
-                    '                   <div class="col-md-4"><div class="panel panel-default"><div class="panel-heading">Resources Requested</div><div class="panel-body">'+build_resources_requested_panel( d )+'</div></div></div>' +
-                    '                   <div class="col-md-4"><div class="panel panel-default"><div class="panel-heading">Resources Used</div><div class="panel-body">'+build_resources_used_panel( d )+'</div></div></div>' +
-                    '                   <div class="col-md-12"><span class="col-md-2">Submit Args: </span><pre class="col-md-10" style="white-space: pre-wrap;">'+ d.submit_args +'</pre></div>' +
-                    '                   <div class="col-md-12"><span class="col-md-2">Output Location: </span><pre class="col-md-10" style="white-space: pre-wrap;">'+ d.output_path+'</pre></span></div>' +
-                    '                   <div class="col-md-12">' +
-                                        filesystem_button( d.fs_path, d.username ) +
-                                        terminal_button( d.terminal_path, d.username ) +
-                                        delete_button( d.pbsid, d.cluster, d.username ) +
-                    '                   </div>' +
-                    '                </div>' +
-                    '            </div>' +
-                    '       </td>' +
-                    '   </tr>' +
-                    '</div>';
-    }
-}
-
-function is_defined( object ) {
-    if (object === undefined || object === null) {
-        return false;
-    } else {
-        return true;
-    }
-}
-
-function build_job_information_panel( d ) {
-    var _Job_Name = d.jobname;
-    var _username = d.username;
-    var _account= d.account;
-    var _walltime_requested = d.walltime;
-    var _queue = d.queue;
-    var _walltime_used = (is_defined(d.walltime_used) ? d.walltime_used : '0');
-    return          label_data("Username", _username) +
-                    label_data("Account Name", _account) +
-                    label_data("Walltime", _walltime_used + " / " + _walltime_requested) +
-                    label_data("Queue", _queue);
-}
-
-function build_resources_requested_panel( d ) {
-    var _nodes_requested = d.nodect;
-    var _processors_per_node = d.ppn;
-    var _walltime_requested = d.walltime;
-    var _total_cpu = d.total_cpu;
-    return          label_data("Nodes", _nodes_requested) +
-                    label_data("PPN", _processors_per_node) +
-                    label_data("Total CPU", _total_cpu) +
-                    label_data("Walltime", _walltime_requested);
-
-}
-
-function build_resources_used_panel( d ) {
-    var _cput = is_defined(d.cput) ? d.cput : '0';
-    var _mem = is_defined(d.mem) ? d.mem : '0';
-    var _vmem = is_defined(d.vmem) ? d.vmem : '0';
-    var _walltime_used = is_defined(d.walltime_used) ? d.walltime_used : '0';
-    return          label_data("CPU Time", _cput) +
-                    label_data("Memory", _mem) +
-                    label_data("VMem", _vmem) +
-                    label_data("Run Time", _walltime_used);
-}
-
-function filesystem_button( url, user ) {
-  if (user == JobStatusapp.username) {
-    return '<a type="button" class="btn btn-default" style="margin: 10px;" href="'+url+'" target="_blank"><i class="fa fa-folder-open"></i> Open in File Manager</a>';
-  } else {
-    return '';
-  }
-}
-
-function terminal_button( url, user ) {
-  if (user == JobStatusapp.username) {
-    return '<a type="button" class="btn btn-default" style="margin: 10px;" href="'+url+'" target="_blank"><i class="fa fa-terminal"></i> Open in Terminal</a>';
-  } else {
-    return '';
-  }
-}
-
-function delete_button( pbsid, host, user ) {
-    if (user == JobStatusapp.username) {
-        return '<a type="button" class="btn btn-danger pull-right" data-method="delete" data-confirm="Are you sure you want to delete ' + pbsid + '?" style="margin: 10px;" href="' + APP_PATH + 'delete_job/?pbsid=' + pbsid + '&cluster=' + host + '">' +
-            '<i class="fa fa-trash-o"></i> Delete</a>';
-    } else {
-        return '';
-    }
-}
-
-function label_data(label, data) {
-    return '<div class="small col-sm-12" style="height: 100%; white-space: nowrap;"><strong class="col-sm-5">'+label+': </strong><span class="job_label_data col-sm-7">' + data + '</span></div>';
-}
-
-/* Formatting function for the status label. */
-function status_label( status ) {
-    var label, labelclass;
-    switch( status ) {
-        case "completed":
-            label = "Completed";
-            labelclass = "label-success";
-            break;
-        case "running":
-            label = "Running";
-            labelclass = "label-primary";
-            break;
-        case "queued":
-            label = "Queued";
-            labelclass = "label-info";
-            break;
-        case "queued_held":
-            label = "Hold";
-            labelclass = "label-warning";
-            break;
-        case "suspended":
-            label = "Suspend";
-            labelclass = "label-warning";
-            break;
-        default:
-            label = "Undetermined";
-            labelclass = "label-default";
-    }
-    return "<div style='white-space: nowrap;'><span class='label "+labelclass+"'>"+label+"</span></div>";
 }
