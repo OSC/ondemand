@@ -107,7 +107,6 @@ class Jobstatusdata
   # This should not be called, but it is available as a template for building new native parsers.
   def extended_data_default(info)
     return unless info.native
-    self.walltime = '00:00:00'
 
     self.native_attribs = []
 
