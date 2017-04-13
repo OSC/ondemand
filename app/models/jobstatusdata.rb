@@ -6,6 +6,7 @@
 # @author Brian L. McMichael
 # @version 0.0.1
 class Jobstatusdata
+  include ApplicationHelper
 
   attr_reader :pbsid, :jobname, :username, :account, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :terminal_path, :fs_path, :extended_available
 
@@ -22,7 +23,7 @@ class Jobstatusdata
     self.jobname = info.job_name
     self.username = info.job_owner
     self.account = info.accounting_id
-    self.status = info.status.state.to_s
+    self.status = status_label(info.status.state.to_s)
     self.cluster = cluster
     self.walltime_used = info.wallclock_time.to_i > 0 ? pretty_time(info.wallclock_time) : ''
     self.queue = info.queue_name
