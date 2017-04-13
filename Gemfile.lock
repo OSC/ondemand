@@ -101,7 +101,7 @@ GEM
     multi_json (1.12.1)
     nokogiri (1.7.0.1)
       mini_portile2 (~> 2.1.0)
-    ood_appkit (0.3.5)
+    ood_appkit (0.3.6)
       addressable (~> 2.4)
       lograge (~> 0.3)
       ood_cluster (~> 0.0)
