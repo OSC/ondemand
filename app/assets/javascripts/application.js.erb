@@ -112,7 +112,7 @@ $(document).ready( function() {
             },
             {
                 data:               "status",
-                className:          "small",
+                className:          "small status-label",
                 "autoWidth":        true,
                 "render":           function(data) {
                                         return status_label(data);
@@ -147,9 +147,10 @@ $(document).ready( function() {
             row.child( format(row.data()) ).show();
             tr.addClass('shown');
             $.getJSON(APP_PATH + '/json?pbsid='+row.data().pbsid+'&cluster='+row.data().cluster , function(data) {
-              //$( "#" + EncodeCSS(row.data().pbsid)).hide().html(display_enhanced_job_data(data)).fadeIn(250);
+                // Add the data panel to the view
                 $( "#" + EncodeCSS(row.data().pbsid)).hide().html(data.html).fadeIn(250);
-                // TODO Update status in parent row with data.status
+                // Update the status label in the parent row
+                tr.find(".status-label").html(data.status);
             });
         }
     });

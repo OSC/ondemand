@@ -4,7 +4,7 @@
       <strong>
         <div class="col-xs-1">
           <div style="white-space: nowrap;">
-            <span class="label label-primary"><%= data.status %></span>
+            <%= status_label(data.status) %>
           </div>
         </div>
         <div class="col-xs-11" style="word-wrap: break-word;"><%= data.jobname %>
@@ -90,7 +90,7 @@
         <% if ENV["USER"] == data.username %>
             <%= link_to "#{icon("folder-open")} Open in File Manager".html_safe, data.fs_path, :class => "btn btn-default", :target => "_blank", :style => "margin: 10px;" %>
             <%= link_to "#{icon("terminal")} Open in Terminal".html_safe, data.terminal_path, :class => "btn btn-default", :target => "_blank", :style => "margin: 10px;" %>
-            <%= link_to "#{icon("trash-o")} Delete".html_safe, delete_job_path(pbsid: data.pbsid, cluster: data.cluster, elk: "lalal"), :class => "btn btn-danger pull-right", :style => "margin: 10px;", data: { method: "delete", confirm: "Are you sure you want to delete #{data.pbsid}" } %>
+            <%= link_to "#{icon("trash-o")} Delete".html_safe, delete_job_path(pbsid: data.pbsid, cluster: data.cluster), :class => "btn btn-danger pull-right", :style => "margin: 10px;", data: { method: "delete", confirm: "Are you sure you want to delete #{data.pbsid}" } %>
         <% end %>
       </div>
     </div>
