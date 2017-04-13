@@ -143,7 +143,7 @@ $(document).ready( function() {
             // Open this row
             row.child( format(row.data()) ).show();
             tr.addClass('shown');
-            $.getJSON(APP_PATH + '/json?pbsid='+row.data().pbsid+'&cluster='+row.data().cluster , function(data) {
+            $.getJSON(APP_PATH + 'json?pbsid='+row.data().pbsid+'&cluster='+row.data().cluster , function(data) {
                 // Add the data panel to the view
                 $( "div[data-jobid='"+row.data().pbsid+"']").hide().html(data.html).fadeIn(250);
                 // Update the status label in the parent row
