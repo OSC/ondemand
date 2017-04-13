@@ -26,8 +26,8 @@ class ResourceMgrAdapter
     script = OodCore::Job::Script.new(content: script_path.read, accounting_id: account_string)
     adapter(cluster).submit( script, **depends_on)
 
-  #rescue OodCore::Job::Adapter::Exception => e
-  #  raise PBS::Error, e.message
+  rescue OodCore::Job::Adapter::Exception => e
+    raise PBS::Error, e.message
   end
 
   def qstat(id, host: nil)
