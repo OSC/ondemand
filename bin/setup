@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 require "pathname"
-require "ostruct"
 require "rake"
 
 include FileUtils
@@ -8,13 +7,20 @@ include FileUtils
 ENV["RAILS_ENV"]               ||= ENV["PASSENGER_APP_ENV"] || "development"
 ENV["RAILS_RELATIVE_URL_ROOT"] ||= ENV["PASSENGER_BASE_URI"]
 
-# application settings
-APP = OpenStruct.new({
-  env:    ENV["RAILS_ENV"],
-  url:    ENV["RAILS_RELATIVE_URL_ROOT"],
-  site:   ENV["OOD_SITE"],
-  portal: ENV["OOD_PORTAL"]
-})
+# define application object
+App = Struct.new(:env, :url, :site, :portal) do
+  def production?
+    env == "production"
+  end
+end
+
+# set application settings
+APP = App.new(
+  ENV["RAILS_ENV"],
+  ENV["RAILS_RELATIVE_URL_ROOT"],
+  ENV["OOD_SITE"],
+  ENV["OOD_PORTAL"]
+)
 
 # path to your application root.
 APP_ROOT = Pathname.new File.expand_path("../../",  __FILE__)
@@ -37,7 +43,7 @@ chdir APP_ROOT do
   end
 
   # Read in RAILS_RELATIVE_URL_ROOT if defined in .env.production
-  if APP.env == "production" && File.exist?(".env.production")
+  if APP.production? && File.exist?(".env.production")
     unless APP.url
       tmp = `bash -c 'source .env.production && echo $RAILS_RELATIVE_URL_ROOT'`.strip
       APP.url = tmp unless tmp.empty?
@@ -88,7 +94,7 @@ chdir APP_ROOT do
     end
   end
 
-  if APP.env == "production"
+  if APP.production?
     puts "\n== Compiling assets =="
     sh "bin/rake assets:clobber"
     sh "bin/rake assets:precompile"
