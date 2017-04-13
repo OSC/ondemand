@@ -2,7 +2,7 @@ JobStatus::Application.routes.draw do
   root "pages#index"
   get "pages/index"
   #get "pages/about"
-  get "/json" => "pages#json"
+  get "/json" => "pages#json", :defaults => { :format => 'json' }
   delete "/delete_job" => "pages#delete_job"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -147,7 +147,9 @@ $(document).ready( function() {
             row.child( format(row.data()) ).show();
             tr.addClass('shown');
             $.getJSON(APP_PATH + '/json?pbsid='+row.data().pbsid+'&host='+row.data().cluster , function(data) {
-              $( "#" + EncodeCSS(row.data().pbsid)).hide().html(display_enhanced_job_data(data)).fadeIn(250);
+              //$( "#" + EncodeCSS(row.data().pbsid)).hide().html(display_enhanced_job_data(data)).fadeIn(250);
+                $( "#" + EncodeCSS(row.data().pbsid)).hide().html(data.html).fadeIn(250);
+                // TODO Update status in parent row with data.status
             });
         }
     });
