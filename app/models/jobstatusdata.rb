@@ -55,6 +55,10 @@ class Jobstatusdata
   def extended_data_torque(info)
     return unless info.native
     attributes = []
+    attributes.push Attribute.new "PBS Id", self.pbsid
+    attributes.push Attribute.new "Job Name", self.jobname
+    attributes.push Attribute.new "User", self.username
+    attributes.push Attribute.new "Account", self.account
     attributes.push Attribute.new "Walltime", (info.native.fetch(:Resource_List, {})[:walltime].presence || "00:00:00")
     node_count = info.native.fetch(:Resource_List, {})[:nodect].to_i
     attributes.push Attribute.new "Node Count", node_count
@@ -85,6 +89,10 @@ class Jobstatusdata
   def extended_data_slurm(info)
     return unless info.native
     attributes = []
+    attributes.push Attribute.new "Job Id", self.pbsid
+    attributes.push Attribute.new "Job Name", self.jobname
+    attributes.push Attribute.new "User", self.username
+    attributes.push Attribute.new "Account", self.account
     attributes.push Attribute.new "Queue Reason", info.native[:reason]
     attributes.push Attribute.new "Priority", info.native[:priority]
     attributes.push Attribute.new "Nodes Requested", info.native[:nodes]
