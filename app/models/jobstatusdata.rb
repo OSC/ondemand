@@ -66,7 +66,6 @@ class Jobstatusdata
     attributes.push Attribute.new "Memory", Filesize.from(mem).pretty
     vmem = info.native.fetch(:resources_used, {})[:vmem].presence || "0 b"
     attributes.push Attribute.new "Virtual Memory", Filesize.from(vmem).pretty
-    attributes.push Attribute.new "Node Count", info.native.fetch(:Resource_List, {})[:nodect].to_i
     self.native_attribs = attributes
 
     self.submit_args = info.native[:submit_args].presence || "None"
