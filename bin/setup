@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require "pathname"
+require "ostruct"
 require "rake"
 
 include FileUtils
@@ -7,47 +8,47 @@ include FileUtils
 ENV["RAILS_ENV"]               ||= ENV["PASSENGER_APP_ENV"] || "development"
 ENV["RAILS_RELATIVE_URL_ROOT"] ||= ENV["PASSENGER_BASE_URI"]
 
+# application settings
+APP = OpenStruct.new({
+  env:    ENV["RAILS_ENV"],
+  url:    ENV["RAILS_RELATIVE_URL_ROOT"],
+  site:   ENV["OOD_SITE"],
+  portal: ENV["OOD_PORTAL"]
+})
+
 # path to your application root.
 APP_ROOT = Pathname.new File.expand_path("../../",  __FILE__)
-
-# application settings
-OOD_ENV    = ENV["RAILS_ENV"]
-OOD_URL    = ENV["RAILS_RELATIVE_URL_ROOT"]
-OOD_SITE   = ENV["OOD_SITE"]
-OOD_PORTAL = ENV["OOD_PORTAL"]
 
 chdir APP_ROOT do
   # This script is a starting point to setup your application.
   # Add necessary setup steps to this file:
 
-  ood_site   = OOD_SITE
-  ood_portal = OOD_PORTAL
-  ood_url    = OOD_URL
-
-  # Read in OOD_SITE and/or OOD_PORTAL if defined in .env.local
+  # Read in OOD_SITE and OOD_PORTAL if defined in .env.local
   if File.exist?(".env.local")
-    unless ood_site
+    unless APP.site
       tmp = `bash -c 'source .env.local && echo $OOD_SITE'`.strip
-      ood_site = tmp unless tmp.empty?
+      APP.site = tmp unless tmp.empty?
     end
 
-    unless ood_portal
+    unless APP.portal
       tmp = `bash -c 'source .env.local && echo $OOD_PORTAL'`.strip
-      ood_portal = tmp unless tmp.empty?
+      APP.portal = tmp unless tmp.empty?
     end
   end
 
   # Read in RAILS_RELATIVE_URL_ROOT if defined in .env.production
-  if !OOD_URL && OOD_ENV == "production" && File.exist?(".env.production")
-    tmp = `bash -c 'source .env.production && echo $RAILS_RELATIVE_URL_ROOT'`.strip
-    ood_url = tmp unless tmp.empty?
+  if APP.env == "production" && File.exist?(".env.production")
+    unless APP.url
+      tmp = `bash -c 'source .env.production && echo $RAILS_RELATIVE_URL_ROOT'`.strip
+      APP.url = tmp unless tmp.empty?
+    end
   end
 
   puts "\n== Building Dashboard App =="
-  puts "RAILS_ENV               = #{OOD_ENV}"
-  puts "RAILS_RELATIVE_URL_ROOT = #{ood_url    || "not set"}"
-  puts "OOD_SITE                = #{ood_site   || "not set (default: none)"}"
-  puts "OOD_PORTAL              = #{ood_portal || "not set (default: none)"}"
+  puts "RAILS_ENV               = #{APP.env}"
+  puts "RAILS_RELATIVE_URL_ROOT = #{APP.url    || "not set"}"
+  puts "OOD_SITE                = #{APP.site   || "not set (default: none)"}"
+  puts "OOD_PORTAL              = #{APP.portal || "not set (default: none)"}"
 
   unless system("bin/bundle check &> /dev/null")
     puts "\n== Installing dependencies =="
@@ -55,31 +56,39 @@ chdir APP_ROOT do
     sh "bin/bundle clean"
   end
 
-  if ood_site && ood_portal
+  if APP.site && APP.portal
     puts "\n== Enabling portal specific settings =="
 
     # .env.local
-    source_file = ".env.local.#{ood_site}.#{ood_portal}"
+    source_file = ".env.local.#{APP.site}.#{APP.portal}"
     target_file = ".env.local"
-    # Copy source file to target file if it exists or user directly requested
-    # it by setting an environment variable
-    if OOD_SITE || OOD_PORTAL || File.exist?(source_file)
-      cp source_file, target_file unless system("cmp -s #{source_file} #{target_file}")
+    # Copy source file to target file if it exists
+    if File.exist?(source_file)
+      unless system("cmp -s #{source_file} #{target_file}")
+        cp source_file, target_file
+      else
+        puts "skip copying (no changes detected): #{source_file} => #{target_file}"
+      end
+    else
+      puts "skip copying (does not exist): #{source_file} => #{target_file}"
     end
 
     # config/initializers/ood.rb
-    source_file = "config/initializers/ood.rb.#{ood_site}.#{ood_portal}"
+    source_file = "config/initializers/ood.rb.#{APP.site}.#{APP.portal}"
     target_file = "config/initializers/ood.rb"
-    # Copy source file to target file if it exists or user directly requested
-    # it by setting an environment variable
-    if OOD_SITE || OOD_PORTAL || File.exist?(source_file)
-      cp source_file, target_file unless system("cmp -s #{source_file} #{target_file}")
+    # Copy source file to target file if it exists
+    if File.exist?(source_file)
+      unless system("cmp -s #{source_file} #{target_file}")
+        cp source_file, target_file
+      else
+        puts "skip copying (no changes detected): #{source_file} => #{target_file}"
+      end
+    else
+      puts "skip copying (does not exist): #{source_file} => #{target_file}"
     end
-  else
-    puts "\n== Ignoring portal specific settings =="
   end
 
-  if OOD_ENV == "production"
+  if APP.env == "production"
     puts "\n== Compiling assets =="
     sh "bin/rake assets:clobber"
     sh "bin/rake assets:precompile"
