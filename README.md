@@ -148,15 +148,22 @@ the `nginx_handler` implements the following sub-URIs:
 sub-URI example                 | Action
 ------------------------------- | ------
 `/nginx/init?redir=/pun/my/app` | Calls `nginx_stage app -u <user> -i /pun -r /my/app` (which generates an app config for the user and reloads his/her PUN). If successful, the user's browser is redirected to `/pun/my/app`.
-`/nginx/start[?redir=<redir>]`  | Calls `nginx_stage pun -u <user> -a /init?redir=$http_x_forwarded_escaped_uri` (which generates a PUN config and starts his/her PUN). The final argument in the command is used in NGINX to redirect the user if the requested app doesn't exist (i.e., it sends them to the URI listed above to generate the app). A `<redir>` URL is optional.
 `/nginx/stop[?redir=<redir>]`   | Calls `nginx_stage nginx -u <user> -s stop` (which sends the `stop` signal to the PUN process). A `<redir>` URL is optional.
 
 ### pun_proxy_handler
 
 This handler proxies the authenticated user's traffic to his/her backend PUN
 through a Unix domain socket. If the user's PUN is down, then this handler will
-try to start up their PUN using the same procedure outlined in the previous
-section for the `/nginx/start` sub-URI.
+try to start up their PUN using:
+
+```sh
+nginx_stage pun -u <user> -a https://ondemand.domain.com/nginx/init?redir=$http_x_forwarded_escaped_uri
+```
+
+which generates a PUN config and starts his/her PUN. The final argument in the
+command is used in NGINX to redirect the user if the requested app doesn't
+exist (i.e., it sends them to the URI listed above to generate the app).
+
 
 #### Required Arguments
 

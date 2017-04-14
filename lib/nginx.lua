@@ -8,8 +8,7 @@ local nginx_stage = require 'ood.nginx_stage'
   Controls the authenticated user's PUN and/or PUN related operations using the
   Apache configured pun stage command. The relevant tasks are:
     1. 'init'  = initialize PUN app and redirect user to it
-    2. 'start' = initialize PUN and start PUN process
-    3. 'stop'  = send `stop` signal to PUN process
+    2. 'stop'  = send `stop` signal to PUN process
 --]]
 function nginx_handler(r)
   -- read in OOD specific settings defined in Apache config
@@ -47,11 +46,6 @@ function nginx_handler(r)
     if not pun_app_request then return http.http404(r, "bad `redir` request (" .. redir .. ")") end
     -- generate app config & restart PUN process
     err = nginx_stage.app(r, pun_stage_cmd, user, pun_app_request, pun_uri)
-  elseif task == "start" then
-    local app_init_url = r.is_https and "https://" or "http://"
-    app_init_url = app_init_url .. r.hostname .. ":" .. r.port .. nginx_uri .. "/init?redir=$http_x_forwarded_escaped_uri"
-    -- generate user config & start PUN process
-    err = nginx_stage.pun(r, pun_stage_cmd, user, app_init_url)
   elseif task == "stop" then
     -- stop PUN process
     err = nginx_stage.nginx(r, pun_stage_cmd, user, "stop")
