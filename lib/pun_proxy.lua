@@ -61,9 +61,6 @@ function pun_proxy_handler(r)
   -- handle if backend server isn't completely started yet
   r:custom_response(502, nginx_uri .. "/noop?redir=" .. r:escape(r.unparsed_uri))
 
-  -- handle if backend server is down
-  -- r:custom_response(503, nginx_uri .. "/start?redir=" .. r:escape(conn.uri))
-
   -- let the proxy handler do this instead
   return apache2.DECLINED
 end
