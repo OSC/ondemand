@@ -1,5 +1,9 @@
 ## Unreleased
 
+Features:
+
+  - add `OOD_USER_ENV` to specify CGI env var used for authenticated username
+
 ## 0.2.0 (2017-01-30)
 
 Features:

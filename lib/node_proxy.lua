@@ -11,6 +11,7 @@ local http     = require 'ood.http'
 function node_proxy_handler(r)
   -- read in OOD specific settings defined in Apache config
   local user_map_cmd = r.subprocess_env['OOD_USER_MAP_CMD']
+  local user_env     = r.subprocess_env['OOD_USER_ENV']
   local map_fail_uri = r.subprocess_env['OOD_MAP_FAIL_URI']
 
   -- read in <LocationMatch> regular expression captures
@@ -19,7 +20,7 @@ function node_proxy_handler(r)
   local uri  = r.subprocess_env['MATCH_URI']
 
   -- get the system-level user name
-  local user = user_map.map(r, user_map_cmd)
+  local user = user_map.map(r, user_map_cmd, user_env and r.subprocess_env[user_env] or r.user)
   if not user then
     if map_fail_uri then
       return http.http302(r, map_fail_uri .. "?redir=" .. r:escape(r.unparsed_uri))

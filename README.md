@@ -117,6 +117,7 @@ reloading the PUN process, and re-directing the user to the application.
 Argument          | Definition
 ----------------- | ----------
 OOD_USER_MAP_CMD  | Full path to binary that maps the authenticated user name to the system-level user name. See `osc-user-map` as example.
+OOD_USER_ENV      | Sets the CGI environment variable used for the authenticated user name (defaults to `REMOTE_USER` if unset).
 OOD_MAP_FAIL_URI  | URI the user is redirected to if it fails to map to a system level user. If not specified then return 404 with error message.
 OOD_PUN_STAGE_CMD | Full path to the binary that stages/controls the per-user NGINX processes. See `nginx_stage` for further details on this binary.
 OOD_NGINX_URI     | The sub-URI that namespaces this handler from the other handlers [`/nginx`].
@@ -162,6 +163,7 @@ section for the `/nginx/start` sub-URI.
 Argument            | Definition
 ------------------- | ----------
 OOD_USER_MAP_CMD    | Full path to binary that maps the authenticated user name to the system-level user name. See `osc-user-map` as example.
+OOD_USER_ENV        | Sets the CGI environment variable used for the authenticated user name (defaults to `REMOTE_USER` if unset).
 OOD_MAP_FAIL_URI    | URI the user is redirected to if it fails to map to a system level user. If not specified then return 404 with error message.
 OOD_PUN_STAGE_CMD   | Full path to the binary that stages/controls the per-user NGINX processes. See `nginx_stage` for further details on this binary.
 OOD_PUN_SOCKET_ROOT | Full path to the root location where all the PUNs keep their sockets. In most typical installations this will be `/var/run/nginx`.
@@ -203,6 +205,7 @@ and port that is specified in the URL request.
 Argument         | Definition
 ---------------- | ----------
 OOD_USER_MAP_CMD | Full path to binary that maps the authenticated user name to the system-level user name. See `osc-user-map` as example.
+OOD_USER_ENV     | Sets the CGI environment variable used for the authenticated user name (defaults to `REMOTE_USER` if unset).
 OOD_MAP_FAIL_URI | URI the user is redirected to if it fails to map to a system level user. If not specified then return 404 with error message.
 MATCH_HOST       | The host address that the user is proxied to.
 MATCH_PORT       | The host port that the user is proxied to.
@@ -220,6 +223,7 @@ A typical Apache config will look like...
   Header edit Location "^[^/]+//[^/:]+:[^/]+" ""
 
   SetEnv OOD_USER_MAP_CMD "/path/to/user-map-cmd"
+  SetEnv OOD_USER_ENV     "OIDC_CLAIM_preferred_username"
   SetEnv OOD_MAP_FAIL_URI "/register"
 
   LuaHookFixups node_proxy.lua node_proxy_handler
