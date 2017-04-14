@@ -38,23 +38,33 @@ wss.on('connection', function connection (ws) {
   var host = process.env.DEFAULT_SSHHOST || 'localhost';
   var dir;
   var term;
-  var args;
+  var cmd, args, cwd, env;
 
   console.log('Connection established');
 
   // Determine host and dir from request URL
   if (match = ws.upgradeReq.url.match(process.env.PASSENGER_BASE_URI + '/ssh/([^\\/]+)(.+)?$')) {
     if (match[1] !== 'default') host = match[1];
-    if (match[2]) dir = unescape(match[2]).replace(/\'/g, "'\\''"); // POSIX escape dir
+    if (match[2]) dir = unescape(match[2]);
   }
 
-  process.env.LANG = 'en_US.UTF-8'; // fix for character issues
-
-  args = dir ? [host, '-t', 'cd \'' + dir + '\' ; exec ${SHELL} -l'] : [host];
-  term = pty.spawn('ssh', args, {
+  if (host === 'localhost') {
+    cmd = 'bash';
+    args = ['-l'];
+    cwd = dir ? dir : process.env.HOME;
+    env = { HOME: process.env.HOME };
+  } else {
+    cmd = 'ssh';
+    args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
+    cwd = process.env.HOME;
+    env = {};
+  }
+  term = pty.spawn(cmd, args, {
     name: 'xterm-256color',
     cols: 80,
     rows: 30,
+    cwd: cwd,
+    env: env
   });
 
   console.log('Opened terminal: ' + term.pid);
