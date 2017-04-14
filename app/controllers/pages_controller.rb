@@ -13,7 +13,7 @@ class PagesController < ApplicationController
       render :json => get_jobs
     else
       #Only allow the configured servers to respond
-      if cluster = OODClusters[params[:cluster].to_sym]
+      if cluster = OODClusters[params[:cluster].to_s.to_sym]
         render '/pages/extended_data', :locals => {:jobstatusdata => get_job(params[:pbsid], cluster) }
       end
     end
