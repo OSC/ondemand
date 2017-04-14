@@ -6,6 +6,10 @@ Features:
   - deprecated the `/nginx/start` url option
   - ignore errors when stopping nginx with a redirect url
 
+Bugfixes:
+
+  - removed unnecessary 307 redirects
+
 ## 0.2.0 (2017-01-30)
 
 Features:
