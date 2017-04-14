@@ -46,23 +46,19 @@ function nginx_handler(r)
     if not pun_app_request then return http.http404(r, "bad `redir` request (" .. redir .. ")") end
     -- generate app config & restart PUN process
     err = nginx_stage.app(r, pun_stage_cmd, user, pun_app_request, pun_uri)
+    return err and http.http404(r, err) or http.http307(r, redir)
   elseif task == "stop" then
     -- stop PUN process
     err = nginx_stage.nginx(r, pun_stage_cmd, user, "stop")
+    if redir then
+      return http.http307(r, redir)  -- ignore errors
+    else
+      return err and http.http404(r, err) or http.http200(r)
+    end
   elseif task == "noop" then
     -- do nothing
+    return redir and http.http307(r, redir) or http.http200(r)
   else
     return http.http404(r, "invalid nginx task")
-  end
-
-  -- properly handle errors
-  if not err then
-    if redir then
-      return http.http307(r, redir)  -- success & redirect
-    else
-      return http.http200(r)         -- success
-    end
-  else
-    return http.http404(r, err)      -- error, throw 404
   end
 end

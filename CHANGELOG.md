@@ -4,6 +4,7 @@ Features:
 
   - add `OOD_USER_ENV` to specify CGI env var used for authenticated username
   - deprecated the `/nginx/start` url option
+  - ignore errors when stopping nginx with a redirect url
 
 ## 0.2.0 (2017-01-30)
 
