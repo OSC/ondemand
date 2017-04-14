@@ -54,6 +54,13 @@
 # Default: '/opt/ood/ood_auth_map/bin/ood_auth_map.regex' (this echo's back auth-user)
 #user_map_cmd: '/opt/ood/ood_auth_map/bin/ood_auth_map.regex'
 
+# Use an alternative CGI environment variable instead of REMOTE_USER for
+# determining the authenticated-user fed to the mapping script
+# Example:
+#     user_env: 'OIDC_CLAIM_preferred_username'
+# Default: null (use REMOTE_USER)
+#user_env: null
+
 # Redirect user to the following URI if fail to map there authenticated-user to
 # a system-user
 # Example:

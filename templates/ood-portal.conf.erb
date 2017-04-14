@@ -59,6 +59,9 @@ Listen <%= addr_port %>
   # Authenticated-user to system-user mapping configuration
   #
   SetEnv OOD_USER_MAP_CMD "<%= @user_map_cmd %>"
+  <%- if @user_env -%>
+  SetEnv OOD_USER_ENV "<%= @user_env %>"
+  <%- end -%>
   <%- if @map_fail_uri -%>
   SetEnv OOD_MAP_FAIL_URI "<%= @map_fail_uri %>"
   <%- end -%>

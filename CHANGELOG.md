@@ -1,5 +1,9 @@
 ## Unreleased
 
+Features:
+
+  - added configuration option for OOD_USER_ENV used in mod_ood_proxy
+
 ## 0.3.1 (2017-03-06)
 
 Bugfixes:
