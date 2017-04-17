@@ -1,10 +1,5 @@
 # config/initializers/ood_appkit.rb
-require "ood_core"
 
-OodAppkit.configure do |config|
-  config.clusters = OodCore::Clusters.new(
-      OodCore::Clusters.load_file(ENV['OOD_CLUSTERS'] || '/etc/ood/config/clusters.d').select(&:job_allow?).reject {|v| v.metadata.hidden }
-  )
-end
-
-OODClusters = OodAppkit.clusters
+OODClusters = OodCore::Clusters.new(
+  OodAppkit.clusters.select(&:job_allow?).reject { |c| c.metadata.hidden }
+)
