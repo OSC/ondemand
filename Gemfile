@@ -34,4 +34,4 @@ gem 'autoprefixer-rails', '~> 6.3'
 gem 'dotenv-rails', '~> 2.1', require: 'dotenv/rails-now'
 gem 'rails_12factor', group: :production
 gem 'font-awesome-sass'
-gem 'ood_appkit', '~> 0.3'
+gem 'ood_appkit', '~> 1.0'
