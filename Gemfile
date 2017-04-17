@@ -53,4 +53,4 @@ gem 'mocha', '~> 1.1', group: :test
 
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'
-gem 'ood_appkit', '~> 0.3.2'
+gem 'ood_appkit', '~> 1.0'

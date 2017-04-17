@@ -1,10 +1,10 @@
 module ApplicationHelper
   def clusters
-    OodAppkit::Clusters.new(OodAppkit.clusters.select(&:valid?).select(&:hpc_cluster?))
+    OodCore::Clusters.new(OodAppkit.clusters.select(&:allow?).reject { |c| c.metadata.hidden })
   end
 
   def login_clusters
-    OodAppkit::Clusters.new(clusters.select(&:login_server?))
+    OodCore::Clusters.new(clusters.select(&:login_allow?))
   end
 
   def restart_url
