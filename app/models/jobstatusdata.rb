@@ -93,19 +93,21 @@ class Jobstatusdata
     attributes.push Attribute.new "Job Name", self.jobname
     attributes.push Attribute.new "User", self.username
     attributes.push Attribute.new "Account", self.account
-    attributes.push Attribute.new "Queue Reason", info.native[:reason]
-    attributes.push Attribute.new "Priority", info.native[:priority]
-    attributes.push Attribute.new "Nodes Requested", info.native[:nodes]
+    attributes.push Attribute.new "Partition", self.queue
+    attributes.push Attribute.new "Cluster", self.cluster
+    attributes.push Attribute.new "State", info.native[:state]
+    attributes.push Attribute.new "Reason", info.native[:reason]
+    attributes.push Attribute.new "Total Nodes", info.native[:nodes]
     attributes.push Attribute.new "Total CPUs", info.native[:cpus]
     attributes.push Attribute.new "Time Limit", info.native[:time_limit]
     attributes.push Attribute.new "Time Used", info.native[:time_used]
-    attributes.push Attribute.new "Memory", info.native[:min_memory].presence || "0 b"
+    attributes.push Attribute.new "Memory", info.native[:min_memory]
     self.native_attribs = attributes
 
-    self.submit_args = info.native[:command]
+    self.submit_args = nil
     self.output_path = info.native[:work_dir]
 
-    output_pathname = Pathname.new(info.native[:work_dir]).dirname
+    output_pathname = Pathname.new(info.native[:work_dir])
     self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"])).to_s
     self.fs_path = OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"])).to_s
     self

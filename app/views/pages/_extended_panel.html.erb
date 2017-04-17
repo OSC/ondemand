@@ -28,10 +28,12 @@
         </div>
       </div>
     </div>
+      <% if data.submit_args %>
       <div class="col-md-12">
         <span class="col-md-2">Submit Args: </span>
         <pre class="col-md-10" style="white-space: pre-wrap;"><%= data.submit_args %></pre>
       </div>
+      <% end %>
       <div class="col-md-12">
         <span class="col-md-2">Output Location: </span>
         <pre class="col-md-10" style="white-space: pre-wrap;"><%= data.output_path %></pre>
