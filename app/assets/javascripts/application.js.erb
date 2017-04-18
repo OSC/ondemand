@@ -31,6 +31,9 @@ $(document).ready( function() {
         "bStateSave": true,         // Save user selected table state
         "aaSorting": [],            // Turn off auto sort.
         "pageLength": 50,           // Set the number of rows
+        "oLanguage": {
+            "sSearch": "Filter: "
+        },
         "fnCreatedRow": function( nRow, aData, iDataIndex ) {
           $(nRow).children("td").css("overflow", "hidden");
           $(nRow).children("td").css("white-space", "nowrap");
