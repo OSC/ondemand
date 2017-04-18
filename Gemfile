@@ -49,6 +49,3 @@ gem 'ood_cluster', '~> 0.0.1'
 gem 'ood_appkit', '~> 1.0'
 gem 'pbs', '~> 2.0'
 gem 'jquery-datatables-rails', '~> 3.3'
-
-# For pretty-printing memory values
-gem 'filesize', '~> 0.1'
