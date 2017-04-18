@@ -43,7 +43,7 @@ class ResourceMgrAdapter
 
   def qdel(id, host: nil)
     cluster = cluster_for_host_id(host)
-    adapter(cluster).delete(id: id)
+    adapter(cluster).delete(id)
 
   rescue OodCore::Job::Adapter::Exception => e
     raise PBS::Error, e.message
