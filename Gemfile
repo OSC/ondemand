@@ -55,6 +55,5 @@ gem "jquery-datatables-rails", "~> 3.3.0"
 gem "js-routes", "~> 1.2.4"
 gem "rails_12factor", group: :production
 gem 'osc_machete_rails', '~> 1.2.2'
-gem 'ood_appkit', '~> 0.3.0'
-gem 'ood_job', :git => 'https://github.com/OSC/ood_job.git'
-
+gem 'pbs', '~> 2.0'
+gem 'ood_appkit', '~> 1.0'

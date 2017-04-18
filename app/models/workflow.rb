@@ -165,7 +165,58 @@ class Workflow < ActiveRecord::Base
     end
 
     success
+  end
 
+  # Stops all jobs, updating each active job to status "failed"
+  # returns true if all jobs were stopped, false otherwise
+  def stop
+    jobs_active_record_relation.to_a.each(&:stop)
+
+    true
+  rescue PBS::Error => e
+    msg = "An error occurred when trying to stop jobs for simulation #{id}: #{e.message}"
+    errors[:base] << msg
+    Rails.logger.error(msg)
+
+    false
+  end
+
+  # Call the #submit method on each job in a hash.
+  #
+  # @param [Hash] jobs A Hash of Job objects to be submitted.
+  def submit_jobs(jobs)
+    jobs.each(&:submit)
+    true
+  rescue OSC::Machete::Job::ScriptMissingError => e
+    stop_machete_jobs(jobs)
+
+    msg = "A OSC::Machete::Job::ScriptMissingError occurred when submitting jobs for simulation #{id}: #{e.message}"
+    errors[:base] << msg
+    Rails.logger.error(msg)
+    false
+  rescue PBS::Error => e
+    stop_machete_jobs(jobs)
+
+    msg = "An error occurred when submitting jobs for simulation #{id}: #{e.message}"
+    errors[:base] << msg
+    Rails.logger.error(msg)
+
+    false
+  end
+
+  # given an array of OSC::Machete::Job objects, qdel them all and handle
+  # any errors. not to be confused with #stop which stops all actual jobs of
+  # the workflow
+  def stop_machete_jobs(jobs)
+    jobs.each do |job|
+      begin
+        job.delete
+      rescue PBS::Error
+        msg = "An error occurred when deleting a job from the batch system with pbsid: #{job.pbsid} and message: #{e.message}"
+        errors[:base] << msg
+        Rails.logger.error(msg)
+      end
+    end
   end
 
   private

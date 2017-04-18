@@ -23,29 +23,29 @@ class ResourceMgrAdapter
     raise OSC::Machete::Job::ScriptMissingError, "#{script_path} does not exist or cannot be read" unless script_path.file? && script_path.readable?
 
     cluster = cluster_for_host_id(host)
-    script = OodJob::Script.new(content: script_path.read, accounting_id: account_string)
-    adapter.new(cluster: cluster).submit(script: script, **depends_on)
+    script = OodCore::Job::Script.new(content: script_path.read, accounting_id: account_string)
+    adapter(cluster).submit( script, **depends_on)
 
-  rescue OodJob::Adapter::Error => e
+  rescue OodCore::JobAdapterError => e
     raise PBS::Error, e.message
   end
 
   def qstat(id, host: nil)
     cluster = cluster_for_host_id(host)
-    status = adapter.new(cluster: cluster).status(id: id)
+    status = adapter(cluster).status(id)
 
     # convert OodJobStatus to OSC::Machete::Status
     status_for_ood_job_status(status)
 
-  rescue OodJob::Adapter::Error => e
+  rescue OodCore::JobAdapterError => e
     raise PBS::Error, e.message
   end
 
   def qdel(id, host: nil)
     cluster = cluster_for_host_id(host)
-    adapter.new(cluster: cluster).delete(id: id)
+    adapter(cluster).delete(id)
 
-  rescue OodJob::Adapter::Error => e
+  rescue OodCore::JobAdapterError => e
     raise PBS::Error, e.message
   end
 
@@ -53,13 +53,13 @@ class ResourceMgrAdapter
 
   def cluster_for_host_id(host)
     raise PBS::Error, "host nil" if host.nil?
-    raise PBS::Error, "host is invalid value: #{host}" unless OODClusters.has_key?(host.to_sym)
+    raise PBS::Error, "host is invalid value: #{host}" unless OODClusters[host.to_sym]
 
     OODClusters[host.to_sym]
   end
 
-  def adapter
-    OodJob::Adapters::Torque
+  def adapter(cluster)
+    cluster.job_adapter
   end
 
   # Returns an OSC::Machete::Status object from an OodJob::Status object
