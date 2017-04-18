@@ -15,7 +15,7 @@
 /log/*.log
 /tmp/*
 !/tmp/.keep
-/templates/*
+/templates
 
 # data to store simulations and file uploads for development
 /data
