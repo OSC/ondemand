@@ -66,10 +66,8 @@ class Jobstatusdata
     attributes.push Attribute.new "PPN", ppn
     attributes.push Attribute.new "Total CPUs", ppn.to_i * node_count.to_i
     attributes.push Attribute.new "CPU Time", info.native.fetch(:resources_used, {})[:cput].presence || '0'
-    mem = info.native.fetch(:resources_used, {})[:mem].presence || "0 b"
-    attributes.push Attribute.new "Memory", Filesize.from(mem).pretty
-    vmem = info.native.fetch(:resources_used, {})[:vmem].presence || "0 b"
-    attributes.push Attribute.new "Virtual Memory", Filesize.from(vmem).pretty
+    attributes.push Attribute.new "Memory", info.native.fetch(:resources_used, {})[:mem].presence || "0 b"
+    attributes.push Attribute.new "Virtual Memory", info.native.fetch(:resources_used, {})[:vmem].presence || "0 b"
     self.native_attribs = attributes
 
     self.submit_args = info.native[:submit_args].presence || "None"
