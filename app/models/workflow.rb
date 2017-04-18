@@ -174,7 +174,7 @@ class Workflow < ActiveRecord::Base
 
     true
   rescue PBS::Error => e
-    msg = "A PBS::Error occurred when trying to stop jobs for simulation #{id}: #{e.message}"
+    msg = "An error occurred when trying to stop jobs for simulation #{id}: #{e.message}"
     errors[:base] << msg
     Rails.logger.error(msg)
 
@@ -197,7 +197,7 @@ class Workflow < ActiveRecord::Base
   rescue PBS::Error => e
     stop_machete_jobs(jobs)
 
-    msg = "A PBS::Error occurred when submitting jobs for simulation #{id}: #{e.message}"
+    msg = "An error occurred when submitting jobs for simulation #{id}: #{e.message}"
     errors[:base] << msg
     Rails.logger.error(msg)
 
@@ -212,7 +212,7 @@ class Workflow < ActiveRecord::Base
       begin
         job.delete
       rescue PBS::Error
-        msg = "A PBS::Error occurred when deleting a job from the batch system with pbsid: #{job.pbsid} and message: #{e.message}"
+        msg = "An error occurred when deleting a job from the batch system with pbsid: #{job.pbsid} and message: #{e.message}"
         errors[:base] << msg
         Rails.logger.error(msg)
       end
