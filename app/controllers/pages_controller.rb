@@ -2,6 +2,9 @@ class PagesController < ApplicationController
   include ApplicationHelper
 
   def index
+    if params[:jobfilter] && Filter.list.any? { |f| f.filter_id == params[:jobfilter] }
+      @jobfilter = params[:jobfilter]
+    end
   end
 
   # Used to send the data to the Datatable.
@@ -10,8 +13,13 @@ class PagesController < ApplicationController
       render :json => get_jobs
     else
       #Only allow the configured servers to respond
-      if cluster = OODClusters[params[:host].to_sym]
-        render :json => get_job(params[:pbsid], cluster)
+      if cluster = OODClusters[params[:cluster].to_s.to_sym]
+        render '/pages/extended_data', :locals => {:jobstatusdata => get_job(params[:pbsid], cluster) }
+      else
+        msg = "Request did not specify an available cluster. "
+        msg += "Available clusters are: #{OODClusters.map(&:id).join(',')} "
+        msg += "But specified cluster is: #{params[:cluster]}"
+        render :json => { name: params[:pbsid], error: msg }
       end
     end
   end
@@ -20,18 +28,12 @@ class PagesController < ApplicationController
 
     # Only delete if the pbsid and host params are present and host is configured in servers.
     # PBS will prevent a user from deleting a job that is not their own and throw an error.
-    cluster = OODClusters[params[:host].to_sym]
+    cluster = OODClusters[params[:cluster].to_sym]
     if (params[:pbsid] && cluster)
       job_id = params[:pbsid].to_s.gsub(/_/, '.')
 
       begin
-        server = cluster.resource_mgr_server
-        b = PBS::Batch.new(
-          host: server.host,
-          lib: server.lib,
-          bin: server.bin
-        )
-        b.delete_job(job_id)
+        cluster.job_adapter.delete(job_id)
 
         # It takes a couple of seconds for the job to clear out
         # Using the sleep to wait before reload
@@ -48,50 +50,46 @@ class PagesController < ApplicationController
   private
 
   # Get the extended data for a particular job.
-  def get_job(pbsid, cluster)
+  #
+  # @param [String] jobid The id of the job
+  # @param [String] cluster The id of the cluster as string
+  #
+  # @return [Jobstatusdata] The job data as a Jobstatusdata object
+  def get_job(jobid, cluster)
     begin
-      server = cluster.resource_mgr_server
-      b = PBS::Batch.new(
-        host: server.host,
-        lib: server.lib,
-        bin: server.bin
-      )
+      data = OODClusters[cluster].job_adapter.info(jobid)
 
-      name, attribs = b.get_job(pbsid).first
-      Jobstatusdata.new({name: name, attribs: attribs}, cluster.id, true)
+      raise OodCore::JobAdapterError if data.native.nil?
+      Jobstatusdata.new(data, cluster.id.to_s, true)
 
-    rescue PBS::UnkjobidError
-      { name: pbsid, error: "No job details because job has already left the queue." , status: "C" }
+    rescue OodCore::JobAdapterError
+      { name: jobid, error: "No job details because job has already left the queue." , status: "completed" }
     rescue => e
-      { name: pbsid, error: "No job details available." }
+      { name: jobid, error: "No job details available.\n" + e.backtrace.to_s}
     end
   end
 
   # Get a set of jobs defined by the filtering parameter.
   def get_jobs
     jobs = Array.new
-    OODClusters.each do |key, value|
-      server = value.resource_mgr_server
-      b = PBS::Batch.new(
-          host: server.host,
-          lib: server.lib,
-          bin: server.bin
-      )
+    OODClusters.each do |cluster|
+
+      b = cluster.job_adapter
 
       # Checks the params and gets the appropriate job set.
       # Default to user set on first load
       param = params[:jobfilter] || Filter.default_id
       filter = Filter.list.find { |f| f.filter_id == param }
-      result = filter ? filter.apply(b.get_jobs) : b.get_jobs
+      result = filter ? filter.apply(b.info_all) : b.info_all
 
       # Only add the running jobs to the list and assign the host to the object.
       #
       # There is also curently a bug in the system where jobs with an empty array
       # (ex. 6407991[].oak-batch.osc.edu) are not stattable, so we do a not-match
       # for those jobs and don't display them.
-      result.each do |id, attr|
-        if attr[:job_state] != 'C' && id !~ /\[\]/
-          jobs.push(Jobstatusdata.new({name: id, attribs: attr}, key))
+      result.each do |j|
+        if j.status.state != :completed && j.id !~ /\[\]/
+          jobs.push(Jobstatusdata.new(j, cluster.id.to_s))
         end
       end
     end

@@ -1,6 +1,6 @@
 <div class="btn-group pull-right" data-toggle="buttons">
     <% Filter.list.each do |filter| %>
-        <label id="<%= filter.filter_id %>" class="btn btn-primary" onclick="localStorage.setItem('jobfilter', '<%= filter.filter_id %>'); window.location.reload();" >
+        <label id="<%= filter.filter_id %>" class="btn btn-primary" onclick="localStorage.setItem('jobfilter', '<%= filter.filter_id %>'); window.location = '?jobfilter=<%= filter.filter_id %>';" >
           <input type="radio" name="<%= filter.filter_id %>" id="option_user" > <%= filter.title %>
         </label>
     <% end %>
@@ -16,6 +16,8 @@
                     <th>Name</th>
                     <th>User</th>
                     <th>Account</th>
+                    <th>Time Used</th>
+                    <th>Queue</th>
                     <th>Status</th>
                     <th>Cluster</th>
                 </tr>
@@ -25,26 +27,28 @@
 <br>
 
 <script>
-    var filter_id = localStorage.getItem("jobfilter") || "<%= Filter.default_id %>";
+    var filter_id = <%= (@jobfilter ? "'#{@jobfilter}'" : "localStorage.getItem('jobfilter') || '#{Filter.default_id}'").html_safe %>;
 
     function build_ganglia_link( host, start_seconds, report_type, node_num, size ) {
         var ganglia_uri;
-        <% OODClusters.each do |key, value| %>
-            if (host == '<%= key %>') {
-                <% if value.ganglia_server? %>
-                    ganglia_uri = '<%= value.ganglia_server.uri.to_s %>&z='+size+'&cs='+start_seconds+'&g='+report_type+'&h='+node_num+'<%= value.ganglia_server.opt_query.fetch(:h, '') % {h: nil} %>';
-                <% else %>
-                    ganglia_uri = '<%= image_path('unavailable.png') %>';
-                <% end %>
-            }
+        <% OODClusters.each do |c| %>
+        if (host == '<%= c.id.to_s %>') {
+            <% if c.custom_allow?(:ganglia) %>
+              <% ganglia_cluster = OodCluster::Servers::Ganglia.new(c.custom_config(:ganglia)) %>
+              var ganglia_base = '<%= ganglia_cluster.uri.to_s %>';
+              ganglia_uri = ganglia_base+'&z='+size+'&cs='+start_seconds+'&g='+report_type+'&h=<%= (ganglia_cluster.opt_query.fetch(:h, '') % {h: '\'+node_num+\''}).html_safe %>';
+            <% else %>
+              ganglia_uri = '<%= image_path('unavailable.png') %>';
+            <% end %>
+        }
         <% end %>
         return ganglia_uri;
     }
 
     function has_ganglia(host) {
-        <% OODClusters.each do |key, value| %>
-        if (host == '<%= key %>') {
-            <% if value.ganglia_server? %>
+        <% OODClusters.each do |c| %>
+        if (host == '<%= c.id.to_s %>') {
+            <% if c.custom_allow?(:ganglia) %>
                 return true;
             <% end %>
         }
