@@ -26,7 +26,7 @@ class ResourceMgrAdapter
     script = OodCore::Job::Script.new(content: script_path.read, accounting_id: account_string)
     adapter(cluster).submit( script, **depends_on)
 
-  rescue OodCore::Job::Adapter::Exception => e
+  rescue OodCore::JobAdapterError => e
     raise PBS::Error, e.message
   end
 
@@ -37,7 +37,7 @@ class ResourceMgrAdapter
     # convert OodJobStatus to OSC::Machete::Status
     status_for_ood_job_status(status)
 
-  rescue OodCore::Job::Adapter::Exception => e
+  rescue OodCore::JobAdapterError => e
     raise PBS::Error, e.message
   end
 
@@ -45,7 +45,7 @@ class ResourceMgrAdapter
     cluster = cluster_for_host_id(host)
     adapter(cluster).delete(id)
 
-  rescue OodCore::Job::Adapter::Exception => e
+  rescue OodCore::JobAdapterError => e
     raise PBS::Error, e.message
   end
 
