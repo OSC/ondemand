@@ -91,7 +91,7 @@
       <div class="panel-body">
         <p>Job Name: <h4><strong><span id="job-details-name"></span></strong></h4></p>
         <p>Submit to:</p>
-          <select class="form-control" id="job-details-server-select" disabled>
+          <select class="form-control remove-caret" id="job-details-server-select" disabled>
             <% OODClusters.each do |cluster| %>
                 <option id="<%= cluster.id %>" value="<%= cluster.id %>"><%= cluster.metadata_config[:title] %></option>
             <% end %>
