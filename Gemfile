@@ -45,11 +45,11 @@ gem 'font-awesome-sass', '~> 4.7.0'
 gem 'autoprefixer-rails'
 gem 'dotenv-rails', '~> 2.1', require: 'dotenv/rails-now'
 gem 'rails_12factor', group: :production
-gem "ood_appkit", '~> 0.3.5'
-gem "ood_core", git: "git@github.com:OSC/ood_core.git"
+gem 'ood_cluster', '~> 0.0.1'
+gem 'ood_appkit', '~> 1.0'
 gem 'pbs', '~> 2.0'
-gem "turbolinks"
-gem "jquery-datatables-rails", '~> 3.3'
+gem 'turbolinks'
+gem 'jquery-datatables-rails', '~> 3.3'
 
 # For pretty-printing memory values
-gem "filesize", '~> 0.1'
+gem 'filesize', '~> 0.1'

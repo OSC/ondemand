@@ -13,8 +13,13 @@ class PagesController < ApplicationController
       render :json => get_jobs
     else
       #Only allow the configured servers to respond
-      if cluster = OODClusters[params[:host].to_sym]
-        render :json => get_job(params[:pbsid], cluster)
+      if cluster = OODClusters[params[:cluster].to_s.to_sym]
+        render '/pages/extended_data', :locals => {:jobstatusdata => get_job(params[:pbsid], cluster) }
+      else
+        msg = "Request did not specify an available cluster. "
+        msg += "Available clusters are: #{OODClusters.map(&:id).join(',')} "
+        msg += "But specified cluster is: #{params[:cluster]}"
+        render :json => { name: params[:pbsid], error: msg }
       end
     end
   end
@@ -23,7 +28,7 @@ class PagesController < ApplicationController
 
     # Only delete if the pbsid and host params are present and host is configured in servers.
     # PBS will prevent a user from deleting a job that is not their own and throw an error.
-    cluster = OODClusters[params[:host].to_sym]
+    cluster = OODClusters[params[:cluster].to_sym]
     if (params[:pbsid] && cluster)
       job_id = params[:pbsid].to_s.gsub(/_/, '.')
 
@@ -45,6 +50,11 @@ class PagesController < ApplicationController
   private
 
   # Get the extended data for a particular job.
+  #
+  # @param [String] jobid The id of the job
+  # @param [String] cluster The id of the cluster as string
+  #
+  # @return [Jobstatusdata] The job data as a Jobstatusdata object
   def get_job(jobid, cluster)
     begin
       data = OODClusters[cluster].job_adapter.info(jobid)

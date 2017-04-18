@@ -6,8 +6,11 @@
 # @author Brian L. McMichael
 # @version 0.0.1
 class Jobstatusdata
+  include ApplicationHelper
+  attr_reader :pbsid, :jobname, :username, :account, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :terminal_path, :fs_path, :extended_available, :native_attribs
 
-  attr_reader :pbsid, :jobname, :username, :account, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :terminal_path, :fs_path, :extended_available
+  Attribute = Struct.new(:name, :value)
+
 
   # Define an object containing only necessary data to send to client.
   #
@@ -22,7 +25,7 @@ class Jobstatusdata
     self.jobname = info.job_name
     self.username = info.job_owner
     self.account = info.accounting_id
-    self.status = info.status.state
+    self.status = status_label(info.status.state.to_s)
     self.cluster = cluster
     self.walltime_used = info.wallclock_time.to_i > 0 ? pretty_time(info.wallclock_time) : ''
     self.queue = info.queue_name
@@ -51,24 +54,30 @@ class Jobstatusdata
   # @return [Jobstatusdata] self
   def extended_data_torque(info)
     return unless info.native
-    self.walltime = info.native.fetch(:Resource_List, {})[:walltime].presence || "00:00:00"
+    attributes = []
+    attributes.push Attribute.new "PBS Id", self.pbsid
+    attributes.push Attribute.new "Job Name", self.jobname
+    attributes.push Attribute.new "User", self.username
+    attributes.push Attribute.new "Account", self.account
+    attributes.push Attribute.new "Walltime", (info.native.fetch(:Resource_List, {})[:walltime].presence || "00:00:00")
+    node_count = info.native.fetch(:Resource_List, {})[:nodect].to_i
+    attributes.push Attribute.new "Node Count", node_count
+    ppn = info.native[:Resource_List][:nodes].to_s.split("ppn=").second || '0'
+    attributes.push Attribute.new "PPN", ppn
+    attributes.push Attribute.new "Total CPUs", ppn.to_i * node_count.to_i
+    attributes.push Attribute.new "CPU Time", info.native.fetch(:resources_used, {})[:cput].presence || '0'
+    mem = info.native.fetch(:resources_used, {})[:mem].presence || "0 b"
+    attributes.push Attribute.new "Memory", Filesize.from(mem).pretty
+    vmem = info.native.fetch(:resources_used, {})[:vmem].presence || "0 b"
+    attributes.push Attribute.new "Virtual Memory", Filesize.from(vmem).pretty
+    self.native_attribs = attributes
+
     self.submit_args = info.native[:submit_args].presence || "None"
     self.output_path = info.native[:Output_Path].to_s.split(":").second || info.native[:Output_Path]
-    self.nodect = info.native.fetch(:Resource_List, {})[:nodect].to_i
-    self.ppn = info.native[:Resource_List][:nodes].to_s.split("ppn=").second || '0'
-    self.total_cpu = self.ppn[/\d+/].to_i * self.nodect.to_i
-    self.cput = info.native.fetch(:resources_used, {})[:cput].presence || '0'
-    mem = info.native.fetch(:resources_used, {})[:mem].presence || "0 b"
-    self.mem = Filesize.from(mem).pretty
-    vmem = info.native.fetch(:resources_used, {})[:vmem].presence || "0 b"
-    self.vmem = Filesize.from(vmem).pretty
+
     output_pathname = Pathname.new(self.output_path).dirname
     self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"])).to_s
     self.fs_path = OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"])).to_s
-    if self.status == :running || self.status == :completed
-      self.nodes = node_array(info.allocated_nodes)
-      self.starttime = info.dispatch_time.to_i
-    end
     self
   end
 
@@ -79,46 +88,43 @@ class Jobstatusdata
   # @return [Jobstatusdata] self
   def extended_data_slurm(info)
     return unless info.native
-    self.walltime = info.native[:time_limit]
-    self.submit_args = info.native[:command]
-    self.output_path = info.native[:work_dir]            # FIXME This is the working directory (i.e. /scratch ) and may not be the output dir
-    self.nodect = info.native[:nodes].to_i               # Nodes Requested
-    self.ppn = info.procs / self.nodect                  # FIXME This may not be accurate on Slurm systems
-    self.total_cpu = info.procs
-    self.cput = info.native[:time_used]
-    self.mem = info.native[:min_memory].presence || "0 b"
-    self.vmem = info.native[:min_memory].presence || "0 b"
-    output_pathname = Pathname.new(info.native[:work_dir]).dirname
+    attributes = []
+    attributes.push Attribute.new "Job Id", self.pbsid
+    attributes.push Attribute.new "Job Name", self.jobname
+    attributes.push Attribute.new "User", self.username
+    attributes.push Attribute.new "Account", self.account
+    attributes.push Attribute.new "Partition", self.queue
+    attributes.push Attribute.new "Cluster", self.cluster
+    attributes.push Attribute.new "State", info.native[:state]
+    attributes.push Attribute.new "Reason", info.native[:reason]
+    attributes.push Attribute.new "Total Nodes", info.native[:nodes]
+    attributes.push Attribute.new "Total CPUs", info.native[:cpus]
+    attributes.push Attribute.new "Time Limit", info.native[:time_limit]
+    attributes.push Attribute.new "Time Used", info.native[:time_used]
+    attributes.push Attribute.new "Memory", info.native[:min_memory]
+    self.native_attribs = attributes
+
+    self.submit_args = nil
+    self.output_path = info.native[:work_dir]
+
+    output_pathname = Pathname.new(info.native[:work_dir])
     self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"])).to_s
     self.fs_path = OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"])).to_s
-    if self.status == :running || self.status == :completed
-      self.nodes = node_array(info.allocated_nodes)
-      self.starttime = info.dispatch_time.to_i
-    end
     self
   end
 
   # This should not be called, but it is available as a template for building new native parsers.
   def extended_data_default(info)
     return unless info.native
-    self.walltime = '00:00:00'
+
+    self.native_attribs = []
+
     self.submit_args = ''
     self.output_path = ''
-    self.nodect = 0
-    self.ppn = ''
-    self.total_cpu = info.procs
-    self.cput = ''
-    mem = "0 b"
-    self.mem = Filesize.from(mem).pretty
-    vmem = "0 b"
-    self.vmem = Filesize.from(vmem).pretty
+
     output_pathname = Pathname.new(ENV["HOME"])
-    self.terminal_path = '' #OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
-    self.fs_path = '' #OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
-    if self.status == :running || self.status == :completed
-      self.nodes = node_array(info.allocated_nodes)
-      self.starttime = info.dispatch_time.to_i
-    end
+    self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
+    self.fs_path = OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
     self
   end
 
@@ -151,6 +157,6 @@ class Jobstatusdata
       node_info_array.map { |n| n.name }
     end
 
-    attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :terminal_path, :fs_path, :extended_available
+    attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :terminal_path, :fs_path, :extended_available, :native_attribs
 
 end

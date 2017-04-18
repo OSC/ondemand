@@ -38,7 +38,7 @@ class JobstatussataTest < ActiveModel::TestCase
       test "test status #{@test_count}" do
         assert_not_nil data.status
 
-        assert data.status.is_a?(Symbol), data.status.class.name
+        assert data.status.is_a?(String), data.status.class.name
       end
 
       test "test cluster #{@test_count}" do
@@ -46,34 +46,24 @@ class JobstatussataTest < ActiveModel::TestCase
       end
 
       test "test nodes #{@test_count}" do
-        if data.status == :running || data.status == :completed
-          assert data.nodes.respond_to?('each'), data.nodes
+        if job.status.state == :running || job.status.state == :completed
+          assert data.nodes.respond_to?('each'), data.nodes.inspect
         else
-          assert data.nodes.nil?
+          assert data.nodes.nil?, "Not nil #{data.nodes.inspect}"
         end
+      end
+
+      test "test native_attribs #{@test_count}" do
+        assert data.native_attribs.respond_to?('each'), data.native_attribs.inspect
       end
 
       test "test starttime #{@test_count}" do
-        if data.status == :running || data.status == :completed
-          assert data.starttime.is_a?(Integer), data.starttime
+        if job.status.state == :running || job.status.state == :completed
+          assert data.starttime.is_a?(Integer), data.starttime.inspect
 
           assert data.starttime >= 0
         else
-          assert data.nodes.nil?
-        end
-      end
-
-      test "test walltime #{@test_count}" do
-        assert data.walltime.is_a?(String), data.walltime
-
-        assert_match(/\d+:\d+:\d+/, data.walltime)
-      end
-
-      test "test walltime_used #{@test_count}" do
-        assert data.walltime_used.is_a?(String), data.walltime_used
-
-        if data.walltime_used != ""
-          assert_match(/\d+:\d+:\d+/, data.walltime_used)
+          assert data.starttime.nil?, "Not nil #{data.starttime}"
         end
       end
 
@@ -87,36 +77,6 @@ class JobstatussataTest < ActiveModel::TestCase
 
       test "test extended_available #{@test_count}" do
         assert data.extended_available.in?( [true, false] ), data.extended_available
-      end
-
-      test "test nodect #{@test_count}" do
-        assert data.nodect.is_a?(Integer), data.nodect
-
-        assert data.nodect >= 0
-      end
-
-      test "test ppn #{@test_count}" do
-        assert data.ppn.is_a?(String), data.ppn
-      end
-
-      test "test total_cpu #{@test_count}" do
-        assert data.total_cpu.is_a?(Integer), data.total_cpu
-      end
-
-      test "test queue #{@test_count}" do
-        assert data.queue.is_a?(String), data.queue
-      end
-
-      test "test cput #{@test_count}" do
-        assert data.cput.is_a?(String), data.cput
-      end
-
-      test "test mem #{@test_count}" do
-        assert data.mem.is_a?(String), data.mem
-      end
-
-      test "test vmem #{@test_count}" do
-        assert data.vmem.is_a?(String), data.vmem
       end
 
       test "test terminal_path #{@test_count}" do
