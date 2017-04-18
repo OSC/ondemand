@@ -1,4 +1,4 @@
 #!/bin/bash
-# PUT JOB HEADERS HERE
+# JOB HEADERS HERE
 
 echo "Hello World"
