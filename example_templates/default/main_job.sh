@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Remove `#torque` prefix to set torque headers and options
 
 #torque #PBS -N hello_world
