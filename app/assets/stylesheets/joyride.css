@@ -173,7 +173,7 @@ body {
     background: -o-linear-gradient(top, rgb(0,99,255) 0%,rgb(0,85,214) 100%);
     background: -ms-linear-gradient(top, rgb(0,99,255) 0%,rgb(0,85,214) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0063ff', endColorstr='#0055d6',GradientType=0 );
-    background: linear-gradient(top, rgb(0,99,255) 0%,rgb(0,85,214) 100%);
+    background: linear-gradient(to bottom, rgb(0,99,255) 0%,rgb(0,85,214) 100%);
     text-shadow: 0 -1px 0 rgba(0,0,0,0.5);
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
@@ -193,7 +193,7 @@ body {
     background: -o-linear-gradient(top, rgb(43,128,255) 0%,rgb(29,102,211) 100%);
     background: -ms-linear-gradient(top, rgb(43,128,255) 0%,rgb(29,102,211) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2b80ff', endColorstr='#1d66d3',GradientType=0 );
-    background: linear-gradient(top, rgb(43,128,255) 0%,rgb(29,102,211) 100%);
+    background: linear-gradient(to bottom, rgb(43,128,255) 0%,rgb(29,102,211) 100%);
 }
 
 .joyride-timer-indicator-wrap {
