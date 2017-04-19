@@ -29,7 +29,16 @@ def copy_or_cat(source, target)
 end
 
 # define application object
-App = Struct.new(:env, :url, :site, :portal) do
+class App
+  attr_accessor :env, :url, :site, :portal
+
+  def initialize(env:, url:, site:, portal:)
+    @env    = env
+    @url    = url
+    @site   = site
+    @portal = portal
+  end
+
   def production?
     env == "production"
   end
@@ -37,10 +46,10 @@ end
 
 # set application settings
 APP = App.new(
-  ENV["RAILS_ENV"],
-  ENV["RAILS_RELATIVE_URL_ROOT"],
-  ENV["OOD_SITE"],
-  ENV["OOD_PORTAL"]
+  env:    ENV["RAILS_ENV"],
+  url:    ENV["RAILS_RELATIVE_URL_ROOT"],
+  site:   ENV["OOD_SITE"],
+  portal: ENV["OOD_PORTAL"]
 )
 
 # path to your application root.
@@ -87,17 +96,25 @@ chdir APP_ROOT do
     puts "\n== Enabling site and portal specific settings =="
 
     # .env.local
-    source_files = [
-      ".env.local.#{APP.site}",
-      ".env.local.#{APP.site}.#{APP.portal}"
-    ]
     target_file = ".env.local"
-    copy_or_cat(source_files, target_file)
+    if APP.site == ""
+      rm_f target_file
+    elsif APP.portal == ""
+      source_file = ".env.local.#{APP.site}"
+      copy_or_cat(source_file, target_file)
+    else
+      source_files = [".env.local.#{APP.site}", ".env.local.#{APP.site}.#{APP.portal}"]
+      copy_or_cat(source_files, target_file)
+    end
 
     # config/initializers/ood.rb
-    source_file = "config/initializers/ood.rb.#{APP.site}.#{APP.portal}"
     target_file = "config/initializers/ood.rb"
-    copy_or_cat(source_file, target_file)
+    if APP.site == "" || APP.portal == ""
+      rm_f target_file
+    else
+      source_file = "config/initializers/ood.rb.#{APP.site}.#{APP.portal}"
+      copy_or_cat(source_file, target_file)
+    end
   elsif APP.portal
     abort "ERROR: You have a portal specified with no site specified"
   end
