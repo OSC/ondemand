@@ -74,8 +74,14 @@ class Jobstatusdata
     self.output_path = info.native[:Output_Path].to_s.split(":").second || info.native[:Output_Path]
 
     output_pathname = Pathname.new(self.output_path).dirname
-    self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"])).to_s
-    self.fs_path = OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"])).to_s
+    kwargs = {path: (output_pathname.writable? ? output_pathname : ENV["HOME"]).to_s }
+
+    self.fs_path = OodAppkit.files.url(kwargs).to_s
+
+    kwargs[:host] = OODClusters[self.cluster].login.host if OODClusters[self.cluster].login_allow?
+
+    self.terminal_path = OodAppkit.shell.url(kwargs).to_s
+
     self
   end
 
@@ -106,8 +112,13 @@ class Jobstatusdata
     self.output_path = info.native[:work_dir]
 
     output_pathname = Pathname.new(info.native[:work_dir])
-    self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"])).to_s
-    self.fs_path = OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"])).to_s
+    kwargs = {path: (output_pathname.writable? ? output_pathname : ENV["HOME"]).to_s }
+
+    self.fs_path = OodAppkit.files.url(kwargs).to_s
+
+    kwargs[:host] = OODClusters[self.cluster].login.host if OODClusters[self.cluster].login_allow?
+
+    self.terminal_path = OodAppkit.shell.url(kwargs).to_s
     self
   end
 
@@ -121,8 +132,13 @@ class Jobstatusdata
     self.output_path = ''
 
     output_pathname = Pathname.new(ENV["HOME"])
-    self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
-    self.fs_path = OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
+    kwargs = {path: (output_pathname.writable? ? output_pathname : ENV["HOME"]).to_s }
+
+    self.fs_path = OodAppkit.files.url(kwargs).to_s
+
+    kwargs[:host] = OODClusters[self.cluster].login.host if OODClusters[self.cluster].login_allow?
+
+    self.terminal_path = OodAppkit.shell.url(kwargs).to_s
     self
   end
 
