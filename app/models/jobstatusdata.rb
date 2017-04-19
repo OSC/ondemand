@@ -136,6 +136,8 @@ class Jobstatusdata
 
     self.fs_path = OodAppkit.files.url(kwargs).to_s
 
+    # If the host has an associated login node, add it to the arguments, otherwise use
+    #  the default host.
     kwargs[:host] = OODClusters[self.cluster].login.host if OODClusters[self.cluster].login_allow?
 
     self.terminal_path = OodAppkit.shell.url(kwargs).to_s
