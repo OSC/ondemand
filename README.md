@@ -23,89 +23,84 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
 
 ## New Install
 
-1. Starting in the build directory for all sys apps, clone and check out the [latest version](https://github.com/OSC/ood-fileexplorer/releases) of the file explorer:
+1. Start in the **build directory** for all sys apps, clone and check out the
+   latest version of the files app (make sure the app directory's name is
+   `files`):
 
-  ```sh
-  scl enable git19 -- git clone https://github.com/OSC/ood-fileexplorer.git files
-  cd files
-  scl enable git19 -- git checkout tags/v1.3.1
-  ```
+   ```sh
+   scl enable git19 -- git clone https://github.com/OSC/ood-fileexplorer.git files
+   cd files
+   scl enable git19 -- git checkout tags/v1.3.1
+   ```
 
+2. Install the app:
 
-  
-2. Build the app (install dependencies and build assets)
- 
-  ```sh
-  scl enable git19 rh-ruby22 nodejs010 -- npm install
-  ```
-  
-3. Copy the built app directory to the deployment directory, and start the server. i.e.:
-    
-  ```sh
-  sudo mkdir -p /var/www/ood/apps/sys
-  sudo cp -r . /var/www/ood/apps/sys/files
-  ```
-  
-## Updating to a new stable version
+   ```sh
+   scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+   ```
 
-1. Navigate to the app installation and check out the [latest version]((https://github.com/OSC/ood-fileexplorer/releases)).
+3. Copy the built app directory to the deployment directory, and start the
+   server. i.e.:
 
-  ```sh
-  scl enable git19 -- git fetch
-  scl enable git19 -- git checkout tags/v1.3.1
-  ```
-  
-2. Install node dependencies reinstall modules
+   ```sh
+   sudo mkdir -p /var/www/ood/apps/sys
+   sudo cp -r . /var/www/ood/apps/sys/files
+   ```
 
-  ```sh
-  scl enable git19 rh-ruby22 nodejs010 -- npm install
-  ```
-  
-3. Restart the app
-  
-  ```sh
-  scl enable git19 rh-ruby22 nodejs010 -- touch tmp/restart.txt
-  ```
+## Updating to a New Stable Version
 
-4. Copy the built app directory to the deployment directory. There is no need to restart the server. Because we touched `tmp/restart.txt` in the app, the next time a user accesses an app Passenger will reload their app.
+1. Navigate to the app's build directory and check out the latest version:
 
-  ```sh
-  sudo mkdir -p /var/www/ood/apps/sys/files
-  sudo rsync -rlptvu --delete . /var/www/ood/apps/sys/files
-  ```
+   ```sh
+   cd files # cd to build directory
+   scl enable git19 -- git fetch
+   scl enable git19 -- git checkout tags/v1.3.1
+   ```
+
+2. Update the app:
+
+   ```sh
+   scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+   ```
+
+3. Copy the built app directory to the deployment directory:
+
+   ```sh
+   sudo rsync -rlptv --delete . /var/www/ood/apps/sys/files
+   ```
 
 ## Configuration
-  
+
 (OPTIONAL) Update the application settings via environment variables as appropriate.
 
   * Copy the `.env.example` to `.env`
-  
+
     ```sh
     cp .env.example .env
     ```
-    
+
   * Uncomment the variables you wish to modify
-    
+
     ```sh
     # The uri path to the ood-fileeditor app (if installed) [Default: "/pun/sys/file-editor/edit"]
     # Uncomment the line below to configure the file editor URI path.
     # OOD_FILE_EDITOR='/pun/sys/file-editor/edit'
-    
+
     # The uri path to the ood-shell app (if installed) [Default: "/pun/sys/shell/ssh/default"]
     # Uncomment the line below to configure shell URI path.
     # OOD_SHELL='/pun/sys/shell/ssh/default'
-    
+
     # The maximum file upload size as integer (in bytes) [Default: 10485760000]
     # Uncomment the line below to configure the maximum upload size.
     # FILE_UPLOAD_MAX=10485760000
     ```
-  
+
     * Uncomment and update `OOD_FILE_EDITOR` to the path of the system installed [`ood-fileeditor`](https://github.com/OSC/ood-fileeditor) application. Setting this value to an empty string will remove the "Edit Files" button and option from the file explorer. (ex. `OOD_FILE_EDITOR=''`)
-  
+
     * Uncomment and update `OOD_SHELL` to the path of the system installed [`ood-shell`](https://github.com/OSC/ood-shell) application. Setting this value to an empty string will remove the "Open in Terminal" button and option from the file explorer. (ex. `OOD_SHELL=''`)
-  
+
     * Uncomment and update `FILE_UPLOAD_MAX` to be the maximum allowable upload size (in bytes) for file uploads in the app. If a user attempts to exceed this value, the upload will be blocked. Uploads are processed in `/var/tmp` by the Passenger process, so uploads will be practically limited by the available space in this location. It is recommended that this value be less than half of the available space in `/var/tmp`, or less, to allow for concurrent uploaders. If this value is not configured, the default will be 10 GB.
-      
+
 ## Usage
 
 For general usage instructions see: https://www.osc.edu/supercomputing/ondemand/file-transfer-and-management
@@ -140,3 +135,13 @@ GET requests will follow the pattern `App Root` + `api/v1/fs/` + `File Path`, wh
     * File Path: `/users/appl/bmcmichael/.gitconfig`
 
 Since the application is running as the logged in user, the application will only have access to the files that the user actually has access to within the file system.
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at
+https://github.com/OSC/ood-fileexplorer.
+
+## License
+
+The gem is available as open source under the terms of the [MIT
+License](http://opensource.org/licenses/MIT).
