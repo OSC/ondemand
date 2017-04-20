@@ -90,9 +90,9 @@ chdir APP_ROOT do
 
     # .env.local
     target_file = ".env.local"
-    if APP.site == ""
+    if APP.site == ""       # user wants to unset site settings
       rm_f target_file
-    elsif APP.portal == ""
+    elsif APP.portal == ""  # user wants to unset portal settings
       source_file = ".env.local.#{APP.site}"
       cat source_file, target_file
     else
@@ -102,7 +102,7 @@ chdir APP_ROOT do
 
     # config/initializers/ood.rb
     target_file = "config/initializers/ood.rb"
-    if APP.site == "" || APP.portal == ""
+    if APP.site == "" || APP.portal == "" # user wants to unset site/portal settings
       rm_f target_file
     else
       source_file = "config/initializers/ood.rb.#{APP.site}.#{APP.portal}"
