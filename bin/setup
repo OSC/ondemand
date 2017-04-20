@@ -7,17 +7,10 @@ include FileUtils
 ENV["RAILS_ENV"]               ||= ENV["PASSENGER_APP_ENV"] || "development"
 ENV["RAILS_RELATIVE_URL_ROOT"] ||= ENV["PASSENGER_BASE_URI"]
 
-def copy_or_cat(source, target)
+def cat(source, target)
   source = Array(source).select {|f| File.file?(f)}
   if source.empty?
     puts "No site/portal specific files found for #{target}"
-  elsif source.size == 1
-    source_file = source.first
-    unless system("cmp -s #{source_file} #{target}")
-      cp source_file, target
-    else
-      puts "No changes detected for #{source_file} => #{target}"
-    end
   else
     source_files = source.join(" ")
     unless system("cat #{source_files} | cmp -s - #{target}")
@@ -101,10 +94,10 @@ chdir APP_ROOT do
       rm_f target_file
     elsif APP.portal == ""
       source_file = ".env.local.#{APP.site}"
-      copy_or_cat(source_file, target_file)
+      cat source_file, target_file
     else
       source_files = [".env.local.#{APP.site}", ".env.local.#{APP.site}.#{APP.portal}"]
-      copy_or_cat(source_files, target_file)
+      cat source_files, target_file
     end
 
     # config/initializers/ood.rb
@@ -113,7 +106,7 @@ chdir APP_ROOT do
       rm_f target_file
     else
       source_file = "config/initializers/ood.rb.#{APP.site}.#{APP.portal}"
-      copy_or_cat(source_file, target_file)
+      cat source_file, target_file
     end
   elsif APP.portal
     abort "ERROR: You have a portal specified with no site specified"
