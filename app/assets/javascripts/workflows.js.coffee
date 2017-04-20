@@ -75,7 +75,7 @@ $(window).focus ->
   show_job_panel()
   if data?
     $("#job-details-name").text(data.name)
-    $("#job-details-server-select option[value=#{data.batch_host}]").prop("selected", "selected")
+    $("#job-details-server").val(data.host_title)
     $("#job-details-staged-dir").text(data.staged_dir)
     if data.account == null or data.account == ""
       $("#job-details-account").addClass("text-muted")
