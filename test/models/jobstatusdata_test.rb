@@ -2,9 +2,13 @@ require 'test_helper'
 
 class JobstatussataTest < ActiveModel::TestCase
 
-
   @clusters = OODClusters
   @test_count = 0
+
+  test "test OODClusters is enumerable" do
+    clusters = OODClusters
+    assert clusters.is_a?(Enumerable), "#{clusters.class.name} is not enumerable"
+  end
 
   @clusters.each do |cluster|
 
@@ -68,7 +72,10 @@ class JobstatussataTest < ActiveModel::TestCase
       end
 
       test "test submit_args #{@test_count}" do
-        assert data.submit_args.is_a?(String), data.submit_args
+        # submit_args is now optional
+        if data.submit_args
+          assert data.submit_args.is_a?(String), data.submit_args
+        end
       end
 
       test "test output_path #{@test_count}" do
