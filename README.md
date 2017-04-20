@@ -6,67 +6,67 @@ Application displays the current system status of jobs running, queued, and held
 
 ## New Install
 
-**Installation assumptions: you have an Open OnDemand installation with File Explorer and Shell apps installed and a cluster config added to /etc/ood/config/clusters.d directory.**
+**Installation assumptions: you have an Open OnDemand installation with File
+Explorer and Shell apps installed and a cluster config added to
+/etc/ood/config/clusters.d directory.**
 
-1. Starting in the build directory for all sys apps, clone and check out the latest version of activejobs:
+1. Start in the **build directory** for all sys apps, clone and check out the
+   latest version of the activejobs app (make sure the app directory's name is
+   `activejobs`):
 
-  ```sh
-  scl enable git19 -- git clone https://github.com/OSC/ood-activejobs.git activejobs
-  cd activejobs
-  scl enable git19 -- git checkout tags/v1.4.0
-  ```
+   ```sh
+   scl enable git19 -- git clone https://github.com/OSC/ood-activejobs.git activejobs
+   cd activejobs
+   scl enable git19 -- git checkout tags/v1.4.0
+   ```
 
-2. Build the app (install dependencies and build assets)
+2. Install the app for a production environment:
 
-  ```sh
-  scl enable rh-ruby22 -- bin/bundle install --path vendor/bundle
-  scl enable rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=production
-  scl enable rh-ruby22 -- bin/rake tmp:clear
-  ```
+   ```sh
+   RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+   ```
 
-3. Copy the built app directory to the deployment directory, and start the server. i.e.:
+   this will setup a default Open OnDemand install. If you'd like a specific
+   pre-defined portal such as OSC OnDemand you'd specify `OOD_SITE` and
+   `OOD_PORTAL` as:
 
-  ```sh
-  sudo mkdir -p /var/www/ood/apps/sys/activejobs
-  sudo cp -r . /var/www/ood/apps/sys/activejobs
-  ```
+   ```sh
+   OOD_SITE=osc OOD_PORTAL=ondemand RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+   ```
 
-4. Access the app through dashboard by going to /pun/sys/dashboard and then clicking "Active Jobs" from the Jobs menu
+3. Copy the built app directory to the deployment directory, and start the
+   server. i.e.:
+
+   ```sh
+   sudo mkdir -p /var/www/ood/apps/sys/activejobs
+   sudo cp -r . /var/www/ood/apps/sys/activejobs
+   ```
 
 ## Updating to a New Stable Version
 
-When updating a deployed version of the Open OnDemand activejobs app.
+1. Navigate to the app's build directory and check out the latest version:
 
-1. Fetch and checkout new version of code:
+   ```sh
+   cd activejobs # cd to build directory
+   scl enable git19 -- git fetch
+   scl enable git19 -- git checkout tags/v1.4.0
+   ```
 
-  ```sh
-  cd dashboard # cd to build directory
-  scl enable git19 -- git fetch
-  scl enable git19 -- git checkout tags/v1.4.0 # check out latest tag
-  ```
+2. Update the app for a production environment:
 
-2. Install gem dependencies and rebuild assets
+   ```sh
+   RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+   ```
 
-  ```sh
-  scl enable rh-ruby22 -- bin/bundle install --path vendor/bundle
-  scl enable rh-ruby22 -- bin/rake tmp:clear
-  scl enable rh-ruby22 -- bin/rake assets:clobber RAILS_ENV=production
-  scl enable rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=production
-  scl enable rh-ruby22 -- bin/rake tmp:clear
-  ```
+   You do not need to specify `OOD_SITE` and `OOD_PORTAL` if they are defined
+   in the `.env.local` file.
 
-3. Restart app
+3. Copy the built app directory to the deployment directory:
 
-  ```sh
-  touch tmp/restart.txt
-  ```
-
-4. Copy the built app directory to the deployment directory. There is no need to restart the server. Because we touched `tmp/restart.txt` in the app, the next time a user accesses an app Passenger will reload their app.
-
-  ```sh
-  sudo mkdir -p /var/www/ood/apps/sys/activejobs
-  sudo rsync -rlptv --delete . /var/www/ood/apps/sys/activejobs
-  ```
+   ```sh
+   sudo mkdir -p /var/www/ood/apps/sys/activejobs
+   sudo rsync -rlptv --delete . /var/www/ood/apps/sys/activejobs
+   ```
 
 ## Usage
 
@@ -99,3 +99,13 @@ Filter.list.insert(1, Filter.new.tap { |f|
 This application depends on a valid `ood_cluster` configuration. Please see the [ood_cluster](https://github.com/OSC/ood_cluster/blob/master/README.md) README for further details.
 
 This application relies upon the `ood_appkit` dependency for certain branding defaults. You may override these defaults by creating an `.env.local` file in the root folder of this app and adding the variables there. See the documentation at [ood_appkit](https://github.com/OSC/ood_appkit) for further details.
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at
+https://github.com/OSC/ood-activejobs.
+
+## License
+
+The gem is available as open source under the terms of the [MIT
+License](http://opensource.org/licenses/MIT).
