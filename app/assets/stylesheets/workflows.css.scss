@@ -28,16 +28,3 @@ tr.missing {
     font-style: italic;
   }
 }
-
-// Hide the caret on the disabled selectpicker
-.remove-caret  {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  text-indent: 1px;
-}
-
-// Hide the caret on the disabled selectpicker (IE)
-.remove-caret::-ms-expand {
-  display: none;
-}
