@@ -6,76 +6,78 @@ OOD Rails app for Open OnDemand for creating and managing batch jobs from templa
 
 ## New Install
 
-**Installation assumptions: you have an Open OnDemand installation with File Explorer and Shell apps installed and a cluster config added to /etc/ood/config/clusters.d directory.**
+**Installation assumptions: you have an Open OnDemand installation with File
+Explorer and Shell apps installed and a cluster config added to
+/etc/ood/config/clusters.d directory.**
 
-1. Starting in the build directory for all sys apps, clone and check out the latest version of myjobs (make sure the app directory's name is "myjobs"):
+1. Start in the **build directory** for all sys apps, clone and check out the
+   latest version of the myjobs app (make sure the app directory's name is
+   `myjobs`):
 
-  ```sh
-  scl enable git19 -- git clone https://github.com/OSC/ood-myjobs.git myjobs
-  cd myjobs
-  scl enable git19 -- git checkout tags/v2.2.1
-  ```
+   ```sh
+   scl enable git19 -- git clone https://github.com/OSC/ood-myjobs.git myjobs
+   cd myjobs
+   scl enable git19 -- git checkout tags/v2.3.1
+   ```
 
-2. Build the app (install dependencies and build assets)
+2. Install the app for a production environment:
 
-  ```sh
-  scl enable rh-ruby22 git19 -- bin/bundle install --path vendor/bundle
-  scl enable rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=production
-  scl enable rh-ruby22 -- bin/rake tmp:clear
-  ```
+   ```sh
+   RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+   ```
 
-3. Copy the built app directory to the deployment directory:
-    
-  ```sh
-  sudo mkdir -p /var/www/ood/apps/sys/myjobs
-  sudo cp -r . /var/www/ood/apps/sys/myjobs
-  ```
+   this will setup a default Open OnDemand install. If you'd like a specific
+   pre-defined portal such as OSC OnDemand you'd specify `OOD_SITE` and
+   `OOD_PORTAL` as:
 
-4. Access the app through dashboard by going to /pun/sys/dashboard and then clicking "My Jobs" from the Jobs menu
+   ```sh
+   OOD_SITE=osc OOD_PORTAL=ondemand RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+   ```
 
-5. (Optional) Add "System" job templates to make available to each user of "My Jobs", i.e.
+   assuming the corresponding `.env.local.$OOD_SITE.$OOD_PORTAL` file exists.
 
-  ```sh
-  # the templates directory is hidden in the .gitignore,
-  # so we can pull a directory of templates from another source
-  # this is an example of deploying OSC's templates it provides to its users
-  git clone git@github.com:OSC/osc-myjobs-templates.git templates
-  cp -r templates /var/www/ood/apps/sys/myjobs/templates
-  ```
+3. (Optional) Add "System" job templates to make available to each user of "My
+   Jobs", i.e.
+
+   ```sh
+   # the templates directory is hidden in the .gitignore,
+   # so we can pull a directory of templates from another source
+   # this is an example of deploying OSC's templates it provides to its users
+   git clone https://github.com/OSC/osc-myjobs-templates.git templates
+   ```
+
+4. Copy the built app directory to the deployment directory, and start the
+   server. i.e.:
+
+   ```sh
+   sudo mkdir -p /var/www/ood/apps/sys/myjobs
+   sudo cp -r . /var/www/ood/apps/sys/myjobs
+   ```
 
 ## Updating to a New Stable Version
 
-1. Fetch and checkout new version of code:
+1. Navigate to the app's build directory and check out the latest version:
 
-  ```sh
-  cd myjobs # cd to build directory
-  scl enable git19 -- git fetch
-  scl enable git19 -- git checkout tags/v2.2.1 # check out latest tag
-  ```
+   ```sh
+   cd myjobs # cd to build directory
+   scl enable git19 -- git fetch
+   scl enable git19 -- git checkout tags/v2.3.1
+   ```
 
-2. Install gem dependencies and rebuild assets
+2. Update the app for a production environment:
 
-  ```sh
-  scl enable rh-ruby22 -- bin/bundle install --path vendor/bundle
-  scl enable rh-ruby22 -- bin/rake tmp:clear
-  scl enable rh-ruby22 -- bin/rake assets:clobber RAILS_ENV=production
-  scl enable rh-ruby22 nodejs010 -- bin/rake assets:precompile RAILS_ENV=production
-  scl enable rh-ruby22 -- bin/rake tmp:clear
-  ```
+   ```sh
+   RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+   ```
 
-3. Restart app
+   You do not need to specify `OOD_SITE` and `OOD_PORTAL` if they are defined
+   in the `.env.local` file.
 
-  ```sh
-  touch tmp/restart.txt
-  ```
+3. Copy the built app directory to the deployment directory:
 
-4. Copy the built app directory to the deployment directory. There is no need to restart the server. Because we touched `tmp/restart.txt` in the app, the next time a user accesses an app Passenger will reload their app.
-
-  ```sh
-  sudo mkdir -p /var/www/ood/apps/sys/myjobs
-  sudo rsync -rlptv --delete . /var/www/ood/apps/sys/myjobs
-  ```
-
+   ```sh
+   sudo rsync -rlptv --delete . /var/www/ood/apps/sys/myjobs
+   ```
 
 ## Usage
 
@@ -127,3 +129,13 @@ In the event that a job is created from a template that is missing from the `man
 * `host` The cluster id of the first cluster with a valid resource_mgr listed in the OOD cluster config
 * `script` The first `.sh` file appearing in the template folder.
 * `notes` The path to the location where a template manifest should be located.
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at
+https://github.com/OSC/ood-myjobs.
+
+## License
+
+The gem is available as open source under the terms of the [MIT
+License](http://opensource.org/licenses/MIT).
