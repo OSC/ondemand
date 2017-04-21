@@ -74,7 +74,9 @@ class Jobstatusdata
     self.output_path = info.native[:Output_Path].to_s.split(":").second || info.native[:Output_Path]
 
     output_pathname = Pathname.new(self.output_path).dirname
-    set_helper_paths(self.cluster, output_pathname)
+    self.fs_path = { path: output_pathname }
+    self.terminal_path = { path: output_pathname, cluster: self.cluster }
+
     self
   end
 
@@ -105,7 +107,9 @@ class Jobstatusdata
     self.output_path = info.native[:work_dir]
 
     output_pathname = Pathname.new(info.native[:work_dir])
-    set_helper_paths(self.cluster, output_pathname)
+    self.fs_path = { path: output_pathname }
+    self.terminal_path = { path: output_pathname, cluster: self.cluster }
+
     self
   end
 
@@ -119,27 +123,25 @@ class Jobstatusdata
     self.output_path = ''
 
     output_pathname = Pathname.new(ENV["HOME"])
+    self.fs_path = { path: output_pathname }
+    self.terminal_path = { path: output_pathname, cluster: self.cluster }
 
-    set_helper_paths(self.cluster, output_pathname)
     self
   end
 
   private
 
-    # Set the shell and file system url's based on a path and cluster id
-    #
-    # @param [String] cluster_id The cluster key (ex. 'oakley')
-    # @param [String] path The path to set the file and terminal paths
-    def set_helper_paths(cluster_id, path)
-      kwargs = {path: (path.writable? ? path : ENV["HOME"]).to_s }
+    def fs_path=(path: path())
+      path = (path.writable? ? path : ENV["HOME"]).to_s
 
-      self.fs_path = OodAppkit.files.url(kwargs).to_s
+      @fs_path = OodAppkit.files.url(path: path).to_s
+    end
 
-      # If the host has an associated login node, add it to the arguments, otherwise use
-      #  the default host.
-      kwargs[:host] = OODClusters[cluster_id].login.host if OODClusters[cluster_id].login_allow?
+    def terminal_path=(path: path(), cluster: cluster())
+      path = (path.writable? ? path : ENV["HOME"]).to_s
+      host = OODClusters[cluster].login.host if OODClusters[cluster].login_allow?
 
-      self.terminal_path = OodAppkit.shell.url(kwargs).to_s
+      @terminal_path = host ? OodAppkit.shell.url(path: path, host: host).to_s : OodAppkit.shell.url(path: path).to_s
     end
 
     # Rails default string formatters only support HH:MM:SS and roll over the days, so we need to create our own.
@@ -169,6 +171,6 @@ class Jobstatusdata
       node_info_array.map { |n| n.name }
     end
 
-    attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :terminal_path, :fs_path, :extended_available, :native_attribs
+    attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :extended_available, :native_attribs
 
 end
