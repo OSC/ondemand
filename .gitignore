@@ -24,7 +24,6 @@
 /public/.htaccess
 /public/assets
 /.env.local
-/.env.production.local
 
 # awesim-rails uses separately versioned wiki repositories
 # do not include those in the app repo

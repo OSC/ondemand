@@ -21,37 +21,31 @@ APP_ROOT = Pathname.new File.expand_path('../../', __FILE__)
 
 chdir APP_ROOT do
   # get env vars for DATABASE and DATAROOT
-  envs = Dotenv.load(".env.production")
+  Dotenv.load(".env.local", ".env.production", ".env")
 
-  if envs.has_key?("OOD_DATAROOT")
-    `mkdir -p $OOD_DATAROOT`
-  elsif envs.has_key?("RAILS_DATAROOT")
-    `mkdir -p $RAILS_DATAROOT`
-  end
+  `mkdir -p #{ENV["OOD_DATAROOT"]}` if ENV["OOD_DATAROOT"]
 
   # currently SQLite-specific
-  if envs.has_key?("DATABASE_PATH")
-    unless File.exist?(envs["DATABASE_PATH"])
-      `RAILS_ENV=production ruby bin/rake db:setup`
-    else
-      # Get a list of all migration for this app
-      app_migrations = Dir.glob("#{APP_ROOT}/db/migrate/*").map {|v| File.basename(v).split("_").first}
+  if File.exist?(ENV["DATABASE_PATH"])
+    # Get a list of all migration for this app
+    app_migrations = Dir.glob("#{APP_ROOT}/db/migrate/*").map {|v| File.basename(v).split("_").first}
 
-      # Read in current migrations from database
-      require 'sqlite3'
-      begin
-        db = SQLite3::Database.new envs["DATABASE_PATH"]
-        db_migrations = db.execute("SELECT * FROM schema_migrations").map {|v| v.first}
-      rescue SQLite3::Exception => e
-        abort "Exception occurred: #{e}"
-      ensure
-        db.close if db
-      end
-
-      # Compare the two arrays of migrations
-      unless app_migrations.sort == db_migrations.sort
-        abort "Your database differs significantly from the app's schema"
-      end
+    # Read in current migrations from database
+    require 'sqlite3'
+    begin
+      db = SQLite3::Database.new ENV["DATABASE_PATH"]
+      db_migrations = db.execute("SELECT * FROM schema_migrations").map {|v| v.first}
+    rescue SQLite3::Exception => e
+      abort "Exception occurred: #{e}"
+    ensure
+      db.close if db
     end
+
+    # Compare the two arrays of migrations
+    unless app_migrations.sort == db_migrations.sort
+      abort "Your database differs significantly from the app's schema"
+    end
+  else
+    `RAILS_ENV=production bin/rake db:setup`
   end
 end
