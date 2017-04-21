@@ -112,8 +112,10 @@ chdir APP_ROOT do
       if target_repo != `git -C #{target_dir} config --get remote.origin.url 2> /dev/null`.strip
         sh "git -C #{target_dir} remote set-url origin #{target_repo}"
       end
-      sh "git -C #{target_dir} fetch"
-      sh "git -C #{target_dir} checkout master"
+      if APP.production?
+        sh "git -C #{target_dir} fetch"
+        sh "git -C #{target_dir} -c advice.detachedHead=false checkout origin/master"
+      end
     end
   elsif APP.portal
     abort "ERROR: You have a portal specified with no site specified"
