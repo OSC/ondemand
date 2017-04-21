@@ -7,7 +7,7 @@
 # @version 0.0.1
 class Jobstatusdata
   include ApplicationHelper
-  attr_reader :pbsid, :jobname, :username, :account, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :terminal_path, :fs_path, :extended_available, :native_attribs
+  attr_reader :pbsid, :jobname, :username, :account, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :shell_url, :file_explorer_url, :extended_available, :native_attribs
 
   Attribute = Struct.new(:name, :value)
 
@@ -74,8 +74,8 @@ class Jobstatusdata
     self.output_path = info.native[:Output_Path].to_s.split(":").second || info.native[:Output_Path]
 
     output_pathname = Pathname.new(self.output_path).dirname
-    self.fs_path = { path: output_pathname }
-    self.terminal_path = { path: output_pathname, cluster: self.cluster }
+    self.file_explorer_url = { path: output_pathname }
+    self.shell_url = { path: output_pathname, cluster: self.cluster }
 
     self
   end
@@ -107,8 +107,8 @@ class Jobstatusdata
     self.output_path = info.native[:work_dir]
 
     output_pathname = Pathname.new(info.native[:work_dir])
-    self.fs_path = { path: output_pathname }
-    self.terminal_path = { path: output_pathname, cluster: self.cluster }
+    self.file_explorer_url = { path: output_pathname }
+    self.shell_url = { path: output_pathname, cluster: self.cluster }
 
     self
   end
@@ -123,25 +123,25 @@ class Jobstatusdata
     self.output_path = ''
 
     output_pathname = Pathname.new(ENV["HOME"])
-    self.fs_path = { path: output_pathname }
-    self.terminal_path = { path: output_pathname, cluster: self.cluster }
+    self.file_explorer_url = { path: output_pathname }
+    self.shell_url = { path: output_pathname, cluster: self.cluster }
 
     self
   end
 
   private
 
-    def fs_path=(path: path())
+    def file_explorer_url=(path: path())
       path = (path.writable? ? path : ENV["HOME"]).to_s
 
-      @fs_path = OodAppkit.files.url(path: path).to_s
+      @file_explorer_url = OodAppkit.files.url(path: path).to_s
     end
 
-    def terminal_path=(path: path(), cluster: cluster())
+    def shell_url=(path: path(), cluster: cluster())
       path = (path.writable? ? path : ENV["HOME"]).to_s
       host = OODClusters[cluster].login.host if OODClusters[cluster].login_allow?
 
-      @terminal_path = host ? OodAppkit.shell.url(path: path, host: host).to_s : OodAppkit.shell.url(path: path).to_s
+      @shell_url = host ? OodAppkit.shell.url(path: path, host: host).to_s : OodAppkit.shell.url(path: path).to_s
     end
 
     # Rails default string formatters only support HH:MM:SS and roll over the days, so we need to create our own.
