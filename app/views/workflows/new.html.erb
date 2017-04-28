@@ -77,7 +77,7 @@
 
         <%= f.text_field :name, label: 'Job Name:', required: true, id: 'name-field' %>
 
-        <%= f.select :batch_host, OODClusters.map { |cluster| [ "#{cluster.metadata.title}", cluster.id ] }, { label: "Cluster:", class: "selectpicker", id: "batch_host_select", required: true, prompt: "Select a cluster..." } %>
+        <%= f.select :batch_host, OODClusters.map { |cluster| [ "#{cluster.metadata.title}", cluster.id ] }, { label: "Cluster:", prompt: "Select a cluster..." }, { class: "selectpicker", id: "batch_host_select", required: true } %>
 
         <%= f.text_field :script_name, label: 'Script Name:', required: true, id: "script-path-field" %>
 
@@ -124,7 +124,7 @@
       Enter a name for the job you wish to create.
     </p>
   </li>
-  <li data-id="workflow_batch_host">
+  <li data-id="batch_host_select">
     <p>
       Select the cluster where the job will be submitted.
     </p>
