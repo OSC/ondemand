@@ -10,9 +10,8 @@ json.folder_contents (@workflow.folder_contents) do |content|
   json.set! 'type', Pathname(content).file? ? 'file' : 'dir'
   json.set! 'fsurl', Filesystem.new.fs(content)
   json.set! 'fs_base', Filesystem.new.fs(File.dirname(content))
-  json.set! 'terminal_base', OODClusters[@workflow.batch_host] && OODClusters[@workflow.batch_host].login_allow? ?
-      OodAppkit.shell.url(path: File.dirname(content), host: @workflow.batch_host).to_s :
-      OodAppkit.shell.url(path: File.dirname(content)).to_s
+  hostname = OODClusters[@workflow.batch_host].login.host if OODClusters[@workflow.batch_host] && OODClusters[@workflow.batch_host].login_allow?
+  json.set! 'terminal_base', OodAppkit.shell.url(path: File.dirname(content), host: hostname).to_s
   json.set! 'apiurl', Filesystem.new.api(content)
   json.set! 'editor_url', Filesystem.new.editor(content)
 end
