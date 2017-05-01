@@ -100,31 +100,31 @@ $( document ).ready(function () {
         // Change the font size
         $( "#fontsize" ).change(function() {
             editor.setFontSize( $( "#fontsize option:selected" ).val() );
-            setCookie( 'fontsize', $( "#fontsize option:selected" ).val(), 9999 );
+            setLocalStorage( 'fontsize', $( "#fontsize option:selected" ).val() );
         });
 
         // Change the key bindings
         $( "#keybindings" ).change(function() {
             setKeyBinding();
-            setCookie( 'keybindings', $( "#keybindings option:selected" ).val(), 9999 );
+            setLocalStorage( 'keybindings', $( "#keybindings option:selected" ).val() );
         });
 
         // Change the theme
         $( "#theme" ).change(function() {
             editor.setTheme( $( "#theme option:selected" ).val() );
-            setCookie( 'theme', $( "#theme option:selected" ).val(), 9999 );
+            setLocalStorage( 'theme', $( "#theme option:selected" ).val() );
         });
 
         // Change the mode
         $( "#mode" ).change(function() {
             editor.getSession().setMode( "ace/mode/" + $( "#mode option:selected" ).val() );
-            setCookie( 'mode', $( "#mode option:selected" ).val(), 9999 );
+            setLocalStorage( 'mode', $( "#mode option:selected" ).val() );
         });
 
         // Change the word wrap setting
         $( "#wordwrap" ).change(function() {
             editor.getSession().setUseWrapMode(this.checked);
-            setCookie( 'wordwrap', $( "#wordwrap" ).is(':checked'), 9999 );
+            setLocalStorage( 'wordwrap', $( "#wordwrap" ).is(':checked') );
         });
 
         // Save button onclick handler
@@ -166,15 +166,15 @@ $( document ).ready(function () {
         };
 
         function setOptions() {
-            $( "#keybindings" ).val(getCookie('keybindings') || "default");
+            $( "#keybindings" ).val(getLocalStorage('keybindings') || "default");
             setKeyBinding();
-            $( "#fontsize" ).val(getCookie('fontsize') || '12px');
+            $( "#fontsize" ).val(getLocalStorage('fontsize') || '12px');
             editor.setFontSize( $( "#fontsize option:selected" ).val() );
-            $( "#mode" ).val(getCookie('mode') || "text");
+            $( "#mode" ).val(getLocalStorage('mode') || "text");
             editor.session.setMode( "ace/mode/" + $( "#mode option:selected" ).val() );
-            $( "#theme" ).val(getCookie('theme') || "ace/theme/solarized_light");
+            $( "#theme" ).val(getLocalStorage('theme') || "ace/theme/solarized_light");
             editor.setTheme( $( "#theme option:selected" ).val() );
-            $( "#wordwrap" ).prop("checked", getCookie('wordwrap') === "true");
+            $( "#wordwrap" ).prop("checked", getLocalStorage('wordwrap') === "true");
             editor.getSession().setUseWrapMode( $( "#wordwrap" ).is(':checked'));
         };
 
