@@ -74,8 +74,8 @@ class Jobstatusdata
     self.output_path = info.native[:Output_Path].to_s.split(":").second || info.native[:Output_Path]
 
     output_pathname = Pathname.new(self.output_path).dirname
-    set_file_explorer_url(output_pathname)
-    set_shell_url(output_pathname, self.cluster)
+    self.file_explorer_url = build_file_explorer_url(output_pathname)
+    self.shell_url = build_shell_url(output_pathname, self.cluster)
 
     self
   end
@@ -107,8 +107,8 @@ class Jobstatusdata
     self.output_path = info.native[:work_dir]
 
     output_pathname = Pathname.new(info.native[:work_dir])
-    set_file_explorer_url(output_pathname)
-    set_shell_url(output_pathname, self.cluster)
+    self.file_explorer_url = build_file_explorer_url(output_pathname)
+    self.shell_url = build_shell_url(output_pathname, self.cluster)
 
     self
   end
@@ -123,25 +123,25 @@ class Jobstatusdata
     self.output_path = ''
 
     output_pathname = Pathname.new(ENV["HOME"])
-    set_file_explorer_url(output_pathname)
-    set_shell_url(output_pathname, self.cluster)
+    self.file_explorer_url = build_file_explorer_url(output_pathname)
+    self.shell_url = build_shell_url(output_pathname, self.cluster)
 
     self
   end
 
   private
 
-    def set_file_explorer_url(path)
+    def build_file_explorer_url(path)
       writable_path = (path.writable? ? path : ENV["HOME"]).to_s
 
-      self.file_explorer_url = OodAppkit.files.url(path: writable_path).to_s
+      return OodAppkit.files.url(path: writable_path).to_s
     end
 
-    def set_shell_url(path, cluster)
+    def build_shell_url(path, cluster)
       writable_path = (path.writable? ? path : ENV["HOME"]).to_s
       host = OODClusters[cluster].login.host if OODClusters[cluster] && OODClusters[cluster].login_allow?
 
-      self.shell_url = OodAppkit.shell.url(path: writable_path, host: host).to_s
+      return OodAppkit.shell.url(path: writable_path, host: host).to_s
     end
 
     # Rails default string formatters only support HH:MM:SS and roll over the days, so we need to create our own.
