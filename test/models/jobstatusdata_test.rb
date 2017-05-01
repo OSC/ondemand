@@ -86,12 +86,12 @@ class JobstatussataTest < ActiveModel::TestCase
         assert data.extended_available.in?( [true, false] ), data.extended_available
       end
 
-      test "test terminal_path #{@test_count}" do
-        assert data.terminal_path.is_a?(String), "Was #{data.terminal_path.class.name} expecting String"
+      test "test shell_url #{@test_count}" do
+        assert data.shell_url.is_a?(String), "Was #{data.shell_url.class.name} expecting String"
       end
 
-      test "test fs_path #{@test_count}" do
-        assert data.fs_path.is_a?(String), "Was #{data.fs_path.class.name} expecting String"
+      test "test file_explorer_url #{@test_count}" do
+        assert data.file_explorer_url.is_a?(String), "Was #{data.file_explorer_url.class.name} expecting String"
       end
 
       @test_count += 1

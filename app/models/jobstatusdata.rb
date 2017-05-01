@@ -7,7 +7,7 @@
 # @version 0.0.1
 class Jobstatusdata
   include ApplicationHelper
-  attr_reader :pbsid, :jobname, :username, :account, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :terminal_path, :fs_path, :extended_available, :native_attribs
+  attr_reader :pbsid, :jobname, :username, :account, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :shell_url, :file_explorer_url, :extended_available, :native_attribs
 
   Attribute = Struct.new(:name, :value)
 
@@ -74,8 +74,9 @@ class Jobstatusdata
     self.output_path = info.native[:Output_Path].to_s.split(":").second || info.native[:Output_Path]
 
     output_pathname = Pathname.new(self.output_path).dirname
-    self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"])).to_s
-    self.fs_path = OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"])).to_s
+    self.file_explorer_url = build_file_explorer_url(output_pathname)
+    self.shell_url = build_shell_url(output_pathname, self.cluster)
+
     self
   end
 
@@ -106,8 +107,9 @@ class Jobstatusdata
     self.output_path = info.native[:work_dir]
 
     output_pathname = Pathname.new(info.native[:work_dir])
-    self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"])).to_s
-    self.fs_path = OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"])).to_s
+    self.file_explorer_url = build_file_explorer_url(output_pathname)
+    self.shell_url = build_shell_url(output_pathname, self.cluster)
+
     self
   end
 
@@ -121,12 +123,26 @@ class Jobstatusdata
     self.output_path = ''
 
     output_pathname = Pathname.new(ENV["HOME"])
-    self.terminal_path = OodAppkit.shell.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
-    self.fs_path = OodAppkit.files.url(path: (output_pathname.writable? ? output_pathname : ENV["HOME"]))
+    self.file_explorer_url = build_file_explorer_url(output_pathname)
+    self.shell_url = build_shell_url(output_pathname, self.cluster)
+
     self
   end
 
   private
+
+    def build_file_explorer_url(path)
+      writable_path = (path.writable? ? path : ENV["HOME"]).to_s
+
+      return OodAppkit.files.url(path: writable_path).to_s
+    end
+
+    def build_shell_url(path, cluster)
+      writable_path = (path.writable? ? path : ENV["HOME"]).to_s
+      host = OODClusters[cluster].login.host if OODClusters[cluster] && OODClusters[cluster].login_allow?
+
+      return OodAppkit.shell.url(path: writable_path, host: host).to_s
+    end
 
     # Rails default string formatters only support HH:MM:SS and roll over the days, so we need to create our own.
     #
@@ -142,7 +158,6 @@ class Jobstatusdata
       end
 
       return duration.join('')
-
     end
 
     # Converts the `allocated_nodes` object array into an array of node names
@@ -155,6 +170,6 @@ class Jobstatusdata
       node_info_array.map { |n| n.name }
     end
 
-    attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :terminal_path, :fs_path, :extended_available, :native_attribs
+    attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :shell_url, :file_explorer_url, :extended_available, :native_attribs
 
 end
