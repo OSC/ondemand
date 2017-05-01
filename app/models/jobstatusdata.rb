@@ -74,8 +74,8 @@ class Jobstatusdata
     self.output_path = info.native[:Output_Path].to_s.split(":").second || info.native[:Output_Path]
 
     output_pathname = Pathname.new(self.output_path).dirname
-    self.file_explorer_url = { path: output_pathname }
-    self.shell_url = { path: output_pathname, cluster: self.cluster }
+    setFileExplorerUrl(output_pathname)
+    setShellUrl(output_pathname, self.cluster)
 
     self
   end
@@ -107,8 +107,8 @@ class Jobstatusdata
     self.output_path = info.native[:work_dir]
 
     output_pathname = Pathname.new(info.native[:work_dir])
-    self.file_explorer_url = { path: output_pathname }
-    self.shell_url = { path: output_pathname, cluster: self.cluster }
+    setFileExplorerUrl(output_pathname)
+    setShellUrl(output_pathname, self.cluster)
 
     self
   end
@@ -123,25 +123,25 @@ class Jobstatusdata
     self.output_path = ''
 
     output_pathname = Pathname.new(ENV["HOME"])
-    self.file_explorer_url = { path: output_pathname }
-    self.shell_url = { path: output_pathname, cluster: self.cluster }
+    setFileExplorerUrl(output_pathname)
+    setShellUrl(output_pathname, self.cluster)
 
     self
   end
 
   private
 
-    def file_explorer_url=(path: path())
-      path = (path.writable? ? path : ENV["HOME"]).to_s
+    def setFileExplorerUrl(path)
+      writable_path = (path.writable? ? path : ENV["HOME"]).to_s
 
-      @file_explorer_url = OodAppkit.files.url(path: path).to_s
+      @file_explorer_url = OodAppkit.files.url(path: writable_path).to_s
     end
 
-    def shell_url=(path: path(), cluster: cluster())
-      path = (path.writable? ? path : ENV["HOME"]).to_s
-      host = OODClusters[cluster].login.host if OODClusters[cluster].login_allow?
+    def setShellUrl(path, cluster)
+      writable_path = (path.writable? ? path : ENV["HOME"]).to_s
+      host = OODClusters[cluster].login.host if OODClusters[cluster] && OODClusters[cluster].login_allow?
 
-      @shell_url = host ? OodAppkit.shell.url(path: path, host: host).to_s : OodAppkit.shell.url(path: path).to_s
+      @shell_url = OodAppkit.shell.url(path: writable_path, host: host).to_s
     end
 
     # Rails default string formatters only support HH:MM:SS and roll over the days, so we need to create our own.
@@ -158,7 +158,6 @@ class Jobstatusdata
       end
 
       return duration.join('')
-
     end
 
     # Converts the `allocated_nodes` object array into an array of node names
@@ -171,6 +170,6 @@ class Jobstatusdata
       node_info_array.map { |n| n.name }
     end
 
-    attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :extended_available, :native_attribs
+    attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :shell_url, :file_explorer_url, :extended_available, :native_attribs
 
 end
