@@ -37,7 +37,9 @@
 <% end %>
 
 <script src="<%= "#{ENV['RAILS_RELATIVE_URL_ROOT']}/ace-src-min-noconflict/ace.js" %>" type="text/javascript" charset="utf-8"></script>
+<script src="<%= "#{ENV['RAILS_RELATIVE_URL_ROOT']}/ace-src-min-noconflict/ext-modelist.js" %>" type="text/javascript" charset="utf-8"></script>
 <script>
   var editorContent = "";
   var apiUrl = "<%= @file_api_url %>";
+  var filePath = "<%= @pathname %>";
 </script>

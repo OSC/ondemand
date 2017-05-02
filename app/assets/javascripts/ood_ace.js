@@ -1,5 +1,5 @@
 $( document ).ready(function () {
-    
+
     // Do not load the ace editor if the element is not available
     // ex. for directory views
     if ( $( '#editor' ).length ) {
@@ -14,12 +14,14 @@ $( document ).ready(function () {
         var loadedContent = $.ajax({
             url: apiUrl,
             type: 'GET',
+            dataType: "text",
             success: function (data) {
                 editorContent = data;
                 $("#editor").text(editorContent);
                 editor.destroy();
                 editor = ace.edit("editor");
                 initializeEditor();
+                setModeFromModelist();
                 $( "#loading-notice" ).toggle();
                 setBeforeUnloadState();
                 loading = false;
@@ -86,6 +88,15 @@ $( document ).ready(function () {
             $( "#save-icon" ).toggleClass("glyphicon-saved");
         };
 
+        // Sets the key binding to the selected option
+        function setKeyBinding() {
+            var binding = $( "#keybindings option:selected" ).val();
+            if (binding == "default") {
+                binding = null;
+            }
+            editor.setKeyboardHandler( binding );
+        };
+
         // Change the font size
         $( "#fontsize" ).change(function() {
             editor.setFontSize( $( "#fontsize option:selected" ).val() );
@@ -94,7 +105,7 @@ $( document ).ready(function () {
 
         // Change the key bindings
         $( "#keybindings" ).change(function() {
-            editor.setKeyboardHandler( $( "#keybindings option:selected" ).val() );
+            setKeyBinding();
             setCookie( 'keybindings', $( "#keybindings option:selected" ).val(), 9999 );
         });
 
@@ -147,9 +158,16 @@ $( document ).ready(function () {
             };
         });
 
+        // Automatically Sets the dropdown and mode to the modelist option
+        function setModeFromModelist() {
+            var modelist = ace.require("ace/ext/modelist").getModeForPath(filePath);
+            $( "#mode" ).val(modelist.name);
+            editor.session.setMode(modelist.mode);
+        };
+
         function setOptions() {
-            $( "#keybindings" ).val(getCookie('keybindings') || 'ace');
-            editor.setKeyboardHandler( $( "#keybindings option:selected" ).val() );
+            $( "#keybindings" ).val(getCookie('keybindings') || "default");
+            setKeyBinding();
             $( "#fontsize" ).val(getCookie('fontsize') || '12px');
             editor.setFontSize( $( "#fontsize option:selected" ).val() );
             $( "#mode" ).val(getCookie('mode') || "text");
