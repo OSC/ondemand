@@ -1,9 +1,13 @@
-<div class="btn-group pull-right" data-toggle="buttons">
+<div class="dropdown pull-right">
+  <button class="btn btn-default dropdown-toggle" type="button" id="dropdown-menu-filter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    <span id="selected-filter-label">Selected Filter</span>
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-menu-filter">
     <% Filter.list.each do |filter| %>
-        <label id="<%= filter.filter_id %>" class="btn btn-primary" onclick="localStorage.setItem('jobfilter', '<%= filter.filter_id %>'); window.location = '?jobfilter=<%= filter.filter_id %>';" >
-          <input type="radio" name="<%= filter.filter_id %>" id="option_user" > <%= filter.title %>
-        </label>
+      <li class="filter-dropdown-option" onclick="setFilterId('<%= filter.filter_id %>');"><a href="#"><%= filter.title %></a></li>
     <% end %>
+  </ul>
 </div>
 
 <h2>Active Jobs</h2>
