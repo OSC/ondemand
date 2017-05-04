@@ -4,6 +4,8 @@ class PagesController < ApplicationController
   def index
     if params[:jobfilter] && Filter.list.any? { |f| f.filter_id == params[:jobfilter] }
       @jobfilter = params[:jobfilter]
+    else
+      @jobfilter = Filter.default_id
     end
   end
 

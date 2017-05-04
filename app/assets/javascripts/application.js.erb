@@ -22,6 +22,9 @@
 var APP_PATH = window.location.pathname;
 
 $(document).ready( function() {
+    $("#selected-filter-label").text($("#filter-id-"+filter_id).text());
+
+
     $("#" + filter_id).addClass("active");
     var table = $('#job_status_table').DataTable({
         ajax: APP_PATH + '/json?jobfilter=' + filter_id,    // 'pages#json'
@@ -204,4 +207,9 @@ function display_node_rows( d ) {
         }
     }
     return rows;
+}
+
+function set_filter_id(id) {
+    localStorage.setItem('jobfilter', id);
+    window.location = '?jobfilter=' + id;
 }

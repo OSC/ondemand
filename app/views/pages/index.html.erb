@@ -1,11 +1,11 @@
 <div class="dropdown pull-right">
-  <button class="btn btn-default dropdown-toggle" type="button" id="dropdown-menu-filter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-    <span id="selected-filter-label">Selected Filter</span>
+  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdown-menu-filter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    <span id="selected-filter-label"></span>
     <span class="caret"></span>
   </button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-menu-filter">
     <% Filter.list.each do |filter| %>
-      <li class="filter-dropdown-option" onclick="setFilterId('<%= filter.filter_id %>');"><a href="#"><%= filter.title %></a></li>
+      <li class="filter-dropdown-option" id="filter-id-<%= filter.filter_id %>" onclick="set_filter_id('<%= filter.filter_id %>');" data-title="<%= filter.title %>"><a href="#"><%= filter.title %></a></li>
     <% end %>
   </ul>
 </div>
