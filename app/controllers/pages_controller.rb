@@ -68,15 +68,21 @@ class PagesController < ApplicationController
     end
   end
 
+  # Returns the filter id from the parameter if it is valid
+  #
+  # @return [String, nil] the filter id if valid
   def get_filter
     if params[:jobfilter] && Filter.list.any? { |f| f.filter_id == params[:jobfilter] }
-      @jobfilter = params[:jobfilter]
+      params[:jobfilter]
     end
   end
 
+  # Returns the cluster id from the parameter if it is valid
+  #
+  # @return [String, nil] the cluster id if valid
   def get_cluster
-    if params[:jobcluster] && OODClusters[params[:jobcluster]]
-      @jobcluster = params[:jobcluster]
+    if params[:jobcluster] && (OODClusters[params[:jobcluster]] || params[:jobcluster] == 'all')
+      params[:jobcluster]
     end
   end
 
@@ -84,7 +90,7 @@ class PagesController < ApplicationController
   def get_jobs
     jobs = Array.new
     jobfilter = get_filter
-    jobcluster = get_cluster || 'all'
+    jobcluster = get_cluster
 
     OODClusters.each do |cluster|
 
