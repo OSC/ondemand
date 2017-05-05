@@ -54,6 +54,11 @@ class MotdFile
 
   private
 
+    # Parse the MOTD in OSC style
+    # See: https://github.com/OSC/ood-dashboard/wiki/Message-of-the-Day
+    #
+    # @param [String] content The content to be parsed
+  # @return [String] The text formatted to html
     def parse_osc(content)
       # get array of sections which are delimited by a row of ******
       sections = content.split(/^\*+$/).map(&:strip).select { |x| ! x.empty?  }
@@ -65,7 +70,14 @@ class MotdFile
       )
     end
 
+  # Parse the MOTD in markdown using Redcarpet gem
+  #
+  # @param [String] content The content to be parsed
+  # @return [String] The text formatted to html
     def parse_markdown(content)
+      markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
+
+      messages = markdown.render(content)
 
       ApplicationController.new.render_to_string(
           :partial => 'dashboard/motd_markdown',
@@ -73,6 +85,10 @@ class MotdFile
       )
     end
 
+  # Parse the MOTD in plain text
+  #
+  # @param [String] content The content to be parsed
+  # @return [String] The text formatted to html
     def parse_text(content)
       messages = content
 
