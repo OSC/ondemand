@@ -7,6 +7,7 @@
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdown-menu-filter">
       <% Filter.list.each do |filter| %>
+          <%= '<li class="divider"></li>'.html_safe if filter == Filter.list.last %>
           <li class="filter-dropdown-option" id="filter-id-<%= filter.filter_id %>" onclick="set_filter_id('<%= filter.filter_id %>');" data-title="<%= filter.title %>"><a href="#"><%= filter.title %></a></li>
       <% end %>
     </ul>
@@ -21,6 +22,7 @@
       <% OODClusters.each do |cluster| %>
           <li class="cluster-dropdown-option" id="cluster-id-<%= cluster.id %>" onclick="set_cluster_id('<%= cluster.id %>');" ><a href="#"><%= cluster.metadata.title || cluster.id.titleize %></a></li>
       <% end %>
+      <li class="divider"></li>
       <li class="cluster-dropdown-option" id="cluster-id-all" onclick="set_cluster_id('all');"><a href="#">All Clusters</a></li>
     </ul>
   </div>
