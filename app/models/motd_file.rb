@@ -62,11 +62,11 @@ class MotdFile
     def parse_osc(content)
       # get array of sections which are delimited by a row of ******
       sections = content.split(/^\*+$/).map(&:strip).select { |x| ! x.empty?  }
-      message = sections.map { |s| MotdFile::Message.from(s) }.compact.sort_by {|s| s.date }.reverse
+      messages = sections.map { |s| MotdFile::Message.from(s) }.compact.sort_by {|s| s.date }.reverse
 
       ApplicationController.new.render_to_string(
           :partial => 'dashboard/motd_osc',
-          :locals => { :message => message }
+          :locals => { :messages => messages }
       )
     end
 
