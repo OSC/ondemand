@@ -27,7 +27,7 @@ $(document).ready( function() {
 
     $("#" + filter_id).addClass("active");
     var table = $('#job_status_table').DataTable({
-        ajax: APP_PATH + '/json?jobfilter=' + filter_id,    // 'pages#json'
+        ajax: APP_PATH + '/json?jobfilter=' + filter_id + "&jobcluster=" + cluster_id,    // 'pages#json'
         "sAjaxDataProp": "",        // There's no data header on the json.
         autoWidth: true,            // Automatically calculate column width
         "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ], // Manually set size of particular columns
@@ -222,5 +222,5 @@ function set_cluster_id(id) {
 }
 
 function reload_page() {
-    window.location = '?jobcluster=' + cluster_id + '?jobfilter=' + filter_id;
+    window.location = '?jobcluster=' + cluster_id + '&jobfilter=' + filter_id;
 }
