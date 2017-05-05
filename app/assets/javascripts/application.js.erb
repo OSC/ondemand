@@ -23,7 +23,7 @@ var APP_PATH = window.location.pathname;
 
 $(document).ready( function() {
     $("#selected-filter-label").text($("#filter-id-"+filter_id).text());
-
+    $("#selected-cluster-label").text($("#cluster-id-"+cluster_id).text());
 
     $("#" + filter_id).addClass("active");
     var table = $('#job_status_table').DataTable({
@@ -211,5 +211,16 @@ function display_node_rows( d ) {
 
 function set_filter_id(id) {
     localStorage.setItem('jobfilter', id);
-    window.location = '?jobfilter=' + id;
+    filter_id = id;
+    reload_page();
+}
+
+function set_cluster_id(id) {
+    localStorage.setItem('jobcluster', id);
+    cluster_id = id;
+    reload_page();
+}
+
+function reload_page() {
+    window.location = '?jobcluster=' + cluster_id + '?jobfilter=' + filter_id;
 }

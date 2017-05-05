@@ -1,14 +1,31 @@
-<div class="dropdown pull-right">
-  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdown-menu-filter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-    <span id="selected-filter-label"></span>
-    <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-menu-filter">
-    <% Filter.list.each do |filter| %>
-      <li class="filter-dropdown-option" id="filter-id-<%= filter.filter_id %>" onclick="set_filter_id('<%= filter.filter_id %>');" data-title="<%= filter.title %>"><a href="#"><%= filter.title %></a></li>
-    <% end %>
-  </ul>
+
+<div class="row pull-right">
+  <div class="div-inline dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdown-menu-filter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <span id="selected-filter-label"></span>
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdown-menu-filter">
+      <% Filter.list.each do |filter| %>
+          <li class="filter-dropdown-option" id="filter-id-<%= filter.filter_id %>" onclick="set_filter_id('<%= filter.filter_id %>');" data-title="<%= filter.title %>"><a href="#"><%= filter.title %></a></li>
+      <% end %>
+    </ul>
+  </div>
+
+  <div class="div-inline dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdown-menu-filter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <span id="selected-cluster-label"></span>
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdown-menu-filter">
+      <% OODClusters.each do |cluster| %>
+          <li class="cluster-dropdown-option" id="cluster-id-<%= cluster.id %>" onclick="set_cluster_id('<%= cluster.id %>');" ><a href="#"><%= cluster.metadata.title || cluster.id.titleize %></a></li>
+      <% end %>
+      <li class="cluster-dropdown-option" id="cluster-id-all" onclick="set_cluster_id('all');"><a href="#">All Clusters</a></li>
+    </ul>
+  </div>
 </div>
+
 
 <h2>Active Jobs</h2>
     <div class="col-md-12">
@@ -32,6 +49,7 @@
 
 <script>
     var filter_id = <%= (@jobfilter ? "'#{@jobfilter}'" : "localStorage.getItem('jobfilter') || '#{Filter.default_id}'").html_safe %>;
+    var cluster_id = <%= (@jobcluster ? "'#{@jobcluster}'" : "localStorage.getItem('jobcluster') || '#{OODClusters.first.id}'").html_safe %>;
 
     function build_ganglia_link( host, start_seconds, report_type, node_num, size ) {
         var ganglia_uri;

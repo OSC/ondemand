@@ -4,8 +4,10 @@ class PagesController < ApplicationController
   def index
     if params[:jobfilter] && Filter.list.any? { |f| f.filter_id == params[:jobfilter] }
       @jobfilter = params[:jobfilter]
-    else
-      @jobfilter = Filter.default_id
+    end
+
+    if params[:jobcluster] && OODClusters[params[:jobcluster]]
+      @jobcluster = params[:jobcluster]
     end
   end
 
