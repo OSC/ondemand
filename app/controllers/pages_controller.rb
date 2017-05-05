@@ -71,16 +71,12 @@ class PagesController < ApplicationController
   def get_filter
     if params[:jobfilter] && Filter.list.any? { |f| f.filter_id == params[:jobfilter] }
       @jobfilter = params[:jobfilter]
-    else
-      @jobfilter = Filter.default_id
     end
   end
 
   def get_cluster
     if params[:jobcluster] && OODClusters[params[:jobcluster]]
       @jobcluster = params[:jobcluster]
-    else
-      @jobcluster = 'all'
     end
   end
 
@@ -88,7 +84,7 @@ class PagesController < ApplicationController
   def get_jobs
     jobs = Array.new
     jobfilter = get_filter
-    jobcluster = get_cluster
+    jobcluster = get_cluster || 'all'
 
     OODClusters.each do |cluster|
 

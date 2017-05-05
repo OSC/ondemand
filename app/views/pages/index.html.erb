@@ -49,7 +49,7 @@
 
 <script>
     var filter_id = <%= (@jobfilter ? "'#{@jobfilter}'" : "localStorage.getItem('jobfilter') || '#{Filter.default_id}'").html_safe %>;
-    var cluster_id = <%= (@jobcluster ? "'#{@jobcluster}'" : "localStorage.getItem('jobcluster') || '#{OODClusters.first.id}'").html_safe %>;
+    var cluster_id = <%= (@jobcluster ? "'#{@jobcluster}'" : "localStorage.getItem('jobcluster') || 'all'").html_safe %>;
 
     function build_ganglia_link( host, start_seconds, report_type, node_num, size ) {
         var ganglia_uri;
