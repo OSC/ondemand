@@ -20,8 +20,6 @@ class MotdFile
   def initialize(path = ENV['MOTD_PATH'], format = ENV['MOTD_FORMAT'], update_user_view_timestamp: false)
     @motd_system_file = path
     @motd_text_format = format
-
-    touch if update_user_view_timestamp
   end
 
   # An empty file whose modification timestamp indicates the last time the user
@@ -36,12 +34,6 @@ class MotdFile
     motd_system_file && File.file?(motd_system_file)
   end
 
-  # If the motd file hasn't been created on the system, or if the system motd is newer than the user's file, return true.
-  def new_messages?
-    # FIXME: Use if/else statements because this is arcane
-    (messages.count > 0) ? ( !File.exist?(motd_config_file) ? true : File.new(motd_system_file).ctime > File.new(motd_config_file).ctime ? true : false ) : false   
-  end
-
   # Create an array of message objects based on the current message of the day.
   def messages
     f = File.read motd_system_file
@@ -54,15 +46,4 @@ class MotdFile
     Rails.logger.warn "MOTD File is missing; it was expected at #{motd_system_file}"
     []
   end
-
-  # The system will use a file called '.motd' to track when the user last was alerted to messages.
-  # This method should be called when the message of the day page is checked so that the dashboard knows when
-  # the user last viewed the page.
-  #
-  # Calling self.touch will create the .motd file, or update the timestamp if it already exists.
-  def touch
-    FileUtils.mkdir_p(File.dirname(motd_config_file)) unless File.exists?(motd_config_file)
-    FileUtils.touch(motd_config_file)
-  end
-    
 end
