@@ -16,6 +16,8 @@ class MotdFile
   end
   # Initialize the Motd Controller object based on the current user.
   #
+  # @param [String] path The path to the motd file on disk
+  # @param [String] format The formatter to use when parsing the motd
   # @param [boolean] update_user_view_timestamp True to update the last viewed timestamp. (Default: false)
   def initialize(path = ENV['MOTD_PATH'], format = ENV['MOTD_FORMAT'], update_user_view_timestamp: false)
     @motd_system_file = path

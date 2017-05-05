@@ -56,6 +56,7 @@ body {
   margin-bottom: (1rem * .50) !important;
 }
 
+// Remove the well-styling from the bootstrap <pre>
 pre.motd_monospaced {
   background-color: #FFFFFF;
   border: none;
