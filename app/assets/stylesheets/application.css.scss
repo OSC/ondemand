@@ -56,8 +56,15 @@ body {
   margin-bottom: (1rem * .50) !important;
 }
 
+pre.motd_monospaced {
+  background-color: #FFFFFF;
+  border: none;
+}
+
 // Your custom css styles below (must be manually added)
 @import "dashboard";
 @import "navbar";
 @import "apps";
 @import "products";
+
+

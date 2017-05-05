@@ -36,14 +36,49 @@ class MotdFile
 
   # Create an array of message objects based on the current message of the day.
   def messages
-    f = File.read motd_system_file
+    file_content = File.read motd_system_file
 
-    # get array of sections which are delimited by a row of ******
-    sections = f.split(/^\*+$/).map(&:strip).select { |x| ! x.empty?  }
-    sections.map { |s| MotdFile::Message.from(s) }.compact.sort_by {|s| s.date }.reverse
+    case @motd_text_format
+    when 'osc'
+      parse_osc(file_content)
+    when 'markdown'
+      parse_markdown(file_content)
+    else
+      parse_text(file_content)
+    end
   rescue Errno::ENOENT
     # The messages file does not exist on the system.
     Rails.logger.warn "MOTD File is missing; it was expected at #{motd_system_file}"
     []
   end
+
+  private
+
+    def parse_osc(content)
+      # get array of sections which are delimited by a row of ******
+      sections = content.split(/^\*+$/).map(&:strip).select { |x| ! x.empty?  }
+      message = sections.map { |s| MotdFile::Message.from(s) }.compact.sort_by {|s| s.date }.reverse
+
+      ApplicationController.new.render_to_string(
+          :partial => 'dashboard/motd_osc',
+          :locals => { :message => message }
+      )
+    end
+
+    def parse_markdown(content)
+
+      ApplicationController.new.render_to_string(
+          :partial => 'dashboard/motd_markdown',
+          :locals => { :messages => messages }
+      )
+    end
+
+    def parse_text(content)
+      messages = content
+
+      ApplicationController.new.render_to_string(
+          :partial => 'dashboard/motd_text',
+          :locals => { :messages => messages }
+      )
+    end
 end
