@@ -1,5 +1,5 @@
 class MotdFile
-  attr_reader :motd_system_file
+  attr_reader :motd_system_file, :motd_text_format
 
   Message = Struct.new :date, :title, :body do
     def self.from(str)
@@ -17,8 +17,9 @@ class MotdFile
   # Initialize the Motd Controller object based on the current user.
   #
   # @param [boolean] update_user_view_timestamp True to update the last viewed timestamp. (Default: false)
-  def initialize(path = ENV['MOTD_PATH'], update_user_view_timestamp: false)
+  def initialize(path = ENV['MOTD_PATH'], format = ENV['MOTD_FORMAT'], update_user_view_timestamp: false)
     @motd_system_file = path
+    @motd_text_format = format
 
     touch if update_user_view_timestamp
   end
