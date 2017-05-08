@@ -45,7 +45,7 @@ wss.on('connection', function connection (ws) {
   // Determine host and dir from request URL
   if (match = ws.upgradeReq.url.match(process.env.PASSENGER_BASE_URI + '/ssh/([^\\/]+)(.+)?$')) {
     if (match[1] !== 'default') host = match[1];
-    if (match[2]) dir = unescape(match[2]);
+    if (match[2]) dir = decodeURIComponent(match[2]);
   }
 
   if (host === 'localhost') {
