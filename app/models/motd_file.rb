@@ -24,14 +24,6 @@ class MotdFile
     @motd_text_format = format
   end
 
-  # An empty file whose modification timestamp indicates the last time the user
-  # viewed the motd messages. This is useful for when we want to use the file
-  # system to determine when new messages the user has not seen have been
-  # added to the motd.
-  def motd_config_file
-    @motd_config_file ||= OodAppkit.dataroot.join(".motd")
-  end
-
   def exist?
     motd_system_file && File.file?(motd_system_file)
   end
