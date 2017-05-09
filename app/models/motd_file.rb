@@ -77,9 +77,7 @@ class MotdFile
   # @param [String] content The content to be parsed
   # @return [String] The text formatted to html
     def parse_markdown(content)
-      markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
-
-      messages = markdown.render(content)
+      messages = OodAppkit.markdown.render(content)
 
       ApplicationController.new.render_to_string(
           :partial => 'dashboard/motd_markdown',
