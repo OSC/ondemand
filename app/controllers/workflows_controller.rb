@@ -45,6 +45,7 @@ class WorkflowsController < ApplicationController
     # POST /workflows
     # POST /workflows.json
     def create
+      @templates = Template.all
       @workflow = Workflow.new(workflow_params)
 
       respond_to do |format|
@@ -61,6 +62,7 @@ class WorkflowsController < ApplicationController
 
     # POST /create_default
     def create_default
+      @templates = Template.all
       @workflow = Workflow.new_from_template(Template.default)
 
       respond_to do |format|
