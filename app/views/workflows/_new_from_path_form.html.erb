@@ -1,0 +1,32 @@
+<%# Uses rails_bootstrap_form gem. API at: https://github.com/bootstrap-ruby/rails-bootstrap-forms %>
+
+<%= bootstrap_form_for(workflow, url: create_from_path_path) do |f| %>
+    <%= f.alert_message "Please fix the errors below." %>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Path to source (Required)
+      </div>
+      <div class="panel-body">
+        <%= f.text_field :staging_template_dir, required: true %>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Job Attributes
+      </div>
+      <div class="panel-body">
+        <%= f.text_field :name %>
+
+        <%= f.select :batch_host, OODClusters.map { |cluster| [ "#{cluster.metadata.title}", cluster.id ] }, { label: "Cluster:", :include_blank => true }, { class: "selectpicker", id: "batch_host_select" } %>
+
+        <%= f.text_field :account, help: "Account is optional field. If not set, the account may be auto-set by the submit filter."%>
+      </div>
+    </div>
+
+    <%= f.submit 'Save', class: 'btn btn-primary' %>
+    <%= f.button 'Reset', type: :reset, class: 'btn btn-default' %>
+
+    <%= link_to 'Back', workflows_path, class: 'btn btn-default' %>
+<% end %>
