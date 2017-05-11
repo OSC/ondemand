@@ -86,8 +86,12 @@ class WorkflowsController < ApplicationController
     @workflow.host = workflow_params[:host] if workflow_params[:host]
     @workflow.account = workflow_params[:account] if workflow_params[:account]
 
+    # validate path we are copying from. safe_path is a boolean, error contains the error string if false
+    copy_safe, error = Filesystem.new.validate_path_is_copy_safe(@workflow.staging_template_dir.to_s)
+    @workflow.errors.add(:staging_template_dir, error) unless copy_safe
+
     respond_to do |format|
-      if @workflow.save
+      if @workflow.errors.empty? && @workflow.save
         format.html { redirect_to workflows_url, notice: 'Job was successfully created.' }
         format.json { render :show, status: :created, location: @workflow }
       else
