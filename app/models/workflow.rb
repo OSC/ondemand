@@ -24,7 +24,7 @@ class Workflow < ActiveRecord::Base
   #  "workflows"
   #end
 
-  # @param [Template] template A template to generate a workflow from.
+  # @param [Template] template A template to generate a workflow from
   # @return [Workflow] Return a new workflow based on the template
   def self.new_from_template(template)
     raise NotImplementedError if template.source.nil?
@@ -34,6 +34,28 @@ class Workflow < ActiveRecord::Base
     workflow.staging_template_dir = template.path
     workflow.batch_host = template.manifest.host
     workflow.script_name = template.manifest.script
+    workflow
+  end
+
+  # Create a new workflow from a path and attempt to load a manifest on that path.
+  #
+  # @param [String] path A path to use as a non-static template
+  # @return [Workflow] Return a new workflow based on the path
+  def self.new_from_path(path)
+    workflow = Workflow.new
+    path = Pathname.new path
+    if path.exist?
+      workflow.staging_template_dir = path.to_s
+
+      # Attempt to load a manifest on the path
+      manifest_path = path.join('manifest.yml')
+      if manifest_path.exist?
+        manifest = Manifest.load manifest_path
+        workflow.name = manifest.name
+        workflow.batch_host = manifest.host
+        workflow.script_name = manifest.script
+      end
+    end
     workflow
   end
 
