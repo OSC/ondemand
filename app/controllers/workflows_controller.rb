@@ -19,83 +19,83 @@ class WorkflowsController < ApplicationController
   # GET /workflows/1.json
   def show
     set_workflow
-      @workflow = Workflow.find(params[:id])
-      @workflow.jobs.last.update_status! unless @workflow.jobs.last.nil?
+    @workflow = Workflow.find(params[:id])
+    @workflow.jobs.last.update_status! unless @workflow.jobs.last.nil?
+  end
+
+  # GET /workflows/new
+  def new
+    @workflow = Workflow.new
+    @templates = Template.all
+  end
+
+
+  def new_from_path
+    @workflow = Workflow.new
+    if params[:path]
+      @workflow = Workflow.new_from_path(params[:path])
     end
+  end
 
-    # GET /workflows/new
-    def new
-      @workflow = Workflow.new
-      @templates = Template.all
+  # GET /workflows/1/edit
+  def edit
+    set_workflow
+  end
+
+  # POST /workflows
+  # POST /workflows.json
+  def create
+    @templates = Template.all
+    @workflow = Workflow.new(workflow_params)
+
+    respond_to do |format|
+      if @workflow.save
+        session[:selected_id] = @workflow.id
+        format.html { redirect_to workflows_url, notice: 'Job was successfully created.' }
+        format.json { render :show, status: :created, location: @workflow }
+      else
+        format.html { render :new }
+        format.json { render json: @workflow.errors, status: :unprocessable_entity }
+      end
     end
+  end
 
+  # POST /create_default
+  # POST /create_default.json
+  def create_default
+    @templates = Template.all
+    @workflow = Workflow.new_from_template(Template.default)
 
-    def new_from_path
-      @workflow = Workflow.new
-      if params[:path]
-        @workflow = Workflow.new_from_path(params[:path])
+    respond_to do |format|
+      if @workflow.save
+        format.html { redirect_to workflows_url, notice: 'Job was successfully created.' }
+        format.json { render :show, status: :created, location: @workflow }
+      else
+        format.html { render :new }
+        format.json { render json: @workflow.errors, status: :unprocessable_entity }
       end
     end
 
-    # GET /workflows/1/edit
-    def edit
-      set_workflow
-    end
+  end
 
-    # POST /workflows
-    # POST /workflows.json
-    def create
-      @templates = Template.all
-      @workflow = Workflow.new(workflow_params)
+  # POST /workflows/create_from_path
+  # POST /workflows/create_from_path.json
+  def create_from_path
+    @workflow = Workflow.new_from_path(workflow_params[:staging_template_dir])
+    @workflow.name = workflow_params[:name] if workflow_params[:name]
+    @workflow.host = workflow_params[:host] if workflow_params[:host]
+    @workflow.account = workflow_params[:account] if workflow_params[:account]
 
-      respond_to do |format|
-        if @workflow.save
-          session[:selected_id] = @workflow.id
-          format.html { redirect_to workflows_url, notice: 'Job was successfully created.' }
-          format.json { render :show, status: :created, location: @workflow }
-        else
-          format.html { render :new }
-          format.json { render json: @workflow.errors, status: :unprocessable_entity }
-        end
+    respond_to do |format|
+      if @workflow.save
+        format.html { redirect_to workflows_url, notice: 'Job was successfully created.' }
+        format.json { render :show, status: :created, location: @workflow }
+      else
+        format.html { render :new_from_path }
+        format.json { render json: @workflow.errors, status: :unprocessable_entity }
       end
     end
-
-    # POST /create_default
-    # POST /create_default.json
-    def create_default
-      @templates = Template.all
-      @workflow = Workflow.new_from_template(Template.default)
-
-      respond_to do |format|
-        if @workflow.save
-          format.html { redirect_to workflows_url, notice: 'Job was successfully created.' }
-          format.json { render :show, status: :created, location: @workflow }
-        else
-          format.html { render :new }
-          format.json { render json: @workflow.errors, status: :unprocessable_entity }
-        end
-      end
-
-    end
-
-    # POST /workflows/create_from_path
-    # POST /workflows/create_from_path.json
-    def create_from_path
-      @workflow = Workflow.new_from_path(workflow_params[:staging_template_dir])
-      @workflow.name = workflow_params[:name] if workflow_params[:name]
-      @workflow.host = workflow_params[:host] if workflow_params[:host]
-      @workflow.account = workflow_params[:account] if workflow_params[:account]
-
-      respond_to do |format|
-        if @workflow.save
-          format.html { redirect_to workflows_url, notice: 'Job was successfully created.' }
-          format.json { render :show, status: :created, location: @workflow }
-        else
-          format.html { render :new_from_path }
-          format.json { render json: @workflow.errors, status: :unprocessable_entity }
-        end
-      end
-    end
+  end
 
   # PATCH/PUT /workflows/1
   # PATCH/PUT /workflows/1.json
