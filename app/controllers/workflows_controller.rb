@@ -67,6 +67,11 @@ class WorkflowsController < ApplicationController
 
   end
 
+  # GET /workflows/create_from_path
+  def create_from_path
+
+  end
+
   # PATCH/PUT /workflows/1
   # PATCH/PUT /workflows/1.json
   def update
