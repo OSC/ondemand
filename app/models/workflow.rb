@@ -42,19 +42,17 @@ class Workflow < ActiveRecord::Base
   # @param [String] path A path to use as a non-static template
   # @return [Workflow] Return a new workflow based on the path
   def self.new_from_path(path)
-    workflow = Workflow.new
     path = Pathname.new(File.expand_path(path)) rescue Pathname.new(path)
-    if path.exist?
-      workflow.staging_template_dir = path.to_s
+    workflow = Workflow.new
+    workflow.staging_template_dir = path.to_s
 
-      # Attempt to load a manifest on the path
-      manifest_path = path.join('manifest.yml')
-      if manifest_path.exist?
-        manifest = Manifest.load manifest_path
-        workflow.name = manifest.name
-        workflow.batch_host = manifest.host
-        workflow.script_name = manifest.script
-      end
+    # Attempt to load a manifest on the path
+    manifest_path = path.join('manifest.yml')
+    if manifest_path.exist?
+      manifest = Manifest.load manifest_path
+      workflow.name = manifest.name
+      workflow.batch_host = manifest.host
+      workflow.script_name = manifest.script
     end
     workflow
   end
