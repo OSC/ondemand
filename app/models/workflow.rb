@@ -44,6 +44,8 @@ class Workflow < ActiveRecord::Base
   def self.new_from_path(path)
     path = Pathname.new(File.expand_path(path)) rescue Pathname.new(path)
     workflow = Workflow.new
+    workflow.batch_host = ''
+    workflow.script_name = ''
     workflow.staging_template_dir = path.to_s
 
     # Attempt to load a manifest on the path
