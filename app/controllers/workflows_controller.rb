@@ -29,7 +29,6 @@ class WorkflowsController < ApplicationController
     @templates = Template.all
   end
 
-
   def new_from_path
     @workflow = Workflow.new
     if params[:path]
@@ -75,7 +74,6 @@ class WorkflowsController < ApplicationController
         format.json { render json: @workflow.errors, status: :unprocessable_entity }
       end
     end
-
   end
 
   # POST /workflows/create_from_path
