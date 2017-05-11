@@ -61,6 +61,7 @@ class WorkflowsController < ApplicationController
     end
 
     # POST /create_default
+    # POST /create_default.json
     def create_default
       @templates = Template.all
       @workflow = Workflow.new_from_template(Template.default)
@@ -78,9 +79,11 @@ class WorkflowsController < ApplicationController
     end
 
     # POST /workflows/create_from_path
+    # POST /workflows/create_from_path.json
     def create_from_path
       @workflow = Workflow.new_from_path(workflow_params[:staging_template_dir])
       @workflow.name = workflow_params[:name] if workflow_params[:name]
+      @workflow.host = workflow_params[:host] if workflow_params[:host]
       @workflow.account = workflow_params[:account] if workflow_params[:account]
 
       respond_to do |format|
