@@ -43,7 +43,7 @@ class Workflow < ActiveRecord::Base
   # @return [Workflow] Return a new workflow based on the path
   def self.new_from_path(path)
     workflow = Workflow.new
-    path = Pathname.new path
+    path = Pathname.new(File.expand_path(path)) rescue Pathname.new(path)
     if path.exist?
       workflow.staging_template_dir = path.to_s
 
