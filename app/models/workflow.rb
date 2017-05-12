@@ -44,7 +44,8 @@ class Workflow < ActiveRecord::Base
   def self.new_from_path(path)
     path = Pathname.new(File.expand_path(path)) rescue Pathname.new(path)
     workflow = Workflow.new
-    workflow.batch_host = ''
+    workflow.name = path.to_s
+    workflow.batch_host = OODClusters.first.id
     workflow.script_name = ''
     workflow.staging_template_dir = path.to_s
 
