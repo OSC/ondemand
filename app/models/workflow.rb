@@ -42,7 +42,7 @@ class Workflow < ActiveRecord::Base
   # @param [String] path A path to use as a non-static template
   # @return [Workflow] Return a new workflow based on the path
   def self.new_from_path(path)
-    path = Pathname.new(File.expand_path(path)) rescue Pathname.new(path)
+    path = Pathname.new(path).expand_path rescue Pathname.new(path)
     workflow = Workflow.new
     workflow.name = path.to_s
     workflow.batch_host = OODClusters.first.id
