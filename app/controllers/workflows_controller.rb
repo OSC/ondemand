@@ -80,9 +80,9 @@ class WorkflowsController < ApplicationController
   # POST /workflows/create_from_path.json
   def create_from_path
     @workflow = Workflow.new_from_path(workflow_params[:staging_template_dir])
-    @workflow.name = workflow_params[:name] if workflow_params[:name]
-    @workflow.host = workflow_params[:host] if workflow_params[:host]
-    @workflow.account = workflow_params[:account] if workflow_params[:account]
+    @workflow.name = workflow_params[:name] unless workflow_params[:name].blank?
+    @workflow.host = workflow_params[:host] unless workflow_params[:host].blank?
+    @workflow.account = workflow_params[:account] unless workflow_params[:account].blank?
 
     # validate path we are copying from. safe_path is a boolean, error contains the error string if false
     copy_safe, error = Filesystem.new.validate_path_is_copy_safe(@workflow.staging_template_dir.to_s)
