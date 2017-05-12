@@ -27,7 +27,7 @@ class Template
   # @param [String] path The template base path.
   # @param [optional, Source] source A Source object based on the template's location.
   def initialize(path, source = Source.new("", Pathname.new("")))
-    @path = Pathname.new(File.expand_path(path)) rescue Pathname.new(path)
+    @path = Pathname.new(path).expand_path rescue Pathname.new(path)
     @source = source
   end
 
