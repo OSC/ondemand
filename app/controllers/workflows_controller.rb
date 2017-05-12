@@ -81,7 +81,8 @@ class WorkflowsController < ApplicationController
   def create_from_path
     @workflow = Workflow.new_from_path(workflow_params[:staging_template_dir])
     @workflow.name = workflow_params[:name] unless workflow_params[:name].blank?
-    @workflow.host = workflow_params[:host] unless workflow_params[:host].blank?
+    @workflow.batch_host = workflow_params[:batch_host] unless workflow_params[:batch_host].blank?
+    @workflow.script_name = workflow_params[:script_name] unless workflow_params[:script_name].blank?
     @workflow.account = workflow_params[:account] unless workflow_params[:account].blank?
 
     # validate path we are copying from. safe_path is a boolean, error contains the error string if false
