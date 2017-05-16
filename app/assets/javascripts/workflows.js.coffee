@@ -161,7 +161,7 @@ $(window).focus ->
     $("#terminal_button").bind('click', false)
 
 @update_submit_button = (id, status_char) ->
-  if id? && !status_char?
+  if id? && status_char != "R" && status_char != "Q"
       $("#submit_button").attr("href", Routes.submit_workflow_path(id))
       $("#submit_button").data("method", "PUT")
       $("#submit_button").removeAttr("disabled")
