@@ -29,7 +29,7 @@ tr.missing {
   }
 }
 
-.truncate {
+.wrap-line {
   /* Technically the same, but use both for browser compatibility */
   overflow-wrap: break-word;
   word-wrap: break-word;
