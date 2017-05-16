@@ -51,7 +51,7 @@
             <tbody>
             <% @templates.each_with_index do |template, index| %>
               <tr class="job-row" data-name="<%= template.name %>" data-host="<%= template.host %>" data-path="<%= template.path %>" data-script="<%= template.manifest.script %>" data-api="<%= Filesystem.new.api(template.path) %>" data-fs="<%= Filesystem.new.fs(template.path) %>" data-shell="<%= OodAppkit.shell.url(path: template.path).to_s %>" data-notes="<%= template.notes %>" <%= "data-delete=#{template.path}" unless template.system? %> >
-              <td><%= template.name %></td>
+              <td class="wrap-line"><%= template.name %></td>
               <td><%= template.host.titleize %></td>
               <td><%= template.source.name %></td>
             </tr>
@@ -66,7 +66,7 @@
     <div class="panel panel-primary">
 
       <div class="panel-heading">
-        <h3 class="panel-title" >Create New "<span id="script-name-label"><%= @workflow.name %></span>"</h3>
+        <h3 class="panel-title" >Create New "<span class="wrap-line" id="script-name-label"><%= @workflow.name %></span>"</h3>
       </div>
       <div class="panel-body">
 
