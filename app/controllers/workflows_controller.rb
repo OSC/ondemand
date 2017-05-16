@@ -127,6 +127,9 @@ class WorkflowsController < ApplicationController
   # PUT /workflows/1/submit.json
   def submit
     set_workflow
+    if @workflow.submitted? && !@workflow.active?
+      @workflow.jobs.clear
+    end
 
     respond_to do |format|
       if @workflow.submitted?
