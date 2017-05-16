@@ -127,6 +127,9 @@ class WorkflowsController < ApplicationController
   # PUT /workflows/1/submit.json
   def submit
     set_workflow
+
+    # We want to allow the user to resubmit a job that has been run or failed. This will clear old jobs from
+    # a workflow when the job is no longer queued or running, which will clear the submitted state.
     if @workflow.submitted? && !@workflow.active?
       @workflow.jobs.clear
     end
