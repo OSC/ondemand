@@ -15,7 +15,8 @@ tr.missing-dir {
   min-height: 100vh;
 }
 
-#script-details-view .help-block-dir, .help-block-script {
+#script-details-view .help-block-dir,
+#script-details-name-view .help-block-script {
   display: none;
 }
 
