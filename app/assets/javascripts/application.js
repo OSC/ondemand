@@ -67,6 +67,7 @@ $(document).ready(function(){
                 $(this).addClass('active');
             }
             update_missing_data_path_view();
+            update_missing_data_script_view(active_var());
             update_display(active_var());
         });
     }

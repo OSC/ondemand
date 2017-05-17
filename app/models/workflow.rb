@@ -55,8 +55,12 @@ class Workflow < ActiveRecord::Base
     self.script_name
   end
 
+  def staged_script_exists?
+    File.file? self.script_path
+  end
+
   def script_path
-    Pathname.new(self.staged_dir).join(self.script_name)
+    Pathname.new(self.staged_dir).join(self.script_name.to_s)
   end
 
   def script_path=(new_path)

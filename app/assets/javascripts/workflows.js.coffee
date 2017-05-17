@@ -77,6 +77,7 @@ $(window).focus ->
     $("#job-details-name").text(data.name)
     $("#job-details-server").val(data.host_title)
     $("#job-details-staged-dir").text(data.staged_dir)
+    $("#job-details-script-name").text(data.staged_script_name || ' ')
     if data.account == null or data.account == ""
       $("#job-details-account").addClass("text-muted")
       $("#job-details-account").text("Not specified")
@@ -337,10 +338,16 @@ $ ->
   $("#template-folder-contents").html("#{list}")
 
 @missing_data_path = ->
-  active_row().hasClass('missing')
+  active_row().hasClass('missing-dir')
+
+@missing_data_script = ->
+  active_row().hasClass('missing-script')
 
 @update_missing_data_path_view = ->
-  $('#script-details-view').toggleClass("missing", missing_data_path());
+  $('#script-details-view').toggleClass("missing-dir", missing_data_path());
+
+@update_missing_data_script_view = (id) ->
+  $('#script-details-name-view').toggleClass("missing-script", missing_data_script());
 
 $ ->
   $('#reset-template-data').on 'click', ->
