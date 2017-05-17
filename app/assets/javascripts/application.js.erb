@@ -22,9 +22,12 @@
 var APP_PATH = window.location.pathname;
 
 $(document).ready( function() {
+    $("#selected-filter-label").text($("#filter-id-"+filter_id).text());
+    $("#selected-cluster-label").text($("#cluster-id-"+cluster_id).text());
+
     $("#" + filter_id).addClass("active");
     var table = $('#job_status_table').DataTable({
-        ajax: APP_PATH + '/json?jobfilter=' + filter_id,    // 'pages#json'
+        ajax: APP_PATH + '/json?' + get_request_params(),    // 'pages#json'
         "sAjaxDataProp": "",        // There's no data header on the json.
         autoWidth: true,            // Automatically calculate column width
         "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ], // Manually set size of particular columns
@@ -204,4 +207,27 @@ function display_node_rows( d ) {
         }
     }
     return rows;
+}
+
+function get_request_params() {
+    return jQuery.param({
+        jobcluster: cluster_id,
+        jobfilter:  filter_id
+    });
+}
+
+function set_filter_id(id) {
+    localStorage.setItem('jobfilter', id);
+    filter_id = id;
+    reload_page();
+}
+
+function set_cluster_id(id) {
+    localStorage.setItem('jobcluster', id);
+    cluster_id = id;
+    reload_page();
+}
+
+function reload_page() {
+    window.location = '?' + get_request_params();
 }

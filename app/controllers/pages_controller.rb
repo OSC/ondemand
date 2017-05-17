@@ -2,9 +2,8 @@ class PagesController < ApplicationController
   include ApplicationHelper
 
   def index
-    if params[:jobfilter] && Filter.list.any? { |f| f.filter_id == params[:jobfilter] }
-      @jobfilter = params[:jobfilter]
-    end
+    @jobfilter = get_filter
+    @jobcluster = get_cluster
   end
 
   # Used to send the data to the Datatable.
@@ -69,27 +68,48 @@ class PagesController < ApplicationController
     end
   end
 
+  # Returns the filter id from the parameter if it is valid
+  #
+  # @return [String, nil] the filter id if valid
+  def get_filter
+    if params[:jobfilter] && Filter.list.any? { |f| f.filter_id == params[:jobfilter] }
+      params[:jobfilter]
+    end
+  end
+
+  # Returns the cluster id from the parameter if it is valid
+  #
+  # @return [String, nil] the cluster id if valid
+  def get_cluster
+    if params[:jobcluster] && (OODClusters[params[:jobcluster]] || params[:jobcluster] == 'all')
+      params[:jobcluster]
+    end
+  end
+
   # Get a set of jobs defined by the filtering parameter.
   def get_jobs
     jobs = Array.new
+    jobfilter = get_filter
+    jobcluster = get_cluster
+
     OODClusters.each do |cluster|
 
-      b = cluster.job_adapter
+      if jobcluster == 'all' || cluster == OODClusters[jobcluster]
 
-      # Checks the params and gets the appropriate job set.
-      # Default to user set on first load
-      param = params[:jobfilter] || Filter.default_id
-      filter = Filter.list.find { |f| f.filter_id == param }
-      result = filter ? filter.apply(b.info_all) : b.info_all
+        b = cluster.job_adapter
 
-      # Only add the running jobs to the list and assign the host to the object.
-      #
-      # There is also curently a bug in the system where jobs with an empty array
-      # (ex. 6407991[].oak-batch.osc.edu) are not stattable, so we do a not-match
-      # for those jobs and don't display them.
-      result.each do |j|
-        if j.status.state != :completed && j.id !~ /\[\]/
-          jobs.push(Jobstatusdata.new(j, cluster.id.to_s))
+        filter = Filter.list.find { |f| f.filter_id == jobfilter }
+        result = filter ? filter.apply(b.info_all) : b.info_all
+
+        # Only add the running jobs to the list and assign the host to the object.
+        #
+        # There is also curently a bug in the system where jobs with an empty array
+        # (ex. 6407991[].oak-batch.osc.edu) are not stattable, so we do a not-match
+        # for those jobs and don't display them.
+        result.each do |j|
+          if j.status.state != :completed && j.id !~ /\[\]/
+            jobs.push(Jobstatusdata.new(j, cluster.id.to_s))
+          end
         end
       end
     end
