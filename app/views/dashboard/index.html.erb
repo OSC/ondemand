@@ -4,7 +4,7 @@
 <br>
 
 <%# This assumes @motd_file responds to `to_partial_path` %>
-<%= render @motd_file if @motd_file.exist? %>
+<%= render @motd if @motd %>
 
 <!--
 TODO: add getting started

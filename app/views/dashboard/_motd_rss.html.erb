@@ -1,0 +1,7 @@
+<div>
+  <% @motd.content.items.each do |item| %>
+    <h3><a href="<%= item.link %>"><%= item.title %></a></h3>
+    <p><%= item.description.html_safe %></p>
+    <hr />
+  <% end %>
+</div>
