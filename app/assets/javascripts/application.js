@@ -22,14 +22,14 @@ $(document).ready(function(){
 var KEY_PREFIX = "ood_editor_store_";
 
 // Set localStorage. Adds a key prefix to reduce overlap likelihood.
-function setLocalStorage(key, value) {
+function setUserPreference(key, value) {
     var ood_key = KEY_PREFIX + key;
     localStorage.setItem(ood_key, value);
     return null;
 }
 
 // Get localStorage. Adds a key prefix added by setter.
-function getLocalStorage(key) {
+function getUserPreference(key) {
     var ood_key = KEY_PREFIX + key;
     return localStorage.getItem(ood_key);
 }

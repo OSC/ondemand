@@ -100,31 +100,31 @@ $( document ).ready(function () {
         // Change the font size
         $( "#fontsize" ).change(function() {
             editor.setFontSize( $( "#fontsize option:selected" ).val() );
-            setLocalStorage( 'fontsize', $( "#fontsize option:selected" ).val() );
+            setUserPreference( 'fontsize', $( "#fontsize option:selected" ).val() );
         });
 
         // Change the key bindings
         $( "#keybindings" ).change(function() {
             setKeyBinding();
-            setLocalStorage( 'keybindings', $( "#keybindings option:selected" ).val() );
+            setUserPreference( 'keybindings', $( "#keybindings option:selected" ).val() );
         });
 
         // Change the theme
         $( "#theme" ).change(function() {
             editor.setTheme( $( "#theme option:selected" ).val() );
-            setLocalStorage( 'theme', $( "#theme option:selected" ).val() );
+            setUserPreference( 'theme', $( "#theme option:selected" ).val() );
         });
 
         // Change the mode
         $( "#mode" ).change(function() {
             editor.getSession().setMode( "ace/mode/" + $( "#mode option:selected" ).val() );
-            setLocalStorage( 'mode', $( "#mode option:selected" ).val() );
+            setUserPreference( 'mode', $( "#mode option:selected" ).val() );
         });
 
         // Change the word wrap setting
         $( "#wordwrap" ).change(function() {
             editor.getSession().setUseWrapMode(this.checked);
-            setLocalStorage( 'wordwrap', $( "#wordwrap" ).is(':checked') );
+            setUserPreference( 'wordwrap', $( "#wordwrap" ).is(':checked') );
         });
 
         // Save button onclick handler
@@ -166,15 +166,15 @@ $( document ).ready(function () {
         };
 
         function setOptions() {
-            $( "#keybindings" ).val(getLocalStorage('keybindings') || "default");
+            $( "#keybindings" ).val(getUserPreference('keybindings') || "default");
             setKeyBinding();
-            $( "#fontsize" ).val(getLocalStorage('fontsize') || '12px');
+            $( "#fontsize" ).val(getUserPreference('fontsize') || '12px');
             editor.setFontSize( $( "#fontsize option:selected" ).val() );
-            $( "#mode" ).val(getLocalStorage('mode') || "text");
+            $( "#mode" ).val(getUserPreference('mode') || "text");
             editor.session.setMode( "ace/mode/" + $( "#mode option:selected" ).val() );
-            $( "#theme" ).val(getLocalStorage('theme') || "ace/theme/solarized_light");
+            $( "#theme" ).val(getUserPreference('theme') || "ace/theme/solarized_light");
             editor.setTheme( $( "#theme option:selected" ).val() );
-            $( "#wordwrap" ).prop("checked", getLocalStorage('wordwrap') === "true");
+            $( "#wordwrap" ).prop("checked", getUserPreference('wordwrap') === "true");
             editor.getSession().setUseWrapMode( $( "#wordwrap" ).is(':checked'));
         };
 
