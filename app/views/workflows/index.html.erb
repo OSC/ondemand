@@ -78,7 +78,7 @@
           <% @workflows.each do |workflow| %>
               <tr class="job-row <%= "missing" unless workflow.staged_dir_exists? %>" id="<%=workflow.id %>">
                 <td data-sort="<%= workflow.id %>"><small><%= local_time(workflow.created_at) %></small></td>
-                <td><strong><%= workflow.name %></strong></td>
+                <td class="wrap-line"><strong><%= workflow.name %></strong></td>
                 <td><%= workflow.pbsid %></td>
                 <td><%= workflow.batch_host.titleize if workflow.batch_host %></td>
                 <td id="status_label_<%= workflow.id %>"><%= status_label(workflow) %></td>
@@ -99,7 +99,7 @@
         <h3 class="panel-title">Job Details</h3>
       </div>
       <div class="panel-body">
-        <p>Job Name: <h4><strong><span id="job-details-name"></span></strong></h4></p>
+        <p>Job Name: <h4 class="wrap-line"><strong><span id="job-details-name"></span></strong></h4></p>
         <p>Submit to:</p>
           <input type="text" class="form-control" id="job-details-server" disabled>
         <p></p>
