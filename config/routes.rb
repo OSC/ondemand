@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  namespace :batch_connect do
+    resources :sessions, only: [:index, :destroy]
+    scope "*token", constraints: { token: /((usr\/[^\/]+)|dev|sys)\/[^\/]+(\/[^\/]+)?/ } do
+      resources :session_contexts, only: [:new, :create]
+    end
+  end
   get "errors/not_found"
   get "errors/internal_server_error"
   get "dashboard/index"

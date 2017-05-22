@@ -3,6 +3,9 @@
 # FIXME: could omit these links if you are in a particular group i.e. a blacklist
 NavConfig.categories << "Desktop Apps"
 
+# FIXME: this is temporary
+NavConfig.categories << "iHPC Apps"
+
 OodFilesApp.candidate_favorite_paths.tap do |paths|
   # add project space directories
   projects = User.new.groups.map(&:name).grep(/^P./)

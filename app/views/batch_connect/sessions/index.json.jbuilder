@@ -1,0 +1,1 @@
+json.array! @batch_connect_sessions, partial: 'batch_connect_sessions/batch_connect_session', as: :batch_connect_session

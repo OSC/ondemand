@@ -1,0 +1,7 @@
+<%= bootstrap_form_for(@session_context) do |f| %>
+  <% f.object.each do |attrib| %>
+    <%= create_widget(f, attrib, format: @render_format) %>
+  <% end %>
+
+  <%= f.submit "Launch", class: "btn btn-primary" %>
+<% end %>

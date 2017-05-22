@@ -1,0 +1,13 @@
+<div class="page-header">
+  <h2>Listing Sessions</h2>
+</div>
+
+<div class="batch-connect sessions" data-toggle="poll" data-url="<%= batch_connect_sessions_path(format: :js) %>" data-delay="<%= ENV["POLL_DELAY"] || 10000 %>">
+  <% if @sessions.empty? %>
+    <div class="ood-appkit markdown">
+      <p>You have no active sessions.</p>
+    </div>
+  <% else %>
+    <%= render partial: "panel", collection: @sessions, as: :session %>
+  <% end %>
+</div>

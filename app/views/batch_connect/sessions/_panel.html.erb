@@ -1,0 +1,26 @@
+<%= session_panel session do %>
+  <%= session_view session do %>
+    <%
+      if session.running?
+        if session.view
+          views = { partial: "custom", locals: { view: session.view, connect: session.connect } }
+        else
+          if session.script_type == "vnc"
+            views = []
+            views << { title: "noVNC Connection",    partial: "novnc",      locals: { connect: session.connect } }
+            views << { title: "Native Instructions", partial: "native_vnc", locals: { connect: session.connect } } if ENV["ENABLE_NATIVE_VNC"]
+          else
+            views = { partial: "missing_connection" }
+          end
+        end
+      elsif session.starting?
+        views = { partial: "starting" }
+      elsif session.queued?
+        views = { partial: "queued" }
+      else
+        views = { partial: "bad" }
+      end
+    %>
+    <%= connection_tabs(session.id, views) %>
+  <% end %>
+<% end %>

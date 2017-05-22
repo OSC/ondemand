@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/OSC/ood_core.git
+  revision: 6ce61bdbda333a6a1c7ef852ea2d40aa2a58df43
+  specs:
+    ood_core (0.0.4)
+      ood_support (~> 0.0.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -45,7 +52,7 @@ GEM
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
     bootstrap_form (2.5.1)
-    browser (2.2.0)
+    browser (2.4.0)
     builder (3.2.3)
     byebug (9.0.5)
     coffee-rails (4.1.1)
@@ -64,6 +71,7 @@ GEM
       railties (>= 4.0, < 5.1)
     erubis (2.7.0)
     execjs (2.7.0)
+    ffi (1.9.18)
     font-awesome-sass (4.6.2)
       sass (>= 3.2)
     globalid (0.3.7)
@@ -107,9 +115,9 @@ GEM
       ood_core (~> 0.0.1)
       rails (~> 4.0, >= 4.0.7)
       redcarpet (~> 3.2)
-    ood_core (0.0.1)
-      ood_support (~> 0.0.2)
     ood_support (0.0.2)
+    pbs (2.0.4)
+      ffi (~> 1.9, >= 1.9.6)
     public_suffix (2.0.5)
     rack (1.6.5)
     rack-test (0.6.3)
@@ -190,7 +198,9 @@ DEPENDENCIES
   jquery-rails
   mocha (~> 1.1)
   ood_appkit (~> 1.0)
+  ood_core!
   ood_support (~> 0.0.2)
+  pbs (~> 2.0)
   rails (= 4.2.7.1)
   rails_12factor
   redcarpet (~> 3.3)

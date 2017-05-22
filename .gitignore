@@ -22,3 +22,7 @@
 
 # Ignore staged app
 /vendor/my_app
+
+# Ignore data files
+/data/*
+!/data/apps
