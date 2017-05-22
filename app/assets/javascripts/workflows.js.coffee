@@ -284,7 +284,7 @@ $ ->
     $("#name-field").val("")
 
 @update_host = (host) ->
-  $("#batch-host-select").val("#{host}")
+  $("#batch_host_select").val("#{host}")
 
 @update_script = (script) ->
   if script?

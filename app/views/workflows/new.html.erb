@@ -51,7 +51,7 @@
             <tbody>
             <% @templates.each_with_index do |template, index| %>
               <tr class="job-row" data-name="<%= template.name %>" data-host="<%= template.host %>" data-path="<%= template.path %>" data-script="<%= template.manifest.script %>" data-api="<%= Filesystem.new.api(template.path) %>" data-fs="<%= Filesystem.new.fs(template.path) %>" data-shell="<%= OodAppkit.shell.url(path: template.path).to_s %>" data-notes="<%= template.notes %>" <%= "data-delete=#{template.path}" unless template.system? %> >
-              <td><%= template.name %></td>
+              <td class="wrap-line"><%= template.name %></td>
               <td><%= template.host.titleize %></td>
               <td><%= template.source.name %></td>
             </tr>
@@ -66,7 +66,7 @@
     <div class="panel panel-primary">
 
       <div class="panel-heading">
-        <h3 class="panel-title" >Create New "<span id="script-name-label"><%= @workflow.name %></span>"</h3>
+        <h3 class="panel-title" >Create New "<span class="wrap-line" id="script-name-label"><%= @workflow.name %></span>"</h3>
       </div>
       <div class="panel-body">
 
@@ -77,7 +77,7 @@
 
         <%= f.text_field :name, label: 'Job Name:', required: true, id: 'name-field' %>
 
-        <%= f.select :batch_host, OODClusters.map { |cluster| [ "#{cluster.metadata.title}", cluster.id ] }, { label: "Cluster:" }, { class: "selectpicker", id: "batch-host-select", required: true } %>
+        <%= f.select :batch_host, OODClusters.map { |cluster| [ "#{cluster.metadata.title}", cluster.id ] }, { label: "Cluster:", prompt: "Select a cluster..." }, { class: "selectpicker", id: "batch_host_select", required: true } %>
 
         <%= f.text_field :script_name, label: 'Script Name:', required: true, id: "script-path-field" %>
 
@@ -124,7 +124,7 @@
       Enter a name for the job you wish to create.
     </p>
   </li>
-  <li data-id="batch-host-select">
+  <li data-id="batch_host_select">
     <p>
       Select the cluster where the job will be submitted.
     </p>
