@@ -2,6 +2,7 @@
 
 * Update to Ace Editor 1.2.6
 * Gem update
+* Update to Rails 4.2.7.1
 
 # version 1.2.5
 

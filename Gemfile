@@ -7,7 +7,7 @@ gem 'rails', '4.2.7.1'
 # gem 'sqlite3'
 
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
+gem 'sass-rails', '~> 5.0.0'
 
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
@@ -29,7 +29,7 @@ group :doc do
   gem 'sdoc', require: false
 end
 
-gem 'bootstrap-sass', '~> 3.3'
+gem 'bootstrap-sass', '3.3.5'
 gem 'autoprefixer-rails', '~> 6.3'
 gem 'dotenv-rails', '~> 2.1', require: 'dotenv/rails-now'
 gem 'rails_12factor', group: :production
