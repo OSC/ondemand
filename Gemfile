@@ -31,7 +31,7 @@ end
 
 gem 'bootstrap-sass', '3.3.5'
 gem 'autoprefixer-rails', '~> 6.3'
-gem 'dotenv-rails', '~> 2.0', require: 'dotenv/rails-now'
+gem 'dotenv-rails', '~> 2.1', require: 'dotenv/rails-now'
 gem 'rails_12factor', group: :production
 gem 'font-awesome-sass'
 gem 'ood_appkit', '~> 1.0'
