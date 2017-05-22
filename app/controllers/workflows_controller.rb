@@ -89,6 +89,11 @@ class WorkflowsController < ApplicationController
     copy_safe, error = Filesystem.new.validate_path_is_copy_safe(@workflow.staging_template_dir.to_s)
     @workflow.errors.add(:staging_template_dir, error) unless copy_safe
 
+    # If the workflow passes validation but a name hasn't been assigned, set the name to the inputted path
+    if @workflow.errors.empty? && @workflow.name.blank?
+      @workflow.name = @workflow.staging_template_dir
+    end
+
     respond_to do |format|
       if @workflow.errors.empty? && @workflow.save
         format.html { redirect_to workflows_url, notice: 'Job was successfully created.' }
