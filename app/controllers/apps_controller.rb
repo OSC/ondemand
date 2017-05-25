@@ -29,7 +29,17 @@ class AppsController < ApplicationController
         raise ActionController::RoutingError.new('Not Found') unless app.accessible?
       end
 
-      @motd_file = MotdFile.new
+      motd_file = MotdFile.new(ENV['MOTD_PATH'])
+      case ENV['MOTD_FORMAT']
+        when 'osc'
+          @motd = MotdFormatterOsc.new(motd_file)
+        when 'markdown'
+          @motd = MotdFormatterMarkdown.new(motd_file)
+        when 'rss'
+          @motd = MotdFormatterRss.new(motd_file)
+        else
+          @motd = MotdFormatterPlaintext.new(motd_file)
+      end
     end
   end
 
