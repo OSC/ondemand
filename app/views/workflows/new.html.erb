@@ -36,29 +36,28 @@
         </a>
       </div>
 
-
-        <div class="panel-body">
-          <div id="joyride-table-stop"></div>
-          <table id="new-job-template-table" class="table data-table-new-job" style="width:100%">
-            <thead>
-              <tr>
-                <th id="name-label">Name</th>
-                <th>Cluster</th>
-                <th>Source</th>
-              </tr>
-            </thead>
-
-            <tbody>
-            <% @templates.each_with_index do |template, index| %>
-              <tr class="job-row" data-name="<%= template.name %>" data-host="<%= template.host %>" data-path="<%= template.path %>" data-script="<%= template.manifest.script %>" data-api="<%= Filesystem.new.api(template.path) %>" data-fs="<%= Filesystem.new.fs(template.path) %>" data-shell="<%= OodAppkit.shell.url(path: template.path).to_s %>" data-notes="<%= template.notes %>" <%= "data-delete=#{template.path}" unless template.system? %> >
-              <td class="wrap-line"><%= template.name %></td>
-              <td><%= template.host.titleize %></td>
-              <td><%= template.source.name %></td>
+      <div class="panel-body">
+        <div id="joyride-table-stop"></div>
+        <table id="new-job-template-table" class="table data-table-new-job" style="width:100%">
+          <thead>
+            <tr>
+              <th id="name-label">Name</th>
+              <th>Cluster</th>
+              <th>Source</th>
             </tr>
-          <% end %>
-            </tbody>
-          </table>
-        </div>
+          </thead>
+
+          <tbody>
+          <% @templates.each_with_index do |template, index| %>
+            <tr class="job-row" data-name="<%= template.name %>" data-host="<%= template.host %>" data-path="<%= template.path %>" data-script="<%= template.manifest.script %>" data-api="<%= Filesystem.new.api(template.path) %>" data-fs="<%= Filesystem.new.fs(template.path) %>" data-shell="<%= OodAppkit.shell.url(path: template.path).to_s %>" data-notes="<%= template.notes %>" <%= "data-delete=#{template.path}" unless template.system? %> >
+              <td class="wrap-line"><%= template.name %></td>
+            <td><%= template.host.titleize %></td>
+            <td><%= template.source.name %></td>
+          </tr>
+        <% end %>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 

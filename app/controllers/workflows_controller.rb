@@ -29,6 +29,13 @@ class WorkflowsController < ApplicationController
     @templates = Template.all
   end
 
+  def new_from_path
+    @workflow = Workflow.new
+    if params[:path]
+      @workflow = Workflow.new_from_path(params[:path])
+    end
+  end
+
   # GET /workflows/1/edit
   def edit
     set_workflow
@@ -37,6 +44,7 @@ class WorkflowsController < ApplicationController
   # POST /workflows
   # POST /workflows.json
   def create
+    @templates = Template.all
     @workflow = Workflow.new(workflow_params)
 
     respond_to do |format|
@@ -52,7 +60,9 @@ class WorkflowsController < ApplicationController
   end
 
   # POST /create_default
+  # POST /create_default.json
   def create_default
+    @templates = Template.all
     @workflow = Workflow.new_from_template(Template.default)
 
     respond_to do |format|
@@ -64,7 +74,35 @@ class WorkflowsController < ApplicationController
         format.json { render json: @workflow.errors, status: :unprocessable_entity }
       end
     end
+  end
 
+  # POST /workflows/create_from_path
+  # POST /workflows/create_from_path.json
+  def create_from_path
+    @workflow = Workflow.new_from_path(workflow_params[:staging_template_dir])
+    @workflow.name = workflow_params[:name] unless workflow_params[:name].blank?
+    @workflow.batch_host = workflow_params[:batch_host] unless workflow_params[:batch_host].blank?
+    @workflow.script_name = workflow_params[:script_name] unless workflow_params[:script_name].blank?
+    @workflow.account = workflow_params[:account] unless workflow_params[:account].blank?
+
+    # validate path we are copying from. safe_path is a boolean, error contains the error string if false
+    copy_safe, error = Filesystem.new.validate_path_is_copy_safe(@workflow.staging_template_dir.to_s)
+    @workflow.errors.add(:staging_template_dir, error) unless copy_safe
+
+    # If the workflow passes validation but a name hasn't been assigned, set the name to the inputted path
+    if @workflow.errors.empty? && @workflow.name.blank?
+      @workflow.name = @workflow.staging_template_dir
+    end
+
+    respond_to do |format|
+      if @workflow.errors.empty? && @workflow.save
+        format.html { redirect_to workflows_url, notice: 'Job was successfully created.' }
+        format.json { render :show, status: :created, location: @workflow }
+      else
+        format.html { render :new_from_path }
+        format.json { render json: @workflow.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   # PATCH/PUT /workflows/1
