@@ -74,9 +74,12 @@ $(window).focus ->
 @update_job_details_panel = (data) ->
   show_job_panel()
   if data?
+    update_missing_data_path_view()
+    update_missing_data_script_view()
     $("#job-details-name").text(data.name)
     $("#job-details-server").val(data.host_title)
     $("#job-details-staged-dir").text(data.staged_dir)
+    $("#job-details-script-name").text(data.staged_script_name || ' ')
     if data.account == null or data.account == ""
       $("#job-details-account").addClass("text-muted")
       $("#job-details-account").text("Not specified")
@@ -337,10 +340,19 @@ $ ->
   $("#template-folder-contents").html("#{list}")
 
 @missing_data_path = ->
-  active_row().hasClass('missing')
+  active_row().hasClass('missing-dir')
+
+@missing_data_script = ->
+  active_row().hasClass('missing-script')
 
 @update_missing_data_path_view = ->
-  $('#script-details-view').toggleClass("missing", missing_data_path());
+  $('#script-details-view').toggleClass("missing-dir", missing_data_path())
+
+@update_missing_data_script_view = ->
+  # No need to show this block if the directory is invalid
+  $('#script-details-name-view').toggle(!missing_data_path())
+  $('#script-details-name-view').toggleClass("missing-script", missing_data_script())
+  $("#edit-job-options-link").attr("href", Routes.edit_workflow_path(active_var()))
 
 $ ->
   $('#reset-template-data').on 'click', ->

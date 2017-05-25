@@ -76,7 +76,7 @@
 
           <tbody>
           <% @workflows.each do |workflow| %>
-              <tr class="job-row <%= "missing" unless workflow.staged_dir_exists? %>" id="<%=workflow.id %>">
+              <tr class="job-row<%= " missing-dir" unless workflow.staged_dir_exists? %><%= " missing-script" unless workflow.script_name && workflow.staged_script_exists? %>" id="<%= workflow.id %>">
                 <td data-sort="<%= workflow.id %>"><small><%= local_time(workflow.created_at) %></small></td>
                 <td class="wrap-line"><strong><%= workflow.name %></strong></td>
                 <td><%= workflow.pbsid %></td>
@@ -107,10 +107,17 @@
         <p id="job-details-account"></p>
       </div>
 
-      <div id="script-details-view" class="panel-body">
-        <p>Script location:</p>
-        <pre id="job-details-staged-dir"></pre>
-        <p class="help-block"><i>Job Directory is missing!</i></p>
+      <div class="panel-body">
+        <div id="script-details-view">
+          <p>Script location:</p>
+          <pre id="job-details-staged-dir"></pre>
+          <p class="help-block-dir"><i>Job Directory is missing!</i></p>
+        </div>
+        <div id="script-details-name-view">
+          <p>Script name:</p>
+          <pre id="job-details-script-name" disabled></pre>
+          <p class="help-block-script"><i>Script is not valid! Edit <a href="#" id="edit-job-options-link">Job Options</a> to select a valid script.</i></p>
+        </div>
       </div>
 
       <div id="job-details-view" class="panel-body folder-content-view">

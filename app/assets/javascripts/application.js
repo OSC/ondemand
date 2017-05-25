@@ -66,7 +66,6 @@ $(document).ready(function(){
                 table.$('tr.active').removeClass('active');
                 $(this).addClass('active');
             }
-            update_missing_data_path_view();
             update_display(active_var());
         });
     }
