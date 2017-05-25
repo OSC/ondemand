@@ -14,28 +14,14 @@ class MotdFile
   # Checks the path URI to see if it can be opened
   #
   # Uses open-uri to check local or remote path for contents
-  def exist?
-    exists = false
-    if motd_uri
-      begin
-        open(motd_uri)
-        exists = true
-      rescue
-        # The messages file does not exist.
-        Rails.logger.warn "MOTD File is missing; it was expected at #{motd_uri}"
-        exists = false
-      end
-    end
-    exists
-  end
-
-  # Create an array of message objects based on the current message of the day.
   def content
-    if self.exist?
-      open(motd_uri).read
-    else
-      ""
-    end
+      motd_uri ? open(motd_uri).read : nil
+  rescue Errno::ENOENT
+    Rails.logger.warn "MOTD File is missing; it was expected at #{motd_uri}"
+  rescue OpenURI::HTTPError
+    Rails.logger.warn "MOTD File is not available at #{motd_uri}"
+  rescue StandardError => ex
+    Rails.logger.warn "Error opening MOTD at #{motd_uri}\nException: #{ex}"
   end
 end
 
