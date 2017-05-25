@@ -28,8 +28,8 @@ $(window).focus ->
         update_open_dir_button(data.fs_root)
         update_edit_button(id)
         update_copy_button(id)
-        update_submit_button(id, data.status.char)
-        update_stop_button(id, data.status.char)
+        update_submit_button(id, data.active)
+        update_stop_button(id, data.active)
         update_template_button(id)
         list_folder_contents(data)
         if missing_data_path()
@@ -160,8 +160,8 @@ $(window).focus ->
     $("#terminal_button").attr("disabled", true)
     $("#terminal_button").bind('click', false)
 
-@update_submit_button = (id, status_char) ->
-  if id? && !status_char?
+@update_submit_button = (id, active) ->
+  if id? && !active
       $("#submit_button").attr("href", Routes.submit_workflow_path(id))
       $("#submit_button").data("method", "PUT")
       $("#submit_button").removeAttr("disabled")
@@ -171,8 +171,8 @@ $(window).focus ->
     $("#submit_button").attr("disabled", true)
     $("#submit_button").bind('click', false)
 
-@update_stop_button = (id, status_char) ->
-  if id? && status_char? && (status_char == "R" || status_char == "Q")
+@update_stop_button = (id, active) ->
+  if id? && active
     $("#stop_button").attr("href", Routes.stop_workflow_path(id))
     $("#stop_button").data("method", "PUT")
     $("#stop_button").removeAttr("disabled")

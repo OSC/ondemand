@@ -166,6 +166,12 @@ class WorkflowsController < ApplicationController
   def submit
     set_workflow
 
+    # We want to allow the user to resubmit a job that has been run or failed. This will destroy all preexisting
+    # job records for this workflow when the job is no longer queued or running, which will clear the submitted state.
+    if @workflow.submitted? && !@workflow.active?
+      @workflow.jobs.destroy_all
+    end
+
     respond_to do |format|
       if @workflow.submitted?
         session[:selected_id] = @workflow.id
