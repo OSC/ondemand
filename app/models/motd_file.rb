@@ -2,10 +2,13 @@ require 'open-uri'
 
 class MotdFile
 
+  attr_reader :motd_path
+
   # Initialize the Motd Controller object based on the current user.
   #
   # @param [String] path The path to the motd file as a URI
   def initialize(path = ENV['MOTD_PATH'])
+    @motd_path = path
     @content = load(path)
   end
 
@@ -13,7 +16,14 @@ class MotdFile
   #
   # Uses open-uri to check local or remote path for contents
   def content
-    @content
+    @content || ""
+  end
+
+  # Is the content present and not empty?
+  #
+  # @return [Boolean] true if content present
+  def exist?
+    !!@content
   end
 
   private
