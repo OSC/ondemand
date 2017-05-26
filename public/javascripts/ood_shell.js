@@ -61,6 +61,9 @@ OodShell.prototype.getMessage = function (ev) {
 OodShell.prototype.closeTerminal = function () {
   // Do not need to warn user if he/she unloads page
   window.onbeforeunload = null;
+
+  // Inform user they lost connection
+  this.term.io.print('\r\nYour connection to the remote server has been terminated.');
 }
 
 OodShell.prototype.onVTKeystroke = function (str) {

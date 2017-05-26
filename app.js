@@ -75,6 +75,14 @@ wss.on('connection', function connection (ws) {
     });
   });
 
+  term.on('error', function (error) {
+    ws.close();
+  });
+
+  term.on('close', function () {
+    ws.close();
+  });
+
   ws.on('message', function (msg) {
     msg = JSON.parse(msg);
     if (msg.input)  term.write(msg.input);
