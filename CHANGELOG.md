@@ -1,4 +1,4 @@
-# Upcoming
+# version 1.3.0
 
 * Update to Ace Editor 1.2.6
 * Gem update
