@@ -7,6 +7,7 @@ class MotdFormatterOsc
   #
   # @param [MotdFile] motd_file an MotdFile object that contains a URI path to a message of the day in OSC format
   def initialize(motd_file)
+    motd_file = MotdFile.new unless motd_file
     @content = motd_file.content
   end
 
@@ -35,6 +36,8 @@ class MotdFormatterOsc
       # get array of sections which are delimited by a row of ******
       sections = content.split(/^\*+$/).map(&:strip).select { |x| ! x.empty?  }
       return sections.map { |s| Message.from(s) }.compact.sort_by {|s| s.date }.reverse
+    else
+      []
     end
   end
 end
