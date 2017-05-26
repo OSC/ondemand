@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xml:base="https://www.osc.edu"  xmlns:dc="http://purl.org/dc/elements/1.1/">
+<channel>
+ <title>Ohio Supercomputer Center</title>
+ <link>https://www.osc.edu</link>
+ <description></description>
+ <language>en</language>
+<item>
+ <title>OSC @ OSU Workshop - Computing Services to Accelerate Research and Innovation</title>
+ <link>https://www.osc.edu/June22_OSU</link>
+ <description>&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot; property=&quot;content:encoded&quot;&gt;&lt;p&gt;Both those interested in learning about OSC services and those who want to use their accounts more efficiently are encouraged to attend. This is a great opportunity to ask any questions you have about performing your computational research on our systems.&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;p&gt;Topics for this workshop include:&lt;/p&gt;
+
+&lt;p style=&quot;margin-left:24pt;&quot;&gt;·         High performance computing concepts&lt;/p&gt;
+
+&lt;p style=&quot;margin-left:24pt;&quot;&gt;·         Hardware and software available at OSC&lt;/p&gt;
+
+&lt;p style=&quot;margin-left:24pt;&quot;&gt;·         Getting allocations and accounts&lt;/p&gt;
+
+&lt;p style=&quot;margin-left:24pt;&quot;&gt;·         How to connect and log in&lt;/p&gt;
+
+&lt;p style=&quot;margin-left:24pt;&quot;&gt;·         How to move data on and off the systems&lt;/p&gt;
+
+&lt;p style=&quot;margin-left:24pt;&quot;&gt;·         Introduction to batch processing&lt;/p&gt;
+
+&lt;p style=&quot;margin-left:24pt;&quot;&gt;·         Storage and file systems&lt;/p&gt;
+
+&lt;p&gt;Optional hands-on participation: &lt;/p&gt;
+
+&lt;p&gt;Participants who bring a laptop computer will be able to connect to the supercomputers during the workshop.  OSU wireless is available in the seminar room.  OSC workshop accounts will be provided or you can use your own OSC accounts.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Who Should Attend&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;New OSC users, or researchers interested in learning about new OSC resources, including OnDemand.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Prerequisites&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;There are no prerequisites.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Method of Delivery&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Slide presentation and open discussion. The presentation slides will be made available before the event.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Registration&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;p&gt;Register HERE&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Additional Information&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Contact &lt;a href=&quot;mailto:oschelp@osc.edu&quot;&gt;oschelp@osc.edu(link sends e-mail)&lt;/a&gt; with questions.&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-ohtech-cal-date field-type-datetime field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;span class=&quot;date-display-single&quot;&gt;Thursday, June 22, 2017 - &lt;div class=&quot;date-display-range&quot;&gt;&lt;span class=&quot;date-display-start&quot; property=&quot;dc:date&quot; datatype=&quot;xsd:dateTime&quot; content=&quot;2017-06-22T13:00:00-04:00&quot;&gt;1:00pm&lt;/span&gt; to &lt;span class=&quot;date-display-end&quot; property=&quot;dc:date&quot; datatype=&quot;xsd:dateTime&quot; content=&quot;2017-06-22T16:00:00-04:00&quot;&gt;4:00pm&lt;/span&gt;&lt;/div&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-ohtech-cal-location field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Location:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;p&gt;&lt;span class=&quot;author fn org&quot;&gt;Research Commons (3rd floor, 18th Avenue Library)&lt;/span&gt;, &lt;span class=&quot;adr&quot;&gt; &lt;span class=&quot;street-address&quot;&gt;175 W. 18th Avenue&lt;/span&gt; &lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</description>
+ <pubDate>Wed, 24 May 2017 18:30:53 +0000</pubDate>
+ <dc:creator>kcahill</dc:creator>
+ <guid isPermaLink="false">4609 at https://www.osc.edu</guid>
+</item>
+<item>
+ <title>XSEDE 2 day HPC Workshop: Big Data</title>
+ <link>https://www.osc.edu/calendar/events/2017_05_18-xsede_2_day_hpc_workshop_big_data</link>
+ <description>&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot; property=&quot;content:encoded&quot;&gt;&lt;p&gt;XSEDE HPC Workshop: BIG DATA&lt;br /&gt;
+May 18 - 19, 2017&lt;/p&gt;
+
+&lt;p&gt;XSEDE along with the Pittsburgh Supercomputing Center are pleased to announce a two day Big Data workshop, to be held May 18 &amp;amp; 19, 2017. This workshop will focus on topics such as Hadoop, Spark, Machine and Deep Learning (using GPUs).&lt;/p&gt;
+
+&lt;p&gt;Agenda&lt;/p&gt;
+
+&lt;p&gt;--&lt;br /&gt;
+All times given are Eastern&lt;/p&gt;
+
+&lt;p&gt;Thursday, May 18&lt;br /&gt;
+11:00 Welcome&lt;br /&gt;
+11:25 Intro to Big Data&lt;br /&gt;
+12:00 Hadoop&lt;br /&gt;
+1:00 Lunch break&lt;br /&gt;
+2:00 Spark&lt;br /&gt;
+5:00 Adjourn&lt;/p&gt;
+
+&lt;p&gt;Friday, May 19&lt;/p&gt;
+
+&lt;p&gt;11:00 Machine Learning: Recommender System with Spark&lt;br /&gt;
+1:00 Lunch break&lt;br /&gt;
+2:00 Deep Learning with Tensorflow&lt;br /&gt;
+5:00 Adjourn&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;p&gt;Please choose Ohio Supercomputer Center on the XSEDE Portal Registration pages:&lt;a class=&quot;0&quot; href=&quot;https://portal.xsede.org/course-calendar&quot; target=&quot;_blank&quot;&gt;&lt;strong&gt;  &lt;/strong&gt;&lt;/a&gt;&lt;a href=&quot;https://portal.xsede.org/web/xup/course-calendar&quot;&gt;&lt;strong&gt;REGISTER&lt;span class=&quot;0&quot;&gt;&lt;span class=&quot;element-invisible&quot; style=&quot;clip: rect(1px 1px 1px 1px); overflow: hidden; height: 1px; position: absolute !important;&quot;&gt;(link sends e-mail)&lt;/span&gt;&lt;/span&gt;&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The agenda and slides will updated &lt;u&gt;&lt;strong&gt;&lt;a href=&quot;https://www.psc.edu/136-users/training/2554-xsede-hpc-workshop-may-18-19-2017-big-data&quot;&gt;here&lt;/a&gt;&lt;/strong&gt;&lt;/u&gt;.&lt;/p&gt;
+
+&lt;p&gt;XSEDE handles all registration, and an XSEDE account is required. Please allocate extra time to create an XSEDE account, if needed. Questions regarding the workshop or registration should be addressed to Tom Maiden at &lt;a class=&quot;0&quot; href=&quot;mailto:tmaiden@psc.edu&quot;&gt;tmaiden@psc.edu&lt;span class=&quot;0&quot;&gt;&lt;span class=&quot;element-invisible&quot; style=&quot;clip: rect(1px 1px 1px 1px); overflow: hidden; height: 1px; position: absolute !important;&quot;&gt;(link sends e-mail)&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Directions to OSC are available here: &lt;a class=&quot;0&quot; href=&quot;https://osc.edu/about/visitOSC&quot; target=&quot;_blank&quot;&gt;https://osc.edu/about/visitOSC&lt;/a&gt;. Please enter via the door on the west side of the building.  If you have additional questions, contact OSChelp at (800) 686-6472, (614) 292-1800 or &lt;u&gt;&lt;a class=&quot;0&quot; href=&quot;mailto:oschelp@osc.edu&quot;&gt;oschelp@osc.edu&lt;/a&gt;&lt;/u&gt;&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-ohtech-cal-date field-type-datetime field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;div class=&quot;date-display-range&quot;&gt;&lt;span class=&quot;date-display-start&quot; property=&quot;dc:date&quot; datatype=&quot;xsd:dateTime&quot; content=&quot;2017-05-18T11:00:00-04:00&quot;&gt;Thursday, May 18, 2017 - 11:00am&lt;/span&gt; to &lt;span class=&quot;date-display-end&quot; property=&quot;dc:date&quot; datatype=&quot;xsd:dateTime&quot; content=&quot;2017-05-19T17:00:00-04:00&quot;&gt;Friday, May 19, 2017 - 5:00pm&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-ohtech-cal-location field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Location:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;p&gt;BALE Theatre, Ohio Supercomputer Center&lt;/p&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</description>
+ <pubDate>Fri, 28 Apr 2017 18:07:37 +0000</pubDate>
+ <dc:creator>kcahill</dc:creator>
+ <guid isPermaLink="false">4594 at https://www.osc.edu</guid>
+</item>
+<item>
+ <title>System Downtime</title>
+ <link>https://www.osc.edu/calendar/events/2017_05_23-system_downtime</link>
+ <description>&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot; property=&quot;content:encoded&quot;&gt;&lt;div _mce_style=&quot;font-family: Cambria; color: black; text-align: left; font-style: normal; font-weight: normal; margin-top: 0; font-size: 12.0pt; margin-bottom: .0001pt; line-height: 13.5pt; background: white;&quot; style=&quot;background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; color: black; font-size: 12pt; font-family: Cambria; margin-top: 0px; margin-bottom: 0.0001pt; line-height: 13.5pt;&quot;&gt;&lt;span _mce_style=&quot;font-size: 10.0pt; font-family: Arial; color: #403f42;&quot; style=&quot;font-size: 10pt; font-family: Arial; color: rgb(64, 63, 66);&quot;&gt;An extended downtime for all HPC systems is scheduled from 7 a.m. Tuesday, May 23 to 8 p.m. Tuesday, May 23, 2017. The downtime will affect the Oakley, Ruby and Owens Clusters, web portals, and HPC file servers. Login services, including my.osc.edu, and access to storage will not be available during this time. &lt;/span&gt;&lt;/div&gt;
+
+&lt;div _mce_style=&quot;font-family: Cambria; color: black; text-align: left; font-style: normal; font-weight: normal; margin-top: 0; font-size: 12.0pt; margin-bottom: .0001pt; line-height: 13.5pt; background: white;&quot; style=&quot;background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; color: black; font-size: 12pt; font-family: Cambria; margin-top: 0px; margin-bottom: 0.0001pt; line-height: 13.5pt;&quot;&gt;&lt;span _mce_style=&quot;font-size: 10.0pt; font-family: Arial; color: #403f42;&quot; style=&quot;font-size: 10pt; font-family: Arial; color: rgb(64, 63, 66);&quot;&gt; &lt;/span&gt;&lt;br /&gt;&lt;span _mce_style=&quot;font-size: 10.0pt; font-family: Arial; color: #403f42;&quot; style=&quot;font-size: 10pt; font-family: Arial; color: rgb(64, 63, 66);&quot;&gt;In preparation for the downtime, the batch scheduler will begin holding jobs that cannot be completed before 7 a.m., May 23. Jobs that are not started will be held until after the downtime and then started once the system is returned to production status. &lt;/span&gt;&lt;br /&gt;&lt;br /&gt;&lt;span _mce_style=&quot;font-size: 10.0pt; font-family: Arial; color: #403f42;&quot; style=&quot;font-size: 10pt; font-family: Arial; color: rgb(64, 63, 66);&quot;&gt;Highlights of the downtime activities include&lt;/span&gt;&lt;span style=&quot;color: rgb(64, 63, 66); font-family: Arial; font-size: 10pt;&quot;&gt;:&lt;/span&gt;&lt;/div&gt;
+
+&lt;ul&gt;&lt;li style=&quot;margin-top: 6px;&quot;&gt;&lt;font color=&quot;#403f42&quot; face=&quot;Arial&quot;&gt;&lt;span style=&quot;font-size: 13.3333px;&quot;&gt;Infrastructure servers, services upgrades, and configuration changes&lt;/span&gt;&lt;/font&gt;&lt;/li&gt;
+	&lt;li style=&quot;margin-top: 6px;&quot;&gt;&lt;font color=&quot;#403f42&quot; face=&quot;Arial&quot;&gt;&lt;span style=&quot;font-size: 13.3333px;&quot;&gt;Project and Scratch file systems maintenance&lt;/span&gt;&lt;/font&gt;&lt;/li&gt;
+	&lt;li style=&quot;margin-top: 6px;&quot;&gt;Upgrade OSC&#039;s link to OARnet from 10 Gig to 40 Gig&lt;/li&gt;
+	&lt;li style=&quot;margin-top: 6px;&quot;&gt;Turn off Intel statewide license on license server 2&lt;/li&gt;
+&lt;/ul&gt;&lt;p style=&quot;margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: rgb(0, 0, 0);&quot;&gt; &lt;/p&gt;
+
+&lt;p style=&quot;margin-bottom: 0px; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: rgb(0, 0, 0);&quot;&gt;&lt;span _mce_style=&quot;font-size: 10.0pt; font-family: Arial; color: #403f42;&quot; style=&quot;font-size: 10pt; font-family: Arial; color: rgb(64, 63, 66);&quot;&gt;To stay up to date on system notices, &lt;/span&gt;&lt;span _mce_style=&quot;font-size: 10.0pt; font-family: Arial; color: #403f42;&quot; style=&quot;font-size: 10pt; font-family: Arial; color: rgb(64, 63, 66);&quot;&gt;follow &lt;a _mce_href=&quot;https://twitter.com/HPCnotices&quot; href=&quot;https://twitter.com/HPCnotices&quot; target=&quot;_blank&quot;&gt;@HPCNotices&lt;/a&gt; on Twitter. As always, you can contact us at &lt;/span&gt;&lt;span _mce_style=&quot;font-size: 10.0pt; font-family: Arial; color: maroon;&quot; style=&quot;font-size: 10pt; font-family: Arial; color: maroon;&quot;&gt;&lt;a _mce_href=&quot;mailto:OSCHelp@osc.edu&quot; href=&quot;mailto:OSCHelp@osc.edu&quot;&gt;OSC Help&lt;/a&gt;&lt;/span&gt;&lt;span _mce_style=&quot;font-size: 10.0pt; font-family: Arial; color: #403f42;&quot; style=&quot;font-size: 10pt; font-family: Arial; color: rgb(64, 63, 66);&quot;&gt;.&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-ohtech-cal-date field-type-datetime field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;span class=&quot;date-display-single&quot;&gt;Tuesday, May 23, 2017 - &lt;div class=&quot;date-display-range&quot;&gt;&lt;span class=&quot;date-display-start&quot; property=&quot;dc:date&quot; datatype=&quot;xsd:dateTime&quot; content=&quot;2017-05-23T07:00:00-04:00&quot;&gt;7:00am&lt;/span&gt; to &lt;span class=&quot;date-display-end&quot; property=&quot;dc:date&quot; datatype=&quot;xsd:dateTime&quot; content=&quot;2017-05-23T20:00:00-04:00&quot;&gt;8:00pm&lt;/span&gt;&lt;/div&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-ohtech-cal-location field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Location:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;p&gt;Ohio Supercomputer Center&lt;/p&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</description>
+ <pubDate>Tue, 25 Apr 2017 17:28:06 +0000</pubDate>
+ <dc:creator>guilfoos</dc:creator>
+ <guid isPermaLink="false">4593 at https://www.osc.edu</guid>
+</item>
+<item>
+ <title>ACM SIGHPC/Intel Computational &amp; Data Science Fellowships</title>
+ <link>https://www.osc.edu/calendar/events/2017_04_18-acm_sighpcintel_computational_data_science_fellowships</link>
+ <description>&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot; property=&quot;content:encoded&quot;&gt;&lt;p&gt;&lt;strong&gt;ACM SIGHPC and Intel&lt;/strong&gt; are launching a new international program of graduate fellowships in computational and data science.&lt;/p&gt;
+
+&lt;p&gt;The goal of this new graduate fellowship is to increase the diversity of students pursuing graduate degrees in data science and computational science, including women as well as students from racial/ethnic backgrounds that have not traditionally participated in the computing field. The program will support students pursuing degrees at institutions anywhere in the world.&lt;/p&gt;
+
+&lt;p&gt;Submissions open March 15, 2017 for the ACM SIGHPC/Intel Computational &amp;amp; Data Science Fellowships.&lt;br /&gt;
+ &lt;/p&gt;
+
+&lt;p&gt;Interested faculty advisors and students can find more information on the fellowships, including a description of the fully online nomination process, at &lt;a href=&quot;http://www.sighpc.org/fellowships&quot;&gt;http://www.sighpc.org/fellowships&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Questions?&lt;/strong&gt;  Contact &lt;a href=&quot;mailto:fellowships@sighpc.org&quot;&gt;fellowships@sighpc.org&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-ohtech-cal-date field-type-datetime field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;div class=&quot;date-display-range&quot;&gt;&lt;span class=&quot;date-display-start&quot; property=&quot;dc:date&quot; datatype=&quot;xsd:dateTime&quot; content=&quot;2017-04-18T00:00:00-04:00&quot;&gt;Tuesday, April 18, 2017 (All day)&lt;/span&gt; to &lt;span class=&quot;date-display-end&quot; property=&quot;dc:date&quot; datatype=&quot;xsd:dateTime&quot; content=&quot;2017-04-30T00:00:00-04:00&quot;&gt;Sunday, April 30, 2017 (All day)&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</description>
+ <pubDate>Tue, 18 Apr 2017 14:32:32 +0000</pubDate>
+ <dc:creator>kcahill</dc:creator>
+ <guid isPermaLink="false">4591 at https://www.osc.edu</guid>
+</item>
+<item>
+ <title>SUG SOCC datacenter tour registration</title>
+ <link>https://www.osc.edu/content/sug_socc_datacenter_tour_registration</link>
+ <description>&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot; property=&quot;content:encoded&quot;&gt;&lt;p&gt;If you are interested in attending one of the two scheduled SOCC tours we will be offering in conjunction with the SUG meeting on April 6th, please register below. Please note that you will be required to present a valid government-issued ID such as a driver&#039;s license or passport (student IDs do not count). We can only accommodate 10 people in each time slot, and will be filling them first-come-first-served.&lt;/p&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;form class=&quot;webform-client-form webform-client-form-4586 form-horizontal&quot; enctype=&quot;multipart/form-data&quot; action=&quot;/rss.xml&quot; method=&quot;post&quot; id=&quot;webform-client-form-4586&quot; accept-charset=&quot;UTF-8&quot;&gt;&lt;div&gt;&lt;div  class=&quot;form-item webform-component webform-component-textfield webform-component--name&quot;&gt;
+  &lt;label for=&quot;edit-submitted-name&quot;&gt;Name &lt;span class=&quot;form-required&quot; title=&quot;This field is required.&quot;&gt;*&lt;/span&gt;&lt;/label&gt;
+ &lt;input required=&quot;required&quot; disabled=&quot;disabled&quot; type=&quot;text&quot; id=&quot;edit-submitted-name&quot; name=&quot;submitted[name]&quot; value=&quot;&quot; size=&quot;60&quot; maxlength=&quot;128&quot; class=&quot;form-text required&quot; /&gt;
+&lt;/div&gt;
+&lt;div  class=&quot;form-item webform-component webform-component-textfield webform-component--institution&quot;&gt;
+  &lt;label for=&quot;edit-submitted-institution&quot;&gt;Institution &lt;span class=&quot;form-required&quot; title=&quot;This field is required.&quot;&gt;*&lt;/span&gt;&lt;/label&gt;
+ &lt;input required=&quot;required&quot; disabled=&quot;disabled&quot; type=&quot;text&quot; id=&quot;edit-submitted-institution&quot; name=&quot;submitted[institution]&quot; value=&quot;&quot; size=&quot;60&quot; maxlength=&quot;128&quot; class=&quot;form-text required&quot; /&gt;
+&lt;/div&gt;
+&lt;div  class=&quot;form-item webform-component webform-component-checkboxes webform-component--which-time-would-you-prefer&quot;&gt;
+  &lt;label for=&quot;edit-submitted-which-time-would-you-prefer&quot;&gt;Which time would you prefer? &lt;span class=&quot;form-required&quot; title=&quot;This field is required.&quot;&gt;*&lt;/span&gt;&lt;/label&gt;
+ &lt;div id=&quot;edit-submitted-which-time-would-you-prefer&quot; class=&quot;form-checkboxes&quot;&gt;&lt;div class=&quot;form-item form-type-checkbox form-item-submitted-which-time-would-you-prefer-morning form-disabled&quot;&gt;
+ &lt;input disabled=&quot;disabled&quot; type=&quot;checkbox&quot; id=&quot;edit-submitted-which-time-would-you-prefer-1&quot; name=&quot;submitted[which_time_would_you_prefer][morning]&quot; value=&quot;morning&quot; class=&quot;form-checkbox&quot; /&gt;  &lt;label class=&quot;option&quot; for=&quot;edit-submitted-which-time-would-you-prefer-1&quot;&gt;8:15 AM &lt;/label&gt;
+
+&lt;/div&gt;
+&lt;div class=&quot;form-item form-type-checkbox form-item-submitted-which-time-would-you-prefer-afternoon form-disabled&quot;&gt;
+ &lt;input disabled=&quot;disabled&quot; type=&quot;checkbox&quot; id=&quot;edit-submitted-which-time-would-you-prefer-2&quot; name=&quot;submitted[which_time_would_you_prefer][afternoon]&quot; value=&quot;afternoon&quot; class=&quot;form-checkbox&quot; /&gt;  &lt;label class=&quot;option&quot; for=&quot;edit-submitted-which-time-would-you-prefer-2&quot;&gt;4:45 PM &lt;/label&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;input disabled=&quot;disabled&quot; type=&quot;hidden&quot; name=&quot;details[sid]&quot; /&gt;
+&lt;input disabled=&quot;disabled&quot; type=&quot;hidden&quot; name=&quot;details[page_num]&quot; value=&quot;1&quot; /&gt;
+&lt;input disabled=&quot;disabled&quot; type=&quot;hidden&quot; name=&quot;details[page_count]&quot; value=&quot;1&quot; /&gt;
+&lt;input disabled=&quot;disabled&quot; type=&quot;hidden&quot; name=&quot;details[finished]&quot; value=&quot;0&quot; /&gt;
+&lt;input disabled=&quot;disabled&quot; type=&quot;hidden&quot; name=&quot;form_build_id&quot; value=&quot;form-7kPgfnKeqsgp0Mh4RJJP-xTRisHPoK-XdfemyQmM4yo&quot; /&gt;
+&lt;input disabled=&quot;disabled&quot; type=&quot;hidden&quot; name=&quot;form_id&quot; value=&quot;webform_client_form_4586&quot; /&gt;
+&lt;div class=&quot;captcha&quot;&gt;&lt;input disabled=&quot;disabled&quot; type=&quot;hidden&quot; name=&quot;captcha_sid&quot; value=&quot;637800&quot; /&gt;
+&lt;input disabled=&quot;disabled&quot; type=&quot;hidden&quot; name=&quot;captcha_token&quot; value=&quot;1d4cc62c4628f2318b855f8bad97d23f&quot; /&gt;
+&lt;input disabled=&quot;disabled&quot; type=&quot;hidden&quot; name=&quot;captcha_response&quot; value=&quot;reCAPTCHA&quot; /&gt;
+&lt;div id=&quot;edit-captcha-form&quot; class=&quot;form-item form-type-item&quot;&gt;
+ &lt;script type=&quot;text/javascript&quot; src=&quot;https://www.google.com/recaptcha/api/challenge?k=6Lccc9YSAAAAAGsipIFmuVKX9dfv7xFFGmt_G58s&quot;&gt;&lt;/script&gt;
+
+	&lt;noscript&gt;
+  		&lt;iframe src=&quot;https://www.google.com/recaptcha/api/noscript?k=6Lccc9YSAAAAAGsipIFmuVKX9dfv7xFFGmt_G58s&quot; height=&quot;300&quot; width=&quot;500&quot; frameborder=&quot;0&quot;&gt;&lt;/iframe&gt;&lt;br/&gt;
+  		&lt;textarea name=&quot;recaptcha_challenge_field&quot; rows=&quot;3&quot; cols=&quot;40&quot;&gt;&lt;/textarea&gt;
+  		&lt;input type=&quot;hidden&quot; name=&quot;recaptcha_response_field&quot; value=&quot;manual_challenge&quot;/&gt;
+	&lt;/noscript&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;div class=&quot;form-actions&quot;&gt;&lt;input class=&quot;webform-submit button-primary btn form-submit form-button-disabled&quot; disabled=&quot;disabled&quot; type=&quot;submit&quot; name=&quot;op&quot; value=&quot;Submit&quot; /&gt;&lt;/div&gt;&lt;/div&gt;&lt;/form&gt;</description>
+ <pubDate>Mon, 03 Apr 2017 19:00:33 +0000</pubDate>
+ <dc:creator>guilfoos</dc:creator>
+ <guid isPermaLink="false">4586 at https://www.osc.edu</guid>
+</item>
+<item>
+ <title>Materials for Workshop</title>
+ <link>https://www.osc.edu/~kcahill/XSEDE_Workshop_materials</link>
+ <description>&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot; property=&quot;content:encoded&quot;&gt;&lt;p&gt; &lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+&lt;meta content=&quot;text/html; charset=UTF-8&quot; http-equiv=&quot;Content-Type&quot; /&gt;&lt;p&gt; &lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+&lt;title&gt;&lt;/title&gt;&lt;p&gt;&lt;img alt=&quot;XSEDE logo&quot; src=&quot;/sites/osc.edu/files/staff_files/sgordon/logo.jpg&quot; style=&quot;width: 624px; height: 120px;&quot; /&gt;&lt;/p&gt;
+
+&lt;h1&gt;Links to Workshop Materials&lt;/h1&gt;
+
+&lt;h4&gt;&lt;a href=&quot;/sites/osc.edu/files/staff_files/kcahill/WORKSHOP_DATA (2).ZIP&quot;&gt;Workshop Data&lt;/a&gt;&lt;/h4&gt;
+
+&lt;h2&gt; &lt;/h2&gt;
+
+&lt;h2&gt;Software Downloads&lt;/h2&gt;
+
+&lt;p&gt;Vensim Software - Download Vensim PLE - Free for educational uses&lt;br /&gt;&lt;a href=&quot;http://vensim.com/download.html&quot;&gt;http://vensim.com/download.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;AgentSheets Software - Download the Trial Version&lt;br /&gt;&lt;a href=&quot;http://www.agentsheets.com/products/trial/index.html&quot;&gt;http://www.agentsheets.com/products/trial/index.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Presentation on formal programs in computational science&lt;br /&gt;&lt;a href=&quot;https://www.osc.edu/sites/osc.edu/files/staff_files/sgordon/Comp_science_overview_1.pdf&quot;&gt;http://www.osc.edu/~sgordon/workshops/Comp_science_overview.pdf&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2&gt;Example Datasets&lt;/h2&gt;
+
+&lt;table border=&quot;1&quot; cellpadding=&quot;2&quot; cellspacing=&quot;2&quot; style=&quot; text-align: left; width: 100%;&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;span style=&quot;font-weight:&amp;#10;              bold;&quot;&gt;Description&lt;/span&gt;&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;span style=&quot;font-weight:&amp;#10;              bold;&quot;&gt;Link&lt;/span&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Package of datasets in zip file format&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;https://www.osc.edu/sites/osc.edu/files/staff_files/sgordon/workshop_data_0.zip&quot;&gt;https://www.osc.edu/sites/osc.edu/files/staff_files/sgordon/workshop_data_0.zip&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Shodor Computational Thinking Exercises&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://www.shodor.org/talks-new/&quot; target=&quot;_blank&quot;&gt;http://www.shodor.org/talks-new/&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Traffic Model Example&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;https://www.osc.edu/sites/osc.edu/files/staff_files/sgordon/trafficmodel.pdf&quot;&gt;https://www.osc.edu/sites/osc.edu/files/staff_files/sgordon/trafficmodel.pdf&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;MATLAB Models Online&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;https://compsci.osc.edu/&quot;&gt;https://compsci.osc.edu/&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Algebraic Thinking with Excel&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://shodor.org/talks/ncsi/excel/SimplePopulation.xls&quot;&gt;http://shodor.org/talks/ncsi/excel/SimplePopulation.xls&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Dynamic Variation with Excel&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://shodor.org/talks/ncsi/excel/Snake2.xls&quot;&gt;http://shodor.org/talks/ncsi/excel/Snake2.xls&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Iteration and Diffusion with Excel&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://shodor.org/talks/ncsi/excel/SaltDiffusion.xls&quot;&gt;http://shodor.org/talks/ncsi/excel/SaltDiffusion.xls &lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Population dynamics with Vensim&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://shodor.org/talks/ncsi/vensim/BunnyComparison.mdl&quot;&gt;http://shodor.org/talks/ncsi/vensim/BunnyComparison.mdl &lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Disease SIR Model with Vensim&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://shodor.org/talks/ncsi/vensim/AdvancedSIR.mdl&quot;&gt;http://shodor.org/talks/ncsi/vensim/AdvancedSIR.mdl&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Malaria Model with Vensim&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://shodor.org/talks/ncsi/vensim/MalariaEpidModel.mdl&quot;&gt;http://shodor.org/talks/ncsi/vensim/MalariaEpidModel.mdl &lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Falling objects with Vensim&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://shodor.org/talks/ncsi/vensim/FallingRockWithDrag.mdl&quot;&gt;http://shodor.org/talks/ncsi/vensim/FallingRockWithDrag.mdl &lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Pharmokinetics with Vensim&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://shodor.org/talks/ncsi/vensim/Pharma.mdl&quot;&gt;http://shodor.org/talks/ncsi/vensim/Pharma.mdl &lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Simple Sick Model with AgentSheets&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://shodor.org/talks/ncsi/agentsheets/SimpleSick.zip&quot;&gt;http://shodor.org/talks/ncsi/agentsheets/SimpleSick.zip &lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Forest Fire with AgentSheets&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://shodor.org/talks/ncsi/agentsheets/AccessFire.zip&quot;&gt;http://shodor.org/talks/ncsi/agentsheets/AccessFire.zip&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Precipitates from Solution with AgentSheets&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://shodor.org/talks/ncsi/agentsheets/precipitate.zip&quot;&gt;http://shodor.org/talks/ncsi/agentsheets/precipitate.zip &lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;h2&gt;Java Applets&lt;/h2&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;table border=&quot;1&quot; cellpadding=&quot;2&quot; cellspacing=&quot;2&quot; style=&quot; text-align: left; width: 100%;&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;span style=&quot;font-weight:&amp;#10;              bold;&quot;&gt;Description&lt;/span&gt;&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;span style=&quot;font-weight:&amp;#10;              bold;&quot;&gt;Link&lt;/span&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Function Flyer for math education&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://www.shodor.org/interactivate/activities/MultiFunctionDataFly/&quot;&gt;http://www.shodor.org/interactivate/activities/MultiFunctionDataFly/ &lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Histogram&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://www.shodor.org/interactivate/activities/Histogram/&quot;&gt;http://www.shodor.org/interactivate/activities/Histogram/ &lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Molecular model of ideal gas&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://www.phy.ntnu.edu.tw/ntnujava/index.php?topic=25&quot;&gt;http://www.phy.ntnu.edu.tw/ntnujava/index.php?topic=25 &lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Predator prey&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://www.shodor.org/interactivate/activities/RabbitsAndWolves/&quot;&gt;http://www.shodor.org/interactivate/activities/RabbitsAndWolves/ &lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Spread of disease&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://shodor.org/talks/ncsi/agentsheets/SimplesickApplet/index.html&quot;&gt;http://shodor.org/talks/ncsi/agentsheets/SimplesickApplet/index.html&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Forest fire&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://shodor.org/talks/ncsi/agentsheets/AccessFireApplet/index.html&quot;&gt;http://shodor.org/talks/ncsi/agentsheets/AccessFireApplet/index.html&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Precipitation from solution&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://shodor.org/talks/ncsi/agentsheets/PrecipitateApplet/index.html&quot;&gt;http://shodor.org/talks/ncsi/agentsheets/PrecipitateApplet/index.html&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;p&gt; &lt;/p&gt;
+
+&lt;h2&gt;Links to XSEDE Resources&lt;/h2&gt;
+
+&lt;table border=&quot;1&quot; cellpadding=&quot;2&quot; cellspacing=&quot;2&quot; style=&quot; text-align: left; width: 100%;&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;span style=&quot;font-weight:&amp;#10;              bold;&quot;&gt;Description&lt;/span&gt;&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;span style=&quot;font-weight:&amp;#10;              bold;&quot;&gt;Link&lt;/span&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;XSEDE User Portal&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;https://www.xsede.org/&quot;&gt;https://www.xsede.org/&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Science Gateways&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;https://www.xsede.org/gateways-listing&quot;&gt;https://www.xsede.org/gateways-listing&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Campus Champions&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;https://www.xsede.org/web/guest/campus-champions&quot;&gt;https://www.xsede.org/web/guest/campus-champions&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Course training calendar&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;https://www.xsede.org/web/xup/course-calendar&quot;&gt;https://www.xsede.org/web/xup/course-calendar&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Online courses&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;https://www.xsede.org/web/xup/online-training&quot;&gt;https://www.xsede.org/web/xup/online-training&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Getting started (accounts and services)&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;https://www.xsede.org/using-xsede&quot;&gt;https://www.xsede.org/using-xsede&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;h2&gt;Resources for Computational Modeling&lt;/h2&gt;
+
+&lt;table border=&quot;1&quot; cellpadding=&quot;2&quot; cellspacing=&quot;2&quot; style=&quot; text-align: left; width: 100%;&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;span style=&quot;font-weight:&amp;#10;              bold;&quot;&gt;Description&lt;/span&gt;&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;span style=&quot;font-weight:&amp;#10;              bold;&quot;&gt;Link&lt;/span&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;National Science Digital Library (NSDL)&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://www.nsdl.org/&quot;&gt;http://www.nsdl.org &lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Biology Workbench&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://mycyberbench.ncsa.illinois.edu/&quot;&gt;http://mycyberbench.ncsa.illinois.edu/ &lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;GridChem&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://www.gridchem.org/&quot;&gt;http://www.gridchem.org &lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Computational Science Education Reference Desk – National Science Digital Library – models with exercises and reviews&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://www.shodor.org/refdesk&quot;&gt;http://www.shodor.org/refdesk&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;HPC University – workshops and pointers to materials&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://hpcuniversity.org/&quot;&gt;http://hpcuniversity.org/&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Shared science instructional modules and models&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://phet.colorado.edu/&quot;&gt;http://phet.colorado.edu/&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Computational physics materials&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://www.ucomp.org/&quot;&gt;http://www.ucomp.org/&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Computational biology for biology educators&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://www.computationalscience.org/cbbe&quot;&gt;http://www.computationalscience.org/cbbe&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Computational chemistry for chemistry educators&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://www.computationalscience.org/ccce&quot;&gt;http://www.computationalscience.org/ccce&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;K12 Modeling Examples&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;https://www.osc.edu/~sgordon/k12&quot; target=&quot;_blank&quot;&gt;https://www.osc.edu/~sgordon/k12&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Shodor Modeling Examples&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://www.shodor.org/talks-new/&quot; target=&quot;_blank&quot;&gt;http://www.shodor.org/talks-new/&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Agent based models for economics&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://www2.econ.iastate.edu/tesfatsi/ace.htm&quot;&gt;http://www2.econ.iastate.edu/tesfatsi/ace.htm&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Systems Dynamics Society Proceedings 2013&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://www.systemdynamics.org/conferences/2013/proceed/&quot; target=&quot;_blank&quot;&gt;http://www.systemdynamics.org/conferences/2013/proceed/&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;MATLAB demos in engineering mechanics&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://www.mathworks.com/matlabcentral/linkexchange/links/3539-mechanics-demos-for-first-year-physics-and-engineering&quot; target=&quot;_blank&quot;&gt;http://www.mathworks.com/matlabcentral/linkexchange/links/3539-mechanics-demos-for-first-year-physics-and-engineering&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Tools, lesson plans, and datasets relating to biological modeling&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://bioquest.org/&quot;&gt;http://bioquest.org&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;NASA Aeronautics Models&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://www.grc.nasa.gov/WWW/k-12/aerores.htm&quot;&gt;http://www.grc.nasa.gov/WWW/k-12/aerores.htm&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Engineering applets from Virginia Tech&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://www.engapplets.vt.edu/&quot;&gt;http://www.engapplets.vt.edu/&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Large number of physics and mathematics applets&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://www.falstad.com/mathphysics.html&quot;&gt;http://www.falstad.com/mathphysics.html&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Virtual Physics Laboratory&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://www.phy.ntnu.edu.tw/ntnujava/&quot; target=&quot;_blank&quot;&gt;http://www.phy.ntnu.edu.tw/ntnujava/&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Earthquake engineering resources&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://nees.org/education/for-teachers/collegiate-teachers&quot;&gt;http://nees.org/education/for-teachers/collegiate-teachers&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;h2&gt;Digital Humanities and Social Science Resources&lt;/h2&gt;
+
+&lt;table border=&quot;1&quot; cellpadding=&quot;2&quot; cellspacing=&quot;2&quot; style=&quot; text-align: left; width: 100%;&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;span style=&quot;font-weight:&amp;lt;br /&amp;gt;&amp;#10;&amp;#10;              bold;&quot;&gt;Description&lt;/span&gt;&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;span style=&quot;font-weight:&amp;lt;br /&amp;gt;&amp;#10;&amp;#10;              bold;&quot;&gt;Link&lt;/span&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;ICHASS - University of Illinois&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://ichass.illinois.edu/&quot; target=&quot;_blank&quot;&gt;http://ichass.illinois.edu/&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Digital Humanities Now&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://digitalhumanitiesnow.org/&quot; target=&quot;_blank&quot;&gt;http://digitalhumanitiesnow.org/&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Journal of Digital Humanities&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://journalofdigitalhumanities.org/&quot; target=&quot;new&quot;&gt;http://journalofdigitalhumanities.org/&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Alliance of Digital Humanities Organizations&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://adho.org/&quot; target=&quot;new&quot;&gt;http://adho.org/&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;dH Commons&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;span class=&quot;0&quot;&gt;&lt;a href=&quot;http://dhcommons.org/&quot; target=&quot;new&quot;&gt;http://dhcommons.org/&lt;/a&gt;&lt;/span&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Association for Computers and the Humanities&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://ach.org/&quot; target=&quot;new&quot;&gt;http://ach.org/&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Humanities and Social Sciences Collaboratory&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://www.hastac.org/&quot;&gt;http://www.hastac.org/&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Online Guide for Newcomers to Agent Modeling&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://www2.econ.iastate.edu/tesfatsi/abmread.htm&quot; target=&quot;_blank&quot;&gt;http://www2.econ.iastate.edu/tesfatsi/abmread.htm&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Repast Open Source Agent Modeling&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://repast.sourceforge.net/&quot; target=&quot;_blank&quot;&gt;http://repast.sourceforge.net/&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Brookings National Agent Based Model&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://www.brookings.edu/about/centers/dynamics/us-abm&quot; target=&quot;_blank&quot;&gt;http://www.brookings.edu/about/centers/dynamics/us-abm&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Model Library with Advanced Vensim Models&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://models.metasd.com/&quot; target=&quot;_blank&quot;&gt;http://models.metasd.com/&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Simulation for the Social Scientist&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://cress.soc.surrey.ac.uk/s4ss/links.html&quot; target=&quot;_blank&quot;&gt;http://cress.soc.surrey.ac.uk/s4ss/links.html&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Repast Application Papers&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://repast.sourceforge.net/papers.php&quot; target=&quot;_blank&quot;&gt;http://repast.sourceforge.net/papers.php&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;vertical-align: top;&quot;&gt;Simulation of Historic Settlement Patterns&lt;/td&gt;
+			&lt;td style=&quot;vertical-align: top;&quot;&gt;&lt;a href=&quot;http://escholarship.org/uc/item/2zd1t887&quot; target=&quot;_blank&quot;&gt;http://escholarship.org/uc/item/2zd1t887&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;p&gt; &lt;/p&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</description>
+ <pubDate>Fri, 31 Mar 2017 02:21:09 +0000</pubDate>
+ <dc:creator>kcahill</dc:creator>
+ <guid isPermaLink="false">4584 at https://www.osc.edu</guid>
+</item>
+<item>
+ <title>2 day XSEDE HPC Workshop: MPI</title>
+ <link>https://www.osc.edu/calendar/events/2017_04_18-2_day_xsede_hpc_workshop_mpi</link>
+ <description>&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot; property=&quot;content:encoded&quot;&gt;&lt;p style=&quot;margin: 0px 0px 1em; padding: 0px; color: rgb(17, 17, 17); font-family: &amp;quot;helvetica neue&amp;quot;, Helvetica, Arial, Verdana, sans-serif; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: 0.4px; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: pre-wrap; widows: 2; word-spacing: 1px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);&quot;&gt;XSEDE HPC Workshop: MPI&lt;br /&gt;
+April 18-19, 2017&lt;/p&gt;
+
+&lt;p style=&quot;box-sizing: border-box; margin-bottom: 10px; color: rgb(68, 68, 68); font-family: sans-serif; font-size: 14px;&quot;&gt;XSEDE along with the Pittsburgh Supercomputing Center is pleased to announce a two-day MPI workshop, to be held April 18-19, 2017.&lt;/p&gt;
+
+&lt;p style=&quot;box-sizing: border-box; margin-bottom: 10px; color: rgb(68, 68, 68); font-family: sans-serif; font-size: 14px;&quot;&gt;This workshop is intended to give C and Fortran programmers a hands-on introduction to MPI programming. Both days are compact, to accommodate multiple time zones, but packed with useful information and lab exercises. Attendees will leave with a working knowledge of how to write scalable codes using MPI – the standard programming tool of scalable parallel computing.&lt;/p&gt;
+
+&lt;h3 style=&quot;box-sizing: border-box; color: rgb(68, 68, 68); font-family: sans-serif; font-weight: 500; line-height: 1.1; margin-top: 20px; margin-bottom: 10px; font-size: 24px;&quot;&gt;&lt;a href=&quot;https://portal.xsede.org/course-calendar/-/training-user/class/543/session/1215&quot;&gt;Registration&lt;/a&gt;&lt;/h3&gt;
+
+&lt;h3 style=&quot;box-sizing: border-box; color: rgb(68, 68, 68); font-family: sans-serif; font-weight: 500; line-height: 1.1; margin-top: 20px; margin-bottom: 10px; font-size: 24px;&quot;&gt;Questions&lt;/h3&gt;
+
+&lt;p style=&quot;box-sizing: border-box; margin-bottom: 10px; color: rgb(68, 68, 68); font-family: sans-serif; font-size: 14px;&quot;&gt;Please address any questions to Tom Maiden at &lt;span id=&quot;cloakf869ceec8b1247971f1a31010c64a2ae&quot; style=&quot;box-sizing: border-box;&quot;&gt;&lt;span id=&quot;cloake61f18596e5d2d669dd2fd4585c16e1e&quot; style=&quot;box-sizing: border-box;&quot;&gt;&lt;a href=&quot;mailto:tmaiden@psc.edu&quot; style=&quot;box-sizing: border-box; background-color: transparent; color: rgb(0, 119, 187); outline: none; transition: all 0.2s;&quot;&gt;tmaiden@psc.edu&lt;/a&gt;&lt;/span&gt;&lt;/span&gt;.&lt;/p&gt;
+
+&lt;table class=&quot;table table-striped table-bordered table-condensed&quot; style=&quot;box-sizing: border-box; border-collapse: collapse; width: 555px; margin-bottom: 20px; color: rgb(68, 68, 68); font-family: sans-serif; font-size: 14px;&quot;&gt;&lt;thead style=&quot;box-sizing: border-box;&quot;&gt;&lt;tr style=&quot;box-sizing: border-box;&quot;&gt;&lt;th colspan=&quot;2&quot; style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; text-align: center; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 2px; border-left-width: 1px; border-bottom-color: rgb(221, 221, 221); border-right-color: rgb(221, 221, 221); border-left-color: rgb(221, 221, 221);&quot;&gt;Tuesday, April 18&lt;br style=&quot;box-sizing: border-box;&quot; /&gt;&lt;em style=&quot;box-sizing: border-box;&quot;&gt;All times given are Eastern&lt;/em&gt;&lt;/th&gt;
+		&lt;/tr&gt;&lt;/thead&gt;&lt;tbody style=&quot;box-sizing: border-box;&quot;&gt;&lt;tr style=&quot;box-sizing: border-box; background-color: rgb(249, 249, 249);&quot;&gt;&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221); border-left-color: rgb(221, 221, 221);&quot;&gt;11:00&lt;/td&gt;
+			&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221);&quot;&gt;&lt;a href=&quot;https://www.psc.edu/images/xsedetraining/MPI_Sep2016/MPI_Welcome.pdf&quot; style=&quot;box-sizing: border-box; background-color: transparent; color: rgb(0, 119, 187); outline: none; transition: all 0.2s;&quot; target=&quot;_blank&quot;&gt;Welcome&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr style=&quot;box-sizing: border-box;&quot;&gt;&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221); border-left-color: rgb(221, 221, 221);&quot;&gt;11:15&lt;/td&gt;
+			&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221);&quot;&gt;&lt;a href=&quot;https://www.psc.edu/images/xsedetraining/MPI_Sep2016/Bridges_Computing_Environment.pdf&quot; style=&quot;box-sizing: border-box; background-color: transparent; color: rgb(0, 119, 187); outline: none; transition: all 0.2s;&quot; target=&quot;_blank&quot;&gt;Computing Environment&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr style=&quot;box-sizing: border-box; background-color: rgb(249, 249, 249);&quot;&gt;&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221); border-left-color: rgb(221, 221, 221);&quot;&gt;12:00&lt;/td&gt;
+			&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221);&quot;&gt;&lt;a href=&quot;https://www.psc.edu/images/xsedetraining/MPI_Sep2016/IntroToParallelComputing.pdf&quot; style=&quot;box-sizing: border-box; background-color: transparent; color: rgb(0, 119, 187); outline: none; transition: all 0.2s;&quot; target=&quot;_blank&quot;&gt;Intro to Parallel Computing&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr style=&quot;box-sizing: border-box;&quot;&gt;&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221); border-left-color: rgb(221, 221, 221);&quot;&gt;1:00&lt;/td&gt;
+			&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221);&quot;&gt;Lunch Break&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr style=&quot;box-sizing: border-box; background-color: rgb(249, 249, 249);&quot;&gt;&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221); border-left-color: rgb(221, 221, 221);&quot;&gt;2:00&lt;/td&gt;
+			&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221);&quot;&gt;&lt;a href=&quot;https://www.psc.edu/images/xsedetraining/MPI_Sep2016/Intro_to_MPI.PDF&quot; style=&quot;box-sizing: border-box; background-color: transparent; color: rgb(0, 119, 187); outline: none; transition: all 0.2s;&quot; target=&quot;_blank&quot;&gt;Introduction to MPI&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr style=&quot;box-sizing: border-box;&quot;&gt;&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221); border-left-color: rgb(221, 221, 221);&quot;&gt;3:30&lt;/td&gt;
+			&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221);&quot;&gt;Introductory Exercises&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr style=&quot;box-sizing: border-box; background-color: rgb(249, 249, 249);&quot;&gt;&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221); border-left-color: rgb(221, 221, 221);&quot;&gt;4:10&lt;/td&gt;
+			&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221);&quot;&gt;&lt;a href=&quot;https://www.psc.edu/images/xsedetraining/MPI_Sep2016/MPI_Intro_Exercises_Solutions.pdf&quot; style=&quot;box-sizing: border-box; background-color: transparent; color: rgb(0, 119, 187); outline: none; transition: all 0.2s;&quot; target=&quot;_blank&quot;&gt;Intro Exercises Review&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr style=&quot;box-sizing: border-box;&quot;&gt;&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221); border-left-color: rgb(221, 221, 221);&quot;&gt;4:15&lt;/td&gt;
+			&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221);&quot;&gt;&lt;a href=&quot;https://www.psc.edu/images/xsedetraining/MPI_Sep2016/MPI_Laplace_Exercise.pdf&quot; style=&quot;box-sizing: border-box; background-color: transparent; color: rgb(0, 119, 187); outline: none; transition: all 0.2s;&quot; target=&quot;_blank&quot;&gt;Scalable Programming: Laplace code&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr style=&quot;box-sizing: border-box; background-color: rgb(249, 249, 249);&quot;&gt;&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221); border-left-color: rgb(221, 221, 221);&quot;&gt;5:00&lt;/td&gt;
+			&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221);&quot;&gt;Adjourn/Laplace Exercises&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr style=&quot;box-sizing: border-box;&quot;&gt;&lt;th colspan=&quot;2&quot; style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; text-align: center; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221); border-left-color: rgb(221, 221, 221);&quot;&gt;&lt;strong style=&quot;box-sizing: border-box;&quot;&gt;Wednesday, April 19&lt;/strong&gt;&lt;br style=&quot;box-sizing: border-box;&quot; /&gt;&lt;strong style=&quot;box-sizing: border-box;&quot;&gt;&lt;em style=&quot;box-sizing: border-box;&quot;&gt;All times given are Eastern&lt;/em&gt;&lt;/strong&gt;&lt;/th&gt;
+		&lt;/tr&gt;&lt;tr style=&quot;box-sizing: border-box; background-color: rgb(249, 249, 249);&quot;&gt;&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221); border-left-color: rgb(221, 221, 221);&quot;&gt;11:00&lt;/td&gt;
+			&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221);&quot;&gt;&lt;a href=&quot;https://www.psc.edu/images/xsedetraining/MPI_Sep2016/Advanced_MPI.PDF&quot; style=&quot;box-sizing: border-box; background-color: transparent; color: rgb(0, 119, 187); outline: none; transition: all 0.2s;&quot; target=&quot;_blank&quot;&gt;Advanced MPI&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr style=&quot;box-sizing: border-box;&quot;&gt;&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221); border-left-color: rgb(221, 221, 221);&quot;&gt;12:30&lt;/td&gt;
+			&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221);&quot;&gt;Lunch Break&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr style=&quot;box-sizing: border-box; background-color: rgb(249, 249, 249);&quot;&gt;&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221); border-left-color: rgb(221, 221, 221);&quot;&gt;1:30&lt;/td&gt;
+			&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221);&quot;&gt;&lt;a href=&quot;https://www.psc.edu/images/xsedetraining/MPI_Sep2016/MPI_Laplace_Exercise_Review.pdf&quot; style=&quot;box-sizing: border-box; background-color: transparent; color: rgb(0, 119, 187); outline: none; transition: all 0.2s;&quot; target=&quot;_blank&quot;&gt;Laplace Review&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr style=&quot;box-sizing: border-box;&quot;&gt;&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221); border-left-color: rgb(221, 221, 221);&quot;&gt;2:00&lt;/td&gt;
+			&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221);&quot;&gt;&lt;a href=&quot;https://www.psc.edu/images/xsedetraining/MPI_Sep2016/Outro_To_Parallel_Computing.pdf&quot; style=&quot;box-sizing: border-box; background-color: transparent; color: rgb(0, 119, 187); outline: none; transition: all 0.2s;&quot; target=&quot;_blank&quot;&gt;Outro to Parallel Computing&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr style=&quot;box-sizing: border-box; background-color: rgb(249, 249, 249);&quot;&gt;&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221); border-left-color: rgb(221, 221, 221);&quot;&gt;2:45&lt;/td&gt;
+			&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221);&quot;&gt;&lt;a href=&quot;https://www.psc.edu/images/xsedetraining/MPI_Sep2016/Tools.pdf&quot; style=&quot;box-sizing: border-box; background-color: transparent; color: rgb(0, 119, 187); outline: none; transition: all 0.2s;&quot; target=&quot;_blank&quot;&gt;Parallel Debugging and Profiling Tools&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr style=&quot;box-sizing: border-box;&quot;&gt;&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221); border-left-color: rgb(221, 221, 221);&quot;&gt;3:00&lt;/td&gt;
+			&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221);&quot;&gt;Exercises&lt;/td&gt;
+		&lt;/tr&gt;&lt;tr style=&quot;box-sizing: border-box; background-color: rgb(249, 249, 249);&quot;&gt;&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221); border-left-color: rgb(221, 221, 221);&quot;&gt;4:30&lt;/td&gt;
+			&lt;td style=&quot;box-sizing: border-box; padding-top: 5px; padding-bottom: 5px; line-height: 1.42857; border-right-width: 1px; border-bottom-width: 1px; border-right-color: rgb(221, 221, 221); border-bottom-color: rgb(221, 221, 221);&quot;&gt;&lt;a href=&quot;https://www.psc.edu/images/xsedetraining/MPI_Sep2016/Goodbye.pdf&quot; style=&quot;box-sizing: border-box; background-color: transparent; color: rgb(0, 119, 187); outline: none; transition: all 0.2s;&quot; target=&quot;_blank&quot;&gt;Adjourn&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;p style=&quot;margin: 2px 0px; padding: 0px;&quot;&gt; &lt;/p&gt;
+
+&lt;p style=&quot;margin-bottom: 1em; padding: 0px; color: rgb(17, 17, 17); font-family: &#039;helvetica neue&#039;, Helvetica, Arial, Verdana, sans-serif; font-size: 12px; letter-spacing: 0.4px; line-height: 20px; white-space: pre-wrap; word-spacing: 1px;&quot;&gt;XSEDE, the Extreme Science and Engineering Discovery Environment, is the most advanced, powerful, and robust collection of integrated digital resources and services in the world. It is a single virtual system that scientists and researchers can use to interactively share computing resources, data, and expertise. XSEDE integrates the resources and services, makes them easier to use, and helps more people use them.&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-ohtech-cal-date field-type-datetime field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;div class=&quot;date-display-range&quot;&gt;&lt;span class=&quot;date-display-start&quot; property=&quot;dc:date&quot; datatype=&quot;xsd:dateTime&quot; content=&quot;2017-04-18T11:00:00-04:00&quot;&gt;Tuesday, April 18, 2017 - 11:00am&lt;/span&gt; to &lt;span class=&quot;date-display-end&quot; property=&quot;dc:date&quot; datatype=&quot;xsd:dateTime&quot; content=&quot;2017-04-19T17:00:00-04:00&quot;&gt;Wednesday, April 19, 2017 - 5:00pm&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-ohtech-cal-location field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Location:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;p&gt;Ohio Supercomputer Center&lt;/p&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</description>
+ <pubDate>Fri, 31 Mar 2017 01:37:59 +0000</pubDate>
+ <dc:creator>kcahill</dc:creator>
+ <guid isPermaLink="false">4583 at https://www.osc.edu</guid>
+</item>
+<item>
+ <title>Owens is in Partial Service</title>
+ <link>https://www.osc.edu/supercomputing/known-issues/owens_is_in_partial_service</link>
+ <description>&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot; property=&quot;content:encoded&quot;&gt;3:45PM April 3, 2017 Update: GPU nodes on Owens are available.&amp;nbsp;
+
+206 Owens nodes are not accessible to users due to GPU testing and a bad Ethernet switch. It is expected that 48 nodes with switch problem will be availabe by Friday, March 31 and the rest for GPU testing will be available on Monday, April 3, 2017.&amp;nbsp;
+
+We apologize for the inconvenience this may cause you. Please contact oschelp@osc.edu if you have any questions.&amp;nbsp;
+&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</description>
+ <pubDate>Wed, 29 Mar 2017 20:43:17 +0000</pubDate>
+ <dc:creator>xwang</dc:creator>
+ <guid isPermaLink="false">4582 at https://www.osc.edu</guid>
+</item>
+<item>
+ <title>Proposed OSC Policies for Public Comments</title>
+ <link>https://www.osc.edu/resources/technical_support/supercomputing-policies/proposed_osc_policies_for_public_comments</link>
+ <description>&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot; property=&quot;content:encoded&quot;&gt;&lt;p&gt;This page lists all proposed OSC policies for public comments. Your comments help inform our policies and are encouraged. We will provide response to comments on this webpage after the public comment period closes. Please submit your comments via our online form by the deadline. &lt;/p&gt;
+
+&lt;h2&gt;Currently Open for Public Comment:&lt;/h2&gt;
+
+&lt;h3&gt;Scratch Storage Policy&lt;/h3&gt;
+
+&lt;p&gt;OSC provides a scratch file system as high-performance, high-capacity, shared space. It is temporary without backup. No customer should rely upon the retention of data placed on scratch storage. The purpose of this policy is to (1) keep sufficient scratch space available at all times, (2) maintain good performance of the scratch file system, (3) protect users from misuse of scratch which will result in data loss and (4) reduce manual management of scratch data by OSC staff. &lt;/p&gt;
+
+&lt;p&gt;View &lt;a href=&quot;/sites/osc.edu/files/supercomputing/policies/Scratch Storage Policy Proposal.pdf&quot;&gt;this PDF&lt;/a&gt; for the proposed policy. &lt;/p&gt;
+
+&lt;p&gt;We need to receive your comments via online form by&lt;strong&gt; Friday, April 28, 2017&lt;/strong&gt;. &lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;form class=&quot;webform-client-form webform-client-form-4579 form-horizontal&quot; enctype=&quot;multipart/form-data&quot; action=&quot;/rss.xml&quot; method=&quot;post&quot; id=&quot;webform-client-form-4579&quot; accept-charset=&quot;UTF-8&quot;&gt;&lt;div&gt;&lt;div  class=&quot;form-item webform-component webform-component-markup webform-component--head&quot;&gt;
+ &lt;h3&gt;Comment Form &lt;/h3&gt;
+
+&lt;/div&gt;
+&lt;div  class=&quot;form-item webform-component webform-component-textfield webform-component--name&quot;&gt;
+  &lt;label for=&quot;edit-submitted-name--2&quot;&gt;Name &lt;span class=&quot;form-required&quot; title=&quot;This field is required.&quot;&gt;*&lt;/span&gt;&lt;/label&gt;
+ &lt;input required=&quot;required&quot; disabled=&quot;disabled&quot; type=&quot;text&quot; id=&quot;edit-submitted-name--2&quot; name=&quot;submitted[name]&quot; value=&quot;&quot; size=&quot;60&quot; maxlength=&quot;128&quot; class=&quot;form-text required&quot; /&gt;
+&lt;/div&gt;
+&lt;div  class=&quot;form-item webform-component webform-component-textfield webform-component--institution-organization&quot;&gt;
+  &lt;label for=&quot;edit-submitted-institution-organization&quot;&gt;Institution/Organization &lt;span class=&quot;form-required&quot; title=&quot;This field is required.&quot;&gt;*&lt;/span&gt;&lt;/label&gt;
+ &lt;input required=&quot;required&quot; disabled=&quot;disabled&quot; type=&quot;text&quot; id=&quot;edit-submitted-institution-organization&quot; name=&quot;submitted[institution_organization]&quot; value=&quot;&quot; size=&quot;60&quot; maxlength=&quot;128&quot; class=&quot;form-text required&quot; /&gt;
+&lt;/div&gt;
+&lt;div  class=&quot;form-item webform-component webform-component-radios webform-component--role&quot;&gt;
+  &lt;label for=&quot;edit-submitted-role&quot;&gt;Role &lt;span class=&quot;form-required&quot; title=&quot;This field is required.&quot;&gt;*&lt;/span&gt;&lt;/label&gt;
+ &lt;div id=&quot;edit-submitted-role&quot; class=&quot;form-radios&quot;&gt;&lt;div class=&quot;form-item form-type-radio form-item-submitted-role form-disabled&quot;&gt;
+ &lt;input required=&quot;required&quot; disabled=&quot;disabled&quot; type=&quot;radio&quot; id=&quot;edit-submitted-role-1&quot; name=&quot;submitted[role]&quot; value=&quot;Faculty&quot; class=&quot;form-radio&quot; /&gt;  &lt;label class=&quot;option&quot; for=&quot;edit-submitted-role-1&quot;&gt;Faculty &lt;/label&gt;
+
+&lt;/div&gt;
+&lt;div class=&quot;form-item form-type-radio form-item-submitted-role form-disabled&quot;&gt;
+ &lt;input required=&quot;required&quot; disabled=&quot;disabled&quot; type=&quot;radio&quot; id=&quot;edit-submitted-role-2&quot; name=&quot;submitted[role]&quot; value=&quot;Graduate Student&quot; class=&quot;form-radio&quot; /&gt;  &lt;label class=&quot;option&quot; for=&quot;edit-submitted-role-2&quot;&gt;Graduate Student &lt;/label&gt;
+
+&lt;/div&gt;
+&lt;div class=&quot;form-item form-type-radio form-item-submitted-role form-disabled&quot;&gt;
+ &lt;input required=&quot;required&quot; disabled=&quot;disabled&quot; type=&quot;radio&quot; id=&quot;edit-submitted-role-3&quot; name=&quot;submitted[role]&quot; value=&quot;Student&quot; class=&quot;form-radio&quot; /&gt;  &lt;label class=&quot;option&quot; for=&quot;edit-submitted-role-3&quot;&gt;Student &lt;/label&gt;
+
+&lt;/div&gt;
+&lt;div class=&quot;form-item form-type-radio form-item-submitted-role form-disabled&quot;&gt;
+ &lt;input required=&quot;required&quot; disabled=&quot;disabled&quot; type=&quot;radio&quot; id=&quot;edit-submitted-role-4&quot; name=&quot;submitted[role]&quot; value=&quot;Industrial User&quot; class=&quot;form-radio&quot; /&gt;  &lt;label class=&quot;option&quot; for=&quot;edit-submitted-role-4&quot;&gt;Industrial User &lt;/label&gt;
+
+&lt;/div&gt;
+&lt;div class=&quot;form-item form-type-radio form-item-submitted-role form-disabled&quot;&gt;
+ &lt;input required=&quot;required&quot; disabled=&quot;disabled&quot; type=&quot;radio&quot; id=&quot;edit-submitted-role-5&quot; name=&quot;submitted[role]&quot; value=&quot;University Non-Research Staff&quot; class=&quot;form-radio&quot; /&gt;  &lt;label class=&quot;option&quot; for=&quot;edit-submitted-role-5&quot;&gt;University Non-Research Staff &lt;/label&gt;
+
+&lt;/div&gt;
+&lt;div class=&quot;form-item form-type-radio form-item-submitted-role form-disabled&quot;&gt;
+ &lt;input required=&quot;required&quot; disabled=&quot;disabled&quot; type=&quot;radio&quot; id=&quot;edit-submitted-role-6&quot; name=&quot;submitted[role]&quot; value=&quot;University Research Staff&quot; class=&quot;form-radio&quot; /&gt;  &lt;label class=&quot;option&quot; for=&quot;edit-submitted-role-6&quot;&gt;University Research Staff &lt;/label&gt;
+
+&lt;/div&gt;
+&lt;div class=&quot;form-item form-type-radio form-item-submitted-role form-disabled&quot;&gt;
+ &lt;input required=&quot;required&quot; disabled=&quot;disabled&quot; type=&quot;radio&quot; id=&quot;edit-submitted-role-7&quot; name=&quot;submitted[role]&quot; value=&quot;Center Staff&quot; class=&quot;form-radio&quot; /&gt;  &lt;label class=&quot;option&quot; for=&quot;edit-submitted-role-7&quot;&gt;Center Staff &lt;/label&gt;
+
+&lt;/div&gt;
+&lt;div class=&quot;form-item form-type-radio form-item-submitted-role form-disabled&quot;&gt;
+ &lt;input required=&quot;required&quot; disabled=&quot;disabled&quot; type=&quot;radio&quot; id=&quot;edit-submitted-role-8&quot; name=&quot;submitted[role]&quot; value=&quot;Other&quot; class=&quot;form-radio&quot; /&gt;  &lt;label class=&quot;option&quot; for=&quot;edit-submitted-role-8&quot;&gt;Other &lt;/label&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div  class=&quot;form-item webform-component webform-component-textarea webform-component--comments&quot;&gt;
+  &lt;label for=&quot;edit-submitted-comments&quot;&gt;Comments &lt;span class=&quot;form-required&quot; title=&quot;This field is required.&quot;&gt;*&lt;/span&gt;&lt;/label&gt;
+ &lt;div class=&quot;form-textarea-wrapper resizable&quot;&gt;&lt;textarea required=&quot;required&quot; disabled=&quot;disabled&quot; id=&quot;edit-submitted-comments&quot; name=&quot;submitted[comments]&quot; cols=&quot;60&quot; rows=&quot;5&quot; class=&quot;form-textarea required&quot;&gt;&lt;/textarea&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div  class=&quot;form-item webform-component webform-component-radios webform-component--we-will-provide-response-to-comments-on-this-webpage-would-you-like-to-receive-response-to-your-comment-via-email-too&quot;&gt;
+  &lt;label for=&quot;edit-submitted-we-will-provide-response-to-comments-on-this-webpage-would-you-like-to-receive-response-to-your-comment-via-email-too&quot;&gt;We will provide response to comments on this webpage. Would you like to receive response to your comment via email, too? &lt;/label&gt;
+ &lt;div id=&quot;edit-submitted-we-will-provide-response-to-comments-on-this-webpage-would-you-like-to-receive-response-to-your-comment-via-email-too&quot; class=&quot;form-radios&quot;&gt;&lt;div class=&quot;form-item form-type-radio form-item-submitted-we-will-provide-response-to-comments-on-this-webpage-would-you-like-to-receive-response-to-your-comment-via-email-too form-disabled&quot;&gt;
+ &lt;input disabled=&quot;disabled&quot; type=&quot;radio&quot; id=&quot;edit-submitted-we-will-provide-response-to-comments-on-this-webpage-would-you-like-to-receive-response-to-your-comment-via-email-too-1&quot; name=&quot;submitted[we_will_provide_response_to_comments_on_this_webpage_would_you_like_to_receive_response_to_your_comment_via_email_too]&quot; value=&quot;No&quot; class=&quot;form-radio&quot; /&gt;  &lt;label class=&quot;option&quot; for=&quot;edit-submitted-we-will-provide-response-to-comments-on-this-webpage-would-you-like-to-receive-response-to-your-comment-via-email-too-1&quot;&gt;No &lt;/label&gt;
+
+&lt;/div&gt;
+&lt;div class=&quot;form-item form-type-radio form-item-submitted-we-will-provide-response-to-comments-on-this-webpage-would-you-like-to-receive-response-to-your-comment-via-email-too form-disabled&quot;&gt;
+ &lt;input disabled=&quot;disabled&quot; type=&quot;radio&quot; id=&quot;edit-submitted-we-will-provide-response-to-comments-on-this-webpage-would-you-like-to-receive-response-to-your-comment-via-email-too-2&quot; name=&quot;submitted[we_will_provide_response_to_comments_on_this_webpage_would_you_like_to_receive_response_to_your_comment_via_email_too]&quot; value=&quot;Yes&quot; class=&quot;form-radio&quot; /&gt;  &lt;label class=&quot;option&quot; for=&quot;edit-submitted-we-will-provide-response-to-comments-on-this-webpage-would-you-like-to-receive-response-to-your-comment-via-email-too-2&quot;&gt;Yes &lt;/label&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div  class=&quot;form-item webform-component webform-component-email webform-component--email&quot;&gt;
+  &lt;label for=&quot;edit-submitted-email&quot;&gt;Email &lt;/label&gt;
+ &lt;input class=&quot;email form-text form-email&quot; disabled=&quot;disabled&quot; type=&quot;email&quot; id=&quot;edit-submitted-email&quot; name=&quot;submitted[email]&quot; size=&quot;60&quot; /&gt;
+&lt;/div&gt;
+&lt;input disabled=&quot;disabled&quot; type=&quot;hidden&quot; name=&quot;details[sid]&quot; /&gt;
+&lt;input disabled=&quot;disabled&quot; type=&quot;hidden&quot; name=&quot;details[page_num]&quot; value=&quot;1&quot; /&gt;
+&lt;input disabled=&quot;disabled&quot; type=&quot;hidden&quot; name=&quot;details[page_count]&quot; value=&quot;1&quot; /&gt;
+&lt;input disabled=&quot;disabled&quot; type=&quot;hidden&quot; name=&quot;details[finished]&quot; value=&quot;0&quot; /&gt;
+&lt;input disabled=&quot;disabled&quot; type=&quot;hidden&quot; name=&quot;form_build_id&quot; value=&quot;form-gy4jEBcgSvA7ngONcoxE3Gl0-N7sJ0_RsODOGkZfDaA&quot; /&gt;
+&lt;input disabled=&quot;disabled&quot; type=&quot;hidden&quot; name=&quot;form_id&quot; value=&quot;webform_client_form_4579&quot; /&gt;
+&lt;div class=&quot;captcha&quot;&gt;&lt;input disabled=&quot;disabled&quot; type=&quot;hidden&quot; name=&quot;captcha_sid&quot; value=&quot;637801&quot; /&gt;
+&lt;input disabled=&quot;disabled&quot; type=&quot;hidden&quot; name=&quot;captcha_token&quot; value=&quot;3f8bcc87caa26ef09ccbe67dea6f3192&quot; /&gt;
+&lt;input disabled=&quot;disabled&quot; type=&quot;hidden&quot; name=&quot;captcha_response&quot; value=&quot;reCAPTCHA&quot; /&gt;
+&lt;div id=&quot;edit-captcha-form--2&quot; class=&quot;form-item form-type-item&quot;&gt;
+ &lt;script type=&quot;text/javascript&quot; src=&quot;https://www.google.com/recaptcha/api/challenge?k=6Lccc9YSAAAAAGsipIFmuVKX9dfv7xFFGmt_G58s&quot;&gt;&lt;/script&gt;
+
+	&lt;noscript&gt;
+  		&lt;iframe src=&quot;https://www.google.com/recaptcha/api/noscript?k=6Lccc9YSAAAAAGsipIFmuVKX9dfv7xFFGmt_G58s&quot; height=&quot;300&quot; width=&quot;500&quot; frameborder=&quot;0&quot;&gt;&lt;/iframe&gt;&lt;br/&gt;
+  		&lt;textarea name=&quot;recaptcha_challenge_field&quot; rows=&quot;3&quot; cols=&quot;40&quot;&gt;&lt;/textarea&gt;
+  		&lt;input type=&quot;hidden&quot; name=&quot;recaptcha_response_field&quot; value=&quot;manual_challenge&quot;/&gt;
+	&lt;/noscript&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;div class=&quot;form-actions&quot;&gt;&lt;input class=&quot;webform-submit button-primary btn form-submit form-button-disabled&quot; disabled=&quot;disabled&quot; type=&quot;submit&quot; name=&quot;op&quot; value=&quot;Submit&quot; /&gt;&lt;/div&gt;&lt;/div&gt;&lt;/form&gt;&lt;div class=&quot;field field-name-field-supercomputer field-type-taxonomy-term-reference field-label-above&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Supercomputer:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;a href=&quot;/vocabulary/supercomputers/oakley&quot; typeof=&quot;skos:Concept&quot; property=&quot;rdfs:label skos:prefLabel&quot; datatype=&quot;&quot;&gt;Oakley&lt;/a&gt;&lt;/div&gt;&lt;div class=&quot;field-item odd&quot;&gt;&lt;a href=&quot;/vocabulary/supercomputers/owens&quot; typeof=&quot;skos:Concept&quot; property=&quot;rdfs:label skos:prefLabel&quot; datatype=&quot;&quot;&gt;Owens&lt;/a&gt;&lt;/div&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;a href=&quot;/vocabulary/supercomputers/ruby&quot; typeof=&quot;skos:Concept&quot; property=&quot;rdfs:label skos:prefLabel&quot; datatype=&quot;&quot;&gt;Ruby&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-field-services field-type-taxonomy-term-reference field-label-above&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Service:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;a href=&quot;/vocabulary/service/hpc&quot; typeof=&quot;skos:Concept&quot; property=&quot;rdfs:label skos:prefLabel&quot; datatype=&quot;&quot;&gt;HPC&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</description>
+ <pubDate>Mon, 27 Mar 2017 16:28:44 +0000</pubDate>
+ <dc:creator>xwang</dc:creator>
+ <guid isPermaLink="false">4579 at https://www.osc.edu</guid>
+</item>
+<item>
+ <title>New User and Big Data Workshops at University of Cincinnati</title>
+ <link>https://www.osc.edu/NewUser_UC_April13</link>
+ <description>&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot; property=&quot;content:encoded&quot;&gt;&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;
+&lt;div class=&quot;field-items&quot;&gt;
+&lt;div class=&quot;field-item even&quot;&gt;
+&lt;p&gt;&lt;strong&gt;New User&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;This workshop will provide an introduction to OSC resources and how to access them. Topics include:&lt;/p&gt;
+
+&lt;p style=&quot;margin-left:24pt;&quot;&gt;·         High performance computing concepts.&lt;/p&gt;
+
+&lt;p style=&quot;margin-left:24pt;&quot;&gt;·         Hardware and software available at OSC.&lt;/p&gt;
+
+&lt;p style=&quot;margin-left:24pt;&quot;&gt;·         Getting allocations and accounts.&lt;/p&gt;
+
+&lt;p style=&quot;margin-left:24pt;&quot;&gt;·         How to connect and log in.&lt;/p&gt;
+
+&lt;p style=&quot;margin-left:24pt;&quot;&gt;·         Introduction to batch processing.&lt;/p&gt;
+
+&lt;p style=&quot;margin-left:24pt;&quot;&gt;·         Storage and file systems.&lt;/p&gt;
+
+&lt;p&gt;Optional hands-on participation: &lt;/p&gt;
+
+&lt;p&gt;Participants who bring a laptop computer will be able to connect to the supercomputers during the workshop.  OSC workshop accounts will be provided.&lt;/p&gt;
+
+&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;
+&lt;div class=&quot;field-items&quot;&gt;
+&lt;p class=&quot;field-item even&quot;&gt;Location &amp;amp; Time: Langsam 475, 10 a.m. - 11:30 a.m.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Registration&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Registration is closed. Walk-ins are welcome. &lt;strong&gt;&lt;a href=&quot;/sites/osc.edu/files/staff_files/kcahill/NewUser_April13UC-small.pdf&quot;&gt;Here&lt;/a&gt;&lt;/strong&gt; is the presentation.&lt;/p&gt;
+
+&lt;p class=&quot;field-item even&quot;&gt; &lt;/p&gt;
+
+&lt;p class=&quot;field-item even&quot;&gt; &lt;/p&gt;
+
+&lt;p class=&quot;field-item even&quot;&gt;&lt;strong&gt;Big Data at OSC&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;field-item even&quot;&gt;
+&lt;p&gt;&lt;span style=&quot;color: rgb(16, 16, 16); font-family: &amp;quot;Helvetica Neue&amp;quot;; font-size: 12px; -webkit-text-stroke-color: rgb(16, 16, 16);&quot;&gt;This workshop will begin with a presentation on introduction to Big Data. Data analytics capabilities at OSC will be discussed. The workshop focuses on running hadoop and spark jobs using OSC resources. Attendees will have an opportunity to try and experience running these software at OSC clusters.&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;p&gt;Topics for this workshop include:&lt;/p&gt;
+
+&lt;p style=&quot;margin-left: 24pt;&quot;&gt;·         Introduction to Big Data&lt;/p&gt;
+
+&lt;p style=&quot;margin-left: 24pt;&quot;&gt;·         Data analytics at OSC&lt;/p&gt;
+
+&lt;p style=&quot;margin-left: 24pt;&quot;&gt;·         Running Spark at OSC&lt;/p&gt;
+
+&lt;p&gt;Participants who bring a laptop computer will be able to participate in hands-on exercises.  OSC workshop accounts will be provided.&lt;/p&gt;
+
+&lt;p&gt;The presentation can be accessed &lt;strong&gt;&lt;a href=&quot;/sites/osc.edu/files/staff_files/kcahill/Big Data Analytics.pdf&quot;&gt;here&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;field-item even&quot;&gt;Location &amp;amp; Time: MSBRCV E602, 1:30 p.m. - 3:30 p.m.&lt;/div&gt;
+
+&lt;div class=&quot;field-item even&quot;&gt; &lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;Registration&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Registration is closed. Walk-ins are welcome if space permits, but may not be able to participate in all the hands-on activities.&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Additional Information&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Contact &lt;a href=&quot;mailto:kcahill@osc.edu&quot;&gt;kcahill@osc.edu(link sends e-mail)&lt;/a&gt; with questions.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-ohtech-cal-date field-type-datetime field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Date:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;span class=&quot;date-display-single&quot; property=&quot;dc:date&quot; datatype=&quot;xsd:dateTime&quot; content=&quot;2017-04-13T00:00:00-04:00&quot;&gt;Thursday, April 13, 2017 (All day)&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-field-files field-type-file field-label-above&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Files:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;span class=&quot;file&quot;&gt;&lt;img class=&quot;file-icon&quot; alt=&quot;&quot; title=&quot;application/vnd.openxmlformats-officedocument.wordprocessingml.document&quot; src=&quot;/modules/file/icons/x-office-document.png&quot; /&gt; &lt;a href=&quot;https://www.osc.edu/sites/osc.edu/files/calendar/OnDemand-How%20to%20Create%20a%20New%20Job%20Template.docx&quot; type=&quot;application/vnd.openxmlformats-officedocument.wordprocessingml.document; length=492526&quot; title=&quot;OnDemand-How to Create a New Job Template.docx&quot;&gt;OnDemand Exercise&lt;/a&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-ohtech-cal-location field-type-text field-label-inline clearfix&quot;&gt;&lt;div class=&quot;field-label&quot;&gt;Location:&amp;nbsp;&lt;/div&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;
+&lt;div class=&quot;field-items&quot;&gt; &lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</description>
+ <pubDate>Thu, 16 Mar 2017 21:52:24 +0000</pubDate>
+ <dc:creator>kcahill</dc:creator>
+ <guid isPermaLink="false">4573 at https://www.osc.edu</guid>
+</item>
+</channel>
+</rss>
