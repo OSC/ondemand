@@ -47,6 +47,11 @@ OodShell.prototype.runTerminal = function () {
 
   // Connect terminal to sacrificial DOM node
   this.term.decorate(this.element);
+
+  // Warn user if he/she unloads page
+  window.onbeforeunload = function() {
+    return 'Leaving this page will terminate your terminal session.';
+  };
 };
 
 OodShell.prototype.getMessage = function (ev) {
@@ -54,7 +59,8 @@ OodShell.prototype.getMessage = function (ev) {
 }
 
 OodShell.prototype.closeTerminal = function () {
-  // do nothing
+  // Do not need to warn user if he/she unloads page
+  window.onbeforeunload = null;
 }
 
 OodShell.prototype.onVTKeystroke = function (str) {
