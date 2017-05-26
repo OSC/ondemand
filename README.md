@@ -30,7 +30,7 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
    ```sh
    scl enable git19 -- git clone https://github.com/OSC/ood-fileexplorer.git files
    cd files
-   scl enable git19 -- git checkout tags/v1.3.2
+   scl enable git19 -- git checkout tags/v1.3.3
    ```
 
 2. Install the app:
@@ -54,7 +54,7 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
    ```sh
    cd files # cd to build directory
    scl enable git19 -- git fetch
-   scl enable git19 -- git checkout tags/v1.3.2
+   scl enable git19 -- git checkout tags/v1.3.3
    ```
 
 2. Update the app:
