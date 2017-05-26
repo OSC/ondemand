@@ -1,4 +1,8 @@
-## Unreleased
+## v1.3.3
+
+- update to osc/cloudcmd v5.3.1-osc.26
+
+## v1.2.1
 
 - Add IE download fix for fallback downloader when nginx stage not configured
 
