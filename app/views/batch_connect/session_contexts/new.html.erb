@@ -28,9 +28,7 @@
   </div>
 
   <div class="ood-appkit markdown">
-    <p>
-      <%= OodAppkit.markdown.render(@app.description).html_safe %>
-    </p>
+    <%= OodAppkit.markdown.render(@app.description).html_safe %>
 
     <% if @session_context %>
       <%= render "form" %>
