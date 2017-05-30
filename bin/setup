@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+require "pathname"
+require "rake"
+
+include FileUtils
+
+# define application object
+class App
+  attr_accessor :site
+
+  def initialize(site:)
+    @site = site
+  end
+end
+
+# set application settings
+APP = App.new(
+  site: ENV["OOD_SITE"]
+)
+
+# path to your application root.
+APP_ROOT = Pathname.new File.expand_path("../../",  __FILE__)
+
+chdir APP_ROOT do
+  # This script is a starting point to setup your application.
+  # Add necessary setup steps to this file:
+
+  puts "\n== Building Batch Connect Desktop App =="
+  puts "OOD_SITE = #{APP.site || "not set (default: none)"}"
+
+  if APP.site
+    puts "\n== Enabling site specific settings =="
+
+    # local
+    source_dir = "local.#{APP.site}"
+    target_dir = "local"
+    if APP.site == ""       # user wants to unset site settings
+      rm_rf target_dir
+    elsif File.exist?(source_dir)
+      rm_rf target_dir
+      cp_r source_dir, target_dir
+    else
+      puts "No site specific directory ('#{source_dir}') found for '#{target_dir}'"
+    end
+  end
+end

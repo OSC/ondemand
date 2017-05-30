@@ -3,59 +3,70 @@
 ![GitHub Release](https://img.shields.io/github/release/osc/bc_desktop.svg)
 ![GitHub License](https://img.shields.io/github/license/osc/bc_desktop.svg)
 
-A library used for launching a GUI Desktop within a batch job. It is designed to:
+A Batch Connect app designed to launch a GUI desktop withing a batch job.
 
-  - carry over as much of the environment set in the batch job to the desktop
-    environment (e.g., `LD_LIBRARY_PATH`, Bash functions, ...)
-  - run as much of the corresponding code underneath the parent process of the
-    batch job (i.e., avoid daemonizing processes)
-  - clean up the VNC server started when the user logs out of the desktop
+## Prerequisites
 
-## Bower Install
+This app requires the following software be installed on the nodes that the
+batch job is intended to run on.
 
-You can install this in any project using Bower:
+One of the following desktops:
+
+- [Gnome](https://www.gnome.org/) 2 (currently we do not support Gnome 3)
+- [Mate Desktop](https://mate-desktop.org/) 1+
+
+For VNC server support:
+
+- [TurboVNC](http://www.turbovnc.org/) 2.1+
+- [websockify](https://github.com/novnc/websockify) 0.8.0+
+
+For hardware rendering support:
+
+- [X server](https://www.x.org/)
+- [VirtualGL](http://www.virtualgl.org/) 2.3+
+
+## Install
+
+Use git to clone this app and checkout the desired branch/version you want to
+use:
 
 ```sh
-bower install git://github.com/OSC/bc_desktop.git --save
+scl enable git19 -- git clone <repo>
+cd <dir>
+scl enable git19 -- git checkout <tag/branch>
 ```
 
-## Specification
+You will not need to do anything beyond this as all necessary assets are
+installed. You will also not need to restart this app as it isn't a Passenger
+app.
 
-### ROOT
-
-All assets in this package look for dependencies in the specified `$ROOT`
-directory. This should be set to correspond to the included `template/`
-directory.
-
-An example running the `xstartup` script included in this package:
+To update the app you would:
 
 ```sh
-# Path where you installed this project
-BC_DESKTOP_DIR="/path/to/bc_desktop/template"
-
-# Run the bc_desktop `xstartup` script with proper `$ROOT` set
-ROOT="${BC_DESKTOP_DIR}" ${BC_DESKTOP_DIR}/xstartup
+cd <dir>
+scl enable git19 -- git fetch
+scl enable git19 -- git checkout <tag/branch>
 ```
 
-## DESKTOP
+Again, you do not need to restart the app as it isn't a Passenger app.
 
-*Optional* (Default: `gnome`)
+> **Note**
+>
+> In some cases you may have site specific configuration files under the
+> directory `local.OOD_SITE/` (see `local.osc/`). You can and should install
+> these every time you install or update the application with:
+>
+> ```sh
+> OOD_SITE=osc scl enable rh-ruby22 -- bin/setup
+> ```
+
+## Template Specification
+
+### DESKTOP
 
 This environment variable describes the desktop to load (e.g., `gnome`, `mate`,
 ...). It will run the corresponding script that can be found in
 [template/desktops](template/desktops).
-
-## Usage
-
-This will launch a Gnome desktop without hardware rendering support. Features
-set on the Gnome desktop include:
-
-  - disabling the screen saver
-  - setting Nautilus to browser window mode
-  - disabling any pre-configured `monitors.xml`
-  - exporting the `module` function for
-    [Lmod](https://www.tacc.utexas.edu/research-development/tacc-projects/lmod)
-    support in any terminals launched within the desktop
 
 ## Contributing
 

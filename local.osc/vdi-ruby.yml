@@ -1,0 +1,22 @@
+---
+title: "Ruby VDI"
+description: |
+  This app will launch an interactive desktop on a **shared node** that we have
+  termed a Virtual Desktop Interface (VDI). This is analogous to an interactive
+  login node as you will be sharing it with multiple users and you *should* be
+  provisioned a desktop nearly immediately.
+
+  This is meant for lightweight tasks (similar to a login node) such as:
+
+  - accessing & viewing files
+  - submitting jobs
+  - compiling code
+  - running visualization software
+cluster: "quick"
+attributes:
+  desktop: "gnome"
+  bc_num_slots: 1
+  bc_queue: null
+  node_type: ":ppn=1:ruby"
+  bc_email_on_started: 0
+submit: submit/pbs.yml.erb
