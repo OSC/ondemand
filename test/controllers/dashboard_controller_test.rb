@@ -48,7 +48,10 @@ class DashboardControllerTest < ActionController::TestCase
 
     assert_select "li.dropdown[title='Clusters'] li" do |items|
       assert_select items[0], "a", "Shell Access"
-      assert_select items[1], "a", "System Status"
+      assert_select items[1], "a", "System Status" do |item|
+        assert_equal "/apps/show/systemstatus", item.first['href']
+      end
+
     end
   end
 
@@ -67,7 +70,9 @@ class DashboardControllerTest < ActionController::TestCase
       assert_select items[4], "a", "Paraview", "Paraview link not in menu"
       assert_divider items[5]
       assert_header items[6], "Desktops"
-      assert_select items[7], "a", "Desktops", "Desktops link not in menu"
+      assert_select items[7], "a", "Desktops", "Desktops link not in menu" do |item|
+        assert_equal "/apps/show/bc_desktop", item.first['href']
+      end
     end
 
     SysRouter.unstub(:base_path)
