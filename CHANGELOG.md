@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.2.2 (2017-05-30)
+
 Bugfixes:
 
   - fix to handle multibyte UTF-8 URI decoding
