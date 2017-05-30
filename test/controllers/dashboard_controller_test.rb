@@ -71,7 +71,7 @@ class DashboardControllerTest < ActionController::TestCase
       assert_divider items[5]
       assert_header items[6], "Desktops"
       assert_select items[7], "a", "Desktops", "Desktops link not in menu" do |item|
-        assert_equal "/apps/show/bc_desktop", item.first['href']
+        assert_equal "/batch_connect/sys/bc_desktop/session_contexts/new", item.first['href']
       end
     end
 
