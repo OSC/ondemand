@@ -36,6 +36,10 @@ class OodApp
     end
   end
 
+  def batch_connect_app?
+    role == "batch_connect"
+  end
+
   def has_gemfile?
     path.join("Gemfile").file? && path.join("Gemfile.lock").file?
   end

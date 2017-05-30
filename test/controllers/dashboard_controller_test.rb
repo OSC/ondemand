@@ -58,12 +58,16 @@ class DashboardControllerTest < ActionController::TestCase
     get :index
 
     assert_select "li.dropdown[title='Interactive Apps'] li" do |items|
-      assert_header items[0], "Apps"
-      assert_select items[1], "a", "Jupyter", "Jupyter link not in menu"
-      assert_select items[2], "a", "Paraview", "Paraview link not in menu"
-      assert_divider items[3]
-      assert_header items[4], "Desktops"
-      assert_select items[5], "a", "Desktops", "Desktops link not in menu"
+      assert_select items[0], "a", "Interactive Sessions", "need to add Active Sessions to each menu that has batch connect apps"
+      assert_divider items[1]
+
+      # Apps and Desktops
+      assert_header items[2], "Apps"
+      assert_select items[3], "a", "Jupyter", "Jupyter link not in menu"
+      assert_select items[4], "a", "Paraview", "Paraview link not in menu"
+      assert_divider items[5]
+      assert_header items[6], "Desktops"
+      assert_select items[7], "a", "Desktops", "Desktops link not in menu"
     end
 
     SysRouter.unstub(:base_path)

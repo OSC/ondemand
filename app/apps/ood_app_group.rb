@@ -10,6 +10,10 @@ class OodAppGroup
     apps.count > 0
   end
 
+  def has_batch_connect_apps?
+    apps.any?(&:batch_connect_app?)
+  end
+
   # given an array of apps, group those apps by app category (or the attribute)
   # specified by 'group_by', sorting both groups and apps arrays by title
   def self.groups_for(apps: [], group_by: :category)
