@@ -18,6 +18,11 @@ class DashboardControllerTest < ActionController::TestCase
     assert_equal "divider", item['class'], "li was supposed to be a divider"
   end
 
+  def assert_header(item, title)
+    assert_equal "dropdown-header", item['class'], "li was supposed to be a dropdown-header"
+    assert_equal title, item.text.strip
+  end
+
   test "should create Jobs dropdown" do
 
     get :index
@@ -45,5 +50,22 @@ class DashboardControllerTest < ActionController::TestCase
       assert_select items[0], "a", "Shell Access"
       assert_select items[1], "a", "System Status"
     end
+  end
+
+  test "should create Interactive Apps dropdown" do
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_interactive_apps"))
+
+    get :index
+
+    assert_select "li.dropdown[title='Interactive Apps'] li" do |items|
+      assert_header items[0], "Apps"
+      assert_select items[1], "a", "Jupyter", "Jupyter link not in menu"
+      assert_select items[2], "a", "Paraview", "Paraview link not in menu"
+      assert_divider items[3]
+      assert_header items[4], "Desktops"
+      assert_select items[5], "a", "Desktops", "Desktops link not in menu"
+    end
+
+    SysRouter.unstub(:base_path)
   end
 end
