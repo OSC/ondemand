@@ -5,13 +5,13 @@ class DashboardControllerTest < ActionController::TestCase
   def setup
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys"))
     OodFilesApp.any_instance.stubs(:favorite_paths).returns([Pathname.new("/fs/scratch/efranz")])
-    ApplicationHelper.stubs(:login_clusters).returns([])
+    OodAppkit.stubs(:clusters).returns([])
   end
 
   def teardown
     SysRouter.unstub(:base_path)
     OodFilesApp.any_instance.unstub(:favorite_paths)
-    ApplicationHelper.unstub(:login_clusters)
+    OodAppkit.unstub(:clusters)
   end
 
   def assert_divider(item)
