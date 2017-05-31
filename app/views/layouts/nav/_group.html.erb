@@ -31,7 +31,7 @@
 
         <% elsif app.role == "batch_connect" %>
           <%# batch connect apps open in dashboard, so can open in same window %>
-          <li class="<%= app.role %>"><a href="<%= new_batch_connect_session_context_path("#{app.token}") %>"><%= app_icon_tag(app) %> <%= app.title %></a></li>
+          <li class="<%= app.role %>"><a href="<%= app.url %>"><%= app_icon_tag(app) %> <%= app.title %></a></li>
         <% else %>
           <li class="<%= app.role %>"><a href="<%= app_path(app.name, app.type, app.owner) %>" target="_blank"><%= app_icon_tag(app) %> <%= app.title %></a></li>
         <% end %>
