@@ -1,3 +1,14 @@
+<ol class="breadcrumb">
+  <li>
+    <%= link_to "Home", root_path %>
+  </li>
+  <li>
+    <%= link_to "Interactive Sessions", batch_connect_sessions_path %>
+  </li>
+  <li class="active">New <%= @app.title if @app %> Session</li>
+</ol>
+
+
 <% if @app %>
   <% if @session && @session.errors.any? %>
     <div class="alert alert-danger alert-dismissible" role="alert">
