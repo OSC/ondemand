@@ -5,7 +5,7 @@
   <li>
     <%= link_to "Interactive Sessions", batch_connect_sessions_path %>
   </li>
-  <li class="active">New <%= @app.title if @app %> Session</li>
+  <li class="active"><%= @app ? @app.title : "New Session" %></li>
 </ol>
 
 
