@@ -19,30 +19,32 @@
     </div>
   <% end %>
 
-  <%# More than one sub app so display tabs %>
-  <% if @sub_apps.size > 1 %>
-    <ul class="nav nav-tabs">
-      <% @sub_apps.each do |sub_app| %>
-        <li class="<%= "active" if @app == sub_app %> <%= "disabled" unless sub_app.valid? %>">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="ood-appkit markdown">
+        <%= OodAppkit.markdown.render(@app.description).html_safe %>
+
+        <% if @session_context %>
+          <%= render "form" %>
+      <% end %>
+      </div>
+    </div>
+
+    <%# More than one sub app so display tabs %>
+    <% if @sub_apps.size > 1 %>
+      <div class="col-md-3">
+      <ul class="nav nav-pills nav-stacked well">
+        <% @sub_apps.each do |sub_app| %>
+          <li class="<%= "active" if @app == sub_app %> <%= "disabled" unless sub_app.valid? %>">
           <% if sub_app.valid? %>
             <%= link_to sub_app.title, new_batch_connect_session_context_path(token: sub_app.token) %>
           <% else %>
             <a data-toggle="tooltip" data-placement="bottom" title="<%= sub_app.validation_reason %>"><%= sub_app.title %></a>
           <% end %>
-        </li>
-      <% end %>
-    </ul>
+          </li>
+        <% end %>
+      </ul>
+    </div>
   <% end %>
-
-  <div class="page-header">
-    <h2><%= @app.title %></h2>
-  </div>
-
-  <div class="ood-appkit markdown">
-    <%= OodAppkit.markdown.render(@app.description).html_safe %>
-
-    <% if @session_context %>
-      <%= render "form" %>
-    <% end %>
   </div>
 <% end %>
