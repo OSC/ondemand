@@ -14,44 +14,54 @@ class DashboardControllerTest < ActionController::TestCase
     OodAppkit.unstub(:clusters)
   end
 
-  def assert_divider(item)
-    assert_equal "divider", item['class'], "li was supposed to be a divider"
+  def dropdown_list(title)
+    css_select("li.dropdown[title='#{title}'] ul")
   end
 
-  def assert_header(item, title)
-    assert_equal "dropdown-header", item['class'], "li was supposed to be a dropdown-header"
-    assert_equal title, item.text.strip
+  # given a dropdown list, return the list items as an array of strings
+  # with symbols for header or divider
+  def dropdown_list_items(list)
+    css_select(list, "li").map do |item|
+      if item['class'] && item['class'].include?("divider")
+        :divider
+      elsif item['class'] && item['class'].include?("dropdown-header")
+        { :header => item.text.strip }
+      else
+        item.text.strip
+      end
+    end
   end
 
   test "should create Jobs dropdown" do
-
     get :index
 
-    assert_select "li.dropdown[title='Jobs'] li" do |items|
-      assert_select items[0], "a", "Active Jobs"
-      assert_select items[1], "a", "My Jobs"
-    end
+    dditems = dropdown_list_items(dropdown_list('Jobs'))
+    assert dditems.any?, "dropdown list items not found"
+    assert_equal ["Active Jobs", "My Jobs"], dditems
   end
 
   test "should create Files dropdown" do
     get :index
 
-    assert_select "li.dropdown[title='Files'] li" do |items|
-      assert_select items[0], "a", "Home Directory"
-      assert_divider items[1]
-      assert_select items[2], "a", "/fs/scratch/efranz"
-    end
+    dditems = dropdown_list_items(dropdown_list('Files'))
+    assert dditems.any?, "dropdown list items not found"
+    assert_equal [
+      "Home Directory",
+      :divider,
+      "/fs/scratch/efranz"], dditems
   end
 
   test "should create Clusters dropdown" do
     get :index
 
-    assert_select "li.dropdown[title='Clusters'] li" do |items|
-      assert_select items[0], "a", "Shell Access"
-      assert_select items[1], "a", "System Status" do |item|
-        assert_equal "/apps/show/systemstatus", item.first['href']
-      end
+    dd = dropdown_list('Clusters')
+    dditems = dropdown_list_items(dd)
 
+    assert dditems.any?, "dropdown list items not found"
+    assert_equal ["Shell Access", "System Status"], dditems
+
+    assert_select dd, "li a", "System Status" do |link|
+      assert_equal "/apps/show/systemstatus", link.first['href'], "System Status link is incorrect"
     end
   end
 
@@ -60,19 +70,21 @@ class DashboardControllerTest < ActionController::TestCase
 
     get :index
 
-    assert_select "li.dropdown[title='Interactive Apps'] li" do |items|
-      assert_select items[0], "a", "Interactive Sessions", "need to add Active Sessions to each menu that has batch connect apps"
-      assert_divider items[1]
+    dd = dropdown_list('Interactive Apps')
+    dditems = dropdown_list_items(dd)
+    assert dditems.any?, "dropdown list items not found"
+    assert_equal [
+      "Interactive Sessions",
+      :divider,
+      {header: "Apps"},
+      "Jupyter",
+      "Paraview",
+      :divider,
+      {header: "Desktops"},
+      "Desktops"], dditems
 
-      # Apps and Desktops
-      assert_header items[2], "Apps"
-      assert_select items[3], "a", "Jupyter", "Jupyter link not in menu"
-      assert_select items[4], "a", "Paraview", "Paraview link not in menu"
-      assert_divider items[5]
-      assert_header items[6], "Desktops"
-      assert_select items[7], "a", "Desktops", "Desktops link not in menu" do |item|
-        assert_equal "/batch_connect/sys/bc_desktop/session_contexts/new", item.first['href']
-      end
+    assert_select dd, "li a", "Desktops" do |link|
+      assert_equal "/batch_connect/sys/bc_desktop/session_contexts/new", link.first['href'], "Desktops link is incorrect"
     end
 
     SysRouter.unstub(:base_path)
