@@ -11,7 +11,8 @@ class OodAppGroup
   end
 
   def has_batch_connect_apps?
-    apps.any?(&:batch_connect_app?)
+    return @has_batch_connect_apps unless @has_batch_connect_apps.nil?
+    @has_batch_connect_apps = apps.any?(&:batch_connect_app?)
   end
 
   # given an array of apps, group those apps by app category (or the attribute)
