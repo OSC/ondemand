@@ -15,8 +15,26 @@ class MotdFile
   # Checks the path URI to see if it can be opened
   #
   # Uses open-uri to check local or remote path for contents
+  # @return [String] the motd raw content as string
   def content
     @content || ""
+  end
+
+  # A factory method that returns an MotdFormatter object
+  #
+  # @return [Object, nil] an MotdFormatter object that responds to `:to_partial_path`
+  #                       `nil` if a file does not exist at the path.
+  def formatter
+    case ENV['MOTD_FORMAT']
+      when 'osc'
+        @motd = MotdFormatterOsc.new(self)
+      when 'markdown'
+        @motd = MotdFormatterMarkdown.new(self)
+      when 'rss'
+        @motd = MotdFormatterRss.new(self)
+      else
+        @motd = MotdFormatterPlaintext.new(self)
+    end if self.exist?
   end
 
   # Is the content present and not empty?
