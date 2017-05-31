@@ -31,4 +31,13 @@ class MotdTest < ActiveSupport::TestCase
     assert_equal '', motd_file.content
   end
 
+  test "test when motd nil" do
+
+    motd_file = MotdFile.new(nil)
+
+    assert_equal false, motd_file.exist?
+    assert_nil motd_file.motd_path
+    assert_equal '', motd_file.content
+  end
+
 end
