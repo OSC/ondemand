@@ -37,7 +37,7 @@ class MotdFile
     Rails.logger.warn "MOTD File is not available at #{motd_uri}"
     nil
   rescue StandardError => ex
-    Rails.logger.warn "Error opening MOTD at #{motd_uri}\nException: #{ex}"
+    Rails.logger.warn "Error opening MOTD at #{motd_uri}\nException: #{ex.message}"
     nil
   end
 end
