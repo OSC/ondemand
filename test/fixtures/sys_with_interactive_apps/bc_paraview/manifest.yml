@@ -1,0 +1,6 @@
+---
+name: Paraview
+category: Interactive Apps
+subcategory: Apps
+icon: fa://gear
+role: batch_connect

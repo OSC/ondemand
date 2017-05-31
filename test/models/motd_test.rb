@@ -15,9 +15,9 @@ class MotdTest < ActiveSupport::TestCase
     msg = "2016.05.04\n--- NEW CLUSTER\n\nSomething good!"
     assert_equal date, MotdFile::Message.from(msg).date
     msg = "2016 05 04\n--- NEW CLUSTER\n\nSomething good!"
-    assert_equal nil, MotdFile::Message.from(msg)
+    assert_nil MotdFile::Message.from(msg)
     msg = "2016+05+04\n--- NEW CLUSTER\n\nSomething good!"
-    assert_equal nil, MotdFile::Message.from(msg)
+    assert_nil MotdFile::Message.from(msg)
   end
 
   test "test when motd valid" do

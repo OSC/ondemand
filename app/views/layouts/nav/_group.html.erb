@@ -1,5 +1,12 @@
-<li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= group.title %><span class="caret"></span></a>
+<li class="dropdown" title="<%= group.title %>" >
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= group.title %><span class="caret"></span></a>
   <ul class="dropdown-menu">
+
+    <% if group.has_batch_connect_apps? %>
+      <%= nav_link "Interactive Sessions", "list", batch_connect_sessions_path %>
+      <%= content_tag "li", "", class: "divider", role: "separator" %>
+    <% end %>
+
     <% OodAppGroup.groups_for(apps: group.apps, group_by: :subcategory).each_with_index do |g, index| %>
       <%= content_tag "li", "", class: "divider", role: "separator" if index > 0 %>
       <%= content_tag "li", g.title, class: "dropdown-header" unless g.title.empty? %>
@@ -22,6 +29,9 @@
             <%= nav_link "#{c.metadata.title} Shell Access", "terminal", OodAppkit.shell.url(host: c.login.host), target: "_blank" %>
           <% end %>
 
+        <% elsif app.role == "batch_connect" %>
+          <%# batch connect apps open in dashboard, so can open in same window %>
+          <li class="<%= app.role %>"><a href="<%= app.url %>"><%= app_icon_tag(app) %> <%= app.title %></a></li>
         <% else %>
           <li class="<%= app.role %>"><a href="<%= app_path(app.name, app.type, app.owner) %>" target="_blank"><%= app_icon_tag(app) %> <%= app.title %></a></li>
         <% end %>
