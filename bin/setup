@@ -117,8 +117,6 @@ chdir APP_ROOT do
         sh "git -C #{target_dir} -c advice.detachedHead=false checkout origin/master"
       end
     end
-  elsif APP.portal
-    abort "ERROR: You have a portal specified with no site specified"
   end
 
   if APP.production?
