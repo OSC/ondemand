@@ -108,8 +108,6 @@ chdir APP_ROOT do
       source_file = "config/initializers/filter.rb.#{APP.site}"
       cat source_file, target_file
     end
-  elsif APP.portal
-    abort "ERROR: You have a portal specified with no site specified"
   end
 
   if APP.production?
