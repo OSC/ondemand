@@ -159,6 +159,22 @@ module BatchConnect
       bc_opts     = opts.fetch(:batch_connect, { template: :basic })
       script_opts = opts.fetch(:script, {})
 
+      # Add adapter specific options
+      case cluster.job_config[:adapter]
+      when "torque"
+        script_opts = {
+          native: {
+            headers: {
+              Shell_Path_List: "/bin/bash"
+            }
+          }
+        }.deep_merge script_opts
+      when "slurm"
+        # slurm sets the shell from the shebang of the script
+      when "lsf"
+        # hopefully lsf also sets the shell from the shebang
+      end
+
       OodCore::Job::Script.new(
         {
           content: script_content(bc_opts),
