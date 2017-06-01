@@ -1,3 +1,8 @@
+# Unreleased
+
+* Fix bug in `bin/setup` that crashes when `OOD_PORTAL` is set but not
+  `OOD_SITE`
+
 # 2.4.0
 
 * Allow user to enter relative path names as template source
