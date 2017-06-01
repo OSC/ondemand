@@ -19,4 +19,6 @@ attributes:
   bc_queue: null
   node_type: ":ppn=1:owens"
   bc_email_on_started: 0
+  bc_account:
+    help: "You can leave this blank if **not** in multiple projects."
 submit: submit/pbs.yml.erb

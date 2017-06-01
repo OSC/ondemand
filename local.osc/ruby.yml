@@ -4,6 +4,8 @@ cluster: "ruby"
 attributes:
   desktop: "gnome"
   bc_queue: null
+  bc_account:
+    help: "You can leave this blank if **not** in multiple projects."
   node_type:
     widget: select
     label: "Node type"
