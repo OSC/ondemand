@@ -1,12 +1,12 @@
+<h3>Message of the Day</h3>
+<hr />
 <% if @motd.content %>
-<div class="container">
   <% @motd.content.items.each do |item| %>
     <div>
-      <%= content_tag(:h4, item.pubDate.strftime("%m-%d-%Y")) if item.pubDate %>
-      <h3><a href="<%= item.link %>"><%= item.title %></a></h3>
+      <%= content_tag(:strong, item.pubDate.strftime("%m-%d-%Y")) if item.pubDate %>
+      <h4><a href="<%= item.link %>"><%= item.title %></a></h4>
       <p><%= item.description.html_safe %></p>
       <hr />
     </div>
   <% end %>
-</div>
 <% end %>
