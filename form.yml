@@ -15,7 +15,7 @@ form:
   - bc_num_hours
   - bc_num_slots
   - node_type
-  - bc_vnc_resolution
   - bc_account
   - bc_queue
+  - bc_vnc_resolution
   - bc_email_on_started
