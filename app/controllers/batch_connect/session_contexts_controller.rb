@@ -5,9 +5,7 @@ class BatchConnect::SessionContextsController < ApplicationController
     set_sub_apps
     set_render_format
     set_session_context
-
-    # get lists of apps
-    @apps = @nav_groups.select(&:has_batch_connect_apps?)
+    set_apps
 
     # Redirect to first valid sub app otherwise first invalid sub app
     unless @sub_apps.include? @app
@@ -36,6 +34,10 @@ class BatchConnect::SessionContextsController < ApplicationController
     set_sub_apps
     set_render_format
     set_session_context
+    set_apps
+
+    # get lists of apps
+    @apps = @nav_groups.select(&:has_batch_connect_apps?)
 
     # Read in context from form parameters
     @session_context.attributes = session_contexts_param
@@ -57,6 +59,12 @@ class BatchConnect::SessionContextsController < ApplicationController
     # Set the app from the token
     def set_app
       @app = BatchConnect::App.from_token params[:token]
+    end
+
+    # Set list of app lists for navigation
+    def set_apps
+      # get lists of apps
+      @apps = @nav_groups.select(&:has_batch_connect_apps?)
     end
 
     # Set the list of sub apps
