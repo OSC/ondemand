@@ -5,7 +5,8 @@ class BatchConnect::SessionsController < ApplicationController
     @sessions = BatchConnect::Session.all
 
     # FIXME: filter @nav_groups from application controller instead
-    @sys_apps = OodAppGroup.groups_for(apps: SysRouter.apps.select(&:batch_connect_app?))
+    # @sys_apps = OodAppGroup.groups_for(apps: SysRouter.apps.select(&:batch_connect_app?))
+    @apps = @nav_groups.select(&:has_batch_connect_apps?)
   end
 
   # DELETE /batch_connect/sessions/1
