@@ -7,3 +7,22 @@
     padding-top: 10px;
   }
 }
+
+.list-group .app-icon{
+  width: 14px;
+  height: 14px;
+  font-size: 14px;
+}
+
+.list-group-item.header {
+  padding-top: 3px;
+  padding-bottom: 3px;
+  color: #777;
+  font-size: 12px;
+  background-color: #eee;
+}
+
+.app-list .panel-heading {
+  background-color: rgb(0, 95, 133);
+  color: #fff;
+}

@@ -5,6 +5,8 @@
   <li class="active">Interactive Sessions</li>
 </ol>
 
+<%= render partial: 'app_list', collection: @sys_apps %>
+
 <div class="batch-connect sessions" data-toggle="poll" data-url="<%= batch_connect_sessions_path(format: :js) %>" data-delay="<%= ENV["POLL_DELAY"] || 10000 %>">
   <% if @sessions.empty? %>
     <div class="ood-appkit markdown">

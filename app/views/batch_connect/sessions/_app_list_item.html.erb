@@ -1,0 +1,10 @@
+<%= link_to app_path(app_list_item.name, app_list_item.type, app_list_item.owner), class: "list-group-item", data: {
+    # toggle: "popover",
+    content: manifest_markdown(app_list_item.manifest.description),
+    html: true,
+    # trigger: "hover",
+    title: app_list_item.title,
+    container: "body"
+} do %>
+  <%= app_icon_tag(app_list_item) %> <%= app_list_item.title %>
+<% end %>
