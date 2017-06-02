@@ -2,12 +2,14 @@
   <li>
     <%= link_to "Home", root_path %>
   </li>
-  <li class="active">Interactive Sessions</li>
+  <li class="active">
+    Interactive Sessions
+  </li>
 </ol>
 
 <div class="row">
   <div class="col-md-3">
-    <%= render partial: 'app_list', collection: @apps %>
+    <%= render partial: "app_list", collection: @apps %>
   </div>
   <div class="col-md-9">
     <div class="batch-connect sessions" data-toggle="poll" data-url="<%= batch_connect_sessions_path(format: :js) %>" data-delay="<%= ENV["POLL_DELAY"] || 10000 %>">
