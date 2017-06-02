@@ -23,7 +23,7 @@
 
   <div class="row">
     <div class="col-md-3">
-      <%= render partial: 'batch_connect/sessions/app_list', collection: @apps %>
+      <%= render partial: 'batch_connect/sessions/app_list', collection: @apps, locals: { current_app_token: @app.base_token } %>
     </div>
 
     <%# More than one sub app so display tabs %>
