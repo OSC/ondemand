@@ -1,4 +1,4 @@
-<%= link_to app_path(app.name, app.type, app.owner),
+<%= link_to app.url,
   class: "list-group-item #{'active' if current_app_token == app.token}",
   data: {
     # toggle: "popover",
