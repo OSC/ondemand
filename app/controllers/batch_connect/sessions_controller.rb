@@ -4,8 +4,13 @@ class BatchConnect::SessionsController < ApplicationController
   def index
     @sessions = BatchConnect::Session.all
 
-    # FIXME: filter @nav_groups from application controller instead
-    # @sys_apps = OodAppGroup.groups_for(apps: SysRouter.apps.select(&:batch_connect_app?))
+    # TODO: to correctly do shared apps we should
+    #   1. get a list of all batch connect apps, both shared and sys, and then split into groups
+    #   2. for shared apps, display the caption below the shared app (i.e. shared by xyz) in the view
+    #
+    #   UsrRouter.all_apps(owners: UsrRouter.owners) gives all usr apps for all owners
+    #
+    # TODO: dev apps can be grouped separately
     @apps = @nav_groups.select(&:has_batch_connect_apps?)
   end
 
