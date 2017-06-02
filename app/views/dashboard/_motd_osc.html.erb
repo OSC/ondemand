@@ -1,6 +1,6 @@
-<h3>Message of the Day</h3>
+<h3><%= @motd.title %></h3>
 
-<% if motd.messages.each do |m| %>
+<% if @motd.messages.each do |m| %>
 
   <hr>
   <div class="motd">

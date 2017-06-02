@@ -11,6 +11,7 @@
     <%= render(partial: "group", collection: @groups) || "<strong>No custom shared apps available.</strong>".html_safe %>
   </div>
   <div class="col-md-3">
-    <%= render partial: "dashboard/motd", locals: { motd: @motd_file  } if @motd_file.exist? %>
+    <%# This assumes @motd_file responds to `to_partial_path` %>
+    <%= render @motd if @motd %>
   </div>
 </div>

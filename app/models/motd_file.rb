@@ -1,67 +1,73 @@
+require 'open-uri'
+
 class MotdFile
-  attr_reader :motd_system_file
 
-  Message = Struct.new :date, :title, :body do
-    def self.from(str)
-      if str =~ /(\d+[-\/\.]\d+[-\/\.]\d+)\n--- ([ \S ]*)\n(.*)/m
-        MotdFile::Message.new(Date.parse($1), $2, $3)
-      else
-        nil
-      end
-    rescue ArgumentError => e
-      Rails.logger.warn("MOTD message poorly formatted: #{e} => #{e.message}")
+  attr_reader :motd_path
 
-      nil
-    end
-  end
   # Initialize the Motd Controller object based on the current user.
   #
-  # @param [boolean] update_user_view_timestamp True to update the last viewed timestamp. (Default: false)
-  def initialize(path = ENV['MOTD_PATH'], update_user_view_timestamp: false)
-    @motd_system_file = path
-
-    touch if update_user_view_timestamp
+  # @param [String] path The path to the motd file as a URI
+  def initialize(path = ENV['MOTD_PATH'])
+    @motd_path = path
+    @content = load(path)
   end
 
-  # An empty file whose modification timestamp indicates the last time the user
-  # viewed the motd messages. This is useful for when we want to use the file
-  # system to determine when new messages the user has not seen have been
-  # added to the motd.
-  def motd_config_file
-    @motd_config_file ||= OodAppkit.dataroot.join(".motd")
-  end
-
-  def exist?
-    motd_system_file && File.file?(motd_system_file)
-  end
-
-  # If the motd file hasn't been created on the system, or if the system motd is newer than the user's file, return true.
-  def new_messages?
-    # FIXME: Use if/else statements because this is arcane
-    (messages.count > 0) ? ( !File.exist?(motd_config_file) ? true : File.new(motd_system_file).ctime > File.new(motd_config_file).ctime ? true : false ) : false   
-  end
-
-  # Create an array of message objects based on the current message of the day.
-  def messages
-    f = File.read motd_system_file
-
-    # get array of sections which are delimited by a row of ******
-    sections = f.split(/^\*+$/).map(&:strip).select { |x| ! x.empty?  }
-    sections.map { |s| MotdFile::Message.from(s) }.compact.sort_by {|s| s.date }.reverse
-  rescue Errno::ENOENT
-    # The messages file does not exist on the system.
-    Rails.logger.warn "MOTD File is missing; it was expected at #{motd_system_file}"
-    []
-  end
-
-  # The system will use a file called '.motd' to track when the user last was alerted to messages.
-  # This method should be called when the message of the day page is checked so that the dashboard knows when
-  # the user last viewed the page.
+  # Checks the path URI to see if it can be opened
   #
-  # Calling self.touch will create the .motd file, or update the timestamp if it already exists.
-  def touch
-    FileUtils.mkdir_p(File.dirname(motd_config_file)) unless File.exists?(motd_config_file)
-    FileUtils.touch(motd_config_file)
+  # Uses open-uri to check local or remote path for contents
+  # @return [String] the motd raw content as string
+  def content
+    @content || ""
   end
-    
+
+  # A title for the message of the day.
+  #   Set via environment variable 'MOTD_TITLE'
+  #   Default: "Message of the Day"
+  #
+  # @return [String] a string used as the MOTD title
+  def title
+    ENV['MOTD_TITLE'] || "Message of the Day"
+  end
+
+  # A factory method that returns an MotdFormatter object
+  #
+  # @return [Object, nil] an MotdFormatter object that responds to `:to_partial_path`
+  #                       `nil` if a file does not exist at the path.
+  def formatter
+    case ENV['MOTD_FORMAT']
+      when 'osc'
+        @motd = MotdFormatterOsc.new(self)
+      when 'markdown'
+        @motd = MotdFormatterMarkdown.new(self)
+      when 'rss'
+        @motd = MotdFormatterRss.new(self)
+      else
+        @motd = MotdFormatterPlaintext.new(self)
+    end if self.exist?
+  end
+
+  # Is the content present and not empty?
+  #
+  # @return [Boolean] true if content present
+  def exist?
+    !@content.nil?
+  end
+
+  private
+
+  def load(motd_uri)
+    motd_uri ? open(motd_uri).read : nil
+  rescue Errno::ENOENT
+    Rails.logger.warn "MOTD File is missing; it was expected at #{motd_uri}"
+    nil
+  rescue OpenURI::HTTPError
+    Rails.logger.warn "MOTD File is not available at #{motd_uri}"
+    nil
+  rescue StandardError => ex
+    Rails.logger.warn "Error opening MOTD at #{motd_uri}\nException: #{ex.message}"
+    nil
+  end
 end
+
+
+
