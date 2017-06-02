@@ -24,7 +24,7 @@ class MotdFile
   #   Set via environment variable 'MOTD_TITLE'
   #   Default: "Message of the Day"
   #
-  # @return [String]
+  # @return [String] a string used as the MOTD title
   def title
     ENV['MOTD_TITLE'] || "Message of the Day"
   end
@@ -50,7 +50,7 @@ class MotdFile
   #
   # @return [Boolean] true if content present
   def exist?
-    !!@content
+    !@content.nil?
   end
 
   private
