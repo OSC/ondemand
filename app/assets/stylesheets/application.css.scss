@@ -56,8 +56,18 @@ body {
   margin-bottom: (1rem * .50) !important;
 }
 
+// Remove the well-styling from the bootstrap <pre>
+pre.motd-monospaced {
+  background-color: #FFFFFF;
+  font-size: 14px;
+  border: none;
+  white-space: pre-wrap;
+}
+
 // Your custom css styles below (must be manually added)
 @import "dashboard";
 @import "navbar";
 @import "apps";
 @import "products";
+
+

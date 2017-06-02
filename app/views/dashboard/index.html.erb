@@ -3,7 +3,8 @@
 <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>
 <br>
 
-<%= render partial: "motd", locals: { motd: @motd_file  } if @motd_file.exist? %>
+<%# This assumes @motd_file responds to `to_partial_path` %>
+<%= render @motd if @motd %>
 
 <!--
 TODO: add getting started

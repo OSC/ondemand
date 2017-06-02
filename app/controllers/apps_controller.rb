@@ -29,7 +29,7 @@ class AppsController < ApplicationController
         raise ActionController::RoutingError.new('Not Found') unless app.accessible?
       end
 
-      @motd_file = MotdFile.new
+      @motd = MotdFile.new.formatter
     end
   end
 
