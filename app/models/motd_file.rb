@@ -20,6 +20,15 @@ class MotdFile
     @content || ""
   end
 
+  # A title for the message of the day.
+  #   Set via environment variable 'MOTD_TITLE'
+  #   Default: "Message of the Day"
+  #
+  # @return [String]
+  def title
+    ENV['MOTD_TITLE'] || "Message of the Day"
+  end
+
   # A factory method that returns an MotdFormatter object
   #
   # @return [Object, nil] an MotdFormatter object that responds to `:to_partial_path`

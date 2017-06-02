@@ -1,9 +1,10 @@
 class MotdFormatterPlaintext
 
-  attr_reader :content
+  attr_reader :content, :title
 
   def initialize(motd_file)
     motd_file = MotdFile.new unless motd_file
+    @title = motd_file.title
     @content = motd_file.content
   end
 

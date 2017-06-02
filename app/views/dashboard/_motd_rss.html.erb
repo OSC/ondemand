@@ -1,4 +1,4 @@
-<h3>Message of the Day</h3>
+<h3><%= @motd.title %></h3>
 <hr />
 <% if @motd.content %>
   <% @motd.content.items.each do |item| %>
