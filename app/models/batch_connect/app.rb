@@ -48,6 +48,12 @@ module BatchConnect
       [router.token, sub_app].compact.join("/")
     end
 
+    # Get the token for this app, excluding the subapp
+    # @return [String] token
+    def base_token
+      router.token
+    end
+
     # Root path to batch connect app
     # @return [Pathname] root directory of batch connect app
     def root
