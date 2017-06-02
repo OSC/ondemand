@@ -4,7 +4,8 @@ module BatchConnect::SessionsHelper
       concat(
         content_tag(:div, class: "panel-heading") do
           content_tag(:h1, class: "panel-title") do
-            concat "#{session.title} (#{session.job_id})"
+            concat link_to(content_tag(:strong, session.title), new_batch_connect_session_context_path(token: session.token))
+            concat " (#{session.job_id})"
             concat(
               content_tag(:div, class: "pull-right") do
                 num_nodes = session.info.allocated_nodes.size
