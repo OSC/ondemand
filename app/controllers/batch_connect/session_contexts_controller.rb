@@ -6,6 +6,9 @@ class BatchConnect::SessionContextsController < ApplicationController
     set_render_format
     set_session_context
 
+    # get lists of apps
+    @apps = @nav_groups.select(&:has_batch_connect_apps?)
+
     # Redirect to first valid sub app otherwise first invalid sub app
     unless @sub_apps.include? @app
       sub_app_token = ( @sub_apps.select(&:valid?).first || @sub_apps.first ).token

@@ -22,6 +22,10 @@
   <% end %>
 
   <div class="row">
+    <div class="col-md-3">
+      <%= render partial: 'batch_connect/sessions/app_list', collection: @apps %>
+    </div>
+
     <%# More than one sub app so display tabs %>
     <% if @sub_apps.size > 1 %>
       <div class="col-md-3 col-md-push-6">
