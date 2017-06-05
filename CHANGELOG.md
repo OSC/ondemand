@@ -1,9 +1,11 @@
 # Unreleased
 
+# v2.4.1
+
 * Fix bug in `bin/setup` that crashes when `OOD_PORTAL` is set but not
   `OOD_SITE`
 
-# 2.4.0
+# v2.4.0
 
 * Allow user to enter relative path names as template source
 * Allow a user to create a new workflow from a path
@@ -13,7 +15,7 @@
 * Wrap long names that break out of containers
 * UI enhancements
 
-# 2.3.4
+# v2.3.4
 
 * Terminal button now links to appropriate host instead of default
 * Update to OOD Appkit 1.0.1
