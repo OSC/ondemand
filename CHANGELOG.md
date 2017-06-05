@@ -1,7 +1,14 @@
 # Unreleased
 
+# v1.4.4
+
 * Fix bug in `bin/setup` that crashes when `OOD_PORTAL` is set but not
   `OOD_SITE`
+  
+# v1.4.3
+
+* Allow user to limit jobs to cluster
+* Convert user inputs to dropdown boxes
 
 # v1.4.2
 
