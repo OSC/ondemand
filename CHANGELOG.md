@@ -1,3 +1,7 @@
+# version 1.3.1
+
+* Save user preferences to local storage instead of cookies
+
 # version 1.3.0
 
 * Update to Ace Editor 1.2.6
