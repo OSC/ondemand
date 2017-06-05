@@ -19,28 +19,27 @@ $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
 });
 
-// Simple cookie setter
-// http://www.w3schools.com/js/js_cookies.asp
-function setCookie(cname,cvalue,exdays) {
-    var d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    var expires = "expires=" + d.toGMTString();
-    document.cookie = cname+"="+cvalue+"; "+expires;
+var KEY_PREFIX = "ood_editor_store_";
+
+// Set localStorage. Adds a key prefix to reduce overlap likelihood.
+function setLocalStorage(key, value) {
+    var ood_key = KEY_PREFIX + key;
+    localStorage.setItem(ood_key, value);
+    return null;
 }
 
-// Simple cookie getter
-// http://www.w3schools.com/js/js_cookies.asp
-function getCookie(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for(var i=0; i<ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0)==' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
-    }
-    return "";
+// Get localStorage. Adds a key prefix added by setter.
+function getLocalStorage(key) {
+    var ood_key = KEY_PREFIX + key;
+    return localStorage.getItem(ood_key);
+}
+
+// Set a user preference key to a specific value.
+function setUserPreference(key, value) {
+    return setLocalStorage(key, value);
+}
+
+// Get the current value of the key from preferences.
+function getUserPreference(key) {
+    return getLocalStorage(key);
 }
