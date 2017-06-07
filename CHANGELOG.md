@@ -1,5 +1,7 @@
 # Unreleased
 
+* Display a cluster's metadata title instead of titleized id.
+
 # v2.4.1
 
 * Fix bug in `bin/setup` that crashes when `OOD_PORTAL` is set but not
