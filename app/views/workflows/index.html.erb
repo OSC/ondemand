@@ -80,7 +80,7 @@
                 <td data-sort="<%= workflow.id %>"><small><%= local_time(workflow.created_at) %></small></td>
                 <td class="wrap-line"><strong><%= workflow.name %></strong></td>
                 <td><%= workflow.pbsid %></td>
-                <td><%= workflow.batch_host.titleize if workflow.batch_host %></td>
+                <td><%= cluster_title workflow.batch_host %></td>
                 <td id="status_label_<%= workflow.id %>"><%= status_label(workflow) %></td>
                 <!-- FILE_SIZE_FEATURE
                   <td><%# number_to_human_size(Filesystem.new.path_size(workflow.staged_dir)) %></td>
