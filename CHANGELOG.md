@@ -1,5 +1,7 @@
 # Unreleased
 
+* Redirect user to new templates page on cancel
+
 # v2.4.1
 
 * Fix bug in `bin/setup` that crashes when `OOD_PORTAL` is set but not
