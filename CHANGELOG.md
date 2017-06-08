@@ -1,5 +1,7 @@
 # Unreleased
 
+* Fix bug where new template path isn't blank
+
 # v2.4.1
 
 * Fix bug in `bin/setup` that crashes when `OOD_PORTAL` is set but not
