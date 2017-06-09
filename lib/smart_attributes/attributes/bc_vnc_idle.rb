@@ -40,12 +40,7 @@ module SmartAttributes
       # @param fmt [String, nil] formatting of hash
       # @return [Hash] submission hash
       def submit(fmt: nil)
-        {
-          batch_connect: {
-            template: "vnc",
-            idle: value.blank? ? 0 : value.to_i
-          }
-        }
+        { batch_connect: { idle: value.blank? ? 0 : value.to_i } }
       end
     end
   end
