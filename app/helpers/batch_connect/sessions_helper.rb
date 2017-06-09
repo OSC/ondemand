@@ -130,7 +130,7 @@ module BatchConnect::SessionsHelper
   end
 
   def novnc_link(connect, view_only: false)
-    asset_path("noVNC-0.6.2/vnc.html?autoconnect=true&password=#{view_only ? connect.spassword : connect.password}&path=rnode/#{connect.host}/#{connect.websocket}/websockify&resize=remote", skip_pipeline: true)
+    asset_path("noVNC-55b459b/vnc.html?autoconnect=true&password=#{view_only ? connect.spassword : connect.password}&path=rnode/#{connect.host}/#{connect.websocket}/websockify&resize=remote", skip_pipeline: true)
   end
 
   def session_save_errors(errors)
