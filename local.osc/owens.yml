@@ -1,0 +1,30 @@
+---
+title: "Owens Desktop"
+cluster: "owens"
+attributes:
+  desktop: "mate"
+  bc_queue: null
+  bc_account:
+    help: "You can leave this blank if **not** in multiple projects."
+  node_type:
+    widget: select
+    label: "Node type"
+    help: |
+      - **any** - (*28 cores*) Chooses anyone of the available Owens nodes.
+        This reduces the wait time as you have no requirements.
+      - **vis** - (*28 cores*) This node includes an NVIDIA Tesla P100 GPU with
+        an X server running in the background. This allows for Hardware
+        Rendering with the GPU typically needed for 3D visualization using
+        VirtualGL. There are currently only 10 of these nodes on Owens.
+      - **gpu** -  (*28 cores*) This node includes an NVIDIA Tesla P100 GPU
+        allowing for CUDA computations. There are currently only 160 of these
+        nodes on Owens. These nodes don't start an X server, so visualization
+        with hardware rendering is not possible.
+      - **hugemem** - (*48 cores*) This Owens node has 1.5TB of available RAM
+        as well as 48 cores. There are 16 of these nodes on Owens.
+    options:
+      - ["any", ":ppn=28"]
+      - ["vis", ":ppn=28:gpus=1:vis"]
+      - ["gpu", ":ppn=28:gpus=1"]
+      - ["hugemem", ":ppn=48:hugemem"]
+submit: submit/pbs.yml.erb

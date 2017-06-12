@@ -1,0 +1,7 @@
+---
+batch_connect:
+  template: vnc
+
+script:
+  job_environment:
+    DESKTOP: "<%= desktop.blank? ? "mate" : desktop %>"
