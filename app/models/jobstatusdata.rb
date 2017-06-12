@@ -56,6 +56,7 @@ class Jobstatusdata
   def extended_data_torque(info)
     return unless info.native
     attributes = []
+    attributes.push Attribute.new "Cluster", self.cluster_title
     attributes.push Attribute.new "PBS Id", self.pbsid
     attributes.push Attribute.new "Job Name", self.jobname
     attributes.push Attribute.new "User", self.username
@@ -89,12 +90,12 @@ class Jobstatusdata
   def extended_data_slurm(info)
     return unless info.native
     attributes = []
+    attributes.push Attribute.new "Cluster", self.cluster_title
     attributes.push Attribute.new "Job Id", self.pbsid
     attributes.push Attribute.new "Job Name", self.jobname
     attributes.push Attribute.new "User", self.username
     attributes.push Attribute.new "Account", self.account
     attributes.push Attribute.new "Partition", self.queue
-    attributes.push Attribute.new "Cluster", self.cluster
     attributes.push Attribute.new "State", info.native[:state]
     attributes.push Attribute.new "Reason", info.native[:reason]
     attributes.push Attribute.new "Total Nodes", info.native[:nodes]
