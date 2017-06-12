@@ -4,6 +4,30 @@
 # or operating system, you probably want to add a global ignore instead:
 #   git config --global core.excludesfile '~/.gitignore_global'
 
+######################################################################
+#
+# Ignore Vim files
+# https://github.com/github/gitignore/blob/master/Global/Vim.gitignore
+#
+######################################################################
+
+# Swap
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-v][a-z]
+[._]sw[a-p]
+
+# Session
+Session.vim
+
+# Temporary
+.netrwhist
+*~
+# Auto-generated tag files
+tags
+
+######################################################################
+
 # Ignore bundler config.
 /.bundle
 /vendor/bundle

@@ -1,5 +1,19 @@
-# v1.12.0
+## Unreleased
 
-* Add ability to use RSS/Markdown/Plaintext MOTD
-* Remove unused assets
-* Fix bug when OOD portal specified without site
+### Fixed
+
+  - Ignore vim temporary files. [#161](https://github.com/OSC/ood-dashboard/issues/161)
+
+## 1.12.0 (2017-06-05)
+
+### Added
+
+  - Add ability to use RSS/Markdown/Plaintext MOTD
+
+### Fixed
+
+  - Fix bug when OOD portal specified without site
+
+### Removed
+
+  - Remove unused assets
