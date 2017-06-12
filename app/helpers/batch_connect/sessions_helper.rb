@@ -43,7 +43,7 @@ module BatchConnect::SessionsHelper
           concat time(session)
         end
       )
-      concat content_tag(:div, class: "ood-appkit markdown") { yield }
+      concat content_tag(:div) { yield }
     end
   end
 
@@ -158,7 +158,7 @@ module BatchConnect::SessionsHelper
         tab = tabs.first
         concat content_tag(:hr)
         concat(
-          content_tag(:div) do
+          content_tag(:div, class: "ood-appkit markdown") do
             render partial: "batch_connect/sessions/connections/#{tab[:partial]}", locals: tab[:locals]
           end
         )
@@ -180,7 +180,7 @@ module BatchConnect::SessionsHelper
         concat(
           content_tag(:div, class: "tab-content") do
             tabs.map.with_index do |tab, idx|
-              content_tag(:div, id: "#{id}_#{idx}", class: "tab-pane #{"active" if idx == 0}") do
+              content_tag(:div, id: "#{id}_#{idx}", class: "tab-pane ood-appkit markdown #{"active" if idx == 0}") do
                 render partial: "batch_connect/sessions/connections/#{tab[:partial]}", locals: tab[:locals]
               end
             end.join("\n").html_safe
