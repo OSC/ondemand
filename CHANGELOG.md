@@ -1,6 +1,7 @@
 # Unreleased
 
 * Display a cluster's metadata title instead of titleized id.
+* Redirect user to new templates page on cancel
 
 # v2.4.1
 
