@@ -59,7 +59,7 @@ class PagesController < ApplicationController
       data = OODClusters[cluster].job_adapter.info(jobid)
 
       raise OodCore::JobAdapterError if data.native.nil?
-      Jobstatusdata.new(data, cluster.id.to_s, true)
+      Jobstatusdata.new(data, cluster, true)
 
     rescue OodCore::JobAdapterError
       { name: jobid, error: "No job details because job has already left the queue." , status: "completed" }
@@ -108,7 +108,7 @@ class PagesController < ApplicationController
         # for those jobs and don't display them.
         result.each do |j|
           if j.status.state != :completed && j.id !~ /\[\]/
-            jobs.push(Jobstatusdata.new(j, cluster.id.to_s))
+            jobs.push(Jobstatusdata.new(j, cluster))
           end
         end
       end

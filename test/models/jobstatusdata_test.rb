@@ -46,7 +46,7 @@ class JobstatussataTest < ActiveModel::TestCase
       end
 
       test "test cluster #{@test_count}" do
-        assert data.cluster.instance_of?(OodCore::Cluster), data.cluster
+        assert data.cluster.is_a?(String), data.cluster
       end
 
       test "test nodes #{@test_count}" do
