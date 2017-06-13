@@ -25,7 +25,11 @@ class OodApp
 
   def url
     if manifest.url.empty?
-      router.url
+      if batch_connect_app?
+        Rails.application.routes.url_helpers.new_batch_connect_session_context_path(token)
+      else
+        router.url
+      end
     else
       manifest.url % {
         app_type: type,
@@ -34,6 +38,10 @@ class OodApp
         app_token: token
       }
     end
+  end
+
+  def batch_connect_app?
+    role == "batch_connect"
   end
 
   def has_gemfile?

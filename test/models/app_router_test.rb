@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'mocha/setup'
 
 class AppRouterTest < ActiveSupport::TestCase
   test "DevRouter.apps" do

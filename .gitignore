@@ -46,3 +46,8 @@ tags
 
 # Ignore staged app
 /vendor/my_app
+
+# Ignore data files
+/data/*
+!/data/apps
+config/clusters.d

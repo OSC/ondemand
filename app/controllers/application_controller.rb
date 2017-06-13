@@ -11,7 +11,11 @@ class ApplicationController < ActionController::Base
 
   def set_nav_groups
     #TODO: for AweSim, what if we added the shared apps here?
-    @nav_groups = OodAppGroup.select(titles: NavConfig.categories, groups: OodAppGroup.groups_for(apps: SysRouter.apps))
+    @nav_groups = OodAppGroup.select(titles: NavConfig.categories, groups: sys_app_groups)
+  end
+
+  def sys_app_groups
+    @sys_app_groups ||= OodAppGroup.groups_for(apps: SysRouter.apps)
   end
 
   def set_announcement
@@ -20,4 +24,5 @@ class ApplicationController < ActionController::Base
   rescue => e
     logger.warn "Failed to read announcement file at: #{path} with error: #{e.message}"
   end
+
 end

@@ -50,7 +50,10 @@ gem 'jquery-datatables-rails', '~> 3.4'
 gem 'data-confirm-modal', '~> 1.2'
 gem 'rails_12factor', group: :production
 gem 'mocha', '~> 1.1', group: :test
+gem "spring", group: :test
 
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'
 gem 'ood_appkit', '~> 1.0'
+gem 'pbs', '~> 2.0'
+gem 'ood_core', git: 'https://github.com/OSC/ood_core.git'

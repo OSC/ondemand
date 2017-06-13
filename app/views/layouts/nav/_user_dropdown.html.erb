@@ -1,7 +1,8 @@
 <p class="navbar-text">
-<i class="fa fa-user" title="Logged in as <%= @user.name %>"></i><span class="hidden-xs hidden-sm"> Logged in as <%= @user.name %></span>
+<i class="fa fa-user" title="Logged in as <%= @user.name %>"></i>
+<span class="hidden-xs hidden-sm"> Logged in as </span><%= @user.name %>
 </p>
 
 <li>
-  <a href="/logout"><i class="fa fa-power-off"></i><span class="hidden-xs hidden-sm"> Log Out</span></a>
+  <a href="/logout"><i class="fa fa-sign-out"></i><span class="hidden-xs hidden-sm"> Log Out</span></a>
 </li>
