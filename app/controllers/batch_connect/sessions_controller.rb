@@ -11,7 +11,7 @@ class BatchConnect::SessionsController < ApplicationController
     #   UsrRouter.all_apps(owners: UsrRouter.owners) gives all usr apps for all owners
     #
     # TODO: dev apps can be grouped separately
-    @apps = @nav_groups.select(&:has_batch_connect_apps?)
+    @apps = sys_app_groups.select(&:has_batch_connect_apps?)
   end
 
   # DELETE /batch_connect/sessions/1

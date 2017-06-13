@@ -36,9 +36,6 @@ class BatchConnect::SessionContextsController < ApplicationController
     set_session_context
     set_apps
 
-    # get lists of apps
-    @apps = @nav_groups.select(&:has_batch_connect_apps?)
-
     # Read in context from form parameters
     @session_context.attributes = session_contexts_param
 
@@ -64,7 +61,7 @@ class BatchConnect::SessionContextsController < ApplicationController
     # Set list of app lists for navigation
     def set_apps
       # get lists of apps
-      @apps = @nav_groups.select(&:has_batch_connect_apps?)
+      @apps = sys_app_groups.select(&:has_batch_connect_apps?)
     end
 
     # Set the list of sub apps
