@@ -39,6 +39,8 @@ $(window).focus ->
           update_edit_button()
           update_submit_button()
           update_copy_button()
+        if missing_data_cluster()
+          update_submit_button()
   else
     show_job_panel()
     disable_all_buttons()
@@ -74,6 +76,7 @@ $(window).focus ->
 @update_job_details_panel = (data) ->
   show_job_panel()
   if data?
+    update_missing_data_cluster_view()
     update_missing_data_path_view()
     update_missing_data_script_view()
     $("#job-details-name").text(data.name)
@@ -339,11 +342,18 @@ $ ->
   list += "</ul>"
   $("#template-folder-contents").html("#{list}")
 
+@missing_data_cluster = ->
+  active_row().hasClass('missing-cluster')
+
 @missing_data_path = ->
   active_row().hasClass('missing-dir')
 
 @missing_data_script = ->
   active_row().hasClass('missing-script')
+
+@update_missing_data_cluster_view = ->
+  $('#job-details-submit-to').toggleClass("missing-cluster", missing_data_cluster())
+  $("#edit-job-options-script-link").attr("href", Routes.edit_workflow_path(active_var()))
 
 @update_missing_data_path_view = ->
   $('#script-details-view').toggleClass("missing-dir", missing_data_path())
