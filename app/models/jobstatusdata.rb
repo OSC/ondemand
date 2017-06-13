@@ -21,9 +21,8 @@ class Jobstatusdata
   # @param [Boolean, nil] extended If true, included extended data in the response (default: false)
   # @return [Jobstatusdata] self
   def initialize(info, cluster=OODClusters.first.id.to_s, extended=false)
-    if OODClusters[cluster].nil?
-      raise ArgumentError.new("Invalid cluster: #{cluster}")
-    end
+    raise ArgumentError, "Invalid cluster: #{cluster}" unless OODClusters[cluster]
+
     self.pbsid = info.id
     self.jobname = info.job_name
     self.username = info.job_owner
