@@ -2,6 +2,7 @@
 
 * Display a cluster's metadata title instead of titleized id.
 * Redirect user to new templates page on cancel
+* Fix a bug when requesting data for a workflow with an unassigned batch_host
 
 # v2.4.1
 
