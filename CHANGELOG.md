@@ -1,5 +1,9 @@
 # Unreleased
 
+# v1.4.5
+
+* Add and use the cluster_title where appropriate in views instead of titleized cluster id
+
 # v1.4.4
 
 * Fix bug in `bin/setup` that crashes when `OOD_PORTAL` is set but not
