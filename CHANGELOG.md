@@ -1,5 +1,9 @@
 ## Unreleased
 
+### Added
+
+  - Integrated iHPC support into the dashboard. [#155](https://github.com/OSC/ood-dashboard/pull/155)
+
 ### Fixed
 
   - Ignore vim temporary files. [#161](https://github.com/OSC/ood-dashboard/issues/161)
