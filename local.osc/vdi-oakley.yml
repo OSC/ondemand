@@ -16,6 +16,8 @@ cluster: "quick"
 attributes:
   desktop: "gnome"
   bc_num_slots: 1
+  bc_num_hours:
+    value: 8
   bc_queue: null
   node_type: ":ppn=1:oakley"
   bc_email_on_started: 0
