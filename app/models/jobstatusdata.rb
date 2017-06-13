@@ -16,20 +16,21 @@ class Jobstatusdata
   #
   # Object defaults to condensed data, add extended flag to initializer to include all data used by the application.
   #
-  # @param [Hash] info An OodCore.job_adapter.info[_all] response hash
-  # @param [String] cluster The string name of a cluster configured in the OODClusters list (ex. 'oakley')
+  # @param [OodCore::Job::Info] info An OodCore.job_adapter.info[_all] response object
+  # @param [OodCore::Cluster, #to_sym] cluster The string name of a cluster configured in the OODClusters list (ex. 'oakley')
   # @param [Boolean, nil] extended If true, included extended data in the response (default: false)
   # @return [Jobstatusdata] self
-  def initialize(info, cluster=OODClusters.first.id.to_s, extended=false)
-    raise ArgumentError, "Invalid cluster: #{cluster}" unless OODClusters[cluster]
+  def initialize(info, cluster=OODClusters.first, extended=false)
+    cluster = OODClusters[cluster]
+    raise ArgumentError, "Invalid cluster" unless cluster
 
     self.pbsid = info.id
     self.jobname = info.job_name
     self.username = info.job_owner
     self.account = info.accounting_id
     self.status = status_label(info.status.state.to_s)
-    self.cluster = cluster
-    self.cluster_title = OODClusters[cluster].metadata.title ||  cluster.titleize
+    self.cluster = cluster.id.to_s
+    self.cluster_title = cluster.metadata.title ||  cluster.id.to_s.titleize
     self.walltime_used = info.wallclock_time.to_i > 0 ? pretty_time(info.wallclock_time) : ''
     self.queue = info.queue_name
     if info.status == :running || info.status == :completed
@@ -37,11 +38,11 @@ class Jobstatusdata
       self.starttime = info.dispatch_time.to_i
     end
     # TODO Find a better way to distingush whether a native parser is available. Maybe this is fine?
-    self.extended_available = OODClusters[cluster].job_config[:adapter] == "torque" || OODClusters[cluster].job_config[:adapter] == "slurm"
+    self.extended_available = cluster.job_config[:adapter] == "torque" || cluster.job_config[:adapter] == "slurm"
     if extended
-      if OODClusters[cluster].job_config[:adapter] == "torque"
+      if cluster.job_config[:adapter] == "torque"
         extended_data_torque(info)
-      elsif OODClusters[cluster].job_config[:adapter] == "slurm"
+      elsif cluster.job_config[:adapter] == "slurm"
         extended_data_slurm(info)
       else
         extended_data_default(info)
