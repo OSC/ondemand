@@ -21,13 +21,16 @@ class Jobstatusdata
   # @param [Boolean, nil] extended If true, included extended data in the response (default: false)
   # @return [Jobstatusdata] self
   def initialize(info, cluster=OODClusters.first.id.to_s, extended=false)
+    if OODClusters[cluster].nil?
+      raise ArgumentError.new("Invalid cluster: #{cluster}")
+    end
     self.pbsid = info.id
     self.jobname = info.job_name
     self.username = info.job_owner
     self.account = info.accounting_id
     self.status = status_label(info.status.state.to_s)
     self.cluster = cluster
-    self.cluster_title = build_title(cluster)
+    self.cluster_title = OODClusters[cluster].metadata.title ||  cluster.titleize
     self.walltime_used = info.wallclock_time.to_i > 0 ? pretty_time(info.wallclock_time) : ''
     self.queue = info.queue_name
     if info.status == :running || info.status == :completed
@@ -170,16 +173,6 @@ class Jobstatusdata
     # @return [Array<String>] the nodes as array
     def node_array(node_info_array)
       node_info_array.map { |n| n.name }
-    end
-
-    # Return the metadata title of a cluster or the titleized key
-    #
-    # @param [String, Symbol] cluster_key A key for a cluster in the OODClusters array
-    # @return [String, nil] The title of the cluster or nil if unassigned
-    def build_title(cluster_key)
-      if cluster_key && OODClusters[cluster_key]
-        OODClusters[cluster_key].metadata.title ||  cluster_key.titleize
-      end
     end
 
     attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :cluster_title, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :shell_url, :file_explorer_url, :extended_available, :native_attribs
