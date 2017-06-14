@@ -2,7 +2,12 @@
 
 Features:
 
-  - refactored for the new Batch Connect app
+  - Refactored for the new Batch Connect app.
+
+Bugfixes:
+
+  - Disable disk check utility on startup.
+    [#2](https://github.com/OSC/bc_desktop/issues/2)
 
 ## 0.0.3 (2017-01-18)
 
