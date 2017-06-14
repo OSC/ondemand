@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.13.0 (2017-06-14)
+
 ### Added
 
   - Integrated iHPC support into the dashboard. [#155](https://github.com/OSC/ood-dashboard/pull/155)
