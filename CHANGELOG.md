@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.13.1 (2017-06-19)
+
 ### Fixed
 
   - Added back OSC Connect for Windows native VNC support.
