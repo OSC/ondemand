@@ -48,6 +48,5 @@ tags
 /vendor/my_app
 
 # Ignore data files
-/data/*
-!/data/apps
+/data
 config/clusters.d
