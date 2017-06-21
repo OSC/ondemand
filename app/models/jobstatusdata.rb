@@ -45,7 +45,7 @@ class Jobstatusdata
       elsif cluster.job_config[:adapter] == "slurm"
         extended_data_slurm(info)
       elsif cluster.job_config[:adapter] == "lsf"
-        extended_data_slurm(info)
+        extended_data_lsf(info)
       else
         extended_data_default(info)
       end
