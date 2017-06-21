@@ -44,6 +44,8 @@ class Jobstatusdata
         extended_data_torque(info)
       elsif cluster.job_config[:adapter] == "slurm"
         extended_data_slurm(info)
+      elsif cluster.job_config[:adapter] == "lsf"
+        extended_data_slurm(info)
       else
         extended_data_default(info)
       end
@@ -54,6 +56,7 @@ class Jobstatusdata
   # Store additional data about the job. (Torque-specific)
   #
   # Parses the `native` info function for additional information about jobs on Torque systems.
+  #   https://github.com/OSC/ood_core/blob/master/spec/job/adapters/torque_spec.rb
   #
   # @return [Jobstatusdata] self
   def extended_data_torque(info)
@@ -88,6 +91,7 @@ class Jobstatusdata
   # Store additional data about the job. (SLURM-specific)
   #
   # Parses the `native` info function for additional information about jobs on SLURM systems.
+  #   https://github.com/OSC/ood_core/blob/master/spec/job/adapters/slurm_spec.rb
   #
   # @return [Jobstatusdata] self
   def extended_data_slurm(info)
@@ -115,6 +119,37 @@ class Jobstatusdata
     self.file_explorer_url = build_file_explorer_url(output_pathname)
     self.shell_url = build_shell_url(output_pathname, self.cluster)
 
+    self
+  end
+
+  # Store additional data about the job. (LSF-specific)
+  #
+  # Parses the `native` info function for additional information about jobs on LSF systems.
+  #   https://github.com/OSC/ood_core/blob/master/spec/job/adapters/lsf_spec.rb
+  #
+  # @return [Jobstatusdata] self
+  def extended_data_lsf(info)
+    return unless info.native
+    attributes = []
+    attributes.push Attribute.new "Job Id", self.pbsid
+    attributes.push Attribute.new "User", self.username
+    attributes.push Attribute.new "Queue", self.queue
+    attributes.push Attribute.new "Cluster", self.cluster_title
+    attributes.push Attribute.new "From Host", info[:from_host]
+    attributes.push Attribute.new "Exec Host", info[:exec_host]
+    attributes.push Attribute.new "Job Name", self.jobname
+    attributes.push Attribute.new "Submit Time", info[:submit_time]
+    attributes.push Attribute.new "Project Name", info[:project]
+    attributes.push Attribute.new "CPU Used", info[:cpu_used]
+    attributes.push Attribute.new "Mem", info[:mem]
+    attributes.push Attribute.new "Swap", info[:swap]
+    attributes.push Attribute.new "PIDs", info[:pids]
+    attributes.push Attribute.new "Start Time", info[:start_time]
+    attributes.push Attribute.new "Finish Time", info[:finish_time]
+
+    self.native_attribs = attributes
+
+    # LSF output is a little sparse at the moment. No output path or submit args are available.
     self
   end
 
