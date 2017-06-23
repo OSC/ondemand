@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.13.3 (2017-06-23)
+
 ### Fixed
 
   - Fallback to older noVNC for Safari browsers. [#177](https://github.com/OSC/ood-dashboard/issues/177)
