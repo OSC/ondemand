@@ -3,6 +3,7 @@
 ### Removed
 
   - Removed leftover stubbed files from a bygone era.
+  - Removed verbiage on requesting reservation while iHPC session is queued. [#176](https://github.com/OSC/ood-dashboard/issues/176)
 
 ## 1.13.1 (2017-06-19)
 
