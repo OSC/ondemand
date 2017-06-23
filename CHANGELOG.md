@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 1.13.2 (2017-06-23)
+
 ### Removed
 
   - Removed leftover stubbed files from a bygone era.
