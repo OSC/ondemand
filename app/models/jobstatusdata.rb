@@ -27,7 +27,7 @@ class Jobstatusdata
     self.pbsid = info.id
     self.jobname = info.job_name
     self.username = info.job_owner
-    self.account = info.accounting_id
+    self.account = info.accounting_id || ''
     self.status = status_label(info.status.state.to_s)
     self.cluster = cluster.id.to_s
     self.cluster_title = cluster.metadata.title ||  cluster.id.to_s.titleize
