@@ -127,7 +127,7 @@ class Jobstatusdata
   # @return [Jobstatusdata] self
   def extended_data_pbspro(info)
     return unless info.native
-    self.account = info.native.group_list || ''
+    self.account = info.native[:group_list] || ''
 
     attributes = []
     attributes.push Attribute.new "Cluster", self.cluster_title
@@ -145,7 +145,7 @@ class Jobstatusdata
     attributes.push Attribute.new "CPU Time", info.native.fetch(:resources_used, {})[:cput].presence || '0'
     attributes.push Attribute.new "Memory", info.native.fetch(:resources_used, {})[:mem].presence || "0 b"
     attributes.push Attribute.new "Virtual Memory", info.native.fetch(:resources_used, {})[:pvmem].presence || "0 b"
-    attributes.push Attribute.new "Comment", info.native.comment || ''
+    attributes.push Attribute.new "Comment", info.native[:comment] || ''
     self.native_attribs = attributes
     self.submit_args = info.native[:Submit_arguments].presence || "None"
     self.output_path = info.native[:Output_Path].to_s.split(":").second || info.native[:Output_Path]
