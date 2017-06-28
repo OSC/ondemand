@@ -67,6 +67,7 @@ class Jobstatusdata
     attributes.push Attribute.new "User", self.username
     attributes.push Attribute.new "Account", self.account
     attributes.push Attribute.new "Walltime", (info.native.fetch(:Resource_List, {})[:walltime].presence || "00:00:00")
+    attributes.push Attribute.new "Walltime Used", info.wallclock_time || '0'
     node_count = info.native.fetch(:Resource_List, {})[:nodect].to_i
     attributes.push Attribute.new "Node Count", node_count
     ppn = info.native.fetch(:Resource_List, {})[:nodes].to_s.split("ppn=").second || '0'
@@ -136,7 +137,7 @@ class Jobstatusdata
     attributes.push Attribute.new "User", self.username
     attributes.push Attribute.new "Account", self.account
     attributes.push Attribute.new "Walltime", (info.native.fetch(:Resource_List, {})[:walltime].presence || "00:00:00")
-    attributes.push Attribute.new "Walltime Used", info.native.fetch(:resources_used, {})[:walltime].presence || '0'
+    attributes.push Attribute.new "Walltime Used", info.wallclock_time || '0'
     node_count = info.native.fetch(:Resource_List, {})[:nodect].to_i
     attributes.push Attribute.new "Node Count", node_count
     ppn = info.native[:Resource_List][:ncpus].presence || '0'
