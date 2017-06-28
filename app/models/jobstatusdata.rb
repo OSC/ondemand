@@ -44,6 +44,8 @@ class Jobstatusdata
         extended_data_torque(info)
       elsif cluster.job_config[:adapter] == "slurm"
         extended_data_slurm(info)
+      elsif cluster.job_config[:adapter] == "pbspro"
+        extended_data_pbspro(info)
       else
         extended_data_default(info)
       end
@@ -112,6 +114,43 @@ class Jobstatusdata
     self.output_path = info.native[:work_dir]
 
     output_pathname = Pathname.new(info.native[:work_dir])
+    self.file_explorer_url = build_file_explorer_url(output_pathname)
+    self.shell_url = build_shell_url(output_pathname, self.cluster)
+
+    self
+  end
+
+  # Store additional data about the job. (PBSPro-specific)
+  #
+  # Parses the `native` info function for additional information about jobs on PBSPRO systems.
+  #
+  # @return [Jobstatusdata] self
+  def extended_data_pbspro(info)
+    return unless info.native
+    self.account = info.group_list || ''
+
+    attributes = []
+    attributes.push Attribute.new "Cluster", self.cluster_title
+    attributes.push Attribute.new "PBS Id", self.pbsid
+    attributes.push Attribute.new "Job Name", self.jobname
+    attributes.push Attribute.new "User", self.username
+    attributes.push Attribute.new "Account", self.account
+    attributes.push Attribute.new "Walltime", (info.native.fetch(:Resource_List, {})[:walltime].presence || "00:00:00")
+    attributes.push Attribute.new "Walltime Used", info.native.fetch(:resources_used, {})[:walltime].presence || '0'
+    node_count = info.native.fetch(:Resource_List, {})[:nodect].to_i
+    attributes.push Attribute.new "Node Count", node_count
+    ppn = info.native[:Resource_List][:ncpus].presence || '0'
+    attributes.push Attribute.new "PPN", ppn
+    attributes.push Attribute.new "Total CPUs", ppn.to_i * node_count.to_i
+    attributes.push Attribute.new "CPU Time", info.native.fetch(:resources_used, {})[:cput].presence || '0'
+    attributes.push Attribute.new "Memory", info.native.fetch(:resources_used, {})[:mem].presence || "0 b"
+    attributes.push Attribute.new "Virtual Memory", info.native.fetch(:resources_used, {})[:pvmem].presence || "0 b"
+    attributes.push Attribute.new "Comment", info.native.comment || ''
+    self.native_attribs = attributes
+    self.submit_args = info.native[:Submit_arguments].presence || "None"
+    self.output_path = info.native[:Output_Path].to_s.split(":").second || info.native[:Output_Path]
+
+    output_pathname = Pathname.new(self.output_path).dirname
     self.file_explorer_url = build_file_explorer_url(output_pathname)
     self.shell_url = build_shell_url(output_pathname, self.cluster)
 
