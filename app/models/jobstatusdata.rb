@@ -69,7 +69,7 @@ class Jobstatusdata
     attributes.push Attribute.new "Walltime", (info.native.fetch(:Resource_List, {})[:walltime].presence || "00:00:00")
     node_count = info.native.fetch(:Resource_List, {})[:nodect].to_i
     attributes.push Attribute.new "Node Count", node_count
-    ppn = info.native[:Resource_List][:nodes].to_s.split("ppn=").second || '0'
+    ppn = info.native.fetch(:Resource_List, {})[:nodes].to_s.split("ppn=").second || '0'
     attributes.push Attribute.new "PPN", ppn
     attributes.push Attribute.new "Total CPUs", ppn.to_i * node_count.to_i
     attributes.push Attribute.new "CPU Time", info.native.fetch(:resources_used, {})[:cput].presence || '0'
