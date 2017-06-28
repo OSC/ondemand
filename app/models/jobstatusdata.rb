@@ -127,7 +127,7 @@ class Jobstatusdata
   # @return [Jobstatusdata] self
   def extended_data_pbspro(info)
     return unless info.native
-    self.account = info.native[:group_list] || ''
+    self.account = info.native[:group_list] unless info.accounting_id
 
     attributes = []
     attributes.push Attribute.new "Cluster", self.cluster_title
