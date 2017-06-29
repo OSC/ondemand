@@ -283,8 +283,8 @@
     },
     "cloudcmd": {
       "version": "5.3.1",
-      "from": "git://github.com/OSC/cloudcmd.git#v5.3.1-osc.27",
-      "resolved": "git://github.com/OSC/cloudcmd.git#76dfee0c3ba5c181df4e80fc5735b87e6e072ce3",
+      "from": "git://github.com/OSC/cloudcmd.git#v5.3.1-osc.28",
+      "resolved": "git://github.com/OSC/cloudcmd.git#4ef7e591f3eaaebe773c5af07a1f56c038f3838e",
       "dependencies": {
         "chalk": {
           "version": "1.1.3",
