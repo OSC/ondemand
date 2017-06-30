@@ -86,10 +86,16 @@ class JobstatussataTest < ActiveModel::TestCase
 
     jobdata.native_attribs.each do |attrib|
       assert attrib.value.is_a?(String), "#{attrib.name} was #{attrib.value.class.name} expecting String"
+
+      # Test of the pretty_time method
+      if attrib.name == "CPU Time"
+        assert_equal "00:00:00", attrib.value
+      elsif attrib.name == "Walltime Used"
+        assert_equal "57:09:02", attrib.value
+      elsif attrib.name == "PPN"
+        assert_equal "14", attrib.value
+      end
     end
-    #assert_equal "", jobdata.native_attribs
-
-
 
   end
 
