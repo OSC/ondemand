@@ -128,22 +128,24 @@ class Jobstatusdata
   # @return [Jobstatusdata] self
   def extended_data_pbspro(info)
     return unless info.native
-    self.account = info.native[:group_list] unless info.accounting_id
 
     attributes = []
     attributes.push Attribute.new "Cluster", self.cluster_title
     attributes.push Attribute.new "PBS Id", self.pbsid
     attributes.push Attribute.new "Job Name", self.jobname
     attributes.push Attribute.new "User", self.username
-    attributes.push Attribute.new "Account", self.account
+    attributes.push Attribute.new "Account", self.account if info.accounting_id
+    attributes.push Attribute.new "Group List", info.native[:group_list] if info.native[:group_list]
     attributes.push Attribute.new "Walltime", (info.native.fetch(:Resource_List, {})[:walltime].presence || "00:00:00")
-    attributes.push Attribute.new "Walltime Used", info.wallclock_time || '0'
+    walltime_used = info.wallclock_time || 0
+    attributes.push Attribute.new "Walltime Used", pretty_time(walltime_used.to_i)
     node_count = info.native.fetch(:Resource_List, {})[:nodect].to_i
     attributes.push Attribute.new "Node Count", node_count
     ppn = info.native[:Resource_List][:ncpus].presence || '0'
     attributes.push Attribute.new "PPN", ppn
     attributes.push Attribute.new "Total CPUs", ppn.to_i * node_count.to_i
-    attributes.push Attribute.new "CPU Time", info.native.fetch(:resources_used, {})[:cput].presence || '0'
+    cput = info.native.fetch(:resources_used, {})[:cput].presence || 0
+    attributes.push Attribute.new "CPU Time", pretty_time(cput.to_i)
     attributes.push Attribute.new "Memory", info.native.fetch(:resources_used, {})[:mem].presence || "0 b"
     attributes.push Attribute.new "Virtual Memory", info.native.fetch(:resources_used, {})[:pvmem].presence || "0 b"
     attributes.push Attribute.new "Comment", info.native[:comment] || ''
