@@ -1,5 +1,6 @@
 # Unreleased
 
+* Fix bug where new template path isn't blank
 * Redirect user to new templates page on cancel
 
 # v2.4.1

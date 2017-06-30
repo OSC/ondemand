@@ -27,7 +27,10 @@ class Template
   # @param [String] path The template base path.
   # @param [optional, Source] source A Source object based on the template's location.
   def initialize(path, source = Source.new("", Pathname.new("")))
-    @path = Pathname.new(path).expand_path rescue Pathname.new(path)
+    # We want to convert the full path if a user enters an alias like `~\path`.
+    # Calling .expand_path on an invalid location will fail. We rescue here and resort to the user-defined path.
+    # Validations that inform the user of the non-existence of the path are handled in the controller.
+    @path = expand_pathname_if_valid(path)
     @source = source
   end
 
@@ -89,4 +92,16 @@ class Template
     # Sort templates by name
     self.name.upcase <=> o.name.upcase
   end
+
+  private
+
+    # Returns an expanded path
+    def expand_pathname_if_valid(path)
+      if path.blank?
+        Pathname.new(path)
+      else
+        Pathname.new(path).expand_path rescue Pathname.new(path)
+      end
+    end
+
 end
