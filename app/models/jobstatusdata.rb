@@ -140,7 +140,7 @@ class Jobstatusdata
     walltime_used = info.wallclock_time || 0
     attributes.push Attribute.new "Walltime Used", pretty_time(walltime_used.to_i)
     node_count = info.native.fetch(:Resource_List, {})[:nodect].to_i
-    attributes.push Attribute.new "Node Count", node_count
+    attributes.push Attribute.new "Node Count", node_count.to_s
     select_data = info.native.fetch(:Resource_List, {})[:select].presence.to_s.split(":")
     ppn = select_data.find {|x| x.include? "ncpus=" }.to_s.split("=").second
     attributes.push Attribute.new "PPN", ppn if ppn
