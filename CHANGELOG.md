@@ -1,6 +1,7 @@
 # Unreleased
 
 * Display a cluster's metadata title instead of titleized id
+* Fix bug where new template path isn't blank
 * Redirect user to new templates page on cancel
 * Fix a bug when requesting data for a workflow with an unassigned batch_host
 * Add warning and prevent submission if host is invalid
