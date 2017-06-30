@@ -1,5 +1,7 @@
 # Unreleased
 
+* Add extended data support for PBS Professional
+
 # v1.4.5
 
 * Add and use the cluster_title where appropriate in views instead of titleized cluster id
