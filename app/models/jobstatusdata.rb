@@ -141,15 +141,14 @@ class Jobstatusdata
     attributes.push Attribute.new "Walltime Used", pretty_time(walltime_used.to_i)
     node_count = info.native.fetch(:Resource_List, {})[:nodect].to_i
     attributes.push Attribute.new "Node Count", node_count.to_s
-    select_data = info.native.fetch(:Resource_List, {})[:select].presence.to_s.split(":")
-    ppn = select_data.find {|x| x.include? "ncpus=" }.to_s.split("=").second
-    attributes.push Attribute.new "PPN", ppn if ppn
     total_procs = info.native[:Resource_List][:ncpus].presence || '0'
     attributes.push Attribute.new "Total CPUs", total_procs
     cput = info.native.fetch(:resources_used, {})[:cput].presence || 0
     attributes.push Attribute.new "CPU Time", pretty_time(cput.to_i)
     attributes.push Attribute.new "Memory", info.native.fetch(:resources_used, {})[:mem].presence || "0 b"
     attributes.push Attribute.new "Virtual Memory", info.native.fetch(:resources_used, {})[:vmem].presence || "0 b"
+    select = info.native.fetch(:Resource_List, {})[:select].presence
+    attributes.push Attribute.new "Select", select if select
     attributes.push Attribute.new "Comment", info.native[:comment] || ''
     self.native_attribs = attributes
     self.submit_args = info.native[:Submit_arguments].presence || "None"
