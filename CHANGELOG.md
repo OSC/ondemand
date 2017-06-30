@@ -1,6 +1,6 @@
-## v1.3.4
+## v1.3.5
 
-- update to osc/cloudcmd v5.3.1-osc.27
+- update to osc/cloudcmd v5.3.1-osc.28
   - Fixes a silent delete bug in cloudcmd
 
 ## v1.3.3
