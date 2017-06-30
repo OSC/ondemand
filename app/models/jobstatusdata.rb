@@ -147,7 +147,7 @@ class Jobstatusdata
     cput = info.native.fetch(:resources_used, {})[:cput].presence || 0
     attributes.push Attribute.new "CPU Time", pretty_time(cput.to_i)
     attributes.push Attribute.new "Memory", info.native.fetch(:resources_used, {})[:mem].presence || "0 b"
-    attributes.push Attribute.new "Virtual Memory", info.native.fetch(:resources_used, {})[:pvmem].presence || "0 b"
+    attributes.push Attribute.new "Virtual Memory", info.native.fetch(:resources_used, {})[:vmem].presence || "0 b"
     attributes.push Attribute.new "Comment", info.native[:comment] || ''
     self.native_attribs = attributes
     self.submit_args = info.native[:Submit_arguments].presence || "None"
