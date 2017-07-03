@@ -1,0 +1,66 @@
+# FIXME: Remove me and my references in `bin/setup` and `.gitignore` after all
+# users' jobs have finished from before the migration.
+#
+# Do not forget to manually delete
+# `config/initializers/fix_batch_connect_dataroot.rb` at each deployment.
+#
+
+module FixBatchConnectDataroot
+  def self.fix
+    db_root  = OodAppkit.dataroot.join("db")
+    dev_root = OodAppkit.dataroot.join("dev")
+    usr_root = OodAppkit.dataroot.join("usr")
+    sys_root = OodAppkit.dataroot.join("sys")
+
+    dataroot     = OodAppkit.dataroot.join("batch_connect")
+    new_db_root  = dataroot.join("db")
+    new_dev_root = dataroot.join("dev")
+    new_usr_root = dataroot.join("usr")
+    new_sys_root = dataroot.join("sys")
+
+    has_jobs = db_root.children.select(&:file?).any?
+
+    # Create new dataroot
+    dataroot.mkpath unless dataroot.exist?
+
+    if has_jobs
+      # Move over old db root if not symlink
+      if db_root.exist? && !db_root.symlink?
+        db_root.rename new_db_root
+        db_root.make_symlink new_db_root
+      end
+
+      # Move over old dev root if not symlink
+      if dev_root.exist? && !dev_root.symlink?
+        dev_root.rename new_dev_root
+        dev_root.make_symlink new_dev_root
+      end
+
+      # Move over old usr root if not symlink
+      if usr_root.exist? && !usr_root.symlink?
+        usr_root.rename new_usr_root
+        usr_root.make_symlink new_usr_root
+      end
+
+      # Move over old sys root if not symlink
+      if sys_root.exist? && !sys_root.symlink?
+        sys_root.rename new_sys_root
+        sys_root.make_symlink new_sys_root
+      end
+    else
+      # Remove old db root
+      db_root.rmtree if db_root.exist?
+
+      # Remove old dev root
+      dev_root.rmtree if dev_root.exist?
+
+      # Remove old usr root
+      usr_root.rmtree if usr_root.exist?
+
+      # Remove old sys root
+      sys_root.rmtree if sys_root.exist?
+    end
+  end
+end
+
+FixBatchConnectDataroot.fix
