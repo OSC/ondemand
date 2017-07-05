@@ -29,6 +29,8 @@ $(document).ready( function() {
     var table = $('#job_status_table').DataTable({
         ajax: APP_PATH + '/json?' + get_request_params(),    // 'pages#json'
         "sAjaxDataProp": function(response){
+          if(response.errors.length > 0)
+            console.error(response.errors);
           return response.data;
         },
         autoWidth: true,            // Automatically calculate column width

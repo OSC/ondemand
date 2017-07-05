@@ -89,6 +89,7 @@ class PagesController < ApplicationController
   # Get a set of jobs defined by the filtering parameter.
   def get_jobs
     jobs = Array.new
+    errors = Array.new
     jobfilter = get_filter
     jobcluster = get_cluster
 
@@ -98,18 +99,22 @@ class PagesController < ApplicationController
 
         b = cluster.job_adapter
 
-        filter = Filter.list.find { |f| f.filter_id == jobfilter }
-        result = filter ? filter.apply(b.info_all) : b.info_all
+        begin
+          filter = Filter.list.find { |f| f.filter_id == jobfilter }
+          result = filter ? filter.apply(b.info_all) : b.info_all
 
-        # Only add the running jobs to the list and assign the host to the object.
-        #
-        # There is also curently a bug in the system where jobs with an empty array
-        # (ex. 6407991[].oak-batch.osc.edu) are not stattable, so we do a not-match
-        # for those jobs and don't display them.
-        result.each do |j|
-          if j.status.state != :completed && j.id !~ /\[\]/
-            jobs.push(Jobstatusdata.new(j, cluster))
+          # Only add the running jobs to the list and assign the host to the object.
+          #
+          # There is also curently a bug in the system where jobs with an empty array
+          # (ex. 6407991[].oak-batch.osc.edu) are not stattable, so we do a not-match
+          # for those jobs and don't display them.
+          result.each do |j|
+            if j.status.state != :completed && j.id !~ /\[\]/
+              jobs.push(Jobstatusdata.new(j, cluster))
+            end
           end
+        rescue OodCore::Error => e
+          errors << "#{cluster.id}: #{e.message}"
         end
       end
     end
@@ -119,6 +124,6 @@ class PagesController < ApplicationController
       user.username == OodSupport::User.new.name ? 0 : 1
     end
 
-    { data: jobs, errors: [] }
+    { data: jobs, errors: errors }
   end
 end
