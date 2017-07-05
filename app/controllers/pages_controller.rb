@@ -118,5 +118,7 @@ class PagesController < ApplicationController
     jobs.sort_by! do |user|
       user.username == OodSupport::User.new.name ? 0 : 1
     end
+
+    { data: jobs, errors: [] }
   end
 end
