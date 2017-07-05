@@ -28,7 +28,11 @@ $(document).ready( function() {
     $("#" + filter_id).addClass("active");
     var table = $('#job_status_table').DataTable({
         ajax: APP_PATH + '/json?' + get_request_params(),    // 'pages#json'
-        "sAjaxDataProp": "",        // There's no data header on the json.
+        "sAjaxDataProp": function(response){
+          if(response.errors.length > 0)
+            console.error(response.errors);
+          return response.data;
+        },
         autoWidth: true,            // Automatically calculate column width
         "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ], // Manually set size of particular columns
         "bStateSave": true,         // Save user selected table state
