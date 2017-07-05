@@ -86,6 +86,6 @@ class BatchConnect::SessionContextsController < ApplicationController
 
     # Store session context into a cache file
     def cache_file
-      OodAppkit.dataroot.join(@app.token).tap { |p| p.mkpath unless p.exist? }.join("context.yml")
+      BatchConnect::Session.dataroot(@app.token).tap { |p| p.mkpath unless p.exist? }.join("context.json")
     end
 end

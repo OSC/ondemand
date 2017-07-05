@@ -50,10 +50,17 @@ module BatchConnect
     end
 
     class << self
+      # The data root directory for this namespace
+      # @param token [#to_s] The data root directory for a given app token
+      # @return [Pathname] data root directory
+      def dataroot(token = "")
+        OodAppkit.dataroot.join("batch_connect", token.to_s)
+      end
+
       # Root directory for file system database
       # @return [Pathname] root directory of file system database
       def db_root
-        OodAppkit.dataroot.join("db").tap { |p| p.mkpath unless p.exist? }
+        dataroot.join("db").tap { |p| p.mkpath unless p.exist? }
       end
 
       # Find all active session jobs
@@ -285,13 +292,13 @@ module BatchConnect
     # Root directory that mirrors the batch connect app's job template
     # @return [Pathname] staged root directory
     def staged_root
-      OodAppkit.dataroot.join(token, "staged").tap { |p| p.mkpath unless p.exist? }
+      self.class.dataroot(token).join("staged").tap { |p| p.mkpath unless p.exist? }
     end
 
     # Root directory for a job's output files
     # @return [Pathname] output root directory
     def output_root
-      OodAppkit.dataroot.join(token, "output", id).tap { |p| p.mkpath unless p.exist? }
+      self.class.dataroot(token).join("output", id).tap { |p| p.mkpath unless p.exist? }
     end
 
     # Path to file that contains the connection information

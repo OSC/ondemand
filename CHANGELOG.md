@@ -1,5 +1,10 @@
 ## Unreleased
 
+### Fixed
+
+  - Moved `batch_connect` dataroot to properly namespaced directory. [#188](https://github.com/OSC/ood-dashboard/issues/181)
+  - Corrected file extension used for session context cache.
+
 ## 1.13.3 (2017-06-23)
 
 ### Fixed
