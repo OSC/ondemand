@@ -114,7 +114,9 @@ class PagesController < ApplicationController
             end
           end
         rescue OodCore::Error => e
-          errors << "#{cluster.metadata.title || cluster.id.to_s.titleize}: #{e.message}"
+          msg = "#{cluster.metadata.title || cluster.id.to_s.titleize}: #{e.message}"
+          logger.error msg
+          errors << msg
         end
       end
     end
