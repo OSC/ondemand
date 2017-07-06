@@ -115,7 +115,7 @@ GEM
       cocaine (~> 0.5.5)
       mime-types
       mimemagic (= 0.3.0)
-    pbs (2.0.4)
+    pbs (2.1.0)
       ffi (~> 1.9, >= 1.9.6)
     public_suffix (2.0.5)
     rack (1.6.5)
@@ -197,7 +197,7 @@ DEPENDENCIES
   ood_appkit (~> 1.0)
   ood_cluster (~> 0.0.1)
   paperclip (~> 4.2)
-  pbs (~> 2.0)
+  pbs (~> 2.1)
   rails (~> 4.2.7.1)
   rails_12factor
   sass-rails (~> 5.0)
