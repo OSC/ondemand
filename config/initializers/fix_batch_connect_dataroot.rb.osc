@@ -18,7 +18,7 @@ module FixBatchConnectDataroot
     new_usr_root = dataroot.join("usr")
     new_sys_root = dataroot.join("sys")
 
-    has_jobs = db_root.children.select(&:file?).any?
+    has_jobs = db_root.children.select(&:file?).any? if db_root.exist? && !db_root.symlink?
 
     # Create new dataroot
     dataroot.mkpath unless dataroot.exist?
