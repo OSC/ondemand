@@ -12,7 +12,6 @@ OodShell.prototype.createTerminal = function () {
   this.socket.onopen    = this.runTerminal.bind(this);
   this.socket.onmessage = this.getMessage.bind(this);
   this.socket.onclose   = this.closeTerminal.bind(this);
-  this.socket.onerror   = this.closeTerminal.bind(this);
 };
 
 OodShell.prototype.runTerminal = function () {
@@ -33,7 +32,7 @@ OodShell.prototype.runTerminal = function () {
   this.term.onTerminalReady = function () {
     // Create a new terminal IO object and give it the foreground.
     // (The default IO object just prints warning messages about unhandled
-    // things to the the JS console.)
+    // things to the JS console.)
     var io = this.io.push();
 
     // Set up event handlers for io
@@ -58,12 +57,21 @@ OodShell.prototype.getMessage = function (ev) {
   this.term.io.print(ev.data);
 }
 
-OodShell.prototype.closeTerminal = function () {
+OodShell.prototype.closeTerminal = function (ev) {
+  var errorDiv;
+
   // Do not need to warn user if he/she unloads page
   window.onbeforeunload = null;
 
   // Inform user they lost connection
-  this.term.io.print('\r\nYour connection to the remote server has been terminated.');
+  if ( this.term === null ) {
+    errorDiv = document.createElement('div');
+    errorDiv.className = 'error';
+    errorDiv.innerHTML = 'Failed to establish a websocket connection. Be sure you are using a browser that supports websocket connections.';
+    this.element.appendChild(errorDiv);
+  } else {
+    this.term.io.print('\r\nYour connection to the remote server has been terminated.');
+  }
 }
 
 OodShell.prototype.onVTKeystroke = function (str) {

@@ -10,3 +10,16 @@ html, body {
   height:   100%;
   width:    100%;
 }
+
+.error {
+  background-color: #f2dede;
+  color: #a94442;
+  font-size: 16px;
+
+  margin: 15px;
+  padding: 15px;
+
+  border-color: #ebccd1;
+  border: 1px solid;
+  border-radius: 4px;
+}
