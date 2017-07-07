@@ -1,5 +1,10 @@
 ## Unreleased
 
+### Added
+
+  - Added a unsupported browser alert for Safari by default due to Basic Auth
+    and websocket issue.
+
 ### Fixed
 
   - Moved `batch_connect` dataroot to properly namespaced directory. [#188](https://github.com/OSC/ood-dashboard/issues/181)
