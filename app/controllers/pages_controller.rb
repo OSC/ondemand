@@ -100,8 +100,12 @@ class PagesController < ApplicationController
         b = cluster.job_adapter
 
         begin
-          filter = Filter.list.find { |f| f.filter_id == jobfilter }
-          result = filter ? filter.apply(b.info_all) : b.info_all
+          if jobfilter == 'user'
+            result = b.info_where_owner(OodSupport::User.new.name)
+          else
+            filter = Filter.list.find { |f| f.filter_id == jobfilter }
+            result = filter ? filter.apply(b.info_all) : b.info_all
+          end
 
           # Only add the running jobs to the list and assign the host to the object.
           #

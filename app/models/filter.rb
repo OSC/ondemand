@@ -31,11 +31,11 @@ class Filter
   self.list = []
 
   # Add a filter by user option.
+  #   The actual filtering for the particular user is handled in the controller
+  #   via the user_where_owner optimization in ood_core.
   Filter.list << Filter.new.tap { |f|
-    user = OodSupport::User.new.name
     f.title = "Your Jobs"
     f.filter_id = "user"
-    f.filter_block = Proc.new { |job| job.job_owner == user }
   }
 
   # Add a filter by all jobs option.
