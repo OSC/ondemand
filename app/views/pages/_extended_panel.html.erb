@@ -1,3 +1,8 @@
+<% if data.error %>
+  <div class="alert alert-warning" role="alert">
+    <%= data.error %>
+  </div>
+<% else %>
 <div>
   <div class="panel panel-default container-fluid">
     <div class="panel-heading row clearfix">
@@ -48,3 +53,4 @@
     </div>
   </div>
 </div>
+<% end %>

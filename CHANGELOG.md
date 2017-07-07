@@ -1,5 +1,6 @@
 # Unreleased
 
+* Add extended data support for PBS Professional
 * Update to `ood_appkit v1.0.2` and `ood_core v0.0.5`
 * Update to `pbs v2.1.0`
 * Update user-level filtering to employ ood_core optimizations

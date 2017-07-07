@@ -7,7 +7,7 @@
 # @version 0.0.1
 class Jobstatusdata
   include ApplicationHelper
-  attr_reader :pbsid, :jobname, :username, :account, :status, :cluster, :cluster_title, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :shell_url, :file_explorer_url, :extended_available, :native_attribs
+  attr_reader :pbsid, :jobname, :username, :account, :status, :cluster, :cluster_title, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :shell_url, :file_explorer_url, :extended_available, :native_attribs, :error
 
   Attribute = Struct.new(:name, :value)
 
@@ -27,7 +27,7 @@ class Jobstatusdata
     self.pbsid = info.id
     self.jobname = info.job_name
     self.username = info.job_owner
-    self.account = info.accounting_id
+    self.account = info.accounting_id || ''
     self.status = status_label(info.status.state.to_s)
     self.cluster = cluster.id.to_s
     self.cluster_title = cluster.metadata.title ||  cluster.id.to_s.titleize
@@ -38,12 +38,14 @@ class Jobstatusdata
       self.starttime = info.dispatch_time.to_i
     end
     # TODO Find a better way to distingush whether a native parser is available. Maybe this is fine?
-    self.extended_available = cluster.job_config[:adapter] == "torque" || cluster.job_config[:adapter] == "slurm"
+    self.extended_available = cluster.job_config[:adapter] == "torque" || cluster.job_config[:adapter] == "slurm" || cluster.job_config[:adapter] == "pbspro"
     if extended
       if cluster.job_config[:adapter] == "torque"
         extended_data_torque(info)
       elsif cluster.job_config[:adapter] == "slurm"
         extended_data_slurm(info)
+      elsif cluster.job_config[:adapter] == "pbspro"
+        extended_data_pbspro(info)
       else
         extended_data_default(info)
       end
@@ -65,9 +67,10 @@ class Jobstatusdata
     attributes.push Attribute.new "User", self.username
     attributes.push Attribute.new "Account", self.account
     attributes.push Attribute.new "Walltime", (info.native.fetch(:Resource_List, {})[:walltime].presence || "00:00:00")
+    attributes.push Attribute.new "Walltime Used", self.walltime_used
     node_count = info.native.fetch(:Resource_List, {})[:nodect].to_i
     attributes.push Attribute.new "Node Count", node_count
-    ppn = info.native[:Resource_List][:nodes].to_s.split("ppn=").second || '0'
+    ppn = info.native.fetch(:Resource_List, {})[:nodes].to_s.split("ppn=").second || '0'
     attributes.push Attribute.new "PPN", ppn
     attributes.push Attribute.new "Total CPUs", ppn.to_i * node_count.to_i
     attributes.push Attribute.new "CPU Time", info.native.fetch(:resources_used, {})[:cput].presence || '0'
@@ -112,6 +115,46 @@ class Jobstatusdata
     self.output_path = info.native[:work_dir]
 
     output_pathname = Pathname.new(info.native[:work_dir])
+    self.file_explorer_url = build_file_explorer_url(output_pathname)
+    self.shell_url = build_shell_url(output_pathname, self.cluster)
+
+    self
+  end
+
+  # Store additional data about the job. (PBSPro-specific)
+  #
+  # Parses the `native` info function for additional information about jobs on PBSPRO systems.
+  #
+  # @return [Jobstatusdata] self
+  def extended_data_pbspro(info)
+    return unless info.native
+
+    attributes = []
+    attributes.push Attribute.new "Cluster", self.cluster_title
+    attributes.push Attribute.new "PBS Id", self.pbsid
+    attributes.push Attribute.new "Job Name", self.jobname
+    attributes.push Attribute.new "User", self.username
+    attributes.push Attribute.new "Account", self.account if info.accounting_id
+    attributes.push Attribute.new "Group List", info.native[:group_list] if info.native[:group_list]
+    attributes.push Attribute.new "Walltime", (info.native.fetch(:Resource_List, {})[:walltime].presence || "00:00:00")
+    walltime_used = info.wallclock_time || 0
+    attributes.push Attribute.new "Walltime Used", self.walltime_used
+    node_count = info.native.fetch(:Resource_List, {})[:nodect].to_i
+    attributes.push Attribute.new "Node Count", node_count.to_s
+    total_procs = info.native[:Resource_List][:ncpus].presence || '0'
+    attributes.push Attribute.new "Total CPUs", total_procs
+    cput = info.native.fetch(:resources_used, {})[:cput].presence || 0
+    attributes.push Attribute.new "CPU Time", pretty_time(cput.to_i)
+    attributes.push Attribute.new "Memory", info.native.fetch(:resources_used, {})[:mem].presence || "0 b"
+    attributes.push Attribute.new "Virtual Memory", info.native.fetch(:resources_used, {})[:vmem].presence || "0 b"
+    select = info.native.fetch(:Resource_List, {})[:select].presence
+    attributes.push Attribute.new "Select", select if select
+    attributes.push Attribute.new "Comment", info.native[:comment] || ''
+    self.native_attribs = attributes
+    self.submit_args = info.native[:Submit_arguments].presence || "None"
+    self.output_path = info.native[:Output_Path].to_s.split(":").second || info.native[:Output_Path]
+
+    output_pathname = Pathname.new(self.output_path).dirname
     self.file_explorer_url = build_file_explorer_url(output_pathname)
     self.shell_url = build_shell_url(output_pathname, self.cluster)
 
@@ -175,6 +218,6 @@ class Jobstatusdata
       node_info_array.map { |n| n.name }
     end
 
-    attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :cluster_title, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :shell_url, :file_explorer_url, :extended_available, :native_attribs
+    attr_writer :pbsid, :jobname, :username, :account, :status, :cluster, :cluster_title, :nodes, :starttime, :walltime, :walltime_used, :submit_args, :output_path, :nodect, :ppn, :total_cpu, :queue, :cput, :mem, :vmem, :shell_url, :file_explorer_url, :extended_available, :native_attribs, :error
 
 end
