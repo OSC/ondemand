@@ -10,10 +10,98 @@ class JobstatussataTest < ActiveModel::TestCase
     assert clusters.is_a?(Enumerable), "#{clusters.class.name} is not enumerable"
   end
 
+  test "test PBSPro adapter queued job" do
+    native = {
+        :job_id=>"3452345.testjob",
+        :Job_Name=>"be_5",
+        :Job_Owner=>"name@some.cluster",
+        :job_state=>"Q",
+        :queue=>"testqueue",
+        :server=>"h001.test.cluster",
+        :Checkpoint=>"u",
+        :ctime=>"Fri Jun 23 06:31:33 2017",
+        :Error_Path=>"login1.test.cluster:/home/user/bob/cluster/load/run.e718894",
+        :group_list=>"testgroup",
+        :Hold_Types=>"n",
+        :Join_Path=>"n",
+        :Keep_Files=>"n",
+        :Mail_Points=>"a",
+        :mtime=>"Fri Jun 23 06:31:33 2017",
+        :Output_Path=>"login1.test.cluster:/home/user/bob/cluster/load/run.o718894",
+        :Priority=>"0",
+        :qtime=>"Fri Jun 23 06:31:33 2017",
+        :Rerunable=>"True",
+        :Resource_List=>{
+            :cput=>"3600:00:00",
+            :mem=>"80gb",
+            :mpiprocs=>"14",
+            :ncpus=>"14",
+            :nodect=>"1",
+            :place=>"free",
+            :pvmem=>"80gb",
+            :select=>"1:ncpus=14:mem=80gb:pcmem=6gb:nodetype=standard:mpiprocs=14",
+            :walltime=>"240:00:00"
+        },
+        :substate=>"10",
+        :Variable_List=>"PBS_O_SYSTEM=Linux,PBS_O_SHELL=/bin/bash,PBS_O_HOME=/home/user/bob,PBS_O_LOGNAME=bob,PBS_O_WORKDIR=/home/u30/trzask/ocelote/be_s/5,PBS_O_HOST=login1.test.cluster",
+        :comment=>"Not Running: Insufficient amount of resource qlist",
+        :etime=>"Fri Jun 23 06:31:33 2017",
+        :Submit_arguments=>"run28",
+        :project=>"_pbs_project_default"
+    }
+
+    info = OodCore::Job::Info.new(
+        :id=>native[:job_id],
+        :status=>:running,
+        :allocated_nodes=>[
+            {:name=>"i15n12", :procs=>28},
+            {:name=>"i15n13", :procs=>28}
+        ],
+        :submit_host=>native[:server],
+        :job_name=>native[:Job_Name],
+        :job_owner=>"name",
+        :accounting_id=>nil,
+        :procs=>56,
+        :queue_name=>"oc_high_pri",
+        :wallclock_time=>205742,
+        :wallclock_limit=>691200,
+        :cpu_time=>5,
+        :submission_time=>Time.parse("Tue Jun 20 21:23:59 2017"),
+        :dispatch_time=>Time.parse("Tue Jun 20 21:24:47 2017"),
+        :native=>native
+
+    )
+
+    cluster = OODClusters.first
+    cluster.job_config[:adapter] = 'pbspro'
+
+    jobdata = Jobstatusdata.new(info, cluster, true)
+
+    assert_equal "3452345.testjob", jobdata.pbsid
+    assert_equal "be_5", jobdata.jobname
+    assert_equal "", jobdata.account
+    assert_equal "<div style='white-space: nowrap;'><span class='label label-primary'>Running</span></div>", jobdata.status
+    assert_equal ["i15n12", "i15n13"], jobdata.nodes
+    assert_equal 1498008287, jobdata.starttime
+
+    jobdata.native_attribs.each do |attrib|
+      assert attrib.value.is_a?(String), "#{attrib.name} was #{attrib.value.class.name} expecting String"
+
+      # Test of the pretty_time method
+      if attrib.name == "CPU Time"
+        assert_equal "00:00:00", attrib.value
+      elsif attrib.name == "Walltime Used"
+        assert_equal "57:09:02", attrib.value
+      elsif attrib.name == "PPN"
+        assert_equal "14", attrib.value
+      end
+    end
+
+  end
+
   @clusters.each do |cluster|
 
     jobs = cluster.job_adapter.info_all
-
 
 
     jobs.each do |job|

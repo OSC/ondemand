@@ -29,8 +29,9 @@ $(document).ready( function() {
     var table = $('#job_status_table').DataTable({
         ajax: APP_PATH + '/json?' + get_request_params(),    // 'pages#json'
         "sAjaxDataProp": function(response){
-          if(response.errors.length > 0)
-            console.error(response.errors);
+          if(response.errors.length > 0) {
+              show_errors(response.errors);
+          }
           return response.data;
         },
         autoWidth: true,            // Automatically calculate column width
@@ -208,6 +209,14 @@ function display_node_rows( d ) {
         }
     }
     return rows;
+}
+
+/* Add errors from an array to the #ajax-error-message div and remove hidden attribute */
+function show_errors(errors) {
+    for (var i = 0; i < errors.length; i++) {
+        $("#ajax-error-message-text").append("<div>"+errors[i]+"</div>");
+    }
+    $("#ajax-error-message").removeAttr('hidden');
 }
 
 function get_request_params() {

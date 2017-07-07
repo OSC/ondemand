@@ -62,9 +62,9 @@ class PagesController < ApplicationController
       Jobstatusdata.new(data, cluster, true)
 
     rescue OodCore::JobAdapterError
-      { name: jobid, error: "No job details because job has already left the queue." , status: "completed" }
+      OpenStruct.new(name: jobid, error: "No job details because job has already left the queue." , status: status_label("completed") )
     rescue => e
-      { name: jobid, error: "No job details available.\n" + e.backtrace.to_s}
+      OpenStruct.new(name: jobid, error: "No job details available.\n" + e.backtrace.to_s, status: status_label("") )
     end
   end
 
@@ -117,9 +117,9 @@ class PagesController < ApplicationController
               jobs.push(Jobstatusdata.new(j, cluster))
             end
           end
-        rescue OodCore::Error => e
+        rescue => e
           msg = "#{cluster.metadata.title || cluster.id.to_s.titleize}: #{e.message}"
-          logger.error msg
+          logger.error "#{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
           errors << msg
         end
       end
