@@ -1,5 +1,6 @@
 # Unreleased
 
+* Show cluster errors as a dismissable bootstrap alert
 * Add extended data support for PBS Professional
 * Update to `ood_appkit v1.0.2` and `ood_core v0.0.5`
 * Update to `pbs v2.1.0`

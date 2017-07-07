@@ -117,9 +117,9 @@ class PagesController < ApplicationController
               jobs.push(Jobstatusdata.new(j, cluster))
             end
           end
-        rescue OodCore::Error => e
+        rescue => e
           msg = "#{cluster.metadata.title || cluster.id.to_s.titleize}: #{e.message}"
-          logger.error msg
+          logger.error "#{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
           errors << msg
         end
       end
