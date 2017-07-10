@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v2.4.2]
+
 ### Added
 
 - Add warning and prevent submission if host is invalid
@@ -38,7 +40,8 @@ All notable changes to this project will be documented in this file.
 - UI enhancements
 
 
-[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.4.1...HEAD
+[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.4.2...HEAD
+[v2.4.2]: https://github.com/OSC/ood-myjobs/compare/v2.4.1...v2.4.2
 [v2.4.1]: https://github.com/OSC/ood-myjobs/compare/v2.4.0...v2.4.1
 [v2.4.0]: https://github.com/OSC/ood-myjobs/compare/v2.3.4...v2.4.0
 [v2.3.4]: https://github.com/OSC/ood-myjobs/compare/v1.0.0...v2.3.4
