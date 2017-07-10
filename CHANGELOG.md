@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.2.3] - 2017-07-10
+
 ### Changed
 
 - Changed the `CHANGELOG.md` formatting.
@@ -23,4 +25,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Warn users if they try to close an active terminal.
 - Warn users when their websocket connection is terminated.
 
-[Unreleased]: https://github.com/OSC/ood-shell/compare/v1.2.2...HEAD
+[Unreleased]: https://github.com/OSC/ood-shell/compare/v1.2.3...HEAD
+[1.2.3]: https://github.com/OSC/ood-shell/compare/v1.2.2...v1.2.3
