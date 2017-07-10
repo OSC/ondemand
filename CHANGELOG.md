@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.14.0] - 2017-07-10
+
 ### Added
 
 - Can now submit iHPC session from command line using rake task.
@@ -72,7 +74,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.13.3...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.14.0...HEAD
+[1.14.0]: https://github.com/OSC/ood-dashboard/compare/v1.13.3...v1.14.0
 [1.13.3]: https://github.com/OSC/ood-dashboard/compare/v1.13.2...v1.13.3
 [1.13.2]: https://github.com/OSC/ood-dashboard/compare/v1.13.1...v1.13.2
 [1.13.1]: https://github.com/OSC/ood-dashboard/compare/v1.13.0...v1.13.1
