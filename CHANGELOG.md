@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Stopped `spring` from loading on every `bin/rails` and `bin/rake` request.
+
 ## [1.14.1] - 2017-07-10
 
 ### Fixed
