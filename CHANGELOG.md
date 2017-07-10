@@ -2,6 +2,7 @@
 
 ### Added
 
+  - Can now submit iHPC session from command line using rake task.
   - Added a unsupported browser alert for Safari by default due to Basic Auth
     and websocket issue.
 
