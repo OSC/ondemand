@@ -125,7 +125,6 @@ class Jobstatusdata
     self
   end
 
-<<<<<<< HEAD
   # Store additional data about the job. (LSF-specific)
   #
   # Parses the `native` info function for additional information about jobs on LSF systems.
@@ -154,7 +153,10 @@ class Jobstatusdata
     self.native_attribs = attributes
 
     # LSF output is a little sparse at the moment. No output path or submit args are available.
-=======
+
+    self
+  end
+
   # Store additional data about the job. (PBSPro-specific)
   #
   # Parses the `native` info function for additional information about jobs on PBSPRO systems.
@@ -192,7 +194,6 @@ class Jobstatusdata
     self.file_explorer_url = build_file_explorer_url(output_pathname)
     self.shell_url = build_shell_url(output_pathname, self.cluster)
 
->>>>>>> master
     self
   end
 
