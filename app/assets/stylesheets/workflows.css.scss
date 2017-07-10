@@ -16,8 +16,19 @@ tr.missing-dir {
 }
 
 #script-details-view .help-block-dir,
-#script-details-name-view .help-block-script {
+#script-details-name-view .help-block-script,
+#job-details-submit-to .help-block-submit-to {
   display: none;
+}
+
+#job-details-submit-to.missing-cluster {
+  color: #a94442;
+
+  .help-block-submit-to {
+    color: #a94442;
+    display: block;
+    font-style: italic;
+  }
 }
 
 #script-details-view.missing-dir {

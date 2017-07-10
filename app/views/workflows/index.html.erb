@@ -76,11 +76,11 @@
 
           <tbody>
           <% @workflows.each do |workflow| %>
-              <tr class="job-row<%= " missing-dir" unless workflow.staged_dir_exists? %><%= " missing-script" unless workflow.script_name && workflow.staged_script_exists? %>" id="<%= workflow.id %>">
+              <tr class="job-row<%= " missing-cluster" unless workflow.batch_host_exists? %><%= " missing-dir" unless workflow.staged_dir_exists? %><%= " missing-script" unless workflow.script_name && workflow.staged_script_exists? %>" id="<%= workflow.id %>">
                 <td data-sort="<%= workflow.id %>"><small><%= local_time(workflow.created_at) %></small></td>
                 <td class="wrap-line"><strong><%= workflow.name %></strong></td>
                 <td><%= workflow.pbsid %></td>
-                <td><%= workflow.batch_host.titleize if workflow.batch_host %></td>
+                <td><%= cluster_title workflow.batch_host %></td>
                 <td id="status_label_<%= workflow.id %>"><%= status_label(workflow) %></td>
                 <!-- FILE_SIZE_FEATURE
                   <td><%# number_to_human_size(Filesystem.new.path_size(workflow.staged_dir)) %></td>
@@ -100,8 +100,11 @@
       </div>
       <div class="panel-body">
         <p>Job Name: <h4 class="wrap-line"><strong><span id="job-details-name"></span></strong></h4></p>
-        <p>Submit to:</p>
+        <div id="job-details-submit-to">
+          <p>Submit to:</p>
           <input type="text" class="form-control" id="job-details-server" disabled>
+          <p class="help-block-submit-to"><i>Cluster is not valid! Edit <a href="#" id="edit-job-options-script-link">Job Options</a> to select a valid cluster.</i></p>
+        </div>
         <p></p>
         <p>Account:</p>
         <p id="job-details-account"></p>

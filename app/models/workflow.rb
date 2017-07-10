@@ -94,6 +94,16 @@ class Workflow < ActiveRecord::Base
     end
   end
 
+  # @return [Boolean] true if batch_host is assigned and exists in the OODClusters array
+  def batch_host_exists?
+    if self.batch_host
+      if OODClusters[self.batch_host]
+        return true
+      end
+    end
+    return false
+  end
+
   class StagingTemplateDirMissing < StandardError; end
   # Override of OSC::Machete#stage
   # Creates a new staging target job directory on the system
