@@ -56,7 +56,7 @@ class ProductsController < ApplicationController
         format.html { redirect_to product_url(@product.name, type: @type), notice: 'Product was successfully created.' }
         format.json { render :show, status: :created, location: @product }
       else
-        format.html { render :new }
+        format.html { render :new_from_git_remote }
         format.json { render json: @product.errors, status: :unprocessable_entity }
       end
     end
@@ -73,7 +73,7 @@ class ProductsController < ApplicationController
         format.html { redirect_to product_url(@product.name, type: @type), notice: 'Product was successfully created.' }
         format.json { render :show, status: :created, location: @product }
       else
-        format.html { render :new }
+        format.html { render :new_from_rails_template }
         format.json { render json: @product.errors, status: :unprocessable_entity }
       end
     end

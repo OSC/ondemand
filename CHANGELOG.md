@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+- Fixes a bug that broke app creation.
+  [#183](https://github.com/OSC/ood-dashboard/issues/183)
 - Updated to `bin/rails` and `bin/rake` to remove Bundler warning.
   [#186](https://github.com/OSC/ood-dashboard/issues/186)
 
