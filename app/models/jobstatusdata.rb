@@ -138,17 +138,17 @@ class Jobstatusdata
     attributes.push Attribute.new "User", self.username
     attributes.push Attribute.new "Queue", self.queue
     attributes.push Attribute.new "Cluster", self.cluster_title
-    attributes.push Attribute.new "From Host", info[:from_host]
-    attributes.push Attribute.new "Exec Host", info[:exec_host]
+    attributes.push Attribute.new "From Host", info.native[:from_host]
+    attributes.push Attribute.new "Exec Host", info.native[:exec_host]
     attributes.push Attribute.new "Job Name", self.jobname
-    attributes.push Attribute.new "Submit Time", info[:submit_time]
-    attributes.push Attribute.new "Project Name", info[:project]
-    attributes.push Attribute.new "CPU Used", info[:cpu_used]
-    attributes.push Attribute.new "Mem", info[:mem]
-    attributes.push Attribute.new "Swap", info[:swap]
-    attributes.push Attribute.new "PIDs", info[:pids]
-    attributes.push Attribute.new "Start Time", info[:start_time]
-    attributes.push Attribute.new "Finish Time", info[:finish_time]
+    attributes.push Attribute.new "Submit Time", info.native[:submit_time]
+    attributes.push Attribute.new "Project Name", info.native[:project]
+    attributes.push Attribute.new "CPU Used", info.native[:cpu_used]
+    attributes.push Attribute.new "Mem", info.native[:mem]
+    attributes.push Attribute.new "Swap", info.native[:swap]
+    attributes.push Attribute.new "PIDs", info.native[:pids]
+    attributes.push Attribute.new "Start Time", info.native[:start_time]
+    attributes.push Attribute.new "Finish Time", info.native[:finish_time]
 
     self.native_attribs = attributes
 
