@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.4.6] - 2017-07-10
+
 ### Added
 - Show cluster errors as a dismissable bootstrap alert
 - Add extended data support for PBS Professional
@@ -34,7 +36,8 @@ All notable changes to this project will be documented in this file.
 - Remove OSC copyright from footer
 - Remove deprecation warnings
 
-[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.4.5...HEAD
+[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.4.6...HEAD
+[v1.4.6]: https://github.com/OSC/ood-activejobs/compare/v1.4.5...v1.4.6
 [v1.4.5]: https://github.com/OSC/ood-activejobs/compare/v1.4.4...v1.4.5
 [v1.4.4]: https://github.com/OSC/ood-activejobs/compare/v1.4.3...v1.4.4
 [v1.4.3]: https://github.com/OSC/ood-activejobs/compare/v1.4.2...v1.4.3
