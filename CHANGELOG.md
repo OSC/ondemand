@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Show native comment if one is available (Torque)
+
 ## [v1.4.6] - 2017-07-10
 
 ### Added
