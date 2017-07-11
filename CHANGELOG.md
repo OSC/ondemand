@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- Changed wording in the Safari websocket alert message to be more helpful.
+
 ### Fixed
 
 - Stopped `spring` from loading on every `bin/rails` and `bin/rake` request.
