@@ -37,8 +37,7 @@ class Jobstatusdata
       self.nodes = node_array(info.allocated_nodes)
       self.starttime = info.dispatch_time.to_i
     end
-    # TODO Find a better way to distinguish whether a native parser is available. Maybe this is fine?
-    self.extended_available = cluster.job_config[:adapter] == "torque" || cluster.job_config[:adapter] == "slurm" || cluster.job_config[:adapter] == "lsf" || cluster.job_config[:adapter] == "pbspro"
+    self.extended_available = %w(torque slurm lsf pbspro).include?(cluster.job_config[:adapter])
     if extended
       if cluster.job_config[:adapter] == "torque"
         extended_data_torque(info)
