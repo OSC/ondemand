@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Stopped `spring` from loading on every `bin/rails` and `bin/rake` request.
+- Drop back `thor` dependency to remove warning messages.
+  [#192](https://github.com/OSC/ood-dashboard/issues/192)
 
 ## [1.14.1] - 2017-07-10
 
