@@ -156,12 +156,21 @@ $(document).ready( function() {
                 $( "div[data-jobid='"+row.data().pbsid+"']").hide().html(data.html).fadeIn(250);
                 // Update the status label in the parent row
                 tr.find(".status-label").html(data.status);
-            });
+            })
+              .fail(function(jqXHR, textStatus, errorThrown) {
+                  var error_panel = '<div class="alert alert-danger" role="alert">' +
+                                    '  <strong>Error:</strong> The information could not be displayed. ' +
+                                    '  <em>' + jqXHR.status + ' (' + errorThrown + ')</em>' +
+                                    '</div>';
+                  $( "div[data-jobid='"+row.data().pbsid+"']").hide().html(error_panel).fadeIn(250);
+              });
         }
     });
 
     table.columns.adjust().draw();
 });
+
+
 
 /* Formatting function for dropdown row. */
 function format ( d ) {
