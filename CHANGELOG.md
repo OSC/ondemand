@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v2.5.0] - 2017-07-12
+
+### Added
+
+- Support for PBS Pro and basic support for LSF 9.1 via update to ood_core gem
+
 ## [v2.4.2] - 2017-07-10
 
 ### Added
@@ -40,7 +46,8 @@ All notable changes to this project will be documented in this file.
 - UI enhancements
 
 
-[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.4.2...HEAD
+[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.5.0...HEAD
+[v2.5.0]: https://github.com/OSC/ood-myjobs/compare/v2.4.2...v2.5.0
 [v2.4.2]: https://github.com/OSC/ood-myjobs/compare/v2.4.1...v2.4.2
 [v2.4.1]: https://github.com/OSC/ood-myjobs/compare/v2.4.0...v2.4.1
 [v2.4.0]: https://github.com/OSC/ood-myjobs/compare/v2.3.4...v2.4.0
