@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Added support for the PBS Pro adapter when using the `bc_num_slots` smart
+  attribute in iHPC.
+
 ### Changed
 
 - Changed wording in the Safari websocket alert message to be more helpful.
