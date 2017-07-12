@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 - Changed the `CHANGELOG.md` formatting.
+- Fixed form attributes `node_type` to `null` and `desktop` to `"mate"` for
+  default installs.
 
 ## [0.1.0] - 2017-06-14
 

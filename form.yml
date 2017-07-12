@@ -5,9 +5,11 @@ description: |
   to an interctive batch job.
 
 attributes:
+  desktop: "mate"
   bc_vnc_idle: 0
   bc_vnc_resolution:
     required: true
+  node_type: null
 
 form:
   - bc_vnc_idle

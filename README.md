@@ -12,8 +12,8 @@ batch job is intended to run on.
 
 One of the following desktops:
 
+- [Mate Desktop](https://mate-desktop.org/) 1+ (*default*)
 - [Gnome](https://www.gnome.org/) 2 (currently we do not support Gnome 3)
-- [Mate Desktop](https://mate-desktop.org/) 1+
 
 For VNC server support:
 
@@ -67,6 +67,8 @@ Again, you do not need to restart the app as it isn't a Passenger app.
 This environment variable describes the desktop to load (e.g., `gnome`, `mate`,
 ...). It will run the corresponding script that can be found in
 [template/desktops](template/desktops).
+
+By default the Mate desktop is used when a Desktop session is launched.
 
 ## Contributing
 
