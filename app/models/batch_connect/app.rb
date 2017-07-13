@@ -99,7 +99,9 @@ module BatchConnect
     # The reason why this app may or may not be valid
     # @return [String] reason why not valid
     def validation_reason
-      if !cluster
+      if !cluster_id
+        "This app does not specify a cluster."
+      elsif !cluster
         "This app requires a cluster that does not exist."
       elsif !cluster.job_allow?
         "You do not have access to use this app."
