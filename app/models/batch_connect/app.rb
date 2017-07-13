@@ -157,14 +157,7 @@ module BatchConnect
     # (including this app as well)
     # @return [Array<App>] list of sub apps
     def sub_app_list
-      return [self] unless sub_app_root.directory?
-      list = sub_app_root.children.select(&:file?).map do |f|
-        root = f.dirname
-        name = f.basename.to_s.split(".").first
-        file = form_file(root: root, name: name)
-        self.class.new(router: router, sub_app: name) if f == file
-      end.compact
-      list.empty? ? [self] : list.sort_by(&:sub_app)
+      @sub_app_list ||= build_sub_app_list
     end
 
     # Convert object to string
@@ -181,6 +174,17 @@ module BatchConnect
     end
 
     private
+      def build_sub_app_list
+        return [self] unless sub_app_root.directory?
+        list = sub_app_root.children.select(&:file?).map do |f|
+          root = f.dirname
+          name = f.basename.to_s.split(".").first
+          file = form_file(root: root, name: name)
+          self.class.new(router: router, sub_app: name) if f == file
+        end.compact
+        list.empty? ? [self] : list.sort_by(&:sub_app)
+      end
+
       # Path to file describing form hash
       def form_file(root:, name: "form")
         %W(#{name}.yml.erb #{name}.yml).map { |f| root.join(f) }.select(&:file?).first
