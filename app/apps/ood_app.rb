@@ -44,6 +44,10 @@ class OodApp
     role == "batch_connect"
   end
 
+  def batch_connect
+    @batch_connect ||= BatchConnect::App.new(router: router)
+  end
+
   def has_gemfile?
     path.join("Gemfile").file? && path.join("Gemfile.lock").file?
   end

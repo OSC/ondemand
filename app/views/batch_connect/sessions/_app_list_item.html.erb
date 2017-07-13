@@ -1,4 +1,4 @@
-<% BatchConnect::App.new(router: app.router).sub_app_list.each do |sub_app| %>
+<% app.batch_connect.sub_app_list.each do |sub_app| %>
   <%= link_to new_batch_connect_session_context_path(token: sub_app.token),
     class: "list-group-item #{'active' if @app && @app == sub_app}",
     data: {
