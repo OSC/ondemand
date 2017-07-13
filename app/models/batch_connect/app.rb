@@ -93,12 +93,16 @@ module BatchConnect
     # Whether this is a valid app the user can use
     # @return [Boolean] whether valid app
     def valid?
+      return false if @validation_reason
+
       cluster && cluster.job_allow?
     end
 
     # The reason why this app may or may not be valid
     # @return [String] reason why not valid
     def validation_reason
+      return @validation_reason if @validation_reason
+
       if !cluster_id
         "This app does not specify a cluster."
       elsif !cluster
@@ -207,6 +211,12 @@ module BatchConnect
           hsh = hsh.deep_merge read_yaml_erb(path: file, binding: binding)
         end
         @form_config = hsh
+      rescue AppNotFound => e
+        @validation_reason = e.message
+        return {}
+      rescue => e
+        @validation_reason = "#{e.class.name}: #{e.message}"
+        return {}
       end
 
       # Hash describing the full submission properties

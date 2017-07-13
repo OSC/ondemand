@@ -15,9 +15,6 @@ class BatchConnect::SessionContextsController < ApplicationController
         #{@app.validation_reason} Please contact support if you see this message
       EOT
     end
-  rescue BatchConnect::App::AppNotFound => e
-    flash.now[:alert] = e.message
-    @app = nil
   end
 
   # POST /batch_connect/<app_token>/session_contexts
