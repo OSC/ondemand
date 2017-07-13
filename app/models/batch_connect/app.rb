@@ -69,7 +69,13 @@ module BatchConnect
     # Title for the batch connect app
     # @return [String] title of app
     def title
-      form_config.fetch(:title, "No title set")
+      form_config.fetch(:title, default_title)
+    end
+
+    # Default title for the batch connect app
+    # @return [String] default title of app
+    def default_title
+      sub_app ? sub_app.titleize : root.basename.to_s.titleize
     end
 
     # Description for the batch connect app

@@ -7,8 +7,6 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
       r.path.join("form.yml").write("--x-\nnot a valid form yaml")
 
       app = BatchConnect::App.new(router: r)
-
-      assert_equal "No title set", app.title
       assert ! app.valid?
     }
   end
@@ -18,9 +16,16 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
       r = PathRouter.new(dir + "/missing_app")
       app = BatchConnect::App.new(router: r)
 
-      assert_equal "No title set", app.title
       assert ! app.valid?
       assert_match /app does not supply.*a form file/, app.validation_reason
+    }
+  end
+
+  test "test default app title" do
+    Dir.mktmpdir { |dir|
+      r = PathRouter.new(dir + "/missing_app")
+      assert_equal "Missing App", BatchConnect::App.new(router: r).title
+      assert_equal "Owens Vdi", BatchConnect::App.new(router: r, sub_app: "owens-vdi").title
     }
   end
 end
