@@ -179,7 +179,7 @@ module BatchConnect
 
     private
       def build_sub_app_list
-        return [self] unless sub_app_root.directory?
+        return [self] unless sub_app_root.directory? && sub_app_root.readable? && sub_app_root.executable?
         list = sub_app_root.children.select(&:file?).map do |f|
           root = f.dirname
           name = f.basename.to_s.split(".").first
