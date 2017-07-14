@@ -32,31 +32,37 @@ class ManifestTest < ActiveSupport::TestCase
   end
 
   test "save a valid manifest" do
-    manifest_file = Tempfile.new('manifest.yml', Dir.mktmpdir).path
-    manifest = Manifest.load("test/fixtures/files/manifest_valid")
-    save_result = manifest.save(manifest_file)
-    new_manifest = Manifest.load(manifest_file)
-    assert_equal true, save_result, "Result should save"
-    assert_instance_of Manifest, new_manifest, "Not a Manifest Object"
-    assert_equal manifest.to_yaml, new_manifest.to_yaml, "The saved manifest does not match the original"
+    Dir.mktmpdir { |dir|
+      manifest_file = Tempfile.new('manifest.yml', dir).path
+      manifest = Manifest.load("test/fixtures/files/manifest_valid")
+      save_result = manifest.save(manifest_file)
+      new_manifest = Manifest.load(manifest_file)
+      assert_equal true, save_result, "Result should save"
+      assert_instance_of Manifest, new_manifest, "Not a Manifest Object"
+      assert_equal manifest.to_yaml, new_manifest.to_yaml, "The saved manifest does not match the original"
+    }
   end
 
   test "save an InvalidManifest" do
-    manifest_file = Tempfile.new('manifest.yml', Dir.mktmpdir).path
-    manifest = Manifest.load("test/fixtures/files/manifest_invalid")
-    save_result = manifest.save(manifest_file + "empty")
-    new_manifest = Manifest.load(manifest_file + "empty")
-    assert_equal false, save_result, "Result should not save"
-    assert_instance_of MissingManifest, new_manifest, "Should not exist"
+    Dir.mktmpdir { |dir|
+      manifest_file = Tempfile.new('manifest.yml', dir).path
+      manifest = Manifest.load("test/fixtures/files/manifest_invalid")
+      save_result = manifest.save(manifest_file + "empty")
+      new_manifest = Manifest.load(manifest_file + "empty")
+      assert_equal false, save_result, "Result should not save"
+      assert_instance_of MissingManifest, new_manifest, "Should not exist"
+    }
   end
 
   test "save a MissingManifest" do
-    manifest_file = Tempfile.new('manifest.yml', Dir.mktmpdir).path
-    manifest = Manifest.load("test/fixtures/files/manifest_missing")
-    save_result = manifest.save(manifest_file + "empty")
-    new_manifest = Manifest.load(manifest_file + "empty")
-    assert_equal false, save_result, "Result should not save"
-    assert_instance_of MissingManifest, new_manifest, "Should not exist"
+    Dir.mktmpdir { |dir|
+      manifest_file = Tempfile.new('manifest.yml', dir).path
+      manifest = Manifest.load("test/fixtures/files/manifest_missing")
+      save_result = manifest.save(manifest_file + "empty")
+      new_manifest = Manifest.load(manifest_file + "empty")
+      assert_equal false, save_result, "Result should not save"
+      assert_instance_of MissingManifest, new_manifest, "Should not exist"
+    }
   end
 
   test "merge manifests" do
