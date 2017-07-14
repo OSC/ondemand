@@ -26,24 +26,7 @@
       <%= render partial: 'batch_connect/sessions/app_list', collection: @apps, locals: { current_app_token: @app.base_token } %>
     </div>
 
-    <%# More than one sub app so display tabs %>
-    <% if @sub_apps.size > 1 %>
-      <div class="col-md-3 col-md-push-6">
-        <ul class="nav nav-pills nav-stacked well">
-          <% @sub_apps.each do |sub_app| %>
-            <li class="<%= "active" if @app == sub_app %> <%= "disabled" unless sub_app.valid? %>">
-              <% if sub_app.valid? %>
-                <%= link_to sub_app.title, new_batch_connect_session_context_path(token: sub_app.token) %>
-              <% else %>
-                <a data-toggle="tooltip" data-placement="bottom" title="<%= sub_app.validation_reason %>"><%= sub_app.title %></a>
-              <% end %>
-            </li>
-          <% end %>
-        </ul>
-      </div><!-- /.col-md-3 -->
-    <% end %>
-
-    <div class="col-md-6 <%= "col-md-pull-3" if @sub_apps.size > 1 %>">
+    <div class="col-md-6">
       <div class="ood-appkit markdown">
         <%= OodAppkit.markdown.render(@app.description).html_safe %>
 

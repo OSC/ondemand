@@ -69,7 +69,13 @@ module BatchConnect
     # Title for the batch connect app
     # @return [String] title of app
     def title
-      form_config.fetch(:title, "No title set")
+      form_config.fetch(:title, default_title)
+    end
+
+    # Default title for the batch connect app
+    # @return [String] default title of app
+    def default_title
+      sub_app ? sub_app.titleize : root.basename.to_s.titleize
     end
 
     # Description for the batch connect app
@@ -93,13 +99,17 @@ module BatchConnect
     # Whether this is a valid app the user can use
     # @return [Boolean] whether valid app
     def valid?
-      cluster && cluster.job_allow?
+      (! form_config.empty?) && cluster && cluster.job_allow?
     end
 
     # The reason why this app may or may not be valid
     # @return [String] reason why not valid
     def validation_reason
-      if !cluster
+      return @validation_reason if @validation_reason
+
+      if !cluster_id
+        "This app does not specify a cluster."
+      elsif !cluster
         "This app requires a cluster that does not exist."
       elsif !cluster.job_allow?
         "You do not have access to use this app."
@@ -151,14 +161,7 @@ module BatchConnect
     # (including this app as well)
     # @return [Array<App>] list of sub apps
     def sub_app_list
-      return [self] unless sub_app_root.directory?
-      list = sub_app_root.children.select(&:file?).map do |f|
-        root = f.dirname
-        name = f.basename.to_s.split(".").first
-        file = form_file(root: root, name: name)
-        self.class.new(router: router, sub_app: name) if f == file
-      end.compact
-      list.empty? ? [self] : list.sort_by(&:sub_app)
+      @sub_app_list ||= build_sub_app_list
     end
 
     # Convert object to string
@@ -175,6 +178,17 @@ module BatchConnect
     end
 
     private
+      def build_sub_app_list
+        return [self] unless sub_app_root.directory? && sub_app_root.readable? && sub_app_root.executable?
+        list = sub_app_root.children.select(&:file?).map do |f|
+          root = f.dirname
+          name = f.basename.to_s.split(".").first
+          file = form_file(root: root, name: name)
+          self.class.new(router: router, sub_app: name) if f == file
+        end.compact
+        list.empty? ? [self] : list.sort_by(&:sub_app)
+      end
+
       # Path to file describing form hash
       def form_file(root:, name: "form")
         %W(#{name}.yml.erb #{name}.yml).map { |f| root.join(f) }.select(&:file?).first
@@ -205,6 +219,12 @@ module BatchConnect
           hsh = hsh.deep_merge read_yaml_erb(path: file, binding: binding)
         end
         @form_config = hsh
+      rescue AppNotFound => e
+        @validation_reason = e.message
+        return {}
+      rescue => e
+        @validation_reason = "#{e.class.name}: #{e.message}"
+        return {}
       end
 
       # Hash describing the full submission properties

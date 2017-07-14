@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- Show batch connect "subapps" in navigation instead of just the parent app
+- Default batch connect app titles to name of directory or subapp
+
+### Fixed
+
+- Prevent problems with batch connect app from causing dashboard to crash
+- Properly clean up /tmp after running unit tests
+
+
 ### Added
 
 - Added support for the PBS Pro adapter when using the `bc_num_slots` smart
