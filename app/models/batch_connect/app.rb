@@ -99,9 +99,7 @@ module BatchConnect
     # Whether this is a valid app the user can use
     # @return [Boolean] whether valid app
     def valid?
-      return false if @validation_reason
-
-      cluster && cluster.job_allow?
+      (! form_config.empty?) && cluster && cluster.job_allow?
     end
 
     # The reason why this app may or may not be valid
