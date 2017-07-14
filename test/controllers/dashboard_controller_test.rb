@@ -81,14 +81,14 @@ class DashboardControllerTest < ActionController::TestCase
       "Interactive Sessions",
       :divider,
       {header: "Apps"},
-      "Jupyter",
+      "Jupyter Notebook",
       "Paraview",
       :divider,
       {header: "Desktops"},
-      "Desktops"], dditems
+      "Oakley Desktop"], dditems
 
-    assert_select dd, "li a", "Desktops" do |link|
-      assert_equal "/batch_connect/sys/bc_desktop/session_contexts/new", link.first['href'], "Desktops link is incorrect"
+    assert_select dd, "li a", "Oakley Desktop" do |link|
+      assert_equal "/batch_connect/sys/bc_desktop/oakley/session_contexts/new", link.first['href'], "Desktops link is incorrect"
     end
 
     SysRouter.unstub(:base_path)
