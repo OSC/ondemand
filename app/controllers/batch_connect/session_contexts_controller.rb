@@ -11,9 +11,7 @@ class BatchConnect::SessionContextsController < ApplicationController
       @session_context.from_json(cache_file.read) if cache_file.file?
     else
       @session_context = nil  # do not display session context form
-      flash.now[:alert] = <<-EOT.html_safe
-        #{@app.validation_reason} Please contact support if you see this message
-      EOT
+      flash.now[:alert] = @app.validation_reason
     end
   end
 
