@@ -38,6 +38,13 @@ group :development do
   # gem 'web-console', '~> 2.0'
 end
 
+# thor > 0.19.1 prints some warnings to stderr which will require changes
+# from rails. We can't make the warnings go away. Once rails fixes these
+# warnings, this line can be removed entirely from our Gemfile.
+# https://github.com/rails/rails/issues/27229
+# https://github.com/erikhuda/thor/issues/538
+gem 'thor', '0.19.1'
+
 # Extra third-party gems
 gem 'dotenv-rails', '~> 2.0', require: 'dotenv/rails-now'
 gem 'bootstrap-sass', '~> 3.3'

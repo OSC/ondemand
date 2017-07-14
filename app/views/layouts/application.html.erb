@@ -49,9 +49,13 @@
           <span aria-hidden="true">&times;</span>
           <span class="sr-only">Close</span>
         </button>
-        OnDemand currently does not support the Safari browser at this time.
-        Not all applications will work currently with this browser, it is
-        recommended that you use a different browser.
+        As currently configured, the Cluster and Interactive Apps of Open
+        OnDemand do not work with Safari. This is due to a bug in Safari with
+        using websockets through servers protected using "Basic" auth. Open
+        OnDemand can be installed with another authentication mechanism such as
+        Shibboleth or OpenID Connect. If "Basic" auth is required, Mac users
+        can connect with other browsers like Chrome or Firefox. Please contact
+        this site’s technical support and report this message.
       </div>
     <% end %>
 

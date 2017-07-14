@@ -35,6 +35,8 @@ module SmartAttributes
         str = opts[:label] || case fmt
         when "lsf"
           "Number of processors"
+        when "pbspro"
+          "Number of CPUs on single node"
         else
           "Number of nodes"
         end
@@ -57,10 +59,14 @@ module SmartAttributes
           native = { resources: { nodes: slots } }
         when "slurm"
           native = ["-N", slots]
-        else
+        when "pbspro"
+          native = ["-l", "select=1:ncpus=#{slots}"]
+        when "lsf"
           native = ["-n", slots]
+        else
+          native = nil
         end
-        { script: { native: native } }
+        native ? { script: { native: native } } : {}
       end
     end
   end
