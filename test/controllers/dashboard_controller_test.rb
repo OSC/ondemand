@@ -5,13 +5,11 @@ class DashboardControllerTest < ActionController::TestCase
   def setup
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys"))
     OodFilesApp.any_instance.stubs(:favorite_paths).returns([Pathname.new("/fs/scratch/efranz")])
-    OodAppkit.stubs(:clusters).returns([])
   end
 
   def teardown
     SysRouter.unstub(:base_path)
     OodFilesApp.any_instance.unstub(:favorite_paths)
-    OodAppkit.unstub(:clusters)
   end
 
   def dropdown_list(title)
@@ -58,7 +56,13 @@ class DashboardControllerTest < ActionController::TestCase
     dditems = dropdown_list_items(dd)
 
     assert dditems.any?, "dropdown list items not found"
-    assert_equal ["Shell Access", "System Status"], dditems
+
+    #FIXME: reorder so this is alphabetical, then fix code
+    assert_equal [
+      "Ruby Shell Access",
+      "Owens Shell Access",
+      "Oakley Shell Access",
+      "System Status"], dditems
 
     assert_select dd, "li a", "System Status" do |link|
       assert_equal "/apps/show/systemstatus", link.first['href'], "System Status link is incorrect"
