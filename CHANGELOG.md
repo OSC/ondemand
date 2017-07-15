@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Show cluster errors as a dismissable bootstrap alert
 - Add extended data support for PBS Professional
+- Add extended data support for LSF
 
 ### Changed
 - Update to `ood_appkit v1.0.2` and `ood_core v0.0.5`

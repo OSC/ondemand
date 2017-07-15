@@ -37,13 +37,14 @@ class Jobstatusdata
       self.nodes = node_array(info.allocated_nodes)
       self.starttime = info.dispatch_time.to_i
     end
-    # TODO Find a better way to distingush whether a native parser is available. Maybe this is fine?
-    self.extended_available = cluster.job_config[:adapter] == "torque" || cluster.job_config[:adapter] == "slurm" || cluster.job_config[:adapter] == "pbspro"
+    self.extended_available = %w(torque slurm lsf pbspro).include?(cluster.job_config[:adapter])
     if extended
       if cluster.job_config[:adapter] == "torque"
         extended_data_torque(info)
       elsif cluster.job_config[:adapter] == "slurm"
         extended_data_slurm(info)
+      elsif cluster.job_config[:adapter] == "lsf"
+        extended_data_lsf(info)
       elsif cluster.job_config[:adapter] == "pbspro"
         extended_data_pbspro(info)
       else
@@ -56,6 +57,7 @@ class Jobstatusdata
   # Store additional data about the job. (Torque-specific)
   #
   # Parses the `native` info function for additional information about jobs on Torque systems.
+  #   https://github.com/OSC/ood_core/blob/master/spec/job/adapters/torque_spec.rb
   #
   # @return [Jobstatusdata] self
   def extended_data_torque(info)
@@ -92,6 +94,7 @@ class Jobstatusdata
   # Store additional data about the job. (SLURM-specific)
   #
   # Parses the `native` info function for additional information about jobs on SLURM systems.
+  #   https://github.com/OSC/ood_core/blob/master/spec/job/adapters/slurm_spec.rb
   #
   # @return [Jobstatusdata] self
   def extended_data_slurm(info)
@@ -118,6 +121,38 @@ class Jobstatusdata
     output_pathname = Pathname.new(info.native[:work_dir])
     self.file_explorer_url = build_file_explorer_url(output_pathname)
     self.shell_url = build_shell_url(output_pathname, self.cluster)
+
+    self
+  end
+
+  # Store additional data about the job. (LSF-specific)
+  #
+  # Parses the `native` info function for additional information about jobs on LSF systems.
+  #   https://github.com/OSC/ood_core/blob/master/spec/job/adapters/lsf_spec.rb
+  #
+  # @return [Jobstatusdata] self
+  def extended_data_lsf(info)
+    return unless info.native
+    attributes = []
+    attributes.push Attribute.new "Job Id", self.pbsid
+    attributes.push Attribute.new "User", self.username
+    attributes.push Attribute.new "Queue", self.queue
+    attributes.push Attribute.new "Cluster", self.cluster_title
+    attributes.push Attribute.new "From Host", info.native[:from_host]
+    attributes.push Attribute.new "Exec Host", info.native[:exec_host]
+    attributes.push Attribute.new "Job Name", self.jobname
+    attributes.push Attribute.new "Submit Time", info.native[:submit_time]
+    attributes.push Attribute.new "Project Name", info.native[:project]
+    attributes.push Attribute.new "CPU Used", info.native[:cpu_used]
+    attributes.push Attribute.new "Mem", info.native[:mem]
+    attributes.push Attribute.new "Swap", info.native[:swap]
+    attributes.push Attribute.new "PIDs", info.native[:pids]
+    attributes.push Attribute.new "Start Time", info.native[:start_time]
+    attributes.push Attribute.new "Finish Time", info.native[:finish_time]
+
+    self.native_attribs = attributes
+
+    # LSF output is a little sparse at the moment. No output path or submit args are available.
 
     self
   end
