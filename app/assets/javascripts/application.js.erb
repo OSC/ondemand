@@ -132,10 +132,15 @@ $(document).ready( function() {
                 "autoWidth":        true
             }
         ]
-    });
-        // Optional, if you want full pagination controls.
-        // Check dataTables documentation to learn more about available options.
-        // http://datatables.net/reference/option/pagingType
+    }).on( 'error.dt', function ( e, settings, techNote, message ) {
+        // Event is fired when there's an error loading or parsing the datatable.
+        show_errors(['There was an error getting data from the remote server.']);
+        console.log('Datatables error: ' + message);
+    } );
+
+    // Override the Datatables default error message functionality
+    //   https://datatables.net/reference/event/error
+    $.fn.dataTable.ext.errMode = 'none'
 
     // Add event listener for opening and closing details
     $('#job_status_table tbody').on('click', '.details-control', function () {
