@@ -59,9 +59,9 @@ class DashboardControllerTest < ActionController::TestCase
 
     #FIXME: reorder so this is alphabetical, then fix code
     assert_equal [
-      "Ruby Shell Access",
-      "Owens Shell Access",
       "Oakley Shell Access",
+      "Owens Shell Access",
+      "Ruby Shell Access",
       "System Status"], dditems
 
     assert_select dd, "li a", "System Status" do |link|
