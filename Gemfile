@@ -62,5 +62,5 @@ gem "spring", group: :test
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'
 gem 'ood_appkit', '~> 1.0'
-gem 'pbs', '~> 2.0'
-gem 'ood_core', git: 'https://github.com/OSC/ood_core.git'
+gem 'ood_core', '~> 0.1'
+gem 'pbs', '~> 2.1'
