@@ -1,11 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [v1.5.0] - 2017-07-17
 
 ### Added
 
 - Show native comment if one is available (Torque)
+
+### Changed
+
+- Update to `ood_appkit v1.0.3` and `ood_core v0.1.0`
+- Add a bootstrap alert message instead of a js alert on ajax failure
 
 ## [v1.4.6] - 2017-07-10
 
@@ -40,7 +45,8 @@ All notable changes to this project will be documented in this file.
 - Remove OSC copyright from footer
 - Remove deprecation warnings
 
-[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.4.6...HEAD
+[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.5.0...HEAD
+[v1.5.0]: https://github.com/OSC/ood-activejobs/compare/v1.4.6...v1.5.0
 [v1.4.6]: https://github.com/OSC/ood-activejobs/compare/v1.4.5...v1.4.6
 [v1.4.5]: https://github.com/OSC/ood-activejobs/compare/v1.4.4...v1.4.5
 [v1.4.4]: https://github.com/OSC/ood-activejobs/compare/v1.4.3...v1.4.4
