@@ -24,5 +24,4 @@ class ApplicationController < ActionController::Base
   rescue => e
     logger.warn "Failed to read announcement file at: #{path} with error: #{e.message}"
   end
-
 end
