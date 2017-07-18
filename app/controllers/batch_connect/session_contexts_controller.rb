@@ -2,36 +2,23 @@ class BatchConnect::SessionContextsController < ApplicationController
   # GET /batch_connect/<app_token>/session_contexts/new
   def new
     set_app
-    set_sub_apps
     set_render_format
     set_session_context
     set_apps
-
-    # Redirect to first valid sub app otherwise first invalid sub app
-    unless @sub_apps.include? @app
-      sub_app_token = ( @sub_apps.select(&:valid?).first || @sub_apps.first ).token
-      redirect_to new_batch_connect_session_context_url(token: sub_app_token)
-    end
 
     if @app.valid?
       # Read in context from cache file
       @session_context.from_json(cache_file.read) if cache_file.file?
     else
       @session_context = nil  # do not display session context form
-      flash.now[:alert] = <<-EOT.html_safe
-        #{@app.validation_reason} Please contact support if you see this message
-      EOT
+      flash.now[:alert] = @app.validation_reason
     end
-  rescue BatchConnect::App::AppNotFound => e
-    flash.now[:alert] = e.message
-    @app = nil
   end
 
   # POST /batch_connect/<app_token>/session_contexts
   # POST /batch_connect/<app_token>/session_contexts.json
   def create
     set_app
-    set_sub_apps
     set_render_format
     set_session_context
     set_apps
@@ -62,11 +49,6 @@ class BatchConnect::SessionContextsController < ApplicationController
     def set_apps
       # get lists of apps
       @apps = sys_app_groups.select(&:has_batch_connect_apps?)
-    end
-
-    # Set the list of sub apps
-    def set_sub_apps
-      @sub_apps = @app.sub_app_list
     end
 
     # Set the session context from the app

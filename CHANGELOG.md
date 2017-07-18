@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.15.0] - 2017-17-17
+
 ### Added
 
 - Added support for the PBS Pro adapter when using the `bc_num_slots` smart
@@ -14,10 +16,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+- Show batch connect "subapps" in navigation instead of just the parent app
+- Default batch connect app titles to name of directory or subapp
 - Changed wording in the Safari websocket alert message to be more helpful.
 
 ### Fixed
 
+- Prevent problems with batch connect app from causing dashboard to crash
+- Properly clean up /tmp after running unit tests
 - Stopped `spring` from loading on every `bin/rails` and `bin/rake` request.
 - Drop back `thor` dependency to remove warning messages.
   [#192](https://github.com/OSC/ood-dashboard/issues/192)
@@ -98,7 +104,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.14.1...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.15.0...HEAD
+[1.15.0]: https://github.com/OSC/ood-dashboard/compare/v1.14.1...v1.15.0
 [1.14.1]: https://github.com/OSC/ood-dashboard/compare/v1.14.0...v1.14.1
 [1.14.0]: https://github.com/OSC/ood-dashboard/compare/v1.13.3...v1.14.0
 [1.13.3]: https://github.com/OSC/ood-dashboard/compare/v1.13.2...v1.13.3
