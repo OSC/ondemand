@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.15.1] - 2017-07-20
 
 ### Fixed
 
@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Browser requirement warnings now show up on every page on the Dashboard.
   [#194](https://github.com/OSC/ood-dashboard/pull/194)
 
-## [1.15.0] - 2017-17-17
+## [1.15.0] - 2017-07-17
 
 ### Added
 
@@ -111,7 +111,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.15.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.15.1...HEAD
+[1.15.1]: https://github.com/OSC/ood-dashboard/compare/v1.15.0...v1.15.1
 [1.15.0]: https://github.com/OSC/ood-dashboard/compare/v1.14.1...v1.15.0
 [1.14.1]: https://github.com/OSC/ood-dashboard/compare/v1.14.0...v1.14.1
 [1.14.0]: https://github.com/OSC/ood-dashboard/compare/v1.13.3...v1.14.0
