@@ -130,8 +130,10 @@ module BatchConnect::SessionsHelper
   end
 
   def novnc_link(connect, view_only: false)
-    version = browser.safari? ? "0.6.2" : "55b459b"
-    asset_path("noVNC-#{version}/vnc.html?autoconnect=true&password=#{view_only ? connect.spassword : connect.password}&path=rnode/#{connect.host}/#{connect.websocket}/websockify&resize=#{view_only ? "downscale" : "remote"}", skip_pipeline: true)
+    version  = browser.safari? ? "0.6.2" : "55b459b"
+    password = view_only ? connect.spassword : connect.password
+    resize   = view_only ? "downscale" : "remote"
+    asset_path("noVNC-#{version}/vnc.html?autoconnect=true&password=#{password}&path=rnode/#{connect.host}/#{connect.websocket}/websockify&resize=#{resize}", skip_pipeline: true)
   end
 
   def session_save_errors(errors)
