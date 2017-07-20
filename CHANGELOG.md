@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix resize issue observed for "View Only" connections with noVNC and latest
+  TurboVNC. [#206](https://github.com/OSC/ood-dashboard/issues/206)
+
 ## [1.15.0] - 2017-17-17
 
 ### Added
