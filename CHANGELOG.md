@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Fix resize issue observed for "View Only" connections with noVNC and latest
   TurboVNC. [#206](https://github.com/OSC/ood-dashboard/issues/206)
+- Browser requirement warnings now show up on every page on the Dashboard.
+  [#194](https://github.com/OSC/ood-dashboard/pull/194)
 
 ## [1.15.0] - 2017-17-17
 
