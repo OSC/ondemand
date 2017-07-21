@@ -139,9 +139,6 @@ wget https://nodejs.org/dist/v6.11.1/node-v6.11.1-linux-x64.tar.xz
 tar xf node-v6.11.1-linux-x64.tar.xz
 ```
 
-Next we will go to the development Dashboard code and download noVNC under the
-`public/` root path:
-
 Next we download and build noVNC:
 
 ```sh
