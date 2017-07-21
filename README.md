@@ -117,6 +117,69 @@ DISABLE_SAFARI_BASIC_AUTH_WARNING=1
 You can launch iHPC sessions using a rake task. See the wiki page
 https://github.com/OSC/ood-dashboard/wiki/iHPC-CLI
 
+## Development
+
+### Updating noVNC
+
+To update noVNC you need to first download and unzip the latest stable Node.js.
+You can find the latest downloads here:
+
+https://nodejs.org/en/download/
+
+For our demonstration purposes I will use Node.js v6.11.1:
+
+```sh
+# Go to my home directory
+cd ${HOME}
+
+# Get latest stable node.js
+wget https://nodejs.org/dist/v6.11.1/node-v6.11.1-linux-x64.tar.xz
+
+# Unzip it
+tar xf node-v6.11.1-linux-x64.tar.xz
+```
+
+Next we will go to the development Dashboard code and download noVNC under the
+`public/` root path:
+
+Next we download and build noVNC:
+
+```sh
+# Go to my home directory
+cd ${HOME}
+
+# Download the commit of noVNC we are interested in
+wget https://github.com/novnc/noVNC/archive/edb7879927c18dd2aaf3b86c99df69ba4fbb0eab.zip
+
+# Unzip it
+unzip edb7879927c18dd2aaf3b86c99df69ba4fbb0eab.zip
+
+# Go into the noVNC directory
+cd noVNC-edb7879927c18dd2aaf3b86c99df69ba4fbb0eab/
+
+# Install the dependency packages
+PATH=${HOME}/node-v6.11.1-linux-x64/bin:$PATH npm install
+
+# Build the noVNC libraries
+PATH=${HOME}/node-v6.11.1-linux-x64/bin:$PATH utils/use_require.js --as commonjs --with-app
+```
+
+Now we copy the build to our Dashboard code under the `public/` root with an
+appropriately named directory (typically a shortened-form of the SHA commit):
+
+```sh
+cp -r build ${HOME}/ondemand/dev/ood-dashboard/public/noVNC-edb7879
+```
+
+Finally we need to update the Dashboard code to use this new version of noVNC.
+We edit this file under the Dashboard code:
+
+```
+app/helpers/batch_connect/sessions_helper.rb
+```
+
+And modify `BatchConnect::SessionsHelper#novnc_link` with the new version.
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at
