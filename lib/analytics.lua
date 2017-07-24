@@ -44,16 +44,19 @@ function analytics_handler(r)
     local time_user_map = time_user_map and math.floor(time_user_map) or 0
 
     -- custom dimensions / metrics
-    local cd1 = user                     -- Username        (User)
-    local cd2 = unique_id                -- Session ID      (Session)
-    local cd3 = os.date('!%Y-%m-%dT%TZ') -- Timestamp       (Hit)
-    local cd4 = r.user                   -- Remote Username (Hit)
-    local cd5 = r.method                 -- Request Method  (Hit)
-    local cd6 = tostring(r.status)       -- Request Status  (Hit)
-    local cm1 = tostring(time_proxy)     -- Proxy Time      (Hit/Integer)
-    local cm2 = tostring(time_user_map)  -- User Map Time   (Hit/Integer)
+    local cd1 = user                     -- Username          (User)
+    local cd2 = unique_id                -- Session ID        (Session)
+    local cd3 = os.date('!%Y-%m-%dT%TZ') -- Timestamp         (Hit)
+    local cd4 = r.user                   -- Remote Username   (Hit)
+    local cd5 = r.method                 -- Request Method    (Hit)
+    local cd6 = tostring(r.status)       -- Request Status    (Hit)
+    local cd7 = doc_referrer             -- Document Referrer (Hit)
+    local cm1 = tostring(time_proxy)     -- Proxy Time        (Hit/Integer)
+    local cm2 = tostring(time_user_map)  -- User Map Time     (Hit/Integer)
 
     -- process analytics
+    -- NB: Do not use the measurement protocol's document referrer as it can
+    --     start a new session when it changes (so we use a custom dimension)
     local now = r:clock()
     local query = 'v=' .. r:escape(version) ..
       '&t='   .. r:escape(hit_type) ..
@@ -62,7 +65,6 @@ function analytics_handler(r)
       '&uid=' .. r:escape(user_id) ..
       '&uip=' .. r:escape(user_ip) ..
       '&ua='  .. r:escape(user_agent) ..
-      '&dr='  .. r:escape(doc_referrer) ..
       '&de='  .. r:escape(doc_encoding) ..
       '&ul='  .. r:escape(user_language) ..
       '&dh='  .. r:escape(doc_host) ..
@@ -73,6 +75,7 @@ function analytics_handler(r)
       '&cd4=' .. r:escape(cd4) ..
       '&cd5=' .. r:escape(cd5) ..
       '&cd6=' .. r:escape(cd6) ..
+      '&cd7=' .. r:escape(cd7) ..
       '&cm1=' .. r:escape(cm1) ..
       '&cm2=' .. r:escape(cm2)
     local handle = io.popen("wget --post-data='" .. query .. "' " .. tracking_url .. " -O /dev/null -T 5 -nv 2>&1")

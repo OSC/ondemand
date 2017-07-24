@@ -9,6 +9,8 @@ Features:
 Bugfixes:
 
   - removed unnecessary 307 redirects
+  - Fix for GA session blow up due to changing document referrer.
+    [#11](https://github.com/OSC/mod_ood_proxy/issues/11)
 
 ## 0.2.0 (2017-01-30)
 
