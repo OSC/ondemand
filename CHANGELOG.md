@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.3.0] - 2017-07-24
 ### Added
 - Add `OOD_USER_ENV` to specify CGI env var used for authenticated username
 
@@ -65,7 +67,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Initial release!
 
-[Unreleased]: https://github.com/OSC/mod_ood_proxy/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/OSC/mod_ood_proxy/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/OSC/mod_ood_proxy/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/OSC/mod_ood_proxy/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/OSC/mod_ood_proxy/compare/v0.0.6...v0.1.0
 [0.0.6]: https://github.com/OSC/mod_ood_proxy/compare/v0.0.5...v0.0.6
