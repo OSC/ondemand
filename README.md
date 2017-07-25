@@ -7,7 +7,7 @@ Generates an Apache configuration file that can be used for hosting an Open
 OnDemand portal on the OnDemand Server.
 
 For more information please visit the
-[Documentation](https://osc.github.io/ood-documentation/infrastructure/ood-portal-generator.html).
+[Documentation](https://osc.github.io/ood-documentation/master/infrastructure/ood-portal-generator.html).
 
 ## Contributing
 

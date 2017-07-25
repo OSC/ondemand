@@ -4,6 +4,10 @@ Features:
 
   - added configuration option for OOD_USER_ENV used in mod_ood_proxy
 
+Bugfixes:
+
+  - fixed link to documentation in `README.md`
+
 ## 0.3.1 (2017-03-06)
 
 Bugfixes:
