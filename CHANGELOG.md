@@ -1,5 +1,9 @@
 ## Unreleased
 
+Bugfixes:
+
+  - fixed link to documentation in `README.md`
+
 ## 0.0.3 (2016-09-27)
 
 Features:

@@ -10,7 +10,7 @@ client to the correct backend per-user NGINX process listening on a Unix domain
 socket.
 
 For more information please visit the
-[Documentation](https://osc.github.io/ood-documentation/infrastructure/ood-auth-map.html).
+[Documentation](https://osc.github.io/ood-documentation/master/infrastructure/ood-auth-map.html).
 
 ## Contributing
 
