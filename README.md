@@ -6,7 +6,7 @@
 An Apache HTTP Server module implementing the Open OnDemand proxy API.
 
 For more information please visit the
-[Documentation](https://osc.github.io/ood-documentation/infrastructure/mod-ood-proxy.html).
+[Documentation](https://osc.github.io/ood-documentation/master/infrastructure/mod-ood-proxy.html).
 
 ## Contributing
 

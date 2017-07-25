@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+- Fixed link to documentation in `README.md`.
+
 ## [0.3.0] - 2017-07-24
 ### Added
 - Add `OOD_USER_ENV` to specify CGI env var used for authenticated username
