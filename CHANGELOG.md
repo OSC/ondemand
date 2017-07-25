@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - Fixed link to documentation in `README.md`.
+- Fixed version number in Lua code.
 
 ## [0.3.0] - 2017-07-24
 ### Added
