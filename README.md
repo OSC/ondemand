@@ -8,7 +8,7 @@ is also responsible for staging, listing, and cleaning up web application NGINX
 configuration files, as well as listing and stopping running PUNs.
 
 For more information please visit the
-[Documentation](https://osc.github.io/ood-documentation/infrastructure/nginx-stage.html).
+[Documentation](https://osc.github.io/ood-documentation/master/infrastructure/nginx-stage.html).
 
 ## Contributing
 
