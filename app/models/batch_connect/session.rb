@@ -3,6 +3,16 @@ module BatchConnect
     include ActiveModel::Model
     include ActiveModel::Serializers::JSON
 
+    # This class describes the object that is bound to the ERB template file
+    # when it is rendered
+    TemplateBinding = Struct.new(:session, :context) do
+      # Get the binding for this object
+      # @return [Binding] this object's binding
+      def get_binding
+        binding()
+      end
+    end
+
     # Unique identifier that describes this session
     # @return [String] session id
     attr_accessor :id
@@ -126,20 +136,34 @@ module BatchConnect
       self.view       = app.session_view
       self.created_at = Time.now.to_i
 
-      stage(root: app.root.join("template")) &&
+      stage(app.root.join("template"), context: context) &&
         submit(app.submit_opts(context, fmt: format))
     end
 
     # Stage the app's job template to user's staging directory
     # @param root [#to_s] root directory that gets staged
+    # @param context [Object] context available to post-processed staged files
     # @return [Boolean] whether staged successfully
-    def stage(root:)
+    def stage(root, context: nil)
+      # Sync the template files over
       oe, s = Open3.capture2e("rsync -av --delete #{root}/ #{staged_root}")
       unless s.success?
         errors.add(:stage, oe)
         Rails.logger.error(oe)
+        return false
       end
-      s.success?
+
+      # Post process the template files
+      template_binding = TemplateBinding.new(self, context)
+      template_files.each do |template_file|
+        rendered_file = template_file.sub_ext("")
+        template = template_file.read
+        rendered = ERB.new(template, nil, "-").result(template_binding.get_binding)
+        template_file.rename rendered_file
+        rendered_file.write(rendered)
+      end
+
+      true
     end
 
     # Submit session's script to the cluster and record job id to database
@@ -150,7 +174,7 @@ module BatchConnect
       db_file.write(to_json)
       true
     rescue ClusterNotFound, AdapterNotAllowed, OodCore::JobAdapterError => e
-      output_root.rmtree
+      staged_root.rmtree
       errors.add(:submit, e.message)
       Rails.logger.error(e.message)
       false
@@ -182,14 +206,18 @@ module BatchConnect
         # hopefully lsf also sets the shell from the shebang
       end
 
-      OodCore::Job::Script.new(
-        {
-          content: script_content(bc_opts),
-          job_name: job_name,
-          workdir: output_root,
-          output_path: output_file
-        }.merge script_opts
-      )
+      script_opts = {
+        content: script_content(bc_opts),
+        job_name: job_name,
+        workdir: staged_root,
+        output_path: output_file
+      }.merge script_opts
+
+      # Record the submission options for debugging purposes
+      job_script_file.write(script_opts[:content])
+      job_script_opts_file.write(script_opts.reject { |k, v| k == :content }.to_yaml)
+
+      OodCore::Job::Script.new(script_opts)
     end
 
     # The content of the batch script used for this session
@@ -202,12 +230,12 @@ module BatchConnect
       self.script_type = opts.fetch(:template, "basic")
 
       opts = opts.merge(
-        work_dir:    output_root,
+        work_dir:    staged_root,
         conn_file:   connect_file,
-        before_file: staged_root.join("before.sh"),
-        script_file: staged_root.join("script.sh"),
-        after_file:  staged_root.join("after.sh"),
-        clean_file:  staged_root.join("clean.sh"),
+        before_file: before_file,
+        script_file: script_file,
+        after_file:  after_file,
+        clean_file:  clean_file
       )
 
       script_template(opts).to_s
@@ -289,29 +317,65 @@ module BatchConnect
       status.completed?
     end
 
-    # Root directory that mirrors the batch connect app's job template
+    # Root directory where a job is staged and run in
     # @return [Pathname] staged root directory
     def staged_root
-      self.class.dataroot(token).join("staged").tap { |p| p.mkpath unless p.exist? }
+      self.class.dataroot(token).join("output", id).tap { |p| p.mkpath unless p.exist? }
     end
 
-    # Root directory for a job's output files
-    # @return [Pathname] output root directory
-    def output_root
-      self.class.dataroot(token).join("output", id).tap { |p| p.mkpath unless p.exist? }
+    # List of template files that need to be rendered
+    # @return [Array<Pathname>] list of template files
+    def template_files
+      Pathname.glob(staged_root.join("**", "*.erb")).select(&:file?)
+    end
+
+    # Path to script that is sourced before main script is forked
+    # @return [Pathname] before script file
+    def before_file
+      staged_root.join("before.sh")
+    end
+
+    # Path to script that is forked as the main script
+    # @return [Pathname] main script file
+    def script_file
+      staged_root.join("script.sh")
+    end
+
+    # Path to script that is sourced after main script is forked
+    # @return [Pathname] after script file
+    def after_file
+      staged_root.join("after.sh")
+    end
+
+    # Path to script that is sourced during clean up portion of batch job
+    # @return [Pathname] clean script file
+    def clean_file
+      staged_root.join("clean.sh")
+    end
+
+    # Path to file that describes the job script's content
+    # @return [Pathname] batch job script file
+    def job_script_file
+      staged_root.join("job_script.sh")
+    end
+
+    # Path to file that describes the job script's submission options
+    # @return [Pathname] batch job script options file
+    def job_script_opts_file
+      staged_root.join("job_script_opts.yml")
     end
 
     # Path to file that contains the connection information
     # @return [Pathname] connection file
     def connect_file
       # flush nfs cache when checking for this file
-      output_root.join("connection.yml").tap { |f| Dir.open(f.dirname.to_s).close }
+      staged_root.join("connection.yml").tap { |f| Dir.open(f.dirname.to_s).close }
     end
 
     # Path to file that job pipes stdout/stderr to
     # @return [Pathname] output file
     def output_file
-      output_root.join("output.log")
+      staged_root.join("output.log")
     end
 
     # The connection information for this session (job must be running)

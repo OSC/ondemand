@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Added support for ERB rendering of Batch Connect App template files.
+  [#179](https://github.com/OSC/ood-dashboard/issues/179)
+
 ## [1.15.2] - 2017-07-24
 
 ### Fixed
