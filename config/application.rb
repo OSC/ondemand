@@ -31,5 +31,14 @@ module Dashboard
 
     # Custom error pages
     config.exceptions_app = self.routes
+
+    # FIXME: ood config should be in OodAppkit and required here?
+    # dashboard shouldn't be hardcoded, but rather use directory name?
+    # could be an OodAppkit.custom_initializers_path
+    #
+    # Pathname.new(ENV['OOD_CONFIG'] || '/etc/ood/config').join("dashboard", "config", "initializers").to_s
+    #
+    # FIXME: how to write a test for this?
+    config.paths["config/initializers"] << "/users/PZS0562/efranz/awesim/config/dashboard/config/initializers" unless Rails.env.test?
   end
 end
