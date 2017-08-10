@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Navbar is more responsive with develop menu consistent with other dropdowns
+- Fixed viewport when viewing on mobile devices
+
+### Changed
+
+- Nav bar is absolutely positioned for responsive issues. The result is that
+  scrolling will shift the navbar out of the viewport.
+
 ## [1.15.2] - 2017-07-24
 
 ### Fixed
