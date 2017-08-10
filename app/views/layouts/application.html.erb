@@ -26,10 +26,10 @@
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
         <ul class="nav navbar-nav">
           <%= render partial: 'layouts/nav/group', collection: @nav_groups %>
-          <%= render partial: 'layouts/nav/develop_dropdown' if NavConfig.show_develop_dropdown %>
         </ul>
         <div class="navbar-right">
           <ul class="nav navbar-nav">
+            <%= render partial: 'layouts/nav/develop_dropdown' if NavConfig.show_develop_dropdown %>
             <%= render partial: "layouts/nav/help_dropdown" %>
           </ul>
           <p class="navbar-text">
