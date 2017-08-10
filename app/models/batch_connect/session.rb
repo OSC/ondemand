@@ -142,7 +142,7 @@ module BatchConnect
 
     # Stage the app's job template to user's staging directory
     # @param root [#to_s] root directory that gets staged
-    # @param context [Object] context available to post-processed staged files
+    # @param context [Object] context available when rendering staged files
     # @return [Boolean] whether staged successfully
     def stage(root, context: nil)
       # Sync the template files over
@@ -153,15 +153,11 @@ module BatchConnect
         return false
       end
 
-      # Post process the template files
-      template_binding = TemplateBinding.new(self, context)
-      template_files.each do |template_file|
-        rendered_file = template_file.sub_ext("")
-        template = template_file.read
-        rendered = ERB.new(template, nil, "-").result(template_binding.get_binding)
-        template_file.rename rendered_file
-        rendered_file.write(rendered)
-      end
+      # Render all template files using ERB
+      render_erb_files(
+        template_files,
+        binding: TemplateBinding.new(self, context).get_binding
+      )
 
       true
     end
@@ -403,6 +399,17 @@ module BatchConnect
           ENV["RAILS_RELATIVE_URL_ROOT"].sub(/^\/[^\/]+\//, ""),  # the OOD app
           token                 # the Batch Connect app
         ].reject(&:blank?).join("/")
+      end
+
+      # Render a list of files using ERB
+      def render_erb_files(files, binding: nil, remove_extension: true)
+        files.each do |file|
+          rendered_file = remove_extension ? file.sub_ext("") : file
+          template = file.read
+          rendered = ERB.new(template, nil, "-").result(binding)
+          file.rename rendered_file
+          rendered_file.write(rendered)
+        end
       end
   end
 end
