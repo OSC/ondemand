@@ -26,10 +26,21 @@
           <%= render partial: 'layouts/nav/group', collection: @nav_groups %>
           <%= render partial: 'layouts/nav/develop_dropdown' if NavConfig.show_develop_dropdown %>
         </ul>
-        <ul class="nav navbar-nav navbar-right">
-          <%= render partial: "layouts/nav/help_dropdown" %>
-          <%= render partial: "layouts/nav/user_dropdown" %>
-        </ul>
+        <div class="navbar-right">
+          <ul class="nav navbar-nav">
+            <%= render partial: "layouts/nav/help_dropdown" %>
+          </ul>
+          <p class="navbar-text">
+            <i class="fa fa-user" title="Logged in as <%= @user.name %>"></i>
+            <span class="hidden-sm"> Logged in as </span><%= @user.name %>
+          </p>
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="/logout"><i class="fa fa-sign-out"></i><span class="hidden-sm"> Log Out</span></a>
+            </li>
+            <li>
+          </ul>
+        </div>
       </div>
     </div>
   </nav>
