@@ -9,8 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Navbar is more responsive with develop menu consistent with other dropdowns
+- Navbar is more responsive with develop menu consistent with other dropdowns [#213](https://github.com/OSC/ood-dashboard/issues/213)
 - Fixed viewport when viewing on mobile devices
+- Show full text of navbar options when navbar is collapsed [#168](https://github.com/OSC/ood-dashboard/issues/168)
 
 ### Changed
 
