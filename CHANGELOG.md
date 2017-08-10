@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Added support for ERB rendering of Batch Connect App template files.
   [#179](https://github.com/OSC/ood-dashboard/issues/179)
+- Output informational files to staging directory of Batch Connect apps for
+  debugging purposes. [#165](https://github.com/OSC/ood-dashboard/issues/165)
 
 ## [1.15.2] - 2017-07-24
 
