@@ -32,9 +32,9 @@
             <%= render partial: 'layouts/nav/develop_dropdown' if NavConfig.show_develop_dropdown %>
             <%= render partial: "layouts/nav/help_dropdown" %>
           </ul>
-          <p class="navbar-text">
+          <p class="navbar-text" data-toggle="popover" data-content="Logged in as <%= @user.name %>" data-placement="bottom" >
             <i class="fa fa-user" title="Logged in as <%= @user.name %>"></i>
-            <span class="hidden-sm"> Logged in as </span><%= @user.name %>
+            <span class="hidden-sm"><span class="hidden-md"> Logged in as </span><%= @user.name %></span>
           </p>
           <ul class="nav navbar-nav">
             <li>
