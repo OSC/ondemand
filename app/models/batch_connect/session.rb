@@ -153,6 +153,9 @@ module BatchConnect
         return false
       end
 
+      # Output user submitted context attributes for debugging purposes
+      user_defined_context_file.write(JSON.pretty_generate context.as_json)
+
       # Render all template files using ERB
       render_erb_files(
         template_files,
@@ -211,7 +214,11 @@ module BatchConnect
 
       # Record the submission options for debugging purposes
       job_script_file.write(script_opts[:content])
-      job_script_opts_file.write(script_opts.reject { |k, v| k == :content }.to_yaml)
+      job_script_opts_file.write(
+        JSON.pretty_generate(
+          script_opts.reject { |k, v| k == :content }
+        )
+      )
 
       OodCore::Job::Script.new(script_opts)
     end
@@ -349,6 +356,13 @@ module BatchConnect
       staged_root.join("clean.sh")
     end
 
+    # Path to file that describes the attributes in the context object that
+    # were defined by the user through the form submission
+    # @return [Pathname] user defined context file
+    def user_defined_context_file
+      staged_root.join("user_defined_context.json")
+    end
+
     # Path to file that describes the job script's content
     # @return [Pathname] batch job script file
     def job_script_file
@@ -358,7 +372,7 @@ module BatchConnect
     # Path to file that describes the job script's submission options
     # @return [Pathname] batch job script options file
     def job_script_opts_file
-      staged_root.join("job_script_opts.yml")
+      staged_root.join("job_script_opts.json")
     end
 
     # Path to file that contains the connection information
