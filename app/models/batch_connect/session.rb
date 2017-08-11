@@ -146,12 +146,8 @@ module BatchConnect
     # @return [Boolean] whether staged successfully
     def stage(root, context: nil)
       # Sync the template files over
-      oe, s = Open3.capture2e("rsync -av --delete #{root}/ #{staged_root}")
-      unless s.success?
-        errors.add(:stage, oe)
-        Rails.logger.error(oe)
-        return false
-      end
+      oe, s = Open3.capture2e("rsync", "-a", "#{root}/", "#{staged_root}")
+      raise oe unless s.success?
 
       # Output user submitted context attributes for debugging purposes
       user_defined_context_file.write(JSON.pretty_generate context.as_json)
@@ -161,66 +157,46 @@ module BatchConnect
         template_files,
         binding: TemplateBinding.new(self, context).get_binding
       )
-
       true
+    rescue => e   # rescue from all standard exceptions (app never crashes)
+      errors.add(:stage, e.message)
+      Rails.logger.error("ERROR: #{e.class} - #{e.message}")
+      false
     end
 
     # Submit session's script to the cluster and record job id to database
-    # @param opts [#to_h] script options
+    # @param opts [#to_h] app-specific submit hash
     # @return [Boolean] whether submitted successfully
-    def submit(script_opts = {})
-      self.job_id = adapter.submit script(script_opts)
+    def submit(opts = {})
+      opts = opts.to_h.compact.deep_symbolize_keys
+      content = script_content opts.fetch(:batch_connect, {})
+      options = script_options opts.fetch(:script, {})
+
+      # Record the job script for debugging purposes
+      job_script_content_file.write(content)
+      job_script_options_file.write(JSON.pretty_generate(options))
+
+      # Submit job script
+      self.job_id = adapter.submit script(content: content, options: options)
       db_file.write(to_json)
       true
-    rescue ClusterNotFound, AdapterNotAllowed, OodCore::JobAdapterError => e
-      staged_root.rmtree
+    rescue => e   # rescue from all standard exceptions (app never crashes)
       errors.add(:submit, e.message)
-      Rails.logger.error(e.message)
+      Rails.logger.error("ERROR: #{e.class} - #{e.message}")
       false
     end
 
     # The session's script
     # @param opts [#to_h] script options
-    # @option opts [Hash] :batch_connect ({}) batch connect template options
-    # @option opts [Hash] :script ({}) job script options
-    # @return [OodCore::Job::Script] the script
+    # @option opts [Hash] :content ({}) job script content
+    # @option opts [Hash] :options ({}) job script options
+    # @return [OodCore::Job::Script] the script object
     def script(opts = {})
-      opts = opts.to_h.deep_symbolize_keys
-      bc_opts     = opts.fetch(:batch_connect, { template: :basic })
-      script_opts = opts.fetch(:script, {})
+      opts = opts.to_h.compact.deep_symbolize_keys
+      content = opts.fetch(:content, "")
+      options = opts.fetch(:options, {})
 
-      # Add adapter specific options
-      case cluster.job_config[:adapter]
-      when "torque"
-        script_opts = {
-          native: {
-            headers: {
-              Shell_Path_List: "/bin/bash"
-            }
-          }
-        }.deep_merge script_opts
-      when "slurm"
-        # slurm sets the shell from the shebang of the script
-      when "lsf"
-        # hopefully lsf also sets the shell from the shebang
-      end
-
-      script_opts = {
-        content: script_content(bc_opts),
-        job_name: job_name,
-        workdir: staged_root,
-        output_path: output_file
-      }.merge script_opts
-
-      # Record the submission options for debugging purposes
-      job_script_file.write(script_opts[:content])
-      job_script_opts_file.write(
-        JSON.pretty_generate(
-          script_opts.reject { |k, v| k == :content }
-        )
-      )
-
-      OodCore::Job::Script.new(script_opts)
+      OodCore::Job::Script.new(options.merge(content: content))
     end
 
     # The content of the batch script used for this session
@@ -229,7 +205,7 @@ module BatchConnect
     #   use when generating the batch script
     # @return [String] the rendered batch script
     def script_content(opts = {})
-      opts = opts.to_h.deep_symbolize_keys
+      opts = opts.to_h.compact.deep_symbolize_keys
       self.script_type = opts.fetch(:template, "basic")
 
       opts = opts.merge(
@@ -242,6 +218,31 @@ module BatchConnect
       )
 
       script_template(opts).to_s
+    end
+
+    # The options used to submit the batch script for this session
+    # @param opts [#to_h] supplied script options
+    # @return [Hash] the session-specific script options
+    def script_options(opts = {})
+      opts = opts.to_h.compact.deep_symbolize_keys
+
+      # Add adapter specific options
+      case cluster.job_config[:adapter]
+      when "torque"
+        opts = { native: { headers: { Shell_Path_List: "/bin/bash" } } }.deep_merge opts
+      when "pbspro"
+        opts[:native] = ["-S", "/bin/bash"] + opts.fetch(:native, [])
+      when "slurm"
+        # slurm sets the shell from the shebang of the script
+      when "lsf"
+        # hopefully lsf also sets the shell from the shebang
+      end
+
+      opts = {
+        job_name: job_name,
+        workdir: staged_root,
+        output_path: output_file
+      }.merge opts
     end
 
     # Delete this session's job and database record
@@ -365,14 +366,14 @@ module BatchConnect
 
     # Path to file that describes the job script's content
     # @return [Pathname] batch job script file
-    def job_script_file
-      staged_root.join("job_script.sh")
+    def job_script_content_file
+      staged_root.join("job_script_content.sh")
     end
 
     # Path to file that describes the job script's submission options
     # @return [Pathname] batch job script options file
-    def job_script_opts_file
-      staged_root.join("job_script_opts.json")
+    def job_script_options_file
+      staged_root.join("job_script_options.json")
     end
 
     # Path to file that contains the connection information
@@ -421,7 +422,7 @@ module BatchConnect
           rendered_file = remove_extension ? file.sub_ext("") : file
           template = file.read
           rendered = ERB.new(template, nil, "-").result(binding)
-          file.rename rendered_file
+          file.rename rendered_file     # keep same file permissions
           rendered_file.write(rendered)
         end
       end

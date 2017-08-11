@@ -9,10 +9,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Added support for ERB rendering of Batch Connect App template files.
+- (Batch Connect) Added support for ERB rendering of template files.
   [#179](https://github.com/OSC/ood-dashboard/issues/179)
-- Output informational files to staging directory of Batch Connect apps for
-  debugging purposes. [#165](https://github.com/OSC/ood-dashboard/issues/165)
+- (Batch Connect) Output informational files to staging directory for debugging
+  purposes. [#165](https://github.com/OSC/ood-dashboard/issues/165)
+
+### Changed
+
+- (Batch Connect) Keep staged directory around if job submission fails for
+  debugging purposes.
+- (Batch Connect) Don't wipe staging directory when `rsync`ing over template
+  directory as it is already a new empty directory.
+
+### Fixed
+
+- (Batch Connect) Rescue from all Standard Exceptions and display error to user
+  to keep with "app never crashes" philosophy.
 
 ## [1.15.2] - 2017-07-24
 
