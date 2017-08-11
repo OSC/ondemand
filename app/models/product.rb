@@ -129,7 +129,7 @@ class Product
     end
   end
 
-  def create_from_git_remote
+  def create_from_git_remote(reset_git: false)
     if self.valid?(:create_from_git_remote)
       target = router.path
       target.mkpath
@@ -138,6 +138,16 @@ class Product
         return false
       end
       FileUtils.chmod 0750, target
+
+      # Reset the git history and remote (make vanilla git project)
+      if reset_git
+        target.join(".git").rmtree
+        unless init_git_repo(target)
+          target.rmtree if target.exist?
+          return false
+        end
+      end
+
       true
     else
       false
@@ -235,6 +245,17 @@ class Product
       Dir.chdir(target) do
         `HOME="" git config --get remote.origin.url 2>/dev/null && HOME="" git remote set-url origin #{git_remote} 2> /dev/null || HOME="" git remote add origin #{git_remote} 2> /dev/null`
       end
+    end
+
+    def init_git_repo(target)
+      o, s = Open3.capture2e({"HOME" => ""}, "git", "init", chdir: target.to_s)
+      unless s.success?
+        errors.add(:reset_git, "was unable to initialize git repository:")
+        errors.add(:reset_git_error, o)
+        Rails.logger.error(o)
+        return false
+      end
+      true
     end
 
     def clone_git_repo(target)

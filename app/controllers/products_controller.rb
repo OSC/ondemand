@@ -46,7 +46,7 @@ class ProductsController < ApplicationController
     @product = Product.build(product_params.merge(type: @type))
 
     respond_to do |format|
-      if @product.create_from_git_remote
+      if @product.create_from_git_remote(reset_git: params[:reset_git] == "1")
         format.html { redirect_to product_url(@product.name, type: @type), notice: 'Product was successfully created.' }
         format.json { render :show, status: :created, location: @product }
       else

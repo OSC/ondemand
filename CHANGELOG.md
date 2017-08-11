@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [#179](https://github.com/OSC/ood-dashboard/issues/179)
 - (Batch Connect) Output informational files to staging directory for debugging
   purposes. [#165](https://github.com/OSC/ood-dashboard/issues/165)
+- Added ability to reset the git repository when cloning a sandbox app.
+  [#214](https://github.com/OSC/ood-dashboard/issues/214)
 
 ### Changed
 
