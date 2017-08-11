@@ -7,16 +7,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-### Fixed
+### Added
 
-- Navbar is more responsive with develop menu consistent with other dropdowns [#213](https://github.com/OSC/ood-dashboard/issues/213)
-- Fixed viewport when viewing on mobile devices
-- Show full text of navbar options when navbar is collapsed [#168](https://github.com/OSC/ood-dashboard/issues/168)
+- (Batch Connect) Added support for ERB rendering of template files.
+  [#179](https://github.com/OSC/ood-dashboard/issues/179)
+- (Batch Connect) Output informational files to staging directory for debugging
+  purposes. [#165](https://github.com/OSC/ood-dashboard/issues/165)
 
 ### Changed
 
 - Nav bar is absolutely positioned for responsive issues. The result is that
   scrolling will shift the navbar out of the viewport.
+- (Batch Connect) Keep staged directory around if job submission fails for
+  debugging purposes.
+- (Batch Connect) Don't wipe staging directory when `rsync`ing over template
+  directory as it is already a new empty directory.
+
+### Fixed
+
+- Navbar is more responsive with develop menu consistent with other dropdowns [#213](https://github.com/OSC/ood-dashboard/issues/213)
+- Fixed viewport when viewing on mobile devices
+- Show full text of navbar options when navbar is collapsed [#168](https://github.com/OSC/ood-dashboard/issues/168)
+- (Batch Connect) Rescue from all Standard Exceptions and display error to user
+  to keep with "app never crashes" philosophy.
 
 ## [1.15.2] - 2017-07-24
 

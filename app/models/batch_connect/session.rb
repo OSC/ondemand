@@ -3,6 +3,16 @@ module BatchConnect
     include ActiveModel::Model
     include ActiveModel::Serializers::JSON
 
+    # This class describes the object that is bound to the ERB template file
+    # when it is rendered
+    TemplateBinding = Struct.new(:session, :context) do
+      # Get the binding for this object
+      # @return [Binding] this object's binding
+      def get_binding
+        binding()
+      end
+    end
+
     # Unique identifier that describes this session
     # @return [String] session id
     attr_accessor :id
@@ -126,70 +136,67 @@ module BatchConnect
       self.view       = app.session_view
       self.created_at = Time.now.to_i
 
-      stage(root: app.root.join("template")) &&
+      stage(app.root.join("template"), context: context) &&
         submit(app.submit_opts(context, fmt: format))
     end
 
     # Stage the app's job template to user's staging directory
     # @param root [#to_s] root directory that gets staged
+    # @param context [Object] context available when rendering staged files
     # @return [Boolean] whether staged successfully
-    def stage(root:)
-      oe, s = Open3.capture2e("rsync -av --delete #{root}/ #{staged_root}")
-      unless s.success?
-        errors.add(:stage, oe)
-        Rails.logger.error(oe)
-      end
-      s.success?
+    def stage(root, context: nil)
+      # Sync the template files over
+      oe, s = Open3.capture2e("rsync", "-a", "#{root}/", "#{staged_root}")
+      raise oe unless s.success?
+
+      # Output user submitted context attributes for debugging purposes
+      user_defined_context_file.write(JSON.pretty_generate context.as_json)
+
+      # Render all template files using ERB
+      render_erb_files(
+        template_files,
+        binding: TemplateBinding.new(self, context).get_binding
+      )
+      true
+    rescue => e   # rescue from all standard exceptions (app never crashes)
+      errors.add(:stage, e.message)
+      Rails.logger.error("ERROR: #{e.class} - #{e.message}")
+      false
     end
 
     # Submit session's script to the cluster and record job id to database
-    # @param opts [#to_h] script options
+    # @param opts [#to_h] app-specific submit hash
     # @return [Boolean] whether submitted successfully
-    def submit(script_opts = {})
-      self.job_id = adapter.submit script(script_opts)
+    def submit(opts = {})
+      opts = opts.to_h.compact.deep_symbolize_keys
+      content = script_content opts.fetch(:batch_connect, {})
+      options = script_options opts.fetch(:script, {})
+
+      # Record the job script for debugging purposes
+      job_script_content_file.write(content)
+      job_script_options_file.write(JSON.pretty_generate(options))
+
+      # Submit job script
+      self.job_id = adapter.submit script(content: content, options: options)
       db_file.write(to_json)
       true
-    rescue ClusterNotFound, AdapterNotAllowed, OodCore::JobAdapterError => e
-      output_root.rmtree
+    rescue => e   # rescue from all standard exceptions (app never crashes)
       errors.add(:submit, e.message)
-      Rails.logger.error(e.message)
+      Rails.logger.error("ERROR: #{e.class} - #{e.message}")
       false
     end
 
     # The session's script
     # @param opts [#to_h] script options
-    # @option opts [Hash] :batch_connect ({}) batch connect template options
-    # @option opts [Hash] :script ({}) job script options
-    # @return [OodCore::Job::Script] the script
+    # @option opts [Hash] :content ({}) job script content
+    # @option opts [Hash] :options ({}) job script options
+    # @return [OodCore::Job::Script] the script object
     def script(opts = {})
-      opts = opts.to_h.deep_symbolize_keys
-      bc_opts     = opts.fetch(:batch_connect, { template: :basic })
-      script_opts = opts.fetch(:script, {})
+      opts = opts.to_h.compact.deep_symbolize_keys
+      content = opts.fetch(:content, "")
+      options = opts.fetch(:options, {})
 
-      # Add adapter specific options
-      case cluster.job_config[:adapter]
-      when "torque"
-        script_opts = {
-          native: {
-            headers: {
-              Shell_Path_List: "/bin/bash"
-            }
-          }
-        }.deep_merge script_opts
-      when "slurm"
-        # slurm sets the shell from the shebang of the script
-      when "lsf"
-        # hopefully lsf also sets the shell from the shebang
-      end
-
-      OodCore::Job::Script.new(
-        {
-          content: script_content(bc_opts),
-          job_name: job_name,
-          workdir: output_root,
-          output_path: output_file
-        }.merge script_opts
-      )
+      OodCore::Job::Script.new(options.merge(content: content))
     end
 
     # The content of the batch script used for this session
@@ -198,19 +205,44 @@ module BatchConnect
     #   use when generating the batch script
     # @return [String] the rendered batch script
     def script_content(opts = {})
-      opts = opts.to_h.deep_symbolize_keys
+      opts = opts.to_h.compact.deep_symbolize_keys
       self.script_type = opts.fetch(:template, "basic")
 
       opts = opts.merge(
-        work_dir:    output_root,
+        work_dir:    staged_root,
         conn_file:   connect_file,
-        before_file: staged_root.join("before.sh"),
-        script_file: staged_root.join("script.sh"),
-        after_file:  staged_root.join("after.sh"),
-        clean_file:  staged_root.join("clean.sh"),
+        before_file: before_file,
+        script_file: script_file,
+        after_file:  after_file,
+        clean_file:  clean_file
       )
 
       script_template(opts).to_s
+    end
+
+    # The options used to submit the batch script for this session
+    # @param opts [#to_h] supplied script options
+    # @return [Hash] the session-specific script options
+    def script_options(opts = {})
+      opts = opts.to_h.compact.deep_symbolize_keys
+
+      # Add adapter specific options
+      case cluster.job_config[:adapter]
+      when "torque"
+        opts = { native: { headers: { Shell_Path_List: "/bin/bash" } } }.deep_merge opts
+      when "pbspro"
+        opts[:native] = ["-S", "/bin/bash"] + opts.fetch(:native, [])
+      when "slurm"
+        # slurm sets the shell from the shebang of the script
+      when "lsf"
+        # hopefully lsf also sets the shell from the shebang
+      end
+
+      opts = {
+        job_name: job_name,
+        workdir: staged_root,
+        output_path: output_file
+      }.merge opts
     end
 
     # Delete this session's job and database record
@@ -289,29 +321,72 @@ module BatchConnect
       status.completed?
     end
 
-    # Root directory that mirrors the batch connect app's job template
+    # Root directory where a job is staged and run in
     # @return [Pathname] staged root directory
     def staged_root
-      self.class.dataroot(token).join("staged").tap { |p| p.mkpath unless p.exist? }
+      self.class.dataroot(token).join("output", id).tap { |p| p.mkpath unless p.exist? }
     end
 
-    # Root directory for a job's output files
-    # @return [Pathname] output root directory
-    def output_root
-      self.class.dataroot(token).join("output", id).tap { |p| p.mkpath unless p.exist? }
+    # List of template files that need to be rendered
+    # @return [Array<Pathname>] list of template files
+    def template_files
+      Pathname.glob(staged_root.join("**", "*.erb")).select(&:file?)
+    end
+
+    # Path to script that is sourced before main script is forked
+    # @return [Pathname] before script file
+    def before_file
+      staged_root.join("before.sh")
+    end
+
+    # Path to script that is forked as the main script
+    # @return [Pathname] main script file
+    def script_file
+      staged_root.join("script.sh")
+    end
+
+    # Path to script that is sourced after main script is forked
+    # @return [Pathname] after script file
+    def after_file
+      staged_root.join("after.sh")
+    end
+
+    # Path to script that is sourced during clean up portion of batch job
+    # @return [Pathname] clean script file
+    def clean_file
+      staged_root.join("clean.sh")
+    end
+
+    # Path to file that describes the attributes in the context object that
+    # were defined by the user through the form submission
+    # @return [Pathname] user defined context file
+    def user_defined_context_file
+      staged_root.join("user_defined_context.json")
+    end
+
+    # Path to file that describes the job script's content
+    # @return [Pathname] batch job script file
+    def job_script_content_file
+      staged_root.join("job_script_content.sh")
+    end
+
+    # Path to file that describes the job script's submission options
+    # @return [Pathname] batch job script options file
+    def job_script_options_file
+      staged_root.join("job_script_options.json")
     end
 
     # Path to file that contains the connection information
     # @return [Pathname] connection file
     def connect_file
       # flush nfs cache when checking for this file
-      output_root.join("connection.yml").tap { |f| Dir.open(f.dirname.to_s).close }
+      staged_root.join("connection.yml").tap { |f| Dir.open(f.dirname.to_s).close }
     end
 
     # Path to file that job pipes stdout/stderr to
     # @return [Pathname] output file
     def output_file
-      output_root.join("output.log")
+      staged_root.join("output.log")
     end
 
     # The connection information for this session (job must be running)
@@ -339,6 +414,17 @@ module BatchConnect
           ENV["RAILS_RELATIVE_URL_ROOT"].sub(/^\/[^\/]+\//, ""),  # the OOD app
           token                 # the Batch Connect app
         ].reject(&:blank?).join("/")
+      end
+
+      # Render a list of files using ERB
+      def render_erb_files(files, binding: nil, remove_extension: true)
+        files.each do |file|
+          rendered_file = remove_extension ? file.sub_ext("") : file
+          template = file.read
+          rendered = ERB.new(template, nil, "-").result(binding)
+          file.rename rendered_file     # keep same file permissions
+          rendered_file.write(rendered)
+        end
       end
   end
 end
