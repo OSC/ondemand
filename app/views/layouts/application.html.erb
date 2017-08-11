@@ -8,10 +8,12 @@
   <%= csrf_meta_tags %>
 
   <%= yield :head %>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
   <header>
-    <nav class="navbar navbar-<%= ENV['OOD_NAVBAR_TYPE'].present? ? ENV['OOD_NAVBAR_TYPE'] : 'inverse' %> navbar-fixed-top">
+    <nav class="navbar navbar-<%= ENV['OOD_NAVBAR_TYPE'].present? ? ENV['OOD_NAVBAR_TYPE'] : 'inverse' %> navbar-static-top">
     <div class="container-fluid">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-9" aria-expanded="false"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
@@ -24,12 +26,23 @@
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
         <ul class="nav navbar-nav">
           <%= render partial: 'layouts/nav/group', collection: @nav_groups %>
-          <%= render partial: 'layouts/nav/develop_dropdown' if NavConfig.show_develop_dropdown %>
         </ul>
-        <ul class="nav navbar-nav navbar-right">
-          <%= render partial: "layouts/nav/help_dropdown" %>
-          <%= render partial: "layouts/nav/user_dropdown" %>
-        </ul>
+        <div class="navbar-right">
+          <ul class="nav navbar-nav">
+            <%= render partial: 'layouts/nav/develop_dropdown' if NavConfig.show_develop_dropdown %>
+            <%= render partial: "layouts/nav/help_dropdown" %>
+          </ul>
+          <p class="navbar-text" data-toggle="popover" data-content="Logged in as <%= @user.name %>" data-placement="bottom" >
+            <i class="fa fa-user" title="Logged in as <%= @user.name %>"></i>
+            <span class="hidden-sm"><span class="hidden-md"> Logged in as </span><%= @user.name %></span>
+          </p>
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="/logout"><i class="fa fa-sign-out"></i><span class="hidden-sm"> Log Out</span></a>
+            </li>
+            <li>
+          </ul>
+        </div>
       </div>
     </div>
   </nav>
