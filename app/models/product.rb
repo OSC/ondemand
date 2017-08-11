@@ -3,8 +3,6 @@ class Product
 
   delegate :passenger_rack_app?, :passenger_rails_app?, :passenger_app?, :can_run_bundle_install?, to: :app
 
-  TEMPLATE = "https://raw.githubusercontent.com/AweSim-OSC/rails-application-template/remote_source/awesim.rb"
-
   attr_accessor :name
   attr_accessor :found
   attr_accessor :title
@@ -13,7 +11,7 @@ class Product
 
   validates :name, presence: true
 
-  validate :app_does_not_exist, on: [:create_from_git_remote, :create_from_rails_template]
+  validate :app_does_not_exist, on: [:create_from_git_remote]
   validates :git_remote, presence: true, on: :create_from_git_remote
 
   # lint a given app
@@ -129,21 +127,6 @@ class Product
       @description ||= app.manifest.description
       @git_remote ||= get_git_remote
     end
-  end
-
-  def create_from_rails_template
-    if self.valid?(:create_from_rails_template)
-      target = router.path
-      target.mkpath
-      FileUtils.cp_r Rails.root.join("vendor/my_app/."), target
-      FileUtils.chmod 0750, target
-      true
-    else
-      false
-    end
-  rescue
-    router.path.rmtree if router.path.exist?
-    raise
   end
 
   def create_from_git_remote

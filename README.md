@@ -82,12 +82,6 @@ See the wiki page https://github.com/OSC/ood-dashboard/wiki/Message-of-the-Day
 
 See the wiki page https://github.com/OSC/ood-dashboard/wiki/Site-Wide-Announcement
 
-### App Sharing
-
-**This is a feature currently in development. The documentation below is for developers working on this feature.**
-
-See the wiki page https://github.com/OSC/ood-dashboard/wiki/App-Sharing
-
 ## Safari Warning
 
 We currently display an alert message at the top of the Dashboard mentioning

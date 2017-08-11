@@ -33,12 +33,6 @@ class ProductsController < ApplicationController
     @product = Product.build(type: @type)
   end
 
-  # GET /products/new_from_rails_template
-  def new_from_rails_template
-    @type = params[:type].to_sym
-    @product = Product.build(type: @type)
-  end
-
   # GET /products/1/edit
   def edit
     @type = params[:type].to_sym
@@ -57,23 +51,6 @@ class ProductsController < ApplicationController
         format.json { render :show, status: :created, location: @product }
       else
         format.html { render :new_from_git_remote }
-        format.json { render json: @product.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # POST /create_from_rails_template
-  # POST /create_from_rails_template.json
-  def create_from_rails_template
-    @type = params[:type].to_sym
-    @product = Product.build(product_params.merge(type: @type))
-
-    respond_to do |format|
-      if @product.create_from_rails_template
-        format.html { redirect_to product_url(@product.name, type: @type), notice: 'Product was successfully created.' }
-        format.json { render :show, status: :created, location: @product }
-      else
-        format.html { render :new_from_rails_template }
         format.json { render json: @product.errors, status: :unprocessable_entity }
       end
     end

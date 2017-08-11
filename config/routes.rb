@@ -37,9 +37,7 @@ Rails.application.routes.draw do
         collection do
           get 'create_key'
           get 'new_from_git_remote'
-          get 'new_from_rails_template'
           post 'create_from_git_remote'
-          post 'create_from_rails_template'
         end
       end
     end
