@@ -11,15 +11,27 @@
 </ol>
 
 
-<% if @app %>
-  <% if @session && @session.errors.any? %>
+<%- if @app -%>
+  <%- if @session && @session.errors.any? -%>
     <div class="alert alert-danger alert-dismissible" role="alert">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
       <%= session_save_errors @session.errors %>
+
+      <p class="small">
+        * The <%= @app.title %> session data for this session can be accessed
+        under the
+        <%=
+          link_to(
+            "staged root directory",
+            OodAppkit.files.url(path: @session.staged_root).to_s,
+            target: "_blank"
+          )
+        %>.
+      </p>
     </div>
-  <% end %>
+  <%- end -%>
 
   <div class="row">
     <div class="col-md-3">
@@ -30,10 +42,24 @@
       <div class="ood-appkit markdown">
         <%= OodAppkit.markdown.render(@app.description).html_safe %>
 
-        <% if @session_context %>
+        <%- if @session_context -%>
           <%= render "form" %>
-      <% end %>
+
+          <p class="small">
+            * All <%= @app.title %> session data is generated and stored under
+            the user's home directory in the corresponding
+            <%=
+              link_to(
+                "data root directory",
+                OodAppkit.files.url(
+                  path: BatchConnect::Session.dataroot(@app.token)
+                ).to_s,
+                target: "_blank"
+              )
+            %>.
+          </p>
+        <%- end -%>
       </div>
     </div><!-- /.col-md-6 -->
   </div><!-- /.row -->
-<% end %>
+<%- end -%>
