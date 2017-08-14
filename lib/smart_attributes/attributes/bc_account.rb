@@ -27,7 +27,7 @@ module SmartAttributes
       # @param fmt [String, nil] formatting of hash
       # @return [Hash] submission hash
       def submit(fmt: nil)
-        { script: { accounting_id: value.blank? ? nil : value } }
+        { script: { accounting_id: value.blank? ? nil : value.strip } }
       end
     end
   end

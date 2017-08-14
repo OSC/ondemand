@@ -27,7 +27,7 @@ module SmartAttributes
       # @param fmt [String, nil] formatting of hash
       # @return [Hash] submission hash
       def submit(fmt: nil)
-        { batch_connect: { geometry: value.blank? ? "800x600" : value } }
+        { batch_connect: { geometry: value.blank? ? "800x600" : value.strip } }
       end
     end
   end
