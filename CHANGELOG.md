@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+
+- Sanitize user input for account string.
+  [#233](https://github.com/OSC/ood-myjobs/issues/233)
+
 ## [v2.5.0] - 2017-07-12
 
 ### Added

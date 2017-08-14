@@ -157,7 +157,7 @@ class Workflow < ActiveRecord::Base
     job_list << OSC::Machete::Job.new(
       script: staged_dir.join(staged_script_name),
       host: batch_host,
-      account_string: account,
+      account_string: account.try(:strip),
       torque_helper: ResourceMgrAdapter.new
     )
   end
