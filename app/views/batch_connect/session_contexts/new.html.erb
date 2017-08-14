@@ -46,17 +46,17 @@
           <%= render "form" %>
 
           <p class="small">
-          * All <%= @app.title %> session data is generated and stored under
-          the user's home directory in the corresponding
-          <%=
-            link_to(
-              "data root directory",
-              OodAppkit.files.url(
-                path: BatchConnect::Session.dataroot(@app.token)
-              ).to_s,
-              target: "_blank"
-            )
-          %>.
+            * All <%= @app.title %> session data is generated and stored under
+            the user's home directory in the corresponding
+            <%=
+              link_to(
+                "data root directory",
+                OodAppkit.files.url(
+                  path: BatchConnect::Session.dataroot(@app.token)
+                ).to_s,
+                target: "_blank"
+              )
+            %>.
           </p>
         <%- end -%>
       </div>
