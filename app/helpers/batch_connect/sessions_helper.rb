@@ -41,6 +41,7 @@ module BatchConnect::SessionsHelper
           concat host(session)
           concat created(session)
           concat time(session)
+          concat id(session)
         end
       )
       concat content_tag(:div) { yield }
@@ -86,6 +87,20 @@ module BatchConnect::SessionsHelper
       concat " "
       concat session.connect.host || "Undetermined"
     end if session.running?
+  end
+
+  def id(session)
+    content_tag(:p) do
+      concat content_tag(:strong, "Session ID:")
+      concat " "
+      concat(
+        link_to(
+          session.id,
+          OodAppkit.files.url(path: session.staged_root).to_s,
+          target: "_blank"
+        )
+      )
+    end
   end
 
   def status(session)

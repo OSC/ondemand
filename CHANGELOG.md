@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   purposes. [#165](https://github.com/OSC/ood-dashboard/issues/165)
 - Added ability to reset the git repository when cloning a sandbox app.
   [#214](https://github.com/OSC/ood-dashboard/issues/214)
+- (Batch Connect) Added links to the output and staging directories for the
+  apps and their sessions.
+  [#218](https://github.com/OSC/ood-dashboard/issues/218)
 
 ### Changed
 
