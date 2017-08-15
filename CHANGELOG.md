@@ -35,6 +35,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Show full text of navbar options when navbar is collapsed [#168](https://github.com/OSC/ood-dashboard/issues/168)
 - (Batch Connect) Rescue from all Standard Exceptions and display error to user
   to keep with "app never crashes" philosophy.
+- (Batch Connect) Sanitize user input for a few smart attribute job submission
+  parameters.
 
 ### Removed
 

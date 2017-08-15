@@ -33,7 +33,7 @@ module SmartAttributes
       # @param fmt [String, nil] formatting of hash
       # @return [Hash] submission hash
       def submit(fmt: nil)
-        { script: { queue_name: value.blank? ? nil : value } }
+        { script: { queue_name: value.blank? ? nil : value.strip } }
       end
     end
   end
