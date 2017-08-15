@@ -143,7 +143,7 @@ class Workflow < ActiveRecord::Base
   #
   # @return [String, nil] the account string or nil if blank
   def account
-    job_attrs[:account] unless job_attrs[:account].blank?
+    super.strip unless super.blank?
   end
 
   # Define tasks to do after staging template directory typically copy over
