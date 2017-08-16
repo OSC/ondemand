@@ -43,7 +43,6 @@ tags
 /public/assets
 .env.local
 /config/initializers/ood.rb
-/config/initializers/fix_batch_connect_dataroot.rb
 
 # Ignore staged app
 /vendor/my_app
