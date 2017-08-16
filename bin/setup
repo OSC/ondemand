@@ -108,15 +108,6 @@ chdir APP_ROOT do
       source_file = "config/initializers/ood.rb.#{APP.site}.#{APP.portal}"
       cat source_file, target_file
     end
-
-    # config/initializers/fix_batch_connect_dataroot.rb
-    target_file = "config/initializers/fix_batch_connect_dataroot.rb"
-    if APP.site == "" # user wants to unset site settings
-      rm_f target_file
-    else
-      source_file = "config/initializers/fix_batch_connect_dataroot.rb.#{APP.site}"
-      cat source_file, target_file
-    end
   end
 
   if APP.production?

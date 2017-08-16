@@ -44,6 +44,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Removed the ability to build a Rails app from a template as it copies from an
   outdated template. [#215](https://github.com/OSC/ood-dashboard/issues/215)
+- (Batch Connect) Removed temporary OSC patch that migrated Batch Connect app
+  data to a namespaced data root.
+  [#200](https://github.com/OSC/ood-dashboard/issues/200)
 
 ## [1.15.2] - 2017-07-24
 
