@@ -9,6 +9,34 @@ module ProductsHelper
     end
   end
 
+  def app_design_title(app)
+    if app.passenger_app?
+      if app.passenger_rack_app?
+        if app.passenger_rails_app?
+          if app.passenger_railsdb_app?
+            "Passenger Rails App with SQLite database"
+          else
+            "Passenger Rails App"
+          end
+        else
+          "Passenger Rack App"
+        end
+      elsif app.passenger_nodejs_app?
+        "Passenger Node App"
+      elsif app.passenger_python_app?
+        "Passenger WSGI App"
+      elsif app.passenger_meteor_app?
+        "Passenger Meteor App"
+      else
+        "Passenger App"
+      end
+    elsif app.batch_connect_app?
+      "Batch Connect App"
+    else
+      "Unknown"
+    end
+  end
+
   def git_prompt(product)
     files     = product.uncommitted_files
     unstaged  = files[:unstaged].size
