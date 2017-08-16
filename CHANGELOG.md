@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - (Batch Connect) Added links to the output and staging directories for the
   apps and their sessions.
   [#218](https://github.com/OSC/ood-dashboard/issues/218)
+- Indicates the style of app when viewing the app details in developer view.
+  [#219](https://github.com/OSC/ood-dashboard/issues/219)
 
 ### Changed
 
