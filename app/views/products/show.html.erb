@@ -47,6 +47,9 @@
       <strong>Description:</strong><br/>
       <%= manifest_markdown(@product.app.manifest.description) %>
     </p>
+    <p>
+      <%= link_to 'Edit', edit_product_path(@product.name, type: @type), class: 'btn btn-default' %>
+    </p>
   </div><!-- /.col-md-6 -->
   <div class="col-md-2 col-xs-6">
     <%= command_btn(title: "Bundle Install", key: "bundle_install", display:"scl enable rh-ruby22 nodejs010 -- bin/bundle install --path=vendor/bundle") if @product.can_run_bundle_install? %>
@@ -128,7 +131,6 @@
 <hr />
 <% end %>
 
-<%= link_to 'Edit', edit_product_path(@product.name, type: @type), class: 'btn btn-default' %>
 <%= link_to 'Back', products_path(type: @type), class: 'btn btn-default' %>
 <%= link_to 'Delete App',
   product_path(@product.name, type: @type),
