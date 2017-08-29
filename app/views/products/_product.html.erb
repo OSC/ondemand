@@ -21,6 +21,9 @@
     </div>
     <% end %>
   </td>
+  <td>
+    <%= link_to "Launch #{product.title}", app_path(product.app.name, product.app.type, product.app.owner), target: '_blank', class: 'btn btn-primary' %>
+  </td>
   <td data-order="<%= modified_time.to_i %>"><%= modified_time.strftime("%m/%d/%y") %></td>
   <td>
     <%= link_to 'Shell', OodAppkit.shell.url(host: ENV['OOD_DEV_SSH_HOST'], path: product.router.path.realdirpath).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
