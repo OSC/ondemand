@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [#218](https://github.com/OSC/ood-dashboard/issues/218)
 - Indicates the style of app when viewing the app details in developer view.
   [#219](https://github.com/OSC/ood-dashboard/issues/219)
+- Giant launch app buttons on development index and details views [#210](https://github.com/OSC/ood-dashboard/issues/210)
 
 ### Changed
 
@@ -29,6 +30,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   debugging purposes.
 - (Batch Connect) Don't wipe staging directory when `rsync`ing over template
   directory as it is already a new empty directory.
+- Enabling app development and app sharing now use two different env vars,
+  OOD_APP_SHARING and OOD_APP_DEVELOPMENT [#212](https://github.com/OSC/ood-dashboard/issues/212)
 
 ### Fixed
 
