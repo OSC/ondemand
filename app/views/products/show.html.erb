@@ -17,8 +17,11 @@
   </div><!-- /.col-md-2 -->
   <div class="col-md-6 col-sm-10 col-xs-12">
     <p>
+      <%= link_to "Launch #{@product.app.title}", app_path(@product.app.name, @product.app.type, @product.app.owner), target: '_blank', class: 'btn btn-primary' %>
+    </p>
+    <p>
       <strong>Title:</strong>
-      <%= link_to @product.app.title, app_path(@product.app.name, @product.app.type, @product.app.owner), target: '_blank'%>
+      <%= @product.app.title %>
     </p>
     <p>
       <span data-toggle="popover" data-trigger="hover" data-placement="bottom" title="Active Users" data-content="<%= @product.active_users.join("<br />") %>" data-html="true">
