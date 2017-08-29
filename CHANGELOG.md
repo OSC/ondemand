@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.16.0] - 2017-08-29
+
 ### Added
 
 - (Batch Connect) Added support for ERB rendering of template files.
@@ -164,7 +166,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.15.2...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.16.0...HEAD
+[1.16.0]: https://github.com/OSC/ood-dashboard/compare/v1.15.2...v1.16.0
 [1.15.2]: https://github.com/OSC/ood-dashboard/compare/v1.15.1...v1.15.2
 [1.15.1]: https://github.com/OSC/ood-dashboard/compare/v1.15.0...v1.15.1
 [1.15.0]: https://github.com/OSC/ood-dashboard/compare/v1.14.1...v1.15.0
