@@ -5,7 +5,7 @@
   </td>
   <td><%= product.name %></td>
   <td>
-    <%= link_to product.title, app_path(product.app.name, product.app.type, product.app.owner), target: "_blank" %>
+    <%= link_to product.title, product_path(product.name, type: @type) %>
     <% if product.git_repo? %>
       <span class="text-muted">[<%= product.version %>]</span>
     <% end %>
