@@ -47,7 +47,6 @@ Rails.application.routes.draw do
         end
       end
     end
-  else
   end
 
   match "/404", :to => "errors#not_found", :via => :all
