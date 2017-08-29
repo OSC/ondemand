@@ -14,7 +14,6 @@ Rails.application.routes.draw do
   get "apps/show/:name(/:type(/:owner))" => "apps#show", as: "app", defaults: { type: "sys" }
   get "apps/icon/:name(/:type(/:owner))" => "apps#icon", as: "app_icon", defaults: { type: "sys" }
 
-  #FIXME: undo when ready to deploy app sharing to production, remove?
   if ENV['OOD_APP_SHARING'].present?
     # TODO:
     # is there a cleaner approach to this? an app should be a resource
@@ -22,7 +21,12 @@ Rails.application.routes.draw do
     get "apps/restart" => "apps#restart"
 
     root "apps#index", defaults: { type: "usr" }
+  else
+    root "dashboard#index"
+  end
 
+  #FIXME: undo when ready to deploy app sharing to production, remove?
+  if ENV['OOD_APP_DEVELOPMENT'].present?
     # App administration
     scope 'admin/:type' do
       resources :products, param: :name, constraints: { type: /dev|usr/ } do
@@ -41,8 +45,6 @@ Rails.application.routes.draw do
         end
       end
     end
-  else
-    root "dashboard#index"
   end
 
   match "/404", :to => "errors#not_found", :via => :all
