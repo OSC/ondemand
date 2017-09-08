@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2.5.2] - 2017-09-08
+
+### Fixed
+
+- update dependencies to fix bug with LSF (see https://github.com/OSC/ood_core/pull/50)
+
 ## [2.5.1] - 2017-09-06
 
 ### Fixed
@@ -53,7 +59,8 @@ All notable changes to this project will be documented in this file.
 - UI enhancements
 
 
-[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.5.1...HEAD
+[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.5.2...HEAD
+[2.5.2]: https://github.com/OSC/ood-myjobs/compare/v2.5.1...v2.5.2
 [2.5.1]: https://github.com/OSC/ood-myjobs/compare/v2.5.0...v2.5.1
 [2.5.0]: https://github.com/OSC/ood-myjobs/compare/v2.4.2...v2.5.0
 [2.4.2]: https://github.com/OSC/ood-myjobs/compare/v2.4.1...v2.4.2
