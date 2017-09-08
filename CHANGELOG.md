@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- (Batch Connect) Attempt to read default app title from manifest.
+  [#241](https://github.com/OSC/ood-dashboard/issues/241)
+
 ## [1.16.0] - 2017-08-29
 
 ### Added

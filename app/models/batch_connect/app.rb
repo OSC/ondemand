@@ -75,7 +75,9 @@ module BatchConnect
     # Default title for the batch connect app
     # @return [String] default title of app
     def default_title
-      sub_app ? sub_app.titleize : root.basename.to_s.titleize
+      title  = OodApp.new(router).title
+      title += ": #{sub_app.titleize}" if sub_app
+      title
     end
 
     # Description for the batch connect app
