@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [v1.5.1] - 2017-09-08
+
+### Fixed
+
+- update dependencies to fix bug with LSF (see https://github.com/OSC/ood_core/pull/50)
+
 ## [v1.5.0] - 2017-07-17
 
 ### Added
@@ -45,7 +51,8 @@ All notable changes to this project will be documented in this file.
 - Remove OSC copyright from footer
 - Remove deprecation warnings
 
-[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.5.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.5.1...HEAD
+[v1.5.1]: https://github.com/OSC/ood-activejobs/compare/v1.5.0...v1.5.1
 [v1.5.0]: https://github.com/OSC/ood-activejobs/compare/v1.4.6...v1.5.0
 [v1.4.6]: https://github.com/OSC/ood-activejobs/compare/v1.4.5...v1.4.6
 [v1.4.5]: https://github.com/OSC/ood-activejobs/compare/v1.4.4...v1.4.5
