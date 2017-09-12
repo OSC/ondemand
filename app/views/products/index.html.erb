@@ -1,6 +1,6 @@
 <% product_class = Product.product_types[@type] %>
 
-<%= render 'header' %>
+<%= render 'breadcrumbs' %>
 
 <p>
   <%= link_to 'New Product', new_product_path(type: @type), class: 'btn btn-default' %>

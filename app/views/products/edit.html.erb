@@ -1,4 +1,4 @@
-<%= render layout: 'products/header' do %>
+<%= render layout: 'products/breadcrumbs' do %>
   <li><%= link_to @product.title, product_path(@product.name, type: @type) %></li>
   <li class="active">Edit</li>
 <% end %>
