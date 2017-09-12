@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   get "apps/show/:name(/:type(/:owner))" => "apps#show", as: "app", defaults: { type: "sys" }
   get "apps/icon/:name(/:type(/:owner))" => "apps#icon", as: "app_icon", defaults: { type: "sys" }
 
-  if ENV['OOD_APP_SHARING'].present?
+  if Configuration.app_sharing_enabled?
     # TODO:
     # is there a cleaner approach to this? an app should be a resource
     get "apps(/index(/:type(/:owner)))" => "apps#index", as: "apps", defaults: { type: "usr" }
@@ -26,7 +26,7 @@ Rails.application.routes.draw do
   end
 
   #FIXME: undo when ready to deploy app sharing to production, remove?
-  if ENV['OOD_APP_DEVELOPMENT'].present?
+  if Configuration.app_development_enabled?
     # App administration
     scope 'admin/:type' do
       resources :products, param: :name, constraints: { type: /dev|usr/ } do

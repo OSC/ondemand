@@ -29,7 +29,7 @@
         </ul>
         <div class="navbar-right">
           <ul class="nav navbar-nav">
-            <%= render partial: 'layouts/nav/develop_dropdown' if NavConfig.show_develop_dropdown %>
+            <%= render partial: 'layouts/nav/develop_dropdown' if Configuration.app_development_enabled? %>
             <%= render partial: "layouts/nav/help_dropdown" %>
           </ul>
           <p class="navbar-text" data-toggle="popover" data-content="Logged in as <%= @user.name %>" data-placement="bottom" >
