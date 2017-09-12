@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.16.0] - 2017-09-12
+
 ### Added
 
 - (Batch Connect) Added support for ERB rendering of template files.
@@ -20,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [#218](https://github.com/OSC/ood-dashboard/issues/218)
 - Indicates the style of app when viewing the app details in developer view.
   [#219](https://github.com/OSC/ood-dashboard/issues/219)
+- Giant launch app buttons on development index and details views [#210](https://github.com/OSC/ood-dashboard/issues/210)
 
 ### Changed
 
@@ -29,6 +32,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   debugging purposes.
 - (Batch Connect) Don't wipe staging directory when `rsync`ing over template
   directory as it is already a new empty directory.
+- Enabling app development and app sharing now use two different env vars,
+  OOD_APP_SHARING and OOD_APP_DEVELOPMENT [#212](https://github.com/OSC/ood-dashboard/issues/212)
+- (Batch Connect) Attempt to read default app title from manifest.
+  [#241](https://github.com/OSC/ood-dashboard/issues/241)
+- (Batch Connect) Attempt to read default description from manifest.
+  [#245](https://github.com/OSC/ood-dashboard/issues/245)
+- Replace app development product page headers with breadcrumbs.
+  [#238](https://github.com/OSC/ood-dashboard/issues/238)
 
 ### Fixed
 
@@ -47,6 +58,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - (Batch Connect) Removed temporary OSC patch that migrated Batch Connect app
   data to a namespaced data root.
   [#200](https://github.com/OSC/ood-dashboard/issues/200)
+
+## [1.15.3] - 2017-09-08
+
+### Fixed
+
+- update dependencies to fix bug with LSF [#50](https://github.com/OSC/ood_core/pull/50)
 
 ## [1.15.2] - 2017-07-24
 
@@ -161,7 +178,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.15.2...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.16.0...HEAD
+[1.16.0]: https://github.com/OSC/ood-dashboard/compare/v1.15.3...v1.16.0
+[1.15.3]: https://github.com/OSC/ood-dashboard/compare/v1.15.2...v1.15.3
 [1.15.2]: https://github.com/OSC/ood-dashboard/compare/v1.15.1...v1.15.2
 [1.15.1]: https://github.com/OSC/ood-dashboard/compare/v1.15.0...v1.15.1
 [1.15.0]: https://github.com/OSC/ood-dashboard/compare/v1.14.1...v1.15.0
