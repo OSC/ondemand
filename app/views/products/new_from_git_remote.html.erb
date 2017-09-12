@@ -1,4 +1,7 @@
-<%= render 'header' %>
+<%= render layout: 'products/breadcrumbs' do %>
+  <li><%= link_to 'New Product', new_product_path(type: @type) %></li>
+  <li class="active">New From Git Repo</li>
+<% end %>
 
 <%= bootstrap_form_for(@product, as: :product, url: create_from_git_remote_products_path(type: @type)) do |f| %>
     <%= render "form_directory", f: f %>
@@ -11,4 +14,4 @@
 
 <hr />
 
-<%= link_to 'Back', products_path(type: @type), class: 'btn btn-default' %>
+<%= link_to 'Back', new_product_path(type: @type), class: 'btn btn-default' %>

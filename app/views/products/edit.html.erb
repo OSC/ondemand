@@ -1,4 +1,7 @@
-<%= render 'header' %>
+<%= render layout: 'products/breadcrumbs' do %>
+  <li><%= link_to @product.title, product_path(@product.name, type: @type) %></li>
+  <li class="active">Edit</li>
+<% end %>
 
 <div class="page-header">
   <h2>
@@ -16,5 +19,4 @@
 
 <hr />
 
-<%= link_to 'Show', product_path(@product.name, type: @type), class: 'btn btn-default' %>
-<%= link_to 'Back', products_path(type: @type), class: 'btn btn-default' %>
+<%= link_to 'Back', product_path(@product.name, type: @type), class: 'btn btn-default' %>
