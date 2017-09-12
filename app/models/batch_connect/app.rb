@@ -75,7 +75,7 @@ module BatchConnect
     # Default title for the batch connect app
     # @return [String] default title of app
     def default_title
-      title  = OodApp.new(router).title
+      title  = ood_app.title
       title += ": #{sub_app.titleize}" if sub_app
       title
     end
@@ -83,7 +83,13 @@ module BatchConnect
     # Description for the batch connect app
     # @return [String] description of app
     def description
-      form_config.fetch(:description, "")
+      form_config.fetch(:description, default_description)
+    end
+
+    # Default description for the batch connect app
+    # @return [String] default description of app
+    def default_description
+      ood_app.manifest.description
     end
 
     # Cluster id the batch connect app uses
@@ -240,6 +246,11 @@ module BatchConnect
           hsh = hsh.deep_merge read_yaml_erb(path: file, binding: binding) if file
         end
         @submit_config = hsh
+      end
+
+      # The OOD app object describing this app
+      def ood_app
+        @ood_app ||= OodApp.new(router)
       end
   end
 end
