@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+- Updated LICENSE date.
 - Nav bar is absolutely positioned for responsive issues. The result is that
   scrolling will shift the navbar out of the viewport.
 - (Batch Connect) Keep staged directory around if job submission fails for
