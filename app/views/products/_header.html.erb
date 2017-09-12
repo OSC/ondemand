@@ -1,3 +1,16 @@
-<h2 class="apps-section-header <%= "apps-section-header-teal" if @type == :usr %>">
-  <%= products_title(@type) %>
-</h2>
+<ol class="breadcrumb">
+  <li>
+    <%= link_to "Home", root_path %>
+  </li>
+
+  <% if current_page?(action: "index") %>
+  <li class="active">
+    <%= products_title(@type) %>
+  </li>
+  <% else %>
+  <li>
+    <%= link_to products_title(@type), products_path(type: @type) %>
+  </li>
+  <%= yield %>
+  <% end %>
+</ol>

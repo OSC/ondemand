@@ -1,4 +1,7 @@
-<%= render 'header' %>
+<%= render layout: 'products/header' do %>
+  <li><%= link_to @product.title, product_path(@product.name, type: @type) %></li>
+  <li class="active">Edit</li>
+<% end %>
 
 <div class="page-header">
   <h2>

@@ -1,4 +1,6 @@
-<%= render 'header' %>
+<%= render layout: 'products/header' do %>
+  <li class="active"><%= @product.title %></li>
+<% end %>
 
 <div class="page-header">
   <h2>
