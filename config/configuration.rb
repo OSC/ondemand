@@ -8,10 +8,12 @@ class Configuration
       return @app_development_enabled if defined? @app_development_enabled
       @app_development_enabled = ENV['OOD_APP_DEVELOPMENT'].present?
     end
+    alias_method :app_development_enabled, :app_development_enabled?
 
     def app_sharing_enabled?
       return @app_sharing_enabled if defined? @app_sharing_enabled
       @app_sharing_enabled = ENV['OOD_APP_SHARING'].present?
     end
+    alias_method :app_sharing_enabled, :app_sharing_enabled?
   end
 end
