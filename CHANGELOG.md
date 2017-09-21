@@ -3,6 +3,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+
+- Joyride help fixed to work with new button dropdwon for creating jobs:
+  https://github.com/OSC/ood-myjobs/issues/236
+
+### Changed
+
+- Rename app to "Job Composer" because "MyJobs" is a confusing name:
+  https://github.com/OSC/ood-myjobs/issues/238
+
 ## [2.5.2] - 2017-09-08
 
 ### Fixed
