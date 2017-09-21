@@ -9,6 +9,6 @@ role - optional, default ""
 
 <li <%= "class=\"#{local_assigns[:role]}\"" unless local_assigns[:role].blank? %>>
   <%= link_to url, target: local_assigns.fetch(:target, "_self") do %>
-    <i class="fa fa-<%= local_assigns.fetch(:faicon, "gear") %>"></i> <%= title %>
+    <i class="fa fa-<%= local_assigns.fetch(:faicon, "gear") %> fa-fw"></i> <%= title %>
   <% end %>
 </li>
