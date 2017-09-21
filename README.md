@@ -1,4 +1,4 @@
-# OOD My Jobs
+# Job Composer (renamed from Job Composer)
 
 [![GitHub version](https://badge.fury.io/gh/OSC%2Food-myjobs.svg)](https://badge.fury.io/gh/OSC%2Food-myjobs)
 
@@ -81,13 +81,13 @@ Explorer and Shell apps installed and a cluster config added to
 
 ## Usage
 
-"My Jobs" attempts to model a simple but common workflow. When creating a new batch job to run a simulation a user may:
+"Job Composer" attempts to model a simple but common workflow. When creating a new batch job to run a simulation a user may:
 
 1. copy the directory of a job they already ran or an example job
 2. edit the files
 3. submit a new job
 
-"My Jobs" implements these steps by providing the user job template directories and the ability to make copies of them.
+"Job Composer" implements these steps by providing the user job template directories and the ability to make copies of them.
 
 1. copy the a directory of a job they already ran or an example job
 
@@ -98,7 +98,7 @@ Explorer and Shell apps installed and a cluster config added to
 
   2. user can select a directory to copy from a list of "System" templates the admin copied to `/var/www/ood/apps/sys/myjobs/templates` during installation
   3. user can select a directory to copy from a list of "User" templates that the user has copied to `$HOME/ondemand/data/sys/myjobs/templates`
-  4. user can select a job directory to copy that they already created through "My Jobs" from `$HOME/ondemand/data/sys/myjobs/projects/default`
+  4. user can select a job directory to copy that they already created through "Job Composer" from `$HOME/ondemand/data/sys/myjobs/projects/default`
 
 2. edit the files
   1. user can open the copied job directory in the File Explorer and edit files using the File Editor
@@ -123,7 +123,7 @@ script: ruby.sh
 notes: Notes about the template, such as content and function.
 ```
 
-In the event that a job is created from a template that is missing from the `manifest.yml`, "My Jobs" will assign the following default values:
+In the event that a job is created from a template that is missing from the `manifest.yml`, "Job Composer" will assign the following default values:
 
 * `name` The name of the template folder.
 * `host` The cluster id of the first cluster with a valid resource_mgr listed in the OOD cluster config
