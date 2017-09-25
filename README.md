@@ -1,4 +1,4 @@
-# Job Composer (renamed from Job Composer)
+# Job Composer (renamed from My Jobs)
 
 [![GitHub version](https://badge.fury.io/gh/OSC%2Food-myjobs.svg)](https://badge.fury.io/gh/OSC%2Food-myjobs)
 
