@@ -9,19 +9,19 @@
         <div class="panel-body">
 
           <div class="btn-group open">
-            <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <button type="button" id="new_job_button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Job <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
               <% if @default_template.exist? %>
-              <li><a id="default_job_button" data-method="post" data-toggle="tooltip" title="Create a new job from the default template" href="<%= create_default_path %>">From Default Template</a></li>
+              <li><a data-method="post" data-toggle="tooltip" title="Create a new job from the default template" href="<%= create_default_path %>">From Default Template</a></li>
               <% end %>
               <% if @templates.any? %>
-              <li><a id="new_job_button" href="<%= new_workflow_path %>" data-toggle="tooltip" title="Create a new job from a template you choose">From Template</a></li>
+              <li><a href="<%= new_workflow_path %>" data-toggle="tooltip" title="Create a new job from a template you choose">From Template</a></li>
               <% end %>
               <li><a href="<%= new_from_path_path %>">From Specified Path</a></li>
               <li role="separator" class="divider"></li>
-              <li><a id="copy_button" data-toggle="tooltip" title="Copy the selected job" data-method="get" disabled>From Selected Job</a></li>
+              <li><a data-toggle="tooltip" title="Copy the selected job" data-method="get" disabled>From Selected Job</a></li>
             </ul>
           </div>
 
@@ -160,18 +160,15 @@
           <b>Edit</b> the files in the job via the file explorer.
         </li>
         <li>
-          <b>Submit</b> the job and monitor the progress from the "My Jobs" page.
+          <b>Submit</b> the job and monitor the progress from the "Job Composer" index page.
         </li>
       </ol>
     </li>
     <li data-id="new_job_button">
       <p>
-        1. Create: Begin by creating a new job from an existing template.
-      </p>
-    </li>
-    <li data-id="copy_button">
-      <p>
-        1. Create: you can also create a new job by copying an existing job. Select the job to copy below and clicking here.
+      1. Create: Begin by creating a new job from an existing template,
+      from any arbitrary path on the file system, or by copying a job you have
+      already creatd  through the Job Composer.
       </p>
     </li>
     <li data-id="open_dir_button">
