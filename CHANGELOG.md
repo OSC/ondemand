@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.17.0] - 2017-09-27
+
+### Added
+
+- optional dashboard help url "Configure Two Factor Authentication" set using
+  `OOD_DASHBOARD_2FA_URL` env var
+- new Configuration object to centralize domain specific app configuration
+
+### Changed
+
+- The configuration flag for enabling developer mode is no longer
+  `NavConfig.show_develop_dropdown`, it is now
+  `Configuration.app_development_enabled` and this defaults to the env var
+  OOD_APP_DEVELOPMENT being present; the flag can be modified in the initializer
+
+### Fixed
+
+- updated to latest version of Font Awesome: 4.7.0
+
 ## [1.16.0] - 2017-09-12
 
 ### Added
@@ -179,7 +198,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.16.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.17.0...HEAD
+[1.17.0]: https://github.com/OSC/ood-dashboard/compare/v1.16.0...v1.17.0
 [1.16.0]: https://github.com/OSC/ood-dashboard/compare/v1.15.3...v1.16.0
 [1.15.3]: https://github.com/OSC/ood-dashboard/compare/v1.15.2...v1.15.3
 [1.15.2]: https://github.com/OSC/ood-dashboard/compare/v1.15.1...v1.15.2
