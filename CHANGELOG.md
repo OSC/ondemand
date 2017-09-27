@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2.6.0] - 2017-09-27
+
 ### Fixed
 
 - Joyride help fixed to work with new button dropdwon for creating jobs:
@@ -69,7 +71,8 @@ All notable changes to this project will be documented in this file.
 - UI enhancements
 
 
-[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.5.2...HEAD
+[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.6.0...HEAD
+[2.6.0]: https://github.com/OSC/ood-myjobs/compare/v2.5.2...v2.6.0
 [2.5.2]: https://github.com/OSC/ood-myjobs/compare/v2.5.1...v2.5.2
 [2.5.1]: https://github.com/OSC/ood-myjobs/compare/v2.5.0...v2.5.1
 [2.5.0]: https://github.com/OSC/ood-myjobs/compare/v2.4.2...v2.5.0
