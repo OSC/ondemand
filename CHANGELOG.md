@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Updated `ood_core` library which includes bug fixes and new Batch Connect
   helper functions for scripts.
+  [#263](https://github.com/OSC/ood-dashboard/pull/263)
 
 ## [1.17.0] - 2017-09-27
 ### Added
