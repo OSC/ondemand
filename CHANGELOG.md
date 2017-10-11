@@ -6,43 +6,35 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Modified app to take advantage of ERB templates in updated Dashboard.
+  [#3](https://github.com/OSC/bc_desktop/issues/3)
 
 ## [0.1.1] - 2017-07-12
-
 ### Changed
-
 - Changed the `CHANGELOG.md` formatting.
 - Fixed form attributes `node_type` to `null` and `desktop` to `"mate"` for
   default installs.
 
 ## [0.1.0] - 2017-06-14
-
 ### Changed
-
 - Refactored for the new Batch Connect app.
 
 ### Fixed
-
 - Disable disk check utility on startup.
   [#2](https://github.com/OSC/bc_desktop/issues/2)
 
 ## [0.0.3] - 2017-01-18
-
 ### Fixed
-
 - Set desktop working dir to user's home dir.
 
 ## [0.0.2] - 2017-01-04
-
 ### Added
-
 - Added Mate desktop support.
 - Added variable `$DESKTOP` that specifies desktop script run.
 
 ## 0.0.1 (2016-12-14)
-
 ### Added
-
 - Initial release!
 
 [Unreleased]: https://github.com/OSC/bc_desktop/compare/v0.1.1...HEAD

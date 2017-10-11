@@ -60,16 +60,6 @@ Again, you do not need to restart the app as it isn't a Passenger app.
 > OOD_SITE=osc scl enable rh-ruby22 -- bin/setup
 > ```
 
-## Template Specification
-
-### DESKTOP
-
-This environment variable describes the desktop to load (e.g., `gnome`, `mate`,
-...). It will run the corresponding script that can be found in
-[template/desktops](template/desktops).
-
-By default the Mate desktop is used when a Desktop session is launched.
-
 ## Contributing
 
 1. Fork it ( https://github.com/OSC/bc_desktop/fork )

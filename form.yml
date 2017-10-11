@@ -1,9 +1,4 @@
 ---
-description: |
-  This app will launch an interactive desktop on one or more compute nodes. You
-  will have full access to the resources these nodes provide. This is analogous
-  to an interctive batch job.
-
 attributes:
   desktop: "mate"
   bc_vnc_idle: 0
