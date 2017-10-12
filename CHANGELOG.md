@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- (Batch Connect) Check boxes are now placed inside of `form_group`.
+  [#266](https://github.com/OSC/ood-dashboard/issues/266)
 
 ## [1.17.0] - 2017-09-27
 
