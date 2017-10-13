@@ -6,7 +6,7 @@ class Configuration
 
     def app_development_enabled?
       return @app_development_enabled if defined? @app_development_enabled
-      @app_development_enabled = ENV['OOD_APP_DEVELOPMENT'].present?
+      @app_development_enabled = ENV['OOD_APP_DEVELOPMENT'].present? || DevRouter.base_path.exist?
     end
     alias_method :app_development_enabled, :app_development_enabled?
 
