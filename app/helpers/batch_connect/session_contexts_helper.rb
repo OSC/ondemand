@@ -20,6 +20,10 @@ module BatchConnect::SessionContextsHelper
       form.number_field attrib.id, **kwargs
     when "resolution_field"
       resolution_field(form, attrib.id, **kwargs)
+    when "check_box"
+      form.form_group attrib.id, help: kwargs[:help] do
+        form.check_box attrib.id, label: kwargs[:label], checked: attrib.opts.fetch(:checked, false)
+      end
     else
       kwargs[:pattern] = attrib.opts.fetch(:pattern, nil) # text, date, search, url ,tel, email, and password
       form.send widget, attrib.id, **kwargs

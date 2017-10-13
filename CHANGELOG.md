@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Changed
+- (Batch Connect) Check boxes are now placed inside of `form_group`.
+  [#266](https://github.com/OSC/ood-dashboard/issues/266)
 - Updated `ood_core` library which includes bug fixes and new Batch Connect
   helper functions for scripts.
   [#263](https://github.com/OSC/ood-dashboard/pull/263)
