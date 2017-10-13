@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Logs the full command line call for any forked processes.
+  [#260](https://github.com/OSC/ood-dashboard/issues/260)
+
 ### Changed
 - (Batch Connect) Check boxes are now placed inside of `form_group`.
   [#266](https://github.com/OSC/ood-dashboard/issues/266)
