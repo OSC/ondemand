@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Updated `ood_core` library which includes bug fixes and new Batch Connect
   helper functions for scripts.
+  [#241](https://github.com/OSC/ood-myjobs/pull/241)
 
 ## [2.6.0] - 2017-09-27
 
