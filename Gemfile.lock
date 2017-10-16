@@ -107,7 +107,7 @@ GEM
       redcarpet (~> 3.2)
     ood_cluster (0.0.1)
       addressable (~> 2.4)
-    ood_core (0.1.1)
+    ood_core (0.2.0)
       ood_support (~> 0.0.2)
     ood_support (0.0.2)
     paperclip (4.3.7)

@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Changed
+- Updated `ood_core` library which includes bug fixes and new Batch Connect
+  helper functions for scripts.
+
 ## [v1.5.1] - 2017-09-08
 
 ### Fixed
