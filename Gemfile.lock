@@ -95,7 +95,7 @@ GEM
       ood_core (~> 0.1)
       rails (~> 4.0, >= 4.0.7)
       redcarpet (~> 3.2)
-    ood_core (0.1.1)
+    ood_core (0.2.0)
       ood_support (~> 0.0.2)
     ood_support (0.0.2)
     osc-machete (1.2.1)
