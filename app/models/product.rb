@@ -137,7 +137,10 @@ class Product
         target.rmtree if target.exist?
         return false
       end
-      FileUtils.chmod 0750, target
+
+      # protect shared apps from access by default
+      # if permissions are being used
+      FileUtils.chmod 0750, target if permissions?
 
       # Reset the git history and remote (make vanilla git project)
       if reset_git
@@ -176,7 +179,7 @@ class Product
   end
 
   def permissions?
-    true
+    Configuration.app_sharing_facls_enabled?
   end
 
   def permissions(context)
