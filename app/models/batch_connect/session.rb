@@ -235,7 +235,10 @@ module BatchConnect
       when "slurm"
         # slurm sets the shell from the shebang of the script
       when "lsf"
-        # hopefully lsf also sets the shell from the shebang
+        # FIXME: There is no simple way to pass environment variables to the
+        # batch script with LSF 8 when the below option is enabled, this needs
+        # to be explore further
+        opts[:native] = ["-L", "/bin/bash"] + opts.fetch(:native, [])
       end
 
       opts = {

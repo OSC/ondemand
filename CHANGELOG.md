@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   helper functions for scripts.
   [#263](https://github.com/OSC/ood-dashboard/pull/263)
 
+### Fixed
+- Load a proper login shell for Interactive Apps when using an LSF resource
+  manager. [262](https://github.com/OSC/ood-dashboard/issues/262)
+
 ## [1.17.0] - 2017-09-27
 ### Added
 - optional dashboard help url "Configure Two Factor Authentication" set using
