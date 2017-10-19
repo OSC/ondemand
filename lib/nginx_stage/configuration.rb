@@ -280,6 +280,14 @@ module NginxStage
     # Validation configuration options
     #
 
+    # Regular expression used to validate a given user name
+    # @return [Regexp] user name regular expression
+    def user_regex
+      /\A#{@user_regex}\z/
+    end
+
+    attr_writer :user_regex
+
     # Minimum user id required to run the per-user NGINX as this user. This
     # restricts running processes as special users (i.e., 'root')
     # @return [Integer] minimum user id required to run as user
@@ -373,6 +381,7 @@ module NginxStage
         sys: 'production'
       }
 
+      self.user_regex     = '\w+'
       self.min_uid        = 1000
       self.disabled_shell = '/access/denied'
 
