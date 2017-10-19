@@ -1,3 +1,5 @@
+require "authz/app_developer_constraint"
+
 Rails.application.routes.draw do
   namespace :batch_connect do
     resources :sessions, only: [:index, :destroy]
@@ -26,7 +28,7 @@ Rails.application.routes.draw do
   end
 
   # App administration
-  scope 'admin/:type' do
+  scope 'admin/:type', constraints: Authz::AppDeveloperConstraint do
     resources :products, param: :name, constraints: { type: /dev|usr/ } do
       nested do
         scope ':context' do
