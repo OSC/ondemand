@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated `ood_core` library which includes bug fixes and new Batch Connect
   helper functions for scripts.
   [#263](https://github.com/OSC/ood-dashboard/pull/263)
+- The developer dashboard is enabled by default if the sandbox directory exists
+  for the user. [#264](https://github.com/OSC/ood-dashboard/issues/264)
 
 ### Fixed
 - Load a proper login shell for Interactive Apps when using an LSF resource

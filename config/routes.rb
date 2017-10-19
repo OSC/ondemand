@@ -1,3 +1,5 @@
+require "authz/app_developer_constraint"
+
 Rails.application.routes.draw do
   namespace :batch_connect do
     resources :sessions, only: [:index, :destroy]
@@ -25,24 +27,21 @@ Rails.application.routes.draw do
     root "dashboard#index"
   end
 
-  #FIXME: undo when ready to deploy app sharing to production, remove?
-  if Configuration.app_development_enabled?
-    # App administration
-    scope 'admin/:type' do
-      resources :products, param: :name, constraints: { type: /dev|usr/ } do
-        nested do
-          scope ':context' do
-            resources :permissions, only: [:index, :new, :create, :destroy], param: :name
-          end
+  # App administration
+  scope 'admin/:type', constraints: Authz::AppDeveloperConstraint do
+    resources :products, param: :name, constraints: { type: /dev|usr/ } do
+      nested do
+        scope ':context' do
+          resources :permissions, only: [:index, :new, :create, :destroy], param: :name
         end
-        member do
-          patch 'cli/:cmd', to: 'products#cli', as: 'cli'
-        end
-        collection do
-          get 'create_key'
-          get 'new_from_git_remote'
-          post 'create_from_git_remote'
-        end
+      end
+      member do
+        patch 'cli/:cmd', to: 'products#cli', as: 'cli'
+      end
+      collection do
+        get 'create_key'
+        get 'new_from_git_remote'
+        post 'create_from_git_remote'
       end
     end
   end
