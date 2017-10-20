@@ -386,7 +386,7 @@ module NginxStage
         sys: 'production'
       }
 
-      self.user_regex     = '\w+'
+      self.user_regex     = '[\w@\.\-]+'
       self.min_uid        = 1000
       self.disabled_shell = '/access/denied'
 
