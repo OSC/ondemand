@@ -28,6 +28,12 @@ module NginxStage
     File.dirname __dir__
   end
 
+  # Path to the configuration file
+  # @return [String] path to config file
+  def self.config_file
+    ENV["NGINX_STAGE_CONFIG_FILE"] || '/etc/ood/config/nginx_stage.yml'
+  end
+
   extend Configuration
 
   # Regex used to parse an app request

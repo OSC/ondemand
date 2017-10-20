@@ -13,6 +13,10 @@
 # - git 1.9
 #
 
+# Allow admin to override this script
+#
+[[ -x "${NGINX_STAGE_WRAPPER}" ]] && exec "${NGINX_STAGE_WRAPPER}" "$@"
+
 # For Software Collections 2.0
 #
 # 1. Read in environment variable SCL_PKGS which may be set in `sudo` call
