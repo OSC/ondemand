@@ -1,6 +1,7 @@
 module Open3Extensions
   def capture3(*cmd, **opts)
-    Rails.logger.error("CMD: #{cmd}")
+    # FIXME: Taking educated guess on what Splunk wants in the logs
+    Rails.logger.error(%[execve="#{cmd.to_s.gsub('"', '\"')}"])
     super
   end
 end
