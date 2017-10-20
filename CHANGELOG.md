@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [#263](https://github.com/OSC/ood-dashboard/pull/263)
 - The developer dashboard is enabled by default if the sandbox directory exists
   for the user. [#264](https://github.com/OSC/ood-dashboard/issues/264)
+- Changed app edit button to "Edit Metadata" and moved to right side.
+  [#272](https://github.com/OSC/ood-dashboard/issues/272)
 
 ### Fixed
 - Load a proper login shell for Interactive Apps when using an LSF resource
