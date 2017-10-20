@@ -86,5 +86,59 @@ module NginxStage
         NginxStage.app_config_path envmt
       end
     end
+
+    # View used to confirm whether the user wants to restart the PUN to reload
+    # configuration changes
+    # @return [String] restart confirmation view
+    def restart_confirmation
+      <<-EOF.gsub("'", %q{\\\'})
+        <html>
+        <head>
+          <style>
+            body {
+              font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+              font-size: 16px;
+              line-height: 1.4;
+              color: #333;
+              font-weight: 300;
+              padding: 15px;
+            }
+            h2 {
+              font-weight: 500;
+              font-size: 30px;
+            }
+            .text-danger {
+              color: #a94442;
+            }
+            .btn-danger {
+              text-decoration: none;
+              font-weight: 400;
+              padding: 10px 16px;
+              border-radius: 6px;
+              color: #fff;
+              background-color: #d9534f;
+            }
+          </style>
+        </head>
+        <body>
+          <h2>
+            App has not been initialized or does not exist
+          </h2>
+          <p class="text-danger">
+            This is the first time this app has been launched in your per-user
+            NGINX (PUN) server. This requires a configuration change followed
+            by a restart of your PUN server. Be sure you save all the work you
+            are doing in other apps that have active websocket connections
+            (i.e., Shell App) and you complete all file uploads/downloads.
+          </p>
+          <p>
+            Clicking the "Initialize App" button will apply the configuration
+            change and restart your per-user NGINX (PUN) server.
+          </p>
+          <a href="#{app_init_url}" class="btn-danger">Initialize App</a>
+        </body>
+        </html>
+      EOF
+    end
   end
 end

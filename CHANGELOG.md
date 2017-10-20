@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
+- Added a confirmation page when attempting to restart PUN due to discovery of
+  uninitialized app. [#20](https://github.com/OSC/nginx_stage/issues/20)
 - Added configuration option to modify regular expression used to validate user
   name. [#19](https://github.com/OSC/nginx_stage/issues/19)
 

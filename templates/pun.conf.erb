@@ -60,7 +60,8 @@ http {
 
     <%- if app_init_url -%>
     location / {
-      return 302 <%= app_init_url %>;
+      default_type text/html;
+      return 404 '<%= restart_confirmation %>';
     }
     <%- end -%>
 
