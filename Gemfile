@@ -46,7 +46,6 @@ end
 gem 'thor', '0.19.1'
 
 # Extra third-party gems
-gem 'dotenv-rails', '~> 2.0', require: 'dotenv/rails-now'
 gem 'bootstrap-sass', '~> 3.3'
 gem 'font-awesome-sass', '~> 4.6'
 gem 'redcarpet', '~> 3.3'
@@ -62,6 +61,6 @@ gem "spring", group: :test
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'
 # gem 'ood_appkit', '~> 1.0'
-gem 'ood_appkit', git: 'git@github.com:OSC/ood_appkit.git', branch: 'move_config_to_etc_alt'
+gem 'ood_appkit', git: 'git@github.com:OSC/ood_appkit.git', branch: 'move_config_to_etc_alt', require: 'ood_appkit/dotenv-rails-now'
 gem 'ood_core', '~> 0.1'
 gem 'pbs', '~> 2.1'
