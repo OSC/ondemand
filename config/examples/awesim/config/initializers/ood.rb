@@ -11,7 +11,8 @@ OodFilesApp.candidate_favorite_paths.tap do |paths|
 end
 
 # don't show develop dropdown unless you are setup for app sharing
-NavConfig.show_develop_dropdown = UsrRouter.base_path.directory?
+Configuration.app_development_enabled = UsrRouter.base_path.directory?
+Configuration.app_sharing_facls_enabled = true
 
 # uncomment if you want to revert to the old menu
 # NavConfig.categories = ["Files", "Jobs", "Clusters", "Desktops", "Desktop Apps"]
