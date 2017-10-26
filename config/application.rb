@@ -36,9 +36,7 @@ module Dashboard
     # dashboard shouldn't be hardcoded, but rather use directory name?
     # could be an OodAppkit.custom_initializers_path
     #
-    # Pathname.new(ENV['OOD_CONFIG'] || '/etc/ood/config').join("dashboard", "config", "initializers").to_s
-    #
-    # FIXME: how to write a test for this?
-    config.paths["config/initializers"] << "/users/PZS0562/efranz/awesim/config/dashboard/config/initializers" unless Rails.env.test?
+    # FIXME: not hardcode "dashboard" into this but use "basename"
+    config.paths["config/initializers"] << Pathname.new(ENV['OOD_CONFIG'] || '/etc/ood/config').join("apps", "dashboard", "config", "initializers").to_s
   end
 end
