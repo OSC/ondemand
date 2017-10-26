@@ -1,0 +1,2 @@
+mkdir -p /etc/ood/config/apps
+rsync -rlptv --delete awesim/ /etc/ood/config/apps/dashboard
