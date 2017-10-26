@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 # Open OnDemand Ruby wrapper script
 #
@@ -13,22 +13,26 @@
 # - git 1.9
 #
 
-# Allow admin to override this script
+# Allow admin to override the environment the PUN runs in
 #
-[[ -x "${NGINX_STAGE_WRAPPER}" ]] && exec "${NGINX_STAGE_WRAPPER}" "$@"
-
-# For Software Collections 2.0
-#
-# 1. Read in environment variable SCL_PKGS which may be set in `sudo` call
-#    otherwise fallback to default software collection packages.
-#
-# 2. Check if Software Collections is installed, then source the defined
-#    package scripts.
-#
-SCL_PKGS=${SCL_PKGS:-"nginx16 rh-passenger40 rh-ruby22 nodejs010 git19"}
-SCL_SOURCE=$(command -v scl_source)
-[[ ${SCL_SOURCE} ]] && source ${SCL_SOURCE} enable ${SCL_PKGS}
+NGINX_ENV=${NGINX_ENV:-/etc/ood/env}
+if [[ -f "${NGINX_ENV}" ]]; then
+  # Source in the custom environment
+  source "${NGINX_ENV}"
+else
+  # For Software Collections 2.0
+  #
+  # 1. Read in environment variable SCL_PKGS which may be set in `sudo` call
+  #    otherwise fallback to default software collection packages.
+  #
+  # 2. Check if Software Collections is installed, then source the defined
+  #    package scripts.
+  #
+  SCL_PKGS=${SCL_PKGS:-"nginx16 rh-passenger40 rh-ruby22 nodejs010 git19"}
+  SCL_SOURCE="$(command -v scl_source)"
+  [[ ${SCL_SOURCE} ]] && source "${SCL_SOURCE}" enable ${SCL_PKGS}
+fi
 
 # Environment is set, so call Ruby now
 #
-exec /bin/env ruby "$@"
+exec /usr/bin/env ruby "$@"
