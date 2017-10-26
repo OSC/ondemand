@@ -61,6 +61,7 @@ gem "spring", group: :test
 
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'
-gem 'ood_appkit', '~> 1.0'
+# gem 'ood_appkit', '~> 1.0'
+gem 'ood_appkit', git: 'git@github.com:OSC/ood_appkit.git', branch: 'move_config_to_etc_alt'
 gem 'ood_core', '~> 0.1'
 gem 'pbs', '~> 2.1'
