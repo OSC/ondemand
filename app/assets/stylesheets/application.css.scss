@@ -3,7 +3,13 @@
 @import "font-awesome-sprockets";
 //@import "awesim";
 
-@import "ood_appkit/bootstrap-overrides";
+$navbar-inverse-bg: #53565a;
+$navbar-inverse-link-color: #fff;
+$navbar-inverse-color: $navbar-inverse-link-color;
+$navbar-inverse-link-hover-color: darken($navbar-inverse-link-color, 20%);
+$navbar-inverse-brand-color: $navbar-inverse-link-color;
+$navbar-inverse-brand-hover-color: $navbar-inverse-link-hover-color;
+// $navbar-height: 20px;
 
 //TODO:
 // overrides for navbar-default to get the same look and feel
@@ -17,10 +23,6 @@
 // $navbar-default-brand-hover-color: rgb(255, 255, 255);
 // $navbar-default-link-active-color: rgb(255, 255, 255);
 
-//TODO: consider this to be the default height to use on other pages
-// then make the navbar larger on the main pages where the larger navbar doesn't
-// get in the way
-// $navbar-height: 20px;
 
 // styles to make a logo fill the navbar height if using a logo for the navbar title
 .navbar-brand.navbar-brand-logo{
