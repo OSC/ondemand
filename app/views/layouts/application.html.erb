@@ -14,10 +14,10 @@
   /* branded header styles */
   header div.banner {
     margin-left: -15px;
-    background-color: <%= ENV['BOOTSTRAP_NAVBAR_INVERSE_BG'] %>;
+    background-color: <%= Configuration.banner_bg %>;
   }
   header .banner a  {
-    color: <%= ENV['BOOTSTRAP_NAVBAR_INVERSE_LINK_COLOR'] %>;
+    color: <%= Configuration.banner_color %> ;
     float: left;
     padding: 15px 15px;
     font-size: 18px;
@@ -26,6 +26,16 @@
   }
   header .banner a:hover, header .banner a:focus  {
     color: #ccc;
+  }
+
+  header .banner a.logo {
+    padding: 0px;
+  }
+  header .banner a.logo img {
+    display: block;
+    height: 100%;
+    vertical-align: middle;
+    border: 0;
   }
 
   .navbar-toggle {
@@ -38,7 +48,7 @@
   <header>
     <div class="banner container-fluid">
       <% if ENV['OOD_DASHBOARD_HEADER_IMG_LOGO'].present? %>
-        <a class="navbar-brand-logo" href="<%= root_path %>"><img src="<%= ENV['OOD_DASHBOARD_HEADER_IMG_LOGO'] %>"></a>
+        <a class="logo" href="<%= root_path %>"><img src="<%= ENV['OOD_DASHBOARD_HEADER_IMG_LOGO'] %>"></a>
       <% else %>
         <a class="" href="<%= root_path %>"><%= OodAppkit.dashboard.title.html_safe %></a>
       <% end %>
