@@ -10,18 +10,44 @@
   <%= yield :head %>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+  /* branded header styles */
+  header div.banner {
+    margin-left: -15px;
+    background-color: <%= ENV['BOOTSTRAP_NAVBAR_INVERSE_BG'] %>;
+  }
+  header .banner a  {
+    color: <%= ENV['BOOTSTRAP_NAVBAR_INVERSE_LINK_COLOR'] %>;
+    float: left;
+    padding: 15px 15px;
+    font-size: 18px;
+    line-height: 20px;
+    height: 50px;
+  }
+  header .banner a:hover, header .banner a:focus  {
+    color: #ccc;
+  }
+
+  .navbar-toggle {
+    /* formerly -7px, shifts button up */
+    margin-top: -40px;
+  }
+  </style>
 </head>
 <body>
   <header>
-    <nav class="navbar navbar-<%= ENV['OOD_NAVBAR_TYPE'].present? ? ENV['OOD_NAVBAR_TYPE'] : 'inverse' %> navbar-static-top">
+    <div class="banner container-fluid">
+      <% if ENV['OOD_DASHBOARD_HEADER_IMG_LOGO'].present? %>
+        <a class="navbar-brand-logo" href="<%= root_path %>"><img src="<%= ENV['OOD_DASHBOARD_HEADER_IMG_LOGO'] %>"></a>
+      <% else %>
+        <a class="" href="<%= root_path %>"><%= OodAppkit.dashboard.title.html_safe %></a>
+      <% end %>
+    </div>
+
+    <nav class="navbar navbar-inverse navbar-static-top ">
     <div class="container-fluid">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-9" aria-expanded="false"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
-        <% if ENV['OOD_DASHBOARD_HEADER_IMG_LOGO'].present? %>
-          <a class="navbar-brand navbar-brand-logo" href="<%= root_path %>"><img src="<%= ENV['OOD_DASHBOARD_HEADER_IMG_LOGO'] %>"></a>
-        <% else %>
-          <a class="navbar-brand" href="<%= root_path %>"><%= OodAppkit.dashboard.title.html_safe %></a>
-        <% end %>
       </div>
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
         <ul class="nav navbar-nav">
