@@ -1,5 +1,5 @@
 require "rake/testtask"
-require 'yaml'
+require "yaml"
 
 #
 # Define tasks for `rake test`
@@ -22,51 +22,15 @@ desc <<-DESC
 Install nginx_stage into env var PREFIX
 Default: PREFIX=/opt/ood/nginx_stage
 DESC
-task :install => [:required_files, "#{PREFIX}/config/nginx_stage.yml", "#{PREFIX}/bin/ood_ruby"] do
+task :install => [:required_files] do
 end
 
 # Dynamically generate tasks for copying required files
-FileList['sbin/nginx_stage', 'bin/ruby', 'bin/node', 'bin/python', 'bin/ood_ruby.example', 'config/nginx_stage.yml.example', 'templates/*.erb', 'lib/**/*.rb'].each do |source|
+FileList['sbin/nginx_stage', 'bin/*', 'share/*', 'templates/*.erb', 'lib/**/*.rb'].each do |source|
   target = "#{PREFIX}/#{source}"
   file target => [source] do
     mkdir_p File.dirname(target) unless File.directory? File.dirname(target)
     cp source, target
   end
   task :required_files => target
-end
-
-# Generate default config yaml file
-file "#{PREFIX}/config/nginx_stage.yml" => 'config/nginx_stage.yml.example' do |task|
-  target = task.name
-  if !File.exists?(target) || !YAML.load_file(target)
-    mkdir_p File.dirname(target) unless File.directory? File.dirname(target)
-    cp task.prerequisites.first, target
-    puts <<-EOF.gsub(/^\s{6}/, '')
-      \n#
-      # Created initial configuration file.
-      #
-      # You can modify the configuration file here:
-      #
-      #     #{target}
-      #\n
-    EOF
-  end
-end
-
-# Generate default Ruby wrapper script
-file "#{PREFIX}/bin/ood_ruby" => 'bin/ood_ruby.example' do |task|
-  target = task.name
-  unless File.exists? target
-    mkdir_p File.dirname(target) unless File.directory? File.dirname(target)
-    cp task.prerequisites.first, target
-    puts <<-EOF.gsub(/^\s{6}/, '')
-      \n#
-      # Created initial Ruby wrapper script.
-      #
-      # You can modify the Ruby wrapper script here:
-      #
-      #     #{target}
-      #\n
-    EOF
-  end
 end
