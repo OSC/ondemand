@@ -15,10 +15,10 @@
 
 # Allow admin to override the environment the PUN runs in
 #
-NGINX_ENV=${NGINX_ENV:-/etc/ood/env}
-if [[ -f "${NGINX_ENV}" ]]; then
+NGINX_PROFILE=${NGINX_PROFILE:-/etc/ood/profile}
+if [[ -f "${NGINX_PROFILE}" ]]; then
   # Source in the custom environment
-  source "${NGINX_ENV}"
+  source "${NGINX_PROFILE}"
 else
   # For Software Collections 2.0
   #
