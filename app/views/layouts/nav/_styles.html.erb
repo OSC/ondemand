@@ -1,0 +1,33 @@
+
+.navbar-inverse {
+  background-color: <%= bg_color %>;
+  border-color: <%= link_active_color %>;
+}
+
+.navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {
+  background-color: <%= link_active_color %>;
+}
+
+/*
+.navbar-inverse .navbar-collapse,
+.navbar-inverse .navbar-form {
+  border-color: #424447;
+}
+*/
+
+.navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus {
+  background-color: <%= link_active_color %>;
+}
+
+@media (max-width: 767px) {
+  .navbar-inverse .navbar-nav .open .dropdown-menu > .dropdown-header {
+    border-color: <%= link_active_color %>;
+  }
+  .navbar-inverse .navbar-nav .open .dropdown-menu .divider {
+    background-color: <%= link_active_color %>;
+  }
+  .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a, .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:hover, .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:focus {
+    background-color: <%= link_active_color %>;
+  }
+}
+
