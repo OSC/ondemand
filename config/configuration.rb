@@ -22,23 +22,16 @@ class Configuration
       @app_sharing_enabled = ENV['OOD_APP_SHARING'].present?
     end
     alias_method :app_sharing_enabled, :app_sharing_enabled?
-  end
 
-  # setup default values for banner
-  # self.banner_bg = '#e9e9e9'
-  # self.banner_color = '#737373'
-  self.banner_bg = lambda {
-    if ENV['OOD_NAVBAR_TYPE'] == 'default'
-      ENV['BOOTSTRAP_NAVBAR_DEFAULT_BG'] || '#f8f8f8'
-    else
-      ENV['BOOTSTRAP_NAVBAR_INVERSE_BG'] || '#53565a'
+    def custom_brand_bg_color
+      return @custom_brand_bg_color if defined? @custom_brand_bg_color
+      @custom_brand_bg_color = ENV.values_at('OOD_BRAND_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_BG', 'BOOTSTRAP_NAVBAR_INVERSE_BG').compact.first
     end
-  }.call
-  self.banner_color = lambda {
-    if ENV['OOD_NAVBAR_TYPE'] == 'default'
-      ENV['BOOTSTRAP_NAVBAR_DEFAULT_LINK_COLOR'] || '#777'
-    else
-      ENV['BOOTSTRAP_NAVBAR_INVERSE_LINK_COLOR'] || '#fff'
+
+    # what is the correct name for this option?
+    def custom_brand_link_active_bg_color
+      return @custom_brand_link_active_bg_color if defined? @custom_brand_link_active_bg_color
+      @custom_brand_link_active_bg_color = ENV.values_at('OOD_BRAND_LINK_ACTIVE_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_LINK_ACTIVE_BG','BOOTSTRAP_NAVBAR_INVERSE_LINK_ACTIVE_BG' ).compact.first
     end
-  }.call
+  end
 end
