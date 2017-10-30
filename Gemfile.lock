@@ -1,16 +1,3 @@
-GIT
-  remote: git@github.com:OSC/ood_appkit.git
-  revision: 9e1b3c54529ba0b3c30cefc755190a98b7c9c5c2
-  branch: move_config_to_etc_alt
-  specs:
-    ood_appkit (1.0.3)
-      addressable (~> 2.4)
-      dotenv-rails (~> 2.0)
-      lograge (~> 0.3)
-      ood_core (~> 0.1)
-      rails (~> 4.0, >= 4.0.7)
-      redcarpet (~> 3.2)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -119,6 +106,12 @@ GEM
     multi_json (1.12.2)
     nokogiri (1.8.1)
       mini_portile2 (~> 2.3.0)
+    ood_appkit (1.0.3)
+      addressable (~> 2.4)
+      lograge (~> 0.3)
+      ood_core (~> 0.1)
+      rails (~> 4.0, >= 4.0.7)
+      redcarpet (~> 3.2)
     ood_core (0.2.0)
       ood_support (~> 0.0.2)
     ood_support (0.0.2)
@@ -212,7 +205,7 @@ DEPENDENCIES
   jquery-datatables-rails (~> 3.4)
   jquery-rails
   mocha (~> 1.1)
-  ood_appkit!
+  ood_appkit (~> 1.0)
   ood_core (~> 0.1)
   ood_support (~> 0.0.2)
   pbs (~> 2.1)
