@@ -152,7 +152,7 @@
 # Regular expression used to validate a given user name. The user name supplied
 # must match the regular expression to be considered valid.
 #
-#user_regex: '\w+'
+#user_regex: '[\w@\.\-]+'
 
 # Minimum user id required to generate per-user NGINX server as the requested
 # user
