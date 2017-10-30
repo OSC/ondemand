@@ -64,9 +64,10 @@ Pathname.new(File.expand_path("../../",  __FILE__)).tap do |root|
   end
 end
 
-# support custom initializers in /etc
+# support custom initializers and views in /etc
 if defined?(Rails) && defined?(Rails.application)
   Rails.application.configure do |config|
     config.paths["config/initializers"] << Configuration.config_root.join("config", "initializers").to_s
+    config.paths["app/views"].unshift Configuration.config_root.join("app", "views").to_s
   end
 end
