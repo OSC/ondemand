@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Default regex for validating username now includes common email symbols.
   [#19](https://github.com/OSC/nginx_stage/issues/19)
-- Moved configuration location to `/etc/ood/nginx_stage`.
+- Moved configuration location to `/etc/ood/config/nginx_stage.yml`.
   [#23](https://github.com/OSC/nginx_stage/pull/23)
 - Modified the CHANGELOG formatting.
 
