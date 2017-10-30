@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - Fixed link to documentation in `README.md`.
+- Updated the `LICENSE.txt` with correct information.
 
 ## [0.2.1] - 2017-03-02
 ### Removed
