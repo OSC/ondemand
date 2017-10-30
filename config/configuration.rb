@@ -20,6 +20,12 @@ class Configuration
     end
     alias_method :app_sharing_enabled, :app_sharing_enabled?
 
+    # The app's configuration root directory
+    # @return [Pathname] path to configuration root
+    def config_root
+      Pathname.new(ENV["OOD_APP_CONFIG"] || "/etc/ood/config/apps/dashboard")
+    end
+
     def custom_brand_bg_color
       return @custom_brand_bg_color if defined? @custom_brand_bg_color
       @custom_brand_bg_color = ENV.values_at('OOD_BRAND_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_BG', 'BOOTSTRAP_NAVBAR_INVERSE_BG').compact.first
@@ -30,5 +36,12 @@ class Configuration
       return @custom_brand_link_active_bg_color if defined? @custom_brand_link_active_bg_color
       @custom_brand_link_active_bg_color = ENV.values_at('OOD_BRAND_LINK_ACTIVE_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_LINK_ACTIVE_BG','BOOTSTRAP_NAVBAR_INVERSE_LINK_ACTIVE_BG' ).compact.first
     end
+  end
+end
+
+# support custom initializers in /etc
+if defined?(Rails) && defined?(Rails.application)
+  Rails.application.configure do |config|
+    config.paths["config/initializers"] << Configuration.config_root.join("initializers").to_s
   end
 end

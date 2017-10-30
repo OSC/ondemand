@@ -31,12 +31,5 @@ module Dashboard
 
     # Custom error pages
     config.exceptions_app = self.routes
-
-    # FIXME: ood config should be in OodAppkit and required here?
-    # dashboard shouldn't be hardcoded, but rather use directory name?
-    # could be an OodAppkit.custom_initializers_path
-    #
-    # FIXME: not hardcode "dashboard" into this but use "basename"
-    config.paths["config/initializers"] << Pathname.new(ENV['OOD_CONFIG'] || '/etc/ood/config').join("apps", "dashboard", "config", "initializers").to_s
   end
 end
