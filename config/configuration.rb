@@ -67,6 +67,6 @@ end
 # support custom initializers in /etc
 if defined?(Rails) && defined?(Rails.application)
   Rails.application.configure do |config|
-    config.paths["config/initializers"] << Configuration.config_root.join("initializers").to_s
+    config.paths["config/initializers"] << Configuration.config_root.join("config", "initializers").to_s
   end
 end
