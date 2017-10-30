@@ -1,19 +1,17 @@
-
+<% if bg_color %>
 .navbar-inverse {
   background-color: <%= bg_color %>;
+}
+<% end %>
+
+<% if link_active_color %>
+.navbar-inverse {
   border-color: <%= link_active_color %>;
 }
 
 .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {
   background-color: <%= link_active_color %>;
 }
-
-/*
-.navbar-inverse .navbar-collapse,
-.navbar-inverse .navbar-form {
-  border-color: #424447;
-}
-*/
 
 .navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus {
   background-color: <%= link_active_color %>;
@@ -30,4 +28,4 @@
     background-color: <%= link_active_color %>;
   }
 }
-
+<% end %>
