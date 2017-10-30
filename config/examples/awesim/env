@@ -13,7 +13,6 @@ OOD_PORTAL="awesim"
 OOD_DASHBOARD_TITLE="AweSim Dashboard"
 
 OOD_NAVBAR_TYPE=default
-BOOTSTRAP_NAVBAR_HEIGHT='80px'
 
 OOD_DASHBOARD_HEADER_IMG_LOGO="/public/logo.png"
 OOD_DASHBOARD_DOCS_URL="https://github.com/AweSim-OSC/documentation/wiki/Users"
