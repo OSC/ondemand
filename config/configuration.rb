@@ -1,3 +1,6 @@
+require 'pathname'
+require 'dotenv'
+
 # dashboard app specific configuration
 class Configuration
   class << self
@@ -36,6 +39,28 @@ class Configuration
       return @custom_brand_link_active_bg_color if defined? @custom_brand_link_active_bg_color
       @custom_brand_link_active_bg_color = ENV.values_at('OOD_BRAND_LINK_ACTIVE_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_LINK_ACTIVE_BG','BOOTSTRAP_NAVBAR_INVERSE_LINK_ACTIVE_BG' ).compact.first
     end
+  end
+end
+
+# load dotenv files to initialize environment
+Pathname.new(File.expand_path("../../",  __FILE__)).tap do |root|
+  Dir.chdir root do
+    rails_env = (defined?(Rails) && Rails.env) || ENV['RAILS_ENV']
+
+    # .env.local first, so it can override OOD_APP_CONFIG
+    dotenv_files = [
+      (root.join(".env.#{rails_env}.local") unless rails_env.nil?),
+      (root.join(".env.local") unless rails_env == "test"),
+    ].compact
+    Dotenv.load(*dotenv_files) unless dotenv_files.empty?
+
+    # load the rest of the dotenv files
+    dotenv_files = [
+      Configuration.config_root.join("env"),
+      (root.join(".env.#{rails_env}") unless rails_env.nil?),
+      root.join(".env")
+    ].compact
+    Dotenv.load(*dotenv_files)
   end
 end
 
