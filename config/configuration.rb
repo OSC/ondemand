@@ -4,9 +4,6 @@ class Configuration
     attr_writer :app_development_enabled
     attr_writer :app_sharing_enabled
 
-    attr_accessor :banner_bg
-    attr_accessor :banner_color
-
     # FIXME: temporary
     attr_accessor :app_sharing_facls_enabled
     alias_method :app_sharing_facls_enabled?, :app_sharing_facls_enabled
