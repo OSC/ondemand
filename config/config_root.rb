@@ -53,8 +53,8 @@ module ConfigRoot
   def dotenv_files
     [
       config_root.join(".env.#{rails_env}"),
-      config_root.join(".env"),
       app_root.join(".env.#{rails_env}"),
+      config_root.join(".env"),
       app_root.join(".env")
     ].compact
   end
