@@ -10,9 +10,7 @@ class Configuration
 end
 
 # support custom initializers and views in /etc
-if defined?(Rails) && defined?(Rails.application)
-  Rails.application.configure do |config|
-    config.paths["config/initializers"].unshift Configuration.config_root.join("config", "initializers").to_s
-    config.paths["app/views"].unshift Configuration.config_root.join("app", "views").to_s
-  end
+Rails.application.configure do |config|
+  config.paths["config/initializers"].unshift Configuration.config_root.join("config", "initializers").to_s
+  config.paths["app/views"].unshift Configuration.config_root.join("app", "views").to_s
 end
