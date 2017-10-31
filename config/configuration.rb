@@ -25,14 +25,12 @@ class Configuration
     end
     alias_method :app_sharing_enabled, :app_sharing_enabled?
 
-    def custom_brand_bg_color
-      return @custom_brand_bg_color if defined? @custom_brand_bg_color
-      @custom_brand_bg_color = ENV.values_at('OOD_BRAND_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_BG', 'BOOTSTRAP_NAVBAR_INVERSE_BG').compact.first
+    def brand_bg_color
+      ENV.values_at('OOD_BRAND_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_BG', 'BOOTSTRAP_NAVBAR_INVERSE_BG').compact.first
     end
 
-    def custom_brand_link_active_bg_color
-      return @custom_brand_link_active_bg_color if defined? @custom_brand_link_active_bg_color
-      @custom_brand_link_active_bg_color = ENV.values_at('OOD_BRAND_LINK_ACTIVE_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_LINK_ACTIVE_BG','BOOTSTRAP_NAVBAR_INVERSE_LINK_ACTIVE_BG' ).compact.first
+    def brand_link_active_bg_color
+      ENV.values_at('OOD_BRAND_LINK_ACTIVE_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_LINK_ACTIVE_BG','BOOTSTRAP_NAVBAR_INVERSE_LINK_ACTIVE_BG' ).compact.first
     end
   end
 end
