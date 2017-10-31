@@ -13,6 +13,14 @@ module ConfigRoot
     Pathname.new(ENV["OOD_APP_CONFIG"] || "/etc/ood/config/apps/myjobs")
   end
 
+
+  # Load the dotenv local files first, then the /etc dotenv files and
+  # the .env and .env.production or .env.development files.
+  #
+  # Doing this in two separate loads means OOD_APP_CONFIG can be specified in
+  # the .env.local file, which will specify where to look for the /etc dotenv
+  # files. The default for OOD_APP_CONFIG is /etc/ood/config/apps/myjobs and
+  # both .env and .env.production will be searched for there.
   def load_dotenv_files
     Dir.chdir app_root do
       # .env.local first, so it can override OOD_APP_CONFIG
@@ -25,16 +33,12 @@ module ConfigRoot
 
   private
 
-  # FIXME: if Rails is always guarenteed to be defined
-  # here, including requiring from a bin/setup-production, then lets drop this
-  #
+  # The environment
+  # @return [String] "development", "test", or "production"
   def rails_env
-    (defined?(Rails) && Rails.env) || ENV['RAILS_ENV']
+    ENV['RAILS_ENV'] || "development"
   end
 
-  # FIXME: if Rails.root is always guarenteed to be defined
-  # here, including in a bin/setup-production, then lets drop this
-  #
   # The app's root directory
   # @return [Pathname] path to configuration root
   def app_root
@@ -43,15 +47,16 @@ module ConfigRoot
 
   def dotenv_local_files
     [
-      (app_root.join(".env.#{rails_env}.local") unless rails_env.nil?),
+      app_root.join(".env.#{rails_env}.local"),
       (app_root.join(".env.local") unless rails_env == "test"),
     ].compact
   end
 
   def dotenv_files
     [
-      config_root.join("env"),
-      (app_root.join(".env.#{rails_env}") unless rails_env.nil?),
+      config_root.join(".env.#{rails_env}"),
+      config_root.join(".env"),
+      app_root.join(".env.#{rails_env}"),
       app_root.join(".env")
     ].compact
   end
