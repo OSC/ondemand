@@ -2,7 +2,11 @@
 
 require 'pathname'
 require 'fileutils'
-require 'dotenv'
+
+# always run this in production environment
+ENV['RAILS_ENV'] = 'production'
+
+require_relative '../config/boot'
 
 include FileUtils
 
@@ -20,9 +24,6 @@ end
 APP_ROOT = Pathname.new File.expand_path('../../', __FILE__)
 
 chdir APP_ROOT do
-  # get env vars for DATABASE and DATAROOT
-  Dotenv.load(".env.local", ".env.production", ".env")
-
   `mkdir -p #{ENV["OOD_DATAROOT"]}` if ENV["OOD_DATAROOT"]
 
   # currently SQLite-specific
