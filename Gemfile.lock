@@ -35,7 +35,7 @@ GEM
     bootstrap-sass (3.3.5)
       autoprefixer-rails (>= 5.0.0.1)
       sass (>= 3.2.19)
-    bootstrap_form (2.3.0)
+    bootstrap_form (2.7.0)
     builder (3.2.3)
     climate_control (0.1.0)
     cocaine (0.5.8)
@@ -175,7 +175,7 @@ PLATFORMS
 DEPENDENCIES
   autoprefixer-rails
   bootstrap-sass (= 3.3.5)
-  bootstrap_form (~> 2.3.0)
+  bootstrap_form (~> 2.7.0)
   coffee-rails (~> 4.0.0)
   dotenv-rails (~> 2.0)
   font-awesome-sass (~> 4.4.0)
