@@ -22,13 +22,11 @@ module ConfigRoot
   # files. The default for OOD_APP_CONFIG is /etc/ood/config/apps/myjobs and
   # both .env and .env.production will be searched for there.
   def load_dotenv_files
-    Dir.chdir app_root do
-      # .env.local first, so it can override OOD_APP_CONFIG
-      Dotenv.load(*dotenv_local_files) unless dotenv_local_files.empty?
+    # .env.local first, so it can override OOD_APP_CONFIG
+    Dotenv.load(*dotenv_local_files) unless dotenv_local_files.empty?
 
-      # load the rest of the dotenv files
-      Dotenv.load(*dotenv_files)
-    end
+    # load the rest of the dotenv files
+    Dotenv.load(*dotenv_files)
   end
 
   private
