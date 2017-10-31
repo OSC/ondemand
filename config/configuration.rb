@@ -11,6 +11,6 @@ end
 
 # support custom initializers and views in /etc
 Rails.application.configure do |config|
-  config.paths["config/initializers"].unshift Configuration.config_root.join("config", "initializers").to_s
+  config.paths["config/initializers"] << Configuration.config_root.join("config", "initializers").to_s
   config.paths["app/views"].unshift Configuration.config_root.join("app", "views").to_s
 end
