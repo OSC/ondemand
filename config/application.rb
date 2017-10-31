@@ -6,6 +6,10 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+# load dotenv files before "before_configuration" callback
+require File.expand_path('../config_root', __FILE__)
+ConfigRoot.load_dotenv_files
+
 module JobConstructor
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
