@@ -17,8 +17,37 @@ chdir APP_ROOT do
   if File.exist?(".env")
     value = `bash -c 'source .env && echo $DEFAULT_SSHHOST'`.strip
     OLD_SSHHOST = value.empty? ? nil : value
+    $stderr.puts <<-EOT.gsub(/^ {6}/, "")
+      \n\e[31m[DEPRECATION] =================================================
+      The file
+
+          #{APP_ROOT.join(".env")}
+
+      is being deprecated. Please specify the DEFAULT_SSHHOST in
+      '/etc/ood/config/apps/shell/config.yml' as:
+
+          # /etc/ood/config/apps/shell/config.yml
+          ---
+          default_host: "#{DEFAULT_SSHHOST || OLD_SSHHOST || "localhost"}"
+
+      then delete the '.env' file.
+      ===============================================================\e[0m
+    EOT
   else
     OLD_SSHHOST = nil
+    $stderr.puts <<-EOT.gsub(/^ {6}/, "") if DEFAULT_SSHHOST
+      \n\e[31m[DEPRECATION] =================================================
+      The default ssh host should not be specified by the
+      environment variable DEFAULT_SSHHOST anymore. Please
+      specify it in '/etc/ood/config/apps/shell/config.yml'
+      as:
+
+          # /etc/ood/config/apps/shell/config.yml
+          ---
+          default_host: "#{DEFAULT_SSHHOST}"
+
+      ===============================================================\e[0m\n
+    EOT
   end
 
   puts "\n== Building Shell App =="

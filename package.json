@@ -7,18 +7,19 @@
   "main": "app.js",
   "homepage": "https://github.com/OSC/ood-shell",
   "repository": {
-    "type":  "git",
-    "url":   "git://github.com/OSC/ood-shell.git"
+    "type": "git",
+    "url": "git://github.com/OSC/ood-shell.git"
   },
   "bugs": {
     "url": "https://github.com/OSC/ood-shell/issues"
   },
   "dependencies": {
-    "dotenv":   "^4.0.0",
-    "express":  "^4.14.0",
-    "hbs":      "^4.0.1",
-    "pty.js":   "^0.3.1",
-    "ws":       "^1.1.2"
+    "dotenv": "^4.0.0",
+    "express": "^4.14.0",
+    "hbs": "^4.0.1",
+    "js-yaml": "^3.10.0",
+    "pty.js": "^0.3.1",
+    "ws": "^1.1.2"
   },
   "private": true
 }
