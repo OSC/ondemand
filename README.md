@@ -26,13 +26,6 @@ the `ood` account, this app should run as `ood`.
     scl enable git19 rh-ruby22 nodejs010 -- bin/setup
     ```
 
-    this will set the default SSH host to `localhost`. It is **recommended**
-    you change this to one of the login nodes with:
-
-    ```sh
-    DEFAULT_SSHHOST=login.my_center.edu scl enable git19 nodejs010 -- bin/setup
-    ```
-
 3. Copy the built app directory to the deployment directory, and start the
    server. i.e.:
 
@@ -63,10 +56,20 @@ the `ood` account, this app should run as `ood`.
    sudo rsync -rlptv --delete . /var/www/ood/apps/sys/shell
    ```
 
+## Configure
+
+The app can be configured by editing the global configuration file:
+
+```
+/etc/ood/config/apps/shell/config.yml
+```
+
+An example configuration file can be found at
+[share/config_example.yml](share/config_example.yml).
 
 ## Usage
 
-Open a terminal to the default SSH host (`$DEFAULT_SSHHOST` or `localhost`):
+Open a terminal to the default SSH host:
 
 `http://localhost:3000/`
 
@@ -81,6 +84,29 @@ To specify a directory on the default host:
 To specify a host and directory:
 
 `http://localhost:3000/ssh/<host>/<dir>`
+
+## Development
+
+To override the global configuration file for development purposes you would:
+
+1. Copy the global configuration to the app root:
+
+   ```sh
+   cp /etc/ood/config/apps/shell/config.yml config.yml
+   ```
+
+2. Point to this location with the `OOD_CONFIG` environment variable specified
+   in the un-versioned local environment variable file:
+
+   ```sh
+   echo "OOD_CONFIG=config.yml" > .env.local
+   ```
+
+3. Restart the app:
+
+   ```sh
+   touch tmp/restart.txt
+   ```
 
 ## Contributing
 
