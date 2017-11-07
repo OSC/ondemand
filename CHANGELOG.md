@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added example YAML configuration file that can be copied to the global
+  location `/etc/ood/config/apps/shell/config.yml` to be read by app.
+- Added support to read local environment variable file `.env.local`.
+
+### Changed
+- Reads environment variables from global location
+  `/etc/ood/config/apps/shell/env`.
+
+### Deprecated
+- Deprecating old environment variable file `.env` located underneath the app.
 
 ## [1.2.4] - 2017-10-20
 ### Changed
