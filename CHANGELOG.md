@@ -9,11 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Added example YAML configuration file that can be copied to the global
   location `/etc/ood/config/apps/shell/config.yml` to be read by app.
+  [#43](https://github.com/OSC/ood-shell/pull/43)
 - Added support to read local environment variable file `.env.local`.
 
 ### Changed
 - Reads environment variables from global location
   `/etc/ood/config/apps/shell/env`.
+  [#42](https://github.com/OSC/ood-shell/issues/42)
 
 ### Deprecated
 - Deprecating old environment variable file `.env` located underneath the app.
