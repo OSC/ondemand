@@ -102,7 +102,7 @@ file:
 ```
 
 In particular, the environment variable `OOD_APP_ENV` can be used to point to a
-different global environment file than the default one:
+different global environment file other than the default location:
 
 ```
 /etc/ood/config/apps/shell/env
