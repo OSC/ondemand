@@ -21,4 +21,3 @@ node_modules/*
 # ignore env vars
 /.env
 /.env.local
-/config.yml

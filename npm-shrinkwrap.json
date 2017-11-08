@@ -498,30 +498,6 @@
         }
       }
     },
-    "js-yaml": {
-      "version": "3.10.0",
-      "from": "js-yaml@>=3.10.0 <4.0.0",
-      "resolved": "https://registry.npmjs.org/js-yaml/-/js-yaml-3.10.0.tgz",
-      "dependencies": {
-        "argparse": {
-          "version": "1.0.9",
-          "from": "argparse@>=1.0.7 <2.0.0",
-          "resolved": "https://registry.npmjs.org/argparse/-/argparse-1.0.9.tgz",
-          "dependencies": {
-            "sprintf-js": {
-              "version": "1.0.3",
-              "from": "sprintf-js@>=1.0.2 <1.1.0",
-              "resolved": "https://registry.npmjs.org/sprintf-js/-/sprintf-js-1.0.3.tgz"
-            }
-          }
-        },
-        "esprima": {
-          "version": "4.0.0",
-          "from": "esprima@>=4.0.0 <5.0.0",
-          "resolved": "https://registry.npmjs.org/esprima/-/esprima-4.0.0.tgz"
-        }
-      }
-    },
     "pty.js": {
       "version": "0.3.1",
       "from": "pty.js@>=0.3.1 <0.4.0",

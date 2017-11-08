@@ -6,27 +6,15 @@ var express   = require('express');
 var pty       = require('pty.js');
 var hbs       = require('hbs');
 var dotenv    = require('dotenv');
-var yaml      = require('js-yaml');
 var port      = 3000;
 
 // Read in environment variables
 dotenv.config({path: '.env.local'});
-dotenv.config({path: '/etc/ood/config/apps/shell/env'}); // used for easier migration
+dotenv.config({path: process.env.OOD_APP_ENV || '/etc/ood/config/apps/shell/env'});
 // Keep app backwards compatible
 if (fs.existsSync('.env')) {
-  console.warn('[DEPRECATION] The file \'.env\' is being deprecated. Please move this file to \'/etc/ood/config/apps/shell/env\' or use the new \'/etc/ood/config/apps/shell/config.yml\' YAML configuration file.');
+  console.warn('[DEPRECATION] The file \'.env\' is being deprecated. Please move this file to \'/etc/ood/config/apps/shell/env\'.');
   dotenv.config({path: '.env'});
-}
-
-// Read in configuration
-var config = {};
-var configFile = process.env.OOD_CONFIG || '/etc/ood/config/apps/shell/config.yml';
-try {
-  if (fs.existsSync(configFile)) {
-    config = yaml.safeLoad(fs.readFileSync(configFile));
-  }
-} catch (e) {
-  console.log(e);
 }
 
 // Create all your routes
@@ -55,7 +43,7 @@ var wss = new WebSocket.Server({ server: server });
 
 wss.on('connection', function connection (ws) {
   var match;
-  var host = config.default_host || process.env.DEFAULT_SSHHOST || 'localhost';
+  var host = process.env.DEFAULT_SSHHOST || 'localhost';
   var dir;
   var term;
   var cmd, args, cwd, env;

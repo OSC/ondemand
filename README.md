@@ -56,16 +56,23 @@ the `ood` account, this app should run as `ood`.
    sudo rsync -rlptv --delete . /var/www/ood/apps/sys/shell
    ```
 
-## Configure
+## Configuration
 
-The app can be configured by editing the global configuration file:
+The app can be configured by editing the global environment file:
 
 ```
-/etc/ood/config/apps/shell/config.yml
+/etc/ood/config/apps/shell/env
 ```
 
-An example configuration file can be found at
-[share/config_example.yml](share/config_example.yml).
+An example environment file is:
+
+```sh
+# /etc/ood/config/apps/shell/env
+
+# The default ssh host the user is logged into if the user doesn't specify a
+# host in the url
+DEFAULT_SSHHOST="localhost"
+```
 
 ## Usage
 
@@ -87,26 +94,26 @@ To specify a host and directory:
 
 ## Development
 
-To override the global configuration file for development purposes you would:
+All global environment variables can be overridden in the local environment
+file:
 
-1. Copy the global configuration to the app root:
+```
+.env.local
+```
 
-   ```sh
-   cp /etc/ood/config/apps/shell/config.yml config.yml
-   ```
+In particular, the environment variable `OOD_APP_ENV` can be used to point to a
+different global environment file than the default one:
 
-2. Point to this location with the `OOD_CONFIG` environment variable specified
-   in the un-versioned local environment variable file:
+```
+/etc/ood/config/apps/shell/env
+```
 
-   ```sh
-   echo "OOD_CONFIG=config.yml" > .env.local
-   ```
+Any changes made to the environment files require an app restart in order for
+the changes to take effect:
 
-3. Restart the app:
-
-   ```sh
-   touch tmp/restart.txt
-   ```
+```console
+$ touch tmp/restart.txt
+```
 
 ## Contributing
 

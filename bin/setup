@@ -23,14 +23,11 @@ chdir APP_ROOT do
 
           #{APP_ROOT.join(".env")}
 
-      is being deprecated. Please specify the DEFAULT_SSHHOST in
-      '/etc/ood/config/apps/shell/config.yml' as:
+      is being deprecated. Please move this file to:
 
-          # /etc/ood/config/apps/shell/config.yml
-          ---
-          default_host: "#{DEFAULT_SSHHOST || OLD_SSHHOST || "localhost"}"
+          /etc/ood/config/apps/shell/env
 
-      then delete the '.env' file.
+      and delete this '.env' file.
       ===============================================================\e[0m
     EOT
   else
@@ -38,13 +35,15 @@ chdir APP_ROOT do
     $stderr.puts <<-EOT.gsub(/^ {6}/, "") if DEFAULT_SSHHOST
       \n\e[31m[DEPRECATION] =================================================
       The default ssh host should not be specified by the
-      environment variable DEFAULT_SSHHOST anymore. Please
-      specify it in '/etc/ood/config/apps/shell/config.yml'
-      as:
+      environment variable DEFAULT_SSHHOST during build time
+      anymore. Instead please specify it in:
 
-          # /etc/ood/config/apps/shell/config.yml
-          ---
-          default_host: "#{DEFAULT_SSHHOST}"
+          /etc/ood/config/apps/shell/env
+
+      An example file would look like:
+
+          # /etc/ood/config/apps/shell/env
+          DEFAULT_SSHHOST="#{DEFAULT_SSHHOST}"
 
       ===============================================================\e[0m\n
     EOT
