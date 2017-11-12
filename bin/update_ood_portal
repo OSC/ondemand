@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+CONFIG="${CONFIG:-/etc/ood/config/ood_portal.yml}"
+APACHE="${APACHE:-/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf}"
+BIN="${BIN:-/opt/ood/ood-portal-generator/bin/generate}"
+
+set -e
+
+echo "Generating '${APACHE}' from '${CONFIG}'"
+
+NEW_APACHE="$("${BIN}" -c "${CONFIG}")"
+if ! cmp -s <(echo "${NEW_APACHE}") "${APACHE}"; then
+  if [[ -f "${APACHE}" ]]; then
+    mv "${APACHE}" "${APACHE}.$(date '+%Y%m%dT%H%M%S')"
+  fi
+  echo "${NEW_APACHE}" > "${APACHE}"
+fi
+
+echo "Completed successfully!"
+echo ""
+echo "Please restart the httpd24-httpd service now."
+echo ""

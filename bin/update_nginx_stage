@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+CONFIG="${CONFIG:-/etc/ood/config/nginx_stage.yml}"
+BIN="${BIN:-/opt/ood/nginx_stage/sbin/nginx_stage}"
+
+set -e
+
+echo "Updating NGINX configs from '${CONFIG}'"
+
+export NGINX_STAGE_CONFIG_FILE="${CONFIG}"
+set -x
+"${BIN}" app_clean
+"${BIN}" app_reset --sub-uri=/pun
+"${BIN}" nginx_clean
+{ set +x; } 2>/dev/null
+
+
+echo "Completed successfully!"
+echo ""

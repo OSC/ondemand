@@ -1,0 +1,64 @@
+[
+  {
+    "name": "ood-portal-generator",
+    "url": "https://github.com/OSC/ood-portal-generator",
+    "tag": "use-global-config"
+  },
+  {
+    "name": "mod_ood_proxy",
+    "url": "https://github.com/OSC/mod_ood_proxy",
+    "tag": "v0.3.1"
+  },
+  {
+    "name": "ood_auth_map",
+    "url": "https://github.com/OSC/ood_auth_map",
+    "tag": "v0.0.3"
+  },
+  {
+    "name": "nginx_stage",
+    "url": "https://github.com/OSC/nginx_stage",
+    "tag": "v0.3.0"
+  },
+  {
+    "name": "dashboard",
+    "url": "https://github.com/OSC/ood-dashboard",
+    "tag": "v1.18.0",
+    "app": true
+  },
+  {
+    "name": "shell",
+    "url": "https://github.com/OSC/ood-shell",
+    "tag": "v1.2.4",
+    "app": true
+  },
+  {
+    "name": "files",
+    "url": "https://github.com/OSC/ood-fileexplorer",
+    "tag": "v1.3.6",
+    "app": true
+  },
+  {
+    "name": "file-editor",
+    "url": "https://github.com/OSC/ood-fileeditor",
+    "tag": "v1.3.1",
+    "app": true
+  },
+  {
+    "name": "activejobs",
+    "url": "https://github.com/OSC/ood-activejobs",
+    "tag": "v1.5.2",
+    "app": true
+  },
+  {
+    "name": "myjobs",
+    "url": "https://github.com/OSC/ood-myjobs",
+    "tag": "v2.6.1",
+    "app": true
+  },
+  {
+    "name": "bc_desktop",
+    "url": "https://github.com/OSC/bc_desktop",
+    "tag": "v0.1.2",
+    "app": true
+  }
+]
