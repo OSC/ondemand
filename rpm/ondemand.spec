@@ -9,7 +9,7 @@ URL:       https://osc.github.io/Open-OnDemand
 Source0:   ondemand-1.2.0.tar.gz
 
 # Disable debuginfo as it causes issues with bundled gems that build libraries
-%define debug_package %{nil}
+%global debug_package %{nil}
 
 # Check if system uses systemd by default
 %if 0%{?rhel} >= 7
