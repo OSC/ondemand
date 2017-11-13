@@ -65,7 +65,7 @@ directory INSTALL_ROOT.to_s
 
 desc "Install OnDemand"
 task :install => [:build, INSTALL_ROOT] do
-  cp_r "#{BUILD_ROOT}/.", "#{INSTALL_ROOT}/"
+  sh "rsync -rptq --delete --copy-unsafe-links #{BUILD_ROOT}/ #{INSTALL_ROOT}"
 end
 
 desc "Clean up build"
