@@ -8,15 +8,23 @@ License:   MIT
 URL:       https://osc.github.io/Open-OnDemand
 Source0:   ondemand-1.2.0.tar.gz
 
+# Disable debuginfo as it causes issues with bundled gems that build libraries
+%define debug_package %{nil}
+
+# Check if system uses systemd by default
 %if 0%{?rhel} >= 7
 %bcond_without systemd
 %else
 %bcond_with systemd
 %endif
 
-BuildRequires:   sqlite-devel, curl
+# Disable automatic dependencies as it causes issues with bundled gems and
+# node.js packages used in the apps
+AutoReqProv:     no
+
+BuildRequires:   sqlite-devel, curl, make
 BuildRequires:   rh-ruby22, rh-ruby22-rubygem-rake, rh-ruby22-rubygem-bundler, rh-ruby22-ruby-devel, nodejs010, git19
-Requires:        sudo, lsof, sqlite-devel, cronie, wget, curl
+Requires:        sudo, lsof, sqlite-devel, cronie, wget, curl, make
 Requires:        httpd24, httpd24-mod_ssl, httpd24-mod_ldap, nginx16, rh-passenger40, rh-ruby22, rh-ruby22-rubygem-rake, rh-ruby22-rubygem-bundler, rh-ruby22-ruby-devel, nodejs010, git19
 
 %if %{with systemd}
@@ -59,7 +67,7 @@ ln -s -f /opt/ood/apps/files %{buildroot}%{_localstatedir}/www/ood/apps/sys/file
 ln -s -f /opt/ood/apps/file-editor %{buildroot}%{_localstatedir}/www/ood/apps/sys/file-editor
 ln -s -f /opt/ood/apps/activejobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/activejobs
 ln -s -f /opt/ood/apps/myjobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/myjobs
-ln -s -f /opt/ood/apps/myjobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/bc_desktop
+ln -s -f /opt/ood/apps/bc_desktop %{buildroot}%{_localstatedir}/www/ood/apps/sys/bc_desktop
 mkdir -p %{buildroot}%{_sharedstatedir}/nginx/config/puns
 mkdir -p %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys
 mkdir -p %{buildroot}%{_sharedstatedir}/nginx/config/apps/usr
@@ -103,7 +111,7 @@ mkdir -p %{buildroot}%{_sysconfdir}/cron.d
 cat >> %{buildroot}%{_sysconfdir}/cron.d/ood << EOF
 #!/bin/bash
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
-0 */2 * * * root [ -f /opt/ood/bin/update_nginx_stage ] && /opt/ood/bin/update_nginx_stage >/dev/null
+0 */2 * * * root [ -f /opt/ood/bin/update_nginx_stage ] && /opt/ood/bin/update_nginx_stage --quiet
 EOF
 
 %if %{with systemd}
