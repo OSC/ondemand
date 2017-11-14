@@ -13,6 +13,10 @@ module ConfigRoot
     Pathname.new(ENV["OOD_APP_CONFIG_ROOT"] || "/etc/ood/config/apps/dashboard")
   end
 
+  def load_external_config?
+    ENV['OOD_LOAD_EXTERNAL_CONFIG'] || rails_env == "production"
+  end
+
   # Load the dotenv local files first, then the /etc dotenv files and
   # the .env and .env.production or .env.development files.
   #
@@ -51,9 +55,8 @@ module ConfigRoot
 
   def dotenv_files
     [
-      config_root.join(".env.#{rails_env}"),
+      (config_root.join("env") if load_external_config?),
       app_root.join(".env.#{rails_env}"),
-      config_root.join(".env"),
       app_root.join(".env")
     ].compact
   end
