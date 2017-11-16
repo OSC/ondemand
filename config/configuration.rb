@@ -37,6 +37,6 @@ end
 
 # support custom initializers and views in /etc
 Rails.application.configure do |config|
-  config.paths["config/initializers"] << Configuration.config_root.join("config", "initializers").to_s if Configuration.load_external_config?
+  config.paths["config/initializers"] << Configuration.initializers_root.to_s if Configuration.load_external_config?
   config.paths["app/views"].unshift Configuration.config_root.join("app", "views").to_s if Configuration.load_external_config?
 end
