@@ -215,6 +215,3 @@ DEPENDENCIES
   spring
   thor (= 0.19.1)
   uglifier (>= 1.3.0)
-
-BUNDLED WITH
-   1.13.7
