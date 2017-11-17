@@ -111,7 +111,7 @@ GEM
       redcarpet (~> 3.2)
     ood_core (0.2.0)
       ood_support (~> 0.0.2)
-    ood_support (0.0.2)
+    ood_support (0.0.3)
     pbs (2.1.0)
       ffi (~> 1.9, >= 1.9.6)
     public_suffix (3.0.0)
