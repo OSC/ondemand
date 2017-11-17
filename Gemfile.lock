@@ -96,7 +96,7 @@ GEM
       redcarpet (~> 3.2)
     ood_core (0.0.4)
       ood_support (~> 0.0.2)
-    ood_support (0.0.2)
+    ood_support (0.0.3)
     public_suffix (2.0.5)
     rack (1.6.8)
     rack-test (0.6.3)
