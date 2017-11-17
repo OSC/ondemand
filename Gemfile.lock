@@ -112,7 +112,7 @@ GEM
       addressable (~> 2.4)
     ood_core (0.2.0)
       ood_support (~> 0.0.2)
-    ood_support (0.0.2)
+    ood_support (0.0.3)
     paperclip (4.3.7)
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
