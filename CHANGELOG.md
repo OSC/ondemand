@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [2.6.2] - 2017-11-17
 ### Fixed
 - Fix bug when copying job from existing. [#245](https://github.com/OSC/ood-myjobs/issues/245)
 
@@ -64,7 +66,8 @@ All notable changes to this project will be documented in this file.
 - UI enhancements
 
 
-[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.6.1...HEAD
+[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.6.2...HEAD
+[2.6.2]: https://github.com/OSC/ood-myjobs/compare/v2.6.1...v2.6.2
 [2.6.1]: https://github.com/OSC/ood-myjobs/compare/v2.6.0...v2.6.1
 [2.6.0]: https://github.com/OSC/ood-myjobs/compare/v2.5.2...v2.6.0
 [2.5.2]: https://github.com/OSC/ood-myjobs/compare/v2.5.1...v2.5.2
