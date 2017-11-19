@@ -2,25 +2,26 @@ require 'test_helper'
 
 class ConfigurationTest < ActiveSupport::TestCase
 
-  def runner(code, environment: 'development', envvars: '')
+  def runner(code, env: 'development', envvars: '')
     Tempfile.open('runnerbin') do |f|
       Bundler.with_clean_env do
         f.write(code)
         f.close
-        `#{envvars} bin/rails runner -e #{environment} #{f.path}`
+        `#{envvars} bin/rails runner -e #{env} #{f.path}`
       end
     end
+  end
+
+  def config_from_runner(env: 'development', envvars: '')
+    Marshal.load(runner('puts Marshal.dump(AppConfig)', env: env, envvars: envvars ))
   end
 
   # TODO: have a block
   test "configuration defaults in development env" do
     assert Dir.glob(".env.local{.development,.production,}").none?, "these tests should not be run with a .env.local or .env.local.development or .env.local.production"
 
-    config = Marshal.load(runner %q(
-puts Marshal.dump(AppConfig)
-))
+    config = config_from_runner
 
-    # config.fetch raises KeyError, so we know all these were obtained from runner
     assert_nil config.brand_bg_color
     assert_equal false, config.app_sharing_enabled?
 
