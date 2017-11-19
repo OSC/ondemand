@@ -25,8 +25,7 @@ class ConfigurationTest < ActiveSupport::TestCase
     assert_nil config.brand_bg_color
     assert_equal false, config.app_sharing_enabled?
 
-    # TODO
-    # assert_equal Rails.root.join("data").to_s, config.fetch(:dataroot)
+    assert_equal Rails.root.join("data").to_s, config.dataroot.to_s
 
     assert_equal "/etc/ood/config/apps/dashboard/initializers", config.initializers_root.to_s
     assert_equal false, config.load_external_config?

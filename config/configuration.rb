@@ -31,6 +31,21 @@ class Configuration
   def brand_link_active_bg_color
     ENV.values_at('OOD_BRAND_LINK_ACTIVE_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_LINK_ACTIVE_BG','BOOTSTRAP_NAVBAR_INVERSE_LINK_ACTIVE_BG' ).compact.first
   end
+
+  def dataroot
+    OodAppkit.dataroot || default_dataroot
+  end
+
+  def default_dataroot
+    # copied from OodAppkit::Configuration#set_default_configuration
+    # FIXME: note that this would be invalid if the dataroot where
+    # overridden in an initializer by modifying OodAppkit.dataroot which is why
+    # this ability should probably be deprecated
+
+    root = ENV['OOD_DATAROOT'] || ENV['RAILS_DATAROOT']
+    root ||= "~/#{ENV['OOD_PORTAL'] || "ondemand"}/data/#{ENV['APP_TOKEN']}" if ENV['APP_TOKEN']
+    root
+  end
 end
 
 # global instance to access and use
