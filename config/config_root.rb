@@ -18,7 +18,7 @@ module ConfigRoot
   end
 
   def load_external_config?
-    ENV['OOD_LOAD_EXTERNAL_CONFIG'] || rails_env == "production"
+    ENV['OOD_LOAD_EXTERNAL_CONFIG'] || (rails_env == "production")
   end
 
   # Load the dotenv local files first, then the /etc dotenv files and
