@@ -21,7 +21,7 @@ class Configuration
   end
 
   def load_external_config?
-    ENV['OOD_LOAD_EXTERNAL_CONFIG'] || (rails_env == "production")
+    to_bool(ENV.fetch('OOD_LOAD_EXTERNAL_CONFIG', (rails_env == 'production')))
   end
 
   # Load the dotenv local files first, then the /etc dotenv files and
@@ -41,13 +41,13 @@ class Configuration
 
   def app_development_enabled?
     return @app_development_enabled if defined? @app_development_enabled
-    ENV['OOD_APP_DEVELOPMENT'].present? || DevRouter.base_path.exist?
+    to_bool(ENV.fetch('OOD_APP_DEVELOPMENT', DevRouter.base_path.exist?))
   end
   alias_method :app_development_enabled, :app_development_enabled?
 
   def app_sharing_enabled?
     return @app_sharing_enabled if defined? @app_sharing_enabled
-    @app_sharing_enabled = ENV['OOD_APP_SHARING'].present?
+    @app_sharing_enabled = to_bool(ENV['OOD_APP_SHARING'])
   end
   alias_method :app_sharing_enabled, :app_sharing_enabled?
 
@@ -103,6 +103,14 @@ class Configuration
     ].compact
   end
 
+  FALSE_VALUES=[nil, false, '', 0, '0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF', 'no', 'NO']
+
+  # Bool coersion pulled from ActiveRecord::Type::Boolean#cast_value
+  #
+  # @return [Boolean] false for falsy value, true for everything else
+  def to_bool(value)
+    ! FALSE_VALUES.include?(value)
+  end
 end
 
 # global instance to access and use

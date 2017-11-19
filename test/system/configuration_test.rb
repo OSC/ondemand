@@ -10,6 +10,9 @@ class ConfigurationTest < ActiveSupport::TestCase
   # dotenv, and one for Configuration.new once expected env is loaded, doesn't
   # let us test dataroot because of OodAppkit's approach to storing the dataroot
   # as an instance variable.
+  #
+  # One solution to clean up the below code would be to implement a
+  # Configuration#to_h method.
   def runner(code, env: 'development', envvars: '')
     Tempfile.open('runnerbin') do |f|
       Bundler.with_clean_env do
@@ -46,5 +49,21 @@ class ConfigurationTest < ActiveSupport::TestCase
     assert_nil config.brand_bg_color
     assert_equal File.expand_path("~/awesim/data/sys/dashboard"), config.dataroot.to_s
     assert_equal true, config.load_external_config
+  end
+
+  test "disable app sharing with falsy env value" do
+    Bundler.with_clean_env do
+      # default is false
+      config = Configuration.new
+      assert_equal false, Configuration.new.app_sharing_enabled?, 'default app sharing enabled should be false'
+
+      # enabling is true
+      ENV['OOD_APP_SHARING'] = '1'
+      assert_equal true, Configuration.new.app_sharing_enabled?, 'OOD_APP_SHARING=1 should result in app sharing enabled'
+
+      # disabling with a falsy value is false
+      ENV['OOD_APP_SHARING'] = '0'
+      assert_equal false, Configuration.new.app_sharing_enabled?, 'OOD_APP_SHARING=0 should result in app sharing disabled'
+    end
   end
 end
