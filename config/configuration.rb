@@ -113,5 +113,3 @@ class Configuration
   end
 end
 
-# global instance to access and use
-AppConfig = Configuration.new
