@@ -23,10 +23,28 @@ class ConfigurationTest < ActiveSupport::TestCase
     end
   end
 
-  test "configuration defaults in development env" do
-    assert Dir.glob(".env.local{.development,.production,}").none?, "these tests should not be run with a .env.local or .env.local.development or .env.local.production"
+  # Use bin/rails runner to get values set in AppConfig after initialization
+  # using marshal to pass the OpenStruct between processes
+  #
+  # @return [OpenStruct] attrs have values set in AppConfig after initialization
+  def config_via_runner(env: 'development', envvars: '')
+    code = %q(puts Marshal.dump(
+        OpenStruct.new(
+          brand_bg_color: AppConfig.brand_bg_color,
+          dataroot: AppConfig.dataroot,
+          load_external_config: AppConfig.load_external_config?
+        )
+      )
+    )
+    Marshal.load(runner(code, env: env, envvars: envvars))
+  end
 
-    config = Marshal.load(runner('puts Marshal.dump(OpenStruct.new(brand_bg_color: AppConfig.brand_bg_color, dataroot: AppConfig.dataroot, load_external_config: AppConfig.load_external_config?))'))
+  test "tests should not be run with .env.local* files in directory" do
+    assert Dir.glob(".env.local{.development,.production,}").none?, "these tests should not be run with a .env.local or .env.local.development or .env.local.production"
+  end
+
+  test "configuration defaults in development env" do
+    config = config_via_runner
 
     assert_nil config.brand_bg_color
     assert_equal Rails.root.join("data").to_s, config.dataroot.to_s
@@ -35,7 +53,7 @@ class ConfigurationTest < ActiveSupport::TestCase
 
   test "loading custom OSC external config in production env" do
     config_root = Rails.root.join('config','examples','osc')
-    config = Marshal.load(runner('puts Marshal.dump(OpenStruct.new(brand_bg_color: AppConfig.brand_bg_color, dataroot: AppConfig.dataroot, load_external_config: AppConfig.load_external_config?))', env: 'production', envvars: "OOD_APP_CONFIG_ROOT=#{config_root}"))
+    config = config_via_runner(env: 'production', envvars: "OOD_APP_CONFIG_ROOT=#{config_root}")
 
     assert_equal '#c8102e', config.brand_bg_color
     assert_equal File.expand_path("~/ondemand/data/sys/dashboard"), config.dataroot.to_s
@@ -44,7 +62,7 @@ class ConfigurationTest < ActiveSupport::TestCase
 
   test "loading custom AweSim external config in production env" do
     config_root = Rails.root.join('config','examples','awesim')
-    config = Marshal.load(runner('puts Marshal.dump(OpenStruct.new(brand_bg_color: AppConfig.brand_bg_color, dataroot: AppConfig.dataroot, load_external_config: AppConfig.load_external_config?))', env: 'production', envvars: "OOD_APP_CONFIG_ROOT=#{config_root}"))
+    config = config_via_runner(env: 'production', envvars: "OOD_APP_CONFIG_ROOT=#{config_root}")
 
     assert_nil config.brand_bg_color
     assert_equal File.expand_path("~/awesim/data/sys/dashboard"), config.dataroot.to_s
