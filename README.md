@@ -94,18 +94,24 @@ To specify a host and directory:
 
 ## Development
 
-All global environment variables can be overridden in the local environment
-file:
+For development purposes the environment variables must be specified in the
+local environment file:
 
 ```
 .env.local
 ```
 
-In particular, the environment variable `OOD_APP_ENV` can be used to point to a
-different global environment file other than the default location:
+underneath the root directory of this app in your sandbox.
 
-```
-/etc/ood/config/apps/shell/env
+To mimic the production environment you may have to copy the production
+environment variables down or set up a symbolic link:
+
+```sh
+# Copy production env vars
+cp /etc/ood/config/apps/shell/env .env.local
+
+# or setup a symlink
+ln -s /etc/ood/config/apps/shell/env .env.local
 ```
 
 Any changes made to the environment files require an app restart in order for
