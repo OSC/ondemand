@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Combined the Ruby wrapper script with the `nginx_stage` executable script.
+  [#27](https://github.com/OSC/nginx_stage/issues/27)
 
 ## [0.3.0] - 2017-10-30
 ### Added
