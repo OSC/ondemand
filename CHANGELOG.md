@@ -7,12 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
-- Added support to read local environment variable file `.env.local`.
-  [#43](https://github.com/OSC/ood-shell/pull/43)
+- Added support to read local environment variable file `.env.local` in
+  development mode. [#43](https://github.com/OSC/ood-shell/pull/43)
 
 ### Changed
 - Reads environment variables from global environment file
-  `/etc/ood/config/apps/shell/env`.
+  `/etc/ood/config/apps/shell/env` in production mode.
   [#42](https://github.com/OSC/ood-shell/issues/42)
 
 ### Deprecated
