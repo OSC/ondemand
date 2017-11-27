@@ -1,3 +1,9 @@
+# unreleased
+
+* Update to Rails 4.2.10 to better support Ruby 2.4.
+  [#71](https://github.com/OSC/ood-fileeditor/issues/71)
+* Update `ood_support` gem to 0.0.3 to better support Ruby 2.4.
+
 # version 1.3.1
 
 * Save user preferences to local storage instead of cookies
