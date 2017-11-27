@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Changed
+- Updated from Rails 4.1 to Rails 4.2.10.
+  [#250](https://github.com/OSC/ood-myjobs/issues/250)
 
 ## [2.6.2] - 2017-11-17
 ### Fixed

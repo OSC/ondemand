@@ -114,7 +114,7 @@ class Workflow < ActiveRecord::Base
     if self.staged_dir.nil?
       raise StagingTemplateDirMissing unless staging_template_dir && File.directory?(staging_template_dir)
 
-      self.staged_dir = OSC::Machete::JobDir.new(staging_target_dir).new_jobdir
+      self.staged_dir = OSC::Machete::JobDir.new(staging_target_dir).new_jobdir.to_s
       FileUtils.mkdir_p self.staged_dir
 
       # rsync to ignore manifest.yml
@@ -181,7 +181,7 @@ class Workflow < ActiveRecord::Base
   def submit(template_view=self)
     success = false
 
-    self.staged_dir = stage   # set staged_dir
+    staged_dir = stage   # set staged_dir
 
     #FIXME: we should add to osc_machete a job directory missing exception
     if ! staged_dir.directory?
@@ -260,7 +260,7 @@ class Workflow < ActiveRecord::Base
 
     def stage_workflow
       begin
-        self.staged_dir = self.stage.to_s
+        stage
       rescue
         self.errors[:base] << "Cannot stage job because of an error copying the folder, check that you have adequate read permissions to the source folder and that the source folder exists."
         return false

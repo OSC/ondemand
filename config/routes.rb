@@ -1,4 +1,4 @@
-JobConstructor::Application.routes.draw do
+Rails.application.routes.draw do
   resources :templates, only: [:new, :create, :destroy]
 
   resources :workflows do
