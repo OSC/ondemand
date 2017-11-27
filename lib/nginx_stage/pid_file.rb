@@ -6,10 +6,10 @@ module NginxStage
     attr_reader :pid_path
 
     # Process id that describes this object
-    # @return [Fixnum] the pid object was initialized with
+    # @return [Integer] the pid object was initialized with
     attr_reader :pid
 
-    # @param pid [Fixnum] the pid describing a process
+    # @param pid [Integer] the pid describing a process
     # @raise [MissingPidFile] if pid file doesn't exist in file system
     # @raise [InvalidPidFile] if it is an invalid pid file
     def initialize(pid_path)

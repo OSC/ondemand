@@ -16,7 +16,7 @@ module NginxStage
     end
 
     # The number of active sessions connected to this socket
-    # @return [Fixnum] number of active connections
+    # @return [Integer] number of active connections
     def sessions
       # generate array of inodes
       ary_inodes = @processes.map{|h| h[:inode]}.reduce([], :+)

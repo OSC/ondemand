@@ -110,7 +110,7 @@ module NginxStage
 
   # Run Ruby block as a different user if possible
   # NB: Will forego user switching if current process is not root-owned
-  # @param user [String, Fixnum, nil] the user or user id to switch to
+  # @param user [String, Integer, nil] the user or user id to switch to
   # @yield [] Block to run as given user
   def self.as_user(user, &block)
     (Process.uid == 0) && user ? sudo(user, &block) : block.call
@@ -119,7 +119,7 @@ module NginxStage
   private
     # Switch user/group effective id's as well as secondary groups
     def self.sudo(user, &block)
-      passwd = (user.is_a? Fixnum) ? Etc.getpwuid(user) : Etc.getpwnam(user)
+      passwd = (user.is_a? Integer) ? Etc.getpwuid(user) : Etc.getpwnam(user)
       name, uid, gid = passwd.name, passwd.uid, passwd.gid
       Process.initgroups(name, gid)
       Process::GID.grant_privilege(gid)
