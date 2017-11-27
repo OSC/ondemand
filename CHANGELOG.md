@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Changed
+- Updated to Rails 4.2.10 to better support Ruby 2.4.
+  [#149](https://github.com/OSC/ood-activejobs/issues/149)
+- Updated `ood_support` gem to 0.0.3 to better support Ruby 2.4.
 
 ## [1.5.2] - 2017-10-20
 ### Changed
