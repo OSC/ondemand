@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [2.7.0] - 2017-11-27
 ### Changed
 - Updated from Rails 4.1 to Rails 4.2.10.
   [#250](https://github.com/OSC/ood-myjobs/issues/250)
@@ -69,7 +71,8 @@ All notable changes to this project will be documented in this file.
 - UI enhancements
 
 
-[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.6.2...HEAD
+[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.7.0...HEAD
+[2.7.0]: https://github.com/OSC/ood-myjobs/compare/v2.6.2...v2.7.0
 [2.6.2]: https://github.com/OSC/ood-myjobs/compare/v2.6.1...v2.6.2
 [2.6.1]: https://github.com/OSC/ood-myjobs/compare/v2.6.0...v2.6.1
 [2.6.0]: https://github.com/OSC/ood-myjobs/compare/v2.5.2...v2.6.0
