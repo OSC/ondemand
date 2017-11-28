@@ -14,6 +14,7 @@ var http        = require('http'),
     dirArray    = __dirname.split('/'),
     PORT        = 9001,
     PREFIX      = '',
+    app_version,
     server,
     socket;
 
@@ -118,6 +119,14 @@ app.use(function (req, res, next) {
         next();
     }
 });
+
+// Set version number
+// TODO: Consider embedding version in project
+try {
+    app_version = gitSync.tag();
+} catch(error) {
+    app_version = '';
+}
 
 // Load cloudcmd
 app.use(cloudcmd({
