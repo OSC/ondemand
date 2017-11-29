@@ -136,6 +136,50 @@ GET requests will follow the pattern `App Root` + `api/v1/fs/` + `File Path`, wh
 
 Since the application is running as the logged in user, the application will only have access to the files that the user actually has access to within the file system.
 
+## Development Notes
+
+#### Updating the `cloudcmd` dependency
+
+`ood-fileexplorer` currently uses a modified fork of [CloudCmd](http://cloudcmd.io/), the latest OOD version of which is at [OSC/cloudcmd](https://github.com/OSC/cloudcmd/releases). This version has been heavily modified from the original and is maintained as a separate fork.  
+
+- To update to a new version of cloudcmd, make the changes and tag a new release at the OSC/cloudcmd repository
+- Update the `package.json` file in the OSC/ood-fileexplorer repository to include the new tag
+```text
+"dependencies": {
+    ...
+    "cloudcmd": "git://github.com/OSC/cloudcmd.git#v5.3.1-osc.29",
+    ...
+  },
+```
+- Back up and delete the `npm-shrinkwrap.json` file
+
+- Remove the `node_modules` directory ex. `rm -rf node_modules/`
+
+- Install the new modules: `npm i`
+
+- Perform a new shrinkwrap operation: `npm shrinkwrap`
+
+- Find and copy the following lines pertaining to the `cloudcmd` dependency in the new `npm-shrinkwrap.json`
+
+```text
+"cloudcmd": {
+      "version": "5.3.1",
+      "from": "git://github.com/OSC/cloudcmd.git#v5.3.1-osc.29",
+      "resolved": "git://github.com/OSC/cloudcmd.git#b19f86a972e4c127bdec3a4a50c939eb7d7b645b",
+```
+
+- Paste the lines copied from the new shrinkwrap file over the top of the matching lines in the backed up `npm-shrinkwrap.json` file. Delete the new `npm-shrinkwrap` and replace it with the backed up copy that includes the pasted lines.
+
+- Remove the `node_modules` folder: `rm -rf node_modules/`
+
+- Install shrinkwrapped dependencies: `npm i`
+
+
+
+
+
+
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at
