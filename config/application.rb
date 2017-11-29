@@ -20,5 +20,10 @@ module JobConstructor
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+
+    if AppConfig.load_external_config?
+      config.paths["config/initializers"] << AppConfig.initializers_root.to_s
+      config.paths["app/views"].unshift AppConfig.config_root.join("views").to_s
+    end
   end
 end
