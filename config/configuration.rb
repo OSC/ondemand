@@ -15,7 +15,23 @@ class Configuration
   end
 
   def load_external_config?
+    # FIXME: is Rails.env defined?
     to_bool(ENV.fetch('OOD_LOAD_EXTERNAL_CONFIG', (rails_env == 'production')))
+  end
+
+  # Custom job templates source directory in /etc/.../myjobs/templates
+  # Defaults to APPROOT/templates if that directory exists or if
+  # not in production.
+  #
+  # @return [Pathname] path to configuration root
+  def templates_path
+    default = Rails.root.join('templates') # FIXME: is Rails.root defined?
+
+    if (! default.directory?) && load_external_config?
+      config_root.join("templates")
+    else
+      default
+    end
   end
 
   # Load the dotenv local files first, then the /etc dotenv files and
