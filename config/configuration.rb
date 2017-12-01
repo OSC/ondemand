@@ -79,7 +79,7 @@ class Configuration
   # The environment
   # @return [String] "development", "test", or "production"
   def rails_env
-    ENV['RAILS_ENV'] || "development"
+    ENV['RAILS_ENV'] || ENV['RACK_ENV'] || "development"
   end
 
   # The app's root directory
