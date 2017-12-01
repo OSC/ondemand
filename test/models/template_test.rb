@@ -8,10 +8,10 @@ class TemplateTest < ActiveSupport::TestCase
 
   # Verify the templates are loaded properly.
   test "valid_template" do
-    assert_equal( @template.path.to_s, "./test/test_templates/template_one" )
+    assert_equal File.expand_path("./test/test_templates/template_one"), @template.path.to_s
     assert @template.path.exist?
 
-    assert_equal( @template_bad.path.to_s, "./test/test_templates/template_two_broken" )
+    assert_equal File.expand_path("./test/test_templates/template_two_broken"), @template_bad.path.to_s
     assert @template_bad.path.exist?
   end
 
