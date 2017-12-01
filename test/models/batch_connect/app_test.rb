@@ -25,7 +25,7 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     Dir.mktmpdir { |dir|
       r = PathRouter.new(dir + "/missing_app")
       assert_equal "Missing App", BatchConnect::App.new(router: r).title
-      assert_equal "Owens Vdi", BatchConnect::App.new(router: r, sub_app: "owens-vdi").title
+      assert_equal "Missing App: Owens Vdi", BatchConnect::App.new(router: r, sub_app: "owens-vdi").title
     }
   end
 
