@@ -25,7 +25,7 @@ class Configuration
   #
   # @return [Pathname] path to configuration root
   def templates_path
-    default = Rails.root.join('templates') # FIXME: is Rails.root defined?
+    default = app_root.join('templates')
 
     if (! default.directory?) && load_external_config?
       config_root.join("templates")
