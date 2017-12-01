@@ -78,9 +78,12 @@ class Configuration
     # overridden in an initializer by modifying OodAppkit.dataroot which is why
     # this ability should probably be deprecated
 
+    # FIXME: fix OodAppkit.dataroot to never be nil, and a method, not an attribute
+    # then this code can be removed and OodAppkit.dataroot can be used directly
     root = ENV['OOD_DATAROOT'] || ENV['RAILS_DATAROOT']
     root ||= "~/#{ENV['OOD_PORTAL'] || "ondemand"}/data/#{ENV['APP_TOKEN']}" if ENV['APP_TOKEN']
-    root
+
+    Pathname.new(root).expand_path if root
   end
 
   private
