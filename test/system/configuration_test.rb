@@ -28,11 +28,13 @@ class ConfigurationTest < ActiveSupport::TestCase
   #
   # @return [OpenStruct] attrs have values set in AppConfig after initialization
   def config_via_runner(env: 'development', envvars: '')
-    code = %q(puts Marshal.dump(
+    code = %q(require 'ood_appkit'
+      puts Marshal.dump(
         OpenStruct.new(
           brand_bg_color: AppConfig.brand_bg_color,
           dataroot: AppConfig.dataroot,
-          load_external_config: AppConfig.load_external_config?
+          load_external_config: AppConfig.load_external_config?,
+          ood_appkit_dataroot: OodAppkit.dataroot
         )
       )
     )
@@ -57,6 +59,7 @@ class ConfigurationTest < ActiveSupport::TestCase
 
     assert_equal '#c8102e', config.brand_bg_color
     assert_equal File.expand_path("~/ondemand/data/sys/dashboard"), config.dataroot.to_s
+    assert_equal config.dataroot, config.ood_appkit_dataroot
     assert_equal true, config.load_external_config
   end
 
@@ -66,13 +69,13 @@ class ConfigurationTest < ActiveSupport::TestCase
 
     assert_nil config.brand_bg_color
     assert_equal File.expand_path("~/awesim/data/sys/dashboard"), config.dataroot.to_s
+    assert_equal config.dataroot, config.ood_appkit_dataroot
     assert_equal true, config.load_external_config
   end
 
   test "disable app sharing with falsy env value" do
     Bundler.with_clean_env do
       # default is false
-      config = Configuration.new
       assert_equal false, Configuration.new.app_sharing_enabled?, 'default app sharing enabled should be false'
 
       # enabling is true
@@ -82,6 +85,15 @@ class ConfigurationTest < ActiveSupport::TestCase
       # disabling with a falsy value is false
       ENV['OOD_APP_SHARING'] = '0'
       assert_equal false, Configuration.new.app_sharing_enabled?, 'OOD_APP_SHARING=0 should result in app sharing disabled'
+    end
+  end
+
+  test "default dataroot" do
+    Bundler.with_clean_env do
+      ENV['OOD_DATAROOT'] = nil
+      ENV['RAILS_ENV'] = 'production'
+
+      assert_equal File.expand_path("~/ondemand/data/sys/dashboard"), Configuration.new.dataroot.to_s
     end
   end
 end

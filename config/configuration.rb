@@ -60,18 +60,18 @@ class Configuration
   end
 
   def dataroot
-    OodAppkit.dataroot || default_dataroot
-  end
-
-  def default_dataroot
     # copied from OodAppkit::Configuration#set_default_configuration
+    # then modified to ensure dataroot is never nil
+    #
     # FIXME: note that this would be invalid if the dataroot where
-    # overridden in an initializer by modifying OodAppkit.dataroot which is why
-    # this ability should probably be deprecated
-
+    # overridden in an initializer by modifying OodAppkit.dataroot
+    # Solution: in a test, add a custom initializer that changes this, then verify it has
+    # no effect or it affects both.
+    #
     root = ENV['OOD_DATAROOT'] || ENV['RAILS_DATAROOT']
-    root ||= "~/#{ENV['OOD_PORTAL'] || "ondemand"}/data/#{ENV['APP_TOKEN']}" if ENV['APP_TOKEN']
-    root
+    root ||= "~/#{ENV['OOD_PORTAL'] || 'ondemand'}/data/#{ENV['APP_TOKEN'] || 'sys/dashboard'}"
+
+    Pathname.new(root).expand_path
   end
 
   private
