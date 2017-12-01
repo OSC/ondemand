@@ -15,7 +15,6 @@ class Configuration
   end
 
   def load_external_config?
-    # FIXME: is Rails.env defined?
     to_bool(ENV.fetch('OOD_LOAD_EXTERNAL_CONFIG', (rails_env == 'production')))
   end
 
@@ -89,7 +88,7 @@ class Configuration
   # The environment
   # @return [String] "development", "test", or "production"
   def rails_env
-    ENV['RAILS_ENV'] || "development"
+    ENV['RAILS_ENV'] || ENV['RACK_ENV'] || "development"
   end
 
   # The app's root directory
