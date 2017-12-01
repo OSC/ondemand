@@ -69,21 +69,27 @@ class Configuration
   end
 
   def dataroot
-    OodAppkit.dataroot || default_dataroot
+    # copied from OodAppkit::Configuration#set_default_configuration
+    # then modified to ensure dataroot is never nil
+    #
+    # FIXME: note that this would be invalid if the dataroot where
+    # overridden in an initializer by modifying OodAppkit.dataroot
+    # Solution: in a test, add a custom initializer that changes this, then verify it has
+    # no effect or it affects both.
+    #
+    root = ENV['OOD_DATAROOT'] || ENV['RAILS_DATAROOT']
+    root ||= "~/#{ENV['OOD_PORTAL'] || 'ondemand'}/data/#{ENV['APP_TOKEN'] || 'sys/myjobs'}"
+
+    Pathname.new(root).expand_path
   end
 
-  def default_dataroot
-    # copied from OodAppkit::Configuration#set_default_configuration
-    # FIXME: note that this would be invalid if the dataroot where
-    # overridden in an initializer by modifying OodAppkit.dataroot which is why
-    # this ability should probably be deprecated
+  def database_path
+    # FIXME: add support/handling for DATABASE_URL
+    ENV["DATABASE_PATH"] || default_database_path
+  end
 
-    # FIXME: fix OodAppkit.dataroot to never be nil, and a method, not an attribute
-    # then this code can be removed and OodAppkit.dataroot can be used directly
-    root = ENV['OOD_DATAROOT'] || ENV['RAILS_DATAROOT']
-    root ||= "~/#{ENV['OOD_PORTAL'] || "ondemand"}/data/#{ENV['APP_TOKEN']}" if ENV['APP_TOKEN']
-
-    Pathname.new(root).expand_path if root
+  def default_database_path
+    dataroot.join('production.sqlite3').to_s
   end
 
   private
