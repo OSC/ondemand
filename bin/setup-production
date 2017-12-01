@@ -24,17 +24,17 @@ end
 APP_ROOT = Pathname.new File.expand_path('../../', __FILE__)
 
 chdir APP_ROOT do
-  `mkdir -p #{ENV["OOD_DATAROOT"]}` if ENV["OOD_DATAROOT"]
+  `mkdir -p #{AppConfig.dataroot}` if AppConfig.dataroot
 
   # currently SQLite-specific
-  if File.exist?(ENV["DATABASE_PATH"])
+  if File.exist?(AppConfig.database_path)
     # Get a list of all migration for this app
     app_migrations = Dir.glob("#{APP_ROOT}/db/migrate/*").map {|v| File.basename(v).split("_").first}
 
     # Read in current migrations from database
     require 'sqlite3'
     begin
-      db = SQLite3::Database.new ENV["DATABASE_PATH"]
+      db = SQLite3::Database.new AppConfig.database_path
       db_migrations = db.execute("SELECT * FROM schema_migrations").map {|v| v.first}
     rescue SQLite3::Exception => e
       abort "Exception occurred: #{e}"
