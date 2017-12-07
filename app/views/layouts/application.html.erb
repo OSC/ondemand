@@ -10,9 +10,7 @@
   <%= yield :head %>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
 <%= render partial: '/layouts/nav/styles', locals: { bg_color: AppConfig.brand_bg_color, link_active_color: AppConfig.brand_link_active_bg_color } %>
-</style>
 </head>
 <body>
   <header>
