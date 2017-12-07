@@ -69,7 +69,11 @@ class Configuration
     # no effect or it affects both.
     #
     root = ENV['OOD_DATAROOT'] || ENV['RAILS_DATAROOT']
-    root ||= "~/#{ENV['OOD_PORTAL'] || 'ondemand'}/data/#{ENV['APP_TOKEN'] || 'sys/dashboard'}"
+    if rails_env == "production"
+      root ||= "~/#{ENV['OOD_PORTAL'] || 'ondemand'}/data/#{ENV['APP_TOKEN'] || 'sys/dashboard'}"
+    else
+      root ||= app_root.join("data")
+    end
 
     Pathname.new(root).expand_path
   end
@@ -83,7 +87,7 @@ class Configuration
   end
 
   # The app's root directory
-  # @return [Pathname] path to configuration root
+  # @return [Pathname] path to app root
   def app_root
     Pathname.new(File.expand_path("../../",  __FILE__))
   end
