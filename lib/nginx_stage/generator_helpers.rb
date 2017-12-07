@@ -2,9 +2,8 @@ module NginxStage
   # Module that adds common options to generators.
   module GeneratorHelpers
     # Add support for accepting USER as an option
-    # @param required [Boolean] whether user option is required
     # @return [void]
-    def add_user_support(required: true)
+    def add_user_support
       # @!method user
       #   The user that the per-user NGINX will run as
       #   @return [User] the user of the nginx process
@@ -12,7 +11,7 @@ module NginxStage
       self.add_option :user do
         {
           opt_args: ["-u", "--user=USER", "# The USER of the per-user nginx process"],
-          required: required,
+          required: true,
           before_init: -> (user) do
             raise InvalidUser, "invalid user name syntax: #{user}" unless user =~ NginxStage.user_regex
             user ? User.new(user) : nil
@@ -20,13 +19,18 @@ module NginxStage
         }
       end
 
-      if required
-        # Validate that the user isn't a special user (i.e., `root`)
-        self.add_hook :validate_user_not_special do
-          min_uid = NginxStage.min_uid
-          if user.uid < min_uid
-            raise InvalidUser, "user is special: #{user} (#{user.uid} < #{min_uid})"
-          end
+      # Validate that the user isn't a special user (i.e., `root`)
+      self.add_hook :validate_user_not_special do
+        min_uid = NginxStage.min_uid
+        if user.uid < min_uid
+          raise InvalidUser, "user is special: #{user} (#{user.uid} < #{min_uid})"
+        end
+      end
+
+      # Validate that the user's home directory exists
+      self.add_hook :validate_user_has_home_dir do
+        unless Dir.exist?(user.dir)
+          raise InvalidUser, "home directory '#{user.dir}' does not exist for user: #{user}"
         end
       end
     end

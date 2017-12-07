@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Combined the Ruby wrapper script with the `nginx_stage` executable script.
   [#27](https://github.com/OSC/nginx_stage/issues/27)
 
+### Fixed
+- Display error if the user's home directory does not exist.
+  [#25](https://github.com/OSC/nginx_stage/issues/25)
+
 ## [0.3.1] - 2017-11-27
 ### Changed
 - Replaced all occurrences of `Fixnum` with `Integer` to better support Ruby
