@@ -45,7 +45,7 @@ class ConfigurationSingleton
   # both .env and .env.production will be searched for there.
   def load_dotenv_files
     # .env.local first, so it can override OOD_APP_CONFIG_ROOT
-    Dotenv.load(*dotenv_local_files) unless dotenv_local_files.empty?
+    Dotenv.load(*dotenv_local_files)
 
     # load the rest of the dotenv files
     Dotenv.load(*dotenv_files)
@@ -53,7 +53,7 @@ class ConfigurationSingleton
 
   def app_development_enabled?
     return @app_development_enabled if defined? @app_development_enabled
-    to_bool(ENV.fetch('OOD_APP_DEVELOPMENT', DevRouter.base_path.exist?))
+    to_bool(ENV['OOD_APP_DEVELOPMENT'] || DevRouter.base_path.exist?)
   end
   alias_method :app_development_enabled, :app_development_enabled?
 
