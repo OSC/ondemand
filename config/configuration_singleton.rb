@@ -32,10 +32,6 @@ class ConfigurationSingleton
     Pathname.new(ENV["OOD_APP_CONFIG_ROOT"] || "/etc/ood/config/apps/dashboard")
   end
 
-  def initializers_root
-    Pathname.new(ENV["OOD_APP_INITIALIZERS_ROOT"] || config_root.join("initializers"))
-  end
-
   def load_external_config?
     to_bool(ENV.fetch('OOD_LOAD_EXTERNAL_CONFIG', (rails_env == 'production')))
   end
