@@ -33,7 +33,7 @@ class ConfigurationSingleton
   end
 
   def load_external_config?
-    to_bool(ENV.fetch('OOD_LOAD_EXTERNAL_CONFIG', (rails_env == 'production')))
+    to_bool(ENV['OOD_LOAD_EXTERNAL_CONFIG'] || (rails_env == 'production'))
   end
 
   # Load the dotenv local files first, then the /etc dotenv files and
