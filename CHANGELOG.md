@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.18.1] - 2017-11-22
+### Changed
+- Updated to latest Rails 4.2.10 for better Ruby 2.4 support.
+  [#195](https://github.com/OSC/ood-dashboard/issues/195)
+- Updated `ood_support` gem to 0.0.3 for better Ruby 2.4 support.
+
 ## [1.18.0] - 2017-10-20
 ### Added
 - Logs the full command line call for any forked processes.
@@ -184,7 +190,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.18.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.18.1...HEAD
+[1.18.1]: https://github.com/OSC/ood-dashboard/compare/v1.18.0...v1.18.1
 [1.18.0]: https://github.com/OSC/ood-dashboard/compare/v1.17.0...v1.18.0
 [1.17.0]: https://github.com/OSC/ood-dashboard/compare/v1.16.0...v1.17.0
 [1.16.0]: https://github.com/OSC/ood-dashboard/compare/v1.15.3...v1.16.0
