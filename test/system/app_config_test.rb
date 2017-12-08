@@ -1,18 +1,18 @@
 require 'test_helper'
 
-class ConfigurationTest < ActiveSupport::TestCase
+class AppConfigTest < ActiveSupport::TestCase
   #FIXME: this approach is ugly and difficult to follow
   #
   # Marshaling the AppConfig doesn't work because the methods are evaluated when
   # you call them: AppConfig doesn't store data for most of its options.
   #
   # Using Bundler.with_clean_env to provide several unit tests, one for loading
-  # dotenv, and one for Configuration.new once expected env is loaded, doesn't
+  # dotenv, and one for AppConfig.new once expected env is loaded, doesn't
   # let us test dataroot because of OodAppkit's approach to storing the dataroot
   # as an instance variable.
   #
   # One solution to clean up the below code would be to implement a
-  # Configuration#to_h method.
+  # AppConfig#to_h method.
   def runner(code, env: 'development', envvars: '')
     Tempfile.open('runnerbin') do |f|
       Bundler.with_clean_env do
@@ -31,9 +31,9 @@ class ConfigurationTest < ActiveSupport::TestCase
     code = %q(require 'ood_appkit'
       puts Marshal.dump(
         OpenStruct.new(
-          brand_bg_color: AppConfig.brand_bg_color,
-          dataroot: AppConfig.dataroot,
-          load_external_config: AppConfig.load_external_config?,
+          brand_bg_color: Configuration.brand_bg_color,
+          dataroot: Configuration.dataroot,
+          load_external_config: Configuration.load_external_config?,
           ood_appkit_dataroot: OodAppkit.dataroot
         )
       )
@@ -76,15 +76,15 @@ class ConfigurationTest < ActiveSupport::TestCase
   test "disable app sharing with falsy env value" do
     Bundler.with_clean_env do
       # default is false
-      assert_equal false, Configuration.new.app_sharing_enabled?, 'default app sharing enabled should be false'
+      assert_equal false, AppConfig.new.app_sharing_enabled?, 'default app sharing enabled should be false'
 
       # enabling is true
       ENV['OOD_APP_SHARING'] = '1'
-      assert_equal true, Configuration.new.app_sharing_enabled?, 'OOD_APP_SHARING=1 should result in app sharing enabled'
+      assert_equal true, AppConfig.new.app_sharing_enabled?, 'OOD_APP_SHARING=1 should result in app sharing enabled'
 
       # disabling with a falsy value is false
       ENV['OOD_APP_SHARING'] = '0'
-      assert_equal false, Configuration.new.app_sharing_enabled?, 'OOD_APP_SHARING=0 should result in app sharing disabled'
+      assert_equal false, AppConfig.new.app_sharing_enabled?, 'OOD_APP_SHARING=0 should result in app sharing disabled'
     end
   end
 
@@ -93,7 +93,7 @@ class ConfigurationTest < ActiveSupport::TestCase
       ENV['OOD_DATAROOT'] = nil
       ENV['RAILS_ENV'] = 'production'
 
-      assert_equal File.expand_path("~/ondemand/data/sys/dashboard"), Configuration.new.dataroot.to_s
+      assert_equal File.expand_path("~/ondemand/data/sys/dashboard"), AppConfig.new.dataroot.to_s
     end
   end
 end

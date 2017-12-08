@@ -6,7 +6,7 @@
     <li><a href="<%= restart_url %>"><i class="fa fa-refresh"></i> Restart Web Server</a></li>
     <li><a href="<%= ENV['OOD_DASHBOARD_DEV_DOCS_URL'] %>" target="_blank"><i class="fa fa-book"></i> Developer Documentation</a></li>
     <li><a href="<%=  products_path(type: "dev") %>"><i class="fa fa-gear"></i> <%= products_title(:dev) %></a></li>
-    <% if AppConfig.app_sharing_enabled? %>
+    <% if Configuration.app_sharing_enabled? %>
         <li><a href="<%= products_path(type: "usr") %>"><i class="fa fa-share-alt"></i> <%= products_title(:usr) %></a></li>
     <% end %>
   </ul>

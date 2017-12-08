@@ -2,7 +2,7 @@ require 'pathname'
 require 'dotenv'
 
 # dashboard app specific configuration
-class Configuration
+class AppConfig
   attr_writer :app_development_enabled
   attr_writer :app_sharing_enabled
 
@@ -60,7 +60,7 @@ class Configuration
   end
 
   def dataroot
-    # copied from OodAppkit::Configuration#set_default_configuration
+    # copied from OodAppkit::AppConfig#set_default_configuration
     # then modified to ensure dataroot is never nil
     #
     # FIXME: note that this would be invalid if the dataroot where

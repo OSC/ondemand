@@ -179,7 +179,7 @@ class Product
   end
 
   def permissions?
-    AppConfig.app_sharing_facls_enabled?
+    Configuration.app_sharing_facls_enabled?
   end
 
   def permissions(context)
