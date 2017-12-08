@@ -13,14 +13,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   environment. Can change location of this by setting `OOD_APP_CONFIG_ROOT` in
   .env.local. This allows moving app specific environment configuration to
   /etc/, easing installing and updating the dashboard app.
-- `OOD_BRAND_BG_COLOR` and `OOD_BRAND_LINK_ACTIVE_BG_COLOR` can be used to
-  configure the colors of the navbar.
+- /etc/ood/config/apps/dashboard/initializers and
+  /etc/ood/config/apps/dashboard/views now are optional paths to place custom
+  initializer and view and view partial overrides
 
 ### Changed
 
 - Changing nav bar brand colors are now a runtime config, not build time config.
   Changes in dotenv files will be applied on application restart. New runtime config
   for branding only works for background, link colors, and navbar type.
+  `OOD_BRAND_BG_COLOR` and `OOD_BRAND_LINK_ACTIVE_BG_COLOR` can be used to
+  configure the colors of the navbar. `OOD_NAVBAR_TYPE` still can be used.
+  `BOOTSTRAP_NAVBAR_DEFAULT_BG` and `BOOTSTRAP_NAVBAR_INVERSE_BG` will be
+  treated as if setting `OOD_BRAND_BG_COLOR`. `BOOTSTRAP_NAVBAR_DEFAULT_LINK_ACTIVE_BG` and
+  `BOOTSTRAP_NAVBAR_INVERSE_LINK_ACTIVE_BG` will be treated as if setting
+  `OOD_BRAND_LINK_ACTIVE_BG_COLOR`.
 - Load dotenv files in two passes: .env.local files first, then the rest of the dotenv files.
   This allows overriding `OOD_APP_CONFIG_ROOT` in .env.local which is useful for
   testing configuration changes when doing development.
@@ -29,12 +36,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed
 
-- Build time config of branding by modifying bootstrap variables using
-  environment variables. `OOD_NAVBAR_TYPE` still can be used.
-  `BOOTSTRAP_NAVBAR_DEFAULT_BG` and `BOOTSTRAP_NAVBAR_INVERSE_BG` will be
-  treated as if setting `OOD_BRAND_BG_COLOR`. `BOOTSTRAP_NAVBAR_DEFAULT_LINK_ACTIVE_BG` and
-  `BOOTSTRAP_NAVBAR_INVERSE_LINK_ACTIVE_BG` will be treated as if setting
-  `OOD_BRAND_LINK_ACTIVE_BG_COLOR`.
+- Removed build time config of branding by modifying bootstrap variables using
+  environment variables.
 - Removed the need for .env.development .env.test  and .env.production files by
   using sensible defaults and avoiding setting RAILS_RELATIVE_URL_ROOT in the
   dotenv files
