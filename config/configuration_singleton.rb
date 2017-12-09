@@ -69,26 +69,6 @@ class ConfigurationSingleton
     Dotenv.load(*dotenv_files)
   end
 
-  def app_development_enabled?
-    return @app_development_enabled if defined? @app_development_enabled
-    to_bool(ENV.fetch('OOD_APP_DEVELOPMENT', DevRouter.base_path.exist?))
-  end
-  alias_method :app_development_enabled, :app_development_enabled?
-
-  def app_sharing_enabled?
-    return @app_sharing_enabled if defined? @app_sharing_enabled
-    @app_sharing_enabled = to_bool(ENV['OOD_APP_SHARING'])
-  end
-  alias_method :app_sharing_enabled, :app_sharing_enabled?
-
-  def brand_bg_color
-    ENV.values_at('OOD_BRAND_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_BG', 'BOOTSTRAP_NAVBAR_INVERSE_BG').compact.first
-  end
-
-  def brand_link_active_bg_color
-    ENV.values_at('OOD_BRAND_LINK_ACTIVE_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_LINK_ACTIVE_BG','BOOTSTRAP_NAVBAR_INVERSE_LINK_ACTIVE_BG' ).compact.first
-  end
-
   def dataroot
     # copied from OodAppkit::Configuration#set_default_configuration
     # then modified to ensure dataroot is never nil
