@@ -46,7 +46,7 @@ class Source
     # Remove "." and ".."
     folders.shift(2)
     # Remove any folder that doesn't have a manifest (ex. `.git`)
-    folders.delete_if { |f| !File.exist?(path.join(f).join("manifest.yml")) }
+    folders.delete_if { |f| ! path.join(f).join("manifest.yml").exist? }
 
     # create a template for each folder
     folders.map {|f| Template.new(path.join(f), self) }
