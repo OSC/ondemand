@@ -1,8 +1,25 @@
 require 'pathname'
 require 'dotenv'
 
-# job composer app specific configuration
-class Configuration
+# Job Composer app specific configuration singleton definition
+#
+# following the first proposal in:
+#
+# https://8thlight.com/blog/josh-cheek/2012/10/20/implementing-and-testing-the-singleton-pattern-in-ruby.html
+#
+# to avoid the traditional singleton approach or using class methods, both of
+# which make it difficult to write tests against
+#
+# instead, ConfigurationSingleton is the definition of the configuration
+# then the singleton instance used is a new class called "Configuration" which
+# we set in config/boot i.e.
+#
+# Configuration = ConfigurationSingleton.new
+#
+# This is functionally equivalent to taking every instance method on
+# ConfigurationSingleton and defining it as a class method on Configuration.
+#
+class ConfigurationSingleton
 
   # The app's configuration root directory
   # @return [Pathname] path to configuration root

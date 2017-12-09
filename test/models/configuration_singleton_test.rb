@@ -2,19 +2,19 @@ require 'test_helper'
 
 # FIXME: move to system directory for system tests
 
-class ConfigurationTest < ActiveSupport::TestCase
+class ConfigurationSingletonTest < ActiveSupport::TestCase
   #FIXME: this approach is ugly and difficult to follow
   #
-  # Marshaling the AppConfig doesn't work because the methods are evaluated when
-  # you call them: AppConfig doesn't store data for most of its options.
+  # Marshaling the Configuration doesn't work because the methods are evaluated when
+  # you call them: Configuration doesn't store data for most of its options.
   #
   # Using Bundler.with_clean_env to provide several unit tests, one for loading
-  # dotenv, and one for Configuration.new once expected env is loaded, doesn't
+  # dotenv, and one for ConfigurationSingleton.new once expected env is loaded, doesn't
   # let us test dataroot because of OodAppkit's approach to storing the dataroot
   # as an instance variable.
   #
   # One solution to clean up the below code would be to implement a
-  # Configuration#to_h method.
+  # ConfigurationSingleton#to_h method.
   def runner(code, env: 'development', envvars: '')
     Tempfile.open('runnerbin') do |f|
       Bundler.with_clean_env do
@@ -25,16 +25,16 @@ class ConfigurationTest < ActiveSupport::TestCase
     end
   end
 
-  # Use bin/rails runner to get values set in AppConfig after initialization
+  # Use bin/rails runner to get values set in Configuration after initialization
   # using marshal to pass the OpenStruct between processes
   #
-  # @return [OpenStruct] attrs have values set in AppConfig after initialization
+  # @return [OpenStruct] attrs have values set in Configuration after initialization
   def config_via_runner(env: 'development', envvars: '')
     code = %q(puts Marshal.dump(
         OpenStruct.new(
-          dataroot: AppConfig.dataroot,
-          database_path: AppConfig.database_path,
-          load_external_config: AppConfig.load_external_config?
+          dataroot: Configuration.dataroot,
+          database_path: Configuration.database_path,
+          load_external_config: Configuration.load_external_config?
         )
       )
     )
@@ -73,17 +73,17 @@ class ConfigurationTest < ActiveSupport::TestCase
   test "setting dataroot and database path" do
     Bundler.with_clean_env do
       # default
-      assert_equal File.expand_path("~/ondemand/data/sys/myjobs"), Configuration.new.dataroot.to_s
-      assert_equal File.expand_path("~/ondemand/data/sys/myjobs/production.sqlite3"), Configuration.new.database_path.to_s
+      assert_equal File.expand_path("~/ondemand/data/sys/myjobs"), ConfigurationSingleton.new.dataroot.to_s
+      assert_equal File.expand_path("~/ondemand/data/sys/myjobs/production.sqlite3"), ConfigurationSingleton.new.database_path.to_s
 
       # set to tmp dir
       ENV['OOD_DATAROOT'] = "/tmp/myjobs"
-      assert_equal "/tmp/myjobs", Configuration.new.dataroot.to_s
-      assert_equal "/tmp/myjobs/production.sqlite3", Configuration.new.database_path.to_s
+      assert_equal "/tmp/myjobs", ConfigurationSingleton.new.dataroot.to_s
+      assert_equal "/tmp/myjobs/production.sqlite3", ConfigurationSingleton.new.database_path.to_s
 
       # set seprate database path
       ENV['DATABASE_PATH'] = "/tmp/db.sqlite3"
-      assert_equal "/tmp/db.sqlite3", Configuration.new.database_path.to_s
+      assert_equal "/tmp/db.sqlite3", ConfigurationSingleton.new.database_path.to_s
     end
   end
 end

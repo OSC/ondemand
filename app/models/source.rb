@@ -12,7 +12,7 @@ class Source
   class << self
     # @return [Source] A source that has been initialized to the system path.
     def system
-      Source.new("System Templates", AppConfig.templates_path)
+      Source.new("System Templates", Configuration.templates_path)
     end
 
     # @return [Source] A source that has been initialized to the user template path.
