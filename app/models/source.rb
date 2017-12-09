@@ -22,8 +22,8 @@ class Source
 
     # @return [Template] The default template.
     def default_template
-      default = Template.new(Rails.root.join("example_templates", "default").to_s, Source.new("Examples", Rails.root.join("example_templates").to_s))
-      custom_default = Template.new(Source.system.path.join("default").to_s, Source.system)
+      default = Template.new(Rails.root.join("example_templates", "default"), Source.new("Examples", Rails.root.join("example_templates")))
+      custom_default = Template.new(Source.system.path.join("default"), Source.system)
 
       custom_default.exist? ? custom_default : default
     end
