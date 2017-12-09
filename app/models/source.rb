@@ -1,5 +1,5 @@
 class Source
-  attr_accessor :path, :name
+  attr_reader :path, :name
 
   # Constructor
   # @param [String] name the human readable name of the source
