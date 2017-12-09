@@ -43,7 +43,7 @@ class ConfigurationSingleton
   # Defaults to APPROOT/templates if that directory exists or if
   # not in production.
   #
-  # @return [Pathname] path to configuration root
+  # @return [Pathname] path to templates root
   def templates_path
     default = app_root.join('templates')
 
@@ -122,7 +122,7 @@ class ConfigurationSingleton
   end
 
   # The app's root directory
-  # @return [Pathname] path to configuration root
+  # @return [Pathname] path to app root
   def app_root
     Pathname.new(File.expand_path("../../",  __FILE__))
   end
