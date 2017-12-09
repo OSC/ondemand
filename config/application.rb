@@ -21,8 +21,8 @@ module JobConstructor
     # config.i18n.default_locale = :de
 
     if ::Configuration.load_external_config?
-      config.paths["config/initializers"] << ::Configuration.initializers_root.to_s
-      config.paths["app/views"].unshift ::Configuration.config_root.join("views").to_s
+      config.paths["config/initializers"] << ::Configuration.custom_initializers_root.to_s
+      config.paths["app/views"].unshift ::Configuration.custom_views_root.to_s
     end
   end
 end

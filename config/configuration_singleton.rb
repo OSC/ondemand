@@ -27,8 +27,12 @@ class ConfigurationSingleton
     Pathname.new(ENV["OOD_APP_CONFIG_ROOT"] || "/etc/ood/config/apps/myjobs")
   end
 
-  def initializers_root
-    Pathname.new(ENV["OOD_APP_INITIALIZERS_ROOT"] || config_root.join("initializers"))
+  def custom_initializers_root
+    config_root.join("initializers")
+  end
+
+  def custom_views_root
+    config_root.join("views")
   end
 
   def load_external_config?
