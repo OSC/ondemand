@@ -1,11 +1,10 @@
 #!/usr/bin/env ruby
 
-require 'pathname'
-require 'fileutils'
-
 # always run this in production environment
 ENV['RAILS_ENV'] = 'production'
 
+require 'pathname'
+require 'fileutils'
 require_relative '../config/boot'
 
 include FileUtils
@@ -24,7 +23,7 @@ end
 APP_ROOT = Pathname.new File.expand_path('../../', __FILE__)
 
 chdir APP_ROOT do
-  `mkdir -p #{Configuration.dataroot}` if Configuration.dataroot
+  `mkdir -p #{Configuration.dataroot}`
 
   # currently SQLite-specific
   if File.exist?(Configuration.database_path)
