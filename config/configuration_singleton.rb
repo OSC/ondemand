@@ -67,7 +67,7 @@ class ConfigurationSingleton
   # both .env and .env.production will be searched for there.
   def load_dotenv_files
     # .env.local first, so it can override OOD_APP_CONFIG_ROOT
-    Dotenv.load(*dotenv_local_files) unless dotenv_local_files.empty?
+    Dotenv.load(*dotenv_local_files)
 
     # load the rest of the dotenv files
     Dotenv.load(*dotenv_files)
