@@ -79,7 +79,11 @@ class ConfigurationSingleton
     # no effect or it affects both.
     #
     root = ENV['OOD_DATAROOT'] || ENV['RAILS_DATAROOT']
-    root ||= "~/#{ENV['OOD_PORTAL'] || 'ondemand'}/data/#{ENV['APP_TOKEN'] || 'sys/myjobs'}"
+    if rails_env == "production"
+      root ||= "~/#{ENV['OOD_PORTAL'] || 'ondemand'}/data/#{ENV['APP_TOKEN'] || 'sys/myjobs'}"
+    else
+      root ||= app_root.join("data")
+    end
 
     Pathname.new(root).expand_path
   end

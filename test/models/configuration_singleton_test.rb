@@ -33,7 +33,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     code = %q(puts Marshal.dump(
         OpenStruct.new(
           dataroot: Configuration.dataroot,
-          database_path: Configuration.database_path,
+          production_database_path: Configuration.production_database_path,
           load_external_config: Configuration.load_external_config?
         )
       )
@@ -57,7 +57,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     config = config_via_runner(env: 'production', envvars: "OOD_APP_CONFIG_ROOT=#{config_root}")
 
     assert_equal File.expand_path("~/ondemand/data/sys/myjobs"), config.dataroot.to_s
-    assert_equal File.expand_path("~/ondemand/data/sys/myjobs/production.sqlite3"), config.database_path.to_s
+    assert_equal File.expand_path("~/ondemand/data/sys/myjobs/production.sqlite3"), config.production_database_path.to_s
     assert_equal true, config.load_external_config
   end
 
@@ -66,24 +66,27 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     config = config_via_runner(env: 'production', envvars: "OOD_APP_CONFIG_ROOT=#{config_root}")
 
     assert_equal File.expand_path("~/awesim/data/sys/myjobs"), config.dataroot.to_s
-    assert_equal File.expand_path("~/awesim/data/sys/myjobs/production.sqlite3"), config.database_path.to_s
+    assert_equal File.expand_path("~/awesim/data/sys/myjobs/production.sqlite3"), config.production_database_path.to_s
     assert_equal true, config.load_external_config
   end
 
   test "setting dataroot and database path" do
     Bundler.with_clean_env do
+      ENV['OOD_DATAROOT'] = nil
+      ENV['RAILS_ENV'] = 'production'
+
       # default
       assert_equal File.expand_path("~/ondemand/data/sys/myjobs"), ConfigurationSingleton.new.dataroot.to_s
-      assert_equal File.expand_path("~/ondemand/data/sys/myjobs/production.sqlite3"), ConfigurationSingleton.new.database_path.to_s
+      assert_equal File.expand_path("~/ondemand/data/sys/myjobs/production.sqlite3"), ConfigurationSingleton.new.production_database_path.to_s
 
       # set to tmp dir
       ENV['OOD_DATAROOT'] = "/tmp/myjobs"
       assert_equal "/tmp/myjobs", ConfigurationSingleton.new.dataroot.to_s
-      assert_equal "/tmp/myjobs/production.sqlite3", ConfigurationSingleton.new.database_path.to_s
+      assert_equal "/tmp/myjobs/production.sqlite3", ConfigurationSingleton.new.production_database_path.to_s
 
       # set seprate database path
       ENV['DATABASE_PATH'] = "/tmp/db.sqlite3"
-      assert_equal "/tmp/db.sqlite3", ConfigurationSingleton.new.database_path.to_s
+      assert_equal "/tmp/db.sqlite3", ConfigurationSingleton.new.production_database_path.to_s
     end
   end
 end
