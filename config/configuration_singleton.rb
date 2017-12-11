@@ -54,6 +54,10 @@ class ConfigurationSingleton
     end
   end
 
+  def show_job_options_account_field?
+    to_bool(ENV.fetch('OOD_SHOW_JOB_OPTIONS_ACCOUNT_FIELD', true))
+  end
+
   # Load the dotenv local files first, then the /etc dotenv files and
   # the .env and .env.production or .env.development files.
   #

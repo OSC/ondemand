@@ -34,7 +34,8 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
         OpenStruct.new(
           dataroot: Configuration.dataroot,
           production_database_path: Configuration.production_database_path,
-          load_external_config: Configuration.load_external_config?
+          load_external_config: Configuration.load_external_config?,
+          show_job_options_account_field: Configuration.show_job_options_account_field?
         )
       )
     )
@@ -49,7 +50,8 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     config = config_via_runner
 
     assert_equal Rails.root.join("data").to_s, config.dataroot.to_s
-    assert_equal false, config.load_external_config
+    refute config.load_external_config
+    assert config.show_job_options_account_field
   end
 
   test "loading custom OSC external config in production env" do
@@ -87,6 +89,21 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       # set seprate database path
       ENV['DATABASE_PATH'] = "/tmp/db.sqlite3"
       assert_equal "/tmp/db.sqlite3", ConfigurationSingleton.new.production_database_path.to_s
+    end
+  end
+
+  test "hide account field" do
+    Bundler.with_clean_env do
+      assert ConfigurationSingleton.new.show_job_options_account_field?
+
+      ENV['OOD_SHOW_JOB_OPTIONS_ACCOUNT_FIELD'] = '1'
+      assert ConfigurationSingleton.new.show_job_options_account_field?
+
+      ENV['OOD_SHOW_JOB_OPTIONS_ACCOUNT_FIELD'] = '0'
+      refute ConfigurationSingleton.new.show_job_options_account_field?
+
+      ENV['OOD_SHOW_JOB_OPTIONS_ACCOUNT_FIELD'] = 'false'
+      refute ConfigurationSingleton.new.show_job_options_account_field?
     end
   end
 end
