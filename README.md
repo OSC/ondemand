@@ -72,7 +72,7 @@ use a database.
 
 ## iHPC App Development
 
-See the OnDemand documentation site: https://osc.github.io/ood-documentation/master/
+See the OnDemand documentation site: https://osc.github.io/ood-documentation/master/app-development.html
 
 ## Configuration
 
