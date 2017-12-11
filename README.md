@@ -70,6 +70,10 @@ use a database.
    sudo rsync -rlptv --delete . /var/www/ood/apps/sys/dashboard
    ```
 
+## iHPC App Development
+
+See the OnDemand documentation site: https://osc.github.io/ood-documentation/master/
+
 ## Configuration
 
 See the wiki page https://github.com/OSC/ood-dashboard/wiki/Configuration-and-Branding
