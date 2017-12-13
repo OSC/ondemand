@@ -3,12 +3,11 @@ require 'ostruct'
 class AppsController < ApplicationController
 
   def index
-    # first lets just display each group in a block
-    @apps = sys_app_groups
-
-    #TODO:
-    # then lets mess with the groups; for example, we can rebuild the
-    # apps list by starting with all the apps, and splitting then grouping
+    @core_app_groups = OodAppGroup.select(titles: %w(Files Jobs Clusters), groups: sys_app_groups)
+    # FIXME: currenlty instead of displaying all apps, only display Gateway and Interactive for now;
+    # long term this is not a good solution!
+    # @app_groups = sys_app_groups.select {|g| ! %w(Files Jobs Clusters).include?(g.title) }
+    @app_groups = OodAppGroup.select(titles: ['Interactive Apps', 'Gateway Apps'], groups: sys_app_groups)
   end
 
   def featured

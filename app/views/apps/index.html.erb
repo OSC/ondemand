@@ -8,5 +8,9 @@
 </ol>
 
 <div class="row">
-  <%= render partial: "app_list", collection: @apps %>
+  <div class="col-md-3">
+    <%= render partial: "app_list", collection: @core_app_groups %>
+  </div>
+
+  <%= render partial: "app_list", collection: @app_groups, layout: "col3_layout" %>
 </div>
