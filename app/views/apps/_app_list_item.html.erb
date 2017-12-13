@@ -1,0 +1,12 @@
+  <%= link_to "#",
+    class: "list-group-item",
+    data: {
+      # toggle: "popover",
+      content: manifest_markdown(app.manifest.description),
+      html: true,
+      # trigger: "hover",
+      title: app.title,
+      container: "body"
+  } do %>
+    <%= app_icon_tag(app) %> <%= app.title %>
+  <% end %>

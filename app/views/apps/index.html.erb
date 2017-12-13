@@ -1,17 +1,12 @@
-<div class="row">
-  <div class="col-md-9">
-    <p class="lead">Cluster access applications are available from the dropdown menus in the navbar above.
-    <br>Custom shared apps are available below.</p>
-    <%= render partial: "catalog_link" %>
-  </div>
-</div>
+<ol class="breadcrumb">
+  <li>
+    <%= link_to "Home", root_path %>
+  </li>
+  <li class="active">
+    All Apps
+  </li>
+</ol>
 
 <div class="row">
-  <div class="col-md-9">
-    <%= render(partial: "group", collection: @groups) || "<strong>No custom shared apps available.</strong>".html_safe %>
-  </div>
-  <div class="col-md-3">
-    <%# This assumes @motd_file responds to `to_partial_path` %>
-    <%= render @motd if @motd %>
-  </div>
+  <%= render partial: "app_list", collection: @apps %>
 </div>

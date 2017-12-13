@@ -3,6 +3,15 @@ require 'ostruct'
 class AppsController < ApplicationController
 
   def index
+    # first lets just display each group in a block
+    @apps = sys_app_groups
+
+    #TODO:
+    # then lets mess with the groups; for example, we can rebuild the
+    # apps list by starting with all the apps, and splitting then grouping
+  end
+
+  def featured
     if OodSupport::Process.groups_changed?
       redirect_to apps_restart_url
     else
