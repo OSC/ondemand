@@ -17,12 +17,10 @@ Rails.application.routes.draw do
   get "apps/icon/:name(/:type(/:owner))" => "apps#icon", as: "app_icon", defaults: { type: "sys" }
 
   if Configuration.app_sharing_enabled?
-    # TODO:
-    # is there a cleaner approach to this? an app should be a resource
-    get "apps(/index(/:type(/:owner)))" => "apps#index", as: "apps", defaults: { type: "usr" }
     get "apps/restart" => "apps#restart"
+    get "apps/index" => "apps#index"
 
-    root "apps#index", defaults: { type: "usr" }
+    root "apps#index"
   else
     root "dashboard#index"
   end

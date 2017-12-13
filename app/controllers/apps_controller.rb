@@ -6,30 +6,8 @@ class AppsController < ApplicationController
     if OodSupport::Process.groups_changed?
       redirect_to apps_restart_url
     else
-      @type = params[:type]
-      @owner = params[:owner]
       @title = nil
-      @groups = []
-
-      # once these work, we can decide what to do
-      # as far as mixing and matching lists of apps
-      if @type == "dev"
-        @groups << OodAppGroup.new.tap { |g|
-          g.apps += DevRouter.apps
-          g.title = "Your Dev Apps"
-        }
-      elsif @type == "usr"
-        @groups += OodAppGroup.groups_for(apps: UsrRouter.all_apps(owners: @owner || UsrRouter.owners))
-      elsif @type == "sys"
-        @groups << OodAppGroup.new.tap { |g|
-          g.apps += SysRouter.apps(require_manifest: false)
-          g.title = "System Installed Apps"
-        }
-      else
-        raise ActionController::RoutingError.new('Not Found') unless app.accessible?
-      end
-
-      @motd = MotdFile.new.formatter
+      @groups = OodAppGroup.groups_for(apps: UsrRouter.all_apps(owners: UsrRouter.owners))
     end
   end
 
