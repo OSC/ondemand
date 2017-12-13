@@ -9,7 +9,12 @@
 
 <div class="row">
   <div class="col-md-3">
-    <%= render partial: "app_list", collection: @core_app_groups %>
+    <div class="panel panel-default">
+      <div class="panel-heading">System Apps</div>
+      <div class="panel-body">
+        <%= render partial: "app_list", collection: @core_app_groups %>
+      </div>
+    </div>
   </div>
 
   <%= render partial: "app_list", collection: @app_groups, layout: "col3_layout" %>
