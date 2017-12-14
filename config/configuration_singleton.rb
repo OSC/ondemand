@@ -71,6 +71,10 @@ class ConfigurationSingleton
     ENV.values_at('OOD_BRAND_LINK_ACTIVE_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_LINK_ACTIVE_BG','BOOTSTRAP_NAVBAR_INVERSE_LINK_ACTIVE_BG' ).compact.first
   end
 
+  def show_all_apps_link?
+    to_bool(ENV['SHOW_ALL_APPS_LINK'])
+  end
+
   def dataroot
     # copied from OodAppkit::AppConfig#set_default_configuration
     # then modified to ensure dataroot is never nil

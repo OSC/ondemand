@@ -15,10 +15,10 @@ Rails.application.routes.draw do
 
   get "apps/show/:name(/:type(/:owner))" => "apps#show", as: "app", defaults: { type: "sys" }
   get "apps/icon/:name(/:type(/:owner))" => "apps#icon", as: "app_icon", defaults: { type: "sys" }
+  get "apps/index" => "apps#index"
 
   if Configuration.app_sharing_enabled?
     get "apps/restart" => "apps#restart"
-    get "apps/index" => "apps#index"
     get "apps/featured" => "apps#featured"
 
     root "apps#featured"
