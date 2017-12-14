@@ -4,7 +4,7 @@
 
     <% OodAppGroup.groups_for(apps: app_list.apps, group_by: :subcategory).each_with_index do |g, index| %>
       <%= content_tag "p", g.title, class: "list-group-item header" unless g.title.empty? %>
-    <%= render partial: "apps/app_list_item", collection: g.apps, as: :app, locals: { current_app_token: local_assigns[:current_app_token] }%>
+      <%= render partial: "apps/app_list_item", collection: g.apps, as: :app, locals: { current_app_token: local_assigns[:current_app_token] }%>
   <% end %>
   </div>
 </div>
