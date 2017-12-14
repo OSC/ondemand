@@ -11,33 +11,13 @@
       <%= content_tag "li", "", class: "divider", role: "separator" if index > 0 %>
       <%= content_tag "li", g.title, class: "dropdown-header" unless g.title.empty? %>
       <% g.apps.each do |app| %>
-
-        <% if app.role == "files" %>
-          <%= nav_link "Home Directory", "home", OodAppkit.files.url(path: @user.home), target: "_blank" %>
-
-          <% OodFilesApp.new.favorite_paths.tap do |paths| %>
-            <%= content_tag "li", "", class: "divider", role: "separator" if paths.count > 0 %>
-            <% paths.each do |path| %>
-              <%= nav_link path.to_s, "folder", OodAppkit.files.url(path: path), target: "_blank" %>
+        <% app.links.each do |link| %>
+          <li>
+            <%= link_to link.url.to_s, target: "_blank" do %>
+              <%= link.icon ? fa_icon(link.icon) : app_icon_tag(app) %> <%= link.title %>
             <% end %>
-          <% end %>
-
-        <% elsif app.role == "shell" %>
-          <%= nav_link("Shell Access", "terminal", OodAppkit.shell.url, target: "_blank") if login_clusters.count == 0 %>
-
-          <% login_clusters.each do |c| %>
-            <%= nav_link "#{c.metadata.title} Shell Access", "terminal", OodAppkit.shell.url(host: c.login.host), target: "_blank" %>
-          <% end %>
-
-        <% elsif app.role == "batch_connect" %>
-          <%# batch connect apps open in dashboard, so can open in same window %>
-          <% app.batch_connect.sub_app_list.select(&:valid?).each do |sub_app| %>
-            <li class="<%= app.role %>"><a href="<%= new_batch_connect_session_context_path(token: sub_app.token) %>"><%= app_icon_tag(app) %> <%= sub_app.title %></a></li>
-          <% end %>
-        <% else %>
-          <li class="<%= app.role %>"><a href="<%= app_path(app.name, app.type, app.owner) %>" target="_blank"><%= app_icon_tag(app) %> <%= app.title %></a></li>
+          </li>
         <% end %>
-
       <% end %>
     <% end %>
   </ul>
