@@ -36,8 +36,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed
 
-- Removed build time config of branding by modifying bootstrap variables using
-  environment variables.
 - Removed the need for .env.development .env.test  and .env.production files by
   using sensible defaults and avoiding setting RAILS_RELATIVE_URL_ROOT in the
   dotenv files
