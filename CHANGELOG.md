@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.19.0] - 2017-12-15
 ### Added
 
 - Loads /etc/ood/config/apps/dashboard/env file as dotenv file when in production
@@ -227,7 +228,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.18.1...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.19.0...HEAD
+[1.19.0]: https://github.com/OSC/ood-dashboard/compare/v1.18.1...v1.19.0
 [1.18.1]: https://github.com/OSC/ood-dashboard/compare/v1.18.0...v1.18.1
 [1.18.0]: https://github.com/OSC/ood-dashboard/compare/v1.17.0...v1.18.0
 [1.17.0]: https://github.com/OSC/ood-dashboard/compare/v1.16.0...v1.17.0
