@@ -17,3 +17,6 @@ OOD_BRAND_LINK_ACTIVE_BG_COLOR='#990c23'
 
 OOD_DASHBOARD_DOCS_URL="https://www.osc.edu/ondemand"
 OOD_DASHBOARD_PASSWD_URL="https://my.osc.edu"
+
+# show all apps index page
+SHOW_ALL_APPS_LINK=1
