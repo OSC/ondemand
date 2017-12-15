@@ -27,6 +27,7 @@
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
         <ul class="nav navbar-nav">
           <%= render partial: 'layouts/nav/group', collection: @nav_groups %>
+          <%= nav_link("All Apps", "th", apps_index_path) if Configuration.show_all_apps_link? %>
         </ul>
         <div class="navbar-right">
           <ul class="nav navbar-nav">

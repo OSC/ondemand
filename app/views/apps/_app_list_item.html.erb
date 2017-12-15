@@ -1,0 +1,15 @@
+<% app.links.each do |link| %>
+  <%= link_to link.url.to_s,
+    class: "list-group-item",
+    data: {
+      toggle: "popover",
+      content: manifest_markdown(app.manifest.description),
+      html: true,
+      trigger: "hover",
+      title: app.title,
+      container: "body"
+    },
+    target: "_blank" do %>
+    <%= link.icon ? fa_icon(link.icon) : app_icon_tag(app) %> <%= link.title %>
+  <% end %>
+<% end %>
