@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - /etc/ood/config/apps/dashboard/initializers and
   /etc/ood/config/apps/dashboard/views now are optional paths to place custom
   initializer and view and view partial overrides
+- App Index page at /apps/index now displays all apps. The shared apps that
+  formerly displayed here are now accessed at /apps/featured. The link to /apps/index
+  page only appears in the navbar if the env var `SHOW_ALL_APPS_LINK` is set to
+  '1'
 
 ### Changed
 
