@@ -46,7 +46,7 @@ end
 gem 'thor', '0.19.1'
 
 # Extra third-party gems
-gem 'dotenv-rails', '~> 2.0', require: 'dotenv/rails-now'
+gem 'dotenv-rails', '~> 2.0'
 gem 'bootstrap-sass', '~> 3.3'
 gem 'font-awesome-sass', '~> 4.6'
 gem 'redcarpet', '~> 3.3'

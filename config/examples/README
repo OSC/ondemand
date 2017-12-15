@@ -1,0 +1,6 @@
+Testing out AweSim config:
+
+```
+sudo mkdir -p /etc/ood/config/apps
+sudo rsync -rlptv --delete awesim/ /etc/ood/config/apps/dashboard
+```

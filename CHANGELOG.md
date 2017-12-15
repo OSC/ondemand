@@ -7,6 +7,39 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Loads /etc/ood/config/apps/dashboard/env file as dotenv file when in production
+  environment. Can change location of this by setting `OOD_APP_CONFIG_ROOT` in
+  .env.local. This allows moving app specific environment configuration to
+  /etc/, easing installing and updating the dashboard app.
+- /etc/ood/config/apps/dashboard/initializers and
+  /etc/ood/config/apps/dashboard/views now are optional paths to place custom
+  initializer and view and view partial overrides
+
+### Changed
+
+- Changing nav bar brand colors are now a runtime config, not build time config.
+  Changes in dotenv files will be applied on application restart. New runtime config
+  for branding only works for background, link colors, and navbar type.
+  `OOD_BRAND_BG_COLOR` and `OOD_BRAND_LINK_ACTIVE_BG_COLOR` can be used to
+  configure the colors of the navbar. `OOD_NAVBAR_TYPE` still can be used.
+  `BOOTSTRAP_NAVBAR_DEFAULT_BG` and `BOOTSTRAP_NAVBAR_INVERSE_BG` will be
+  treated as if setting `OOD_BRAND_BG_COLOR`. `BOOTSTRAP_NAVBAR_DEFAULT_LINK_ACTIVE_BG` and
+  `BOOTSTRAP_NAVBAR_INVERSE_LINK_ACTIVE_BG` will be treated as if setting
+  `OOD_BRAND_LINK_ACTIVE_BG_COLOR`.
+- Load dotenv files in two passes: .env.local files first, then the rest of the dotenv files.
+  This allows overriding `OOD_APP_CONFIG_ROOT` in .env.local which is useful for
+  testing configuration changes when doing development.
+- Configuration object is now created in config/boot so it can be used in setup
+  scripts and rake tasks that don't load the config/application.
+
+### Removed
+
+- Removed the need for .env.development .env.test  and .env.production files by
+  using sensible defaults and avoiding setting RAILS_RELATIVE_URL_ROOT in the
+  dotenv files
+
 ## [1.18.1] - 2017-11-22
 ### Changed
 - Updated to latest Rails 4.2.10 for better Ruby 2.4 support.

@@ -31,5 +31,10 @@ module Dashboard
 
     # Custom error pages
     config.exceptions_app = self.routes
+
+    if ::Configuration.load_external_config?
+      config.paths["config/initializers"] << ::Configuration.config_root.join("initializers").to_s
+      config.paths["app/views"].unshift ::Configuration.config_root.join("views").to_s
+    end
   end
 end
