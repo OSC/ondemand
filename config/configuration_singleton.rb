@@ -36,6 +36,16 @@ class ConfigurationSingleton
     to_bool(ENV['OOD_LOAD_EXTERNAL_CONFIG'] || (rails_env == 'production'))
   end
 
+  # The batch_connect apps' configuration root directory
+  def bc_config_root
+    Pathname.new(ENV["OOD_BC_APP_CONFIG_ROOT"] || "/etc/ood/config/apps")
+  end
+
+  # Whether we load the batch_connect apps' configuration from external root
+  def load_external_bc_config?
+    to_bool(ENV["OOD_LOAD_EXTERNAL_BC_CONFIG"])
+  end
+
   # Load the dotenv local files first, then the /etc dotenv files and
   # the .env and .env.production or .env.development files.
   #

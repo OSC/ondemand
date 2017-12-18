@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [#289](https://github.com/OSC/ood-dashboard/issues/289)
 - Renamed "App Design" in developer interface to "Type".
   [#277](https://github.com/OSC/ood-dashboard/issues/277)
+- (Batch Connect) Look for sub-app configuration under the global path
+  `/etc/ood/config/<app>/` for system iHPC apps or with the appropriate env var
+  set. [#293](https://github.com/OSC/ood-dashboard/issues/293)
 
 ### Fixed
 - Fix Rack app development by using `bundle` instead of `bin/bundle` as well as
