@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     resources :sessions, only: [:index, :destroy]
     scope "*token", constraints: { token: /((usr\/[^\/]+)|dev|sys)\/[^\/]+(\/[^\/]+)?/ } do
       resources :session_contexts, only: [:new, :create]
+      root "session_contexts#new"
     end
   end
   get "errors/not_found"
