@@ -9,7 +9,7 @@ module ProductsHelper
     end
   end
 
-  def app_design_title(app)
+  def app_type_title(app)
     if app.passenger_app?
       if app.passenger_rack_app?
         if app.passenger_rails_app?

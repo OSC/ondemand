@@ -10,13 +10,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - (Batch Connect) Added a root route for iHPC apps that take the user to the
   submission form. [#283](https://github.com/OSC/ood-dashboard/issues/283)
 
+### Changed
+- Renamed "App Design" in developer interface to "Type".
+  [#277](https://github.com/OSC/ood-dashboard/issues/277)
+
 ### Fixed
 - Fix Rack app development by using `bundle` instead of `bin/bundle` as well as
   updating lint checks. [#290](https://github.com/OSC/ood-dashboard/issues/290)
 
 ## [1.19.0] - 2017-12-15
 ### Added
-
 - Loads /etc/ood/config/apps/dashboard/env file as dotenv file when in production
   environment. Can change location of this by setting `OOD_APP_CONFIG_ROOT` in
   .env.local. This allows moving app specific environment configuration to
@@ -30,7 +33,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   '1'
 
 ### Changed
-
 - Changing nav bar brand colors are now a runtime config, not build time config.
   Changes in dotenv files will be applied on application restart. New runtime config
   for branding only works for background, link colors, and navbar type.
@@ -47,7 +49,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   scripts and rake tasks that don't load the config/application.
 
 ### Removed
-
 - Removed the need for .env.development .env.test  and .env.production files by
   using sensible defaults and avoiding setting RAILS_RELATIVE_URL_ROOT in the
   dotenv files
