@@ -14,6 +14,7 @@ var http        = require('http'),
     dirArray    = __dirname.split('/'),
     PORT        = 9001,
     PREFIX      = '',
+    app_version,
     server,
     socket;
 
@@ -119,6 +120,14 @@ app.use(function (req, res, next) {
     }
 });
 
+// Set version number
+// TODO: Consider embedding version in project
+try {
+    app_version = gitSync.tag();
+} catch(error) {
+    app_version = '';
+}
+
 // Load cloudcmd
 app.use(cloudcmd({
     socket: socket,                   /* used by Config, Edit (optional) and Console (required)   */
@@ -138,7 +147,7 @@ app.use(cloudcmd({
         upload_max:             process.env.FILE_UPLOAD_MAX || 10485760000,
         file_editor:            process.env.OOD_FILE_EDITOR || '/pun/sys/file-editor/edit',
         shell:                  process.env.OOD_SHELL || '/pun/sys/shell/ssh/default',
-        fileexplorer_version:   gitSync.tag()
+        fileexplorer_version:   app_version
     }
 }));
 
