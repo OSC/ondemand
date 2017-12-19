@@ -17,10 +17,7 @@ class Product
   # lint a given app
   validate :manifest_is_valid, on: [:show_app, :list_apps]
 
-  with_options if: :passenger_rails_app?, on: :show_app do |app|
-    app.validate :gemfile_is_valid
-    app.validate :gems_installed
-  end
+  validate :gems_are_valid, on: :show_app, if: :passenger_rack_app?
 
   validate :is_git_repo, on: :show_app
 
@@ -33,26 +30,25 @@ class Product
     errors.add(:manifest, "is corrupt, please use the edit button or edit the file to fix this") if app.manifest.exist? && !app.manifest.valid?
   end
 
-  def gemfile_is_valid
-    if !gemfile.exist? || !gemfile_lock.exist?
-      errors.add(:base, "App is missing <code>Gemfile</code>") unless gemfile.exist?
-      errors.add(:base, "App is missing <code>Gemfile.lock</code>") unless gemfile_lock.exist?
-      return
+  def gems_are_valid
+    if !gemfile.exist?
+      errors.add(:base, "App is missing <code>Gemfile</code>")
+    elsif !gemfile_lock.exist?
+      errors.add(:base, "App is missing <code>Gemfile.lock</code>, please run <strong>Bundle Install</strong>")
+    elsif !gems_installed?
+      errors.add(:base, "Install missing gems with <strong>Bundle Install</strong>")
+    elsif passenger_rails_app?
+      errors.add(:base, "Gemfile missing <code>rails_12factor</code> gem") unless gemfile_specs.detect {|s| s.name == "rails_12factor"}
+      errors.add(:base, "Gemfile missing <code>dotenv-rails</code> gem") unless gemfile_specs.detect {|s| s.name == "dotenv-rails"}
+      errors.add(:base, "Gemfile missing <code>ood_appkit</code> gem") unless gemfile_specs.detect {|s| s.name == "ood_appkit"}
     end
-    errors.add(:base, "Gemfile missing <code>rails_12factor</code> gem") unless gemfile_specs.detect {|s| s.name == "rails_12factor"}
-    errors.add(:base, "Gemfile missing <code>dotenv-rails</code> gem") unless gemfile_specs.detect {|s| s.name == "dotenv-rails"}
-    errors.add(:base, "Gemfile missing <code>ood_appkit</code> gem") unless gemfile_specs.detect {|s| s.name == "ood_appkit"}
   end
 
-  def gems_installed
-    unless router.path.join("bin", "bundle").exist?
-      errors.add(:base, "App is missing <code>bin/bundle</code>")
-      return
-    end
+  def gems_installed?
     Dir.chdir(router.path) do
       Bundler.with_clean_env do
-        _, s = Open3.capture2e("bin/bundle", "check")
-        errors.add(:base, "Install missing gems with <strong>Bundle Install</strong>") unless s.success?
+        _, s = Open3.capture2e("bundle", "check")
+        s.success?
       end
     end
   end

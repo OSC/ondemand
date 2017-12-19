@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - (Batch Connect) Added a root route for iHPC apps that take the user to the
   submission form. [#283](https://github.com/OSC/ood-dashboard/issues/283)
 
+### Fixed
+- Fix Rack app development by using `bundle` instead of `bin/bundle` as well as
+  updating lint checks. [#290](https://github.com/OSC/ood-dashboard/issues/290)
+
 ## [1.19.0] - 2017-12-15
 ### Added
 
