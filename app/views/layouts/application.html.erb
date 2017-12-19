@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Dashboard</title>
+  <title><%= content_for?(:title) ? yield(:title) : "Dashboard" %></title>
   <%= favicon_link_tag nil, href: OodAppkit.public.url.join('favicon.ico') %>
   <%= stylesheet_link_tag    'application', media: 'all' %>
   <%= javascript_include_tag 'application' %>

@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   submission form. [#283](https://github.com/OSC/ood-dashboard/issues/283)
 
 ### Changed
+- (Batch Connect) Change page title for iHPC apps.
+  [#289](https://github.com/OSC/ood-dashboard/issues/289)
 - Renamed "App Design" in developer interface to "Type".
   [#277](https://github.com/OSC/ood-dashboard/issues/277)
 
