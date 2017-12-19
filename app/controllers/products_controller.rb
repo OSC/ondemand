@@ -114,10 +114,10 @@ class ProductsController < ApplicationController
 
   # PATCH/PUT /products/1/cli/bundle_install
   CMDS = {
-    bundle_install:              [{"HOME" => ""}, "bin/bundle install --path=vendor/bundle"],
+    bundle_install:              [{"HOME" => ""}, "bundle install --path=vendor/bundle"],
     precompile_assets:           [{"RAILS_ENV" => "production"}, "bin/rake assets:clobber && bin/rake assets:precompile && bin/rake tmp:clear"],
     restart_app:                 ["mkdir -p tmp && touch tmp/restart.txt && echo 'Done!'"],
-    rebuild_passenger_rails_app: [{"HOME" => "", "RAILS_ENV" => "production"}, "bin/bundle install --path=vendor/bundle && bin/rake assets:clobber && bin/rake assets:precompile && bin/rake tmp:clear && mkdir -p tmp && touch tmp/restart.txt && echo 'Done!'"]
+    rebuild_passenger_rails_app: [{"HOME" => "", "RAILS_ENV" => "production"}, "bundle install --path=vendor/bundle && bin/rake assets:clobber && bin/rake assets:precompile && bin/rake tmp:clear && mkdir -p tmp && touch tmp/restart.txt && echo 'Done!'"]
   }
   def cli
     cmd = CMDS[params[:cmd].to_sym]
