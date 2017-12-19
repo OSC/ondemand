@@ -1,4 +1,6 @@
-<%= logo_image_tag(ENV['OOD_DASHBOARD_LOGO']) %>
+<% if Configuration.logo_img? %>
+  <%= logo_image_tag(Configuration.logo_img) %>
+<% end %>
 
 <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>
 <br>
