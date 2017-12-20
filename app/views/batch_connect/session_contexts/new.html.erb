@@ -8,60 +8,59 @@
     <%= link_to "Interactive Sessions", batch_connect_sessions_path %>
   </li>
   <li class="active">
-    <%= @app ? @app.title : "New Session" %>
+    <%= @app.title %>
   </li>
 </ol>
 
 
-<%- if @app -%>
-  <%- if @session && @session.errors.any? -%>
-    <div class="alert alert-danger alert-dismissible" role="alert">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      <%= session_save_errors @session.errors %>
+<%- if @session && @session.errors.any? -%>
+  <div class="alert alert-danger alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <%= session_save_errors @session.errors %>
 
-      <p class="small">
-        * The <%= @app.title %> session data for this session can be accessed
-        under the
-        <%=
-          link_to(
-            "staged root directory",
-            OodAppkit.files.url(path: @session.staged_root).to_s,
-            target: "_blank"
-          )
-        %>.
-      </p>
-    </div>
-  <%- end -%>
-
-  <div class="row">
-    <div class="col-md-3">
-      <%= render partial: 'batch_connect/sessions/app_list', collection: @apps, locals: { current_app_token: @app.base_token } %>
-    </div>
-
-    <div class="col-md-6">
-      <div class="ood-appkit markdown">
-        <%= OodAppkit.markdown.render(@app.description).html_safe %>
-
-        <%- if @session_context -%>
-          <%= render "form" %>
-
-          <p class="small">
-            * All <%= @app.title %> session data is generated and stored under
-            the user's home directory in the corresponding
-            <%=
-              link_to(
-                "data root directory",
-                OodAppkit.files.url(
-                  path: BatchConnect::Session.dataroot(@app.token)
-                ).to_s,
-                target: "_blank"
-              )
-            %>.
-          </p>
-        <%- end -%>
-      </div>
-    </div><!-- /.col-md-6 -->
-  </div><!-- /.row -->
+    <p class="small">
+      * The <%= @app.title %> session data for this session can be accessed
+      under the
+      <%=
+        link_to(
+          "staged root directory",
+          OodAppkit.files.url(path: @session.staged_root).to_s,
+          target: "_blank"
+        )
+      %>.
+    </p>
+  </div>
 <%- end -%>
+
+<div class="row">
+  <div class="col-md-3">
+    <%= render partial: 'batch_connect/sessions/app_list', collection: @apps, locals: { current_app_token: @app.base_token } %>
+  </div>
+
+  <div class="col-md-6">
+    <h3><%= @app.title %></h3>
+    <div class="ood-appkit markdown">
+      <%= OodAppkit.markdown.render(@app.description).html_safe %>
+
+      <%- if @session_context -%>
+        <%= render "form" %>
+
+        <p class="small">
+          * All <%= @app.title %> session data is generated and stored under
+          the user's home directory in the corresponding
+          <%=
+            link_to(
+              "data root directory",
+              OodAppkit.files.url(
+                path: BatchConnect::Session.dataroot(@app.token)
+              ).to_s,
+              target: "_blank"
+            )
+          %>.
+        </p>
+      <%- end -%>
+    </div>
+  </div><!-- /.col-md-6 -->
+</div><!-- /.row -->
