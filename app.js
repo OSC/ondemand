@@ -1,13 +1,24 @@
-// Set dotenv as early as possible
-require('dotenv').config();
-
+var fs        = require('fs');
 var http      = require('http');
 var path      = require('path');
 var WebSocket = require('ws');
 var express   = require('express');
 var pty       = require('pty.js');
 var hbs       = require('hbs');
+var dotenv    = require('dotenv');
 var port      = 3000;
+
+// Read in environment variables
+dotenv.config({path: '.env.local'});
+if (process.env.NODE_ENV === 'production') {
+  dotenv.config({path: '/etc/ood/config/apps/shell/env'});
+}
+
+// Keep app backwards compatible
+if (fs.existsSync('.env')) {
+  console.warn('[DEPRECATION] The file \'.env\' is being deprecated. Please move this file to \'/etc/ood/config/apps/shell/env\'.');
+  dotenv.config({path: '.env'});
+}
 
 // Create all your routes
 var router = express.Router();

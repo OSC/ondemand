@@ -26,13 +26,6 @@ the `ood` account, this app should run as `ood`.
     scl enable git19 rh-ruby22 nodejs010 -- bin/setup
     ```
 
-    this will set the default SSH host to `localhost`. It is **recommended**
-    you change this to one of the login nodes with:
-
-    ```sh
-    DEFAULT_SSHHOST=login.my_center.edu scl enable git19 nodejs010 -- bin/setup
-    ```
-
 3. Copy the built app directory to the deployment directory, and start the
    server. i.e.:
 
@@ -63,10 +56,27 @@ the `ood` account, this app should run as `ood`.
    sudo rsync -rlptv --delete . /var/www/ood/apps/sys/shell
    ```
 
+## Configuration
+
+The app can be configured by editing the global environment file:
+
+```
+/etc/ood/config/apps/shell/env
+```
+
+An example environment file is:
+
+```sh
+# /etc/ood/config/apps/shell/env
+
+# The default ssh host the user is logged into if the user doesn't specify a
+# host in the url
+DEFAULT_SSHHOST="localhost"
+```
 
 ## Usage
 
-Open a terminal to the default SSH host (`$DEFAULT_SSHHOST` or `localhost`):
+Open a terminal to the default SSH host:
 
 `http://localhost:3000/`
 
@@ -81,6 +91,35 @@ To specify a directory on the default host:
 To specify a host and directory:
 
 `http://localhost:3000/ssh/<host>/<dir>`
+
+## Development
+
+For development purposes the environment variables must be specified in the
+local environment file:
+
+```
+.env.local
+```
+
+underneath the root directory of this app in your sandbox.
+
+To mimic the production environment you may have to copy the production
+environment variables down or set up a symbolic link:
+
+```sh
+# Copy production env vars
+cp /etc/ood/config/apps/shell/env .env.local
+
+# or setup a symlink
+ln -s /etc/ood/config/apps/shell/env .env.local
+```
+
+Any changes made to the environment files require an app restart in order for
+the changes to take effect:
+
+```console
+$ touch tmp/restart.txt
+```
 
 ## Contributing
 

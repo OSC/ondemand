@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added support to read local environment variable file `.env.local`.
+  [#43](https://github.com/OSC/ood-shell/pull/43)
+
+### Changed
+- Reads environment variables from global environment file
+  `/etc/ood/config/apps/shell/env` in production mode.
+  [#42](https://github.com/OSC/ood-shell/issues/42)
+
+### Deprecated
+- Deprecating old environment variable file `.env` located underneath the app.
+  [#43](https://github.com/OSC/ood-shell/pull/43)
 
 ## [1.2.4] - 2017-10-20
 ### Changed
