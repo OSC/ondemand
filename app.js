@@ -10,6 +10,7 @@ var http        = require('http'),
     archiver    = require('archiver'),
     queryString = require('querystring'),
     gitSync     = require('git-rev-sync'),
+    dotenv      = require('dotenv'),
     app         = express(),
     dirArray    = __dirname.split('/'),
     PORT        = 9001,
@@ -18,7 +19,17 @@ var http        = require('http'),
     server,
     socket;
 
-require('dotenv').config();
+// Read in environment variables
+dotenv.config({path: '.env.local'});
+if (process.env.NODE_ENV === 'production') {
+  dotenv.config({path: '/etc/ood/config/apps/files/env'});
+}
+
+// Keep app backwards compatible
+if (fs.existsSync('.env')) {
+  console.warn('[DEPRECATION] The file \'.env\' is being deprecated. Please move this file to \'/etc/ood/config/apps/files/env\'.');
+  dotenv.config({path: '.env'});
+}
 
 server = http.createServer(app);
 

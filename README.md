@@ -73,10 +73,10 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
 
 (OPTIONAL) Update the application settings via environment variables as appropriate.
 
-  * Copy the `.env.example` to `.env`
+  * Copy the `.env.example` to `/etc/ood/config/apps/files/env`
 
     ```sh
-    cp .env.example .env
+    sudo cp .env.example /etc/ood/config/apps/files/env
     ```
 
   * Uncomment the variables you wish to modify
@@ -136,9 +136,36 @@ GET requests will follow the pattern `App Root` + `api/v1/fs/` + `File Path`, wh
 
 Since the application is running as the logged in user, the application will only have access to the files that the user actually has access to within the file system.
 
-## Development Notes
+## Development
 
-#### Updating the `cloudcmd` dependency
+For development purposes the environment variables must be specified in the
+local environment file:
+
+```
+.env.local
+```
+
+underneath the root directory of this app in your sandbox.
+
+To mimic the production environment you may have to copy the production
+environment variables down or set up a symbolic link:
+
+```sh
+# Copy production env vars
+cp /etc/ood/config/apps/files/env .env.local
+
+# or setup a symlink
+ln -s /etc/ood/config/apps/files/env .env.local
+```
+
+Any changes made to the environment files require an app restart in order for
+the changes to take effect:
+
+```console
+$ touch tmp/restart.txt
+```
+
+### Updating the `cloudcmd` dependency
 
 `ood-fileexplorer` currently uses a modified fork of [CloudCmd](http://cloudcmd.io/), the latest OOD version of which is at [OSC/cloudcmd](https://github.com/OSC/cloudcmd/releases). This version has been heavily modified from the original and is maintained as a separate fork.  
 
@@ -173,12 +200,6 @@ Since the application is running as the logged in user, the application will onl
 - Remove the `node_modules` folder: `rm -rf node_modules/`
 
 - Install shrinkwrapped dependencies: `npm i`
-
-
-
-
-
-
 
 ## Contributing
 

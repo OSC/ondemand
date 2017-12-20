@@ -5,8 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## Upcoming
+## Unreleased
 
+- Add global configuration file `/etc/ood/config/apps/files/env/` for
+  production mode.
+- Add local configuration file `.env.local`.
+- Deprecate previous `.env` file.
 - Fix crash when the git folder is not present
 
 ## v1.3.6 - 2017-10-24
