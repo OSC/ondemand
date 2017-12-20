@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - (Batch Connect) Added a root route for iHPC apps that take the user to the
   submission form. [#283](https://github.com/OSC/ood-dashboard/issues/283)
+- (Batch Connect) Added title of iHPC app to submission form.
+  [#278](https://github.com/OSC/ood-dashboard/issues/278)
 
 ### Changed
 - (Batch Connect) Change page title for iHPC apps.
