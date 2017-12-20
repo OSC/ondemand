@@ -46,6 +46,18 @@
 // Load up dataTables bootstrap specific styles
 @import "dataTables/bootstrap/3/jquery.dataTables.bootstrap";
 
+// Use sticky footer in body of layout
+// See: https://philipwalton.github.io/solved-by-flexbox/demos/sticky-footer/
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+
+  div.content {
+    flex: 1;
+  }
+}
+
 // Borrowed from bootstrap 4
 .ood-mb-2 {
   margin-bottom: (1rem * .50) !important;
