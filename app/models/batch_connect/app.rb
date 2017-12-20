@@ -63,7 +63,17 @@ module BatchConnect
     # Root path to the sub apps
     # @return [Pathname] root directory of sub apps
     def sub_app_root
-      root.join("local")
+      if router.type == :sys && global_sub_app_root.directory?
+        global_sub_app_root
+      else
+        root.join("local")
+      end
+    end
+
+    # Global root path to the sub apps
+    # @return [Pathname] global root directory of sub apps
+    def global_sub_app_root
+      Configuration.bc_config_root.join(router.name)
     end
 
     # Title for the batch connect app
