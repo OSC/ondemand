@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.3.0] - 2017-12-21
 ### Added
 - Added support to read local environment variable file `.env.local`.
   [#43](https://github.com/OSC/ood-shell/pull/43)
@@ -38,6 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Warn users if they try to close an active terminal.
 - Warn users when their websocket connection is terminated.
 
-[Unreleased]: https://github.com/OSC/ood-shell/compare/v1.2.4...HEAD
+[Unreleased]: https://github.com/OSC/ood-shell/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/OSC/ood-shell/compare/v1.2.4...v1.3.0
 [1.2.4]: https://github.com/OSC/ood-shell/compare/v1.2.3...v1.2.4
 [1.2.3]: https://github.com/OSC/ood-shell/compare/v1.2.2...v1.2.3

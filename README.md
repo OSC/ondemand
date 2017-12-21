@@ -17,7 +17,7 @@ the `ood` account, this app should run as `ood`.
     ```sh
     scl enable git19 -- git clone https://github.com/OSC/ood-shell.git shell
     cd shell
-    scl enable git19 -- git checkout tags/v1.2.4
+    scl enable git19 -- git checkout tags/v1.3.0
     ```
 
 2.  Install the app:
@@ -41,7 +41,7 @@ the `ood` account, this app should run as `ood`.
    ```sh
    cd shell # cd to build directory
    scl enable git19 -- git fetch
-   scl enable git19 -- git checkout tags/v1.2.4
+   scl enable git19 -- git checkout tags/v1.3.0
    ```
 
 2. Update the app:
