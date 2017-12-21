@@ -7,11 +7,12 @@ module DashboardHelper
   end
 
   def logo_image_tag(url)
-    return "" unless url
-
-    uri = Addressable::URI.parse(url)
-    uri.query_values = (uri.query_values || {}).merge({timestamp: Time.now.to_i})
-
-    %Q(<img alt="logo" src="#{uri}" />).html_safe
+    if url
+      uri = Addressable::URI.parse(url)
+      uri.query_values = (uri.query_values || {}).merge({timestamp: Time.now.to_i})
+      %(<img src="#{uri}" alt="logo" />).html_safe
+    else # default logo image
+      image_tag("OpenOnDemand_stack_RGB.svg", alt: "logo", height: "85", style: "margin-bottom: 10px")
+    end
   end
 end

@@ -69,6 +69,18 @@ class ConfigurationSingleton
   end
   alias_method :app_sharing_enabled, :app_sharing_enabled?
 
+  # URL to the Dashboard logo image
+  # @return [String, nil] URL of logo image
+  def logo_img
+    ENV["OOD_DASHBOARD_LOGO"]
+  end
+
+  # Whether we display the Dashboard logo image
+  # @return [Boolean] whether display logo image
+  def logo_img?
+    !to_bool(ENV["DISABLE_DASHBOARD_LOGO"])
+  end
+
   def brand_bg_color
     ENV.values_at('OOD_BRAND_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_BG', 'BOOTSTRAP_NAVBAR_INVERSE_BG').compact.first
   end
