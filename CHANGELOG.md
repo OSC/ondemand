@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## v1.4.0 - 2017-12-21
+
 - Add global configuration file `/etc/ood/config/apps/files/env/` for
   production mode.
 - Add local configuration file `.env.local`.
