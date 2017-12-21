@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.20.0] - 2017-12-21
 ### Added
 - (Batch Connect) Added a root route for iHPC apps that take the user to the
   submission form. [#283](https://github.com/OSC/ood-dashboard/issues/283)
@@ -243,7 +245,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.19.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.20.0...HEAD
+[1.20.0]: https://github.com/OSC/ood-dashboard/compare/v1.19.0...v1.20.0
 [1.19.0]: https://github.com/OSC/ood-dashboard/compare/v1.18.1...v1.19.0
 [1.18.1]: https://github.com/OSC/ood-dashboard/compare/v1.18.0...v1.18.1
 [1.18.0]: https://github.com/OSC/ood-dashboard/compare/v1.17.0...v1.18.0
