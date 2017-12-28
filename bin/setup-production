@@ -33,7 +33,7 @@ chdir APP_ROOT do
     # Read in current migrations from database
     require 'sqlite3'
     begin
-      db = SQLite3::Database.new Configuration.database_path
+      db = SQLite3::Database.new Configuration.production_database_path
       db_migrations = db.execute("SELECT * FROM schema_migrations").map {|v| v.first}
     rescue SQLite3::Exception => e
       abort "Exception occurred: #{e}"
