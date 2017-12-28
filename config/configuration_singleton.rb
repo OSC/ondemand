@@ -94,7 +94,7 @@ class ConfigurationSingleton
 
   def production_database_path
     # FIXME: add support/handling for DATABASE_URL
-    ENV["DATABASE_PATH"] || dataroot.join('production.sqlite3').to_s
+    Pathname.new(ENV["DATABASE_PATH"] || dataroot.join('production.sqlite3'))
   end
 
   private

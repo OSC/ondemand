@@ -26,14 +26,14 @@ chdir APP_ROOT do
   `mkdir -p #{Configuration.dataroot}`
 
   # currently SQLite-specific
-  if File.exist?(Configuration.production_database_path)
+  if Configuration.production_database_path.file?
     # Get a list of all migration for this app
     app_migrations = Dir.glob("#{APP_ROOT}/db/migrate/*").map {|v| File.basename(v).split("_").first}
 
     # Read in current migrations from database
     require 'sqlite3'
     begin
-      db = SQLite3::Database.new Configuration.production_database_path
+      db = SQLite3::Database.new Configuration.production_database_path.to_s
       db_migrations = db.execute("SELECT * FROM schema_migrations").map {|v| v.first}
     rescue SQLite3::Exception => e
       abort "Exception occurred: #{e}"

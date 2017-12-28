@@ -22,4 +22,4 @@ test:
 
 production:
   <<: *default
-  database: <%= Configuration.production_database_path %>
+  database: <%= Configuration.production_database_path.to_s %>
