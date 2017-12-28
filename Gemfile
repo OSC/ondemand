@@ -12,7 +12,7 @@ gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.1.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
-gem 'therubyracer', platforms: :ruby
+# gem 'therubyracer', platforms: :ruby
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -47,10 +47,10 @@ end
 
 gem "autoprefixer-rails"
 gem "bootstrap-sass", "3.3.5"
-gem "bootstrap_form", "~> 2.3.0"
+gem "bootstrap_form", "~> 2.7.0"
 gem "font-awesome-sass", "~> 4.4.0"
 gem "local_time", "~> 1.0.3"
-gem 'dotenv-rails', '~> 2.0', require: 'dotenv/rails-now'
+gem 'dotenv-rails', '~> 2.0'
 gem "paperclip", "~> 4.2.2"
 gem "jquery-datatables-rails", "~> 3.3.0"
 gem "js-routes", "~> 1.2.4"

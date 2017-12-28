@@ -92,11 +92,11 @@ Explorer and Shell apps installed and a cluster config added to
 1. copy the a directory of a job they already ran or an example job
 
   1. User can create a new job from a "default" template.
-  
-    1. A custom default template can be defined at `/var/www/ood/apps/sys/myjobs/templates/default`
+
+    1. A custom default template can be defined at `/etc/ood/config/apps/myjobs/templates/default` or under the app deployment directory at `/var/www/ood/apps/sys/myjobs/templates/default`
     2. If no default template is specified, the default is `/var/www/ood/apps/sys/myjobs/example_templates/torque`
 
-  2. user can select a directory to copy from a list of "System" templates the admin copied to `/var/www/ood/apps/sys/myjobs/templates` during installation
+  2. user can select a directory to copy from a list of "System" templates the admin copied to `/etc/ood/config/apps/myjobs/templates` or under the app deployment directory at `/var/www/ood/apps/sys/myjobs/templates` during installation
   3. user can select a directory to copy from a list of "User" templates that the user has copied to `$HOME/ondemand/data/sys/myjobs/templates`
   4. user can select a job directory to copy that they already created through "Job Composer" from `$HOME/ondemand/data/sys/myjobs/projects/default`
 

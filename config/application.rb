@@ -20,6 +20,11 @@ module JobConstructor
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
+    if ::Configuration.load_external_config?
+      config.paths["config/initializers"] << ::Configuration.custom_initializers_root.to_s
+      config.paths["app/views"].unshift ::Configuration.custom_views_root.to_s
+    end
+
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
   end

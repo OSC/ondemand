@@ -24,7 +24,7 @@ class Template
   end
 
   # Constructor
-  # @param [String] path The template base path.
+  # @param [String, Pathname] path The template base path.
   # @param [optional, Source] source A Source object based on the template's location.
   def initialize(path, source = Source.new("", Pathname.new("")))
     # We want to convert the full path if a user enters an alias like `~\path`.

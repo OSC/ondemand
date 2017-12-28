@@ -1,0 +1,7 @@
+<%# Uses rails_bootstrap_form gem.  i.e.:
+
+  bootstrap_form_for(workflow) do |f|
+
+API at: https://github.com/bootstrap-ruby/rails-bootstrap-forms %>
+
+<%= f.text_field :account, help: "Account is optional field. If not set, the account may be auto-set by the submit filter." if Configuration.show_job_options_account_field? %>

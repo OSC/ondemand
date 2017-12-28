@@ -23,7 +23,7 @@
 # files used for deployment should not be versioned
 /public/.htaccess
 /public/assets
-/.env.local
+/.env.local*
 
 # awesim-rails uses separately versioned wiki repositories
 # do not include those in the app repo
