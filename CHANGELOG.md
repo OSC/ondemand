@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Load dotenv files in two passes: .env.local files first, then the rest of the dotenv files. This allows overriding `OOD_APP_CONFIG_ROOT` in .env.local which is useful for testing configuration changes when doing development.
 - Configuration object is now created in config/boot so it can be used in setup scripts and rake tasks that don't load the config/application.
+- Removed `therubyracer` gem requirement in favor of node.js.
 
 
 ## [2.7.0] - 2017-11-27
