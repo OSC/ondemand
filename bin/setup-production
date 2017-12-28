@@ -46,6 +46,7 @@ chdir APP_ROOT do
       abort "Your database differs significantly from the app's schema"
     end
   else
+    Configuration.production_database_path.parent.mkpath
     `RAILS_ENV=production bin/rake db:setup`
   end
 end
