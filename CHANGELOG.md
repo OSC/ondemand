@@ -2,6 +2,18 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Added
+- `OOD_SHOW_JOB_OPTIONS_ACCOUNT_FIELD` env var can be set to a falsy value (i.e. `OOD_SHOW_JOB_OPTIONS_ACCOUNT_FIELD=0`) which allows hiding account field from job options
+- Loads /etc/ood/config/apps/myjobs/env file as dotenv file when in production environment. Can change location of this by setting `OOD_APP_CONFIG_ROOT` in .env.local. This allows moving app specific environment configuration to /etc/, easing installing and updating the dashboard app.
+- /etc/ood/config/apps/myjobs/initializers and /etc/ood/config/apps/myjobs/views now are optional paths to place custom initializer and view and view partial overrides
+
+### Fixed
+- Create directory containing sqlite3 database prior to creating sqlite3 database [#197](https://github.com/OSC/ood-myjobs/issues/197)
+
+### Changed
+- Load dotenv files in two passes: .env.local files first, then the rest of the dotenv files. This allows overriding `OOD_APP_CONFIG_ROOT` in .env.local which is useful for testing configuration changes when doing development.
+- Configuration object is now created in config/boot so it can be used in setup scripts and rake tasks that don't load the config/application.
+
 
 ## [2.7.0] - 2017-11-27
 ### Changed
