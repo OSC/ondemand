@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Update `bin/setup` to remove `node-modules` instead of relying on `npm prune`
 
+## [v1.4.0] - 2017-12-21
+
+- Add global configuration file `/etc/ood/config/apps/files/env/` for
+  production mode.
+- Add local configuration file `.env.local`.
+- Deprecate previous `.env` file.
+- Fix crash when the git folder is not present
+
 ## [v1.3.6] - 2017-10-24
 
 - update to osc/cloudcmd v5.3.1-osc.29
@@ -66,7 +74,8 @@ Bugfixes:
 
 Initial Release
 
-[Unreleased]: https://github.com/OSC/ood-fileexplorer/compare/v1.3.6...HEAD
+[Unreleased]: https://github.com/OSC/ood-fileexplorer/compare/v1.4.0...HEAD
+[v1.4.0]: https://github.com/OSC/ood-fileexplorer/compare/v1.3.6...v1.4.0
 [v1.3.6]: https://github.com/OSC/ood-fileexplorer/compare/v1.3.5...v1.3.6
 [v1.3.5]: https://github.com/OSC/ood-fileexplorer/compare/v1.3.4...v1.3.5
 [v1.3.4]: https://github.com/OSC/ood-fileexplorer/compare/v1.3.3...v1.3.4

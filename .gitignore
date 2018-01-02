@@ -1,5 +1,6 @@
 # Don't include the site-configured .env
 .env
+.env.local
 
 # Don't include the node modules
 /node_modules/
