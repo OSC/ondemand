@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Modified `CHANGELOG.md` formatting.
   [#72](https://github.com/OSC/ood-fileeditor/issues/72)
+- Updated date in `LICENSE.txt`.
 
 ### Fixed
 - Set cursor focus in editor on load.
