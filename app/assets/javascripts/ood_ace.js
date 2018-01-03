@@ -53,6 +53,9 @@ $( document ).ready(function () {
             // Modifying settings and adding data to the editor makes the UndoManager "dirty"
             // so we have to explicitly re-disable it on page ready.
             $( "#save-button" ).prop("disabled", true);
+
+            // Set the caret at inside the editor on load.
+            editor.focus();
         };
 
         function setSaveButtonState() {

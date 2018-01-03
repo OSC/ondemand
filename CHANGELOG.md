@@ -6,12 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Set cursor focus in editor on load.
+  [#15](https://github.com/OSC/ood-fileeditor/issues/15)
 
 ## [1.3.2] - 2017-11-27
 ### Changed
-* Update to Rails 4.2.10 to better support Ruby 2.4.
+- Update to Rails 4.2.10 to better support Ruby 2.4.
   [#71](https://github.com/OSC/ood-fileeditor/issues/71)
-* Update `ood_support` gem to 0.0.3 to better support Ruby 2.4.
+- Update `ood_support` gem to 0.0.3 to better support Ruby 2.4.
 
 ## [1.3.1] - 2017-06-05
 ### Changed
