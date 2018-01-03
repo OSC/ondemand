@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [2.8.0] - 2018-01-03
 ### Added
 - `OOD_SHOW_JOB_OPTIONS_ACCOUNT_FIELD` env var can be set to a falsy value (i.e. `OOD_SHOW_JOB_OPTIONS_ACCOUNT_FIELD=0`) which allows hiding account field from job options
 - Loads /etc/ood/config/apps/myjobs/env file as dotenv file when in production environment. Can change location of this by setting `OOD_APP_CONFIG_ROOT` in .env.local. This allows moving app specific environment configuration to /etc/, easing installing and updating the dashboard app.
@@ -84,7 +86,8 @@ All notable changes to this project will be documented in this file.
 - UI enhancements
 
 
-[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.7.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.8.0...HEAD
+[2.8.0]: https://github.com/OSC/ood-myjobs/compare/v2.7.0...v2.8.0
 [2.7.0]: https://github.com/OSC/ood-myjobs/compare/v2.6.2...v2.7.0
 [2.6.2]: https://github.com/OSC/ood-myjobs/compare/v2.6.1...v2.6.2
 [2.6.1]: https://github.com/OSC/ood-myjobs/compare/v2.6.0...v2.6.1
