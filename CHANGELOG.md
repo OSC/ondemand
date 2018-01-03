@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.4.1] - 2018-01-03
 ### Changed
 - Remove and rebuild `node-modules` during every setup.
 - Changed the `CHANGELOG.md` formatting.
@@ -92,7 +94,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Initial Release!
 
-[Unreleased]: https://github.com/OSC/ood-fileexplorer/compare/v1.4.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-fileexplorer/compare/v1.4.1...HEAD
+[1.4.1]: https://github.com/OSC/ood-fileexplorer/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/OSC/ood-fileexplorer/compare/v1.3.6...v1.4.0
 [1.3.6]: https://github.com/OSC/ood-fileexplorer/compare/v1.3.5...v1.3.6
 [1.3.5]: https://github.com/OSC/ood-fileexplorer/compare/v1.3.3...v1.3.5
