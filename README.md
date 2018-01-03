@@ -20,7 +20,7 @@ A simple Rails web app that uses https://ace.c9.io/ for editing files. It is mea
    ```sh
    scl enable git19 -- git clone https://github.com/OSC/ood-fileeditor.git file-editor
    cd file-editor
-   scl enable git19 -- git checkout tags/v1.3.2
+   scl enable git19 -- git checkout tags/v1.3.3
    ```
 
 2. Install the app for a production environment:
@@ -44,7 +44,7 @@ A simple Rails web app that uses https://ace.c9.io/ for editing files. It is mea
    ```sh
    cd file-editor # cd to build directory
    scl enable git19 -- git fetch
-   scl enable git19 -- git checkout tags/v1.3.2
+   scl enable git19 -- git checkout tags/v1.3.3
    ```
 
 2. Update the app for a production environment:
