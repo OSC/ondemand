@@ -26,8 +26,8 @@ chdir APP_ROOT do
   puts "\n== Building Files App =="
 
   puts "\n== Installing dependencies =="
+  rm_rf "node_modules"
   sh "npm install"
-  sh "npm prune"
 
   puts "\n== Restarting application server =="
   touch "tmp/restart.txt"

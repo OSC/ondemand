@@ -5,67 +5,102 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [Unreleased]
+### Changed
+- Remove and rebuild `node-modules` during every setup.
+- Changed the `CHANGELOG.md` formatting.
 
-## v1.4.0 - 2017-12-21
-
+## [1.4.0] - 2017-12-21
+### Added
 - Add global configuration file `/etc/ood/config/apps/files/env/` for
   production mode.
 - Add local configuration file `.env.local`.
+
+### Deprecated
 - Deprecate previous `.env` file.
-- Fix crash when the git folder is not present
 
-## v1.3.6 - 2017-10-24
+### Fixed
+- Fix crash when the git folder is not present.
 
-- update to osc/cloudcmd v5.3.1-osc.29
-  - Open html and pdf files in a new tab
-- update cloudcmd dependencies 
+## [1.3.6] - 2017-10-24
+### Changed
+- Updated to `osc/cloudcmd v5.3.1-osc.29` (open html and pdf files in a new
+  tab).
+- Updated `cloudcmd` dependencies.
 
-## v1.3.5 - 2017-06-30
+## [1.3.5] - 2017-06-30
+### Changed
+- Updated to `osc/cloudcmd v5.3.1-osc.28` (fixes a silent delete bug in
+  cloudcmd).
 
-- update to osc/cloudcmd v5.3.1-osc.28
-  - Fixes a silent delete bug in cloudcmd
+## 1.3.4 - 2017-06-19 [YANKED]
+### Changed
+- Updated to `osc/cloudcmd v5.3.1-osc.27`.
 
-## v1.3.4 [YANKED]
+## [1.3.3] - 2017-05-26
+### Changed
+- Updated to `osc/cloudcmd v5.3.1-osc.26`.
 
-- update to osc/cloudcmd v5.3.1-osc.27
+## [1.3.2] - 2017-04-20
+### Added
+- Added `bin/setup` script for easier deployment.
 
-## v1.3.3
+## [1.3.1] - 2017-03-07
+### Fixed
+- The `.env` is no longer required for installation as defaults are now set in
+  `app.js` for file upload max, and editor and shell URIs.
 
-- update to osc/cloudcmd v5.3.1-osc.26
+## [1.3.0] - 2016-11-21
+### Added
+- Added clearer install documentation.
 
-## v1.2.1
+### Changed
+- Renamed the `.env` to `.env.example`.
 
-- Add IE download fix for fallback downloader when nginx stage not configured
+## [1.2.2] - 2016-11-15
+### Changed
+- Limit maximum upload size in app.
 
-## v1.2.0 - 2016-10-27
+## [1.2.1] - 2016-11-15
+### Fixed
+- Add IE download fix for fallback downloader when nginx stage not configured.
 
-Features:
+## [1.2.0] - 2016-10-27
+### Changed
+- Removed Passenger overhead for large file downloads by leveraging
+  https://github.com/OSC/nginx_stage.
 
-  - Removed Passenger overhead for large file downloads by leveraging https://github.com/OSC/nginx_stage
+## [1.1.1] - 2016-10-12
+### Added
+- New downloading scheme for large file download support.
 
-## v1.1.1
+### Fixed
+- Fixed IE 11 font caching issue.
+- Fixed Chrome warning for deprecated method.
 
-Features:
+## [1.1.0] - 2016-09-08
+### Added
+- Added MIT license.
+- Added documentation with images in `README.md`.
 
-  - new downloading scheme for large file download support
+### Fixed
+- Updated `cloudcmd` dependency to address bugfixes in `v5.3.1-osc.15` and
+  `v5.3.1-osc.16`.
 
-Bugfixes: 
+## 1.0.0 - 2016-06-15
+### Added
+- Initial Release!
 
-  - IE 11 font caching fix
-  - fix Chrome warning for deprecated method
-
-## v1.1.0
- 
-Features:
- 
-  - MIT License
-  - documentation with images in README
-  
-Bugfixes:  
-  
-  - updated cloudcmd dependency to address bugfixes in v5.3.1-osc.15 and v5.3.1-osc.16
-  
-## v1.0.0
-
-Initial Release
+[Unreleased]: https://github.com/OSC/ood-fileexplorer/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/OSC/ood-fileexplorer/compare/v1.3.6...v1.4.0
+[1.3.6]: https://github.com/OSC/ood-fileexplorer/compare/v1.3.5...v1.3.6
+[1.3.5]: https://github.com/OSC/ood-fileexplorer/compare/v1.3.3...v1.3.5
+[1.3.3]: https://github.com/OSC/ood-fileexplorer/compare/v1.3.2...v1.3.3
+[1.3.2]: https://github.com/OSC/ood-fileexplorer/compare/v1.3.1...v1.3.2
+[1.3.1]: https://github.com/OSC/ood-fileexplorer/compare/v1.3.0...v1.3.1
+[1.3.0]: https://github.com/OSC/ood-fileexplorer/compare/v1.2.2...v1.3.0
+[1.2.2]: https://github.com/OSC/ood-fileexplorer/compare/v1.2.1...v1.2.2
+[1.2.1]: https://github.com/OSC/ood-fileexplorer/compare/v1.2.0...v1.2.1
+[1.2.0]: https://github.com/OSC/ood-fileexplorer/compare/v1.1.1...v1.2.0
+[1.1.1]: https://github.com/OSC/ood-fileexplorer/compare/v1.1.0...v1.1.1
+[1.1.0]: https://github.com/OSC/ood-fileexplorer/compare/v1.0.0...v1.1.0
