@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Remove and rebuild `node-modules` during every setup.
 - Changed the `CHANGELOG.md` formatting.
+- Updated date in `LICENSE.txt`.
 
 ## [1.4.0] - 2017-12-21
 ### Added
