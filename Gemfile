@@ -43,7 +43,7 @@ gem 'paperclip', '~> 4.2'
 gem 'bootstrap-sass', '3.3'
 gem 'font-awesome-sass', '~> 4.7.0'
 gem 'autoprefixer-rails'
-gem 'dotenv-rails', '~> 2.1', require: 'dotenv/rails-now'
+gem 'dotenv-rails', '~> 2.1'
 gem 'rails_12factor', group: :production
 gem 'ood_cluster', '~> 0.0.1'
 gem 'ood_appkit', '~> 1.0'

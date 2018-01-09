@@ -7,29 +7,16 @@ include FileUtils
 ENV["RAILS_ENV"]               ||= ENV["PASSENGER_APP_ENV"] || "development"
 ENV["RAILS_RELATIVE_URL_ROOT"] ||= ENV["PASSENGER_BASE_URI"]
 
-def cat(source, target)
-  source = Array(source).select {|f| File.file?(f)}
-  if source.empty?
-    puts "No site/portal specific files found for #{target}"
-  else
-    source_files = source.join(" ")
-    unless system("cat #{source_files} | cmp -s - #{target}")
-      sh "cat #{source_files} > #{target}"
-    else
-      puts "No changes detected for #{source.join(", ")} => #{target}"
-    end
-  end
-end
+# If relative url root not set, use default for this app
+ENV['RAILS_RELATIVE_URL_ROOT'] ||= "/pun/sys/activejobs" if ENV['RAILS_ENV'] == 'production'
 
 # define application object
 class App
-  attr_accessor :env, :url, :site, :portal
+  attr_accessor :env, :url
 
-  def initialize(env:, url:, site:, portal:)
+  def initialize(env:, url:)
     @env    = env
     @url    = url
-    @site   = site
-    @portal = portal
   end
 
   def production?
@@ -40,9 +27,7 @@ end
 # set application settings
 APP = App.new(
   env:    ENV["RAILS_ENV"],
-  url:    ENV["RAILS_RELATIVE_URL_ROOT"],
-  site:   ENV["OOD_SITE"],
-  portal: ENV["OOD_PORTAL"]
+  url:    ENV["RAILS_RELATIVE_URL_ROOT"]
 )
 
 # path to your application root.
@@ -52,62 +37,14 @@ chdir APP_ROOT do
   # This script is a starting point to setup your application.
   # Add necessary setup steps to this file:
 
-  # Read in OOD_SITE and OOD_PORTAL if defined in .env.local
-  if File.exist?(".env.local")
-    unless APP.site
-      tmp = `bash -c 'source .env.local && echo $OOD_SITE'`.strip
-      APP.site = tmp unless tmp.empty?
-    end
-
-    unless APP.portal
-      tmp = `bash -c 'source .env.local && echo $OOD_PORTAL'`.strip
-      APP.portal = tmp unless tmp.empty?
-    end
-  end
-
-  # Read in RAILS_RELATIVE_URL_ROOT if defined in .env.production
-  if APP.production? && File.exist?(".env.production")
-    unless APP.url
-      tmp = `bash -c 'source .env.production && echo $RAILS_RELATIVE_URL_ROOT'`.strip
-      APP.url = tmp unless tmp.empty?
-    end
-  end
-
   puts "\n== Building Active Jobs App =="
   puts "RAILS_ENV               = #{APP.env}"
   puts "RAILS_RELATIVE_URL_ROOT = #{APP.url    || "not set"}"
-  puts "OOD_SITE                = #{APP.site   || "not set (default: none)"}"
-  puts "OOD_PORTAL              = #{APP.portal || "not set (default: none)"}"
 
   unless system("bin/bundle check &> /dev/null")
     puts "\n== Installing dependencies =="
     sh "bin/bundle install --path=vendor/bundle"
     sh "bin/bundle clean"
-  end
-
-  if APP.site
-    puts "\n== Enabling site and portal specific settings =="
-
-    # .env.local
-    target_file = ".env.local"
-    if APP.site == ""       # user wants to unset site settings
-      rm_f target_file
-    elsif APP.portal == ""  # user wants to unset portal settings
-      source_file = ".env.local.#{APP.site}"
-      cat source_file, target_file
-    else
-      source_files = [".env.local.#{APP.site}", ".env.local.#{APP.site}.#{APP.portal}"]
-      cat source_files, target_file
-    end
-
-    # config/initializers/ood.rb
-    target_file = "config/initializers/filter.rb"
-    if APP.site == ""       # user wants to unset site settings
-      rm_f target_file
-    else
-      source_file = "config/initializers/filter.rb.#{APP.site}"
-      cat source_file, target_file
-    end
   end
 
   if APP.production?

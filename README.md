@@ -2,7 +2,8 @@
 
 [![GitHub version](https://badge.fury.io/gh/OSC%2Food-activejobs.svg)](https://badge.fury.io/gh/OSC%2Food-activejobs)
 
-Application displays the current system status of jobs running, queued, and held on the Oakley and Ruby Clusters.
+Application displays the current system status of jobs running, queued, and
+held on the Oakley and Ruby Clusters.
 
 ## New Install
 
@@ -26,13 +27,7 @@ Explorer and Shell apps installed and a cluster config added to
    RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
    ```
 
-   this will setup a default Open OnDemand install. If you'd like a specific
-   pre-defined portal such as OSC OnDemand you'd specify `OOD_SITE` and
-   `OOD_PORTAL` as:
-
-   ```sh
-   OOD_SITE=osc OOD_PORTAL=ondemand RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
-   ```
+   this will setup a default Open OnDemand install.
 
 3. Copy the built app directory to the deployment directory, and start the
    server. i.e.:
@@ -58,9 +53,6 @@ Explorer and Shell apps installed and a cluster config added to
    RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
    ```
 
-   You do not need to specify `OOD_SITE` and `OOD_PORTAL` if they are defined
-   in the `.env.local` file.
-
 3. Copy the built app directory to the deployment directory:
 
    ```sh
@@ -70,35 +62,40 @@ Explorer and Shell apps installed and a cluster config added to
 
 ## Usage
 
-- Active Jobs displays in a datatables table formatted output of qstat that is searchable.
-- The app displays a list of filters, one for each tab. Each filter has a title (Your Jobs, All Jobs, etc.) and is applied server side to the results of qstat.
-- The data is retrieved via an Ajax request but to get updated data you must refresh the page.
-- Progressive disclosure is used to show details of a job. Click on the "right arrow" handle to the left of a table row to show details.
+- Active Jobs displays in a table the jobs currently submitted to the batch
+  server.
+- The table of jobs can be filtered using the provided filters in the dropdowns
+  located in the top right.
+- The data is retrieved via an Ajax request but to get updated data you must
+  refresh the page.
+- Progressive disclosure is used to show details of a job. Click on the "right
+  arrow" handle to the left of a table row to show details.
 
 ## Configuration
 
 ### Custom Filters
 
-More filters can be added (showing more tabs to the user of the app) by
-inserting filters into the filter list in an initializer.
-`config/initializers/filter.rb` has been added to `.gitignore` so this can be
-safely added. An example of a custom filter can be viewed at
-`config/initializers/filter.rb.osc`:
+Filters can be added by creating a file with the necessary Ruby code under:
 
-```ruby
+```
+/etc/ood/config/apps/activejobs/initializers/filters.rb
+```
+
+An example of a custom filter is:
+
+```rb
+# /etc/ood/config/apps/activejobs/initializers/filters.rb
+
+# Add a filter by group option and insert it after the first option.
 Filter.list.insert(1, Filter.new.tap { |f|
   group = OodSupport::User.new.group.name
   f.title = "Your Group's Jobs (#{group})"
   f.filter_id = "group"
-  f.filter_block = Proc.new { |id, attr| attr[:egroup] == group }
+  # N.B. Need to use :egroup here for now. My Oodsupport group name is 'appl'
+  # but job 'Account_Name' is 'PZS0002'
+  f.filter_block = Proc.new { |job| job.native[:egroup] == group }
 })
 ```
-
-### Other Configuration
-
-This application depends on a valid `ood_cluster` configuration. Please see the [ood_cluster](https://github.com/OSC/ood_cluster/blob/master/README.md) README for further details.
-
-This application relies upon the `ood_appkit` dependency for certain branding defaults. You may override these defaults by creating an `.env.local` file in the root folder of this app and adding the variables there. See the documentation at [ood_appkit](https://github.com/OSC/ood_appkit) for further details.
 
 ## Contributing
 
