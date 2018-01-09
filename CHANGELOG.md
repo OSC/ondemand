@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added global configuration support.
   [#151](https://github.com/OSC/ood-activejobs/issues/151)
 
+### Changed
+- Updated date in `LICENSE.md`.
+
 ## [1.5.3] - 2017-11-27
 ### Changed
 - Updated to Rails 4.2.10 to better support Ruby 2.4.
