@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   multiple announcements.
   [#306](https://github.com/OSC/ood-dashboard/issues/306)
 
+### Changed
+- Updated date in `LICENSE.md`.
+
 ## [1.20.0] - 2017-12-21
 ### Added
 - (Batch Connect) Added a root route for iHPC apps that take the user to the
