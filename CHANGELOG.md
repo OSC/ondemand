@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.21.0] - 2018-01-10
 ### Added
 - Added support for YAML announcements with ERB syntax as well as handling for
   multiple announcements.
@@ -252,7 +254,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.20.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.21.0...HEAD
+[1.21.0]: https://github.com/OSC/ood-dashboard/compare/v1.20.0...v1.21.0
 [1.20.0]: https://github.com/OSC/ood-dashboard/compare/v1.19.0...v1.20.0
 [1.19.0]: https://github.com/OSC/ood-dashboard/compare/v1.18.1...v1.19.0
 [1.18.1]: https://github.com/OSC/ood-dashboard/compare/v1.18.0...v1.18.1
