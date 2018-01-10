@@ -1,0 +1,37 @@
+<%-
+  extend ActionView::Helpers::NumberHelper
+
+  threshold = 80
+  cmd = "quota -w"
+  errors = []
+  begin
+    o, e, s = Open3.capture3(cmd)
+    if s.success?
+      o.split("\n").map(&:strip).drop(2).map do |line|
+        disk, *values = line.split(" ")
+        values = values.map(&:to_i)
+        block, max_block, _, files, max_files, _ = values
+        if (block > max_block * threshold / 100)
+          errors << "Within #{threshold}% of limit for **disk space** on `#{disk}` (#{number_to_human_size block * 1024} / #{number_to_human_size max_block * 1024})"
+        end
+        if (files > max_files * threshold / 100)
+          errors << "Within #{threshold}% of limit for **total files** on `#{disk}` (#{number_to_human(files).downcase} files / #{number_to_human(max_files).downcase} files)"
+        end
+      end
+    else
+      raise e
+    end
+  rescue => e
+    Rails.logger.warn "Error parsing quota: #{e.message}"
+    errors = []
+  end
+-%>
+type: warning
+msg: |
+  <%- if errors.any? -%>
+  **Quota warnings:**
+
+  <%- errors.each do |error| -%>
+  - <%= error %>
+  <%- end -%>
+  <%- end -%>

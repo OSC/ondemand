@@ -52,9 +52,9 @@
 
   <div class="container content" role="main">
 
-    <% if @announcement %>
-      <div class="alert alert-warning" role="alert">
-        <%=raw markdown(@announcement) %>
+    <% @announcements.each do |announcement| %>
+      <div class="alert alert-<%= announcement.type %>" role="alert">
+        <%= raw markdown(announcement.msg) %>
       </div>
     <% end %>
 

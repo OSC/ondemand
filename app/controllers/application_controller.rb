@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  before_filter :set_user, :set_nav_groups, :set_announcement
+  before_filter :set_user, :set_nav_groups, :set_announcements
 
   def set_user
     @user = User.new
@@ -18,10 +18,10 @@ class ApplicationController < ActionController::Base
     @sys_app_groups ||= OodAppGroup.groups_for(apps: SysRouter.apps)
   end
 
-  def set_announcement
-    path = Pathname.new(ENV["OOD_ANNOUNCEMENT_PATH"] || "/etc/ood/config/announcement.md")
-    @announcement = path.read if path.file?
+  def set_announcements
+    @announcements = Announcements.all(Configuration.announcement_path)
   rescue => e
-    logger.warn "Failed to read announcement file at: #{path} with error: #{e.message}"
+    logger.warn "Error parsing announcements: #{e.message}"
+    @announcements = []
   end
 end

@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added support for YAML announcements with ERB syntax as well as handling for
+  multiple announcements.
+  [#306](https://github.com/OSC/ood-dashboard/issues/306)
 
 ## [1.20.0] - 2017-12-21
 ### Added

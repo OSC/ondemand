@@ -42,6 +42,20 @@ class ConfigurationSingleton
     Pathname.new(ENV["OOD_BC_APP_CONFIG_ROOT"] || "/etc/ood/config/apps")
   end
 
+  # The file system path to the announcements
+  # @return [Pathname, Array<Pathname>] announcement path or paths
+  def announcement_path
+    if path = ENV["OOD_ANNOUNCEMENT_PATH"]
+      Pathname.new(path)
+    else
+      [
+        "/etc/ood/config/announcement.md",
+        "/etc/ood/config/announcement.yml",
+        "/etc/ood/config/announcements.d"
+      ].map {|p| Pathname.new(p)}
+    end
+  end
+
   # Load the dotenv local files first, then the /etc dotenv files and
   # the .env and .env.production or .env.development files.
   #
