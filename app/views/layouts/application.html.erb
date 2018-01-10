@@ -53,7 +53,7 @@
   <div class="container content" role="main">
 
     <% @announcements.each do |announcement| %>
-      <div class="alert alert-<%= announcement.type %>" role="alert">
+      <div class="alert alert-<%= announcement.type %> announcement" role="alert">
         <%= raw markdown(announcement.msg) %>
       </div>
     <% end %>
