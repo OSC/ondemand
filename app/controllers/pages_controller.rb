@@ -37,12 +37,12 @@ class PagesController < ApplicationController
         # It takes a couple of seconds for the job to clear out
         # Using the sleep to wait before reload
         sleep(2.0)
-        redirect_to root_url, :alert => "Deleted " + job_id
+        redirect_to root_url, :notice => "Successfully deleted " + job_id
       rescue
-        redirect_to root_url, :alert => "Unable to delete " + job_id
+        redirect_to root_url, :alert => "Failed to delete " + job_id
       end
     else
-      redirect_to root_url, :alert => "Not Deleted"
+      redirect_to root_url, :alert => "Failed to delete."
     end
   end
 

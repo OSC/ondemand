@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Updated date in `LICENSE.md`.
+- Use `notice` instead of `alert` when successfully deleting job.
+  [#110](https://github.com/OSC/ood-activejobs/issues/110)
 
 ## [1.5.3] - 2017-11-27
 ### Changed
