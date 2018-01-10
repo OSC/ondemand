@@ -18,24 +18,6 @@
 // libdot/js/lib_test_manager.js
 // libdot/js/lib_utf8.js
 // libdot/third_party/wcwidth/lib_wc.js
-// hterm/js/hterm.js
-// hterm/js/hterm_frame.js
-// hterm/js/hterm_keyboard.js
-// hterm/js/hterm_keyboard_bindings.js
-// hterm/js/hterm_keyboard_keymap.js
-// hterm/js/hterm_keyboard_keypattern.js
-// hterm/js/hterm_options.js
-// hterm/js/hterm_parser.js
-// hterm/js/hterm_parser_identifiers.js
-// hterm/js/hterm_preference_manager.js
-// hterm/js/hterm_pubsub.js
-// hterm/js/hterm_screen.js
-// hterm/js/hterm_scrollport.js
-// hterm/js/hterm_terminal.js
-// hterm/js/hterm_terminal_io.js
-// hterm/js/hterm_text_attributes.js
-// hterm/js/hterm_vt.js
-// hterm/js/hterm_vt_character_map.js
 //
 
 // SOURCE FILE: libdot/js/lib.js
@@ -1555,7 +1537,8 @@ lib.f.getAcceptLanguages.chromeSupported = function() {
  * This takes a url query string in the form 'name1=value&name2=value' and
  * converts it into an object of the form { name1: 'value', name2: 'value' }.
  * If a given name appears multiple times in the query string, only the
- * last value will appear in the result.
+ * last value will appear in the result.  If the name ends with [], it is
+ * turned into an array.
  *
  * Names and values are passed through decodeURIComponent before being added
  * to the result object.
@@ -1572,7 +1555,20 @@ lib.f.parseQuery = function(queryString) {
   var pairs = queryString.split('&');
   for (var i = 0; i < pairs.length; i++) {
     var pair = pairs[i].split('=');
-    rv[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+    let key = decodeURIComponent(pair[0]);
+    let val = decodeURIComponent(pair[1]);
+
+    if (key.endsWith('[]')) {
+      // It's an array.
+      key = key.slice(0, -2);
+      // The key doesn't exist, or wasn't an array before.
+      if (!(rv[key] instanceof Array))
+        rv[key] = [];
+      rv[key].push(val);
+    } else {
+      // It's a plain string.
+      rv[key] = val;
+    }
   }
 
   return rv;
@@ -1773,6 +1769,59 @@ lib.f.smartFloorDivide = function(numerator,  denominator) {
 lib.f.randomInt = function(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
+
+/**
+ * Get the current OS.
+ *
+ * @return {Promise<string>} A promise that resolves to a constant in
+ *     runtime.PlatformOs.
+ */
+lib.f.getOs = function() {
+  // Try the brower extensions API.
+  if (window.browser && browser.runtime && browser.runtime.getPlatformInfo)
+    return browser.runtime.getPlatformInfo().then((info) => info.os);
+
+  // Use the native Chrome API if available.
+  if (window.chrome && chrome.runtime && chrome.runtime.getPlatformInfo) {
+    return new Promise((resolve, reject) =>
+        chrome.runtime.getPlatformInfo((info) => resolve(info.os)));
+  }
+
+  // Fallback logic.  Capture the major OS's.  The rest should support the
+  // browser API above.
+  if (window.navigator && navigator.userAgent) {
+    const ua = navigator.userAgent;
+    if (ua.includes('Mac OS X'))
+      return Promise.resolve('mac');
+    else if (ua.includes('CrOS'))
+      return Promise.resolve('cros');
+    else if (ua.includes('Linux'))
+      return Promise.resolve('linux');
+    else if (ua.includes('Android'))
+      return Promise.resolve('android');
+    else if (ua.includes('Windows'))
+      return Promise.resolve('windows');
+  }
+
+  // Still here?  No idea.
+  return Promise.reject(null);
+};
+
+/**
+ * Get the current Chrome milestone version.
+ *
+ * @return {number} The milestone number if we're running on Chrome, else NaN.
+ */
+lib.f.getChromeMilestone = function() {
+  if (window.navigator && navigator.userAgent) {
+    const ary = navigator.userAgent.match(/\sChrome\/(\d+)/);
+    if (ary)
+      return parseInt(ary[1]);
+  }
+
+  // Returning NaN will make all number comparisons fail.
+  return NaN;
+};
 // SOURCE FILE: libdot/js/lib_message_manager.js
 // Copyright (c) 2012 The Chromium OS Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
@@ -1872,17 +1921,12 @@ lib.MessageManager.prototype.loadMessages = function(
     url, onSuccess, opt_onError) {
   var xhr = new XMLHttpRequest();
 
-  xhr.onloadend = function() {
-    if (xhr.status != 200) {
-      if (opt_onError)
-        opt_onError(xhr.status);
-
-      return;
-    }
-
+  xhr.onload = () => {
     this.addMessages(JSON.parse(xhr.responseText));
     onSuccess();
-  }.bind(this);
+  };
+  if (opt_onError)
+    xhr.onerror = () => opt_onError(xhr);
 
   xhr.open('GET', url);
   xhr.send();
@@ -1926,7 +1970,9 @@ lib.MessageManager.prototype.get = function(msgname, opt_args, opt_default) {
 
     if (!message) {
       console.warn('Unknown message: ' + msgname);
-      return (typeof opt_default == 'undefined') ? msgname : opt_default;
+      message = opt_default === undefined ? msgname : opt_default;
+      // Register the message with the default to avoid multiple warnings.
+      this.messages[msgname] = message;
     }
   }
 
@@ -2774,10 +2820,15 @@ lib.PreferenceManager.prototype.importFromJson = function(json, opt_onComplete) 
       }
 
     } else {
-      this.set(name, json[name], onWriteStorage);
-      pendingWrites++;
+      // The set is synchronous.
+      this.set(name, json[name]);
     }
   }
+
+  // If we didn't update any children, no async work has been queued, so make
+  // the completion callback directly.
+  if (pendingWrites == 0 && opt_onComplete)
+    opt_onComplete();
 };
 
 /**
@@ -3586,7 +3637,8 @@ lib.TestManager.Log = function(opt_console=console) {
   const oGroupEnd = this.console_.groupEnd;
   this.groupEnd = this.console_.groupEnd = () => {
     oGroupEnd();
-    this.prefix_ = '  '.repeat(--this.prefixStack_);
+    if (this.prefixStack_)
+      this.prefix_ = '  '.repeat(--this.prefixStack_);
   };
 };
 
@@ -5255,14 +5307,300 @@ lib.wc.substring = function(str, start, end) {
   return lib.wc.substr(str, start, end - start);
 };
 lib.resource.add('libdot/changelog/version', 'text/plain',
-'1.19' +
+'1.21' +
 ''
 );
 
 lib.resource.add('libdot/changelog/date', 'text/plain',
-'2017-10-16' +
+'2018-01-05' +
 ''
 );
+
+
+// This file was generated by libdot/bin/concat.sh.
+// It has been marked read-only for your safety.  Rather
+// than edit it directly, please modify one of these source
+// files...
+//
+//
+
+lib.resource.add('hterm/audio/bell', 'audio/ogg;base64',
+'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' +
+'zinmkFLKMeUcUko5p5xTzjkIHYTKMQadgxAppRxTzinHHITMQeWcg9BBKAAAIMABACDAQig0ZEUA' +
+'ECcA4HAkz5M0SxQlSxNFzxRl1xNN15U0zTQ1UVRVyxNV1VRV2xZNVbYlTRNNTfRUVRNFVRVV05ZN' +
+'VbVtzzRl2VRV3RZV1bZl2xZ+V5Z13zNNWRZV1dZNVbV115Z9X9ZtXZg0zTQ1UVRVTRRV1VRV2zZV' +
+'17Y1UXRVUVVlWVRVWXZlWfdVV9Z9SxRV1VNN2RVVVbZV2fVtVZZ94XRVXVdl2fdVWRZ+W9eF4fZ9' +
+'4RhV1dZN19V1VZZ9YdZlYbd13yhpmmlqoqiqmiiqqqmqtm2qrq1bouiqoqrKsmeqrqzKsq+rrmzr' +
+'miiqrqiqsiyqqiyrsqz7qizrtqiquq3KsrCbrqvrtu8LwyzrunCqrq6rsuz7qizruq3rxnHrujB8' +
+'pinLpqvquqm6um7runHMtm0co6rqvirLwrDKsu/rui+0dSFRVXXdlF3jV2VZ921fd55b94WybTu/' +
+'rfvKceu60vg5z28cubZtHLNuG7+t+8bzKz9hOI6lZ5q2baqqrZuqq+uybivDrOtCUVV9XZVl3zdd' +
+'WRdu3zeOW9eNoqrquirLvrDKsjHcxm8cuzAcXds2jlvXnbKtC31jyPcJz2vbxnH7OuP2daOvDAnH' +
+'jwAAgAEHAIAAE8pAoSErAoA4AQAGIecUUxAqxSB0EFLqIKRUMQYhc05KxRyUUEpqIZTUKsYgVI5J' +
+'yJyTEkpoKZTSUgehpVBKa6GU1lJrsabUYu0gpBZKaS2U0lpqqcbUWowRYxAy56RkzkkJpbQWSmkt' +
+'c05K56CkDkJKpaQUS0otVsxJyaCj0kFIqaQSU0mptVBKa6WkFktKMbYUW24x1hxKaS2kEltJKcYU' +
+'U20txpojxiBkzknJnJMSSmktlNJa5ZiUDkJKmYOSSkqtlZJSzJyT0kFIqYOOSkkptpJKTKGU1kpK' +
+'sYVSWmwx1pxSbDWU0lpJKcaSSmwtxlpbTLV1EFoLpbQWSmmttVZraq3GUEprJaUYS0qxtRZrbjHm' +
+'GkppraQSW0mpxRZbji3GmlNrNabWam4x5hpbbT3WmnNKrdbUUo0txppjbb3VmnvvIKQWSmktlNJi' +
+'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' +
+'m2L/kruPM6Q7oz4tvDQy+bZ3HzOi+gNHA4DZEgA=' +
+''
+);
+
+lib.resource.add('hterm/images/icon-96', 'image/png;base64',
+'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' +
+'ODoyNC0wNDowMNba8BsAAAAASUVORK5CYII=' +
+''
+);
+
+lib.resource.add('hterm/concat/date', 'text/plain',
+'Wed, 10 Jan 2018 16:40:46 +0000' +
+''
+);
+
+lib.resource.add('hterm/changelog/version', 'text/plain',
+'1.77' +
+''
+);
+
+lib.resource.add('hterm/changelog/date', 'text/plain',
+'2018-01-05' +
+''
+);
+
+lib.resource.add('hterm/git/HEAD', 'text/plain',
+'git rev-parse HEAD' +
+''
+);
+
+
+// This file was generated by libdot/bin/concat.sh.
+// It has been marked read-only for your safety.  Rather
+// than edit it directly, please modify one of these source
+// files...
+//
+// hterm/js/hterm.js
+// hterm/js/hterm_frame.js
+// hterm/js/hterm_keyboard.js
+// hterm/js/hterm_keyboard_bindings.js
+// hterm/js/hterm_keyboard_keymap.js
+// hterm/js/hterm_keyboard_keypattern.js
+// hterm/js/hterm_options.js
+// hterm/js/hterm_parser.js
+// hterm/js/hterm_parser_identifiers.js
+// hterm/js/hterm_preference_manager.js
+// hterm/js/hterm_pubsub.js
+// hterm/js/hterm_screen.js
+// hterm/js/hterm_scrollport.js
+// hterm/js/hterm_terminal.js
+// hterm/js/hterm_terminal_io.js
+// hterm/js/hterm_text_attributes.js
+// hterm/js/hterm_vt.js
+// hterm/js/hterm_vt_character_map.js
+//
 
 // SOURCE FILE: hterm/js/hterm.js
 // Copyright (c) 2012 The Chromium OS Authors. All rights reserved.
@@ -5286,6 +5624,16 @@ var hterm = {};
  * initialization completes.
  */
 hterm.windowType = null;
+
+/**
+ * The OS we're running under.
+ *
+ * Used when setting up OS-specific behaviors.
+ *
+ * This is set as part of hterm.init().  The value is invalid until
+ * initialization completes.
+ */
+hterm.os = null;
 
 /**
  * Warning message to display in the terminal when browser zoom is enabled.
@@ -5331,9 +5679,26 @@ hterm.testDeps = ['hterm.ScrollPort.Tests', 'hterm.Screen.Tests',
  *     initialization is complete.
  */
 lib.registerInit('hterm', function(onInit) {
+  function initOs(os) {
+    hterm.os = os;
+
+    onInit();
+  }
+
+  function initMessageManager() {
+    lib.f.getAcceptLanguages((languages) => {
+      if (!hterm.messageManager)
+        hterm.messageManager = new lib.MessageManager(languages);
+
+      // If OS detection fails, then we'll still set the value to something.
+      // The OS logic in hterm tends to be best effort anyways.
+      lib.f.getOs().then(initOs).catch(initOs);
+    });
+  }
+
   function onWindow(window) {
     hterm.windowType = window.type;
-    setTimeout(onInit, 0);
+    initMessageManager();
   }
 
   function onTab(tab) {
@@ -5343,7 +5708,7 @@ lib.registerInit('hterm', function(onInit) {
       // TODO(rginda): This is where we end up for a v1 app's background page.
       // Maybe windowType = 'none' would be more appropriate, or something.
       hterm.windowType = 'normal';
-      setTimeout(onInit, 0);
+      initMessageManager();
     }
   }
 
@@ -5433,6 +5798,18 @@ hterm.pasteFromClipboard = function(document) {
 };
 
 /**
+ * Return a formatted message in the current locale.
+ *
+ * @param {string} name The name of the message to return.
+ * @param {Array<string>=} args The message arguments, if required.
+ * @param {string=} string The default message text.
+ * @return {string} The localized message.
+ */
+hterm.msg = function(name, args = [], string) {
+  return hterm.messageManager.get('HTERM_' + name, args, string);
+};
+
+/**
  * Create a new notification.
  *
  * @param {Object} params Various parameters for the notification.
@@ -5463,6 +5840,21 @@ hterm.notify = function(params) {
   };
   return n;
 };
+
+/**
+ * Launches url in a new tab.
+ *
+ * @param {string} url URL to launch in a new tab.
+ */
+hterm.openUrl = function(url) {
+  if (window.chrome && chrome.browser && chrome.browser.openTab) {
+    // For Chrome v2 apps, we need to use this API to properly open windows.
+    chrome.browser.openTab({'url': url});
+  } else {
+    const win = window.open(url, '_blank');
+    win.focus();
+  }
+}
 
 /**
  * Constructor for a hterm.Size record.
@@ -6201,8 +6593,12 @@ hterm.Keyboard.prototype.onKeyDown_ = function(e) {
 
   var keyDef = this.keyMap.keyDefs[e.keyCode];
   if (!keyDef) {
-    console.warn('No definition for keyCode: ' + e.keyCode);
-    return;
+    // If this key hasn't been explicitly registered, fall back to the unknown
+    // key mapping (keyCode == 0), and then automatically register it to avoid
+    // any further warnings here.
+    console.warn(`No definition for key ${e.key} (keyCode ${e.keyCode})`);
+    keyDef = this.keyMap.keyDefs[0];
+    this.keyMap.addKeyDef(e.keyCode, keyDef);
   }
 
   // The type of action we're going to use.
@@ -6807,7 +7203,7 @@ hterm.Keyboard.KeyMap.prototype.reset = function() {
     [119, '[F8]',  CSI + '19~',               DEFAULT, CSI + "32~", DEFAULT],
     [120, '[F9]',  CSI + '20~',               DEFAULT, CSI + "33~", DEFAULT],
     [121, '[F10]', CSI + '21~',               DEFAULT, CSI + "34~", DEFAULT],
-    [122, '[F11]', CSI + '23~',               DEFAULT, CSI + "42~", DEFAULT],
+    [122, '[F11]', c('onF11_'),               DEFAULT, CSI + "42~", DEFAULT],
     [123, '[F12]', CSI + '24~',               DEFAULT, CSI + "43~", DEFAULT],
 
     // Second row.
@@ -6909,6 +7305,11 @@ hterm.Keyboard.KeyMap.prototype.reset = function() {
     [37, '[LEFT]',  ac(CSI + 'D', SS3 + 'D'), DEFAULT, DEFAULT, DEFAULT],
 
     [144, '[NUMLOCK]', PASS, PASS, PASS, PASS],
+
+    // On Apple keyboards, the NumLock key is a Clear key.  It also tends to be
+    // what KP5 sends when numlock is off.  Not clear if we could do anything
+    // useful with it, so just pass it along.
+    [12, '[CLEAR]', PASS, PASS, PASS, PASS],
 
     // With numlock off, the keypad generates the same key codes as the arrows
     // and 'block of six' for some keys, and null key codes for the rest.
@@ -7058,6 +7459,20 @@ hterm.Keyboard.KeyMap.prototype.onKeyArrowDown_ = function(e) {
 hterm.Keyboard.KeyMap.prototype.onClear_ = function(e, keyDef) {
   this.keyboard.terminal.wipeContents();
   return hterm.Keyboard.KeyActions.CANCEL;
+};
+
+/**
+ * Handle F11 behavior (fullscreen) when not in a window.
+ *
+ * It would be nice to use the Fullscreen API, but the UX is slightly different
+ * a bad way: the Escape key is automatically registered for exiting.  If we let
+ * the browser handle F11 directly though, we still get to capture Escape.
+ */
+hterm.Keyboard.KeyMap.prototype.onF11_ = function(e, keyDef) {
+  if (hterm.windowType != 'popup')
+    return hterm.Keyboard.KeyActions.PASS;
+  else
+    return '\x1b[23~';
 };
 
 /**
@@ -8033,11 +8448,36 @@ lib.rtdep('lib.f', 'lib.Storage');
  */
 hterm.PreferenceManager = function(profileId) {
   lib.PreferenceManager.call(this, hterm.defaultStorage,
-                             '/hterm/profiles/' + profileId);
+                             hterm.PreferenceManager.prefix_ + profileId);
   var defs = hterm.PreferenceManager.defaultPreferences;
   Object.keys(defs).forEach(function(key) {
     this.definePreference(key, defs[key][1]);
   }.bind(this));
+};
+
+/**
+ * The storage key prefix to namespace the preferences.
+ */
+hterm.PreferenceManager.prefix_ = '/hterm/profiles/';
+
+/**
+ * List all the defined profiles.
+ *
+ * @param {function(Array<string>)} callback Called with the list of profiles.
+ */
+hterm.PreferenceManager.listProfiles = function(callback) {
+  hterm.defaultStorage.getItems(null, (items) => {
+    const profiles = {};
+    for (let key of Object.keys(items)) {
+      if (key.startsWith(hterm.PreferenceManager.prefix_)) {
+        // Turn "/hterm/profiles/foo/bar/cow" to "foo/bar/cow".
+        const subKey = key.slice(hterm.PreferenceManager.prefix_.length);
+        // Turn "foo/bar/cow" into "foo".
+        profiles[subKey.split('/', 1)[0]] = true;
+      }
+    }
+    callback(Object.keys(profiles));
+  });
 };
 
 hterm.PreferenceManager.categories = {};
@@ -8047,6 +8487,7 @@ hterm.PreferenceManager.categories.CopyPaste = 'CopyPaste';
 hterm.PreferenceManager.categories.Sounds = 'Sounds';
 hterm.PreferenceManager.categories.Scrolling = 'Scrolling';
 hterm.PreferenceManager.categories.Encoding = 'Encoding';
+hterm.PreferenceManager.categories.Extensions = 'Extensions';
 hterm.PreferenceManager.categories.Miscellaneous = 'Miscellaneous';
 
 /**
@@ -8065,6 +8506,8 @@ hterm.PreferenceManager.categoryDefinitions = [
     text: 'Scrolling'},
   { id: hterm.PreferenceManager.categories.Sounds,
     text: 'Sounds'},
+  { id: hterm.PreferenceManager.categories.Extensions,
+    text: 'Extensions'},
   { id: hterm.PreferenceManager.categories.Miscellaneous,
     text: 'Misc.'}
 ];
@@ -8081,7 +8524,7 @@ hterm.PreferenceManager.defaultPreferences = {
    '\'none\': Disable any AltGr related munging.\n' +
    '\'ctrl-alt\': Assume Ctrl+Alt means AltGr.\n' +
    '\'left-alt\': Assume left Alt means AltGr.\n' +
-   '\'right-alt\': Assume right Alt means AltGr.\n'],
+   '\'right-alt\': Assume right Alt means AltGr.'],
 
   'alt-backspace-is-meta-backspace':
   [hterm.PreferenceManager.categories.Keyboard, false, 'bool',
@@ -8099,8 +8542,8 @@ hterm.PreferenceManager.defaultPreferences = {
    '\n' +
    '  escape....... Send an ESC prefix.\n' +
    '  8-bit........ Add 128 to the unshifted character as in xterm.\n' +
-   '  browser-key.. Wait for the keypress event and see what the browser \n' +
-   '                says.  (This won\'t work well on platforms where the \n' +
+   '  browser-key.. Wait for the keypress event and see what the browser\n' +
+   '                says.  (This won\'t work well on platforms where the\n' +
    '                browser performs a default action for some alt sequences.)'
   ],
 
@@ -8258,7 +8701,10 @@ hterm.PreferenceManager.defaultPreferences = {
 
   'enable-clipboard-write':
   [hterm.PreferenceManager.categories.CopyPaste, true, 'bool',
-   'Allow the host to write directly to the system clipboard.'],
+   'Allow the remote host to write directly to the local system clipboard.\n' +
+   'Read access is never granted regardless of this setting.\n' +
+   '\n' +
+   'This is used to control access to features like OSC-52.'],
 
   'enable-dec12':
   [hterm.PreferenceManager.categories.Miscellaneous, false, 'bool',
@@ -8266,7 +8712,14 @@ hterm.PreferenceManager.defaultPreferences = {
    'DEC Private Mode 12.'],
 
   'environment':
-  [hterm.PreferenceManager.categories.Miscellaneous, {'TERM': 'xterm-256color'},
+  [hterm.PreferenceManager.categories.Miscellaneous,
+   {
+     // Signal ncurses based apps to use UTF-8 output instead of legacy drawing
+     // modes (which only work in ISO-2022 mode).  Since hterm is always UTF-8,
+     // this shouldn't cause problems.
+     'NCURSES_NO_UTF8_ACS': '1',
+     'TERM': 'xterm-256color',
+   },
    'value',
    'The default environment variables, as an object.'],
 
@@ -8308,11 +8761,6 @@ hterm.PreferenceManager.defaultPreferences = {
    '  "Ctrl-Shift-L": "PASS",\n' +
    '  "Ctrl-H": "\'HELLO\\n\'"\n' +
    '}'],
-
-  'max-string-sequence':
-  [hterm.PreferenceManager.categories.Encoding, 100000, 'int',
-   'Max length of a DCS, OSC, PM, or APS sequence before we give up and ' +
-   'ignore the code.'],
 
   'media-keys-are-fkeys':
   [hterm.PreferenceManager.categories.Keyboard, false, 'bool',
@@ -8462,7 +8910,7 @@ hterm.PreferenceManager.defaultPreferences = {
    'Set the encoding for data sent to host.'],
 
   'terminal-encoding':
-  [hterm.PreferenceManager.categories.Encoding, 'iso-2022',
+  [hterm.PreferenceManager.categories.Encoding, 'utf-8',
    ['iso-2022', 'utf-8', 'utf-8-locked'],
    'The default terminal encoding (DOCS).\n' +
    '\n' +
@@ -8486,6 +8934,12 @@ hterm.PreferenceManager.defaultPreferences = {
   'user-css-text':
   [hterm.PreferenceManager.categories.Appearance, '', 'multiline-string',
    'Custom CSS text for styling the terminal.'],
+
+  'allow-images-inline':
+  [hterm.PreferenceManager.categories.Extensions, null, 'tristate',
+   'Whether to allow the remote side to display images in the terminal.\n' +
+   '\n' +
+   'By default, we prompt until a choice is made.'],
 };
 
 hterm.PreferenceManager.prototype =
@@ -8655,6 +9109,10 @@ hterm.Screen = function(opt_columnCount) {
 
   // Current zero-based cursor coordinates.
   this.cursorPosition = new hterm.RowCol(0, 0);
+
+  // Saved state used by DECSC and related settings.  This is only for saving
+  // and restoring specific state, not for the current/active state.
+  this.cursorState_ = new hterm.Screen.CursorState(this);
 
   // The node containing the row that the cursor is positioned on.
   this.cursorRowNode_ = null;
@@ -9523,6 +9981,90 @@ hterm.Screen.prototype.expandSelection = function(selection) {
   this.setRange_(row, expandedStart, expandedEnd, range);
   selection.addRange(range);
 };
+
+/**
+ * Save the current cursor state to the corresponding screens.
+ *
+ * @param {hterm.VT} vt The VT object to read graphic codeset details from.
+ */
+hterm.Screen.prototype.saveCursorAndState = function(vt) {
+  this.cursorState_.save(vt);
+};
+
+/**
+ * Restore the saved cursor state in the corresponding screens.
+ *
+ * @param {hterm.VT} vt The VT object to write graphic codeset details to.
+ */
+hterm.Screen.prototype.restoreCursorAndState = function(vt) {
+  this.cursorState_.restore(vt);
+};
+
+/**
+ * Track all the things related to the current "cursor".
+ *
+ * The set of things saved & restored here is defined by DEC:
+ * https://vt100.net/docs/vt510-rm/DECSC.html
+ * - Cursor position
+ * - Character attributes set by the SGR command
+ * - Character sets (G0, G1, G2, or G3) currently in GL and GR
+ * - Wrap flag (autowrap or no autowrap)
+ * - State of origin mode (DECOM)
+ * - Selective erase attribute
+ * - Any single shift 2 (SS2) or single shift 3 (SS3) functions sent
+ *
+ * These are done on a per-screen basis.
+ */
+hterm.Screen.CursorState = function(screen) {
+  this.screen_ = screen;
+  this.cursor = null;
+  this.textAttributes = null;
+  this.GL = this.GR = this.G0 = this.G1 = this.G2 = this.G3 = null;
+};
+
+/**
+ * Save all the cursor state.
+ *
+ * @param {hterm.VT} vt The VT object to read graphic codeset details from.
+ */
+hterm.Screen.CursorState.prototype.save = function(vt) {
+  this.cursor = vt.terminal.saveCursor();
+
+  this.textAttributes = this.screen_.textAttributes.clone();
+
+  this.GL = vt.GL;
+  this.GR = vt.GR;
+
+  this.G0 = vt.G0;
+  this.G1 = vt.G1;
+  this.G2 = vt.G2;
+  this.G3 = vt.G3;
+};
+
+/**
+ * Restore the previously saved cursor state.
+ *
+ * @param {hterm.VT} vt The VT object to write graphic codeset details to.
+ */
+hterm.Screen.CursorState.prototype.restore = function(vt) {
+  vt.terminal.restoreCursor(this.cursor);
+
+  // Cursor restore includes char attributes (bold/etc...), but does not change
+  // the color palette (which are a terminal setting).
+  const tattrs = this.textAttributes.clone();
+  tattrs.colorPalette = this.screen_.textAttributes.colorPalette;
+  tattrs.syncColors();
+
+  this.screen_.textAttributes = tattrs;
+
+  vt.GL = this.GL;
+  vt.GR = this.GR;
+
+  vt.G0 = this.G0;
+  vt.G1 = this.G1;
+  vt.G2 = this.G2;
+  vt.G3 = this.G3;
+};
 // SOURCE FILE: hterm/js/hterm_scrollport.js
 // Copyright (c) 2012 The Chromium OS Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
@@ -9824,6 +10366,10 @@ hterm.ScrollPort.prototype.decorate = function(div) {
       'cursor: var(--hterm-mouse-cursor-style);' +
       '-webkit-user-select: none;' +
       '-moz-user-select: none;');
+
+  const metaCharset = doc.createElement('meta');
+  metaCharset.setAttribute('charset', 'utf-8');
+  doc.head.appendChild(metaCharset);
 
   if (this.DEBUG_) {
     // When we're debugging we add padding to the body so that the offscreen
@@ -11060,9 +11606,9 @@ hterm.ScrollPort.prototype.onDragAndDrop_ = function(e) {
   let data;
   let format;
 
-  // If the shift key isn't active, try to find a text source (but not plain
+  // If the shift key active, try to find a "rich" text source (but not plain
   // text).  e.g. text/html is OK.
-  if (!e.shiftKey) {
+  if (e.shiftKey) {
     e.dataTransfer.types.forEach((t) => {
       if (!format && t != 'text/plain' && t.startsWith('text/'))
         format = t;
@@ -11224,6 +11770,8 @@ hterm.Terminal = function(opt_profileId) {
   // The VT escape sequence interpreter.
   this.vt = new hterm.VT(this);
 
+  this.saveCursorAndState(true);
+
   // The keyboard handler.
   this.keyboard = new hterm.Keyboard(this);
 
@@ -11245,6 +11793,9 @@ hterm.Terminal = function(opt_profileId) {
 
   this.realizeSize_(80, 24);
   this.setDefaultTabStops();
+
+  // Whether we allow images to be shown.
+  this.allowImagesInline = null;
 
   this.reportFocus = false;
 
@@ -11483,7 +12034,7 @@ hterm.Terminal.prototype.setProfile = function(profileId, opt_callback) {
     },
 
     'enable-blink': function(v) {
-      terminal.syncBlinkState();
+      terminal.setTextBlink(!!v);
     },
 
     'enable-clipboard-write': function(v) {
@@ -11499,6 +12050,12 @@ hterm.Terminal.prototype.setProfile = function(profileId, opt_callback) {
     },
 
     'font-size': function(v) {
+      v = parseInt(v);
+      if (v <= 0) {
+        console.error(`Invalid font size: ${v}`);
+        return;
+      }
+
       terminal.setFontSize(v);
     },
 
@@ -11532,10 +12089,6 @@ hterm.Terminal.prototype.setProfile = function(profileId, opt_callback) {
       }
     },
 
-    'max-string-sequence': function(v) {
-      terminal.vt.maxStringSequence = v;
-    },
-
     'media-keys-are-fkeys': function(v) {
       terminal.keyboard.mediaKeysAreFKeys = v;
     },
@@ -11558,11 +12111,9 @@ hterm.Terminal.prototype.setProfile = function(profileId, opt_callback) {
 
     'pass-alt-number': function(v) {
       if (v == null) {
-        var osx = window.navigator.userAgent.match(/Mac OS X/);
-
         // Let Alt-1..9 pass to the browser (to control tab switching) on
         // non-OS X systems, or if hterm is not opened in an app window.
-        v = (!osx && hterm.windowType != 'popup');
+        v = (hterm.os != 'mac' && hterm.windowType != 'popup');
       }
 
       terminal.passAltNumber = v;
@@ -11570,11 +12121,9 @@ hterm.Terminal.prototype.setProfile = function(profileId, opt_callback) {
 
     'pass-ctrl-number': function(v) {
       if (v == null) {
-        var osx = window.navigator.userAgent.match(/Mac OS X/);
-
         // Let Ctrl-1..9 pass to the browser (to control tab switching) on
         // non-OS X systems, or if hterm is not opened in an app window.
-        v = (!osx && hterm.windowType != 'popup');
+        v = (hterm.os != 'mac' && hterm.windowType != 'popup');
       }
 
       terminal.passCtrlNumber = v;
@@ -11582,11 +12131,9 @@ hterm.Terminal.prototype.setProfile = function(profileId, opt_callback) {
 
     'pass-meta-number': function(v) {
       if (v == null) {
-        var osx = window.navigator.userAgent.match(/Mac OS X/);
-
         // Let Meta-1..9 pass to the browser (to control tab switching) on
         // OS X systems, or if hterm is not opened in an app window.
-        v = (osx && hterm.windowType != 'popup');
+        v = (hterm.os == 'mac' && hterm.windowType != 'popup');
       }
 
       terminal.passMetaNumber = v;
@@ -11664,6 +12211,10 @@ hterm.Terminal.prototype.setProfile = function(profileId, opt_callback) {
       terminal.primaryScreen_.wordBreakMatchMiddle = v;
       terminal.alternateScreen_.wordBreakMatchMiddle = v;
     },
+
+    'allow-images-inline': function(v) {
+      terminal.allowImagesInline = v;
+    },
   });
 
   this.prefs_.readStorage(function() {
@@ -11699,9 +12250,13 @@ hterm.Terminal.prototype.setBracketedPaste = function(state) {
  * If you want this setting to persist, set it through prefs_, rather than
  * with this method.
  *
- * @param {string} color The color to set.
+ * @param {string=} color The color to set.  If not defined, we reset to the
+ *     saved user preference.
  */
 hterm.Terminal.prototype.setCursorColor = function(color) {
+  if (color === undefined)
+    color = this.prefs_.get('cursor-color');
+
   this.cursorColor_ = color;
   this.cursorNode_.style.backgroundColor = color;
   this.cursorNode_.style.borderColor = color;
@@ -11730,9 +12285,13 @@ hterm.Terminal.prototype.setSelectionEnabled = function(state) {
  * If you want this setting to persist, set it through prefs_, rather than
  * with this method.
  *
- * @param {string} color The color to set.
+ * @param {string=} color The color to set.  If not defined, we reset to the
+ *     saved user preference.
  */
 hterm.Terminal.prototype.setBackgroundColor = function(color) {
+  if (color === undefined)
+    color = this.prefs_.get('background-color');
+
   this.backgroundColor_ = lib.colors.normalizeCSS(color);
   this.primaryScreen_.textAttributes.setDefaults(
       this.foregroundColor_, this.backgroundColor_);
@@ -11759,9 +12318,13 @@ hterm.Terminal.prototype.getBackgroundColor = function() {
  * If you want this setting to persist, set it through prefs_, rather than
  * with this method.
  *
- * @param {string} color The color to set.
+ * @param {string=} color The color to set.  If not defined, we reset to the
+ *     saved user preference.
  */
 hterm.Terminal.prototype.setForegroundColor = function(color) {
+  if (color === undefined)
+    color = this.prefs_.get('foreground-color');
+
   this.foregroundColor_ = lib.colors.normalizeCSS(color);
   this.primaryScreen_.textAttributes.setDefaults(
       this.foregroundColor_, this.backgroundColor_);
@@ -11853,6 +12416,20 @@ hterm.Terminal.prototype.setCssVar = function(name, value,
 };
 
 /**
+ * Get a CSS variable.
+ *
+ * Normally this is used to get variables in the hterm namespace.
+ *
+ * @param {string} name The variable to read.
+ * @param {string?} opt_prefix The variable namespace/prefix to use.
+ * @return {string} The current setting for this variable.
+ */
+hterm.Terminal.prototype.getCssVar = function(name, opt_prefix='--hterm-') {
+  return this.document_.documentElement.style.getPropertyValue(
+      `${opt_prefix}${name}`);
+};
+
+/**
  * Set the font size for this terminal.
  *
  * Call setFontSize(0) to reset to the default font size.
@@ -11862,7 +12439,7 @@ hterm.Terminal.prototype.setCssVar = function(name, value,
  * @param {number} px The desired font size, in pixels.
  */
 hterm.Terminal.prototype.setFontSize = function(px) {
-  if (px === 0)
+  if (px <= 0)
     px = this.prefs_.get('font-size');
 
   this.scrollPort_.setFontSize(px);
@@ -11909,8 +12486,7 @@ hterm.Terminal.prototype.syncMousePasteButton = function() {
     return;
   }
 
-  var ary = navigator.userAgent.match(/\(X11;\s+(\S+)/);
-  if (!ary || ary[1] == 'CrOS') {
+  if (hterm.os != 'linux') {
     this.mousePasteButton = 1;  // Middle mouse button.
   } else {
     this.mousePasteButton = 2;  // Right mouse button.
@@ -11944,11 +12520,14 @@ hterm.Terminal.prototype.syncBoldSafeState = function() {
 };
 
 /**
- * Enable or disable blink based on the enable-blink pref.
+ * Control text blinking behavior.
+ *
+ * @param {boolean=} state Whether to enable support for blinking text.
  */
-hterm.Terminal.prototype.syncBlinkState = function() {
-  this.setCssVar('node-duration',
-                 this.prefs_.get('enable-blink') ? '0.7s' : '0');
+hterm.Terminal.prototype.setTextBlink = function(state) {
+  if (state === undefined)
+    state = this.prefs_.get('enable-blink');
+  this.setCssVar('blink-node-duration', state ? '0.7s' : '0');
 };
 
 /**
@@ -12026,6 +12605,38 @@ hterm.Terminal.prototype.restoreCursor = function(cursor) {
  */
 hterm.Terminal.prototype.clearCursorOverflow = function() {
   this.screen_.cursorPosition.overflow = false;
+};
+
+/**
+ * Save the current cursor state to the corresponding screens.
+ *
+ * See the hterm.Screen.CursorState class for more details.
+ *
+ * @param {boolean=} both If true, update both screens, else only update the
+ *     current screen.
+ */
+hterm.Terminal.prototype.saveCursorAndState = function(both) {
+  if (both) {
+    this.primaryScreen_.saveCursorAndState(this.vt);
+    this.alternateScreen_.saveCursorAndState(this.vt);
+  } else
+    this.screen_.saveCursorAndState(this.vt);
+};
+
+/**
+ * Restore the saved cursor state in the corresponding screens.
+ *
+ * See the hterm.Screen.CursorState class for more details.
+ *
+ * @param {boolean=} both If true, update both screens, else only update the
+ *     current screen.
+ */
+hterm.Terminal.prototype.restoreCursorAndState = function(both) {
+  if (both) {
+    this.primaryScreen_.restoreCursorAndState(this.vt);
+    this.alternateScreen_.restoreCursorAndState(this.vt);
+  } else
+    this.screen_.restoreCursorAndState(this.vt);
 };
 
 /**
@@ -12269,22 +12880,34 @@ hterm.Terminal.prototype.wipeContents = function() {
 
 /**
  * Full terminal reset.
+ *
+ * Perform a full reset to the default values listed in
+ * https://vt100.net/docs/vt510-rm/RIS.html
  */
 hterm.Terminal.prototype.reset = function() {
+  this.vt.reset();
+
   this.clearAllTabStops();
   this.setDefaultTabStops();
 
-  this.clearHome(this.primaryScreen_);
-  this.primaryScreen_.textAttributes.reset();
+  const resetScreen = (screen) => {
+    // We want to make sure to reset the attributes before we clear the screen.
+    // The attributes might be used to initialize default/empty rows.
+    screen.textAttributes.reset();
+    screen.textAttributes.resetColorPalette();
+    this.clearHome(screen);
+    screen.saveCursorAndState(this.vt);
+  };
+  resetScreen(this.primaryScreen_);
+  resetScreen(this.alternateScreen_);
 
-  this.clearHome(this.alternateScreen_);
-  this.alternateScreen_.textAttributes.reset();
-
+  // Reset terminal options to their default values.
+  this.options_ = new hterm.Options();
   this.setCursorBlink(!!this.prefs_.get('cursor-blink'));
 
-  this.vt.reset();
+  this.setVTScrollRegion(null, null);
 
-  this.softReset();
+  this.setCursorVisible(true);
 };
 
 /**
@@ -12294,16 +12917,23 @@ hterm.Terminal.prototype.reset = function() {
  * http://www.vt100.net/docs/vt510-rm/DECSTR#T5-9
  */
 hterm.Terminal.prototype.softReset = function() {
+  this.vt.reset();
+
   // Reset terminal options to their default values.
   this.options_ = new hterm.Options();
 
   // We show the cursor on soft reset but do not alter the blink state.
   this.options_.cursorBlink = !!this.timeouts_.cursorBlink;
 
-  // Xterm also resets the color palette on soft reset, even though it doesn't
-  // seem to be documented anywhere.
-  this.primaryScreen_.textAttributes.resetColorPalette();
-  this.alternateScreen_.textAttributes.resetColorPalette();
+  const resetScreen = (screen) => {
+    // Xterm also resets the color palette on soft reset, even though it doesn't
+    // seem to be documented anywhere.
+    screen.textAttributes.reset();
+    screen.textAttributes.resetColorPalette();
+    screen.saveCursorAndState(this.vt);
+  };
+  resetScreen(this.primaryScreen_);
+  resetScreen(this.alternateScreen_);
 
   // The xterm man page explicitly says this will happen on soft reset.
   this.setVTScrollRegion(null, null);
@@ -12435,6 +13065,12 @@ hterm.Terminal.prototype.interpret = function(str) {
  * @param {HTMLDivElement} div The div to use as the terminal display.
  */
 hterm.Terminal.prototype.decorate = function(div) {
+  const charset = div.ownerDocument.characterSet.toLowerCase();
+  if (charset != 'utf-8') {
+    console.warn(`Document encoding should be set to utf-8, not "${charset}";` +
+                 ` Add <meta charset='utf-8'/> to your HTML <head> to fix.`);
+  }
+
   this.div_ = div;
 
   this.scrollPort_.decorate(div);
@@ -12501,6 +13137,10 @@ hterm.Terminal.prototype.decorate = function(div) {
        '  --hterm-mouse-cursor-pointer: default;' +
        '  --hterm-mouse-cursor-style: var(--hterm-mouse-cursor-text);' +
        '}' +
+       '.uri-node:hover {' +
+       '  text-decoration: underline;' +
+       '  cursor: pointer;' +
+       '}' +
        '@keyframes blink {' +
        '  from { opacity: 1.0; }' +
        '  to { opacity: 0.0; }' +
@@ -12527,7 +13167,7 @@ hterm.Terminal.prototype.decorate = function(div) {
        '-webkit-transition: opacity, background-color 100ms linear;' +
        '-moz-transition: opacity, background-color 100ms linear;');
 
-  this.setCursorColor(this.prefs_.get('cursor-color'));
+  this.setCursorColor();
   this.setCursorBlink(!!this.prefs_.get('cursor-blink'));
   this.restyleCursor_();
 
@@ -13982,6 +14622,180 @@ hterm.Terminal.prototype.copyStringToClipboard = function(str) {
 };
 
 /**
+ * Display an image.
+ *
+ * @param {Object} options The image to display.
+ * @param {string=} options.name A human readable string for the image.
+ * @param {string|number=} options.size The size (in bytes).
+ * @param {boolean=} options.preserveAspectRatio Whether to preserve aspect.
+ * @param {boolean=} options.inline Whether to display the image inline.
+ * @param {string|number=} options.width The width of the image.
+ * @param {string|number=} options.height The height of the image.
+ * @param {string=} options.align Direction to align the image.
+ * @param {string} options.uri The source URI for the image.
+ */
+hterm.Terminal.prototype.displayImage = function(options) {
+  // Make sure we're actually given a resource to display.
+  if (options.uri === undefined)
+    return;
+
+  // Set up the defaults to simplify code below.
+  if (!options.name)
+    options.name = '';
+
+  // Has the user approved image display yet?
+  if (this.allowImagesInline !== true) {
+    this.newLine();
+    const row = this.getRowNode(this.scrollbackRows_.length +
+                                this.getCursorRow() - 1);
+
+    if (this.allowImagesInline === false) {
+      row.textContent = hterm.msg('POPUP_INLINE_IMAGE_DISABLED', [],
+                                  'Inline Images Disabled');
+      return;
+    }
+
+    // Show a prompt.
+    let button;
+    const span = this.document_.createElement('span');
+    span.innerText = hterm.msg('POPUP_INLINE_IMAGE', [], 'Inline Images');
+    span.style.fontWeight = 'bold';
+    span.style.borderWidth = '1px';
+    span.style.borderStyle = 'dashed';
+    button = this.document_.createElement('span');
+    button.innerText = hterm.msg('BUTTON_BLOCK', [], 'block');
+    button.style.marginLeft = '1em';
+    button.style.borderWidth = '1px';
+    button.style.borderStyle = 'solid';
+    button.addEventListener('click', () => {
+      this.prefs_.set('allow-images-inline', false);
+    });
+    span.appendChild(button);
+    button = this.document_.createElement('span');
+    button.innerText = hterm.msg('BUTTON_ALLOW_SESSION', [],
+                                 'allow this session');
+    button.style.marginLeft = '1em';
+    button.style.borderWidth = '1px';
+    button.style.borderStyle = 'solid';
+    button.addEventListener('click', () => {
+      this.allowImagesInline = true;
+    });
+    span.appendChild(button);
+    button = this.document_.createElement('span');
+    button.innerText = hterm.msg('BUTTON_ALLOW_ALWAYS', [], 'always allow');
+    button.style.marginLeft = '1em';
+    button.style.borderWidth = '1px';
+    button.style.borderStyle = 'solid';
+    button.addEventListener('click', () => {
+      this.prefs_.set('allow-images-inline', true);
+    });
+    span.appendChild(button);
+
+    row.appendChild(span);
+    return;
+  }
+
+  // See if we should show this object directly, or download it.
+  if (options.inline) {
+    const io = this.io.push();
+    io.showOverlay(hterm.msg('LOADING_RESOURCE_START', [options.name],
+                             'Loading $1 ...'), null);
+
+    // While we're loading the image, eat all the user's input.
+    io.onVTKeystroke = io.sendString = () => {};
+
+    // Initialize this new image.
+    const img = this.document_.createElement('img');
+    img.src = options.uri;
+    img.title = img.alt = options.name;
+
+    // Attach the image to the page to let it load/render.  It won't stay here.
+    // This is needed so it's visible and the DOM can calculate the height.  If
+    // the image is hidden or not in the DOM, the height is always 0.
+    this.document_.body.appendChild(img);
+
+    // Wait for the image to finish loading before we try moving it to the
+    // right place in the terminal.
+    img.onload = () => {
+      // Now that we have the image dimensions, figure out how to show it.
+      img.style.objectFit = options.preserveAspectRatio ? 'scale-down' : 'fill';
+      img.style.maxWidth = `${this.document_.body.clientWidth}px`;
+      img.style.maxHeight = `${this.document_.body.clientHeight}px`;
+
+      // Parse a width/height specification.
+      const parseDim = (dim, maxDim, cssVar) => {
+        if (!dim || dim == 'auto')
+          return '';
+
+        const ary = dim.match(/^([0-9]+)(px|%)?$/);
+        if (ary) {
+          if (ary[2] == '%')
+            return maxDim * parseInt(ary[1]) / 100 + 'px';
+          else if (ary[2] == 'px')
+            return dim;
+          else
+            return `calc(${dim} * var(${cssVar}))`;
+        }
+
+        return '';
+      };
+      img.style.width =
+          parseDim(options.width, this.document_.body.clientWidth,
+                   '--hterm-charsize-width');
+      img.style.height =
+          parseDim(options.height,  this.document_.body.clientHeight,
+                   '--hterm-charsize-height');
+
+      // Figure out how many rows the image occupies, then add that many.
+      // XXX: This count will be inaccurate if the font size changes on us.
+      const padRows = Math.ceil(img.clientHeight /
+                                this.scrollPort_.characterSize.height);
+      for (let i = 0; i < padRows; ++i)
+        this.newLine();
+
+      // Update the max height in case the user shrinks the character size.
+      img.style.maxHeight = `calc(${padRows} * var(--hterm-charsize-height))`;
+
+      // Move the image to the last row.  This way when we scroll up, it doesn't
+      // disappear when the first row gets clipped.  It will disappear when we
+      // scroll down and the last row is clipped ...
+      this.document_.body.removeChild(img);
+      // Create a wrapper node so we can do an absolute in a relative position.
+      // This helps with rounding errors between JS & CSS counts.
+      const div = this.document_.createElement('div');
+      div.style.position = 'relative';
+      div.style.textAlign = options.align;
+      img.style.position = 'absolute';
+      img.style.bottom = 'calc(0px - var(--hterm-charsize-height))';
+      div.appendChild(img);
+      const row = this.getRowNode(this.scrollbackRows_.length +
+                                  this.getCursorRow() - 1);
+      row.appendChild(div);
+
+      io.hideOverlay();
+      io.pop();
+    };
+
+    // If we got a malformed image, give up.
+    img.onerror = (e) => {
+      this.document_.body.removeChild(img);
+      io.showOverlay(hterm.msg('LOADING_RESOURCE_FAILED', [options.name],
+                               'Loading $1 failed ...'));
+      io.pop();
+    };
+  } else {
+    // We can't use chrome.downloads.download as that requires "downloads"
+    // permissions, and that works only in extensions, not apps.
+    const a = this.document_.createElement('a');
+    a.href = options.uri;
+    a.download = options.name;
+    this.document_.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+};
+
+/**
  * Returns the selected text, or null if no text is selected.
  *
  * @return {string|null}
@@ -14067,21 +14881,6 @@ hterm.Terminal.prototype.onVTKeystroke = function(string) {
 };
 
 /**
- * Launches url in a new tab.
- *
- * @param {string} url URL to launch in a new tab.
- */
-hterm.Terminal.prototype.openUrl = function(url) {
-  if (window.chrome && window.chrome.browser) {
-    // For Chrome v2 apps, we need to use this API to properly open windows.
-    chrome.browser.openTab({'url': url});
-  } else {
-    var win = window.open(url, '_blank');
-    win.focus();
-  }
-}
-
-/**
  * Open the selected url.
  */
 hterm.Terminal.prototype.openSelectedUrl_ = function() {
@@ -14115,7 +14914,7 @@ hterm.Terminal.prototype.openSelectedUrl_ = function() {
     }
   }
 
-  this.openUrl(str);
+  hterm.openUrl(str);
 }
 
 
@@ -14669,7 +15468,7 @@ hterm.TextAttributes = function(document) {
   this.document_ = document;
   // These variables contain the source of the color as either:
   // SRC_DEFAULT  (use context default)
-  // SRC_RGB      (specified in 'rgb( r, g, b)' form)
+  // rgb(...)     (true color form)
   // number       (representing the index from color palette to use)
   this.foregroundSource = this.SRC_DEFAULT;
   this.backgroundSource = this.SRC_DEFAULT;
@@ -14690,12 +15489,15 @@ hterm.TextAttributes = function(document) {
   this.italic = false;
   this.blink = false;
   this.underline = false;
+  this.doubleUnderline = false;
   this.strikethrough = false;
   this.inverse = false;
   this.invisible = false;
   this.wcNode = false;
   this.asciiNode = true;
   this.tileData = null;
+  this.uri = null;
+  this.uriId = null;
 
   this.colorPalette = null;
   this.resetColorPalette();
@@ -14725,13 +15527,6 @@ hterm.TextAttributes.prototype.DEFAULT_COLOR = lib.f.createEnum('');
  * A constant string used to specify that source color is context default.
  */
 hterm.TextAttributes.prototype.SRC_DEFAULT = 'default';
-
-
-/**
- * A constant string used to specify that the source of a color is a valid
- * rgb( r, g, b) specifier.
- */
-hterm.TextAttributes.prototype.SRC_RGB = 'rgb';
 
 /**
  * The document object which should own the DOM nodes created by this instance.
@@ -14774,11 +15569,14 @@ hterm.TextAttributes.prototype.reset = function() {
   this.italic = false;
   this.blink = false;
   this.underline = false;
+  this.doubleUnderline = false;
   this.strikethrough = false;
   this.inverse = false;
   this.invisible = false;
   this.wcNode = false;
   this.asciiNode = true;
+  this.uri = null;
+  this.uriId = null;
 };
 
 /**
@@ -14802,12 +15600,14 @@ hterm.TextAttributes.prototype.isDefault = function() {
           !this.italic &&
           !this.blink &&
           !this.underline &&
+          !this.doubleUnderline &&
           !this.strikethrough &&
           !this.inverse &&
           !this.invisible &&
           !this.wcNode &&
           this.asciiNode &&
-          this.tileData == null);
+          this.tileData == null &&
+          this.uri == null);
 };
 
 /**
@@ -14858,18 +15658,27 @@ hterm.TextAttributes.prototype.createContainer = function(opt_textContent) {
     span.blinkNode = true;
   }
 
-  var textDecoration = '';
+  let textDecorationLine = '';
+  let textDecorationStyle = '';
   if (this.underline) {
-    textDecoration += ' underline';
+    textDecorationLine += ' underline';
     span.underline = true;
   }
+  if (this.doubleUnderline) {
+    // The web platform doesn't like the same keyword twice.
+    if (!this.underline)
+      textDecorationLine += ' underline';
+    textDecorationStyle = 'double';
+    span.doubleUnderline = true;
+  }
   if (this.strikethrough) {
-    textDecoration += ' line-through';
+    textDecorationLine += ' line-through';
     span.strikethrough = true;
   }
-  if (textDecoration) {
-    style.textDecoration = textDecoration;
-  }
+  if (textDecorationLine)
+    style.textDecorationLine = textDecorationLine;
+  if (textDecorationStyle)
+    style.textDecorationStyle = textDecorationStyle;
 
   if (this.wcNode) {
     classes.push('wc-node');
@@ -14885,6 +15694,13 @@ hterm.TextAttributes.prototype.createContainer = function(opt_textContent) {
 
   if (opt_textContent)
     span.textContent = opt_textContent;
+
+  if (this.uri) {
+    classes.push('uri-node');
+    span.uriId = this.uriId;
+    span.title = this.uri;
+    span.addEventListener('click', hterm.openUrl.bind(this, this.uri));
+  }
 
   if (classes.length)
     span.className = classes.join(' ');
@@ -14919,12 +15735,14 @@ hterm.TextAttributes.prototype.matchesContainer = function(obj) {
   return (!(this.wcNode || obj.wcNode) &&
           this.asciiNode == obj.asciiNode &&
           !(this.tileData != null || obj.tileNode) &&
+          this.uriId == obj.uriId &&
           this.foreground == style.color &&
           this.background == style.backgroundColor &&
           (this.enableBold && this.bold) == !!style.fontWeight &&
           this.blink == !!obj.blinkNode &&
           this.italic == !!style.fontStyle &&
           !!this.underline == !!obj.underline &&
+          !!this.doubleUnderline == !!obj.doubleUnderline &&
           !!this.strikethrough == !!obj.strikethrough);
 };
 
@@ -14971,33 +15789,34 @@ hterm.TextAttributes.prototype.syncColors = function() {
   }
 
   if (this.enableBoldAsBright && this.bold) {
-    if (foregroundSource != this.SRC_DEFAULT &&
-        foregroundSource != this.SRC_RGB) {
+    if (Number.isInteger(foregroundSource)) {
       foregroundSource = getBrightIndex(foregroundSource);
     }
   }
 
-  if (this.invisible) {
-    foregroundSource = backgroundSource;
-    defaultForeground = this.defaultBackground;
-  }
+  if (foregroundSource == this.SRC_DEFAULT)
+    this.foreground = defaultForeground;
+  else if (Number.isInteger(foregroundSource))
+    this.foreground = this.colorPalette[foregroundSource];
+  else
+    this.foreground = foregroundSource;
 
-  // Set fore/background colors unless already specified in rgb(r, g, b) form.
-  if (foregroundSource != this.SRC_RGB) {
-    this.foreground = ((foregroundSource == this.SRC_DEFAULT) ?
-                       defaultForeground : this.colorPalette[foregroundSource]);
-  }
-
-  if (this.faint && !this.invisible) {
+  if (this.faint) {
     var colorToMakeFaint = ((this.foreground == this.DEFAULT_COLOR) ?
                             this.defaultForeground : this.foreground);
     this.foreground = lib.colors.mix(colorToMakeFaint, 'rgb(0, 0, 0)', 0.3333);
   }
 
-  if (backgroundSource != this.SRC_RGB) {
-    this.background = ((backgroundSource == this.SRC_DEFAULT) ?
-                       defaultBackground : this.colorPalette[backgroundSource]);
-  }
+  if (backgroundSource == this.SRC_DEFAULT)
+    this.background = defaultBackground;
+  else if (Number.isInteger(backgroundSource))
+    this.background = this.colorPalette[backgroundSource];
+  else
+    this.background = backgroundSource;
+
+  // Process invisible settings last to keep it simple.
+  if (this.invisible)
+    this.foreground = this.background;
 };
 
 /**
@@ -15187,6 +16006,10 @@ hterm.VT = function(terminal) {
 
   terminal.onMouse = this.onTerminalMouse_.bind(this);
   this.mouseReport = this.MOUSE_REPORT_DISABLED;
+  this.mouseCoordinates = this.MOUSE_COORDINATES_X10;
+
+  // We only want to report mouse moves between cells, not between pixels.
+  this.lastMouseDragResponse_ = null;
 
   // Parse state left over from the last parse.  You should use the parseState
   // instance passed into your parse routine, rather than reading
@@ -15238,15 +16061,6 @@ hterm.VT = function(terminal) {
    * The expected encoding method for data received from the host.
    */
   this.characterEncoding = 'utf-8';
-
-  /**
-   * Max length of an unterminated DCS, OSC, PM or APC sequence before we give
-   * up and ignore the code.
-   *
-   * These all end with a String Terminator (ST, '\x9c', ESC '\\') or
-   * (BEL, '\x07') character, hence the "string sequence" moniker.
-   */
-  this.maxStringSequence = 1024;
 
   /**
    * If true, emit warnings when we encounter a control character or escape
@@ -15306,11 +16120,6 @@ hterm.VT = function(terminal) {
   // control character.
   this.cc1Pattern_ = null;
   this.updateEncodingState_();
-
-  // Saved state used in DECSC.
-  //
-  // This is a place to store a copy VT state, it is *not* the active state.
-  this.savedState_ = new hterm.VT.CursorState(this);
 };
 
 /**
@@ -15319,11 +16128,18 @@ hterm.VT = function(terminal) {
 hterm.VT.prototype.MOUSE_REPORT_DISABLED = 0;
 
 /**
+ * DECSET mode 9.
+ *
+ * Report mouse down events only.
+ */
+hterm.VT.prototype.MOUSE_REPORT_PRESS = 1;
+
+/**
  * DECSET mode 1000.
  *
  * Report mouse down/up events only.
  */
-hterm.VT.prototype.MOUSE_REPORT_CLICK = 1;
+hterm.VT.prototype.MOUSE_REPORT_CLICK = 2;
 
 /**
  * DECSET mode 1002.
@@ -15331,6 +16147,21 @@ hterm.VT.prototype.MOUSE_REPORT_CLICK = 1;
  * Report mouse down/up and movement while a button is down.
  */
 hterm.VT.prototype.MOUSE_REPORT_DRAG = 3;
+
+/**
+ * DEC mode for X10 coorindates (the default).
+ */
+hterm.VT.prototype.MOUSE_COORDINATES_X10 = 0;
+
+/**
+ * DEC mode 1005 for UTF-8 coorindates.
+ */
+hterm.VT.prototype.MOUSE_COORDINATES_UTF8 = 1;
+
+/**
+ * DEC mode 1006 for SGR coorindates.
+ */
+hterm.VT.prototype.MOUSE_COORDINATES_SGR = 2;
 
 /**
  * ParseState constructor.
@@ -15347,6 +16178,10 @@ hterm.VT.ParseState = function(defaultFunction, opt_buf) {
   this.pos = 0;
   this.func = defaultFunction;
   this.args = [];
+  // Whether any of the arguments in the args array have subarguments.
+  // e.g. All CSI sequences are integer arguments separated by semi-colons,
+  // so subarguments are further colon separated.
+  this.subargs = null;
 };
 
 /**
@@ -15378,6 +16213,11 @@ hterm.VT.ParseState.prototype.resetBuf = function(opt_buf) {
 /**
  * Reset the arguments list only.
  *
+ * Typically we reset arguments before parsing a sequence that uses them rather
+ * than always trying to make sure they're in a good state.  This can lead to
+ * confusion during debugging where args from a previous sequence appear to be
+ * "sticking around" in other sequences (which in reality don't use args).
+ *
  * @param {string} opt_arg_zero Optional initial value for args[0].
  */
 hterm.VT.ParseState.prototype.resetArguments = function(opt_arg_zero) {
@@ -15387,20 +16227,60 @@ hterm.VT.ParseState.prototype.resetArguments = function(opt_arg_zero) {
 };
 
 /**
+ * Parse an argument as an integer.
+ *
+ * This assumes the inputs are already in the proper format.  e.g. This won't
+ * handle non-numeric arguments.
+ *
+ * An "0" argument is treated the same as "" which means the default value will
+ * be applied.  This is what most terminal sequences expect.
+ *
+ * @param {string} argstr The argument to parse directly.
+ * @param {number=} defaultValue Default value if argstr is empty.
+ * @return {number} The parsed value.
+ */
+hterm.VT.ParseState.prototype.parseInt = function(argstr, defaultValue) {
+  if (defaultValue === undefined)
+    defaultValue = 0;
+
+  if (argstr) {
+    const ret = parseInt(argstr, 10);
+    // An argument of zero is treated as the default value.
+    return ret == 0 ? defaultValue : ret;
+  }
+  return defaultValue;
+};
+
+/**
  * Get an argument as an integer.
  *
  * @param {number} argnum The argument number to retrieve.
+ * @param {number=} defaultValue Default value if the argument is empty.
+ * @return {number} The parsed value.
  */
 hterm.VT.ParseState.prototype.iarg = function(argnum, defaultValue) {
-  var str = this.args[argnum];
-  if (str) {
-    var ret = parseInt(str, 10);
-    // An argument of zero is treated as the default value.
-    if (ret == 0)
-      ret = defaultValue;
-    return ret;
-  }
-  return defaultValue;
+  return this.parseInt(this.args[argnum], defaultValue);
+};
+
+/**
+ * Check whether an argument has subarguments.
+ *
+ * @param {number} argnum The argument number to check.
+ * @return {number} Whether the argument has subarguments.
+ */
+hterm.VT.ParseState.prototype.argHasSubargs = function(argnum) {
+  return this.subargs && this.subargs[argnum];
+};
+
+/**
+ * Mark an argument as having subarguments.
+ *
+ * @param {number} argnum The argument number that has subarguments.
+ */
+hterm.VT.ParseState.prototype.argSetSubargs = function(argnum) {
+  if (this.subargs === null)
+    this.subargs = {};
+  this.subargs[argnum] = true;
 };
 
 /**
@@ -15449,51 +16329,19 @@ hterm.VT.ParseState.prototype.isComplete = function() {
   return this.buf == null || this.buf.length <= this.pos;
 };
 
-hterm.VT.CursorState = function(vt) {
-  this.vt_ = vt;
-  this.save();
-};
-
-hterm.VT.CursorState.prototype.save = function() {
-  this.cursor = this.vt_.terminal.saveCursor();
-
-  this.textAttributes = this.vt_.terminal.getTextAttributes().clone();
-
-  this.GL = this.vt_.GL;
-  this.GR = this.vt_.GR;
-
-  this.G0 = this.vt_.G0;
-  this.G1 = this.vt_.G1;
-  this.G2 = this.vt_.G2;
-  this.G3 = this.vt_.G3;
-};
-
-hterm.VT.CursorState.prototype.restore = function() {
-  this.vt_.terminal.restoreCursor(this.cursor);
-
-  this.vt_.terminal.setTextAttributes(this.textAttributes.clone());
-
-  this.vt_.GL = this.GL;
-  this.vt_.GR = this.GR;
-
-  this.vt_.G0 = this.G0;
-  this.vt_.G1 = this.G1;
-  this.vt_.G2 = this.G2;
-  this.vt_.G3 = this.G3;
-};
-
+/**
+ * Reset the VT back to baseline state.
+ */
 hterm.VT.prototype.reset = function() {
-  this.G0 = this.characterMaps.getMap('B');
-  this.G1 = this.characterMaps.getMap('0');
-  this.G2 = this.characterMaps.getMap('B');
-  this.G3 = this.characterMaps.getMap('B');
+  this.G0 = this.G1 = this.G2 = this.G3 =
+      this.characterMaps.getMap('B');
 
   this.GL = 'G0';
   this.GR = 'G0';
 
-  this.savedState_ = new hterm.VT.CursorState(this);
-
   this.mouseReport = this.MOUSE_REPORT_DISABLED;
+  this.mouseCoordinates = this.MOUSE_COORDINATES_X10;
+  this.lastMouseDragResponse_ = null;
 };
 
 /**
@@ -15502,7 +16350,10 @@ hterm.VT.prototype.reset = function() {
  * See the "Mouse Tracking" section of [xterm].
  */
 hterm.VT.prototype.onTerminalMouse_ = function(e) {
+  // Short circuit a few events to avoid unnecessary processing.
   if (this.mouseReport == this.MOUSE_REPORT_DISABLED)
+    return;
+  else if (this.mouseReport != this.MOUSE_REPORT_DRAG && e.type == 'mousemove')
     return;
 
   // Temporary storage for our response.
@@ -15510,43 +16361,75 @@ hterm.VT.prototype.onTerminalMouse_ = function(e) {
 
   // Modifier key state.
   var mod = 0;
-  if (e.shiftKey)
-    mod |= 4;
-  if (e.metaKey || (this.terminal.keyboard.altIsMeta && e.altKey))
-    mod |= 8;
-  if (e.ctrlKey)
-    mod |= 16;
+  if (this.mouseReport != this.MOUSE_REPORT_PRESS) {
+    if (e.shiftKey)
+      mod |= 4;
+    if (e.metaKey || (this.terminal.keyboard.altIsMeta && e.altKey))
+      mod |= 8;
+    if (e.ctrlKey)
+      mod |= 16;
+  }
 
-  // TODO(rginda): We should also support mode 1005 and/or 1006 to extend the
-  // coordinate space.  Though, after poking around just a little, I wasn't
-  // able to get vi or emacs to use either of these modes.
-  var x = String.fromCharCode(lib.f.clamp(e.terminalColumn + 32, 32, 255));
-  var y = String.fromCharCode(lib.f.clamp(e.terminalRow + 32, 32, 255));
+  // X & Y coordinate reporting.
+  let x;
+  let y;
+  let limit = 255;
+  switch (this.mouseCoordinates) {
+    case this.MOUSE_COORDINATES_UTF8:
+      // UTF-8 mode is the same as X10 but with higher limits.
+      limit = 2047;
+    case this.MOUSE_COORDINATES_X10:
+      // X10 reports coordinates by encoding into strings.
+      x = String.fromCharCode(lib.f.clamp(e.terminalColumn + 32, 32, limit));
+      y = String.fromCharCode(lib.f.clamp(e.terminalRow + 32, 32, limit));
+      break;
+    case this.MOUSE_COORDINATES_SGR:
+      // SGR reports coordinates by transmitting the numbers directly.
+      x = e.terminalColumn;
+      y = e.terminalRow;
+      break;
+  }
 
   switch (e.type) {
     case 'wheel':
       // Mouse wheel is treated as button 1 or 2 plus an additional 64.
-      b = (((e.deltaY * -1) > 0) ? 0 : 1) + 96;
+      b = (((e.deltaY * -1) > 0) ? 0 : 1) + 64;
       b |= mod;
-      response = '\x1b[M' + String.fromCharCode(b) + x + y;
+      if (this.mouseCoordinates == this.MOUSE_COORDINATES_SGR)
+        response = `\x1b[<${b};${x};${y}M`;
+      else
+        response = '\x1b[M' + String.fromCharCode(b) + x + y;
 
       // Keep the terminal from scrolling.
       e.preventDefault();
       break;
 
     case 'mousedown':
-      // Buttons are encoded as button number plus 32.
-      var b = Math.min(e.button, 2) + 32;
+      // Buttons are encoded as button number.
+      var b = Math.min(e.button, 2);
+      // In X10 mode, we also add 32 for legacy reasons.
+      if (this.mouseCoordinates != this.MOUSE_COORDINATES_SGR)
+        b += 32;
 
       // And mix in the modifier keys.
       b |= mod;
 
-      response = '\x1b[M' + String.fromCharCode(b) + x + y;
+      if (this.mouseCoordinates == this.MOUSE_COORDINATES_SGR)
+        response = `\x1b[<${b};${x};${y}M`;
+      else
+        response = '\x1b[M' + String.fromCharCode(b) + x + y;
       break;
 
     case 'mouseup':
-      // Mouse up has no indication of which button was released.
-      response = '\x1b[M\x23' + x + y;
+      if (this.mouseReport != this.MOUSE_REPORT_PRESS) {
+        if (this.mouseCoordinates == this.MOUSE_COORDINATES_SGR) {
+          // SGR mode can report the released button.
+          response = `\x1b[<${e.button};${x};${y}m`;
+        } else {
+          // X10 mode has no indication of which button was released.
+          response = '\x1b[M\x23' + x + y;
+        }
+      }
       break;
 
     case 'mousemove':
@@ -15555,7 +16438,7 @@ hterm.VT.prototype.onTerminalMouse_ = function(e) {
         // button press (e.g. if left & right are pressed, right is ignored),
         // and it only supports the first three buttons.  If none of them are
         // pressed, then XTerm flags it as a release.  We'll do the same.
-        b = 32;
+        b = this.mouseCoordinates == this.MOUSE_COORDINATES_SGR ? 0 : 32;
 
         // Priority here matches XTerm: left, middle, right.
         if (e.buttons & 0x1) {
@@ -15578,7 +16461,18 @@ hterm.VT.prototype.onTerminalMouse_ = function(e) {
         // And mix in the modifier keys.
         b |= mod;
 
-        response = '\x1b[M' + String.fromCharCode(b) + x + y;
+        if (this.mouseCoordinates == this.MOUSE_COORDINATES_SGR)
+          response = `\x1b[<${b};${x};${y}M`;
+        else
+          response = '\x1b[M' + String.fromCharCode(b) + x + y;
+
+        // If we were going to report the same cell because we moved pixels
+        // within, suppress the report.  This is what xterm does and cuts
+        // down on duplicate messages.
+        if (this.lastMouseDragResponse_ == response)
+          response = '';
+        else
+          this.lastMouseDragResponse_ = response;
       }
 
       break;
@@ -15734,17 +16628,27 @@ hterm.VT.prototype.parseCSI_ = function(parseState) {
   var ch = parseState.peekChar();
   var args = parseState.args;
 
+  const finishParsing = () => {
+    // Resetting the arguments isn't strictly necessary, but it makes debugging
+    // less confusing (otherwise args will stick around until the next sequence
+    // that needs arguments).
+    parseState.resetArguments();
+    // We need to clear subargs since we explicitly set it.
+    parseState.subargs = null;
+    parseState.resetParseFunction();
+  };
+
   if (ch >= '@' && ch <= '~') {
     // This is the final character.
     this.dispatch('CSI', this.leadingModifier_ + this.trailingModifier_ + ch,
                   parseState);
-    parseState.resetParseFunction();
+    finishParsing();
 
   } else if (ch == ';') {
     // Parameter delimiter.
     if (this.trailingModifier_) {
       // Parameter delimiter after the trailing modifier.  That's a paddlin'.
-      parseState.resetParseFunction();
+      finishParsing();
 
     } else {
       if (!args.length) {
@@ -15755,21 +16659,25 @@ hterm.VT.prototype.parseCSI_ = function(parseState) {
       args.push('');
     }
 
-  } else if (ch >= '0' && ch <= '9') {
+  } else if (ch >= '0' && ch <= '9' || ch == ':') {
     // Next byte in the current parameter.
 
     if (this.trailingModifier_) {
       // Numeric parameter after the trailing modifier.  That's a paddlin'.
-      parseState.resetParseFunction();
+      finishParsing();
     } else {
       if (!args.length) {
         args[0] = ch;
       } else {
         args[args.length - 1] += ch;
       }
+
+      // Possible sub-parameters.
+      if (ch == ':')
+        parseState.argSetSubargs(args.length - 1);
     }
 
-  } else if (ch >= ' ' && ch <= '?' && ch != ':') {
+  } else if (ch >= ' ' && ch <= '?') {
     // Modifier character.
     if (!args.length) {
       this.leadingModifier_ += ch;
@@ -15783,7 +16691,7 @@ hterm.VT.prototype.parseCSI_ = function(parseState) {
 
   } else {
     // Unexpected character in sequence, bail out.
-    parseState.resetParseFunction();
+    finishParsing();
   }
 
   parseState.advance(1);
@@ -15798,9 +16706,6 @@ hterm.VT.prototype.parseCSI_ = function(parseState) {
  *
  * You can detect that parsing in complete by checking that the parse
  * function has changed back to the default parse function.
- *
- * If we encounter more than maxStringSequence characters, we send back
- * the unterminated sequence to be re-parsed with the default parser function.
  *
  * @return {boolean} If true, parsing is ongoing or complete.  If false, we've
  *     exceeded the max string sequence.
@@ -15844,9 +16749,6 @@ hterm.VT.prototype.parseUntilStringTerminator_ = function(parseState) {
 
     var abortReason;
 
-    if (args[0].length > this.maxStringSequence)
-      abortReason = 'too long: ' + args[0].length;
-
     // Special case: If our buffering happens to split the ST (\e\\), we have to
     // buffer the content temporarily.  So don't reject a trailing escape here,
     // instead we let it timeout or be rejected in the next pass.
@@ -15866,12 +16768,6 @@ hterm.VT.prototype.parseUntilStringTerminator_ = function(parseState) {
 
     parseState.advance(buf.length - bufInserted);
     return true;
-  }
-
-  if (args[0].length + nextTerminator > this.maxStringSequence) {
-    // We found the end of the sequence, but we still think it's too long.
-    parseState.reset(args[0] + buf);
-    return false;
   }
 
   args[0] += buf.substr(0, nextTerminator);
@@ -15897,6 +16793,12 @@ hterm.VT.prototype.dispatch = function(type, code, parseState) {
   if (handler == hterm.VT.ignore) {
     if (this.warnUnimplemented)
       console.warn('Ignored ' + type + ' code: ' + JSON.stringify(code));
+    return;
+  }
+
+  if (parseState.subargs && !handler.supportsSubargs) {
+    if (this.warnUnimplemented)
+      console.warn('Ignored ' + type + ' code w/subargs: ' + JSON.stringify(code));
     return;
   }
 
@@ -15966,6 +16868,12 @@ hterm.VT.prototype.setDECMode = function(code, state) {
       this.terminal.setWraparound(state);
       break;
 
+    case 9:  // Report on mouse down events only (X10).
+      this.mouseReport = (
+          state ? this.MOUSE_REPORT_PRESS : this.MOUSE_REPORT_DISABLED);
+      this.terminal.syncMouseStyle();
+      break;
+
     case 12:  // Start blinking cursor
       if (this.enableDec12)
         this.terminal.setCursorBlink(state);
@@ -15991,7 +16899,7 @@ hterm.VT.prototype.setDECMode = function(code, state) {
       this.terminal.keyboard.backspaceSendsBackspace = state;
       break;
 
-    case 1000:  // Report on mouse clicks only.
+    case 1000:  // Report on mouse clicks only (X11).
       this.mouseReport = (
           state ? this.MOUSE_REPORT_CLICK : this.MOUSE_REPORT_DISABLED);
       this.terminal.syncMouseStyle();
@@ -16005,6 +16913,20 @@ hterm.VT.prototype.setDECMode = function(code, state) {
 
     case 1004:  // Report on window focus change.
       this.terminal.reportFocus = state;
+      break;
+
+    case 1005:  // Extended coordinates in UTF-8 mode.
+      this.mouseCoordinates = (
+          state ? this.MOUSE_COORDINATES_UTF8 : this.MOUSE_COORDINATES_X10);
+      break;
+
+    case 1006:  // Extended coordinates in SGR mode.
+      this.mouseCoordinates = (
+          state ? this.MOUSE_COORDINATES_SGR : this.MOUSE_COORDINATES_X10);
+      break;
+
+    case 1007:  // Enable Alternate Scroll Mode.
+      this.terminal.scrollWheelArrowKeys_ = state;
       break;
 
     case 1010:  // Scroll to bottom on tty output
@@ -16039,16 +16961,20 @@ hterm.VT.prototype.setDECMode = function(code, state) {
       break;
 
     case 1048:  // Save cursor as in DECSC.
-      this.savedState_.save();
+      if (state)
+        this.terminal.saveCursorAndState();
+      else
+        this.terminal.restoreCursorAndState();
+      break;
 
     case 1049:  // 1047 + 1048 + clear.
       if (state) {
-        this.savedState_.save();
+        this.terminal.saveCursorAndState();
         this.terminal.setAlternateMode(state);
         this.terminal.clear();
       } else {
         this.terminal.setAlternateMode(state);
-        this.savedState_.restore();
+        this.terminal.restoreCursorAndState();
       }
 
       break;
@@ -16433,6 +17359,11 @@ hterm.VT.ESC[']'] = function(parseState) {
     } else {
       console.warn('Invalid OSC: ' + JSON.stringify(parseState.args[0]));
     }
+
+    // Resetting the arguments isn't strictly necessary, but it makes debugging
+    // less confusing (otherwise args will stick around until the next sequence
+    // that needs arguments).
+    parseState.resetArguments();
   };
 
   parseState.func = parseOSC;
@@ -16608,14 +17539,14 @@ hterm.VT.ESC['6'] = hterm.VT.ignore;
  * Save Cursor (DECSC).
  */
 hterm.VT.ESC['7'] = function() {
-  this.savedState_.save();
+  this.terminal.saveCursorAndState();
 };
 
 /**
  * Restore Cursor (DECRC).
  */
 hterm.VT.ESC['8'] = function() {
-  this.savedState_.restore();
+  this.terminal.restoreCursorAndState();
 };
 
 /**
@@ -16653,7 +17584,6 @@ hterm.VT.ESC['F'] = hterm.VT.ignore;
  * Full Reset (RIS).
  */
 hterm.VT.ESC['c'] = function() {
-  this.reset();
   this.terminal.reset();
 };
 
@@ -16759,6 +17689,54 @@ hterm.VT.OSC['4'] = function(parseState) {
 
   if (responseArray.length)
     this.terminal.io.sendString('\x1b]4;' + responseArray.join(';') + '\x07');
+};
+
+/**
+ * Hyperlinks.
+ *
+ * The first argument is optional and colon separated:
+ *   id=<id>
+ * The second argument is the link itself.
+ *
+ * Calling with a non-blank URI starts it.  A blank URI stops it.
+ *
+ * https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda
+ */
+hterm.VT.OSC['8'] = function(parseState) {
+  const args = parseState.args[0].split(';');
+  let id = null;
+  let uri = null;
+
+  if (args.length != 2 || args[1].length == 0) {
+    // Reset link.
+  } else {
+    // Pull out any colon separated parameters in the first argument.
+    const params = args[0].split(':');
+    id = '';
+    params.forEach((param) => {
+      const idx = param.indexOf('=');
+      if (idx == -1)
+        return;
+
+      const key = param.slice(0, idx);
+      const value = param.slice(idx + 1);
+      switch (key) {
+        case 'id':
+          id = value;
+          break;
+        default:
+          // Ignore unknown keys.
+          break;
+      }
+    });
+
+    // The URI is in the second argument.
+    uri = args[1];
+  }
+
+  const attrs = this.terminal.getTextAttributes();
+  attrs.uri = uri;
+  attrs.uriId = id;
 };
 
 /**
@@ -16881,6 +17859,9 @@ hterm.VT.OSC['50'] = function(parseState) {
  * preference.
  */
 hterm.VT.OSC['52'] = function(parseState) {
+  if (!this.enableClipboardWrite)
+    return;
+
   // Args come in as a single 'clipboard;b64-data' string.  The clipboard
   // parameter is used to select which of the X clipboards to address.  Since
   // we're not integrating with X, we treat them all the same.
@@ -16891,6 +17872,106 @@ hterm.VT.OSC['52'] = function(parseState) {
   var data = window.atob(args[1]);
   if (data)
     this.terminal.copyStringToClipboard(this.decode(data));
+};
+
+/**
+ * Reset foreground color.
+ */
+hterm.VT.OSC['110'] = function(parseState) {
+  this.terminal.setForegroundColor();
+};
+
+/**
+ * Reset background color.
+ */
+hterm.VT.OSC['111'] = function(parseState) {
+  this.terminal.setBackgroundColor();
+};
+
+/**
+ * Reset text cursor color.
+ */
+hterm.VT.OSC['112'] = function(parseState) {
+  this.terminal.setCursorColor();
+};
+
+/**
+ * iTerm2 extended sequences.
+ *
+ * We only support image display atm.
+ */
+hterm.VT.OSC['1337'] = function(parseState) {
+  // Args come in as a set of key value pairs followed by data.
+  // File=name=<base64>;size=123;inline=1:<base64 data>
+  let args = parseState.args[0].match(/^File=([^:]*):([\s\S]*)$/m);
+  if (!args) {
+    if (this.warnUnimplemented)
+      console.log(`iTerm2 1337: unsupported sequence: ${args[1]}`);
+    return;
+  }
+
+  const options = {
+    name: '',
+    size: 0,
+    preserveAspectRatio: true,
+    inline: false,
+    width: 'auto',
+    height: 'auto',
+    align: 'left',
+    uri: 'data:application/octet-stream;base64,' + args[2].replace(/[\n\r]+/gm, ''),
+  };
+  // Walk the "key=value;" sets.
+  args[1].split(';').forEach((ele) => {
+    const kv = ele.match(/^([^=]+)=(.*)$/m);
+    if (!kv)
+      return;
+
+    // Sanitize values nicely.
+    switch (kv[1]) {
+      case 'name':
+        try {
+          options.name = window.atob(kv[2]);
+        } catch (e) {}
+        break;
+      case 'size':
+        try {
+          options.size = parseInt(kv[2]);
+        } catch (e) {}
+        break;
+      case 'width':
+        options.width = kv[2];
+        break;
+      case 'height':
+        options.height = kv[2];
+        break;
+      case 'preserveAspectRatio':
+        options.preserveAspectRatio = !(kv[2] == '0');
+        break;
+      case 'inline':
+        options.inline = !(kv[2] == '0');
+        break;
+      // hterm-specific keys.
+      case 'align':
+        options.align = kv[2];
+        break;
+      default:
+        // Ignore unknown keys.  Don't want remote stuffing our JS env.
+        break;
+    }
+  });
+
+  // This is a bit of a hack.  If the buffer has data following the image, we
+  // need to delay processing of it until after we've finished with the image.
+  // Otherwise while we wait for the the image to load asynchronously, the new
+  // text data will intermingle with the image.
+  if (options.inline) {
+    const io = this.terminal.io;
+    const queued = parseState.peekRemainingBuf();
+    parseState.advance(queued.length);
+    this.terminal.displayImage(options);
+    io.writeUTF8(queued);
+  } else
+    this.terminal.displayImage(options);
 };
 
 /**
@@ -16984,7 +18065,9 @@ hterm.VT.CSI['F'] = function(parseState) {
 };
 
 /**
- * Cursor Character Absolute (CHA).
+ * Cursor Horizontal Absolute (CHA).
+ *
+ * Xterm calls this Cursor Character Absolute.
  */
 hterm.VT.CSI['G'] = function(parseState) {
   this.terminal.setCursorColumn(parseState.iarg(0, 1) - 1);
@@ -17124,7 +18207,7 @@ hterm.VT.CSI['Z'] = function(parseState) {
 /**
  * Character Position Absolute (HPA).
  *
- * Same as Cursor Character Absolute (CHA).
+ * Same as Cursor Horizontal Absolute (CHA).
  */
 hterm.VT.CSI['`'] = hterm.VT.CSI['G'];
 
@@ -17240,29 +18323,163 @@ hterm.VT.CSI['?l'] = function(parseState) {
 };
 
 /**
+ * Parse extended SGR 38/48 sequences.
+ *
+ * This deals with the various ISO 8613-6 forms, and with legacy xterm forms
+ * that are common in the wider application world.
+ *
+ * @param {hterm.VT.ParseState} parseState The current input state.
+ * @param {number} i The argument in parseState to start processing.
+ * @param {hterm.TextAttributes} attrs The current text attributes.
+ * @return {Object} The skipCount member defines how many arguments to skip
+ *     (i.e. how many were processed), and the color member is the color that
+ *     was successfully processed, or undefined if not.
+ */
+hterm.VT.prototype.parseSgrExtendedColors = function(parseState, i, attrs) {
+  let ary;
+  let usedSubargs;
+
+  if (parseState.argHasSubargs(i)) {
+    // The ISO 8613-6 compliant form.
+    // e.g. 38:[color choice]:[arg1]:[arg2]:...
+    ary = parseState.args[i].split(':');
+    ary.shift();  // Remove "38".
+    usedSubargs = true;
+  } else if (parseState.argHasSubargs(i + 1)) {
+    // The xterm form which isn't ISO 8613-6 compliant.  Not many emulators
+    // support this, and others actively do not want to.  We'll ignore it so
+    // at least the rest of the stream works correctly.  e.g. 38;2:R:G:B
+    // We return 0 here so we only skip the "38" ... we can't be confident the
+    // next arg is actually supposed to be part of it vs a typo where the next
+    // arg is legit.
+    return {skipCount: 0};
+  } else {
+    // The xterm form which isn't ISO 8613-6 compliant, but many emulators
+    // support, and many applications rely on.
+    // e.g. 38;2;R;G;B
+    ary = parseState.args.slice(i + 1);
+    usedSubargs = false;
+  }
+
+  // Figure out which form to parse.
+  switch (parseInt(ary[0])) {
+    default:  // Unknown.
+    case 0:  // Implementation defined.  We ignore it.
+      return {skipCount: 0};
+
+    case 1: {  // Transparent color.
+      // Require ISO 8613-6 form.
+      if (!usedSubargs)
+        return {skipCount: 0};
+
+      return {
+        color: 'rgba(0, 0, 0, 0)',
+        skipCount: 0,
+      };
+    }
+
+    case 2: {  // RGB color.
+      // Skip over the color space identifier, if it exists.
+      let start;
+      if (usedSubargs) {
+        // The ISO 8613-6 compliant form:
+        //   38:2:<color space id>:R:G:B[:...]
+        // The xterm form isn't ISO 8613-6 compliant.
+        //   38:2:R:G:B
+        // Since the ISO 8613-6 form requires at least 5 arguments,
+        // we can still support the xterm form unambiguously.
+        if (ary.length == 4)
+          start = 1;
+        else
+          start = 2;
+      } else {
+        // The legacy xterm form: 38;2;R;G;B
+        start = 1;
+      }
+
+      // We need at least 3 args for RGB.  If we don't have them, assume this
+      // sequence is corrupted, so don't eat anything more.
+      // We ignore more than 3 args on purpose since ISO 8613-6 defines some,
+      // and we don't care about them.
+      if (ary.length < start + 3)
+        return {skipCount: 0};
+
+      const r = parseState.parseInt(ary[start + 0]);
+      const g = parseState.parseInt(ary[start + 1]);
+      const b = parseState.parseInt(ary[start + 2]);
+      return {
+        color: `rgb(${r}, ${g}, ${b})`,
+        skipCount: usedSubargs ? 0 : 4,
+      };
+    }
+
+    case 3: {  // CMY color.
+      // No need to support xterm/legacy forms as xterm doesn't support CMY.
+      if (!usedSubargs)
+        return {skipCount: 0};
+
+      // We need at least 4 args for CMY.  If we don't have them, assume
+      // this sequence is corrupted.  We ignore the color space identifier,
+      // tolerance, etc...
+      if (ary.length < 4)
+        return {skipCount: 0};
+
+      // TODO: See CMYK below.
+      const c = parseState.parseInt(ary[1]);
+      const m = parseState.parseInt(ary[2]);
+      const y = parseState.parseInt(ary[3]);
+      return {skipCount: 0};
+    }
+
+    case 4: {  // CMYK color.
+      // No need to support xterm/legacy forms as xterm doesn't support CMYK.
+      if (!usedSubargs)
+        return {skipCount: 0};
+
+      // We need at least 5 args for CMYK.  If we don't have them, assume
+      // this sequence is corrupted.  We ignore the color space identifier,
+      // tolerance, etc...
+      if (ary.length < 5)
+        return {skipCount: 0};
+
+      // TODO: Implement this.
+      // Might wait until CSS4 is adopted for device-cmyk():
+      // https://www.w3.org/TR/css-color-4/#cmyk-colors
+      // Or normalize it to RGB ourselves:
+      // https://www.w3.org/TR/css-color-4/#cmyk-rgb
+      const c = parseState.parseInt(ary[1]);
+      const m = parseState.parseInt(ary[2]);
+      const y = parseState.parseInt(ary[3]);
+      const k = parseState.parseInt(ary[4]);
+      return {skipCount: 0};
+    }
+
+    case 5: {  // Color palette index.
+      // If we're short on args, assume this sequence is corrupted, so don't
+      // eat anything more.
+      if (ary.length < 2)
+        return {skipCount: 0};
+
+      // Support 38:5:P (ISO 8613-6) and 38;5;P (xterm/legacy).
+      // We also ignore extra args with 38:5:P:[...], but more for laziness.
+      const ret = {
+        skipCount: usedSubargs ? 0 : 2,
+      };
+      const color = parseState.parseInt(ary[1]);
+      if (color < attrs.colorPalette.length)
+        ret.color = color;
+      return ret;
+    }
+  }
+};
+
+/**
  * Character Attributes (SGR).
  *
  * Iterate through the list of arguments, applying the attribute changes based
  * on the argument value...
  */
 hterm.VT.CSI['m'] = function(parseState) {
-  function get256(i) {
-    if (parseState.args.length < i + 2 || parseState.args[i + 1] != 5)
-      return null;
-
-    return parseState.iarg(i + 2, 0);
-  }
-
-  function getTrueColor(i) {
-    if (parseState.args.length < i + 5 || parseState.args[i + 1] != 2)
-      return null;
-    var r = parseState.iarg(i + 2, 0);
-    var g = parseState.iarg(i + 3, 0);
-    var b = parseState.iarg(i + 4, 0);
-
-    return 'rgb(' + r + ' ,' + g + ' ,' + b + ')';
-  }
-
   var attrs = this.terminal.getTextAttributes();
 
   if (!parseState.args.length) {
@@ -17271,6 +18488,8 @@ hterm.VT.CSI['m'] = function(parseState) {
   }
 
   for (var i = 0; i < parseState.args.length; i++) {
+    // If this argument has subargs (i.e. it has args followed by colons),
+    // the iarg logic will implicitly truncate that off for us.
     var arg = parseState.iarg(i, 0);
 
     if (arg < 30) {
@@ -17292,6 +18511,8 @@ hterm.VT.CSI['m'] = function(parseState) {
         attrs.invisible = true;
       } else if (arg == 9) {  // Crossed out.
         attrs.strikethrough = true;
+      } else if (arg == 21) {  // Double underlined.
+        attrs.doubleUnderline = true;
       } else if (arg == 22) {  // Not bold & not faint.
         attrs.bold = false;
         attrs.faint = false;
@@ -17299,6 +18520,7 @@ hterm.VT.CSI['m'] = function(parseState) {
         attrs.italic = false;
       } else if (arg == 24) {  // Not underlined.
         attrs.underline = false;
+        attrs.doubleUnderline = false;
       } else if (arg == 25) {  // Not blink.
         attrs.blink = false;
       } else if (arg == 27) {  // Steady.
@@ -17317,26 +18539,10 @@ hterm.VT.CSI['m'] = function(parseState) {
         attrs.foregroundSource = arg - 30;
 
       } else if (arg == 38) {
-        // First check for true color definition
-        var trueColor = getTrueColor(i);
-        if (trueColor != null) {
-          attrs.foregroundSource = attrs.SRC_RGB;
-          attrs.foreground = trueColor;
-
-          i += 5;
-        } else {
-          // Check for 256 color
-          var c = get256(i);
-          if (c == null)
-            break;
-
-          i += 2;
-
-          if (c >= attrs.colorPalette.length)
-            continue;
-
-          attrs.foregroundSource = c;
-        }
+        const result = this.parseSgrExtendedColors(parseState, i, attrs);
+        if (result.color !== undefined)
+          attrs.foregroundSource = result.color;
+        i += result.skipCount;
 
       } else if (arg == 39) {
         attrs.foregroundSource = attrs.SRC_DEFAULT;
@@ -17345,26 +18551,11 @@ hterm.VT.CSI['m'] = function(parseState) {
         attrs.backgroundSource = arg - 40;
 
       } else if (arg == 48) {
-        // First check for true color definition
-        var trueColor = getTrueColor(i);
-        if (trueColor != null) {
-          attrs.backgroundSource = attrs.SRC_RGB;
-          attrs.background = trueColor;
+        const result = this.parseSgrExtendedColors(parseState, i, attrs);
+        if (result.color !== undefined)
+          attrs.backgroundSource = result.color;
+        i += result.skipCount;
 
-          i += 5;
-        } else {
-          // Check for 256 color
-          var c = get256(i);
-          if (c == null)
-            break;
-
-          i += 2;
-
-          if (c >= attrs.colorPalette.length)
-            continue;
-
-          attrs.backgroundSource = c;
-        }
       } else {
         attrs.backgroundSource = attrs.SRC_DEFAULT;
       }
@@ -17380,6 +18571,9 @@ hterm.VT.CSI['m'] = function(parseState) {
   attrs.setDefaults(this.terminal.getForegroundColor(),
                     this.terminal.getBackgroundColor());
 };
+
+// SGR calls can handle subargs.
+hterm.VT.CSI['m'].supportsSubargs = true;
 
 /**
  * Set xterm-specific keyboard modes.
@@ -17459,7 +18653,6 @@ hterm.VT.CSI['>p'] = hterm.VT.ignore;
  * Soft terminal reset (DECSTR).
  */
 hterm.VT.CSI['!p'] = function() {
-  this.reset();
   this.terminal.softReset();
 };
 
@@ -17551,7 +18744,7 @@ hterm.VT.CSI['$r'] = hterm.VT.ignore;
  * Save cursor (ANSI.SYS)
  */
 hterm.VT.CSI['s'] = function() {
-  this.savedState_.save();
+  this.terminal.saveCursorAndState();
 };
 
 /**
@@ -17593,7 +18786,7 @@ hterm.VT.CSI[' t'] = hterm.VT.ignore;
  * Restore cursor (ANSI.SYS).
  */
 hterm.VT.CSI['u'] = function() {
-  this.savedState_.restore();
+  this.terminal.restoreCursorAndState();
 };
 
 /**
@@ -18370,17 +19563,17 @@ lib.resource.add('hterm/images/icon-96', 'image/png;base64',
 );
 
 lib.resource.add('hterm/concat/date', 'text/plain',
-'Fri, 20 Oct 2017 16:53:13 +0000' +
+'Wed, 10 Jan 2018 16:40:49 +0000' +
 ''
 );
 
 lib.resource.add('hterm/changelog/version', 'text/plain',
-'1.73' +
+'1.77' +
 ''
 );
 
 lib.resource.add('hterm/changelog/date', 'text/plain',
-'2017-10-16' +
+'2018-01-05' +
 ''
 );
 

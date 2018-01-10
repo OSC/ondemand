@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Changed
 - Remove and rebuild `node-modules` during every setup.
+- Updated hterm from 1.73 to 1.77.
 
 ## [1.3.0] - 2017-12-21
 ### Added
