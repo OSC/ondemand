@@ -34,7 +34,7 @@ class Jobstatusdata
     self.walltime_used = info.wallclock_time.to_i > 0 ? pretty_time(info.wallclock_time) : ''
     self.queue = info.queue_name
     if info.status == :running || info.status == :completed
-      self.nodes = node_array(info.allocated_nodes)
+      self.nodes = node_array(info.allocated_nodes).reject(&:blank?)
       self.starttime = info.dispatch_time.to_i
     end
     self.extended_available = %w(torque slurm lsf pbspro).include?(cluster.job_config[:adapter])
@@ -73,6 +73,7 @@ class Jobstatusdata
     node_count = info.native.fetch(:Resource_List, {})[:nodect].to_i
     attributes.push Attribute.new "Node Count", node_count
     ppn = info.native.fetch(:Resource_List, {})[:nodes].to_s.split("ppn=").second || '0'
+    attributes.push Attribute.new "Node List", self.nodes.join(", ") unless self.nodes.blank?
     attributes.push Attribute.new "PPN", ppn
     attributes.push Attribute.new "Total CPUs", ppn.to_i * node_count.to_i
     attributes.push Attribute.new "CPU Time", info.native.fetch(:resources_used, {})[:cput].presence || '0'
@@ -109,6 +110,7 @@ class Jobstatusdata
     attributes.push Attribute.new "State", info.native[:state]
     attributes.push Attribute.new "Reason", info.native[:reason]
     attributes.push Attribute.new "Total Nodes", info.native[:nodes]
+    attributes.push Attribute.new "Node List", self.nodes.join(", ") unless self.nodes.blank?
     attributes.push Attribute.new "Total CPUs", info.native[:cpus]
     attributes.push Attribute.new "Time Limit", info.native[:time_limit]
     attributes.push Attribute.new "Time Used", info.native[:time_used]
@@ -147,6 +149,7 @@ class Jobstatusdata
     attributes.push Attribute.new "Mem", info.native[:mem]
     attributes.push Attribute.new "Swap", info.native[:swap]
     attributes.push Attribute.new "PIDs", info.native[:pids]
+    attributes.push Attribute.new "Node List", self.nodes.join(", ") unless self.nodes.blank?
     attributes.push Attribute.new "Start Time", info.native[:start_time]
     attributes.push Attribute.new "Finish Time", info.native[:finish_time]
 
@@ -177,6 +180,7 @@ class Jobstatusdata
     attributes.push Attribute.new "Walltime Used", self.walltime_used
     node_count = info.native.fetch(:Resource_List, {})[:nodect].to_i
     attributes.push Attribute.new "Node Count", node_count.to_s
+    attributes.push Attribute.new "Node List", self.nodes.join(", ") unless self.nodes.blank?
     total_procs = info.native[:Resource_List][:ncpus].presence || '0'
     attributes.push Attribute.new "Total CPUs", total_procs
     cput = info.native.fetch(:resources_used, {})[:cput].presence || 0
