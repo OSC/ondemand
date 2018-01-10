@@ -53,8 +53,8 @@ chdir APP_ROOT do
   puts "DEFAULT_SSHHOST = #{DEFAULT_SSHHOST || OLD_SSHHOST || "localhost"}"
 
   puts "\n== Installing dependencies =="
+  rm_rf "node_modules"
   sh "npm install"
-  sh "npm prune"
 
   if DEFAULT_SSHHOST && DEFAULT_SSHHOST != OLD_SSHHOST
     puts "\n== Setting default ssh host =="
