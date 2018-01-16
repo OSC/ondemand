@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Fixed crash when editing development app and no SSH key exists for user.
+  [#314](https://github.com/OSC/ood-dashboard/issues/314)
 
 ## [1.21.0] - 2018-01-10
 ### Added
