@@ -2,24 +2,35 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
-
 ### Changed
 - Disable all links during reload process.
 
 ## [2.8.0] - 2018-01-03
 ### Added
-- `OOD_SHOW_JOB_OPTIONS_ACCOUNT_FIELD` env var can be set to a falsy value (i.e. `OOD_SHOW_JOB_OPTIONS_ACCOUNT_FIELD=0`) which allows hiding account field from job options
-- Loads /etc/ood/config/apps/myjobs/env file as dotenv file when in production environment. Can change location of this by setting `OOD_APP_CONFIG_ROOT` in .env.local. This allows moving app specific environment configuration to /etc/, easing installing and updating the dashboard app.
-- /etc/ood/config/apps/myjobs/initializers and /etc/ood/config/apps/myjobs/views now are optional paths to place custom initializer and view and view partial overrides
+- `OOD_SHOW_JOB_OPTIONS_ACCOUNT_FIELD` env var can be set to a falsy value
+  (i.e. `OOD_SHOW_JOB_OPTIONS_ACCOUNT_FIELD=0`) which allows hiding account
+  field from job options.
+- Loads `/etc/ood/config/apps/myjobs/env` file as dotenv file when in
+  production environment. Can change location of this by setting
+  `OOD_APP_CONFIG_ROOT` in `.env.local`. This allows moving app specific
+  environment configuration to `/etc/`, easing installing and updating the
+  dashboard app.
+- `/etc/ood/config/apps/myjobs/initializers` and
+  `/etc/ood/config/apps/myjobs/views` now are optional paths to place custom
+  initializer and view and view partial overrides.
 
 ### Fixed
-- Create directory containing sqlite3 database prior to creating sqlite3 database [#197](https://github.com/OSC/ood-myjobs/issues/197)
+- Create directory containing sqlite3 database prior to creating sqlite3
+  database. [#197](https://github.com/OSC/ood-myjobs/issues/197)
 
 ### Changed
-- Load dotenv files in two passes: .env.local files first, then the rest of the dotenv files. This allows overriding `OOD_APP_CONFIG_ROOT` in .env.local which is useful for testing configuration changes when doing development.
-- Configuration object is now created in config/boot so it can be used in setup scripts and rake tasks that don't load the config/application.
+- Load dotenv files in two passes: `.env.local` files first, then the rest of
+  the dotenv files. This allows overriding `OOD_APP_CONFIG_ROOT` in
+  `.env.local` which is useful for testing configuration changes when doing
+  development.
+- Configuration object is now created in `config/boot.rb` so it can be used in
+  setup scripts and rake tasks that don't load the `config/application.rb`.
 - Removed `therubyracer` gem requirement in favor of node.js.
-
 
 ## [2.7.0] - 2017-11-27
 ### Changed
@@ -28,7 +39,8 @@ All notable changes to this project will be documented in this file.
 
 ## [2.6.2] - 2017-11-17
 ### Fixed
-- Fix bug when copying job from existing. [#245](https://github.com/OSC/ood-myjobs/issues/245)
+- Fix bug when copying job from existing.
+  [#245](https://github.com/OSC/ood-myjobs/issues/245)
 
 ## [2.6.1] - 2017-10-20
 ### Changed
@@ -38,16 +50,17 @@ All notable changes to this project will be documented in this file.
 
 ## [2.6.0] - 2017-09-27
 ### Fixed
-- Joyride help fixed to work with new button dropdwon for creating jobs:
-  https://github.com/OSC/ood-myjobs/issues/236
+- Joyride help fixed to work with new button dropdwon for creating jobs.
+  [#236](https://github.com/OSC/ood-myjobs/issues/236)
 
 ### Changed
-- Rename app to "Job Composer" because "MyJobs" is a confusing name:
-  https://github.com/OSC/ood-myjobs/issues/238
+- Rename app to "Job Composer" because "MyJobs" is a confusing name.
+  [#238](https://github.com/OSC/ood-myjobs/issues/238)
 
 ## [2.5.2] - 2017-09-08
 ### Fixed
-- update dependencies to fix bug with LSF (see https://github.com/OSC/ood_core/pull/50)
+- Update dependencies to fix bug with LSF.
+  [#50](https://github.com/OSC/ood_core/pull/50)
 
 ## [2.5.1] - 2017-09-06
 ### Fixed
