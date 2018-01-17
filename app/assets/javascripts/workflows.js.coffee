@@ -2,16 +2,21 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
+# When the user returns to the page, perform a subtle refresh of the selected information.
 $(window).focus ->
   if active_var()
-    update_display(active_var())
+    request_job_data(active_var())
   return
 
+# This method is called when a user selects a job.
 @update_display = (id) ->
+  disable_all_buttons()
+  update_script_details_panel()
   request_job_data(id)
   update_destroy_button(id)
 
 @request_job_data = (id) ->
+  show_loading_button()
   if id?
     $.ajax
       type: 'GET'
@@ -23,30 +28,34 @@ $(window).focus ->
         console.log jqXHR
       success: (data, textStatus, jqXHR) ->
         show_job_panel()
-        update_status_label(id, data.status_label)
-        update_job_details_panel(data)
-        update_open_dir_button(data.fs_root)
-        update_edit_button(id)
-        update_copy_button(id)
-        update_submit_button(id, data.active)
-        update_stop_button(id, data.active)
-        update_template_button(id)
-        list_folder_contents(data)
-        if missing_data_path()
-          # If the template folder does not exist we need to disable certain buttons.
-          update_open_dir_button()
-          update_terminal_button()
-          update_edit_button()
-          update_submit_button()
-          update_copy_button()
-        if missing_data_cluster()
-          update_submit_button()
+        update_job_panel(id, data)
+      complete: ->
+        hide_loading_button()
   else
     show_job_panel()
-    disable_all_buttons()
+    hide_loading_button()
+
+@update_job_panel = (id, data) ->
+  update_status_label(id, data.status_label)
+  update_job_details_panel(data)
+  update_open_dir_button(data.fs_root)
+  update_edit_button(id)
+  update_copy_button(id)
+  update_submit_button(id, data.active)
+  update_stop_button(id, data.active)
+  update_template_button(id)
+  list_folder_contents(data)
+  if missing_data_path()
+# If the template folder does not exist we need to disable certain buttons.
+    update_open_dir_button()
+    update_terminal_button()
+    update_edit_button()
+    update_submit_button()
+    update_copy_button()
+  if missing_data_cluster()
+    update_submit_button()
 
 @disable_all_buttons = ->
-  update_job_details_panel()
   update_open_dir_button()
   update_edit_button()
   update_terminal_button()
@@ -56,6 +65,12 @@ $(window).focus ->
   update_copy_button()
   update_destroy_button()
   list_folder_contents()
+
+@hide_loading_button = ->
+  $("#loading_button").invisible()
+
+@show_loading_button = ->
+  $("#loading_button").visible()
 
 @show_job_panel = (show) ->
   if show?

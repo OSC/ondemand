@@ -19,6 +19,14 @@
 //= require local_time
 //= require_tree .
 
+jQuery.fn.visible = function() {
+    return this.css('visibility', 'visible');
+};
+
+jQuery.fn.invisible = function() {
+    return this.css('visibility', 'hidden');
+};
+
 var active_var = function() {
     return active_row().attr('id');
 };
@@ -52,6 +60,7 @@ $(document).ready(function(){
 
     if ($('#job-list-table').length) {
         table = $('#job-list-table').DataTable();
+
         if (($('.job-row').length == 0)) {
             update_display();
             start_joyride();
@@ -66,6 +75,7 @@ $(document).ready(function(){
                 table.$('tr.active').removeClass('active');
                 $(this).addClass('active');
             }
+            update_job_details_panel();
             update_display(active_var());
         });
     }

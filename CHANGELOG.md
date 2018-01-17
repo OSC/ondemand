@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+- Disable all links during reload process.
+
 ## [2.8.0] - 2018-01-03
 ### Added
 - `OOD_SHOW_JOB_OPTIONS_ACCOUNT_FIELD` env var can be set to a falsy value (i.e. `OOD_SHOW_JOB_OPTIONS_ACCOUNT_FIELD=0`) which allows hiding account field from job options
