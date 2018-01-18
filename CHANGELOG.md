@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [2.8.1] - 2018-01-18
 ### Fixed
 - Fix invalid buttons by disabling them during data refresh process.
   [#226](https://github.com/OSC/ood-myjobs/issues/226)
@@ -103,7 +105,8 @@ All notable changes to this project will be documented in this file.
 - UI enhancements
 
 
-[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.8.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.8.1...HEAD
+[2.8.1]: https://github.com/OSC/ood-myjobs/compare/v2.8.0...v2.8.1
 [2.8.0]: https://github.com/OSC/ood-myjobs/compare/v2.7.0...v2.8.0
 [2.7.0]: https://github.com/OSC/ood-myjobs/compare/v2.6.2...v2.7.0
 [2.6.2]: https://github.com/OSC/ood-myjobs/compare/v2.6.1...v2.6.2
