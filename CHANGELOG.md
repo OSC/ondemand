@@ -2,8 +2,9 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
-### Changed
-- Disable all links during reload process.
+### Fixed
+- Fix invalid buttons by disabling them during data refresh process.
+  [#226](https://github.com/OSC/ood-myjobs/issues/226)
 
 ## [2.8.0] - 2018-01-03
 ### Added
