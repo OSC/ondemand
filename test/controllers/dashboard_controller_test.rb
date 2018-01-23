@@ -45,7 +45,6 @@ class DashboardControllerTest < ActionController::TestCase
     assert dditems.any?, "dropdown list items not found"
     assert_equal [
       "Home Directory",
-      :divider,
       "/fs/scratch/efranz"], dditems
   end
 

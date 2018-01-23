@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Fixed tests with class name collision.
 - Fixed tests reading global configuration when they shouldn't.
+- Removed missing divider from test.
 
 ## [1.21.1] - 2018-01-18
 ### Fixed
