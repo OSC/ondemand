@@ -30,4 +30,19 @@ class OodAppTest < ActiveSupport::TestCase
       assert ! OodApp.new(PathRouter.new(dir)).passenger_rails_app?, "an app with a Gemfile but not a Gemfile.lock should not be recognized as a rails app"
     }
   end
+
+  test "should set apps with period in directory as invalid" do
+    Dir.mktmpdir "apps" do |dir|
+      dir = Pathname.new(dir)
+
+      app_dir = dir.join("app").tap { |p| p.mkdir }
+      assert OodApp.new(PathRouter.new(app_dir)).valid_dir?
+
+      app_dir = dir.join(".app").tap { |p| p.mkdir }
+      refute OodApp.new(PathRouter.new(app_dir)).valid_dir?
+
+      app_dir = dir.join("app.bak").tap { |p| p.mkdir }
+      refute OodApp.new(PathRouter.new(app_dir)).valid_dir?
+    end
+  end
 end

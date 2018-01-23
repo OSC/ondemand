@@ -14,7 +14,7 @@ class OodApp
   def valid_dir?
     path.directory? &&
     ! self.class::PROTECTED_NAMES.include?(path.basename.to_s) &&
-    ! path.basename.to_s.start_with?(".")
+    ! path.basename.to_s.include?(".")
   end
 
   def initialize(router)

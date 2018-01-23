@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Ignore apps if they have a period in directory name.
+  [#313](https://github.com/OSC/ood-dashboard/issues/313)
+
 ### Fixed
 - Fixed tests with class name collision.
 - Fixed tests reading global configuration when they shouldn't.
