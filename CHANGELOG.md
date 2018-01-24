@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed tests with class name collision.
 - Fixed tests reading global configuration when they shouldn't.
 - Removed missing divider from test.
+- Fixed Developer Documentation link appearing when unset.
+  [#255](https://github.com/OSC/ood-dashboard/issues/255)
 
 ## [1.21.1] - 2018-01-18
 ### Fixed
