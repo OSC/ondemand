@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Changed
+- Updated `ood_core`
+  ([0.2.0 => 0.2.1](https://github.com/OSC/ood_core/blob/master/CHANGELOG.md))
+  which includes a number of bugfixes.
+  [#259](https://github.com/OSC/ood-myjobs/issues/259)
 
 ## [2.8.1] - 2018-01-18
 ### Fixed
