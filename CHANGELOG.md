@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Updated `ood_core`
+  ([0.2.0 => 0.2.1](https://github.com/OSC/ood_core/blob/master/CHANGELOG.md))
+  which includes a number of bugfixes.
+  [#154](https://github.com/OSC/ood-activejobs/issues/154)
 
 ## [1.6.0] - 2018-01-10
 ### Added
