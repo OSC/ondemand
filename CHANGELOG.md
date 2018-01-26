@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
   which includes a number of bugfixes.
   [#259](https://github.com/OSC/ood-myjobs/issues/259)
 
+### Removed
+- Removed `paperclip` gem dependency.
+  [#258](https://github.com/OSC/ood-myjobs/issues/258)
+
 ## [2.8.1] - 2018-01-18
 ### Fixed
 - Fix invalid buttons by disabling them during data refresh process.

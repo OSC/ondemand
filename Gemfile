@@ -51,7 +51,6 @@ gem "bootstrap_form", "~> 2.7.0"
 gem "font-awesome-sass", "~> 4.4.0"
 gem "local_time", "~> 1.0.3"
 gem 'dotenv-rails', '~> 2.0'
-gem "paperclip", "~> 4.2.2"
 gem "jquery-datatables-rails", "~> 3.3.0"
 gem "js-routes", "~> 1.2.4"
 gem "rails_12factor", group: :production
