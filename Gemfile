@@ -39,7 +39,6 @@ end
 # gem 'debugger', group: [:development, :test]
 
 gem 'therubyracer', platforms: :ruby
-gem 'paperclip', '~> 4.2'
 gem 'bootstrap-sass', '3.3'
 gem 'font-awesome-sass', '~> 4.7.0'
 gem 'autoprefixer-rails'

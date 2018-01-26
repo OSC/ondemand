@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   which includes a number of bugfixes.
   [#154](https://github.com/OSC/ood-activejobs/issues/154)
 
+### Removed
+- Removed `paperclip` gem dependency.
+  [#153](https://github.com/OSC/ood-activejobs/issues/153)
+
 ## [1.6.0] - 2018-01-10
 ### Added
 - Added global configuration support.
