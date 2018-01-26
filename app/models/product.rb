@@ -15,6 +15,7 @@ class Product
   validates :git_remote, presence: true, on: :create_from_git_remote
 
   # lint a given app
+  validate :app_is_backup, on: [:show_app, :list_apps]
   validate :manifest_is_valid, on: [:show_app, :list_apps]
 
   validate :gems_are_valid, on: :show_app, if: :passenger_rack_app?
@@ -25,9 +26,13 @@ class Product
     errors.add(:name, "already exists as an app") if !name.empty? && router.path.exist?
   end
 
+  def app_is_backup
+    errors.add(:base, "App is marked as a backup, please remove the <code>.</code> (period) from the directory name to fix this") if app.backup?
+  end
+
   def manifest_is_valid
-    errors.add(:manifest, "is missing, add a title and description to fix this") unless app.manifest.exist?
-    errors.add(:manifest, "is corrupt, please use the edit button or edit the file to fix this") if app.manifest.exist? && !app.manifest.valid?
+    errors.add(:base, "Manifest is missing, add a title and description to fix this") unless app.manifest.exist?
+    errors.add(:base, "Manifest is corrupt, please edit the <code>manifest.yml</code> to fix this") if app.manifest.exist? && !app.manifest.valid?
   end
 
   def gems_are_valid

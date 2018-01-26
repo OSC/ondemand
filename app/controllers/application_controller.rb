@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
   end
 
   def sys_app_groups
-    @sys_app_groups ||= OodAppGroup.groups_for(apps: SysRouter.apps)
+    @sys_app_groups ||= OodAppGroup.groups_for(apps: SysRouter.apps.select(&:valid?))
   end
 
   def set_announcements

@@ -8,14 +8,18 @@ class DevRouter
     @category = "Sandbox Apps"
   end
 
-  def self.apps(owner: OodSupport::Process.user.name, require_manifest: true)
+  # Get array of apps for specified owner
+  #
+  # @param owner [String] username of user to get apps for
+  # @return [Array<OodApp>] all valid apps owner has shared that user has
+  #   access to
+  def self.apps(owner: OodSupport::Process.user.name)
     target = base_path(owner: owner)
     if target.directory? && target.executable? && target.readable?
-      target.children.map { |d|
-        ::OodApp.new(self.new(d.basename, owner))
-      }.select { |d|
-        d.valid_dir? && d.accessible? && (!require_manifest || d.manifest.valid?)
-      }
+      target.children.map { |d| OodApp.new self.new(d.basename, owner) }
+        .select(&:directory?)
+        .select(&:accessible?)
+        .reject(&:hidden?)
     else
       []
     end

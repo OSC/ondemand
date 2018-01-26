@@ -31,18 +31,48 @@ class OodAppTest < ActiveSupport::TestCase
     }
   end
 
-  test "should set apps with period in directory as invalid" do
+  test "app is hidden if directory name begins with a period" do
+    Dir.mktmpdir "apps" do |dir|
+      dir = Pathname.new(dir)
+
+      app_dir = dir.join(".app").tap { |p| p.mkdir }
+      assert OodApp.new(PathRouter.new(app_dir)).hidden?
+    end
+  end
+
+  test "app is not hidden if directory name doesn't begin with a period" do
     Dir.mktmpdir "apps" do |dir|
       dir = Pathname.new(dir)
 
       app_dir = dir.join("app").tap { |p| p.mkdir }
-      assert OodApp.new(PathRouter.new(app_dir)).valid_dir?
+      refute OodApp.new(PathRouter.new(app_dir)).hidden?
+    end
+  end
 
-      app_dir = dir.join(".app").tap { |p| p.mkdir }
-      refute OodApp.new(PathRouter.new(app_dir)).valid_dir?
+  test "app is a backup if directory name has period in it" do
+    Dir.mktmpdir "apps" do |dir|
+      dir = Pathname.new(dir)
 
       app_dir = dir.join("app.bak").tap { |p| p.mkdir }
-      refute OodApp.new(PathRouter.new(app_dir)).valid_dir?
+      assert OodApp.new(PathRouter.new(app_dir)).backup?
+    end
+  end
+
+  test "app is not a backup if directory name begins with a period" do
+    Dir.mktmpdir "apps" do |dir|
+      dir = Pathname.new(dir)
+
+      app_dir = dir.join(".app").tap { |p| p.mkdir }
+      refute OodApp.new(PathRouter.new(app_dir)).backup?
+    end
+  end
+
+  test "app is not a backup if directory name doesn't contain a period" do
+    Dir.mktmpdir "apps" do |dir|
+      dir = Pathname.new(dir)
+
+      app_dir = dir.join("app").tap { |p| p.mkdir }
+      refute OodApp.new(PathRouter.new(app_dir)).backup?
     end
   end
 end

@@ -34,16 +34,15 @@ class UsrRouter
   # Get array of apps for specified owner
   #
   # @param owner [String] username of user to get apps for
-  # @param require_manifest [Boolean] if true, exclude apps that don't have a valid manifest
-  # @return [Array<OodApp] all valid apps owner has shared that user has access to
-  def self.apps(owner: OodSupport::Process.user.name, require_manifest: true)
+  # @return [Array<OodApp>] all valid apps owner has shared that user has
+  #   access to
+  def self.apps(owner: OodSupport::Process.user.name)
     target = base_path(owner: owner)
     if target.directory? && target.executable? && target.readable?
-      target.children.map { |d|
-        ::OodApp.new(self.new(d.basename, owner))
-      }.select { |d|
-        d.valid_dir? && d.accessible? && (!require_manifest || d.manifest.valid?)
-      }
+      target.children.map { |d| OodApp.new self.new(d.basename, owner) }
+        .select(&:directory?)
+        .select(&:accessible?)
+        .reject(&:hidden?)
     else
       []
     end
