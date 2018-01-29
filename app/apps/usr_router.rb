@@ -34,8 +34,7 @@ class UsrRouter
   # Get array of apps for specified owner
   #
   # @param owner [String] username of user to get apps for
-  # @return [Array<OodApp>] all valid apps owner has shared that user has
-  #   access to
+  # @return [Array<OodApp>] all apps owner has shared that user has access to
   def self.apps(owner: OodSupport::Process.user.name)
     target = base_path(owner: owner)
     if target.directory? && target.executable? && target.readable?

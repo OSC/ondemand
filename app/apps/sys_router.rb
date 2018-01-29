@@ -6,7 +6,7 @@ class SysRouter
 
   # Get array of apps
   #
-  # @return [Array<OodApp>] all apps
+  # @return [Array<OodApp>] all system apps
   def self.apps
     target = base_path
     if target.directory? && target.executable? && target.readable?
