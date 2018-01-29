@@ -9,11 +9,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Ignore apps if they have a period in directory name.
   [#313](https://github.com/OSC/ood-dashboard/issues/313)
+- Updated `ood_core`
+  ([0.2.0 => 0.2.1](https://github.com/OSC/ood_core/blob/master/CHANGELOG.md))
+  which includes a number of bugfixes.
 
 ### Fixed
 - Fixed tests with class name collision.
 - Fixed tests reading global configuration when they shouldn't.
 - Removed missing divider from test.
+- Fixed Developer Documentation link appearing when unset.
+  [#255](https://github.com/OSC/ood-dashboard/issues/255)
 
 ## [1.21.1] - 2018-01-18
 ### Fixed

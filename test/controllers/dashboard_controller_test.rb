@@ -92,4 +92,11 @@ class DashboardControllerTest < ActionController::TestCase
 
     SysRouter.unstub(:base_path)
   end
+
+  test "should not create any empty links" do
+    get :index
+
+    assert_response :success
+    assert_select "a[href='']", count: 0
+  end
 end
