@@ -4,21 +4,17 @@ class SysRouter
   #TODO: consider making SysRouter a subclass of
   # OodAppkit::Url
 
-  # TODO: consider memoizing this for the duration of the request
-  # one way would be to instantiate a new SysRouter and then use that same
-  # instance
-  def self.app_exists?(name)
-    OodApp.new(SysRouter.new(name)).valid_dir?
-  end
-
-  def self.apps(require_manifest: true)
+  # Get array of apps
+  #
+  # @return [Array<OodApp>] all system apps
+  def self.apps
     target = base_path
     if target.directory? && target.executable? && target.readable?
-      base_path.children.map { |d|
-        ::OodApp.new(self.new(d.basename))
-      }.select { |d|
-        d.valid_dir? && d.accessible? && (!require_manifest || d.manifest.valid?)
-      }
+      target.children.map { |d| OodApp.new self.new(d.basename) }
+        .select(&:directory?)
+        .select(&:accessible?)
+        .reject(&:hidden?)
+        .reject(&:backup?)
     else
       []
     end

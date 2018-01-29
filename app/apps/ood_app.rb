@@ -2,8 +2,6 @@ class OodApp
   attr_reader :router
   delegate :owner, :caption, :type, :path, :name, :token, to: :router
 
-  PROTECTED_NAMES = ["shared_apps", "cgi-bin", "tmp"]
-
   Link = Struct.new(:title, :url, :icon)
 
   def accessible?
@@ -11,10 +9,20 @@ class OodApp
   end
   alias_method :rx?, :accessible?
 
-  def valid_dir?
-    path.directory? &&
-    ! self.class::PROTECTED_NAMES.include?(path.basename.to_s) &&
-    ! path.basename.to_s.start_with?(".")
+  def directory?
+    path.directory?
+  end
+
+  def hidden?
+    path.basename.to_s.start_with?(".")
+  end
+
+  def backup?
+    !hidden? && path.basename.to_s.include?(".")
+  end
+
+  def manifest?
+    manifest.valid?
   end
 
   def initialize(router)

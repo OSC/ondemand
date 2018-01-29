@@ -16,9 +16,11 @@
       <%= manifest_markdown(product.description) %>
     </p>
     <% unless product.valid?(:list_apps) %>
-    <div class="alert alert-danger">
-      <p>Manifest <%= product.errors[:manifest].first %></p>
-    </div>
+      <% product.errors.full_messages.each do |msg| %>
+        <div class="alert alert-danger">
+          <p><%= msg.html_safe %></p>
+        </div>
+      <% end %>
     <% end %>
   </td>
   <td>

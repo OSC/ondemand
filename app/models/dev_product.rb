@@ -1,7 +1,7 @@
 class DevProduct < Product
   class << self
     def all
-      router.apps(require_manifest: false).map {|a| new(name: a.name, found: true)}
+      router.apps.map {|a| new(name: a.name, found: true)}
     end
 
     def find(name)

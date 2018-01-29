@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Changed
+- Ignore apps if they have a period in directory name.
+  [#313](https://github.com/OSC/ood-dashboard/issues/313)
 - Updated `ood_core`
   ([0.2.0 => 0.2.1](https://github.com/OSC/ood_core/blob/master/CHANGELOG.md))
   which includes a number of bugfixes.
-  [#322](https://github.com/OSC/ood-dashboard/issues/322)
 
 ### Fixed
 - Fixed tests with class name collision.
