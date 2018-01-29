@@ -10,6 +10,10 @@ class Product
   attr_accessor :git_remote
 
   validates :name, presence: true
+  validates :name, format: {
+    with: /\A[\w-]+\z/,
+    message: "can only contain letters, digits, dash and underscore"
+  }
 
   validate :app_does_not_exist, on: [:create_from_git_remote]
   validates :git_remote, presence: true, on: :create_from_git_remote
