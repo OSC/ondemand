@@ -20,6 +20,7 @@ class DevRouter
         .select(&:directory?)
         .select(&:accessible?)
         .reject(&:hidden?)
+        .reject(&:backup?)
     else
       []
     end

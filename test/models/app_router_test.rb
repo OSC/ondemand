@@ -14,7 +14,7 @@ class AppRouterTest < ActiveSupport::TestCase
     dir.rmtree()
   end
 
-  test "SysRouter.apps should only hide apps that are hidden directories" do
+  test "SysRouter.apps should hide apps that have periods in directory name" do
     Dir.mktmpdir "apps" do |dir|
       dir = Pathname.new(dir)
       [
@@ -27,11 +27,11 @@ class AppRouterTest < ActiveSupport::TestCase
       SysRouter.stubs(:base_path).returns(dir)
 
       apps = SysRouter.apps.map(&:name).sort
-      assert_equal ["app1", "app-3", "app.4"].sort, apps
+      assert_equal ["app1", "app-3"].sort, apps
     end
   end
 
-  test "UsrRouter.apps should only hide apps that are hidden directories" do
+  test "UsrRouter.apps should hide apps that have periods in directory name" do
     Dir.mktmpdir "apps" do |dir|
       dir = Pathname.new(dir)
       [
@@ -44,11 +44,11 @@ class AppRouterTest < ActiveSupport::TestCase
       UsrRouter.stubs(:base_path).returns(dir)
 
       apps = UsrRouter.apps.map(&:name).sort
-      assert_equal ["app1", "app-3", "app.4"].sort, apps
+      assert_equal ["app1", "app-3"].sort, apps
     end
   end
 
-  test "DevRouter.apps should only hide apps that are hidden directories" do
+  test "DevRouter.apps should only apps that have periods in directory name" do
     Dir.mktmpdir "apps" do |dir|
       dir = Pathname.new(dir)
       [
@@ -61,7 +61,7 @@ class AppRouterTest < ActiveSupport::TestCase
       DevRouter.stubs(:base_path).returns(dir)
 
       apps = DevRouter.apps.map(&:name).sort
-      assert_equal ["app1", "app-3", "app.4"].sort, apps
+      assert_equal ["app1", "app-3"].sort, apps
     end
   end
 end

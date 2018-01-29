@@ -43,6 +43,7 @@ class UsrRouter
         .select(&:directory?)
         .select(&:accessible?)
         .reject(&:hidden?)
+        .reject(&:backup?)
     else
       []
     end

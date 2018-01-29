@@ -25,10 +25,6 @@ class OodApp
     manifest.valid?
   end
 
-  def valid?
-    !backup? && manifest?
-  end
-
   def initialize(router)
     @router = router
   end
