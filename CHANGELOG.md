@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [2.8.2] - 2018-01-29
 ### Changed
 - Updated `ood_core`
   ([0.2.0 => 0.2.1](https://github.com/OSC/ood_core/blob/master/CHANGELOG.md))
@@ -114,7 +116,8 @@ All notable changes to this project will be documented in this file.
 - UI enhancements
 
 
-[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.8.1...HEAD
+[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.8.2...HEAD
+[2.8.2]: https://github.com/OSC/ood-myjobs/compare/v2.8.1...v2.8.2
 [2.8.1]: https://github.com/OSC/ood-myjobs/compare/v2.8.0...v2.8.1
 [2.8.0]: https://github.com/OSC/ood-myjobs/compare/v2.7.0...v2.8.0
 [2.7.0]: https://github.com/OSC/ood-myjobs/compare/v2.6.2...v2.7.0
