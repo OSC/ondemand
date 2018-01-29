@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.21.2] - 2018-01-29
 ### Changed
 - Ignore apps if they have a period in directory name.
   [#313](https://github.com/OSC/ood-dashboard/issues/313)
@@ -272,7 +274,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.21.1...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.21.2...HEAD
+[1.21.2]: https://github.com/OSC/ood-dashboard/compare/v1.21.1...v1.21.2
 [1.21.1]: https://github.com/OSC/ood-dashboard/compare/v1.21.0...v1.21.1
 [1.21.0]: https://github.com/OSC/ood-dashboard/compare/v1.20.0...v1.21.0
 [1.20.0]: https://github.com/OSC/ood-dashboard/compare/v1.19.0...v1.20.0
