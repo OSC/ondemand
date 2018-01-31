@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added a commented warning about editing the Apache config directly in the ERB
+  template. [#11](https://github.com/OSC/ood-portal-generator/issues/11)
+- Added the executable `bin/generate` for easier generation of Apache configs.
+
+### Changed
+- Changed location of default YAML configuration file to the well-defined
+  global location `/etc/ood/config/ood-portal.yml`.
+  [#11](https://github.com/OSC/ood-portal-generator/issues/11)
+- Refactored code out of `Rakefile` into a separate library for code re-use.
 
 ## [0.4.0] - 2017-07-25
 ### Added
