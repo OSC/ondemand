@@ -22,7 +22,7 @@ module BatchConnect::SessionContextsHelper
       resolution_field(form, attrib.id, **kwargs)
     when "check_box"
       form.form_group attrib.id, help: kwargs[:help] do
-        form.check_box attrib.id, label: kwargs[:label], checked: attrib.opts.fetch(:checked, false)
+        form.check_box attrib.id, label: kwargs[:label]
       end
     else
       kwargs[:pattern] = attrib.opts.fetch(:pattern, nil) # text, date, search, url ,tel, email, and password
