@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added the executable `bin/generate` for easier generation of Apache configs.
 
 ### Changed
+- Updated information in `LICENSE.txt`.
 - Changed location of default YAML configuration file to the well-defined
   global location `/etc/ood/config/ood-portal.yml`.
   [#11](https://github.com/OSC/ood-portal-generator/issues/11)
