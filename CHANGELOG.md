@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.21.3] - 2018-02-01
 ### Changed
 - Made system call logging more human-friendly.
   [#328](https://github.com/OSC/ood-dashboard/issues/328)
@@ -283,7 +285,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.21.2...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.21.3...HEAD
+[1.21.3]: https://github.com/OSC/ood-dashboard/compare/v1.21.2...v1.21.3
 [1.21.2]: https://github.com/OSC/ood-dashboard/compare/v1.21.1...v1.21.2
 [1.21.1]: https://github.com/OSC/ood-dashboard/compare/v1.21.0...v1.21.1
 [1.21.0]: https://github.com/OSC/ood-dashboard/compare/v1.20.0...v1.21.0
