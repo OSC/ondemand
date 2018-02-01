@@ -404,7 +404,8 @@ module BatchConnect
       hsh = {
         id: id,
         status: status.to_sym,
-        connect: running? ? connect.to_h : nil
+        connect: running? ? connect.to_h : nil,
+        time: info.wallclock_time.to_i / 60     # only update every minute
       }
       Digest::MD5.hexdigest(hsh.to_json)
     end

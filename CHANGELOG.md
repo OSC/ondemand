@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - (Batch Connect) Set check box empty by default or populate it from cache.
   [#315](https://github.com/OSC/ood-dashboard/issues/315)
+- (Batch Connect) Update panel when the time left changes.
+  [#319](https://github.com/OSC/ood-dashboard/issues/319)
 
 ## [1.21.2] - 2018-01-29
 ### Changed
