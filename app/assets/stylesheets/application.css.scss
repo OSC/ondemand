@@ -36,6 +36,15 @@
      color: #ddd;
 }
 
+// Add colors
+$ood-white: rgb(255, 255, 255);
+$ood-red: rgb(200, 16, 46);
+$ood-burgundy: rgb(120, 47, 64);
+$ood-light-gray: rgb(151, 153, 155);
+$ood-gray: rgb(83, 86, 90);
+$ood-black: rgb(45, 51, 38);
+$ood-blue: rgb(0, 95, 133);
+
 
 // Load up bootstrap/font-awesome style sheet
 @import "bootstrap";
@@ -69,6 +78,14 @@ pre.motd-monospaced {
   font-size: 14px;
   border: none;
   white-space: pre-wrap;
+}
+
+// Add branded panels
+.panel-ood-blue {
+  @include panel-variant($ood-blue, $ood-white, $ood-blue, $ood-blue);
+}
+.panel-ood-burgundy {
+  @include panel-variant($ood-burgundy, $ood-white, $ood-burgundy, $ood-burgundy);
 }
 
 // Your custom css styles below (must be manually added)

@@ -36,7 +36,17 @@
 
 <div class="row">
   <div class="col-md-3">
-    <%= render partial: 'batch_connect/sessions/app_list', collection: @apps, locals: { current_app_token: @app.base_token } %>
+    <%=
+      render(
+        partial: "batch_connect/shared/app_menu",
+        locals: {
+          sys_app_groups: @sys_app_groups,
+          usr_app_groups: @usr_app_groups,
+          dev_app_groups: @dev_app_groups,
+          current_url: new_batch_connect_session_context_path(token: @app.token)
+        }
+      )
+    %>
   </div>
 
   <div class="col-md-6">

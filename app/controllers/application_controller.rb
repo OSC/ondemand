@@ -14,8 +14,32 @@ class ApplicationController < ActionController::Base
     @nav_groups = OodAppGroup.select(titles: NavConfig.categories, groups: sys_app_groups)
   end
 
+  def sys_apps
+    @sys_apps ||= SysRouter.apps
+  end
+
+  def dev_apps
+    @dev_apps ||= ::Configuration.app_development_enabled? ? DevRouter.apps : []
+  end
+
+  def usr_apps
+    @usr_apps ||= ::Configuration.app_sharing_enabled? ? UsrRouter.all_apps(owners: UsrRouter.owners) : []
+  end
+
+  def nav_sys_apps
+    sys_apps.select(&:manifest?).reject(&:invalid_batch_connect_app?)
+  end
+
+  def nav_dev_apps
+    dev_apps.select(&:manifest?).reject(&:invalid_batch_connect_app?)
+  end
+
+  def nav_usr_apps
+    usr_apps.select(&:manifest?).reject(&:invalid_batch_connect_app?)
+  end
+
   def sys_app_groups
-    @sys_app_groups ||= OodAppGroup.groups_for(apps: SysRouter.apps.select(&:manifest?))
+    OodAppGroup.groups_for(apps: nav_sys_apps)
   end
 
   def set_announcements

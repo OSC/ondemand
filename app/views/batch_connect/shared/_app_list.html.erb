@@ -1,0 +1,31 @@
+<div class="panel panel-<%= local_assigns.fetch(:style, "default") %>">
+  <div class="panel-heading"><%= title %></div>
+  <div class="list-group">
+
+  <%-
+    OodAppGroup.groups_for(
+      apps: apps,
+      group_by: local_assigns.fetch(:group_by, :subcategory)
+    ).each do |app_group|
+  -%>
+    <%=
+      content_tag(
+        "p",
+        app_group.title,
+        class: "list-group-item header"
+      ) unless app_group.title.empty?
+    %>
+    <%=
+      render(
+        partial: "batch_connect/shared/app_list_item",
+        collection: app_group.apps,
+        as: :app,
+        locals: {
+          show_owner: local_assigns.fetch(:show_owner, false),
+          current_url: local_assigns[:current_url]
+        }
+      )
+    %>
+  <%- end -%>
+  </div>
+</div>

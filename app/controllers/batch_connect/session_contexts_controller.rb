@@ -1,10 +1,11 @@
 class BatchConnect::SessionContextsController < ApplicationController
+  include BatchConnectConcern
+
   # GET /batch_connect/<app_token>/session_contexts/new
   def new
     set_app
     set_render_format
     set_session_context
-    set_apps
 
     if @app.valid?
       # Read in context from cache file
@@ -13,6 +14,8 @@ class BatchConnect::SessionContextsController < ApplicationController
       @session_context = nil  # do not display session context form
       flash.now[:alert] = @app.validation_reason
     end
+
+    set_app_groups
   end
 
   # POST /batch_connect/<app_token>/session_contexts
@@ -21,7 +24,6 @@ class BatchConnect::SessionContextsController < ApplicationController
     set_app
     set_render_format
     set_session_context
-    set_apps
 
     # Read in context from form parameters
     @session_context.attributes = session_contexts_param
@@ -33,7 +35,10 @@ class BatchConnect::SessionContextsController < ApplicationController
         format.html { redirect_to batch_connect_sessions_url, notice: 'Session was successfully created.' }
         format.json { head :no_content }
       else
-        format.html { render :new }
+        format.html do
+          set_app_groups
+          render :new
+        end
         format.json { render json: @session_context.errors, status: :unprocessable_entity }
       end
     end
@@ -46,9 +51,10 @@ class BatchConnect::SessionContextsController < ApplicationController
     end
 
     # Set list of app lists for navigation
-    def set_apps
-      # get lists of apps
-      @apps = sys_app_groups.select(&:has_batch_connect_apps?)
+    def set_app_groups
+      @sys_app_groups = bc_sys_app_groups
+      @usr_app_groups = bc_usr_app_groups
+      @dev_app_groups = bc_dev_app_groups
     end
 
     # Set the session context from the app

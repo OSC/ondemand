@@ -24,7 +24,26 @@
     <% end %>
   </td>
   <td>
-    <%= link_to "Launch #{product.title}", app_path(product.app.name, product.app.type, product.app.owner), target: '_blank', class: 'btn btn-primary' %>
+    <div class="btn-group-vertical btn-block">
+      <%- product.app.links.each do |link| -%>
+        <%=
+          link_to(
+            "Launch #{link.title}",
+            link.url.to_s,
+            class: "btn btn-primary",
+            data: {
+              toggle: "popover",
+              content: manifest_markdown(link.description),
+              html: true,
+              trigger: "hover",
+              title: link.title,
+              container: "body",
+            },
+            target: link.new_tab? ? "_blank" : nil
+          )
+        %>
+      <%- end -%>
+    </div>
   </td>
   <td data-order="<%= modified_time.to_i %>"><%= modified_time.strftime("%m/%d/%y") %></td>
   <td>
