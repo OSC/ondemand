@@ -1,7 +1,9 @@
 <div class="row">
   <div class="col-md-9">
+    <% if @nav_groups.any? %>
     <p class="lead">Cluster access applications are available from the dropdown menus in the navbar above.
     <br>Custom shared apps are available below.</p>
+    <% end %>
     <%= render partial: "catalog_link" %>
   </div>
 </div>

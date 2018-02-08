@@ -55,4 +55,13 @@ module ApplicationHelper
       fa_icon(icon)
     end
   end
+
+  def icon_tag(icon_uri)
+    case icon_uri.scheme
+    when "fa"
+      fa_icon(icon_uri.host)
+    else
+      image_tag icon_uri.to_s, class: "app-icon", title: icon_uri.to_s
+    end
+  end
 end

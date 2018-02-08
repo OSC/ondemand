@@ -1,17 +1,11 @@
 class BatchConnect::SessionsController < ApplicationController
+  include BatchConnectConcern
+
   # GET /batch_connect/sessions
   # GET /batch_connect/sessions.json
   def index
     @sessions = BatchConnect::Session.all
-
-    # TODO: to correctly do shared apps we should
-    #   1. get a list of all batch connect apps, both shared and sys, and then split into groups
-    #   2. for shared apps, display the caption below the shared app (i.e. shared by xyz) in the view
-    #
-    #   UsrRouter.all_apps(owners: UsrRouter.owners) gives all usr apps for all owners
-    #
-    # TODO: dev apps can be grouped separately
-    @apps = sys_app_groups.select(&:has_batch_connect_apps?)
+    set_app_groups
   end
 
   # DELETE /batch_connect/sessions/1
@@ -36,5 +30,12 @@ class BatchConnect::SessionsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_session
       @session = BatchConnect::Session.find(params[:id])
+    end
+
+    # Set list of app lists for navigation
+    def set_app_groups
+      @sys_app_groups = bc_sys_app_groups
+      @usr_app_groups = bc_usr_app_groups
+      @dev_app_groups = bc_dev_app_groups
     end
 end

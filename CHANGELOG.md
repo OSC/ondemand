@@ -6,7 +6,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- (Batch Connect) Added Shared/Sandbox apps to left-hand navigation menu.
+  [#317](https://github.com/OSC/ood-dashboard/issues/317),
+  [#173](https://github.com/OSC/ood-dashboard/issues/173)
+- Added support to launch "sub-apps" from Developer Dashboard.
+  [#261](https://github.com/OSC/ood-dashboard/issues/261)
+
+### Changed
+- (Batch Connect) Interactive Apps open in same tab from all navigation menus.
+  [#318](https://github.com/OSC/ood-dashboard/issues/318)
+
 ### Fixed
+- (Batch Connect) Hide empty sub-categories in top navbar due to invalid
+  Interactive Apps. [#259](https://github.com/OSC/ood-dashboard/issues/259)
 - (Batch Connect) Fixed error message displayed when Interactive App directory
   does not exist. [#335](https://github.com/OSC/ood-dashboard/issues/335)
 
