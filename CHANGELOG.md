@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - (Batch Connect) Hide empty sub-categories in top navbar due to invalid
   Interactive Apps. [#259](https://github.com/OSC/ood-dashboard/issues/259)
+- (Batch Connect) Fixed error message displayed when Interactive App directory
+  does not exist. [#335](https://github.com/OSC/ood-dashboard/issues/335)
 
 ## [1.21.3] - 2018-02-01
 ### Changed

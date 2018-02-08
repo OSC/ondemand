@@ -228,6 +228,7 @@ module BatchConnect
       def form_config(binding: nil)
         return @form_config if @form_config
 
+        raise AppNotFound, "This app does not exist under the directory '#{root}'" unless root.directory?
         file = form_file(root: root)
         raise AppNotFound, "This app does not supply a form file under the directory '#{root}'" unless file
         hsh = read_yaml_erb(path: file, binding: binding)
