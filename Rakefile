@@ -26,7 +26,7 @@ task :install => [:required_files] do
 end
 
 # Dynamically generate tasks for copying required files
-FileList['sbin/nginx_stage', 'bin/*', 'share/*', 'templates/*.erb', 'lib/**/*.rb'].each do |source|
+FileList['sbin/*', 'bin/*', 'share/*', 'templates/*.erb', 'lib/**/*.rb'].each do |source|
   target = "#{PREFIX}/#{source}"
   file target => [source] do
     mkdir_p File.dirname(target) unless File.directory? File.dirname(target)
