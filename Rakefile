@@ -36,16 +36,6 @@ end
 
 task :default => :build
 
-FileList["bin/**/*"].each do |source|
-  next if File.directory?(source)
-  target = BUILD_ROOT.join(source)
-  file target => source do
-    mkdir_p target.dirname unless target.dirname.directory?
-    cp source, target, preserve: true
-  end
-  task :required_files => target
-end
-
 all_components.each do |c|
   file c.build_root => CONFIG_FILE do
     rm_rf c.build_root if c.build_root.directory?
@@ -59,7 +49,7 @@ all_components.each do |c|
 end
 
 desc "Build OnDemand"
-task :build => all_components.map(&:build_root).push(:required_files)
+task :build => all_components.map(&:build_root)
 
 directory INSTALL_ROOT.to_s
 
