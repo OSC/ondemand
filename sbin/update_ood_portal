@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-DIR="$(dirname "$(readlink -f "${0}")")"
+ROOT="$(dirname "$(readlink -f "${0}")")"
 
 CONFIG="${CONFIG:-/etc/ood/config/ood_portal.yml}"
 APACHE="${APACHE:-/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf}"
-BIN="${BIN:-${DIR}/../bin/generate}"
+BIN="${BIN:-${ROOT}/../bin/generate}"
 
 set -e
 
