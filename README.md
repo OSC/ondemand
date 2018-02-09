@@ -6,9 +6,9 @@
 
 **Work in Progress**
 
-Please see the [Open OnDemand
-Documentation](https://osc.github.io/ood-documentation/master/) for
-installation instructions.
+Please see the [Open OnDemand Documentation] for installation instructions.
+
+[Open OnDemand Documentation]: https://osc.github.io/ood-documentation/master/
 
 ## Contributing
 
@@ -17,5 +17,6 @@ https://github.com/OSC/ondemand.
 
 ## License
 
-The gem is available as open source under the terms of the [MIT
-License](http://opensource.org/licenses/MIT).
+The code is available as open source under the terms of the [MIT License].
+
+[MIT License]: http://opensource.org/licenses/MIT
