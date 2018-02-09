@@ -16,7 +16,7 @@ yum install -y \
   git19
 
 # Setup environment
-source scl_source enable rh-ruby22 nodejs010 git19
+source scl_source enable rh-ruby22 nodejs010 git19 || :
 
 # Build and install
 rake && rake install
