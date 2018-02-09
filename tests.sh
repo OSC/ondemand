@@ -19,4 +19,4 @@ yum install -y \
 source scl_source enable rh-ruby22 nodejs010 git19 || :
 
 # Build and install
-rake && rake install
+rake -mj ${NUM_TASKS:-$(nproc)} && rake install
