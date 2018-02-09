@@ -1,0 +1,28 @@
+sudo: required
+
+env:
+  - OS_TYPE=centos OS_VERSION=6
+  - OS_TYPE=centos OS_VERSION=7
+
+services:
+  - docker
+
+before_install:
+  - docker pull ${OS_TYPE}:${OS_VERSION}
+
+script:
+  - |
+    docker run \
+      --rm \
+      -it \
+      -e "OS_TYPE" \
+      -e "OS_VERSION" \
+      -v "${PWD}:/data" \
+      -w "/data" \
+      ${OS_TYPE}:${OS_VERSION} \
+      ./tests.sh
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always
