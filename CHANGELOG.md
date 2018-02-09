@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added helpful utility for performing the necessary operations when updating
   NGINX configs.
 
+### Changed
+- Updated date in `LICENSE.txt`.
+
 ## [0.3.2] - 2017-12-07
 ### Changed
 - Combined the Ruby wrapper script with the `nginx_stage` executable script.
