@@ -88,6 +88,19 @@ pre.motd-monospaced {
   @include panel-variant($ood-burgundy, $ood-white, $ood-burgundy, $ood-burgundy);
 }
 
+//
+@media screen and (max-width: 1210px) {
+  #interactive-sessions-nav-text {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 997px) {
+  #develop-nav-text, #help-nav-text {
+    display: none;
+  }
+}
+
 // Your custom css styles below (must be manually added)
 @import "dashboard";
 @import "navbar";
