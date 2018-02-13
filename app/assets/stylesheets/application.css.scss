@@ -88,17 +88,12 @@ pre.motd-monospaced {
   @include panel-variant($ood-burgundy, $ood-white, $ood-burgundy, $ood-burgundy);
 }
 
-//
-@media screen and (max-width: 1210px) {
-  #interactive-sessions-nav-text {
-    display: none;
-  }
+@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max + 125) {
+  @include responsive-invisibility('.hidden-sm-nav');
 }
 
-@media screen and (max-width: 997px) {
-  #develop-nav-text, #help-nav-text {
-    display: none;
-  }
+@media (min-width: $screen-md-min) and (max-width: $screen-md-max + 130) {
+  @include responsive-invisibility('.hidden-md-nav');
 }
 
 // Your custom css styles below (must be manually added)
