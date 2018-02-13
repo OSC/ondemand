@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added more verbose logging feature.
   [#12](https://github.com/OSC/mod_ood_proxy/issues/12)
 
+### Changed
+- Updated date in `LICENSE.txt`.
+
 ## [0.3.1] - 2017-07-25
 ### Fixed
 - Fixed link to documentation in `README.md`.
