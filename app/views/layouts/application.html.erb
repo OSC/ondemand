@@ -34,7 +34,13 @@
               </a>
             </li>
           <% end %>
-          <%= nav_link("All Apps", "th", apps_index_path) if Configuration.show_all_apps_link? %>
+          <% if Configuration.show_all_apps_link? %>
+            <li>
+              <a target="_self" href="<%= apps_index_path %>">
+                <i class="fa fa-th"></i><span class="hidden-sm hidden-md hidden-md-nav"> All Apps</span>
+              </a>
+            </li>
+          <% end %>
         </ul>
         <div class="navbar-right">
           <ul class="nav navbar-nav">
