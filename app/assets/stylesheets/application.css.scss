@@ -92,7 +92,7 @@ pre.motd-monospaced {
   @include responsive-invisibility('.hidden-sm-nav');
 }
 
-@media (min-width: $screen-md-min) and (max-width: $screen-md-max + 130) {
+@media (min-width: $screen-md-min) and (max-width: $screen-md-max + 135) {
   @include responsive-invisibility('.hidden-md-nav');
 }
 
