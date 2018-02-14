@@ -15,7 +15,7 @@ module OodPortalGenerator
       @port             = opts.fetch(:port, @ssl ? "443" : "80")
       @logroot          = opts.fetch(:logroot, "logs")
       @lua_root         = opts.fetch(:lua_root, "/opt/ood/mod_ood_proxy/lib")
-      @lua_log_level    = opts.fetch(:lua_log_level, nil)
+      @lua_log_level    = opts.fetch(:lua_log_level, "info")
       @user_map_cmd     = opts.fetch(:user_map_cmd, "/opt/ood/ood_auth_map/bin/ood_auth_map.regex")
       @user_env         = opts.fetch(:user_env, nil)
       @map_fail_uri     = opts.fetch(:map_fail_uri, nil)

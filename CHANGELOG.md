@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added the verbose Lua log handler `logger` for metrics gathering.
+
+### Changed
+- Set default log level to `info` to enable verbose logging.
 
 ## [0.6.0] - 2018-02-09
 ### Added

@@ -44,9 +44,9 @@
 # Verbosity of the Lua module logging
 # (see https://httpd.apache.org/docs/2.4/mod/core.html#loglevel)
 # Example:
-#     lua_log_level: 'info'
-# Default: null (use default log level)
-#lua_log_level: null
+#     lua_log_level: 'warn'
+# Default: 'info' (get verbose logs)
+#lua_log_level: 'info'
 
 # System command used to map authenticated-user to system-user
 # Example:

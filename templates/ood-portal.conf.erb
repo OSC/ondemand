@@ -83,9 +83,10 @@ Listen <%= addr_port %>
   <%- if @lua_root -%>
   LuaRoot "<%= @lua_root %>"
   <%- end -%>
-  <%- if @lua_log_level -%>
   LogLevel lua_module:<%= @lua_log_level %>
-  <%- end -%>
+
+  # Log authenticated user requests (requires min log level: info)
+  LuaHookLog logger.lua logger
 
   # Authenticated-user to system-user mapping configuration
   #
