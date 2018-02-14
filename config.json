@@ -2,12 +2,12 @@
   {
     "name": "ood-portal-generator",
     "url": "https://github.com/OSC/ood-portal-generator",
-    "tag": "v0.6.0"
+    "tag": "v0.7.0"
   },
   {
     "name": "mod_ood_proxy",
     "url": "https://github.com/OSC/mod_ood_proxy",
-    "tag": "v0.3.1"
+    "tag": "v0.4.0"
   },
   {
     "name": "ood_auth_map",
