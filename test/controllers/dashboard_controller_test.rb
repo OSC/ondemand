@@ -77,7 +77,7 @@ class DashboardControllerTest < ActionController::TestCase
     dditems = dropdown_list_items(dd)
     assert dditems.any?, "dropdown list items not found"
     assert_equal [
-      "Interactive Sessions",
+      "My Interactive Sessions",
       :divider,
       {header: "Apps"},
       "Jupyter Notebook",
