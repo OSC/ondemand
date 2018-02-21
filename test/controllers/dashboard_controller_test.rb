@@ -77,8 +77,6 @@ class DashboardControllerTest < ActionController::TestCase
     dditems = dropdown_list_items(dd)
     assert dditems.any?, "dropdown list items not found"
     assert_equal [
-      "My Interactive Sessions",
-      :divider,
       {header: "Apps"},
       "Jupyter Notebook",
       "Paraview",
@@ -89,6 +87,32 @@ class DashboardControllerTest < ActionController::TestCase
     assert_select dd, "li a", "Oakley Desktop" do |link|
       assert_equal "/batch_connect/sys/bc_desktop/oakley/session_contexts/new", link.first['href'], "Desktops link is incorrect"
     end
+
+    SysRouter.unstub(:base_path)
+  end
+
+  test "should create My Interactive Apps link" do
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_interactive_apps"))
+
+    get :index
+    assert_select "li[title='My Interactive Sessions'] a", "My Interactive Sessions"
+
+    # assert_select doesn't have a refute_select, so the best we can do is a
+    # css_select on the title - since we can't do contains - and assert above
+    # that the link has both title and text set to the same thing.
+    #
+    # Then for our refutation test we can just assert an item with the title
+    # does not exist.
+    assert css_select("li[title='My Interactive Sessions']").any?
+
+    SysRouter.unstub(:base_path)
+  end
+
+  test "should not create My Interactive Apps link" do
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys"))
+
+    get :index
+    assert css_select("li[title='My Interactive Sessions']").empty?
 
     SysRouter.unstub(:base_path)
   end
