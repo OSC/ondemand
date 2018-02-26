@@ -19,6 +19,9 @@ if ! cmp -s <(echo "${NEW_APACHE}") "${APACHE}"; then
   fi
   echo "Generating new Apache config at: '${APACHE}'"
   echo "${NEW_APACHE}" > "${APACHE}"
+else
+  echo "No change in Apache config."
+  exit 1
 fi
 
 echo "Completed successfully!"
