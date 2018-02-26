@@ -145,7 +145,7 @@ module BatchConnect::SessionsHelper
   end
 
   def novnc_link(connect, view_only: false)
-    version  = "edb7879"
+    version  = "1.0.0"
     password = view_only ? connect.spassword : connect.password
     resize   = view_only ? "downscale" : "remote"
     asset_path("noVNC-#{version}/vnc.html?autoconnect=true&password=#{password}&path=rnode/#{connect.host}/#{connect.websocket}/websockify&resize=#{resize}", skip_pipeline: true)
