@@ -60,7 +60,6 @@ class DashboardControllerTest < ActionController::TestCase
     assert_equal [
       "Oakley Shell Access",
       "Owens Shell Access",
-      "Ruby Shell Access",
       "System Status"], dditems
 
     assert_select dd, "li a", "System Status" do |link|
@@ -91,28 +90,34 @@ class DashboardControllerTest < ActionController::TestCase
     SysRouter.unstub(:base_path)
   end
 
-  test "should create My Interactive Apps link" do
+  test "should create My Interactive Apps link if Interactive Apps exist" do
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_interactive_apps"))
 
     get :index
-    assert_select "li[title='My Interactive Sessions'] a", "My Interactive Sessions"
-
-    # assert_select doesn't have a refute_select, so the best we can do is a
-    # css_select on the title - since we can't do contains - and assert above
-    # that the link has both title and text set to the same thing.
-    #
-    # Then for our refutation test we can just assert an item with the title
-    # does not exist.
-    assert css_select("li[title='My Interactive Sessions']").any?
+    assert_response :success
+    assert_select "nav a[href='#{batch_connect_sessions_path}']", 1
 
     SysRouter.unstub(:base_path)
   end
 
-  test "should not create My Interactive Apps link" do
+  test "should create My Interactive Apps link if no Interactive Apps and developer" do
+    Configuration.stubs(:app_development_enabled?).returns(true)
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys"))
 
     get :index
-    assert css_select("li[title='My Interactive Sessions']").empty?
+    assert_response :success
+    assert_select "nav a[href='#{batch_connect_sessions_path}']", 1
+
+    SysRouter.unstub(:base_path)
+  end
+
+  test "should not create My Interactive Apps link if no Interactive Apps and not developer" do
+    Configuration.stubs(:app_development_enabled?).returns(false)
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys"))
+
+    get :index
+    assert_response :success
+    assert_select "nav a[href='#{batch_connect_sessions_path}']", 0
 
     SysRouter.unstub(:base_path)
   end

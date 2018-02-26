@@ -1,5 +1,6 @@
 # OOD Dashboard
 
+[![Build Status](https://travis-ci.org/OSC/ood-dashboard.svg?branch=master)](https://travis-ci.org/OSC/ood-dashboard)
 [![GitHub version](https://badge.fury.io/gh/OSC%2Food-dashboard.svg)](https://badge.fury.io/gh/OSC%2Food-dashboard)
 
 This app is a Rails app for Open OnDemand that serves as a gateway to launching

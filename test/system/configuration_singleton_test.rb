@@ -41,10 +41,6 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     Marshal.load(runner(code, env: env, envvars: envvars))
   end
 
-  test "tests should not be run with .env.local* files in directory" do
-    assert Dir.glob(".env.local{.development,.production,}").none?, "these tests should not be run with a .env.local or .env.local.development or .env.local.production"
-  end
-
   test "configuration defaults in development env" do
     config = config_via_runner
 

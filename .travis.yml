@@ -1,0 +1,18 @@
+sudo: false
+language: ruby
+rvm:
+  - 2.2.2
+env:
+  global:
+    - TRAVIS_NODE_VERSION="0.10.40"
+    - TRAVIS_NPM_VERSION="2.14.13"
+before_install:
+  - nvm install $TRAVIS_NODE_VERSION
+  - nvm use $TRAVIS_NODE_VERSION
+  - npm install -g npm@$TRAVIS_NPM_VERSION
+  - node --version
+  - npm --version
+notifications:
+  email:
+    on_success: never
+    on_failure: always

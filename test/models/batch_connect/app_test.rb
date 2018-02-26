@@ -17,7 +17,7 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
       app = BatchConnect::App.new(router: r)
 
       assert ! app.valid?
-      assert_match /app does not supply.*a form file/, app.validation_reason
+      assert_match /app does not exist/, app.validation_reason
     }
   end
 
