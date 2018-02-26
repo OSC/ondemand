@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.23.0] - 2018-02-26
 ### Added
 - Add Travis CI automated testing.
   [#345](https://github.com/OSC/ood-dashboard/issues/345)
@@ -310,7 +312,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.22.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.23.0...HEAD
+[1.23.0]: https://github.com/OSC/ood-dashboard/compare/v1.22.0...v1.23.0
 [1.22.0]: https://github.com/OSC/ood-dashboard/compare/v1.21.3...v1.22.0
 [1.21.3]: https://github.com/OSC/ood-dashboard/compare/v1.21.2...v1.21.3
 [1.21.2]: https://github.com/OSC/ood-dashboard/compare/v1.21.1...v1.21.2
