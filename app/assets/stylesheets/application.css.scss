@@ -57,6 +57,9 @@ $ood-blue: rgb(0, 95, 133);
 
 // Use sticky footer in body of layout
 // See: https://philipwalton.github.io/solved-by-flexbox/demos/sticky-footer/
+html, body{
+  height: 100%;
+}
 body {
   display: flex;
   min-height: 100vh;

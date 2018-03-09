@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- Fix sticky footer bug in IE11. [#347](https://github.com/OSC/ood-dashboard/issues/347)
+
 ## [1.23.0] - 2018-02-26
 ### Added
 - Add Travis CI automated testing.
