@@ -6,10 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-
 ### Changed
+- Open navigation links to external sites in new windows.
+  [#349](https://github.com/OSC/ood-dashboard/issues/349)
 
-- Fix sticky footer bug in IE11. [#347](https://github.com/OSC/ood-dashboard/issues/347)
+### Fixed
+- Fix sticky footer bug in IE11.
+  [#347](https://github.com/OSC/ood-dashboard/issues/347)
 
 ## [1.23.0] - 2018-02-26
 ### Added
