@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Disabled all the unnecessary services that are auto-started when Mate loads.
 - Fixed local configuration directory not always being ignored.
+- Set Mate and Xfce terminals to launch login shell to get proper `TERM` set.
 
 ### Removed
 - Remove local OSC configuration as this has moved to

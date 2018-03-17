@@ -13,5 +13,8 @@ for service in "gnome-keyring-gpg" "gnome-keyring-pkcs11" "gnome-keyring-secrets
   cat "/etc/xdg/autostart/${service}.desktop" <(echo "X-MATE-Autostart-enabled=false") > "${AUTOSTART}/${service}.desktop"
 done
 
+# Run Mate Terminal as login shell (sets proper TERM)
+dconf write /org/mate/terminal/profiles/default/login-shell true
+
 # Start up mate desktop (block until user logs out of desktop)
 mate-session
