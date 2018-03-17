@@ -12,6 +12,7 @@ batch job is intended to run on.
 
 One of the following desktops:
 
+- [Xfce](https://xfce.org/) 4+
 - [Mate Desktop](https://mate-desktop.org/) 1+ (*default*)
 - [Gnome](https://www.gnome.org/) 2 (currently we do not support Gnome 3)
 

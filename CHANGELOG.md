@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added support for the Xfce desktop.
+
 ### Removed
 - Remove local OSC configuration as this has moved to
   [osc-ood-config](https://github.com/OSC/osc-ood-config).
