@@ -13,9 +13,9 @@ OnDemand node).
 
 One of the following desktops:
 
-- [Xfce] 4+
+- [Xfce Desktop] 4+
 - [Mate Desktop] 1+ (*default*)
-- [Gnome] 2 (currently we do not support Gnome 3)
+- [Gnome Desktop] 2 (currently we do not support Gnome 3)
 
 For VNC server support:
 
