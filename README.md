@@ -62,10 +62,11 @@ Again, you do not need to restart the app as it isn't a Passenger app.
 
 ## Configuration
 
-Please see [Install Desktops] to learn more about setting up and configuring a
-desktop at your HPC center.
+Please see the [Install Desktops] section in the [Open OnDemand Documentation]
+to learn more about setting up and configuring a desktop at your HPC center.
 
 [Install Desktops]: https://osc.github.io/ood-documentation/master/install-desktops.html
+[Open OnDemand Documentation]: https://osc.github.io/ood-documentation/master/index.html
 
 ## Contributing
 
