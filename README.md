@@ -1,30 +1,39 @@
 # Batch Connect - Desktop
 
 ![GitHub Release](https://img.shields.io/github/release/osc/bc_desktop.svg)
-![GitHub License](https://img.shields.io/github/license/osc/bc_desktop.svg)
+[![GitHub License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 A Batch Connect app designed to launch a GUI desktop withing a batch job.
 
 ## Prerequisites
 
-This app requires the following software be installed on the nodes that the
-batch job is intended to run on.
+This Batch Connect app requires the following software be installed on the
+**compute nodes** that the batch job is intended to run on (**NOT** the
+OnDemand node).
 
 One of the following desktops:
 
-- [Xfce](https://xfce.org/) 4+
-- [Mate Desktop](https://mate-desktop.org/) 1+ (*default*)
-- [Gnome](https://www.gnome.org/) 2 (currently we do not support Gnome 3)
+- [Xfce] 4+
+- [Mate Desktop] 1+ (*default*)
+- [Gnome] 2 (currently we do not support Gnome 3)
 
 For VNC server support:
 
-- [TurboVNC](http://www.turbovnc.org/) 2.1+
-- [websockify](https://github.com/novnc/websockify) 0.8.0+
+- [TurboVNC] 2.1+
+- [websockify] 0.8.0+
 
 For hardware rendering support:
 
-- [X server](https://www.x.org/)
-- [VirtualGL](http://www.virtualgl.org/) 2.3+
+- [X server]
+- [VirtualGL] 2.3+
+
+[Xfce Desktop]: https://xfce.org/
+[Mate Desktop]: https://mate-desktop.org/
+[Gnome Desktop]: https://www.gnome.org/
+[TurboVNC]: http://www.turbovnc.org/
+[websockify]: https://github.com/novnc/websockify
+[X server]: https://www.x.org/
+[VirtualGL]: http://www.virtualgl.org/
 
 ## Install
 
@@ -51,15 +60,12 @@ scl enable git19 -- git checkout <tag/branch>
 
 Again, you do not need to restart the app as it isn't a Passenger app.
 
-> **Note**
->
-> In some cases you may have site specific configuration files under the
-> directory `local.OOD_SITE/` (see `local.osc/`). You can and should install
-> these every time you install or update the application with:
->
-> ```sh
-> OOD_SITE=osc scl enable rh-ruby22 -- bin/setup
-> ```
+## Configuration
+
+Please see [Install Desktops] to learn more about setting up and configuring a
+desktop at your HPC center.
+
+[Install Desktops]: https://osc.github.io/ood-documentation/master/install-desktops.html
 
 ## Contributing
 
