@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Added support for the Xfce desktop.
 
+### Changed
+- Moved "Account" field higher up in the form.
+
 ### Fixed
 - Disabled all the unnecessary services that are auto-started when Mate loads.
 
