@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Add logging tag to logger to distinguish from other Lua log lines.
+
 ### Changed
 - Changed log level for analytics and user mapping to debug to make logs less
   chatty.

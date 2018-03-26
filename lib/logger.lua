@@ -15,6 +15,9 @@ function logger(r)
     local time = r:clock()
     local msg  = {}
 
+    -- log hook id
+    msg["log_hook"] = "ood"
+
     -- log
     msg["log_time"] = os.date("!%Y-%m-%dT%T", time / 1000000) .. "." .. time % 1000000 .. "Z"
     msg["log_id"]   = r.log_id
