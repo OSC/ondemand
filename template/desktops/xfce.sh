@@ -12,6 +12,7 @@ fi
 
 # Disable useless services on autostart
 AUTOSTART="${HOME}/.config/autostart"
+rm -fr "${AUTOSTART}"    # clean up previous autostarts
 mkdir -p "${AUTOSTART}"
 for service in "pulseaudio" "rhsm-icon" "spice-vdagent" "tracker-extract" "tracker-miner-apps" "tracker-miner-user-guides" "xfce4-power-manager" "xfce-polkit"; do
   echo -e "[Desktop Entry]\nHidden=true" > "${AUTOSTART}/${service}.desktop"
