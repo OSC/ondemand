@@ -35,7 +35,7 @@ function logger(r)
     msg["req_hostname"]     = r.hostname
     msg["req_port"]         = r.port
     msg["req_server_name"]  = r.server_name
-    msg["req_handler"]      = r.handler
+    msg["req_handler"]      = r.handler or ""
     msg["req_filename"]     = r.filename
     msg["req_is_https"]     = r.is_https and true or false
     msg["req_is_websocket"] = r.headers_in["Upgrade"] and true or false

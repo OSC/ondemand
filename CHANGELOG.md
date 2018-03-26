@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Changed log level for analytics and user mapping to debug to make logs less
   chatty.
 
+### Fixed
+- Fixed `req_handler` sometimes missing from logs.
+  [#14](https://github.com/OSC/mod_ood_proxy/issues/14)
+
 ## [0.4.0] - 2018-02-13
 ### Added
 - Added more verbose logging feature.
