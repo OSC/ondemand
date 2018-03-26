@@ -1,6 +1,9 @@
 # Turn off screensaver (this may not exist at all)
 gsettings set org.mate.screensaver idle-activation-enabled false
 
+# Disable gnome-keyring-daemon
+gsettings set org.mate.session gnome-compat-startup "['smproxy']"
+
 # Remove any preconfigured monitors
 if [[ -f "${HOME}/.config/monitors.xml" ]]; then
   mv "${HOME}/.config/monitors.xml" "${HOME}/.config/monitors.xml.bak"
