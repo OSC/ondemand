@@ -81,8 +81,8 @@ function analytics_handler(r)
     local handle = io.popen("wget --post-data='" .. query .. "' " .. tracking_url .. " -O /dev/null -T 5 -nv 2>&1")
     output = handle:read('*all'):match('^%s*(.-)%s*$')
     handle:close()
-    r:info("Analytics input: '" .. query .. "'")
-    r:info("Analytics output: '" .. r:escape_logitem(output) .. "' [" .. (r:clock() - now)/1000.0 .. " ms]")
+    r:debug("Analytics input: '" .. query .. "'")
+    r:debug("Analytics output: '" .. r:escape_logitem(output) .. "' [" .. (r:clock() - now)/1000.0 .. " ms]")
   end
 
   return apache2.DECLINED

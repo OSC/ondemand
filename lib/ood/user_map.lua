@@ -11,7 +11,7 @@ function map(r, user_map_cmd, remote_user)
   sys_user = handle:read()
   handle:close()
   time_user_map = (r:clock() - now)/1000.0
-  r:info("Mapped '" .. remote_user .. "' => '" .. (sys_user or "") .. "' [" .. time_user_map .. " ms]")
+  r:debug("Mapped '" .. remote_user .. "' => '" .. (sys_user or "") .. "' [" .. time_user_map .. " ms]")
 
   -- failed to map if returns empty string
   if not sys_user or sys_user == "" then
