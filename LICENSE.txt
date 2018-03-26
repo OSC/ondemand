@@ -1,4 +1,4 @@
-Copyright (c) 2016-2017 Ohio Supercomputer Center
+Copyright (c) 2016-2018 Ohio Supercomputer Center
 
 MIT License
 

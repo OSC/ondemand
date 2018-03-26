@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Moved "Account" field higher up in the form.
+- Updated date in `LICENSE.txt`.
 
 ### Fixed
 - Disabled all the unnecessary services that are auto-started when Mate loads.
