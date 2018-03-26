@@ -1,10 +1,10 @@
-#!/bin/bash -l
+#!/usr/bin/env bash
 
 # Change working directory to user's home directory
 cd "${HOME}"
 
-# Export the module function if it exists
-[[ $(type -t module) == "function" ]] && export -f module
+# Reset module environment (may require login shell for some HPC clusters)
+module purge && module restore
 
 # Start up desktop
 echo "Launching desktop '<%= context.desktop %>'..."
