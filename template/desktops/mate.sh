@@ -17,10 +17,11 @@ for service in "gnome-keyring-gpg" "gnome-keyring-pkcs11" "gnome-keyring-secrets
   cat "/etc/xdg/autostart/${service}.desktop" <(echo "X-MATE-Autostart-enabled=false") > "${AUTOSTART}/${service}.desktop"
 done
 
-# Disable pulse audio
-PULSE_CONFIG="${HOME}/.config/pulse/client.conf"
-mkdir -p "$(dirname "${PULSE_CONFIG}")"
-echo "autospawn = no" > "${PULSE_CONFIG}"
+# Disable pulseaudio
+# Warning: If you disable pulseaudio you get flooded with warning messages
+#PULSE_CONFIG="${HOME}/.config/pulse/client.conf"
+#mkdir -p "$(dirname "${PULSE_CONFIG}")"
+#echo "autospawn = no" > "${PULSE_CONFIG}"
 
 # Run Mate Terminal as login shell (sets proper TERM)
 dconf write /org/mate/terminal/profiles/default/login-shell true
