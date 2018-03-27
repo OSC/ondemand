@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - Fix sticky footer bug in IE11.
-  [#347](https://github.com/OSC/ood-dashboard/issues/347)
+  [#347](https://github.com/OSC/ood-dashboard/issues/347),
+  [#351](https://github.com/OSC/ood-dashboard/issues/351)
 - Bump version of gem dependencies for security fixes.
 
 ## [1.23.0] - 2018-02-26
