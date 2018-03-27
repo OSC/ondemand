@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/OSC/ood-dashboard.svg?branch=master)](https://travis-ci.org/OSC/ood-dashboard)
 [![GitHub version](https://badge.fury.io/gh/OSC%2Food-dashboard.svg)](https://badge.fury.io/gh/OSC%2Food-dashboard)
+[![GitHub License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 This app is a Rails app for Open OnDemand that serves as a gateway to launching
 other Open OnDemand apps. It is meant to be run as the user (and on behalf of
