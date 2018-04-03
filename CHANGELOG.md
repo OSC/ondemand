@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Ordered the Shell Apps by cluster title in the dropdown navbar.
   [#116](https://github.com/OSC/ood-dashboard/issues/116)
 
+### Removed
+- Removed environment variable specifying `OOD_DEV_SSH_HOST`.
+  [#312](https://github.com/OSC/ood-dashboard/issues/312)
+
 ## [1.24.0] - 2018-03-27
 ### Changed
 - Open navigation links to external sites in new windows.
