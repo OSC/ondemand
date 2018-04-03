@@ -42,6 +42,10 @@ class ConfigurationSingleton
     Pathname.new(ENV["OOD_BC_APP_CONFIG_ROOT"] || "/etc/ood/config/apps")
   end
 
+  def load_external_bc_config?
+    to_bool(ENV["OOD_LOAD_EXTERNAL_BC_CONFIG"] || (rails_env == "production"))
+  end
+
   # The file system path to the announcements
   # @return [Pathname, Array<Pathname>] announcement path or paths
   def announcement_path

@@ -62,6 +62,35 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test "should have default bc config root" do
+    assert_equal Pathname.new("/etc/ood/config/apps"), ConfigurationSingleton.new.bc_config_root
+  end
+
+  test "can configure bc config root" do
+    ENV["OOD_BC_APP_CONFIG_ROOT"] = "/path/to/bc_config"
+    assert_equal Pathname.new("/path/to/bc_config"), ConfigurationSingleton.new.bc_config_root
+  end
+
+  test "should not load external bc configuration by default if not production" do
+    refute ConfigurationSingleton.new.load_external_bc_config?
+  end
+
+  test "can enable external bc configuration if not production" do
+    ENV["OOD_LOAD_EXTERNAL_BC_CONFIG"] = "true"
+    assert ConfigurationSingleton.new.load_external_bc_config?
+  end
+
+  test "should load external bc configuration by default if production" do
+    ENV["RAILS_ENV"] = "production"
+    assert ConfigurationSingleton.new.load_external_bc_config?
+  end
+
+  test "can disable external bc configuration if production" do
+    ENV["RAILS_ENV"] = "production"
+    ENV["OOD_LOAD_EXTERNAL_BC_CONFIG"] = "false"
+    refute ConfigurationSingleton.new.load_external_bc_config?
+  end
+
   test "should have app development disabled by default if sandbox does not exist" do
     Dir.mktmpdir do |dir|
       sandbox = Pathname.new(dir)
