@@ -107,7 +107,7 @@ class OodApp
             caption: caption,
             new_tab: true
           )
-        end
+        end.sort_by { |lnk| lnk.title }
       end
     elsif role == "batch_connect"
       batch_connect.sub_app_list.select(&:valid?).map do |sub_app|

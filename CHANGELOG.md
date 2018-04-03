@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Set a default developer documentation link to https://go.osu.edu/ood-app-dev.
   [#255](https://github.com/OSC/ood-dashboard/issues/255)
+- Ordered the Shell Apps by cluster title in the dropdown navbar.
+  [#116](https://github.com/OSC/ood-dashboard/issues/116)
 
 ## [1.24.0] - 2018-03-27
 ### Changed

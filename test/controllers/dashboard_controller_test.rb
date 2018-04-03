@@ -48,7 +48,18 @@ class DashboardControllerTest < ActionController::TestCase
       "/fs/scratch/efranz"], dditems
   end
 
-  test "should create Clusters dropdown" do
+  test "should create Clusters dropdown with valid clusters that are alphabetically ordered by title" do
+    OodAppkit.stubs(:clusters).returns(
+      OodCore::Clusters.new([
+        {id: :cluster1, metadata: {title: "Cluster B"}, login: {host: "host"}},
+        {id: :cluster2, metadata: {title: "Cluster D"}, login: {host: "host"}},
+        {id: :cluster3, metadata: {title: "Cluster C"}, login: {host: "host"}},
+        {id: :cluster4, metadata: {title: "Cluster A"}, login: {host: "host"}},
+        {id: :cluster5, metadata: {title: "Cluster NoLogin"}, login: nil},
+        {id: :cluster6, metadata: {title: "Cluster NoAccess"}, login: {host: "host"}, acls: [{adapter: :group, groups: ["GROUP"]}]},
+      ].map {|h| OodCore::Cluster.new(h)})
+    )
+
     get :index
 
     dd = dropdown_list('Clusters')
@@ -56,10 +67,11 @@ class DashboardControllerTest < ActionController::TestCase
 
     assert dditems.any?, "dropdown list items not found"
 
-    #FIXME: reorder so this is alphabetical, then fix code
     assert_equal [
-      "Oakley Shell Access",
-      "Owens Shell Access",
+      "Cluster A Shell Access",
+      "Cluster B Shell Access",
+      "Cluster C Shell Access",
+      "Cluster D Shell Access",
       "System Status"], dditems
 
     assert_select dd, "li a", "System Status" do |link|
