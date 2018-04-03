@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - (Batch Connect) Can now configure whether global configuration is used for
   system apps.
 
+### Changed
+- Set a default developer documentation link to https://go.osu.edu/ood-app-dev.
+  [#255](https://github.com/OSC/ood-dashboard/issues/255)
+
 ## [1.24.0] - 2018-03-27
 ### Changed
 - Open navigation links to external sites in new windows.

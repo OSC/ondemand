@@ -4,7 +4,7 @@
   </a>
   <ul class="dropdown-menu">
     <%= nav_link("Restart Web Server", "refresh", restart_url) %>
-    <%= nav_link("Developer Documentation", "book", developer_docs_url, target: "_blank") %>
+    <%= nav_link("Developer Documentation", "book", Configuration.developer_docs_url, target: "_blank") %>
     <%= nav_link(products_title(:dev), "gear", products_path(type: "dev")) %>
     <% if Configuration.app_sharing_enabled? %>
       <%= nav_link(products_title(:usr), "share-alt", products_path(type: "usr")) %>

@@ -143,6 +143,15 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     assert_equal Pathname.new("/path/to/announcement"), ConfigurationSingleton.new.announcement_path
   end
 
+  test "should have default developer docs url" do
+    assert_equal "https://go.osu.edu/ood-app-dev", ConfigurationSingleton.new.developer_docs_url
+  end
+
+  test "can configure developer docs url" do
+    ENV["OOD_DASHBOARD_DEV_DOCS_URL"] = "https://www.example.com"
+    assert_equal "https://www.example.com", ConfigurationSingleton.new.developer_docs_url
+  end
+
   test "should not have default brand bg color" do
     assert_nil ConfigurationSingleton.new.brand_bg_color
   end

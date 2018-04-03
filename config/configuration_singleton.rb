@@ -111,6 +111,10 @@ class ConfigurationSingleton
     to_bool(ENV['SHOW_ALL_APPS_LINK'])
   end
 
+  def developer_docs_url
+    ENV['OOD_DASHBOARD_DEV_DOCS_URL'] || "https://go.osu.edu/ood-app-dev"
+  end
+
   def dataroot
     # copied from OodAppkit::AppConfig#set_default_configuration
     # then modified to ensure dataroot is never nil
