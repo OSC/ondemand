@@ -45,6 +45,7 @@ all_components.each do |c|
     if setup_path.exist? && setup_path.executable?
       sh "PASSENGER_APP_ENV=production PASSENGER_BASE_URI=/pun/sys/#{c.name} #{setup_path}"
     end
+    c.build_root.join("VERSION").write(c.tag) if c.app?
   end
 end
 
