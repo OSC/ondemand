@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Changed
+- Update gem dependencies to patch any possible security vulnerabilities.
+  [#261](https://github.com/OSC/ood-myjobs/issues/261)
 
 ## [2.8.2] - 2018-01-29
 ### Changed
