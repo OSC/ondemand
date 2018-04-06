@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Update gem dependencies to patch any possible security vulnerabilities.
   [#261](https://github.com/OSC/ood-myjobs/issues/261)
+- Updated `ood_core` dependency to 0.3.0.
 
 ### Removed
 - Removed the `VERSION` file as this is now added by the installer.
