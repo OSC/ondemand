@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [2.8.3] - 2018-04-06
 ### Changed
 - Update gem dependencies to patch any possible security vulnerabilities.
   [#261](https://github.com/OSC/ood-myjobs/issues/261)
@@ -123,7 +125,8 @@ All notable changes to this project will be documented in this file.
 - UI enhancements
 
 
-[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.8.2...HEAD
+[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.8.3...HEAD
+[2.8.3]: https://github.com/OSC/ood-myjobs/compare/v2.8.2...v2.8.3
 [2.8.2]: https://github.com/OSC/ood-myjobs/compare/v2.8.1...v2.8.2
 [2.8.1]: https://github.com/OSC/ood-myjobs/compare/v2.8.0...v2.8.1
 [2.8.0]: https://github.com/OSC/ood-myjobs/compare/v2.7.0...v2.8.0
