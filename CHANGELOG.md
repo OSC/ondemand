@@ -11,12 +11,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   system apps.
 
 ### Changed
+- Allow HTML to be included and rendered in announcement message.
+  [#352](https://github.com/OSC/ood-dashboard/issues/352)
+- Lazily load the announcements so they aren't parsed unless needed.
+  [#353](https://github.com/OSC/ood-dashboard/issues/353)
 - Set a default developer documentation link to https://go.osu.edu/ood-app-dev.
   [#255](https://github.com/OSC/ood-dashboard/issues/255)
 - Ordered the Shell Apps by cluster title in the dropdown navbar.
   [#116](https://github.com/OSC/ood-dashboard/issues/116)
 - (Batch Connect) Shell path is now a configurable option for the job script
   template. [#356](https://github.com/OSC/ood-dashboard/issues/356)
+
+### Fixed
+- Show valid announcements even if error raised when parsing an announcement.
+  [#354](https://github.com/OSC/ood-dashboard/issues/354)
 
 ### Removed
 - Removed environment variable specifying `OOD_DEV_SSH_HOST`.

@@ -6,11 +6,16 @@ class Announcements
     # @param paths [#to_s, Array<#to_s>] announcement path or paths
     # @return [Announcements] the parsed announcements
     def all(paths = [])
-      paths = Array.wrap(paths).map { |p| Pathname.new(p.to_s).expand_path }
+      paths = Array.wrap(paths).map { |p| Pathname.new(p.to_s) }
 
       announcements = paths.flat_map do |p|
-        p.directory? ? Pathname.glob(p.join("*.{md,yml}")).sort : p
-      end.map { |p| Announcement.parse(p) }.select(&:valid?)
+        begin
+          path = p.expand_path
+          path.directory? ? Pathname.glob(path.join("*.{md,yml}")).sort : path
+        rescue
+          p
+        end
+      end.map { |p| Announcement.new(p) }
 
       new(announcements)
     end

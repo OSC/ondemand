@@ -2,48 +2,30 @@ class Announcement
   # List of valid announcement types
   TYPES = %i(warning info success danger)
 
-  # The announcement's message
-  # @return [String, nil] the announcement's message if it exists
-  attr_reader :msg
-
-  # The type of announcement
-  # @return [Symbol] the type of announcement
-  attr_reader :type
-
-  class << self
-    # Parse a file
-    # @param path [#to_s] path to file
-    # @return [Announcement] announcement object
-    def parse(path)
-      path = Pathname.new(path.to_s).expand_path
-
-      if path.file? && path.readable?
-        case path.extname
-        when ".md"
-          Announcement.new(msg: path.read)
-        when ".yml"
-          Announcement.new(YAML.safe_load(ERB.new(path.read, nil, "-").result))
-        else
-          Announcement.new
-        end
-      else
-        Announcement.new
-      end
-    end
-  end
-
-  # @param opts [#to_h] the announcement object
+  # @param opts [#to_h, #to_s] the announcement object or path
   # @option opts [#to_sym] :type (:warning) Type of announcement (:info,
   #   :success, :warning, :danger)
   # @option opts [#to_s] :msg (nil) The announcement message
   def initialize(opts = {})
-    opts = opts.to_h.symbolize_keys.compact
+    if opts.respond_to? :to_h
+      @opts = opts.to_h
+    else
+      @path = Pathname.new(opts.to_s)
+    end
+  end
 
-    type  = opts.fetch(:type, TYPES.first).to_sym
-    @type = TYPES.include?(type) ? type : TYPES.first
+  # The type of announcement
+  # @return [Symbol] the type of announcement
+  def type
+    type = opts.fetch(:type, TYPES.first).to_sym
+    TYPES.include?(type) ? type : TYPES.first
+  end
 
-    msg   = opts.fetch(:msg, "").to_s
-    @msg  = msg.blank? ? nil : msg
+  # The announcement's message
+  # @return [String, nil] the announcement's message if it exists
+  def msg
+    msg = opts.fetch(:msg, "").to_s
+    msg.blank? ? nil : msg
   end
 
   # Whether this is a valid announcement
@@ -51,4 +33,20 @@ class Announcement
   def valid?
     !!msg
   end
+
+  private
+    def opts
+      @opts ||= case @path.extname
+                when ".md"
+                  { msg: @path.expand_path.read }
+                when ".yml"
+                  YAML.safe_load(ERB.new(@path.expand_path.read, nil, "-").result)
+                else
+                  {}
+                end
+      @opts.symbolize_keys.compact
+    rescue => e
+      Rails.logger.warn "Error parsing announcement file '#{@path}': #{e.message}"
+      @opts = {}
+    end
 end
