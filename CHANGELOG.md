@@ -6,6 +6,9 @@ All notable changes to this project will be documented in this file.
 - Update gem dependencies to patch any possible security vulnerabilities.
   [#261](https://github.com/OSC/ood-myjobs/issues/261)
 
+### Removed
+- Removed the `VERSION` file as this is now added by the installer.
+
 ## [2.8.2] - 2018-01-29
 ### Changed
 - Updated `ood_core`
