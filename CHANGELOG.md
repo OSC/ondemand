@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [#255](https://github.com/OSC/ood-dashboard/issues/255)
 - Ordered the Shell Apps by cluster title in the dropdown navbar.
   [#116](https://github.com/OSC/ood-dashboard/issues/116)
+- (Batch Connect) Shell path is now a configurable option for the job script
+  template. [#356](https://github.com/OSC/ood-dashboard/issues/356)
 
 ### Removed
 - Removed environment variable specifying `OOD_DEV_SSH_HOST`.

@@ -226,25 +226,11 @@ module BatchConnect
     def script_options(opts = {})
       opts = opts.to_h.compact.deep_symbolize_keys
 
-      # Add adapter specific options
-      case cluster.job_config[:adapter]
-      when "torque"
-        opts = { native: { headers: { Shell_Path_List: "/bin/bash" } } }.deep_merge opts
-      when "pbspro"
-        opts[:native] = ["-S", "/bin/bash"] + opts.fetch(:native, [])
-      when "slurm"
-        # slurm sets the shell from the shebang of the script
-      when "lsf"
-        # FIXME: There is no simple way to pass environment variables to the
-        # batch script with LSF 8 when the below option is enabled, this needs
-        # to be explore further
-        opts[:native] = ["-L", "/bin/bash"] + opts.fetch(:native, [])
-      end
-
       opts = {
         job_name: job_name,
         workdir: staged_root,
-        output_path: output_file
+        output_path: output_file,
+        shell_path: shell_path
       }.merge opts
     end
 
@@ -390,6 +376,12 @@ module BatchConnect
     # @return [Pathname] output file
     def output_file
       staged_root.join("output.log")
+    end
+
+    # Path to login shell used by the script
+    # @return [Pathname] shell path
+    def shell_path
+      Pathname.new("/usr/bin/bash")
     end
 
     # The connection information for this session (job must be running)
