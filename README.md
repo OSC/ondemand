@@ -1,6 +1,6 @@
 # OnDemand Package
 
-[![Build Status](https://travis-ci.org/OSC/ondemand.svg?branch=develop)](https://travis-ci.org/OSC/ondemand)
+[![Build Status](https://travis-ci.org/OSC/ondemand.svg?branch=master)](https://travis-ci.org/OSC/ondemand)
 ![GitHub Release](https://img.shields.io/github/release/osc/ondemand.svg)
 [![GitHub License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
