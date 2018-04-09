@@ -381,7 +381,7 @@ module BatchConnect
     # Path to login shell used by the script
     # @return [Pathname] shell path
     def shell_path
-      Pathname.new("/usr/bin/bash")
+      Pathname.new("/bin/bash")
     end
 
     # The connection information for this session (job must be running)
