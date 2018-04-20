@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Made currently installed version number of OnDemand available to all PUNs if
+  the OnDemand version file exists.
+  [#36](https://github.com/OSC/nginx_stage/issues/36)
 
 ## [0.4.0] - 2018-02-09
 ### Added
