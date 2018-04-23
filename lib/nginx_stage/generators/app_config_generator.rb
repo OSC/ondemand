@@ -79,10 +79,24 @@ module NginxStage
     add_hook :exec_nginx do
       if !skip_nginx
         if File.file? NginxStage.pun_pid_path(user: user)
-          o, s = Open3.capture2e([NginxStage.nginx_bin, "(#{user})"], *NginxStage.nginx_args(user: user, signal: :stop))
+          o, s = Open3.capture2e(
+            NginxStage.nginx_env(user: user),
+            [
+              NginxStage.nginx_bin,
+              "(#{user})"
+            ],
+            *NginxStage.nginx_args(user: user, signal: :stop)
+          )
           abort(o) unless s.success?
         end
-        o, s = Open3.capture2e([NginxStage.nginx_bin, "(#{user})"], *NginxStage.nginx_args(user: user))
+        o, s = Open3.capture2e(
+          NginxStage.nginx_env(user: user),
+          [
+            NginxStage.nginx_bin,
+            "(#{user})"
+          ],
+          *NginxStage.nginx_args(user: user)
+        )
         s.success? ? exit : abort(o)
       end
     end

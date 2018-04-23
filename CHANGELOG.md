@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Made currently installed version number of OnDemand available to all PUNs if
   the OnDemand version file exists.
   [#36](https://github.com/OSC/nginx_stage/issues/36)
+- Can specify portal name to namespace multiple OnDemand hosted portals.
 
 ## [0.4.0] - 2018-02-09
 ### Added

@@ -18,6 +18,11 @@
 #
 #ondemand_version_path: '/opt/ood/VERSION'
 
+# Unique name of this OnDemand portal used to namespace multiple hosted portals
+# NB: If this is not set then most apps will use default namespace "ondemand"
+#
+#ondemand_portal: null
+
 # Location of the ERB templates used in the generation of the NGINX configs
 #
 #template_root: '/opt/ood/nginx_stage/templates'
@@ -119,7 +124,7 @@
 # corresponding environment
 #
 #app_root:
-#  dev: '~%{owner}/ondemand/dev/%{name}'
+#  dev: '~%{owner}/%{portal}/dev/%{name}'
 #  usr: '/var/www/ood/apps/usr/%{owner}/gateway/%{name}'
 #  sys: '/var/www/ood/apps/sys/%{name}'
 

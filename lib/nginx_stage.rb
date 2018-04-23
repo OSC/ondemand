@@ -49,6 +49,21 @@ module NginxStage
     nil
   end
 
+  # The unique name of the hosted OnDemand portal used to namespace apps, their
+  # data, and logging information
+  # @example No OnDemand Portal name specified
+  #   portal #=> "ondemand"
+  # @example The AweSim portal is specified
+  #   portal #=> "awesim"
+  # @return [String] unique portal name
+  def self.portal
+    if ondemand_portal.to_s.strip.empty?
+      "ondemand"
+    else
+      ondemand_portal.strip.downcase.gsub(/\s+/, "_")
+    end
+  end
+
   # Regex used to parse an app request
   # @example Dev app request
   #   parse_app_request(request: '/dev/rails1/structure/1')
@@ -70,6 +85,21 @@ module NginxStage
     end
     raise InvalidRequest, "invalid request: #{request}" if app_info.empty?
     app_info
+  end
+
+  # Environment used during execution of nginx binary
+  # @example Start the per-user NGINX for user Bob
+  #   nginx_env(user: 'bob')
+  #   #=> { "USER" => "bob", ... }
+  # @param user [String] the owner of the nginx process
+  # @return [Hash{String=>String}] the environment used to execute the nginx process
+  def self.nginx_env(user:)
+    {
+      "USER" => user,
+      "ONDEMAND_VERSION" => ondemand_version,
+      "ONDEMAND_PORTAL" => portal,
+      "OOD_PORTAL" => ondemand_portal, # backwards compatible
+    }
   end
 
   # Arguments used during execution of nginx binary
