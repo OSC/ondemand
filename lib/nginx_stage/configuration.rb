@@ -8,6 +8,11 @@ module NginxStage
     # Global
     #
 
+    # Path to the OnDemand version file that contains version of OnDemand
+    # installed
+    # @return [String] the ondemand version file
+    attr_accessor :ondemand_version_path
+
     # Location of ERB templates used as NGINX configs
     # @return [String] the ERB templates root path
     attr_accessor :template_root
@@ -330,7 +335,8 @@ module NginxStage
     # Sets the default configuration options
     # @return [void]
     def set_default_configuration
-      self.template_root  = "#{root}/templates"
+      self.ondemand_version_path = "/opt/ood/VERSION"
+      self.template_root         = "#{root}/templates"
 
       self.proxy_user       = 'apache'
       self.nginx_bin        = '/opt/rh/nginx16/root/usr/sbin/nginx'

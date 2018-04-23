@@ -36,6 +36,19 @@ module NginxStage
 
   extend Configuration
 
+  # The current version of OnDemand installed
+  # @example Get version of OnDemand for version file that exists
+  #   ondemand_version #=> "1.3.0"
+  # @example No version file exists
+  #   ondemand_version #=> nil
+  # @return [String, nil] current version of installed OnDemand if exists
+  def self.ondemand_version
+    version = File.read(ondemand_version_path).strip
+    version.empty? ? nil : version
+  rescue
+    nil
+  end
+
   # Regex used to parse an app request
   # @example Dev app request
   #   parse_app_request(request: '/dev/rails1/structure/1')

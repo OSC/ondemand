@@ -1,6 +1,12 @@
 module NginxStage
   # A view used as context for the pun config ERB template file
   module PunConfigView
+    # Current version of installed OnDemand
+    # @return [String, nil] version of OnDemand
+    def ondemand_version
+      NginxStage.ondemand_version
+    end
+
     # Primary group of the user
     # @return [String] primary group of user
     def group

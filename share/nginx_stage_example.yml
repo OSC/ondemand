@@ -14,6 +14,10 @@
 
 ---
 
+# Path to the OnDemand version file
+#
+#ondemand_version_path: '/opt/ood/VERSION'
+
 # Location of the ERB templates used in the generation of the NGINX configs
 #
 #template_root: '/opt/ood/nginx_stage/templates'
