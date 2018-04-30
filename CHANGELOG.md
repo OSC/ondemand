@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.26.1] - 2018-04-30
 ### Fixed
 - Updated gem dependencies to stave off security risks.
 
@@ -367,7 +369,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.26.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.26.1...HEAD
+[1.26.1]: https://github.com/OSC/ood-dashboard/compare/v1.26.0...v1.26.1
 [1.26.0]: https://github.com/OSC/ood-dashboard/compare/v1.25.1...v1.26.0
 [1.25.1]: https://github.com/OSC/ood-dashboard/compare/v1.25.0...v1.25.1
 [1.25.0]: https://github.com/OSC/ood-dashboard/compare/v1.24.0...v1.25.0
