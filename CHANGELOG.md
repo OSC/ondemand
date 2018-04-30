@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   the OnDemand version file exists.
   [#36](https://github.com/OSC/nginx_stage/issues/36)
 - Can specify portal name to namespace multiple OnDemand hosted portals.
+  [#33](https://github.com/OSC/nginx_stage/issues/33)
+- Can specify portal title for apps to use in their views.
+  [#33](https://github.com/OSC/nginx_stage/issues/33)
 
 ## [0.4.0] - 2018-02-09
 ### Added

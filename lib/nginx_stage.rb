@@ -57,10 +57,26 @@ module NginxStage
   #   portal #=> "awesim"
   # @return [String] unique portal name
   def self.portal
-    if ondemand_portal.to_s.strip.empty?
+    portal = ondemand_portal.to_s.strip
+    if portal.empty?
       "ondemand"
     else
-      ondemand_portal.strip.downcase.gsub(/\s+/, "_")
+      portal.downcase.gsub(/\s+/, "_")
+    end
+  end
+
+  # The title of the hosted OnDemand portal
+  # @example No title supplied
+  #   title #=> "Open OnDemand"
+  # @example The OSC OnDemand portal
+  #   title #=> "OSC OnDemand"
+  # @return [String] portal title
+  def self.title
+    title = ondemand_title.to_s.strip
+    if title.empty?
+      "Open OnDemand"
+    else
+      title
     end
   end
 
@@ -98,7 +114,10 @@ module NginxStage
       "USER" => user,
       "ONDEMAND_VERSION" => ondemand_version,
       "ONDEMAND_PORTAL" => portal,
-      "OOD_PORTAL" => ondemand_portal, # backwards compatible
+      "ONDEMAND_TITLE" => title,
+      # backwards compatibility
+      "OOD_PORTAL" => ondemand_portal,
+      "OOD_DASHBOARD_TITLE" => ondemand_title,
     }
   end
 

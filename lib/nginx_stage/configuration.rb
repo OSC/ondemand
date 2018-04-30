@@ -17,6 +17,10 @@ module NginxStage
     # @return [String, nil] the name of OnDemand portal if defined
     attr_accessor :ondemand_portal
 
+    # Title of the OnDemand portal that apps *should* display in their navbar
+    # @return [String, nil] the title of the Dashboard if defined
+    attr_accessor :ondemand_title
+
     # Location of ERB templates used as NGINX configs
     # @return [String] the ERB templates root path
     attr_accessor :template_root
@@ -341,6 +345,7 @@ module NginxStage
     def set_default_configuration
       self.ondemand_version_path = "/opt/ood/VERSION"
       self.ondemand_portal       = nil
+      self.ondemand_title        = nil
       self.template_root         = "#{root}/templates"
 
       self.proxy_user       = 'apache'

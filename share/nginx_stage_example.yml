@@ -22,6 +22,11 @@
 # NB: If this is not set then most apps will use default namespace "ondemand"
 #
 #ondemand_portal: null
+#
+# Title of this OnDemand portal that apps *should* display in their navbar
+# NB: If this is not set then most apps will use default title "Open OnDemand"
+#
+#ondemand_title: null
 
 # Location of the ERB templates used in the generation of the NGINX configs
 #
