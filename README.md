@@ -1,6 +1,7 @@
 # OOD Active Jobs
 
-[![GitHub version](https://badge.fury.io/gh/OSC%2Food-activejobs.svg)](https://badge.fury.io/gh/OSC%2Food-activejobs)
+![GitHub Release](https://img.shields.io/github/release/osc/ood-activejobs.svg)
+[![GitHub License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 Application displays the current system status of jobs running, queued, and
 held on the Oakley and Ruby Clusters.
