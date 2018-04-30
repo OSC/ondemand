@@ -13,6 +13,10 @@ module NginxStage
     # @return [String] the ondemand version file
     attr_accessor :ondemand_version_path
 
+    # Unique name of OnDemand portal for namespacing multiple portals
+    # @return [String, nil] the name of OnDemand portal if defined
+    attr_accessor :ondemand_portal
+
     # Location of ERB templates used as NGINX configs
     # @return [String] the ERB templates root path
     attr_accessor :template_root
@@ -207,7 +211,7 @@ module NginxStage
       File.expand_path(
         @app_root.fetch(env) do
           raise InvalidRequest, "invalid request environment: #{env}"
-        end % {env: env, owner: owner, name: name}
+        end % {env: env, owner: owner, name: name, portal: portal}
       )
     end
 
@@ -336,6 +340,7 @@ module NginxStage
     # @return [void]
     def set_default_configuration
       self.ondemand_version_path = "/opt/ood/VERSION"
+      self.ondemand_portal       = nil
       self.template_root         = "#{root}/templates"
 
       self.proxy_user       = 'apache'
@@ -367,7 +372,7 @@ module NginxStage
         sys: '/var/lib/nginx/config/apps/sys/%{name}.conf'
       }
       self.app_root          = {
-        dev: '~%{owner}/ondemand/dev/%{name}',
+        dev: '~%{owner}/%{portal}/dev/%{name}',
         usr: '/var/www/ood/apps/usr/%{owner}/gateway/%{name}',
         sys: '/var/www/ood/apps/sys/%{name}'
       }

@@ -1,9 +1,3 @@
-# Setup environment
-env USER=<%= user %>;
-<%- if ondemand_version -%>
-env ONDEMAND_VERSION=<%= ondemand_version %>;
-<%- end -%>
-
 user        <%= user %> <%= group %>;  ## Default: nobody
 error_log   <%= error_log_path %>;
 pid         <%= pid_path %>;
