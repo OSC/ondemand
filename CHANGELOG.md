@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated `ood_core` gem to support `Script#native` arrays for the Torque
   adapter.
 
+### Fixed
+- (Batch Connect) Fix crashing when handling invalid session data files.
+  [#357](https://github.com/OSC/ood-dashboard/issues/357)
+
 ## [1.25.1] - 2018-04-09
 ### Fixed
 - (Batch Connect) Fixed missing `/usr/bin/bash` on CentOS 6.
