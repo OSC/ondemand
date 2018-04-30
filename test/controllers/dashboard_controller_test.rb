@@ -81,6 +81,7 @@ class DashboardControllerTest < ActionController::TestCase
 
   test "should create Interactive Apps dropdown" do
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_interactive_apps"))
+    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
 
     get :index
 
@@ -102,36 +103,34 @@ class DashboardControllerTest < ActionController::TestCase
     SysRouter.unstub(:base_path)
   end
 
-  test "should create My Interactive Apps link if Interactive Apps exist" do
+  test "should create My Interactive Apps link if Interactive Apps exist and not developer" do
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_interactive_apps"))
+    Configuration.stubs(:app_development_enabled?).returns(false)
+    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
 
     get :index
     assert_response :success
     assert_select "nav a[href='#{batch_connect_sessions_path}']", 1
-
-    SysRouter.unstub(:base_path)
   end
 
   test "should create My Interactive Apps link if no Interactive Apps and developer" do
-    Configuration.stubs(:app_development_enabled?).returns(true)
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys"))
+    Configuration.stubs(:app_development_enabled?).returns(true)
+    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
 
     get :index
     assert_response :success
     assert_select "nav a[href='#{batch_connect_sessions_path}']", 1
-
-    SysRouter.unstub(:base_path)
   end
 
   test "should not create My Interactive Apps link if no Interactive Apps and not developer" do
-    Configuration.stubs(:app_development_enabled?).returns(false)
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys"))
+    Configuration.stubs(:app_development_enabled?).returns(false)
+    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
 
     get :index
     assert_response :success
     assert_select "nav a[href='#{batch_connect_sessions_path}']", 0
-
-    SysRouter.unstub(:base_path)
   end
 
   test "should not create any empty links" do

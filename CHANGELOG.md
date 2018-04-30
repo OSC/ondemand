@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added simple Rake task to test cluster job submission.
+  [#358](https://github.com/OSC/ood-dashboard/issues/358)
+
 ### Changed
 - Updated `ood_core` gem to support `Script#native` arrays for the Torque
   adapter.
