@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.26.2] - 2018-05-14
 ### Fixed
 - Updated `ood_core` gem to 0.5.1 to patch VNC template bug.
 
@@ -371,7 +373,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.26.1...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.26.2...HEAD
+[1.26.2]: https://github.com/OSC/ood-dashboard/compare/v1.26.1...v1.26.2
 [1.26.1]: https://github.com/OSC/ood-dashboard/compare/v1.26.0...v1.26.1
 [1.26.0]: https://github.com/OSC/ood-dashboard/compare/v1.25.1...v1.26.0
 [1.25.1]: https://github.com/OSC/ood-dashboard/compare/v1.25.0...v1.25.1
