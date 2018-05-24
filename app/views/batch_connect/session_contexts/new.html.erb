@@ -12,6 +12,12 @@
   </li>
 </ol>
 
+<%=
+  render(
+    partial: "shared/insufficient_quota",
+    locals: { quotas: @my_quotas }
+  )
+%>
 
 <%- if @session && @session.errors.any? -%>
   <div class="alert alert-danger alert-dismissible" role="alert">

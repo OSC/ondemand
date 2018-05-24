@@ -3,6 +3,14 @@
 <% end %>
 
 <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>
+
+<%=
+  render(
+    partial: "shared/insufficient_quota",
+    locals: { quotas: @my_quotas }
+  )
+%>
+
 <br>
 
 <%# This assumes @motd_file responds to `to_partial_path` %>

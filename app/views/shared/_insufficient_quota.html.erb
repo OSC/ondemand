@@ -1,0 +1,31 @@
+<%- if quotas.any?(&:insufficient?) -%>
+  <div class="alert alert-danger insufficient-quota" role="alert">
+    <div class="insufficient-quota-group">
+    <%- quotas.select(&:insufficient?).each do |quota| -%>
+      <%- unless quota.sufficient_blocks? -%>
+        <div class="insufficient-quota-resource">
+          <%=
+            render(
+              partial: "shared/insufficient_quota_resource",
+              locals: { quota: quota, resource: "block", resource_title: "disk size" }
+            )
+          %>
+        </div>
+      <%- end -%>
+      <%- unless quota.sufficient_files? -%>
+        <div class="insufficient-quota-resource">
+          <%=
+            render(
+              partial: "shared/insufficient_quota_resource",
+              locals: { quota: quota, resource: "file", resource_title: "number of files" }
+            )
+          %>
+        </div>
+      <%- end -%>
+    <%- end -%>
+    </div>
+    <footer>
+      <sup>*</sup> Please allow up to 5 minutes for these numbers to update.
+    </footer>
+  </div>
+<%- end -%>

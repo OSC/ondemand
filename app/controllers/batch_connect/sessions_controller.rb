@@ -6,6 +6,7 @@ class BatchConnect::SessionsController < ApplicationController
   def index
     @sessions = BatchConnect::Session.all
     set_app_groups
+    set_my_quotas
   end
 
   # DELETE /batch_connect/sessions/1

@@ -1,0 +1,32 @@
+<h4>
+  Nearing <%= resource_title %> limit for
+  <%= link_to quota.url, class: "text-danger", target: "_blank" do -%>
+    <strong><%= quota.path %></strong>
+  <%- end -%>
+  <small class="pull-right">
+    Updated <%= quota.last_updated_ago %> ago
+  </small>
+</h4>
+<ul class="list-unstyled">
+  <li>
+    Consider deleting or archiving files to free up disk space.
+  </li>
+  <li>
+    Current disk space used:
+    <strong><%= quota.human_total_resource_usage(resource) %></strong>
+    <%- if quota.shared? -%>
+      (<%= quota.human_resource_usage(resource) %> is yours)
+    <%- end -%>
+    &mdash;
+    Total <%= resource_title %> allowed:
+    <strong><%= quota.human_resource_limit(resource) %></strong>
+  </li>
+  <li>
+    <%=
+      render(
+        partial: "shared/insufficient_quota_progress_bar",
+        locals: { percent: quota.total_resource_usage_percent(resource) }
+      )
+    %>
+  </li>
+</ul>

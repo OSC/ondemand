@@ -77,7 +77,7 @@ See the wiki page https://github.com/OSC/ood-dashboard/wiki/Message-of-the-Day
 
 See the wiki page https://github.com/OSC/ood-dashboard/wiki/Site-Wide-Announcement
 
-## Safari Warning
+### Safari Warning
 
 We currently display an alert message at the top of the Dashboard mentioning
 that we don't currently support the Safari browser. This is because of an issue
@@ -98,6 +98,96 @@ You can do this by modifying the `.env.local` file as such:
 # Set this to disable Safari + Basic Auth warning
 DISABLE_SAFARI_BASIC_AUTH_WARNING=1
 ```
+
+### Disk Quota Warnings
+
+We currently support displaying warnings to users on the Dashboard if their
+disk quota is nearing its limit. This requires an auto-updated (it is
+recommended to update this file every **5 minutes** with a cronjob) JSON file
+that lists all user quotas. The JSON schema for version `1` is given as:
+
+```json
+{
+  "version": 1,
+  "timestamp": 1525361263,
+  "quotas": [
+    {
+      ...
+    },
+    {
+      ...
+    }
+  ]
+}
+```
+
+Where `version` defines the version of the JSON schema used, `timestamp`
+defines when this file was generated, and `quotas` is a list of quota objects
+(see below).
+
+You can configure the Dashboard to use this JSON file (or files) by setting the
+environment variable `OOD_QUOTA_PATH` as a colon-delimited list of all JSON
+file paths.
+
+The default threshold for displaying the warning is at 95% (`0.95`), but this
+can be changed with the environment variable `OOD_QUOTA_THRESHOLD`.
+
+An example is given as:
+
+```shell
+# /etc/ood/config/apps/dashboard/env
+
+OOD_QUOTA_PATH=/path/to/quota1.json:/path/to/quota2.json
+OOD_QUOTA_THRESHOLD=0.80
+```
+
+#### Individual User Quota
+
+If the quota is defined as a `user` quota, then it applies to only disk
+resources used by the user alone. This is the default type of quota object and
+is given in the following format:
+
+```json
+{
+  "path": "/path/to/volume1",
+  "user": "user1",
+  "total_block_usage": 1000,
+  "block_limit": 2000,
+  "total_file_usage": 5,
+  "file_limit": 10
+}
+```
+
+**Warning: A block must be equal to 1 KB for proper conversions.**
+
+#### Individual Fileset Quota
+
+If the quota is defined as a `fileset` quota, then it applies to all disk
+resources used underneath a given volume. This requires the object to be
+repeated for **each user** that uses disk resources under this given volume.
+The format is given as:
+
+```json
+{
+  "type": "fileset",
+  "user": "user1",
+  "path": "/path/to/volume2",
+  "block_usage": 500,
+  "total_block_usage": 1000,
+  "block_limit": 2000,
+  "file_usage": 1,
+  "total_file_usage": 5,
+  "file_limit": 10
+}
+```
+
+Where `block_usage` and `file_usage` are the disk resource usages attributed to
+the specified user only.
+
+*Note: For each user with resources under this fileset, the above object will
+be repeated with just `user`, `block_usage`, and `file_usage` changing.*
+
+**Warning: A block must be equal to 1 KB for proper conversions.**
 
 ## API
 

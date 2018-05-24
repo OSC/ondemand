@@ -103,6 +103,7 @@ GEM
     multi_json (1.13.1)
     nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
+    oj (3.6.0)
     ood_appkit (1.0.3)
       addressable (~> 2.4)
       lograge (~> 0.3)
@@ -203,6 +204,7 @@ DEPENDENCIES
   jquery-datatables-rails (~> 3.4)
   jquery-rails
   mocha (~> 1.1)
+  oj (~> 3.6)
   ood_appkit (~> 1.0)
   ood_core (~> 0.1)
   ood_support (~> 0.0.2)
