@@ -158,7 +158,7 @@ is given in the following format:
 }
 ```
 
-**Warning: A block must be equal to 1 KB for proper conversions.**
+*Warning: A block must be equal to 1 KB for proper conversions.*
 
 #### Individual Fileset Quota
 
@@ -187,7 +187,7 @@ the specified user only.
 *Note: For each user with resources under this fileset, the above object will
 be repeated with just `user`, `block_usage`, and `file_usage` changing.*
 
-**Warning: A block must be equal to 1 KB for proper conversions.**
+*Warning: A block must be equal to 1 KB for proper conversions.*
 
 ## API
 
