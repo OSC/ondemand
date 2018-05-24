@@ -137,8 +137,8 @@ An example is given as:
 ```shell
 # /etc/ood/config/apps/dashboard/env
 
-OOD_QUOTA_PATH=/path/to/quota1.json:/path/to/quota2.json
-OOD_QUOTA_THRESHOLD=0.80
+OOD_QUOTA_PATH="/path/to/quota1.json:/path/to/quota2.json"
+OOD_QUOTA_THRESHOLD="0.80"
 ```
 
 #### Individual User Quota
