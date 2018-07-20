@@ -78,7 +78,7 @@
 
         <%= f.select :batch_host, OODClusters.map { |cluster| [ "#{cluster.metadata.title}", cluster.id ] }, { label: "Cluster:", prompt: "Select a cluster..." }, { class: "selectpicker", id: "batch_host_select", required: true } %>
 
-        <%= f.text_field :script_name, label: 'Script Name:', required: true, id: "script-path-field" %>
+        <%= f.text_field :script_name, label: 'Script Name:', required: true, readonly: true, id: "script-path-field" %>
 
         <%= f.hidden_field :staging_template_dir, required: true, id: 'staging-template-dir' %>
 
