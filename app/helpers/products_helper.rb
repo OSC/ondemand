@@ -1,3 +1,5 @@
+require 'redcarpet'
+
 module ProductsHelper
   def products_title(type)
     if type == :dev
@@ -80,4 +82,10 @@ module ProductsHelper
         cmd: "<code>#{display}</code>"
     })
   end
+
+  def render_markdown(file_path)
+    rc = ::Redcarpet::Markdown.new(Redcarpet::Render::HTML.new())
+    file_path.realpath.to_s + rc.render(file_path.read)
+  end
+
 end

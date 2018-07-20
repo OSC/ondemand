@@ -216,6 +216,20 @@ class Product
     git_status
   end
 
+  def readme?
+    self.router.path.entries.each do |path|
+      if path.file? && path.readable? && path.basename.to_s =~ /readme.*/i
+        @readme = path
+        return true
+      end
+    end
+    return false
+  end
+
+  def readme
+    return readme? ? @readme : nil
+  end
+
   private
 
     # Writes out a manifest to the router path unless the repository has been newly cloned.
@@ -304,4 +318,5 @@ class Product
       results[:untracked] = files.select {|v| /^\?\? .+$/ =~ v}
       results
     end
+
 end
