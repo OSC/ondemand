@@ -189,7 +189,7 @@ class WorkflowsController < ApplicationController
     end
   end
 
-  # PUT /workflows/1/copy
+  # POST /workflows/1/copy
   def copy
     set_workflow
 
