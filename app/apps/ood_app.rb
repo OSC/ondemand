@@ -180,7 +180,7 @@ class OodApp
     elsif manifest.icon =~ /fa:\/\//
       manifest.icon
     else
-      "fa://gear"
+      "fa://cog"
     end
   end
 
@@ -246,7 +246,7 @@ class OodApp
   # @return [Boolean] true if Gemfile.lock has specified gem name
   def has_gem?(gemname)
     # FIXME: we want to make this public, test it, and add functionality to make it
-    # work whether the app has a Gemfile.lock or just a Gemfile. 
+    # work whether the app has a Gemfile.lock or just a Gemfile.
     # see ood_app_test.rb
     has_gemfile? && bundler_helper.has_gem?(gemname)
   end
