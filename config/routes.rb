@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     member do
       put 'submit'
       put 'stop'
-      put 'copy'
+      post 'copy'
     end
   end
 

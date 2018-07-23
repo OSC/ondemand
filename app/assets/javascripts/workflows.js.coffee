@@ -142,7 +142,7 @@ $(window).focus ->
 @update_copy_button = (id) ->
   if id?
     $("#copy_button").attr("href", Routes.copy_workflow_path(id))
-    $("#copy_button").data("method", "PUT")
+    $("#copy_button").data("method", "POST")
     $("#copy_button").removeAttr("disabled")
     $("#copy_button").unbind('click', false)
   else
