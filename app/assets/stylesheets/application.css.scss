@@ -8,7 +8,7 @@
 //TODO:
 // overrides for navbar-default to get the same look and feel
 // this way we could have 2 different navbars on the same app
-// one that is styled darker and tiny (navbar-inverse) and one 
+// one that is styled darker and tiny (navbar-inverse) and one
 // that is red:
 // $navbar-default-bg:  rgb(200,16,46);
 // $navbar-default-color: rgb(255, 255, 255);
@@ -108,3 +108,4 @@ pre.motd-monospaced {
 @import "products";
 @import "batch_connect/sessions";
 @import "batch_connect/session_contexts";
+@import "fa_shims";
