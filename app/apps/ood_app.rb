@@ -73,7 +73,7 @@ class OodApp
             title: path.to_s,
             description: manifest.description,
             url: OodAppkit.files.url(path: path),
-            icon_uri: "fa://folder",
+            icon_uri: "fas://folder",
             caption: caption,
             new_tab: true
           )
@@ -92,7 +92,7 @@ class OodApp
             title: "Shell Access",
             description: manifest.description,
             url: OodAppkit.shell.url,
-            icon_uri: "fa://terminal",
+            icon_uri: "fas://terminal",
             caption: caption,
             new_tab: true
           )
@@ -103,7 +103,7 @@ class OodApp
             title: "#{cluster.metadata.title || cluster.id.titleize} Shell Access",
             description: manifest.description,
             url: OodAppkit.shell.url(host: cluster.login.host),
-            icon_uri: "fa://terminal",
+            icon_uri: "fas://terminal",
             caption: caption,
             new_tab: true
           )
@@ -177,10 +177,10 @@ class OodApp
   def icon_uri
     if icon_path.file?
       app_icon_path(name, type, owner)
-    elsif manifest.icon =~ /fa:\/\//
+    elsif manifest.icon =~ /^fa[bsrl]?:\/\//
       manifest.icon
     else
-      "fa://cog"
+      "fas://cog"
     end
   end
 
