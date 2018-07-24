@@ -217,13 +217,14 @@ class Product
   end
 
   def readme?
-    self.router.path.entries.each do |path|
-      if path.file? && path.readable? && path.basename.to_s =~ /readme.*/i
-        @readme = path
-        return true
+    found_readme = false
+    self.router.path.each_child do |path|
+      if path.file? && path.readable? && path.basename.to_s =~ /^readme(.*)/i
+        @readme ||= path
+        found_readme = true
       end
     end
-    return false
+    return found_readme
   end
 
   def readme

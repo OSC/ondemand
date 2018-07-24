@@ -83,7 +83,6 @@
 </div><!-- /.row -->
 
 <% if @product.readme? %>
-<p><%= @product.router.path.realpath %></p>
 <button class="btn" data-toggle="collapse" data-target="#readme">Readme</button>
 <div id="readme" class="container collapse">
   <% if @product.readme.basename.to_s =~ /.*.md|.*.markdown/i %>
