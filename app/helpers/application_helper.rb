@@ -39,7 +39,7 @@ module ApplicationHelper
     ENV['OOD_DASHBOARD_PASSWD_URL']
   end
 
-  def fa_icon(icon, fa_style = "fas")
+  def fa_icon(icon, fa_style: "fas")
     content_tag(:i, "", class: [fa_style, "fa-#{icon}", "fa-fw", "app-icon"] , title: "FontAwesome icon specified: #{icon}")
   end
 
@@ -47,10 +47,9 @@ module ApplicationHelper
     if app.icon_path.file?
       image_tag app_icon_path(app.name, app.type, app.owner), class: 'app-icon', title: app.icon_path
     else # default to font awesome icon
-      if app.manifest.icon =~ /^fa[bsrl]?:\/\/(.*)/
+      if app.manifest.icon =~ /^(fa[bsrl]?):\/\/(.*)/
         icon = $1
-        app.manifest.icon =~ /^(.*):\/\//
-        style = $1
+        style = $2
         fa_icon(icon, style)
       else
         fa_icon("cog")
@@ -59,17 +58,8 @@ module ApplicationHelper
   end
 
   def icon_tag(icon_uri)
-    case icon_uri.scheme
-    when "fa"
-      fa_icon(icon_uri.host, "fa")
-    when "fas"
-      fa_icon(icon_uri.host, "fas")
-    when "far"
-      fa_icon(icon_uri.host, "far")
-    when "fab"
-      fa_icon(icon_uri.host, "fab")
-    when "fal"
-      fa_icon(icon_uri.host, "fal")
+    if %w(fa fas far fab fal).include?(icon_uri.scheme)
+      fa_icon(icon_uri.host, icon_uri.scheme)
     else
       image_tag icon_uri.to_s, class: "app-icon", title: icon_uri.to_s
     end
