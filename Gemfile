@@ -38,7 +38,7 @@ end
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
-gem 'therubyracer', platforms: :ruby
+# gem 'therubyracer', platforms: :ruby
 gem 'bootstrap-sass', '3.3'
 gem 'font-awesome-sass', '~> 4.7.0'
 gem 'autoprefixer-rails'
