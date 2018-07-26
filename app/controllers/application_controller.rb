@@ -53,10 +53,8 @@ class ApplicationController < ActionController::Base
   # an insufficient disk resource
   def set_my_quotas
     @my_quotas =
-      Quota.find(OodSupport::User.new).map do |quota|
-        SufficientQuotaDecorator.new(quota)
-      end.map do |quota|
-        QuotaPresenter.new(quota)
+      Quota.find(::Configuration.quota_paths, OodSupport::User.new).map do |quota|
+        QuotaPresenter.new(quota, threshold: ::Configuration.quota_threshold)
       end
   end
 end

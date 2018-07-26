@@ -15,7 +15,7 @@
     Current disk space used:
     <strong><%= quota.human_total_resource_usage(resource) %></strong>
     <%- if quota.shared? -%>
-      (<%= quota.human_resource_usage(resource) %> is yours)
+      (<%= quota.human_user_resource_usage(resource) %> is yours)
     <%- end -%>
     &mdash;
     Total <%= resource_title %> allowed:

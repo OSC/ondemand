@@ -14,7 +14,7 @@ class Quota
 
   # Disk space used by user for this volume
   # @return [Integer] blocks used by user
-  attr_reader :block_usage
+  attr_reader :user_block_usage
 
   # Disk space used by all users this quota encompasses for this volume
   # @return [Integer] total blocks used
@@ -26,7 +26,7 @@ class Quota
 
   # Number of files owned by user for this volume
   # @return [Integer] files owned by user
-  attr_reader :file_usage
+  attr_reader :user_file_usage
 
   # Number of files owned by all users this quota encompasses for this volume
   # @return [Integer] total files owned
@@ -40,6 +40,14 @@ class Quota
   # @return [Time] when quota generated
   attr_reader :updated_at
 
+  # Number of files allowed over limit
+  # @return [Integer] file grace
+  attr_reader :file_grace
+
+  # Number of blocks allowed over limit
+  # @return [Integer] disk grace
+  attr_reader :disk_grace
+
   class << self
     # Get quota objects for all users in JSON file(s)
     def all(opts = {})
@@ -47,11 +55,11 @@ class Quota
     end
 
     # Get quota objects only for requested user in JSON file(s)
-    def find(user, opts = {})
+    def find(quota_paths, user, opts = {})
       user  = user && user.to_s
       opts  = opts.to_h.compact.symbolize_keys
-      paths = opts.fetch(:paths, Configuration.quota_paths)
-      paths = Array.wrap(paths).map { |p| Pathname.new p }
+      paths = Array.wrap(quota_paths).map { |p| Pathname.new p }
+      logger = opts.fetch(:logger, Rails.logger)
 
       quotas = []
       paths.each do |path|
@@ -60,7 +68,7 @@ class Quota
         when 0..1
           quotas += find_v1(user, json)
         else
-          Rails.logger.error("Invalid version specified for quota file: '#{path}'")
+          logger.error("Invalid version specified for quota file: '#{path}'")
         end
       end
       quotas
@@ -99,9 +107,11 @@ class Quota
     @file_limit  = params.fetch(:file_limit).to_i
     @total_block_usage = params.fetch(:total_block_usage).to_i
     @total_file_usage  = params.fetch(:total_file_usage).to_i
-    @block_usage = params.fetch(:block_usage, @total_block_usage).to_i
-    @file_usage  = params.fetch(:file_usage, @total_file_usage).to_i
+    @user_block_usage = params.fetch(:block_usage, @total_block_usage).to_i
+    @user_file_usage  = params.fetch(:file_usage, @total_file_usage).to_i
     @updated_at = Time.at(params.fetch(:updated_at).to_i)
+    @file_grace = params.fetch(:file_grace, 0).to_i # future functionality
+    @disk_grace = params.fetch(:disk_grace, 0).to_i # future functionality
   end
 
   # Whether quota reporting is shared for this volume amongst other users
@@ -109,4 +119,5 @@ class Quota
   def shared?
     type != :user
   end
+
 end
