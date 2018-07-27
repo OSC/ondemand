@@ -52,9 +52,8 @@ class ApplicationController < ActionController::Base
   # Set a list of my quotas which can be used to display warnings if there is
   # an insufficient disk resource
   def set_my_quotas
-    @my_quotas =
-      Quota.find(::Configuration.quota_paths, OodSupport::User.new).map do |quota|
-        QuotaPresenter.new(quota, threshold: ::Configuration.quota_threshold)
-      end
+    @my_quotas = []
+    ::Configuration.quota_paths.each { |path| @my_quotas += Quota.find(path, OodSupport::User.new) }
+    @my_quotas
   end
 end
