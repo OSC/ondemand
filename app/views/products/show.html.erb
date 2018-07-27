@@ -83,18 +83,23 @@
 </div><!-- /.row -->
 
 <% if @product.readme? %>
-<button class="btn" data-toggle="collapse" data-target="#readme">Readme</button>
-<div id="readme" class="container collapse">
+<hr />
+<div class="container row">
+  <button class="btn" data-toggle="collapse" data-target=".readme">Toggle Readme</button>
+  <pre class="readme collapse" aria-expanded="true" style="float: right;"><%= link_to @product.readme.to_s, OodAppkit.editor.edit(path: @product.readme).to_s, target: '_blank', title: 'Edit Readme' %></pre>
+</div>
+<!-- <hr class="readme collapse" /> -->
+<div id="readme" class="readme container row collapse">
   <% if @product.readme.basename.to_s =~ /.*.md|.*.markdown/i %>
-    <%= render_markdown(@product.readme).html_safe %>
+    <%= OodAppkit.markdown.render(@product.readme.read).html_safe %>
   <% else %>
-    <%= @product.readme.read %>
+    <pre><%= @product.readme.read %></pre>
   <% end %>
-
 </div>
 <% end %>
 
 <% unless @product.valid?(:show_app) %>
+<br />
 <div class="alert alert-danger">
   <p>Please fix the errors below:</p>
   <ul class="rails-bootstrap-forms-error-summary">

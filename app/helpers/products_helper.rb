@@ -83,9 +83,4 @@ module ProductsHelper
     })
   end
 
-  def render_markdown(file_path)
-    rc = ::Redcarpet::Markdown.new(Redcarpet::Render::HTML.new())
-    file_path.realpath.to_s + rc.render(file_path.read)
-  end
-
 end
