@@ -58,7 +58,6 @@ gem 'data-confirm-modal', '~> 1.2'
 gem 'rails_12factor', group: :production
 gem 'mocha', '~> 1.1', group: :test
 gem "spring", group: :test
-gem "oj", "~> 3.6"
 
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'
