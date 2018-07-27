@@ -63,7 +63,7 @@ class OodApp
           title: "Home Directory",
           description: manifest.description,
           url: OodAppkit.files.url(path: Dir.home),
-          icon_uri: icon_uri,
+          icon_uri: "fas://home",
           caption: caption,
           new_tab: true
         )
