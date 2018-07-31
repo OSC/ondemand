@@ -7,6 +7,7 @@ class Product
   attr_accessor :found
   attr_accessor :title
   attr_accessor :description
+  attr_accessor :icon
   attr_accessor :git_remote
 
   validates :name, presence: true
@@ -125,6 +126,7 @@ class Product
     if persisted?
       @title ||= app.title
       @description ||= app.manifest.description
+      @icon ||= app.manifest.icon
       @git_remote ||= get_git_remote
     end
   end
@@ -163,6 +165,7 @@ class Product
   def update(attributes)
     @title = attributes[:title] if attributes[:title]
     @description = attributes[:description] if attributes[:description]
+    @icon = attributes[:icon] if attributes[:icon]
     @git_remote = attributes[:git_remote] if attributes[:git_remote]
     if self.valid?
       write_manifest
@@ -224,7 +227,7 @@ class Product
     def write_manifest
       manifest = Manifest.load( app.manifest_path )
 
-      manifest = manifest.merge({ name: title, description: description })
+      manifest = manifest.merge({ name: title, description: description, icon: icon})
 
       manifest.save( app.manifest_path ) if (!title.blank? || !description.blank?) || !app.manifest_path.exist?
 

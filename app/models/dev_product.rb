@@ -25,4 +25,5 @@ class DevProduct < Product
   def permissions?
     false
   end
+
 end

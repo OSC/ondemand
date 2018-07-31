@@ -1,6 +1,33 @@
-<div class="field">
-  <%= f.text_field :title, placeholder: "My OnDemand App" %>
+<div class="col-md-3">
+  <% if product.app.icon_path.file? %>
+    <p class="text-center">
+      <%= image_tag app_icon_path(product.app.name, product.app.type, product.app.owner), class: 'app-icon', title: product.app.icon_path %>
+    </p>
+    <p>This app uses the icon.png shown. To use a FontAwesome icon, remove or rename the icon.png file in <a href="<%= OodAppkit.files.url(path: product.app.path) %>">this</a> directory.</p>
+  <% else %>
+    <% if product.app.manifest.icon =~ /^(fa[bsrl]?):\/\/(.*)/ %>
+      <% icon = $2; style = $1 %>
+      <p class="text-center">
+        <%= fa_icon(icon, fa_style: style) %>
+      </p>
+    <% else %>
+      <p class="text-center">
+        <%= fa_icon("cog", fa_style: "fas") %>
+      </p>
+    <% end %>
+    <div class="field">
+      <%= f.text_field :icon, placeholder: "fas://cog" %>
+      <div class="checkbox">
+        <label><input type="checkbox" /> Use FontAwesome 4 aliases</label>
+      </div>
+    </div>
+  <% end %>
 </div>
-<div class="field">
-  <%= f.text_area :description, placeholder: "Description should go here.\n\nFormat using **markdown**.", help: "Format using <a href='https://guides.github.com/features/mastering-markdown/' target='_blank'>markdown</a>".html_safe, rows: 10 %>
+<div class="col-md-9">
+  <div class="field">
+    <%= f.text_field :title, placeholder: "My OnDemand App" %>
+  </div>
+  <div class="field">
+    <%= f.text_area :description, placeholder: "Description should go here.\n\nFormat using **markdown**.", help: "Format using <a href='https://guides.github.com/features/mastering-markdown/' target='_blank'>markdown</a>".html_safe, rows: 10 %>
+  </div>
 </div>
