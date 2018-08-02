@@ -11,7 +11,7 @@ class OodAppLink
     @title       = config.fetch(:title, "No title set").to_s
     @description = config.fetch(:description, "").to_s
     @url         = config.fetch(:url, "").to_s
-    @icon_uri    = URI(config.fetch(:icon_uri, "fa://gear").to_s)
+    @icon_uri    = URI(config.fetch(:icon_uri, "fas://cog").to_s)
     @caption     = config.fetch(:caption, nil)
     @new_tab     = !!config.fetch(:new_tab, true)
   end

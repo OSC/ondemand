@@ -48,7 +48,7 @@ gem 'thor', '0.19.1'
 # Extra third-party gems
 gem 'dotenv-rails', '~> 2.0'
 gem 'bootstrap-sass', '~> 3.3'
-gem 'font-awesome-sass', '~> 4.6'
+gem 'font-awesome-sass', '5.0.9' # later versions require sassc which fails on bundle install
 gem 'redcarpet', '~> 3.3'
 gem 'browser', '~> 2.2'
 gem 'addressable', '~> 2.4'

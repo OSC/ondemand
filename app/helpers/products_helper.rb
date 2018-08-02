@@ -49,9 +49,9 @@ module ProductsHelper
     html = %Q(<span data-toggle="popover" data-trigger="hover" data-placement="bottom" title="Git Status" data-content="<strong>Staged:</strong> #{staged}<br><strong>Unstaged:</strong> #{unstaged}<br><strong>Untracked:</strong> #{untracked}#{"<br>Please commit any changes or add necessary files to <code>.gitignore</code>" if total != 0}" data-html="true">)
     html += %Q(<small>[#{version} S:#{staged} U:#{unstaged} ?:#{untracked}]</small> )
     if total == 0
-      html += %Q(<span class="text-success">#{icon('check')}</span>)
+      html += %Q(<span class="text-success">#{icon('fas', 'check')}</span>)
     else
-      html += %Q(<span class="text-danger">#{icon('times')}</span>)
+      html += %Q(<span class="text-danger">#{icon('fas', 'times')}</span>)
     end
     html += %Q(</span>)
     html.html_safe

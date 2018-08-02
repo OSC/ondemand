@@ -1,12 +1,12 @@
 <li class="dropdown" title="Help" >
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-    <i class="fa fa-question-circle"></i><span class="hidden-sm hidden-sm-nav"> Help</span><span class="caret"></span>
+    <i class="fas fa-question-circle"></i><span class="hidden-sm hidden-sm-nav"> Help</span><span class="caret"></span>
   </a>
   <ul class="dropdown-menu">
     <%= nav_link("Contact Support", "question-circle", support_url, target: "_blank") %>
     <%= nav_link("Online Documentation", "info-circle", docs_url, target: "_blank") %>
     <%= nav_link("Change HPC Password", "key", passwd_url, target: "_blank") %>
-    <%= nav_link("Configure Two-Factor Authentication", "mobile", configure_2fa_url, target: "_blank") %>
-    <%= nav_link("Restart Web Server", "refresh", restart_url) %>
+    <%= nav_link("Configure Two-Factor Authentication", "mobile-alt", configure_2fa_url, target: "_blank") %>
+    <%= nav_link("Restart Web Server", "sync", restart_url) %>
   </ul>
 </li>
