@@ -1,14 +1,30 @@
+<style>
+  .iconpicker .iconpicker-items {
+    max-height: 98px;
+  }
+</style>
 <script>
   $(document).ready(function() {
 
-    var usesOld = $('#product-icon').hasClass("fa")
-    var iconSetting = usesOld ? {icons: FA4iconinfo} : {icons: FA5iconinfo};
-    $('#uri-box').iconpicker(iconSetting);
+    function faClassToURI(classname) {
+      var re = /^(fa[bsrl]?) fa-(.*)/;
+      var result = re.exec(classname);
+      if (result) {
+        return result[1] + "://" + result[2];
+      } else {
+        return classname;
+      }
+    };
+
+    var usesOld = $('#product-icon').hasClass("fa");
+    var iconSetting = usesOld ? {icons: FA4iconinfo, placement: "inline"} : {icons: FA5iconinfo, placement: "inline"};
+    $('#icp').iconpicker(iconSetting);
     $('#alias').prop('checked', usesOld);
 
-    $('#uri-box').on('iconpickerSelected', function(event) {
-      $('#product-icon').get(0).className = 'app-icon fa-fw ' +
-        event.iconpickerInstance.options.fullClassFormatter(event.iconpickerValue);
+    $('#icp').on('iconpickerSelected', function(event) {
+      classname = event.iconpickerInstance.options.fullClassFormatter(event.iconpickerValue);
+      $('#product-icon').get(0).className = 'app-icon fa-fw ' + classname;
+      $('#uri-box').val(faClassToURI(classname));
     });
 
     $('#uri-box').on('change', function(event) {
@@ -18,11 +34,11 @@
     });
 
     $('#alias').on('change', function() {
-      $('#uri-box').data('iconpicker').destroy();
+      $('#icp').data('iconpicker').destroy();
       if ($('#alias').is(":checked")) {
-        $('#uri-box').iconpicker({icons: FA4iconinfo});
+        $('#icp').iconpicker({icons: FA4iconinfo, placement: "inline"});
       } else {
-        $('#uri-box').iconpicker({icons: FA5iconinfo});
+        $('#icp').iconpicker({icons: FA5iconinfo, placement: "inline"});
       }
     })
   });
@@ -51,6 +67,7 @@
         <% end %>
         <div class="field">
           <%= f.text_field :icon, placeholder: "fas://cog", id: "uri-box" %>
+          <p id="icp" class="text-center"><!-- inline icon picker placeholder --></p>
           <div class="checkbox">
             <label><input id="alias" type="checkbox" /> Use Font Awesome 4 icons</label>
           </div>
