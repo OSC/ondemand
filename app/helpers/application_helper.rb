@@ -39,8 +39,8 @@ module ApplicationHelper
     ENV['OOD_DASHBOARD_PASSWD_URL']
   end
 
-  def fa_icon(icon, fa_style: "fas")
-    content_tag(:i, "", class: [fa_style, "fa-#{icon}", "fa-fw", "app-icon"] , title: "FontAwesome icon specified: #{icon}")
+  def fa_icon(icon, fa_style: "fas", id: "")
+    content_tag(:i, "", id: id, class: [fa_style, "fa-#{icon}", "fa-fw", "app-icon"] , title: "FontAwesome icon specified: #{icon}")
   end
 
   def app_icon_tag(app)

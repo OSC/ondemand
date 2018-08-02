@@ -1,33 +1,72 @@
-<div class="col-md-3">
-  <% if product.app.icon_path.file? %>
-    <p class="text-center">
-      <%= image_tag app_icon_path(product.app.name, product.app.type, product.app.owner), class: 'app-icon', title: product.app.icon_path %>
-    </p>
-    <p>This app uses the icon.png shown. To use a FontAwesome icon, remove or rename the icon.png file in <a href="<%= OodAppkit.files.url(path: product.app.path) %>">this</a> directory.</p>
-  <% else %>
-    <% if product.app.manifest.icon =~ /^(fa[bsrl]?):\/\/(.*)/ %>
-      <% icon = $2; style = $1 %>
-      <p class="text-center">
-        <%= fa_icon(icon, fa_style: style) %>
-      </p>
-    <% else %>
-      <p class="text-center">
-        <%= fa_icon("cog", fa_style: "fas") %>
-      </p>
-    <% end %>
-    <div class="field">
-      <%= f.text_field :icon, placeholder: "fas://cog" %>
-      <div class="checkbox">
-        <label><input type="checkbox" /> Use FontAwesome 4 aliases</label>
+<script>
+  $(document).ready(function() {
+
+    var usesOld = $('#product-icon').hasClass("fa")
+    var iconSetting = usesOld ? {icons: FA4iconinfo} : {icons: FA5iconinfo};
+    $('#uri-box').iconpicker(iconSetting);
+    $('#alias').prop('checked', usesOld);
+
+    $('#uri-box').on('iconpickerSelected', function(event) {
+      $('#product-icon').get(0).className = 'app-icon fa-fw ' +
+        event.iconpickerInstance.options.fullClassFormatter(event.iconpickerValue);
+    });
+
+    $('#uri-box').on('change', function(event) {
+      if ($('#uri-box').val() === "") {
+        $('#product-icon').get(0).className = 'app-icon fa-fw fas fa-cog';
+      }
+    });
+
+    $('#alias').on('change', function() {
+      $('#uri-box').data('iconpicker').destroy();
+      if ($('#alias').is(":checked")) {
+        $('#uri-box').iconpicker({icons: FA4iconinfo});
+      } else {
+        $('#uri-box').iconpicker({icons: FA5iconinfo});
+      }
+    })
+  });
+</script>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3">
+      <% if product.app.icon_path.file? %>
+        <p class="text-center">
+          <%= image_tag app_icon_path(product.app.name, product.app.type, product.app.owner), class: 'app-icon', title: product.app.icon_path %>
+        </p>
+        <small>This app uses the icon.png shown. To use a FontAwesome icon, remove or rename the icon.png file in <a href="<%= OodAppkit.files.url(path: product.app.path) %>">this</a> directory.</small>
+      <% else %>
+        <% if product.app.manifest.icon =~ /^(fa[bsrl]?):\/\/(.*)/ %>
+          <% icon = $2; style = $1 %>
+          <p class="text-center">
+            <%= fa_icon(icon, fa_style: style, id: "product-icon") %>
+          </p>
+        <% else %>
+          <p class="text-center">
+            <%= fa_icon("cog", fa_style: "fas", id: "product-icon") %>
+          </p>
+          <div class="alert alert-warning">
+            <small class="">There is no icon specified for this app. Default is fas://cog.</small>
+          </div>
+        <% end %>
+        <div class="field">
+          <%= f.text_field :icon, placeholder: "fas://cog", id: "uri-box" %>
+          <div class="checkbox">
+            <label><input id="alias" type="checkbox" /> Use Font Awesome 4 icons</label>
+          </div>
+        </div>
+        <div class="alert alert-info">
+          <small>To use a custom icon, add an icon.png file in <a class="alert-link" href="<%= OodAppkit.files.url(path: product.app.path) %>">this</a> directory.</small>
+        </div>
+      <% end %>
+    </div>
+    <div class="col-md-9">
+      <div class="field">
+        <%= f.text_field :title, placeholder: "My OnDemand App" %>
+      </div>
+      <div class="field">
+        <%= f.text_area :description, placeholder: "Description should go here.\n\nFormat using **markdown**.", help: "Format using <a href='https://guides.github.com/features/mastering-markdown/' target='_blank'>markdown</a>".html_safe, rows: 10 %>
       </div>
     </div>
-  <% end %>
-</div>
-<div class="col-md-9">
-  <div class="field">
-    <%= f.text_field :title, placeholder: "My OnDemand App" %>
-  </div>
-  <div class="field">
-    <%= f.text_area :description, placeholder: "Description should go here.\n\nFormat using **markdown**.", help: "Format using <a href='https://guides.github.com/features/mastering-markdown/' target='_blank'>markdown</a>".html_safe, rows: 10 %>
   </div>
 </div>
