@@ -12,8 +12,8 @@
 <%= bootstrap_form_for(@product, as: :product, url: product_path(@product.name, type: @type)) do |f| %>
     <%= render "form_git", f: f, type: @type, product: @product if @product.git_repo? %>
     <%= render "form_manifest", f: f, product: @product %>
-    <div class="actions">
-      <%= f.submit 'Save' %>
+    <div class="container-fluid actions">
+      <%= f.submit 'Save', class: 'btn btn-primary pull-right' %>
     </div>
 <% end %>
 
