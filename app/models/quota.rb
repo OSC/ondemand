@@ -3,7 +3,16 @@ class InvalidQuotaFile < StandardError; end
 # This describes disk quota utilization for a given user and volume
 class Quota
 
+  begin
+    BLOCK_SIZE = ::Configuration.block_size
+  rescue NameError
+    BLOCK_SIZE = 1024
+  end
+
   attr_reader :type, :path, :user, :resource_type, :user_usage, :total_usage, :limit, :grace, :updated_at
+
+  # for number_to_human_size & number_to_human
+  include ActionView::Helpers::NumberHelper
 
   class << self
 
@@ -29,12 +38,12 @@ class Quota
       q = []
       time = params["timestamp"]
       params["quotas"].each do |quota|
-        q += create(quota.merge "updated_at" => time) if !user || user == quota["user"]
+        q += create_both_quota_types(quota.merge "updated_at" => time) if !user || user == quota["user"]
       end
       q
     end
 
-    def create(params)
+    def create_both_quota_types(params)
       params = params.to_h.compact.symbolize_keys
       file_quota = Quota.new(
         type:   params.fetch(:type, :user).to_sym,
@@ -67,7 +76,7 @@ class Quota
   # @option params [#to_sym] :type (:user) type of quota (usually "fileset")
   # @option params [#to_s] :path path to volume
   # @option params [#to_s] :user user name
-  # @option params [#to_s] :resource "file" or "block"
+  # @option params [#to_s] :resource_type "file" or "block"
   # @option params [#to_i] :user_usage number of resource units used by user
   # @option params [#to_i] :total_usage total resource units used
   # @option params [#to_i] :limit resource unit limit
@@ -90,7 +99,7 @@ class Quota
   # Whether quota reporting is shared for this volume amongst other users
   # @return [Boolean] is quota for this volume shared
   def shared?
-    type != :user
+    @type != :user
   end
 
   def sufficient?(threshold: 0.95)
@@ -111,6 +120,18 @@ class Quota
   # @return [Integer] percent total block usage
   def percent_total_usage
     @total_usage * 100 / @limit
+  end
+
+  def to_s
+    if @resource_type == "file"
+      msg = "Using #{number_to_human(@total_usage).downcase} files of quota #{number_to_human(@limit).downcase} files"
+      return msg unless self.shared?
+      return msg + " (#{number_to_human(@user_usage).downcase} files are yours)"
+    elsif @resource_type == "block"
+      msg = "Using #{number_to_human_size(@total_usage * BLOCK_SIZE)} of quota #{number_to_human_size(@limit * BLOCK_SIZE)}"
+      return msg unless self.shared?
+      return msg + " (#{number_to_human_size(@user_usage * BLOCK_SIZE)} are yours)"
+    end
   end
 
 end
