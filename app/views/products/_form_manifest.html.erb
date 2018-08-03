@@ -16,8 +16,9 @@
       }
     };
 
+    var stdConfig = {placement: "inline", templates: {iconpickerItem: '<div role="button" class="iconpicker-item"><i></i></div>'}};
     var usesOld = $('#product-icon').hasClass("fa");
-    var iconSetting = usesOld ? {icons: FA4iconinfo, placement: "inline"} : {icons: FA5iconinfo, placement: "inline"};
+    var iconSetting = usesOld ? $.extend({icons: FA4iconinfo}, stdConfig) : $.extend({icons: FA5iconinfo, placement: "inline"}, stdConfig);
     $('#icp').iconpicker(iconSetting);
     $('#alias').prop('checked', usesOld);
 
@@ -36,9 +37,9 @@
     $('#alias').on('change', function() {
       $('#icp').data('iconpicker').destroy();
       if ($('#alias').is(":checked")) {
-        $('#icp').iconpicker({icons: FA4iconinfo, placement: "inline"});
+        $('#icp').iconpicker($.extend({icons: FA4iconinfo, placement: "inline"}, stdConfig));
       } else {
-        $('#icp').iconpicker({icons: FA5iconinfo, placement: "inline"});
+        $('#icp').iconpicker($.extend({icons: FA5iconinfo, placement: "inline"}, stdConfig));
       }
     })
   });
