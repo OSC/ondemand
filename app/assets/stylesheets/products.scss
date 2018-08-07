@@ -24,3 +24,15 @@
     top: 50%;
   }
 }
+
+#readme > table > tbody > tr > td,
+#readme > table > thead > tr > th {
+    border: black 1px solid;
+    padding: 2px;
+}
+
+#readme > h1,
+#readme > h2 {
+    border-bottom: 1px solid #eaecef;
+    padding-bottom: 4px;
+}

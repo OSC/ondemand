@@ -140,7 +140,7 @@
     <div class="page-header"><h3><%= link_to @product.readme.basename.to_s, OodAppkit.editor.edit(path: @product.readme).to_s, target: '_blank', title: "Edit #{@product.readme.basename.to_s}", style: "color: inherit; text-decoration: inherit;" %></h3></div>
     <div id="readme">
       <% if @product.readme.basename.to_s =~ /.*.md|.*.markdown/i %>
-        <%= OodAppkit.markdown.render(@product.readme.read).html_safe %>
+        <%= ProductsHelper::RenderReadmeMarkdown.renderer(app_path: @product.app.path).render(@product.readme.read).html_safe %>
       <% else %>
         <pre><%= @product.readme.read %></pre>
       <% end %>
