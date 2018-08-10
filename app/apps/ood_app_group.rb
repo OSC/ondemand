@@ -37,4 +37,12 @@ class OodAppGroup
 
     titles.map { |t| h.has_key?(t) ? h[t] : nil }.compact
   end
+  
+  def self.order(titles:[], groups:[])
+      h = Hash[groups.map {|g| [g.title, g]}]
+      unselected =[]
+      selected = []
+      titles.each { |t| h.has_key?(t) ? selected.push(h[t]) : unselected.push(h[t]) }
+      selected.concat(unselected.sort)
+  end
 end
