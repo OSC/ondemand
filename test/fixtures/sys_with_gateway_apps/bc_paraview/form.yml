@@ -1,0 +1,15 @@
+---
+title: "Paraview"
+cluster: "quick"
+description: |
+  This app will launch Paraview on an Owens **shared node**. You will be able
+  to interact with Paraview through a VNC session.
+attributes:
+  bc_vnc_resolution:
+    required: true
+  bc_account:
+    help: "You can leave this blank if **not** in multiple projects."
+form:
+  - bc_num_hours
+  - bc_account
+  - bc_vnc_resolution
