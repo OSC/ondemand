@@ -137,7 +137,7 @@ class DashboardControllerTest < ActionController::TestCase
     assert_select "nav a[href='#{batch_connect_sessions_path}']", 0
   end
 
-# gate
+  #test whitelist mode 
   test "should not create app menus if NavConfig.categories is empty and whitelist is enabled" do
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
