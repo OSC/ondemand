@@ -83,9 +83,9 @@
 </div><!-- /.row -->
 
 <% if @product.permissions? %>
-<h3>Permissions</h3>
 <div class="row">
-  <div class="col-sm-6">
+  <div class="col-md-offset-2 col-md-10 col-sm-12 col-xs-12"><div class="page-header"><h3>Permissions</h3></div></div>
+  <div class="col-md-offset-2 col-md-5 col-sm-6 col-xs-12">
     <table class="table table-striped">
       <thead>
         <tr>
@@ -106,8 +106,8 @@
     <p>
       <%= link_to 'New User Permission', new_product_permission_path(type: @type, product_name: @product.name, context: :user), class: 'btn btn-default' %>
     </p>
-  </div><!-- /.col-sm-6 -->
-  <div class="col-sm-6">
+  </div>
+  <div class="col-md-5 col-sm-6 col-xs-12">
     <table class="table table-striped">
       <thead>
         <tr>
@@ -128,15 +128,13 @@
     <p>
       <%= link_to 'New Group Permission', new_product_permission_path(type: @type, product_name: @product.name, context: :group), class: 'btn btn-default' %>
     </p>
-  </div><!-- /.col-sm-6 -->
-</div><!-- /.row -->
-
-<hr />
+  </div>
+</div>
 <% end %>
 
 <% if @product.readme? %>
 <div class="row">
-  <div class="col-md-offset-2 col-md-10 col-sm-10 col-xs-12">
+  <div class="col-md-offset-2 col-md-10 col-sm-12 col-xs-12">
     <div class="page-header"><h3><%= link_to @product.readme.basename.to_s, OodAppkit.editor.edit(path: @product.readme).to_s, target: '_blank', title: "Edit #{@product.readme.basename.to_s}", style: "color: inherit; text-decoration: inherit;" %></h3></div>
     <div id="readme">
       <% if @product.readme.basename.to_s =~ /.*.md|.*.markdown/i %>
@@ -147,11 +145,11 @@
     </div>
   </div>
 </div>
-<hr />
 <% end %>
 
+<hr />
+
 <% unless @product.valid?(:show_app) %>
-<br />
 <div class="alert alert-danger">
   <p>Please fix the errors below:</p>
   <ul class="rails-bootstrap-forms-error-summary">
