@@ -44,7 +44,8 @@ module ProductsHelper
     
     def image(link, title, alt_text)
       link = OodAppkit.files.api(path: @app_path.to_s + '/' + link).to_s if @app_path && relative?(link)
-      "<img src=\"#{link}\" title=\"#{title}\" alt=\"#{alt_text}\" style=\"max-width:100%;\"/>"
+      content = "<img src=\"#{link}\" title=\"#{title}\" alt=\"#{alt_text}\" style=\"max-width:100%;\"/>"
+      link(link, title, content)
     end
     
     def header(text, header_level)
