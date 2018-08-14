@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+- Update version of sprockets for a security fix.
+
 ## [1.6.2] - 2018-04-30
 ### Fixed
 - Updated dependencies that included security fixes.
