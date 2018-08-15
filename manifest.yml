@@ -3,4 +3,5 @@ name: Job Composer
 category: Jobs
 description: |-
   Job Composer allows the creation and submission of batch jobs
-icon: fa://tasks
+icon: fas://magic
+
