@@ -24,7 +24,11 @@ module SmartAttributes
     # Value of attribute
     # @return [String] attribute value
     def value
-      opts[:value].to_s
+      if opts[:value].class.to_s.match(/UploadedFile/)
+        opts[:value]
+      else
+        opts[:value].to_s
+      end
     end
 
     def value=(other)
