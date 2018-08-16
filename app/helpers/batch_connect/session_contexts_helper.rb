@@ -4,29 +4,30 @@ module BatchConnect::SessionContextsHelper
 
     widget = attrib.widget
 
-    kwargs = {
+    field_options = attrib.opts.reject { |k,v|
+      %i(widget options html_options checked_value unchecked_value).include?(k)
+    }.merge({
       label: attrib.label(fmt: format),
       help:  OodAppkit.markdown.render(attrib.help(fmt: format)).html_safe,
       required: attrib.required
-    }
+    })
+    html_options = attrib.opts.fetch(:html_options, {})
+    all_options = field_options.merge(html_options)
+
+    checked_value = attrib.opts.fetch(:checked_value, "1")
+    unchecked_value = attrib.opts.fetch(:unchecked_value, "0")
 
     case widget
     when "select"
-      form.select attrib.id, attrib.opts.fetch(:options, []), **kwargs
-    when "number_field"
-      kwargs[:min]  = attrib.opts.fetch(:min, nil)
-      kwargs[:max]  = attrib.opts.fetch(:max, nil)
-      kwargs[:step] = attrib.opts.fetch(:step, nil)
-      form.number_field attrib.id, **kwargs
+      form.select attrib.id, attrib.opts.fetch(:options, []), field_options, html_options
     when "resolution_field"
-      resolution_field(form, attrib.id, **kwargs)
+      resolution_field(form, attrib.id, all_options)
     when "check_box"
-      form.form_group attrib.id, help: kwargs[:help] do
-        form.check_box attrib.id, label: kwargs[:label]
+      form.form_group attrib.id, help: field_options[:help] do
+        form.check_box attrib.id, all_options, checked_value, unchecked_value
       end
     else
-      kwargs[:pattern] = attrib.opts.fetch(:pattern, nil) # text, date, search, url ,tel, email, and password
-      form.send widget, attrib.id, **kwargs
+      form.send widget, attrib.id, all_options
     end
   end
 
