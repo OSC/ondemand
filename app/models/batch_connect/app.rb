@@ -220,7 +220,13 @@ module BatchConnect
       # Parse an ERB and Yaml file
       def read_yaml_erb(path:, binding: nil)
         contents = path.read
-        contents = ERB.new(contents, nil, "-").result(binding) if path.extname == ".erb"
+
+        if path.extname == ".erb"
+          erb = ERB.new(contents, nil, "-")
+          erb.filename = path.to_s
+          contents = erb.result(binding)
+        end
+
         YAML.safe_load(contents).to_h.deep_symbolize_keys
       end
 
