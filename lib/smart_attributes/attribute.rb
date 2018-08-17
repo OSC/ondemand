@@ -55,6 +55,10 @@ module SmartAttributes
       opts[:help].to_s
     end
 
+    def help_html(fmt: nil)
+      OodAppkit.markdown.render(help(fmt: fmt)).html_safe
+    end
+
     # Whether this attribute is required
     # @return [Boolean] is required
     def required
@@ -79,6 +83,38 @@ module SmartAttributes
     # @return [String] attribute value
     def to_s
       value
+    end
+
+    # Hash of html options for Rails form helpers
+    # @return [Hash] key value pairs are html options
+    def html_options
+      opts.fetch(:html_options, {})
+    end
+
+    # Array of choices for select fields used to build <option> tags
+    # @return [Array] choices in form [name, value], [name, value]
+    def select_choices
+      opts.fetch(:options, [])
+    end
+
+    # String value if this attribute is "checked" (relevant for checkboxes)
+    # @return [String] checked value
+    def checked_value
+      opts.fetch(:checked_value, "1")
+    end
+
+    # String value if this attribute is "unchecked" (relevant for checkboxes)
+    # @return [String] unchecked value
+    def unchecked_value
+      opts.fetch(:unchecked_value, "0")
+    end
+
+    # Array of reserved keys for options that are used as methods in this class
+    # for the value of these options, the methods in this class should be used,
+    # instead of the underlying option
+    # @return [Array<String>] option keys
+    def reserved_keys
+      %i(widget fixed options html_options checked_value unchecked_value required label help)
     end
   end
 end
