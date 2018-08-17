@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+- Updated dependencies using `bundle update`
+
 ## [1.26.2] - 2018-05-14
 ### Fixed
 - Updated `ood_core` gem to 0.5.1 to patch VNC template bug.
