@@ -3,15 +3,8 @@ module BatchConnect::SessionContextsHelper
     return "" if attrib.fixed?
 
     widget = attrib.widget
-
-    field_options = attrib.opts.reject { |k,v|
-      attrib.reserved_keys.include?(k)
-    }.merge({
-      label: attrib.label(fmt: format),
-      help:  attrib.help_html(fmt: format),
-      required: attrib.required
-    })
-    all_options = field_options.merge(attrib.html_options)
+    field_options = attrib.field_options(fmt: format)
+    all_options = attrib.all_options(fmt: format)
 
     case widget
     when "select"

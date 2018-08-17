@@ -91,6 +91,29 @@ module SmartAttributes
       opts.fetch(:html_options, {})
     end
 
+    # Hash of field options for Rails form helpers
+    # these are assumed to be everything that isn't already defined
+    # as a method on this class, but is in the opts hash, except for
+    # label, help, and required, which are defined methods on this class
+    # but should be called to be included.
+    #
+    # @return [Hash] key value pairs are field options
+    def field_options(fmt: nil)
+      opts.reject { |k,v|
+        reserved_keys.include?(k)
+      }.merge({
+        label: label(fmt: fmt),
+        help:  help_html(fmt: fmt),
+        required: required
+      })
+    end
+
+    # Hash of both field options and html options
+    # @return [Hash] key value pairs are field and html options
+    def all_options(fmt: nil)
+      field_options(fmt: fmt).merge(html_options)
+    end
+
     # Array of choices for select fields used to build <option> tags
     # @return [Array] choices in form [name, value], [name, value]
     def select_choices
@@ -108,6 +131,8 @@ module SmartAttributes
     def unchecked_value
       opts.fetch(:unchecked_value, "0")
     end
+
+    private
 
     # Array of reserved keys for options that are used as methods in this class
     # for the value of these options, the methods in this class should be used,
