@@ -3,30 +3,20 @@ module BatchConnect::SessionContextsHelper
     return "" if attrib.fixed?
 
     widget = attrib.widget
-
-    kwargs = {
-      label: attrib.label(fmt: format),
-      help:  OodAppkit.markdown.render(attrib.help(fmt: format)).html_safe,
-      required: attrib.required
-    }
+    field_options = attrib.field_options(fmt: format)
+    all_options = attrib.all_options(fmt: format)
 
     case widget
     when "select"
-      form.select attrib.id, attrib.opts.fetch(:options, []), **kwargs
-    when "number_field"
-      kwargs[:min]  = attrib.opts.fetch(:min, nil)
-      kwargs[:max]  = attrib.opts.fetch(:max, nil)
-      kwargs[:step] = attrib.opts.fetch(:step, nil)
-      form.number_field attrib.id, **kwargs
+      form.select attrib.id, attrib.select_choices, field_options, attrib.html_options
     when "resolution_field"
-      resolution_field(form, attrib.id, **kwargs)
+      resolution_field(form, attrib.id, all_options)
     when "check_box"
-      form.form_group attrib.id, help: kwargs[:help] do
-        form.check_box attrib.id, label: kwargs[:label]
+      form.form_group attrib.id, help: field_options[:help] do
+        form.check_box attrib.id, all_options, attrib.checked_value, attrib.unchecked_value
       end
     else
-      kwargs[:pattern] = attrib.opts.fetch(:pattern, nil) # text, date, search, url ,tel, email, and password
-      form.send widget, attrib.id, **kwargs
+      form.send widget, attrib.id, all_options
     end
   end
 
