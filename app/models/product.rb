@@ -216,19 +216,8 @@ class Product
     git_status
   end
 
-  def readme?
-    found_readme = false
-    self.router.path.each_child do |path|
-      if path.file? && path.readable? && path.basename.to_s =~ /^readme(.*)/i
-        @readme ||= path
-        found_readme = true
-      end
-    end
-    return found_readme
-  end
-
   def readme
-    return readme? ? @readme : nil
+    @readme ||= ProductReadme.new(self)
   end
 
   private

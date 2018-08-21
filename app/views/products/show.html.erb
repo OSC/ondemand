@@ -84,7 +84,9 @@
 
 <% if @product.permissions? %>
 <div class="row">
-  <div class="col-md-offset-2 col-md-10 col-sm-12 col-xs-12"><div class="page-header"><h3>Permissions</h3></div></div>
+  <div class="col-md-offset-2 col-md-10 col-sm-12 col-xs-12">
+    <div class="page-header"><h3>Permissions</h3></div>
+  </div>
   <div class="col-md-offset-2 col-md-5 col-sm-6 col-xs-12">
     <table class="table table-striped">
       <thead>
@@ -132,17 +134,15 @@
 </div>
 <% end %>
 
-<% if @product.readme? %>
+<% if @product.readme.exist? %>
 <div class="row">
   <div class="col-md-offset-2 col-md-10 col-sm-12 col-xs-12">
-    <div class="page-header"><h3><%= link_to @product.readme.basename.to_s, OodAppkit.editor.edit(path: @product.readme).to_s, target: '_blank', title: "Edit #{@product.readme.basename.to_s}", style: "color: inherit; text-decoration: inherit;" %></h3></div>
-    <div id="readme">
-      <% if @product.readme.basename.to_s =~ /.*.md|.*.markdown/i %>
-        <%= ProductsHelper::RenderReadmeMarkdown.renderer(app_path: @product.app.path).render(@product.readme.read).html_safe %>
-      <% else %>
-        <pre><%= @product.readme.read %></pre>
-      <% end %>
+    <div class="page-header">
+      <h3>
+        <%= link_to @product.readme.title, @product.readme.edit_link.to_s, target: '_blank', title: "Edit #{@product.readme.title}", style: "color: inherit; text-decoration: inherit;" %>
+      </h3>
     </div>
+    <%= @product.readme.html %>
   </div>
 </div>
 <% end %>
