@@ -60,6 +60,24 @@ class ConfigurationSingleton
     end
   end
 
+  # The paths to the JSON files that store the quota information
+  # @return [Array<Pathname>] quota paths
+  def quota_paths
+    ENV.fetch("OOD_QUOTA_PATH", "").strip.split(":").map {|p| Pathname.new(p)}
+  end
+
+  # The threshold for determining if there is sufficient quota remaining
+  # @return [Float] threshold factor
+  def quota_threshold
+    ENV.fetch("OOD_QUOTA_THRESHOLD", 0.95).to_f
+  end
+
+  # The number of bytes per block in the system
+  # @return [Integer] number of bytes per block
+  def block_size
+    1024
+  end
+
   # Load the dotenv local files first, then the /etc dotenv files and
   # the .env and .env.production or .env.development files.
   #
@@ -172,4 +190,3 @@ class ConfigurationSingleton
     ! FALSE_VALUES.include?(value)
   end
 end
-

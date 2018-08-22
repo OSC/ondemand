@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Support parsing disk quota information that follows a pre-defined JSON
+  schema.
+- Display disk quota warnings to user if near limit.
+  [#366](https://github.com/OSC/ood-dashboard/issues/366)
 
 ### Added
 - Can specify html options for batch connect form fields in form.yml using

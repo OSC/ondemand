@@ -16,6 +16,7 @@ class BatchConnect::SessionContextsController < ApplicationController
     end
 
     set_app_groups
+    set_my_quotas
   end
 
   # POST /batch_connect/<app_token>/session_contexts

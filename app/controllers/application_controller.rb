@@ -48,4 +48,12 @@ class ApplicationController < ActionController::Base
     logger.warn "Error parsing announcements: #{e.message}"
     @announcements = []
   end
+
+  # Set a list of my quotas which can be used to display warnings if there is
+  # an insufficient disk resource
+  def set_my_quotas
+    @my_quotas = []
+    ::Configuration.quota_paths.each { |path| @my_quotas += Quota.find(path, OodSupport::User.new) }
+    @my_quotas
+  end
 end
