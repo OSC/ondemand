@@ -17,49 +17,49 @@ use a database.
    latest version of the dashboard app (make sure the app directory's name is
    `dashboard`):
 
-   ```sh
-   scl enable git19 -- git clone https://github.com/OSC/ood-dashboard.git dashboard
-   cd dashboard
-   scl enable git19 -- git checkout tags/v1.26.1
-   ```
+    ```sh
+    scl enable git19 -- git clone https://github.com/OSC/ood-dashboard.git dashboard
+    cd dashboard
+    scl enable git19 -- git checkout tags/v1.26.1
+    ```
 
 2. Install the app for a production environment:
 
-   ```sh
-   RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
-   ```
+    ```sh
+    RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+    ```
 
-   this will setup a default Open OnDemand install.
+    this will setup a default Open OnDemand install.
 
 3. Copy the built app directory to the deployment directory, and start the
    server. i.e.:
 
-   ```sh
-   sudo mkdir -p /var/www/ood/apps/sys/dashboard
-   sudo cp -r . /var/www/ood/apps/sys/dashboard
-   ```
+    ```sh
+    sudo mkdir -p /var/www/ood/apps/sys/dashboard
+    sudo cp -r . /var/www/ood/apps/sys/dashboard
+    ```
 
 ## Updating to a New Stable Version
 
 1. Navigate to the app's build directory and check out the latest version:
 
-   ```sh
-   cd dashboard # cd to build directory
-   scl enable git19 -- git fetch
-   scl enable git19 -- git checkout tags/v1.26.1
-   ```
+    ```sh
+    cd dashboard # cd to build directory
+    scl enable git19 -- git fetch
+    scl enable git19 -- git checkout tags/v1.26.1
+    ```
 
 2. Update the app for a production environment:
 
-   ```sh
-   RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
-   ```
+    ```sh
+    RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+    ```
 
 3. Copy the built app directory to the deployment directory:
 
-   ```sh
-   sudo rsync -rlptv --delete . /var/www/ood/apps/sys/dashboard
-   ```
+    ```sh
+    sudo rsync -rlptv --delete . /var/www/ood/apps/sys/dashboard
+    ```
 
 ## iHPC App Development
 

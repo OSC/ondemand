@@ -40,7 +40,7 @@
     </div>
     <hr />
     <p>
-      <strong>Title:</strong>
+      <strong>Name:</strong>
       <%= @product.app.title %>
     </p>
     <p>
@@ -82,25 +82,12 @@
 
 </div><!-- /.row -->
 
-<% unless @product.valid?(:show_app) %>
-<div class="alert alert-danger">
-  <p>Please fix the errors below:</p>
-  <ul class="rails-bootstrap-forms-error-summary">
-    <% @product.errors.full_messages.each do |msg| %>
-    <li><%= msg.html_safe %></li>
-    <% end %>
-  </ul>
-</div>
-<% end %>
-
-<hr />
-
 <% if @product.permissions? %>
-
-<h3>Permissions</h3>
-
 <div class="row">
-  <div class="col-sm-6">
+  <div class="col-md-offset-2 col-md-10 col-sm-12 col-xs-12">
+    <div class="page-header"><h3>Permissions</h3></div>
+  </div>
+  <div class="col-md-offset-2 col-md-5 col-sm-6 col-xs-12">
     <table class="table table-striped">
       <thead>
         <tr>
@@ -121,8 +108,8 @@
     <p>
       <%= link_to 'New User Permission', new_product_permission_path(type: @type, product_name: @product.name, context: :user), class: 'btn btn-default' %>
     </p>
-  </div><!-- /.col-sm-6 -->
-  <div class="col-sm-6">
+  </div>
+  <div class="col-md-5 col-sm-6 col-xs-12">
     <table class="table table-striped">
       <thead>
         <tr>
@@ -143,10 +130,34 @@
     <p>
       <%= link_to 'New Group Permission', new_product_permission_path(type: @type, product_name: @product.name, context: :group), class: 'btn btn-default' %>
     </p>
-  </div><!-- /.col-sm-6 -->
-</div><!-- /.row -->
+  </div>
+</div>
+<% end %>
+
+<% if @product.readme.exist? %>
+<div class="row">
+  <div class="col-md-offset-2 col-md-10 col-sm-12 col-xs-12">
+    <div class="page-header">
+      <h3>
+        <%= link_to @product.readme.title, @product.readme.edit_url.to_s, target: '_blank', title: "Edit #{@product.readme.title}", style: "color: inherit; text-decoration: inherit;" %>
+      </h3>
+    </div>
+    <%= @product.readme.html %>
+  </div>
+</div>
+<% end %>
 
 <hr />
+
+<% unless @product.valid?(:show_app) %>
+<div class="alert alert-danger">
+  <p>Please fix the errors below:</p>
+  <ul class="rails-bootstrap-forms-error-summary">
+    <% @product.errors.full_messages.each do |msg| %>
+    <li><%= msg.html_safe %></li>
+    <% end %>
+  </ul>
+</div>
 <% end %>
 
 <%= link_to 'Back', products_path(type: @type), class: 'btn btn-default' %>

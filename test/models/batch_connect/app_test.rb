@@ -29,6 +29,16 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     }
   end
 
+  test "form.yml.erb can use __FILE__" do
+    Dir.mktmpdir { |dir|
+      r = PathRouter.new(dir)
+      r.path.join("form.yml.erb").write("---\ntitle: <%= File.expand_path(File.dirname(__FILE__)) %>")
+
+      app = BatchConnect::App.new(router: r)
+      assert_equal dir, app.title, "When rendering form.yml.erb __FILE__ doesn't return correct value"
+    }
+  end
+
   test "sub_apps_list doesn't crash when local directory inaccessible" do
     begin
       # place in begin/ensure so we can delete the directory after setting

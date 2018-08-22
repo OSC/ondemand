@@ -216,6 +216,10 @@ class Product
     git_status
   end
 
+  def readme
+    @readme ||= ProductReadme.new(self)
+  end
+
   private
 
     # Writes out a manifest to the router path unless the repository has been newly cloned.
@@ -304,4 +308,5 @@ class Product
       results[:untracked] = files.select {|v| /^\?\? .+$/ =~ v}
       results
     end
+
 end

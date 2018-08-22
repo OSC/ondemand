@@ -12,6 +12,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Display disk quota warnings to user if near limit.
   [#366](https://github.com/OSC/ood-dashboard/issues/366)
 
+### Added
+- Can specify html options for batch connect form fields in form.yml using
+  `html_options` key [#376](https://github.com/OSC/ood-dashboard/issues/376)
+- Can specify other form field helper options for batch connect form fields in
+  form.yml by adding more key/value pairs to the attribute section
+  [#369](https://github.com/OSC/ood-dashboard/issues/369)
+
+### Changed
+- Updated dependencies using `bundle update`
+
+### Fixed
+- When rendering form.yml.erb and submit.yml.erb `__FILE__` is now properly set
+  to the path to the yaml file being rendered
+  [#369](https://github.com/OSC/ood-dashboard/issues/369)
+
 ## [1.26.2] - 2018-05-14
 ### Fixed
 - Updated `ood_core` gem to 0.5.1 to patch VNC template bug.

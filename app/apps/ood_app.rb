@@ -63,7 +63,7 @@ class OodApp
           title: "Home Directory",
           description: manifest.description,
           url: OodAppkit.files.url(path: Dir.home),
-          icon_uri: icon_uri,
+          icon_uri: "fas://home",
           caption: caption,
           new_tab: true
         )
@@ -73,7 +73,7 @@ class OodApp
             title: path.to_s,
             description: manifest.description,
             url: OodAppkit.files.url(path: path),
-            icon_uri: "fa://folder",
+            icon_uri: "fas://folder",
             caption: caption,
             new_tab: true
           )
@@ -92,7 +92,7 @@ class OodApp
             title: "Shell Access",
             description: manifest.description,
             url: OodAppkit.shell.url,
-            icon_uri: "fa://terminal",
+            icon_uri: "fas://terminal",
             caption: caption,
             new_tab: true
           )
@@ -103,7 +103,7 @@ class OodApp
             title: "#{cluster.metadata.title || cluster.id.titleize} Shell Access",
             description: manifest.description,
             url: OodAppkit.shell.url(host: cluster.login.host),
-            icon_uri: "fa://terminal",
+            icon_uri: "fas://terminal",
             caption: caption,
             new_tab: true
           )
@@ -177,10 +177,10 @@ class OodApp
   def icon_uri
     if icon_path.file?
       app_icon_path(name, type, owner)
-    elsif manifest.icon =~ /fa:\/\//
+    elsif manifest.icon =~ /^fa[bsrl]?:\/\//
       manifest.icon
     else
-      "fa://gear"
+      "fas://cog"
     end
   end
 
@@ -246,7 +246,7 @@ class OodApp
   # @return [Boolean] true if Gemfile.lock has specified gem name
   def has_gem?(gemname)
     # FIXME: we want to make this public, test it, and add functionality to make it
-    # work whether the app has a Gemfile.lock or just a Gemfile. 
+    # work whether the app has a Gemfile.lock or just a Gemfile.
     # see ood_app_test.rb
     has_gemfile? && bundler_helper.has_gem?(gemname)
   end
