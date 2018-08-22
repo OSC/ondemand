@@ -23,7 +23,7 @@ class ProductReadme
   
   # include Rails.application.routes.url_helpers
   
-  def edit_link
+  def edit_url
     OodAppkit.editor.edit(path: @path)
   end
   
