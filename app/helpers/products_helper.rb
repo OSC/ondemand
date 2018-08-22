@@ -1,4 +1,5 @@
 module ProductsHelper
+
   def products_title(type)
     if type == :dev
       "My Sandbox Apps (Development)"
@@ -80,4 +81,5 @@ module ProductsHelper
         cmd: "<code>#{display}</code>"
     })
   end
+
 end
