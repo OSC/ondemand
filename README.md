@@ -16,50 +16,50 @@ Explorer and Shell apps installed and a cluster config added to
    latest version of the activejobs app (make sure the app directory's name is
    `activejobs`):
 
-   ```sh
-   scl enable git19 -- git clone https://github.com/OSC/ood-activejobs.git activejobs
-   cd activejobs
-   scl enable git19 -- git checkout tags/v1.6.2
-   ```
+    ```sh
+    scl enable git19 -- git clone https://github.com/OSC/ood-activejobs.git activejobs
+    cd activejobs
+    scl enable git19 -- git checkout tags/v1.6.2
+    ```
 
 2. Install the app for a production environment:
 
-   ```sh
-   RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
-   ```
+    ```sh
+    RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+    ```
 
-   this will setup a default Open OnDemand install.
+    this will setup a default Open OnDemand install.
 
 3. Copy the built app directory to the deployment directory, and start the
    server. i.e.:
 
-   ```sh
-   sudo mkdir -p /var/www/ood/apps/sys/activejobs
-   sudo cp -r . /var/www/ood/apps/sys/activejobs
-   ```
+    ```sh
+    sudo mkdir -p /var/www/ood/apps/sys/activejobs
+    sudo cp -r . /var/www/ood/apps/sys/activejobs
+    ```
 
 ## Updating to a New Stable Version
 
 1. Navigate to the app's build directory and check out the latest version:
 
-   ```sh
-   cd activejobs # cd to build directory
-   scl enable git19 -- git fetch
-   scl enable git19 -- git checkout tags/v1.6.2
-   ```
+    ```sh
+    cd activejobs # cd to build directory
+    scl enable git19 -- git fetch
+    scl enable git19 -- git checkout tags/v1.6.2
+    ```
 
 2. Update the app for a production environment:
 
-   ```sh
-   RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
-   ```
+    ```sh
+    RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+    ```
 
 3. Copy the built app directory to the deployment directory:
 
-   ```sh
-   sudo mkdir -p /var/www/ood/apps/sys/activejobs
-   sudo rsync -rlptv --delete . /var/www/ood/apps/sys/activejobs
-   ```
+    ```sh
+    sudo mkdir -p /var/www/ood/apps/sys/activejobs
+    sudo rsync -rlptv --delete . /var/www/ood/apps/sys/activejobs
+    ```
 
 ## Usage
 
