@@ -59,7 +59,7 @@ wss.on('connection', function connection (ws) {
     if (match[2]) dir = decodeURIComponent(match[2]);
   }
 
-  if (host === 'localhost') {
+  if (host === 'localhost' && !process.env.SSH_LOCALHOST) {
     cmd = 'bash';
     args = ['-l'];
     cwd = dir ? dir : process.env.HOME;
