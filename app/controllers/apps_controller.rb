@@ -16,6 +16,7 @@ class AppsController < ApplicationController
     else
       @title = nil
       @groups = OodAppGroup.groups_for(apps: nav_usr_apps)
+      set_my_quotas
     end
   end
 
