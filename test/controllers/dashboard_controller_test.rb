@@ -141,7 +141,7 @@ class DashboardControllerTest < ActionController::TestCase
   test "should not create app menus if NavConfig.categories is empty and whitelist is enabled" do
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
-    NavConfig.stubs(:categories_whitelist).returns(true)
+    NavConfig.stubs(:categories_whitelist?).returns(true)
     NavConfig.stubs(:categories).returns([])
     
     get :index
@@ -152,7 +152,7 @@ class DashboardControllerTest < ActionController::TestCase
   test "should exclude gateway apps if NavConfig.categories is set to default and whitelist is enabled" do
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
-    NavConfig.stubs(:categories_whitelist).returns(true)
+    NavConfig.stubs(:categories_whitelist?).returns(true)
     NavConfig.stubs(:categories).returns(["Files", "Jobs", "Clusters", "Interactive Apps"])
 
     get :index
@@ -163,7 +163,7 @@ class DashboardControllerTest < ActionController::TestCase
   test "should include gateway and System Installed apps in alphabetical order in end if NavConfig.categories is set to default listing and whitelist is disabled" do
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
-    NavConfig.stubs(:categories_whitelist).returns(false)
+    NavConfig.stubs(:categories_whitelist?).returns(false)
     NavConfig.stubs(:categories).returns(["Files", "Jobs", "Clusters", "Interactive Apps"])
     
     get :index
@@ -180,7 +180,7 @@ class DashboardControllerTest < ActionController::TestCase
   test "should include all apps in alphabetical order if NavConfig.categories is set to nil or empty array and whitelist is disabled" do
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
-    NavConfig.stubs(:categories_whitelist).returns(false)
+    NavConfig.stubs(:categories_whitelist?).returns(false)
     NavConfig.stubs(:categories).returns([])
 
     get :index

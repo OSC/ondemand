@@ -37,14 +37,12 @@ class OodAppGroup
     titles.map { |t| h.has_key?(t) ? h[t] : nil }.compact
   end
   
-  # select a subset of groups by the specified array of titles
-  # maintaining the order specified by the titles array
+  # Append groups not in the specified array in alphabetical order at the end of
+  # subset of groups in the titles array maintaining the order specified by the titles array
   #
-  # append groups not in the  specified array at the end
-  # in alphabetical order
-  #
-  # This way we can get a list of deployed sys apps, then group them by category
-  # then select only the categories we want to display in the menu
+  # This way we can get a list of deployed sys apps, then group them by category,
+  # then display categories in titles array in specific order,
+  # then display other categories in alphabetical order
   def self.order(titles:[], groups:[])
       h = Hash[groups.map {|g| [g.title, g]}]
       titles.concat(h.keys.sort).uniq.map { |t| h.has_key?(t) ? h[t] : nil }.compact 
