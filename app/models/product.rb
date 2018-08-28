@@ -93,14 +93,6 @@ class Product
     rescue Errno::EACCES
       false # user does not have permission to create this directory
     end
-
-    def trash_path
-      router.base_path.join(".trash")
-    end
-
-    def trash_contents
-      trash_path.directory? ? trash_path.children : []
-    end
   end
 
   def app
@@ -171,11 +163,6 @@ class Product
     else
       false
     end
-  end
-
-  def destroy
-    self.class.trash_path.mkpath
-    FileUtils.mv router.path, self.class.trash_path.join("#{Time.now.localtime.strftime('%Y%m%dT%H%M%S')}_#{name}")
   end
 
   def permissions?

@@ -73,19 +73,6 @@ class ProductsController < ApplicationController
     end
   end
 
-  # DELETE /products/1
-  # DELETE /products/1.json
-  def destroy
-    @type = params[:type].to_sym
-    @product = Product.find(@type, params[:name])
-
-    @product.destroy
-    respond_to do |format|
-      format.html { redirect_to products_url(type: @type), notice: 'Product was successfully moved to the trash.' }
-      format.json { head :no_content }
-    end
-  end
-
   # POST /create_key
   # POST /create_key.json
   def create_key

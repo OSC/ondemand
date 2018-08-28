@@ -161,20 +161,29 @@
 <% end %>
 
 <%= link_to 'Back', products_path(type: @type), class: 'btn btn-default' %>
-<%= link_to 'Delete App',
-  product_path(@product.name, type: @type),
-  method: :delete,
+
+<%= button_tag 'Delete App',
+  class: 'btn btn-danger pull-right',
   data: {
-    original_title: 'Are you ABSOLUTELY sure?',
-    confirm: '<div class="alert alert-warning">Unexpected bad things will happen if you don\'t read this!</div><p>This will move the product to the trash. Any users currently running this app will experience breaking behavior. Any past or present users of this app will be unable to access their data for this app. Be sure you know what you are doing!</p>'.html_safe,
-    verify: @product.name,
-    verify_text: 'Please type in the directory name of the app to confirm.',
-    commit: 'I understand the consequences, delete this app',
-    commit_class: 'btn-danger btn-block',
-    cancel_class: 'hide'
-  },
-  class: 'btn btn-danger pull-right'
+    toggle: 'collapse',
+    target: '#delete-panel'
+  }
 %>
+
+<div id="delete-panel" class="collapse">
+  <br />
+  <div class="panel panel-danger">
+    <div class="panel-heading">Delete this app using the terminal.</div>
+    <div class="panel-body">
+      <p>The following command moves this app to a local temporary directory and then deletes it:</p>
+<pre>APP_DIR=<%= @product.app.path %> && \
+mkdir -p $HOME/tmp && \
+mktemp -d --tmpdir=$HOME/tmp/ | \
+xargs -I % sh -c "echo % && mv $APP_DIR % && rm -rf %;"</pre>
+      <p>If it shows an error, then there may have been users running the app, causing open file handles to remain open and preventing the files from being completely deleted. But once these file handles close, the empty directory alone will remain.</p>
+    </div>
+  </div>
+</div>
 
 <div class="modal fade" id="productCliModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-lg" role="document">

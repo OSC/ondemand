@@ -7,13 +7,6 @@
   <span class="pull-right">
     <%= link_to 'Launch Shell', OodAppkit.shell.url(host: ENV['OOD_DEV_SSH_HOST'], path: product_class.router.base_path.realdirpath).to_s, target: '_blank', class: 'btn btn-default' %>
     <%= link_to 'Launch Files', OodAppkit.files.url(path: product_class.router.base_path.realdirpath).to_s, target: '_blank', class: 'btn btn-default' %>
-    <% unless product_class.trash_contents.empty? %>
-      <%= link_to "Open Trash <span class=\"badge\">#{product_class.trash_contents.size}</span>".html_safe,
-          OodAppkit.files.url(path: product_class.trash_path.realpath).to_s,
-          target: '_blank',
-          class: 'btn btn-default'
-      %>
-    <% end %>
   </span>
 </p>
 
