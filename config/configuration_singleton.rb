@@ -72,12 +72,6 @@ class ConfigurationSingleton
     ENV.fetch("OOD_QUOTA_THRESHOLD", 0.95).to_f
   end
 
-  # The number of bytes per block in the system
-  # @return [Integer] number of bytes per block
-  def block_size
-    1024
-  end
-
   # Load the dotenv local files first, then the /etc dotenv files and
   # the .env and .env.production or .env.development files.
   #

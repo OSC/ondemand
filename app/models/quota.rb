@@ -3,11 +3,7 @@ class InvalidQuotaFile < StandardError; end
 # This describes disk quota utilization for a given user and volume
 class Quota
 
-  begin
-    BLOCK_SIZE = ::Configuration.block_size
-  rescue NameError
-    BLOCK_SIZE = 1024
-  end
+  BLOCK_SIZE = 1024
 
   attr_reader :type, :path, :user, :resource_type, :user_usage, :total_usage, :limit, :grace, :updated_at
 
