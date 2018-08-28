@@ -6,9 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-### Added
-- Configuration via environment variable SSH_LOCALHOST to force ssh session
-  even if the host is localhost, instead of forking a bash session
 
 ## [1.3.1] - 2018-01-10
 ### Changed

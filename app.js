@@ -59,17 +59,11 @@ wss.on('connection', function connection (ws) {
     if (match[2]) dir = decodeURIComponent(match[2]);
   }
 
-  if (host === 'localhost' && !process.env.SSH_LOCALHOST) {
-    cmd = 'bash';
-    args = ['-l'];
-    cwd = dir ? dir : process.env.HOME;
-    env = { HOME: process.env.HOME };
-  } else {
-    cmd = 'ssh';
-    args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
-    cwd = process.env.HOME;
-    env = {};
-  }
+  cmd = 'ssh';
+  args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
+  cwd = process.env.HOME;
+  env = {};
+    
   term = pty.spawn(cmd, args, {
     name: 'xterm-256color',
     cols: 80,
