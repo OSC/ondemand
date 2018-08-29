@@ -1,7 +1,9 @@
 ---
 v2:
   metadata:
-    title: "Owens"
+    # here we omit the title so that the title of the cluster is forced to be
+    # the titleized id of the cluster
+    # title: "Owens"
     url: "https://www.osc.edu/supercomputing/computing/owens"
     hidden: false
   login:

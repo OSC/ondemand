@@ -100,7 +100,7 @@ class OodApp
       else
         login_clusters.map do |cluster|
           OodAppLink.new(
-            title: "#{cluster.metadata.title || cluster.id.titleize} Shell Access",
+            title: "#{cluster.metadata.title || cluster.id.to_s.titleize} Shell Access",
             description: manifest.description,
             url: OodAppkit.shell.url(host: cluster.login.host),
             icon_uri: "fas://terminal",
