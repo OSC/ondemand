@@ -137,7 +137,7 @@ module SmartAttributes
     # Array of reserved keys for options that are used as methods in this class
     # for the value of these options, the methods in this class should be used,
     # instead of the underlying option
-    # @return [Array<String>] option keys
+    # @return [Array<Symbol>] option keys
     def reserved_keys
       %i(widget fixed options html_options checked_value unchecked_value required label help)
     end
