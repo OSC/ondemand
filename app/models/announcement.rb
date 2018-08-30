@@ -1,6 +1,6 @@
 class Announcement
   # List of valid announcement types
-  TYPES = %i(warning info success danger)
+  TYPES = [:warning, :info, :success, :danger]
 
   # @param opts [#to_h, #to_s] the announcement object or path
   # @option opts [#to_sym] :type (:warning) Type of announcement (:info,

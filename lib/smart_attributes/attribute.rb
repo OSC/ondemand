@@ -139,7 +139,7 @@ module SmartAttributes
     # instead of the underlying option
     # @return [Array<Symbol>] option keys
     def reserved_keys
-      %i(widget fixed options html_options checked_value unchecked_value required label help)
+      [:widget, :fixed, :options, :html_options, :checked_value, :unchecked_value, :required, :label, :help]
     end
   end
 end
