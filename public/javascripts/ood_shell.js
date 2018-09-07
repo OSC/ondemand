@@ -43,6 +43,9 @@ OodShell.prototype.runTerminal = function () {
     // Capture all keyboard input
     this.installKeyboard();
   };
+  
+  // Patch cursor setting for Firefox
+  this.term.options_.cursorVisible = true;
 
   // Connect terminal to sacrificial DOM node
   this.term.decorate(this.element);
