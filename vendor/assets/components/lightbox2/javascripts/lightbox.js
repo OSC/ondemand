@@ -22,8 +22,8 @@
       this.alwaysShowNavOnTouchDevices = false;
       this.fadeDuration                = 20;
       this.fitImagesInViewport         = true;
-      // this.maxWidth                    = 800;
-      // this.maxHeight                   = 600;
+      this.maxWidth                    = window.innerWidth;
+      this.maxHeight                   = window.innerHeight;
       this.positionFromTop             = 50;
       this.resizeDuration              = 20;
       this.showImageNumberLabel        = true;
