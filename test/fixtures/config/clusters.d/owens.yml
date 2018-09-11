@@ -1,54 +1,9 @@
 ---
-v1:
-  title: "Owens"
-  url: "https://www.osc.edu/supercomputing/computing/owens"
-  validators:
-    rsv_query:
-      - type: "OodAppkit::Validators::Groups"
-        data:
-          groups:
-            - "sysp"
-            - "hpcsoft"
-          allow: false
-  cluster:
-    type: "OodCluster::Cluster"
-    data:
-      hpc_cluster: true
-      servers:
-        login:
-          type: "OodCluster::Servers::Ssh"
-          data:
-            host: "owens.osc.edu"
-        resource_mgr:
-          type: "OodCluster::Servers::Torque"
-          data:
-            host: "owens-batch.ten.osc.edu"
-            lib: "/opt/torque/lib64"
-            bin: "/opt/torque/bin"
-            version: "6.0.1"
-        scheduler:
-          type: "OodCluster::Servers::Moab"
-          data:
-            host: "owens-batch.ten.osc.edu"
-            bin: "/opt/moab/bin"
-            version: "9.0.1"
-            moabhomedir: "/var/spool/moab"
-        ganglia:
-          type: "OodCluster::Servers::Ganglia"
-          data:
-            host: "ganglia.osc.edu"
-            scheme: "https://"
-            segments:
-              - "graph.php"
-            req_query:
-              c: "Owens"
-            opt_query:
-              h: "%{h}.ten.osc.edu"
-            version: "3"
-
 v2:
   metadata:
-    title: "Owens"
+    # here we omit the title so that the title of the cluster is forced to be
+    # the titleized id of the cluster
+    # title: "Owens"
     url: "https://www.osc.edu/supercomputing/computing/owens"
     hidden: false
   login:
