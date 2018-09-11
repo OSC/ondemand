@@ -6,26 +6,37 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.27.0] - 2018-09-11
 ### Added
 - Support parsing disk quota information that follows a pre-defined JSON
   schema.
+  [#366](https://github.com/OSC/ood-dashboard/issues/366)
 - Display disk quota warnings to user if near limit.
   [#366](https://github.com/OSC/ood-dashboard/issues/366)
-
-### Added
 - Can specify html options for batch connect form fields in form.yml using
-  `html_options` key [#376](https://github.com/OSC/ood-dashboard/issues/376)
+  `html_options` key
+  [#376](https://github.com/OSC/ood-dashboard/issues/376)
 - Can specify other form field helper options for batch connect form fields in
   form.yml by adding more key/value pairs to the attribute section
   [#369](https://github.com/OSC/ood-dashboard/issues/369)
 
 ### Changed
 - Updated dependencies using `bundle update`
+- Improve user messanging around using Git when cloning apps
+  [#256](https://github.com/OSC/ood-dashboard/issues/256)
+- Changed 'title' to 'name' in the Developer View
+- Upgrade Front Awesome to v5
+  [#341](https://github.com/OSC/ood-dashboard/issues/341)
+- In the Developer View replaced app delete button with instructions on how to do so from the command line
+
 
 ### Fixed
 - When rendering form.yml.erb and submit.yml.erb `__FILE__` is now properly set
   to the path to the yaml file being rendered
   [#369](https://github.com/OSC/ood-dashboard/issues/369)
+- Fixed a problem where a missing title in the cluster metadata could cause a crash in the fallback handler
+  [#395](https://github.com/OSC/ood-dashboard/issues/395)
 
 ## [1.26.2] - 2018-05-14
 ### Fixed
@@ -393,7 +404,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.26.2...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.27.0...HEAD
+[1.27.0]: https://github.com/OSC/ood-dashboard/compare/v1.26.2...v1.27.0
 [1.26.2]: https://github.com/OSC/ood-dashboard/compare/v1.26.1...v1.26.2
 [1.26.1]: https://github.com/OSC/ood-dashboard/compare/v1.26.0...v1.26.1
 [1.26.0]: https://github.com/OSC/ood-dashboard/compare/v1.25.1...v1.26.0
