@@ -6,8 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.6.3] - 2018-09-11
 ### Changed
-- Update version of sprockets for a security fix.
+- Update gem dependencies
 
 ## [1.6.2] - 2018-04-30
 ### Fixed
@@ -88,7 +89,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove OSC copyright from footer
 - Remove deprecation warnings
 
-[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.6.2...HEAD
+[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.6.3...HEAD
+[1.6.3]: https://github.com/OSC/ood-activejobs/compare/v1.6.2...v1.6.3
 [1.6.2]: https://github.com/OSC/ood-activejobs/compare/v1.6.1...v1.6.2
 [1.6.1]: https://github.com/OSC/ood-activejobs/compare/v1.6.0...v1.6.1
 [1.6.0]: https://github.com/OSC/ood-activejobs/compare/v1.5.3...v1.6.0
