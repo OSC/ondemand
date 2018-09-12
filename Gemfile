@@ -45,7 +45,7 @@ group :development do
   # gem 'spring'
 end
 
-gem "autoprefixer-rails"
+gem "autoprefixer-rails", "~> 8.4"
 gem "bootstrap-sass", "3.3.5"
 gem "bootstrap_form", "~> 2.7.0"
 gem "font-awesome-sass", "~> 4.4.0"
