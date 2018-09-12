@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2.9.1] - 2018-09-12
+### Fixed
+- Fixed setup crash due to incompatibilities between older nodejs and newer autoprefixer
+
 ## [2.9.0] - 2018-09-12
 ### Added
 - Added logging of system commands
