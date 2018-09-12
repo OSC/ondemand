@@ -3,6 +3,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2.9.0] - 2018-09-12
+### Added
+- Added logging of system commands
+[#264](https://github.com/OSC/ood-myjobs/issues/264)
+
+### Changed
+- Update gem dependencies
+- Jobs created from templates no longer have editable
+[#266](https://github.com/OSC/ood-myjobs/issues/266)
+
 ## [2.8.3] - 2018-04-06
 ### Changed
 - Update gem dependencies to patch any possible security vulnerabilities.
@@ -125,7 +135,8 @@ All notable changes to this project will be documented in this file.
 - UI enhancements
 
 
-[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.8.3...HEAD
+[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.9.0...HEAD
+[2.9.0]: https://github.com/OSC/ood-myjobs/compare/v2.8.3...v2.9.0
 [2.8.3]: https://github.com/OSC/ood-myjobs/compare/v2.8.2...v2.8.3
 [2.8.2]: https://github.com/OSC/ood-myjobs/compare/v2.8.1...v2.8.2
 [2.8.1]: https://github.com/OSC/ood-myjobs/compare/v2.8.0...v2.8.1
