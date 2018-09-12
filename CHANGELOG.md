@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.6.4] - 2018-09-12
+### Fixed
+- Fixed setup crash due to incompatibilities between older nodejs and newer autoprefixer
+
 ## [1.6.3] - 2018-09-11
 ### Changed
 - Update gem dependencies

@@ -41,7 +41,7 @@ end
 # gem 'therubyracer', platforms: :ruby
 gem 'bootstrap-sass', '3.3'
 gem 'font-awesome-sass', '~> 4.7.0'
-gem 'autoprefixer-rails'
+gem 'autoprefixer-rails', '~> 8.4'
 gem 'dotenv-rails', '~> 2.1'
 gem 'rails_12factor', group: :production
 gem 'ood_cluster', '~> 0.0.1'
