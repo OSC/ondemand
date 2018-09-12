@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.27.1] - 2018-09-12
+### Fixed
+- Fixed setup crash due to incompatibilities between older nodejs and newer autoprefixer
+
 ## [1.27.0] - 2018-09-11
 ### Added
 - Support parsing disk quota information that follows a pre-defined JSON

@@ -38,7 +38,7 @@ GEM
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
     arel (6.0.4)
-    autoprefixer-rails (9.1.1)
+    autoprefixer-rails (8.6.5)
       execjs
     bootstrap-sass (3.3.7)
       autoprefixer-rails (>= 5.2.1)
@@ -191,6 +191,7 @@ PLATFORMS
 
 DEPENDENCIES
   addressable (~> 2.4)
+  autoprefixer-rails (~> 8.4)
   bootstrap-sass (~> 3.3)
   bootstrap_form (~> 2.4)
   browser (~> 2.2)
