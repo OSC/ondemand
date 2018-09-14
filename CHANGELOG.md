@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.27.2] - 2018-09-14
+### Changed
+- Update PBS gem to v2.2.1
+
 ## [1.27.1] - 2018-09-12
 ### Fixed
 - Fixed setup crash due to incompatibilities between older nodejs and newer autoprefixer
@@ -408,7 +412,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.27.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.27.2...HEAD
+[1.27.2]: https://github.com/OSC/ood-dashboard/compare/v1.27.1...v1.27.2
+[1.27.1]: https://github.com/OSC/ood-dashboard/compare/v1.27.0...v1.27.1
 [1.27.0]: https://github.com/OSC/ood-dashboard/compare/v1.26.2...v1.27.0
 [1.26.2]: https://github.com/OSC/ood-dashboard/compare/v1.26.1...v1.26.2
 [1.26.1]: https://github.com/OSC/ood-dashboard/compare/v1.26.0...v1.26.1

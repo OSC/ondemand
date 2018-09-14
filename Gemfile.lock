@@ -112,7 +112,7 @@ GEM
     ood_core (0.5.1)
       ood_support (~> 0.0.2)
     ood_support (0.0.3)
-    pbs (2.2.0)
+    pbs (2.2.1)
       ffi (~> 1.9, >= 1.9.6)
     public_suffix (3.0.2)
     rack (1.6.10)
@@ -207,7 +207,7 @@ DEPENDENCIES
   ood_appkit (~> 1.0)
   ood_core (~> 0.1)
   ood_support (~> 0.0.2)
-  pbs (~> 2.1)
+  pbs (~> 2.2.1)
   rails (= 4.2.10)
   rails_12factor
   redcarpet (~> 3.3)
