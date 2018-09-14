@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2.9.2] - 2018-09-12
+### Fixed
+- Update to PBS gem fixes crash on job submission
+
 ## [2.9.1] - 2018-09-12
 ### Fixed
 - Fixed setup crash due to incompatibilities between older nodejs and newer autoprefixer
@@ -139,7 +143,9 @@ All notable changes to this project will be documented in this file.
 - UI enhancements
 
 
-[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.9.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.9.2...HEAD
+[2.9.2]: https://github.com/OSC/ood-myjobs/compare/v2.9.1...v2.9.2
+[2.9.1]: https://github.com/OSC/ood-myjobs/compare/v2.9.0...v2.9.1
 [2.9.0]: https://github.com/OSC/ood-myjobs/compare/v2.8.3...v2.9.0
 [2.8.3]: https://github.com/OSC/ood-myjobs/compare/v2.8.2...v2.8.3
 [2.8.2]: https://github.com/OSC/ood-myjobs/compare/v2.8.1...v2.8.2
