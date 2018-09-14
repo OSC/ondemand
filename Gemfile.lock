@@ -118,7 +118,7 @@ GEM
     osc_machete_rails (1.2.2)
       osc-machete (~> 1.2.0)
       rails (~> 4.0)
-    pbs (2.2.0)
+    pbs (2.2.1)
       ffi (~> 1.9, >= 1.9.6)
     public_suffix (3.0.3)
     rack (1.6.10)
@@ -209,7 +209,7 @@ DEPENDENCIES
   local_time (~> 1.0.3)
   ood_appkit (~> 1.0)
   osc_machete_rails (~> 1.2.2)
-  pbs (~> 2.1)
+  pbs (~> 2.2.1)
   rails (= 4.2.10)
   rails_12factor
   sass-rails (~> 5.0)
