@@ -147,6 +147,8 @@ class DashboardControllerTest < ActionController::TestCase
     get :index
     assert_response :success
     assert_select ".navbar-collapse > .nav li.dropdown[title]", 0
+    NavConfig.unstub(:categories_whitelist?)
+    NavConfig.unstub(:categories)
   end
 
   test "should exclude gateway apps if NavConfig.categories is set to default and whitelist is enabled" do
@@ -158,6 +160,8 @@ class DashboardControllerTest < ActionController::TestCase
     get :index
     assert_response :success
     assert_select ".navbar-collapse > .nav li.dropdown[title='Gateway Apps']", 0
+    NavConfig.unstub(:categories_whitelist?)
+    NavConfig.unstub(:categories)
   end
 
   test "should include gateway and System Installed apps in alphabetical order in end if NavConfig.categories is set to default listing and whitelist is disabled" do
@@ -175,6 +179,8 @@ class DashboardControllerTest < ActionController::TestCase
     assert_select  dropdown_link(4), text: "Interactive Apps"
     assert_select  dropdown_link(5), text: "Gateway Apps"
     assert_select  dropdown_link(6), text: "System Installed Apps"
+    NavConfig.unstub(:categories_whitelist?)
+    NavConfig.unstub(:categories)
   end
 
   test "should include all apps in alphabetical order if NavConfig.categories is set to nil or empty array and whitelist is disabled" do
@@ -192,6 +198,8 @@ class DashboardControllerTest < ActionController::TestCase
     assert_select dropdown_link(4), text: "Interactive Apps"
     assert_select dropdown_link(5), text: "Jobs"
     assert_select dropdown_link(6), text: "System Installed Apps"
+    NavConfig.unstub(:categories_whitelist?)
+    NavConfig.unstub(:categories)
   end
   
   test "should not create any empty links" do
