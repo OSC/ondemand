@@ -5568,7 +5568,7 @@ lib.resource.add('hterm/images/icon-96', 'image/png;base64',
 );
 
 lib.resource.add('hterm/concat/date', 'text/plain',
-'Wed, 29 Aug 2018 17:25:17 +0000'
+'Mon, 17 Sep 2018 16:13:11 +0000'
 );
 
 lib.resource.add('hterm/changelog/version', 'text/plain',
@@ -20019,7 +20019,7 @@ lib.resource.add('hterm/images/icon-96', 'image/png;base64',
 );
 
 lib.resource.add('hterm/concat/date', 'text/plain',
-'Wed, 29 Aug 2018 17:25:19 +0000'
+'Mon, 17 Sep 2018 16:13:14 +0000'
 );
 
 lib.resource.add('hterm/changelog/version', 'text/plain',

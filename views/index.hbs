@@ -20,7 +20,9 @@
       webSocketUrl      = document.URL.replace(/^http/, 'ws').replace(/#.*$/, ''),
       terminalPrefs     = {
         'send-encoding': 'raw',
-        'use-default-window-copy': true
+        'use-default-window-copy': true,
+        'ctrl-v-paste': true,
+        'ctrl-c-copy': true
       };
 
   // hterm default preferences are defined here:
