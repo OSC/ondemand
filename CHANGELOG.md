@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added whitelist mode to manage categories in the navbar.
   [#295](https://github.com/OSC/ood-dashboard/issues/295)
 
+### Changed
+- Whitelist mode defaults to false, so now app categories not defined in whitelist
+  will appear in navbar. To enable whitelist mode to hide these categories, set
+  `NavConfig.categories_whitelist = true` in a custom initializer
+
 ## [1.27.2] - 2018-09-14
 ### Changed
 - Update PBS gem to v2.2.1
