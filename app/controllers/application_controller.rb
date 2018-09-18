@@ -11,7 +11,11 @@ class ApplicationController < ActionController::Base
 
   def set_nav_groups
     #TODO: for AweSim, what if we added the shared apps here?
-    @nav_groups = OodAppGroup.select(titles: NavConfig.categories, groups: sys_app_groups)
+    if NavConfig.categories_whitelist?
+        @nav_groups = OodAppGroup.select(titles: NavConfig.categories, groups: sys_app_groups)
+    else
+        @nav_groups = OodAppGroup.order(titles: NavConfig.categories, groups: sys_app_groups)
+    end
   end
 
   def sys_apps

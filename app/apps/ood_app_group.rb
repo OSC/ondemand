@@ -34,7 +34,17 @@ class OodAppGroup
     # only one group per title; this just makes it easy to get the group
     # Hash[ [:title1,:group1], [:title2,:group2]] => {title1: :group1, title2: :group2 }
     h = Hash[groups.map {|g| [g.title, g]}]
-
     titles.map { |t| h.has_key?(t) ? h[t] : nil }.compact
+  end
+  
+  # Append groups not in the specified array in alphabetical order at the end of
+  # subset of groups in the titles array maintaining the order specified by the titles array
+  #
+  # This way we can get a list of deployed sys apps, then group them by category,
+  # then display categories in titles array in specific order,
+  # then display other categories in alphabetical order
+  def self.order(titles:[], groups:[])
+      h = Hash[groups.map {|g| [g.title, g]}]
+      titles.concat(h.keys.sort).uniq.map { |t| h.has_key?(t) ? h[t] : nil }.compact 
   end
 end
