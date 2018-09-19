@@ -18,7 +18,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Update gem dependencies
-- Jobs created from templates no longer have editable
+- Make Script Name field read only on new job form on templates page
 [#266](https://github.com/OSC/ood-myjobs/issues/266)
 
 ## [2.8.3] - 2018-04-06
