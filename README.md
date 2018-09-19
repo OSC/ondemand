@@ -72,9 +72,6 @@ An example environment file is:
 # The default ssh host the user is logged into if the user doesn't specify a
 # host in the url
 DEFAULT_SSHHOST="localhost"
-
-# If the host is localhost, use ssh to access instead of using bash directly
-SSH_LOCALHOST=1
 ```
 
 ## Usage
