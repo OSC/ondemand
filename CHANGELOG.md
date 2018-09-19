@@ -42,7 +42,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Improve user messaging around using Git when cloning apps
   [#256](https://github.com/OSC/ood-dashboard/issues/256)
 - Changed 'title' to 'name' in the Developer View
-- Upgrade Front Awesome to v5
+- Upgrade Font Awesome to v5
   [#341](https://github.com/OSC/ood-dashboard/issues/341)
 - In the Developer View replaced app delete button with instructions on how to do so from the command line
 
