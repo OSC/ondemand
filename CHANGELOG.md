@@ -39,7 +39,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Updated dependencies using `bundle update`
-- Improve user messanging around using Git when cloning apps
+- Improve user messaging around using Git when cloning apps
   [#256](https://github.com/OSC/ood-dashboard/issues/256)
 - Changed 'title' to 'name' in the Developer View
 - Upgrade Front Awesome to v5
