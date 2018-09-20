@@ -8,15 +8,15 @@ yum install -y \
   make \
   curl \
   sqlite-devel \
-  rh-ruby22 \
-  rh-ruby22-rubygem-rake \
-  rh-ruby22-rubygem-bundler \
-  rh-ruby22-ruby-devel \
-  nodejs010 \
+  rh-ruby24 \
+  rh-ruby24-rubygem-rake \
+  rh-ruby24-rubygem-bundler \
+  rh-ruby24-ruby-devel \
+  nodejs6 \
   git19
 
 # Setup environment
-source scl_source enable rh-ruby22 nodejs010 git19 || :
+source scl_source enable rh-ruby24 nodejs6 git19 || :
 
 # Build and install
 rake -mj ${NUM_TASKS:-$(nproc)} && rake install
