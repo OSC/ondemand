@@ -12,11 +12,11 @@ yum install -y \
   rh-ruby24-rubygem-rake \
   rh-ruby24-rubygem-bundler \
   rh-ruby24-ruby-devel \
-  nodejs6 \
-  git19
+  rh-nodejs6 \
+  rh-git29
 
 # Setup environment
-source scl_source enable rh-ruby24 nodejs6 git19 || :
+source scl_source enable rh-ruby24 rh-nodejs6 rh-git29 || :
 
 # Build and install
 rake -mj ${NUM_TASKS:-$(nproc)} && rake install
