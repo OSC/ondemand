@@ -10,7 +10,7 @@
       Launch <strong>OSC Connect</strong>
     </li>
     <li>
-      Click - <%= link_to "osc://:#{connect.password}@#{connect.host}:#{connect.port}", "osc://:#{connect.password}@#{connect.host}:#{connect.port}" %>
+      Click - <%= link_to "osc://:#{connect.password}@#{connect.host}:#{connect.port}", "osc://:#{connect.password}@#{connect.host}:#{connect.port}", onclick: "$.get('" + analytics_path(type: "launch_osc_connect") + "');" %>
     </li>
   </ol>
 
