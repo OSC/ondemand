@@ -1,0 +1,180 @@
+#
+# This is an example NginxStage CLI configuration file. It contains the
+# configuration options that can be specified to meet your system requirements.
+# See https://github.com/OSC/nginx_stage for detailed information about
+# NginxStage. In particular see
+# https://github.com/OSC/nginx_stage/blob/master/lib/nginx_stage/configuration.rb
+# for a detailed list of all possible configuration options and their default
+# settings.
+#
+# Below you can find the default values for each configuration option commented
+# out. Feel free to uncomment it and make modifications or write your
+# modifications directly below the commented defaults.
+#
+
+---
+
+# Path to the OnDemand version file
+#
+#ondemand_version_path: '/opt/ood/VERSION'
+
+# Unique name of this OnDemand portal used to namespace multiple hosted portals
+# NB: If this is not set then most apps will use default namespace "ondemand"
+#
+#ondemand_portal: null
+
+# Title of this OnDemand portal that apps *should* display in their navbar
+# NB: If this is not set then most apps will use default title "Open OnDemand"
+#
+#ondemand_title: null
+
+# Location of the ERB templates used in the generation of the NGINX configs
+#
+#template_root: '/opt/ood/nginx_stage/templates'
+
+# The reverse proxy daemon user used to access the Unix domain sockets
+#
+#proxy_user: 'apache'
+
+# Path to system-installed NGINX binary
+#
+#nginx_bin: '/opt/rh/nginx16/root/usr/sbin/nginx'
+
+# White-list of signals that can be sent to the NGINX process
+#
+#nginx_signals:
+#  - 'stop'
+#  - 'quit'
+#  - 'reopen'
+#  - 'reload'
+
+# Path to system-installed NGINX 'mime.types' file
+#
+#mime_types_path: '/opt/rh/nginx16/root/etc/nginx/mime.types'
+
+# Path to system-installed Passenger 'locations.ini' file
+#
+#passenger_root: '/opt/rh/rh-passenger40/root/usr/share/passenger/phusion_passenger/locations.ini'
+
+# Path to system-installed Ruby binary
+#
+#passenger_ruby: '/opt/ood/nginx_stage/bin/ruby'
+
+# Path to system-installed Node.js binary
+# Set to `false` if you don't want this specified in nginx config
+#
+#passenger_nodejs: '/opt/ood/nginx_stage/bin/node'
+
+# Path to system-installed Python binary
+# Set to `false` if you don't want this specified in nginx config
+#
+#passenger_python: '/opt/ood/nginx_stage/bin/python'
+
+# Root location of per-user NGINX configs
+#
+#pun_config_path: '/var/lib/nginx/config/puns/%{user}.conf'
+
+# Root location of per-user NGINX tmp dirs
+#
+#pun_tmp_root: '/var/lib/nginx/tmp/%{user}'
+
+# Path to the per-user NGINX access log
+#
+#pun_access_log_path: '/var/log/nginx/%{user}/access.log'
+
+# Path to the per-user NGINX error log
+#
+#pun_error_log_path: '/var/log/nginx/%{user}/error.log'
+
+# Path to the per-user NGINX pid file
+#
+#pun_pid_path: '/var/run/nginx/%{user}/passenger.pid'
+
+# Path to the per-user NGINX socket file
+#
+#pun_socket_path: '/var/run/nginx/%{user}/passenger.sock'
+
+# Path to the local filesystem root where the per-user NGINX process serves
+# files from for the user making use of the sendfile feature in NGINX
+#
+#pun_sendfile_root: '/'
+
+# The internal URI used to access the local filesystem for downloading files
+# from the apps (not accessible directly by client browser)
+#
+#pun_sendfile_uri: '/sendfile'
+
+# List of hashes helping define wildcard app config locations. These are the
+# arguments for {#app_config_path}.
+#
+#pun_app_configs:
+#  - env: 'dev'
+#    owner: '%{user}'
+#    name: '*'
+#  - env: 'usr'
+#    owner: '*'
+#    name: '*'
+#  - env: 'sys'
+#    owner: ''
+#    name: '*'
+
+# A hash detailing the path to the per-user NGINX app configs
+#
+#app_config_path:
+#  dev: '/var/lib/nginx/config/apps/dev/%{owner}/%{name}.conf'
+#  usr: '/var/lib/nginx/config/apps/usr/%{owner}/%{name}.conf'
+#  sys: '/var/lib/nginx/config/apps/sys/%{name}.conf'
+
+# A hash detailing the locations on the file system where apps reside for the
+# corresponding environment
+#
+#app_root:
+#  dev: '~%{owner}/%{portal}/dev/%{name}'
+#  usr: '/var/www/ood/apps/usr/%{owner}/gateway/%{name}'
+#  sys: '/var/www/ood/apps/sys/%{name}'
+
+# A hash detailing the app's request URI not including the base-URI
+#
+#app_request_uri:
+#  dev: '/dev/%{name}'
+#  usr: '/usr/%{owner}/%{name}'
+#  sys: '/sys/%{name}'
+
+# A hash detailing the regular expressions used to define the app namespace
+# from a given URI request. Should match {#app_request_uri}.
+#
+#app_request_regex:
+#  dev: '^/dev/(?<name>[-\w.]+)'
+#  usr: '^/usr/(?<owner>[\w]+)\/(?<name>[-\w.]+)'
+#  sys: '^/sys/(?<name>[-\w.]+)'
+
+# A hash detailing the tokens used to identify individual apps
+#
+#app_token:
+#  dev: 'dev/%{owner}/%{name}'
+#  usr: 'usr/%{owner}/%{name}'
+#  sys: 'sys/%{name}'
+
+# A hash detailing the Passenger environment to run the app under within the
+# PUN
+#
+#app_passenger_env:
+#  dev: 'development'
+#  usr: 'production'
+#  sys: 'production'
+
+# Regular expression used to validate a given user name. The user name supplied
+# must match the regular expression to be considered valid.
+#
+#user_regex: '[\w@\.\-]+'
+
+# Minimum user id required to generate per-user NGINX server as the requested
+# user
+#
+#min_uid: 1000
+
+# Restrict starting up per-user NGINX process as user with this shell.
+# NB: This only affects the `pun` command, you are still able to start or stop
+#     the PUN using other commands (e.g., `nginx`, `nginx_clean`, ...)
+#
+#disabled_shell: '/access/denied'

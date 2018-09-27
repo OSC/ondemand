@@ -1,0 +1,15 @@
+#!/bin/env bash
+
+#
+# Passenger `node` wrapper script
+#
+# Tries to run the developer specified version of node for the requested app
+# before running system default binary (specified in the `bin/ood_ruby` wrapper
+# that stages the PUN)
+#
+
+if [[ -x "${PWD}/bin/node" ]]; then
+  exec "${PWD}/bin/node" "$@"
+else
+  exec node "$@"
+fi

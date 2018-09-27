@@ -1,0 +1,76 @@
+user        <%= user %> <%= group %>;  ## Default: nobody
+error_log   <%= error_log_path %>;
+pid         <%= pid_path %>;
+worker_processes 1;  ## Default: 1
+
+events {
+  worker_connections 1024;  ## Default: 1024
+}
+
+http {
+  include     <%= mime_types_path %>;
+
+  # Define passenger environment
+  passenger_root <%= passenger_root %>;
+  passenger_ruby <%= passenger_ruby %>;
+  <%- if passenger_nodejs -%>
+  passenger_nodejs <%= passenger_nodejs %>;
+  <%- end -%>
+  <%- if passenger_python -%>
+  passenger_python <%= passenger_python %>;
+  <%- end -%>
+
+  # Set passenger security measures
+  passenger_user_switching off;
+  passenger_default_user <%= user %>;
+  passenger_load_shell_envvars off;
+
+  # Kill all apps after they idle timeout
+  passenger_min_instances 0;
+
+  # Take advantage of Ruby preloader
+  #passenger_spawn_method smart;
+  #passenger_max_preloader_idle_time 0;
+
+  # Load all apps directly
+  passenger_spawn_method direct;
+
+  # Set an array of temp and cache file options for the per-user environment
+  client_body_temp_path   <%= tmp_root %>/client_body;
+  proxy_temp_path         <%= tmp_root %>/proxy_temp;
+  fastcgi_temp_path       <%= tmp_root %>/fastcgi_temp;
+  uwsgi_temp_path         <%= tmp_root %>/uwsgi_temp;
+  scgi_temp_path          <%= tmp_root %>/scgi_temp;
+
+  default_type application/octet-stream;
+  log_format   main '$remote_addr - $remote_user [$time_local] "$request" '
+    '$status $body_bytes_sent "$http_referer" '
+    '"$http_user_agent" "$http_x_forwarded_for"';
+  access_log   <%= access_log_path %> main;
+  sendfile     on;
+  tcp_nopush   on;
+  client_max_body_size 10G;
+
+  server {
+    listen      unix:<%= socket_path %>;
+    server_name localhost;
+
+    <%- if app_init_url -%>
+    location / {
+      default_type text/html;
+      return 404 '<%= restart_confirmation %>';
+    }
+    <%- end -%>
+
+    # Give apps the ability to download files from filesystem
+    location <%= sendfile_uri %> {
+      internal;
+      alias "<%= sendfile_root %>";
+    }
+
+    # Include all app configs user has access to
+    <%- app_configs.each do |app_config| -%>
+    include <%= app_config %>;
+    <%- end -%>
+  }
+}

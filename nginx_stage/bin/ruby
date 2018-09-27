@@ -1,0 +1,15 @@
+#!/bin/env bash
+
+#
+# Passenger `ruby` wrapper script
+#
+# Tries to run the developer specified version of ruby for the requested app
+# before running system default binary (specified in the `bin/ood_ruby` wrapper
+# that stages the PUN)
+#
+
+if [[ -x "${PWD}/bin/ruby" ]]; then
+  exec "${PWD}/bin/ruby" "$@"
+else
+  exec ruby "$@"
+fi
