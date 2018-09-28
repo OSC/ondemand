@@ -6,7 +6,7 @@ class ProductReadme
   
   def html
     if @path.basename.to_s =~ /.*.md|.*.markdown/i
-        content = ProductReadmeMarkdownRenderer.renderer(app_path: @path).render(@path.read).html_safe
+        content = ProductReadmeMarkdownRenderer.renderer(app_path: @path.parent).render(@path.read).html_safe
     else
         content = "<pre>#{@path.read}</pre>"
     end
