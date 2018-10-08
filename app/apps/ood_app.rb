@@ -62,7 +62,7 @@ class OodApp
         OodAppLink.new(
           title: "Home Directory",
           description: manifest.description,
-          url: OodAppkit.files.url(path: Dir.home),
+          url: OodAppkit::Urls::Files.new(base_url: url).url(path: Dir.home),
           icon_uri: "fas://home",
           caption: caption,
           new_tab: true
@@ -72,7 +72,7 @@ class OodApp
           OodAppLink.new(
             title: path.to_s,
             description: manifest.description,
-            url: OodAppkit.files.url(path: path),
+            url: OodAppkit::Urls::Files.new(base_url: url).url(path: path),
             icon_uri: "fas://folder",
             caption: caption,
             new_tab: true
@@ -91,7 +91,7 @@ class OodApp
           OodAppLink.new(
             title: "Shell Access",
             description: manifest.description,
-            url: OodAppkit.shell.url,
+            url: OodAppkit::Urls::Shell.new(base_url: url).url,
             icon_uri: "fas://terminal",
             caption: caption,
             new_tab: true
@@ -102,7 +102,7 @@ class OodApp
           OodAppLink.new(
             title: "#{cluster.metadata.title || cluster.id.to_s.titleize} Shell Access",
             description: manifest.description,
-            url: OodAppkit.shell.url(host: cluster.login.host),
+            url: OodAppkit::Urls::Shell.new(base_url: url).url(host: cluster.login.host),
             icon_uri: "fas://terminal",
             caption: caption,
             new_tab: true
