@@ -4,10 +4,7 @@ class AppsController < ApplicationController
 
   def index
     @core_app_groups = OodAppGroup.select(titles: %w(Files Jobs Clusters), groups: sys_app_groups)
-    # FIXME: currenlty instead of displaying all apps, only display Gateway and Interactive for now;
-    # long term this is not a good solution!
-    # @app_groups = sys_app_groups.select {|g| ! %w(Files Jobs Clusters).include?(g.title) }
-    @app_groups = OodAppGroup.select(titles: ['Interactive Apps', 'Gateway Apps'], groups: sys_app_groups)
+    @app_groups = sys_app_groups.select {|g| ! %w(Files Jobs Clusters).include?(g.title) }
   end
 
   def featured
