@@ -75,4 +75,28 @@ class OodAppTest < ActiveSupport::TestCase
       refute OodApp.new(PathRouter.new(app_dir)).backup?
     end
   end
+
+  test "sys app with empty category should be hidden from nav" do
+    Dir.mktmpdir "apps" do |dir|
+      dir = Pathname.new(dir)
+      SysRouter.stubs(:base_path).returns(dir)
+
+      app_dir = dir.join("app").tap { |p| p.mkdir }
+      app_dir.join("manifest.yml").write("---\nname: Ood Dashboard\ndescription: stuff")
+
+      refute OodApp.new(SysRouter.new(app_dir.basename.to_s)).should_appear_in_nav?
+    end
+  end
+
+  test "sys app with category should appear in nav" do
+    Dir.mktmpdir "apps" do |dir|
+      dir = Pathname.new(dir)
+      SysRouter.stubs(:base_path).returns(dir)
+
+      app_dir = dir.join("app").tap { |p| p.mkdir }
+      app_dir.join("manifest.yml").write("---\nname: Jobs\ncategory: Jobs")
+
+      assert OodApp.new(SysRouter.new(app_dir.basename.to_s)).should_appear_in_nav?
+    end
+  end
 end

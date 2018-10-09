@@ -31,15 +31,15 @@ class ApplicationController < ActionController::Base
   end
 
   def nav_sys_apps
-    sys_apps.select(&:manifest?).reject(&:invalid_batch_connect_app?)
+    sys_apps.select(&:should_appear_in_nav?)
   end
 
   def nav_dev_apps
-    dev_apps.select(&:manifest?).reject(&:invalid_batch_connect_app?)
+    dev_apps.select(&:should_appear_in_nav?)
   end
 
   def nav_usr_apps
-    usr_apps.select(&:manifest?).reject(&:invalid_batch_connect_app?)
+    usr_apps.select(&:should_appear_in_nav?)
   end
 
   def sys_app_groups
