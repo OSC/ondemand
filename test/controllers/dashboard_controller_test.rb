@@ -7,11 +7,6 @@ class DashboardControllerTest < ActionController::TestCase
     OodFilesApp.any_instance.stubs(:favorite_paths).returns([Pathname.new("/fs/scratch/efranz")])
   end
 
-  def teardown
-    SysRouter.unstub(:base_path)
-    OodFilesApp.any_instance.unstub(:favorite_paths)
-  end
-
   def dropdown_list(title)
     css_select("li.dropdown[title='#{title}'] ul")
   end
@@ -103,8 +98,6 @@ class DashboardControllerTest < ActionController::TestCase
     assert_select dd, "li a", "Oakley Desktop" do |link|
       assert_equal "/batch_connect/sys/bc_desktop/oakley/session_contexts/new", link.first['href'], "Desktops link is incorrect"
     end
-
-    SysRouter.unstub(:base_path)
   end
 
   test "should create My Interactive Apps link if Interactive Apps exist and not developer" do
@@ -146,8 +139,6 @@ class DashboardControllerTest < ActionController::TestCase
     get :index
     assert_response :success
     assert_select ".navbar-collapse > .nav li.dropdown[title]", 0
-    NavConfig.unstub(:categories_whitelist?)
-    NavConfig.unstub(:categories)
   end
 
   test "should exclude gateway apps if NavConfig.categories is set to default and whitelist is enabled" do
@@ -159,8 +150,6 @@ class DashboardControllerTest < ActionController::TestCase
     get :index
     assert_response :success
     assert_select ".navbar-collapse > .nav li.dropdown[title='Gateway Apps']", 0
-    NavConfig.unstub(:categories_whitelist?)
-    NavConfig.unstub(:categories)
   end
 
   test "uses NavConfig.categories as sort order if whitelist is false" do
@@ -177,9 +166,6 @@ class DashboardControllerTest < ActionController::TestCase
     assert_select  dropdown_link(3), text: "Clusters"
     assert_select  dropdown_link(4), text: "Interactive Apps"
     assert_select  dropdown_link(5), text: "Gateway Apps"
-
-    NavConfig.unstub(:categories_whitelist?)
-    NavConfig.unstub(:categories)
   end
 
   test "verify default values for NavConfig" do
@@ -201,8 +187,6 @@ class DashboardControllerTest < ActionController::TestCase
     assert_select dropdown_link(3), text: "Gateway Apps"
     assert_select dropdown_link(4), text: "Interactive Apps"
     assert_select dropdown_link(5), text: "Jobs"
-    NavConfig.unstub(:categories_whitelist?)
-    NavConfig.unstub(:categories)
   end
 
   test "apps with no category should not appear in menu" do
