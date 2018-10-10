@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+ROOT="$(dirname "$(readlink -f "${0}")")"
+
+CONFIG="${CONFIG:-/etc/ood/config/ood_portal.yml}"
+APACHE="${APACHE:-/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf}"
+BIN="${BIN:-${ROOT}/../bin/generate}"
+
+set -e
+
+echo "Generating Apache config using YAML config: '${CONFIG}'"
+
+NEW_APACHE="$("${BIN}" -c "${CONFIG}")"
+if ! cmp -s <(echo "${NEW_APACHE}") "${APACHE}"; then
+  if [[ -f "${APACHE}" ]]; then
+    BAK_APACHE="${APACHE}.$(date '+%Y%m%dT%H%M%S')"
+    echo "Backing up previous Apache config to: '${BAK_APACHE}'"
+    mv "${APACHE}" "${BAK_APACHE}"
+  fi
+  echo "Generating new Apache config at: '${APACHE}'"
+  echo "${NEW_APACHE}" > "${APACHE}"
+else
+  echo "No change in Apache config."
+  exit 1
+fi
+
+echo "Completed successfully!"
+echo ""
+echo "Restart the httpd24-httpd service now."
+echo ""
+
+if [[ -L "/sbin/init" ]]; then
+  echo "Suggested command:"
+  echo "    sudo systemctl try-restart httpd24-httpd.service httpd24-htcacheclean.service"
+  echo ""
+else
+  echo "Suggested commands:"
+  echo "    sudo service httpd24-httpd condrestart"
+  echo "    sudo service httpd24-htcacheclean condrestart"
+  echo ""
+fi

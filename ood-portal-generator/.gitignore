@@ -1,0 +1,5 @@
+# Build directory
+/build/
+
+# Configuration file
+/config.yml

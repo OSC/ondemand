@@ -1,25 +1,5 @@
 [
   {
-    "name": "ood-portal-generator",
-    "url": "https://github.com/OSC/ood-portal-generator",
-    "tag": "v0.7.1"
-  },
-  {
-    "name": "mod_ood_proxy",
-    "url": "https://github.com/OSC/mod_ood_proxy",
-    "tag": "v0.5.0"
-  },
-  {
-    "name": "ood_auth_map",
-    "url": "https://github.com/OSC/ood_auth_map",
-    "tag": "v0.0.3"
-  },
-  {
-    "name": "nginx_stage",
-    "url": "https://github.com/OSC/nginx_stage",
-    "tag": "v0.5.0"
-  },
-  {
     "name": "dashboard",
     "url": "https://github.com/OSC/ood-dashboard",
     "tag": "v1.27.2",

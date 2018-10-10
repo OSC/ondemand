@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+SCL_SOURCE=$(command -v scl_source)
+[[ "${SCL_SOURCE}" ]] && source "${SCL_SOURCE}" enable rh-ruby24 &> /dev/null
+
+ROOT_DIR="$(dirname "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")"
+
+exec \
+  /usr/bin/env ruby \
+    -I"${ROOT_DIR}/lib" \
+    -rood_portal_generator \
+    -e "OodPortalGenerator::Application.start" \
+    -- "${@}"

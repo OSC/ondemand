@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+ROOT="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+
+CONFIG="${CONFIG:-/etc/ood/config/nginx_stage.yml}"
+BIN="${BIN:-${ROOT}/nginx_stage}"
+
+set -e
+
+OPTS=$(getopt -o q --long quiet -n 'update_nginx_stage' -- "${@}")
+eval set -- "${OPTS}"
+while true; do
+  case "${1}" in
+    -q | --quiet ) QUIET=true; shift ;;
+    -- ) shift; break ;;
+    * ) break ;;
+  esac
+done
+
+if [[ "${QUIET}" == "true" ]]; then
+  exec > /dev/null
+fi
+
+echo "Updating NGINX configs using YAML config: '${CONFIG}'"
+
+export NGINX_STAGE_CONFIG_FILE="${CONFIG}"
+if [[ "${QUIET}" != "true" ]]; then
+  set -x
+fi
+"${BIN}" app_clean
+"${BIN}" app_reset --sub-uri=/pun
+"${BIN}" nginx_clean
+{ set +x; } 2>/dev/null
+
+echo "Completed successfully!"
+echo ""
