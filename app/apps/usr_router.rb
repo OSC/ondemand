@@ -12,7 +12,11 @@ class UsrRouter
   #
   # @return [String] human readable owner string
   def caption
-    "Shared by #{owner_title} (#{owner})"
+    if owner_title == owner
+      "Shared by #{owner}"
+    else
+      "Shared by #{owner_title} (#{owner})"
+    end
   end
 
   def category
@@ -20,7 +24,11 @@ class UsrRouter
   end
 
   def owner_title
+    return @owner_title if defined?(@owner_title)
+
     @owner_title ||= (Etc.getpwnam(owner).gecos || owner)
+  rescue
+    @owner_title = owner
   end
 
   # Get array of all apps from specified owners

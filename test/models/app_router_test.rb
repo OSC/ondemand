@@ -48,6 +48,10 @@ class AppRouterTest < ActiveSupport::TestCase
     end
   end
 
+  test "UsrRouter.caption when user is a group (or non-existance user)" do
+    assert_equal "Shared by PZS0714", UsrRouter.new('foo', 'PZS0714').caption
+  end
+
   test "DevRouter.apps should only apps that have periods in directory name" do
     Dir.mktmpdir "apps" do |dir|
       dir = Pathname.new(dir)
