@@ -26,7 +26,7 @@ use a database.
 2. Install the app for a production environment:
 
     ```sh
-    RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+    RAILS_ENV=production scl enable rh-git29 rh-nodejs6 rh-ruby24 -- bin/setup
     ```
 
     this will setup a default Open OnDemand install.
@@ -52,7 +52,7 @@ use a database.
 2. Update the app for a production environment:
 
     ```sh
-    RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+    RAILS_ENV=production scl enable rh-git29 rh-nodejs6 rh-ruby24 -- bin/setup
     ```
 
 3. Copy the built app directory to the deployment directory:
