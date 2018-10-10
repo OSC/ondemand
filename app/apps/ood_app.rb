@@ -29,6 +29,10 @@ class OodApp
     batch_connect_app? && batch_connect.sub_app_list.none?(&:valid?)
   end
 
+  def should_appear_in_nav?
+    manifest? && ! (invalid_batch_connect_app? || category.empty?)
+  end
+
   def initialize(router)
     @router = router
   end
@@ -151,7 +155,11 @@ class OodApp
   end
 
   def category
-    manifest.category.empty? ? router.category : manifest.category
+    if (! router.category.empty?) && manifest.category.empty?
+      router.category
+    else
+      manifest.category
+    end
   end
 
   def subcategory

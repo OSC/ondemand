@@ -45,7 +45,7 @@ class SysRouter
   end
 
   def category
-    "System Installed Apps"
+    ""
   end
 
   def url
