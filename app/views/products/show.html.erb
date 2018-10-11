@@ -70,10 +70,10 @@
   </div><!-- /.col-md-6 -->
   <div class="col-md-2 col-xs-6">
     <%= link_to 'Edit Metadata', edit_product_path(@product.name, type: @type), class: 'btn btn-default btn-block' %>
-    <%= command_btn(title: "Bundle Install", key: "bundle_install", display:"scl enable rh-ruby22 nodejs010 -- bundle install --path=vendor/bundle") if @product.can_run_bundle_install? %>
-    <%= command_btn(title: "Precompile Assets", key: "precompile_assets", display: "RAILS_ENV=production scl enable rh-ruby22 nodejs010 -- <<< 'bin/rake assets:clobber && bin/rake assets:precompile && bin/rake tmp:clear'") if @type == :usr && @product.passenger_rails_app? %>
+    <%= command_btn(title: "Bundle Install", key: "bundle_install", display: "bundle install --path=vendor/bundle") if @product.can_run_bundle_install? %>
+    <%= command_btn(title: "Precompile Assets", key: "precompile_assets", display: "RAILS_ENV=production bin/rake assets:clobber && RAILS_ENV=production bin/rake assets:precompile && RAILS_ENV=production bin/rake tmp:clear") if @type == :usr && @product.passenger_rails_app? %>
     <%= command_btn(title: "Restart App", key: "restart_app", display: "mkdir -p tmp && touch tmp/restart.txt") if @product.passenger_app? %>
-    <%= command_btn(title: "Rebuild App", key: "rebuild_passenger_rails_app", display: "RAILS_ENV=production scl enable rh-ruby22 nodejs010 -- <<< 'bundle install --path=vendor/bundle && bin/rake assets:clobber && bin/rake assets:precompile && bin/rake tmp:clear && mkdir -p tmp && touch tmp/restart.txt && echo 'Done\\!''", help: "Performs Bundle Install, Precompile Assets, and Restart App", color: "primary") if @type == :usr && @product.passenger_rails_app? %>
+    <%= command_btn(title: "Rebuild App", key: "rebuild_passenger_rails_app", display: "RAILS_ENV=production bundle install --path=vendor/bundle && RAILS_ENV=production bin/rake assets:clobber && RAILS_ENV=production bin/rake assets:precompile && RAILS_ENV=production bin/rake tmp:clear && mkdir -p tmp && touch tmp/restart.txt", help: "Performs Bundle Install, Precompile Assets, and Restart App", color: "primary") if @type == :usr && @product.passenger_rails_app? %>
   </div><!-- /.col-md-2 -->
   <div class="col-md-2 col-xs-6">
     <%= link_to 'Shell', OodAppkit.shell.url(host: ENV['OOD_DEV_SSH_HOST'], path: @product.router.path.realdirpath).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
@@ -176,10 +176,10 @@
     <div class="panel-heading">Delete this app using the terminal.</div>
     <div class="panel-body">
       <p>The following command moves this app to a local temporary directory and then deletes it:</p>
-<pre>APP_DIR=<%= @product.app.path %> && \
-mkdir -p $HOME/tmp && \
+<pre>APP_DIR=<%= @product.app.path %> &amp;&amp; \
+mkdir -p $HOME/tmp &amp;&amp; \
 mktemp -d --tmpdir=$HOME/tmp/ | \
-xargs -I % sh -c "echo % && mv $APP_DIR % && rm -rf %;"</pre>
+xargs -I % sh -c "echo % &amp;&amp; mv $APP_DIR % &amp;&amp; rm -rf %;"</pre>
       <p>If it shows an error, then there may have been users running the app, causing open file handles to remain open and preventing the files from being completely deleted. But once these file handles close, the empty directory alone will remain.</p>
     </div>
   </div>
@@ -190,11 +190,21 @@ xargs -I % sh -c "echo % && mv $APP_DIR % && rm -rf %;"</pre>
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Command</h4>
+
       </div><!-- /.modal-header -->
       <div class="modal-body">
         <pre class="product-cli-body">
           Loading...
         </pre>
+
+        <% if ENV['X_SCLS'] %>
+        <div class="alert alert-info" style="margin-top: 10px">
+          <p>Use the correct environment when building this app. If you copy and
+          execute the command below manually, be sure to first load the correct software collections environment:
+          </p>
+          <pre>source scl_source enable <%= ENV['X_SCLS'] %></pre>
+        </div>
+        <% end %>
       </div><!-- /.modal-body -->
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
