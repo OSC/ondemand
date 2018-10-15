@@ -26,35 +26,35 @@ the `ood` account, this app should run as `ood`.
     scl enable git19 rh-ruby22 nodejs010 -- bin/setup
     ```
 
-3. Copy the built app directory to the deployment directory, and start the
-   server. i.e.:
+3.  Copy the built app directory to the deployment directory, and start the
+    server. i.e.:
 
-   ```sh
-   sudo mkdir -p /var/www/ood/apps/sys
-   sudo cp -r . /var/www/ood/apps/sys/shell
-   ```
+    ```sh
+    sudo mkdir -p /var/www/ood/apps/sys
+    sudo cp -r . /var/www/ood/apps/sys/shell
+    ```
 
 ## Updating to a New Stable Version
 
-1. Navigate to the app's build directory and check out the latest version:
+1.  Navigate to the app's build directory and check out the latest version:
 
-   ```sh
-   cd shell # cd to build directory
-   scl enable git19 -- git fetch
-   scl enable git19 -- git checkout tags/v1.3.1
-   ```
+    ```sh
+    cd shell # cd to build directory
+    scl enable git19 -- git fetch
+    scl enable git19 -- git checkout tags/v1.3.1
+    ```
 
-2. Update the app:
+2.  Update the app:
 
-   ```sh
-   scl enable git19 rh-ruby22 nodejs010 -- bin/setup
-   ```
+    ```sh
+    scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+    ```
 
-3. Copy the built app directory to the deployment directory:
+3.  Copy the built app directory to the deployment directory:
 
-   ```sh
-   sudo rsync -rlptv --delete . /var/www/ood/apps/sys/shell
-   ```
+    ```sh
+    sudo rsync -rlptv --delete . /var/www/ood/apps/sys/shell
+    ```
 
 ## Configuration
 
@@ -123,6 +123,22 @@ the changes to take effect:
 ```console
 $ touch tmp/restart.txt
 ```
+
+### Updating `hterm`
+
+Clone Google's repository that includes some other things in addition to hterm:
+
+```console
+$ git clone https://chromium.googlesource.com/apps/libapps
+```
+
+Run the build script. It requires Python, specifically Python 3 for hterm 1.81 and newer. Here, it is run from the root directory of this new local repository (libapps):
+
+```console
+$ scl enable rh-python35 -- hterm/bin/mkdist.sh
+```
+
+There will be a file created in `hterm/dist/js` called `hterm_all.js`. Copy and rename this file to `public/javascripts/hterm_all_x.xx.js` in the Shell App repository, where x.xx represents the version number hterm (for cache busting), and change the reference in `views/index.hbs` to point to this new file.
 
 ## Contributing
 
