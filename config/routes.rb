@@ -32,7 +32,7 @@ Rails.application.routes.draw do
 
   # App administration
   scope 'admin/:type', constraints: Authz::AppDeveloperConstraint do
-    resources :products, param: :name, constraints: { type: /dev|usr/ } do
+    resources :products, except: :destroy, param: :name, constraints: { type: /dev|usr/ } do
       nested do
         scope ':context' do
           resources :permissions, only: [:index, :new, :create, :destroy], param: :name
