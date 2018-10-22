@@ -201,7 +201,15 @@ class OodApp
       setup = "./bin/setup-production"
       Dir.chdir(path) do
         if File.exist?(setup) && File.executable?(setup)
-          output = `bundle exec #{setup} 2>&1`
+          # FIXME: write a test for this
+
+          # Prepend #{path}/bin to the PATH so that bin/ruby wrapper is used if
+          # it exists - in other words, /usr/bin/env ruby will resolve to #{path}/bin/ruby
+          # instead of whatever ruby version the dashboard is using
+          #
+          # This makes the execution of the setup-production script use the same ruby versions
+          # that Passenger uses when launching the app.
+          output = `PATH=#{path.join('bin').to_s}:$PATH bundle exec #{setup} 2>&1`
           unless $?.success?
             msg = "Per user setup failed for script at #{path}/#{setup} "
             msg += "for user #{Etc.getpwuid.name} with output: #{output}"
