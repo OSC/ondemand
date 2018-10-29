@@ -20,11 +20,13 @@
     "express": "^4.13.4",
     "git-rev-sync": "^1.8.0",
     "os-homedir": "^1.0.1",
-    "socket.io": "^1.4.5"
+    "socket.io": "^1.4.5",
+    "yarn": "^1.10.1"
   },
   "private": true,
   "license": "MIT",
   "scripts": {
     "test": "test"
-  }
+  },
+  "workspaces": ["lib/cloudcmd"]
 }
