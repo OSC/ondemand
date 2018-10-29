@@ -1822,6 +1822,28 @@ lib.f.getChromeMilestone = function() {
   // Returning NaN will make all number comparisons fail.
   return NaN;
 };
+
+/**
+ * Return the lastError string in the browser.
+ *
+ * This object might live in different locations, and it isn't always defined
+ * (if there hasn't been a "last error").  Wrap all that ugliness here.
+ *
+ * @param {string=} defaultMsg The default message if no error is found.
+ * @return {string} The last error message from the browser.
+ */
+lib.f.lastError = function(defaultMsg = null) {
+  let lastError;
+  if (window.browser && browser.runtime)
+    lastError = browser.runtime.lastError;
+  else if (window.chrome && chrome.runtime)
+    lastError = chrome.runtime.lastError;
+
+  if (lastError && lastError.message)
+    return lastError.message;
+  else
+    return defaultMsg;
+};
 // SOURCE FILE: libdot/js/lib_message_manager.js
 // Copyright (c) 2012 The Chromium OS Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
@@ -3074,16 +3096,16 @@ lib.Storage.Chrome.prototype.getItems = function(keys, callback) {
  */
 lib.Storage.Chrome.prototype.setItem = function(key, value, opt_callback) {
   const onComplete = () => {
-    if (chrome.runtime.lastError) {
+    const err = lib.f.lastError();
+    if (err) {
       // Doesn't seem to be any better way of handling this.
       // https://crbug.com/764759
-      if (chrome.runtime.lastError.message.indexOf('MAX_WRITE_OPERATIONS')) {
-        console.warn(`Will retry save of ${key} after exceeding quota`,
-                     chrome.runtime.lastError);
+      if (err.indexOf('MAX_WRITE_OPERATIONS')) {
+        console.warn(`Will retry save of ${key} after exceeding quota: ${err}`);
         setTimeout(() => this.setItem(key, value, onComplete), 1000);
         return;
       } else {
-        console.error('Unknown runtime error', chrome.runtime.lastError);
+        console.error(`Unknown runtime error: ${err}`);
       }
     }
 
@@ -4893,22 +4915,23 @@ lib.wc.combining = [
     [0x061c, 0x061c], [0x064b, 0x065f], [0x0670, 0x0670],
     [0x06d6, 0x06dc], [0x06df, 0x06e4], [0x06e7, 0x06e8],
     [0x06ea, 0x06ed], [0x0711, 0x0711], [0x0730, 0x074a],
-    [0x07a6, 0x07b0], [0x07eb, 0x07f3], [0x0816, 0x0819],
-    [0x081b, 0x0823], [0x0825, 0x0827], [0x0829, 0x082d],
-    [0x0859, 0x085b], [0x08d4, 0x08e1], [0x08e3, 0x0902],
-    [0x093a, 0x093a], [0x093c, 0x093c], [0x0941, 0x0948],
-    [0x094d, 0x094d], [0x0951, 0x0957], [0x0962, 0x0963],
-    [0x0981, 0x0981], [0x09bc, 0x09bc], [0x09c1, 0x09c4],
-    [0x09cd, 0x09cd], [0x09e2, 0x09e3], [0x0a01, 0x0a02],
-    [0x0a3c, 0x0a3c], [0x0a41, 0x0a42], [0x0a47, 0x0a48],
-    [0x0a4b, 0x0a4d], [0x0a51, 0x0a51], [0x0a70, 0x0a71],
-    [0x0a75, 0x0a75], [0x0a81, 0x0a82], [0x0abc, 0x0abc],
-    [0x0ac1, 0x0ac5], [0x0ac7, 0x0ac8], [0x0acd, 0x0acd],
-    [0x0ae2, 0x0ae3], [0x0afa, 0x0aff], [0x0b01, 0x0b01],
-    [0x0b3c, 0x0b3c], [0x0b3f, 0x0b3f], [0x0b41, 0x0b44],
-    [0x0b4d, 0x0b4d], [0x0b56, 0x0b56], [0x0b62, 0x0b63],
-    [0x0b82, 0x0b82], [0x0bc0, 0x0bc0], [0x0bcd, 0x0bcd],
-    [0x0c00, 0x0c00], [0x0c3e, 0x0c40], [0x0c46, 0x0c48],
+    [0x07a6, 0x07b0], [0x07eb, 0x07f3], [0x07fd, 0x07fd],
+    [0x0816, 0x0819], [0x081b, 0x0823], [0x0825, 0x0827],
+    [0x0829, 0x082d], [0x0859, 0x085b], [0x08d3, 0x08e1],
+    [0x08e3, 0x0902], [0x093a, 0x093a], [0x093c, 0x093c],
+    [0x0941, 0x0948], [0x094d, 0x094d], [0x0951, 0x0957],
+    [0x0962, 0x0963], [0x0981, 0x0981], [0x09bc, 0x09bc],
+    [0x09c1, 0x09c4], [0x09cd, 0x09cd], [0x09e2, 0x09e3],
+    [0x09fe, 0x09fe], [0x0a01, 0x0a02], [0x0a3c, 0x0a3c],
+    [0x0a41, 0x0a42], [0x0a47, 0x0a48], [0x0a4b, 0x0a4d],
+    [0x0a51, 0x0a51], [0x0a70, 0x0a71], [0x0a75, 0x0a75],
+    [0x0a81, 0x0a82], [0x0abc, 0x0abc], [0x0ac1, 0x0ac5],
+    [0x0ac7, 0x0ac8], [0x0acd, 0x0acd], [0x0ae2, 0x0ae3],
+    [0x0afa, 0x0aff], [0x0b01, 0x0b01], [0x0b3c, 0x0b3c],
+    [0x0b3f, 0x0b3f], [0x0b41, 0x0b44], [0x0b4d, 0x0b4d],
+    [0x0b56, 0x0b56], [0x0b62, 0x0b63], [0x0b82, 0x0b82],
+    [0x0bc0, 0x0bc0], [0x0bcd, 0x0bcd], [0x0c00, 0x0c00],
+    [0x0c04, 0x0c04], [0x0c3e, 0x0c40], [0x0c46, 0x0c48],
     [0x0c4a, 0x0c4d], [0x0c55, 0x0c56], [0x0c62, 0x0c63],
     [0x0c81, 0x0c81], [0x0cbc, 0x0cbc], [0x0cbf, 0x0cbf],
     [0x0cc6, 0x0cc6], [0x0ccc, 0x0ccd], [0x0ce2, 0x0ce3],
@@ -4948,40 +4971,43 @@ lib.wc.combining = [
     [0xa674, 0xa67d], [0xa69e, 0xa69f], [0xa6f0, 0xa6f1],
     [0xa802, 0xa802], [0xa806, 0xa806], [0xa80b, 0xa80b],
     [0xa825, 0xa826], [0xa8c4, 0xa8c5], [0xa8e0, 0xa8f1],
-    [0xa926, 0xa92d], [0xa947, 0xa951], [0xa980, 0xa982],
-    [0xa9b3, 0xa9b3], [0xa9b6, 0xa9b9], [0xa9bc, 0xa9bc],
-    [0xa9e5, 0xa9e5], [0xaa29, 0xaa2e], [0xaa31, 0xaa32],
-    [0xaa35, 0xaa36], [0xaa43, 0xaa43], [0xaa4c, 0xaa4c],
-    [0xaa7c, 0xaa7c], [0xaab0, 0xaab0], [0xaab2, 0xaab4],
-    [0xaab7, 0xaab8], [0xaabe, 0xaabf], [0xaac1, 0xaac1],
-    [0xaaec, 0xaaed], [0xaaf6, 0xaaf6], [0xabe5, 0xabe5],
-    [0xabe8, 0xabe8], [0xabed, 0xabed], [0xfb1e, 0xfb1e],
-    [0xfe00, 0xfe0f], [0xfe20, 0xfe2f], [0xfeff, 0xfeff],
-    [0xfff9, 0xfffb], [0x101fd, 0x101fd], [0x102e0, 0x102e0],
-    [0x10376, 0x1037a], [0x10a01, 0x10a03], [0x10a05, 0x10a06],
-    [0x10a0c, 0x10a0f], [0x10a38, 0x10a3a], [0x10a3f, 0x10a3f],
-    [0x10ae5, 0x10ae6], [0x11001, 0x11001], [0x11038, 0x11046],
+    [0xa8ff, 0xa8ff], [0xa926, 0xa92d], [0xa947, 0xa951],
+    [0xa980, 0xa982], [0xa9b3, 0xa9b3], [0xa9b6, 0xa9b9],
+    [0xa9bc, 0xa9bc], [0xa9e5, 0xa9e5], [0xaa29, 0xaa2e],
+    [0xaa31, 0xaa32], [0xaa35, 0xaa36], [0xaa43, 0xaa43],
+    [0xaa4c, 0xaa4c], [0xaa7c, 0xaa7c], [0xaab0, 0xaab0],
+    [0xaab2, 0xaab4], [0xaab7, 0xaab8], [0xaabe, 0xaabf],
+    [0xaac1, 0xaac1], [0xaaec, 0xaaed], [0xaaf6, 0xaaf6],
+    [0xabe5, 0xabe5], [0xabe8, 0xabe8], [0xabed, 0xabed],
+    [0xfb1e, 0xfb1e], [0xfe00, 0xfe0f], [0xfe20, 0xfe2f],
+    [0xfeff, 0xfeff], [0xfff9, 0xfffb], [0x101fd, 0x101fd],
+    [0x102e0, 0x102e0], [0x10376, 0x1037a], [0x10a01, 0x10a03],
+    [0x10a05, 0x10a06], [0x10a0c, 0x10a0f], [0x10a38, 0x10a3a],
+    [0x10a3f, 0x10a3f], [0x10ae5, 0x10ae6], [0x10d24, 0x10d27],
+    [0x10f46, 0x10f50], [0x11001, 0x11001], [0x11038, 0x11046],
     [0x1107f, 0x11081], [0x110b3, 0x110b6], [0x110b9, 0x110ba],
     [0x11100, 0x11102], [0x11127, 0x1112b], [0x1112d, 0x11134],
     [0x11173, 0x11173], [0x11180, 0x11181], [0x111b6, 0x111be],
-    [0x111ca, 0x111cc], [0x1122f, 0x11231], [0x11234, 0x11234],
+    [0x111c9, 0x111cc], [0x1122f, 0x11231], [0x11234, 0x11234],
     [0x11236, 0x11237], [0x1123e, 0x1123e], [0x112df, 0x112df],
-    [0x112e3, 0x112ea], [0x11300, 0x11301], [0x1133c, 0x1133c],
+    [0x112e3, 0x112ea], [0x11300, 0x11301], [0x1133b, 0x1133c],
     [0x11340, 0x11340], [0x11366, 0x1136c], [0x11370, 0x11374],
     [0x11438, 0x1143f], [0x11442, 0x11444], [0x11446, 0x11446],
-    [0x114b3, 0x114b8], [0x114ba, 0x114ba], [0x114bf, 0x114c0],
-    [0x114c2, 0x114c3], [0x115b2, 0x115b5], [0x115bc, 0x115bd],
-    [0x115bf, 0x115c0], [0x115dc, 0x115dd], [0x11633, 0x1163a],
-    [0x1163d, 0x1163d], [0x1163f, 0x11640], [0x116ab, 0x116ab],
-    [0x116ad, 0x116ad], [0x116b0, 0x116b5], [0x116b7, 0x116b7],
-    [0x1171d, 0x1171f], [0x11722, 0x11725], [0x11727, 0x1172b],
-    [0x11a01, 0x11a06], [0x11a09, 0x11a0a], [0x11a33, 0x11a38],
-    [0x11a3b, 0x11a3e], [0x11a47, 0x11a47], [0x11a51, 0x11a56],
-    [0x11a59, 0x11a5b], [0x11a8a, 0x11a96], [0x11a98, 0x11a99],
-    [0x11c30, 0x11c36], [0x11c38, 0x11c3d], [0x11c3f, 0x11c3f],
-    [0x11c92, 0x11ca7], [0x11caa, 0x11cb0], [0x11cb2, 0x11cb3],
-    [0x11cb5, 0x11cb6], [0x11d31, 0x11d36], [0x11d3a, 0x11d3a],
-    [0x11d3c, 0x11d3d], [0x11d3f, 0x11d45], [0x11d47, 0x11d47],
+    [0x1145e, 0x1145e], [0x114b3, 0x114b8], [0x114ba, 0x114ba],
+    [0x114bf, 0x114c0], [0x114c2, 0x114c3], [0x115b2, 0x115b5],
+    [0x115bc, 0x115bd], [0x115bf, 0x115c0], [0x115dc, 0x115dd],
+    [0x11633, 0x1163a], [0x1163d, 0x1163d], [0x1163f, 0x11640],
+    [0x116ab, 0x116ab], [0x116ad, 0x116ad], [0x116b0, 0x116b5],
+    [0x116b7, 0x116b7], [0x1171d, 0x1171f], [0x11722, 0x11725],
+    [0x11727, 0x1172b], [0x1182f, 0x11837], [0x11839, 0x1183a],
+    [0x11a01, 0x11a0a], [0x11a33, 0x11a38], [0x11a3b, 0x11a3e],
+    [0x11a47, 0x11a47], [0x11a51, 0x11a56], [0x11a59, 0x11a5b],
+    [0x11a8a, 0x11a96], [0x11a98, 0x11a99], [0x11c30, 0x11c36],
+    [0x11c38, 0x11c3d], [0x11c3f, 0x11c3f], [0x11c92, 0x11ca7],
+    [0x11caa, 0x11cb0], [0x11cb2, 0x11cb3], [0x11cb5, 0x11cb6],
+    [0x11d31, 0x11d36], [0x11d3a, 0x11d3a], [0x11d3c, 0x11d3d],
+    [0x11d3f, 0x11d45], [0x11d47, 0x11d47], [0x11d90, 0x11d91],
+    [0x11d95, 0x11d95], [0x11d97, 0x11d97], [0x11ef3, 0x11ef4],
     [0x16af0, 0x16af4], [0x16b30, 0x16b36], [0x16f8f, 0x16f92],
     [0x1bc9d, 0x1bc9e], [0x1bca0, 0x1bca3], [0x1d167, 0x1d169],
     [0x1d173, 0x1d182], [0x1d185, 0x1d18b], [0x1d1aa, 0x1d1ad],
@@ -5073,11 +5099,12 @@ lib.wc.ambiguous = [
     [0x1f4ff, 0x1f53d], [0x1f54b, 0x1f54e], [0x1f550, 0x1f567],
     [0x1f57a, 0x1f57a], [0x1f595, 0x1f596], [0x1f5a4, 0x1f5a4],
     [0x1f5fb, 0x1f64f], [0x1f680, 0x1f6c5], [0x1f6cc, 0x1f6cc],
-    [0x1f6d0, 0x1f6d2], [0x1f6eb, 0x1f6ec], [0x1f6f4, 0x1f6f8],
-    [0x1f910, 0x1f93e], [0x1f940, 0x1f94c], [0x1f950, 0x1f96b],
-    [0x1f980, 0x1f997], [0x1f9c0, 0x1f9c0], [0x1f9d0, 0x1f9e6],
-    [0x20000, 0x2fffd], [0x30000, 0x3fffd], [0xe0100, 0xe01ef],
-    [0xf0000, 0xffffd], [0x100000, 0x10fffd],
+    [0x1f6d0, 0x1f6d2], [0x1f6eb, 0x1f6ec], [0x1f6f4, 0x1f6f9],
+    [0x1f910, 0x1f93e], [0x1f940, 0x1f970], [0x1f973, 0x1f976],
+    [0x1f97a, 0x1f97a], [0x1f97c, 0x1f9a2], [0x1f9b0, 0x1f9b9],
+    [0x1f9c0, 0x1f9c2], [0x1f9d0, 0x1f9ff], [0x20000, 0x2fffd],
+    [0x30000, 0x3fffd], [0xe0100, 0xe01ef], [0xf0000, 0xffffd],
+    [0x100000, 0x10fffd],
 ];
 
 // Sorted list of non-overlapping intervals of East Asian Unambiguous characters
@@ -5110,10 +5137,10 @@ lib.wc.unambiguous = [
     [0x1f54b, 0x1f54e], [0x1f550, 0x1f567], [0x1f57a, 0x1f57a],
     [0x1f595, 0x1f596], [0x1f5a4, 0x1f5a4], [0x1f5fb, 0x1f64f],
     [0x1f680, 0x1f6c5], [0x1f6cc, 0x1f6cc], [0x1f6d0, 0x1f6d2],
-    [0x1f6eb, 0x1f6ec], [0x1f6f4, 0x1f6f8], [0x1f910, 0x1f93e],
-    [0x1f940, 0x1f94c], [0x1f950, 0x1f96b], [0x1f980, 0x1f997],
-    [0x1f9c0, 0x1f9c0], [0x1f9d0, 0x1f9e6], [0x20000, 0x2fffd],
-    [0x30000, 0x3fffd],
+    [0x1f6eb, 0x1f6ec], [0x1f6f4, 0x1f6f9], [0x1f910, 0x1f93e],
+    [0x1f940, 0x1f970], [0x1f973, 0x1f976], [0x1f97a, 0x1f97a],
+    [0x1f97c, 0x1f9a2], [0x1f9b0, 0x1f9b9], [0x1f9c0, 0x1f9c2],
+    [0x1f9d0, 0x1f9ff], [0x20000, 0x2fffd], [0x30000, 0x3fffd],
 ];
 
 /**
@@ -5307,13 +5334,11 @@ lib.wc.substring = function(str, start, end) {
   return lib.wc.substr(str, start, end - start);
 };
 lib.resource.add('libdot/changelog/version', 'text/plain',
-'1.21' +
-''
+'1.22'
 );
 
 lib.resource.add('libdot/changelog/date', 'text/plain',
-'2018-01-05' +
-''
+'2018-06-20'
 );
 
 
@@ -5450,130 +5475,112 @@ lib.resource.add('hterm/audio/bell', 'audio/ogg;base64',
 'v9+movui1wUNPAj059N3OVxzk4gV73PmE8FIA2F5mRq37Evc76vLXfF4rD5UJJAw46hW6LZCb5sN' +
 'Ldx+kzMCAAB+hfy95+965ZCLP7B3/VlTHCvDEKtQhTm4KiCgAEAbrfbWTPssAAAAXpee1tVrozYY' +
 'n41wD1aeYtkKfswN5/SXPO0JDnhO/4laUortv/s412fybe/nONdncoCHnBVliu0CQGBWlPY/5Kwo' +
-'m2L/kruPM6Q7oz4tvDQy+bZ3HzOi+gNHA4DZEgA=' +
-''
+'m2L/kruPM6Q7oz4tvDQy+bZ3HzOi+gNHA4DZEgA='
 );
 
 lib.resource.add('hterm/images/icon-96', 'image/png;base64',
-'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' +
-'ODoyNC0wNDowMNba8BsAAAAASUVORK5CYII=' +
-''
+'iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAStklEQVR42u1dBXjrupL+RzIGmjIf' +
+'vAcu42NmZub3lpmZmZmZmRkuMzPDYaYyJG0Sa9b2p2z1eQtp7bzefpv/nKnkkSw7Gg1IshNsDtpo' +
+'o4022mijDWp/tlTgzbpJSqYvMoFTC9vjRD5JLb9RYaRkpk22SS28P8pacAaPdZ41KYMCI89YB6wN' +
+'3JzQJM3UIGqurfTlKQTAZtqENid5SlNdU804VmbbWQtA6HMkAAdADsBeAJ7mxwIhIhFSXJ9iRPw4' +
+'JYDEcqmGWEp1HhCI8gAtpXF7scB1ZRH9E3HObANCNy1AoGTegNDnCdE41tfQDH2t+CINQEpJ9Xp9' +
+'7oUDh3+nXK48DYAMIWQmANIkNTn6vP69e3d/zctfeu0nXNexmVn3F0gDAMxMlBoHuht0qnsEEekC' +
+'42SdGHmNxgVjgk4bPN04Yui8bhc534cQBH35RKrPN9sGdLnB1/Wuv+HW4f+6/tZvBHAaAJvmKr0A' +
+'jJGvyQMw8pLrrvqeT378Ax8UwrKeevoFgEhfjcGGO2JO+iuTt1SW5DHzyraDExyTlWwHjCQ/CAJc' +
+'ecU+XHn5xWDmVCGQFAKljsLbx8Ynvv3Bhx7/EQCzurimU04jADLsvK3r73/7W1//g1/6hU++uVqt' +
+'0X/dcBcKxRIsy9Ji34DPow2et6FzgcXFKk6fOY83vu4VEFKkDiYHB3roSz73sc+Oj08eOHzk+B9o' +
+'MyQABGk0gCIyOt9xHPvaD3/wnT/5VV/+meumpmbwD/98A0qdvVEBNhvMDCJaVXtM01GtVlEs+LBt' +
+'C1ngzW98tX/m7Llv/emf+83HarX6vbrfGECQRgBmlLP9Ix961499+zd/5XVj45P407/8FxQ7uiGl' +
+'QK1Ww1ZCvR6gXq3AsgQ8zwYzUkMIgXe+/Q1Dd9x5/6duv/P+R7QjprQaIHQd/8orLvnCJz/2/pfm' +
+'cj7+6rf+DK5XgOu6sT3dQtBawqjW6lhYXIRlSTAjE/T39eLSS/ZeEwqgE8CiYUV4vQIgTULTyFve' +
+'9Or3WJZN/3n9HTh3fgrFjhJmZmawFaGUwkJlEffc9xh83wMYqcFg7Noxinw+l9OBikirAabz7eju' +
+'6sxJKTE7W4bn5+D7PrYmtI/gAFJasCwb4IzaBMHzXE8LgBJC4I1GQRKAa4Xo6upEsZiH53nIRYLe' +
+'olDMCIIq+nq70dFRAGckgFKpAD+UgBaAgfRRkGvbliwUcoh8ABHFYSfWMnBrxOzL12PwKufzSvV5' +
+'5Tpmi5a0IASBQCgWcujs7ABn5AQic+b5rhNlAVAmTliTEwnA990wIxEEdUQYnxjHidMnAUIcBYAB' +
+'RqNDdC7BM8t0VtfTnGRd8FKdRIjJcVlCsAbPPA5UAK4rXLJjP7aNbkO9XoPrOrEQWHEm69Kua0ca' +
+'YEspvCBQ5toSp9EASCkt27ZF1PlCxBOZOPo5feY0Xpg8jHe/7V3YNjhqjDRac3mMVl1Oo40vtREt' +
+'W+2FYwdw/S03YHJ6EkODQ1hcXIQUcaeBlUIWsCwZ+QDLdZxcubKAtBpgNmzZliUa6yLMKiRGoBR2' +
+'79yN6666FlJYABgvRhAIncUSHn/iCdQrAZjjSAiKFQQRVEhZIRJASJEACICmlAKQUtqhBETjw5ij' +
+'uFqr4oWjBwHmF7/jVUHc6aRNXxAoZA3PdYXruvlldJfTaIATaQA4KU/CzNwMDp84DOYXf+hZXiij' +
+'hJz+DK0QAEd+RYTOOAcgMw0g24oskNYAIoCXxDpbnsOxM8fB5qacwKZD+3WQcS+VxQrYYXNVNGMh' +
+'I1odiIRQSHb8BmbCpgZYjmVLYi0ANmxQNKpOj50FFOB3WnDzEpOnFkGbuOXPimG5Ap0jLqZOLiKo' +
+'MyIsVhfB9lLEpFSQ+S26jh2Fo/n0YagRCUlLRhpAAIMIyWl9vBinAkbfoIPXf+0wnrlxAs/dPInK' +
+'VB1CUOsFkdhD6Nnp49oP98EvWfjvnzqGak0hVlwwFJsaoADK9vq2Y0eOOKUGJLTAjjQgFgBAy/gT' +
+'vbGIyXC0nX66jJd+YgC7X1nCo39/AccfmUVQU1F5y0d9rsvGJW/txuXv7oGqMx7+2/OoVxWIzE5S' +
+'OkfaBBGyhGPHc4G8YYjT+wDLDgUgJbQPWDGuL0/VcefvnMLRB2dw3Uf78dZv345D90zjsX++gPGj' +
+'C7peC8yNI7DjpSVcE476rlEPB++awmP/dCEaEMtqbAP1Fqzkhn0VaUAegMzABJkaIMG8epNEiE3R' +
+'0funce75Mi4NR+MV7+3B6NUFPPnvY3jupslISJkKoW9PDld/sA+7Xt6B8SMV3Pjzx3Di0TkENQaJ' +
+'5A1qM8VRljKPgpg58pcNHyCz0ADSTnhNDTBBglCZruPhvz+PY4/M4Jqwg6772AB2vqwDd/zmKYwd' +
+'WQAJpMalb+vGSz81AA6Ah/76HJ69KfI7tej6K7RPUKwaWQT1FmiAlJEJykXZZh5cE02FoaEJkpYE' +
+'wGsKwNQGAnDhQAUP/915TJ5YwPCleZSG3WwWvwgYvryAYr8Tm5wn/2Mc5cm481c9RzXWobQPyBpS' +
+'ikgDGgJAVvMARzY0AARwc7Y5Ckn3vK4TV7+/D5YncN+fnsWpJ+cgsnDICnj0n85DSOCSUBO6Rl08' +
+'8g8XcObZ+VgjSKweKRG1xgcIEQnA9QE46aMgwwlHAmBuOFFepeMRd8rI1cU4FBzYn8exh2bw6D9e' +
+'wNihCjgrR0wI21vAzb9yIrT/pfha7/y+nXj+5gk8EWrDzJlF/WxQUgMUwEtREGW/5RlpgJdaABq0' +
+'pAGicYFVFaBzxMGV7+vFvtd3YfpsFbf+6ok4KqovxqFoph+YBBAsMg7cPonTT83jsnd247J39IQR' +
+'UUcceR28cxrVcrBUX2sAa1Nar7dCAwhevCkDN7UADB9gSyEBaBVYYeT37PTw9u/aAbcg8Pi/XMAz' +
+'109gfqLhFAktgX46LbrOg395DscemAnD0X68+suGQ+3L4Y7fOhVHRA00nDBRa3wAEGuAA8DbqABI' +
+'kyEA2xFSrBHHM2xf4Ozz82HIOb5kbgSh1TDv69wLZdz0S8dxUTgRHLwkD2HRkgCIdBi6NBPmVpgg' +
+'L7krBkrnA6xIA0Qjfl4x9Bw7XInDzHo1hblJbZYoNkvP3zqFw/fPIKgqGNC7aNoEtUQDEJkg23Ec' +
+'v1qtrhkFiWYeTYzCUCEEeI15QDTSgjpnMerTmyUB1CsKrGACyvABQb1VAnAt13V8NAHRxGqotEMI' +
+'QUbJFgGtMhNuqQa4Ui9HbEgDKFknioKIhC4kbGUwFBhsOGHO/AqhCxAh5dOsBZFBMoqCGhpARJv7' +
+'ihul35oEt84E6U0ZCv1APp0T1tACsIhEpquZQhJsT2C9UAGjtqA2vDnPzOD/NUEqymcOJ94TcPJZ' +
+'zYSFHYKIjHlA+iXk/kvyeO1XDENYtK6J16kn53H375+OBbFukBkFtWoewHAdJ1qQKwAQWcyEtQaQ' +
+'4QPSmk6KZ6gXDlVAcn0x9vTpxTSjdhkBcOYmSO+KNTZlKK0GWHYoASJkZoJIABPHFnDbb5zEFxts' +
+'hqEtMkG2rfcEtAZsJAoimBpgGRqg062KVmsAmBH2V2NfWKZ1woxYAyIBwFABXma+nE30wytV4rU/' +
+'OK9xLWaGUmpJAHE+awEDUsrGnoCERsooyJYALfPaOEHNByBl7BGwKQsy8kYLUZ1kOTXyZprgUYJH' +
+'SBzrctLHDZ6huflCLt61qtWDWAMawsgOWgCe5+v+JYN4vT6AtAbIpSCIGuEcRoaG8TrXRcwzCeZ7' +
+'u2gcm4QIZn0QEudC5wGYdYxUt2PyjRSAyWsc6mvW6hW0CnpXzAdgQ6NZAdByJsgKBQAQGCp+oQFQ' +
+'8ePdhUIBxWJxXfrJYKQHNRUMMK9kuwhzc3O4eO+eeLQqpbLfFfMaAgAnhdDccrSpAZYtAUApxujI' +
+'EN725lfg3//7bvT19cOyLJhg44/ZCTo1y40yI79qmT4/5un2jTx0+XLtmAOAlUJXVx6ve83LdFkr' +
+'dsWMTZkUTpikjFyAJUxHFr6oDc918cDDT6KyMB8xzVFpmBpAGGZHiCgVZgoRphSlQkCQTvXxEhFk' +
+'lMolXnyseY28NMtlIjXaCzsHO7aPoFDIQ6nWCMDzXS2AdJvybMl4HiaSLyK89S2vxRte/wrU6vXG' +
+'IFrzOxdWTZcaMNtCgq15a9vNtWyTMjUncwEguSu2ISesO3vp3YDkE2ZSypiyQMO0JO331gTFryoJ' +
+'IXylVLrFOCtEpAHmaG5jbQ3Qb8r45XKFN2qCOCJpSUsxi/n5SlOP8rXB0WpoUgC8HgGwQYqI7AMH' +
+'j1G9zk2Ea20wgI5iPhqs8dMk6/26GrOyiqharc16nlffvn3EaWtAc/BcBw8+/Ojc+PjkKaMvuWkN' +
+'ME+YnZ17+rnnDxweHOi9iCM+gzbLOXLrG8piu46JIO5/4NHD9XpwbEPfEqjJ01R0XecDYcz8lvhF' +
+'MSEkwJIBaU76AZA+SsST5oHOmidqvsHQieYk6ya/ucysT/pPon6yLum/5tXN4uV45ocAKHEeWFdQ' +
+'YcpKKb4wNnH/xMTUjwGYArBofLHfuhfjeO+eXbu+/ms+946JyWl16NAxWmV80AZGImW+M0z/dxWU' +
+'NbvJNQzaqNK4ro13v/NN9C//doP4gz/+mxKAWWNQb2hHzL/s0n1XDfT3W3fe8wRAVmLytCE56HM3' +
+'LL/E+bRqb+niFZ9rSvD0nnHzd2Y+M3vs5Ckwc/S9QQMABgGc0cvS9fU8migi0uUDey7asfvQ4eMQ' +
+'louuzs74Am0sL4TZQhHHTpzG8FB/qdRR3DU9M/sUgJqmphfjhJaa9H1v9/Ztw/1PPn0QtWoNs7Oz' +
+'WBltATiOixMnzuCS/bvtgTBwCQXg6s5fNLdTmnkuSAKww0WrS7q6St7E5Ax6egbWWHpow3EcnDs/' +
+'EX8v6fDw4J4XDhzxASwAEOvSAF2Wu2j3jssAQqVSQ6+ULTQ/W3+pQy/dYHauEi9Sbhsd2gGgqB2x' +
+'BEDN+gCpy3rCCGjP5OQ0FHO0idGeDTexHRkoxvjEJHZsGxkE0APgnO5TYc6x1hKAIKJtu3dtGzp1' +
+'+hyKxY5oB6wpDWibIRenTp3D6OhQl5RyMAiC5w0TRCtpACW+rM8aGR7cPzTYX3ziqQPw/dzmm4gt' +
+'YOaYGZ7n4cTJs3jVK67xw++l23723AVtURLhaFIDEuGnG47+S33fo8mpWZQ6XUxPT6ONtfeD7dgR' +
+'j6NQyNHQ0MCOUAA2ANmMBpAhhGJo//eFy6lgFsjn823zsw6cnhyHUhw74kcfe8ozfMCKAkjOAYb2' +
+'7tk5cubsBTiuF3v35h1w2xwpRmgxZrBj+/AIgA4AY7pfsZYGyIi6uzv3hHOArocefQbMwNTUVFsD' +
+'mjdDIUmcDgfv6OhwH4CIjie0gJfVAF3J2bVjWzgB65TnL0ygs7NrnROwthZUqzWcPHUOV1y2txiu' +
+'JA/Pzc0/spYJEob5ye/Zs/NiZka5XEVPr4821gfP9xAN3nA9yB4c6Nt+cG5eLvPGDCdNUKNS7769' +
+'u3ZGX1NfqwfR+s//C/PDnH5TRq+kxun8fBkdxQJGhgd2Hjx01BBAwgQl7L/I5fyd4RJE3+TUdNjI' +
+'PKSc0AJg/T+JxNNnK5Uly3VuterJOpzh3hmts5DWKExy3/j6l2J4eAAjI4PbjG9UF6YQrMaBWRCu' +
+'fu4fHRn0Bvp7USzkUS4vmD9as+IP3cSHWL5eXGTUizk6v/IDubodM7+++qs+ENbsg2RxLlE/5pr1' +
+'Ew8H25aFnp6u2CFvGx0e0JHQGdMEJTWgkTo7d4xe3NfXg1KpiLe86TWg9ONtc3eKuVX3yatei5m1' +
+'AIa6pRT9QaCeb2YporBzx7Zd0chnRkgKbaSLsMLZcK6/rzecU53n5TSAEkw/HPkFy86BpJtq3LRB' +
+'IK6jq7NDhPOqPi0A0+cuuxq6EMas5bGJaVQWFWgTbrqVTdEX9f4ZvmfB9/3Il5bW2hNmnZbDB4om' +
+'Lpw/h7n5RYCa+3E0ToY4Jp9XiGSYk/WMvHmlxDEn7yN5ffN4mTzrM808G+0leJqVbG81njbfjFJH' +
+'Hr4no4lZ3fjRT06GoWxQ+eFHn7rTz/1Tv5QSrBQpZrAmfVMaQJyNOXHOPESjztJfs54uxFJWl5q1' +
+'zYuZRzD+RzAPEufoJFln2TyMv8axwUheJPGRVSMFEHe4ZckqMy8cOXLin5f7xVUyyPypwhKAHp13' +
+'IjJCVW4iHGAz30Q5mmx3I+dwyvbWE36x0ck1AFW9Gb+g06qmWkMQVuLEQEtuVldyjR/vFJqyjxNb' +
+'6+mTA6DV96HMvkx0ej2pAZZxoBL5QJ8oDKIW3jxnfA5twj1xUhPMjjd9wGpOOEgIgUzaxFG8RZ4F' +
+'Tgxos9N1atajtd+S1LytA26p8NKbQE7/0+BtpNakNtpoo4022vgf7lRPtKCE39oAAAAASUVORK5C' +
+'YII='
 );
 
 lib.resource.add('hterm/concat/date', 'text/plain',
-'Wed, 10 Jan 2018 16:40:46 +0000' +
-''
+'Mon, 17 Sep 2018 16:13:11 +0000'
 );
 
 lib.resource.add('hterm/changelog/version', 'text/plain',
-'1.77' +
-''
+'1.80'
 );
 
 lib.resource.add('hterm/changelog/date', 'text/plain',
-'2018-01-05' +
-''
+'2018-06-22'
 );
 
 lib.resource.add('hterm/git/HEAD', 'text/plain',
-'git rev-parse HEAD' +
-''
+'2056832f0b287924110849cecbf1e5019c1a51c3'
 );
 
 
@@ -5583,6 +5590,7 @@ lib.resource.add('hterm/git/HEAD', 'text/plain',
 // files...
 //
 // hterm/js/hterm.js
+// hterm/js/hterm_accessibility_reader.js
 // hterm/js/hterm_frame.js
 // hterm/js/hterm_keyboard.js
 // hterm/js/hterm_keyboard_bindings.js
@@ -5666,9 +5674,9 @@ hterm.desktopNotificationTitle = '\u266A %(title) \u266A';
  *
  * A test harness should ensure that they all exist before running.
  */
-hterm.testDeps = ['hterm.ScrollPort.Tests', 'hterm.Screen.Tests',
-                  'hterm.Terminal.Tests', 'hterm.VT.Tests',
-                  'hterm.VT.CannedTests'];
+hterm.testDeps = ['hterm.AccessibilityReader.Tests', 'hterm.ScrollPort.Tests',
+                  'hterm.Screen.Tests', 'hterm.Terminal.Tests',
+                  'hterm.VT.Tests', 'hterm.VT.CannedTests'];
 
 /**
  * The hterm init function, registered with lib.registerInit().
@@ -5826,7 +5834,7 @@ hterm.notify = function(params) {
   var options = {
       'body': params.body,
       'icon': def(params.icon, lib.resource.getDataUrl('hterm/images/icon-96')),
-  }
+  };
 
   var title = def(params.title, window.document.title);
   if (!title)
@@ -5854,7 +5862,7 @@ hterm.openUrl = function(url) {
     const win = window.open(url, '_blank');
     win.focus();
   }
-}
+};
 
 /**
  * Constructor for a hterm.Size record.
@@ -6001,6 +6009,157 @@ hterm.RowCol.prototype.toString = function() {
   return ('[hterm.RowCol: ' + this.row + ', ' + this.column + ', ' +
           this.overflow + ']');
 };
+// SOURCE FILE: hterm/js/hterm_accessibility_reader.js
+// Copyright 2018 The Chromium OS Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+'use strict';
+
+/**
+ * AccessibilityReader responsible for rendering command output for AT.
+ *
+ * Renders command output for Assistive Technology using a live region. We don't
+ * use the visible rows of the terminal for rendering command output to the
+ * screen reader because the rendered content may be different from what we want
+ * read out by a screen reader. For example, we may not actually render every
+ * row of a large piece of output to the screen as it wouldn't be performant.
+ * But we want the screen reader to read it all out in order.
+ *
+ * @param {HTMLDivElement} div The div element where the live region should be
+ *     added.
+ */
+hterm.AccessibilityReader = function(div) {
+  this.document_ = div.ownerDocument;
+
+  // The live region element to add text to.
+  const liveRegion = this.document_.createElement('div');
+  liveRegion.id = 'hterm:accessibility-live-region';
+  liveRegion.setAttribute('aria-live', 'polite');
+  liveRegion.style.cssText = `position: absolute;
+                              width: 0; height: 0;
+                              overflow: hidden;
+                              left: 0; top: 0;`;
+  div.appendChild(liveRegion);
+  this.liveElement_ = this.document_.createElement('p');
+  this.liveElement_.setAttribute('aria-label', '');
+  liveRegion.appendChild(this.liveElement_);
+
+  // A queue of updates to announce.
+  this.queue_ = [];
+
+  // A timer which tracks when next to add items to the live region. null when
+  // not running. This is used to combine updates that occur in a small window,
+  // as well as to avoid too much output being added to the live region in one
+  // go which can cause the renderer to hang.
+  this.nextReadTimer_ = null;
+};
+
+/**
+ * Delay in ms to use for merging strings to output.
+ *
+ * We merge strings together to avoid hanging the terminal and to ensure that
+ * aria updates make it to the screen reader. We want this to be short so
+ * there's not a big delay between typing/executing commands and hearing output.
+ *
+ * @constant
+ * @type {integer}
+ */
+hterm.AccessibilityReader.DELAY = 90;
+
+/**
+ * Announce the command output.
+ *
+ * @param {string} str The string to announce using a live region.
+ */
+hterm.AccessibilityReader.prototype.announce = function(str) {
+  if (this.queue_.length == 0) {
+    this.queue_.push(str);
+  } else {
+    // We put a space between strings that appear on the same line.
+    // TODO(raymes): We should check the location on the row and not add a space
+    // if the strings are joined together.
+    let padding = '';
+    if (this.queue_[this.queue_.length - 1].length != 0) {
+      padding = ' ';
+    }
+    this.queue_[this.queue_.length - 1] += padding + str;
+  }
+
+  // If we've already scheduled text being added to the live region, wait for it
+  // to happen.
+  if (this.nextReadTimer_) {
+    return;
+  }
+
+  // If there's only one item in the queue, we may get other text being added
+  // very soon after. In that case, wait a small delay so we can merge the
+  // related strings.
+  if (this.queue_.length == 1) {
+    this.nextReadTimer_ = setTimeout(this.onNextReadTimer_.bind(this),
+                                     hterm.AccessibilityReader.DELAY / 2);
+  } else {
+    throw new Error(
+        'Expected only one item in queue_ or nextReadTimer_ to be running.');
+  }
+};
+
+/**
+ * Add a newline to the text that will be announced to the live region.
+ */
+hterm.AccessibilityReader.prototype.newLine = function() {
+  this.queue_.push('');
+};
+
+/**
+ * Clear the live region and any in-flight announcements.
+ */
+hterm.AccessibilityReader.prototype.clear = function() {
+  this.liveElement_.setAttribute('aria-label', '');
+  this.queue_ = [];
+};
+
+/**
+ * Add text from queue_ to the live region.
+ *
+ */
+hterm.AccessibilityReader.prototype.addToLiveRegion_ = function() {
+  if (this.nextReadTimer_) {
+    throw new Error('Expected nextReadTimer_ not to be running.');
+  }
+
+  // As soon as the aria-label is changed, the screen reader will be informed so
+  // we can re-use the same element.
+  // TODO(raymes): One downside of this approach is that strings that span two
+  // calls to addToLiveRegion_ will have a newline placed between them. We could
+  // try to use heuristics to avoid this but it would be more complicated and it
+  // should only happen for large amounts of output.
+  this.liveElement_.setAttribute('aria-label', this.queue_.join('\n'));
+  this.queue_ = [];
+};
+
+/**
+ * Fired when nextReadTimer_ finishes.
+ *
+ * This clears the aria-label attribute and sets up a call to onClearFinished_.
+ */
+hterm.AccessibilityReader.prototype.onNextReadTimer_ = function() {
+  this.liveElement_.setAttribute('aria-label', '');
+  // We need to wait for the screen reader to register that the attribute is
+  // cleared. This is only necessary if the string to be announced is identical
+  // to the previous string to be announced.
+  // TODO(raymes): Optimize for the above case if necessary.
+  setTimeout(this.onClearFinished_.bind(this),
+             hterm.AccessibilityReader.DELAY / 2);
+};
+
+/**
+ * Fired when sufficient time has passed to clear the aria-label attribute.
+ */
+hterm.AccessibilityReader.prototype.onClearFinished_ = function() {
+  this.nextReadTimer_ = null;
+  this.addToLiveRegion_();
+};
 // SOURCE FILE: hterm/js/hterm_frame.js
 // Copyright (c) 2012 The Chromium OS Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
@@ -6051,6 +6210,7 @@ hterm.Frame.prototype.onMessage_ = function(e) {
       // Show the finished frame, and then rebind our message handler to the
       // callback below.
       this.container_.style.display = 'flex';
+      this.postMessage('visible');
       this.messageChannel_.port1.onmessage = this.onMessage.bind(this);
       this.onLoad();
       return;
@@ -7023,26 +7183,26 @@ hterm.Keyboard.KeyMap = function(keyboard) {
 /**
  * Add a single key definition.
  *
- * The definition is a hash containing the following keys: 'keyCap', 'normal',
- * 'control', and 'alt'.
+ * The definition is an object containing the following fields: 'keyCap',
+ * 'normal', 'control', 'alt', and 'meta'.
  *
- *  - keyCap is a string identifying the key.  For printable
+ *  - keyCap is a string identifying the key on the keyboard.  For printable
  *    keys, the key cap should be exactly two characters, starting with the
  *    unshifted version.  For example, 'aA', 'bB', '1!' and '=+'.  For
  *    non-printable the key cap should be surrounded in square braces, as in
  *    '[INS]', '[LEFT]'.  By convention, non-printable keycaps are in uppercase
  *    but this is not a strict requirement.
  *
- *  - Normal is the action that should be performed when they key is pressed
+ *  - Normal is the action that should be performed when the key is pressed
  *    in the absence of any modifier.  See below for the supported actions.
  *
- *  - Control is the action that should be performed when they key is pressed
+ *  - Control is the action that should be performed when the key is pressed
  *    along with the control modifier.  See below for the supported actions.
  *
- *  - Alt is the action that should be performed when they key is pressed
+ *  - Alt is the action that should be performed when the key is pressed
  *    along with the alt modifier.  See below for the supported actions.
  *
- *  - Meta is the action that should be performed when they key is pressed
+ *  - Meta is the action that should be performed when the key is pressed
  *    along with the meta modifier.  See below for the supported actions.
  *
  * Actions can be one of the hterm.Keyboard.KeyActions as documented below,
@@ -7156,10 +7316,10 @@ hterm.Keyboard.KeyMap.prototype.reset = function() {
   }
 
   // Compute a control character for a given character.
-  function ctl(ch) { return String.fromCharCode(ch.charCodeAt(0) - 64) }
+  function ctl(ch) { return String.fromCharCode(ch.charCodeAt(0) - 64); }
 
   // Call a method on the keymap instance.
-  function c(m) { return function (e, k) { return this[m](e, k) } }
+  function c(m) { return function(e, k) { return this[m](e, k); }; }
 
   // Ignore if not trapping media keys.
   function med(fn) {
@@ -7173,6 +7333,36 @@ hterm.Keyboard.KeyMap.prototype.reset = function() {
       }
       return resolve(fn, e, k);
     };
+  }
+
+  // Browser-specific differences.
+  if (window.navigator && navigator.userAgent) {
+    if (navigator.userAgent.includes('Firefox')) {
+      // Firefox defines some keys uniquely.  No other browser defines these is
+      // this way.  Some even conflict.  The keyCode field isn't well documented
+      // as it isn't standardized.  At some point we should switch to "key".
+      // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
+      // http://unixpapa.com/js/key.html
+      var keycapMute = 181;   // Mute
+      var keycapVolDn = 182;  // Volume Down
+      var keycapVolUp = 183;  // Volume Up
+      var keycapSC = 59;      // ;:
+      var keycapEP = 61;      // =+
+      var keycapMU = 173;     // -_
+
+      this.addKeyDefs(
+        // Firefox Italian +*.
+        [171, '+*', DEFAULT, c('onPlusMinusZero_'), DEFAULT, c('onPlusMinusZero_')]
+      );
+    } else {
+      // All other browsers use these mappings.
+      var keycapMute = 173;   // Mute
+      var keycapVolDn = 174;  // Volume Down
+      var keycapVolUp = 175;  // Volume Up
+      var keycapSC = 186;     // ;:
+      var keycapEP = 187;     // =+
+      var keycapMU = 189;     // -_
+    }
   }
 
   var ESC = '\x1b';
@@ -7192,6 +7382,9 @@ hterm.Keyboard.KeyMap.prototype.reset = function() {
     [0,   '[UNKNOWN]', PASS, PASS, PASS, PASS],
 
     // First row.
+    // These bindings match xterm for lack of a better standard.  The emitted
+    // values might look like they're skipping values, but it's what xterm does.
+    // https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h2-PC-Style-Function-Keys
     [27,  '[ESC]', ESC,                       DEFAULT, DEFAULT,     DEFAULT],
     [112, '[F1]',  mod(SS3 + 'P', CSI + 'P'), DEFAULT, CSI + "23~", DEFAULT],
     [113, '[F2]',  mod(SS3 + 'Q', CSI + 'Q'), DEFAULT, CSI + "24~", DEFAULT],
@@ -7218,13 +7411,8 @@ hterm.Keyboard.KeyMap.prototype.reset = function() {
     [56,  '8*', DEFAULT, c('onCtrlNum_'),    c('onAltNum_'), c('onMetaNum_')],
     [57,  '9(', DEFAULT, c('onCtrlNum_'),    c('onAltNum_'), c('onMetaNum_')],
     [48,  '0)', DEFAULT, c('onPlusMinusZero_'),c('onAltNum_'),c('onPlusMinusZero_')],
-    [189, '-_', DEFAULT, c('onPlusMinusZero_'), DEFAULT, c('onPlusMinusZero_')],
-    [187, '=+', DEFAULT, c('onPlusMinusZero_'), DEFAULT, c('onPlusMinusZero_')],
-    // Firefox -_ and =+
-    [173, '-_', DEFAULT, c('onPlusMinusZero_'), DEFAULT, c('onPlusMinusZero_')],
-    [61, '=+', DEFAULT, c('onPlusMinusZero_'), DEFAULT, c('onPlusMinusZero_')],
-    // Firefox Italian +*
-    [171, '+*', DEFAULT, c('onPlusMinusZero_'), DEFAULT, c('onPlusMinusZero_')],
+    [keycapMU, '-_', DEFAULT, c('onPlusMinusZero_'), DEFAULT, c('onPlusMinusZero_')],
+    [keycapEP, '=+', DEFAULT, c('onPlusMinusZero_'), DEFAULT, c('onPlusMinusZero_')],
 
     [8,   '[BKSP]', bs('\x7f', '\b'), bs('\b', '\x7f'), DEFAULT,     DEFAULT],
 
@@ -7255,7 +7443,7 @@ hterm.Keyboard.KeyMap.prototype.reset = function() {
     [74,  'jJ',      DEFAULT, sh(ctl('J'), PASS),             DEFAULT, DEFAULT],
     [75,  'kK',      DEFAULT, sh(ctl('K'), c('onClear_')),    DEFAULT, DEFAULT],
     [76,  'lL',      DEFAULT, sh(ctl('L'), PASS),             DEFAULT, DEFAULT],
-    [186, ';:',      DEFAULT, STRIP,                          DEFAULT, DEFAULT],
+    [keycapSC, ';:', DEFAULT, STRIP,                          DEFAULT, DEFAULT],
     [222, '\'"',     DEFAULT, STRIP,                          DEFAULT, DEFAULT],
     [13,  '[ENTER]', '\r',    CANCEL,                         CANCEL,  DEFAULT],
 
@@ -7329,21 +7517,41 @@ hterm.Keyboard.KeyMap.prototype.reset = function() {
     [109, '[KP-]', DEFAULT, c('onPlusMinusZero_'), DEFAULT, c('onPlusMinusZero_')],
     [106, '[KP*]', DEFAULT, DEFAULT, DEFAULT, DEFAULT],
     [111, '[KP/]', DEFAULT, DEFAULT, DEFAULT, DEFAULT],
-    [110, '[KP.]', DEFAULT, DEFAULT, DEFAULT, DEFAULT],
-
-    // Chrome OS keyboard top row.
-    [166, '[BACK]',   med(mod(SS3+'P', CSI+'P')), DEFAULT, CSI+"23~", DEFAULT],
-    [167, '[FWD]',    med(mod(SS3+'Q', CSI+'Q')), DEFAULT, CSI+"24~", DEFAULT],
-    [168, '[RELOAD]', med(mod(SS3+'R', CSI+'R')), DEFAULT, CSI+"25~", DEFAULT],
-    [183, '[FSCR]',   med(mod(SS3+'S', CSI+'S')), DEFAULT, CSI+"26~", DEFAULT],
-    [182, '[WINS]',   med(CSI + '15~'),           DEFAULT, CSI+"28~", DEFAULT],
-    [216, '[BRIT-]',  med(CSI + '17~'),           DEFAULT, CSI+"29~", DEFAULT],
-    [217, '[BRIT+]',  med(CSI + '18~'),           DEFAULT, CSI+"31~", DEFAULT]
-
-    // 173 [MUTE], 174 [VOL-] and 175 [VOL+] are trapped by the Chrome OS
-    // window manager, so we'll never see them. Note that 173 is also
-    // Firefox's -_ keycode.
+    [110, '[KP.]', DEFAULT, DEFAULT, DEFAULT, DEFAULT]
   );
+
+  // OS-specific differences.
+  if (hterm.os == 'cros') {
+    this.addKeyDefs(
+      // Chrome OS keyboard top row.  The media-keys-are-fkeys preference allows
+      // users to make these always behave as function keys (see those bindings
+      // above for more details).
+      [166, '[BACK]',   med(mod(SS3+'P', CSI+'P')), DEFAULT, CSI+'23~', DEFAULT],  // F1
+      [167, '[FWD]',    med(mod(SS3+'Q', CSI+'Q')), DEFAULT, CSI+'24~', DEFAULT],  // F2
+      [168, '[RELOAD]', med(mod(SS3+'R', CSI+'R')), DEFAULT, CSI+'25~', DEFAULT],  // F3
+      [183, '[FSCR]',   med(mod(SS3+'S', CSI+'S')), DEFAULT, CSI+'26~', DEFAULT],  // F4
+      [182, '[WINS]',   med(CSI + '15~'),           DEFAULT, CSI+'28~', DEFAULT],  // F5
+      [216, '[BRIT-]',  med(CSI + '17~'),           DEFAULT, CSI+'29~', DEFAULT],  // F6
+      [217, '[BRIT+]',  med(CSI + '18~'),           DEFAULT, CSI+'31~', DEFAULT],  // F7
+      [173, '[MUTE]',   med(CSI + '19~'),           DEFAULT, CSI+'32~', DEFAULT],  // F8
+      [174, '[VOL-]',   med(CSI + '20~'),           DEFAULT, CSI+'33~', DEFAULT],  // F9
+      [175, '[VOL+]',   med(CSI + '21~'),           DEFAULT, CSI+'34~', DEFAULT],  // F10
+
+      // We could make this into F11, but it'd be a bit weird.  Chrome allows us
+      // to see this and react, but it doesn't actually allow us to block or
+      // cancel it, so it makes the screen flash/lock still.
+      [152, '[POWER]',  DEFAULT, DEFAULT, DEFAULT, DEFAULT],
+
+      // The Pixelbook has a slightly different layout.  This means half the keys
+      // above are off by one.  https://crbug.com/807513
+      [179, '[PLAY]',   med(CSI + '18~'),           DEFAULT, CSI + '31~', DEFAULT], // F7
+      // The settings / hamburgers / three hot dogs / menu / whatever-it's-called.
+      [154, '[DOGS]',   med(CSI + '23~'),           DEFAULT, CSI + '42~', DEFAULT], // F11
+
+      // We don't use this for anything, but keep it from popping up by default.
+      [153, '[ASSIST]', DEFAULT, DEFAULT, DEFAULT, DEFAULT]
+    );
+  }
 };
 
 /**
@@ -7484,7 +7692,7 @@ hterm.Keyboard.KeyMap.prototype.onF11_ = function(e, keyDef) {
  */
 hterm.Keyboard.KeyMap.prototype.onCtrlNum_ = function(e, keyDef) {
   // Compute a control character for a given character.
-  function ctl(ch) { return String.fromCharCode(ch.charCodeAt(0) - 64) }
+  function ctl(ch) { return String.fromCharCode(ch.charCodeAt(0) - 64); }
 
   if (this.keyboard.terminal.passCtrlNumber && !e.shiftKey)
     return hterm.Keyboard.KeyActions.PASS;
@@ -7631,7 +7839,7 @@ hterm.Keyboard.KeyMap.prototype.onMetaC_ = function(e, keyDef) {
 
   // Otherwise let the browser handle it as a copy command.
   if (this.keyboard.terminal.clearSelectionAfterCopy) {
-    setTimeout(function() { document.getSelection().collapseToEnd() }, 50);
+    setTimeout(function() { document.getSelection().collapseToEnd(); }, 50);
   }
   return hterm.Keyboard.KeyActions.PASS;
 };
@@ -8509,7 +8717,7 @@ hterm.PreferenceManager.categoryDefinitions = [
   { id: hterm.PreferenceManager.categories.Extensions,
     text: 'Extensions'},
   { id: hterm.PreferenceManager.categories.Miscellaneous,
-    text: 'Misc.'}
+    text: 'Miscellaneous'}
 ];
 
 
@@ -8517,7 +8725,7 @@ hterm.PreferenceManager.defaultPreferences = {
   'alt-gr-mode':
   [hterm.PreferenceManager.categories.Keyboard, null,
    [null, 'none', 'ctrl-alt', 'left-alt', 'right-alt'],
-   'Select an AltGr detection hack^Wheuristic.\n' +
+   'Select an AltGr detection heuristic.\n' +
    '\n' +
    '\'null\': Autodetect based on navigator.language:\n' +
    '      \'en-us\' => \'none\', else => \'right-alt\'\n' +
@@ -8529,28 +8737,28 @@ hterm.PreferenceManager.defaultPreferences = {
   'alt-backspace-is-meta-backspace':
   [hterm.PreferenceManager.categories.Keyboard, false, 'bool',
    'If set, undoes the Chrome OS Alt-Backspace->DEL remap, so that ' +
-   'alt-backspace indeed is alt-backspace.'],
+   'Alt-Backspace indeed is Alt-Backspace.'],
 
   'alt-is-meta':
   [hterm.PreferenceManager.categories.Keyboard, false, 'bool',
-   'Set whether the alt key acts as a meta key or as a distinct alt key.'],
+   'Whether the Alt key acts as a Meta key or as a distinct Alt key.'],
 
   'alt-sends-what':
   [hterm.PreferenceManager.categories.Keyboard, 'escape',
    ['escape', '8-bit', 'browser-key'],
-   'Controls how the alt key is handled.\n' +
+   'Controls how the Alt key is handled.\n' +
    '\n' +
-   '  escape....... Send an ESC prefix.\n' +
-   '  8-bit........ Add 128 to the unshifted character as in xterm.\n' +
-   '  browser-key.. Wait for the keypress event and see what the browser\n' +
-   '                says.  (This won\'t work well on platforms where the\n' +
-   '                browser performs a default action for some alt sequences.)'
+   '  escape: Send an ESC prefix.\n' +
+   '  8-bit: Add 128 to the typed character as in xterm.\n' +
+   '  browser-key: Wait for the keypress event and see what the browser\n' +
+   '    says. (This won\'t work well on platforms where the browser\n' +
+   '    performs a default action for some Alt sequences.)'
   ],
 
   'audible-bell-sound':
   [hterm.PreferenceManager.categories.Sounds, 'lib-resource:hterm/audio/bell',
    'url',
-   'URL of the terminal bell sound.  Empty string for no audible bell.'],
+   'URL of the terminal bell sound. Empty string for no audible bell.'],
 
   'desktop-notification-bell':
   [hterm.PreferenceManager.categories.Sounds, false, 'bool',
@@ -8559,8 +8767,8 @@ hterm.PreferenceManager.defaultPreferences = {
    '\n'+
    'Displaying notifications requires permission from the user. When this ' +
    'option is set to true, hterm will attempt to ask the user for permission ' +
-   'if necessary. Note browsers may not show this permission request if it ' +
-   'did not originate from a user action.\n' +
+   'if necessary. Browsers may not show this permission request if it was ' +
+   'not triggered by a user action.\n' +
    '\n' +
    'Chrome extensions with the "notifications" permission have permission to ' +
    'display notifications.'],
@@ -8571,7 +8779,7 @@ hterm.PreferenceManager.defaultPreferences = {
 
   'background-image':
   [hterm.PreferenceManager.categories.Appearance, '', 'string',
-   'CSS value of the background image.  Empty string for no image.\n' +
+   'CSS value of the background image. Empty string for no image.\n' +
    '\n' +
    'For example:\n' +
    '  url(https://goo.gl/anedTK)\n' +
@@ -8579,7 +8787,7 @@ hterm.PreferenceManager.defaultPreferences = {
 
   'background-size':
   [hterm.PreferenceManager.categories.Appearance, '', 'string',
-   'CSS value of the background image size.  Defaults to none.'],
+   'CSS value of the background image size.'],
 
   'background-position':
   [hterm.PreferenceManager.categories.Appearance, '', 'string',
@@ -8591,7 +8799,7 @@ hterm.PreferenceManager.defaultPreferences = {
 
   'backspace-sends-backspace':
   [hterm.PreferenceManager.categories.Keyboard, false, 'bool',
-   'If true, the backspace should send BS (\'\\x08\', aka ^H).  Otherwise ' +
+   'If true, the backspace should send BS (\'\\x08\', aka ^H). Otherwise ' +
    'the backspace key should send \'\\x7f\'.'],
 
   'character-map-overrides':
@@ -8608,39 +8816,44 @@ hterm.PreferenceManager.defaultPreferences = {
 
   'close-on-exit':
   [hterm.PreferenceManager.categories.Miscellaneous, true, 'bool',
-   'Whether or not to close the window when the command exits.'],
+   'Whether to close the window when the command finishes executing.'],
 
   'cursor-blink':
   [hterm.PreferenceManager.categories.Appearance, false, 'bool',
-   'Whether or not to blink the cursor by default.'],
+   'Whether the text cursor blinks by default. This can be toggled at ' +
+   'runtime via terminal escape sequences.'],
 
   'cursor-blink-cycle':
   [hterm.PreferenceManager.categories.Appearance, [1000, 500], 'value',
-   'The cursor blink rate in milliseconds.\n' +
+   'The text cursor blink rate in milliseconds.\n' +
    '\n' +
-   'A two element array, the first of which is how long the cursor should be ' +
-   'on, second is how long it should be off.'],
+   'A two element array, the first of which is how long the text cursor ' +
+   'should be on, second is how long it should be off.'],
 
   'cursor-color':
   [hterm.PreferenceManager.categories.Appearance, 'rgba(255, 0, 0, 0.5)',
    'color',
-   'The color of the visible cursor.'],
+   'The color of the visible text cursor.'],
 
   'color-palette-overrides':
   [hterm.PreferenceManager.categories.Appearance, null, 'value',
    'Override colors in the default palette.\n' +
    '\n' +
-   'This can be specified as an array or an object.  If specified as an ' +
+   'This can be specified as an array or an object. If specified as an ' +
    'object it is assumed to be a sparse array, where each property ' +
    'is a numeric index into the color palette.\n' +
    '\n' +
-   'Values can be specified as almost any css color value.  This ' +
+   'Values can be specified as almost any CSS color value. This ' +
    'includes #RGB, #RRGGBB, rgb(...), rgba(...), and any color names ' +
-   'that are also part of the stock X11 rgb.txt file.\n' +
+   'that are also part of the standard X11 rgb.txt file.\n' +
    '\n' +
    'You can use \'null\' to specify that the default value should be not ' +
-   'be changed.  This is useful for skipping a small number of indices ' +
-   'when the value is specified as an array.'],
+   'be changed. This is useful for skipping a small number of indices ' +
+   'when the value is specified as an array.\n' +
+   '\n' +
+   'For example, these both set color index 1 to blue:\n' +
+   '  {1: "#0000ff"}\n' +
+   '  [null, "#0000ff"]'],
 
   'copy-on-select':
   [hterm.PreferenceManager.categories.CopyPaste, true, 'bool',
@@ -8648,7 +8861,14 @@ hterm.PreferenceManager.defaultPreferences = {
 
   'use-default-window-copy':
   [hterm.PreferenceManager.categories.CopyPaste, false, 'bool',
-   'Whether to use the default window copy behavior'],
+   'Whether to use the default browser/OS\'s copy behavior.\n' +
+   '\n' +
+   'Allow the browser/OS to handle the copy event directly which might ' +
+   'improve compatibility with some systems (where copying doesn\'t work ' +
+   'at all), but makes the text selection less robust.\n' +
+   '\n' +
+   'For example, long lines that were automatically line wrapped will ' +
+   'be copied with the newlines still in them.'],
 
   'clear-selection-after-copy':
   [hterm.PreferenceManager.categories.CopyPaste, true, 'bool',
@@ -8662,17 +8882,17 @@ hterm.PreferenceManager.defaultPreferences = {
 
   'ctrl-c-copy':
   [hterm.PreferenceManager.categories.Keyboard, false, 'bool',
-   'Ctrl+C copies if true, send ^C to host if false.\n' +
-   'Ctrl+Shift+C sends ^C to host if true, copies if false.'],
+   'Ctrl-C copies if true, send ^C to host if false.\n' +
+   'Ctrl-Shift-C sends ^C to host if true, copies if false.'],
 
   'ctrl-v-paste':
   [hterm.PreferenceManager.categories.Keyboard, false, 'bool',
-   'Ctrl+V pastes if true, send ^V to host if false.\n' +
-   'Ctrl+Shift+V sends ^V to host if true, pastes if false.'],
+   'Ctrl-V pastes if true, send ^V to host if false.\n' +
+   'Ctrl-Shift-V sends ^V to host if true, pastes if false.'],
 
   'east-asian-ambiguous-as-two-column':
   [hterm.PreferenceManager.categories.Keyboard, false, 'bool',
-   'Set whether East Asian Ambiguous characters have two column width.'],
+   'Whether East Asian Ambiguous characters have two column width.'],
 
   'enable-8-bit-control':
   [hterm.PreferenceManager.categories.Keyboard, false, 'bool',
@@ -8683,21 +8903,22 @@ hterm.PreferenceManager.defaultPreferences = {
 
   'enable-bold':
   [hterm.PreferenceManager.categories.Appearance, null, 'tristate',
-   'True if we should use bold weight font for text with the bold/bright ' +
-   'attribute.  False to use the normal weight font.  Null to autodetect.'],
+   'If true, use bold weight font for text with the bold/bright attribute. ' +
+   'False to use the normal weight font. Null to autodetect.'],
 
   'enable-bold-as-bright':
   [hterm.PreferenceManager.categories.Appearance, true, 'bool',
-   'True if we should use bright colors (8-15 on a 16 color palette) ' +
-   'for any text with the bold attribute.  False otherwise.'],
+   'If true, use bright colors (8-15 on a 16 color palette) for any text ' +
+   'with the bold attribute. False otherwise.'],
 
   'enable-blink':
   [hterm.PreferenceManager.categories.Appearance, true, 'bool',
-   'True if we should respect the blink attribute.  False to ignore it.  '],
+   'If true, respect the blink attribute. False to ignore it.'],
 
   'enable-clipboard-notice':
   [hterm.PreferenceManager.categories.CopyPaste, true, 'bool',
-   'Show a message in the terminal when the host writes to the clipboard.'],
+   'Whether to show a message in the terminal when the host writes to the ' +
+   'clipboard.'],
 
   'enable-clipboard-write':
   [hterm.PreferenceManager.categories.CopyPaste, true, 'bool',
@@ -8708,7 +8929,7 @@ hterm.PreferenceManager.defaultPreferences = {
 
   'enable-dec12':
   [hterm.PreferenceManager.categories.Miscellaneous, false, 'bool',
-   'Respect the host\'s attempt to change the cursor blink status using ' +
+   'Respect the host\'s attempt to change the text cursor blink status using ' +
    'DEC Private Mode 12.'],
 
   'environment':
@@ -8719,14 +8940,18 @@ hterm.PreferenceManager.defaultPreferences = {
      // this shouldn't cause problems.
      'NCURSES_NO_UTF8_ACS': '1',
      'TERM': 'xterm-256color',
+     // Set this env var that a bunch of mainstream terminal emulators set to
+     // indicate we support true colors.
+     // https://gist.github.com/XVilka/8346728
+     'COLORTERM': 'truecolor',
    },
    'value',
-   'The default environment variables, as an object.'],
+   'The initial set of environment variables, as an object.'],
 
   'font-family':
   [hterm.PreferenceManager.categories.Appearance,
-   '"DejaVu Sans Mono", "Everson Mono", FreeMono, "Menlo", "Terminal", ' +
-   'monospace', 'string',
+   '"DejaVu Sans Mono", "Noto Sans Mono", "Everson Mono", ' +
+   'FreeMono, Menlo, Terminal, monospace', 'string',
    'Default font family for the terminal text.'],
 
   'font-size':
@@ -8741,25 +8966,33 @@ hterm.PreferenceManager.defaultPreferences = {
   [hterm.PreferenceManager.categories.Appearance, 'rgb(240, 240, 240)', 'color',
    'The foreground color for text with no other color attributes.'],
 
+  'hide-mouse-while-typing':
+  [hterm.PreferenceManager.categories.Keyboard, null, 'tristate',
+   'Whether to automatically hide the mouse cursor when typing. ' +
+   'By default, autodetect whether the platform/OS handles this.\n' +
+   '\n' +
+   'Note: Some operating systems may override this setting and thus you ' +
+   'might not be able to always disable it.'],
+
   'home-keys-scroll':
   [hterm.PreferenceManager.categories.Keyboard, false, 'bool',
-   'If true, home/end will control the terminal scrollbar and shift home/end ' +
-   'will send the VT keycodes.  If false then home/end sends VT codes and ' +
-   'shift home/end scrolls.'],
+   'If true, Home/End controls the terminal scrollbar and Shift-Home/' +
+   'Shift-End are sent to the remote host. If false, then Home/End are ' +
+   'sent to the remote host and Shift-Home/Shift-End scrolls.'],
 
   'keybindings':
   [hterm.PreferenceManager.categories.Keyboard, null, 'value',
-   'A map of key sequence to key actions.  Key sequences include zero or ' +
-   'more modifier keys followed by a key code.  Key codes can be decimal or ' +
-   'hexadecimal numbers, or a key identifier.  Key actions can be specified ' +
-   'a string to send to the host, or an action identifier.  For a full ' +
+   'A map of key sequence to key actions. Key sequences include zero or ' +
+   'more modifier keys followed by a key code. Key codes can be decimal or ' +
+   'hexadecimal numbers, or a key identifier. Key actions can be specified ' +
+   'as a string to send to the host, or an action identifier. For a full ' +
    'explanation of the format, see https://goo.gl/LWRndr.\n' +
    '\n' +
    'Sample keybindings:\n' +
    '{\n' +
    '  "Ctrl-Alt-K": "clearScrollback",\n' +
    '  "Ctrl-Shift-L": "PASS",\n' +
-   '  "Ctrl-H": "\'HELLO\\n\'"\n' +
+   '  "Ctrl-H": "\'Hello World\'"\n' +
    '}'],
 
   'media-keys-are-fkeys':
@@ -8769,14 +9002,16 @@ hterm.PreferenceManager.defaultPreferences = {
 
   'meta-sends-escape':
   [hterm.PreferenceManager.categories.Keyboard, true, 'bool',
-   'Set whether the meta key sends a leading escape or not.'],
+   'Send an ESC prefix when pressing a key while holding the Meta key.\n' +
+   '\n' +
+   'For example, when enabled, pressing Meta-K will send ^[k as if you ' +
+   'typed Escape then k. When disabled, only k will be sent.'],
 
   'mouse-right-click-paste':
   [hterm.PreferenceManager.categories.CopyPaste, true, 'bool',
    'Paste on right mouse button clicks.\n' +
    '\n' +
-   'This option is activate independent of the "mouse-paste-button" ' +
-   'setting.\n' +
+   'This option is independent of the "mouse-paste-button" setting.\n' +
    '\n' +
    'Note: This will handle left & right handed mice correctly.'],
 
@@ -8786,7 +9021,7 @@ hterm.PreferenceManager.defaultPreferences = {
    'Mouse paste button, or null to autodetect.\n' +
    '\n' +
    'For autodetect, we\'ll use the middle mouse button for non-X11 ' +
-   'platforms (including Chrome OS).  On X11, we\'ll use the right mouse ' +
+   'platforms (including Chrome OS). On X11, we\'ll use the right mouse ' +
    'button (since the native window manager should paste via the middle ' +
    'mouse button).\n' +
    '\n' +
@@ -8794,8 +9029,7 @@ hterm.PreferenceManager.defaultPreferences = {
    '1 == middle (auxiliary) button.\n' +
    '2 == right (secondary) button.\n' +
    '\n' +
-   'This option is activate independent of the "mouse-right-click-paste" ' +
-   'setting.\n' +
+   'This option is independent of the setting for right-click paste.\n' +
    '\n' +
    'Note: This will handle left & right handed mice correctly.'],
 
@@ -8825,66 +9059,68 @@ hterm.PreferenceManager.defaultPreferences = {
 
   'page-keys-scroll':
   [hterm.PreferenceManager.categories.Keyboard, false, 'bool',
-   'If true, page up/down will control the terminal scrollbar and shift ' +
-   'page up/down will send the VT keycodes.  If false then page up/down ' +
-   'sends VT codes and shift page up/down scrolls.'],
+   'If true, Page Up/Page Down controls the terminal scrollbar and ' +
+   'Shift-Page Up/Shift-Page Down are sent to the remote host. If false, ' +
+   'then Page Up/Page Down are sent to the remote host and Shift-Page Up/' +
+   'Shift-Page Down scrolls.'],
 
   'pass-alt-number':
   [hterm.PreferenceManager.categories.Keyboard, null, 'tristate',
-   'Set whether we should pass Alt-1..9 to the browser.\n' +
+   'Whether Alt-1..9 is passed to the browser.\n' +
    '\n' +
    'This is handy when running hterm in a browser tab, so that you don\'t ' +
-   'lose Chrome\'s "switch to tab" keyboard accelerators.  When not running ' +
+   'lose Chrome\'s "switch to tab" keyboard accelerators. When not running ' +
    'in a tab it\'s better to send these keys to the host so they can be ' +
    'used in vim or emacs.\n' +
    '\n' +
-   'If true, Alt-1..9 will be handled by the browser.  If false, Alt-1..9 ' +
-   'will be sent to the host.  If null, autodetect based on browser platform ' +
+   'If true, Alt-1..9 will be handled by the browser. If false, Alt-1..9 ' +
+   'will be sent to the host. If null, autodetect based on browser platform ' +
    'and window type.'],
 
   'pass-ctrl-number':
   [hterm.PreferenceManager.categories.Keyboard, null, 'tristate',
-   'Set whether we should pass Ctrl-1..9 to the browser.\n' +
+   'Whether Ctrl-1..9 is passed to the browser.\n' +
    '\n' +
    'This is handy when running hterm in a browser tab, so that you don\'t ' +
-   'lose Chrome\'s "switch to tab" keyboard accelerators.  When not running ' +
+   'lose Chrome\'s "switch to tab" keyboard accelerators. When not running ' +
    'in a tab it\'s better to send these keys to the host so they can be ' +
    'used in vim or emacs.\n' +
    '\n' +
-   'If true, Ctrl-1..9 will be handled by the browser.  If false, Ctrl-1..9 ' +
-   'will be sent to the host.  If null, autodetect based on browser platform ' +
+   'If true, Ctrl-1..9 will be handled by the browser. If false, Ctrl-1..9 ' +
+   'will be sent to the host. If null, autodetect based on browser platform ' +
    'and window type.'],
 
    'pass-meta-number':
   [hterm.PreferenceManager.categories.Keyboard, null, 'tristate',
-   'Set whether we should pass Meta-1..9 to the browser.\n' +
+   'Whether Meta-1..9 is passed to the browser.\n' +
    '\n' +
    'This is handy when running hterm in a browser tab, so that you don\'t ' +
-   'lose Chrome\'s "switch to tab" keyboard accelerators.  When not running ' +
+   'lose Chrome\'s "switch to tab" keyboard accelerators. When not running ' +
    'in a tab it\'s better to send these keys to the host so they can be ' +
    'used in vim or emacs.\n' +
    '\n' +
-   'If true, Meta-1..9 will be handled by the browser.  If false, Meta-1..9 ' +
-   'will be sent to the host.  If null, autodetect based on browser platform ' +
+   'If true, Meta-1..9 will be handled by the browser. If false, Meta-1..9 ' +
+   'will be sent to the host. If null, autodetect based on browser platform ' +
    'and window type.'],
 
   'pass-meta-v':
   [hterm.PreferenceManager.categories.Keyboard, true, 'bool',
-   'Set whether meta-V gets passed to host.'],
+   'Whether Meta-V gets passed to host.'],
 
   'receive-encoding':
   [hterm.PreferenceManager.categories.Encoding, 'utf-8', ['utf-8', 'raw'],
    'Set the expected encoding for data received from the host.\n' +
+   'If the encodings do not match, visual bugs are likely to be observed.\n' +
    '\n' +
    'Valid values are \'utf-8\' and \'raw\'.'],
 
   'scroll-on-keystroke':
   [hterm.PreferenceManager.categories.Scrolling, true, 'bool',
-   'If true, scroll to the bottom on any keystroke.'],
+   'Whether to scroll to the bottom on any keystroke.'],
 
   'scroll-on-output':
   [hterm.PreferenceManager.categories.Scrolling, false, 'bool',
-   'If true, scroll to the bottom on terminal output.'],
+   'Whether to scroll to the bottom on terminal output.'],
 
   'scrollbar-visible':
   [hterm.PreferenceManager.categories.Scrolling, true, 'bool',
@@ -8895,15 +9131,16 @@ hterm.PreferenceManager.defaultPreferences = {
    'When using the alternative screen buffer, and DECCKM (Application Cursor ' +
    'Keys) is active, mouse wheel scroll events will emulate arrow keys.\n' +
    '\n' +
-   'It can be temporarily disabled by holding the shift key.\n' +
+   'It can be temporarily disabled by holding the Shift key.\n' +
    '\n' +
    'This frequently comes up when using pagers (less) or reading man pages ' +
    'or text editors (vi/nano) or using screen/tmux.'],
 
   'scroll-wheel-move-multiplier':
   [hterm.PreferenceManager.categories.Scrolling, 1, 'int',
-   'The multiplier for the pixel delta in wheel events caused by the ' +
-   'scroll wheel. Alters how fast the page scrolls.'],
+   'The multiplier for scroll wheel events when measured in pixels.\n' +
+   '\n' +
+   'Alters how fast the page scrolls.'],
 
   'send-encoding':
   [hterm.PreferenceManager.categories.Encoding, 'utf-8', ['utf-8', 'raw'],
@@ -8925,7 +9162,7 @@ hterm.PreferenceManager.defaultPreferences = {
 
   'shift-insert-paste':
   [hterm.PreferenceManager.categories.Keyboard, true, 'bool',
-   'Shift + Insert pastes if true, sent to host if false.'],
+   'Whether Shift-Insert is used for pasting or is sent to the remote host.'],
 
   'user-css':
   [hterm.PreferenceManager.categories.Appearance, '', 'url',
@@ -8937,7 +9174,7 @@ hterm.PreferenceManager.defaultPreferences = {
 
   'allow-images-inline':
   [hterm.PreferenceManager.categories.Extensions, null, 'tristate',
-   'Whether to allow the remote side to display images in the terminal.\n' +
+   'Whether to allow the remote host to display images in the terminal.\n' +
    '\n' +
    'By default, we prompt until a choice is made.'],
 };
@@ -9560,6 +9797,8 @@ hterm.Screen.prototype.insertString = function(str, wcwidth=undefined) {
                  !cursorNode.asciiNode ||
                  cursorNode.tileNode ||
                  cursorNode.style.textDecoration ||
+                 cursorNode.style.textDecorationStyle ||
+                 cursorNode.style.textDecorationLine ||
                  cursorNode.style.backgroundColor)) {
       // Second best case, the current node is able to hold the whitespace.
       cursorNode.textContent = (cursorNodeText += ws);
@@ -9927,11 +10166,15 @@ hterm.Screen.prototype.setRange_ = function(row, start, end, range) {
 };
 
 /**
- * Expands selection to surround URLs.
+ * Expands selection to surrounding string with word break matches.
  *
  * @param {Selection} selection Selection to expand.
- **/
-hterm.Screen.prototype.expandSelection = function(selection) {
+ * @param {string} leftMatch left word break match.
+ * @param {string} rightMatch right word break match.
+ * @param {string} insideMatch inside word break match.
+ */
+hterm.Screen.prototype.expandSelectionWithWordBreakMatches_ =
+    function(selection, leftMatch, rightMatch, insideMatch) {
   if (!selection)
     return;
 
@@ -9954,11 +10197,6 @@ hterm.Screen.prototype.expandSelection = function(selection) {
   if (endPosition == -1)
     return;
 
-  // Use the user configurable match settings.
-  var leftMatch   = this.wordBreakMatchLeft;
-  var rightMatch  = this.wordBreakMatchRight;
-  var insideMatch = this.wordBreakMatchMiddle;
-
   //Move start to the left.
   var rowText = this.getLineText_(row);
   var lineUpToRange = lib.wc.substring(rowText, 0, endPosition);
@@ -9980,6 +10218,32 @@ hterm.Screen.prototype.expandSelection = function(selection) {
 
   this.setRange_(row, expandedStart, expandedEnd, range);
   selection.addRange(range);
+};
+
+/**
+ * Expands selection to surrounding string using the user's settings.
+ *
+ * @param {Selection} selection Selection to expand.
+ */
+hterm.Screen.prototype.expandSelection = function(selection) {
+  this.expandSelectionWithWordBreakMatches_(
+      selection,
+      this.wordBreakMatchLeft,
+      this.wordBreakMatchRight,
+      this.wordBreakMatchMiddle);
+};
+
+/**
+ * Expands selection to surrounding URL using a set of fixed match settings.
+ *
+ * @param {Selection} selection Selection to expand.
+ */
+hterm.Screen.prototype.expandSelectionForUrl = function(selection) {
+  this.expandSelectionWithWordBreakMatches_(
+      selection,
+      "[^\\s\\[\\](){}<>\"'\\^!@#$%&*,;:`]",
+      "[^\\s\\[\\](){}<>\"'\\^!@#$%&*,;:~.`]",
+      "[^\\s\\[\\](){}<>\"'\\^]*");
 };
 
 /**
@@ -10155,6 +10419,11 @@ hterm.ScrollPort = function(rowProvider) {
    */
   this.ctrlVPaste = false;
 
+  /**
+   * Whether accessibility features that impact performance should be enabled.
+   */
+  this.accessibilityEnabled_ = false;
+
   this.div_ = null;
   this.document_ = null;
 
@@ -10164,7 +10433,7 @@ hterm.ScrollPort = function(rowProvider) {
   this.observers_ = {};
 
   this.DEBUG_ = false;
-}
+};
 
 /**
  * Proxy for the native selection object which understands how to walk up the
@@ -10275,28 +10544,35 @@ hterm.ScrollPort.Selection.prototype.sync = function() {
   this.isMultiline = null;
   this.isCollapsed = !selection || selection.isCollapsed;
 
-  if (this.isCollapsed)
+  if (!selection) {
     return;
+  }
+
+  // Usually collapsed selections wouldn't be interesting, however screen
+  // readers will set a collapsed selection as they navigate through the DOM.
+  // It is important to preserve these nodes in the DOM as scrolling happens
+  // so that screen reader navigation isn't cleared.
+  if (this.isCollapsed && !this.scrollPort_.accessibilityEnabled_) {
+    return;
+  }
 
   var anchorRow = selection.anchorNode;
-  while (anchorRow && !('rowIndex' in anchorRow)) {
+  while (anchorRow && anchorRow.nodeName != 'X-ROW') {
     anchorRow = anchorRow.parentNode;
   }
 
   if (!anchorRow) {
-    console.error('Selection anchor is not rooted in a row node: ' +
-                  selection.anchorNode.nodeName);
+    // Don't set a selection if it's not a row node that's selected.
     return;
   }
 
   var focusRow = selection.focusNode;
-  while (focusRow && !('rowIndex' in focusRow)) {
+  while (focusRow && focusRow.nodeName != 'X-ROW') {
     focusRow = focusRow.parentNode;
   }
 
   if (!focusRow) {
-    console.error('Selection focus is not rooted in a row node: ' +
-                  selection.focusNode.nodeName);
+    // Don't set a selection if it's not a row node that's selected.
     return;
   }
 
@@ -10408,8 +10684,15 @@ hterm.ScrollPort.prototype.decorate = function(div) {
   this.screen_.setAttribute('spellcheck', 'false');
   this.screen_.setAttribute('autocomplete', 'off');
   this.screen_.setAttribute('autocorrect', 'off');
-  this.screen_.setAttribute('autocaptalize', 'none');
+  this.screen_.setAttribute('autocapitalize', 'none');
   this.screen_.setAttribute('role', 'textbox');
+  this.screen_.setAttribute('aria-live', 'off');
+
+  // Set aria-readonly to indicate to the screen reader that the text on the
+  // screen is not modifiable by the html cursor. It may be modifiable by
+  // sending input to the application running in the terminal, but this is
+  // orthogonal to the DOM's notion of modifiable.
+  this.screen_.setAttribute('aria-readonly', 'true');
   this.screen_.setAttribute('tabindex', '-1');
   this.screen_.style.cssText = (
       'caret-color: transparent;' +
@@ -10436,6 +10719,10 @@ hterm.ScrollPort.prototype.decorate = function(div) {
   this.screen_.addEventListener('drop', this.onDragAndDrop_.bind(this));
 
   doc.body.addEventListener('keydown', this.onBodyKeyDown_.bind(this));
+
+  this.document_.addEventListener('selectionchange', () => {
+    this.selection.sync();
+  });
 
   // This is the main container for the fixed rows.
   this.rowNodes_ = doc.createElement('div');
@@ -10506,6 +10793,7 @@ hterm.ScrollPort.prototype.decorate = function(div) {
   this.pasteTarget_ = doc.createElement('textarea');
   this.pasteTarget_.id = 'hterm:ctrl-v-paste-target';
   this.pasteTarget_.setAttribute('tabindex', '-1');
+  this.pasteTarget_.setAttribute('aria-hidden', 'true');
   this.pasteTarget_.style.cssText = (
     'position: absolute;' +
     'height: 1px;' +
@@ -10520,6 +10808,15 @@ hterm.ScrollPort.prototype.decorate = function(div) {
       'textInput', this.handlePasteTargetTextInput_.bind(this));
 
   this.resize();
+};
+
+/**
+ * Enable accessibility-friendly features that have a performance impact.
+ *
+ * @param {boolean} enabled Whether to enable accessibility-friendly features.
+ */
+hterm.ScrollPort.prototype.setAccessibilityEnabled = function(enabled) {
+  this.accessibilityEnabled_ = enabled;
 };
 
 /**
@@ -11507,7 +11804,7 @@ hterm.ScrollPort.prototype.onCopy_ = function(e) {
   this.resetSelectBags_();
   this.selection.sync();
 
-  if (!this.selection.startRow ||
+  if (this.selection.isCollapsed ||
       this.selection.endRow.rowIndex - this.selection.startRow.rowIndex < 2) {
     return;
   }
@@ -11649,9 +11946,9 @@ hterm.ScrollPort.prototype.setScrollWheelMoveMultipler = function(multiplier) {
 'use strict';
 
 lib.rtdep('lib.colors', 'lib.PreferenceManager', 'lib.resource', 'lib.wc',
-          'lib.f', 'hterm.Keyboard', 'hterm.Options', 'hterm.PreferenceManager',
-          'hterm.Screen', 'hterm.ScrollPort', 'hterm.Size',
-          'hterm.TextAttributes', 'hterm.VT');
+          'lib.f', 'hterm.AccessibilityReader', 'hterm.Keyboard',
+          'hterm.Options', 'hterm.PreferenceManager', 'hterm.Screen',
+          'hterm.ScrollPort', 'hterm.Size', 'hterm.TextAttributes', 'hterm.VT');
 
 /**
  * Constructor for the Terminal class.
@@ -11746,10 +12043,22 @@ hterm.Terminal = function(opt_profileId) {
   // True if we should override mouse event reporting to allow local selection.
   this.defeatMouseReports_ = false;
 
+  // Whether to auto hide the mouse cursor when typing.
+  this.setAutomaticMouseHiding();
+  // Timer to keep mouse visible while it's being used.
+  this.mouseHideDelay_ = null;
+
   // Terminal bell sound.
   this.bellAudio_ = this.document_.createElement('audio');
   this.bellAudio_.id = 'hterm:bell-audio';
   this.bellAudio_.setAttribute('preload', 'auto');
+
+  // The AccessibilityReader object for announcing command output.
+  this.accessibilityReader_ = null;
+
+  // Whether command output should be rendered for Assistive Technology.
+  // This isn't always enabled because it has an impact on performance.
+  this.accessibilityEnabled_ = false;
 
   // All terminal bell notifications that have been generated (not necessarily
   // shown).
@@ -12065,6 +12374,10 @@ hterm.Terminal.prototype.setProfile = function(profileId, opt_callback) {
 
     'foreground-color': function(v) {
       terminal.setForegroundColor(v);
+    },
+
+    'hide-mouse-while-typing': function(v) {
+      terminal.setAutomaticMouseHiding(v);
     },
 
     'home-keys-scroll': function(v) {
@@ -12391,14 +12704,14 @@ hterm.Terminal.prototype.isPrimaryScreen = function() {
  */
 hterm.Terminal.prototype.installKeyboard = function() {
   this.keyboard.installKeyboard(this.scrollPort_.getDocument().body);
-}
+};
 
 /**
  * Uninstall the keyboard handler for this terminal.
  */
 hterm.Terminal.prototype.uninstallKeyboard = function() {
   this.keyboard.installKeyboard(null);
-}
+};
 
 /**
  * Set a CSS variable.
@@ -12647,7 +12960,7 @@ hterm.Terminal.prototype.restoreCursorAndState = function(both) {
 hterm.Terminal.prototype.setCursorShape = function(shape) {
   this.cursorShape_ = shape;
   this.restyleCursor_();
-}
+};
 
 /**
  * Get the cursor shape
@@ -12656,7 +12969,7 @@ hterm.Terminal.prototype.setCursorShape = function(shape) {
  */
 hterm.Terminal.prototype.getCursorShape = function() {
   return this.cursorShape_;
-}
+};
 
 /**
  * Set the width of the terminal, resizing the UI to match.
@@ -13073,6 +13386,8 @@ hterm.Terminal.prototype.decorate = function(div) {
 
   this.div_ = div;
 
+  this.accessibilityReader_ = new hterm.AccessibilityReader(div);
+
   this.scrollPort_.decorate(div);
   this.scrollPort_.setBackgroundImage(this.prefs_.get('background-image'));
   this.scrollPort_.setBackgroundSize(this.prefs_.get('background-size'));
@@ -13100,6 +13415,8 @@ hterm.Terminal.prototype.decorate = function(div) {
   screenNode.addEventListener('mouseup', onMouse);
   screenNode.addEventListener('mousemove', onMouse);
   this.scrollPort_.onScrollWheel = onMouse;
+
+  screenNode.addEventListener('keydown', this.onKeyboardActivity_.bind(this));
 
   screenNode.addEventListener(
       'focus', this.onFocusChange_.bind(this, true));
@@ -13139,7 +13456,7 @@ hterm.Terminal.prototype.decorate = function(div) {
        '}' +
        '.uri-node:hover {' +
        '  text-decoration: underline;' +
-       '  cursor: pointer;' +
+       '  cursor: var(--hterm-mouse-cursor-pointer), pointer;' +
        '}' +
        '@keyframes blink {' +
        '  from { opacity: 1.0; }' +
@@ -13152,7 +13469,12 @@ hterm.Terminal.prototype.decorate = function(div) {
        '  animation-timing-function: ease-in-out;' +
        '  animation-direction: alternate;' +
        '}');
-  this.document_.head.appendChild(style);
+  // Insert this stock style as the first node so that any user styles will
+  // override w/out having to use !important everywhere.  The rules above mix
+  // runtime variables with default ones designed to be overridden by the user,
+  // but we can wait for a concrete case from the users to determine the best
+  // way to split the sheet up to before & after the user-css settings.
+  this.document_.head.insertBefore(style, this.document_.head.firstChild);
 
   this.cursorNode_ = this.document_.createElement('div');
   this.cursorNode_.id = 'hterm:terminal-cursor';
@@ -13161,7 +13483,7 @@ hterm.Terminal.prototype.decorate = function(div) {
       ('position: absolute;' +
        'left: calc(var(--hterm-charsize-width) * var(--hterm-cursor-offset-col));' +
        'top: calc(var(--hterm-charsize-height) * var(--hterm-cursor-offset-row));' +
-       'display: block;' +
+       'display: ' + (this.options_.cursorVisible ? '' : 'none') + ';' +
        'width: var(--hterm-charsize-width);' +
        'height: var(--hterm-charsize-height);' +
        '-webkit-transition: opacity, background-color 100ms linear;' +
@@ -13182,6 +13504,7 @@ hterm.Terminal.prototype.decorate = function(div) {
   // It's a hack, but it's the cleanest way I could find.
   this.scrollBlockerNode_ = this.document_.createElement('div');
   this.scrollBlockerNode_.id = 'hterm:mouse-drag-scroll-blocker';
+  this.scrollBlockerNode_.setAttribute('aria-hidden', 'true');
   this.scrollBlockerNode_.style.cssText =
       ('position: absolute;' +
        'top: -99px;' +
@@ -13409,6 +13732,11 @@ hterm.Terminal.prototype.renumberRows_ = function(start, end, opt_screen) {
  * @param{string} str The string to print.
  */
 hterm.Terminal.prototype.print = function(str) {
+  // Basic accessibility output for the screen reader.
+  if (this.accessibilityEnabled_) {
+    this.accessibilityReader_.announce(str);
+  }
+
   var startOffset = 0;
 
   var strWidth = lib.wc.strWidth(str);
@@ -13420,7 +13748,7 @@ hterm.Terminal.prototype.print = function(str) {
   while (startOffset < strWidth) {
     if (this.options_.wraparound && this.screen_.cursorPosition.overflow) {
       this.screen_.commitLineOverflow();
-      this.newLine();
+      this.newLine(true);
     }
 
     var count = strWidth - startOffset;
@@ -13523,7 +13851,7 @@ hterm.Terminal.prototype.getVTScrollBottom = function() {
     return this.vtScrollBottom_;
 
   return this.screenSize.height - 1;
-}
+};
 
 /**
  * Process a '\n' character.
@@ -13533,8 +13861,14 @@ hterm.Terminal.prototype.getVTScrollBottom = function() {
  * buffer.
  *
  * Otherwise, this moves the cursor to column zero of the next row.
+ *
+ * @param {boolean=} dueToOverflow Whether the newline is due to wraparound of
+ *     the terminal.
  */
-hterm.Terminal.prototype.newLine = function() {
+hterm.Terminal.prototype.newLine = function(dueToOverflow = false) {
+  if (!dueToOverflow)
+    this.accessibilityReader_.newLine();
+
   var cursorAtEndOfScreen = (this.screen_.cursorPosition.row ==
                              this.screen_.rowsArray.length - 1);
 
@@ -13741,6 +14075,8 @@ hterm.Terminal.prototype.clearHome = function(opt_screen) {
   var screen = opt_screen || this.screen_;
   var bottom = screen.getHeight();
 
+  this.accessibilityReader_.clear();
+
   if (bottom == 0) {
     // Empty screen, nothing to do.
     return;
@@ -13906,6 +14242,21 @@ hterm.Terminal.prototype.vtScrollDown = function(opt_count) {
   this.restoreCursor(cursor);
 };
 
+/**
+ * Enable accessibility-friendly features that have a performance impact.
+ *
+ * This will generate additional DOM nodes in an aria-live region that will
+ * cause Assitive Technology to announce the output of the terminal. It also
+ * enables other features that aid assistive technology. All the features gated
+ * behind this flag have a performance impact on the terminal which is why they
+ * are made optional.
+ *
+ * @param {boolean} enabled Whether to enable accessibility-friendly features.
+ */
+hterm.Terminal.prototype.setAccessibilityEnabled = function(enabled) {
+  this.accessibilityEnabled_ = enabled;
+  this.scrollPort_.setAccessibilityEnabled(enabled);
+};
 
 /**
  * Set the cursor position.
@@ -14633,8 +14984,10 @@ hterm.Terminal.prototype.copyStringToClipboard = function(str) {
  * @param {string|number=} options.height The height of the image.
  * @param {string=} options.align Direction to align the image.
  * @param {string} options.uri The source URI for the image.
+ * @param {function=} onLoad Callback when loading finishes.
+ * @param {function(Event)=} onError Callback when loading fails.
  */
-hterm.Terminal.prototype.displayImage = function(options) {
+hterm.Terminal.prototype.displayImage = function(options, onLoad, onError) {
   // Make sure we're actually given a resource to display.
   if (options.uri === undefined)
     return;
@@ -14774,14 +15127,20 @@ hterm.Terminal.prototype.displayImage = function(options) {
 
       io.hideOverlay();
       io.pop();
+
+      if (onLoad)
+        onLoad();
     };
 
     // If we got a malformed image, give up.
     img.onerror = (e) => {
       this.document_.body.removeChild(img);
       io.showOverlay(hterm.msg('LOADING_RESOURCE_FAILED', [options.name],
-                               'Loading $1 failed ...'));
+                               'Loading $1 failed'));
       io.pop();
+
+      if (onError)
+        onError(e);
     };
   } else {
     // We can't use chrome.downloads.download as that requires "downloads"
@@ -14888,7 +15247,7 @@ hterm.Terminal.prototype.openSelectedUrl_ = function() {
 
   // If there is no selection, try and expand wherever they clicked.
   if (str == null) {
-    this.screen_.expandSelection(this.document_.getSelection());
+    this.screen_.expandSelectionForUrl(this.document_.getSelection());
     str = this.getSelectionText();
 
     // If clicking in empty space, return.
@@ -14915,8 +15274,35 @@ hterm.Terminal.prototype.openSelectedUrl_ = function() {
   }
 
   hterm.openUrl(str);
-}
+};
 
+/**
+ * Manage the automatic mouse hiding behavior while typing.
+ *
+ * @param {boolean=} v Whether to enable automatic hiding.
+ */
+hterm.Terminal.prototype.setAutomaticMouseHiding = function(v=null) {
+  // Since Chrome OS & macOS do this by default everywhere, we don't need to.
+  // Linux & Windows seem to leave this to specific applications to manage.
+  if (v === null)
+    v = (hterm.os != 'cros' && hterm.os != 'mac');
+
+  this.mouseHideWhileTyping_ = !!v;
+};
+
+/**
+ * Handler for monitoring user keyboard activity.
+ *
+ * This isn't for processing the keystrokes directly, but for updating any
+ * state that might toggle based on the user using the keyboard at all.
+ *
+ * @param {KeyboardEvent} e The keyboard event that triggered us.
+ */
+hterm.Terminal.prototype.onKeyboardActivity_ = function(e) {
+  // When the user starts typing, hide the mouse cursor.
+  if (this.mouseHideWhileTyping_ && !this.mouseHideDelay_)
+    this.setCssVar('mouse-cursor-style', 'none');
+};
 
 /**
  * Add the terminalRow and terminalColumn properties to mouse events and
@@ -14943,6 +15329,17 @@ hterm.Terminal.prototype.onMouse_ = function(e) {
       this.vt.mouseReport != this.vt.MOUSE_REPORT_DISABLED);
 
   e.processedByTerminalHandler_ = true;
+
+  // Handle auto hiding of mouse cursor while typing.
+  if (this.mouseHideWhileTyping_ && !this.mouseHideDelay_) {
+    // Make sure the mouse cursor is visible.
+    this.syncMouseStyle();
+    // This debounce isn't perfect, but should work well enough for such a
+    // simple implementation.  If the user moved the mouse, we enabled this
+    // debounce, and then moved the mouse just before the timeout, we wouldn't
+    // debounce that later movement.
+    this.mouseHideDelay_ = setTimeout(() => this.mouseHideDelay_ = null, 1000);
+  }
 
   // One based row/column stored on the mouse event.
   e.terminalRow = parseInt((e.clientY - this.scrollPort_.visibleRowTopMargin) /
@@ -14984,9 +15381,10 @@ hterm.Terminal.prototype.onMouse_ = function(e) {
   }
 
   if (!reportMouseEvents) {
-    if (e.type == 'dblclick' && this.copyOnSelect) {
+    if (e.type == 'dblclick') {
       this.screen_.expandSelection(this.document_.getSelection());
-      this.copySelectionToClipboard(this.document_);
+      if (this.copyOnSelect)
+        this.copySelectionToClipboard(this.document_);
     }
 
     if (e.type == 'click' && !e.shiftKey && (e.ctrlKey || e.metaKey)) {
@@ -15079,9 +15477,8 @@ hterm.Terminal.prototype.onFocusChange_ = function(focused) {
   this.cursorNode_.setAttribute('focus', focused);
   this.restyleCursor_();
 
-  if (this.reportFocus) {
-    this.io.sendString(focused === true ? '\x1b[I' : '\x1b[O')
-  }
+  if (this.reportFocus)
+    this.io.sendString(focused === true ? '\x1b[I' : '\x1b[O');
 
   if (focused === true)
     this.closeBellNotifications_();
@@ -15102,8 +15499,14 @@ hterm.Terminal.prototype.onScroll_ = function() {
 hterm.Terminal.prototype.onPaste_ = function(e) {
   var data = e.text.replace(/\n/mg, '\r');
   data = this.keyboard.encode(data);
-  if (this.options_.bracketedPaste)
-    data = '\x1b[200~' + data + '\x1b[201~';
+  if (this.options_.bracketedPaste) {
+    // We strip out most escape sequences as they can cause issues (like
+    // inserting an \x1b[201~ midstream).  We pass through whitespace
+    // though: 0x08:\b 0x09:\t 0x0a:\n 0x0d:\r.
+    // This matches xterm behavior.
+    const filter = (data) => data.replace(/[\x00-\x07\x0b-\x0c\x0e-\x1f]/g, '');
+    data = '\x1b[200~' + filter(data) + '\x1b[201~';
+  }
 
   this.io.sendString(data);
 };
@@ -15472,11 +15875,13 @@ hterm.TextAttributes = function(document) {
   // number       (representing the index from color palette to use)
   this.foregroundSource = this.SRC_DEFAULT;
   this.backgroundSource = this.SRC_DEFAULT;
+  this.underlineSource = this.SRC_DEFAULT;
 
   // These properties cache the value in the color table, but foregroundSource
   // and backgroundSource contain the canonical values.
   this.foreground = this.DEFAULT_COLOR;
   this.background = this.DEFAULT_COLOR;
+  this.underlineColor = this.DEFAULT_COLOR;
 
   this.defaultForeground = 'rgb(255, 255, 255)';
   this.defaultBackground = 'rgb(0, 0, 0)';
@@ -15489,7 +15894,6 @@ hterm.TextAttributes = function(document) {
   this.italic = false;
   this.blink = false;
   this.underline = false;
-  this.doubleUnderline = false;
   this.strikethrough = false;
   this.inverse = false;
   this.invisible = false;
@@ -15562,14 +15966,15 @@ hterm.TextAttributes.prototype.clone = function() {
 hterm.TextAttributes.prototype.reset = function() {
   this.foregroundSource = this.SRC_DEFAULT;
   this.backgroundSource = this.SRC_DEFAULT;
+  this.underlineSource = this.SRC_DEFAULT;
   this.foreground = this.DEFAULT_COLOR;
   this.background = this.DEFAULT_COLOR;
+  this.underlineColor = this.DEFAULT_COLOR;
   this.bold = false;
   this.faint = false;
   this.italic = false;
   this.blink = false;
   this.underline = false;
-  this.doubleUnderline = false;
   this.strikethrough = false;
   this.inverse = false;
   this.invisible = false;
@@ -15588,6 +15993,20 @@ hterm.TextAttributes.prototype.resetColorPalette = function() {
 };
 
 /**
+ * Reset the color.
+ *
+ * @param {integer|string} index The color index in the palette to reset.
+ */
+hterm.TextAttributes.prototype.resetColor = function(index) {
+  index = parseInt(index, 10);
+  if (isNaN(index) || index >= this.colorPalette.length)
+    return;
+
+  this.colorPalette[index] = lib.colors.stockColorPalette[index];
+  this.syncColors();
+};
+
+/**
  * Test if the current attributes describe unstyled text.
  *
  * @return {boolean} True if the current attributes describe unstyled text.
@@ -15600,7 +16019,6 @@ hterm.TextAttributes.prototype.isDefault = function() {
           !this.italic &&
           !this.blink &&
           !this.underline &&
-          !this.doubleUnderline &&
           !this.strikethrough &&
           !this.inverse &&
           !this.invisible &&
@@ -15659,26 +16077,19 @@ hterm.TextAttributes.prototype.createContainer = function(opt_textContent) {
   }
 
   let textDecorationLine = '';
-  let textDecorationStyle = '';
+  span.underline = this.underline;
   if (this.underline) {
     textDecorationLine += ' underline';
-    span.underline = true;
+    style.textDecorationStyle = this.underline;
   }
-  if (this.doubleUnderline) {
-    // The web platform doesn't like the same keyword twice.
-    if (!this.underline)
-      textDecorationLine += ' underline';
-    textDecorationStyle = 'double';
-    span.doubleUnderline = true;
-  }
+  if (this.underlineSource != this.SRC_DEFAULT)
+    style.textDecorationColor = this.underlineColor;
   if (this.strikethrough) {
     textDecorationLine += ' line-through';
     span.strikethrough = true;
   }
   if (textDecorationLine)
     style.textDecorationLine = textDecorationLine;
-  if (textDecorationStyle)
-    style.textDecorationStyle = textDecorationStyle;
 
   if (this.wcNode) {
     classes.push('wc-node');
@@ -15738,11 +16149,11 @@ hterm.TextAttributes.prototype.matchesContainer = function(obj) {
           this.uriId == obj.uriId &&
           this.foreground == style.color &&
           this.background == style.backgroundColor &&
+          this.underlineColor == style.textDecorationColor &&
           (this.enableBold && this.bold) == !!style.fontWeight &&
           this.blink == !!obj.blinkNode &&
           this.italic == !!style.fontStyle &&
-          !!this.underline == !!obj.underline &&
-          !!this.doubleUnderline == !!obj.doubleUnderline &&
+          this.underline == obj.underline &&
           !!this.strikethrough == !!obj.strikethrough);
 };
 
@@ -15817,6 +16228,13 @@ hterm.TextAttributes.prototype.syncColors = function() {
   // Process invisible settings last to keep it simple.
   if (this.invisible)
     this.foreground = this.background;
+
+  if (this.underlineSource == this.SRC_DEFAULT)
+    this.underlineColor = '';
+  else if (Number.isInteger(this.underlineSource))
+    this.underlineColor = this.colorPalette[this.underlineSource];
+  else
+    this.underlineColor = this.underlineSource;
 };
 
 /**
@@ -15844,9 +16262,13 @@ hterm.TextAttributes.containersMatch = function(obj1, obj2) {
 
   return (style1.color == style2.color &&
           style1.backgroundColor == style2.backgroundColor &&
+          style1.backgroundColor == style2.backgroundColor &&
           style1.fontWeight == style2.fontWeight &&
           style1.fontStyle == style2.fontStyle &&
-          style1.textDecoration == style2.textDecoration);
+          style1.textDecoration == style2.textDecoration &&
+          style1.textDecorationColor == style2.textDecorationColor &&
+          style1.textDecorationStyle == style2.textDecorationStyle &&
+          style1.textDecorationLine == style2.textDecorationLine);
 };
 
 /**
@@ -15874,7 +16296,7 @@ hterm.TextAttributes.nodeWidth = function(node) {
   } else {
     return node.textContent.length;
   }
-}
+};
 
 /**
  * Static method to get the substr of a node's textContent.  The start index
@@ -15892,7 +16314,7 @@ hterm.TextAttributes.nodeSubstr = function(node, start, width) {
   } else {
     return node.textContent.substr(start, width);
   }
-}
+};
 
 /**
  * Static method to get the substring based of a node's textContent.  The
@@ -16395,10 +16817,12 @@ hterm.VT.prototype.onTerminalMouse_ = function(e) {
       // Mouse wheel is treated as button 1 or 2 plus an additional 64.
       b = (((e.deltaY * -1) > 0) ? 0 : 1) + 64;
       b |= mod;
-      if (this.mouseCoordinates == this.MOUSE_COORDINATES_SGR)
+      if (this.mouseCoordinates == this.MOUSE_COORDINATES_SGR) {
         response = `\x1b[<${b};${x};${y}M`;
-      else
-        response = '\x1b[M' + String.fromCharCode(b) + x + y;
+      } else {
+        // X10 based modes (including UTF8) add 32 for legacy encoding reasons.
+        response = '\x1b[M' + String.fromCharCode(b + 32) + x + y;
+      }
 
       // Keep the terminal from scrolling.
       e.preventDefault();
@@ -16407,7 +16831,7 @@ hterm.VT.prototype.onTerminalMouse_ = function(e) {
     case 'mousedown':
       // Buttons are encoded as button number.
       var b = Math.min(e.button, 2);
-      // In X10 mode, we also add 32 for legacy reasons.
+      // X10 based modes (including UTF8) add 32 for legacy encoding reasons.
       if (this.mouseCoordinates != this.MOUSE_COORDINATES_SGR)
         b += 32;
 
@@ -16438,6 +16862,7 @@ hterm.VT.prototype.onTerminalMouse_ = function(e) {
         // button press (e.g. if left & right are pressed, right is ignored),
         // and it only supports the first three buttons.  If none of them are
         // pressed, then XTerm flags it as a release.  We'll do the same.
+        // X10 based modes (including UTF8) add 32 for legacy encoding reasons.
         b = this.mouseCoordinates == this.MOUSE_COORDINATES_SGR ? 0 : 32;
 
         // Priority here matches XTerm: left, middle, right.
@@ -16594,7 +17019,7 @@ hterm.VT.prototype.parseUnknown_ = function(parseState) {
       str = self[self.GL].GL(str);
 
     self.terminal.print(str);
-  };
+  }
 
   // Search for the next contiguous block of plain text.
   var buf = parseState.peekRemainingBuf();
@@ -17188,7 +17613,7 @@ hterm.VT.CC1['\x1b'] = function(parseState) {
 
     if (parseState.func == parseESC)
       parseState.resetParseFunction();
-  };
+  }
 
   parseState.func = parseESC;
 };
@@ -17364,7 +17789,7 @@ hterm.VT.ESC[']'] = function(parseState) {
     // less confusing (otherwise args will stick around until the next sequence
     // that needs arguments).
     parseState.resetArguments();
-  };
+  }
 
   parseState.func = parseOSC;
 };
@@ -17419,8 +17844,11 @@ hterm.VT.ESC['\x20'] = function(parseState) {
 hterm.VT.ESC['#'] = function(parseState) {
   parseState.func = function(parseState) {
     var ch = parseState.consumeChar();
-    if (ch == '8')  // DEC Screen Alignment Test (DECALN)
+    if (ch == '8') {
+      // DEC Screen Alignment Test (DECALN).
+      this.terminal.setCursorPosition(0, 0);
       this.terminal.fill('E');
+    }
 
     parseState.resetParseFunction();
   };
@@ -17872,6 +18300,24 @@ hterm.VT.OSC['52'] = function(parseState) {
   var data = window.atob(args[1]);
   if (data)
     this.terminal.copyStringToClipboard(this.decode(data));
+};
+
+/**
+ * Reset color palette.
+ */
+hterm.VT.OSC['104'] = function(parseState) {
+  const attrs = this.terminal.getTextAttributes();
+
+  // If there are no args, we reset the entire palette.
+  if (!parseState.args[0]) {
+    attrs.resetColorPalette();
+    return;
+  }
+
+  // Args come in as a single 'index1;index2;...;indexN' string.
+  // Split on the semicolon and iterate through the colors.
+  const args = parseState.args[0].split(';');
+  args.forEach((c) => attrs.resetColor(c));
 };
 
 /**
@@ -18502,7 +18948,23 @@ hterm.VT.CSI['m'] = function(parseState) {
       } else if (arg == 3) {  // Italic.
         attrs.italic = true;
       } else if (arg == 4) {  // Underline.
-        attrs.underline = true;
+        if (parseState.argHasSubargs(i)) {
+          const uarg = parseState.args[i].split(':')[1];
+          if (uarg == 0)
+            attrs.underline = false;
+          else if (uarg == 1)
+            attrs.underline = 'solid';
+          else if (uarg == 2)
+            attrs.underline = 'double';
+          else if (uarg == 3)
+            attrs.underline = 'wavy';
+          else if (uarg == 4)
+            attrs.underline = 'dotted';
+          else if (uarg == 5)
+            attrs.underline = 'dashed';
+        } else {
+          attrs.underline = 'solid';
+        }
       } else if (arg == 5) {  // Blink.
         attrs.blink = true;
       } else if (arg == 7) {  // Inverse.
@@ -18512,7 +18974,7 @@ hterm.VT.CSI['m'] = function(parseState) {
       } else if (arg == 9) {  // Crossed out.
         attrs.strikethrough = true;
       } else if (arg == 21) {  // Double underlined.
-        attrs.doubleUnderline = true;
+        attrs.underline = 'double';
       } else if (arg == 22) {  // Not bold & not faint.
         attrs.bold = false;
         attrs.faint = false;
@@ -18520,7 +18982,6 @@ hterm.VT.CSI['m'] = function(parseState) {
         attrs.italic = false;
       } else if (arg == 24) {  // Not underlined.
         attrs.underline = false;
-        attrs.doubleUnderline = false;
       } else if (arg == 25) {  // Not blink.
         attrs.blink = false;
       } else if (arg == 27) {  // Steady.
@@ -18559,6 +19020,15 @@ hterm.VT.CSI['m'] = function(parseState) {
       } else {
         attrs.backgroundSource = attrs.SRC_DEFAULT;
       }
+
+    } else if (arg == 58) {  // Underline coloring.
+      const result = this.parseSgrExtendedColors(parseState, i, attrs);
+      if (result.color !== undefined)
+        attrs.underlineSource = result.color;
+      i += result.skipCount;
+
+    } else if (arg == 59) {  // Disable underline coloring.
+      attrs.underlineSource = attrs.SRC_DEFAULT;
 
     } else if (arg >= 90 && arg <= 97) {
       attrs.foregroundSource = arg - 90 + 8;
@@ -19456,130 +19926,112 @@ lib.resource.add('hterm/audio/bell', 'audio/ogg;base64',
 'v9+movui1wUNPAj059N3OVxzk4gV73PmE8FIA2F5mRq37Evc76vLXfF4rD5UJJAw46hW6LZCb5sN' +
 'Ldx+kzMCAAB+hfy95+965ZCLP7B3/VlTHCvDEKtQhTm4KiCgAEAbrfbWTPssAAAAXpee1tVrozYY' +
 'n41wD1aeYtkKfswN5/SXPO0JDnhO/4laUortv/s412fybe/nONdncoCHnBVliu0CQGBWlPY/5Kwo' +
-'m2L/kruPM6Q7oz4tvDQy+bZ3HzOi+gNHA4DZEgA=' +
-''
+'m2L/kruPM6Q7oz4tvDQy+bZ3HzOi+gNHA4DZEgA='
 );
 
 lib.resource.add('hterm/images/icon-96', 'image/png;base64',
-'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' +
-'ODoyNC0wNDowMNba8BsAAAAASUVORK5CYII=' +
-''
+'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' +
+'YII='
 );
 
 lib.resource.add('hterm/concat/date', 'text/plain',
-'Wed, 10 Jan 2018 16:40:49 +0000' +
-''
+'Mon, 17 Sep 2018 16:13:14 +0000'
 );
 
 lib.resource.add('hterm/changelog/version', 'text/plain',
-'1.77' +
-''
+'1.80'
 );
 
 lib.resource.add('hterm/changelog/date', 'text/plain',
-'2018-01-05' +
-''
+'2018-06-22'
 );
 
 lib.resource.add('hterm/git/HEAD', 'text/plain',
-'git rev-parse HEAD' +
-''
+'2056832f0b287924110849cecbf1e5019c1a51c3'
 );
 
 

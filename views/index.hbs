@@ -5,7 +5,7 @@
   <title>Shell</title>
   <link rel="stylesheet" href="{{baseURI}}/stylesheets/style.css">
 
-  <script src="{{baseURI}}/javascripts/hterm_all_1.77.js"></script>
+  <script src="{{baseURI}}/javascripts/hterm_all_1.80.js"></script>
   <script src="{{baseURI}}/javascripts/ood_shell.js"></script>
 </head>
 
@@ -20,7 +20,9 @@
       webSocketUrl      = document.URL.replace(/^http/, 'ws').replace(/#.*$/, ''),
       terminalPrefs     = {
         'send-encoding': 'raw',
-        'use-default-window-copy': true
+        'use-default-window-copy': true,
+        'ctrl-v-paste': true,
+        'ctrl-c-copy': true
       };
 
   // hterm default preferences are defined here:
