@@ -87,6 +87,48 @@ module NginxStage
       end
     end
 
+    def missing_home_directory?
+      ! File.directory? user.dir
+    end
+
+    def fix_missing_home_directory
+      # instead of embedded string, lets make this a FILE that is on the file system that we can read
+      # oh thats escaping ' with the idea that we can embed it in a ' in nginx config and it will work
+      <<-EOF.gsub("'", %q{\\\'})
+        <html>
+        <head>
+          <style>
+            body {
+              font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+              font-size: 16px;
+              line-height: 1.4;
+              color: #333;
+              font-weight: 300;
+              padding: 15px;
+            }
+            h2 {
+              font-weight: 500;
+              font-size: 30px;
+            }
+            .text-danger {
+              color: #a94442;
+            }
+          </style>
+        </head>
+        <body>
+          <h2>Home directory not found</h2>
+          <p>
+          Your home directory at #{user.dir} appears to be missing. If this is the first time you have logged in with this account, you may
+          need to access our systems using SSH in order to trigger the creation of your home directory.
+          </p>
+          <ol>
+            <li><a target="_blank" href="/pun/sys/shell/ssh/default">Open Shell to create home directory</a></li>
+            <li><a href="/nginx/stop?redir=/pun/sys/dashboard">Restart Web Server</a></li>
+        </body>
+        </html>
+      EOF
+    end
+
     # View used to confirm whether the user wants to restart the PUN to reload
     # configuration changes
     # @return [String] restart confirmation view

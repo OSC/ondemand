@@ -62,6 +62,13 @@ http {
     }
     <%- end -%>
 
+    <%- if missing_home_directory? -%>
+    location ~ ^/pun/sys/dashboard(/.*|$) {
+      default_type text/html;
+      return 500 '<%= fix_missing_home_directory %>';
+    }
+    <%- end -%>
+
     # Give apps the ability to download files from filesystem
     location <%= sendfile_uri %> {
       internal;
