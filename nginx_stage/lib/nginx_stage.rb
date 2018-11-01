@@ -34,6 +34,10 @@ module NginxStage
     ENV["NGINX_STAGE_CONFIG_FILE"] || '/etc/ood/config/nginx_stage.yml'
   end
 
+  def self.config_root
+    ENV['OOD_CONFIG_ROOT'] || '/etc/ood/config'
+  end
+
   extend Configuration
 
   # The current version of OnDemand installed
