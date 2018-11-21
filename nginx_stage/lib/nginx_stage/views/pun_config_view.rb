@@ -87,6 +87,12 @@ module NginxStage
       end
     end
 
+    # Array of env vars to declar in NGINX config using env directive
+    # @return [Array<String>] list of env vars to declare in NGINX config
+    def env_declarations
+      NginxStage.nginx_env(user: user).keys | %w(PATH LD_LIBRARY_PATH X_SCLS)
+    end
+
     # View used to confirm whether the user wants to restart the PUN to reload
     # configuration changes
     # @return [String] restart confirmation view
