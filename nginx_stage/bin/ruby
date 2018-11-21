@@ -8,26 +8,6 @@
 # that stages the PUN)
 #
 
-# Allow admin to override the environment the Passenger Apps run in
-#
-NGINX_PROFILE=${NGINX_PROFILE:-/etc/ood/profile}
-if [[ -f "${NGINX_PROFILE}" ]]; then
-  # Source in the custom environment
-  source "${NGINX_PROFILE}"
-else
-  # For Software Collections 2.0
-  #
-  # 1. Read in environment variable SCL_PKGS which may be set in `sudo` call
-  #    otherwise fallback to default software collection packages.
-  #
-  # 2. Check if Software Collections is installed, then source the defined
-  #    package scripts.
-  #
-  SCL_PKGS=${SCL_PKGS:-"rh-git29 rh-nodejs6 rh-ruby24"}
-  SCL_SOURCE="$(command -v scl_source)"
-  [[ "${SCL_SOURCE}" ]] && source "${SCL_SOURCE}" enable ${SCL_PKGS}
-fi
-
 if [[ -x "${PWD}/bin/ruby" ]]; then
   exec "${PWD}/bin/ruby" "$@"
 else
