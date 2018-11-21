@@ -349,10 +349,11 @@ module NginxStage
       self.template_root         = "#{root}/templates"
 
       self.proxy_user       = 'apache'
-      self.nginx_bin        = '/opt/rh/nginx16/root/usr/sbin/nginx'
+      self.nginx_bin        = '/usr/sbin/nginx'
       self.nginx_signals    = %i(stop quit reopen reload)
-      self.mime_types_path  = '/opt/rh/nginx16/root/etc/nginx/mime.types'
-      self.passenger_root   = '/opt/rh/rh-passenger40/root/usr/share/passenger/phusion_passenger/locations.ini'
+      self.mime_types_path  = '/etc/nginx/mime.types'
+      #FIXME:  `passenber-config about root` and this value changes between RHEL6 and RHEL7 but is fixed for an OOD install
+      self.passenger_root   = '/usr/share/ruby/vendor_ruby/phusion_passenger/locations.ini'
       self.passenger_ruby   = "#{root}/bin/ruby"
       self.passenger_nodejs = "#{root}/bin/node"
       self.passenger_python = "#{root}/bin/python"
