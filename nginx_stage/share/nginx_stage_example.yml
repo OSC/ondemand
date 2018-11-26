@@ -38,7 +38,7 @@
 
 # Path to system-installed NGINX binary
 #
-#nginx_bin: '/opt/rh/nginx16/root/usr/sbin/nginx'
+#nginx_bin: '/usr/sbin/nginx'
 
 # White-list of signals that can be sent to the NGINX process
 #
@@ -50,11 +50,14 @@
 
 # Path to system-installed NGINX 'mime.types' file
 #
-#mime_types_path: '/opt/rh/nginx16/root/etc/nginx/mime.types'
+#mime_types_path: '/etc/nginx/mime.types'
 
-# Path to system-installed Passenger 'locations.ini' file
+# Path to system-installed Passenger 'locations.ini' file.
+# In CentOS6/RHEL6 it is /usr/lib/ruby/1.8/phusion_passenger/locations.ini
+# To determine for your system, run command: passenger-config about root
 #
-#passenger_root: '/opt/rh/rh-passenger40/root/usr/share/passenger/phusion_passenger/locations.ini'
+#passenger_root: '/usr/share/ruby/vendor_ruby/phusion_passenger/locations.ini'
+#
 
 # Path to system-installed Ruby binary
 #
