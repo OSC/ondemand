@@ -1,4 +1,5 @@
 require 'yaml'
+require 'etc'
 
 module NginxStage
   # An object that stores the configuration options to control NginxStage's
@@ -352,8 +353,13 @@ module NginxStage
       self.nginx_bin        = '/usr/sbin/nginx'
       self.nginx_signals    = %i(stop quit reopen reload)
       self.mime_types_path  = '/etc/nginx/mime.types'
-      #FIXME:  `passenber-config about root` and this value changes between RHEL6 and RHEL7 but is fixed for an OOD install
-      self.passenger_root   = '/usr/share/ruby/vendor_ruby/phusion_passenger/locations.ini'
+
+      if Etc.uname[:release].include? "el6"
+        self.passenger_root   = '/usr/lib/ruby/1.8/phusion_passenger/locations.ini'
+      else
+        self.passenger_root   = '/usr/share/ruby/vendor_ruby/phusion_passenger/locations.ini'
+      end
+
       self.passenger_ruby   = "#{root}/bin/ruby"
       self.passenger_nodejs = "#{root}/bin/node"
       self.passenger_python = "#{root}/bin/python"
