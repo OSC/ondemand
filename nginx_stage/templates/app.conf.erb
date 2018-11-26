@@ -6,6 +6,7 @@ location ~ ^<%= app_request_uri %>(/.*|$) {
   passenger_enabled on;
 
   passenger_app_env <%= app_passenger_env %>;
+  passenger_stat_throttle_rate = <%= app_passenger_stat_throttle_rate %>;
 
   # Give apps the ability to download files from filesystem
   passenger_env_var HTTP_X_SENDFILE_TYPE X-Accel-Redirect;
