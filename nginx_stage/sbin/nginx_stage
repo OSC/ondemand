@@ -10,6 +10,7 @@
 #
 # It also assumes Passenger 5 & NGINX 1.14+ are installed at /usr/bin/passenger and /usr/sbin/nginx
 
+
 # Root directory for this library
 #
 ROOT_DIR="$(dirname "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")"
@@ -25,6 +26,7 @@ else
   source "${ROOT_DIR}/etc/profile"
 fi
 
+export PASSENGER_ROOT=$(passenger-config about root)
 
 # Environment is set, so call Ruby now
 #

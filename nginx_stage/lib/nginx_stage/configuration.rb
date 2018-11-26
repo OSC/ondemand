@@ -354,11 +354,8 @@ module NginxStage
       self.nginx_signals    = %i(stop quit reopen reload)
       self.mime_types_path  = '/etc/nginx/mime.types'
 
-      if Etc.uname[:release].include? "el6"
-        self.passenger_root   = '/usr/lib/ruby/1.8/phusion_passenger/locations.ini'
-      else
-        self.passenger_root   = '/usr/share/ruby/vendor_ruby/phusion_passenger/locations.ini'
-      end
+      # default is set in sbin/nginx_stage
+      self.passenger_root = ENV['PASSENGER_ROOT']
 
       self.passenger_ruby   = "#{root}/bin/ruby"
       self.passenger_nodejs = "#{root}/bin/node"
