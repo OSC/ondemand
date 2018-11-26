@@ -19,19 +19,6 @@ module NginxStage
       NginxStage.app_passenger_env(env: env, owner: owner, name: name)
     end
 
-    # Passenger passenger_stat_throttle_rate for reducing the number of checks
-    # of restart.txt file in an app to be on every request only in development,
-    # and every 2 minutes otherwise.
-    #
-    # @return [Integer] stat throttle rate
-    def app_passenger_stat_throttle_rate
-      if app_passenger_env == "development"
-        0
-      else
-        120
-      end
-    end
-
     # The token used to identify an app
     # @return [String] unique app token
     def app_token
