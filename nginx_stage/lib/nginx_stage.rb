@@ -113,8 +113,6 @@ module NginxStage
   def self.nginx_env(user:)
     {
       "USER" => user,
-      "OOD_VERSION" => ondemand_version,
-      # backwards compatibility - deprecated, favor OOD_ env vars
       "ONDEMAND_VERSION" => ondemand_version,
       "ONDEMAND_PORTAL" => portal,
       "ONDEMAND_TITLE" => title,
