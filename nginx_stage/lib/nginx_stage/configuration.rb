@@ -68,7 +68,11 @@ module NginxStage
 
     # Custom environment variables to set in the PUN
     # @return [Hash<String, String>] custom env var key and value pairs
-    attr_accessor :pun_custom_env
+    attr_writer :pun_custom_env
+
+    def pun_custom_env
+      transform_keys(@pun_custom_env) { |key| key.to_s }
+    end
 
     # Custom environment variables to pass to the PUN using NGINX env directive
     # @return [Array<String>] the array of env var names
@@ -437,6 +441,15 @@ module NginxStage
       end
     end
 
+    def transform_keys(hash_obj)
+      # see https://apidock.com/rails/Hash/transform_keys
+      result = {}
+      hash_obj.each do |key, value|
+        result[yield(key)] = value
+      end
+      result
+    end
+
     private
       # Recursively symbolize keys in hash
       def symbolize(obj)
@@ -444,5 +457,6 @@ module NginxStage
         return obj.each_with_object([]) {|v, a|      a           << symbolize(v)} if obj.is_a? Array
         return obj
       end
+
   end
 end
