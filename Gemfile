@@ -65,3 +65,7 @@ gem 'ood_support', '~> 0.0.2'
 gem 'ood_appkit', '~> 1.0'
 gem 'ood_core', '~> 0.1'
 gem 'pbs', '~> 2.2.1'
+
+# Security updates
+gem "rack", ">= 1.6.11"
+gem "loofah", ">= 2.2.2", "~> 2.2"
