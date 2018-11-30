@@ -13,14 +13,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [#295](https://github.com/OSC/ood-dashboard/issues/295)
 
 ### Changed
-- Updated Gem dependency (rack)
-- Update recommended dependencies (ruby, git, node)
-
-### Changed
 - Whitelist mode defaults to false, so now app categories not defined in whitelist
   will appear in navbar. To enable whitelist mode to hide these categories, set
   `NavConfig.categories_whitelist = true` in a custom initializer
 - Updated Gem dependency
+- Updated Gem dependency (rack)
+- Update recommended dependencies (ruby, git, node)
 
 ## [1.27.2] - 2018-09-14
 ### Changed
