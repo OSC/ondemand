@@ -87,10 +87,17 @@ module NginxStage
       end
     end
 
-    # Array of env vars to declar in NGINX config using env directive
+    # Array of env vars to declare in NGINX config using env directive
     # @return [Array<String>] list of env vars to declare in NGINX config
     def env_declarations
-      NginxStage.nginx_env(user: user).keys | %w(PATH LD_LIBRARY_PATH X_SCLS)
+      NginxStage.nginx_env(user: user).keys | scl_env_declarations
+    end
+
+    # Array of env vars that loading SCL packages with modify that we should
+    # also declare in NGINX config using env directive
+    # @return [Array<String>] list of env vars to declare in NGINX config
+    def scl_env_declarations
+      %w(PATH LD_LIBRARY_PATH X_SCLS MANPATH PCP_DIR PERL5LIB PKG_CONFIG_PATH PYTHONPATH XDG_DATA_DIRS SCLS)
     end
 
     # View used to confirm whether the user wants to restart the PUN to reload
