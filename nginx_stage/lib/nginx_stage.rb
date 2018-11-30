@@ -97,9 +97,10 @@ module NginxStage
   def self.nginx_env(user:)
     {
       "USER" => user,
-      "ONDEMAND_VERSION" => ondemand_version,
+      "OOD_VERSION" => ondemand_version,
       "ONDEMAND_PORTAL" => portal,
       # backwards compatibility
+      "ONDEMAND_VERSION" => ondemand_version,
       "OOD_PORTAL" => ondemand_portal
     }.merge(pun_custom_env)
   end
