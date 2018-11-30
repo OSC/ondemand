@@ -56,10 +56,10 @@ module NginxStage
   # @example The AweSim portal is specified
   #   portal #=> "awesim"
   # @return [String] unique portal name
-  def self.portal
+  def self.portal(default: "ondemand")
     portal = ondemand_portal.to_s.strip
     if portal.empty?
-      "ondemand"
+      default
     else
       portal.downcase.gsub(/\s+/, "_")
     end
@@ -71,14 +71,15 @@ module NginxStage
   # @example The OSC OnDemand portal
   #   title #=> "OSC OnDemand"
   # @return [String] portal title
-  def self.title
+  def self.title(default: "Open OnDemand")
     title = ondemand_title.to_s.strip
     if title.empty?
-      "Open OnDemand"
+      default
     else
       title
     end
   end
+
 
   # Regex used to parse an app request
   # @example Dev app request
@@ -113,13 +114,13 @@ module NginxStage
     {
       "USER" => user,
       "OOD_VERSION" => ondemand_version,
-      "OOD_PORTAL" => portal,
       # backwards compatibility - deprecated, favor OOD_ env vars
       "ONDEMAND_VERSION" => ondemand_version,
       "ONDEMAND_PORTAL" => portal,
       "ONDEMAND_TITLE" => title,
-      # only set OOD_DASHBOARD_TITLE if ondemand_title is set in nginx_stage.yml
-      "OOD_DASHBOARD_TITLE" => ondemand_title
+      # only set these if corresponding config is set in nginx_stage.yml
+      "OOD_DASHBOARD_TITLE" => title(default: nil),
+      "OOD_PORTAL" => portal(default: nil)
     }.merge(pun_custom_env)
   end
 
