@@ -98,10 +98,10 @@ module NginxStage
     {
       "USER" => user,
       "OOD_VERSION" => ondemand_version,
-      "ONDEMAND_PORTAL" => portal,
+      "OOD_PORTAL" => portal,
       # backwards compatibility
       "ONDEMAND_VERSION" => ondemand_version,
-      "OOD_PORTAL" => ondemand_portal
+      "ONDEMAND_PORTAL" => portal,
     }.merge(pun_custom_env)
   end
 
