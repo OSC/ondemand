@@ -18,15 +18,15 @@ A simple Rails web app that uses https://ace.c9.io/ for editing files. It is mea
    `file-editor`):
 
    ```sh
-   scl enable git19 -- git clone https://github.com/OSC/ood-fileeditor.git file-editor
+   scl enable rh-git29 -- git clone https://github.com/OSC/ood-fileeditor.git file-editor
    cd file-editor
-   scl enable git19 -- git checkout tags/v1.3.3
+   scl enable rh-git29 -- git checkout tags/v1.3.3
    ```
 
 2. Install the app for a production environment:
 
    ```sh
-   RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+   RAILS_ENV=production scl enable rh-git29 rh-ruby24 rh-nodejs6 -- bin/setup
    ```
 
 3. Copy the built app directory to the deployment directory, and start the
@@ -43,14 +43,14 @@ A simple Rails web app that uses https://ace.c9.io/ for editing files. It is mea
 
    ```sh
    cd file-editor # cd to build directory
-   scl enable git19 -- git fetch
-   scl enable git19 -- git checkout tags/v1.3.3
+   scl enable rh-git29 -- git fetch
+   scl enable rh-git29 -- git checkout tags/v1.3.3
    ```
 
 2. Update the app for a production environment:
 
    ```sh
-   RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+   RAILS_ENV=production scl enable rh-git29 rh-ruby24 rh-nodejs6 -- bin/setup
    ```
 
 3. Copy the built app directory to the deployment directory:

@@ -35,3 +35,7 @@ gem 'dotenv-rails', '~> 2.1', require: 'dotenv/rails-now'
 gem 'rails_12factor', group: :production
 gem 'font-awesome-sass'
 gem 'ood_appkit', '~> 1.0'
+
+# Security updates
+gem 'loofah', '~> 2.2', '>= 2.2.3'
+gem 'rack', '>= 1.6.11'

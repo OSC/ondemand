@@ -6,8 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.3.5] - 2018-11-30
 ### Changed
-- Updated gem dependencies
+- Updated gem dependencies (loofah, rack)
+- Update recommended development dependencies for ruby, node, git
 
 ## [1.3.4] - 2018-09-11
 ### Changed
@@ -91,7 +94,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Initial release!
 
-[Unreleased]: https://github.com/OSC/ood-fileeditor/compare/v1.3.4...HEAD
+[Unreleased]: https://github.com/OSC/ood-fileeditor/compare/v1.3.5...HEAD
+[1.3.5]: https://github.com/OSC/ood-fileeditor/compare/v1.3.4...v1.3.5
 [1.3.4]: https://github.com/OSC/ood-fileeditor/compare/v1.3.3...v1.3.4
 [1.3.3]: https://github.com/OSC/ood-fileeditor/compare/v1.3.2...v1.3.3
 [1.3.2]: https://github.com/OSC/ood-fileeditor/compare/v1.3.1...v1.3.2
