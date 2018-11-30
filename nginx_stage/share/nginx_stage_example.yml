@@ -23,6 +23,25 @@
 #
 #ondemand_portal: null
 
+# Custom environment variables to set for the PUN environment
+# Below is an example of the use for setting env vars.
+#
+# pun_custom_env:
+#   OOD_DASHBOARD_TITLE: "Open OnDemand"
+#   OOD_BRAND_BG_COLOR: "#53565a"
+#   OOD_BRAND_LINK_ACTIVE_BG_COLOR: "#fff"
+
+# List of environment variables to pass onto PUN environment
+# from /etc/ood/profile. Example below shows some default
+# env vars that are declared.
+#
+# pun_custom_env_declarations:
+#  - PATH
+#  - LD_LIBRARY_PATH
+#  - MANPATH
+#  - SCLS
+#  - X_SCLS
+
 # Location of the ERB templates used in the generation of the NGINX configs
 #
 #template_root: '/opt/ood/nginx_stage/templates'

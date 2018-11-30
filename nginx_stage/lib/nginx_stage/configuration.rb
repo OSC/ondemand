@@ -62,6 +62,14 @@ module NginxStage
     # per-user NGINX configuration options
     #
 
+    # Custom environment variables to set in the PUN
+    # @return [Hash<String, String>] custom env var key and value pairs
+    attr_accessor :pun_custom_env
+
+    # Custom environment variables to pass to the PUN using NGINX env directive
+    # @return [Array<String>] the array of env var names
+    attr_accessor :pun_custom_env_declarations
+
     # Root location where per-user NGINX configs are generated
     # Path to generated per-user NGINX config file
     # @example User Bob's nginx config
@@ -356,6 +364,8 @@ module NginxStage
       self.passenger_nodejs = "#{root}/bin/node"
       self.passenger_python = "#{root}/bin/python"
 
+      self.pun_custom_env      = {}
+      self.pun_custom_env_declarations = []
       self.pun_config_path     = '/var/lib/nginx/config/puns/%{user}.conf'
       self.pun_tmp_root        = '/var/lib/nginx/tmp/%{user}'
       self.pun_access_log_path = '/var/log/nginx/%{user}/access.log'

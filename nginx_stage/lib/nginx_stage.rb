@@ -101,7 +101,7 @@ module NginxStage
       "ONDEMAND_PORTAL" => portal,
       # backwards compatibility
       "OOD_PORTAL" => ondemand_portal
-    }
+    }.merge(pun_custom_env)
   end
 
   # Arguments used during execution of nginx binary
