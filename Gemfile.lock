@@ -107,7 +107,7 @@ GEM
     pbs (2.2.1)
       ffi (~> 1.9, >= 1.9.6)
     public_suffix (3.0.3)
-    rack (1.6.10)
+    rack (1.6.11)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.2.10)
@@ -190,6 +190,7 @@ DEPENDENCIES
   ood_appkit (~> 1.0)
   ood_cluster (~> 0.0.1)
   pbs (~> 2.2.1)
+  rack (>= 1.6.11)
   rails (~> 4.2.10)
   rails_12factor
   sass-rails (~> 5.0)
