@@ -23,10 +23,24 @@
 #
 #ondemand_portal: null
 
-# Title of this OnDemand portal that apps *should* display in their navbar
-# NB: If this is not set then most apps will use default title "Open OnDemand"
+# Custom environment variables to set for the PUN environment
+# Below is an example of the use for setting env vars.
 #
-#ondemand_title: null
+# pun_custom_env:
+#   OOD_DASHBOARD_TITLE: "Open OnDemand"
+#   OOD_BRAND_BG_COLOR: "#53565a"
+#   OOD_BRAND_LINK_ACTIVE_BG_COLOR: "#fff"
+
+# List of environment variables to pass onto PUN environment
+# from /etc/ood/profile. Example below shows some default
+# env vars that are declared.
+#
+# pun_custom_env_declarations:
+#  - PATH
+#  - LD_LIBRARY_PATH
+#  - MANPATH
+#  - SCLS
+#  - X_SCLS
 
 # Location of the ERB templates used in the generation of the NGINX configs
 #
@@ -38,7 +52,7 @@
 
 # Path to system-installed NGINX binary
 #
-#nginx_bin: '/opt/rh/nginx16/root/usr/sbin/nginx'
+#nginx_bin: '/usr/sbin/nginx'
 
 # White-list of signals that can be sent to the NGINX process
 #
@@ -50,11 +64,14 @@
 
 # Path to system-installed NGINX 'mime.types' file
 #
-#mime_types_path: '/opt/rh/nginx16/root/etc/nginx/mime.types'
+#mime_types_path: '/etc/nginx/mime.types'
 
-# Path to system-installed Passenger 'locations.ini' file
+# Path to system-installed Passenger 'locations.ini' file.
+# In CentOS6/RHEL6 it is /usr/lib/ruby/1.8/phusion_passenger/locations.ini
+# To determine for your system, run command: passenger-config about root
 #
-#passenger_root: '/opt/rh/rh-passenger40/root/usr/share/passenger/phusion_passenger/locations.ini'
+#passenger_root: '/usr/share/ruby/vendor_ruby/phusion_passenger/locations.ini'
+#
 
 # Path to system-installed Ruby binary
 #

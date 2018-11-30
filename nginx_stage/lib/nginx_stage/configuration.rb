@@ -1,4 +1,5 @@
 require 'yaml'
+require 'etc'
 
 module NginxStage
   # An object that stores the configuration options to control NginxStage's
@@ -64,6 +65,18 @@ module NginxStage
     #
     # per-user NGINX configuration options
     #
+
+    # Custom environment variables to set in the PUN
+    # @return [Hash<String, String>] custom env var key and value pairs
+    attr_writer :pun_custom_env
+
+    def pun_custom_env
+      transform_keys(@pun_custom_env) { |key| key.to_s }
+    end
+
+    # Custom environment variables to pass to the PUN using NGINX env directive
+    # @return [Array<String>] the array of env var names
+    attr_accessor :pun_custom_env_declarations
 
     # Root location where per-user NGINX configs are generated
     # Path to generated per-user NGINX config file
@@ -349,14 +362,19 @@ module NginxStage
       self.template_root         = "#{root}/templates"
 
       self.proxy_user       = 'apache'
-      self.nginx_bin        = '/opt/rh/nginx16/root/usr/sbin/nginx'
+      self.nginx_bin        = '/usr/sbin/nginx'
       self.nginx_signals    = %i(stop quit reopen reload)
-      self.mime_types_path  = '/opt/rh/nginx16/root/etc/nginx/mime.types'
-      self.passenger_root   = '/opt/rh/rh-passenger40/root/usr/share/passenger/phusion_passenger/locations.ini'
+      self.mime_types_path  = '/etc/nginx/mime.types'
+
+      # default is set in sbin/nginx_stage
+      self.passenger_root = ENV['PASSENGER_ROOT']
+
       self.passenger_ruby   = "#{root}/bin/ruby"
       self.passenger_nodejs = "#{root}/bin/node"
       self.passenger_python = "#{root}/bin/python"
 
+      self.pun_custom_env      = {}
+      self.pun_custom_env_declarations = []
       self.pun_config_path     = '/var/lib/nginx/config/puns/%{user}.conf'
       self.pun_tmp_root        = '/var/lib/nginx/tmp/%{user}'
       self.pun_access_log_path = '/var/log/nginx/%{user}/access.log'
@@ -423,6 +441,15 @@ module NginxStage
       end
     end
 
+    def transform_keys(hash_obj)
+      # see https://apidock.com/rails/Hash/transform_keys
+      result = {}
+      hash_obj.each do |key, value|
+        result[yield(key)] = value
+      end
+      result
+    end
+
     private
       # Recursively symbolize keys in hash
       def symbolize(obj)
@@ -430,5 +457,6 @@ module NginxStage
         return obj.each_with_object([]) {|v, a|      a           << symbolize(v)} if obj.is_a? Array
         return obj
       end
+
   end
 end
