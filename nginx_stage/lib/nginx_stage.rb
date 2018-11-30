@@ -65,21 +65,6 @@ module NginxStage
     end
   end
 
-  # The title of the hosted OnDemand portal
-  # @example No title supplied
-  #   title #=> "Open OnDemand"
-  # @example The OSC OnDemand portal
-  #   title #=> "OSC OnDemand"
-  # @return [String] portal title
-  def self.title
-    title = ondemand_title.to_s.strip
-    if title.empty?
-      "Open OnDemand"
-    else
-      title
-    end
-  end
-
   # Regex used to parse an app request
   # @example Dev app request
   #   parse_app_request(request: '/dev/rails1/structure/1')
@@ -114,10 +99,8 @@ module NginxStage
       "USER" => user,
       "ONDEMAND_VERSION" => ondemand_version,
       "ONDEMAND_PORTAL" => portal,
-      "ONDEMAND_TITLE" => title,
       # backwards compatibility
-      "OOD_PORTAL" => ondemand_portal,
-      "OOD_DASHBOARD_TITLE" => ondemand_title,
+      "OOD_PORTAL" => ondemand_portal
     }
   end
 
