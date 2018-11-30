@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.6.6] - 2018-11-30
 ### Changed
 - Update recommended development dependencies for ruby, node, git
+- Update Gem dependency (rack)
 
 ## [1.6.5] - 2018-09-14
 ### Changed
