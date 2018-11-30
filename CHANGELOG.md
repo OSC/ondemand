@@ -6,9 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.28.0] - 2018-11-30
 ### Added
 - Added whitelist mode to manage categories in the navbar.
   [#295](https://github.com/OSC/ood-dashboard/issues/295)
+
+### Changed
+- Updated Gem dependency (rack)
+- Update recommended dependencies (ruby, git, node)
 
 ### Changed
 - Whitelist mode defaults to false, so now app categories not defined in whitelist
@@ -421,7 +427,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.27.2...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.28.0...HEAD
+[1.28.0]: https://github.com/OSC/ood-dashboard/compare/v1.27.1...v1.28.0
 [1.27.2]: https://github.com/OSC/ood-dashboard/compare/v1.27.1...v1.27.2
 [1.27.1]: https://github.com/OSC/ood-dashboard/compare/v1.27.0...v1.27.1
 [1.27.0]: https://github.com/OSC/ood-dashboard/compare/v1.26.2...v1.27.0
