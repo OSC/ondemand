@@ -78,11 +78,10 @@ module NginxStage
     # @return [Array<String>] the array of env var names
     attr_accessor :pun_custom_env_declarations
 
-    # Root location where per-user NGINX configs are generated
     # Path to generated per-user NGINX config file
     # @example User Bob's nginx config
     #   pun_config_path(user: 'bob')
-    #   #=> "/var/log/nginx/config/puns/bob.conf"
+    #   #=> "/var/lib/nginx/config/puns/bob.conf"
     # @param user [String] the user of the nginx process
     # @return [String] the path to the per-user nginx config file
     def pun_config_path(user:)
@@ -90,6 +89,22 @@ module NginxStage
     end
 
     attr_writer :pun_config_path
+
+    # Path to generated per-user secret key base file
+    # @example User Bob's secret key base file
+    #   pun_config_path(user: 'bob')
+    #   #=> "/var/lib/nginx/config/puns/bob.secret_key_base.txt"
+    # @param user [String] the user of the nginx process
+    # @return [String] the path to the per-user nginx config file
+    def pun_secret_key_base_path(user:)
+      File.expand_path @pun_secret_key_base_path % {user: user}
+    end
+    #FIXME: another option is we add a new directory
+    # /var/lib/nginx/config/puns/
+    # /var/lib/nginx/config/secrets/
+    # does any code in here assume all files in the directory /var/lib/nginx/config/puns/ are pun config files?
+
+    attr_writer :pun_secret_key_base_path
 
     # Path to user's personal tmp root
     # @example User Bob's nginx tmp root
@@ -376,6 +391,8 @@ module NginxStage
       self.pun_custom_env      = {}
       self.pun_custom_env_declarations = []
       self.pun_config_path     = '/var/lib/nginx/config/puns/%{user}.conf'
+      self.pun_secret_key_base_path = '/var/lib/nginx/config/puns/%{user}.secret_key_base.txt'
+
       self.pun_tmp_root        = '/var/lib/nginx/tmp/%{user}'
       self.pun_access_log_path = '/var/log/nginx/%{user}/access.log'
       self.pun_error_log_path  = '/var/log/nginx/%{user}/error.log'
