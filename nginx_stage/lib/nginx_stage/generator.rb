@@ -107,9 +107,9 @@ module NginxStage
     # @param destination [String] the relative path to the destination file
     # @param data [String] the given data
     # @return [void]
-    def create_file(destination, data = "")
+    def create_file(destination, data = "", mode: 0644)
       empty_directory File.dirname(destination)
-      File.open(destination, "wb", 0644) { |f| f.write data }
+      File.open(destination, "wb", mode) { |f| f.write data }
     end
 
     # Create an empty directory if it doesn't already exist
