@@ -2,13 +2,13 @@
   {
     "name": "dashboard",
     "url": "https://github.com/OSC/ood-dashboard",
-    "tag": "v1.27.2",
+    "tag": "v1.28.0",
     "app": true
   },
   {
     "name": "shell",
     "url": "https://github.com/OSC/ood-shell",
-    "tag": "v1.4.0",
+    "tag": "v1.4.1",
     "app": true
   },
   {
@@ -20,19 +20,19 @@
   {
     "name": "file-editor",
     "url": "https://github.com/OSC/ood-fileeditor",
-    "tag": "v1.3.4",
+    "tag": "v1.3.5",
     "app": true
   },
   {
     "name": "activejobs",
     "url": "https://github.com/OSC/ood-activejobs",
-    "tag": "v1.6.5",
+    "tag": "v1.6.6",
     "app": true
   },
   {
     "name": "myjobs",
     "url": "https://github.com/OSC/ood-myjobs",
-    "tag": "v2.9.2",
+    "tag": "v2.9.3",
     "app": true
   },
   {
