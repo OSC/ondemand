@@ -2,7 +2,7 @@ require 'securerandom'
 
 module NginxStage
   # A class to handle a PID file
-  class SecretBaseKeyFile
+  class SecretKeyBaseFile
     # Path of the secret base key file
     # @return [String] the path of the secret file
     attr_reader :path

@@ -4,7 +4,7 @@ require_relative "nginx_stage/errors"
 require_relative "nginx_stage/user"
 require_relative "nginx_stage/pid_file"
 require_relative "nginx_stage/socket_file"
-require_relative "nginx_stage/secret_base_key_file"
+require_relative "nginx_stage/secret_key_base_file"
 require_relative "nginx_stage/views/pun_config_view"
 require_relative "nginx_stage/views/app_config_view"
 require_relative "nginx_stage/generator"
@@ -117,7 +117,7 @@ module NginxStage
       "ONDEMAND_VERSION" => ondemand_version,
       "ONDEMAND_PORTAL" => portal,
       "ONDEMAND_TITLE" => title,
-      "SECRET_KEY_BASE" => SecretBaseKeyFile.new(user).secret,
+      "SECRET_KEY_BASE" => SecretKeyBaseFile.new(user).secret,
       # only set these if corresponding config is set in nginx_stage.yml
       "OOD_DASHBOARD_TITLE" => title(default: nil),
       "OOD_PORTAL" => portal(default: nil)

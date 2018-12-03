@@ -79,7 +79,7 @@ module NginxStage
     # Generate per user secret_key_base file if it doesn't already exist
     add_hook :create_secret_key_base do
       begin
-        secret = SecretBaseKeyFile.new(user)
+        secret = SecretKeyBaseFile.new(user)
         secret.generate unless secret.exist?
       rescue => e
         $stderr.puts "Failed to write secret to path: #{secret.path}"
