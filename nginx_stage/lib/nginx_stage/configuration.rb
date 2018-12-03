@@ -395,7 +395,7 @@ module NginxStage
         sys: '/var/lib/nginx/config/apps/sys/%{name}.conf'
       }
       self.app_root          = {
-        dev: '~%{owner}/%{portal}/dev/%{name}',
+        dev: '/var/www/ood/apps/dev/%{owner}/gateway/%{name}',
         usr: '/var/www/ood/apps/usr/%{owner}/gateway/%{name}',
         sys: '/var/www/ood/apps/sys/%{name}'
       }
