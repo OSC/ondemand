@@ -4,6 +4,7 @@ require_relative "nginx_stage/errors"
 require_relative "nginx_stage/user"
 require_relative "nginx_stage/pid_file"
 require_relative "nginx_stage/socket_file"
+require_relative "nginx_stage/secret_base_key_file"
 require_relative "nginx_stage/views/pun_config_view"
 require_relative "nginx_stage/views/app_config_view"
 require_relative "nginx_stage/generator"
@@ -19,7 +20,6 @@ require_relative "nginx_stage/generators/nginx_clean_generator"
 require_relative "nginx_stage/application"
 
 require 'etc'
-require 'securerandom'
 
 # The main namespace for NginxStage. Provides a global configuration.
 module NginxStage
@@ -117,39 +117,11 @@ module NginxStage
       "ONDEMAND_VERSION" => ondemand_version,
       "ONDEMAND_PORTAL" => portal,
       "ONDEMAND_TITLE" => title,
-      "SECRET_KEY_BASE" => secret_key_base(user: user),
+      "SECRET_KEY_BASE" => SecretBaseKeyFile.new(user).secret,
       # only set these if corresponding config is set in nginx_stage.yml
       "OOD_DASHBOARD_TITLE" => title(default: nil),
-      "OOD_PORTAL" => portal(default: nil),
+      "OOD_PORTAL" => portal(default: nil)
     }.merge(pun_custom_env)
-  end
-
-  def self.secret_key_base(user:)
-    @secret_key_base ||= find_or_generate_secret_key_base(user: user)
-  end
-
-  def self.find_or_generate_secret_key_base(user:)
-    path = pun_secret_key_base_path(user: user)
-
-    if File.file?(path) && File.readable?(path)
-      # use existing key
-      File.read(path)
-    else
-      # generate new key
-      secret = SecureRandom.hex(64)
-      cache_secret_key_base user: user, secret: secret
-      secret
-    end
-  end
-
-  def self.cache_secret_key_base(user:, secret:)
-    File.write pun_secret_key_base_path(user: user), secret, { perm: 0600 }
-  rescue => e
-    $stderr.puts "Failed to write secret to pun_secret_key_base_path: #{pun_secret_key_base_path(user: user)}"
-    $stderr.puts e.message
-    $stderr.puts e.backtrace
-
-    abort
   end
 
   # Arguments used during execution of nginx binary

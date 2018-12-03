@@ -99,10 +99,6 @@ module NginxStage
     def pun_secret_key_base_path(user:)
       File.expand_path @pun_secret_key_base_path % {user: user}
     end
-    #FIXME: another option is we add a new directory
-    # /var/lib/nginx/config/puns/
-    # /var/lib/nginx/config/secrets/
-    # does any code in here assume all files in the directory /var/lib/nginx/config/puns/ are pun config files?
 
     attr_writer :pun_secret_key_base_path
 

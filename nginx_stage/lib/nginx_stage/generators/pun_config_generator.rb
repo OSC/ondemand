@@ -1,3 +1,5 @@
+require 'securerandom'
+
 module NginxStage
   # This generator stages and generates the per-user NGINX environment.
   class PunConfigGenerator < Generator
@@ -72,6 +74,20 @@ module NginxStage
       empty_directory socket_root
       FileUtils.chmod 0700, socket_root
       FileUtils.chown NginxStage.proxy_user, nil, socket_root if Process.uid == 0
+    end
+
+    # Generate per user secret_key_base file if it doesn't already exist
+    add_hook :create_secret_key_base do
+      begin
+        secret = SecretBaseKeyFile.new(user)
+        secret.generate unless secret.exist?
+      rescue => e
+        $stderr.puts "Failed to write secret to path: #{secret.path}"
+        $stderr.puts e.message
+        $stderr.puts e.backtrace
+
+        abort
+      end
     end
 
     # Generate the per-user NGINX config from the 'pun.conf.erb' template
