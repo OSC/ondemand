@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2.9.3] - 2018-12-03
+### Changed
+- Update gem dependencies
+
 ## [2.9.2] - 2018-09-12
 ### Fixed
 - Update to PBS gem fixes crash on job submission
@@ -143,7 +147,8 @@ All notable changes to this project will be documented in this file.
 - UI enhancements
 
 
-[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.9.2...HEAD
+[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.9.3...HEAD
+[2.9.3]: https://github.com/OSC/ood-myjobs/compare/v2.9.2...v2.9.3
 [2.9.2]: https://github.com/OSC/ood-myjobs/compare/v2.9.1...v2.9.2
 [2.9.1]: https://github.com/OSC/ood-myjobs/compare/v2.9.0...v2.9.1
 [2.9.0]: https://github.com/OSC/ood-myjobs/compare/v2.8.3...v2.9.0

@@ -57,3 +57,7 @@ gem "rails_12factor", group: :production
 gem 'osc_machete_rails', '~> 1.2.2'
 gem 'pbs', '~> 2.2.1'
 gem 'ood_appkit', '~> 1.0'
+
+# Security updates
+gem "rack", ">= 1.6.11"
+gem "loofah", "~> 2.2", ">= 2.2.3"
