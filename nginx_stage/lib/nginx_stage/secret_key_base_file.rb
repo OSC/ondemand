@@ -1,7 +1,7 @@
 require 'securerandom'
 
 module NginxStage
-  # A class to handle a PID file
+  # A class to handle generating storing and retrieving per user secret key base
   class SecretKeyBaseFile
     # Path of the secret base key file
     # @return [String] the path of the secret file
