@@ -15,15 +15,15 @@ the `ood` account, this app should run as `ood`.
     `shell`):
 
     ```sh
-    scl enable git19 -- git clone https://github.com/OSC/ood-shell.git shell
+    scl enable rh-git29 -- git clone https://github.com/OSC/ood-shell.git shell
     cd shell
-    scl enable git19 -- git checkout tags/v1.3.1
+    scl enable rh-git29 -- git checkout tags/v1.3.1
     ```
 
 2.  Install the app:
 
     ```sh
-    scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+    scl enable rh-git29 rh-ruby24 rh-nodejs6 -- bin/setup
     ```
 
 3.  Copy the built app directory to the deployment directory, and start the
@@ -40,14 +40,14 @@ the `ood` account, this app should run as `ood`.
 
     ```sh
     cd shell # cd to build directory
-    scl enable git19 -- git fetch
-    scl enable git19 -- git checkout tags/v1.3.1
+    scl enable rh-git29 -- git fetch
+    scl enable rh-git29 -- git checkout tags/v1.3.1
     ```
 
 2.  Update the app:
 
     ```sh
-    scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+    scl enable rh-git29 rh-ruby24 rh-nodejs6 -- bin/setup
     ```
 
 3.  Copy the built app directory to the deployment directory:

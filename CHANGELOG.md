@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.4.1] - 2018-12-03
+### Changed
+- Updated hterm to 1.80 [#49](https://github.com/OSC/ood-shell/issues/49)
+
+### Fixed
+- Fixed cut and paste not working in Firefox [#48](https://github.com/OSC/ood-shell/issues/48)
+
 ## [1.4.0] - 2018-09-11
 ### Changed
 - Remove special case for "localhost". All shell sessions now use ssh.
@@ -50,7 +57,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Warn users if they try to close an active terminal.
 - Warn users when their websocket connection is terminated.
 
-[Unreleased]: https://github.com/OSC/ood-shell/compare/v1.4.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-shell/compare/v1.4.1...HEAD
+[1.4.1]: https://github.com/OSC/ood-shell/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/OSC/ood-shell/compare/v1.3.1...v1.4.0
 [1.3.1]: https://github.com/OSC/ood-shell/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/OSC/ood-shell/compare/v1.2.4...v1.3.0
