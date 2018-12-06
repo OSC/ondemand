@@ -56,10 +56,14 @@ function OodShell(element, url, prefs) {
 }
 
 OodShell.prototype.createTerminal = function () {
-  this.socket = new WebSocket(this.url);
-  this.socket.onopen    = this.runTerminal.bind(this);
-  this.socket.onmessage = this.getMessage.bind(this);
-  this.socket.onclose   = this.closeTerminal.bind(this);
+  if(lib.resource.get('hterm/changelog/version', null).data === '1.80') {
+    this.socket = new WebSocket(this.url);
+    this.socket.onopen    = this.runTerminal.bind(this);
+    this.socket.onmessage = this.getMessage.bind(this);
+    this.socket.onclose   = this.closeTerminal.bind(this);
+  } else {
+    document.getElementById('terminal').innerHTML = 'WARNING: version of hterm has changed. Please review ood_shell.js to ensure that the override of hterm.Terminal.prototype.copyStringToClipboard is still an appropriate fix to copy on select in Firefox.';
+  }
 };
 
 OodShell.prototype.runTerminal = function () {
