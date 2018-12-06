@@ -1,3 +1,51 @@
+/**
+ * Copy a string to the system clipboard.
+ *
+ * Note: If there is a selected range in the terminal, it'll be cleared.
+ * 
+ * @hacks Replacing this.document_ with the top-level document to ensure that copy on select works in Firefox
+ * @hacks Removing the selection.extend behavior because it was preventing removal of the copy source
+ *
+ * @param {string} str The string to copy.
+ */
+hterm.Terminal.prototype.copyStringToClipboard = function(str) {
+  if (this.prefs_.get('enable-clipboard-notice'))
+    setTimeout(this.showOverlay.bind(this, hterm.notifyCopyMessage, 500), 200);
+
+  var copySource = document.createElement('pre');
+  copySource.id = 'hterm:copy-to-clipboard-source';
+  copySource.textContent = str;
+  copySource.style.cssText = (
+      '-webkit-user-select: text;' +
+      '-moz-user-select: text;' +
+      'position: absolute;' +
+      'top: -99px');
+
+  document.body.appendChild(copySource);
+
+  var selection = document.getSelection();
+  var anchorNode = selection.anchorNode;
+  var anchorOffset = selection.anchorOffset;
+  var focusNode = selection.focusNode;
+  var focusOffset = selection.focusOffset;
+
+  selection.selectAllChildren(copySource);
+
+  hterm.copySelectionToClipboard(document);
+
+  // @FIXME after changing this.document_ to document selection's nodes are all null, causing an error
+  // This doesn't appear to break the application
+
+  // // IE doesn't support selection.extend. This means that the selection
+  // // won't return on IE.
+  // if (selection.extend) {
+  //   selection.collapse(anchorNode, anchorOffset);
+  //   selection.extend(focusNode, focusOffset);
+  // }
+
+  copySource.parentNode.removeChild(copySource);
+};
+
 // Object that defines a terminal element
 function OodShell(element, url, prefs) {
   this.element = element;
