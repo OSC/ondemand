@@ -59,6 +59,7 @@ gem 'rails_12factor', group: :production
 gem 'mocha', '~> 1.1', group: :test
 gem "spring", group: :test
 gem 'autoprefixer-rails', '~> 8.4'
+gem 'dotiw'
 
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'

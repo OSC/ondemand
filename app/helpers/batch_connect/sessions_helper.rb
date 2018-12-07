@@ -65,17 +65,17 @@ module BatchConnect::SessionsHelper
         if time_limit && time_used
           concat content_tag(:strong, "Time Remaining:")
           concat " "
-          concat distance_of_time_in_words(time_limit - time_used)
+          concat distance_of_time_in_words(time_limit - time_used, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)
         elsif time_used
           concat content_tag(:strong, "Time Used:")
           concat " "
-          concat distance_of_time_in_words(time_used)
+          concat distance_of_time_in_words(time_used, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)
         end
       else  # not starting or running
         if time_limit
           concat content_tag(:strong, "Time Requested:")
           concat " "
-          concat pluralize(time_limit / 3600, "hour")
+          concat distance_of_time_in_words(time_limit, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)
         end
       end
     end
