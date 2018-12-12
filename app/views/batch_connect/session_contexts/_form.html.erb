@@ -5,3 +5,7 @@
 
   <%= f.submit "Launch", class: "btn btn-primary btn-block" %>
 <% end %>
+
+<% if @app.custom_javascript? %>
+  <%= javascript_tag "(function(){\n#{@app.custom_javascript}\n}());" %>
+<% end %>
