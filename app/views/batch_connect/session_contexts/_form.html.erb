@@ -6,6 +6,6 @@
   <%= f.submit "Launch", class: "btn btn-primary btn-block" %>
 <% end %>
 
-<% if @app.custom_javascript? %>
-  <%= javascript_tag "(function(){\n#{@app.custom_javascript}\n}());" %>
+<% @app.custom_javascript_files.each do |jsfile| %>
+  <%= javascript_tag "(function(){\n#{jsfile.read}\n}());" %>
 <% end %>
