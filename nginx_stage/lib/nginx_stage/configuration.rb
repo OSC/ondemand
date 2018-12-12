@@ -389,7 +389,7 @@ module NginxStage
       self.pun_config_path     = '/var/lib/nginx/config/puns/%{user}.conf'
       self.pun_secret_key_base_path = '/var/lib/nginx/config/puns/%{user}.secret_key_base.txt'
 
-      self.pun_tmp_root        = '/var/lib/nginx/tmp/%{user}'
+      self.pun_tmp_root        = '/var/tmp/nginx/%{user}'
       self.pun_access_log_path = '/var/log/nginx/%{user}/access.log'
       self.pun_error_log_path  = '/var/log/nginx/%{user}/error.log'
       self.pun_pid_path        = '/var/run/nginx/%{user}/passenger.pid'
