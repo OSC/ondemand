@@ -7,5 +7,5 @@
 <% end %>
 
 <% @app.custom_javascript_files.each do |jsfile| %>
-  <%= javascript_tag "(function(){\n#{jsfile.read}\n}());" %>
+  <%= javascript_tag "(function(){\n" + jsfile.read + "\n}());" %>
 <% end %>
