@@ -1,5 +1,6 @@
 <%# Uses rails_bootstrap_form gem. API at: https://github.com/bootstrap-ruby/rails-bootstrap-forms %>
 
+<%= ::Configuration.whitelist_paths? ? ::Configuration.whitelist_paths : "no paths" %>
 <%= bootstrap_form_for(workflow, url: create_from_path_path) do |f| %>
     <%= f.alert_message "Please fix the errors below." %>
 
