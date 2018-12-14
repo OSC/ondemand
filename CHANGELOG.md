@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added ability to include JavaScript files to the form
+
+### Changed
+- Changed logout message to inform users that they need to close their browsers to ensure logout
 
 ## [1.28.0] - 2018-11-30
 ### Added
