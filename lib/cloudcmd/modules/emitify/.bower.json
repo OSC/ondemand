@@ -1,0 +1,36 @@
+{
+  "name": "emitify",
+  "version": "2.0.0",
+  "homepage": "https://github.com/coderaiser/emitify",
+  "authors": [
+    "coderaiser <mnemonic.enemy@gmail.com>"
+  ],
+  "description": "Dead simple event emitter",
+  "main": "dist/emitify.min.js",
+  "moduleType": [
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "event",
+    "emitter"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "_release": "2.0.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.0.0",
+    "commit": "82014823cbf1b668e08fafe3aec7fbc2efc80805"
+  },
+  "_source": "git://github.com/coderaiser/emitify.git",
+  "_target": "~2.0.0",
+  "_originalSource": "emitify",
+  "_direct": true
+}
