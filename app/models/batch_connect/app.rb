@@ -175,6 +175,14 @@ module BatchConnect
       file.read if file.file?
     end
 
+    # Paths to custom javascript files
+    # @return [Pathname] paths to custom javascript files that exist
+    def custom_javascript_files
+      files = [root.join("form.js")]
+      files << sub_app_root.join("#{sub_app}.js")
+      files.select(&:file?)
+    end
+
     # List of sub apps that are owned by the parent batch connect app
     # (including this app as well)
     # @return [Array<App>] list of sub apps
