@@ -1,6 +1,7 @@
 var http        = require('http'),
     fs          = require('fs'),
     path        = require('path'),
+    url         = require('url'),
     cloudcmd    = require('cloudcmd'),
     CloudFunc   = require('cloudcmd/lib/cloudfunc'),
     express     = require('express'),
@@ -25,6 +26,14 @@ if (process.env.NODE_ENV === 'production') {
   dotenv.config({path: '/etc/ood/config/apps/files/env'});
 }
 
+var WHITELIST_PATHS = process.env.WHITELIST ? process.env.WHITELIST.split(":") : [];
+var whitelist_paths_contain = (function(filepath){
+    return WHITELIST_PATHS.filter(function(whitelisted_path){
+        // path.relative will contain "/../" if not in the whitelisted path
+        return ! path.relative(whitelisted_path, path.normalize(filepath)).split(path.sep).includes("..")
+    }).length > 0;
+});
+
 // Keep app backwards compatible
 if (fs.existsSync('.env')) {
   console.warn('[DEPRECATION] The file \'.env\' is being deprecated. Please move this file to \'/etc/ood/config/apps/files/env\'.');
@@ -37,6 +46,55 @@ server = http.createServer(app);
 socket = io.listen(server, {
     path: BASE_URI + '/socket.io'
 });
+
+// thank you https://regex101.com/
+//
+// here are example urls:
+//
+// url: /api/v1/fs/Users/efranz/Downloads/
+// path: /Users/efranz/Downloads/
+// rx: ^\/api\/v1\/fs(.*)
+//
+// url: /api/v1/fs/Users/efranz/Downloads/fascinating.txt?download=1544841048995
+// path: /Users/efranz/Downloads/fascinating.txt
+// rx: ^\/api\/v1\/fs(.*)
+//
+// url: /api/v1/fs/Users/efranz/Downloads/IT7.5.1-WIAG.txt?hash
+// path: /Users/efranz/Downloads/IT7.5.1-WIAG.txt
+// 
+// url: /oodzip/Users/efranz/Downloads/gs
+// path: /Users/efranz/Downloads/gs
+//
+// url: /fs/Applications/
+// path: /Applications/
+
+// only if whitelist exists should we add this
+if(WHITELIST_PATHS.length > 0) {
+    app.use(function(req, res, next) {
+        var request_url = url.parse(req.url).pathname,
+            rx = /(?:\/oodzip|\/api\/v1\/fs|\/fs)(.*)(?:)/,
+            match = request_url.match(rx),
+            filepath = match ? match[1] : null;
+
+        if(request_url == "/" || request_url == "/fs")
+            filepath = "/";
+
+        if(filepath == null) {
+            // not a concern
+            next();
+        }
+        else{
+            if(whitelist_paths_contain(filepath)) {
+                next();
+            }
+            else {
+                // FIXME: if AJAX, send text; 
+                // if normal GET request, send page with whitelist links
+                res.status(403).send("Forbidden").end();
+            }
+        }
+    });
+}
 
 // Disable browser-side caching of assets by injecting expiry headers into all requests
 // Since the caching is being performed in the browser, we set several headers to
