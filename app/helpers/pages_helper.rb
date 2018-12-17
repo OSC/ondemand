@@ -1,13 +1,18 @@
 module PagesHelper
-  # Determine if target is a child of root
-  # @param root [Pathname]
-  # @param target [Pathname]
+  # Determine if child is a subpath of parent
+  #
+  # If the relative path from the child to the supposed parent includes '..'
+  # then child is not a subpath of parent
+  #
+  # @param parent [Pathname]
+  # @param child [Pathname]
   # @return Boolean
-  def child?(root, target)
-    abs_root = root.expand_path.to_s.split('/')
-    abs_target = target.expand_path.to_s.split('/')
-    
-    (abs_root & abs_target) == abs_root
+  def child?(parent, child)
+    ! child.expand_path.relative_path_from(
+      parent.expand_path
+    ).each_filename.to_a.include?(
+      '..'
+    )
   end
 
   def whitelist
