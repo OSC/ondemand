@@ -28,5 +28,8 @@ module OODApp
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+
+    # Whitelist paths are stored in a colon delimited list in the environment variable WHITELIST_PATH
+    config.whitelist_paths = (path = ENV['WHITELIST_PATH']) ? path.split(':').map{|s| Pathname.new(s)} : []
   end
 end
