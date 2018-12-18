@@ -1,11 +1,14 @@
 class PagesController < ApplicationController
-
   def index
     path = params[:path] || "/"
     path = "/" + path unless path.start_with?("/")
 
     @pathname = Pathname.new(path)
-    if @pathname.file? && @pathname.readable?
+
+    if ! WhitelistPolicy.new(Rails.application.config.x.whitelist_paths).permitted?(@pathname)
+      @path_forbidden = true
+      render status: 403
+    elsif @pathname.file? && @pathname.readable?
       fileinfo = %x[ file -b --mime-type #{@pathname.to_s.shellescape} ]
       if fileinfo =~ /text\/|\/(x-empty|(.*\+)?xml)/ || params.has_key?(:force)
         @editor_content = ""
@@ -21,7 +24,6 @@ class PagesController < ApplicationController
       @not_found = true
       render status: 404
     end
-
   end
 
   def about
