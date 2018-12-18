@@ -8,8 +8,18 @@ class WhitelistPolicy
   # @raises ArgumentError if any whitelist path or permitted? argument
   #         has the form ~user/some/path where user doesn't exist
   def permitted?(path)
-    whitelist.blank? || whitelist.any?{ |parent| child?(Pathname.new(parent), Pathname.new(path)) }
+    whitelist.blank? || whitelist.any?{ |parent| child?(Pathname.new(parent), real_expanded_path(path)) }
   end
+
+  # call realpath to ensure symlinks are handled
+   def real_expanded_path(path)
+     # call realpath to ensure symlinks are resolved
+     Pathname.new(path).expand_path.realpath
+   rescue Errno::ENOENT
+     # path doesn't exist, so we just get absolute version then
+     Pathname.new(path).expand_path
+   end
+
 
   # Determine if child is a subpath of parent
   #
