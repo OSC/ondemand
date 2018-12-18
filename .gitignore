@@ -30,4 +30,5 @@
 /vendor/bundle
 
 /.htaccess
-
+# SSHFS temp files
+._*
