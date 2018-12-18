@@ -26,13 +26,26 @@ if (process.env.NODE_ENV === 'production') {
     dotenv.config({path: '/etc/ood/config/apps/files/env'});
 }
 
-var WHITELIST_PATHS = process.env.WHITELIST ? process.env.WHITELIST.split(":") : [];
-var whitelist_paths_contain = (function(filepath){
-    return WHITELIST_PATHS.filter(function(whitelisted_path){
-        // path.relative will contain "/../" if not in the whitelisted path
-        return ! path.relative(whitelisted_path, path.normalize(filepath)).split(path.sep).includes("..")
-    }).length > 0;
-});
+var startsWithAny = function(subject, prefixes){
+    return prefixes.some(function(x){
+        return subject.startsWith(x);
+    });
+};
+
+var whitelist = {
+    paths:  process.env.WHITELIST ? process.env.WHITELIST.split(":") : [],
+    enabled: function(){ return this.paths.length > 0; },
+    contains: function(filepath){
+        return this.paths.filter(function(whitelisted_path){
+            // path.relative will contain "/../" if not in the whitelisted path
+            return ! path.relative(whitelisted_path, path.normalize(filepath)).split(path.sep).includes("..");
+        }).length > 0;
+    },
+    // "/api/v1/mv", "/api/v1/cp" are handled by the lib/cloudcmd server itself
+    // FIXME: its possible that ALL reads can be handled in a similar way by the server itself
+    requests: ["/api/v1/mv", "/api/v1/cp", "/cloudcmd.js", "/public/favicon.ico", "/api/v1/config", "/json/modules.json", "/ishtar/ishtar.js", "/remedy/remedy.js"],
+    request_prefixes: ["/css", "/join:", "/lib/client", "/img", "/font", "/pun/sys", "/modules", "/tmpl", "/spero"]
+};
 
 // Keep app backwards compatible
 if (fs.existsSync('.env')) {
@@ -67,31 +80,35 @@ socket = io.listen(server, {
 //
 // url: /fs/Applications/
 // path: /Applications/
-
-// only if whitelist exists should we add this
-if(WHITELIST_PATHS.length > 0) {
+if(whitelist.enabled()) {
     app.use(function(req, res, next) {
         var request_url = url.parse(req.url).pathname,
             rx = /(?:\/oodzip|\/api\/v1\/fs|\/fs)(.*)(?:)/,
-            match = request_url.match(rx),
-            filepath = match ? match[1] : null;
+            match,
+            filepath;
 
-        if(request_url == "/" || request_url == "/fs")
+        if(BASE_URI && BASE_URI != "/")
+            request_url = request_url.replace(BASE_URI, '');
+
+        match = request_url.match(rx);
+        filepath = match ? match[1] : null;
+
+        // FIXME: request_url must drop the base uri before testing
+
+        if(request_url == "/" || request_url == "/fs"){
             filepath = "/";
-
-        if(filepath == null) {
-            // not a concern
+        }
+        else if(filepath != null && whitelist.contains(filepath)) {
             next();
         }
+        else if(whitelist.requests.includes(request_url)){
+            next();
+        }
+        else if(startsWithAny(request_url, whitelist.request_prefixes)){
+          next();
+        }
         else{
-            if(whitelist_paths_contain(filepath)) {
-                next();
-            }
-            else {
-                // FIXME: if AJAX, send text; 
-                // if normal GET request, send page with whitelist links
-                res.status(403).send("Forbidden").end();
-            }
+            res.status(403).send("Forbidden").end();
         }
     });
 }
@@ -139,6 +156,7 @@ app.get(BASE_URI + CloudFunc.apiURL + CloudFunc.FS + ':path(*)', function(req, r
 // Custom middleware to zip and send a directory to a browser.
 // Access at http://PREFIX/oodzip/PATH
 // Uses `archiver` https://www.npmjs.com/package/archiver to stream the contents of a file to the browser.
+// FIXME: Can we do app.get(BASE_URI + "oodzip" + ':path(*)', function(req, res, next))
 app.use(function (req, res, next) {
     var paramPath,
         paramURL    = queryString.unescape(req.url);
@@ -194,6 +212,7 @@ app.use(function (req, res, next) {
 try {
     app_version = gitSync.tag();
 } catch(error) {
+    # FIXME: await file read VERSION if it exists
     app_version = '';
 }
 
@@ -216,7 +235,10 @@ app.use(cloudcmd({
         upload_max:             process.env.FILE_UPLOAD_MAX || 10485760000,
         file_editor:            process.env.OOD_FILE_EDITOR || '/pun/sys/file-editor/edit',
         shell:                  process.env.OOD_SHELL || '/pun/sys/shell/ssh/default',
-        fileexplorer_version:   app_version
+        fileexplorer_version:   app_version,
+        // function that accepts a path and returns true or false
+        // FIXME: whitelist would be better as a function that has some properties!
+        whitelist: whitelist
     }
 }));
 
