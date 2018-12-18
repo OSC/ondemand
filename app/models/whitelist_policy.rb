@@ -7,6 +7,11 @@ class WhitelistPolicy
 
   def permitted?(path)
     whitelist.blank? || whitelist.any?{ |parent| child?(parent, Pathname.new(path)) }
+
+  rescue ArgumentError => e
+    Rails.logger "#{e.class} in WhitelistPolicy#permitted?(#{path}): #{e.message}"
+
+    false
   end
 
   # Determine if child is a subpath of parent
