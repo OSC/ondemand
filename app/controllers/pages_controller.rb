@@ -1,13 +1,11 @@
 class PagesController < ApplicationController
-  include PagesHelper
-
   def index
     path = params[:path] || "/"
     path = "/" + path unless path.start_with?("/")
 
     @pathname = Pathname.new(path)
 
-    if ! is_path_whitelisted?
+    if ! WhitelistPolicy.new(Rails.application.config.x.whitelist_paths).permitted?(@pathname)
       @path_forbidden = true
       render status: 403
     elsif @pathname.file? && @pathname.readable?

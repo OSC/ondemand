@@ -30,6 +30,6 @@ module OODApp
     # config.i18n.default_locale = :de
 
     # Whitelist paths are stored in a colon delimited list in the environment variable WHITELIST_PATH
-    config.whitelist_paths = (path = ENV['WHITELIST_PATH']) ? path.split(':').map{|s| Pathname.new(s)} : []
+    config.x.whitelist_paths = (path = ENV['WHITELIST_PATH']) ? path.split(':').map{|s| Pathname.new(s)} : []
   end
 end
