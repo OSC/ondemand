@@ -42,7 +42,7 @@ class Workflow < ActiveRecord::Base
   # @param [String] path A path to use as a non-static template
   # @return [Workflow] Return a new workflow based on the path
   def self.new_from_path(path)
-    path = Pathname.new(path).expand_path
+    path = Pathname.new(path).expand_path rescue Pathname.new(path)
     workflow = Workflow.new
     workflow.name = ''
     workflow.batch_host = OODClusters.first.id
@@ -58,8 +58,6 @@ class Workflow < ActiveRecord::Base
       workflow.script_name = manifest.script
     end
     workflow
-  rescue ArgumentError => e
-    workflow.errors.add(:staging_template_dir, "#{e.class}: #{e.message}"
   end
 
   # Override of osc_machete_rails

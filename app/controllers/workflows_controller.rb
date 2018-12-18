@@ -80,25 +80,18 @@ class WorkflowsController < ApplicationController
   # POST /workflows/create_from_path.json
   def create_from_path
     @workflow = Workflow.new_from_path(workflow_params[:staging_template_dir])
-
-    # setting these values ensures the
-    # form inputs are preserved (something a form object would take care of)
     @workflow.name = workflow_params[:name] unless workflow_params[:name].blank?
     @workflow.batch_host = workflow_params[:batch_host] unless workflow_params[:batch_host].blank?
     @workflow.script_name = workflow_params[:script_name] unless workflow_params[:script_name].blank?
     @workflow.account = workflow_params[:account] unless workflow_params[:account].blank?
 
-    # TODO: add WorkflowFromPath form object so these are validations on path
-    # with the form object you can get rid of the need for the manifest loading
-    # which only exits for setting defaults in new
-    #
-    if @workflow.errors.empty?
-      if ! WhitelistPolicy.new(Configuration.whitelist).permitted?(@workflow.staging_template_dir)
-        @workflow.errors.add(:staging_template_dir, "No permission to use the path due to whitelist policy.")
-      else
-        copy_safe, error = Filesystem.new.validate_path_is_copy_safe(@workflow.staging_template_dir.to_s)
-        @workflow.errors.add(:staging_template_dir, error) unless copy_safe
-      end
+    # validate path we are copying from. safe_path is a boolean, error contains the error string if false
+    copy_safe, error = Filesystem.new.validate_path_is_copy_safe(@workflow.staging_template_dir.to_s)
+    @workflow.errors.add(:staging_template_dir, error) unless copy_safe
+
+    # validate path against whitelist
+    if WhitelistPolicy.new(Configuration.whitelist).permitted?(@workflow.staging_template_dir)
+      @workflow.errors.add(:staging_template_dir, "No permission to use the path due to whitelist policy.")
     end
 
     # If the workflow passes validation but a name hasn't been assigned, set the name to the inputted path
