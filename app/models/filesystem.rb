@@ -46,7 +46,7 @@ class Filesystem
     # and do proper testing
     begin
       unless WhitelistPolicy.new(Configuration.whitelist_paths).permitted?(path)
-        return false, "No permission to use the path due to whitelist policy."
+        return false, "No permission to use the path due to the whitelist policy."
       end
     rescue ArgumentError => e
       return false, "#{e.class} when testing path #{path} against whitelist: #{e.message}"
