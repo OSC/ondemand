@@ -5,13 +5,10 @@ class WhitelistPolicy
     @whitelist = whitelist
   end
 
+  # @raises ArgumentError if any whitelist path or permitted? argument
+  #         has the form ~user/some/path where user doesn't exist
   def permitted?(path)
-    whitelist.blank? || whitelist.any?{ |parent| child?(parent, Pathname.new(path)) }
-
-  rescue ArgumentError => e
-    Rails.logger "#{e.class} in WhitelistPolicy#permitted?(#{path}): #{e.message}"
-
-    false
+    whitelist.blank? || whitelist.any?{ |parent| child?(Pathname.new(parent), Pathname.new(path)) }
   end
 
   # Determine if child is a subpath of parent

@@ -44,8 +44,12 @@ class Filesystem
   def validate_path_is_copy_safe(path)
     # FIXME: this is hack till we can move this to controllers or form objects
     # and do proper testing
-    unless WhitelistPolicy.new(Configuration.whitelist).permitted?(path)
-      return false, "No permission to use the path due to whitelist policy."
+    begin
+      unless WhitelistPolicy.new(Configuration.whitelist_paths).permitted?(path)
+        return false, "No permission to use the path due to whitelist policy."
+      end
+    rescue ArgumentError => e
+      return false, "#{e.class} when testing path #{path} against whitelist: #{e.message}"
     end
 
     # FIXME: consider using http://ruby-doc.org/stdlib-2.2.0/libdoc/timeout/rdoc/Timeout.html
