@@ -98,11 +98,7 @@ class ConfigurationSingleton
   end
   
   def whitelist_paths
-    (path = ENV['WHITELIST_PATH']) ? path.split(':') : []
-  end
-  
-  def whitelist_paths?
-    whitelist_paths.any?
+    ENV['WHITELIST_PATH'].to_s.strip.split(":")
   end
 
   private
