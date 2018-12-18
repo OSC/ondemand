@@ -42,6 +42,12 @@ class Filesystem
   # unfortunately the template's source path and @source for the template Source
   # directory are two very different things and so naming is confusing...
   def validate_path_is_copy_safe(path)
+    # FIXME: this is hack till we can move this to controllers or form objects
+    # and do proper testing
+    unless WhitelistPolicy.new(Configuration.whitelist).permitted?(path)
+      return false, "No permission to use the path due to whitelist policy."
+    end
+
     # FIXME: consider using http://ruby-doc.org/stdlib-2.2.0/libdoc/timeout/rdoc/Timeout.html
     stdout, stderr, status = du(path, self.class.max_copy_safe_du_timeout_seconds)
     return false, MAX_COPY_TIMEOUT_MESSAGE if status.exitstatus == 124

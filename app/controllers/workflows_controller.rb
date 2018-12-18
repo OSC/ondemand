@@ -89,11 +89,6 @@ class WorkflowsController < ApplicationController
     copy_safe, error = Filesystem.new.validate_path_is_copy_safe(@workflow.staging_template_dir.to_s)
     @workflow.errors.add(:staging_template_dir, error) unless copy_safe
 
-    # validate path against whitelist
-    if WhitelistPolicy.new(Configuration.whitelist).permitted?(@workflow.staging_template_dir)
-      @workflow.errors.add(:staging_template_dir, "No permission to use the path due to whitelist policy.")
-    end
-
     # If the workflow passes validation but a name hasn't been assigned, set the name to the inputted path
     if @workflow.errors.empty? && @workflow.name.blank?
       @workflow.name = @workflow.staging_template_dir
