@@ -15,7 +15,7 @@ class WhitelistPolicy
    def real_expanded_path(path)
      # call realpath to ensure symlinks are resolved
      Pathname.new(path).expand_path.realpath
-   rescue Errno::ENOENT
+   rescue SystemCallError
      # path doesn't exist, so we just get absolute version then
      Pathname.new(path).expand_path
    end
