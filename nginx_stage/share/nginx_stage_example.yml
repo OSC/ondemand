@@ -145,8 +145,16 @@
 # A hash detailing the locations on the file system where apps reside for the
 # corresponding environment
 #
-#app_root:
+#app_root
 #  dev: '/var/www/ood/apps/dev/%{owner}/gateway/%{name}'
+#  usr: '/var/www/ood/apps/usr/%{owner}/gateway/%{name}'
+#  sys: '/var/www/ood/apps/sys/%{name}'
+#
+# If you want to enable app development like in 1.3, where each user's home directory
+# use this app_root block instead:
+#
+#app_root
+#  dev: '~%{owner}/%{portal}/dev/%{name}',
 #  usr: '/var/www/ood/apps/usr/%{owner}/gateway/%{name}'
 #  sys: '/var/www/ood/apps/sys/%{name}'
 

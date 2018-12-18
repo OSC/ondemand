@@ -1,5 +1,6 @@
 require 'yaml'
 require 'etc'
+require 'pathname'
 
 module NginxStage
   # An object that stores the configuration options to control NginxStage's
@@ -244,6 +245,17 @@ module NginxStage
     end
 
     attr_writer :app_root
+
+    # The root directory of all the apps of a given type (usr, dev, sys)
+    # is the parent directory of one of those apps.
+    #
+    # @return [String, nil] path to the root directory for the app type, and
+    #   nil if app type undefined
+    def apps_root(env:, owner:)
+      Pathname.new(app_root(env: env, owner: owner, name: "app")).parent.to_s
+    rescue InvalidRequest
+      nil
+    end
 
     # The URI used to access the app from the browser, not including any base-uri
     # @example URI for dev app owned by Bob
