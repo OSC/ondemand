@@ -12,6 +12,7 @@ var http        = require('http'),
     queryString = require('querystring'),
     gitSync     = require('git-rev-sync'),
     dotenv      = require('dotenv'),
+    expandTilde = require('expand-tilde'),
     app         = express(),
     dirArray    = __dirname.split('/'),
     PORT        = 9001,
@@ -32,13 +33,28 @@ var startsWithAny = function(subject, prefixes){
     });
 };
 
+function resolvePath(filepath) {
+    return fs.realpathSync(  // Resolve symlinks
+        expandTilde(  // Resolve home directories
+            path.normalize(filepath)  // Resolve . and ..
+        )
+    );
+}
+
 var whitelist = {
     paths:  process.env.WHITELIST ? process.env.WHITELIST.split(":") : [],
     enabled: function(){ return this.paths.length > 0; },
     contains: function(filepath){
         return this.paths.filter(function(whitelisted_path){
             // path.relative will contain "/../" if not in the whitelisted path
-            return ! path.relative(whitelisted_path, path.normalize(filepath)).split(path.sep).includes("..");
+            return ! path.relative(
+                expandTilde(whitelisted_path),
+                resolvePath(filepath)
+            ).split(
+                path.sep
+            ).includes(
+                ".."
+            );
         }).length > 0;
     },
     // "/api/v1/mv", "/api/v1/cp" are handled by the lib/cloudcmd server itself
@@ -60,58 +76,64 @@ socket = io.listen(server, {
     path: BASE_URI + '/socket.io'
 });
 
-// thank you https://regex101.com/
-//
-// here are example urls:
-//
-// url: /api/v1/fs/Users/efranz/Downloads/
-// path: /Users/efranz/Downloads/
-// rx: ^\/api\/v1\/fs(.*)
-//
-// url: /api/v1/fs/Users/efranz/Downloads/fascinating.txt?download=1544841048995
-// path: /Users/efranz/Downloads/fascinating.txt
-// rx: ^\/api\/v1\/fs(.*)
-//
-// url: /api/v1/fs/Users/efranz/Downloads/IT7.5.1-WIAG.txt?hash
-// path: /Users/efranz/Downloads/IT7.5.1-WIAG.txt
-// 
-// url: /oodzip/Users/efranz/Downloads/gs
-// path: /Users/efranz/Downloads/gs
-//
-// url: /fs/Applications/
-// path: /Applications/
-if(whitelist.enabled()) {
-    app.use(function(req, res, next) {
-        var request_url = url.parse(req.url).pathname,
-            rx = /(?:\/oodzip|\/api\/v1\/fs|\/fs)(.*)(?:)/,
-            match,
-            filepath;
+// Whitelist middleware
+app.use(function(req, res, next) {
+    // Skip this if we are not using a whitelist
+    if(! whitelist.enabled() ) {
+        next();
+        return;
+    }
 
-        if(BASE_URI && BASE_URI != "/")
-            request_url = request_url.replace(BASE_URI, '');
+    // thank you https://regex101.com/
+    //
+    // here are example urls:
+    //
+    // url: /api/v1/fs/Users/efranz/Downloads/
+    // path: /Users/efranz/Downloads/
+    // rx: ^\/api\/v1\/fs(.*)
+    //
+    // url: /api/v1/fs/Users/efranz/Downloads/fascinating.txt?download=1544841048995
+    // path: /Users/efranz/Downloads/fascinating.txt
+    // rx: ^\/api\/v1\/fs(.*)
+    //
+    // url: /api/v1/fs/Users/efranz/Downloads/IT7.5.1-WIAG.txt?hash
+    // path: /Users/efranz/Downloads/IT7.5.1-WIAG.txt
+    //
+    // url: /oodzip/Users/efranz/Downloads/gs
+    // path: /Users/efranz/Downloads/gs
+    //
+    // url: /fs/Applications/
+    // path: /Applications/
+    var request_url = url.parse(req.url).pathname,
+        rx = /(?:\/oodzip|\/api\/v1\/fs|\/fs)(.*)(?:)/,
+        match,
+        filepath;
 
-        match = request_url.match(rx);
-        filepath = match ? match[1] : null;
+    if(BASE_URI && BASE_URI != "/")
+        request_url = request_url.replace(BASE_URI, '');
 
-        // FIXME: request_url must drop the base uri before testing
+    match = request_url.match(rx);
+    filepath = match ? match[1] : null;
 
-        if(request_url == "/" || request_url == "/fs"){
-            filepath = "/";
-        }
-        else if(filepath != null && whitelist.contains(filepath)) {
-            next();
-        }
-        else if(whitelist.requests.includes(request_url)){
-            next();
-        }
-        else if(startsWithAny(request_url, whitelist.request_prefixes)){
-          next();
-        }
-        else{
-            res.status(403).send("Forbidden").end();
-        }
-    });
-}
+    // FIXME: request_url must drop the base uri before testing
+
+    if(request_url == "/" || request_url == "/fs"){
+        filepath = "/";
+    }
+
+    if(filepath != null && whitelist.contains(filepath)) {
+        next();
+    }
+    else if(whitelist.requests.includes(request_url)){
+        next();
+    }
+    else if(startsWithAny(request_url, whitelist.request_prefixes)){
+        next();
+    }
+    else {
+        res.status(403).send("Forbidden").end();
+    }
+});
 
 // Disable browser-side caching of assets by injecting expiry headers into all requests
 // Since the caching is being performed in the browser, we set several headers to
@@ -212,7 +234,7 @@ app.use(function (req, res, next) {
 try {
     app_version = gitSync.tag();
 } catch(error) {
-    # FIXME: await file read VERSION if it exists
+    // FIXME: await file read VERSION if it exists
     app_version = '';
 }
 
