@@ -2,12 +2,13 @@ require 'test_helper'
 
 class ProductsTest < ActionDispatch::IntegrationTest
   test "sandbox_apps_accessible_if_app_development_enabled" do
-    Configuration.stubs(:app_development_enabled?).returns(true)
+    Dir.mktmpdir do |dir|
+      Configuration.stubs(:app_development_enabled?).returns(true)
+      Configuration.stubs(:dev_apps_root_path).returns(Pathname.new(dir))
 
-    get "/admin/dev/products"
-    assert_response :success
-
-    Configuration.unstub(:app_development_enabled?)
+      get "/admin/dev/products"
+      assert_response :success
+    end
   end
 
   test "sandbox_apps_not_accessible_if_app_development_disabled" do
@@ -16,7 +17,5 @@ class ProductsTest < ActionDispatch::IntegrationTest
     assert_raises(ActionController::RoutingError) do
       get "/admin/dev/products"
     end
-
-    Configuration.unstub(:app_development_enabled?)
   end
 end

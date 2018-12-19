@@ -26,7 +26,7 @@ class DevRouter
   end
 
   def self.base_path(owner: OodSupport::Process.user.name)
-    Pathname.new "#{Dir.home(owner)}/#{ENV['OOD_PORTAL'] || "ondemand"}/dev"
+    Configuration.dev_apps_root_path
   end
 
   def base_path

@@ -87,9 +87,13 @@ class ConfigurationSingleton
     Dotenv.load(*dotenv_files)
   end
 
+  def dev_apps_root_path
+    Pathname.new(ENV["OOD_DEV_APPS_ROOT"] || "/dev/null")
+  end
+
   def app_development_enabled?
     return @app_development_enabled if defined? @app_development_enabled
-    to_bool(ENV['OOD_APP_DEVELOPMENT'] || DevRouter.base_path.exist?)
+    to_bool(ENV['OOD_APP_DEVELOPMENT'] || DevRouter.base_path.directory?)
   end
   alias_method :app_development_enabled, :app_development_enabled?
 
