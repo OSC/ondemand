@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.29.0] - 2018-11-30
 ### Added
 - Added ability to include JavaScript files to the form
+- Added experimental Grid Engine support
 
 ### Changed
 - Changed logout message to inform users that they need to close their browsers to ensure logout
