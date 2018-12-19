@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.4.0] - 2018-12-19
+### Changed
+- Upgraded Rails to version 4.2.11
+
+### Added
+- Added an optional whitelist to provide granular control of file system access.
 
 ## [1.3.5] - 2018-11-30
 ### Changed
