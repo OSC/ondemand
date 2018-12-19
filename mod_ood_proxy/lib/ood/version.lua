@@ -1,4 +1,4 @@
--- current version of mod_ood_proxy
+-- The current version of OnDemand
 return {
-  VERSION = '0.5.0'
+  VERSION = '1.4.5'
 }

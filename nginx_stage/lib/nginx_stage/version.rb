@@ -1,4 +1,4 @@
 module NginxStage
-  # The current version of NginxStage
-  VERSION = "0.5.0"
+  # The current version of OnDemand
+  VERSION = "1.4.5"
 end
