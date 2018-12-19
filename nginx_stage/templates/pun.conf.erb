@@ -72,6 +72,21 @@ http {
       alias "<%= sendfile_root %>";
     }
 
+    <%- if missing_home_directory? -%>
+    rewrite ^/pun/sys/dashboard(/.*|$) /pun/custom_html/missing_home_directory.html;
+    <%- end -%>
+
+    location = /pun/custom_html/missing_home_directory.html {
+      add_header Cache-Control "no-store";
+      root <%= custom_html_root %>;
+      try_files /missing_home_directory.html /pun/html/missing_home_directory.html;
+    }
+
+    location ~ /pun/html/([0-9a-z_\.]+)$ {
+      add_header Cache-Control "no-store";
+      alias <%= default_html_root %>/$1;
+    }
+
     # Include all app configs user has access to
     <%- app_configs.each do |app_config| -%>
     include <%= app_config %>;

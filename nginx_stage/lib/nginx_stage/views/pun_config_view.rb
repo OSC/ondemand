@@ -87,6 +87,18 @@ module NginxStage
       end
     end
 
+    def missing_home_directory?
+      ! Dir.exist?(user.dir)
+    end
+
+    def custom_html_root
+      NginxStage.pun_custom_html_root
+    end
+
+    def default_html_root
+      File.join NginxStage.root, "html"
+    end
+
     # Array of env vars to declare in NGINX config using env directive
     # @return [Array<String>] list of env vars to declare in NGINX config
     def env_declarations
