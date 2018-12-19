@@ -17,6 +17,7 @@
     "archiver": "^1.0.0",
     "base-uri": "^1.0.1",
     "dotenv": "^4.0.0",
+    "expand-tilde": "^2.0.2",
     "express": "^4.13.4",
     "git-rev-sync": "^1.8.0",
     "os-homedir": "^1.0.1",
@@ -28,5 +29,7 @@
   "scripts": {
     "test": "test"
   },
-  "workspaces": ["lib/cloudcmd"]
+  "workspaces": [
+    "lib/cloudcmd"
+  ]
 }

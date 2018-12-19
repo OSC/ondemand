@@ -1,6 +1,7 @@
 var http        = require('http'),
     fs          = require('fs'),
     path        = require('path'),
+    url         = require('url'),
     cloudcmd    = require('cloudcmd'),
     CloudFunc   = require('cloudcmd/lib/cloudfunc'),
     express     = require('express'),
@@ -11,6 +12,7 @@ var http        = require('http'),
     queryString = require('querystring'),
     gitSync     = require('git-rev-sync'),
     dotenv      = require('dotenv'),
+    expandTilde = require('expand-tilde'),
     app         = express(),
     dirArray    = __dirname.split('/'),
     PORT        = 9001,
@@ -22,13 +24,60 @@ var http        = require('http'),
 // Read in environment variables
 dotenv.config({path: '.env.local'});
 if (process.env.NODE_ENV === 'production') {
-  dotenv.config({path: '/etc/ood/config/apps/files/env'});
+    dotenv.config({path: '/etc/ood/config/apps/files/env'});
 }
+
+var startsWithAny = function(subject, prefixes){
+    return prefixes.some(function(x){
+        return subject.startsWith(x);
+    });
+};
+
+function realpathSyncSafe(filepath){
+    try {
+	// resolve symlinks
+        return fs.realpathSync(filepath);
+    }
+    catch(error){
+	// exception thrown when path ! exist
+        return filepath;
+    }
+}
+
+function resolvePath(filepath) {
+    return realpathSyncSafe(  // Resolve symlinks
+        expandTilde(  // Resolve home directories
+            path.normalize(filepath)  // Resolve . and ..
+        )
+    );
+}
+
+var whitelist = {
+    paths:  process.env.WHITELIST_PATH ? process.env.WHITELIST_PATH.split(":") : [],
+    enabled: function(){ return this.paths.length > 0; },
+    contains: function(filepath){
+        return this.paths.filter(function(whitelisted_path){
+            // path.relative will contain "/../" if not in the whitelisted path
+            return ! path.relative(
+                expandTilde(whitelisted_path),
+                resolvePath(filepath)
+            ).split(
+                path.sep
+            ).includes(
+                ".."
+            );
+        }).length > 0;
+    },
+    // "/api/v1/mv", "/api/v1/cp" are handled by the lib/cloudcmd server itself
+    // FIXME: its possible that ALL reads can be handled in a similar way by the server itself
+    requests: ["/api/v1/mv", "/api/v1/cp", "/cloudcmd.js", "/public/favicon.ico", "/api/v1/config", "/json/modules.json", "/ishtar/ishtar.js", "/remedy/remedy.js"],
+    request_prefixes: ["/css", "/join:", "/lib/client", "/img", "/font", "/pun/sys", "/modules", "/tmpl", "/spero"]
+};
 
 // Keep app backwards compatible
 if (fs.existsSync('.env')) {
-  console.warn('[DEPRECATION] The file \'.env\' is being deprecated. Please move this file to \'/etc/ood/config/apps/files/env\'.');
-  dotenv.config({path: '.env'});
+    console.warn('[DEPRECATION] The file \'.env\' is being deprecated. Please move this file to \'/etc/ood/config/apps/files/env\'.');
+    dotenv.config({path: '.env'});
 }
 
 server = http.createServer(app);
@@ -37,6 +86,59 @@ server = http.createServer(app);
 socket = io.listen(server, {
     path: BASE_URI + '/socket.io'
 });
+
+// thank you https://regex101.com/
+//
+// here are example urls:
+//
+// url: /api/v1/fs/Users/efranz/Downloads/
+// path: /Users/efranz/Downloads/
+// rx: ^\/api\/v1\/fs(.*)
+//
+// url: /api/v1/fs/Users/efranz/Downloads/fascinating.txt?download=1544841048995
+// path: /Users/efranz/Downloads/fascinating.txt
+// rx: ^\/api\/v1\/fs(.*)
+//
+// url: /api/v1/fs/Users/efranz/Downloads/IT7.5.1-WIAG.txt?hash
+// path: /Users/efranz/Downloads/IT7.5.1-WIAG.txt
+//
+// url: /oodzip/Users/efranz/Downloads/gs
+// path: /Users/efranz/Downloads/gs
+//
+// url: /fs/Applications/
+// path: /Applications/
+if(whitelist.enabled()) {
+    app.use(function(req, res, next) {
+        var request_url = url.parse(req.url).pathname,
+            rx = /(?:\/oodzip|\/api\/v1\/fs|\/fs)(.*)(?:)/,
+            match,
+            filepath;
+
+        if(BASE_URI && BASE_URI != "/")
+            request_url = request_url.replace(BASE_URI, '');
+
+        match = request_url.match(rx);
+        filepath = match ? match[1] : null;
+
+        if(request_url == "/" || request_url == "/fs"){
+            filepath = "/";
+        }
+
+
+        if(filepath != null && whitelist.contains(filepath)) {
+            next();
+        }
+        else if(whitelist.requests.includes(request_url)){
+            next();
+        }
+        else if(startsWithAny(request_url, whitelist.request_prefixes)){
+          next();
+        }
+        else{
+            res.status(403).send("Forbidden").end();
+        }
+    });
+}
 
 // Disable browser-side caching of assets by injecting expiry headers into all requests
 // Since the caching is being performed in the browser, we set several headers to
@@ -81,6 +183,7 @@ app.get(BASE_URI + CloudFunc.apiURL + CloudFunc.FS + ':path(*)', function(req, r
 // Custom middleware to zip and send a directory to a browser.
 // Access at http://PREFIX/oodzip/PATH
 // Uses `archiver` https://www.npmjs.com/package/archiver to stream the contents of a file to the browser.
+// FIXME: Can we do app.get(BASE_URI + "oodzip" + ':path(*)', function(req, res, next))
 app.use(function (req, res, next) {
     var paramPath,
         paramURL    = queryString.unescape(req.url);
@@ -136,6 +239,7 @@ app.use(function (req, res, next) {
 try {
     app_version = gitSync.tag();
 } catch(error) {
+    // FIXME: await file read VERSION if it exists
     app_version = '';
 }
 
@@ -158,7 +262,10 @@ app.use(cloudcmd({
         upload_max:             process.env.FILE_UPLOAD_MAX || 10485760000,
         file_editor:            process.env.OOD_FILE_EDITOR || '/pun/sys/file-editor/edit',
         shell:                  process.env.OOD_SHELL || '/pun/sys/shell/ssh/default',
-        fileexplorer_version:   app_version
+        fileexplorer_version:   app_version,
+        // function that accepts a path and returns true or false
+        // FIXME: whitelist would be better as a function that has some properties!
+        whitelist: whitelist
     }
 }));
 
