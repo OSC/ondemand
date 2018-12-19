@@ -6,13 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.4.2] - 2018-12-19
+### Fixed
+- Fixed cut and paste not working in Firefox [#48](https://github.com/OSC/ood-shell/issues/48)
 
 ## [1.4.1] - 2018-12-03
 ### Changed
 - Updated hterm to 1.80 [#49](https://github.com/OSC/ood-shell/issues/49)
-
-### Fixed
-- Fixed cut and paste not working in Firefox [#48](https://github.com/OSC/ood-shell/issues/48)
 
 ## [1.4.0] - 2018-09-11
 ### Changed
@@ -57,7 +57,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Warn users if they try to close an active terminal.
 - Warn users when their websocket connection is terminated.
 
-[Unreleased]: https://github.com/OSC/ood-shell/compare/v1.4.1...HEAD
+[Unreleased]: https://github.com/OSC/ood-shell/compare/v1.4.2...HEAD
+[1.4.2]: https://github.com/OSC/ood-shell/compare/v1.4.1...v1.4.2
 [1.4.1]: https://github.com/OSC/ood-shell/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/OSC/ood-shell/compare/v1.3.1...v1.4.0
 [1.3.1]: https://github.com/OSC/ood-shell/compare/v1.3.0...v1.3.1
