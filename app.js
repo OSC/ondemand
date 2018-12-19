@@ -33,8 +33,19 @@ var startsWithAny = function(subject, prefixes){
     });
 };
 
+function realpathSyncSafe(filepath){
+    try {
+	// resolve symlinks
+        return fs.realpathSync(filepath);
+    }
+    catch(error){
+	// exception thrown when path ! exist
+        return filepath;
+    }
+}
+
 function resolvePath(filepath) {
-    return fs.realpathSync(  // Resolve symlinks
+    return realpathSyncSafe(  // Resolve symlinks
         expandTilde(  // Resolve home directories
             path.normalize(filepath)  // Resolve . and ..
         )
