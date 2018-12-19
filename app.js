@@ -42,7 +42,7 @@ function resolvePath(filepath) {
 }
 
 var whitelist = {
-    paths:  process.env.WHITELIST ? process.env.WHITELIST.split(":") : [],
+    paths:  process.env.WHITELIST_PATH ? process.env.WHITELIST_PATH.split(":") : [],
     enabled: function(){ return this.paths.length > 0; },
     contains: function(filepath){
         return this.paths.filter(function(whitelisted_path){
