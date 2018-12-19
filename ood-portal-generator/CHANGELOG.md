@@ -1,3 +1,5 @@
+## Frozen. See [CHANGELOG.md](https://github.com/OSC/ondemand/blob/master/CHANGELOG.md) at root of ondemand repo for future changes
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
