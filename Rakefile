@@ -54,7 +54,7 @@ def proxy_components
 end
 
 proxy_components.each do |build_root|
-  file build_root => 'VERSION_PROXY' do
+  file build_root => 'nginx_stage/lib/nginx_stage/version.rb' do
     rm_rf build_root if build_root.directory?
     cp_r build_root.basename, build_root
   end
