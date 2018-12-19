@@ -13,7 +13,7 @@
 
 ActiveRecord::Schema.define(version: 20160601203013) do
 
-  create_table "jobs", force: true do |t|
+  create_table "jobs", force: :cascade do |t|
     t.integer  "workflow_id"
     t.string   "status"
     t.text     "job_cache"
@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 20160601203013) do
 
   add_index "jobs", ["workflow_id"], name: "index_jobs_on_workflow_id"
 
-  create_table "json_stores", force: true do |t|
+  create_table "json_stores", force: :cascade do |t|
     t.text     "json_attrs"
     t.string   "type"
     t.datetime "created_at"
@@ -32,7 +32,7 @@ ActiveRecord::Schema.define(version: 20160601203013) do
 
   add_index "json_stores", ["type"], name: "index_json_stores_on_type"
 
-  create_table "workflows", force: true do |t|
+  create_table "workflows", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "job_attrs"

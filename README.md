@@ -15,15 +15,15 @@ Explorer and Shell apps installed and a cluster config added to
    `myjobs`):
 
     ```sh
-    scl enable git19 -- git clone https://github.com/OSC/ood-myjobs.git myjobs
+    scl enable rh-git29 -- git clone https://github.com/OSC/ood-myjobs.git myjobs
     cd myjobs
-    scl enable git19 -- git checkout tags/v2.8.3
+    scl enable rh-git29 -- git checkout tags/v2.9.4
     ```
 
 2. Install the app for a production environment:
 
     ```sh
-    RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+    RAILS_ENV=production scl enable rh-git29 rh-ruby24 rh-nodejs6 -- bin/setup
     ```
 
     this will setup a default Open OnDemand install. If you'd like a specific
@@ -31,7 +31,7 @@ Explorer and Shell apps installed and a cluster config added to
     `OOD_PORTAL` as:
 
     ```sh
-    OOD_SITE=osc OOD_PORTAL=ondemand RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+    OOD_SITE=osc OOD_PORTAL=ondemand RAILS_ENV=production scl enable rh-git29 rh-ruby24 rh-nodejs6 -- bin/setup
     ```
 
     assuming the corresponding `.env.local.$OOD_SITE.$OOD_PORTAL` file exists.
@@ -60,14 +60,14 @@ Explorer and Shell apps installed and a cluster config added to
 
     ```sh
     cd myjobs # cd to build directory
-    scl enable git19 -- git fetch
-    scl enable git19 -- git checkout tags/v2.8.3
+    scl enable rh-git29 -- git fetch
+    scl enable rh-git29 -- git checkout tags/v2.9.4
     ```
 
 2. Update the app for a production environment:
 
     ```sh
-    RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+    RAILS_ENV=production scl enable rh-git29 rh-ruby24 rh-nodejs6 -- bin/setup
     ```
 
     You do not need to specify `OOD_SITE` and `OOD_PORTAL` if they are defined

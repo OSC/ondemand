@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2.10.0] - 2018-12-19
+### Changed
+- Updated to Rails 4.2.11
+
+### Added
+- Added an optional whitelist to provide granular control of file system access.
+- Adds experimental support for Grid Engine
+
 ## [2.9.3] - 2018-12-03
 ### Changed
 - Update gem dependencies
