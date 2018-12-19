@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Update Rails to 4.2.11 to address security issues with dependencies
 
+### Added
+- Adds experimental Grid Engine support
+
 ## [1.6.6] - 2018-11-30
 ### Changed
 - Update recommended development dependencies for ruby, node, git
