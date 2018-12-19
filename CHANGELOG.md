@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - Added an optional whitelist to provide granular control of file system access.
+- Added experimental Grid Engine support
 
 ## [1.3.5] - 2018-11-30
 ### Changed
