@@ -6,11 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.29.0] - 2018-11-30
 ### Added
 - Added ability to include JavaScript files to the form
 
 ### Changed
 - Changed logout message to inform users that they need to close their browsers to ensure logout
+- Changed precision of time reporting of Batch Connect
+- Changed development application root to be defined by the environment variable `OOD_DEV_APPS_ROOT`
 
 ## [1.28.0] - 2018-11-30
 ### Added
@@ -430,7 +434,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.28.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.29.0...HEAD
+[1.29.0]: https://github.com/OSC/ood-dashboard/compare/v1.28.0...v1.29.0
 [1.28.0]: https://github.com/OSC/ood-dashboard/compare/v1.27.1...v1.28.0
 [1.27.2]: https://github.com/OSC/ood-dashboard/compare/v1.27.1...v1.27.2
 [1.27.1]: https://github.com/OSC/ood-dashboard/compare/v1.27.0...v1.27.1
