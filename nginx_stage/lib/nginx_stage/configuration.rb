@@ -349,6 +349,13 @@ module NginxStage
     # @return [String] user shell that is blocked
     attr_accessor :disabled_shell
 
+    # Path to the root directory for custom html files
+    # that NGINX can serve. Currently only the missing_home_directory.html
+    # error page can be customized with this mechanism.
+    #
+    # @return [String] path to the custom html root
+    attr_accessor :pun_custom_html_root
+
     #
     # Configuration module
     #
@@ -398,6 +405,7 @@ module NginxStage
 
       self.pun_custom_env      = {}
       self.pun_custom_env_declarations = []
+      self.pun_custom_html_root = '/etc/ood/config/pun/html'
       self.pun_config_path     = '/var/lib/nginx/config/puns/%{user}.conf'
       self.pun_secret_key_base_path = '/var/lib/nginx/config/puns/%{user}.secret_key_base.txt'
 

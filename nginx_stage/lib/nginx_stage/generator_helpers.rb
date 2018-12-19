@@ -26,13 +26,6 @@ module NginxStage
           raise InvalidUser, "user is special: #{user} (#{user.uid} < #{min_uid})"
         end
       end
-
-      # Validate that the user's home directory exists
-      self.add_hook :validate_user_has_home_dir do
-        unless Dir.exist?(user.dir)
-          raise InvalidUser, "home directory '#{user.dir}' does not exist for user: #{user}"
-        end
-      end
     end
 
     # Add support for accepting SKIP_NGINX as an option
