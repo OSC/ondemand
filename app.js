@@ -12,6 +12,7 @@ var http        = require('http'),
     queryString = require('querystring'),
     gitSync     = require('git-rev-sync'),
     dotenv      = require('dotenv'),
+    expandTilde = require('expand-tilde'),
     app         = express(),
     dirArray    = __dirname.split('/'),
     PORT        = 9001,
@@ -32,13 +33,39 @@ var startsWithAny = function(subject, prefixes){
     });
 };
 
+function realpathSyncSafe(filepath){
+    try {
+	// resolve symlinks
+        return fs.realpathSync(filepath);
+    }
+    catch(error){
+	// exception thrown when path ! exist
+        return filepath;
+    }
+}
+
+function resolvePath(filepath) {
+    return realpathSyncSafe(  // Resolve symlinks
+        expandTilde(  // Resolve home directories
+            path.normalize(filepath)  // Resolve . and ..
+        )
+    );
+}
+
 var whitelist = {
-    paths:  process.env.WHITELIST ? process.env.WHITELIST.split(":") : [],
+    paths:  process.env.WHITELIST_PATH ? process.env.WHITELIST_PATH.split(":") : [],
     enabled: function(){ return this.paths.length > 0; },
     contains: function(filepath){
         return this.paths.filter(function(whitelisted_path){
             // path.relative will contain "/../" if not in the whitelisted path
-            return ! path.relative(whitelisted_path, path.normalize(filepath)).split(path.sep).includes("..");
+            return ! path.relative(
+                expandTilde(whitelisted_path),
+                resolvePath(filepath)
+            ).split(
+                path.sep
+            ).includes(
+                ".."
+            );
         }).length > 0;
     },
     // "/api/v1/mv", "/api/v1/cp" are handled by the lib/cloudcmd server itself
@@ -74,7 +101,7 @@ socket = io.listen(server, {
 //
 // url: /api/v1/fs/Users/efranz/Downloads/IT7.5.1-WIAG.txt?hash
 // path: /Users/efranz/Downloads/IT7.5.1-WIAG.txt
-// 
+//
 // url: /oodzip/Users/efranz/Downloads/gs
 // path: /Users/efranz/Downloads/gs
 //
@@ -93,12 +120,12 @@ if(whitelist.enabled()) {
         match = request_url.match(rx);
         filepath = match ? match[1] : null;
 
-        // FIXME: request_url must drop the base uri before testing
-
         if(request_url == "/" || request_url == "/fs"){
             filepath = "/";
         }
-        else if(filepath != null && whitelist.contains(filepath)) {
+
+
+        if(filepath != null && whitelist.contains(filepath)) {
             next();
         }
         else if(whitelist.requests.includes(request_url)){
@@ -212,7 +239,7 @@ app.use(function (req, res, next) {
 try {
     app_version = gitSync.tag();
 } catch(error) {
-    # FIXME: await file read VERSION if it exists
+    // FIXME: await file read VERSION if it exists
     app_version = '';
 }
 
