@@ -120,7 +120,8 @@ module NginxStage
       "SECRET_KEY_BASE" => SecretKeyBaseFile.new(user).secret,
       # only set these if corresponding config is set in nginx_stage.yml
       "OOD_DASHBOARD_TITLE" => title(default: nil),
-      "OOD_PORTAL" => portal(default: nil)
+      "OOD_PORTAL" => portal(default: nil),
+      "OOD_DEV_APPS_ROOT" => apps_root(env: :dev, owner: user)
     }.merge(pun_custom_env)
   end
 

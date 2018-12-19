@@ -1,5 +1,6 @@
 require 'yaml'
 require 'etc'
+require 'pathname'
 
 module NginxStage
   # An object that stores the configuration options to control NginxStage's
@@ -245,6 +246,17 @@ module NginxStage
 
     attr_writer :app_root
 
+    # The root directory of all the apps of a given type (usr, dev, sys)
+    # is the parent directory of one of those apps.
+    #
+    # @return [String, nil] path to the root directory for the app type, and
+    #   nil if app type undefined
+    def apps_root(env:, owner:)
+      Pathname.new(app_root(env: env, owner: owner, name: "app")).parent.to_s
+    rescue InvalidRequest
+      nil
+    end
+
     # The URI used to access the app from the browser, not including any base-uri
     # @example URI for dev app owned by Bob
     #   app_request_uri(env: :dev, owner: 'bob', name: 'rails1')
@@ -337,6 +349,13 @@ module NginxStage
     # @return [String] user shell that is blocked
     attr_accessor :disabled_shell
 
+    # Path to the root directory for custom html files
+    # that NGINX can serve. Currently only the missing_home_directory.html
+    # error page can be customized with this mechanism.
+    #
+    # @return [String] path to the custom html root
+    attr_accessor :pun_custom_html_root
+
     #
     # Configuration module
     #
@@ -386,6 +405,7 @@ module NginxStage
 
       self.pun_custom_env      = {}
       self.pun_custom_env_declarations = []
+      self.pun_custom_html_root = '/etc/ood/config/pun/html'
       self.pun_config_path     = '/var/lib/nginx/config/puns/%{user}.conf'
       self.pun_secret_key_base_path = '/var/lib/nginx/config/puns/%{user}.secret_key_base.txt'
 
