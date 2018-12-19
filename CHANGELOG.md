@@ -6,9 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.5.0] - 2018-12-19
+### Added
+- Added an optional whitelist to provide granular control of file system access.
+
 ### Changed
 - Use yarn to build (use the workspaces feature of yarn)
-- Integrated `osc/cloudcmd` repo with the history of our modifications since v5.3.1
+- Integrated `osc/cloudcmd` repo with the history of our modifications since v5.3.1. Fixes [#175](https://github.com/OSC/ood-fileexplorer/issues/175)
 - Updated `bin/setup` script
 
 ## [1.4.1] - 2018-01-03
@@ -98,7 +103,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Initial Release!
 
-[Unreleased]: https://github.com/OSC/ood-fileexplorer/compare/v1.4.1...HEAD
+[Unreleased]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/OSC/ood-fileexplorer/compare/v1.4.1...v1.5.0
 [1.4.1]: https://github.com/OSC/ood-fileexplorer/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/OSC/ood-fileexplorer/compare/v1.3.6...v1.4.0
 [1.3.6]: https://github.com/OSC/ood-fileexplorer/compare/v1.3.5...v1.3.6
