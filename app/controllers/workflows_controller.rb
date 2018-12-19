@@ -80,17 +80,6 @@ class WorkflowsController < ApplicationController
   # POST /workflows/create_from_path.json
   def create_from_path
     @workflow = Workflow.new_from_path(workflow_params[:staging_template_dir])
-    if ::Configuration.whitelist_paths?
-      in_whitelist = false
-      given_path = Pathname.new(workflow_params[:staging_template_dir]).realpath
-      ::Configuration.whitelist_paths.each { |wp|
-        whitelist_path = Pathname.new(wp).realpath
-        given_path.ascend { |given_path_crumb|
-          in_whitelist = true if given_path_crumb == whitelist_path
-        }
-      }
-      @workflow.errors.add(:staging_template_dir, "Given path was not in whitelist") if !in_whitelist
-    end
     @workflow.name = workflow_params[:name] unless workflow_params[:name].blank?
     @workflow.batch_host = workflow_params[:batch_host] unless workflow_params[:batch_host].blank?
     @workflow.script_name = workflow_params[:script_name] unless workflow_params[:script_name].blank?
