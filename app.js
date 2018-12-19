@@ -33,8 +33,19 @@ var startsWithAny = function(subject, prefixes){
     });
 };
 
+function realpathSyncSafe(filepath){
+    try {
+	// resolve symlinks
+        return fs.realpathSync(filepath);
+    }
+    catch(error){
+	// exception thrown when path ! exist
+        return filepath;
+    }
+}
+
 function resolvePath(filepath) {
-    return fs.realpathSync(  // Resolve symlinks
+    return realpathSyncSafe(  // Resolve symlinks
         expandTilde(  // Resolve home directories
             path.normalize(filepath)  // Resolve . and ..
         )
@@ -42,7 +53,7 @@ function resolvePath(filepath) {
 }
 
 var whitelist = {
-    paths:  process.env.WHITELIST ? process.env.WHITELIST.split(":") : [],
+    paths:  process.env.WHITELIST_PATH ? process.env.WHITELIST_PATH.split(":") : [],
     enabled: function(){ return this.paths.length > 0; },
     contains: function(filepath){
         return this.paths.filter(function(whitelisted_path){
@@ -76,64 +87,58 @@ socket = io.listen(server, {
     path: BASE_URI + '/socket.io'
 });
 
-// Whitelist middleware
-app.use(function(req, res, next) {
-    // Skip this if we are not using a whitelist
-    if(! whitelist.enabled() ) {
-        next();
-        return;
-    }
+// thank you https://regex101.com/
+//
+// here are example urls:
+//
+// url: /api/v1/fs/Users/efranz/Downloads/
+// path: /Users/efranz/Downloads/
+// rx: ^\/api\/v1\/fs(.*)
+//
+// url: /api/v1/fs/Users/efranz/Downloads/fascinating.txt?download=1544841048995
+// path: /Users/efranz/Downloads/fascinating.txt
+// rx: ^\/api\/v1\/fs(.*)
+//
+// url: /api/v1/fs/Users/efranz/Downloads/IT7.5.1-WIAG.txt?hash
+// path: /Users/efranz/Downloads/IT7.5.1-WIAG.txt
+//
+// url: /oodzip/Users/efranz/Downloads/gs
+// path: /Users/efranz/Downloads/gs
+//
+// url: /fs/Applications/
+// path: /Applications/
+if(whitelist.enabled()) {
+    app.use(function(req, res, next) {
+        var request_url = url.parse(req.url).pathname,
+            rx = /(?:\/oodzip|\/api\/v1\/fs|\/fs)(.*)(?:)/,
+            match,
+            filepath;
 
-    // thank you https://regex101.com/
-    //
-    // here are example urls:
-    //
-    // url: /api/v1/fs/Users/efranz/Downloads/
-    // path: /Users/efranz/Downloads/
-    // rx: ^\/api\/v1\/fs(.*)
-    //
-    // url: /api/v1/fs/Users/efranz/Downloads/fascinating.txt?download=1544841048995
-    // path: /Users/efranz/Downloads/fascinating.txt
-    // rx: ^\/api\/v1\/fs(.*)
-    //
-    // url: /api/v1/fs/Users/efranz/Downloads/IT7.5.1-WIAG.txt?hash
-    // path: /Users/efranz/Downloads/IT7.5.1-WIAG.txt
-    //
-    // url: /oodzip/Users/efranz/Downloads/gs
-    // path: /Users/efranz/Downloads/gs
-    //
-    // url: /fs/Applications/
-    // path: /Applications/
-    var request_url = url.parse(req.url).pathname,
-        rx = /(?:\/oodzip|\/api\/v1\/fs|\/fs)(.*)(?:)/,
-        match,
-        filepath;
+        if(BASE_URI && BASE_URI != "/")
+            request_url = request_url.replace(BASE_URI, '');
 
-    if(BASE_URI && BASE_URI != "/")
-        request_url = request_url.replace(BASE_URI, '');
+        match = request_url.match(rx);
+        filepath = match ? match[1] : null;
 
-    match = request_url.match(rx);
-    filepath = match ? match[1] : null;
+        if(request_url == "/" || request_url == "/fs"){
+            filepath = "/";
+        }
 
-    // FIXME: request_url must drop the base uri before testing
 
-    if(request_url == "/" || request_url == "/fs"){
-        filepath = "/";
-    }
-
-    if(filepath != null && whitelist.contains(filepath)) {
-        next();
-    }
-    else if(whitelist.requests.includes(request_url)){
-        next();
-    }
-    else if(startsWithAny(request_url, whitelist.request_prefixes)){
-        next();
-    }
-    else {
-        res.status(403).send("Forbidden").end();
-    }
-});
+        if(filepath != null && whitelist.contains(filepath)) {
+            next();
+        }
+        else if(whitelist.requests.includes(request_url)){
+            next();
+        }
+        else if(startsWithAny(request_url, whitelist.request_prefixes)){
+          next();
+        }
+        else{
+            res.status(403).send("Forbidden").end();
+        }
+    });
+}
 
 // Disable browser-side caching of assets by injecting expiry headers into all requests
 // Since the caching is being performed in the browser, we set several headers to
