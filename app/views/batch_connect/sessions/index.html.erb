@@ -13,13 +13,6 @@
   </li>
 </ol>
 
-<%=
-  render(
-    partial: "shared/insufficient_quota",
-    locals: { quotas: @my_quotas }
-  )
-%>
-
 <div class="row">
   <%- if any_apps -%>
     <div class="col-md-3">
