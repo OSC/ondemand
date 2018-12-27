@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.6.8] - 2018-12-26
+### Fixed
+- Update `ood_core` to latest version for Torque and SGE bug fixes
+
 ## [1.6.7] - 2018-12-19
 ### Fixed
 - Update Rails to 4.2.11 to address security issues with dependencies
@@ -110,7 +114,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove OSC copyright from footer
 - Remove deprecation warnings
 
-[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.6.7...HEAD
+[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.6.8...HEAD
+[1.6.8]: https://github.com/OSC/ood-activejobs/compare/v1.6.7...v1.6.8
 [1.6.7]: https://github.com/OSC/ood-activejobs/compare/v1.6.6...v1.6.7
 [1.6.6]: https://github.com/OSC/ood-activejobs/compare/v1.6.5...v1.6.6
 [1.6.5]: https://github.com/OSC/ood-activejobs/compare/v1.6.4...v1.6.5
