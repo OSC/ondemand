@@ -1,14 +1,20 @@
 <footer>
   <div class="container-fluid">
-    <hr>
-    <%= link_to "https://osc.github.io/Open-OnDemand/" do %>
-      <%= image_tag(
-            "OpenOnDemand_powered_by_RGB.svg",
-            class: "footer-logo",
-            alt: "Powered by Open OnDemand",
-            height: "40",
-            style: "margin-bottom: 20px"
-           ) %>
-    <% end %>
+    <div class="row">
+      <div class="col-md-6 col-sm-6">
+        <%= link_to "https://osc.github.io/Open-OnDemand/" do %>
+          <%= image_tag(
+                "OpenOnDemand_powered_by_RGB.svg",
+                class: "footer-logo",
+                alt: "Powered by Open OnDemand",
+                height: "40",
+                style: "margin-bottom: 20px"
+              ) %>
+        <% end %>
+      </div>
+      <div class="col-md-6 col-sm-6">
+        <p class="pull-right">Dashboard version: <%= Configuration.version %></p>
+      </div>
+    </div>
   </div><!-- /.container -->
 </footer>
