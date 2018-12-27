@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.4.7] - 2018-12-26
+### Fixed
+- Update Dashboard, Active Jobs, and Job Composer to use latest version of `ood_core` for bug fixes to SGE and Torque adapters
+
 ## [1.4.6] - 2018-12-21
 ### Changed
 - Reverting a change which may cause Apache configs to be replaced
@@ -51,7 +56,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.4.6...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.4.7...HEAD
+[1.4.7]: https://github.com/OSC/ondemand/compare/v1.4.6...v1.4.7
 [1.4.6]: https://github.com/OSC/ondemand/compare/v1.4.5...v1.4.6
 [1.4.5]: https://github.com/OSC/ondemand/compare/v1.4.4...v1.4.5
 [1.4.4]: https://github.com/OSC/ondemand/compare/v1.4.3...v1.4.4
