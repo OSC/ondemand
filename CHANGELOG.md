@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.30.0] - 2018-12-26
+### Fixed
+- Update `ood_core` to latest version for Torque and SGE bug fixes
+- Shortened quota alert
+
 ## [1.29.0] - 2018-12-19
 ### Added
 - Added ability to include JavaScript files to the form
@@ -435,7 +440,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.29.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.30.0...HEAD
+[1.30.0]: https://github.com/OSC/ood-dashboard/compare/v1.29.0...v1.30.0
 [1.29.0]: https://github.com/OSC/ood-dashboard/compare/v1.28.0...v1.29.0
 [1.28.0]: https://github.com/OSC/ood-dashboard/compare/v1.27.1...v1.28.0
 [1.27.2]: https://github.com/OSC/ood-dashboard/compare/v1.27.1...v1.27.2
