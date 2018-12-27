@@ -17,7 +17,7 @@ Explorer and Shell apps installed and a cluster config added to
     ```sh
     scl enable rh-git29 -- git clone https://github.com/OSC/ood-myjobs.git myjobs
     cd myjobs
-    scl enable rh-git29 -- git checkout tags/v2.9.4
+    scl enable rh-git29 -- git checkout tags/v2.10.1
     ```
 
 2. Install the app for a production environment:
@@ -61,7 +61,7 @@ Explorer and Shell apps installed and a cluster config added to
     ```sh
     cd myjobs # cd to build directory
     scl enable rh-git29 -- git fetch
-    scl enable rh-git29 -- git checkout tags/v2.9.4
+    scl enable rh-git29 -- git checkout tags/v2.10.1
     ```
 
 2. Update the app for a production environment:
