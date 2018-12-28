@@ -102,6 +102,18 @@ module BatchConnect
       ood_app.manifest.description
     end
 
+    def link
+      OodAppLink.new(
+        # FIXME: better to use default_title and "" description
+        title: title,
+        description: description,
+        url: Rails.application.routes.url_helpers.new_batch_connect_session_context_path(token: token),
+        icon_uri: ood_app.icon_uri,
+        caption: ood_app.caption,
+        new_tab: false
+      )
+    end
+
     # Cluster id the batch connect app uses
     # @return [String, nil] cluster id used by app
     def cluster_id
