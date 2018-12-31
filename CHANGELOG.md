@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.4.8] - 2018-12-31
+### Fixed
+- Update Dashboard to fix a divide by zero error when a resource is not limited
 
 ## [1.4.7] - 2018-12-26
 ### Fixed
@@ -56,7 +59,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.4.7...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.4.8...HEAD
+[1.4.8]: https://github.com/OSC/ondemand/compare/v1.4.7...v1.4.8
 [1.4.7]: https://github.com/OSC/ondemand/compare/v1.4.6...v1.4.7
 [1.4.6]: https://github.com/OSC/ondemand/compare/v1.4.5...v1.4.6
 [1.4.5]: https://github.com/OSC/ondemand/compare/v1.4.4...v1.4.5
