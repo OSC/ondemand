@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.30.1] - 2018-12-31
+### Fixed
+- Fixes a divide by zero error in the Quota model when a resource is not limited
+
 ## [1.30.0] - 2018-12-26
 ### Fixed
 - Update `ood_core` to latest version for Torque and SGE bug fixes
@@ -440,7 +444,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.30.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.30.1...HEAD
+[1.30.0]: https://github.com/OSC/ood-dashboard/compare/v1.30.0...v1.30.1
 [1.30.0]: https://github.com/OSC/ood-dashboard/compare/v1.29.0...v1.30.0
 [1.29.0]: https://github.com/OSC/ood-dashboard/compare/v1.28.0...v1.29.0
 [1.28.0]: https://github.com/OSC/ood-dashboard/compare/v1.27.1...v1.28.0
