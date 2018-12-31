@@ -13,17 +13,26 @@ class Quota
   class << self
 
     # Get quota objects only for requested user in JSON file(s)
+    #
+    # KeyError and JSON::ParserErrors shall be non-fatal errors
     def find(quota_path, user)
       user  = user && user.to_s
 
       quotas = []
-      json = JSON.parse(quota_path.read)
-      case json["version"].to_i
-      when 0..1
-        quotas += find_v1(user, json)
-      else
-        raise InvalidQuotaFile("JSON version found was: #{json["version"].to_i}")
+      begin
+        json = JSON.parse(quota_path.read)
+        case json["version"].to_i
+        when 0..1
+          quotas += find_v1(user, json)
+        else
+          raise InlimitedQuotaFile("JSON version found was: #{json["version"].to_i}")
+        end
+      rescue KeyError => e
+        Rails.logger.error("Quota entry for user #{user} is missing expected parameter #{e.message}")
+      rescue JSON::ParserError => e
+        Rails.logger.error("Quota file is not limited JSON: #{e.message}")
       end
+
       quotas
     end
 
@@ -87,9 +96,27 @@ class Quota
     @resource_type = params.fetch(:resource_type).to_s
     @user_usage = params.fetch(:user_usage).to_i
     @total_usage = params.fetch(:total_usage).to_i
-    @limit = params.fetch(:limit).to_i
+    set_limit(params)
     @grace = params.fetch(:grace).to_i # future functionality
     @updated_at = Time.at(params.fetch(:updated_at).to_i)
+  end
+
+  def invalid?(limit)
+    [
+      limit == 0,                         # Limit is an integer and equals 0
+      limit.to_i > 0,                     # Limit cast to an integer is greater than zero
+      limit == nil,                       # No limit is set
+      limit.to_s.downcase == 'unlimited'  # Limit is the string 'unlimited'
+    ].any? ? false : true
+  end
+
+  # Some file systems may report usage without requiring a limit
+  def set_limit(params)
+    limit = params.fetch(:limit, nil)
+
+    Rails.logger.warn("Quota limit #{limit} for #{@user} appears to be malformed and so will be set to 0 / unlimited.") if invalid?(limit)
+
+    @limit = limit.to_i
   end
 
   # Whether quota reporting is shared for this volume amongst other users
@@ -99,7 +126,7 @@ class Quota
   end
 
   def sufficient?(threshold: 0.95)
-    if valid?
+    if limited?
       @total_usage < threshold * @limit
     else
       true
@@ -113,7 +140,7 @@ class Quota
   # Percent of user resource units used for this volume
   # @return [Integer] percent user usage
   def percent_user_usage
-    if valid?
+    if limited?
       @user_usage * 100 / @limit
     else
       0
@@ -123,15 +150,15 @@ class Quota
   # Percent of total resource units used for this volume
   # @return [Integer] percent total block usage
   def percent_total_usage
-    if valid?
+    if limited?
       @total_usage * 100 / @limit
     else
       0
     end
   end
 
-  # @return [Boolean] true if limit > 0, otherwise consider it an invalid quota
-  def valid?
+  # @return [Boolean] true if limit > 0, otherwise consider it an unlimited quota
+  def limited?
     @limit > 0
   end
 

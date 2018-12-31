@@ -18,7 +18,7 @@ class QuotaTest < ActiveSupport::TestCase
   test "creating files quota instance for a fileset path" do
     quota = Quota.new(@quota_defaults)
 
-    assert quota.valid?
+    assert quota.limited?
     assert_equal 10, quota.percent_user_usage
     assert_equal 50, quota.percent_total_usage
     assert quota.sufficient?
@@ -27,16 +27,27 @@ class QuotaTest < ActiveSupport::TestCase
     assert_equal "Using 50 files of quota 100 files (10 files are yours)", quota.to_s
   end
 
-  test "quota invalid with limit 0" do
+  test "quota unlimited when limit is 0" do
     quota = Quota.new(@quota_defaults.merge(limit: 0))
-    refute quota.valid?
+    refute quota.limited?
 
-    assert_equal 0, quota.percent_user_usage, "an invalid quota should return 0% usage"
-    assert_equal 0, quota.percent_total_usage, "an invalid quota should return 0% usage"
+    assert_equal 0, quota.percent_user_usage, "an unlimited quota should return 0% usage"
+    assert_equal 0, quota.percent_total_usage, "an unlimited quota should return 0% usage"
 
-    assert quota.sufficient?, "an invalid quota should not be flagged as insufficient"
-    refute quota.insufficient?, "an invalid quota should not be flagged as insufficient"
+    assert quota.sufficient?, "an unlimited quota should not be flagged as insufficient"
+    refute quota.insufficient?, "an unlimited quota should not be flagged as insufficient"
 
     assert_equal "Using 50 files of quota 0 files (10 files are yours)", quota.to_s
+  end
+
+  test "quota warns only when limit is invalid" do
+    # Note that this should log an error about the limit being invalid
+    quota = Quota.new(@quota_defaults.merge(limit: 'not a limit'))
+    assert quota.send(:invalid?, 'not a limit'), '"not a limit" is not a a valid limit'
+    assert quota.send(:invalid?, -1), 'negative numbers are not valid limits'
+
+    refute quota.send(:invalid?, 5), 'Quota should not warn if limit is a positive integer'
+    refute quota.send(:invalid?, 'unlimited'), 'Quota should not warn if limit is "unlimited"'
+    refute quota.send(:invalid?, nil), 'Quota should not warn if limit is nil'
   end
 end
