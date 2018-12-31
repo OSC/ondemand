@@ -99,7 +99,11 @@ class Quota
   end
 
   def sufficient?(threshold: 0.95)
-    @total_usage < threshold * @limit
+    if valid?
+      @total_usage < threshold * @limit
+    else
+      true
+    end
   end
 
   def insufficient?(threshold: 0.95)
@@ -109,13 +113,26 @@ class Quota
   # Percent of user resource units used for this volume
   # @return [Integer] percent user usage
   def percent_user_usage
-    @user_usage * 100 / @limit
+    if valid?
+      @user_usage * 100 / @limit
+    else
+      0
+    end
   end
 
   # Percent of total resource units used for this volume
   # @return [Integer] percent total block usage
   def percent_total_usage
-    @total_usage * 100 / @limit
+    if valid?
+      @total_usage * 100 / @limit
+    else
+      0
+    end
+  end
+
+  # @return [Boolean] true if limit > 0, otherwise consider it an invalid quota
+  def valid?
+    @limit > 0
   end
 
   def to_s
@@ -129,5 +146,4 @@ class Quota
       return msg + " (#{number_to_human_size(@user_usage * BLOCK_SIZE)} are yours)"
     end
   end
-
 end
