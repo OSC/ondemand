@@ -43,11 +43,66 @@ class QuotaTest < ActiveSupport::TestCase
   test "quota warns only when limit is invalid" do
     # Note that this should log an error about the limit being invalid
     quota = Quota.new(@quota_defaults.merge(limit: 'not a limit'))
-    assert quota.send(:invalid?, 'not a limit'), '"not a limit" is not a a valid limit'
-    assert quota.send(:invalid?, -1), 'negative numbers are not valid limits'
+    assert quota.send(:limit_invalid?, 'not a limit'), '"not a limit" is not a a valid limit'
+    assert quota.send(:limit_invalid?, -1), 'negative numbers are not valid limits'
 
-    refute quota.send(:invalid?, 5), 'Quota should not warn if limit is a positive integer'
-    refute quota.send(:invalid?, 'unlimited'), 'Quota should not warn if limit is "unlimited"'
-    refute quota.send(:invalid?, nil), 'Quota should not warn if limit is nil'
+    refute quota.send(:limit_invalid?, 5), 'Quota should not warn if limit is a positive integer'
+    refute quota.send(:limit_invalid?, 'unlimited'), 'Quota should not warn if limit is "unlimited"'
+    refute quota.send(:limit_invalid?, nil), 'Quota should not warn if limit is nil'
+  end
+
+  test "invalid version raises InvalidQuotaFile exception" do
+    Dir.mktmpdir do |dir|
+      quota_file = Pathname.new(dir).join('quota.json')
+      quota_file.write('{"version": 2000}')
+
+      assert_raises Quota::InvalidQuotaFile do
+        Quota.find(quota_file, 'efranz')
+      end
+    end
+  end
+
+  test "invalid json raises InvalidQuotaFile exception" do
+    Dir.mktmpdir do |dir|
+      quota_file = Pathname.new(dir).join('quota.json')
+      quota_file.write('{}')
+
+      assert_raises Quota::InvalidQuotaFile do
+        Quota.find(quota_file, 'efranz')
+      end
+    end
+  end
+
+  test "json with missing quotas array raises InvalidQuotaFile exception" do
+    Dir.mktmpdir do |dir|
+      quota_file = Pathname.new(dir).join('quota.json')
+      quota_file.write('{"version": 1}')
+
+      assert_raises Quota::InvalidQuotaFile do
+        Quota.find(quota_file, 'efranz')
+      end
+    end
+  end
+
+  test "json with missing path handles KeyError" do
+    Dir.mktmpdir do |dir|
+      quota_file = Pathname.new(dir).join('quota.json')
+      quota_file.write('{"version": 1, "quotas": [ { "user":"efranz" }]}')
+
+      assert_equal [], Quota.find(quota_file, 'efranz')
+    end
+  end
+
+  test "loading fixtures from file" do
+    quota_file = Pathname.new "#{Rails.root}/test/fixtures/quota.json"
+    quotas = Quota.find(quota_file, 'efranz')
+
+    assert_equal 4, quotas.count, "Should have found 4 quotas. The json file specifies 2 quota hashes, for 4 quotas - 2 file and 2 block quotas"
+
+    file_quota = quotas.find {|q| q.path.to_s == "/users/PND0005" }
+    assert file_quota, "Failed to find file quota for efranz and path /users/PND0005 in fixture"
+    assert_equal 973, file_quota.total_usage
+    assert_equal "file", file_quota.resource_type
+    assert_equal 1000000, file_quota.limit
   end
 end

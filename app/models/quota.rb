@@ -1,7 +1,6 @@
-class InvalidQuotaFile < StandardError; end
-
 # This describes disk quota utilization for a given user and volume
 class Quota
+  class InvalidQuotaFile < StandardError; end
 
   BLOCK_SIZE = 1024
 
@@ -22,10 +21,10 @@ class Quota
       begin
         json = JSON.parse(quota_path.read)
         case json["version"].to_i
-        when 0..1
+        when 1
           quotas += find_v1(user, json)
         else
-          raise InlimitedQuotaFile("JSON version found was: #{json["version"].to_i}")
+          raise InvalidQuotaFile.new("JSON version found was: #{json["version"].to_i}")
         end
       rescue KeyError => e
         Rails.logger.error("Quota entry for user #{user} is missing expected parameter #{e.message}")
@@ -40,6 +39,8 @@ class Quota
 
     # Parse JSON object using version 1 formatting
     def find_v1(user, params)
+      raise InvalidQuotaFile.new("Quota file with version 1 formatting missing quotas array section") unless params["quotas"].respond_to?(:each)
+
       q = []
       time = params["timestamp"]
       params["quotas"].each do |quota|
@@ -101,7 +102,7 @@ class Quota
     @updated_at = Time.at(params.fetch(:updated_at).to_i)
   end
 
-  def invalid?(limit)
+  def limit_invalid?(limit)
     [
       limit == 0,                         # Limit is an integer and equals 0
       limit.to_i > 0,                     # Limit cast to an integer is greater than zero
@@ -114,7 +115,7 @@ class Quota
   def set_limit(params)
     limit = params.fetch(:limit, nil)
 
-    Rails.logger.warn("Quota limit #{limit} for #{@user} appears to be malformed and so will be set to 0 / unlimited.") if invalid?(limit)
+    Rails.logger.warn("Quota limit #{limit} for #{@user} appears to be malformed and so will be set to 0 / unlimited.") if limit_invalid?(limit)
 
     @limit = limit.to_i
   end
