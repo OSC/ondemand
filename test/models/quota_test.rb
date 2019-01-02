@@ -72,4 +72,15 @@ class QuotaTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test "json with missing quotas array raises InvalidQuotaFile exception" do
+    Dir.mktmpdir do |dir|
+      quota_file = Pathname.new(dir).join('quota.json')
+      quota_file.write('{"version": 1}')
+
+      assert_raises Quota::InvalidQuotaFile do
+        Quota.find(quota_file, 'efranz')
+      end
+    end
+  end
 end

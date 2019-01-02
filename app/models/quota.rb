@@ -39,6 +39,8 @@ class Quota
 
     # Parse JSON object using version 1 formatting
     def find_v1(user, params)
+      raise InvalidQuotaFile.new("Quota file with version 1 formatting missing quotas array section") unless params["quotas"].respond_to?(:each)
+
       q = []
       time = params["timestamp"]
       params["quotas"].each do |quota|
