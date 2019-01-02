@@ -102,7 +102,7 @@ class Quota
     @updated_at = Time.at(params.fetch(:updated_at).to_i)
   end
 
-  def invalid?(limit)
+  def limit_invalid?(limit)
     [
       limit == 0,                         # Limit is an integer and equals 0
       limit.to_i > 0,                     # Limit cast to an integer is greater than zero
@@ -115,7 +115,7 @@ class Quota
   def set_limit(params)
     limit = params.fetch(:limit, nil)
 
-    Rails.logger.warn("Quota limit #{limit} for #{@user} appears to be malformed and so will be set to 0 / unlimited.") if invalid?(limit)
+    Rails.logger.warn("Quota limit #{limit} for #{@user} appears to be malformed and so will be set to 0 / unlimited.") if limit_invalid?(limit)
 
     @limit = limit.to_i
   end

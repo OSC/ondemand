@@ -43,12 +43,12 @@ class QuotaTest < ActiveSupport::TestCase
   test "quota warns only when limit is invalid" do
     # Note that this should log an error about the limit being invalid
     quota = Quota.new(@quota_defaults.merge(limit: 'not a limit'))
-    assert quota.send(:invalid?, 'not a limit'), '"not a limit" is not a a valid limit'
-    assert quota.send(:invalid?, -1), 'negative numbers are not valid limits'
+    assert quota.send(:limit_invalid?, 'not a limit'), '"not a limit" is not a a valid limit'
+    assert quota.send(:limit_invalid?, -1), 'negative numbers are not valid limits'
 
-    refute quota.send(:invalid?, 5), 'Quota should not warn if limit is a positive integer'
-    refute quota.send(:invalid?, 'unlimited'), 'Quota should not warn if limit is "unlimited"'
-    refute quota.send(:invalid?, nil), 'Quota should not warn if limit is nil'
+    refute quota.send(:limit_invalid?, 5), 'Quota should not warn if limit is a positive integer'
+    refute quota.send(:limit_invalid?, 'unlimited'), 'Quota should not warn if limit is "unlimited"'
+    refute quota.send(:limit_invalid?, nil), 'Quota should not warn if limit is nil'
   end
 
   test "invalid version raises InvalidQuotaFile exception" do
