@@ -83,4 +83,13 @@ class QuotaTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test "json with missing path handles KeyError" do
+    Dir.mktmpdir do |dir|
+      quota_file = Pathname.new(dir).join('quota.json')
+      quota_file.write('{"version": 1, "quotas": [ { "user":"efranz" }]}')
+
+      assert_equal [], Quota.find(quota_file, 'efranz')
+    end
+  end
 end
