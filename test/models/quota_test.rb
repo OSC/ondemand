@@ -92,4 +92,17 @@ class QuotaTest < ActiveSupport::TestCase
       assert_equal [], Quota.find(quota_file, 'efranz')
     end
   end
+
+  test "loading fixtures from file" do
+    quota_file = Pathname.new "#{Rails.root}/test/fixtures/quota.json"
+    quotas = Quota.find(quota_file, 'efranz')
+
+    assert_equal 4, quotas.count, "Should have found 4 quotas. The json file specifies 2 quota hashes, for 4 quotas - 2 file and 2 block quotas"
+
+    file_quota = quotas.find {|q| q.path.to_s == "/users/PND0005" }
+    assert file_quota, "Failed to find file quota for efranz and path /users/PND0005 in fixture"
+    assert_equal 973, file_quota.total_usage
+    assert_equal "file", file_quota.resource_type
+    assert_equal 1000000, file_quota.limit
+  end
 end
