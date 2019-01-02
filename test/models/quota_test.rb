@@ -50,4 +50,26 @@ class QuotaTest < ActiveSupport::TestCase
     refute quota.send(:invalid?, 'unlimited'), 'Quota should not warn if limit is "unlimited"'
     refute quota.send(:invalid?, nil), 'Quota should not warn if limit is nil'
   end
+
+  test "invalid version raises InvalidQuotaFile exception" do
+    Dir.mktmpdir do |dir|
+      quota_file = Pathname.new(dir).join('quota.json')
+      quota_file.write('{"version": 2000}')
+
+      assert_raises Quota::InvalidQuotaFile do
+        Quota.find(quota_file, 'efranz')
+      end
+    end
+  end
+
+  test "invalid json raises InvalidQuotaFile exception" do
+    Dir.mktmpdir do |dir|
+      quota_file = Pathname.new(dir).join('quota.json')
+      quota_file.write('{}')
+
+      assert_raises Quota::InvalidQuotaFile do
+        Quota.find(quota_file, 'efranz')
+      end
+    end
+  end
 end

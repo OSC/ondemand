@@ -1,7 +1,6 @@
-class InvalidQuotaFile < StandardError; end
-
 # This describes disk quota utilization for a given user and volume
 class Quota
+  class InvalidQuotaFile < StandardError; end
 
   BLOCK_SIZE = 1024
 
@@ -22,10 +21,10 @@ class Quota
       begin
         json = JSON.parse(quota_path.read)
         case json["version"].to_i
-        when 0..1
+        when 1
           quotas += find_v1(user, json)
         else
-          raise InlimitedQuotaFile("JSON version found was: #{json["version"].to_i}")
+          raise InvalidQuotaFile.new("JSON version found was: #{json["version"].to_i}")
         end
       rescue KeyError => e
         Rails.logger.error("Quota entry for user #{user} is missing expected parameter #{e.message}")
