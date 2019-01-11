@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.6.8] - 2019-01-11
+### Changed
+- Updating ood_core gem
 
 ## [1.6.7] - 2018-12-19
 ### Fixed
@@ -110,7 +113,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove OSC copyright from footer
 - Remove deprecation warnings
 
-[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.6.7...HEAD
+[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.6.8...HEAD
+[1.6.8]: https://github.com/OSC/ood-activejobs/compare/v1.6.7...v1.6.8
 [1.6.7]: https://github.com/OSC/ood-activejobs/compare/v1.6.6...v1.6.7
 [1.6.6]: https://github.com/OSC/ood-activejobs/compare/v1.6.5...v1.6.6
 [1.6.5]: https://github.com/OSC/ood-activejobs/compare/v1.6.4...v1.6.5
