@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Fixed crash due to bug in ood_core
 
+## [2.10.1] - 2018-12-26
+### Fixed
+- Update `ood_core` to latest version for Torque and SGE bug fixes
+
 ## [2.10.0] - 2018-12-19
 ### Changed
 - Updated to Rails 4.2.11
