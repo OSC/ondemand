@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.30.3] - 2019-01-11
+### Fixed
+- ood_core updated with critical bug fix for SGE
+- fix displaying "invalid" interactive appp launch button in developer views
+  [#434](https://github.com/OSC/ood-dashboard/issues/434)
+
 ## [1.30.2] - 2019-01-02
 ### Fixed
 - Fixes for Quotas and improved tests
@@ -448,7 +454,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.30.2...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.30.3...HEAD
+[1.30.3]: https://github.com/OSC/ood-dashboard/compare/v1.30.2...v1.30.3
 [1.30.2]: https://github.com/OSC/ood-dashboard/compare/v1.30.1...v1.30.2
 [1.30.1]: https://github.com/OSC/ood-dashboard/compare/v1.30.0...v1.30.1
 [1.30.0]: https://github.com/OSC/ood-dashboard/compare/v1.29.0...v1.30.0
