@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-## [1.4.9] - 2019-01-11
+## [1.4.10] - 2019-01-11
 ### Fixed
 - Fixed error in ood_core that caused crashes in MyJobs with a SGE cluster
 - Fixed issue with displaying launch button with invalid Batch Connect apps [#435](https://github.com/OSC/ood-dashboard/pull/435)
@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Updated ood_core to newest in all core apps
+
+## [1.4.9] - 2018-12-31
+### Fixed
+- Update Dashboard to improve Quotas
 
 ## [1.4.8] - 2018-12-31
 ### Fixed
@@ -68,7 +72,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.4.9...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.4.10...HEAD
+[1.4.10]: https://github.com/OSC/ondemand/compare/v1.4.9...v1.4.10
 [1.4.9]: https://github.com/OSC/ondemand/compare/v1.4.8...v1.4.9
 [1.4.8]: https://github.com/OSC/ondemand/compare/v1.4.7...v1.4.8
 [1.4.7]: https://github.com/OSC/ondemand/compare/v1.4.6...v1.4.7
