@@ -265,7 +265,7 @@ app.use(cloudcmd({
         fileexplorer_version:   app_version,
         // function that accepts a path and returns true or false
         // FIXME: whitelist would be better as a function that has some properties!
-        whitelist: whitelist
+        whitelist: whitelist.enabled() ? whitelist : null
     }
 }));
 

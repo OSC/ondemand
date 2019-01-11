@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.5.1] - 2019-01-11
+### Fixed
+- Fixed whitelist bug that broke API calls
 
 ## [1.5.0] - 2018-12-19
 ### Added
@@ -103,7 +106,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Initial Release!
 
-[Unreleased]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.1...HEAD
+[1.5.1]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/OSC/ood-fileexplorer/compare/v1.4.1...v1.5.0
 [1.4.1]: https://github.com/OSC/ood-fileexplorer/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/OSC/ood-fileexplorer/compare/v1.3.6...v1.4.0
