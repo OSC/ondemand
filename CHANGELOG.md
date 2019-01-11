@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.4.9] - 2019-01-11
+### Fixed
+- Fixed error in ood_core that caused crashes in MyJobs with a SGE cluster
+- Fixed issue with displaying launch button with invalid Batch Connect apps [#435](https://github.com/OSC/ood-dashboard/pull/435)
+- Fixed error where users were unable to rename/move files using the FileExplorer [#186](https://github.com/OSC/ood-fileexplorer/issues/186)
+
+### Changed
+- Updated ood_core to newest in all core apps
+
 ## [1.4.8] - 2018-12-31
 ### Fixed
 - Update Dashboard to fix a divide by zero error when a resource is not limited
@@ -59,7 +68,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.4.8...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.4.9...HEAD
+[1.4.9]: https://github.com/OSC/ondemand/compare/v1.4.8...v1.4.9
 [1.4.8]: https://github.com/OSC/ondemand/compare/v1.4.7...v1.4.8
 [1.4.7]: https://github.com/OSC/ondemand/compare/v1.4.6...v1.4.7
 [1.4.6]: https://github.com/OSC/ondemand/compare/v1.4.5...v1.4.6
@@ -67,4 +77,3 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [1.4.4]: https://github.com/OSC/ondemand/compare/v1.4.3...v1.4.4
 [1.4.3]: https://github.com/OSC/ondemand/compare/v1.4.2...v1.4.3
 [1.4.2]: https://github.com/OSC/ondemand/compare/v1.3.7...v1.4.2
-
