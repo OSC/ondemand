@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
-## [2.10.1] - 2019-01-11
+## [2.10.2] - 2019-01-11
 ### Fixed
 - Fixed crash due to bug in ood_core
 
@@ -162,7 +162,8 @@ All notable changes to this project will be documented in this file.
 - UI enhancements
 
 
-[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.10.1...HEAD
+[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.10.2...HEAD
+[2.10.2]: https://github.com/OSC/ood-myjobs/compare/v2.10.1...v2.10.2
 [2.10.1]: https://github.com/OSC/ood-myjobs/compare/v2.10.0...v2.10.1
 [2.10.0]: https://github.com/OSC/ood-myjobs/compare/v2.9.3...v2.10.0
 [2.9.3]: https://github.com/OSC/ood-myjobs/compare/v2.9.2...v2.9.3
