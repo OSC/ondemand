@@ -4,6 +4,7 @@ set -ex
 
 # Get dependencies
 yum install -y centos-release-scl
+yum install -y https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-2.el${OS_VERSION}.noarch.rpm
 yum install -y \
   make \
   curl \
@@ -13,10 +14,11 @@ yum install -y \
   rh-ruby24-rubygem-bundler \
   rh-ruby24-ruby-devel \
   rh-nodejs6 \
-  rh-git29
+  rh-git29 \
+  ondemand-runtime
 
 # Setup environment
-source scl_source enable rh-ruby24 rh-nodejs6 rh-git29 || :
+source scl_source enable ondemand || :
 
 # Build and install
 rake -mj ${NUM_TASKS:-$(nproc)} && rake install
