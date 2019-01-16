@@ -26,8 +26,6 @@ else
   source "${ROOT_DIR}/etc/profile"
 fi
 
-export PASSENGER_ROOT=$(passenger-config about root)
-
 # Environment is set, so call Ruby now
 #
 exec \

@@ -396,8 +396,7 @@ module NginxStage
       self.nginx_signals    = %i(stop quit reopen reload)
       self.mime_types_path  = '/opt/ood/ondemand/root/etc/nginx/mime.types'
 
-      # default is set in sbin/nginx_stage
-      self.passenger_root = ENV['PASSENGER_ROOT']
+      self.passenger_root = '/opt/ood/ondemand/root/usr/share/ruby/vendor_ruby/phusion_passenger/locations.ini'
 
       self.passenger_ruby   = "#{root}/bin/ruby"
       self.passenger_nodejs = "#{root}/bin/node"
