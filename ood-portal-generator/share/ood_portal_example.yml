@@ -181,8 +181,8 @@
 # connect to
 # Example:
 #     pun_socket_root: '/path/to/pun/sockets'
-# Default: '/var/run/nginx' (default location set in nginx_stage)
-#pun_socket_root: '/var/run/nginx'
+# Default: '/var/run/ondemand-nginx' (default location set in nginx_stage)
+#pun_socket_root: '/var/run/ondemand-nginx'
 
 # Number of times the proxy attempts to connect to the PUN Unix socket before
 # giving up and displaying an error to the user

@@ -82,7 +82,7 @@ module NginxStage
     # Path to generated per-user NGINX config file
     # @example User Bob's nginx config
     #   pun_config_path(user: 'bob')
-    #   #=> "/var/lib/nginx/config/puns/bob.conf"
+    #   #=> "/var/lib/ondemand-nginx/config/puns/bob.conf"
     # @param user [String] the user of the nginx process
     # @return [String] the path to the per-user nginx config file
     def pun_config_path(user:)
@@ -94,7 +94,7 @@ module NginxStage
     # Path to generated per-user secret key base file
     # @example User Bob's secret key base file
     #   pun_config_path(user: 'bob')
-    #   #=> "/var/lib/nginx/config/puns/bob.secret_key_base.txt"
+    #   #=> "/var/lib/ondemand-nginx/config/puns/bob.secret_key_base.txt"
     # @param user [String] the user of the nginx process
     # @return [String] the path to the per-user nginx config file
     def pun_secret_key_base_path(user:)
@@ -106,7 +106,7 @@ module NginxStage
     # Path to user's personal tmp root
     # @example User Bob's nginx tmp root
     #   pun_tmp_root(user: 'bob')
-    #   #=> "/var/lib/nginx/tmp/bob"
+    #   #=> "/var/lib/ondemand-nginx/tmp/bob"
     # @param user [String] the user of the nginx process
     # @return [String] the path to the tmp root
     def pun_tmp_root(user:)
@@ -118,7 +118,7 @@ module NginxStage
     # Path to the user's personal access.log
     # @example User Bob's nginx access log
     #   pun_access_log_path(user: 'bob')
-    #   #=> "/var/log/nginx/bob/access.log"
+    #   #=> "/var/log/ondemand-nginx/bob/access.log"
     # @param user [String] the user of the nginx process
     # @return [String] the path to the nginx access log
     def pun_access_log_path(user:)
@@ -130,7 +130,7 @@ module NginxStage
     # Path to the user's personal error.log
     # @example User Bob's nginx error log
     #   pun_error_log_path(user: 'bob')
-    #   #=> "/var/log/nginx/bob/error.log"
+    #   #=> "/var/log/ondemand-nginx/bob/error.log"
     # @param user [String] the user of the nginx process
     # @return [String] the path to the nginx error log
     def pun_error_log_path(user:)
@@ -142,7 +142,7 @@ module NginxStage
     # Path to the user's per-user NGINX pid file
     # @example User Bob's pid file
     #   pun_pid_path(user: 'bob')
-    #   #=> "/var/run/nginx/bob/passenger.pid"
+    #   #=> "/var/run/ondemand-nginx/bob/passenger.pid"
     # @param user [String] the user of nginx process
     # @return [String] the path to the pid file
     def pun_pid_path(user:)
@@ -154,7 +154,7 @@ module NginxStage
     # Path to the user's per-user NGINX socket file
     # @example User Bob's socket file
     #   socket_path(user: 'bob')
-    #   #=> "/var/run/nginx/bob/passenger.sock"
+    #   #=> "/var/run/ondemand-nginx/bob/passenger.sock"
     # @param user [String] the user of nginx process
     # @return [String] the path to the socket file
     def pun_socket_path(user:)
@@ -210,10 +210,10 @@ module NginxStage
     # Path to generated NGINX app config
     # @example Dev app owned by Bob
     #   app_config_path(env: :dev, owner: 'bob', name: 'rails1')
-    #   #=> "/var/lib/nginx/config/apps/dev/bob/rails1.conf"
+    #   #=> "/var/lib/ondemand-nginx/config/apps/dev/bob/rails1.conf"
     # @example User app owned by Dan
     #   app_config_path(env: :usr, owner: 'dan', name: 'fillsim')
-    #   #=> "/var/lib/nginx/config/apps/usr/dan/fillsim.conf"
+    #   #=> "/var/lib/ondemand-nginx/config/apps/usr/dan/fillsim.conf"
     # @param env [Symbol] environment the app is run under
     # @param owner [String] the owner of the app
     # @param name [String] the name of the app
@@ -392,9 +392,9 @@ module NginxStage
       self.template_root         = "#{root}/templates"
 
       self.proxy_user       = 'apache'
-      self.nginx_bin        = '/usr/sbin/nginx'
+      self.nginx_bin        = '/opt/ood/ondemand/root/usr/sbin/nginx'
       self.nginx_signals    = %i(stop quit reopen reload)
-      self.mime_types_path  = '/etc/nginx/mime.types'
+      self.mime_types_path  = '/opt/ood/ondemand/root/etc/nginx/mime.types'
 
       # default is set in sbin/nginx_stage
       self.passenger_root = ENV['PASSENGER_ROOT']
@@ -406,14 +406,14 @@ module NginxStage
       self.pun_custom_env      = {}
       self.pun_custom_env_declarations = []
       self.pun_custom_html_root = '/etc/ood/config/pun/html'
-      self.pun_config_path     = '/var/lib/nginx/config/puns/%{user}.conf'
-      self.pun_secret_key_base_path = '/var/lib/nginx/config/puns/%{user}.secret_key_base.txt'
+      self.pun_config_path     = '/var/lib/ondemand-nginx/config/puns/%{user}.conf'
+      self.pun_secret_key_base_path = '/var/lib/ondemand-nginx/config/puns/%{user}.secret_key_base.txt'
 
-      self.pun_tmp_root        = '/var/tmp/nginx/%{user}'
-      self.pun_access_log_path = '/var/log/nginx/%{user}/access.log'
-      self.pun_error_log_path  = '/var/log/nginx/%{user}/error.log'
-      self.pun_pid_path        = '/var/run/nginx/%{user}/passenger.pid'
-      self.pun_socket_path     = '/var/run/nginx/%{user}/passenger.sock'
+      self.pun_tmp_root        = '/var/tmp/ondemand-nginx/%{user}'
+      self.pun_access_log_path = '/var/log/ondemand-nginx/%{user}/access.log'
+      self.pun_error_log_path  = '/var/log/ondemand-nginx/%{user}/error.log'
+      self.pun_pid_path        = '/var/run/ondemand-nginx/%{user}/passenger.pid'
+      self.pun_socket_path     = '/var/run/ondemand-nginx/%{user}/passenger.sock'
       self.pun_sendfile_root   = '/'
       self.pun_sendfile_uri    = '/sendfile'
       self.pun_app_configs     = [
@@ -423,9 +423,9 @@ module NginxStage
       ]
 
       self.app_config_path   = {
-        dev: '/var/lib/nginx/config/apps/dev/%{owner}/%{name}.conf',
-        usr: '/var/lib/nginx/config/apps/usr/%{owner}/%{name}.conf',
-        sys: '/var/lib/nginx/config/apps/sys/%{name}.conf'
+        dev: '/var/lib/ondemand-nginx/config/apps/dev/%{owner}/%{name}.conf',
+        usr: '/var/lib/ondemand-nginx/config/apps/usr/%{owner}/%{name}.conf',
+        sys: '/var/lib/ondemand-nginx/config/apps/sys/%{name}.conf'
       }
       self.app_root          = {
         dev: '/var/www/ood/apps/dev/%{owner}/gateway/%{name}',
