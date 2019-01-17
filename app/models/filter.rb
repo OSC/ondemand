@@ -5,6 +5,12 @@ class Filter
     attr_accessor :list
   end
 
+  def initialize(title: nil, filter_id: nil, &filter_block)
+    @title = title
+    @filter_id = filter_id
+    @filter_block = filter_block
+  end
+
   # Apply the current filtering proc to an array of jobs.
   #
   # @return [Array] The filtered array.
@@ -19,6 +25,14 @@ class Filter
     "user"
   end
 
+  def user?
+    filter_id == "user"
+  end
+
+  def all?
+    filter_id == "all"
+  end
+
   # Maintains a list of Filter objects.
   #
   # Add new filter objects via the format:
@@ -28,19 +42,18 @@ class Filter
   #   f.filter_id = "user"
   #   f.filter_block = Proc.new { |job| job.job_owner == user }
   # }
-  self.list = []
+
+  def self.all_filter
+    Filter.new(title: "All Jobs", filter_id: "all")
+  end
 
   # Add a filter by user option.
   #   The actual filtering for the particular user is handled in the controller
   #   via the user_where_owner optimization in ood_core.
-  Filter.list << Filter.new.tap { |f|
-    f.title = "Your Jobs"
-    f.filter_id = "user"
-  }
+  def self.user_filter
+    Filter.new(title: "Your Jobs", filter_id: "user")
+  end
 
-  # Add a filter by all jobs option.
-  Filter.list << Filter.new.tap { |f|
-    f.title = "All Jobs"
-    f.filter_id = "all"
-  }
+  # Maintains a list of Filter objects.
+  self.list = [user_filter, all_filter]
 end
