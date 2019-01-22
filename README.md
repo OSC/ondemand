@@ -99,7 +99,7 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
 
     * Uncomment and update `OOD_SHELL` to the path of the system installed [`ood-shell`](https://github.com/OSC/ood-shell) application. Setting this value to an empty string will remove the "Open in Terminal" button and option from the file explorer. (ex. `OOD_SHELL=''`)
 
-    * Uncomment and update `FILE_UPLOAD_MAX` to be the maximum allowable upload size (in bytes) for file uploads in the app. If a user attempts to exceed this value, the upload will be blocked. Uploads are processed in `/var/tmp` by the Passenger process, so uploads will be practically limited by the available space in this location. It is recommended that this value be less than half of the available space in `/var/tmp`, or less, to allow for concurrent uploaders. If this value is not configured, the default will be 10 GB.
+    * Uncomment and update `FILE_UPLOAD_MAX` to be the maximum allowable upload size (in bytes) for file uploads in the app. If a user attempts to exceed this value, the upload will be blocked. Uploads are buffered in an NGINX temporary directory (by default `/var/lib/nginx/tmp/$USER/client_body` by the Passenger process, so uploads will be practically limited by the available space in this location. The temporary directory can be changed by changing the setting [`pun_tmp_root` in the `nginx_stage.yml`](https://github.com/OSC/ondemand/blob/d5514a7bb8f9c76cb876f4067244b30ac7bef615/nginx_stage/share/nginx_stage_example.yml#L96). It is recommended that this value be less than half of the available space in `/var/tmp`, or less, to allow for concurrent uploaders. If this value is not configured, the default will be 10 GB.
 
 ## Usage
 
