@@ -15,7 +15,7 @@ class Job < ActiveRecord::Base
       script: script,
       pbsid: pbsid,
       host: host || workflow.batch_host,
-      torque_helper: ResourceMgrAdapter.new
+      torque_helper: ResourceMgrAdapter.new(workflow)
     )
   end
 end

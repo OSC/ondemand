@@ -7,6 +7,7 @@ class WorkflowsController < ApplicationController
     if OODClusters.none?
       flash.now[:alert] = 'There are no configured hosts that allow you to submit jobs. Please contact your system administrator.'
     end
+
     @default_template = Template.default
     @templates = Template.all
 

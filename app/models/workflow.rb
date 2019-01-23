@@ -8,7 +8,7 @@ class Workflow < ActiveRecord::Base
   # add accessors: [ :attr1, :attr2 ] etc. when you want to add getters and
   # setters to add new attributes stored in the JSON store
   # don't remove attributes from this list going forward! only deprecate
-  store :job_attrs, coder: JSON, accessors: [:account]
+  store :job_attrs, coder: JSON, accessors: [:account, :job_array_request]
 
   attr_accessor :staging_template_dir
 
@@ -158,7 +158,8 @@ class Workflow < ActiveRecord::Base
       script: staged_dir.join(staged_script_name),
       host: batch_host,
       account_string: account,
-      torque_helper: ResourceMgrAdapter.new
+      torque_helper: ResourceMgrAdapter.new(self),
+      job_array_request: job_array_request
     )
   end
 
