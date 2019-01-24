@@ -8,7 +8,13 @@ class JobsController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.json {
-        render :json => get_jobs
+        JobsJsonRequestHandler.new(
+          filter_id: @jobfilter,
+          cluster_id: @jobcluster,
+          controller: self,
+          params: params,
+          response: response
+        ).render
       }
     end
   end
@@ -95,57 +101,4 @@ class JobsController < ApplicationController
     end
   end
 
-  # Get a set of jobs defined by the filtering parameter.
-  def get_jobs
-    jobs = Array.new
-    errors = Array.new
-
-    clusters.each do |cluster|
-      b = cluster.job_adapter
-
-      begin
-        if filter.user?
-          result = b.info_where_owner(OodSupport::User.new.name)
-        else
-          result = filter.apply(b.info_all)
-        end
-
-        # Only add the running jobs to the list and assign the host to the object.
-        #
-        # There is also curently a bug in the system where jobs with an empty array
-        # (ex. 6407991[].oak-batch.osc.edu) are not stattable, so we do a not-match
-        # for those jobs and don't display them.
-        result.each do |j|
-          if j.status.state != :completed && j.id !~ /\[\]/
-            jobs.push(Jobstatusdata.new(j, cluster))
-          end
-        end
-      rescue => e
-        msg = "#{cluster.metadata.title || cluster.id.to_s.titleize}: #{e.message}"
-        logger.error "#{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
-        errors << msg
-      end
-    end
-
-    # Sort jobs by username
-    jobs.sort_by! do |user|
-      user.username == OodSupport::User.new.name ? 0 : 1
-    end
-
-    { data: jobs, errors: errors }
-  end
-
-  def filter
-    filter_id = get_filter
-    Filter.list.find(Filter.all_filter) { |f| f.filter_id == filter_id  }
-  end
-
-  def clusters
-    cluster_id = get_cluster
-    if cluster_id == 'all'
-      OODClusters
-    else
-      OODClusters.select { |c| c == cluster_id}
-    end
-  end
 end
