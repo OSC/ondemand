@@ -21,7 +21,22 @@
 // The app path without parameters
 var APP_PATH = window.location.pathname;
 
+<% unless Rails.env.production? %>
+function report_performance(){
+  var marks = performance.getEntriesByType('mark');
+  marks.forEach(function(entry){
+    console.log(entry.startTime + "," + entry.name);
+  });
+
+  // hack but only one mark for document ready, and rest are draw times
+  console.log("version,documentReady,firstDraw,lastDraw");
+  console.log(`<%= `git describe --always --tags`.strip() %>,${marks[0].startTime},${marks[1].startTime},${marks.slice(-1)[0].startTime}`);
+}
+<% end %>
+
 $(document).ready( function() {
+    <%= "performance.mark('document ready - build table and make ajax request for jobs');" unless Rails.env.production? %>
+
     $("#selected-filter-label").text($("#filter-id-"+filter_id).text());
     $("#selected-cluster-label").text($("#cluster-id-"+cluster_id).text());
 
@@ -32,6 +47,8 @@ $(document).ready( function() {
           if(response.errors.length > 0) {
               show_errors(response.errors);
           }
+
+          <%= "setTimeout(report_performance, 2000);" unless Rails.env.production? %>
           return response.data;
         },
         autoWidth: true,            // Automatically calculate column width
@@ -57,6 +74,13 @@ $(document).ready( function() {
                                         }
                                     },
         processing: true,           // Add the "processing" while json is being downloaded.
+        <% unless Rails.env.production? %>
+        drawCallback: function(settings){
+          if(settings.aoData.length > 0){
+            performance.mark('draw records - ' + settings.aoData.length);
+          }
+        },
+        <% end %>
         columns: [
             {
                 "orderable":        false,
