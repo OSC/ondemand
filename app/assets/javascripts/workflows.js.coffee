@@ -84,6 +84,15 @@ $(window).focus ->
   else
     $("#script-details-panel").hide()
 
+@show_job_array_request = (show) ->
+  if show
+    $("#job-details-job-array-request").show()
+    $("#job-details-job-array-request").prev().show()
+  else
+    $("#job-details-job-array-request").hide()
+    $("#job-details-job-array-request").prev().hide()
+
+
 @update_status_label = (id, label) ->
   if label? && id?
     $("#status_label_#{id}").html(label)
@@ -98,6 +107,8 @@ $(window).focus ->
     $("#job-details-server").val(data.host_title)
     $("#job-details-staged-dir").text(data.staged_dir)
     $("#job-details-script-name").text(data.staged_script_name || ' ')
+    $("#job-details-job-array-request").val(data.job_array_request || '')
+    show_job_array_request( !(data.job_array_request == null or data.job_array_request == '') )
     if data.account == null or data.account == ""
       $("#job-details-account").addClass("text-muted")
       $("#job-details-account").text("Not specified")
