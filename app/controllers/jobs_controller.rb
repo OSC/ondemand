@@ -99,38 +99,31 @@ class JobsController < ApplicationController
   def get_jobs
     jobs = Array.new
     errors = Array.new
-    jobfilter = get_filter
-    jobcluster = get_cluster
 
-    OODClusters.each do |cluster|
+    clusters.each do |cluster|
+      b = cluster.job_adapter
 
-      if jobcluster == 'all' || cluster == OODClusters[jobcluster]
-
-        b = cluster.job_adapter
-
-        begin
-          if jobfilter == 'user'
-            result = b.info_where_owner(OodSupport::User.new.name)
-          else
-            filter = Filter.list.find { |f| f.filter_id == jobfilter }
-            result = filter ? filter.apply(b.info_all) : b.info_all
-          end
-
-          # Only add the running jobs to the list and assign the host to the object.
-          #
-          # There is also curently a bug in the system where jobs with an empty array
-          # (ex. 6407991[].oak-batch.osc.edu) are not stattable, so we do a not-match
-          # for those jobs and don't display them.
-          result.each do |j|
-            if j.status.state != :completed && j.id !~ /\[\]/
-              jobs.push(Jobstatusdata.new(j, cluster))
-            end
-          end
-        rescue => e
-          msg = "#{cluster.metadata.title || cluster.id.to_s.titleize}: #{e.message}"
-          logger.error "#{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
-          errors << msg
+      begin
+        if filter.user?
+          result = b.info_where_owner(OodSupport::User.new.name)
+        else
+          result = filter.apply(b.info_all)
         end
+
+        # Only add the running jobs to the list and assign the host to the object.
+        #
+        # There is also curently a bug in the system where jobs with an empty array
+        # (ex. 6407991[].oak-batch.osc.edu) are not stattable, so we do a not-match
+        # for those jobs and don't display them.
+        result.each do |j|
+          if j.status.state != :completed && j.id !~ /\[\]/
+            jobs.push(Jobstatusdata.new(j, cluster))
+          end
+        end
+      rescue => e
+        msg = "#{cluster.metadata.title || cluster.id.to_s.titleize}: #{e.message}"
+        logger.error "#{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
+        errors << msg
       end
     end
 
@@ -140,5 +133,19 @@ class JobsController < ApplicationController
     end
 
     { data: jobs, errors: errors }
+  end
+
+  def filter
+    filter_id = get_filter
+    Filter.list.find(Filter.all_filter) { |f| f.filter_id == filter_id  }
+  end
+
+  def clusters
+    cluster_id = get_cluster
+    if cluster_id == 'all'
+      OODClusters
+    else
+      OODClusters.select { |c| c == cluster_id}
+    end
   end
 end
