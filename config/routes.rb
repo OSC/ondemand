@@ -1,6 +1,6 @@
 JobStatus::Application.routes.draw do
   root "jobs#index"
-  get "jobs/index"
+  get "jobs" => "jobs#index"
   #get "jobs/about"
   get "/json" => "jobs#json", :defaults => { :format => 'json' }
   delete "/delete_job" => "jobs#delete_job"

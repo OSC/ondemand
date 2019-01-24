@@ -4,22 +4,31 @@ class JobsController < ApplicationController
   def index
     @jobfilter = get_filter
     @jobcluster = get_cluster
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.json {
+        render :json => get_jobs
+      }
+    end
   end
 
-  # Used to send the data to the Datatable.
   def json
-    if params[:pbsid].nil?
-      render :json => get_jobs
-    else
-      #Only allow the configured servers to respond
-      if cluster = OODClusters[params[:cluster].to_s.to_sym]
-        render '/jobs/extended_data', :locals => {:jobstatusdata => get_job(params[:pbsid], cluster) }
-      else
-        msg = "Request did not specify an available cluster. "
-        msg += "Available clusters are: #{OODClusters.map(&:id).join(',')} "
-        msg += "But specified cluster is: #{params[:cluster]}"
-        render :json => { name: params[:pbsid], error: msg }
-      end
+    respond_to do |format|
+      format.html { # show.html.erb
+        raise "html"
+      }
+      format.json {
+        #Only allow the configured servers to respond
+        if cluster = OODClusters[params[:cluster].to_s.to_sym]
+          render '/jobs/extended_data', :locals => {:jobstatusdata => get_job(params[:pbsid], cluster) }
+        else
+          msg = "Request did not specify an available cluster. "
+          msg += "Available clusters are: #{OODClusters.map(&:id).join(',')} "
+          msg += "But specified cluster is: #{params[:cluster]}"
+          render :json => { name: params[:pbsid], error: msg }
+        end
+      }
     end
   end
 
