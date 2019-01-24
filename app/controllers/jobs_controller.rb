@@ -1,4 +1,4 @@
-class PagesController < ApplicationController
+class JobsController < ApplicationController
   include ApplicationHelper
 
   def index
@@ -13,7 +13,7 @@ class PagesController < ApplicationController
     else
       #Only allow the configured servers to respond
       if cluster = OODClusters[params[:cluster].to_s.to_sym]
-        render '/pages/extended_data', :locals => {:jobstatusdata => get_job(params[:pbsid], cluster) }
+        render '/jobs/extended_data', :locals => {:jobstatusdata => get_job(params[:pbsid], cluster) }
       else
         msg = "Request did not specify an available cluster. "
         msg += "Available clusters are: #{OODClusters.map(&:id).join(',')} "
