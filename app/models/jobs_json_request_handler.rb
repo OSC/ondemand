@@ -21,21 +21,31 @@ class JobsJsonRequestHandler
     end
   end
 
-  def render
-    controller.render :json => get_jobs
+  def job_info_enumerator(cluster)
+    if filter.user?
+      cluster.job_adapter.info_where_owner_each(OodSupport::User.new.name)
+    else
+      cluster.job_adapter.info_all_each
+    end
   end
 
-  # Get a set of jobs defined by the filtering parameter.
-  def get_jobs
-    jobs = Array.new
-    errors = Array.new
+  def render
+    response.content_type = Mime[:json]
 
-    clusters.each do |cluster|
+    errors = []
+    count = 0
+    response.stream.write '{"data":[' # data is now an array of arrays']}'
+
+    clusters.each_with_index do |cluster|
       begin
-        if filter.user?
-          jobs += convert_info(cluster.job_adapter.info_where_owner(OodSupport::User.new.name), cluster)
-        else
-          jobs += convert_info(filter.apply(cluster.job_adapter.info_all), cluster)
+        job_info_enumerator(cluster).each_slice(3000) do |jobs|
+          jobs = convert_info(filter.apply(jobs), cluster)
+
+          response.stream.write "," if count > 0
+          response.stream.write jobs.to_json
+
+          controller.logger.debug "wrote jobs to stream: #{jobs.count}"
+          count += 1;
         end
       rescue => e
         msg = "#{cluster.metadata.title || cluster.id.to_s.titleize}: #{e.message}"
@@ -44,7 +54,9 @@ class JobsJsonRequestHandler
       end
     end
 
-    { data: jobs, errors: errors }
+    response.stream.write '], "errors":' + errors.to_json + '}'
+  ensure
+    response.stream.close
   end
 
   def convert_info(info_all, cluster)

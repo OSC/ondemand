@@ -49,7 +49,7 @@ $(document).ready( function() {
           }
 
           <%= "setTimeout(report_performance, 2000);" unless Rails.env.production? %>
-          return response.data;
+          return response.data.flat();
         },
         autoWidth: true,            // Automatically calculate column width
         "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ], // Manually set size of particular columns
