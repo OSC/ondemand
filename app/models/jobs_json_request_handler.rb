@@ -33,20 +33,9 @@ class JobsJsonRequestHandler
     clusters.each do |cluster|
       begin
         if filter.user?
-          result = cluster.job_adapter.info_where_owner(OodSupport::User.new.name)
+          jobs += convert_info(cluster.job_adapter.info_where_owner(OodSupport::User.new.name), cluster)
         else
-          result = filter.apply(cluster.job_adapter.info_all)
-        end
-
-        # Only add the running jobs to the list and assign the host to the object.
-        #
-        # There is also curently a bug in the system where jobs with an empty array
-        # (ex. 6407991[].oak-batch.osc.edu) are not stattable, so we do a not-match
-        # for those jobs and don't display them.
-        result.each do |j|
-          if j.status.state != :completed && j.id !~ /\[\]/
-            jobs.push(Jobstatusdata.new(j, cluster))
-          end
+          jobs += convert_info(filter.apply(cluster.job_adapter.info_all), cluster)
         end
       rescue => e
         msg = "#{cluster.metadata.title || cluster.id.to_s.titleize}: #{e.message}"
@@ -55,11 +44,53 @@ class JobsJsonRequestHandler
       end
     end
 
-    # Sort jobs by username
-    jobs.sort_by! do |user|
-      user.username == OodSupport::User.new.name ? 0 : 1
-    end
-
     { data: jobs, errors: errors }
+  end
+
+  def convert_info(info_all, cluster)
+    extended_available = %w(torque slurm lsf pbspro).include?(cluster.job_config[:adapter])
+
+    info_all.map { |j|
+      {
+        cluster_title: cluster.metadata.title || cluster.id.to_s.titleize,
+        status: status_for_job(j),
+        cluster: cluster.id.to_s,
+        pbsid: j.id,
+        jobname: j.job_name,
+        account: j.accounting_id,
+        queue: j.queue_name,
+        walltime_used: j.wallclock_time,
+        username: j.job_owner,
+        extended_available: extended_available
+      }
+    }
+  end
+
+  def status_for_job(job)
+    status_label(job.status.state.to_s)
+  end
+
+  def status_label(status)
+    case status
+    when "completed"
+      label = "Completed"
+      labelclass = "label-success"
+    when "running"
+      label = "Running"
+      labelclass = "label-primary"
+    when "queued"
+      label = "Queued"
+      labelclass = "label-info"
+    when "queued_held"
+      label = "Hold"
+      labelclass = "label-warning"
+    when "suspended"
+      label = "Suspend"
+      labelclass = "label-warning"
+    else
+      label = "Undetermined"
+      labelclass = "label-default"
+    end
+    "<div style='white-space: nowrap;'><span class='label #{labelclass}'>#{label}</span></div>".html_safe
   end
 end
