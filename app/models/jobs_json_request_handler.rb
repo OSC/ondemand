@@ -9,6 +9,18 @@ class JobsJsonRequestHandler
     @response = response
   end
 
+  def filter
+    @filter ||= Filter.list.find(Filter.all_filter) { |f| f.filter_id == filter_id  }
+  end
+
+  def clusters
+    if cluster_id == 'all'
+      OODClusters
+    else
+      OODClusters.select { |c| c == cluster_id}
+    end
+  end
+
   def render
     controller.render :json => get_jobs
   end
@@ -19,13 +31,11 @@ class JobsJsonRequestHandler
     errors = Array.new
 
     clusters.each do |cluster|
-      b = cluster.job_adapter
-
       begin
         if filter.user?
-          result = b.info_where_owner(OodSupport::User.new.name)
+          result = cluster.job_adapter.info_where_owner(OodSupport::User.new.name)
         else
-          result = filter.apply(b.info_all)
+          result = filter.apply(cluster.job_adapter.info_all)
         end
 
         # Only add the running jobs to the list and assign the host to the object.
@@ -51,17 +61,5 @@ class JobsJsonRequestHandler
     end
 
     { data: jobs, errors: errors }
-  end
-
-  def filter
-    @filter ||= Filter.list.find(Filter.all_filter) { |f| f.filter_id == filter_id  }
-  end
-
-  def clusters
-    if cluster_id == 'all'
-      OODClusters
-    else
-      OODClusters.select { |c| c == cluster_id}
-    end
   end
 end
