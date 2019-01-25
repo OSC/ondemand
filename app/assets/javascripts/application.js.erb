@@ -34,6 +34,50 @@ function report_performance(){
 }
 <% end %>
 
+
+function fetch_table_data(table){
+  //console.log(performance.now() + ' - send ajax request to get job records')
+  oboe({
+    url: APP_PATH + '/jobs.json?'+get_request_params(),
+    headers: {
+      'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
+      'X-Requested-With': 'XMLHttpRequest'
+    }
+  }).start(function(){
+    // console.log(performance.now() + ' - received initial response for jobs');
+  }).node('data.*', function(jobs){
+    table.rows.add(jobs).draw();
+  }).node('error.*', function(errors){
+    show_errors(errors);
+  }).done(function(){
+    <%= "setTimeout(report_performance, 2000);" unless Rails.env.production? %>
+  });
+}
+
+function fetch_table_data_bad(table){
+  var xhr = new XMLHttpRequest(),
+      content = '';
+
+  xhr.onreadystatechange = function(){
+    if(xhr.status == 200){
+      console.log("Handle event:")
+      console.log(xhr.responseText);
+      // console.log(JSON.parse(xhr.responseText));
+      content += xhr.responseText;
+    }
+  };
+
+  xhr.onloadend = function (){
+//    console.log("done fetching data");
+//    console.log(JSON.parse(content));
+  };
+
+  xhr.open('GET', APP_PATH + '/jobs.json?' + get_request_params());
+  xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+  xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+  xhr.send();
+}
+
 $(document).ready( function() {
     <%= "performance.mark('document ready - build table and make ajax request for jobs');" unless Rails.env.production? %>
 
@@ -42,15 +86,6 @@ $(document).ready( function() {
 
     $("#" + filter_id).addClass("active");
     var table = $('#job_status_table').DataTable({
-        ajax: APP_PATH + '/jobs.json?' + get_request_params(),    // 'jobs#json'
-        "sAjaxDataProp": function(response){
-          if(response.errors.length > 0) {
-              show_errors(response.errors);
-          }
-
-          <%= "setTimeout(report_performance, 2000);" unless Rails.env.production? %>
-          return response.data.flat();
-        },
         autoWidth: true,            // Automatically calculate column width
         "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ], // Manually set size of particular columns
         "bStateSave": true,         // Save user selected table state
@@ -197,6 +232,8 @@ $(document).ready( function() {
     });
 
     table.columns.adjust().draw();
+
+    fetch_table_data(table);
 });
 
 
