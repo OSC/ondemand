@@ -54,30 +54,6 @@ function fetch_table_data(table){
   });
 }
 
-function fetch_table_data_bad(table){
-  var xhr = new XMLHttpRequest(),
-      content = '';
-
-  xhr.onreadystatechange = function(){
-    if(xhr.status == 200){
-      console.log("Handle event:")
-      console.log(xhr.responseText);
-      // console.log(JSON.parse(xhr.responseText));
-      content += xhr.responseText;
-    }
-  };
-
-  xhr.onloadend = function (){
-//    console.log("done fetching data");
-//    console.log(JSON.parse(content));
-  };
-
-  xhr.open('GET', APP_PATH + '/jobs.json?' + get_request_params());
-  xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
-  xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-  xhr.send();
-}
-
 $(document).ready( function() {
     <%= "performance.mark('document ready - build table and make ajax request for jobs');" unless Rails.env.production? %>
 
