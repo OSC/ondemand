@@ -16,8 +16,9 @@
 //= require dataTables/jquery.dataTables
 //= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
 //= require lightbox2/javascripts/lightbox
-//= require_tree .
 //= require oboe/oboe-browser.min
+//= require datatables_plugins/api/processing
+//= require_tree .
 
 // The app path without parameters
 var APP_PATH = window.location.pathname;
@@ -42,12 +43,16 @@ function fetch_table_data(table){
       'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
       'X-Requested-With': 'XMLHttpRequest'
     }
+  }).start(function(){
+    table.processing(true);
   }).node('data.*', function(jobs){
     table.rows.add(jobs).draw();
+    table.processing(false);
   }).node('error.*', function(errors){
     show_errors(errors);
   }).done(function(){
     <%= "setTimeout(report_performance, 2000);" unless Rails.env.production? %>
+    table.processing(false);
   });
 }
 
