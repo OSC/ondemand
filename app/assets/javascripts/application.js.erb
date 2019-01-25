@@ -27,7 +27,7 @@ $(document).ready( function() {
 
     $("#" + filter_id).addClass("active");
     var table = $('#job_status_table').DataTable({
-        ajax: APP_PATH + '/json?' + get_request_params(),    // 'pages#json'
+        ajax: APP_PATH + '/jobs.json?' + get_request_params(),    // 'jobs#json'
         "sAjaxDataProp": function(response){
           if(response.errors.length > 0) {
               show_errors(response.errors);

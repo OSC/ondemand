@@ -1,25 +1,40 @@
-class PagesController < ApplicationController
+class JobsController < ApplicationController
   include ApplicationHelper
 
   def index
     @jobfilter = get_filter
     @jobcluster = get_cluster
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.json {
+        JobsJsonRequestHandler.new(
+          filter_id: @jobfilter,
+          cluster_id: @jobcluster,
+          controller: self,
+          params: params,
+          response: response
+        ).render
+      }
+    end
   end
 
-  # Used to send the data to the Datatable.
   def json
-    if params[:pbsid].nil?
-      render :json => get_jobs
-    else
-      #Only allow the configured servers to respond
-      if cluster = OODClusters[params[:cluster].to_s.to_sym]
-        render '/pages/extended_data', :locals => {:jobstatusdata => get_job(params[:pbsid], cluster) }
-      else
-        msg = "Request did not specify an available cluster. "
-        msg += "Available clusters are: #{OODClusters.map(&:id).join(',')} "
-        msg += "But specified cluster is: #{params[:cluster]}"
-        render :json => { name: params[:pbsid], error: msg }
-      end
+    respond_to do |format|
+      format.html { # show.html.erb
+        raise ActionController::RoutingError.new('Not Found')
+      }
+      format.json {
+        #Only allow the configured servers to respond
+        if cluster = OODClusters[params[:cluster].to_s.to_sym]
+          render '/jobs/extended_data', :locals => {:jobstatusdata => get_job(params[:pbsid], cluster) }
+        else
+          msg = "Request did not specify an available cluster. "
+          msg += "Available clusters are: #{OODClusters.map(&:id).join(',')} "
+          msg += "But specified cluster is: #{params[:cluster]}"
+          render :json => { name: params[:pbsid], error: msg }
+        end
+      }
     end
   end
 
@@ -86,50 +101,4 @@ class PagesController < ApplicationController
     end
   end
 
-  # Get a set of jobs defined by the filtering parameter.
-  def get_jobs
-    jobs = Array.new
-    errors = Array.new
-    jobfilter = get_filter
-    jobcluster = get_cluster
-
-    OODClusters.each do |cluster|
-
-      if jobcluster == 'all' || cluster == OODClusters[jobcluster]
-
-        b = cluster.job_adapter
-
-        begin
-          if jobfilter == 'user'
-            result = b.info_where_owner(OodSupport::User.new.name)
-          else
-            filter = Filter.list.find { |f| f.filter_id == jobfilter }
-            result = filter ? filter.apply(b.info_all) : b.info_all
-          end
-
-          # Only add the running jobs to the list and assign the host to the object.
-          #
-          # There is also curently a bug in the system where jobs with an empty array
-          # (ex. 6407991[].oak-batch.osc.edu) are not stattable, so we do a not-match
-          # for those jobs and don't display them.
-          result.each do |j|
-            if j.status.state != :completed && j.id !~ /\[\]/
-              jobs.push(Jobstatusdata.new(j, cluster))
-            end
-          end
-        rescue => e
-          msg = "#{cluster.metadata.title || cluster.id.to_s.titleize}: #{e.message}"
-          logger.error "#{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
-          errors << msg
-        end
-      end
-    end
-
-    # Sort jobs by username
-    jobs.sort_by! do |user|
-      user.username == OodSupport::User.new.name ? 0 : 1
-    end
-
-    { data: jobs, errors: errors }
-  end
 end
