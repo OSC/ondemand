@@ -22,7 +22,7 @@ class JobsController < ApplicationController
   def json
     respond_to do |format|
       format.html { # show.html.erb
-        raise "html"
+        raise ActionController::RoutingError.new('Not Found')
       }
       format.json {
         #Only allow the configured servers to respond
