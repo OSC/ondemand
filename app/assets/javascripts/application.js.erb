@@ -34,17 +34,13 @@ function report_performance(){
 }
 <% end %>
 
-
 function fetch_table_data(table){
-  //console.log(performance.now() + ' - send ajax request to get job records')
   oboe({
     url: APP_PATH + '/jobs.json?'+get_request_params(),
     headers: {
       'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
       'X-Requested-With': 'XMLHttpRequest'
     }
-  }).start(function(){
-    // console.log(performance.now() + ' - received initial response for jobs');
   }).node('data.*', function(jobs){
     table.rows.add(jobs).draw();
   }).node('error.*', function(errors){
@@ -170,7 +166,6 @@ $(document).ready( function() {
     }).on( 'error.dt', function ( e, settings, techNote, message ) {
         // Event is fired when there's an error loading or parsing the datatable.
         show_errors(['There was an error getting data from the remote server.']);
-        console.log('Datatables error: ' + message);
     } );
 
     // Override the Datatables default error message functionality
