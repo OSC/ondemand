@@ -2,5 +2,5 @@
 name: Active Jobs
 category: Jobs
 description: |-
-  View jobs currently running on OSC clusters.
+  View jobs currently running on available clusters configured for OnDemand.
 icon: fa://clock-o
