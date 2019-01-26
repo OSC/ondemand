@@ -1,6 +1,9 @@
 class JobsJsonRequestHandler
   attr_reader :controller, :params, :response, :filter_id, :cluster_id
 
+  # additional attrs to request when calling info_all
+  JOB_ATTRS = [:accounting_id, :job_name, :job_owner, :queue_name, :wallclock_time ]
+
   def initialize(filter_id:, cluster_id:, controller:, params:, response:)
     @filter_id = filter_id
     @cluster_id = cluster_id
@@ -23,9 +26,9 @@ class JobsJsonRequestHandler
 
   def job_info_enumerator(cluster)
     if filter.user?
-      cluster.job_adapter.info_where_owner_each(OodSupport::User.new.name)
+      cluster.job_adapter.info_where_owner_each(OodSupport::User.new.name, attrs: JOB_ATTRS)
     else
-      cluster.job_adapter.info_all_each
+      cluster.job_adapter.info_all_each(attrs: JOB_ATTRS)
     end
   end
 
