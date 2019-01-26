@@ -39,7 +39,7 @@ class JobsJsonRequestHandler
     clusters.each_with_index do |cluster|
       begin
         job_info_enumerator(cluster).each_slice(3000) do |jobs|
-          jobs = convert_info(filter.apply(jobs), cluster)
+          jobs = convert_info_filtered(filter.apply(jobs), cluster)
 
           response.stream.write "," if count > 0
           response.stream.write jobs.to_json
@@ -76,6 +76,16 @@ class JobsJsonRequestHandler
         extended_available: extended_available
       }
     }
+  end
+
+  # FIXME: remove when LSF and PBSPro are confirmed to handle job ids gracefuly
+  def convert_info_filtered(info_all, cluster)
+    if %w(lsf pbspro).include?(cluster.job_config[:adapter])
+      rx = Regexp.new(/\[/)
+      convert_info(info_all.reject {|job| rx.match?(job.id) }, cluster)
+    else
+      convert_info(info_all, cluster)
+    end
   end
 
   def status_for_job(job)
