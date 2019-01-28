@@ -73,6 +73,10 @@ class ConfigurationSingleton
     Pathname.new(root).expand_path
   end
 
+  def console_log_performance_report?
+    dataroot.join("debug").file? || rails_env != 'production'
+  end
+
   private
 
   # The environment
