@@ -99,24 +99,23 @@ performance_tracking_enabled = true;
 performance.mark('document ready - build table and make ajax request for jobs');
 <% end %>
 
-
-// FIXME: set options.base_uri
 var table = create_datatable({
   drawCallback: function(settings){
     // do a performance mark every time we draw the table (which happens when new records are downloaded)
     if(performance_tracking_enabled && settings.aoData.length > 0){
       performance.mark('draw records - ' + settings.aoData.length);
     }
-  }
+  },
+  base_uri: '<%= controller.relative_url_root %>'
 });
 
-// FIXME: set options.base_uri
 fetch_table_data(table, {
   doneCallback: function(){
     // generate report after done fetching records
     if(performance_tracking_enabled){
       setTimeout(report_performance, 2000);
     }
-  }
+  },
+  base_uri: '<%= controller.relative_url_root %>'
 });
 </script>
