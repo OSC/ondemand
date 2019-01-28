@@ -50,7 +50,7 @@
 #
 #proxy_user: 'apache'
 
-# Path to system-installed NGINX binary
+# Path to NGINX executable used by OnDemand
 #
 #nginx_bin: '/opt/ood/ondemand/root/usr/sbin/nginx'
 
@@ -62,16 +62,16 @@
 #  - 'reopen'
 #  - 'reload'
 
-# Path to system-installed NGINX 'mime.types' file
+# Path to NGINX 'mime.types' file used by OnDemand
 #
 #mime_types_path: '/opt/ood/ondemand/root/etc/nginx/mime.types'
 
-# Path to system-installed Passenger 'locations.ini' file.
+# Path to Passenger 'locations.ini' file used by OnDemand.
 #
 #passenger_root: '/opt/ood/ondemand/root/usr/share/ruby/vendor_ruby/phusion_passenger/locations.ini'
 #
 
-# Path to system-installed Ruby binary
+# Path to Ruby binary used by nginx_stage
 #
 #passenger_ruby: '/opt/ood/nginx_stage/bin/ruby'
 
