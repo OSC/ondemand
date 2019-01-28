@@ -158,8 +158,7 @@ class Workflow < ActiveRecord::Base
       script: staged_dir.join(staged_script_name),
       host: batch_host,
       account_string: account,
-      torque_helper: ResourceMgrAdapter.new(self),
-      job_array_request: job_array_request
+      torque_helper: ResourceMgrAdapter.new(self)
     )
   end
 
@@ -255,6 +254,14 @@ class Workflow < ActiveRecord::Base
         Rails.logger.error(msg)
       end
     end
+  end
+
+  def self.show_job_arrays?
+    OODClusters.any? { |cluster| cluster.job_adapter.supports_job_arrays? }
+  end
+
+  def self.not_all_clusters_support_job_arrays
+    OODClusters.any? { |cluster| ! cluster.job_adapter.supports_job_arrays? }
   end
 
   private
