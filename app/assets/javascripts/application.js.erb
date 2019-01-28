@@ -20,25 +20,13 @@
 //= require datatables_plugins/api/processing
 //= require_tree .
 
-// The app path without parameters
-var APP_PATH = window.location.pathname;
+function fetch_table_data(table, options){
+  if (!options) options = {};
+  if (!options.doneCallback) options.doneCallback = null;
+  if (!options.base_uri) options.base_uri = window.location.pathname;
 
-<% unless Rails.env.production? %>
-function report_performance(){
-  var marks = performance.getEntriesByType('mark');
-  marks.forEach(function(entry){
-    console.log(entry.startTime + "," + entry.name);
-  });
-
-  // hack but only one mark for document ready, and rest are draw times
-  console.log("version,documentReady,firstDraw,lastDraw");
-  console.log(`<%= `git describe --always --tags`.strip() %>,${marks[0].startTime},${marks[1].startTime},${marks.slice(-1)[0].startTime}`);
-}
-<% end %>
-
-function fetch_table_data(table){
   oboe({
-    url: APP_PATH + '/jobs.json?'+get_request_params(),
+    url: options.base_uri + '/jobs.json?'+get_request_params(),
     headers: {
       'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
       'X-Requested-With': 'XMLHttpRequest'
@@ -51,13 +39,18 @@ function fetch_table_data(table){
   }).node('error.*', function(errors){
     show_errors(errors);
   }).done(function(){
-    <%= "setTimeout(report_performance, 2000);" unless Rails.env.production? %>
     table.processing(false);
+
+    if(options.doneCallback){
+       options.doneCallback();
+    }
   });
 }
 
-$(document).ready( function() {
-    <%= "performance.mark('document ready - build table and make ajax request for jobs');" unless Rails.env.production? %>
+function create_datatable(options){
+    if (!options) options = {};
+    if (!options.drawCallback) options.drawCallback = null;
+    if (!options.base_uri) options.base_uri = window.location.pathname;
 
     $("#selected-filter-label").text($("#filter-id-"+filter_id).text());
     $("#selected-cluster-label").text($("#cluster-id-"+cluster_id).text());
@@ -87,13 +80,11 @@ $(document).ready( function() {
                                         }
                                     },
         processing: true,           // Add the "processing" while json is being downloaded.
-        <% unless Rails.env.production? %>
         drawCallback: function(settings){
-          if(settings.aoData.length > 0){
-            performance.mark('draw records - ' + settings.aoData.length);
+          if(options.drawCallback){
+            options.drawCallback(settings);
           }
         },
-        <% end %>
         columns: [
             {
                 "orderable":        false,
@@ -192,7 +183,7 @@ $(document).ready( function() {
             // Open this row
             row.child( format(row.data()) ).show();
             tr.addClass('shown');
-            $.getJSON(APP_PATH + '/json?pbsid='+row.data().pbsid+'&cluster='+row.data().cluster , function(data) {
+            $.getJSON(options.base_uri + '/json?pbsid='+row.data().pbsid+'&cluster='+row.data().cluster , function(data) {
                 // Add the data panel to the view
                 $( "div[data-jobid='"+row.data().pbsid+"']").hide().html(data.html).fadeIn(250);
                 // Update the status label in the parent row
@@ -210,8 +201,8 @@ $(document).ready( function() {
 
     table.columns.adjust().draw();
 
-    fetch_table_data(table);
-});
+    return table;
+}
 
 
 
