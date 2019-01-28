@@ -264,6 +264,14 @@ class Workflow < ActiveRecord::Base
     OODClusters.any? { |cluster| ! cluster.job_adapter.supports_job_arrays? }
   end
 
+  def self.clusters_not_supporting_job_arrays
+    OODClusters.select {
+      |cluster| cluster.job_adapter.supports_job_arrays?
+    }.map {
+      |cluster| "#{cluster.metadata.title || cluster.id.titleize} (#{cluster.job_config[:adapter].titleize})"
+    }
+  end
+
   private
 
     def stage_workflow
