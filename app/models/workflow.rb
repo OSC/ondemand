@@ -265,7 +265,7 @@ class Workflow < ActiveRecord::Base
   end
 
   def self.clusters_not_supporting_job_arrays
-    OODClusters.select {
+    OODClusters.reject {
       |cluster| cluster.job_adapter.supports_job_arrays?
     }.map {
       |cluster| "#{cluster.metadata.title || cluster.id.titleize} (#{cluster.job_config[:adapter].titleize})"
