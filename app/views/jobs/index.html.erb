@@ -83,7 +83,7 @@ function has_ganglia(host) {
 
 var performance_tracking_enabled = false;
 
-<% unless Rails.env.production? %>
+<% if Configuration.console_log_performance_report? %>
 function report_performance(){
   var marks = performance.getEntriesByType('mark');
   marks.forEach(function(entry){
