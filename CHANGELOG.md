@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [2.11.0] - 2019-01-29
+### Added
+- submit jobs using job array in job options (for supported adapters)
+
+### Fixed
+- handle job arrays submitted through app gracefully for Torque, Slurm, and SGE
+- removed unnused .env file
+
 ## [2.10.2] - 2019-01-11
 ### Fixed
 - Fixed crash due to bug in ood_core
@@ -162,7 +170,8 @@ All notable changes to this project will be documented in this file.
 - UI enhancements
 
 
-[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.10.2...HEAD
+[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.11.0...HEAD
+[2.11.0]: https://github.com/OSC/ood-myjobs/compare/v2.10.2...v2.11.0
 [2.10.2]: https://github.com/OSC/ood-myjobs/compare/v2.10.1...v2.10.2
 [2.10.1]: https://github.com/OSC/ood-myjobs/compare/v2.10.0...v2.10.1
 [2.10.0]: https://github.com/OSC/ood-myjobs/compare/v2.9.3...v2.10.0
