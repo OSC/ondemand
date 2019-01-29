@@ -5,6 +5,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.7.0] - 2019-01-29
+### Changed
+- xhr response is now "streamed" and handled using oboe.js to progressively
+  update the view, so when viewing all jobs from all clusters you see jobs from
+  one cluster at a time instead of waiting for them all to be transferred
+- no longer filter out array jobs for Torque, Slurm and SGE since these are now
+  supported
+- no longer pre-sort jobs so user's jobs appear first when loading all jobs
+- use more Rails conventional url for getting all jobs (index.json)
+
+### Fixed
+- removed stray .env file
+- ensure base uri for xhr requests are always correct
+
 ## [1.6.9] - 2019-01-11
 ### Changed
 - Updating ood_core gem
@@ -117,7 +131,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove OSC copyright from footer
 - Remove deprecation warnings
 
-[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.6.9...HEAD
+[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.7.0...HEAD
+[1.7.0]: https://github.com/OSC/ood-activejobs/compare/v1.6.9...v1.7.0
 [1.6.9]: https://github.com/OSC/ood-activejobs/compare/v1.6.8...v1.6.9
 [1.6.8]: https://github.com/OSC/ood-activejobs/compare/v1.6.7...v1.6.8
 [1.6.7]: https://github.com/OSC/ood-activejobs/compare/v1.6.6...v1.6.7
