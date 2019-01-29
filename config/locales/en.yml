@@ -20,4 +20,8 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  tagline: "OnDemand provides an integrated, single access point for all of your HPC resources."
+  motd_title: "Message of the Day"
+  ondemand: "ood"
+pirate:
+  hi: "ahoy"

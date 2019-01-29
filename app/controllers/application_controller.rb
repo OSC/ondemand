@@ -4,6 +4,12 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   before_filter :set_user, :set_nav_groups, :set_announcements
+  
+  before_action :set_locale
+  
+  def set_locale
+    I18n.locale = ::Configuration.locale
+  end
 
   def set_user
     @user = User.new

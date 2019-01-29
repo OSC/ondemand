@@ -25,7 +25,7 @@ class ConfigurationSingleton
   # FIXME: temporary
   attr_accessor :app_sharing_facls_enabled
   alias_method :app_sharing_facls_enabled?, :app_sharing_facls_enabled
-
+  
   # The app's configuration root directory
   # @return [Pathname] path to configuration root
   def config_root
@@ -144,6 +144,18 @@ class ConfigurationSingleton
     end
 
     Pathname.new(root).expand_path
+  end
+  
+  def locale
+    if l = ENV['OOD_LOCALE']
+      l.to_sym
+    else
+      I18n.default_locale
+    end
+  end
+  
+  def locales_root
+    Pathname.new(ENV['OOD_LOCALES_ROOT'] || "/etc/ood/config/locales/")
   end
 
   private
