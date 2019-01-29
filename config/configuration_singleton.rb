@@ -26,6 +26,23 @@ class ConfigurationSingleton
   attr_accessor :app_sharing_facls_enabled
   alias_method :app_sharing_facls_enabled?, :app_sharing_facls_enabled
 
+  # @return [String] memoized version string
+  def version
+    @version ||= (version_from_file || version_from_git || "No version string available").strip
+  end
+
+  # @return [String, nil] version string from git describe, or nil if not git repo
+  def version_from_git
+    version = `git describe --always --tags`
+    version.blank? ? nil : version
+  end
+
+  # @return [String, nil] version string from VERSION file, or nil if no file avail
+  def version_from_file
+    file = Rails.root.join("VERSION")
+    file.read if file.file?
+  end
+
   # The app's configuration root directory
   # @return [Pathname] path to configuration root
   def config_root
