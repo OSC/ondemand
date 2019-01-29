@@ -47,6 +47,34 @@ function fetch_table_data(table, options){
   });
 }
 
+function status_label(status){
+  var label = "Undetermined", labelclass = "label-default";
+
+  if(status == "completed"){
+    label = "Completed";
+    labelclass = "label-success";
+  }
+
+  if(status == "running"){
+    label = "Running";
+    labelclass = "label-primary";
+  }
+  if(status == "queued"){
+    label = "Queued";
+    labelclass = "label-info";
+  }
+  if(status == "queued_held"){
+    label = "Hold";
+    labelclass = "label-warning";
+  }
+  if(status == "suspended"){
+    label = "Suspend";
+    labelclass = "label-warning";
+  }
+
+  return "<span class='label " + labelclass + "'>" + label + "</span></div>";
+}
+
 function create_datatable(options){
     if (!options) options = {};
     if (!options.drawCallback) options.drawCallback = null;
@@ -152,7 +180,11 @@ function create_datatable(options){
             {
                 data:               "status",
                 className:          "small status-label",
-                "autoWidth":        true
+                "autoWidth":        true,
+                "render":           function(data) {
+                    return status_label(data);
+                    //return "<span style='color: red' title="+data+">"+data+"</span>";
+                }
             },
             {
                 data:               "cluster_title",
