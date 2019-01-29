@@ -1,5 +1,6 @@
 class JobsController < ApplicationController
   include ApplicationHelper
+  include ActionController::Live
 
   def index
     @jobfilter = get_filter

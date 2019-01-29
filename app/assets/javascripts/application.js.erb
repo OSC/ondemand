@@ -16,24 +16,75 @@
 //= require dataTables/jquery.dataTables
 //= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
 //= require lightbox2/javascripts/lightbox
+//= require oboe/oboe-browser.min
+//= require datatables_plugins/api/processing
 //= require_tree .
 
-// The app path without parameters
-var APP_PATH = window.location.pathname;
+function fetch_table_data(table, options){
+  if (!options) options = {};
+  if (!options.doneCallback) options.doneCallback = null;
+  if (!options.base_uri) options.base_uri = window.location.pathname;
 
-$(document).ready( function() {
+  oboe({
+    url: options.base_uri + '/jobs.json?'+get_request_params(),
+    headers: {
+      'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
+      'X-Requested-With': 'XMLHttpRequest'
+    }
+  }).start(function(){
+    table.processing(true);
+  }).node('data.*', function(jobs){
+    table.rows.add(jobs).draw();
+    table.processing(false);
+  }).node('error.*', function(errors){
+    show_errors(errors);
+  }).done(function(){
+    table.processing(false);
+
+    if(options.doneCallback){
+       options.doneCallback();
+    }
+  });
+}
+
+function status_label(status){
+  var label = "Undetermined", labelclass = "label-default";
+
+  if(status == "completed"){
+    label = "Completed";
+    labelclass = "label-success";
+  }
+
+  if(status == "running"){
+    label = "Running";
+    labelclass = "label-primary";
+  }
+  if(status == "queued"){
+    label = "Queued";
+    labelclass = "label-info";
+  }
+  if(status == "queued_held"){
+    label = "Hold";
+    labelclass = "label-warning";
+  }
+  if(status == "suspended"){
+    label = "Suspend";
+    labelclass = "label-warning";
+  }
+
+  return "<span class='label " + labelclass + "'>" + label + "</span></div>";
+}
+
+function create_datatable(options){
+    if (!options) options = {};
+    if (!options.drawCallback) options.drawCallback = null;
+    if (!options.base_uri) options.base_uri = window.location.pathname;
+
     $("#selected-filter-label").text($("#filter-id-"+filter_id).text());
     $("#selected-cluster-label").text($("#cluster-id-"+cluster_id).text());
 
     $("#" + filter_id).addClass("active");
     var table = $('#job_status_table').DataTable({
-        ajax: APP_PATH + '/jobs.json?' + get_request_params(),    // 'jobs#json'
-        "sAjaxDataProp": function(response){
-          if(response.errors.length > 0) {
-              show_errors(response.errors);
-          }
-          return response.data;
-        },
         autoWidth: true,            // Automatically calculate column width
         "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ], // Manually set size of particular columns
         "bStateSave": true,         // Save user selected table state
@@ -57,6 +108,11 @@ $(document).ready( function() {
                                         }
                                     },
         processing: true,           // Add the "processing" while json is being downloaded.
+        drawCallback: function(settings){
+          if(options.drawCallback){
+            options.drawCallback(settings);
+          }
+        },
         columns: [
             {
                 "orderable":        false,
@@ -124,7 +180,11 @@ $(document).ready( function() {
             {
                 data:               "status",
                 className:          "small status-label",
-                "autoWidth":        true
+                "autoWidth":        true,
+                "render":           function(data) {
+                    return status_label(data);
+                    //return "<span style='color: red' title="+data+">"+data+"</span>";
+                }
             },
             {
                 data:               "cluster_title",
@@ -135,7 +195,6 @@ $(document).ready( function() {
     }).on( 'error.dt', function ( e, settings, techNote, message ) {
         // Event is fired when there's an error loading or parsing the datatable.
         show_errors(['There was an error getting data from the remote server.']);
-        console.log('Datatables error: ' + message);
     } );
 
     // Override the Datatables default error message functionality
@@ -156,7 +215,7 @@ $(document).ready( function() {
             // Open this row
             row.child( format(row.data()) ).show();
             tr.addClass('shown');
-            $.getJSON(APP_PATH + '/json?pbsid='+row.data().pbsid+'&cluster='+row.data().cluster , function(data) {
+            $.getJSON(options.base_uri + '/json?pbsid='+row.data().pbsid+'&cluster='+row.data().cluster , function(data) {
                 // Add the data panel to the view
                 $( "div[data-jobid='"+row.data().pbsid+"']").hide().html(data.html).fadeIn(250);
                 // Update the status label in the parent row
@@ -173,7 +232,9 @@ $(document).ready( function() {
     });
 
     table.columns.adjust().draw();
-});
+
+    return table;
+}
 
 
 

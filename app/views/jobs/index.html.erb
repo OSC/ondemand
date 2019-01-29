@@ -51,33 +51,71 @@
 </div>
 
 <script>
-    var filter_id = <%= (@jobfilter ? "'#{@jobfilter}'" : "localStorage.getItem('jobfilter') || '#{Filter.default_id}'").html_safe %>;
-    var cluster_id = <%= (@jobcluster ? "'#{@jobcluster}'" : "localStorage.getItem('jobcluster') || 'all'").html_safe %>;
+var filter_id = <%= (@jobfilter ? "'#{@jobfilter}'" : "localStorage.getItem('jobfilter') || '#{Filter.default_id}'").html_safe %>;
+var cluster_id = <%= (@jobcluster ? "'#{@jobcluster}'" : "localStorage.getItem('jobcluster') || 'all'").html_safe %>;
 
-    function build_ganglia_link( host, start_seconds, report_type, node_num, size ) {
-        var ganglia_uri;
-        <% OODClusters.each do |c| %>
-        if (host == '<%= c.id.to_s %>') {
-            <% if c.custom_allow?(:ganglia) %>
-              <% ganglia_cluster = OodCluster::Servers::Ganglia.new(c.custom_config(:ganglia)) %>
-              var ganglia_base = '<%= ganglia_cluster.uri.to_s %>';
-              ganglia_uri = ganglia_base+'&z='+size+'&cs='+start_seconds+'&g='+report_type+'&h=<%= (ganglia_cluster.opt_query.fetch(:h, '') % {h: '\'+node_num+\''}).html_safe %>';
-            <% else %>
-              ganglia_uri = '<%= image_path('unavailable.png') %>';
-            <% end %>
-        }
+function build_ganglia_link( host, start_seconds, report_type, node_num, size ) {
+    var ganglia_uri;
+    <% OODClusters.each do |c| %>
+    if (host == '<%= c.id.to_s %>') {
+        <% if c.custom_allow?(:ganglia) %>
+          <% ganglia_cluster = OodCluster::Servers::Ganglia.new(c.custom_config(:ganglia)) %>
+          var ganglia_base = '<%= ganglia_cluster.uri.to_s %>';
+          ganglia_uri = ganglia_base+'&z='+size+'&cs='+start_seconds+'&g='+report_type+'&h=<%= (ganglia_cluster.opt_query.fetch(:h, '') % {h: '\'+node_num+\''}).html_safe %>';
+        <% else %>
+          ganglia_uri = '<%= image_path('unavailable.png') %>';
         <% end %>
-        return ganglia_uri;
     }
+    <% end %>
+    return ganglia_uri;
+}
 
-    function has_ganglia(host) {
-        <% OODClusters.each do |c| %>
-        if (host == '<%= c.id.to_s %>') {
-            <% if c.custom_allow?(:ganglia) %>
-                return true;
-            <% end %>
-        }
+function has_ganglia(host) {
+    <% OODClusters.each do |c| %>
+    if (host == '<%= c.id.to_s %>') {
+        <% if c.custom_allow?(:ganglia) %>
+            return true;
         <% end %>
-        return false;
     }
+    <% end %>
+    return false;
+}
+
+var performance_tracking_enabled = false;
+
+<% if Configuration.console_log_performance_report? %>
+function report_performance(){
+  var marks = performance.getEntriesByType('mark');
+  marks.forEach(function(entry){
+    console.log(entry.startTime + "," + entry.name);
+  });
+
+  // hack but only one mark for document ready, and rest are draw times
+  console.log("version,documentReady,firstDraw,lastDraw");
+  console.log(`<%= `git describe --always --tags`.strip() %>,${marks[0].startTime},${marks[1].startTime},${marks.slice(-1)[0].startTime}`);
+}
+
+performance_tracking_enabled = true;
+performance.mark('document ready - build table and make ajax request for jobs');
+<% end %>
+
+var table = create_datatable({
+  drawCallback: function(settings){
+    // do a performance mark every time we draw the table (which happens when new records are downloaded)
+    if(performance_tracking_enabled && settings.aoData.length > 0){
+      performance.mark('draw records - ' + settings.aoData.length);
+    }
+  },
+  base_uri: '<%= controller.relative_url_root %>'
+});
+
+fetch_table_data(table, {
+  doneCallback: function(){
+    // generate report after done fetching records
+    if(performance_tracking_enabled){
+      setTimeout(report_performance, 2000);
+    }
+  },
+  base_uri: '<%= controller.relative_url_root %>'
+});
 </script>

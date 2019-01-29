@@ -1,6 +1,9 @@
 class JobsJsonRequestHandler
   attr_reader :controller, :params, :response, :filter_id, :cluster_id
 
+  # additional attrs to request when calling info_all
+  JOB_ATTRS = [:accounting_id, :job_name, :job_owner, :queue_name, :wallclock_time ]
+
   def initialize(filter_id:, cluster_id:, controller:, params:, response:)
     @filter_id = filter_id
     @cluster_id = cluster_id
@@ -21,32 +24,31 @@ class JobsJsonRequestHandler
     end
   end
 
-  def render
-    controller.render :json => get_jobs
+  def job_info_enumerator(cluster)
+    if filter.user?
+      cluster.job_adapter.info_where_owner_each(OodSupport::User.new.name, attrs: JOB_ATTRS)
+    else
+      cluster.job_adapter.info_all_each(attrs: JOB_ATTRS)
+    end
   end
 
-  # Get a set of jobs defined by the filtering parameter.
-  def get_jobs
-    jobs = Array.new
-    errors = Array.new
+  def render
+    response.content_type = Mime[:json]
 
-    clusters.each do |cluster|
+    errors = []
+    count = 0
+    response.stream.write '{"data":[' # data is now an array of arrays']}'
+
+    clusters.each_with_index do |cluster|
       begin
-        if filter.user?
-          result = cluster.job_adapter.info_where_owner(OodSupport::User.new.name)
-        else
-          result = filter.apply(cluster.job_adapter.info_all)
-        end
+        job_info_enumerator(cluster).each_slice(3000) do |jobs|
+          jobs = convert_info_filtered(filter.apply(jobs), cluster)
 
-        # Only add the running jobs to the list and assign the host to the object.
-        #
-        # There is also curently a bug in the system where jobs with an empty array
-        # (ex. 6407991[].oak-batch.osc.edu) are not stattable, so we do a not-match
-        # for those jobs and don't display them.
-        result.each do |j|
-          if j.status.state != :completed && j.id !~ /\[\]/
-            jobs.push(Jobstatusdata.new(j, cluster))
-          end
+          response.stream.write "," if count > 0
+          response.stream.write jobs.to_json
+
+          controller.logger.debug "wrote jobs to stream: #{jobs.count}"
+          count += 1;
         end
       rescue => e
         msg = "#{cluster.metadata.title || cluster.id.to_s.titleize}: #{e.message}"
@@ -55,11 +57,37 @@ class JobsJsonRequestHandler
       end
     end
 
-    # Sort jobs by username
-    jobs.sort_by! do |user|
-      user.username == OodSupport::User.new.name ? 0 : 1
-    end
+    response.stream.write '], "errors":' + errors.to_json + '}'
+  ensure
+    response.stream.close
+  end
 
-    { data: jobs, errors: errors }
+  def convert_info(info_all, cluster)
+    extended_available = %w(torque slurm lsf pbspro).include?(cluster.job_config[:adapter])
+
+    info_all.map { |j|
+      {
+        cluster_title: cluster.metadata.title || cluster.id.to_s.titleize,
+        status: j.status.state.to_s,
+        cluster: cluster.id.to_s,
+        pbsid: j.id,
+        jobname: j.job_name,
+        account: j.accounting_id,
+        queue: j.queue_name,
+        walltime_used: j.wallclock_time,
+        username: j.job_owner,
+        extended_available: extended_available
+      }
+    }
+  end
+
+  # FIXME: remove when LSF and PBSPro are confirmed to handle job ids gracefuly
+  def convert_info_filtered(info_all, cluster)
+    if %w(lsf pbspro).include?(cluster.job_config[:adapter])
+      rx = Regexp.new(/\[/)
+      convert_info(info_all.reject {|job| rx.match?(job.id) }, cluster)
+    else
+      convert_info(info_all, cluster)
+    end
   end
 end
