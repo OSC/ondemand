@@ -12,7 +12,6 @@ Rails.application.routes.draw do
   get "errors/internal_server_error"
   get "dashboard/index"
   get "logout" => "dashboard#logout"
-  get "translations" => "dashboard#translations"
 
   # analytics request appears in the access logs and google analytics
   get "analytics/:type" => proc { [204, {}, ['']] }, as: "analytics"
