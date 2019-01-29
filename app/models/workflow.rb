@@ -8,7 +8,7 @@ class Workflow < ActiveRecord::Base
   # add accessors: [ :attr1, :attr2 ] etc. when you want to add getters and
   # setters to add new attributes stored in the JSON store
   # don't remove attributes from this list going forward! only deprecate
-  store :job_attrs, coder: JSON, accessors: [:account]
+  store :job_attrs, coder: JSON, accessors: [:account, :job_array_request]
 
   attr_accessor :staging_template_dir
 
@@ -158,7 +158,7 @@ class Workflow < ActiveRecord::Base
       script: staged_dir.join(staged_script_name),
       host: batch_host,
       account_string: account,
-      torque_helper: ResourceMgrAdapter.new
+      torque_helper: ResourceMgrAdapter.new(self)
     )
   end
 
@@ -254,6 +254,22 @@ class Workflow < ActiveRecord::Base
         Rails.logger.error(msg)
       end
     end
+  end
+
+  def self.show_job_arrays?
+    OODClusters.any? { |cluster| cluster.job_adapter.supports_job_arrays? }
+  end
+
+  def self.not_all_clusters_support_job_arrays
+    OODClusters.any? { |cluster| ! cluster.job_adapter.supports_job_arrays? }
+  end
+
+  def self.clusters_not_supporting_job_arrays
+    OODClusters.reject {
+      |cluster| cluster.job_adapter.supports_job_arrays?
+    }.map {
+      |cluster| "#{cluster.metadata.title || cluster.id.titleize} (#{cluster.job_config[:adapter].titleize})"
+    }
   end
 
   private
