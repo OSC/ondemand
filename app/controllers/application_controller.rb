@@ -7,6 +7,8 @@ class ApplicationController < ActionController::Base
 
   def set_locale
     I18n.locale = ::Configuration.locale
+  rescue I18n::InvalidLocale => e
+    logger.warn "I18n::InvalidLocale #{::Configuration.locale}: #{e.message}"
   end
 
   def set_user
