@@ -26,7 +26,7 @@ class MotdFile
   #
   # @return [String] a string used as the MOTD title
   def title
-    ENV['MOTD_TITLE'] || I18n.t('motd_title')
+    ENV['MOTD_TITLE'] || I18n.t('dashboard.motd_title')
   end
 
   # A factory method that returns an MotdFormatter object
