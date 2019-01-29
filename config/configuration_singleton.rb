@@ -147,7 +147,7 @@ class ConfigurationSingleton
   end
 
   def locale
-    @locale ||= ENV['OOD_LOCALE'].try(:to_sym) || I18n.default_locale
+    (ENV['OOD_LOCALE'] || I18n.default_locale).to_sym
   end
 
   def locales_root
