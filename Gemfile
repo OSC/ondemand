@@ -47,7 +47,7 @@ gem 'rails_12factor', group: :production
 gem 'ood_cluster', '~> 0.0.1'
 gem 'ood_appkit', '~> 1.0'
 gem 'jquery-datatables-rails', '~> 3.3'
-gem 'ood_core', github: 'OSC/ood_core', branch: 'master'
+gem 'ood_core', '~> 0.8.0'
 
 # Security patches
 gem "rack", ">= 1.6.11"
