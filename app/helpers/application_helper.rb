@@ -65,4 +65,8 @@ module ApplicationHelper
     end
   end
 
+  def tm(*args, **kwargs)
+    s = t(*args, **kwargs)
+    s ? RenderInlineTextMarkdown.renderer.render(s).html_safe : s
+  end
 end
