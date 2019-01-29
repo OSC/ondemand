@@ -151,7 +151,7 @@ class ConfigurationSingleton
   end
 
   def locales_root
-    Pathname.new(ENV['OOD_LOCALES_ROOT'] || "/etc/ood/config/locales/")
+    Pathname.new(ENV['OOD_LOCALES_ROOT'] || "/etc/ood/config/locales")
   end
 
   private
