@@ -19,7 +19,7 @@
   </div><!-- /.col-md-2 -->
   <div class="col-md-6 col-sm-10 col-xs-12">
     <div class="btn-group-vertical">
-      <%- @product.app.links.each do |link| -%>
+      <%- @product.app.links_without_validation.each do |link| -%>
         <%=
           link_to(
             "Launch #{link.title}",

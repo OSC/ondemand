@@ -1,12 +1,5 @@
 <%= t('dashboard.welcome_html', logo_img_tag: Configuration.logo_img? ? logo_image_tag(Configuration.logo_img) : "") %>
 
-<%=
-  render(
-    partial: "shared/insufficient_quota",
-    locals: { quotas: @my_quotas }
-  )
-%>
-
 <br>
 
 <%# This assumes @motd_file responds to `to_partial_path` %>

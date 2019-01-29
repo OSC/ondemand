@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.30.3] - 2019-01-11
+### Fixed
+- ood_core updated with critical bug fix for SGE
+- fix displaying "invalid" interactive appp launch button in developer views
+  [#434](https://github.com/OSC/ood-dashboard/issues/434)
+
+## [1.30.2] - 2019-01-02
+### Fixed
+- Fixes for Quotas and improved tests
+
+## [1.30.1] - 2018-12-31
+### Fixed
+- Fixes a divide by zero error in the Quota model when a resource is not limited
+
+## [1.30.0] - 2018-12-26
+### Fixed
+- Update `ood_core` to latest version for Torque and SGE bug fixes
+- Shortened quota alert
+
+## [1.29.0] - 2018-12-19
+### Added
+- Added ability to include JavaScript files to the form
+- Added experimental Grid Engine support
+
+### Changed
+- Changed logout message to inform users that they need to close their browsers to ensure logout
+- Changed precision of time reporting of Batch Connect
+- Changed development application root to be defined by the environment variable `OOD_DEV_APPS_ROOT`
+
 ## [1.28.0] - 2018-11-30
 ### Added
 - Added whitelist mode to manage categories in the navbar.
@@ -425,7 +454,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.28.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.30.3...HEAD
+[1.30.3]: https://github.com/OSC/ood-dashboard/compare/v1.30.2...v1.30.3
+[1.30.2]: https://github.com/OSC/ood-dashboard/compare/v1.30.1...v1.30.2
+[1.30.1]: https://github.com/OSC/ood-dashboard/compare/v1.30.0...v1.30.1
+[1.30.0]: https://github.com/OSC/ood-dashboard/compare/v1.29.0...v1.30.0
+[1.29.0]: https://github.com/OSC/ood-dashboard/compare/v1.28.0...v1.29.0
 [1.28.0]: https://github.com/OSC/ood-dashboard/compare/v1.27.1...v1.28.0
 [1.27.2]: https://github.com/OSC/ood-dashboard/compare/v1.27.1...v1.27.2
 [1.27.1]: https://github.com/OSC/ood-dashboard/compare/v1.27.0...v1.27.1

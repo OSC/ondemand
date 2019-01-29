@@ -114,16 +114,7 @@ class OodApp
         end.sort_by { |lnk| lnk.title }
       end
     elsif role == "batch_connect"
-      batch_connect.sub_app_list.select(&:valid?).map do |sub_app|
-        OodAppLink.new(
-          title: sub_app.title,
-          description: sub_app.description,
-          url: new_batch_connect_session_context_path(token: sub_app.token),
-          icon_uri: icon_uri,
-          caption: caption,
-          new_tab: false
-        )
-      end
+      batch_connect.sub_app_list.select(&:valid?).map(&:link)
     else
       [
         OodAppLink.new(
@@ -135,6 +126,17 @@ class OodApp
           new_tab: true
         )
       ]
+    end
+  end
+
+  def links_without_validation
+    # hack - but at least this hack is in a method next to the method it is
+    # coupled with and this prevents control coupling from the outside by doing
+    # something atrocious like links(validate: false)
+    if role == "batch_connect"
+      batch_connect.sub_app_list.map(&:link)
+    else
+      links
     end
   end
 

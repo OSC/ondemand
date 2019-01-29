@@ -102,6 +102,18 @@ module BatchConnect
       ood_app.manifest.description
     end
 
+    def link
+      OodAppLink.new(
+        # FIXME: better to use default_title and "" description
+        title: title,
+        description: description,
+        url: Rails.application.routes.url_helpers.new_batch_connect_session_context_path(token: token),
+        icon_uri: ood_app.icon_uri,
+        caption: ood_app.caption,
+        new_tab: false
+      )
+    end
+
     # Cluster id the batch connect app uses
     # @return [String, nil] cluster id used by app
     def cluster_id
@@ -173,6 +185,14 @@ module BatchConnect
     def session_view
       file = root.join("view.html.erb")
       file.read if file.file?
+    end
+
+    # Paths to custom javascript files
+    # @return [Pathname] paths to custom javascript files that exist
+    def custom_javascript_files
+      files = [root.join("form.js")]
+      files << sub_app_root.join("#{sub_app}.js")
+      files.select(&:file?)
     end
 
     # List of sub apps that are owned by the parent batch connect app

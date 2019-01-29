@@ -25,7 +25,7 @@
   </td>
   <td>
     <div class="btn-group-vertical btn-block">
-      <%- product.app.links.each do |link| -%>
+      <%- product.app.links_without_validation.each do |link| -%>
         <%=
           link_to(
             "Launch #{link.title}",
