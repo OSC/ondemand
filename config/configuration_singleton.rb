@@ -145,15 +145,11 @@ class ConfigurationSingleton
 
     Pathname.new(root).expand_path
   end
-  
+
   def locale
-    if l = ENV['OOD_LOCALE']
-      l.to_sym
-    else
-      I18n.default_locale
-    end
+    @locale ||= ENV['OOD_LOCALE'].try(:to_sym) || I18n.default_locale
   end
-  
+
   def locales_root
     Pathname.new(ENV['OOD_LOCALES_ROOT'] || "/etc/ood/config/locales/")
   end
