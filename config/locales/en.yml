@@ -21,5 +21,7 @@
 
 en:
   dashboard:
-    tagline: "OnDemand provides an integrated, single access point for all of your HPC resources."
+    welcome_html: |
+      %{logo_img_tag}
+      <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>
     motd_title: "Message of the Day"

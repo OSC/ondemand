@@ -1,8 +1,4 @@
-<% if Configuration.logo_img? %>
-  <%= logo_image_tag(Configuration.logo_img) %>
-<% end %>
-
-<p class="lead"><%= t('dashboard.tagline') %></p>
+<%= t('dashboard.welcome_html', logo_img_tag: Configuration.logo_img? ? logo_image_tag(Configuration.logo_img) : "") %>
 
 <%=
   render(
