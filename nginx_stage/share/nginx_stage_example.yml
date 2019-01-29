@@ -91,7 +91,7 @@
 
 # Root location of per-user NGINX tmp dirs
 #
-#pun_tmp_root: '/var/lib/ondemand-nginx/tmp/%{user}'
+#pun_tmp_root: '/var/tmp/ondemand-nginx/%{user}'
 
 # Path to the per-user NGINX access log
 #
