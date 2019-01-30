@@ -2,7 +2,7 @@
   {
     "name": "dashboard",
     "url": "https://github.com/OSC/ood-dashboard",
-    "tag": "v1.30.3",
+    "tag": "v1.31.0",
     "app": true
   },
   {
@@ -26,13 +26,13 @@
   {
     "name": "activejobs",
     "url": "https://github.com/OSC/ood-activejobs",
-    "tag": "v1.6.9",
+    "tag": "v1.7.0",
     "app": true
   },
   {
     "name": "myjobs",
     "url": "https://github.com/OSC/ood-myjobs",
-    "tag": "v2.10.2",
+    "tag": "v2.11.0",
     "app": true
   },
   {

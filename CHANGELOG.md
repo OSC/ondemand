@@ -6,6 +6,28 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.5.0] - 2019-01-30
+### Added
+- Dasboard
+  - version string to footer
+  - add support for localization of home page welcome text and motd title with added setup to be able to add support for more localization options in the future
+  - the home page html (both logo and text) can now be customized using a single html formatted string in /etc/ood/config/locales/en.yml with the welcome_html key
+- JobComposer
+  - submit jobs using job array in job options (for supported adapters)
+
+### Fixed
+- ActiveJobs
+  - ensure base URI for XHR requests are always correct
+- Job Composer
+  - handle job arrays submitted through app gracefully for Torque, Slurm, and SGE
+
+### Changed
+- ActiveJobs
+  - XHR response is now "streamed" and handled using oboe.js to progressively update the view, so when viewing all jobs from all clusters you see jobs from one cluster at a time instead of waiting for them all to be transferred
+  - no longer filter out array jobs for Torque, Slurm and SGE since these are now supported
+  - no longer pre-sort jobs so user's jobs appear first when loading all jobs
+  - use more Rails conventional url for getting all jobs (index.json)
+
 ## [1.4.10] - 2019-01-11
 ### Fixed
 - Fixed error in ood_core that caused crashes in MyJobs with a SGE cluster
@@ -72,7 +94,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.4.10...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/OSC/ondemand/compare/v1.4.10...v1.5.0
 [1.4.10]: https://github.com/OSC/ondemand/compare/v1.4.9...v1.4.10
 [1.4.9]: https://github.com/OSC/ondemand/compare/v1.4.8...v1.4.9
 [1.4.8]: https://github.com/OSC/ondemand/compare/v1.4.7...v1.4.8
