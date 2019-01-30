@@ -112,7 +112,7 @@ GEM
       ood_core (~> 0.1)
       rails (~> 4.0, >= 4.0.7)
       redcarpet (~> 3.2)
-    ood_core (0.7.1)
+    ood_core (0.8.0)
       ffi (~> 1.9, >= 1.9.6)
       ood_support (~> 0.0.2)
     ood_support (0.0.3)
