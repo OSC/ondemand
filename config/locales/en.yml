@@ -20,4 +20,8 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  dashboard:
+    welcome_html: |
+      %{logo_img_tag}
+      <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>
+    motd_title: "Message of the Day"
