@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 SCL_SOURCE=$(command -v scl_source)
-[[ "${SCL_SOURCE}" ]] && source "${SCL_SOURCE}" enable rh-ruby24 &> /dev/null
+[[ "${SCL_SOURCE}" ]] && source "${SCL_SOURCE}" enable ondemand &> /dev/null
 
 ROOT_DIR="$(dirname "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")"
 

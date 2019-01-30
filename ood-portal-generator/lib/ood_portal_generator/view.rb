@@ -56,7 +56,7 @@ module OodPortalGenerator
       # Per-user NGINX sub-uri
       @nginx_uri       = opts.fetch(:nginx_uri, "/nginx")
       @pun_uri         = opts.fetch(:pun_uri, "/pun")
-      @pun_socket_root = opts.fetch(:pun_socket_root, "/var/run/nginx")
+      @pun_socket_root = opts.fetch(:pun_socket_root, "/var/run/ondemand-nginx")
       @pun_max_retries = opts.fetch(:pun_max_retries, 5)
 
       # OpenID Connect sub-uri

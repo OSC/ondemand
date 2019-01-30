@@ -128,10 +128,10 @@ module NginxStage
   # Arguments used during execution of nginx binary
   # @example Start the per-user NGINX for user Bob
   #   nginx_args(user: 'bob')
-  #   #=> ['-c', '/var/lib/nginx/config/puns/bob.conf']
+  #   #=> ['-c', '/var/lib/ondemand-nginx/config/puns/bob.conf']
   # @example Stop the per-user NGINX for user Bob
   #   nginx_args(user: 'bob', signal: :stop)
-  #   #=> ['-c', '/var/lib/nginx/config/puns/bob.conf', '-s', 'stop']
+  #   #=> ['-c', '/var/lib/ondemand-nginx/config/puns/bob.conf', '-s', 'stop']
   # @param user [String] the owner of the nginx process
   # @param signal [Symbol] the signal sent to the nginx process
   # @return [Array<String>] the shell arguments used to execute the nginx process

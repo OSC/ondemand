@@ -50,9 +50,9 @@
 #
 #proxy_user: 'apache'
 
-# Path to system-installed NGINX binary
+# Path to NGINX executable used by OnDemand
 #
-#nginx_bin: '/usr/sbin/nginx'
+#nginx_bin: '/opt/ood/ondemand/root/usr/sbin/nginx'
 
 # White-list of signals that can be sent to the NGINX process
 #
@@ -62,18 +62,16 @@
 #  - 'reopen'
 #  - 'reload'
 
-# Path to system-installed NGINX 'mime.types' file
+# Path to NGINX 'mime.types' file used by OnDemand
 #
-#mime_types_path: '/etc/nginx/mime.types'
+#mime_types_path: '/opt/ood/ondemand/root/etc/nginx/mime.types'
 
-# Path to system-installed Passenger 'locations.ini' file.
-# In CentOS6/RHEL6 it is /usr/lib/ruby/1.8/phusion_passenger/locations.ini
-# To determine for your system, run command: passenger-config about root
+# Path to Passenger 'locations.ini' file used by OnDemand.
 #
-#passenger_root: '/usr/share/ruby/vendor_ruby/phusion_passenger/locations.ini'
+#passenger_root: '/opt/ood/ondemand/root/usr/share/ruby/vendor_ruby/phusion_passenger/locations.ini'
 #
 
-# Path to system-installed Ruby binary
+# Path to Ruby binary used by nginx_stage
 #
 #passenger_ruby: '/opt/ood/nginx_stage/bin/ruby'
 
@@ -89,27 +87,27 @@
 
 # Root location of per-user NGINX configs
 #
-#pun_config_path: '/var/lib/nginx/config/puns/%{user}.conf'
+#pun_config_path: '/var/lib/ondemand-nginx/config/puns/%{user}.conf'
 
 # Root location of per-user NGINX tmp dirs
 #
-#pun_tmp_root: '/var/lib/nginx/tmp/%{user}'
+#pun_tmp_root: '/var/tmp/ondemand-nginx/%{user}'
 
 # Path to the per-user NGINX access log
 #
-#pun_access_log_path: '/var/log/nginx/%{user}/access.log'
+#pun_access_log_path: '/var/log/ondemand-nginx/%{user}/access.log'
 
 # Path to the per-user NGINX error log
 #
-#pun_error_log_path: '/var/log/nginx/%{user}/error.log'
+#pun_error_log_path: '/var/log/ondemand-nginx/%{user}/error.log'
 
 # Path to the per-user NGINX pid file
 #
-#pun_pid_path: '/var/run/nginx/%{user}/passenger.pid'
+#pun_pid_path: '/var/run/ondemand-nginx/%{user}/passenger.pid'
 
 # Path to the per-user NGINX socket file
 #
-#pun_socket_path: '/var/run/nginx/%{user}/passenger.sock'
+#pun_socket_path: '/var/run/ondemand-nginx/%{user}/passenger.sock'
 
 # Path to the local filesystem root where the per-user NGINX process serves
 # files from for the user making use of the sendfile feature in NGINX
@@ -138,9 +136,9 @@
 # A hash detailing the path to the per-user NGINX app configs
 #
 #app_config_path:
-#  dev: '/var/lib/nginx/config/apps/dev/%{owner}/%{name}.conf'
-#  usr: '/var/lib/nginx/config/apps/usr/%{owner}/%{name}.conf'
-#  sys: '/var/lib/nginx/config/apps/sys/%{name}.conf'
+#  dev: '/var/lib/ondemand-nginx/config/apps/dev/%{owner}/%{name}.conf'
+#  usr: '/var/lib/ondemand-nginx/config/apps/usr/%{owner}/%{name}.conf'
+#  sys: '/var/lib/ondemand-nginx/config/apps/sys/%{name}.conf'
 
 # A hash detailing the locations on the file system where apps reside for the
 # corresponding environment
