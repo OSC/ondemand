@@ -6,7 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-## [1.5.0] - 2019-01-30
+## [1.5.1] - 2019-01-30
+### Fixed
+- updated infrastructure components to point to new ondemand-nginx paths
+
+## [1.5.0] - 2019-01-30 [YANKED]
 ### Added
 - Dasboard
   - version string to footer
@@ -94,7 +98,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.5.0...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.5.1...HEAD
+[1.5.1]: https://github.com/OSC/ondemand/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/OSC/ondemand/compare/v1.4.10...v1.5.0
 [1.4.10]: https://github.com/OSC/ondemand/compare/v1.4.9...v1.4.10
 [1.4.9]: https://github.com/OSC/ondemand/compare/v1.4.8...v1.4.9
