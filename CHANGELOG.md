@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.31.0] - 2019-01-30
+### Added
+- version string to footer
+- add support for localization of home page welcome text and motd title with
+  added setup to be able to add support for more localization options in the
+  future
+- the home page html (both logo and text) can now be customized using a single
+  html formatted string in /etc/ood/config/locales/en.yml with the `welcome_html`
+  key
+
 ## [1.30.3] - 2019-01-11
 ### Fixed
 - ood_core updated with critical bug fix for SGE
@@ -454,7 +464,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.30.3...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.31.0...HEAD
+[1.31.0]: https://github.com/OSC/ood-dashboard/compare/v1.30.3...v1.31.0
 [1.30.3]: https://github.com/OSC/ood-dashboard/compare/v1.30.2...v1.30.3
 [1.30.2]: https://github.com/OSC/ood-dashboard/compare/v1.30.1...v1.30.2
 [1.30.1]: https://github.com/OSC/ood-dashboard/compare/v1.30.0...v1.30.1

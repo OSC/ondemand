@@ -20,7 +20,7 @@ use a database.
     ```sh
     scl enable git29 -- git clone https://github.com/OSC/ood-dashboard.git dashboard
     cd dashboard
-    scl enable git29 -- git checkout tags/v1.30.0
+    scl enable git29 -- git checkout tags/v1.31.0
     ```
 
 2. Install the app for a production environment:
@@ -46,7 +46,7 @@ use a database.
     ```sh
     cd dashboard # cd to build directory
     scl enable git29 -- git fetch
-    scl enable git29 -- git checkout tags/v1.30.0
+    scl enable git29 -- git checkout tags/v1.31.0
     ```
 
 2. Update the app for a production environment:
