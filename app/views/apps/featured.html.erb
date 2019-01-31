@@ -7,11 +7,7 @@
     <br>Custom shared apps are available below.</p>
     <% end %>
     <%= render partial: "catalog_link" %>
-  </div>
-</div>
 
-<div class="row">
-  <div class="col-md-9">
     <%= render(partial: "group", collection: @groups) || "<strong>No custom shared apps available.</strong>".html_safe %>
   </div>
   <div class="col-md-3">
