@@ -3,10 +3,10 @@
     <i class="fas fa-question-circle"></i><span class="hidden-sm hidden-sm-nav"> Help</span><span class="caret"></span>
   </a>
   <ul class="dropdown-menu">
-    <%= nav_link("Contact Support", "question-circle", support_url, target: "_blank") %>
-    <%= nav_link("Online Documentation", "info-circle", docs_url, target: "_blank") %>
-    <%= nav_link("Change HPC Password", "key", passwd_url, target: "_blank") %>
-    <%= nav_link("Configure Two-Factor Authentication", "mobile-alt", configure_2fa_url, target: "_blank") %>
-    <%= nav_link("Restart Web Server", "sync", restart_url) %>
+    <%= nav_link(t('dashboard.nav.help.support'), "question-circle", support_url, target: "_blank") %>
+    <%= nav_link(t('dashboard.nav.help.docs'), "info-circle", docs_url, target: "_blank") %>
+    <%= nav_link(t('dashboard.nav.help.change_password'), "key", passwd_url, target: "_blank") %>
+    <%= nav_link(t('dashboard.nav.help.two_factor'), "mobile-alt", configure_2fa_url, target: "_blank") %>
+    <%= nav_link(t('dashboard.nav.restart_server'), "sync", restart_url) %>
   </ul>
 </li>

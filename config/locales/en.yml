@@ -25,3 +25,36 @@ en:
       %{logo_img_tag}
       <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>
     motd_title: "Message of the Day"
+    breadcrumbs:
+      home: "Home"
+      my_sessions: "My Interactive Sessions"
+    nav:
+      sessions: "My Interactive Sessions"
+      all_apps: "All Apps"
+      develop:
+        title: "Develop"
+        docs: "Developer Documentation"
+      help:
+        title: "Help"
+        change_password: "Change HPC Password"
+        support: "Contact Support"
+        docs: "Online Documentation"
+        two_factor: "Configure Two-Factor Authentication"
+      restart_server: "Restart Web Server"
+      user: "Logged in as %{username}"
+      logout: "Log Out"
+    bc:
+      no_sessions: "You have no active sessions."
+      no_apps: "There are no available Interactive Apps."
+      sandbox: " [Sandbox]"
+      sessions:
+        data: |
+          * The %{title} session data for this session can be accessed 
+          under the %{data_link_tag}.
+        staged_root: "staged root directory"
+      form:
+        launch: "Launch"
+        session_data: |
+          * All %{title} session data is generated and stored under 
+          the user's home directory in the corresponding %{data_link_tag}.
+        data_root: "data root directory"

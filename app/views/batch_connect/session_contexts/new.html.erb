@@ -2,10 +2,10 @@
 
 <ol class="breadcrumb">
   <li>
-    <%= link_to "Home", root_path %>
+    <%= link_to t('dashboard.breadcrumbs.home'), root_path %>
   </li>
   <li>
-    <%= link_to "My Interactive Sessions", batch_connect_sessions_path %>
+    <%= link_to t('dashboard.breadcrumbs.my_sessions'), batch_connect_sessions_path %>
   </li>
   <li class="active">
     <%= @app.title %>
@@ -20,15 +20,14 @@
     <%= session_save_errors @session.errors %>
 
     <p class="small">
-      * The <%= @app.title %> session data for this session can be accessed
-      under the
-      <%=
-        link_to(
-          "staged root directory",
-          OodAppkit.files.url(path: @session.staged_root).to_s,
-          target: "_blank"
-        )
-      %>.
+      <%= t('dashboard.bc.sessions.data',
+            title: @app.title,
+            data_link_tag: link_to(
+              t('dashboard.bc.sessions.staged_root'),
+              OodAppkit.files.url(path: @session.staged_root).to_s,
+              target: "_blank")
+            ).html_safe
+      %>
     </p>
   </div>
 <%- end -%>
@@ -57,17 +56,16 @@
         <%= render "form" %>
 
         <p class="small">
-          * All <%= @app.title %> session data is generated and stored under
-          the user's home directory in the corresponding
-          <%=
-            link_to(
-              "data root directory",
-              OodAppkit.files.url(
-                path: BatchConnect::Session.dataroot(@app.token)
-              ).to_s,
-              target: "_blank"
-            )
-          %>.
+          <%= t('dashboard.bc.form.session_data',
+                title: @app.title,
+                data_link_tag: link_to(
+                  t('dashboard.bc.form.data_root'),
+                  OodAppkit.files.url(
+                    path: BatchConnect::Session.dataroot(@app.token)
+                  ).to_s,
+                  target: "_blank")
+                ).html_safe
+          %>
         </p>
       <%- end -%>
     </div>

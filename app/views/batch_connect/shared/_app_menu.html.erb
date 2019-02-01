@@ -30,7 +30,7 @@
     render(
         partial: "batch_connect/shared/app_list",
         locals: {
-          title: "#{app_group.title} [Sandbox]",
+          title: "#{app_group.title}" + t('dashboard.bc.sandbox'),
           apps: app_group.apps,
           current_url: local_assigns[:current_url],
           style: "ood-burgundy"
