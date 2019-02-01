@@ -2,11 +2,34 @@
 
 ROOT="$(dirname "$(readlink -f "${0}")")"
 
+RPM=0
 CONFIG="${CONFIG:-/etc/ood/config/ood_portal.yml}"
 APACHE="${APACHE:-/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf}"
 BIN="${BIN:-${ROOT}/../bin/generate}"
 
 set -e
+
+usage () {
+    echo "Usage: update_ood_portal [-r|--rpm]"
+    echo "-r|--rpm      Execution performed during RPM install"
+}
+
+OPTS=`getopt -o rh --long rpm,help -n 'update_ood_portal' -- "$@"`
+if [[ $? -ne 0 ]]; then
+    echo "Failed parsing options"
+    usage
+    exit 1
+fi
+
+eval set -- "$OPTS"
+
+while true; do
+    case "$1" in
+        -h|--help) usage ; exit 0 ; shift ;;
+        -r|--rpm) RPM=1 ; shift ;;
+        *) break ;;
+    esac
+done
 
 echo "Generating Apache config using YAML config: '${CONFIG}'"
 
@@ -19,9 +42,14 @@ if ! cmp -s <(echo "${NEW_APACHE}") "${APACHE}"; then
   fi
   echo "Generating new Apache config at: '${APACHE}'"
   echo "${NEW_APACHE}" > "${APACHE}"
+  ret=0
 else
   echo "No change in Apache config."
-  exit 1
+  ret=1
+fi
+
+if [ $RPM -eq 1 ]; then
+    exit $ret
 fi
 
 echo "Completed successfully!"
@@ -39,3 +67,5 @@ else
   echo "    sudo service httpd24-htcacheclean condrestart"
   echo ""
 fi
+
+exit $ret
