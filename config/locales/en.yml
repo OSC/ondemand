@@ -52,6 +52,102 @@ en:
           * The %{title} session data for this session can be accessed 
           under the %{data_link_tag}.
         staged_root: "staged root directory"
+        status:
+          bad: |
+            Your session has entered a bad state. Feel free to contact support for 
+            further information.
+          missing_connection: |
+            This app is missing information required to establish a connection. Please 
+            contact support if you see this message.
+          queued: |
+            Please be patient as your job currently sits in queue. The wait time depends 
+            on the number of cores as well as time requested.
+          starting: |
+            Your session is currently starting... Please be patient as this process can 
+            take a few minutes.
+        native:
+          windows:
+            instructions: |
+              <ol>
+                <li>
+                  Download the latest
+                  <a href="https://github.com/OSC/osc-connect/releases/latest" target="_blank">OSC Connect</a>
+                  if you don't already have it
+                </li>
+                <li>
+                  Launch <strong>OSC Connect</strong>
+                </li>
+                <li>
+                  Click - %{link_tag}
+                </li>
+              </ol>
+            support: |
+              <p>
+                <a href="https://www.osc.edu/resources/getting_started/howto/howto_connect_to_osc_services_using_osc_connect" target="_blank">Troubleshoot OSC Connect issues</a>
+              </p>
+          mac: |
+            <ol>
+              <li>Open a terminal window</li>
+              <li>
+                <p>
+                  Copy/paste in your terminal and replace <code>SSH_HOST</code> with a
+                  valid HPC login server to establish the SSH tunnel:
+                </p>
+                <pre><code>ssh -f -N -L %{localport}:%{host}:%{host_port} %{username}<strong>@SSH_HOST</strong></code></pre>
+              </li>
+              <li>
+                <p>Use the code below to establish the VNC connection:</p>
+                <pre>open vnc://:%{password}@localhost:%{localport}</pre>
+              </li>
+            </ol>
+          linux: |
+            <ol>
+              <li>Open a terminal window</li>
+              <li>
+                <p>
+                  Copy/paste in your terminal and replace <code>SSH_HOST</code> with a
+                  valid HPC login server to establish the SSH tunnel:
+                </p>
+                <pre><code>ssh -L %{localport}:%{host}:%{host_port} %{username}@<strong>SSH_HOST</strong></code></pre>
+              </li>
+              <li>
+                <p>
+                  Open a VNC client and connect to
+                  <code>localhost:%{localport}</code> within the client
+                </p>
+              </li>
+              <li>
+                <p>Use the VNC password: <code>%{password}</code></p>
+              </li>
+            </ol>
+          unsupported: |
+            We do not currently support documentation for connecting to a VNC session 
+            with a native client for your operating system.
+        novnc:
+          launch: "Launch noVNC in New Tab"
+          view_only: "View Only (Share-able Link)"
+        stats:
+          created_at: "Created at:"
+          time_remaining: "Time Remaining:"
+          time_used: "Time Used:"
+          time_requested: "Time Requested:"
+          host: "Host:"
+          undetermined_host: "Undetermined"
+          session_id: "Session ID:"
+          status:
+            starting: "Starting"
+            running: "Running"
+            queued: "Queued"
+            held: "Held"
+            suspended: "Suspended"
+            undetermined: "Undetermined"
+        delete:
+          title: "Delete"
+          hover: "Delete Session"
+          confirm: "Are you sure?"
+        errors:
+          submission: "Failed to submit session with the following error:"
+          staging: "Failed to stage the template with the following error:"
       form:
         launch: "Launch"
         session_data: |
