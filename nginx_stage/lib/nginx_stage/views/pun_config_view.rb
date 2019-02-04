@@ -109,7 +109,7 @@ module NginxStage
     # also declare in NGINX config using env directive
     # @return [Array<String>] list of env vars to declare in NGINX config
     def scl_env_declarations
-      %w(PATH LD_LIBRARY_PATH X_SCLS MANPATH PCP_DIR PERL5LIB PKG_CONFIG_PATH PYTHONPATH XDG_DATA_DIRS SCLS)
+      %w(PATH LD_LIBRARY_PATH X_SCLS MANPATH PCP_DIR PERL5LIB PKG_CONFIG_PATH PYTHONPATH XDG_DATA_DIRS SCLS RUBYLIB)
     end
 
     # View used to confirm whether the user wants to restart the PUN to reload
