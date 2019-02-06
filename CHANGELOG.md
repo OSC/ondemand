@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Always load the default profile in nginx_stage as we now use the new ondemand SCL
+- Include RUBYLIB in the env vars that are declared in the nginx config to be preserved
+
 ## [1.5.2] - 2019-01-31
 ### Added
 - RPM friendly execution mode of update_ood_portal script when
