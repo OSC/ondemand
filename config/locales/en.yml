@@ -150,7 +150,16 @@ en:
           staging: "Failed to stage the template with the following error:"
       form:
         launch: "Launch"
+        reset_resolution: "Reset Resolution"
         session_data: |
           * All %{title} session data is generated and stored under 
           the user's home directory in the corresponding %{data_link_tag}.
         data_root: "data root directory"
+    quota:
+      warning_header: "Quota limit warning for %{path_tag}"
+      reload_message: "Reload page to see updated quota. Quotas are updated every 5 minutes."
+      additional_message: "Consider deleting or archiving files to free up disk space."
+      file: "Using %{used} files of quota %{available} files"
+      file_shared: "(%{used_exclusive} files are yours)"
+      block: "Using %{used} of quota %{available}"
+      block_shared: "(%{used_exclusive} are yours)"
