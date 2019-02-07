@@ -31,3 +31,5 @@
 
 # do not version the bundled gems
 vendor/bundle
+._*
+.DS_Store

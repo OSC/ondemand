@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [2.12.0] - 2019-02-07
+### Changed
+- Disable eager loading to speed initial load of the application
+
 ## [2.11.0] - 2019-01-29
 ### Added
 - submit jobs using job array in job options (for supported adapters)
@@ -170,7 +174,8 @@ All notable changes to this project will be documented in this file.
 - UI enhancements
 
 
-[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.11.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.12.0...HEAD
+[2.12.0]: https://github.com/OSC/ood-myjobs/compare/v2.11.0...v2.12.0
 [2.11.0]: https://github.com/OSC/ood-myjobs/compare/v2.10.2...v2.11.0
 [2.10.2]: https://github.com/OSC/ood-myjobs/compare/v2.10.1...v2.10.2
 [2.10.1]: https://github.com/OSC/ood-myjobs/compare/v2.10.0...v2.10.1
