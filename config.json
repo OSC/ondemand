@@ -2,7 +2,7 @@
   {
     "name": "dashboard",
     "url": "https://github.com/OSC/ood-dashboard",
-    "tag": "v1.31.0",
+    "tag": "v1.32.0",
     "app": true
   },
   {
@@ -26,19 +26,19 @@
   {
     "name": "activejobs",
     "url": "https://github.com/OSC/ood-activejobs",
-    "tag": "v1.7.0",
+    "tag": "v1.8.0",
     "app": true
   },
   {
     "name": "myjobs",
     "url": "https://github.com/OSC/ood-myjobs",
-    "tag": "v2.11.0",
+    "tag": "v2.12.0",
     "app": true
   },
   {
     "name": "bc_desktop",
     "url": "https://github.com/OSC/bc_desktop",
-    "tag": "v0.2.0",
+    "tag": "v0.2.1",
     "app": true
   }
 ]
