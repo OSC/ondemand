@@ -2,7 +2,7 @@ class JobsJsonRequestHandler
   attr_reader :controller, :params, :response, :filter_id, :cluster_id
 
   # additional attrs to request when calling info_all
-  JOB_ATTRS = [:accounting_id, :job_name, :job_owner, :queue_name, :wallclock_time ]
+  JOB_ATTRS = [:accounting_id, :allocated_nodes, :job_name, :job_owner, :queue_name, :wallclock_time ]
 
   def initialize(filter_id:, cluster_id:, controller:, params:, response:)
     @filter_id = filter_id
@@ -76,7 +76,8 @@ class JobsJsonRequestHandler
         queue: j.queue_name,
         walltime_used: j.wallclock_time,
         username: j.job_owner,
-        extended_available: extended_available
+        extended_available: extended_available,
+        nodes: j.allocated_nodes.map{ |node| node.name }.reject(&:blank?)
       }
     }
   end
