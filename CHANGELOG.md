@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.8.0] - 2019-02-07
+### Changed
+- Disable eager loading to speed initial load of the application
+
 ## [1.7.0] - 2019-01-29
 ### Changed
 - xhr response is now "streamed" and handled using oboe.js to progressively
@@ -131,7 +135,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove OSC copyright from footer
 - Remove deprecation warnings
 
-[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.7.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.8.0...HEAD
+[1.8.0]: https://github.com/OSC/ood-activejobs/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/OSC/ood-activejobs/compare/v1.6.9...v1.7.0
 [1.6.9]: https://github.com/OSC/ood-activejobs/compare/v1.6.8...v1.6.9
 [1.6.8]: https://github.com/OSC/ood-activejobs/compare/v1.6.7...v1.6.8
