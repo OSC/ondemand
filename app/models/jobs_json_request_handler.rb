@@ -76,7 +76,8 @@ class JobsJsonRequestHandler
         queue: j.queue_name,
         walltime_used: j.wallclock_time,
         username: j.job_owner,
-        extended_available: extended_available
+        extended_available: extended_available,
+        nodes: j.allocated_nodes.map{ |node| node.name }.reject(&:blank?)
       }
     }
   end
