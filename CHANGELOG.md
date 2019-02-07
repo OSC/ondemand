@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.32.0] - 2019-02-07
+### Changed
+- Disable eager loading to speed initial load of the application
 
 ## [1.31.0] - 2019-01-30
 ### Added
@@ -464,7 +467,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.31.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.32.0...HEAD
+[1.32.0]: https://github.com/OSC/ood-dashboard/compare/v1.31.0...v1.32.0
 [1.31.0]: https://github.com/OSC/ood-dashboard/compare/v1.30.3...v1.31.0
 [1.30.3]: https://github.com/OSC/ood-dashboard/compare/v1.30.2...v1.30.3
 [1.30.2]: https://github.com/OSC/ood-dashboard/compare/v1.30.1...v1.30.2
