@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Disable eager loading to speed initial load of the application
 
+### Fixed
+- Replaced missing MoTD formatter
+
 ## [1.31.0] - 2019-01-30
 ### Added
 - version string to footer
