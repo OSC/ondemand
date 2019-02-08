@@ -3,12 +3,11 @@
     <%= render partial: 'shared/welcome' %>
 
     <% if @nav_groups.any? %>
-    <p class="lead">Cluster access applications are available from the dropdown menus in the navbar above.
-    <br>Custom shared apps are available below.</p>
+    <p class="lead"><%= t('dashboard.sharing.welcome_msg_tag').html_safe %></p>
     <% end %>
     <%= render partial: "catalog_link" %>
 
-    <%= render(partial: "group", collection: @groups) || "<strong>No custom shared apps available.</strong>".html_safe %>
+    <%= render(partial: "group", collection: @groups) || t('dashboard.sharing.no_shared_apps_tag').html_safe %>
   </div>
   <div class="col-md-3">
     <%# This assumes @motd_file responds to `to_partial_path` %>

@@ -1,10 +1,14 @@
 <p>
-<% if ENV['OOD_DASHBOARD_SUPPORT_URL'].present? %>
-If you don't see the app you are looking for, please
-<a href="<%= ENV['OOD_DASHBOARD_SUPPORT_URL'] %>">contact support</a>.
-<% end %>
+  <% if ENV['OOD_DASHBOARD_SUPPORT_URL'].present? %>
+  <%= t('dashboard.sharing.support_msg_tag', support_url: ENV['OOD_DASHBOARD_SUPPORT_URL']).html_safe %>
+  <% end %>
 
-<% if ENV['OOD_APP_CATALOG_URL'].present? %>
-<br>A subset of the apps available can be viewed on the <%= link_to 'App Catalog', ENV['OOD_APP_CATALOG_URL'] %>.
-<% end %>
+  <% if ENV['OOD_APP_CATALOG_URL'].present? %>
+  <%= t(  'dashboard.sharing.catalog_msg_tag',
+          catalog_link_tag: link_to(  t('dashboard.sharing.catalog_title'),
+                                      ENV['OOD_APP_CATALOG_URL']
+                                    )
+        ).html_safe
+  %>
+  <% end %>
 </p>

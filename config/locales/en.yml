@@ -28,6 +28,10 @@ en:
     breadcrumbs:
       home: "Home"
       my_sessions: "My Interactive Sessions"
+      all_apps: "All Apps"
+    restart_msg_tag: |
+      Your group membership has changed, which affects your access to apps. Your dashboard should restart automatically. 
+      If it doesn't please, click: <a href="%{restart_url}">restart web server</a>.
     nav:
       sessions: "My Interactive Sessions"
       all_apps: "All Apps"
@@ -163,3 +167,31 @@ en:
       file_shared: "(%{used_exclusive} files are yours)"
       block: "Using %{used} of quota %{available}"
       block_shared: "(%{used_exclusive} are yours)"
+    sharing:
+      welcome_msg_tag: |
+        Cluster access applications are available from the dropdown menus in the navbar above.
+        <br>Custom shared apps are available below.
+      no_shared_apps_tag: |
+        <strong>No custom shared apps available.</strong>
+      support_msg_tag: |
+        If you don't see the app you are looking for, please
+        <a href="%{support_url}">contact support</a>.
+      catalog_msg_tag: |
+        <br>A subset of the apps available can be viewed on the %{catalog_link_tag}.
+      catalog_title: "App Catalog"
+    apps:
+      system_apps_title: "System Apps"
+      setup_failure: |
+        <h2>A problem occurred while initializing your data for this app.</h2>
+        <p class="lead">
+          At your own risk you can still <a href="%{app_url}">open the app</a> 
+          or you can just go <a href="%{home_url}">back to the dashboard</a>
+        </p>
+        <p>
+          Share this with the developer of your app:
+          The setup production script is supposed to be idempotent and is run each time 
+          the user opens the app through the dashboard.</p>
+        <h4>Exception: %{exception_class}</h4>
+        <pre>%{exception_message}</pre>
+        <h4>Stack trace:</h4>
+        <pre>%{exception_trace}</pre>

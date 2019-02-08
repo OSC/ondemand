@@ -1,16 +1,16 @@
 <ol class="breadcrumb">
   <li>
-    <%= link_to "Home", root_path %>
+    <%= link_to t('dashboard.breadcrumbs.home'), root_path %>
   </li>
   <li class="active">
-    All Apps
+    <%= t('dashboard.breadcrumbs.all_apps') %>
   </li>
 </ol>
 
 <div class="row">
   <div class="col-md-3">
     <div class="panel panel-default">
-      <div class="panel-heading">System Apps</div>
+      <div class="panel-heading"><%= t('dashboard.apps.system_apps_title') %></div>
       <div class="panel-body">
         <%= render partial: "app_list", collection: @core_app_groups %>
       </div>
