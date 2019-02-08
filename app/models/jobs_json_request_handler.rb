@@ -84,11 +84,11 @@ class JobsJsonRequestHandler
 
   # FIXME: remove when LSF and PBSPro are confirmed to handle job ids gracefuly
   def convert_info_filtered(info_all, cluster)
-    if %w(lsf pbspro).include?(cluster.job_config[:adapter])
+    if cluster.job_adapter.supports_job_arrays?
+      convert_info(info_all, cluster)
+    else
       rx = Regexp.new(/\[/)
       convert_info(info_all.reject {|job| rx.match?(job.id) }, cluster)
-    else
-      convert_info(info_all, cluster)
     end
   end
 end
