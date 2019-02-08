@@ -145,6 +145,10 @@ en:
             held: "Held"
             suspended: "Suspended"
             undetermined: "Undetermined"
+        status_blurb:
+          create_success: "Session was successfully created."
+          delete_success: "Session was successfully deleted."
+          delete_failure: "Session failed to be deleted."
         delete:
           title: "Delete"
           hover: "Delete Session"
@@ -181,6 +185,7 @@ en:
       catalog_title: "App Catalog"
     apps:
       system_apps_title: "System Apps"
+      shared_apps_title: "Shared Apps"
       setup_failure: |
         <h2>A problem occurred while initializing your data for this app.</h2>
         <p class="lead">

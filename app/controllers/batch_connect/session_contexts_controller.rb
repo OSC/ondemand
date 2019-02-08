@@ -33,7 +33,7 @@ class BatchConnect::SessionContextsController < ApplicationController
     respond_to do |format|
       if @session.save(app: @app, context: @session_context, format: @render_format)
         cache_file.write(@session_context.to_json)  # save context to cache file
-        format.html { redirect_to batch_connect_sessions_url, notice: 'Session was successfully created.' }
+        format.html { redirect_to batch_connect_sessions_url, notice: t('dashboard.bc.sessions.status_blurb.create_success') }
         format.json { head :no_content }
       else
         format.html do
