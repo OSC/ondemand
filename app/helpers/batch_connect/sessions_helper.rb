@@ -105,17 +105,17 @@ module BatchConnect::SessionsHelper
 
   def status(session)
     if session.starting?
-      t('dashboard.bc.sessions.stats.status.starting')
+      "Starting"
     elsif session.running?
-      t('dashboard.bc.sessions.stats.status.running')
+      "Running"
     elsif session.queued?
-      t('dashboard.bc.sessions.stats.status.queued')
+      "Queued"
     elsif session.held?
-      t('dashboard.bc.sessions.stats.status.held')
+      "Held"
     elsif session.suspended?
-      t('dashboard.bc.sessions.stats.status.suspended')
+      "Suspended"
     else
-      t('dashboard.bc.sessions.stats.status.undetermined')
+      "Undetermined"
     end
   end
 

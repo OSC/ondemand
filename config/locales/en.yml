@@ -138,13 +138,6 @@ en:
           host: "Host:"
           undetermined_host: "Undetermined"
           session_id: "Session ID:"
-          status:
-            starting: "Starting"
-            running: "Running"
-            queued: "Queued"
-            held: "Held"
-            suspended: "Suspended"
-            undetermined: "Undetermined"
         status_blurb:
           create_success: "Session was successfully created."
           delete_success: "Session was successfully deleted."
