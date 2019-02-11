@@ -47,7 +47,7 @@ en:
       restart_server: "Restart Web Server"
       user: "Logged in as %{username}"
       logout: "Log Out"
-    bc:
+    batch_connect:
       no_sessions: "You have no active sessions."
       no_apps: "There are no available Interactive Apps."
       sandbox: " [Sandbox]"
