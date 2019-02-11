@@ -1,11 +1,11 @@
 <h4>
-  <%= t(  'dashboard.quota.warning_header',
+  <%= t(  'dashboard.quota.warning_header_html',
           path_tag: link_to(  "<strong>#{quota.path}</strong>".html_safe,
                               OodAppkit.files.url(path: quota.path).to_s,
                               class: "text-danger",
                               target: "_blank"
-                            ).html_safe
-        ).html_safe
+                            )
+        )
   %>
   <small class="pull-right hidden-xs hidden-sm">
     <%= t('dashboard.quota.reload_message') %>

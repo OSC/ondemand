@@ -20,13 +20,13 @@
     <%= session_save_errors @session.errors %>
 
     <p class="small">
-      <%= t('dashboard.batch_connect.sessions.data',
+      <%= t('dashboard.batch_connect.sessions.data_html',
             title: @app.title,
             data_link_tag: link_to(
               t('dashboard.batch_connect.sessions.staged_root'),
               OodAppkit.files.url(path: @session.staged_root).to_s,
               target: "_blank")
-            ).html_safe
+            )
       %>
     </p>
   </div>
@@ -56,7 +56,7 @@
         <%= render "form" %>
 
         <p class="small">
-          <%= t('dashboard.batch_connect.form.session_data',
+          <%= t('dashboard.batch_connect.form.session_data_html',
                 title: @app.title,
                 data_link_tag: link_to(
                   t('dashboard.batch_connect.form.data_root'),
@@ -64,7 +64,7 @@
                     path: BatchConnect::Session.dataroot(@app.token)
                   ).to_s,
                   target: "_blank")
-                ).html_safe
+                )
           %>
         </p>
       <%- end -%>

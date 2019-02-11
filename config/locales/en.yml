@@ -29,7 +29,7 @@ en:
       home: "Home"
       my_sessions: "My Interactive Sessions"
       all_apps: "All Apps"
-    restart_msg_tag: |
+    restart_msg_html: |
       Your group membership has changed, which affects your access to apps. Your dashboard should restart automatically. 
       If it doesn't please, click: <a href="%{restart_url}">restart web server</a>.
     nav:
@@ -52,7 +52,7 @@ en:
       no_apps: "There are no available Interactive Apps."
       sandbox: " [Sandbox]"
       sessions:
-        data: |
+        data_html: |
           * The %{title} session data for this session can be accessed 
           under the %{data_link_tag}.
         staged_root: "staged root directory"
@@ -94,12 +94,12 @@ en:
       form:
         launch: "Launch"
         reset_resolution: "Reset Resolution"
-        session_data: |
+        session_data_html: |
           * All %{title} session data is generated and stored under 
           the user's home directory in the corresponding %{data_link_tag}.
         data_root: "data root directory"
     quota:
-      warning_header: "Quota limit warning for %{path_tag}"
+      warning_header_html: "Quota limit warning for %{path_tag}"
       reload_message: "Reload page to see updated quota. Quotas are updated every 5 minutes."
       additional_message: "Consider deleting or archiving files to free up disk space."
       file: "Using %{used} files of quota %{available} files"
@@ -107,21 +107,21 @@ en:
       block: "Using %{used} of quota %{available}"
       block_shared: "(%{used_exclusive} are yours)"
     sharing:
-      welcome_msg_tag: |
+      welcome_msg_html: |
         Cluster access applications are available from the dropdown menus in the navbar above.
         <br>Custom shared apps are available below.
-      no_shared_apps_tag: |
+      no_shared_apps_html: |
         <strong>No custom shared apps available.</strong>
-      support_msg_tag: |
+      support_msg_html: |
         If you don't see the app you are looking for, please
         <a href="%{support_url}">contact support</a>.
-      catalog_msg_tag: |
+      catalog_msg_html: |
         <br>A subset of the apps available can be viewed on the %{catalog_link_tag}.
       catalog_title: "App Catalog"
     apps:
       system_apps_title: "System Apps"
       shared_apps_title: "Shared Apps"
-      setup_failure: |
+      setup_failure_html: |
         <h2>A problem occurred while initializing your data for this app.</h2>
         <p class="lead">
           At your own risk you can still <a href="%{app_url}">open the app</a> 

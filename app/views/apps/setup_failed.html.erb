@@ -1,8 +1,8 @@
-<%= t(  'dashboard.apps.setup_failure',
+<%= t(  'dashboard.apps.setup_failure_html',
         app_url: @app_url,
         home_url: root_path,
         exception_class: @exception.class,
         exception_message: @exception.message,
         exception_trace: @exception.backtrace.join("\n")
-      ).html_safe
+      )
 %>
