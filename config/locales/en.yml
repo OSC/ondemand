@@ -69,64 +69,6 @@ en:
           starting: |
             Your session is currently starting... Please be patient as this process can 
             take a few minutes.
-        native:
-          windows:
-            instructions: |
-              <ol>
-                <li>
-                  Download the latest
-                  <a href="https://github.com/OSC/osc-connect/releases/latest" target="_blank">OSC Connect</a>
-                  if you don't already have it
-                </li>
-                <li>
-                  Launch <strong>OSC Connect</strong>
-                </li>
-                <li>
-                  Click - %{link_tag}
-                </li>
-              </ol>
-            support: |
-              <p>
-                <a href="https://www.osc.edu/resources/getting_started/howto/howto_connect_to_osc_services_using_osc_connect" target="_blank">Troubleshoot OSC Connect issues</a>
-              </p>
-          mac: |
-            <ol>
-              <li>Open a terminal window</li>
-              <li>
-                <p>
-                  Copy/paste in your terminal and replace <code>SSH_HOST</code> with a
-                  valid HPC login server to establish the SSH tunnel:
-                </p>
-                <pre><code>ssh -f -N -L %{localport}:%{host}:%{host_port} %{username}<strong>@SSH_HOST</strong></code></pre>
-              </li>
-              <li>
-                <p>Use the code below to establish the VNC connection:</p>
-                <pre>open vnc://:%{password}@localhost:%{localport}</pre>
-              </li>
-            </ol>
-          linux: |
-            <ol>
-              <li>Open a terminal window</li>
-              <li>
-                <p>
-                  Copy/paste in your terminal and replace <code>SSH_HOST</code> with a
-                  valid HPC login server to establish the SSH tunnel:
-                </p>
-                <pre><code>ssh -L %{localport}:%{host}:%{host_port} %{username}@<strong>SSH_HOST</strong></code></pre>
-              </li>
-              <li>
-                <p>
-                  Open a VNC client and connect to
-                  <code>localhost:%{localport}</code> within the client
-                </p>
-              </li>
-              <li>
-                <p>Use the VNC password: <code>%{password}</code></p>
-              </li>
-            </ol>
-          unsupported: |
-            We do not currently support documentation for connecting to a VNC session 
-            with a native client for your operating system.
         novnc:
           launch: "Launch noVNC in New Tab"
           view_only: "View Only (Share-able Link)"
