@@ -57,6 +57,8 @@ class JobsJsonRequestHandler
       end
     end
 
+    errors << "No clusters found for cluster id: #{cluster_id}" if clusters.empty?
+
     response.stream.write '], "errors":' + errors.to_json + '}'
   ensure
     response.stream.close
