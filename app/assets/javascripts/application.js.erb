@@ -35,10 +35,14 @@ function fetch_table_data(table, options){
   }).start(function(){
     table.processing(true);
   }).node('data.*', function(jobs){
+    // data is an array of arrays, where each array has one or more jobs
+    // this is called once for each array of jobs
     table.rows.add(jobs).draw();
     table.processing(false);
-  }).node('error.*', function(errors){
-    show_errors(errors);
+  }).node('errors.*', function(error){
+    // errors is a single array of error messages
+    // this is called once for each error msg
+    show_errors([error]);
   }).done(function(){
     table.processing(false);
 
