@@ -49,6 +49,18 @@ function fetch_table_data(table, options){
     if(options.doneCallback){
        options.doneCallback();
     }
+  }).fail(function(errorReport){
+    if(errorReport.statusCode != null){
+      show_errors(["Request for jobs failed with status code: " + errorReport.statusCode]);
+    }
+    else{
+      //FIXME: this error appears even when the above 404 occurs, for example
+      // that is because a 404 responce for json request returns a plain text response
+      // and parsing that as json fails
+       show_errors(["Request for jobs failed due to body parsing error."])
+    }
+
+    table.processing(false);
   });
 }
 
