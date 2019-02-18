@@ -19,6 +19,8 @@ class JobsJsonRequestHandler
   def clusters
     if cluster_id == 'all'
       OODClusters
+    elsif cluster_id.nil? # FIXME: because of bug in ood_core https://github.com/OSC/ood_core/issues/129
+      []
     else
       OODClusters.select { |c| c == cluster_id}
     end
