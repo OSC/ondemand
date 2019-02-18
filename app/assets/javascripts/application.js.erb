@@ -29,7 +29,8 @@ function fetch_table_data(table, options){
     url: options.base_uri + '/jobs.json?'+get_request_params(),
     headers: {
       'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-      'X-Requested-With': 'XMLHttpRequest'
+      'X-Requested-With': 'XMLHttpRequest',
+      'Content-Type': 'application/json'
     }
   }).start(function(){
     table.processing(true);
