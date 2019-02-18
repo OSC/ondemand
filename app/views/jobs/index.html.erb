@@ -91,8 +91,10 @@ function report_performance(){
   });
 
   // hack but only one mark for document ready, and rest are draw times
-  console.log("version,documentReady,firstDraw,lastDraw");
-  console.log(`<%= `git describe --always --tags`.strip() %>,${marks[0].startTime},${marks[1].startTime},${marks.slice(-1)[0].startTime}`);
+  if(marks.length > 1){
+    console.log("version,documentReady,firstDraw,lastDraw");
+    console.log(`<%= `git describe --always --tags`.strip() %>,${marks[0].startTime},${marks[1].startTime},${marks.slice(-1)[0].startTime}`);
+  }
 }
 
 performance_tracking_enabled = true;
