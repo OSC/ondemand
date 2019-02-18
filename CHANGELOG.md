@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.5.2] - 2019-02-18
+### Fixed
+- Fixed bug where setting `OOD_SHELL` variable to empty string did not match documented behavior [Github #191](https://github.com/OSC/ood-fileexplorer/issues/191)
+
 ## [1.5.1] - 2019-01-11
 ### Fixed
 - Fixed whitelist bug that broke API calls
@@ -106,7 +110,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Initial Release!
 
-[Unreleased]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.1...HEAD
+[Unreleased]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.2...HEAD
+[1.5.2]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.1...v1.5.2
 [1.5.1]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/OSC/ood-fileexplorer/compare/v1.4.1...v1.5.0
 [1.4.1]: https://github.com/OSC/ood-fileexplorer/compare/v1.4.0...v1.4.1
