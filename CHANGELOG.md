@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.5.5] - 2019-02-18
+### Fixed
+- Fixed bug in Active Jobs that broke when cluster configs changed
+- Fixed bug in File Explorer when `OOD_SHELL` was an empty string
+
 ## [1.5.4] - 2019-02-07
 ### Fixed
 - Fixed bug in Active Jobs that broke Ganglia graphs
@@ -113,7 +118,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.5.4...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.5.5...HEAD
+[1.5.5]: https://github.com/OSC/ondemand/compare/v1.5.4...v1.5.5
 [1.5.4]: https://github.com/OSC/ondemand/compare/v1.5.3...v1.5.4
 [1.5.3]: https://github.com/OSC/ondemand/compare/v1.5.2...v1.5.3
 [1.5.2]: https://github.com/OSC/ondemand/compare/v1.5.1...v1.5.2
