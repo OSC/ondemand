@@ -11,7 +11,7 @@ class JobsController < ApplicationController
       format.json {
         JobsJsonRequestHandler.new(
           filter_id: @jobfilter,
-          cluster_id: @jobcluster,
+          cluster_id: params[:jobcluster],
           controller: self,
           params: params,
           response: response
