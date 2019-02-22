@@ -20,4 +20,18 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  jobcomposer:
+    options:
+      title: "Job Options"
+      errors: "Please fix the errors below."
+      name_title: "Name"
+      cluster_title: "Cluster"
+      script_title: "Specify job script"
+      account:
+        title: "Account"
+        help: "Account is optional field. If not set, the account may be auto-set by the submit filter."
+      array:
+        title: "Job array specification"
+        help: "Job arrays are optional."
+        help_with_clusters: |
+          Job arrays are optional. OnDemand does not currently support job arrays for the cluster(s): %{cluster_list}.
