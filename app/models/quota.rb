@@ -1,4 +1,6 @@
 # This describes disk quota utilization for a given user and volume
+require 'net/http'
+require 'uri'
 class Quota
   class InvalidQuotaFile < StandardError; end
 
@@ -18,8 +20,35 @@ class Quota
       user  = user && user.to_s
 
       quotas = []
+
+      # Attempt to convert path into a URI
+      uri = URI.parse(quota_path)
+      if uri.instance_of?(URI::HTTP) or uri.instance_of?(URI::HTTPS)
+        # If it is a URI, and it is http:// or https://
+        begin
+          raw = Net::HTTP.get(uri)
+        rescue Exception => e
+            # There are a million ways this could go wrong, assume configured correctly and is temporary issue (e.g., not a URL typo).
+            Rails.logger.error("Quota URI failed to return data: #{e.message}")
+            # Bail with empty results. Don't break portal because web service is down.
+            return []
+        end
+      else
+        # If not a URL, assume it is a local file and attempt to read.
+        # Assume this always works, unless configured wrong, in which case don't attempt to catch.
+        raw = quota_path.read
+      end
+
+      # Attempt to parse raw JSON into an object
       begin
-        json = JSON.parse(quota_path.read)
+        json = JSON.parse(raw)
+      rescue JSON::ParserError => e
+        Rails.logger.error("Quota file is not limited JSON: #{e.message}")
+      end
+
+      Rails.logger.error("#{json}")
+      # Parse JSON object into quota data
+      begin
         case json["version"].to_i
         when 1
           quotas += find_v1(user, json)
@@ -28,8 +57,6 @@ class Quota
         end
       rescue KeyError => e
         Rails.logger.error("Quota entry for user #{user} is missing expected parameter #{e.message}")
-      rescue JSON::ParserError => e
-        Rails.logger.error("Quota file is not limited JSON: #{e.message}")
       end
 
       quotas
@@ -42,8 +69,13 @@ class Quota
       raise InvalidQuotaFile.new("Quota file with version 1 formatting missing quotas array section") unless params["quotas"].respond_to?(:each)
 
       q = []
-      time = params["timestamp"]
       params["quotas"].each do |quota|
+        # If individual quota data points include a timestamp, use that instead of the global source timestamp
+        if quota.key?("timestamp")
+          time = quota["timestamp"]
+        else
+          time = params["timestamp"]
+        end
         q += create_both_quota_types(quota.merge "updated_at" => time) if !user || user == quota["user"]
       end
       q
