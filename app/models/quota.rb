@@ -36,7 +36,7 @@ class Quota
       else
         # If not a URL, assume it is a local file and attempt to read.
         # Assume this always works, unless configured wrong, in which case don't attempt to catch.
-        raw = quota_path.read
+        raw = Pathname.new(quota_path).read
       end
 
       # Attempt to parse raw JSON into an object
