@@ -22,8 +22,8 @@ class Quota
       quotas = []
 
       # Attempt to convert path into a URI
-      uri = URI.parse(quota_path)
-      if uri.instance_of?(URI::HTTP) or uri.instance_of?(URI::HTTPS)
+      if quota_path.match(/^https?:/)
+        uri = URI.parse(quota_path)
         # If it is a URI, and it is http:// or https://
         begin
           raw = Net::HTTP.get(uri)
