@@ -22,7 +22,7 @@ class Quota
       quotas = []
 
       # Attempt to convert path into a URI
-      if quota_path.match(/^https?:/)
+      if quota_path.instance_of?(String) and quota_path.match(/^https?:/)
         uri = URI.parse(quota_path)
         # If it is a URI, and it is http:// or https://
         begin
@@ -35,8 +35,12 @@ class Quota
         end
       else
         # If not a URL, assume it is a local file and attempt to read.
+        # If we're fed a string, convert to Pathname. Otherwise, use as is.
+        if quota_path.instance_of?(String)
+          quota_path = Pathname.new(quota_path)
+        end
         # Assume this always works, unless configured wrong, in which case don't attempt to catch.
-        raw = Pathname.new(quota_path).read
+        raw = quota_path.read
       end
 
       # Attempt to parse raw JSON into an object
