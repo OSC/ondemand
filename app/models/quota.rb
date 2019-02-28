@@ -27,7 +27,7 @@ class Quota
         # If it is a URI, and it is http:// or https://
         begin
           raw = Net::HTTP.get(uri)
-        rescue Exception => e
+        rescue StandardError => e
             # There are a million ways this could go wrong, assume configured correctly and is temporary issue (e.g., not a URL typo).
             Rails.logger.error("Quota URI failed to return data: #{e.message}")
             # Bail with empty results. Don't break portal because web service is down.
@@ -48,6 +48,7 @@ class Quota
         json = JSON.parse(raw)
       rescue JSON::ParserError => e
         Rails.logger.error("Quota file is not limited JSON: #{e.message}")
+	return []
       end
 
       Rails.logger.error("#{json}")
