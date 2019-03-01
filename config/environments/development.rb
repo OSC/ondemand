@@ -8,7 +8,7 @@ Rails.application.configure do
 
   # Eager load code on boot, necessary for
   # OscMacheteRails::update_status_of_all_active_jobs_on_each_request
-  config.eager_load = true
+  config.eager_load = false
 
   # Show full error reports and disable caching.
   config.consider_all_requests_local       = true
