@@ -46,7 +46,7 @@ group :development do
 end
 
 gem "autoprefixer-rails", "~> 8.4"
-gem "bootstrap-sass", "3.3.5"
+gem "bootstrap-sass", ">= 3.4.1"
 gem "bootstrap_form", "~> 2.7.0"
 gem "font-awesome-sass", "~> 4.4.0"
 gem "local_time", "~> 1.0.3"
