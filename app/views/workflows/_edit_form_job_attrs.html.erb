@@ -4,8 +4,8 @@
 
 API at: https://github.com/bootstrap-ruby/rails-bootstrap-forms %>
 
-<%= f.text_field :account, help: "Account is optional field. If not set, the account may be auto-set by the submit filter." if Configuration.show_job_options_account_field? %>
+<%= f.text_field :account, help: "Account is an optional field. If not set, the account may be auto-set by the submit filter." if Configuration.show_job_options_account_field? %>
 
 <% if Workflow.show_job_arrays? %>
-<%= f.text_field :job_array_request, label: 'Job array specification', help: Workflow.not_all_clusters_support_job_arrays ? "Job arrays are optional. OnDemand does not currently support job arrays for the cluster(s): #{Workflow.clusters_not_supporting_job_arrays.join(', ')}." : "Job arrays are optional." %>
+<%= f.text_field :job_array_request, label: 'Job array specification', help: Workflow.not_all_clusters_support_job_arrays ? "Job arrays are optional. OnDemand does not currently support job arrays for the cluster(s): #{Workflow.clusters_not_supporting_job_arrays.join(', ')}. e.g. 1-10" : "Job arrays are optional. e.g. 1-10", placeholder: '1-10' %>
 <% end %>
