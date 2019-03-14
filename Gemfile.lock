@@ -200,7 +200,7 @@ PLATFORMS
 
 DEPENDENCIES
   autoprefixer-rails (~> 8.4)
-  bootstrap-sass (>= 3.4.1)
+  bootstrap-sass (~> 3.4.1)
   bootstrap_form (~> 2.7.0)
   byebug
   coffee-rails (~> 4.1.0)
