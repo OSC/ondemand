@@ -1,3 +1,5 @@
+require 'redcarpet'
+
 class Manifest
   attr_accessor :name, :path, :host, :notes, :script
 
@@ -29,6 +31,12 @@ class Manifest
     @name = opts.fetch("name", default_name)
     @host = opts.fetch("host", default_host)
     @notes = opts.fetch("notes", default_notes)
+
+    if !!opts.fetch("notes_is_markdown", false)
+      renderer = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
+      @notes = renderer.render(@notes)
+    end
+
     @script = opts.fetch("script", default_script)
   end
 

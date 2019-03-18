@@ -216,6 +216,7 @@ DEPENDENCIES
   pbs (~> 2.2.1)
   rails (= 4.2.11)
   rails_12factor
+  redcarpet (~> 3.4.0)
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   sqlite3
