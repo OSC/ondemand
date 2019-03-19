@@ -101,6 +101,17 @@ class ConfigurationSingleton
     ENV['WHITELIST_PATH'].to_s.strip.split(":")
   end
 
+  # Permit sites to disable Markdown rendering of Template notes
+  def render_template_notes_as_markdown?
+    preference = ENV['RENDER_TEMPLATE_NOTES_AS_MARKDOWN']
+
+    if preference.nil?
+      true
+    else
+      to_bool(preference)
+    end
+  end
+
   private
 
   # The environment

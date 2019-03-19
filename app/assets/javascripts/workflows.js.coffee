@@ -304,7 +304,6 @@ $ ->
     $("#script-name-label").text("")
 
 @update_notes = (notes) ->
-  console.log('Setting notes')
   if notes?
     $("#notes-field").html("#{notes}")
   else
