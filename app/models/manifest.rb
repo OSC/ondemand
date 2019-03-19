@@ -1,5 +1,3 @@
-require 'redcarpet'
-
 class Manifest
   attr_accessor :name, :path, :host, :notes, :script
 
@@ -32,9 +30,10 @@ class Manifest
     @host = opts.fetch("host", default_host)
     @notes = opts.fetch("notes", default_notes)
 
-    if !!opts.fetch("notes_is_markdown", false)
-      renderer = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
-      @notes = renderer.render(@notes)
+    begin
+      @notes = OodAppkit.markdown.render(@notes)
+    rescue StandardError => e
+      Rails.logger.warn "Markdown rendering failed for manifest #{@path.to_s}"
     end
 
     @script = opts.fetch("script", default_script)

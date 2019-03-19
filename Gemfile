@@ -57,5 +57,3 @@ gem "rails_12factor", group: :production
 gem 'osc_machete_rails', '~> 1.2.2'
 gem 'pbs', '~> 2.2.1'
 gem 'ood_appkit', '~> 1.0'
-
-gem 'redcarpet', '~> 3.4.0'
