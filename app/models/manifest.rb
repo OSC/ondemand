@@ -29,6 +29,15 @@ class Manifest
     @name = opts.fetch("name", default_name)
     @host = opts.fetch("host", default_host)
     @notes = opts.fetch("notes", default_notes)
+
+    if Configuration.render_template_notes_as_markdown?
+      begin
+        @notes = OodAppkit.markdown.render(@notes)
+      rescue StandardError => e
+        Rails.logger.warn "Markdown rendering failed for manifest #{@path.to_s}"
+      end
+    end
+
     @script = opts.fetch("script", default_script)
   end
 
