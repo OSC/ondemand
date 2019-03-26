@@ -13,7 +13,12 @@
         <% end %>
       </div>
       <div class="col-md-6 col-sm-6">
-        <p class="pull-right">Dashboard version: <%= Configuration.version %></p>
+        <div class="pull-right">
+          <p>Dashboard version: <%= Configuration.version %></p>
+          <% if @app %>
+          <p><%= "#{@app.name} version: #{@app.version}" %></p>
+          <% end %>
+        </div>
       </div>
     </div>
   </div><!-- /.container -->

@@ -253,9 +253,24 @@ class OodApp
     @passenger_railsdb_app = (passenger_rails_app? && has_gem?("sqlite3"))
   end
 
-
+  # @return [String] memoized version string
+  def version
+    @version ||= (version_from_file || version_from_git || "unknown").strip
+  end
 
   private
+
+  # @return [String, nil] version string from git describe, or nil if not git repo
+  def version_from_git
+    version = `( cd #{path}; git describe --always --tags 2>/dev/null )`
+    version.blank? ? nil : version
+  end
+
+  # @return [String, nil] version string from VERSION file, or nil if no file avail
+  def version_from_file
+    file = path.join("VERSION")
+    file.read if file.file?
+  end
 
   # Check if Gemfile and Gemfile.lock exists, and if the Gemfile.lock specs
   # include a gem with the specified name
