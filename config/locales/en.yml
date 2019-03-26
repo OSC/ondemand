@@ -21,117 +21,229 @@
 
 en:
   dashboard:
-    welcome_html: |
-      %{logo_img_tag}
-      <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>
-    motd_title: "Message of the Day"
-    breadcrumbs:
-      home: "Home"
-      my_sessions: "My Interactive Sessions"
-      all_apps: "All Apps"
-    restart_msg_html: |
-      Your group membership has changed, which affects your access to apps. Your dashboard should restart automatically. 
-      If it doesn't please, click: <a href="%{restart_url}">restart web server</a>.
-    nav:
-      sessions: "My Interactive Sessions"
-      all_apps: "All Apps"
-      develop:
-        title: "Develop"
-        docs: "Developer Documentation"
-      help:
-        title: "Help"
-        change_password: "Change HPC Password"
-        support: "Contact Support"
-        docs: "Online Documentation"
-        two_factor: "Configure Two-Factor Authentication"
-      restart_server: "Restart Web Server"
-      user: "Logged in as %{username}"
-      logout: "Log Out"
-    batch_connect:
-      no_sessions: "You have no active sessions."
-      no_apps: "There are no available Interactive Apps."
-      sandbox: " [Sandbox]"
-      sessions:
-        data_html: |
-          * The %{title} session data for this session can be accessed 
-          under the %{data_link_tag}.
-        staged_root: "staged root directory"
-        status:
-          bad: |
-            Your session has entered a bad state. Feel free to contact support for 
-            further information.
-          missing_connection: |
-            This app is missing information required to establish a connection. Please 
-            contact support if you see this message.
-          queued: |
-            Please be patient as your job currently sits in queue. The wait time depends 
-            on the number of cores as well as time requested.
-          starting: |
-            Your session is currently starting... Please be patient as this process can 
-            take a few minutes.
-        novnc:
-          launch: "Launch noVNC in New Tab"
-          view_only: "View Only (Share-able Link)"
-        stats:
-          created_at: "Created at:"
-          time_remaining: "Time Remaining:"
-          time_used: "Time Used:"
-          time_requested: "Time Requested:"
-          host: "Host:"
-          undetermined_host: "Undetermined"
-          session_id: "Session ID:"
-        status_blurb:
-          create_success: "Session was successfully created."
-          delete_success: "Session was successfully deleted."
-          delete_failure: "Session failed to be deleted."
-        delete:
-          title: "Delete"
-          hover: "Delete Session"
-          confirm: "Are you sure?"
-        errors:
-          submission: "Failed to submit session with the following error:"
-          staging: "Failed to stage the template with the following error:"
-      form:
-        launch: "Launch"
-        reset_resolution: "Reset Resolution"
-        session_data_html: |
-          * All %{title} session data is generated and stored under 
-          the user's home directory in the corresponding %{data_link_tag}.
-        data_root: "data root directory"
-    quota:
-      warning_header_html: "Quota limit warning for %{path_tag}"
-      reload_message: "Reload page to see updated quota. Quotas are updated every 5 minutes."
-      additional_message: "Consider deleting or archiving files to free up disk space."
-      file: "Using %{used} files of quota %{available} files"
-      file_shared: "(%{used_exclusive} files are yours)"
-      block: "Using %{used} of quota %{available}"
-      block_shared: "(%{used_exclusive} are yours)"
-    sharing:
-      welcome_msg_html: |
-        Cluster access applications are available from the dropdown menus in the navbar above.
-        <br>Custom shared apps are available below.
-      no_shared_apps_html: |
-        <strong>No custom shared apps available.</strong>
-      support_msg_html: |
-        If you don't see the app you are looking for, please
-        <a href="%{support_url}">contact support</a>.
-      catalog_msg_html: |
-        <br>A subset of the apps available can be viewed on the %{catalog_link_tag}.
-      catalog_title: "App Catalog"
-    apps:
-      system_apps_title: "System Apps"
-      shared_apps_title: "Shared Apps"
-      setup_failure_html: |
+    site_specific:
+      batch_connect_sessions_status_bad: "Your session has entered a bad state. Feel free to contact support for
+            further information.👍"
+      batch_connect_sessions_status_missing_connection: |
+        This app is missing information required to establish a connection. Please
+        contact support if you see this message.👍
+      batch_connect_sessions_status_queued: |
+        Please be patient as your job currently sits in queue. The wait time depends
+        on the number of cores as well as time requested.👍
+
+      nav_help_change_password: "Change HPC Password👍"
+      nav_help_docs: "Online Documentation👍"
+      nav_help_support: "Contact Support👍"
+      nav_help_two_factor: "Configure Two-Factor Authentication👍"
+
+      quota_additional_message: "Consider deleting or archiving files to free up disk space.👍"
+      quota_reload_message: "Reload page to see updated quota. Quotas are updated every 5 minutes.👍"
+      quota_warning_prefix_html: "Quota limit warning for👍"
+
+      welcome_html: |
+        %{logo_img_tag}
+        <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.👍</p>
+
+    generic_msg:
+      apps_setup_failure_html: |
         <h2>A problem occurred while initializing your data for this app.</h2>
         <p class="lead">
-          At your own risk you can still <a href="%{app_url}">open the app</a> 
+          At your own risk you can still <a href="%{app_url}">open the app</a>
           or you can just go <a href="%{home_url}">back to the dashboard</a>
         </p>
         <p>
           Share this with the developer of your app:
-          The setup production script is supposed to be idempotent and is run each time 
+          The setup production script is supposed to be idempotent and is run each time
           the user opens the app through the dashboard.</p>
         <h4>Exception: %{exception_class}</h4>
         <pre>%{exception_message}</pre>
         <h4>Stack trace:</h4>
-        <pre>%{exception_trace}</pre>
+        <pre>%{exception_trace}</pre>👍
+      apps_system_apps_title: "System Apps👍"
+
+      batch_connect_form_data_root: "data root directory"
+      batch_connect_form_launch: "Launch👍"
+      batch_connect_form_reset_resolution: "Reset Resolution👍"
+      batch_connect_form_session_data_html: |
+        * The %{title} session data for this session can be accessed
+          under the %{data_link_tag}.👍
+      batch_connect_no_apps: "There are no available Interactive Apps.👍"
+      batch_connect_no_sessions: "You have no active sessions.👍"
+      batch_connect_sandbox: " [Sandbox]👍"
+      batch_connect_sessions_data_html: |
+        * The %{title} session data for this session can be accessed
+        under the %{data_link_tag}.👍
+      batch_connect_sessions_delete_confirm: "Are you sure?👍"
+      batch_connect_sessions_delete_hover: "Delete Session👍"
+      batch_connect_sessions_delete_title: "Delete👍"
+      batch_connect_sessions_errors_staging: "Failed to stage the template with the following error:👍"
+      batch_connect_sessions_errors_submission: "Failed to submit session with the following error:👍"
+      batch_connect_sessions_novnc_launch: "Launch noVNC in New Tab👍"
+      batch_connect_sessions_novnc_view_only: "View Only (Share-able Link)👍"
+      batch_connect_sessions_staged_root: "staged root directory👍"
+      batch_connect_sessions_stats_created_at: "Created at:👍"
+      batch_connect_sessions_stats_host: "Host:👍"
+      batch_connect_sessions_stats_session_id: "Session ID:👍"
+      batch_connect_sessions_stats_time_remaining: "Time Remaining:👍"
+      batch_connect_sessions_stats_time_requested: "Time Requested:👍"
+      batch_connect_sessions_stats_time_used: "Time Used:👍"
+      batch_connect_sessions_stats_undetermined_host: "Undetermined👍"
+      batch_connect_sessions_status_blurb_create_success: "Session was successfully created.👍"
+      batch_connect_sessions_status_blurb_delete_failure: "Failed to delete session.👍"
+      batch_connect_sessions_status_blurb_delete_success: "Session was successfully deleted.👍"
+      batch_connect_sessions_status_starting: |
+        Your session is currently starting... Please be patient as this process can
+        take a few minutes.👍
+
+      breadcrumbs_all_apps: "All Apps👍"
+      breadcrumbs_home: "Home"
+      breadcrumbs_home: "Home👍"
+      breadcrumbs_my_sessions: "My Interactive Sessions👍"
+      breadcrumbs_my_sessions: "My Interactive Sessions👍"
+
+      nav_all_apps: "All Apps👍"
+      nav_develop_docs: "Developer Documentation👍"
+      nav_develop_my_sandbox_apps_dev: "My Sandbox Apps (Development)👍"
+      nav_develop_my_sandbox_apps_prod: "My Sandbox Apps (Production)👍"
+      nav_develop_title: "Develop👍"
+      nav_help_title: "Help👍"
+      nav_logout: "Log Out👍"
+      nav_restart_server: "Restart Web Server👍"
+      nav_restart_server: "Restart Web Server👍"
+      nav_sessions: "My Interactive Sessions👍"  # Note duplication with breadcrumbs_my_sessions
+      nav_user: "Logged in as %{username}👍"
+
+      quota_block: "Using %{used} of quota %{available}👍"
+      quota_block_shared: "(%{used_exclusive} are yours)👍"
+      quota_file: "Using %{used} files of quota %{available} files👍"
+      quota_file_shared: "(%{used_exclusive} files are yours)👍"
+
+      restart_msg_html: |
+        Your group membership has changed, which affects your access to apps. Your dashboard should restart automatically.
+        If it doesn't please, click: <a href="%{restart_url}">restart web server</a>.👍
+
+      shared_apps_title: "Shared Apps👍"
+      sharing_catalog_title: "App Catalog👍"
+      sharing_no_shared_apps_html: |
+        <strong>No custom shared apps available.</strong>👍
+      sharing_support_msg_html: |
+        <br>A subset of the apps available can be viewed on the %{catalog_link_tag}.👍
+      sharing_welcome_msg_html: |
+        Cluster access applications are available from the dropdown menus in the navbar above.
+        <br>Custom shared apps are available below.👍
+
+# # ===== ORIGINAL ===== #
+#     welcome_html: |
+#       %{logo_img_tag}
+#       <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>
+#     motd_title: "Message of the Day"
+#     breadcrumbs:
+#       home: "Home"
+#       my_sessions: "My Interactive Sessions"
+#       all_apps: "All Apps"
+#     restart_msg_html: |
+#       Your group membership has changed, which affects your access to apps. Your dashboard should restart automatically.
+#       If it doesn't please, click: <a href="%{restart_url}">restart web server</a>.
+#     nav:
+#       sessions: "My Interactive Sessions"
+#       all_apps: "All Apps"
+#       develop:
+#         title: "Develop"
+#         docs: "Developer Documentation"
+#       help:
+#         title: "Help"
+#         change_password: "Change HPC Password"
+#         support: "Contact Support"
+#         docs: "Online Documentation"
+#         two_factor: "Configure Two-Factor Authentication"
+#       restart_server: "Restart Web Server"
+#       user: "Logged in as %{username}"
+#       logout: "Log Out"
+#     batch_connect:
+#       no_sessions: "You have no active sessions."
+#       no_apps: "There are no available Interactive Apps."
+#       sandbox: " [Sandbox]"
+#       sessions:
+#         data_html: |
+#           * The %{title} session data for this session can be accessed
+#           under the %{data_link_tag}.
+#         staged_root: "staged root directory"
+#         status:
+#           bad: |
+#             Your session has entered a bad state. Feel free to contact support for
+#             further information.
+#           missing_connection: |
+#             This app is missing information required to establish a connection. Please
+#             contact support if you see this message.
+#           queued: |
+#             Please be patient as your job currently sits in queue. The wait time depends
+#             on the number of cores as well as time requested.
+#           starting: |
+#             Your session is currently starting... Please be patient as this process can
+#             take a few minutes.
+#         novnc:
+#           launch: "Launch noVNC in New Tab"
+#           view_only: "View Only (Share-able Link)"
+#         stats:
+#           created_at: "Created at:"
+#           time_remaining: "Time Remaining:"
+#           time_used: "Time Used:"
+#           time_requested: "Time Requested:"
+#           host: "Host:"
+#           undetermined_host: "Undetermined"
+#           session_id: "Session ID:"
+#         status_blurb:
+#           create_success: "Session was successfully created."
+#           delete_success: "Session was successfully deleted."
+#           delete_failure: "Session failed to be deleted."
+#         delete:
+#           title: "Delete"
+#           hover: "Delete Session"
+#           confirm: "Are you sure?"
+#         errors:
+#           submission: "Failed to submit session with the following error:"
+#           staging: "Failed to stage the template with the following error:"
+#       form:
+#         launch: "Launch"
+#         reset_resolution: "Reset Resolution"
+#         session_data_html: |
+#           * All %{title} session data is generated and stored under
+#           the user's home directory in the corresponding %{data_link_tag}.
+#         data_root: "data root directory"
+#     quota:
+#       warning_header_html: "Quota limit warning for %{path_tag}"
+#       reload_message: "Reload page to see updated quota. Quotas are updated every 5 minutes."
+#       additional_message: "Consider deleting or archiving files to free up disk space."
+#       file: "Using %{used} files of quota %{available} files"
+#       file_shared: "(%{used_exclusive} files are yours)"
+#       block: "Using %{used} of quota %{available}"
+#       block_shared: "(%{used_exclusive} are yours)"
+#     sharing:
+#       welcome_msg_html: |
+#         Cluster access applications are available from the dropdown menus in the navbar above.
+#         <br>Custom shared apps are available below.
+#       no_shared_apps_html: |
+#         <strong>No custom shared apps available.</strong>
+#       support_msg_html: |
+#         If you don't see the app you are looking for, please
+#         <a href="%{support_url}">contact support</a>.
+#       catalog_msg_html: |
+#         <br>A subset of the apps available can be viewed on the %{catalog_link_tag}.
+#       catalog_title: "App Catalog"
+#     apps:
+#       system_apps_title: "System Apps"
+#       shared_apps_title: "Shared Apps"
+#       setup_failure_html: |
+#         <h2>A problem occurred while initializing your data for this app.</h2>
+#         <p class="lead">
+#           At your own risk you can still <a href="%{app_url}">open the app</a>
+#           or you can just go <a href="%{home_url}">back to the dashboard</a>
+#         </p>
+#         <p>
+#           Share this with the developer of your app:
+#           The setup production script is supposed to be idempotent and is run each time
+#           the user opens the app through the dashboard.</p>
+#         <h4>Exception: %{exception_class}</h4>
+#         <pre>%{exception_message}</pre>
+#         <h4>Stack trace:</h4>
+#         <pre>%{exception_trace}</pre>

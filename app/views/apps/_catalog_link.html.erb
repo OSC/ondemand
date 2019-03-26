@@ -1,11 +1,11 @@
 <p>
   <% if ENV['OOD_DASHBOARD_SUPPORT_URL'].present? %>
-  <%= t('dashboard.sharing.support_msg_html', support_url: ENV['OOD_DASHBOARD_SUPPORT_URL']) %>
+  <%= t('dashboard.generic_msg.sharing_support_msg_html', support_url: ENV['OOD_DASHBOARD_SUPPORT_URL']) %>
   <% end %>
 
   <% if ENV['OOD_APP_CATALOG_URL'].present? %>
   <%= t(  'dashboard.sharing.catalog_msg_html',
-          catalog_link_tag: link_to(  t('dashboard.sharing.catalog_title'),
+          catalog_link_tag: link_to(  t('dashboard.generic_msg.sharing_catalog_title'),
                                       ENV['OOD_APP_CATALOG_URL']
                                     )
         )
