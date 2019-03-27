@@ -21,7 +21,7 @@
 
 en:
   dashboard:
-    site_specific:
+    site:
       batch_connect_sessions_status_bad: "Your session has entered a bad state. Feel free to contact support for
             further information."
       batch_connect_sessions_status_missing_connection: |
@@ -44,7 +44,7 @@ en:
         %{logo_img_tag}
         <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>
 
-    generic_msg:
+    tr:
       apps_setup_failure_html: |
         <h2>A problem occurred while initializing your data for this app.</h2>
         <p class="lead">
