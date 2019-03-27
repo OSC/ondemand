@@ -80,7 +80,7 @@ class ConfigurationSingleton
   # The paths to the JSON files that store the quota information
   # @return [Array<Pathname>] quota paths
   def quota_paths
-    ENV.fetch("OOD_QUOTA_PATH", "").strip.split(":").map {|p| Pathname.new(p)}
+    ENV.fetch("OOD_QUOTA_PATH", "").strip.split(/(?<!\\):/).map {|p| p.gsub(/\\/,"")}
   end
 
   # The threshold for determining if there is sufficient quota remaining
