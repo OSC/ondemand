@@ -1,2 +1,2 @@
-<%= link_to icon('fas', 'eye', 'Launch noVNC in New Tab'), novnc_link(connect), class: 'btn btn-primary', target: '_blank' %>
+<%= link_to icon('fas', 'eye', "Launch #{app_title} "), novnc_link(connect), class: 'btn btn-primary', target: '_blank' %>
 <%= link_to 'View Only (Share-able Link)', novnc_link(connect, view_only: true), class: 'btn btn-default pull-right', target: '_blank' %>
