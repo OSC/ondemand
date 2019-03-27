@@ -2,10 +2,10 @@
 
 <ol class="breadcrumb">
   <li>
-    <%= link_to t('dashboard.generic_msg.breadcrumbs_home'), root_path %>
+    <%= link_to t('dashboard.tr.breadcrumbs_home'), root_path %>
   </li>
   <li>
-    <%= link_to t('dashboard.generic_msg.breadcrumbs_my_sessions'), batch_connect_sessions_path %>
+    <%= link_to t('dashboard.tr.breadcrumbs_my_sessions'), batch_connect_sessions_path %>
   </li>
   <li class="active">
     <%= @app.title %>
@@ -20,10 +20,10 @@
     <%= session_save_errors @session.errors %>
 
     <p class="small">
-      <%= t('dashboard.generic_msg.batch_connect_sessions_data_html',
+      <%= t('dashboard.tr.batch_connect_sessions_data_html',
             title: @app.title,
             data_link_tag: link_to(
-              t('dashboard.generic_msg.batch_connect_sessions_staged_root'),
+              t('dashboard.tr.batch_connect_sessions_staged_root'),
               OodAppkit.files.url(path: @session.staged_root).to_s,
               target: "_blank")
             )
@@ -56,10 +56,10 @@
         <%= render "form" %>
 
         <p class="small">
-          <%= t('dashboard.generic_msg.batch_connect_form_session_data_html',
+          <%= t('dashboard.tr.batch_connect_form_session_data_html',
                 title: @app.title,
                 data_link_tag: link_to(
-                  t('dashboard.generic_msg.batch_connect_form_data_root'),
+                  t('dashboard.tr.batch_connect_form_data_root'),
                   OodAppkit.files.url(
                     path: BatchConnect::Session.dataroot(@app.token)
                   ).to_s,
