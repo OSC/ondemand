@@ -142,8 +142,14 @@ module BatchConnect
       self.view       = app.session_view
       self.created_at = Time.now.to_i
 
+      submit_script = app.submit_opts(context, fmt: format) # could raise an exception
+
       stage(app.root.join("template"), context: context) &&
-        submit(app.submit_opts(context, fmt: format))
+        submit(submit_script)
+    rescue => e   # rescue from all standard exceptions (app never crashes)
+      errors.add(:save, e.message)
+      Rails.logger.error("ERROR: #{e.class} - #{e.message}")
+      false
     end
 
     # Stage the app's job template to user's staging directory
