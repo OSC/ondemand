@@ -78,9 +78,16 @@ class ConfigurationSingleton
   end
 
   # The paths to the JSON files that store the quota information
-  # @return [Array<Pathname>] quota paths
+  # Can be URL or File path. colon delimited string; though colon in URL is
+  # ignored if URL has format: scheme://path (colons preceeding // are ignored)
+  #
+  # /path/to/quota.json:https://osc.edu/quota.json
+  #
+  #
+  # @return [Array<String>] quota paths
   def quota_paths
-    ENV.fetch("OOD_QUOTA_PATH", "").strip.split(/(?<!\\):/).map {|p| p.gsub(/\\/,"")}
+    # regex uses negative lookahead to ignore : preceeding //
+    ENV.fetch("OOD_QUOTA_PATH", "").strip.split(/:(?!\/\/)/)
   end
 
   # The threshold for determining if there is sufficient quota remaining
