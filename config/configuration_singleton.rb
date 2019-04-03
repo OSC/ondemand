@@ -48,12 +48,8 @@ class ConfigurationSingleton
 
   # @return [String, nil] version string from VERSION file, or nil if no file avail
   def version_from_file(dir)
-    Dir.chdir(Pathname.new(dir)) do
-      file = Pathname.new("VERSION")
-      file.read if file.file?
-    end
-  rescue Errno::ENOENT
-    nil
+    file = Pathname.new(dir).join("VERSION")
+    file.read if file.file?
   end
 
   def ood_version_from_env
