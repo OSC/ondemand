@@ -28,7 +28,7 @@ class ConfigurationSingleton
 
   # @return [String] memoized version string
   def app_version
-    @app_version ||= (version_from_file('.') || version_from_git('.') || "Unknown").strip
+    @app_version ||= (version_from_file(Rails.root) || version_from_git(Rails.root) || "Unknown").strip
   end
 
   # @return [String] memoized version string
@@ -49,7 +49,7 @@ class ConfigurationSingleton
   # @return [String, nil] version string from VERSION file, or nil if no file avail
   def version_from_file(dir)
     Dir.chdir(Pathname.new(dir)) do
-      file = Rails.root.join("VERSION")
+      file = Pathname.new("VERSION")
       file.read if file.file?
     end
   rescue Errno::ENOENT
