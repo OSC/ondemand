@@ -39,9 +39,11 @@ class ConfigurationSingleton
   # @return [String, nil] version string from git describe, or nil if not git repo
   def version_from_git(dir)
     Dir.chdir(Pathname.new(dir)) do
-      version = `git describe --always --tags`
+      version = `git describe --always --tags 2>/dev/null`
       version.blank? ? nil : version
     end
+  rescue Errno::ENOENT
+    nil
   end
 
   # @return [String, nil] version string from VERSION file, or nil if no file avail
@@ -50,6 +52,8 @@ class ConfigurationSingleton
       file = Rails.root.join("VERSION")
       file.read if file.file?
     end
+  rescue Errno::ENOENT
+    nil
   end
 
   def ood_version_from_env
