@@ -82,7 +82,7 @@
           <% @workflows.each do |workflow| %>
               <tr class="job-row<%= " missing-cluster" unless workflow.batch_host_exists? %><%= " missing-dir" unless workflow.staged_dir_exists? %><%= " missing-script" unless workflow.script_name && workflow.staged_script_exists? %>" id="<%= workflow.id %>">
                 <td data-sort="<%= workflow.id %>"><small><%= local_time(workflow.created_at) %></small></td>
-                <td class="wrap-line"><strong><%= workflow.name %></strong></td>
+                <td class="job-name"><strong><%= workflow.name %></strong></td>
                 <td><%= workflow.pbsid %></td>
                 <td><%= cluster_title workflow.batch_host %></td>
                 <td id="status_label_<%= workflow.id %>"><%= status_label(workflow) %></td>
