@@ -23,3 +23,9 @@
   margin-left: 70px;
 }
 
+
+.job-name{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}

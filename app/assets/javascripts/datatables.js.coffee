@@ -10,7 +10,8 @@ jQuery ->
     columnDefs: [{
       orderable: false
       targets: 'no-sort'
-    }]
+    },
+    { "width": "50%", "targets": 1 }]
     iDisplayLength: 25
 
 jQuery ->
@@ -21,7 +22,8 @@ jQuery ->
     columnDefs: [{
       orderable: false
       targets: 'no-sort'
-    }]
+    },
+    { "width": "50%", "targets": 0 }]
     iDisplayLength: 10
 
 jQuery ->
