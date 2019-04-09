@@ -21,28 +21,27 @@
 
 en:
   dashboard:
-    site:
-      batch_connect_sessions_status_bad: "Your session has entered a bad state. Feel free to contact support for
-            further information."
-      batch_connect_sessions_status_missing_connection: |
-        This app is missing information required to establish a connection. Please
-        contact support if you see this message.
-      batch_connect_sessions_status_queued: |
-        Please be patient as your job currently sits in queue. The wait time depends
-        on the number of cores as well as time requested.
+    batch_connect_sessions_status_bad: "Your session has entered a bad state. Feel free to contact support for
+          further information."
+    batch_connect_sessions_status_missing_connection: |
+      This app is missing information required to establish a connection. Please
+      contact support if you see this message.
+    batch_connect_sessions_status_queued: |
+      Please be patient as your job currently sits in queue. The wait time depends
+      on the number of cores as well as time requested.
 
-      nav_help_change_password: "Change HPC Password"
-      nav_help_docs: "Online Documentation"
-      nav_help_support: "Contact Support"
-      nav_help_two_factor: "Configure Two-Factor Authentication"
+    nav_help_change_password: "Change HPC Password"
+    nav_help_docs: "Online Documentation"
+    nav_help_support: "Contact Support"
+    nav_help_two_factor: "Configure Two-Factor Authentication"
 
-      quota_additional_message: "Consider deleting or archiving files to free up disk space."
-      quota_reload_message: "Reload page to see updated quota. Quotas are updated every 5 minutes."
-      quota_warning_prefix_html: "Quota limit warning for"
+    quota_additional_message: "Consider deleting or archiving files to free up disk space."
+    quota_reload_message: "Reload page to see updated quota. Quotas are updated every 5 minutes."
+    quota_warning_prefix_html: "Quota limit warning for"
 
-      welcome_html: |
-        %{logo_img_tag}
-        <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>
+    welcome_html: |
+      %{logo_img_tag}
+      <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>
 
     tr:
       apps_setup_failure_html: |
