@@ -208,11 +208,6 @@ module BatchConnect
       @ood_app.version
     end
 
-    # @return [String] the app name
-    def name
-      @ood_app.manifest.name.empty? ? @ood_app.name : @ood_app.manifest.name
-    end
-
     # Convert object to string
     # @return [String] the string describing this object
     def to_s
