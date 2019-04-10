@@ -5,17 +5,17 @@
 API at: https://github.com/bootstrap-ruby/rails-bootstrap-forms %>
 
 <%= f.text_field :account,
-        label: t('jobcomposer.options.account.title'),
-        help: t('jobcomposer.options.account.help') if Configuration.show_job_options_account_field?
+        label: t('jobcomposer.tr.options_account_title'),
+        help: t('jobcomposer.options_account_help') if Configuration.show_job_options_account_field?
 %>
 
 <% if Workflow.show_job_arrays? %>
 <%= f.text_field :job_array_request,
-        label: t('jobcomposer.options.array.title'),
+        label: t('jobcomposer.tr.options_array_title'),
         help: Workflow.not_all_clusters_support_job_arrays ?
-                  t('jobcomposer.options.array.help_with_clusters',
+                  t('jobcomposer.tr.options_array_help_with_clusters',
                       cluster_list: Workflow.clusters_not_supporting_job_arrays.join(', '))
                   :
-                  t('jobcomposer.options.array.help')
+                  t('jobcomposer.tr.options_array_help')
 %>
 <% end %>

@@ -21,17 +21,18 @@
 
 en:
   jobcomposer:
-    options:
-      title: "Job Options"
-      errors: "Please fix the errors below."
-      name_title: "Name"
-      cluster_title: "Cluster"
-      script_title: "Specify job script"
-      account:
-        title: "Account"
-        help: "Account is optional field. If not set, the account may be auto-set by the submit filter."
-      array:
-        title: "Job array specification"
-        help: "Job arrays are optional."
-        help_with_clusters: |
-          Job arrays are optional. OnDemand does not currently support job arrays for the cluster(s): %{cluster_list}.
+    # Site specific 
+    options_account_help:  "Account is an optional field. If not set, the account may be auto-set by the subit filter."
+
+    # General translations
+    tr:
+      options_account_title: "Account"
+      options_array_help: "Job arrays are optional."
+      options_array_help_with_clusters: |
+        Job arrays are optional. OnDemand does not currently support job arrays for the clusters(s): %{cluster_list}.
+      options_array_title: "Job array specification"
+      options_cluster_title: "Cluster"
+      options_errors: "Please fix the errors below."
+      options_name_title: "Name"
+      options_script_title: "Specify job script"
+      options_title: "Job Options"
