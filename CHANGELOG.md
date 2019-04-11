@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added support for fetching quota from a URL
+- Added app title to noVNC launch button
+- Allow BatchConnect applications to raise errors that can be shown to users
+
+### Fixed
+- Updated Gems to address CVEs
+
 ## [1.32.0] - 2019-02-07
 ### Changed
 - Disable eager loading to speed initial load of the application
