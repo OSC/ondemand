@@ -202,6 +202,12 @@ module BatchConnect
       @sub_app_list ||= build_sub_app_list
     end
 
+    # The version of the OodApp
+    # @return [String] the version
+    def version
+      @ood_app.version
+    end
+
     # Convert object to string
     # @return [String] the string describing this object
     def to_s
