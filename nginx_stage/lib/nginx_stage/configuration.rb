@@ -72,6 +72,8 @@ module NginxStage
     attr_writer :pun_custom_env
 
     def pun_custom_env
+      # Ensure that both keys and values are strings to avoid a crash when
+      # rendering the template
       Hash[@pun_custom_env.map {|key, value| [key.to_s, value.to_s]}]
     end
 
