@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Fixed a crash in nginx_stage relating to numeric values in pun_custom_env
+
 ## [1.5.5] - 2019-02-18
 ### Fixed
 - Fixed bug in Active Jobs that broke when cluster configs changed
