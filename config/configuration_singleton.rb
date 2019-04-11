@@ -27,20 +27,33 @@ class ConfigurationSingleton
   alias_method :app_sharing_facls_enabled?, :app_sharing_facls_enabled
 
   # @return [String] memoized version string
-  def version
-    @version ||= (version_from_file || version_from_git || "No version string available").strip
+  def app_version
+    @app_version ||= (version_from_file(Rails.root) || version_from_git(Rails.root) || "Unknown").strip
+  end
+
+  # @return [String] memoized version string
+  def ood_version
+    @ood_version ||= (ood_version_from_env || version_from_file('/opt/ood') || version_from_git('/opt/ood') || "Unknown").strip
   end
 
   # @return [String, nil] version string from git describe, or nil if not git repo
-  def version_from_git
-    version = `git describe --always --tags`
-    version.blank? ? nil : version
+  def version_from_git(dir)
+    Dir.chdir(Pathname.new(dir)) do
+      version = `git describe --always --tags 2>/dev/null`
+      version.blank? ? nil : version
+    end
+  rescue Errno::ENOENT
+    nil
   end
 
   # @return [String, nil] version string from VERSION file, or nil if no file avail
-  def version_from_file
-    file = Rails.root.join("VERSION")
+  def version_from_file(dir)
+    file = Pathname.new(dir).join("VERSION")
     file.read if file.file?
+  end
+
+  def ood_version_from_env
+    ENV['OOD_VERSION'] || ENV['ONDEMAND_VERSION']
   end
 
   # The app's configuration root directory
