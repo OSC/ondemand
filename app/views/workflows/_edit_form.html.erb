@@ -1,15 +1,15 @@
 <%# Uses rails_bootstrap_form gem. API at: https://github.com/bootstrap-ruby/rails-bootstrap-forms %>
 
 <%= bootstrap_form_for(workflow) do |f| %>
-    <%= f.alert_message t('jobcomposer.tr.options_errors') %>
+    <%= f.alert_message t('jobcomposer.options_errors') %>
 
-    <%= f.text_field :name, label: t('jobcomposer.tr.options_name_title') %>
-    <%= f.select :batch_host, OODClusters.map { |cluster| [ "#{cluster.metadata.title}", cluster.id ] }, { selected: @workflow.batch_host, label: t('jobcomposer.tr.options_cluster_title') }, { class: "selectpicker" } %>
+    <%= f.text_field :name, label: t('jobcomposer.options_name_title') %>
+    <%= f.select :batch_host, OODClusters.map { |cluster| [ "#{cluster.metadata.title}", cluster.id ] }, { selected: @workflow.batch_host, label: t('jobcomposer.options_cluster_title') }, { class: "selectpicker" } %>
 
     <%# select in bootstrap_form?@%>
 
     <div class="form-group">
-      <label class="control-label" for="workflow_script_path"><%= t('jobcomposer.tr.options_script_title') %></label>
+      <label class="control-label" for="workflow_script_path"><%= t('jobcomposer.options_script_title') %></label>
       <select class="form-control selectpicker" id="workflow_script_path" name="workflow[script_path]">
         <% workflow.folder_contents.each do |content| %>
           <% if File.file? content %>
