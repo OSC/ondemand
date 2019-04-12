@@ -1,12 +1,12 @@
-<li class="dropdown" title="<%= t('dashboard.tr.nav_help_title') %>" >
+<li class="dropdown" title="<%= t('dashboard.nav_help_title') %>" >
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-    <i class="fas fa-question-circle"></i><span class="hidden-sm hidden-sm-nav"> <%= t('dashboard.tr.nav_help_title') %></span><span class="caret"></span>
+    <i class="fas fa-question-circle"></i><span class="hidden-sm hidden-sm-nav"> <%= t('dashboard.nav_help_title') %></span><span class="caret"></span>
   </a>
   <ul class="dropdown-menu">
     <%= nav_link(t('dashboard.nav_help_support'), "question-circle", support_url, target: "_blank") %>
     <%= nav_link(t('dashboard.nav_help_docs'), "info-circle", docs_url, target: "_blank") %>
     <%= nav_link(t('dashboard.nav_help_change_password'), "key", passwd_url, target: "_blank") %>
     <%= nav_link(t('dashboard.nav_help_two_factor'), "mobile-alt", configure_2fa_url, target: "_blank") %>
-    <%= nav_link(t('dashboard.tr.nav_restart_server'), "sync", restart_url) %>
+    <%= nav_link(t('dashboard.nav_restart_server'), "sync", restart_url) %>
   </ul>
 </li>

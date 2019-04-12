@@ -35,13 +35,13 @@
             <%= render partial: 'layouts/nav/develop_dropdown' if Configuration.app_development_enabled? %>
             <%= render partial: "layouts/nav/help_dropdown" %>
           </ul>
-          <p class="navbar-text" data-toggle="popover" data-content="<%= t('dashboard.tr.nav_user', username: @user.name) %>" data-placement="bottom" >
-            <i class="fas fa-user" title="<%= t('dashboard.tr.nav_user', username: @user.name) %>"></i>
-            <span class="hidden-sm"><span class="hidden-md"> <%= t('dashboard.tr.nav_user', username: @user.name) %></span>
+          <p class="navbar-text" data-toggle="popover" data-content="<%= t('dashboard.nav_user', username: @user.name) %>" data-placement="bottom" >
+            <i class="fas fa-user" title="<%= t('dashboard.nav_user', username: @user.name) %>"></i>
+            <span class="hidden-sm"><span class="hidden-md"> <%= t('dashboard.nav_user', username: @user.name) %></span>
           </p>
           <ul class="nav navbar-nav">
             <li>
-              <a href="/logout"><i class="fas fa-sign-out-alt"></i><span class="hidden-sm"> <%= t('dashboard.tr.nav_logout') %></span></a>
+              <a href="/logout"><i class="fas fa-sign-out-alt"></i><span class="hidden-sm"> <%= t('dashboard.nav_logout') %></span></a>
             </li>
             <li>
           </ul>
