@@ -50,3 +50,6 @@ tags
 # Ignore data files
 /data
 config/clusters.d
+
+# SSHFS
+._*

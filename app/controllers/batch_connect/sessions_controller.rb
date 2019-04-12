@@ -16,12 +16,12 @@ class BatchConnect::SessionsController < ApplicationController
 
     if @session.destroy
       respond_to do |format|
-        format.html { redirect_to batch_connect_sessions_url, notice: t('dashboard.batch_connect.sessions.status_blurb.delete_success') }
+        format.html { redirect_to batch_connect_sessions_url, notice: t('dashboard.tr.batch_connect_sessions_status_blurb_delete_success') }
         format.json { head :no_content }
       end
     else
       respond_to do |format|
-        format.html { redirect_to batch_connect_sessions_url, alert: t('dashboard.batch_connect.sessions.status_blurb.delete_failure') }
+        format.html { redirect_to batch_connect_sessions_url, alert: t('dashboard.tr.batch_connect_sessions_status_blurb_delete_failure') }
         format.json { render json: @session.errors, status: :unprocessable_entity }
       end
     end

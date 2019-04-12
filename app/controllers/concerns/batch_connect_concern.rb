@@ -12,7 +12,7 @@ module BatchConnectConcern
     if apps.empty?
       []
     else
-      [ OodAppGroup.new(title: t('dashboard.apps.shared_apps_title'), apps: apps) ]
+      [ OodAppGroup.new(title: t('dashboard.tr.shared_apps_title'), apps: apps) ]
     end
   end
 

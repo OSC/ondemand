@@ -50,7 +50,7 @@ module BatchConnect::SessionsHelper
 
   def created(session)
     content_tag(:p) do
-      concat content_tag(:strong, t('dashboard.batch_connect.sessions.stats.created_at'))
+      concat content_tag(:strong, t('dashboard.tr.batch_connect_sessions_stats_created_at'))
       concat " "
       concat Time.at(session.created_at).localtime.strftime("%Y-%m-%d %H:%M:%S %Z")
     end
@@ -63,17 +63,17 @@ module BatchConnect::SessionsHelper
     content_tag(:p) do
       if session.starting? || session.running?
         if time_limit && time_used
-          concat content_tag(:strong, t('dashboard.batch_connect.sessions.stats.time_remaining'))
+          concat content_tag(:strong, t('dashboard.tr.batch_connect_sessions_stats_time_remaining'))
           concat " "
           concat distance_of_time_in_words(time_limit - time_used, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)
         elsif time_used
-          concat content_tag(:strong, t('dashboard.batch_connect.sessions.stats.time_used'))
+          concat content_tag(:strong, t('dashboard.tr.batch_connect_sessions_stats_time_used'))
           concat " "
           concat distance_of_time_in_words(time_used, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)
         end
       else  # not starting or running
         if time_limit
-          concat content_tag(:strong, t('dashboard.batch_connect.sessions.stats.time_requested'))
+          concat content_tag(:strong, t('dashboard.tr.batch_connect_sessions_stats_time_requested'))
           concat " "
           concat distance_of_time_in_words(time_limit, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)
         end
@@ -83,15 +83,15 @@ module BatchConnect::SessionsHelper
 
   def host(session)
     content_tag(:p) do
-      concat content_tag(:strong, t('dashboard.batch_connect.sessions.stats.host'))
+      concat content_tag(:strong, t('dashboard.batch_connect_sessions_stats_host'))
       concat " "
-      concat session.connect.host || t('dashboard.batch_connect.sessions.stats.undetermined_host')
+      concat session.connect.host || t('dashboard.tr.batch_connect_sessions_stats_undetermined_host')
     end if session.running?
   end
 
   def id(session)
     content_tag(:p) do
-      concat content_tag(:strong, t('dashboard.batch_connect.sessions.stats.session_id'))
+      concat content_tag(:strong, t('dashboard.tr.batch_connect_sessions_stats_session_id'))
       concat " "
       concat(
         link_to(
@@ -135,12 +135,12 @@ module BatchConnect::SessionsHelper
 
   def delete(session)
     link_to(
-      icon("fas", "trash-alt", t('dashboard.batch_connect.sessions.delete.title'), class: "fa-fw"),
+      icon("fas", "trash-alt", t('dashboard.tr.batch_connect_sessions_delete_title'), class: "fa-fw"),
       session,
       method: :delete,
       class: "btn btn-danger pull-right btn-delete",
-      title: t('dashboard.batch_connect.sessions.delete.hover'),
-      data: { confirm: t('dashboard.batch_connect.sessions.delete.confirm'), toggle: "tooltip", placement: "bottom"}
+      title: t('dashboard.tr.batch_connect_sessions_delete_hover'),
+      data: { confirm: t('dashboard.tr.batch_connect_sessions_delete_confirm'), toggle: "tooltip", placement: "bottom"}
     )
   end
 
@@ -156,10 +156,10 @@ module BatchConnect::SessionsHelper
       errors.keys.each do |key|
         case key
         when :submit
-          concat content_tag(:h4, t('dashboard.batch_connect.sessions.errors.submission'))
+          concat content_tag(:h4, t('dashboard.tr.batch_connect_sessions_errors_submission'))
           concat content_tag(:pre, errors[key].first)
         when :stage
-          concat content_tag(:h4, t('dashboard.batch_connect.sessions.errors.staging'))
+          concat content_tag(:h4, t('dashboard.tr.batch_connect_sessions_errors_staging'))
           concat content_tag(:pre, errors[key].first)
         else
           errors[key].each { |m| concat content_tag(:h4, m) }

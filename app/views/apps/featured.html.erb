@@ -3,11 +3,11 @@
     <%= render partial: 'shared/welcome' %>
 
     <% if @nav_groups.any? %>
-    <p class="lead"><%= t('dashboard.sharing.welcome_msg_html') %></p>
+    <p class="lead"><%= t('dashboard.tr.sharing_welcome_msg_html') %></p>
     <% end %>
     <%= render partial: "catalog_link" %>
 
-    <%= render(partial: "group", collection: @groups) || t('dashboard.sharing.no_shared_apps_html') %>
+    <%= render(partial: "group", collection: @groups) || t('dashboard.tr.sharing_no_shared_apps_html') %>
   </div>
   <div class="col-md-3">
     <%# This assumes @motd_file responds to `to_partial_path` %>

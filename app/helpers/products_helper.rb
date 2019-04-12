@@ -2,9 +2,9 @@ module ProductsHelper
 
   def products_title(type)
     if type == :dev
-      "My Sandbox Apps (Development)"
+      t('dashboard.tr.nav_develop_my_sandbox_apps_dev')
     elsif type == :usr
-      "My Shared Apps (Production)"
+      t('dashboard.tr.nav_develop_my_sandbox_apps_prod')
     else
       "Undefined Title"
     end
