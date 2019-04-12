@@ -1,15 +1,8 @@
-<h2>A problem occurred while initializing your data for this app.</h2>
-
-<p class="lead">
-At your own risk you can still <a href="<%= @app_url %>">open the app</a> 
-or you can just go <a href="<%= root_path %>">back to the dashboard</a>
-</p>
-
-<p>Share this with the developer of your app:
-The setup production script is supposed to be idempotent and is run each time 
-the user opens the app through the dashboard.</p>
-
-<h4>Exception: <%= @exception.class %></h4>
-<pre><%= @exception.message %></pre>
-<h4>Stack trace:</h4>
-<pre><%= @exception.backtrace.join("\n") %></pre>
+<%= t(  'dashboard.apps_setup_failure_html',
+        app_url: @app_url,
+        home_url: root_path,
+        exception_class: @exception.class,
+        exception_message: @exception.message,
+        exception_trace: @exception.backtrace.join("\n")
+      )
+%>

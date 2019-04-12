@@ -202,13 +202,13 @@ class Quota
 
   def to_s
     if @resource_type == "file"
-      msg = "Using #{number_to_human(@total_usage).downcase} files of quota #{number_to_human(@limit).downcase} files"
+      msg = I18n.translate('dashboard.quota_file', used: number_to_human(@total_usage).downcase, available: number_to_human(@limit).downcase)
       return msg unless self.shared?
-      return msg + " (#{number_to_human(@user_usage).downcase} files are yours)"
+      return msg + " #{I18n.translate('dashboard.quota_file_shared', used_exclusive: number_to_human(@user_usage).downcase)}"
     elsif @resource_type == "block"
-      msg = "Using #{number_to_human_size(@total_usage * BLOCK_SIZE)} of quota #{number_to_human_size(@limit * BLOCK_SIZE)}"
+      msg = I18n.translate('dashboard.quota_block', used: number_to_human_size(@total_usage * BLOCK_SIZE), available: number_to_human_size(@limit * BLOCK_SIZE))
       return msg unless self.shared?
-      return msg + " (#{number_to_human_size(@user_usage * BLOCK_SIZE)} are yours)"
+      return msg + " #{I18n.translate('dashboard.quota_block_shared', used_exclusive: number_to_human_size(@user_usage * BLOCK_SIZE))}"
     end
   end
 end

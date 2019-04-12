@@ -51,7 +51,7 @@ module BatchConnect::SessionContextsHelper
         end
       )
       concat content_tag(:span, opts[:help], class: "help-block") if opts[:help]
-      concat button_tag("Reset Resolution", id: "#{id}_reset", type: "button", class: "btn btn-default")
+      concat button_tag(t('dashboard.batch_connect_form_reset_resolution'), id: "#{id}_reset", type: "button", class: "btn btn-default")
       concat(
         content_tag(:script) do
           <<-EOT.html_safe
