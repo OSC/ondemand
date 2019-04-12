@@ -100,6 +100,14 @@ class ConfigurationSingleton
   def whitelist_paths
     ENV['WHITELIST_PATH'].to_s.strip.split(":")
   end
+  
+  def locale
+    (ENV['OOD_LOCALE'] || I18n.default_locale).to_sym
+  end
+
+  def locales_root
+    Pathname.new(ENV['OOD_LOCALES_ROOT'] || "/etc/ood/config/locales")
+  end
 
   # Permit sites to disable Markdown rendering of Template notes
   def render_template_notes_as_markdown?
