@@ -6,12 +6,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.33] - 2019-04-17
 ### Added
-- Added support for fetching quota from a URL
 - Added app title to noVNC launch button
+- Added BatchConnect app version to new session form
+- Added I18n hooks and an initial OSC/English locale
+- Added OOD and Dashboard version to footer
+- Added support for fetching quota from a URL
 - Allow BatchConnect applications to raise errors that can be shown to users
 
 ### Fixed
+- Handled file not found errors with Announcements and MOTDs
 - Updated Gems to address CVEs
 
 ## [1.32.0] - 2019-02-07
@@ -478,7 +484,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.32.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.33.0...HEAD
+[1.33.0]: https://github.com/OSC/ood-dashboard/compare/v1.32.0...v1.33.0
 [1.32.0]: https://github.com/OSC/ood-dashboard/compare/v1.31.0...v1.32.0
 [1.31.0]: https://github.com/OSC/ood-dashboard/compare/v1.30.3...v1.31.0
 [1.30.3]: https://github.com/OSC/ood-dashboard/compare/v1.30.2...v1.30.3
