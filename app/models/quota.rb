@@ -46,11 +46,7 @@ class Quota
       q = []
       params["quotas"].each do |quota|
         # If individual quota data points include a timestamp, use that instead of the global source timestamp
-        if quota.key?("timestamp")
-          time = quota["timestamp"]
-        else
-          time = params["timestamp"]
-        end
+        time = quota["timestamp"] || params["timestamp"]
         q += create_both_quota_types(quota.merge "updated_at" => time) if user == quota["user"]
       end
       q

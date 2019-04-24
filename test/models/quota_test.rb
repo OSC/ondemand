@@ -127,4 +127,16 @@ class QuotaTest < ActiveSupport::TestCase
 
     assert_equal [], quotas, "Should have handled exception and returned 0 quotas"
   end
+
+  test "per quota timestamp" do
+    quota_file = Pathname.new "#{Rails.root}/test/fixtures/quota.json"
+
+    # per quota timestamp
+    quotas = Quota.find(quota_file, 'djohnson')
+    assert_equal 1546456000, quotas.first.updated_at.to_i
+
+    # global timestamp
+    quotas = Quota.find(quota_file, 'efranz')
+    assert_equal 1546455993, quotas.first.updated_at.to_i
+  end
 end
