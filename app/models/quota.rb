@@ -1,6 +1,5 @@
 # This describes disk quota utilization for a given user and volume
-require 'net/http'
-require 'uri'
+require 'open-uri'
 
 class Quota
   class InvalidQuotaFile < StandardError; end
@@ -52,29 +51,19 @@ class Quota
     private
 
     def read_file(quota_path)
-      # Attempt to convert path into a URI
-      if quota_path.instance_of?(String) and quota_path.match(/^https?:/)
-        uri = URI.parse(quota_path)
-        # If it is a URI, and it is http:// or https://
-        begin
-          raw = Net::HTTP.get(uri)
-        rescue StandardError => e
-            # There are a million ways this could go wrong, assume configured correctly and is temporary issue (e.g., not a URL typo).
-            Rails.logger.error("Quota URI failed to return data: #{e.message}")
-            # Bail with empty results. Don't break portal because web service is down.
-            return nil
-        end
-      else
-        # If not a URL, assume it is a local file and attempt to read.
-        # If we're fed a string, convert to Pathname. Otherwise, use as is.
-        if quota_path.instance_of?(String)
-          quota_path = Pathname.new(quota_path)
-        end
-        # Assume this always works, unless configured wrong, in which case don't attempt to catch.
-        raw = quota_path.read
-      end
+      # open-uri can handle Strings that are full paths, http and https URLs
+      open(quota_path).read
 
-      raw
+    #TODO:
+    # rescue Errno::ENOENT => e
+    #   # failed to read quota file
+    # rescue OpenURI::HTTPError => e
+    #   # failed to read HTTP file
+    rescue StandardError => e
+      # There are a million ways this could go wrong, assume configured correctly and is temporary issue (e.g., not a URL typo).
+      Rails.logger.error("Quota URI #{quota_path} failed to return data: #{e.message}")
+      # Bail with empty results. Don't break portal because web service is down.
+      return nil
     end
 
     # Parse JSON object using version 1 formatting
