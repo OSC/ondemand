@@ -27,7 +27,6 @@ class Quota
       # Attempt to parse raw JSON into an object
       json = JSON.parse(raw)
 
-      Rails.logger.error("#{json}")
       # Parse JSON object into quota data
       begin
         case json["version"].to_i
