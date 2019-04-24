@@ -17,7 +17,6 @@ class Quota
     #
     # KeyError and JSON::ParserErrors shall be non-fatal errors
     def find(quota_path, user)
-      user  = user && user.to_s
       raw = open(quota_path).read
       return [] if raw.nil?
 
@@ -52,7 +51,7 @@ class Quota
         else
           time = params["timestamp"]
         end
-        q += create_both_quota_types(quota.merge "updated_at" => time) if !user || user == quota["user"]
+        q += create_both_quota_types(quota.merge "updated_at" => time) if user == quota["user"]
       end
       q
     end
