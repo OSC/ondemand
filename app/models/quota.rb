@@ -1,6 +1,7 @@
 # This describes disk quota utilization for a given user and volume
 require 'net/http'
 require 'uri'
+
 class Quota
   class InvalidQuotaFile < StandardError; end
 
@@ -21,34 +22,15 @@ class Quota
 
       quotas = []
 
-      # Attempt to convert path into a URI
-      if quota_path.instance_of?(String) and quota_path.match(/^https?:/)
-        uri = URI.parse(quota_path)
-        # If it is a URI, and it is http:// or https://
-        begin
-          raw = Net::HTTP.get(uri)
-        rescue StandardError => e
-            # There are a million ways this could go wrong, assume configured correctly and is temporary issue (e.g., not a URL typo).
-            Rails.logger.error("Quota URI failed to return data: #{e.message}")
-            # Bail with empty results. Don't break portal because web service is down.
-            return []
-        end
-      else
-        # If not a URL, assume it is a local file and attempt to read.
-        # If we're fed a string, convert to Pathname. Otherwise, use as is.
-        if quota_path.instance_of?(String)
-          quota_path = Pathname.new(quota_path)
-        end
-        # Assume this always works, unless configured wrong, in which case don't attempt to catch.
-        raw = quota_path.read
-      end
+      raw = read_file(quota_path)
+      return [] if raw.nil?
 
       # Attempt to parse raw JSON into an object
       begin
         json = JSON.parse(raw)
       rescue JSON::ParserError => e
         Rails.logger.error("Quota file is not limited JSON: #{e.message}")
-	return []
+        return []
       end
 
       Rails.logger.error("#{json}")
@@ -68,6 +50,32 @@ class Quota
     end
 
     private
+
+    def read_file(quota_path)
+      # Attempt to convert path into a URI
+      if quota_path.instance_of?(String) and quota_path.match(/^https?:/)
+        uri = URI.parse(quota_path)
+        # If it is a URI, and it is http:// or https://
+        begin
+          raw = Net::HTTP.get(uri)
+        rescue StandardError => e
+            # There are a million ways this could go wrong, assume configured correctly and is temporary issue (e.g., not a URL typo).
+            Rails.logger.error("Quota URI failed to return data: #{e.message}")
+            # Bail with empty results. Don't break portal because web service is down.
+            return nil
+        end
+      else
+        # If not a URL, assume it is a local file and attempt to read.
+        # If we're fed a string, convert to Pathname. Otherwise, use as is.
+        if quota_path.instance_of?(String)
+          quota_path = Pathname.new(quota_path)
+        end
+        # Assume this always works, unless configured wrong, in which case don't attempt to catch.
+        raw = quota_path.read
+      end
+
+      raw
+    end
 
     # Parse JSON object using version 1 formatting
     def find_v1(user, params)

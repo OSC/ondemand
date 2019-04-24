@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'net/http'
 
 class QuotaTest < ActiveSupport::TestCase
   setup do
@@ -104,5 +105,25 @@ class QuotaTest < ActiveSupport::TestCase
     assert_equal 973, file_quota.total_usage
     assert_equal "file", file_quota.resource_type
     assert_equal 1000000, file_quota.limit
+  end
+
+  test "loading fixtures from URL" do
+    quota_file = Pathname.new "#{Rails.root}/test/fixtures/quota.json"
+    Net::HTTP.stubs(:get).returns(quota_file.read)
+    quotas = Quota.find("https://url/to/quota.json", 'efranz')
+
+    assert_equal 4, quotas.count, "Should have found 4 quotas. The json file specifies 2 quota hashes, for 4 quotas - 2 file and 2 block quotas"
+    file_quota = quotas.find {|q| q.path.to_s == "/users/PND0005" }
+    assert file_quota, "Failed to find file quota for efranz and path /users/PND0005 in fixture"
+    assert_equal 973, file_quota.total_usage
+    assert_equal "file", file_quota.resource_type
+    assert_equal 1000000, file_quota.limit
+  end
+
+  test "handle error loading URL" do
+    Net::HTTP.stubs(:get).raises(StandardError, "404 file not found")
+    quotas = Quota.find("https://url/to/quota.json", 'efranz')
+
+    assert_equal [], quotas, "Should have handled exception and returned 0 quotas"
   end
 end
