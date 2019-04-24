@@ -21,16 +21,11 @@ class Quota
 
       quotas = []
 
-      raw = read_file(quota_path)
+      raw = open(quota_path).read
       return [] if raw.nil?
 
       # Attempt to parse raw JSON into an object
-      begin
-        json = JSON.parse(raw)
-      rescue JSON::ParserError => e
-        Rails.logger.error("Quota file is not limited JSON: #{e.message}")
-        return []
-      end
+      json = JSON.parse(raw)
 
       Rails.logger.error("#{json}")
       # Parse JSON object into quota data
@@ -46,25 +41,17 @@ class Quota
       end
 
       quotas
+    rescue StandardError => e
+      #FIXME: by design (we have test to confirm) that an invalid quota file results in invalid quota exception raised
+      # should we keep doing this? what is the behavior? does it remain unhandled? perhaps all reading and parsing errors
+      # should result in an empty quotas array and the log file with an error string
+      raise if e.class == InvalidQuotaFile
+
+      Rails.logger.error("Error #{e.class} when reading and parsing quota file #{quota_path} for user #{user}: #{e.message}")
+      []
     end
 
     private
-
-    def read_file(quota_path)
-      # open-uri can handle Strings that are full paths, http and https URLs
-      open(quota_path).read
-
-    #TODO:
-    # rescue Errno::ENOENT => e
-    #   # failed to read quota file
-    # rescue OpenURI::HTTPError => e
-    #   # failed to read HTTP file
-    rescue StandardError => e
-      # There are a million ways this could go wrong, assume configured correctly and is temporary issue (e.g., not a URL typo).
-      Rails.logger.error("Quota URI #{quota_path} failed to return data: #{e.message}")
-      # Bail with empty results. Don't break portal because web service is down.
-      return nil
-    end
 
     # Parse JSON object using version 1 formatting
     def find_v1(user, params)
