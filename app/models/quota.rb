@@ -18,28 +18,16 @@ class Quota
     # KeyError and JSON::ParserErrors shall be non-fatal errors
     def find(quota_path, user)
       user  = user && user.to_s
-
-      quotas = []
-
       raw = open(quota_path).read
       return [] if raw.nil?
 
       # Attempt to parse raw JSON into an object
       json = JSON.parse(raw)
 
-      # Parse JSON object into quota data
-      begin
-        case json["version"].to_i
-        when 1
-          quotas += find_v1(user, json)
-        else
-          raise InvalidQuotaFile.new("JSON version found was: #{json["version"].to_i}")
-        end
-      rescue KeyError => e
-        Rails.logger.error("Quota entry for user #{user} is missing expected parameter #{e.message}")
-      end
-
-      quotas
+      #FIXME: any validation of the structure here? otherwise we don't need the complexity of the code below
+      # until we have more than one quota version schema, which we do not
+      # so assume version is 1
+      find_v1(user, json)
     rescue StandardError => e
       #FIXME: by design (we have test to confirm) that an invalid quota file results in invalid quota exception raised
       # should we keep doing this? what is the behavior? does it remain unhandled? perhaps all reading and parsing errors
