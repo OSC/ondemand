@@ -36,7 +36,7 @@ class Quota
 
     # Parse JSON object using version 1 formatting
     def find_v1(user, params)
-      raise InvalidQuotaFile.new("Quota file with version 1 formatting missing quotas array section") unless params["quotas"].respond_to?(:each)
+      raise InvalidQuotaFile.new("Quota file expected to be a JSON object with quotas array section") unless params.is_a?(Hash) && params["quotas"].respond_to?(:each)
 
       q = []
       params["quotas"].each do |quota|

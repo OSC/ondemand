@@ -82,6 +82,16 @@ class QuotaTest < ActiveSupport::TestCase
     end
   end
 
+  test "handles InvalidQuotaFile exception for json array" do
+    Dir.mktmpdir do |dir|
+      quota_file = Pathname.new(dir).join('quota.json')
+      quota_file.write('[]')
+
+      Rails.logger.expects(:error).with(regexp_matches(/InvalidQuotaFile/))
+      assert_equal [], Quota.find(quota_file, 'efranz')
+    end
+  end
+
   test "handles KeyError for quota with missing path" do
     Dir.mktmpdir do |dir|
       quota_file = Pathname.new(dir).join('quota.json')
