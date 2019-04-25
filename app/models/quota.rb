@@ -28,11 +28,6 @@ class Quota
       # so assume version is 1
       find_v1(user, json)
     rescue StandardError => e
-      #FIXME: by design (we have test to confirm) that an invalid quota file results in invalid quota exception raised
-      # should we keep doing this? what is the behavior? does it remain unhandled? perhaps all reading and parsing errors
-      # should result in an empty quotas array and the log file with an error string
-      raise if e.class == InvalidQuotaFile
-
       Rails.logger.error("Error #{e.class} when reading and parsing quota file #{quota_path} for user #{user}: #{e.message}")
       []
     end

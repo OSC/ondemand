@@ -52,36 +52,33 @@ class QuotaTest < ActiveSupport::TestCase
     refute quota.send(:limit_invalid?, nil), 'Quota should not warn if limit is nil'
   end
 
-  test "invalid version raises InvalidQuotaFile exception" do
+  test "invalid version handles InvalidQuotaFile exception" do
     Dir.mktmpdir do |dir|
       quota_file = Pathname.new(dir).join('quota.json')
       quota_file.write('{"version": 2000}')
 
-      assert_raises Quota::InvalidQuotaFile do
-        Quota.find(quota_file, 'efranz')
-      end
+      Rails.logger.expects(:error).with(regexp_matches(/InvalidQuotaFile/))
+      assert_equal [], Quota.find(quota_file, 'efranz')
     end
   end
 
-  test "invalid json raises InvalidQuotaFile exception" do
+  test "invalid json handles InvalidQuotaFile exception" do
     Dir.mktmpdir do |dir|
       quota_file = Pathname.new(dir).join('quota.json')
       quota_file.write('{}')
 
-      assert_raises Quota::InvalidQuotaFile do
-        Quota.find(quota_file, 'efranz')
-      end
+      Rails.logger.expects(:error).with(regexp_matches(/InvalidQuotaFile/))
+      assert_equal [], Quota.find(quota_file, 'efranz')
     end
   end
 
-  test "json with missing quotas array raises InvalidQuotaFile exception" do
+  test "json with missing quotas array handles InvalidQuotaFile exception" do
     Dir.mktmpdir do |dir|
       quota_file = Pathname.new(dir).join('quota.json')
       quota_file.write('{"version": 1}')
 
-      assert_raises Quota::InvalidQuotaFile do
-        Quota.find(quota_file, 'efranz')
-      end
+      Rails.logger.expects(:error).with(regexp_matches(/InvalidQuotaFile/))
+      assert_equal [], Quota.find(quota_file, 'efranz')
     end
   end
 
