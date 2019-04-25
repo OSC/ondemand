@@ -18,7 +18,7 @@ class Quota
     # KeyError and JSON::ParserErrors shall be non-fatal errors
     def find(quota_path, user)
       raw = open(quota_path).read
-      return [] if raw.nil?
+      raise InvalidQuotaFile.new("No content returned when attempting to read quota file") if raw.nil? || raw.empty?
 
       # Attempt to parse raw JSON into an object
       json = JSON.parse(raw)
