@@ -22,11 +22,12 @@ class Quota
 
       # Attempt to parse raw JSON into an object
       json = JSON.parse(raw)
+      raise InvalidQuotaFile.new("Quota file expected to be a JSON object with quotas array section") unless json.is_a?(Hash) && json["quotas"].respond_to?(:each)
 
       #FIXME: any validation of the structure here? otherwise we don't need the complexity of the code below
       # until we have more than one quota version schema, which we do not
       # so assume version is 1
-      find_v1(user, json)
+      build_quotas(json["quotas"], json["timestamp"], user)
     rescue StandardError => e
       Rails.logger.error("Error #{e.class} when reading and parsing quota file #{quota_path} for user #{user}: #{e.message}")
       []
@@ -35,14 +36,10 @@ class Quota
     private
 
     # Parse JSON object using version 1 formatting
-    def find_v1(user, params)
-      raise InvalidQuotaFile.new("Quota file expected to be a JSON object with quotas array section") unless params.is_a?(Hash) && params["quotas"].respond_to?(:each)
-
+    def build_quotas(quota_hashes, updated_at, user)
       q = []
-      params["quotas"].each do |quota|
-        # If individual quota data points include a timestamp, use that instead of the global source timestamp
-        time = quota["timestamp"] || params["timestamp"]
-        q += create_both_quota_types(quota.merge "updated_at" => time) if user == quota["user"]
+      quota_hashes.each do |quota|
+        q += create_both_quota_types(quota.merge("updated_at" => quota.fetch("timestamp", updated_at))) if user == quota["user"]
       end
       q
     end
