@@ -1,6 +1,6 @@
 # This describes disk quota utilization for a given user and volume
-require 'net/http'
-require 'uri'
+require 'open-uri'
+
 class Quota
   class InvalidQuotaFile < StandardError; end
 
@@ -17,71 +17,29 @@ class Quota
     #
     # KeyError and JSON::ParserErrors shall be non-fatal errors
     def find(quota_path, user)
-      user  = user && user.to_s
-
-      quotas = []
-
-      # Attempt to convert path into a URI
-      if quota_path.instance_of?(String) and quota_path.match(/^https?:/)
-        uri = URI.parse(quota_path)
-        # If it is a URI, and it is http:// or https://
-        begin
-          raw = Net::HTTP.get(uri)
-        rescue StandardError => e
-            # There are a million ways this could go wrong, assume configured correctly and is temporary issue (e.g., not a URL typo).
-            Rails.logger.error("Quota URI failed to return data: #{e.message}")
-            # Bail with empty results. Don't break portal because web service is down.
-            return []
-        end
-      else
-        # If not a URL, assume it is a local file and attempt to read.
-        # If we're fed a string, convert to Pathname. Otherwise, use as is.
-        if quota_path.instance_of?(String)
-          quota_path = Pathname.new(quota_path)
-        end
-        # Assume this always works, unless configured wrong, in which case don't attempt to catch.
-        raw = quota_path.read
-      end
+      raw = open(quota_path).read
+      raise InvalidQuotaFile.new("No content returned when attempting to read quota file") if raw.nil? || raw.empty?
 
       # Attempt to parse raw JSON into an object
-      begin
-        json = JSON.parse(raw)
-      rescue JSON::ParserError => e
-        Rails.logger.error("Quota file is not limited JSON: #{e.message}")
-	return []
-      end
+      json = JSON.parse(raw)
+      raise InvalidQuotaFile.new("Quota file expected to be a JSON object with quotas array section") unless json.is_a?(Hash) && json["quotas"].respond_to?(:each)
 
-      Rails.logger.error("#{json}")
-      # Parse JSON object into quota data
-      begin
-        case json["version"].to_i
-        when 1
-          quotas += find_v1(user, json)
-        else
-          raise InvalidQuotaFile.new("JSON version found was: #{json["version"].to_i}")
-        end
-      rescue KeyError => e
-        Rails.logger.error("Quota entry for user #{user} is missing expected parameter #{e.message}")
-      end
-
-      quotas
+      #FIXME: any validation of the structure here? otherwise we don't need the complexity of the code below
+      # until we have more than one quota version schema, which we do not
+      # so assume version is 1
+      build_quotas(json["quotas"], json["timestamp"], user)
+    rescue StandardError => e
+      Rails.logger.error("Error #{e.class} when reading and parsing quota file #{quota_path} for user #{user}: #{e.message}")
+      []
     end
 
     private
 
     # Parse JSON object using version 1 formatting
-    def find_v1(user, params)
-      raise InvalidQuotaFile.new("Quota file with version 1 formatting missing quotas array section") unless params["quotas"].respond_to?(:each)
-
+    def build_quotas(quota_hashes, updated_at, user)
       q = []
-      params["quotas"].each do |quota|
-        # If individual quota data points include a timestamp, use that instead of the global source timestamp
-        if quota.key?("timestamp")
-          time = quota["timestamp"]
-        else
-          time = params["timestamp"]
-        end
-        q += create_both_quota_types(quota.merge "updated_at" => time) if !user || user == quota["user"]
+      quota_hashes.each do |quota|
+        q += create_both_quota_types(quota.merge("updated_at" => quota.fetch("timestamp", updated_at))) if user == quota["user"]
       end
       q
     end

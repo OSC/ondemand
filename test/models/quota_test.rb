@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'net/http'
 
 class QuotaTest < ActiveSupport::TestCase
   setup do
@@ -51,40 +52,47 @@ class QuotaTest < ActiveSupport::TestCase
     refute quota.send(:limit_invalid?, nil), 'Quota should not warn if limit is nil'
   end
 
-  test "invalid version raises InvalidQuotaFile exception" do
+  test "invalid version handles InvalidQuotaFile exception" do
     Dir.mktmpdir do |dir|
       quota_file = Pathname.new(dir).join('quota.json')
       quota_file.write('{"version": 2000}')
 
-      assert_raises Quota::InvalidQuotaFile do
-        Quota.find(quota_file, 'efranz')
-      end
+      Rails.logger.expects(:error).with(regexp_matches(/InvalidQuotaFile/))
+      assert_equal [], Quota.find(quota_file, 'efranz')
     end
   end
 
-  test "invalid json raises InvalidQuotaFile exception" do
+  test "handles InvalidQuotaFile exception for invalid json" do
     Dir.mktmpdir do |dir|
       quota_file = Pathname.new(dir).join('quota.json')
       quota_file.write('{}')
 
-      assert_raises Quota::InvalidQuotaFile do
-        Quota.find(quota_file, 'efranz')
-      end
+      Rails.logger.expects(:error).with(regexp_matches(/InvalidQuotaFile/))
+      assert_equal [], Quota.find(quota_file, 'efranz')
     end
   end
 
-  test "json with missing quotas array raises InvalidQuotaFile exception" do
+  test "handles InvalidQuotaFile exception for json with missing quotas array " do
     Dir.mktmpdir do |dir|
       quota_file = Pathname.new(dir).join('quota.json')
       quota_file.write('{"version": 1}')
 
-      assert_raises Quota::InvalidQuotaFile do
-        Quota.find(quota_file, 'efranz')
-      end
+      Rails.logger.expects(:error).with(regexp_matches(/InvalidQuotaFile/))
+      assert_equal [], Quota.find(quota_file, 'efranz')
     end
   end
 
-  test "json with missing path handles KeyError" do
+  test "handles InvalidQuotaFile exception for json array" do
+    Dir.mktmpdir do |dir|
+      quota_file = Pathname.new(dir).join('quota.json')
+      quota_file.write('[]')
+
+      Rails.logger.expects(:error).with(regexp_matches(/InvalidQuotaFile/))
+      assert_equal [], Quota.find(quota_file, 'efranz')
+    end
+  end
+
+  test "handles KeyError for quota with missing path" do
     Dir.mktmpdir do |dir|
       quota_file = Pathname.new(dir).join('quota.json')
       quota_file.write('{"version": 1, "quotas": [ { "user":"efranz" }]}')
@@ -104,5 +112,38 @@ class QuotaTest < ActiveSupport::TestCase
     assert_equal 973, file_quota.total_usage
     assert_equal "file", file_quota.resource_type
     assert_equal 1000000, file_quota.limit
+  end
+
+  test "loading fixtures from URL" do
+    quota_file = Pathname.new "#{Rails.root}/test/fixtures/quota.json"
+    # stub open with an object you can call read on
+    Quota.stubs(:open).with("https://url/to/quota.json").returns(quota_file)
+    quotas = Quota.find("https://url/to/quota.json", 'efranz')
+
+    assert_equal 4, quotas.count, "Should have found 4 quotas. The json file specifies 2 quota hashes, for 4 quotas - 2 file and 2 block quotas"
+    file_quota = quotas.find {|q| q.path.to_s == "/users/PND0005" }
+    assert file_quota, "Failed to find file quota for efranz and path /users/PND0005 in fixture"
+    assert_equal 973, file_quota.total_usage
+    assert_equal "file", file_quota.resource_type
+    assert_equal 1000000, file_quota.limit
+  end
+
+  test "handle error loading URL" do
+    Quota.stubs(:open).with("https://url/to/quota.json").raises(StandardError, "404 file not found")
+    quotas = Quota.find("https://url/to/quota.json", 'efranz')
+
+    assert_equal [], quotas, "Should have handled exception and returned 0 quotas"
+  end
+
+  test "per quota timestamp" do
+    quota_file = Pathname.new "#{Rails.root}/test/fixtures/quota.json"
+
+    # per quota timestamp
+    quotas = Quota.find(quota_file, 'djohnson')
+    assert_equal 1546456000, quotas.first.updated_at.to_i
+
+    # global timestamp
+    quotas = Quota.find(quota_file, 'efranz')
+    assert_equal 1546455993, quotas.first.updated_at.to_i
   end
 end
