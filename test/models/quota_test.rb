@@ -62,7 +62,7 @@ class QuotaTest < ActiveSupport::TestCase
     end
   end
 
-  test "invalid json handles InvalidQuotaFile exception" do
+  test "handles InvalidQuotaFile exception for invalid json" do
     Dir.mktmpdir do |dir|
       quota_file = Pathname.new(dir).join('quota.json')
       quota_file.write('{}')
@@ -72,7 +72,7 @@ class QuotaTest < ActiveSupport::TestCase
     end
   end
 
-  test "json with missing quotas array handles InvalidQuotaFile exception" do
+  test "handles InvalidQuotaFile exception for json with missing quotas array " do
     Dir.mktmpdir do |dir|
       quota_file = Pathname.new(dir).join('quota.json')
       quota_file.write('{"version": 1}')
@@ -82,7 +82,7 @@ class QuotaTest < ActiveSupport::TestCase
     end
   end
 
-  test "json with missing path handles KeyError" do
+  test "handles KeyError for quota with missing path" do
     Dir.mktmpdir do |dir|
       quota_file = Pathname.new(dir).join('quota.json')
       quota_file.write('{"version": 1, "quotas": [ { "user":"efranz" }]}')
