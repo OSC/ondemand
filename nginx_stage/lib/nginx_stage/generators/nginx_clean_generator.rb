@@ -37,7 +37,7 @@ module NginxStage
 
     add_option :remove_files do
       {
-        opt_args: ["-r", "--remove-files", "# Ensure pid and socket files are removed."],
+        opt_args: ["-r", "--rm-stale-files", "# Remove pid and socket files whose process is not running."],
         default: false
       }
     end
@@ -63,7 +63,7 @@ module NginxStage
               $stderr.puts o unless s.success?
             end
 
-            if remove_files
+            if remove_files && ! pid_path.running_process?
               pid_path.delete
               socket.delete
             end
