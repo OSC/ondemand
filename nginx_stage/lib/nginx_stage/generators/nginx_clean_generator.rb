@@ -35,6 +35,13 @@ module NginxStage
       }
     end
 
+    add_option :remove_files do
+      {
+        opt_args: ["-r", "--remove-files", "# Ensure pid and socket files are removed."],
+        default: false
+      }
+    end
+
     # Accepts `skip_nginx` as an option
     add_skip_nginx_support
 
@@ -43,7 +50,7 @@ module NginxStage
       NginxStage.active_users.each do |u|
         begin
           pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
-          raise StalePidFile, "stale pid file: #{pid_path}" unless pid_path.running_process?
+          raise StalePidFile, "stale pid file: #{pid_path}" unless pid_path.running_process? || remove_files
           socket = SocketFile.new NginxStage.pun_socket_path(user: u)
           if socket.sessions.zero? || force
             puts u
@@ -54,6 +61,11 @@ module NginxStage
                 *NginxStage.nginx_args(user: u, signal: :stop)
               )
               $stderr.puts o unless s.success?
+            end
+
+            if remove_files
+              pid_path.delete
+              socket.delete
             end
           end
         rescue

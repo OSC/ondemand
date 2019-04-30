@@ -1,15 +1,13 @@
+require 'pathname'
+
 module NginxStage
   # A class describing a Unix domain socket
   class SocketFile
-    # Path to Unix domain socket file
-    # @return [String] path to unix domain socket file
-    attr_reader :socket
-
     # @param socket [String] path to unix domain socket file
     # @raise [MissingSocketFile] if socket file doesn't exist in file system
     # @raise [InvalidSocketFile] if supplied file isn't a valid socket file
     def initialize(socket)
-      @socket = socket
+      @socket = Pathname.new(socket)
       raise MissingSocketFile, "missing socket file: #{socket}" unless File.exist?(socket)
       raise InvalidSocketFile, "invalid socket file: #{socket}" unless File.socket?(socket)
       @processes = get_processes
@@ -29,7 +27,20 @@ module NginxStage
     # Convert object to string
     # @return [String] path to socket file
     def to_s
-      socket
+      @socket.to_s
+    end
+
+    # Path to Unix domain socket file
+    # @return [String] path to unix domain socket file
+    def socket
+      @socket.to_s
+    end
+
+    # Delete the socket from the file system
+    def delete
+      @socket.delete
+    rescue
+      $stderr.puts "Unable to delete socket file at #{socket}"
     end
 
     private
