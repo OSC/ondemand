@@ -40,9 +40,9 @@ GEM
     arel (6.0.4)
     autoprefixer-rails (6.7.7.2)
       execjs
-    bootstrap-sass (3.3.5)
-      autoprefixer-rails (>= 5.0.0.1)
-      sass (>= 3.2.19)
+    bootstrap-sass (3.4.1)
+      autoprefixer-rails (>= 5.2.1)
+      sassc (>= 2.0.0)
     builder (3.2.3)
     coffee-rails (4.0.1)
       coffee-script (>= 2.2.0)
@@ -176,7 +176,7 @@ PLATFORMS
 
 DEPENDENCIES
   autoprefixer-rails (~> 6.3)
-  bootstrap-sass (= 3.3.5)
+  bootstrap-sass (~> 3.4.1)
   coffee-rails (~> 4.0.0)
   dotenv-rails (~> 2.1)
   font-awesome-sass
