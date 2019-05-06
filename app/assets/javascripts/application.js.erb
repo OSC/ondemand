@@ -18,7 +18,13 @@
 //= require lightbox2/javascripts/lightbox
 //= require oboe/oboe-browser.min
 //= require datatables_plugins/api/processing
+//= require momentjs/moment.min.js
 //= require_tree .
+
+function human_time(seconds) {
+    return moment.utc(seconds * 1000).format('HH:mm:ss');
+}
+
 
 function fetch_table_data(table, options){
   if (!options) options = {};
@@ -183,7 +189,7 @@ function create_datatable(options){
                 className:          "small text-right",
                 "autoWidth":        true,
                 "render":           function(data) {
-                    return "<span title="+data+">"+data+"</span>";
+                    return "<span title="+human_time(data)+">"+human_time(data)+"</span>";
                 }
             },
             {
