@@ -90,7 +90,7 @@ class JobsJsonRequestHandler
   #   PBSPro: nil
   #   Slurm:  '(null)'
   #   SGE:    nil
-  #   LSF:    ???
+  #   LSF:    ???  # defaults to 'default'
   #   Torque: ???
   def accounting_id_is_null?(accounting_id)
     accounting_id.nil? || accounting_id == '(null)'
