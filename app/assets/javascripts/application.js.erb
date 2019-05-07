@@ -18,13 +18,18 @@
 //= require lightbox2/javascripts/lightbox
 //= require oboe/oboe-browser.min
 //= require datatables_plugins/api/processing
-//= require momentjs/moment.min.js
 //= require_tree .
 
-function human_time(seconds) {
-    return moment.utc(seconds * 1000).format('HH:mm:ss');
-}
+function human_time(seconds_total) {
+  let hours = parseInt(seconds_total / 3600), 
+      minutes = parseInt((seconds_total - (hours * 3600)) / 60),
+      seconds = parseInt((seconds_total - (3600 * hours) - (60 * minutes))),
+      hours_str = ('' + hours).padStart(2, "0"),
+      minutes_str = ('' + minutes).padStart(2, "0"),
+      seconds_str = ('' + seconds).padStart(2, "0");
 
+  return `${hours_str}:${minutes_str}:${seconds_str}`;
+}
 
 function fetch_table_data(table, options){
   if (!options) options = {};
