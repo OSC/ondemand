@@ -76,7 +76,7 @@ class JobsJsonRequestHandler
         cluster: cluster.id.to_s,
         pbsid: j.id,
         jobname: j.job_name,
-        account: accounting_id_is_null?(j.accounting_id) ? '' : j.accounting_id,
+        account: j.accounting_id.to_s,
         queue: j.queue_name,
         walltime_used: j.wallclock_time,
         username: j.job_owner,
@@ -84,16 +84,6 @@ class JobsJsonRequestHandler
         nodes: j.allocated_nodes.map{ |node| node.name }.reject(&:blank?)
       }
     }
-  end
-
-  # Determine if accounting_id is a null value
-  #   PBSPro: nil
-  #   Slurm:  '(null)'
-  #   SGE:    nil
-  #   LSF:    ???
-  #   Torque: ???
-  def accounting_id_is_null?(accounting_id)
-    accounting_id.nil? || accounting_id == '(null)'
   end
 
   # FIXME: remove when LSF and PBSPro are confirmed to handle job ids gracefuly
