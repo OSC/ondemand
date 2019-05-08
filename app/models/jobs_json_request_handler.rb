@@ -76,7 +76,7 @@ class JobsJsonRequestHandler
         cluster: cluster.id.to_s,
         pbsid: j.id,
         jobname: j.job_name,
-        account: j.accounting_id,
+        account: j.accounting_id.to_s,
         queue: j.queue_name,
         walltime_used: j.wallclock_time,
         username: j.job_owner,
