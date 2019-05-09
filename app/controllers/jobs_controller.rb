@@ -67,12 +67,12 @@ class JobsController < ApplicationController
   # Get the extended data for a particular job.
   #
   # @param [String] jobid The id of the job
-  # @param [String] cluster The id of the cluster as string
+  # @param [OodCore::Cluster] cluster The selected cluster instance from OODClusters
   #
   # @return [Jobstatusdata] The job data as a Jobstatusdata object
   def get_job(jobid, cluster)
     begin
-      data = OODClusters[cluster].job_adapter.info(jobid)
+      data = cluster.job_adapter.info(jobid)
 
       raise OodCore::JobAdapterError if data.native.nil?
       Jobstatusdata.new(data, cluster, true)
