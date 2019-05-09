@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.9.1] - 2019-05-09
+### Fixed
+- Fixed bug when showing a job's extended details
+
 ## [1.9.0] - 2019-05-03
 ## Changed
 - Updated [ood_core](https://github.com/OSC/ood_core/blob/master/CHANGELOG.md#090---2019-05-04)
@@ -151,7 +155,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove OSC copyright from footer
 - Remove deprecation warnings
 
-[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.9.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.9.1...HEAD
+[1.9.1]: https://github.com/OSC/ood-activejobs/compare/v1.9.0...v1.9.1
 [1.9.0]: https://github.com/OSC/ood-activejobs/compare/v1.8.3...v1.9.0
 [1.8.3]: https://github.com/OSC/ood-activejobs/compare/v1.8.2...v1.8.3
 [1.8.2]: https://github.com/OSC/ood-activejobs/compare/v1.8.1...v1.8.2
