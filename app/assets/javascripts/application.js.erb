@@ -34,7 +34,6 @@ function human_time(seconds_total) {
 function handleErrors(response) {
     if (!response.ok) {
         table.processing(false);
-        show_errors(["Request for jobs failed with status code: " + response.statusText]);
         throw Error(response.statusText);
     }
     return response;
@@ -63,7 +62,7 @@ function fetch_table_data(table, options){
   .then(handleErrors)
   .then((response) => {
     table.processing(true);
-    return ndjson(response.body);
+    return ndjsonStream(response.body);
   })
   .then((stream) => {
     const reader = stream.getReader();
