@@ -16,7 +16,7 @@
 //= require dataTables/jquery.dataTables
 //= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
 //= require lightbox2/javascripts/lightbox
-//= require ndjson/ndjsonStream
+//= require oboe/oboe-browser.min
 //= require datatables_plugins/api/processing
 //= require_tree .
 
@@ -30,59 +30,49 @@ function human_time(seconds_total) {
 
   return hours_str + ":" + minutes_str + ":" + seconds_str;
 }
-//Check if response returns 200
-function handleResponseErrors(response) {
-    if (!response.ok) {
-        table.processing(false);
-        throw Error(response.statusText);
-    }
-    return response;
-}
-//check if errors are in the response
-function processJobsNdjsonObject(obj) {
-    if (Array.isArray(obj)) {
-        table.rows.add(obj).draw()
-    } else {
-        show_errors([obj])
-    }
-}
 
 function fetch_table_data(table, options){
   if (!options) options = {};
   if (!options.doneCallback) options.doneCallback = null;
   if (!options.base_uri) options.base_uri = window.location.pathname;
 
-  fetch(options.base_uri + '/jobs.json?' + get_request_params(), {
+  oboe({
+    url: options.base_uri + '/jobs.json?'+get_request_params(),
     headers: {
-        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-        'X-Requested-With': 'XMLHttpRequest',
-        'Content-Type': 'application/json'
+      'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
+      'X-Requested-With': 'XMLHttpRequest',
+      'Content-Type': 'application/json'
     }
-  })
-  .then(handleResponseErrors)
-  .then((response) => {
+  }).start(function(){
     table.processing(true);
-    return ndjsonStream(response.body);
-  })
-  .then((stream) => {
-    const reader = stream.getReader();
-    let read;
-    reader.read().then(read = (result) => {
-        if (result.done) {
-            table.processing(false);
-            if (options.doneCallback) {
-                options.doneCallback();
-            }
-            return;
-        }
-        //result.value is the json response
-        processJobsNdjsonObject(result.value);
-        //recurse through stream
-        reader.read().then( read );
-    })
-  }).catch(e => {
-    show_errors(["An error occured, " + e]);
-  })
+  }).node('data.*', function(jobs){
+    // data is an array of arrays, where each array has one or more jobs
+    // this is called once for each array of jobs
+    table.rows.add(jobs).draw();
+    table.processing(false);
+  }).node('errors.*', function(error){
+    // errors is a single array of error messages
+    // this is called once for each error msg
+    show_errors([error]);
+  }).done(function(){
+    table.processing(false);
+
+    if(options.doneCallback){
+       options.doneCallback();
+    }
+  }).fail(function(errorReport){
+    if(errorReport.statusCode != null){
+      show_errors(["Request for jobs failed with status code: " + errorReport.statusCode]);
+    }
+    else{
+      //FIXME: this error appears even when the above 404 occurs, for example
+      // that is because a 404 responce for json request returns a plain text response
+      // and parsing that as json fails
+       show_errors(["Request for jobs failed due to body parsing error."])
+    }
+
+    table.processing(false);
+  });
 }
 
 function status_label(status){
