@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ## [1.9.1] - 2019-05-09
 ### Fixed
+- Fixed showing `'null'` when for `OodCore::Job::Info#account_id` was nil
+- Fixed showing integer Time Used instead of `HH:MM:SS`
 - Fixed bug when showing a job's extended details
 
 ## [1.9.0] - 2019-05-03
