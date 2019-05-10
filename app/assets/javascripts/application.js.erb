@@ -30,20 +30,20 @@ function human_time(seconds_total) {
 
   return `${hours_str}:${minutes_str}:${seconds_str}`;
 }
-
-function handleErrors(response) {
+//Check if response returns 200
+function handleResponseErrors(response) {
     if (!response.ok) {
         table.processing(false);
         throw Error(response.statusText);
     }
     return response;
 }
-
-function checkResponse(type) {
-    if (Array.isArray(type)) {
-        table.rows.add(type).draw()
+//check if errors are in the response
+function processJobsNdjsonObject(obj) {
+    if (Array.isArray(obj)) {
+        table.rows.add(obj).draw()
     } else {
-        show_errors([type])
+        show_errors([obj])
     }
 }
 
@@ -59,7 +59,7 @@ function fetch_table_data(table, options){
         'Content-Type': 'application/json'
     }
   })
-  .then(handleErrors)
+  .then(handleResponseErrors)
   .then((response) => {
     table.processing(true);
     return ndjsonStream(response.body);
@@ -75,7 +75,9 @@ function fetch_table_data(table, options){
             }
             return;
         }
-        checkResponse(result.value);
+        //result.value is the json response
+        processJobsNdjsonObject(result.value);
+        //recurse through stream
         reader.read().then( read );
     })
   }).catch(e => {
