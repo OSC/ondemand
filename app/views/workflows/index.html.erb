@@ -64,7 +64,7 @@
       </div>
 
       <div class="panel-body">
-        <table id="job-list-table" class="table data-table" style="width:100%">
+        <table id="job-list-table" class="table data-table" style="width:100%; table-layout: fixed;">
           <thead>
           <tr>
             <th>Created</th>
@@ -82,9 +82,9 @@
           <% @workflows.each do |workflow| %>
               <tr class="job-row<%= " missing-cluster" unless workflow.batch_host_exists? %><%= " missing-dir" unless workflow.staged_dir_exists? %><%= " missing-script" unless workflow.script_name && workflow.staged_script_exists? %>" id="<%= workflow.id %>">
                 <td data-sort="<%= workflow.id %>"><small><%= local_time(workflow.created_at) %></small></td>
-                <td class="job-name"><strong><%= workflow.name %></strong></td>
-                <td><%= workflow.pbsid %></td>
-                <td><%= cluster_title workflow.batch_host %></td>
+                <td><span title="<%= workflow.name %>"><strong><%= workflow.name %></strong></span></td>
+                <td><span title="<%= workflow.pbsid %>"><%= workflow.pbsid %></span></td>
+                <td><span title="<%= cluster_title workflow.batch_host %>"><%= cluster_title workflow.batch_host %></span></td>
                 <td id="status_label_<%= workflow.id %>"><%= status_label(workflow) %></td>
                 <!-- FILE_SIZE_FEATURE
                   <td><%# number_to_human_size(Filesystem.new.path_size(workflow.staged_dir)) %></td>

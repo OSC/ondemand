@@ -5,25 +5,31 @@
 jQuery ->
   # Set up datatable
   $('.data-table').DataTable
+    autoWidth: true
     order: [0, 'desc'],
     stateSave: true,
     columnDefs: [{
       orderable: false
       targets: 'no-sort'
-    },
-    { "width": "50%", "targets": 1 }]
+    }, {
+      width: '10%',
+      targets: [3, 4]
+    }, {
+      width: '15%',
+      targets: 0
+    }]
     iDisplayLength: 25
 
 jQuery ->
 # Set up datatable
   $('.data-table-new-job').DataTable
+    autoWidth: true
     order: [2, 'asc'],
     stateSave: true,
     columnDefs: [{
       orderable: false
       targets: 'no-sort'
-    },
-    { "width": "50%", "targets": 0 }]
+    }]
     iDisplayLength: 10
 
 jQuery ->
