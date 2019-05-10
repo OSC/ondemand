@@ -39,15 +39,13 @@ class JobsJsonRequestHandler
 
     errors = []
     count = 0
-    response.stream.write '{"data":[' # data is now an array of arrays']}'
 
     clusters.each_with_index do |cluster|
       begin
         job_info_enumerator(cluster).each_slice(3000) do |jobs|
           jobs = convert_info_filtered(filter.apply(jobs), cluster)
 
-          response.stream.write "," if count > 0
-          response.stream.write jobs.to_json
+          response.stream.write jobs.to_json + "\n"
 
           controller.logger.debug "wrote jobs to stream: #{jobs.count}"
           count += 1;
@@ -61,7 +59,7 @@ class JobsJsonRequestHandler
 
     errors << "No clusters found for cluster id: #{cluster_id}" if clusters.to_a.empty?
 
-    response.stream.write '], "errors":' + errors.to_json + '}'
+    response.stream.write errors.to_json + "\n"
   ensure
     response.stream.close
   end
