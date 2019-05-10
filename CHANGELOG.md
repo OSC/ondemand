@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.4.3] - 2019-05-10
+### Changed
+- Updated [ood_core](https://github.com/OSC/ood_core/blob/master/CHANGELOG.md#093---2019-05-08) 
+
 ## [1.4.2] - 2019-05-03
 ### Changed
 - Updated [ood_core](https://github.com/OSC/ood_core/blob/master/CHANGELOG.md#090---2019-05-04) 
@@ -109,7 +113,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Initial release!
 
-[Unreleased]: https://github.com/OSC/ood-fileeditor/compare/v1.4.2...HEAD
+[Unreleased]: https://github.com/OSC/ood-fileeditor/compare/v1.4.3...HEAD
+[1.4.3]: https://github.com/OSC/ood-fileeditor/compare/v1.4.2...v1.4.3
 [1.4.2]: https://github.com/OSC/ood-fileeditor/compare/v1.4.1...v1.4.2
 [1.4.1]: https://github.com/OSC/ood-fileeditor/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/OSC/ood-fileeditor/compare/v1.3.5...v1.4.0
