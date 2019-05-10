@@ -2,12 +2,19 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [2.14.0] - 2019-05-10
+### Changed
+- Updated [ood_core](https://github.com/OSC/ood_core/blob/v0.9.3/CHANGELOG.md)
+
+### Fixed
+- Fixed layout bug relating to ([#290](https://github.com/OSC/ood-myjobs/issues/290))
+
 ## [2.13.0] - 2019-04-17
 ### Added
 - Added ability to render HTML or Markdown in job template manifests ([#278](https://github.com/OSC/ood-myjobs/issues/278))
 - Added I18n hooks for Job Options with an initial OSC/English translation
 - Added placeholder for job array in job options
-- Added support for job arrays for LSF and PBSPro ([ood_core](https://github.com/OSC/ood_core/blob/master/CHANGELOG.md))
+- Added support for job arrays for LSF and PBSPro ([ood_core](https://github.com/OSC/ood_core/blob/v0.9.0/CHANGELOG.md))
 
 ### Fixed
 - Updated Gems
@@ -187,7 +194,8 @@ All notable changes to this project will be documented in this file.
 - UI enhancements
 
 
-[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.13.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-myjobs/compare/v2.14.0...HEAD
+[2.14.0]: https://github.com/OSC/ood-myjobs/compare/v2.13.0...v2.14.0
 [2.13.0]: https://github.com/OSC/ood-myjobs/compare/v2.12.0...v2.13.0
 [2.12.0]: https://github.com/OSC/ood-myjobs/compare/v2.11.0...v2.12.0
 [2.11.0]: https://github.com/OSC/ood-myjobs/compare/v2.10.2...v2.11.0
