@@ -6,13 +6,49 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.6.0] - 2019-05-10
+### Added
+- Added ability to render HTML or Markdown in job template manifests ([#278](https://github.com/OSC/ood-myjobs/issues/278))
+- Added I18n hooks to Job Composer for Job Options with an initial OSC/English locale
+- Added job array support for PBSPro and LSF
+- Added placeholder for job array in job options
+
+### Changed
+
+- Changed Shell to use the maintained `node-pty` instead of `pts.js`
+- Slurm adapter now returns `nil` instead of `'(null)'` for `OodCore::Job::Info#account_id`
+- Updated Gems to address CVEs
+- `nginx_stage` changed to always remove (and report removal of on `stderr`) stale Passenger PID and socket files ([#11](https://github.com/OSC/ondemand/issues/11))
+
 ### Fixed
+- Disabled warning in Job Composer about Gems not being eager loaded
 - Fixed a crash in nginx_stage relating to numeric values in pun_custom_env
+- Fixed Active Jobs showing `'null'` when for `OodCore::Job::Info#account_id` was nil
+- Fixed Active Jobs showing integer Time Used instead of `HH:MM:SS`
+- Fixed bug in `ood_core` live system test
+- Fixed bug with Slurm adapter when submit time is not available
+- Fixed bug with the live system test that impacted non-LSF systems
+- Fixed issue where Slurm comment field might break job info parsing
+- Fixed layout bug in Job Composer ([#290](https://github.com/OSC/ood-myjobs/issues/290))
+- Fixed possible crash when comparing two clusters if the id of one of the clusters is nil
+- Job Composer with Grid Engine will attempt to detect if the user has set the working directory, and if not will set it (matching behavior of other adapters)
+- Prevent long job names from breaking the Job Composer layout ([#290](https://github.com/OSC/ood-myjobs/issues/290))
+- Fixed bug where using integers as values in `pun_custom_env` caused a `TypeError` ([#26](https://github.com/OSC/ondemand/issues/26))
 
 ## [1.5.5] - 2019-02-18
+### Added
+- Added app title to noVNC launch button to Dashboard
+- Added BatchConnect app version to new session form
+- Added I18n hooks for Dashboard with an initial OSC/English locale
+- Added OOD and Dashboard version to footer
+- Added support for fetching quota from a URL
+- Allow BatchConnect applications to raise errors that can be shown to users
+
 ### Fixed
 - Fixed bug in Active Jobs that broke when cluster configs changed
 - Fixed bug in File Explorer when `OOD_SHELL` was an empty string
+- Handled file not found errors with Announcements and MOTDs
+- Updated Gems to address CVEs
 
 ## [1.5.4] - 2019-02-07
 ### Fixed
@@ -121,7 +157,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.5.5...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.6.0...HEAD
+[1.6.0]: https://github.com/OSC/ondemand/compare/v1.5.5...v1.6.0
 [1.5.5]: https://github.com/OSC/ondemand/compare/v1.5.4...v1.5.5
 [1.5.4]: https://github.com/OSC/ondemand/compare/v1.5.3...v1.5.4
 [1.5.3]: https://github.com/OSC/ondemand/compare/v1.5.2...v1.5.3
