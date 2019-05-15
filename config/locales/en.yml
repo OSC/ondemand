@@ -99,6 +99,8 @@ en:
     breadcrumbs_home: "Home"
     breadcrumbs_my_sessions: "My Interactive Sessions"
 
+    motd_title: "Message of the Day"
+
     nav_all_apps: "All Apps"
     nav_develop_docs: "Developer Documentation"
     nav_develop_my_sandbox_apps_dev: "My Sandbox Apps (Development)"
