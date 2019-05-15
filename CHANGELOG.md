@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.6.1] - 2019-05-15
+### Fixed
+- Fixed crashing bug in Dashboard
+
 ## [1.6.0] - 2019-05-10
 ### Added
 - Added ability to render HTML or Markdown in job template manifests ([#278](https://github.com/OSC/ood-myjobs/issues/278))
@@ -157,7 +161,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.6.0...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.6.1...HEAD
+[1.6.1]: https://github.com/OSC/ondemand/compare/v1.6.0...v1.6.1
 [1.6.0]: https://github.com/OSC/ondemand/compare/v1.5.5...v1.6.0
 [1.5.5]: https://github.com/OSC/ondemand/compare/v1.5.4...v1.5.5
 [1.5.4]: https://github.com/OSC/ondemand/compare/v1.5.3...v1.5.4
