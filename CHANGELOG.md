@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.33.3] - 2019-05-15
+### Fixed
+- Fixed more missing translations
+
 ## [1.33.2] - 2019-05-15
 ### Fixed
 - Fixed translation bug which broke the Dashboard when certain environment variables were set
@@ -491,7 +495,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.33.2...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.33.3...HEAD
+[1.33.3]: https://github.com/OSC/ood-dashboard/compare/v1.33.2...v1.33.3
 [1.33.2]: https://github.com/OSC/ood-dashboard/compare/v1.33.1...v1.33.2
 [1.33.1]: https://github.com/OSC/ood-dashboard/compare/v1.33.0...v1.33.1
 [1.33.0]: https://github.com/OSC/ood-dashboard/compare/v1.32.0...v1.33.0
