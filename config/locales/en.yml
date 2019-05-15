@@ -124,8 +124,11 @@ en:
     sharing_catalog_title: "App Catalog"
     sharing_no_shared_apps_html: |
       <strong>No custom shared apps available.</strong>
-    sharing_support_msg_html: |
+    sharing_catalog_msg_html: |
       <br>A subset of the apps available can be viewed on the %{catalog_link_tag}.
+    sharing_support_msg_html: |
+      If you don't see the app you are looking for, please
+      <a href="%{support_url}">contact support</a>.
     sharing_welcome_msg_html: |
       Cluster access applications are available from the dropdown menus in the navbar above.
       <br>Custom shared apps are available below.
