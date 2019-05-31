@@ -89,6 +89,9 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       # set seprate database path
       ENV['DATABASE_PATH'] = "/tmp/db.sqlite3"
       assert_equal "/tmp/db.sqlite3", ConfigurationSingleton.new.production_database_path.to_s
+
+      ENV['DATABASE_PATH'] = "~root/db.sqlite3"
+      assert_equal "/root/db.sqlite3", ConfigurationSingleton.new.production_database_path.to_s
     end
   end
 
