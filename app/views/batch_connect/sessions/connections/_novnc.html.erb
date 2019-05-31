@@ -1,2 +1,16 @@
-<%= link_to icon('fas', 'eye', t('dashboard.tr.batch_connect_sessions_novnc_launch', app_title: app_title)), novnc_link(connect), class: 'btn btn-primary', target: '_blank' %>
+<%= form_tag(asset_path("noVNC-1.0.0/vnc.html"), method: "get") do %>
+ <%= hidden_field_tag(:autoconnect, 'true') %>
+ <%= hidden_field_tag(:path, "rnode/#{connect.host}/#{connect.websocket}/websockify") %>
+ <%= hidden_field_tag(:resize, "remote") %>
+ <%= hidden_field_tag(:password, connect.password) %>
+ <p>Compression Setting: (-255 Low Compression, -247 High Compression)</p>
+ <%= text_field_tag(:compressionsetting) %>
+  <br />
+ <p>Quality Setting: (-32 Low Quality, -23 High Quality)</p>
+ <%= text_field_tag(:qualitysetting) %>
+<br />
+<br />
+ <%= submit_tag("Connect") %>
+<% end %>
+
 <%= link_to t('dashboard.tr.batch_connect_sessions_novnc_view_only'), novnc_link(connect, view_only: true), class: 'btn btn-default pull-right', target: '_blank' %>
