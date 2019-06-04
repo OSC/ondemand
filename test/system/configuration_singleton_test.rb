@@ -222,4 +222,12 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     ENV["APP_TOKEN"] = "MY/APP/TOKEN"
     assert_equal Pathname.new("~/ondemand/data/MY/APP/TOKEN").expand_path, ConfigurationSingleton.new.dataroot
   end
+
+  test "quota_paths correctly parses OOD_QUOTA_PATH when using files" do
+    ENV["OOD_QUOTA_PATH"] = "/path_a/quota.json:/path_b/quota.json"
+    assert_equal ["/path_a/quota.json", "/path_b/quota.json"], ConfigurationSingleton.new.quota_paths
+
+    ENV["OOD_QUOTA_PATH"] = "https://example.com/quota.json:ftp://path_b/quota.json"
+    assert_equal ["https://example.com/quota.json", "ftp://path_b/quota.json"], ConfigurationSingleton.new.quota_paths
+  end
 end
