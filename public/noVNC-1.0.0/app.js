@@ -7504,11 +7504,15 @@ RFB.prototype = {
 
         var compressionLevelDefault = _encodings.encodings.pseudoEncodingCompressLevel0 + 2;
 
-        //get the compression level query string or use set default if query returns null
-        var compressionLevel = urlParams.get('compressionsetting') || compressionLevelDefault;
+        // get the compression level query string or use set default if query returns null
+        // compressionsetting: 0-9
+        console.log('Compression Setting: ');
+        console.log(urlParams.get('compressionsetting'));
+        var compressionLevel = (urlParams.get('compressionsetting') === null) ? compressionLevelDefault : urlParams.get('compressionsetting') - 256;
 
-        //get the quality level query string or use set default if query returns null
-        var qualityLevel = urlParams.get('qualitysetting') || qualityLevelDefault;
+        // get the quality level query string or use set default if query returns null
+        // qualitysetting: 0-9
+        var qualityLevel = (urlParams.get('qualitysetting') === null) ? qualityLevelDefault : urlParams.get('qualitysetting') - 32;
 
 
         // In preference order

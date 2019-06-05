@@ -4,8 +4,8 @@
  <%= hidden_field_tag(:resize, "remote") %>
  <%= hidden_field_tag(:password, connect.password) %>
 
- <%= f.number_field(:compressionsetting, min: -255, max: -247, label: "Compression", help: "-255 (low) to -247 (high)") %>
- <%= f.number_field(:qualitysetting, min: -32, max: -23, label: "Quality", help: "-32 (low) to -23 (high)") %>
+ <%= f.number_field(:compressionsetting, min: 0, max: 9, value: 6, label: "Compression", help: "0 (low) to 9 (high)") %>
+ <%= f.number_field(:qualitysetting, min: 0, max: 9, value: 2, label: "Quality", help: "0 (low) to 9 (high)") %>
 
  <%= f.submit( t('dashboard.batch_connect_sessions_novnc_launch', app_title: app_title), class: 'btn btn-primary', :formtarget => "_blank") %>
  <%= link_to t('dashboard.batch_connect_sessions_novnc_view_only'), novnc_link(connect, view_only: true), class: 'btn btn-default pull-right', target: '_blank' %>
