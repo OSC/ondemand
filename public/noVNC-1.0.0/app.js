@@ -7506,8 +7506,6 @@ RFB.prototype = {
 
         // get the compression level query string or use set default if query returns null
         // compressionsetting: 0-9
-        console.log('Compression Setting: ');
-        console.log(urlParams.get('compressionsetting'));
         var compressionLevel = (urlParams.get('compressionsetting') === null) ? compressionLevelDefault : urlParams.get('compressionsetting') - 256;
 
         // get the quality level query string or use set default if query returns null
