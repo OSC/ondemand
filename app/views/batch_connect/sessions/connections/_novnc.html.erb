@@ -10,7 +10,7 @@
  <%= text_field_tag(:qualitysetting) %>
 <br />
 <br />
- <%= submit_tag("Connect") %>
+ <%= submit_tag("Connect", :formtarget => "_blank") %>
 <% end %>
 
 <%= link_to t('dashboard.tr.batch_connect_sessions_novnc_view_only'), novnc_link(connect, view_only: true), class: 'btn btn-default pull-right', target: '_blank' %>

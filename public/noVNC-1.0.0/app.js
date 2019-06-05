@@ -7500,9 +7500,9 @@ RFB.prototype = {
         //URLSearchParams parses through the query string in search bar
         var urlParams = new URLSearchParams(window.location.search);
 
-        var qualityLevelDefault = _encodings.encodings.psuedoEncodingQualityLevel0 + 6;
+        var qualityLevelDefault = _encodings.encodings.pseudoEncodingQualityLevel0 + 6;
         
-        var compressionLevelDefault = _encodings.encodings.psuedoEncodingCompressLevel0 + 2;
+        var compressionLevelDefault = _encodings.encodings.pseudoEncodingCompressLevel0 + 2;
 
         //get the compression level query string or use set default if query returns null
         var compressionLevel = urlParams.get('compressionsetting') || compressionLevelDefault; 
