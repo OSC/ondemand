@@ -11,6 +11,7 @@
 
     <link rel=stylesheet href="{{ prefix }}/css/urls.css">
     <!-- OSC_CUSTOM_CODE add custom bootstrap stylesheet path -->
+    <link rel=stylesheet href="{{ prefix }}/css/osc_bootstrap/bootstrap.css">
     <link rel=stylesheet href="{{ prefix }}/css/ood_bootstrap.css">
     <link rel=stylesheet href="{{ prefix }}/join:{{ css }}">
     <noscript>
@@ -19,6 +20,7 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
     <script>
         var jQuery12 = $.noConflict(true);
 
@@ -36,7 +38,21 @@
 <body class="hide-owner-mode">
     <div class="bootstrap panel-btns">
         <button type="button" class="bootstrap icon icon-directory btn btn-default btn-sm" onclick="DOM.goToDirectory()">Go To...</button>
+        {{#if ssh_hosts}}
+        <div class="btn-group hidden" id="terminal-button">
+          <button type="button" class="btn btn-default btn-sm dropdown-toggle icon icon-console" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Open in terminal <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            {{#each ssh_hosts}}
+            <li><a href="javascript:terminal('{{ssh_host}}');">{{host_name}}</a></li>
+            {{/each}}
+          </ul>
+        </div>
+        {{else}}
         <button type="button" class="bootstrap icon icon-console btn btn-default btn-sm hidden" id="terminal-button" onclick="terminal()">Open in Terminal</button>
+        {{/if}}
+
         <button type="button" class="bootstrap icon icon-new btn btn-default btn-sm" onclick="DOM.promptNewFile()">New File</button>
         <button type="button" class="bootstrap icon icon-directory btn btn-default btn-sm" onclick="DOM.promptNewDir()">New Dir</button>
         <button type="button" class="bootstrap icon icon-upload btn btn-default btn-sm" onclick="CloudCmd.Upload.show();">Upload</button>
@@ -44,7 +60,7 @@
         <label class="bootstrap checkbox-inline"><input type="checkbox" class="bootstrap" id="checkbox-ownermode" onclick="ownerModeChecked()" value="">Show Owner/Mode</label>
     </div>
     <div><span class="fe-version">File Explorer {{ fileexplorer_version }}</span></div>
-    <div class="fm">{{ fm }}</div>
+    <div class="fm">{{{ fm }}}</div>
 <script src="{{ prefix }}/lib/client/ood_tree.js"></script>
 <script src="{{ prefix }}/lib/client/ood.js"></script>
 <script>

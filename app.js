@@ -52,6 +52,46 @@ function resolvePath(filepath) {
     );
 }
 
+
+/**
+ * Split a delimited string into ssh_host, host_name objects
+ *
+ * Gracefully handles nulls, empty strings and incomplete pairs by not
+ * returning an element for those cases.
+ *
+ *   var hosts = 'owens.osc.edu:Owens,ruby.osc.edu:Ruby,pitzer.osc.edu:Pitzer'
+ *   sshHosts(hosts) === [
+ *       {ssh_host: 'owens.osc.edu', host_name: 'Owens'},
+ *       {ssh_host: 'ruby.osc.edu', host_name: 'Ruby'},
+ *       {ssh_host: 'pitzer.osc.edu', host_name: 'Pitzer'}
+ *   ]
+ *
+ *   sshHosts(null) === []
+ *   sshHosts(' ') === []
+ *   sshHosts('a:b,c') === [{ssh_host: 'a', host_name: 'b'}]
+ *
+ * IMPORTANT: To function properly all ssh_hosts should be prefaced with either:
+ *      /pun/sys/shell/ssh/ OR a full URL to another OOD-Shell-like app
+ *      https://our-other-web-shell.osc.edu/shell-app/
+ *
+ * @param      {String}  hosts   The unparsed host list
+ * @return     {Array<Object>}  An array of ssh_host, host_name objects
+ */
+function sshHosts(hosts) {
+    return (hosts || '').split(',').map(function(el) {
+        var split = el.split(':')
+
+        if(split.length !== 2) {
+            return false
+        }
+
+        return {
+            ssh_host:  split[0],
+            host_name: split[1]
+        };
+    }).filter(el => el);
+}
+
 var whitelist = {
     paths:  process.env.WHITELIST_PATH ? process.env.WHITELIST_PATH.split(":") : [],
     enabled: function(){ return this.paths.length > 0; },
@@ -262,6 +302,7 @@ app.use(cloudcmd({
         upload_max:             process.env.FILE_UPLOAD_MAX || 10485760000,
         file_editor:            process.env.OOD_FILE_EDITOR || '/pun/sys/file-editor/edit',
         shell:                  (process.env.OOD_SHELL || process.env.OOD_SHELL === "") ? process.env.OOD_SHELL : '/pun/sys/shell/ssh/default',
+        ssh_hosts: sshHosts(process.env.OOD_SSH_HOSTS),
         fileexplorer_version:   app_version,
         // function that accepts a path and returns true or false
         // FIXME: whitelist would be better as a function that has some properties!
