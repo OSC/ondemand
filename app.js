@@ -52,6 +52,22 @@ function resolvePath(filepath) {
     );
 }
 
+function sshAppUrls(hosts, shell_url) {
+  return hosts.map(function(host) {
+    return {
+      ssh_host: shell_url.replace(/\/$/, '') + '/' + host.ssh_host,
+      host_name: host.host_name
+    };
+  });
+}
+
+/**
+ * The URL for the OnDemand Shell
+ * @return {[type]} [description]
+ */
+function oodShellUrl() {
+  return process.env.OOD_SHELL_URL ? process.env.OOD_SHELL_URL : '/pun/sys/shell/ssh';
+}
 
 /**
  * Split a delimited string into ssh_host, host_name objects
@@ -70,9 +86,7 @@ function resolvePath(filepath) {
  *   sshHosts(' ') === []
  *   sshHosts('a:b,c') === [{ssh_host: 'a', host_name: 'b'}]
  *
- * IMPORTANT: To function properly all ssh_hosts should be prefaced with either:
- *      /pun/sys/shell/ssh/ OR a full URL to another OOD-Shell-like app
- *      https://our-other-web-shell.osc.edu/shell-app/
+ * Overrides OOD_SHELL
  *
  * @param      {String}  hosts   The unparsed host list
  * @return     {Array<Object>}  An array of ssh_host, host_name objects
@@ -302,7 +316,7 @@ app.use(cloudcmd({
         upload_max:             process.env.FILE_UPLOAD_MAX || 10485760000,
         file_editor:            process.env.OOD_FILE_EDITOR || '/pun/sys/file-editor/edit',
         shell:                  (process.env.OOD_SHELL || process.env.OOD_SHELL === "") ? process.env.OOD_SHELL : '/pun/sys/shell/ssh/default',
-        ssh_hosts: sshHosts(process.env.OOD_SSH_HOSTS),
+        ssh_hosts:              sshAppUrls(sshHosts(process.env.OOD_SSH_HOSTS), oodShellUrl()),
         fileexplorer_version:   app_version,
         // function that accepts a path and returns true or false
         // FIXME: whitelist would be better as a function that has some properties!
