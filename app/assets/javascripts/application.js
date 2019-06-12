@@ -40,3 +40,30 @@ $(document).ready(function(){
 $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();
 });
+
+/**
+ * Support persisting noVNC quality settings in localStorage
+ **/
+
+function settingKey(id) {
+  return id + '_value';
+}
+
+function storeSetting(event) {
+  var key = settingKey(event.currentTarget.id);
+  var value = event.currentTarget.value;
+
+  localStorage.setItem(key, value);
+}
+
+function tryUpdateSetting(id) {
+  var saved_value = localStorage.getItem(settingKey(id));
+
+  if(saved_value) {
+    $('#' + id).val(saved_value);
+  }
+}
+
+function installSettingHandlers(id) {
+  $('#' + id).change(storeSetting);
+}
