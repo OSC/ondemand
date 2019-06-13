@@ -7497,6 +7497,22 @@ RFB.prototype = {
     _sendEncodings: function () {
         var encs = [];
 
+        //URLSearchParams parses through the query string in search bar
+        var urlParams = new URLSearchParams(window.location.search);
+
+        var qualityLevelDefault = _encodings.encodings.pseudoEncodingQualityLevel0 + 6;
+
+        var compressionLevelDefault = _encodings.encodings.pseudoEncodingCompressLevel0 + 2;
+
+        // get the compression level query string or use set default if query returns null
+        // compressionsetting: 0-9
+        var compressionLevel = (urlParams.get('compressionsetting') === null) ? compressionLevelDefault : urlParams.get('compressionsetting') - 256;
+
+        // get the quality level query string or use set default if query returns null
+        // qualitysetting: 0-9
+        var qualityLevel = (urlParams.get('qualitysetting') === null) ? qualityLevelDefault : urlParams.get('qualitysetting') - 32;
+
+
         // In preference order
         encs.push(_encodings.encodings.encodingCopyRect);
         // Only supported with full depth support
@@ -7509,8 +7525,8 @@ RFB.prototype = {
 
         // Psuedo-encoding settings
         encs.push(_encodings.encodings.pseudoEncodingTightPNG);
-        encs.push(_encodings.encodings.pseudoEncodingQualityLevel0 + 6);
-        encs.push(_encodings.encodings.pseudoEncodingCompressLevel0 + 2);
+        encs.push(qualityLevel);
+        encs.push(compressionLevel);
 
         encs.push(_encodings.encodings.pseudoEncodingDesktopSize);
         encs.push(_encodings.encodings.pseudoEncodingLastRect);
