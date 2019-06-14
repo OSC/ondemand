@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.6.4] - 2019-06-16
+### Added
+- Added VNC quality and compression controls to Dashboard
+- Added link to compute node that a VNC job is running on in the Dashboard
+
+### Changed
+- Changed 'Open in Terminal' button to offer multiple options when `OOD_SSH_HOSTS` is set in the File Explorer
+
+### Fixed
+- Fixed possible crash when running the Job Composer for the first time
+
 ## [1.6.3] - 2019-05-21
 ### Fixed
 - Fixed translation bug in Dashboard
