@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.5.3] - 2019-06-14
+### Changed
+- Changed 'Open in Terminal' button to offer multiple options when `OOD_SSH_HOSTS` is set
+
 ## [1.5.2] - 2019-02-18
 ### Fixed
 - Fixed bug where setting `OOD_SHELL` variable to empty string did not match documented behavior [Github #191](https://github.com/OSC/ood-fileexplorer/issues/191)
@@ -110,7 +114,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Initial Release!
 
-[Unreleased]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.2...HEAD
+[Unreleased]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.3...HEAD
+[1.5.3]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.2...v1.5.3
 [1.5.2]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.1...v1.5.2
 [1.5.1]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/OSC/ood-fileexplorer/compare/v1.4.1...v1.5.0
