@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - Fixed possible crash when running the Job Composer for the first time
+- Fix sorting of cluster dropdown ([#168](https://github.com/OSC/ood-activejobs/issues/168))
 
 ## [1.6.3] - 2019-05-21
 ### Fixed
