@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.9.2] - 2019-06-17
+### Fixed
+- Fix sorting of cluster dropdown ([#168](https://github.com/OSC/ood-activejobs/issues/168))
+
 ## [1.9.1] - 2019-05-09
 ### Fixed
 - Fixed showing `'null'` when for `OodCore::Job::Info#account_id` was nil
@@ -157,7 +161,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove OSC copyright from footer
 - Remove deprecation warnings
 
-[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.9.1...HEAD
+[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.9.2...HEAD
+[1.9.2]: https://github.com/OSC/ood-activejobs/compare/v1.9.1...v1.9.2
 [1.9.1]: https://github.com/OSC/ood-activejobs/compare/v1.9.0...v1.9.1
 [1.9.0]: https://github.com/OSC/ood-activejobs/compare/v1.8.3...v1.9.0
 [1.8.3]: https://github.com/OSC/ood-activejobs/compare/v1.8.2...v1.8.3
