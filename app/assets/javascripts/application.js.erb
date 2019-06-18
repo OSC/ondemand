@@ -21,7 +21,7 @@
 //= require_tree .
 
 function human_time(seconds_total) {
-  var hours = parseInt(seconds_total / 3600), 
+  var hours = parseInt(seconds_total / 3600),
       minutes = parseInt((seconds_total - (hours * 3600)) / 60),
       seconds = parseInt((seconds_total - (3600 * hours) - (60 * minutes))),
       hours_str = ('' + hours).padStart(2, "0"),
@@ -240,12 +240,12 @@ function create_datatable(options){
             tr.removeClass('shown');
         }
         else {
-            // Open this row
-            row.child( format(row.data()) ).show();
             tr.addClass('shown');
             $.getJSON(options.base_uri + '/json?pbsid='+row.data().pbsid+'&cluster='+row.data().cluster , function(data) {
+            	// Open this row
+                row.child(data.html_ganglia_graphs_table).show();
                 // Add the data panel to the view
-                $( "div[data-jobid='"+row.data().pbsid+"']").hide().html(data.html).fadeIn(250);
+                $( "div[data-jobid='"+row.data().pbsid+"']").hide().html(data.html_extended_panel).fadeIn(250);
                 // Update the status label in the parent row
                 tr.find(".status-label").html(data.status);
             })
@@ -262,56 +262,6 @@ function create_datatable(options){
     table.columns.adjust().draw();
 
     return table;
-}
-
-
-
-/* Formatting function for dropdown row. */
-function format ( d ) {
-    // `d` is the original data object for the row
-    return          '<table>' +
-                    '   <div class="panel panel-default">' +
-                        display_job_info(d) +
-                        display_node_rows(d) +
-                    '   </div>' +
-                    '</table>';
-}
-
-/* A function that builds a job data view */
-function display_job_info( d ) {
-    return          '<tr class="col-xs-12>' +
-                    '   <div class="col-xs-12">' +
-                    '       <tr><div class="job_data" data-jobid="' + d.pbsid + '"></div></tr>' +
-                    '   </div>' +
-                    '</tr>';
-}
-
-/* Build the ganglia images view */
-function display_node_rows( d ) {
-    var rows = "";
-    // Ganglia accepts timestamps in seconds, not millis.
-    var start = d.starttime;
-    if (d.nodes != null && has_ganglia(d.cluster)) {
-        for (node in d.nodes) {
-            var node_num = d.nodes[node];
-            rows += '<div class="col-md-12">' +
-                    '   <tr>' +
-                    '       <td>' +
-                    '           <div class="panel panel-default">' +
-                    '              <div class="panel-heading"><h3 class="panel-title">' + node_num + ' <span class="pull-right">' + d.pbsid + '</span></h3></div>' +
-                    '              <div class="panel-body">' +
-                    '                   <a href="'+ build_ganglia_link(d.cluster, start, 'cpu_report', node_num, 'large') +'" data-lightbox="cpu-report" data-title="CPU Report '+node_num+'"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" src="'+build_ganglia_link(d.cluster, start, 'cpu_report', node_num, 'small')+'" /></a>' +
-                    '                   <a href="'+ build_ganglia_link(d.cluster, start, 'load_report', node_num, 'large') +'" data-lightbox="load-report" data-title="Load Report '+node_num+'"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" src="'+build_ganglia_link(d.cluster, start, 'load_report', node_num, 'small')+'" /></a>' +
-                    '                   <a href="'+ build_ganglia_link(d.cluster, start, 'mem_report', node_num, 'large') +'" data-lightbox="mem-report" data-title="Memory Report '+node_num+'"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" src="'+build_ganglia_link(d.cluster, start, 'mem_report', node_num, 'small')+'" /></a>' +
-                    '                   <a href="'+ build_ganglia_link(d.cluster, start, 'network_report', node_num, 'large') +'" data-lightbox="network-report" data-title="Network Report '+node_num+'"><img class="img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" src="'+build_ganglia_link(d.cluster, start, 'network_report', node_num, 'small')+'" /></a>' +
-                    '              </div>' +
-                    '           </div>' +
-                    '       </td>' +
-                    '   </tr>' +
-                    '</div>';
-        }
-    }
-    return rows;
 }
 
 /* Add errors from an array to the #ajax-error-message div and remove hidden attribute */
