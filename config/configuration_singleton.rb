@@ -130,7 +130,7 @@ class ConfigurationSingleton
 
   def app_development_enabled?
     return @app_development_enabled if defined? @app_development_enabled
-    to_bool(ENV['OOD_APP_DEVELOPMENT'] || DevRouter.base_path.directory?)
+    to_bool(ENV['OOD_APP_DEVELOPMENT'] || DevRouter.base_path.directory? || DevRouter.base_path.symlink?)
   end
   alias_method :app_development_enabled, :app_development_enabled?
 
