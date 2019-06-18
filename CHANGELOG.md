@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.35.0] - 2019-06-17
+### Added
+- Added new check to enable developer mode if a symlink exists between the gateway and the user's ~/ondemand/dev directory, even if the corresponding directory has not yet been created
+
 ## [1.34.0] - 2019-06-14
 ### Added
 - Added VNC quality and compression controls
@@ -504,7 +508,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.34.0...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.35.0...HEAD
+[1.35.0]: https://github.com/OSC/ood-dashboard/compare/v1.34.0...v1.35.0
 [1.34.0]: https://github.com/OSC/ood-dashboard/compare/v1.33.4...v1.34.0
 [1.33.4]: https://github.com/OSC/ood-dashboard/compare/v1.33.3...v1.33.4
 [1.33.3]: https://github.com/OSC/ood-dashboard/compare/v1.33.2...v1.33.3
