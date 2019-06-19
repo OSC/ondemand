@@ -2692,7 +2692,15 @@ lib.PreferenceManager.prototype.readStorage = function(callback = undefined) {
       }
 
       if (pendingChildren == 0 && callback) {
-        setTimeout(callback);
+        // OSC/OOD hack for Firefox because one callback, notifyAll, called during the Terminal's constructor
+        // *has* to execute after the Term.scrollPort_ has been initialized and painted, which is asynchronous - in FF only.
+        // See line 10495 where they register that event listener. If notifyAll() occurs *before* paintIframeContents_
+        // an error will occur becuase we're chaning the property of something that is not initialized yet. This error
+        // halts the screen and attempts to avoid it through other hacks (checking for nulls, etc.) have proven unsuccessful.
+        // Find out more here: https://github.com/OSC/ood-shell/issues/64
+        //
+        // hopefully 100ms is enough of a buffer time, testing usually shows a 10ms difference between the 2 events in question.
+        setTimeout(callback, 100);
       }
     });
 };
