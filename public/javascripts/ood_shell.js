@@ -56,7 +56,7 @@ function OodShell(element, url, prefs) {
 }
 
 OodShell.prototype.createTerminal = function () {
-  if(lib.resource.get('hterm/changelog/version', null).data === '1.80') {
+  if(lib.resource.get('hterm/changelog/version', null).data === '1.85') {
     this.socket = new WebSocket(this.url);
     this.socket.onopen    = this.runTerminal.bind(this);
     this.socket.onmessage = this.getMessage.bind(this);
