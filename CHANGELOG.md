@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.4.5] - 2019-06-20
+### Fixed
+- Fixed bugs when running Shell in Firefox and MS Edge ([#62](https://github.com/OSC/ood-shell/issues/62), [#59](https://github.com/OSC/ood-shell/issues/59), and [#64](https://github.com/OSC/ood-shell/issues/64))
+
 ## [1.4.4] - 2019-06-17
 ### Changed
 - Updated ws to address CVE
@@ -65,7 +69,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Warn users if they try to close an active terminal.
 - Warn users when their websocket connection is terminated.
 
-[Unreleased]: https://github.com/OSC/ood-shell/compare/v1.4.4...HEAD
+[Unreleased]: https://github.com/OSC/ood-shell/compare/v1.4.5...HEAD
+[1.4.5]: https://github.com/OSC/ood-shell/compare/v1.4.4...v1.4.5
 [1.4.4]: https://github.com/OSC/ood-shell/compare/v1.4.3...v1.4.4
 [1.4.3]: https://github.com/OSC/ood-shell/compare/v1.4.2...v1.4.3
 [1.4.2]: https://github.com/OSC/ood-shell/compare/v1.4.1...v1.4.2
