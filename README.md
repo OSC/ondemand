@@ -137,6 +137,13 @@ $ scl enable rh-python35 -- hterm/bin/mkdist.sh
 
 There will be a file created in `hterm/dist/js` called `hterm_all.js`. Copy and rename this file to `public/javascripts/hterm_all_x.xx.js` in the Shell App repository, where x.xx represents the version number hterm (for cache busting), and change the reference in `views/index.hbs` to point to this new file.
 
+#### Hacking `hterm`
+
+So you've updated hterm and now something is broken.  Maybe only on one platform (*cough firefox*).  Here's a list of hacks/changes we've made to these files so when you're updating from one version to another you may have to add these 
+changes. If you're lucky you may be able to cherry pick them, if not, hopefully we've made an issue where you can reference and you can at least see the commit. 
+
+* 0cbc84e3d53386064e278a0495c940a217f4f18b - that fixed [issue 64](https://github.com/OSC/ood-shell/issues/64)
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at

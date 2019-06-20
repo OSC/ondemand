@@ -5,7 +5,7 @@
   <title>Shell</title>
   <link rel="stylesheet" href="{{baseURI}}/stylesheets/style.css">
 
-  <script src="{{baseURI}}/javascripts/hterm_all_1.80.js"></script>
+  <script src="{{baseURI}}/javascripts/hterm_all_1.85.js"></script>
   <script src="{{baseURI}}/javascripts/ood_shell.js"></script>
 </head>
 
@@ -14,22 +14,27 @@
 </body>
 
 <script>
-  // Global variables that define the terminal
-  var oodShell,
+  setupHterm = function () {
+    // Global variables that define the terminal
+    var oodShell,
       terminalContainer = document.getElementById('terminal'),
       webSocketUrl      = document.URL.replace(/^http/, 'ws').replace(/#.*$/, ''),
       terminalPrefs     = {
-        'send-encoding': 'raw',
         'use-default-window-copy': true,
         'ctrl-v-paste': true,
         'ctrl-c-copy': true
       };
 
-  // hterm default preferences are defined here:
-  // https://chromium.googlesource.com/apps/libapps/+/c277f0aa4c194dae2619e874b74803094e13d1bc/hterm/js/hterm_preference_manager.js#53
+    // hterm default preferences are defined here. Switch to the tag that we're using.
+    // https://chromium.googlesource.com/apps/libapps/+/master/hterm/js/hterm_preference_manager.js
 
-  oodShell = new OodShell(terminalContainer, webSocketUrl, terminalPrefs);
-  oodShell.createTerminal();
+    oodShell = new OodShell(terminalContainer, webSocketUrl, terminalPrefs);
+    oodShell.createTerminal();
+  }
+
+  window.onload = function() {
+    lib.init(setupHterm);
+  };
 </script>
 
 </html>
