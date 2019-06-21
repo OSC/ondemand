@@ -1,0 +1,17 @@
+<% if has_ganglia(data.cluster) %>
+  <div class="col-md-12">
+    <tr>
+      <td>
+        <div class="panel panel-default">
+          <div class="panel-heading"><h3 class="panel-title"> <%= n %> <span class="pull-right"> <%= data.pbsid %> </span></h3></div>
+          <div class="panel-body">
+            <%= link_to  image_tag( build_ganglia_link(data.cluster, data.starttime, 'cpu_report', n, 'small'), class:"img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" ), build_ganglia_link(data.cluster, data.starttime, 'cpu_report', n, 'large'), data: { lightbox: "cpu-report", title: "CPU Report " + n } %>
+            <%= link_to  image_tag( build_ganglia_link(data.cluster, data.starttime, 'load_report', n, 'small'), class:"img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" ), build_ganglia_link(data.cluster, data.starttime, 'load_report', n, 'large'), data: { lightbox: "load-report", title: "Load Report " + n } %>
+            <%= link_to  image_tag( build_ganglia_link(data.cluster, data.starttime, 'mem_report', n, 'small'), class:"img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" ), build_ganglia_link(data.cluster, data.starttime, 'mem_report', n, 'large'), data: { lightbox: "mem-report", title: "Memory Report " + n } %>
+            <%= link_to  image_tag( build_ganglia_link(data.cluster, data.starttime, 'network_report', n, 'small'), class:"img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" ), build_ganglia_link(data.cluster, data.starttime, 'network_report', n, 'large'), data: { lightbox: "network-report", title: "Network Report " + n } %>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </div>
+<% end %>
