@@ -46,7 +46,7 @@ Listen <%= addr_port %>
 <% end -%>
 <% end -%>
 
-<% if @ssl -%>
+<% if @ssl && @use_rewrites -%>
 # Redirect all http traffic to the https Open OnDemand portal URI
 #     http://*:<%= @port %>
 #     #=> <%= @ssl ? "https" : "http" %>://<%= @servername || "localhost" %>:<%= @port %>
@@ -66,9 +66,11 @@ Listen <%= addr_port %>
   ErrorLog  "<%= @logroot %>/<%= @servername %>_error<%= "_ssl" if @ssl %>.log"
   CustomLog "<%= @logroot %>/<%= @servername %>_access<%= "_ssl" if @ssl %>.log" combined
 
+  <%- if @use_rewrites -%>
   RewriteEngine On
   RewriteCond %{HTTP_HOST} !^(<%= @servername %>(:<%= @port %>)?)?$ [NC]
   RewriteRule ^(.*) <%= @ssl ? "https" : "http" %>://<%= @servername %>:<%= @port %>$1 [R=301,NE,L]
+  <%- end -%>
   <%- end -%>
 
   <%- if @ssl -%>
