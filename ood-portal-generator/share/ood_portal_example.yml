@@ -35,6 +35,12 @@
 # Default: 'logs' (this is relative to ServerRoot)
 #logroot: 'logs'
 
+# Should RewriteEngine be used
+# Example:
+#     use_rewrites: false
+# Default: true
+#use_rewrites: true
+
 # Root directory of the Lua handler code
 # Example:
 #     lua_root: '/path/to/lua/handlers'
