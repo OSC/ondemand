@@ -1,0 +1,19 @@
+<div class="field">
+  <div class="checkbox<%= " has-error" if product.errors[:reset_git].any? %>">
+    <label>
+      <%= check_box_tag :reset_git %>
+      Create a new Git Project from this?
+    </label>
+    <%- if product.errors[:reset_git].any? -%>
+      <span class="help-block">
+        <%= product.errors[:reset_git].first %>
+      </span>
+    <%- else -%>
+      <span class="help-block">
+        This will reset the git history and remote of the original git repo,
+        making this a newly minted git project.
+      </span>
+    <%- end -%>
+  </div>
+  <%= content_tag :pre, product.errors[:reset_git_error].first.html_safe, class: "text-danger" if product.errors[:reset_git_error].any? %>
+</div>

@@ -1,0 +1,25 @@
+OOD_SITE="osc"
+
+MOTD_PATH="/etc/motd"
+MOTD_FORMAT="osc"
+
+OOD_DASHBOARD_LOGO="/public/logo.png"
+OOD_DASHBOARD_SUPPORT_URL="https://www.osc.edu/contact/supercomputing_support"
+OOD_DASHBOARD_SUPPORT_EMAIL="oschelp@osc.edu"
+
+ENABLE_NATIVE_VNC=1
+DISABLE_SAFARI_BASIC_AUTH_WARNING=1
+OOD_PORTAL="awesim"
+OOD_DASHBOARD_TITLE="AweSim Dashboard"
+
+OOD_NAVBAR_TYPE=default
+
+OOD_DASHBOARD_HEADER_IMG_LOGO="/public/logo.png"
+OOD_DASHBOARD_DOCS_URL="https://github.com/AweSim-OSC/documentation/wiki/Users"
+OOD_DASHBOARD_PASSWD_URL="https://my.osc.edu"
+OOD_DASHBOARD_DEV_DOCS_URL="https://github.com/AweSim-OSC/documentation/wiki/Developers"
+
+OOD_APP_CATALOG_URL="https://www.awesim.org/en/products/"
+OOD_APP_DEVELOPMENT=1
+OOD_APP_SHARING=1
+OOD_DEV_SSH_HOST="apps-test.awesim.org"

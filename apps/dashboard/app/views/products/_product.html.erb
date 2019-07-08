@@ -1,0 +1,56 @@
+<% modified_time = File.mtime(product.router.path) %>
+<tr>
+  <td>
+    <%= app_icon_tag(product.app) %>
+  </td>
+  <td><%= product.name %></td>
+  <td>
+    <%= link_to product.title, product_path(product.name, type: @type) %>
+    <% if product.git_repo? %>
+      <span class="text-muted">[<%= product.version %>]</span>
+    <% end %>
+    <% unless product.active_users.empty? %>
+      <span class="label label-default pull-right"><%= pluralize product.active_users.size, "active user" %></span>
+    <% end %>
+    <p>
+      <%= manifest_markdown(product.description) %>
+    </p>
+    <% unless product.valid?(:list_apps) %>
+      <% product.errors.full_messages.each do |msg| %>
+        <div class="alert alert-danger">
+          <p><%= msg.html_safe %></p>
+        </div>
+      <% end %>
+    <% end %>
+  </td>
+  <td>
+    <div class="btn-group-vertical btn-block">
+      <%- product.app.links_without_validation.each do |link| -%>
+        <%=
+          link_to(
+            "Launch #{link.title}",
+            link.url.to_s,
+            class: "btn btn-primary",
+            data: {
+              toggle: "popover",
+              content: manifest_markdown(link.description),
+              html: true,
+              trigger: "hover",
+              title: link.title,
+              container: "body",
+            },
+            target: link.new_tab? ? "_blank" : nil
+          )
+        %>
+      <%- end -%>
+    </div>
+  </td>
+  <td data-order="<%= modified_time.to_i %>"><%= modified_time.strftime("%m/%d/%y") %></td>
+  <td>
+    <%= link_to 'Details', product_path(product.name, type: @type), class: 'btn btn-info btn-block' %>
+    <%= link_to 'Shell', OodAppkit.shell.url(host: ENV['OOD_DEV_SSH_HOST'], path: product.router.path.realdirpath).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
+    <%= link_to 'Files', OodAppkit.files.url(path: product.router.path.realdirpath).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
+  </td>
+  <td>
+  </td>
+</tr>

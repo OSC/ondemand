@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= content_for?(:title) ? yield(:title) : "Dashboard" %></title>
+  <%= favicon_link_tag nil, href: OodAppkit.public.url.join('favicon.ico') %>
+  <%= stylesheet_link_tag    'application', media: 'all' %>
+  <%= javascript_include_tag 'application' %>
+  <%= csrf_meta_tags %>
+
+  <%= yield :head %>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<%= render partial: '/layouts/nav/styles', locals: { bg_color: Configuration.brand_bg_color, link_active_color: Configuration.brand_link_active_bg_color } %>
+</head>
+<body>
+  <header>
+    <nav class="navbar navbar-<%= ENV['OOD_NAVBAR_TYPE'].present? ? ENV['OOD_NAVBAR_TYPE'] : 'inverse' %> navbar-static-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-9" aria-expanded="false"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+        <% if ENV['OOD_DASHBOARD_HEADER_IMG_LOGO'].present? %>
+          <a class="navbar-brand navbar-brand-logo" href="<%= root_path %>"><img src="<%= ENV['OOD_DASHBOARD_HEADER_IMG_LOGO'] %>"></a>
+        <% else %>
+          <a class="navbar-brand" href="<%= root_path %>"><%= OodAppkit.dashboard.title.html_safe %></a>
+        <% end %>
+      </div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
+        <ul class="nav navbar-nav">
+          <%= render partial: 'layouts/nav/group', collection: @nav_groups %>
+          <%= render partial: 'layouts/nav/sessions', nav_groups: @nav_groups if Configuration.app_development_enabled? || @nav_groups.any?(&:has_batch_connect_apps?) %>
+          <%= render partial: 'layouts/nav/all_apps' if Configuration.show_all_apps_link? %>
+        </ul>
+        <div class="navbar-right">
+          <ul class="nav navbar-nav">
+            <%= render partial: 'layouts/nav/develop_dropdown' if Configuration.app_development_enabled? %>
+            <%= render partial: "layouts/nav/help_dropdown" %>
+          </ul>
+          <p class="navbar-text" data-toggle="popover" data-content="<%= t('dashboard.nav_user', username: @user.name) %>" data-placement="bottom" >
+            <i class="fas fa-user" title="<%= t('dashboard.nav_user', username: @user.name) %>"></i>
+            <span class="hidden-sm"><span class="hidden-md"> <%= t('dashboard.nav_user', username: @user.name) %></span>
+          </p>
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="/logout"><i class="fas fa-sign-out-alt"></i><span class="hidden-sm"> <%= t('dashboard.nav_logout') %></span></a>
+            </li>
+            <li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+  </header>
+
+  <div class="container content" role="main">
+
+    <% @announcements.select(&:valid?).each do |announcement| %>
+      <div class="alert alert-<%= announcement.type %> announcement" role="alert">
+        <%= raw OodAppkit.markdown.render(announcement.msg) %>
+      </div>
+    <% end %>
+
+    <%= render "layouts/browser_warning" %>
+
+    <%= render partial: "shared/insufficient_quota", locals: { quotas: @my_quotas } if @my_quotas && @my_quotas.any? %>
+
+    <script type="text/coffee-script-template" id="js-alert-danger-template">
+      <div class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert">
+          <span aria-hidden="true">&times;</span>
+          <span class="sr-only">Close</span>
+        </button>
+        ALERT_MSG
+      </div>
+    </script>
+
+    <% if alert %>
+      <div class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert">
+          <span aria-hidden="true">&times;</span>
+          <span class="sr-only">Close</span>
+        </button>
+        <%= alert %>
+      </div>
+    <% end %>
+
+    <% if notice %>
+      <div class="alert alert-success" role="alert">
+        <button type="button" class="close" data-dismiss="alert">
+          <span aria-hidden="true">&times;</span>
+          <span class="sr-only">Close</span>
+        </button>
+        <%= notice %>
+      </div>
+    <% end %>
+
+    <%= yield %>
+
+  </div><!-- /.container -->
+
+  <%= render "layouts/footer" %>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<ol class="breadcrumb">
+  <li>
+    <%= link_to t('dashboard.breadcrumbs_home'), root_path %>
+  </li>
+  <li class="active">
+    <%= t('dashboard.breadcrumbs_all_apps') %>
+  </li>
+</ol>
+
+<div class="row">
+  <div class="col-md-3">
+    <div class="panel panel-default">
+      <div class="panel-heading"><%= t('dashboard.apps_system_apps_title') %></div>
+      <div class="panel-body">
+        <%= render partial: "app_list", collection: @core_app_groups %>
+      </div>
+    </div>
+  </div>
+
+  <%= render partial: "app_list", collection: @app_groups, layout: "col3_layout" %>
+</div>

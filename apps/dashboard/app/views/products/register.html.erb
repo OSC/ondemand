@@ -1,0 +1,9 @@
+<div class="alert alert-warning">
+  <p>
+  You are not a registered developer for this portal.
+  <% if ENV['OOD_DASHBOARD_SUPPORT_EMAIL'] %>
+    Please contact <%= mail_to ENV['OOD_DASHBOARD_SUPPORT_EMAIL'] %> for more
+    information on how to register.
+  <% end %>
+  </p>
+</div>

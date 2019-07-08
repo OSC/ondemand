@@ -1,0 +1,4 @@
+<tr>
+  <td><%= permission.name %></td>
+  <td><%= link_to 'Destroy', product_permission_path(permission.name, type: @type, product_name: @product.name, context: @context), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+</tr>

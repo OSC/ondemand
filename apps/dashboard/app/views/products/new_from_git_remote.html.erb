@@ -1,0 +1,17 @@
+<%= render layout: 'products/breadcrumbs' do %>
+  <li><%= link_to 'New App', new_product_path(type: @type) %></li>
+  <li class="active">New From Git Repo</li>
+<% end %>
+
+<%= bootstrap_form_for(@product, as: :product, url: create_from_git_remote_products_path(type: @type)) do |f| %>
+    <%= render "form_directory", f: f %>
+    <%= render "form_git", f: f, type: @type, product: @product %>
+    <%= render "form_reset_git", product: @product if @type == :dev%>
+    <div class="actions">
+      <%= f.submit 'Submit' %>
+    </div>
+<% end %>
+
+<hr />
+
+<%= link_to 'Back', new_product_path(type: @type), class: 'btn btn-default' %>

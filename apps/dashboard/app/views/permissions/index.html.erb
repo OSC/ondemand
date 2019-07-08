@@ -1,0 +1,17 @@
+<h2 class="apps-section-header"><%= permissions_title(@context) %></h2>
+
+<%= link_to 'New Permission', new_product_permission_path(type: @type, product_name: @product.name, context: @context) %>
+<br>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <%= render partial: "permission", collection: @permissions %>
+  </tbody>
+</table>
