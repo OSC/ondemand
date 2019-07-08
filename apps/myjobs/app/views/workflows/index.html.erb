@@ -1,0 +1,216 @@
+<div class="page-header" xmlns="http://www.w3.org/1999/html">
+  <h2>Jobs</h2>
+</div>
+
+<% if OODClusters.any? %>
+  <div class="row">
+    <div class="col-md-7">
+      <div cladd="panel panel-thin">
+        <div class="panel-body">
+
+          <div class="btn-group open">
+            <button type="button" id="new_job_button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Job <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <% if @default_template.exist? %>
+              <li><a data-method="post" data-toggle="tooltip" title="Create a new job from the default template" href="<%= create_default_path %>">From Default Template</a></li>
+              <% end %>
+              <% if @templates.any? %>
+              <li><a href="<%= new_workflow_path %>" data-toggle="tooltip" title="Create a new job from a template you choose">From Template</a></li>
+              <% end %>
+              <li><a href="<%= new_from_path_path %>">From Specified Path</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a id="copy_button" data-toggle="tooltip" title="Copy the selected job" data-method="post" disabled>From Selected Job</a></li>
+            </ul>
+          </div>
+
+          <a class="pull-right btn btn-default btn-sm btn-templates" id="template_button" data-toggle="tooltip" title="Create template from selected job" data-method="get" role="button" disabled>
+            <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span><span class="hidden-xs hidden-md"> Create Template</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<div class="row">
+  <div class="col-md-7">
+    <div id="job-list-view" class="panel panel-default">
+      <div class="panel-body">
+        <a class="btn btn-default btn-sm btn-primary" id="open_dir_button" target="_blank" data-toggle="tooltip" title="Open Directory in File Manager" role="button" disabled>
+          <span class="glyphicon glyphicon-edit" aria-hidden="true"></span><span class="hidden-xs"> Edit Files</span>
+        </a>
+        <!-- <a class="btn btn-default btn-sm" id="view_button" data-toggle="tooltip" title="View Job" role="button" data-method="get" disabled><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a> -->
+        <a class="btn btn-default btn-sm btn-primary" id="edit_button" data-toggle="tooltip" title="Specify Job Host and Script" role="button" data-method="get" disabled>
+          <span class="glyphicon glyphicon-cog" aria-hidden="true"></span><span class="hidden-xs">  Job Options</span>
+        </a>
+        <a class="btn btn-default btn-sm btn-primary" id="terminal_button" target="_blank" data-toggle="tooltip" title="Open Selected Job in the Terminal" role="button" disabled>
+          <span class="glyphicon glyphicon-console" aria-hidden="true"></span><span class="hidden-xs"> Open Terminal</span>
+        </a>
+        <a class="btn btn-success btn-sm" id="submit_button" data-toggle="tooltip" title="Submit Job" role="button" data-method="get" disabled>
+          <span class="glyphicon glyphicon-play" aria-hidden="true"></span><span class="hidden-xs hidden-md">  Submit</span>
+        </a>
+        <a class="btn btn-default btn-sm btn-warning" id="stop_button" data-toggle="tooltip" title="Stop Job" role="button" data-method="get" disabled>
+          <span class="glyphicon glyphicon-stop" aria-hidden="true"></span><span class="hidden-xs hidden-md">  Stop</span>
+        </a>
+        <a class="btn btn-default btn-sm noanimate" id="loading_button" title="Loading Job Information" role="button">
+          <span class="glyphicon glyphicon-repeat fast-right-spinner" aria-hidden="true"></span>
+          <span class="hidden-xs hidden-md">  Loading</span>
+        </a>
+        <a class="btn btn-danger btn-sm pull-right" id="destroy_button" data-toggle="tooltip" title="Delete Job" data-method="get" data-confirm="Are you sure?" role="button" disabled>
+          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> <span class="hidden-xs hidden-md"> Delete</span>
+        </a>
+      </div>
+
+      <div class="panel-body">
+        <table id="job-list-table" class="table data-table" style="width:100%; table-layout: fixed;">
+          <thead>
+          <tr>
+            <th>Created</th>
+            <th>Name</th>
+            <th>ID</th>
+            <th>Cluster</th>
+            <th>Status</th>
+            <!-- FILE_SIZE_FEATURE
+            <th>Size</th>
+            -->
+          </tr>
+          </thead>
+
+          <tbody>
+          <% @workflows.each do |workflow| %>
+              <tr class="job-row<%= " missing-cluster" unless workflow.batch_host_exists? %><%= " missing-dir" unless workflow.staged_dir_exists? %><%= " missing-script" unless workflow.script_name && workflow.staged_script_exists? %>" id="<%= workflow.id %>">
+                <td data-sort="<%= workflow.id %>"><small><%= local_time(workflow.created_at) %></small></td>
+                <td><span title="<%= workflow.name %>"><strong><%= workflow.name %></strong></span></td>
+                <td><span title="<%= workflow.pbsid %>"><%= workflow.pbsid %></span></td>
+                <td><span title="<%= cluster_title workflow.batch_host %>"><%= cluster_title workflow.batch_host %></span></td>
+                <td id="status_label_<%= workflow.id %>"><%= status_label(workflow) %></td>
+                <!-- FILE_SIZE_FEATURE
+                  <td><%# number_to_human_size(Filesystem.new.path_size(workflow.staged_dir)) %></td>
+                  -->
+              </tr>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-5" id="job-details-container">
+    <div class="panel panel-default" id="job-details-panel" hidden>
+      <div class="panel-heading">
+        <h3 class="panel-title">Job Details</h3>
+      </div>
+      <div class="panel-body">
+        <p>Job Name: <h4 class="wrap-line"><strong><span id="job-details-name"></span></strong></h4></p>
+        <div id="job-details-submit-to">
+          <p>Submit to:</p>
+          <input type="text" class="form-control" id="job-details-server" disabled>
+          <p class="help-block-submit-to"><i>Cluster is not valid! Edit <a href="#" id="edit-job-options-script-link">Job Options</a> to select a valid cluster.</i></p>
+        </div>
+        <p></p>
+        <p>Account:</p>
+        <p id="job-details-account"></p>
+        <p>Job Array Request:</p>
+        <input type="text" class="form-control" id="job-details-job-array-request" disabled>
+      </div>
+
+      <div class="panel-body">
+        <div id="script-details-view">
+          <p>Script location:</p>
+          <pre id="job-details-staged-dir"></pre>
+          <p class="help-block-dir"><i>Job Directory is missing!</i></p>
+        </div>
+        <div id="script-details-name-view">
+          <p>Script name:</p>
+          <pre id="job-details-script-name" disabled></pre>
+          <p class="help-block-script"><i>Script is not valid! Edit <a href="#" id="edit-job-options-link">Job Options</a> to select a valid script.</i></p>
+        </div>
+      </div>
+
+      <div id="job-details-view" class="panel-body folder-content-view">
+        <p>Folder Contents:</p>
+        <span id="job-details-staged-dir-contents"></span>
+      </div>
+    </div>
+
+    <div class="panel panel-default" id="script-details-panel" hidden>
+      <div class="panel-heading">
+        <h3 class="panel-title">Submit Script</h3>
+      </div>
+      <div id="script-text-panel" class="panel-body">
+        <h4 id="script-name"></h4>
+        <p>Script contents:</p>
+        <pre id="script-text-data"></pre>
+        <p>
+          <a class="btn btn-info btn-sm" style="margin: 5px" id="open-editor-button" target="_blank" data-toggle="tooltip" title="Open Directory in File Editor" role="button"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Open Editor</a>
+          <a class="btn btn-primary btn-sm pull-right" style="margin: 5px" id="open-script-dir-button" target="_blank" data-toggle="tooltip" title="Open Directory in File Manager" role="button"><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span> Open Dir</a>
+          <a class="btn btn-default btn-sm pull-right" style="margin: 5px" id="open-terminal-dir-button" target="_blank" data-toggle="tooltip" title="Open Directory in Terminal" role="button"><span class="glyphicon glyphicon-console" aria-hidden="true"></span> Open Terminal</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Joyride steps -->
+  <ol id="joyride" style="display: none;" data-joyride>
+    <li>
+      <ol>
+        <h4>
+          Steps to create a job:
+        </h4>
+        <li>
+          <b>Create</b> a new job by copying from an existing job template directory or a previously run job directory.
+        </li>
+        <li>
+          <b>Edit</b> the files in the job via the file explorer.
+        </li>
+        <li>
+          <b>Submit</b> the job and monitor the progress from the "Job Composer" index page.
+        </li>
+      </ol>
+    </li>
+    <li data-id="new_job_button">
+      <p>
+      1. Create: Begin by creating a new job from an existing template,
+      from any arbitrary path on the file system, or by copying a job you have
+      already created through the Job Composer.
+      </p>
+    </li>
+    <li data-id="open_dir_button">
+      <p>
+        2. Edit: Select a job and click here to open the path in the file explorer so you can edit the job's files.
+      </p>
+    </li>
+    <li data-id="edit_button">
+      <p>
+        2. Edit: Select an existing job and click here to specify the jobs's server and submit script.
+      </p>
+    </li>
+    <li data-id="terminal_button">
+      <p>
+        2. Edit: Select an existing job and click here to open a new terminal to the job path.
+      </p>
+    </li>
+    <li data-id="submit_button">
+      <p>
+        3. Submit: Select an existing job and click here to submit the job to the batch queue.
+      </p>
+    </li>
+    <li data-id="stop_button">
+      <p>
+        Select a running or queued job and click here to stop the job.
+      </p>
+    </li>
+    <li data-id="destroy_button">
+      <p>
+        Select an existing job and click here to remove the job from the list.
+      </p>
+    </li>
+    <li data-id="template_button" data-button="Close">
+      <p>
+        You can also create new job templates from existing jobs. This way, you can use that job as a template for future jobs. Select the job in the table to copy, then click "Create Template" to initiate the template creation process.
+      </p>
+    </li>
+  </ol>
+</div>

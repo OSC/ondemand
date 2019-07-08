@@ -1,0 +1,22 @@
+# manifest.yml provides key value attributes for the template
+# when the job template directory is copied, this file will not be included in
+# the copy; however, the attributes specified here will become the default
+# attributes set in the database for the newly created job
+
+# name of the template and default job name when copied
+name: (default) Simple Sequential Job
+
+# notes tell the user what the template is for
+# and display when the user clicks "create Job ()Choose Template)" and selects
+# this template
+notes: A very basic template for a sequential job
+
+# specifies the script that will be submitted to the batch system
+script: main_job.sh # specify the job script
+
+# host - specifies the default host cluster id that should be set
+# if this is omitted, the first host found will be used
+# for example, at OSC we have Oakley, Ruby, and Ownes and in the cluster config
+# their ids are "oakley", "ruby", and "owens":
+#
+# host: oakley

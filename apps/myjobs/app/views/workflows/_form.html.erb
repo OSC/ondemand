@@ -1,0 +1,27 @@
+<%# Uses rails_bootstrap_form gem. API at: https://github.com/bootstrap-ruby/rails-bootstrap-forms %>
+<%= bootstrap_form_for(workflow) do |f| %>
+  <%= f.alert_message "Please fix the errors below." %>
+
+  <div class="form-group">
+    <label class="control-label">Template:</label>
+    <select class="form-control selectpicker" id="new_job_template_selectpicker">
+      <option disabled selected value> -- select a template -- </option>
+      <% @templates.each do |template| %>
+          <option value="<%= template.to_json %>"><%= template.name %> -- <%= template.notes || template.path %></option>
+      <% end %>
+    </select>
+  </div>
+
+  <%= f.text_field :name, required: true, id: 'name_field' %>
+
+  <%= f.select :batch_host, OODClusters.map { |cluster| [ "#{cluster.metadata.title}", cluster.id ] }, { label: "Cluster:" }, { class: "selectpicker", id: "batch_host_select", required: true } %>
+  <%= f.text_field :script_path, required: true, id: "script_path_field" %>
+
+  <%= f.submit 'Save', class: 'btn btn-primary' %>
+  <%= f.button 'Reset', type: :reset, class: 'btn btn-default' %>
+
+  <%= link_to 'Back', workflows_path, class: 'btn btn-default' %>
+  <%= link_to 'Show', workflow, class: 'btn btn-primary' unless workflow.new_record? %>
+
+  <%= link_to '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Template'.html_safe, new_template_path, { class: 'btn btn-default pull-right', title: "Create a new template", 'data-toggle': 'tooltip', role: 'button' } %>
+<% end %>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+
+  <title>Job Composer</title>
+  <%= favicon_link_tag nil, href: OodAppkit.public.url.join('favicon.ico') %>
+
+  <%= stylesheet_link_tag    "application", media: "all" %>
+  <script>
+    var ROOT_PATH = "<%= root_path %>";
+  </script>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+<header>
+  <!-- navbar  -->
+  <nav class="ood-appkit navbar navbar-inverse navbar-static-top" role="navigation">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <ul class="navbar-breadcrumbs">
+          <li><%= link_to OodAppkit.dashboard.title, OodAppkit.dashboard.url.to_s %></li>
+          <li><%= link_to "Job Composer", root_path %></li>
+        </ul>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse navbar-responsive-collapse">
+        <ul class="nav navbar-nav">
+          <%= content_tag(:li, class: current_page?(root_path) ? "active" : "") { link_to "Jobs", root_path } %>
+          <%= content_tag(:li, class: current_page?(new_workflow_path) ? "active" : "") { link_to "Templates", new_workflow_path } %>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <%= link_to '<span class="glyphicon glyphicon-question-sign"></span> Help'.html_safe, "#", :onclick => 'start_joyride();' %>
+          </li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+</header>
+
+<div class="container-fluid" role="main">
+
+  <script type="text/javascript">var selected_id = <%= @selected_id || 0 %>;</script>
+
+  <% if alert %>
+  <div class="alert alert-danger alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+      <span aria-hidden="true">&times;</span>
+      <span class="sr-only">Close</span>
+    </button>
+    <%= alert %>
+    <%= content_tag :pre, flash[:alert_error] if flash[:alert_error] %>
+  </div>
+  <% end %>
+
+  <% if notice %>
+  <div class="alert alert-success" role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+      <span aria-hidden="true">&times;</span>
+      <span class="sr-only">Close</span>
+    </button>
+    <%= notice %>
+  </div>
+  <% end %>
+
+  <%= yield %>
+
+  <footer>
+      <hr>
+      <div class="row">
+        <div class="col-sm-12">
+          <p id="app_version" class="pull-right"><%= ENV['APP_VERSION'] %></p>
+        </div>
+      </div>
+  </footer>
+
+</div><!-- /.container -->
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+// Place all the styles related to the Workflows controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.folder-content-view {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+tr.missing-dir {
+  @extend .bg-danger;
+}
+
+#job-details-container {
+  min-height: 100vh;
+}
+
+#script-details-view .help-block-dir,
+#script-details-name-view .help-block-script,
+#job-details-submit-to .help-block-submit-to {
+  display: none;
+}
+
+#job-details-submit-to.missing-cluster {
+  color: #a94442;
+
+  .help-block-submit-to {
+    color: #a94442;
+    display: block;
+    font-style: italic;
+  }
+}
+
+#script-details-view.missing-dir {
+  color: #a94442;
+
+  .help-block-dir {
+    color: #a94442;
+    display: block;
+    font-style: italic;
+  }
+}
+
+#script-details-name-view.missing-script {
+  color: #a94442;
+
+  .help-block-script {
+    color: #a94442;
+    display: block;
+    font-style: italic;
+  }
+}
+
+.wrap-line {
+  /* Technically the same, but use both for browser compatibility */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  -ms-word-break: break-all;
+  word-break: break-word;
+}
