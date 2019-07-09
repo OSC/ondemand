@@ -32,6 +32,10 @@ class Component
   def download_url
     "#{url}/archive/#{tag}.tar.gz"
   end
+
+  def file_url
+    "apps/#{name}/."
+  end
 end
 
 task :default => :build
@@ -40,7 +44,7 @@ all_components.each do |c|
   file c.build_root => CONFIG_FILE do
     rm_rf c.build_root if c.build_root.directory?
     mkdir_p c.build_root unless c.build_root.directory?
-    sh "curl -skL #{c.download_url} | tar xzf - -C #{c.build_root} --strip-components=1"
+    cp_r c.file_url, c.build_root
     setup_path = c.build_root.join("bin", "setup")
     if setup_path.exist? && setup_path.executable?
       sh "PASSENGER_APP_ENV=production PASSENGER_BASE_URI=/pun/sys/#{c.name} #{setup_path}"
