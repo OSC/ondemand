@@ -30,7 +30,7 @@ APP = App.new(
 # path to your application root.
 APP_ROOT = Pathname.new File.expand_path("../../",  __FILE__)
 
-bundle_dir = ENV["BUNDLE_DIR"] || "vendor/bundle"
+BUNDLE_DIR = ENV["BUNDLE_DIR"] || "vendor/bundle"
 
 chdir APP_ROOT do
   # This script is a starting point to setup your application.
@@ -50,7 +50,7 @@ chdir APP_ROOT do
 
   unless system("bin/bundle check &> /dev/null")
     puts "\n== Installing dependencies =="
-    sh "bin/bundle install --path=#{bundle_dir}"
+    sh "bin/bundle install --path=#{BUNDLE_DIR}"
     sh "bin/bundle clean"
   end
 
