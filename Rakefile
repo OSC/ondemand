@@ -20,7 +20,7 @@ def build_apps
     setup_path = app.join("bin", "setup")
     if setup_path.exist? && setup_path.executable?
       args = "PASSENGER_APP_ENV=production PASSENGER_BASE_URI=/pun/sys/#{app.basename}"
-      args = args + " BUNDLE_DIR=#{VENDOR_DIR.join("bundle")}"
+      args = args + " VENDOR_BUNDLE_DIR=#{VENDOR_DIR.join("bundle")}"
 
       sh "#{args} #{setup_path}"
     end
