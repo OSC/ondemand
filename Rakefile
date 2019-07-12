@@ -1,59 +1,41 @@
 require "pathname"
 
-BUILD_ROOT   = Pathname.new(ENV["OBJDIR"] || "build")
+HERE  = Pathname.new(".")
 INSTALL_ROOT = Pathname.new(ENV["PREFIX"] || "/opt/ood")
-VENDOR_DIR   = Pathname.new(ENV["VENDOR_DIR"] || BUILD_ROOT.join("vendor").expand_path )
+VENDOR_BUNDLE_DIR = Pathname.new(ENV["VENDOR_BUNDLE_DIR"] || "../../vendor/bundle")
+
+def apps
+  %w(activejobs bc_desktop dashboard file-editor files myjobs shell).map {|name| HERE.join("apps", name) }
+end
 
 task :default => :build
 
-def apps
-  %w(activejobs bc_desktop dashboard file-editor files myjobs shell).map {|name| BUILD_ROOT.join("apps", name) }
-end
-
-def build_apps
-  app_build_dir = BUILD_ROOT.join("apps")
-  rm_rf app_build_dir if app_build_dir.directory?
-  mkdir_p BUILD_ROOT unless BUILD_ROOT.directory?
-  cp_r "apps", BUILD_ROOT
-
-  apps.each do |app|
-    setup_path = app.join("bin", "setup")
-    if setup_path.exist? && setup_path.executable?
-      args = "PASSENGER_APP_ENV=production PASSENGER_BASE_URI=/pun/sys/#{app.basename}"
-      args = args + " VENDOR_BUNDLE_DIR=#{VENDOR_DIR.join("bundle")}"
-
-      sh "#{args} #{setup_path}"
-    end
-  end
-
-end
-
-def proxy_components
-  %w(ood-portal-generator mod_ood_proxy ood_auth_map nginx_stage).map {|name| BUILD_ROOT.join(name) }
-end
-
-def build_proxy_components
-  proxy_components.each do |build_root|
-    rm_rf build_root if build_root.directory?
-    cp_r build_root.basename, build_root
+apps.each do |app|
+  setup_path = app.join("bin", "setup")
+  if setup_path.exist? && setup_path.executable?
+    sh "PASSENGER_APP_ENV=production VENDOR_BUNDLE_DIR=#{VENDOR_BUNDLE_DIR} #{setup_path}"
   end
 end
-
 
 desc "Build OnDemand"
-task :build => [:clean] do
-  build_apps
-  build_proxy_components
-end
+task :build => apps
 
 directory INSTALL_ROOT.to_s
 
-desc "Install OnDemand"
-task :install => [:build, INSTALL_ROOT] do
-  sh "rsync -rptl --delete --copy-unsafe-links #{BUILD_ROOT}/ #{INSTALL_ROOT}"
+def proxy_components
+  %w(ood-portal-generator mod_ood_proxy ood_auth_map nginx_stage).map {|name| HERE.join(name) }
 end
 
-desc "Clean up build"
-task :clean do
-  rm_rf BUILD_ROOT
+desc "Install OnDemand"
+task :install => [:build, INSTALL_ROOT] do
+  proxy_components.each do |comp|
+    sh "rsync -rptl --delete --copy-unsafe-links #{comp} #{INSTALL_ROOT}"
+  end
+
+  sh "rsync -rptl --delete --copy-unsafe-links apps #{INSTALL_ROOT}"
+  
+  if Pathname.new("vendor").exist?
+    sh "rsync -rptl --delete --copy-unsafe-links vendor #{INSTALL_ROOT}"
+  end
+
 end
