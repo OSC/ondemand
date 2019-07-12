@@ -1,39 +1,64 @@
+require "json"
 require "pathname"
 
+CONFIG_FILE  = Pathname.new(__dir__).join(ENV["CNFFILE"] || "config.json")
 BUILD_ROOT   = Pathname.new(ENV["OBJDIR"] || "build")
 INSTALL_ROOT = Pathname.new(ENV["PREFIX"] || "/opt/ood")
-VENDOR_DIR   = Pathname.new(ENV["VENDOR_DIR"] || BUILD_ROOT.join("vendor").expand_path )
+
+def all_components
+  JSON.parse(CONFIG_FILE.read).map { |c| Component.new(c) }
+end
+
+class Component
+  attr_reader :name
+  attr_reader :url
+  attr_reader :tag
+
+  def initialize(opts = {})
+    @name = opts.fetch("name") { raise ArgumentError, "No name specified. Missing argument: name" }.to_s
+    @url  = opts.fetch("url")  { raise ArgumentError, "No url specified. Missing argument: url" }.to_s
+    @tag  = opts.fetch("tag")  { raise ArgumentError, "No tag specified. Missing argument: tag" }.to_s
+    @app  = opts.fetch("app", nil)
+  end
+
+  def app?
+    !!@app
+  end
+
+  def build_root
+    app? ? BUILD_ROOT.join("apps", name) : BUILD_ROOT.join(name)
+  end
+
+  def download_url
+    "#{url}/archive/#{tag}.tar.gz"
+  end
+
+  def file_url
+    "apps/#{name}/."
+  end
+end
 
 task :default => :build
 
-def apps
-  %w(activejobs bc_desktop dashboard file-editor files myjobs shell).map {|name| BUILD_ROOT.join("apps", name) }
-end
-
-def build_apps
-  app_build_dir = BUILD_ROOT.join("apps")
-  rm_rf app_build_dir if app_build_dir.directory?
-  mkdir_p BUILD_ROOT unless BUILD_ROOT.directory?
-  cp_r "apps", BUILD_ROOT
-
-  apps.each do |app|
-    setup_path = app.join("bin", "setup")
+all_components.each do |c|
+  file c.build_root => CONFIG_FILE do
+    rm_rf c.build_root if c.build_root.directory?
+    mkdir_p c.build_root unless c.build_root.directory?
+    cp_r c.file_url, c.build_root
+    setup_path = c.build_root.join("bin", "setup")
     if setup_path.exist? && setup_path.executable?
-      args = "PASSENGER_APP_ENV=production PASSENGER_BASE_URI=/pun/sys/#{app.basename}"
-      args = args + " VENDOR_BUNDLE_DIR=#{VENDOR_DIR.join("bundle")}"
-
-      sh "#{args} #{setup_path}"
+      sh "PASSENGER_APP_ENV=production PASSENGER_BASE_URI=/pun/sys/#{c.name} #{setup_path}"
     end
+    c.build_root.join("VERSION").write(c.tag) if c.app?
   end
-
 end
 
 def proxy_components
   %w(ood-portal-generator mod_ood_proxy ood_auth_map nginx_stage).map {|name| BUILD_ROOT.join(name) }
 end
 
-def build_proxy_components
-  proxy_components.each do |build_root|
+proxy_components.each do |build_root|
+  file build_root => 'nginx_stage/lib/nginx_stage/version.rb' do
     rm_rf build_root if build_root.directory?
     cp_r build_root.basename, build_root
   end
@@ -41,10 +66,7 @@ end
 
 
 desc "Build OnDemand"
-task :build => [:clean] do
-  build_apps
-  build_proxy_components
-end
+task :build => all_components.map(&:build_root) + proxy_components
 
 directory INSTALL_ROOT.to_s
 
