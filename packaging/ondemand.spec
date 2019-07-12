@@ -83,6 +83,15 @@ echo "%{package_version}" > %{buildroot}/opt/ood/VERSION
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/register
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/apps/sys
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/apps/usr
+
+%define bundle_dir /opt/ood/vendor/bundle
+%define app_dir %{buildroot}/opt/ood/apps
+# point ruby apps to a different vendor directory
+%__sed -i 's|^BUNDLE_PATH: ".*"|BUNDLE_PATH: "%{bundle_dir}"|g' %{app_dir}/activejobs/.bundle/config
+%__sed -i 's|^BUNDLE_PATH: ".*"|BUNDLE_PATH: "%{bundle_dir}"|g' %{app_dir}/dashboard/.bundle/config
+%__sed -i 's|^BUNDLE_PATH: ".*"|BUNDLE_PATH: "%{bundle_dir}"|g' %{app_dir}/file-editor/.bundle/config
+%__sed -i 's|^BUNDLE_PATH: ".*"|BUNDLE_PATH: "%{bundle_dir}"|g' %{app_dir}/myjobs/.bundle/config
+
 %__mv %{buildroot}/opt/ood/apps/dashboard %{buildroot}%{_localstatedir}/www/ood/apps/sys/dashboard
 %__mv %{buildroot}/opt/ood/apps/shell %{buildroot}%{_localstatedir}/www/ood/apps/sys/shell
 %__mv %{buildroot}/opt/ood/apps/files %{buildroot}%{_localstatedir}/www/ood/apps/sys/files
