@@ -51,7 +51,6 @@ chdir APP_ROOT do
   unless system("bin/bundle check &> /dev/null")
     puts "\n== Installing dependencies =="
     sh "bin/bundle install --path=#{VENDOR_BUNDLE_DIR}"
-    sh "bin/bundle clean"
   end
 
   if APP.production?
