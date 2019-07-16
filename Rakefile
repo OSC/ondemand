@@ -10,15 +10,55 @@ end
 
 task :default => :build
 
-apps.each do |app|
+def build_app(app)
   setup_path = app.join("bin", "setup")
   if setup_path.exist? && setup_path.executable?
     sh "PASSENGER_APP_ENV=production VENDOR_BUNDLE_DIR=#{VENDOR_BUNDLE_DIR} #{setup_path}"
   end
 end
 
-desc "Build OnDemand"
-task :build => apps
+namespace :build do
+  desc "build activejobs"
+  task "activejobs" do
+    build_app Pathname.new("apps/activejobs")
+  end
+
+  desc "build bc_desktop"
+  task "bc_desktop" do
+    build_app Pathname.new("apps/bc_desktop")
+  end
+
+  desc "build dashboard"
+  task "dashboard" do
+    build_app Pathname.new("apps/dashboard")
+  end
+
+  desc "build file-editor"
+  task "file_editor" do
+    build_app Pathname.new("apps/file-editor")
+  end
+
+  desc "build files"
+  task "files" do
+    build_app Pathname.new("apps/files")
+  end
+
+  desc "build myjobs"
+  task "myjobs" do
+    build_app Pathname.new("apps/myjobs")
+  end
+
+  desc "build shell"
+  task "shell" do
+    build_app Pathname.new("apps/shell")
+  end
+
+  desc "build all apps"
+  task :all => [:activejobs, :bc_desktop, :dashboard, :file_editor, :files, :myjobs, :shell]
+end
+
+desc "build all apps"
+task :build => 'build:all'
 
 directory INSTALL_ROOT.to_s
 
