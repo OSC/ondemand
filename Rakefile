@@ -18,43 +18,16 @@ def build_app(app)
 end
 
 namespace :build do
-  desc "build activejobs"
-  task "activejobs" do
-    build_app Pathname.new("apps/activejobs")
+  apps = [:activejobs, :bc_desktop, :dashboard, :"file-editor", :files, :myjobs, :shell]
+
+  apps.each do |app|
+    desc "build #{app}"
+    task app do
+      build_app Pathname.new("apps/#{app}")
+    end
   end
 
-  desc "build bc_desktop"
-  task "bc_desktop" do
-    build_app Pathname.new("apps/bc_desktop")
-  end
-
-  desc "build dashboard"
-  task "dashboard" do
-    build_app Pathname.new("apps/dashboard")
-  end
-
-  desc "build file-editor"
-  task "file_editor" do
-    build_app Pathname.new("apps/file-editor")
-  end
-
-  desc "build files"
-  task "files" do
-    build_app Pathname.new("apps/files")
-  end
-
-  desc "build myjobs"
-  task "myjobs" do
-    build_app Pathname.new("apps/myjobs")
-  end
-
-  desc "build shell"
-  task "shell" do
-    build_app Pathname.new("apps/shell")
-  end
-
-  desc "build all apps"
-  task :all => [:activejobs, :bc_desktop, :dashboard, :file_editor, :files, :myjobs, :shell]
+  task :all => apps
 end
 
 desc "build all apps"
