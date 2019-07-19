@@ -1,0 +1,35 @@
+before_script:
+  - docker info
+  - '[ -d tmp ] || mkdir tmp'
+  - git clone https://github.com/OSC/ondemand-packaging.git tmp/ondemand-packaging
+  - cp /systems/osc_certs/gpg/ondemand/.gpgpass $CI_PROJECT_DIR/tmp/ondemand-packaging/
+  - cp /systems/osc_certs/gpg/ondemand/ondemand.sec $CI_PROJECT_DIR/tmp/ondemand-packaging/
+stages:
+  - build
+  - deploy
+
+rpm-build:
+  stage: build
+  only:
+    - tags
+  script:
+    - ./tmp/ondemand-packaging/build.sh -w $CI_PROJECT_DIR/tmp/work -o $CI_PROJECT_DIR/tmp/output -u $CI_PROJECT_DIR/packaging
+  artifacts are disabled until we increase the GitLab limit
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+
+rpm-deploy:
+  variables:
+    RLS_SCRIPT: "./tmp/ondemand-packaging/release.py"
+    RLS_KEY: "/systems/osc_certs/ssh/ondemand-packaging/id_rsa"
+    RLS_OUTPUT: "./tmp/output/*"
+    SECTION: "latest"
+  stage: deploy
+  only:
+    - tags
+  script:
+    - if [[ "$CI_COMMIT_TAG" =~ .*-.* ]]; then export SECTION=ci; fi
+    - $RLS_SCRIPT --pkey $RLS_KEY -c $SECTION $RLS_OUTPUT
