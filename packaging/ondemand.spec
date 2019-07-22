@@ -5,7 +5,8 @@
 %global patch 7
 %global ondemand_version %{major}.%{minor}
 %{!?package_version: %define package_version %{major}.%{minor}.%{patch}}
-%global package_release 1
+%{!?package_release: %define package_release 1}
+%{!?git_tag: %define git_tag %{package_version}}
 
 Name:      %{package_name}
 Version:   %{package_version}
@@ -15,7 +16,7 @@ Summary:   Web server that provides users access to HPC resources
 Group:     System Environment/Daemons
 License:   MIT
 URL:       https://osc.github.io/Open-OnDemand
-Source0:   https://github.com/OSC/%{package_name}/archive/v%{package_version}.tar.gz
+Source0:   https://github.com/OSC/%{package_name}/archive/%{git_tag}.tar.gz
 
 # Disable debuginfo as it causes issues with bundled gems that build libraries
 %global debug_package %{nil}
