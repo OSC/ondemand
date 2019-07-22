@@ -78,7 +78,7 @@ EOS
 scl enable ondemand - << \EOS
 rake install PREFIX=%{buildroot}/opt/ood
 %__rm %{buildroot}/opt/ood/apps/*/log/production.log
-echo "%{package_version}" > %{buildroot}/opt/ood/VERSION
+echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/public
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/discover
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/register
