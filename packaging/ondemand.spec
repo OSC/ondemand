@@ -4,7 +4,7 @@
 %global minor 6
 %global patch 7
 %global ondemand_version %{major}.%{minor}
-%global package_version %{major}.%{minor}.%{patch}
+%{!?package_version: %define package_version %{major}.%{minor}.%{patch}}
 %global package_release 1
 
 Name:      %{package_name}
