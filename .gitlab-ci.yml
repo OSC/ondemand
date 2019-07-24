@@ -30,5 +30,5 @@ rpm-deploy:
   only:
     - tags
   script:
-    - if [[ "$CI_COMMIT_TAG" =~ .*-.* ]]; then export SECTION=ci; fi
+    - if [[ "$CI_COMMIT_TAG" =~ .*_.* ]]; then export SECTION=ci; fi
     - $RLS_SCRIPT --pkey $RLS_KEY -c $SECTION $RLS_OUTPUT
