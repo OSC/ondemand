@@ -25,7 +25,7 @@ rpm-deploy:
     RLS_SCRIPT: "./tmp/ondemand-packaging/release.py"
     RLS_KEY: "/systems/osc_certs/ssh/ondemand-packaging/id_rsa"
     RLS_OUTPUT: "./tmp/output/*"
-    SECTION: "latest"
+    SECTION: "main"
   stage: deploy
   only:
     - tags
