@@ -7,6 +7,7 @@
 %{!?package_version: %define package_version %{major}.%{minor}.%{patch}}
 %{!?package_release: %define package_release 1}
 %{!?git_tag: %define git_tag v%{package_version}}
+%define git_tag_minus_v %(echo %{git_tag} | sed -r 's/^v//')
 
 Name:      %{package_name}
 Version:   %{package_version}
@@ -65,7 +66,7 @@ access, job submission and interactive work on compute nodes.
 
 
 %prep
-%setup -q -n %{package_name}-%{package_version}
+%setup -q -n %{package_name}-%{git_tag_minus_v}
 
 
 %build
