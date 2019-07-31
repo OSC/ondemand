@@ -18,6 +18,7 @@ Group:     System Environment/Daemons
 License:   MIT
 URL:       https://osc.github.io/Open-OnDemand
 Source0:   https://github.com/OSC/%{package_name}/archive/%{git_tag}.tar.gz
+Source1:   ondemand-selinux.te
 
 # Disable debuginfo as it causes issues with bundled gems that build libraries
 %global debug_package %{nil}
@@ -64,6 +65,18 @@ Open OnDemand is an open source release of OSC's OnDemand platform to provide
 HPC access via a web browser, supporting web based file management, shell
 access, job submission and interactive work on compute nodes.
 
+%package -n %{name}-selinux
+Summary: SELinux policy for OnDemand
+BuildRequires:      selinux-policy-devel, checkpolicy, policycoreutils
+Requires:           %{name} = %{version}
+Requires:           selinux-policy
+Requires(post):     /usr/sbin/semodule, /sbin/restorecon, /usr/sbin/setsebool, /usr/sbin/selinuxenabled, /usr/sbin/semanage
+Requires(post):     policycoreutils-python
+Requires(post):     selinux-policy-targeted
+Requires(postun):   /usr/sbin/semodule, /sbin/restorecon
+
+%description -n %{name}-selinux
+SELinux policy for OnDemand
 
 %prep
 %setup -q -n %{package_name}-%{git_tag_minus_v}
@@ -146,6 +159,12 @@ EOF
 %endif
 EOS
 
+mkdir selinux
+cd selinux
+cp %{SOURCE1} .
+make -f %{_datadir}/selinux/devel/Makefile
+install -p -m 644 -D %{name}-selinux.pp $RPM_BUILD_ROOT%{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp
+
 %post
 %__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24 %{?scl_ondemand_ruby}"/' \
     /opt/rh/httpd24/service-environment
@@ -212,6 +231,13 @@ EOF
     done
 fi
 
+%post selinux
+SELINUX_TEMP=$(mktemp -t ondemand-selinux-enable.XXXXX)
+echo "boolean -m --on httpd_can_network_connect" >> $SELINUX_TEMP
+echo "boolean -m --on httpd_execmem" >> $SELINUX_TEMP
+semanage import -S targeted -f $SELINUX_TEMP
+semodule -i %{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp 2>/dev/null || :
+
 %preun
 if [ "$1" -eq 0 ]; then
 %__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24"/' \
@@ -219,6 +245,8 @@ if [ "$1" -eq 0 ]; then
 /opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force &>/dev/null || :
 fi
 
+%preun selinux
+semodule -r %{name} 2>/dev/null || :
 
 %postun
 if [ "$1" -eq 0 ]; then
@@ -232,6 +260,10 @@ exit 0
 %endif
 fi
 
+%postun selinux
+if [ "$1" -ge "1" ] ; then # Upgrade
+semodule -i %{_datadir}/selinux/packages/%{name}/%{name}.pp 2>/dev/null || :
+fi
 
 %posttrans
 # Rebuild NGINX app configs and restart PUNs w/ no active connections
@@ -312,6 +344,8 @@ fi
 %config(noreplace) %{_sysconfdir}/systemd/system/httpd24-httpd.service.d/ood.conf
 %endif
 
+%files -n %{name}-selinux
+%{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp
 
 %changelog
 * Fri Feb 08 2019 Morgan Rodgers <mrodgers@osc.edu> 1.5.4-2

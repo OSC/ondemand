@@ -1,0 +1,19 @@
+
+module ondemand-selinux 1.0;
+
+require {
+	type httpd_tmp_t;
+	type devpts_t;
+	type ptmx_t;
+	type httpd_t;
+	class fifo_file { create getattr ioctl open read setattr unlink write };
+	class chr_file { ioctl open read write };
+	class file { create getattr ioctl lock open read unlink write };
+}
+
+#============= httpd_t ==============
+
+#!!!! This avc can be allowed using the boolean 'daemons_use_tty'
+allow httpd_t devpts_t:chr_file open;
+allow httpd_t httpd_tmp_t:fifo_file { create getattr ioctl open read setattr unlink write };
+allow httpd_t ptmx_t:chr_file { ioctl open read write };
