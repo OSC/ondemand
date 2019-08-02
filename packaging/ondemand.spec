@@ -8,6 +8,8 @@
 %{!?package_release: %define package_release 1}
 %{!?git_tag: %define git_tag v%{package_version}}
 %define git_tag_minus_v %(echo %{git_tag} | sed -r 's/^v//')
+%global selinux_policy_ver %(rpm --qf "%%{version}-%%{release}" -q selinux-policy)
+%global selinux_module_version %{package_version}.%{package_release}
 
 Name:      %{package_name}
 Version:   %{package_version}
@@ -69,7 +71,7 @@ access, job submission and interactive work on compute nodes.
 Summary: SELinux policy for OnDemand
 BuildRequires:      selinux-policy-devel, checkpolicy, policycoreutils
 Requires:           %{name} = %{version}
-Requires:           selinux-policy
+Requires:           selinux-policy >= %{selinux_policy_ver}
 Requires(post):     /usr/sbin/semodule, /sbin/restorecon, /usr/sbin/setsebool, /usr/sbin/selinuxenabled, /usr/sbin/semanage
 Requires(post):     policycoreutils-python
 Requires(post):     selinux-policy-targeted
@@ -79,16 +81,25 @@ Requires(postun):   /usr/sbin/semodule, /sbin/restorecon
 SELinux policy for OnDemand
 
 %prep
+%dump
 %setup -q -n %{package_name}-%{git_tag_minus_v}
 
 
 %build
+%__mkdir selinux
+cd selinux
+%__cp %{SOURCE1} ./ondemand-selinux.te
+%__sed -i 's/@VERSION@/%{selinux_module_version}/' ./ondemand-selinux.te
+%__make -f %{_datadir}/selinux/devel/Makefile
+
 scl enable ondemand - << \EOS
 rake -mj%{ncpus}
 EOS
 
 
 %install
+%__install -p -m 644 -D selinux/%{name}-selinux.pp %{buildroot}%{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp
+
 scl enable ondemand - << \EOS
 rake install PREFIX=%{buildroot}/opt/ood
 %__rm %{buildroot}/opt/ood/apps/*/log/production.log
@@ -158,12 +169,6 @@ EOF
 %__chmod 444 %{buildroot}%{_sysconfdir}/systemd/system/httpd24-httpd.service.d/ood.conf
 %endif
 EOS
-
-mkdir selinux
-cd selinux
-cp %{SOURCE1} .
-make -f %{_datadir}/selinux/devel/Makefile
-install -p -m 644 -D %{name}-selinux.pp $RPM_BUILD_ROOT%{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp
 
 %post
 %__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24 %{?scl_ondemand_ruby}"/' \
@@ -235,8 +240,16 @@ fi
 SELINUX_TEMP=$(mktemp -t ondemand-selinux-enable.XXXXX)
 echo "boolean -m --on httpd_can_network_connect" >> $SELINUX_TEMP
 echo "boolean -m --on httpd_execmem" >> $SELINUX_TEMP
+echo "boolean -m --on httpd_use_nfs" >> $SELINUX_TEMP
+echo "boolean -m --on httpd_setrlimit" >> $SELINUX_TEMP
+echo "boolean -m --on use_nfs_home_dirs"
 semanage import -S targeted -f $SELINUX_TEMP
 semodule -i %{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp 2>/dev/null || :
+semanage fcontext -a -t httpd_var_lib_t '%{_sharedstatedir}/ondemand-nginx(/.*)?' 2>/dev/null || :
+semanage fcontext -a -t httpd_tmp_t '%{_sharedstatedir}/ondemand-nginx/tmp(/.*)?' 2>/dev/null || :
+restorecon -R %{_sharedstatedir}/ondemand-nginx
+semanage fcontext -a -t httpd_log_t '%{_localstatedir}/log/ondemand-nginx(/.*)?' 2>/dev/null || :
+restorecon -R %{_localstatedir}/log/ondemand-nginx
 
 %preun
 if [ "$1" -eq 0 ]; then
@@ -246,7 +259,7 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %preun selinux
-semodule -r %{name} 2>/dev/null || :
+semodule -r %{name}-selinux 2>/dev/null || :
 
 %postun
 if [ "$1" -eq 0 ]; then
@@ -262,7 +275,12 @@ fi
 
 %postun selinux
 if [ "$1" -ge "1" ] ; then # Upgrade
-semodule -i %{_datadir}/selinux/packages/%{name}/%{name}.pp 2>/dev/null || :
+semodule -i %{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp 2>/dev/null || :
+fi
+if [ $1 -eq 0 ] ; then  # final removal
+semanage fcontext -d -t httpd_var_lib_t '%{_sharedstatedir}/ondemand-nginx(/.*)?' 2>/dev/null || :
+semanage fcontext -d -t httpd_tmp_t '%{_sharedstatedir}/ondemand-nginx/tmp(/.*)?' 2>/dev/null || :
+semanage fcontext -d -t httpd_log_t '%{_localstatedir}/log/ondemand-nginx(/.*)?' 2>/dev/null || :
 fi
 
 %posttrans

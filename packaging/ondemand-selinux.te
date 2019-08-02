@@ -1,14 +1,21 @@
-
-module ondemand-selinux 1.0;
+module ondemand-selinux @VERSION@;
 
 require {
-	type httpd_tmp_t;
-	type devpts_t;
-	type ptmx_t;
-	type httpd_t;
-	class fifo_file { create getattr ioctl open read setattr unlink write };
-	class chr_file { ioctl open read write };
-	class file { create getattr ioctl lock open read unlink write };
+  type httpd_tmp_t;
+  type devpts_t;
+  type httpd_t;
+  type systemd_logind_t;
+  type shadow_t;
+  type ptmx_t;
+  type sshd_key_t;
+  type tmp_t;
+  class chr_file { ioctl open read write };
+  class fifo_file { create getattr ioctl open read setattr unlink write };
+  class netlink_audit_socket nlmsg_relay;
+  class capability { audit_write fowner };
+  class dbus send_msg;
+  class file { getattr open read };
+  class sock_file write;
 }
 
 #============= httpd_t ==============
@@ -16,4 +23,23 @@ require {
 #!!!! This avc can be allowed using the boolean 'daemons_use_tty'
 allow httpd_t devpts_t:chr_file open;
 allow httpd_t httpd_tmp_t:fifo_file { create getattr ioctl open read setattr unlink write };
+
+#!!!! This avc can be allowed using the boolean 'httpd_mod_auth_pam'
+allow httpd_t self:netlink_audit_socket nlmsg_relay;
+
+# PUN startup
+#!!!! This avc can be allowed using the boolean 'httpd_mod_auth_pam'
+allow httpd_t self:capability { audit_write fowner };
+allow httpd_t shadow_t:file { getattr open read };
+allow httpd_t systemd_logind_t:dbus send_msg;
+
+# Shell app
 allow httpd_t ptmx_t:chr_file { ioctl open read write };
+allow httpd_t sshd_key_t:file { getattr open read };
+
+# trqauthd socket
+allow httpd_t tmp_t:sock_file write;
+
+#============= systemd_logind_t ==============
+# PUN startup
+allow systemd_logind_t httpd_t:dbus send_msg;
