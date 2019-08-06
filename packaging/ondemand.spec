@@ -242,7 +242,11 @@ echo "boolean -m --on httpd_can_network_connect" >> $SELINUX_TEMP
 echo "boolean -m --on httpd_execmem" >> $SELINUX_TEMP
 echo "boolean -m --on httpd_use_nfs" >> $SELINUX_TEMP
 echo "boolean -m --on httpd_setrlimit" >> $SELINUX_TEMP
-echo "boolean -m --on use_nfs_home_dirs"
+echo "boolean -m --on httpd_mod_auth_pam" >> $SELINUX_TEMP
+echo "boolean -m --on httpd_unified" >> $SELINUX_TEMP
+echo "boolean -m --on httpd_run_stickshift" >> $SELINUX_TEMP
+echo "boolean -m --on use_nfs_home_dirs" >> $SELINUX_TEMP
+echo "boolean -m --on daemons_use_tty" >> $SELINUX_TEMP
 semanage import -S targeted -f $SELINUX_TEMP
 semodule -i %{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp 2>/dev/null || :
 semanage fcontext -a -t httpd_var_lib_t '%{_sharedstatedir}/ondemand-nginx(/.*)?' 2>/dev/null || :
