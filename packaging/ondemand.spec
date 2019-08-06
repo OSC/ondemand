@@ -120,6 +120,8 @@ touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/file-editor.
 touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/activejobs.conf
 touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/myjobs.conf
 
+touch %{buildroot}%{_sysconfdir}/ood/config/ood_portal.sha256sum
+
 %__mkdir_p %{buildroot}%{_sysconfdir}/sudoers.d
 %__cat >> %{buildroot}%{_sysconfdir}/sudoers.d/ood << EOF
 Defaults:apache !requiretty, !authenticate
@@ -290,6 +292,7 @@ fi
 %dir %{_sysconfdir}/ood/config
 %config(noreplace,missingok) %{_sysconfdir}/ood/config/nginx_stage.yml
 %config(noreplace,missingok) %{_sysconfdir}/ood/config/ood_portal.yml
+%ghost %{_sysconfdir}/ood/config/ood_portal.sha256sum
 
 %dir %{_sharedstatedir}/ondemand-nginx/config
 %dir %{_sharedstatedir}/ondemand-nginx/config/puns
