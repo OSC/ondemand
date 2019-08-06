@@ -4,6 +4,7 @@ ROOT="$(dirname "$(readlink -f "${0}")")"
 
 RPM=0
 FORCE=false
+CHANGED=false
 CONFIG="${CONFIG:-/etc/ood/config/ood_portal.yml}"
 APACHE="${APACHE:-/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf}"
 BIN="${BIN:-${ROOT}/../bin/generate}"
@@ -66,6 +67,7 @@ if ! cmp -s "${NEW_APACHE}" "${APACHE}"; then
     echo "Generating Apache config checksum file: '${SUM}'"
     sha256sum $APACHE > $SUM
     ret=0
+    CHANGED=true
   else
     echo "WARNING: Checksum of ${APACHE} does not match previous value, not replacing."
     ret=1
@@ -82,19 +84,21 @@ if [ $RPM -eq 1 ] || ! $REPLACE; then
 fi
 
 echo "Completed successfully!"
-echo ""
-echo "Restart the httpd24-httpd service now."
-echo ""
+if $CHANGED; then
+    echo ""
+    echo "Restart the httpd24-httpd service now."
+    echo ""
 
-if [[ -L "/sbin/init" ]]; then
-  echo "Suggested command:"
-  echo "    sudo systemctl try-restart httpd24-httpd.service httpd24-htcacheclean.service"
-  echo ""
-else
-  echo "Suggested commands:"
-  echo "    sudo service httpd24-httpd condrestart"
-  echo "    sudo service httpd24-htcacheclean condrestart"
-  echo ""
+    if [[ -L "/sbin/init" ]]; then
+      echo "Suggested command:"
+      echo "    sudo systemctl try-restart httpd24-httpd.service httpd24-htcacheclean.service"
+      echo ""
+    else
+      echo "Suggested commands:"
+      echo "    sudo service httpd24-httpd condrestart"
+      echo "    sudo service httpd24-htcacheclean condrestart"
+      echo ""
+    fi
 fi
 
 exit $ret
