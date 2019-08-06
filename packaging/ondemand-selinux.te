@@ -9,19 +9,15 @@ require {
   type shadow_t;
   type ptmx_t;
   type sshd_key_t;
-  type tmp_t;
   type chkpwd_t;
   type initrc_var_run_t;
-  type var_spool_t;
   class chr_file { ioctl open read write };
   class fifo_file { create getattr ioctl open read setattr unlink write };
   class netlink_audit_socket { nlmsg_relay create write };
   class capability { audit_write fowner net_admin };
   class dbus send_msg;
   class file { getattr open read };
-  class sock_file write;
   class process { noatsecure rlimitinh siginh };
-  class lnk_file read;
 }
 
 #============= httpd_t ==============
@@ -37,14 +33,8 @@ allow httpd_t systemd_logind_t:dbus send_msg;
 allow httpd_t ptmx_t:chr_file { ioctl open read write };
 allow httpd_t sshd_key_t:file { getattr open read };
 
-# trqauthd socket
-allow httpd_t tmp_t:sock_file write;
-
 # Job Composer
 allow httpd_t httpd_sys_script_t:process { noatsecure rlimitinh siginh };
-
-# Moab
-allow httpd_t var_spool_t:lnk_file read;
 
 #============= systemd_logind_t ==============
 # PUN startup
