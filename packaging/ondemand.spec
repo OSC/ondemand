@@ -81,7 +81,6 @@ Requires(postun):   /usr/sbin/semodule, /sbin/restorecon
 SELinux policy for OnDemand
 
 %prep
-%dump
 %setup -q -n %{package_name}-%{git_tag_minus_v}
 
 
