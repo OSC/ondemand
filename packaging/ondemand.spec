@@ -8,7 +8,11 @@
 %{!?package_release: %define package_release 1}
 %{!?git_tag: %define git_tag v%{package_version}}
 %define git_tag_minus_v %(echo %{git_tag} | sed -r 's/^v//')
-%global selinux_policy_ver %(rpm --qf "%%{version}-%%{release}" -q selinux-policy)
+%if 0%{?rhel} >= 7
+%define selinux_policy_ver %(rpm --qf "%%{version}-%%{release}" -q selinux-policy)
+%else
+%define selinux_policy_ver %(rpm -qa --qf "%%{name}|%%{version}-%%{release}\\n" | grep selinux-policy | awk -F '|' '{ print $2 }')
+%endif
 %global selinux_module_version %{package_version}.%{package_release}
 
 Name:      %{package_name}
@@ -21,6 +25,7 @@ License:   MIT
 URL:       https://osc.github.io/Open-OnDemand
 Source0:   https://github.com/OSC/%{package_name}/archive/%{git_tag}.tar.gz
 Source1:   ondemand-selinux.te
+Source2:   ondemand-selinux-systemd.te
 
 # Disable debuginfo as it causes issues with bundled gems that build libraries
 %global debug_package %{nil}
@@ -71,11 +76,7 @@ access, job submission and interactive work on compute nodes.
 Summary: SELinux policy for OnDemand
 BuildRequires:      selinux-policy, selinux-policy-devel, checkpolicy, policycoreutils
 Requires:           %{name} = %{version}
-%if 0%{?rhel} >= 7
 Requires:           selinux-policy >= %{selinux_policy_ver}
-%else
-Requires:           selinux-policy
-%endif
 Requires(post):     /usr/sbin/semodule, /sbin/restorecon, /usr/sbin/setsebool, /usr/sbin/selinuxenabled, /usr/sbin/semanage
 Requires(post):     policycoreutils-python
 Requires(post):     selinux-policy-targeted
@@ -91,7 +92,11 @@ SELinux policy for OnDemand
 %build
 %__mkdir selinux
 cd selinux
+echo "SELinux policy %{selinux_policy_ver}"
 %__cp %{SOURCE1} ./ondemand-selinux.te
+%if 0%{?rhel} >= 7
+%__cat %{SOURCE2} >> ./ondemand-selinux.te
+%endif
 %__sed -i 's/@VERSION@/%{selinux_module_version}/' ./ondemand-selinux.te
 %__make -f %{_datadir}/selinux/devel/Makefile
 
@@ -245,12 +250,20 @@ echo "boolean -m --on httpd_can_network_connect" >> $SELINUX_TEMP
 echo "boolean -m --on httpd_execmem" >> $SELINUX_TEMP
 echo "boolean -m --on httpd_use_nfs" >> $SELINUX_TEMP
 echo "boolean -m --on httpd_setrlimit" >> $SELINUX_TEMP
+%if 0%{?rhel} >= 7
 echo "boolean -m --on httpd_mod_auth_pam" >> $SELINUX_TEMP
+%else
+echo "boolean -m --on allow_httpd_mod_auth_pam" >> $SELINUX_TEMP
+%endif
 echo "boolean -m --on httpd_unified" >> $SELINUX_TEMP
 echo "boolean -m --on httpd_run_stickshift" >> $SELINUX_TEMP
 echo "boolean -m --on use_nfs_home_dirs" >> $SELINUX_TEMP
+%if 0%{?rhel} >= 7
 echo "boolean -m --on daemons_use_tty" >> $SELINUX_TEMP
-semanage import -S targeted -f $SELINUX_TEMP
+%else
+echo "boolean -m --on allow_daemons_use_tty" >> $SELINUX_TEMP
+%endif
+semanage -S targeted -i $SELINUX_TEMP
 semodule -i %{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp 2>/dev/null || :
 semanage fcontext -a -t httpd_var_lib_t '%{_sharedstatedir}/ondemand-nginx(/.*)?' 2>/dev/null || :
 semanage fcontext -a -t httpd_tmp_t '%{_sharedstatedir}/ondemand-nginx/tmp(/.*)?' 2>/dev/null || :

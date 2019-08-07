@@ -15,7 +15,6 @@ require {
   class fifo_file { create getattr ioctl open read setattr unlink write };
   class netlink_audit_socket { nlmsg_relay create write };
   class capability { audit_write fowner net_admin };
-  class dbus send_msg;
   class file { getattr open read };
   class process { noatsecure rlimitinh siginh };
 }
@@ -27,7 +26,6 @@ allow httpd_t chkpwd_t:process { noatsecure rlimitinh siginh };
 allow httpd_t httpd_tmp_t:fifo_file { create getattr ioctl open read setattr unlink write };
 allow httpd_t initrc_var_run_t:file read;
 allow httpd_t self:capability net_admin;
-allow httpd_t systemd_logind_t:dbus send_msg;
 
 # Shell app
 allow httpd_t ptmx_t:chr_file { ioctl open read write };
@@ -35,7 +33,3 @@ allow httpd_t sshd_key_t:file { getattr open read };
 
 # Job Composer
 allow httpd_t httpd_sys_script_t:process { noatsecure rlimitinh siginh };
-
-#============= systemd_logind_t ==============
-# PUN startup
-allow systemd_logind_t httpd_t:dbus send_msg;
