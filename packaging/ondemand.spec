@@ -134,6 +134,16 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 0 */2 * * * root [ -f /opt/ood/nginx_stage/sbin/nginx_stage ] && /opt/ood/nginx_stage/sbin/nginx_stage nginx_clean 2>&1 | logger -t nginx_clean
 EOF
 
+%__mkdir_p %{buildroot}%{_sysconfdir}/logrotate.d
+%__cat >> %{buildroot}%{_sysconfdir}/logrotate.d/ood << EOF
+%{_localstatedir}/log/ondemand-nginx/*/access.log %{_localstatedir}/log/ondemand-nginx/*/error.log {
+  compress
+  copytruncate
+  missingok
+  notifempty
+}
+EOF
+
 %if %{with systemd}
 %__mkdir_p %{buildroot}%{_sysconfdir}/systemd/system/httpd24-httpd.service.d
 %__cat >> %{buildroot}%{_sysconfdir}/systemd/system/httpd24-httpd.service.d/ood.conf << EOF
@@ -307,6 +317,7 @@ fi
 
 %config(noreplace) %{_sysconfdir}/sudoers.d/ood
 %config(noreplace) %{_sysconfdir}/cron.d/ood
+%config(noreplace) %{_sysconfdir}/logrotate.d/ood
 %ghost /opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf
 %if %{with systemd}
 %config(noreplace) %{_sysconfdir}/systemd/system/httpd24-httpd.service.d/ood.conf
