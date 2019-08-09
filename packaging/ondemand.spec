@@ -8,11 +8,7 @@
 %{!?package_release: %define package_release 1}
 %{!?git_tag: %define git_tag v%{package_version}}
 %define git_tag_minus_v %(echo %{git_tag} | sed -r 's/^v//')
-%if 0%{?rhel} >= 7
 %define selinux_policy_ver %(rpm --qf "%%{version}-%%{release}" -q selinux-policy)
-%else
-%define selinux_policy_ver %(rpm -qa --qf "%%{name}|%%{version}-%%{release}\\n" | grep selinux-policy | awk -F '|' '{ print $2 }')
-%endif
 %global selinux_module_version %{package_version}.%{package_release}
 
 Name:      %{package_name}
@@ -26,6 +22,7 @@ URL:       https://osc.github.io/Open-OnDemand
 Source0:   https://github.com/OSC/%{package_name}/archive/%{git_tag}.tar.gz
 Source1:   ondemand-selinux.te
 Source2:   ondemand-selinux-systemd.te
+Source3:   ondemand-selinux.fc
 
 # Disable debuginfo as it causes issues with bundled gems that build libraries
 %global debug_package %{nil}
@@ -97,6 +94,7 @@ echo "SELinux policy %{selinux_policy_ver}"
 %if 0%{?rhel} >= 7
 %__cat %{SOURCE2} >> ./ondemand-selinux.te
 %endif
+%__cp %{SOURCE3} ./ondemand-selinux.fc
 %__sed -i 's/@VERSION@/%{selinux_module_version}/' ./ondemand-selinux.te
 %__make -f %{_datadir}/selinux/devel/Makefile
 
@@ -265,10 +263,7 @@ echo "boolean -m --on allow_daemons_use_tty" >> $SELINUX_TEMP
 %endif
 semanage -S targeted -i $SELINUX_TEMP
 semodule -i %{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp 2>/dev/null || :
-semanage fcontext -a -t httpd_var_lib_t '%{_sharedstatedir}/ondemand-nginx(/.*)?' 2>/dev/null || :
-semanage fcontext -a -t httpd_tmp_t '%{_sharedstatedir}/ondemand-nginx/tmp(/.*)?' 2>/dev/null || :
 restorecon -R %{_sharedstatedir}/ondemand-nginx
-semanage fcontext -a -t httpd_log_t '%{_localstatedir}/log/ondemand-nginx(/.*)?' 2>/dev/null || :
 restorecon -R %{_localstatedir}/log/ondemand-nginx
 
 %preun
@@ -296,11 +291,6 @@ fi
 %postun selinux
 if [ "$1" -ge "1" ] ; then # Upgrade
 semodule -i %{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp 2>/dev/null || :
-fi
-if [ $1 -eq 0 ] ; then  # final removal
-semanage fcontext -d -t httpd_var_lib_t '%{_sharedstatedir}/ondemand-nginx(/.*)?' 2>/dev/null || :
-semanage fcontext -d -t httpd_tmp_t '%{_sharedstatedir}/ondemand-nginx/tmp(/.*)?' 2>/dev/null || :
-semanage fcontext -d -t httpd_log_t '%{_localstatedir}/log/ondemand-nginx(/.*)?' 2>/dev/null || :
 fi
 
 %posttrans
