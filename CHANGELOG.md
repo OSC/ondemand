@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.6.8] - 2019-08-13
+### Fixed
+- Fixed issue in Dashboard where older browsers (IE) could not connect to VNC sessions [ood-dashboard](https://github.com/OSC/ood-dashboard/issues/479)
+
 ## [1.6.7] - 2019-06-28
 ## Added
 - Added ability to disable RewriteEngine
@@ -196,7 +200,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.6.7...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.6.8...HEAD
+[1.6.8]: https://github.com/OSC/ondemand/compare/v1.6.7...v1.6.8
 [1.6.7]: https://github.com/OSC/ondemand/compare/v1.6.6...v1.6.7
 [1.6.6]: https://github.com/OSC/ondemand/compare/v1.6.5...v1.6.6
 [1.6.5]: https://github.com/OSC/ondemand/compare/v1.6.4...v1.6.5
