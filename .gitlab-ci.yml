@@ -13,7 +13,7 @@ rpm-build:
   only:
     - tags
   script:
-    - ./tmp/ondemand-packaging/build.sh -w $CI_PROJECT_DIR/tmp/work -o $CI_PROJECT_DIR/tmp/output -V $CI_COMMIT_TAG -u $CI_PROJECT_DIR/packaging
+    - ./tmp/ondemand-packaging/build.sh -w $CI_PROJECT_DIR/tmp/work -o $CI_PROJECT_DIR/tmp/output -V $CI_COMMIT_TAG -u -v $CI_PROJECT_DIR/packaging
   artifacts:
     paths:
       - tmp/output
@@ -31,4 +31,4 @@ rpm-deploy:
     - tags
   script:
     - if [[ "$CI_COMMIT_TAG" =~ .*_.* ]]; then export SECTION=ci; fi
-    - $RLS_SCRIPT --pkey $RLS_KEY -c $SECTION $RLS_OUTPUT
+    - $RLS_SCRIPT --debug --pkey $RLS_KEY -c $SECTION $RLS_OUTPUT
