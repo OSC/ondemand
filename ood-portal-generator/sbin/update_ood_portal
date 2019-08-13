@@ -70,6 +70,8 @@ if ! cmp -s "${NEW_APACHE}" "${APACHE}"; then
     CHANGED=true
   else
     echo "WARNING: Checksum of ${APACHE} does not match previous value, not replacing."
+    echo "Generating new Apache config at: '${APACHE}.new'"
+    cat "${NEW_APACHE}" > "${APACHE}.new"
     ret=1
   fi
 else
