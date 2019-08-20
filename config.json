@@ -38,7 +38,7 @@
   {
     "name": "bc_desktop",
     "url": "https://github.com/OSC/bc_desktop",
-    "tag": "v0.2.1",
+    "tag": "v0.2.2",
     "app": true
   }
 ]
