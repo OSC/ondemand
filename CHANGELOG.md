@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.35.2] - 2019-08-22
+### Fixed
+- Updated jQuery and Nokogiri
+
 ## [1.35.1] - 2019-08-13
 ### Fixed
 - Fixed issue where older browsers (IE) could not connect to VNC sessions [ood-dashboard](https://github.com/OSC/ood-dashboard/issues/479)
@@ -512,7 +516,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.35.1...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.35.2...HEAD
+[1.35.2]: https://github.com/OSC/ood-dashboard/compare/v1.35.1...v1.35.2
 [1.35.1]: https://github.com/OSC/ood-dashboard/compare/v1.35.0...v1.35.1
 [1.35.0]: https://github.com/OSC/ood-dashboard/compare/v1.34.0...v1.35.0
 [1.34.0]: https://github.com/OSC/ood-dashboard/compare/v1.33.4...v1.34.0
