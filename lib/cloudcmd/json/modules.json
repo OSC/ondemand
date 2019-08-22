@@ -8,15 +8,10 @@
     "contact",
     "upload",
     "operation",
-    "konsole", 
+    "konsole",
     "cloud", [{
         "name": "remote",
         "data": [{
-            "name": "jquery",
-            "version": "2.1.4",
-            "local": "/modules/jquery/dist/jquery.js",
-            "remote": "//ajax.googleapis.com/ajax/libs/jquery/{{ version }}/jquery.min.js"
-        }, {
             "name": "socket",
             "version": "1.4.5",
             "local": "/socket.io/socket.io.js",
