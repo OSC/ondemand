@@ -1,0 +1,3 @@
+/var/lib/ondemand-nginx(/.*)?     gen_context(system_u:object_r:httpd_var_lib_t,s0)
+/var/lib/ondemand-nginx/tmp(/.*)? gen_context(system_u:object_r:httpd_tmp_t,s0)
+/var/log/ondemand-nginx(/.*)?     gen_context(system_u:object_r:httpd_log_t,s0)

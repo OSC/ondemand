@@ -8,6 +8,8 @@
 %{!?package_release: %define package_release 1}
 %{!?git_tag: %define git_tag v%{package_version}}
 %define git_tag_minus_v %(echo %{git_tag} | sed -r 's/^v//')
+%define selinux_policy_ver %(rpm --qf "%%{version}-%%{release}" -q selinux-policy)
+%global selinux_module_version %{package_version}.%{package_release}
 
 Name:      %{package_name}
 Version:   %{package_version}
@@ -18,6 +20,9 @@ Group:     System Environment/Daemons
 License:   MIT
 URL:       https://osc.github.io/Open-OnDemand
 Source0:   https://github.com/OSC/%{package_name}/archive/%{git_tag}.tar.gz
+Source1:   ondemand-selinux.te
+Source2:   ondemand-selinux-systemd.te
+Source3:   ondemand-selinux.fc
 
 # Disable debuginfo as it causes issues with bundled gems that build libraries
 %global debug_package %{nil}
@@ -64,18 +69,43 @@ Open OnDemand is an open source release of OSC's OnDemand platform to provide
 HPC access via a web browser, supporting web based file management, shell
 access, job submission and interactive work on compute nodes.
 
+%package -n %{name}-selinux
+Summary: SELinux policy for OnDemand
+BuildRequires:      selinux-policy, selinux-policy-devel, checkpolicy, policycoreutils
+Requires:           %{name} = %{version}
+Requires:           selinux-policy >= %{selinux_policy_ver}
+Requires(post):     /usr/sbin/semodule, /sbin/restorecon, /usr/sbin/setsebool, /usr/sbin/selinuxenabled, /usr/sbin/semanage
+Requires(post):     policycoreutils-python
+Requires(post):     selinux-policy-targeted
+Requires(postun):   /usr/sbin/semodule, /sbin/restorecon
+
+%description -n %{name}-selinux
+SELinux policy for OnDemand
 
 %prep
 %setup -q -n %{package_name}-%{git_tag_minus_v}
 
 
 %build
+%__mkdir selinux
+cd selinux
+echo "SELinux policy %{selinux_policy_ver}"
+%__cp %{SOURCE1} ./ondemand-selinux.te
+%if 0%{?rhel} >= 7
+%__cat %{SOURCE2} >> ./ondemand-selinux.te
+%endif
+%__cp %{SOURCE3} ./ondemand-selinux.fc
+%__sed -i 's/@VERSION@/%{selinux_module_version}/' ./ondemand-selinux.te
+%__make -f %{_datadir}/selinux/devel/Makefile
+
 scl enable ondemand - << \EOS
 rake -mj%{ncpus}
 EOS
 
 
 %install
+%__install -p -m 644 -D selinux/%{name}-selinux.pp %{buildroot}%{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp
+
 scl enable ondemand - << \EOS
 rake install PREFIX=%{buildroot}/opt/ood
 %__rm %{buildroot}/opt/ood/apps/*/log/production.log
@@ -222,6 +252,30 @@ EOF
     done
 fi
 
+%post selinux
+SELINUX_TEMP=$(mktemp -t ondemand-selinux-enable.XXXXX)
+echo "boolean -m --on httpd_can_network_connect" >> $SELINUX_TEMP
+echo "boolean -m --on httpd_execmem" >> $SELINUX_TEMP
+echo "boolean -m --on httpd_use_nfs" >> $SELINUX_TEMP
+echo "boolean -m --on httpd_setrlimit" >> $SELINUX_TEMP
+%if 0%{?rhel} >= 7
+echo "boolean -m --on httpd_mod_auth_pam" >> $SELINUX_TEMP
+%else
+echo "boolean -m --on allow_httpd_mod_auth_pam" >> $SELINUX_TEMP
+%endif
+echo "boolean -m --on httpd_unified" >> $SELINUX_TEMP
+echo "boolean -m --on httpd_run_stickshift" >> $SELINUX_TEMP
+echo "boolean -m --on use_nfs_home_dirs" >> $SELINUX_TEMP
+%if 0%{?rhel} >= 7
+echo "boolean -m --on daemons_use_tty" >> $SELINUX_TEMP
+%else
+echo "boolean -m --on allow_daemons_use_tty" >> $SELINUX_TEMP
+%endif
+semanage -S targeted -i $SELINUX_TEMP
+semodule -i %{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp 2>/dev/null || :
+restorecon -R %{_sharedstatedir}/ondemand-nginx
+restorecon -R %{_localstatedir}/log/ondemand-nginx
+
 %preun
 if [ "$1" -eq 0 ]; then
 %__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24"/' \
@@ -229,6 +283,8 @@ if [ "$1" -eq 0 ]; then
 /opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force &>/dev/null || :
 fi
 
+%preun selinux
+semodule -r %{name}-selinux 2>/dev/null || :
 
 %postun
 if [ "$1" -eq 0 ]; then
@@ -242,6 +298,10 @@ exit 0
 %endif
 fi
 
+%postun selinux
+if [ "$1" -ge "1" ] ; then # Upgrade
+semodule -i %{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp 2>/dev/null || :
+fi
 
 %posttrans
 # Rebuild NGINX app configs and restart PUNs w/ no active connections
@@ -323,6 +383,8 @@ fi
 %config(noreplace) %{_sysconfdir}/systemd/system/httpd24-httpd.service.d/ood.conf
 %endif
 
+%files -n %{name}-selinux
+%{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp
 
 %changelog
 * Fri Feb 08 2019 Morgan Rodgers <mrodgers@osc.edu> 1.5.4-2
