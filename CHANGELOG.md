@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.5.5] - 2019-08-26
+### Fixed
+- Upgrade dependencies
+
 ## [1.5.4] - 2019-08-22
 ### Fixed
 - Upgrade jQuery
@@ -118,8 +122,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Initial Release!
 
-[Unreleased]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.4...HEAD
-[1.5.3]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.3...v1.5.4
+[Unreleased]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.5...HEAD
+[1.5.5]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.4...v1.5.5
+[1.5.4]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.3...v1.5.4
 [1.5.3]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.2...v1.5.3
 [1.5.2]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.1...v1.5.2
 [1.5.1]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.0...v1.5.1
