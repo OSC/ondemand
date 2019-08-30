@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.6.11] - 2019-08-30
+### Fixed
+- Fixed bug in the File Explorer when attempting to copy directories on a Lustre FS; a side effect of this fix is that copy-progress messages are no longer sent to the client
+
 ## [1.6.10] - 2019-08-27
 ### Fixed
 - Upgraded dependencies for multiple apps
@@ -208,7 +212,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.6.10...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.6.11...HEAD
+[1.6.11]: https://github.com/OSC/ondemand/compare/v1.6.10...v1.6.11
 [1.6.10]: https://github.com/OSC/ondemand/compare/v1.6.9...v1.6.10
 [1.6.9]: https://github.com/OSC/ondemand/compare/v1.6.8...v1.6.9
 [1.6.8]: https://github.com/OSC/ondemand/compare/v1.6.7...v1.6.8
