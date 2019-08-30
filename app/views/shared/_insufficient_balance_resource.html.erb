@@ -1,0 +1,12 @@
+<h4>
+  <%= t('dashboard.balance_warning_prefix_html', unit: balance.unit) %>
+  <strong><%= balance.project_type %> <%= balance.balance_object %></strong>
+  <small class="pull-right hidden-xs hidden-sm">
+    <%= t('dashboard.balance_reload_message') %>
+  </small>
+</h4>
+<ul class="list-unstyled">
+  <li>
+    <%= balance.to_s %>. <%= t('dashboard.balance_additional_message', unit: balance.unit) %>
+  </li>
+</ul>

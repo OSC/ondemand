@@ -230,4 +230,12 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     ENV["OOD_QUOTA_PATH"] = "https://example.com/quota.json:ftp://path_b/quota.json"
     assert_equal ["https://example.com/quota.json", "ftp://path_b/quota.json"], ConfigurationSingleton.new.quota_paths
   end
+
+  test "balance_paths correctly parses OOD_BALANCE_PATH" do
+    ENV["OOD_BALANCE_PATH"] = "/path_a/balance.json:/path_b/balance.json"
+    assert_equal ["/path_a/balance.json", "/path_b/balance.json"], ConfigurationSingleton.new.balance_paths
+
+    ENV["OOD_BALANCE_PATH"] = "https://example.com/balance.json:ftp://path_b/balance.json"
+    assert_equal ["https://example.com/balance.json", "ftp://path_b/balance.json"], ConfigurationSingleton.new.balance_paths
+  end
 end
