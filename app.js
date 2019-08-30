@@ -305,6 +305,7 @@ app.use(cloudcmd({
         showKeysPanel: false,         /* disable the buttons at the bottom of the view            */
         root: '/',                    /* set the root path. change to HOME to use homedir         */
         prefix: BASE_URI,             /* base URL or function which returns base URL (optional)   */
+        progress: false,
 
         //TODO: could we set this using get params? or post params for when you first "create a session" ?
         //FIXME: try setting this with get params - or something that will make
