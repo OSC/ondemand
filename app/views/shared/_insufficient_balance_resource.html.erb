@@ -1,5 +1,5 @@
 <h4>
-  <%= t('dashboard.balance_warning_prefix_html', units_balance: balance.units_balance) %>
+  <%= t('dashboard.balance_warning_prefix_html', units_balance: balance.units_balance, unit: @unit) %>
   <strong><%= balance.project_type %> <%= balance.balance_object %></strong>
   <small class="pull-right hidden-xs hidden-sm">
     <%= t('dashboard.balance_reload_message') %>
@@ -7,6 +7,6 @@
 </h4>
 <ul class="list-unstyled">
   <li>
-    <%= balance.to_s %>. <%= t('dashboard.balance_additional_message', balanace_units: balance.balanace_units) %>
+    <%= balance.to_s %>. <%= t('dashboard.balance_additional_message', balanace_units: balance.balanace_units, unit: @unit) %>
   </li>
 </ul>

@@ -94,6 +94,6 @@ class Balance
   end
 
   def to_s
-    I18n.translate('dashboard.balance_message', units_balance: units_balance, value: @value)
+    I18n.translate('dashboard.balance_message', unit: @unit, units_balance: units_balance, value: @value)
   end
 end
