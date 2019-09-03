@@ -219,7 +219,7 @@ Where `version` defines the version of the JSON schema used, `timestamp`
 defines when this file was generated, and `balances` is a list of balance objects
 (see below).
 
-The value for `config.unit` defines the type of units for balances and `config.project_type` would be project, account, or group, etc.
+The value for `config.unit` defines the type of units for balances and `config.project_type` would be project, account, or group, etc. Both values are used in locales and can be any string value.
 
 You can configure the Dashboard to use this JSON file (or files) by setting the
 environment variable `OOD_BALANCE_PATH` as a colon-delimited list of all JSON
