@@ -73,6 +73,13 @@ class Balance
     @project.presence || @user
   end
 
+  # Unit + balance text
+  def units_balance
+    "#{@unit} balance" if @unit.present?
+    'Balance'
+  end
+
+  # Plural units
   def balanace_units
     @unit.pluralize if @unit.present?
     'resources'
@@ -87,6 +94,6 @@ class Balance
   end
 
   def to_s
-    I18n.translate('dashboard.balance_message', unit: @unit, value: @value)
+    I18n.translate('dashboard.balance_message', units_balance: units_balance, value: @value)
   end
 end
