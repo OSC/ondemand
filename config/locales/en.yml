@@ -42,8 +42,8 @@ en:
 
     balance_additional_message: "Consider requesting additional %{balanace_units}"
     balance_reload_message: "Reload page to see updated balance. Balances are updated every 15 minutes."
-    balance_warning_prefix_html: "%{units_balance} balance warning for"
-    balance_message: "%{units_balance} balance is %{value}"
+    balance_warning_prefix_html: "%{units_balance} warning for"
+    balance_message: "%{units_balance} is %{value}"
 
     welcome_html: |
       %{logo_img_tag}
