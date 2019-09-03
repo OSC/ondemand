@@ -69,8 +69,7 @@ class Balance
   end
 
   def balance_object
-    return @project if @project.present?
-    @user
+    @project.presence || @user
   end
 
   def sufficient?(threshold: 0)
