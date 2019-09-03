@@ -40,7 +40,7 @@ en:
     quota_reload_message: "Reload page to see updated quota. Quotas are updated every 5 minutes."
     quota_warning_prefix_html: "Quota limit warning for"
 
-    balance_additional_message: "Consider requesting additional %{unit}s"
+    balance_additional_message: "Consider requesting additional %{balanace_units}"
     balance_reload_message: "Reload page to see updated balance. Balances are updated every 15 minutes."
     balance_warning_prefix_html: "%{unit} balance warning for"
     balance_message: "%{unit} balance is %{value}"

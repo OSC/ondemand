@@ -22,7 +22,8 @@ class Balance
       #FIXME: any validation of the structure here? otherwise we don't need the complexity of the code below
       # until we have more than one balance version schema, which we do not
       # so assume version is 1
-      build_balances(json["balances"], json["timestamp"], json["config"], user)
+      config = json["config"] || {}
+      build_balances(json["balances"], json["timestamp"], config, user)
     rescue StandardError => e
       Rails.logger.error("Error #{e.class} when reading and parsing balance file #{balance_path} for user #{user}: #{e.message}")
       []
@@ -70,6 +71,11 @@ class Balance
 
   def balance_object
     @project.presence || @user
+  end
+
+  def balanace_units
+    @unit.pluralize if @unit.present?
+    'resources'
   end
 
   def sufficient?(threshold: 0)
