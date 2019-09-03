@@ -75,13 +75,13 @@ class Balance
 
   # Unit + balance text
   def units_balance
-    "#{@unit} balance" if @unit.present?
+    return "#{@unit} balance" if @unit.present?
     'Balance'
   end
 
   # Plural units
   def balanace_units
-    @unit.pluralize if @unit.present?
+    return @unit.pluralize if @unit.present?
     'resources'
   end
 
