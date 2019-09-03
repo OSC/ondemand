@@ -1,4 +1,4 @@
-# This describes disk quota utilization for a given user and volume
+# This describes balances for a given user
 require 'open-uri'
 
 class Balance

@@ -216,7 +216,7 @@ that lists all user balances. The JSON schema for version `1` is given as:
 ```
 
 Where `version` defines the version of the JSON schema used, `timestamp`
-defines when this file was generated, and `quotas` is a list of quota objects
+defines when this file was generated, and `balances` is a list of balance objects
 (see below).
 
 The value for `config.unit` defines the type of units for balances and `config.project_type` would be project, account, or group, etc.
