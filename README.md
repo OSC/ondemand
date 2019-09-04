@@ -193,7 +193,7 @@ be repeated with just `user`, `block_usage`, and `file_usage` changing.*
 
 We currently support displaying warnings to users on the Dashboard if their
 balance is nearing its limit. This requires an auto-updated (it is
-recommended to update this file every **15 minutes** with a cronjob) JSON file
+recommended to update this file every day with a cronjob) JSON file
 that lists all user balances. The JSON schema for version `1` is given as:
 
 ```json

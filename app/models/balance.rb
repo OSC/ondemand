@@ -93,6 +93,10 @@ class Balance
     !sufficient?(threshold: threshold)
   end
 
+  def last_update
+    @updated_at.in_time_zone(Time.zone.name).strftime("%Y/%m/%d at %l:%M%p")
+  end
+
   def to_s
     I18n.translate('dashboard.balance_message', unit: @unit, units_balance: units_balance, value: @value)
   end

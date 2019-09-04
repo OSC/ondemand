@@ -2,7 +2,7 @@
   <%= t('dashboard.balance_warning_prefix_html', units_balance: balance.units_balance, unit: @unit) %>
   <strong><%= balance.project_type %> <%= balance.balance_object %></strong>
   <small class="pull-right hidden-xs hidden-sm">
-    <%= t('dashboard.balance_reload_message') %>
+    <%= t('dashboard.balance_reload_message_html', last_update: balance.last_update) %>
   </small>
 </h4>
 <ul class="list-unstyled">
