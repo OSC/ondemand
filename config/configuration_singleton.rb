@@ -214,10 +214,6 @@ class ConfigurationSingleton
     Pathname.new(ENV['OOD_LOCALES_ROOT'] || "/etc/ood/config/locales")
   end
 
-  def timezone
-    ENV['OOD_TIMEZONE'] || 'UTC'
-  end
-
   private
 
   # The environment
