@@ -100,7 +100,7 @@ class ConfigurationSingleton
   # @return [Array<String>] quota paths
   def quota_paths
     # regex uses negative lookahead to ignore : preceeding //
-    @quota_paths ||= ENV.fetch("OOD_QUOTA_PATH", "").strip.split(/:(?!\/\/)/)
+    ENV.fetch("OOD_QUOTA_PATH", "").strip.split(/:(?!\/\/)/)
   end
 
   # The threshold for determining if there is sufficient quota remaining
@@ -119,7 +119,7 @@ class ConfigurationSingleton
   # @return [Array<String>] balance paths
   def balance_paths
     # regex uses negative lookahead to ignore : preceeding //
-    @balance_paths ||= ENV.fetch("OOD_BALANCE_PATH", "").strip.split(/:(?!\/\/)/)
+    ENV.fetch("OOD_BALANCE_PATH", "").strip.split(/:(?!\/\/)/)
   end
 
   # The threshold for determining if there is sufficient balance remaining
