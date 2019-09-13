@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 4.2.10'
+gem 'rails', '~> 4.2.11'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
@@ -38,13 +38,14 @@ end
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
-# gem 'therubyracer', platforms: :ruby
-gem 'bootstrap-sass', '3.3'
+gem 'bootstrap-sass', '~> 3.4.1'
 gem 'font-awesome-sass', '~> 4.7.0'
-gem 'autoprefixer-rails'
+gem 'autoprefixer-rails', '~> 8.4'
 gem 'dotenv-rails', '~> 2.1'
 gem 'rails_12factor', group: :production
 gem 'ood_cluster', '~> 0.0.1'
 gem 'ood_appkit', '~> 1.0'
-gem 'pbs', '~> 2.1'
 gem 'jquery-datatables-rails', '~> 3.3'
+
+# Security patches
+gem "rack", ">= 1.6.11"

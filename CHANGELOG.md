@@ -5,9 +5,86 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.9.3] - 2019-08-22
+### Fixed
+- Upgraded jQuery and Nokogiri
 
+## [1.9.2] - 2019-06-17
+### Fixed
+- Fix sorting of cluster dropdown ([#168](https://github.com/OSC/ood-activejobs/issues/168))
+
+## [1.9.1] - 2019-05-09
+### Fixed
+- Fixed showing `'null'` when for `OodCore::Job::Info#account_id` was nil
+- Fixed showing integer Time Used instead of `HH:MM:SS`
+- Fixed bug when showing a job's extended details
+
+## [1.9.0] - 2019-05-03
+## Changed
+- Updated [ood_core](https://github.com/OSC/ood_core/blob/master/CHANGELOG.md#090---2019-05-04)
+
+## [1.8.3] - 2019-02-18
+### Fixed
+- Fixed a few bugs relating to changing cluster configs
+
+## [1.8.2] - 2019-02-08
+### Fixed
+- Fixed bug that broke display of job arrays with compliant adapters
+
+## [1.8.1] - 2019-02-07
+### Fixed
+- Fixed bug that broke Ganglia metrics
+
+## [1.8.0] - 2019-02-07
 ### Changed
-- Update version of sprockets for a security fix.
+- Disable eager loading to speed initial load of the application
+
+## [1.7.0] - 2019-01-29
+### Changed
+- xhr response is now "streamed" and handled using oboe.js to progressively
+  update the view, so when viewing all jobs from all clusters you see jobs from
+  one cluster at a time instead of waiting for them all to be transferred
+- no longer filter out array jobs for Torque, Slurm and SGE since these are now
+  supported
+- no longer pre-sort jobs so user's jobs appear first when loading all jobs
+- use more Rails conventional url for getting all jobs (index.json)
+
+### Fixed
+- removed stray .env file
+- ensure base uri for xhr requests are always correct
+
+## [1.6.9] - 2019-01-11
+### Changed
+- Updating ood_core gem
+
+## [1.6.8] - 2018-12-26
+### Fixed
+- Update `ood_core` to latest version for Torque and SGE bug fixes
+
+## [1.6.7] - 2018-12-19
+### Fixed
+- Update Rails to 4.2.11 to address security issues with dependencies
+
+### Added
+- Adds experimental Grid Engine support
+
+## [1.6.6] - 2018-11-30
+### Changed
+- Update recommended development dependencies for ruby, node, git
+- Update Gem dependency (rack)
+
+## [1.6.5] - 2018-09-14
+### Changed
+- Update PBS gem to v2.2.1
+- Update Gem dependencies
+
+## [1.6.4] - 2018-09-12
+### Fixed
+- Fixed setup crash due to incompatibilities between older nodejs and newer autoprefixer
+
+## [1.6.3] - 2018-09-11
+### Changed
+- Update gem dependencies
 
 ## [1.6.2] - 2018-04-30
 ### Fixed
@@ -88,7 +165,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove OSC copyright from footer
 - Remove deprecation warnings
 
-[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.6.2...HEAD
+[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.9.3...HEAD
+[1.9.3]: https://github.com/OSC/ood-activejobs/compare/v1.9.2...v1.9.3
+[1.9.2]: https://github.com/OSC/ood-activejobs/compare/v1.9.1...v1.9.2
+[1.9.1]: https://github.com/OSC/ood-activejobs/compare/v1.9.0...v1.9.1
+[1.9.0]: https://github.com/OSC/ood-activejobs/compare/v1.8.3...v1.9.0
+[1.8.3]: https://github.com/OSC/ood-activejobs/compare/v1.8.2...v1.8.3
+[1.8.2]: https://github.com/OSC/ood-activejobs/compare/v1.8.1...v1.8.2
+[1.8.1]: https://github.com/OSC/ood-activejobs/compare/v1.8.0...v1.8.1
+[1.8.0]: https://github.com/OSC/ood-activejobs/compare/v1.7.0...v1.8.0
+[1.7.0]: https://github.com/OSC/ood-activejobs/compare/v1.6.9...v1.7.0
+[1.6.9]: https://github.com/OSC/ood-activejobs/compare/v1.6.8...v1.6.9
+[1.6.8]: https://github.com/OSC/ood-activejobs/compare/v1.6.7...v1.6.8
+[1.6.7]: https://github.com/OSC/ood-activejobs/compare/v1.6.6...v1.6.7
+[1.6.6]: https://github.com/OSC/ood-activejobs/compare/v1.6.5...v1.6.6
+[1.6.5]: https://github.com/OSC/ood-activejobs/compare/v1.6.4...v1.6.5
+[1.6.4]: https://github.com/OSC/ood-activejobs/compare/v1.6.3...v1.6.4
+[1.6.3]: https://github.com/OSC/ood-activejobs/compare/v1.6.2...v1.6.3
 [1.6.2]: https://github.com/OSC/ood-activejobs/compare/v1.6.1...v1.6.2
 [1.6.1]: https://github.com/OSC/ood-activejobs/compare/v1.6.0...v1.6.1
 [1.6.0]: https://github.com/OSC/ood-activejobs/compare/v1.5.3...v1.6.0

@@ -17,15 +17,15 @@ Explorer and Shell apps installed and a cluster config added to
    `activejobs`):
 
     ```sh
-    scl enable git19 -- git clone https://github.com/OSC/ood-activejobs.git activejobs
+    scl enable rh-git29 -- git clone https://github.com/OSC/ood-activejobs.git activejobs
     cd activejobs
-    scl enable git19 -- git checkout tags/v1.6.2
+    scl enable rh-git29 -- git checkout tags/v1.7.0
     ```
 
 2. Install the app for a production environment:
 
     ```sh
-    RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+    RAILS_ENV=production scl enable rh-git29 rh-ruby24 rh-nodejs6 -- bin/setup
     ```
 
     this will setup a default Open OnDemand install.
@@ -44,14 +44,14 @@ Explorer and Shell apps installed and a cluster config added to
 
     ```sh
     cd activejobs # cd to build directory
-    scl enable git19 -- git fetch
-    scl enable git19 -- git checkout tags/v1.6.2
+    scl enable rh-git29 -- git fetch
+    scl enable rh-git29 -- git checkout tags/v1.7.0
     ```
 
 2. Update the app for a production environment:
 
     ```sh
-    RAILS_ENV=production scl enable git19 rh-ruby22 nodejs010 -- bin/setup
+    RAILS_ENV=production scl enable rh-git29 rh-ruby24 rh-nodejs6 -- bin/setup
     ```
 
 3. Copy the built app directory to the deployment directory:
