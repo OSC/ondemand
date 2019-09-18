@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.9.4] - 2019-09-18
 ### Changed
 - Ganglia graphs how utilization over the entire lifetime of the job; previously only showed the last hour
-- bin/setup patch for debain
+- bin/setup patch for Debian
 
 ## [1.9.3] - 2019-08-22
 ### Fixed
