@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Fixed
+- bin/setup patch for debian
+
 ## [2.15.1] - 2019-08-22
 ### Fixed
 - Upgraded jQuery and Nokogiri
