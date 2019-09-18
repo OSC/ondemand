@@ -41,12 +41,16 @@ echo "Generating Apache config using YAML config: '${CONFIG}'"
 NEW_APACHE=$(mktemp)
 "${BIN}" -c "${CONFIG}" > $NEW_APACHE
 
+# Create checksum file if the path to ood-portal.conf not in checksum file
+# Checksum is based on mktemp generated ood-portal.conf but using path of real ood-portal.conf
 if ! grep -q "$APACHE" $SUM 1>/dev/null 2>&1; then
     echo "Generating Apache config checksum file: '${SUM}'"
     NEW_SUM=$(sha256sum $NEW_APACHE | cut -d' ' -f1)
     echo "${NEW_SUM} ${APACHE}" > $SUM
 fi
 
+# If checksum of ood-portal.conf matches, replace is possible.
+# If the checksum matches this means a site has not changed ood-portal.conf outside ood-portal-generator
 if sha256sum --quiet --status --check $SUM 1>/dev/null 2>&1; then
     REPLACE=true
 else
