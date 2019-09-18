@@ -40,6 +40,11 @@ en:
     quota_reload_message: "Reload page to see updated quota. Quotas are updated every 5 minutes."
     quota_warning_prefix_html: "Quota limit warning for"
 
+    balance_additional_message: "Consider requesting additional %{balanace_units}"
+    balance_reload_message_html: "Reload page to see updated balance. Balances are updated daily.<br>Last update was %{last_update}"
+    balance_warning_prefix_html: "%{units_balance} warning for"
+    balance_message: "%{units_balance} is %{value}"
+
     welcome_html: |
       %{logo_img_tag}
       <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>

@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   before_action :set_user, :set_nav_groups, :set_announcements, :set_locale
+  before_action :set_my_balances, only: [:index, :new, :featured]
 
   def set_locale
     I18n.locale = ::Configuration.locale
@@ -65,5 +66,13 @@ class ApplicationController < ActionController::Base
     @my_quotas = []
     ::Configuration.quota_paths.each { |path| @my_quotas += Quota.find(path, OodSupport::User.new.name) }
     @my_quotas
+  end
+
+  # Set a list of my balances which can be used to display warnings if there is
+  # an insufficient balance
+  def set_my_balances
+    @my_balances = []
+    ::Configuration.balance_paths.each { |path| @my_balances += Balance.find(path, OodSupport::User.new.name) }
+    @my_balances
   end
 end

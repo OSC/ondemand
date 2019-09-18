@@ -87,6 +87,8 @@ GEM
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
     json (1.8.6)
+    local_time (1.0.3)
+      coffee-rails
     lograge (0.10.0)
       actionpack (>= 4)
       activesupport (>= 4)
@@ -211,6 +213,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-datatables-rails (~> 3.4)
   jquery-rails
+  local_time (~> 1.0.3)
   mocha (~> 1.1)
   ood_appkit (~> 1.0)
   ood_core (~> 0.1)

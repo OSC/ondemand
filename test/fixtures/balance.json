@@ -1,0 +1,25 @@
+{
+    "balances": [
+        {
+            "project": "PZS0708", 
+            "user": "tdockendorf", 
+            "value": 0
+        }, 
+        {
+            "project": "PZS0708", 
+            "user": "djohnson", 
+            "value": 20
+        }, 
+        {
+            "project": "PZS0714", 
+            "user": "efranz", 
+            "value": 0
+        }
+    ],
+    "config": {
+        "unit": "RU",
+        "project_type": "project"
+    },
+    "timestamp": 1567190705, 
+    "version": 1
+}
