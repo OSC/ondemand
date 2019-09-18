@@ -109,6 +109,25 @@ class ConfigurationSingleton
     ENV.fetch("OOD_QUOTA_THRESHOLD", 0.95).to_f
   end
 
+  # The paths to the JSON files that store the balance information
+  # Can be URL or File path. colon delimited string; though colon in URL is
+  # ignored if URL has format: scheme://path (colons preceeding // are ignored)
+  #
+  # /path/to/balance.json:https://osc.edu/balance.json
+  #
+  #
+  # @return [Array<String>] balance paths
+  def balance_paths
+    # regex uses negative lookahead to ignore : preceeding //
+    ENV.fetch("OOD_BALANCE_PATH", "").strip.split(/:(?!\/\/)/)
+  end
+
+  # The threshold for determining if there is sufficient balance remaining
+  # @return [Float] threshold factor
+  def balance_threshold
+    ENV.fetch("OOD_BALANCE_THRESHOLD", 0).to_f
+  end
+
   # Load the dotenv local files first, then the /etc dotenv files and
   # the .env and .env.production or .env.development files.
   #

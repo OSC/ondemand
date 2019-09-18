@@ -60,6 +60,7 @@ gem 'mocha', '~> 1.1', group: :test
 gem "spring", group: :test
 gem 'autoprefixer-rails', '~> 8.4'
 gem 'dotiw'
+gem 'local_time', '~> 1.0.3'
 
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'
