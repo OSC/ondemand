@@ -53,7 +53,6 @@
 <script>
 var filter_id = <%= (@jobfilter ? "'#{@jobfilter}'" : "localStorage.getItem('jobfilter') || '#{Filter.default_id}'").html_safe %>;
 var cluster_id = <%= (@jobcluster ? "'#{@jobcluster}'" : "localStorage.getItem('jobcluster') || 'all'").html_safe %>;
-
 var performance_tracking_enabled = false;
 
 <% if Configuration.console_log_performance_report? %>
