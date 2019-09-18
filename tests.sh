@@ -12,6 +12,7 @@ yum install -y \
   make \
   curl \
   sqlite-devel \
+  git \
   rh-ruby24 \
   rh-ruby24-rubygem-rake \
   rh-ruby24-rubygem-bundler \
