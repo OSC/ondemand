@@ -36,16 +36,16 @@ while true; do
     esac
 done
 
-
-if ! grep -q "$APACHE" $SUM 1>/dev/null 2>&1; then
-    echo "Generating Apache config checksum file: '${SUM}'"
-    sha256sum $APACHE > $SUM
-fi
-
 echo "Generating Apache config using YAML config: '${CONFIG}'"
 
 NEW_APACHE=$(mktemp)
 "${BIN}" -c "${CONFIG}" > $NEW_APACHE
+
+if ! grep -q "$APACHE" $SUM 1>/dev/null 2>&1; then
+    echo "Generating Apache config checksum file: '${SUM}'"
+    NEW_SUM=$(sha256sum $NEW_APACHE | cut -d' ' -f1)
+    echo "${NEW_SUM} ${APACHE}" > $SUM
+fi
 
 if sha256sum --quiet --status --check $SUM 1>/dev/null 2>&1; then
     REPLACE=true
