@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.6.2] - 2019-09-18
+### Changed
+- Added cache busting to FancyBox so that viewing images always shows the newest version of a file
+
 ## [1.6.1] - 2019-09-11
 ### Fixed
 - Reverted use of Rsync; use of Rsync caused resource exhaustion on the web nodes when file copies took longer than 1 minute
@@ -130,7 +134,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Initial Release!
 
-[Unreleased]: https://github.com/OSC/ood-fileexplorer/compare/v1.6.1...HEAD
+[Unreleased]: https://github.com/OSC/ood-fileexplorer/compare/v1.6.2...HEAD
+[1.6.2]: https://github.com/OSC/ood-fileexplorer/compare/v1.6.1...v1.6.2
 [1.6.1]: https://github.com/OSC/ood-fileexplorer/compare/v1.6.0...v1.6.1
 [1.6.0]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.5...v1.6.0
 [1.5.5]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.4...v1.5.5
