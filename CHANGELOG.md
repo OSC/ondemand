@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [2.15.2] - 2019-09-18
 ### Fixed
 - bin/setup patch for debian
 
