@@ -189,6 +189,77 @@ be repeated with just `user`, `block_usage`, and `file_usage` changing.*
 
 *Warning: A block must be equal to 1 KB for proper conversions.*
 
+### Balance Warnings
+
+We currently support displaying warnings to users on the Dashboard if their
+balance is nearing its limit. This requires an auto-updated (it is
+recommended to update this file every day with a cronjob) JSON file
+that lists all user balances. The JSON schema for version `1` is given as:
+
+```json
+{
+  "version": 1,
+  "timestamp": 1525361263,
+  "config": {
+    "unit": "RU",
+    "project_type": "project"
+  },
+  "balances": [
+    {
+      ...
+    },
+    {
+      ...
+    }
+  ]
+}
+```
+
+Where `version` defines the version of the JSON schema used, `timestamp`
+defines when this file was generated, and `balances` is a list of balance objects
+(see below).
+
+The value for `config.unit` defines the type of units for balances and `config.project_type` would be project, account, or group, etc. Both values are used in locales and can be any string value.
+
+You can configure the Dashboard to use this JSON file (or files) by setting the
+environment variable `OOD_BALANCE_PATH` as a colon-delimited list of all JSON
+file paths.
+
+The default threshold for displaying the warning is at `0`, but this
+can be changed with the environment variable `OOD_BALANCE_THRESHOLD`.
+
+An example is given as:
+
+```shell
+# /etc/ood/config/apps/dashboard/env
+
+OOD_BALANCE_PATH="/path/to/balance1.json:/path/to/balance2.json"
+OOD_BALANCE_THRESHOLD=1000
+```
+
+#### User Balance
+
+If the balance is defined as a `user` quota, then it applies to only that user. Omit the `project` key:
+
+```json
+{
+  "user": "user1",
+  "value": 10
+}
+```
+
+#### Project Balance
+
+If the balance is defined as a `project` balance, then it applies to a project/account/group, whatever is defined for `config.project_type`:
+
+```json
+{
+  "user": "user1",
+  "project": "project1",
+  "value": 10
+}
+```
+
 ## API
 
 ### iHPC CLI
