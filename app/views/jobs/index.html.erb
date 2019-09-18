@@ -53,38 +53,6 @@
 <script>
 var filter_id = <%= (@jobfilter ? "'#{@jobfilter}'" : "localStorage.getItem('jobfilter') || '#{Filter.default_id}'").html_safe %>;
 var cluster_id = <%= (@jobcluster ? "'#{@jobcluster}'" : "localStorage.getItem('jobcluster') || 'all'").html_safe %>;
-
-function build_ganglia_link( host, start_seconds, report_type, node_num, size ) {
-    var ganglia_uri;
-    <% OODClusters.each do |c| %>
-    if (host == '<%= c.id.to_s %>') {
-        <% if c.custom_allow?(:ganglia) %>
-          <% ganglia_cluster = OodCluster::Servers::Ganglia.new(c.custom_config(:ganglia)) %>
-          var ganglia_base = '<%= ganglia_cluster.uri.to_s %>';
-          if(size == 'large'){
-              ganglia_uri = ganglia_base+'&width=1092&height=400'+'&cs='+start_seconds+'&g='+report_type+'&h=<%= (ganglia_cluster.opt_query.fetch(:h, '') % {h: '\'+node_num+\''}).html_safe %>';
-          }else{
-              ganglia_uri = ganglia_base+'&z='+size+'&cs='+start_seconds+'&g='+report_type+'&h=<%= (ganglia_cluster.opt_query.fetch(:h, '') % {h: '\'+node_num+\''}).html_safe %>';
-          }
-        <% else %>
-          ganglia_uri = '<%= image_path('unavailable.png') %>';
-        <% end %>
-    }
-    <% end %>
-    return ganglia_uri;
-}
-
-function has_ganglia(host) {
-    <% OODClusters.each do |c| %>
-    if (host == '<%= c.id.to_s %>') {
-        <% if c.custom_allow?(:ganglia) %>
-            return true;
-        <% end %>
-    }
-    <% end %>
-    return false;
-}
-
 var performance_tracking_enabled = false;
 
 <% if Configuration.console_log_performance_report? %>

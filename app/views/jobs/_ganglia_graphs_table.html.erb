@@ -1,0 +1,14 @@
+<table>
+<div class="panel panel-default">
+	<tr class="col-xs-12">
+		<div class="col-xs-12">
+   			<tr><div class="job_data" data-jobid="<%= d.pbsid %>" ></div></tr>
+  		</div>
+    	</tr>
+	<% if !d.nodes.nil? %>
+		<% d.nodes.each do |node| %>
+			<%= render partial: 'jobs/job_details_node_view.html.erb', :locals => {:data => d, :node => node } %>
+		<% end %>
+	<% end %>
+</div>
+</table>
