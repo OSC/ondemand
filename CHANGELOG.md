@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ## [1.35.3] - 2019-09-18
+### Added
+- [Support balances and add warnings](https://github.com/OSC/ood-dashboard/pull/483). 
+The dashboard now looks for files with users account balance data and can warn them when it's getting close to 0.
+- Added [Font Awesome Icon picker](https://github.com/OSC/ood-dashboard/issues/380) to development mode.
 ### Fixed
 - bin/setup patch for debian
 
@@ -521,7 +525,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.35.2...HEAD
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.35.3...HEAD
+[1.35.3]: https://github.com/OSC/ood-dashboard/compare/v1.35.2...v1.35.3
 [1.35.2]: https://github.com/OSC/ood-dashboard/compare/v1.35.1...v1.35.2
 [1.35.1]: https://github.com/OSC/ood-dashboard/compare/v1.35.0...v1.35.1
 [1.35.0]: https://github.com/OSC/ood-dashboard/compare/v1.34.0...v1.35.0
