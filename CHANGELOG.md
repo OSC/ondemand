@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [1.35.3] - 2019-09-18
+## [1.36.0] - 2019-09-19
 ### Added
 - [Support balances and add warnings](https://github.com/OSC/ood-dashboard/pull/483). 
 The dashboard now looks for files with users account balance data and can warn them when it's getting close to 0.
@@ -525,8 +525,8 @@ The dashboard now looks for files with users account balance data and can warn t
 - Remove unused assets.
 
 
-[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.35.3...HEAD
-[1.35.3]: https://github.com/OSC/ood-dashboard/compare/v1.35.2...v1.35.3
+[Unreleased]: https://github.com/OSC/ood-dashboard/compare/v1.36.0...HEAD
+[1.36.0]: https://github.com/OSC/ood-dashboard/compare/v1.35.2...v1.36.0
 [1.35.2]: https://github.com/OSC/ood-dashboard/compare/v1.35.1...v1.35.2
 [1.35.1]: https://github.com/OSC/ood-dashboard/compare/v1.35.0...v1.35.1
 [1.35.0]: https://github.com/OSC/ood-dashboard/compare/v1.34.0...v1.35.0
