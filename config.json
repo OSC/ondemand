@@ -14,13 +14,13 @@
   {
     "name": "files",
     "url": "https://github.com/OSC/ood-fileexplorer",
-    "tag": "v1.6.1",
+    "tag": "v1.6.2",
     "app": true
   },
   {
     "name": "file-editor",
     "url": "https://github.com/OSC/ood-fileeditor",
-    "tag": "v1.4.4",
+    "tag": "v1.4.5",
     "app": true
   },
   {
@@ -32,7 +32,7 @@
   {
     "name": "myjobs",
     "url": "https://github.com/OSC/ood-myjobs",
-    "tag": "v2.15.1",
+    "tag": "v2.15.2",
     "app": true
   },
   {
