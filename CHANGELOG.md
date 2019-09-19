@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.6.14] - 2019-09-19
+### Fixed
+- files, file editor, job composer apps all get fix in bin/setup for output redirection
+- files app gets cachebusting fix for "FancyBox" so images show newest version of file
+
 ## [1.6.13] - 2019-09-19
 ### Fixed
 - Depend on system git instead of rh-git29 which is an EOL SCL
@@ -221,7 +226,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.6.13...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.6.14...HEAD
+[1.6.14]: https://github.com/OSC/ondemand/compare/v1.6.13...v1.6.14
 [1.6.13]: https://github.com/OSC/ondemand/compare/v1.6.12...v1.6.13
 [1.6.12]: https://github.com/OSC/ondemand/compare/v1.6.11...v1.6.12
 [1.6.11]: https://github.com/OSC/ondemand/compare/v1.6.10...v1.6.11
