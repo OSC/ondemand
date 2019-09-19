@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.10.0] - 2019-09-19
 ### Changed
 - Ganglia graphs how utilization over the entire lifetime of the job; previously only showed the last hour
+- Ganglia graph images resize
 ### Fixed
 - bin/setup patch for Debian
 
