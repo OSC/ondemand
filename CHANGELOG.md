@@ -5,9 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-## [1.9.4] - 2019-09-18
+## [1.10.0] - 2019-09-19
 ### Changed
 - Ganglia graphs how utilization over the entire lifetime of the job; previously only showed the last hour
+### Fixed
 - bin/setup patch for Debian
 
 ## [1.9.3] - 2019-08-22
@@ -170,8 +171,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove OSC copyright from footer
 - Remove deprecation warnings
 
-[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.9.4...HEAD
-[1.9.4]: https://github.com/OSC/ood-activejobs/compare/v1.9.3...v1.9.4
+[Unreleased]: https://github.com/OSC/ood-activejobs/compare/v1.10.0...HEAD
+[1.10.0]: https://github.com/OSC/ood-activejobs/compare/v1.9.3...v1.10.0
 [1.9.3]: https://github.com/OSC/ood-activejobs/compare/v1.9.2...v1.9.3
 [1.9.2]: https://github.com/OSC/ood-activejobs/compare/v1.9.1...v1.9.2
 [1.9.1]: https://github.com/OSC/ood-activejobs/compare/v1.9.0...v1.9.1
