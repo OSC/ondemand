@@ -3,18 +3,22 @@
 ROOT="$(dirname "$(readlink -f "${0}")")"
 
 RPM=0
+FORCE=false
+CHANGED=false
 CONFIG="${CONFIG:-/etc/ood/config/ood_portal.yml}"
 APACHE="${APACHE:-/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf}"
 BIN="${BIN:-${ROOT}/../bin/generate}"
+SUM="${SUM:-/etc/ood/config/ood_portal.sha256sum}"
 
 set -e
 
 usage () {
-    echo "Usage: update_ood_portal [-r|--rpm]"
+    echo "Usage: update_ood_portal [-r|--rpm] [-f|--force]"
     echo "-r|--rpm      Execution performed during RPM install"
+    echo "-f|--force    Force replacement of configs even if checksums differ"
 }
 
-OPTS=`getopt -o rh --long rpm,help -n 'update_ood_portal' -- "$@"`
+OPTS=`getopt -o rfh --long rpm,force,help -n 'update_ood_portal' -- "$@"`
 if [[ $? -ne 0 ]]; then
     echo "Failed parsing options"
     usage
@@ -27,45 +31,80 @@ while true; do
     case "$1" in
         -h|--help) usage ; exit 0 ; shift ;;
         -r|--rpm) RPM=1 ; shift ;;
+        -f|--force) FORCE=true ; shift ;;
         *) break ;;
     esac
 done
 
 echo "Generating Apache config using YAML config: '${CONFIG}'"
 
-NEW_APACHE="$("${BIN}" -c "${CONFIG}")"
-if ! cmp -s <(echo "${NEW_APACHE}") "${APACHE}"; then
-  if [[ -f "${APACHE}" ]]; then
-    BAK_APACHE="${APACHE}.$(date '+%Y%m%dT%H%M%S')"
-    echo "Backing up previous Apache config to: '${BAK_APACHE}'"
-    mv "${APACHE}" "${BAK_APACHE}"
+NEW_APACHE=$(mktemp)
+"${BIN}" -c "${CONFIG}" > $NEW_APACHE
+
+# Create checksum file if the path to ood-portal.conf not in checksum file
+# Checksum is based on mktemp generated ood-portal.conf but using path of real ood-portal.conf
+if ! grep -q "$APACHE" $SUM 1>/dev/null 2>&1; then
+    echo "Generating Apache config checksum file: '${SUM}'"
+    NEW_SUM=$(sha256sum $NEW_APACHE | cut -d' ' -f1)
+    echo "${NEW_SUM} ${APACHE}" > $SUM
+fi
+
+# If checksum of ood-portal.conf matches, replace is possible.
+# If the checksum matches this means a site has not changed ood-portal.conf outside ood-portal-generator
+if sha256sum --quiet --status --check $SUM 1>/dev/null 2>&1; then
+    REPLACE=true
+else
+    REPLACE=false
+fi
+if $FORCE; then
+    REPLACE=true
+fi
+if ! cmp -s "${NEW_APACHE}" "${APACHE}"; then
+  if $REPLACE; then
+    if [[ -f "${APACHE}" ]]; then
+      BAK_APACHE="${APACHE}.$(date '+%Y%m%dT%H%M%S')"
+      echo "Backing up previous Apache config to: '${BAK_APACHE}'"
+      mv "${APACHE}" "${BAK_APACHE}"
+    fi
+    echo "Generating new Apache config at: '${APACHE}'"
+    cat "${NEW_APACHE}" > "${APACHE}"
+    echo "Generating Apache config checksum file: '${SUM}'"
+    sha256sum $APACHE > $SUM
+    ret=0
+    CHANGED=true
+  else
+    echo "WARNING: Checksum of ${APACHE} does not match previous value, not replacing."
+    echo "Generating new Apache config at: '${APACHE}.new'"
+    cat "${NEW_APACHE}" > "${APACHE}.new"
+    ret=1
   fi
-  echo "Generating new Apache config at: '${APACHE}'"
-  echo "${NEW_APACHE}" > "${APACHE}"
-  ret=0
 else
   echo "No change in Apache config."
   ret=1
 fi
 
-if [ $RPM -eq 1 ]; then
+rm -f $NEW_APACHE
+
+if [ $RPM -eq 1 ] || ! $REPLACE; then
     exit $ret
 fi
 
 echo "Completed successfully!"
-echo ""
-echo "Restart the httpd24-httpd service now."
-echo ""
+if $CHANGED; then
+    echo ""
+    echo "Restart the httpd24-httpd service now."
+    echo ""
 
-if [[ -L "/sbin/init" ]]; then
-  echo "Suggested command:"
-  echo "    sudo systemctl try-restart httpd24-httpd.service httpd24-htcacheclean.service"
-  echo ""
-else
-  echo "Suggested commands:"
-  echo "    sudo service httpd24-httpd condrestart"
-  echo "    sudo service httpd24-htcacheclean condrestart"
-  echo ""
+    if [[ -L "/sbin/init" ]]; then
+      echo "Suggested command:"
+      echo "    sudo systemctl try-restart httpd24-httpd.service httpd24-htcacheclean.service"
+      echo ""
+    else
+      echo "Suggested commands:"
+      echo "    sudo service httpd24-httpd condrestart"
+      echo "    sudo service httpd24-htcacheclean condrestart"
+      echo ""
+    fi
 fi
 
 exit $ret
