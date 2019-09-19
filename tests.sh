@@ -2,19 +2,22 @@
 
 set -ex
 
+# Remove nodocs that breaks some things
+sed -i -r '/^tsflags/d' /etc/yum.conf
+
 # Get dependencies
 yum install -y centos-release-scl
-yum install -y https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-2.el${OS_VERSION}.noarch.rpm
+yum install -y https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-3.noarch.rpm
 yum install -y \
   make \
   curl \
   sqlite-devel \
+  git \
   rh-ruby24 \
   rh-ruby24-rubygem-rake \
   rh-ruby24-rubygem-bundler \
   rh-ruby24-ruby-devel \
   rh-nodejs6 \
-  rh-git29 \
   ondemand-runtime
 
 # Setup environment

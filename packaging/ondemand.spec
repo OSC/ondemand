@@ -49,14 +49,14 @@ BuildRequires:   ondemand-scldevel = %{ondemand_version}
 BuildRequires:   sqlite-devel, curl, make
 BuildRequires:   ondemand-ruby = %{ondemand_version}
 BuildRequires:   ondemand-nodejs = %{ondemand_version}
-BuildRequires:   ondemand-git = %{ondemand_version}
+BuildRequires:   git
+Requires:        git
 Requires:        sudo, lsof, sqlite-devel, cronie, wget, curl, make, rsync, file, libxml2
 Requires:        ondemand-apache = %{ondemand_version}
 Requires:        ondemand-nginx = 1.14.0
 Requires:        ondemand-passenger = 5.3.7
 Requires:        ondemand-ruby = %{ondemand_version}
 Requires:        ondemand-nodejs = %{ondemand_version}
-Requires:        ondemand-git = %{ondemand_version}
 Requires:        ondemand-runtime = %{ondemand_version}
 
 %if %{with systemd}
