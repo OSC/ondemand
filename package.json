@@ -16,25 +16,27 @@
   "dependencies": {
     "archiver": "^1.0.0",
     "base-uri": "^1.0.1",
+    "clean-css": "^4.1.11",
     "dotenv": "^4.0.0",
     "expand-tilde": "^2.0.2",
     "express": "^4.13.4",
     "git-rev-sync": "^1.8.0",
+    "lodash": "^4.17.13",
     "os-homedir": "^1.0.1",
-    "socket.io": "^1.4.5",
-    "yarn": "^1.17.3",
-
-    "clean-css": "^4.1.11",
-    "ws": "^3.3.1",
     "request": "^2.6.8",
-    "lodash": "^4.17.13"
+    "socket.io": "^1.4.5",
+    "ws": "^3.3.1",
+    "yarn": "^1.17.3"
   },
   "private": true,
   "license": "MIT",
   "scripts": {
-    "test": "test"
+    "test": "mocha"
   },
   "workspaces": [
     "lib/cloudcmd"
-  ]
+  ],
+  "devDependencies": {
+    "mocha": "^6.2.0"
+  }
 }
