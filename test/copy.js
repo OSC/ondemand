@@ -15,8 +15,8 @@ var assert = require('assert'),
     fixtures_path = path.resolve(__dirname, 'fixtures/'),
     hometmp, scratchtmp;
 
-// add_slash for copymitter by appending slash if it doesn't exist
-function add_slash(p){
+// normalize for copymitter by appending slash if it doesn't exist
+function normalize(p){
   return path.join(p, '/');
 }
 
@@ -57,7 +57,7 @@ describe('copy with home',function(){
     if(hometmp == null)
       this.skip();
 
-    rest.copy(add_slash(fixtures_path), add_slash(hometmp), ["data"], function(){
+    rest.copy(normalize(fixtures_path), normalize(hometmp), ["data"], function(){
       assert_data_dir_exists(path.join(hometmp, 'data'));
       done();
     });
@@ -89,7 +89,7 @@ describe('copy with scratch', function(){
 
 
   it('copies from fixture to scratch', function(done){
-    rest.copy(add_slash(fixtures_path), add_slash(scratchtmp), ["data"], function(){
+    rest.copy(normalize(fixtures_path), normalize(scratchtmp), ["data"], function(){
       assert_data_dir_exists(path.join(scratchtmp, 'data'));
       done();
     });
@@ -99,8 +99,8 @@ describe('copy with scratch', function(){
     var target = path.join(scratchtmp, 'target');
     fs.mkdirSync(target);
 
-    rest.copy(add_slash(fixtures_path), add_slash(scratchtmp), ["data"], function(){
-      rest.copy(add_slash(scratchtmp), add_slash(target), ["data"], function(){
+    rest.copy(normalize(fixtures_path), normalize(scratchtmp), ["data"], function(){
+      rest.copy(normalize(scratchtmp), normalize(target), ["data"], function(){
         assert_data_dir_exists(path.join(target, 'data'));
         done();
       });
@@ -108,8 +108,8 @@ describe('copy with scratch', function(){
   });
 
   it('copies from scratch to home dir', function(done){
-    rest.copy(add_slash(fixtures_path), add_slash(scratchtmp), ["data"], function(){
-      rest.copy(add_slash(scratchtmp), add_slash(hometmp), ["data"], function(){
+    rest.copy(normalize(fixtures_path), normalize(scratchtmp), ["data"], function(){
+      rest.copy(normalize(scratchtmp), normalize(hometmp), ["data"], function(){
         assert_data_dir_exists(path.join(hometmp, 'data'));
         done();
       });
