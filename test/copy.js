@@ -34,7 +34,34 @@ describe('fixtures', function(){
   });
 });
 
-describe('copy', function(){
+describe('copy with home',function(){
+  beforeEach(function(){
+    if(home)
+      hometmp = fs.mkdtempSync(path.join(home, '/oodfilestest-'));
+  });
+
+  afterEach(function(){
+    if(hometmp){
+      fs.removeSync(hometmp, {recursive: true});
+      hometmp = null;
+    }
+  });
+  it('copies from fixture to home dir', function(done){
+    if(hometmp == null)
+      this.skip();
+
+    rest.copy(s(fixtures_path), s(hometmp), ["data"], function(){
+      assert_data_dir_exists(path.join(hometmp, 'data'));
+      done();
+    });
+  });
+});
+
+describe('copy with scratch', function(){
+  before(function(){
+    if(scratch == null)
+      this.skip();
+  });
   beforeEach(function(){
     if(home)
       hometmp = fs.mkdtempSync(path.join(home, '/oodfilestest-'));
@@ -53,21 +80,8 @@ describe('copy', function(){
     }
   });
 
-  it('copies from fixture to home dir', function(done){
-    if(hometmp == null)
-      this.skip();
-
-    rest.copy(s(fixtures_path), s(hometmp), ["data"], function(){
-      assert_data_dir_exists(path.join(hometmp, 'data'));
-      done();
-    });
-  });
 
   it('copies from fixture to scratch', function(done){
-    if(scratchtmp == null)
-      this.skip();
-
-
     rest.copy(s(fixtures_path), s(scratchtmp), ["data"], function(){
       assert_data_dir_exists(path.join(scratchtmp, 'data'));
       done();
@@ -75,10 +89,6 @@ describe('copy', function(){
   });
 
   it('copies from scratch to scratch', function(done){
-    if(scratchtmp == null)
-      this.skip();
-
-
     var target = path.join(scratchtmp, 'target');
     fs.mkdirSync(target);
 
@@ -91,10 +101,6 @@ describe('copy', function(){
   });
 
   it('copies from scratch to home dir', function(done){
-    if(scratchtmp == null)
-      this.skip();
-
-
     rest.copy(s(fixtures_path), s(scratchtmp), ["data"], function(){
       rest.copy(s(scratchtmp), s(hometmp), ["data"], function(){
         assert_data_dir_exists(path.join(hometmp, 'data'));
