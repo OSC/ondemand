@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.6.3] - 2019-09-24
+### Fixed
+- Fix copy issues on Lustre by upgrading CloudCmd dependency findit to
+  forked project findit2 [#212](https://github.com/OSC/ood-fileexplorer/pull/212)
+
 ## [1.6.2] - 2019-09-18
 ### Changed
 - Added cache busting to FancyBox so that viewing images always shows the newest version of a file
@@ -134,7 +139,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Initial Release!
 
-[Unreleased]: https://github.com/OSC/ood-fileexplorer/compare/v1.6.2...HEAD
+[Unreleased]: https://github.com/OSC/ood-fileexplorer/compare/v1.6.3...HEAD
+[1.6.3]: https://github.com/OSC/ood-fileexplorer/compare/v1.6.2...v1.6.3
 [1.6.2]: https://github.com/OSC/ood-fileexplorer/compare/v1.6.1...v1.6.2
 [1.6.1]: https://github.com/OSC/ood-fileexplorer/compare/v1.6.0...v1.6.1
 [1.6.0]: https://github.com/OSC/ood-fileexplorer/compare/v1.5.5...v1.6.0
