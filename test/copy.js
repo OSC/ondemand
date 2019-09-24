@@ -1,3 +1,11 @@
+// run these tests by doing
+//
+//   bin/yarn test
+//
+// or
+//
+//   SCRATCH=/fs/scratch/PZS0714/efranz bin/yarn test
+//
 var assert = require('assert'),
     rest = require('cloudcmd/lib/server/rest'),
     path = require('path'),
@@ -7,7 +15,8 @@ var assert = require('assert'),
     fixtures_path = path.resolve(__dirname, 'fixtures/'),
     hometmp, scratchtmp;
 
-function s(p){
+// normalize for copymitter by appending slash if it doesn't exist
+function normalize(p){
   return path.join(p, '/');
 }
 
@@ -48,7 +57,7 @@ describe('copy with home',function(){
     if(hometmp == null)
       this.skip();
 
-    rest.copy(s(fixtures_path), s(hometmp), ["data"], function(){
+    rest.copy(normalize(fixtures_path), normalize(hometmp), ["data"], function(){
       assert_data_dir_exists(path.join(hometmp, 'data'));
       done();
     });
@@ -80,7 +89,7 @@ describe('copy with scratch', function(){
 
 
   it('copies from fixture to scratch', function(done){
-    rest.copy(s(fixtures_path), s(scratchtmp), ["data"], function(){
+    rest.copy(normalize(fixtures_path), normalize(scratchtmp), ["data"], function(){
       assert_data_dir_exists(path.join(scratchtmp, 'data'));
       done();
     });
@@ -90,8 +99,8 @@ describe('copy with scratch', function(){
     var target = path.join(scratchtmp, 'target');
     fs.mkdirSync(target);
 
-    rest.copy(s(fixtures_path), s(scratchtmp), ["data"], function(){
-      rest.copy(s(scratchtmp), s(target), ["data"], function(){
+    rest.copy(normalize(fixtures_path), normalize(scratchtmp), ["data"], function(){
+      rest.copy(normalize(scratchtmp), normalize(target), ["data"], function(){
         assert_data_dir_exists(path.join(target, 'data'));
         done();
       });
@@ -99,8 +108,8 @@ describe('copy with scratch', function(){
   });
 
   it('copies from scratch to home dir', function(done){
-    rest.copy(s(fixtures_path), s(scratchtmp), ["data"], function(){
-      rest.copy(s(scratchtmp), s(hometmp), ["data"], function(){
+    rest.copy(normalize(fixtures_path), normalize(scratchtmp), ["data"], function(){
+      rest.copy(normalize(scratchtmp), normalize(hometmp), ["data"], function(){
         assert_data_dir_exists(path.join(hometmp, 'data'));
         done();
       });
