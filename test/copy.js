@@ -18,11 +18,9 @@ function assert_exists(){
 
 function assert_data_dir_exists(p){
   assert_exists(p);
-  assert_exists(p, 'emptydir');
   assert_exists(p, 'emptyfile.txt');
   assert_exists(p, 'test.txt');
   assert_exists(p, 'testdir');
-  assert_exists(p, 'testdir', 'emptydir');
   assert_exists(p, 'testdir', 'test.txt');
 }
 
