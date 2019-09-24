@@ -39,5 +39,8 @@
   "devDependencies": {
     "fs-extra": "^8.1.0",
     "mocha": "^6.2.0"
+  },
+  "resolutions": {
+    "findit": "file:./lib/findit2"
   }
 }
