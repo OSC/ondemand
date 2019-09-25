@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.6.16] - 2019-09-25
+### Fixed
+- debian fix for bin/setup in Active Jobs and Dashboard
+- use latest ondemand release RPM
+- fixed exit codes for `update_ood_portal` script
+
 ## [1.6.15] - 2019-09-24
 ### Fixed
 - files app updated for Lustre copy bugfix
@@ -230,7 +236,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.6.15...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.6.16...HEAD
+[1.6.16]: https://github.com/OSC/ondemand/compare/v1.6.15...v1.6.16
 [1.6.15]: https://github.com/OSC/ondemand/compare/v1.6.14...v1.6.15
 [1.6.14]: https://github.com/OSC/ondemand/compare/v1.6.13...v1.6.14
 [1.6.13]: https://github.com/OSC/ondemand/compare/v1.6.12...v1.6.13
