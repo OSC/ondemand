@@ -36,7 +36,7 @@ while true; do
         -h|--help) usage ; exit 0 ; shift ;;
         -r|--rpm) RPM=1 ; shift ;;
         -f|--force) FORCE=true ; shift ;;
-        --detailed-exitcodes) CHANGE_EXIT=2 ; SKIP_EXIT=4 ; shift ;;
+        --detailed-exitcodes) CHANGE_EXIT=3 ; SKIP_EXIT=4 ; shift ;;
         *) break ;;
     esac
 done
