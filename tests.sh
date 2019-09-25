@@ -7,7 +7,7 @@ sed -i -r '/^tsflags/d' /etc/yum.conf
 
 # Get dependencies
 yum install -y centos-release-scl
-yum install -y https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-3.noarch.rpm
+yum install -y https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-4.noarch.rpm
 yum install -y \
   make \
   curl \
