@@ -54,9 +54,9 @@ if ! grep -q "$APACHE" $SUM 1>/dev/null 2>&1; then
     echo "${NEW_SUM} ${APACHE}" > $SUM
 fi
 
-# If checksum of ood-portal.conf matches, replace is possible.
+# If checksum of ood-portal.conf matches or ood-portal.conf doesn't exit, replace is possible.
 # If the checksum matches this means a site has not changed ood-portal.conf outside ood-portal-generator
-if sha256sum --quiet --status --check $SUM 1>/dev/null 2>&1; then
+if [ sha256sum --quiet --status --check $SUM 1>/dev/null 2>&1 ] || [ ! -f "$APACHE" ]; then
     REPLACE=true
 else
     REPLACE=false
