@@ -323,7 +323,7 @@ touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 
 # Rebuild Apache config and restart Apache httpd if config changed
 /opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm --detailed-exitcodes
-if [[ $? -eq 2 ]] ; then
+if [[ $? -eq 3 ]] ; then
 %if %{with systemd}
 /bin/systemctl try-restart httpd24-httpd.service httpd24-htcacheclean.service &>/dev/null || :
 %else
