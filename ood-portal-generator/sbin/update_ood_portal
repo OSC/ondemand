@@ -19,7 +19,7 @@ usage () {
     echo "Usage: update_ood_portal [-r|--rpm] [-f|--force] [--detailed-exitcodes]"
     echo "-r|--rpm              Execution performed during RPM install"
     echo "-f|--force            Force replacement of configs even if checksums differ"
-    echo "--detailed-exitcodes  Exit with 2 when changes are made and 4 when changes skipped"
+    echo "--detailed-exitcodes  Exit with 3 when changes are made and 4 when changes skipped"
 }
 
 OPTS=`getopt -o rfh --long rpm,force,detailed-exitcodes,help -n 'update_ood_portal' -- "$@"`
