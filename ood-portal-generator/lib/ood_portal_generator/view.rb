@@ -12,7 +12,7 @@ module OodPortalGenerator
       @ssl              = opts.fetch(:ssl, nil)
       @listen_addr_port = opts.fetch(:listen_addr_port, nil)
       @servername       = opts.fetch(:servername, nil)
-      proxy_server      = opts.fetch(:proxy_server, @servername)
+      @proxy_server     = opts.fetch(:proxy_server, @servername)
       @port             = opts.fetch(:port, @ssl ? "443" : "80")
       @logroot          = opts.fetch(:logroot, "logs")
       @use_rewrites     = opts.fetch(:use_rewrites, true)
