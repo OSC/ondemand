@@ -46,22 +46,17 @@ BuildRequires:   ondemand-runtime = %{runtime_version}
 BuildRequires:   ondemand-scldevel = %{runtime_version}
 BuildRequires:   sqlite-devel, curl, make, zlib-devel, libxslt-devel
 BuildRequires:   ondemand-ruby = %{runtime_version}
+BuildRequires:   ondemand-python = %{runtime_version}
 BuildRequires:   ondemand-nodejs = %{runtime_version}
 BuildRequires:   rsync
 BuildRequires:   git
 Requires:        git
-%if 0%{?rhel} >= 8
-BuildRequires:   python2
-Requires:        python2
-%else
-BuildRequires:   python
-Requires:        python
-%endif
 Requires:        sudo, lsof, sqlite-devel, cronie, wget, curl, make, rsync, file, libxml2, libxslt, zlib
 Requires:        ondemand-apache = %{runtime_version}
 Requires:        ondemand-nginx = 1.17.3
 Requires:        ondemand-passenger = 6.0.4
 Requires:        ondemand-ruby = %{runtime_version}
+Requires:        ondemand-python = %{runtime_version}
 Requires:        ondemand-nodejs = %{runtime_version}
 Requires:        ondemand-runtime = %{runtime_version}
 
@@ -107,9 +102,6 @@ echo "SELinux policy %{selinux_policy_ver}"
 scl enable ondemand - << \EOS
 set -x
 set -e
-%if 0%{?rhel} >= 8
-export PYTHON=python2
-%endif
 rake -mj%{ncpus}
 EOS
 
