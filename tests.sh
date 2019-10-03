@@ -9,12 +9,18 @@ sed -i -r '/^tsflags/d' /etc/yum.conf
 yum install -y --skip-broken centos-release-scl
 yum install -y https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-6.noarch.rpm
 yum install -y \
-  make gcc gcc-c++ \
-  zlib-devel libxslt-devel \
+  make \
+  gcc \
+  gcc-c++ \
+  zlib-devel \
+  libxslt-devel \
   curl \
+  rsync \
   sqlite-devel \
   git \
+  redhat-rpm-config \
   ondemand-ruby \
+  ondemand-python \
   ondemand-nodejs \
   ondemand-runtime
 
