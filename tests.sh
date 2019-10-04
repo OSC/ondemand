@@ -18,7 +18,7 @@ yum install -y \
   rh-ruby24-rubygem-bundler \
   rh-ruby24-ruby-devel \
   rh-nodejs6 \
-  ondemand-runtime
+  ondemand-runtime-1.6
 
 # Setup environment
 source scl_source enable ondemand || :
