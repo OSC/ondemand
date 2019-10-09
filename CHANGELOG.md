@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.4.7] - 2019-10-08
+### Fixed
+- Omit `cwd` from spawn if it does not exist [#72](https://github.com/OSC/ood-shell/pull/72)
+
 ## [1.4.6] - 2019-06-25
 ### Fixed
 - Fixed caching issue with `ood_shell.js`
@@ -73,7 +77,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Warn users if they try to close an active terminal.
 - Warn users when their websocket connection is terminated.
 
-[Unreleased]: https://github.com/OSC/ood-shell/compare/v1.4.6...HEAD
+[Unreleased]: https://github.com/OSC/ood-shell/compare/v1.4.7...HEAD
+[1.4.7]: https://github.com/OSC/ood-shell/compare/v1.4.6...v1.4.7
 [1.4.6]: https://github.com/OSC/ood-shell/compare/v1.4.5...v1.4.6
 [1.4.5]: https://github.com/OSC/ood-shell/compare/v1.4.4...v1.4.5
 [1.4.4]: https://github.com/OSC/ood-shell/compare/v1.4.3...v1.4.4
