@@ -49,7 +49,7 @@ wss.on('connection', function connection (ws) {
   var host = process.env.DEFAULT_SSHHOST || 'localhost';
   var dir;
   var term;
-  var cmd, args, cwd, env, pty_spawn_env;
+  var cmd, args;
 
   console.log('Connection established');
 
@@ -61,22 +61,12 @@ wss.on('connection', function connection (ws) {
 
   cmd = 'ssh';
   args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
-  cwd = process.env.HOME;
-  env = {};
 
-  pty_spawn_env = {
+  term = pty.spawn(cmd, args, {
     name: 'xterm-256color',
     cols: 80,
-    rows: 30,
-    env: env
-  };
-
-  // omit cwd if ! exist, as in case of first login flow using pam_mkhomedir
-  if(fs.existsSync(cwd)){
-    pty_spawn_env.cwd = cwd;
-  }
-
-  term = pty.spawn(cmd, args, pty_spawn_env);
+    rows: 30
+  });
 
   console.log('Opened terminal: ' + term.pid);
 
