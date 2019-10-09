@@ -49,7 +49,7 @@ wss.on('connection', function connection (ws) {
   var host = process.env.DEFAULT_SSHHOST || 'localhost';
   var dir;
   var term;
-  var cmd, args, cwd, env;
+  var cmd, args;
 
   console.log('Connection established');
 
@@ -61,15 +61,11 @@ wss.on('connection', function connection (ws) {
 
   cmd = 'ssh';
   args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
-  cwd = process.env.HOME;
-  env = {};
-    
+
   term = pty.spawn(cmd, args, {
     name: 'xterm-256color',
     cols: 80,
-    rows: 30,
-    cwd: cwd,
-    env: env
+    rows: 30
   });
 
   console.log('Opened terminal: ' + term.pid);
