@@ -17,9 +17,9 @@
 
 # The server name used for rewrites
 # Example:
-#     proxy_host: 'proxy.example.com'
+#     proxy_server: 'proxy.example.com'
 # Default: The value of servername
-#proxy_host: null
+#proxy_server: null
 
 # The port specification for the Virtual Host
 # Example:
