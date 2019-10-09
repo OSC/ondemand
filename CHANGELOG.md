@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.6.19] - 2019-10-09
 ### Added
 - ability to set separate proxy server for rewrite rules in ood-portal-generator config
-  https://github.com/OSC/ondemand/blob/4e2614917fac74e861908ca189c42a21e8895518/ood-portal-generator/share/ood_portal_example.yml#L18-L22 fixing [#73](https://github.com/OSC/ondemand/issues/73)
+  https://github.com/OSC/ondemand/blob/4e2614917fac74e861908ca189c42a21e8895518/ood-portal-generator/share/ood_portal_example.yml#L18-L22 fixing [#73](https://github.com/OSC/ondemand/issues/73) - thank you @wdpypere
 
 ## [1.6.18] - 2019-10-09
 ### Fixed
