@@ -1,15 +1,13 @@
 %{!?ncpus: %define ncpus 12}
 %global package_name ondemand
-%global major 1
-%global minor 6
-%global patch 17
-%global ondemand_version %{major}.%{minor}
-%{!?package_version: %define package_version %{major}.%{minor}.%{patch}}
 %{!?package_release: %define package_release 1}
 %{!?git_tag: %define git_tag v%{package_version}}
 %define git_tag_minus_v %(echo %{git_tag} | sed -r 's/^v//')
+%define runtime_version %(echo %{git_tag_minus_v} | sed -r 's/^([0-9])\.([0-9]).*/\\1.\\2/g')
 %define selinux_policy_ver %(rpm --qf "%%{version}-%%{release}" -q selinux-policy)
 %global selinux_module_version %{package_version}.%{package_release}
+
+%define __brp_mangle_shebangs /bin/true
 
 Name:      %{package_name}
 Version:   %{package_version}
@@ -44,20 +42,23 @@ Source3:   ondemand-selinux.fc
 # node.js packages used in the apps
 AutoReqProv:     no
 
-BuildRequires:   ondemand-runtime = %{ondemand_version}
-BuildRequires:   ondemand-scldevel = %{ondemand_version}
-BuildRequires:   sqlite-devel, curl, make
-BuildRequires:   ondemand-ruby = %{ondemand_version}
-BuildRequires:   ondemand-nodejs = %{ondemand_version}
+BuildRequires:   ondemand-runtime = %{runtime_version}
+BuildRequires:   ondemand-scldevel = %{runtime_version}
+BuildRequires:   sqlite-devel, curl, make, zlib-devel, libxslt-devel
+BuildRequires:   ondemand-ruby = %{runtime_version}
+BuildRequires:   ondemand-python = %{runtime_version}
+BuildRequires:   ondemand-nodejs = %{runtime_version}
+BuildRequires:   rsync
 BuildRequires:   git
 Requires:        git
-Requires:        sudo, lsof, sqlite-devel, cronie, wget, curl, make, rsync, file, libxml2
-Requires:        ondemand-apache = %{ondemand_version}
-Requires:        ondemand-nginx = 1.14.0
-Requires:        ondemand-passenger = 5.3.7
-Requires:        ondemand-ruby = %{ondemand_version}
-Requires:        ondemand-nodejs = %{ondemand_version}
-Requires:        ondemand-runtime = %{ondemand_version}
+Requires:        sudo, lsof, sqlite-devel, cronie, wget, curl, make, rsync, file, libxml2, libxslt, zlib
+Requires:        ondemand-apache = %{runtime_version}
+Requires:        ondemand-nginx = 1.17.3
+Requires:        ondemand-passenger = 6.0.4
+Requires:        ondemand-ruby = %{runtime_version}
+Requires:        ondemand-python = %{runtime_version}
+Requires:        ondemand-nodejs = %{runtime_version}
+Requires:        ondemand-runtime = %{runtime_version}
 
 %if %{with systemd}
 BuildRequires: systemd
@@ -99,6 +100,8 @@ echo "SELinux policy %{selinux_policy_ver}"
 %__make -f %{_datadir}/selinux/devel/Makefile
 
 scl enable ondemand - << \EOS
+set -x
+set -e
 rake -mj%{ncpus}
 EOS
 
@@ -107,6 +110,8 @@ EOS
 %__install -p -m 644 -D selinux/%{name}-selinux.pp %{buildroot}%{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp
 
 scl enable ondemand - << \EOS
+set -x
+set -e
 rake install PREFIX=%{buildroot}/opt/ood
 %__rm %{buildroot}/opt/ood/apps/*/log/production.log
 echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION

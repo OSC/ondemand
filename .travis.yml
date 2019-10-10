@@ -1,8 +1,8 @@
 sudo: required
 
 env:
-  - OS_TYPE=centos OS_VERSION=6
   - OS_TYPE=centos OS_VERSION=7
+  - OS_TYPE=centos OS_VERSION=8
 
 services:
   - docker

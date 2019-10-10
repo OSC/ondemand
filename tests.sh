@@ -6,19 +6,23 @@ set -ex
 sed -i -r '/^tsflags/d' /etc/yum.conf
 
 # Get dependencies
-yum install -y centos-release-scl
-yum install -y https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-4.noarch.rpm
+yum install -y --skip-broken centos-release-scl
+yum install -y https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-6.noarch.rpm
 yum install -y \
   make \
+  gcc \
+  gcc-c++ \
+  zlib-devel \
+  libxslt-devel \
   curl \
+  rsync \
   sqlite-devel \
   git \
-  rh-ruby24 \
-  rh-ruby24-rubygem-rake \
-  rh-ruby24-rubygem-bundler \
-  rh-ruby24-ruby-devel \
-  rh-nodejs6 \
-  ondemand-runtime-1.6
+  redhat-rpm-config \
+  ondemand-ruby \
+  ondemand-python \
+  ondemand-nodejs \
+  ondemand-runtime
 
 # Setup environment
 source scl_source enable ondemand || :
