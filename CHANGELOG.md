@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- update Dashboard to add account balance warnings & dev mode icon picker
+
 ## [1.6.19] - 2019-10-09
 ### Added
 - ability to set separate proxy server for rewrite rules in ood-portal-generator config
