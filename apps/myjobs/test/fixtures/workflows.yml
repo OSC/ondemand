@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: Test One
+  batch_host: oakley
+  staged_dir: nil
+  script_name: sample.sh
+
+two:
+  name: Test Two
+  batch_host: ruby
+  staged_dir: nil
+  script_name: sample.sh

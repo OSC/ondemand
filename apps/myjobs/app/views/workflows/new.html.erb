@@ -1,0 +1,140 @@
+<div class="page-header">
+  <h2>Templates <br><small>To create a new job, select a template to copy, fill out the form to the right, and click "Create New Job".</small></h2>
+</div>
+
+<div class="col-md-7">
+  <div class="panel">
+    <a class="btn btn-default btn-sm btn-info" id="new_template_button" href="<%= new_template_path %>" data-toggle="tooltip" title="Create a new template" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Template</a>
+    <a class="btn btn-default btn-sm btn-info" id="copy_template_button" data-toggle="tooltip" title="Copy Template" role="button" data-method="get" disabled><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> Copy Template</a>
+  </div>
+
+</div>
+
+<div class="col-md-5">
+  <!-- placeholder -->
+</div>
+
+<%# render 'form', workflow: @workflow %>
+
+<div class="row">
+
+  <div class="col-md-7">
+    <div id="job-list-view" class="panel panel-default">
+      <div class="panel-body">
+
+        <a class="btn btn-default btn-sm btn-primary" id="open_dir_button" target="_blank" data-toggle="tooltip" title="Open Directory in File Manager" role="button" disabled>
+          <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> View Files
+        </a>
+        <!--<a class="btn btn-default btn-sm btn-primary" id="edit_template_button" data-toggle="tooltip" title="Specify Template Options" role="button" data-method="get" disabled>
+          <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Template Default Options
+        </a>-->
+        <a class="btn btn-default btn-sm btn-primary" id="terminal_button" target="_blank" data-toggle="tooltip" title="Open Selected Template in the Terminal" role="button" disabled>
+          <span class="glyphicon glyphicon-console" aria-hidden="true"></span> Open Terminal
+        </a>
+        <a class="btn btn-danger btn-sm pull-right" id="destroy_template_button" data-toggle="tooltip" title="Delete Job" data-method="get" data-confirm="Are you certain you want to delete this?" role="button" disabled>
+          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
+        </a>
+      </div>
+
+      <div class="panel-body">
+        <div id="joyride-table-stop"></div>
+        <table id="new-job-template-table" class="table data-table-new-job" style="width:100%">
+          <thead>
+            <tr>
+              <th id="name-label">Name</th>
+              <th>Cluster</th>
+              <th>Source</th>
+            </tr>
+          </thead>
+
+          <tbody>
+          <% @templates.each_with_index do |template, index| %>
+            <tr class="job-row" data-name="<%= template.name %>" data-host="<%= template.host %>" data-path="<%= template.path %>" data-script="<%= template.manifest.script %>" data-api="<%= Filesystem.new.api(template.path) %>" data-fs="<%= Filesystem.new.fs(template.path) %>" data-shell="<%= OodAppkit.shell.url(path: template.path).to_s %>" data-notes="<%= template.notes %>" <%= "data-delete=#{template.path}" unless template.system? %> >
+              <td class="job-name"><%= template.name %></td>
+            <td><%= template.host.titleize %></td>
+            <td><%= template.source.name %></td>
+          </tr>
+        <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-5">
+    <div class="panel panel-primary">
+
+      <div class="panel-heading">
+        <h3 class="panel-title" >Create New "<span class="wrap-line" id="script-name-label"><%= @workflow.name %></span>"</h3>
+      </div>
+      <div class="panel-body">
+        <p class="text-muted" id="notes-field"></p>
+
+        <%= bootstrap_form_for(@workflow) do |f| %>
+          <%= f.alert_message "Please fix the errors below." %>
+
+        <%= f.text_field :name, label: 'Job Name:', required: true, id: 'name-field' %>
+
+        <%= f.select :batch_host, OODClusters.map { |cluster| [ "#{cluster.metadata.title}", cluster.id ] }, { label: "Cluster:", prompt: "Select a cluster..." }, { class: "selectpicker", id: "batch_host_select", required: true } %>
+
+        <%= f.text_field :script_name, label: 'Script Name:', required: true, readonly: true, id: "script-path-field" %>
+
+        <%= f.hidden_field :staging_template_dir, required: true, id: 'staging-template-dir' %>
+
+        <%= f.submit 'Create New Job', class: 'btn btn-primary', id: 'create-job-button' %>
+
+        <a class="btn btn-default" id="reset-template-data" data-toggle="tooltip" title="Reset fields to template default" role="button">Reset</a>
+      <% end %>
+      </div>
+    </div>
+
+    <div class="panel panel-default" id="job-details-panel">
+      <div class="panel-heading">
+        <h3 class="panel-title">Selected Template Details</h3>
+      </div>
+
+      <div class="panel-body">
+        <div id="template-details-view" hidden>
+          <div  class="panel-body">
+            <p>Template location:</p>
+            <pre id="template-location"></pre>
+          </div>
+          <div class="panel-body folder-content-view">
+            <p>Folder Contents:</p>
+            <span id="template-folder-contents"></span>
+            <a class="btn btn-default pull-right" id="open-template-dir-button" target="_blank" data-toggle="tooltip" title="Open Template Directory in File Manager" role="button" disabled><span class="glyphicon glyphicon-new-window" aria-hidden="true"></span> Open Dir</a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ol id="joyride" style="display: none;" data-joyride>
+  <li data-id="name-label">
+    <p>
+      First, select a template that will be used to create a new job.
+    </p>
+  </li>
+  <li data-id="name-field">
+    <p>
+      Enter a name for the job you wish to create.
+    </p>
+  </li>
+  <li data-id="batch_host_select">
+    <p>
+      Select the cluster where the job will be submitted.
+    </p>
+  </li>
+  <li data-id="script-path-field">
+    <p>
+      Enter the name of the script that will be submitted to the batch server. (If different from default)
+    </p>
+  </li>
+  <li data-id="create-job-button">
+    <p>
+      Finally, click "Create Job" to add this to your list of jobs.
+    </p>
+  </li>
+</ol>

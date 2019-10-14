@@ -1,0 +1,73 @@
+// Load bootstrap/font-awesome sprockets first
+@import "bootstrap-sprockets";
+@import "font-awesome-sprockets";
+
+// this MUST occur before you import bootstrap
+@import "ood_appkit/bootstrap-overrides";
+
+// Load up bootstrap/font-awesome style sheet
+@import "bootstrap";
+@import "font-awesome";
+
+@import "ood_appkit";
+
+// Load up dataTables bootstrap specific styles
+@import "dataTables/bootstrap/3/jquery.dataTables.bootstrap";
+
+// Your custom css styles below (must be manually added)
+@import "pages";
+@import "workflows";
+@import "joyride";
+
+
+.table {
+  width: 100%;
+  word-wrap: break-word;
+}
+
+.panel-thin {
+  margin-bottom:  0 !important;
+  padding-bottom: 0 !important;
+}
+
+#error_explanation {
+  color: #a94442;
+}
+
+.glyphicon.fast-right-spinner {
+  -webkit-animation: glyphicon-spin-r 1s infinite linear;
+  animation: glyphicon-spin-r 1s infinite linear;
+}
+
+@-webkit-keyframes glyphicon-spin-r {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+@keyframes glyphicon-spin-r {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+.btn.noanimate:hover,
+.btn.noanimate:active,
+.btn.noanimate:focus {
+  color: #333;
+  background-color: #fff;
+  border-color: #ccc;
+  box-shadow: none;
+}

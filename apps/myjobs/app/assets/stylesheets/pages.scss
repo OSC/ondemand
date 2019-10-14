@@ -1,0 +1,31 @@
+// Place all the styles related to the pages controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+//FIXME: use the purple button from the VFT app
+
+// .btn-templates {
+//   background: rgb(71,10,104);
+//   color: #ffffff;
+// }
+
+// .btn-templates:hover, .btn-templates:focus, .btn-templates:active, .btn-templates.active, .open > .dropdown-toggle.btn-templates {
+//   background: darken(rgb(71,10,104), 10%);
+//   color: #ffffff;
+// }
+
+// .btn-templates:active, .btn-templates.active {
+//   background: #007299;
+//   color: #ffffff;
+// }
+
+#submit_button {
+  margin-left: 70px;
+}
+
+
+.job-name{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}

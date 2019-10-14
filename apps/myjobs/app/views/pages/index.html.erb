@@ -1,0 +1,10 @@
+<h2>AweSim on Rails</h2>
+
+<p>To get started with your AweSim app:</p>
+
+<ol>
+  <li>run <code>rails g osc_machete_rails:scaffold Model field:type field:type ...</code> for your domain object</li>
+  <li>run the migrations <code>rake db:migrate</code> <strong>twice</strong> ignoring the errors seen</li>
+  <li>modify the associated job template in the <code>jobs/</code> directory</li>
+  <li>change the root to point to your model's index action by modifying <code>public/.htaccess.passenger_fix</code> and <code>public/.htaccess</code></li>
+</ol>

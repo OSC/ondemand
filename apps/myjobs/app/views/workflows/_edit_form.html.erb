@@ -1,0 +1,28 @@
+<%# Uses rails_bootstrap_form gem. API at: https://github.com/bootstrap-ruby/rails-bootstrap-forms %>
+
+<%= bootstrap_form_for(workflow) do |f| %>
+    <%= f.alert_message t('jobcomposer.options_errors') %>
+
+    <%= f.text_field :name, label: t('jobcomposer.options_name_title') %>
+    <%= f.select :batch_host, OODClusters.map { |cluster| [ "#{cluster.metadata.title}", cluster.id ] }, { selected: @workflow.batch_host, label: t('jobcomposer.options_cluster_title') }, { class: "selectpicker" } %>
+
+    <%# select in bootstrap_form?@%>
+
+    <div class="form-group">
+      <label class="control-label" for="workflow_script_path"><%= t('jobcomposer.options_script_title') %></label>
+      <select class="form-control selectpicker" id="workflow_script_path" name="workflow[script_path]">
+        <% workflow.folder_contents.each do |content| %>
+          <% if File.file? content %>
+            <%= "<option #{"selected" if (content == workflow.script_path.to_s)} value=\"#{content}\">#{content.gsub(workflow.staged_dir, "").sub!(/^\//, '')}</option>".html_safe %>
+          <% end %>
+        <% end %>
+      </select>
+    </div>
+
+    <%= render partial: "edit_form_job_attrs", locals: { f: f } %>
+
+    <%= f.submit 'Save', class: 'btn btn-primary' %>
+    <%= f.button 'Reset', type: :reset, class: 'btn btn-default' %>
+
+    <%= link_to 'Back', workflows_path, class: 'btn btn-default' %>
+<% end %>

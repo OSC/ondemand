@@ -1,0 +1,53 @@
+#!/usr/bin/env ruby
+
+# always run this in production environment
+ENV['RAILS_ENV'] = 'production'
+
+require 'pathname'
+require 'fileutils'
+require_relative '../config/boot'
+
+include FileUtils
+
+# if this returns with error
+# we can handle that appropriately
+
+# abort if cmd fails
+def `(cmd)
+  output = super
+  abort "'#{cmd}' failed with output: #{output}" unless $?.success?
+  output
+end
+
+# path to your application root
+APP_ROOT = Pathname.new File.expand_path('../../', __FILE__)
+
+chdir APP_ROOT do
+  `mkdir -p #{Configuration.dataroot}`
+
+  # currently SQLite-specific and not safe for Sqlite URIs
+  # https://www.sqlite.org/uri.html
+  if Configuration.production_database_path.file?
+    # Get a list of all migration for this app
+    app_migrations = Dir.glob("#{APP_ROOT}/db/migrate/*").map {|v| File.basename(v).split("_").first}
+
+    # Read in current migrations from database
+    require 'sqlite3'
+    begin
+      db = SQLite3::Database.new Configuration.production_database_path.to_s
+      db_migrations = db.execute("SELECT * FROM schema_migrations").map {|v| v.first}
+    rescue SQLite3::Exception => e
+      abort "Exception occurred: #{e}"
+    ensure
+      db.close if db
+    end
+
+    # Compare the two arrays of migrations
+    unless app_migrations.sort == db_migrations.sort
+      abort "Your database differs significantly from the app's schema"
+    end
+  else
+    Configuration.production_database_path.parent.mkpath
+    `RAILS_ENV=production bin/rake db:setup`
+  end
+end
