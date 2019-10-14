@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - update Dashboard to add account balance warnings & dev mode icon picker
 - for new installs, sudoers.d/ood script now includes `env_keep` for all env
   vars starting with `NGING_STAGE_` or `OOD_`
+- add support for CentOS/RHEL8
 
 ### Changed
 - drop support for CentOS/RHEL6
