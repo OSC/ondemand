@@ -89,7 +89,7 @@ SELinux policy for OnDemand
 
 %build
 %__mkdir selinux
-cd selinux
+pushd selinux
 echo "SELinux policy %{selinux_policy_ver}"
 %__cp %{SOURCE1} ./ondemand-selinux.te
 %if 0%{?rhel} >= 7
@@ -98,10 +98,12 @@ echo "SELinux policy %{selinux_policy_ver}"
 %__cp %{SOURCE3} ./ondemand-selinux.fc
 %__sed -i 's/@VERSION@/%{selinux_module_version}/' ./ondemand-selinux.te
 %__make -f %{_datadir}/selinux/devel/Makefile
+popd
 
 scl enable ondemand - << \EOS
 set -x
 set -e
+export OBJDIR=$(pwd)/build
 rake -mj%{ncpus}
 EOS
 
