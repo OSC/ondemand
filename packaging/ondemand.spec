@@ -160,6 +160,7 @@ touch %{buildroot}%{_sysconfdir}/ood/config/ood_portal.sha256sum
 %__mkdir_p %{buildroot}%{_sysconfdir}/sudoers.d
 %__cat >> %{buildroot}%{_sysconfdir}/sudoers.d/ood << EOF
 Defaults:apache !requiretty, !authenticate
+Defaults:apache env_keep += "NGINX_STAGE_* OOD_*"
 apache ALL=(ALL) NOPASSWD: /opt/ood/nginx_stage/sbin/nginx_stage
 EOF
 %__chmod 440 %{buildroot}%{_sysconfdir}/sudoers.d/ood
