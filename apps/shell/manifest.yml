@@ -1,0 +1,7 @@
+---
+name: Shell
+category: Clusters
+icon: fa://terminal
+description: |-
+  Open OnDemand web-based terminal
+role: shell
