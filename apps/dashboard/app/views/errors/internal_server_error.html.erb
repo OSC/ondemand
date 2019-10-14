@@ -1,0 +1,17 @@
+<div class="jumbotron">
+  <h1>Internal Server Error</h1>
+  <p>Please try again in a few moments. 
+  If you continue to see this error, please
+  <a href="<%= support_url %>">contact support</a>.
+  </p>
+
+
+</div>
+
+<h3>Details:</h3>
+
+<pre>
+<%= @exception.inspect if @exception %>
+
+<%= @exception.backtrace.join("\n") if @exception  %>
+</pre>

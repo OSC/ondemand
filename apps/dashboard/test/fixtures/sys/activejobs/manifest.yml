@@ -1,0 +1,6 @@
+---
+name: Active Jobs
+category: Jobs
+description: |-
+  View jobs currently running on OSC clusters.
+icon: fa://clock-o

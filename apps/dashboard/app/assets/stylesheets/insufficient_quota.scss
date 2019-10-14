@@ -1,0 +1,26 @@
+.insufficient-quota {
+  padding-bottom: 10px;
+
+  .insufficient-quota-group {
+    .insufficient-quota-resource {
+      padding: 5px 0 5px 0;
+
+      &:first-child {
+        padding-top: 0;
+      }
+
+      &:last-child {
+        padding-bottom: 0;
+      }
+
+      .progress {
+        margin: 5px 0 5px 0;
+      }
+    }
+  }
+
+  footer {
+    margin-top: 20px;
+    font-size: 12px;
+  }
+}

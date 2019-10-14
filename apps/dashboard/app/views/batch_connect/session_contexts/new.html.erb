@@ -1,0 +1,78 @@
+<% content_for :title, @app.title %>
+
+<ol class="breadcrumb">
+  <li>
+    <%= link_to t('dashboard.breadcrumbs_home'), root_path %>
+  </li>
+  <li>
+    <%= link_to t('dashboard.breadcrumbs_my_sessions'), batch_connect_sessions_path %>
+  </li>
+  <li class="active">
+    <%= @app.title %>
+  </li>
+</ol>
+
+<%- if @session && @session.errors.any? -%>
+  <div class="alert alert-danger alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <%= session_save_errors @session.errors %>
+
+    <p class="small">
+      <%= t('dashboard.batch_connect_sessions_data_html',
+            title: @app.title,
+            data_link_tag: link_to(
+              t('dashboard.batch_connect_sessions_staged_root'),
+              OodAppkit.files.url(path: @session.staged_root).to_s,
+              target: "_blank")
+            )
+      %>
+    </p>
+  </div>
+<%- end -%>
+
+<div class="row">
+  <div class="col-md-3">
+    <%=
+      render(
+        partial: "batch_connect/shared/app_menu",
+        locals: {
+          sys_app_groups: @sys_app_groups,
+          usr_app_groups: @usr_app_groups,
+          dev_app_groups: @dev_app_groups,
+          current_url: new_batch_connect_session_context_path(token: @app.token)
+        }
+      )
+    %>
+  </div>
+
+  <div class="col-md-6">
+    <h3>
+      <%= @app.title %>
+      <% if @app.version != 'unknown' %>
+        <small>version: <%= @app.version %></small>
+      <% end %>
+    </h3>
+    <div class="ood-appkit markdown">
+      <%= OodAppkit.markdown.render(@app.description).html_safe %>
+
+      <%- if @session_context -%>
+        <%= render "form" %>
+
+        <p class="small">
+          <%= t('dashboard.batch_connect_form_session_data_html',
+                title: @app.title,
+                data_link_tag: link_to(
+                  t('dashboard.batch_connect_form_data_root'),
+                  OodAppkit.files.url(
+                    path: BatchConnect::Session.dataroot(@app.token)
+                  ).to_s,
+                  target: "_blank")
+                )
+          %>
+        </p>
+      <%- end -%>
+    </div>
+  </div><!-- /.col-md-6 -->
+</div><!-- /.row -->

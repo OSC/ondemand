@@ -1,0 +1,12 @@
+<h3><%= @motd.title %></h3>
+<hr />
+<% if @motd.content %>
+  <% @motd.content.items.each do |item| %>
+    <div>
+      <%= content_tag(:strong, item.pubDate.strftime("%m-%d-%Y")) if item.pubDate %>
+      <h4><a href="<%= item.link %>"><%= item.title %></a></h4>
+      <%= content_tag(:p, item.description.html_safe) if item.description %>
+      <hr />
+    </div>
+  <% end %>
+<% end %>

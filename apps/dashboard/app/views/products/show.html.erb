@@ -1,0 +1,211 @@
+<%= render layout: 'products/breadcrumbs' do %>
+  <li class="active"><%= @product.title %></li>
+<% end %>
+
+<div class="page-header">
+  <h2>
+    <%= @product.name %>
+    <%= git_prompt(@product) if @product.git_repo? %>
+  </h2>
+</div>
+
+<h3>Details</h3>
+
+<div class="row ood-mb-2">
+  <div class="col-md-2 col-sm-2 col-xs-12">
+    <p class="text-center">
+      <%= app_icon_tag(@product.app) %>
+    </p>
+  </div><!-- /.col-md-2 -->
+  <div class="col-md-6 col-sm-10 col-xs-12">
+    <div class="btn-group-vertical">
+      <%- @product.app.links_without_validation.each do |link| -%>
+        <%=
+          link_to(
+            "Launch #{link.title}",
+            link.url.to_s,
+            class: "btn btn-primary",
+            data: {
+              toggle: "popover",
+              content: manifest_markdown(link.description),
+              html: true,
+              trigger: "hover",
+              title: link.title,
+              container: "body",
+            },
+            target: link.new_tab? ? "_blank" : nil
+          )
+        %>
+      <%- end -%>
+    </div>
+    <hr />
+    <p>
+      <strong>Name:</strong>
+      <%= @product.app.title %>
+    </p>
+    <p>
+      <span data-toggle="popover" data-trigger="hover" data-placement="bottom" title="Active Users" data-content="<%= @product.active_users.join("<br />") %>" data-html="true">
+        <strong>Active users:</strong>
+        <%= @product.active_users.size %>
+      </span>
+    </p>
+    <p>
+      <strong>Type:</strong>
+      <%= app_type_title @product.app %>
+    </p>
+    <p>
+      <strong>Directory:</strong>
+      <%= @product.router.path.realpath %>
+    </p>
+    <% if @product.git_repo? %>
+    <p>
+      <strong>Git remote:</strong>
+      <%= @product.git_remote %>
+    </p>
+    <% end %>
+    <p>
+      <strong>Description:</strong><br/>
+      <%= manifest_markdown(@product.app.manifest.description) %>
+    </p>
+  </div><!-- /.col-md-6 -->
+  <div class="col-md-2 col-xs-6">
+    <%= link_to 'Edit Metadata', edit_product_path(@product.name, type: @type), class: 'btn btn-default btn-block' %>
+    <%= command_btn(title: "Bundle Install", key: "bundle_install", display: "bundle install --path=vendor/bundle") if @product.can_run_bundle_install? %>
+    <%= command_btn(title: "Precompile Assets", key: "precompile_assets", display: "RAILS_ENV=production bin/rake assets:clobber && RAILS_ENV=production bin/rake assets:precompile && RAILS_ENV=production bin/rake tmp:clear") if @type == :usr && @product.passenger_rails_app? %>
+    <%= command_btn(title: "Restart App", key: "restart_app", display: "mkdir -p tmp && touch tmp/restart.txt") if @product.passenger_app? %>
+    <%= command_btn(title: "Rebuild App", key: "rebuild_passenger_rails_app", display: "RAILS_ENV=production bundle install --path=vendor/bundle && RAILS_ENV=production bin/rake assets:clobber && RAILS_ENV=production bin/rake assets:precompile && RAILS_ENV=production bin/rake tmp:clear && mkdir -p tmp && touch tmp/restart.txt", help: "Performs Bundle Install, Precompile Assets, and Restart App", color: "primary") if @type == :usr && @product.passenger_rails_app? %>
+  </div><!-- /.col-md-2 -->
+  <div class="col-md-2 col-xs-6">
+    <%= link_to 'Shell', OodAppkit.shell.url(host: ENV['OOD_DEV_SSH_HOST'], path: @product.router.path.realdirpath).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
+    <%= link_to 'Files', OodAppkit.files.url(path: @product.router.path.realdirpath).to_s, target: '_blank', class: 'btn btn-default btn-block' %>
+  </div><!-- /.col-md-2 -->
+
+</div><!-- /.row -->
+
+<% if @product.permissions? %>
+<div class="row">
+  <div class="col-md-offset-2 col-md-10 col-sm-12 col-xs-12">
+    <div class="page-header"><h3>Permissions</h3></div>
+  </div>
+  <div class="col-md-offset-2 col-md-5 col-sm-6 col-xs-12">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Users</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @product.users.each do |u| %>
+        <tr>
+          <td><%= u.name %> <%= "(Owner)" if u.owner %></td>
+          <td><%= link_to 'Remove', product_permission_path(u.name, type: @type, product_name: @product.name, context: :user), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' unless u.owner %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <p>
+      <%= link_to 'New User Permission', new_product_permission_path(type: @type, product_name: @product.name, context: :user), class: 'btn btn-default' %>
+    </p>
+  </div>
+  <div class="col-md-5 col-sm-6 col-xs-12">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Groups</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @product.groups.each do |g| %>
+        <tr>
+          <td><%= g.name %> <%= "(Owner)" if g.owner %></td>
+          <td><%= link_to 'Remove', product_permission_path(g.name, type: @type, product_name: @product.name, context: :group), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' unless g.owner %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <p>
+      <%= link_to 'New Group Permission', new_product_permission_path(type: @type, product_name: @product.name, context: :group), class: 'btn btn-default' %>
+    </p>
+  </div>
+</div>
+<% end %>
+
+<% if @product.readme.exist? %>
+<div class="row">
+  <div class="col-md-offset-2 col-md-10 col-sm-12 col-xs-12">
+    <div class="page-header">
+      <h3>
+        <%= link_to @product.readme.title, @product.readme.edit_url.to_s, target: '_blank', title: "Edit #{@product.readme.title}", style: "color: inherit; text-decoration: inherit;" %>
+      </h3>
+    </div>
+    <%= @product.readme.html %>
+  </div>
+</div>
+<% end %>
+
+<hr />
+
+<% unless @product.valid?(:show_app) %>
+<div class="alert alert-danger">
+  <p>Please fix the errors below:</p>
+  <ul class="rails-bootstrap-forms-error-summary">
+    <% @product.errors.full_messages.each do |msg| %>
+    <li><%= msg.html_safe %></li>
+    <% end %>
+  </ul>
+</div>
+<% end %>
+
+<%= link_to 'Back', products_path(type: @type), class: 'btn btn-default' %>
+
+<%= button_tag 'Delete App',
+  class: 'btn btn-danger pull-right',
+  data: {
+    toggle: 'collapse',
+    target: '#delete-panel'
+  }
+%>
+
+<div id="delete-panel" class="collapse">
+  <br />
+  <div class="panel panel-danger">
+    <div class="panel-heading">Delete this app using the terminal.</div>
+    <div class="panel-body">
+      <p>The following command moves this app to a local temporary directory and then deletes it:</p>
+<pre>APP_DIR=<%= @product.app.path %> &amp;&amp; \
+mkdir -p $HOME/tmp &amp;&amp; \
+mktemp -d --tmpdir=$HOME/tmp/ | \
+xargs -I % sh -c "echo % &amp;&amp; mv $APP_DIR % &amp;&amp; rm -rf %;"</pre>
+      <p>If it shows an error, then there may have been users running the app, causing open file handles to remain open and preventing the files from being completely deleted. But once these file handles close, the empty directory alone will remain.</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="productCliModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Command</h4>
+
+      </div><!-- /.modal-header -->
+      <div class="modal-body">
+        <pre class="product-cli-body">
+          Loading...
+        </pre>
+
+        <% if ENV['X_SCLS'] %>
+        <div class="alert alert-info" style="margin-top: 10px">
+          <p>Use the correct environment when building this app. If you copy and
+          execute the command below manually, be sure to first load the correct software collections environment:
+          </p>
+          <pre>source scl_source enable <%= ENV['X_SCLS'] %></pre>
+        </div>
+        <% end %>
+      </div><!-- /.modal-body -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
