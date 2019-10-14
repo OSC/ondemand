@@ -1,0 +1,48 @@
+<% if @editor_content %>
+    <div id="error">
+      <h2>
+        <span class='label label-danger'>Failed to load file!</span>
+      </h2>
+      <h3>
+        The file failed to load. Please try again later.
+      </h3>
+      <h4>
+        <pre><%= @pathname %></pre>
+      </h4>
+      <div id="ajaxErrorResponse"></div>
+    </div>
+    <pre id="editor"></pre>
+
+<% elsif @directory_content %>
+    <h3>Select a file to edit:</h3>
+    <h4><%= @pathname %></h4>
+    <ul class="list-group">
+      <%= "<li class='list-group-item small'><a href='#{File.join(@file_edit_url, @pathname.dirname)}'>..</a></li>".html_safe unless @pathname.to_s == "/" %>
+      <% @directory_content.each do |path| %>
+          <li class="list-group-item small">
+            <%= "<a href='#{File.join(@file_edit_url, path)}'>#{Pathname.new(path).basename}</a>".html_safe %>
+          </li>
+      <% end %>
+    </ul>
+<% elsif @invalid_file_type %>
+    <h2><span class="label label-danger">File Not Editable!</span></h2>
+    <h3>The file you are attempting to edit is not in plain text format.</h3>
+    <h4><pre><%= @invalid_file_type %></pre></h4>
+    <h4><a href="?force">I understand the risks and would like to edit the file anyway.</a></h4>
+<% elsif @not_found %>
+    <h2><span class="label label-danger">File Not Found!</span></h2>
+    <h3>The file or folder could not be found.</h3>
+    
+<% elsif @path_forbidden %>
+    <h2><span class="label label-danger">Path Forbidden!</span></h2>
+    <h3>The file or folder cannot be loaded.</h3>
+    <h4><pre><%= @pathname %></pre></h4>
+<% end %>
+
+<script src="<%= "#{ENV['RAILS_RELATIVE_URL_ROOT']}/ace/1.2.6/ace.js" %>" type="text/javascript" charset="utf-8"></script>
+<script src="<%= "#{ENV['RAILS_RELATIVE_URL_ROOT']}/ace/1.2.6/ext-modelist.js" %>" type="text/javascript" charset="utf-8"></script>
+<script>
+  var editorContent = "";
+  var apiUrl = "<%= @file_api_url %>";
+  var filePath = "<%= @pathname %>";
+</script>
