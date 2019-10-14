@@ -6,8 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.7.0] - 2019-10-14
 ### Added
 - update Dashboard to add account balance warnings & dev mode icon picker
+- for new installs, sudoers.d/ood script now includes `env_keep` for all env
+  vars starting with `NGING_STAGE_` or `OOD_`
+
+### Changed
+- drop support for CentOS/RHEL6
+- upgrade to Ruby 2.5, Node 10, and Passenger 6
 
 ## [1.6.19] - 2019-10-09
 ### Added
@@ -255,7 +262,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.6.19...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.0...HEAD
+[1.7.0]: https://github.com/OSC/ondemand/compare/v1.6.19...v1.7.0
 [1.6.19]: https://github.com/OSC/ondemand/compare/v1.6.18...v1.6.19
 [1.6.18]: https://github.com/OSC/ondemand/compare/v1.6.17...v1.6.18
 [1.6.17]: https://github.com/OSC/ondemand/compare/v1.6.16...v1.6.17
