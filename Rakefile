@@ -1,7 +1,8 @@
 require "json"
 require "pathname"
 
-CONFIG_FILE  = Pathname.new(__dir__).join(ENV["CNFFILE"] || "config.json")
+PROJ_DIR     = Pathname.new(__dir__)
+CONFIG_FILE  = PROJ_DIR.join(ENV["CNFFILE"] || "config.json")
 BUILD_ROOT   = Pathname.new(ENV["OBJDIR"] || "build")
 INSTALL_ROOT = Pathname.new(ENV["PREFIX"] || "/opt/ood")
 
@@ -59,7 +60,7 @@ proxy_components.each do |build_root|
     puts "RAKE DEBUG1"
     puts Dir[File.dirname(build_root)]
     puts "RAKE DEBUG: cp -r #{build_root.basename} #{build_root}"
-    cp_r build_root.basename, build_root
+    cp_r PROJ_DIR.join(build_root.basename), build_root
     puts "RAKE DEBUG2"
     puts Dir[File.dirname(build_root)]
   end
