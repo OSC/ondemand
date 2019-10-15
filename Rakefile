@@ -50,31 +50,30 @@ all_components.each do |c|
   end
 end
 
-def proxy_components_build
-  %w().map {|name| BUILD_ROOT.join(name) }
+def proxy_components
+  %w(ood-portal-generator mod_ood_proxy ood_auth_map nginx_stage).map {|name| BUILD_ROOT.join(name) }
 end
 
-def proxy_components_install
-  %w(ood-portal-generator mod_ood_proxy ood_auth_map nginx_stage).map {|name| PROJ_DIR.join(name) }
-end
-
-proxy_components_build.each do |build_root|
+proxy_components.each do |build_root|
   file build_root => 'nginx_stage/lib/nginx_stage/version.rb' do
     rm_rf build_root if build_root.directory?
+    puts "RAKE DEBUG1"
+    puts Dir[File.dirname(build_root)]
+    puts "RAKE DEBUG: cp -r #{build_root.basename} #{build_root}"
     cp_r PROJ_DIR.join(build_root.basename), build_root
+    puts "RAKE DEBUG2"
+    puts Dir[File.dirname(build_root)]
   end
 end
 
+
 desc "Build OnDemand"
-task :build => all_components.map(&:build_root) + proxy_components_build
+task :build => all_components.map(&:build_root) + proxy_components
 
 directory INSTALL_ROOT.to_s
 
 desc "Install OnDemand"
 task :install => [:build, INSTALL_ROOT] do
-  proxy_components_install.each do |path|
-    sh "rsync -rptl --delete --copy-unsafe-links #{path} #{INSTALL_ROOT}/"
-  end
   sh "rsync -rptl --delete --copy-unsafe-links #{BUILD_ROOT}/ #{INSTALL_ROOT}"
 end
 
