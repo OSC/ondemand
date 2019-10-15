@@ -17,7 +17,7 @@ Summary:   Web server that provides users access to HPC resources
 Group:     System Environment/Daemons
 License:   MIT
 URL:       https://osc.github.io/Open-OnDemand
-Source0:   https://github.com/OSC/%{package_name}/archive/%{git_tag}.tar.gz
+Source0:   https://github.com/treydock/%{package_name}/archive/%{git_tag}.tar.gz
 Source1:   ondemand-selinux.te
 Source2:   ondemand-selinux-systemd.te
 Source3:   ondemand-selinux.fc
