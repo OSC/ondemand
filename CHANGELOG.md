@@ -17,6 +17,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - drop support for CentOS/RHEL6
 - upgrade to Ruby 2.5, Node 10, and Passenger 6
 
+## [1.6.20] - 2019-10-14
+### Fixed
+- fix bug to ensure `update_ood_portal` installs new config if existing
+  ood-portal.conf matches checksum [#83](https://github.com/OSC/ondemand/pull/83)
+
 ## [1.6.19] - 2019-10-09
 ### Added
 - ability to set separate proxy server for rewrite rules in ood-portal-generator config
@@ -264,7 +269,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 [Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.0...HEAD
-[1.7.0]: https://github.com/OSC/ondemand/compare/v1.6.19...v1.7.0
+[1.7.0]: https://github.com/OSC/ondemand/compare/v1.6.20...v1.7.0
+[1.6.20]: https://github.com/OSC/ondemand/compare/v1.6.19...v1.6.20
 [1.6.19]: https://github.com/OSC/ondemand/compare/v1.6.18...v1.6.19
 [1.6.18]: https://github.com/OSC/ondemand/compare/v1.6.17...v1.6.18
 [1.6.17]: https://github.com/OSC/ondemand/compare/v1.6.16...v1.6.17
