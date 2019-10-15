@@ -22,8 +22,11 @@ usage () {
     echo "--detailed-exitcodes  Exit with 3 when changes are made and 4 when changes skipped"
 }
 
+OPTS=$(getopt -o rfh --long rpm,force,detailed-exitcodes,help -n 'update_ood_portal' -- "$@")
 
-if ! OPTS=$(getopt -o rfh --long rpm,force,detailed-exitcodes,help -n 'update_ood_portal' -- "$@"); then
+# more readable this way, so disable this shellcheck
+# shellcheck disable=SC2181
+if [[ $? -ne 0 ]]; then
     echo "Failed parsing options"
     usage
     exit 1
