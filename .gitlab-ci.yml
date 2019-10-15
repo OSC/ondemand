@@ -8,6 +8,9 @@ stages:
   - build
   - deploy
 
+variables:
+  GIT_STRATEGY: clone
+
 rpm-build:
   stage: build
   only:
