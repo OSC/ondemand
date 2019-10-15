@@ -104,7 +104,7 @@ scl enable ondemand - << \EOS
 set -x
 set -e
 export OBJDIR=$(pwd)/build
-rake -mj%{ncpus}
+rake --trace -mj%{ncpus}
 EOS
 
 
@@ -114,7 +114,7 @@ EOS
 scl enable ondemand - << \EOS
 set -x
 set -e
-rake install PREFIX=%{buildroot}/opt/ood
+rake --trace install PREFIX=%{buildroot}/opt/ood
 %__rm %{buildroot}/opt/ood/apps/*/log/production.log
 echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/public
