@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.6.20] - 2019-10-14
+### Fixed
+- fix bug to ensure `update_ood_portal` installs new config if existing
+  ood-portal.conf matches checksum [#83](https://github.com/OSC/ondemand/pull/83)
+
 ## [1.6.19] - 2019-10-09
 ### Added
 - ability to set separate proxy server for rewrite rules in ood-portal-generator config
@@ -252,7 +257,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.6.19...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.6.20...HEAD
+[1.6.20]: https://github.com/OSC/ondemand/compare/v1.6.19...v1.6.20
 [1.6.19]: https://github.com/OSC/ondemand/compare/v1.6.18...v1.6.19
 [1.6.18]: https://github.com/OSC/ondemand/compare/v1.6.17...v1.6.18
 [1.6.17]: https://github.com/OSC/ondemand/compare/v1.6.16...v1.6.17
