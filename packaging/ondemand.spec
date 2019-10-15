@@ -114,6 +114,11 @@ scl enable ondemand - << \EOS
 set -x
 set -e
 rake --trace install PREFIX=%{buildroot}/opt/ood OBJDIR=$(pwd)/build
+%__cp -r mod_ood_proxy %{buildroot}/opt/ood/mod_ood_proxy
+%__cp -r nginx_stage %{buildroot}/opt/ood/nginx_stage
+%__cp -r ood-portal-generator %{buildroot}/opt/ood/ood-portal-generator
+%__cp -r ood_auth_map %{buildroot}/opt/ood/ood_auth_map
+
 %__rm %{buildroot}/opt/ood/apps/*/log/production.log
 echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/public

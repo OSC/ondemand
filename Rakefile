@@ -50,20 +50,8 @@ all_components.each do |c|
   end
 end
 
-def proxy_components
-  %w(ood-portal-generator mod_ood_proxy ood_auth_map nginx_stage).map {|name| BUILD_ROOT.join(name) }
-end
-
-proxy_components.each do |build_root|
-  file build_root => 'nginx_stage/lib/nginx_stage/version.rb' do
-    rm_rf build_root if build_root.directory?
-    sh "rsync -rptl --delete --copy-unsafe-links #{PROJ_DIR.join(build_root.basename)} #{build_root}"
-  end
-end
-
-
 desc "Build OnDemand"
-task :build => all_components.map(&:build_root) + proxy_components
+task :build => all_components.map(&:build_root)
 
 directory INSTALL_ROOT.to_s
 
