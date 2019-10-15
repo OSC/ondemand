@@ -147,12 +147,12 @@ fi
 %__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/dev
 %__mkdir_p %{buildroot}%{_tmppath}/ondemand-nginx
 
-%__install -D -m 644 build/ood-portal-generator/share/ood_portal_example.yml \
+%__install -D -m 644 ood-portal-generator/share/ood_portal_example.yml \
     %{buildroot}%{_sysconfdir}/ood/config/ood_portal.yml
 %__mkdir_p %{buildroot}/opt/rh/httpd24/root/etc/httpd/conf.d
 touch %{buildroot}/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf
 
-%__install -D -m 644 build/nginx_stage/share/nginx_stage_example.yml \
+%__install -D -m 644 nginx_stage/share/nginx_stage_example.yml \
     %{buildroot}%{_sysconfdir}/ood/config/nginx_stage.yml
 touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/dashboard.conf
 touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/shell.conf
