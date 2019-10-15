@@ -56,6 +56,9 @@ end
 proxy_components.each do |build_root|
   file build_root => 'nginx_stage/lib/nginx_stage/version.rb' do
     rm_rf build_root if build_root.directory?
+    puts "RAKE DEBUG"
+    puts Dir[File.dirname(build_root)]
+    puts "RAKE DEBUG: cp -r #{build_root.basename} #{build_root}"
     cp_r build_root.basename, build_root
   end
 end
