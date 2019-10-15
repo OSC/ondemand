@@ -57,7 +57,7 @@ end
 proxy_components.each do |build_root|
   file build_root => 'nginx_stage/lib/nginx_stage/version.rb' do
     rm_rf build_root if build_root.directory?
-    cp_r PROJ_DIR.join(build_root.basename), build_root
+    sh "rsync -rptl --delete --copy-unsafe-links #{PROJ_DIR.join(build_root.basename)} #{build_root}"
   end
 end
 
