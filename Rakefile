@@ -1,7 +1,8 @@
 require "json"
 require "pathname"
 
-CONFIG_FILE  = Pathname.new(__dir__).join(ENV["CNFFILE"] || "config.json")
+PROJ_DIR     = Pathname.new(__dir__)
+CONFIG_FILE  = PROJ_DIR.join(ENV["CNFFILE"] || "config.json")
 BUILD_ROOT   = Pathname.new(ENV["OBJDIR"] || "build")
 INSTALL_ROOT = Pathname.new(ENV["PREFIX"] || "/opt/ood")
 
@@ -49,20 +50,8 @@ all_components.each do |c|
   end
 end
 
-def proxy_components
-  %w(ood-portal-generator mod_ood_proxy ood_auth_map nginx_stage).map {|name| BUILD_ROOT.join(name) }
-end
-
-proxy_components.each do |build_root|
-  file build_root => 'nginx_stage/lib/nginx_stage/version.rb' do
-    rm_rf build_root if build_root.directory?
-    cp_r build_root.basename, build_root
-  end
-end
-
-
 desc "Build OnDemand"
-task :build => all_components.map(&:build_root) + proxy_components
+task :build => all_components.map(&:build_root)
 
 directory INSTALL_ROOT.to_s
 

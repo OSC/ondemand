@@ -89,7 +89,7 @@ SELinux policy for OnDemand
 
 %build
 %__mkdir selinux
-cd selinux
+pushd selinux
 echo "SELinux policy %{selinux_policy_ver}"
 %__cp %{SOURCE1} ./ondemand-selinux.te
 %if 0%{?rhel} >= 7
@@ -98,11 +98,12 @@ echo "SELinux policy %{selinux_policy_ver}"
 %__cp %{SOURCE3} ./ondemand-selinux.fc
 %__sed -i 's/@VERSION@/%{selinux_module_version}/' ./ondemand-selinux.te
 %__make -f %{_datadir}/selinux/devel/Makefile
+popd
 
 scl enable ondemand - << \EOS
 set -x
 set -e
-rake -mj%{ncpus}
+rake --trace -mj%{ncpus} OBJDIR=$(pwd)/build
 EOS
 
 
@@ -112,7 +113,12 @@ EOS
 scl enable ondemand - << \EOS
 set -x
 set -e
-rake install PREFIX=%{buildroot}/opt/ood
+rake --trace install PREFIX=%{buildroot}/opt/ood OBJDIR=$(pwd)/build
+%__cp -r mod_ood_proxy %{buildroot}/opt/ood/mod_ood_proxy
+%__cp -r nginx_stage %{buildroot}/opt/ood/nginx_stage
+%__cp -r ood-portal-generator %{buildroot}/opt/ood/ood-portal-generator
+%__cp -r ood_auth_map %{buildroot}/opt/ood/ood_auth_map
+
 %__rm %{buildroot}/opt/ood/apps/*/log/production.log
 echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/public
@@ -141,12 +147,12 @@ fi
 %__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/dev
 %__mkdir_p %{buildroot}%{_tmppath}/ondemand-nginx
 
-%__install -D -m 644 build/ood-portal-generator/share/ood_portal_example.yml \
+%__install -D -m 644 ood-portal-generator/share/ood_portal_example.yml \
     %{buildroot}%{_sysconfdir}/ood/config/ood_portal.yml
 %__mkdir_p %{buildroot}/opt/rh/httpd24/root/etc/httpd/conf.d
 touch %{buildroot}/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf
 
-%__install -D -m 644 build/nginx_stage/share/nginx_stage_example.yml \
+%__install -D -m 644 nginx_stage/share/nginx_stage_example.yml \
     %{buildroot}%{_sysconfdir}/ood/config/nginx_stage.yml
 touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/dashboard.conf
 touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/shell.conf
