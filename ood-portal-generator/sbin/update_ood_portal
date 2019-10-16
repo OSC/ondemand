@@ -22,7 +22,10 @@ usage () {
     echo "--detailed-exitcodes  Exit with 3 when changes are made and 4 when changes skipped"
 }
 
-OPTS=`getopt -o rfh --long rpm,force,detailed-exitcodes,help -n 'update_ood_portal' -- "$@"`
+OPTS=$(getopt -o rfh --long rpm,force,detailed-exitcodes,help -n 'update_ood_portal' -- "$@")
+
+# more readable this way, so disable this shellcheck
+# shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
     echo "Failed parsing options"
     usage
@@ -44,19 +47,19 @@ done
 echo "Generating Apache config using YAML config: '${CONFIG}'"
 
 NEW_APACHE=$(mktemp)
-"${BIN}" -c "${CONFIG}" > $NEW_APACHE
+"${BIN}" -c "${CONFIG}" > "$NEW_APACHE"
 
 # Create checksum file if the path to ood-portal.conf not in checksum file
 # Checksum is based on mktemp generated ood-portal.conf but using path of real ood-portal.conf
-if ! grep -q "$APACHE" $SUM 1>/dev/null 2>&1; then
+if ! grep -q "$APACHE" "$SUM" 1>/dev/null 2>&1; then
     echo "Generating Apache config checksum file: '${SUM}'"
-    NEW_SUM=$(sha256sum $NEW_APACHE | cut -d' ' -f1)
-    echo "${NEW_SUM} ${APACHE}" > $SUM
+    NEW_SUM=$(sha256sum "$NEW_APACHE" | cut -d' ' -f1)
+    echo "${NEW_SUM} ${APACHE}" > "$SUM"
 fi
 
 # If checksum of ood-portal.conf matches or ood-portal.conf doesn't exit, replace is possible.
 # If the checksum matches this means a site has not changed ood-portal.conf outside ood-portal-generator
-if sha256sum --quiet --status --check $SUM 1>/dev/null 2>&1 || [ ! -f "$APACHE" ]; then
+if sha256sum --quiet --status --check "$SUM" 1>/dev/null 2>&1 || [ ! -f "$APACHE" ]; then
     REPLACE=true
 else
     REPLACE=false
@@ -74,7 +77,7 @@ if ! cmp -s "${NEW_APACHE}" "${APACHE}"; then
     echo "Generating new Apache config at: '${APACHE}'"
     cat "${NEW_APACHE}" > "${APACHE}"
     echo "Generating Apache config checksum file: '${SUM}'"
-    sha256sum $APACHE > $SUM
+    sha256sum "$APACHE" > "$SUM"
     ret=$CHANGE_EXIT
     CHANGED=true
   else
@@ -87,7 +90,7 @@ else
   echo "No change in Apache config."
 fi
 
-rm -f $NEW_APACHE
+rm -f "$NEW_APACHE"
 
 if [ $RPM -eq 1 ] || ! $REPLACE; then
     exit $ret
