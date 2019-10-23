@@ -1,3 +1,0 @@
-Defaults:apache !requiretty, !authenticate
-Defaults:apache env_keep += "NGINX_STAGE_* OOD_*"
-apache ALL=(ALL) NOPASSWD: /opt/ood/nginx_stage/sbin/nginx_stage
