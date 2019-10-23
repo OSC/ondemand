@@ -1,0 +1,7 @@
+# Services are started in a fresh environment without any influence of user's
+# environment (like environment variable values). As a consequence,
+# information of all enabled collections will be lost during service start up.
+# If user needs to run a service under any software collection enabled, this
+# collection has to be written into HTTPD24_HTTPD_SCLS_ENABLED variable in
+# /opt/rh/sclname/service-environment.
+HTTPD24_HTTPD_SCLS_ENABLED="httpd24 ondemand rh-nodejs10 rh-ruby25"
