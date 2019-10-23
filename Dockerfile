@@ -16,10 +16,9 @@ RUN yum install -y centos-release-scl && \
         rh-ruby25 \
         rh-nodejs10 \
         ondemand-runtime \
-        ondemand-passenger-6.0.4-2.el7.x86_64 \
-        ondemand-nginx-1.17.3-2.p6.0.4.el7.x86_64
-
-RUN yum clean all && rm -rf /var/cache/yum/*
+        ondemand-passenger \
+        ondemand-nginx && \
+    yum clean all && rm -rf /var/cache/yum/*
 
 # copy basic stuff to /opt/ood and /var/www/ood/apps
 RUN mkdir -p /opt/ood
