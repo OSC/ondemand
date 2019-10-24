@@ -2,16 +2,15 @@ FROM centos:7
 LABEL maintainer="tdockendorf@osc.edu; johrstrom@osc.edu"
 
 # setup the ondemand repositories
-RUN yum -y install https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-6.noarch.rpm
-
-# install all the dependencies
-RUN yum install -y centos-release-scl && \
+RUN yum -y install https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-6.noarch.rpm \
+        centos-release-scl && \
     yum -y update && \
     yum install -y \
         file \
         lsof \
         sqlite-devel \
         sudo \
+        git \
         httpd24 \
         rh-ruby25 \
         rh-nodejs10 \
