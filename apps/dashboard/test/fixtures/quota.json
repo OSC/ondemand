@@ -1,0 +1,47 @@
+{
+    "quotas": [
+        {
+            "block_limit": 524288000,
+            "file_limit": 1000000,
+            "path": "/users/sysp",
+            "total_block_usage": 53725420,
+            "total_file_usage": 274402,
+            "user": "troy"
+        },
+        {
+            "block_limit": 524288000,
+            "file_limit": 1000000,
+            "path": "/users/sysp",
+            "total_block_usage": 326225892,
+            "total_file_usage": 944077,
+            "user": "djohnson",
+            "timestamp": "1546456000"
+        },
+        {
+            "block_limit": 524288000,
+            "file_limit": 1000000,
+            "path": "/users/PAN0014",
+            "total_block_usage": 124,
+            "total_file_usage": 53,
+            "user": "efranz"
+        },
+        {
+            "block_limit": 524288000,
+            "file_limit": 1000000,
+            "path": "/users/PAN0014",
+            "total_block_usage": 918352,
+            "total_file_usage": 40419,
+            "user": "an0047"
+        },
+        {
+            "block_limit": 524288000,
+            "file_limit": 1000000,
+            "path": "/users/PND0005",
+            "total_block_usage": 2497964,
+            "total_file_usage": 973,
+            "user": "efranz"
+        }
+    ],
+    "timestamp": 1546455993,
+    "version": 1
+}

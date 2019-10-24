@@ -1,0 +1,8 @@
+<%= bootstrap_form_for(@permission, as: :permission, url: form_url) do |f| %>
+  <div class="field">
+    <%= f.text_field :name, label: "#{@context.to_s.titleize} name" %>
+  </div>
+  <div class="actions">
+    <%= f.submit 'Submit', class: 'btn btn-default' %>
+  </div>
+<% end %>

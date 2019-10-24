@@ -1,0 +1,7 @@
+---
+name: File Explorer
+description: |-
+  The Open OnDemand File Explorer
+category: Files
+icon: fa://folder
+role: files

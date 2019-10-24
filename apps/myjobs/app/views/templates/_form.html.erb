@@ -1,0 +1,76 @@
+<%= bootstrap_form_for(@template) do |f| %>
+  <% if @template.errors.any? %>
+
+    <script type="text/javascript">
+      $( document ).ready(function() {
+        $(".has-error input").first().focus();
+      });
+    </script>
+
+    <div id="error_explanation">
+      <h4><%= pluralize(@template.errors.count, "error") %> prohibited this template from being saved:</h4>
+    </div>
+
+  <% end %>
+
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="field">
+        <%= f.text_field :path, label: "Path (the template will be created by copying files from this source path)", :id => "path_field" %>
+      </div>
+      <div>
+        <p class="small">&bull; If left blank, a default job script will be added to your new template.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="field">
+        <%= f.text_field :name, :id => "name_field" %>
+      </div>
+      <div class="field">
+        <%= f.select :host, OODClusters.map { |cluster| [ "#{cluster.metadata.title}", cluster.id ] }, { label: "Cluster:" }, { selected: @template.host, class: "selectpicker", id: "server picker", required: true } %>
+      </div>
+      <div class="field">
+        <%= f.text_area :notes, :id => "notes_field" %>
+      </div>
+      <div class="actions">
+
+        <%= f.hidden_field :script, { value: @template.script } %>
+
+        <%= f.submit "Save", :id => "save_button" %>
+        <%= link_to "Cancel", :new_workflow, :class => "btn btn-default" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+
+<ol id="joyride" style="display: none;" data-joyride>
+  <li data-id="path_field">
+    <p>
+      Enter the full path to the system location to be used as a template.
+    </p>
+  </li>
+  <li data-id="name_field">
+    <p>
+      Name your template here. This will be used to easily identify the template in the future.
+    </p>
+  </li>
+  <li data-id="server_picker">
+    <p>
+      Select the cluster that your job will be submitted to.
+    </p>
+  </li>
+  <li data-id="notes_field">
+    <p>
+      Add some notes about your template.
+    </p>
+  </li>
+  <li data-id="save_button">
+    <p>
+      Finally, click here to save your template.
+    </p>
+  </li>
+</ol>

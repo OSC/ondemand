@@ -1,0 +1,6 @@
+---
+name: System Status
+description: |-
+  System Status of OSC Clusters
+category: Clusters
+icon: fa://tachometer

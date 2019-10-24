@@ -1,0 +1,29 @@
+---
+title: "Jupyter Notebook"
+cluster: "owens"
+description: |
+  This app will launch a Jupyter Notebook server on one or more Owens nodes.
+attributes:
+  bc_account:
+    help: "You can leave this blank if **not** in multiple projects."
+  node_type:
+    widget: select
+    label: "Node type"
+    help: |
+      - **any** - (*28 cores*) Chooses anyone of the available Owens nodes.
+        This reduces the wait time as you have no requirements.
+      - **gpu** -  (*28 cores*) This node includes an NVIDIA Tesla P100 GPU
+        allowing for CUDA computations. There are currently only 160 of these
+        nodes on Owens.
+      - **hugemem** - (*48 cores*) This Owens node has 1.5TB of available RAM
+        as well as 48 cores. There are 16 of these nodes on Owens.
+    options:
+      - ["any", ":ppn=28"]
+      - ["gpu", ":ppn=28:gpus=1"]
+      - ["hugemem", ":ppn=48:hugemem"]
+form:
+  - bc_num_hours
+  - bc_num_slots
+  - node_type
+  - bc_account
+  - bc_email_on_started

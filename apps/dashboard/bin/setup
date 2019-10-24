@@ -1,0 +1,62 @@
+#!/usr/bin/env ruby
+require "pathname"
+require "rake"
+
+include FileUtils
+
+ENV["RAILS_ENV"]               ||= ENV["PASSENGER_APP_ENV"] || "development"
+ENV["RAILS_RELATIVE_URL_ROOT"] ||= ENV["PASSENGER_BASE_URI"]
+
+# if relative url root not set, use default for this app
+ENV['RAILS_RELATIVE_URL_ROOT'] ||= "/pun/sys/dashboard" if ENV['RAILS_ENV'] == 'production'
+
+# define application object
+class App
+  attr_accessor :env, :url
+
+  def initialize(env:, url:)
+    @env    = env
+    @url    = url
+  end
+
+  def production?
+    env == "production"
+  end
+end
+
+# set application settings
+APP = App.new(
+  env:    ENV["RAILS_ENV"],
+  url:    ENV["RAILS_RELATIVE_URL_ROOT"],
+)
+
+# path to your application root.
+APP_ROOT = Pathname.new File.expand_path("../../",  __FILE__)
+
+chdir APP_ROOT do
+  # This script is a starting point to setup your application.
+  # Add necessary setup steps to this file:
+
+  puts "\n== Building Dashboard App =="
+  puts "RAILS_ENV               = #{APP.env}"
+  puts "RAILS_RELATIVE_URL_ROOT = #{APP.url    || "not set"}"
+
+  unless system("bin/bundle check >/dev/null 2>&1")
+    puts "\n== Installing dependencies =="
+    sh "bin/bundle install --path=vendor/bundle"
+    sh "bin/bundle clean"
+  end
+
+  if APP.production?
+    puts "\n== Compiling assets =="
+    sh "bin/rake assets:clobber"
+    sh "bin/rake assets:precompile"
+  end
+
+  puts "\n== Removing old logs and tempfiles =="
+  sh "bin/rake log:clear tmp:clear"
+
+  puts "\n== Restarting application server =="
+  touch "tmp/restart.txt"
+  puts ""
+end

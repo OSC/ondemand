@@ -1,0 +1,23 @@
+---
+v2:
+  metadata:
+    title: "Quick"
+    url: ""
+    hidden: true
+  job:
+    adapter: "torque"
+    host: "quick-batch.ten.osc.edu"
+    lib: "/opt/torque/lib64"
+    bin: "/opt/torque/bin"
+    version: "6.0.2"
+  custom:
+    pbs:
+      host: "quick-batch.ten.osc.edu"
+      lib: "/opt/torque/lib64"
+      bin: "/opt/torque/bin"
+      version: "6.0.2"
+  batch_connect:
+      basic:
+        script_wrapper: "module restore\n%s"
+      vnc:
+        script_wrapper: "module restore\nmodule load ondemand-vnc\n%s"

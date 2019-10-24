@@ -1,0 +1,141 @@
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. If you want to use locales other
+# than English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t 'hello'
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t('hello') %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# To learn more, please read the Rails Internationalization guide
+# available at http://guides.rubyonrails.org/i18n.html.
+
+en:
+  dashboard:
+    # Site specific translations
+    batch_connect_sessions_status_bad: "Your session has entered a bad state. Feel free to contact support for
+          further information."
+    batch_connect_sessions_status_missing_connection: |
+      This app is missing information required to establish a connection. Please
+      contact support if you see this message.
+    batch_connect_sessions_status_queued: |
+      Please be patient as your job currently sits in queue. The wait time depends
+      on the number of cores as well as time requested.
+
+    nav_help_change_password: "Change HPC Password"
+    nav_help_docs: "Online Documentation"
+    nav_help_support: "Contact Support"
+    nav_help_two_factor: "Configure Two-Factor Authentication"
+
+    quota_additional_message: "Consider deleting or archiving files to free up disk space."
+    quota_reload_message: "Reload page to see updated quota. Quotas are updated every 5 minutes."
+    quota_warning_prefix_html: "Quota limit warning for"
+
+    balance_additional_message: "Consider requesting additional %{balanace_units}"
+    balance_reload_message_html: "Reload page to see updated balance. Balances are updated daily.<br>Last update was %{last_update}"
+    balance_warning_prefix_html: "%{units_balance} warning for"
+    balance_message: "%{units_balance} is %{value}"
+
+    welcome_html: |
+      %{logo_img_tag}
+      <p class="lead">OnDemand provides an integrated, single access point for all of your HPC resources.</p>
+
+    # General translations
+    apps_setup_failure_html: |
+      <h2>A problem occurred while initializing your data for this app.</h2>
+      <p class="lead">
+        At your own risk you can still <a href="%{app_url}">open the app</a>
+        or you can just go <a href="%{home_url}">back to the dashboard</a>
+      </p>
+      <p>
+        Share this with the developer of your app:
+        The setup production script is supposed to be idempotent and is run each time
+        the user opens the app through the dashboard.</p>
+      <h4>Exception: %{exception_class}</h4>
+      <pre>%{exception_message}</pre>
+      <h4>Stack trace:</h4>
+      <pre>%{exception_trace}</pre>
+    apps_system_apps_title: "System Apps"
+
+    batch_connect_form_data_root: "data root directory"
+    batch_connect_form_launch: "Launch"
+    batch_connect_form_reset_resolution: "Reset Resolution"
+    batch_connect_form_session_data_html: |
+      * The %{title} session data for this session can be accessed
+        under the %{data_link_tag}.
+    batch_connect_no_apps: "There are no available Interactive Apps."
+    batch_connect_no_sessions: "You have no active sessions."
+    batch_connect_sandbox: " [Sandbox]"
+    batch_connect_sessions_data_html: |
+      * The %{title} session data for this session can be accessed
+      under the %{data_link_tag}.
+    batch_connect_sessions_delete_confirm: "Are you sure?"
+    batch_connect_sessions_delete_hover: "Delete Session"
+    batch_connect_sessions_delete_title: "Delete"
+    batch_connect_sessions_errors_staging: "Failed to stage the template with the following error:"
+    batch_connect_sessions_errors_submission: "Failed to submit session with the following error:"
+    batch_connect_sessions_novnc_launch: "Launch %{app_title}"
+    batch_connect_sessions_novnc_view_only: "View Only (Share-able Link)"
+    batch_connect_sessions_staged_root: "staged root directory"
+    batch_connect_sessions_stats_created_at: "Created at:"
+    batch_connect_sessions_stats_host: "Host:"
+    batch_connect_sessions_stats_session_id: "Session ID:"
+    batch_connect_sessions_stats_time_remaining: "Time Remaining:"
+    batch_connect_sessions_stats_time_requested: "Time Requested:"
+    batch_connect_sessions_stats_time_used: "Time Used:"
+    batch_connect_sessions_stats_undetermined_host: "Undetermined"
+    batch_connect_sessions_status_blurb_create_success: "Session was successfully created."
+    batch_connect_sessions_status_blurb_delete_failure: "Failed to delete session."
+    batch_connect_sessions_status_blurb_delete_success: "Session was successfully deleted."
+    batch_connect_sessions_status_starting: |
+      Your session is currently starting... Please be patient as this process can
+      take a few minutes.
+
+    breadcrumbs_all_apps: "All Apps"
+    breadcrumbs_home: "Home"
+    breadcrumbs_my_sessions: "My Interactive Sessions"
+
+    motd_title: "Message of the Day"
+
+    nav_all_apps: "All Apps"
+    nav_develop_docs: "Developer Documentation"
+    nav_develop_my_sandbox_apps_dev: "My Sandbox Apps (Development)"
+    nav_develop_my_sandbox_apps_prod: "My Sandbox Apps (Production)"
+    nav_develop_title: "Develop"
+    nav_help_title: "Help"
+    nav_logout: "Log Out"
+    nav_restart_server: "Restart Web Server"
+    nav_restart_server: "Restart Web Server"
+    nav_sessions: "My Interactive Sessions"  # Note duplication with breadcrumbs_my_sessions
+    nav_user: "Logged in as %{username}"
+
+    quota_block: "Using %{used} of quota %{available}"
+    quota_block_shared: "(%{used_exclusive} are yours)"
+    quota_file: "Using %{used} files of quota %{available} files"
+    quota_file_shared: "(%{used_exclusive} files are yours)"
+
+    restart_msg_html: |
+      Your group membership has changed, which affects your access to apps. Your dashboard should restart automatically.
+      If it doesn't please, click: <a href="%{restart_url}">restart web server</a>.
+
+    shared_apps_title: "Shared Apps"
+    sharing_catalog_title: "App Catalog"
+    sharing_no_shared_apps_html: |
+      <strong>No custom shared apps available.</strong>
+    sharing_catalog_msg_html: |
+      <br>A subset of the apps available can be viewed on the %{catalog_link_tag}.
+    sharing_support_msg_html: |
+      If you don't see the app you are looking for, please
+      <a href="%{support_url}">contact support</a>.
+    sharing_welcome_msg_html: |
+      Cluster access applications are available from the dropdown menus in the navbar above.
+      <br>Custom shared apps are available below.

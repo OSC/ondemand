@@ -1,0 +1,12 @@
+---
+name: Ruby VDI
+[ # this line ought to break the YAML parser
+description: |-
+  **Ruby VDI** provides a remote desktop on an Ruby shared node at the Ohio
+  Supercomputer Center (OSC). Care must be taken to avoid heavy computation as
+  the resources are shared with many users.
+icon: fa://desktop
+category: Desktops
+subcategory: Virtual Desktop Interface
+role: vdi
+url: /pun/sys/vncsim/%{app_token}/sessions

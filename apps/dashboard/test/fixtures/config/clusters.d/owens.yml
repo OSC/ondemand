@@ -1,0 +1,57 @@
+---
+v2:
+  metadata:
+    # here we omit the title so that the title of the cluster is forced to be
+    # the titleized id of the cluster
+    # title: "Owens"
+    url: "https://www.osc.edu/supercomputing/computing/owens"
+    hidden: false
+  login:
+    host: "owens.osc.edu"
+  job:
+    adapter: "torque"
+    host: "owens-batch.ten.osc.edu"
+    lib: "/opt/torque/lib64"
+    bin: "/opt/torque/bin"
+    version: "6.0.1"
+  custom:
+    pbs:
+      host: "owens-batch.ten.osc.edu"
+      lib: "/opt/torque/lib64"
+      bin: "/opt/torque/bin"
+      version: "6.0.1"
+    moab:
+      host: "owens-batch.ten.osc.edu"
+      bin: "/opt/moab/bin"
+      version: "9.0.1"
+      homedir: "/var/spool/moab"
+    rsv_query:
+      torque_host: "owens-batch.ten.osc.edu"
+      torque_lib: "/opt/torque/lib64"
+      torque_bin: "/opt/torque/bin"
+      torque_version: "6.0.1"
+      moab_host: "owens-batch.ten.osc.edu"
+      moab_bin: "/opt/moab/bin"
+      moab_version: "9.0.1"
+      moab_homedir: "/var/spool/moab"
+      acls:
+        - adapter: "group"
+          groups:
+            - "sysp"
+            - "hpcsoft"
+          type: "blacklist"
+    ganglia:
+      host: "ganglia.osc.edu"
+      scheme: "https://"
+      segments:
+        - "graph.php"
+      req_query:
+        c: "Owens"
+      opt_query:
+        h: "%{h}.ten.osc.edu"
+      version: "3"
+  batch_connect:
+      basic:
+        script_wrapper: "module restore\n%s"
+      vnc:
+        script_wrapper: "module restore\nmodule load ondemand-vnc\n%s"

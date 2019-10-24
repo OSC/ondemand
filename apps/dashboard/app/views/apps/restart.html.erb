@@ -1,0 +1,12 @@
+<% content_for(:head) do %>
+  <meta http-equiv="refresh" content="5;url=<%= restart_url %>">
+<% end %>
+
+<h2><%= t('dashboard.nav_restart_server') %></h2>
+
+<p class="lead">
+  <%= t(  'dashboard.restart_msg_html',
+          restart_url: restart_url
+        )
+  %>
+</p>

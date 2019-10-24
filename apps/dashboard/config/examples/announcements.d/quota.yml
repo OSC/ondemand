@@ -1,0 +1,81 @@
+<%-
+  extend ActionView::Helpers::NumberHelper
+
+  def disk_space_msg(disk:, blocks:, max_blocks:, threshold:)
+    blocks     = blocks.to_i
+    max_blocks = max_blocks.to_i
+    size       = number_to_human_size(blocks     * 1024)
+    max_size   = number_to_human_size(max_blocks * 1024)
+    percent    = blocks * 100 / max_blocks
+    <<-EOT.gsub(/^ {6}/, "")
+      <p style="margin-bottom: 10px;">
+        Manage your disk space usage on <code>#{disk}</code> by deleting or
+        archiving files.
+      </p>
+      <ul class="list-inline" style="margin-bottom: 10px;">
+        <li>&bull; Current disk space used: <strong>#{size}</strong></li>
+        <li>&bull; Total disk space available: <strong>#{max_size}</strong></li>
+      </ul>
+      <div class="progress">
+        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="#{percent}" aria-valuemin="0" aria-valuemax="100" style="width: #{percent}%;">
+          #{percent}%
+        </div>
+      </div>
+    EOT
+  end
+
+  def disk_files_msg(disk:, files:, max_files:, threshold:)
+    files     = files.to_i
+    max_files = max_files.to_i
+    size      = number_to_human(files    ).downcase
+    max_size  = number_to_human(max_files).downcase
+    percent   = files * 100 / max_files
+    <<-EOT.gsub(/^ {6}/, "")
+      <p style="margin-bottom: 10px;">
+        Manage your number of files on <code>#{disk}</code> by deleting or
+        archiving files.
+      </p>
+      <ul class="list-inline" style="margin-bottom: 10px;">
+        <li>&bull; Current number of files used: <strong>#{size}</strong></li>
+        <li>&bull; Total number of files available: <strong>#{max_size}</strong></li>
+      </ul>
+      <div class="progress">
+        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="#{percent}" aria-valuemin="0" aria-valuemax="100" style="width: #{percent}%;">
+          #{percent}%
+        </div>
+      </div>
+    EOT
+  end
+
+  threshold = 80
+  cmd = "quota -w"
+  errors = []
+  begin
+    o, e, s = Open3.capture3(cmd)
+    if s.success?
+      o.split("\n").map(&:strip).drop(2).map do |line|
+        disk, *values = line.split(" ")
+        values = values.map(&:to_i)
+        blocks, max_blocks, _, files, max_files, _ = values
+        if (blocks > max_blocks * threshold / 100)
+          errors << disk_space_msg(disk: disk, blocks: blocks, max_blocks: max_blocks, threshold: threshold)
+        end
+        if (files > max_files * threshold / 100)
+          errors << disk_files_msg(disk: disk, files: files, max_files: max_files, threshold: threshold)
+        end
+      end
+    else
+      raise e
+    end
+  rescue => e
+    Rails.logger.warn "Error parsing quota: #{e.message}"
+    errors = []
+  end
+-%>
+type: danger
+msg: |
+  <%- if errors.any? -%>
+  <h4 class="alert-heading">Quota Warning</h4>
+
+  <%= errors.join("<hr />").gsub("\n", "") -%>
+  <%- end -%>
