@@ -103,8 +103,8 @@ popd
 scl enable ondemand - << \EOS
 set -x
 set -e
-export GEM_HOME=./gems
-export GEM_PATH=./gems:$GEM_PATH
+export GEM_HOME=$(pwd)/gems
+export GEM_PATH=$(pwd)/gems:$GEM_PATH
 rake --trace -mj%{ncpus} build
 EOS
 
