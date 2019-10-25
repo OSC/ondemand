@@ -5,8 +5,7 @@
 #   git config --global core.excludesfile '~/.gitignore_global'
 
 # Ignore bundler config.
-/vendor
-/apps/vendor
+/vendor/bundle
 /.bundle
 /apps/*/.bundle
 /apps/*/vendor/bundle/

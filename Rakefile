@@ -51,7 +51,7 @@ namespace :build do
   desc "Build gems"
   task :gems do
     if VENDOR_BUNDLE
-      args = "--path #{APPS_DIR}/vendor/bundle"
+      args = "--path vendor/bundle"
     else
       args = ""
     end
