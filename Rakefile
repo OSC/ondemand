@@ -57,14 +57,25 @@ task :build => 'build:all'
 
 directory INSTALL_ROOT.to_s
 
-desc "Install OnDemand"
-task :install => [INSTALL_ROOT] do
-  sh "cp -r mod_ood_proxy #{INSTALL_ROOT}/"
-  sh "cp -r nginx_stage #{INSTALL_ROOT}/"
-  sh "cp -r ood_auth_map #{INSTALL_ROOT}/"
-  sh "cp -r ood-portal-generator #{INSTALL_ROOT}/"
-  sh "cp -r #{APPS_DIR} #{INSTALL_ROOT}/"
+namespace :install do
+  desc "Install OnDemand infrastructure"
+  task :infrastructure => [INSTALL_ROOT] do
+    sh "cp -r mod_ood_proxy #{INSTALL_ROOT}/"
+    sh "cp -r nginx_stage #{INSTALL_ROOT}/"
+    sh "cp -r ood_auth_map #{INSTALL_ROOT}/"
+    sh "cp -r ood-portal-generator #{INSTALL_ROOT}/"
+  end
+  desc "Install OnDemand apps"
+  task :apps => [INSTALL_ROOT] do
+    sh "cp -r #{APPS_DIR} #{INSTALL_ROOT}/"
+  end
+
+  desc "Install OnDemand infrastructure and apps"
+  task :all => [:infrastructure, :apps]
 end
+
+desc "Install OnDemand"
+task :install => 'install:all'
 
 desc "Clean up build"
 task :clean do
