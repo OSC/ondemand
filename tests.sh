@@ -28,4 +28,4 @@ yum install -y \
 source scl_source enable ondemand || :
 
 # Build and install
-rake -mj ${NUM_TASKS:-$(nproc)} && rake install
+rake -mj ${NUM_TASKS:-$(nproc)} build && rake install

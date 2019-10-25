@@ -103,7 +103,7 @@ popd
 scl enable ondemand - << \EOS
 set -x
 set -e
-rake --trace -mj%{ncpus} OBJDIR=$(pwd)/build
+rake --trace -mj%{ncpus} build
 EOS
 
 
@@ -113,11 +113,7 @@ EOS
 scl enable ondemand - << \EOS
 set -x
 set -e
-rake --trace install PREFIX=%{buildroot}/opt/ood OBJDIR=$(pwd)/build
-%__cp -r mod_ood_proxy %{buildroot}/opt/ood/mod_ood_proxy
-%__cp -r nginx_stage %{buildroot}/opt/ood/nginx_stage
-%__cp -r ood-portal-generator %{buildroot}/opt/ood/ood-portal-generator
-%__cp -r ood_auth_map %{buildroot}/opt/ood/ood_auth_map
+rake --trace install PREFIX=%{buildroot}/opt/ood
 
 %__rm %{buildroot}/opt/ood/apps/*/log/production.log
 echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION
@@ -141,6 +137,7 @@ fi
 %__mv %{buildroot}/opt/ood/apps/activejobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/activejobs
 %__mv %{buildroot}/opt/ood/apps/myjobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/myjobs
 %__mv %{buildroot}/opt/ood/apps/bc_desktop %{buildroot}%{_localstatedir}/www/ood/apps/sys/bc_desktop
+%__rm -rf %{buildroot}/opt/ood/apps
 %__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/puns
 %__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys
 %__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/usr

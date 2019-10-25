@@ -1,1 +1,4 @@
-/build
+/apps/*/vendor/bundle
+/apps/*/node_modules
+/apps/*/.built
+/packaging/*.tar.gz
