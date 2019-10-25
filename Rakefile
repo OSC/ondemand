@@ -1,9 +1,11 @@
 require "pathname"
 require "time"
 
-PROJ_DIR     = Pathname.new(__dir__)
-APPS_DIR     = PROJ_DIR.join('apps')
-INSTALL_ROOT = Pathname.new(ENV["PREFIX"] || "/opt/ood")
+PROJ_DIR      = Pathname.new(__dir__)
+APPS_DIR      = PROJ_DIR.join('apps')
+GEMFILE       = PROJ_DIR.join('Gemfile')
+INSTALL_ROOT  = Pathname.new(ENV["PREFIX"] || "/opt/ood")
+VENDOR_BUNDLE = (ENV['VENDOR_BUNDLE'] == "yes" || ENV['VENDOR_BUNDLE'] == "true")
 
 def apps
   Dir["#{APPS_DIR}/*"].map { |d| Component.new(d) }

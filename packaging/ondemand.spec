@@ -103,6 +103,8 @@ popd
 scl enable ondemand - << \EOS
 set -x
 set -e
+export GEM_HOME=./gems
+export GEM_PATH=./gems:$GEM_PATH
 rake --trace -mj%{ncpus} build
 EOS
 
@@ -113,6 +115,9 @@ EOS
 scl enable ondemand - << \EOS
 set -x
 set -e
+%__mkdir_p %{buildroot}%{scl_ondemand_gem_home}
+%__mv ./gems/* %{buildroot}%{scl_ondemand_gem_home}/
+export GEM_PATH=%{buildroot}%{scl_ondemand_gem_home}:$GEM_PATH
 rake --trace install PREFIX=%{buildroot}/opt/ood
 
 %__rm %{buildroot}/opt/ood/apps/*/log/production.log
@@ -359,6 +364,8 @@ fi
 %{_localstatedir}/www/ood/apps/sys/myjobs
 %{_localstatedir}/www/ood/apps/sys/bc_desktop
 %exclude %{_localstatedir}/www/ood/apps/sys/*/tmp/*
+
+%{scl_ondemand_gem_home}/*
 
 %dir %{_localstatedir}/www/ood
 %dir %{_localstatedir}/www/ood/public

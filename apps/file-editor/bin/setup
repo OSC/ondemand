@@ -46,12 +46,6 @@ chdir APP_ROOT do
   puts "RAILS_ENV               = #{APP.env}"
   puts "RAILS_RELATIVE_URL_ROOT = #{APP.url || "not set"}"
 
-  unless system("bin/bundle check >/dev/null 2>&1")
-    puts "\n== Installing dependencies =="
-    sh "bin/bundle install --path=vendor/bundle"
-    sh "bin/bundle clean"
-  end
-
   if APP.production?
     puts "\n== Compiling assets =="
     sh "bin/rake assets:clobber"
