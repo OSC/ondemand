@@ -28,7 +28,7 @@ class ProductReadmeMarkdownRenderer < Redcarpet::Render::HTML
   # open link in new window
   def link(link, title, content)
     link = OodAppkit.files.api(path: @app_path.to_s + '/' + link).to_s if @app_path && relative?(link)
-    return "<a href=\"#{link}\" target=\"_blank\">#{content}</a>" unless id_link?(link)
+    return "<a href=\"#{link}\" rel=\"noopener\" target=\"_blank\">#{content}</a>" unless id_link?(link)
     return "<a href=\"#{link}\">#{content}</a>"
   end
 
