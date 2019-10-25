@@ -38,12 +38,34 @@ task :package do
 end
 
 namespace :build do
+  desc "Build gems"
+  task :gems do
+    if VENDOR_BUNDLE
+      args = "--path vendor/bundle"
+    else
+      args = ""
+    end
+    sh "BUNDLE_GEMFILE=#{GEMFILE} bundle install #{args}"
+    if VENDOR_BUNDLE
+      config = <<-EOS
+---
+BUNDLE_PATH: "../../vendor/bundle"
+    EOS
+      apps.each do |a|
+        bundle_dir = a.path.join('.bundle')
+        bundle_dir.mkdir unless bundle_dir.exist?
+        config_path = bundle_dir.join('config')
+        config_path.write config
+      end
+    end
+  end
+
   apps.each do |a|
     desc "Build #{a.name} app"
-    task a.name.to_sym do
+    task a.name.to_sym => [:gems] do
       setup_path = a.path.join("bin", "setup")
       if setup_path.exist? && setup_path.executable?
-        sh "PASSENGER_APP_ENV=production PASSENGER_BASE_URI=/pun/sys/#{a.name} #{setup_path}"
+        sh "BUNDLE_GEMFILE=#{GEMFILE} PASSENGER_APP_ENV=production PASSENGER_BASE_URI=/pun/sys/#{a.name} #{setup_path}"
       end
     end
   end
