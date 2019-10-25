@@ -1,13 +1,16 @@
 require File.expand_path('../boot', __FILE__)
 
-require "rails"
-# Pick the frameworks you want:
-require "active_model/railtie"
-require "active_job/railtie"
-# require "active_record/railtie"
+# require "rails"
+
+# This is not loaded in rails/all but inside active_record so add it if
+# you want your models work as expected
+require "active_model/railtie" 
+# And now the rest
 require "action_controller/railtie"
 require "action_mailer/railtie"
 require "action_view/railtie"
+require "action_cable/engine" # Only for Rails >= 5.0
+# require "active_storage/engine" # Only for Rails >= 5.2  # Will need this...
 require "sprockets/railtie"
 require "rails/test_unit/railtie"
 

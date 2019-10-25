@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.11'
+gem 'rails', '5.0.0'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -64,6 +64,6 @@ gem 'local_time', '~> 1.0.3'
 
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'
-gem 'ood_appkit', '~> 1.0'
+gem 'ood_appkit', '~> 1.1'
 gem 'ood_core', '~> 0.1'
 gem 'pbs', '~> 2.2.1'
