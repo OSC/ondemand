@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="<%= Configuration.locale %>">
 <head>
   <title><%= content_for?(:title) ? yield(:title) : "Dashboard" %></title>
   <%= favicon_link_tag nil, href: OodAppkit.public.url.join('favicon.ico') %>
