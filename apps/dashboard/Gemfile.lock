@@ -209,7 +209,7 @@ DEPENDENCIES
   data-confirm-modal (~> 1.2)
   dotenv-rails (~> 2.1)
   dotiw
-  font-awesome-sass (= 5.0.9)
+  font-awesome-sass (~> 5.0)
   jbuilder (~> 2.0)
   jquery-datatables-rails (~> 3.4)
   jquery-rails

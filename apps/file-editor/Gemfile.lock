@@ -38,7 +38,7 @@ GEM
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
     arel (6.0.4)
-    autoprefixer-rails (6.7.7.2)
+    autoprefixer-rails (8.6.5)
       execjs
     bootstrap-sass (3.4.1)
       autoprefixer-rails (>= 5.2.1)
@@ -173,11 +173,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  autoprefixer-rails (~> 6.3)
+  autoprefixer-rails (~> 8.4)
   bootstrap-sass (~> 3.4.1)
   coffee-rails (~> 4.2)
   dotenv-rails (~> 2.1)
-  font-awesome-sass
+  font-awesome-sass (~> 5.0)
   jbuilder (~> 2.0)
   jquery-rails
   ood_appkit (~> 1.0)

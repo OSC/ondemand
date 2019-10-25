@@ -30,10 +30,10 @@ group :doc do
 end
 
 gem 'bootstrap-sass', '~> 3.4.1'
-gem 'autoprefixer-rails', '~> 6.3'
+gem 'autoprefixer-rails', '~> 8.4'
 gem 'dotenv-rails', '~> 2.1', require: 'dotenv/rails-now'
 gem 'rails_12factor', group: :production
-gem 'font-awesome-sass'
+gem 'font-awesome-sass', '~> 5.0'
 gem 'ood_appkit', '~> 1.0'
 
 # Security updates
