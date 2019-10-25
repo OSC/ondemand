@@ -19,6 +19,14 @@ class Component
     @name = File.basename(app)
     @path = Pathname.new(app)
   end
+
+  def ruby_app?
+    @path.join('config.ru').exist?
+  end
+
+  def node_app?
+    @path.join('app.js').exist?
+  end
 end
 
 desc "Package OnDemand"
@@ -63,8 +71,12 @@ BUNDLE_PATH: "../../vendor/bundle"
   end
 
   apps.each do |a|
-    desc "Build #{a.name} app"
-    task a.name.to_sym => [:gems] do
+    if a.ruby_app?
+      depends = [:gems]
+    else
+      depends = []
+    end
+    task a.name.to_sym => depends do |t|
       setup_path = a.path.join("bin", "setup")
       if setup_path.exist? && setup_path.executable?
         sh "BUNDLE_GEMFILE=#{GEMFILE} PASSENGER_APP_ENV=production PASSENGER_BASE_URI=/pun/sys/#{a.name} #{setup_path}"
