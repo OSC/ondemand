@@ -12,12 +12,10 @@ end
 class Component
   attr_reader :name
   attr_reader :path
-  #attr_reader :built
 
   def initialize(app)
     @name = File.basename(app)
     @path = Pathname.new(app)
-    #@built = @path.join('.built')
   end
 end
 
@@ -54,21 +52,8 @@ namespace :build do
   task :all => apps.map { |a| a.name }
 end
 
-=begin
-apps.each do |a|
-  file a.built do
-    setup_path = a.path.join("bin", "setup")
-    if setup_path.exist? && setup_path.executable?
-      sh "PASSENGER_APP_ENV=production PASSENGER_BASE_URI=/pun/sys/#{a.name} #{setup_path}"
-      sh "touch #{a.built}"
-    end
-  end
-end
-=end
-
 desc "Build OnDemand"
 task :build => 'build:all'
-#task :build => all_apps.map(&:built)
 
 directory INSTALL_ROOT.to_s
 
