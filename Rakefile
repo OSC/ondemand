@@ -1,11 +1,12 @@
 require "pathname"
 require "time"
 
-PROJ_DIR      = Pathname.new(__dir__)
-APPS_DIR      = PROJ_DIR.join('apps')
-GEMFILE       = PROJ_DIR.join('Gemfile')
-INSTALL_ROOT  = Pathname.new(ENV["PREFIX"] || "/opt/ood")
-VENDOR_BUNDLE = (ENV['VENDOR_BUNDLE'] == "yes" || ENV['VENDOR_BUNDLE'] == "true")
+PROJ_DIR          = Pathname.new(__dir__)
+APPS_DIR          = PROJ_DIR.join('apps')
+GEMFILE           = PROJ_DIR.join('Gemfile')
+INSTALL_ROOT      = Pathname.new(ENV["PREFIX"] || "/opt/ood")
+VENDOR_BUNDLE     = (ENV['VENDOR_BUNDLE'] == "yes" || ENV['VENDOR_BUNDLE'] == "true")
+PASSENGER_APP_ENV = ENV["PASSENGER_APP_ENV"] || "production"
 
 def apps
   Dir["#{APPS_DIR}/*"].map { |d| Component.new(d) }
@@ -72,7 +73,7 @@ namespace :build do
     task a.name.to_sym => depends do |t|
       setup_path = a.path.join("bin", "setup")
       if setup_path.exist? && setup_path.executable?
-        sh "PASSENGER_APP_ENV=production #{setup_path}"
+        sh "PASSENGER_APP_ENV=#{PASSENGER_APP_ENV} #{setup_path}"
       end
     end
   end
