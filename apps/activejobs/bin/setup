@@ -42,7 +42,7 @@ chdir APP_ROOT do
   puts "RAILS_RELATIVE_URL_ROOT = #{APP.url    || "not set"}"
 
   puts "\n== Installing dependencies =="
-  sh "bin/bundle check || bin/bundle install"
+  sh "bin/bundle check 1>/dev/null 2>&1 || bin/bundle install"
 
   if APP.production?
     puts "\n== Compiling assets =="
