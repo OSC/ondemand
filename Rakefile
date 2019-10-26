@@ -58,7 +58,7 @@ namespace :build do
     apps.each do |a|
       next unless a.ruby_app?
       chdir a.path do
-        sh "bundle install #{args}"
+        sh "bin/bundle install #{args}"
       end
     end
   end
