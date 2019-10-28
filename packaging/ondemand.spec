@@ -59,6 +59,7 @@ Requires:        ondemand-ruby = %{runtime_version}
 Requires:        ondemand-python = %{runtime_version}
 Requires:        ondemand-nodejs = %{runtime_version}
 Requires:        ondemand-runtime = %{runtime_version}
+Requires:        ondemand-gems = %{version}-%{release}
 
 %if %{with systemd}
 BuildRequires: systemd
@@ -82,6 +83,13 @@ Requires(postun):   /usr/sbin/semodule, /sbin/restorecon
 
 %description -n %{name}-selinux
 SELinux policy for OnDemand
+
+%package -n ondemand-gems
+Summary: Rubygems for OnDemand
+AutoReqProv: no
+
+%description -n ondemand-gems
+Rubygem for OnDemand
 
 %prep
 %setup -q -n %{package_name}-%{git_tag_minus_v}
@@ -365,8 +373,6 @@ fi
 %{_localstatedir}/www/ood/apps/sys/bc_desktop
 %exclude %{_localstatedir}/www/ood/apps/sys/*/tmp/*
 
-%{scl_ondemand_gem_home}/*
-
 %dir %{_localstatedir}/www/ood
 %dir %{_localstatedir}/www/ood/public
 %dir %{_localstatedir}/www/ood/register
@@ -402,6 +408,9 @@ fi
 %if %{with systemd}
 %config(noreplace) %{_sysconfdir}/systemd/system/httpd24-httpd.service.d/ood.conf
 %endif
+
+%files -n ondemand-gems
+%{scl_ondemand_gem_home}/*
 
 %files -n %{name}-selinux
 %{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp
