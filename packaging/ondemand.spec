@@ -111,8 +111,8 @@ popd
 scl enable ondemand - << \EOS
 set -x
 set -e
-export GEM_HOME=$(pwd)/gems
-export GEM_PATH=$(pwd)/gems:$GEM_PATH
+export GEM_HOME=$(pwd)/gems-build
+export GEM_PATH=$(pwd)/gems-build:$GEM_PATH
 rake --trace -mj%{ncpus} build
 EOS
 
@@ -124,7 +124,7 @@ scl enable ondemand - << \EOS
 set -x
 set -e
 %__mkdir_p %{buildroot}%{scl_ondemand_gem_home}
-%__mv ./gems/* %{buildroot}%{scl_ondemand_gem_home}/
+%__mv ./gems-build/* %{buildroot}%{scl_ondemand_gem_home}/
 export GEM_PATH=%{buildroot}%{scl_ondemand_gem_home}:$GEM_PATH
 rake --trace install PREFIX=%{buildroot}/opt/ood
 
