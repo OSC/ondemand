@@ -13,7 +13,7 @@ class ErrorsController < ApplicationController
   end
 
   def internal_server_error
-    @exception  = env['action_dispatch.exception']
+    @exception  = request.env['action_dispatch.exception']
 
 
     # FIXME: a better solution exists than this
