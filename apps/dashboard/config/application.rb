@@ -7,14 +7,13 @@ require_relative 'boot'
 require "active_model/railtie" 
 require "active_job/railtie"  # New in 5.2.x
 # require "active_record/railtie"
-# require "active_storage/engine"
 
 # And now the rest
 require "action_controller/railtie"
 require "action_mailer/railtie"
 require "action_view/railtie"
 require "action_cable/engine"
-require "active_storage/engine"
+# require "active_storage/engine"  # Enable if we start using ActiveRecord
 require "sprockets/railtie"
 require "rails/test_unit/railtie"
 
