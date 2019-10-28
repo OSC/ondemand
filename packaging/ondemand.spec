@@ -6,6 +6,8 @@
 %define runtime_version %(echo %{git_tag_minus_v} | sed -r 's/^([0-9])\.([0-9]).*/\\1.\\2/g')
 %define selinux_policy_ver %(rpm --qf "%%{version}-%%{release}" -q selinux-policy)
 %global selinux_module_version %{package_version}.%{package_release}
+%global gem_home %{scl_ondemand_gem_home}/ondemand/%{version}
+%global gems_name ondemand-gems-%{version}
 
 %define __brp_mangle_shebangs /bin/true
 
@@ -59,6 +61,7 @@ Requires:        ondemand-ruby = %{runtime_version}
 Requires:        ondemand-python = %{runtime_version}
 Requires:        ondemand-nodejs = %{runtime_version}
 Requires:        ondemand-runtime = %{runtime_version}
+Requires:        %{gems_name}
 
 %if %{with systemd}
 BuildRequires: systemd
@@ -83,6 +86,20 @@ Requires(postun):   /usr/sbin/semodule, /sbin/restorecon
 %description -n %{name}-selinux
 SELinux policy for OnDemand
 
+%package -n %{gems_name}
+Summary: Rubygems for OnDemand
+AutoReqProv: no
+
+%description -n %{gems_name}
+Rubygem for OnDemand
+
+%package -n ondemand-gems
+Summary: Metapackage to include Rubygems for OnDemand
+Requires: %{gems_name}
+
+%description -n ondemand-gems
+Metapackage to include Rubygems for OnDemand
+
 %prep
 %setup -q -n %{package_name}-%{git_tag_minus_v}
 
@@ -103,7 +120,9 @@ popd
 scl enable ondemand - << \EOS
 set -x
 set -e
-rake --trace -mj%{ncpus} OBJDIR=$(pwd)/build
+export GEM_HOME=$(pwd)/gems-build
+export GEM_PATH=$(pwd)/gems-build:$GEM_PATH
+rake --trace -mj%{ncpus} build
 EOS
 
 
@@ -113,11 +132,10 @@ EOS
 scl enable ondemand - << \EOS
 set -x
 set -e
-rake --trace install PREFIX=%{buildroot}/opt/ood OBJDIR=$(pwd)/build
-%__cp -r mod_ood_proxy %{buildroot}/opt/ood/mod_ood_proxy
-%__cp -r nginx_stage %{buildroot}/opt/ood/nginx_stage
-%__cp -r ood-portal-generator %{buildroot}/opt/ood/ood-portal-generator
-%__cp -r ood_auth_map %{buildroot}/opt/ood/ood_auth_map
+%__mkdir_p %{buildroot}%{gem_home}
+%__mv ./gems-build/* %{buildroot}%{gem_home}/
+export GEM_PATH=%{buildroot}%{gem_home}:$GEM_PATH
+rake --trace install PREFIX=%{buildroot}/opt/ood
 
 %__rm %{buildroot}/opt/ood/apps/*/log/production.log
 echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION
@@ -141,6 +159,7 @@ fi
 %__mv %{buildroot}/opt/ood/apps/activejobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/activejobs
 %__mv %{buildroot}/opt/ood/apps/myjobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/myjobs
 %__mv %{buildroot}/opt/ood/apps/bc_desktop %{buildroot}%{_localstatedir}/www/ood/apps/sys/bc_desktop
+%__rm -rf %{buildroot}/opt/ood/apps
 %__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/puns
 %__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys
 %__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/usr
@@ -398,6 +417,11 @@ fi
 %if %{with systemd}
 %config(noreplace) %{_sysconfdir}/systemd/system/httpd24-httpd.service.d/ood.conf
 %endif
+
+%files -n %{gems_name}
+%{gem_home}/*
+
+%files -n ondemand-gems
 
 %files -n %{name}-selinux
 %{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp

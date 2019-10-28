@@ -60,15 +60,14 @@ GEM
     erubis (2.7.0)
     execjs (2.7.0)
     ffi (1.10.0)
-    font-awesome-sass (4.7.0)
-      sass (>= 3.2)
+    font-awesome-sass (5.11.2)
+      sassc (>= 1.11)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     i18n (0.9.5)
       concurrent-ruby (~> 1.0)
-    jbuilder (1.5.3)
-      activesupport (>= 3.0.0)
-      multi_json (>= 1.2.0)
+    jbuilder (2.9.1)
+      activesupport (>= 4.2.0)
     jquery-datatables-rails (3.4.0)
       actionpack (>= 3.1)
       jquery-rails
@@ -91,7 +90,6 @@ GEM
     mini_mime (1.0.1)
     mini_portile2 (2.4.0)
     minitest (5.11.3)
-    multi_json (1.13.1)
     nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
     ood_appkit (1.0.3)
@@ -186,9 +184,9 @@ DEPENDENCIES
   bootstrap-sass (~> 3.4.1)
   coffee-rails (~> 4.2)
   dotenv-rails (~> 2.1)
-  font-awesome-sass (~> 4.7.0)
-  jbuilder (~> 1.2)
-  jquery-datatables-rails (~> 3.3)
+  font-awesome-sass (~> 5.0)
+  jbuilder (~> 2.0)
+  jquery-datatables-rails (~> 3.4)
   jquery-rails
   ood_appkit (~> 1.0)
   ood_cluster (~> 0.0.1)
@@ -197,7 +195,7 @@ DEPENDENCIES
   rails_12factor
   sass-rails (~> 5.0)
   sdoc
-  uglifier (>= 1.3)
+  uglifier (>= 1.3.0)
 
 BUNDLED WITH
    1.13.7
