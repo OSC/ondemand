@@ -5,12 +5,16 @@ require_relative 'boot'
 # This is not loaded in rails/all but inside active_record so add it if
 # you want your models work as expected
 require "active_model/railtie" 
+require "active_job/railtie"  # New in 5.2.x
+# require "active_record/railtie"
+# require "active_storage/engine"
+
 # And now the rest
 require "action_controller/railtie"
 require "action_mailer/railtie"
 require "action_view/railtie"
-require "action_cable/engine" # Only for Rails >= 5.0
-# require "active_storage/engine" # Only for Rails >= 5.2  # Will need this...
+require "action_cable/engine"
+require "active_storage/engine"
 require "sprockets/railtie"
 require "rails/test_unit/railtie"
 
