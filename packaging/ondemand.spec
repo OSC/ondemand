@@ -6,6 +6,8 @@
 %define runtime_version %(echo %{git_tag_minus_v} | sed -r 's/^([0-9])\.([0-9]).*/\\1.\\2/g')
 %define selinux_policy_ver %(rpm --qf "%%{version}-%%{release}" -q selinux-policy)
 %global selinux_module_version %{package_version}.%{package_release}
+%global gem_home %{scl_ondemand_gem_home}/ondemand/%{version}
+%global gems_name ondemand-gems-%{version}
 
 %define __brp_mangle_shebangs /bin/true
 
@@ -59,7 +61,7 @@ Requires:        ondemand-ruby = %{runtime_version}
 Requires:        ondemand-python = %{runtime_version}
 Requires:        ondemand-nodejs = %{runtime_version}
 Requires:        ondemand-runtime = %{runtime_version}
-Requires:        ondemand-gems = %{version}-%{release}
+Requires:        %{gems_name}
 
 %if %{with systemd}
 BuildRequires: systemd
@@ -84,12 +86,19 @@ Requires(postun):   /usr/sbin/semodule, /sbin/restorecon
 %description -n %{name}-selinux
 SELinux policy for OnDemand
 
-%package -n ondemand-gems
+%package -n %{gems_name}
 Summary: Rubygems for OnDemand
 AutoReqProv: no
 
-%description -n ondemand-gems
+%description -n %{gems_name}
 Rubygem for OnDemand
+
+%package -n ondemand-gems
+Summary: Metapackage to include Rubygems for OnDemand
+Requires: %{gems_name}
+
+%description -n ondemand-gems
+Metapackage to include Rubygems for OnDemand
 
 %prep
 %setup -q -n %{package_name}-%{git_tag_minus_v}
@@ -123,9 +132,9 @@ EOS
 scl enable ondemand - << \EOS
 set -x
 set -e
-%__mkdir_p %{buildroot}%{scl_ondemand_gem_home}
-%__mv ./gems-build/* %{buildroot}%{scl_ondemand_gem_home}/
-export GEM_PATH=%{buildroot}%{scl_ondemand_gem_home}:$GEM_PATH
+%__mkdir_p %{buildroot}%{gem_home}
+%__mv ./gems-build/* %{buildroot}%{gem_home}/
+export GEM_PATH=%{buildroot}%{gem_home}:$GEM_PATH
 rake --trace install PREFIX=%{buildroot}/opt/ood
 
 %__rm %{buildroot}/opt/ood/apps/*/log/production.log
@@ -409,8 +418,10 @@ fi
 %config(noreplace) %{_sysconfdir}/systemd/system/httpd24-httpd.service.d/ood.conf
 %endif
 
+%files -n %{gems_name}
+%{gem_home}/*
+
 %files -n ondemand-gems
-%{scl_ondemand_gem_home}/*
 
 %files -n %{name}-selinux
 %{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp
