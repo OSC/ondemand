@@ -27,5 +27,6 @@
   <ol>
     <li><a target="_blank" href="/pun/sys/shell/ssh/default">Open Shell to create home directory</a></li>
     <li><a href="/nginx/stop?redir=/pun/sys/dashboard">Restart Web Server</a></li>
+  </ol>
 </body>
 </html>
