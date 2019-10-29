@@ -19,6 +19,8 @@ class BalanceTest < ActiveSupport::TestCase
     refute balance.sufficient?
     assert balance.insufficient?
     refute balance.sufficient?(threshold: 5)
+    # This test may fail if run on a node with a custom locale installed
+    # define OOD_LOCALES_ROOT to be Rails.root.join('config/locales') before running rake test
     assert_equal "RU balance is 0", balance.to_s
   end
 
@@ -30,6 +32,8 @@ class BalanceTest < ActiveSupport::TestCase
     refute balance.sufficient?
     assert balance.insufficient?
     refute balance.sufficient?(threshold: 5)
+    # This test may fail if run on a node with a custom locale installed
+    # define OOD_LOCALES_ROOT to be Rails.root.join('config/locales') before running rake test
     assert_equal "RU balance is 0", balance.to_s
   end
 
