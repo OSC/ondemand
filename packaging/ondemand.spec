@@ -35,12 +35,12 @@ Source3:   ondemand-selinux.fc
 %endif
 
 %if 0%{?rhel} >= 8
-%bcond_without scl_apache
+%bcond_with scl_apache
 %define apache_confd /etc/httpd/conf.d
 %define apache_service httpd
 %define htcacheclean_service htcacheclean
 %else
-%bcond_with scl_apache
+%bcond_without scl_apache
 %define apache_confd /opt/rh/httpd24/root/etc/httpd/conf.d
 %define apache_service httpd24-httpd
 %define htcacheclean_service httpd24-htcacheclean
@@ -325,8 +325,10 @@ restorecon -R %{_localstatedir}/log/ondemand-nginx
 
 %preun
 if [ "$1" -eq 0 ]; then
+%if %{with scl_apache}
 %__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24"/' \
     /opt/rh/httpd24/service-environment
+%endif
 /opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force &>/dev/null || :
 fi
 
