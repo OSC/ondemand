@@ -5,6 +5,8 @@ SCL_SOURCE=$(command -v scl_source)
 
 ROOT_DIR="$(dirname "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")"
 
+[ -f /etc/os-release ] && source /etc/os-release
+
 exec \
   /usr/bin/env ruby \
     -I"${ROOT_DIR}/lib" \

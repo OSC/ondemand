@@ -6,14 +6,15 @@ RPM=0
 FORCE=false
 CHANGED=false
 CONFIG="${CONFIG:-/etc/ood/config/ood_portal.yml}"
-if [ -d /opt/rh/httpd24/root/etc/httpd ]; then
-    SERVICE="httpd24-httpd"
-    HTCACHECLEAN_SERVICE="httpd24-htcacheclean"
-    DEFAULT_APACHE="/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf"
-else
+[ -f /etc/os-release ] && source /etc/os-release
+if ([[ "$ID" = "rhel" ]] || [[ "$ID_LIKE" = *"rhel"* ]]) && [[ "$VERSION_ID" = "8"* ]]; then
     SERVICE="httpd"
     HTCACHECLEAN_SERVICE="htcacheclean"
     DEFAULT_APACHE="/etc/httpd/conf.d/ood-portal.conf"
+else
+    SERVICE="httpd24-httpd"
+    HTCACHECLEAN_SERVICE="httpd24-htcacheclean"
+    DEFAULT_APACHE="/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf"
 fi
 APACHE="${APACHE:-$DEFAULT_APACHE}"
 BIN="${BIN:-${ROOT}/../bin/generate}"
