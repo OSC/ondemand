@@ -21,7 +21,7 @@ script:
       -w "/data" \
       ${OS_TYPE}:${OS_VERSION} \
       ./tests.sh
-  - shellcheck ood-portal-generator/sbin/update_ood_portal
+  - shellcheck -x ood-portal-generator/sbin/update_ood_portal
   - shellcheck -x nginx_stage/sbin/nginx_stage
   - shellcheck nginx_stage/sbin/update_nginx_stage
 

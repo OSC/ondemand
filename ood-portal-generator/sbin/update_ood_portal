@@ -7,7 +7,7 @@ FORCE=false
 CHANGED=false
 CONFIG="${CONFIG:-/etc/ood/config/ood_portal.yml}"
 [ -f /etc/os-release ] && source /etc/os-release
-if ([[ "$ID" = "rhel" ]] || [[ "$ID_LIKE" = *"rhel"* ]]) && [[ "$VERSION_ID" = "8"* ]]; then
+if [[ "$ID $ID_LIKE" = *"rhel"* ]] && [[ "$VERSION_ID" = "8"* ]]; then
     SERVICE="httpd"
     HTCACHECLEAN_SERVICE="htcacheclean"
     DEFAULT_APACHE="/etc/httpd/conf.d/ood-portal.conf"
