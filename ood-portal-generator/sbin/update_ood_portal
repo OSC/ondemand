@@ -8,11 +8,11 @@ CHANGED=false
 CONFIG="${CONFIG:-/etc/ood/config/ood_portal.yml}"
 if [ -d /opt/rh/httpd24/root/etc/httpd ]; then
     SERVICE="httpd24-httpd"
-    HTCLASSCLEAN_SERVICE="httpd24-htcacheclean"
+    HTCACHECLEAN_SERVICE="httpd24-htcacheclean"
     DEFAULT_APACHE="/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf"
 else
     SERVICE="httpd"
-    HTCLASSCLEAN_SERVICE="htcacheclean"
+    HTCACHECLEAN_SERVICE="htcacheclean"
     DEFAULT_APACHE="/etc/httpd/conf.d/ood-portal.conf"
 fi
 APACHE="${APACHE:-$DEFAULT_APACHE}"
@@ -113,12 +113,12 @@ if $CHANGED; then
 
     if [[ -L "/sbin/init" ]]; then
       echo "Suggested command:"
-      echo "    sudo systemctl try-restart $SERVICE.service $HTCLASSCLEAN_SERVICE.service"
+      echo "    sudo systemctl try-restart $SERVICE.service $HTCACHECLEAN_SERVICE.service"
       echo ""
     else
       echo "Suggested commands:"
       echo "    sudo service $SERVICE condrestart"
-      echo "    sudo service $HTCLASSCLEAN_SERVICE condrestart"
+      echo "    sudo service $HTCACHECLEAN_SERVICE condrestart"
       echo ""
     fi
 fi
