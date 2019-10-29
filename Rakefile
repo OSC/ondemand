@@ -73,6 +73,7 @@ namespace :build do
     else
       depends = []
     end
+    desc "Build #{a.name}"
     task a.name.to_sym => depends do |t|
       setup_path = a.path.join("bin", "setup")
       if setup_path.exist? && setup_path.executable?
@@ -81,8 +82,15 @@ namespace :build do
     end
   end
 
+  desc "Build ood-portal-generator"
+  task "ood-portal-generator".to_sym => [:gems] do
+    chdir PROJ_DIR.join('ood-portal-generator') do
+      sh "bundle install"
+    end
+  end
+
   desc "Build all apps"
-  task :all => apps.map { |a| a.name }
+  task :all => apps.map { |a| a.name } + ['ood-portal-generator']
 end
 
 desc "Build OnDemand"

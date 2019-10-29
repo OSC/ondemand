@@ -1,3 +1,4 @@
+require "dotenv"
 require "erb"
 
 module OodPortalGenerator
@@ -23,6 +24,7 @@ module OodPortalGenerator
       @map_fail_uri     = opts.fetch(:map_fail_uri, nil)
       @pun_stage_cmd    = opts.fetch(:pun_stage_cmd, "sudo /opt/ood/nginx_stage/sbin/nginx_stage")
 
+      Dotenv.load('/etc/os-release')
       if (ENV['ID'] == 'rhel' || ENV['ID_LIKE'] =~ /rhel/) && ENV['VERSION_ID'] =~ /^8/
         default_htpasswd = "/etc/httpd/.htpasswd"
       else
