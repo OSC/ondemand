@@ -23,11 +23,17 @@ module OodPortalGenerator
       @map_fail_uri     = opts.fetch(:map_fail_uri, nil)
       @pun_stage_cmd    = opts.fetch(:pun_stage_cmd, "sudo /opt/ood/nginx_stage/sbin/nginx_stage")
 
+      if File.exist?('/opt/rh/httpd24/root/etc/httpd')
+        default_htpasswd = "/opt/rh/httpd24/root/etc/httpd/.htpasswd"
+      else
+        default_htpasswd = "/etc/httpd/.htpasswd"
+      end
+
       # Portal authentication
       @auth = opts.fetch(:auth, [
         %q{AuthType Basic},
         %q{AuthName "Private"},
-        %q{AuthUserFile "/opt/rh/httpd24/root/etc/httpd/.htpasswd"},
+        %Q{AuthUserFile "#{default_htpasswd}"},
         %q{RequestHeader unset Authorization},
         %q{Require valid-user}
       ])

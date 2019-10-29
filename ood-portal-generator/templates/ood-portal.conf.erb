@@ -34,6 +34,9 @@
 #      # For CentOS 7
 #      sudo systemctl try-restart httpd24-httpd.service httpd24-htcacheclean.service
 #
+#      # For CentOS 8
+#      sudo systemctl try-restart httpd.service htcacheclean.service
+#
 
 <% if @listen_addr_port -%>
 # Listen should always be one of:
