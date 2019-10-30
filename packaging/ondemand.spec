@@ -27,6 +27,9 @@ Source3:   ondemand-selinux.fc
 # Disable debuginfo as it causes issues with bundled gems that build libraries
 %global debug_package %{nil}
 
+# Avoid duplicate build-id files between builds of ondemand-gems
+%global _build_id_links none
+
 # Check if system uses systemd by default
 %if 0%{?rhel} >= 7 || 0%{?fedora} >= 16
 %bcond_without systemd
