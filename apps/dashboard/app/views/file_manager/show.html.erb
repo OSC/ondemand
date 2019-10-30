@@ -1,0 +1,50 @@
+<div id="filemanager-detail-view">
+    <div class="row">
+        <button type="button" class="btn btn-primary">
+        Open with
+        </button>
+        <button type="button" class="btn btn-primary">
+        Download
+        </button>
+        <button type="button" class="btn btn-primary">
+        Compress
+        </button>
+        <button type="button" class="btn btn-danger pull-right">
+        Delete
+        </button>
+    </div>
+    <div class="row">
+        <table class="table table-striped table-hover">
+            <%# :basename, :fs_type, :group, :modified, :owner, :path, :permissions, :size %>
+            <thead>
+                <tr>
+                    <th>Attribute</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Kind</td>
+                    <%# TODO: use mimetype here %>
+                    <td><%= @entry.fs_type.to_s %></td>
+                </tr>
+                <tr>
+                    <td>Size</td>
+                    <td><%= @entry.size %></td>
+                </tr>
+                <tr>
+                    <td>Full Path</td>
+                    <td><%= @entry.path %></td>
+                </tr>
+                <tr>
+                    <td>Modified</td>
+                    <td><%= @entry.modified %></td>
+                </tr>
+                <tr>
+                    <td>Permissions</td>
+                    <td><%= @entry.permissions %></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

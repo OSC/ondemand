@@ -1,0 +1,19 @@
+<div class="row window-header">
+    <div class="col-sm-12 col-md-12 col-lg-8">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <% for crumb in breadcrumbs(absolute_requested_path) %>
+                <li class="breadcrumb-item"><a href="<%= crumb[:uri] %>"><%= crumb[:name] %></a></li>
+                <% end %>
+            </ol>
+        </nav>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-4 float-right">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search / Filter" aria-label="Filter">
+            <div class="input-group-append">
+                <button type="submit" class='btn btn-secondary'>Search</button>
+            </div>
+        </div>
+    </div>
+</div>

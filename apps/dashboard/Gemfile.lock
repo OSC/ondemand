@@ -75,6 +75,7 @@ GEM
     erubi (1.9.0)
     execjs (2.7.0)
     ffi (1.11.1)
+    filesize (0.2.0)
     font-awesome-sass (5.0.9)
       sass (>= 3.2)
     globalid (0.4.2)
@@ -219,6 +220,7 @@ DEPENDENCIES
   data-confirm-modal (~> 1.2)
   dotenv-rails (~> 2.1)
   dotiw
+  filesize (~> 0.2)
   font-awesome-sass (= 5.0.9)
   jbuilder (~> 2.0)
   jquery-datatables-rails (~> 3.4)
