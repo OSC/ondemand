@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require "pathname"
-require "rake"
+require "fileutils"
 
 include FileUtils
 
@@ -49,6 +49,11 @@ chdir APP_ROOT do
     sh "bin/rake assets:clobber"
     sh "bin/rake assets:precompile"
   end
+
+  # puts "\n== Preparing database =="
+  # system! 'bin/rails db:setup'
+  # Install JavaScript dependencies if using Yarn
+  # system('bin/yarn')
 
   puts "\n== Removing old logs and tempfiles =="
   sh "bin/rake log:clear tmp:clear"

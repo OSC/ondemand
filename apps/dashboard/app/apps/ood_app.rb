@@ -120,7 +120,7 @@ class OodApp
         OodAppLink.new(
           title: title,
           description: manifest.description,
-          url: app_path(name, type, owner),
+          url: (type == :sys && owner == :sys) ? app_path(name, nil, nil) : app_path(name, type, owner),
           icon_uri: icon_uri,
           caption: caption,
           new_tab: true
