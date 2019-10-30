@@ -57,7 +57,7 @@ gem 'jquery-datatables-rails', '~> 3.4'
 gem 'data-confirm-modal', '~> 1.2'
 gem 'rails_12factor', group: :production
 gem 'mocha', '~> 1.1', group: :test
-gem "spring", group: :test
+# gem "spring", group: :test
 gem 'autoprefixer-rails', '~> 8.4'
 gem 'dotiw'
 gem 'local_time', '~> 1.0.3'
