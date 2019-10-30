@@ -1,8 +1,10 @@
 # Build options
-if File.exist?('/opt/rh/httpd24/root/etc/httpd')
-  DEFAULT_PREFIX = '/opt/rh/httpd24/root/etc/httpd/conf.d'
-else
+# Logic copied from sbin/update_ood_portal
+`[ -f /etc/os-release ] && source /etc/os-release && [[ "$ID $ID_LIKE" = *"rhel"* ]] && [[ "$VERSION_ID" = "8"* ]]`
+if $?.success?
   DEFAULT_PREFIX = '/etc/httpd/conf.d'
+else
+  DEFAULT_PREFIX = '/opt/rh/httpd24/root/etc/httpd/conf.d'
 end
 PREFIX  = ENV['PREFIX']  || DEFAULT_PREFIX
 SRCDIR  = ENV['SRCDIR']  || 'templates'
