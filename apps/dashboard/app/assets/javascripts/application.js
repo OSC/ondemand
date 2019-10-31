@@ -57,14 +57,16 @@ function storeSetting(event) {
   localStorage.setItem(key, value);
 }
 
-function tryUpdateSetting(id) {
-  var saved_value = localStorage.getItem(settingKey(id));
+function tryUpdateSetting(name) {
+  var saved_value = localStorage.getItem(settingKey(name));
 
   if(saved_value) {
-    $('#' + id).val(saved_value);
+    var selector = 'input[type="range"][name="' + name + '"]';
+    $(selector).val(saved_value);
   }
 }
 
-function installSettingHandlers(id) {
-  $('#' + id).change(storeSetting);
+function installSettingHandlers(name) {
+  var selector = 'input[type="range"][name="' + name + '"]';
+  $(selector).change(storeSetting);
 }
