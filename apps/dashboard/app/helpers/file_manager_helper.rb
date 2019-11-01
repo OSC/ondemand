@@ -26,4 +26,8 @@ module FileManagerHelper
     def fs_link(path)
         (Addressable::URI.parse(root_url) + 'fs/' + path.to_s.gsub(/^\//, '')).to_s
     end
+
+    def can_upload_to?(path)
+        Pathname.new(path).writable?
+    end
 end

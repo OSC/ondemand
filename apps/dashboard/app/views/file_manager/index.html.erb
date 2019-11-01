@@ -1,27 +1,31 @@
-<form action="#">
+<%= form_with(
+    url: url_for(controller: 'file_manager', action: 'actions', path: absolute_requested_path),
+    method: 'post'
+    ) do |f|
+%>
     <%= render 'file_manager/shared/breadcrumbs_and_search' %>
     <div class="row">
         <div class="col">
             <div class="table-view-actions button-bar">
-                <button class="btn btn-success" type="submit" name="action" value="open">Open</button>
-                <button class="btn btn-info" type="submit" name="action" value="download">Download</button>
-                <button class="btn btn-primary" type="submit" name="action" value="upload">Upload</button>
+                <button class="btn btn-success" type="submit" name="actions" value="open">Open</button>
+                <button class="btn btn-info" type="submit" name="actions" value="download">Download</button>
+                <a class="btn btn-primary <%= can_upload_to?(absolute_requested_path) ? '' : 'disabled' %>" href="<%= url_for controller: 'file_manager', action: 'upload', path: absolute_requested_path %>" >Upload</a>
                 
                 <div class="d-inline dropdown m-1">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
                     Other Actions
                     </button>
                     <div class="dropdown-menu dropdown-xs-menu-bottom dropdown-menu-sm-left" aria-labelledby="dropdownMenuButton">
-                        <button class="dropdown-item" type="submit" name="action" value="copy">Copy</button>
-                        <button class="dropdown-item" type="submit" name="action" value="add-favorite">Add to Favorites</button>
-                        <button class="dropdown-item" type="submit" name="action" value="download">Download</button>
-                        <button class="dropdown-item" type="submit" name="action" value="create-new">Create New</button>
-                        <button class="dropdown-item" type="submit" name="action" value="open-in-terminal">Open in Terminal</button>
-                        <button class="dropdown-item" type="submit" name="action" value="select-all">Select All</button>
-                        <button class="dropdown-item" type="submit" name="action" value="preview">Preview</button>
-                        <button class="dropdown-item" type="submit" name="action" value="properties">Properties</button>
+                        <button class="dropdown-item" type="submit" name="" value="copy">Copy</button>
+                        <button class="dropdown-item" type="submit" name="actactionion" value="add-favorite">Add to Favorites</button>
+                        <button class="dropdown-item" type="submit" name="actions" value="download">Download</button>
+                        <button class="dropdown-item" type="submit" name="actions" value="create-new">Create New</button>
+                        <button class="dropdown-item" type="submit" name="actions" value="open-in-terminal">Open in Terminal</button>
+                        <button class="dropdown-item" type="submit" name="actions" value="select-all">Select All</button>
+                        <button class="dropdown-item" type="submit" name="actions" value="preview">Preview</button>
+                        <button class="dropdown-item" type="submit" name="actions" value="properties">Properties</button>
                         <div class="dropdown-divider"></div>
-                        <button class="dropdown-item " type="submit">Delete</button>
+                        <button class="dropdown-item " type="submit" name="actions">Delete</button>
                     </div>
                 </div>
             </div>
@@ -61,4 +65,4 @@
             </div>
         </div>
     </div>
-</form>
+<% end %>

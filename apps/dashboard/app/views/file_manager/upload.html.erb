@@ -1,2 +1,16 @@
-<h1>FileManager#upload</h1>
-<p>Find me in app/views/file_manager/upload.html.erb</p>
+<h1>Upload a file to <code><%= absolute_requested_path %></code></h1>
+
+<%= form_with(
+    url: url_for(controller: 'file_manager', action: 'upload_perform', path: absolute_requested_path),
+    method: 'post',
+    html: { class: 'form-inline' }) do |f|
+%>
+    <div class="form-group">
+    <label class="sr-only" for="file-upload">Select a file to upload</label>
+    <div class="input-group">
+      <div class="input-group-addon">Choose file</div>
+      <%= f.file_field 'file_upload', class: 'form-control' %>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+<% end %>

@@ -14,6 +14,13 @@ class FileManagerController < ApplicationController
     end
   end
 
+  # POST /fs/actions/*path
+  def actions
+    p params
+
+    redirect_to action: 'index', path: return_path, flash: { :error => "Pretending to do something ..." }
+  end
+
   # GET /fs/show/*path
   def show
     @entry = FileSystem::Entry.from_pathname(Pathname.new(absolute_requested_path))
@@ -32,6 +39,9 @@ class FileManagerController < ApplicationController
   end
 
   def delete
+    p params
+
+    redirect_to action: 'index', path: return_path, flash: { :error => "Pretending to delete" }
   end
 
   def download
@@ -44,8 +54,20 @@ class FileManagerController < ApplicationController
     end
   end
 
-  # POST /fs/upload/*path
+  # GET /fs/upload/*path
   def upload
+  end
+
+  # POST /fs/upload/*path
+  def upload_perform
+    upload = params['file_upload']
+    if upload
+      File.open(Pathname.new(absolute_requested_path).join(upload.original_filename), 'wb') do |file|
+        file.write(upload.read)
+      end
+    end
+
+    redirect_to action: 'index', path: absolute_requested_path, flash: { :success => "Upload begun" }
   end
 
   private
