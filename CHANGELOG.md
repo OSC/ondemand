@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.7.1] - 2019-11-04
+### Added
+- shellcheck static analysis of shell scripts
+
+### Changed
+- monorepo: add all core apps to main repo
+- start installing app gems to a `GEM_HOME` under /opt/ood that is built into a separate ondemand-gems rpm
+- upgrade Dashboard to Rails 5
+
+### Fixed
+- fix window.opener vulnerability found by Google's Lighthouse @zooley [#88](https://github.com/OSC/ondemand/pull/88)
+- accessibility fixes exposed using Deque's aXe utility @zooley [#89](https://github.com/OSC/ondemand/pull/89)
+- optimize some included pngs using ImageOptim app @zooley [#91](https://github.com/OSC/ondemand/pull/91)
+- add missing closing tag to missing home directory error page @zooley [#92](https://github.com/OSC/ondemand/pull/92)
+
 ## [1.7.0] - 2019-10-14
 ### Added
 - update Dashboard to add account balance warnings & dev mode icon picker
@@ -268,7 +283,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.0...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.1...HEAD
+[1.7.1]: https://github.com/OSC/ondemand/compare/v1.7.0...v1.7.1
 [1.7.0]: https://github.com/OSC/ondemand/compare/v1.6.20...v1.7.0
 [1.6.20]: https://github.com/OSC/ondemand/compare/v1.6.19...v1.6.20
 [1.6.19]: https://github.com/OSC/ondemand/compare/v1.6.18...v1.6.19
