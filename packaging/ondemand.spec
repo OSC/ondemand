@@ -235,56 +235,6 @@ touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/file-editor.conf
 touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/activejobs.conf
 touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/myjobs.conf
 
-# Migrate from OnDemand 1.3 or 1.4
-if [ $1 -gt 1 ] && [ -d %{_sharedstatedir}/nginx/config ]; then
-    echo "Making copy of %{_sharedstatedir}/nginx/config at %{_sharedstatedir}/nginx/config.rpmsave"
-    cp -a %{_sharedstatedir}/nginx/config %{_sharedstatedir}/nginx/config.rpmsave
-    find %{_sharedstatedir}/nginx/config/apps -type f -exec rm -f {} \;
-    cat > /tmp/nginx_stage.yml <<EOF
-pun_config_path: '/var/lib/nginx/config/puns/%%{user}.conf'
-pun_pid_path: '/var/run/nginx/%%{user}/passenger.pid'
-pun_socket_path: '/var/run/nginx/%%{user}/passenger.sock'
-EOF
-    echo "Kill all PUNs as part of upgrade."
-    NGINX_STAGE_CONFIG_FILE=/tmp/nginx_stage.yml /opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force || :
-    rm -f /tmp/nginx_stage.yml
-    for d in `find %{_tmppath}/nginx -maxdepth 1 -mindepth 1 -type d 2>/dev/null` ; do
-        new=$(echo $d | sed 's|%{_tmppath}/nginx|%{_tmppath}/ondemand-nginx|g')
-        if [ -d $new ]; then
-            continue
-        fi
-        cp -a $d $new
-    done
-    for d in `find %{_sharedstatedir}/nginx/tmp -maxdepth 1 -mindepth 1 -type d 2>/dev/null` ; do
-        new=$(echo $d | sed 's|%{_sharedstatedir}/nginx/tmp|%{_tmppath}/ondemand-nginx|g')
-        if [ -d $new ]; then
-            continue
-        fi
-        cp -a $d $new
-    done
-    for d in `find %{_sharedstatedir}/nginx/config.rpmsave -type d 2>/dev/null`; do
-        new=$(echo $d | sed 's|%{_sharedstatedir}/nginx/config.rpmsave|%{_sharedstatedir}/ondemand-nginx/config|g')
-        if [ -d $new ]; then
-            continue
-        fi
-        install -d $new
-    done
-    for f in `find %{_sharedstatedir}/nginx/config.rpmsave -type f 2>/dev/null`; do
-        new=$(echo $f | sed 's|%{_sharedstatedir}/nginx/config.rpmsave|%{_sharedstatedir}/ondemand-nginx/config|g')
-        if [ -f $new ]; then
-            continue
-        fi
-        cp -a $f $new
-    done
-    for d in `find %{_localstatedir}/log/nginx -maxdepth 1 -mindepth 1 -type d 2>/dev/null`; do
-        new=$(echo $d | sed 's|%{_localstatedir}/log/nginx|%{_localstatedir}/log/ondemand-nginx|g')
-        if [ -d $new ]; then
-            continue
-        fi
-        cp -a $d $new
-    done
-fi
-
 %post selinux
 SELINUX_TEMP=$(mktemp -t ondemand-selinux-enable.XXXXX)
 echo "boolean -m --on httpd_can_network_connect" >> $SELINUX_TEMP
