@@ -27,11 +27,26 @@ Source3:   ondemand-selinux.fc
 # Disable debuginfo as it causes issues with bundled gems that build libraries
 %global debug_package %{nil}
 
+# Avoid duplicate build-id files between builds of ondemand-gems
+%global _build_id_links none
+
 # Check if system uses systemd by default
 %if 0%{?rhel} >= 7 || 0%{?fedora} >= 16
 %bcond_without systemd
 %else
 %bcond_with systemd
+%endif
+
+%if 0%{?rhel} >= 8
+%bcond_with scl_apache
+%define apache_confd /etc/httpd/conf.d
+%define apache_service httpd
+%define htcacheclean_service htcacheclean
+%else
+%bcond_without scl_apache
+%define apache_confd /opt/rh/httpd24/root/etc/httpd/conf.d
+%define apache_service httpd24-httpd
+%define htcacheclean_service httpd24-htcacheclean
 %endif
 
 # Work around issue with EL6 builds
@@ -168,8 +183,8 @@ fi
 
 %__install -D -m 644 ood-portal-generator/share/ood_portal_example.yml \
     %{buildroot}%{_sysconfdir}/ood/config/ood_portal.yml
-%__mkdir_p %{buildroot}/opt/rh/httpd24/root/etc/httpd/conf.d
-touch %{buildroot}/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf
+%__mkdir_p %{buildroot}%{apache_confd}
+touch %{buildroot}%{apache_confd}/ood-portal.conf
 
 %__install -D -m 644 nginx_stage/share/nginx_stage_example.yml \
     %{buildroot}%{_sysconfdir}/ood/config/nginx_stage.yml
@@ -208,20 +223,22 @@ EOF
 EOF
 
 %if %{with systemd}
-%__mkdir_p %{buildroot}%{_sysconfdir}/systemd/system/httpd24-httpd.service.d
-%__cat >> %{buildroot}%{_sysconfdir}/systemd/system/httpd24-httpd.service.d/ood.conf << EOF
+%__mkdir_p %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d
+%__cat >> %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood.conf << EOF
 [Service]
 KillSignal=SIGTERM
 KillMode=process
 PrivateTmp=false
 EOF
-%__chmod 444 %{buildroot}%{_sysconfdir}/systemd/system/httpd24-httpd.service.d/ood.conf
+%__chmod 444 %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood.conf
 %endif
 EOS
 
 %post
+%if %{with scl_apache}
 %__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24 %{?scl_ondemand_ruby}"/' \
     /opt/rh/httpd24/service-environment
+%endif
 
 %if %{with systemd}
 /bin/systemctl daemon-reload &>/dev/null || :
@@ -261,8 +278,10 @@ restorecon -R %{_localstatedir}/log/ondemand-nginx
 
 %preun
 if [ "$1" -eq 0 ]; then
+%if %{with scl_apache}
 %__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24"/' \
     /opt/rh/httpd24/service-environment
+%endif
 /opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force &>/dev/null || :
 fi
 
@@ -273,10 +292,10 @@ semodule -r %{name}-selinux 2>/dev/null || :
 if [ "$1" -eq 0 ]; then
 %if %{with systemd}
 /bin/systemctl daemon-reload &>/dev/null || :
-/bin/systemctl try-restart httpd24-httpd.service httpd24-htcacheclean.service &>/dev/null || :
+/bin/systemctl try-restart %{apache_service}.service %{htcacheclean_service}.service &>/dev/null || :
 %else
-/sbin/service httpd24-httpd condrestart &>/dev/null
-/sbin/service httpd24-htcacheclean condrestart &>/dev/null
+/sbin/service %{apache_service} condrestart &>/dev/null
+/sbin/service %{htcacheclean_service} condrestart &>/dev/null
 exit 0
 %endif
 fi
@@ -306,10 +325,10 @@ touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 /opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm --detailed-exitcodes
 if [[ $? -eq 3 ]] ; then
 %if %{with systemd}
-/bin/systemctl try-restart httpd24-httpd.service httpd24-htcacheclean.service &>/dev/null || :
+/bin/systemctl try-restart %{apache_service}.service %{htcacheclean_service}.service &>/dev/null || :
 %else
-/sbin/service httpd24-httpd condrestart &>/dev/null
-/sbin/service httpd24-htcacheclean condrestart &>/dev/null
+/sbin/service %{apache_service} condrestart &>/dev/null
+/sbin/service %{htcacheclean_service} condrestart &>/dev/null
 exit 0
 %endif
 fi
@@ -363,9 +382,9 @@ fi
 %config(noreplace) %{_sysconfdir}/sudoers.d/ood
 %config(noreplace) %{_sysconfdir}/cron.d/ood
 %config(noreplace) %{_sysconfdir}/logrotate.d/ood
-%ghost /opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf
+%ghost %{apache_confd}/ood-portal.conf
 %if %{with systemd}
-%config(noreplace) %{_sysconfdir}/systemd/system/httpd24-httpd.service.d/ood.conf
+%config(noreplace) %{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood.conf
 %endif
 
 %files -n %{gems_name}

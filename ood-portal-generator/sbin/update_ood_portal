@@ -6,7 +6,17 @@ RPM=0
 FORCE=false
 CHANGED=false
 CONFIG="${CONFIG:-/etc/ood/config/ood_portal.yml}"
-APACHE="${APACHE:-/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf}"
+[ -f /etc/os-release ] && source /etc/os-release
+if [[ "$ID $ID_LIKE" = *"rhel"* ]] && [[ "$VERSION_ID" = "8"* ]]; then
+    SERVICE="httpd"
+    HTCACHECLEAN_SERVICE="htcacheclean"
+    DEFAULT_APACHE="/etc/httpd/conf.d/ood-portal.conf"
+else
+    SERVICE="httpd24-httpd"
+    HTCACHECLEAN_SERVICE="httpd24-htcacheclean"
+    DEFAULT_APACHE="/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf"
+fi
+APACHE="${APACHE:-$DEFAULT_APACHE}"
 BIN="${BIN:-${ROOT}/../bin/generate}"
 SUM="${SUM:-/etc/ood/config/ood_portal.sha256sum}"
 CHANGE_EXIT=0
@@ -99,17 +109,17 @@ fi
 echo "Completed successfully!"
 if $CHANGED; then
     echo ""
-    echo "Restart the httpd24-httpd service now."
+    echo "Restart the $SERVICE service now."
     echo ""
 
     if [[ -L "/sbin/init" ]]; then
       echo "Suggested command:"
-      echo "    sudo systemctl try-restart httpd24-httpd.service httpd24-htcacheclean.service"
+      echo "    sudo systemctl try-restart $SERVICE.service $HTCACHECLEAN_SERVICE.service"
       echo ""
     else
       echo "Suggested commands:"
-      echo "    sudo service httpd24-httpd condrestart"
-      echo "    sudo service httpd24-htcacheclean condrestart"
+      echo "    sudo service $SERVICE condrestart"
+      echo "    sudo service $HTCACHECLEAN_SERVICE condrestart"
       echo ""
     fi
 fi
