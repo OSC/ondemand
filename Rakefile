@@ -51,18 +51,17 @@ end
 namespace :build do
   desc "Build gems"
   task :gems do
+    bundle_args = ["--jobs 4", "--retry 2"]
     if VENDOR_BUNDLE
-      bundle_args = "--path vendor/bundle"
-    else
-      bundle_args = ""
+      bundle_args << "--path vendor/bundle"
     end
     if PASSENGER_APP_ENV == "production"
-      bundle_args = "#{bundle_args} --without doc test development"
+      bundle_args << "--without doc test development"
     end
     apps.each do |a|
       next unless a.ruby_app?
       chdir a.path do
-        sh "bin/bundle install #{bundle_args}"
+        sh "bin/bundle install #{bundle_args.join(' ')}"
       end
     end
   end
