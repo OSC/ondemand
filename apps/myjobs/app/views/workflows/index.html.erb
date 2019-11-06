@@ -83,7 +83,17 @@
               <tr class="job-row<%= " missing-cluster" unless workflow.batch_host_exists? %><%= " missing-dir" unless workflow.staged_dir_exists? %><%= " missing-script" unless workflow.script_name && workflow.staged_script_exists? %>" id="<%= workflow.id %>">
                 <td data-sort="<%= workflow.id %>"><small><%= local_time(workflow.created_at) %></small></td>
                 <td><span title="<%= workflow.name %>"><strong><%= workflow.name %></strong></span></td>
-                <td><span title="<%= workflow.pbsid %>"><%= workflow.pbsid %></span></td>
+                <%# FIXME: AJAX causes a problem with this change %>
+                <%# FIXME: Retaining job records would be helpful %>
+                <td>
+                  <% if workflow.completed? %>
+                    <%= link_to(workflow.jobs.first.xdmod_url, target: "_blank", class: "btn btn-default", style: "color: black")  do %>
+                      <%= workflow.pbsid_number %><%= image_tag "xdmod_small.png", height: 24 %>
+                    <% end %>
+                  <% else %>
+                    <span title="<%= workflow.pbsid %>"><%= workflow.pbsid %></span>
+                  <% end %>
+                </td>
                 <td><span title="<%= cluster_title workflow.batch_host %>"><%= cluster_title workflow.batch_host %></span></td>
                 <td id="status_label_<%= workflow.id %>"><%= status_label(workflow) %></td>
                 <!-- FILE_SIZE_FEATURE
