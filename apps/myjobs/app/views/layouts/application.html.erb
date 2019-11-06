@@ -12,6 +12,7 @@
   </script>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
+  <%= render partial: '/layouts/nav/styles', locals: { bg_color: Configuration.brand_bg_color, link_active_color: Configuration.brand_link_active_bg_color } %>
 </head>
 <body>
 
@@ -28,7 +29,13 @@
           <span class="icon-bar"></span>
         </button>
         <ul class="navbar-breadcrumbs">
-          <li><%= link_to OodAppkit.dashboard.title, OodAppkit.dashboard.url.to_s %></li>
+          <li>
+            <% if ENV['OOD_DASHBOARD_HEADER_IMG_LOGO'].present? %>
+              <a class="navbar-brand navbar-brand-logo" href="<%= OodAppkit.dashboard.url.to_s %>"><img src="<%= ENV['OOD_DASHBOARD_HEADER_IMG_LOGO'] %>" alt="<%= OodAppkit.dashboard.title.html_safe %>"></a>
+            <% else %>
+              <a class="navbar-brand" href="<%= OodAppkit.dashboard.url.to_s %>"><%= OodAppkit.dashboard.title.html_safe %></a>
+            <% end %>
+          </li>
           <li><%= link_to "Job Composer", root_path %></li>
         </ul>
       </div>
