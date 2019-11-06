@@ -175,6 +175,10 @@ class Workflow < ActiveRecord::Base
     jobs.last.pbsid unless jobs.last.nil?
   end
 
+  def pbsid_number
+    jobs.last.pbsid_number unless jobs.last.nil?
+  end
+
   # Returns the optional user-entered account string
   #
   # @return [String, nil] the account string or nil if blank
