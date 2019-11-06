@@ -77,6 +77,14 @@ class ConfigurationSingleton
     dataroot.join("debug").file? || rails_env != 'production'
   end
 
+  def brand_bg_color
+    ENV.values_at('OOD_BRAND_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_BG', 'BOOTSTRAP_NAVBAR_INVERSE_BG').compact.first
+  end
+
+  def brand_link_active_bg_color
+    ENV.values_at('OOD_BRAND_LINK_ACTIVE_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_LINK_ACTIVE_BG','BOOTSTRAP_NAVBAR_INVERSE_LINK_ACTIVE_BG' ).compact.first
+  end
+
   private
 
   # The environment

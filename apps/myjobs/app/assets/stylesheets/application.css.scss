@@ -19,6 +19,25 @@
 @import "workflows";
 @import "joyride";
 
+// styles to make a logo fill the navbar height if using a logo for the navbar title
+.navbar-brand.navbar-brand-logo,
+.ood-appkit.navbar ul.navbar-breadcrumbs>li>a.navbar-brand-logo{
+  padding: 0px;
+}
+.ood-appkit.navbar ul.navbar-breadcrumbs>li>a.navbar-brand-logo{
+  margin-right: 15px;
+}
+.navbar-brand.navbar-brand-logo img{
+  height: 100%;
+}
+.navbar>.container-fluid ul.navbar-breadcrumbs .navbar-brand {
+  margin-left: 0;
+}
+// for inverse, lets make the text slightliy darker so its
+// different than the links
+.navbar.navbar-inverse .navbar-text{
+  color: #ddd;
+}
 
 .table {
   width: 100%;
