@@ -3,7 +3,11 @@
 %{!?package_release: %define package_release 1}
 %{!?git_tag: %define git_tag v%{package_version}}
 %define git_tag_minus_v %(echo %{git_tag} | sed -r 's/^v//')
-%define runtime_version %(echo %{git_tag_minus_v} | sed -r 's/^([0-9])\.([0-9]).*/\\1.\\2/g')
+%define major_version %(echo %{git_tag_minus_v} | cut -d. -f1)
+%define minor_version %(echo %{git_tag_minus_v} | cut -d. -f2)
+%define runtime_version %{major_version}.%{minor_version}-5
+%define next_major_version %(echo $((%{major_version}+1))).0
+%define next_minor_version %{major_version}.%(echo $((%{minor_version}+1)))
 %define selinux_policy_ver %(rpm --qf "%%{version}-%%{release}" -q selinux-policy)
 %global selinux_module_version %{package_version}.%{package_release}
 %global gem_home %{scl_ondemand_gem_home}/ondemand/%{version}
@@ -59,23 +63,23 @@ Source3:   ondemand-selinux.fc
 # node.js packages used in the apps
 AutoReqProv:     no
 
-BuildRequires:   ondemand-runtime = %{runtime_version}
-BuildRequires:   ondemand-scldevel = %{runtime_version}
+BuildRequires:   ondemand-runtime >= %{runtime_version}, ondemand-runtime < %{next_major_version}, ondemand-runtime < %{next_minor_version}
+BuildRequires:   ondemand-scldevel >= %{runtime_version}, ondemand-scldevel < %{next_major_version}, ondemand-scldevel < %{next_minor_version}
 BuildRequires:   sqlite-devel, curl, make, zlib-devel, libxslt-devel
-BuildRequires:   ondemand-ruby = %{runtime_version}
-BuildRequires:   ondemand-python = %{runtime_version}
-BuildRequires:   ondemand-nodejs = %{runtime_version}
+BuildRequires:   ondemand-ruby >= %{runtime_version}, ondemand-ruby < %{next_major_version}, ondemand-ruby < %{next_minor_version}
+BuildRequires:   ondemand-python >= %{runtime_version}, ondemand-python < %{next_major_version}, ondemand-python < %{next_minor_version}
+BuildRequires:   ondemand-nodejs >= %{runtime_version}, ondemand-nodejs < %{next_major_version}, ondemand-nodejs < %{next_minor_version}
 BuildRequires:   rsync
 BuildRequires:   git
 Requires:        git
 Requires:        sudo, lsof, sqlite-devel, cronie, wget, curl, make, rsync, file, libxml2, libxslt, zlib
-Requires:        ondemand-apache = %{runtime_version}
+Requires:        ondemand-apache >= %{runtime_version}, ondemand-apache < %{next_major_version}, ondemand-apache < %{next_minor_version}
 Requires:        ondemand-nginx = 1.17.3
 Requires:        ondemand-passenger = 6.0.4
-Requires:        ondemand-ruby = %{runtime_version}
-Requires:        ondemand-python = %{runtime_version}
-Requires:        ondemand-nodejs = %{runtime_version}
-Requires:        ondemand-runtime = %{runtime_version}
+Requires:        ondemand-ruby >= %{runtime_version}, ondemand-ruby < %{next_major_version}, ondemand-ruby < %{next_minor_version}
+Requires:        ondemand-python >= %{runtime_version}, ondemand-python < %{next_major_version}, ondemand-python < %{next_minor_version}
+Requires:        ondemand-nodejs >= %{runtime_version}, ondemand-nodejs < %{next_major_version}, ondemand-nodejs < %{next_minor_version}
+Requires:        ondemand-runtime >= %{runtime_version}, ondemand-runtime < %{next_major_version}, ondemand-runtime < %{next_minor_version}
 Requires:        %{gems_name}
 
 %if %{with systemd}
