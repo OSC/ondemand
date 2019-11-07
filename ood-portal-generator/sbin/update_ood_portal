@@ -82,7 +82,7 @@ fi
 if $FORCE; then
     REPLACE=true
 fi
-if ! diff -w -I "^\s*#" "${NEW_APACHE}" "${APACHE}" 1>/dev/null 2>&1 ; then
+if ! cmp -s "${NEW_APACHE}" "${APACHE}" 1>/dev/null 2>&1 ; then
   if $REPLACE; then
     if [[ -f "${APACHE}" ]]; then
       BAK_APACHE="${APACHE}.$(date '+%Y%m%dT%H%M%S')"
