@@ -27,7 +27,7 @@ set -e
 
 save_checksum() {
     local INPUT="$1"
-    NEW_SUM=$(sed '/^\s*#/d' $INPUT | sha256sum | cut -d' ' -f1)
+    NEW_SUM=$(sed '/^\s*#/d' "$INPUT" | sha256sum | cut -d' ' -f1)
     echo "${NEW_SUM} ${APACHE}" > "$SUM"
 }
 
@@ -69,7 +69,7 @@ NEW_APACHE=$(mktemp)
 # Checksum is based on mktemp generated ood-portal.conf but using path of real ood-portal.conf
 if ! grep -q "$APACHE" "$SUM" 1>/dev/null 2>&1; then
     echo "Generating Apache config checksum file: '${SUM}'"
-    save_checksum $NEW_APACHE
+    save_checksum "$NEW_APACHE"
 fi
 
 # If checksum of ood-portal.conf matches or ood-portal.conf doesn't exit, replace is possible.
@@ -92,7 +92,7 @@ if ! cmp -s "${NEW_APACHE}" "${APACHE}" 1>/dev/null 2>&1 ; then
     echo "Generating new Apache config at: '${APACHE}'"
     cat "${NEW_APACHE}" > "${APACHE}"
     echo "Generating Apache config checksum file: '${SUM}'"
-    save_checksum $APACHE
+    save_checksum "$APACHE"
     ret=$CHANGE_EXIT
     CHANGED=true
   else
