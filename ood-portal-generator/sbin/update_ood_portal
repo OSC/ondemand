@@ -25,6 +25,12 @@ ret=0
 
 set -e
 
+save_checksum() {
+    local INPUT="$1"
+    NEW_SUM=$(sed '/^\s*#/d' $INPUT | sha256sum | cut -d' ' -f1)
+    echo "${NEW_SUM} ${APACHE}" > "$SUM"
+}
+
 usage () {
     echo "Usage: update_ood_portal [-r|--rpm] [-f|--force] [--detailed-exitcodes]"
     echo "-r|--rpm              Execution performed during RPM install"
@@ -63,8 +69,7 @@ NEW_APACHE=$(mktemp)
 # Checksum is based on mktemp generated ood-portal.conf but using path of real ood-portal.conf
 if ! grep -q "$APACHE" "$SUM" 1>/dev/null 2>&1; then
     echo "Generating Apache config checksum file: '${SUM}'"
-    NEW_SUM=$(sha256sum "$NEW_APACHE" | cut -d' ' -f1)
-    echo "${NEW_SUM} ${APACHE}" > "$SUM"
+    save_checksum $NEW_APACHE
 fi
 
 # If checksum of ood-portal.conf matches or ood-portal.conf doesn't exit, replace is possible.
@@ -77,7 +82,7 @@ fi
 if $FORCE; then
     REPLACE=true
 fi
-if ! cmp -s "${NEW_APACHE}" "${APACHE}"; then
+if ! diff -w -I "^\s*#" "${NEW_APACHE}" "${APACHE}" 1>/dev/null 2>&1 ; then
   if $REPLACE; then
     if [[ -f "${APACHE}" ]]; then
       BAK_APACHE="${APACHE}.$(date '+%Y%m%dT%H%M%S')"
@@ -87,7 +92,7 @@ if ! cmp -s "${NEW_APACHE}" "${APACHE}"; then
     echo "Generating new Apache config at: '${APACHE}'"
     cat "${NEW_APACHE}" > "${APACHE}"
     echo "Generating Apache config checksum file: '${SUM}'"
-    sha256sum "$APACHE" > "$SUM"
+    save_checksum $APACHE
     ret=$CHANGE_EXIT
     CHANGED=true
   else
