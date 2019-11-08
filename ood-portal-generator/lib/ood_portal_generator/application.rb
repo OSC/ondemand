@@ -31,20 +31,22 @@ module OodPortalGenerator
 
       # Starts the OodPortalGenerator CLI
       # @return [void]
-      def start
+      def start(mode)
         # Set a cleaner process title
-        Process.setproctitle("generate #{ARGV.join(" ")}")
+        Process.setproctitle("#{mode} #{ARGV.join(" ")}")
 
         # Parse CLI arguments
         parser.parse!
 
         # Render Apache portal config
-        view = View.new(context)
-        rendered_template = view.render(template.read)
-        output.write(rendered_template)
+        if mode == 'generate'
+          view = View.new(context)
+          rendered_template = view.render(template.read)
+          output.write(rendered_template)
+        end
       rescue
         $stderr.puts "#{$!.to_s}"
-        $stderr.puts "Run 'generate --help' to see a full list of available options."
+        $stderr.puts "Run '#{mode} --help' to see a full list of available options."
         exit(false)
       end
 

@@ -9,6 +9,7 @@
 /.bundle
 /apps/*/.bundle
 /apps/*/vendor/bundle/
+/*/.bundle
 
 # files used for deployment should not be versioned
 /apps/*/.htaccess
