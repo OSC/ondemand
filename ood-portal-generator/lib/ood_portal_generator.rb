@@ -12,5 +12,10 @@ module OodPortalGenerator
     def root
       Pathname.new(__dir__).dirname
     end
+
+    def scl_apache
+      `[ -f /etc/os-release ] && source /etc/os-release && [[ "$ID $ID_LIKE" = *"rhel"* ]] && [[ "$VERSION_ID" = "8"* ]]`
+      ! $?.success?
+    end
   end
 end

@@ -1,132 +1,14 @@
 #!/usr/bin/env bash
 
-ROOT="$(dirname "$(readlink -f "${0}")")"
+SCL_SOURCE=$(command -v scl_source)
+[[ "${SCL_SOURCE}" ]] && source "${SCL_SOURCE}" enable ondemand &> /dev/null
 
-RPM=0
-FORCE=false
-CHANGED=false
-CONFIG="${CONFIG:-/etc/ood/config/ood_portal.yml}"
-[ -f /etc/os-release ] && source /etc/os-release
-if [[ "$ID $ID_LIKE" = *"rhel"* ]] && [[ "$VERSION_ID" = "8"* ]]; then
-    SERVICE="httpd"
-    HTCACHECLEAN_SERVICE="htcacheclean"
-    DEFAULT_APACHE="/etc/httpd/conf.d/ood-portal.conf"
-else
-    SERVICE="httpd24-httpd"
-    HTCACHECLEAN_SERVICE="httpd24-htcacheclean"
-    DEFAULT_APACHE="/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf"
-fi
-APACHE="${APACHE:-$DEFAULT_APACHE}"
-BIN="${BIN:-${ROOT}/../bin/generate}"
-SUM="${SUM:-/etc/ood/config/ood_portal.sha256sum}"
-CHANGE_EXIT=0
-SKIP_EXIT=0
-ret=0
+ROOT_DIR="$(dirname "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")"
+NAME=`basename "$0"`
 
-set -e
-
-save_checksum() {
-    local INPUT="$1"
-    NEW_SUM=$(sed '/^\s*#/d' "$INPUT" | sha256sum | cut -d' ' -f1)
-    echo "${NEW_SUM} ${APACHE}" > "$SUM"
-}
-
-usage () {
-    echo "Usage: update_ood_portal [-r|--rpm] [-f|--force] [--detailed-exitcodes]"
-    echo "-r|--rpm              Execution performed during RPM install"
-    echo "-f|--force            Force replacement of configs even if checksums differ"
-    echo "--detailed-exitcodes  Exit with 3 when changes are made and 4 when changes skipped"
-}
-
-OPTS=$(getopt -o rfh --long rpm,force,detailed-exitcodes,help -n 'update_ood_portal' -- "$@")
-
-# more readable this way, so disable this shellcheck
-# shellcheck disable=SC2181
-if [[ $? -ne 0 ]]; then
-    echo "Failed parsing options"
-    usage
-    exit 1
-fi
-
-eval set -- "$OPTS"
-
-while true; do
-    case "$1" in
-        -h|--help) usage ; exit 0 ; shift ;;
-        -r|--rpm) RPM=1 ; shift ;;
-        -f|--force) FORCE=true ; shift ;;
-        --detailed-exitcodes) CHANGE_EXIT=3 ; SKIP_EXIT=4 ; shift ;;
-        *) break ;;
-    esac
-done
-
-echo "Generating Apache config using YAML config: '${CONFIG}'"
-
-NEW_APACHE=$(mktemp)
-"${BIN}" -c "${CONFIG}" > "$NEW_APACHE"
-
-# Create checksum file if the path to ood-portal.conf not in checksum file
-# Checksum is based on mktemp generated ood-portal.conf but using path of real ood-portal.conf
-if ! grep -q "$APACHE" "$SUM" 1>/dev/null 2>&1; then
-    echo "Generating Apache config checksum file: '${SUM}'"
-    save_checksum "$NEW_APACHE"
-fi
-
-# If checksum of ood-portal.conf matches or ood-portal.conf doesn't exit, replace is possible.
-# If the checksum matches this means a site has not changed ood-portal.conf outside ood-portal-generator
-if sha256sum --quiet --status --check "$SUM" 1>/dev/null 2>&1 || [ ! -f "$APACHE" ]; then
-    REPLACE=true
-else
-    REPLACE=false
-fi
-if $FORCE; then
-    REPLACE=true
-fi
-if ! cmp -s "${NEW_APACHE}" "${APACHE}" 1>/dev/null 2>&1 ; then
-  if $REPLACE; then
-    if [[ -f "${APACHE}" ]]; then
-      BAK_APACHE="${APACHE}.$(date '+%Y%m%dT%H%M%S')"
-      echo "Backing up previous Apache config to: '${BAK_APACHE}'"
-      mv "${APACHE}" "${BAK_APACHE}"
-    fi
-    echo "Generating new Apache config at: '${APACHE}'"
-    cat "${NEW_APACHE}" > "${APACHE}"
-    echo "Generating Apache config checksum file: '${SUM}'"
-    save_checksum "$APACHE"
-    ret=$CHANGE_EXIT
-    CHANGED=true
-  else
-    echo "WARNING: Checksum of ${APACHE} does not match previous value, not replacing."
-    echo "Generating new Apache config at: '${APACHE}.new'"
-    cat "${NEW_APACHE}" > "${APACHE}.new"
-    ret=$SKIP_EXIT
-  fi
-else
-  echo "No change in Apache config."
-fi
-
-rm -f "$NEW_APACHE"
-
-if [ $RPM -eq 1 ] || ! $REPLACE; then
-    exit $ret
-fi
-
-echo "Completed successfully!"
-if $CHANGED; then
-    echo ""
-    echo "Restart the $SERVICE service now."
-    echo ""
-
-    if [[ -L "/sbin/init" ]]; then
-      echo "Suggested command:"
-      echo "    sudo systemctl try-restart $SERVICE.service $HTCACHECLEAN_SERVICE.service"
-      echo ""
-    else
-      echo "Suggested commands:"
-      echo "    sudo service $SERVICE condrestart"
-      echo "    sudo service $HTCACHECLEAN_SERVICE condrestart"
-      echo ""
-    fi
-fi
-
-exit $ret
+exec \
+  /usr/bin/env ruby \
+    -I"${ROOT_DIR}/lib" \
+    -rood_portal_generator \
+    -e "OodPortalGenerator::Application.start($NAME)" \
+    -- "${@}"
