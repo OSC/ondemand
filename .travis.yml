@@ -24,8 +24,7 @@ script:
   - shellcheck -x ood-portal-generator/sbin/update_ood_portal
   - shellcheck -x nginx_stage/sbin/nginx_stage
   - shellcheck nginx_stage/sbin/update_nginx_stage
-  - cd ood-portal-generator && bundle install
-  - cd ood-portal-generator && bundle exec rake spec
+  - cd ood-portal-generator && bundle install && bundle exec rake spec ; cd -
 
 notifications:
   email:
