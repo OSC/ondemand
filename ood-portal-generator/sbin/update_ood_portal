@@ -2,7 +2,7 @@
 
 SCL_SOURCE=$(command -v scl_source)
 # Source in the custom environment
-# shellcheck source=/bin/scl_source
+# shellcheck source=/dev/null
 [[ "${SCL_SOURCE}" ]] && source "${SCL_SOURCE}" enable ondemand &> /dev/null
 
 ROOT_DIR="$(dirname "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")"
