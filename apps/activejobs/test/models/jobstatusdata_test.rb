@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class JobstatusdataTest < ActiveModel::TestCase
+class JobstatusdataTest < ActiveSupport::TestCase
 
   @clusters = OODClusters
   @test_count = 0
