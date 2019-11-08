@@ -15,11 +15,18 @@ require {
   class fifo_file { create getattr ioctl open read setattr unlink write };
   class netlink_audit_socket { nlmsg_relay create write };
   class capability { audit_write fowner net_admin };
-  class file { getattr open read };
+  class file { rw_file_perms manage_file_perms };
+  class dir { rw_dir_perms manage_dir_perms };
   class process { noatsecure rlimitinh siginh };
 }
 
 #============= httpd_t ==============
+
+# Allow management of home directories when they are local
+manage_dirs_pattern(httpd_t, user_home_dir_t, user_home_dir_t)
+manage_files_pattern(httpd_t, user_home_dir_t, user_home_dir_t)
+manage_dirs_pattern(httpd_sys_script_t, user_home_dir_t, user_home_dir_t)
+manage_files_pattern(httpd_sys_script_t, user_home_dir_t, user_home_dir_t)
 
 # PUN startup
 allow httpd_t chkpwd_t:process { noatsecure rlimitinh siginh };
