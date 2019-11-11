@@ -54,14 +54,12 @@ describe 'update_ood_portal' do
     end
   end
 
-  it 'not changes to ood-portal.conf and exits 0' do
+  it 'no changes to ood-portal.conf and exits 0' do
     with_modified_env APACHE: apache.path, SUM: sum.path  do
       File.write(apache.path, read_fixture('ood-portal.conf.default'))
       File.write(sum.path, read_fixture('sum.default'))
       expect(OodPortalGenerator::Application).to receive(:exit!).with(0)
       OodPortalGenerator::Application.start('update_ood_portal', ['--detailed-exitcodes'])
-      expect(File.exist?(apache.path)).to eq(true)
-      expect(File.exist?(sum.path)).to eq(true)
     end
   end
 
