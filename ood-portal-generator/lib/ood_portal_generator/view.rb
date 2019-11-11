@@ -23,7 +23,7 @@ module OodPortalGenerator
       @map_fail_uri     = opts.fetch(:map_fail_uri, nil)
       @pun_stage_cmd    = opts.fetch(:pun_stage_cmd, "sudo /opt/ood/nginx_stage/sbin/nginx_stage")
 
-      if OodPortalGenerator.scl_apache
+      if OodPortalGenerator.scl_apache?
         default_htpasswd = "/opt/rh/httpd24/root/etc/httpd/.htpasswd"
       else
         default_htpasswd = "/etc/httpd/.htpasswd"

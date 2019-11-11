@@ -54,7 +54,7 @@ module OodPortalGenerator
       end
 
       def apache
-        ENV['APACHE'] || OodPortalGenerator.scl_apache ? '/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf' : '/etc/httpd/conf.d/ood-portal.conf'
+        ENV['APACHE'] || OodPortalGenerator.scl_apache? ? '/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf' : '/etc/httpd/conf.d/ood-portal.conf'
       end
 
       def apache_bak
@@ -62,18 +62,18 @@ module OodPortalGenerator
       end
 
       def apache_services
-        if OodPortalGenerator.scl_apache
+        if OodPortalGenerator.scl_apache?
           ['httpd24-httpd', 'httpd24-htcacheclean']
         else
           ['httpd', 'htcacheclean']
         end
       end
 
-      def sum
+      def sum_path
         ENV['SUM'] || '/etc/ood/config/ood_portal.sha256sum'
       end
 
-      def parse_input(input)
+      def read_file_omitting_comments(input)
         lines = File.readlines(input)
         new_lines = []
         lines.each do |line|
@@ -84,27 +84,29 @@ module OodPortalGenerator
         str
       end
 
+      def checksum(input)
+        Digest::SHA256.hexdigest(read_file_omitting_comments(input))
+      end
+
       def save_checksum(input)
-        str = parse_input(input)
-        checksum = Digest::SHA256.hexdigest(str)
-        open(sum, 'w') do |f|
-          f.puts "#{checksum} #{apache}\n"
+        open(sum_path, 'w') do |f|
+          f.puts "#{checksum(input)} #{apache}\n"
         end
       end
 
       def checksum_matches?(input)
-        checksum_str = File.readlines(sum)[0]
+        checksum_str = File.readlines(sum_path)[0]
         checksum = checksum_str.split(' ')[0]
 
-        str = parse_input(input)
-        new_checksum = Digest::SHA256.hexdigest(str)
+        str = read_file_omitting_comments(input)
+        new_checksum = checksum(input)
 
         checksum == new_checksum
       end
 
       def checksum_exists?
-        return false unless File.exist?(sum)
-        File.readlines(sum).grep(apache).size == 0
+        return false unless File.exist?(sum_path)
+        File.readlines(sum_path).grep(apache).size == 0
       end
 
       def update_replace?
@@ -140,7 +142,7 @@ module OodPortalGenerator
         # Create checksum file if the path to ood-portal.conf not in checksum file
         # Checksum is based on mktemp generated ood-portal.conf but using path of real ood-portal.conf
         if ! checksum_exists?
-          puts "Generating Apache config checksum file: '#{sum}'"
+          puts "Generating Apache config checksum file: '#{sum_path}'"
           save_checksum(new_apache.path)
         end
 
@@ -154,7 +156,7 @@ module OodPortalGenerator
             end
             puts "Generating new Apache config at: '#{apache}'"
             `cat "#{new_apache.path}" > "#{apache}"`
-            puts "Generating Apache config checksum file: '#{sum}'"
+            puts "Generating Apache config checksum file: '#{sum_path}'"
             save_checksum(apache)
             ret = change_exit
             changed = true
