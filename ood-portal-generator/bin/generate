@@ -10,5 +10,5 @@ exec \
   /usr/bin/env ruby \
     -I"${ROOT_DIR}/lib" \
     -rood_portal_generator \
-    -e "OodPortalGenerator::Application.start($NAME)" \
+    -e "OodPortalGenerator::Application.start('$NAME')" \
     -- "${@}"
