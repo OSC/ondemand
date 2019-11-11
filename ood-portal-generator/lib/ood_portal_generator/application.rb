@@ -73,15 +73,9 @@ module OodPortalGenerator
         ENV['SUM'] || '/etc/ood/config/ood_portal.sha256sum'
       end
 
+      # return string contents of file without comments
       def read_file_omitting_comments(input)
-        lines = File.readlines(input)
-        new_lines = []
-        lines.each do |line|
-          next if line =~ /^\s*#/
-          new_lines << line
-        end
-        str = new_lines.join('')
-        str
+        File.readlines(input).reject {|line| line =~ /^\s*#/ }.join('')
       end
 
       def checksum(input)
