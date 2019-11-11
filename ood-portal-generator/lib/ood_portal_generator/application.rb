@@ -89,9 +89,7 @@ module OodPortalGenerator
       end
 
       def save_checksum(input)
-        open(sum_path, 'w') do |f|
-          f.puts "#{checksum(input)} #{apache}\n"
-        end
+        File.write(sum_path, "#{checksum(input)} #{apache}\n")
       end
 
       def checksum_matches?(input)
