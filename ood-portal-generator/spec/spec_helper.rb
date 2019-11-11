@@ -98,3 +98,16 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 =end
 end
+
+require 'climate_control'
+
+def with_modified_env(options, &block)
+  ClimateControl.modify(options, &block)
+end
+
+def read_fixture(name)
+  spec_dir = File.dirname(__FILE__)
+  fixture_dir = File.join(spec_dir, 'fixtures')
+  fixture = File.join(fixture_dir, name)
+  File.read(fixture)
+end
