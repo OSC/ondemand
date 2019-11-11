@@ -209,7 +209,7 @@ module OodPortalGenerator
             add_generate_opt_parser_attrs(parser)
             default = "-c #{config} -t #{template}"
           elsif mode == 'update_ood_portal'
-            add_generate_opt_parser_attrs(parser)
+            add_generate_opt_parser_attrs(parser, false)
             add_update_opt_parser_attrs(parser)
             default = ""
           end
@@ -234,7 +234,7 @@ module OodPortalGenerator
         exit!(false)
       end
 
-      def add_generate_opt_parser_attrs(parser)
+      def add_generate_opt_parser_attrs(parser, output = true)
         parser.on("-c", "--config CONFIG", String, "YAML config file used to render template") do |v|
           @config = v
         end
@@ -243,8 +243,10 @@ module OodPortalGenerator
           @template = v
         end
 
-        parser.on("-o", "--output OUTPUT", String, "File that rendered template is output to") do |v|
-          @output = v
+        if output
+          parser.on("-o", "--output OUTPUT", String, "File that rendered template is output to") do |v|
+            @output = v
+          end
         end
       end
 
