@@ -23,11 +23,33 @@ describe OodPortalGenerator::Application do
 
   describe 'generate' do
     it 'runs generate' do
-      expect { described_class.start('generate') }.to output(/VirtualHost/).to_stdout
+      expect { described_class.start('generate', []) }.to output(/VirtualHost/).to_stdout
+    end
+  end
+
+  describe 'apache' do
+    it 'reads from ENV' do
+      with_modified_env APACHE: apache.path do
+        expect(described_class.apache).to eq(apache.path)
+      end
+    end
+
+    it 'should use SCL apache' do
+      allow(OodPortalGenerator).to receive(:scl_apache?).and_return(true)
+      expect(described_class.apache).to eq('/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf')
+    end
+
+    it 'should not use SCL apache' do
+      allow(OodPortalGenerator).to receive(:scl_apache?).and_return(false)
+      expect(described_class.apache).to eq('/etc/httpd/conf.d/ood-portal.conf')
     end
   end
 
   describe 'save_checksum' do
+    before(:each) do
+      allow(File).to receive(:exist?).with('/dne.conf').and_return(true)
+    end
+
     it 'saves checksum file' do
       allow(File).to receive(:readlines).with('/dne.conf').and_return(["# comment\n", "foo\n", "  #comment\n"])
       described_class.save_checksum('/dne.conf')

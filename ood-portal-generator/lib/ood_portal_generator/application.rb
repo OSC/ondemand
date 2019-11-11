@@ -132,12 +132,18 @@ module OodPortalGenerator
         end
       end
 
-      def update_ood_portal
+      def generate()
+        view = View.new(context)
+        rendered_template = view.render(template.read)
+        output.write(rendered_template)
+      end
+
+      def update_ood_portal()
         ret = 0
         changed = false
         new_apache = Tempfile.new('new_apache')
         @output = new_apache.path
-        self.start('generate')
+        generate()
 
         # Create checksum file if the path to ood-portal.conf not in checksum file
         # Checksum is based on mktemp generated ood-portal.conf but using path of real ood-portal.conf
@@ -191,18 +197,33 @@ module OodPortalGenerator
 
       # Starts the OodPortalGenerator CLI
       # @return [void]
-      def start(mode)
+      def start(mode, argv = ARGV)
         # Set a cleaner process title
-        Process.setproctitle("#{mode} #{ARGV.join(" ")}")
+        Process.setproctitle("#{mode} #{argv.join(" ")}")
 
         # Parse CLI arguments
-        parser(mode).parse!
+        OptionParser.new do |parser|
+          parser.banner = "Usage: #{mode} [options]"
+
+          if mode == 'generate'
+            add_generate_opt_parser_attrs(parser)
+            default = "-c #{config} -t #{template}"
+          elsif mode == 'update_ood_portal'
+            add_generate_opt_parser_attrs(parser)
+            add_update_opt_parser_attrs(parser)
+            default = ""
+          end
+
+          add_shared_opt_parser_attrs(parser)
+
+          parser.separator ""
+          parser.separator "Default:"
+          parser.separator "  #{mode} #{default}"
+        end.parse!(argv)
 
         # Render Apache portal config
         if mode == 'generate'
-          view = View.new(context)
-          rendered_template = view.render(template.read)
-          output.write(rendered_template)
+          generate()
         elsif mode == 'update_ood_portal'
           exitcode = update_ood_portal()
           exit!(exitcode)
@@ -213,51 +234,43 @@ module OodPortalGenerator
         exit!(false)
       end
 
-      # Parser used for parsing CLI options
-      # @return [OptionParser] the option parser object
-      def parser(mode)
-        OptionParser.new do |parser|
-          parser.banner = "Usage: #{mode} [options]"
+      def add_generate_opt_parser_attrs(parser)
+        parser.on("-c", "--config CONFIG", String, "YAML config file used to render template") do |v|
+          @config = v
+        end
 
-          if mode == 'generate'
-            parser.on("-c", "--config CONFIG", String, "YAML config file used to render template") do |v|
-              @config = v
-            end
+        parser.on("-t", "--template TEMPLATE", String, "ERB template that is rendered") do |v|
+          @template = v
+        end
 
-            parser.on("-t", "--template TEMPLATE", String, "ERB template that is rendered") do |v|
-              @template = v
-            end
+        parser.on("-o", "--output OUTPUT", String, "File that rendered template is output to") do |v|
+          @output = v
+        end
+      end
 
-            parser.on("-o", "--output OUTPUT", String, "File that rendered template is output to") do |v|
-              @output = v
-            end
-          elsif mode == 'update_ood_portal'
-            parser.on("-r", "--rpm", TrueClass, "Execution performed during RPM install") do |v|
-              @rpm = v
-            end
+      def add_update_opt_parser_attrs(parser)
+        parser.on("-r", "--rpm", TrueClass, "Execution performed during RPM install") do |v|
+          @rpm = v
+        end
 
-            parser.on("-f", "--force", TrueClass, "Force replacement of configs even if checksums differ") do |v|
-              @force = v
-            end
+        parser.on("-f", "--force", TrueClass, "Force replacement of configs even if checksums differ") do |v|
+          @force = v
+        end
 
-            parser.on("--detailed-exitcodes", TrueClass, "Exit with 3 when changes are made and 4 when changes skipped") do |v|
-              @detailed_exitcodes = v
-            end
-          end
+        parser.on("--detailed-exitcodes", TrueClass, "Exit with 3 when changes are made and 4 when changes skipped") do |v|
+          @detailed_exitcodes = v
+        end
+      end
 
-          parser.on("-v", "--version", "Print current version") do
-            puts "version #{OodPortalGenerator::VERSION}"
-            exit
-          end
+      def add_shared_opt_parser_attrs(parser)
+        parser.on("-v", "--version", "Print current version") do
+          puts "version #{OodPortalGenerator::VERSION}"
+          exit
+        end
 
-          parser.on("-h", "--help", "Show this help message") do
-            puts parser
-            exit
-          end
-
-          parser.separator ""
-          parser.separator "Default:"
-          parser.separator "  generate -c #{config} -t #{template}"
+        parser.on("-h", "--help", "Show this help message") do
+          puts parser
+          exit
         end
       end
     end
