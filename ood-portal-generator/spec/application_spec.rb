@@ -3,10 +3,6 @@ require File.expand_path '../../lib/ood_portal_generator', __FILE__
 require 'tempfile'
 
 describe OodPortalGenerator::Application do
-  let(:argv) do
-    %W()
-  end
-
   let(:sum_path) do
     Tempfile.new('sum')
   end
@@ -15,12 +11,8 @@ describe OodPortalGenerator::Application do
     Tempfile.new('apache')
   end
 
-  let(:apache_bak) do
-    Tempfile.new('apache_bak')
-  end
-
   before(:each) do
-    stub_const('ARGV', argv)
+    stub_const('ARGV', [])
     allow(described_class).to receive(:sum_path).and_return(sum_path.path)
   end
 
@@ -44,6 +36,10 @@ describe OodPortalGenerator::Application do
   end
 
   describe 'checksum_matches?' do
+    before(:each) do
+      allow(File).to receive(:exist?).with('/dne.conf').and_return(true)
+    end
+
     it 'matches' do
       allow(File).to receive(:readlines).with(sum_path.path).and_return(["b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c /opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf\n"])
       allow(File).to receive(:readlines).with('/dne.conf').and_return(["# comment\n", "foo\n", "  #comment\n"])
@@ -79,7 +75,7 @@ describe OodPortalGenerator::Application do
     it 'does not replace if no changes detected' do
       allow(described_class).to receive(:checksum_exists?).and_return(true)
       allow(described_class).to receive(:update_replace?).and_return(false)
-      allow(FileUtils).to receive(:cmp).and_return(true)
+      allow(described_class).to receive(:files_identical?).and_return(true)
       ret = described_class.update_ood_portal()
       expect(ret).to eq(0)
     end
@@ -89,7 +85,7 @@ describe OodPortalGenerator::Application do
       allow(described_class).to receive(:apache).and_return(apache.path)
       allow(described_class).to receive(:checksum_exists?).and_return(true)
       allow(described_class).to receive(:update_replace?).and_return(true)
-      allow(FileUtils).to receive(:cmp).and_return(true)
+      allow(described_class).to receive(:files_identical?).and_return(true)
       ret = described_class.update_ood_portal()
       expect(ret).to eq(0)
     end
@@ -99,7 +95,7 @@ describe OodPortalGenerator::Application do
       allow(described_class).to receive(:apache).and_return(apache.path)
       allow(described_class).to receive(:checksum_exists?).and_return(true)
       allow(described_class).to receive(:update_replace?).and_return(true)
-      allow(FileUtils).to receive(:cmp).and_return(false)
+      allow(described_class).to receive(:files_identical?).and_return(false)
       expect(described_class).to receive(:save_checksum).with(apache.path)
       ret = described_class.update_ood_portal()
       expect(ret).to eq(3)
@@ -111,7 +107,7 @@ describe OodPortalGenerator::Application do
       allow(described_class).to receive(:apache_bak).and_return("#{apache.path}.bak")
       allow(described_class).to receive(:checksum_exists?).and_return(true)
       allow(described_class).to receive(:update_replace?).and_return(true)
-      allow(FileUtils).to receive(:cmp).and_return(false)
+      allow(described_class).to receive(:files_identical?).and_return(false)
       expect(described_class).to receive(:save_checksum).with(apache.path)
       ret = described_class.update_ood_portal()
       expect(ret).to eq(3)
@@ -123,7 +119,7 @@ describe OodPortalGenerator::Application do
       allow(described_class).to receive(:apache).and_return(apache.path)
       allow(described_class).to receive(:checksum_exists?).and_return(true)
       allow(described_class).to receive(:update_replace?).and_return(false)
-      allow(FileUtils).to receive(:cmp).and_return(false)
+      allow(described_class).to receive(:files_identical?).and_return(false)
       ret = described_class.update_ood_portal()
       expect(ret).to eq(4)
       expect(File.exist?("#{apache.path}.new")).to eq(true)

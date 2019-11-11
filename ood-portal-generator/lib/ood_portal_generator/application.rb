@@ -54,7 +54,7 @@ module OodPortalGenerator
       end
 
       def apache
-        ENV['APACHE'] || OodPortalGenerator.scl_apache? ? '/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf' : '/etc/httpd/conf.d/ood-portal.conf'
+        ENV['APACHE'] || (OodPortalGenerator.scl_apache? ? '/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf' : '/etc/httpd/conf.d/ood-portal.conf')
       end
 
       def apache_bak
@@ -75,6 +75,7 @@ module OodPortalGenerator
 
       # return string contents of file without comments
       def read_file_omitting_comments(input)
+        return '' unless File.exist?(input)
         File.readlines(input).reject {|line| line =~ /^\s*#/ }.join('')
       end
 
@@ -104,13 +105,20 @@ module OodPortalGenerator
       def update_replace?
         # If checksum of ood-portal.conf matches or ood-portal.conf doesn't exit, replace is possible.
         # If the checksum matches this means a site has not changed ood-portal.conf outside ood-portal-generator
-        if checksum_matches?(apache)
+        if ! File.exist?(apache)
+          replace = true
+        elsif checksum_matches?(apache)
           replace = true
         else
           replace = false
         end
         replace = true if force
         return replace
+      end
+
+      def files_identical?(a, b)
+        `cmp -s "#{a}" "#{b}" 1>/dev/null 2>&1`
+        $?.success?
       end
 
       def exit!(code)
@@ -140,7 +148,7 @@ module OodPortalGenerator
 
         replace = update_replace?
 
-        if ! FileUtils.cmp(new_apache.path, apache)
+        if ! files_identical?(new_apache.path, apache)
           if replace
             if File.exist?(apache)
               puts "Backing up previous Apache config to: '#{apache_bak}'"
