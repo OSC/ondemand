@@ -93,6 +93,38 @@ describe OodPortalGenerator::Application do
     end
   end
 
+  describe 'update_replace?' do
+    before(:each) do
+      allow(described_class).to receive(:apache).and_return(apache.path)
+    end
+
+    it 'replaces if apache config missing' do
+      allow(File).to receive(:exist?).with(apache.path).and_return(false)
+      expect(described_class.update_replace?).to eq(true)
+    end
+
+    it 'replaces if checksums match' do
+      allow(File).to receive(:exist?).with(apache.path).and_return(true)
+      allow(described_class).to receive(:checksum_matches?).with(apache.path).and_return(true)
+      allow(described_class).to receive(:force).and_return(false)
+      expect(described_class.update_replace?).to eq(true)
+    end
+
+    it 'does not replace if checksums do not match' do
+      allow(File).to receive(:exist?).with(apache.path).and_return(true)
+      allow(described_class).to receive(:checksum_matches?).with(apache.path).and_return(false)
+      allow(described_class).to receive(:force).and_return(false)
+      expect(described_class.update_replace?).to eq(false)
+    end
+
+    it 'does not replace if checksums do not match' do
+      allow(File).to receive(:exist?).with(apache.path).and_return(true)
+      allow(described_class).to receive(:checksum_matches?).with(apache.path).and_return(false)
+      allow(described_class).to receive(:force).and_return(true)
+      expect(described_class.update_replace?).to eq(true)
+    end
+  end
+
   describe 'update_ood_portal' do
     it 'does not replace if no changes detected' do
       allow(described_class).to receive(:checksum_exists?).and_return(true)

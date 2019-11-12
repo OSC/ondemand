@@ -105,15 +105,7 @@ module OodPortalGenerator
       def update_replace?
         # If checksum of ood-portal.conf matches or ood-portal.conf doesn't exit, replace is possible.
         # If the checksum matches this means a site has not changed ood-portal.conf outside ood-portal-generator
-        if ! File.exist?(apache)
-          replace = true
-        elsif checksum_matches?(apache)
-          replace = true
-        else
-          replace = false
-        end
-        replace = true if force
-        return replace
+        force || (! File.exist?(apache)) || checksum_matches?(apache)
       end
 
       def files_identical?(a, b)
