@@ -1,3 +1,5 @@
+## Moved to https://github.com/OSC/ondemand/tree/master/apps/bc_desktop
+
 # OnDemand Package
 
 [![Build Status](https://travis-ci.org/OSC/ondemand.svg?branch=master)](https://travis-ci.org/OSC/ondemand)
