@@ -48,6 +48,7 @@ describe OodPortalGenerator::Application do
   describe 'save_checksum' do
     before(:each) do
       allow(File).to receive(:exist?).with('/dne.conf').and_return(true)
+      allow(OodPortalGenerator).to receive(:scl_apache?).and_return(true)
     end
 
     it 'saves checksum file' do

@@ -13,8 +13,15 @@ module OodPortalGenerator
       Pathname.new(__dir__).dirname
     end
 
+    def os_release_file
+      path = '/etc/os-release'
+      return nil unless File.exist?(path)
+      path
+    end
+
     def scl_apache?
-      `[ -f /etc/os-release ] && source /etc/os-release && [[ "$ID $ID_LIKE" = *"rhel"* ]] && [[ "$VERSION_ID" = "8"* ]]`
+      return true if os_release_file.nil?
+      `source #{os_release_file} && [[ "$ID $ID_LIKE" = *"rhel"* ]] && [[ "$VERSION_ID" = "8"* ]]`
       ! $?.success?
     end
   end
