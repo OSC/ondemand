@@ -11,6 +11,10 @@ before_install:
   - docker pull ${OS_TYPE}:${OS_VERSION}
 
 script:
+  - rake test:run
+  - shellcheck -x ood-portal-generator/sbin/update_ood_portal
+  - shellcheck -x nginx_stage/sbin/nginx_stage
+  - shellcheck nginx_stage/sbin/update_nginx_stage
   - |
     docker run \
       --rm \
@@ -21,10 +25,6 @@ script:
       -w "/data" \
       ${OS_TYPE}:${OS_VERSION} \
       ./tests.sh
-  - shellcheck -x ood-portal-generator/sbin/update_ood_portal
-  - shellcheck -x nginx_stage/sbin/nginx_stage
-  - shellcheck nginx_stage/sbin/update_nginx_stage
-  - cd ood-portal-generator && bundle install && bundle exec rake spec ; cd -
 
 notifications:
   email:
