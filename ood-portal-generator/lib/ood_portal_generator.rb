@@ -1,3 +1,4 @@
+require "dotenv"
 require "pathname"
 
 require "ood_portal_generator/version"
@@ -21,8 +22,9 @@ module OodPortalGenerator
 
     def scl_apache?
       return true if os_release_file.nil?
-      `source #{os_release_file} && [[ "$ID $ID_LIKE" = *"rhel"* ]] && [[ "$VERSION_ID" = "8"* ]]`
-      ! $?.success?
+      env = Dotenv.parse(os_release_file)
+      return false if ("#{env['ID']} #{env['ID_LIKE']}" =~ /rhel/ && env['VERSION_ID'] =~ /^8/)
+      true
     end
   end
 end
