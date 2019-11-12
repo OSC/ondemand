@@ -8,6 +8,15 @@ INSTALL_ROOT      = Pathname.new(ENV["PREFIX"] || "/opt/ood")
 VENDOR_BUNDLE     = (ENV['VENDOR_BUNDLE'] == "yes" || ENV['VENDOR_BUNDLE'] == "true")
 PASSENGER_APP_ENV = ENV["PASSENGER_APP_ENV"] || "production"
 
+def infrastructure
+  [
+    'mod_ood_proxy',
+    'nginx_stage',
+    'ood_auth_map',
+    'ood-portal-generator',
+  ].map { |d| Component.new(d) }
+end
+
 def apps
   Dir["#{APPS_DIR}/*"].map { |d| Component.new(d) }
 end
@@ -27,6 +36,10 @@ class Component
 
   def node_app?
     @path.join('app.js').exist?
+  end
+
+  def gemfile?
+    @path.join('Gemfile.lock').exist?
   end
 end
 
@@ -64,6 +77,12 @@ namespace :build do
         sh "bin/bundle install #{bundle_args.join(' ')}"
       end
     end
+    infrastructure.each do |a|
+      next unless a.gemfile?
+      chdir a.path do
+        sh "bundle install #{bundle_args.join(' ')}"
+      end
+    end
   end
 
   apps.each do |a|
@@ -92,10 +111,9 @@ directory INSTALL_ROOT.to_s
 namespace :install do
   desc "Install OnDemand infrastructure"
   task :infrastructure => [INSTALL_ROOT] do
-    sh "cp -r mod_ood_proxy #{INSTALL_ROOT}/"
-    sh "cp -r nginx_stage #{INSTALL_ROOT}/"
-    sh "cp -r ood_auth_map #{INSTALL_ROOT}/"
-    sh "cp -r ood-portal-generator #{INSTALL_ROOT}/"
+    infrastructure.each do |infra|
+      sh "cp -r #{infra.name} #{INSTALL_ROOT}/"
+    end
   end
   desc "Install OnDemand apps"
   task :apps => [INSTALL_ROOT] do
