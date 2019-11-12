@@ -113,3 +113,27 @@ desc "Clean up build"
 task :clean do
   sh "git clean -Xdf"
 end
+
+namespace :test do
+  testing = {
+    'ood-portal-generator': 'spec',
+  }
+
+  desc "Setup tests"
+  task :setup do
+    testing.each_pair do |app, _task|
+      chdir PROJ_DIR.join(app.to_s) do
+        sh "bundle install --with development test"
+      end
+    end
+  end
+
+  desc "Run unit tests"
+  task :run => [:setup] do
+    testing.each_pair do |app,_task|
+      chdir PROJ_DIR.join(app.to_s) do
+        sh "bundle exec rake #{_task}"
+      end
+    end
+  end
+end
