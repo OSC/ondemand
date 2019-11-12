@@ -23,7 +23,7 @@ describe OodPortalGenerator::Application do
 
   describe 'generate' do
     it 'runs generate' do
-      expect { described_class.start('generate', []) }.to output(/VirtualHost/).to_stdout
+      expect { described_class.generate() }.to output(/VirtualHost/).to_stdout
     end
   end
 
