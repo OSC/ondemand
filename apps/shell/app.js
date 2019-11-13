@@ -44,7 +44,7 @@ app.use(process.env.PASSENGER_BASE_URI || '/', router);
 var server = new http.createServer(app);
 var wss = new WebSocket.Server({ server: server });
 
-wss.on('connection', function connection (ws) {
+wss.on('connection', function connection (ws, req) {
   var match;
   var host = process.env.DEFAULT_SSHHOST || 'localhost';
   var dir;
@@ -54,7 +54,7 @@ wss.on('connection', function connection (ws) {
   console.log('Connection established');
 
   // Determine host and dir from request URL
-  if (match = ws.upgradeReq.url.match(process.env.PASSENGER_BASE_URI + '/ssh/([^\\/]+)(.+)?$')) {
+  if (match = req.url.match(process.env.PASSENGER_BASE_URI + '/ssh/([^\\/]+)(.+)?$')) {
     if (match[1] !== 'default') host = match[1];
     if (match[2]) dir = decodeURIComponent(match[2]);
   }
