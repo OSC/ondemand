@@ -28,7 +28,7 @@ class Job < ActiveRecord::Base
       "pitzer" => 4
     }[host]
 
-    "https://xdmod.osc.edu/index.php#job_viewer?action=show&realm=SUPREMM&resource_id=#{resource_id}&local_job_id=#{pbsid_number}"
+    "https://xdmod-test.hpc.osc.edu/index.php#job_viewer?action=show&realm=SUPREMM&resource_id=#{resource_id}&local_job_id=#{pbsid_number}"
   end
 
   def pbsid_number
