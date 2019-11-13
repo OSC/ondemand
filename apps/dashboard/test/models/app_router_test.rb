@@ -9,7 +9,7 @@ class AppRouterTest < ActiveSupport::TestCase
     dir.join("c").chmod(0600)
     dir.join("d.txt").chmod(0700)
 
-    assert_equal ["a", "b"].sort, DevRouter.apps.map(&:name).sort
+    assert_equal ["a", "b", "c"].sort, DevRouter.apps.map(&:name).sort
 
     dir.rmtree()
   end
