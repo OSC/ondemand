@@ -23,6 +23,11 @@
 #
 #ondemand_portal: null
 
+# Title of this OnDemand portal that apps *should* display in their navbar
+# NB: If this is not set then most apps will use default title "Open OnDemand"
+#
+#ondemand_title: null
+
 # Custom environment variables to set for the PUN environment
 # Below is an example of the use for setting env vars.
 #
