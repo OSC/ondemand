@@ -239,7 +239,7 @@ Ext.onReady(function() {
 
     var jobStore = new Ext.data.JsonStore({
         restful: true,
-        url: "https://xdmod.osc.edu/rest/v1/warehouse/search/jobs",
+        url: "https://xdmod-test.hpc.osc.edu/rest/v1/warehouse/search/jobs",
         root: 'results',
         cors: true,
         withCredentials: true,
@@ -323,7 +323,7 @@ Ext.onReady(function() {
                     realm: store.baseParams.realm,
                     jobref: info.data[info.data.dtype]
                 };
-                window.open('https://xdmod.osc.edu/#job_viewer?' + Ext.urlEncode(params));
+                window.open('https://xdmod-test.hpc.osc.edu/#job_viewer?' + Ext.urlEncode(params));
             }
         }
     };
@@ -366,7 +366,7 @@ Ext.onReady(function() {
         ],
         proxy: new Ext.data.HttpProxy({
             method: 'GET',
-            url: 'https://xdmod.osc.edu/rest/v1/app_kernels/performance_map/raw'
+            url: 'https://xdmod-test.hpc.osc.edu/rest/v1/app_kernels/performance_map/raw'
         }),
         baseParams: {
             start_date: moment().startOf('year').format("YYYY-MM-DD"),
@@ -557,7 +557,7 @@ Ext.onReady(function() {
                     app_kernel: record.get('app_kernel')
                 };
 
-                var token = 'https://xdmod.osc.edu/#main_tab_panel:app_kernels:app_kernel_performance_map?ak=' + window.btoa(JSON.stringify(info));
+                var token = 'https://xdmod-test.hpc.osc.edu/#main_tab_panel:app_kernels:app_kernel_performance_map?ak=' + window.btoa(JSON.stringify(info));
 
                 window.open(token);
             }
@@ -601,7 +601,7 @@ var timeframe = {
 var timeframe_label = '30 day';
 
 var reportThumbnailsStore = new Ext.data.JsonStore({
-    url: 'https://xdmod.osc.edu/rest/v1/dashboard/rolereport',
+    url: 'https://xdmod-test.hpc.osc.edu/rest/v1/dashboard/rolereport',
     cors: true,
     withCredentials: true,
     useDefaultXhrHeader: false,
@@ -637,7 +637,7 @@ var tpl = new Ext.XTemplate(
     '<tpl for=".">',
     '<div class="thumb-wrap" id="{chart_title}">',
     '<span class="x-editable">{shortName}</span>',
-    '<div class="thumb"><img src="https://xdmod.osc.edu/{thumbnail_link}"></div>',
+    '<div class="thumb"><img src="https://xdmod-test.hpc.osc.edu/{thumbnail_link}"></div>',
     '</div>',
     '</tpl>',
     '<div class="x-clear"></div>'
@@ -813,7 +813,7 @@ var reportThumbnailsPanel = new Ext.Panel({
                             text: 'Open in Metric Explorer',
                             handler: function() {
                                 win.destroy();
-                                var url = "https://xdmod.osc.edu/#main_tab_panel:metric_explorer?config=" + window.btoa(JSON.stringify(config_link));
+                                var url = "https://xdmod-test.hpc.osc.edu/#main_tab_panel:metric_explorer?config=" + window.btoa(JSON.stringify(config_link));
 
                                 window.open(url, '_blank');
                             }
@@ -828,7 +828,7 @@ var reportThumbnailsPanel = new Ext.Panel({
                     win.show();
 
                     $.ajax({
-                        url: "https://xdmod.osc.edu/controllers/metric_explorer.php",
+                        url: "https://xdmod-test.hpc.osc.edu/controllers/metric_explorer.php",
                         data: config_data,
                         method: "POST",
                         xhrFields: {
