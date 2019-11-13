@@ -132,9 +132,15 @@ task :clean do
   sh "git clean -Xdf"
 end
 
+desc "Test OnDemand"
+task :test => 'test:all'
 namespace :test do
   testing = {
     'ood-portal-generator': 'spec',
+    'apps/activejobs': 'test',
+    'apps/dashboard': 'test',
+    'apps/file-editor': 'test',
+    'apps/myjobs': 'test'
   }
 
   desc "Setup tests"
@@ -147,10 +153,10 @@ namespace :test do
   end
 
   desc "Run unit tests"
-  task :run => [:setup] do
-    testing.each_pair do |app,_task|
+  task :unit => [:setup] do
+    testing.each_pair do |app, task|
       chdir PROJ_DIR.join(app.to_s) do
-        sh "bundle exec rake #{_task}"
+        sh "bundle exec rake #{task}"
       end
     end
   end
@@ -161,4 +167,6 @@ namespace :test do
     sh "shellcheck -x nginx_stage/sbin/nginx_stage"
     sh "shellcheck nginx_stage/sbin/update_nginx_stage"
   end
+
+  task :all => [:unit, :shellcheck]
 end
