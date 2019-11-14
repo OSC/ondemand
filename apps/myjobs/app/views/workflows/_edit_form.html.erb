@@ -8,16 +8,8 @@
 
     <%# select in bootstrap_form?@%>
 
-    <div class="form-group">
-      <label class="control-label" for="workflow_script_path"><%= t('jobcomposer.options_script_title') %></label>
-      <select class="form-control selectpicker" id="workflow_script_path" name="workflow[script_path]">
-        <% workflow.folder_contents.each do |content| %>
-          <% if File.file? content %>
-            <%= "<option #{"selected" if (content == workflow.script_path.to_s)} value=\"#{content}\">#{content.gsub(workflow.staged_dir, "").sub!(/^\//, '')}</option>".html_safe %>
-          <% end %>
-        <% end %>
-      </select>
-    </div>
+    
+    <%= f.select :script_path, grouped_options_for_select(workflow.grouped_script_options), { label: t('jobcomposer.options_script_title'), help: t('jobcomposer.options_script_help') }, { class: "selectpicker", id: "workflow_script_path" }  %>
 
     <%= render partial: "edit_form_job_attrs", locals: { f: f } %>
 

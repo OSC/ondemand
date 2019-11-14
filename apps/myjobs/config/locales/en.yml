@@ -34,4 +34,5 @@ en:
     options_errors: "Please fix the errors below."
     options_name_title: "Name"
     options_script_title: "Specify job script"
+    options_script_help: "Files larger than 65KB are omitted for the job script field"
     options_title: "Job Options"

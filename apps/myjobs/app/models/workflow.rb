@@ -129,9 +129,33 @@ class Workflow < ActiveRecord::Base
   # Find.find returns an enumerator - the first path is always the initial directory
   # so we return the array with the first item omitted
   def folder_contents
-    File.directory?(staged_dir) ? Find.find(staged_dir).to_a[1..-1] : []
+    WorkflowHelper.new.folder_contents(self.staged_dir)
   end
-
+  
+  # Return a nested arry of valid files for job script path field in the job options form
+  # Each file is an array [relative_file_path, file_path]
+  # Relative file path to the staged dir is at index 0, which will be used as the text in the option element
+  # Full file path is at index 1, which will be used as the value in the option element
+  # 
+  # Files grouped under the same categroy are in the same array of files [[relative_file_path, file_path]]
+  #
+  # Files grouped under 'Suggested files' in the dropdown are at index 1 of the array with 'Suggested files' at index 0 
+  # ["Suggested files", [[relative_file_path, file_path]]]
+  #
+  # Files grouped under 'Others' in the dropdown are at index 1 of the array with 'Others' at index 0 
+  # ["Others", [[relative_file_path, file_path]]]
+  #
+  # @return [["Suggested files",[[relative_file_path, file_path]]], ["Others",[[relative_file_path, file_path]]]] the filename string
+  def grouped_script_options
+      suggested_files = WorkflowHelper.new.get_suggested_script_files(self.staged_dir).map{ |file_path|
+        [  WorkflowHelper.new.parse_relative_path(file_path, self.staged_dir), file_path ]
+      }
+      other_valid_files = WorkflowHelper.new.other_valid_job_scripts(self.staged_dir).map{ |file_path|
+        [  WorkflowHelper.new.parse_relative_path(file_path, self.staged_dir), file_path ]
+      }
+      [["Suggested files", suggested_files], ["Others", other_valid_files]]
+  end
+  
   # Returns the pbsid of the last job in the workflow
   #
   # @return [String, nil] the pbsid or nil if no jobs on the workflow
