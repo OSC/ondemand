@@ -206,3 +206,8 @@
 #     the PUN using other commands (e.g., `nginx`, `nginx_clean`, ...)
 #
 #disabled_shell: '/access/denied'
+
+# Set BUNDLE_USER_CONFIG to /dev/null in the PUN environment
+# NB: This prevents a user's ~/.bundle/config from affecting OnDemand applications
+#
+#disable_bundle_user_config: true
