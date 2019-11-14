@@ -11,7 +11,7 @@ stages:
 script: 'rake $TASK'
 matrix:
   include:
-    - env: TASK=test:run
+    - env: TASK=test:unit
       stage: unit
     - env: TASK=test:shellcheck
       stage: unit

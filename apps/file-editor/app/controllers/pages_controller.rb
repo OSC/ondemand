@@ -19,7 +19,7 @@ class PagesController < ApplicationController
       end
     elsif @pathname.directory?
       @directory_content = Dir.glob(@pathname + "*").sort
-      @file_edit_url = Pathname.new(ENV['RAILS_RELATIVE_URL_ROOT']).join('edit')
+      @file_edit_url = Pathname.new(ENV['RAILS_RELATIVE_URL_ROOT'] || '/').join('edit')
     else
       @not_found = true
       render status: 404
