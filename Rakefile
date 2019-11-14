@@ -170,3 +170,5 @@ namespace :test do
 
   task :all => [:unit, :shellcheck]
 end
+
+task default: %w[test]
