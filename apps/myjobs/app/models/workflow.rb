@@ -132,18 +132,16 @@ class Workflow < ActiveRecord::Base
     WorkflowHelper.new.folder_contents(self.staged_dir)
   end
   
-  # Return a nested arry of valid files for job script path field in the job options form
-  # Each file is an array [relative_file_path, file_path]
-  # Relative file path to the staged dir is at index 0, which will be used as the text in the option element
-  # Full file path is at index 1, which will be used as the value in the option element
+  # Return a nested array of valid files for job script field in the job options form
+  # Each file is an array with 2 elements: [relative_file_path, file_path]
+  # Relative file path to the staged dir is at index 0, which will be used as the text for the option element
+  # Full file path is at index 1, which will be used as the value for the option element
   # 
-  # Files grouped under the same categroy are in the same array of files [[relative_file_path, file_path]]
+  # Files grouped under the same categroy are in the same array: [[relative_file_path, file_path]]
   #
-  # Files grouped under 'Suggested files' in the dropdown are at index 1 of the array with 'Suggested files' at index 0 
-  # ["Suggested files", [[relative_file_path, file_path]]]
+  # Files grouped under 'Suggested files' in the dropdown are at index 1 of the array with 'Suggested files' at index 0: ["Suggested files", [[relative_file_path, file_path]]]
   #
-  # Files grouped under 'Others' in the dropdown are at index 1 of the array with 'Others' at index 0 
-  # ["Others", [[relative_file_path, file_path]]]
+  # Files grouped under 'Others' in the dropdown are at index 1 of the array with 'Others' at index 0: ["Others", [[relative_file_path, file_path]]]
   #
   # @return [["Suggested files",[[relative_file_path, file_path]]], ["Others",[[relative_file_path, file_path]]]] the filename string
   def grouped_script_options
