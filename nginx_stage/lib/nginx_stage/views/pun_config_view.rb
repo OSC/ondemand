@@ -112,6 +112,10 @@ module NginxStage
       %w(PATH LD_LIBRARY_PATH X_SCLS MANPATH PCP_DIR PERL5LIB PKG_CONFIG_PATH PYTHONPATH XDG_DATA_DIRS SCLS RUBYLIB)
     end
 
+    def disable_bundle_user_config?
+      NginxStage.disable_bundle_user_config
+    end
+
     # View used to confirm whether the user wants to restart the PUN to reload
     # configuration changes
     # @return [String] restart confirmation view
