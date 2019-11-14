@@ -29,6 +29,11 @@ http {
   passenger_default_user <%= user %>;
   passenger_load_shell_envvars off;
 
+  <%- if disable_bundle_user_config? -%>
+  passenger_env_var BUNDLE_USER_CONFIG /dev/null;
+
+  <%- end -%>
+
   # Kill all apps after they idle timeout
   passenger_min_instances 0;
 
@@ -87,10 +92,6 @@ http {
       alias <%= default_html_root %>/$1;
     }
 
-    <%- if disable_bundle_user_config? -%>
-    passenger_env_var BUNDLE_USER_CONFIG /dev/null
-
-    <%- end -%>
     # Include all app configs user has access to
     <%- app_configs.each do |app_config| -%>
     include <%= app_config %>;
