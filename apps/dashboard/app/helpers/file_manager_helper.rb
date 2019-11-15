@@ -30,4 +30,10 @@ module FileManagerHelper
     def can_upload_to?(path)
         Pathname.new(path).writable?
     end
+
+    def fs_entrys_as_JSON(entries)
+        entries.each_with_index.map do |entry, index|
+            entry.to_h.tap { |hsh| hsh['id'] = index }
+        end.to_json
+    end
 end

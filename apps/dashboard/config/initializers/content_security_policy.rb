@@ -1,8 +1,8 @@
-# Be sure to restart your server when you modify this file.
+# # Be sure to restart your server when you modify this file.
 
-# Define an application-wide content security policy
-# For further information see the following documentation
-# https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
+# # Define an application-wide content security policy
+# # For further information see the following documentation
+# # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
 
 # Rails.application.config.content_security_policy do |policy|
 #   policy.default_src :self, :https
@@ -12,17 +12,25 @@
 #   policy.script_src  :self, :https
 #   policy.style_src   :self, :https
 
-#   # Specify URI for violation reports
-#   # policy.report_uri "/csp-violation-report-endpoint"
+# #   # Specify URI for violation reports
+# #   # policy.report_uri "/csp-violation-report-endpoint"
+
+#     # Allow webpack-dev-server host as allowed origin for connect-src.
+#     policy.connect_src :self, :https, "http://localhost:3035", "ws://localhost:3035" if Rails.env.development?
+
+#     # Recommended by `rake webpacker:install:vue`
+#     if Rails.env.development?
+#       policy.script_src :self, :https, :unsafe_eval
+#     else
+#       policy.script_src :self, :https
+#     end
+
 # end
 
-# If you are using UJS then enable automatic nonce generation
-# Rails.application.config.content_security_policy_nonce_generator = -> request { SecureRandom.base64(16) }
+# # If you are using UJS then enable automatic nonce generation
+# # Rails.application.config.content_security_policy_nonce_generator = -> request { SecureRandom.base64(16) }
 
-# Report CSP violations to a specified URI
-# For further information see the following documentation:
-# https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy-Report-Only
-# Rails.application.config.content_security_policy_report_only = true
-
-# You need to allow webpack-dev-server host as allowed origin for connect-src.
-policy.connect_src :self, :https, "http://localhost:3035", "ws://localhost:3035" if Rails.env.development?
+# # Report CSP violations to a specified URI
+# # For further information see the following documentation:
+# # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy-Report-Only
+Rails.application.config.content_security_policy_report_only = true
