@@ -6,8 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.7.2] - 2019-11-04
 ### Added
 - Job Compser and ActiveJobs now respect same navbar branding configuration as Dashboard @zooley [#101](https://github.com/OSC/ondemand/pull/101)
+- Dashboard upgraded to ood_core 0.10.0 giving access to LinuxHost adapter
 
 ## [1.7.1] - 2019-11-04
 ### Added
@@ -286,7 +288,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.1...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.2...HEAD
+[1.7.2]: https://github.com/OSC/ondemand/compare/v1.7.`...v1.7.2
 [1.7.1]: https://github.com/OSC/ondemand/compare/v1.7.0...v1.7.1
 [1.7.0]: https://github.com/OSC/ondemand/compare/v1.6.20...v1.7.0
 [1.6.20]: https://github.com/OSC/ondemand/compare/v1.6.19...v1.6.20
