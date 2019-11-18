@@ -175,8 +175,8 @@ class Workflow < ActiveRecord::Base
     jobs.last.pbsid unless jobs.last.nil?
   end
 
-  def pbsid_number
-    jobs.last.pbsid_number unless jobs.last.nil?
+  def xdmod_url
+    jobs.first.xdmod_url if completed?
   end
 
   # Returns the optional user-entered account string
