@@ -11,6 +11,7 @@ require {
   type sshd_key_t;
   type chkpwd_t;
   type initrc_var_run_t;
+  type user_home_dir_t;
   class chr_file { ioctl open read write };
   class fifo_file { create getattr ioctl open read setattr unlink write };
   class netlink_audit_socket { nlmsg_relay create write };
@@ -23,10 +24,10 @@ require {
 #============= httpd_t ==============
 
 # Allow management of home directories when they are local
-manage_dirs_pattern(httpd_t, user_home_dir_t, user_home_dir_t)
-manage_files_pattern(httpd_t, user_home_dir_t, user_home_dir_t)
-manage_dirs_pattern(httpd_sys_script_t, user_home_dir_t, user_home_dir_t)
-manage_files_pattern(httpd_sys_script_t, user_home_dir_t, user_home_dir_t)
+manage_dirs_pattern(httpd_t, user_home_dir_t, user_home_dir_t);
+manage_files_pattern(httpd_t, user_home_dir_t, user_home_dir_t);
+manage_dirs_pattern(httpd_sys_script_t, user_home_dir_t, user_home_dir_t);
+manage_files_pattern(httpd_sys_script_t, user_home_dir_t, user_home_dir_t);
 
 # PUN startup
 allow httpd_t chkpwd_t:process { noatsecure rlimitinh siginh };
