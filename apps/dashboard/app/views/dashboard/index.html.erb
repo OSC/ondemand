@@ -1,19 +1,26 @@
 <%= render partial: 'shared/welcome' %>
 
-<br>
+<div class="xdmod">
+    <div id="jobsPanelDiv"></div>
+    <div id="centerReportCardPanelDiv"></div>
+    <div id="reportThumbnailsPanelDiv"></div>
+</div>
 
-<%# This assumes @motd_file responds to `to_partial_path` %>
-<%= render @motd if @motd %>
 
+    <%# This assumes @motd_file responds to `to_partial_path` %>
+    <%= render @motd if @motd %>
 <!--
-TODO: add getting started
 <div class="row">
   <div class="col-md-8">
-    <h3>Getting Started</h3>
-    <hr>
+    <div class="xdmod">
+      <div id="jobsPanelDiv"></div>
+      <div id="centerReportCardPanelDiv"></div>
+      <div id="reportThumbnailsPanelDiv"></div>
+    </div>
   </div>
   <div class="col-md-4">
-    <%# render partial: "motd", locals: { motd: MotdFile.new } %>
+    <%# This assumes @motd_file responds to `to_partial_path` %>
+    <%# render @motd if @motd %>
   </div>
 </div>
 -->
