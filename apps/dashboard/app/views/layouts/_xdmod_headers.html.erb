@@ -47,9 +47,31 @@
   }
 </style>
 
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/highcharts-more.js"></script>
-<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/extjs/3.4.1-1/resources/css/ext-all.css"/>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/extjs/3.4.1-1/adapter/ext/ext-base.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/extjs/3.4.1-1/ext-all.js"></script>
+<script type="text/javascript">
+  jQuery.ajaxSetup({
+    xhrFields: {
+      withCredentials: true
+    }
+  });
+</script>
+
+
+<link rel="stylesheet" type="text/css" href="https://xdmod-test.hpc.osc.edu/gui/lib/extjs/resources/css/ext-all.css">
+<link rel="stylesheet" type="text/css" href="https://xdmod-test.hpc.osc.edu/gui/lib/extjs/resources/css/xtheme-gray.css">
+<link rel="stylesheet" type="text/css" href="https://xdmod-test.hpc.osc.edu/gui/lib/extjs/resources/css/debug.css">
+
+<!-- Inclue custom script to stop Ext from checking for Flash: -->
+
+<script type="text/javascript" src="https://xdmod-test.hpc.osc.edu/gui/lib/ext-stop-flash-check.js"></script>
+<script type="text/javascript" src="https://xdmod-test.hpc.osc.edu/gui/lib/extjs/adapter/jquery/ext-jquery-adapter.js"></script>
+<script type="text/javascript" src="https://xdmod-test.hpc.osc.edu/gui/lib/extjs/ext-all-debug-w-comments.js"></script>
+
+<!-- ExtJS extjs support files END -->
+
+<script type="text/javascript" src="https://xdmod-test.hpc.osc.edu/gui/lib/ext-oldie-history-patch.js"></script>
+<script type="text/javascript" src="https://xdmod-test.hpc.osc.edu/gui/lib/highcharts/js/highcharts.src.js"></script>
+<script type="text/javascript" src="https://xdmod-test.hpc.osc.edu/gui/lib/highcharts/js/highcharts-more.js"></script>
+<script type="text/javascript" src="https://xdmod-test.hpc.osc.edu/gui/lib/highchartsDateformats.src.js"></script>
+<script type="text/javascript" src="https://xdmod-test.hpc.osc.edu/gui/lib/highchartsDottedLineNullPlot.src.js"></script>
+<script type="text/javascript" src="https://xdmod-test.hpc.osc.edu/gui/lib/highcharts/js/modules/exporting.src.js"></script>
+
