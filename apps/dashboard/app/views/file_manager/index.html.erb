@@ -33,36 +33,7 @@
     </div>
     <div class="row">
         <div class="col-12">
-            <div class="file-list table-responsive overflow-auto">
-                <div class="file-list table-responsive overflow-auto">
-                    <table class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th>Select</th>
-                                <th>Name</th>
-                                <th>Size</th>
-                                <th class="d-none d-sm-table-cell">Modified</th>
-                                <th class="d-none d-lg-table-cell">Owner</th>
-                                <th class="d-none d-lg-table-cell">Group</th>
-                                <th class="d-none d-xl-table-cell">Permissions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        <% for entry in @fs_entries %>
-                            <tr>
-                                <td><i class="fas <%= entry_icon(entry) %> file-list-icon fa-lg">&nbsp;</i><input type="checkbox" name="selected-entries[]" value="<%= entry.path %>"></td>
-                                <td><a href="<%= fs_link(entry.path) %>"><%= entry.basename %></a></td>
-                                <td><%= entry.size %></td>
-                                <td class="d-none d-sm-table-cell"><%= entry.modified %></td>
-                                <td class="d-none d-lg-table-cell"><%= entry.owner %></td>
-                                <td class="d-none d-lg-table-cell"><%= entry.group %></td>
-                                <td class="d-none d-xl-table-cell"><%= entry.permissions %></td>
-                            </tr>
-                        <% end %>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <div id="filemanager-list"></div>            
         </div>
     </div>
 <% end %>
@@ -70,4 +41,3 @@
     window.FILESYSTEM_ENTRIES = <%== fs_entrys_as_JSON(@fs_entries) %>;
 </script>
 <%= javascript_pack_tag 'filemanager_list' %>
-<div id="filemanager-list"></div>
