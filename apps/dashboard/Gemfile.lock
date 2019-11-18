@@ -115,6 +115,8 @@ GEM
     minitest (5.13.0)
     mocha (1.9.0)
       metaclass (~> 0.0.1)
+    momentjs-rails (2.20.1)
+      railties (>= 3.1)
     nio4r (2.5.2)
     nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
@@ -225,6 +227,7 @@ DEPENDENCIES
   jquery-rails
   local_time (~> 1.0.3)
   mocha (~> 1.1)
+  momentjs-rails
   ood_appkit (~> 1.1)
   ood_core (~> 0.1)
   ood_support (~> 0.0.2)
