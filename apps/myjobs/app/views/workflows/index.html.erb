@@ -87,8 +87,8 @@
                 <%# FIXME: Retaining job records would be helpful %>
                 <td>
                   <% if workflow.completed? %>
-                    <%= link_to(workflow.jobs.first.xdmod_url, target: "_blank", class: "btn btn-default", style: "color: black")  do %>
-                      <%= workflow.pbsid_number %><%= image_tag "xdmod_small.png", height: 24 %>
+                    <%= link_to(workflow.xdmod_url, target: "_blank")  do %>
+                      <%= workflow.pbsid %> - <%= content_tag :i, nil, style: "display: inline", class: "fa fa-external-link-square-alt" %>&nbsp;XDMoD
                     <% end %>
                   <% else %>
                     <span title="<%= workflow.pbsid %>"><%= workflow.pbsid %></span>
