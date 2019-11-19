@@ -6,8 +6,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.7.2] - 2019-11-19
 ### Added
 - Job Compser and ActiveJobs now respect same navbar branding configuration as Dashboard @zooley [#101](https://github.com/OSC/ondemand/pull/101)
+- running core app unit tests in Travis CI [#303](https://github.com/OSC/ondemand/pull/303)
+- support for radio buttons in batch connect apps [#139](https://github.com/OSC/ondemand/pull/139)
+- branding to Job Composer and Active Jobs that match Dashboard [#101](https://github.com/OSC/ondemand/pull/101)
+
+### Changed
+- rewrote ood-portal-generator in Ruby with automated tests [#108](https://github.com/OSC/ondemand/pull/108)
+
+### Fixed
+- SELinux policy issues exposed when installing at external site [#110](https://github.com/OSC/ondemand/issues/110) and [#112](https://github.com/OSC/ondemand/issues/112)
+- Shell app now uses en_US.UTF-8 as LANG @jasonbuechler [#308](https://github.com/OSC/ondemand/pull/308)
+- ignore comments when comparing Apache configs in ood-portal-generator [#100](https://github.com/OSC/ondemand/issues/100)
 
 ## [1.7.1] - 2019-11-04
 ### Added
@@ -48,7 +60,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.6.18] - 2019-10-09
 ### Fixed
 - stop shell app from changing directory to the home directory prior to initiating ssh connection
-  which [introduced a crash when the home directory does 
+  which [introduced a crash when the home directory does
   not exist](https://discourse.osc.edu/t/custom-home-directory-broken-after-upgrade-to-1-6-x/518)
   when we upgraded the shell app's pty dependency
 
@@ -286,7 +298,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.1...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.2...HEAD
+[1.7.2]: https://github.com/OSC/ondemand/compare/v1.7.1...v1.7.2
 [1.7.1]: https://github.com/OSC/ondemand/compare/v1.7.0...v1.7.1
 [1.7.0]: https://github.com/OSC/ondemand/compare/v1.6.20...v1.7.0
 [1.6.20]: https://github.com/OSC/ondemand/compare/v1.6.19...v1.6.20
