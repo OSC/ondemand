@@ -124,12 +124,19 @@ class Workflow < ActiveRecord::Base
     Pathname.new(self.staged_dir)
   end
 
-  # Get an array of all the files of a directory
+  # Get an array of WorkflowFile Objects of all the files of a directory
   #
   # Find.find returns an enumerator - the first path is always the initial directory
   # so we return the array with the first item omitted
+  # Then, map files to WorkflowFile objects
+  #
+  # @return [WorkflowFile] An array of WorkflowFile Objects of all the files of a directory
   def folder_contents
-    WorkflowHelper.new.folder_contents(self.staged_dir)
+    if File.directory?(self.staged_dir)
+      Find.find(self.staged_dir).drop(1).select {|f| File.file?(f) }.map {|f| WorkflowFile.new(f, self.staged_dir)}
+    else
+      []
+    end
   end
   
   # Return a nested array of valid files for job script field in the job options form
@@ -145,13 +152,16 @@ class Workflow < ActiveRecord::Base
   #
   # @return [["Suggested files",[[relative_file_path, file_path]]], ["Others",[[relative_file_path, file_path]]]] the filename string
   def grouped_script_options
-      suggested_files = WorkflowHelper.new.get_suggested_script_files(self.staged_dir).map{ |file_path|
-        [  WorkflowHelper.new.parse_relative_path(file_path, self.staged_dir), file_path ]
-      }
-      other_valid_files = WorkflowHelper.new.other_valid_job_scripts(self.staged_dir).map{ |file_path|
-        [  WorkflowHelper.new.parse_relative_path(file_path, self.staged_dir), file_path ]
-      }
-      [["Suggested files", suggested_files], ["Others", other_valid_files]]
+    suggested_files = []
+    other_valid_files = []
+    folder_contents.map{ |file|
+      if file.suggested_script?
+        suggested_files.append([ file.relative_path, file.path ])
+      elsif file.valid_script?
+        other_valid_files.append([ file.relative_path, file.path ])
+      end
+    }
+    [["Suggested files", suggested_files], ["Others", other_valid_files]]
   end
   
   # Returns the pbsid of the last job in the workflow
@@ -277,7 +287,7 @@ class Workflow < ActiveRecord::Base
       end
     end
   end
-
+  
   def self.show_job_arrays?
     OODClusters.any? { |cluster| cluster.job_adapter.supports_job_arrays? }
   end
