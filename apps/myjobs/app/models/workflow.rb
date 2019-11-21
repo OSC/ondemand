@@ -132,6 +132,7 @@ class Workflow < ActiveRecord::Base
   #
   # @return [WorkflowFile] An array of WorkflowFile Objects of all the files of a directory
   def folder_contents
+    return @folder_contents if defined? @folder_contents
     if File.directory?(self.staged_dir)
       Find.find(self.staged_dir).drop(1).select {|f| File.file?(f) }.map {|f| WorkflowFile.new(f, self.staged_dir)}
     else
@@ -152,16 +153,10 @@ class Workflow < ActiveRecord::Base
   #
   # @return [["Suggested files",[[relative_file_path, file_path]]], ["Others",[[relative_file_path, file_path]]]] the filename string
   def grouped_script_options
-    suggested_files = []
-    other_valid_files = []
-    folder_contents.map{ |file|
-      if file.suggested_script?
-        suggested_files.append([ file.relative_path, file.path ])
-      elsif file.valid_script?
-        other_valid_files.append([ file.relative_path, file.path ])
-      end
-    }
-    [["Suggested files", suggested_files], ["Others", other_valid_files]]
+   {
+      "Suggested files" => folder_contents.select(&:suggested_script?).map { |f| [f.relative_path, f.path] },
+      "Others" => folder_contents.select(&:valid_script?).reject(&:suggested_script?).map { |f| [f.relative_path, f.path] },
+    }.to_a
   end
   
   # Returns the pbsid of the last job in the workflow
