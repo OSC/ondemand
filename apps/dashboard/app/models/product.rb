@@ -52,6 +52,7 @@ class Product
   def gems_installed?
     Dir.chdir(router.path) do
       Bundler.with_clean_env do
+        ENV['BUNDLE_USER_CONFIG'] = '/dev/null' if Rails.env.production?
         _, s = Open3.capture2e("bundle", "check")
         s.success?
       end
