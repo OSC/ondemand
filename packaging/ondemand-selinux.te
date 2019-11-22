@@ -1,43 +1,198 @@
-module ondemand-selinux @VERSION@;
+#policy_module(ondemand-selinux, @VERSION@)
+policy_module(ondemand-selinux, 1)
 
 require {
-  type httpd_tmp_t;
-  type httpd_sys_script_t;
-  type devpts_t;
+#  type httpd_sys_script_t;
+#  type devpts_t;
+  type bin_t;
   type httpd_t;
-  type systemd_logind_t;
-  type shadow_t;
-  type ptmx_t;
-  type sshd_key_t;
-  type chkpwd_t;
-  type initrc_var_run_t;
+  type shell_exec_t;
+#  type systemd_logind_t;
+#  type shadow_t;
+#  type ptmx_t;
+#  type sshd_key_t;
+#  type chkpwd_t;
   type user_home_dir_t;
-  class chr_file { ioctl open read write };
-  class fifo_file { create getattr ioctl open read setattr unlink write };
-  class netlink_audit_socket { nlmsg_relay create write };
-  class capability { audit_write fowner net_admin };
-  class file { rw_file_perms manage_file_perms };
-  class dir { rw_dir_perms manage_dir_perms };
-  class process { noatsecure rlimitinh siginh };
+  type proc_t;
+  type unconfined_t;
+  type systemd_logind_t;
+  type systemd_logind_sessions_t;
+  type chkpwd_t;
+  type vmblock_t;
+#  class chr_file { ioctl open read write };
+#  class fifo_file { create getattr ioctl open read setattr unlink write };
+#  class netlink_audit_socket { nlmsg_relay create write };
+#  class capability { audit_write fowner net_admin };
+#  class file { rw_file_perms manage_file_perms };
+#  class dir { rw_dir_perms manage_dir_perms };
+#  class process { noatsecure rlimitinh siginh };
+  class dbus send_msg;
+#  class file { open read };
 }
 
-#============= httpd_t ==============
+# Define custom types
+type ood_pun_t;
+type ood_pun_exec_t;
 
-# Allow management of home directories when they are local
-manage_dirs_pattern(httpd_t, user_home_dir_t, user_home_dir_t);
-manage_files_pattern(httpd_t, user_home_dir_t, user_home_dir_t);
-manage_dirs_pattern(httpd_sys_script_t, user_home_dir_t, user_home_dir_t);
-manage_files_pattern(httpd_sys_script_t, user_home_dir_t, user_home_dir_t);
+# service setup
+domain_type(ood_pun_t);
+domain_entry_file(ood_pun_t, ood_pun_exec_t);
+init_daemon_domain(ood_pun_t, ood_pun_exec_t);
+role system_r types ood_pun_t;
+
+# tmp support
+type ood_pun_tmp_t;
+files_tmp_file(ood_pun_tmp_t)
+manage_dirs_pattern(ood_pun_t, ood_pun_tmp_t, ood_pun_tmp_t)
+manage_files_pattern(ood_pun_t, ood_pun_tmp_t, ood_pun_tmp_t)
+manage_fifo_files_pattern(ood_pun_t, ood_pun_tmp_t, ood_pun_tmp_t)
+manage_sock_files_pattern(ood_pun_t, ood_pun_tmp_t, ood_pun_tmp_t)
+files_tmp_filetrans(ood_pun_t, ood_pun_tmp_t, { file fifo_file dir })
+
+# PID support
+type ood_pun_var_run_t;
+files_pid_file(ood_pun_var_run_t)
+admin_pattern(ood_pun_t, ood_pun_var_run_t, ood_pun_var_run_t)
+#allow httpd_t ood_pun_var_run_t:dir { setattr };
+
+# PUN configs
+type ood_pun_var_lib_t;
+type ood_pun_var_config_t;
+manage_dirs_pattern(ood_pun_t, ood_pun_var_lib_t, ood_pun_var_lib_t)
+manage_files_pattern(ood_pun_t, ood_pun_var_lib_t, ood_pun_var_lib_t)
+manage_dirs_pattern(ood_pun_t, ood_pun_var_config_t, ood_pun_var_config_t)
+manage_files_pattern(ood_pun_t, ood_pun_var_config_t, ood_pun_var_config_t)
+manage_dirs_pattern(httpd_t, ood_pun_var_config_t, ood_pun_var_config_t)
+manage_files_pattern(httpd_t, ood_pun_var_config_t, ood_pun_var_config_t)
+
+# logging
+type ood_pun_log_t;
+logging_log_file(ood_pun_log_t);
+manage_dirs_pattern(ood_pun_t, ood_pun_log_t, ood_pun_log_t)
+manage_files_pattern(ood_pun_t, ood_pun_log_t, ood_pun_log_t)
+
+# networking
+allow ood_pun_t self:tcp_socket { create_stream_socket_perms };
+allow ood_pun_t self:udp_socket { create_stream_socket_perms };
+logging_send_syslog_msg(ood_pun_t)
+
+# When an httpd_t process executes a file with context ood_pun_exec_t, 
+# then the resulting process should run in the ood_pun_t context.
+can_exec(httpd_t, ood_pun_exec_t)
+allow httpd_t ood_pun_t:process transition;
+type_transition httpd_t ood_pun_exec_t : process ood_pun_t;
+
+# Manage app contexts
+type ood_apps_t;
+list_dirs_pattern(ood_pun_t, ood_apps_t, ood_apps_t)
+read_files_pattern(ood_pun_t, ood_apps_t, ood_apps_t)
+
+## <desc>
+## <p>
+## Allow OnDemand to manage user home directories
+## </p>
+## </desc>
+gen_tunable(ondemand_manage_user_home_dir, true)
+
+tunable_policy(`ondemand_manage_user_home_dir',`
+  manage_dirs_pattern(ood_pun_t, user_home_dir_t, user_home_dir_t)
+  manage_files_pattern(ood_pun_t, user_home_dir_t, user_home_dir_t)
+')
+
+## <desc>
+## <p>
+## Allow OnDemand to manage vmblock contexts
+## </p>
+## </desc>
+gen_tunable(ondemand_manage_vmblock, true)
+
+tunable_policy(`ondemand_manage_vmblock',`
+  manage_dirs_pattern(ood_pun_t, vmblock_t, vmblock_t)
+  manage_files_pattern(ood_pun_t, vmblock_t, vmblock_t)
+')
+
+## <desc>
+## <p>
+## Allow OnDemand to access NFS file systems
+## </p>
+## </desc>
+gen_tunable(ondemand_use_nfs, true)
+
+tunable_policy(`ondemand_use_nfs',`
+  fs_list_auto_mountpoints(ood_pun_t)
+	fs_manage_nfs_dirs(ood_pun_t)
+	fs_manage_nfs_files(ood_pun_t)
+	fs_manage_nfs_symlinks(ood_pun_t)
+')
+optional_policy(`
+    tunable_policy(`ondemand_use_nfs',`
+	    automount_search_tmp_dirs(ood_pun_t)
+    ')
+')
+
+# Allow Apache to acces PUN socket
+allow httpd_t ood_pun_t:unix_stream_socket connectto;
+
+# Allow PUN to access socket for passenger
+allow ood_pun_t self:unix_stream_socket connectto;
+
+# Allow PUN to execute bin_t
+exec_files_pattern(ood_pun_t, bin_t, bin_t)
+# Allow PUN to execute bash
+exec_files_pattern(ood_pun_t, shell_exec_t, shell_exec_t)
+
+# Allow PUN to connect to Apache
+corenet_tcp_connect_http_port(ood_pun_t)
+
+allow ood_pun_t self:capability { chown dac_override setgid setuid sys_resource fowner };
+allow ood_pun_t self:process { setpgid setsched };
+
+# Following was necessary to kill PUNs via nginx_stage
+allow ood_pun_t httpd_t:fifo_file ioctl;
+read_files_pattern(ood_pun_t, proc_t, proc_t)
+list_dirs_pattern(ood_pun_t, proc_t, proc_t)
+# allow ood_pun_t proc_t:file { read open };
+
+# Allow Apache to execute sudo
+sudo_exec(httpd_t)
 
 # PUN startup
+allow httpd_t systemd_logind_t:dbus send_msg;
+allow systemd_logind_t httpd_t:dbus send_msg;
+allow ood_pun_t httpd_t:process sigchld;
+allow ood_pun_t httpd_t:fifo_file { rw_fifo_file_perms };
+
+# PUN STARTUP TODO AUDIT
 allow httpd_t chkpwd_t:process { noatsecure rlimitinh siginh };
-allow httpd_t httpd_tmp_t:fifo_file { create getattr ioctl open read setattr unlink write };
-allow httpd_t initrc_var_run_t:file read;
+#allow httpd_t initrc_var_run_t:file read;
 allow httpd_t self:capability net_admin;
+allow httpd_t systemd_logind_sessions_t:fifo_file write;
+
+# Allow PUN to read passwd
+auth_read_passwd(ood_pun_t)
+
+# Allow Apache to send signals to PUN
+allow httpd_t ood_pun_t:process { noatsecure rlimitinh siginh signal_perms };
+
+# PUN and Passenger to bind to network
+corenet_tcp_bind_generic_node(ood_pun_t)
+
+# Handle getattr
+fs_getattr_all_fs(ood_pun_t)
+files_getattr_home_dir(ood_pun_t)
+files_dontaudit_getattr_all_files(ood_pun_t)
+
+#allow httpd_t chkpwd_t:process { noatsecure rlimitinh siginh };
+#allow httpd_t self:capability net_admin;
 
 # Shell app
-allow httpd_t ptmx_t:chr_file { ioctl open read write };
-allow httpd_t sshd_key_t:file { getattr open read };
+#allow httpd_t ptmx_t:chr_file { ioctl open read write };
+#allow httpd_t sshd_key_t:file { getattr open read };
 
 # Job Composer
-allow httpd_t httpd_sys_script_t:process { noatsecure rlimitinh siginh };
+#allow httpd_t httpd_sys_script_t:process { noatsecure rlimitinh siginh };
+
+# Necessary to run nginx_stage at command line which is unconfined
+list_dirs_pattern(unconfined_t, ood_pun_var_config_t, ood_pun_var_config_t)
+list_dirs_pattern(unconfined_t, ood_pun_var_lib_t, ood_pun_var_lib_t)
+read_files_pattern(unconfined_t, ood_pun_var_config_t, ood_pun_var_config_t)
