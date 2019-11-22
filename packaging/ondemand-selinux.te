@@ -60,6 +60,8 @@ admin_pattern(ood_pun_t, ood_pun_var_run_t, ood_pun_var_run_t)
 # PUN configs
 type ood_pun_var_lib_t;
 type ood_pun_var_config_t;
+files_type(ood_pun_var_lib_t)
+files_type(ood_pun_var_config_t)
 manage_dirs_pattern(ood_pun_t, ood_pun_var_lib_t, ood_pun_var_lib_t)
 manage_files_pattern(ood_pun_t, ood_pun_var_lib_t, ood_pun_var_lib_t)
 manage_dirs_pattern(ood_pun_t, ood_pun_var_config_t, ood_pun_var_config_t)
@@ -86,9 +88,11 @@ type_transition httpd_t ood_pun_exec_t : process ood_pun_t;
 
 # Manage app contexts
 type ood_apps_t;
+files_type(ood_apps_t)
 list_dirs_pattern(ood_pun_t, ood_apps_t, ood_apps_t)
 read_files_pattern(ood_pun_t, ood_apps_t, ood_apps_t)
 mmap_exec_files_pattern(ood_pun_t, ood_apps_t, ood_apps_t)
+read_lnk_files_pattern(ood_pun_t, ood_apps_t, ood_apps_t)
 
 ## <desc>
 ## <p>
