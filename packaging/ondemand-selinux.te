@@ -9,7 +9,7 @@ require {
   type shell_exec_t;
 #  type systemd_logind_t;
 #  type shadow_t;
-#  type ptmx_t;
+  type ptmx_t;
 #  type sshd_key_t;
 #  type chkpwd_t;
   type user_home_dir_t;
@@ -19,6 +19,8 @@ require {
   type systemd_logind_sessions_t;
   type chkpwd_t;
   type vmblock_t;
+  type ssh_exec_t;
+  type net_conf_t;
 #  class chr_file { ioctl open read write };
 #  class fifo_file { create getattr ioctl open read setattr unlink write };
 #  class netlink_audit_socket { nlmsg_relay create write };
@@ -86,6 +88,7 @@ type_transition httpd_t ood_pun_exec_t : process ood_pun_t;
 type ood_apps_t;
 list_dirs_pattern(ood_pun_t, ood_apps_t, ood_apps_t)
 read_files_pattern(ood_pun_t, ood_apps_t, ood_apps_t)
+mmap_exec_files_pattern(ood_pun_t, ood_apps_t, ood_apps_t)
 
 ## <desc>
 ## <p>
@@ -130,6 +133,20 @@ optional_policy(`
     ')
 ')
 
+## <desc>
+## <p>
+## Allow OnDemand to use Shell app
+## </p>
+## </desc>
+gen_tunable(ondemand_use_shell_app, true)
+
+tunable_policy(`ondemand_use_shell_app',`
+  allow ood_pun_t ptmx_t:chr_file { ioctl open read write };
+  can_exec(ood_pun_t, ssh_exec_t)
+  #corenet_tcp_sendrecv_ssh_port(ood_pun_t)
+  corenet_tcp_connect_ssh_port(ood_pun_t)
+')
+
 # Allow Apache to acces PUN socket
 allow httpd_t ood_pun_t:unix_stream_socket connectto;
 
@@ -145,7 +162,7 @@ exec_files_pattern(ood_pun_t, shell_exec_t, shell_exec_t)
 corenet_tcp_connect_http_port(ood_pun_t)
 
 allow ood_pun_t self:capability { chown dac_override setgid setuid sys_resource fowner };
-allow ood_pun_t self:process { setpgid setsched };
+allow ood_pun_t self:process { setpgid setsched execmem execstack };
 
 # Following was necessary to kill PUNs via nginx_stage
 allow ood_pun_t httpd_t:fifo_file ioctl;
@@ -181,16 +198,16 @@ corenet_tcp_bind_generic_node(ood_pun_t)
 fs_getattr_all_fs(ood_pun_t)
 files_getattr_home_dir(ood_pun_t)
 files_dontaudit_getattr_all_files(ood_pun_t)
+dontaudit ood_pun_t non_security_file_type:dir getattr;
 
 #allow httpd_t chkpwd_t:process { noatsecure rlimitinh siginh };
 #allow httpd_t self:capability net_admin;
 
-# Shell app
-#allow httpd_t ptmx_t:chr_file { ioctl open read write };
-#allow httpd_t sshd_key_t:file { getattr open read };
-
 # Job Composer
 #allow httpd_t httpd_sys_script_t:process { noatsecure rlimitinh siginh };
+
+# Allow PUN to read /etc/hosts
+read_files_pattern(ood_pun_t, net_conf_t, net_conf_t)
 
 # Necessary to run nginx_stage at command line which is unconfined
 list_dirs_pattern(unconfined_t, ood_pun_var_config_t, ood_pun_var_config_t)
