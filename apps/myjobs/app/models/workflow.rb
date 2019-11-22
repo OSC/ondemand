@@ -147,16 +147,18 @@ class Workflow < ActiveRecord::Base
   # 
   # Files grouped under the same categroy are in the same array: [[relative_file_path, file_path]]
   #
-  # Files grouped under 'Suggested files' in the dropdown are at index 1 of the array with 'Suggested files' at index 0: ["Suggested files", [[relative_file_path, file_path]]]
+  # Valid abd suggested files are grouped under "Suggested file(s)" in the dropdown
+  # They are at index 1 of the array with "Suggested file(s)" at index 0: ["Suggested file(s)", [[relative_file_path, file_path]]]
   #
-  # Files grouped under 'Others' in the dropdown are at index 1 of the array with 'Others' at index 0: ["Others", [[relative_file_path, file_path]]]
+  # Valid but not suggested files are grouped under "Valid file(s)" in the dropdown
+  # They are at index 1 of the array with "Other valid file(s)" at index 0: ["Other valid file(s)", [[relative_file_path, file_path]]]
   #
-  # @return [["Suggested files",[[relative_file_path, file_path]]], ["Others",[[relative_file_path, file_path]]]] the filename string
+  # @return [["Suggested file(s)",[[relative_file_path, file_path]]], ["Other valid file(s)",[[relative_file_path, file_path]]]] Category with no files will be omitted
   def grouped_script_options
-   {
-      "Suggested files" => folder_contents.select(&:suggested_script?).map { |f| [f.relative_path, f.path] },
-      "Others" => folder_contents.select(&:valid_script?).reject(&:suggested_script?).map { |f| [f.relative_path, f.path] },
-    }.to_a
+    group_options = {
+      "Suggested file(s)" => folder_contents.select(&:suggested_script?).map { |f| [f.relative_path, f.path] },
+      "Other valid file(s)" => folder_contents.select(&:valid_script?).reject(&:suggested_script?).map { |f| [f.relative_path, f.path] },
+    }.reject {|k,v| v.blank?}
   end
   
   # Returns the pbsid of the last job in the workflow
