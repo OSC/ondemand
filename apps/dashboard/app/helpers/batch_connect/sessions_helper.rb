@@ -97,7 +97,9 @@ module BatchConnect::SessionsHelper
       end if session.running?
     else
       content_tag(:p) do
+        concat content_tag(:strong, t('dashboard.batch_connect_sessions_stats_host'))
         concat " "
+        concat session.connect.host || t('dashboard.batch_connect_sessions_stats_undetermined_host')
       end if session.running?
     end
   end
