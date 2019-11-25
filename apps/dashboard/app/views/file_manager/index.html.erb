@@ -6,27 +6,28 @@
     <%= render 'file_manager/shared/breadcrumbs_and_search' %>
     <div class="row">
         <div class="col">
-            <div class="table-view-actions button-bar">
+            <%# This should be a Vue %>
+            <div class="table-view-actions button-bar pull-right">
                 <button class="btn btn-success" type="submit" name="actions" value="open">Open</button>
                 <button class="btn btn-info" type="submit" name="actions" value="download">Download</button>
                 <a class="btn btn-primary <%= can_upload_to?(absolute_requested_path) ? '' : 'disabled' %>" href="<%= url_for controller: 'file_manager', action: 'upload', path: absolute_requested_path %>" >Upload</a>
                 
-                <div class="d-inline dropdown m-1">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
-                    Other Actions
-                    </button>
-                    <div class="dropdown-menu dropdown-xs-menu-bottom dropdown-menu-sm-left" aria-labelledby="dropdownMenuButton">
-                        <button class="dropdown-item" type="submit" name="" value="copy">Copy</button>
-                        <button class="dropdown-item" type="submit" name="actactionion" value="add-favorite">Add to Favorites</button>
-                        <button class="dropdown-item" type="submit" name="actions" value="download">Download</button>
-                        <button class="dropdown-item" type="submit" name="actions" value="create-new">Create New</button>
-                        <button class="dropdown-item" type="submit" name="actions" value="open-in-terminal">Open in Terminal</button>
-                        <button class="dropdown-item" type="submit" name="actions" value="select-all">Select All</button>
-                        <button class="dropdown-item" type="submit" name="actions" value="preview">Preview</button>
-                        <button class="dropdown-item" type="submit" name="actions" value="properties">Properties</button>
-                        <div class="dropdown-divider"></div>
-                        <button class="dropdown-item " type="submit" name="actions">Delete</button>
-                    </div>
+                <div class="btn-group">
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Action <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a href="#" target="_blank" class="">Copy</a></li>
+                    <li><a href="#" target="_blank" class="">Add to Favorites</a></li>
+                    <li><a href="#" target="_blank" class="">Download</a></li>
+                    <li><a href="#" target="_blank" class="">Create New</a></li>
+                    <li><a href="#" target="_blank" class="">Open in Terminal</a></li>
+                    <li><a href="#" target="_blank" class="">Select All</a></li>
+                    <li><a href="#" target="_blank" class="">Preview</a></li>
+                    <li><a href="#" target="_blank" class="">Properties</a></li>
+                    <li><div class="dropdown-divider"></div></li>
+                    <li><a href="#" target="_blank" class="">Delete</a></li>
+                  </ul>
                 </div>
             </div>
         </div>

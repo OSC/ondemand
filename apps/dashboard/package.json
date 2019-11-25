@@ -1,6 +1,9 @@
 {
   "dependencies": {
     "@rails/webpacker": "^4.0.7",
+    "filesize": "^6.0.1",
+    "moment": "^2.24.0",
+    "path": "^0.12.7",
     "vue": "^2.6.10",
     "vue-loader": "^15.7.1",
     "vue-tables-2": "^1.5.45",
