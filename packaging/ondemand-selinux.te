@@ -2,16 +2,10 @@
 policy_module(ondemand-selinux, 1)
 
 require {
-#  type httpd_sys_script_t;
-#  type devpts_t;
   type bin_t;
   type httpd_t;
   type shell_exec_t;
-#  type systemd_logind_t;
-#  type shadow_t;
   type ptmx_t;
-#  type sshd_key_t;
-#  type chkpwd_t;
   type user_home_dir_t;
   type proc_t;
   type unconfined_t;
@@ -21,15 +15,7 @@ require {
   type vmblock_t;
   type ssh_exec_t;
   type net_conf_t;
-#  class chr_file { ioctl open read write };
-#  class fifo_file { create getattr ioctl open read setattr unlink write };
-#  class netlink_audit_socket { nlmsg_relay create write };
-#  class capability { audit_write fowner net_admin };
-#  class file { rw_file_perms manage_file_perms };
-#  class dir { rw_dir_perms manage_dir_perms };
-#  class process { noatsecure rlimitinh siginh };
   class dbus send_msg;
-#  class file { open read };
 }
 
 # Define custom types
@@ -55,7 +41,6 @@ files_tmp_filetrans(ood_pun_t, ood_pun_tmp_t, { file fifo_file dir })
 type ood_pun_var_run_t;
 files_pid_file(ood_pun_var_run_t)
 admin_pattern(ood_pun_t, ood_pun_var_run_t, ood_pun_var_run_t)
-#allow httpd_t ood_pun_var_run_t:dir { setattr };
 
 # PUN configs
 type ood_pun_var_lib_t;
@@ -194,7 +179,6 @@ allow ood_pun_t self:process { setpgid setsched execmem execstack };
 allow ood_pun_t httpd_t:fifo_file ioctl;
 read_files_pattern(ood_pun_t, proc_t, proc_t)
 list_dirs_pattern(ood_pun_t, proc_t, proc_t)
-# allow ood_pun_t proc_t:file { read open };
 
 # Allow Apache to execute sudo
 sudo_exec(httpd_t)
@@ -207,7 +191,6 @@ allow ood_pun_t httpd_t:fifo_file { rw_fifo_file_perms };
 
 # PUN STARTUP TODO AUDIT
 allow httpd_t chkpwd_t:process { noatsecure rlimitinh siginh };
-#allow httpd_t initrc_var_run_t:file read;
 allow httpd_t self:capability net_admin;
 allow httpd_t systemd_logind_sessions_t:fifo_file write;
 
