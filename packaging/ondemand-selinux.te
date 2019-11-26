@@ -88,11 +88,19 @@ type_transition httpd_t ood_pun_exec_t : process ood_pun_t;
 
 # Manage app contexts
 type ood_apps_t;
+type ood_apps_public_t;
 files_type(ood_apps_t)
+files_type(ood_apps_public_t)
 list_dirs_pattern(ood_pun_t, ood_apps_t, ood_apps_t)
 read_files_pattern(ood_pun_t, ood_apps_t, ood_apps_t)
 mmap_exec_files_pattern(ood_pun_t, ood_apps_t, ood_apps_t)
 read_lnk_files_pattern(ood_pun_t, ood_apps_t, ood_apps_t)
+list_dirs_pattern(ood_pun_t, ood_apps_public_t, ood_apps_public_t)
+read_files_pattern(ood_pun_t, ood_apps_public_t, ood_apps_public_t)
+mmap_exec_files_pattern(ood_pun_t, ood_apps_public_t, ood_apps_public_t)
+read_lnk_files_pattern(ood_pun_t, ood_apps_public_t, ood_apps_public_t)
+read_files_pattern(httpd_t, ood_apps_public_t, ood_apps_public_t)
+read_lnk_files_pattern(httpd_t, ood_apps_public_t, ood_apps_public_t)
 
 ## <desc>
 ## <p>
