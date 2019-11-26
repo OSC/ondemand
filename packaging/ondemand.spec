@@ -263,9 +263,15 @@ echo "boolean -m --on daemons_use_tty" >> $SELINUX_TEMP
 echo "boolean -m --on use_nfs_home_dirs" >> $SELINUX_TEMP
 semanage -S targeted -i $SELINUX_TEMP
 semodule -i %{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp 2>/dev/null || :
-restorecon -R %{_sharedstatedir}/ondemand-nginx
-restorecon -R %{_localstatedir}/log/ondemand-nginx
+restorecon -R /opt/ood/nginx_stage
+restorecon -R /opt/ood/ondemand/root/usr/sbin/nginx gen_context
+restorecon -R /opt/ood/ondemand/root/usr/lib64/passenger/support-binaries/PassengerAgent
 restorecon -R %{_rundir}/ondemand-nginx
+restorecon -R %{_sharedstatedir}/ondemand-nginx
+restorecon -R %{_localstatedir}/tmp/ondemand-nginx
+restorecon -R %{_localstatedir}/log/ondemand-nginx
+restorecon -R %{_localstatedir}/www/ood
+restorecon -R /opt/ood/apps
 
 %preun
 if [ "$1" -eq 0 ]; then
