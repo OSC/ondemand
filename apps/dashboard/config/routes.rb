@@ -10,8 +10,15 @@ Rails.application.routes.draw do
   end
   get "errors/not_found"
   get "errors/internal_server_error"
-  get "dashboard/index"
   get "logout" => "dashboard#logout"
+
+  resources :dashboard, only: [:index] do
+    collection do
+      get 'jobs'
+      get 'perf'
+      get 'role'
+    end
+  end
 
   # analytics request appears in the access logs and google analytics
   get "analytics/:type" => proc { [204, {}, ['']] }, as: "analytics"
