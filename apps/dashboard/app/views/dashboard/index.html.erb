@@ -24,3 +24,155 @@
   </div>
 </div>
 -->
+<script id="jobs-template" type="text/x-handlebars-template">
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Job ID</th>
+        <th>Cluster/Resource</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Walltime Used</th>
+        <th>CPU</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each results}}
+      <tr>
+        <td>{{name}}</td>
+        <td>{{local_job_id}}</td>
+        <td>{{resource}}</td>
+        <td>{{start_time_ts}}</td>
+        <td>{{end_time_ts}}</td>
+        <td></td>
+        <td></td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</script>
+
+
+<!--
+failedRuns red 660
+underPerformingRuns: orange  469
+inControl: green  0
+overPerforming: blue  41
+
+
+-->
+
+<script id="perf-template" type="text/x-handlebars-template">
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>Cluster/Resource</th>
+        <th>App Kernel</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each results}}
+      <tr>
+        <td width="100px">{{resource}}</td>
+        <td width="100px">{{app_kernel}}</td>
+        <td>
+          <div class="progress">
+            <div class="progress-bar progress-bar-danger" style="width: {{failed_percent}}%">
+              <span class="sr-only">10% Complete (danger)</span>
+            </div>
+            <div class="progress-bar progress-bar-warning" style="width: {{underperforming_percent}}%">
+              <span class="sr-only">20% Complete (warning)</span>
+            </div>
+            <div class="progress-bar progress-bar-success" style="width: {{incontrol_percent}}%">
+              <span class="sr-only">35% Complete (success)</span>
+            </div>
+            <div class="progress-bar progress-bar-primary" style="width: {{overperforming_percent}}%">
+              <span class="sr-only">35% Over Performing</span>
+            </div>
+          </div>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</script>
+
+<script id="report-template" type="text/x-handlebars-template">
+  <div class="row">
+    {{#each data.queue}}
+    <div class="col-md-3 col-xs-12">
+      <a href="#" class="thumbnail">
+        <div class="caption text-center"><small>Total CPU Hours and Jobs</small></div>
+        <img class="img-responsive" src="{{thumbnail_src}}" data-src="holder.js/362x214">
+      </a>
+    </div>
+    {{/each}}
+  </div>
+</script>
+
+<script>
+var jobsUrl = '<%= jobs_dashboard_index_path %>';
+$.get(jobsUrl, function(jsonData){
+  var template_source = $('#jobs-template').html();
+  var template = Handlebars.compile(template_source);
+  $('#jobsPanelDiv').html(template(jsonData));
+});
+
+var perfUrl = '<%= perf_dashboard_index_path %>';
+$.get(perfUrl, function(jsonData){
+  var template_source = $('#perf-template').html();
+  var template = Handlebars.compile(template_source);
+  var total_runs = function(obj){
+    return obj.failedRuns + obj.inControlRuns + obj.overPerformingRuns + obj.underPerformingRuns;
+  }
+
+  var helpers = {
+    failed_percent: function(){
+      return (this.failedRuns*1.0 / total_runs(this))*100;
+    },
+    incontrol_percent: function(){
+      return (this.inControlRuns*1.0 / total_runs(this))*100;
+    },
+    overperforming_percent: function(){
+      return (this.overPerformingRuns*1.0 / total_runs(this))*100;
+    },
+    underperforming_percent: function(){
+      return (this.underPerformingRuns*1.0 / total_runs(this))*100;
+    }
+  };
+  $('#centerReportCardPanelDiv').html(template(jsonData, {helpers: helpers}));
+});
+
+
+var reporturl = '<%= role_dashboard_index_path %>';
+$.get(reporturl, function(jsondata){
+  var template_source = $('#report-template').html(),
+      template = Handlebars.compile(template_source),
+
+      // TODO: add optional start/end date strings with query params:
+      // url.searchParams.set('start', '2019-10-22')
+      // url.searchParams.set('end', '2019-11-21')
+      // url.searchParams.set('type', 'cached')
+      helpers = {
+        thumbnail_src: function(){
+          // TODO: polyfills for URL and URLSearchParams
+          var url = new URL("https://xdmod-test.hpc.osc.edu"+ this.thumbnail_link);
+
+          // TODO: should token be set to something?
+          url.searchParams.delete('token');
+
+          return url.toString();
+        }
+      };
+
+
+  // TODO: let user vary the start and stop date range
+  $('#reportThumbnailsPanelDiv').html(template(jsondata, {helpers: helpers}));
+});
+
+
+// TODO: handle errors etc.
+// TODO: testing client side integration using automated test! webmock FTW. Where vue would be nice :-P
+</script>
