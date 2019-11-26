@@ -39,6 +39,8 @@
     </div>
 <% end %>
 <script type="text/javascript">
-    window.FILESYSTEM_ENTRIES = <%== fs_entrys_as_JSON(@fs_entries) %>;
+    window.STORE = {
+        file_system_entries: <%== fs_entrys_as_JSON(@fs_entries) %>
+    }
 </script>
 <%= javascript_pack_tag 'filemanager_list' %>

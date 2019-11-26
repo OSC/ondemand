@@ -16,8 +16,6 @@ class FileManagerController < ApplicationController
 
   # POST /fs/actions/*path
   def actions
-    p params
-
     redirect_to action: 'index', path: return_path, flash: { :error => "Pretending to do something ..." }
   end
 
@@ -39,18 +37,17 @@ class FileManagerController < ApplicationController
   end
 
   def delete
-    p params
-
-    redirect_to action: 'index', path: return_path, flash: { :error => "Pretending to delete" }
+    FileSystem::Operation.delete(absolute_requested_path)
+    # redirect_to action: 'index', path: return_path, flash: { :error => "Pretending to delete" }
   end
 
   def download
     path = Pathname.new(absolute_requested_path)
 
     if path.directory?
-      # TODO: start ActiveJob to compress directory, then start download?
+      send_data(FileSystem::Operation.archive_in_memory(path), disposition: 'attachment', filename: path.basename + '.zip')
     else
-      send_file(path, disposition: 'inline')
+      send_file(path, disposition: 'attachment')
     end
   end
 

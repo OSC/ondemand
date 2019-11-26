@@ -1,27 +1,31 @@
 <template>
-	<v-client-table
-    ref='dataTable'
-		:data="tableData"
-		:columns="columns"
-		:options="options"
-	> 
-    <a slot="basename" slot-scope="{row}" :href="file_link(row.path)">{{ row.basename }}</a>
-    <span slot="size" slot-scope="{row}">{{ file_size(row.size, {round: 0}) }}</span>
-    <span slot="modified" slot-scope="{row}">{{ moment_unix(row.modified).format() }}</span>
-  </v-client-table>
+  <div>
+    <v-client-table
+      ref='dataTable'
+      :data="store.file_system_entries"
+      :columns="columns"
+      :options="options"
+    >
+      <a slot="basename" slot-scope="{row}" :href="file_link(row.path)">{{ row.basename }}</a>
+      <span slot="size" slot-scope="{row}">{{ file_size(row.size, {round: 0}) }}</span>
+      <span slot="modified" slot-scope="{row}">{{ moment_unix(row.modified).format() }}</span>
+    </v-client-table>
+    <modals-container/>
+  </div>
 </template>
 
 <script>
 import {file_link} from '../helper'
 import filesize from 'filesize'
 import moment from 'moment'
+import UploadModal from './UploadModal'
 
 export default {
   name: 'FilemanagerList',
-  props: ['tableData'],
+  props: ['store'],
   data () {
     return {
-		columns: ['basename', 'size', 'modified', 'owner', 'group', 'permissions'],
+    columns: ['basename', 'size', 'modified', 'owner', 'group', 'permissions'],
         dataTable: null,
         options: {
           childRow: 'table-buttons',
@@ -43,9 +47,30 @@ export default {
   },
   mounted () {
     this.dataTable = this.$refs.dataTable;
+    this.$modal.show(UploadModal, { abc: 123 }, {})
+  },
+  
+  beforeUpdate() {
+
   }
 }
 </script>
 
 <style lang="css">
+.VueTables__child-row-toggler {
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    display: block;
+    margin: auto;
+    text-align: center;
+}
+
+.VueTables__child-row-toggler--closed::before {
+    content: "+";
+}
+
+.VueTables__child-row-toggler--open::before {
+    content: "-";
+}
 </style>

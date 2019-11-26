@@ -2,15 +2,20 @@ require "authz/app_developer_constraint"
 
 Rails.application.routes.draw do
   # format: false is necessary to prevent Rails from attempting to turn dot files and directories into formats
-  get  'fs/copy', to: 'file_manager#copy', format: false
-  get  'fs/upload/*path', to: 'file_manager#upload', format: false
-  post 'fs/upload/*path', to: 'file_manager#upload_perform', format: false
-  post 'fs/actions', to: 'file_manager#actions', format: false
-  post 'fs/actions/*path', to: 'file_manager#actions', format: false
-  get  'fs/details', to: 'file_manager#show', format: false
-  get  'fs/details/*path', to: 'file_manager#show', format: false
-  get  'fs', to: 'file_manager#index', format: false
-  get  'fs/*path', to: 'file_manager#index', format: false
+  get  'fs/copy',          format: false, to: 'file_manager#copy'
+
+  get  'fs/upload/*path',  format: false, to: 'file_manager#upload'
+  post 'fs/upload/*path',  format: false, to: 'file_manager#upload_perform'
+  
+  post 'fs/actions',       format: false, to: 'file_manager#actions'
+  post 'fs/actions/*path', format: false, to: 'file_manager#actions'
+  get  'fs/details',       format: false, to: 'file_manager#show'
+  get  'fs/details/*path', format: false, to: 'file_manager#show'
+  
+  get  'fs/download/*path',format: false, to: 'file_manager#download'
+  
+  get  'fs',               format: false, to: 'file_manager#index'
+  get  'fs/*path',         format: false, to: 'file_manager#index'
 
   namespace :batch_connect do
     resources :sessions, only: [:index, :destroy]

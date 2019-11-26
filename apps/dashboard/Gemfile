@@ -63,7 +63,7 @@ gem 'autoprefixer-rails', '~> 8.4'
 gem 'dotiw'
 gem 'local_time', '~> 1.0.3'
 gem 'filesize', '~> 0.2'
-
+gem 'rubyzip', '~> 2.0'
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'
 gem 'ood_appkit', '~> 1.1'
