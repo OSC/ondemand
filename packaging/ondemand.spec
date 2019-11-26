@@ -259,14 +259,8 @@ echo "boolean -m --on httpd_setrlimit" >> $SELINUX_TEMP
 echo "boolean -m --on httpd_mod_auth_pam" >> $SELINUX_TEMP
 echo "boolean -m --on httpd_run_stickshift" >> $SELINUX_TEMP
 echo "boolean -m --on httpd_can_network_connect" >> $SELINUX_TEMP
-
 echo "boolean -m --on daemons_use_tty" >> $SELINUX_TEMP
 echo "boolean -m --on use_nfs_home_dirs" >> $SELINUX_TEMP
-
-echo "boolean -m --on httpd_execmem" >> $SELINUX_TEMP
-echo "boolean -m --on httpd_unified" >> $SELINUX_TEMP
-echo "boolean -m --on httpd_enable_homedirs" >> $SELINUX_TEMP
-echo "boolean -m --on httpd_read_user_content" >> $SELINUX_TEMP
 semanage -S targeted -i $SELINUX_TEMP
 semodule -i %{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp 2>/dev/null || :
 restorecon -R %{_sharedstatedir}/ondemand-nginx
