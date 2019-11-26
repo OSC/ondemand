@@ -11,3 +11,7 @@
 /var/log/ondemand-nginx(/.*)?     gen_context(system_u:object_r:ood_pun_log_t,s0)
 /var/www/ood(/.*)? gen_context(system_u:object_r:ood_apps_t,s0)
 /opt/ood/apps(/.*)? gen_context(system_u:object_r:ood_apps_t,s0)
+/var/www/ood/public(/.*)? gen_context(system_u:object_r:ood_apps_public_t,s0)
+/opt/ood/apps/public(/.*)? gen_context(system_u:object_r:ood_apps_public_t,s0)
+/var/www/ood/apps/sys(/.*)/public(/.*)? gen_context(system_u:object_r:ood_apps_public_t,s0)
+/opt/ood/apps(/.*)/public(/.*)? gen_context(system_u:object_r:ood_apps_public_t,s0)
