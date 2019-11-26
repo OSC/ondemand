@@ -258,10 +258,10 @@ SELINUX_TEMP=$(mktemp -t ondemand-selinux-enable.XXXXX)
 echo "boolean -m --on httpd_setrlimit" >> $SELINUX_TEMP
 echo "boolean -m --on httpd_mod_auth_pam" >> $SELINUX_TEMP
 echo "boolean -m --on httpd_run_stickshift" >> $SELINUX_TEMP
+echo "boolean -m --on httpd_can_network_connect" >> $SELINUX_TEMP
 
 echo "boolean -m --on daemons_use_tty" >> $SELINUX_TEMP
 
-echo "boolean -m --on httpd_can_network_connect" >> $SELINUX_TEMP
 echo "boolean -m --on httpd_execmem" >> $SELINUX_TEMP
 echo "boolean -m --on httpd_unified" >> $SELINUX_TEMP
 echo "boolean -m --on use_nfs_home_dirs" >> $SELINUX_TEMP
