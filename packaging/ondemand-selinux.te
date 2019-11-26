@@ -5,6 +5,7 @@ require {
   type bin_t;
   type httpd_t;
   type shell_exec_t;
+  type rsync_exec_t;
   type ptmx_t;
   type user_home_dir_t;
   type proc_t;
@@ -194,6 +195,8 @@ allow ood_pun_t self:unix_stream_socket connectto;
 exec_files_pattern(ood_pun_t, bin_t, bin_t)
 # Allow PUN to execute bash
 exec_files_pattern(ood_pun_t, shell_exec_t, shell_exec_t)
+# Allow PUN to execute rsync
+exec_files_pattern(ood_pun_t, rsync_exec_t, rsync_exec_t)
 
 # Allow PUN to connect to Apache
 corenet_tcp_connect_http_port(ood_pun_t)
