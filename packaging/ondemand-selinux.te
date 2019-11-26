@@ -229,20 +229,21 @@ allow httpd_t ood_pun_t:process { noatsecure rlimitinh siginh signal_perms };
 # PUN and Passenger to bind to network
 corenet_tcp_bind_generic_node(ood_pun_t)
 
-# Handle getattr
+# Handle getattr and dontaudit
 fs_getattr_all_fs(ood_pun_t)
 files_getattr_home_dir(ood_pun_t)
 files_dontaudit_getattr_all_files(ood_pun_t)
-dontaudit ood_pun_t non_security_file_type:dir getattr;
+files_dontaudit_getattr_all_dirs(ood_pun_t)
+files_dontaudit_search_non_security_dirs(ood_pun_t)
 
-#allow httpd_t chkpwd_t:process { noatsecure rlimitinh siginh };
-#allow httpd_t self:capability net_admin;
-
-# Job Composer
-#allow httpd_t httpd_sys_script_t:process { noatsecure rlimitinh siginh };
+# Allow PUN to read /proc
+ps_process_pattern(ood_pun_t, domain)
 
 # Allow PUN to read /etc/hosts
 read_files_pattern(ood_pun_t, net_conf_t, net_conf_t)
+
+# Allow PUN to access system certs
+miscfiles_read_generic_certs(ood_pun_t)
 
 # Necessary to run nginx_stage at command line which is unconfined
 list_dirs_pattern(unconfined_t, ood_pun_var_config_t, ood_pun_var_config_t)
