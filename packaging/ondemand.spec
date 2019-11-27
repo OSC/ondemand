@@ -262,9 +262,9 @@ echo "boolean -m --on httpd_can_network_connect" >> $SELINUX_TEMP
 echo "boolean -m --on daemons_use_tty" >> $SELINUX_TEMP
 echo "boolean -m --on use_nfs_home_dirs" >> $SELINUX_TEMP
 semanage -S targeted -i $SELINUX_TEMP
-semodule -i %{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp 2>/dev/null || :
+semodule -i %{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp
 restorecon -R /opt/ood/nginx_stage
-restorecon -R /opt/ood/ondemand/root/usr/sbin/nginx gen_context
+restorecon -R /opt/ood/ondemand/root/usr/sbin/nginx
 restorecon -R /opt/ood/ondemand/root/usr/lib64/passenger/support-binaries/PassengerAgent
 restorecon -R %{_rundir}/ondemand-nginx
 restorecon -R %{_sharedstatedir}/ondemand-nginx
