@@ -20,6 +20,13 @@ module NginxStage
 
         this also displays the users who had their PUNs shutdown.
 
+        To clean up ALL running per-user nginx processes belonging to a specific user
+        whether it has an active connection or not:
+
+            nginx_stage nginx_clean --force --user exampleuser
+
+        this also displays the users who had their PUNs shutdown.
+
         To ONLY display the users with inactive PUNs:
 
             nginx_stage nginx_clean --skip-nginx
@@ -35,6 +42,13 @@ module NginxStage
       }
     end
 
+    add_option :user do
+      {
+        opt_args: ["-u", "--user", "# Operate on specific user", "# Default: nil (all users)"],
+        default: nil,
+      }
+    end
+
     # Accepts `skip_nginx` as an option
     add_skip_nginx_support
 
@@ -42,6 +56,7 @@ module NginxStage
     add_hook :delete_puns_of_users_with_no_sessions do
       NginxStage.active_users.each do |u|
         begin
+          next if (user && user != u)
           pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
           socket = SocketFile.new NginxStage.pun_socket_path(user: u)
           cleanup_stale_files(pid_path, socket) unless pid_path.running_process? 
