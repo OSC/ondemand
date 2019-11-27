@@ -144,7 +144,7 @@ $.get(jobsUrl, function(jsonData){
     title: function(){
       return "Jobs - " + thirtyDaysAgo + " to " + today;
     },
-    start_time: function(){ return moment.unix(this.start_time_ts).format('YY-MM-DD h:mmA'tive.vim); },
+    start_time: function(){ return moment.unix(this.start_time_ts).format('YY-MM-DD h:mmA'); },
     end_time: function(){ return moment.unix(this.end_time_ts).format('YY-MM-DD h:mmA'); },
     walltime: function(){ return moment.duration(this.end_time_ts - this.start_time_ts).humanize(); }
   };
