@@ -20,6 +20,12 @@ import filesize from 'filesize'
 import moment from 'moment'
 import UploadModal from './UploadModal'
 
+// polyfill for MAX_SAFE_INTEGER
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER
+if (!Number.MAX_SAFE_INTEGER) {
+    Number.MAX_SAFE_INTEGER = 9007199254740991; // Math.pow(2, 53) - 1;
+}
+
 export default {
   name: 'FilemanagerList',
   props: ['store'],
@@ -35,8 +41,8 @@ export default {
             group:       'hidden-xs hidden-sm',
             permissions: 'hidden-xs hidden-sm hidden-md',
           },
-          perPage: 100,
-          perPageValues: [10, 100, 250]
+          perPage: Number.MAX_SAFE_INTEGER,
+          perPageValues: [],
         }
     }
   },
@@ -49,7 +55,7 @@ export default {
     this.dataTable = this.$refs.dataTable;
     this.$modal.show(UploadModal, { abc: 123 }, {})
   },
-  
+
   beforeUpdate() {
 
   }
