@@ -115,7 +115,7 @@ class ProductsController < ApplicationController
     response.headers['Content-Type'] = 'text/plain'
     Dir.chdir(@product.router.path) do
       Bundler.with_clean_env do
-        ENV['BUNDLE_USER_CONFIG'] = '/dev/null' if Rails.env.production?
+        ENV['BUNDLE_USER_CONFIG'] = '/dev/null'
         Open3.popen2e(*cmd) do |i, o, t|
           o.each do |line|
             response.stream.write line
