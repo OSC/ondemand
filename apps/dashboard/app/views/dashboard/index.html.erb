@@ -27,7 +27,33 @@
 <script id="jobs-template" type="text/x-handlebars-template">
   <div class="well">
   <h4>{{title}}</h4>
-  <table class="table table-condensed">
+
+  <table class="table table-condensed visible-xs-block">
+  {{#each results}}
+  <tr>
+    <td>
+      <dl>
+        <dt>User</dt>
+        <dd>{{name}}</dd>
+        <dt>Job ID</dt>
+        <dd>{{local_job_id}}</dd>
+        <dt>Cluster/Resource</dt>
+        <dd>{{resource}}</dd>
+        <dt>Start</dt>
+        <dd>{{start_time}}</dd>
+        <dt>Stop</dt>
+        <dd>{{end_time}}</dd>
+        <dt>Walltime Used</dt>
+        <dd>{{walltime}}</dd>
+        <dt>CPU</dt>
+        <dd>{{cpu}}</dd>
+      </dl>
+    </td>
+  </tr>
+  {{/each}}
+  </table>
+
+  <table class="table table-condensed hidden-xs">
     <thead>
       <tr>
         <th>User</th>
@@ -69,7 +95,40 @@ overPerforming: blue  41
 <script id="perf-template" type="text/x-handlebars-template">
   <div class="well">
   <h4>{{title}}</h4>
-  <table class="table table-condensed">
+
+  <table class="table table-condensed visible-xs-block">
+  {{#each results}}
+  <tr>
+    <td>
+      <dl>
+        <dt>Cluster/Resource</dt>
+        <dd>{{resource}}</dd>
+        <dt>App Kernel</dt>
+        <dd>{{app_kernel}}</dd>
+        <dt>Status</dt>
+        <dd>
+          <div class="progress" style="margin-bottom: 0px;">
+            <div class="progress-bar progress-bar-danger" style="width: {{failed_percent}}%">
+              <span class="sr-only">{{failed_percent}}% Failed</span>
+            </div>
+            <div class="progress-bar progress-bar-warning" style="width: {{underperforming_percent}}%">
+              <span class="sr-only">{{underperforming_percent}}% Underperforming</span>
+            </div>
+            <div class="progress-bar progress-bar-success" style="width: {{incontrol_percent}}%">
+              <span class="sr-only">{{incontrol_percent}}% In Control</span>
+            </div>
+            <div class="progress-bar progress-bar-primary" style="width: {{overperforming_percent}}%">
+              <span class="sr-only">{{overperforming_percent}}% Over Performing</span>
+            </div>
+          </div>
+        </dd>
+      </dl>
+    </td>
+  </tr>
+  {{/each}}
+  </table>
+
+  <table class="table table-condensed hidden-xs">
     <thead>
       <tr>
         <th>Cluster/Resource</th>
@@ -85,16 +144,16 @@ overPerforming: blue  41
         <td>
           <div class="progress" style="margin-bottom: 0px;">
             <div class="progress-bar progress-bar-danger" style="width: {{failed_percent}}%">
-              <span class="sr-only">10% Complete (danger)</span>
+              <span class="sr-only">{{failed_percent}}% Failed</span>
             </div>
             <div class="progress-bar progress-bar-warning" style="width: {{underperforming_percent}}%">
-              <span class="sr-only">20% Complete (warning)</span>
+              <span class="sr-only">{{underperforming_percent}}% Underperforming</span>
             </div>
             <div class="progress-bar progress-bar-success" style="width: {{incontrol_percent}}%">
-              <span class="sr-only">35% Complete (success)</span>
+              <span class="sr-only">{{incontrol_percent}}% In Control</span>
             </div>
             <div class="progress-bar progress-bar-primary" style="width: {{overperforming_percent}}%">
-              <span class="sr-only">35% Over Performing</span>
+              <span class="sr-only">{{overperforming_percent}}% Over Performing</span>
             </div>
           </div>
         </td>
