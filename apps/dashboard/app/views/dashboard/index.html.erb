@@ -1,15 +1,16 @@
 <%= render partial: 'shared/welcome' %>
 
+<!--
 <div class="xdmod">
     <div id="jobsPanelDiv"></div>
     <div id="centerReportCardPanelDiv"></div>
     <div id="reportThumbnailsPanelDiv"></div>
 </div>
 
+-->
 
     <%# This assumes @motd_file responds to `to_partial_path` %>
-    <%= render @motd if @motd %>
-<!--
+    <%# render @motd if @motd %>
 <div class="row">
   <div class="col-md-8">
     <div class="xdmod">
@@ -20,10 +21,9 @@
   </div>
   <div class="col-md-4">
     <%# This assumes @motd_file responds to `to_partial_path` %>
-    <%# render @motd if @motd %>
+    <%= render @motd if @motd %>
   </div>
 </div>
--->
 <script id="jobs-template" type="text/x-handlebars-template">
   <div class="well">
   <h4>{{title}}</h4>
