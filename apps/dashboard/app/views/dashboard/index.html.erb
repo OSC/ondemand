@@ -26,6 +26,7 @@
 -->
 <script id="jobs-template" type="text/x-handlebars-template">
   <div class="well">
+  <h4>{{title}}</h4>
   <table class="table table-condensed">
     <thead>
       <tr>
@@ -44,10 +45,10 @@
         <td>{{name}}</td>
         <td>{{local_job_id}}</td>
         <td>{{resource}}</td>
-        <td>{{start_time_ts}}</td>
-        <td>{{end_time_ts}}</td>
-        <td></td>
-        <td></td>
+        <td>{{start_time}}</td>
+        <td>{{end_time}}</td>
+        <td>{{walltime}}</td>
+        <td>{{cpu_user}}</td>
       </tr>
       {{/each}}
     </tbody>
@@ -67,6 +68,7 @@ overPerforming: blue  41
 
 <script id="perf-template" type="text/x-handlebars-template">
   <div class="well">
+  <h4>{{title}}</h4>
   <table class="table table-condensed">
     <thead>
       <tr>
@@ -105,11 +107,12 @@ overPerforming: blue  41
 
 <script id="report-template" type="text/x-handlebars-template">
   <div class="well">
+  <h4>{{title}}</h4>
   <div class="row">
     {{#each data.queue}}
-    <div class="col-md-3 col-xs-12">
+    <div class="col-md-6 col-xs-12">
       <a href="#" class="thumbnail">
-        <div class="caption text-center"><small>Total CPU Hours and Jobs</small></div>
+        <div class="caption text-center"><small>{{chart_title}}</small></div>
         <img class="img-responsive" src="{{thumbnail_src}}" data-src="holder.js/362x214">
       </a>
     </div>
@@ -137,7 +140,15 @@ jobsUrl.searchParams.set('params', JSON.stringify({}));
 $.get(jobsUrl, function(jsonData){
   var template_source = $('#jobs-template').html();
   var template = Handlebars.compile(template_source);
-  $('#jobsPanelDiv').html(template(jsonData));
+  var helpers = {
+    title: function(){
+      return "Jobs - " + thirtyDaysAgo + " to " + today;
+    },
+    start_time: function(){ return moment.unix(this.start_time_ts).format('YY-MM-DD h:mmA'tive.vim); },
+    end_time: function(){ return moment.unix(this.end_time_ts).format('YY-MM-DD h:mmA'); },
+    walltime: function(){ return moment.duration(this.end_time_ts - this.start_time_ts).humanize(); }
+  };
+  $('#jobsPanelDiv').html(template(jsonData, {helpers: helpers}));
 });
 
 
@@ -166,6 +177,9 @@ $.get(perfUrl, function(jsonData){
     },
     underperforming_percent: function(){
       return (this.underPerformingRuns*1.0 / total_runs(this))*100;
+    },
+    title: function(){
+      return "Center Report Card - " + startOfYear + " to " + today;
     }
   };
   $('#centerReportCardPanelDiv').html(template(jsonData, {helpers: helpers}));
@@ -183,6 +197,8 @@ $.get(reportUrl, function(jsondata){
       // url.searchParams.set('start', '2019-10-22')
       // url.searchParams.set('end', '2019-11-21')
       // url.searchParams.set('type', 'cached')
+      // title should update then as necessary...tied to a dropdown
+
       helpers = {
         thumbnail_src: function(){
           // TODO: polyfills for URL and URLSearchParams
@@ -192,6 +208,10 @@ $.get(reportUrl, function(jsondata){
           url.searchParams.delete('token');
 
           return url.toString();
+        },
+        title: function(){
+          // FIXME: this is incorrect time range
+          return "Summary Charts - " + startOfYear + " to " + today;
         }
       };
 
