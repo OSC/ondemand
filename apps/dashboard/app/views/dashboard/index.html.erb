@@ -25,6 +25,7 @@
 </div>
 -->
 <script id="jobs-template" type="text/x-handlebars-template">
+  <div class="well">
   <table class="table table-condensed">
     <thead>
       <tr>
@@ -51,6 +52,7 @@
       {{/each}}
     </tbody>
   </table>
+  </div>
 </script>
 
 
@@ -64,6 +66,7 @@ overPerforming: blue  41
 -->
 
 <script id="perf-template" type="text/x-handlebars-template">
+  <div class="well">
   <table class="table table-condensed">
     <thead>
       <tr>
@@ -97,9 +100,11 @@ overPerforming: blue  41
       {{/each}}
     </tbody>
   </table>
+  </div>
 </script>
 
 <script id="report-template" type="text/x-handlebars-template">
+  <div class="well">
   <div class="row">
     {{#each data.queue}}
     <div class="col-md-3 col-xs-12">
@@ -109,6 +114,7 @@ overPerforming: blue  41
       </a>
     </div>
     {{/each}}
+  </div>
   </div>
 </script>
 
