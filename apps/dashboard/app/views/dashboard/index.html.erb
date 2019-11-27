@@ -119,14 +119,34 @@ overPerforming: blue  41
 </script>
 
 <script>
-var jobsUrl = '<%= jobs_dashboard_index_path %>';
+var startOfYear = moment().startOf('year').format("YYYY-MM-DD"),
+    thirtyDaysAgo = moment().subtract(30, 'days').format("YYYY-MM-DD"),
+    today = moment().format("YYYY-MM-DD");
+
+
+var jobsUrl = new URL('https://xdmod-test.hpc.osc.edu/rest/v1/warehouse/search/jobs');
+jobsUrl.searchParams.set('_dc', Date.now());
+jobsUrl.searchParams.set('start_date', thirtyDaysAgo);
+jobsUrl.searchParams.set('end_date', today);
+jobsUrl.searchParams.set('realm', 'Jobs');
+jobsUrl.searchParams.set('limit', 10);
+jobsUrl.searchParams.set('start', 0);
+jobsUrl.searchParams.set('verbose', true);
+jobsUrl.searchParams.set('params', JSON.stringify({}));
+
 $.get(jobsUrl, function(jsonData){
   var template_source = $('#jobs-template').html();
   var template = Handlebars.compile(template_source);
   $('#jobsPanelDiv').html(template(jsonData));
 });
 
-var perfUrl = '<%= perf_dashboard_index_path %>';
+
+// perf is from start of the year
+var perfUrl = new URL('https://xdmod-test.hpc.osc.edu/rest/v1/app_kernels/performance_map/raw');
+perfUrl.searchParams.set('_dc', Date.now());
+perfUrl.searchParams.set('start_date', startOfYear);
+perfUrl.searchParams.set('end_date', today);
+
 $.get(perfUrl, function(jsonData){
   var template_source = $('#perf-template').html();
   var template = Handlebars.compile(template_source);
@@ -152,8 +172,10 @@ $.get(perfUrl, function(jsonData){
 });
 
 
-var reporturl = '<%= role_dashboard_index_path %>';
-$.get(reporturl, function(jsondata){
+var reportUrl = new URL('https://xdmod-test.hpc.osc.edu/rest/v1/dashboard/rolereport');
+reportUrl.searchParams.set('_dc', Date.now());
+
+$.get(reportUrl, function(jsondata){
   var template_source = $('#report-template').html(),
       template = Handlebars.compile(template_source),
 
