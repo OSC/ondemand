@@ -16,6 +16,7 @@ require {
   type vmblock_t;
   type ssh_exec_t;
   type net_conf_t;
+  type krb5_conf_t;
   class dbus send_msg;
 }
 
@@ -183,6 +184,20 @@ gen_tunable(ondemand_use_ldap, true)
 
 tunable_policy(`ondemand_use_ldap',`
   corenet_tcp_connect_ldap_port(ood_pun_t)
+')
+
+## <desc>
+## <p>
+## Allow OnDemand to use Kerberos
+## </p>
+## </desc>
+gen_tunable(ondemand_use_kerberos, true)
+
+optional_policy(`
+  tunable_policy(`ondemand_use_kerberos',`
+    read_files_pattern(ood_pun_t, krb5_conf_t, krb5_conf_t)
+    list_dirs_pattern(ood_pun_t, krb5_conf_t, krb5_conf_t)
+  ')
 ')
 
 # Allow Apache to acces PUN socket
