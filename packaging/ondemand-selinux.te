@@ -181,6 +181,18 @@ tunable_policy(`ondemand_use_torque',`
 
 ## <desc>
 ## <p>
+## Allow OnDemand to use SLURM and MUNGE
+## </p>
+## </desc>
+gen_tunable(ondemand_use_slurm, true)
+
+tunable_policy(`ondemand_use_slurm',`
+  # Access munge socket
+  allow ood_pun_t var_run_t:sock_file { getattr write };
+')
+
+## <desc>
+## <p>
 ## Allow OnDemand to use LDAP
 ## Not needed for Apache LDAP authentication
 ## </p>
