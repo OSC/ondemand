@@ -142,7 +142,6 @@ gen_tunable(ondemand_use_shell_app, true)
 tunable_policy(`ondemand_use_shell_app',`
   allow ood_pun_t ptmx_t:chr_file { ioctl open read write };
   can_exec(ood_pun_t, ssh_exec_t)
-  #corenet_tcp_sendrecv_ssh_port(ood_pun_t)
   corenet_tcp_connect_ssh_port(ood_pun_t)
   allow ood_pun_t self:key { read view write };
 ')
