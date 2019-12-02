@@ -271,7 +271,6 @@ restorecon -R %{_sharedstatedir}/ondemand-nginx
 restorecon -R %{_localstatedir}/tmp/ondemand-nginx
 restorecon -R %{_localstatedir}/log/ondemand-nginx
 restorecon -R %{_localstatedir}/www/ood
-restorecon -R /opt/ood/apps
 
 %preun
 if [ "$1" -eq 0 ]; then

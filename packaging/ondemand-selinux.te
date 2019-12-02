@@ -29,6 +29,7 @@ domain_type(ood_pun_t);
 domain_entry_file(ood_pun_t, ood_pun_exec_t);
 init_daemon_domain(ood_pun_t, ood_pun_exec_t);
 role system_r types ood_pun_t;
+can_exec(ood_pun_t, ood_pun_exec_t)
 
 # tmp support
 type ood_pun_tmp_t;
