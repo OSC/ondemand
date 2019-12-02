@@ -205,7 +205,7 @@ $.get(jobsUrl, function(jsonData){
   var template = Handlebars.compile(template_source);
   var helpers = {
     title: function(){
-      return "Jobs - " + thirtyDaysAgo + " to " + today;
+      return "XDMoD - Jobs - " + thirtyDaysAgo + " to " + today;
     },
     start_time: function(){ return moment.unix(this.start_time_ts).format('YY-MM-DD h:mmA'); },
     end_time: function(){ return moment.unix(this.end_time_ts).format('YY-MM-DD h:mmA'); },
@@ -242,7 +242,7 @@ $.get(perfUrl, function(jsonData){
       return (this.underPerformingRuns*1.0 / total_runs(this))*100;
     },
     title: function(){
-      return "Center Report Card - " + startOfYear + " to " + today;
+      return "XDMoD - Center Report Card - " + startOfYear + " to " + today;
     }
   };
   $('#centerReportCardPanelDiv').html(template(jsonData, {helpers: helpers}));
@@ -274,7 +274,7 @@ $.get(reportUrl, function(jsondata){
         },
         title: function(){
           // FIXME: this is incorrect time range
-          return "Summary Charts - " + startOfYear + " to " + today;
+          return "XDMoD - Summary Charts - " + startOfYear + " to " + today;
         }
       };
 
