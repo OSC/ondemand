@@ -159,6 +159,12 @@ optional_policy(`
   ')
 ')
 
+optional_policy(`
+  tunable_policy(`ondemand_use_sssd && ondemand_use_kerberos', `
+    allow ood_pun_t sssd_var_run_t:sock_file { getattr write };
+  ')
+')
+
 ## <desc>
 ## <p>
 ## Allow OnDemand to use Torque/PBS
