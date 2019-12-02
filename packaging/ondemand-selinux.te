@@ -36,7 +36,7 @@ manage_dirs_pattern(ood_pun_t, ood_pun_tmp_t, ood_pun_tmp_t)
 manage_files_pattern(ood_pun_t, ood_pun_tmp_t, ood_pun_tmp_t)
 manage_fifo_files_pattern(ood_pun_t, ood_pun_tmp_t, ood_pun_tmp_t)
 manage_sock_files_pattern(ood_pun_t, ood_pun_tmp_t, ood_pun_tmp_t)
-files_tmp_filetrans(ood_pun_t, ood_pun_tmp_t, { file fifo_file dir })
+files_tmp_filetrans(ood_pun_t, ood_pun_tmp_t, { file fifo_file dir lnk_file sock_file })
 
 # PID support
 type ood_pun_var_run_t;
