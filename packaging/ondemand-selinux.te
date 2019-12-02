@@ -1,5 +1,4 @@
-#policy_module(ondemand-selinux, @VERSION@)
-policy_module(ondemand-selinux, 1)
+policy_module(ondemand-selinux, @VERSION@)
 
 require {
   type bin_t;
