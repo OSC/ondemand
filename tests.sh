@@ -27,6 +27,7 @@ yum install -y \
 
 # Build SELinux module
 pushd packaging
+sed -i 's/@VERSION@/1/g' ondemand-selinux.te
 make -f /usr/share/selinux/devel/Makefile
 popd
 
