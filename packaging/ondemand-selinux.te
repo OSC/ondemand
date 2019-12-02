@@ -10,13 +10,11 @@ require {
   type user_home_dir_t;
   type proc_t;
   type unconfined_t;
-  type systemd_logind_t;
-  type systemd_logind_sessions_t;
-  type chkpwd_t;
   type vmblock_t;
   type ssh_exec_t;
   type net_conf_t;
   type krb5_conf_t;
+  type sssd_var_run_t;
   class dbus send_msg;
 }
 
@@ -217,7 +215,7 @@ exec_files_pattern(ood_pun_t, rsync_exec_t, rsync_exec_t)
 # Allow PUN to connect to Apache
 corenet_tcp_connect_http_port(ood_pun_t)
 
-allow ood_pun_t self:capability { chown dac_override setgid setuid sys_resource fowner };
+allow ood_pun_t self:capability { chown dac_override dac_read_search setgid setuid sys_resource fowner net_admin };
 allow ood_pun_t self:process { setpgid setsched execmem execstack };
 
 # Following was necessary to kill PUNs via nginx_stage
@@ -229,15 +227,11 @@ list_dirs_pattern(ood_pun_t, proc_t, proc_t)
 sudo_exec(httpd_t)
 
 # PUN startup
-allow httpd_t systemd_logind_t:dbus send_msg;
-allow systemd_logind_t httpd_t:dbus send_msg;
+systemd_dbus_chat_logind(httpd_t)
+allow httpd_t ood_pun_var_run_t:sock_file { getattr write };
 allow ood_pun_t httpd_t:process sigchld;
 allow ood_pun_t httpd_t:fifo_file { rw_fifo_file_perms };
-
-# PUN STARTUP TODO AUDIT
-allow httpd_t chkpwd_t:process { noatsecure rlimitinh siginh };
-allow httpd_t self:capability net_admin;
-allow httpd_t systemd_logind_sessions_t:fifo_file write;
+dbus_system_bus_client(ood_pun_t)
 
 # Allow PUN to read passwd
 auth_read_passwd(ood_pun_t)
