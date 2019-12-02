@@ -12,6 +12,7 @@ require {
   type unconfined_t;
   type vmblock_t;
   type ssh_exec_t;
+  type ssh_home_t;
   type net_conf_t;
   type krb5_conf_t;
   type sssd_var_run_t;
@@ -143,6 +144,11 @@ tunable_policy(`ondemand_use_shell_app',`
   can_exec(ood_pun_t, ssh_exec_t)
   corenet_tcp_connect_ssh_port(ood_pun_t)
   allow ood_pun_t self:key { read view write };
+')
+
+tunable_policy(`ondemand_use_shell_app && ondemand_manage_user_home_dir',`
+  manage_dirs_pattern(ood_pun_t, ssh_home_t, ssh_home_t)
+  manage_files_pattern(ood_pun_t, ssh_home_t, ssh_home_t)
 ')
 
 ## <desc>
