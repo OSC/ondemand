@@ -37,7 +37,11 @@ class ConfigurationSingleton
   end
 
   def ood_bc_ssh_to_compute_node
-    ENV['OOD_BC_SSH_TO_COMPUTE_NODE'] || true
+    if ENV['OOD_BC_SSH_TO_COMPUTE_NODE'] == nil
+      true
+    else
+      ENV['OOD_BC_SSH_TO_COMPUTE_NODE'].to_bool
+    end
   end
 
   # @return [String, nil] version string from git describe, or nil if not git repo
