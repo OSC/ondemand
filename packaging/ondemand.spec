@@ -180,6 +180,7 @@ fi
 %__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/usr
 %__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/dev
 %__mkdir_p %{buildroot}%{_tmppath}/ondemand-nginx
+%__mkdir_p %{buildroot}%{_rundir}/ondemand-nginx
 
 %__install -D -m 644 ood-portal-generator/share/ood_portal_example.yml \
     %{buildroot}%{_sysconfdir}/ood/config/ood_portal.yml
