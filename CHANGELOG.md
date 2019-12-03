@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.7.3] - 2019-12-03
+### Added
+- `-u/--user` flag to `nginx_stage nginx_clean` subcommand [#315](https://github.com/OSC/ondemand/pull/315)
+- enable admin to disable shell link to compute node by setting env var
+  `OOD_BC_SSH_TO_COMPUTE_NODE` to falsy value (0, false, off) [#306](https://github.com/OSC/ondemand/issues/306)
+
+### Changed
+- rewrite SELinux support by running as `ood_pun_t` context instead of `httpd_t`
+  context [#319](https://github.com/OSC/ondemand/pull/319)
+
+### Fixed
+- ensure `BUNDLE_USER_CONFIG` is set to `/dev/null` when the dashboard executes
+  the per user setup script for an app [#318](https://github.com/OSC/ondemand/pull/318)
+- include development and test gems in production build so OnDemand developers
+  can develop against existing gem set [#326](https://github.com/OSC/ondemand/pull/326)
+- Fix font awesome icon usage for activejobs [#323](https://github.com/OSC/ondemand/issues/323)
+
 ## [1.7.2] - 2019-11-19
 ### Added
 - Job Compser and ActiveJobs now respect same navbar branding configuration as Dashboard @zooley [#101](https://github.com/OSC/ondemand/pull/101)
@@ -298,7 +315,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.2...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.3...HEAD
+[1.7.3]: https://github.com/OSC/ondemand/compare/v1.7.2...v1.7.3
 [1.7.2]: https://github.com/OSC/ondemand/compare/v1.7.1...v1.7.2
 [1.7.1]: https://github.com/OSC/ondemand/compare/v1.7.0...v1.7.1
 [1.7.0]: https://github.com/OSC/ondemand/compare/v1.6.20...v1.7.0
