@@ -25,8 +25,7 @@ License:   MIT
 URL:       https://osc.github.io/Open-OnDemand
 Source0:   https://github.com/OSC/%{package_name}/archive/%{git_tag}.tar.gz
 Source1:   ondemand-selinux.te
-Source2:   ondemand-selinux-systemd.te
-Source3:   ondemand-selinux.fc
+Source2:   ondemand-selinux.fc
 
 # Disable debuginfo as it causes issues with bundled gems that build libraries
 %global debug_package %{nil}
@@ -128,7 +127,7 @@ Metapackage to include Rubygems for OnDemand
 pushd selinux
 echo "SELinux policy %{selinux_policy_ver}"
 %__cp %{SOURCE1} ./ondemand-selinux.te
-%__cp %{SOURCE3} ./ondemand-selinux.fc
+%__cp %{SOURCE2} ./ondemand-selinux.fc
 %__sed -i 's/@VERSION@/%{selinux_module_version}/' ./ondemand-selinux.te
 %__make -f %{_datadir}/selinux/devel/Makefile
 popd
