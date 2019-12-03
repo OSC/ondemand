@@ -8,7 +8,6 @@ require {
   type ptmx_t;
   type user_home_dir_t;
   type proc_t;
-  type unconfined_t;
   type vmblock_t;
   type ssh_exec_t;
   type ssh_home_t;
@@ -27,7 +26,10 @@ domain_type(ood_pun_t);
 domain_entry_file(ood_pun_t, ood_pun_exec_t);
 init_daemon_domain(ood_pun_t, ood_pun_exec_t);
 role system_r types ood_pun_t;
+
+# executable support
 can_exec(ood_pun_t, ood_pun_exec_t)
+application_executable_file(ood_pun_exec_t)
 
 # tmp support
 type ood_pun_tmp_t;
@@ -280,8 +282,3 @@ read_files_pattern(ood_pun_t, net_conf_t, net_conf_t)
 
 # Allow PUN to access system certs
 miscfiles_read_generic_certs(ood_pun_t)
-
-# Necessary to run nginx_stage at command line which is unconfined
-list_dirs_pattern(unconfined_t, ood_pun_var_config_t, ood_pun_var_config_t)
-list_dirs_pattern(unconfined_t, ood_pun_var_lib_t, ood_pun_var_lib_t)
-read_files_pattern(unconfined_t, ood_pun_var_config_t, ood_pun_var_config_t)
