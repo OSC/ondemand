@@ -92,3 +92,8 @@ Session.vim
 *~
 # Auto-generated tag files
 tags
+
+# Ignore SELinux files
+/packaging/*.pp
+/packaging/*.if
+/packaging/tmp

@@ -19,10 +19,17 @@ yum install -y \
   sqlite-devel \
   git \
   redhat-rpm-config \
+  selinux-policy-devel \
   ondemand-ruby \
   ondemand-python \
   ondemand-nodejs \
   ondemand-runtime
+
+# Build SELinux module
+pushd packaging
+sed -i 's/@VERSION@/1/g' ondemand-selinux.te
+make -f /usr/share/selinux/devel/Makefile
+popd
 
 # Setup environment
 source scl_source enable ondemand || :
