@@ -36,6 +36,10 @@ class ConfigurationSingleton
     @ood_version ||= (ood_version_from_env || version_from_file('/opt/ood') || version_from_git('/opt/ood') || "Unknown").strip
   end
 
+def ood_bc_ssh_to_compute_node
+  to_bool(ENV['OOD_BC_SSH_TO_COMPUTE_NODE'] || true)
+end
+
   # @return [String, nil] version string from git describe, or nil if not git repo
   def version_from_git(dir)
     Dir.chdir(Pathname.new(dir)) do
