@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.7.4] - 2019-12-04
+### Added
+- Addition of LinuxHost adapter to the Dashboard
+
+### Fixed
+- Fixed bug where an unreadable cluster config (e.g. due to file permissions) would cause crashes
+
 ## [1.7.3] - 2019-12-03
 ### Added
 - `-u/--user` flag to `nginx_stage nginx_clean` subcommand [#315](https://github.com/OSC/ondemand/pull/315)
@@ -315,7 +322,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.3...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.4...HEAD
+[1.7.4]: https://github.com/OSC/ondemand/compare/v1.7.3...v1.7.4
 [1.7.3]: https://github.com/OSC/ondemand/compare/v1.7.2...v1.7.3
 [1.7.2]: https://github.com/OSC/ondemand/compare/v1.7.1...v1.7.2
 [1.7.1]: https://github.com/OSC/ondemand/compare/v1.7.0...v1.7.1
