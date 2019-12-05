@@ -1058,12 +1058,17 @@ var UI = {
     // further information at https://developer.mozilla.org/en-US/docs/Web/API/Clipboard
 
     writeLocalClipboard(text) {
-        if (typeof navigator.clipboard !== "undefined" && typeof navigator.clipboard.writeText !== "undefined") {
-            navigator.clipboard.writeText(text).then(() => {
+        if (typeof navigator.clipboard !== "undefined" && typeof navigator.clipboard.writeText !== "undefined"
+            && typeof navigator.permissions !== "undefined" && typeof navigator.permissions.query !== "undefined"
+           ) {
+            navigator.permissions.query({name: 'clipboard-write'})
+            .then(() => { return navigator.clipboard.writeText(text) })
+            .then(() => {
                 let debugMessage = text.substr(0, 40) + "...";
                 Log.Debug('>> UI.setClipboardText: navigator.clipboard.writeText with ' + debugMessage);
-            }).catch(() => {
-                Log.Error(">> UI.setClipboardText: Failed to write system clipboard (trying to copy from NoVNC clipboard)");
+            }).catch((err) => {
+                if(err.name !== 'TypeError')
+                    Log.Error(">> UI.setClipboardText: Failed to write system clipboard (trying to copy from NoVNC clipboard)");
             });
         }
     },
