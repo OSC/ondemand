@@ -33,7 +33,7 @@ class WorkflowFile
     end
   end
 
-  # Return true if first 1000 bytes of file contain '#PBS' or '#SBATCH"
+  # Return true if first 1000 bytes of file contain '#PBS' or '#SBATCH" or '#BSUB' or '#$'
   def has_resource_manager_directive?
     begin
       contents = File.open(path) { |f| f.read(1000) }
