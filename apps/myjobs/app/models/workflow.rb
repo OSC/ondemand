@@ -133,10 +133,11 @@ class Workflow < ActiveRecord::Base
   # @return [WorkflowFile] An array of WorkflowFile Objects of all the files of a directory
   def folder_contents
     return @folder_contents if defined? @folder_contents
+    
     if File.directory?(self.staged_dir)
-      Find.find(self.staged_dir).drop(1).select {|f| File.file?(f) }.map {|f| WorkflowFile.new(f, self.staged_dir)}
+      @folder_contents = Find.find(self.staged_dir).drop(1).select {|f| File.file?(f) }.map {|f| WorkflowFile.new(f, self.staged_dir)}
     else
-      []
+      @folder_contents = []
     end
   end
   
