@@ -10,7 +10,7 @@ class WorkflowFile
   #
   # Filter the files by file size, extension and content
   def suggested_script?
-    @suggested_script ||= (valid_size? && ( has_suggested_extensions? || starts_with_shebang_line? || has_specific_command?))
+    @suggested_script ||= (valid_size? && ( has_suggested_extensions? || starts_with_shebang_line? || has_resource_manager_directive?))
   end
  
   # Return true if the file meets the basic requirements to be a job script
@@ -34,10 +34,10 @@ class WorkflowFile
   end
 
   # Return true if first 1000 bytes of file contain '#PBS' or '#SBATCH"
-  def has_specific_command?
+  def has_resource_manager_directive?
     begin
       contents = File.open(path) { |f| f.read(1000) }
-      contents && (contents.include?("#PBS") || contents.include?("#SBATCH"))
+      contents && (contents.include?("#PBS") || contents.include?("#SBATCH") || contents.include?('#BSUB') || contents.include?('#$'))
     rescue
       false
     end

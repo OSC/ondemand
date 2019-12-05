@@ -158,7 +158,7 @@ class Workflow < ActiveRecord::Base
     group_options = {
       "Suggested file(s)" => folder_contents.select(&:suggested_script?).map { |f| [f.relative_path, f.path] },
       "Other valid file(s)" => folder_contents.select(&:valid_script?).reject(&:suggested_script?).map { |f| [f.relative_path, f.path] },
-    }.reject {|k,v| v.blank?}
+    }.reject {|k,v| v.empty?}
   end
   
   # Returns the pbsid of the last job in the workflow
