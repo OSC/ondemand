@@ -489,6 +489,8 @@ var UI = {
         document.getElementById("noVNC_clipboard_button").addEventListener('click', UI.toggleClipboardPanel);
         document.getElementById("noVNC_clipboard_text").addEventListener('change', UI.clipboardSend);
         document.getElementById("noVNC_clipboard_clear_button").addEventListener('click', UI.clipboardClear);
+
+        document.getElementById("noVNC_clipboard_text").addEventListener('input', UI.syncClipboardPanelToLocalClipboard);
     },
 
     // Add a call to save settings when the element changes,
@@ -1052,6 +1054,35 @@ var UI = {
      *   CLIPBOARD
      * ------v------*/
 
+    // Read and write text to local clipboard is currently only supported in Chrome 66+ and Opera53+
+    // further information at https://developer.mozilla.org/en-US/docs/Web/API/Clipboard
+
+    writeLocalClipboard(text) {
+        if (typeof navigator.clipboard !== "undefined" && typeof navigator.clipboard.writeText !== "undefined") {
+            navigator.clipboard.writeText(text).then(() => {
+                let debugMessage = text.substr(0, 40) + "...";
+                Log.Debug('>> UI.setClipboardText: navigator.clipboard.writeText with ' + debugMessage);
+            }).catch(() => {
+                Log.Error(">> UI.setClipboardText: Failed to write system clipboard (trying to copy from NoVNC clipboard)");
+            });
+        }
+    },
+
+    readLocalClipboard() {
+        // navigator.clipboard and navigator.clipbaord.readText is not available in all browsers
+        if (typeof navigator.clipboard !== "undefined" && typeof navigator.clipboard.readText !== "undefined") {
+            navigator.clipboard.readText()
+                .then((clipboardText) => {
+                    const text = document.getElementById('noVNC_clipboard_text').value;
+                    if (clipboardText !== text) {
+                        document.getElementById('noVNC_clipboard_text').value = clipboardText;
+                        UI.clipboardSend();
+                    }
+                })
+                .catch(err => Log.Warn("<< UI.readLocalClipboard: Failed to read system clipboard-: " + err));
+        }
+    },
+
     openClipboardPanel: function () {
         UI.closeAllPanels();
         UI.openControlbar();
@@ -1076,11 +1107,13 @@ var UI = {
     clipboardReceive: function (e) {
         Log.Debug(">> UI.clipboardReceive: " + e.detail.text.substr(0, 40) + "...");
         document.getElementById('noVNC_clipboard_text').value = e.detail.text;
+        UI.writeLocalClipboard(e.detail.text);
         Log.Debug("<< UI.clipboardReceive");
     },
 
     clipboardClear: function () {
         document.getElementById('noVNC_clipboard_text').value = "";
+        UI.writeLocalClipboard("");
         UI.rfb.clipboardPasteFrom("");
     },
 
@@ -1089,6 +1122,12 @@ var UI = {
         Log.Debug(">> UI.clipboardSend: " + text.substr(0, 40) + "...");
         UI.rfb.clipboardPasteFrom(text);
         Log.Debug("<< UI.clipboardSend");
+    },
+    syncClipboardPanelToLocalClipboard() {
+        // Reads text from clipboard panel and set it to local clipboard
+        // Mainly used to synchronize clipboard panel with local clipboard
+        const text = document.getElementById('noVNC_clipboard_text').value;
+        UI.writeLocalClipboard(text);
     },
 
     /* ------^-------
@@ -1159,6 +1198,9 @@ var UI = {
             UI.updatePowerButton();
         });
         UI.rfb.addEventListener("clipboard", UI.clipboardReceive);
+
+        UI.rfb.oncanvasfocus = UI.readLocalClipboard;
+
         UI.rfb.addEventListener("bell", UI.bell);
         UI.rfb.addEventListener("desktopname", UI.updateDesktopName);
         UI.rfb.clipViewport = UI.getSetting('view_clip');
@@ -6468,6 +6510,8 @@ function RFB(target, url, options) {
     // time to set up callbacks
     setTimeout(this._updateConnectionState.bind(this, 'connecting'));
 
+    this.oncanvasfocus = () => {}; // Handler for canvas focused
+
     Log.Debug("<< RFB.constructor");
 };
 
@@ -6615,6 +6659,7 @@ RFB.prototype = {
     },
 
     focus: function () {
+        this.oncanvasfocus();
         this._canvas.focus();
     },
 
