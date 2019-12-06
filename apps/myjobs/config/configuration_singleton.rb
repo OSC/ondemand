@@ -128,6 +128,10 @@ class ConfigurationSingleton
     ENV.values_at('OOD_BRAND_LINK_ACTIVE_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_LINK_ACTIVE_BG','BOOTSTRAP_NAVBAR_INVERSE_LINK_ACTIVE_BG' ).compact.first
   end
 
+  def max_valid_script_size_kb
+    (ENV['OOD_MAX_SCRIPT_SIZE_KB'] || 65).to_i
+  end
+
   private
 
   # The environment
