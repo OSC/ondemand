@@ -1062,7 +1062,7 @@ var UI = {
             && typeof navigator.permissions !== "undefined" && typeof navigator.permissions.query !== "undefined"
            ) {
             navigator.permissions.query({name: 'clipboard-write'})
-            .then(() => { return navigator.clipboard.writeText(text) })
+            .then(() => navigator.clipboard.writeText(text))
             .then(() => {
                 let debugMessage = text.substr(0, 40) + "...";
                 Log.Debug('>> UI.setClipboardText: navigator.clipboard.writeText with ' + debugMessage);
