@@ -1077,16 +1077,23 @@ var UI = {
 
     readLocalClipboard() {
         // navigator.clipboard and navigator.clipbaord.readText is not available in all browsers
-        if (typeof navigator.clipboard !== "undefined" && typeof navigator.clipboard.readText !== "undefined") {
-            navigator.clipboard.readText()
-                .then((clipboardText) => {
-                    const text = document.getElementById('noVNC_clipboard_text').value;
-                    if (clipboardText !== text) {
-                        document.getElementById('noVNC_clipboard_text').value = clipboardText;
-                        UI.clipboardSend();
-                    }
-                })
-                .catch(err => Log.Warn("<< UI.readLocalClipboard: Failed to read system clipboard-: " + err));
+        if (typeof navigator.clipboard !== "undefined" && typeof navigator.clipboard.readText !== "undefined" &&
+            typeof navigator.permissions !== "undefined" && typeof navigator.permissions.query !== "undefined"
+           ) {
+            navigator.permissions.query({name: 'clipboard-read'})
+            .then(() => navigator.clipboard.readText())
+            .then((clipboardText) => {
+                const text = document.getElementById('noVNC_clipboard_text').value;
+                if (clipboardText !== text) {
+                    document.getElementById('noVNC_clipboard_text').value = clipboardText;
+                    UI.clipboardSend();
+                }
+            })
+            .catch((err) => {
+                if(err.name !== 'TypeError'){
+                  Log.Warn("<< UI.readLocalClipboard: Failed to read system clipboard-: " + err);
+                }
+            });
         }
     },
 
