@@ -259,7 +259,7 @@ abs_path = (filepath) ->
   if data?
     list = "<ul class='list-group'>"
     for content in data.folder_contents
-      formatted_path = content.path.replace(data.staged_dir, "")
+      formatted_path = content.relative_path
       if content.name == data.staged_script_name
         formatted_path = "<strong>#{formatted_path}</strong>"
         submit_script = content

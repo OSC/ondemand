@@ -22,7 +22,7 @@
     <strong>Directory Contents:</strong>
   <ul>
     <% @workflow.folder_contents.each do |content| %>
-        <li><%= content %></li>
+        <li><%= content.path %></li>
     <% end %>
   </ul>
   </p>
