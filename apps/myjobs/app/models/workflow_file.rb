@@ -45,7 +45,7 @@ class WorkflowFile
 
   # Return true if file size is smaller than 65KB
   def valid_size?
-    File.size(path).to_f/1024 <= 65
+    File.size(path).to_f/1024 <= Configuration.max_valid_script_size_kb
   end  
   
   # Return relative file path uses staged_dir as base
