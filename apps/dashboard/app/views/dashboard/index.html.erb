@@ -71,7 +71,7 @@
       {{#each results}}
       <tr>
         <td>{{name}}</td>
-        <td>{{local_job_id}}</td>
+        <td><a target="_blank" href="{{job_url}}">{{local_job_id}}&nbsp;<i style="display: inline" class="fa fa-external-link-square-alt"></i></a></td>
         <td>{{resource}}</td>
         <td>{{start_time}}</td>
         <td>{{end_time}}</td>
@@ -209,7 +209,8 @@ $.get(jobsUrl, function(jsonData){
     },
     start_time: function(){ return moment.unix(this.start_time_ts).format('YY-MM-DD h:mmA'); },
     end_time: function(){ return moment.unix(this.end_time_ts).format('YY-MM-DD h:mmA'); },
-    walltime: function(){ return moment.duration(this.end_time_ts - this.start_time_ts).humanize(); }
+    walltime: function(){ return moment.duration(this.end_time_ts - this.start_time_ts).humanize(); },
+    job_url: function(){ return "https://xdmod-test.hpc.osc.edu/#job_viewer?action=show&realm=Jobs&jobref=" + this.jobid; }
   };
   $('#jobsPanelDiv').html(template(jsonData, {helpers: helpers}));
 });
