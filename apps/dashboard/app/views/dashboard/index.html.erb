@@ -1,29 +1,28 @@
 <%= render partial: 'shared/welcome' %>
 
-<!--
-<div class="xdmod">
-    <div id="jobsPanelDiv"></div>
-    <div id="centerReportCardPanelDiv"></div>
-    <div id="reportThumbnailsPanelDiv"></div>
-</div>
 
--->
-
-    <%# This assumes @motd_file responds to `to_partial_path` %>
-    <%# render @motd if @motd %>
-<div class="row">
-  <div class="col-md-8">
-    <div class="xdmod">
-      <div id="jobsPanelDiv"></div>
-      <div id="centerReportCardPanelDiv"></div>
-      <div id="reportThumbnailsPanelDiv"></div>
+<% if Configuration.xdmod_integration_enabled? %>
+  <%# This assumes @motd_file responds to `to_partial_path` %>
+  <%# render @motd if @motd %>
+  <div class="row">
+    <div class="col-md-8">
+      <div class="xdmod">
+        <div id="jobsPanelDiv"></div>
+        <div id="centerReportCardPanelDiv"></div>
+        <div id="reportThumbnailsPanelDiv"></div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <%# This assumes @motd_file responds to `to_partial_path` %>
+      <%= render @motd if @motd %>
     </div>
   </div>
-  <div class="col-md-4">
-    <%# This assumes @motd_file responds to `to_partial_path` %>
-    <%= render @motd if @motd %>
-  </div>
-</div>
+
+<% else %>
+  <%= render @motd if @motd %>
+<% end %>
+
+<% if Configuration.xdmod_integration_enabled? %>
 <script id="jobs-template" type="text/x-handlebars-template">
 <div class="panel panel-default"><div class="panel-body">
   <h4>{{title}}</h4>
@@ -190,7 +189,7 @@ var startOfYear = moment().startOf('year').format("YYYY-MM-DD"),
     today = moment().format("YYYY-MM-DD");
 
 
-var jobsUrl = new URL('https://xdmod-test.hpc.osc.edu/rest/v1/warehouse/search/jobs');
+var jobsUrl = new URL('<%= Configuration.xdmod_host %>/rest/v1/warehouse/search/jobs');
 jobsUrl.searchParams.set('_dc', Date.now());
 jobsUrl.searchParams.set('start_date', thirtyDaysAgo);
 jobsUrl.searchParams.set('end_date', today);
@@ -210,14 +209,14 @@ $.get(jobsUrl, function(jsonData){
     start_time: function(){ return moment.unix(this.start_time_ts).format('YY-MM-DD h:mmA'); },
     end_time: function(){ return moment.unix(this.end_time_ts).format('YY-MM-DD h:mmA'); },
     walltime: function(){ return moment.duration(this.end_time_ts - this.start_time_ts).humanize(); },
-    job_url: function(){ return "https://xdmod-test.hpc.osc.edu/#job_viewer?action=show&realm=Jobs&jobref=" + this.jobid; }
+    job_url: function(){ return "<%= Configuration.xdmod_host %>/#job_viewer?action=show&realm=Jobs&jobref=" + this.jobid; }
   };
   $('#jobsPanelDiv').html(template(jsonData, {helpers: helpers}));
 });
 
 
 // perf is from start of the year
-var perfUrl = new URL('https://xdmod-test.hpc.osc.edu/rest/v1/app_kernels/performance_map/raw');
+var perfUrl = new URL('<%= Configuration.xdmod_host %>/rest/v1/app_kernels/performance_map/raw');
 perfUrl.searchParams.set('_dc', Date.now());
 perfUrl.searchParams.set('start_date', startOfYear);
 perfUrl.searchParams.set('end_date', today);
@@ -252,14 +251,14 @@ $.get(perfUrl, function(jsonData){
         resource: this.resource,
         app_kernel: this.app_kernel
       };
-      return "https://xdmod-test.hpc.osc.edu/#main_tab_panel:app_kernels:app_kernel_performance_map?ak=" + window.btoa(JSON.stringify(link_info));
+      return "<%= Configuration.xdmod_host %>/#main_tab_panel:app_kernels:app_kernel_performance_map?ak=" + window.btoa(JSON.stringify(link_info));
     }
   };
   $('#centerReportCardPanelDiv').html(template(jsonData, {helpers: helpers}));
 });
 
 
-var reportUrl = new URL('https://xdmod-test.hpc.osc.edu/rest/v1/dashboard/rolereport');
+var reportUrl = new URL('<%= Configuration.xdmod_host %>/rest/v1/dashboard/rolereport');
 reportUrl.searchParams.set('_dc', Date.now());
 
 $.get(reportUrl, function(jsondata){
@@ -275,7 +274,7 @@ $.get(reportUrl, function(jsondata){
       helpers = {
         thumbnail_src: function(){
           // TODO: polyfills for URL and URLSearchParams
-          var url = new URL("https://xdmod-test.hpc.osc.edu"+ this.thumbnail_link);
+          var url = new URL("<%= Configuration.xdmod_host %>"+ this.thumbnail_link);
 
           // TODO: should token be set to something?
           url.searchParams.delete('token');
@@ -317,7 +316,7 @@ $.get(reportUrl, function(jsondata){
 //            config_data.end_date = timeframeRange.end_date;
 //          }
 
-          return "https://xdmod-test.hpc.osc.edu/#main_tab_panel:metric_explorer?config=" + window.btoa(JSON.stringify(config_link));
+          return "<%= Configuration.xdmod_host %>/#main_tab_panel:metric_explorer?config=" + window.btoa(JSON.stringify(config_link));
         },
         title: function(){
           // FIXME: this is incorrect time range
@@ -334,3 +333,4 @@ $.get(reportUrl, function(jsondata){
 // TODO: handle errors etc.
 // TODO: testing client side integration using automated test! webmock FTW. Where vue would be nice :-P
 </script>
+<% end %>
