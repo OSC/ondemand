@@ -144,7 +144,7 @@ overPerforming: blue  41
       {{#each results}}
       <tr>
         <td width="100px">{{resource}}</td>
-        <td width="100px">{{app_kernel}}</td>
+        <td width="120px"><a target="_blank" href="{{app_kernel_url}}">{{app_kernel}}&nbsp;<i style="display: inline" class="fa fa-external-link-square-alt"></i></a></td>
         <td>
           <div class="progress" style="margin-bottom: 0px;">
             <div class="progress-bar progress-bar-danger" style="width: {{failed_percent}}%">
@@ -227,7 +227,7 @@ $.get(perfUrl, function(jsonData){
   var template = Handlebars.compile(template_source);
   var total_runs = function(obj){
     return obj.failedRuns + obj.inControlRuns + obj.overPerformingRuns + obj.underPerformingRuns;
-  }
+  };
 
   var helpers = {
     failed_percent: function(){
@@ -244,6 +244,15 @@ $.get(perfUrl, function(jsonData){
     },
     title: function(){
       return "XDMoD - Center Report Card - " + startOfYear + " to " + today;
+    },
+    app_kernel_url: function(){
+      var link_info = {
+        start_date: startOfYear,
+        end_date: today,
+        resource: this.resource,
+        app_kernel: this.app_kernel
+      };
+      return "https://xdmod-test.hpc.osc.edu/#main_tab_panel:app_kernels:app_kernel_performance_map?ak=" + window.btoa(JSON.stringify(link_info));
     }
   };
   $('#centerReportCardPanelDiv').html(template(jsonData, {helpers: helpers}));
