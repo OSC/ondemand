@@ -174,7 +174,7 @@ overPerforming: blue  41
   <div class="row">
     {{#each data.queue}}
     <div class="col-md-6 col-xs-12">
-      <a href="#" class="thumbnail">
+      <a target="_blank" href="{{chart_url}}" class="thumbnail">
         <div class="caption text-center"><small>{{chart_title}}</small></div>
         <img class="img-responsive" src="{{thumbnail_src}}" data-src="holder.js/362x214">
       </a>
@@ -282,9 +282,46 @@ $.get(reportUrl, function(jsondata){
 
           return url.toString();
         },
+        chart_url: function(){
+          var config_link = {};
+          var config = this.chart_id;
+          for (var key in this.chart_id){
+            if (key === 'data_series') {
+              let data_series = {};
+              data_series.data = config[key];
+              data_series.total = config[key].length;
+              config_link.data_series = data_series;
+            } else if (key === 'global_filters') {
+              config_link[key] = config[key];
+            } else {
+              config_link[key] = config[key];
+            }
+          }
+          //FIXME: config_link.start_date and config_link.end_date already should exist...
+          // so what is the point of below?
+//
+//          if (!(timeframe.start_date === null && timeframe.end_date === null)) {
+//            config_link.start_date = timeframe.start_date;
+//            config_link.end_date = timeframe.end_date;
+//            config_link.timeframe_label = 'User Defined';
+//            config_data.start_date = timeframe.start_date;
+//            config_data.end_date = timeframe.end_date;
+//            config_data.timeframe_label = 'User Defined';
+//
+//          } else {
+//            var ranges = getDateRanges();
+//            var timeframeRange = filterRange(ranges, config.timeframe_label);
+//            config_link.start_date = timeframeRange.start_date;
+//            config_link.end_date = timeframeRange.end_date;
+//            config_data.start_date = timeframeRange.start_date;
+//            config_data.end_date = timeframeRange.end_date;
+//          }
+
+          return "https://xdmod-test.hpc.osc.edu/#main_tab_panel:metric_explorer?config=" + window.btoa(JSON.stringify(config_link));
+        },
         title: function(){
           // FIXME: this is incorrect time range
-          return "XDMoD - Summary Charts - " + startOfYear + " to " + today;
+          return "XDMoD - Summary Charts"; //FIXME: + startOfYear + " to " + today;
         }
       };
 
