@@ -128,6 +128,18 @@ class ConfigurationSingleton
     ENV.fetch("OOD_BALANCE_THRESHOLD", 0).to_f
   end
 
+  # The XMoD host
+  # @return [String, null] the host, or null if not set
+  def xdmod_host
+    ENV["OOD_XDMOD_HOST"]
+  end
+
+  # Whether or not XDMoD integration is enabled
+  # @return [Boolean]
+  def xdmod_integration_enabled?
+    xdmod_host.present?
+  end
+
   # Load the dotenv local files first, then the /etc dotenv files and
   # the .env and .env.production or .env.development files.
   #
