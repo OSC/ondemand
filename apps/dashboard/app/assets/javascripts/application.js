@@ -18,6 +18,8 @@
 //= require dataTables/jquery.dataTables
 //= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
 //= require data-confirm-modal
+//= require holder/2.9.6/holder.min
+//= require handlebars.js/4.4.2/handlebars.min
 //= require_tree .
 
 //FIXME: move to coffescript
