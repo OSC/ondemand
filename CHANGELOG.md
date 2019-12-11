@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.7.5] - 2019-12-11
+### Added
+- use Async ClipboardAPI for better copy and paste with Chrome and NoVNC [#335](https://github.com/OSC/ondemand/pull/335)
+- restrictions on what can be set as a job script in Job Composer to mitigate
+  problem with accidently choosing input file as job script [#310](https://github.com/OSC/ondemand/pull/310)
+
+### Fixed
+- fix URL used for file-editor assets [#343](https://github.com/OSC/ondemand/pull/343)
+
 ## [1.7.4] - 2019-12-04
 ### Added
 - Addition of LinuxHost adapter to the Dashboard
@@ -322,7 +331,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.4...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.5...HEAD
+[1.7.5]: https://github.com/OSC/ondemand/compare/v1.7.4...v1.7.5
 [1.7.4]: https://github.com/OSC/ondemand/compare/v1.7.3...v1.7.4
 [1.7.3]: https://github.com/OSC/ondemand/compare/v1.7.2...v1.7.3
 [1.7.2]: https://github.com/OSC/ondemand/compare/v1.7.1...v1.7.2
