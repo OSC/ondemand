@@ -7,6 +7,9 @@ include FileUtils
 ENV["RAILS_ENV"]               ||= ENV["PASSENGER_APP_ENV"] || "development"
 ENV["RAILS_RELATIVE_URL_ROOT"] ||= ENV["PASSENGER_BASE_URI"]
 
+# if relative url root not set, use default for this app
+ENV['RAILS_RELATIVE_URL_ROOT'] ||= "/pun/sys/file-editor" if ENV['RAILS_ENV'] == 'production'
+
 # define application object
 class App
   attr_accessor :env, :url
