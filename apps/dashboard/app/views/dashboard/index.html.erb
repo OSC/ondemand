@@ -199,7 +199,7 @@ jobsUrl.searchParams.set('start', 0);
 jobsUrl.searchParams.set('verbose', true);
 jobsUrl.searchParams.set('params', JSON.stringify({}));
 
-$.get(jobsUrl, function(jsonData){
+$.get({url: jobsUrl, xhrFields: { withCredentials: true }}).done(function(jsonData){
   var template_source = $('#jobs-template').html();
   var template = Handlebars.compile(template_source);
   var helpers = {
@@ -221,7 +221,7 @@ perfUrl.searchParams.set('_dc', Date.now());
 perfUrl.searchParams.set('start_date', startOfYear);
 perfUrl.searchParams.set('end_date', today);
 
-$.get(perfUrl, function(jsonData){
+$.get({url: perfUrl, xhrFields: { withCredentials: true }}).done(function(jsonData){
   var template_source = $('#perf-template').html();
   var template = Handlebars.compile(template_source);
   var total_runs = function(obj){
@@ -261,7 +261,7 @@ $.get(perfUrl, function(jsonData){
 var reportUrl = new URL('<%= Configuration.xdmod_host %>/rest/v1/dashboard/rolereport');
 reportUrl.searchParams.set('_dc', Date.now());
 
-$.get(reportUrl, function(jsondata){
+$.get({url: reportUrl, xhrFields: { withCredentials: true }}).done(function(jsondata){
   var template_source = $('#report-template').html(),
       template = Handlebars.compile(template_source),
 
