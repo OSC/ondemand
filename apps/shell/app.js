@@ -6,7 +6,10 @@ var express   = require('express');
 var pty       = require('node-pty');
 var hbs       = require('hbs');
 var dotenv    = require('dotenv');
-var port      = 3000;
+var port = 3000;
+var uuidv4 = require('uuid/v4');
+var currentId;
+
 
 // Read in environment variables
 dotenv.config({path: '.env.local'});
@@ -23,9 +26,11 @@ if (fs.existsSync('.env')) {
 // Create all your routes
 var router = express.Router();
 router.get('/', function (req, res) {
-  res.redirect(req.baseUrl + '/ssh');
+    currentId = uuidv4();
+  res.redirect(req.baseUrl + `/ssh/${currentId}`);
 });
-router.get('/ssh*', function (req, res) {
+router.get('/ssh/:id*', function (req, res) {
+    currentId = req.params["id"];
   res.render('index', { baseURI: req.baseUrl });
 });
 router.use(express.static(path.join(__dirname, 'public')));
@@ -40,6 +45,74 @@ app.set('views', path.join(__dirname, 'views'));
 // Mount the routes at the base URI
 app.use(process.env.PASSENGER_BASE_URI || '/', router);
 
+var terminals = {
+    instances: {
+
+    },
+
+    create: function (host, dir) {
+        var cmd = 'ssh';
+        var args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
+        var uuid = currentId;
+
+        this.instances[uuid] = pty.spawn(cmd, args, {
+            name: 'xterm-256color',
+            cols: 80,
+            rows: 30
+        });
+        return uuid;
+    },
+
+    exists: function (uuid) {
+        if (uuid in instances) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+
+    get: function (uuid) {
+        return this.instance[uuid];
+    },
+
+    attach: function (uuid, ws) {
+        var term = this.get(uuid);
+        term.resume();
+
+        term.on('data', function (data) {
+            ws.send(data, function (error) {
+                if (error) console.log('Send error: ' + error.message);
+            });
+        });
+
+        term.on('error', function (error) {
+            console.log(error);
+            ws.close();
+        });
+
+        term.on('close', function () {
+            ws.close();
+        });
+
+        ws.on('message', function (msg) {
+            msg = JSON.parse(msg);
+            if (msg.input) term.write(msg.input);
+            if (msg.resize) term.resize(parseInt(msg.resize.cols), parseInt(msg.resize.rows));
+        });
+
+        ws.on('close', function () {
+            term.pause();
+            console.log('Kept terminal: ' + term.pid);
+        });
+
+        ws.on('reconnect', () => {
+            console.log('terminal program resumed.' + term.pid);
+        });
+
+    }
+}
+
+
 // Setup websocket server
 var server = new http.createServer(app);
 var wss = new WebSocket.Server({ server: server });
@@ -48,8 +121,6 @@ wss.on('connection', function connection (ws, req) {
   var match;
   var host = process.env.DEFAULT_SSHHOST || 'localhost';
   var dir;
-  var term;
-  var cmd, args;
 
   console.log('Connection established');
 
@@ -59,43 +130,17 @@ wss.on('connection', function connection (ws, req) {
     if (match[2]) dir = decodeURIComponent(match[2]);
   }
 
-  cmd = 'ssh';
-  args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
+    if (terminals.exists(currentId) === false) {
+        terminals.create(host, dir);
+    }
+
+    terminals.attach(currentId, ws);
 
   process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
   
-  term = pty.spawn(cmd, args, {
-    name: 'xterm-256color',
-    cols: 80,
-    rows: 30
-  });
+ 
 
-  console.log('Opened terminal: ' + term.pid);
 
-  term.on('data', function (data) {
-    ws.send(data, function (error) {
-      if (error) console.log('Send error: ' + error.message);
-    });
-  });
-
-  term.on('error', function (error) {
-    ws.close();
-  });
-
-  term.on('close', function () {
-    ws.close();
-  });
-
-  ws.on('message', function (msg) {
-    msg = JSON.parse(msg);
-    if (msg.input)  term.write(msg.input);
-    if (msg.resize) term.resize(parseInt(msg.resize.cols), parseInt(msg.resize.rows));
-  });
-
-  ws.on('close', function () {
-    term.end();
-    console.log('Closed terminal: ' + term.pid);
-  });
 });
 
 server.listen(port, function () {
