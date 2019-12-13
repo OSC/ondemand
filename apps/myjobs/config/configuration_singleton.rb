@@ -96,11 +96,21 @@ class ConfigurationSingleton
     # FIXME: add support/handling for DATABASE_URL
     Pathname.new(ENV["DATABASE_PATH"] || dataroot.join('production.sqlite3')).expand_path
   end
-  
+
+  def database_path
+    {
+      'test' => Pathname.new('db/test.sqlite3'),
+      'development' => Pathname.new('db/development.sqlite3')
+    }.fetch(
+      rails_env,
+      production_database_path
+    )
+  end
+
   def whitelist_paths
     ENV['WHITELIST_PATH'].to_s.strip.split(":")
   end
-  
+
   def locale
     (ENV['OOD_LOCALE'] || I18n.default_locale).to_sym
   end

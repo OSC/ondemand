@@ -1,6 +1,7 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
+require 'fileutils'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -23,6 +24,16 @@ module JobConstructor
     if ::Configuration.load_external_config?
       config.paths["config/initializers"] << ::Configuration.custom_initializers_root.to_s
       config.paths["app/views"].unshift ::Configuration.custom_views_root.to_s
+    end
+
+    # Handle case where app database file is missing and user does not use the Dashboard to launch app
+    if (! ::Configuration.database_path.file?) || ::Configuration.database_path.empty?
+      require 'rake'
+      FileUtils.chdir ::Configuration.dataroot.parent do
+        load_tasks
+        ::Configuration.production_database_path.parent.mkpath
+        Rake::Task['db:setup'].invoke
+      end
     end
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
