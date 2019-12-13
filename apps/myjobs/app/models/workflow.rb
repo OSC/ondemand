@@ -135,7 +135,13 @@ class Workflow < ActiveRecord::Base
     return @folder_contents if defined? @folder_contents
     
     if File.directory?(self.staged_dir)
-      @folder_contents = Find.find(self.staged_dir).drop(1).select {|f| File.file?(f) }.map {|f| WorkflowFile.new(f, self.staged_dir)}
+      @folder_contents = Find.find(self.staged_dir).drop(1).select {
+        |f| File.file?(f)
+      }.map {
+        |f| WorkflowFile.new(f, self.staged_dir)
+      }.reject {
+        |wf| wf.under_dotfile?
+      }
     else
       @folder_contents = []
     end
@@ -156,7 +162,7 @@ class Workflow < ActiveRecord::Base
   #
   # @return [["Suggested file(s)",[[relative_file_path, file_path]]], ["Other valid file(s)",[[relative_file_path, file_path]]]] Category with no files will be omitted
   def grouped_script_options
-    group_options = {
+    {
       "Suggested file(s)" => folder_contents.select(&:suggested_script?).map { |f| [f.relative_path, f.path] },
       "Other valid file(s)" => folder_contents.select(&:valid_script?).reject(&:suggested_script?).map { |f| [f.relative_path, f.path] },
     }.reject {|k,v| v.empty?}

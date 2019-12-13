@@ -1,9 +1,7 @@
 class WorkflowFile
-  attr_reader :path, :staged_dir
-
   def initialize(path, staged_dir)
-    @path = path
-    @staged_dir = staged_dir
+    @path = Pathname.new(path.to_s)
+    @staged_dir = Pathname.new(staged_dir.to_s)
   end
 
   # Get an array of files of a directory meeting the criteria for job scripts in alphabetical order
@@ -27,7 +25,7 @@ class WorkflowFile
   # Return true if file starts with a shebang line
   def starts_with_shebang_line?
     begin
-      (File.open(path) { |f| f.read(2) }) == "#!"
+      (@path.open { |f| f.read(2) }) == "#!"
     rescue
       false
     end
@@ -36,7 +34,7 @@ class WorkflowFile
   # Return true if first 1000 bytes of file contain '#PBS' or '#SBATCH" or '#BSUB' or '#$'
   def has_resource_manager_directive?
     begin
-      contents = File.open(path) { |f| f.read(1000) }
+      contents = @path.open { |f| f.read(1000) }
       contents && (contents.include?("#PBS") || contents.include?("#SBATCH") || contents.include?('#BSUB') || contents.include?('#$'))
     rescue
       false
@@ -45,11 +43,23 @@ class WorkflowFile
 
   # Return true if file size is smaller than 65KB
   def valid_size?
-    File.size(path).to_f/1024 <= Configuration.max_valid_script_size_kb
+    @path.size.to_f/1024 <= Configuration.max_valid_script_size_kb
   end  
   
   # Return relative file path uses staged_dir as base
   def relative_path
-    path.gsub(staged_dir, "").sub!(/^\//, '')
+    @path.relative_path_from(@staged_dir).to_s
+  end
+
+  def under_dotfile?
+    @path.ascend().to_a.any? { |entry| entry.basename.to_s.start_with?('.') }
+  end
+
+  def path
+    @path.to_s
+  end
+
+  def staged_dir
+    @staged_dir.to_s
   end
 end
