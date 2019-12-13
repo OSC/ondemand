@@ -142,6 +142,10 @@ class ConfigurationSingleton
     (ENV['OOD_MAX_SCRIPT_SIZE_KB'] || 65).to_i
   end
 
+  def production?
+    rails_env == 'production'
+  end
+
   private
 
   # The environment
