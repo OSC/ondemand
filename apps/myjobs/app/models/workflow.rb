@@ -131,11 +131,38 @@ class Workflow < ActiveRecord::Base
   #
   # @return [String, nil] the pbsid or nil if no jobs on the workflow
   def pbsid
-    jobs.last.pbsid unless jobs.last.nil?
+    @pbsid ||= jobs.last.pbsid unless jobs.last.nil?
+  end
+
+  # FIXME: this is a hack that is relevant only for our install where
+  # a job id will look like:
+  #
+  #      8366777.owens-batch.ten.osc.edu
+  #
+  #  but the corresponding XDMoD job id is
+  #
+  #      8366777
+  #
+  # need to address this across sites. Solution might be to have this be a
+  # lambda that is passed in...via initializer.
+  def pbsid_number
+    pbsid && pbsid.scan(/\d+/).first
+  end
+
+  def cluster
+    @cluster ||= OODClusters[self.batch_host]
+  end
+
+  def xdmod_resource_id
+    cluster && cluster.custom_config(:xdmod)[:resource_id]
   end
 
   def xdmod_url
-    jobs.first.xdmod_url if completed?
+    "#{Configuration.xdmod_host}/index.php#job_viewer?action=show&realm=SUPREMM&resource_id=#{xdmod_resource_id}&local_job_id=#{pbsid_number}"
+  end
+
+  def xdmod_url_available?
+    Configuration.xdmod_integration_enabled? && xdmod_resource_id && completed?
   end
 
   # Returns the optional user-entered account string
