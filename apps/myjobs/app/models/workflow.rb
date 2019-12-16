@@ -96,12 +96,7 @@ class Workflow < ActiveRecord::Base
 
   # @return [Boolean] true if batch_host is assigned and exists in the OODClusters array
   def batch_host_exists?
-    if self.batch_host
-      if OODClusters[self.batch_host]
-        return true
-      end
-    end
-    return false
+    OODClusters[self.batch_host].present?
   end
 
   class StagingTemplateDirMissing < StandardError; end
