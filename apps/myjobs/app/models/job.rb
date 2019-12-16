@@ -18,20 +18,4 @@ class Job < ActiveRecord::Base
       torque_helper: ResourceMgrAdapter.new(workflow)
     )
   end
-
-  def xdmod_url
-    "8366777.owens-batch.ten.osc.edu => 8366777"
-    resource_id = {
-      "owens" => 1,
-      "ruby" => 2,
-      "oakley" => 3,
-      "pitzer" => 4
-    }[host]
-
-    "https://xdmod-test.hpc.osc.edu/index.php#job_viewer?action=show&realm=SUPREMM&resource_id=#{resource_id}&local_job_id=#{pbsid_number}"
-  end
-
-  def pbsid_number
-    @pbsid_number ||= pbsid.scan(/\d+/).first
-  end
 end
