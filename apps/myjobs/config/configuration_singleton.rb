@@ -120,6 +120,18 @@ class ConfigurationSingleton
     end
   end
 
+  # The XMoD host
+  # @return [String, null] the host, or null if not set
+  def xdmod_host
+    ENV["OOD_XDMOD_HOST"]
+  end
+
+  # Whether or not XDMoD integration is enabled
+  # @return [Boolean]
+  def xdmod_integration_enabled?
+    xdmod_host.present?
+  end
+
   private
 
   # The environment
