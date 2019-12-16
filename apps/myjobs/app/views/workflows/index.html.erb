@@ -86,7 +86,7 @@
                 <%# FIXME: AJAX causes a problem with this change %>
                 <%# FIXME: Retaining job records would be helpful %>
                 <td>
-                  <% if workflow.completed? %>
+                  <% if workflow.xdmod_url_available? %>
                     <%= link_to(workflow.xdmod_url, target: "_blank")  do %>
                       <%= workflow.pbsid %> - <%= content_tag :i, nil, style: "display: inline", class: "fa fa-external-link-square-alt" %>&nbsp;XDMoD
                     <% end %>
