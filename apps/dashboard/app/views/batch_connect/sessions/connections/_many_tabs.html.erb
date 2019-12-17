@@ -1,0 +1,16 @@
+<div>
+	<ul class="nav nav-tab">
+		<% tabs.map { |t| t[:title] }.map.with_index do |title, idx| %>
+			<li class="<%= 'active' if idx.zero? %>">
+				<%= link_to title, "##{id}_#{idx}", data: { toggle: "tab" } %>
+			</li>
+		<% end.join("\n").html_safe %>
+	</ul>
+	<div class="tab-content">
+		<%= tabs.map.with_index do |tab, idx| %>
+		<div id="<%= id.to_s + '_' + idx.to_s %>" class="tab-pane ood-appkit markdown <%= "active" if idx == 0 %>">
+			<%= render partial: "batch_connect/sessions/connections/#{tab[:partial]}", locals: tab[:locals] %>
+		</div>
+		<% end.join("\n").html_safe %>
+	</div>
+</div>
