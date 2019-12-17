@@ -27,7 +27,7 @@ module JobConstructor
     end
 
     # Handle case where app database file is missing and user does not use the Dashboard to launch app
-    if ::Configuration.production? && ((! ::Configuration.database_path.file?) || ::Configuration.database_path.empty?)
+    if ::Configuration.dataroot.parent.exist? && ::Configuration.production? && ((! ::Configuration.database_path.file?) || ::Configuration.database_path.empty?)
       require 'rake'
       FileUtils.chdir ::Configuration.dataroot.parent do
         load_tasks
