@@ -1,5 +1,5 @@
 <div>
-	<ul class="nav nav-tab">
+	<ul class="nav nav-tabs">
 		<% tabs.map { |t| t[:title] }.map.with_index do |title, idx| %>
 			<li class="<%= 'active' if idx.zero? %>">
 				<%= link_to title, "##{id}_#{idx}", data: { toggle: "tab" } %>
