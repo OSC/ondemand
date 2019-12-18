@@ -1,43 +1,284 @@
-module ondemand-selinux @VERSION@;
+policy_module(ondemand-selinux, @VERSION@)
 
 require {
-  type httpd_tmp_t;
-  type httpd_sys_script_t;
-  type devpts_t;
+  type bin_t;
   type httpd_t;
-  type systemd_logind_t;
-  type shadow_t;
+  type shell_exec_t;
+  type rsync_exec_t;
   type ptmx_t;
-  type sshd_key_t;
-  type chkpwd_t;
-  type initrc_var_run_t;
   type user_home_dir_t;
-  class chr_file { ioctl open read write };
-  class fifo_file { create getattr ioctl open read setattr unlink write };
-  class netlink_audit_socket { nlmsg_relay create write };
-  class capability { audit_write fowner net_admin };
-  class file { rw_file_perms manage_file_perms };
-  class dir { rw_dir_perms manage_dir_perms };
-  class process { noatsecure rlimitinh siginh };
+  type proc_t;
+  type vmblock_t;
+  type ssh_exec_t;
+  type ssh_home_t;
+  type net_conf_t;
+  type krb5_conf_t;
+  type sssd_var_run_t;
+  class dbus send_msg;
 }
 
-#============= httpd_t ==============
+# Define custom types
+type ood_pun_t;
+type ood_pun_exec_t;
 
-# Allow management of home directories when they are local
-manage_dirs_pattern(httpd_t, user_home_dir_t, user_home_dir_t);
-manage_files_pattern(httpd_t, user_home_dir_t, user_home_dir_t);
-manage_dirs_pattern(httpd_sys_script_t, user_home_dir_t, user_home_dir_t);
-manage_files_pattern(httpd_sys_script_t, user_home_dir_t, user_home_dir_t);
+# service setup
+domain_type(ood_pun_t);
+domain_entry_file(ood_pun_t, ood_pun_exec_t);
+init_daemon_domain(ood_pun_t, ood_pun_exec_t);
+role system_r types ood_pun_t;
+
+# executable support
+can_exec(ood_pun_t, ood_pun_exec_t)
+application_executable_file(ood_pun_exec_t)
+
+# tmp support
+type ood_pun_tmp_t;
+files_tmp_file(ood_pun_tmp_t)
+manage_dirs_pattern(ood_pun_t, ood_pun_tmp_t, ood_pun_tmp_t)
+manage_files_pattern(ood_pun_t, ood_pun_tmp_t, ood_pun_tmp_t)
+manage_fifo_files_pattern(ood_pun_t, ood_pun_tmp_t, ood_pun_tmp_t)
+manage_sock_files_pattern(ood_pun_t, ood_pun_tmp_t, ood_pun_tmp_t)
+files_tmp_filetrans(ood_pun_t, ood_pun_tmp_t, { file fifo_file dir lnk_file sock_file })
+
+# PID support
+type ood_pun_var_run_t;
+files_pid_file(ood_pun_var_run_t)
+admin_pattern(ood_pun_t, ood_pun_var_run_t, ood_pun_var_run_t)
+
+# PUN configs
+type ood_pun_var_lib_t;
+type ood_pun_var_config_t;
+files_type(ood_pun_var_lib_t)
+files_type(ood_pun_var_config_t)
+manage_dirs_pattern(ood_pun_t, ood_pun_var_lib_t, ood_pun_var_lib_t)
+manage_files_pattern(ood_pun_t, ood_pun_var_lib_t, ood_pun_var_lib_t)
+manage_dirs_pattern(ood_pun_t, ood_pun_var_config_t, ood_pun_var_config_t)
+manage_files_pattern(ood_pun_t, ood_pun_var_config_t, ood_pun_var_config_t)
+manage_dirs_pattern(httpd_t, ood_pun_var_config_t, ood_pun_var_config_t)
+manage_files_pattern(httpd_t, ood_pun_var_config_t, ood_pun_var_config_t)
+
+# logging
+type ood_pun_log_t;
+logging_log_file(ood_pun_log_t);
+manage_dirs_pattern(ood_pun_t, ood_pun_log_t, ood_pun_log_t)
+manage_files_pattern(ood_pun_t, ood_pun_log_t, ood_pun_log_t)
+
+# networking
+allow ood_pun_t self:tcp_socket { create_stream_socket_perms };
+allow ood_pun_t self:udp_socket { create_stream_socket_perms };
+logging_send_syslog_msg(ood_pun_t)
+
+# When an httpd_t process executes a file with context ood_pun_exec_t, 
+# then the resulting process should run in the ood_pun_t context.
+can_exec(httpd_t, ood_pun_exec_t)
+allow httpd_t ood_pun_t:process transition;
+type_transition httpd_t ood_pun_exec_t : process ood_pun_t;
+
+# Manage app contexts
+type ood_apps_t;
+type ood_apps_public_t;
+files_type(ood_apps_t)
+files_type(ood_apps_public_t)
+list_dirs_pattern(ood_pun_t, ood_apps_t, ood_apps_t)
+read_files_pattern(ood_pun_t, ood_apps_t, ood_apps_t)
+mmap_exec_files_pattern(ood_pun_t, ood_apps_t, ood_apps_t)
+read_lnk_files_pattern(ood_pun_t, ood_apps_t, ood_apps_t)
+list_dirs_pattern(ood_pun_t, ood_apps_public_t, ood_apps_public_t)
+read_files_pattern(ood_pun_t, ood_apps_public_t, ood_apps_public_t)
+mmap_exec_files_pattern(ood_pun_t, ood_apps_public_t, ood_apps_public_t)
+read_lnk_files_pattern(ood_pun_t, ood_apps_public_t, ood_apps_public_t)
+read_files_pattern(httpd_t, ood_apps_public_t, ood_apps_public_t)
+read_lnk_files_pattern(httpd_t, ood_apps_public_t, ood_apps_public_t)
+
+## <desc>
+## <p>
+## Allow OnDemand to manage user home directories
+## </p>
+## </desc>
+gen_tunable(ondemand_manage_user_home_dir, false)
+
+tunable_policy(`ondemand_manage_user_home_dir',`
+  manage_dirs_pattern(ood_pun_t, user_home_dir_t, user_home_dir_t)
+  manage_files_pattern(ood_pun_t, user_home_dir_t, user_home_dir_t)
+')
+
+## <desc>
+## <p>
+## Allow OnDemand to manage vmblock contexts
+## </p>
+## </desc>
+gen_tunable(ondemand_manage_vmblock, false)
+
+tunable_policy(`ondemand_manage_vmblock',`
+  manage_dirs_pattern(ood_pun_t, vmblock_t, vmblock_t)
+  manage_files_pattern(ood_pun_t, vmblock_t, vmblock_t)
+')
+
+## <desc>
+## <p>
+## Allow OnDemand to access NFS file systems
+## </p>
+## </desc>
+gen_tunable(ondemand_use_nfs, true)
+
+tunable_policy(`ondemand_use_nfs && use_nfs_home_dirs',`
+  fs_list_auto_mountpoints(ood_pun_t)
+	fs_manage_nfs_dirs(ood_pun_t)
+	fs_manage_nfs_files(ood_pun_t)
+	fs_manage_nfs_symlinks(ood_pun_t)
+')
+optional_policy(`
+    tunable_policy(`ondemand_use_nfs && use_nfs_home_dirs',`
+	    automount_search_tmp_dirs(ood_pun_t)
+    ')
+')
+
+## <desc>
+## <p>
+## Allow OnDemand to use Shell app
+## </p>
+## </desc>
+gen_tunable(ondemand_use_shell_app, true)
+
+tunable_policy(`ondemand_use_shell_app',`
+  allow ood_pun_t ptmx_t:chr_file { ioctl open read write };
+  can_exec(ood_pun_t, ssh_exec_t)
+  corenet_tcp_connect_ssh_port(ood_pun_t)
+  allow ood_pun_t self:key { read view write };
+')
+
+tunable_policy(`ondemand_use_shell_app && ondemand_manage_user_home_dir',`
+  manage_dirs_pattern(ood_pun_t, ssh_home_t, ssh_home_t)
+  manage_files_pattern(ood_pun_t, ssh_home_t, ssh_home_t)
+')
+
+## <desc>
+## <p>
+## Allow OnDemand to access SSSD
+## </p>
+## </desc>
+gen_tunable(ondemand_use_sssd, true)
+
+optional_policy(`
+  tunable_policy(`ondemand_use_sssd',`
+    sssd_read_public_files(ood_pun_t)
+    sssd_stream_connect(ood_pun_t)
+  ')
+')
+
+optional_policy(`
+  tunable_policy(`ondemand_use_sssd && ondemand_use_kerberos', `
+    allow ood_pun_t sssd_var_run_t:sock_file { getattr write };
+  ')
+')
+
+## <desc>
+## <p>
+## Allow OnDemand to use Torque/PBS
+## </p>
+## </desc>
+gen_tunable(ondemand_use_torque, false)
+
+tunable_policy(`ondemand_use_torque',`
+  corenet_tcp_connect_generic_port(ood_pun_t)
+  allow ood_pun_t tmp_t:sock_file write;
+  # OSC submit filter
+  allow ood_pun_t self:netlink_route_socket { create_netlink_socket_perms };
+')
+
+## <desc>
+## <p>
+## Allow OnDemand to use SLURM and MUNGE
+## </p>
+## </desc>
+gen_tunable(ondemand_use_slurm, false)
+
+tunable_policy(`ondemand_use_slurm',`
+  # Access munge socket
+  allow ood_pun_t var_run_t:sock_file { getattr write };
+')
+
+## <desc>
+## <p>
+## Allow OnDemand to use LDAP
+## Not needed for Apache LDAP authentication
+## </p>
+## </desc>
+gen_tunable(ondemand_use_ldap, false)
+
+tunable_policy(`ondemand_use_ldap',`
+  corenet_tcp_connect_ldap_port(ood_pun_t)
+')
+
+## <desc>
+## <p>
+## Allow OnDemand to use Kerberos
+## </p>
+## </desc>
+gen_tunable(ondemand_use_kerberos, false)
+
+optional_policy(`
+  tunable_policy(`ondemand_use_kerberos',`
+    read_files_pattern(ood_pun_t, krb5_conf_t, krb5_conf_t)
+    list_dirs_pattern(ood_pun_t, krb5_conf_t, krb5_conf_t)
+  ')
+')
+
+# Allow Apache to acces PUN socket
+allow httpd_t ood_pun_t:unix_stream_socket connectto;
+
+# Allow PUN to access socket for passenger
+allow ood_pun_t self:unix_stream_socket connectto;
+
+# Allow PUN to execute bin_t
+exec_files_pattern(ood_pun_t, bin_t, bin_t)
+# Allow PUN to execute bash
+exec_files_pattern(ood_pun_t, shell_exec_t, shell_exec_t)
+# Allow PUN to execute rsync
+exec_files_pattern(ood_pun_t, rsync_exec_t, rsync_exec_t)
+
+# Allow PUN to connect to Apache
+corenet_tcp_connect_http_port(ood_pun_t)
+
+allow ood_pun_t self:capability { chown dac_override dac_read_search setgid setuid sys_resource fowner net_admin };
+allow ood_pun_t self:process { setpgid setsched execmem execstack };
+
+# Following was necessary to kill PUNs via nginx_stage
+allow ood_pun_t httpd_t:fifo_file ioctl;
+read_files_pattern(ood_pun_t, proc_t, proc_t)
+list_dirs_pattern(ood_pun_t, proc_t, proc_t)
+
+# Allow Apache to execute sudo
+sudo_exec(httpd_t)
 
 # PUN startup
-allow httpd_t chkpwd_t:process { noatsecure rlimitinh siginh };
-allow httpd_t httpd_tmp_t:fifo_file { create getattr ioctl open read setattr unlink write };
-allow httpd_t initrc_var_run_t:file read;
-allow httpd_t self:capability net_admin;
+systemd_dbus_chat_logind(httpd_t)
+allow httpd_t ood_pun_var_run_t:sock_file { getattr write };
+allow ood_pun_t httpd_t:process sigchld;
+allow ood_pun_t httpd_t:fifo_file { rw_fifo_file_perms };
+dbus_system_bus_client(ood_pun_t)
 
-# Shell app
-allow httpd_t ptmx_t:chr_file { ioctl open read write };
-allow httpd_t sshd_key_t:file { getattr open read };
+# Allow PUN to read passwd
+auth_read_passwd(ood_pun_t)
 
-# Job Composer
-allow httpd_t httpd_sys_script_t:process { noatsecure rlimitinh siginh };
+# Allow Apache to send signals to PUN
+allow httpd_t ood_pun_t:process { noatsecure rlimitinh siginh signal_perms };
+
+# PUN and Passenger to bind to network
+corenet_tcp_bind_generic_node(ood_pun_t)
+
+# Handle getattr and dontaudit
+fs_getattr_all_fs(ood_pun_t)
+files_getattr_home_dir(ood_pun_t)
+files_dontaudit_getattr_all_files(ood_pun_t)
+files_dontaudit_getattr_all_dirs(ood_pun_t)
+files_dontaudit_search_non_security_dirs(ood_pun_t)
+
+# Allow PUN to read /proc
+ps_process_pattern(ood_pun_t, domain)
+
+# Allow PUN to read /etc/hosts
+read_files_pattern(ood_pun_t, net_conf_t, net_conf_t)
+
+# Allow PUN to access system certs
+miscfiles_read_generic_certs(ood_pun_t)

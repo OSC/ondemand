@@ -5,7 +5,7 @@
 %define git_tag_minus_v %(echo %{git_tag} | sed -r 's/^v//')
 %define major_version %(echo %{git_tag_minus_v} | cut -d. -f1)
 %define minor_version %(echo %{git_tag_minus_v} | cut -d. -f2)
-%define runtime_version %{major_version}.%{minor_version}-7
+%define runtime_version %{major_version}.%{minor_version}-8
 %define next_major_version %(echo $((%{major_version}+1))).0
 %define next_minor_version %{major_version}.%(echo $((%{minor_version}+1)))
 %define selinux_policy_ver %(rpm --qf "%%{version}-%%{release}" -q selinux-policy)
@@ -25,8 +25,7 @@ License:   MIT
 URL:       https://osc.github.io/Open-OnDemand
 Source0:   https://github.com/OSC/%{package_name}/archive/%{git_tag}.tar.gz
 Source1:   ondemand-selinux.te
-Source2:   ondemand-selinux-systemd.te
-Source3:   ondemand-selinux.fc
+Source2:   ondemand-selinux.fc
 
 # Disable debuginfo as it causes issues with bundled gems that build libraries
 %global debug_package %{nil}
@@ -128,10 +127,7 @@ Metapackage to include Rubygems for OnDemand
 pushd selinux
 echo "SELinux policy %{selinux_policy_ver}"
 %__cp %{SOURCE1} ./ondemand-selinux.te
-%if 0%{?rhel} >= 7
-%__cat %{SOURCE2} >> ./ondemand-selinux.te
-%endif
-%__cp %{SOURCE3} ./ondemand-selinux.fc
+%__cp %{SOURCE2} ./ondemand-selinux.fc
 %__sed -i 's/@VERSION@/%{selinux_module_version}/' ./ondemand-selinux.te
 %__make -f %{_datadir}/selinux/devel/Makefile
 popd
@@ -184,6 +180,7 @@ fi
 %__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/usr
 %__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/dev
 %__mkdir_p %{buildroot}%{_tmppath}/ondemand-nginx
+%__mkdir_p %{buildroot}%{_rundir}/ondemand-nginx
 
 %__install -D -m 644 ood-portal-generator/share/ood_portal_example.yml \
     %{buildroot}%{_sysconfdir}/ood/config/ood_portal.yml
@@ -258,29 +255,22 @@ touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/myjobs.conf
 
 %post selinux
 SELINUX_TEMP=$(mktemp -t ondemand-selinux-enable.XXXXX)
-echo "boolean -m --on httpd_can_network_connect" >> $SELINUX_TEMP
-echo "boolean -m --on httpd_execmem" >> $SELINUX_TEMP
-echo "boolean -m --on httpd_use_nfs" >> $SELINUX_TEMP
 echo "boolean -m --on httpd_setrlimit" >> $SELINUX_TEMP
-%if 0%{?rhel} >= 7
 echo "boolean -m --on httpd_mod_auth_pam" >> $SELINUX_TEMP
-%else
-echo "boolean -m --on allow_httpd_mod_auth_pam" >> $SELINUX_TEMP
-%endif
-echo "boolean -m --on httpd_unified" >> $SELINUX_TEMP
 echo "boolean -m --on httpd_run_stickshift" >> $SELINUX_TEMP
-echo "boolean -m --on use_nfs_home_dirs" >> $SELINUX_TEMP
-echo "boolean -m --on httpd_enable_homedirs" >> $SELINUX_TEMP
-echo "boolean -m --on httpd_read_user_content" >> $SELINUX_TEMP
-%if 0%{?rhel} >= 7
+echo "boolean -m --on httpd_can_network_connect" >> $SELINUX_TEMP
 echo "boolean -m --on daemons_use_tty" >> $SELINUX_TEMP
-%else
-echo "boolean -m --on allow_daemons_use_tty" >> $SELINUX_TEMP
-%endif
+echo "boolean -m --on use_nfs_home_dirs" >> $SELINUX_TEMP
 semanage -S targeted -i $SELINUX_TEMP
-semodule -i %{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp 2>/dev/null || :
+semodule -i %{_datadir}/selinux/packages/%{name}-selinux/%{name}-selinux.pp
+restorecon -R /opt/ood/nginx_stage
+restorecon -R /opt/ood/ondemand/root/usr/sbin/nginx
+restorecon -R /opt/ood/ondemand/root/usr/lib64/passenger/support-binaries/PassengerAgent
+restorecon -R %{_rundir}/ondemand-nginx
 restorecon -R %{_sharedstatedir}/ondemand-nginx
+restorecon -R %{_localstatedir}/tmp/ondemand-nginx
 restorecon -R %{_localstatedir}/log/ondemand-nginx
+restorecon -R %{_localstatedir}/www/ood
 
 %preun
 if [ "$1" -eq 0 ]; then
@@ -384,6 +374,7 @@ fi
 %ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/activejobs.conf
 %ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/myjobs.conf
 %dir %{_tmppath}/ondemand-nginx
+%dir %{_rundir}/ondemand-nginx
 
 %config(noreplace) %{_sysconfdir}/sudoers.d/ood
 %config(noreplace) %{_sysconfdir}/cron.d/ood
