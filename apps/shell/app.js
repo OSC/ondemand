@@ -17,6 +17,16 @@ if (process.env.NODE_ENV === 'production') {
   dotenv.config({path: '/etc/ood/config/apps/shell/env'});
 }
 
+//
+function getSession(req, res, next) {
+    currentId = uuidv4();
+    return currentId;
+
+    next();
+
+
+}
+
 // Keep app backwards compatible
 if (fs.existsSync('.env')) {
   console.warn('[DEPRECATION] The file \'.env\' is being deprecated. Please move this file to \'/etc/ood/config/apps/shell/env\'.');
@@ -25,11 +35,10 @@ if (fs.existsSync('.env')) {
 
 // Create all your routes
 var router = express.Router();
-router.get('/', function (req, res) {
-    currentId = uuidv4();
+router.get('/', getSession, function (req, res) {
   res.redirect(req.baseUrl + `/ssh/${currentId}`);
 });
-router.get('/ssh/:id*', function (req, res) {
+router.get('/ssh*', function (req, res) {
     currentId = req.params["id"];
   res.render('index', { baseURI: req.baseUrl });
 });
