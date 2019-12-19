@@ -9,22 +9,13 @@ var dotenv    = require('dotenv');
 var port = 3000;
 var uuidv4 = require('uuid/v4');
 var currentId;
+const regexPathMatch = /[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}/i
 
 
 // Read in environment variables
 dotenv.config({path: '.env.local'});
 if (process.env.NODE_ENV === 'production') {
   dotenv.config({path: '/etc/ood/config/apps/shell/env'});
-}
-
-//
-function getSession(req, res, next) {
-    currentId = uuidv4();
-    return currentId;
-
-    next();
-
-
 }
 
 // Keep app backwards compatible
@@ -35,13 +26,29 @@ if (fs.existsSync('.env')) {
 
 // Create all your routes
 var router = express.Router();
-router.get('/', getSession, function (req, res) {
-  res.redirect(req.baseUrl + `/ssh/${currentId}`);
+router.get('/', function (req, res) {
+  res.redirect(req.baseUrl + `/ssh`);
 });
-router.get('/ssh*', function (req, res) {
-    currentId = req.params["id"];
+router.get('/ssh*', function (req, res, next) {
+    if (regexPathMatch.test(req.path) === false) {
+        currentId = uuidv4();
+        res.redirect(req.baseUrl + `/ssh/${currentId}`);
+        next('route')
+    } else {
+        var extraction = regexPathMatch.exec(req.path);
+        currentId = extraction[0];
+        next('route')
+    }
+
+});
+
+router.get('/ssh*', function (req, res, next) {
+
+
   res.render('index', { baseURI: req.baseUrl });
 });
+
+
 router.use(express.static(path.join(__dirname, 'public')));
 
 // Setup app
