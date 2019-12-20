@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.7.6] - 2019-12-20
+### Fixed
+- Remove Async ClipboardAPI (noVNC copy/paste hack) due to noVNC freezes [#356](https://github.com/OSC/ondemand/pull/356)
+- Fix missing favicon [#322](https://github.com/OSC/ondemand/pull/322)
+- Remove hidden/dot files from JobComposer's file list [#346](https://github.com/OSC/ondemand/pull/346)
+
 ## [1.7.5] - 2019-12-11
 ### Added
 - use Async ClipboardAPI for better copy and paste with Chrome and NoVNC [#335](https://github.com/OSC/ondemand/pull/335)
@@ -331,7 +337,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.5...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.6...HEAD
+[1.7.6]: https://github.com/OSC/ondemand/compare/v1.7.5...v1.7.6
 [1.7.5]: https://github.com/OSC/ondemand/compare/v1.7.4...v1.7.5
 [1.7.4]: https://github.com/OSC/ondemand/compare/v1.7.3...v1.7.4
 [1.7.3]: https://github.com/OSC/ondemand/compare/v1.7.2...v1.7.3
