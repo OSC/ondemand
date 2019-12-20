@@ -22,12 +22,56 @@
 		<span class="help-block"><%= opts[:help] %></span>
 	<% end %>
 	<button name="button" type="button" id="<%= id.to_s + "_reset" %>" class="btn btn-default"> <%= t('dashboard.batch_connect_form_reset_resolution') %> </button>
-	<% content_tag(:script) do %>
-		<%=
+	<script type="text/javascript">
+		<<-EOT.html_safe
+			(function() {
+			// Target elements
 			var $target  = $('#<%= id %>_field');
 			var $targetX = $('#<%= id %>_x_field');
 			var $targetY = $('#<%= id %>_y_field');
 			var $targetR = $('#<%= id %>_reset');
-		%>
-	<% end %>
+
+			// Helper methods
+			var setX = function(x) {
+			  y = getY();
+			  $target.val(x + 'x' + y);
+			  $targetX.val(x);
+			};
+			var setY = function(y) {
+			  x = getX();
+			  $target.val(x + 'x' + y);
+			  $targetY.val(y);
+			};
+			var getX = function() {
+			  return $target.val().split('x')[0];
+			};
+			var getY = function() {
+			  return $target.val().split('x')[1];
+			};
+			var resetXY = function() {
+			  setX(window.screen.width  * 0.8 | 0);
+			  setY(window.screen.height * 0.8 | 0);
+			};
+
+			// Set defaults if not already set
+			if ( !$target.val() ) {
+			  resetXY();
+			} else {
+			  setX(getX());
+			  setY(getY());
+			}
+
+			// Event listeners
+			$targetX.change(function() {
+			  setX($(this).val());
+			});
+			$targetY.change(function() {
+			  setY($(this).val());
+			});
+			$targetR.click(function() {
+			  resetXY();
+			});
+		      })();
+	    EOT
+  </script>
 </div>
