@@ -122,7 +122,7 @@ GEM
     pbs (2.2.1)
       ffi (~> 1.9, >= 1.9.6)
     public_suffix (3.0.3)
-    rack (1.6.11)
+    rack (1.6.12)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.2.11)
