@@ -418,8 +418,8 @@ module BatchConnect
       # Namespace the job name
       def job_name
         [
-          ENV["OOD_PORTAL"],    # the OOD portal id
-          ENV["RAILS_RELATIVE_URL_ROOT"].sub(/^\/[^\/]+\//, ""),  # the OOD app
+          ENV["OOD_PORTAL"].to_s,    # the OOD portal id
+          ENV["RAILS_RELATIVE_URL_ROOT"].to_s.sub(/^\/[^\/]+\//, ""),  # the OOD app
           token                 # the Batch Connect app
         ].reject(&:blank?).join("/").parameterize.underscore
       end

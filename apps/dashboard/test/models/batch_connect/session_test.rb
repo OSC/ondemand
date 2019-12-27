@@ -71,13 +71,6 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
   end
 
   test "generated job_name should be valid for Grid Engine and PBSPro" do
-    # Environment variables are used in job_name
-    ood_portal = ENV['OOD_PORTAL']
-    relative_root = ENV['RAILS_RELATIVE_URL_ROOT']
-
-    ENV['OOD_PORTAL'] = 'ondemand'
-    ENV['RAILS_RELATIVE_URL_ROOT'] = 'sys/dashboard/sys'
-
     Dir.mktmpdir("dbroot") do |dir|
       dir = Pathname.new(dir)
       BatchConnect::Session.stubs(:db_root).returns(dir)
@@ -96,8 +89,5 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       sessions = BatchConnect::Session.all
       refute sessions.map { |session| session.send :job_name }.any? { |job_name| /[:\/]/.match?(job_name) }
     end
-
-    ENV['OOD_PORTAL'] = ood_portal
-    ENV['RAILS_RELATIVE_URL_ROOT'] = relative_root
   end
 end
