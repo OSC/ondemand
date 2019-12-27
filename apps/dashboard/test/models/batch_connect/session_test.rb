@@ -69,4 +69,35 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       assert_equal ["A", "B", "C", "D.bak"], dir.children.map(&:basename).map(&:to_s).sort
     end
   end
+
+  test "generated job_name should be valid for Grid Engine and PBSPro" do
+    # Environment variables are used in job_name
+    ood_portal = ENV['OOD_PORTAL']
+    relative_root = ENV['RAILS_RELATIVE_URL_ROOT']
+
+    ENV['OOD_PORTAL'] = 'ondemand'
+    ENV['RAILS_RELATIVE_URL_ROOT'] = 'sys/dashboard/sys'
+
+    Dir.mktmpdir("dbroot") do |dir|
+      dir = Pathname.new(dir)
+      BatchConnect::Session.stubs(:db_root).returns(dir)
+
+      [
+        { id: "A", job_id: "RUNNING", created_at: 500, token: 'matlab' },
+        { id: "B", job_id: "RUNNING", created_at: 100, token: 'rstudio' },
+        { id: "C", job_id: "RUNNING", created_at: 100, token: 'jupyter:development' },
+        { id: "D", job_id: "RUNNING", created_at: 100, token: 'qgis/batch' },
+      ].each do |v|
+        File.open(dir.join(v[:id]), "w") do |f|
+          f.write v.to_json
+        end
+      end
+
+      sessions = BatchConnect::Session.all
+      refute sessions.map { |session| session.send :job_name }.any? { |job_name| /[:\/]/.match?(job_name) }
+    end
+
+    ENV['OOD_PORTAL'] = ood_portal
+    ENV['RAILS_RELATIVE_URL_ROOT'] = relative_root
+  end
 end
