@@ -118,6 +118,7 @@ module BatchConnect
     # @return [String, nil] cluster id used by app
     def cluster_id
       form_config.fetch(:cluster, nil)
+    end
 
     # The clusters that are available
     def clusters
