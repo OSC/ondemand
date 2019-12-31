@@ -27,7 +27,7 @@ class BatchConnect::SessionContextsController < ApplicationController
     set_specified_cluster
 
     # Read in context from form parameters
-    @session_context.attributes = session_contexts_params
+    @session_context.attributes = @permitted_params
 
     @session = BatchConnect::Session.new
     respond_to do |format|
@@ -36,7 +36,7 @@ class BatchConnect::SessionContextsController < ApplicationController
         format.html { redirect_to batch_connect_sessions_url, notice: t('dashboard.batch_connect_sessions_status_blurb_create_success') }
         format.json { head :no_content }
       else
-        @session.errors.add(:base, :cluster_not_specified, "A valid cluster to submit to has not been specified.") unless @cluster
+        @session.errors.add(:cluster_not_specified, "A valid cluster to submit to has not been specified.") unless @cluster
 
         format.html do
           set_app_groups
@@ -50,12 +50,18 @@ class BatchConnect::SessionContextsController < ApplicationController
   private
 
     def set_specified_cluster
-      permitted_params = session_contexts_params
+      @permitted_params = session_contexts_params
 
       if @app.cluster_dependencies.one?
         @cluster = @app.cluster_dependencies.first
-      elsif @app.cluster_dependencies.any? && permitted_params[:batch_connect_session_context] && permitted_params[:batch_connect_session_context][:cluster]
-        cluster = @app.cluster_dependencies.find { |cluster| cluster.id == permitted_params[:batch_connect_session_context][:cluster] }
+      elsif (
+        @app.cluster_dependencies.any? &&
+        @permitted_params &&
+        @permitted_params[:cluster]
+      )
+        @cluster = @app.cluster_dependencies.find do |cluster|
+          cluster.id == @permitted_params[:cluster].to_sym
+        end
       end
     end
 
@@ -84,7 +90,7 @@ class BatchConnect::SessionContextsController < ApplicationController
 
       # FIXME: not sure if we want to write a warning or display a message
       # seems like you could write custom JavaScript to address the potential
-      # prbblems, and that we would only want to display, perhaps in the help
+      # problems, and that we would only want to display, perhaps in the help
       # text of a smart attribute that requires a specific format to display
       # correctly
       #

@@ -19,16 +19,18 @@
     </button>
     <%= session_save_errors @session.errors %>
 
-    <p class="small">
-      <%= t('dashboard.batch_connect_sessions_data_html',
-            title: @app.title,
-            data_link_tag: link_to(
-              t('dashboard.batch_connect_sessions_staged_root'),
-              OodAppkit.files.url(path: @session.staged_root).to_s,
-              target: "_blank")
-            )
-      %>
-    </p>
+    <%- if @session.staged_root %>
+      <p class="small">
+        <%= t('dashboard.batch_connect_sessions_data_html',
+              title: @app.title,
+              data_link_tag: link_to(
+                t('dashboard.batch_connect_sessions_staged_root'),
+                OodAppkit.files.url(path: @session.staged_root).to_s,
+                target: "_blank")
+              )
+        %>
+      </p>
+    <%- end %>
   </div>
 <%- end -%>
 

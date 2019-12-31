@@ -324,9 +324,12 @@ module BatchConnect
     end
 
     # Root directory where a job is staged and run in
-    # @return [Pathname] staged root directory
+    # @return [Pathname|nil] staged root directory
     def staged_root
       self.class.dataroot(token).join("output", id).tap { |p| p.mkpath unless p.exist? }
+    rescue TypeError => e
+      raise e unless [token, id].any?(&:nil?)
+      nil
     end
 
     # List of template files that need to be rendered
