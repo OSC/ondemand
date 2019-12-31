@@ -118,33 +118,74 @@ module BatchConnect
     # @return [String, nil] cluster id used by app
     def cluster_id
       form_config.fetch(:cluster, nil)
+
+    # The clusters that are available
+    def clusters
+      OodAppkit.clusters
     end
 
-    # The cluster that the batch connect app uses
-    # @return [OodCore::Cluster, nil] cluster that app uses
-    def cluster
-      OodAppkit.clusters[cluster_id] if cluster_id
+    # The clusters that the batch connect app uses
+    # invalid cluster ids are ignored
+    # @return [Array<OodCore::Cluster>] clusters that app uses
+    def cluster_dependencies
+      all_cluster_dependencies.select(&:job_allow?)
+    end
+
+    def all_cluster_dependencies
+      cluster_ids.map {|cluster_id| clusters[cluster_id] }.compact
+    end
+
+    # The ids of clusters that the batch connect app declares it uses
+    # @return [Array<String>] array of ids of clusters that app declares it uses
+    def cluster_ids
+      Array.wrap(form_config.fetch(:cluster, nil)).compact.map(&:to_sym)
     end
 
     # Whether this is a valid app the user can use
+    #
+    # An app is valid if:
+    #
+    # 1. The form config exists
+    # 2. If any clusters that are declared, the user has access to at least one
+    #
     # @return [Boolean] whether valid app
     def valid?
-      (! form_config.empty?) && cluster && cluster.job_allow?
+      valid_form_config? && valid_cluster_ids? && declared_clusters_authorized?
+    end
+
+    # @return [Boolean] true if form config exists
+    def valid_form_config?
+      ! form_config.empty?
+    end
+
+    # FIXME: There is no test coverage for this
+    #        This method would be irrelevant if you had a NullCluster object
+    # @return [Boolean] true if all declared cluster ids are valid
+    def valid_cluster_ids?
+      cluster_ids.all? { |cluster_id|  clusters.include?(cluster_id) }
+    end
+
+    # FIXME: there is no test coverage for this
+    # @return [Boolean] true if no declared clusters or at least one accessible declared cluster
+    def declared_clusters_authorized?
+      if all_cluster_dependencies.any?
+        cluster_dependencies.any?
+      else
+        true
+      end
     end
 
     # The reason why this app may or may not be valid
     # @return [String] reason why not valid
     def validation_reason
-      return @validation_reason if @validation_reason
-
-      if !cluster_id
-        "This app does not specify a cluster."
-      elsif !cluster
+      if @validation_reason
+        @validation_reason
+      elsif !valid_cluster_ids?
         "This app requires a cluster that does not exist."
-      elsif !cluster.job_allow?
+      elsif !declared_clusters_authorized?
         "You do not have access to use this app."
       else
-        ""
+        "There is a problem with this app."
       end
     end
 

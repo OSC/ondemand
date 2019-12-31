@@ -133,10 +133,11 @@ module BatchConnect
     # @param app [BatchConnect::App] batch connect app
     # @param context [BatchConnect::SessionContext] context used for session
     # @param format [String] format used when rendering template
+    # @param cluster_id [String] cluster to submit to
     # @return [Boolean] whether saved successfully
-    def save(app:, context:, format: nil)
+    def save(app:, context:, format: nil, cluster_id: nil)
       self.id         = SecureRandom.uuid
-      self.cluster_id = app.cluster_id
+      self.cluster_id = cluster_id
       self.token      = app.token
       self.title      = app.title
       self.view       = app.session_view

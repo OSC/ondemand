@@ -1,14 +1,40 @@
 require 'test_helper'
 
 class BatchConnect::AppTest < ActiveSupport::TestCase
-  test "app with malformed form.yml" do
+
+  def with_batch_connect_yaml(yaml)
     Dir.mktmpdir { |dir|
       r = PathRouter.new(dir)
-      r.path.join("form.yml").write("--x-\nnot a valid form yaml")
+      r.path.join("form.yml.erb").write(yaml)
 
       app = BatchConnect::App.new(router: r)
-      assert ! app.valid?
+
+      yield app, Pathname.new(dir)
     }
+  end
+
+  test "app with malformed form.yml" do
+    with_batch_connect_yaml("--x-\nnot a valid form yaml") do |app, app_path|
+      refute app.valid?
+    end
+  end
+
+  test "form.yml.erb can use __FILE__" do
+    with_batch_connect_yaml("---\ntitle: <%= File.expand_path(File.dirname(__FILE__)) %>") do |app, app_path|
+      assert_equal app_path.to_s, app.title, "When rendering form.yml.erb __FILE__ doesn't return correct value"
+    end
+  end
+
+  test "one cluster dependency" do
+    BatchConnect::App.any_instance.stubs(:clusters).returns(OodCore::Clusters.new([
+       OodCore::Cluster.new({id: 'owens', job: {adapter: 'slurm'}}),
+       OodCore::Cluster.new({id: 'pitzer', job: {adapter: 'slurm'}})
+    ]))
+
+    with_batch_connect_yaml("---\ncluster: owens") do |app, app_path|
+      assert_equal [:owens], app.cluster_ids
+      assert_equal [:owens], app.cluster_dependencies.map(&:id)
+    end
   end
 
   test "missing app handled gracefully" do
@@ -29,15 +55,6 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     }
   end
 
-  test "form.yml.erb can use __FILE__" do
-    Dir.mktmpdir { |dir|
-      r = PathRouter.new(dir)
-      r.path.join("form.yml.erb").write("---\ntitle: <%= File.expand_path(File.dirname(__FILE__)) %>")
-
-      app = BatchConnect::App.new(router: r)
-      assert_equal dir, app.title, "When rendering form.yml.erb __FILE__ doesn't return correct value"
-    }
-  end
 
   test "sub_apps_list doesn't crash when local directory inaccessible" do
     begin
@@ -62,4 +79,5 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
       appdir.rmtree
     end
   end
+
 end
