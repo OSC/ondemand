@@ -421,7 +421,9 @@ module BatchConnect
           ENV["OOD_PORTAL"].to_s,    # the OOD portal id
           ENV["RAILS_RELATIVE_URL_ROOT"].to_s.sub(/^\/[^\/]+\//, ""),  # the OOD app
           token                 # the Batch Connect app
-        ].reject(&:blank?).join("/").parameterize.underscore
+        ].reject(&:blank?).join("/").tap do |jb_nm|
+          jb_nm.replace(jb_nm.parameterize.underscore ) if Configuration.sanitize_bc_job_names?
+        end
       end
 
       # Render a list of files using ERB

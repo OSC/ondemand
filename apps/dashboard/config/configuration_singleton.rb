@@ -218,6 +218,10 @@ end
     Pathname.new(ENV['OOD_LOCALES_ROOT'] || "/etc/ood/config/locales")
   end
 
+  def sanitize_bc_job_names?
+    to_bool(ENV['OOD_SANITIZE_BC_JOB_NAMES'])
+  end
+
   private
 
   # The environment

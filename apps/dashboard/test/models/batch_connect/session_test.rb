@@ -71,6 +71,9 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
   end
 
   test "generated job_name should be valid for Grid Engine and PBSPro" do
+    original = ENV['OOD_SANITIZE_BC_JOB_NAMES']
+    ENV['OOD_SANITIZE_BC_JOB_NAMES'] = '1'
+
     Dir.mktmpdir("dbroot") do |dir|
       dir = Pathname.new(dir)
       BatchConnect::Session.stubs(:db_root).returns(dir)
@@ -89,5 +92,31 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       sessions = BatchConnect::Session.all
       refute sessions.map { |session| session.send :job_name }.any? { |job_name| /[:\/]/.match?(job_name) }
     end
+
+    ENV['OOD_SANITIZE_BC_JOB_NAMES'] = original
+  end
+
+  test "generated job_name is unchanged when OOD_SANITIZE_BC_JOB_NAMES is falsy" do
+    original = ENV['OOD_SANITIZE_BC_JOB_NAMES']
+    ENV['OOD_SANITIZE_BC_JOB_NAMES'] = 'NO'
+
+    Dir.mktmpdir("dbroot") do |dir|
+      dir = Pathname.new(dir)
+      BatchConnect::Session.stubs(:db_root).returns(dir)
+
+      [
+        { id: "C", job_id: "RUNNING", created_at: 100, token: 'jupyter:development' },
+        { id: "D", job_id: "RUNNING", created_at: 100, token: 'qgis/batch' },
+      ].each do |v|
+        File.open(dir.join(v[:id]), "w") do |f|
+          f.write v.to_json
+        end
+      end
+
+      sessions = BatchConnect::Session.all
+      assert sessions.map { |session| session.send :job_name }.all? { |job_name| /[:\/]/.match?(job_name) }
+    end
+
+    ENV['OOD_SANITIZE_BC_JOB_NAMES'] = original
   end
 end
