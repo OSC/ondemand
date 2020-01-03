@@ -8,8 +8,7 @@ var hbs       = require('hbs');
 var dotenv    = require('dotenv');
 var port = 3000;
 var uuidv4 = require('uuid/v4');
-var currentId;
-const regexPathMatch = /[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}/i
+const regexPathMatch = /[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}/i;
 
 
 // Read in environment variables
@@ -29,6 +28,7 @@ var router = express.Router();
 router.get('/', function (req, res) {
   res.redirect(req.baseUrl + `/ssh`);
 });
+/*
 router.get('/ssh*', function (req, res, next) {
     if (regexPathMatch.test(req.path) === false) {
         currentId = uuidv4();
@@ -41,11 +41,21 @@ router.get('/ssh*', function (req, res, next) {
     }
 
 });
+*/
+
 
 router.get('/ssh*', function (req, res, next) {
+    var id = uuidv4();
+
+    res.redirect(req.baseUrl + `/ssh-session/${id}`);
+
+});
 
 
+
+router.get('/ssh-session/:id*', function (req, res) {
   res.render('index', { baseURI: req.baseUrl });
+
 });
 
 
@@ -66,10 +76,9 @@ var terminals = {
 
     },
 
-    create: function (host, dir) {
+    create: function (host, dir, uuid) {
         var cmd = 'ssh';
         var args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
-        var uuid = currentId;
 
         this.instances[uuid] = pty.spawn(cmd, args, {
             name: 'xterm-256color',
@@ -88,7 +97,7 @@ var terminals = {
     },
 
     get: function (uuid) {
-        return this.instance[uuid];
+        return this.instances[uuid];
     },
 
     attach: function (uuid, ws) {
@@ -137,20 +146,24 @@ wss.on('connection', function connection (ws, req) {
   var match;
   var host = process.env.DEFAULT_SSHHOST || 'localhost';
   var dir;
-
+  var extraction = regexPathMatch.exec(ws.upgradeReq.url);
+  var uuid = extraction[0];
+  
   console.log('Connection established');
 
+
+
   // Determine host and dir from request URL
-  if (match = req.url.match(process.env.PASSENGER_BASE_URI + '/ssh/([^\\/]+)(.+)?$')) {
+  if (match = ws.upgradeReq.url.match(process.env.PASSENGER_BASE_URI + '/ssh/([^\\/]+)(.+)?$')) {
     if (match[1] !== 'default') host = match[1];
     if (match[2]) dir = decodeURIComponent(match[2]);
   }
 
-    if (terminals.exists(currentId) === false) {
-        terminals.create(host, dir);
+    if (terminals.exists(uuid) === false) {
+        terminals.create(host, dir, uuid);
     }
 
-    terminals.attach(currentId, ws);
+    terminals.attach(uuid, ws);
 
   process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
   
