@@ -15,7 +15,7 @@ namespace :test do
         end
         puts "Testing cluster '#{cluster.id}'..."
         test_string = "TEST A B C"
-        output_path = WORKDIR.join("output_#{cluster.id}_#{Time.now.iso8601}.log")
+        output_path = WORKDIR.join("output_#{cluster.id}_#{Time.now.iso8601}.log".parameterize.underscore)
         script = OodCore::Job::Script.new(
           job_name: "test_jobs_#{cluster.id}",
           workdir: WORKDIR,
