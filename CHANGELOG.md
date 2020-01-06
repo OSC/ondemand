@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Use legal job names in job submission rake task [#341](https://github.com/OSC/ondemand/issues/341) and [#355](https://github.com/OSC/ondemand/pull/355)
+
 ## [1.7.6] - 2019-12-20
 ### Fixed
 - Remove Async ClipboardAPI (noVNC copy/paste hack) due to noVNC freezes [#356](https://github.com/OSC/ondemand/pull/356)
