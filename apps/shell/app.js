@@ -8,6 +8,8 @@ var hbs       = require('hbs');
 var dotenv    = require('dotenv');
 var port = 3000;
 var uuidv4 = require('uuid/v4');
+
+//regular expression to find uuid in url
 const regexPathMatch = /[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}/i;
 
 
@@ -26,34 +28,24 @@ if (fs.existsSync('.env')) {
 // Create all your routes
 var router = express.Router();
 router.get('/', function (req, res) {
-  res.redirect(req.baseUrl + `/ssh`);
+  res.redirect(req.baseUrl + `/ssh/`);
 });
-/*
-router.get('/ssh*', function (req, res, next) {
-    if (regexPathMatch.test(req.path) === false) {
-        currentId = uuidv4();
-        res.redirect(req.baseUrl + `/ssh/${currentId}`);
-        next('route')
-    } else {
-        var extraction = regexPathMatch.exec(req.path);
-        currentId = extraction[0];
-        next('route')
-    }
-
-});
-*/
 
 
-router.get('/ssh*', function (req, res, next) {
+router.get('/ssh/*', function (req, res, next) {
+    
+    //create new id per session.
     var id = uuidv4();
 
-    res.redirect(req.baseUrl + `/ssh-session/${id}`);
+    //redirect to newly created session with url.
+    res.redirect(req.baseUrl + `/session/${id}/${req.params[0]}`);
 
 });
 
 
 
-router.get('/ssh-session/:id*', function (req, res) {
+router.get('/session/:id/*', function (req, res) {
+
   res.render('index', { baseURI: req.baseUrl });
 
 });
@@ -71,11 +63,15 @@ app.set('views', path.join(__dirname, 'views'));
 // Mount the routes at the base URI
 app.use(process.env.PASSENGER_BASE_URI || '/', router);
 
+//terminals object for sessions.
 var terminals = {
+    
+    //session id storage object.
     instances: {
 
     },
 
+    //create new terminals
     create: function (host, dir, uuid) {
         var cmd = 'ssh';
         var args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
@@ -88,18 +84,21 @@ var terminals = {
         return uuid;
     },
 
+    //check if uuid exists.
     exists: function (uuid) {
-        if (uuid in instances) {
+        if (uuid in this.instances) {
             return true;
         } else {
             return false;
         }
     },
 
+    //get the terminal from the uuid
     get: function (uuid) {
         return this.instances[uuid];
     },
 
+    //attach the terminal to the websocket.
     attach: function (uuid, ws) {
         var term = this.get(uuid);
         term.resume();
@@ -146,7 +145,7 @@ wss.on('connection', function connection (ws, req) {
   var match;
   var host = process.env.DEFAULT_SSHHOST || 'localhost';
   var dir;
-  var extraction = regexPathMatch.exec(ws.upgradeReq.url);
+  var extraction = regexPathMatch.exec(req.url);
   var uuid = extraction[0];
   
   console.log('Connection established');
@@ -154,7 +153,7 @@ wss.on('connection', function connection (ws, req) {
 
 
   // Determine host and dir from request URL
-  if (match = ws.upgradeReq.url.match(process.env.PASSENGER_BASE_URI + '/ssh/([^\\/]+)(.+)?$')) {
+  if (match = req.url.match(process.env.PASSENGER_BASE_URI + `/session/${uuid}([^\\/]+)(.+)?$`)) {
     if (match[1] !== 'default') host = match[1];
     if (match[2]) dir = decodeURIComponent(match[2]);
   }
