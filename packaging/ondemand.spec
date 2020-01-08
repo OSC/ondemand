@@ -186,6 +186,9 @@ fi
     %{buildroot}%{_sysconfdir}/ood/config/ood_portal.yml
 %__mkdir_p %{buildroot}%{apache_confd}
 touch %{buildroot}%{apache_confd}/ood-portal.conf
+%__mkdir_p %{buildroot}%{_localstatedir}/www/ood/public/maintenance
+%__install -D -m 644 ood-portal-generator/share/maintenance.html \
+    %{buildroot}%{_localstatedir}/www/ood/public/maintenance/index.html
 
 %__install -D -m 644 nginx_stage/share/nginx_stage_example.yml \
     %{buildroot}%{_sysconfdir}/ood/config/nginx_stage.yml
@@ -349,11 +352,14 @@ fi
 
 %dir %{_localstatedir}/www/ood
 %dir %{_localstatedir}/www/ood/public
+%dir %{_localstatedir}/www/ood/public/maintenance
 %dir %{_localstatedir}/www/ood/register
 %dir %{_localstatedir}/www/ood/discover
 %dir %{_localstatedir}/www/ood/apps
 %dir %{_localstatedir}/www/ood/apps/sys
 %dir %{_localstatedir}/www/ood/apps/usr
+%config(noreplace,missingok) %{_localstatedir}/www/ood/public/maintenance/index.html
+%ghost %{_sysconfdir}/ood/maintenance.enable
 
 %dir %{_sysconfdir}/ood
 %dir %{_sysconfdir}/ood/config

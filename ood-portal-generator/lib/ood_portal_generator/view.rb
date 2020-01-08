@@ -23,6 +23,10 @@ module OodPortalGenerator
       @map_fail_uri     = opts.fetch(:map_fail_uri, nil)
       @pun_stage_cmd    = opts.fetch(:pun_stage_cmd, "sudo /opt/ood/nginx_stage/sbin/nginx_stage")
 
+      # Maintenance configuration
+      @use_maintenance          = opts.fetch(:use_maintenance, true)
+      @maintenance_ip_whitelist = Array(opts.fetch(:maintenance_ip_whitelist, []))
+
       if OodPortalGenerator.scl_apache?
         default_htpasswd = "/opt/rh/httpd24/root/etc/httpd/.htpasswd"
       else
@@ -75,6 +79,16 @@ module OodPortalGenerator
       # Register unmapped user sub-uri
       @register_uri  = opts.fetch(:register_uri, nil)
       @register_root = opts.fetch(:register_root, nil)
+    end
+
+    # Helper method to escape IP for maintenance rewrite condition
+    def escape_ip(value)
+      # Value is already escaped
+      if value.split(%r{\\.}, 4).size == 4
+        value
+      else
+        value.split('.', 4).join('\.')
+      end
     end
 
     # Render the provided template as a string

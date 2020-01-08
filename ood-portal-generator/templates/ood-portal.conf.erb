@@ -76,6 +76,20 @@ Listen <%= addr_port %>
   <%- end -%>
   <%- end -%>
 
+  <%- if @use_rewrites && @use_maintenance -%>
+  # Support maintenance page during outages of OnDemand
+  RewriteEngine On
+  RewriteCond <%= @public_root %>/maintenance/index.html -f
+  RewriteCond /etc/ood/maintenance.enable -f
+  RewriteCond %{REQUEST_URI} !/public/maintenance/.*$
+  <%- @maintenance_ip_whitelist.each do |ip| -%>
+  RewriteCond %{REMOTE_ADDR} !^<%= escape_ip(ip) %>
+  <%- end -%>
+  RewriteRule ^.*$ <%= @public_uri %>/maintenance/index.html [R=503,L]
+  ErrorDocument 503 <%= @public_uri %>/maintenance/index.html
+  Header Set Cache-Control "max-age=0, no-store"
+
+  <%- end -%>
   <%- if @ssl -%>
   SSLEngine On
   <%- @ssl.each do |line| -%>

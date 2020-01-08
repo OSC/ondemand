@@ -47,6 +47,20 @@
 # Default: true
 #use_rewrites: true
 
+# Should Maintenance Rewrite rules be added
+# Example:
+#   use_maintenance: false
+# Default: true
+#use_maintenance: true
+
+# List of IPs to whitelist when maintenance is enabled
+# Example:
+#   maintenance_ip_whitelist:
+#     - 192.168.0..*
+#     - 192.168.1..*
+# Default: [] (no IPs whitelisted)
+#maintenance_ip_whitelist: []
+
 # Root directory of the Lua handler code
 # Example:
 #     lua_root: '/path/to/lua/handlers'

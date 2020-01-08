@@ -25,6 +25,32 @@ describe OodPortalGenerator::Application do
     it 'runs generate' do
       expect { described_class.generate() }.to output(/VirtualHost/).to_stdout
     end
+
+    it 'generates default template' do
+      expected_rendered = read_fixture('ood-portal.conf.default')
+      expect(described_class.output).to receive(:write).with(expected_rendered)
+      described_class.generate()
+    end
+
+    it 'generates without maintenance' do
+      allow(described_class).to receive(:context).and_return({use_maintenance: false})
+      expected_rendered = read_fixture('ood-portal.conf.nomaint')
+      expect(described_class.output).to receive(:write).with(expected_rendered)
+      described_class.generate()
+    end
+
+    it 'generates maintenance template with IP whitelist' do
+      allow(described_class).to receive(:context).and_return({maintenance_ip_whitelist: ['192.168.1..*', '10.0.0..*']})
+      expected_rendered = read_fixture('ood-portal.conf.maint_with_ips')
+      expect(described_class.output).to receive(:write).with(expected_rendered)
+      described_class.generate()
+    end
+    it 'generates maintenance template with IP whitelist already escaped' do
+      allow(described_class).to receive(:context).and_return({maintenance_ip_whitelist: ['192\.168\.1\..*', '10\.0\.0\..*']})
+      expected_rendered = read_fixture('ood-portal.conf.maint_with_ips')
+      expect(described_class.output).to receive(:write).with(expected_rendered)
+      described_class.generate()
+    end
   end
 
   describe 'apache' do
