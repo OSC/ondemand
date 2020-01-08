@@ -1,0 +1,99 @@
+<div id="jobsPanelDiv"></div>
+
+
+<script id="jobs-template" type="text/x-handlebars-template">
+<div class="panel panel-default"><div class="panel-body">
+  <h4>{{title}}</h4>
+
+  <div class="table-responsive visible-xs-block">
+    <table class="table table-striped  table-condensed">
+      {{#each results}}
+      <tr>
+        <td>
+          <dl>
+            <dt>User</dt>
+            <dd>{{name}}</dd>
+            <dt>Job ID</dt>
+            <dd>{{local_job_id}}</dd>
+            <dt>Cluster/Resource</dt>
+            <dd>{{resource}}</dd>
+            <dt>Start</dt>
+            <dd>{{start_time}}</dd>
+            <dt>Stop</dt>
+            <dd>{{end_time}}</dd>
+            <dt>Walltime Used</dt>
+            <dd>{{walltime}}</dd>
+            <dt>CPU</dt>
+            <dd>{{cpu}}</dd>
+          </dl>
+        </td>
+      </tr>
+      {{/each}}
+    </table>
+  </div>
+
+  <table class="table table-striped table-condensed hidden-xs">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Job ID</th>
+        <th>Cluster/Resource</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Walltime Used</th>
+        <th>CPU</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each results}}
+      <tr>
+        <td>{{name}}</td>
+        <td><a target="_blank" href="{{job_url}}">{{local_job_id}}&nbsp;<i style="display: inline" class="fa fa-external-link-square-alt"></i></a></td>
+        <td>{{resource}}</td>
+        <td>{{start_time}}</td>
+        <td>{{end_time}}</td>
+        <td>{{walltime}}</td>
+        <td>{{cpu_user}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div></div>
+</script>
+
+<script>
+(function(){
+
+var startOfYear = moment().startOf('year').format("YYYY-MM-DD"),
+    thirtyDaysAgo = moment().subtract(30, 'days').format("YYYY-MM-DD"),
+    today = moment().format("YYYY-MM-DD");
+
+var jobsUrl = new URL('<%= Configuration.xdmod_host %>/rest/v1/warehouse/search/jobs');
+jobsUrl.searchParams.set('_dc', Date.now());
+jobsUrl.searchParams.set('start_date', thirtyDaysAgo);
+jobsUrl.searchParams.set('end_date', today);
+jobsUrl.searchParams.set('realm', 'Jobs');
+jobsUrl.searchParams.set('limit', 10);
+jobsUrl.searchParams.set('start', 0);
+jobsUrl.searchParams.set('verbose', true);
+jobsUrl.searchParams.set('params', JSON.stringify({}));
+
+$.get({url: jobsUrl, xhrFields: { withCredentials: true }}).done(function(jsonData){
+  var template_source = $('#jobs-template').html();
+  var template = Handlebars.compile(template_source);
+  var helpers = {
+    title: function(){
+      return "XDMoD - Jobs - " + thirtyDaysAgo + " to " + today;
+    },
+    start_time: function(){ return moment.unix(this.start_time_ts).format('YY-MM-DD h:mmA'); },
+    end_time: function(){ return moment.unix(this.end_time_ts).format('YY-MM-DD h:mmA'); },
+    walltime: function(){ return moment.duration(this.end_time_ts - this.start_time_ts).humanize(); },
+    job_url: function(){ return "<%= Configuration.xdmod_host %>/#job_viewer?action=show&realm=Jobs&jobref=" + this.jobid; }
+  };
+  $('#jobsPanelDiv').html(template(jsonData, {helpers: helpers}));
+});
+
+// TODO: handle errors etc.
+// TODO: testing client side integration using automated test! webmock FTW. Where vue would be nice :-P
+}());
+</script>

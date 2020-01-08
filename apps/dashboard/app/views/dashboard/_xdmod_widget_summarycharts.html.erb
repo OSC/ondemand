@@ -1,0 +1,99 @@
+<div id="reportThumbnailsPanelDiv"></div>
+<script id="report-template" type="text/x-handlebars-template">
+<div class="panel panel-default"><div class="panel-body">
+  <h4>{{title}}</h4>
+  <div class="row">
+    {{#each data.queue}}
+    <div class="col-md-6 col-xs-12">
+      <a target="_blank" href="{{chart_url}}" class="thumbnail">
+        <div class="caption text-center"><small>{{chart_title}}</small></div>
+        <img class="img-responsive" src="{{thumbnail_src}}" data-src="holder.js/362x214">
+      </a>
+    </div>
+    {{/each}}
+  </div>
+</div></div>
+</script>
+
+<script>
+(function(){
+
+var startOfYear = moment().startOf('year').format("YYYY-MM-DD"),
+    thirtyDaysAgo = moment().subtract(30, 'days').format("YYYY-MM-DD"),
+    today = moment().format("YYYY-MM-DD");
+
+var reportUrl = new URL('<%= Configuration.xdmod_host %>/rest/v1/dashboard/rolereport');
+reportUrl.searchParams.set('_dc', Date.now());
+
+$.get({url: reportUrl, xhrFields: { withCredentials: true }}).done(function(jsondata){
+  var template_source = $('#report-template').html(),
+      template = Handlebars.compile(template_source),
+
+      // TODO: add optional start/end date strings with query params:
+      // url.searchParams.set('start', '2019-10-22')
+      // url.searchParams.set('end', '2019-11-21')
+      // url.searchParams.set('type', 'cached')
+      // title should update then as necessary...tied to a dropdown
+
+      helpers = {
+        thumbnail_src: function(){
+          // TODO: polyfills for URL and URLSearchParams
+          var url = new URL("<%= Configuration.xdmod_host %>"+ this.thumbnail_link);
+
+          // TODO: should token be set to something?
+          url.searchParams.delete('token');
+
+          return url.toString();
+        },
+        chart_url: function(){
+          var config_link = {};
+          var config = this.chart_id;
+          for (var key in this.chart_id){
+            if (key === 'data_series') {
+              let data_series = {};
+              data_series.data = config[key];
+              data_series.total = config[key].length;
+              config_link.data_series = data_series;
+            } else if (key === 'global_filters') {
+              config_link[key] = config[key];
+            } else {
+              config_link[key] = config[key];
+            }
+          }
+          //FIXME: config_link.start_date and config_link.end_date already should exist...
+          // so what is the point of below?
+//
+//          if (!(timeframe.start_date === null && timeframe.end_date === null)) {
+//            config_link.start_date = timeframe.start_date;
+//            config_link.end_date = timeframe.end_date;
+//            config_link.timeframe_label = 'User Defined';
+//            config_data.start_date = timeframe.start_date;
+//            config_data.end_date = timeframe.end_date;
+//            config_data.timeframe_label = 'User Defined';
+//
+//          } else {
+//            var ranges = getDateRanges();
+//            var timeframeRange = filterRange(ranges, config.timeframe_label);
+//            config_link.start_date = timeframeRange.start_date;
+//            config_link.end_date = timeframeRange.end_date;
+//            config_data.start_date = timeframeRange.start_date;
+//            config_data.end_date = timeframeRange.end_date;
+//          }
+
+          return "<%= Configuration.xdmod_host %>/#main_tab_panel:metric_explorer?config=" + window.btoa(JSON.stringify(config_link));
+        },
+        title: function(){
+          // FIXME: this is incorrect time range
+          return "XDMoD - Summary Charts"; //FIXME: + startOfYear + " to " + today;
+        }
+      };
+
+
+  // TODO: let user vary the start and stop date range
+  $('#reportThumbnailsPanelDiv').html(template(jsondata, {helpers: helpers}));
+});
+
+// TODO: handle errors etc.
+// TODO: testing client side integration using automated test! webmock FTW. Where vue would be nice :-P
+}());
+</script>
