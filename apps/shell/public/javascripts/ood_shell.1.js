@@ -53,7 +53,7 @@ OodShell.prototype.runTerminal = function () {
 
   // Warn user if he/she unloads page
   window.onbeforeunload = function() {
-    return 'Leaving this page will terminate your terminal session.';
+    return 'Leaving this page will pause your shell session temporarily.';
   };
 };
 
@@ -74,7 +74,7 @@ OodShell.prototype.closeTerminal = function (ev) {
     errorDiv.innerHTML = 'Failed to establish a websocket connection. Be sure you are using a browser that supports websocket connections.';
     this.element.appendChild(errorDiv);
   } else {
-    this.term.io.print('\r\nYour connection to the remote server has been terminated.');
+    this.term.io.print('\r\nYour connection to the remote server has been paused temporarily.');
   }
 }
 
