@@ -393,7 +393,7 @@ fi
 %ghost %{apache_confd}/ood-portal.conf
 %if %{with systemd}
 %config(noreplace) %{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood.conf
-%config(noreplace) %{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood-portal.conf
+%config(noreplace,missingok) %{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood-portal.conf
 %endif
 
 %files -n %{gems_name}
