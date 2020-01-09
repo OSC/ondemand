@@ -10,8 +10,21 @@
         <img class="img-responsive" src="{{thumbnail_src}}" data-src="holder.js/362x214">
       </a>
     </div>
+    {{else}}
+    <div class="col-md-12 col-xs-12">
+    No data available.
+    </div>
     {{/each}}
   </div>
+
+  {{#if error}}
+    <div class="alert alert-danger">{{error}}</div>
+  {{/if}}
+
+  {{#if loading}}
+    <div class="alert">LOADING...</div>
+  {{/if}}
+
 </div></div>
 </script>
 
@@ -24,44 +37,42 @@ var startOfYear = moment().startOf('year').format("YYYY-MM-DD"),
 
 var reportUrl = new URL('<%= Configuration.xdmod_host %>/rest/v1/dashboard/rolereport');
 reportUrl.searchParams.set('_dc', Date.now());
+var template_source = $('#report-template').html(),
+    template = Handlebars.compile(template_source),
 
-$.get({url: reportUrl, xhrFields: { withCredentials: true }}).done(function(jsondata){
-  var template_source = $('#report-template').html(),
-      template = Handlebars.compile(template_source),
+    // TODO: add optional start/end date strings with query params:
+    // url.searchParams.set('start', '2019-10-22')
+    // url.searchParams.set('end', '2019-11-21')
+    // url.searchParams.set('type', 'cached')
+    // title should update then as necessary...tied to a dropdown
 
-      // TODO: add optional start/end date strings with query params:
-      // url.searchParams.set('start', '2019-10-22')
-      // url.searchParams.set('end', '2019-11-21')
-      // url.searchParams.set('type', 'cached')
-      // title should update then as necessary...tied to a dropdown
+    helpers = {
+      thumbnail_src: function(){
+        // TODO: polyfills for URL and URLSearchParams
+        var url = new URL("<%= Configuration.xdmod_host %>"+ this.thumbnail_link);
 
-      helpers = {
-        thumbnail_src: function(){
-          // TODO: polyfills for URL and URLSearchParams
-          var url = new URL("<%= Configuration.xdmod_host %>"+ this.thumbnail_link);
+        // TODO: should token be set to something?
+        url.searchParams.delete('token');
 
-          // TODO: should token be set to something?
-          url.searchParams.delete('token');
-
-          return url.toString();
-        },
-        chart_url: function(){
-          var config_link = {};
-          var config = this.chart_id;
-          for (var key in this.chart_id){
-            if (key === 'data_series') {
-              let data_series = {};
-              data_series.data = config[key];
-              data_series.total = config[key].length;
-              config_link.data_series = data_series;
-            } else if (key === 'global_filters') {
-              config_link[key] = config[key];
-            } else {
-              config_link[key] = config[key];
-            }
+        return url.toString();
+      },
+      chart_url: function(){
+        var config_link = {};
+        var config = this.chart_id;
+        for (var key in this.chart_id){
+          if (key === 'data_series') {
+            let data_series = {};
+            data_series.data = config[key];
+            data_series.total = config[key].length;
+            config_link.data_series = data_series;
+          } else if (key === 'global_filters') {
+            config_link[key] = config[key];
+          } else {
+            config_link[key] = config[key];
           }
-          //FIXME: config_link.start_date and config_link.end_date already should exist...
-          // so what is the point of below?
+        }
+        //FIXME: config_link.start_date and config_link.end_date already should exist...
+        // so what is the point of below?
 //
 //          if (!(timeframe.start_date === null && timeframe.end_date === null)) {
 //            config_link.start_date = timeframe.start_date;
@@ -80,17 +91,35 @@ $.get({url: reportUrl, xhrFields: { withCredentials: true }}).done(function(json
 //            config_data.end_date = timeframeRange.end_date;
 //          }
 
-          return "<%= Configuration.xdmod_host %>/#main_tab_panel:metric_explorer?config=" + window.btoa(JSON.stringify(config_link));
-        },
-        title: function(){
-          // FIXME: this is incorrect time range
-          return "XDMoD - Summary Charts"; //FIXME: + startOfYear + " to " + today;
-        }
-      };
+        return "<%= Configuration.xdmod_host %>/#main_tab_panel:metric_explorer?config=" + window.btoa(JSON.stringify(config_link));
+      },
+      title: function(){
+        // FIXME: this is incorrect time range
+        return "XDMoD - Summary Charts"; //FIXME: + startOfYear + " to " + today;
+      }
+};
+
+var render_template = function(context){
+  $('#reportThumbnailsPanelDiv').html(template(context, {helpers: helpers}));
+}
+
+render_template({loading: true});
 
 
+$.get({url: reportUrl, xhrFields: { withCredentials: true }}).done(function(jsondata){
   // TODO: let user vary the start and stop date range
-  $('#reportThumbnailsPanelDiv').html(template(jsondata, {helpers: helpers}));
+  render_template(jsondata);
+}).fail(function(response){
+  if(response.status == 401){
+  //TODO: special case for 401 - provide link to xdmod to open in new window
+    render_template({error: response.responseText});
+  }
+  else {
+    //TODO: if XDMoD returns responseText and it is valid JSON
+    // display only message part (generic error msg vs xdmod api error msg)
+    // consider special casing CORs as well
+    render_template({error: response.responseText});
+  }
 });
 
 // TODO: handle errors etc.
