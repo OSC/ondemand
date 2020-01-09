@@ -41,6 +41,8 @@ overPerforming: blue  41
           </dl>
         </td>
       </tr>
+      {{else}}
+      <tr><td>No data available.</td></tr>
       {{/each}}
     </table>
   </div>
@@ -75,9 +77,20 @@ overPerforming: blue  41
           </div>
         </td>
       </tr>
+      {{else}}
+      <tr><td colspan="3">No data available.</td></tr>
       {{/each}}
     </tbody>
   </table>
+
+  {{#if error}}
+    <div class="alert alert-danger">{{error}}</div>
+  {{/if}}
+
+  {{#if loading}}
+    <div class="alert">LOADING...</div>
+  {{/if}}
+
 </div></div>
 </script>
 
@@ -94,40 +107,57 @@ perfUrl.searchParams.set('_dc', Date.now());
 perfUrl.searchParams.set('start_date', startOfYear);
 perfUrl.searchParams.set('end_date', today);
 
-$.get({url: perfUrl, xhrFields: { withCredentials: true }}).done(function(jsonData){
-  var template_source = $('#perf-template').html();
-  var template = Handlebars.compile(template_source);
-  var total_runs = function(obj){
-    return obj.failedRuns + obj.inControlRuns + obj.overPerformingRuns + obj.underPerformingRuns;
-  };
+var template_source = $('#perf-template').html();
+var template = Handlebars.compile(template_source);
+var total_runs = function(obj){
+  return obj.failedRuns + obj.inControlRuns + obj.overPerformingRuns + obj.underPerformingRuns;
+};
 
-  var helpers = {
-    failed_percent: function(){
-      return (this.failedRuns*1.0 / total_runs(this))*100;
-    },
-    incontrol_percent: function(){
-      return (this.inControlRuns*1.0 / total_runs(this))*100;
-    },
-    overperforming_percent: function(){
-      return (this.overPerformingRuns*1.0 / total_runs(this))*100;
-    },
-    underperforming_percent: function(){
-      return (this.underPerformingRuns*1.0 / total_runs(this))*100;
-    },
-    title: function(){
-      return "XDMoD - Center Report Card - " + startOfYear + " to " + today;
-    },
-    app_kernel_url: function(){
-      var link_info = {
-        start_date: startOfYear,
-        end_date: today,
-        resource: this.resource,
-        app_kernel: this.app_kernel
-      };
-      return "<%= Configuration.xdmod_host %>/#main_tab_panel:app_kernels:app_kernel_performance_map?ak=" + window.btoa(JSON.stringify(link_info));
+var helpers = {
+  failed_percent: function(){
+    return (this.failedRuns*1.0 / total_runs(this))*100;
+  },
+  incontrol_percent: function(){
+    return (this.inControlRuns*1.0 / total_runs(this))*100;
+  },
+  overperforming_percent: function(){
+    return (this.overPerformingRuns*1.0 / total_runs(this))*100;
+  },
+  underperforming_percent: function(){
+    return (this.underPerformingRuns*1.0 / total_runs(this))*100;
+  },
+  title: function(){
+    return "XDMoD - Center Report Card - " + startOfYear + " to " + today;
+  },
+  app_kernel_url: function(){
+    var link_info = {
+      start_date: startOfYear,
+      end_date: today,
+      resource: this.resource,
+      app_kernel: this.app_kernel
+    };
+    return "<%= Configuration.xdmod_host %>/#main_tab_panel:app_kernels:app_kernel_performance_map?ak=" + window.btoa(JSON.stringify(link_info));
+  }
+};
+var render_template = function(context){
+  $('#centerReportCardPanelDiv').html(template(context, {helpers: helpers}));
+}
+
+render_template({loading: true});
+
+$.get({url: perfUrl, xhrFields: { withCredentials: true }}).done(function(jsonData){
+    render_template(jsonData);
+}).fail(function(response){
+    if(response.status == 401){
+    //TODO: special case for 401 - provide link to xdmod to open in new window
+      render_template({error: response.responseText});
     }
-  };
-  $('#centerReportCardPanelDiv').html(template(jsonData, {helpers: helpers}));
+    else {
+      //TODO: if XDMoD returns responseText and it is valid JSON
+      // display only message part (generic error msg vs xdmod api error msg)
+      // consider special casing CORs as well
+      render_template({error: response.responseText});
+    }
 });
 
 // TODO: handle errors etc.
