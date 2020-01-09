@@ -28,6 +28,8 @@
           </dl>
         </td>
       </tr>
+      {{else}}
+      <tr><td>No data available.</td></tr>
       {{/each}}
     </table>
   </div>
@@ -55,9 +57,20 @@
         <td>{{walltime}}</td>
         <td>{{cpu_user}}</td>
       </tr>
+      {{else}}
+      <tr><td colspan="7">No data available.</td></tr>
       {{/each}}
     </tbody>
   </table>
+
+  {{#if error}}
+    <div class="alert alert-danger">{{error}}</div>
+  {{/if}}
+
+  {{#if loading}}
+    <div class="alert">LOADING...</div>
+  {{/if}}
+
 </div></div>
 </script>
 
@@ -78,19 +91,36 @@ jobsUrl.searchParams.set('start', 0);
 jobsUrl.searchParams.set('verbose', true);
 jobsUrl.searchParams.set('params', JSON.stringify({}));
 
+var template_source = $('#jobs-template').html();
+var template = Handlebars.compile(template_source);
+var helpers = {
+  title: function(){
+    return "XDMoD - Jobs - " + thirtyDaysAgo + " to " + today;
+  },
+  start_time: function(){ return moment.unix(this.start_time_ts).format('YY-MM-DD h:mmA'); },
+  end_time: function(){ return moment.unix(this.end_time_ts).format('YY-MM-DD h:mmA'); },
+  walltime: function(){ return moment.duration(this.end_time_ts - this.start_time_ts).humanize(); },
+  job_url: function(){ return "<%= Configuration.xdmod_host %>/#job_viewer?action=show&realm=Jobs&jobref=" + this.jobid; }
+};
+var render_template = function(context){
+  $('#jobsPanelDiv').html(template(context, {helpers: helpers}));
+}
+
+render_template({loading: true});
+
 $.get({url: jobsUrl, xhrFields: { withCredentials: true }}).done(function(jsonData){
-  var template_source = $('#jobs-template').html();
-  var template = Handlebars.compile(template_source);
-  var helpers = {
-    title: function(){
-      return "XDMoD - Jobs - " + thirtyDaysAgo + " to " + today;
-    },
-    start_time: function(){ return moment.unix(this.start_time_ts).format('YY-MM-DD h:mmA'); },
-    end_time: function(){ return moment.unix(this.end_time_ts).format('YY-MM-DD h:mmA'); },
-    walltime: function(){ return moment.duration(this.end_time_ts - this.start_time_ts).humanize(); },
-    job_url: function(){ return "<%= Configuration.xdmod_host %>/#job_viewer?action=show&realm=Jobs&jobref=" + this.jobid; }
-  };
-  $('#jobsPanelDiv').html(template(jsonData, {helpers: helpers}));
+    render_template(jsonData);
+  }).fail(function(response){
+    if(response.status == 401){
+    //TODO: special case for 401 - provide link to xdmod to open in new window
+      render_template({error: response.responseText});
+    }
+    else {
+      //TODO: if XDMoD returns responseText and it is valid JSON
+      // display only message part (generic error msg vs xdmod api error msg)
+      // consider special casing CORs as well
+      render_template({error: response.responseText});
+    }
 });
 
 // TODO: handle errors etc.
