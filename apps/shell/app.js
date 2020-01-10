@@ -76,11 +76,12 @@ var terminals = {
         var cmd = 'ssh';
         var args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
 
-        this.instances[uuid] = pty.spawn(cmd, args, {
+        this.instances[uuid] = {term: pty.spawn(cmd, args, {
             name: 'xterm-256color',
             cols: 80,
             rows: 30
-        });
+        }), host: host}
+
         return uuid;
     },
 
@@ -95,7 +96,7 @@ var terminals = {
 
     //get the terminal from the uuid
     get: function (uuid) {
-        return this.instances[uuid];
+        return this.instances[uuid].term;
     },
 
     //attach the terminal to the websocket.
