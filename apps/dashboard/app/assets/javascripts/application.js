@@ -13,7 +13,6 @@
 //= require jquery3
 //= require jquery-migrate-3.1.0.min.js
 //= require jquery_ujs
-//= require moment
 //= require bootstrap-sprockets
 //= require dataTables/jquery.dataTables
 //= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
