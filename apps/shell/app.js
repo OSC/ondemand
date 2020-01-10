@@ -153,7 +153,7 @@ wss.on('connection', function connection (ws, req) {
 
 
   // Determine host and dir from request URL
-  if (match = req.url.match(process.env.PASSENGER_BASE_URI + `/session/${uuid}([^\\/]+)(.+)?$`)) {
+  if (match = req.url.match(process.env.PASSENGER_BASE_URI + `/session/${uuid}/([^\\/]+)(.+)?$`)) {
     if (match[1] !== 'default') host = match[1];
     if (match[2]) dir = decodeURIComponent(match[2]);
   }
