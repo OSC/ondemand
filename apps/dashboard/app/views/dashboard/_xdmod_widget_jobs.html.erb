@@ -77,9 +77,9 @@
 <script>
 (function(){
 
-var startOfYear = moment().startOf('year').format("YYYY-MM-DD"),
-    thirtyDaysAgo = moment().subtract(30, 'days').format("YYYY-MM-DD"),
-    today = moment().format("YYYY-MM-DD");
+ var startOfYear = '<%= Date.today.beginning_of_year.strftime("%Y-%m-%d") %>',
+     thirtyDaysAgo = '<%= 30.days.ago.strftime("%Y-%m-%d") %>',
+     today = '<%= Date.today.strftime("%Y-%m-%d") %>';
 
 var jobsUrl = new URL('<%= Configuration.xdmod_host %>/rest/v1/warehouse/search/jobs');
 jobsUrl.searchParams.set('_dc', Date.now());
