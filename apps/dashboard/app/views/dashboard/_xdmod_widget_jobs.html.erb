@@ -97,9 +97,20 @@ var helpers = {
   title: function(){
     return "XDMoD - Jobs - " + thirtyDaysAgo + " to " + today;
   },
-  start_time: function(){ return moment.unix(this.start_time_ts).format('YY-MM-DD h:mmA'); },
-  end_time: function(){ return moment.unix(this.end_time_ts).format('YY-MM-DD h:mmA'); },
-  walltime: function(){ return moment.duration(this.end_time_ts - this.start_time_ts).humanize(); },
+  start_time: function(){ return new Date(this.start_time_ts*1000).toLocaleString(); },
+  end_time: function(){ return new Date(this.end_time_ts*1000).toLocaleString(); },
+  //FIXME: would be nice to use 1 representation of walltime across all of OnDemand
+  // but this is in hours and minutes
+  walltime: function(){
+    let duration = this.end_time_ts - this.start_time_ts;
+    let hours = Math.floor(duration / (60 * 60));
+    duration -= hours * (60 * 60);
+    let minutes = Math.floor(duration / (60));
+    duration -= minutes * (60);
+    let seconds = Math.floor(duration);
+
+    return hours + "h " + minutes + "m " + seconds + "s";
+  },
   job_url: function(){ return "<%= Configuration.xdmod_host %>/#job_viewer?action=show&realm=Jobs&jobref=" + this.jobid; }
 };
 var render_template = function(context){
