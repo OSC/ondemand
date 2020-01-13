@@ -103,6 +103,11 @@ $(window).focus ->
     update_missing_data_cluster_view()
     update_missing_data_path_view()
     update_missing_data_script_view()
+    if(data.xdmod_url)
+      # details external url
+      $("#job-details-id").html('<a target="_blank" href="'+data.xdmod_url+'">'+data.pbsid+' - <i style="display: inline" class="fa fa-external-link-square-alt"></i>&nbsp;XDMoD</a>')
+    else
+      $("#job-details-id").text(data.pbsid)
     $("#job-details-name").text(data.name)
     $("#job-details-server").val(data.host_title)
     $("#job-details-staged-dir").text(data.staged_dir)

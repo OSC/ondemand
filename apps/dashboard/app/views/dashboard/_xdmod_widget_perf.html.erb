@@ -1,0 +1,167 @@
+<div id="centerReportCardPanelDiv"></div>
+
+<!--
+failedRuns red 660
+underPerformingRuns: orange  469
+inControl: green  0
+overPerforming: blue  41
+-->
+
+<script id="perf-template" type="text/x-handlebars-template">
+<div class="panel panel-default"><div class="panel-body">
+  <h4>{{title}}</h4>
+
+  <div class="table-responsive visible-xs-block">
+    <table class="table table-striped table-condensed">
+      {{#each results}}
+      <tr>
+        <td>
+          <dl>
+            <dt>Cluster/Resource</dt>
+            <dd>{{resource}}</dd>
+            <dt>App Kernel</dt>
+            <dd>{{app_kernel}}</dd>
+            <dt>Status</dt>
+            <dd>
+              <div class="progress" style="margin-bottom: 0px;">
+                <div class="progress-bar progress-bar-danger" style="width: {{failed_percent}}%">
+                  <span class="sr-only">{{failed_percent}}% Failed</span>
+                </div>
+                <div class="progress-bar progress-bar-warning" style="width: {{underperforming_percent}}%">
+                  <span class="sr-only">{{underperforming_percent}}% Underperforming</span>
+                </div>
+                <div class="progress-bar progress-bar-success" style="width: {{incontrol_percent}}%">
+                  <span class="sr-only">{{incontrol_percent}}% In Control</span>
+                </div>
+                <div class="progress-bar progress-bar-primary" style="width: {{overperforming_percent}}%">
+                  <span class="sr-only">{{overperforming_percent}}% Over Performing</span>
+                </div>
+              </div>
+            </dd>
+          </dl>
+        </td>
+      </tr>
+      {{else}}
+      <tr><td>No data available.</td></tr>
+      {{/each}}
+    </table>
+  </div>
+
+  <table class="table table-striped table-condensed hidden-xs">
+    <thead>
+      <tr>
+        <th>Cluster/Resource</th>
+        <th>App Kernel</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each results}}
+      <tr>
+        <td width="100px">{{resource}}</td>
+        <td width="120px"><a target="_blank" href="{{app_kernel_url}}">{{app_kernel}}&nbsp;<i style="display: inline" class="fa fa-external-link-square-alt"></i></a></td>
+        <td>
+          <div class="progress" style="margin-bottom: 0px;">
+            <div class="progress-bar progress-bar-danger" style="width: {{failed_percent}}%">
+              <span class="sr-only">{{failed_percent}}% Failed</span>
+            </div>
+            <div class="progress-bar progress-bar-warning" style="width: {{underperforming_percent}}%">
+              <span class="sr-only">{{underperforming_percent}}% Underperforming</span>
+            </div>
+            <div class="progress-bar progress-bar-success" style="width: {{incontrol_percent}}%">
+              <span class="sr-only">{{incontrol_percent}}% In Control</span>
+            </div>
+            <div class="progress-bar progress-bar-primary" style="width: {{overperforming_percent}}%">
+              <span class="sr-only">{{overperforming_percent}}% Over Performing</span>
+            </div>
+          </div>
+        </td>
+      </tr>
+      {{else}}
+      <tr><td colspan="3">No data available.</td></tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+  {{#if error}}
+    <div class="alert alert-danger">{{error}}</div>
+  {{/if}}
+
+  {{#if loading}}
+    <div class="alert">LOADING...</div>
+  {{/if}}
+
+</div></div>
+</script>
+
+<script>
+(function(){
+
+ var startOfYear = '<%= Date.today.beginning_of_year.strftime("%Y-%m-%d") %>',
+     thirtyDaysAgo = '<%= 30.days.ago.strftime("%Y-%m-%d") %>',
+     today = '<%= Date.today.strftime("%Y-%m-%d") %>';
+
+// perf is from start of the year
+var perfUrl = new URL('<%= Configuration.xdmod_host %>/rest/v1/app_kernels/performance_map/raw');
+perfUrl.searchParams.set('_dc', Date.now());
+perfUrl.searchParams.set('start_date', startOfYear);
+perfUrl.searchParams.set('end_date', today);
+
+var template_source = $('#perf-template').html();
+var template = Handlebars.compile(template_source);
+var total_runs = function(obj){
+  return obj.failedRuns + obj.inControlRuns + obj.overPerformingRuns + obj.underPerformingRuns;
+};
+
+var helpers = {
+  failed_percent: function(){
+    return (this.failedRuns*1.0 / total_runs(this))*100;
+  },
+  incontrol_percent: function(){
+    return (this.inControlRuns*1.0 / total_runs(this))*100;
+  },
+  overperforming_percent: function(){
+    return (this.overPerformingRuns*1.0 / total_runs(this))*100;
+  },
+  underperforming_percent: function(){
+    return (this.underPerformingRuns*1.0 / total_runs(this))*100;
+  },
+  title: function(){
+    return "XDMoD - Center Report Card - " + startOfYear + " to " + today;
+  },
+  app_kernel_url: function(){
+    var link_info = {
+      start_date: startOfYear,
+      end_date: today,
+      resource: this.resource,
+      app_kernel: this.app_kernel
+    };
+    return "<%= Configuration.xdmod_host %>/#main_tab_panel:app_kernels:app_kernel_performance_map?ak=" + window.btoa(JSON.stringify(link_info));
+  }
+};
+var render_template = function(context){
+  $('#centerReportCardPanelDiv').html(template(context, {helpers: helpers}));
+}
+
+render_template({loading: true});
+
+$.get({url: perfUrl, xhrFields: { withCredentials: true }}).done(function(jsonData){
+    render_template(jsonData);
+}).fail(function(response){
+    if(response.status == 401){
+    //TODO: special case for 401 - provide link to xdmod to open in new window
+      render_template({error: response.responseText});
+    }
+    else {
+      //TODO: if XDMoD returns responseText and it is valid JSON
+      // display only message part (generic error msg vs xdmod api error msg)
+      // consider special casing CORs as well
+      render_template({error: response.responseText});
+    }
+});
+
+// TODO: handle errors etc.
+// TODO: testing client side integration using automated test! webmock FTW. Where vue would be nice :-P
+
+}());
+</script>
