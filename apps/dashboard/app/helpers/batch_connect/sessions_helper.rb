@@ -1,18 +1,4 @@
 module BatchConnect::SessionsHelper
-  def session_panel(session)
-    num_nodes = session.info.allocated_nodes.size
-    num_cores = session.info.procs.to_i
-
-    # Generate nice status display
-    status = []
-    if session.starting? || session.running?
-      status << content_tag(:span, pluralize(num_nodes, "node"), class: "badge") unless num_nodes.zero?
-      status << content_tag(:span, pluralize(num_cores, "core"), class: "badge") unless num_cores.zero?
-    end
-    status << "#{status session}"
-    status.join(" | ").html_safe
-  end
-
   def link_to_session_host(session)
       session.connect.host ? link_to(
        session.connect.host, OodAppkit.shell.url(

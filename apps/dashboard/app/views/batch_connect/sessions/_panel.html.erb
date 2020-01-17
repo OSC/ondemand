@@ -4,7 +4,13 @@
       <%= link_to(content_tag(:strong, session.title), new_batch_connect_session_context_path(token: session.token)) %>
       <%= " (" + session.job_id.to_s + ")" %>
       <div class="pull-right">
-        <%= session_panel(session) %>
+        <% if session.info.allocated_nodes.size > 0 %>
+        <%= tag.span pluralize(session.info.allocated_nodes.size, "node"), class: "badge" %> |
+        <% end %>
+        <% if session.info.procs.to_i > 0 %>
+        <%= tag.span pluralize(session.info.procs.to_i, "core"), class: "badge" %> |
+        <% end %>
+        <%= session.status %>
       </div>
       <div class="clearfix"></div>
     </h1>
