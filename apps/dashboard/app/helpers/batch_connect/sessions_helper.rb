@@ -60,7 +60,7 @@ module BatchConnect::SessionsHelper
     end
   end
 
-  def delete(session)
+  def delete_session_button(session)
     link_to(
       icon("fas", "trash-alt", t('dashboard.batch_connect_sessions_delete_title'), class: "fa-fw"),
       session,
