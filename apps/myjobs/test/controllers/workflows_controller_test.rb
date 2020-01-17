@@ -25,23 +25,23 @@ class WorkflowsControllerTest < ActionController::TestCase
   # end
 
   test "should show workflow" do
-    get :show, id: @workflow
+    get :show, params: { id: @workflow }
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, id: @workflow
+    get :edit, params: { id: @workflow }
     assert_response :success
   end
 
   test "should update workflow" do
-    patch :update, id: @workflow, workflow: { batch_host: @workflow.batch_host, name: @workflow.name }
+    patch :update, params: { id: @workflow, workflow: { batch_host: @workflow.batch_host, name: @workflow.name } }
     assert_redirected_to workflows_path
   end
 
   test "should destroy workflow" do
     assert_difference('Workflow.count', -1) do
-      delete :destroy, id: @workflow
+      delete :destroy, params: { id: @workflow }
     end
 
     assert_redirected_to workflows_path
