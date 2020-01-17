@@ -8,6 +8,9 @@ Bundler.require(*Rails.groups)
 
 module JobConstructor
   class Application < Rails::Application
+    # Initialize configuration defaults for originally generated Rails version.
+    config.load_defaults 5.1
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
@@ -24,8 +27,5 @@ module JobConstructor
       config.paths["config/initializers"] << ::Configuration.custom_initializers_root.to_s
       config.paths["app/views"].unshift ::Configuration.custom_views_root.to_s
     end
-
-    # Do not swallow errors in after_commit/after_rollback callbacks.
-    config.active_record.raise_in_transactional_callbacks = true
   end
 end
