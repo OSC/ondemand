@@ -1,36 +1,35 @@
 <div id="<%= id.to_s + "_group"%>" class="form-group">
-	<%= form.label(id, opts[:label]) %>
-	<%= form.hidden_field(id, id: "#{id}_field") %>
-	<div class="row">
-		<div class="col-sm-6">
-			<div class="input-group">
-				<div class="input-group-addon" style="width: 70px">width</div>
-				<input class="form-control" id="<%= id.to_s + "_x_field" %>" min="100" required="<%= opts[:required] %>"/>
-				<div class="input-group-addon">px</div>
-			</div>
-		</div>
-		<div class="col-sm-6">
-			<div class="input-group">
-				<div class="input-group-addon" style="width: 70px">height</div>
-				<input class="form-control" id="<%= id.to_s + "_y_field" %>"
-				min="100" required="<%= opts[:required] %>"/>
-				<div class="input-group-addon">px</div>
-			</div>
-		</div>
-	</div>
-	<% if opts[:help] %>
-		<span class="help-block"><%= opts[:help] %></span>
-	<% end %>
-	<button name="button" type="button" id="<%= id.to_s + "_reset" %>" class="btn btn-default"><%= t('dashboard.batch_connect_form_reset_resolution') %></button>
-	<% content_tag(:script) do %>
-		<%=
-		<<-EOT.html_safe
+  <%= form.label(id, opts[:label]) %>
+  <%= form.hidden_field(id, id: "#{id}_field") %>
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="input-group">
+        <div class="input-group-addon" style="width: 70px">width</div>
+        <input class="form-control" id="<%= id.to_s + "_x_field" %>" min="100" required="<%= opts[:required] %>"/>
+        <div class="input-group-addon">px</div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="input-group">
+        <div class="input-group-addon" style="width: 70px">height</div>
+        <input class="form-control" id="<%= id.to_s + "_y_field" %>"
+        min="100" required="<%= opts[:required] %>"/>
+        <div class="input-group-addon">px</div>
+      </div>
+    </div>
+  </div>
+  <% if opts[:help] %>
+    <span class="help-block"><%= opts[:help] %></span>
+  <% end %>
+  <button name="button" type="button" id="<%= id.to_s + "_reset" %>" class="btn btn-default"><%= t('dashboard.batch_connect_form_reset_resolution') %></button>
+  <script type="text/javascript">
+    <<-EOT.html_safe
       (function() {
         // Target elements
-        var $target  = $('##{id}_field');
-        var $targetX = $('##{id}_x_field');
-        var $targetY = $('##{id}_y_field');
-        var $targetR = $('##{id}_reset');
+        var $target  = $('#<%= id %>_field');
+        var $targetX = $('#<%= id %>_x_field');
+        var $targetY = $('#<%= id %>_y_field');
+        var $targetR = $('#<%= id %>_reset');
 
         // Helper methods
         var setX = function(x) {
@@ -74,6 +73,5 @@
         });
       })();
     EOT
-    %>
-	<% end %>
+  </script>
 </div>
