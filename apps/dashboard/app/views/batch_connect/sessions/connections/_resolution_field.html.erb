@@ -23,7 +23,6 @@
   <% end %>
   <button name="button" type="button" id="<%= id.to_s + "_reset" %>" class="btn btn-default"><%= t('dashboard.batch_connect_form_reset_resolution') %></button>
   <script type="text/javascript">
-    <<-EOT.html_safe
       (function() {
         // Target elements
         var $target  = $('#<%= id %>_field');
@@ -68,10 +67,9 @@
         $targetY.change(function() {
           setY($(this).val());
         });
-        $targetR.click(function() {
+        $targetR.click(function() {\
           resetXY();
         });
       })();
-    EOT
   </script>
 </div>
