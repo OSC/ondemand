@@ -1,6 +1,6 @@
 require 'find'
 
-class Workflow < ActiveRecord::Base
+class Workflow < ApplicationRecord
   has_many :jobs, class_name: "Job", dependent: :destroy
   has_machete_workflow_of :jobs
   before_create :stage_workflow

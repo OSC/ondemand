@@ -1,4 +1,4 @@
-class Job < ActiveRecord::Base
+class Job < ApplicationRecord
   include OscMacheteRails::Statusable
 
   belongs_to :workflow
