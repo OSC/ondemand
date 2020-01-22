@@ -81,12 +81,6 @@ module BatchConnect::SessionsHelper
 
   def connection_tabs(id, tabs)
     tabs = Array.wrap(tabs)
-    if tabs.any? && tabs.size == 1
-        tab = tabs.first
-        render partial: "batch_connect/sessions/connections/one_tab", locals: {tab: tab}
-    else
-      # tabs
       render partial: "batch_connect/sessions/connections/many_tabs", locals: {tabs: tabs, id: id}
-    end
   end
 end
