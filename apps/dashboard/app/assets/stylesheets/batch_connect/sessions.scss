@@ -21,3 +21,7 @@
   font-size: 12px;
   background-color: #f5f5f5;
 }
+
+.session-panel .nav.nav-tabs li:only-child {
+  display: none;
+}
