@@ -16,7 +16,7 @@
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 
-  <%= favicon_link_tag 'favicon.ico', href: OodAppkit.public.url.join('favicon.ico') %>
+  <%= favicon_link_tag 'favicon.ico', href: OodAppkit.public.url.join('favicon.ico') , skip_pipeline: true %>
   <%= render partial: '/layouts/nav/styles', locals: { bg_color: Configuration.brand_bg_color, link_active_color: Configuration.brand_link_active_bg_color } %>
 </head>
 <body>
