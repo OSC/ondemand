@@ -16,11 +16,12 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   # One solution to clean up the below code would be to implement a
   # ConfigurationSingleton#to_h method.
   def runner(code, env: 'development', envvars: '')
+    key = '7bf28d4575e79d7df1597758eb36d6e889943cbfa74e861112687b8d64b12f1cdf2d4cb9892ade429f142ee424ed00258ea4d186ed5b6d31c1bf642dc9f66ee2'
     Tempfile.open('runnerbin') do |f|
       Bundler.with_clean_env do
         f.write(code)
         f.close
-        `RAILS_ENV=#{env} #{envvars} bin/rails runner -e #{env} #{f.path}`
+        `SECRET_KEY_BASE=#{key} RAILS_ENV=#{env} #{envvars} bin/rails runner -e #{env} #{f.path}`
       end
     end
   end
