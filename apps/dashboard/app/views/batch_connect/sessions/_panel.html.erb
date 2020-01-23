@@ -5,10 +5,10 @@
       <%= " (" + session.job_id.to_s + ")" %>
       <div class="pull-right">
         <% if session.info.allocated_nodes.size > 0 %>
-        <%= tag.span pluralize(session.info.allocated_nodes.size, "node"), class: "badge" %> |
+          <%= tag.span pluralize(session.info.allocated_nodes.size, "node"), class: "badge" %> |
         <% end %>
         <% if session.info.procs.to_i > 0 %>
-        <%= tag.span pluralize(session.info.procs.to_i, "core"), class: "badge" %> |
+          <%= tag.span pluralize(session.info.procs.to_i, "core"), class: "badge" %> |
         <% end %>
         <%= session.status %>
       </div>
@@ -20,15 +20,15 @@
       <div><%= delete_session_button(session) %></div>
 
       <%# host(session) %>
-      <% if ::Configuration.ood_bc_ssh_to_compute_node %>
-      <% if session.running? %>
-      <p><strong><%= t('dashboard.batch_connect_sessions_stats_host') %></strong> <%= link_to_session_host(session) %></p>
-      <% end %>
-      <% else %>
-      <% if session.running? %>
-      <p><strong><%= t('dashboard.batch_connect_sessions_stats_host') %></strong> <%= concat session.connect.host || t('dashboard.batch_connect_sessions_stats_undetermined_host') %></p>
-      <% end %>
-      <% end %>
+        <% if ::Configuration.ood_bc_ssh_to_compute_node %>
+          <% if session.running? %>
+            <p><strong><%= t('dashboard.batch_connect_sessions_stats_host') %></strong> <%= link_to_session_host(session) %></p>
+          <% end %>
+        <% else %>
+          <% if session.running? %>
+            <p><strong><%= t('dashboard.batch_connect_sessions_stats_host') %></strong> <%= concat session.connect.host || t('dashboard.batch_connect_sessions_stats_undetermined_host') %></p>
+          <% end %>
+        <% end %>
       <%# end %>
 
       <%# created(session) %>
