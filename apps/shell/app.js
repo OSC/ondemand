@@ -8,6 +8,7 @@ var hbs       = require('hbs');
 var dotenv    = require('dotenv');
 var port = 3000;
 var uuidv4 = require('uuid/v4');
+var arraySessions = [];
 
 //regular expression to find uuid in url
 const regexPathMatch = /[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}/i;
@@ -50,6 +51,12 @@ router.get('/session/:id/*', function (req, res) {
 
 });
 
+router.get('/launch/', function (req, res) {
+
+    res.render('launch', { baseURI: req.baseUrl, sessions: arraySessions });
+
+});
+
 
 router.use(express.static(path.join(__dirname, 'public')));
 
@@ -81,6 +88,8 @@ var terminals = {
             cols: 80,
             rows: 30
         }), host: host}
+
+        arraySessions.push({id: uuid, host: host});
 
         return uuid;
     },
@@ -150,6 +159,7 @@ wss.on('connection', function connection (ws, req) {
   var uuid = extraction[0];
   
   console.log('Connection established');
+
 
 
 
