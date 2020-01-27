@@ -9,7 +9,7 @@
     <%# select in bootstrap_form?@%>
 
     
-    <%= f.select :script_path, grouped_options_for_select(workflow.grouped_script_options), { label: t('jobcomposer.options_script_title'), help: t('jobcomposer.options_script_help') }, { class: "selectpicker", id: "workflow_script_path" }  %>
+    <%= f.select :script_path, grouped_options_for_select(workflow.grouped_script_options, workflow.script_path), { label: t('jobcomposer.options_script_title'), help: t('jobcomposer.options_script_help') }, { class: "selectpicker", id: "workflow_script_path" }  %>
 
     <%= render partial: "edit_form_job_attrs", locals: { f: f } %>
 
