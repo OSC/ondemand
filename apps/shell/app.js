@@ -8,7 +8,6 @@ var hbs       = require('hbs');
 var dotenv    = require('dotenv');
 var port = 3000;
 var uuidv4 = require('uuid/v4');
-var arraySessions = [];
 
 //regular expression to find uuid in url
 const regexPathMatch = /[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}/i;
@@ -53,7 +52,7 @@ router.get('/session/:id/*', function (req, res) {
 
 router.get('/launch/', function (req, res) {
 
-    res.render('launch', { baseURI: req.baseUrl, sessions: arraySessions });
+    res.render('launch', { baseURI: req.baseUrl, sessions: terminals.sessionsInfo() });
 
 });
 
@@ -78,6 +77,14 @@ var terminals = {
 
     },
 
+    sessionsInfo: function () {
+
+   return Object.entries(this.instances)
+        .sort()
+        .map(function(array){ return {id: array[0], host: array[1].host }; });
+
+    },
+
     //create new terminals
     create: function (host, dir, uuid) {
         var cmd = 'ssh';
@@ -88,8 +95,6 @@ var terminals = {
             cols: 80,
             rows: 30
         }), host: host}
-
-        arraySessions.push({id: uuid, host: host});
 
         return uuid;
     },
