@@ -14,7 +14,7 @@ jobs:
         if: github.event.issue.milestone == null
         # Set environment
         env:
-          MILESTONE_ID: 1
+          MILESTONE_ID: 5
         run: |
           curl --silent --output /dev/null --request PATCH \
           --url https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }} \
