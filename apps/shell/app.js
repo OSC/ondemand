@@ -5,12 +5,19 @@ var WebSocket = require('ws');
 var express   = require('express');
 var pty       = require('node-pty');
 var hbs       = require('hbs');
+var util      = require('util')
 var dotenv    = require('dotenv');
+var os        = require('os');
+var path      = require('path');
+var schemes   = require('term-schemes')
 var port = 3000;
 var uuidv4 = require('uuid/v4');
 
 //regular expression to find uuid in url
 const regexPathMatch = /[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}/i;
+const regexFileMatch = /^.*\.(js|itermcolors|colorscheme|colors|terminal|config|config_0|theme|xrdb|xresources)$/gmi;
+const xdg_config_dir = (process.env["XDG_CONFIG_DIR"] || path.join(os.homedir(), ".config"));
+
 
 
 // Read in environment variables
@@ -23,6 +30,75 @@ if (process.env.NODE_ENV === 'production') {
 if (fs.existsSync('.env')) {
   console.warn('[DEPRECATION] The file \'.env\' is being deprecated. Please move this file to \'/etc/ood/config/apps/shell/env\'.');
   dotenv.config({path: '.env'});
+}
+
+//check if directory exists to avoid any errors about the non-existence of the directory.
+function checkDirExists(dir) {
+    fs.stat(dir, function(err, stats) {
+        if (err || err.errno == 34) {
+            return false;
+        }
+
+        return true;
+    });
+}
+
+//This removes any possible duplicates between the two arrays that I concat together.
+function removeDuplicates(arr) {
+    return [...new Set(array)];
+}
+
+//this returns the array of all the files within the one or two directories that contain the color schemes.
+function getSchemeFiles() {
+    var schemeFiles = [];
+
+    var userDir = path.join(xdg_config_dir, "apps", "shell", "themes");
+    var systemDir = path.join();
+
+    if (checkDirExists(userDir)) {
+
+        var userFiles = fs.readdirSync(userDir);
+        var systemFiles = fs.readdirSync(systemDir);
+
+        schemeFiles.concat(userFiles, systemDir);
+
+        return removeDuplicates(schemeFiles);
+
+    } else if (checkDirExists(systemDir)) {
+        var systemFiles = fs.readdirSync(systemDir)
+
+        return systemFiles;
+
+    } 
+
+    //returning an empty array will make the launch.hbs render a different looking view
+    return [];
+
+
+
+}
+
+//term-schemes return an rgb color but hterm.js reads hex. The next two functions return the color values in hex.
+function rgbToHexMath (num) { 
+  var hex = Number(num).toString(16);
+  if (hex.length < 2) {
+       hex = "0" + hex;
+  }
+  return hex;
+};
+
+function hexConverter (array) {
+    var red = array[0];
+    var green = array[1];
+    var blue = array[2];
+
+    return `#${rgbToHexMath(red)}+${rgbToHexMath(green)}+${rgbToHexMath(blue)}`;
+}
+
+const readFile = util.promisify(fs.readFile);
+
+async function getColorSchemeFile(file) {
+    const raw = String(await readFile(`${file}`))
 }
 
 // Create all your routes
@@ -52,9 +128,61 @@ router.get('/session/:id/*', function (req, res) {
 
 router.get('/launch/', function (req, res) {
 
-    res.render('launch', { baseURI: req.baseUrl, sessions: terminals.sessionsInfo() });
+    res.render('launch', { baseURI: req.baseUrl, sessions: terminals.sessionsInfo(), fileOptions: getSchemeFiles() });
 
 });
+
+//This is the route that needs to know which directory it is from. Then it parses that. I was gonna use something similar to the getSchemeFiles function.
+router.post('/color-scheme', function (req, res, next) {
+    var schemeFile = req.param('color-scheme');
+    var schemeDestination = req.param('session');
+
+    var ext = schemeFile.split('.').pop();
+
+    switch(ext) {
+        case "itermcolors":
+        //logic for parser
+        break;
+
+        case "colorscheme":
+       //logic for parser
+        break;
+
+        case "js":
+        //logic for parser
+        break;
+
+        case "colors":
+         //logic for parser
+        break;
+
+        case "terminal":
+         //logic for parser
+        break;
+
+        case "config":
+        //logic for parser
+        break;
+
+        case "config_0":
+        //logic for parser
+        break;
+
+        case "theme":
+        //logic for parser
+        break;
+
+        case "xrdb" || "Xresources":
+        //logic for parser
+        break;
+
+    }
+
+    next();
+
+
+})
+
 
 
 router.use(express.static(path.join(__dirname, 'public')));
