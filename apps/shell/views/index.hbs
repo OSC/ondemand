@@ -14,27 +14,31 @@
 </body>
 
 <script>
+
+
+
   setupHterm = function () {
     // Global variables that define the terminal
     var oodShell,
       terminalContainer = document.getElementById('terminal'),
-      webSocketUrl      = document.URL.replace(/^http/, 'ws').replace(/#.*$/, ''),
-      terminalPrefs     = {
-        'use-default-window-copy': true,
-        'ctrl-v-paste': true,
-        'ctrl-c-copy': true
-      };
+      webSocketUrl      = document.URL.replace(/^http/, 'ws').replace(/#.*$/, '')
 
     // hterm default preferences are defined here. Switch to the tag that we're using.
     // https://chromium.googlesource.com/apps/libapps/+/master/hterm/js/hterm_preference_manager.js
 
-    oodShell = new OodShell(terminalContainer, webSocketUrl, terminalPrefs);
+    var uuid = "{{session}}";
+    console.log(uuid);
+    var customTerm = new CustomTerm(uuid);
+
+   var oodShell = new OodShell(terminalContainer, webSocketUrl, customTerm.getTermPrefs());
     oodShell.createTerminal();
   }
 
   window.onload = function() {
+
     lib.init(setupHterm);
   };
+
 </script>
 
 </html>

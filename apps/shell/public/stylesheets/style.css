@@ -23,21 +23,60 @@ html, body {
   border: 1px solid;
   border-radius: 4px;
 }
+
 /* For Launch page*/
 
-table {
-  border-collapse: collapse;
-  width: 100%;
+.split {
+  height: 100%;
+  width: 50%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  overflow-x: hidden;
+  padding-top: 20px;
 }
 
-th, td {
-  text-align: left;
-  padding: 8px;
+.left {
+  left: 0;
+  background-color: #F0E9E9;
 }
 
-tr:nth-child(even){background-color: #f2f2f2}
+.right {
+  right: 0;
+  background-color: #F0E9E9;
+}
 
-th {
-  background-color: #FF0000;
-  color: white;
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.bubble {
+  padding: 10px;
+  background-color: white;
+  height: 500px;
+  width: 400px;
+  border-radius: 20px;
+  -moz-box-shadow: 2px 2px 5px #333;
+  -webkit-box-shadow: 2px 2px 5px #333;
+  box-shadow: 2px 2px 5px #333;
+}
+
+.drop {
+  margin-top: 10px;
+  width: 200px;
+  height: 30px;
+  border-radius: 50px;
+}
+
+.custom-label {
+  font-size: 20px;
+}
+
+.button {
+  height: 40px;
+  border-radius: 5px;
 }

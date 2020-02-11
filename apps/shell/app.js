@@ -9,16 +9,20 @@ var util      = require('util')
 var dotenv    = require('dotenv');
 var os        = require('os');
 var path      = require('path');
-var schemes   = require('term-schemes')
+var url       = require('url');
+var termSchemes   = require('term-schemes');
 var port = 3000;
 var uuidv4 = require('uuid/v4');
 
 //regular expression to find uuid in url
 const regexPathMatch = /[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}/i;
-const regexFileMatch = /^.*\.(js|itermcolors|colorscheme|colors|terminal|config|config_0|theme|xrdb|xresources)$/gmi;
+const regexFileMatch = /^.*\.(js|itermcolors|colorscheme|colors|terminal|config|config_0|theme|xrdb|xresources|txt)$/gmi;
 const xdg_config_dir = (process.env["XDG_CONFIG_DIR"] || path.join(os.homedir(), ".config"));
+const ood_app_config_root = (process.env["OOD_APP_CONFIG_ROOT"] || '/etc/ood/config/apps/shell');
+const userDir = path.join(xdg_config_dir, "apps", "shell", "themes");
+const systemDir = path.join(ood_app_config_root, "themes");
 
-
+var schemeObjects;
 
 // Read in environment variables
 dotenv.config({path: '.env.local'});
@@ -32,51 +36,64 @@ if (fs.existsSync('.env')) {
   dotenv.config({path: '.env'});
 }
 
+if (checkDirExists(userDir) && checkDirExists(systemDir)) {
+    var user = getSchemeObjects(userDir);
+    var system = getSchemeObjects(systemDir);
+
+   schemeObjects = {...system, ...user};
+
+} else if (checkDirExists(userDir)) {
+    schemeObjects = getSchemeObjects(userDir);
+
+} else if (checkDirExists(systemDir)) {
+    schemeObjects = getSchemeObjects(systemDir);
+}
+
 //check if directory exists to avoid any errors about the non-existence of the directory.
 function checkDirExists(dir) {
-    fs.stat(dir, function(err, stats) {
-        if (err || err.errno == 34) {
+    try {
+        if (fs.existsSync(dir)) {
+            console.log('dir true')
+            return true;
+        } else {
+            console.log('dir false')
             return false;
         }
+    } catch(e) {
+        console.log('error');
+    }
+ }
 
-        return true;
-    });
+function getSchemeFileObject(base) {
+    var userDir = path.join(xdg_config_dir, "apps", "shell", "themes");
+    fs.readdirSync(userDir).forEach(file => {
+        if (file === base) {
+            return path.parse(file);
+        }
+
+    })
 }
 
-//This removes any possible duplicates between the two arrays that I concat together.
-function removeDuplicates(arr) {
-    return [...new Set(array)];
-}
 
 //this returns the array of all the files within the one or two directories that contain the color schemes.
-function getSchemeFiles() {
-    var schemeFiles = [];
+function getSchemeFilesArray() {
 
-    var userDir = path.join(xdg_config_dir, "apps", "shell", "themes");
-    var systemDir = path.join();
-
-    if (checkDirExists(userDir)) {
-
-        var userFiles = fs.readdirSync(userDir);
-        var systemFiles = fs.readdirSync(systemDir);
-
-        schemeFiles.concat(userFiles, systemDir);
-
-        return removeDuplicates(schemeFiles);
-
-    } else if (checkDirExists(systemDir)) {
-        var systemFiles = fs.readdirSync(systemDir)
-
-        return systemFiles;
-
-    } 
-
-    //returning an empty array will make the launch.hbs render a different looking view
-    return [];
-
-
-
+    return Object.keys(schemeObjects).map(i => schemeObjects[i])
 }
+
+
+
+
+function getSchemeObjects(dir) {
+    var schemes = {};
+        
+        fs.readdirSync(dir).forEach(function(file) {
+        fileInfo = path.parse(file);
+        schemes[fileInfo.name] = {name: fileInfo.name, file: fileInfo.base, ext: fileInfo.ext, dir: userDir};
+    });
+        return schemes;
+}
+
 
 //term-schemes return an rgb color but hterm.js reads hex. The next two functions return the color values in hex.
 function rgbToHexMath (num) { 
@@ -92,19 +109,97 @@ function hexConverter (array) {
     var green = array[1];
     var blue = array[2];
 
-    return `#${rgbToHexMath(red)}+${rgbToHexMath(green)}+${rgbToHexMath(blue)}`;
+    return `#${rgbToHexMath(red)}${rgbToHexMath(green)}${rgbToHexMath(blue)}`.toUpperCase();
 }
 
-const readFile = util.promisify(fs.readFile);
+function findHost(uuid) {
+    sessions = terminals.instances;
+    var host = sessions[uuid].host;
 
-async function getColorSchemeFile(file) {
-    const raw = String(await readFile(`${file}`))
+    return host;
+
 }
+
+function parseFile(fileObject) {
+    
+    const ext = fileObject.ext;
+    const file = fileObject.dir + "/" + fileObject.file;
+    const raw = String(fs.readFileSync(file));
+      
+    switch(ext) {
+        case ".itermcolors":
+            return termSchemes.iterm2(raw);
+        break;
+
+        case ".colorscheme":
+            return termSchemes.konsole(raw);
+        break;
+
+        case ".js":
+            return termSchemes.hyper(raw);  
+        break;
+
+        case ".colors":
+            return termSchemes.remmina(raw);
+        break;
+
+        case ".terminal":
+            return termSchemes.terminal(raw);      
+        break;
+
+        case ".config":
+            return termSchemes.terminator(raw);
+        break;
+
+        case ".config_0":
+            return termSchemes.tilda(raw);
+        break;
+
+        case ".theme":
+            return termSchemes.xfce(raw);
+        break;
+
+        case ".txt":
+            return termSchemes.termite(raw);
+        break;
+
+        case ".xrdb" || ".Xresources":
+            return termSchemes.xresources(raw);
+        break;
+
+        default:
+            schemeError = {error: "unknown file type."}
+            return schemeError;
+        break; 
+
+    }
+}
+
+
+function convertSchemeObject(obj) {
+    newSchemeObj = {};
+    colorArray = [];
+    for (var key of Object.keys(obj)) {
+       if(isNaN(key) === false) {
+           
+           colorArray.push(hexConverter(obj[key]));
+       
+        } else if (isNaN(key)) {
+            newSchemeObj[key] = hexConverter(obj[key]);
+        }
+
+    }
+
+    newSchemeObj["colorPaletteOverrides"] = colorArray;
+
+    return newSchemeObj;
+}
+
 
 // Create all your routes
 var router = express.Router();
 router.get('/', function (req, res) {
-  res.redirect(req.baseUrl + `/ssh/`);
+  res.redirect(req.baseUrl + `/launch/`);
 });
 
 
@@ -118,70 +213,77 @@ router.get('/ssh/*', function (req, res, next) {
 
 });
 
+router.get('/new-session', function(req, res, next) {
+    var id = uuidv4();
 
+
+    res.redirect(url.format({
+        pathname: req.baseUrl + "/custom-term",
+        query: {
+            "host": req.query.host + ".osc.edu",
+            "scheme": req.query.scheme,
+            "session": id
+        }
+    }));
+
+});
+
+router.get('/custom-term', function(req, res, next) {
+    res.locals.uuid = req.query.session;
+    var fileObject, schemeObject, schemeColorConvert;
+    var defaultObj = {
+        'use-default-window-copy': true,
+        'ctrl-v-paste': true,
+        'ctrl-c-copy': true,
+        'cursor-blink': true,
+        };
+
+    res.locals.schemeObject;
+    if (req.query.scheme === "default") {
+       if ('default' in schemeObjects) {
+        fileObject = schemeObjects[req.query.scheme];
+        schemeObject = parseFile(fileObject);
+        schemeColorConvert = convertSchemeObject(schemeObject);
+        res.locals.schemeObject = schemeColorConvert;
+       } else {
+
+        res.locals.schemeObject = defaultObj;
+       }
+    } else {
+     
+     fileObject = schemeObjects[req.query.scheme];
+     schemeObject = parseFile(fileObject);
+     schemeColorConvert = convertSchemeObject(schemeObject);
+     res.locals.schemeObject = schemeColorConvert;        
+    }
+
+    next();
+
+}, function(req, res, next) {
+    res.locals.host = req.query.host || findHost(req.query.session);
+    console.log(res.locals.schemeObject);
+    var cookieValue = JSON.stringify(res.locals.schemeObject);
+
+    res.cookie(res.locals.uuid, cookieValue, {expires: new Date(Date.now() + 8 * 3600000) });
+
+    next();   
+
+}, function(req, res, next) {
+
+    res.redirect(req.baseUrl + `/session/${req.query.session}/${res.locals.host}`)
+})
 
 router.get('/session/:id/*', function (req, res) {
 
-  res.render('index', { baseURI: req.baseUrl });
+  res.render('index', { baseURI: req.baseUrl, session: req.params.id });
 
 });
 
 router.get('/launch/', function (req, res) {
 
-    res.render('launch', { baseURI: req.baseUrl, sessions: terminals.sessionsInfo(), fileOptions: getSchemeFiles() });
+    res.render('launch', { baseURI: req.baseUrl, sessions: terminals.sessionsInfo(), fileOptions: getSchemeFilesArray() });
 
 });
-
-//This is the route that needs to know which directory it is from. Then it parses that. I was gonna use something similar to the getSchemeFiles function.
-router.post('/color-scheme', function (req, res, next) {
-    var schemeFile = req.param('color-scheme');
-    var schemeDestination = req.param('session');
-
-    var ext = schemeFile.split('.').pop();
-
-    switch(ext) {
-        case "itermcolors":
-        //logic for parser
-        break;
-
-        case "colorscheme":
-       //logic for parser
-        break;
-
-        case "js":
-        //logic for parser
-        break;
-
-        case "colors":
-         //logic for parser
-        break;
-
-        case "terminal":
-         //logic for parser
-        break;
-
-        case "config":
-        //logic for parser
-        break;
-
-        case "config_0":
-        //logic for parser
-        break;
-
-        case "theme":
-        //logic for parser
-        break;
-
-        case "xrdb" || "Xresources":
-        //logic for parser
-        break;
-
-    }
-
-    next();
-
-
-})
 
 
 
@@ -310,7 +412,7 @@ wss.on('connection', function connection (ws, req) {
 
   process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
   
- 
+console.log(getSchemeFilesArray());
 
 
 });
