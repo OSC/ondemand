@@ -7,11 +7,11 @@
     <div class="col-md-7">
       <div cladd="panel panel-thin">
         <div class="panel-body">
-          <div class="btn-group open" id="new_job_button_div">
+          <div class="btn-group open">
             <button type="button" id="new_job_button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Job <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu" id="new_job_button_dropdown">
+            <ul class="dropdown-menu">
               <% if @default_template.exist? %>
               <li><a data-method="post" data-toggle="tooltip" title="Create a new job from the default template" href="<%= create_default_path %>">From Default Template</a></li>
               <% end %>
