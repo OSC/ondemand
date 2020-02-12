@@ -7,12 +7,11 @@
     <div class="col-md-7">
       <div cladd="panel panel-thin">
         <div class="panel-body">
-
-          <div class="btn-group open">
-            <button type="button" id="new_job_button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <div class="btn-group open" id="new_job_button_div">
+            <button type="button" id="new_job_button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Job <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu" id="new_job_button_dropdown">
               <% if @default_template.exist? %>
               <li><a data-method="post" data-toggle="tooltip" title="Create a new job from the default template" href="<%= create_default_path %>">From Default Template</a></li>
               <% end %>
@@ -35,7 +34,7 @@
 <% end %>
 
 <div class="row">
-  <div class="col-md-7">
+  <div class="col-md-7" id="joyride_start">
     <div id="job-list-view" class="panel panel-default">
       <div class="panel-body">
         <a class="btn btn-default btn-sm btn-primary" id="open_dir_button" target="_blank" data-toggle="tooltip" title="Open Directory in File Manager" role="button" disabled>
@@ -164,8 +163,8 @@
   </div>
 
   <!-- Joyride steps -->
-  <ol id="joyride" style="display: none;" data-joyride>
-    <li>
+  <ol id="joyride" style="visibility: none;" data-joyride>
+    <li data-id="new_job_button">
       <ol>
         <h4>
           Steps to create a job:
