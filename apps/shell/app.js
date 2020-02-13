@@ -17,9 +17,9 @@ var uuidv4 = require('uuid/v4');
 //regular expression to find uuid in url
 const regexPathMatch = /[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}/i;
 const regexFileMatch = /^.*\.(js|itermcolors|colorscheme|colors|terminal|config|config_0|theme|xrdb|xresources|txt)$/gmi;
-const xdg_config_dir = (process.env["XDG_CONFIG_DIR"] || path.join(os.homedir(), ".config"));
+const xdg_config_dir = (process.env["XDG_CONFIG_HOME"] || path.join(os.homedir(), ".config"));
 const ood_app_config_root = (process.env["OOD_APP_CONFIG_ROOT"] || '/etc/ood/config/apps/shell');
-const userDir = path.join(xdg_config_dir, "apps", "shell", "themes");
+const userDir = path.join(xdg_config_dir, "ondemand", "apps", "shell", "themes");
 const systemDir = path.join(ood_app_config_root, "themes");
 
 var schemeObjects;
@@ -281,7 +281,7 @@ router.get('/session/:id/*', function (req, res) {
 
 router.get('/launch/', function (req, res) {
 
-    res.render('launch', { baseURI: req.baseUrl, sessions: terminals.sessionsInfo(), fileOptions: getSchemeFilesArray() });
+    res.render('launch', { baseURI: req.baseUrl, sessions: terminals.sessionsInfo(), fileOptions: getSchemeFilesArray() || [] });
 
 });
 
@@ -412,7 +412,6 @@ wss.on('connection', function connection (ws, req) {
 
   process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
   
-console.log(getSchemeFilesArray());
 
 
 });
