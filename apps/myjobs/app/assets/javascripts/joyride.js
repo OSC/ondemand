@@ -495,7 +495,7 @@
                     } else if (methods.top()) {
 
                         settings.$next_tip.css({
-                            top: settings.$target.offset().top + topAdjustment,
+                            top: (settings.$target.offset().top - settings.$next_tip.outerHeight() - nub_height + topAdjustment),
                             left: settings.$target.offset().left + leftAdjustment});
 
                         methods.nub_position($nub, settings.tipSettings.nubPosition, 'bottom');
@@ -631,7 +631,6 @@
                 }
                 expose = $(settings.template.expose);
                 settings.$body.append(expose);
-
                 expose.css({
                     top: el.offset().top,
                     left: el.offset().left,
