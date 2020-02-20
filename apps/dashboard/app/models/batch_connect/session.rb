@@ -387,7 +387,11 @@ module BatchConnect
     # Whether job is running but still hasn't generated the connection file
     # @return [Boolean] whether starting
     def starting?
-      status.running? && !connect_file.file?
+      if native_host?
+        !status.running?
+      else
+        status.running? && !connect_file.file?
+      end
     end
 
     # Whether job is running and connection file is generated
@@ -479,7 +483,17 @@ module BatchConnect
     # The connection information for this session (job must be running)
     # @return [OpenStruct] connection information
     def connect
-      OpenStruct.new YAML.safe_load(connect_file.read)
+      if native_host?
+        OpenStruct.new info.native
+      else
+        OpenStruct.new YAML.safe_load(connect_file.read)
+      end
+    end
+
+    # Whether the session info has native host fields.
+    # @return [Boolean] whether there is host and port information in this session.
+    def native_host?
+      info&.native&.key?(:host) && info&.native&.key?(:port)
     end
 
     # A unique identifier that details the current state of a session
