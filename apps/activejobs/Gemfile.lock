@@ -110,8 +110,6 @@ GEM
       ood_core (~> 0.1)
       rails (> 4.0.7, < 6.0)
       redcarpet (~> 3.2)
-    ood_cluster (0.0.1)
-      addressable (~> 2.4)
     ood_core (0.10.0)
       ffi (~> 1.9, >= 1.9.6)
       ood_support (~> 0.0.2)
@@ -203,7 +201,6 @@ DEPENDENCIES
   jquery-datatables-rails (~> 3.4)
   jquery-rails
   ood_appkit (~> 1.0)
-  ood_cluster (~> 0.0.1)
   rack (>= 1.6.11)
   rails (~> 5.2.4.1)
   rails_12factor
