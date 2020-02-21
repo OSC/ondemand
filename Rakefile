@@ -137,7 +137,7 @@ task :test => 'test:all'
 namespace :test do
   testing = {
     'ood-portal-generator': 'spec',
-    'apps/activejobs': 'test',
+    'apps/activejobs': 'spec',
     'apps/dashboard': 'test',
     'apps/file-editor': 'test',
     'apps/myjobs': 'test'
