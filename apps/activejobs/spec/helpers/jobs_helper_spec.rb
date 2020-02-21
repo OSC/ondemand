@@ -9,12 +9,12 @@ RSpec.describe JobsHelper, type: :helper do
   end
   describe 'build_grafana_link' do
     it 'generates cpu panel URL' do
-      expected_url = "https://grafana.domain/d-solo/aaba6Ahbauquag/ondemand-clusters?orgId=3&from=1582303423000&to=now&panelId=20&var-cluster=owens&var-host=o0484&var-jobid=9427651"
+      expected_url = "https://grafana.domain/d-solo/aaba6Ahbauquag/ondemand-clusters?orgId=3&from=1582303423000&to=now&var-cluster=owens&var-host=o0484&panelId=20&var-jobid=9427651"
       expect(build_grafana_link('owens', '1582303423', 'cpu', 'o0484', '9427651')).to eq(expected_url)
     end
 
     it 'generates memory panel URL' do
-      expected_url = "https://grafana.domain/d-solo/aaba6Ahbauquag/ondemand-clusters?orgId=3&from=1582303423000&to=now&panelId=24&var-cluster=owens&var-host=o0484&var-jobid=9427651"
+      expected_url = "https://grafana.domain/d-solo/aaba6Ahbauquag/ondemand-clusters?orgId=3&from=1582303423000&to=now&var-cluster=owens&var-host=o0484&panelId=24&var-jobid=9427651"
       expect(build_grafana_link('owens', '1582303423', 'memory', 'o0484', '9427651')).to eq(expected_url)
     end
 

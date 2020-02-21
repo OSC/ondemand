@@ -26,6 +26,8 @@ module JobsHelper
         orgId: server[:orgId],
         from: "#{start_seconds}000",
         to: 'now',
+        "var-#{server[:labels]['cluster']}": cluster,
+        "var-#{server[:labels]['host']}": host,
       }
       if ['cpu','memory'].include?(report_type)
         url_base = 'd-solo'
@@ -34,8 +36,6 @@ module JobsHelper
       else
         url_base = 'd'
       end
-      query_params["var-#{server[:labels]['cluster']}"] = cluster
-      query_params["var-#{server[:labels]['host']}"] = host
       if jobid
         jobid = jobid.split('.')[0]
         query_params["var-#{server[:labels]['jobid']}"] = jobid unless server[:labels]['jobid'].nil?
