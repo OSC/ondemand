@@ -17,22 +17,19 @@ module JobsHelper
 
   def build_grafana_link(cluster, start_seconds, report_type, node_num, jobid = nil) 
     c = OODClusters[cluster]
+    grafana_uri = nil
     if c && c.custom_allow?(:grafana)
       server = c.custom_config(:grafana)
-      host = node_num.split('.')[0]
-      dashboard = server[:dashboard]
-      dashboard_url = "#{dashboard['uid']}/#{dashboard['name']}"
       query_params = {
         orgId: server[:orgId],
         from: "#{start_seconds}000",
         to: 'now',
         "var-#{server[:labels]['cluster']}": cluster,
-        "var-#{server[:labels]['host']}": host,
+        "var-#{server[:labels]['host']}": node_num.split('.')[0],
       }
       if ['cpu','memory'].include?(report_type)
         url_base = 'd-solo'
-        panel_id = dashboard['panels'][report_type]
-        query_params[:panelId] = panel_id
+        query_params[:panelId] = server[:dashboard]['panels'][report_type]
       else
         url_base = 'd'
       end
@@ -40,8 +37,11 @@ module JobsHelper
         jobid = jobid.split('.')[0]
         query_params["var-#{server[:labels]['jobid']}"] = jobid unless server[:labels]['jobid'].nil?
       end
-      query_params = query_params.map { |k,v| "#{k}=#{v}" }.join('&')
-      grafana_uri = ("#{server[:host]}/#{url_base}/#{dashboard_url}?#{query_params}").html_safe
+      uri = Addressable::Template.new("#{server[:host]}{/segments*}/{?query*}")
+      grafana_uri = uri.expand({
+        'segments' => [url_base, server[:dashboard]['uid'], server[:dashboard]['name']],
+        'query'    => query_params,
+        }).to_s
     end
     grafana_uri
   rescue StandardError => e
