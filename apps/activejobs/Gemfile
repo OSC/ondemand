@@ -26,6 +26,9 @@ group :doc do
   gem 'sdoc', require: false
 end
 
+group :development, :test do
+  gem 'rspec-rails', '~> 3.9'
+end
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
@@ -43,7 +46,6 @@ gem 'font-awesome-sass', '~> 5.0'
 gem 'autoprefixer-rails', '~> 8.4'
 gem 'dotenv-rails', '~> 2.1'
 gem 'rails_12factor', group: :production
-gem 'ood_cluster', '~> 0.0.1'
 gem 'ood_appkit', '~> 1.0'
 gem 'jquery-datatables-rails', '~> 3.4'
 

@@ -1,0 +1,56 @@
+---
+v2:
+  metadata:
+    title: "Ruby"
+    url: "https://www.domain/supercomputing/computing/ruby"
+    hidden: false
+  login:
+    host: "ruby.domain"
+  job:
+    adapter: "torque"
+    host: "ruby-batch.domain"
+    lib: "/opt/torque/lib64"
+    bin: "/opt/torque/bin"
+    version: "6.0.1"
+  custom:
+    pbs:
+      host: "ruby-batch.domain"
+      lib: "/opt/torque/lib64"
+      bin: "/opt/torque/bin"
+      version: "6.0.1"
+    moab:
+      host: "ruby-batch.domain"
+      bin: "/opt/moab/bin"
+      version: "9.0.1"
+      homedir: "/var/spool/moab"
+    rsv_query:
+      torque_host: "ruby-batch.domain"
+      torque_lib: "/opt/torque/lib64"
+      torque_bin: "/opt/torque/bin"
+      torque_version: "6.0.1"
+      moab_host: "ruby-batch.domain"
+      moab_bin: "/opt/moab/bin"
+      moab_version: "9.0.1"
+      moab_homedir: "/var/spool/moab"
+      acls:
+        - adapter: "group"
+          groups:
+            - "sysall"
+            - "sappall"
+            - "clntall"
+          type: "blacklist"
+    ganglia:
+      host: "ganglia.domain"
+      scheme: "https://"
+      segments:
+        - "graph.php"
+      req_query:
+        c: "Ruby"
+      opt_query:
+        h: "%{h}.domain"
+      version: "3"
+  batch_connect:
+      basic:
+        script_wrapper: "module restore\n%s"
+      vnc:
+        script_wrapper: "module restore\nmodule load ondemand-vnc\n%s"
