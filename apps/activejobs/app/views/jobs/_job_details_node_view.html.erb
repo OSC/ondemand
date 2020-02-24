@@ -1,3 +1,4 @@
+<% if has_ganglia(data.cluster) || has_grafana(data.cluster) %>
 <div class="col-md-12">
   <tr>
     <td>
@@ -22,3 +23,4 @@
     </td>
   </tr>
 </div>
+<% end %>
