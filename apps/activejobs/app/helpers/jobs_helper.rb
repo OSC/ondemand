@@ -22,6 +22,7 @@ module JobsHelper
       server = c.custom_config(:grafana)
       query_params = {
         orgId: server[:orgId],
+        theme: server[:theme] || 'light',
         from: "#{start_seconds}000",
         to: 'now',
         "var-#{server[:labels]['cluster']}": cluster,
