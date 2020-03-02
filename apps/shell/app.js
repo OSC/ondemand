@@ -47,9 +47,10 @@ var wss = new WebSocket.Server({ server: server });
 wss.on('connection', function connection (ws, req) {
   var match;
   var host = process.env.DEFAULT_SSHHOST || 'localhost';
+  var cmd = process.env.CUSTOM_SSH || 'ssh';
   var dir;
   var term;
-  var cmd, args;
+  var args;
 
   console.log('Connection established');
 
@@ -59,11 +60,10 @@ wss.on('connection', function connection (ws, req) {
     if (match[2]) dir = decodeURIComponent(match[2]);
   }
 
-  cmd = 'ssh';
   args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
 
   process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
-  
+
   term = pty.spawn(cmd, args, {
     name: 'xterm-256color',
     cols: 80,
