@@ -237,7 +237,6 @@ KillMode=process
 PrivateTmp=false
 EOF
 %__chmod 444 %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood.conf
-%endif
 %__cat >> %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood-portal.conf << EOF
 [Service]
 ExecStartPre=-/opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm
