@@ -44,11 +44,13 @@ Source2:   ondemand-selinux.fc
 %bcond_with scl_apache
 %define apache_confd /etc/httpd/conf.d
 %define apache_service httpd
+%define apache_daemon /usr/sbin/httpd
 %define htcacheclean_service htcacheclean
 %else
 %bcond_without scl_apache
 %define apache_confd /opt/rh/httpd24/root/etc/httpd/conf.d
 %define apache_service httpd24-httpd
+%define apache_daemon /opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper
 %define htcacheclean_service httpd24-htcacheclean
 %endif
 
@@ -236,6 +238,15 @@ PrivateTmp=false
 EOF
 %__chmod 444 %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood.conf
 %endif
+%__cat >> %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood-portal.conf << EOF
+[Service]
+ExecStartPre=-/opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm
+ExecReload=
+ExecReload=-/opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm
+ExecReload=%{apache_daemon} \$OPTIONS -k graceful
+EOF
+%__chmod 444 %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood-portal.conf
+%endif
 EOS
 
 %post
@@ -388,6 +399,7 @@ fi
 %ghost %{apache_confd}/ood-portal.conf
 %if %{with systemd}
 %config(noreplace) %{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood.conf
+%config(noreplace,missingok) %{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood-portal.conf
 %endif
 
 %files -n %{gems_name}
