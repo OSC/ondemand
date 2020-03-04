@@ -269,6 +269,78 @@ https://github.com/OSC/ood-dashboard/wiki/iHPC-CLI
 
 ## Development
 
+### Building noVNC with OnDemand custom changes
+
+For this example we will assume that you have `rsync` and `hub` installed in your development environment.
+
+Node version used: `v12.16.1`
+
+Open OnDemand includes modifications to noVNC that enable users to manually set the compression and image quality for their noVNC session
+
+```sh
+# Go to /tmp
+cd /tmp
+
+# Clone OnDemand
+hub clone OSC/ondemand
+
+# Change to OnDemand directory
+cd /tmp/ondemand
+
+# Checkout specific commit with noVNC 1.1.0 and our changes applied
+hub checkout 0d70e4d88d2d1c6ccac6dd587ece9d141039c1cc
+```
+
+Make changes as needed to the noVNC core and then we will compile the app.js file that OnDemand uses
+
+```sh
+# Go to /tmp
+cd /tmp
+
+# Clone noVNC 1.1.0
+hub clone noVNC/noVNC
+
+# Switch to official 1.1.0 release branch
+hub checkout 9fe2fd04d4eeda0d5a360009453861803ba0ca84
+
+# Copy /utils into your OnDemand noVNC code, do not add any forward slashes to any folder paths here.
+rsync -rh /tmp/noVNC/utils /tmp/ondemand/apps/dashboard/public/noVNC-1.1.0
+
+# Now switch back to your OnDemand noVNC directory
+cd /tmp/ondemand/apps/dashboard/public/noVNC-1.1.0
+
+# Run npm install
+npm install
+```
+
+We have installed all of the dependencies that we need to build noVNC 1.1.0 now. After making your changes to the noVNC core, run the following commands to compile and clean up your build:
+
+```sh
+# Make sure you're in the right directory
+cd /tmp/ondemand/apps/dashboard/public/noVNC-1.1.0
+
+# Compile noVNC 1.1.0, don't forget to use the command flags in this example. This command will output the compiled files in /build in the same directory
+./utils/use_require.js --as commonjs --with-app
+
+# Recursively copy folders from the /build folder into /tmp/ondemand/apps/dashboard/public/noVNC-1.1.0
+rsync -rh build/ /tmp/ondemand/apps/dashboard/public/noVNC-1.1.0
+
+# Clean up development files used for building
+rm -rf node_modules/ build/ utils/
+```
+
+Finally we need to update `vnc.html` to include the third party library used for legacy browser support for URI parameters.
+
+```sh
+# Open /tmp/ondemand/apps/dashboard/public/noVNC-1.1.0/public/vnc.html
+sublime /tmp/ondemand/apps/dashboard/public/noVNC-1.1.0/vnc.html
+
+# Add the following to vnc.html before any noVNC scripts are loaded
+<script nomodule src="shims/url-search-params@0.1.2.min.js"></script>
+```
+
+Congratulations, you have successfully rebuilt noVNC 1.1.0 with the Open OnDemand custom changes included!
+
 ### Updating noVNC
 
 To update noVNC you need to first download and unzip the latest stable Node.js.
@@ -296,13 +368,13 @@ Next we download and build noVNC:
 cd ${HOME}
 
 # Download the commit of noVNC we are interested in
-wget https://github.com/novnc/noVNC/archive/edb7879927c18dd2aaf3b86c99df69ba4fbb0eab.zip
+wget https://github.com/novnc/noVNC/archive/9fe2fd04d4eeda0d5a360009453861803ba0ca84.zip
 
 # Unzip it
-unzip edb7879927c18dd2aaf3b86c99df69ba4fbb0eab.zip
+unzip 9fe2fd04d4eeda0d5a360009453861803ba0ca84.zip
 
 # Go into the noVNC directory
-cd noVNC-edb7879927c18dd2aaf3b86c99df69ba4fbb0eab/
+cd noVNC-9fe2fd04d4eeda0d5a360009453861803ba0ca84/
 
 # Install the dependency packages
 PATH=${HOME}/node-v6.11.1-linux-x64/bin:$PATH npm install
@@ -315,7 +387,7 @@ Now we copy the build to our Dashboard code under the `public/` root with an
 appropriately named directory (typically a shortened-form of the SHA commit):
 
 ```sh
-cp -r build ${HOME}/ondemand/dev/ood-dashboard/public/noVNC-edb7879
+cp -r build ${HOME}/ondemand/dev/ood-dashboard/public/noVNC-9fe2fd0
 ```
 
 Finally we need to update the Dashboard code to use this new version of noVNC.
