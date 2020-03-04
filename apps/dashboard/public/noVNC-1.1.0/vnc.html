@@ -54,13 +54,29 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" href="app/styles/base.css">
 
+    <!-- this is a shim for backwards compatability with IE and older versions of edge -->
+    <script nomodule src="shims/url-search-params@0.1.2.min.js"></script>
+
     <!-- this is included as a normal file in order to catch script-loading errors as well -->
     <script src="app/error-handler.js"></script>
 
     <!-- begin scripts -->
+    <script type="module">
+        window._noVNC_has_module_support = true;
+    </script>
+    <script>
+        window.addEventListener("load", function() {
+            if (window._noVNC_has_module_support) return;
+            let legacy_scripts = ["legacy/app.js"];
+            for (let i = 0;i < legacy_scripts.length;i++) {
+                let script = document.createElement("script");
+                script.src = legacy_scripts[i];
+                script.async = false;
+                document.head.appendChild(script);
+            }
+        });
+    </script>
     <script type="module" crossorigin="anonymous" src="app/ui.js"></script>
-    <script nomodule src="legacy/vendor/promise.js"></script>
-    <script nomodule src="legacy/app.js"></script>
 
 <!-- end scripts -->
 </head>
