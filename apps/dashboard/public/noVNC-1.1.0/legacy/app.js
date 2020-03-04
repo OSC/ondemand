@@ -10249,18 +10249,6 @@ function (_EventTargetMixin) {
     value: function _sendEncodings() {
       var encs = []; // In preference order
 
-	// URL Search Params Shim for supporting older browsers.
-	var urlParams = new URLSearchParams(window.location.search);
-	var qualityLevelDefault = _encodings.encodings.pseudoEncodingQualityLevel0 + 6;   
-	var compressionLevelDefault = _encodings.encodings.pseudoEncodingCompressLevel0 + 2;
-	// get the compression level query string or use set default if query returns null
-	// compressionsetting: 0-9
-	var compressionLevel = (urlParams.get('compressionsetting') === null) ? compressionLevelDefault : urlParams.get('compressionsetting') - 256;
-	
-	// get the quality level query string or use set default if the query returns null
-	// qualitysetting: 0-9
-	var qualityLevel = (urlParams.get('qualitysetting') === null) ? qualityLevelDefault : urlParams.get('qualitysetting') - 32;
-
       encs.push(_encodings.encodings.encodingCopyRect); // Only supported with full depth support
 
       if (this._fb_depth == 24) {
@@ -10272,11 +10260,9 @@ function (_EventTargetMixin) {
 
       encs.push(_encodings.encodings.encodingRaw); // Psuedo-encoding settings
 
-	// push our custom configuration to encs
-	encs.push(qualityLevel);
-	encs.push(compressionLevel);
-
-	encs.push(_encodings.encodings.pseudoEncodingDesktopSize);
+      encs.push(_encodings.encodings.pseudoEncodingQualityLevel0 + 6);
+      encs.push(_encodings.encodings.pseudoEncodingCompressLevel0 + 2);
+      encs.push(_encodings.encodings.pseudoEncodingDesktopSize);
       encs.push(_encodings.encodings.pseudoEncodingLastRect);
       encs.push(_encodings.encodings.pseudoEncodingQEMUExtendedKeyEvent);
       encs.push(_encodings.encodings.pseudoEncodingExtendedDesktopSize);
