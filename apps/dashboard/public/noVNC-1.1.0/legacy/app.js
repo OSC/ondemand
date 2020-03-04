@@ -10247,25 +10247,10 @@ function (_EventTargetMixin) {
   }, {
     key: "_sendEncodings",
     value: function _sendEncodings() {
-      const encs = [];
+      var encs = []; // In preference order
 
-      // URL Search Params Shim for supporting older browsers.
-      const urlParams = new URLSearchParams(window.location.search);
-      const qualityLevelDefault = _encodings.encodings.pseudoEncodingQualityLevel0 + 6;   
-      const compressionLevelDefault = _encodings.encodings.pseudoEncodingCompressLevel0 + 2;
+      encs.push(_encodings.encodings.encodingCopyRect); // Only supported with full depth support
 
-      // Get the compression level query string or use set default if query returns null
-      // compressionsetting: 0-9
-      const compressionLevel = (urlParams.get('compressionsetting') === null) ? compressionLevelDefault : urlParams.get('compressionsetting') - 256;
-
-      // Get the quality level query string or use set default if the query returns null
-      // qualitysetting: 0-9
-      const qualityLevel = (urlParams.get('qualitysetting') === null) ? qualityLevelDefault : urlParams.get('qualitysetting') - 32;
-      
-      // In preference order
-      encs.push(_encodings.encodings.encodingCopyRect);
-
-      // Only supported with full depth support
       if (this._fb_depth == 24) {
         encs.push(_encodings.encodings.encodingTight);
         encs.push(_encodings.encodings.encodingTightPNG);
@@ -10273,13 +10258,12 @@ function (_EventTargetMixin) {
         encs.push(_encodings.encodings.encodingRRE);
       }
 
-      encs.push(_encodings.encodings.encodingRaw);
+      encs.push(_encodings.encodings.encodingRaw); // Psuedo-encoding settings
 
-      // Push our custom configuration to encs
-      encs.push(qualityLevel);
-      encs.push(compressionLevel);
+      encs.push(_encodings.encodings.pseudoEncodingQualityLevel0 + 6);
+      encs.push(_encodings.encodings.pseudoEncodingCompressLevel0 + 2);
 
-      encs.push(_encodings.encodings.pseudoEncodingDesktopSize);
+	    encs.push(_encodings.encodings.pseudoEncodingDesktopSize);
       encs.push(_encodings.encodings.pseudoEncodingLastRect);
       encs.push(_encodings.encodings.pseudoEncodingQEMUExtendedKeyEvent);
       encs.push(_encodings.encodings.pseudoEncodingExtendedDesktopSize);
