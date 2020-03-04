@@ -1282,6 +1282,18 @@ export default class RFB extends EventTargetMixin {
     _sendEncodings() {
         const encs = [];
 
+        const urlParams = new URLSearchParams(window.location.search);
+        const qualityLevelDefault = encodings.pseudoEncodingQualityLevel0 + 6;   
+        const compressionLevelDefault = encodings.pseudoEncodingCompressLevel0 + 2;
+
+        // Get the compression level query string or use set default if query returns null
+        // compressionsetting: 0-9
+        const compressionLevel = (urlParams.get('compressionsetting') === null) ? compressionLevelDefault : urlParams.get('compressionsetting') - 256;
+        
+        // get the quality level query string or use set default if the query returns null
+        // qualitysetting: 0-9
+        const qualityLevel = (urlParams.get('qualitysetting') === null) ? qualityLevelDefault : urlParams.get('qualitysetting') - 32;
+
         // In preference order
         encs.push(encodings.encodingCopyRect);
         // Only supported with full depth support
@@ -1294,8 +1306,9 @@ export default class RFB extends EventTargetMixin {
         encs.push(encodings.encodingRaw);
 
         // Psuedo-encoding settings
-        encs.push(encodings.pseudoEncodingQualityLevel0 + 6);
-        encs.push(encodings.pseudoEncodingCompressLevel0 + 2);
+        // Push our custom configuration to encs[]
+        encs.push(qualityLevel);
+        encs.push(compressionLevel);
 
         encs.push(encodings.pseudoEncodingDesktopSize);
         encs.push(encodings.pseudoEncodingLastRect);
