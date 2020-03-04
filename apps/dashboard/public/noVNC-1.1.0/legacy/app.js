@@ -25,9 +25,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 /*
  * Localization Utilities
  */
-var Localizer =
-/*#__PURE__*/
-function () {
+var Localizer = /*#__PURE__*/function () {
   function Localizer() {
     _classCallCheck(this, Localizer);
 
@@ -1096,7 +1094,8 @@ var UI = {
       repeaterID: UI.getSetting('repeaterID'),
       credentials: {
         password: password
-      }
+      },
+      wsProtocols: ['binary', 'base64']
     });
     UI.rfb.addEventListener("connect", UI.connectFinished);
     UI.rfb.addEventListener("disconnect", UI.disconnectFinished);
@@ -2122,9 +2121,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  * See README.md for usage and integration instructions.
  *
  */
-var CopyRectDecoder =
-/*#__PURE__*/
-function () {
+var CopyRectDecoder = /*#__PURE__*/function () {
   function CopyRectDecoder() {
     _classCallCheck(this, CopyRectDecoder);
   }
@@ -2169,9 +2166,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var HextileDecoder =
-/*#__PURE__*/
-function () {
+var HextileDecoder = /*#__PURE__*/function () {
   function HextileDecoder() {
     _classCallCheck(this, HextileDecoder);
 
@@ -2345,9 +2340,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  * See README.md for usage and integration instructions.
  *
  */
-var RawDecoder =
-/*#__PURE__*/
-function () {
+var RawDecoder = /*#__PURE__*/function () {
   function RawDecoder() {
     _classCallCheck(this, RawDecoder);
 
@@ -2426,9 +2419,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  * See README.md for usage and integration instructions.
  *
  */
-var RREDecoder =
-/*#__PURE__*/
-function () {
+var RREDecoder = /*#__PURE__*/function () {
   function RREDecoder() {
     _classCallCheck(this, RREDecoder);
 
@@ -2498,9 +2489,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var TightDecoder =
-/*#__PURE__*/
-function () {
+var TightDecoder = /*#__PURE__*/function () {
   function TightDecoder() {
     _classCallCheck(this, TightDecoder);
 
@@ -2855,9 +2844,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var TightPNGDecoder =
-/*#__PURE__*/
-function (_TightDecoder) {
+var TightPNGDecoder = /*#__PURE__*/function (_TightDecoder) {
   _inherits(TightPNGDecoder, _TightDecoder);
 
   function TightPNGDecoder() {
@@ -2909,9 +2896,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var Deflator =
-/*#__PURE__*/
-function () {
+var Deflator = /*#__PURE__*/function () {
   function Deflator() {
     _classCallCheck(this, Deflator);
 
@@ -3136,9 +3121,7 @@ f = d | e;
 var SP8 = [b | f, z | e, a | z, c | f, b | z, b | f, z | d, b | z, a | d, c | z, c | f, a | e, c | e, a | f, z | e, z | d, c | z, b | d, b | e, z | f, a | e, a | d, c | d, c | e, z | f, z | z, z | z, c | d, b | d, b | e, a | f, a | z, a | f, a | z, c | e, z | e, z | d, c | d, z | e, a | f, b | e, z | d, b | d, c | z, c | d, b | z, a | z, b | f, z | z, c | f, a | d, b | d, c | z, b | e, b | f, z | z, c | f, a | e, a | e, z | f, z | f, a | d, b | z, c | e];
 /* eslint-enable comma-spacing */
 
-var DES =
-/*#__PURE__*/
-function () {
+var DES = /*#__PURE__*/function () {
   function DES(password) {
     _classCallCheck(this, DES);
 
@@ -3326,9 +3309,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var Display =
-/*#__PURE__*/
-function () {
+var Display = /*#__PURE__*/function () {
   function Display(target) {
     _classCallCheck(this, Display);
 
@@ -4118,9 +4099,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var Inflate =
-/*#__PURE__*/
-function () {
+var Inflate = /*#__PURE__*/function () {
   function Inflate() {
     _classCallCheck(this, Inflate);
 
@@ -4623,9 +4602,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 //
 // Keyboard event handler
 //
-var Keyboard =
-/*#__PURE__*/
-function () {
+var Keyboard = /*#__PURE__*/function () {
   function Keyboard(target) {
     _classCallCheck(this, Keyboard);
 
@@ -7543,9 +7520,7 @@ var WHEEL_STEP_TIMEOUT = 50; // ms
 
 var WHEEL_LINE_HEIGHT = 19;
 
-var Mouse =
-/*#__PURE__*/
-function () {
+var Mouse = /*#__PURE__*/function () {
   function Mouse(target) {
     _classCallCheck(this, Mouse);
 
@@ -8871,9 +8846,7 @@ var extendedClipboardActionPeek = 1 << 26;
 var extendedClipboardActionNotify = 1 << 27;
 var extendedClipboardActionProvide = 1 << 28;
 
-var RFB =
-/*#__PURE__*/
-function (_EventTargetMixin) {
+var RFB = /*#__PURE__*/function (_EventTargetMixin) {
   _inherits(RFB, _EventTargetMixin);
 
   function RFB(target, url, options) {
@@ -10247,7 +10220,16 @@ function (_EventTargetMixin) {
   }, {
     key: "_sendEncodings",
     value: function _sendEncodings() {
-      var encs = []; // In preference order
+      var encs = [];
+      var urlParams = new URLSearchParams(window.location.search);
+      var qualityLevelDefault = _encodings.encodings.pseudoEncodingQualityLevel0 + 6;
+      var compressionLevelDefault = _encodings.encodings.pseudoEncodingCompressLevel0 + 2; // Get the compression level query string or use set default if query returns null
+      // compressionsetting: 0-9
+
+      var compressionLevel = urlParams.get('compressionsetting') === null ? compressionLevelDefault : urlParams.get('compressionsetting') - 256; // get the quality level query string or use set default if the query returns null
+      // qualitysetting: 0-9
+
+      var qualityLevel = urlParams.get('qualitysetting') === null ? qualityLevelDefault : urlParams.get('qualitysetting') - 32; // In preference order
 
       encs.push(_encodings.encodings.encodingCopyRect); // Only supported with full depth support
 
@@ -10259,9 +10241,10 @@ function (_EventTargetMixin) {
       }
 
       encs.push(_encodings.encodings.encodingRaw); // Psuedo-encoding settings
+      // Push our custom configuration to encs[]
 
-      encs.push(_encodings.encodings.pseudoEncodingQualityLevel0 + 6);
-      encs.push(_encodings.encodings.pseudoEncodingCompressLevel0 + 2);
+      encs.push(qualityLevel);
+      encs.push(compressionLevel);
       encs.push(_encodings.encodings.pseudoEncodingDesktopSize);
       encs.push(_encodings.encodings.pseudoEncodingLastRect);
       encs.push(_encodings.encodings.pseudoEncodingQEMUExtendedKeyEvent);
@@ -11805,9 +11788,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 var useFallback = !_browser.supportsCursorURIs || _browser.isTouchDevice;
 
-var Cursor =
-/*#__PURE__*/
-function () {
+var Cursor = /*#__PURE__*/function () {
   function Cursor() {
     _classCallCheck(this, Cursor);
 
@@ -12277,9 +12258,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  *
  * See README.md for usage and integration instructions.
  */
-var EventTargetMixin =
-/*#__PURE__*/
-function () {
+var EventTargetMixin = /*#__PURE__*/function () {
   function EventTargetMixin() {
     _classCallCheck(this, EventTargetMixin);
 
@@ -12562,9 +12541,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var ENABLE_COPYWITHIN = false;
 var MAX_RQ_GROW_SIZE = 40 * 1024 * 1024; // 40 MiB
 
-var Websock =
-/*#__PURE__*/
-function () {
+var Websock = /*#__PURE__*/function () {
   function Websock() {
     _classCallCheck(this, Websock);
 
