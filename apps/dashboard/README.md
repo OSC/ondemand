@@ -296,13 +296,13 @@ Next we download and build noVNC:
 cd ${HOME}
 
 # Download the commit of noVNC we are interested in
-wget https://github.com/novnc/noVNC/archive/edb7879927c18dd2aaf3b86c99df69ba4fbb0eab.zip
+wget https://github.com/novnc/noVNC/archive/9fe2fd04d4eeda0d5a360009453861803ba0ca84.zip
 
 # Unzip it
-unzip edb7879927c18dd2aaf3b86c99df69ba4fbb0eab.zip
+unzip 9fe2fd04d4eeda0d5a360009453861803ba0ca84.zip
 
 # Go into the noVNC directory
-cd noVNC-edb7879927c18dd2aaf3b86c99df69ba4fbb0eab/
+cd noVNC-9fe2fd04d4eeda0d5a360009453861803ba0ca84/
 
 # Install the dependency packages
 PATH=${HOME}/node-v6.11.1-linux-x64/bin:$PATH npm install
@@ -315,7 +315,7 @@ Now we copy the build to our Dashboard code under the `public/` root with an
 appropriately named directory (typically a shortened-form of the SHA commit):
 
 ```sh
-cp -r build ${HOME}/ondemand/dev/ood-dashboard/public/noVNC-edb7879
+cp -r build ${HOME}/ondemand/dev/ood-dashboard/public/noVNC-9fe2fd0
 ```
 
 Finally we need to update the Dashboard code to use this new version of noVNC.
