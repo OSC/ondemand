@@ -47,7 +47,7 @@ var wss = new WebSocket.Server({ server: server });
 wss.on('connection', function connection (ws, req) {
   var match;
   var host = process.env.DEFAULT_SSHHOST || 'localhost';
-  var cmd = process.env.CUSTOM_SSH || 'ssh';
+  var cmd = process.env.OOD_SSH_WRAPPER || 'ssh';
   var dir;
   var term;
   var args;
