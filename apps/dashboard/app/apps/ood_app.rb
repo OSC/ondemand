@@ -64,6 +64,7 @@ class OodApp
       # assumes Home Directory is primary...
       [
         OodAppLink.new(
+          nick_name: "Home Directory",
           title: "Home Directory",
           description: manifest.description,
           url: OodAppkit::Urls::Files.new(base_url: url).url(path: Dir.home),
@@ -72,8 +73,9 @@ class OodApp
           new_tab: true
         )
       ].concat(
-        OodFilesApp.new.favorite_paths.map do |path|
+        OodFilesApp.new.favorite_paths.map do |path, name|
           OodAppLink.new(
+            nick_name: name,
             title: path.to_s,
             description: manifest.description,
             url: OodAppkit::Urls::Files.new(base_url: url).url(path: path),
