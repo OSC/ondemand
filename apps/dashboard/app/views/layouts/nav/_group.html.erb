@@ -14,7 +14,10 @@
                 target: link.new_tab? ? "_blank" : nil
               ) do
             %>
-              <%= icon_tag(link.icon_uri) %> <%= link.title %>
+              <%= icon_tag(link.icon_uri) %>
+              <%= link.nick_name %>
+              <br /> 
+              <small><%= link.title %></small>
             <% end %>
           </li>
         <% end %>
