@@ -38,15 +38,15 @@
       <%# time(session) %>
       <p>
         <% if session.starting? || session.running? %>
-        <% if session.info.wallclock_limit && session.info.wallclock_time %>
-        <strong><%= t('dashboard.batch_connect_sessions_stats_time_remaining') %></strong> <%= distance_of_time_in_words(session.info.wallclock_limit - session.info.wallclock_time, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours) %>
-        <% elsif session.info.wallclock_time %>
-        <strong><%= t('dashboard.batch_connect_sessions_stats_time_used') %></strong> <%= distance_of_time_in_words(session.info.wallclock_time, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours) %>
-        <% end %>
+          <% if session.info.wallclock_limit && session.info.wallclock_time %>
+            <strong><%= t('dashboard.batch_connect_sessions_stats_time_remaining') %></strong> <%= distance_of_time_in_words(session.info.wallclock_limit - session.info.wallclock_time, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours) %>
+          <% elsif session.info.wallclock_time %>
+            <strong><%= t('dashboard.batch_connect_sessions_stats_time_used') %></strong> <%= distance_of_time_in_words(session.info.wallclock_time, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours) %>
+          <% end %>
         <% else %>
-        <% if session.info.wallclock_limit %>
-        <strong><%= t('dashboard.batch_connect_sessions_stats_time_requested') %></strong> <%= distance_of_time_in_words(session.info.wallclock_limit, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours) %>
-        <% end %>
+          <% if session.info.wallclock_limit %>
+            <strong><%= t('dashboard.batch_connect_sessions_stats_time_requested') %></strong> <%= distance_of_time_in_words(session.info.wallclock_limit, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours) %>
+          <% end %>
         <% end %>
       </p>
       <%# end %>
