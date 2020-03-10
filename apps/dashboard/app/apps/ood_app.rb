@@ -73,7 +73,7 @@ class OodApp
           new_tab: true
         )
       ].concat(
-        OodFilesApp.new.favorite_paths.map do |path, name|
+        OodFilesApp.new.favorite_paths_with_name.map do |path, name|
           OodAppLink.new(
             nick_name: name,
             title: path.to_s,

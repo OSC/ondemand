@@ -9,7 +9,7 @@ class OodAppLink
   def initialize(config = {})
     config = config.to_h.compact.symbolize_keys
 
-    @title       = config.fetch(:title, "No title set").to_s
+    @title       = config.fetch(:title, "").to_s
     @nick_name   = config.fetch(:nick_name, "No name").to_s
     @description = config.fetch(:description, "").to_s
     @url         = config.fetch(:url, "").to_s

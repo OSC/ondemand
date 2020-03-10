@@ -1,18 +1,23 @@
 OodFilesApp.candidate_favorite_paths.tap do |paths|
   # add project space directories
- 
   projects = User.new.groups.map(&:name).grep(/^P./)
-  
-projects.map { |p| paths[Pathname.new("/fs/project/#{p}")] = "Project" }
-
-
-
+  paths.concat projects.map { |p| Pathname.new("/fs/project/#{p}")  }
 
   # add scratch space directories
- paths[Pathname.new("/fs/scratch/#{User.new.name}")] = "Scratch"
+  paths << Pathname.new("/fs/scratch/#{User.new.name}")
+  paths.concat projects.map { |p| Pathname.new("/fs/scratch/#{p}")  }
+end
 
- projects.map { |p| paths[Pathname.new("/fs/scratch/#{p}")] = "Scratch" }
 
+
+OodFilesApp.favorite_path_names.tap do |paths|
+    
+    projects = User.new.groups.map(&:name).grep(/^P./)
+    projects.map { |p| paths[Pathname.new("/fs/project/#{p}")] = "Project" }
+    
+    paths[Pathname.new("/fs/scratch/#{User.new.name}")] = "Scratch"
+    projects.map { |p| paths[Pathname.new("/fs/scratch/#{p}")] = "Scratch" }
+    
 end
 
 
