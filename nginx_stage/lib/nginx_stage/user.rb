@@ -31,13 +31,11 @@ module NginxStage
     attr_reader :groups
 
     # @param user [String] the user name defining this object
-    # @raise [InvalidUser] if user doesn't exist on local system
+    # @raise [ArgumentError] if user or primary group doesn't exist on local system
     def initialize(user)
       @passwd = Etc.getpwnam user.to_s
       @group = Etc.getgrgid gid
       @groups = get_groups
-    rescue ArgumentError
-      raise InvalidUser, "user doesn't exist: #{user}"
     end
 
     # User's primary group name
