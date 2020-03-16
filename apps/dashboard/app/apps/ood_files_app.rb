@@ -26,13 +26,13 @@ class OodFilesApp
 end
 
 class FavoritePath
-  attr_accessor :title
-  attr_accessor :uri
-
-  def initialize(uri, title:nil)
+  
+  def initialize(path, title:nil)
     @title = title 
-    @uri = Pathname.new(path.to_s)
+    @path = Pathname.new(path.to_s)
   end
+
+  attr_accessor :path, :title 
     
 
 end
