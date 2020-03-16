@@ -7,7 +7,10 @@
 
     <script>
       var JobStatusapp = {
-        username: "<%= OodSupport::User.new.name %>"
+        username: "<%= OodSupport::User.new.name %>",
+        delete_job_path: function(id, cluster){
+          return "<%= delete_job_path %>?cluster="  + cluster + "&pbsid=" + id
+        }
       };
     </script>
 

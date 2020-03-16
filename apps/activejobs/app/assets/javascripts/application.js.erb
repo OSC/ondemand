@@ -218,6 +218,24 @@ function create_datatable(options){
                 data:               "cluster_title",
                 className:          "small",
                 "autoWidth":        true
+            },
+            {
+                data:               null,
+                className:          "small",
+                "autoWidth":        true,
+                "render":           function(data){
+                  console.log(data)
+                  if(data.username == JobStatusapp.username){
+                    return "<div>" +
+                              "<button class='btn btn-danger action-btn' data-method='delete'" +
+                              "data-confirm='Are you sure you want to delete " + data.pbsid + "'" +
+                              "href='" + JobStatusapp.delete_job_path(data.pbsid, data.cluster) + "'" +
+                              ">D</button>" +
+                            "</div>";
+                  }else{
+                    return "";
+                  }
+                }
             }
         ]
     }).on( 'error.dt', function ( e, settings, techNote, message ) {
