@@ -228,7 +228,7 @@ function create_datatable(options){
                   if(data.username == JobStatusapp.username){
                     return "<div>" +
                               "<a class='btn btn-danger action-btn' data-method='delete'" +
-                              " data-confirm='Are you sure you want to delete " + data.pbsid + "'" +
+                              " data-confirm='Are you sure you want to delete " + data.jobname  + " - " + data.pbsid + "'" +
                               " href='" + JobStatusapp.delete_job_path(data.pbsid, data.cluster) + "'" +
                               " aria-label='delete job' >" + 
                                 "<i class='glyphicon glyphicon-trash' aria-hidden='true'></i>" +  
