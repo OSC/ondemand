@@ -29,3 +29,19 @@ tr.shown td.details-control {
 .action-btn {
   margin: 1px;
 }
+
+.action-btn .action-btn-tooltip {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: white;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+}
+
+.action-btn:hover .action-btn-tooltip {
+  visibility: visible;
+}
+

@@ -228,9 +228,13 @@ function create_datatable(options){
                   if(data.username == JobStatusapp.username){
                     return "<div>" +
                               "<a class='btn btn-danger action-btn' data-method='delete'" +
-                              "data-confirm='Are you sure you want to delete " + data.pbsid + "'" +
-                              "href='" + JobStatusapp.delete_job_path(data.pbsid, data.cluster) + "'" +
-                              ">D</a>" +
+                              " data-confirm='Are you sure you want to delete " + data.pbsid + "'" +
+                              " href='" + JobStatusapp.delete_job_path(data.pbsid, data.cluster) + "'" +
+                              " aria-label='delete job' >" + 
+                                "<i class='glyphicon glyphicon-trash' aria-hidden='true'>" +
+                                  "<span class='action-btn-tooltip'>Delete Job</span>"
+                                "</i>" +
+                              "</a>" +
                             "</div>";
                   }else{
                     return "";
