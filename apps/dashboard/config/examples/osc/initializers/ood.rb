@@ -7,14 +7,5 @@ OodFilesApp.candidate_favorite_paths.tap do |paths|
   paths << FavoritePaths.new(Pathname.new("/fs/scratch/#{User.new.name}"), "Scratch")
   paths.concat projects.map { |p| FavoritePath.new(Pathname.new("/fs/scratch/#{p}"), "Scratch")  }
 end
-
-
-
-
-
-
-
-
-
 # uncomment if you want to revert to the old menu
 # NavConfig.categories = ["Files", "Jobs", "Clusters", "Desktops", "Desktop Apps"]

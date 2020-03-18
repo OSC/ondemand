@@ -4,7 +4,7 @@ class OodAppLink
   attr_reader :url
   attr_reader :icon_uri
   attr_reader :caption
-  attr_reader :nick_name
+  attr_reader :subtitle
 
   def initialize(config = {})
     config = config.to_h.compact.symbolize_keys
