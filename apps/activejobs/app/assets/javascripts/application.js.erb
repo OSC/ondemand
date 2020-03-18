@@ -224,15 +224,13 @@ function create_datatable(options){
                 className:          "small",
                 "autoWidth":        true,
                 "render":           function(data){
-                  console.log(data)
                   if(data.username == JobStatusapp.username){
                     return "<div>" +
-                              "<a class='btn btn-danger action-btn' data-method='delete'" +
+                              "<a class='btn btn-danger btn-xs action-btn' data-method='delete'" +
                               " data-confirm='Are you sure you want to delete " + data.jobname  + " - " + data.pbsid + "'" +
                               " href='" + JobStatusapp.delete_job_path(data.pbsid, data.cluster) + "'" +
-                              " aria-label='delete job' >" + 
+                              " aria-labeledby='title' data-toggle='tooltip' title='Delete Job' >" + 
                                 "<i class='glyphicon glyphicon-trash' aria-hidden='true'></i>" +  
-                                "<span class='action-btn-tooltip'>Delete Job</span>" +
                               "</a>" +
                             "</div>";
                   }else{
