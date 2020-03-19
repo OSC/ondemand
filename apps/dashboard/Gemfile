@@ -65,5 +65,5 @@ gem 'local_time', '~> 1.0.3'
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'
 gem 'ood_appkit', '~> 1.1'
-gem 'ood_core', '~> 0.11.1'
+gem 'ood_core', '~> 0.11'
 gem 'pbs', '~> 2.2.1'
