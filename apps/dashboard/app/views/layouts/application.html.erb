@@ -62,6 +62,7 @@
 
     <%= render partial: "shared/insufficient_quota", locals: { quotas: @my_quotas } if @my_quotas && @my_quotas.any? %>
     <%= render partial: "shared/insufficient_balance", locals: { balances: @my_balances } if @my_balances && @my_balances.any? %>
+    <%= render partial: "shared/bad_cluster_config" if invalid_clusters.any? %>
 
     <script type="text/coffee-script-template" id="js-alert-danger-template">
       <div class="alert alert-danger alert-dismissible" role="alert">

@@ -15,4 +15,8 @@ module DashboardHelper
       image_tag("OpenOnDemand_stack_RGB.svg", alt: "logo", height: "85", style: "margin-bottom: 10px")
     end
   end
+
+  def invalid_clusters
+    @invalid_clusters ||= OodCore::Clusters.new(OodAppkit.clusters.select { |c| not c.valid? })
+  end
 end

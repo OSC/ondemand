@@ -1,0 +1,7 @@
+<%- invalid_clusters.each do |cluster| -%>
+   <%- cluster.errors.each do |error| -%>
+   <div class="alert alert-danger" role="alert">
+      The cluster config for <strong><%= cluster.id.to_s %></strong> has a problem: <%= error -%>
+   </div>
+  <%- end -%>
+<%- end -%>
