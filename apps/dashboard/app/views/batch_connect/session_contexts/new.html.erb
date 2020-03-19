@@ -17,7 +17,18 @@
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
-    <%= session_save_errors @session.errors %>
+
+    <% @session.errors.each do |key, error| %>
+      <% if key == :submit %>
+        <h4><%= t('dashboard.batch_connect_sessions_errors_submission') %></h4>
+        <pre><%= error %></pre>
+      <% elsif key == :stage %>
+        <h4><%= t('dashboard.batch_connect_sessions_errors_staging') %></h4>
+        <pre><%= error %></pre>
+      <% else %>
+        <h4><%= error %></h4>
+      <% end %>
+    <% end %>
 
     <p class="small">
       <%= t('dashboard.batch_connect_sessions_data_html',
