@@ -69,4 +69,24 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       assert_equal ["A", "B", "C", "D.bak"], dir.children.map(&:basename).map(&:to_s).sort
     end
   end
+
+  test "default job name uses / as delimiter" do
+    BatchConnect::Session.any_instance.stubs(:adapter).returns(OodCore::Job::Adapter.new)
+    BatchConnect::Session.any_instance.stubs(:token).returns('rstudio')
+    BatchConnect::Session.any_instance.stubs(:staged_root).returns(Pathname.new("/dev/null"))
+
+    with_modified_env(OOD_PORTAL: 'ood', RAILS_RELATIVE_URL_ROOT: '/pun/sys/dashboard') do
+      assert_equal 'ood/sys/dashboard/rstudio', BatchConnect::Session.new.script_options[:job_name]
+    end
+  end
+
+  test "job name replaces / with - when sanitizing" do
+    BatchConnect::Session.any_instance.stubs(:adapter).returns(OodCore::Job::Adapter.new)
+    BatchConnect::Session.any_instance.stubs(:token).returns('rstudio')
+    BatchConnect::Session.any_instance.stubs(:staged_root).returns(Pathname.new("/dev/null"))
+
+    with_modified_env(OOD_PORTAL: 'ood', RAILS_RELATIVE_URL_ROOT: '/pun/sys/dashboard', OOD_JOB_NAME_ILLEGAL_CHARS: '/') do
+      assert_equal 'ood-sys-dashboard-rstudio', BatchConnect::Session.new.script_options[:job_name]
+    end
+  end
 end
