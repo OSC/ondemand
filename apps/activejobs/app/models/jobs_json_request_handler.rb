@@ -87,10 +87,6 @@ class JobsJsonRequestHandler
     }
   end
 
-        # delete_job_path: function(id, cluster){
-        #   return "<%= delete_job_path %>?cluster="  + cluster + "&pbsid=" + id
-        # }
-
   # FIXME: remove when LSF and PBSPro are confirmed to handle job ids gracefuly
   def convert_info_filtered(info_all, cluster)
     if cluster.job_adapter.supports_job_arrays?
