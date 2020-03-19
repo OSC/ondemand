@@ -81,10 +81,15 @@ class JobsJsonRequestHandler
         walltime_used: j.wallclock_time,
         username: j.job_owner,
         extended_available: extended_available,
-        nodes: j.allocated_nodes.map{ |node| node.name }.reject(&:blank?)
+        nodes: j.allocated_nodes.map{ |node| node.name }.reject(&:blank?),
+        delete_path: users_job?(j.job_owner) ? UrlHelper.instance.delete_job_path(pbsid: j.id, cluster: cluster.id.to_s) : ""
       }
     }
   end
+
+        # delete_job_path: function(id, cluster){
+        #   return "<%= delete_job_path %>?cluster="  + cluster + "&pbsid=" + id
+        # }
 
   # FIXME: remove when LSF and PBSPro are confirmed to handle job ids gracefuly
   def convert_info_filtered(info_all, cluster)
@@ -95,4 +100,15 @@ class JobsJsonRequestHandler
       convert_info(info_all.reject {|job| rx.match?(job.id) }, cluster)
     end
   end
+
+  # small helper to just cache the @user
+  def users_job?(owner)
+    @user ||= ENV["USER"]
+    owner == @user
+  end
+end
+
+class UrlHelper
+  include Singleton
+  include Rails.application.routes.url_helpers
 end
