@@ -30,16 +30,25 @@
       <% end %>
     <% end %>
 
-    <p class="small">
-      <%= t('dashboard.batch_connect_sessions_data_html',
+    <ul>
+      <% if @session.errors.include?(:submit) %>
+      <li>
+        If this job failed to submit because of an invalid job name
+        please ask your administrator to configure OnDemand to set the
+        environment variable OOD_JOB_NAME_ILLEGAL_CHARS.
+      </li>
+      <% end %>
+      <li>
+        <%= t('dashboard.batch_connect_sessions_data_html',
             title: @app.title,
             data_link_tag: link_to(
               t('dashboard.batch_connect_sessions_staged_root'),
               OodAppkit.files.url(path: @session.staged_root).to_s,
               target: "_blank")
             )
-      %>
-    </p>
+            %>
+      </li>
+    </ul>
   </div>
 <%- end -%>
 

@@ -76,7 +76,7 @@ en:
     batch_connect_no_sessions: "You have no active sessions."
     batch_connect_sandbox: " [Sandbox]"
     batch_connect_sessions_data_html: |
-      * The %{title} session data for this session can be accessed
+      The %{title} session data for this session can be accessed
       under the %{data_link_tag}.
     batch_connect_sessions_delete_confirm: "Are you sure?"
     batch_connect_sessions_delete_hover: "Delete Session"
