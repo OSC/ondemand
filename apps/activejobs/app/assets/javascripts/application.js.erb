@@ -218,6 +218,25 @@ function create_datatable(options){
                 data:               "cluster_title",
                 className:          "small",
                 "autoWidth":        true
+            },
+            {
+                data:               null,
+                className:          "small",
+                "autoWidth":        true,
+                "render":           function(data){
+                  if(data.delete_path == "" || data.status == "completed"){
+                    return ""
+                  } else {
+                    return "<div>" +
+                              "<a class='btn btn-danger btn-xs action-btn' data-method='delete'" +
+                              " data-confirm='Are you sure you want to delete " + data.jobname  + " - " + data.pbsid + "'" +
+                              " href='" + data.delete_path + "'" +
+                              " aria-labeledby='title' data-toggle='tooltip' title='Delete Job' >" + 
+                                "<i class='glyphicon glyphicon-trash' aria-hidden='true'></i>" +  
+                              "</a>" +
+                            "</div>";
+                  }
+                }
             }
         ]
     }).on( 'error.dt', function ( e, settings, techNote, message ) {
