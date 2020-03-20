@@ -74,8 +74,8 @@ class OodApp
       ].concat(
         OodFilesApp.new.favorite_paths.map do |favorite_path|
           OodAppLink.new(
-            title: favorite_path.title[:title] || favorite_path.path.to_s,
-            subtitle: favorite_path.title[:title] ? favorite_path.path.to_s : nil,
+            title: favorite_path.title || favorite_path.path.to_s,
+            subtitle: favorite_path.title ? favorite_path.path.to_s : nil,
             description: manifest.description,
             url: OodAppkit::Urls::Files.new(base_url: url).url(path: path),
             icon_uri: "fas://folder",
