@@ -17,18 +17,36 @@
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
-    <%= session_save_errors @session.errors %>
 
-    <p class="small">
-      <%= t('dashboard.batch_connect_sessions_data_html',
+    <% @session.errors.each do |key, error| %>
+      <% if key == :submit %>
+        <h4><%= t('dashboard.batch_connect_sessions_errors_submission') %></h4>
+        <pre><%= error %></pre>
+      <% elsif key == :stage %>
+        <h4><%= t('dashboard.batch_connect_sessions_errors_staging') %></h4>
+        <pre><%= error %></pre>
+      <% else %>
+        <h4><%= error %></h4>
+      <% end %>
+    <% end %>
+
+    <ul>
+      <% if @session.errors.include?(:submit) %>
+      <li>
+        <%= t('dashboard.batch_connect_sessions_error_invalid_job_name_html') %>
+      </li>
+      <% end %>
+      <li>
+        <%= t('dashboard.batch_connect_sessions_data_html',
             title: @app.title,
             data_link_tag: link_to(
               t('dashboard.batch_connect_sessions_staged_root'),
               OodAppkit.files.url(path: @session.staged_root).to_s,
               target: "_blank")
             )
-      %>
-    </p>
+            %>
+      </li>
+    </ul>
   </div>
 <%- end -%>
 

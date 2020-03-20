@@ -239,7 +239,7 @@ module BatchConnect
       opts = opts.to_h.compact.deep_symbolize_keys
 
       opts = {
-        job_name: job_name,
+        job_name: adapter.sanitize_job_name(job_name),
         workdir: staged_root,
         output_path: output_file,
         shell_path: shell_path

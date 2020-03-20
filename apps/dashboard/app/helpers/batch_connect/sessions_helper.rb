@@ -166,23 +166,6 @@ module BatchConnect::SessionsHelper
     asset_path("noVNC-#{version}/vnc.html?autoconnect=true&password=#{password}&path=rnode/#{connect.host}/#{connect.websocket}/websockify&resize=#{resize}", skip_pipeline: true)
   end
 
-  def session_save_errors(errors)
-    capture do
-      errors.keys.each do |key|
-        case key
-        when :submit
-          concat content_tag(:h4, t('dashboard.batch_connect_sessions_errors_submission'))
-          concat content_tag(:pre, errors[key].first)
-        when :stage
-          concat content_tag(:h4, t('dashboard.batch_connect_sessions_errors_staging'))
-          concat content_tag(:pre, errors[key].first)
-        else
-          errors[key].each { |m| concat content_tag(:h4, m) }
-        end
-      end
-    end
-  end
-
   def connection_tabs(id, tabs)
     tabs = Array.wrap(tabs)
     if tabs.any? && tabs.size == 1
