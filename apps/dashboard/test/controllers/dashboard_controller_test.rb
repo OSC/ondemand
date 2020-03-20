@@ -45,7 +45,7 @@ class DashboardControllerTest < ActionController::TestCase
     assert dditems.any?, "dropdown list items not found"
     assert_equal [
       "Home Directory",
-      "Scratch\n/fs/scratch/efranz"], dditems
+      "Scratch\n/fs/scratch/efranz"], dditems.squeeze(" ")
   end
 
   test "should create Clusters dropdown with valid clusters that are alphabetically ordered by title" do
