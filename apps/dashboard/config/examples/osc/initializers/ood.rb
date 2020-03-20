@@ -4,7 +4,7 @@ OodFilesApp.candidate_favorite_paths.tap do |paths|
   paths.concat projects.map { |p| FavoritePath.new(Pathname.new("/fs/project/#{p}"), "Project")  }
 
   # add scratch space directories
-  paths << FavoritePaths.new(Pathname.new("/fs/scratch/#{User.new.name}"), "Scratch")
+  paths << FavoritePath.new(Pathname.new("/fs/scratch/#{User.new.name}"), "Scratch")
   paths.concat projects.map { |p| FavoritePath.new(Pathname.new("/fs/scratch/#{p}"), "Scratch")  }
 end
 # uncomment if you want to revert to the old menu

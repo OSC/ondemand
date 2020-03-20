@@ -25,7 +25,7 @@ end
 
 class FavoritePath
   
-  def initialize(path, title:nil)
+  def initialize(path, title=nil)
     @title = title 
     @path = Pathname.new(path.to_s)
   end
