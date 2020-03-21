@@ -1,12 +1,11 @@
 OodFilesApp.candidate_favorite_paths.tap do |paths|
   # add project space directories
   projects = User.new.groups.map(&:name).grep(/^P./)
-  paths.concat projects.map { |p| Pathname.new("/fs/project/#{p}")  }
+  paths.concat projects.map { |p| FavoritePath.new(Pathname.new("/fs/project/#{p}"), title: "Project")  }
 
   # add scratch space directories
-  paths << Pathname.new("/fs/scratch/#{User.new.name}")
-  paths.concat projects.map { |p| Pathname.new("/fs/scratch/#{p}")  }
+  paths << FavoritePath.new(Pathname.new("/fs/scratch/#{User.new.name}"), "Scratch")
+  paths.concat projects.map { |p| FavoritePath.new(Pathname.new("/fs/scratch/#{p}"), title: "Scratch")  }
 end
-
 # uncomment if you want to revert to the old menu
 # NavConfig.categories = ["Files", "Jobs", "Clusters", "Desktops", "Desktop Apps"]
