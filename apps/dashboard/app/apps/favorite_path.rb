@@ -7,8 +7,7 @@ class FavoritePath
   attr_accessor :path, :title
 
   def self.build(path)
-    title = path.respond_to?(:title) ? path.title : nil
-    FavoritePath.new(path.to_s, title: title)
+    FavoritePath.new(path.to_s, title: path.try(:title))
   end
 
   def to_s
