@@ -11,7 +11,7 @@ class OodFilesApp
 
   # esure that [] is returned if class variable is not set
   def candidate_favorite_paths
-    (self.class.candidate_favorite_paths || []).map { |path| FavoritePath.build(path) }
+    (self.class.candidate_favorite_paths || []).map { |path| FavoritePath.new(path) }
   end
 
   # when showing a link to the file explorer we always show
