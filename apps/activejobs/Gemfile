@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.4.1'
+gem 'rails', '5.2.4.1'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
@@ -51,3 +51,7 @@ gem 'jquery-datatables-rails', '~> 3.4'
 
 # Security patches
 gem "rack", ">= 1.6.11"
+
+# thor > 0.19.1 prints some warnings to stderr which will require changes
+# https://github.com/erikhuda/thor/issues/538
+gem 'thor', '0.19.1'

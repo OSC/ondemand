@@ -17,7 +17,7 @@ gem 'jquery-rails'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
-gem 'sdoc', '~> 0.4.0', group: :doc
+gem 'sdoc', group: :doc, require: false
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
@@ -49,7 +49,7 @@ gem 'thor', '0.19.1'
 # Extra third-party gems
 gem 'dotenv-rails', '~> 2.1'
 gem "bootstrap-sass", "~> 3.4.1"
-gem 'font-awesome-sass', '5.0.9' # later versions require sassc which fails on bundle install
+gem 'font-awesome-sass', '5.12.0'
 gem 'redcarpet', '~> 3.3'
 gem 'browser', '~> 2.2'
 gem 'addressable', '~> 2.4'
