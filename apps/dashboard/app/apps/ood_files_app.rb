@@ -11,7 +11,7 @@ class OodFilesApp
 
   # esure that [] is returned if class variable is not set
   def candidate_favorite_paths
-    (self.class.candidate_favorite_paths || []).map { |path| FavoritePath.build(path) }
+    (self.class.candidate_favorite_paths || []).map { |path| FavoritePath.new(path) }
   end
 
   # when showing a link to the file explorer we always show
@@ -22,24 +22,3 @@ class OodFilesApp
   end
 
 end
-
-class FavoritePath
-  
-  def initialize(path, title:nil)
-    @title = title 
-    @path = Pathname.new(path.to_s)
-  end
-
-  attr_accessor :path, :title 
-
-  def self.build(path)
-    title = path.respond_to?(:title) ? path.title : nil
-    FavoritePath.new(path.to_s, title: title)
-  end
-
-  def to_s
-    path.to_s
-  end
-
-end
-

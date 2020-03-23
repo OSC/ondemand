@@ -14,8 +14,10 @@
                 target: link.new_tab? ? "_blank" : nil
               ) do
             %>
-             <span style="display: block;"> <%= icon_tag(link.icon_uri) %> <%=link.title %> </span>
-              <%= content_tag(:small, link.subtitle) if link.subtitle.present? %>
+              <%= icon_tag(link.icon_uri) %> <%=link.title %>
+              <% if link.subtitle.present? %>
+                <%= content_tag(:small, link.subtitle, style: "text-indent: 20px", class: 'visible-xs-block visible-sm-inline visible-md-inline visible-lg-inline') %>
+              <% end %>
             <% end %>
           </li>
         <% end %>

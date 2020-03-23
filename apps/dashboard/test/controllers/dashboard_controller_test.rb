@@ -37,7 +37,11 @@ class DashboardControllerTest < ActionController::TestCase
   end
 
   test "should create Files dropdown" do
-    OodFilesApp.any_instance.stubs(:favorite_paths).returns([FavoritePath.new("/fs/scratch/efranz", title: "Scratch")])
+    scratch_path = "test/fixtures/dummy_fs/scratch"
+    project_path = "test/fixtures/dummy_fs/project"
+    project_path2 = Pathname.new("test/fixtures/dummy_fs/project2")
+    missing_path = "test/fixtures/dummy_fs/missing"
+    OodFilesApp.stubs(:candidate_favorite_paths).returns([FavoritePath.new(scratch_path, title: "Scratch"), project_path, project_path2, missing_path])
     
     get :index
 
@@ -45,7 +49,10 @@ class DashboardControllerTest < ActionController::TestCase
     assert dditems.any?, "dropdown list items not found"
     assert_equal [
       "Home Directory",
-      "Scratch /fs/scratch/efranz"], dditems.map { |e| e.gsub(/\s+/, ' ')  }
+      "Scratch #{scratch_path}",
+      project_path,
+      project_path2.to_s
+    ], dditems.map { |e| e.gsub(/\s+/, ' ')  }
   end
 
   test "should create Clusters dropdown with valid clusters that are alphabetically ordered by title" do
