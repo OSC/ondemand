@@ -37,3 +37,8 @@ gem 'font-awesome-sass', '~> 5.0'
 gem 'ood_appkit', '~> 1.1'
 
 # Security updates
+gem "rack", ">= 1.6.11"
+
+# thor > 0.19.1 prints some warnings to stderr which will require changes
+# https://github.com/erikhuda/thor/issues/538
+gem 'thor', '0.19.1'
