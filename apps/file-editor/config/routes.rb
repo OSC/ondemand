@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
   root "pages#index"
 
-  get "edit/*path" => "pages#index", :defaults => { :path => "/" }, format: false
-  get "edit" => "pages#index", :defaults => { :path => "/" }, format: false
+  get "edit/*path" => "pages#index", defaults: { :path => "/" , :format => 'html' }, format: false
+  get "edit" => "pages#index", :defaults => { :path => "/", :format => 'html' }, format: false
 
   get "pages/index"
   get "pages/about"

@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.11.1'
+gem 'rails', '5.0.7.2'
 
 # Use sqlite3 as the database for Active Record
 # gem 'sqlite3'
@@ -34,6 +34,6 @@ gem 'autoprefixer-rails', '~> 8.4'
 gem 'dotenv-rails', '~> 2.1', require: 'dotenv/rails-now'
 gem 'rails_12factor', group: :production
 gem 'font-awesome-sass', '~> 5.0'
-gem 'ood_appkit', '~> 1.0'
+gem 'ood_appkit', '~> 1.1'
 
 # Security updates

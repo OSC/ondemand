@@ -1,4 +1,4 @@
-require File.expand_path('../boot', __FILE__)
+require_relative 'boot'
 
 # Don't require all so we can ignore active record
 # require 'rails/all'
