@@ -7,59 +7,16 @@ include FileUtils
 # path to your application root.
 APP_ROOT = Pathname.new File.expand_path("../../",  __FILE__)
 
-# application settings
-DEFAULT_SSHHOST = ENV["DEFAULT_SSHHOST"]
-
 chdir APP_ROOT do
   # This script is a starting point to setup your application.
   # Add necessary setup steps to this file:
 
-  if File.exist?(".env")
-    value = `bash -c 'source .env && echo $DEFAULT_SSHHOST'`.strip
-    OLD_SSHHOST = value.empty? ? nil : value
-    $stderr.puts <<-EOT.gsub(/^ {6}/, "")
-      \n\e[31m[DEPRECATION] =================================================
-      The file
-
-          #{APP_ROOT.join(".env")}
-
-      is being deprecated. Please move this file to:
-
-          /etc/ood/config/apps/shell/env
-
-      and delete this '.env' file.
-      ===============================================================\e[0m
-    EOT
-  else
-    OLD_SSHHOST = nil
-    $stderr.puts <<-EOT.gsub(/^ {6}/, "") if DEFAULT_SSHHOST
-      \n\e[31m[DEPRECATION] =================================================
-      The default ssh host should not be specified by the
-      environment variable DEFAULT_SSHHOST during build time
-      anymore. Instead please specify it in:
-
-          /etc/ood/config/apps/shell/env
-
-      An example file would look like:
-
-          # /etc/ood/config/apps/shell/env
-          DEFAULT_SSHHOST="#{DEFAULT_SSHHOST}"
-
-      ===============================================================\e[0m\n
-    EOT
-  end
-
   puts "\n== Building Shell App =="
-  puts "DEFAULT_SSHHOST = #{DEFAULT_SSHHOST || OLD_SSHHOST || "localhost"}"
 
   puts "\n== Installing dependencies =="
   rm_rf "node_modules"
-  sh "npm install"
-
-  if DEFAULT_SSHHOST && DEFAULT_SSHHOST != OLD_SSHHOST
-    puts "\n== Setting default ssh host =="
-    sh "echo 'DEFAULT_SSHHOST=#{DEFAULT_SSHHOST}' > .env"
-  end
+  sh "npm install --production --prefix tmp yarn"
+  sh "tmp/node_modules/yarn/bin/yarn --production install --flat"
 
   puts "\n== Restarting application server =="
   touch "tmp/restart.txt"
