@@ -9,6 +9,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Use legal job names in job submission rake task [#341](https://github.com/OSC/ondemand/issues/341) and [#355](https://github.com/OSC/ondemand/pull/355)
 
+### Changed
+- Upgrade Rails to version 5.2 (from 4.2)
+  * Dashboard [#374](https://github.com/OSC/ondemand/pull/374)
+  * Active Jobs [#378](https://github.com/OSC/ondemand/pull/378)
+  * Job Composer [#385](https://github.com/OSC/ondemand/pull/385)
+  * File Editor [#440](https://github.com/OSC/ondemand/pull/440)
+- Upgrade noVNC to 1.1.0 (from 1.0) in [#428](https://github.com/OSC/ondemand/pull/440)
+  and [#431](https://github.com/OSC/ondemand/pull/431)
+  
+### Added
+- Title to Favorite Paths dropdown [#418](https://github.com/OSC/ondemand/pull/418) and 
+  [#432](https://github.com/OSC/ondemand/pull/432)
+- Action column with delete button in active jobs [#423](https://github.com/OSC/ondemand/pull/423)
+- Alert for invalid clusters [#427](https://github.com/OSC/ondemand/pull/427)
+- SSH Wrapper [#406](https://github.com/OSC/ondemand/pull/406)
+- Regenerate ood-portal.conf when apache starts or reloads [#371](https://github.com/OSC/ondemand/pull/371)
+
+
 ## [1.7.6] - 2019-12-20
 ### Fixed
 - Remove Async ClipboardAPI (noVNC copy/paste hack) due to noVNC freezes [#356](https://github.com/OSC/ondemand/pull/356)
