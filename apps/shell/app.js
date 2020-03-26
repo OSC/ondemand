@@ -122,8 +122,8 @@ server.on('upgrade', function upgrade(request, socket, head) {
       'HTTP/1.1 401 Unauthorized',
       'Content-Type: text/html; charset=UTF-8',
       'Content-Encoding: UTF-8',
-      'Accept-Ranges: bytes',
-      'Connection: keep-alive',
+      'Connection: close',
+      'X-OOD-Failure-Reason: bad csrf token',
     ].join('\n') + '\n\n');
 
     socket.end();
