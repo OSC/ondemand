@@ -110,7 +110,7 @@ wss.on('connection', function connection (ws, req) {
 });
 
 server.on('upgrade', function upgrade(request, socket, head) {
-  const queryParams = url.parse(request.url).searchParams;
+  var queryParams = new URLSearchParams(url.parse(request.url).search);;
   var requestToken = 'notdefined';
 
   if (queryParams) {
@@ -126,7 +126,6 @@ server.on('upgrade', function upgrade(request, socket, head) {
       'Connection: keep-alive',
     ].join('\n') + '\n\n');
 
-    socket.write('Bad CSRF Token');
     socket.end();
 
   }else{
