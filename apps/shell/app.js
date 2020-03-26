@@ -65,8 +65,9 @@ wss.on('connection', function connection (ws, req) {
 
   console.log('Connection established');
 
-  // Determine host and dir from request URL
-  if (match = req.url.match(process.env.PASSENGER_BASE_URI + '/ssh/([^\\/]+)(.+)?$')) {
+  // Determine host and dir from request URL path
+  path = url.parse(req.url).pathname;
+  if (match = path.match(process.env.PASSENGER_BASE_URI + '/ssh/([^\\/]+)(.+)?$')) {
     if (match[1] !== 'default') host = match[1];
     if (match[2]) dir = decodeURIComponent(match[2]);
   }
