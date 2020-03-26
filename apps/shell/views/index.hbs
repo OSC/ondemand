@@ -18,7 +18,7 @@
     // Global variables that define the terminal
     var oodShell,
       terminalContainer = document.getElementById('terminal'),
-      webSocketUrl      = document.URL.replace(/^http/, 'ws').replace(/#.*$/, ''),
+      webSocketUrl      = document.URL.replace(/^http/, 'ws').replace(/#.*$/, '') + "?csrf={{csrfToken}}",
       terminalPrefs     = {
         'use-default-window-copy': true,
         'ctrl-v-paste': true,

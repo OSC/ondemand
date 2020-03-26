@@ -6,6 +6,8 @@ var express   = require('express');
 var pty       = require('node-pty');
 var hbs       = require('hbs');
 var dotenv    = require('dotenv');
+var Tokens    = require('csrf');
+var url       = require('url');
 var port      = 3000;
 
 // Read in environment variables
@@ -20,14 +22,23 @@ if (fs.existsSync('.env')) {
   dotenv.config({path: '.env'});
 }
 
+const tokens = new Tokens({});
+const secret = tokens.secretSync();
+
 // Create all your routes
 var router = express.Router();
 router.get('/', function (req, res) {
   res.redirect(req.baseUrl + '/ssh');
 });
+
 router.get('/ssh*', function (req, res) {
-  res.render('index', { baseURI: req.baseUrl });
+  res.render('index', 
+    { 
+      baseURI: req.baseUrl,
+      csrfToken: tokens.create(secret),
+    });
 });
+
 router.use(express.static(path.join(__dirname, 'public')));
 
 // Setup app
@@ -42,7 +53,7 @@ app.use(process.env.PASSENGER_BASE_URI || '/', router);
 
 // Setup websocket server
 var server = new http.createServer(app);
-var wss = new WebSocket.Server({ server: server });
+var wss = new WebSocket.Server({ noServer: true });
 
 wss.on('connection', function connection (ws, req) {
   var match;
@@ -96,6 +107,33 @@ wss.on('connection', function connection (ws, req) {
     term.end();
     console.log('Closed terminal: ' + term.pid);
   });
+});
+
+server.on('upgrade', function upgrade(request, socket, head) {
+  const queryParams = url.parse(request.url).searchParams;
+  var requestToken = 'notdefined';
+
+  if (queryParams) {
+    requestToken = queryParams.get('csrf') || 'notdefined';
+  }
+
+  if (!tokens.verify(secret, requestToken)) {
+    socket.write([
+      'HTTP/1.1 401 Unauthorized',
+      'Content-Type: text/html; charset=UTF-8',
+      'Content-Encoding: UTF-8',
+      'Accept-Ranges: bytes',
+      'Connection: keep-alive',
+    ].join('\n') + '\n\n');
+
+    socket.write('Bad CSRF Token');
+    socket.end();
+
+  }else{
+    wss.handleUpgrade(request, socket, head, function done(ws) {
+      wss.emit('connection', ws, request);
+    });
+  }
 });
 
 server.listen(port, function () {
