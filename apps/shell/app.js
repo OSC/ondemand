@@ -111,7 +111,7 @@ wss.on('connection', function connection (ws, req) {
 });
 
 server.on('upgrade', function upgrade(request, socket, head) {
-  var queryParams = new URLSearchParams(url.parse(request.url).search);;
+  var queryParams = new URLSearchParams(url.parse(request.url).search);
   var requestToken = 'notdefined';
 
   if (queryParams) {
@@ -125,9 +125,9 @@ server.on('upgrade', function upgrade(request, socket, head) {
       'Content-Encoding: UTF-8',
       'Connection: close',
       'X-OOD-Failure-Reason: bad csrf token',
-    ].join('\n') + '\n\n');
+    ].join('\r\n') + '\r\n\r\n');
 
-    socket.end();
+    socket.destroy();
 
   }else{
     wss.handleUpgrade(request, socket, head, function done(ws) {
