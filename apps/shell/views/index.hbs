@@ -37,9 +37,14 @@
   };
 
   var urlWithToken = function(){
-    url = new URL(document.URL.replace(/^http/, 'ws').replace(/#.*$/, ''));
-    url.searchParams.append('csrf', '{{csrfToken}}');
-    return url;
+    var base = document.URL.replace(/^http/, 'ws').replace(/#.*$/, '');
+    var separator = '?'
+    
+    if(base.includes('?')){
+      separator = '&'
+    }
+
+    return base + separator + "csrf={{csrfToken}}";
   }
 
 </script>
