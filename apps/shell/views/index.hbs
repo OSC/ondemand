@@ -18,7 +18,7 @@
     // Global variables that define the terminal
     var oodShell,
       terminalContainer = document.getElementById('terminal'),
-      webSocketUrl      = document.URL.replace(/^http/, 'ws').replace(/#.*$/, ''),
+      webSocketUrl      = urlWithToken(),
       terminalPrefs     = {
         'use-default-window-copy': true,
         'ctrl-v-paste': true,
@@ -35,6 +35,18 @@
   window.onload = function() {
     lib.init(setupHterm);
   };
+
+  var urlWithToken = function(){
+    var base = document.URL.replace(/^http/, 'ws').replace(/#.*$/, '');
+    var separator = '?';
+    
+    if(base.includes('?')){
+      separator = '&';
+    }
+
+    return base + separator + "csrf={{csrfToken}}";
+  }
+
 </script>
 
 </html>
