@@ -32,8 +32,8 @@ router.get('/', function (req, res) {
 });
 
 router.get('/ssh*', function (req, res) {
-  res.render('index', 
-    { 
+  res.render('index',
+    {
       baseURI: req.baseUrl,
       csrfToken: tokens.create(secret),
     });
@@ -111,12 +111,7 @@ wss.on('connection', function connection (ws, req) {
 });
 
 server.on('upgrade', function upgrade(request, socket, head) {
-  var queryParams = new URLSearchParams(url.parse(request.url).search);
-  var requestToken = 'notdefined';
-
-  if (queryParams) {
-    requestToken = queryParams.get('csrf') || 'notdefined';
-  }
+  var requestToken = new URLSearchParams(url.parse(request.url).search).get('csrf');
 
   if (!tokens.verify(secret, requestToken)) {
     socket.write([

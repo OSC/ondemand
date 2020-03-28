@@ -38,10 +38,10 @@
 
   var urlWithToken = function(){
     var base = document.URL.replace(/^http/, 'ws').replace(/#.*$/, '');
-    var separator = '?'
+    var separator = '?';
     
     if(base.includes('?')){
-      separator = '&'
+      separator = '&';
     }
 
     return base + separator + "csrf={{csrfToken}}";
