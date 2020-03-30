@@ -32,7 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [#432](https://github.com/OSC/ondemand/pull/432)
 - Action column with delete button in active jobs [#423](https://github.com/OSC/ondemand/pull/423)
 - Alert for invalid clusters [#427](https://github.com/OSC/ondemand/pull/427)
-- SSH Wrapper [#406](https://github.com/OSC/ondemand/pull/406)
+- Configurable SSH Wrapper for Shell app @baverhey [#406](https://github.com/OSC/ondemand/pull/406)
 - Regenerate ood-portal.conf when apache starts or reloads [#371](https://github.com/OSC/ondemand/pull/371)
 - Maintenance Mode for OnDemand [#370](https://github.com/OSC/ondemand/pull/370)
 
