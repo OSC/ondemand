@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ## [1.5.6] - 2020-03-30
+### Fixed
 - update Shell app to [v1.5.0](https://github.com/OSC/ood-shell/compare/v1.4.8...v1.5.0) which has
   backported fix for adding CSRF protection via CSRF token and Origin checking when creating shell app
   websocket connection [#444](https://github.com/OSC/ondemand/commit/1816de76fdf8bcec21d5f9619f5a3a09ff8db01d)
