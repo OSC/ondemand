@@ -10,11 +10,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.7.7] - 2020-03-30
 ### Fixed
 - Use legal job names in job submission rake task [#341](https://github.com/OSC/ondemand/issues/341) and [#355](https://github.com/OSC/ondemand/pull/355)
+- Support sanitizing job names of batch connect apps with `OOD_JOB_NAME_ILLEGAL_CHARS` env var [#429](https://github.com/OSC/ondemand/pull/429)
 - Add CSRF protection via CSRF token and Origin checking when creating shell app
   websocket connection [#444](https://github.com/OSC/ondemand/commit/1816de76fdf8bcec21d5f9619f5a3a09ff8db01d)
   and [#452](https://github.com/OSC/ondemand/pull/452)
+- Fix JoyRide tooltip positioning for the Job Composer [#396](https://github.com/OSC/ondemand/pull/396)
 
 ### Changed
+- Regenerate `ood_portal.conf` whenever Apache is restarted [#371](https://github.com/OSC/ondemand/pull/371).
+  This means you can edit `/etc/ood/config/ood-portal.conf` and restart Apache and your change should take effect.
 - Upgrade Rails to version 5.2 (from 4.2)
   * Dashboard [#374](https://github.com/OSC/ondemand/pull/374)
   * Active Jobs [#378](https://github.com/OSC/ondemand/pull/378)
@@ -30,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Alert for invalid clusters [#427](https://github.com/OSC/ondemand/pull/427)
 - SSH Wrapper [#406](https://github.com/OSC/ondemand/pull/406)
 - Regenerate ood-portal.conf when apache starts or reloads [#371](https://github.com/OSC/ondemand/pull/371)
+- Maintenance Mode for OnDemand [#370](https://github.com/OSC/ondemand/pull/370)
 
 ## [1.7.6] - 2019-12-20
 ### Fixed
