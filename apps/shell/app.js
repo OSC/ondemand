@@ -110,10 +110,52 @@ wss.on('connection', function connection (ws, req) {
   });
 });
 
-server.on('upgrade', function upgrade(request, socket, head) {
-  var requestToken = new URLSearchParams(url.parse(request.url).search).get('csrf');
+function custom_server_origin(default_value = null){
+  var custom_origin = null;
 
-  if (!tokens.verify(secret, requestToken)) {
+  if(process.env.OOD_SHELL_ORIGIN_CHECK) {
+    // if ENV is set, do not use default!
+    if(process.env.OOD_SHELL_ORIGIN_CHECK.startsWith('http')){
+      custom_origin = process.env.OOD_SHELL_ORIGIN_CHECK;
+    }
+  }
+  else {
+    custom_origin = default_value;
+  }
+
+  return custom_origin;
+}
+
+function default_server_origin(headers){
+  var origin = null;
+
+  if (headers['x-forwarded-proto'] && headers['x-forwarded-host']){
+    origin = headers['x-forwarded-proto'] + "://" + headers['x-forwarded-host']
+  }
+
+  return origin;
+}
+
+server.on('upgrade', function upgrade(request, socket, head) {
+  var requestToken = new URLSearchParams(url.parse(request.url).search).get('csrf'),
+      client_origin = request.headers['origin'],
+      server_origin = custom_server_origin(default_server_origin(request.headers));
+
+  if (client_origin &&
+      client_origin.startsWith('http') &&
+      server_origin && client_origin !== server_origin
+  ) {
+    socket.write([
+      'HTTP/1.1 401 Unauthorized',
+      'Content-Type: text/html; charset=UTF-8',
+      'Content-Encoding: UTF-8',
+      'Connection: close',
+      'X-OOD-Failure-Reason: invalid origin',
+    ].join('\r\n') + '\r\n\r\n');
+
+    socket.destroy();
+  }
+  else if (!tokens.verify(secret, requestToken)) {
     socket.write([
       'HTTP/1.1 401 Unauthorized',
       'Content-Type: text/html; charset=UTF-8',
