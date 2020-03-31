@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.6.22] - 2020-03-30
+### Fixed
+- fix Shell app by downgrading node-pty dependency to version that is compatible with nodejs6
+
 ## [1.6.21] - 2020-03-30
 ### Fixed
 - update Shell app to [v1.5.0](https://github.com/OSC/ood-shell/compare/v1.4.8...v1.5.0) which has
@@ -263,7 +267,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.6.21...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.6.22...HEAD
+[1.6.22]: https://github.com/OSC/ondemand/compare/v1.6.21...v1.6.22
 [1.6.21]: https://github.com/OSC/ondemand/compare/v1.6.20...v1.6.21
 [1.6.20]: https://github.com/OSC/ondemand/compare/v1.6.19...v1.6.20
 [1.6.19]: https://github.com/OSC/ondemand/compare/v1.6.18...v1.6.19
