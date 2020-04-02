@@ -1,4 +1,4 @@
-class CreateOscJobJobs < ActiveRecord::Migration
+class CreateOscJobJobs < ActiveRecord::Migration[4.2]
   def change
     create_table :osc_job_jobs do |t|
       t.references :osc_job, index: true

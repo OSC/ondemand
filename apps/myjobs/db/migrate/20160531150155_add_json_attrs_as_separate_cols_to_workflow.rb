@@ -1,4 +1,4 @@
-class AddJsonAttrsAsSeparateColsToWorkflow < ActiveRecord::Migration
+class AddJsonAttrsAsSeparateColsToWorkflow < ActiveRecord::Migration[4.2]
   class Workflow < ActiveRecord::Base
     # store :job_attrs, accessors: [ :name, :batch_host, :staged_dir, :script_name ], coder: JSON
     store :job_attrs, coder: JSON
