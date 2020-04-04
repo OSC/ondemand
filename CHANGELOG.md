@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.7.9] - 2020-04-03
+### Fixed
+- remove deprecated Dashboard version string from footer
+  [#467](https://github.com/OSC/ondemand/issues/467)
+- fix hiding the joy ride script which is meant to be hidden in the DOM on the
+  bottom of the page, not visible [#466](https://github.com/OSC/ondemand/issues/466)
+
 ## [1.7.8] - 2020-04-03
 ### Fixed
 - fix use of ActiveSupport::Inflector#parameterize in Rails 5.1+ [#71](https://github.com/OSC/osc_machete_rails/pull/71) and [commit cbb8b19](https://github.com/OSC/osc_machete_rails/commit/cbb8b1949ac971b8f34877a64c3d86c9f33a5fb5)
@@ -372,7 +379,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.8...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.9...HEAD
+[1.7.9]: https://github.com/OSC/ondemand/compare/v1.7.8...v1.7.9
 [1.7.8]: https://github.com/OSC/ondemand/compare/v1.7.7...v1.7.8
 [1.7.7]: https://github.com/OSC/ondemand/compare/v1.7.6...v1.7.7
 [1.7.6]: https://github.com/OSC/ondemand/compare/v1.7.5...v1.7.6
