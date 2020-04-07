@@ -11,9 +11,15 @@ describe OodPortalGenerator::Application do
     Tempfile.new('apache')
   end
 
+  let(:dex_config) do
+    Tempfile.new('dex.yaml')
+  end
+
   before(:each) do
     stub_const('ARGV', [])
     allow(described_class).to receive(:sum_path).and_return(sum_path.path)
+    allow(described_class).to receive(:dex_config).and_return(dex_config.path)
+    allow(OodPortalGenerator).to receive(:fqdn).and_return('example.com')
   end
 
   after(:each) do
@@ -50,6 +56,114 @@ describe OodPortalGenerator::Application do
       expected_rendered = read_fixture('ood-portal.conf.maint_with_ips')
       expect(described_class.output).to receive(:write).with(expected_rendered)
       described_class.generate()
+    end
+
+    context 'dex' do
+      let(:config_dir) do
+        Dir.mktmpdir
+      end
+      before(:each) do
+        allow(OodPortalGenerator::Dex).to receive(:installed?).and_return(true)
+        allow(OodPortalGenerator::Dex).to receive(:config_dir).and_return(config_dir)
+        allow_any_instance_of(OodPortalGenerator::Dex).to receive(:enabled?).and_return(true)
+        user = Etc.getlogin
+        gid = Etc.getpwnam(user).gid
+        group = Etc.getgrgid(gid).name
+        allow(OodPortalGenerator).to receive(:dex_user).and_return(user)
+        allow(OodPortalGenerator).to receive(:dex_group).and_return(group)
+        allow(described_class).to receive(:dex_output).and_return(dex_config)
+      end
+
+      it 'generates default dex configs' do
+        expected_rendered = read_fixture('ood-portal.conf.dex')
+        expect(described_class.output).to receive(:write).with(expected_rendered)
+        expected_dex_yaml = read_fixture('dex.yaml.default').gsub('/etc/ood/dex', config_dir)
+        expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
+        described_class.generate()
+      end
+
+      it 'generates full dex configs with SSL' do
+        allow(described_class).to receive(:context).and_return({
+          servername: 'example.com',
+          port: '443',
+          ssl: [
+            'SSLCertificateFile /etc/pki/tls/certs/example.com.crt',
+            'SSLCertificateKeyFile /etc/pki/tls/private/example.com.key',
+            'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
+          ],
+        })
+        expected_rendered = read_fixture('ood-portal.conf.dex-full')
+        expect(described_class.output).to receive(:write).with(expected_rendered)
+        expected_dex_yaml = read_fixture('dex.yaml.full').gsub('/etc/ood/dex', config_dir)
+        expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
+        described_class.generate()
+      end
+
+      it 'generates copies SSL certs' do
+        certdir = Dir.mktmpdir
+        cert = File.join(certdir, 'cert')
+        File.open(cert, 'w') { |f| f.write("CERT") }
+        key = File.join(certdir, 'key')
+        File.open(key, 'w') { |f| f.write("KEY") }
+        allow(described_class).to receive(:context).and_return({
+          servername: 'example.com',
+          port: '443',
+          ssl: [
+            "SSLCertificateFile #{cert}",
+            "SSLCertificateKeyFile #{key}",
+            'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
+          ],
+        })
+        described_class.generate()
+        expect(File.exists?(File.join(config_dir, 'cert'))).to eq(true)
+        expect(File.read(File.join(config_dir, 'cert'))).to eq('CERT')
+        expect(File.exists?(File.join(config_dir, 'key'))).to eq(true)
+        expect(File.read(File.join(config_dir, 'key'))).to eq('KEY')
+      end
+
+      it 'generates LDAP dex configs with SSL' do
+        allow(described_class).to receive(:context).and_return({
+          servername: 'example.com',
+          port: '443',
+          ssl: [
+            'SSLCertificateFile /etc/pki/tls/certs/example.com.crt',
+            'SSLCertificateKeyFile /etc/pki/tls/private/example.com.key',
+            'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
+          ],
+          dex: {
+            connectors: [{
+              type: 'ldap',
+              id: 'ldap',
+              name: 'LDAP',
+              config: {
+                host: 'ldap1.example.com:636',
+                bindDN: 'cn=read,dc=example,dc=com',
+                bindPW: 'secret',
+                userSearch: {
+                  baseDN: 'ou=People,dc=example,dc=com',
+                  filter: "(objectClass=posixAccount)",
+                  username: 'uid',
+                  idAttr: 'uid',
+                  emailAttr: 'mail',
+                  nameAttr: 'gecos',
+                  preferredUsernameAttr: 'uid',
+                },
+                groupSearch: {
+                  baseDN: 'ou=Groups,dc=example,dc=com',
+                  filter: "(objectClass=posixGroup)",
+                  userMatchers: [{userAttr: 'dn', groupAttr: 'member'}],
+                  nameAttr: 'cn',
+                },
+              },
+            }]
+          }
+        })
+        expected_rendered = read_fixture('ood-portal.conf.dex-ldap')
+        expect(described_class.output).to receive(:write).with(expected_rendered)
+        expected_dex_yaml = read_fixture('dex.yaml.ldap').gsub('/etc/ood/dex', config_dir)
+        expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
+        described_class.generate()
+      end
     end
   end
 
