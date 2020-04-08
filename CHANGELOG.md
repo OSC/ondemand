@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.7.10] - 2020-04-08
+### Fixed
+- fix bug with file favorite URLs being incorrectly set in dropdown [#472](https://github.com/OSC/ondemand/pull/472)
+
 ## [1.7.9] - 2020-04-03
 ### Fixed
 - remove deprecated Dashboard version string from footer
@@ -379,7 +383,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.9...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.10...HEAD
+[1.7.9]: https://github.com/OSC/ondemand/compare/v1.7.9...v1.7.10
 [1.7.9]: https://github.com/OSC/ondemand/compare/v1.7.8...v1.7.9
 [1.7.8]: https://github.com/OSC/ondemand/compare/v1.7.7...v1.7.8
 [1.7.7]: https://github.com/OSC/ondemand/compare/v1.7.6...v1.7.7
