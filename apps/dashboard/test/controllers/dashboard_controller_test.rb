@@ -28,6 +28,14 @@ class DashboardControllerTest < ActionController::TestCase
     end
   end
 
+  # given a dropdown list, return the list items as an array of URL strings
+  def dropdown_list_items_urls(list)
+    css_select(list, "a").map do |item|
+      item.attributes['href'].try(:value) || ""
+    end
+  end
+
+
   test "should create Jobs dropdown" do
     get :index
 
@@ -37,10 +45,10 @@ class DashboardControllerTest < ActionController::TestCase
   end
 
   test "should create Files dropdown" do
-    scratch_path = "test/fixtures/dummy_fs/scratch"
-    project_path = "test/fixtures/dummy_fs/project"
-    project_path2 = Pathname.new("test/fixtures/dummy_fs/project2")
-    missing_path = "test/fixtures/dummy_fs/missing"
+    scratch_path = File.expand_path "test/fixtures/dummy_fs/scratch"
+    project_path = File.expand_path "test/fixtures/dummy_fs/project"
+    project_path2 = Pathname.new("test/fixtures/dummy_fs/project2").expand_path
+    missing_path = "/test/fixtures/dummy_fs/missing"
     OodFilesApp.stubs(:candidate_favorite_paths).returns([FavoritePath.new(scratch_path, title: "Scratch"), project_path, project_path2, missing_path])
     
     get :index
@@ -52,7 +60,15 @@ class DashboardControllerTest < ActionController::TestCase
       "Scratch #{scratch_path}",
       project_path,
       project_path2.to_s
-    ], dditems.map { |e| e.gsub(/\s+/, ' ')  }
+    ], dditems.map { |e| e.gsub(/\s+/, ' ')  }, "Files dropdown item text is incorrect"
+
+    dditemurls = dropdown_list_items_urls(dropdown_list('Files'))
+    assert_equal [
+      "/pun/sys/files/fs" + Dir.home,
+      "/pun/sys/files/fs" + scratch_path,
+      "/pun/sys/files/fs" + project_path,
+      "/pun/sys/files/fs" + project_path2.to_s
+    ], dditemurls, "Files dropdown URLs are incorrect"
   end
 
   test "should create Clusters dropdown with valid clusters that are alphabetically ordered by title" do
