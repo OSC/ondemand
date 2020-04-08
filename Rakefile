@@ -183,7 +183,7 @@ namespace :docker do
 
   desc "Run Docker container"
   task :run do
-    sh "docker run -p #{DOCKER_PORT}:80 -v '#{PROJ_DIR}:/ondemand' --name #{DOCKER_NAME} --rm --detach #{DOCKER_NAME}"
+    sh "docker run -p #{DOCKER_PORT}:80 -p 5556:5556 -v '#{PROJ_DIR}:/ondemand' --name #{DOCKER_NAME} --rm --detach #{DOCKER_NAME}"
   end
 
   desc "Kill Docker container"
