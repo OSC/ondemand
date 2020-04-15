@@ -19,7 +19,7 @@
 # To learn more, please read the Rails Internationalization guide
 # available at http://guides.rubyonrails.org/i18n.html.
 
-en:
+zh-CN:
   dashboard:
     # Site specific translations
     batch_connect_sessions_status_bad: "您的会话已进入不良状态。 请随时与支持人员联系以获取更多信息。"
