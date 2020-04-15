@@ -1,0 +1,38 @@
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. If you want to use locales other
+# than English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t 'hello'
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t('hello') %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# To learn more, please read the Rails Internationalization guide
+# available at http://guides.rubyonrails.org/i18n.html.
+
+zh-CN:
+  jobcomposer:
+    # Site specific translations
+    options_account_help:  "帐户是一个可选字段。 如果未设置，则可以通过提交过滤器自动设置帐户。"
+
+    # General translations
+    options_account_title: "账户"
+    options_array_help: "作业数组是可选的。例如：1-10"
+    options_array_help_with_clusters: |
+      作业数组是可选的。 OnDemand当前不支持集群的作业阵列： %{cluster_list}.
+    options_array_title: "作业阵列规格"
+    options_cluster_title: "集群"
+    options_errors: "请修复一下错误："
+    options_name_title: "名称"
+    options_script_title: "指定作业脚本"
+    options_script_help: "作业脚本字段将忽略大于65KB的文件"
+    options_title: "作业选项"
