@@ -22,7 +22,7 @@
 zh-CN:
   dashboard:
     # Site specific translations
-    batch_connect_sessions_status_bad: "您的会话已进入不良状态。 请随时与支持人员联系以获取更多信息。"
+    batch_connect_sessions_status_bad: "你的会话出现问题。请与支持人员联系以获取更多信息。"
     batch_connect_sessions_status_missing_connection: |
       此应用缺少建立连接所需的信息。 如果看到此消息，请联系支持。
     batch_connect_sessions_status_queued: |
