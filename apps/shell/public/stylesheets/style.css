@@ -23,3 +23,21 @@ html, body {
   border: 1px solid;
   border-radius: 4px;
 }
+/* For Launch page*/
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+th {
+  background-color: #FF0000;
+  color: white;
+}
