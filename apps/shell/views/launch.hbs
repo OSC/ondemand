@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Shell Sessions</title>
+	<link rel="stylesheet" href="{{baseURI}}/stylesheets/style.css">
+
+</head>
+<body>
+<h1>Terminal Sessions:</h1>
+<table>
+  <tr>
+    <th>UUID</th>
+    <th>HOST</th>
+  </tr>
+  {{#each sessions}}
+  <tr>
+    <td>{{id}}</td>
+    <td>{{host}}</td>
+  </tr>
+  {{/each}}
+</table></body>
+</html>
