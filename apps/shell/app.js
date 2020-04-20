@@ -8,6 +8,7 @@ var hbs       = require('hbs');
 var dotenv    = require('dotenv');
 var Tokens    = require('csrf');
 var url       = require('url');
+var uuidv4    = require('uuid/v4');
 var port      = 3000;
 
 // Read in environment variables
@@ -31,13 +32,29 @@ router.get('/', function (req, res) {
   res.redirect(req.baseUrl + '/ssh');
 });
 
-router.get('/ssh*', function (req, res) {
+router.get('/ssh/*', function (req, res) {
+
+  var id = uuidv4();
+
+  res.redirect(req.baseUrl + `/session/${id}/${req.params[0]}`);
+
+});
+
+router.get('/session/:id/*', function (req, res) {
+
   res.render('index',
     {
       baseURI: req.baseUrl,
       csrfToken: tokens.create(secret),
     });
+
 });
+
+router.get('/launch', function (req, res) {
+
+  res.render('launch', {baseURI: req.baseUrl, sessions: terminal.sessionsInfo()});
+
+})
 
 router.use(express.static(path.join(__dirname, 'public')));
 
@@ -51,6 +68,76 @@ app.set('views', path.join(__dirname, 'views'));
 // Mount the routes at the base URI
 app.use(process.env.PASSENGER_BASE_URI || '/', router);
 
+var terminals = {
+
+  instances: {
+
+  },
+
+  sessionsInfo: function () {
+
+    return Object.entries(this.instances)
+          .sort()
+          .map(function(array){ return {id: array[0], host: array[1].host }; });
+  },
+
+  create: function (host, dir, uuid) {
+    var cmd = 'ssh';
+    var args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
+
+    this.instances[uuid] = {term: pty.spawn(cmd, args, {
+      name: 'xterm-256color',
+      cols: 80,
+      rows: 30
+    }), host: host}
+
+    return uuid;
+  },
+
+  exists: function (uuid) {
+    if (uuid in this.instances) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  get: function (uuid) {
+    return this.instances[uuid].term;
+  },
+
+  attach: function (uuid, ws) {
+    var term = this.get(uuid);
+    term.resume();
+
+    term.on('data', function (data) {
+      ws.send(data, function (error) {
+        if (error) console.log('Send error: ' + error.message);
+      });
+    });
+
+    term.on('error', function (error) {
+      ws.close();
+    });
+
+    term.on('close', function () {
+      ws.close();
+    });
+
+    ws.on('message', function (msg) {
+      msg = JSON.parse(msg);
+      if (msg.input)  term.write(msg.input);
+      if (msg.resize) term.resize(parseInt(msg.resize.cols), parseInt(msg.resize.rows));
+    });
+
+    ws.on('close', function () {
+      term.end();
+      console.log('Closed terminal: ' + term.pid);
+    });
+
+  }
+}
+
 // Setup websocket server
 var server = new http.createServer(app);
 var wss = new WebSocket.Server({ noServer: true });
@@ -60,54 +147,26 @@ wss.on('connection', function connection (ws, req) {
   var host = process.env.DEFAULT_SSHHOST || 'localhost';
   var cmd = process.env.OOD_SSH_WRAPPER || 'ssh';
   var dir;
-  var term;
-  var args;
-  var host_path_rx = '/ssh/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$';
+  var uuid;
+  var host_path_rx = `/session/([a-f0-9\-]+)/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$`;
 
   console.log('Connection established');
 
   // Determine host and dir from request URL
   if (match = req.url.match(process.env.PASSENGER_BASE_URI + host_path_rx)) {
-    if (match[1] !== 'default') host = match[1];
-    if (match[2]) dir = decodeURIComponent(match[2]);
+    uuid = match[1];
+    if (match[2] !== 'default') host = match[2];
+    if (match[3]) dir = decodeURIComponent(match[3]);
   }
 
-  args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
+  if (terminals.exists(uuid) === false) {
+    terminals.create(host, dir, uuid);
+  }
+
+  terminals.attach(uuid, ws);
 
   process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
 
-  term = pty.spawn(cmd, args, {
-    name: 'xterm-256color',
-    cols: 80,
-    rows: 30
-  });
-
-  console.log('Opened terminal: ' + term.pid);
-
-  term.on('data', function (data) {
-    ws.send(data, function (error) {
-      if (error) console.log('Send error: ' + error.message);
-    });
-  });
-
-  term.on('error', function (error) {
-    ws.close();
-  });
-
-  term.on('close', function () {
-    ws.close();
-  });
-
-  ws.on('message', function (msg) {
-    msg = JSON.parse(msg);
-    if (msg.input)  term.write(msg.input);
-    if (msg.resize) term.resize(parseInt(msg.resize.cols), parseInt(msg.resize.rows));
-  });
-
-  ws.on('close', function () {
-    term.end();
-    console.log('Closed terminal: ' + term.pid);
-  });
 });
 
 function custom_server_origin(default_value = null){
