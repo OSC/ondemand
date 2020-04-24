@@ -388,7 +388,7 @@ module BatchConnect
     # @return [Boolean] whether starting
     def starting?
       if native_host?
-        !status.running?
+        status.queued?
       else
         status.running? && !connect_file.file?
       end
