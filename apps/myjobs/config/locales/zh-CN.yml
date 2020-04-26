@@ -31,7 +31,7 @@ zh-CN:
       作业数组是可选的。 OnDemand当前不支持集群的作业阵列： %{cluster_list}.
     options_array_title: "作业阵列规格"
     options_cluster_title: "集群"
-    options_errors: "请修复一下错误："
+    options_errors: "请修复以下错误："
     options_name_title: "名称"
     options_script_title: "指定作业脚本"
     options_script_help: "作业脚本字段将忽略大于65KB的文件"
