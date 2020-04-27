@@ -112,8 +112,8 @@ zh-CN:
 
     quota_block: "配额%{used} of quota %{available}"
     quota_block_shared: "(您的%{used_exclusive} )"
-    quota_file: "配额%{used} of quota %{available}"
-    quota_file_shared: "(您的%{used_exclusive})"
+    quota_file: "文件配额%{used} of quota %{available}"
+    quota_file_shared: "(您的文件%{used_exclusive})"
 
     restart_msg_html: |
       您的小组成员资格已更改，这会影响您对应用程序的访问。 您的dashboard将自动重启。
