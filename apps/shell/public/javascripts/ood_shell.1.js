@@ -1,3 +1,46 @@
+ function getCookie(uuid) {
+
+   var cookie = document.cookie.match('(^|[^;]+)\\s*' + uuid + '\\s*=\\s*([^;]+)')
+
+   return cookie ? cookie.pop() : '';
+
+ }
+
+ function CustomTerm(uuid) {
+  this.uuid = uuid;
+}
+
+CustomTerm.prototype.getTermPrefs = function () {
+
+  var defaultPref = {
+        'use-default-window-copy': true,
+        'ctrl-v-paste': true,
+        'ctrl-c-copy': true,
+        'cursor-blink': true,
+    };
+
+  if (getCookie(this.uuid)) {
+    var decodedTheme = decodeURIComponent(getCookie(this.uuid));
+    var jsonTheme = JSON.parse(decodedTheme);
+
+    pref = {
+        'use-default-window-copy': true,
+        'ctrl-v-paste': true,
+        'ctrl-c-copy': true,
+        'cursor-blink': true,
+        'background-color': jsonTheme['background'],
+        'foreground-color': jsonTheme['text'],
+        'color-palette-overrides': jsonTheme['colorPaletteOverrides'],
+        'cursor-color': jsonTheme['cursor'] + '50',
+    };
+
+    return pref;
+  }
+
+  return defaultPref;
+}
+
+
 
 // Object that defines a terminal element
 function OodShell(element, socket, prefs) {

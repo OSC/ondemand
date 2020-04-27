@@ -31,7 +31,11 @@
     // hterm default preferences are defined here. Switch to the tag that we're using.
     // https://chromium.googlesource.com/apps/libapps/+/master/hterm/js/hterm_preference_manager.js
 
-    oodShell = new OodShell(terminalContainer, socket, terminalPrefs);
+    var uuid = "{{session}}";
+    console.log(uuid);
+    var customTerm = new CustomTerm(uuid);
+
+    oodShell = new OodShell(terminalContainer, socket, customTerm.getTermPrefs());
     oodShell.createTerminal();
 
     setInterval(check, 5000);

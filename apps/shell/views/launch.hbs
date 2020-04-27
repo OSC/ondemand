@@ -6,17 +6,77 @@
 
 </head>
 <body>
-<h1>Terminal Sessions:</h1>
-<table>
-  <tr>
-    <th>UUID</th>
-    <th>HOST</th>
-  </tr>
-  {{#each sessions}}
-  <tr>
-    <td>{{id}}</td>
-    <td>{{host}}</td>
-  </tr>
-  {{/each}}
-</table></body>
+<div class="split left">
+    <div class="centered">
+      <div class="bubble">
+        <div style="height: 20px;"></div>
+        <h2>New Session</h2>
+                  <div style="height: 30px;"></div>
+        <form method="get" action="{{baseURI}}/new-session">
+          <div class="group">
+            <label class="custom-label">Host</br></label>
+            <select class="drop" name="host">
+              <option value="owens">Owens</option>
+              <option value="pitzer">Pitzer</option>
+              <option value="ruby">Ruby</option>
+            </select>
+          </div>
+          <div style="height: 50px;"></div>
+          <div class="group">
+            <label class="custom-label">Color Scheme</br></label>
+            <select class="drop" name="scheme">
+              <option>default</option>
+              {{#each fileOptions}}
+              <option>{{name}}</option>
+              {{/each}}
+            </select>
+             <div style="height: 50px;"></div>
+            <div class="group">
+              <button class="button" type="submit">Start Session</button>
+
+            </div>
+          </div>
+          
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="split right">
+    <div class="centered">
+      <div class="bubble">
+         <div style="height: 20px;"></div>
+        <h2>Existing Session</h2>
+                  <div style="height: 30px;"></div>
+        <form method="get" action="{{baseURI}}/custom-term">
+          <div class="group">
+            <label class="custom-label">Session</br></label>
+            <select class="drop" name="session">
+              {{#each sessions}}
+              <option>{{id}}</option>
+              {{/each}}
+
+            </select>
+          </div>
+          <div style="height: 50px;"></div>
+          <div class="group">
+            <label class="custom-label">Color Scheme</br></label>
+            <select class="drop" name="scheme">
+              <option>default</option>
+              {{#each fileOptions}}
+              <option>{{name}}</option>
+              {{/each}}
+            </select>
+             <div style="height: 50px;"></div>
+            <div class="group">
+              <button class="button" type="submit">Open Session</button>
+
+            </div>
+          </div>
+          
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
 </html>
