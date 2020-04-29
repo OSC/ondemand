@@ -44,7 +44,7 @@ module NginxStage
 
     add_option :user do
       {
-        opt_args: ["-u", "--user", "# Operate on specific user", "# Default: nil (all users)"],
+        opt_args: ["-u", "--user=USER", "# Operate on specific user", "# Default: nil (all users)"],
         default: nil,
       }
     end
@@ -56,7 +56,7 @@ module NginxStage
     add_hook :delete_puns_of_users_with_no_sessions do
       NginxStage.active_users.each do |u|
         begin
-          next if (user && user != u)
+          next if (user && user != u.to_s)
           pid_path = PidFile.new NginxStage.pun_pid_path(user: u)
           socket = SocketFile.new NginxStage.pun_socket_path(user: u)
           cleanup_stale_files(pid_path, socket) unless pid_path.running_process? 
