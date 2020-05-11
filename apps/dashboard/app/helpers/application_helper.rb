@@ -19,7 +19,7 @@ module ApplicationHelper
   # @param url [#to_s, nil] url to access
   # @param role [String] app role i.e. "vdi", "shell", etc.
   # @return nil if url not set or the HTML string for the bootstrap nav link
-  def nav_link(title, icon, url, target: "_self", role: nil)
+  def nav_link(title, icon, url, target: "", role: nil)
     render partial: "layouts/nav/link", locals: { title: title, faicon: icon, url: url.to_s, target: target, role: role  } if url
   end
 
