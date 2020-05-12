@@ -21,6 +21,10 @@ def apps
   Dir["#{APPS_DIR}/*"].map { |d| Component.new(d) }
 end
 
+def ruby_apps
+  apps.select(&:ruby_app?)
+end
+
 class Component
   attr_reader :name
   attr_reader :path
@@ -170,5 +174,14 @@ namespace :test do
 
   task :all => [:unit, :shellcheck]
 end
+
+desc "Update Ondemand"
+task :update do
+  ruby_apps.each do |app|
+    chdir app.path
+    sh "bin/bundle update"
+  end
+end
+
 
 task default: %w[test]
