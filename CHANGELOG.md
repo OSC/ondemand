@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.7.12] - 2020-05-12
+### Fixed
+- Fix nginx_clean --user --force to properly force kill PUN [#485](https://github.com/OSC/ondemand/issues/485)
+- Linux Host Adapter: fix to work when a user's default shell is not bash [#187](https://github.com/OSC/ood_core/issues/187)
+- Linux Host Adapter: fix issue with wrong arguments passed to pstree [#188](https://github.com/OSC/ood_core/pull/188)
+
 ## [1.7.11] - 2020-04-23
 ### Fixed
 - update to latest `ood_core` patch version to fix calls to
@@ -388,7 +394,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.11...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.12...HEAD
+[1.7.12]: https://github.com/OSC/ondemand/compare/v1.7.11...v1.7.12
 [1.7.11]: https://github.com/OSC/ondemand/compare/v1.7.10...v1.7.11
 [1.7.10]: https://github.com/OSC/ondemand/compare/v1.7.9...v1.7.10
 [1.7.9]: https://github.com/OSC/ondemand/compare/v1.7.8...v1.7.9
