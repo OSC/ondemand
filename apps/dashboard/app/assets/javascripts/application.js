@@ -19,7 +19,6 @@
 //= require data-confirm-modal
 //= require handlebars.js/4.4.2/handlebars.min
 //= require_tree .
-//= require turbolinks
 
 //FIXME: move to coffescript
 $(function(){

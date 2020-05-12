@@ -5,6 +5,7 @@
   <%= favicon_link_tag 'favicon.ico', href: OodAppkit.public.url.join('favicon.ico'), skip_pipeline: true %>
   <%= stylesheet_link_tag    'application', media: 'all' %>
   <%= javascript_include_tag 'application' %>
+  <%= javascript_include_tag 'turbolinks', 'data-turbolinks-track' => 'reload' if Configuration.turbolinks %>
   <%= csrf_meta_tags %>
 
   <%= yield :head %>
@@ -14,7 +15,7 @@
 <%= render partial: '/layouts/nav/styles', locals: { bg_color: Configuration.brand_bg_color, link_active_color: Configuration.brand_link_active_bg_color } %>
 </head>
 <body>
-  <header data-turbolinks-permanent>
+  <header <%= 'data-turbolinks-permanent' if Configuration.turbolinks %>>
     <nav class="navbar navbar-<%= ENV['OOD_NAVBAR_TYPE'].present? ? ENV['OOD_NAVBAR_TYPE'] : 'inverse' %> navbar-static-top">
     <div class="container-fluid">
       <div class="navbar-header">

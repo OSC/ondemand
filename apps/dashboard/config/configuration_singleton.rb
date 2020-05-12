@@ -203,6 +203,11 @@ end
     ENV['OOD_DASHBOARD_DEV_DOCS_URL'] || "https://go.osu.edu/ood-app-dev"
   end
 
+  # Turbolinks feature flag
+  def turbolinks
+    to_bool(ENV['OOD_TURBOLINKS'] || false)
+  end
+
   def dataroot
     # copied from OodAppkit::AppConfig#set_default_configuration
     # then modified to ensure dataroot is never nil
