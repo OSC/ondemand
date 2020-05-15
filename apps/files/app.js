@@ -313,7 +313,7 @@ app.use(cloudcmd({
         // treeroottitle: "Project Space"
         treeroot:               HOME,
         treeroottitle:          "Home Directory",
-        upload_max:             process.env.FILE_UPLOAD_MAX || 10485760000,
+        upload_max:             parseInt(process.env.FILE_UPLOAD_MAX) <= parseInt(process.env.NGINX_FILE_UPLOAD_MAX) ? parseInt(process.env.FILE_UPLOAD_MAX) : parseInt(process.env.NGINX_FILE_UPLOAD_MAX) || 10737420000,
         file_editor:            process.env.OOD_FILE_EDITOR || '/pun/sys/file-editor/edit',
         shell:                  (process.env.OOD_SHELL || process.env.OOD_SHELL === "") ? process.env.OOD_SHELL : '/pun/sys/shell/ssh/default',
         ssh_hosts:              sshAppUrls(sshHosts(process.env.OOD_SSH_HOSTS), oodShellUrl()),
