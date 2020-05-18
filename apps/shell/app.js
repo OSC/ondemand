@@ -29,7 +29,7 @@ const secret = tokens.secretSync();
 // Create all your routes
 var router = express.Router();
 router.get('/', function (req, res) {
-  res.redirect(req.baseUrl + '/ssh');
+  res.redirect(req.baseUrl + '/ssh/');
 });
 
 router.get('/ssh/*', function (req, res) {
