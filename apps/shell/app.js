@@ -52,7 +52,7 @@ router.get('/session/:id/*', function (req, res) {
 
 router.get('/launch', function (req, res) {
 
-  res.render('launch', {baseURI: req.baseUrl, sessions: terminal.sessionsInfo()});
+  res.render('launch', {baseURI: req.baseUrl, sessions: terminals.sessionsInfo()});
 
 })
 
