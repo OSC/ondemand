@@ -166,7 +166,7 @@ module BatchConnect::SessionsHelper
     asset_path("noVNC-#{version}/vnc.html?autoconnect=true&password=#{password}&path=rnode/#{connect.host}/#{connect.websocket}/websockify&resize=#{resize}", skip_pipeline: true)
   end
 
-  def connection_tabs(id, tabs)
+  def connection_tabs(id, tabs, is_vnc_session = false, vnc_custom_view = {})
     tabs = Array.wrap(tabs)
     if tabs.any? && tabs.size == 1
       # hr + content
@@ -182,6 +182,16 @@ module BatchConnect::SessionsHelper
     else
       # tabs
       content_tag(:div) do
+        # render custom html if vnc apps have view.html.erb
+        if is_vnc_session && [:connect, :view ].all? { |k| vnc_custom_view.key? k }
+          concat content_tag(:hr)
+          concat(
+            content_tag(:div) do
+              render partial: "batch_connect/sessions/connections/custom", locals: { connect: vnc_custom_view[:connect], view: vnc_custom_view[:view].to_s }
+            end
+          )
+          concat content_tag(:hr)
+        end
         # menu
         concat(
           content_tag(:ul, class: "nav nav-tabs") do

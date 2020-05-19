@@ -2,17 +2,10 @@
   <%= session_view session do %>
     <%
       if session.running?
-        if session.view && session.script_type != "vnc"
-          views = { partial: "custom", locals: { view: session.view, connect: session.connect } }
+        if session.view && ! session.script_type["vnc"]
+          views = { partial: "custom", locals: { connect: session.connect, view: session.view } }
         else
-          if session.script_type == "vnc"
-            if session.view
-            %>
-              <hr/>
-              <%= OodAppkit.markdown.render(ERB.new(session.view, nil, "-").result(session.connect.instance_eval { binding })).html_safe %>
-              <hr/>
-            <%
-            end
+          if session.script_type["vnc"]
             views = []
             views << { title: "noVNC Connection",    partial: "novnc",      locals: { connect: session.connect, app_title: session.title } }
             views << { title: "Native Instructions", partial: "native_vnc", locals: { connect: session.connect } } if ENV["ENABLE_NATIVE_VNC"]
@@ -28,6 +21,13 @@
         views = { partial: "bad" }
       end
     %>
-    <%= connection_tabs(session.id, views) %>
+    <%=
+      connection_tabs(
+        session.id,
+        views,
+        session.script_type["vnc"] ? true : false,
+        session.running? && session.script_type["vnc"] ? { connect: session.connect, view: session.view } : nil,
+      )
+    %>
   <% end %>
 <% end %>
