@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.7.14] - 2020-05-27
+### Fixed
+- Safari bug that broke noVNC [#516](https://github.com/OSC/ondemand/pull/516).
+
 ## [1.7.13] - 2020-05-27
 ### Fixed
 - update to latest ood_core, 0.11.4 (up from 0.11.3) for SLURM bug fixes in [#193](https://github.com/OSC/ood_core/pull/193).
@@ -402,7 +406,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.12...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.14...HEAD
+[1.7.14]: https://github.com/OSC/ondemand/compare/v1.7.13...v1.7.14
+[1.7.13]: https://github.com/OSC/ondemand/compare/v1.7.12...v1.7.13
 [1.7.12]: https://github.com/OSC/ondemand/compare/v1.7.11...v1.7.12
 [1.7.11]: https://github.com/OSC/ondemand/compare/v1.7.10...v1.7.11
 [1.7.10]: https://github.com/OSC/ondemand/compare/v1.7.9...v1.7.10
