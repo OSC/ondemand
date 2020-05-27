@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.7.13] - 2020-05-27
+### Fixed
+- update to latest ood_core, 0.11.4 (up from 0.11.3) for SLURM bug fixes in [#193](https://github.com/OSC/ood_core/pull/193).
+- updated rails to 5.2.4.3 (up from 5.2.4.2) for security vulnerabilites in several rails libraries.
+
+### Added
+- KDE bc_desktop in [#482](https://github.com/OSC/ondemand/pull/482)
+
 ## [1.7.12] - 2020-05-12
 ### Fixed
 - Fix nginx_clean --user --force to properly force kill PUN [#485](https://github.com/OSC/ondemand/issues/485)
