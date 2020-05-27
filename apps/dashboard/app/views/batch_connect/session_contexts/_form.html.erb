@@ -6,6 +6,58 @@
   <%= f.submit t('dashboard.batch_connect_form_launch'), class: "btn btn-primary btn-block" %>
 <% end %>
 
+<%= javascript_tag do %>
+	'use strict'
+
+	/**
+	 * Toggle the visibilty of a certain field based on data
+	 * attributes
+	 *
+	 * Academic: hidden
+	 * Commercial: visible
+	 */
+	function toggle_field_visibility() {
+	  let data_visibility_scope_show = $('select:has(option[data-visibility-scope-show]) option:selected').data('visibility-scope-show');
+
+	  toggle_visibilty_of_form_group('[data-visibility-scope]', data_visibility_scope_show === $('[data-visibility-scope]').data('visibility-scope'));
+	}
+
+	/**
+	 * Toggle the visibilty of a form group
+	 *
+	 * @param      {string}    form_id  The form identifier
+	 * @param      {boolean}   show     Whether to show or hide
+	 */
+	function toggle_visibilty_of_form_group(form_id, show) {
+	  let form_element = $(form_id);
+	  let parent = form_element.parent();
+
+	  if(show) {
+	    parent.show();
+	  } else {
+	    // hide help block for the element if it exists
+	    parent.parent().next().hasClass('help-block') ? parent.parent().next().hide() : null;
+	    // if element to hide is div.checkbox
+	    if (parent.hasClass('checkbox')) {
+	      // make sure element is unchecked
+	      form_element.prop('checked', false);
+	    } else { // otherwise
+	      form_element.val('');
+	    }
+	    parent.hide();
+	  }
+	}
+
+	/**
+	 * Install event handlers
+	 */
+	$(document).ready(function() {
+	  // Ensure that fields are shown or hidden based on what was set in the last session
+	  toggle_license_field_visibility();
+	});
+<% end %>
+
+
 <% @app.custom_javascript_files.each do |jsfile| %>
   <%= javascript_tag "(function(){\n" + jsfile.read + "\n}());" %>
 <% end %>
