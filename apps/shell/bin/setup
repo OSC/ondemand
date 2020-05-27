@@ -1,14 +1,48 @@
 #!/usr/bin/env ruby
 require "pathname"
 require "rake"
+require "yaml"
 
 include FileUtils
 
 # path to your application root.
 APP_ROOT = Pathname.new File.expand_path("../../",  __FILE__)
 
-# application settings
-DEFAULT_SSHHOST = ENV["DEFAULT_SSHHOST"]
+# Create whitelist of sshhosts
+sshhost = []
+Dir.glob('/etc/ood/config/clusters.d/*.y*ml') do |config_file|
+  file = YAML.load_file(config_file)
+  if file.has_key?('v2')
+    v2 = file['v2']
+    if (v2.has_key?('metadata')) #check for hidden attribute in metadata
+      metadata = v2['metadata']
+      if metadata['hidden']
+        next
+      end
+    end
+
+    if (v2.has_key?('login')) #Skip over file if no login info
+      login = v2['login']
+      host = login['host']
+      default = login['default']
+      if default
+        sshhost.unshift(host)
+      else
+        sshhost << host
+      end
+    end
+  else
+    puts "#{config_file} does not follow config schema v2. See osc.github.io/ood-documentation for more details"
+  end
+end
+
+# Determine default sshhost
+if ENV["DEFAULT_SSHHOST"]
+  DEFAULT_SSHHOST = ENV["DEFAULT_SSHHOST"]
+else
+  DEFAULT_SSHHOST = sshhost[0] #default sshhost at the beginning of array
+end
+
 
 chdir APP_ROOT do
   # This script is a starting point to setup your application.
@@ -50,13 +84,13 @@ chdir APP_ROOT do
   end
 
   puts "\n== Building Shell App =="
-  puts "DEFAULT_SSHHOST = #{DEFAULT_SSHHOST || OLD_SSHHOST || "localhost"}"
+  puts "DEFAULT_SSHHOST = #{DEFAULT_SSHHOST || OLD_SSHHOST}"
 
   puts "\n== Installing dependencies =="
   rm_rf "node_modules"
   sh "npm install"
 
-  if DEFAULT_SSHHOST && DEFAULT_SSHHOST != OLD_SSHHOST
+  if DEFAULT_SSHHOST != OLD_SSHHOST
     puts "\n== Setting default ssh host =="
     sh "echo 'DEFAULT_SSHHOST=#{DEFAULT_SSHHOST}' > .env"
   end
