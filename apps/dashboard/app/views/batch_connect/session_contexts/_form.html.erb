@@ -7,6 +7,7 @@
 <% end %>
 
 <%= javascript_tag do %>
+(function(){
 	'use strict'
 
 	/**
@@ -49,12 +50,22 @@
 	}
 
 	/**
+	 * Sets the change handler for the user_is_commercial_user select.
+	 */
+	function set_field_change_handler() {
+	  let data_visibility_scope_show = $('select:has(option[data-visibility-scope-show])');
+	  data_visibility_scope_show.change(toggle_field_visibility);
+	}
+
+	/**
 	 * Install event handlers
 	 */
 	$(document).ready(function() {
 	  // Ensure that fields are shown or hidden based on what was set in the last session
-	  toggle_license_field_visibility();
+	  toggle_field_visibility();
+	  set_field_change_handler();
 	});
+}());
 <% end %>
 
 
