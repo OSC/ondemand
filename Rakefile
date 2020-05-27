@@ -25,9 +25,15 @@ def ruby_apps
   apps.select(&:ruby_app?)
 end
 
+def node_apps
+  apps.select(&:node_app?)
+end
+
 class Component
   attr_reader :name
   attr_reader :path
+  attr_reader :ruby_app
+  attr_reader :node_app
 
   def initialize(app)
     @name = File.basename(app)
@@ -183,5 +189,50 @@ task :update do
   end
 end
 
+namespace :audit do
+  desc "Audit app dependencies for vulnerabilities"
+  task :dependencies do
+    branches = ["release_1.8"]
+
+    branches.each do |branch|
+      vulnerable_apps = []
+      # Audit Ruby apps
+      ruby_apps.each do |app|
+        begin
+          chdir app.path do
+            sh "git checkout #{branch}"
+            # Get last line from bundle-audit output
+            bundle_audit = %x[ bundle-audit | tail -n 1 ]
+            if bundle_audit["Vulnerabilities found!"]
+              vulnerable_apps << app.name
+            end
+            sh "git checkout -"
+          end
+        end
+      end
+
+      # Audit node.js apps
+      node_apps.each do |app|
+        begin
+          chdir app.path do
+            sh "git checkout #{branch}"
+            # Get last 3 lines from yarn audit output
+            yarn_audit = %x[yarn audit --level moderate | tail -n 3]
+            if yarn_audit["vulnerabilities"]
+              vulnerable_apps << app.name
+            end
+            sh "git checkout -"
+          end
+        end
+      end
+
+      puts ""
+      puts "Vulnerable apps in branch #{branch}: #{ vulnerable_apps.size }"
+      vulnerable_apps.each { |app|
+        puts app
+      }
+    end
+  end
+end
 
 task default: %w[test]
