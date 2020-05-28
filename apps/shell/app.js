@@ -46,16 +46,17 @@ var wss = new WebSocket.Server({ server: server });
 
 wss.on('connection', function connection (ws, req) {
   var match;
-  var host = process.env.DEFAULT_SSHHOST || 'localhost';
+  var host = process.env.DEFAULT_SSHHOST;
   var dir;
   var term;
   var cmd, args;
 
   console.log('Connection established');
 
+  var whitelist = process.env.SSHHOST_WHITELIST.split(':')
   // Determine host and dir from request URL
   if (match = req.url.match(process.env.PASSENGER_BASE_URI + '/ssh/([^\\/]+)(.+)?$')) {
-    if (match[1] !== 'default') host = match[1];
+    if (match[1] !== 'default'&& whitelist.includes(match[1])) host = match[1];
     if (match[2]) dir = decodeURIComponent(match[2]);
   }
 

@@ -8,7 +8,13 @@ include FileUtils
 # path to your application root.
 APP_ROOT = Pathname.new File.expand_path("../../",  __FILE__)
 
-# Create whitelist of sshhosts
+# Set Whitelist env variable
+whitelist = []
+if ENV['SSHHOST_WHITELIST']
+  whitelist = ENV['SSHHOST_WHITELIST'].split(':')
+end
+
+# Determine sshhosts from cluster config files
 sshhost = []
 Dir.glob('/etc/ood/config/clusters.d/*.y*ml') do |config_file|
   file = YAML.load_file(config_file)
@@ -16,8 +22,8 @@ Dir.glob('/etc/ood/config/clusters.d/*.y*ml') do |config_file|
     v2 = file['v2']
     if (v2.has_key?('metadata')) #check for hidden attribute in metadata
       metadata = v2['metadata']
-      if metadata['hidden']
-        next
+      if metadata['hidden'] 
+        next #if true, skip to next config file
       end
     end
 
@@ -39,10 +45,13 @@ end
 # Determine default sshhost
 if ENV["DEFAULT_SSHHOST"]
   DEFAULT_SSHHOST = ENV["DEFAULT_SSHHOST"]
+  whitelist << DEFAULT_SSHHOST
 else
   DEFAULT_SSHHOST = sshhost[0] #default sshhost at the beginning of array
 end
 
+# Add cluster and DEFAULT_SSHHOST to whitelist and remove duplicates
+whitelist = whitelist.concat(sshhost).uniq.join(':')
 
 chdir APP_ROOT do
   # This script is a starting point to setup your application.
@@ -94,6 +103,8 @@ chdir APP_ROOT do
     puts "\n== Setting default ssh host =="
     sh "echo 'DEFAULT_SSHHOST=#{DEFAULT_SSHHOST}' > .env"
   end
+
+  sh "echo 'SSHHOST_WHITELIST=#{whitelist}' >> .env"
 
   puts "\n== Restarting application server =="
   touch "tmp/restart.txt"
