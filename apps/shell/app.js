@@ -8,6 +8,7 @@ var hbs       = require('hbs');
 var dotenv    = require('dotenv');
 var Tokens    = require('csrf');
 var url       = require('url');
+var yaml      = require('js-yaml');
 var port      = 3000;
 
 // Read in environment variables
@@ -55,9 +56,67 @@ app.use(process.env.PASSENGER_BASE_URI || '/', router);
 var server = new http.createServer(app);
 var wss = new WebSocket.Server({ noServer: true });
 
+
+
+whitelist = process.env.SSHHOST_WHITELIST;
+if (whitelist === undefined){
+  whitelist = [];
+} else {
+  whitelist = whitelist.split(':');
+}
+
+var filter = '.yml'; // add regex capability
+var files = fs.readdirSync('/etc/ood/config/clusters.d');
+files.forEach( function (file){
+  if (file.indexOf(filter) >= 0){
+    var fullPath = '/etc/ood/config/clusters.d/' + file;
+    var data = yaml.safeLoad(fs.readFileSync(fullPath)); //data is in json format
+    var errorMessage = 'Cluster config file does not follow correct v2 schema. Please see osc.github.io/ood-documentation.';
+
+    if (data.hasOwnProperty('v2')){
+      var v2 = data.v2;
+      if (v2.hasOwnProperty('metadata')){
+        var metadata = v2.metadata;
+        if (metadata.hasOwnProperty('hidden')){
+          if (!metadata.hidden){
+            if (v2.hasOwnProperty('login')){
+              var login = v2.login;
+              if(login.hasOwnProperty('host')){
+                var host = login.host;
+                var isDefault = false;
+                if(login.hasOwnProperty('default')){
+                  isDefault = login.default;
+                }
+                if (isDefault){
+                  whitelist.unshift(host);
+                } else {
+                  whitelist.push(host);
+                }
+              }
+            } else {
+              console.log(errorMessage);
+            }
+          }
+        } else {
+          console.log(errorMessage);
+        }
+      } else {
+        console.log(errorMessage);
+      }
+    } else {
+      console.log(errorMessage);
+    }
+  }
+});
+
+whitelist.push('default');
+whitelist = Array.from(new Set(whitelist)); // remove duplicates
+sshhost = whitelist[0]; //default sshhost if not set
+host_in_whitelist = true; // declare global variable for later
+
 wss.on('connection', function connection (ws, req) {
   var match;
-  var host = process.env.DEFAULT_SSHHOST || 'localhost';
+  var host = process.env.DEFAULT_SSHHOST || sshhost;
   var cmd = process.env.OOD_SSH_WRAPPER || 'ssh';
   var dir;
   var term;
@@ -71,6 +130,8 @@ wss.on('connection', function connection (ws, req) {
     if (match[1] !== 'default') host = match[1];
     if (match[2]) dir = decodeURIComponent(match[2]);
   }
+
+  host_in_whitelist = whitelist.includes(host);
 
   args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
 
@@ -165,8 +226,19 @@ server.on('upgrade', function upgrade(request, socket, head) {
     ].join('\r\n') + '\r\n\r\n');
 
     socket.destroy();
+  }
+  else if (!host_in_whitelist){ // host not in whitelist
+    socket.write([
+      'HTTP/1.1 401 Unauthorized',
+      'Content-Type: text/html; charset=UTF-8',
+      'Content-Encoding: UTF-8',
+      'Connection: close',
+      'X-OOD-Failure-Reason: host not whitelisted',
+    ].join('\r\n') + '\r\n\r\n');
 
-  }else{
+    socket.destroy();
+  }
+  else{
     wss.handleUpgrade(request, socket, head, function done(ws) {
       wss.emit('connection', ws, request);
     });
