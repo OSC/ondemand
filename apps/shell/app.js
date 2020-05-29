@@ -9,6 +9,7 @@ var dotenv    = require('dotenv');
 var Tokens    = require('csrf');
 var url       = require('url');
 var yaml      = require('js-yaml');
+var glob      = require("glob");
 var port      = 3000;
 
 // Read in environment variables
@@ -56,67 +57,44 @@ app.use(process.env.PASSENGER_BASE_URI || '/', router);
 var server = new http.createServer(app);
 var wss = new WebSocket.Server({ noServer: true });
 
-
-
-whitelist = process.env.SSHHOST_WHITELIST;
-if (whitelist === undefined){
-  whitelist = [];
-} else {
-  whitelist = whitelist.split(':');
+whitelist = [];
+if (process.env.SSHHOST_WHITELIST){
+  whitelist = process.env.SSHHOST_WHITELIST.split(':');
 }
 
-var filter = '.yml'; // add regex capability
-var files = fs.readdirSync('/etc/ood/config/clusters.d');
-files.forEach( function (file){
-  if (file.indexOf(filter) >= 0){
-    var fullPath = '/etc/ood/config/clusters.d/' + file;
-    var data = yaml.safeLoad(fs.readFileSync(fullPath)); //data is in json format
-    var errorMessage = 'Cluster config file does not follow correct v2 schema. Please see osc.github.io/ood-documentation.';
+glob.sync('/etc/ood/config/clusters.d/*.y*ml').forEach(function (file){
+  var data = yaml.safeLoad(fs.readFileSync(file));
+  const {
+    v2: {
+      metadata: {
+        hidden = true
+      },
+      login
+    }
+  } = data
 
-    if (data.hasOwnProperty('v2')){
-      var v2 = data.v2;
-      if (v2.hasOwnProperty('metadata')){
-        var metadata = v2.metadata;
-        if (metadata.hasOwnProperty('hidden')){
-          if (!metadata.hidden){
-            if (v2.hasOwnProperty('login')){
-              var login = v2.login;
-              if(login.hasOwnProperty('host')){
-                var host = login.host;
-                var isDefault = false;
-                if(login.hasOwnProperty('default')){
-                  isDefault = login.default;
-                }
-                if (isDefault){
-                  whitelist.unshift(host);
-                } else {
-                  whitelist.push(host);
-                }
-              }
-            } else {
-              console.log(errorMessage);
-            }
-          }
-        } else {
-          console.log(errorMessage);
-        }
+  if (login){ //check login separately, doesn't exist in some config files
+    const{
+      host = 'default',
+      default: isDefault = false
+    } = login
+
+    if (!hidden){
+      if(isDefault){
+        whitelist.unshift(host);
       } else {
-        console.log(errorMessage);
+        whitelist.push(host);
       }
-    } else {
-      console.log(errorMessage);
     }
   }
 });
 
-whitelist.push('default');
 whitelist = Array.from(new Set(whitelist)); // remove duplicates
-sshhost = whitelist[0]; //default sshhost if not set
-host_in_whitelist = true; // declare global variable for later
+default_sshhost = whitelist[0]; //default sshhost if not set
 
 wss.on('connection', function connection (ws, req) {
   var match;
-  var host = process.env.DEFAULT_SSHHOST || sshhost;
+  var host = process.env.DEFAULT_SSHHOST || default_sshhost || 'owens.osc.edu'; //worst case scenario, w/no config files or env variable, use owens
   var cmd = process.env.OOD_SSH_WRAPPER || 'ssh';
   var dir;
   var term;
@@ -130,8 +108,6 @@ wss.on('connection', function connection (ws, req) {
     if (match[1] !== 'default') host = match[1];
     if (match[2]) dir = decodeURIComponent(match[2]);
   }
-
-  host_in_whitelist = whitelist.includes(host);
 
   args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
 
@@ -201,6 +177,10 @@ server.on('upgrade', function upgrade(request, socket, head) {
   var requestToken = new URLSearchParams(url.parse(request.url).search).get('csrf'),
       client_origin = request.headers['origin'],
       server_origin = custom_server_origin(default_server_origin(request.headers));
+
+  var host_path_rx = '/ssh/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$';
+  match = request.url.match(host_path_rx);
+  host_in_whitelist = whitelist.includes(match[1]);
 
   if (client_origin &&
       client_origin.startsWith('http') &&
