@@ -47,6 +47,8 @@ class Jobstatusdata
         extended_data_lsf(info)
       elsif cluster.job_config[:adapter] == "pbspro"
         extended_data_pbspro(info)
+      elsif cluster.job_config[:adapter] == "sge"
+        extended_data_sge(info)
       else
         extended_data_default(info)
       end
@@ -195,6 +197,33 @@ class Jobstatusdata
     self.output_path = info.native[:Output_Path].to_s.split(":").second || info.native[:Output_Path]
 
     output_pathname = Pathname.new(self.output_path).dirname
+    self.file_explorer_url = build_file_explorer_url(output_pathname)
+    self.shell_url = build_shell_url(output_pathname, self.cluster)
+
+    self
+  end
+
+  # Store additional data about the job. (SGE-specific)
+  #
+  # Parses the `native` info function for additional information about jobs on SGE systems.
+  #
+  # @return [Jobstatusdata] self
+  def extended_data_sge(info)
+    return unless info.native
+    attributes = []
+    attributes.push Attribute.new "Cluster", self.cluster_title
+    attributes.push Attribute.new "Job Id", self.pbsid
+    attributes.push Attribute.new "Job Name", self.jobname
+    attributes.push Attribute.new "User", self.username
+    attributes.push Attribute.new "Account", self.account
+    attributes.push Attribute.new "Partition", self.queue
+    attributes.push Attribute.new "Node List", self.nodes.join(", ") unless self.nodes.blank?
+    self.native_attribs = attributes
+
+    self.submit_args = nil
+    self.output_path = info.native[:work_dir]
+
+    output_pathname = Pathname.new(info.native[:work_dir])
     self.file_explorer_url = build_file_explorer_url(output_pathname)
     self.shell_url = build_shell_url(output_pathname, self.cluster)
 
