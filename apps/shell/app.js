@@ -1,16 +1,16 @@
-var fs        = require('fs');
-var http      = require('http');
-var path      = require('path');
-var WebSocket = require('ws');
-var express   = require('express');
-var pty       = require('node-pty');
-var hbs       = require('hbs');
-var dotenv    = require('dotenv');
-var Tokens    = require('csrf');
-var url       = require('url');
-var yaml      = require('js-yaml');
-var glob      = require("glob");
-var port      = 3000;
+const fs        = require('fs');
+const http      = require('http');
+const path      = require('path');
+const WebSocket = require('ws');
+const express   = require('express');
+const pty       = require('node-pty');
+const hbs       = require('hbs');
+const dotenv    = require('dotenv');
+const Tokens    = require('csrf');
+const url       = require('url');
+const yaml      = require('js-yaml');
+const glob      = require("glob");
+const port      = 3000;
 
 // Read in environment variables
 dotenv.config({path: '.env.local'});
@@ -54,10 +54,10 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(process.env.PASSENGER_BASE_URI || '/', router);
 
 // Setup websocket server
-var server = new http.createServer(app);
-var wss = new WebSocket.Server({ noServer: true });
+const server = new http.createServer(app);
+const wss = new WebSocket.Server({ noServer: true });
 
-whitelist = [];
+let whitelist = [];
 if (process.env.SSHHOST_WHITELIST){
   whitelist = process.env.SSHHOST_WHITELIST.split(':');
 }
@@ -79,22 +79,20 @@ glob.sync('/etc/ood/config/clusters.d/*.y*ml').forEach(function (file){
       default: isDefault = false
     } = login
 
-    if (!hidden){
-      if(isDefault){
-        whitelist.unshift(host);
-      } else {
-        whitelist.push(host);
-      }
+    if (!hidden && isDefault){
+      whitelist.unshift(host);
+    } else {
+      whitelist.push(host);
     }
   }
 });
 
 whitelist = Array.from(new Set(whitelist)); // remove duplicates
-default_sshhost = whitelist[0]; //default sshhost if not set
+const default_sshhost = whitelist[0]; //default sshhost if not set
 
 wss.on('connection', function connection (ws, req) {
   var match;
-  var host = process.env.DEFAULT_SSHHOST || default_sshhost || 'owens.osc.edu'; //worst case scenario, w/no config files or env variable, use owens
+  var host = process.env.DEFAULT_SSHHOST || default_sshhost
   var cmd = process.env.OOD_SSH_WRAPPER || 'ssh';
   var dir;
   var term;
@@ -178,14 +176,13 @@ server.on('upgrade', function upgrade(request, socket, head) {
       client_origin = request.headers['origin'],
       server_origin = custom_server_origin(default_server_origin(request.headers));
 
-  var host_path_rx = '/ssh/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$';
-  match = request.url.match(host_path_rx);
-  host_in_whitelist = whitelist.includes(match[1]);
+  const host_path_rx = '/ssh/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$';
+  const match = request.url.match(host_path_rx);
+  const host_in_whitelist = whitelist.includes(match[1]);
 
   if (client_origin &&
       client_origin.startsWith('http') &&
-      server_origin && client_origin !== server_origin
-  ) {
+      server_origin && client_origin !== server_origin) {
     socket.write([
       'HTTP/1.1 401 Unauthorized',
       'Content-Type: text/html; charset=UTF-8',
@@ -195,8 +192,7 @@ server.on('upgrade', function upgrade(request, socket, head) {
     ].join('\r\n') + '\r\n\r\n');
 
     socket.destroy();
-  }
-  else if (!tokens.verify(secret, requestToken)) {
+  } else if (!tokens.verify(secret, requestToken)) {
     socket.write([
       'HTTP/1.1 401 Unauthorized',
       'Content-Type: text/html; charset=UTF-8',
@@ -206,8 +202,7 @@ server.on('upgrade', function upgrade(request, socket, head) {
     ].join('\r\n') + '\r\n\r\n');
 
     socket.destroy();
-  }
-  else if (!host_in_whitelist){ // host not in whitelist
+  } else if (!host_in_whitelist){ // host not in whitelist
     socket.write([
       'HTTP/1.1 401 Unauthorized',
       'Content-Type: text/html; charset=UTF-8',
@@ -217,8 +212,7 @@ server.on('upgrade', function upgrade(request, socket, head) {
     ].join('\r\n') + '\r\n\r\n');
 
     socket.destroy();
-  }
-  else{
+  } else{
     wss.handleUpgrade(request, socket, head, function done(ws) {
       wss.emit('connection', ws, request);
     });
