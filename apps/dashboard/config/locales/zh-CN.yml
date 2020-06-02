@@ -28,7 +28,7 @@ zh-CN:
     batch_connect_sessions_status_queued: |
       由于您的工作目前正在排队，请耐心等待。 等待时间取决于内核数以及请求的时间。
     nav_help_change_password: "修改HPC密码"
-    nav_help_docs: "在线文档"
+    nav_help_docs: "帮助文档"
     nav_help_support: "联系支持人员"
     nav_help_two_factor: "配置双重身份验证"
 
@@ -36,7 +36,7 @@ zh-CN:
     quota_reload_message: "重新加载页面以查看更新的配额。 配额每5分钟更新一次。"
     quota_warning_prefix_html: "配额限制警告"
 
-    balance_additional_message: "考虑请求额外的 %{balanace_units}"
+    balance_additional_message: "考虑申请额外的 %{balanace_units}"
     balance_reload_message_html: "重新加载页面以查看更新后的余额。 余额每天更新。<br>最后一次更新是 %{last_update}"
     balance_warning_prefix_html: "%{units_balance} 警告"
     balance_message: "%{units_balance} 是 %{value}"
@@ -66,7 +66,7 @@ zh-CN:
     batch_connect_form_session_data_html: |
       * 你可以通过%{data_link_tag}来获取会话数据%{title}。
     batch_connect_no_apps: "没有可用的互动应用程序。"
-    batch_connect_no_sessions: "您没有活动的会话。"
+    batch_connect_no_sessions: "您没有可运行的会话。"
     batch_connect_sandbox: " [Sandbox]"
     batch_connect_sessions_data_html: |
       你可以通过%{data_link_tag}来获取会话数据%{title}。
@@ -75,7 +75,7 @@ zh-CN:
     batch_connect_sessions_delete_confirm: "你确定吗？"
     batch_connect_sessions_delete_hover: "删除会话"
     batch_connect_sessions_delete_title: "删除"
-    batch_connect_sessions_errors_staging: "无法登台模板，并显示以下错误："
+    batch_connect_sessions_errors_staging: "无法调用模板，并显示以下错误："
     batch_connect_sessions_errors_submission: "提交会话失败，出现以下错误："
     batch_connect_sessions_novnc_launch: "启动%{app_title}"
     batch_connect_sessions_novnc_view_only: "只读 (共享链接)"
