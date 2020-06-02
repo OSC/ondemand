@@ -17,53 +17,132 @@
 	 * Academic: hidden
 	 * Commercial: visible
 	 */
-	function toggle_field_visibility() {
-	  let data_visibility_scope_show = $('select:has(option[data-visibility-scope-show]) option:selected').data('visibility-scope-show');
+	function toggle_scopes_visibility() {
+	  // define select options with data-visibility-scope-show attribute
+	  let select_scopes = $('option[data-visibility-scope-show]');
+	  // define the checkbox elements with data-visibility-scope-show-a ttribute
+	  let checkbox_scopes = $('[data-visibility-scope-show]:checkbox');
 
-	  toggle_visibilty_of_form_group('[data-visibility-scope]', data_visibility_scope_show === $('[data-visibility-scope]').data('visibility-scope'));
+	  // call each respective function to show/hide element with data-visibility-scope attribute
+	  toggle_visibility_of_checkbox_scopes(checkbox_scopes);
+	  toggle_visibility_of_select_scopes(select_scopes);
 	}
 
 	/**
-	 * Toggle the visibilty of a form group
-	 *
-	 * @param      {string}    form_id  The form identifier
-	 * @param      {boolean}   show     Whether to show or hide
-	 */
-	function toggle_visibilty_of_form_group(form_id, show) {
-	  let form_element = $(form_id);
-	  let parent = form_element.parent();
+	  * Toggle the visibility of the select scopes
+	  *
+	  * @param    {array}    select_scopes   Options of Select Elements with the data-visibility-scope-show attribute
+	  */
+	function toggle_visibility_of_select_scopes(select_scopes) {
+	  // declare prevObj if select options have the same parent
+	  let prevObj;
+	  select_scopes.each(function() {
 
-	  if(show) {
-	    parent.show();
-	  } else {
-	    // hide help block for the element if it exists
-	    parent.parent().next().hasClass('help-block') ? parent.parent().next().hide() : null;
-	    // if element to hide is div.checkbox
-	    if (parent.hasClass('checkbox')) {
-	      // make sure element is unchecked
-	      form_element.prop('checked', false);
-	    } else { // otherwise
+	    let form_element = $('[data-visibility-scope="' + $(this).data('visibility-scope-show') + '"]');
+
+	    let parent = form_element.parent();
+
+	    if (!(this.selected)) {
+
+	      // skip unselected element with data attribute of the same parent (in case one wishes to display a certain element based on a number of versions for a bc app e.g. Rstudio server)
+	      if (typeof prevObj !== 'undefined'
+	          && prevObj.parent().get(0) === $(this).parent().get(0)) return;
+
+
+	      parent.hide();
 	      form_element.val('');
+
+	      // check if the element to show/hide has a help block (this is needed for checkbox elements that one wishes to hide as the help blocks are not within the parent of element)
+	      parent.parent().next().hasClass('help-block') ? parent.parent().next().hide() : null;
+
+
+	    } else {
+	      parent.show();
+	      // define the previous object that was shown
+	      prevObj = $(this);
+
+	      // check if the element to show/hide has a help block (this is needed for checkbox elements that one wishes to hide as the help blocks are not within the parent of element)
+	      parent.parent().next().hasClass('help-block') ? parent.parent().next().show() : null;
+
 	    }
-	    parent.hide();
-	  }
+	  });
 	}
 
 	/**
-	 * Sets the change handler for the user_is_commercial_user select.
-	 */
-	function set_field_change_handler() {
-	  let data_visibility_scope_show = $('select:has(option[data-visibility-scope-show])');
-	  data_visibility_scope_show.change(toggle_field_visibility);
+	  * Toggle the visibility of the checkbox scopes
+	  *
+	  * @param    {array}    checkbox_scopes   input elements of type checkbox with the data-visibility-scope-show attribute
+	  */
+	function toggle_visibility_of_checkbox_scopes(checkbox_scopes) {
+	  checkbox_scopes.each(function() {
+	    $(this).click(function() {
+	      let form_element = $('[data-visibility-scope="' + $(this).data('visibility-scope-show') + '"]');
+
+	      let parent = form_element.parent();
+
+	      if ($(this).is(':checked')) {
+	        parent.show();
+
+	        // check if the element to show/hide has a help block (this is needed for checkbox elements that one wishes to hide as the help blocks are not within the parent of element)
+	        parent.parent().next().hasClass('help-block') ? parent.parent().next().show() : null;
+
+	      } else {
+	        parent.hide();
+
+	        form_element.prop('checked', false);
+
+	        // check if the element to show/hide has a help block (this is needed for checkbox elements that one wishes to hide as the help blocks are not within the parent of element)
+	        parent.parent().next().hasClass('help-block') ? parent.parent().next().hide() : null;
+
+	      }
+	    });
+	  });
 	}
+
+
+	/**
+	 * Sets the change handler for the select scope
+	 */
+	function set_select_scope_change_handler() {
+	  let data_visibility_scope_show = $('select:has(option[data-visibility-scope-show])');
+
+	  let checkbox_scopes = $('[data-visibility-scope-show]:checkbox');
+
+	  hide_checkbox_dependent_elements_on_display(checkbox_scopes);
+
+	  data_visibility_scope_show.change(toggle_scopes_visibility);
+	}
+
+	/**
+	 * Hides checkbox scope dependent elements on initial display
+	 * as their visibility depends on the click event
+	 */
+	 function hide_checkbox_dependent_elements_on_display(checkbox_scopes) {
+
+	 	checkbox_scopes.each(function() {
+
+	    let form_element = $('[data-visibility-scope="' + $(this).data('visibility-scope-show') + '"]');
+
+	    let parent = form_element.parent();
+
+	    // hide the element that depends on the checkbox, as the checkbox is unchecked on display (this is done because showing or hiding the element only depends on the click event of the checkbox)
+	    parent.hide();
+
+	    // hide the help block as well if it exits for that element
+	    parent.parent().next().hasClass('help-block') ? parent.parent().next().hide() : null;
+
+
+	  });
+
+	 }
 
 	/**
 	 * Install event handlers
 	 */
 	$(document).ready(function() {
 	  // Ensure that fields are shown or hidden based on what was set in the last session
-	  toggle_field_visibility();
-	  set_field_change_handler();
+	  toggle_scopes_visibility();
+	  set_select_scope_change_handler();
 	});
 }());
 <% end %>
