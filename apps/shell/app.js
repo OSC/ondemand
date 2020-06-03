@@ -62,30 +62,18 @@ if (process.env.SSHHOST_WHITELIST){
   whitelist = process.env.SSHHOST_WHITELIST.split(':');
 }
 
-glob.sync('/etc/ood/config/clusters.d/*.y*ml').forEach(function (file){
-  var data = yaml.safeLoad(fs.readFileSync(file));
-  const {
-    v2: {
-      metadata: {
-        hidden = true
-      },
-      login
-    }
-  } = data
-
-  if (login){ //check login separately, doesn't exist in some config files
-    const{
-      host = 'default',
-      default: isDefault = false
-    } = login
-
-    if (!hidden && isDefault){
+glob.sync('/etc/ood/config/clusters.d/*.y*ml')
+  .map(yml => yaml.safeLoad(fs.readFileSync(yml)))
+  .filter(config => (config.v2 && config.v2.login && config.v2.login.host) && ! (config.v2 && config.v2.metadata && config.v2.metadata.hidden))
+  .forEach((config) => {
+    let host = config.v2.login.host; //Already did checking above
+    let isDefault = config.v2 && config.v2.login && config.v2.login.default;
+    if(isDefault){
       whitelist.unshift(host);
-    } else {
+    } else{
       whitelist.push(host);
     }
-  }
-});
+  });
 
 whitelist = Array.from(new Set(whitelist)); // remove duplicates
 const default_sshhost = whitelist[0]; //default sshhost if not set
