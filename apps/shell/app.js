@@ -68,7 +68,6 @@ glob.sync('/etc/ood/config/clusters.d/*.y*ml')
   .forEach((config) => {
     let host = config.v2.login.host; //Already did checking above
     let isDefault = config.v2.login.default;
-    console.log(isDefault)
     if(isDefault){
       whitelist.unshift(host);
     } else{
