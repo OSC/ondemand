@@ -216,14 +216,24 @@ class Jobstatusdata
     attributes.push Attribute.new "Job Name", self.jobname
     attributes.push Attribute.new "User", self.username
     attributes.push Attribute.new "Account", self.account
+    attributes.push Attribute.new "Project", info.native[:accounting_id] unless info.native[:accounting_id].nil?
     attributes.push Attribute.new "Partition", self.queue
     attributes.push Attribute.new "Node List", self.nodes.join(", ") unless self.nodes.blank?
+    attributes.push Attribute.new "State", info.native[:status] unless info.native[:status].nil?
+    attributes.push Attribute.new "Slots", info.native[:procs] unless info.native[:procs].nil?
+    attributes.push Attribute.new "Queue Name", info.native[:queue_name] unless info.native[:queue_name].nil?
+    attributes.push Attribute.new "Submission Time", info.native[:submission_time] unless info.native[:submission_time].nil?
+    attributes.push Attribute.new "Dispatch Time", info.native[:dispatch_time] unless info.native[:dispatch_time].nil?
+    attributes.push Attribute.new "Wallclock Time", info.native[:wallclock_time] unless info.native[:wallclock_time].nil?
+    attributes.push Attribute.new "Wallclock Limit", info.native[:wallclock_limit] unless info.native[:wallclock_limit].nil?
+    attributes.push Attribute.new "CPU usage", info.native[:cpu_usage] unless info.native[:cpu_usage].nil?
+    attributes.push Attribute.new "Memory usage", info.native[:mem_usage] unless info.native[:mem_usage].nil?
     self.native_attribs = attributes
 
-    self.submit_args = nil
-    self.output_path = info.native[:work_dir]
+    self.submit_args = ''
+    self.output_path = ''
 
-    output_pathname = Pathname.new(info.native[:work_dir])
+    output_pathname = Pathname.new(ENV["HOME"])
     self.file_explorer_url = build_file_explorer_url(output_pathname)
     self.shell_url = build_shell_url(output_pathname, self.cluster)
 
