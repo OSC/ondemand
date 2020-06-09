@@ -35,6 +35,11 @@ class ConfigurationSingleton
     config_root.join("views")
   end
 
+  def default_batch_host
+    ENV.fetch('OOD_DEFAULT_CLUSTER') || OODClusters.first ? OODClusters.first.metadata.title : "" 
+  end
+
+
   def load_external_config?
     to_bool(ENV.fetch('OOD_LOAD_EXTERNAL_CONFIG', (rails_env == 'production')))
   end

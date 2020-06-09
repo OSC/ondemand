@@ -45,7 +45,7 @@ class Workflow < ApplicationRecord
     path = Pathname.new(path).expand_path rescue Pathname.new(path)
     workflow = Workflow.new
     workflow.name = ''
-    workflow.batch_host = OODClusters.first.id
+    workflow.batch_host = Configuration.default_batch_host
     workflow.script_name = ''
     workflow.staging_template_dir = path.to_s
 
@@ -128,7 +128,7 @@ class Workflow < ApplicationRecord
   # @return [WorkflowFile] An array of WorkflowFile Objects of all the files of a directory
   def folder_contents
     return @folder_contents if defined? @folder_contents
-    
+
     if File.directory?(self.staged_dir)
       @folder_contents = Find.find(self.staged_dir).drop(1).select {
         |f| File.file?(f)
@@ -141,12 +141,12 @@ class Workflow < ApplicationRecord
       @folder_contents = []
     end
   end
-  
+
   # Return a nested array of valid files for job script field in the job options form
   # Each file is an array with 2 elements: [relative_file_path, file_path]
   # Relative file path to the staged dir is at index 0, which will be used as the text for the option element
   # Full file path is at index 1, which will be used as the value for the option element
-  # 
+  #
   # Files grouped under the same categroy are in the same array: [[relative_file_path, file_path]]
   #
   # Valid abd suggested files are grouped under "Suggested file(s)" in the dropdown
@@ -162,7 +162,7 @@ class Workflow < ApplicationRecord
       "Other valid file(s)" => folder_contents.select(&:valid_script?).reject(&:suggested_script?).map { |f| [f.relative_path, f.path] },
     }.reject {|k,v| v.empty?}
   end
-  
+
   # Returns the pbsid of the last job in the workflow
   #
   # @return [String, nil] the pbsid or nil if no jobs on the workflow
@@ -317,7 +317,7 @@ class Workflow < ApplicationRecord
       end
     end
   end
-  
+
   def self.show_job_arrays?
     OODClusters.any? { |cluster| cluster.job_adapter.supports_job_arrays? }
   end
