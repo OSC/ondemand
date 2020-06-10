@@ -2,10 +2,10 @@
   <%= session_view session do %>
     <%
       if session.running?
-        if session.view && ! session.script_type["vnc"]
+        if session.view && ! session.script_type == "vnc"
           views = { partial: "custom", locals: { connect: session.connect, view: session.view } }
         else
-          if session.script_type["vnc"]
+          if session.script_type == "vnc"
             views = []
             views << { title: "noVNC Connection",    partial: "novnc",      locals: { connect: session.connect, app_title: session.title } }
             views << { title: "Native Instructions", partial: "native_vnc", locals: { connect: session.connect } } if ENV["ENABLE_NATIVE_VNC"]

@@ -42,7 +42,7 @@ module BatchConnect::SessionsHelper
           concat created(session)
           concat time(session)
           concat id(session)
-          concat custom_vnc_html(session) if session.running? && session.script_type["vnc"] && session.view
+          concat custom_vnc_html(session) if session.running? && session.view && session.script_type == "vnc"
         end
       )
       concat content_tag(:div) { yield }
