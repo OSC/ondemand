@@ -21,13 +21,49 @@
         views = { partial: "bad" }
       end
     %>
-    <%=
-      connection_tabs(
-        session.id,
-        views,
-        session.script_type["vnc"] ? true : false,
-        session.running? && session.script_type["vnc"] ? { connect: session.connect, view: session.view } : nil,
-      )
+
+    <%
+      id = session.id
+      tabs = Array.wrap(views)
+
+      if tabs.any? && tabs.size == 1
+        # hr + content
+        capture do
+          tab = tabs.first
+          concat content_tag(:hr)
+          concat(
+            content_tag(:div, class: "ood-appkit markdown") do
+              render partial: "batch_connect/sessions/connections/#{tab[:partial]}", locals: tab[:locals]
+            end
+          )
+        end
+      else
+        # tabs
+        content_tag(:div) do
+          # menu
+          concat(
+            content_tag(:hr) do
+              content_tag(:ul, class: "nav nav-tabs") do
+                tabs.map { |t| t[:title] }.map.with_index do |title, idx|
+                  content_tag(:li, class: "#{"active" if idx.zero?}") do
+                    link_to title, "##{id}_#{idx}", data: { toggle: "tab" }
+                  end
+                end.join("\n").html_safe
+              end
+            end
+          )
+          # content
+          concat(
+            content_tag(:div, class: "tab-content") do
+              tabs.map.with_index do |tab, idx|
+                content_tag(:div, id: "#{id}_#{idx}", class: "tab-pane ood-appkit markdown #{"active" if idx == 0}") do
+                  render partial: "batch_connect/sessions/connections/#{tab[:partial]}", locals: tab[:locals]
+                end
+              end.join("\n").html_safe
+            end
+          )
+        end
+      end
     %>
   <% end %>
 <% end %>

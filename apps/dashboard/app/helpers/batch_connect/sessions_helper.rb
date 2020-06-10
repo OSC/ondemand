@@ -42,6 +42,7 @@ module BatchConnect::SessionsHelper
           concat created(session)
           concat time(session)
           concat id(session)
+          concat custom_vnc_html(session) if session.running? && session.script_type["vnc"] && session.view
         end
       )
       concat content_tag(:div) { yield }
@@ -166,52 +167,10 @@ module BatchConnect::SessionsHelper
     asset_path("noVNC-#{version}/vnc.html?autoconnect=true&password=#{password}&path=rnode/#{connect.host}/#{connect.websocket}/websockify&resize=#{resize}", skip_pipeline: true)
   end
 
-  def connection_tabs(id, tabs, is_vnc_session = false, vnc_custom_view = {})
-    tabs = Array.wrap(tabs)
-    if tabs.any? && tabs.size == 1
-      # hr + content
-      capture do
-        tab = tabs.first
-        concat content_tag(:hr)
-        concat(
-          content_tag(:div, class: "ood-appkit markdown") do
-            render partial: "batch_connect/sessions/connections/#{tab[:partial]}", locals: tab[:locals]
-          end
-        )
-      end
-    else
-      # tabs
-      content_tag(:div) do
-        # render custom html if vnc apps have view.html.erb
-        if is_vnc_session && [:connect, :view ].all? { |k| vnc_custom_view.key? k }
-          concat content_tag(:hr)
-          concat(
-            content_tag(:div) do
-              render partial: "batch_connect/sessions/connections/custom", locals: { connect: vnc_custom_view[:connect], view: vnc_custom_view[:view].to_s }
-            end
-          )
-          concat content_tag(:hr)
-        end
-        # menu
-        concat(
-          content_tag(:ul, class: "nav nav-tabs") do
-            tabs.map { |t| t[:title] }.map.with_index do |title, idx|
-              content_tag(:li, class: "#{"active" if idx.zero?}") do
-                link_to title, "##{id}_#{idx}", data: { toggle: "tab" }
-              end
-            end.join("\n").html_safe
-          end
-        )
-        # content
-        concat(
-          content_tag(:div, class: "tab-content") do
-            tabs.map.with_index do |tab, idx|
-              content_tag(:div, id: "#{id}_#{idx}", class: "tab-pane ood-appkit markdown #{"active" if idx == 0}") do
-                render partial: "batch_connect/sessions/connections/#{tab[:partial]}", locals: tab[:locals]
-              end
-            end.join("\n").html_safe
-          end
-        )
+  def custom_vnc_html(session)
+    content_tag(:div) do
+      content_tag(:hr) do
+        render partial: "batch_connect/sessions/connections/custom", locals: { connect: session.connect, view: session.view.to_s }
       end
     end
   end
