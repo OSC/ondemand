@@ -65,7 +65,7 @@ class BatchConnect::SessionContextsController < ApplicationController
 
     # Set the rendering format for displaying attributes
     def set_render_format
-      @render_format = @app.cluster.job_config[:adapter] if @app.cluster
+      @render_format = @app.clusters.first.job_config[:adapter] unless @app.clusters.empty?
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

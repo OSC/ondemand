@@ -136,7 +136,7 @@ module BatchConnect
     # @return [Boolean] whether saved successfully
     def save(app:, context:, format: nil)
       self.id         = SecureRandom.uuid
-      self.cluster_id = app.cluster_id
+      self.cluster_id = context.cluster
       self.token      = app.token
       self.title      = app.title
       self.view       = app.session_view
