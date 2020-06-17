@@ -117,7 +117,7 @@ module BatchConnect
     # The clusters the batch connect app is configured to use
     # @return [Array<String>, []] the clusters the app wants to use
     def configured_clusters
-      Array.wrap(form_config.fetch(:cluster, nil)).compact.map(&:to_sym)
+      Array.wrap(form_config.fetch(:cluster, nil)).compact.map { |c| c.to_s.strip.eql?("*") ? ".*" : c.to_s.strip }
     end
 
     # The clusters that the batch connect app can use. It's a combination
@@ -125,8 +125,10 @@ module BatchConnect
     # to use.
     # @return [OodCore::Clusters] clusters available to the app user
     def clusters
+      cluster_regex = configured_clusters.join('|')
+
       OodAppkit.clusters.select do |cluster|
-        (configured_clusters.include? cluster.id) && cluster.job_allow?
+        cluster.id.to_s.match(/^#{cluster_regex}$/) && cluster.job_allow?
       end
     end
 
