@@ -132,13 +132,14 @@ router.get('/', function (req, res) {
   res.redirect(req.baseUrl + '/ssh');
 });
 
-router.get('/ssh/*', function (req, res) {
+router.get('/ssh*', function (req, res) {
 
   var id = uuidv4();
 
-  res.redirect(req.baseUrl + `/session/${id}/${req.params[0]}`);
+  res.redirect(req.baseUrl + `/session/${id + req.params[0]}`);
 
 });
+
 
 //For laumch page to start a new session with color scheme and host.
 router.get('/new-session', function(req, res, next) {
@@ -201,7 +202,8 @@ router.get('/custom-term', function(req, res, next) {
     res.redirect(req.baseUrl + `/session/${req.query.session}/${res.locals.host}`)
 })
 
-router.get('/session/:id/*', function (req, res) {
+
+router.get('/session/:id*', function (req, res) {
 
   res.render('index',
     {
@@ -215,7 +217,6 @@ router.get('/session/:id/*', function (req, res) {
 router.get('/launch', function (req, res) {
 
   res.render('launch', {baseURI: req.baseUrl, sessions: terminals.sessionsInfo(), fileOptions: getSchemeFilesArray() || []});
-
 })
 
 router.use(express.static(path.join(__dirname, 'public')));
@@ -273,6 +274,7 @@ var terminals = {
   attach: function (uuid, ws) {
     var term = this.get(uuid);
     term.resume();
+    term.resize(80, 30);
 
     term.on('data', function (data) {
       ws.send(data, function (error) {
