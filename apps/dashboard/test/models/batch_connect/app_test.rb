@@ -132,7 +132,6 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
       r.path.join("form.yml").write("cluster: '*'")
 
       app = BatchConnect::App.new(router: r)
-      STDERR.write "#{app.configured_clusters} and #{app.clusters.inspect}"
       assert app.valid?
       assert_equal good_clusters, app.clusters # make sure you only allow good clusters
     }
