@@ -111,6 +111,7 @@ var terminals = {
   attach: function (uuid, ws) {
     var term = this.get(uuid);
     term.resume();
+    term.resize(80, 30);
 
     term.on('data', function (data) {
       ws.send(data, function (error) {
@@ -133,7 +134,7 @@ var terminals = {
     });
 
     ws.on('close', function () {
-      term.end();
+      term.pause();
       console.log('Closed terminal: ' + term.pid);
     });
 
