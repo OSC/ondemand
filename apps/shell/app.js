@@ -32,59 +32,28 @@ const ood_app_config_root = (process.env["OOD_APP_CONFIG_ROOT"] || '/etc/ood/con
 const userDir = path.join(xdg_config_dir, "ondemand", "apps", "shell", "themes");
 const systemDir = path.join(ood_app_config_root, "themes");
 
-//declared global variables for color schemes
-var schemeObjects;
+//Search directories and 
+fs.mkdirSync(userDir, {recursive: true});
+ var schemeObjects = {...getSchemeObjects(userDir), ...getSchemeObjects(systemDir)};
 
-checkDirSync(userDir);
-checkDirSync(systemDir);
-
-if (process.env["SYSTEM_SCHEMES"] === true) {
-    var user = getSchemeObjects(userDir);
-    var system = getSchemeObjects(systemDir);
-
-   schemeObjects = {...getSchemeObjects(userDir), ...getSchemeObjects(systemDir)};
-
-} else {
-   schemeObjects = {...getSchemeObjects(userDir)};
-}
-
-// helper functions
-function checkDirSync(dir) {  
-  try {
-    fs.statSync(dir);
-  } catch(e) {
-    if (dir === systemDir) {
-      process.env["SYSTEM_SCHEMES"] = false;
-    } else if (dir === userDir) {
-      fs.mkdirSync(dir);
-    }
-  }
-}
 
 function getSchemeObjects(dir) {
   var schemes = {};
 
-  fs.readdirSync(dir).forEach(function(file) {
-    fileInfo = path.parse(file);
-    schemes[fileInfo.name] = {name: fileInfo.name, file: fileInfo.base, ext: fileInfo.ext, dir: dir}
-  });
-  return schemes;
+  try {
+    fs.readdirSync(dir).forEach(function(file) {
+      fileInfo = path.parse(file);
+      schemes[fileInfo.name] = {name: fileInfo.name, file: fileInfo.base, ext: fileInfo.ext, dir: dir}
+    });
+    return schemes;
+  } catch (err) {
+    return {};
+  }
 }
 
 function getSchemeFilesArray() {
 
     return Object.keys(schemeObjects).map(i => schemeObjects[i])
-}
-
-
-function getSchemeFileObject(base) {
-    var userDir = path.join(xdg_config_dir, "apps", "shell", "themes");
-    fs.readdirSync(userDir).forEach(file => {
-        if (file === base) {
-            return path.parse(file);
-        }
-
-    })
 }
 
 function rgbToHexMath (num) { 
@@ -115,49 +84,23 @@ function parseFile(fileObject) {
     const ext = fileObject.ext;
     const file = fileObject.dir + "/" + fileObject.file;
     const raw = String(fs.readFileSync(file));
-      
-    switch(ext) {
-        case ".itermcolors":
-            return termSchemes.iterm2(raw);
-        break;
 
-        case ".colorscheme":
-            return termSchemes.konsole(raw);
-        break;
-
-        case ".colors":
-            return termSchemes.remmina(raw);
-        break;
-
-        case ".terminal":
-            return termSchemes.terminal(raw);      
-        break;
-
-        case ".config":
-            return termSchemes.terminator(raw);
-        break;
-
-        case ".config_0":
-            return termSchemes.tilda(raw);
-        break;
-
-        case ".theme":
-            return termSchemes.xfce(raw);
-        break;
-
-        case ".txt":
-            return termSchemes.termite(raw);
-        break;
-
-        case ".xrdb" || ".Xresources":
-            return termSchemes.xresources(raw);
-        break;
-
-        default:
-            schemeError = {error: "unknown file type."}
-            return schemeError;
-        break; 
-
+    const schemes = {
+      ".itermcolors": termSchemes.iterm2,
+      ".colorscheme": termSchemes.konsole,
+      ".colors": termSchemes.remmina,
+      ".terminal":termSchemes.terminal,
+      ".config": termSchemes.terminator,
+      ".config_0": termSchemes.tilda,
+      ".theme": termSchemes.xfce,
+      ".txt": termSchemes.termite,
+      ".Xresources": termSchemes.xresources,
+      ".xrdb": termSchemes.xresources,
+    }
+    try {
+      return schemes[ext](raw)
+    } catch (err) {
+      return {error: "unknown file type."}
     }
 }
 
@@ -304,6 +247,8 @@ var terminals = {
     var cmd = 'ssh';
     var args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
 
+    process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
+    
     this.instances[uuid] = {term: pty.spawn(cmd, args, {
       name: 'xterm-256color',
       cols: 80,
@@ -350,7 +295,7 @@ var terminals = {
     });
 
     ws.on('close', function () {
-      term.end();
+      term.pause();
       console.log('Closed terminal: ' + term.pid);
     });
 
@@ -383,9 +328,6 @@ wss.on('connection', function connection (ws, req) {
   }
 
   terminals.attach(uuid, ws);
-
-  process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
-
 });
 
 function custom_server_origin(default_value = null){
