@@ -12,13 +12,14 @@ local nginx_stage = require 'ood.nginx_stage'
 --]]
 function pun_proxy_handler(r)
   -- read in OOD specific settings defined in Apache config
-  local user_map_cmd    = r.subprocess_env['OOD_USER_MAP_CMD']
-  local user_env        = r.subprocess_env['OOD_USER_ENV']
-  local pun_socket_root = r.subprocess_env['OOD_PUN_SOCKET_ROOT']
-  local nginx_uri       = r.subprocess_env['OOD_NGINX_URI']
-  local map_fail_uri    = r.subprocess_env['OOD_MAP_FAIL_URI']
-  local pun_stage_cmd   = r.subprocess_env['OOD_PUN_STAGE_CMD']
-  local pun_max_retries = tonumber(r.subprocess_env['OOD_PUN_MAX_RETRIES'])
+  local user_map_cmd      = r.subprocess_env['OOD_USER_MAP_CMD']
+  local user_env          = r.subprocess_env['OOD_USER_ENV']
+  local pun_socket_root   = r.subprocess_env['OOD_PUN_SOCKET_ROOT']
+  local nginx_uri         = r.subprocess_env['OOD_NGINX_URI']
+  local map_fail_uri      = r.subprocess_env['OOD_MAP_FAIL_URI']
+  local pun_stage_cmd     = r.subprocess_env['OOD_PUN_STAGE_CMD']
+  local oidc_access_token = r.subprocess_env['OIDC_ACCESS_TOKEN']
+  local pun_max_retries   = tonumber(r.subprocess_env['OOD_PUN_MAX_RETRIES'])
 
   -- get the system-level user name
   local user = user_map.map(r, user_map_cmd, user_env and r.subprocess_env[user_env] or r.user)
@@ -43,7 +44,7 @@ function pun_proxy_handler(r)
     local app_init_url = r.is_https and "https://" or "http://"
     app_init_url = app_init_url .. r.hostname .. ":" .. r.port .. nginx_uri .. "/init?redir=$http_x_forwarded_escaped_uri"
     -- generate user config & start PUN process
-    err = nginx_stage.pun(r, pun_stage_cmd, user, app_init_url)
+    err = nginx_stage.pun(r, pun_stage_cmd, user, app_init_url, oidc_access_token)
     if err then
       r.usleep(1000000) -- sleep for 1 second before trying again
     end

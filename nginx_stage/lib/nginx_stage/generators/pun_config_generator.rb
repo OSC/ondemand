@@ -95,6 +95,27 @@ module NginxStage
       template "pun.conf.erb", config_path
     end
 
+    # Read standard in, expecting FOO=BAR and set the environment variables
+    # ENV['FOO']=BAR for each line of standard input.
+    add_hook :read_stdin do
+      unless STDIN.tty?
+        STDIN.each_line do |line|
+          key_values = line.split('=')
+          ENV[key_values[0]] = key_values[1] if key_values.size[2]
+        end
+      end
+    end
+
+    # Run the pre hook command. This eats the output and doesn't affect
+    # the overall status of the PUN startup
+    add_hook :exec_pre_hook do
+      unless NginxStage.pun_pre_hook.nil?
+        args = ["--user", user]
+
+        Open3.capture2e(NginxStage.pun_pre_hook, *args)
+      end
+    end
+
     # Run the per-user NGINX process (exit quietly on success)
     add_hook :exec_nginx do
       if !skip_nginx

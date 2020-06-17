@@ -213,6 +213,15 @@ module NginxStage
 
     attr_writer :pun_app_configs
 
+    # Execute this hook before the PUN startup. Can be an executable
+    # of any kind (bash, ruby, binary, etc.)
+    # @example
+    #   pun_pre_hook
+    #   #=> /opt/pun_oidc_exchange
+    #
+    # @return [String] the script to execute
+    attr_accessor :pun_pre_hook
+
     #
     # per-user NGINX app configuration options
     #
@@ -471,6 +480,7 @@ module NginxStage
       self.user_regex     = '[\w@\.\-]+'
       self.min_uid        = 1000
       self.disabled_shell = '/access/denied'
+      self.pun_pre_hook   = nil
 
       self.disable_bundle_user_config = true
       self.nginx_file_upload_max = '10737420000'
