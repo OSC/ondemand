@@ -120,4 +120,61 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
       assert_equal [ OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}}) ], app.clusters
     }
   end
+
+  test "app with special case of all clusters (*)" do
+    OodAppkit.stubs(:clusters).returns(good_clusters + bad_clusters)
+
+    Dir.mktmpdir { |dir|
+      r = PathRouter.new(dir)
+      # note the format here, it's a string not array for backward compatability
+      # and it's the special case * (not the regex .*). Also note the quotes, those
+      # are nessecary for yaml to parse it correctly
+      r.path.join("form.yml").write("cluster: '*'")
+
+      app = BatchConnect::App.new(router: r)
+      assert app.valid?
+      assert_equal good_clusters, app.clusters # make sure you only allow good clusters
+    }
+  end
+
+  test "app with all clusters regex" do
+    OodAppkit.stubs(:clusters).returns(good_clusters + bad_clusters)
+
+    Dir.mktmpdir { |dir|
+      r = PathRouter.new(dir)
+      # not the special case * but the regex .*
+      r.path.join("form.yml").write("cluster: .*")
+
+      app = BatchConnect::App.new(router: r)
+      assert app.valid?
+      assert_equal good_clusters, app.clusters # make sure you only allow good clusters
+    }
+  end
+
+  test "app with single regex to get owens" do
+    OodAppkit.stubs(:clusters).returns(good_clusters + bad_clusters)
+
+    Dir.mktmpdir { |dir|
+      r = PathRouter.new(dir)
+      r.path.join("form.yml").write("cluster: o.*")
+
+      app = BatchConnect::App.new(router: r)
+      assert app.valid?
+      assert_equal [ OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}}) ], app.clusters
+    }
+  end
+
+  test "app with single regex to get owens and pitzer" do
+    OodAppkit.stubs(:clusters).returns(good_clusters + bad_clusters)
+
+    Dir.mktmpdir { |dir|
+      r = PathRouter.new(dir)
+      # try to pick up owens pitzter and ruby by regexs
+      r.path.join("form.yml").write("cluster:\n  - o.*\n  - p.*\n  - r.*")
+
+      app = BatchConnect::App.new(router: r)
+      assert app.valid?
+      assert_equal good_clusters, app.clusters # make sure you only allow good clusters
+    }
+  end
 end
