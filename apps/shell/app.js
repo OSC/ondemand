@@ -36,11 +36,11 @@ router.get('/ssh*', function (req, res) {
 
   var id = uuidv4();
 
-  res.redirect(req.baseUrl + `/session/${id}/${req.params[0]}`);
+  res.redirect(req.baseUrl + `/session/${id + req.params[0]}`);
 
 });
 
-router.get('/session/:id/*', function (req, res) {
+router.get('/session/:id*', function (req, res) {
 
   res.render('index',
     {
@@ -84,6 +84,8 @@ var terminals = {
   create: function (host, dir, uuid) {
     var cmd = 'ssh';
     var args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
+
+    process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
 
     this.instances[uuid] = {term: pty.spawn(cmd, args, {
       name: 'xterm-256color',
@@ -164,9 +166,6 @@ wss.on('connection', function connection (ws, req) {
   }
 
   terminals.attach(uuid, ws);
-
-  process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
-
 });
 
 function custom_server_origin(default_value = null){
