@@ -147,12 +147,7 @@ module BatchConnect
         ""
       end
     end
-     def testing 
-      file = form_file(root: root)
-      #read_yaml_erb(path: file, binding: binding)
-      #file1 = form_file(root: sub_app_root, name: sub_app)
-      
-     end
+    
     # The session context described by this batch connect app
     # @return [SessionContext] the session context
     def build_session_context
