@@ -1,5 +1,6 @@
 class BatchConnect::SessionContextsController < ApplicationController
   include BatchConnectConcern
+  require "json"
 
   # GET /batch_connect/<app_token>/session_contexts/new
   def new
@@ -8,8 +9,9 @@ class BatchConnect::SessionContextsController < ApplicationController
     set_session_context
 
     if @app.valid?
-      # Read in context from cache file
-      @session_context.from_json(cache_file.read) if cache_file.file?
+      # Read in context from cache file if cache is disabled and context.json exist 
+     # @session_context.test(JSON.parse(cache_file.read))
+      @session_context.update_from(JSON.parse(cache_file.read))  if cache_file.file?
     else
       @session_context = nil  # do not display session context form
       flash.now[:alert] = @app.validation_reason
@@ -33,6 +35,7 @@ class BatchConnect::SessionContextsController < ApplicationController
     respond_to do |format|
       if @session.save(app: @app, context: @session_context, format: @render_format)
         cache_file.write(@session_context.to_json)  # save context to cache file
+    
         format.html { redirect_to batch_connect_sessions_url, notice: t('dashboard.batch_connect_sessions_status_blurb_create_success') }
         format.json { head :no_content }
       else
@@ -76,5 +79,5 @@ class BatchConnect::SessionContextsController < ApplicationController
     # Store session context into a cache file
     def cache_file
       BatchConnect::Session.dataroot(@app.token).tap { |p| p.mkpath unless p.exist? }.join("context.json")
-    end
+    end 
 end
