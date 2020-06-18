@@ -11,7 +11,7 @@ class BatchConnect::SessionContextsController < ApplicationController
     if @app.valid?
       # Read in context from cache file if cache is disabled and context.json exist 
      # @session_context.test(JSON.parse(cache_file.read))
-      @session_context.update_from(JSON.parse(cache_file.read))  if cache_file.file?
+      @session_context.update_with(JSON.parse(cache_file.read))  if cache_file.file?
     else
       @session_context = nil  # do not display session context form
       flash.now[:alert] = @app.validation_reason

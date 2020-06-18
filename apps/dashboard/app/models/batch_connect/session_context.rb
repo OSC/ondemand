@@ -59,6 +59,57 @@ module BatchConnect
     # @return [Boolean]
     def respond_to_missing?(method_name, include_private = false)
       /^(?<id>[^=]+)=?$/ =~ method_name.to_s && self[id] || super
+   end
+    
+
+    # Determines if any of the attributes are cacheable on a per attribute level
+    # If more attributes need to be cached in the future, consider iterating through Self
+    #instead of cehcking each attribute manually 
+    # return [Boolean]
+    def attribute_has_cache_enabled?
+     if !( self[:num_cores].opts[:cacheable]) && !(self[:bc_num_hours].opts[:cacheable])
+       false
+     else 
+       true 
+     end
     end
+   
+    # value of atttribute only changes if set through the Attribute.value setter,
+    # updating the hash directly will result in the attribute mainting its old value.
+    def test()
+      self[:bc_num_hours].value = 4
+      self[:bc_num_hours].opts  
+     # self.map  {|element| element}
+    end
+
+    # Logic for updating cacheable attributes 
+    # As of now only bc_num_hours & num_cores are cacheble 
+    # return nil, updates Self[:Attribute].value
+    def load_from_cache(cache)
+     if self[:num_cores].opts[:cacheable] && self[:bc_num_hours].opts[:cacheable]
+
+       self[:num_cores].opts[:value] =  cache.fetch("num_cores", {})
+       self[:bc_num_hours].value =  cache.fetch("bc_num_hours", {})
+     
+     elsif self[:num_cores].opts[:cacheable]
+
+       self[:num_cores].opts[:value] =  cache.fetch("num_cores", {})
+     
+     elsif self[:bc_num_hours].opts[:cacheable]
+      
+       self[:bc_num_hours].value = cache.fetch("bc_num_hours", {}) 
+     
+     end
+    end
+
+    #Logic or determining if attributes should be pulled from cache
+    # cache can be set either per attribute, per app, or system wide 
+    def update_from(cache)
+      if attribute_has_cache_enabled?
+       load_from_cache(cache)       
+      end
+        
+    end
+
   end
 end
