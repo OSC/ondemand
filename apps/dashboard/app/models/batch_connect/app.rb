@@ -305,9 +305,11 @@ module BatchConnect
         @ood_app ||= OodApp.new(router)
       end
 
-      # add a widget for choosing the cluster.
+      # add a widget for choosing the cluster if one doesn't already exist
       def add_cluster_widget(attributes, attribute_list)
-        attribute_list.prepend("cluster") unless attribute_list.include? "cluster"
+        return if attribute_list.include?("cluster") && !attributes[:cluster].nil?
+
+        attribute_list.prepend("cluster") unless attribute_list.include?("cluster")
 
         if clusters.size > 1
           attributes[:cluster] = {
