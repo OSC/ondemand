@@ -104,7 +104,7 @@ module BatchConnect
 
     #Logic or determining if attributes should be pulled from cache
     # cache can be set either per attribute, per app, or system wide 
-    def update_from(cache)
+    def update_with(cache)
       if attribute_has_cache_enabled?
        load_from_cache(cache)       
       end
