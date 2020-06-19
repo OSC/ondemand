@@ -44,6 +44,28 @@
 #
 <VirtualHost *:80>
 
+  # Support maintenance page during outages of OnDemand
+  RewriteEngine On
+  RewriteCond /var/www/ood/public/maintenance/index.html -f
+  RewriteCond /etc/ood/maintenance.enable -f
+  RewriteCond %{REQUEST_URI} !/public/maintenance/.*$
+  RewriteRule ^.*$ /public/maintenance/index.html [R=503,L]
+  ErrorDocument 503 /public/maintenance/index.html
+  Header Set Cache-Control "max-age=0, no-store"
+
+
+  # OIDC configuration
+  #
+  OIDCProviderMetadataURL http://example.com:5556/.well-known/openid-configuration
+  OIDCClientID example.com
+  OIDCClientSecret 0caaf24ab1a0c33440c06afe99df986365b0781f
+  OIDCRedirectURI http://example.com/oidc
+  OIDCRemoteUserClaim email
+  OIDCScope "openid profile email"
+  OIDCCryptoPassphrase 0caaf24ab1a0c33440c06afe99df986365b0781f
+  OIDCSessionInactivityTimeout 28800
+  OIDCSessionMaxDuration 28800
+  OIDCStateMaxNumberOfCookies 10 true
 
   # Lua configuration
   #
@@ -55,7 +77,7 @@
 
   # Authenticated-user to system-user mapping configuration
   #
-  SetEnv OOD_USER_MAP_CMD "/opt/ood/ood_auth_map/bin/ood_auth_map.regex"
+  SetEnv OOD_USER_MAP_CMD "/opt/ood/ood_auth_map/bin/ood_auth_map.regex --regex='^([^@]+)@.*$'"
 
   # Per-user Nginx (PUN) configuration
   # NB: Apache will need sudo privs to control the PUNs
@@ -128,10 +150,19 @@
   # Redirect logout URI to specified redirect URI
   #
   #     http://localhost:80/logout
-  #     #=> http://localhost:80/pun/sys/dashboard/logout
+  #     #=> http://localhost:80/oidc?logout=http%3A%2F%2Fexample.com
   #
-  Redirect "/logout" "/pun/sys/dashboard/logout"
+  Redirect "/logout" "/oidc?logout=http%3A%2F%2Fexample.com"
 
+  # OpenID Connect redirect URI:
+  #
+  #     http://localhost:80/oidc
+  #     #=> handled by mod_auth_openidc
+  #
+  <Location "/oidc">
+    AuthType openid-connect
+    Require valid-user
+  </Location>
 
 
 </VirtualHost>
