@@ -135,7 +135,9 @@ module BatchConnect
     # Whether this is a valid app the user can use
     # @return [Boolean] whether valid app
     def valid?
-      form_config.any? && configured_clusters.any? && clusters.any?
+      form_config.any? &&
+        # top level cluster(s) is defined and valid OR form.cluster exists
+        ((configured_clusters.any? && clusters.any?) || form_config.fetch(:form, []).include?('cluster'))
     end
 
     # The reason why this app may or may not be valid
@@ -306,8 +308,9 @@ module BatchConnect
       end
 
       # add a widget for choosing the cluster if one doesn't already exist
+      # and if users aren't defining they're own form.cluster and attributes.cluster
       def add_cluster_widget(attributes, attribute_list)
-        return if attribute_list.include?("cluster") && !attributes[:cluster].nil?
+        return unless configured_clusters.any?
 
         attribute_list.prepend("cluster") unless attribute_list.include?("cluster")
 

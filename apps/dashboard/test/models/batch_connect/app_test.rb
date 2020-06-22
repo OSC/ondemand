@@ -177,4 +177,31 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
       assert_equal good_clusters, app.clusters # make sure you only allow good clusters
     }
   end
+
+  test "app with user defined cluster" do
+    Dir.mktmpdir { |dir|
+      r = PathRouter.new(dir)
+      r.path.join("form.yml").write("form:\n  - cluster")
+
+      app = BatchConnect::App.new(router: r)
+      # it's valid but there are no clusters. they're user defined and not validated by us
+      assert app.valid?
+      assert_equal [], app.clusters
+    }
+  end
+
+
+  test "valid yaml but invalid cluster" do
+    OodAppkit.stubs(:clusters).returns(good_clusters + bad_clusters)
+
+    Dir.mktmpdir { |dir|
+      r = PathRouter.new(dir)
+      # try to pick up owens pitzter and ruby by regexs
+      r.path.join("form.yml").write("form:\n  - foo\n")
+
+      app = BatchConnect::App.new(router: r)
+      # need to have either cluster or form.cluster
+      assert ! app.valid?
+    }
+  end
 end
