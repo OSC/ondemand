@@ -92,18 +92,23 @@ end
   Give a command and some standard in, get a string for merged stdout and stderr
 --]]
 function capture2e_with_stdin(cmd, stdin)
-  output_file = os.tmpname()
-  local redir_cmd = cmd .. " > " .. output_file .. " 2>&1"
+  math.randomseed(os.time())
+  local num = math.random(0,1000000000)
 
-  local stdin_handle = io.popen(redir_cmd, "w")
+  local input_file = '/tmp/pun_boot_' .. os.time() .. '_' .. num
+  os.execute('mkfifo -m 600 ' .. input_file)
+  local redir_cmd = 'cat ' .. input_file .. ' | ' .. cmd .. " 2>&1"
+
+  local output_handle = io.popen(redir_cmd, "r")
+  local stdin_handle = io.open(input_file, "w")
+
   stdin_handle:write(stdin)
   output = stdin_handle:close()
 
-  local output_handle = io.open(output_file, "r")
   output = output_handle:read("*all")
   output_handle:close()
 
-  os.remove(output_file)
+  os.remove(input_file)
 
   return output
 end
