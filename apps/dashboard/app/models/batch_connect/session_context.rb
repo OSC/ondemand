@@ -77,37 +77,42 @@ module BatchConnect
     # value of atttribute only changes if set through the Attribute.value setter,
     # updating the hash directly will result in the attribute mainting its old value.
     def test()
-      self[:bc_num_hours].value = 4
-      self[:bc_num_hours].opts  
-     # self.map  {|element| element}
+      cache = {"bc_account":"","jupyterlab_switch":"0","bc_num_hours":"1","node_type":"any","cuda_version":"","num_cores":"2","bc_email_on_started":"0"}
+      attributes = cache.select { |k,v| self[k.to_sym].opts[:cacheable]  }
     end
 
     # Logic for updating cacheable attributes 
     # As of now only bc_num_hours & num_cores are cacheble 
     # return nil, updates Self[:Attribute].value
     def load_from_cache(cache)
-     if self[:num_cores].opts[:cacheable] && self[:bc_num_hours].opts[:cacheable]
 
-       self[:num_cores].opts[:value] =  cache.fetch("num_cores", {})
-       self[:bc_num_hours].value =  cache.fetch("bc_num_hours", {})
-     
-     elsif self[:num_cores].opts[:cacheable]
+     self.attributes = cache.select { |k,v| self[k.to_sym].opts[:cacheable] }
 
-       self[:num_cores].opts[:value] =  cache.fetch("num_cores", {})
+     # Old code soon to be removed
+     #
+    # if self[:num_cores].opts[:cacheable] && self[:bc_num_hours].opts[:cacheable]
+
+     #  self[:num_cores].opts[:value] =  cache.fetch("num_cores", {})
+      # self[:bc_num_hours].value =  cache.fetch("bc_num_hours", {})
      
-     elsif self[:bc_num_hours].opts[:cacheable]
+    # elsif self[:num_cores].opts[:cacheable]
+
+     #  self[:num_cores].opts[:value] =  cache.fetch("num_cores", {})
+     
+    # elsif self[:bc_num_hours].opts[:cacheable]
       
-       self[:bc_num_hours].value = cache.fetch("bc_num_hours", {}) 
+     #  self[:bc_num_hours].value = cache.fetch("bc_num_hours", {}) 
      
-     end
+    # end
     end
 
     #Logic or determining if attributes should be pulled from cache
     # cache can be set either per attribute, per app, or system wide 
-    def update_with(cache)
-      if attribute_has_cache_enabled?
-       load_from_cache(cache)       
-      end
+    def update_with_cache(cache)
+      self.attributes = cache.select { |k,v| self[k.to_sym].opts[:cacheable] }   
+      #if attribute_has_cache_enabled?
+      # load_from_cache(cache)       
+      #end
         
     end
 
