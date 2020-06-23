@@ -135,9 +135,13 @@ module BatchConnect
     # Whether this is a valid app the user can use
     # @return [Boolean] whether valid app
     def valid?
-      form_config.any? &&
-        # top level cluster(s) is defined and valid OR form.cluster exists
-        ((configured_clusters.any? && clusters.any?) || form_config.fetch(:form, []).include?('cluster'))
+      if form_config.empty?
+        false
+      elsif configured_clusters.any?
+        clusters.any?
+      else
+        true
+      end
     end
 
     # The reason why this app may or may not be valid
