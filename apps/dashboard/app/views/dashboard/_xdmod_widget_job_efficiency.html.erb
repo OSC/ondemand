@@ -1,0 +1,234 @@
+<div id="jobsEfficiencyReportPanelDiv"></div>
+
+<script id="job-efficiency-template" type="text/x-handlebars-template">
+
+<div class="row">
+<div class="col-md-6">
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{title}}</h3>
+  </div>
+  <div class="panel-body">
+    <p><strong><span class="text-success">{{good_job_percent}}% efficient</span>, <span class="text-danger">{{bad_job_percent}}% inefficent:</span></strong></p>
+    <div class="progress progress-custom">
+      <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{good_job_percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{good_job_percent}}%">
+      </div>
+      <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{bad_job_percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{bad_job_percent}}%">
+      </div>
+    </div>
+    <p>
+      <span class="text-danger">{{job_count_bad}} inefficent jobs</span> &frasl; {{job_count}} total jobs
+    </p>
+  </div>
+</div>
+
+</div>
+<div class="col-md-6">
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+    XDMoD - Core Hours Efficiency Report - 2020-05-21 to 2020-06-20
+    </h3>
+  </div>
+  <div class="panel-body">
+    <p><strong><span class="text-success">{{good_core_percent}}% efficient</span>, <span class="text-danger">{{bad_core_percent}}% inefficent:</span></strong></p>
+    <div class="progress progress-custom">
+      <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: {{good_core_percent}}%">
+      </div>
+      <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: {{bad_core_percent}}%">
+      </div>
+    </div>
+    <p>
+      <span class="text-danger">{{round core_time_bad}} inefficient core hours</span> &frasl;<br>{{round core_time}} total core hours
+    </p>
+  </div>
+</div>
+
+
+</div>
+</div>
+
+<div class="row">
+<div class="col-md-6">
+
+
+<div class="panel panel-default">
+<div class="panel-heading">
+  <h3 class="panel-title">{{title}}</h3>
+</div>
+<div class="panel-body">
+<p>
+          {{good_job_percent}}% efficient:
+          <div class="progress progress-custom">
+              <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: {{good_job_percent}}%">
+              </div>
+            </div>
+            {{bad_job_percent}}% inefficent:
+            <div class="progress progress-custom">
+                <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: {{bad_job_percent}}%">
+                </div>
+                </div>
+                </p>
+              <span class="text-danger">{{job_count_bad}} inefficent jobs</span> &frasl;<br>{{job_count}} total jobs
+</div>
+</div>
+
+</div>
+<div class="col-md-6">
+
+<div class="panel panel-default">
+<div class="panel-heading">
+  <h3 class="panel-title">
+  XDMoD - Core Hours Efficiency Report - 2020-05-21 to 2020-06-20
+   </h3>
+</div>
+<div class="panel-body">
+<p>
+          {{good_core_percent}}% efficient:
+          <div class="progress progress-custom">
+              <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: {{good_core_percent}}%">
+                <span class="sr-only">40% Complete (success)</span>
+              </div>
+            </div>
+            {{bad_core_percent}}% inefficent:
+            <div class="progress progress-custom">
+              <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: {{bad_core_percent}}%">
+                  <span class="sr-only">60% Complete (warning)</span>
+                </div>
+                </div>
+                </p>
+              <span class="text-danger">{{round core_time_bad}} inefficient core hours</span> &frasl;<br>{{round core_time}} total core hours
+</div>
+</div>
+
+
+</div>
+</div>
+
+<div class="panel panel-default"><div class="panel-body">
+  <h4>{{title}}</h4>
+
+  <table class="table table-striped table-condensed">
+    <thead>
+      <th>Report</th>
+      <th>Summary</th>
+      <th>Total</th>
+    </thead>
+    <tbody>
+      <tr>
+        <th>Job Efficiency</th>
+        <td>
+          {{good_job_percent}}% efficient:
+          <div class="progress progress-custom">
+              <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: {{good_job_percent}}%">
+              </div>
+            </div>
+            {{bad_job_percent}}% inefficent:
+            <div class="progress progress-custom">
+                <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: {{bad_job_percent}}%">
+                </div>
+                </div>
+              </td>
+              <td><span class="text-danger">{{job_count_bad}} inefficent jobs</span> &frasl;<br>{{job_count}} total jobs</td>
+
+      </tr>
+      <tr>
+        <th>Core Hour Efficiency</th>
+        <td>
+          {{good_core_percent}}% efficient:
+          <div class="progress progress-custom">
+              <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: {{good_core_percent}}%">
+                <span class="sr-only">40% Complete (success)</span>
+              </div>
+            </div>
+            {{bad_core_percent}}% inefficent:
+            <div class="progress progress-custom">
+              <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: {{bad_core_percent}}%">
+                  <span class="sr-only">60% Complete (warning)</span>
+                </div>
+                </div>
+              </td>
+              <td><span class="text-danger">{{round core_time_bad}} inefficient core hours</span> &frasl;<br>{{round core_time}} total core hours</td>
+      </tr>
+    </thead>
+    <tbody>
+  </table>
+
+  {{#if error}}
+    <div class="alert alert-danger">{{error}}</div>
+  {{/if}}
+
+  {{#if loading}}
+    <div class="alert">LOADING...</div>
+  {{/if}}
+
+</div></div>
+</div>
+</script>
+
+
+<script>
+(function(){
+
+ var startOfYear = '<%= Date.today.beginning_of_year.strftime("%Y-%m-%d") %>',
+     thirtyDaysAgo = '<%= 30.days.ago.strftime("%Y-%m-%d") %>',
+     today = '<%= Date.today.strftime("%Y-%m-%d") %>';
+
+var jobsUrl = new URL('<%= Configuration.xdmod_host %>/rest/v1/warehouse/aggregatedata');
+jobsUrl.searchParams.set('_dc', Date.now());
+
+jobsUrl.searchParams.set('start', 0);
+jobsUrl.searchParams.set('limit', 1);
+jobsUrl.searchParams.set('config', JSON.stringify({
+  "realm":"JobEfficiency",
+  "group_by":"person",
+  "aggregation_unit":"day",
+  "start_date":"2020-05-20",
+  "end_date":"2020-06-19",
+  // "person_id":"327", //FIXME: this can be omitted - but what if you have staff acct
+  "order_by":{
+    "field":"core_time_bad",
+    "dirn":"desc"},
+  "statistics":["core_time_bad","bad_core_ratio"]
+}));
+
+var template_source = $('#job-efficiency-template').html();
+var template = Handlebars.compile(template_source);
+var helpers = {
+  title: function(){
+    return "XDMoD - Job Efficiency Report - " + thirtyDaysAgo + " to " + today;
+  },
+  bad_job_percent: function(){
+                   return (parseFloat(this.bad_job_ratio)).toFixed(1)
+  },
+  good_job_percent: function(){
+                   return (100 - parseFloat(this.bad_job_ratio)).toFixed(1)
+  },
+  bad_core_percent: function(){
+                   return (parseFloat(this.bad_core_ratio)).toFixed(1)
+                  },
+  good_core_percent: function(){
+                   return (100 - parseFloat(this.bad_core_ratio)).toFixed(1)
+                     },
+round: function(str){
+return parseFloat(str).toFixed(1);
+       }
+};
+var render_template = function(context){
+  $('#jobsEfficiencyReportPanelDiv').html(template(context, {helpers: helpers}));
+}
+
+render_template({loading: true});
+
+$.get({url: jobsUrl, xhrFields: { withCredentials: true }, crossDomain: true}).done(function(jsonData){
+    //FIXME: error checking for ["results"][0]
+    render_template(jsonData["results"][0]);
+  }).fail(function(response){
+    render_template({error: response.responseText});
+});
+
+}());
+</script>
