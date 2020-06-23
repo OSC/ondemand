@@ -24,7 +24,7 @@
             <dt>Walltime Used</dt>
             <dd>{{walltime}}</dd>
             <dt>CPU</dt>
-            <dd>{{cpu}}</dd>
+            <dd>{{cpu_label cpu_user}}</dd>
           </dl>
         </td>
       </tr>
@@ -55,7 +55,7 @@
         <td>{{start_time}}</td>
         <td>{{end_time}}</td>
         <td>{{walltime}}</td>
-        <td>{{cpu_user}}</td>
+        <td>{{cpu_label cpu_user}}</td>
       </tr>
       {{else}}
       <tr><td colspan="7">No data available.</td></tr>
@@ -111,7 +111,26 @@ var helpers = {
 
     return hours + "h " + minutes + "m " + seconds + "s";
   },
-  job_url: function(){ return "https://xdmod-test.hpc.osc.edu/#job_viewer?action=show&realm=SUPREMM&jobref=" + this.jobid;  }
+  job_url: function(){ return "https://xdmod-test.hpc.osc.edu/#job_viewer?action=show&realm=SUPREMM&jobref=" + this.jobid;  },
+  cpu_label: function(cpu){
+    let value = (parseFloat(cpu)*100).toFixed(1),
+        label = "N/A";
+
+    if(! isNaN(value)){
+      let severity = "warning";
+
+      if(cpu > 0.74){
+        severity = "success";
+      }
+      else if(cpu < 0.25){
+        severity = "danger";
+      }
+
+      label = `<span class="label label-${severity}">${Handlebars.escapeExpression(value.toString().padStart(4,0))}</span>`;
+    }
+
+    return new Handlebars.SafeString(label);
+  }
 };
 var render_template = function(context){
   $('#jobsPanelDiv').html(template(context, {helpers: helpers}));
