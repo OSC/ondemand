@@ -47,9 +47,9 @@
   </div>
 </div>
 
+</div>
+</div>
 
-</div>
-</div>
 
 <div class="row">
 <div class="col-md-6">
@@ -202,21 +202,22 @@ var helpers = {
     return "XDMoD - Job Efficiency Report - " + thirtyDaysAgo + " to " + today;
   },
   bad_job_percent: function(){
-                   return (parseFloat(this.bad_job_ratio)).toFixed(1)
+    return (parseFloat(this.bad_job_ratio)).toFixed(1)
   },
   good_job_percent: function(){
-                   return (100 - parseFloat(this.bad_job_ratio)).toFixed(1)
+    return (100 - parseFloat(this.bad_job_ratio)).toFixed(1)
   },
   bad_core_percent: function(){
-                   return (parseFloat(this.bad_core_ratio)).toFixed(1)
-                  },
+    return (parseFloat(this.bad_core_ratio)).toFixed(1)
+  },
   good_core_percent: function(){
-                   return (100 - parseFloat(this.bad_core_ratio)).toFixed(1)
-                     },
-round: function(str){
-return parseFloat(str).toFixed(1);
-       }
+    return (100 - parseFloat(this.bad_core_ratio)).toFixed(1)
+  },
+  round: function(str){
+    return parseFloat(str).toFixed(1);
+  }
 };
+
 var render_template = function(context){
   $('#jobsEfficiencyReportPanelDiv').html(template(context, {helpers: helpers}));
 }
