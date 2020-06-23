@@ -85,7 +85,7 @@ var jobsUrl = new URL('<%= Configuration.xdmod_host %>/rest/v1/warehouse/search/
 jobsUrl.searchParams.set('_dc', Date.now());
 jobsUrl.searchParams.set('start_date', thirtyDaysAgo);
 jobsUrl.searchParams.set('end_date', today);
-jobsUrl.searchParams.set('realm', 'Jobs');
+jobsUrl.searchParams.set('realm', 'SUPREMM');
 jobsUrl.searchParams.set('limit', 10);
 jobsUrl.searchParams.set('start', 0);
 jobsUrl.searchParams.set('verbose', true);
@@ -111,7 +111,7 @@ var helpers = {
 
     return hours + "h " + minutes + "m " + seconds + "s";
   },
-  job_url: function(){ return "<%= Configuration.xdmod_host %>/#job_viewer?action=show&realm=Jobs&jobref=" + this.jobid; }
+  job_url: function(){ return "https://xdmod-test.hpc.osc.edu/#job_viewer?action=show&realm=SUPREMM&jobref=" + this.jobid;  }
 };
 var render_template = function(context){
   $('#jobsPanelDiv').html(template(context, {helpers: helpers}));
