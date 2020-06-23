@@ -35,9 +35,10 @@
   <div class="panel-body">
     <p style="font-weight: bold; display: flex; justify-content: space-between"><span class="text-success">{{good_core_percent}}% efficient</span> <span class="text-danger">{{bad_core_percent}}% inefficent</span></p>
     <div class="progress progress-custom">
-      <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: {{good_core_percent}}%">
+      <!-- FIXME: the role is not a progress bar but a graph so aria values will be different -->
+      <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{good_core_percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{good_core_percent}}%">
       </div>
-      <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: {{bad_core_percent}}%">
+      <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{bad_core_percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{bad_core_percent}}%">
       </div>
     </div>
     <p>
