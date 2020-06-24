@@ -66,53 +66,42 @@ module BatchConnect
     # If more attributes need to be cached in the future, consider iterating through Self
     #instead of cehcking each attribute manually 
     # return [Boolean]
-    def attribute_has_cache_enabled?
-     if !( self[:num_cores].opts[:cacheable]) && !(self[:bc_num_hours].opts[:cacheable])
-       false
-     else 
-       true 
-     end
+    def attribute_cache_enabled?
+      self.any? {|v| v.opts[:cacheable]  } 
+    end
+
+    def app_specific_cache_enabled?
+      self[:cacheable]
     end
    
     # value of atttribute only changes if set through the Attribute.value setter,
     # updating the hash directly will result in the attribute mainting its old value.
     def test()
       cache = {"bc_account":"","jupyterlab_switch":"0","bc_num_hours":"1","node_type":"any","cuda_version":"","num_cores":"2","bc_email_on_started":"0"}
-      attributes = cache.select { |k,v| self[k.to_sym].opts[:cacheable]  }
+     # attributes = cache.select { |k,v| self[k.to_sym].opts[:cacheable]  }
+      self.any? {|k,v| v == :cacheable }
+      self.each {|v| v.opts[:cacheable]  }
+      self.any? {|v| v.opts[:cacheable]  } 
+      ENV.keys
+      ENV["OOD_BATCH_CONNECT_CACHE_ATTR_VALUES"]
+     # u = ConfigurationSingleton.new
+      #u.load_dotenv_files
     end
 
-    # Logic for updating cacheable attributes 
-    # As of now only bc_num_hours & num_cores are cacheble 
-    # return nil, updates Self[:Attribute].value
-    def load_from_cache(cache)
-
-     self.attributes = cache.select { |k,v| self[k.to_sym].opts[:cacheable] }
-
-     # Old code soon to be removed
-     #
-    # if self[:num_cores].opts[:cacheable] && self[:bc_num_hours].opts[:cacheable]
-
-     #  self[:num_cores].opts[:value] =  cache.fetch("num_cores", {})
-      # self[:bc_num_hours].value =  cache.fetch("bc_num_hours", {})
-     
-    # elsif self[:num_cores].opts[:cacheable]
-
-     #  self[:num_cores].opts[:value] =  cache.fetch("num_cores", {})
-     
-    # elsif self[:bc_num_hours].opts[:cacheable]
-      
-     #  self[:bc_num_hours].value = cache.fetch("bc_num_hours", {}) 
-     
-    # end
+    def global_cache_enabled? 
+       ENV["OOD_BATCH_CONNECT_CACHE_ATTR_VALUES"]
     end
 
-    #Logic or determining if attributes should be pulled from cache
-    # cache can be set either per attribute, per app, or system wide 
-    def update_with_cache(cache)
-      self.attributes = cache.select { |k,v| self[k.to_sym].opts[:cacheable] }   
-      #if attribute_has_cache_enabled?
-      # load_from_cache(cache)       
-      #end
+    #Logic determining if attributes should be pulled from cache
+    def update_with_cache(cache, app_specific_cache)
+        
+      if attribute_cache_enabled?
+        self.attributes = cache.select { |k,v| self[k.to_sym].opts[:cacheable]}       
+      elsif app_specific_cache_enabled?
+        self.attributes = cache
+      elsif global_cache_enabled? 
+        self.attributes = cache 
+      end
         
     end
 

@@ -96,6 +96,10 @@ module BatchConnect
       form_config.fetch(:description, default_description)
     end
 
+    def cacheable
+      form_config.fetch(:cacheable, nil)
+    end
+
     # Default description for the batch connect app
     # @return [String] default description of app
     def default_description
