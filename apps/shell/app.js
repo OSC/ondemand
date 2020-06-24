@@ -8,6 +8,7 @@ var hbs       = require('hbs');
 var dotenv    = require('dotenv');
 var Tokens    = require('csrf');
 var url       = require('url');
+var URLSearchParams = require('url-search-params');
 var port      = 3000;
 
 // Read in environment variables
