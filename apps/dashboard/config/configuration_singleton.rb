@@ -204,8 +204,8 @@ end
   end
 
   # Turbolinks feature flag
-  def turbolinks
-    to_bool(ENV['OOD_TURBOLINKS'] || false)
+  def turbolinks_enabled?
+    to_bool(ENV['OOD_TURBOLINKS_ENABLED'])
   end
 
   def dataroot
