@@ -20,7 +20,8 @@
     "hbs": "^4.1.0",
     "minimist": ">=1.2.2",
     "node-pty": "^0.9.0",
-    "ws": ">=7.2.0"
+    "ws": ">=7.2.0",
+    "url-search-params": ">=0.10.0",
   },
   "private": true,
   "resolutions": {
