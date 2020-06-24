@@ -17,8 +17,8 @@
       <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{bad_job_percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{bad_job_percent}}%">
       </div>
     </div>
-    <p>
-      <span class="text-danger">{{job_count_bad}} inefficent jobs</span> &frasl; {{job_count}} total jobs
+    <p class="text-center">
+      <span class="text-danger">{{job_count_bad}} inefficent jobs </span> &frasl; {{job_count}} total jobs
     </p>
   </div>
 </div>
@@ -41,7 +41,7 @@
       <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{bad_core_percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{bad_core_percent}}%">
       </div>
     </div>
-    <p>
+    <p class="text-center">
       <span class="text-danger">{{round core_time_bad}} inefficient core hours</span> &frasl;<br>{{round core_time}} total core hours
     </p>
   </div>
