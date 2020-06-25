@@ -77,38 +77,52 @@ function installSettingHandlers(name) {
 function promiseLoginToXDMoD(xdmodUrl){
   return new Promise(function(resolve, reject){
 
-    window.addEventListener("message", function(event){
-      if (event.origin !== xdmodUrl){
-        console.log('Received message from untrusted origin, discarding');
-        return;
-      }
-      else if(event.data.application == 'xdmod'){
-        if(event.data.action == 'loginComplete'){
-          resolve();
+    var promise_to_receive_message_from_iframe = new Promise(function(resolve, reject){
+      window.addEventListener("message", function(event){
+        if (event.origin !== xdmodUrl){
+          console.log('Received message from untrusted origin, discarding');
+          return;
         }
-          else if(event.data.action == 'error'){
-            console.log('ERROR: ' + event.data.info);
-            reject();
+        else if(event.data.application == 'xdmod'){
+          if(event.data.action == 'loginComplete'){
+            resolve();
+          }
+            else if(event.data.action == 'error'){
+              console.log('ERROR: ' + event.data.info);
+              //FIXME: what to pass to reject?
+              reject();
+          }
         }
-      }
-    }, false);
+      }, false);
+    });
 
     fetch(xdmodUrl + '/rest/auth/idpredirect?returnTo=%2Fgui%2Fgeneral%2Flogin.php')
       .then(response => response.ok ? Promise.resolve(response) : Promise.reject())
       .then(response => response.json())
-      .then((data) => {
-        var xdmodLogin = document.createElement('iframe');
-        xdmodLogin.src = data;
-        document.body.appendChild(xdmodLogin);
-
-        //FIXME: if my mod_auth_openidc credentials are good BUT idp-test.osc.edu credentials have expired
-        // we get to this point but then the iframe loads on idp-test.osc.edu and stops, presenting the user with
-        // the login page, and the message never gets posted to this window!!!
-        // either the login page would need to post the message, or we need another solution for this...
+      .then(function(data){
+        return new Promise(function(resolve, reject){
+          var xdmodLogin = document.createElement('iframe');
+          xdmodLogin.src = data;
+          document.body.appendChild(xdmodLogin);
+          xdmodLogin.onload = function(){
+            resolve();
+          }
+          xdmodLogin.onerror = function(){
+            console.error("failed to load "+ xdmodLogin.src);
+            //FIXME: what to pass to reject?
+            reject();
+          }
+        });
+      })
+      .then(() => {
+        return Promise.race([promise_to_receive_message_from_iframe, new Promise(function(resolve, reject){
+          setTimeout(reject, 5000, 'Timout waiting for login to complete');
+        })]);
       })
       .catch((e)=> {
         console.log("fetching URL login URL failed");
         console.log(e);
+        //FIXME: handle error properly passing it onto reject
         reject();
       });
   });
