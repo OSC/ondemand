@@ -5,6 +5,9 @@ module BatchConnect
     include ActiveModel::Model
     include ActiveModel::Serializers::JSON
 
+
+    attr_accessor :app_specific_cache_setting
+
     # Attributes used for serialization
     # @return [Hash{String => String, nil}] attributes to be serialized
     def attributes
@@ -18,8 +21,9 @@ module BatchConnect
     end
 
     # @param attributes [Array<Attribute>] list of attribute objects
-    def initialize(attributes = [])
+    def initialize(attributes = [], app_specific_cache_setting = nil)
       @attributes = attributes
+      @app_specific_cache_setting = app_specific_cache_setting
     end
 
     # Find attribute in list using the id of the attribute
@@ -68,28 +72,31 @@ module BatchConnect
     end
     
     
-    # @return [Boolean]   
+    # @return true, false, nil    
     def app_specific_cache_enabled?
-      self[:cacheable]
+      @app_specific_cache_setting
     end
    
      # @return [Boolean]   
     def global_cache_enabled? 
-       ENV["OOD_BATCH_CONNECT_CACHE_ATTR_VALUES"]
+      Configuration.batch_connect_global_cache_enabled?
     end
 
     #Logic determining if attributes should be pulled from cache
-    def update_with_cache(cache, app_specific_cache)
+    def update_with_cache(cache)
         
       if attribute_cache_enabled?
         self.attributes = cache.select { |k,v| self[k.to_sym].opts[:cacheable]}       
-      elsif app_specific_cache_enabled?
+      elsif app_specific_cache_enabled? && attribute_cache_enabled? != false
         self.attributes = cache
-      elsif global_cache_enabled? 
+      elsif global_cache_enabled? && app_specific_cache_enabled? !=  false && attribute_cache_enabled? != false 
         self.attributes = cache 
       end
         
     end
-
+    
+    def test
+       @app_specific_cache_setting
+    end
   end
 end
