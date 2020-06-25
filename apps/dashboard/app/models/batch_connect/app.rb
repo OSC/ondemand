@@ -96,10 +96,6 @@ module BatchConnect
       form_config.fetch(:description, default_description)
     end
 
-    def cacheable
-      form_config.fetch(:cacheable, nil)
-    end
-
     # Default description for the batch connect app
     # @return [String] default description of app
     def default_description
@@ -159,8 +155,7 @@ module BatchConnect
       local_attribs = form_config.fetch(:attributes, {})
       attrib_list   = form_config.fetch(:form, [])
     
-      BatchConnect::SessionContext.new(
-        attrib_list.map do |attribute_id|
+     attributes = attrib_list.map do |attribute_id|
           attribute_opts = local_attribs.fetch(attribute_id.to_sym, {})
     
           # Developer wanted a fixed value
@@ -171,8 +166,9 @@ module BatchConnect
 
           SmartAttributes::AttributeFactory.build(attribute_id, attribute_opts)
         end
-      )
 
+     BatchConnect::SessionContext.new(attributes, form_config.fetch(:cacheable))   
+       
     end
 
     #
