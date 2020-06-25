@@ -11,17 +11,15 @@
       <tr>
         <td>
           <dl>
-            <dt>User</dt>
-            <dd>{{name}}</dd>
-            <dt>Job ID</dt>
+            <dt>ID</dt>
             <dd>{{local_job_id}}</dd>
-            <dt>Cluster/Resource</dt>
+            <dt>Name</dt>
+            <dd>{{job_name}}</dd>
+            <dt>Cluster</dt>
             <dd>{{resource}}</dd>
-            <dt>Start</dt>
-            <dd>{{start_time}}</dd>
-            <dt>Stop</dt>
-            <dd>{{end_time}}</dd>
-            <dt>Walltime Used</dt>
+            <dt>Date</dt>
+            <dd>{{date}}</dd>
+            <dt>Time Used</dt>
             <dd>{{walltime}}</dd>
             <dt>CPU</dt>
             <dd>{{cpu_label cpu_user}}</dd>
@@ -37,23 +35,19 @@
   <table class="table table-striped table-condensed hidden-xs">
     <thead>
       <tr>
-        <th>User</th>
-        <th>Job ID</th>
-        <th>Cluster/Resource</th>
-        <th>Start</th>
-        <th>End</th>
-        <th>Walltime Used</th>
+        <th>ID</th>
+        <th>Cluster</th>
+        <th>Date</th>
+        <th>Time Used</th>
         <th>CPU</th>
       </tr>
     </thead>
     <tbody>
       {{#each results}}
       <tr>
-        <td>{{name}}</td>
-        <td><a target="_blank" href="{{job_url}}">{{local_job_id}}&nbsp;<i style="display: inline" class="fa fa-external-link-square-alt"></i></a></td>
+        <td><a target="_blank" href="{{job_url}}">{{local_job_id}}&nbsp;<i style="display: inline" class="fa fa-external-link-square-alt"></i></a><!--<br>{{job_name}}--></td>
         <td>{{resource}}</td>
-        <td>{{start_time}}</td>
-        <td>{{end_time}}</td>
+        <td>{{date}}</td>
         <td>{{walltime}}</td>
         <td>{{cpu_label cpu_user}}</td>
       </tr>
@@ -109,7 +103,17 @@ var helpers = {
     duration -= minutes * (60);
     let seconds = Math.floor(duration);
 
-    return hours + "h " + minutes + "m " + seconds + "s";
+    return hours.toString().padStart(2, "0") + ":" +
+           minutes.toString().padStart(2, "0") + ":" +
+           seconds.toString().padStart(2, "0");
+  },
+  date: function(){
+    // month/day
+    let d = new Date(this.start_time_ts*1000),
+        month = d.getMonth()+1,
+        day = d.getDay()+1;
+
+    return `${month}/${day}`;
   },
   job_url: function(){ return "https://xdmod-test.hpc.osc.edu/#job_viewer?action=show&realm=SUPREMM&jobref=" + this.jobid;  },
   cpu_label: function(cpu){
