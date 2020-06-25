@@ -187,6 +187,12 @@ end
     !to_bool(ENV["DISABLE_DASHBOARD_LOGO"])
   end
 
+  # Dashboard logo height used to set the height style attribute
+  # @return [String, nil] Logo height
+  def logo_height
+    ENV["OOD_DASHBOARD_LOGO_HEIGHT"]
+  end
+
   def brand_bg_color
     ENV.values_at('OOD_BRAND_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_BG', 'BOOTSTRAP_NAVBAR_INVERSE_BG').compact.first
   end
