@@ -72,3 +72,52 @@ function installSettingHandlers(name) {
   var selector = 'input[type="range"][name="' + name + '"]';
   $(selector).change(storeSetting);
 }
+
+
+function promiseLoginToXDMoD(xdmodUrl){
+  return new Promise(function(resolve, reject){
+
+    window.addEventListener("message", function(event){
+      if (event.origin !== xdmodUrl){
+        console.log('Received message from untrusted origin, discarding');
+        return;
+      }
+      else if(event.data.application == 'xdmod'){
+        if(event.data.action == 'loginComplete'){
+          resolve();
+        }
+          else if(event.data.action == 'error'){
+            console.log('ERROR: ' + event.data.info);
+            reject();
+        }
+      }
+    }, false);
+
+    fetch(xdmodUrl + '/rest/auth/idpredirect?returnTo=%2Fgui%2Fgeneral%2Flogin.php')
+      .then(response => response.ok ? Promise.resolve(response) : Promise.reject())
+      .then(response => response.json())
+      .then((data) => {
+        var xdmodLogin = document.createElement('iframe');
+        xdmodLogin.src = data;
+        document.body.appendChild(xdmodLogin);
+
+        //FIXME: if my mod_auth_openidc credentials are good BUT idp-test.osc.edu credentials have expired
+        // we get to this point but then the iframe loads on idp-test.osc.edu and stops, presenting the user with
+        // the login page, and the message never gets posted to this window!!!
+        // either the login page would need to post the message, or we need another solution for this...
+      })
+      .catch((e)=> {
+        console.log("fetching URL login URL failed");
+        console.log(e);
+        reject();
+      });
+  });
+}
+
+var promiseLoggedIntoXDMoD = (function(){
+  return _.memoize(function(xdmodUrl){
+    return fetch(xdmodUrl + '/rest/v1/users/current', { credentials: 'include' })
+      .then(response => response.ok ? Promise.resolve() : Promise.reject())
+      .catch(() => promiseLoginToXDMoD(xdmodUrl));
+  });
+})();
