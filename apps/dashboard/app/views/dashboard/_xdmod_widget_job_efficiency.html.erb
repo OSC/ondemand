@@ -114,12 +114,13 @@ var render_template = function(context){
 
 render_template({loading: true});
 
-$.get({url: jobsUrl, xhrFields: { withCredentials: true }, crossDomain: true}).done(function(jsonData){
-    //FIXME: error checking for ["results"][0]
-    render_template(jsonData["results"][0]);
-  }).fail(function(response){
-    render_template({error: response.responseText});
-});
+var xdmodUrl = '<%= Configuration.xdmod_host %>';
+promiseLoggedIntoXDMoD(xdmodUrl)
+  .then(() => fetch(jobsUrl, { credentials: 'include' }))
+  .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
+  .then(response => response.json())
+  .then((data) => render_template(data["results"][0])) //FIXME: error checking for ["results"][0]
+  .catch((error) => { console.error('failed to fetch jobs'); console.log(error); }); //FIXME: render error here for user... // render_template({error: response.responseText});
 
 }());
 </script>
