@@ -188,7 +188,7 @@ end
   end
 
   # Dashboard logo height used to set the height style attribute
-  # @return [String, nil] Logo height in pixels
+  # @return [String, nil] Logo height
   def logo_height
     ENV["OOD_DASHBOARD_LOGO_HEIGHT"]
   end
