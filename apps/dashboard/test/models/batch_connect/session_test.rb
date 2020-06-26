@@ -89,4 +89,24 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       assert_equal 'ood-sys-dashboard-rstudio', BatchConnect::Session.new.script_options[:job_name]
     end
   end
+
+  test "session correctly sets cluster_id from the form" do
+    BatchConnect::SessionContext.any_instance.stubs(:cluster).returns('owens')
+
+    session = BatchConnect::Session.new
+    session.send(:set_cluster_id, BatchConnect::SessionContext.new, {})
+    assert_equal 'owens', session.cluster_id
+  end
+
+  test "session correctly sets cluster_id from the sumit options" do
+    session = BatchConnect::Session.new
+    session.send(:set_cluster_id, BatchConnect::SessionContext.new, {:cluster => 'owens'})
+    assert_equal 'owens', session.cluster_id
+  end
+
+  test "session throws exception when no cluster is available" do
+    assert_raise BatchConnect::Session::ClusterNotFound do
+      BatchConnect::Session.new.send(:set_cluster_id, BatchConnect::SessionContext.new, {})
+    end
+  end
 end

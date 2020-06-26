@@ -136,13 +136,13 @@ module BatchConnect
     # @return [Boolean] whether saved successfully
     def save(app:, context:, format: nil)
       self.id         = SecureRandom.uuid
-      self.cluster_id = context.cluster
       self.token      = app.token
       self.title      = app.title
       self.view       = app.session_view
       self.created_at = Time.now.to_i
 
       submit_script = app.submit_opts(context, fmt: format) # could raise an exception
+      set_cluster_id(context, submit_script) # could also raise ClusterNotFound exception
 
       stage(app.root.join("template"), context: context) &&
         submit(submit_script)
@@ -433,6 +433,19 @@ module BatchConnect
           file.rename rendered_file     # keep same file permissions
           rendered_file.write(rendered)
         end
+      end
+
+      # Sets the self.cluster_id from the SessionContext (the form.yml.erb)
+      # or the submit_opts from the submit.yml.erb.
+      # Throws a ClusterNotFound if it cannot be set from either of these.
+      def set_cluster_id(context, submit_opts)
+        self.cluster_id = if submit_opts.fetch(:cluster, nil)
+                            submit_opts.fetch(:cluster, nil).to_s
+                          elsif context.respond_to?(:cluster)
+                            context.cluster
+                          else
+                            raise(ClusterNotFound, I18n.t('dashboard.batch_connect_missing_cluster'))
+                          end
       end
   end
 end
