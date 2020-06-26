@@ -1,7 +1,8 @@
 <div id="jobsPanelDiv"></div>
 
 <script id="jobs-template" type="text/x-handlebars-template">
-<div class="panel panel-default"><div class="panel-body">
+<div class="panel panel-default">
+<div class="panel-body">
   <h4>{{title}}</h4>
 
   <div class="table-responsive visible-xs-block">
@@ -44,7 +45,7 @@
     <tbody>
       {{#each results}}
       <tr>
-        <td><a target="_blank" href="{{job_url}}">{{local_job_id}}&nbsp;<i style="display: inline" class="fa fa-external-link-square-alt"></i></a><!--<br>{{job_name}}--></td>
+        <td><a target="_blank" href="{{job_url}}">{{local_job_id}}&nbsp;<span class="fa fa-external-link-square-alt"></span></a><!--<br>{{job_name}}--></td>
         <td>{{resource}}</td>
         <td>{{date}}</td>
         <td>{{walltime}}</td>
@@ -55,21 +56,24 @@
       {{/each}}
     </tbody>
   </table>
+</div>
 
+<div class="panel-footer">
   {{#if error}}
     <div class="alert alert-danger">{{error}}</div>
+  {{else}}
+    {{#if loading}}
+      <div class="alert alert-info">LOADING...</div>
+    {{else}}
+      Showing first {{page_limit}} of {{totalCount}} jobs. See <a href="{{xdmod_url}}">your XDMoD dashboard&nbsp;<span class="fa fa-external-link-square-alt"></span></a> for more information.
+    {{/if}}
   {{/if}}
 
-  {{#if loading}}
-    <div class="alert">LOADING...</div>
-  {{/if}}
-
-</div></div>
+  <%# TODO: add pagination? %>
+</div>
+</div>
 </script>
 
-<!--
-FIXME: Showing 10 of 58
--->
 
 <script>
 (function(){
@@ -78,12 +82,14 @@ var startOfYear = '<%= Date.today.beginning_of_year.strftime("%Y-%m-%d") %>',
      thirtyDaysAgo = '<%= 30.days.ago.strftime("%Y-%m-%d") %>',
      today = '<%= Date.today.strftime("%Y-%m-%d") %>';
 
+var jobsPageLimit = 10;
+
 var jobsUrl = new URL('<%= Configuration.xdmod_host %>/rest/v1/warehouse/search/jobs');
 jobsUrl.searchParams.set('_dc', Date.now());
 jobsUrl.searchParams.set('start_date', thirtyDaysAgo);
 jobsUrl.searchParams.set('end_date', today);
 jobsUrl.searchParams.set('realm', 'SUPREMM');
-jobsUrl.searchParams.set('limit', 10);
+jobsUrl.searchParams.set('limit', jobsPageLimit);
 jobsUrl.searchParams.set('start', 0);
 jobsUrl.searchParams.set('verbose', true);
 jobsUrl.searchParams.set('params', JSON.stringify({}));
@@ -93,6 +99,12 @@ var template = Handlebars.compile(template_source);
 var helpers = {
   title: function(){
     return "XDMoD - Jobs - " + thirtyDaysAgo + " to " + today;
+  },
+  page_limit: function(){
+    return jobsPageLimit;
+  },
+  xdmod_url: function(){
+    return '<%= Configuration.xdmod_host %>';
   },
   start_time: function(){ return new Date(this.start_time_ts*1000).toLocaleString(); },
   end_time: function(){ return new Date(this.end_time_ts*1000).toLocaleString(); },
@@ -139,12 +151,12 @@ var helpers = {
     return new Handlebars.SafeString(label);
   }
 };
+
 var render_template = function(context){
   $('#jobsPanelDiv').html(template(context, {helpers: helpers}));
 }
 
 render_template({loading: true});
-
 
 var xdmodUrl = '<%= Configuration.xdmod_host %>';
 promiseLoggedIntoXDMoD(xdmodUrl)
