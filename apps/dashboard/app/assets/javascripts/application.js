@@ -102,6 +102,7 @@ function promiseLoginToXDMoD(xdmodUrl){
       .then(function(data){
         return new Promise(function(resolve, reject){
           var xdmodLogin = document.createElement('iframe');
+          xdmodLogin.style = 'display:hidden;left: -10000';
           xdmodLogin.src = data;
           document.body.appendChild(xdmodLogin);
           xdmodLogin.onload = function(){
