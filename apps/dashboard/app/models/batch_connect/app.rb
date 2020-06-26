@@ -135,7 +135,13 @@ module BatchConnect
     # Whether this is a valid app the user can use
     # @return [Boolean] whether valid app
     def valid?
-      form_config.any? && configured_clusters.any? && clusters.any?
+      if form_config.empty?
+        false
+      elsif configured_clusters.any?
+        clusters.any?
+      else
+        true
+      end
     end
 
     # The reason why this app may or may not be valid
@@ -305,9 +311,12 @@ module BatchConnect
         @ood_app ||= OodApp.new(router)
       end
 
-      # add a widget for choosing the cluster.
+      # add a widget for choosing the cluster if one doesn't already exist
+      # and if users aren't defining they're own form.cluster and attributes.cluster
       def add_cluster_widget(attributes, attribute_list)
-        attribute_list.prepend("cluster") unless attribute_list.include? "cluster"
+        return unless configured_clusters.any?
+
+        attribute_list.prepend("cluster") unless attribute_list.include?("cluster")
 
         if clusters.size > 1
           attributes[:cluster] = {

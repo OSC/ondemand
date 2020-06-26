@@ -177,4 +177,16 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
       assert_equal good_clusters, app.clusters # make sure you only allow good clusters
     }
   end
+
+  test "app with user defined cluster" do
+    Dir.mktmpdir { |dir|
+      r = PathRouter.new(dir)
+      r.path.join("form.yml").write("form:\n  - cluster")
+
+      app = BatchConnect::App.new(router: r)
+      # it's valid but there are no clusters. they're user defined and not validated by us
+      assert app.valid?
+      assert_equal [], app.clusters
+    }
+  end
 end
