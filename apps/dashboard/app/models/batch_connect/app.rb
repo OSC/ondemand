@@ -167,7 +167,7 @@ module BatchConnect
           SmartAttributes::AttributeFactory.build(attribute_id, attribute_opts)
         end
 
-     BatchConnect::SessionContext.new(attributes, form_config.fetch(:cacheable))   
+     BatchConnect::SessionContext.new(attributes, form_config.fetch(:cacheable, nil)  ) #form_config.fetch(:cacheable, nil)  
        
     end
 

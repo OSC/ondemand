@@ -5,10 +5,6 @@ module BatchConnect
     include ActiveModel::Model
     include ActiveModel::Serializers::JSON
 
-
-    attr_accessor :app_specific_cache_setting
-
-
     # Attributes used for serialization
     # @return [Hash{String => String, nil}] attributes to be serialized
     def attributes
@@ -22,9 +18,8 @@ module BatchConnect
     end
 
     # @param attributes [Array<Attribute>] list of attribute objects
-    def initialize(attributes = [], app_specific_cache_setting = nil)
+    def initialize(attributes = [])
       @attributes = attributes
-      @app_specific_cache_setting = app_specific_cache_setting
     end
 
     # Find attribute in list using the id of the attribute
@@ -67,47 +62,46 @@ module BatchConnect
    end
     
 
-    def update_with_cache(cache)
-     if attribute_cache_enabled? 
-       self.attributes = cache.select { |k,v| self[k.to_sym].opts[:cacheable] }
-     elsif app_specific_cache_enabled? && attribute_cache_disabled == false 
-       self.attributes = cache
-     elsif global_cache_enabled? && app_specific_cache_disabled == false
-       self.attributes = cache
-     end
-    end
-
-    private
-
-    # @return [Boolean]
+    # Determines if any of the attributes are cacheable on a per attribute level
+    # If more attributes need to be cached in the future, consider iterating through Self
+    #instead of cehcking each attribute manually 
+    # return [Boolean]
     def attribute_cache_enabled?
-      self.any? {|v| v.opts[:cacheable] } 
+      self.any? {|v| v.opts[:cacheable]  } 
     end
-    
-    # Used to differentiate nil from false                                                                                                          
-    # could implement a to_bool whit nil omitted as a falsy value     
-    def attribute_cache_disabled                                                                                                     
-      self.any? {|v| v.opts[:cacheable] == false }   
-    end
-    
-    # @return [Boolean]    
+
     def app_specific_cache_enabled?
-      @app_specific_cache_setting
+      self[:cacheable]
     end
    
-    # Used to differentiate nil from false
-    # could implement a to_bool whit nil omitted as a falsy value 
-    def app_specific_cache_disabled
-      @app_specific_cache_setting == false
+    # value of atttribute only changes if set through the Attribute.value setter,
+    # updating the hash directly will result in the attribute mainting its old value.
+    def test()
+      cache = {"bc_account":"","jupyterlab_switch":"0","bc_num_hours":"1","node_type":"any","cuda_version":"","num_cores":"2","bc_email_on_started":"0"}
+     # attributes = cache.select { |k,v| self[k.to_sym].opts[:cacheable]  }
+      self.any? {|k,v| v == :cacheable }
+      self.each {|v| v.opts[:cacheable]  }
+      self.any? {|v| v.opts[:cacheable]  } 
+      ENV.keys
+      ENV["OOD_BATCH_CONNECT_CACHE_ATTR_VALUES"]
     end
 
-    # @return [Boolean]   
     def global_cache_enabled? 
-      Configuration.batch_connect_global_cache_enabled?
+       ENV["OOD_BATCH_CONNECT_CACHE_ATTR_VALUES"]
     end
-    
-    def test
+
+    #Logic determining if attributes should be pulled from cache
+    def update_with_cache(cache, app_specific_cache)
+        
+      if attribute_cache_enabled?
+        self.attributes = cache.select { |k,v| self[k.to_sym].opts[:cacheable]}       
+      elsif app_specific_cache_enabled?
+        self.attributes = cache
+      elsif global_cache_enabled? 
+        self.attributes = cache 
+      end
         
     end
+
   end
 end
