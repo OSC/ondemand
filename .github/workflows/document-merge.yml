@@ -22,6 +22,6 @@ jobs:
 
           curl --silent --output /dev/null --request POST \
           --url https://api.github.com/repos/OSC/ood-documentation/issues \
-          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --header 'Authorization: token ${{ secrets.OSCWIAG_ISSUE_TOKEN }}' \
           --header 'content-type: application/json' \
           --data "$BODY"
