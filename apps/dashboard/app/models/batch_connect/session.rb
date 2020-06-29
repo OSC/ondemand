@@ -26,7 +26,7 @@ module BatchConnect
     attr_accessor :job_id
 
     # When this session was created at as a unix timestamp
-    # @return [Fixnum] created at
+    # @return [Integer] created at
     attr_accessor :created_at
 
     # Token describing app and sub app
@@ -85,7 +85,7 @@ module BatchConnect
             nil
           end
         end.compact.map do |s|
-          s.completed? && s.destroy ? nil : s
+          (s.completed? && s.old? && s.destroy) ? nil : s
         end.compact.sort_by(&:created_at).reverse
       end
 

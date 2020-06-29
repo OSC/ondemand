@@ -23,12 +23,22 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
     end
   end
 
-  test "should only return sorted running sessions from dbroot and clean up completed/corrupt session files" do
-    double_session = Class.new(BatchConnect::Session) do
+  def create_double_session
+    # FIXME: we should store status in the job, and then fix info to return an info object with id and status
+    Class.new(BatchConnect::Session) do
       def completed?
         job_id == "COMPLETED"
       end
     end
+  end
+
+  #FIXME: this tests too many things:
+  # 1. the order of the sessions based on the created_at date
+  # 2. that bad sessions are renamed to .bak and the omitted from the original
+  # 3. a job 8 days
+  test "should only return sorted running and recently completed sessions from dbroot and clean up old completed or corrupt session files" do
+    # FIXME: we have mocha
+    double_session = create_double_session
 
     Dir.mktmpdir("dbroot") do |dir|
       dir = Pathname.new(dir)
@@ -38,23 +48,21 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
         { id: "A", job_id: "RUNNING",   created_at: 500 },
         { id: "B", job_id: "RUNNING",   created_at: 100 },
         { id: "C", job_id: "RUNNING",   created_at: 300 },
-        { id: "D", job_id: "COMPLETED", created_at: 400 }
-      ].each do |v|
-        File.open(dir.join(v[:id]), "w") do |f|
-          f.write v.to_json
-        end
-      end
-      File.open(dir.join("bad1"), "w") do |f|
-        f.write("")
-      end
-      File.open(dir.join("bad2"), "w") do |f|
-        f.write("{)")
-      end
+        { id: "D", job_id: "COMPLETED", created_at: 400 },
+        { id: "E", job_id: "COMPLETED", created_at: 400 },
+      ].each { |v| File.write dir.join(v[:id]), v.to_json }
 
-      assert_equal ["A", "B", "C", "D", "bad1", "bad2"], dir.children.map(&:basename).map(&:to_s).sort
+
+      # the final job is 8 days old so will be deleted
+      File.utime(8.days.ago.to_i, 8.days.ago.to_i, dir.join("E"))
+
+      File.write dir.join("bad1"), ""
+      File.write dir.join("bad2"), "{)"
+
+      assert_equal ["A", "B", "C", "D", "E", "bad1", "bad2"], dir.children.map(&:basename).map(&:to_s).sort
       sessions = double_session.all
-      assert_equal ["A", "C", "B"], sessions.map(&:id)
-      assert_equal ["A", "B", "C", "bad1.bak", "bad2.bak"], dir.children.map(&:basename).map(&:to_s).sort
+      assert_equal ["A", "D", "C", "B"], sessions.map(&:id)
+      assert_equal ["A", "B", "C", "D", "bad1.bak", "bad2.bak"], dir.children.map(&:basename).map(&:to_s).sort
     end
   end
 
