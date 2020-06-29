@@ -96,10 +96,24 @@ module BatchConnect
       end
     end
 
+    #FIXME: new(JSON) not new(path) but then it somehow knows its path by resolving it
+    # based on the database
+
     # Path to database file for this object
     # @return [Pathname, nil] path to db file
     def db_file
       self.class.db_root.join(id) if id
+    end
+
+    # The last time the session was updated
+    # (which in this case is the database file modified timestamp)
+    # @return [Integer] unix timestamp
+    def modified_at
+      @modified_at ||= (id && File.stat(db_file).mtime.to_i)
+    end
+
+    def old?
+      modified_at && modified_at < 7.days.ago.to_i
     end
 
     # Raised when cluster is not found for specific cluster id

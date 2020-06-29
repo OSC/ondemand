@@ -10,6 +10,19 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
     end
   end
 
+  test "old? " do
+    Tempfile.open do |f|
+      BatchConnect::Session.any_instance.stubs(:db_file).returns(f.path)
+      BatchConnect::Session.any_instance.stubs(:id).returns(File.basename(f.path))
+      session = BatchConnect::Session.new({})
+
+      refute session.old?, "A newly created session should not be identified as old"
+      Timecop.freeze(8.days.from_now) do
+        assert session.old?, "A session unmodified for 8 days should be identified as old"
+      end
+    end
+  end
+
   test "should only return sorted running sessions from dbroot and clean up completed/corrupt session files" do
     double_session = Class.new(BatchConnect::Session) do
       def completed?
