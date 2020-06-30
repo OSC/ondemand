@@ -8,6 +8,12 @@
     <h3 class="panel-title">{{title}}</h3>
   </div>
   <div class="panel-body">
+  {{#if error}}
+    <div class="alert alert-danger">{{error}} Please ensure you are <a href="{{xdmod_url}}">logged into XDMoD first</a>, and then try again.</div>
+  {{else}}
+    {{#if loading}}
+      <p>LOADING...</p>
+    {{else}}
     <p style="font-weight: bold; display: flex; justify-content: space-between"><span class="text-success">{{good_percent}}% efficient</span> <span class="text-danger">{{bad_percent}}% inefficent</span></p>
     <div class="progress progress-custom">
       <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{good_percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{good_percent}}%">
@@ -18,14 +24,9 @@
     <p class="text-center">
       <span class="text-danger">{{count_bad}} inefficent {{unit}} </span> &frasl; {{count}} total {{unit}}
     </p>
-  </div>
-  {{#if error}}
-    <div class="panel-footer"><div class="alert alert-danger">{{error}}</div></div>
-  {{else}}
-    {{#if loading}}
-      <div class="panel-footer"><div class="alert alert-info">LOADING...</div></div>
     {{/if}}
   {{/if}}
+  </div>
 </div>
 </script>
 

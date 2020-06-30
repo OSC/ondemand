@@ -109,15 +109,13 @@ function promiseLoginToXDMoD(xdmodUrl){
             resolve();
           }
           xdmodLogin.onerror = function(){
-            console.error("failed to load "+ xdmodLogin.src);
-            //FIXME: what to pass to reject?
-            reject();
+            reject(new Error('Login failed: Failed to load XDMoD login page'));
           }
         });
       })
       .then(() => {
         return Promise.race([promise_to_receive_message_from_iframe, new Promise(function(resolve, reject){
-          setTimeout(reject, 5000, 'Timout waiting for login to complete');
+          setTimeout(reject, 5000, new Error('Login failed: Timeout waiting for login to complete'));
         })]);
       })
       .catch((e)=> {
@@ -126,6 +124,7 @@ function promiseLoginToXDMoD(xdmodUrl){
   });
 }
 
+//FIXME: comment on this to clarify what is happening
 var promiseLoggedIntoXDMoD = (function(){
   return _.memoize(function(xdmodUrl){
     return fetch(xdmodUrl + '/rest/v1/users/current', { credentials: 'include' })

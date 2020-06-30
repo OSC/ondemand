@@ -6,46 +6,49 @@
     <a href="{{xdmod_url}}" class="pull-right">XDMoD <span class="fa fa-external-link-square-alt"></span></a>
     <h3 class="panel-title">{{title}}</h3>
   </div>
-  <div class="panel-body">
-    <div class="table-responsive">
-    <table class="table table-striped table-condensed">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Date</th>
-          <th>CPU</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#each results}}
-        <tr title="{{job_name}} - {{local_job_id}}" data-toggle="tooltip" data-placement="left">
-          <td style="white-space: no-wrap"><a target="_blank" href="{{job_url}}">{{local_job_id}}&nbsp;<span class="fa fa-external-link-square-alt"></span></a></td>
-          <td style="max-width: 150px; text-overflow: ellipsis; overflow: hidden;">{{job_name}}</td>
-          <td>{{date}}</td>
-          <td>{{cpu_label cpu_user}}</td>
-        </tr>
-        {{else}}
-        <tr><td colspan="7">No data available.</td></tr>
-        {{/each}}
-      </tbody>
-    </table>
-    </div>
-  </div>
 
-  <div class="panel-footer">
   {{#if error}}
-    <div class="alert alert-danger">{{error}}</div>
+    <div class="panel-body">
+      <div class="alert alert-danger">{{error}} Please ensure you are <a href="{{xdmod_url}}">logged into XDMoD first</a>, and then try again.</div>
+    </div>
   {{else}}
-    {{#if loading}}
-      <div class="alert alert-info">LOADING...</div>
-    {{else}}
-      Showing first {{page_limit}} of {{totalCount}} jobs. See <a href="{{xdmod_url}}">your XDMoD dashboard&nbsp;<span class="fa fa-external-link-square-alt"></span></a> for more information.
-    {{/if}}
-  {{/if}}
+  {{#if loading}}
+    <div class="panel-body">
+      <p>LOADING...</p>
+    </div>
+  {{else}}
+    <div class="panel-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-condensed">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Date</th>
+              <th>CPU</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each results}}
+            <tr title="{{job_name}} - {{local_job_id}}" data-toggle="tooltip" data-placement="left">
+              <td style="white-space: no-wrap"><a target="_blank" href="{{job_url}}">{{local_job_id}}&nbsp;<span class="fa fa-external-link-square-alt"></span></a></td>
+              <td style="max-width: 150px; text-overflow: ellipsis; overflow: hidden;">{{job_name}}</td>
+              <td>{{date}}</td>
+              <td>{{cpu_label cpu_user}}</td>
+            </tr>
+            {{else}}
+            <tr><td colspan="7">No data available.</td></tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-  <%# TODO: add pagination? %>
-  </div>
+    <div class="panel-footer">
+      Showing first {{page_limit}} of {{totalCount}} jobs. See <a href="{{xdmod_url}}">your XDMoD dashboard&nbsp;<span class="fa fa-external-link-square-alt"></span></a> for more information.
+    </div>
+  {{/if}}
+  {{/if}}
 </div>
 </script>
 
@@ -140,6 +143,9 @@ promiseLoggedIntoXDMoD(xdmodUrl)
   .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
   .then(response => response.json())
   .then((data) => render_template(data))
-  .catch((error) => { console.error('failed to fetch jobs'); console.log(error); }); //FIXME: render error here for user... // render_template({error: response.responseText});
+  .catch((error) => {
+    console.error(error);
+    render_template({error: error});
+  });
 }());
 </script>
