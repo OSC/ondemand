@@ -2,13 +2,9 @@
 <div id="coreHoursEfficiencyReportPanelDiv"></div>
 
 <script id="job-efficiency-template" type="text/x-handlebars-template">
-
-<div class="row">
-<div class="col-md-12">
-
 <div class="panel panel-default">
   <div class="panel-heading">
-    <span class="pull-right">XDMoD <span class="fa fa-external-link-square-alt"></span></span>
+    <a href="{{xdmod_url}}" class="pull-right">XDMoD <span class="fa fa-external-link-square-alt"></span></a>
     <h3 class="panel-title">{{title}}</h3>
   </div>
   <div class="panel-body">
@@ -31,10 +27,6 @@
     {{/if}}
   {{/if}}
 </div>
-
-</div>
-</div>
-
 </script>
 
 
@@ -68,6 +60,9 @@ var template = Handlebars.compile(template_source);
 var helpers = {
   title: function(){
     return this.unit_title + " Efficiency Report - " + thirtyDaysAgo + " to " + today;
+  },
+  xdmod_url: function(){
+    return '<%= Configuration.xdmod_host %>';
   },
   bad_percent: function(){
     return (parseFloat(this.bad_ratio)).toFixed(1)
