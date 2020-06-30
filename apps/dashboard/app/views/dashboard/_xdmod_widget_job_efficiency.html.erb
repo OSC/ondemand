@@ -1,4 +1,5 @@
 <div id="jobsEfficiencyReportPanelDiv"></div>
+<div id="coreHoursEfficiencyReportPanelDiv"></div>
 
 <script id="job-efficiency-template" type="text/x-handlebars-template">
 
@@ -7,56 +8,33 @@
 
 <div class="panel panel-default">
   <div class="panel-heading">
+    <span class="pull-right">XDMoD <span class="fa fa-external-link-square-alt"></span></span>
     <h3 class="panel-title">{{title}}</h3>
   </div>
   <div class="panel-body">
-    <p style="font-weight: bold; display: flex; justify-content: space-between"><span class="text-success">{{good_job_percent}}% efficient</span> <span class="text-danger">{{bad_job_percent}}% inefficent</span></p>
+    <p style="font-weight: bold; display: flex; justify-content: space-between"><span class="text-success">{{good_percent}}% efficient</span> <span class="text-danger">{{bad_percent}}% inefficent</span></p>
     <div class="progress progress-custom">
-      <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{good_job_percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{good_job_percent}}%">
+      <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{good_percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{good_percent}}%">
       </div>
-      <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{bad_job_percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{bad_job_percent}}%">
+      <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{bad_percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{bad_percent}}%">
       </div>
     </div>
     <p class="text-center">
-      <span class="text-danger">{{job_count_bad}} inefficent jobs </span> &frasl; {{job_count}} total jobs
+      <span class="text-danger">{{count_bad}} inefficent {{unit}} </span> &frasl; {{count}} total {{unit}}
     </p>
   </div>
-</div>
-
-</div>
-<div class="col-md-12">
-
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">
-    XDMoD - Core Hours Efficiency Report - 2020-05-21 to 2020-06-20
-    </h3>
-  </div>
-  <div class="panel-body">
-    <p style="font-weight: bold; display: flex; justify-content: space-between"><span class="text-success">{{good_core_percent}}% efficient</span> <span class="text-danger">{{bad_core_percent}}% inefficent</span></p>
-    <div class="progress progress-custom">
-      <!-- FIXME: the role is not a progress bar but a graph so aria values will be different -->
-      <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{good_core_percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{good_core_percent}}%">
-      </div>
-      <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{bad_core_percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{bad_core_percent}}%">
-      </div>
-    </div>
-    <p class="text-center">
-      <span class="text-danger">{{round core_time_bad}} inefficient core hours</span> &frasl;<br>{{round core_time}} total core hours
-    </p>
-  </div>
-</div>
-
-</div>
-</div>
-
   {{#if error}}
-    <div class="alert alert-danger">{{error}}</div>
+    <div class="panel-footer"><div class="alert alert-danger">{{error}}</div></div>
+  {{else}}
+    {{#if loading}}
+      <div class="panel-footer"><div class="alert alert-info">LOADING...</div></div>
+    {{/if}}
   {{/if}}
+</div>
 
-  {{#if loading}}
-    <div class="alert">LOADING...</div>
-  {{/if}}
+</div>
+</div>
+
 </script>
 
 
@@ -76,8 +54,8 @@ jobsUrl.searchParams.set('config', JSON.stringify({
   "realm":"JobEfficiency",
   "group_by":"person",
   "aggregation_unit":"day",
-  "start_date":"2020-05-20",
-  "end_date":"2020-06-19",
+  "start_date": thirtyDaysAgo,
+  "end_date": today,
   // "person_id":"327", //FIXME: this can be omitted - but what if you have staff acct
   "order_by":{
     "field":"core_time_bad",
@@ -89,38 +67,53 @@ var template_source = $('#job-efficiency-template').html();
 var template = Handlebars.compile(template_source);
 var helpers = {
   title: function(){
-    return "XDMoD - Job Efficiency Report - " + thirtyDaysAgo + " to " + today;
+    return this.unit_title + " Efficiency Report - " + thirtyDaysAgo + " to " + today;
   },
-  bad_job_percent: function(){
-    return (parseFloat(this.bad_job_ratio)).toFixed(1)
+  bad_percent: function(){
+    return (parseFloat(this.bad_ratio)).toFixed(1)
   },
-  good_job_percent: function(){
-    return (100 - parseFloat(this.bad_job_ratio)).toFixed(1)
-  },
-  bad_core_percent: function(){
-    return (parseFloat(this.bad_core_ratio)).toFixed(1)
-  },
-  good_core_percent: function(){
-    return (100 - parseFloat(this.bad_core_ratio)).toFixed(1)
-  },
-  round: function(str){
-    return parseFloat(str).toFixed(1);
+  good_percent: function(){
+    return (100 - parseFloat(this.bad_ratio)).toFixed(1)
   }
 };
 
-var render_template = function(context){
-  $('#jobsEfficiencyReportPanelDiv').html(template(context, {helpers: helpers}));
+var round = function(num){
+   return parseFloat(num).toFixed(1);
 }
 
-render_template({loading: true});
+var render_jobs_template = function(context){
+  $('#jobsEfficiencyReportPanelDiv').html(template(_.merge(context, {unit: "jobs", unit_title: "Jobs"}), {helpers: helpers}));
+}
+var render_core_hours_template = function(context){
+  $('#coreHoursEfficiencyReportPanelDiv').html(template(_.merge(context, {unit: "core hours", unit_title: "Core Hours"}), {helpers: helpers}));
+}
+
+render_jobs_template({loading: true});
+render_core_hours_template({loading: true});
 
 var xdmodUrl = '<%= Configuration.xdmod_host %>';
 promiseLoggedIntoXDMoD(xdmodUrl)
   .then(() => fetch(jobsUrl, { credentials: 'include' }))
   .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
   .then(response => response.json())
-  .then((data) => render_template(data["results"][0])) //FIXME: error checking for ["results"][0]
-  .catch((error) => { console.error('failed to fetch jobs'); console.log(error); }); //FIXME: render error here for user... // render_template({error: response.responseText});
+  .then((data) => {
+    render_jobs_template({
+      bad_ratio: data["results"][0]['bad_job_ratio'],
+      count_bad: data["results"][0]['job_count_bad'],
+      count: data["results"][0]['job_count']
+    });
+    render_core_hours_template({
+      bad_ratio: data["results"][0]['bad_core_ratio'],
+      count_bad: round(data["results"][0]['core_time_bad']),
+      count: round(data["results"][0]['core_time'])
+    });
+  })
+  .catch((error) => {
+    console.error(error);
+    render_jobs_template({error: error});
+    render_core_hours_template({error: error});
+    //FIXME: provide a good user experience i.e. link to XDMoD and say "login, then refresh this page"
+  });
 
 }());
 </script>
