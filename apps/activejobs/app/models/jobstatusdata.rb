@@ -11,7 +11,6 @@ class Jobstatusdata
 
   Attribute = Struct.new(:name, :value)
 
-
   # Define an object containing only necessary data to send to client.
   #
   # Object defaults to condensed data, add extended flag to initializer to include all data used by the application.
@@ -212,28 +211,42 @@ class Jobstatusdata
     return unless info.native
     attributes = []
     attributes.push Attribute.new "Cluster", self.cluster_title
+    attributes.push Attribute.new "Cluster Id", self.cluster
     attributes.push Attribute.new "Job Id", self.pbsid
     attributes.push Attribute.new "Job Name", self.jobname
     attributes.push Attribute.new "User", self.username
     attributes.push Attribute.new "Account", self.account
-    attributes.push Attribute.new "Project", info.native[:accounting_id] unless info.native[:accounting_id].nil?
-    attributes.push Attribute.new "Partition", self.queue
-    attributes.push Attribute.new "Node List", self.nodes.join(", ") unless self.nodes.blank?
-    attributes.push Attribute.new "State", info.native[:status] unless info.native[:status].nil?
-    attributes.push Attribute.new "Slots", info.native[:procs] unless info.native[:procs].nil?
-    attributes.push Attribute.new "Queue Name", info.native[:queue_name] unless info.native[:queue_name].nil?
-    attributes.push Attribute.new "Submission Time", info.native[:submission_time] unless info.native[:submission_time].nil?
-    attributes.push Attribute.new "Dispatch Time", info.native[:dispatch_time] unless info.native[:dispatch_time].nil?
-    attributes.push Attribute.new "Wallclock Time", info.native[:wallclock_time] unless info.native[:wallclock_time].nil?
-    attributes.push Attribute.new "Wallclock Limit", info.native[:wallclock_limit] unless info.native[:wallclock_limit].nil?
-    attributes.push Attribute.new "CPU usage", info.native[:cpu_usage] unless info.native[:cpu_usage].nil?
-    attributes.push Attribute.new "Memory usage", info.native[:mem_usage] unless info.native[:mem_usage].nil?
+    attributes.push Attribute.new "Queue", self.queue
+    attributes.push Attribute.new "Start Time", self.starttime
+    attributes.push Attribute.new "Walltime Used", self.walltime_used
+    attributes.push Attribute.new "Status", self.status
+    attributes.push Attribute.new "Job Version", info.native[:JB_version] if info.native[:JB_version]
+    attributes.push Attribute.new "Job Exec File", info.native[:JB_exec_file] if info.native[:JB_exec_file] 
+    attributes.push Attribute.new "Job Script File", info.native[:JB_script_file] if info.native[:JB_script_file]
+    attributes.push Attribute.new "Job Script Size", info.native[:JB_script_size] if info.native[:JB_script_size]
+    attributes.push Attribute.new "Job Execution Time", info.native[:JB_execution_time] if info.native[:JB_execution_time]
+    attributes.push Attribute.new "Job Deadline", info.native[:JB_deadline] if info.native[:JB_deadline]
+    attributes.push Attribute.new "Job UID", info.native[:JB_uid] if info.native[:JB_uid]
+    attributes.push Attribute.new "Job Group", info.native[:JB_group] if info.native[:JB_group]
+    attributes.push Attribute.new "Job GID", info.native[:JB_gid] if info.native[:JB_gid]
+    attributes.push Attribute.new "Job Account", info.native[:JB_account] if info.native[:JB_account]
+    attributes.push Attribute.new "Current Working Directory", info.native[:JB_cwd] if info.native[:JB_cwd]
+    attributes.push Attribute.new "Notifications", info.native[:JB_notify] if info.native[:JB_notify] 
+    attributes.push Attribute.new "Job Type", info.native[:JB_type] if info.native[:JB_type]
+    attributes.push Attribute.new "Reserve", info.native[:JB_reserve] if info.native[:JB_reserve]
+    attributes.push Attribute.new "Job Priority", info.native[:JB_priority] if info.native[:JB_priority]
+    attributes.push Attribute.new "Job Share", info.native[:JB_jobshare] if info.native[:JB_jobshare]
+    attributes.push Attribute.new "Job Verify", info.native[:JB_verify] if info.native[:JB_verify]
+    attributes.push Attribute.new "Job Checkpoint Attr", info.native[:JB_checkpoint_attr] if info.native[:JB_checkpoint_attr]
+    attributes.push Attribute.new "Job Checkpoint Interval", info.native[:JB_checkpoint_interval] if info.native[:JB_checkpoint_interval]
+    attributes.push Attribute.new "Job Restart", info.native[:JB_restart] if info.native[:JB_restart]
+
     self.native_attribs = attributes
 
-    self.submit_args = ''
-    self.output_path = ''
+    self.submit_args = info.native[:ST_name] || "None"
+    self.output_path = info.native[:PN_path] if info.native[:PN_path]
 
-    output_pathname = Pathname.new(ENV["HOME"])
+    output_pathname = Pathname.new(self.output_path).dirname
     self.file_explorer_url = build_file_explorer_url(output_pathname)
     self.shell_url = build_shell_url(output_pathname, self.cluster)
 
