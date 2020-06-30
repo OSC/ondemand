@@ -129,6 +129,7 @@ var helpers = {
 
 var render_template = function(context){
   $('#jobsPanelDiv').html(template(context, {helpers: helpers}));
+  $('#jobsPanelDiv [data-toggle="tooltip"]').tooltip();
 }
 
 render_template({loading: true});
