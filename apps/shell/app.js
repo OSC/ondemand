@@ -131,6 +131,10 @@ var terminals = {
       msg = JSON.parse(msg);
       if (msg.input)  term.write(msg.input);
       if (msg.resize) term.resize(parseInt(msg.resize.cols), parseInt(msg.resize.rows));
+      if (msg.close) {
+        term.end();
+        ws.close();
+      }
     });
 
     ws.on('close', function () {
