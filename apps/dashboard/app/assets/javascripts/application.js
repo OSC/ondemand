@@ -121,10 +121,7 @@ function promiseLoginToXDMoD(xdmodUrl){
         })]);
       })
       .catch((e)=> {
-        console.log("fetching URL login URL failed");
-        console.log(e);
-        //FIXME: handle error properly passing it onto reject
-        reject();
+        reject(e);
       });
   });
 }
