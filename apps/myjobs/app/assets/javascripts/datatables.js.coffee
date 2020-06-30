@@ -8,6 +8,16 @@ jQuery ->
     autoWidth: true
     order: [0, 'desc'],
     stateSave: true,
+    serverSide: true,
+    deferRender: true,
+    ajax: '/get_dataset'
+    columns: [
+      {title: 'Created', data: 'created_at'},
+      {title: 'Name', data: 'name'},
+      {title: 'ID' data: 'pbsid'},
+      {title: 'Cluster' data: 'batch_host'},
+      {title: 'Status' data: 'status'},
+    ],
     columnDefs: [{
       orderable: false
       targets: 'no-sort'

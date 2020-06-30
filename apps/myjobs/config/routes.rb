@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   post "create_default" => "workflows#create_default"
   get "new_from_path" => "workflows#new_from_path"
   post "create_from_path" => "workflows#create_from_path"
+  get "get_dataset" => "workflows#get_dataset"
   root "workflows#index"
 
   # The priority is based upon order of creation: first created -> highest priority.

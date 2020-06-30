@@ -24,6 +24,9 @@ class WorkflowsController < ApplicationController
     @workflow.jobs.last.update_status! unless @workflow.jobs.last.nil?
   end
 
+  def get_dataset
+    render json: {data: Workflow.all}
+
   # GET /workflows/new
   def new
     @workflow = Workflow.new
