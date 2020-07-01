@@ -42,6 +42,7 @@ module BatchConnect::SessionsHelper
           concat created(session)
           concat time(session)
           concat id(session)
+          concat tag.hr                         if session.info_view
           safe_concat custom_info_view(session) if session.info_view
         end
       )
@@ -51,9 +52,7 @@ module BatchConnect::SessionsHelper
 
   def custom_info_view(session)
     content_tag(:div) do
-      content_tag(:hr) do
-        render partial: "batch_connect/sessions/connections/info", locals: { view: session.info_view, session: session }
-      end
+      concat render partial: "batch_connect/sessions/connections/info", locals: { view: session.info_view, session: session }
     end
   end
 
@@ -181,7 +180,7 @@ module BatchConnect::SessionsHelper
       # hr + content
       capture do
         tab = tabs.first
-        concat content_tag(:hr)
+        concat tag.hr
         concat(
           content_tag(:div, class: "ood-appkit markdown") do
             render partial: "batch_connect/sessions/connections/#{tab[:partial]}", locals: tab[:locals]
@@ -191,7 +190,6 @@ module BatchConnect::SessionsHelper
     else
       # tabs
       content_tag(:div) do
-        concat content_tag(:hr)
         # menu
         concat(
           content_tag(:ul, class: "nav nav-tabs") do
