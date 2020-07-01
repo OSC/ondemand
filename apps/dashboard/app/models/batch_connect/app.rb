@@ -114,22 +114,34 @@ module BatchConnect
       )
     end
 
-    # Cluster id the batch connect app uses
-    # @return [String, nil] cluster id used by app
-    def cluster_id
-      form_config.fetch(:cluster, nil)
+    # The clusters the batch connect app is configured to use
+    # @return [Array<String>, []] the clusters the app wants to use
+    def configured_clusters
+      Array.wrap(form_config.fetch(:cluster, nil)).compact.map { |c| c.to_s.strip.eql?("*") ? ".*" : c.to_s.strip }
     end
 
-    # The cluster that the batch connect app uses
-    # @return [OodCore::Cluster, nil] cluster that app uses
-    def cluster
-      OodAppkit.clusters[cluster_id] if cluster_id
+    # The clusters that the batch connect app can use. It's a combination
+    # of what the app is configured to use and what the user is allowed
+    # to use.
+    # @return [OodCore::Clusters] clusters available to the app user
+    def clusters
+      cluster_regex = configured_clusters.join('|')
+
+      OodAppkit.clusters.select do |cluster|
+        cluster.id.to_s.match(/^#{cluster_regex}$/) && cluster.job_allow?
+      end
     end
 
     # Whether this is a valid app the user can use
     # @return [Boolean] whether valid app
     def valid?
-      (! form_config.empty?) && cluster && cluster.job_allow?
+      if form_config.empty?
+        false
+      elsif configured_clusters.any?
+        clusters.any?
+      else
+        true
+      end
     end
 
     # The reason why this app may or may not be valid
@@ -137,12 +149,11 @@ module BatchConnect
     def validation_reason
       return @validation_reason if @validation_reason
 
-      if !cluster_id
-        "This app does not specify a cluster."
-      elsif !cluster
-        "This app requires a cluster that does not exist."
-      elsif !cluster.job_allow?
-        "You do not have access to use this app."
+      if configured_clusters.empty?
+        "This app does not specify any cluster."
+      elsif clusters.empty?
+        "This app requires clusters that do not exist " +
+        "or you do not have access to."
       else
         ""
       end
@@ -153,6 +164,8 @@ module BatchConnect
     def build_session_context
       local_attribs = form_config.fetch(:attributes, {})
       attrib_list   = form_config.fetch(:form, [])
+      add_cluster_widget(local_attribs, attrib_list)
+
       BatchConnect::SessionContext.new(
         attrib_list.map do |attribute_id|
           attribute_opts = local_attribs.fetch(attribute_id.to_sym, {})
@@ -296,6 +309,27 @@ module BatchConnect
       # The OOD app object describing this app
       def ood_app
         @ood_app ||= OodApp.new(router)
+      end
+
+      # add a widget for choosing the cluster if one doesn't already exist
+      # and if users aren't defining they're own form.cluster and attributes.cluster
+      def add_cluster_widget(attributes, attribute_list)
+        return unless configured_clusters.any?
+
+        attribute_list.prepend("cluster") unless attribute_list.include?("cluster")
+
+        if clusters.size > 1
+          attributes[:cluster] = {
+            widget: "select",
+            label: "Cluster",
+            options: clusters.map { |cluster| cluster.id.to_s }
+          }
+        else
+          attributes[:cluster] = {
+            value: clusters.first.id.to_s,
+            widget: "hidden_field"
+          }
+        end
       end
   end
 end
