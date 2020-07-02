@@ -75,6 +75,7 @@ glob.sync(path.join((process.env.OOD_CLUSTERS || '/etc/ood/config/clusters.d'), 
   });
 
 default_sshhost = process.env.DEFAULT_SSHHOST || default_sshhost;
+host_whitelist.add(default_sshhost);
 function host_and_dir_from_url(url){
   let match = url.match(host_path_rx),
   hostname = match[1] === "default" ? default_sshhost : match[1],
