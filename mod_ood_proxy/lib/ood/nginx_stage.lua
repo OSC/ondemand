@@ -1,18 +1,15 @@
+
 --[[
   pun
 
   Start PUN process for given user
 --]]
-function pun(r, bin, user, app_init_url, oidc_access_token)
+function pun(r, bin, user, app_init_url, exports)
   local cmd = bin .. " pun -u '" .. r:escape(user) .. "'"
-  local stdin = ""
+  local stdin = parse_exports(r, exports)
 
   if app_init_url then
     cmd = cmd .. " -a '" .. r:escape(app_init_url) .. "'"
-  end
-
-  if oidc_access_token then
-    stdin = "OIDC_ACCESS_TOKEN=" .. r:escape(oidc_access_token)
   end
 
   local err = capture2e_with_stdin(cmd, stdin)
@@ -111,6 +108,31 @@ function capture2e_with_stdin(cmd, stdin)
   os.remove(input_file)
 
   return output
+end
+
+--[[
+  parse_exports
+
+  Given exports to be a comma seperated list of environment variable
+  names: split that string, extract the variable values from the request's
+  environment and return a string of key=value pairs seperated by newlines
+  like "KEY=VALUE\nNEXT=THEOTHER\n".
+--]]
+function parse_exports(r, exports)
+  if exports then
+      environment = ""
+
+      for key in string.gmatch(exports, '([^,]+)') do
+          value = r.subprocess_env[key]
+          if value then
+            environment = environment .. key .. "=" .. value .. "\n"
+          end
+      end
+
+      return environment
+  else
+      return ""
+  end
 end
 
 return {

@@ -71,10 +71,11 @@ module OodPortalGenerator
       @rnode_uri  = opts.fetch(:rnode_uri, nil)
 
       # Per-user NGINX sub-uri
-      @nginx_uri       = opts.fetch(:nginx_uri, "/nginx")
-      @pun_uri         = opts.fetch(:pun_uri, "/pun")
-      @pun_socket_root = opts.fetch(:pun_socket_root, "/var/run/ondemand-nginx")
-      @pun_max_retries = opts.fetch(:pun_max_retries, 5)
+      @nginx_uri            = opts.fetch(:nginx_uri, "/nginx")
+      @pun_uri              = opts.fetch(:pun_uri, "/pun")
+      @pun_socket_root      = opts.fetch(:pun_socket_root, "/var/run/ondemand-nginx")
+      @pun_max_retries      = opts.fetch(:pun_max_retries, 5)
+      @pun_pre_hook_exports = opts.fetch(:pun_pre_hook_exports, nil)
 
       # OpenID Connect sub-uri
       @oidc_uri           = opts.fetch(:oidc_uri, nil)

@@ -247,6 +247,14 @@
 # Default: 5 (only try 5 times)
 #pun_max_retries: 5
 
+# Comma separated list of environment variables to pass from the apache context
+# into the PUN pre hook. Defaults to null so nothing is exported.
+#
+# Example:
+#    pun_pre_hook_exports: "OIDC_ACCESS_TOKEN,OIDC_CLAIM_EMAIL"
+# Default: null (pass nothing)
+#pun_pre_hook_exports: null
+
 #
 # Support for OpenID Connect
 #
