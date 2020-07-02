@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ## [1.8.0] - 2020-07-02
 ### Added
+- Chinese localization for "Mainland China simplified characters"
+  [#477](https://github.com/OSC/ondemand/pull/477), thank you [@374365283](https://github.com/374365283)
+  and [@summerwang](https://github.com/summerwang)
 - Specify the default login host in the cluster config
   [#508](https://github.com/OSC/ondemand/issues/508)
 - Control nginx max upload size by setting byte size in nginx_stage.yml
@@ -26,6 +29,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Streamlined Copy and Paste for Chrome 
   [#537](https://github.com/OSC/ondemand/pull/537)
 - Dockerfile for help with development [#309](https://github.com/OSC/ondemand/pull/309)
+- Configurable logo height using OOD_DASHBOARD_LOGO_HEIGHT set to a value like `100px` which
+  enables using SVG for logos on the dashboard
 
 ### Changed
 - Shell app now requires every host it will connect to to be whitelisted
@@ -34,9 +39,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [#507](https://github.com/OSC/ondemand/issues/507)
 - Switch from BasicAuth to Dex for default authentication
   [#474](https://github.com/OSC/ondemand/pull/474)
-
-### Fixed
-- 
 
 ## [1.7.14] - 2020-05-27
 ### Fixed
