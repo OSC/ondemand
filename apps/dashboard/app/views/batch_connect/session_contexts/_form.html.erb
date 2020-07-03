@@ -11,139 +11,43 @@
 	'use strict'
 
 	/**
-	 * Toggle the visibilty of a certain field based on data
-	 * attributes
-	 *
-	 * Academic: hidden
-	 * Commercial: visible
+	 * Toggle the visibilty of a form group
 	 */
-	function toggle_scopes_visibility() {
-	  // define select options with data-visibility-scope-show attribute
-	  let select_scopes = $('option[data-visibility-scope-show]');
-	  // define the checkbox elements with data-visibility-scope-show-a ttribute
-	  let checkbox_scopes = $('[data-visibility-scope-show]:checkbox');
+	function toggle_visibilty_of_elements() {
+	  /* array of controlled elements */
+	  let controlled_scopes = Array.from(document.querySelectorAll('[data-show-scope]'));
 
-	  // call each respective function to show/hide element with data-visibility-scope attribute
-	  toggle_visibility_of_checkbox_scopes(checkbox_scopes);
-	  toggle_visibility_of_select_scopes(select_scopes);
+	  /* array of active scopes' values */
+	  let enabled_scopes_values = Array.from(document.querySelectorAll('option[data-show-scope-show]:checked, input[data-show-scope-show]:checked').values()).map(x => x.dataset.showScopeShow);
+
+      let elements_to_show = controlled_scopes.filter(x => enabled_scopes_values.includes(x.dataset.showScope));
+	  let elements_to_hide = controlled_scopes.filter(x => !enabled_scopes_values.includes(x.dataset.showScope));
+
+	  hide_show_elements(elements_to_show, elements_to_hide);
 	}
 
-	/**
-	  * Toggle the visibility of the select scopes
-	  *
-	  * @param    {array}    select_scopes   Options of Select Elements with the data-visibility-scope-show attribute
-	  */
-	function toggle_visibility_of_select_scopes(select_scopes) {
-	  // declare prevObj if select options have the same parent
-	  let prevObj;
-	  select_scopes.each(function() {
-
-	    let form_element = $('[data-visibility-scope="' + $(this).data('visibility-scope-show') + '"]');
-
-	    let parent = form_element.parent();
-
-	    if (!(this.selected)) {
-
-	      // skip unselected element with data attribute of the same parent (in case one wishes to display a certain element based on a number of versions for a bc app e.g. Rstudio server)
-	      if (typeof prevObj !== 'undefined'
-	          && prevObj.parent().get(0) === $(this).parent().get(0)) return;
-
-
-	      parent.hide();
-	      form_element.val('');
-
-	      // check if the element to show/hide has a help block (this is needed for checkbox elements that one wishes to hide as the help blocks are not within the parent of element)
-	      parent.parent().next().hasClass('help-block') ? parent.parent().next().hide() : null;
-
-
-	    } else {
-	      parent.show();
-	      // define the previous object that was shown
-	      prevObj = $(this);
-
-	      // check if the element to show/hide has a help block (this is needed for checkbox elements that one wishes to hide as the help blocks are not within the parent of element)
-	      parent.parent().next().hasClass('help-block') ? parent.parent().next().show() : null;
-
-	    }
+	/*
+	* Hides/shows the controlled scopes
+	*/
+	function hide_show_elements(show_elms, hide_elms) {
+	  show_elms.forEach(elm => $(elm).parent().show());
+	  hide_elms.forEach(elm => { let parent = $(elm).parent()
+	    parent.hide()
+        /* check if the element to show/hide has a help block (this is needed for checkbox elements that one wishes to hide as the help blocks are not within the parent of element) */
+	    parent.parent().next().hasClass('help-block') ? parent.parent().next().hide() : null
 	  });
 	}
 
 	/**
-	  * Toggle the visibility of the checkbox scopes
-	  *
-	  * @param    {array}    checkbox_scopes   input elements of type checkbox with the data-visibility-scope-show attribute
-	  */
-	function toggle_visibility_of_checkbox_scopes(checkbox_scopes) {
-	  checkbox_scopes.each(function() {
-	    $(this).click(function() {
-	      let form_element = $('[data-visibility-scope="' + $(this).data('visibility-scope-show') + '"]');
-
-	      let parent = form_element.parent();
-
-	      if ($(this).is(':checked')) {
-	        parent.show();
-
-	        // check if the element to show/hide has a help block (this is needed for checkbox elements that one wishes to hide as the help blocks are not within the parent of element)
-	        parent.parent().next().hasClass('help-block') ? parent.parent().next().show() : null;
-
-	      } else {
-	        parent.hide();
-
-	        form_element.prop('checked', false);
-
-	        // check if the element to show/hide has a help block (this is needed for checkbox elements that one wishes to hide as the help blocks are not within the parent of element)
-	        parent.parent().next().hasClass('help-block') ? parent.parent().next().hide() : null;
-
-	      }
-	    });
-	  });
+ 	* Sets the change handler for scopes
+ 	*/
+	function set_change_handler() {
+	  let enabled_scopes = $('select:has(option[data-show-scope-show]), input[data-show-scope-show]').change(toggle_visibilty_of_form_group);
 	}
 
+	toggle_visibilty_of_form_group();
+	set_change_handler();
 
-	/**
-	 * Sets the change handler for the select scope
-	 */
-	function set_select_scope_change_handler() {
-	  let data_visibility_scope_show = $('select:has(option[data-visibility-scope-show])');
-
-	  let checkbox_scopes = $('[data-visibility-scope-show]:checkbox');
-
-	  hide_checkbox_dependent_elements_on_display(checkbox_scopes);
-
-	  data_visibility_scope_show.change(toggle_scopes_visibility);
-	}
-
-	/**
-	 * Hides checkbox scope dependent elements on initial display
-	 * as their visibility depends on the click event
-	 */
-	 function hide_checkbox_dependent_elements_on_display(checkbox_scopes) {
-
-	 	checkbox_scopes.each(function() {
-
-	    let form_element = $('[data-visibility-scope="' + $(this).data('visibility-scope-show') + '"]');
-
-	    let parent = form_element.parent();
-
-	    // hide the element that depends on the checkbox, as the checkbox is unchecked on display (this is done because showing or hiding the element only depends on the click event of the checkbox)
-	    parent.hide();
-
-	    // hide the help block as well if it exits for that element
-	    parent.parent().next().hasClass('help-block') ? parent.parent().next().hide() : null;
-
-
-	  });
-
-	 }
-
-	/**
-	 * Install event handlers
-	 */
-	$(document).ready(function() {
-	  // Ensure that fields are shown or hidden based on what was set in the last session
-	  toggle_scopes_visibility();
-	  set_select_scope_change_handler();
-	});
 }());
 <% end %>
 
