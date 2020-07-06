@@ -5,7 +5,7 @@
 %define git_tag_minus_v %(echo %{git_tag} | sed -r 's/^v//')
 %define major_version %(echo %{git_tag_minus_v} | cut -d. -f1)
 %define minor_version %(echo %{git_tag_minus_v} | cut -d. -f2)
-%define runtime_version %{major_version}.%{minor_version}-8
+%define runtime_version %{major_version}.%{minor_version}-1
 %define next_major_version %(echo $((%{major_version}+1))).0
 %define next_minor_version %{major_version}.%(echo $((%{minor_version}+1)))
 %define selinux_policy_ver %(rpm --qf "%%{version}-%%{release}" -q selinux-policy)
@@ -26,6 +26,8 @@ URL:       https://osc.github.io/Open-OnDemand
 Source0:   https://github.com/OSC/%{package_name}/archive/%{git_tag}.tar.gz
 Source1:   ondemand-selinux.te
 Source2:   ondemand-selinux.fc
+Source3:   logo.png
+Source4:   favicon.ico
 
 # Disable debuginfo as it causes issues with bundled gems that build libraries
 %global debug_package %{nil}
@@ -157,6 +159,8 @@ rake --trace install PREFIX=%{buildroot}/opt/ood
 %__rm %{buildroot}/opt/ood/apps/*/log/production.log
 echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/public
+%__cp %{SOURCE3} %{buildroot}%{_localstatedir}/www/ood/public/logo.png
+%__cp %{SOURCE4} %{buildroot}%{_localstatedir}/www/ood/public/favicon.ico
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/discover
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/register
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/apps/sys
@@ -370,6 +374,8 @@ fi
 %dir %{_localstatedir}/www/ood/apps/usr
 %config(noreplace,missingok) %{_localstatedir}/www/ood/public/maintenance/index.html
 %ghost %{_sysconfdir}/ood/maintenance.enable
+%config(noreplace,missingok) %{_localstatedir}/www/ood/public/logo.png
+%config(noreplace,missingok) %{_localstatedir}/www/ood/public/favicon.ico
 
 %dir %{_sysconfdir}/ood
 %dir %{_sysconfdir}/ood/config

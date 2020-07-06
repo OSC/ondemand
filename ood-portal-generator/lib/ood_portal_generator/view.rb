@@ -1,8 +1,12 @@
+require "digest/sha1"
 require "erb"
 
 module OodPortalGenerator
   # A view class that renders an OOD portal Apache configuration file
   class View
+    attr_reader :ssl, :protocol, :servername, :port
+    attr_accessor :user_map_cmd, :logout_redirect
+    attr_accessor :oidc_uri, :oidc_client_secret, :oidc_remote_user_claim, :oidc_client_id, :oidc_provider_metadata_url, :oidc_redirect_uri
     # @param opts [#to_h] the options describing the context used to render the
     #   template
     def initialize(opts = {})
@@ -10,6 +14,7 @@ module OodPortalGenerator
 
       # Portal configuration
       @ssl              = opts.fetch(:ssl, nil)
+      @protocol         = @ssl ? "https://" : "http://"
       @listen_addr_port = opts.fetch(:listen_addr_port, nil)
       @servername       = opts.fetch(:servername, nil)
       @proxy_server     = opts.fetch(:proxy_server, @servername)
@@ -27,18 +32,9 @@ module OodPortalGenerator
       @use_maintenance          = opts.fetch(:use_maintenance, true)
       @maintenance_ip_whitelist = Array(opts.fetch(:maintenance_ip_whitelist, []))
 
-      if OodPortalGenerator.scl_apache?
-        default_htpasswd = "/opt/rh/httpd24/root/etc/httpd/.htpasswd"
-      else
-        default_htpasswd = "/etc/httpd/.htpasswd"
-      end
-
       # Portal authentication
       @auth = opts.fetch(:auth, [
-        %q{AuthType Basic},
-        %q{AuthName "Private"},
-        %Q{AuthUserFile "#{default_htpasswd}"},
-        %q{RequestHeader unset Authorization},
+        %q{AuthType openid-connect},
         %q{Require valid-user}
       ])
 
@@ -79,6 +75,19 @@ module OodPortalGenerator
       # Register unmapped user sub-uri
       @register_uri  = opts.fetch(:register_uri, nil)
       @register_root = opts.fetch(:register_root, nil)
+
+      servername = @servername || OodPortalGenerator.fqdn
+      @oidc_provider_metadata_url       = opts.fetch(:oidc_provider_metadata_url, nil)
+      @oidc_client_id                   = opts.fetch(:oidc_client_id, nil)
+      @oidc_client_secret               = opts.fetch(:oidc_client_secret, nil)
+      @oidc_redirect_uri                = "#{protocol}#{servername}#{@oidc_uri}"
+      @oidc_remote_user_claim           = opts.fetch(:oidc_remote_user_claim, 'preferred_username')
+      @oidc_scope                       = opts.fetch(:oidc_scope, "openid profile email")
+      @oidc_crypto_passphrase           = Digest::SHA1.hexdigest(servername)
+      @oidc_session_inactivity_timeout  = opts.fetch(:oidc_session_inactivity_timeout, 28800)
+      @oidc_session_max_duration        = opts.fetch(:oidc_session_max_duration, 28800)
+      @oidc_state_max_number_of_cookies = opts.fetch(:oidc_state_max_number_of_cookies, '10 true')
+      @oidc_settings                    = opts.fetch(:oidc_settings, {})
     end
 
     # Helper method to escape IP for maintenance rewrite condition
@@ -95,6 +104,12 @@ module OodPortalGenerator
     # @return [String] rendered template
     def render(str)
       ERB.new(str, nil, "-").result(binding)
+    end
+
+    def update_oidc_attributes(attrs)
+      attrs.each_pair do |key, value|
+        instance_variable_set("@#{key}", value)
+      end
     end
   end
 end

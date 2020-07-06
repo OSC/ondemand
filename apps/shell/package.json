@@ -17,7 +17,9 @@
     "csrf": "^3.1.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "glob": "^7.1.6",
     "hbs": "^4.1.0",
+    "js-yaml": "^3.14.0",
     "minimist": ">=1.2.2",
     "node-pty": "^0.9.0",
     "ws": ">=7.2.0",
@@ -26,6 +28,8 @@
   "private": true,
   "resolutions": {
     "ms": "2.1.1",
-    "minimist": "1.2.5"
+    "minimist": "1.2.5",
+    "inherits": "2.0.3",
+    "http-errors": "1.7.2"
   }
 }

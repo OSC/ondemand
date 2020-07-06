@@ -75,6 +75,9 @@ en:
     batch_connect_no_apps: "There are no available Interactive Apps."
     batch_connect_no_sessions: "You have no active sessions."
     batch_connect_sandbox: " [Sandbox]"
+    batch_connect_missing_cluster: |
+      The cluster was never set. Either set it in form.yml.erb with `cluster` or `form.cluster` or
+      set `cluster` in submit.yml.erb.
     batch_connect_sessions_data_html: |
       The %{title} session data for this session can be accessed
       under the %{data_link_tag}.

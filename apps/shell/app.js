@@ -1,15 +1,18 @@
-var fs        = require('fs');
-var http      = require('http');
-var path      = require('path');
-var WebSocket = require('ws');
-var express   = require('express');
-var pty       = require('node-pty');
-var hbs       = require('hbs');
-var dotenv    = require('dotenv');
-var Tokens    = require('csrf');
-var url       = require('url');
-var uuidv4    = require('uuid/v4');
-var port      = 3000;
+const fs        = require('fs');
+const http      = require('http');
+const path      = require('path');
+const WebSocket = require('ws');
+const express   = require('express');
+const pty       = require('node-pty');
+const hbs       = require('hbs');
+const dotenv    = require('dotenv');
+const Tokens    = require('csrf');
+const url       = require('url');
+const yaml      = require('js-yaml');
+const glob      = require("glob");
+const uuidv4    = require('uuid/v4');
+const port      = 3000;
+const host_path_rx = `/session/([a-f0-9\-]+)/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$`;
 
 // Read in environment variables
 dotenv.config({path: '.env.local'});
@@ -81,7 +84,7 @@ var terminals = {
           .map(function(array){ return {id: array[0], host: array[1].host }; });
   },
 
-  create: function (host, dir, uuid) {
+  create: function (host, dir, uuid, cmd) {
     var cmd = 'ssh';
     var args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
 
@@ -146,30 +149,52 @@ var terminals = {
 }
 
 // Setup websocket server
-var server = new http.createServer(app);
-var wss = new WebSocket.Server({ noServer: true });
+const server = new http.createServer(app);
+const wss = new WebSocket.Server({ noServer: true });
+
+let host_whitelist = new Set;
+if (process.env.SSHHOST_WHITELIST){
+  host_whitelist = new Set(process.env.SSHHOST_WHITELIST.split(':'));
+}
+
+let default_sshhost;
+glob.sync(path.join((process.env.OOD_CLUSTERS || '/etc/ood/config/clusters.d'), '*.y*ml'))
+  .map(yml => yaml.safeLoad(fs.readFileSync(yml)))
+  .filter(config => (config.v2 && config.v2.login && config.v2.login.host) && ! (config.v2 && config.v2.metadata && config.v2.metadata.hidden))
+  .forEach((config) => {
+    let host = config.v2.login.host; //Already did checking above
+    let isDefault = config.v2.login.default;
+    host_whitelist.add(host);
+    if (isDefault) default_sshhost = host;
+  });
+
+default_sshhost = process.env.DEFAULT_SSHHOST || default_sshhost;
+function host_and_dir_from_url(url){
+  let match = url.match(host_path_rx),
+  hostname = match[1] === "default" ? default_sshhost : match[1],
+  directory = match[2] ? decodeURIComponent(match[2]) : null;
+
+  return [hostname, directory];
+}
 
 wss.on('connection', function connection (ws, req) {
-  var match;
-  var host = process.env.DEFAULT_SSHHOST || 'localhost';
-  var cmd = process.env.OOD_SSH_WRAPPER || 'ssh';
-  var dir;
-  var uuid;
-  var host_path_rx = `/session/([a-f0-9\-]+)/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$`;
+
+  var dir,
+     term,
+     args,
+     host,
+     uuid,
+     cmd = process.env.OOD_SSH_WRAPPER || 'ssh';
 
   console.log('Connection established');
 
-  // Determine host and dir from request URL
-  if (match = req.url.match(process.env.PASSENGER_BASE_URI + host_path_rx)) {
-    uuid = match[1];
-    if (match[2] !== 'default') host = match[2];
-    if (match[3]) dir = decodeURIComponent(match[3]);
-  }
+  [host, dir] = host_and_dir_from_url(req.url);
+  args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
 
   if (terminals.exists(uuid) === false) {
-    terminals.create(host, dir, uuid);
+    terminals.create(host, dir, uuid, cmd);
   }
-
+  
   terminals.attach(uuid, ws);
 });
 
@@ -200,14 +225,15 @@ function default_server_origin(headers){
 }
 
 server.on('upgrade', function upgrade(request, socket, head) {
-  var requestToken = new URLSearchParams(url.parse(request.url).search).get('csrf'),
-      client_origin = request.headers['origin'],
-      server_origin = custom_server_origin(default_server_origin(request.headers));
+  const requestToken = new URLSearchParams(url.parse(request.url).search).get('csrf'),
+        client_origin = request.headers['origin'],
+        server_origin = custom_server_origin(default_server_origin(request.headers));
+  var host, dir;
+  [host, dir] = host_and_dir_from_url(request.url);
 
   if (client_origin &&
       client_origin.startsWith('http') &&
-      server_origin && client_origin !== server_origin
-  ) {
+      server_origin && client_origin !== server_origin) {
     socket.write([
       'HTTP/1.1 401 Unauthorized',
       'Content-Type: text/html; charset=UTF-8',
@@ -217,8 +243,7 @@ server.on('upgrade', function upgrade(request, socket, head) {
     ].join('\r\n') + '\r\n\r\n');
 
     socket.destroy();
-  }
-  else if (!tokens.verify(secret, requestToken)) {
+  } else if (!tokens.verify(secret, requestToken)) {
     socket.write([
       'HTTP/1.1 401 Unauthorized',
       'Content-Type: text/html; charset=UTF-8',
@@ -228,8 +253,17 @@ server.on('upgrade', function upgrade(request, socket, head) {
     ].join('\r\n') + '\r\n\r\n');
 
     socket.destroy();
+  } else if (!host_whitelist.has(host)){ // host not in whitelist
+    socket.write([
+      'HTTP/1.1 401 Unauthorized',
+      'Content-Type: text/html; charset=UTF-8',
+      'Content-Encoding: UTF-8',
+      'Connection: close',
+      'X-OOD-Failure-Reason: host not whitelisted',
+    ].join('\r\n') + '\r\n\r\n');
 
-  }else{
+    socket.destroy();
+  } else{
     wss.handleUpgrade(request, socket, head, function done(ws) {
       wss.emit('connection', ws, request);
     });

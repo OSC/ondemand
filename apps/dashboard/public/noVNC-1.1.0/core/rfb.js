@@ -258,6 +258,8 @@ export default class RFB extends EventTargetMixin {
         // time to set up callbacks
         setTimeout(this._updateConnectionState.bind(this, 'connecting'));
 
+        this.oncanvasfocus = () => {}; // Handler for canvas focused
+
         Log.Debug("<< RFB.constructor");
 
         // ===== PROPERTIES =====
@@ -406,6 +408,7 @@ export default class RFB extends EventTargetMixin {
 
     focus() {
         this._canvas.focus();
+        this.oncanvasfocus();
     }
 
     blur() {
