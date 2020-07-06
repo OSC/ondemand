@@ -31,6 +31,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Dockerfile for help with development [#309](https://github.com/OSC/ondemand/pull/309)
 - Configurable logo height using OOD_DASHBOARD_LOGO_HEIGHT set to a value like `100px` which
   enables using SVG for logos on the dashboard
+- Add TurboLinks dependeny to the dashboard in decrease loading time
+  [498](https://github.com/OSC/ondemand/pull/498)
 
 ### Changed
 - Shell app now requires every host it will connect to to be whitelisted
@@ -440,7 +442,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.14...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.0...HEAD
 [1.8.0]: https://github.com/OSC/ondemand/compare/v1.7.14...v1.8.0
 [1.7.14]: https://github.com/OSC/ondemand/compare/v1.7.13...v1.7.14
 [1.7.13]: https://github.com/OSC/ondemand/compare/v1.7.12...v1.7.13
