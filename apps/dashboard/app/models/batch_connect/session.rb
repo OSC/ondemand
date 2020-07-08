@@ -45,6 +45,9 @@ module BatchConnect
     # @return [String] script type
     attr_accessor :script_type
 
+    # How many days before a Session record is considered old and ready to delete
+    OLD_IN_DAYS=7
+
     # Attributes used for serialization
     # @return [Hash] attributes to be serialized
     def attributes
@@ -113,7 +116,7 @@ module BatchConnect
     end
 
     def old?
-      modified_at && modified_at < 7.days.ago.to_i
+      modified_at && modified_at < self.class::OLD_IN_DAYS.days.ago.to_i
     end
 
     # Raised when cluster is not found for specific cluster id

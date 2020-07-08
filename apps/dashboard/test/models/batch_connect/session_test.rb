@@ -17,8 +17,8 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       session = BatchConnect::Session.new({})
 
       refute session.old?, "A newly created session should not be identified as old"
-      Timecop.freeze(8.days.from_now) do
-        assert session.old?, "A session unmodified for 8 days should be identified as old"
+      Timecop.freeze((BatchConnect::Session::OLD_IN_DAYS+1).days.from_now) do
+        assert session.old?, "A session unmodified for #{BatchConnect::Session::OLD_IN_DAYS+1} days should be identified as old"
       end
     end
   end
@@ -63,7 +63,11 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
 
       # the final job is 8 days old so will be deleted
       # FIXME: magic number should be constant
-      File.utime(8.days.ago.to_i, 8.days.ago.to_i, dir.join("OLD"))
+      File.utime(
+        (BatchConnect::Session::OLD_IN_DAYS+1).days.ago.to_i,
+        (BatchConnect::Session::OLD_IN_DAYS+1).days.ago.to_i,
+        dir.join("OLD")
+      )
 
       assert_equal ["A", "OLD"], dir.children.map(&:basename).map(&:to_s).sort
       sessions = double_session.all
