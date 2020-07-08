@@ -78,8 +78,13 @@ default_sshhost = process.env.DEFAULT_SSHHOST || default_sshhost;
 if (default_sshhost) host_whitelist.add(default_sshhost);
 function host_and_dir_from_url(url){
   let match = url.match(host_path_rx),
-  hostname = match[1] === "default" ? default_sshhost : match[1],
-  directory = match[2] ? decodeURIComponent(match[2]) : null;
+  hostname = default_sshhost, 
+  directory = null;
+
+  if (match) {
+    hostname = match[1] === "default" ? default_sshhost : match[1];
+    directory = match[2] ? decodeURIComponent(match[2]) : null;
+  }
 
   return [hostname, directory];
 }
