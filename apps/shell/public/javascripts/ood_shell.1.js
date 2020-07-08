@@ -1,13 +1,15 @@
 
 // Object that defines a terminal element
-function OodShell(element, socket, prefs) {
+function OodShell(element, url, prefs) {
   this.element = element;
+  this.url     = url;
   this.prefs   = prefs || {};
-  this.socket  = socket;
+  this.socket  = null;
   this.term    = null;
 }
 
 OodShell.prototype.createTerminal = function () {
+  this.socket = new ReconnectingWebSocket(this.url);
   this.socket.onopen    = this.runTerminal.bind(this);
   this.socket.onmessage = this.getMessage.bind(this);
   this.socket.onclose   = this.closeTerminal.bind(this);

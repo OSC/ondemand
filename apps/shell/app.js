@@ -85,7 +85,6 @@ var terminals = {
   },
 
   create: function (host, dir, uuid, cmd) {
-    var cmd = 'ssh';
     var args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
 
     process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
@@ -180,6 +179,7 @@ function host_and_dir_from_url(url){
 wss.on('connection', function connection (ws, req) {
 
   var dir,
+     matchId,
      term,
      args,
      host,
@@ -187,6 +187,10 @@ wss.on('connection', function connection (ws, req) {
      cmd = process.env.OOD_SSH_WRAPPER || 'ssh';
 
   console.log('Connection established');
+  
+  if (matchId = req.url.match(process.env.PASSENGER_BASE_URI + host_path_rx)) {
+    uuid = matchId[1];
+  }
 
   [host, dir] = host_and_dir_from_url(req.url);
   args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
