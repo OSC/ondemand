@@ -77,9 +77,6 @@
 
       <%- if @session_context -%>
         <%= render "form" %>
-        <pre> <%= @app.send(:form_config) %> </pre>
-        <pre> <%= @session_context.send(:test) %> </pre>
-        <pre> <%= @app.send(:root) %> </pre>
         <p class="small">
           <%= t('dashboard.batch_connect_form_session_data_html',
                 title: @app.title,

@@ -68,46 +68,49 @@ module BatchConnect
     
 
     def update_with_cache(cache)
-     if attribute_cache_enabled? 
-       self.attributes = cache.select { |k,v| self[k.to_sym].opts[:cacheable] }
-     elsif app_specific_cache_enabled? && attribute_cache_disabled == false 
-       self.attributes = cache
-     elsif global_cache_enabled? && app_specific_cache_disabled == false
-       self.attributes = cache
-     end
+     
+      if  ! attribute_cache_disabled?
+
+        if attribute_cache_enabled? 
+          self.attributes = cache.select { |k,v| self[k.to_sym].opts[:cacheable] }
+        elsif app_specific_cache_enabled? 
+          self.attributes = cache
+        elsif global_cache_enabled? && to_bool(app_specific_cache_enabled?) 
+          self.attributes = cache
+        end
+
+      end
+
     end
 
     private
+    
+    FALSE_VALUES=[ false, '', 0, '0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF', 'no', 'NO']
+
+    def to_bool(value)
+     ! FALSE_VALUES.include?(value)
+    end
 
     # @return [Boolean]
+    # True if any attribute is cacheable
     def attribute_cache_enabled?
       self.any? {|v| v.opts[:cacheable] } 
     end
     
-    # Used to differentiate nil from false                                                                                                          
-    # could implement a to_bool whit nil omitted as a falsy value     
-    def attribute_cache_disabled                                                                                                     
+    # Used to differentiate nil from false
+    # @return [Boolean] 
+    def attribute_cache_disabled?                                                                                                     
       self.any? {|v| v.opts[:cacheable] == false }   
     end
-    
-    # @return [Boolean]    
+        
     def app_specific_cache_enabled?
       @app_specific_cache_setting
     end
    
-    # Used to differentiate nil from false
-    # could implement a to_bool whit nil omitted as a falsy value 
-    def app_specific_cache_disabled
-      @app_specific_cache_setting == false
-    end
-
     # @return [Boolean]   
     def global_cache_enabled? 
       Configuration.batch_connect_global_cache_enabled?
     end
-    
-    def test
-        
-    end
+
   end
 end

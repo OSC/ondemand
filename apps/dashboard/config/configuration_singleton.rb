@@ -176,7 +176,7 @@ end
   alias_method :app_sharing_enabled, :app_sharing_enabled?
   
   def batch_connect_global_cache_enabled?
-    to_bool(ENV["batch_connect_global_cache_enabled?"] || true )
+    to_bool(ENV["OOD_BATCH_CONNECT_CACHE_ATTR_VALUES"] || true )
   end
 
   # URL to the Dashboard logo image
