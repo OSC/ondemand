@@ -193,7 +193,7 @@ server.on('upgrade', function upgrade(request, socket, head) {
       'Content-Type: text/html; charset=UTF-8',
       'Content-Encoding: UTF-8',
       'Connection: close',
-      'X-OOD-Failure-Reason: host not allowlisted',
+      'X-OOD-Failure-Reason: host not specified in allowlist or cluster configs',
     ].join('\r\n') + '\r\n\r\n');
 
     socket.destroy();
