@@ -32,12 +32,47 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
     end
   end
 
-  #FIXME: this tests too many things:
-  # 1. the order of the sessions based on the created_at date
-  # 2. that bad sessions are renamed to .bak and the omitted from the original
-  # 3. a job 8 days
-  test "should only return sorted running and recently completed sessions from dbroot and clean up old completed or corrupt session files" do
-    # FIXME: we have mocha
+  test "Session.all should return recently completed sessions" do
+    double_session = create_double_session
+
+    Dir.mktmpdir("dbroot") do |dir|
+      dir = Pathname.new(dir)
+      double_session.stubs(:db_root).returns(dir)
+
+      [
+        { id: "A", job_id: "RUNNING",   created_at: 500 },
+        { id: "B", job_id: "COMPLETED",   created_at: 100 }
+      ].each { |v| File.write dir.join(v[:id]), v.to_json }
+
+      sessions = double_session.all
+      assert_equal ["A", "B"], sessions.map(&:id)
+    end
+  end
+
+  test "Session.all should omit 'old' sessions and delete old job records" do
+    double_session = create_double_session
+
+    Dir.mktmpdir("dbroot") do |dir|
+      dir = Pathname.new(dir)
+      double_session.stubs(:db_root).returns(dir)
+
+      [
+        { id: "A", job_id: "COMPLETED",   created_at: 100 },
+        { id: "OLD", job_id: "COMPLETED",   created_at: 100 }
+      ].each { |v| File.write dir.join(v[:id]), v.to_json }
+
+      # the final job is 8 days old so will be deleted
+      # FIXME: magic number should be constant
+      File.utime(8.days.ago.to_i, 8.days.ago.to_i, dir.join("OLD"))
+
+      assert_equal ["A", "OLD"], dir.children.map(&:basename).map(&:to_s).sort
+      sessions = double_session.all
+      assert_equal ["A"], sessions.map(&:id)
+      assert_equal ["A"], dir.children.map(&:basename).map(&:to_s).sort
+    end
+  end
+
+  test "Session.all should return ids order by created_at date DESC (newer to older)" do
     double_session = create_double_session
 
     Dir.mktmpdir("dbroot") do |dir|
@@ -48,21 +83,34 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
         { id: "A", job_id: "RUNNING",   created_at: 500 },
         { id: "B", job_id: "RUNNING",   created_at: 100 },
         { id: "C", job_id: "RUNNING",   created_at: 300 },
-        { id: "D", job_id: "COMPLETED", created_at: 400 },
-        { id: "E", job_id: "COMPLETED", created_at: 400 },
+        { id: "D", job_id: "RUNNING", created_at: 400 },
       ].each { |v| File.write dir.join(v[:id]), v.to_json }
 
+      sessions = double_session.all
+      assert_equal ["A", "D", "C", "B"], sessions.map(&:id)
+    end
+  end
 
-      # the final job is 8 days old so will be deleted
-      File.utime(8.days.ago.to_i, 8.days.ago.to_i, dir.join("E"))
+  test "Session.all should rename and ignore corrupt session files" do
+    # FIXME: this is a test to confirm how it currently works - but how is wrong
+    # Session.all is a "getter" method - **it should not change state as it does**
+
+    double_session = create_double_session
+    Dir.mktmpdir("dbroot") do |dir|
+      dir = Pathname.new(dir)
+      double_session.stubs(:db_root).returns(dir)
+
+      [
+        { id: "A", job_id: "RUNNING",   created_at: 500 },
+      ].each { |v| File.write dir.join(v[:id]), v.to_json }
 
       File.write dir.join("bad1"), ""
       File.write dir.join("bad2"), "{)"
 
-      assert_equal ["A", "B", "C", "D", "E", "bad1", "bad2"], dir.children.map(&:basename).map(&:to_s).sort
+      assert_equal ["A", "bad1", "bad2"], dir.children.map(&:basename).map(&:to_s).sort
       sessions = double_session.all
-      assert_equal ["A", "D", "C", "B"], sessions.map(&:id)
-      assert_equal ["A", "B", "C", "D", "bad1.bak", "bad2.bak"], dir.children.map(&:basename).map(&:to_s).sort
+      assert_equal ["A"], sessions.map(&:id)
+      assert_equal ["A", "bad1.bak", "bad2.bak"], dir.children.map(&:basename).map(&:to_s).sort
     end
   end
 
