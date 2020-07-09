@@ -139,10 +139,7 @@ server.on('upgrade', function upgrade(request, socket, head) {
     server_origin = custom_server_origin(default_server_origin(request.headers));
   var host, dir;
   [host, dir] = helpers.host_and_dir_from_url(request.url);
-  console.log([host, dir])
-  return wss.handleUpgrade(request, socket, head, function done(ws) {
-    wss.emit('connection', ws, request);
-  });
+
   if (client_origin &&
     client_origin.startsWith('http') &&
     server_origin && client_origin !== server_origin) {
