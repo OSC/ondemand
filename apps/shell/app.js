@@ -170,16 +170,16 @@ glob.sync(path.join((process.env.OOD_CLUSTERS || '/etc/ood/config/clusters.d'), 
 default_sshhost = process.env.DEFAULT_SSHHOST || default_sshhost;
 function host_and_dir_from_url(url){
   let match = url.match(host_path_rx),
-  hostname = match[1] === "default" ? default_sshhost : match[1],
-  directory = match[2] ? decodeURIComponent(match[2]) : null;
+  id = match[1],
+  hostname = match[2] === "default" ? default_sshhost : match[2],
+  directory = match[3] ? decodeURIComponent(match[3]) : null;
 
-  return [hostname, directory];
+  return [id, hostname, directory];
 }
 
 wss.on('connection', function connection (ws, req) {
 
   var dir,
-     matchId,
      term,
      args,
      host,
@@ -188,11 +188,8 @@ wss.on('connection', function connection (ws, req) {
 
   console.log('Connection established');
   
-  if (matchId = req.url.match(process.env.PASSENGER_BASE_URI + host_path_rx)) {
-    uuid = matchId[1];
-  }
 
-  [host, dir] = host_and_dir_from_url(req.url);
+  [uuid, host, dir] = host_and_dir_from_url(req.url);
   args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
 
   if (terminals.exists(uuid) === false) {
