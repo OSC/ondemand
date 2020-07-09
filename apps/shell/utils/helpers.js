@@ -1,12 +1,12 @@
-const path         = require('path');
-const fs           = require('fs');
-const glob         = require('glob');
-const yaml         = require('js-yaml');
-const host_path_rx = '/ssh/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$';
+const path = require('path');
+const fs   = require('fs');
+const glob = require('glob');
+const yaml = require('js-yaml');
 
 let host_whitelist = new Set;
 
 exports.host_and_dir_from_url = function (url, default_sshhost) {
+  const host_path_rx = '/ssh/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$';
   if (process.env.SSHHOST_WHITELIST) {
     host_whitelist = new Set(process.env.SSHHOST_WHITELIST.split(':'));
   }
