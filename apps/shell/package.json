@@ -30,5 +30,11 @@
     "minimist": "1.2.5",
     "inherits": "2.0.3",
     "http-errors": "1.7.2"
+  },
+  "scripts": {
+    "test": "npx jest"
+  },
+  "devDependencies": {
+    "jest": "^26.1.0"
   }
 }
