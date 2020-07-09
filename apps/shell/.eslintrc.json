@@ -1,0 +1,28 @@
+{
+  "extends": [
+    "standard",
+    "prettier",
+    "plugin:node/recommended"
+  ],
+  "plugins": [
+    "prettier"
+  ],
+  "rules": {
+    "prettier/prettier": "error",
+    "no-unused-vars": "warn",
+    "func-names": "off",
+    "object-shorthand": "off",
+    "semi": "off",
+    "multiline-comment-style": [
+      "error",
+      "starred-block"
+    ],
+    "no-var": "error",
+    "new-cap": "off",
+    "no-template-curly-in-string": "warn"
+  },
+  "env": {
+    "node": true,
+    "browser": true
+  }
+}
