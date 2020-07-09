@@ -1,7 +1,7 @@
-const path = require('path');
-const fs = require('fs');
-const glob = require('glob');
-const yaml = require('js-yaml');
+const path         = require('path');
+const fs           = require('fs');
+const glob         = require('glob');
+const yaml         = require('js-yaml');
 const host_path_rx = '/ssh/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$';
 
 let host_whitelist = new Set;
