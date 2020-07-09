@@ -45,6 +45,11 @@ module BatchConnect
     # @return [String] script type
     attr_accessor :script_type
 
+    # Cached value to indicate the job is completed
+    # We call this cache_completed, not completed to avoid the risk of confusing
+    # completed with completed?
+    #
+    # @return [Boolean] true if job is completed
     attr_accessor :cache_completed
 
     # How many days before a Session record is considered old and ready to delete
@@ -81,7 +86,7 @@ module BatchConnect
       # Find all active session jobs
       # @return [Array<Session>] list of sessions
       def all
-        db_root.children.select(&:file?).reject {|p| p.extname == ".bak"}.map do |f|
+        db_root.children.select(&:file?).reject {|p| p.extname == ".bak"}.map { |f|
           begin
             new.from_json(f.read)
           rescue => e
@@ -89,9 +94,12 @@ module BatchConnect
             f.rename("#{f}.bak")
             nil
           end
-        end.compact.map do |s|
+        }.compact.map { |s|
           (s.completed? && s.old? && s.destroy) ? nil : s
-        end.compact.sort_by {|s| [s.completed? ? 0 : 1, s.created_at]}.reverse
+        }.compact.sort_by {|s|
+          # sort by completed status, then created_at date
+          [s.completed? ? 0 : 1, s.created_at]
+        }.reverse
       end
 
       # Find requested session job
@@ -100,9 +108,6 @@ module BatchConnect
         new.from_json(db_root.join(id).read)
       end
     end
-
-    #FIXME: new(JSON) not new(path) but then it somehow knows its path by resolving it
-    # based on the database
 
     # Path to database file for this object
     # @return [Pathname, nil] path to db file
@@ -119,8 +124,15 @@ module BatchConnect
       nil
     end
 
+    # Return true if session record has not been modified in OLD_IN_DAYS days
+    #
+    # @return [Boolean] true if old, false otherwise
     def old?
-      modified_at && modified_at < self.class::OLD_IN_DAYS.days.ago.to_i
+      if modified_at.nil?
+        false
+      else
+        modified_at < self.class::OLD_IN_DAYS.days.ago.to_i
+      end
     end
 
     # Display value for days till old
@@ -128,7 +140,7 @@ module BatchConnect
     # This is 0 if no modified date is available, or if it is old, thus this
     # value should not be used for anything but display purposes.
     #
-    # @reutrn [Integer]
+    # @return [Integer]
     def days_till_old
       if modified_at.nil? || old?
         0
