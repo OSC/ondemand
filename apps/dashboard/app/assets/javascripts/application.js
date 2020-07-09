@@ -89,8 +89,8 @@ function promiseLoginToXDMoD(xdmodUrl){
           }
             else if(event.data.action == 'error'){
               console.log('ERROR: ' + event.data.info);
-              //FIXME: what to pass to reject?
-              reject();
+              let iframe = document.querySelector("#xdmod_login_iframe");
+              reject(new Error(`XDMoD Login iFrame at URL ${iframe && iframe.src} posted error message with info ${event.data.info}`));
           }
         }
       }, false);
@@ -103,6 +103,7 @@ function promiseLoginToXDMoD(xdmodUrl){
         return new Promise(function(resolve, reject){
           var xdmodLogin = document.createElement('iframe');
           xdmodLogin.style = 'display:none;left: -10000';
+          xdmodLogin.id = 'xdmod_login_iframe'
           xdmodLogin.src = data;
           document.body.appendChild(xdmodLogin);
           xdmodLogin.onload = function(){
