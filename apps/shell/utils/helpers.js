@@ -4,8 +4,9 @@ const glob = require('glob');
 const yaml = require('js-yaml');
 const host_path_rx = '/ssh/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$';
 
+let host_whitelist = new Set;
+
 exports.host_and_dir_from_url = function (url) {
-  let host_whitelist = new Set;
   if (process.env.SSHHOST_WHITELIST) {
     host_whitelist = new Set(process.env.SSHHOST_WHITELIST.split(':'));
   }
@@ -35,3 +36,5 @@ exports.host_and_dir_from_url = function (url) {
 
   return [hostname, directory];
 }
+
+exports.host_whitelist = host_whitelist

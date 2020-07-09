@@ -162,7 +162,7 @@ server.on('upgrade', function upgrade(request, socket, head) {
     ].join('\r\n') + '\r\n\r\n');
 
     socket.destroy();
-  } else if (!host_whitelist.has(host)) { // host not in whitelist
+  } else if (!helpers.host_whitelist.has(host)) { // host not in whitelist
     socket.write([
       'HTTP/1.1 401 Unauthorized',
       'Content-Type: text/html; charset=UTF-8',
