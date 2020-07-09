@@ -26,6 +26,9 @@ if (fs.existsSync('.env')) {
   dotenv.config({ path: '.env' });
 }
 
+let default_sshhost;
+default_sshhost = process.env.DEFAULT_SSHHOST || default_sshhost;
+
 const tokens = new Tokens({});
 const secret = tokens.secretSync();
 
@@ -68,7 +71,7 @@ wss.on('connection', function connection(ws, req) {
 
   console.log('Connection established');
 
-  [host, dir] = helpers.host_and_dir_from_url(req.url);
+  [host, dir] = helpers.host_and_dir_from_url(req.url, default_sshhost);
   args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
 
   process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
@@ -138,7 +141,7 @@ server.on('upgrade', function upgrade(request, socket, head) {
     client_origin = request.headers['origin'],
     server_origin = custom_server_origin(default_server_origin(request.headers));
   var host, dir;
-  [host, dir] = helpers.host_and_dir_from_url(request.url);
+  [host, dir] = helpers.host_and_dir_from_url(request.url, default_sshhost);
 
   if (client_origin &&
     client_origin.startsWith('http') &&
