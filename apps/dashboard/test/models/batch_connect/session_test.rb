@@ -100,6 +100,25 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
     end
   end
 
+  test "Session.all should return completed jobs after running jobs" do
+    double_session = create_double_session
+
+    Dir.mktmpdir("dbroot") do |dir|
+      dir = Pathname.new(dir)
+      double_session.stubs(:db_root).returns(dir)
+
+      [
+        { id: "A", job_id: "COMPLETED",   created_at: 500 },
+        { id: "B", job_id: "RUNNING",   created_at: 100 },
+        { id: "C", job_id: "RUNNING",   created_at: 300 },
+        { id: "D", job_id: "RUNNING", created_at: 400 }
+      ].each { |v| File.write dir.join(v[:id]), v.to_json }
+
+      sessions = double_session.all
+      assert_equal ["D", "C", "B", "A"], sessions.map(&:id), "even though A is newest, since completed, it should appear last"
+    end
+  end
+
   test "Session.all should rename and ignore corrupt session files" do
     # FIXME: this is a test to confirm how it currently works - but how is wrong
     # Session.all is a "getter" method - **it should not change state as it does**

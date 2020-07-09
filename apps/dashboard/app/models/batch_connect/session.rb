@@ -91,7 +91,7 @@ module BatchConnect
           end
         end.compact.map do |s|
           (s.completed? && s.old? && s.destroy) ? nil : s
-        end.compact.sort_by(&:created_at).reverse
+        end.compact.sort_by {|s| [s.completed? ? 0 : 1, s.created_at]}.reverse
       end
 
       # Find requested session job
