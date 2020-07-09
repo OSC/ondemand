@@ -6,7 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-## [1.8.0] - 2020-07-02
+## [1.8.1] - 2020-07-06
+### Fixed
+- ondemand-dex binary location in /usr/sbin not /usr/local [#566](https://github.com/OSC/ondemand/pull/566).
+
+## [1.8.0] - 2020-07-06
 ### Added
 - Chinese localization for "Mainland China simplified characters"
   [#477](https://github.com/OSC/ondemand/pull/477), thank you [@374365283](https://github.com/374365283)
@@ -442,7 +446,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.0...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.1...HEAD
+[1.8.1]: https://github.com/OSC/ondemand/compare/v1.8.0...v1.8.1
 [1.8.0]: https://github.com/OSC/ondemand/compare/v1.7.14...v1.8.0
 [1.7.14]: https://github.com/OSC/ondemand/compare/v1.7.13...v1.7.14
 [1.7.13]: https://github.com/OSC/ondemand/compare/v1.7.12...v1.7.13
