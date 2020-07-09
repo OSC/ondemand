@@ -57,22 +57,16 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       double_session.stubs(:db_root).returns(dir)
 
       [
-        { id: "A", job_id: "COMPLETED",   created_at: 100 },
+        { id: "A", job_id: "RUNNING",   created_at: 100 },
         { id: "OLD", job_id: "COMPLETED",   created_at: 100 }
       ].each { |v| File.write dir.join(v[:id]), v.to_json }
 
-      # the final job is 8 days old so will be deleted
-      # FIXME: magic number should be constant
-      File.utime(
-        (BatchConnect::Session::OLD_IN_DAYS+1).days.ago.to_i,
-        (BatchConnect::Session::OLD_IN_DAYS+1).days.ago.to_i,
-        dir.join("OLD")
-      )
-
-      assert_equal ["A", "OLD"], dir.children.map(&:basename).map(&:to_s).sort
-      sessions = double_session.all
-      assert_equal ["A"], sessions.map(&:id)
-      assert_equal ["A"], dir.children.map(&:basename).map(&:to_s).sort
+      Timecop.freeze((BatchConnect::Session::OLD_IN_DAYS+1).days.from_now) do
+        assert_equal ["A", "OLD"], dir.children.map(&:basename).map(&:to_s).sort
+        sessions = double_session.all
+        assert_equal ["A"], sessions.map(&:id)
+        assert_equal ["A"], dir.children.map(&:basename).map(&:to_s).sort
+      end
     end
   end
 
