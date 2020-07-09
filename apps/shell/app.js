@@ -1,51 +1,55 @@
-const fs        = require('fs');
-const http      = require('http');
-const path      = require('path');
+const fs = require('fs');
+const http = require('http');
+const path = require('path');
 const WebSocket = require('ws');
-const express   = require('express');
-const pty       = require('node-pty');
-const hbs       = require('hbs');
-const dotenv    = require('dotenv');
-const Tokens    = require('csrf');
-const url       = require('url');
-const yaml      = require('js-yaml');
-const glob      = require("glob");
-const port      = 3000;
-const host_path_rx = '/ssh/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$';
+const express = require('express');
+const pty = require('node-pty');
+const dotenv = require('dotenv');
+const Tokens = require('csrf');
+const port = 3000;
 
 // Read in environment variables
-dotenv.config({path: '.env.local'});
+dotenv.config({ path: '.env.local' });
 if (process.env.NODE_ENV === 'production') {
-  dotenv.config({path: '/etc/ood/config/apps/shell/env'});
+  dotenv.config({ path: '/etc/ood/config/apps/shell/env' });
 }
+
+const {
+  parseUrl,
+  hostAllowList,
+  defaultServerOrigin,
+  customServerOrigin,
+  wsErrorMessage,
+} = require('./utils/helpers');
 
 // Keep app backwards compatible
 if (fs.existsSync('.env')) {
-  console.warn('[DEPRECATION] The file \'.env\' is being deprecated. Please move this file to \'/etc/ood/config/apps/shell/env\'.');
-  dotenv.config({path: '.env'});
+  console.warn(
+    "[DEPRECATION] The file '.env' is being deprecated. Please move this file to '/etc/ood/config/apps/shell/env'.",
+  );
+  dotenv.config({ path: '.env' });
 }
 
 const tokens = new Tokens({});
 const secret = tokens.secretSync();
 
 // Create all your routes
-var router = express.Router();
-router.get('/', function (req, res) {
+const router = express.Router();
+router.get('/', (req, res) => {
   res.redirect(req.baseUrl + '/ssh');
 });
 
-router.get('/ssh*', function (req, res) {
-  res.render('index',
-    {
-      baseURI: req.baseUrl,
-      csrfToken: tokens.create(secret),
-    });
+router.get('/ssh*', (req, res) => {
+  res.render('index', {
+    baseURI: req.baseUrl,
+    csrfToken: tokens.create(secret),
+  });
 });
 
 router.use(express.static(path.join(__dirname, 'public')));
 
 // Setup app
-var app = express();
+const app = express();
 
 // Setup template engine
 app.set('view engine', 'hbs');
@@ -58,157 +62,89 @@ app.use(process.env.PASSENGER_BASE_URI || '/', router);
 const server = new http.createServer(app);
 const wss = new WebSocket.Server({ noServer: true });
 
-let host_whitelist = new Set;
-if (process.env.SSHHOST_WHITELIST){
-  host_whitelist = new Set(process.env.SSHHOST_WHITELIST.split(':'));
-}
-
-let default_sshhost;
-glob.sync(path.join((process.env.OOD_CLUSTERS || '/etc/ood/config/clusters.d'), '*.y*ml'))
-  .map(yml => yaml.safeLoad(fs.readFileSync(yml)))
-  .filter(config => (config.v2 && config.v2.login && config.v2.login.host) && ! (config.v2 && config.v2.metadata && config.v2.metadata.hidden))
-  .forEach((config) => {
-    let host = config.v2.login.host; //Already did checking above
-    let isDefault = config.v2.login.default;
-    host_whitelist.add(host);
-    if (isDefault) default_sshhost = host;
-  });
-
-default_sshhost = process.env.DEFAULT_SSHHOST || default_sshhost;
-if (default_sshhost) host_whitelist.add(default_sshhost);
-function host_and_dir_from_url(url){
-  let match = url.match(host_path_rx),
-  hostname = default_sshhost, 
-  directory = null;
-
-  if (match) {
-    hostname = match[1] === "default" ? default_sshhost : match[1];
-    directory = match[2] ? decodeURIComponent(match[2]) : null;
-  }
-
-  return [hostname, directory];
-}
-
-wss.on('connection', function connection (ws, req) {
-  var dir,
-      term,
-      args,
-      host,
-      cmd = process.env.OOD_SSH_WRAPPER || 'ssh';
+wss.on('connection', (ws, req) => {
+  const cmd = process.env.OOD_SSH_WRAPPER || 'ssh';
 
   console.log('Connection established');
 
-  [host, dir] = host_and_dir_from_url(req.url);
-  args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
+  const [host, dir] = parseUrl(req.url);
+  const args = dir
+    ? [host, '-t', "cd '" + dir.replace(/'+/g, '\\') + "' ; exec ${SHELL} -l"]
+    : [host];
 
   process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
 
-  term = pty.spawn(cmd, args, {
+  const term = pty.spawn(cmd, args, {
     name: 'xterm-256color',
     cols: 80,
-    rows: 30
+    rows: 30,
   });
 
   console.log('Opened terminal: ' + term.pid);
 
-  term.on('data', function (data) {
-    ws.send(data, function (error) {
+  term.on('data', (data) => {
+    ws.send(data, (error) => {
       if (error) console.log('Send error: ' + error.message);
     });
   });
 
-  term.on('error', function (error) {
+  term.on('error', () => {
     ws.close();
   });
 
-  term.on('close', function () {
+  term.on('close', () => {
     ws.close();
   });
 
-  ws.on('message', function (msg) {
+  ws.on('message', (msg) => {
     msg = JSON.parse(msg);
-    if (msg.input)  term.write(msg.input);
-    if (msg.resize) term.resize(parseInt(msg.resize.cols), parseInt(msg.resize.rows));
+    if (msg.input) term.write(msg.input);
+    if (msg.resize)
+      term.resize(parseInt(msg.resize.cols), parseInt(msg.resize.rows));
   });
 
-  ws.on('close', function () {
+  ws.on('close', () => {
     term.end();
     console.log('Closed terminal: ' + term.pid);
   });
 });
 
-function custom_server_origin(default_value = null){
-  var custom_origin = null;
+server.on('upgrade', (request, socket, head) => {
+  console.log(socket);
+  const {
+    url,
+    headers: { origin: clientOrigin },
+  } = request;
 
-  if(process.env.OOD_SHELL_ORIGIN_CHECK) {
-    // if ENV is set, do not use default!
-    if(process.env.OOD_SHELL_ORIGIN_CHECK.startsWith('http')){
-      custom_origin = process.env.OOD_SHELL_ORIGIN_CHECK;
-    }
-  }
-  else {
-    custom_origin = default_value;
-  }
+  const requestToken = new URL(url, clientOrigin).searchParams.get('csrf');
+  const serverOrigin = customServerOrigin(defaultServerOrigin(request.headers));
+  const [host] = parseUrl(request.url);
 
-  return custom_origin;
-}
-
-function default_server_origin(headers){
-  var origin = null;
-
-  if (headers['x-forwarded-proto'] && headers['x-forwarded-host']){
-    origin = headers['x-forwarded-proto'] + "://" + headers['x-forwarded-host']
-  }
-
-  return origin;
-}
-
-server.on('upgrade', function upgrade(request, socket, head) {
-  const requestToken = new URLSearchParams(url.parse(request.url).search).get('csrf'),
-        client_origin = request.headers['origin'],
-        server_origin = custom_server_origin(default_server_origin(request.headers));
-  var host, dir;
-  [host, dir] = host_and_dir_from_url(request.url);
-
-  if (client_origin &&
-      client_origin.startsWith('http') &&
-      server_origin && client_origin !== server_origin) {
-    socket.write([
-      'HTTP/1.1 401 Unauthorized',
-      'Content-Type: text/html; charset=UTF-8',
-      'Content-Encoding: UTF-8',
-      'Connection: close',
-      'X-OOD-Failure-Reason: invalid origin',
-    ].join('\r\n') + '\r\n\r\n');
+  if (
+    clientOrigin &&
+    serverOrigin.startsWith('http') &&
+    serverOrigin &&
+    clientOrigin !== serverOrigin
+  ) {
+    socket.write(wsErrorMessage('bad origin'));
 
     socket.destroy();
   } else if (!tokens.verify(secret, requestToken)) {
-    socket.write([
-      'HTTP/1.1 401 Unauthorized',
-      'Content-Type: text/html; charset=UTF-8',
-      'Content-Encoding: UTF-8',
-      'Connection: close',
-      'X-OOD-Failure-Reason: bad csrf token',
-    ].join('\r\n') + '\r\n\r\n');
+    socket.write(wsErrorMessage('bad csrf token'));
 
     socket.destroy();
-  } else if (!host_whitelist.has(host)){ // host not in whitelist
-    socket.write([
-      'HTTP/1.1 401 Unauthorized',
-      'Content-Type: text/html; charset=UTF-8',
-      'Content-Encoding: UTF-8',
-      'Connection: close',
-      'X-OOD-Failure-Reason: host not whitelisted',
-    ].join('\r\n') + '\r\n\r\n');
+  } else if (!hostAllowList().has(host)) {
+    // host not in whitelist
+    socket.write(wsErrorMessage('host not whitelisted'));
 
     socket.destroy();
-  } else{
-    wss.handleUpgrade(request, socket, head, function done(ws) {
+  } else {
+    wss.handleUpgrade(request, socket, head, (ws) => {
       wss.emit('connection', ws, request);
     });
   }
 });
 
-server.listen(port, function () {
+server.listen(port, () => {
   console.log('Listening on ' + port);
 });
