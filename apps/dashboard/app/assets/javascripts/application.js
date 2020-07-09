@@ -128,7 +128,6 @@ function promiseLoginToXDMoD(xdmodUrl){
 var promiseLoggedIntoXDMoD = (function(){
   return _.memoize(function(xdmodUrl){
     return fetch(xdmodUrl + '/rest/v1/users/current', { credentials: 'include' })
-      .then(response => response.ok ? Promise.resolve() : Promise.reject())
-      .catch(() => promiseLoginToXDMoD(xdmodUrl));
+      .then(response => response.ok ? Promise.resolve() : promiseLoginToXDMoD(xdmodUrl))
   });
 })();
