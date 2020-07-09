@@ -156,4 +156,43 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       assert_equal 'ood-sys-dashboard-rstudio', BatchConnect::Session.new.script_options[:job_name]
     end
   end
+
+  test "cache_completed can be set to true" do
+    session = BatchConnect::Session.new
+
+    refute session.cache_completed
+    refute BatchConnect::Session.new.as_json['cache_completed']
+
+    session.cache_completed = true
+
+    assert session.cache_completed
+    assert BatchConnect::Session.new.from_json(session.to_json).cache_completed
+  end
+
+  test "update_cache_completed! will update record for completed job" do
+    # TODO: add integration test to verify adapter#info is called only once
+    # in consecutive get requests
+    # because cached the completed status
+    #
+    adapter = mock()
+    adapter.stubs(:info).returns(OodCore::Job::Info.new(id: "123", status: :completed))
+    BatchConnect::Session.any_instance.stubs(:adapter).returns(adapter)
+
+    Dir.mktmpdir("dbroot") do |dir|
+      dir = Pathname.new(dir)
+      BatchConnect::Session.stubs(:db_root).returns(dir)
+
+      dir.join("A").write({id: "A", job_id: "123", created_at: 100 }.to_json)
+
+      session = BatchConnect::Session.all.first
+
+      refute session.cache_completed
+
+      session.update_cache_completed!
+
+      assert session.completed?, "mock adapter should return job with completed Info status"
+      assert session.cache_completed, "update_cache_completed! failed to set cache_completed to true"
+      assert BatchConnect::Session.all.first.cache_completed, "update_cache_completed! failed to write cache_completed to json"
+    end
+  end
 end

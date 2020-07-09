@@ -45,13 +45,15 @@ module BatchConnect
     # @return [String] script type
     attr_accessor :script_type
 
+    attr_accessor :cache_completed
+
     # How many days before a Session record is considered old and ready to delete
     OLD_IN_DAYS=7
 
     # Attributes used for serialization
     # @return [Hash] attributes to be serialized
     def attributes
-      %w(id cluster_id job_id created_at token title view script_type).map do |attribute|
+      %w(id cluster_id job_id created_at token title view script_type cache_completed).map do |attribute|
         [ attribute, nil ]
       end.to_h
     end
@@ -290,11 +292,22 @@ module BatchConnect
     # Force update the job's info
     # @return [OodCore::Job::Info] info object
     def update_info
-      @info = adapter.info(job_id)
+      if cache_completed
+        @info = OodCore::Job::Info.new(id: job_id, status: :completed)
+      else
+        @info = adapter.info(job_id)
+      end
     rescue ClusterNotFound, AdapterNotAllowed, OodCore::JobAdapterError => e
       errors.add(:info, e.message)
       Rails.logger.error(e.message)
       @info = OodCore::Job::Info.new(id: id, status: :undetermined)
+    end
+
+    def update_cache_completed!
+      if (! cache_completed) && completed?
+        self.cache_completed = true
+        db_file.write(to_json)
+      end
     end
 
     # Whether this session is persisted to the database
