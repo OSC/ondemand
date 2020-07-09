@@ -30,8 +30,8 @@ const secret = tokens.secretSync();
 
 // Create all your routes
 var router = express.Router();
-router.get('/', function (req, res) {
-  res.redirect(req.baseUrl + '/ssh');
+router.get(['/', '/ssh'], function (req, res) {
+  res.redirect(req.baseUrl + '/ssh/default');
 });
 
 router.get('/ssh*', function (req, res) {
@@ -63,7 +63,7 @@ if (process.env.SSHHOST_WHITELIST){
   host_whitelist = new Set(process.env.SSHHOST_WHITELIST.split(':'));
 }
 
-let default_sshhost;
+let default_sshhost, first_available_host, isFirst = true;
 glob.sync(path.join((process.env.OOD_CLUSTERS || '/etc/ood/config/clusters.d'), '*.y*ml'))
   .map(yml => yaml.safeLoad(fs.readFileSync(yml)))
   .filter(config => (config.v2 && config.v2.login && config.v2.login.host) && ! (config.v2 && config.v2.metadata && config.v2.metadata.hidden))
@@ -72,20 +72,24 @@ glob.sync(path.join((process.env.OOD_CLUSTERS || '/etc/ood/config/clusters.d'), 
     let isDefault = config.v2.login.default;
     host_whitelist.add(host);
     if (isDefault) default_sshhost = host;
+    if (isFirst) {
+      first_available_host = host;
+      isFirst = false;
+    }
   });
 
-default_sshhost = process.env.DEFAULT_SSHHOST || default_sshhost;
+default_sshhost = process.env.DEFAULT_SSHHOST || default_sshhost || first_available_host;
 if (default_sshhost) host_whitelist.add(default_sshhost);
+
 function host_and_dir_from_url(url){
-  let match = url.match(host_path_rx),
-  hostname = default_sshhost, 
+  let match = url.match(host_path_rx), 
+  hostname = null, 
   directory = null;
 
   if (match) {
     hostname = match[1] === "default" ? default_sshhost : match[1];
     directory = match[2] ? decodeURIComponent(match[2]) : null;
   }
-
   return [hostname, directory];
 }
 
