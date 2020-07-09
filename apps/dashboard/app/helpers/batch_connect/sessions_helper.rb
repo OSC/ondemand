@@ -129,6 +129,8 @@ module BatchConnect::SessionsHelper
       "Held"
     elsif session.suspended?
       "Suspended"
+    elsif session.completed?
+      "Completed"
     else
       "Undetermined"
     end
@@ -139,7 +141,7 @@ module BatchConnect::SessionsHelper
       "info"
     elsif session.running?
       "success"
-    elsif session.queued?
+    elsif session.queued? || session.completed?
       "default"
     elsif session.held? || session.suspended?
       "danger"

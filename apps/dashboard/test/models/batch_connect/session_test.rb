@@ -23,6 +23,17 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
     end
   end
 
+  test "days_till_old" do
+    assert_equal 0, BatchConnect::Session.new.days_till_old, "should be 0 since no id is set"
+    assert_equal 0, BatchConnect::Session.new(id: "A").days_till_old, "should be 0 since no db file exists"
+
+    File.stubs(:stat).returns(OpenStruct.new(mtime: Time.now))
+    assert_equal BatchConnect::Session::OLD_IN_DAYS, BatchConnect::Session.new(id: 'A').days_till_old
+
+    File.stubs(:stat).returns(OpenStruct.new(mtime: 1.day.ago))
+    assert_equal BatchConnect::Session::OLD_IN_DAYS-1, BatchConnect::Session.new(id: 'A').days_till_old
+  end
+
   def create_double_session
     # FIXME: we should store status in the job, and then fix info to return an info object with id and status
     Class.new(BatchConnect::Session) do

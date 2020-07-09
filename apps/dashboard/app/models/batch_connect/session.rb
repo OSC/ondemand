@@ -115,10 +115,26 @@ module BatchConnect
     # @return [Integer] unix timestamp
     def modified_at
       @modified_at ||= (id && File.stat(db_file).mtime.to_i)
+    rescue
+      nil
     end
 
     def old?
       modified_at && modified_at < self.class::OLD_IN_DAYS.days.ago.to_i
+    end
+
+    # Display value for days till old
+    #
+    # This is 0 if no modified date is available, or if it is old, thus this
+    # value should not be used for anything but display purposes.
+    #
+    # @reutrn [Integer]
+    def days_till_old
+      if modified_at.nil? || old?
+        0
+      else
+        (modified_at - self.class::OLD_IN_DAYS.days.ago.to_i)/(1.day.to_i)
+      end
     end
 
     # Raised when cluster is not found for specific cluster id
