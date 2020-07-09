@@ -118,6 +118,9 @@ function promiseLoginToXDMoD(xdmodUrl){
           setTimeout(reject, 5000, new Error('Login failed: Timeout waiting for login to complete'));
         })]);
       })
+      .then(() => {
+        resolve();
+      })
       .catch((e)=> {
         reject(e);
       });
