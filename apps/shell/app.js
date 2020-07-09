@@ -12,13 +12,13 @@ const yaml      = require('js-yaml');
 const glob      = require("glob");
 const port      = 3000;
 
+const helpers = require('./utils/helpers.js');
+
 // Read in environment variables
 dotenv.config({ path: '.env.local' });
 if (process.env.NODE_ENV === 'production') {
   dotenv.config({ path: '/etc/ood/config/apps/shell/env' });
 }
-
-const helpers = require('./utils/helpers.js')
 
 // Keep app backwards compatible
 if (fs.existsSync('.env')) {
