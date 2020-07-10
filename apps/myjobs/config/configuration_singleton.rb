@@ -97,8 +97,8 @@ class ConfigurationSingleton
     Pathname.new(ENV["DATABASE_PATH"] || dataroot.join('production.sqlite3')).expand_path
   end
   
-  def whitelist_paths
-    ENV['WHITELIST_PATH'].to_s.strip.split(":")
+  def allowlist_paths
+    (ENV['WHITELIST_PATH'] + ENV['ALLOWLIST_PATH']).to_s.strip.split(":")
   end
   
   def locale

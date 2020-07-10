@@ -106,14 +106,15 @@ function sshHosts(hosts) {
     }).filter(el => el);
 }
 
-var whitelist = {
-    paths:  process.env.WHITELIST_PATH ? process.env.WHITELIST_PATH.split(":") : [],
+let path_list = process.env.WHITELIST_PATH + process.env.ALLOWLIST_PATH;
+var allowlist = {
+    paths:  path_list ? path_list.split(":") : [],
     enabled: function(){ return this.paths.length > 0; },
     contains: function(filepath){
-        return this.paths.filter(function(whitelisted_path){
-            // path.relative will contain "/../" if not in the whitelisted path
+        return this.paths.filter(function(allowlisted_path){
+            // path.relative will contain "/../" if not in the allowlisted path
             return ! path.relative(
-                expandTilde(whitelisted_path),
+                expandTilde(allowlisted_path),
                 resolvePath(filepath)
             ).split(
                 path.sep
@@ -161,7 +162,7 @@ socket = io.listen(server, {
 //
 // url: /fs/Applications/
 // path: /Applications/
-if(whitelist.enabled()) {
+if(allowlist.enabled()) {
     app.use(function(req, res, next) {
         var request_url = url.parse(req.url).pathname,
             rx = /(?:\/oodzip|\/api\/v1\/fs|\/fs)(.*)(?:)/,
@@ -179,13 +180,13 @@ if(whitelist.enabled()) {
         }
 
 
-        if(filepath != null && whitelist.contains(filepath)) {
+        if(filepath != null && allowlist.contains(filepath)) {
             next();
         }
-        else if(whitelist.requests.includes(request_url)){
+        else if(allowlist.requests.includes(request_url)){
             next();
         }
-        else if(startsWithAny(request_url, whitelist.request_prefixes)){
+        else if(startsWithAny(request_url, allowlist.request_prefixes)){
           next();
         }
         else{
@@ -319,8 +320,8 @@ app.use(cloudcmd({
         ssh_hosts:              sshAppUrls(sshHosts(process.env.OOD_SSH_HOSTS), oodShellUrl()),
         fileexplorer_version:   app_version,
         // function that accepts a path and returns true or false
-        // FIXME: whitelist would be better as a function that has some properties!
-        whitelist: whitelist.enabled() ? whitelist : null
+        // FIXME: allowlist would be better as a function that has some properties!
+        allowlist: allowlist.enabled() ? allowlist : null
     }
 }));
 

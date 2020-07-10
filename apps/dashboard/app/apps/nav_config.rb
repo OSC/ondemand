@@ -1,8 +1,8 @@
 class NavConfig
     class << self
-      attr_accessor :categories, :categories_whitelist
-      alias_method :categories_whitelist?, :categories_whitelist
+      attr_accessor :categories, :categories_allowlist
+      alias_method :categories_allowlist?, :categories_allowlist
     end
     self.categories = ["Files", "Jobs", "Clusters", "Interactive Apps"]
-    self.categories_whitelist = false
+    self.categories_allowlist = false
 end
