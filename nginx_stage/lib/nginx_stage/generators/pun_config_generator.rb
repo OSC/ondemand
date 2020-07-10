@@ -105,7 +105,7 @@ module NginxStage
         unless STDIN.tty?
           STDIN.each_line do |line|
             key_values = line.split('=')
-            env[key_values[0]] = key_values[1] if key_values.size[2]
+            env[key_values[0]] = key_values[1] if key_values.size == 2
           end
         end
 
