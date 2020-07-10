@@ -229,8 +229,8 @@ server.on('upgrade', function upgrade(request, socket, head) {
   const requestToken = new URLSearchParams(url.parse(request.url).search).get('csrf'),
         client_origin = request.headers['origin'],
         server_origin = custom_server_origin(default_server_origin(request.headers));
-  var host, dir;
-  [host, dir] = host_and_dir_from_url(request.url);
+  var uuid, host, dir;
+  [uuid, host, dir] = host_and_dir_from_url(request.url);
 
   if (client_origin &&
       client_origin.startsWith('http') &&
