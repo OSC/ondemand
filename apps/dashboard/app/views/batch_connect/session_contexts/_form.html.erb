@@ -15,28 +15,22 @@
 	 */
 	function toggle_visibilty_of_elements() {
 	  /* array of controlled elements */
-	  let controlled_scopes = Array.from(document.querySelectorAll('[data-show-scope]'));
+      let controlled_form_groups = Array.from(document.querySelectorAll('.form-group[data-ood-show-for]'));
 
-	  /* array of active scopes' values */
-	  let enabled_scopes_values = Array.from(document.querySelectorAll('option[data-show-scope-show]:checked, input[data-show-scope-show]:checked').values()).map(x => x.dataset.showScopeShow);
+      /* array of active scopes' values */
+      let enabled_scopes_values = Array.from(document.querySelectorAll('option[data-ood-show-scope]:checked, input[data-ood-show-scope]:checked').values()).map(x => x.dataset.oodShowScope);
 
-      let elements_to_show = controlled_scopes.filter(x => enabled_scopes_values.includes(x.dataset.showScope));
-	  let elements_to_hide = controlled_scopes.filter(x => !enabled_scopes_values.includes(x.dataset.showScope));
 
-	  hide_show_elements(elements_to_show, elements_to_hide);
+      controlled_form_groups.forEach(el => update_form_group_visibility(el, enabled_scopes_values.includes(el.dataset.oodShowFor)));
 	}
 
 	/*
-	* Hides/shows the controlled scopes
-	*/
-	function hide_show_elements(show_elms, hide_elms) {
-	  show_elms.forEach(elm => $(elm).parent().show());
-	  hide_elms.forEach(elm => { let parent = $(elm).parent()
-	    parent.hide()
-        /* check if the element to show/hide has a help block (this is needed for checkbox elements that one wishes to hide as the help blocks are not within the parent of element) */
-	    parent.parent().next().hasClass('help-block') ? parent.parent().next().hide() : null
-	  });
-	}
+    * Updates the visibility of controlled a form group
+    */
+    function update_form_group_visibility(e1, visible) {
+      let input_element = $(e1).find(":input");
+      visible ? $( e1 ).show() && input_element.prop( "disabled", false ) : $( e1 ).hide() && input_element.prop( "disabled", true );
+    }
 
 	/**
  	* Sets the change handler for scopes

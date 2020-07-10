@@ -5,25 +5,26 @@ module BatchConnect::SessionContextsHelper
     widget = attrib.widget
     field_options = attrib.field_options(fmt: format)
     all_options = attrib.all_options(fmt: format)
+    data_attribute_option = { data: { 'ood-show-for': all_options[:'data-ood-show-for'] } }
 
     case widget
     when "select"
-      form.select attrib.id, attrib.select_choices, field_options, attrib.html_options
+      form.select attrib.id, attrib.select_choices, field_options, attrib.html_options.merge( wrapper: data_attribute_option )
     when "resolution_field"
       resolution_field(form, attrib.id, all_options)
     when "check_box"
-      form.form_group attrib.id, help: field_options[:help] do
+      form.form_group attrib.id, { help: field_options[:help] }.merge( data_attribute_option ) do
         form.check_box attrib.id, all_options, attrib.checked_value, attrib.unchecked_value
       end
     when "radio", "radio_button"
-      form.collection_radio_buttons attrib.id,   attrib.select_choices, :second, :first, checked: (attrib.value.presence || attrib.field_options[:checked])
+      form.collection_radio_buttons attrib.id, attrib.select_choices, :second, :first, all_options.merge( checked: (attrib.value.presence || attrib.field_options[:checked]), wrapper: data_attribute_option )
     else
-      form.send widget, attrib.id, all_options
+      form.send widget, attrib.id, all_options.merge( wrapper: data_attribute_option )
     end
   end
 
   def resolution_field(form, id, opts = {})
-    content_tag(:div, id: "#{id}_group", class: "form-group") do
+    content_tag(:div, id: "#{id}_group", class: "form-group", data: { 'ood-show-for': opts[:'data-ood-show-for'] } ) do
       concat form.label(id, opts[:label])
       concat form.hidden_field(id, id: "#{id}_field")
       concat(
