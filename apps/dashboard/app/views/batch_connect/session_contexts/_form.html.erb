@@ -10,7 +10,7 @@
 (function(){
 	'use strict'
 
-	// update form elements visibility based on enabled/disabled scopes
+    // update form elements visibility based on enabled/disabled scopes
     function update_form_elements_visibility_based_on_scope() {
       // elements whose visibility changes based on active scopes
       let controlled_form_groups = Array.from(
@@ -25,26 +25,27 @@
       // go through each controlled form-group and
       // hide or show it according to its respective
       // enabled scopes' values
-      controlled_form_groups.forEach(
-        el => update_element_visibility(
-          el, enabled_scopes_values.includes(
-            el.dataset.oodShowFor)));
+      controlled_form_groups.forEach(el => {
+        let input_element = $(el).find(":input");
+        let visible = enabled_scopes_values.includes(
+            el.dataset.oodShowFor);
 
-    }
+        // show or hide the element based on its visibility
+        // meaning whether its respective scope is enabled
+        // or not
+        $( el ).toggle(visible);
+        input_element.prop( "disabled", ! visible );
 
-    // change handler for when select options or input scopes are enabled/disabled
-    $('select:has(option[data-ood-show-scope]), input[data-ood-show-scope]').change(
-      update_form_elements_visibility_based_on_scope);
+      });
 
-	  // show or hide the element based on whether its scope is enabled or not
-    function update_element_visibility(e1, visible) {
-      let input_element = $(e1).find(":input");
-      $( e1 ).toggle(visible);
-      input_element.prop( "disabled", ! visible );
     }
 
     update_form_elements_visibility_based_on_scope();
 
+    // change handler for when select options or input scopes
+    // are updated (enabled/disabled)
+    $('select:has(option[data-ood-show-scope]), input[data-ood-show-scope]').change(
+      update_form_elements_visibility_based_on_scope);
 
 }());
 <% end %>
