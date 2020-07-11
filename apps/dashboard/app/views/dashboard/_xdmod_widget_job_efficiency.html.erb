@@ -49,7 +49,6 @@ jobsUrl.searchParams.set('config', JSON.stringify({
   "aggregation_unit":"day",
   "start_date": thirtyDaysAgo,
   "end_date": today,
-  // "person_id":"327", //FIXME: this can be omitted - but what if you have staff acct
   "order_by":{
     "field":"core_time_bad",
     "dirn":"desc"},
@@ -115,7 +114,4 @@ promiseLoggedIntoXDMoD(xdmodUrl)
     render_core_hours_template({error: error});
   });
 }());
-
-//TODO: custom error class for login failure
-// or add a .catch after promiseLoggedIntoXDMoD to add the special login failed message
 </script>
