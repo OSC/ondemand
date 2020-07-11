@@ -16,13 +16,11 @@
       let controlled_form_groups = Array.from(
         document.querySelectorAll('.form-group[data-ood-show-for]'));
 
-      // array of enabled scopes' values
       let enabled_scopes_values = Array.from(
         document.querySelectorAll(
           'option[data-ood-show-scope]:checked, input[data-ood-show-scope]:checked'
           ).values()).map(x => x.dataset.oodShowScope);
 
-      // go through each controlled form-group and
       // hide or show it according to its respective
       // enabled scopes' values
       controlled_form_groups.forEach(el => {
@@ -30,14 +28,9 @@
         let visible = enabled_scopes_values.includes(
             el.dataset.oodShowFor);
 
-        // show or hide the element based on its visibility
-        // meaning whether its respective scope is enabled
-        // or not
         $( el ).toggle(visible);
         input_element.prop( "disabled", ! visible );
-
       });
-
     }
 
     update_form_elements_visibility_based_on_scope();
