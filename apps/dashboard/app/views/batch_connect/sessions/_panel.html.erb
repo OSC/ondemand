@@ -17,6 +17,8 @@
         views = { partial: "starting" }
       elsif session.queued?
         views = { partial: "queued" }
+      elsif session.completed?
+        views = { partial: "completed", locals: { session: session } }
       else
         views = { partial: "bad" }
       end

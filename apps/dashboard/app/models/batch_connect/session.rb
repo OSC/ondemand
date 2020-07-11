@@ -26,7 +26,7 @@ module BatchConnect
     attr_accessor :job_id
 
     # When this session was created at as a unix timestamp
-    # @return [Fixnum] created at
+    # @return [Integer] created at
     attr_accessor :created_at
 
     # Token describing app and sub app
@@ -49,10 +49,20 @@ module BatchConnect
     # @return [String] script type
     attr_accessor :script_type
 
+    # Cached value to indicate the job is completed
+    # We call this cache_completed, not completed to avoid the risk of confusing
+    # completed with completed?
+    #
+    # @return [Boolean] true if job is completed
+    attr_accessor :cache_completed
+
+    # How many days before a Session record is considered old and ready to delete
+    OLD_IN_DAYS=7
+
     # Attributes used for serialization
     # @return [Hash] attributes to be serialized
     def attributes
-      %w(id cluster_id job_id created_at token title view info_view script_type).map do |attribute|
+      %w(id cluster_id job_id created_at token title view info_view script_type cache_completed).map do |attribute|
         [ attribute, nil ]
       end.to_h
     end
@@ -80,7 +90,7 @@ module BatchConnect
       # Find all active session jobs
       # @return [Array<Session>] list of sessions
       def all
-        db_root.children.select(&:file?).reject {|p| p.extname == ".bak"}.map do |f|
+        db_root.children.select(&:file?).reject {|p| p.extname == ".bak"}.map { |f|
           begin
             new.from_json(f.read)
           rescue => e
@@ -88,9 +98,12 @@ module BatchConnect
             f.rename("#{f}.bak")
             nil
           end
-        end.compact.map do |s|
-          s.completed? && s.destroy ? nil : s
-        end.compact.sort_by(&:created_at).reverse
+        }.compact.map { |s|
+          (s.completed? && s.old? && s.destroy) ? nil : s
+        }.compact.sort_by {|s|
+          # sort by completed status, then created_at date
+          [s.completed? ? 0 : 1, s.created_at]
+        }.reverse
       end
 
       # Find requested session job
@@ -104,6 +117,40 @@ module BatchConnect
     # @return [Pathname, nil] path to db file
     def db_file
       self.class.db_root.join(id) if id
+    end
+
+    # The last time the session was updated
+    # (which in this case is the database file modified timestamp)
+    # @return [Integer] unix timestamp
+    def modified_at
+      @modified_at ||= (id && File.stat(db_file).mtime.to_i)
+    rescue
+      nil
+    end
+
+    # Return true if session record has not been modified in OLD_IN_DAYS days
+    #
+    # @return [Boolean] true if old, false otherwise
+    def old?
+      if modified_at.nil?
+        false
+      else
+        modified_at < self.class::OLD_IN_DAYS.days.ago.to_i
+      end
+    end
+
+    # Display value for days till old
+    #
+    # This is 0 if no modified date is available, or if it is old, thus this
+    # value should not be used for anything but display purposes.
+    #
+    # @return [Integer]
+    def days_till_old
+      if modified_at.nil? || old?
+        0
+      else
+        (modified_at - self.class::OLD_IN_DAYS.days.ago.to_i)/(1.day.to_i)
+      end
     end
 
     # Raised when cluster is not found for specific cluster id
@@ -280,11 +327,22 @@ module BatchConnect
     # Force update the job's info
     # @return [OodCore::Job::Info] info object
     def update_info
-      @info = adapter.info(job_id)
+      if cache_completed
+        @info = OodCore::Job::Info.new(id: job_id, status: :completed)
+      else
+        @info = adapter.info(job_id)
+      end
     rescue ClusterNotFound, AdapterNotAllowed, OodCore::JobAdapterError => e
       errors.add(:info, e.message)
       Rails.logger.error(e.message)
       @info = OodCore::Job::Info.new(id: id, status: :undetermined)
+    end
+
+    def update_cache_completed!
+      if (! cache_completed) && completed?
+        self.cache_completed = true
+        db_file.write(to_json)
+      end
     end
 
     # Whether this session is persisted to the database
