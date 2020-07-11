@@ -5,21 +5,21 @@ module BatchConnect::SessionContextsHelper
     widget = attrib.widget
     field_options = attrib.field_options(fmt: format)
     all_options = attrib.all_options(fmt: format)
-    data_attribute_option = { data: { 'ood-show-for': all_options[:'data-ood-show-for'] } }
+    form_group_data_attributes = { data: { 'ood-show-for': all_options[:'data-ood-show-for'] } }
 
     case widget
     when "select"
-      form.select attrib.id, attrib.select_choices, field_options, attrib.html_options.merge( wrapper: data_attribute_option )
+      form.select attrib.id, attrib.select_choices, field_options, attrib.html_options.merge( wrapper: form_group_data_attributes )
     when "resolution_field"
       resolution_field(form, attrib.id, all_options)
     when "check_box"
-      form.form_group attrib.id, { help: field_options[:help] }.merge( data_attribute_option ) do
+      form.form_group attrib.id, { help: field_options[:help] }.merge( form_group_data_attributes ) do
         form.check_box attrib.id, all_options, attrib.checked_value, attrib.unchecked_value
       end
     when "radio", "radio_button"
-      form.collection_radio_buttons attrib.id, attrib.select_choices, :second, :first, all_options.merge( checked: (attrib.value.presence || attrib.field_options[:checked]), wrapper: data_attribute_option )
+      form.collection_radio_buttons attrib.id, attrib.select_choices, :second, :first, all_options.merge( checked: (attrib.value.presence || attrib.field_options[:checked]), wrapper: form_group_data_attributes )
     else
-      form.send widget, attrib.id, all_options.merge( wrapper: data_attribute_option )
+      form.send widget, attrib.id, all_options.merge( wrapper: form_group_data_attributes )
     end
   end
 
