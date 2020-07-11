@@ -6,6 +6,7 @@ include FileUtils
 
 # path to your application root.
 APP_ROOT = Pathname.new File.expand_path("../../",  __FILE__)
+CACHE    = "#{ENV['HOME']}/.cache/yarn/ood-files-app"
 
 chdir APP_ROOT do
   # This script is a starting point to setup your application.
@@ -28,7 +29,7 @@ chdir APP_ROOT do
   puts "\n== Installing dependencies =="
   rm_rf "node_modules"
   sh "npm install --production --prefix tmp yarn"
-  sh "tmp/node_modules/yarn/bin/yarn --production install"
+  sh "tmp/node_modules/yarn/bin/yarn --production install --cache-folder #{CACHE}"
 
   puts "\n== Restarting application server =="
   touch "tmp/restart.txt"

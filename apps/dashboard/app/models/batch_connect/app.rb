@@ -200,6 +200,12 @@ module BatchConnect
       file.read if file.file?
     end
 
+    # View used for session info if it exists
+    # @return [String, nil] session info
+    def session_info_view
+      Pathname.new(root).glob("info.{md,html}.erb").find(&:file?).try(:read)
+    end
+
     # Paths to custom javascript files
     # @return [Pathname] paths to custom javascript files that exist
     def custom_javascript_files

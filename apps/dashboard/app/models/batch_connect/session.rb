@@ -41,6 +41,10 @@ module BatchConnect
     # @return [String, nil] session view
     attr_accessor :view
 
+    # The view used to display custom info for this session
+    # @return [String, nil] session info
+    attr_accessor :info_view
+
     # Batch connect script type
     # @return [String] script type
     attr_accessor :script_type
@@ -58,7 +62,7 @@ module BatchConnect
     # Attributes used for serialization
     # @return [Hash] attributes to be serialized
     def attributes
-      %w(id cluster_id job_id created_at token title view script_type cache_completed).map do |attribute|
+      %w(id cluster_id job_id created_at token title view info_view script_type cache_completed).map do |attribute|
         [ attribute, nil ]
       end.to_h
     end
@@ -183,13 +187,16 @@ module BatchConnect
     # @return [Boolean] whether saved successfully
     def save(app:, context:, format: nil)
       self.id         = SecureRandom.uuid
-      self.cluster_id = context.cluster
       self.token      = app.token
       self.title      = app.title
       self.view       = app.session_view
+      self.info_view  = app.session_info_view
       self.created_at = Time.now.to_i
 
       submit_script = app.submit_opts(context, fmt: format) # could raise an exception
+
+      self.cluster_id = submit_script.fetch(:cluster, context.try(:cluster)).to_s
+      raise(ClusterNotFound, I18n.t('dashboard.batch_connect_missing_cluster')) unless self.cluster_id.present?
 
       stage(app.root.join("template"), context: context) &&
         submit(submit_script)
