@@ -75,9 +75,8 @@ describe OodPortalGenerator::Application do
       expect(described_class.output).to receive(:write).with(expected_rendered)
       described_class.generate()
     end
-
-    it 'generates maintenance template with IP whitelist already escaped' do
-      allow(described_class).to receive(:context).and_return({maintenance_ip_whitelist: ['192\.168\.1\..*', '10\.0\.0\..*']})
+    it 'generates maintenance template with IP allowlist already escaped' do
+      allow(described_class).to receive(:context).and_return({maintenance_ip_allowlist: ['192\.168\.1\..*', '10\.0\.0\..*']})
       expected_rendered = read_fixture('ood-portal.conf.maint_with_ips')
       expect(described_class.output).to receive(:write).with(expected_rendered)
       described_class.generate()
