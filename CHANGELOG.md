@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.8.2] - 2020-07-13
+### Changed
+- Retain the BC panel after a job completes [559](https://github.com/OSC/ondemand/pull/559)
+- XMDOD panels to use SSO, removing perf & summary widgets and added job efficiency widget
+  [578](https://github.com/OSC/ondemand/pull/578) and [580](https://github.com/OSC/ondemand/pull/580)
+
+### Added
+- Added jest for shell testing suite [577](https://github.com/OSC/ondemand/pull/577)
+- Added Sinatra gems into ondemand-gems for other apps to use [579](https://github.com/OSC/ondemand/pull/579)
+
+### Fixed
+- default_sshost is added to the shell's allowlist [564](https://github.com/OSC/ondemand/pull/564)
+
 ## [1.8.1] - 2020-07-06
 ### Fixed
 - ondemand-dex binary location in /usr/sbin not /usr/local [#566](https://github.com/OSC/ondemand/pull/566).
@@ -446,7 +459,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.1...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.2...HEAD
+[1.8.2]: https://github.com/OSC/ondemand/compare/v1.8.1...v1.8.2
 [1.8.1]: https://github.com/OSC/ondemand/compare/v1.8.0...v1.8.1
 [1.8.0]: https://github.com/OSC/ondemand/compare/v1.7.14...v1.8.0
 [1.7.14]: https://github.com/OSC/ondemand/compare/v1.7.13...v1.7.14
