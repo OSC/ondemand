@@ -67,12 +67,22 @@ GEM
     crass (1.0.6)
     data-confirm-modal (1.6.3)
       railties (>= 3.0)
+<<<<<<< HEAD
     dotenv (2.7.6)
     dotenv-rails (2.7.6)
       dotenv (= 2.7.6)
       railties (>= 3.2)
     dotiw (5.1.0)
       activesupport
+=======
+    diff-lcs (1.4.4)
+    dotenv (2.7.5)
+    dotenv-rails (2.7.5)
+      dotenv (= 2.7.5)
+      railties (>= 3.2, < 6.1)
+    dotiw (4.0.1)
+      actionpack (>= 4)
+>>>>>>> 5f66ae7... Added nav_config tests with rspec
       i18n
     erubi (1.9.0)
     execjs (2.7.0)
@@ -175,6 +185,19 @@ GEM
     redcarpet (3.5.0)
     request_store (1.5.0)
       rack (>= 1.4)
+    rspec (3.9.0)
+      rspec-core (~> 3.9.0)
+      rspec-expectations (~> 3.9.0)
+      rspec-mocks (~> 3.9.0)
+    rspec-core (3.9.2)
+      rspec-support (~> 3.9.3)
+    rspec-expectations (3.9.2)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.9.0)
+    rspec-mocks (3.9.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.9.0)
+    rspec-support (3.9.3)
     ruby2_keywords (0.0.2)
     sass (3.7.4)
       sass-listen (~> 4.0.0)
@@ -254,6 +277,7 @@ DEPENDENCIES
   rails (= 5.2.4.3)
   rails_12factor
   redcarpet (~> 3.3)
+  rspec
   sass-rails (~> 5.0)
   sdoc
   sinatra
