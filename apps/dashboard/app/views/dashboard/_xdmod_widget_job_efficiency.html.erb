@@ -51,8 +51,9 @@ jobsUrl.searchParams.set('config', JSON.stringify({
   "end_date": today,
   "order_by":{
     "field":"core_time_bad",
-    "dirn":"desc"},
-  "statistics":["core_time_bad","bad_core_ratio"]
+    "dirn":"desc"
+  },
+  "statistics": ["core_time","core_time_bad","bad_core_ratio","job_count","job_count_bad","bad_job_ratio"]
 }));
 
 var template_source = $('#job-efficiency-template').html();
