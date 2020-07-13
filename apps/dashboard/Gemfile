@@ -69,3 +69,8 @@ gem 'ood_support', '~> 0.0.2'
 gem 'ood_appkit', '~> 1.1'
 gem 'ood_core', '~> 0.11'
 gem 'pbs', '~> 2.2.1'
+
+# gems to include in ondemand-gems repo for status apps to use
+gem "sinatra", require: false
+gem "sinatra-contrib", require: false
+gem "erubi", require: false
