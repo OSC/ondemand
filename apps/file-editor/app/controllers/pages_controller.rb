@@ -5,7 +5,7 @@ class PagesController < ApplicationController
 
     @pathname = Pathname.new(path)
 
-    if ! WhitelistPolicy.new(Rails.application.config.x.whitelist_paths).permitted?(@pathname)
+    if ! AllowlistPolicy.new(Rails.application.config.x.allowlist_paths).permitted?(@pathname)
       @path_forbidden = true
       render status: 403
     elsif @pathname.file? && @pathname.readable?

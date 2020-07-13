@@ -1,14 +1,14 @@
-class WhitelistPolicy
-  attr_reader :whitelist
+class AllowlistPolicy
+  attr_reader :allowlist
 
-  def initialize(whitelist)
-    @whitelist = whitelist
+  def initialize(allowlist)
+    @allowlist = allowlist
   end
 
-  # @raises ArgumentError if any whitelist path or permitted? argument
+  # @raises ArgumentError if any allowlist path or permitted? argument
   #         has the form ~user/some/path where user doesn't exist
   def permitted?(path)
-    whitelist.blank? || whitelist.any?{ |parent| child?(Pathname.new(parent), real_expanded_path(path)) }
+    allowlist.blank? || allowlist.any?{ |parent| child?(Pathname.new(parent), real_expanded_path(path)) }
   end
 
   # call realpath to ensure symlinks are handled

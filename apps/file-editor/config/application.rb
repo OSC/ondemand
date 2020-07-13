@@ -29,7 +29,7 @@ module OODApp
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
-    # Whitelist paths are stored in a colon delimited list in the environment variable WHITELIST_PATH
-    config.x.whitelist_paths = (path = ENV['WHITELIST_PATH']) ? path.split(':').map{|s| Pathname.new(s)} : []
+    # Allowlist paths are stored in a colon delimited list in the environment variable ALLOWLIST_PATH or WHITELIST_PATH
+    config.x.allowlist_paths = (path = ENV['ALLOWLIST_PATH'] || ENV['WHITELIST_PATH']) ? path.split(':').map{|s| Pathname.new(s)} : []
   end
 end
