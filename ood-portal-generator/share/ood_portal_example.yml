@@ -104,10 +104,7 @@
 # NB: Be sure the appropriate Apache module is installed for this
 # Default: (see below, uses basic auth with an htpasswd file)
 #auth:
-#  - 'AuthType Basic'
-#  - 'AuthName "private"'
-#  - 'AuthUserFile "/opt/rh/httpd24/root/etc/httpd/.htpasswd"'
-#  - 'RequestHeader unset Authorization'
+#  - 'AuthType openid-connect'
 #  - 'Require valid-user'
 
 # Redirect user to the following URI when accessing root URI
