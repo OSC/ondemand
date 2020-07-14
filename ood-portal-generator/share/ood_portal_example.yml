@@ -260,3 +260,107 @@
 #     register_root: '/var/www/ood/register'
 # Default: null (display error to user if mapping fails)
 #register_root: null
+
+# OIDC metadata URL
+# Example:
+#     oidc_provider_metadata_url: https://example.com:5554/.well-known/openid-configuration
+# Default: null (value auto-generated if using Dex)
+#oidc_provider_metadata_url: null
+
+# OIDC client ID
+# Example:
+#     oidc_client_id: ondemand.example.com
+# Default: null (value auto-generated if using Dex)
+#oidc_client_id: null
+
+# OIDC client secret
+# Example:
+#     oidc_client_secret: 334389048b872a533002b34d73f8c29fd09efc50
+# Default: null (value auto-generated if using Dex)
+#oidc_client_secret: null
+
+# OIDC remote user claim. This is the claim that populates REMOTE_USER
+# Example:
+#     oidc_remote_user_claim: preferred_username
+# Default: preferred_username
+#oidc_remote_user_claim: preferred_username
+
+# OIDC scopes
+# Example:
+#     oidc_scope: "openid profile email groups"
+# Default: "openid profile email"
+#oidc_scope: "openid profile email"
+
+# OIDC session inactivity timeout
+# Example:
+#     oidc_session_inactivity_timeout: 28800
+# Default: 28800
+#oidc_session_inactivity_timeout: 28800
+
+# OIDC session max duration
+# Example:
+#     oidc_session_max_duration: 28800
+# Default: 28800
+#oidc_session_max_duration: 28800
+
+# OIDC max number of state cookies and if to automatically clean old cookies
+# Example:
+#     oidc_state_max_number_of_cookies: "10 true"
+# Default: "10 true"
+#oidc_state_max_number_of_cookies: "10 true"
+
+# Additional OIDC settings as key-value pairs
+# Example:
+#     oidc_settings:
+#       OIDCPassIDTokenAs: serialized
+#       OIDCPassRefreshToken: On
+# Default: {} (empty hash)
+
+# Dex configurations, values inside the "dex" structure are directly used to configure Dex
+# If the value for "dex" key is false or null, Dex support is disabled
+# Dex support will auto-enable if ondemand-dex package is installed
+#dex:
+  # Default based on if ssl key for ood-portal-generator is defined
+#  ssl: false
+  # Only used if SSL is disabled
+#  http_port: "5556"
+  # Only used if SSL is enabled
+#  https_port: "5554"
+  # tls_cert and tls_key take OnDemand configured values for ssl and copy keys to /etc/ood/dex maintaining file names
+#  tls_cert: null
+#  tls_key: null
+#  storage_file: /etc/ood/dex/dex.db
+#  grpc: null
+#  expiry: null
+#  client_name: OnDemand
+  # Client secret, value auto generated
+#  client_secret: null
+  # The following example is to configure OpenLDAP
+  # Docs: https://github.com/dexidp/dex/blob/master/Documentation/connectors/ldap.md
+#  connectors:
+#    - type: ldap
+#      id: ldap
+#      name: LDAP
+#      config:
+#        host: openldap.my_center.edu:636
+#        insecureSkipVerify: false
+#        bindDN: cn=admin,dc=example,dc=org
+#        bindPW: admin
+#        userSearch:
+#          baseDN: ou=People,dc=example,dc=org
+#          filter: "(objectClass=posixAccount)"
+#          username: uid
+#          idAttr: uid
+#          emailAttr: mail
+#          nameAttr: gecos
+#          preferredUsernameAttr: uid
+#        groupSearch:
+#          baseDN: ou=Groups,dc=example,dc=org
+#          filter: "(objectClass=posixGroup)"
+#          userMatchers:
+#            - userAttr: DN
+#              groupAttr: member
+#          nameAttr: cn
+#  frontend:
+#    theme: ondemand
+#    dir: /usr/share/ondemand-dex/web
