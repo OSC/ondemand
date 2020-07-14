@@ -63,18 +63,17 @@ class BatchConnect::SessionContextTest < ActiveSupport::TestCase
   
    test "should not update single field if per attribute cache disabled" do
      app = BatchConnect::App.new(router: nil)
-     app.stubs(:form_config).returns(attributes: { bc_account: {value: "PZS0714"}, num_cores: { widget: "number_field", value: "1", cacheable: false } }, form: ["bc_account", "num_cores"])
+     app.stubs(:form_config).returns(attributes: {  num_cores: { widget: "number_field", value: "1", cacheable: false } }, form: ["bc_account", "num_cores"])
      context = app.build_session_context
-     context.update_with_cache({"bc_account" => "PZS0714", :num_cores => 28}  )
+     context.update_with_cache({"bc_account" => "PZS0714", :num_cores => 28})
      assert_equal ["PZS0714", "1"], [context["bc_account"].value, context["num_cores"].value]
    end
   
    test "should not update single field if per attribute cache disabled even if global cache setting disabled but per app cache enabled" do
      with_modified_env(OOD_BATCH_CONNECT_CACHE_ATTR_VALUES: 'FALSE') do
        app = BatchConnect::App.new(router: nil)
-       app.stubs(:form_config).returns(cacheable: true, attributes: { bc_account: {value: "PZS0714"}, num_cores: { widget: "number_field", value: "1", cacheable: false } }, form: ["bc_account", "num_cores"])
+       app.stubs(:form_config).returns(cacheable: true, attributes: {  num_cores: { widget: "number_field", value: "1", cacheable: false } }, form: ["bc_account", "num_cores"])
        context = app.build_session_context
-       cache = { attributes: { num_cores: { widget: "number_field", value: "1", cacheable: false  } } }
        context.update_with_cache({"bc_account" => "PZS0714", "num_cores" => "28"})
   
        assert_equal ["PZS0714", "1"], [context["bc_account"].value, context["num_cores"].value]
