@@ -65,22 +65,21 @@ module BatchConnect
     def respond_to_missing?(method_name, include_private = false)
       /^(?<id>[^=]+)=?$/ =~ method_name.to_s && self[id] || super
    end
-    
+   
 
     def update_with_cache(cache)
-     
-      if  ! attribute_cache_disabled?
 
-        if attribute_cache_enabled? 
-          self.attributes = cache.select { |k,v| self[k.to_sym].opts[:cacheable] }
-        elsif app_specific_cache_enabled? 
-          self.attributes = cache
-        elsif global_cache_enabled? && to_bool(app_specific_cache_enabled?) 
-          self.attributes = cache
-        end
+       if attribute_cache_enabled?
+         self.attributes = cache.select { |k,v| self[k.to_sym].opts[:cacheable]  }
+       end
 
-      end
+       if app_specific_cache_enabled?
+         self.attributes = cache.select { |k,v| to_bool(self[k.to_sym].opts[:cacheable]) }
+       end
 
+       if global_cache_enabled? && to_bool(app_specific_cache_enabled?)
+         self.attributes = cache.select { |k,v| to_bool(self[k.to_sym].opts[:cacheable])  }
+       end
     end
 
     private
@@ -97,11 +96,6 @@ module BatchConnect
       self.any? {|v| v.opts[:cacheable] } 
     end
     
-    # Used to differentiate nil from false
-    # @return [Boolean] 
-    def attribute_cache_disabled?                                                                                                     
-      self.any? {|v| v.opts[:cacheable] == false }   
-    end
         
     def app_specific_cache_enabled?
       @app_specific_cache_setting

@@ -155,7 +155,7 @@ module BatchConnect
       local_attribs = form_config.fetch(:attributes, {})
       attrib_list   = form_config.fetch(:form, [])
     
-     attributes = attrib_list.map do |attribute_id|
+      attributes = attrib_list.map do |attribute_id|
           attribute_opts = local_attribs.fetch(attribute_id.to_sym, {})
     
           # Developer wanted a fixed value
