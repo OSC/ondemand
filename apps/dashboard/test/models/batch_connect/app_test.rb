@@ -189,4 +189,37 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
       assert_equal [], app.clusters
     }
   end
+
+  test "app with empty configured cluster is not configured with any cluster" do
+    Dir.mktmpdir { |dir|
+      r = PathRouter.new(dir)
+      r.path.join("form.yml").write("cluster: \"\"")
+
+      app = BatchConnect::App.new(router: r)
+      # it's valid but there are no clusters. Empty configurations are the same as
+      # user defined
+      assert app.valid?
+      assert_equal [], app.configured_clusters
+      assert_equal [], app.clusters
+    }
+  end
+
+   test "app disregards empty cluster strings" do
+    OodAppkit.stubs(:clusters).returns(good_clusters + bad_clusters)
+
+    Dir.mktmpdir { |dir|
+      r = PathRouter.new(dir)
+      # note the empty string and the string with whitespace
+      r.path.join("form.yml").write("cluster:\n  - owens\n  - \"\"\n  - \"  \"")
+
+      app = BatchConnect::App.new(router: r)
+
+      assert app.valid?
+      # only owens gets through
+      assert_equal [ 'owens' ], app.configured_clusters
+      assert_equal [ OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}}) ], app.clusters
+    }
+  end
+
+
 end
