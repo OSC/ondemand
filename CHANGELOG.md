@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.8.5] - 2020-07-16
+### Fixed
+- Broken tests introduced with redirect URIs in Dex [#592](https://github.com/OSC/ondemand/pull/592)
+
 ## [1.8.4] - 2020-07-16
 ### Added
 - Support for additional redirect URIs in Dex config [#591](https://github.com/OSC/ondemand/pull/591)
@@ -470,7 +474,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.4...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.5...HEAD
+[1.8.5]: https://github.com/OSC/ondemand/compare/v1.8.4...v1.8.5
 [1.8.4]: https://github.com/OSC/ondemand/compare/v1.8.3...v1.8.4
 [1.8.3]: https://github.com/OSC/ondemand/compare/v1.8.2...v1.8.3
 [1.8.2]: https://github.com/OSC/ondemand/compare/v1.8.1...v1.8.2
