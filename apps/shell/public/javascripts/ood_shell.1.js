@@ -64,9 +64,12 @@ OodShell.prototype.runTerminal = function () {
   }
 
   this.socket.onopen = function (ev) {
-    showState("onopen", false);
+    showState("", false);
   }
 
+    this.socket.onerror = function (ev) {
+    showState("Attempting Reconnection", true);
+  }
 };
 
 OodShell.prototype.getMessage = function (ev) {
