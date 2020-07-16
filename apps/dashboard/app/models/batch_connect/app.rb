@@ -117,7 +117,10 @@ module BatchConnect
     # The clusters the batch connect app is configured to use
     # @return [Array<String>, []] the clusters the app wants to use
     def configured_clusters
-      Array.wrap(form_config.fetch(:cluster, nil)).compact.map { |c| c.to_s.strip.eql?("*") ? ".*" : c.to_s.strip }
+      Array.wrap(form_config.fetch(:cluster, nil))
+        .select { |c| !c.to_s.strip.empty? }
+        .map { |c| c.to_s.strip.eql?("*") ? ".*" : c.to_s.strip }
+        .compact
     end
 
     # The clusters that the batch connect app can use. It's a combination
