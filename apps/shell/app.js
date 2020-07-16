@@ -58,9 +58,9 @@ app.use(process.env.PASSENGER_BASE_URI || '/', router);
 const server = new http.createServer(app);
 const wss = new WebSocket.Server({ noServer: true });
 
-let host_whitelist = new Set;
-if (process.env.SSHHOST_WHITELIST){
-  host_whitelist = new Set(process.env.SSHHOST_WHITELIST.split(':'));
+let host_allowlist = new Set;
+if (process.env.OOD_SSHHOST_ALLOWLIST){
+  host_allowlist = new Set(process.env.OOD_SSHHOST_ALLOWLIST.split(':'));
 }
 
 let default_sshhost;
@@ -70,12 +70,12 @@ glob.sync(path.join((process.env.OOD_CLUSTERS || '/etc/ood/config/clusters.d'), 
   .forEach((config) => {
     let host = config.v2.login.host; //Already did checking above
     let isDefault = config.v2.login.default;
-    host_whitelist.add(host);
+    host_allowlist.add(host);
     if (isDefault) default_sshhost = host;
   });
 
-default_sshhost = process.env.DEFAULT_SSHHOST || default_sshhost;
-if (default_sshhost) host_whitelist.add(default_sshhost);
+default_sshhost = process.env.OOD_DEFAULT_SSHHOST || default_sshhost;
+if (default_sshhost) host_allowlist.add(default_sshhost);
 function host_and_dir_from_url(url){
   let match = url.match(host_path_rx),
   hostname = match[1] === "default" ? default_sshhost : match[1],
@@ -187,13 +187,13 @@ server.on('upgrade', function upgrade(request, socket, head) {
     ].join('\r\n') + '\r\n\r\n');
 
     socket.destroy();
-  } else if (!host_whitelist.has(host)){ // host not in whitelist
+  } else if (!host_allowlist.has(host)){ // host not in allowlist
     socket.write([
       'HTTP/1.1 401 Unauthorized',
       'Content-Type: text/html; charset=UTF-8',
       'Content-Encoding: UTF-8',
       'Connection: close',
-      'X-OOD-Failure-Reason: host not whitelisted',
+      'X-OOD-Failure-Reason: host not specified in allowlist or cluster configs',
     ].join('\r\n') + '\r\n\r\n');
 
     socket.destroy();
