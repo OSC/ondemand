@@ -108,10 +108,12 @@ describe OodPortalGenerator::Application do
             'SSLCertificateKeyFile /etc/pki/tls/private/example.com.key',
             'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
           ],
-          client_redirect_uris: [
-            'https://localhost:4443/simplesaml/module.php/authglobus/linkback.php',
-            'https://localhost:2443/oidc/callback/',
-          ],
+          dex: {
+            client_redirect_uris: [
+              'https://localhost:4443/simplesaml/module.php/authglobus/linkback.php',
+              'https://localhost:2443/oidc/callback/',
+            ],
+          }
         })
         expected_dex_yaml = read_fixture('dex.yaml.full-redirect-uris').gsub('/etc/ood/dex', config_dir)
         expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
