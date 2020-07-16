@@ -138,15 +138,16 @@ module OodPortalGenerator
     end
 
     def client_id
-      @view.servername || OodPortalGenerator.fqdn
+      @config.fetch(:client_id, (@view.servername || OodPortalGenerator.fqdn))
     end
 
     def client_url
       "#{client_protocol}#{client_id}#{client_port}"
     end
 
-    def client_redirect_uri
-      "#{client_url}/oidc"
+    def client_redirect_uris
+      config_redirect_uris = @config.fetch(:client_redirect_uris, [])
+      ["#{client_url}/oidc"] + config_redirect_uris
     end
 
     def client_name
@@ -160,7 +161,7 @@ module OodPortalGenerator
     def static_clients
       ood_client = {
         id: client_id,
-        redirectURIs: [client_redirect_uri],
+        redirectURIs: client_redirect_uris,
         name: client_name,
         secret: client_secret,
       }

@@ -1,0 +1,32 @@
+---
+issuer: https://example.com:5554
+storage:
+  type: sqlite3
+  config:
+    file: "/etc/ood/dex/dex.db"
+web:
+  http: 0.0.0.0:5556
+  https: 0.0.0.0:5554
+  tlsCert: "/etc/ood/dex/example.com.crt"
+  tlsKey: "/etc/ood/dex/example.com.key"
+telemetry:
+  http: 0.0.0.0:5558
+staticClients:
+- id: example.com
+  redirectURIs:
+  - https://example.com/oidc
+  - https://localhost:4443/simplesaml/module.php/authglobus/linkback.php
+  - https://localhost:2443/oidc/callback/
+  name: OnDemand
+  secret: 0caaf24ab1a0c33440c06afe99df986365b0781f
+oauth2:
+  skipApprovalScreen: true
+enablePasswordDB: true
+staticPasswords:
+- email: ood@localhost
+  hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
+  username: ood
+  userID: '08a8684b-db88-4b73-90a9-3cd1661f5466'
+frontend:
+  dir: "/usr/share/ondemand-dex/web"
+  theme: ondemand
