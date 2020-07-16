@@ -104,3 +104,7 @@ OodShell.prototype.onTerminalResize = function (columns, rows) {
     }
   }));
 };
+
+OodShell.prototype.onSessionEnd = function (code, reason) {
+  this.socket.close(code, reason);
+} 

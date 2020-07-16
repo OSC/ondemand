@@ -133,15 +133,20 @@ var terminals = {
       msg = JSON.parse(msg);
       if (msg.input)  term.write(msg.input);
       if (msg.resize) term.resize(parseInt(msg.resize.cols), parseInt(msg.resize.rows));
-      if (msg.close) {
-        term.end();
-        ws.close();
-      }
     });
 
-    ws.on('close', function () {
-      term.pause();
-      console.log('Closed terminal: ' + term.pid);
+    ws.on('close', function (code, reason) {
+      console.log(code);
+      if (code === 3000) {
+        term.end();
+        console.log('Closed terminal: ' + term.pid);
+      } else if (code === 1001){
+        term.pause();
+        console.log('Paused terminal: ' + term.pid);
+      } else {
+        term.end();
+        console.log('Closed terminal: ' + term.pid);
+      }
     });
 
   }
