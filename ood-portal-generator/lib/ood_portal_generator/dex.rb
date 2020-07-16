@@ -145,9 +145,13 @@ module OodPortalGenerator
       "#{client_protocol}#{client_id}#{client_port}"
     end
 
+    def client_redirect_uri
+      "#{client_url}/oidc"
+    end
+
     def client_redirect_uris
       config_redirect_uris = @config.fetch(:client_redirect_uris, [])
-      ["#{client_url}/oidc"] + config_redirect_uris
+      [client_redirect_uri] + config_redirect_uris
     end
 
     def client_name
