@@ -501,6 +501,7 @@ var UI = {
     addClipboardHandlers: function addClipboardHandlers() {
         document.getElementById("noVNC_clipboard_button").addEventListener('click', UI.toggleClipboardPanel);
         document.getElementById("noVNC_clipboard_text").addEventListener('change', UI.clipboardSend);
+        document.getElementById("noVNC_clipboard_text").addEventListener('input', UI.syncClipboardPanelToLocalClipboard);
         document.getElementById("noVNC_clipboard_clear_button").addEventListener('click', UI.clipboardClear);
     },
 
@@ -1054,6 +1055,41 @@ var UI = {
      *   CLIPBOARD
      * ------v------*/
 
+    // Read and write text to local clipboard is currently only supported in Chrome 66+ and Opera53+
+    // further information at https://developer.mozilla.org/en-US/docs/Web/API/Clipboard
+
+    writeLocalClipboard: function writeLocalClipboard(text) {
+        if (typeof navigator.clipboard !== "undefined" && typeof navigator.clipboard.writeText !== "undefined" && typeof navigator.permissions !== "undefined" && typeof navigator.permissions.query !== "undefined") {
+            navigator.permissions.query({ name: 'clipboard-write' }).then(function () {
+                return navigator.clipboard.writeText(text);
+            }).then(function () {
+                var debugMessage = text.substr(0, 40) + "...";
+                Log.Debug('>> UI.setClipboardText: navigator.clipboard.writeText with ' + debugMessage);
+            }).catch(function (err) {
+                if (err.name !== 'TypeError') {
+                    Log.Error(">> UI.setClipboardText: Failed to write system clipboard (trying to copy from NoVNC clipboard)");
+                }
+            });
+        }
+    },
+    readLocalClipboard: function readLocalClipboard() {
+        // navigator.clipboard and navigator.clipbaord.readText is not available in all browsers
+        if (typeof navigator.clipboard !== "undefined" && typeof navigator.clipboard.readText !== "undefined" && typeof navigator.permissions !== "undefined" && typeof navigator.permissions.query !== "undefined") {
+            navigator.permissions.query({ name: 'clipboard-read' }).then(function () {
+                return navigator.clipboard.readText();
+            }).then(function (clipboardText) {
+                var text = document.getElementById('noVNC_clipboard_text').value;
+                if (clipboardText !== text) {
+                    document.getElementById('noVNC_clipboard_text').value = clipboardText;
+                    UI.clipboardSend();
+                }
+            }).catch(function (err) {
+                if (err.name !== 'TypeError') {
+                    Log.Warn("<< UI.readLocalClipboard: Failed to read system clipboard-: " + err);
+                }
+            });
+        }
+    },
     openClipboardPanel: function openClipboardPanel() {
         UI.closeAllPanels();
         UI.openControlbar();
@@ -1075,11 +1111,17 @@ var UI = {
     clipboardReceive: function clipboardReceive(e) {
         Log.Debug(">> UI.clipboardReceive: " + e.detail.text.substr(0, 40) + "...");
         document.getElementById('noVNC_clipboard_text').value = e.detail.text;
+        UI.writeLocalClipboard(e.detail.text);
         Log.Debug("<< UI.clipboardReceive");
     },
     clipboardClear: function clipboardClear() {
         document.getElementById('noVNC_clipboard_text').value = "";
+        UI.writeLocalClipboard("");
         UI.rfb.clipboardPasteFrom("");
+    },
+    syncClipboardPanelToLocalClipboard: function syncClipboardPanelToLocalClipboard() {
+        var text = document.getElementById('noVNC_clipboard_text').value;
+        UI.writeLocalClipboard(text);
     },
     clipboardSend: function clipboardSend() {
         var text = document.getElementById('noVNC_clipboard_text').value;
@@ -1154,6 +1196,7 @@ var UI = {
         UI.rfb.addEventListener("securityfailure", UI.securityFailed);
         UI.rfb.addEventListener("capabilities", UI.updatePowerButton);
         UI.rfb.addEventListener("clipboard", UI.clipboardReceive);
+        UI.rfb.oncanvasfocus = UI.readLocalClipboard;
         UI.rfb.addEventListener("bell", UI.bell);
         UI.rfb.addEventListener("desktopname", UI.updateDesktopName);
         UI.rfb.clipViewport = UI.getSetting('view_clip');
@@ -7589,6 +7632,8 @@ var RFB = function (_EventTargetMixin) {
         // time to set up callbacks
         setTimeout(_this._updateConnectionState.bind(_this, 'connecting'));
 
+        _this.oncanvasfocus = function () {}; // Handler for canvas focused
+
         Log.Debug("<< RFB.constructor");
 
         // ===== PROPERTIES =====
@@ -7697,6 +7742,7 @@ var RFB = function (_EventTargetMixin) {
         key: 'focus',
         value: function focus() {
             this._canvas.focus();
+            this.oncanvasfocus();
         }
     }, {
         key: 'blur',

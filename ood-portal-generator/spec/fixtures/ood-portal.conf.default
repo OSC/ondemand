@@ -96,10 +96,7 @@
   #
   SetEnv OOD_PUN_URI "/pun"
   <Location "/pun">
-    AuthType Basic
-    AuthName "Private"
-    AuthUserFile "/opt/rh/httpd24/root/etc/httpd/.htpasswd"
-    RequestHeader unset Authorization
+    AuthType openid-connect
     Require valid-user
 
     ProxyPassReverse "http://localhost/pun"
@@ -124,10 +121,7 @@
   #
   SetEnv OOD_NGINX_URI "/nginx"
   <Location "/nginx">
-    AuthType Basic
-    AuthName "Private"
-    AuthUserFile "/opt/rh/httpd24/root/etc/httpd/.htpasswd"
-    RequestHeader unset Authorization
+    AuthType openid-connect
     Require valid-user
 
     LuaHookFixups nginx.lua nginx_handler

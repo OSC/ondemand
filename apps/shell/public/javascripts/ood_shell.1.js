@@ -43,14 +43,16 @@ CustomTerm.prototype.getTermPrefs = function () {
 
 
 // Object that defines a terminal element
-function OodShell(element, socket, prefs) {
+function OodShell(element, url, prefs) {
   this.element = element;
+  this.url     = url;
   this.prefs   = prefs || {};
-  this.socket  = socket;
+  this.socket  = null;
   this.term    = null;
 }
 
 OodShell.prototype.createTerminal = function () {
+  this.socket = new ReconnectingWebSocket(this.url);
   this.socket.onopen    = this.runTerminal.bind(this);
   this.socket.onmessage = this.getMessage.bind(this);
   this.socket.onclose   = this.closeTerminal.bind(this);
@@ -58,6 +60,8 @@ OodShell.prototype.createTerminal = function () {
 
 OodShell.prototype.runTerminal = function () {
   var that = this;
+
+  showState("", false);
 
   // Set backing store that hterm uses to read/write preferences
   hterm.defaultStorage = new lib.Storage.Memory();
@@ -96,6 +100,16 @@ OodShell.prototype.runTerminal = function () {
   window.onbeforeunload = function() {
     return 'Leaving this page will terminate your terminal session.';
   };
+
+  this.socket.onclose = function (ev) {
+    console.log("onclose")
+    showState("Attempting Reconnection", true)
+  }
+
+  this.socket.onopen = function (ev) {
+    showState("onopen", false);
+  }
+
 };
 
 OodShell.prototype.getMessage = function (ev) {
@@ -115,7 +129,7 @@ OodShell.prototype.closeTerminal = function (ev) {
     errorDiv.innerHTML = 'Failed to establish a websocket connection. Be sure you are using a browser that supports websocket connections.';
     this.element.appendChild(errorDiv);
   } else {
-    this.term.io.print('\r\nYour connection to the remote server has been interrupted. Attempting to reconnect.');
+    showState("Attempting Reconnection", true);
   }
 }
 
@@ -145,3 +159,21 @@ OodShell.prototype.onTerminalResize = function (columns, rows) {
     }
   }));
 };
+
+OodShell.prototype.onSessionEnd = function (code, reason) {
+  this.socket.close(code, reason);
+} 
+
+function showState(text, showBool) {
+  var stateDiv = document.getElementById('state');
+  var stateText = document.getElementById('state-text');
+
+  stateText.textContent = text;
+  if (showBool) {
+    stateDiv.classList.remove('connected-state');
+    stateDiv.classList.add('connecting-state');
+  } else {
+    stateDiv.classList.remove('connecting-state');
+    stateDiv.classList.add('connected-state');
+  }
+}

@@ -97,6 +97,26 @@ Listen <%= addr_port %>
   <%- end -%>
   <%- end -%>
 
+  <%- if @oidc_uri && @oidc_provider_metadata_url && @oidc_client_id -%>
+  # OIDC configuration
+  #
+  OIDCProviderMetadataURL <%= @oidc_provider_metadata_url %>
+  OIDCClientID <%= @oidc_client_id %>
+  <%- if @oidc_client_secret -%>
+  OIDCClientSecret <%= @oidc_client_secret %>
+  <%- end -%>
+  OIDCRedirectURI <%= @oidc_redirect_uri %>
+  OIDCRemoteUserClaim <%= @oidc_remote_user_claim %>
+  OIDCScope "<%= @oidc_scope %>"
+  OIDCCryptoPassphrase <%= @oidc_crypto_passphrase %>
+  OIDCSessionInactivityTimeout <%= @oidc_session_inactivity_timeout %>
+  OIDCSessionMaxDuration <%= @oidc_session_max_duration %>
+  OIDCStateMaxNumberOfCookies <%= @oidc_state_max_number_of_cookies %>
+  <%- @oidc_settings.keys.sort do |oidc_setting| -%>
+  <%= oidc_setting %> <%= @oidc_settings[oidc_setting] %>
+  <%- end -%>
+
+  <%- end -%>
   # Lua configuration
   #
   <%- if @lua_root -%>

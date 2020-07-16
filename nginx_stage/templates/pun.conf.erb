@@ -58,7 +58,7 @@ http {
   access_log   <%= access_log_path %> main;
   sendfile     on;
   tcp_nopush   on;
-  client_max_body_size 10G;
+  client_max_body_size <%= nginx_file_upload_max %>;
 
   server {
     listen      unix:<%= socket_path %>;

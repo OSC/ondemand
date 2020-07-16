@@ -6,27 +6,26 @@
   <link rel="stylesheet" href="{{baseURI}}/stylesheets/style.css">
 
   <script src="{{baseURI}}/javascripts/hterm_all_1.85.js"></script>
+  <script src="{{baseURI}}/javascripts/reconnecting-websocket.js"></script>
   <script src="{{baseURI}}/javascripts/ood_shell.1.js"></script>
 </head>
 
 <body>
   <div id="terminal"></div>
+  <div id="state"><span class="loader"></span><span id="state-text" class="connected-state"></span></div>
 </body>
 
 <script>
-  var socket = null;
+  var oodShell;
   setupHterm = function () {
     // Global variables that define the terminal
-    var oodShell,
-      terminalContainer = document.getElementById('terminal'),
+      var terminalContainer = document.getElementById('terminal'),
       webSocketUrl      = urlWithToken(),
       terminalPrefs     = {
         'use-default-window-copy': true,
         'ctrl-v-paste': true,
         'ctrl-c-copy': true
       };
-      start();
-
 
     // hterm default preferences are defined here. Switch to the tag that we're using.
     // https://chromium.googlesource.com/apps/libapps/+/master/hterm/js/hterm_preference_manager.js
@@ -34,18 +33,9 @@
     var uuid = "{{session}}";
     var customTerm = new CustomTerm(uuid);
 
-    oodShell = new OodShell(terminalContainer, socket, customTerm.getTermPrefs());
+    oodShell = new OodShell(terminalContainer, webSocketUrl, customTerm.getTermPrefs());
+
     oodShell.createTerminal();
-
-    setInterval(check, 5000);
-
-      function start() {
-    socket = new WebSocket(webSocketUrl);
-
-    socket.onclose = function() {
-      check();
-    }
-  }
   }
 
   window.onload = function() {
@@ -63,15 +53,9 @@
     return base + separator + "csrf={{csrfToken}}";
   }
 
-
-
-  function check() {
-    if (!socket || socket.readyState === WebSocket.CLOSED) {
-      start();
-    }
-  }
- 
-
+  window.addEventListener('unload', function(event) {
+  oodShell.onSessionEnd(3000, "User closed tab or browser.",);
+  });
 
 </script>
 

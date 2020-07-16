@@ -4,6 +4,7 @@ MOTD_PATH="/etc/motd"
 MOTD_FORMAT="osc"
 
 OOD_DASHBOARD_LOGO="/public/logo.png"
+OOD_DASHBOARD_LOGO_HEIGHT="85px"
 OOD_DASHBOARD_SUPPORT_URL="https://www.osc.edu/contact/supercomputing_support"
 OOD_DASHBOARD_SUPPORT_EMAIL="oschelp@osc.edu"
 
