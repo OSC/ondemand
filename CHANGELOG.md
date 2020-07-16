@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ## [1.8.3] - 2020-07-16
 ### Changed
-- Shell App: use OOD_SSHHOST_ALLOWLIST instead of SSHHOST_WHITELIST
+- Shell App: use OOD_SSHHOST_ALLOWLIST instead of SSHHOST_WHITELIST [#582](https://github.com/OSC/ondemand/pull/582)
 
 ### Added
 - Dex config generator now supports configuring multiple static clients [#589](https://github.com/OSC/ondemand/pull/589)
