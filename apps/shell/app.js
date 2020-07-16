@@ -35,11 +35,11 @@ const ood_app_config_root = (process.env["OOD_APP_CONFIG_ROOT"] || '/etc/ood/con
 const userDir = path.join(xdg_config_dir, "ondemand", "apps", "shell", "themes");
 const systemDir = path.join(ood_app_config_root, "themes");
 
-//Search directories and 
+//Search directories and make directory if not present.
 fs.mkdirSync(userDir, {recursive: true});
  var schemeObjects = {...getSchemeObjects(userDir), ...getSchemeObjects(systemDir)};
 
-
+//Parses through the files and returns them as objects.
 function getSchemeObjects(dir) {
   var schemes = {};
 
@@ -54,11 +54,13 @@ function getSchemeObjects(dir) {
   }
 }
 
+// Show list of options for color schemes.
 function getSchemeFilesArray() {
 
     return Object.keys(schemeObjects).map(i => schemeObjects[i])
 }
 
+//Converts the colors returned by term-scheme to a hex number. This allows the colors to play nicely with hterm.
 function rgbToHexMath (num) { 
   var hex = Number(num).toString(16);
   if (hex.length < 2) {
@@ -67,6 +69,7 @@ function rgbToHexMath (num) {
   return hex;
 };
 
+//Converts to a complete hex color.
 function hexConverter (array) {
     var red = array[0];
     var green = array[1];
@@ -75,6 +78,7 @@ function hexConverter (array) {
     return `#${rgbToHexMath(red)}${rgbToHexMath(green)}${rgbToHexMath(blue)}`.toUpperCase();
 }
 
+//Finds the host of the terminal and returns that value.
 function findHost(uuid) {
     sessions = terminals.instances;
     var host = sessions[uuid].host;
@@ -82,6 +86,7 @@ function findHost(uuid) {
     return host;
 }
 
+//Parses through the various file types of the terminal schemes.
 function parseFile(fileObject) {
     
     const ext = fileObject.ext;
@@ -107,6 +112,7 @@ function parseFile(fileObject) {
     }
 }
 
+//Converts scheme colors to an object.
 function convertSchemeObject(obj) {
     newSchemeObj = {};
     colorArray = [];
