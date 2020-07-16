@@ -122,6 +122,7 @@ var terminals = {
     });
 
     term.on('error', function (error) {
+      console.log("error present");
       ws.close();
     });
 
@@ -201,7 +202,12 @@ wss.on('connection', function connection (ws, req) {
     terminals.create(host, dir, uuid, cmd);
   }
   
+  try {
   terminals.attach(uuid, ws);
+} catch(e) {
+  terminals.create(host, dir, uuid, cmd);
+  terminals.attach(uuid, ws);
+}
 });
 
 function custom_server_origin(default_value = null){

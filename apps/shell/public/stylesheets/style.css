@@ -11,6 +11,59 @@ html, body {
   width:    100%;
 }
 
+.loader {
+  display: inline-block;
+  border: 2px solid rgb(16, 16, 16);
+  border-radius: 50%;
+  border-top: 2px solid #3498db;
+  width: 14px;
+  height: 14px;
+  margin-right: 5px;
+  -webkit-animation: spin 1s linear infinite; /* Safari */
+  animation: spin 1s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#state-text {
+  display: inline-block;
+  padding-left: 5px;
+  transform: translateY(-12%);
+}
+
+#state {
+  z-index: 1000;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: rgb(16, 16, 16);
+  overflow-x: auto;
+  white-space: nowrap;
+  width: auto;
+  height: auto;
+  padding: 10px;
+  text-align: center;
+  color: white;
+}
+
+
+.connected-state {
+  display: none;
+}
+
+.connecting-state {
+  display: block;
+}
+
 .error {
   background-color: #f2dede;
   color: #a94442;
