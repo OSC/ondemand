@@ -138,7 +138,7 @@ var terminals = {
 
     ws.on('close', function (code, reason) {
       console.log(code);
-      if (code === 3000) {
+      if (code === 4000) {
         term.end();
         console.log('Closed terminal: ' + term.pid);
       } else if (code === 1001){
