@@ -329,9 +329,15 @@
 #  storage_file: /etc/ood/dex/dex.db
 #  grpc: null
 #  expiry: null
+  # Client ID, defaults to servername or FQDN
+#  client_id: null
 #  client_name: OnDemand
   # Client secret, value auto generated
 #  client_secret: null
+   # The OnDemand redirectURI is auto-generated, this option allows adding additional URIs
+#  client_redirect_uris: []
+  # Additional Dex OIDC clients to configure
+#  static_clients: []
   # The following example is to configure OpenLDAP
   # Docs: https://github.com/dexidp/dex/blob/master/Documentation/connectors/ldap.md
 #  connectors:
