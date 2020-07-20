@@ -34,7 +34,13 @@ module SmartAttributes
     def value=(other)
       @opts[:value] = other
     end
-
+    def cacheable?(default_value) 
+      if opts[:cacheable].nil?
+        default_value
+      else
+        to_bool(opts[:cacheable])
+      end
+    end
     # Type of form widget used for this attribute
     # @return [String] widget type
     def widget
@@ -140,6 +146,12 @@ module SmartAttributes
     # @return [Array<Symbol>] option keys
     def reserved_keys
       [:widget, :fixed, :options, :html_options, :checked_value, :unchecked_value, :required, :label, :help, :cacheable]
+    end
+
+    FALSE_VALUES=[ false, '', 0, '0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF', 'no', 'NO' ]
+     
+    def to_bool(value)
+      ! FALSE_VALUES.include?(value)
     end
   end
 end
