@@ -2,6 +2,7 @@
     'use strict';
 
     var rendy;
+    const { execSync } = require('child_process');
 
     if (typeof module === 'object' && module.exports) {
         rendy               = require('rendy');
@@ -255,7 +256,7 @@
 
                 // OSC_CUSTOM_CODE call buildPrettyDate() function and use blank date instead of '--.--.----'
                 date    = buildPrettyDate(file.date) || '          ';
-                owner   = file.owner || 'root';
+                owner = execSync('id -nu ' + file.owner) || 'root';
                 mode    = file.mode;
 
                 linkResult  = rendy(templateLink, {
