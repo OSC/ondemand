@@ -11,8 +11,8 @@
   {{#if error}}
     <div class="alert alert-danger">{{error}} Please ensure you are <a href="{{xdmod_url}}">logged into XDMoD first</a>, and then try again.</div>
   {{else}}
-    {{#if loading}}
-      <p>LOADING...</p>
+    {{#if nodata}}
+      <p>{{msg}}</p>
     {{else}}
     <p style="font-weight: bold; display: flex; justify-content: space-between"><span class="text-success">{{good_percent}}% efficient</span> <span class="text-danger">{{bad_percent}}% inefficent</span></p>
     <div class="progress progress-custom">
@@ -84,30 +84,39 @@ var render_core_hours_template = function(context){
   $('#coreHoursEfficiencyReportPanelDiv').html(template(_.merge(context, {unit: "core hours", unit_title: "Core Hours"}), {helpers: helpers}));
 }
 
-render_jobs_template({loading: true});
-render_core_hours_template({loading: true});
+render_jobs_template({nodata: true, msg: 'LOADING...'});
+render_core_hours_template({nodata: true, msg: 'LOADING...'});
 
 var xdmodUrl = '<%= Configuration.xdmod_host %>';
-promiseLoggedIntoXDMoD(xdmodUrl)
+promiseLoggedIntoXDMoD(xdmodUrl, <%= Configuration.xdmod_login_timeout %>)
   .then(() => fetch(jobsUrl, { credentials: 'include' }))
   .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
   .then(response => response.json())
   .then((data) => {
-    let results = data && data["results"] && data["results"]["0"];
-    if(! results){
+    if(data && data["success"] && Array.isArray(data["results"])){
+      let results = data["results"][0];
+      if(results){
+        render_jobs_template({
+          bad_ratio: results.bad_job_ratio,
+          count_bad: results.job_count_bad,
+          count: results.job_count
+        });
+        render_core_hours_template({
+          bad_ratio: results.bad_core_ratio,
+          count_bad: round(results.core_time_bad),
+          count: round(results.core_time)
+        });
+      }
+      else{
+        render_jobs_template({nodata: true, msg: 'No data available.'});
+        render_core_hours_template({nodata: true, msg: 'No data available.'});
+      }
+    }
+    else{
       throw new Error('Job data returned by request is invalid.')
     }
 
-    render_jobs_template({
-      bad_ratio: results.bad_job_ratio,
-      count_bad: results.job_count_bad,
-      count: results.job_count
-    });
-    render_core_hours_template({
-      bad_ratio: results.bad_core_ratio,
-      count_bad: round(results.core_time_bad),
-      count: round(results.core_time)
-    });
+
   })
   .catch((error) => {
     console.error(error);
