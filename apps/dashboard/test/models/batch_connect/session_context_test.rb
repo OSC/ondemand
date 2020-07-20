@@ -58,7 +58,7 @@ class BatchConnect::SessionContextTest < ActiveSupport::TestCase
   
      context.update_with_cache({"bc_account" => "PZS0714", "num_cores" => "28"})
   
-     assert_equal ["", "1"], [context["bc_account"].value, context["num_cores"].value]
+     assert_equal ["", "1"], [context["bc_account"].value,context["num_cores"].value ]
    end
   
    test "should not update single field if per attribute cache disabled" do
