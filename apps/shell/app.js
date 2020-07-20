@@ -9,7 +9,8 @@ const dotenv    = require('dotenv');
 const Tokens    = require('csrf');
 const url       = require('url');
 const yaml      = require('js-yaml');
-const glob      = require("glob");
+const glob      = require('glob');
+const minimatch = require('minimatch');
 const port      = 3000;
 const host_path_rx = '/ssh/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$';
 
@@ -59,6 +60,8 @@ const server = new http.createServer(app);
 const wss = new WebSocket.Server({ noServer: true });
 
 let host_allowlist = new Set;
+let wildcard_hosts = new Set;
+let wildcard_glob = new String;
 
 let default_sshhost;
 glob.sync(path.join((process.env.OOD_CLUSTERS || '/etc/ood/config/clusters.d'), '*.y*ml'))
@@ -72,7 +75,10 @@ glob.sync(path.join((process.env.OOD_CLUSTERS || '/etc/ood/config/clusters.d'), 
   });
 
 if (process.env.OOD_SSHHOST_ALLOWLIST){
-  host_allowlist = new Set(process.env.OOD_SSHHOST_ALLOWLIST.split(':'));
+  let parsed_allowlist = process.env.OOD_SSHHOST_ALLOWLIST.split(":")
+  host_allowlist = new Set(parsed_allowlist);
+  wildcard_hosts = new Set(parsed_allowlist.filter((host) => host.indexOf('*') != -1));
+  wildcard_hosts.forEach(wildcard => wildcard_glob += `${wildcard}|`);
 }
 
 default_sshhost = process.env.OOD_DEFAULT_SSHHOST || default_sshhost;
@@ -163,8 +169,12 @@ server.on('upgrade', function upgrade(request, socket, head) {
   const requestToken = new URLSearchParams(url.parse(request.url).search).get('csrf'),
         client_origin = request.headers['origin'],
         server_origin = custom_server_origin(default_server_origin(request.headers));
-  var host, dir;
+
+  var host, dir, host_wildcard_match;
   [host, dir] = host_and_dir_from_url(request.url);
+  if (wildcard_hosts.size > 0) {
+    host_wildcard_match = [host].filter(minimatch.filter(`@(${wildcard_glob})`)).length > 0 ? true : false
+  }
 
   if (client_origin &&
       client_origin.startsWith('http') &&
@@ -188,7 +198,11 @@ server.on('upgrade', function upgrade(request, socket, head) {
     ].join('\r\n') + '\r\n\r\n');
 
     socket.destroy();
-  } else if (!host_allowlist.has(host)){ // host not in allowlist
+  } else if (host_wildcard_match) {
+    return wss.handleUpgrade(request, socket, head, function done(ws) {
+      wss.emit('connection', ws, request);
+    });
+  } else if (!host_allowlist.has(host)) { // host not in allowlist
     socket.write([
       'HTTP/1.1 401 Unauthorized',
       'Content-Type: text/html; charset=UTF-8',
@@ -198,7 +212,7 @@ server.on('upgrade', function upgrade(request, socket, head) {
     ].join('\r\n') + '\r\n\r\n');
 
     socket.destroy();
-  } else{
+  } else {
     wss.handleUpgrade(request, socket, head, function done(ws) {
       wss.emit('connection', ws, request);
     });
