@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.8.6] - 2020-07-20
+### Added
+- Configuration for XDMoD auto-login timeout [#597](https://github.com/OSC/ondemand/pull/597)
+
+### Fixed
+- Handle edge case in job efficiency widget where no data 
+  available [#597](https://github.com/OSC/ondemand/pull/597)
+- Fix XDMoD auto-login iframe trick to properly hide and position 
+  iframe so form button clicks in iframe still work 
+  [#596](https://github.com/OSC/ondemand/pull/596) 
+- Fix bug where `cluster: ""` in batch connect app resulted in unhandled exception [#593](https://github.com/OSC/ondemand/pull/593)
+
 ## [1.8.5] - 2020-07-16
 ### Fixed
 - Broken tests introduced with redirect URIs in Dex [#592](https://github.com/OSC/ondemand/pull/592)
@@ -474,7 +486,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.5...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.6...HEAD
+[1.8.6]: https://github.com/OSC/ondemand/compare/v1.8.5...v1.8.6
 [1.8.5]: https://github.com/OSC/ondemand/compare/v1.8.4...v1.8.5
 [1.8.4]: https://github.com/OSC/ondemand/compare/v1.8.3...v1.8.4
 [1.8.3]: https://github.com/OSC/ondemand/compare/v1.8.2...v1.8.3
