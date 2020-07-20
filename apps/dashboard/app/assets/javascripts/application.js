@@ -74,7 +74,7 @@ function installSettingHandlers(name) {
 }
 
 
-function promiseLoginToXDMoD(xdmodUrl){
+function promiseLoginToXDMoD(xdmodUrl, timeoutms){
   return new Promise(function(resolve, reject){
 
     var promise_to_receive_message_from_iframe = new Promise(function(resolve, reject){
@@ -116,7 +116,7 @@ function promiseLoginToXDMoD(xdmodUrl){
       })
       .then(() => {
         return Promise.race([promise_to_receive_message_from_iframe, new Promise(function(resolve, reject){
-          setTimeout(reject, 5000, new Error('Login failed: Timeout waiting for login to complete'));
+          setTimeout(reject, timeoutms, new Error('Login failed: Timeout waiting for login to complete'));
         })]);
       })
       .then(() => {
@@ -129,7 +129,7 @@ function promiseLoginToXDMoD(xdmodUrl){
 }
 
 var promiseLoggedIntoXDMoD = (function(){
-  return _.memoize(function(xdmodUrl){
+  return _.memoize(function(xdmodUrl, timeoutms = 5000){
     return fetch(xdmodUrl + '/rest/v1/users/current', { credentials: 'include' })
       .then(response => response.ok ? Promise.resolve() : promiseLoginToXDMoD(xdmodUrl))
   });
