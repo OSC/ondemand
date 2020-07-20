@@ -66,23 +66,11 @@ module BatchConnect
       /^(?<id>[^=]+)=?$/ =~ method_name.to_s && self[id] || super
    end
    
+   def update_with_cache(cache)
+      self.attributes = cache.select { |k,v| self[k.to_sym].cacheable?(app_specific_cache)  }
+   end 
 
-    def update_with_cache(cache)
-
-       if attribute_cache_enabled?
-         self.attributes = cache.select { |k,v| self[k.to_sym].opts[:cacheable]  }
-       end
-
-       if app_specific_cache_enabled?
-         self.attributes = cache.select { |k,v| to_bool(self[k.to_sym].opts[:cacheable]) }
-       end
-
-       if global_cache_enabled? && to_bool(app_specific_cache_enabled?)
-         self.attributes = cache.select { |k,v| to_bool(self[k.to_sym].opts[:cacheable])  }
-       end
-    end
-
-    private
+   private
     
     FALSE_VALUES=[ false, '', 0, '0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF', 'no', 'NO']
 
@@ -96,7 +84,14 @@ module BatchConnect
       self.any? {|v| v.opts[:cacheable] } 
     end
     
-        
+    def app_specific_cache
+       if app_specific_cache_enabled?.nil?
+          global_cache_enabled?
+       else
+          to_bool(app_specific_cache_enabled?)
+       end
+    end
+
     def app_specific_cache_enabled?
       @app_specific_cache_setting
     end
