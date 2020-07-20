@@ -39,7 +39,11 @@ const systemDir = path.join(ood_app_config_root, "themes");
 fs.mkdirSync(userDir, {recursive: true});
  var schemeObjects = {...getSchemeObjects(userDir), ...getSchemeObjects(systemDir)};
 
-//Parses through the files and returns them as objects.
+/**
+* Parse through file information in certain directories.
+* @param {String} dir - The target directory.
+* @return {Object} - The key information returned is an object within an object.
+*/
 function getSchemeObjects(dir) {
   var schemes = {};
 
@@ -54,13 +58,20 @@ function getSchemeObjects(dir) {
   }
 }
 
-// Show list of options for color schemes.
+/**
+* Maps schemeObject to an array for frontend.
+* @return {Array} - An array of shemeObjects.
+*/
 function getSchemeFilesArray() {
 
     return Object.keys(schemeObjects).map(i => schemeObjects[i])
 }
 
-//Converts the colors returned by term-scheme to a hex number. This allows the colors to play nicely with hterm.
+/**
+* Takes a number and converts it to a hex number.
+* @param {Int} num - The number to convert.
+* @return {String} - The hex number.
+*/
 function rgbToHexMath (num) { 
   var hex = Number(num).toString(16);
   if (hex.length < 2) {
@@ -69,7 +80,11 @@ function rgbToHexMath (num) {
   return hex;
 };
 
-//Converts to a complete hex color.
+/**
+* Converts a complete array of colors to a hex color value.
+* @param {Array} array - The colors to convert.
+* @return {String} - The hex code for the color.
+*/
 function hexConverter (array) {
     var red = array[0];
     var green = array[1];
@@ -78,7 +93,11 @@ function hexConverter (array) {
     return `#${rgbToHexMath(red)}${rgbToHexMath(green)}${rgbToHexMath(blue)}`.toUpperCase();
 }
 
-//Finds the host of the terminal and returns that value.
+/**
+* Show the host of the specific terminal.
+* @param {String} uuid - The id of the terminal.
+* @return {String} - The host of the specific terminal.
+*/
 function findHost(uuid) {
     sessions = terminals.instances;
     var host = sessions[uuid].host;
@@ -86,7 +105,11 @@ function findHost(uuid) {
     return host;
 }
 
-//Parses through the various file types of the terminal schemes.
+/**
+* Convert file with scheme to an object of colors.
+* @param {Object} fileObject - An object with information on file location and ext.
+* @return {Object} - The colors parsed into an object.
+*/
 function parseFile(fileObject) {
     
     const ext = fileObject.ext;
@@ -112,7 +135,11 @@ function parseFile(fileObject) {
     }
 }
 
-//Converts scheme colors to an object.
+/**
+* Convert rgb color format to hex color codes.
+* @param {Object} obj - The object of rgb colors.
+* @return {Object} - The object of hex colors.
+*/
 function convertSchemeObject(obj) {
     newSchemeObj = {};
     colorArray = [];
