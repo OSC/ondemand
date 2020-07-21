@@ -9,8 +9,13 @@ class BatchConnect::SessionContextsController < ApplicationController
     set_session_context
 
     if @app.valid?
-      # Read in context from cache file if cache is disabled and context.json exist 
-      @session_context.update_with_cache(JSON.parse(cache_file.read))  if cache_file.file?
+      # Read in context from cache file if cache is disabled and context.json exist
+      begin
+       @session_context.update_with_cache(JSON.parse(cache_file.read))  if cache_file.file?
+      rescue JSON::ParserError => e
+        flash.now[:alert] = "Attempting to update form inputs with cached values resulted in a crash: #{e.msg} "
+      end
+      #@session_context.update_with_cache(JSON.parse(cache_file.read))  if cache_file.file?
     else
       @session_context = nil  # do not display session context form
       flash.now[:alert] = @app.validation_reason
