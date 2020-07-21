@@ -81,7 +81,7 @@ if (process.env.OOD_SSHHOST_ALLOWLIST){
   wildcard_hosts.forEach(wildcard => wildcard_glob += `${wildcard}|`);
 }
 
-default_sshhost = process.env.OOD_DEFAULT_SSHHOST || default_sshhost;
+default_sshhost = process.env.OOD_DEFAULT_SSHHOST || process.env.DEFAULT_SSHHOST|| default_sshhost;
 if (default_sshhost) host_allowlist.add(default_sshhost);
 function host_and_dir_from_url(url){
   let match = url.match(host_path_rx),
