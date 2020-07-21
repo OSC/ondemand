@@ -149,7 +149,10 @@ module SmartAttributes
     end
 
     FALSE_VALUES=[ false, '', 0, '0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF', 'no', 'NO' ]
-     
+    
+    # Returns false if value is included among False_Values set
+    # @param value the value to be checked 
+    # @return [Boolean]
     def to_bool(value)
       ! FALSE_VALUES.include?(value)
     end
