@@ -73,17 +73,16 @@ module BatchConnect
    private
     
     FALSE_VALUES=[ false, '', 0, '0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF', 'no', 'NO']
-
+    
+    # Returns false if value is among the FALSE_VALUES set
+    # @param value the value to check 
+    # @return [Boolean]
     def to_bool(value)
      ! FALSE_VALUES.include?(value)
     end
-
-    # @return [Boolean]
-    # True if any attribute is cacheable
-    def attribute_cache_enabled?
-      self.any? {|v| v.opts[:cacheable] } 
-    end
     
+
+    #@return [Boolean]
     def app_specific_cache_enabled?
        if @app_specific_cache_setting.nil?
           global_cache_enabled?
@@ -92,7 +91,7 @@ module BatchConnect
        end
     end
       
-   
+  
     # @return [Boolean]   
     def global_cache_enabled? 
       Configuration.batch_connect_global_cache_enabled?
