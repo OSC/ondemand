@@ -82,7 +82,7 @@ module BatchConnect
     end
     
 
-    #@return [Boolean]
+    # @return [Boolean]
     def app_specific_cache_enabled?
        if @app_specific_cache_setting.nil?
           global_cache_enabled?
