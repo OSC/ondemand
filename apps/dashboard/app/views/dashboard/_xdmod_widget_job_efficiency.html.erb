@@ -88,7 +88,7 @@ render_jobs_template({nodata: true, msg: 'LOADING...'});
 render_core_hours_template({nodata: true, msg: 'LOADING...'});
 
 var xdmodUrl = '<%= Configuration.xdmod_host %>';
-promiseLoggedIntoXDMoD(xdmodUrl, <%= Configuration.xdmod_login_timeout %>)
+promiseLoggedIntoXDMoD(xdmodUrl)
   .then(() => fetch(jobsUrl, { credentials: 'include' }))
   .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
   .then(response => response.json())
