@@ -133,6 +133,15 @@ var terminals = {
     ws.on('message', function (msg) {
       msg = JSON.parse(msg);
       if (msg.input)  term.write(msg.input);
+      if (msg.check) {
+        var connection = msg.check.status;
+
+        this.send(connection, function (error) {
+          if (error) {
+            console.log("Connect status error: " + error.message)
+          }
+        });
+      }
       if (msg.resize) term.resize(parseInt(msg.resize.cols), parseInt(msg.resize.rows));
     });
 
@@ -184,7 +193,6 @@ function host_and_dir_from_url(url){
 }
 
 wss.on('connection', function connection (ws, req) {
-
   var dir,
      term,
      args,
