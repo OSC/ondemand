@@ -108,7 +108,7 @@ var helpers = {
 
     return `${month}/${day}`;
   },
-  job_url: function(){ return "https://xdmod-test.hpc.osc.edu/#job_viewer?action=show&realm=SUPREMM&jobref=" + this.jobid;  },
+  job_url: function(){ return "<%= Configuration.xdmod_host %>/#job_viewer?action=show&realm=SUPREMM&jobref=" + this.jobid;  },
   cpu_label: function(cpu){
     let value = (parseFloat(cpu)*100).toFixed(1),
         label = "N/A";
