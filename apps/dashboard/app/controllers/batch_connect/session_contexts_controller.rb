@@ -1,6 +1,5 @@
 class BatchConnect::SessionContextsController < ApplicationController
   include BatchConnectConcern
-  require "json"
 
   # GET /batch_connect/<app_token>/session_contexts/new
   def new
@@ -13,9 +12,8 @@ class BatchConnect::SessionContextsController < ApplicationController
       begin
        @session_context.update_with_cache(JSON.parse(cache_file.read))  if cache_file.file?
       rescue JSON::ParserError => e
-        flash.now[:alert] = "Attempting to update form inputs with cached values resulted in a crash: #{e.msg} "
+        flash.now[:alert] = "Attempting to update form inputs with cached values resulted in a crash: #{e.message} "
       end
-      #@session_context.update_with_cache(JSON.parse(cache_file.read))  if cache_file.file?
     else
       @session_context = nil  # do not display session context form
       flash.now[:alert] = @app.validation_reason
