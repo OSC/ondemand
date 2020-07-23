@@ -1,21 +1,10 @@
 const minimatch = require('minimatch')
 
-function generateWildcardGlob(allowlist) {
-  let wildcards = allowlist.filter((host) => host.indexOf('*') != -1)  
-  let globExpression = `@(${ wildcards.join('|') })`;
-  return globExpression;
-}
-
 function hostInAllowList(allowlist, host) {
   allowlist = Array.from(allowlist);
-  let wildcard = generateWildcardGlob(allowlist);
-
-  return allowlist.some(() => {
-    return allowlist.includes(host) ? true : minimatch(host, wildcard) ? true : false;
-  });
+  return allowlist.some((value) => minimatch(host, value))
 }
 
 module.exports = {
   hostInAllowList,
-  generateWildcardGlob,
 }
