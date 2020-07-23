@@ -9,7 +9,6 @@ function generateWildcardGlob(allowlist) {
 function hostInAllowList(allowlist, host) {
   allowlist = Array.from(allowlist);
   let wildcard = generateWildcardGlob(allowlist);
-  console.log(wildcard)
 
   return allowlist.some(() => {
     return allowlist.includes(host) ? true : minimatch(host, wildcard) ? true : false;
@@ -17,5 +16,6 @@ function hostInAllowList(allowlist, host) {
 }
 
 module.exports = {
-  hostInAllowList
+  hostInAllowList,
+  generateWildcardGlob,
 }
