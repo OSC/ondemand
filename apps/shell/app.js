@@ -10,9 +10,9 @@ const Tokens    = require('csrf');
 const url       = require('url');
 const yaml      = require('js-yaml');
 const glob      = require('glob');
-const minimatch = require('minimatch');
 const port      = 3000;
 const host_path_rx = '/ssh/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$';
+const helpers   = require('./utils/helpers');
 
 // Read in environment variables
 dotenv.config({path: '.env.local'});
@@ -60,10 +60,8 @@ const server = new http.createServer(app);
 const wss = new WebSocket.Server({ noServer: true });
 
 let host_allowlist = new Set;
-let wildcard_hosts = new Set;
-let wildcard_glob = new String;
-
 let default_sshhost;
+
 glob.sync(path.join((process.env.OOD_CLUSTERS || '/etc/ood/config/clusters.d'), '*.y*ml'))
   .map(yml => yaml.safeLoad(fs.readFileSync(yml)))
   .filter(config => (config.v2 && config.v2.login && config.v2.login.host) && ! (config.v2 && config.v2.metadata && config.v2.metadata.hidden))
@@ -74,16 +72,14 @@ glob.sync(path.join((process.env.OOD_CLUSTERS || '/etc/ood/config/clusters.d'), 
     if (isDefault) default_sshhost = host;
   });
 
-if (process.env.OOD_SSHHOST_ALLOWLIST){
+if (process.env.OOD_SSHHOST_ALLOWLIST) {
   let parsed_allowlist = process.env.OOD_SSHHOST_ALLOWLIST.split(":")
-  host_allowlist = new Set(parsed_allowlist);
-  wildcard_hosts = new Set(parsed_allowlist.filter((host) => host.indexOf('*') != -1));
-  wildcard_hosts.forEach(wildcard => wildcard_glob += `${wildcard}|`);
+  host_allowlist = new Set(parsed_allowlist, ...host_allowlist);
 }
 
 default_sshhost = process.env.OOD_DEFAULT_SSHHOST || process.env.DEFAULT_SSHHOST|| default_sshhost;
 if (default_sshhost) host_allowlist.add(default_sshhost);
-function host_and_dir_from_url(url){
+function host_and_dir_from_url(url) {
   let match = url.match(host_path_rx),
   hostname = match[1] === "default" ? default_sshhost : match[1],
   directory = match[2] ? decodeURIComponent(match[2]) : null;
@@ -170,11 +166,8 @@ server.on('upgrade', function upgrade(request, socket, head) {
         client_origin = request.headers['origin'],
         server_origin = custom_server_origin(default_server_origin(request.headers));
 
-  var host, dir, host_wildcard_match;
+  var host, dir;
   [host, dir] = host_and_dir_from_url(request.url);
-  if (wildcard_hosts.size > 0) {
-    host_wildcard_match = [host].filter(minimatch.filter(`@(${wildcard_glob})`)).length > 0 ? true : false
-  }
 
   if (client_origin &&
       client_origin.startsWith('http') &&
@@ -198,11 +191,7 @@ server.on('upgrade', function upgrade(request, socket, head) {
     ].join('\r\n') + '\r\n\r\n');
 
     socket.destroy();
-  } else if (host_wildcard_match) {
-    return wss.handleUpgrade(request, socket, head, function done(ws) {
-      wss.emit('connection', ws, request);
-    });
-  } else if (!host_allowlist.has(host)) { // host not in allowlist
+  } else if (!helpers.hostInAllowList(host_allowlist, host)) { // host not in allowlist
     socket.write([
       'HTTP/1.1 401 Unauthorized',
       'Content-Type: text/html; charset=UTF-8',
