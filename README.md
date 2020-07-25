@@ -1,14 +1,15 @@
-<div align="center">
-<a href="https://openondemand.org"><img src="https://raw.githubusercontent.com/OSC/Open-OnDemand/gh-pages/assets/images/2017_1108%20Open%20OnDemand%20logo/stack/RGB/OpenOnDemand_stack_RGB.svg" width=300></a>
-</div>
-
-<br/>
-
 # Open OnDemand
 ![GitHub Release](https://img.shields.io/github/release/osc/ondemand.svg?color=informational)
 [![Build Status](https://img.shields.io/travis/OSC/ondemand/master?color=success)](https://travis-ci.org/OSC/ondemand)
 [![GitHub License](https://img.shields.io/badge/license-MIT-green.svg?color=success)](https://opensource.org/licenses/MIT)
 > Supercomputing. Seamlessly. Open, Interactive HPC Via the Web
+
+- Website: http://openondemand.org/
+- Documentation: https://osc.github.io/ood-documentation/master/
+- Main code repo: https://github.com/OSC/ondemand
+- Core library repo: https://github.com/OSC/ood_core
+- Original repo with JOSS publication: https://github.com/OSC/Open-OnDemand
+
 
 ## Overview
 Open OnDemand is an NSF-funded open-source HPC portal. The goal of Open OnDemand is to provide an easy way for system administrators to provide web access to their HPC resources, including, but not limited to:
