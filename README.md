@@ -5,11 +5,10 @@
 > Supercomputing. Seamlessly. Open, Interactive HPC Via the Web
 
 - Website: http://openondemand.org/
+- Website repo with JOSS publication: https://github.com/OSC/Open-OnDemand
 - Documentation: https://osc.github.io/ood-documentation/master/
 - Main code repo: https://github.com/OSC/ondemand
 - Core library repo: https://github.com/OSC/ood_core
-- Original repo with JOSS publication: https://github.com/OSC/Open-OnDemand
-
 
 ## Overview
 Open OnDemand is an NSF-funded open-source HPC portal. The goal of Open OnDemand is to provide an easy way for system administrators to provide web access to their HPC resources, including, but not limited to:
