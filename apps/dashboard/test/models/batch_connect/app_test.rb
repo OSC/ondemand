@@ -221,5 +221,27 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     }
   end
 
+  test "app does not include quick_pitzer when given pitzer" do
+    clusters = good_clusters +
+      [
+        OodCore::Cluster.new({ id: 'quick_pitzer', job: { foo: 'bar' } }),
+        OodCore::Cluster.new({ id: 'owens_login', job: { foo: 'bar' } }),
+        OodCore::Cluster.new({ id: '_owens_', job: { foo: 'bar' } }),
+        OodCore::Cluster.new({ id: '_pitzer_', job: { foo: 'bar' } }),
+        OodCore::Cluster.new({ id: 'pit', job: { foo: 'bar' } }),
+        OodCore::Cluster.new({ id: 'owen', job: { foo: 'bar' } })
+      ]
 
+    OodAppkit.stubs(:clusters).returns(clusters + bad_clusters)
+
+    Dir.mktmpdir { |dir|
+      r = PathRouter.new(dir)
+      r.path.join("form.yml").write("cluster:\n  - \"owens\"\n  - \"pitzer\"")
+
+      app = BatchConnect::App.new(router: r)
+
+      assert app.valid?
+      assert_equal good_clusters, app.clusters
+    }
+  end
 end
