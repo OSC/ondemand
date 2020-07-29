@@ -20,6 +20,16 @@ describe 'update_ood_portal' do
     Tempfile.new('dex.yaml')
   end
 
+  let(:dex_secret_path) do
+    Tempfile.new('secret')
+  end
+
+  let(:user) { user = Etc.getlogin }
+  let(:group) do
+    gid = Etc.getpwnam(user).gid
+    group = Etc.getgrgid(gid).name
+  end
+
   before(:each) do
     allow(OodPortalGenerator).to receive(:apache_group).and_return('apache')
   end
@@ -112,11 +122,10 @@ describe 'update_ood_portal' do
       allow(OodPortalGenerator).to receive(:fqdn).and_return('example.com')
       allow(OodPortalGenerator::Dex).to receive(:installed?).and_return(true)
       allow_any_instance_of(OodPortalGenerator::Dex).to receive(:enabled?).and_return(true)
-      user = Etc.getlogin
-      gid = Etc.getpwnam(user).gid
-      group = Etc.getgrgid(gid).name
       allow(OodPortalGenerator).to receive(:dex_user).and_return(user)
       allow(OodPortalGenerator).to receive(:dex_group).and_return(group)
+      allow_any_instance_of(OodPortalGenerator::Dex).to receive(:default_secret_path).and_return(dex_secret_path.path)
+      allow(SecureRandom).to receive(:uuid).and_return('83bc78b7-6f5e-4010-9d80-22f328aa6550')
     end
 
     it 'does not replace dex config' do

@@ -16,7 +16,7 @@ staticClients:
   redirectURIs:
   - https://example.com/oidc
   name: OnDemand
-  secret: 0caaf24ab1a0c33440c06afe99df986365b0781f
+  secret: 83bc78b7-6f5e-4010-9d80-22f328aa6550
 oauth2:
   skipApprovalScreen: true
 enablePasswordDB: true

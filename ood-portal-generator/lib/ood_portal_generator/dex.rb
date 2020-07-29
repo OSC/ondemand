@@ -1,6 +1,6 @@
 require 'active_support'
 require 'active_support/core_ext'
-require 'digest/sha1'
+require 'securerandom'
 require 'fileutils'
 
 module OodPortalGenerator
@@ -158,12 +158,26 @@ module OodPortalGenerator
       @config.fetch(:client_name, "OnDemand")
     end
 
+    def default_secret_path
+      File.join(self.class.config_dir, "#{client_id}.secret")
+    end
+
+    def generate_secret
+      return default_secret_path if (File.exist?(default_secret_path) && ! File.zero?(default_secret_path))
+
+      secret = SecureRandom.uuid
+      File.open(default_secret_path, "w") { |f| f.write("#{secret}\n") }
+      FileUtils.chown(OodPortalGenerator.dex_user, OodPortalGenerator.dex_group, default_secret_path)
+      FileUtils.chmod(0600, default_secret_path)
+      default_secret_path
+    end
+
     def client_secret
       secret = @config.fetch(:client_secret, nil)
-      if secret.nil?
-        secret = Digest::SHA1.hexdigest(client_id)
+      if secret.nil? && self.class.installed? && enabled?
+        secret = generate_secret
       end
-      if File.exist?(secret)
+      if !secret.nil? && File.exist?(secret)
         secret = File.read(secret).strip
       end
       secret
