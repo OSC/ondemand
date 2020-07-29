@@ -239,6 +239,19 @@ describe OodPortalGenerator::Application do
         expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
         described_class.generate()
       end
+
+      it 'generates Dex config using secure secret' do
+        secret = Tempfile.new('secret')
+        File.write(secret.path, "supersecret\n")
+        allow(described_class).to receive(:context).and_return({
+          dex: {
+            client_secret: secret.path,
+          }
+        })
+        expected_dex_yaml = read_fixture('dex.yaml.secret').gsub('/etc/ood/dex', config_dir)
+        expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
+        described_class.generate()
+      end
     end
   end
 

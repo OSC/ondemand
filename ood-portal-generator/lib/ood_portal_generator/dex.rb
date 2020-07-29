@@ -159,7 +159,14 @@ module OodPortalGenerator
     end
 
     def client_secret
-      @config.fetch(:client_secret, Digest::SHA1.hexdigest(client_id))
+      secret = @config.fetch(:client_secret, nil)
+      if secret.nil?
+        secret = Digest::SHA1.hexdigest(client_id)
+      end
+      if File.exist?(secret)
+        secret = File.read(secret).strip
+      end
+      secret
     end
 
     def static_clients
