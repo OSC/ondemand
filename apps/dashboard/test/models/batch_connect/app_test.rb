@@ -127,8 +127,7 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     Dir.mktmpdir { |dir|
       r = PathRouter.new(dir)
       # note the format here, it's a string not array for backward compatability
-      # and it's the special case * (not the regex .*). Also note the quotes, those
-      # are nessecary for yaml to parse it correctly
+      # Also note the quotes, those are nessecary for yaml to parse it correctly
       r.path.join("form.yml").write("cluster: '*'")
 
       app = BatchConnect::App.new(router: r)
@@ -137,26 +136,12 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     }
   end
 
-  test "app with all clusters regex" do
+  test "app with single glob to get owens" do
     OodAppkit.stubs(:clusters).returns(good_clusters + bad_clusters)
 
     Dir.mktmpdir { |dir|
       r = PathRouter.new(dir)
-      # not the special case * but the regex .*
-      r.path.join("form.yml").write("cluster: .*")
-
-      app = BatchConnect::App.new(router: r)
-      assert app.valid?
-      assert_equal good_clusters, app.clusters # make sure you only allow good clusters
-    }
-  end
-
-  test "app with single regex to get owens" do
-    OodAppkit.stubs(:clusters).returns(good_clusters + bad_clusters)
-
-    Dir.mktmpdir { |dir|
-      r = PathRouter.new(dir)
-      r.path.join("form.yml").write("cluster: o.*")
+      r.path.join("form.yml").write("cluster: o*")
 
       app = BatchConnect::App.new(router: r)
       assert app.valid?
@@ -164,13 +149,13 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     }
   end
 
-  test "app with single regex to get owens and pitzer" do
+  test "app with multiple globs to get owens and pitzer, but not ruby" do
     OodAppkit.stubs(:clusters).returns(good_clusters + bad_clusters)
 
     Dir.mktmpdir { |dir|
       r = PathRouter.new(dir)
-      # try to pick up owens pitzter and ruby by regexs
-      r.path.join("form.yml").write("cluster:\n  - o.*\n  - p.*\n  - r.*")
+      # try to pick up owens pitzer by globs
+      r.path.join("form.yml").write("cluster:\n  - o*\n  - p*\n  - r*")
 
       app = BatchConnect::App.new(router: r)
       assert app.valid?
@@ -204,7 +189,7 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     }
   end
 
-   test "app disregards empty cluster strings" do
+  test "app disregards empty cluster strings" do
     OodAppkit.stubs(:clusters).returns(good_clusters + bad_clusters)
 
     Dir.mktmpdir { |dir|
