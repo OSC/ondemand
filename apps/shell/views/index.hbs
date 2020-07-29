@@ -6,18 +6,20 @@
   <link rel="stylesheet" href="{{baseURI}}/stylesheets/style.css">
 
   <script src="{{baseURI}}/javascripts/hterm_all_1.85.js"></script>
+  <script src="{{baseURI}}/javascripts/reconnecting-websocket.js"></script>
   <script src="{{baseURI}}/javascripts/ood_shell.1.js"></script>
 </head>
 
 <body>
   <div id="terminal"></div>
+  <div id="state"><span class="loader"></span><span id="state-text" class="connected-state"></span></div>
 </body>
 
 <script>
+  var oodShell;
   setupHterm = function () {
     // Global variables that define the terminal
-    var oodShell,
-      terminalContainer = document.getElementById('terminal'),
+      var terminalContainer = document.getElementById('terminal'),
       webSocketUrl      = urlWithToken(),
       terminalPrefs     = {
         'use-default-window-copy': true,
@@ -46,6 +48,10 @@
 
     return base + separator + "csrf={{csrfToken}}";
   }
+
+  window.addEventListener('unload', function(event) {
+  oodShell.onSessionEnd(4000, "User closed tab or browser.",);
+  });
 
 </script>
 

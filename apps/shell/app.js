@@ -10,8 +10,9 @@ const Tokens    = require('csrf');
 const url       = require('url');
 const yaml      = require('js-yaml');
 const glob      = require("glob");
+const uuidv4    = require('uuid/v4');
 const port      = 3000;
-const host_path_rx = '/ssh/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$';
+const host_path_rx = `/session/([a-f0-9\-]+)/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$`;
 
 // Read in environment variables
 dotenv.config({path: '.env.local'});
@@ -35,12 +36,28 @@ router.get('/', function (req, res) {
 });
 
 router.get('/ssh*', function (req, res) {
+
+  var id = uuidv4();
+
+  res.redirect(req.baseUrl + `/session/${id + req.params[0]}`);
+
+});
+
+router.get('/session/:id*', function (req, res) {
+
   res.render('index',
     {
       baseURI: req.baseUrl,
       csrfToken: tokens.create(secret),
     });
+
 });
+
+router.get('/launch', function (req, res) {
+
+  res.render('launch', {baseURI: req.baseUrl, sessions: terminals.sessionsInfo()});
+
+})
 
 router.use(express.static(path.join(__dirname, 'public')));
 
@@ -53,6 +70,97 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Mount the routes at the base URI
 app.use(process.env.PASSENGER_BASE_URI || '/', router);
+
+var terminals = {
+
+  instances: {
+
+  },
+
+  sessionsInfo: function () {
+
+    return Object.entries(this.instances)
+          .sort()
+          .map(function(array){ return {id: array[0], host: array[1].host }; });
+  },
+
+  create: function (host, dir, uuid, cmd) {
+    var args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
+
+    process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
+
+    this.instances[uuid] = {term: pty.spawn(cmd, args, {
+      name: 'xterm-256color',
+      cols: 80,
+      rows: 30
+    }), host: host}
+
+    return uuid;
+  },
+
+  exists: function (uuid) {
+    if (uuid in this.instances) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  get: function (uuid) {
+    return this.instances[uuid].term;
+  },
+
+  attach: function (uuid, ws) {
+    var term = this.get(uuid);
+    term.resume();
+    term.resize(80, 30);
+
+    term.on('data', function (data) {
+      ws.send(data, function (error) {
+        if (error) console.log('Send error: ' + error.message);
+      });
+    });
+
+    term.on('error', function (error) {
+      console.log("error present");
+      ws.close();
+    });
+
+    term.on('close', function () {
+      ws.close();
+    });
+
+    ws.on('message', function (msg) {
+      msg = JSON.parse(msg);
+      if (msg.input)  term.write(msg.input);
+      if (msg.check) {
+        var connection = msg.check.status;
+
+        this.send(connection, function (error) {
+          if (error) {
+            console.log("Connect status error: " + error.message)
+          }
+        });
+      }
+      if (msg.resize) term.resize(parseInt(msg.resize.cols), parseInt(msg.resize.rows));
+    });
+
+    ws.on('close', function (code, reason) {
+      console.log(code);
+      if (code === 4000) {
+        term.end();
+        console.log('Closed terminal: ' + term.pid);
+      } else if (code === 1001){
+        term.pause();
+        console.log('Paused terminal: ' + term.pid);
+      } else {
+        term.end();
+        console.log('Closed terminal: ' + term.pid);
+      }
+    });
+
+  }
+}
 
 // Setup websocket server
 const server = new http.createServer(app);
@@ -78,58 +186,37 @@ default_sshhost = process.env.OOD_DEFAULT_SSHHOST || process.env.DEFAULT_SSHHOST
 if (default_sshhost) host_allowlist.add(default_sshhost);
 function host_and_dir_from_url(url){
   let match = url.match(host_path_rx),
-  hostname = match[1] === "default" ? default_sshhost : match[1],
-  directory = match[2] ? decodeURIComponent(match[2]) : null;
+  id = match[1],
+  hostname = match[2] === "default" ? default_sshhost : match[2],
+  directory = match[3] ? decodeURIComponent(match[3]) : null;
 
-  return [hostname, directory];
+  return [id, hostname, directory];
 }
 
 wss.on('connection', function connection (ws, req) {
   var dir,
-      term,
-      args,
-      host,
-      cmd = process.env.OOD_SSH_WRAPPER || 'ssh';
+     term,
+     args,
+     host,
+     uuid,
+     cmd = process.env.OOD_SSH_WRAPPER || 'ssh';
 
   console.log('Connection established');
+  
 
-  [host, dir] = host_and_dir_from_url(req.url);
+  [uuid, host, dir] = host_and_dir_from_url(req.url);
   args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
 
-  process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
-
-  term = pty.spawn(cmd, args, {
-    name: 'xterm-256color',
-    cols: 80,
-    rows: 30
-  });
-
-  console.log('Opened terminal: ' + term.pid);
-
-  term.on('data', function (data) {
-    ws.send(data, function (error) {
-      if (error) console.log('Send error: ' + error.message);
-    });
-  });
-
-  term.on('error', function (error) {
-    ws.close();
-  });
-
-  term.on('close', function () {
-    ws.close();
-  });
-
-  ws.on('message', function (msg) {
-    msg = JSON.parse(msg);
-    if (msg.input)  term.write(msg.input);
-    if (msg.resize) term.resize(parseInt(msg.resize.cols), parseInt(msg.resize.rows));
-  });
-
-  ws.on('close', function () {
-    term.end();
-    console.log('Closed terminal: ' + term.pid);
-  });
+  if (terminals.exists(uuid) === false) {
+    terminals.create(host, dir, uuid, cmd);
+  }
+  
+  try {
+  terminals.attach(uuid, ws);
+} catch(e) {
+  terminals.create(host, dir, uuid, cmd);
+  terminals.attach(uuid, ws);
+}
 });
 
 function custom_server_origin(default_value = null){
@@ -162,8 +249,8 @@ server.on('upgrade', function upgrade(request, socket, head) {
   const requestToken = new URLSearchParams(url.parse(request.url).search).get('csrf'),
         client_origin = request.headers['origin'],
         server_origin = custom_server_origin(default_server_origin(request.headers));
-  var host, dir;
-  [host, dir] = host_and_dir_from_url(request.url);
+  var uuid, host, dir;
+  [uuid, host, dir] = host_and_dir_from_url(request.url);
 
   if (client_origin &&
       client_origin.startsWith('http') &&
