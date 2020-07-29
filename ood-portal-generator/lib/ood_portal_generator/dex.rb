@@ -159,7 +159,7 @@ module OodPortalGenerator
     end
 
     def default_secret_path
-      File.join(self.class.config_dir, "#{client_id}.secret")
+      File.join(self.class.config_dir, "ondemand.secret")
     end
 
     def generate_secret
