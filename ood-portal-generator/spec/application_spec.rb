@@ -20,6 +20,7 @@ describe OodPortalGenerator::Application do
     allow(described_class).to receive(:sum_path).and_return(sum_path.path)
     allow(described_class).to receive(:dex_config).and_return(dex_config.path)
     allow(OodPortalGenerator).to receive(:fqdn).and_return('example.com')
+    allow(OodPortalGenerator).to receive(:apache_group).and_return('apache')
   end
 
   after(:each) do
@@ -379,6 +380,8 @@ describe OodPortalGenerator::Application do
       allow(described_class).to receive(:checksum_exists?).and_return(true)
       allow(described_class).to receive(:update_replace?).and_return(true)
       allow(described_class).to receive(:files_identical?).and_return(false)
+      expect(FileUtils).to receive(:chown).with('root', 'apache', apache.path, verbose: true)
+      expect(FileUtils).to receive(:chmod).with(0640, apache.path, verbose: true)
       expect(described_class).to receive(:save_checksum).with(apache.path)
       ret = described_class.update_ood_portal()
       expect(ret).to eq(3)
@@ -391,6 +394,8 @@ describe OodPortalGenerator::Application do
       allow(described_class).to receive(:checksum_exists?).and_return(true)
       allow(described_class).to receive(:update_replace?).and_return(true)
       allow(described_class).to receive(:files_identical?).and_return(false)
+      expect(FileUtils).to receive(:chown).with('root', 'apache', apache.path, verbose: true)
+      expect(FileUtils).to receive(:chmod).with(0640, apache.path, verbose: true)
       expect(described_class).to receive(:save_checksum).with(apache.path)
       ret = described_class.update_ood_portal()
       expect(ret).to eq(3)
@@ -403,6 +408,8 @@ describe OodPortalGenerator::Application do
       allow(described_class).to receive(:checksum_exists?).and_return(true)
       allow(described_class).to receive(:update_replace?).and_return(false)
       allow(described_class).to receive(:files_identical?).and_return(false)
+      expect(FileUtils).to receive(:chown).with('root', 'apache', "#{apache.path}.new", verbose: true)
+      expect(FileUtils).to receive(:chmod).with(0640, "#{apache.path}.new", verbose: true)
       ret = described_class.update_ood_portal()
       expect(ret).to eq(4)
       expect(File.exist?("#{apache.path}.new")).to eq(true)

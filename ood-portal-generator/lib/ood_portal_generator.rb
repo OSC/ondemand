@@ -50,5 +50,22 @@ module OodPortalGenerator
       gid = Etc.getpwnam(Etc.getlogin).gid
       Etc.getgrgid(gid).name
     end
+
+    def apache_group
+      group = nil
+
+      begin
+        group = Etc.getgrnam('apache').name
+      rescue ArgumentError
+      end
+
+      return group unless group.nil?
+
+      begin
+        group = Etc.getgrnam('www-data').name
+      rescue ArgumentError
+      end
+      group
+    end
   end
 end

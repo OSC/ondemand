@@ -20,6 +20,10 @@ describe 'update_ood_portal' do
     Tempfile.new('dex.yaml')
   end
 
+  before(:each) do
+    allow(OodPortalGenerator).to receive(:apache_group).and_return('apache')
+  end
+
   after(:each) do
     sum.unlink
     apache.unlink
@@ -31,6 +35,8 @@ describe 'update_ood_portal' do
     with_modified_env APACHE: apache.path, SUM: sum.path  do
       File.delete(sum.path)
       File.delete(apache.path)
+      expect(FileUtils).to receive(:chown).with('root', 'apache', apache.path, verbose: true)
+      expect(FileUtils).to receive(:chmod).with(0640, apache.path, verbose: true)
       expect(OodPortalGenerator::Application).to receive(:exit!).with(0)
       OodPortalGenerator::Application.start('update_ood_portal', [])
       expect(File.exist?(apache.path)).to eq(true)
@@ -43,6 +49,8 @@ describe 'update_ood_portal' do
       File.write(config.path, read_fixture('ood_portal.yaml.port'))
       File.write(apache.path, read_fixture('ood-portal.conf.default'))
       File.write(sum.path, read_fixture('sum.default'))
+      expect(FileUtils).to receive(:chown).with('root', 'apache', apache.path, verbose: true)
+      expect(FileUtils).to receive(:chmod).with(0640, apache.path, verbose: true)
       expect(OodPortalGenerator::Application).to receive(:exit!).with(0)
       OodPortalGenerator::Application.start('update_ood_portal', [])
       expect(File.read(apache.path)).to match(/^<VirtualHost \*:8080>$/)
@@ -54,6 +62,8 @@ describe 'update_ood_portal' do
       File.write(config.path, read_fixture('ood_portal.yaml.port'))
       File.write(apache.path, read_fixture('ood-portal.conf.default'))
       File.write(sum.path, read_fixture('sum.not-default'))
+      expect(FileUtils).not_to receive(:chown).with('root', 'apache', apache.path, verbose: true)
+      expect(FileUtils).not_to receive(:chmod).with(0640, apache.path, verbose: true)
       expect(OodPortalGenerator::Application).to receive(:exit!).with(0)
       OodPortalGenerator::Application.start('update_ood_portal', [])
       expect(File.read(apache.path)).to match(/^<VirtualHost \*:80>$/)
@@ -64,6 +74,8 @@ describe 'update_ood_portal' do
     with_modified_env APACHE: apache.path, SUM: sum.path  do
       File.write(apache.path, read_fixture('ood-portal.conf.default'))
       File.write(sum.path, read_fixture('sum.default'))
+      expect(FileUtils).not_to receive(:chown).with('root', 'apache', apache.path, verbose: true)
+      expect(FileUtils).not_to receive(:chmod).with(0640, apache.path, verbose: true)
       expect(OodPortalGenerator::Application).to receive(:exit!).with(0)
       OodPortalGenerator::Application.start('update_ood_portal', ['--detailed-exitcodes'])
     end
@@ -74,6 +86,8 @@ describe 'update_ood_portal' do
       File.write(config.path, read_fixture('ood_portal.yaml.port'))
       File.write(apache.path, read_fixture('ood-portal.conf.default'))
       File.write(sum.path, read_fixture('sum.default'))
+      expect(FileUtils).to receive(:chown).with('root', 'apache', apache.path, verbose: true)
+      expect(FileUtils).to receive(:chmod).with(0640, apache.path, verbose: true)
       expect(OodPortalGenerator::Application).to receive(:exit!).with(3)
       OodPortalGenerator::Application.start('update_ood_portal', ['--detailed-exitcodes'])
       expect(File.read(apache.path)).to match(/^<VirtualHost \*:8080>$/)
@@ -85,6 +99,8 @@ describe 'update_ood_portal' do
       File.write(config.path, read_fixture('ood_portal.yaml.port'))
       File.write(apache.path, read_fixture('ood-portal.conf.default'))
       File.write(sum.path, read_fixture('sum.not-default'))
+      expect(FileUtils).not_to receive(:chown).with('root', 'apache', apache.path, verbose: true)
+      expect(FileUtils).not_to receive(:chmod).with(0640, apache.path, verbose: true)
       expect(OodPortalGenerator::Application).to receive(:exit!).with(4)
       OodPortalGenerator::Application.start('update_ood_portal', ['--detailed-exitcodes'])
       expect(File.read(apache.path)).to match(/^<VirtualHost \*:80>$/)
