@@ -1,13 +1,15 @@
 (function(global) {
     'use strict';
 
-    var rendy;
+    var rendy, Handlebars;
 
     if (typeof module === 'object' && module.exports) {
         rendy               = require('rendy');
+        Handlebars          = require('handlebars');
         module.exports      = new CloudFuncProto();
     } else {
         rendy               = window.rendy;
+        Handlebars          = window.Handlebars;
         global.CloudFunc    = new CloudFuncProto();
     }
 
