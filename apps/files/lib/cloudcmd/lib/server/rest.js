@@ -214,7 +214,7 @@
                 else
                     data    = files;
 
-                if (config('whitelist') && ! (config('whitelist').contains(files.from) && config('whitelist').contains(files.to))) {
+                if (config('allowlist') && ! (config('allowlist').contains(files.from) && config('allowlist').contains(files.to))) {
                     callback(Error("EACCES: permission denied, rename '" + files.from + "' -> '" + files.to + "'"));
                 }
                 else {
@@ -239,7 +239,7 @@
 
                 msg         = formatMsg('copy', files.names);
 
-                if (config('whitelist') && ! (config('whitelist').contains(files.from) && config('whitelist').contains(files.to))) {
+                if (config('allowlist') && ! (config('allowlist').contains(files.from) && config('allowlist').contains(files.to))) {
                     callback(Error("EACCES: permission denied, copy '" + files.from + "' -> '" + files.to + "'"));
                 }
                 else {
