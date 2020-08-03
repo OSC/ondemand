@@ -62,6 +62,10 @@ const wss = new WebSocket.Server({ noServer: true });
 let host_allowlist = new Set;
 let default_sshhost;
 
+if (process.env.OOD_SSHHOST_ALLOWLIST) {
+  host_allowlist = new Set(process.env.OOD_SSHHOST_ALLOWLIST.split(":"));
+}
+
 glob.sync(path.join((process.env.OOD_CLUSTERS || '/etc/ood/config/clusters.d'), '*.y*ml'))
   .map(yml => yaml.safeLoad(fs.readFileSync(yml)))
   .filter(config => (config.v2 && config.v2.login && config.v2.login.host) && ! (config.v2 && config.v2.metadata && config.v2.metadata.hidden))
@@ -71,11 +75,6 @@ glob.sync(path.join((process.env.OOD_CLUSTERS || '/etc/ood/config/clusters.d'), 
     host_allowlist.add(host);
     if (isDefault) default_sshhost = host;
   });
-
-if (process.env.OOD_SSHHOST_ALLOWLIST) {
-  let parsed_allowlist = process.env.OOD_SSHHOST_ALLOWLIST.split(":")
-  host_allowlist = new Set(parsed_allowlist, ...host_allowlist);
-}
 
 default_sshhost = process.env.OOD_DEFAULT_SSHHOST || process.env.DEFAULT_SSHHOST|| default_sshhost;
 if (default_sshhost) host_allowlist.add(default_sshhost);
