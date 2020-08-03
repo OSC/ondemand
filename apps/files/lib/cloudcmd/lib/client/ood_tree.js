@@ -24,7 +24,7 @@ var initTree = function(treeroot){
                 // returns whether or not the directory CONTAINS any subdirectories
                 // THUS our own request/response in front of the api request/response
                 // but this works well now...
-                return {text: arg.name, children: true, id: parsed_data.path + arg.name}; // add id or attribute for full path
+                return {text: Handlebars.Utils.escapeExpression(arg.name), children: true, id: Handlebars.Utils.escapeExpression(parsed_data.path + arg.name)}; // add id or attribute for full path
             }));
           }
         }

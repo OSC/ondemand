@@ -1179,13 +1179,14 @@ var CloudCmd, Util, DOM, CloudFunc;
                     link        = Info.link,
                     FS          = CloudFunc.FS,
                     PREFIX      = CloudCmd.PREFIX,
-                    dir         = PREFIX + FS + Info.dirPath;
+                    dir         = PREFIX + FS + Info.dirPath,
+                    name_safe   = Handlebars.Utils.escapeExpression(name);
 
-                link.title      = name;
-                link.innerHTML  = CloudFunc.Entity.encode(name);
-                link.href       = dir + name;
+                link.title      = name_safe;
+                link.innerHTML  = name_safe;
+                link.href       = Handlebars.Utils.escapeExpression(dir + name);
 
-                current.setAttribute('data-name', 'js-file-' + name);
+                current.setAttribute('data-name', 'js-file-' + name_safe);
 
                 return link;
             };
