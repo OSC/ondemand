@@ -43,6 +43,7 @@
   },
   "resolutions": {
     "findit": "file:./lib/findit2",
+    "ponse": "2.0.2",
     "handlebars": "4.7.6"
   }
 }
