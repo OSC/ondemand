@@ -268,7 +268,7 @@ var CloudCmd, Util, DOM, CloudFunc;
                 CURRENT_FILE            = 'current-file',
                 SELECTED_FILE           = 'selected-file',
                 SelectType              = '*.*',
-                TITLE                   = 'File Explorer',
+                TITLE                   = 'Files App',
                 Title,
                 // OSC_CUSTOM_CODE only use the left panel
                 TabPanel   = {
@@ -1376,7 +1376,7 @@ var CloudCmd, Util, DOM, CloudFunc;
                         ',personalbar=0,toolbar=0'          +
                         ',scrollbars=1,resizable=1',
 
-                    wnd         = window.open(url, 'File Explorer Auth', options);
+                    wnd         = window.open(url, 'Files App Auth', options);
 
                 if (!wnd)
                     DOM.Dialog.alert(TITLE, 'Please disable your popup blocker and try again.');

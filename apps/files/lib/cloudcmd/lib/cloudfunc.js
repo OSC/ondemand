@@ -20,7 +20,7 @@
         /* Constants (common to both client and server) */
 
         /* the name of the program */
-        this.NAME                   = 'File Explorer';
+        this.NAME                   = 'Files App';
 
         /* if the link is this line - in the browser js disabled */
         this.FS    =   FS           = '/fs';
