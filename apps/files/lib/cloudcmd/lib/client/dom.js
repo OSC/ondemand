@@ -268,7 +268,7 @@ var CloudCmd, Util, DOM, CloudFunc;
                 CURRENT_FILE            = 'current-file',
                 SELECTED_FILE           = 'selected-file',
                 SelectType              = '*.*',
-                TITLE                   = 'File Explorer',
+                TITLE                   = 'Files App',
                 Title,
                 // OSC_CUSTOM_CODE only use the left panel
                 TabPanel   = {
@@ -1179,13 +1179,14 @@ var CloudCmd, Util, DOM, CloudFunc;
                     link        = Info.link,
                     FS          = CloudFunc.FS,
                     PREFIX      = CloudCmd.PREFIX,
-                    dir         = PREFIX + FS + Info.dirPath;
+                    dir         = PREFIX + FS + Info.dirPath,
+                    name_safe   = Handlebars.Utils.escapeExpression(name);
 
-                link.title      = name;
-                link.innerHTML  = CloudFunc.Entity.encode(name);
-                link.href       = dir + name;
+                link.title      = name_safe;
+                link.innerHTML  = name_safe;
+                link.href       = Handlebars.Utils.escapeExpression(dir + name);
 
-                current.setAttribute('data-name', 'js-file-' + name);
+                current.setAttribute('data-name', 'js-file-' + name_safe);
 
                 return link;
             };
@@ -1375,7 +1376,7 @@ var CloudCmd, Util, DOM, CloudFunc;
                         ',personalbar=0,toolbar=0'          +
                         ',scrollbars=1,resizable=1',
 
-                    wnd         = window.open(url, 'File Explorer Auth', options);
+                    wnd         = window.open(url, 'Files App Auth', options);
 
                 if (!wnd)
                     DOM.Dialog.alert(TITLE, 'Please disable your popup blocker and try again.');

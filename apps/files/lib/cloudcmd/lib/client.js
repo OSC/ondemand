@@ -31,7 +31,7 @@ var Util, DOM, CloudFunc, join;
         this.HOST                   = location.origin ||
                                       location.protocol + '//' + location.host;
 
-        this.TITLE                  = 'File Explorer';
+        this.TITLE                  = 'Files App';
 
         TITLE                       = this.TITLE;
 

@@ -1,4 +1,4 @@
-# OOD File Explorer
+# OOD Files App
 
 [![GitHub version](https://badge.fury.io/gh/OSC%2Food-fileexplorer.svg)](https://badge.fury.io/gh/OSC%2Food-fileexplorer)
 
@@ -19,7 +19,7 @@ A Node.js web based file explorer that is a modification of [CloudCommander](htt
 * Download files
 * Launch Terminal in location (with [OOD Shell](https://github.com/OSC/ood-shell) configured)
 
-![File Explorer Interface](docs/img/001_interface.png)
+![Files App Interface](docs/img/001_interface.png)
 
 ## New Install
 
@@ -107,7 +107,7 @@ For general usage instructions see: https://www.osc.edu/supercomputing/ondemand/
 
 ### API
 
-The File Explorer contains a node-js REST API based on the [`node-restafary`](https://github.com/coderaiser/node-restafary) package, which can be used by other applications in the OnDemand Environment.
+The Files App contains a node-js REST API based on the [`node-restafary`](https://github.com/coderaiser/node-restafary) package, which can be used by other applications in the OnDemand Environment.
 
 |URL                            |HTTP Verb   |Body               |Description                    |
 |:------------------------------|:-----------|:------------------|:------------------------------|
