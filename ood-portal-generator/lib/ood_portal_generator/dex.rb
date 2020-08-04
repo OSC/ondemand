@@ -173,13 +173,10 @@ module OodPortalGenerator
     end
 
     def client_secret
-      secret = @config.fetch(:client_secret, nil)
-      if secret.nil? && self.class.installed? && enabled?
-        secret = generate_secret
-      end
-      if !secret.nil? && File.exist?(secret)
-        secret = File.read(secret).strip
-      end
+      return nil unless self.class.installed? && enabled?
+
+      secret = @config.fetch(:client_secret) { generate_secret }
+      secret = File.read(secret).strip if File.exist?(secret)
       secret
     end
 
