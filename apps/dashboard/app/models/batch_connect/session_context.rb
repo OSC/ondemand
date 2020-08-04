@@ -5,10 +5,6 @@ module BatchConnect
     include ActiveModel::Model
     include ActiveModel::Serializers::JSON
 
-
-    attr_accessor :app_specific_cache_setting
-
-
     # Attributes used for serialization
     # @return [Hash{String => String, nil}] attributes to be serialized
     def attributes
@@ -22,9 +18,8 @@ module BatchConnect
     end
 
     # @param attributes [Array<Attribute>] list of attribute objects
-    def initialize(attributes = [], app_specific_cache_setting = nil)
+    def initialize(attributes = [])
       @attributes = attributes
-      @app_specific_cache_setting = app_specific_cache_setting
     end
 
     # Find attribute in list using the id of the attribute
@@ -64,38 +59,6 @@ module BatchConnect
     # @return [Boolean]
     def respond_to_missing?(method_name, include_private = false)
       /^(?<id>[^=]+)=?$/ =~ method_name.to_s && self[id] || super
-   end
-   
-   def update_with_cache(cache)
-      self.attributes = cache.select { |k,v| self[k.to_sym].cacheable?(app_specific_cache_enabled?)  }
-   end 
-
-   private
-    
-    FALSE_VALUES=[ false, '', 0, '0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF', 'no', 'NO']
-    
-    # Returns false if value is among the FALSE_VALUES set
-    # @param value the value to check 
-    # @return [Boolean]
-    def to_bool(value)
-     ! FALSE_VALUES.include?(value)
     end
-    
-
-    # @return [Boolean]
-    def app_specific_cache_enabled?
-       if @app_specific_cache_setting.nil?
-          global_cache_enabled?
-       else
-          to_bool(@app_specific_cache_setting)
-       end
-    end
-      
-  
-    # @return [Boolean]   
-    def global_cache_enabled? 
-      Configuration.batch_connect_global_cache_enabled?
-    end
-
   end
 end

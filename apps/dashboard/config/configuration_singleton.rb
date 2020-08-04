@@ -174,10 +174,6 @@ end
     @app_sharing_enabled = to_bool(ENV['OOD_APP_SHARING'])
   end
   alias_method :app_sharing_enabled, :app_sharing_enabled?
-  
-  def batch_connect_global_cache_enabled?
-    to_bool(ENV["OOD_BATCH_CONNECT_CACHE_ATTR_VALUES"] || true )
-  end
 
   # URL to the Dashboard logo image
   # @return [String, nil] URL of logo image
