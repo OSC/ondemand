@@ -1,0 +1,31 @@
+<ol>
+  <li>
+    Download any VNC viewer,
+    <a href="https://www.realvnc.com/en/connect/download/viewer/" rel="noopener" target="_blank">RealVNC</a>
+    is a good option.
+  </li>
+  <li>
+    Start an SSH tunnel through your preferred SSH client or through your <a href="https://www.microsoft.com/en-us/p/windows-terminal/9n0dx20hk701">Windows Terminal</a> Linux distribution.
+  </li>
+  <li>
+    <% if Configuration.native_vnc_login_host %>
+    <p>
+      Copy/paste in your terminal to establish the SSH tunnel:
+    </p>
+    <pre><code>ssh -f -N -L <%= localport %>:<%= connect.host %>:<%= connect.port %> <%= ENV["USER"] %>@<%= Configuration.native_vnc_login_host %></code></pre>
+    <% else %>
+    <p>
+      Copy/paste in your terminal and replace <code>SSH_HOST</code> with a
+      valid HPC login server to establish the SSH tunnel:
+    </p>
+    <pre><code>ssh -f -N -L <%= localport %>:<%= connect.host %>:<%= connect.port %> <%= ENV["USER"] %>@<strong>SSH_HOST</strong></code></pre>
+    <% end %>
+  </li>
+  <li>
+    Open a VNC client and connect to
+    <code>localhost:<%= localport %></code> within the client
+  </li>
+  <li>
+    <p>Use the VNC password: <code><%= connect.password %></code></p>
+  </li>
+</ol>

@@ -241,6 +241,11 @@ end
     Pathname.new(ENV['OOD_LOCALES_ROOT'] || "/etc/ood/config/locales")
   end
 
+  # Set the login host in the Native Instructions VNC session partial
+  def native_vnc_login_host
+    ENV['OOD_NATIVE_VNC_LOGIN_HOST']
+  end
+
   private
 
   # The environment
