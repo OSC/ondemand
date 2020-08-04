@@ -166,9 +166,8 @@ module OodPortalGenerator
       return default_secret_path if (File.exist?(default_secret_path) && ! File.zero?(default_secret_path))
 
       secret = SecureRandom.uuid
-      File.open(default_secret_path, "w") { |f| f.write("#{secret}\n") }
+      File.open(default_secret_path, "w", 0600) { |f| f.write("#{secret}\n") }
       FileUtils.chown(OodPortalGenerator.dex_user, OodPortalGenerator.dex_group, default_secret_path)
-      FileUtils.chmod(0600, default_secret_path)
       default_secret_path
     end
 
