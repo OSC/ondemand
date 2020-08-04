@@ -9,9 +9,10 @@ const dotenv    = require('dotenv');
 const Tokens    = require('csrf');
 const url       = require('url');
 const yaml      = require('js-yaml');
-const glob      = require("glob");
+const glob      = require('glob');
 const port      = 3000;
 const host_path_rx = '/ssh/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$';
+const helpers   = require('./utils/helpers');
 
 // Read in environment variables
 dotenv.config({path: '.env.local'});
@@ -168,6 +169,7 @@ server.on('upgrade', function upgrade(request, socket, head) {
   const requestToken = new URLSearchParams(url.parse(request.url).search).get('csrf'),
         client_origin = request.headers['origin'],
         server_origin = custom_server_origin(default_server_origin(request.headers));
+
   var host, dir;
   [host, dir] = host_and_dir_from_url(request.url);
 
@@ -193,7 +195,7 @@ server.on('upgrade', function upgrade(request, socket, head) {
     ].join('\r\n') + '\r\n\r\n');
 
     socket.destroy();
-  } else if (!host_allowlist.has(host)){ // host not in allowlist
+  } else if (!helpers.hostInAllowList(host_allowlist, host)) { // host not in allowlist
     socket.write([
       'HTTP/1.1 401 Unauthorized',
       'Content-Type: text/html; charset=UTF-8',
@@ -203,7 +205,7 @@ server.on('upgrade', function upgrade(request, socket, head) {
     ].join('\r\n') + '\r\n\r\n');
 
     socket.destroy();
-  } else{
+  } else {
     wss.handleUpgrade(request, socket, head, function done(ws) {
       wss.emit('connection', ws, request);
     });
