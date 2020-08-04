@@ -107,6 +107,7 @@ en:
       Your session is currently starting... Please be patient as this process can
       take a few minutes.
 
+    batch_connect_sessions_status_completed: "For debugging purposes, this card will be retained for %{days} more days"
     breadcrumbs_all_apps: "All Apps"
     breadcrumbs_home: "Home"
     breadcrumbs_my_sessions: "My Interactive Sessions"

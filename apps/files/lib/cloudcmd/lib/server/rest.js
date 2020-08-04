@@ -133,7 +133,7 @@
             switch(cmd) {
             case '':
                 p.data = json.stringify({
-                    info: 'File Explorer API v1'
+                    info: 'Files App API v1'
                 });
 
                 callback(null, {name: 'api.json'}, p.data);

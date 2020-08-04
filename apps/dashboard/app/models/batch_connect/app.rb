@@ -117,7 +117,20 @@ module BatchConnect
     # The clusters the batch connect app is configured to use
     # @return [Array<String>, []] the clusters the app wants to use
     def configured_clusters
-      Array.wrap(form_config.fetch(:cluster, nil)).compact.map { |c| c.to_s.strip.eql?("*") ? ".*" : c.to_s.strip }
+      Array.wrap(form_config.fetch(:cluster, nil))
+        .select { |c| !c.to_s.strip.empty? }
+        .map { |c| c.to_s.strip }
+        .compact
+    end
+
+    # Wheter the cluster is allowed or not based on the configured
+    # clusters and if the cluster allows jobs (job_allow?)
+    #
+    # @return [Boolean] whether the cluster is allowed or not
+    def cluster_allowed(cluster)
+      cluster.job_allow? && configured_clusters.any? do |pattern|
+        File.fnmatch(pattern, cluster.id.to_s, File::FNM_EXTGLOB)
+      end
     end
 
     # The clusters that the batch connect app can use. It's a combination
@@ -125,11 +138,7 @@ module BatchConnect
     # to use.
     # @return [OodCore::Clusters] clusters available to the app user
     def clusters
-      cluster_regex = configured_clusters.join('|')
-
-      OodAppkit.clusters.select do |cluster|
-        cluster.id.to_s.match(/^#{cluster_regex}$/) && cluster.job_allow?
-      end
+      OodAppkit.clusters.select { |cluster| cluster_allowed(cluster) }
     end
 
     # Whether this is a valid app the user can use

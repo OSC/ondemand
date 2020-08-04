@@ -54,7 +54,7 @@ function terminal(ssh_host) {
 
 function ood_editor(){
     if(currentPathIsDirectory()){
-        DOM.Dialog.alert("File Explorer", "Please select a file to edit");
+        DOM.Dialog.alert("Files App", "Please select a file to edit");
     }
     else{
         if(OOD.file_editor != null && OOD.file_editor != ""){

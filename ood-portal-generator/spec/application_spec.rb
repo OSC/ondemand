@@ -57,6 +57,60 @@ describe OodPortalGenerator::Application do
       expect(described_class.output).to receive(:write).with(expected_rendered)
       described_class.generate()
     end
+    it 'generates full OIDC config' do
+      config = {
+        servername: 'ondemand.example.com',
+        oidc_uri: '/oidc',
+        oidc_provider_metadata_url: 'https://idp.example.com/auth/realms/osc/.well-known/openid-configuration',
+        oidc_client_id: 'ondemand.example.com',
+        oidc_client_secret: 'secret',
+        oidc_remote_user_claim: 'preferred_username',
+        oidc_scope: 'openid profile email groups',
+        oidc_session_inactivity_timeout: 28800,
+        oidc_session_max_duration: 28800,
+        oidc_state_max_number_of_cookies: '10 true',
+        oidc_settings: {
+          OIDCPassIDTokenAs: 'serialized',
+          OIDCPassRefreshToken: 'On',
+          OIDCPassClaimsAs: 'environment',
+          OIDCStripCookies: 'mod_auth_openidc_session mod_auth_openidc_session_chunks mod_auth_openidc_session_0 mod_auth_openidc_session_1',
+        },
+      }
+      allow(described_class).to receive(:context).and_return(config)
+      expected_rendered = read_fixture('ood-portal.conf.oidc')
+      expect(described_class.output).to receive(:write).with(expected_rendered)
+      described_class.generate()
+    end
+    it 'generates full OIDC config with SSL' do
+      config = {
+        servername: 'ondemand.example.com',
+        port: '443',
+        ssl: [
+          'SSLCertificateFile /etc/pki/tls/certs/ondemand.example.com.crt',
+          'SSLCertificateKeyFile /etc/pki/tls/private/ondemand.example.com.key',
+          'SSLCertificateChainFile /etc/pki/tls/certs/ondemand.example.com-interm.crt',
+        ],
+        oidc_uri: '/oidc',
+        oidc_provider_metadata_url: 'https://idp.example.com/auth/realms/osc/.well-known/openid-configuration',
+        oidc_client_id: 'ondemand.example.com',
+        oidc_client_secret: 'secret',
+        oidc_remote_user_claim: 'preferred_username',
+        oidc_scope: 'openid profile email groups',
+        oidc_session_inactivity_timeout: 28800,
+        oidc_session_max_duration: 28800,
+        oidc_state_max_number_of_cookies: '10 true',
+        oidc_settings: {
+          OIDCPassIDTokenAs: 'serialized',
+          OIDCPassRefreshToken: 'On',
+          OIDCPassClaimsAs: 'environment',
+          OIDCStripCookies: 'mod_auth_openidc_session mod_auth_openidc_session_chunks mod_auth_openidc_session_0 mod_auth_openidc_session_1',
+        },
+      }
+      allow(described_class).to receive(:context).and_return(config)
+      expected_rendered = read_fixture('ood-portal.conf.oidc-ssl')
+      expect(described_class.output).to receive(:write).with(expected_rendered)
+      described_class.generate()
+    end
 
     context 'dex' do
       let(:config_dir) do
@@ -95,6 +149,27 @@ describe OodPortalGenerator::Application do
         expected_rendered = read_fixture('ood-portal.conf.dex-full')
         expect(described_class.output).to receive(:write).with(expected_rendered)
         expected_dex_yaml = read_fixture('dex.yaml.full').gsub('/etc/ood/dex', config_dir)
+        expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
+        described_class.generate()
+      end
+
+      it 'generates full dex configs with SSL and multiple redirect URIs' do
+        allow(described_class).to receive(:context).and_return({
+          servername: 'example.com',
+          port: '443',
+          ssl: [
+            'SSLCertificateFile /etc/pki/tls/certs/example.com.crt',
+            'SSLCertificateKeyFile /etc/pki/tls/private/example.com.key',
+            'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
+          ],
+          dex: {
+            client_redirect_uris: [
+              'https://localhost:4443/simplesaml/module.php/authglobus/linkback.php',
+              'https://localhost:2443/oidc/callback/',
+            ],
+          }
+        })
+        expected_dex_yaml = read_fixture('dex.yaml.full-redirect-uris').gsub('/etc/ood/dex', config_dir)
         expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
         described_class.generate()
       end

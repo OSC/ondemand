@@ -35,12 +35,7 @@ module OodPortalGenerator
       @dex_config[:grpc] = grpc unless grpc.nil?
       @dex_config[:expiry] = expiry unless expiry.nil?
       @dex_config[:telemetry] = { http: '0.0.0.0:5558' }
-      @dex_config[:staticClients] = [{
-        id: client_id,
-        redirectURIs: [client_redirect_uri],
-        name: client_name,
-        secret: client_secret,
-      }]
+      @dex_config[:staticClients] = static_clients
       @dex_config[:connectors] = connectors unless connectors.nil?
       @dex_config[:oauth2] = { skipApprovalScreen: true }
       @dex_config[:enablePasswordDB] = connectors.nil?
@@ -143,7 +138,7 @@ module OodPortalGenerator
     end
 
     def client_id
-      @view.servername || OodPortalGenerator.fqdn
+      @config.fetch(:client_id, (@view.servername || OodPortalGenerator.fqdn))
     end
 
     def client_url
@@ -154,12 +149,28 @@ module OodPortalGenerator
       "#{client_url}/oidc"
     end
 
+    def client_redirect_uris
+      config_redirect_uris = @config.fetch(:client_redirect_uris, [])
+      [client_redirect_uri] + config_redirect_uris
+    end
+
     def client_name
       @config.fetch(:client_name, "OnDemand")
     end
 
     def client_secret
       @config.fetch(:client_secret, Digest::SHA1.hexdigest(client_id))
+    end
+
+    def static_clients
+      ood_client = {
+        id: client_id,
+        redirectURIs: client_redirect_uris,
+        name: client_name,
+        secret: client_secret,
+      }
+      config_clients = @config.fetch(:static_clients, [])
+      [ood_client] + config_clients
     end
 
     def connectors
