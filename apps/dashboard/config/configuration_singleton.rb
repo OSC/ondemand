@@ -191,6 +191,12 @@ end
     !to_bool(ENV["DISABLE_DASHBOARD_LOGO"])
   end
 
+  # Dashboard logo height used to set the height style attribute
+  # @return [String, nil] Logo height
+  def logo_height
+    ENV["OOD_DASHBOARD_LOGO_HEIGHT"]
+  end
+
   def brand_bg_color
     ENV.values_at('OOD_BRAND_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_BG', 'BOOTSTRAP_NAVBAR_INVERSE_BG').compact.first
   end
@@ -205,6 +211,11 @@ end
 
   def developer_docs_url
     ENV['OOD_DASHBOARD_DEV_DOCS_URL'] || "https://go.osu.edu/ood-app-dev"
+  end
+
+  # Turbolinks feature flag
+  def turbolinks_enabled?
+    to_bool(ENV['OOD_TURBOLINKS_ENABLED'])
   end
 
   def dataroot

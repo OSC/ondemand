@@ -55,6 +55,12 @@ module NginxStage
       NginxStage.passenger_python
     end
 
+    # Max file upload size in bytes (e.g., 10737420000)
+    # @return [String] the max file size clients can upload
+    def nginx_file_upload_max
+      NginxStage.nginx_file_upload_max
+    end
+
     # Path to user's personal tmp root
     # @return [String] path to tmp root
     def tmp_root

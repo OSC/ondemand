@@ -1,0 +1,48 @@
+---
+issuer: https://example.com:5554
+storage:
+  type: sqlite3
+  config:
+    file: "/etc/ood/dex/dex.db"
+web:
+  http: 0.0.0.0:5556
+  https: 0.0.0.0:5554
+  tlsCert: "/etc/ood/dex/example.com.crt"
+  tlsKey: "/etc/ood/dex/example.com.key"
+telemetry:
+  http: 0.0.0.0:5558
+staticClients:
+- id: example.com
+  redirectURIs:
+  - https://example.com/oidc
+  name: OnDemand
+  secret: 83bc78b7-6f5e-4010-9d80-22f328aa6550
+connectors:
+- type: ldap
+  id: ldap
+  name: LDAP
+  config:
+    host: ldap1.example.com:636
+    bindDN: cn=read,dc=example,dc=com
+    bindPW: secret
+    userSearch:
+      baseDN: ou=People,dc=example,dc=com
+      filter: "(objectClass=posixAccount)"
+      username: uid
+      idAttr: uid
+      emailAttr: mail
+      nameAttr: gecos
+      preferredUsernameAttr: uid
+    groupSearch:
+      baseDN: ou=Groups,dc=example,dc=com
+      filter: "(objectClass=posixGroup)"
+      userMatchers:
+      - userAttr: dn
+        groupAttr: member
+      nameAttr: cn
+oauth2:
+  skipApprovalScreen: true
+enablePasswordDB: false
+frontend:
+  dir: "/usr/share/ondemand-dex/web"
+  theme: ondemand

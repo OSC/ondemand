@@ -5,6 +5,8 @@ class BatchConnect::SessionsController < ApplicationController
   # GET /batch_connect/sessions.json
   def index
     @sessions = BatchConnect::Session.all
+    @sessions.each(&:update_cache_completed!)
+
     set_app_groups
     set_my_quotas
   end

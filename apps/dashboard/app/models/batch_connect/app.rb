@@ -114,22 +114,43 @@ module BatchConnect
       )
     end
 
-    # Cluster id the batch connect app uses
-    # @return [String, nil] cluster id used by app
-    def cluster_id
-      form_config.fetch(:cluster, nil)
+    # The clusters the batch connect app is configured to use
+    # @return [Array<String>, []] the clusters the app wants to use
+    def configured_clusters
+      Array.wrap(form_config.fetch(:cluster, nil))
+        .select { |c| !c.to_s.strip.empty? }
+        .map { |c| c.to_s.strip }
+        .compact
     end
 
-    # The cluster that the batch connect app uses
-    # @return [OodCore::Cluster, nil] cluster that app uses
-    def cluster
-      OodAppkit.clusters[cluster_id] if cluster_id
+    # Wheter the cluster is allowed or not based on the configured
+    # clusters and if the cluster allows jobs (job_allow?)
+    #
+    # @return [Boolean] whether the cluster is allowed or not
+    def cluster_allowed(cluster)
+      cluster.job_allow? && configured_clusters.any? do |pattern|
+        File.fnmatch(pattern, cluster.id.to_s, File::FNM_EXTGLOB)
+      end
+    end
+
+    # The clusters that the batch connect app can use. It's a combination
+    # of what the app is configured to use and what the user is allowed
+    # to use.
+    # @return [OodCore::Clusters] clusters available to the app user
+    def clusters
+      OodAppkit.clusters.select { |cluster| cluster_allowed(cluster) }
     end
 
     # Whether this is a valid app the user can use
     # @return [Boolean] whether valid app
     def valid?
-      (! form_config.empty?) && cluster && cluster.job_allow?
+      if form_config.empty?
+        false
+      elsif configured_clusters.any?
+        clusters.any?
+      else
+        true
+      end
     end
 
     # The reason why this app may or may not be valid
@@ -137,12 +158,11 @@ module BatchConnect
     def validation_reason
       return @validation_reason if @validation_reason
 
-      if !cluster_id
-        "This app does not specify a cluster."
-      elsif !cluster
-        "This app requires a cluster that does not exist."
-      elsif !cluster.job_allow?
-        "You do not have access to use this app."
+      if configured_clusters.empty?
+        "This app does not specify any cluster."
+      elsif clusters.empty?
+        "This app requires clusters that do not exist " +
+        "or you do not have access to."
       else
         ""
       end
@@ -154,18 +174,18 @@ module BatchConnect
 
       local_attribs = form_config.fetch(:attributes, {})
       attrib_list   = form_config.fetch(:form, [])
-    
+      add_cluster_widget(local_attribs, attrib_list)
       attributes = attrib_list.map do |attribute_id|
-          attribute_opts = local_attribs.fetch(attribute_id.to_sym, {})
-    
-          # Developer wanted a fixed value
-          attribute_opts = { value: attribute_opts, fixed: true } unless attribute_opts.is_a?(Hash)
-          
-          # Hide resolution if not using native vnc clients
-          attribute_opts = { value: nil, fixed: true } if attribute_id.to_s == "bc_vnc_resolution" && !ENV["ENABLE_NATIVE_VNC"]
+        attribute_opts = local_attribs.fetch(attribute_id.to_sym, {})
 
-          SmartAttributes::AttributeFactory.build(attribute_id, attribute_opts)
-        end
+        # Developer wanted a fixed value
+        attribute_opts = { value: attribute_opts, fixed: true } unless attribute_opts.is_a?(Hash)
+
+        # Hide resolution if not using native vnc clients
+        attribute_opts = { value: nil, fixed: true } if attribute_id.to_s == "bc_vnc_resolution" && !ENV["ENABLE_NATIVE_VNC"]
+
+        SmartAttributes::AttributeFactory.build(attribute_id, attribute_opts)
+      end
 
      BatchConnect::SessionContext.new(attributes, form_config.fetch(:cacheable, nil)  ) #form_config.fetch(:cacheable, nil)  
        
@@ -189,6 +209,12 @@ module BatchConnect
     def session_view
       file = root.join("view.html.erb")
       file.read if file.file?
+    end
+
+    # View used for session info if it exists
+    # @return [String, nil] session info
+    def session_info_view
+      Pathname.new(root).glob("info.{md,html}.erb").find(&:file?).try(:read)
     end
 
     # Paths to custom javascript files
@@ -300,6 +326,27 @@ module BatchConnect
       # The OOD app object describing this app
       def ood_app
         @ood_app ||= OodApp.new(router)
+      end
+
+      # add a widget for choosing the cluster if one doesn't already exist
+      # and if users aren't defining they're own form.cluster and attributes.cluster
+      def add_cluster_widget(attributes, attribute_list)
+        return unless configured_clusters.any?
+
+        attribute_list.prepend("cluster") unless attribute_list.include?("cluster")
+
+        if clusters.size > 1
+          attributes[:cluster] = {
+            widget: "select",
+            label: "Cluster",
+            options: clusters.map { |cluster| cluster.id.to_s }
+          }
+        else
+          attributes[:cluster] = {
+            value: clusters.first.id.to_s,
+            widget: "hidden_field"
+          }
+        end
       end
   end
 end

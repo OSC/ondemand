@@ -6,6 +6,95 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.8.8] - 2020-07-22
+### Fixed
+- Revert the commit that made XDMoD SSO timeout configurable, which introduced a bug [#607](https://github.com/OSC/ondemand/pull/607)
+
+## [1.8.7] - 2020-07-21
+### Fixed
+- Add back support for DEFAULT_SSHHOST env var in shell app [#603](https://github.com/OSC/ondemand/pull/603)
+- Replace accidental hardcoded OSC XDMoD host [#604](https://github.com/OSC/ondemand/pull/604)
+
+## [1.8.6] - 2020-07-20
+### Added
+- Configuration for XDMoD auto-login timeout [#597](https://github.com/OSC/ondemand/pull/597)
+
+### Fixed
+- Handle edge case in job efficiency widget where no data 
+  available [#597](https://github.com/OSC/ondemand/pull/597)
+- Fix XDMoD auto-login iframe trick to properly hide and position 
+  iframe so form button clicks in iframe still work 
+  [#596](https://github.com/OSC/ondemand/pull/596) 
+- Fix bug where `cluster: ""` in batch connect app resulted in unhandled exception [#593](https://github.com/OSC/ondemand/pull/593)
+
+## [1.8.5] - 2020-07-16
+### Fixed
+- Broken tests introduced with redirect URIs in Dex [#592](https://github.com/OSC/ondemand/pull/592)
+
+## [1.8.4] - 2020-07-16
+### Added
+- Support for additional redirect URIs in Dex config [#591](https://github.com/OSC/ondemand/pull/591)
+
+## [1.8.3] - 2020-07-16
+### Changed
+- Shell App: use OOD_SSHHOST_ALLOWLIST instead of SSHHOST_WHITELIST [#582](https://github.com/OSC/ondemand/pull/582)
+
+### Added
+- Dex config generator now supports configuring multiple static clients [#589](https://github.com/OSC/ondemand/pull/589)
+
+## [1.8.2] - 2020-07-13
+### Changed
+- Retain the BC panel after a job completes [559](https://github.com/OSC/ondemand/pull/559)
+- XMDOD panels to use SSO, removing perf & summary widgets and added job efficiency widget
+  [578](https://github.com/OSC/ondemand/pull/578) and [580](https://github.com/OSC/ondemand/pull/580)
+
+### Added
+- Added jest for shell testing suite [577](https://github.com/OSC/ondemand/pull/577)
+- Added Sinatra gems into ondemand-gems for other apps to use [579](https://github.com/OSC/ondemand/pull/579)
+
+### Fixed
+- default_sshost is added to the shell's allowlist [564](https://github.com/OSC/ondemand/pull/564)
+
+## [1.8.1] - 2020-07-06
+### Fixed
+- ondemand-dex binary location in /usr/sbin not /usr/local [#566](https://github.com/OSC/ondemand/pull/566).
+
+## [1.8.0] - 2020-07-06
+### Added
+- Chinese localization for "Mainland China simplified characters"
+  [#477](https://github.com/OSC/ondemand/pull/477), thank you [@374365283](https://github.com/374365283)
+  and [@summerwang](https://github.com/summerwang)
+- Specify the default login host in the cluster config
+  [#508](https://github.com/OSC/ondemand/issues/508)
+- Control nginx max upload size by setting byte size in nginx_stage.yml
+  using configuration option `nginx_file_upload_max` and the files app will now respect this
+  [#502](https://github.com/OSC/ondemand/pull/502)
+- Add an info.md.erb (or info.html.erb) to the root of any batch connect app
+  to display extra information. the context for the erb is the session and the rendered
+  string is passed through a markdown renderer
+  [#556](https://github.com/OSC/ondemand/pull/556)
+- Configure a single batch connect app to submit to multiple different clusters, either
+  in form.yml or submit.yml:
+  [#524](https://github.com/OSC/ondemand/pull/553)
+  [#536](https://github.com/OSC/ondemand/pull/536)
+  [#538](https://github.com/OSC/ondemand/pull/538)
+  [#553](https://github.com/OSC/ondemand/pull/553)
+- Streamlined Copy and Paste for Chrome 
+  [#537](https://github.com/OSC/ondemand/pull/537)
+- Dockerfile for help with development [#309](https://github.com/OSC/ondemand/pull/309)
+- Configurable logo height using OOD_DASHBOARD_LOGO_HEIGHT set to a value like `100px` which
+  enables using SVG for logos on the dashboard
+- Add TurboLinks dependeny to the dashboard in decrease loading time
+  [498](https://github.com/OSC/ondemand/pull/498)
+
+### Changed
+- Shell app now requires every host it will connect to to be whitelisted
+  defaulting to hosts in colon delimited SSHHOST_WHITELIST env var or every
+  host specified in the login section of each cluster config
+  [#507](https://github.com/OSC/ondemand/issues/507)
+- Switch from BasicAuth to Dex for default authentication
+  [#474](https://github.com/OSC/ondemand/pull/474)
+
 ## [1.7.14] - 2020-05-27
 ### Fixed
 - Safari bug that broke noVNC [#516](https://github.com/OSC/ondemand/pull/516).
@@ -406,7 +495,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.14...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.8...HEAD
+[1.8.8]: https://github.com/OSC/ondemand/compare/v1.8.7...v1.8.8
+[1.8.7]: https://github.com/OSC/ondemand/compare/v1.8.6...v1.8.7
+[1.8.6]: https://github.com/OSC/ondemand/compare/v1.8.5...v1.8.6
+[1.8.5]: https://github.com/OSC/ondemand/compare/v1.8.4...v1.8.5
+[1.8.4]: https://github.com/OSC/ondemand/compare/v1.8.3...v1.8.4
+[1.8.3]: https://github.com/OSC/ondemand/compare/v1.8.2...v1.8.3
+[1.8.2]: https://github.com/OSC/ondemand/compare/v1.8.1...v1.8.2
+[1.8.1]: https://github.com/OSC/ondemand/compare/v1.8.0...v1.8.1
+[1.8.0]: https://github.com/OSC/ondemand/compare/v1.7.14...v1.8.0
 [1.7.14]: https://github.com/OSC/ondemand/compare/v1.7.13...v1.7.14
 [1.7.13]: https://github.com/OSC/ondemand/compare/v1.7.12...v1.7.13
 [1.7.12]: https://github.com/OSC/ondemand/compare/v1.7.11...v1.7.12

@@ -62,4 +62,171 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
       appdir.rmtree
     end
   end
+
+  def good_clusters
+    [
+      OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}}),
+      OodCore::Cluster.new({id: 'pitzer', job: {foo: 'bar'}})
+    ]
+  end
+
+  def bad_clusters
+    [
+      # ruby not allowed bc the acl
+      OodCore::Cluster.new({
+        id: 'ruby',
+        job: { foo: 'bar'},
+        acls: [{ adapter: 'group', groups: ['hopefully-doesnt-exist'], type: 'whitelist' }]
+      })
+    ]
+  end
+
+  test "app with multiple clusters" do
+    OodAppkit.stubs(:clusters).returns(good_clusters + bad_clusters)
+
+    Dir.mktmpdir { |dir|
+      r = PathRouter.new(dir)
+      r.path.join("form.yml").write("cluster:\n  - owens\n  - pitzer\n  - ruby")
+
+      app = BatchConnect::App.new(router: r)
+      assert app.valid?
+      assert_equal good_clusters, app.clusters # make sure you only allow good clusters
+    }
+  end
+
+  test "app with a single invalid cluster" do
+    OodAppkit.stubs(:clusters).returns(good_clusters + bad_clusters)
+
+    Dir.mktmpdir { |dir|
+      r = PathRouter.new(dir)
+      r.path.join("form.yml").write("cluster:\n  - ruby")
+
+      app = BatchConnect::App.new(router: r)
+      assert ! app.valid?
+      assert_equal [], app.clusters
+    }
+  end
+
+  test "app with a single valid cluster" do
+    OodAppkit.stubs(:clusters).returns(good_clusters + bad_clusters)
+
+    Dir.mktmpdir { |dir|
+      r = PathRouter.new(dir)
+      # note the format here, it's a string not array for backward compatability
+      r.path.join("form.yml").write("cluster: \'owens\'")
+
+      app = BatchConnect::App.new(router: r)
+      assert app.valid?
+      assert_equal [ OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}}) ], app.clusters
+    }
+  end
+
+  test "app with special case of all clusters (*)" do
+    OodAppkit.stubs(:clusters).returns(good_clusters + bad_clusters)
+
+    Dir.mktmpdir { |dir|
+      r = PathRouter.new(dir)
+      # note the format here, it's a string not array for backward compatability
+      # Also note the quotes, those are nessecary for yaml to parse it correctly
+      r.path.join("form.yml").write("cluster: '*'")
+
+      app = BatchConnect::App.new(router: r)
+      assert app.valid?
+      assert_equal good_clusters, app.clusters # make sure you only allow good clusters
+    }
+  end
+
+  test "app with single glob to get owens" do
+    OodAppkit.stubs(:clusters).returns(good_clusters + bad_clusters)
+
+    Dir.mktmpdir { |dir|
+      r = PathRouter.new(dir)
+      r.path.join("form.yml").write("cluster: o*")
+
+      app = BatchConnect::App.new(router: r)
+      assert app.valid?
+      assert_equal [ OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}}) ], app.clusters
+    }
+  end
+
+  test "app with multiple globs to get owens and pitzer, but not ruby" do
+    OodAppkit.stubs(:clusters).returns(good_clusters + bad_clusters)
+
+    Dir.mktmpdir { |dir|
+      r = PathRouter.new(dir)
+      # try to pick up owens pitzer by globs
+      r.path.join("form.yml").write("cluster:\n  - o*\n  - p*\n  - r*")
+
+      app = BatchConnect::App.new(router: r)
+      assert app.valid?
+      assert_equal good_clusters, app.clusters # make sure you only allow good clusters
+    }
+  end
+
+  test "app with user defined cluster" do
+    Dir.mktmpdir { |dir|
+      r = PathRouter.new(dir)
+      r.path.join("form.yml").write("form:\n  - cluster")
+
+      app = BatchConnect::App.new(router: r)
+      # it's valid but there are no clusters. they're user defined and not validated by us
+      assert app.valid?
+      assert_equal [], app.clusters
+    }
+  end
+
+  test "app with empty configured cluster is not configured with any cluster" do
+    Dir.mktmpdir { |dir|
+      r = PathRouter.new(dir)
+      r.path.join("form.yml").write("cluster: \"\"")
+
+      app = BatchConnect::App.new(router: r)
+      # it's valid but there are no clusters. Empty configurations are the same as
+      # user defined
+      assert app.valid?
+      assert_equal [], app.configured_clusters
+      assert_equal [], app.clusters
+    }
+  end
+
+  test "app disregards empty cluster strings" do
+    OodAppkit.stubs(:clusters).returns(good_clusters + bad_clusters)
+
+    Dir.mktmpdir { |dir|
+      r = PathRouter.new(dir)
+      # note the empty string and the string with whitespace
+      r.path.join("form.yml").write("cluster:\n  - owens\n  - \"\"\n  - \"  \"")
+
+      app = BatchConnect::App.new(router: r)
+
+      assert app.valid?
+      # only owens gets through
+      assert_equal [ 'owens' ], app.configured_clusters
+      assert_equal [ OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}}) ], app.clusters
+    }
+  end
+
+  test "app does not include quick_pitzer when given pitzer" do
+    clusters = good_clusters +
+      [
+        OodCore::Cluster.new({ id: 'quick_pitzer', job: { foo: 'bar' } }),
+        OodCore::Cluster.new({ id: 'owens_login', job: { foo: 'bar' } }),
+        OodCore::Cluster.new({ id: '_owens_', job: { foo: 'bar' } }),
+        OodCore::Cluster.new({ id: '_pitzer_', job: { foo: 'bar' } }),
+        OodCore::Cluster.new({ id: 'pit', job: { foo: 'bar' } }),
+        OodCore::Cluster.new({ id: 'owen', job: { foo: 'bar' } })
+      ]
+
+    OodAppkit.stubs(:clusters).returns(clusters + bad_clusters)
+
+    Dir.mktmpdir { |dir|
+      r = PathRouter.new(dir)
+      r.path.join("form.yml").write("cluster:\n  - \"owens\"\n  - \"pitzer\"")
+
+      app = BatchConnect::App.new(router: r)
+
+      assert app.valid?
+      assert_equal good_clusters, app.clusters
+    }
+  end
 end

@@ -8,10 +8,10 @@
     <button type="button" class="icon icon-rename btn btn-default btn-sm" onclick="DOM.renameCurrent()">Rename/Move</button>
     <button type="button" class="icon icon-download btn btn-primary btn-sm" onclick="download()">Download</button>
     <button type="button" class="icon icon-copy btn btn-default btn-sm" data-toggle="tooltip"
-      title="Copy selected files to File Explorer's 'clipboard'"
+      title="Copy selected files to the Files App's 'clipboard'"
       onclick="DOM.Buffer.copy()">Copy</button>
     <button type="button" class="bootstrap icon icon-paste btn btn-default btn-sm" data-toggle="tooltip"
-      title="Copy the list of files in the File Explorer's clipboard into current directory"
+      title="Copy the list of files in the Files App's clipboard into current directory"
       onclick="DOM.Buffer.paste()">Paste</button>
     <button type="button" class="icon icon-unselect-all btn btn-default btn-sm" onclick="DOM.toggleAllSelectedFiles()">(Un)Select All</button>
     <button type="button" class="icon icon-delete btn btn-danger btn-sm pull-right" onclick="CloudCmd.Operation.show('delete');">Delete</button>

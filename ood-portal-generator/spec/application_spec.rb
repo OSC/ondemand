@@ -11,9 +11,30 @@ describe OodPortalGenerator::Application do
     Tempfile.new('apache')
   end
 
+  let(:dex_config) do
+    Tempfile.new('dex.yaml')
+  end
+
+  let(:dex_secret_path) do
+    Tempfile.new('secret')
+  end
+
+  let(:user) { user = Etc.getlogin }
+  let(:group) do
+    gid = Etc.getpwnam(user).gid
+    group = Etc.getgrgid(gid).name
+  end
+
   before(:each) do
     stub_const('ARGV', [])
     allow(described_class).to receive(:sum_path).and_return(sum_path.path)
+    allow(described_class).to receive(:dex_config).and_return(dex_config.path)
+    allow(OodPortalGenerator).to receive(:fqdn).and_return('example.com')
+    allow(OodPortalGenerator).to receive(:apache_group).and_return('apache')
+    allow(OodPortalGenerator).to receive(:dex_user).and_return(user)
+    allow(OodPortalGenerator).to receive(:dex_group).and_return(group)
+    allow_any_instance_of(OodPortalGenerator::Dex).to receive(:default_secret_path).and_return(dex_secret_path.path)
+    allow(SecureRandom).to receive(:uuid).and_return('83bc78b7-6f5e-4010-9d80-22f328aa6550')
   end
 
   after(:each) do
@@ -50,6 +71,197 @@ describe OodPortalGenerator::Application do
       expected_rendered = read_fixture('ood-portal.conf.maint_with_ips')
       expect(described_class.output).to receive(:write).with(expected_rendered)
       described_class.generate()
+    end
+    it 'generates full OIDC config' do
+      config = {
+        servername: 'ondemand.example.com',
+        oidc_uri: '/oidc',
+        oidc_provider_metadata_url: 'https://idp.example.com/auth/realms/osc/.well-known/openid-configuration',
+        oidc_client_id: 'ondemand.example.com',
+        oidc_client_secret: 'secret',
+        oidc_remote_user_claim: 'preferred_username',
+        oidc_scope: 'openid profile email groups',
+        oidc_session_inactivity_timeout: 28800,
+        oidc_session_max_duration: 28800,
+        oidc_state_max_number_of_cookies: '10 true',
+        oidc_settings: {
+          OIDCPassIDTokenAs: 'serialized',
+          OIDCPassRefreshToken: 'On',
+          OIDCPassClaimsAs: 'environment',
+          OIDCStripCookies: 'mod_auth_openidc_session mod_auth_openidc_session_chunks mod_auth_openidc_session_0 mod_auth_openidc_session_1',
+        },
+      }
+      allow(described_class).to receive(:context).and_return(config)
+      expected_rendered = read_fixture('ood-portal.conf.oidc')
+      expect(described_class.output).to receive(:write).with(expected_rendered)
+      described_class.generate()
+    end
+    it 'generates full OIDC config with SSL' do
+      config = {
+        servername: 'ondemand.example.com',
+        port: '443',
+        ssl: [
+          'SSLCertificateFile /etc/pki/tls/certs/ondemand.example.com.crt',
+          'SSLCertificateKeyFile /etc/pki/tls/private/ondemand.example.com.key',
+          'SSLCertificateChainFile /etc/pki/tls/certs/ondemand.example.com-interm.crt',
+        ],
+        oidc_uri: '/oidc',
+        oidc_provider_metadata_url: 'https://idp.example.com/auth/realms/osc/.well-known/openid-configuration',
+        oidc_client_id: 'ondemand.example.com',
+        oidc_client_secret: 'secret',
+        oidc_remote_user_claim: 'preferred_username',
+        oidc_scope: 'openid profile email groups',
+        oidc_session_inactivity_timeout: 28800,
+        oidc_session_max_duration: 28800,
+        oidc_state_max_number_of_cookies: '10 true',
+        oidc_settings: {
+          OIDCPassIDTokenAs: 'serialized',
+          OIDCPassRefreshToken: 'On',
+          OIDCPassClaimsAs: 'environment',
+          OIDCStripCookies: 'mod_auth_openidc_session mod_auth_openidc_session_chunks mod_auth_openidc_session_0 mod_auth_openidc_session_1',
+        },
+      }
+      allow(described_class).to receive(:context).and_return(config)
+      expected_rendered = read_fixture('ood-portal.conf.oidc-ssl')
+      expect(described_class.output).to receive(:write).with(expected_rendered)
+      described_class.generate()
+    end
+
+    context 'dex' do
+      let(:config_dir) do
+        Dir.mktmpdir
+      end
+      before(:each) do
+        allow(OodPortalGenerator::Dex).to receive(:installed?).and_return(true)
+        allow(OodPortalGenerator::Dex).to receive(:config_dir).and_return(config_dir)
+        allow_any_instance_of(OodPortalGenerator::Dex).to receive(:enabled?).and_return(true)
+        allow(described_class).to receive(:dex_output).and_return(dex_config)
+      end
+
+      it 'generates default dex configs' do
+        expected_rendered = read_fixture('ood-portal.conf.dex')
+        expect(described_class.output).to receive(:write).with(expected_rendered)
+        expected_dex_yaml = read_fixture('dex.yaml.default').gsub('/etc/ood/dex', config_dir)
+        expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
+        described_class.generate()
+      end
+
+      it 'generates full dex configs with SSL' do
+        allow(described_class).to receive(:context).and_return({
+          servername: 'example.com',
+          port: '443',
+          ssl: [
+            'SSLCertificateFile /etc/pki/tls/certs/example.com.crt',
+            'SSLCertificateKeyFile /etc/pki/tls/private/example.com.key',
+            'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
+          ],
+        })
+        expected_rendered = read_fixture('ood-portal.conf.dex-full')
+        expect(described_class.output).to receive(:write).with(expected_rendered)
+        expected_dex_yaml = read_fixture('dex.yaml.full').gsub('/etc/ood/dex', config_dir)
+        expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
+        described_class.generate()
+      end
+
+      it 'generates full dex configs with SSL and multiple redirect URIs' do
+        allow(described_class).to receive(:context).and_return({
+          servername: 'example.com',
+          port: '443',
+          ssl: [
+            'SSLCertificateFile /etc/pki/tls/certs/example.com.crt',
+            'SSLCertificateKeyFile /etc/pki/tls/private/example.com.key',
+            'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
+          ],
+          dex: {
+            client_redirect_uris: [
+              'https://localhost:4443/simplesaml/module.php/authglobus/linkback.php',
+              'https://localhost:2443/oidc/callback/',
+            ],
+          }
+        })
+        expected_dex_yaml = read_fixture('dex.yaml.full-redirect-uris').gsub('/etc/ood/dex', config_dir)
+        expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
+        described_class.generate()
+      end
+
+      it 'generates copies SSL certs' do
+        certdir = Dir.mktmpdir
+        cert = File.join(certdir, 'cert')
+        File.open(cert, 'w') { |f| f.write("CERT") }
+        key = File.join(certdir, 'key')
+        File.open(key, 'w') { |f| f.write("KEY") }
+        allow(described_class).to receive(:context).and_return({
+          servername: 'example.com',
+          port: '443',
+          ssl: [
+            "SSLCertificateFile #{cert}",
+            "SSLCertificateKeyFile #{key}",
+            'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
+          ],
+        })
+        described_class.generate()
+        expect(File.exists?(File.join(config_dir, 'cert'))).to eq(true)
+        expect(File.read(File.join(config_dir, 'cert'))).to eq('CERT')
+        expect(File.exists?(File.join(config_dir, 'key'))).to eq(true)
+        expect(File.read(File.join(config_dir, 'key'))).to eq('KEY')
+      end
+
+      it 'generates LDAP dex configs with SSL' do
+        allow(described_class).to receive(:context).and_return({
+          servername: 'example.com',
+          port: '443',
+          ssl: [
+            'SSLCertificateFile /etc/pki/tls/certs/example.com.crt',
+            'SSLCertificateKeyFile /etc/pki/tls/private/example.com.key',
+            'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
+          ],
+          dex: {
+            connectors: [{
+              type: 'ldap',
+              id: 'ldap',
+              name: 'LDAP',
+              config: {
+                host: 'ldap1.example.com:636',
+                bindDN: 'cn=read,dc=example,dc=com',
+                bindPW: 'secret',
+                userSearch: {
+                  baseDN: 'ou=People,dc=example,dc=com',
+                  filter: "(objectClass=posixAccount)",
+                  username: 'uid',
+                  idAttr: 'uid',
+                  emailAttr: 'mail',
+                  nameAttr: 'gecos',
+                  preferredUsernameAttr: 'uid',
+                },
+                groupSearch: {
+                  baseDN: 'ou=Groups,dc=example,dc=com',
+                  filter: "(objectClass=posixGroup)",
+                  userMatchers: [{userAttr: 'dn', groupAttr: 'member'}],
+                  nameAttr: 'cn',
+                },
+              },
+            }]
+          }
+        })
+        expected_rendered = read_fixture('ood-portal.conf.dex-ldap')
+        expect(described_class.output).to receive(:write).with(expected_rendered)
+        expected_dex_yaml = read_fixture('dex.yaml.ldap').gsub('/etc/ood/dex', config_dir)
+        expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
+        described_class.generate()
+      end
+
+      it 'generates Dex config using secure secret' do
+        secret = Tempfile.new('secret')
+        File.write(secret.path, "supersecret\n")
+        allow(described_class).to receive(:context).and_return({
+          dex: {
+            client_secret: secret.path,
+          }
+        })
+        expected_dex_yaml = read_fixture('dex.yaml.secret').gsub('/etc/ood/dex', config_dir)
+        expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
+        described_class.generate()
+      end
     end
   end
 
@@ -177,6 +389,8 @@ describe OodPortalGenerator::Application do
       allow(described_class).to receive(:checksum_exists?).and_return(true)
       allow(described_class).to receive(:update_replace?).and_return(true)
       allow(described_class).to receive(:files_identical?).and_return(false)
+      expect(FileUtils).to receive(:chown).with('root', 'apache', apache.path, verbose: true)
+      expect(FileUtils).to receive(:chmod).with(0640, apache.path, verbose: true)
       expect(described_class).to receive(:save_checksum).with(apache.path)
       ret = described_class.update_ood_portal()
       expect(ret).to eq(3)
@@ -189,6 +403,8 @@ describe OodPortalGenerator::Application do
       allow(described_class).to receive(:checksum_exists?).and_return(true)
       allow(described_class).to receive(:update_replace?).and_return(true)
       allow(described_class).to receive(:files_identical?).and_return(false)
+      expect(FileUtils).to receive(:chown).with('root', 'apache', apache.path, verbose: true)
+      expect(FileUtils).to receive(:chmod).with(0640, apache.path, verbose: true)
       expect(described_class).to receive(:save_checksum).with(apache.path)
       ret = described_class.update_ood_portal()
       expect(ret).to eq(3)
@@ -201,6 +417,8 @@ describe OodPortalGenerator::Application do
       allow(described_class).to receive(:checksum_exists?).and_return(true)
       allow(described_class).to receive(:update_replace?).and_return(false)
       allow(described_class).to receive(:files_identical?).and_return(false)
+      expect(FileUtils).to receive(:chown).with('root', 'apache', "#{apache.path}.new", verbose: true)
+      expect(FileUtils).to receive(:chmod).with(0640, "#{apache.path}.new", verbose: true)
       ret = described_class.update_ood_portal()
       expect(ret).to eq(4)
       expect(File.exist?("#{apache.path}.new")).to eq(true)
