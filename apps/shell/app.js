@@ -60,12 +60,11 @@ const server = new http.createServer(app);
 const wss = new WebSocket.Server({ noServer: true });
 
 let host_allowlist = new Set;
-let default_sshhost;
-
-if (process.env.OOD_SSHHOST_ALLOWLIST) {
-  host_allowlist = new Set(process.env.OOD_SSHHOST_ALLOWLIST.split(":"));
+if (process.env.OOD_SSHHOST_ALLOWLIST){
+  host_allowlist = new Set(process.env.OOD_SSHHOST_ALLOWLIST.split(':'));
 }
 
+let default_sshhost;
 glob.sync(path.join((process.env.OOD_CLUSTERS || '/etc/ood/config/clusters.d'), '*.y*ml'))
   .map(yml => yaml.safeLoad(fs.readFileSync(yml)))
   .filter(config => (config.v2 && config.v2.login && config.v2.login.host) && ! (config.v2 && config.v2.metadata && config.v2.metadata.hidden))
