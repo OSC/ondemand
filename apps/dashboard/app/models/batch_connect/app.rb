@@ -1,4 +1,4 @@
-require "smart_attributes"
+ require "smart_attributes"
 
 module BatchConnect
   class App
@@ -167,29 +167,31 @@ module BatchConnect
         ""
       end
     end
-
+    
     # The session context described by this batch connect app
     # @return [SessionContext] the session context
     def build_session_context
+
       local_attribs = form_config.fetch(:attributes, {})
       attrib_list   = form_config.fetch(:form, [])
       add_cluster_widget(local_attribs, attrib_list)
+      attributes = attrib_list.map do |attribute_id|
+        attribute_opts = local_attribs.fetch(attribute_id.to_sym, {})
 
-      BatchConnect::SessionContext.new(
-        attrib_list.map do |attribute_id|
-          attribute_opts = local_attribs.fetch(attribute_id.to_sym, {})
+        # Developer wanted a fixed value
+        attribute_opts = { value: attribute_opts, fixed: true } unless attribute_opts.is_a?(Hash)
 
-          # Developer wanted a fixed value
-          attribute_opts = { value: attribute_opts, fixed: true } unless attribute_opts.is_a?(Hash)
+        # Hide resolution if not using native vnc clients
+        attribute_opts = { value: nil, fixed: true } if attribute_id.to_s == "bc_vnc_resolution" && !ENV["ENABLE_NATIVE_VNC"]
 
-          # Hide resolution if not using native vnc clients
-          attribute_opts = { value: nil, fixed: true } if attribute_id.to_s == "bc_vnc_resolution" && !ENV["ENABLE_NATIVE_VNC"]
+        SmartAttributes::AttributeFactory.build(attribute_id, attribute_opts)
+      end
 
-          SmartAttributes::AttributeFactory.build(attribute_id, attribute_opts)
-        end
-      )
+     BatchConnect::SessionContext.new(attributes, form_config.fetch(:cacheable, nil)  ) #form_config.fetch(:cacheable, nil)  
+       
     end
 
+    #
     # Generate a hash of the submission options
     # @param session_context [SessionContext] object with attributes
     # @param fmt [String, nil] formatting used for attributes in submit hash
