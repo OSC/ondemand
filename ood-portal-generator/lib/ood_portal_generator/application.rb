@@ -175,14 +175,19 @@ module OodPortalGenerator
             end
             puts "Generating new Apache config at: '#{apache}'"
             `cat "#{new_apache.path}" > "#{apache}"`
+            FileUtils.chown('root', OodPortalGenerator.apache_group, apache, verbose: true)
+            FileUtils.chmod(0640, apache, verbose: true)
             puts "Generating Apache config checksum file: '#{sum_path}'"
             save_checksum(apache)
             ret = change_exit
             changed = true
           else
+            apache_new = "#{apache}.new"
             puts "WARNING: Checksum of #{apache} does not match previous value, not replacing."
-            puts "Generating new Apache config at: '#{apache}.new'"
-            `cat "#{new_apache.path}" > "#{apache}.new"`
+            puts "Generating new Apache config at: '#{apache_new}'"
+            `cat "#{new_apache.path}" > "#{apache_new}"`
+            FileUtils.chown('root', OodPortalGenerator.apache_group, apache_new, verbose: true)
+            FileUtils.chmod(0640, apache_new, verbose: true)
             ret = skip_exit
           end
         else

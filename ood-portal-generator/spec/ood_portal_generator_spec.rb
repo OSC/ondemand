@@ -73,4 +73,19 @@ VERSION_ID="8"
       expect(described_class.scl_apache?).to eq(false)
     end
   end
+
+  describe 'apache_group' do
+    let(:getgrnam) { Struct.new(:name, keyword_init: true) }
+    it 'returns apache' do
+      group = getgrnam.new(name: 'apache')
+      allow(Etc).to receive(:getgrnam).with('apache').and_return(group)
+      expect(described_class.apache_group).to eq('apache')
+    end
+    it 'returns www-data' do
+      group = getgrnam.new(name: 'www-data')
+      allow(Etc).to receive(:getgrnam).with('apache').and_raise(ArgumentError)
+      allow(Etc).to receive(:getgrnam).with('www-data').and_return(group)
+      expect(described_class.apache_group).to eq('www-data')
+    end
+  end
 end

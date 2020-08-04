@@ -333,7 +333,8 @@
 #  client_id: null
 #  client_name: OnDemand
   # Client secret, value auto generated
-#  client_secret: null
+  # A value that is a filesystem path can be used to store secret in a file
+#  client_secret: /etc/ood/dex/ondemand.secret
    # The OnDemand redirectURI is auto-generated, this option allows adding additional URIs
 #  client_redirect_uris: []
   # Additional Dex OIDC clients to configure
