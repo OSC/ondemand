@@ -1,7 +1,7 @@
 ---
-name: File Explorer
+name: Files App
 description: |-
-  The Open OnDemand File Explorer
+  The Open OnDemand Files App
 category: Files
 icon: fa://folder
 role: files

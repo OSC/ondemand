@@ -9,7 +9,7 @@
         
     module.exports = function() {
         var auth   = httpAuth.basic({
-            realm: 'File Explorer'
+            realm: 'Files App'
         }, check);
         
         return middle(auth);

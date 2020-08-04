@@ -132,16 +132,10 @@ end
     ENV.fetch("OOD_BALANCE_THRESHOLD", 0).to_f
   end
 
-  # The XDMoD host
+  # The XMoD host
   # @return [String, null] the host, or null if not set
   def xdmod_host
     ENV["OOD_XDMOD_HOST"]
-  end
-
-  # The XDMoD login timeout in milliseconds
-  # @return [String] the number of milliseconds before timing out auto-login
-  def xdmod_login_timeout
-    ENV['OOD_XDMOD_LOGIN_TIMEOUT'] || '5000'
   end
 
   # Whether or not XDMoD integration is enabled

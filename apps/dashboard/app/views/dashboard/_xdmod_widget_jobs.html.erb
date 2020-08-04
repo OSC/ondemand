@@ -108,7 +108,7 @@ var helpers = {
 
     return `${month}/${day}`;
   },
-  job_url: function(){ return "https://xdmod-test.hpc.osc.edu/#job_viewer?action=show&realm=SUPREMM&jobref=" + this.jobid;  },
+  job_url: function(){ return "<%= Configuration.xdmod_host %>/#job_viewer?action=show&realm=SUPREMM&jobref=" + this.jobid;  },
   cpu_label: function(cpu){
     let value = (parseFloat(cpu)*100).toFixed(1),
         label = "N/A";
@@ -138,7 +138,7 @@ var render_template = function(context){
 render_template({loading: true});
 
 var xdmodUrl = '<%= Configuration.xdmod_host %>';
-promiseLoggedIntoXDMoD(xdmodUrl, <%= Configuration.xdmod_login_timeout %>)
+promiseLoggedIntoXDMoD(xdmodUrl)
   .then(() => fetch(jobsUrl, { credentials: 'include' }))
   .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
   .then(response => response.json())

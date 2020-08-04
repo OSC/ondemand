@@ -1,8 +1,9 @@
 (function() {
     'use strict';
 
-    var DIR         = __dirname + '/',
-        DIR_ROOT    = DIR + '../',
+    var path        = require('path'),
+        DIR         = __dirname + '/',
+        DIR_ROOT    = path.resolve(DIR + '../'),
         DIR_SERVER  = DIR + 'server/',
 
         cloudfunc   = require(DIR + 'cloudfunc'),
