@@ -22,7 +22,8 @@
     "js-yaml": "^3.14.0",
     "minimist": ">=1.2.2",
     "node-pty": "^0.9.0",
-    "ws": ">=7.2.0"
+    "ws": ">=7.2.0",
+    "term-schemes": "1.2.1"
   },
   "private": true,
   "resolutions": {

@@ -13,6 +13,7 @@ const glob      = require('glob');
 const port      = 3000;
 const host_path_rx = '/ssh/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$';
 const helpers   = require('./utils/helpers');
+const termSchemes = require("term-schemes");
 
 // Read in environment variables
 dotenv.config({path: '.env.local'});
@@ -24,6 +25,123 @@ if (process.env.NODE_ENV === 'production') {
 if (fs.existsSync('.env')) {
   console.warn('[DEPRECATION] The file \'.env\' is being deprecated. Please move this file to \'/etc/ood/config/apps/shell/env\'.');
   dotenv.config({path: '.env'});
+}
+
+// Create directories if theme directory isn't there.
+const themesDir = path.join(__dirname, "themes");
+const darkThemes = path.join(themesDir, "dark");
+const lightThemes = path.join(themesDir, "light");
+
+fs.mkdirSync(darkThemes, {recursive: true});
+fs.mkdirSync(lightThemes, {recursive: true});
+ var schemeObjects = [];
+ getSchemeObjects(darkThemes);
+ getSchemeObjects(lightThemes);
+
+/**
+* Parse through file information in certain directories.
+* @param {String} dir - The target directory.
+* @return {Array} - The key information returned is an object within an array.
+*/
+function getSchemeObjects(dir) {
+
+  try {
+    fs.readdirSync(dir).forEach(function(file) {
+      fileInfo = path.parse(file);
+      var filePath = dir + "/" + fileInfo.base;
+      var color;
+      if (dir === darkThemes) {
+        color = "dark"
+      } else {
+        color = "light"
+      }
+      var schemeObject = parseFile(filePath, fileInfo.ext);
+      var convertedSchemeObject = convertSchemeObject(schemeObject);
+      schemeObjects.push({name: fileInfo.name, scheme: convertedSchemeObject, color: color})
+    });
+    
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+
+/**
+* Takes a number and converts it to a hex number.
+* @param {Int} num - The number to convert.
+* @return {String} - The hex number.
+*/
+function rgbToHexMath (num) { 
+  var hex = Number(num).toString(16);
+  if (hex.length < 2) {
+       hex = "0" + hex;
+  }
+  return hex;
+};
+
+/**
+* Converts a complete array of colors to a hex color value.
+* @param {Array} array - The colors to convert.
+* @return {String} - The hex code for the color.
+*/
+function hexConverter (array) {
+    var red = array[0];
+    var green = array[1];
+    var blue = array[2];
+
+    return `#${rgbToHexMath(red)}${rgbToHexMath(green)}${rgbToHexMath(blue)}`.toUpperCase();
+}
+
+/**
+* Convert file with scheme to an object of colors.
+* @param {Object} fileObject - An object with information on file location and ext.
+* @return {Object} - The colors parsed into an object.
+*/
+function parseFile(file, ext) {
+    
+    const raw = String(fs.readFileSync(file));
+
+    const schemes = {
+      ".itermcolors": termSchemes.iterm2,
+      ".colorscheme": termSchemes.konsole,
+      ".colors": termSchemes.remmina,
+      ".terminal":termSchemes.terminal,
+      ".config": termSchemes.terminator,
+      ".config_0": termSchemes.tilda,
+      ".theme": termSchemes.xfce,
+      ".txt": termSchemes.termite,
+      ".Xresources": termSchemes.xresources,
+      ".xrdb": termSchemes.xresources,
+    }
+    try {
+      return schemes[ext](raw)
+    } catch (err) {
+      return {error: "unknown file type."}
+    }
+}
+
+/**
+* Convert rgb color format to hex color codes.
+* @param {Object} obj - The object of rgb colors.
+* @return {Object} - The object of hex colors.
+*/
+function convertSchemeObject(obj) {
+    newSchemeObj = {};
+    colorArray = [];
+    for (var key of Object.keys(obj)) {
+       if(isNaN(key) === false) {
+           
+           colorArray.push(hexConverter(obj[key]));
+       
+        } else if (isNaN(key)) {
+            newSchemeObj[key] = hexConverter(obj[key]);
+        }
+
+    }
+
+    newSchemeObj["colorPaletteOverrides"] = colorArray;
+
+    return newSchemeObj;
 }
 
 const tokens = new Tokens({});
@@ -40,6 +158,7 @@ router.get('/ssh*', function (req, res) {
     {
       baseURI: req.baseUrl,
       csrfToken: tokens.create(secret),
+      themes: schemeObjects
     });
 });
 
@@ -51,6 +170,24 @@ var app = express();
 // Setup template engine
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
+
+// hbs helpers
+
+hbs.registerHelper('darkMode', function(value) {
+  if (value === "dark") {
+    return true;
+  }
+})
+
+hbs.registerHelper('lightMode', function(value) {
+  if (value === "light") {
+    return true;
+  }
+})
+
+hbs.registerHelper('json', function(context) {
+    return JSON.stringify(context);
+});
 
 // Mount the routes at the base URI
 app.use(process.env.PASSENGER_BASE_URI || '/', router);

@@ -10,10 +10,36 @@
 </head>
 
 <body>
-  <div id="terminal"></div>
+  <div id="terminal">
+      <nav>
+      Host: owens.osc.edu
+      Starting directory: /path/to/start/dir
+      Shell App
+      Themes:
+      <select id="colors">
+        <option value="default">Default</option>
+        <optgroup label="Dark">
+        {{#each themes}}
+        {{#if (darkMode color)}}
+        <option>{{this.name}}</option>
+        {{/if}}
+        {{/each}}
+        <optgroup label="Light">
+        {{#each themes}}
+        {{#if (lightMode color)}}
+        <option>{{this.name}}</option>
+        {{/if}}
+        {{/each}}
+      </optgroup>
+      </select>
+    </select>
+    </nav>
+  </div>
 </body>
 
 <script>
+  var help = "{{json themes}}"
+  console.log(help)
   setupHterm = function () {
     // Global variables that define the terminal
     var oodShell,

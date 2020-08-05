@@ -4,13 +4,6 @@ html, body {
   margin: 0;
 }
 
-#terminal {
-  display:  block;
-  position: relative;
-  height:   100%;
-  width:    100%;
-}
-
 .error {
   background-color: #f2dede;
   color: #a94442;
@@ -22,4 +15,24 @@ html, body {
   border-color: #ebccd1;
   border: 1px solid;
   border-radius: 4px;
+}
+
+#terminal {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+nav {
+  flex-grow: 0;
+  height: 25px;
+}
+
+nav ul {
+padding-right: 25px;
+}
+iframe {
+   flex-grow: 1;
+   height: auto !important;
+   position: static !important;
+   width: auto !important;
 }
