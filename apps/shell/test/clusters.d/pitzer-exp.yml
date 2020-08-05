@@ -1,0 +1,40 @@
+---
+v2:
+  metadata:
+    title: "Pitzer Expansion"
+    url: "https://www.osc.edu/supercomputing/computing/pitzer"
+    hidden: true
+  acls:
+    - adapter: "group"
+      groups:
+        - "oscall"
+      type: "whitelist"
+  login:
+    host: "pitzer-exp.osc.edu"
+  job:
+    adapter: "slurm"
+
+    cluster: "pitzer"
+    host: "pitzer-slurm01.ten.osc.edu"
+    lib: "/usr/lib64"
+    bin: "/usr/bin"
+    conf: "/etc/slurm/slurm.conf"
+  custom:
+    grafana:
+      host: "https://grafana-test.osc.edu"
+      orgId: 1
+      dashboard:
+        name: "ondemand-clusters"
+        uid: "aaba6Ahbauquag"
+        panels:
+          cpu: 20
+          memory: 24
+      labels:
+        cluster: "cluster"
+        host: "host"
+        jobid: "jobid"
+  batch_connect:
+      basic:
+        script_wrapper: "module restore\n%s"
+      vnc:
+        script_wrapper: "module restore\nmodule load ondemand-vnc\n%s"

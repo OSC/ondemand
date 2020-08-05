@@ -22,7 +22,9 @@
     "js-yaml": "^3.14.0",
     "minimist": ">=1.2.2",
     "node-pty": "^0.9.0",
-    "ws": ">=7.2.0"
+    "package.json": "^2.0.1",
+    "ws": ">=7.2.0",
+    "yarn": "^1.22.4"
   },
   "private": true,
   "resolutions": {

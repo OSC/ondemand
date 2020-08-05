@@ -45,7 +45,7 @@ function generate_default_sshhost(cluster_sshhosts){
   let default_sshhost;
   cluster_sshhosts.forEach((cluster) => {
     if (!default_sshhost) default_sshhost = cluster.host;
-    if (cluster.default) default_sshhost = host;
+    if (cluster.default) default_sshhost = cluster.host;
   });
   return default_sshhost;
 }
@@ -96,10 +96,10 @@ function host_and_dir_from_url(url, host_path_rx, default_sshhost){
 }
 
 module.exports = {
-  hostInAllowList,
-  generate_cluster_sshhosts,
   generate_host_allowlist,
+  generate_cluster_sshhosts,
   generate_default_sshhost,
   add_to_host_allowlist,
+  hostInAllowList,
   host_and_dir_from_url,
 }
