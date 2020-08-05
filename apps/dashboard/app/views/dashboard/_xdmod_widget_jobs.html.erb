@@ -79,7 +79,7 @@ var helpers = {
     return "Recently Completed Jobs - " + thirtyDaysAgo + " to " + today;
   },
   page_limit: function(){
-    return jobsPageLimit;
+    return Math.min(jobsPageLimit, parseInt(this.totalCount));
   },
   xdmod_url: function(){
     return '<%= Configuration.xdmod_host %>';
