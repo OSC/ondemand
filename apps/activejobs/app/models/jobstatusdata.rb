@@ -220,26 +220,31 @@ class Jobstatusdata
     attributes.push Attribute.new "Start Time", self.starttime
     attributes.push Attribute.new "Walltime Used", self.walltime_used
     attributes.push Attribute.new "Status", self.status
-    attributes.push Attribute.new "Job Version", info.native[:JB_version] if info.native[:JB_version]
-    attributes.push Attribute.new "Job Exec File", info.native[:JB_exec_file] if info.native[:JB_exec_file] 
-    attributes.push Attribute.new "Job Script File", info.native[:JB_script_file] if info.native[:JB_script_file]
-    attributes.push Attribute.new "Job Script Size", info.native[:JB_script_size] if info.native[:JB_script_size]
-    attributes.push Attribute.new "Job Execution Time", info.native[:JB_execution_time] if info.native[:JB_execution_time]
-    attributes.push Attribute.new "Job Deadline", info.native[:JB_deadline] if info.native[:JB_deadline]
-    attributes.push Attribute.new "Job UID", info.native[:JB_uid] if info.native[:JB_uid]
-    attributes.push Attribute.new "Job Group", info.native[:JB_group] if info.native[:JB_group]
-    attributes.push Attribute.new "Job GID", info.native[:JB_gid] if info.native[:JB_gid]
-    attributes.push Attribute.new "Job Account", info.native[:JB_account] if info.native[:JB_account]
-    attributes.push Attribute.new "Current Working Directory", info.native[:JB_cwd] if info.native[:JB_cwd]
-    attributes.push Attribute.new "Notifications", info.native[:JB_notify] if info.native[:JB_notify] 
-    attributes.push Attribute.new "Job Type", info.native[:JB_type] if info.native[:JB_type]
-    attributes.push Attribute.new "Reserve", info.native[:JB_reserve] if info.native[:JB_reserve]
-    attributes.push Attribute.new "Job Priority", info.native[:JB_priority] if info.native[:JB_priority]
-    attributes.push Attribute.new "Job Share", info.native[:JB_jobshare] if info.native[:JB_jobshare]
-    attributes.push Attribute.new "Job Verify", info.native[:JB_verify] if info.native[:JB_verify]
-    attributes.push Attribute.new "Job Checkpoint Attr", info.native[:JB_checkpoint_attr] if info.native[:JB_checkpoint_attr]
-    attributes.push Attribute.new "Job Checkpoint Interval", info.native[:JB_checkpoint_interval] if info.native[:JB_checkpoint_interval]
-    attributes.push Attribute.new "Job Restart", info.native[:JB_restart] if info.native[:JB_restart]
+
+    {
+      "Job Version" => :JB_version,
+      "Job Exec File" => :JB_exec_file,
+      "Job Script File" => :JB_script_file,
+      "Job Script Size" => :JB_script_size,
+      "Job Execution Time" => :JB_execution_time,
+      "Job Deadline" => :JB_deadline,
+      "Job UID" => :JB_uid,
+      "Job Group" => :JB_group,
+      "Job GID" => :JB_gid,
+      "Job Account" => :JB_account,
+      "Current Working Directory" => :JB_cwd,
+      "Notifications" => :JB_notify,
+      "Job Type" => :JB_type,
+      "Reserve" => :JB_reserve,
+      "Job Priority" => :JB_priority,
+      "Job Share" => :JB_jobshare,
+      "Job Verify" => :JB_verify,
+      "Job Checkpoint Attr" => :JB_checkpoint_attr,
+      "Job Checkpoint Interval" => :JB_checkpoint_interval,
+      "Job Restart" => :JB_restart
+    }.each do |k,v|
+      attributes.push Attribute.new k, info.native[v] if info.native[v]
+    end
 
     self.native_attribs = attributes
 
