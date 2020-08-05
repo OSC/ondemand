@@ -248,12 +248,14 @@ class Jobstatusdata
 
     self.native_attribs = attributes
 
-    self.submit_args = info.native[:ST_name] || "None"
-    self.output_path = info.native[:PN_path] if info.native[:PN_path]
+    self.submit_args = info.native[:ST_name]
+    self.output_path = info.native[:PN_path]
 
-    output_pathname = Pathname.new(self.output_path).dirname
-    self.file_explorer_url = build_file_explorer_url(output_pathname)
-    self.shell_url = build_shell_url(output_pathname, self.cluster)
+    if self.output_path
+      output_pathname = Pathname.new(self.output_path).dirname
+      self.file_explorer_url = build_file_explorer_url(output_pathname)
+      self.shell_url = build_shell_url(output_pathname, self.cluster)
+    end
 
     self
   end
