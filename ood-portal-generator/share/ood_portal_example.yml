@@ -247,6 +247,13 @@
 # Default: 5 (only try 5 times)
 #pun_max_retries: 5
 
+# The PUN pre hook command to execute as root
+#
+# Example:
+#    pun_pre_hook_root_cmd: "/opt/hpc-site/ood_pun_prehook"
+# Default: null (do not run any PUN pre hook as root)
+#pun_pre_hook_root_cmd: null
+
 # Comma separated list of environment variables to pass from the apache context
 # into the PUN pre hook. Defaults to null so nothing is exported.
 #

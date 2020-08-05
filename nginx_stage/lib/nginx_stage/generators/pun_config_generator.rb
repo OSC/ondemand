@@ -49,6 +49,20 @@ module NginxStage
       }
     end
 
+    # @!method pre_hook_root_cmd
+    #   The command to execute as root before starting the PUN
+    #
+    #   @return [String] the command
+    add_option :pre_hook_root_cmd do
+      {
+        opt_args: ["-P", "--pre-hook-root=ROOT_HOOK", "# Run ROOT_HOOK as root before the PUN starts"],
+        default: nil,
+        before_init: -> (hook) do
+          hook
+        end
+      }
+    end
+
     # Create the user's personal per-user NGINX `/tmp` location for the various
     # nginx cache directories
     add_hook :create_user_tmp_root do
@@ -98,7 +112,7 @@ module NginxStage
     # Run the pre hook command. This eats the output and doesn't affect
     # the overall status of the PUN startup
     add_hook :exec_pre_hook do
-      unless NginxStage.pun_pre_hook.nil?
+      unless pre_hook_root_cmd.nil?
         args = ["--user", user]
         env = {}
 
@@ -109,7 +123,7 @@ module NginxStage
           end
         end
 
-        Open3.capture2e(env, NginxStage.pun_pre_hook, *args)
+        Open3.capture2e(env, pre_hook_root_cmd, *args)
       end
     end
 

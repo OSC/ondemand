@@ -158,6 +158,9 @@ Listen <%= addr_port %>
   <%- if @pun_pre_hook_exports -%>
   # Environment variables to export to the PUN pre hook.
   SetEnv OOD_PUN_PRE_HOOK_EXPORTS "<%= @pun_pre_hook_exports %>"
+  <%- if @pun_pre_hook_exports -%>
+  SetEnv OOD_PUN_PRE_HOOK_ROOT_CMD "<%= @pun_pre_hook_root_cmd %>"
+  <%- end -%>
   <%- end -%>
 
   #

@@ -146,10 +146,6 @@
 #    owner: ''
 #    name: '*'
 
-# Executable hook to be ran before the PUN startup.
-#
-#pun_pre_hook: nil
-
 # A hash detailing the path to the per-user NGINX app configs
 #
 #app_config_path:

@@ -4,12 +4,16 @@
 
   Start PUN process for given user
 --]]
-function pun(r, bin, user, app_init_url, exports)
+function pun(r, bin, user, app_init_url, exports, pre_hook_root_cmd)
   local cmd = bin .. " pun -u '" .. r:escape(user) .. "'"
   local stdin = parse_exports(r, exports)
 
   if app_init_url then
     cmd = cmd .. " -a '" .. r:escape(app_init_url) .. "'"
+  end
+
+  if pre_hook_root_cmd then
+    cmd = cmd .. " -P '" .. r:escape(pre_hook_root_cmd) .. "'"
   end
 
   local err = capture2e_with_stdin(cmd, stdin)
