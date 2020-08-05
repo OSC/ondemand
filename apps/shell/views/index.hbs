@@ -3,6 +3,7 @@
 
 <head>
   <title>Shell</title>
+  <link rel="stylesheet" href="{{baseURI}}/stylesheets/bootstrap.css">
   <link rel="stylesheet" href="{{baseURI}}/stylesheets/style.css">
 
   <script src="{{baseURI}}/javascripts/hterm_all_1.85.js"></script>
@@ -11,35 +12,55 @@
 
 <body>
   <div id="terminal">
-      <nav>
-      Host: owens.osc.edu
-      Starting directory: /path/to/start/dir
-      Shell App
-      Themes:
-      <select id="colors">
+<nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <ul class="nav navbar-nav">
+          <li>
+            <span class="label">/Directory/Ex</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse navbar-responsive-collapse">
+        <ul class="nav navbar-nav navbar-right form-inline">
+        
+ 
+          <li class="hidden-xs">
+            <label class="label hidden-sm hidden-md" for="theme">Themes:</label>
+            <div class="form-group">
+          <select id="colors" class="form-control input-xs" id="theme">
         <option value="default">Default</option>
         <optgroup label="Dark">
-        {{#each themes}}
-        {{#if (darkMode color)}}
-        <option>{{this.name}}</option>
-        {{/if}}
+        {{#each darkThemes}}
+        <option value="{{name}}">{{name}}</option>
         {{/each}}
-        <optgroup label="Light">
-        {{#each themes}}
-        {{#if (lightMode color)}}
-        <option>{{this.name}}</option>
-        {{/if}}
+        <optgroup label="Bright">
+        {{#each brightThemes}}
+        <option value="{{name}}">{{name}}</option>
         {{/each}}
       </optgroup>
       </select>
-    </select>
-    </nav>
+            </div>
+          </li>
+          <li class="hidden-xs">
+            <span class="label hidden-xs">Host: owens</span>
+          </li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
   </div>
 </body>
 
 <script>
-  var help = "{{json themes}}"
-  console.log(help)
+  const scheme = document.getElementById('colors');
+  var jsonStringOfSchemes = '"{{json darkThemes}}"'
+  //var arrayofSchemes = JSON.parse(jsonStringOfSchemes);
+  //console.log(arrayOfSchemes);
+  //console.log(stuff.replace(/"([^"]+)":/g, '$1:').slice(1,-1))
   setupHterm = function () {
     // Global variables that define the terminal
     var oodShell,
@@ -72,6 +93,16 @@
 
     return base + separator + "csrf={{csrfToken}}";
   }
+
+  scheme.addEventListener("change", function(event) {
+    var selection = event.target.value;
+    var schemeObject = arrayOfSchemes.forEach(function (element) {
+        console.log(element)
+    })
+    console.log(schemeObject);
+    //ood.changeTheme()
+  })
+
 
 </script>
 

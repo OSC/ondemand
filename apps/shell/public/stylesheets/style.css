@@ -22,14 +22,21 @@ html, body {
   flex-direction: column;
   height: 100vh;
 }
-nav {
-  flex-grow: 0;
-  height: 25px;
+
+.navbar {
+  margin-bottom: 5px;
+  min-height: 0;
+  padding: 1px 3px 1px 3px;
+
+  /* keep the navbar from expanding on multiple lines */
+  max-height: 25px;
+  overflow: hidden;
 }
 
-nav ul {
-padding-right: 25px;
+#colors {
+  margin-right: 20px;
 }
+
 iframe {
    flex-grow: 1;
    height: auto !important;

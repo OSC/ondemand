@@ -30,13 +30,10 @@ if (fs.existsSync('.env')) {
 // Create directories if theme directory isn't there.
 const themesDir = path.join(__dirname, "themes");
 const darkThemes = path.join(themesDir, "dark");
-const lightThemes = path.join(themesDir, "light");
+const brightThemes = path.join(themesDir, "light");
 
 fs.mkdirSync(darkThemes, {recursive: true});
-fs.mkdirSync(lightThemes, {recursive: true});
- var schemeObjects = [];
- getSchemeObjects(darkThemes);
- getSchemeObjects(lightThemes);
+fs.mkdirSync(brightThemes, {recursive: true});
 
 /**
 * Parse through file information in certain directories.
@@ -44,24 +41,18 @@ fs.mkdirSync(lightThemes, {recursive: true});
 * @return {Array} - The key information returned is an object within an array.
 */
 function getSchemeObjects(dir) {
-
+var schemes = [];
   try {
     fs.readdirSync(dir).forEach(function(file) {
       fileInfo = path.parse(file);
       var filePath = dir + "/" + fileInfo.base;
-      var color;
-      if (dir === darkThemes) {
-        color = "dark"
-      } else {
-        color = "light"
-      }
       var schemeObject = parseFile(filePath, fileInfo.ext);
       var convertedSchemeObject = convertSchemeObject(schemeObject);
-      schemeObjects.push({name: fileInfo.name, scheme: convertedSchemeObject, color: color})
+      schemes.push({name: fileInfo.name, scheme: convertedSchemeObject})
     });
-    
+    return schemes;
   } catch (err) {
-    console.log(err);
+    [];
   }
 }
 
@@ -77,7 +68,7 @@ function rgbToHexMath (num) {
        hex = "0" + hex;
   }
   return hex;
-};
+}
 
 /**
 * Converts a complete array of colors to a hex color value.
@@ -158,7 +149,8 @@ router.get('/ssh*', function (req, res) {
     {
       baseURI: req.baseUrl,
       csrfToken: tokens.create(secret),
-      themes: schemeObjects
+      darkThemes: getSchemeObjects(darkThemes),
+      brightThemes: getSchemeObjects(brightThemes),
     });
 });
 
@@ -171,24 +163,9 @@ var app = express();
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
 
-// hbs helpers
-
-hbs.registerHelper('darkMode', function(value) {
-  if (value === "dark") {
-    return true;
-  }
-})
-
-hbs.registerHelper('lightMode', function(value) {
-  if (value === "light") {
-    return true;
-  }
-})
-
-hbs.registerHelper('json', function(context) {
-    return JSON.stringify(context);
-});
-
+ hbs.registerHelper('json', function(context) {
+ return new hbs.handlebars.SafeString(JSON.stringify(context));
+ });
 // Mount the routes at the base URI
 app.use(process.env.PASSENGER_BASE_URI || '/', router);
 
