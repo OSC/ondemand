@@ -11,7 +11,6 @@ class Jobstatusdata
 
   Attribute = Struct.new(:name, :value)
 
-
   # Define an object containing only necessary data to send to client.
   #
   # Object defaults to condensed data, add extended flag to initializer to include all data used by the application.
@@ -47,6 +46,8 @@ class Jobstatusdata
         extended_data_lsf(info)
       elsif cluster.job_config[:adapter] == "pbspro"
         extended_data_pbspro(info)
+      elsif cluster.job_config[:adapter] == "sge"
+        extended_data_sge(info)
       else
         extended_data_default(info)
       end
@@ -197,6 +198,64 @@ class Jobstatusdata
     output_pathname = Pathname.new(self.output_path).dirname
     self.file_explorer_url = build_file_explorer_url(output_pathname)
     self.shell_url = build_shell_url(output_pathname, self.cluster)
+
+    self
+  end
+
+  # Store additional data about the job. (SGE-specific)
+  #
+  # Parses the `native` info function for additional information about jobs on SGE systems.
+  #
+  # @return [Jobstatusdata] self
+  def extended_data_sge(info)
+    return unless info.native
+    attributes = []
+    attributes.push Attribute.new "Cluster", self.cluster_title
+    attributes.push Attribute.new "Cluster Id", self.cluster
+    attributes.push Attribute.new "Job Id", self.pbsid
+    attributes.push Attribute.new "Job Name", self.jobname
+    attributes.push Attribute.new "User", self.username
+    attributes.push Attribute.new "Account", self.account
+    attributes.push Attribute.new "Queue", self.queue
+    attributes.push Attribute.new "Start Time", self.starttime
+    attributes.push Attribute.new "Walltime Used", self.walltime_used
+    attributes.push Attribute.new "Status", self.status
+
+    {
+      "Job Version" => :JB_version,
+      "Job Exec File" => :JB_exec_file,
+      "Job Script File" => :JB_script_file,
+      "Job Script Size" => :JB_script_size,
+      "Job Execution Time" => :JB_execution_time,
+      "Job Deadline" => :JB_deadline,
+      "Job UID" => :JB_uid,
+      "Job Group" => :JB_group,
+      "Job GID" => :JB_gid,
+      "Job Account" => :JB_account,
+      "Current Working Directory" => :JB_cwd,
+      "Notifications" => :JB_notify,
+      "Job Type" => :JB_type,
+      "Reserve" => :JB_reserve,
+      "Job Priority" => :JB_priority,
+      "Job Share" => :JB_jobshare,
+      "Job Verify" => :JB_verify,
+      "Job Checkpoint Attr" => :JB_checkpoint_attr,
+      "Job Checkpoint Interval" => :JB_checkpoint_interval,
+      "Job Restart" => :JB_restart
+    }.each do |k,v|
+      attributes.push Attribute.new k, info.native[v] if info.native[v]
+    end
+
+    self.native_attribs = attributes
+
+    self.submit_args = info.native[:ST_name]
+    self.output_path = info.native[:PN_path]
+
+    if self.output_path
+      output_pathname = Pathname.new(self.output_path).dirname
+      self.file_explorer_url = build_file_explorer_url(output_pathname)
+      self.shell_url = build_shell_url(output_pathname, self.cluster)
+    end
 
     self
   end

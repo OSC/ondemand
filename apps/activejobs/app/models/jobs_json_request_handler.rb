@@ -67,7 +67,7 @@ class JobsJsonRequestHandler
   end
 
   def convert_info(info_all, cluster)
-    extended_available = %w(torque slurm lsf pbspro).include?(cluster.job_config[:adapter])
+    extended_available = %w(torque slurm lsf pbspro sge).include?(cluster.job_config[:adapter])
 
     info_all.map { |j|
       {
