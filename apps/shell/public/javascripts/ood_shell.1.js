@@ -93,6 +93,12 @@ OodShell.prototype.sendString = function (str) {
   this.onVTKeystroke(str)
 };
 
+OodShell.prototype.changeTheme = function (theme) {
+    for (var k in theme) {
+    this.term.prefs_.set(k, theme[k]);
+  }
+}
+
 OodShell.prototype.onTerminalResize = function (columns, rows) {
   // React to size changes here.
   // Secure Shell pokes at NaCl, which eventually results in

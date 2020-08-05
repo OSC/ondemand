@@ -5,10 +5,9 @@ html, body {
 }
 
 #terminal {
-  display:  block;
-  position: relative;
-  height:   100%;
-  width:    100%;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
 .error {
@@ -23,3 +22,24 @@ html, body {
   border: 1px solid;
   border-radius: 4px;
 }
+
+.navbar {
+  margin-bottom: 5px;
+  min-height: 0;
+  padding: 1px 3px 1px 3px;
+
+  /* keep the navbar from expanding on multiple lines */
+  max-height: 25px;
+  overflow: hidden;
+}
+
+#colors {
+  margin-right: 20px;
+}
+
+iframe {
+   flex-grow: 1;
+   height: auto !important;
+   position: static !important;
+   width: auto !important;
+} 

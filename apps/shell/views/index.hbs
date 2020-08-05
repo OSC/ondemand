@@ -3,21 +3,68 @@
 
 <head>
   <title>Shell</title>
+    <link rel="stylesheet" href="{{baseURI}}/stylesheets/bootstrap.css">
   <link rel="stylesheet" href="{{baseURI}}/stylesheets/style.css">
 
   <script src="{{baseURI}}/javascripts/hterm_all_1.85.js"></script>
   <script src="{{baseURI}}/javascripts/ood_shell.1.js"></script>
+  <script src="{{baseURI}}/javascripts/themes.js"></script>
 </head>
 
 <body>
-  <div id="terminal"></div>
+  <div id="terminal">
+    <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <ul class="nav navbar-nav">
+          <li>
+            <span id="directory" class="label"></span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse navbar-responsive-collapse">
+        <ul class="nav navbar-nav navbar-right form-inline">
+
+
+          <li class="hidden-xs">
+            <label class="label hidden-sm hidden-md" for="theme">Themes:</label>
+            <div class="form-group">
+          <select id="colors" class="form-control input-xs" id="theme">
+        <option value="default">Default</option>
+        <optgroup label="Dark">
+        <option value="nord">Nord</option>
+        <option value="AlienBlood">Alien Blood</option>
+        <option value="cyberpunk">Cyber Punk</option>
+        <option value="dracula">Dracula</option>
+      </optgroup>
+        <optgroup label="Bright">
+        <option value="AtomOneLight">Atom One Light</option>
+        <option value="BreezeHoneyLight">Breeze Honey Light</option>
+      </optgroup>
+      </select>
+            </div>
+          </li>
+          <li class="hidden-xs">
+            <span id="host" class="label hidden-xs">Host: owens</span>
+          </li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+  </div>
 </body>
 
 <script>
+  var oodShell,
+  dirElement = document.getElementById("directory"),
+  hostElement = document.getElementById("host"),
+  schemeSelect = document.getElementById("colors");
   setupHterm = function () {
     // Global variables that define the terminal
-    var oodShell,
-      terminalContainer = document.getElementById('terminal'),
+      var terminalContainer = document.getElementById('terminal'),
       webSocketUrl      = urlWithToken(),
       terminalPrefs     = {
         'use-default-window-copy': true,
@@ -46,7 +93,43 @@
 
     return base + separator + "csrf={{csrfToken}}";
   }
+var pathname = window.location.pathname.split( '/' );
+var host = pathname[5];
+var directory = "/";
 
+if (pathname[6]) {
+  pathname.forEach(function(dir, index) {
+    if (index >= 6) {
+      directory = directory + dir;
+    } 
+  });
+}
+
+dirElement.textContent += directory;
+
+hostElement.textContent += " " + host;
+
+schemeSelect.addEventListener("change", function(ev) {
+  combinedArr = [...darkThemes, ...brightThemes];
+  var choice  = ev.target.value;
+
+  combinedArr.forEach(function(ele) {
+    if (choice === ele.name) {
+      var schemeObject = {
+        'use-default-window-copy': true,
+        'ctrl-v-paste': true,
+        'ctrl-c-copy': true,
+        'cursor-blink': true,
+        'background-color': ele.scheme.background,
+        'foreground-color': ele.scheme.text,
+        'color-palette-overrides': ele.scheme.colorPaletteOverrides,
+        'cursor-color': ele.scheme.cursor + '50',
+      };
+      oodShell.changeTheme(schemeObject);
+    }
+  })
+
+})
 </script>
 
 </html>
