@@ -66,6 +66,7 @@ en:
       <pre>%{exception_trace}</pre>
     apps_system_apps_title: "System Apps"
 
+    batch_connect_form_attr_cache_error: "Unable to use previously cached values, using defaults instead. (%{error_message})"
     batch_connect_form_data_root: "data root directory"
     batch_connect_form_launch: "Launch"
     batch_connect_form_reset_resolution: "Reset Resolution"
