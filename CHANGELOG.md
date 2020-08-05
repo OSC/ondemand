@@ -6,6 +6,33 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.8.9] - 2020-08-05
+### Changed
+- specified clusters in app to support glob expressoins [#617](https://github.com/OSC/ondemand/pull/617)
+
+### Added
+- extended view support for SGE [#520](https://github.com/OSC/ondemand/pull/520)
+- Native VNC connection tab for OOD can be enabled for sites external to OSC [#625](https://github.com/OSC/ondemand/pull/625)
+- Ability to control which batch connect apps or app attrs use cache to preset values [#539](https://github.com/OSC/ondemand/pull/539)
+- ood_core 0.12.0 additions
+   - qos option to Slurm and Torque [#205](https://github.com/OSC/ood_core/pull/205)
+   - native hash returned in qstat for SGE adapter [#198](https://github.com/OSC/ood_core/pull/198)
+   - option for specifying `submit_host` to submit jobs via ssh on other host [#204](https://github.com/OSC/ood_core/pull/204)
+
+### Fixed
+- support glob style wildcard in host names for OOD_SSHHOST_ALLOWLIST [#601](https://github.com/OSC/ondemand/pull/601)
+- ood_core 0.12.0 fixes
+   - SGE handle milliseconds instead of seconds when milliseconds used [#206](https://github.com/OSC/ood_core/issues/206)
+   - Torque's native "hash" for job submission now handles env vars values with spaces [#202](https://github.com/OSC/ood_core/pull/202)
+
+### Removed
+- Safari compatibility alert for BasicAuth [#608](https://github.com/OSC/ondemand/issues/608)
+
+### Security
+- use handlebars in files app to prevent XSS 
+- update files app dependencies ponse, express, jquery
+- ensure default Dex generated secret is stored in file with secure permissions
+
 ## [1.8.8] - 2020-07-22
 ### Fixed
 - Revert the commit that made XDMoD SSO timeout configurable, which introduced a bug [#607](https://github.com/OSC/ondemand/pull/607)
@@ -495,7 +522,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.8...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.9...HEAD
+[1.8.9]: https://github.com/OSC/ondemand/compare/v1.8.8...v1.8.9
 [1.8.8]: https://github.com/OSC/ondemand/compare/v1.8.7...v1.8.8
 [1.8.7]: https://github.com/OSC/ondemand/compare/v1.8.6...v1.8.7
 [1.8.6]: https://github.com/OSC/ondemand/compare/v1.8.5...v1.8.6
