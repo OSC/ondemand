@@ -12,7 +12,7 @@ class BatchConnect::SessionContextsController < ApplicationController
       begin
        @session_context.update_with_cache(JSON.parse(cache_file.read))  if cache_file.file?
       rescue => e
-        flash.now[:alert] = "Attempting to update form inputs with cached values resulted in a crash: #{e.message} "
+        flash.now[:alert] = t('dashboard.batch_connect_form_attr_cache_error',error_message: e.message)
       end
     else
       @session_context = nil  # do not display session context form
