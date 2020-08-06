@@ -113,17 +113,21 @@ module NginxStage
     # the overall status of the PUN startup
     add_hook :exec_pre_hook do
       unless pre_hook_root_cmd.nil?
-        args = ["--user", user]
+        args = ["--user", user.to_s]
         env = {}
 
         unless STDIN.tty?
           STDIN.each_line do |line|
             key_values = line.split('=')
-            env[key_values[0]] = key_values[1] if key_values.size == 2
+            env[key_values[0]] = key_values[1].to_s.chomp if key_values.size == 2
           end
         end
 
-        Open3.capture2e(env, pre_hook_root_cmd, *args)
+        begin
+          Open3.capture2e(env, pre_hook_root_cmd, *args)
+        rescue
+          # FIXME: we're silently failing here
+        end
       end
     end
 

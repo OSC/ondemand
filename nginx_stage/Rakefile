@@ -2,15 +2,17 @@ require "rake/testtask"
 require "yaml"
 
 #
-# Define tasks for `rake test`
+# Define tasks for `rake spec`
 #
 
-Rake::TestTask.new(:test) do |t|
-  t.libs << "test"
+begin
+  require "rspec/core/rake_task"
+  RSpec::Core::RakeTask.new(:spec)
+rescue LoadError
 end
 
-# Set default rake task to `test`
-task :default => :test
+# Set default rake task to `spec`
+task :default => :spec
 
 #
 # Define tasks needed for `rake install`
