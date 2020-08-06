@@ -107,7 +107,7 @@ function sshHosts(hosts) {
 }
 
 var allowlist = {
-    paths:  (path_list = process.env.ALLOWLIST_PATH || process.env.WHITELIST_PATH) ? path_list.split(":") : [],
+    paths:  (path_list = process.env.OOD_ALLOWLIST_PATH || process.env.WHITELIST_PATH) ? path_list.split(":") : [],
     enabled: function(){ return this.paths.length > 0; },
     contains: function(filepath){
         return this.paths.filter(function(allowlisted_path){
