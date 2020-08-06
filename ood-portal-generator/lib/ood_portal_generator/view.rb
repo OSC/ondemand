@@ -36,7 +36,7 @@ module OodPortalGenerator
 
       # Maintenance configuration
       @use_maintenance          = opts.fetch(:use_maintenance, true)
-      @maintenance_ip_allowlist = Array(opts.fetch(:maintenance_ip_allowlist || :maintenance_ip_whitelist, []))
+      @maintenance_ip_allowlist = Array(opts.fetch(:maintenance_ip_allowlist, nil) || opts.fetch(:maintenance_ip_whitelist, []))
 
       # Security configuration
       @security_csp_frame_ancestors = opts.fetch(:security_csp_frame_ancestors, "#{@protocol}#{@servername ?  @servername : OodPortalGenerator.fqdn}")
