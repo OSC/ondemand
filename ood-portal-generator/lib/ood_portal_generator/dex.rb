@@ -49,6 +49,7 @@ module OodPortalGenerator
       end
       @dex_config[:frontend] = {
         dir: '/usr/share/ondemand-dex/web',
+        theme: 'ondemand',
       }.merge(frontend)
       # Pass values back to main ood-portal.conf view
       if enabled? && self.class.installed?
@@ -195,9 +196,7 @@ module OodPortalGenerator
     end
 
     def frontend
-      @config.fetch(:frontend, {
-        theme: 'ondemand',
-      })
+      @config.fetch(:frontend, {})
     end
 
     def copy_ssl_certs
