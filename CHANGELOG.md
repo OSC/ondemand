@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.8.10] - 2020-08-05
+### Fixed
+- Fixed a dependency bug in dotwi [#110 on the dotiw repo](https://github.com/radar/distance_of_time_in_words/issues/110).
+
 ## [1.8.9] - 2020-08-05
 ### Changed
 - specified clusters in app to support glob expressoins [#617](https://github.com/OSC/ondemand/pull/617)
@@ -522,7 +526,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.9...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.10...HEAD
+[1.8.10]: https://github.com/OSC/ondemand/compare/v1.8.9...v1.8.10
 [1.8.9]: https://github.com/OSC/ondemand/compare/v1.8.8...v1.8.9
 [1.8.8]: https://github.com/OSC/ondemand/compare/v1.8.7...v1.8.8
 [1.8.7]: https://github.com/OSC/ondemand/compare/v1.8.6...v1.8.7
