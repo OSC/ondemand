@@ -9,9 +9,7 @@ const dotenv    = require('dotenv');
 const Tokens    = require('csrf');
 const url       = require('url');
 const port      = 3000;
-const host_path_rx = '/ssh/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$';
 const helpers   = require('./utils/helpers');
-const { generate_default_sshhost } = require('./utils/helpers');
 
 // Read in environment variables
 dotenv.config({path: '.env.local'});
@@ -58,10 +56,10 @@ app.use(process.env.PASSENGER_BASE_URI || '/', router);
 const server = new http.createServer(app);
 const wss = new WebSocket.Server({ noServer: true });
 
-let host_allowlist = helpers.generate_host_allowlist(process.env.OOD_SSHHOST_ALLOWLIST);
-let cluster_sshhosts = helpers.generate_cluster_sshhosts(process.env.OOD_CLUSTERS);
-let default_sshhost = process.env.OOD_DEFAULT_SSHHOST || process.env.DEFAULT_SSHHOST || generate_default_sshhost(cluster_sshhosts);
-host_allowlist = helpers.add_to_host_allowlist(host_allowlist, cluster_sshhosts, default_sshhost);
+let host_allowlist = helpers.generateHostAllowlist(process.env.OOD_SSHHOST_ALLOWLIST);
+let cluster_sshhosts = helpers.generateClusterSshhosts(process.env.OOD_CLUSTERS);
+let default_sshhost = process.env.OOD_DEFAULT_SSHHOST || process.env.DEFAULT_SSHHOST || helpers.generateDefaultSshhost(cluster_sshhosts);
+host_allowlist = helpers.addToHostAllowlist(host_allowlist, cluster_sshhosts, default_sshhost);
 
 wss.on('connection', function connection (ws, req) {
   var dir,
@@ -72,7 +70,7 @@ wss.on('connection', function connection (ws, req) {
 
   console.log('Connection established');
 
-  [host, dir] = helpers.host_and_dir_from_url(req.url, host_path_rx, default_sshhost);
+  [host, dir] = helpers.hostAndDirFromURL(req.url, default_sshhost);
   args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
 
   process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
@@ -143,7 +141,7 @@ server.on('upgrade', function upgrade(request, socket, head) {
         server_origin = custom_server_origin(default_server_origin(request.headers));
 
   var host, dir;
-  [host, dir] = helpers.host_and_dir_from_url(request.url, host_path_rx, default_sshhost);
+  [host, dir] = helpers.hostAndDirFromURL(request.url, default_sshhost);
   if (client_origin &&
       client_origin.startsWith('http') &&
       server_origin && client_origin !== server_origin) {
