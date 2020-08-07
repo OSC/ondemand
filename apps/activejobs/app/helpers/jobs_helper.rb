@@ -20,6 +20,7 @@ module JobsHelper
     grafana_uri = nil
     if c && c.custom_allow?(:grafana)
       server = c.custom_config(:grafana)
+      cluster = server.fetch(:cluster_override, cluster)
       query_params = {
         orgId: server[:orgId],
         theme: server[:theme] || 'light',
