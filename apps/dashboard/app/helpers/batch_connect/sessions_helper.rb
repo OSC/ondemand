@@ -146,10 +146,12 @@ module BatchConnect::SessionsHelper
 
   def status_context(session)
     if session.starting?
-      "info"
+      "primary"
     elsif session.running?
       "success"
-    elsif session.queued? || session.completed?
+    elsif session.queued?
+      "info"
+    elsif session.completed?
       "default"
     elsif session.held? || session.suspended?
       "danger"
