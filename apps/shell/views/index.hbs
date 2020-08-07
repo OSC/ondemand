@@ -3,7 +3,7 @@
 
 <head>
   <title>Shell</title>
-    <link rel="stylesheet" href="{{baseURI}}/stylesheets/bootstrap.css">
+    <link rel="stylesheet" href="{{baseURI}}/stylesheets/bootstrap.min.css">
   <link rel="stylesheet" href="{{baseURI}}/stylesheets/style.css">
 
   <script src="{{baseURI}}/javascripts/hterm_all_1.85.js"></script>
@@ -18,8 +18,11 @@
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
         <ul class="nav navbar-nav">
+            <li>
+            <span id="host" class="label hidden-xs">Host: </span>
+          </li>
           <li>
-            <span id="directory" class="label"></span>
+            <span id="directory" class="label hidden-sm hidden-xs"></span>
           </li>
         </ul>
       </div>
@@ -30,7 +33,7 @@
 
 
           <li class="hidden-xs">
-            <label class="label hidden-sm hidden-md" for="theme">Themes:</label>
+            <label class="label hidden-xs" for="theme">Themes:</label>
             <div class="form-group">
           <select id="colors" class="form-control input-xs" id="theme">
         <option value="default">Default</option>
@@ -39,16 +42,13 @@
         <option value="AlienBlood">Alien Blood</option>
         <option value="cyberpunk">Cyber Punk</option>
         <option value="dracula">Dracula</option>
+        <option value="BrezeHoneyLight">Breze Honey</option>
       </optgroup>
         <optgroup label="Bright">
         <option value="AtomOneLight">Atom One Light</option>
-        <option value="BreezeHoneyLight">Breeze Honey Light</option>
       </optgroup>
       </select>
             </div>
-          </li>
-          <li class="hidden-xs">
-            <span id="host" class="label hidden-xs">Host: owens</span>
           </li>
         </ul>
       </div><!-- /.navbar-collapse -->
@@ -95,12 +95,13 @@
   }
 var pathname = window.location.pathname.split( '/' );
 var host = pathname[5];
-var directory = "/";
+var directory = "";
 
 if (pathname[6]) {
+  directory = "Initial Directory: /";
   pathname.forEach(function(dir, index) {
     if (index >= 6) {
-      directory = directory + dir;
+      directory = directory + dir +"/"
     } 
   });
 }
@@ -114,8 +115,21 @@ schemeSelect.addEventListener("change", function(ev) {
   var choice  = ev.target.value;
 
   combinedArr.forEach(function(ele) {
-    if (choice === ele.name) {
-      var schemeObject = {
+    var schemeObject;
+    if (choice === "default") {
+      schemeObject = {
+        'use-default-window-copy': true,
+        'ctrl-v-paste': true,
+        'ctrl-c-copy': true,
+        'cursor-blink': true,
+        'background-color': '#101010',
+        'foreground-color': '#F0F0F0',
+        'color-palette-overrides': null,
+        'cursor-color': '#FF0000' + '50',
+      };
+        
+    } else if (choice === ele.name) {
+        schemeObject = {
         'use-default-window-copy': true,
         'ctrl-v-paste': true,
         'ctrl-c-copy': true,
@@ -125,8 +139,9 @@ schemeSelect.addEventListener("change", function(ev) {
         'color-palette-overrides': ele.scheme.colorPaletteOverrides,
         'cursor-color': ele.scheme.cursor + '50',
       };
-      oodShell.changeTheme(schemeObject);
     }
+
+    oodShell.changeTheme(schemeObject);
   })
 
 })

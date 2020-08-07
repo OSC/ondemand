@@ -24,7 +24,7 @@ html, body {
 }
 
 .navbar {
-  margin-bottom: 5px;
+  margin-bottom: 0px;
   min-height: 0;
   padding: 1px 3px 1px 3px;
 
@@ -35,6 +35,9 @@ html, body {
 
 #colors {
   margin-right: 20px;
+  font-size: 10px;
+  height: 20px;
+  padding: 0px;
 }
 
 iframe {
