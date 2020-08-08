@@ -4,7 +4,7 @@
 const helpers = require('../utils/helpers')
 
 //generateHostAllowlist
-describe('Helper function generate_host_allowlist()', () => {
+describe('Helper function generateHostAllowlist()', () => {
   test('it should turn a colon-delimited string into a set', () => {
     expect(helpers.generateHostAllowlist('pitzer.osc.edu:owens.osc.edu:*.ten.osc.edu')).toMatchObject(new Set(['pitzer.osc.edu', 'owens.osc.edu', '*.ten.osc.edu']));
   })
@@ -32,8 +32,8 @@ describe('Helper function generateDefaultSshhost()', () => {
   })
 
   test('it should return the first hostname if no cluster.default = true', () => {
-    const cluster_sshhosts_2 = [{host: 'pitzer.osc.edu', default: false}, {host: 'ruby.osc.edu', default: undefined}];
-    expect(helpers.generateDefaultSshhost(cluster_sshhosts_2)).toBe('pitzer.osc.edu')
+    const cluster_sshhosts = [{host: 'pitzer.osc.edu', default: false}, {host: 'ruby.osc.edu', default: undefined}];
+    expect(helpers.generateDefaultSshhost(cluster_sshhosts)).toBe('pitzer.osc.edu')
   })
 })
 
