@@ -132,7 +132,7 @@ class ConfigurationSingleton
     (ENV['OOD_MAX_SCRIPT_SIZE_KB'] || 65).to_i
   end
 
-  # The XMoD host
+  # The XDMoD host
   # @return [String, null] the host, or null if not set
   def xdmod_host
     ENV["OOD_XDMOD_HOST"]
