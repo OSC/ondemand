@@ -144,6 +144,26 @@ class ConfigurationSingleton
     xdmod_host.present?
   end
 
+  # Default cluster for submitting jobs
+  # @return default cluster for submitting jobs, or first if none specified
+  def default_job_cluster
+    clusters.find(clusters.first) {|c| c.job_config[:default] }
+  end
+
+  # id of default cluster for submitting jobs
+  # @return the id of default cluster for submitting jobs
+  def default_batch_host
+    default_job_cluster.try(:id)
+  end
+
+  # Get clusters that a user can submit jobs to
+  # @return [OodCore::Clusters] clusters object is a list of clusters
+  def clusters
+    @clusters ||= OodCore::Clusters.new(
+      OodAppkit.clusters.select(&:job_allow?).reject { |c| c.metadata.hidden  }
+    )
+  end
+
   private
 
   # The environment

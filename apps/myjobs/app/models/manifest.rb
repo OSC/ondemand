@@ -52,7 +52,7 @@ class Manifest
   end
 
   def default_host
-    OODClusters.first ? OODClusters.first.id.to_s : ""
+    Configuration.default_batch_host || ''
   end
 
   def default_notes
