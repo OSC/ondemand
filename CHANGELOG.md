@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.8.11] - 2020-08-10
+### Added
+- grafana config: allow changing the cluster config name when the cluster in OOD differs from the cluster in Grafana [#639](https://github.com/OSC/ondemand/pull/639)
+- latest ood_core provides CCQ adapter
+- Dex default theme is the ondemand theme so this doesn't have to be configured manually [#635](https://github.com/OSC/ondemand/pull/635)
+
+### Fixed
+- job composer staged_dir guard clauses prevent crash [#637](https://github.com/OSC/ondemand/pull/637)
+- colors for queued and starting panels changed to differ from completed panels [#636](https://github.com/OSC/ondemand/pull/636)
+- clarify Powershell is option for setting up SSH tunnel for Native VNC Windows tab [#638](https://github.com/OSC/ondemand/pull/638)
+
 ## [1.8.10] - 2020-08-05
 ### Fixed
 - Fixed a dependency bug in dotwi [#110 on the dotiw repo](https://github.com/radar/distance_of_time_in_words/issues/110).
@@ -33,7 +44,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Safari compatibility alert for BasicAuth [#608](https://github.com/OSC/ondemand/issues/608)
 
 ### Security
-- use handlebars in files app to prevent XSS 
+- use handlebars in files app to prevent XSS
 - update files app dependencies ponse, express, jquery
 - ensure default Dex generated secret is stored in file with secure permissions
 
@@ -51,11 +62,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Configuration for XDMoD auto-login timeout [#597](https://github.com/OSC/ondemand/pull/597)
 
 ### Fixed
-- Handle edge case in job efficiency widget where no data 
+- Handle edge case in job efficiency widget where no data
   available [#597](https://github.com/OSC/ondemand/pull/597)
-- Fix XDMoD auto-login iframe trick to properly hide and position 
-  iframe so form button clicks in iframe still work 
-  [#596](https://github.com/OSC/ondemand/pull/596) 
+- Fix XDMoD auto-login iframe trick to properly hide and position
+  iframe so form button clicks in iframe still work
+  [#596](https://github.com/OSC/ondemand/pull/596)
 - Fix bug where `cluster: ""` in batch connect app resulted in unhandled exception [#593](https://github.com/OSC/ondemand/pull/593)
 
 ## [1.8.5] - 2020-07-16
@@ -110,7 +121,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [#536](https://github.com/OSC/ondemand/pull/536)
   [#538](https://github.com/OSC/ondemand/pull/538)
   [#553](https://github.com/OSC/ondemand/pull/553)
-- Streamlined Copy and Paste for Chrome 
+- Streamlined Copy and Paste for Chrome
   [#537](https://github.com/OSC/ondemand/pull/537)
 - Dockerfile for help with development [#309](https://github.com/OSC/ondemand/pull/309)
 - Configurable logo height using OOD_DASHBOARD_LOGO_HEIGHT set to a value like `100px` which
@@ -185,9 +196,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   * File Editor [#440](https://github.com/OSC/ondemand/pull/440)
 - Upgrade noVNC to 1.1.0 (from 1.0) in [#428](https://github.com/OSC/ondemand/pull/440)
   and [#431](https://github.com/OSC/ondemand/pull/431)
-  
+
 ### Added
-- Title to Favorite Paths dropdown [#418](https://github.com/OSC/ondemand/pull/418) and 
+- Title to Favorite Paths dropdown [#418](https://github.com/OSC/ondemand/pull/418) and
   [#432](https://github.com/OSC/ondemand/pull/432)
 - Action column with delete button in active jobs [#423](https://github.com/OSC/ondemand/pull/423)
 - Alert for invalid clusters [#427](https://github.com/OSC/ondemand/pull/427)
@@ -526,7 +537,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.10...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.11...HEAD
+[1.8.11]: https://github.com/OSC/ondemand/compare/v1.8.10...v1.8.11
 [1.8.10]: https://github.com/OSC/ondemand/compare/v1.8.9...v1.8.10
 [1.8.9]: https://github.com/OSC/ondemand/compare/v1.8.8...v1.8.9
 [1.8.8]: https://github.com/OSC/ondemand/compare/v1.8.7...v1.8.8
