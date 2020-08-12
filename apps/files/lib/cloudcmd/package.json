@@ -83,7 +83,7 @@
     "markdown-it": "6.0.5",
     "mellow": "2.0.2",
     "minify": "2.0.12",
-    "minimist": "1.2.0",
+    "minimist": "1.2.5",
     "mollify": "1.0.7",
     "os-homedir": "1.0.2",
     "package-json": "~2.3.0",
