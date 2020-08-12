@@ -17,7 +17,6 @@ var http        = require('http'),
     dirArray    = __dirname.split('/'),
     PORT        = 9001,
     PREFIX      = '',
-    app_version,
     server,
     socket;
 
@@ -288,15 +287,6 @@ app.use(function (req, res, next) {
     }
 });
 
-// Set version number
-// TODO: Consider embedding version in project
-try {
-    app_version = gitSync.tag();
-} catch(error) {
-    // FIXME: await file read VERSION if it exists
-    app_version = '';
-}
-
 // Load cloudcmd
 app.use(cloudcmd({
     socket: socket,                   /* used by Config, Edit (optional) and Console (required)   */
@@ -317,7 +307,6 @@ app.use(cloudcmd({
         file_editor:            process.env.OOD_FILE_EDITOR || '/pun/sys/file-editor/edit',
         shell:                  (process.env.OOD_SHELL || process.env.OOD_SHELL === "") ? process.env.OOD_SHELL : '/pun/sys/shell/ssh/default',
         ssh_hosts:              sshAppUrls(sshHosts(process.env.OOD_SSH_HOSTS), oodShellUrl()),
-        fileexplorer_version:   app_version,
         // function that accepts a path and returns true or false
         // FIXME: whitelist would be better as a function that has some properties!
         whitelist: whitelist.enabled() ? whitelist : null

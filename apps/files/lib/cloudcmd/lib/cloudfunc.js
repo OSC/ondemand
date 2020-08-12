@@ -1,19 +1,20 @@
 (function(global) {
     'use strict';
 
-    var rendy;
+    var rendy, Handlebars;
 
     if (typeof module === 'object' && module.exports) {
         rendy               = require('rendy');
+        Handlebars          = require('handlebars');
         module.exports      = new CloudFuncProto();
     } else {
         rendy               = window.rendy;
+        Handlebars          = window.Handlebars;
         global.CloudFunc    = new CloudFuncProto();
     }
 
     function CloudFuncProto() {
         var CloudFunc               = this,
-            Entity                  = new entityProto(),
             FS;
 
         /* Constants (common to both client and server) */
@@ -26,37 +27,6 @@
 
         this.apiURL                 = '/api/v1';
         this.MAX_FILE_SIZE          = 500 * 1024;
-        this.Entity                 = Entity;
-
-        function entityProto() {
-            var Entities = {
-                '&nbsp;': ' ',
-                '&lt;'  : '<',
-                '&gt;'   : '>'
-            };
-
-            this.encode = function(str) {
-                Object.keys(Entities).forEach(function(code) {
-                    var char    = Entities[code],
-                        reg     = RegExp(char, 'g');
-
-                    str = str.replace(reg, code);
-                });
-
-                return str;
-            };
-
-            this.decode = function(str) {
-                Object.keys(Entities).forEach(function(code) {
-                    var char    = Entities[code],
-                        reg     = RegExp(code, 'g');
-
-                    str = str.replace(reg, char);
-                });
-
-                return str;
-            };
-        }
 
         this.formatMsg              = function(msg, name, status) {
             if (!status)
@@ -89,7 +59,8 @@
         function getPathLink(url, prefix, template) {
             var namesRaw, names, length,
                 pathHTML    = '',
-                path        = '/';
+                path        = '/',
+                pathLinkTemplate = Handlebars.compile(template);
 
             if (!url)
                 throw Error('url could not be empty!');
@@ -112,12 +83,12 @@
                     path        += name + '/';
 
                 if (index && isLast) {
-                    pathHTML    += name + '/';
+                    pathHTML    += Handlebars.Utils.escapeExpression(name + '/');
                 } else {
                     if (index)
                         slash = '/';
 
-                    pathHTML    += rendy(template, {
+                    pathHTML    += pathLinkTemplate({
                         path: path,
                         name: name,
                         slash: slash,
@@ -126,7 +97,8 @@
                 }
             });
 
-            return pathHTML;
+            // return safestring since we know this has been escaped by Handlebars
+            return new Handlebars.SafeString(pathHTML);
         }
 
         /*
@@ -155,8 +127,9 @@
                 linkResult,
                 prefix          = params.prefix,
                 template        = params.template,
-                templateFile    = template.file,
-                templateLink    = template.link,
+                templatePath    = Handlebars.compile(template.path),
+                templateFile    = Handlebars.compile(template.file),
+                templateLink    = Handlebars.compile(template.link),
                 json            = params.data,
                 files           = json.files,
                 path            = json.path;
@@ -177,14 +150,14 @@
              */
             var htmlPath        = getPathLink(path, prefix, template.pathLink),
 
-                fileTable       = rendy(template.path, {
+                fileTable       = templatePath({
                     link        : prefix + FS + path,
                     fullPath    : path,
                     path        : htmlPath
                 }),
 
                 // OSC_CUSTOM_CODE change 'date' to 'modified date'
-                header         = rendy(templateFile, {
+                header         = templateFile({
                     tag         : 'div',
                     attribute   : '',
                     className   : 'fm-header',
@@ -213,7 +186,7 @@
 
                 link            = prefix + FS + dotDot;
 
-                linkResult      = rendy(template.link, {
+                linkResult      = templateLink({
                     link        : link,
                     title       : '..',
                     name        : '..'
@@ -224,13 +197,13 @@
                     /* Save the path to the top-level directory
                      * OSC_CUSTOM_CODE use blank date instead of '--.--.----'
                      * */
-                    fileTable += rendy(template.file, {
+                    fileTable += templateFile({
                         tag         : 'li',
-                        attribute   : attribute,
+                        attribute   : new Handlebars.SafeString(attribute),
                         className   : '',
                         type        : 'directory',
-                        name        : linkResult,
-                        size        : '&lt;dir&gt;',
+                        name        : new Handlebars.SafeString(linkResult),
+                        size        : 'dir',
                         date        : '          ',
                         owner       : '.',
                         mode        : '--- --- ---'
@@ -246,7 +219,7 @@
                 if (file.size === 'dir') {
                     type        = 'directory';
                     attribute   = '';
-                    size        = '&lt;dir&gt;';
+                    size        = 'dir';
                 } else {
                     type        = 'text-file';
                     attribute   = 'target="_blank" ';
@@ -258,26 +231,26 @@
                 owner   = file.owner || 'root';
                 mode    = file.mode;
 
-                linkResult  = rendy(templateLink, {
+                linkResult  = templateLink({
                     link        : link,
                     title       : file.name,
-                    name        : Entity.encode(file.name),
-                    attribute   : attribute
+                    name        : Handlebars.Utils.escapeExpression(file.name),
+                    attribute   : new Handlebars.SafeString(attribute)
                 });
 
-                dataName        = 'data-name="js-file-' + file.name + '" ';
+                dataName        = 'data-name="js-file-' + Handlebars.Utils.escapeExpression(file.name) + '" ';
                 attribute       = 'draggable="true" ' + dataName;
 
-                fileTable += rendy(templateFile, {
+                fileTable += templateFile({
                     tag         : 'li',
-                    attribute   : attribute,
+                    attribute   : new Handlebars.SafeString(attribute),
                     className   : isDotfile ? 'dotfile' : '',  // OSC_CUSTOM_CODE add dotfiles class to dotfiles
                     /*
                      * If a folder - displays a folder icon
                      * In the opposite case - file
                      */
                     type        : type,
-                    name        : linkResult,
+                    name        : new Handlebars.SafeString(linkResult),
                     size        : size,
                     date        : date,
                     owner       : owner,

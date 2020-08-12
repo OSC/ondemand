@@ -106,8 +106,7 @@
             file_editor  : config("file_editor") || "",
             shell   : config("shell") || "",
             ssh_hosts: config("ssh_hosts") || [],
-            upload_max   : config("upload_max") || 2097152000,
-            fileexplorer_version   : config("fileexplorer_version") || ""
+            upload_max   : config("upload_max") || 2097152000
         });
 
         return data;
