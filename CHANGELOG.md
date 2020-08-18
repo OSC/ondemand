@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.6.23] - 2020-08-18
+### Fixed
+- Backport from 1.8 files app dependency updates and switch to handlebars for security fixes
+
 ## [1.6.22] - 2020-03-30
 ### Fixed
 - fix Shell app by downgrading node-pty dependency to version that is compatible with nodejs6
@@ -267,7 +271,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.6.22...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.6.23...release_1.6
+[1.6.23]: https://github.com/OSC/ondemand/compare/v1.6.22...v1.6.23
 [1.6.22]: https://github.com/OSC/ondemand/compare/v1.6.21...v1.6.22
 [1.6.21]: https://github.com/OSC/ondemand/compare/v1.6.20...v1.6.21
 [1.6.20]: https://github.com/OSC/ondemand/compare/v1.6.19...v1.6.20
