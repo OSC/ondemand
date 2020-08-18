@@ -102,7 +102,7 @@
 
 # List of Apache authentication directives
 # NB: Be sure the appropriate Apache module is installed for this
-# Default: (see below, uses basic auth with an htpasswd file)
+# Default: (see below, uses OIDC auth with Dex)
 #auth:
 #  - 'AuthType openid-connect'
 #  - 'Require valid-user'
