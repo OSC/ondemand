@@ -87,6 +87,7 @@ module OodPortalGenerator
       @oidc_session_inactivity_timeout  = opts.fetch(:oidc_session_inactivity_timeout, 28800)
       @oidc_session_max_duration        = opts.fetch(:oidc_session_max_duration, 28800)
       @oidc_state_max_number_of_cookies = opts.fetch(:oidc_state_max_number_of_cookies, '10 true')
+      @oidc_cookie_same_site            = opts.fetch(:oidc_cookie_same_site, @ssl ? 'Off' : 'On')
       @oidc_settings                    = opts.fetch(:oidc_settings, {})
     end
 

@@ -306,6 +306,14 @@
 # Default: "10 true"
 #oidc_state_max_number_of_cookies: "10 true"
 
+# OIDC Enable SameSite cookie
+# When ssl is defined this defaults to 'Off'
+# When ssl is not defined this defaults to 'On'
+# Example:
+#     oidc_cookie_same_site: 'Off'
+# Default: 'On'
+#oidc_cookie_same_site: 'On'
+
 # Additional OIDC settings as key-value pairs
 # Example:
 #     oidc_settings:
