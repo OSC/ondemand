@@ -21,6 +21,7 @@
     "expand-tilde": "^2.0.2",
     "express": "^4.13.4",
     "git-rev-sync": "^1.8.0",
+    "handlebars": "4.7.6",
     "lodash": "^4.17.13",
     "os-homedir": "^1.0.1",
     "request": "^2.6.8",
@@ -41,6 +42,10 @@
     "mocha": "^6.2.0"
   },
   "resolutions": {
-    "findit": "file:./lib/findit2"
+    "findit": "file:./lib/findit2",
+    "ponse": "2.0.2",
+    "handlebars": "4.7.6",
+    "minimist": "1.2.5",
+    "node-uuid": "1.4.8"
   }
 }
