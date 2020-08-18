@@ -411,7 +411,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 [Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.15...release_1.7
-[1.7.14]: https://github.com/OSC/ondemand/compare/v1.7.14...v1.7.15
+[1.7.15]: https://github.com/OSC/ondemand/compare/v1.7.14...v1.7.15
 [1.7.14]: https://github.com/OSC/ondemand/compare/v1.7.13...v1.7.14
 [1.7.13]: https://github.com/OSC/ondemand/compare/v1.7.12...v1.7.13
 [1.7.12]: https://github.com/OSC/ondemand/compare/v1.7.11...v1.7.12
