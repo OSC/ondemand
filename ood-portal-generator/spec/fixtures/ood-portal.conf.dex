@@ -66,6 +66,7 @@
   OIDCSessionInactivityTimeout 28800
   OIDCSessionMaxDuration 28800
   OIDCStateMaxNumberOfCookies 10 true
+  OIDCCookieSameSite On
 
   # Lua configuration
   #
