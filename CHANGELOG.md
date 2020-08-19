@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.7.16] - 2020-08-18
+### Fixed
+- node apps use their own cache directory to avoid collisions when building [#652](https://github.com/OSC/ondemand/pull/652)
+
 ## [1.7.15] - 2020-08-18
 ### Fixed
 - Backport from 1.8 files app dependency updates and switch to handlebars for security fixes
@@ -410,7 +414,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.15...release_1.7
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.16...release_1.7
+[1.7.16]: https://github.com/OSC/ondemand/compare/v1.7.15...v1.7.16
 [1.7.15]: https://github.com/OSC/ondemand/compare/v1.7.14...v1.7.15
 [1.7.14]: https://github.com/OSC/ondemand/compare/v1.7.13...v1.7.14
 [1.7.13]: https://github.com/OSC/ondemand/compare/v1.7.12...v1.7.13
