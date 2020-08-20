@@ -6,7 +6,7 @@
 
 - Website: http://openondemand.org/
 - Website repo with JOSS publication: https://github.com/OSC/Open-OnDemand
-- Documentation: https://osc.github.io/ood-documentation/master/
+- Documentation: https://osc.github.io/ood-documentation/latest/
 - Main code repo: https://github.com/OSC/ondemand
 - Core library repo: https://github.com/OSC/ood_core
 
