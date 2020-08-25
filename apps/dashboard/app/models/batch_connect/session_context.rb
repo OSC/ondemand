@@ -67,7 +67,7 @@ module BatchConnect
    end
    
    def update_with_cache(cache)
-      self.attributes = cache.select { |k,v| self[k.to_sym].cacheable?(app_specific_cache_enabled?)  }
+      self.attributes = cache.select { |k,v| self[k.to_sym] && self[k.to_sym].cacheable?(app_specific_cache_enabled?)  }
    end 
 
    private

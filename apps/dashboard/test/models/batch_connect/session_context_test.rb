@@ -101,4 +101,14 @@ class BatchConnect::SessionContextTest < ActiveSupport::TestCase
   
      assert_equal ["", "28"], [context["bc_account"].value, context["num_cores"].value]
    end
+
+   test "should ignore bad cache keys when updating cache using update_with_cache" do
+     app = BatchConnect::App.new(router: nil)
+     app.stubs(:form_config).returns(attributes: { num_cores: { widget: "number_field", value: "1" } }, form: ["bc_account", "num_cores"])
+     context = app.build_session_context
+
+     context.update_with_cache({"bc_account" => "PZS0714", "num_cores" => "28", "bad_key_1" => "1", "bad_key_2" => "2"})
+
+     assert_equal ["PZS0714", "28"], [context["bc_account"].value, context["num_cores"].value]
+   end
 end
