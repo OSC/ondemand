@@ -2,12 +2,11 @@ class MotdFormatterPlaintext
 
   attr_reader :content, :title
 
-  def initialize(motd_file)
+  def initialize(motd_file, env_var)
     motd_file = MotdFile.new unless motd_file
     @title = motd_file.title
     file_content =
-      # in case ENV[MOTD_FORMAT] = txt_erb
-      if ENV['MOTD_FORMAT'].split('_').second.eql?("erb")
+      if env_var.split('_').last.eql?("erb")
         begin
           ERB.new(motd_file.content).result
         rescue
@@ -22,5 +21,4 @@ class MotdFormatterPlaintext
   def to_partial_path
     "dashboard/motd_plaintext"
   end
-
 end
