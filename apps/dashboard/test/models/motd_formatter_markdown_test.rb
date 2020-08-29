@@ -6,7 +6,7 @@ class MotdTest < ActiveSupport::TestCase
 
     path = "#{Rails.root}/test/fixtures/files/motd_valid"
     motd_file = MotdFile.new(path)
-    formatted_motd = MotdFormatterMarkdown.new motd_file
+    formatted_motd = MotdFormatterMarkdown.new(motd_file, ENV['MOTD_FORMAT'])
     expected_file = OodAppkit.markdown.render(motd_file.content)
 
     assert_equal expected_file, formatted_motd.content
@@ -15,7 +15,7 @@ class MotdTest < ActiveSupport::TestCase
   test "test when motd_formatter_markdown empty" do
     path = "#{Rails.root}/test/fixtures/files/motd_empty"
     motd_file = MotdFile.new(path)
-    formatted_motd = MotdFormatterMarkdown.new motd_file
+    formatted_motd = MotdFormatterMarkdown.new(motd_file, ENV['MOTD_FORMAT'])
 
     assert_equal '', formatted_motd.content
   end
@@ -23,14 +23,14 @@ class MotdTest < ActiveSupport::TestCase
   test "test when motd formatter_markdown_missing" do
     path = "#{Rails.root}/test/fixtures/files/motd_missing"
     motd_file = MotdFile.new(path)
-    formatted_motd = MotdFormatterMarkdown.new motd_file
+    formatted_motd = MotdFormatterMarkdown.new(motd_file, ENV['MOTD_FORMAT'])
 
     assert_equal '', formatted_motd.content
   end
 
   test "test when motd formatter_markdown_nil" do
     motd_file = nil
-    formatted_motd = MotdFormatterMarkdown.new motd_file
+    formatted_motd = MotdFormatterMarkdown.new(motd_file, ENV['MOTD_FORMAT'])
 
     assert_not_nil formatted_motd.content
   end
