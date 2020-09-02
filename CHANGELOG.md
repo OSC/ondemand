@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.7.17] - 2020-09-02
+- Backport from 1.8 files app security fix for XSS in Go To Directory dialog
+
 ## [1.7.16] - 2020-08-18
 ### Fixed
 - node apps use their own cache directory to avoid collisions when building [#652](https://github.com/OSC/ondemand/pull/652)
@@ -414,7 +417,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.16...release_1.7
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.17...release_1.7
+[1.7.17]: https://github.com/OSC/ondemand/compare/v1.7.16...v1.7.17
 [1.7.16]: https://github.com/OSC/ondemand/compare/v1.7.15...v1.7.16
 [1.7.15]: https://github.com/OSC/ondemand/compare/v1.7.14...v1.7.15
 [1.7.14]: https://github.com/OSC/ondemand/compare/v1.7.13...v1.7.14
