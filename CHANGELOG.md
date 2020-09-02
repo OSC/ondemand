@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ## [1.7.17] - 2020-09-02
+### Security
 - Backport from 1.8 files app security fix for XSS in Go To Directory dialog
 
 ## [1.7.16] - 2020-08-18
