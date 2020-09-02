@@ -1576,7 +1576,7 @@ var CloudCmd, Util, DOM, CloudFunc;
                     path    = CurrentInfo.dirPath,
                     Dialog  = DOM.Dialog;
 
-                Dialog.prompt(TITLE, msg, path, {cancel: false}).then(function(path) {
+                Dialog.prompt(TITLE, msg, Handlebars.Utils.escapeExpression(path), {cancel: false}).then(function(path) {
                     CloudCmd.loadDir({
                         path: path
                     });
