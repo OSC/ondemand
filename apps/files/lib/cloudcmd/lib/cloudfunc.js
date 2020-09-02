@@ -234,7 +234,7 @@
                 linkResult  = templateLink({
                     link        : link,
                     title       : file.name,
-                    name        : Handlebars.Utils.escapeExpression(file.name),
+                    name        : file.name,
                     attribute   : new Handlebars.SafeString(attribute)
                 });
 
