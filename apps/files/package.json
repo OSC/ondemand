@@ -44,6 +44,9 @@
   "resolutions": {
     "findit": "file:./lib/findit2",
     "ponse": "2.0.2",
-    "handlebars": "4.7.6"
+    "handlebars": "4.7.6",
+    "minimist": "1.2.5",
+    "node-uuid": "1.4.8",
+    "tar-stream": "2.1.3"
   }
 }
