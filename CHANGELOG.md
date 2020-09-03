@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.7.18] - 2020-09-02
+### Security
+- Update buffer list dependency (bl) by forcing a version of tar-stream.
+  The Files interface does not use this code, but the cloudcmd server portion
+  may expose a route that does.
+
 ## [1.7.17] - 2020-09-02
 ### Security
 - Backport from 1.8 files app security fix for XSS in Go To Directory dialog
@@ -418,7 +424,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.17...release_1.7
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.18...release_1.7
+[1.7.18]: https://github.com/OSC/ondemand/compare/v1.7.17...v1.7.18
 [1.7.17]: https://github.com/OSC/ondemand/compare/v1.7.16...v1.7.17
 [1.7.16]: https://github.com/OSC/ondemand/compare/v1.7.15...v1.7.16
 [1.7.15]: https://github.com/OSC/ondemand/compare/v1.7.14...v1.7.15
