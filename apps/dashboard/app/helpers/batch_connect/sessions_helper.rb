@@ -53,6 +53,12 @@ module BatchConnect::SessionsHelper
   def custom_info_view(session)
     content_tag(:div) do
       concat render partial: "batch_connect/sessions/connections/info", locals: { view: session.info_view, session: session }
+    rescue => e
+      Rails.logger.error("Failed to render partial: #{e.class} - #{e.message}")
+      content_tag(:div, class: "alert alert-danger", role: "alert") do
+        concat tag.h4 "Failed to render partial", class: "alert-heading"
+        concat tag.p "#{e.class} - #{e.message}"
+      end
     end
   end
 
