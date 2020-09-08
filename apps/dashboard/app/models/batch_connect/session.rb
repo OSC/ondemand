@@ -56,6 +56,25 @@ module BatchConnect
     # @return [Boolean] true if job is completed
     attr_accessor :cache_completed
 
+    # 
+    attr_reader :render_info_view_error_message
+
+    # Return parsed markdown from info.{md, html}.erb
+    # @return [String, Boolean] return HTML if no error while parsing, else return false
+    def render_info_view
+      @render_info_view ||= OodAppkit.markdown.render(ERB.new(self.app.session_info_view, nil, "-").result(binding)).html_safe
+    rescue => e
+      @render_info_view_error_message = "Error when rendering info view: #{e.class} - #{e.message}"
+      Rails.logger.error(@render_info_view_error_message)
+      false
+    end
+
+    # Return the Batch Connect app from the session token
+    # @return [BatchConnect::App]
+    def app
+      BatchConnect::App.from_token(self.token)
+    end
+    
     # How many days before a Session record is considered old and ready to delete
     OLD_IN_DAYS=7
 
