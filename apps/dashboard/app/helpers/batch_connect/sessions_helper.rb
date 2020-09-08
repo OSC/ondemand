@@ -42,8 +42,7 @@ module BatchConnect::SessionsHelper
           concat created(session)
           concat time(session)
           concat id(session)
-          concat tag.hr                         if session.info_view
-          safe_concat custom_info_view(session) if session.info_view
+          safe_concat custom_info_view(session) if session.app.session_info_view
         end
       )
       concat content_tag(:div) { yield }
@@ -51,6 +50,7 @@ module BatchConnect::SessionsHelper
   end
 
   def custom_info_view(session)
+    concat tag.hr
     content_tag(:div) do
       concat session.render_info_view if session.render_info_view
 
