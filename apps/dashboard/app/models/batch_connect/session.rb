@@ -56,7 +56,8 @@ module BatchConnect
     # @return [Boolean] true if job is completed
     attr_accessor :cache_completed
 
-    # 
+    # Error message about failing to parse info view ERB template.
+    # @return [String] error message
     attr_reader :render_info_view_error_message
 
     # Return parsed markdown from info.{md, html}.erb
