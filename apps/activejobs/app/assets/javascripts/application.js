@@ -167,6 +167,8 @@ function create_datatable(options){
             "sSearch": "Filter: "
         },
         "fnCreatedRow": function( nRow, aData, iDataIndex ) {
+          $(nRow).attr("tabindex", 0);
+          
           $(nRow).children("td").css("overflow", "hidden");
           $(nRow).children("td").css("white-space", "nowrap");
           $(nRow).children("td").css("text-overflow", "ellipsis");
