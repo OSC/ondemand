@@ -35,6 +35,46 @@ function human_time(seconds_total) {
   return hours_str + ":" + minutes_str + ":" + seconds_str;
 }
 
+function fetch_job_data(tr, row, options) {
+  if (row.child.isShown()) {
+    // This row is already open - close it
+    row.child.hide();
+    tr.removeClass("shown");
+  } else {
+    tr.addClass("shown");
+
+    let data = {
+      pbsid: row.data().pbsid,
+      cluster: row.data().cluster,
+    };
+    let jobDataUrl = `${options.base_uri}/json?${new URLSearchParams(data)}`;
+
+    $.getJSON(jobDataUrl, function (data) {
+      // Open this row
+      row.child(data.html_ganglia_graphs_table).show();
+      // Add the data panel to the view
+      $(`div[data-jobid="${row.data().pbsid}"]`)
+        .hide()
+        .html(data.html_extended_panel)
+        .fadeIn(250);
+      // Update the status label in the parent row
+      tr.find(".status-label").html(data.status);
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+      let error_panel = `
+        <div class="alert alert-danger" role="alert">
+          <strong>Error:</strong> The information could not be displayed.
+          <em>${jqXHR.status} (${errorThrown})</em>
+        </div>
+      `;
+
+      $(`div[data-jobid="${row.data().pbsid}]"`)
+        .hide()
+        .html(error_panel)
+        .fadeIn(250);
+    });
+  }
+}
+
 function fetch_table_data(table, options){
   if (!options) options = {};
   if (!options.doneCallback) options.doneCallback = null;
@@ -78,6 +118,7 @@ function fetch_table_data(table, options){
     table.processing(false);
   });
 }
+
 
 function status_label(status){
   var label = "Undetermined", labelclass = "label-default";
@@ -257,29 +298,7 @@ function create_datatable(options){
         var tr = $(this).closest('tr');
         var row = table.row( tr );
 
-        if ( row.child.isShown() ) {
-            // This row is already open - close it
-            row.child.hide();
-            tr.removeClass('shown');
-        }
-        else {
-            tr.addClass('shown');
-            $.getJSON(options.base_uri + '/json?pbsid='+row.data().pbsid+'&cluster='+row.data().cluster , function(data) {
-            	// Open this row
-                row.child(data.html_ganglia_graphs_table).show();
-                // Add the data panel to the view
-                $( "div[data-jobid='"+row.data().pbsid+"']").hide().html(data.html_extended_panel).fadeIn(250);
-                // Update the status label in the parent row
-                tr.find(".status-label").html(data.status);
-            })
-              .fail(function(jqXHR, textStatus, errorThrown) {
-                  var error_panel = '<div class="alert alert-danger" role="alert">' +
-                                    '  <strong>Error:</strong> The information could not be displayed. ' +
-                                    '  <em>' + jqXHR.status + ' (' + errorThrown + ')</em>' +
-                                    '</div>';
-                  $( "div[data-jobid='"+row.data().pbsid+"']").hide().html(error_panel).fadeIn(250);
-              });
-        }
+        fetch_job_data(tr, row, options);
     });
 
     table.columns.adjust().draw();
