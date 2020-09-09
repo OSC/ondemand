@@ -145,7 +145,7 @@ function status_label(status){
     labelclass = "label-warning";
   }
 
-  return "<span class='label " + labelclass + "'>" + label + "</span></div>";
+  return `<span class="label ${labelclass}">${label}</span>`;
 }
 
 function create_datatable(options){
@@ -200,56 +200,60 @@ function create_datatable(options){
                                             $(nTd).addClass('details-control');
                                         }
                                     },
-                "render":           function() {
-                                        return "";
-                                    }
+                render: function () {
+                  return "";
+                },
             },
             {
                 data:               "pbsid",
                 className:          "small",
                 "autoWidth":        true,
-                "render":           function(data) {
-                    return "<span title="+data+">"+data+"</span>";
-                }
+                render: function (data) {
+                  return `<span title="${data}">${data}</span>`;
+                },
             },
             {
                 data:               "jobname",
                 className:          "small",
                 width:              '25%',
-                "render":           function(data) {
-                    return "<span title="+data+">"+data+"</span>";
-                }
+                render: function (data) {
+                  return `<span title="${data}">${data}</span>`;
+                },
             },
             {
                 data:               "username",
                 className:          "small",
                 "autoWidth":        true,
-                "render":           function(data) {
-                    return "<span title="+data+">"+data+"</span>";
-                }
+                render: function (data) {
+                  return `<span title="${data}">${data}</span>`;
+                },
             },
             {
                 data:               "account",
                 className:          "small",
                 "autoWidth":        true,
-                "render":           function(data) {
-                    return "<span title="+data+">"+data+"</span>";
-                }
+                render: function (data) {
+                  return `<span title="${data}">${data}</span>`;
+                },
             },
             {
                 data:               "walltime_used",
                 className:          "small text-right",
                 "autoWidth":        true,
-                "render":           function(data) {
-                    return "<span title="+human_time(data)+">"+human_time(data)+"</span>";
-                }
+                render: function (data) {
+                  return `
+                    <span title="${human_time(data)}">
+                      ${human_time(data)}
+                    </span>
+                  `;
+                },
             },
             {
                 data:               "queue",
                 className:          "small",
                 "autoWidth":        true,
                 "render":           function(data) {
-                    return "<span title="+data+">"+data+"</span>";
+                  return `<span title="${data}">${data}</span>`;
                 }
             },
             {
@@ -257,8 +261,7 @@ function create_datatable(options){
                 className:          "small status-label",
                 "autoWidth":        true,
                 "render":           function(data) {
-                    return status_label(data);
-                    //return "<span style='color: red' title="+data+">"+data+"</span>";
+                  return status_label(data);
                 }
             },
             {
@@ -274,14 +277,21 @@ function create_datatable(options){
                   if(data.delete_path == "" || data.status == "completed"){
                     return ""
                   } else {
-                    return "<div>" +
-                              "<a class='btn btn-danger btn-xs action-btn' data-method='delete'" +
-                              " data-confirm='Are you sure you want to delete " + data.jobname  + " - " + data.pbsid + "'" +
-                              " href='" + data.delete_path + "'" +
-                              " aria-labeledby='title' data-toggle='tooltip' title='Delete Job' >" + 
-                                "<i class='glyphicon glyphicon-trash' aria-hidden='true'></i>" +  
-                              "</a>" +
-                            "</div>";
+                    return `
+                      <div>
+                        <a
+                          class="btn btn-danger btn-xs action-btn"
+                          data-method="delete"
+                          data-confirm="Are you sure you want to delete ${data.jobname} - ${data.pbsid}"
+                          href="${data.delete_path}"
+                          aria-labeled-by"title"
+                          data-toggle="tooltip"
+                          title="Delete Job"
+                        >
+                          <i class='glyphicon glyphicon-trash' aria-hidden='true'></i>
+                        </a>
+                      </div>
+                    `;
                   }
                 }
             }
@@ -310,10 +320,10 @@ function create_datatable(options){
 
 /* Add errors from an array to the #ajax-error-message div and remove hidden attribute */
 function show_errors(errors) {
-    for (var i = 0; i < errors.length; i++) {
-        $("#ajax-error-message-text").append("<div>"+errors[i]+"</div>");
-    }
-    $("#ajax-error-message").removeAttr('hidden');
+  for (var i = 0; i < errors.length; i++) {
+    $("#ajax-error-message-text").append(`<div>${errors[i]}</div>`);
+  }
+  $("#ajax-error-message").removeAttr('hidden');
 }
 
 function get_request_params() {
