@@ -168,6 +168,16 @@ function create_datatable(options){
         },
         "fnCreatedRow": function( nRow, aData, iDataIndex ) {
           $(nRow).attr("tabindex", 0);
+
+          $(nRow).on("keydown", function (event) {
+            const ENTER_KEY_CODE = "Enter"
+            const tr = $(this).closest("tr");
+            const row = table.row(tr);
+
+            if (event.code == ENTER_KEY_CODE) {
+              fetch_job_data(tr, row, options);
+            }
+          })
           
           $(nRow).children("td").css("overflow", "hidden");
           $(nRow).children("td").css("white-space", "nowrap");
