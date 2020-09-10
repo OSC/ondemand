@@ -214,7 +214,7 @@ module BatchConnect
     # View used for session info if it exists
     # @return [String, nil] session info
     def session_info_view
-      Pathname.new(root).glob("info.{md,html}.erb").find(&:file?).try(:read)
+      @session_info_view ||= Pathname.new(root).glob("info.{md,html}.erb").find(&:file?).try(:read)
     rescue
       nil
     end
