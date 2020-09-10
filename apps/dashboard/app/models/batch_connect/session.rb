@@ -41,10 +41,6 @@ module BatchConnect
     # @return [String, nil] session view
     attr_accessor :view
 
-    # The view used to display custom info for this session
-    # @return [String, nil] session info
-    attr_accessor :info_view
-
     # Batch connect script type
     # @return [String] script type
     attr_accessor :script_type
