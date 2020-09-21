@@ -89,6 +89,8 @@
                     <%= link_to(workflow.xdmod_url, target: "_blank")  do %>
                       <%= workflow.pbsid %> - <%= content_tag :i, nil, style: "display: inline", class: "fa fa-external-link-square-alt" %>&nbsp;XDMoD
                     <% end %>
+
+                    <%= content_tag :p, xdmod_url_warning_message(workflow), class: "bg-warning" if xdmod_url_warning_message(workflow) %>
                   <% else %>
                     <span title="<%= workflow.pbsid %>"><%= workflow.pbsid %></span>
                   <% end %>
@@ -113,6 +115,7 @@
       </div>
       <div class="panel-body">
         <h4 id="job-details-id"></h4>
+        <p id="job-details-xdmod-warning" class="bg-warning"></p>
         <p>Job Name: <h4 class="wrap-line"><strong><span id="job-details-name"></span></strong></h4></p>
         <div id="job-details-submit-to">
           <p>Submit to:</p>

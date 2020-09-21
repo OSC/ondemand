@@ -106,8 +106,13 @@ $(window).focus ->
     if(data.xdmod_url)
       # details external url
       $("#job-details-id").html('<a target="_blank" href="'+data.xdmod_url+'">'+data.pbsid+' - <i style="display: inline" class="fa fa-external-link-square-alt"></i>&nbsp;XDMoD</a>')
+      if(data.xdmod_url_warning_message)
+        $("#job-details-xdmod-warning").text(data.xdmod_url_warning_message)
+      else
+        $("#job-details-xdmod-warning").text('')
     else
       $("#job-details-id").text(data.pbsid)
+      $("#job-details-xdmod-warning").text('')
     $("#job-details-name").text(data.name)
     $("#job-details-server").val(data.host_title)
     $("#job-details-staged-dir").text(data.staged_dir)
