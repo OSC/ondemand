@@ -115,13 +115,16 @@ promiseLoggedIntoXDMoD(xdmodUrl)
     else{
       throw new Error('Job data returned by request is invalid.')
     }
-
-
   })
   .catch((error) => {
     console.error(error);
     render_jobs_template({error: error});
     render_core_hours_template({error: error});
+
+    // error - report back for analytics purposes
+    let analyticsUrl = new URL("<%= analytics_url(type: 'xdmod_job_widget_efficiency_error') %>");
+    analyticsUrl.searchParams.append('error', error);
+    fetch(analyticsUrl);
   });
 }());
 </script>
