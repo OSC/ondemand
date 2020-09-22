@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.8.14] - 2020-09-21
+### Fixed
+- use harmony for building ES6 assets in all core Rails apps
+
 ## [1.8.13] - 2020-09-21
 ### Changed
 - make it easier to develop info.html.erb in batch connect apps by gracefully handling crashes and now rendering template from the app root instead of storing a copy of the template in the session [#666](https://github.com/OSC/ondemand/pull/666)
@@ -561,7 +565,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.13...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.14...HEAD
+[1.8.14]: https://github.com/OSC/ondemand/compare/v1.8.13...v1.8.14
 [1.8.13]: https://github.com/OSC/ondemand/compare/v1.8.12...v1.8.13
 [1.8.12]: https://github.com/OSC/ondemand/compare/v1.8.11...v1.8.12
 [1.8.11]: https://github.com/OSC/ondemand/compare/v1.8.10...v1.8.11
