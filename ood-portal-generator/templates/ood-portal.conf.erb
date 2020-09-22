@@ -63,11 +63,16 @@ Listen <%= addr_port %>
 # The Open OnDemand portal VirtualHost
 #
 <VirtualHost *:<%= @port %>>
+  <%- if @logformat -%>
+  LogFormat <%= @logformat %>
+  TransferLog "<%= @accesslog %>"
+  <% else %>
+  CustomLog "<%= @accesslog %>" combined
+  <%- end -%>
+  ErrorLog  "<%= @errorlog %>"
+
   <%- if @servername -%>
   ServerName <%= @servername %>
-
-  ErrorLog  "<%= @logroot %>/<%= @servername %>_error<%= "_ssl" if @ssl %>.log"
-  CustomLog "<%= @logroot %>/<%= @servername %>_access<%= "_ssl" if @ssl %>.log" combined
 
   <%- if @use_rewrites -%>
   RewriteEngine On

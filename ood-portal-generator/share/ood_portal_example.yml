@@ -35,11 +35,22 @@
 # Default: null (no SSL support)
 #ssl: null
 
-# Root directory of log files (can be relative ServerRoot)
+# Error log file path
 # Example:
-#     logroot: '/path/to/my/logs'
-# Default: 'logs' (this is relative to ServerRoot)
-#logroot: 'logs'
+#     errorlog: '/path/to/my/error_log'
+# Default: 'logs/error.log' (This is relative to ServerRoot. If 'servername' and/or 'ssl' options are defined the default value will be logs/<servername>_error_ssl.log)
+#errorlog: 'logs/error.log'
+
+# Access log file path
+# Example:
+#     accesslog: '/path/to/my/access_log'
+# Default: 'logs/access.log' (This is relative to ServerRoot. If 'servername' and/or 'ssl' options are defined the default value will be logs/<servername>_access_ssl.log)
+#accesslog: 'logs/access.log'
+
+# Apache access log format (Don't specify log nickname see: http://httpd.apache.org/docs/current/mod/mod_log_config.html#transferlog)
+# Example:
+#     logformat: '"%v %h \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %{SSL_PROTOCOL}x %T"'
+# Default: Apache combined format
 
 # Should RewriteEngine be used
 # Example:

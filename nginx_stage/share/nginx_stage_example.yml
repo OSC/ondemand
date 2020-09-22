@@ -110,6 +110,10 @@
 #
 #pun_error_log_path: '/var/log/ondemand-nginx/%{user}/error.log'
 
+# Custom format configuration for access log
+#
+#pun_log_format: '$server_name $remote_addr - $remote_user [$time_local] "$request" $status $bytes_sent "$http_referer" "$http_user_agent" "$http_x_forwarded_for"'
+
 # Path to the per-user NGINX pid file
 #
 #pun_pid_path: '/var/run/ondemand-nginx/%{user}/passenger.pid'
