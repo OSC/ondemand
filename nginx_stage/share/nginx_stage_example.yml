@@ -112,7 +112,7 @@
 
 # Custom format configuration for access log
 #
-#pun_log_format: '$server_name $remote_addr - $remote_user [$time_local] "$request" $status $bytes_sent "$http_referer" "$http_user_agent" "$http_x_forwarded_for"'
+#pun_log_format: '$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" "$http_x_forwarded_for"'
 
 # Path to the per-user NGINX pid file
 #

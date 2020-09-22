@@ -19,8 +19,11 @@ module OodPortalGenerator
       @servername       = opts.fetch(:servername, nil)
       @proxy_server     = opts.fetch(:proxy_server, @servername)
       @port             = opts.fetch(:port, @ssl ? "443" : "80")
-      @accesslog        = opts.fetch(:accesslog, "logs/#{@servername ? @servername+'_access' : 'access'}#{@ssl ? '_ssl.log' : '.log'}")
-      @errorlog         = opts.fetch(:errorlog, "logs/#{@servername ? @servername+'_error' : 'error'}#{@ssl ? '_ssl.log' : '.log'}")
+      @logroot          = opts.fetch(:logroot, "logs")
+      access_log        = opts.fetch(:accesslog, nil)
+      error_log         = opts.fetch(:errorlog, nil)
+      @accesslog        = log_filename(access_log,"access")
+      @errorlog         = log_filename(error_log,"error")
       @logformat        = opts.fetch(:logformat, nil)
       @use_rewrites     = opts.fetch(:use_rewrites, true)
       @lua_root         = opts.fetch(:lua_root, "/opt/ood/mod_ood_proxy/lib")
@@ -91,6 +94,17 @@ module OodPortalGenerator
       @oidc_state_max_number_of_cookies = opts.fetch(:oidc_state_max_number_of_cookies, '10 true')
       @oidc_cookie_same_site            = opts.fetch(:oidc_cookie_same_site, @ssl ? 'Off' : 'On')
       @oidc_settings                    = opts.fetch(:oidc_settings, {})
+    end
+
+    # Helper method to set the filename and path for access and error logs
+    def log_filename(value,log_type)
+      if value.nil?
+        prefix = @servername ? "#{@servername}_#{log_type}" : "#{log_type}"
+        suffix = @ssl ? '_ssl.log' : '.log'
+        "#{@logroot}/#{prefix}#{suffix}"
+      else
+        "#{@logroot}/#{value}"
+      end
     end
 
     # Helper method to escape IP for maintenance rewrite condition

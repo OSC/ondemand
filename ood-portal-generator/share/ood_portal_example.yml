@@ -35,17 +35,25 @@
 # Default: null (no SSL support)
 #ssl: null
 
-# Error log file path
+# Root directory of log files (can be relative ServerRoot)
 # Example:
-#     errorlog: '/path/to/my/error_log'
-# Default: 'logs/error.log' (This is relative to ServerRoot. If 'servername' and/or 'ssl' options are defined the default value will be logs/<servername>_error_ssl.log)
-#errorlog: 'logs/error.log'
+#     logroot: '/path/to/my/logs'
+# Default: 'logs' (this is relative to ServerRoot)
+#logroot: 'logs'
 
-# Access log file path
+# Error log filename
 # Example:
-#     accesslog: '/path/to/my/access_log'
-# Default: 'logs/access.log' (This is relative to ServerRoot. If 'servername' and/or 'ssl' options are defined the default value will be logs/<servername>_access_ssl.log)
-#accesslog: 'logs/access.log'
+#     errorlog: 'error.log'
+# Default: 'error.log' (If 'servername' and 'ssl' options are defined 
+# the default value will be <servername>_error_ssl.log)
+#errorlog: 'error.log'
+
+# Access log filename
+# Example:
+#     accesslog: 'access.log'
+# Default: 'access.log' (If 'servername' and 'ssl' options are defined 
+# the default value will be <servername>_access_ssl.log)
+#accesslog: 'access.log'
 
 # Apache access log format (Don't specify log nickname see: http://httpd.apache.org/docs/current/mod/mod_log_config.html#transferlog)
 # Example:
