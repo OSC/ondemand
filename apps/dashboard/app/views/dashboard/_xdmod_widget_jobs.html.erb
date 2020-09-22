@@ -146,6 +146,11 @@ promiseLoggedIntoXDMoD(xdmodUrl)
   .catch((error) => {
     console.error(error);
     render_template({error: error});
+
+    // error - report back for analytics purposes
+    let analyticsUrl = new URL("<%= analytics_url(type: 'xdmod_jobs_widget_error') %>");
+    analyticsUrl.searchParams.append('error', error);
+    fetch(analyticsUrl);
   });
 }());
 </script>
