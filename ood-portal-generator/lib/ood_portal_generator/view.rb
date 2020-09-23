@@ -98,13 +98,11 @@ module OodPortalGenerator
 
     # Helper method to set the filename and path for access and error logs
     def log_filename(value,log_type)
-      if value.nil?
-        prefix = @servername ? "#{@servername}_#{log_type}" : "#{log_type}"
-        suffix = @ssl ? '_ssl.log' : '.log'
-        "#{@logroot}/#{prefix}#{suffix}"
-      else
-        "#{@logroot}/#{value}"
-      end
+      return "#{@logroot}/#{value}" unless value.nil?
+
+      prefix = @servername ? "#{@servername}_#{log_type}" : "#{log_type}"
+      suffix = @ssl ? '_ssl.log' : '.log'
+      "#{@logroot}/#{prefix}#{suffix}"
     end
 
     # Helper method to escape IP for maintenance rewrite condition
