@@ -44,6 +44,10 @@
 #
 <VirtualHost *:80>
 
+  ErrorLog  "logs/error.log"
+  CustomLog "logs/access.log" combined
+
+
   # Support maintenance page during outages of OnDemand
   RewriteEngine On
   RewriteCond /var/www/ood/public/maintenance/index.html -f
