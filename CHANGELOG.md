@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- log formatting options for apache and nginx access logs [#677] (https://github.com/OSC/ondemand/pull/677)
+
 ## [1.8.13] - 2020-09-21
 ### Changed
 - make it easier to develop info.html.erb in batch connect apps by gracefully handling crashes and now rendering template from the app root instead of storing a copy of the template in the session [#666](https://github.com/OSC/ondemand/pull/666)

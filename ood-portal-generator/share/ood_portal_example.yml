@@ -41,6 +41,25 @@
 # Default: 'logs' (this is relative to ServerRoot)
 #logroot: 'logs'
 
+# Error log filename
+# Example:
+#     errorlog: 'error.log'
+# Default: 'error.log' (If 'servername' and 'ssl' options are defined 
+# the default value will be <servername>_error_ssl.log)
+#errorlog: 'error.log'
+
+# Access log filename
+# Example:
+#     accesslog: 'access.log'
+# Default: 'access.log' (If 'servername' and 'ssl' options are defined 
+# the default value will be <servername>_access_ssl.log)
+#accesslog: 'access.log'
+
+# Apache access log format (Don't specify log nickname see: http://httpd.apache.org/docs/current/mod/mod_log_config.html#transferlog)
+# Example:
+#     logformat: '"%v %h \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %{SSL_PROTOCOL}x %T"'
+# Default: Apache combined format
+
 # Should RewriteEngine be used
 # Example:
 #     use_rewrites: false

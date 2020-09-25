@@ -44,6 +44,10 @@
 #
 <VirtualHost *:80>
 
+  ErrorLog  "logs/error.log"
+  CustomLog "logs/access.log" combined
+
+
 
   # Lua configuration
   #
