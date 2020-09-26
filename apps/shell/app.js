@@ -56,10 +56,7 @@ app.use(process.env.PASSENGER_BASE_URI || '/', router);
 const server = new http.createServer(app);
 const wss = new WebSocket.Server({ noServer: true });
 
-let host_allowlist = helpers.generateHostAllowlist(process.env.OOD_SSHHOST_ALLOWLIST);
-let cluster_sshhosts = helpers.generateClusterSshhosts(process.env.OOD_CLUSTERS);
-let default_sshhost = process.env.OOD_DEFAULT_SSHHOST || process.env.DEFAULT_SSHHOST || helpers.generateDefaultSshhost(cluster_sshhosts);
-host_allowlist = helpers.addToHostAllowlist(host_allowlist, cluster_sshhosts, default_sshhost);
+let [host_allowlist, default_sshhost] = helpers.hostAllowListAndDefaultHost(process.env.OOD_SSHHOST_ALLOWLIST, process.env.OOD_CLUSTERS, process.env.OOD_DEFAULT_SSHHOST || process.env.DEFAULT_SSHHOST);
 
 wss.on('connection', function connection (ws, req) {
   var dir,
