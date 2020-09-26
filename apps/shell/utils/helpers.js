@@ -58,7 +58,7 @@ function hostAllowlistAndDefaultHost(ood_sshhost_allowlist, cluster_path, ood_de
   })
 
   //Add to allowlist
-  allowlist.add(default_sshhost);
+  if (ood_default_sshhost) {allowlist.add(ood_default_sshhost);}
   cluster_sshhosts.forEach(cluster => {
     allowlist.add(cluster.host);
   });

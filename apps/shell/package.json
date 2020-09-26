@@ -31,7 +31,8 @@
     "ms": "2.1.1",
     "minimist": "1.2.5",
     "inherits": "2.0.3",
-    "http-errors": "1.7.2"
+    "http-errors": "1.7.2",
+    "safe-buffer": "5.1.2"
   },
   "devDependencies": {
     "jest": "^26.1.0"

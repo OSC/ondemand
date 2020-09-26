@@ -3,53 +3,28 @@
  */
 const helpers = require('../utils/helpers')
 
-//generateHostAllowlist
-describe('Helper function generateHostAllowlist()', () => {
-  test('it should turn a colon-delimited string into a set', () => {
-    expect(helpers.generateHostAllowlist('pitzer.osc.edu:owens.osc.edu:*.ten.osc.edu')).toMatchObject(new Set(['pitzer.osc.edu', 'owens.osc.edu', '*.ten.osc.edu']));
+describe('Helper function hostAllowlistAndDefaultHost()', () => {
+  let cluster_path = "./test/clusters.d"
+
+  test('generates allowlist and default_sshhost correctly', () => {
+    let ood_default_sshhost = "owens.osc.edu"
+    let ood_sshhost_allowlist = "owens.osc.edu:pitzer.osc.edu:*.ten.osc.edu"
+
+    expect(helpers.hostAllowlistAndDefaultHost(ood_sshhost_allowlist, cluster_path, ood_default_sshhost)).toMatchObject([new Set(['owens.osc.edu', 'pitzer.osc.edu', 'ruby.osc.edu', "*.ten.osc.edu"]), "owens.osc.edu" ])
   })
 
-  test('it should return an empty set for an undefined allowlist', () => {
-    expect(helpers.generateHostAllowlist(null)).toMatchObject(new Set);
-  })
-})
+  test('if default_sshhost is not declared', () => {
+    let ood_default_sshhost
+    let ood_sshhost_allowlist = "owens.osc.edu:pitzer.osc.edu:*.ten.osc.edu"
 
-//pitzer expansion has v2.metadata.hidden = true so it is not included
-describe('Helper function generateClusterSshhosts()', () => {
-  test('it should include host & default values in the cluster configs', () => {
-    expect(helpers.generateClusterSshhosts('./test/clusters.d')).toMatchObject([
-      {host: 'owens.osc.edu', default: true},
-      {host: 'pitzer.osc.edu', default: false},
-      {host: 'ruby.osc.edu', default: undefined}
-    ]);
-  })
-})
-
-describe('Helper function generateDefaultSshhost()', () => {
-  test('it should return the hostname where cluster.default = true', () => {
-    const cluster_sshhosts = [{host: 'owens.osc.edu', default: true}, {host: 'pitzer.osc.edu', default: false}, {host: 'ruby.osc.edu', default: undefined}];
-    expect(helpers.generateDefaultSshhost(cluster_sshhosts)).toBe('owens.osc.edu')
+    expect(helpers.hostAllowlistAndDefaultHost(ood_sshhost_allowlist, cluster_path, ood_default_sshhost)).toMatchObject([new Set(['owens.osc.edu', 'pitzer.osc.edu', 'ruby.osc.edu', "*.ten.osc.edu"]), "owens.osc.edu" ])
   })
 
-  test('it should return the first hostname if no cluster.default = true', () => {
-    const cluster_sshhosts = [{host: 'pitzer.osc.edu', default: false}, {host: 'ruby.osc.edu', default: undefined}];
-    expect(helpers.generateDefaultSshhost(cluster_sshhosts)).toBe('pitzer.osc.edu')
-  })
-})
+  test('allowlist not declared, allowlist generated from default_sshhost and cluster configs', () => {
+    let ood_default_sshhost = "armstrong.osc.edu"
+    let ood_sshhost_allowlist
 
-describe('Helper function addToHostAllowlist()', () => {
-  const cluster_sshhosts = [
-    {host: 'owens.osc.edu', default: true},
-    {host: 'pitzer.osc.edu', default: false},
-    {host: 'ruby.osc.edu', default: undefined}
-  ]
-
-  test('it should add hosts from cluster_sshhosts and default_sshhost to host_allowlist', () => {
-    expect(helpers.addToHostAllowlist(new Set(['pitzer.osc.edu']), cluster_sshhosts, 'owens.osc.edu')).toMatchObject(new Set(['owens.osc.edu', 'pitzer.osc.edu', 'ruby.osc.edu']));
-  })
-
-  test('it should add hosts to host_allowlist when default_sshhost is same value in cluster_sshhosts', () => {
-    expect(helpers.addToHostAllowlist(new Set, cluster_sshhosts, 'armstrong.osc.edu')).toMatchObject(new Set(['owens.osc.edu', 'pitzer.osc.edu', 'ruby.osc.edu', 'armstrong.osc.edu']));
+    expect(helpers.hostAllowlistAndDefaultHost(ood_sshhost_allowlist, cluster_path, ood_default_sshhost)).toMatchObject([new Set(['armstrong.osc.edu', 'owens.osc.edu', 'pitzer.osc.edu', 'ruby.osc.edu']), "armstrong.osc.edu" ])
   })
 })
 
