@@ -3,13 +3,13 @@
 <script id="jobs-template" type="text/x-handlebars-template">
 <div class="panel panel-default">
   <div class="panel-heading">
-    <a href="{{xdmod_url}}" class="pull-right">XDMoD <span class="fa fa-external-link-square-alt"></span></a>
+    <a href="{{xdmod_url}}" class="pull-right">Open XDMoD <span class="fa fa-external-link-square-alt"></span></a>
     <h3 class="panel-title">{{title}}</h3>
   </div>
 
   {{#if error}}
     <div class="panel-body">
-      <div class="alert alert-danger">{{error}} Please ensure you are <a href="{{xdmod_url}}">logged into XDMoD first</a>, and then try again.</div>
+      <div class="alert alert-danger">{{error}} Please ensure you are <a href="{{xdmod_url}}">logged into Open XDMoD first</a>, and then try again.</div>
     </div>
   {{else}}
   {{#if loading}}
@@ -45,7 +45,7 @@
     </div>
 
     <div class="panel-footer">
-      Showing first {{page_limit}} of {{totalCount}} jobs. See <a href="{{xdmod_url}}">your XDMoD dashboard&nbsp;<span class="fa fa-external-link-square-alt"></span></a> for more information.
+      Showing first {{page_limit}} of {{totalCount}} jobs. See <a href="{{xdmod_url}}">your Open XDMoD dashboard&nbsp;<span class="fa fa-external-link-square-alt"></span></a> for more information.
     </div>
   {{/if}}
   {{/if}}
