@@ -62,15 +62,18 @@ var startOfYear = '<%= Date.today.beginning_of_year.strftime("%Y-%m-%d") %>',
 
 var jobsPageLimit = 10;
 
-var jobsUrl = new URL('<%= Configuration.xdmod_host %>/rest/v1/warehouse/search/jobs');
-jobsUrl.searchParams.set('_dc', Date.now());
-jobsUrl.searchParams.set('start_date', thirtyDaysAgo);
-jobsUrl.searchParams.set('end_date', today);
-jobsUrl.searchParams.set('realm', 'SUPREMM');
-jobsUrl.searchParams.set('limit', jobsPageLimit);
-jobsUrl.searchParams.set('start', 0);
-jobsUrl.searchParams.set('verbose', true);
-jobsUrl.searchParams.set('params', JSON.stringify({}));
+function jobsUrl(user){
+  var url = new URL('<%= Configuration.xdmod_host %>/rest/v1/warehouse/search/jobs');
+  url.searchParams.set('_dc', Date.now());
+  url.searchParams.set('start_date', thirtyDaysAgo);
+  url.searchParams.set('end_date', today);
+  url.searchParams.set('realm', user?.results?.raw_data_allowed_realms?.includes('SUPREMM') ? 'SUPREMM' : 'Jobs');
+  url.searchParams.set('limit', jobsPageLimit);
+  url.searchParams.set('start', 0);
+  url.searchParams.set('verbose', true);
+  url.searchParams.set('params', JSON.stringify({person: user?.results?.person_id}));
+  return url;
+}
 
 var template_source = $('#jobs-template').html();
 var template = Handlebars.compile(template_source);
@@ -139,7 +142,7 @@ render_template({loading: true});
 
 var xdmodUrl = '<%= Configuration.xdmod_host %>';
 promiseLoggedIntoXDMoD(xdmodUrl)
-  .then(() => fetch(jobsUrl, { credentials: 'include' }))
+  .then((user_data) => fetch(jobsUrl(user_data), { credentials: 'include' }))
   .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
   .then(response => response.json())
   .then((data) => render_template(data))
