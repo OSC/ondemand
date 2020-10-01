@@ -34,27 +34,31 @@
 <script>
 (function(){
 
- var startOfYear = '<%= Date.today.beginning_of_year.strftime("%Y-%m-%d") %>',
+var startOfYear = '<%= Date.today.beginning_of_year.strftime("%Y-%m-%d") %>',
      thirtyDaysAgo = '<%= 30.days.ago.strftime("%Y-%m-%d") %>',
      today = '<%= Date.today.strftime("%Y-%m-%d") %>';
 
-var jobsUrl = new URL('<%= Configuration.xdmod_host %>/rest/v1/warehouse/aggregatedata');
-jobsUrl.searchParams.set('_dc', Date.now());
+function jobsUrl(user){
+  var url = new URL('<%= Configuration.xdmod_host %>/rest/v1/warehouse/aggregatedata');
+  url.searchParams.set('_dc', Date.now());
+  url.searchParams.set('start', 0);
+  url.searchParams.set('limit', 1);
+  url.searchParams.set('config', JSON.stringify({
+    "realm":"JobEfficiency",
+    "group_by":"person",
+    "aggregation_unit":"day",
+    "start_date": thirtyDaysAgo,
+    "end_date": today,
+    "filters": {"person": user?.results?.person_id},
+    "order_by":{
+      "field":"core_time_bad",
+      "dirn":"desc"
+    },
+    "statistics": ["core_time","core_time_bad","bad_core_ratio","job_count","job_count_bad","bad_job_ratio"]
+  }));
 
-jobsUrl.searchParams.set('start', 0);
-jobsUrl.searchParams.set('limit', 1);
-jobsUrl.searchParams.set('config', JSON.stringify({
-  "realm":"JobEfficiency",
-  "group_by":"person",
-  "aggregation_unit":"day",
-  "start_date": thirtyDaysAgo,
-  "end_date": today,
-  "order_by":{
-    "field":"core_time_bad",
-    "dirn":"desc"
-  },
-  "statistics": ["core_time","core_time_bad","bad_core_ratio","job_count","job_count_bad","bad_job_ratio"]
-}));
+  return url;
+}
 
 var template_source = $('#job-efficiency-template').html();
 var template = Handlebars.compile(template_source);
@@ -89,7 +93,7 @@ render_core_hours_template({nodata: true, msg: 'LOADING...'});
 
 var xdmodUrl = '<%= Configuration.xdmod_host %>';
 promiseLoggedIntoXDMoD(xdmodUrl)
-  .then(() => fetch(jobsUrl, { credentials: 'include' }))
+  .then((user_data) => fetch(jobsUrl(user_data), { credentials: 'include' }))
   .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
   .then(response => response.json())
   .then((data) => {

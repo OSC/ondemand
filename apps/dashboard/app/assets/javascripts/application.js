@@ -131,6 +131,23 @@ function promiseLoginToXDMoD(xdmodUrl){
 var promiseLoggedIntoXDMoD = (function(){
   return _.memoize(function(xdmodUrl){
     return fetch(xdmodUrl + '/rest/v1/users/current', { credentials: 'include' })
-      .then(response => response.ok ? Promise.resolve() : promiseLoginToXDMoD(xdmodUrl))
+      .then((response) => {
+        if(response.ok){
+          return Promise.resolve(response.json());
+        }
+        else{
+          return promiseLoginToXDMoD(xdmodUrl)
+                .then(() => fetch(xdmodUrl + '/rest/v1/users/current', { credentials: 'include' }))
+                .then(response => response.json());
+        }
+      })
+      .then((user_data) => {
+        if(user_data && user_data.success && user_data.results && user_data.results.person_id){
+          return Promise.resolve(user_data);
+        }
+        else{
+          return Promise.reject(new Error('Attempting to fetch current user info from Open XDMoD failed'));
+        }
+      });
   });
 })();
