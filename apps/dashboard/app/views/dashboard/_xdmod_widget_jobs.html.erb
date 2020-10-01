@@ -67,7 +67,7 @@ function jobsUrl(user){
   url.searchParams.set('_dc', Date.now());
   url.searchParams.set('start_date', thirtyDaysAgo);
   url.searchParams.set('end_date', today);
-  url.searchParams.set('realm', 'SUPREMM');
+  url.searchParams.set('realm', user?.results?.raw_data_allowed_realms?.includes('SUPREMM') ? 'SUPREMM' : 'Jobs');
   url.searchParams.set('limit', jobsPageLimit);
   url.searchParams.set('start', 0);
   url.searchParams.set('verbose', true);
