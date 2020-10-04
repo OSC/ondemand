@@ -2,29 +2,32 @@
  * Allowlist helper function tests
  */
 const helpers = require('../utils/helpers')
-const { HostAllowlist } = require('../utils/helpers')
+const HostAllowlist = require('../utils/HostAllowlist')
 
 /**
  * Constants used during test
  */
-const ALLOW_LIST = new Set(['owens.osc.edu', 'pitzer.osc.edu', '*.ten.osc.edu'])
-
 describe('Helper function hostInAllowList()', () => {
+  let ood_default_sshhost = "owens.osc.edu"
+  let ood_sshhost_allowlist = "owens.osc.edu:pitzer.osc.edu:*.ten.osc.edu"
+  let cluster_path = "./test/clusters.d"
+  let host_allowlist = new HostAllowlist(ood_sshhost_allowlist, cluster_path, ood_default_sshhost);
+
   test('it should be true for hostnames in allowlist', () => {
-    expect(helpers.hostInAllowList(ALLOW_LIST, 'pitzer.osc.edu')).toBeTruthy()
-    expect(helpers.hostInAllowList(ALLOW_LIST, 'owens.osc.edu')).toBeTruthy()
+    expect(host_allowlist.hostInAllowlist('pitzer.osc.edu')).toBeTruthy()
+    expect(host_allowlist.hostInAllowlist('owens.osc.edu')).toBeTruthy()
   })
 
   test('it should be false for hostname not in the allowlist', () => {
-    expect(helpers.hostInAllowList(ALLOW_LIST, 'localhost')).not.toBeTruthy()
+    expect(host_allowlist.hostInAllowlist('localhost')).not.toBeTruthy()
   })
 
   test('it should be true for hostname that matches wildcard FQDN', () => {
-    expect(helpers.hostInAllowList(ALLOW_LIST, 'p1001.ten.osc.edu')).toBeTruthy()
+    expect(host_allowlist.hostInAllowlist('p1001.ten.osc.edu')).toBeTruthy()
   })
 
   test('it should be false for hostname not matched by wildcard FQDN', () => {
-    expect(helpers.hostInAllowList(ALLOW_LIST, 'p1001.eleven.osc.edu')).not.toBeTruthy()
+    expect(host_allowlist.hostInAllowlist('p1001.eleven.osc.edu')).not.toBeTruthy()
   })
 })
 
@@ -76,4 +79,5 @@ describe('Class HostAllowlist', () => {
     expect(host_allowlist.allowlist).toMatchObject(new Set(['armstrong.osc.edu', 'owens.osc.edu', 'pitzer.osc.edu', 'ruby.osc.edu']))
     expect(host_allowlist.default_sshhost).toBe("armstrong.osc.edu")
   })
+
 })

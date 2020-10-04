@@ -10,7 +10,7 @@ const Tokens    = require('csrf');
 const url       = require('url');
 const port      = 3000;
 const helpers   = require('./utils/helpers');
-const { HostAllowlist } = require('./utils/helpers');
+const HostAllowlist = require('./utils/HostAllowlist');
 
 // Read in environment variables
 dotenv.config({path: '.env.local'});
@@ -163,7 +163,7 @@ server.on('upgrade', function upgrade(request, socket, head) {
     ].join('\r\n') + '\r\n\r\n');
 
     socket.destroy();
-  } else if (!helpers.hostInAllowList(host_allowlist.allowlist, host)) { // host not in allowlist
+  } else if (host_allowlist.hostInAllowlist(host)) { // host not in allowlist
     socket.write([
       'HTTP/1.1 401 Unauthorized',
       'Content-Type: text/html; charset=UTF-8',
