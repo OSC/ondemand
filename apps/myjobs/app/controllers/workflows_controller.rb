@@ -26,6 +26,8 @@ class WorkflowsController < ApplicationController
 
   def get_dataset
     render json: {data: Workflow.all}
+  end
+  
 
   # GET /workflows/new
   def new
