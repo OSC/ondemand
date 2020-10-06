@@ -7,8 +7,9 @@ GEMFILE           = PROJ_DIR.join('Gemfile')
 INSTALL_ROOT      = Pathname.new(ENV["PREFIX"] || "/opt/ood")
 VENDOR_BUNDLE     = (ENV['VENDOR_BUNDLE'] == "yes" || ENV['VENDOR_BUNDLE'] == "true")
 PASSENGER_APP_ENV = ENV["PASSENGER_APP_ENV"] || "production"
-DOCKER_NAME       = ENV["DOCKER_NAME"] || "ondemand-dev"
-DOCKER_PORT       = ENV["DOCKER_PORT"] || '8080'
+
+require "#{PROJ_DIR}/build/packaging"
+require "#{PROJ_DIR}/build/test"
 
 def infrastructure
   [
@@ -47,24 +48,6 @@ class Component
   def gemfile?
     @path.join('Gemfile.lock').exist?
   end
-end
-
-desc "Package OnDemand"
-task :package do
-  `which gtar 1>/dev/null 2>&1`
-  if $?.success?
-    tar = 'gtar'
-  else
-    tar = 'tar'
-  end
-  version = ENV['VERSION']
-  if ! version
-    latest_commit = `git rev-list --tags --max-count=1`.strip[0..6]
-    latest_tag = `git describe --tags #{latest_commit}`.strip[1..-1]
-    datetime = Time.now.strftime("%Y%m%d-%H%M")
-    version = "#{latest_tag}-#{datetime}-#{latest_commit}"
-  end
-  sh "git ls-files | #{tar} -c --transform 's,^,ondemand-#{version}/,' -T - | gzip > packaging/v#{version}.tar.gz"
 end
 
 namespace :build do
@@ -138,46 +121,6 @@ task :clean do
   sh "git clean -Xdf"
 end
 
-desc "Test OnDemand"
-task :test => 'test:all'
-namespace :test do
-  testing = {
-    'ood-portal-generator': 'spec',
-    'nginx_stage': 'spec',
-    'apps/activejobs': 'spec',
-    'apps/dashboard': 'test',
-    'apps/file-editor': 'test',
-    'apps/myjobs': 'test'
-  }
-
-  desc "Setup tests"
-  task :setup do
-    testing.each_pair do |app, _task|
-      chdir PROJ_DIR.join(app.to_s) do
-        sh "bundle install --with development test"
-      end
-    end
-  end
-
-  desc "Run unit tests"
-  task :unit => [:setup] do
-    testing.each_pair do |app, task|
-      chdir PROJ_DIR.join(app.to_s) do
-        sh "bundle exec rake #{task}"
-      end
-    end
-  end
-
-  desc "Run shellcheck"
-  task :shellcheck do
-    sh "shellcheck -x ood-portal-generator/sbin/update_ood_portal"
-    sh "shellcheck -x nginx_stage/sbin/nginx_stage"
-    sh "shellcheck nginx_stage/sbin/update_nginx_stage"
-  end
-
-  task :all => [:unit, :shellcheck]
-end
-
 desc "Update Ondemand"
 task :update do
   ruby_apps.each do |app|
@@ -188,28 +131,3 @@ end
 
 
 task default: %w[test]
-
-namespace :docker do
-  desc "Build Docker container"
-  task :build do
-    sh "docker build -t #{DOCKER_NAME} ."
-  end
-
-  desc "Run Docker container"
-  task :run do
-    sh "docker run -p #{DOCKER_PORT}:8080 -p 5556:5556 -v '#{PROJ_DIR}:/ondemand' --name #{DOCKER_NAME} --rm --detach #{DOCKER_NAME}"
-  end
-
-  desc "Kill Docker container"
-  task :kill do
-    sh "docker kill #{DOCKER_NAME}"
-  end
-
-  desc "Connect to Docker container"
-  task :connect do
-    sh "docker exec -it #{DOCKER_NAME} /bin/bash"
-  end
-
-  desc "Use docker to do development, build run and connect to container"
-  task :development => [:build, :run, :connect]
-end
