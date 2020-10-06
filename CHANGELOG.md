@@ -6,8 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.8.14] - 2020-10-06
 ### Added
 - log formatting options for apache and nginx access logs [#677] (https://github.com/OSC/ondemand/pull/677)
+
+### Changed
+- Changed language to 'Open XDMoD' [#687](https://github.com/OSC/ondemand/pull/687).
+- Update to 5.2.4.4 and ood_core 0.14.0 [#690](https://github.com/OSC/ondemand/pull/690).
+
+### Fixed
+- Fixed XDMoD queries for staff users [#688](https://github.com/OSC/ondemand/pull/688).
 
 ## [1.8.13] - 2020-09-21
 ### Changed
@@ -564,7 +572,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.13...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.14...HEAD
+[1.8.14]: https://github.com/OSC/ondemand/compare/v1.8.13...v1.8.14
 [1.8.13]: https://github.com/OSC/ondemand/compare/v1.8.12...v1.8.13
 [1.8.12]: https://github.com/OSC/ondemand/compare/v1.8.11...v1.8.12
 [1.8.11]: https://github.com/OSC/ondemand/compare/v1.8.10...v1.8.11
