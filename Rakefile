@@ -2,14 +2,15 @@ require "pathname"
 require "time"
 
 PROJ_DIR          = Pathname.new(__dir__)
+TASK_DIR          = "#{PROJ_DIR}/lib/tasks"
 APPS_DIR          = PROJ_DIR.join('apps')
 GEMFILE           = PROJ_DIR.join('Gemfile')
 INSTALL_ROOT      = Pathname.new(ENV["PREFIX"] || "/opt/ood")
 VENDOR_BUNDLE     = (ENV['VENDOR_BUNDLE'] == "yes" || ENV['VENDOR_BUNDLE'] == "true")
 PASSENGER_APP_ENV = ENV["PASSENGER_APP_ENV"] || "production"
 
-require "#{PROJ_DIR}/build/packaging"
-require "#{PROJ_DIR}/build/test"
+require "#{TASK_DIR}/packaging"
+require "#{TASK_DIR}/test"
 
 def infrastructure
   [

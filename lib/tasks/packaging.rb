@@ -48,7 +48,7 @@ namespace :package do
   end
 
   task container: [:clean] do
-    file = "build/container_files/Dockerfile.base"
+    file = "lib/tasks/container_files/Dockerfile.base"
     cmd = podman_runtime? ? buildah_build_cmd(file, image_name) : docker_build_cmd(file, image_name)
     sh cmd unless image_exists?("ood:#{image_tag}")
   end
@@ -58,7 +58,7 @@ namespace :package do
   end
 
   task test_container: [:latest_container] do
-    file = "build/container_files/Dockerfile.test"
+    file = "lib/tasks/container_files/Dockerfile.test"
     build_cmd = podman_runtime? ? buildah_build_cmd(file, test_image_name) : docker_build_cmd(file, test_image_name)
     sh build_cmd unless image_exists?("#{test_image_name}:#{image_tag}")
     sh tag_latest_container_cmd(test_image_name)

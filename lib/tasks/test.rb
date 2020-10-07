@@ -57,7 +57,7 @@ namespace :test do
   end
 
   def mount_args
-    ["-v", "#{Dir.pwd}/build/container_files/test/ood_portal.yml:/etc/ood/config/ood_portal.yml:ro"]
+    ["-v", "#{TASK_DIR}/container_files/test/ood_portal.yml:/etc/ood/config/ood_portal.yml:ro"]
   end
 
   def rt_specific_flags

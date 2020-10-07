@@ -10,7 +10,7 @@ RUN groupadd -g $GID $USER && \
     useradd -u $UID --create-home --gid $USER $USER && \
     /usr/bin/htpasswd -b -c /etc/httpd/.htpasswd $USER $USER
 
-COPY build/container_files/test/entrypoint.sh /entrypoint.sh
+COPY lib/tasks/container_files/test/entrypoint.sh /entrypoint.sh
 
 CMD [ "/entrypoint.sh" ]
 

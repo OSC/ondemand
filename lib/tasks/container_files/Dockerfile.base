@@ -38,12 +38,12 @@ COPY ood-portal-generator   /opt/ood/ood-portal-generator
 COPY ood_auth_map           /opt/ood/ood_auth_map
 COPY apps                   /opt/ood/apps
 COPY Rakefile               /opt/ood/Rakefile
-COPY build                  /opt/ood/build
+COPY lib                    /opt/ood/lib
 
 RUN source /opt/rh/ondemand/enable && \
     rake -f /opt/ood/Rakefile -mj$CONCURRENCY build && \
     mv /opt/ood/apps/* /var/www/ood/apps/sys/ && \
-    rm -rf /opt/ood/Rakefile /opt/ood/apps /opt/ood/build
+    rm -rf /opt/ood/Rakefile /opt/ood/apps /opt/ood/lib
 
 # copy configuration files
 RUN mkdir -p /etc/ood/config
