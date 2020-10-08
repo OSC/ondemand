@@ -16,7 +16,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Changed language to 'Open XDMoD' [#687](https://github.com/OSC/ondemand/pull/687).
-- Update to 5.2.4.4 and ood_core 0.14.0 [#690](https://github.com/OSC/ondemand/pull/690).
+- Update to Rails 5.2.4.4 and ood_core 0.14.0 [#690](https://github.com/OSC/ondemand/pull/690).
+- ood_core 0.14.0 additions
+   - Added: Kubernetes adapter in PR [156](https://github.com/OSC/ood_core/pull/156)
+   - Fixed: Handle Slurm timeouts [209](https://github.com/OSC/ood_core/pull/209)
+   - Fixed: Linux Host Adapter race condition in deleteing tmp files [212](https://github.com/OSC/ood_core/pull/212)
 
 ### Fixed
 - Fixed XDMoD queries for staff users [#688](https://github.com/OSC/ondemand/pull/688).
