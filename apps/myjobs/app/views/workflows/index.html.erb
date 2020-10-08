@@ -87,7 +87,7 @@
                 <td>
                   <% if workflow.xdmod_url_available? %>
                     <%= link_to(workflow.xdmod_url, target: "_blank")  do %>
-                      <%= workflow.pbsid %> - <%= content_tag :i, nil, style: "display: inline", class: "fa fa-external-link-square-alt" %>&nbsp;XDMoD
+                      <%= workflow.pbsid %> - <%= content_tag :i, nil, style: "display: inline", class: "fa fa-external-link-square-alt" %>&nbsp;Open&nbsp;XDMoD
                     <% end %>
 
                     <%= content_tag :p, xdmod_url_warning_message(workflow), class: "bg-warning" if xdmod_url_warning_message(workflow) %>

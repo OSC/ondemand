@@ -105,7 +105,7 @@ $(window).focus ->
     update_missing_data_script_view()
     if(data.xdmod_url)
       # details external url
-      $("#job-details-id").html('<a target="_blank" href="'+data.xdmod_url+'">'+data.pbsid+' - <i style="display: inline" class="fa fa-external-link-square-alt"></i>&nbsp;XDMoD</a>')
+      $("#job-details-id").html('<a target="_blank" href="'+data.xdmod_url+'">'+data.pbsid+' - <i style="display: inline" class="fa fa-external-link-square-alt"></i>&nbsp;Open&nbsp;XDMoD</a>')
       if(data.xdmod_url_warning_message)
         $("#job-details-xdmod-warning").text(data.xdmod_url_warning_message)
       else
