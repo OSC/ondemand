@@ -58,6 +58,7 @@ const server = new http.createServer(app);
 const wss = new WebSocket.Server({ noServer: true });
 
 let host_allowlist = new HostAllowlist(process.env.OOD_SSHHOST_ALLOWLIST, process.env.OOD_CLUSTERS, process.env.OOD_DEFAULT_SSHHOST || process.env.DEFAULT_SSHHOST);
+let defaultHost = "owens.osc.edu";
 
 wss.on('connection', function connection (ws, req) {
   var dir,
@@ -163,7 +164,7 @@ server.on('upgrade', function upgrade(request, socket, head) {
     ].join('\r\n') + '\r\n\r\n');
 
     socket.destroy();
-  } else if (host_allowlist.hostInAllowlist(host)) { // host not in allowlist
+  } else if (!host_allowlist.hostInAllowlist(host)) { // host not in allowlist
     socket.write([
       'HTTP/1.1 401 Unauthorized',
       'Content-Type: text/html; charset=UTF-8',
