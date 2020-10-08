@@ -3,6 +3,10 @@
 
 <head>
   <title>Shell</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="{{baseURI}}/javascripts/jquery-3.0.0.min.js"></script>
+      <script src="{{baseURI}}/javascripts/bootstrap.min.js"></script>
+     <link rel="stylesheet" href="{{baseURI}}/stylesheets/bootstrap-theme.min.css">
     <link rel="stylesheet" href="{{baseURI}}/stylesheets/bootstrap.min.css">
   <link rel="stylesheet" href="{{baseURI}}/stylesheets/style.css">
 
@@ -13,29 +17,24 @@
 
 <body>
   <div id="terminal">
-    <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
-    <div class="container-fluid">
-      <!-- Brand and toggle get grouped for better mobile display -->
-      <div class="navbar-header">
-        <ul class="nav navbar-nav">
-            <li>
-            <span id="host" class="label hidden-xs">Host: </span>
+    
+    <nav class="navbar navbar-inverse navbar-static-top navbar-expand" role="navigation">
+      <div class="container-fluid" >
+      <ul class="navbar-nav left-padding-none">
+            <li class="nav-item custom-host">
+            <label id="host" class="label">Host: </label>
           </li>
-          <li>
-            <span id="directory" class="label hidden-sm hidden-xs"></span>
+      </ul>
+            <ul class="navbar-nav left-padding-some">
+          <li class="nav-item hidden-xs">
+            <label id="directory" class="label hidden-xs"></label>
           </li>
-        </ul>
-      </div>
-
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse navbar-responsive-collapse">
-        <ul class="nav navbar-nav navbar-right form-inline">
-
-
-          <li class="hidden-xs">
-            <label class="label hidden-xs" for="theme">Themes:</label>
-            <div class="form-group">
-          <select id="colors" class="form-control input-xs" id="theme">
+      </ul>
+          <ul class="navbar-nav form-inline navbar-right left-padding-none">
+          <li class="nav-item">
+            <div class="form-group custom-form">
+            <label class="label" for="colors">Themes:</label>
+          <select id="colors" class="form-control custom-select">
         <option value="default">Default</option>
         <optgroup label="Dark">
         <option value="Monokai">Monokai</option>
@@ -57,8 +56,6 @@
             </div>
           </li>
         </ul>
-      </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
   </nav>
   </div>
 </body>
@@ -112,7 +109,9 @@ if (pathname[6]) {
   });
 }
 
-dirElement.textContent += directory;
+var finalDir = directory.slice(0, -1);
+
+dirElement.textContent += finalDir;
 
 hostElement.textContent += " " + host;
 

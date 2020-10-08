@@ -25,12 +25,38 @@ html, body {
 
 .navbar {
   margin-bottom: 0px;
-  min-height: 0;
+  min-height: 5px;
   padding: 1px 3px 1px 3px;
-
-  /* keep the navbar from expanding on multiple lines */
-  max-height: 25px;
+  max-height: 27px;
   overflow: hidden;
+}
+
+@media only screen and (max-width: 768px) {
+  .custom-form {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  .custom-select {
+    width: 60%;
+    display: inline;
+  }
+
+  .custom-host {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+
+}
+
+.left-padding-none {
+padding-left: 0;
+}
+
+.left-padding-some {
+  padding-left: 20px;
 }
 
 #colors {
