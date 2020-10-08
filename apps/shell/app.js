@@ -36,10 +36,14 @@ router.get(['/', '/ssh'], function (req, res) {
 });
 
 router.get('/ssh*', function (req, res) {
+  var theHost, theDir;
+  [theHost, theDir] = host_and_dir_from_url(req.url);
   res.render('index',
     {
       baseURI: req.baseUrl,
       csrfToken: tokens.create(secret),
+      host: theHost,
+      dir: theDir,
     });
 });
 

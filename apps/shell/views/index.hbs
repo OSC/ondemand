@@ -22,7 +22,7 @@
       <div class="container-fluid" >
       <ul class="navbar-nav left-padding-none">
             <li class="nav-item custom-host">
-            <label id="host" class="label">Host: </label>
+            <label id="host" class="label">Host: {{host}} </label>
           </li>
       </ul>
             <ul class="navbar-nav left-padding-some">
@@ -66,7 +66,6 @@
 <script>
   var oodShell,
   dirElement = document.getElementById("directory"),
-  hostElement = document.getElementById("host"),
   schemeSelect = document.getElementById("colors");
   setupHterm = function () {
     // Global variables that define the terminal
@@ -99,24 +98,15 @@
 
     return base + separator + "csrf={{csrfToken}}";
   }
-var pathname = window.location.pathname.split( '/' );
-var host = pathname[5];
-var directory = "";
 
-if (pathname[6]) {
-  directory = "Initial Directory: /";
-  pathname.forEach(function(dir, index) {
-    if (index >= 6) {
-      directory = directory + dir +"/"
-    } 
-  });
+var directory = "{{dir}}";
+
+if (directory != "") {
+  directory = "Initial Directory: {{dir}}";
 }
 
-var finalDir = directory.slice(0, -1);
+dirElement.textContent += directory;
 
-dirElement.textContent += finalDir;
-
-hostElement.textContent += " " + host;
 
 schemeSelect.addEventListener("change", function(ev) {
   combinedArr = [...darkThemes, ...brightThemes];
