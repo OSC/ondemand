@@ -11,6 +11,7 @@ PASSENGER_APP_ENV = ENV["PASSENGER_APP_ENV"] || "production"
 
 require "#{TASK_DIR}/packaging"
 require "#{TASK_DIR}/test"
+require "#{TASK_DIR}/docker"
 
 def infrastructure
   [
