@@ -92,6 +92,10 @@ To specify a host and directory:
 
 `http://localhost:3000/ssh/<host>/<dir>`
 
+## Terminal Color Schemes
+
+Credit for the terminal color schemes in use goes to https://github.com/mbadolato/iTerm2-Color-Schemes.
+
 ## Development
 
 For development purposes the environment variables must be specified in the
