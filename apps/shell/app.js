@@ -58,7 +58,6 @@ const server = new http.createServer(app);
 const wss = new WebSocket.Server({ noServer: true });
 
 let host_allowlist = new HostAllowlist(process.env.OOD_SSHHOST_ALLOWLIST, process.env.OOD_CLUSTERS, process.env.OOD_DEFAULT_SSHHOST || process.env.DEFAULT_SSHHOST);
-let defaultHost = "owens.osc.edu";
 
 wss.on('connection', function connection (ws, req) {
   var dir,

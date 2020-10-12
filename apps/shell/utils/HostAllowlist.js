@@ -13,7 +13,11 @@ class HostAllowlist {
         .map(yml => yaml.safeLoad(fs.readFileSync(yml)))
         .filter(config => (config.v2 && config.v2.login && config.v2.login.host) && ! (config.v2 && config.v2.metadata && config.v2.metadata.hidden))
         .map(config => {
-            return { host: config.v2.login.host, default: config.v2.login.default }
+            let isDefault = false;
+            if (config.v2.login.default){ // a catch in case the default is undefined for cluster configs
+                isDefault = true
+            }
+            return { host: config.v2.login.host, default: isDefault }
         })
     
         //Add to allowlist
@@ -24,7 +28,8 @@ class HostAllowlist {
             this.addToAllowlist(cluster.host);
         });
 
-        this.default_sshhost = ood_default_sshhost || cluster_sshhosts.find(cluster => cluster.default || ([first] = cluster_sshhosts)).host;
+        var cluster = cluster_sshhosts.find(cluster => cluster.default) || cluster_sshhosts[0];
+        this.default_sshhost = ood_default_sshhost || cluster.host;
     }
   
     default_sshhost() {
