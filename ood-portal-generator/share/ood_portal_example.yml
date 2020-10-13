@@ -80,6 +80,12 @@
 # Default: [] (no IPs whitelisted)
 #maintenance_ip_whitelist: []
 
+# Set Header Content-Security-Policy to disallow OnDemand beind loaded in an iFrame.
+# Example:
+#   security_disable_frames: false
+# Default: true
+#security_disable_frames: true
+
 # Root directory of the Lua handler code
 # Example:
 #     lua_root: '/path/to/lua/handlers'
