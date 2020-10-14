@@ -4,18 +4,17 @@ class MotdFormatterPlaintextErb
   def initialize(motd_file)
     motd_file = MotdFile.new unless motd_file
     @title = motd_file.title
-    @content = render(motd_file.content)
+    @content = render(motd_file)
   end
 
-  def render(content)
+  def render(motd_file)
     begin
-      ERB.new(content).result || raise('ERB has failed to parse the file')
-    rescue StandardError => e
-      puts e.message
-      content
+      ERB.new(motd_file.content).result
+    rescue Exception => e
+      raise e, "ERB Has Failed To Parse The File", motd_file.motd_path
     end
   end
-
+ 
   def to_partial_path
     "dashboard/motd_plaintext"
   end

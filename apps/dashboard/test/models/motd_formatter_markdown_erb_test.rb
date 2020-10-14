@@ -14,9 +14,20 @@ class MotdTest < ActiveSupport::TestCase
     path = "#{Rails.root}/test/fixtures/files/motd_valid_erb_md"
     motd_file = MotdFile.new(path)
     formatted_motd = MotdFormatterMarkdownErb.new(motd_file)
-    expected_file = OodAppkit.markdown.render(ERB.new(motd_file.content).result)
+    expected_file = OodAppkit.markdown.render("# Welcome to the Ohio Supercomputer Center!")
     
     assert_equal expected_file, formatted_motd.content
+  end
+
+  test "test when motd_formatter_markdown_erb_throws_exception" do
+    path = "#{Rails.root}/test/fixtures/files/motd_erb_exception"
+    motd_file = MotdFile.new(path)
+    msg = "ERB Has Failed To Parse The File"
+    exception = assert_raises(Exception) {
+      MotdFormatterMarkdownErb.new(motd_file)
+    }
+
+    assert_equal msg, exception.message
   end
 
   test "test when motd_formatter_markdown_erb_empty" do
