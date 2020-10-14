@@ -6,6 +6,49 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.8.15] - 2020-10-08
+### Fixed
+- replace text "XDMoD" with "Open XDMoD" in Job Composer
+
+## [1.8.14] - 2020-10-06
+### Added
+- log formatting options for apache and nginx access logs [#677] (https://github.com/OSC/ondemand/pull/677)
+
+### Changed
+- Changed language to 'Open XDMoD' [#687](https://github.com/OSC/ondemand/pull/687).
+- Update to Rails 5.2.4.4 and ood_core 0.14.0 [#690](https://github.com/OSC/ondemand/pull/690).
+- ood_core 0.14.0 additions
+   - Added: Kubernetes adapter in PR [156](https://github.com/OSC/ood_core/pull/156)
+   - Fixed: Handle Slurm timeouts [209](https://github.com/OSC/ood_core/pull/209)
+   - Fixed: Linux Host Adapter race condition in deleteing tmp files [212](https://github.com/OSC/ood_core/pull/212)
+
+### Fixed
+- Fixed XDMoD queries for staff users [#688](https://github.com/OSC/ondemand/pull/688).
+
+## [1.8.13] - 2020-09-21
+### Changed
+- make it easier to develop info.html.erb in batch connect apps by gracefully handling crashes and now rendering template from the app root instead of storing a copy of the template in the session [#666](https://github.com/OSC/ondemand/pull/666)
+
+### Added
+- can load .rb locale files alongside .yml files [#645](https://github.com/OSC/ondemand/pull/645)
+- warn users about job composer links to XDMoD jobs being broken immediately after job starts [#676](https://github.com/OSC/ondemand/pull/676)
+
+### Fixed
+- ignore bad cache key values when updating from batch connect form cache [#655](https://github.com/OSC/ondemand/pull/655)
+- properly escape characters in Go To dialog in Files app [#660](https://github.com/OSC/ondemand/pull/660)
+- force update Files app dependencies using yarn resolutions [#661](https://github.com/OSC/ondemand/pull/661)
+- accessibility: hide FA icons from screen readers and use real title in app link list [#667](https://github.com/OSC/ondemand/pull/667)
+- xdmod widgets utilize available space when no motd displays [#676](https://github.com/OSC/ondemand/pull/676)
+
+## [1.8.12] - 2020-08-18
+### Added
+- mod_auth_openidc option for setting OIDCCookieSameSite in ood-portal-generator using
+  "oidc_cookie_same_site: On" or "oidc_cookie_same_site: Off" [#651](https://github.com/OSC/ondemand/pull/651)
+
+### Fixed
+- default "oidc_cookie_same_site: On" if SSL not enabled so Chrome browser works
+  (useful for ood-images) [#651](https://github.com/OSC/ondemand/pull/651)
+
 ## [1.8.11] - 2020-08-10
 ### Added
 - grafana config: allow changing the cluster config name when the cluster in OOD differs from the cluster in Grafana [#639](https://github.com/OSC/ondemand/pull/639)
@@ -537,7 +580,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.11...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.15...HEAD
+[1.8.15]: https://github.com/OSC/ondemand/compare/v1.8.14...v1.8.15
+[1.8.14]: https://github.com/OSC/ondemand/compare/v1.8.13...v1.8.14
+[1.8.13]: https://github.com/OSC/ondemand/compare/v1.8.12...v1.8.13
+[1.8.12]: https://github.com/OSC/ondemand/compare/v1.8.11...v1.8.12
 [1.8.11]: https://github.com/OSC/ondemand/compare/v1.8.10...v1.8.11
 [1.8.10]: https://github.com/OSC/ondemand/compare/v1.8.9...v1.8.10
 [1.8.9]: https://github.com/OSC/ondemand/compare/v1.8.8...v1.8.9

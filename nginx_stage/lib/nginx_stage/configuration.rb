@@ -145,6 +145,10 @@ module NginxStage
 
     attr_writer :pun_error_log_path
 
+    # Access log custom format
+    # @return [String] format parameters
+    attr_accessor :pun_log_format
+
     # Path to the user's per-user NGINX pid file
     # @example User Bob's pid file
     #   pun_pid_path(user: 'bob')
@@ -422,6 +426,7 @@ module NginxStage
       self.pun_tmp_root        = '/var/tmp/ondemand-nginx/%{user}'
       self.pun_access_log_path = '/var/log/ondemand-nginx/%{user}/access.log'
       self.pun_error_log_path  = '/var/log/ondemand-nginx/%{user}/error.log'
+      self.pun_log_format      = '$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" "$http_x_forwarded_for"'
       self.pun_pid_path        = '/var/run/ondemand-nginx/%{user}/passenger.pid'
       self.pun_socket_path     = '/var/run/ondemand-nginx/%{user}/passenger.sock'
       self.pun_sendfile_root   = '/'

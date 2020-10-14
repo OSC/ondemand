@@ -41,10 +41,6 @@ module BatchConnect
     # @return [String, nil] session view
     attr_accessor :view
 
-    # The view used to display custom info for this session
-    # @return [String, nil] session info
-    attr_accessor :info_view
-
     # Batch connect script type
     # @return [String] script type
     attr_accessor :script_type
@@ -56,13 +52,33 @@ module BatchConnect
     # @return [Boolean] true if job is completed
     attr_accessor :cache_completed
 
+    # Error message about failing to parse info view ERB template.
+    # @return [String] error message
+    attr_reader :render_info_view_error_message
+
+    # Return parsed markdown from info.{md, html}.erb
+    # @return [String, nil] return HTML if no error while parsing, else return nil
+    def render_info_view
+      @render_info_view ||= OodAppkit.markdown.render(ERB.new(self.app.session_info_view, nil, "-").result(binding)).html_safe if self.app.session_info_view
+    rescue => e
+      @render_info_view_error_message = "Error when rendering info view: #{e.class} - #{e.message}"
+      Rails.logger.error(@render_info_view_error_message)
+      nil
+    end
+
+    # Return the Batch Connect app from the session token
+    # @return [BatchConnect::App]
+    def app
+      BatchConnect::App.from_token(self.token)
+    end
+    
     # How many days before a Session record is considered old and ready to delete
     OLD_IN_DAYS=7
 
     # Attributes used for serialization
     # @return [Hash] attributes to be serialized
     def attributes
-      %w(id cluster_id job_id created_at token title view info_view script_type cache_completed).map do |attribute|
+      %w(id cluster_id job_id created_at token title view script_type cache_completed).map do |attribute|
         [ attribute, nil ]
       end.to_h
     end
@@ -190,7 +206,6 @@ module BatchConnect
       self.token      = app.token
       self.title      = app.title
       self.view       = app.session_view
-      self.info_view  = app.session_info_view
       self.created_at = Time.now.to_i
 
       submit_script = app.submit_opts(context, fmt: format) # could raise an exception

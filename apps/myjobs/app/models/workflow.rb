@@ -197,6 +197,10 @@ class Workflow < ApplicationRecord
     "#{Configuration.xdmod_host}/index.php#job_viewer?action=show&realm=SUPREMM&resource_id=#{xdmod_resource_id}&local_job_id=#{pbsid_number}"
   end
 
+  def completed_at
+    jobs.first.try(:updated_at)
+  end
+
   def xdmod_url_available?
     Configuration.xdmod_integration_enabled? && xdmod_resource_id && completed?
   end

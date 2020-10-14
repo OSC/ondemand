@@ -65,15 +65,20 @@ Listen <%= addr_port %>
 <VirtualHost *:<%= @port %>>
   <%- if @servername -%>
   ServerName <%= @servername %>
+  <%- end -%>
 
-  ErrorLog  "<%= @logroot %>/<%= @servername %>_error<%= "_ssl" if @ssl %>.log"
-  CustomLog "<%= @logroot %>/<%= @servername %>_access<%= "_ssl" if @ssl %>.log" combined
+  ErrorLog  "<%= @errorlog %>"
+  <%- if @logformat -%>
+  LogFormat <%= @logformat %>
+  TransferLog "<%= @accesslog %>"
+  <%- else -%>
+  CustomLog "<%= @accesslog %>" combined
+  <%- end -%>
 
-  <%- if @use_rewrites -%>
+  <%- if @servername && @use_rewrites -%>
   RewriteEngine On
   RewriteCond %{HTTP_HOST} !^(<%= @proxy_server %>(:<%= @port %>)?)?$ [NC]
   RewriteRule ^(.*) <%= @ssl ? "https" : "http" %>://<%= @proxy_server %>:<%= @port %>$1 [R=301,NE,L]
-  <%- end -%>
   <%- end -%>
 
   <%- if @use_rewrites && @use_maintenance -%>
@@ -112,6 +117,7 @@ Listen <%= addr_port %>
   OIDCSessionInactivityTimeout <%= @oidc_session_inactivity_timeout %>
   OIDCSessionMaxDuration <%= @oidc_session_max_duration %>
   OIDCStateMaxNumberOfCookies <%= @oidc_state_max_number_of_cookies %>
+  OIDCCookieSameSite <%= @oidc_cookie_same_site %>
   <%- @oidc_settings.keys.sort.each do |oidc_setting| -%>
   <%= oidc_setting %> <%= @oidc_settings[oidc_setting] %>
   <%- end -%>

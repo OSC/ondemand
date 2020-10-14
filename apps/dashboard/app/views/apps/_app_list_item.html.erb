@@ -3,12 +3,12 @@
     link_to(
       link.url.to_s,
       class: "list-group-item",
+      title: link.title,
       data: {
         toggle: "popover",
         content: manifest_markdown(link.description),
         html: true,
         trigger: "hover",
-        title: link.title,
         container: "body"
       },
       target: link.new_tab? ? "_blank" : nil

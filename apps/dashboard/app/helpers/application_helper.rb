@@ -44,7 +44,7 @@ module ApplicationHelper
   end
 
   def fa_icon(icon, fa_style: "fas", id: "")
-    content_tag(:i, "", id: id, class: [fa_style, "fa-#{icon}", "fa-fw", "app-icon"] , title: "FontAwesome icon specified: #{icon}")
+    content_tag(:i, "", id: id, class: [fa_style, "fa-#{icon}", "fa-fw", "app-icon"] , title: "FontAwesome icon specified: #{icon}", "aria-hidden": true)
   end
 
   def app_icon_tag(app)
@@ -65,7 +65,7 @@ module ApplicationHelper
     if %w(fa fas far fab fal).include?(icon_uri.scheme)
       fa_icon(icon_uri.host, fa_style: icon_uri.scheme)
     else
-      image_tag icon_uri.to_s, class: "app-icon", title: icon_uri.to_s
+      image_tag icon_uri.to_s, class: "app-icon", title: icon_uri.to_s, "aria-hidden": true
     end
   end
 

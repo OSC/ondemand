@@ -8,4 +8,4 @@ Rails.application.config.i18n = {}
 I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
 
 # load the local translations and any translations from config_root
-I18n.load_path += Dir[Rails.application.config.root.join('config/locales/*.yml'), ::Configuration.locales_root.join('*.yml')]
+I18n.load_path += Dir[Rails.application.config.root.join('config', 'locales', '*.{yml,rb}'), ::Configuration.locales_root.join('*.{yml,rb}')]

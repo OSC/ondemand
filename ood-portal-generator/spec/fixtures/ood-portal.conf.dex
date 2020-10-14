@@ -44,6 +44,10 @@
 #
 <VirtualHost *:80>
 
+  ErrorLog  "logs/error.log"
+  CustomLog "logs/access.log" combined
+
+
   # Support maintenance page during outages of OnDemand
   RewriteEngine On
   RewriteCond /var/www/ood/public/maintenance/index.html -f
@@ -66,6 +70,7 @@
   OIDCSessionInactivityTimeout 28800
   OIDCSessionMaxDuration 28800
   OIDCStateMaxNumberOfCookies 10 true
+  OIDCCookieSameSite On
 
   # Lua configuration
   #

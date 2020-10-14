@@ -19,6 +19,12 @@ module NginxStage
       NginxStage.pun_access_log_path(user: user)
     end
 
+    # Log format for access.log
+    # @return [String] log format configuration parameters
+    def log_format
+      NginxStage.pun_log_format
+    end
+
     # Path to the user's per-user NGINX pid file
     # @return [String] path to pid file
     def pid_path
