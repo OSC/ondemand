@@ -61,7 +61,7 @@
   ErrorDocument 503 /public/maintenance/index.html
   Header Set Cache-Control "max-age=0, no-store"
 
-  Header set Content-Security-Policy: "frame-ancestors none;"
+  Header always set Content-Security-Policy "frame-ancestors none;"
 
   # OIDC configuration
   #

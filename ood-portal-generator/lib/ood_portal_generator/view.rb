@@ -39,6 +39,7 @@ module OodPortalGenerator
 
       # Security configuration
       @security_disable_frames = opts.fetch(:security_disable_frames, true)
+      @security_strict_transport = opts.fetch(:security_strict_transport, !@ssl.nil?)
 
       # Portal authentication
       @auth = opts.fetch(:auth, [

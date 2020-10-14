@@ -86,6 +86,12 @@
 # Default: true
 #security_disable_frames: true
 
+# Set Header Strict-Transport-Security to help enforce SSL
+# Example:
+#   security_strict_transport: false
+# Default: true when ssl is enabled, false otherwise
+#security_strict_transport: false
+
 # Root directory of the Lua handler code
 # Example:
 #     lua_root: '/path/to/lua/handlers'

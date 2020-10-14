@@ -48,7 +48,7 @@
   CustomLog "logs/access.log" combined
 
 
-  Header set Content-Security-Policy: "frame-ancestors none;"
+  Header always set Content-Security-Policy "frame-ancestors none;"
 
   # Lua configuration
   #
