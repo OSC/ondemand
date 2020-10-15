@@ -22,12 +22,10 @@ class MotdTest < ActiveSupport::TestCase
   test "test when motd_formatter_markdown_erb_throws_exception" do
     path = "#{Rails.root}/test/fixtures/files/motd_erb_exception"
     motd_file = MotdFile.new(path)
-    msg = "ERB Has Failed To Parse The File"
-    exception = assert_raises(Exception) {
+    
+    assert_raises(Exception) {
       MotdFormatterMarkdownErb.new(motd_file)
     }
-
-    assert_equal msg, exception.message
   end
 
   test "test when motd_formatter_markdown_erb_empty" do
