@@ -95,7 +95,14 @@ Listen <%= addr_port %>
   Header Set Cache-Control "max-age=0, no-store"
 
   <%- end -%>
+  <%- if @security_disable_frames -%>
+  Header always set Content-Security-Policy "frame-ancestors none;"
+  <%- end -%>
+  <%- if @security_strict_transport -%>
+  Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+  <%- end -%>
   <%- if @ssl -%>
+
   SSLEngine On
   <%- @ssl.each do |line| -%>
   <%= line %>
