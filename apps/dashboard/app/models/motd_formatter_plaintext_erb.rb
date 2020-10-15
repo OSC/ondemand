@@ -11,7 +11,7 @@ class MotdFormatterPlaintextErb
     begin
       ERB.new(motd_file.content).result
     rescue Exception => e
-      raise "ERB rendering failed with: #{e.message}\n #{content}"
+      raise "ERB rendering failed with: #{e.message}\n #{motd_file.content}"
     end
   end
  
