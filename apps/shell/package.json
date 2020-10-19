@@ -32,9 +32,11 @@
     "http-errors": "1.7.2"
   },
   "devDependencies": {
-    "jest": "^26.1.0"
+    "jest": "^26.1.0",
+    "term-schemes": "^1.2.1"
   },
   "scripts": {
-    "test": "jest --verbose"
+    "test": "jest --verbose",
+    "compile:themes": "node scheme_generator.js"
   }
 }
