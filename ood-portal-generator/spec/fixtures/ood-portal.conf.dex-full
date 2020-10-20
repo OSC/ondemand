@@ -69,6 +69,9 @@
   ErrorDocument 503 /public/maintenance/index.html
   Header Set Cache-Control "max-age=0, no-store"
 
+  Header always set Content-Security-Policy "frame-ancestors none;"
+  Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+
   SSLEngine On
   SSLCertificateFile /etc/pki/tls/certs/example.com.crt
   SSLCertificateKeyFile /etc/pki/tls/private/example.com.key

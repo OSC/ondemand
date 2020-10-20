@@ -40,6 +40,7 @@ router.get('/ssh*', function (req, res) {
     {
       baseURI: req.baseUrl,
       csrfToken: tokens.create(secret),
+      siteTitle: (process.env.OOD_DASHBOARD_TITLE || "Open OnDemand"),
     });
 });
 

@@ -1,4 +1,4 @@
-<% content_for :title, t('dashboard.breadcrumbs_my_sessions') %>
+<% content_for :title, "#{t('dashboard.breadcrumbs_my_sessions')} - #{OodAppkit.dashboard.title}" %>
 
 <%-
   any_apps = (@sys_app_groups + @usr_app_groups + @dev_app_groups).any?
