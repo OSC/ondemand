@@ -1,0 +1,7 @@
+<div class="alert alert-danger" role="alert">
+  <% begin %>
+    <%= MotdFile.new.formatter %>
+  <% rescue Exception => e %>
+    <p>MOTD was not parsed or rendered correctly: <%= e.message %></p>
+  <% end %>
+</div>
