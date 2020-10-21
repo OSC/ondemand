@@ -3,7 +3,7 @@ class DashboardController < ApplicationController
     begin
        @motd = MotdFile.new.formatter
     rescue Exception => e
-       render "errors/motd_erb_error", locals: { e: e }
+  	flash.now[:alert] = "MOTD was not parsed or rendered correctly: " + e.message   
     end
   end
 
