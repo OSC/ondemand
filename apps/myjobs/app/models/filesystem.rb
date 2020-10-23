@@ -87,10 +87,11 @@ class Filesystem
   # FIXME: some duplication here between du command above and this; we probably
   # want to use the above
   #
-  # Get the disk usage of a path in bytes, nil if path is invalid
+  # Get the disk usage of a path in bytes, nil if path does not exist
   def path_size (path)
     if Dir.exist? path
-      Integer(`du -s -b #{path}`.split('/')[0])
+      o, e, s = Open3.capture3('du', '-s', '-b', path)
+      o.split('/')[0].to_i
     end
   end
 end
