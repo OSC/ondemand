@@ -25,36 +25,46 @@ class TemplatesController < ApplicationController
   # POST /templates.json
   def create
     @template = template_params[:path].blank? ? Template.default : Template.new(template_params[:path])
-    @template.script = template_params[:script] if template_params[:script].present?
-    @template.name = template_params[:name]
-    @template.host = template_params[:host]
-    @template.notes = template_params[:notes]
+    saved = false
 
-    # TODO this whole create method can be cleaned up
-    template_location = Pathname.new(@template.path)
+    begin
+      @template.script = template_params[:script] if template_params[:script].present?
+      @template.name = template_params[:name]
+      @template.host = template_params[:host]
+      @template.notes = template_params[:notes]
 
-    data_location = OodAppkit.dataroot.join('templates').join(@template.name.parameterize.underscore)
+      # TODO this whole create method can be cleaned up
+      template_location = Pathname.new(@template.path)
 
-    if data_location.exist? then @template.errors.add(:name, "must be unique.") end
-    unless template_location.exist? then @template.errors.add(:path, "does not exist.") end
+      data_location = OodAppkit.dataroot.join('templates').join(@template.name.parameterize.underscore)
 
-    # validate path we are copying from. safe_path is a boolean, error contains the error string if false
-    copy_safe, error = Filesystem.new.validate_path_is_copy_safe(template_location.to_s)
-    @template.errors.add(:path, error) unless copy_safe
+      if data_location.exist? then @template.errors.add(:name, "must be unique.") end
+      unless template_location.exist? then @template.errors.add(:path, "does not exist.") end
 
-    if template_location.file? then @template.errors.add(:path, "must point to a directory.") end
+      # validate path we are copying from. safe_path is a boolean, error contains the error string if false
+      copy_safe, error = Filesystem.new.validate_path_is_copy_safe(template_location.to_s)
+      @template.errors.add(:path, error) unless copy_safe
 
-    if @template.errors.empty?
-      FileUtils.mkdir_p(data_location)
-      Filesystem.new.copy_dir(template_location, data_location)
-      @template.path = data_location.to_s
+      if template_location.file? then @template.errors.add(:path, "must point to a directory.") end
 
-      yaml = { 'name' => @template.name, 'host' => @template.host, 'notes' => @template.notes, 'script' => @template.script }
-      File.open(data_location.join('manifest.yml'), 'w') do |file|
-        file.write(yaml.to_yaml)
+      if @template.errors.empty?
+        FileUtils.mkdir_p(data_location)
+        error, status = Filesystem.new.copy_dir(template_location, data_location)
+        unless status.success?
+          @template.errors.add(:path, error)
+        else
+          @template.path = data_location.to_s
+
+          yaml = { 'name' => @template.name, 'host' => @template.host, 'notes' => @template.notes, 'script' => @template.script }
+          File.open(data_location.join('manifest.yml'), 'w') do |file|
+            file.write(yaml.to_yaml)
+          end
+
+          saved = true
+        end
       end
-
-      saved = true
+    rescue => e
+      @template.errors.add(:base, e.message)
     end
 
     respond_to do |format|
