@@ -24,7 +24,6 @@ class TemplatesController < ApplicationController
   # POST /templates
   # POST /templates.json
   def create
-
     @template = template_params[:path].blank? ? Template.default : Template.new(template_params[:path])
     @template.script = template_params[:script] if template_params[:script].present?
     @template.name = template_params[:name]
@@ -47,7 +46,7 @@ class TemplatesController < ApplicationController
 
     if @template.errors.empty?
       FileUtils.mkdir_p(data_location)
-      copy_dir(template_location, data_location)
+      Filesystem.new.copy_dir(template_location, data_location)
       @template.path = data_location.to_s
 
       yaml = { 'name' => @template.name, 'host' => @template.host, 'notes' => @template.notes, 'script' => @template.script }
@@ -94,17 +93,4 @@ class TemplatesController < ApplicationController
     def template_params
       params.require(:template).permit(:name, :path, :host, :notes, :script)
     end
-
-  # Copies the data in a Location to a destination path using rsync.
-  #
-  # @param [String, Pathname] dest The target location path.
-  # @return [Location] The target location path wrapped by Location instance.
-  def copy_dir(src, dest)
-    # @path has / auto-dropped, so we add it to make sure we copy everything
-    # in the old directory to the new
-    `rsync -r --exclude='.svn' --exclude='.git' --exclude='.gitignore' --filter=':- .gitignore' '#{src.to_s}/' '#{dest.to_s}'`
-
-    # return target location so we can chain method
-    dest
-  end
 end
