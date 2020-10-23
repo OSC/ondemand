@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.8.16] - 2020-10-23
+### Fixed
+- accessibility: update html titles of apps to be a little more specific to reduce ambiguity [#698](https://github.com/OSC/ondemand/pull/698)
+
+### Security
+- properly escape user input by using Open3 capture methods [#702](https://github.com/OSC/ondemand/pull/702)
+- by default, set Content Security Policy frame-ancestors: none for all requests, which can be disabled setting security_disable_frames: false in the ood_portal.yml [#697](https://github.com/OSC/ondemand/pull/697)
+- by default, set HSTS if SSL is in use, which can be disabled setting security_strict_transport: false in the ood_portal.yml [#697](https://github.com/OSC/ondemand/pull/697)
+
 ## [1.8.15] - 2020-10-08
 ### Fixed
 - replace text "XDMoD" with "Open XDMoD" in Job Composer
@@ -580,7 +589,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.15...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.16...HEAD
+[1.8.16]: https://github.com/OSC/ondemand/compare/v1.8.15...v1.8.16
 [1.8.15]: https://github.com/OSC/ondemand/compare/v1.8.14...v1.8.15
 [1.8.14]: https://github.com/OSC/ondemand/compare/v1.8.13...v1.8.14
 [1.8.13]: https://github.com/OSC/ondemand/compare/v1.8.12...v1.8.13
