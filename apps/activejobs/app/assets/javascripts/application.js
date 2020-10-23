@@ -18,10 +18,11 @@
 //= require lightbox2/javascripts/lightbox
 //= require oboe/oboe-browser.min
 //= require datatables_plugins/api/processing
+//= require KeyTable/js/keyTable.bootstrap
 //= require_tree .
 
 $(document).ready(function(){
-    $('[data-toggle="tooltip"]').tooltip();
+  $('[data-toggle="tooltip"]').tooltip();
 });
 
 function human_time(seconds_total) {
@@ -167,18 +168,6 @@ function create_datatable(options){
             "sSearch": "Filter: "
         },
         "fnCreatedRow": function( nRow, aData, iDataIndex ) {
-          $(nRow).attr("tabindex", 0);
-
-          $(nRow).on("keydown", function (event) {
-            const ENTER_KEY_CODE = "Enter"
-            const tr = $(this).closest("tr");
-            const row = table.row(tr);
-
-            if (event.code == ENTER_KEY_CODE) {
-              fetch_job_data(tr, row, options);
-            }
-          })
-          
           $(nRow).children("td").css("overflow", "hidden");
           $(nRow).children("td").css("white-space", "nowrap");
           $(nRow).children("td").css("text-overflow", "ellipsis");
@@ -310,6 +299,23 @@ function create_datatable(options){
         // Event is fired when there's an error loading or parsing the datatable.
         show_errors(['There was an error getting data from the remote server.']);
     } );
+
+    // Initialize DataTables KeyTable plugin.
+    new $.fn.dataTable.KeyTable(table, {
+      columns: [0, 1, 2, 3, 4, 5, 6, 7, 8] // Disable highlighting on cell 9 (delete job button)
+    })
+
+    table
+      .on('key', function(e, datatable, key, cell, originalEvent) {
+        if (key == 13) {
+          const tr = $(this).closest("tr");
+          const row = table.row(cell.index().row)
+
+          if (cell.index().column == 0) { // If enter key is pressed while on chevron.
+            fetch_job_data(tr, row, options)
+          }
+        }
+      })
 
     // Override the Datatables default error message functionality
     //   https://datatables.net/reference/event/error
