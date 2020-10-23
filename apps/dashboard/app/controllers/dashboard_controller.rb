@@ -1,9 +1,9 @@
 class DashboardController < ApplicationController
   def index
     begin
-       @motd = MotdFile.new.formatter
+      @motd = MotdFile.new.formatter
     rescue Exception => e
-  	flash.now[:alert] = t('dashboard.motd_erb_render_error', error_message: e.message)   
+  	  flash.now[:alert] = t('dashboard.motd_erb_render_error', error_message: e.message)
     end
   end
 
