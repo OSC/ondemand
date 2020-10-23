@@ -44,12 +44,6 @@
       <%= @product.app.title %>
     </p>
     <p>
-      <span data-toggle="popover" data-trigger="hover" data-placement="bottom" title="Active Users" data-content="<%= @product.active_users.join("<br />") %>" data-html="true">
-        <strong>Active users:</strong>
-        <%= @product.active_users.size %>
-      </span>
-    </p>
-    <p>
       <strong>Type:</strong>
       <%= app_type_title @product.app %>
     </p>
