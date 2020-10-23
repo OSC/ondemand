@@ -189,12 +189,6 @@ class Product
     permissions(:group)
   end
 
-  def active_users
-    @active_users ||= `ps -o uid= -p $(pgrep -f '^Passenger .*#{Regexp.quote(router.path.to_s)}') 2> /dev/null | sort | uniq`.split.map(&:to_i).map do |id|
-      OodSupport::User.new id
-    end
-  end
-
   def git_repo?
     router.path.join(".git", "HEAD").file?
   end
@@ -235,13 +229,22 @@ class Product
     end
 
     def get_git_remote
-      `cd #{router.path} 2> /dev/null && HOME="" git config --get remote.origin.url 2> /dev/null`.strip
+      Dir.chdir(router.path) do
+        o, s = Open3.capture2({'HOME'=>''}, 'git', 'config', '--get', 'remote.origin.url')
+        o.to_s.strip
+      end
     end
 
     def set_git_remote
-      target = router.path
-      Dir.chdir(target) do
-        `HOME="" git config --get remote.origin.url 2>/dev/null && HOME="" git remote set-url origin #{git_remote} 2> /dev/null || HOME="" git remote add origin #{git_remote} 2> /dev/null`
+      Dir.chdir(router.path) do
+        o, s = Open3.capture2({'HOME'=>''}, 'git', 'config', '--get', 'remote.origin.url')
+        if s.success?
+          o, s = Open3.capture2({'HOME'=>''}, 'git', 'remote', 'set-url', 'origin', git_remote)
+
+          unless s.success?
+            o, s = Open3.capture2({'HOME'=>''}, 'git', 'remote', 'add', 'origin', git_remote)
+          end
+        end
       end
     end
 
@@ -292,7 +295,9 @@ class Product
     end
 
     def git_status
-      files = `cd #{router.path} 2> /dev/null && HOME="" git status --porcelain 2> /dev/null`.split("\n")
+      files = Dir.chdir(router.path) do
+        `HOME="" git status --porcelain 2> /dev/null`.split("\n")
+      end
       results = {}
       results[:unstaged]  = files.select {|v| /^\s\w .+$/ =~ v}
       results[:staged]    = files.select {|v| /^\w\s .+$/ =~ v}
