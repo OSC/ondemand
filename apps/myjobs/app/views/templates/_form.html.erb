@@ -3,12 +3,23 @@
 
     <script type="text/javascript">
       $( document ).ready(function() {
-        $(".has-error input").first().focus();
+          let inputs = $(".has-error input");
+          if(inputs.length > 0){
+            inputs.first().focus();
+          }
+          else{
+            $('#error_explanation').focus()
+          }
       });
     </script>
 
     <div id="error_explanation">
       <h4><%= pluralize(@template.errors.count, "error") %> prohibited this template from being saved:</h4>
+      <ul>
+        <% @template.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
     </div>
 
   <% end %>
