@@ -73,18 +73,14 @@ class Filesystem
     Open3.capture3("timeout", "#{timeout}s", "du", "-cbs", path)
   end
 
-  # Copies the data in a Location to a destination path using rsync.
+  # Copies the data in a source to a destination path using rsync.
   #
-  # @param [String, Pathname] dest The target location path.
-  # @return [Pathname] The target location path as Pathname obj
+  # @param [String, Pathname] src The src path.
+  # @param [String, Pathname] dest The target path.
+  # @return array of the [output, status] of the command
   def copy_dir(src, dest)
-    o, s = Open3.capture2e({}, 'rsync', "-r --exclude='.svn' --exclude='.git' --exclude='.gitignore' --filter=':- .gitignore", src.to_s + "/", dest.to_s)
-
-    if(s.success?)
-      Pathname.new(dest)
-    else
-      raise "rsync exited with error: #{o}"
-    end
+    output = `rsync -r --exclude='.svn' --exclude='.git' --exclude='.gitignore' --filter=':- .gitignore' 2>&1 #{Shellwords.escape(src.to_s)}/ #{Shellwords.escape(dest.to_s)}`
+    [output, $?]
   end
 
   # FIXME: some duplication here between du command above and this; we probably
