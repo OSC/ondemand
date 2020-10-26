@@ -1,62 +1,19 @@
+<%# Random port from 10000 - 65535 deterministically generated %>
+<% localport = Digest::MD5.hexdigest("#{connect.host}:#{connect.port}").to_i(16) % 55535 + 10000 %>
+
 <% if browser.platform == :windows %>
 
-  <ol>
-    <li>
-      Download the latest
-      <a href="https://github.com/OSC/osc-connect/releases/latest" rel="noopener" target="_blank">OSC Connect</a>
-      if you don't already have it
-    </li>
-    <li>
-      Launch <strong>OSC Connect</strong>
-    </li>
-    <li>
-      Click - <%= link_to "osc://:#{connect.password}@#{connect.host}:#{connect.port}", "osc://:#{connect.password}@#{connect.host}:#{connect.port}", onclick: "$.get('" + analytics_path(type: "launch_osc_connect") + "');" %>
-    </li>
-  </ol>
+  <%= render partial: 'batch_connect/sessions/connections/native_vnc_windows.html.erb', :locals => { :connect => connect, :localport => localport } %>
 
-  <p>
-    <a href="https://www.osc.edu/resources/getting_started/howto/howto_connect_to_osc_services_using_osc_connect" rel="noopener" target="_blank">Troubleshoot OSC Connect issues</a>
-  </p>
+<% elsif browser.platform == :mac %>
 
-<% elsif browser.platform == :mac || browser.platform == :linux %>
+  <%= render partial: 'batch_connect/sessions/connections/native_vnc_mac.html.erb', :locals => { :connect => connect, :localport => localport } %>
 
-  <%# Random port from 10000 - 65535 deterministically generated %>
-  <% localport = Digest::MD5.hexdigest("#{connect.host}:#{connect.port}").to_i(16) % 55535 + 10000 %>
+<% elsif browser.platform == :linux %>
 
-  <ol>
-    <li>Open a terminal window</li>
-    <li>
-      <p>
-        Copy/paste in your terminal and replace <code>SSH_HOST</code> with a
-        valid HPC login server to establish the SSH tunnel:
-      </p>
-      <% if browser.platform == :mac %>
-        <pre><code>ssh -f -N -L <%= localport %>:<%= connect.host %>:<%= connect.port %> <%= ENV["USER"] %><strong>@SSH_HOST</strong></code></pre>
-      <% else %>
-        <pre><code>ssh -L <%= localport %>:<%= connect.host %>:<%= connect.port %> <%= ENV["USER"] %>@<strong>SSH_HOST</strong></code></pre>
-      <% end %>
-    </li>
-    <% if browser.platform == :mac %>
-      <li>
-        <p>Use the code below to establish the VNC connection:</p>
-        <pre>open vnc://:<%= connect.password %>@localhost:<%= localport %></pre>
-      </li>
-    <% else %>
-      <li>
-        <p>
-          Open a VNC client and connect to
-          <code>localhost:<%= localport %></code> within the client
-        </p>
-      </li>
-      <li>
-        <p>Use the VNC password: <code><%= connect.password %></code></p>
-      </li>
-    <% end %>
-  </ol>
+  <%= render partial: 'batch_connect/sessions/connections/native_vnc_linux.html.erb', :locals => { :connect => connect, :localport => localport } %>
 
 <% else %>
-
   We do not currently support documentation for connecting to a VNC session
   with a native client for your operating system.
-
 <% end %>

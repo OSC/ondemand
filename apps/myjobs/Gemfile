@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '5.2.4.3'
+gem 'rails', '5.2.4.4'
 # Use sqlite3 as the database for Active Record
 # Note that the version has been fixed due to an incompatibilty
 # https://github.com/rails/rails/issues/35153
@@ -38,7 +38,11 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
   gem 'rails-controller-testing'
+  gem 'mocha', '~> 1.1'
+  gem 'climate_control', '~> 0.2'
+  gem 'timecop', '~> 0.9'
 end
+
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views

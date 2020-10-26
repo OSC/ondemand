@@ -238,4 +238,9 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     ENV["OOD_BALANCE_PATH"] = "https://example.com/balance.json:ftp://path_b/balance.json"
     assert_equal ["https://example.com/balance.json", "ftp://path_b/balance.json"], ConfigurationSingleton.new.balance_paths
   end
+
+  test "can set native vnc login host" do
+    ENV["OOD_NATIVE_VNC_LOGIN_HOST"] = "owens.osc.edu"
+    assert_equal ENV["OOD_NATIVE_VNC_LOGIN_HOST"], ConfigurationSingleton.new.native_vnc_login_host
+  end
 end

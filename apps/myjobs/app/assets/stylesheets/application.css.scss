@@ -90,3 +90,7 @@
   border-color: #ccc;
   box-shadow: none;
 }
+
+tr.active .bg-warning {
+  background-color: transparent;
+}

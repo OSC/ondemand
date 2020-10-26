@@ -36,6 +36,46 @@ function human_time(seconds_total) {
   return hours_str + ":" + minutes_str + ":" + seconds_str;
 }
 
+function fetch_job_data(tr, row, options) {
+  if (row.child.isShown()) {
+    // This row is already open - close it
+    row.child.hide();
+    tr.removeClass("shown");
+  } else {
+    tr.addClass("shown");
+
+    let data = {
+      pbsid: row.data().pbsid,
+      cluster: row.data().cluster,
+    };
+    let jobDataUrl = `${options.base_uri}/json?${new URLSearchParams(data)}`;
+
+    $.getJSON(jobDataUrl, function (data) {
+      // Open this row
+      row.child(data.html_ganglia_graphs_table).show();
+      // Add the data panel to the view
+      $(`div[data-jobid="${row.data().pbsid}"]`)
+        .hide()
+        .html(data.html_extended_panel)
+        .fadeIn(250);
+      // Update the status label in the parent row
+      tr.find(".status-label").html(data.status);
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+      let error_panel = `
+        <div class="alert alert-danger" role="alert">
+          <strong>Error:</strong> The information could not be displayed.
+          <em>${jqXHR.status} (${errorThrown})</em>
+        </div>
+      `;
+
+      $(`div[data-jobid="${row.data().pbsid}]"`)
+        .hide()
+        .html(error_panel)
+        .fadeIn(250);
+    });
+  }
+}
+
 function fetch_table_data(table, options){
   if (!options) options = {};
   if (!options.doneCallback) options.doneCallback = null;
@@ -80,6 +120,7 @@ function fetch_table_data(table, options){
   });
 }
 
+
 function status_label(status){
   var label = "Undetermined", labelclass = "label-default";
 
@@ -105,7 +146,7 @@ function status_label(status){
     labelclass = "label-warning";
   }
 
-  return "<span class='label " + labelclass + "'>" + label + "</span></div>";
+  return `<span class="label ${labelclass}">${label}</span>`;
 }
 
 function create_datatable(options){
@@ -127,6 +168,8 @@ function create_datatable(options){
             "sSearch": "Filter: "
         },
         "fnCreatedRow": function( nRow, aData, iDataIndex ) {
+          $(nRow).attr("tabindex", 0);
+          
           $(nRow).children("td").css("overflow", "hidden");
           $(nRow).children("td").css("white-space", "nowrap");
           $(nRow).children("td").css("text-overflow", "ellipsis");
@@ -158,56 +201,60 @@ function create_datatable(options){
                                             $(nTd).addClass('details-control');
                                         }
                                     },
-                "render":           function() {
-                                        return "";
-                                    }
+                render: function () {
+                  return "";
+                },
             },
             {
                 data:               "pbsid",
                 className:          "small",
                 "autoWidth":        true,
-                "render":           function(data) {
-                    return "<span title="+data+">"+data+"</span>";
-                }
+                render: function (data) {
+                  return `<span title="${data}">${data}</span>`;
+                },
             },
             {
                 data:               "jobname",
                 className:          "small",
                 width:              '25%',
-                "render":           function(data) {
-                    return "<span title="+data+">"+data+"</span>";
-                }
+                render: function (data) {
+                  return `<span title="${data}">${data}</span>`;
+                },
             },
             {
                 data:               "username",
                 className:          "small",
                 "autoWidth":        true,
-                "render":           function(data) {
-                    return "<span title="+data+">"+data+"</span>";
-                }
+                render: function (data) {
+                  return `<span title="${data}">${data}</span>`;
+                },
             },
             {
                 data:               "account",
                 className:          "small",
                 "autoWidth":        true,
-                "render":           function(data) {
-                    return "<span title="+data+">"+data+"</span>";
-                }
+                render: function (data) {
+                  return `<span title="${data}">${data}</span>`;
+                },
             },
             {
                 data:               "walltime_used",
                 className:          "small text-right",
                 "autoWidth":        true,
-                "render":           function(data) {
-                    return "<span title="+human_time(data)+">"+human_time(data)+"</span>";
-                }
+                render: function (data) {
+                  return `
+                    <span title="${human_time(data)}">
+                      ${human_time(data)}
+                    </span>
+                  `;
+                },
             },
             {
                 data:               "queue",
                 className:          "small",
                 "autoWidth":        true,
                 "render":           function(data) {
-                    return "<span title="+data+">"+data+"</span>";
+                  return `<span title="${data}">${data}</span>`;
                 }
             },
             {
@@ -215,8 +262,7 @@ function create_datatable(options){
                 className:          "small status-label",
                 "autoWidth":        true,
                 "render":           function(data) {
-                    return status_label(data);
-                    //return "<span style='color: red' title="+data+">"+data+"</span>";
+                  return status_label(data);
                 }
             },
             {
@@ -232,14 +278,21 @@ function create_datatable(options){
                   if(data.delete_path == "" || data.status == "completed"){
                     return ""
                   } else {
-                    return "<div>" +
-                              "<a class='btn btn-danger btn-xs action-btn' data-method='delete'" +
-                              " data-confirm='Are you sure you want to delete " + data.jobname  + " - " + data.pbsid + "'" +
-                              " href='" + data.delete_path + "'" +
-                              " aria-labeledby='title' data-toggle='tooltip' title='Delete Job' >" + 
-                                "<i class='glyphicon glyphicon-trash' aria-hidden='true'></i>" +  
-                              "</a>" +
-                            "</div>";
+                    return `
+                      <div>
+                        <a
+                          class="btn btn-danger btn-xs action-btn"
+                          data-method="delete"
+                          data-confirm="Are you sure you want to delete ${data.jobname} - ${data.pbsid}"
+                          href="${data.delete_path}"
+                          aria-labeled-by"title"
+                          data-toggle="tooltip"
+                          title="Delete Job"
+                        >
+                          <i class='glyphicon glyphicon-trash' aria-hidden='true'></i>
+                        </a>
+                      </div>
+                    `;
                   }
                 }
             }
@@ -258,29 +311,7 @@ function create_datatable(options){
         var tr = $(this).closest('tr');
         var row = table.row( tr );
 
-        if ( row.child.isShown() ) {
-            // This row is already open - close it
-            row.child.hide();
-            tr.removeClass('shown');
-        }
-        else {
-            tr.addClass('shown');
-            $.getJSON(options.base_uri + '/json?pbsid='+row.data().pbsid+'&cluster='+row.data().cluster , function(data) {
-            	// Open this row
-                row.child(data.html_ganglia_graphs_table).show();
-                // Add the data panel to the view
-                $( "div[data-jobid='"+row.data().pbsid+"']").hide().html(data.html_extended_panel).fadeIn(250);
-                // Update the status label in the parent row
-                tr.find(".status-label").html(data.status);
-            })
-              .fail(function(jqXHR, textStatus, errorThrown) {
-                  var error_panel = '<div class="alert alert-danger" role="alert">' +
-                                    '  <strong>Error:</strong> The information could not be displayed. ' +
-                                    '  <em>' + jqXHR.status + ' (' + errorThrown + ')</em>' +
-                                    '</div>';
-                  $( "div[data-jobid='"+row.data().pbsid+"']").hide().html(error_panel).fadeIn(250);
-              });
-        }
+        fetch_job_data(tr, row, options);
     });
 
     table.columns.adjust().draw();
@@ -290,10 +321,10 @@ function create_datatable(options){
 
 /* Add errors from an array to the #ajax-error-message div and remove hidden attribute */
 function show_errors(errors) {
-    for (var i = 0; i < errors.length; i++) {
-        $("#ajax-error-message-text").append("<div>"+errors[i]+"</div>");
-    }
-    $("#ajax-error-message").removeAttr('hidden');
+  for (var i = 0; i < errors.length; i++) {
+    $("#ajax-error-message-text").append(`<div>${errors[i]}</div>`);
+  }
+  $("#ajax-error-message").removeAttr('hidden');
 }
 
 function get_request_params() {

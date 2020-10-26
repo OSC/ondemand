@@ -1,8 +1,9 @@
 json.extract! @workflow, :pbsid, :name, :batch_host, :script_path, :staged_script_name, :staged_dir, :created_at, :updated_at, :status, :account, :job_array_request
 json.extract! @workflow, :xdmod_url if @workflow.xdmod_url_available?
+json.set! 'xdmod_url_warning_message', xdmod_url_warning_message(@workflow) if xdmod_url_warning_message(@workflow)
 json.set! 'status_label', status_label(@workflow)
 json.set! 'active', @workflow.active?
-json.set! 'fs_root', Filesystem.new.fs(@workflow.staged_dir)
+json.set! 'fs_root', Filesystem.new.fs(@workflow.staged_dir) if @workflow.staged_dir
 json.set! 'host_title', cluster_title(@workflow.batch_host)
 json.folder_contents (@workflow.folder_contents).each do |file|
   json.set! 'path', file.path

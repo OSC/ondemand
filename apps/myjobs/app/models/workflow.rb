@@ -79,11 +79,11 @@ class Workflow < ApplicationRecord
   end
 
   def staged_script_exists?
-    File.file? self.script_path
+    File.file? self.script_path.to_s
   end
 
   def script_path
-    Pathname.new(self.staged_dir).join(self.script_name.to_s)
+    Pathname.new(self.staged_dir).join(self.script_name.to_s) unless self.staged_dir.nil?
   end
 
   def script_path=(new_path)
@@ -116,7 +116,7 @@ class Workflow < ApplicationRecord
       stdout, stderr, status = Open3.capture3 "rsync -r --exclude='manifest.yml' #{Shellwords.escape(staging_template_dir.to_s)}/ #{Shellwords.escape(self.staged_dir)}"
       raise IOError if status.exitstatus != 0
     end
-    Pathname.new(self.staged_dir)
+    Pathname.new(self.staged_dir.to_s)
   end
 
   # Get an array of WorkflowFile Objects of all the files of a directory
@@ -128,8 +128,8 @@ class Workflow < ApplicationRecord
   # @return [WorkflowFile] An array of WorkflowFile Objects of all the files of a directory
   def folder_contents
     return @folder_contents if defined? @folder_contents
-    
-    if File.directory?(self.staged_dir)
+
+    if self.staged_dir && File.directory?(self.staged_dir)
       @folder_contents = Find.find(self.staged_dir).drop(1).select {
         |f| File.file?(f)
       }.map {
@@ -195,6 +195,10 @@ class Workflow < ApplicationRecord
 
   def xdmod_url
     "#{Configuration.xdmod_host}/index.php#job_viewer?action=show&realm=SUPREMM&resource_id=#{xdmod_resource_id}&local_job_id=#{pbsid_number}"
+  end
+
+  def completed_at
+    jobs.first.try(:updated_at)
   end
 
   def xdmod_url_available?

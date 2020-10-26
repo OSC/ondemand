@@ -118,7 +118,7 @@ en:
     nav_all_apps: "All Apps"
     nav_develop_docs: "Developer Documentation"
     nav_develop_my_sandbox_apps_dev: "My Sandbox Apps (Development)"
-    nav_develop_my_sandbox_apps_prod: "My Sandbox Apps (Production)"
+    nav_develop_my_sandbox_apps_prod: "My Shared Apps (Production)"
     nav_develop_title: "Develop"
     nav_help_title: "Help"
     nav_logout: "Log Out"

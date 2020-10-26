@@ -41,6 +41,25 @@
 # Default: 'logs' (this is relative to ServerRoot)
 #logroot: 'logs'
 
+# Error log filename
+# Example:
+#     errorlog: 'error.log'
+# Default: 'error.log' (If 'servername' and 'ssl' options are defined 
+# the default value will be <servername>_error_ssl.log)
+#errorlog: 'error.log'
+
+# Access log filename
+# Example:
+#     accesslog: 'access.log'
+# Default: 'access.log' (If 'servername' and 'ssl' options are defined 
+# the default value will be <servername>_access_ssl.log)
+#accesslog: 'access.log'
+
+# Apache access log format (Don't specify log nickname see: http://httpd.apache.org/docs/current/mod/mod_log_config.html#transferlog)
+# Example:
+#     logformat: '"%v %h \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %{SSL_PROTOCOL}x %T"'
+# Default: Apache combined format
+
 # Should RewriteEngine be used
 # Example:
 #     use_rewrites: false
@@ -60,6 +79,18 @@
 #     - 192.168.1..*
 # Default: [] (no IPs whitelisted)
 #maintenance_ip_whitelist: []
+
+# Set Header Content-Security-Policy to disallow OnDemand beind loaded in an iFrame.
+# Example:
+#   security_disable_frames: false
+# Default: true
+#security_disable_frames: true
+
+# Set Header Strict-Transport-Security to help enforce SSL
+# Example:
+#   security_strict_transport: false
+# Default: true when ssl is enabled, false otherwise
+#security_strict_transport: false
 
 # Root directory of the Lua handler code
 # Example:
@@ -102,7 +133,7 @@
 
 # List of Apache authentication directives
 # NB: Be sure the appropriate Apache module is installed for this
-# Default: (see below, uses basic auth with an htpasswd file)
+# Default: (see below, uses OIDC auth with Dex)
 #auth:
 #  - 'AuthType openid-connect'
 #  - 'Require valid-user'
@@ -305,6 +336,14 @@
 #     oidc_state_max_number_of_cookies: "10 true"
 # Default: "10 true"
 #oidc_state_max_number_of_cookies: "10 true"
+
+# OIDC Enable SameSite cookie
+# When ssl is defined this defaults to 'Off'
+# When ssl is not defined this defaults to 'On'
+# Example:
+#     oidc_cookie_same_site: 'Off'
+# Default: 'On'
+#oidc_cookie_same_site: 'On'
 
 # Additional OIDC settings as key-value pairs
 # Example:

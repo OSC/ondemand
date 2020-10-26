@@ -65,15 +65,20 @@ Listen <%= addr_port %>
 <VirtualHost *:<%= @port %>>
   <%- if @servername -%>
   ServerName <%= @servername %>
+  <%- end -%>
 
-  ErrorLog  "<%= @logroot %>/<%= @servername %>_error<%= "_ssl" if @ssl %>.log"
-  CustomLog "<%= @logroot %>/<%= @servername %>_access<%= "_ssl" if @ssl %>.log" combined
+  ErrorLog  "<%= @errorlog %>"
+  <%- if @logformat -%>
+  LogFormat <%= @logformat %>
+  TransferLog "<%= @accesslog %>"
+  <%- else -%>
+  CustomLog "<%= @accesslog %>" combined
+  <%- end -%>
 
-  <%- if @use_rewrites -%>
+  <%- if @servername && @use_rewrites -%>
   RewriteEngine On
   RewriteCond %{HTTP_HOST} !^(<%= @proxy_server %>(:<%= @port %>)?)?$ [NC]
   RewriteRule ^(.*) <%= @ssl ? "https" : "http" %>://<%= @proxy_server %>:<%= @port %>$1 [R=301,NE,L]
-  <%- end -%>
   <%- end -%>
 
   <%- if @use_rewrites && @use_maintenance -%>
@@ -90,7 +95,14 @@ Listen <%= addr_port %>
   Header Set Cache-Control "max-age=0, no-store"
 
   <%- end -%>
+  <%- if @security_disable_frames -%>
+  Header always set Content-Security-Policy "frame-ancestors none;"
+  <%- end -%>
+  <%- if @security_strict_transport -%>
+  Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+  <%- end -%>
   <%- if @ssl -%>
+
   SSLEngine On
   <%- @ssl.each do |line| -%>
   <%= line %>
@@ -112,6 +124,7 @@ Listen <%= addr_port %>
   OIDCSessionInactivityTimeout <%= @oidc_session_inactivity_timeout %>
   OIDCSessionMaxDuration <%= @oidc_session_max_duration %>
   OIDCStateMaxNumberOfCookies <%= @oidc_state_max_number_of_cookies %>
+  OIDCCookieSameSite <%= @oidc_cookie_same_site %>
   <%- @oidc_settings.keys.sort.each do |oidc_setting| -%>
   <%= oidc_setting %> <%= @oidc_settings[oidc_setting] %>
   <%- end -%>

@@ -44,6 +44,10 @@
 #
 <VirtualHost *:80>
 
+  ErrorLog  "logs/error.log"
+  CustomLog "logs/access.log" combined
+
+
   # Support maintenance page during outages of OnDemand
   RewriteEngine On
   RewriteCond /var/www/ood/public/maintenance/index.html -f
@@ -53,6 +57,7 @@
   ErrorDocument 503 /public/maintenance/index.html
   Header Set Cache-Control "max-age=0, no-store"
 
+  Header always set Content-Security-Policy "frame-ancestors none;"
 
   # OIDC configuration
   #
@@ -66,6 +71,7 @@
   OIDCSessionInactivityTimeout 28800
   OIDCSessionMaxDuration 28800
   OIDCStateMaxNumberOfCookies 10 true
+  OIDCCookieSameSite On
 
   # Lua configuration
   #

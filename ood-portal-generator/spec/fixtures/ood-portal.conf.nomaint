@@ -44,6 +44,11 @@
 #
 <VirtualHost *:80>
 
+  ErrorLog  "logs/error.log"
+  CustomLog "logs/access.log" combined
+
+
+  Header always set Content-Security-Policy "frame-ancestors none;"
 
   # Lua configuration
   #

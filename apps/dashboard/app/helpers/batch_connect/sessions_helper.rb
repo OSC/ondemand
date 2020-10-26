@@ -42,8 +42,7 @@ module BatchConnect::SessionsHelper
           concat created(session)
           concat time(session)
           concat id(session)
-          concat tag.hr                         if session.info_view
-          safe_concat custom_info_view(session) if session.info_view
+          safe_concat custom_info_view(session) if session.app.session_info_view
         end
       )
       concat content_tag(:div) { yield }
@@ -51,8 +50,15 @@ module BatchConnect::SessionsHelper
   end
 
   def custom_info_view(session)
+    concat tag.hr
     content_tag(:div) do
-      concat render partial: "batch_connect/sessions/connections/info", locals: { view: session.info_view, session: session }
+      concat session.render_info_view
+
+      if session.render_info_view_error_message
+        content_tag(:div, class: "alert alert-danger", role: "alert") do
+          concat tag.p session.render_info_view_error_message
+        end
+      end
     end
   end
 
@@ -146,10 +152,12 @@ module BatchConnect::SessionsHelper
 
   def status_context(session)
     if session.starting?
-      "info"
+      "primary"
     elsif session.running?
       "success"
-    elsif session.queued? || session.completed?
+    elsif session.queued?
+      "info"
+    elsif session.completed?
       "default"
     elsif session.held? || session.suspended?
       "danger"

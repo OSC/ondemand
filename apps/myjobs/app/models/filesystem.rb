@@ -70,16 +70,27 @@ class Filesystem
   end
 
   def du(path, timeout)
-    Open3.capture3 "timeout #{timeout}s du -cbs #{Shellwords.escape(path)}"
+    Open3.capture3("timeout", "#{timeout}s", "du", "-cbs", path)
+  end
+
+  # Copies the data in a source to a destination path using rsync.
+  #
+  # @param [String, Pathname] src The src path.
+  # @param [String, Pathname] dest The target path.
+  # @return array of the [output, status] of the command
+  def copy_dir(src, dest)
+    output = `rsync -r --exclude='.svn' --exclude='.git' --exclude='.gitignore' --filter=':- .gitignore' 2>&1 #{Shellwords.escape(src.to_s)}/ #{Shellwords.escape(dest.to_s)}`
+    [output, $?]
   end
 
   # FIXME: some duplication here between du command above and this; we probably
   # want to use the above
   #
-  # Get the disk usage of a path in bytes, nil if path is invalid
+  # Get the disk usage of a path in bytes, nil if path does not exist
   def path_size (path)
     if Dir.exist? path
-      Integer(`du -s -b #{path}`.split('/')[0])
+      o, e, s = Open3.capture3('du', '-s', '-b', path)
+      o.split('/')[0].to_i
     end
   end
 end

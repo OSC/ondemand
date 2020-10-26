@@ -6,6 +6,100 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.8.16] - 2020-10-23
+### Fixed
+- accessibility: update html titles of apps to be a little more specific to reduce ambiguity [#698](https://github.com/OSC/ondemand/pull/698)
+
+### Security
+- properly escape user input by using Open3 capture methods [#702](https://github.com/OSC/ondemand/pull/702)
+- by default, set Content Security Policy frame-ancestors: none for all requests, which can be disabled setting security_disable_frames: false in the ood_portal.yml [#697](https://github.com/OSC/ondemand/pull/697)
+- by default, set HSTS if SSL is in use, which can be disabled setting security_strict_transport: false in the ood_portal.yml [#697](https://github.com/OSC/ondemand/pull/697)
+
+## [1.8.15] - 2020-10-08
+### Fixed
+- replace text "XDMoD" with "Open XDMoD" in Job Composer
+
+## [1.8.14] - 2020-10-06
+### Added
+- log formatting options for apache and nginx access logs [#677] (https://github.com/OSC/ondemand/pull/677)
+
+### Changed
+- Changed language to 'Open XDMoD' [#687](https://github.com/OSC/ondemand/pull/687).
+- Update to Rails 5.2.4.4 and ood_core 0.14.0 [#690](https://github.com/OSC/ondemand/pull/690).
+- ood_core 0.14.0 additions
+   - Added: Kubernetes adapter in PR [156](https://github.com/OSC/ood_core/pull/156)
+   - Fixed: Handle Slurm timeouts [209](https://github.com/OSC/ood_core/pull/209)
+   - Fixed: Linux Host Adapter race condition in deleteing tmp files [212](https://github.com/OSC/ood_core/pull/212)
+
+### Fixed
+- Fixed XDMoD queries for staff users [#688](https://github.com/OSC/ondemand/pull/688).
+
+## [1.8.13] - 2020-09-21
+### Changed
+- make it easier to develop info.html.erb in batch connect apps by gracefully handling crashes and now rendering template from the app root instead of storing a copy of the template in the session [#666](https://github.com/OSC/ondemand/pull/666)
+
+### Added
+- can load .rb locale files alongside .yml files [#645](https://github.com/OSC/ondemand/pull/645)
+- warn users about job composer links to XDMoD jobs being broken immediately after job starts [#676](https://github.com/OSC/ondemand/pull/676)
+
+### Fixed
+- ignore bad cache key values when updating from batch connect form cache [#655](https://github.com/OSC/ondemand/pull/655)
+- properly escape characters in Go To dialog in Files app [#660](https://github.com/OSC/ondemand/pull/660)
+- force update Files app dependencies using yarn resolutions [#661](https://github.com/OSC/ondemand/pull/661)
+- accessibility: hide FA icons from screen readers and use real title in app link list [#667](https://github.com/OSC/ondemand/pull/667)
+- xdmod widgets utilize available space when no motd displays [#676](https://github.com/OSC/ondemand/pull/676)
+
+## [1.8.12] - 2020-08-18
+### Added
+- mod_auth_openidc option for setting OIDCCookieSameSite in ood-portal-generator using
+  "oidc_cookie_same_site: On" or "oidc_cookie_same_site: Off" [#651](https://github.com/OSC/ondemand/pull/651)
+
+### Fixed
+- default "oidc_cookie_same_site: On" if SSL not enabled so Chrome browser works
+  (useful for ood-images) [#651](https://github.com/OSC/ondemand/pull/651)
+
+## [1.8.11] - 2020-08-10
+### Added
+- grafana config: allow changing the cluster config name when the cluster in OOD differs from the cluster in Grafana [#639](https://github.com/OSC/ondemand/pull/639)
+- latest ood_core provides CCQ adapter
+- Dex default theme is the ondemand theme so this doesn't have to be configured manually [#635](https://github.com/OSC/ondemand/pull/635)
+
+### Fixed
+- job composer staged_dir guard clauses prevent crash [#637](https://github.com/OSC/ondemand/pull/637)
+- colors for queued and starting panels changed to differ from completed panels [#636](https://github.com/OSC/ondemand/pull/636)
+- clarify Powershell is option for setting up SSH tunnel for Native VNC Windows tab [#638](https://github.com/OSC/ondemand/pull/638)
+
+## [1.8.10] - 2020-08-05
+### Fixed
+- Fixed a dependency bug in dotwi [#110 on the dotiw repo](https://github.com/radar/distance_of_time_in_words/issues/110).
+
+## [1.8.9] - 2020-08-05
+### Changed
+- specified clusters in app to support glob expressoins [#617](https://github.com/OSC/ondemand/pull/617)
+
+### Added
+- extended view support for SGE [#520](https://github.com/OSC/ondemand/pull/520)
+- Native VNC connection tab for OOD can be enabled for sites external to OSC [#625](https://github.com/OSC/ondemand/pull/625)
+- Ability to control which batch connect apps or app attrs use cache to preset values [#539](https://github.com/OSC/ondemand/pull/539)
+- ood_core 0.12.0 additions
+   - qos option to Slurm and Torque [#205](https://github.com/OSC/ood_core/pull/205)
+   - native hash returned in qstat for SGE adapter [#198](https://github.com/OSC/ood_core/pull/198)
+   - option for specifying `submit_host` to submit jobs via ssh on other host [#204](https://github.com/OSC/ood_core/pull/204)
+
+### Fixed
+- support glob style wildcard in host names for OOD_SSHHOST_ALLOWLIST [#601](https://github.com/OSC/ondemand/pull/601)
+- ood_core 0.12.0 fixes
+   - SGE handle milliseconds instead of seconds when milliseconds used [#206](https://github.com/OSC/ood_core/issues/206)
+   - Torque's native "hash" for job submission now handles env vars values with spaces [#202](https://github.com/OSC/ood_core/pull/202)
+
+### Removed
+- Safari compatibility alert for BasicAuth [#608](https://github.com/OSC/ondemand/issues/608)
+
+### Security
+- use handlebars in files app to prevent XSS
+- update files app dependencies ponse, express, jquery
+- ensure default Dex generated secret is stored in file with secure permissions
+
 ## [1.8.8] - 2020-07-22
 ### Fixed
 - Revert the commit that made XDMoD SSO timeout configurable, which introduced a bug [#607](https://github.com/OSC/ondemand/pull/607)
@@ -20,11 +114,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Configuration for XDMoD auto-login timeout [#597](https://github.com/OSC/ondemand/pull/597)
 
 ### Fixed
-- Handle edge case in job efficiency widget where no data 
+- Handle edge case in job efficiency widget where no data
   available [#597](https://github.com/OSC/ondemand/pull/597)
-- Fix XDMoD auto-login iframe trick to properly hide and position 
-  iframe so form button clicks in iframe still work 
-  [#596](https://github.com/OSC/ondemand/pull/596) 
+- Fix XDMoD auto-login iframe trick to properly hide and position
+  iframe so form button clicks in iframe still work
+  [#596](https://github.com/OSC/ondemand/pull/596)
 - Fix bug where `cluster: ""` in batch connect app resulted in unhandled exception [#593](https://github.com/OSC/ondemand/pull/593)
 
 ## [1.8.5] - 2020-07-16
@@ -79,7 +173,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [#536](https://github.com/OSC/ondemand/pull/536)
   [#538](https://github.com/OSC/ondemand/pull/538)
   [#553](https://github.com/OSC/ondemand/pull/553)
-- Streamlined Copy and Paste for Chrome 
+- Streamlined Copy and Paste for Chrome
   [#537](https://github.com/OSC/ondemand/pull/537)
 - Dockerfile for help with development [#309](https://github.com/OSC/ondemand/pull/309)
 - Configurable logo height using OOD_DASHBOARD_LOGO_HEIGHT set to a value like `100px` which
@@ -154,9 +248,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   * File Editor [#440](https://github.com/OSC/ondemand/pull/440)
 - Upgrade noVNC to 1.1.0 (from 1.0) in [#428](https://github.com/OSC/ondemand/pull/440)
   and [#431](https://github.com/OSC/ondemand/pull/431)
-  
+
 ### Added
-- Title to Favorite Paths dropdown [#418](https://github.com/OSC/ondemand/pull/418) and 
+- Title to Favorite Paths dropdown [#418](https://github.com/OSC/ondemand/pull/418) and
   [#432](https://github.com/OSC/ondemand/pull/432)
 - Action column with delete button in active jobs [#423](https://github.com/OSC/ondemand/pull/423)
 - Alert for invalid clusters [#427](https://github.com/OSC/ondemand/pull/427)
@@ -495,7 +589,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.8...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.16...HEAD
+[1.8.16]: https://github.com/OSC/ondemand/compare/v1.8.15...v1.8.16
+[1.8.15]: https://github.com/OSC/ondemand/compare/v1.8.14...v1.8.15
+[1.8.14]: https://github.com/OSC/ondemand/compare/v1.8.13...v1.8.14
+[1.8.13]: https://github.com/OSC/ondemand/compare/v1.8.12...v1.8.13
+[1.8.12]: https://github.com/OSC/ondemand/compare/v1.8.11...v1.8.12
+[1.8.11]: https://github.com/OSC/ondemand/compare/v1.8.10...v1.8.11
+[1.8.10]: https://github.com/OSC/ondemand/compare/v1.8.9...v1.8.10
+[1.8.9]: https://github.com/OSC/ondemand/compare/v1.8.8...v1.8.9
 [1.8.8]: https://github.com/OSC/ondemand/compare/v1.8.7...v1.8.8
 [1.8.7]: https://github.com/OSC/ondemand/compare/v1.8.6...v1.8.7
 [1.8.6]: https://github.com/OSC/ondemand/compare/v1.8.5...v1.8.6

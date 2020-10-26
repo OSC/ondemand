@@ -9,9 +9,6 @@
     <% if product.git_repo? %>
       <span class="text-muted">[<%= product.version %>]</span>
     <% end %>
-    <% unless product.active_users.empty? %>
-      <span class="label label-default pull-right"><%= pluralize product.active_users.size, "active user" %></span>
-    <% end %>
     <p>
       <%= manifest_markdown(product.description) %>
     </p>
