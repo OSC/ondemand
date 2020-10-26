@@ -1,4 +1,5 @@
 require 'securerandom'
+require 'syslog/logger'
 
 module NginxStage
   # This generator stages and generates the per-user NGINX environment.
@@ -115,6 +116,7 @@ module NginxStage
       unless pre_hook_root_cmd.nil?
         args = ["--user", user.to_s]
         env = {}
+        log = Syslog::Logger.new 'ood_nginx_stage'
 
         unless STDIN.tty?
           STDIN.each_line do |line|
@@ -124,9 +126,11 @@ module NginxStage
         end
 
         begin
-          Open3.capture2e(env, pre_hook_root_cmd, *args)
-        rescue
-          # FIXME: we're silently failing here
+          _, err, s = Open3.capture3(env, pre_hook_root_cmd, *args)
+          log.error "#{pre_hook_root_cmd} exited with #{s.exitstatus} for user #{user}. stderr was '#{err}'" unless s.success?
+        rescue StandardError => e
+          log = Syslog::Logger.new 'ood_nginx_stage'
+          log.error "#{pre_hook_root_cmd} threw exception '#{e.message}' for #{user}"
         end
       end
     end
