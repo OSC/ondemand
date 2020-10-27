@@ -2,7 +2,7 @@
  * Allowlist helper function tests
  */
 const helpers = require('../utils/helpers')
-const HostAllowlist = require('../utils/HostAllowlist')
+const HostAllowlist = require('../utils/host-allowlist')
 
 /**
  * Constants used during test

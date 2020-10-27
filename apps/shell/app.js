@@ -10,7 +10,7 @@ const Tokens    = require('csrf');
 const url       = require('url');
 const port      = 3000;
 const helpers   = require('./utils/helpers');
-const HostAllowlist = require('./utils/HostAllowlist');
+const HostAllowlist = require('./utils/host-allowlist');
 
 // Read in environment variables
 dotenv.config({path: '.env.local'});

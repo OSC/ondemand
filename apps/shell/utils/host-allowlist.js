@@ -13,13 +13,9 @@ class HostAllowlist {
         .map(yml => yaml.safeLoad(fs.readFileSync(yml)))
         .filter(config => (config.v2 && config.v2.login && config.v2.login.host) && ! (config.v2 && config.v2.metadata && config.v2.metadata.hidden))
         .map(config => {
-            let isDefault = false;
-            if (config.v2.login.default){ // a catch in case the default is undefined for cluster configs
-                isDefault = true
-            }
-            return { host: config.v2.login.host, default: isDefault }
+            return { host: config.v2.login.host, default: config.v2.login.default ? true : false }
         })
-    
+
         //Add to allowlist
         if (ood_default_sshhost) { 
             this.addToAllowlist(ood_default_sshhost);
