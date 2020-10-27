@@ -5,6 +5,7 @@ class DashboardController < ApplicationController
     rescue StandardError => e
       flash.now[:alert] = t('dashboard.motd_erb_render_error', error_message: e.message)
     end
+    set_my_quotas
   end
 
   def logout
