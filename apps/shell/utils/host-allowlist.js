@@ -11,40 +11,41 @@ class HostAllowlist {
 
     const directory = path.join((clusters_d_path || '/etc/ood/config/clusters.d'))
     let yamlFiles = glob.sync(path.join(directory, '*.y*ml'))
-  
-    while (yamlFiles.length > 0) {
-      try {
-        // Destructure "v2" property out of yaml configuration.
-        let { v2: version } = yaml.safeLoad(fs.readFileSync(yamlFiles.shift(), 'utf-8'))
-  
-        // Destructure "login" and "metadata" properties out of cluster configuration.
-        let {
-          login: {
-            default: isDefault = version.login.default === undefined ? false : version.login.default, // If cluster configuration does not contain "default" property, set false.
-            host = version.login.host === undefined ? 'localhost' : version.login.host // If host is not defined, set to "localhost".
-          },
-          metadata: {
-            hidden = version.metadata.hidden === undefined ? true : version.metadata.hidden // If cluster configuration does not set "hidden" property, set true.
-          }
-        } = version
- 
-        this.clusters.push(version)
 
-        if (isDefault) this.default_sshhost = host // Set cluster as default if "login.default" is true.
+    this.clusters = yamlFiles
+      .map(location => {
+        // Attempt to parse yaml file.
+        try {
+          let data = yaml.safeLoad(fs.readFileSync(location, 'utf-8'))
+
+          return data
+        } catch (err) {
+          const { name, reason, message } = err
+
+          if (name === 'YAMLException', reason, message) {
+            console.error(name, reason, message)
+          }
+        }
+      })
+      .filter(config => (config.v2 && config.v2.login && config.v2.login.host) && ! (config.v2 && config.v2.metadata && config.v2.metadata.hidden))
+      .map(config => {
+        let hidden = config.v2.login.hidden
+        let host = config.v2.login.host || 'localhost'
+        let isDefault = config.v2.login.default || false
+
         if (!hidden) { // If the cluster is not hidden, add the host to the allowlist.
           this.addToAllowlist(host)
         }
-      } catch (err) {
-        const { name, reason, message } = err
-        if (name === 'YAMLException', reason, message) {
-          console.error(name, reason, message)
+
+        return {
+          host,
+          default: isDefault,
         }
-      }
-    }
+      })
 
     // Find default cluster configuration.
-    let { login: { host } } = this.clusters.find(cluster => cluster.default) || this.clusters.shift() // Find cluster with "login.default", if not found then use first cluster found.
-    this.default_sshhost = ood_default_sshhost || host // ood_default_sshhost takes precedence over default cluster found.
+    let found = this.clusters.find(cluster => cluster.default) || this.clusters.shift() // Find cluster with "default", if not found then use first cluster in array.
+    this.default_sshhost = ood_default_sshhost || found.host // ood_default_sshhost takes precedence over default cluster found.
 
     if (ood_default_sshhost) {
       this.addToAllowlist(ood_default_sshhost)
