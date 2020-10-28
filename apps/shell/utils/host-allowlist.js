@@ -22,7 +22,7 @@ class HostAllowlist {
         } catch (err) {
           const { name, reason, message } = err
 
-          if (name === 'YAMLException', reason, message) {
+          if (name === 'YAMLException') {
             console.error(name, reason, message)
           }
         }
