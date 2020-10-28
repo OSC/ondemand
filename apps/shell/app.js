@@ -4,7 +4,6 @@ const path      = require('path');
 const WebSocket = require('ws');
 const express   = require('express');
 const pty       = require('node-pty');
-const hbs       = require('hbs');
 const dotenv    = require('dotenv');
 const Tokens    = require('csrf');
 const url       = require('url');
