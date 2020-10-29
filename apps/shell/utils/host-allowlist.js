@@ -8,25 +8,9 @@ class HostAllowlist {
   constructor(ood_sshhost_allowlist, clusters_d_path, ood_default_sshhost) {
     this.allowlist = ood_sshhost_allowlist ? new Set(ood_sshhost_allowlist.split(':')) : new Set()
     this.clusters = new Array()
+    this.clusters_d_path = clusters_d_path
 
-    const directory = path.join((clusters_d_path || '/etc/ood/config/clusters.d'))
-    let yamlFiles = glob.sync(path.join(directory, '*.y*ml'))
-
-    this.clusters = yamlFiles
-      .map(location => {
-        // Attempt to parse yaml file.
-        try {
-          let data = yaml.safeLoad(fs.readFileSync(location, 'utf-8'))
-
-          return data
-        } catch (err) {
-          const { name, reason, message } = err
-
-          if (name === 'YAMLException') {
-            console.error(name, reason, message)
-          }
-        }
-      })
+    this.clusters = this.getClusterConfigs()
       .filter(config => (config.v2 && config.v2.login && config.v2.login.host) && ! (config.v2 && config.v2.metadata && config.v2.metadata.hidden))
       .map(config => {
         let hidden = config.v2.login.hidden
@@ -50,6 +34,29 @@ class HostAllowlist {
     if (ood_default_sshhost) {
       this.addToAllowlist(ood_default_sshhost)
     }
+  }
+
+  getClusterConfigs() {
+    const clusterConfigs = path.join((this.clusters_d_path || '/etc/ood/config/clusters.d'))
+    let yamlFiles = glob.sync(path.join(clusterConfigs, '*.y*ml'))
+
+    let data = yamlFiles
+      .map(location => {
+        // Attempt to parse yaml file.
+        try {
+          let data = yaml.safeLoad(fs.readFileSync(location, 'utf-8'))
+
+          return data
+        } catch (err) {
+          const { name, reason, message } = err
+
+          if (name === 'YAMLException') {
+            console.error(name, reason, message)
+          }
+        }
+      })
+
+    return data
   }
 
   default_sshhost() {
