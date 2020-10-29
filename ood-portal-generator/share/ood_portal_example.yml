@@ -80,11 +80,13 @@
 # Default: [] (no IPs whitelisted)
 #maintenance_ip_whitelist: []
 
-# Set Header Content-Security-Policy to disallow OnDemand beind loaded in an iFrame.
+# Set Header Content-Security-Policy frame-ancestors.
 # Example:
-#   security_disable_frames: false
-# Default: true
-#security_disable_frames: true
+#   security_csp_frame_ancestors: https://ondemand.osc.edu
+# Example to disable setting:
+#   security_csp_frame_ancestors: false
+# Default: none
+#security_disable_frames: none
 
 # Set Header Strict-Transport-Security to help enforce SSL
 # Example:
