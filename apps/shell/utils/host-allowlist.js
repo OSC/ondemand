@@ -44,14 +44,14 @@ class HostAllowlist {
       .map(location => {
         // Attempt to parse yaml file.
         try {
-          let data = yaml.safeLoad(fs.readFileSync(location, 'utf-8'))
+          let parsed = yaml.safeLoad(fs.readFileSync(location, 'utf-8'))
 
-          return data
+          return parsed
         } catch (err) {
-          const { name, reason, message } = err
+          const { name } = err
 
           if (name === 'YAMLException') {
-            console.error(name, reason, message)
+            return err
           }
         }
       })
