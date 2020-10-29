@@ -8,9 +8,25 @@ class HostAllowlist {
   constructor(ood_sshhost_allowlist, clusters_d_path, ood_default_sshhost) {
     this.allowlist = ood_sshhost_allowlist ? new Set(ood_sshhost_allowlist.split(':')) : new Set();
     this.clusters = new Array();
-    this.clusters_d_path = clusters_d_path;
 
-    this.clusters = this.getClusterConfigs()
+    const clusterConfigs = path.join((clusters_d_path || '/etc/ood/config/clusters.d'));
+    let yamlFiles = glob.sync(path.join(clusterConfigs, '*.y*ml'));
+
+    yamlFiles.map(location => {
+      try {
+        let parsed = yaml.safeLoad(fs.readFileSync(location, 'utf8'));
+
+        if (parsed != undefined) {
+          this.clusters.push(parsed);
+        }
+      } catch (err) {
+        const { name, reason } = err
+        console.error(name, reason)
+      }
+    })
+
+    this.clusters = this.clusters
+      .filter(config => config != undefined)
       .filter(config => (config.v2 && config.v2.login && config.v2.login.host) && ! (config.v2 && config.v2.metadata && config.v2.metadata.hidden))
       .map(config => {
         let hidden = config.v2.login.hidden;
@@ -25,38 +41,19 @@ class HostAllowlist {
           host,
           default: isDefault,
         };
-      })
+      });
+
+    this.default_sshhost = ood_default_sshhost || undefined; // ood_default_sshhost takes precedence over default cluster found.
 
     // Find default cluster configuration.
-    let found = this.clusters.find(cluster => cluster.default) || this.clusters.shift(); // Find cluster with "default", if not found then use first cluster in array.
-    this.default_sshhost = ood_default_sshhost || found.host; // ood_default_sshhost takes precedence over default cluster found.
-
-    if (ood_default_sshhost) {
-      this.addToAllowlist(ood_default_sshhost);
+    if (this.clusters.length > 0) {
+      let found = this.clusters.find(cluster => cluster.default) || this.clusters.shift(); // Find cluster with "default", if not found then use first cluster in array.
+      this.default_sshhost = ood_default_sshhost == undefined ? found.host : ood_default_sshhost; // ood_default_sshhost takes precedence over default cluster found.
     }
-  }
 
-  getClusterConfigs() {
-    const clusterConfigs = path.join((this.clusters_d_path || '/etc/ood/config/clusters.d'));
-    let yamlFiles = glob.sync(path.join(clusterConfigs + '/**', '*.y*ml'));
-
-    let data = yamlFiles
-      .map(location => {
-        // Attempt to parse yaml file.
-        try {
-          let parsed = yaml.safeLoad(fs.readFileSync(location, 'utf-8'));
-
-          return parsed;
-        } catch (err) {
-          const { name } = err;
-
-          if (name === 'YAMLException') {
-            return err;
-          }
-        }
-      })
-
-    return data;
+    if (this.default_sshhost != undefined) {
+      this.addToAllowlist(this.default_sshhost);
+    }
   }
 
   default_sshhost() {
