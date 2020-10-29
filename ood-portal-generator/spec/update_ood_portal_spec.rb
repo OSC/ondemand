@@ -32,6 +32,7 @@ describe 'update_ood_portal' do
 
   before(:each) do
     allow(OodPortalGenerator).to receive(:apache_group).and_return('apache')
+    allow(OodPortalGenerator).to receive(:fqdn).and_return('example.com')
   end
 
   after(:each) do
@@ -119,7 +120,6 @@ describe 'update_ood_portal' do
 
   context 'dex' do
     before(:each) do
-      allow(OodPortalGenerator).to receive(:fqdn).and_return('example.com')
       allow(OodPortalGenerator::Dex).to receive(:installed?).and_return(true)
       allow_any_instance_of(OodPortalGenerator::Dex).to receive(:enabled?).and_return(true)
       allow(OodPortalGenerator).to receive(:dex_user).and_return(user)
