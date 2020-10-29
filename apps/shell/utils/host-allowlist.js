@@ -38,7 +38,7 @@ class HostAllowlist {
 
   getClusterConfigs() {
     const clusterConfigs = path.join((this.clusters_d_path || '/etc/ood/config/clusters.d'))
-    let yamlFiles = glob.sync(path.join(clusterConfigs, '*.y*ml'))
+    let yamlFiles = glob.sync(path.join(clusterConfigs + '/**', '*.y*ml'))
 
     let data = yamlFiles
       .map(location => {
