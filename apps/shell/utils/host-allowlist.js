@@ -8,6 +8,7 @@ class HostAllowlist {
   constructor(ood_sshhost_allowlist, clusters_d_path, ood_default_sshhost) {
     this.allowlist = ood_sshhost_allowlist ? new Set(ood_sshhost_allowlist.split(':')) : new Set();
     this.clusters = new Array();
+    this.default_sshhost = ood_default_sshhost || undefined;
 
     const clusterConfigs = path.join((clusters_d_path || '/etc/ood/config/clusters.d'));
     let yamlFiles = glob.sync(path.join(clusterConfigs, '*.y*ml'));
@@ -42,8 +43,6 @@ class HostAllowlist {
           default: isDefault,
         };
       });
-
-    this.default_sshhost = ood_default_sshhost || undefined; // ood_default_sshhost takes precedence over default cluster found.
 
     // Find default cluster configuration.
     if (this.clusters.length > 0) {
