@@ -4,13 +4,12 @@ const path      = require('path');
 const WebSocket = require('ws');
 const express   = require('express');
 const pty       = require('node-pty');
-const hbs       = require('hbs');
 const dotenv    = require('dotenv');
 const Tokens    = require('csrf');
 const url       = require('url');
 const port      = 3000;
 const helpers   = require('./utils/helpers');
-const HostAllowlist = require('./utils/HostAllowlist');
+const HostAllowlist = require('./utils/host-allowlist');
 
 // Read in environment variables
 dotenv.config({path: '.env.local'});
