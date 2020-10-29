@@ -49,8 +49,17 @@ describe('Helper function hostAndDirFromURL()', () => {
   })
 }) 
 
-describe('Class HostAllowlist', () => {
-  let cluster_path = "./test/clusters.d"
+describe('test host-allowlist class', () => {
+  let cluster_path = "./test/clusters.d";
+
+  // Mute console error during test runs
+  beforeAll(() => {
+    jest.spyOn(console, 'error').mockImplementation(() => undefined);
+  });
+
+  afterAll(() => {
+    console.error.mockRestore();
+  });
 
   test('generates allowlist and default_sshhost correctly', () => {
     let ood_default_sshhost = "owens.osc.edu"
@@ -59,7 +68,6 @@ describe('Class HostAllowlist', () => {
 
     expect(host_allowlist.allowlist).toMatchObject(new Set(['owens.osc.edu', 'pitzer.osc.edu', 'ruby.osc.edu', "*.ten.osc.edu"]))
     expect(host_allowlist.default_sshhost).toBe("owens.osc.edu")
-
   })
 
   test('if default_sshhost is not declared', () => {
@@ -80,4 +88,19 @@ describe('Class HostAllowlist', () => {
     expect(host_allowlist.default_sshhost).toBe("armstrong.osc.edu")
   })
 
+  test('gracefully fail if invalid cluster configs with default_sshhost defined', () => {
+    let ood_default_sshhost = 'owens.osc.edu';
+    let ood_sshhost_allowlist;
+    let host_allowlist = new HostAllowlist(ood_sshhost_allowlist, './test/clusters.d/invalid', ood_default_sshhost);
+
+    expect(host_allowlist.allowlist).toMatchObject(new Set(['owens.osc.edu']));
+    expect(host_allowlist.default_sshhost).toBe('owens.osc.edu');
+  })
+
+  test('gracefully fail if invalid cluster configs without default_sshhost defined', () => {
+    let host_allowlist = new HostAllowlist(null, './test/clusters.d/invalid', null);
+
+    expect(host_allowlist.allowlist).toMatchObject(new Set());
+    expect(host_allowlist.default_sshhost).toBe(undefined);
+  })
 })
