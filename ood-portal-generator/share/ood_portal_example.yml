@@ -86,7 +86,7 @@
 # Example to disable setting:
 #   security_csp_frame_ancestors: false
 # Default: based on servername and ssl settings
-#security_disable_frames:
+#security_csp_frame_ancestors:
 
 # Set Header Strict-Transport-Security to help enforce SSL
 # Example:
