@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.8.17] - 2020-10-30
+### Fixed
+- build bin from nginx_stage gemspec which can end up placing the
+  ruby/node/python wrappers in your PATH which causes issues
+  [#719](https://github.com/OSC/ondemand/pull/719)
+
+### Changed
+- replace `security_disable_frames` with `security_csp_frame_ancestors` setting
+  that lets you set the value of this header and defaults header to servername
+  instead of none [#721](https://github.com/OSC/ondemand/pull/721)
+
 ## [1.8.16] - 2020-10-23
 ### Fixed
 - accessibility: update html titles of apps to be a little more specific to reduce ambiguity [#698](https://github.com/OSC/ondemand/pull/698)
@@ -589,7 +600,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.16...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.17...HEAD
+[1.8.17]: https://github.com/OSC/ondemand/compare/v1.8.16...v1.8.17
 [1.8.16]: https://github.com/OSC/ondemand/compare/v1.8.15...v1.8.16
 [1.8.15]: https://github.com/OSC/ondemand/compare/v1.8.14...v1.8.15
 [1.8.14]: https://github.com/OSC/ondemand/compare/v1.8.13...v1.8.14
