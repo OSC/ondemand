@@ -31,8 +31,9 @@ class Files
   #   @top_cities[order_by]
   # end
 
+  # FIXME: cache
   def username(uid)
-    Etc.getpwuid(user).name
+    Etc.getpwuid(uid).name
   rescue
     uid
   end

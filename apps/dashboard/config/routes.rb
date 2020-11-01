@@ -3,7 +3,10 @@ require "authz/app_developer_constraint"
 Rails.application.routes.draw do
 
   get "files/config" => "files#legacy_app_config", :defaults => { :format => 'json' }
-  get "files/fs/*filepath" => "files#fs", :defaults => { :format => 'json' }, :constraints => { :filepath => /[\w.\/]+/ }
+  get "files/fs/*filepath" => "files#fs", :defaults => { :format => 'json' }, :constraints => { :filepath => /.+/ }
+  put "files/fs/*filepath" => "files#update", :format => false, :defaults => { :format => 'text' }, :constraints => { :filepath => /.+/ }
+  put "files/mv" => "files#mv", :defaults => { :format => 'json' }
+  put "files/cp" => "files#cp", :defaults => { :format => 'json' }
 
   namespace :batch_connect do
     resources :sessions, only: [:index, :destroy]

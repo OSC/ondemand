@@ -1,4 +1,7 @@
 class FilesController < ApplicationController
+  # FIXME:
+  skip_before_action :verify_authenticity_token
+
   # TODO: how do we support legacy ability to control access to files app through file permissions?
 
   def legacy_app_config
@@ -20,11 +23,112 @@ class FilesController < ApplicationController
       # TODO: generate files listing below! then we have it...
       # then we can add the other things till the backend is re-implemented
       format.json {
-        render :json => {
-            "path": "/" + params[:filepath].chomp("/")+"/",
-            "files": Files.new.ls('/' + params[:filepath])
-        }
+        #FIXME:
+        #the current API does a GET on the file to get the file contents AND
+        #a GET on the directory to get the JSON for the directory
+        path = "/" + params[:filepath].chomp("/")
+        if File.directory?(path)
+          render :json => {
+              "path": path + "/",
+              "files": Files.new.ls('/' + params[:filepath])
+          }
+        else
+          #FIXME: type, inline
+          send_file path
+        end
       }
+    end
+  end
+
+  # put - create or update
+  # an empty put wants to create or touch a file
+  # Content-Length: 0
+  #
+  # a put with contents wants to do something else
+  # Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+  #
+  # request payload: the content of the file
+  #
+  # but an empty payload might be
+  #
+  # so their new file request actually creates a file of 0 size instead of touching a file
+  #
+  # FIXME: separate from touching a file (for new) vs saving content of 0 to a file
+  def update
+    # 1.find the path
+    # 2. if it is a file, write the content to it
+    # 3. if it doesn't exist, create the file
+    #
+    # format.html { # show.html.erb
+    #   raise ActionController::RoutingError.new('Not Found')
+    # }
+    # format.json {
+    respond_to do |format|
+      format.text {
+        path = "/" + params[:filepath]
+
+        if params.include?("dir")
+          #TODO: separate FilesController and DirectoriesController
+          # and separate TransfersController (create new transfer)
+          Dir.mkdir path
+          render :body => "make dir: ok(#{File.basename(path)}) }"
+        elsif params.include?("file")
+          FileUtils.mv params["file"].tempfile, path
+          render :body => "save: ok(#{File.basename(path)}) }"
+        else
+          # so... this is file upload instead...
+          # so... we need to preserve the content type
+          File.write(path, request.body.read)
+          render :body => "save: ok(#{File.basename(path)}) }"
+        end
+       }
+    end
+  end
+
+  # FIXME: TransfersController
+  def cp
+    params = ActionController::Parameters.new(JSON.parse(request.body.read).merge(params.to_h))
+    normalize_transfer_params(params).select { |transfer|
+      if transfer.include?(:from) && transfer.include?(:to)
+        transfer
+      else
+        raise "args needed from and to" unless transfer.include?(:from) && transfer.include?(:to)
+      end
+    }.each { |transfer|
+      FileUtils.cp transfer[:from], transfer[:to]
+    }
+
+    render :body => "copy: ok('') }"
+  end
+
+  # FIXME: TransfersController
+  def mv
+    #
+    # parse json body :-P
+    # content type sending is its problem
+    #
+    params = ActionController::Parameters.new(JSON.parse(request.body.read).merge(params.to_h))
+    normalize_transfer_params(params).select { |transfer|
+      if transfer.include?(:from) && transfer.include?(:to)
+        transfer
+      else
+        raise "args needed from and to" unless transfer.include?(:from) && transfer.include?(:to)
+      end
+    }.each { |transfer|
+      FileUtils.mv transfer[:from], transfer[:to]
+    }
+
+    render :body => "move: ok('') }"
+  end
+
+
+  def normalize_transfer_params(params)
+    if params.include?('names')
+      params['names'].map do |name|
+        { from: File.join(params['from'], name), to: File.join(params['to'], name)  }
+      end
+    else
+      [{ from: params['from'], to: params['to']  }]
     end
   end
 end
