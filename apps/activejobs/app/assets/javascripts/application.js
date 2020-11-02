@@ -279,6 +279,7 @@ function create_datatable(options){
                     return `
                       <div>
                         <a
+                          tabindex="0"
                           class="btn btn-danger btn-xs action-btn"
                           data-method="delete"
                           data-confirm="Are you sure you want to delete ${data.jobname} - ${data.pbsid}"
@@ -287,7 +288,7 @@ function create_datatable(options){
                           data-toggle="tooltip"
                           title="Delete Job"
                         >
-                          <i class='glyphicon glyphicon-trash' aria-hidden='true'></i>
+                          <i class="glyphicon glyphicon-trash" aria-hidden="true"></i>
                         </a>
                       </div>
                     `;
