@@ -2,15 +2,17 @@ require 'spec_helper'
 require 'nginx_stage'
 
 describe NginxStage::PunConfigGenerator do
-  let(:test_user){ "spec" }
+  let(:test_user) { "spec" }
+  let(:test_user_gid) { 1000 }
 
   before(:each) {
     etc_stub = {
-      :gid => 1000,
+      :gid => test_user_gid,
       :name => test_user
     }
 
     allow(Etc).to receive(:getpwnam).with(test_user).and_return(Struct.new(*etc_stub.keys).new(*etc_stub.values))
+    allow(Etc).to receive(:getgrgid).with(test_user_gid).and_return(Struct.new(*etc_stub.keys).new(*etc_stub.values))
     allow_any_instance_of(NginxStage::User).to receive(:get_groups).and_return([test_user])
   }
 
