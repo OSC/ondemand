@@ -10,13 +10,13 @@ class BatchConnect::SessionContextsController < ApplicationController
     if @app.valid?
       # Read in context from cache file if cache is disabled and context.json exist
       begin
-       @session_context.update_with_cache(JSON.parse(cache_file.read))  if cache_file.file?
-      rescue => e
-        flash.now[:alert] = t('dashboard.batch_connect_form_attr_cache_error',error_message: e.message)
+        @session_context.update_with_cache(JSON.parse(cache_file.read)) if cache_file.file?
+      rescue StandardError => e
+        flash.now[:alert] = t('dashboard.batch_connect_form_attr_cache_error', error_message: e.message)
       end
     else
       @session_context = nil  # do not display session context form
-      flash.now[:alert] = @app.validation_reason
+      redirect_to batch_connect_sessions_url, alert: @app.validation_reason
     end
 
     set_app_groups

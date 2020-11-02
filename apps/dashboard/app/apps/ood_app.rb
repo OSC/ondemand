@@ -266,6 +266,8 @@ class OodApp
   def version_from_git
     o, e, s = Open3.capture3('git', 'describe', '--always', '--tags', chdir: path.to_s)
     s.success? ? o : nil
+  rescue
+    nil
   end
 
   # @return [String, nil] version string from VERSION file, or nil if no file avail
