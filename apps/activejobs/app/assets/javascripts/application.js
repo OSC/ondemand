@@ -284,7 +284,7 @@ function create_datatable(options){
                           data-method="delete"
                           data-confirm="Are you sure you want to delete ${data.jobname} - ${data.pbsid}"
                           href="${data.delete_path}"
-                          aria-labeled-by"title"
+                          aria-labelledby="title"
                           data-toggle="tooltip"
                           title="Delete Job"
                         >
