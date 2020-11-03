@@ -16,9 +16,11 @@ class FilesController < ApplicationController
   end
 
   def fs
+    @path = Pathname.new("/" + params[:filepath].chomp("/"))
+
     respond_to do |format|
       format.html { # show.html.erb
-        raise ActionController::RoutingError.new('Not Found')
+        render :index
       }
       # TODO: generate files listing below! then we have it...
       # then we can add the other things till the backend is re-implemented
@@ -26,15 +28,14 @@ class FilesController < ApplicationController
         #FIXME:
         #the current API does a GET on the file to get the file contents AND
         #a GET on the directory to get the JSON for the directory
-        path = "/" + params[:filepath].chomp("/")
-        if File.directory?(path)
+        if @path.directory?
           render :json => {
-              "path": path + "/",
-              "files": Files.new.ls('/' + params[:filepath])
+              "path": @path.to_s,
+              "files": Files.new.ls(@path.to_s)
           }
         else
           #FIXME: type, inline
-          send_file path
+          send_file @path
         end
       }
     end

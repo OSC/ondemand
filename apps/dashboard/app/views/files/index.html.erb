@@ -1,0 +1,42 @@
+<h2>files index page</h2>
+
+<ol class="breadcrumb">
+  <li>
+    <%= link_to '/', files_path('/') %>
+  </li>
+  <% @path.each_filename do |f| %>
+  <li>
+    <%= link_to File.basename(f), files_path(f) %>
+  </li>
+  <% end %>
+</ol>
+
+<table class="table table-striped" id="directory-contents">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Size</th>
+      <th>Modified at</th>
+      <th>Owner</th>
+      <th>Mode</th>
+    </tr>
+  </thead>
+</table>
+
+<%# FIXME: problem with not using tables %>
+<script>
+$('#directory-contents').DataTable({
+ajax: {
+url: window.location.href,
+  dataSrc: 'files'
+
+},
+  columns: [
+    { data: 'name' },
+    { data: 'size' },
+    { data: 'date' },
+    { data: 'owner' },
+    { data: 'mode' },
+  ]
+});
+</script>
