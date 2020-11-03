@@ -20,7 +20,13 @@ class FilesController < ApplicationController
 
     respond_to do |format|
       format.html { # show.html.erb
-        render :index
+        if @path.directory?
+          @files = Files.new.ls(@path.to_s)
+          render :index
+        else
+          #FIXME: type, inline
+          send_file @path
+        end
       }
       # TODO: generate files listing below! then we have it...
       # then we can add the other things till the backend is re-implemented
