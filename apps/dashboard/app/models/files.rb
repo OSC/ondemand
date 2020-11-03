@@ -4,7 +4,7 @@ class Files
   def ls(dirpath)
     Pathname.new(dirpath).each_child.map do |path|
       stat(path)
-    end
+    end.sort_by { |p| p[:directory] ? 0 : 1 }
   end
 
   def stat(path)
@@ -13,6 +13,7 @@ class Files
     {
       name: path.basename,
       size: s.directory? ? 'dir' : s.size,
+      directory: s.directory?,
       date: s.mtime.strftime("%d.%m.%Y"),
       owner: username(s.uid),
       #todo: this value converted here or server side
