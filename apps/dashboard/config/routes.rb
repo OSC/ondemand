@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   put "files/fs/*filepath" => "files#update", :format => false, :defaults => { :format => 'text' }, :constraints => { :filepath => /.+/ }
   put "files/mv" => "files#mv", :defaults => { :format => 'json' }
   put "files/cp" => "files#cp", :defaults => { :format => 'json' }
+  put "files/zip/*filepath" => "files#zip", :format => false, :defaults => { :format => 'json' }, :constraints => { :filepath => /.+/ }
 
   namespace :batch_connect do
     resources :sessions, only: [:index, :destroy]

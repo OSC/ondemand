@@ -128,6 +128,9 @@ class FilesController < ApplicationController
     render :body => "move: ok('') }"
   end
 
+  def zip
+    raise "not yet impl"
+  end
 
   def normalize_transfer_params(params)
     if params.include?('names')
