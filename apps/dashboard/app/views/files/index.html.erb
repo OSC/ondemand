@@ -11,6 +11,7 @@
 <table class="table table-striped" id="directory-contents">
   <thead>
     <tr>
+      <th>Type</th>
       <th>Name</th>
       <th>Size</th>
       <th>Modified at</th>
@@ -18,22 +19,23 @@
       <th>Mode</th>
     </tr>
   </thead>
+  <tbody>
+  <% @files.each do |f| %>
+    <tr>
+      <td><%= f[:directory] ? '<span class="fa fa-folder" style="color: gold"></span>'.html_safe : '<span class="fa fa-file" style="color: lightgrey"></span>'.html_safe %></td>
+      <td><%= link_to f[:name], files_path(@path.join(f[:name]).to_s) %></td>
+      <td><%= f[:size] %></td>
+      <td><%= f[:date] %></td>
+      <td><%= f[:owner] %></td>
+      <td><%= f[:mode] %></td>
+    </tr>
+  <% end %>
+  </tbody>
 </table>
 
 <%# FIXME: problem with not using tables %>
 <script>
 $('#directory-contents').DataTable({
-ajax: {
-url: window.location.href,
-  dataSrc: 'files'
-
-},
-  columns: [
-    { data: 'name' },
-    { data: 'size' },
-    { data: 'date' },
-    { data: 'owner' },
-    { data: 'mode' },
-  ]
+    paging:false
 });
 </script>
