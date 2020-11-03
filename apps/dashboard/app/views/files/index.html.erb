@@ -1,12 +1,9 @@
 <h2>files index page</h2>
 
 <ol class="breadcrumb">
+  <% @path.descend do |f| %>
   <li>
-    <%= link_to '/', files_path('/') %>
-  </li>
-  <% @path.each_filename do |f| %>
-  <li>
-    <%= link_to File.basename(f), files_path(f) %>
+    <%= link_to f.basename, files_path(f) %>
   </li>
   <% end %>
 </ol>
