@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.8.18] - 2020-11-03
+### Fixed
+- [Fix name of setting security_csp_frame_ancestors](b7e115cfd35c6c2135c8935fe582fb77342dc7b6) in example ood_portal_example.yml file
+
 ## [1.8.17] - 2020-10-30
 ### Fixed
 - build bin from nginx_stage gemspec which can end up placing the
@@ -600,7 +604,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.17...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.18...HEAD
+[1.8.18]: https://github.com/OSC/ondemand/compare/v1.8.17...v1.8.18
 [1.8.17]: https://github.com/OSC/ondemand/compare/v1.8.16...v1.8.17
 [1.8.16]: https://github.com/OSC/ondemand/compare/v1.8.15...v1.8.16
 [1.8.15]: https://github.com/OSC/ondemand/compare/v1.8.14...v1.8.15
