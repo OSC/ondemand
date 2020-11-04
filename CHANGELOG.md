@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [1.7.19] - 2020-11-03
+### Security
+- backport [security fix from OnDemand 1.8](https://github.com/OSC/ondemand/pull/702)
+  to properly escape user input when creating job template in job composer as
+  reported as CVE-2020-27958
+
 ## [1.7.18] - 2020-09-02
 ### Security
 - Update buffer list dependency (bl) by forcing a version of tar-stream.
@@ -424,7 +430,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.18...release_1.7
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.7.19...release_1.7
+[1.7.19]: https://github.com/OSC/ondemand/compare/v1.7.18...v1.7.19
 [1.7.18]: https://github.com/OSC/ondemand/compare/v1.7.17...v1.7.18
 [1.7.17]: https://github.com/OSC/ondemand/compare/v1.7.16...v1.7.17
 [1.7.16]: https://github.com/OSC/ondemand/compare/v1.7.15...v1.7.16
