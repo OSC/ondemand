@@ -127,9 +127,10 @@
 # Default: null (don't redirect, just display error message)
 #map_fail_uri: null
 
-# System command used to run the `nginx_stage` script with sudo privileges
+# System command used to run the `nginx_stage` script with sudo privileges.
+# May need the -E flag to pass the environment to pre hook commands.
 # Example:
-#     pun_stage_cmd: 'sudo /path/to/nginx_stage'
+#     pun_stage_cmd: 'sudo -E /path/to/nginx_stage'
 # Default: 'sudo /opt/ood/nginx_stage/sbin/nginx_stage' (don't forget sudo)
 #pun_stage_cmd: 'sudo /opt/ood/nginx_stage/sbin/nginx_stage'
 

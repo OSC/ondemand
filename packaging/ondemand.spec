@@ -75,7 +75,7 @@ BuildRequires:   ondemand-nodejs >= %{runtime_version}, ondemand-nodejs < %{next
 BuildRequires:   rsync
 BuildRequires:   git
 Requires:        git
-Requires:        sudo, lsof, sqlite-devel, cronie, wget, curl, make, rsync, file, libxml2, libxslt, zlib
+Requires:        sudo, lsof, sqlite-devel, cronie, wget, curl, make, rsync, file, libxml2, libxslt, zlib, lua-posix
 Requires:        ondemand-apache >= %{runtime_version}, ondemand-apache < %{next_major_version}, ondemand-apache < %{next_minor_version}
 Requires:        ondemand-nginx = 1.17.3
 Requires:        ondemand-passenger = 6.0.4
@@ -211,7 +211,7 @@ touch %{buildroot}%{_sysconfdir}/ood/config/ood_portal.sha256sum
 %__cat >> %{buildroot}%{_sysconfdir}/sudoers.d/ood << EOF
 Defaults:apache !requiretty, !authenticate
 Defaults:apache env_keep += "NGINX_STAGE_* OOD_*"
-apache ALL=(ALL) NOPASSWD: /opt/ood/nginx_stage/sbin/nginx_stage
+apache ALL=(ALL) NOPASSWD:SETENV: /opt/ood/nginx_stage/sbin/nginx_stage
 EOF
 %__chmod 440 %{buildroot}%{_sysconfdir}/sudoers.d/ood
 
