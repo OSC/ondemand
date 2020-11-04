@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+
+runuser -u ondemand-dex /usr/sbin/ondemand-dex serve /etc/ood/dex/config.yaml &
+/opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper -DFOREGROUND

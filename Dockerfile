@@ -21,13 +21,15 @@ RUN yum install -y centos-release-scl && \
         ondemand-ruby \
         ondemand-nodejs \
         ondemand-passenger \
-        ondemand-nginx && \
+        ondemand-nginx \
+        ondemand-dex && \
     yum clean all && rm -rf /var/cache/yum/*
 
 RUN mkdir -p /opt/ood
 RUN mkdir -p /var/www/ood/{apps,public,discover}
 RUN mkdir -p /var/www/ood/apps/{sys,dev,usr}
 
+COPY docker/launch-ood      /opt/ood/launch
 COPY mod_ood_proxy          /opt/ood/mod_ood_proxy
 COPY nginx_stage/           /opt/ood/nginx_stage
 COPY ood-portal-generator   /opt/ood/ood-portal-generator
@@ -48,6 +50,7 @@ RUN sed -i -r \
   -e 's/^#listen_addr_port:.*/listen_addr_port: 8080/g' \
   -e 's/^#port:.*/port: 8080/g' \
   -e 's/^#servername:.*/servername: localhost/g' \
+  -e "s/^#lua_log_level:.*/lua_log_level: 'debug'/g" \
   /etc/ood/config/ood_portal.yml
 
 # make some misc directories & files
@@ -66,5 +69,5 @@ RUN sed -i 's#HTTPD24_HTTPD_SCLS_ENABLED=.*#HTTPD24_HTTPD_SCLS_ENABLED="httpd24 
 RUN groupadd ood
 RUN useradd --create-home --gid ood ood
 
-EXPOSE 80
-CMD [ "/opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper", "-DFOREGROUND" ]
+EXPOSE 8080
+CMD [ "/opt/ood/launch" ]
