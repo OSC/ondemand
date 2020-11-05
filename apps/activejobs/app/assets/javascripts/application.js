@@ -146,7 +146,7 @@ function status_label(status){
     labelclass = "label-warning";
   }
 
-  return `<span class="label ${labelclass}">${label}</span>`;
+  return `<span aria-label="job status is ${label}" class="label ${labelclass}">${label}</span>`;
 }
 
 function create_datatable(options){
@@ -208,7 +208,9 @@ function create_datatable(options){
                 className:          "small",
                 "autoWidth":        true,
                 render: function (data) {
-                  return `<span title="${data}">${data}</span>`;
+                  return `
+                    <span aria-label="pbs id ${data}" title="${data}">${data}</span>
+                  `;
                 },
             },
             {
@@ -216,7 +218,7 @@ function create_datatable(options){
                 className:          "small",
                 width:              '25%',
                 render: function (data) {
-                  return `<span title="${data}">${data}</span>`;
+                  return `<span aria-label="job name ${data}" title="job name ${data}">${data}</span>`;
                 },
             },
             {
@@ -224,7 +226,7 @@ function create_datatable(options){
                 className:          "small",
                 "autoWidth":        true,
                 render: function (data) {
-                  return `<span title="${data}">${data}</span>`;
+                  return `<span aria-label="username ${data}" title="username ${data}">${data}</span>`;
                 },
             },
             {
@@ -232,7 +234,7 @@ function create_datatable(options){
                 className:          "small",
                 "autoWidth":        true,
                 render: function (data) {
-                  return `<span title="${data}">${data}</span>`;
+                  return `<span aria-label="account" title="${data}">${data}</span>`;
                 },
             },
             {
@@ -241,7 +243,7 @@ function create_datatable(options){
                 "autoWidth":        true,
                 render: function (data) {
                   return `
-                    <span title="${human_time(data)}">
+                    <span aria-label="walltime used ${human_time(data)}" title="${human_time(data)}">
                       ${human_time(data)}
                     </span>
                   `;
@@ -252,7 +254,7 @@ function create_datatable(options){
                 className:          "small",
                 "autoWidth":        true,
                 "render":           function(data) {
-                  return `<span title="${data}">${data}</span>`;
+                  return `<div aria-label="in queue ${data}"><span title="in queue ${data}">${data}</span></div>`;
                 }
             },
             {
@@ -266,7 +268,10 @@ function create_datatable(options){
             {
                 data:               "cluster_title",
                 className:          "small",
-                "autoWidth":        true
+                "autoWidth":        true,
+                "render":           function(data) {
+                  return `<span title="${data}">${data}</span>`
+                }
             },
             {
                 data:               null,
@@ -277,9 +282,8 @@ function create_datatable(options){
                     return ""
                   } else {
                     return `
-                      <div>
+                      <div aria-label="delete job">
                         <a
-                          tabindex="0"
                           class="btn btn-danger btn-xs action-btn"
                           data-method="delete"
                           data-confirm="Are you sure you want to delete ${data.jobname} - ${data.pbsid}"
