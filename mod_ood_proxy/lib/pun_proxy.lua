@@ -12,6 +12,7 @@ local nginx_stage = require 'ood.nginx_stage'
 --]]
 function pun_proxy_handler(r)
   -- read in OOD specific settings defined in Apache config
+  local user_map_match        = r.subprocess_env['OOD_USER_MAP_MATCH']
   local user_map_cmd          = r.subprocess_env['OOD_USER_MAP_CMD']
   local user_env              = r.subprocess_env['OOD_USER_ENV']
   local pun_socket_root       = r.subprocess_env['OOD_PUN_SOCKET_ROOT']
@@ -23,7 +24,7 @@ function pun_proxy_handler(r)
   local pun_max_retries       = tonumber(r.subprocess_env['OOD_PUN_MAX_RETRIES'])
 
   -- get the system-level user name
-  local user = user_map.map(r, user_map_cmd, user_env and r.subprocess_env[user_env] or r.user)
+  local user = user_map.map(r, user_map_match, user_map_cmd, user_env and r.subprocess_env[user_env] or r.user)
   if not user then
     if map_fail_uri then
       return http.http302(r, map_fail_uri .. "?redir=" .. r:escape(r.unparsed_uri))
