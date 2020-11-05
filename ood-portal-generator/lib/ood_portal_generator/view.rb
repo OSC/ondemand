@@ -5,7 +5,7 @@ module OodPortalGenerator
   # A view class that renders an OOD portal Apache configuration file
   class View
     attr_reader :ssl, :protocol, :servername, :port
-    attr_accessor :user_map_cmd, :logout_redirect
+    attr_accessor :user_mapping, :user_map_cmd, :logout_redirect
     attr_accessor :oidc_uri, :oidc_client_secret, :oidc_remote_user_claim, :oidc_client_id, :oidc_provider_metadata_url, :oidc_redirect_uri
     # @param opts [#to_h] the options describing the context used to render the
     #   template
@@ -28,7 +28,9 @@ module OodPortalGenerator
       @use_rewrites     = opts.fetch(:use_rewrites, true)
       @lua_root         = opts.fetch(:lua_root, "/opt/ood/mod_ood_proxy/lib")
       @lua_log_level    = opts.fetch(:lua_log_level, "info")
-      @user_map_cmd     = opts.fetch(:user_map_cmd, "/opt/ood/ood_auth_map/bin/ood_auth_map.regex")
+      @user_mapping     = opts.fetch(:user_mapping, 'match')
+      @user_map_match   = opts.fetch(:user_map_match, ".*")
+      @user_map_cmd     = opts.fetch(:user_map_cmd, nil)
       @user_env         = opts.fetch(:user_env, nil)
       @map_fail_uri     = opts.fetch(:map_fail_uri, nil)
       @pun_stage_cmd    = opts.fetch(:pun_stage_cmd, "sudo /opt/ood/nginx_stage/sbin/nginx_stage")

@@ -223,6 +223,7 @@ module OodPortalGenerator
 
     def oidc_attributes
       attrs = {
+        user_mapping: 'match',
         oidc_uri: '/oidc',
         oidc_redirect_uri: client_redirect_uri,
         oidc_provider_metadata_url: "#{issuer}/.well-known/openid-configuration",
@@ -231,7 +232,7 @@ module OodPortalGenerator
       }
       attrs[:oidc_remote_user_claim] = 'email' if connectors.nil?
       if @view.oidc_remote_user_claim == 'email' || attrs[:oidc_remote_user_claim] == 'email'
-        attrs[:user_map_cmd] = "/opt/ood/ood_auth_map/bin/ood_auth_map.regex --regex='^([^@]+)@.*$'"
+        attrs[:user_map_match] = "^([^@]+)@.*$"
       end
       attrs[:logout_redirect] = "/oidc?logout=#{client_url}".gsub('://', '%3A%2F%2F')
       attrs

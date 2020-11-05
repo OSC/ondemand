@@ -101,7 +101,7 @@
 
   # Authenticated-user to system-user mapping configuration
   #
-  SetEnv OOD_USER_MAP_CMD "/opt/ood/ood_auth_map/bin/ood_auth_map.regex --regex='^([^@]+)@.*$'"
+  SetEnv OOD_USER_MAP_MATCH "^([^@]+)@.*$"
 
   # Per-user Nginx (PUN) configuration
   # NB: Apache will need sudo privs to control the PUNs
