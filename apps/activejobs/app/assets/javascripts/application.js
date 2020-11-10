@@ -277,7 +277,9 @@ function create_datatable(options){
                 data:               null,
                 className:          "small",
                 "autoWidth":        true,
-                "render":           function(data){
+                render: function(data, type, row, meta) {
+                  let { jobname, pbsid } = row
+
                   if(data.delete_path == "" || data.status == "completed"){
                     return ""
                   } else {
@@ -288,7 +290,7 @@ function create_datatable(options){
                           data-method="delete"
                           data-confirm="Are you sure you want to delete ${data.jobname} - ${data.pbsid}"
                           href="${data.delete_path}"
-                          aria-labeled-by"title"
+                          aria-label="Delete job ${jobname} with ID ${pbsid}"
                           data-toggle="tooltip"
                           title="Delete Job"
                         >
