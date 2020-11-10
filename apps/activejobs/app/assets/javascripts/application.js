@@ -37,12 +37,21 @@ function human_time(seconds_total) {
 }
 
 function fetch_job_data(tr, row, options) {
+  let btn = tr.find('button.details-control');
   if (row.child.isShown()) {
     // This row is already open - close it
     row.child.hide();
     tr.removeClass("shown");
+
+    btn.removeClass("fa-chevron-down");
+    btn.addClass("fa-chevron-right");
+    btn.attr("aria-expanded", false);
   } else {
     tr.addClass("shown");
+
+    btn.removeClass("fa-chevron-right");
+    btn.addClass("fa-chevron-down");
+    btn.attr("aria-expanded", true);
 
     let data = {
       pbsid: row.data().pbsid,
@@ -168,8 +177,6 @@ function create_datatable(options){
             "sSearch": "Filter: "
         },
         "fnCreatedRow": function( nRow, aData, iDataIndex ) {
-          $(nRow).attr("tabindex", 0);
-          
           $(nRow).children("td").css("overflow", "hidden");
           $(nRow).children("td").css("white-space", "nowrap");
           $(nRow).children("td").css("text-overflow", "ellipsis");
@@ -196,13 +203,8 @@ function create_datatable(options){
                 "defaultContent":   '',
                 "width":            "20px",
                 "searchable":       false,
-                "fnCreatedCell":    function(nTd, data) {
-                                        if (data) {
-                                            $(nTd).addClass('details-control');
-                                        }
-                                    },
-                render: function () {
-                  return "";
+                render: function (data, type, row, meta) {
+                  return '<button class="details-control fa fa-chevron-right btn btn-default" aria-expanded="false" aria-label="Toggle visibility of job details row"></button>';
                 },
             },
             {
