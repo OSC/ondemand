@@ -204,7 +204,8 @@ function create_datatable(options){
                 "width":            "20px",
                 "searchable":       false,
                 render: function (data, type, row, meta) {
-                  return '<button class="details-control fa fa-chevron-right btn btn-default" aria-expanded="false" aria-label="Toggle visibility of job details row"></button>';
+                  let { cluster_title, jobname, } = row
+                  return `<button class="details-control fa fa-chevron-right btn btn-default" aria-expanded="false" aria-label="Toggle visibility of job details for job ${jobname} on ${cluster_title}"></button>`;
                 },
             },
             {
