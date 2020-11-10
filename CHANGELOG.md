@@ -8,7 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ## [1.8.19] - 2020-12-14
 ### Fixed
- - don't use cached cluster value if it's not available [#748](https://github.com/OSC/ondemand/pull/748)
+- don't use cached cluster value if it's not available [#748](https://github.com/OSC/ondemand/pull/748)
+- fix accessability of buttons in active jobs table [#732](https://github.com/OSC/ondemand/pull/732)
+
+### Changed
+- use specific versions of packaging repo in [#735](https://github.com/OSC/ondemand/pull/735)
 
 ## [1.8.18] - 2020-11-03
 ### Fixed
