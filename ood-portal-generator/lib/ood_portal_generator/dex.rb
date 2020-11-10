@@ -223,7 +223,6 @@ module OodPortalGenerator
 
     def oidc_attributes
       attrs = {
-        user_mapping: 'match',
         oidc_uri: '/oidc',
         oidc_redirect_uri: client_redirect_uri,
         oidc_provider_metadata_url: "#{issuer}/.well-known/openid-configuration",
