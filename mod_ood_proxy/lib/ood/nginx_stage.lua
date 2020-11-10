@@ -13,11 +13,16 @@ function pun(r, bin, user, app_init_url, exports, pre_hook_root_cmd)
   end
 
   if pre_hook_root_cmd then
-    parse_exports(r, exports)
+    export_env = export_table(r, exports)
+    set_env(export_env)
     cmd = cmd .. " -P '" .. r:escape(pre_hook_root_cmd) .. "'"
   end
 
   local err = capture2e(cmd)
+
+  if pre_hook_root_cmd then
+    clear_env(export_env)
+  end
 
   if err == "" then
     return nil -- success
@@ -89,20 +94,46 @@ function capture2e(cmd)
 end
 
 --[[
-  parse_exports
+  export_table
 
   Given exports to be a comma seperated list of environment variable
   names: split that string, extract the variable values from the request's
-  environment and set the OS environment variables.
+  environment and return a table of the environment variable key:value pairs
 --]]
-function parse_exports(r, exports)
+function export_table(r, exports)
+  export_table = {}
+
   if exports then
     for key in string.gmatch(exports, '([^,]+)') do
         value = r.subprocess_env[key]
         if value then
-          posix.setenv(key, value)
+          export_table[key] = value
         end
     end
+  end
+
+  return export_table
+end
+
+--[[
+  set_env
+
+  Given a table of key:value pairs, set the environment with those pairs
+--]]
+function set_env(export_table)
+  for key, value in pairs(export_table) do
+    posix.setenv(key, value)
+  end
+end
+
+--[[
+  clear_env
+
+  Given a table of key:value pairs, clear the environment with the keys
+--]]
+function clear_env(export_table)
+  for key, value in pairs(export_table) do
+    posix.setenv(key, nil)
   end
 end
 
