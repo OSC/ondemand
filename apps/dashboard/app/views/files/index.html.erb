@@ -36,6 +36,14 @@
 <%# FIXME: problem with not using tables %>
 <script>
 $('#directory-contents').DataTable({
-    paging:false
+  paging:false,
+  //FIXME: need some mixture of flexbox to control height
+  scrollY: '65vh',
+  scrollCollapse: true,
+  select: {
+    style: 'os',
+    className: 'selected info',
+    toggleable: false
+  }
 });
 </script>
