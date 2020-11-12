@@ -73,7 +73,13 @@
 
 <%# FIXME: problem with not using tables %>
 <script>
-$('#directory-contents').DataTable({
+$.fn.dataTable.ext.search.push(
+    function( settings, data, dataIndex  ) {
+      return $('#show-dotfiles').is(':checked') || ! data[1].startsWith('.');
+    }
+)
+
+var table = $('#directory-contents').DataTable({
   paging:false,
   //FIXME: need some mixture of flexbox to control height
   scrollY: '65vh',
@@ -84,4 +90,6 @@ $('#directory-contents').DataTable({
     toggleable: false
   }
 });
+
+$('#show-dotfiles').change(() => table.draw());
 </script>
