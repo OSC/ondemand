@@ -6,6 +6,13 @@
   <%= stylesheet_link_tag    'application', media: 'all' %>
   <%= javascript_include_tag 'application' %>
   <%= javascript_include_tag 'turbolinks' if Configuration.turbolinks_enabled? %>
+  <%# stylesheet_link_tag    "/DataTables-1.10.22/datatables.css", media: "all" %>
+  <%# javascript_include_tag "/DataTables-1.10.22/datatables.js" %>
+  <%= stylesheet_link_tag    "https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap.min.css", media: "all" %>
+  <%= stylesheet_link_tag    "https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css", media: "all" %>
+  <%= javascript_include_tag "https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js" %>
+  <%= javascript_include_tag "https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap.min.js" %>
+  <%= javascript_include_tag "https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js" %>
   <%= csrf_meta_tags %>
 
   <%= yield :head %>

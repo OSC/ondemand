@@ -52,9 +52,6 @@ $ood-blue: rgb(0, 95, 133);
 
 @import "ood_appkit";
 
-// Load up dataTables bootstrap specific styles
-@import "dataTables/bootstrap/3/jquery.dataTables.bootstrap";
-
 // Use sticky footer in body of layout
 // See: https://css-tricks.com/couple-takes-sticky-footer/
 html, body {
