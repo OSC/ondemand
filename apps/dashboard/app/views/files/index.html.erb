@@ -88,8 +88,23 @@ var table = $('#directory-contents').DataTable({
     style: 'os',
     className: 'selected info',
     toggleable: false
-  }
+  },
+  columns: [
+    null, // type
+    null, // name
+    null, // size
+    null, // modified_at
+    { visible: $('#show-owner-mode').is(':checked') }, // owner
+    { visible: $('#show-owner-mode').is(':checked') } // mode
+  ]
 });
 
 $('#show-dotfiles').change(() => table.draw());
+
+// TODO: https://datatables.net/reference/button/colvis
+$('#show-owner-mode').change(() => {
+  let visible = $('#show-owner-mode').is(':checked');
+  table.column(4).visible(visible);
+  table.column(5).visible(visible);
+});
 </script>
