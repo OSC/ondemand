@@ -1,5 +1,19 @@
 <h2>files index page</h2>
 
+<div class="text-right">
+  <button type="button" class="btn btn-default btn-sm"><i class="fas fa-folder" aria-hidden="true"></i> Go To...</button>
+  <button type="button" class="btn btn-default btn-sm"><i class="fas fa-terminal" aria-hidden="true"></i> Open in Terminal</button>
+  <button type="button" class="btn btn-default btn-sm"><i class="fas fa-file-plus" aria-hidden="true"></i> New File</button>
+  <button type="button" class="btn btn-default btn-sm"><i class="fas fa-folder-plus" aria-hidden="true"></i> New Directory</button>
+  <button type="button" class="btn btn-default btn-sm"><i class="fas fa-upload" aria-hidden="true"></i> Upload</button>
+  <label>
+    <input type="checkbox" id="show-dotfiles"> Show Dotfiles
+  </label>
+  <label>
+    <input type="checkbox" id="show-owner-mode"> Show Owner/Mode
+  </label>
+</div>
+
 <ol class="breadcrumb">
   <% @path.descend do |f| %>
   <li>
@@ -20,6 +34,14 @@
 </div>
 
 <div class="col-md-9">
+
+<div>
+  <button type="button" class="btn btn-default btn-sm"><i class="fas fa-eye" aria-hidden="true"></i> View</button>
+  <button type="button" class="btn btn-default btn-sm"><i class="fas fa-edit" aria-hidden="true"></i> Edit</button>
+  <button type="button" class="btn btn-default btn-sm"><i class="fas fa-font-case" aria-hidden="true"></i> Rename</button>
+  <button type="button" class="btn btn-default btn-sm"><i class="fas fa-copy" aria-hidden="true"></i> Copy/Move</button>
+  <button type="button" class="btn btn-danger pull-right btn-sm"><i class="fas fa-trash" aria-hidden="true"></i> Delete</button>
+</div>
 
 <table class="table table-striped table-condensed" id="directory-contents">
   <thead>
