@@ -40,7 +40,7 @@
 <div>
   <button type="button" class="btn btn-default btn-sm"><i class="fas fa-eye" aria-hidden="true"></i> View</button>
   <button type="button" class="btn btn-default btn-sm"><i class="fas fa-edit" aria-hidden="true"></i> Edit</button>
-  <button type="button" class="btn btn-default btn-sm"><i class="fas fa-font-case" aria-hidden="true"></i> Rename</button>
+  <button id="rename-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-font" aria-hidden="true"></i> Rename</button>
   <button type="button" class="btn btn-default btn-sm"><i class="fas fa-copy" aria-hidden="true"></i> Copy/Move</button>
   <button type="button" class="btn btn-danger pull-right btn-sm"><i class="fas fa-trash" aria-hidden="true"></i> Delete</button>
 </div>
@@ -157,5 +157,40 @@ $('#new-dir-btn').click(() => {
   .then((result) => { if(result.isConfirmed){ return Promise.resolve(result.value); }})
   .then((filename) => fetch(`${currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put'}))
   // TODO: update view with successful file creation
+});
+
+$('#rename-btn').click(() => {
+  let selection = table.rows({selected: true}).data();
+  if(selection.length != 1){
+    Swal.fire('Cannot rename selection', 'Need only 1 item selected to rename', 'error')
+  }
+  else{
+    // if there was some other attribute that just had the name...
+    let filename = $($.parseHTML(selection[0][1])).text();
+    console.log(filename);
+
+
+    Swal.fire({
+      title: 'Rename',
+      input: 'text',
+      inputLabel: 'Filename',
+      inputValue: filename,
+      showCancelButton: true,
+      inputValidator: (value) => {
+        if (! value) {
+          // TODO: validate filenames against listing
+          return 'Provide a filename to rename this to';
+        }
+        else if (value.includes('/') || value.includes('..')){
+         return 'Filename cannot include / or ..';
+        }
+      }
+    })
+    // FIXME: do not allow / in the filename or ..
+    // error cases
+    .then((result) => { if(result.isConfirmed){ return Promise.resolve(result.value); }})
+    .then((new_filename) => fetch('<%= files_mv_path %>', {method: 'put', body: JSON.stringify({from: `${currentDirectory}/${filename}`, to: `${currentDirectory}/${new_filename}`})}))
+    // TODO: update view with successful file rename
+  }
 });
 </script>
