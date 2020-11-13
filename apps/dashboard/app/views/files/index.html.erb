@@ -2,9 +2,11 @@
 
 <div class="text-right">
   <button type="button" class="btn btn-default btn-sm"><i class="fas fa-folder" aria-hidden="true"></i> Go To...</button>
+
+  <%# FIXME: open in terminal should be dropdown of all clusters (with default) %>
   <button type="button" class="btn btn-default btn-sm"><i class="fas fa-terminal" aria-hidden="true"></i> Open in Terminal</button>
-  <button type="button" class="btn btn-default btn-sm"><i class="fas fa-file-plus" aria-hidden="true"></i> New File</button>
-  <button type="button" class="btn btn-default btn-sm"><i class="fas fa-folder-plus" aria-hidden="true"></i> New Directory</button>
+  <button id="new-file-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-plus" aria-hidden="true"></i> New File</button>
+  <button id="new-dir-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-folder-plus" aria-hidden="true"></i> New Directory</button>
   <button type="button" class="btn btn-default btn-sm"><i class="fas fa-upload" aria-hidden="true"></i> Upload</button>
   <label>
     <input type="checkbox" id="show-dotfiles"> Show Dotfiles
@@ -99,6 +101,11 @@ var table = $('#directory-contents').DataTable({
   ]
 });
 
+
+// is this escaped correctly?
+var currentDirectory = '<%= @path %>';
+var currentDirectoryUrl = '<%= files_path(@path) %>';
+
 $('#show-dotfiles').change(() => table.draw());
 
 // TODO: https://datatables.net/reference/button/colvis
@@ -106,5 +113,49 @@ $('#show-owner-mode').change(() => {
   let visible = $('#show-owner-mode').is(':checked');
   table.column(4).visible(visible);
   table.column(5).visible(visible);
+});
+
+// FIXME:
+// upon creating new dir or new file
+// should actually update view AND set file as selected
+
+$('#new-file-btn').click(() => {
+  Swal.fire({
+    title: 'New File',
+    input: 'text',
+    inputLabel: 'Filename',
+    showCancelButton: true,
+    inputValidator: (value) => {
+      if (! value) {
+        // TODO: validate filenames against listing
+        return 'Provide a filename'
+      }
+    }
+  })
+  // FIXME: do not allow / in the filename or ..
+  // error cases
+  .then((result) => { if(result.isConfirmed){ return Promise.resolve(result.value); }})
+  .then((filename) => fetch(`${currentDirectoryUrl}/${encodeURI(filename)}`, {method: 'put'}))
+  // TODO: update view with successful file creation
+});
+
+$('#new-dir-btn').click(() => {
+  Swal.fire({
+    title: 'New Directory',
+    input: 'text',
+    inputLabel: 'Directory name',
+    showCancelButton: true,
+    inputValidator: (value) => {
+      if (! value) {
+        // TODO: validate filenames against listing
+        return 'Provide a directory name'
+      }
+    }
+  })
+  // FIXME: do not allow / in the filename or ..
+  // error cases
+  .then((result) => { if(result.isConfirmed){ return Promise.resolve(result.value); }})
+  .then((filename) => fetch(`${currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put'}))
+  // TODO: update view with successful file creation
 });
 </script>
