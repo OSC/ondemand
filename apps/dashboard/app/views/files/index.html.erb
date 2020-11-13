@@ -41,6 +41,7 @@
   <button type="button" class="btn btn-default btn-sm"><i class="fas fa-eye" aria-hidden="true"></i> View</button>
   <button type="button" class="btn btn-default btn-sm"><i class="fas fa-edit" aria-hidden="true"></i> Edit</button>
   <button id="rename-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-font" aria-hidden="true"></i> Rename</button>
+  <button id="download-btn" type="button" class="btn btn-primary btn-sm"><i class="fas fa-download" aria-hidden="true"></i> Download</button>
   <button type="button" class="btn btn-default btn-sm"><i class="fas fa-copy" aria-hidden="true"></i> Copy/Move</button>
   <button type="button" class="btn btn-danger pull-right btn-sm"><i class="fas fa-trash" aria-hidden="true"></i> Delete</button>
 </div>
@@ -59,7 +60,7 @@
   <tbody>
   <% @files.each do |f| %>
     <tr>
-      <td><%= f[:directory] ? '<span class="fa fa-folder" style="color: gold"></span>'.html_safe : '<span class="fa fa-file" style="color: lightgrey"></span>'.html_safe %></td>
+      <td><%= f[:directory] ? 'dir' : 'file' %></td>
       <td><%= link_to f[:name], files_path(@path.join(f[:name]).to_s) %></td>
       <td><%= f[:size] %></td>
       <td><%= f[:date] %></td>
@@ -92,12 +93,12 @@ var table = $('#directory-contents').DataTable({
     toggleable: false
   },
   columns: [
-    null, // type
-    null, // name
-    null, // size
-    null, // modified_at
-    { visible: $('#show-owner-mode').is(':checked') }, // owner
-    { visible: $('#show-owner-mode').is(':checked') } // mode
+    { data: 'type', render: (data, type, row, meta) => data == 'dir' ? '<span title="directory" class="fa fa-folder" style="color: gold"></span>' : '<span title="file" class="fa fa-file" style="color: lightgrey"></span>' }, // type
+    { data: 'name' }, // name
+    { data: 'size' }, // size
+    { data: 'modified_at' }, // modified_at
+    { data: 'owner', visible: $('#show-owner-mode').is(':checked') }, // owner
+    { data: 'mode', visible: $('#show-owner-mode').is(':checked') } // mode
   ]
 });
 
@@ -166,9 +167,7 @@ $('#rename-btn').click(() => {
   }
   else{
     // if there was some other attribute that just had the name...
-    let filename = $($.parseHTML(selection[0][1])).text();
-    console.log(filename);
-
+    let filename = $($.parseHTML(selection[0].name)).text();
 
     Swal.fire({
       title: 'Rename',
@@ -191,6 +190,35 @@ $('#rename-btn').click(() => {
     .then((result) => { if(result.isConfirmed){ return Promise.resolve(result.value); }})
     .then((new_filename) => fetch('<%= files_mv_path %>', {method: 'put', body: JSON.stringify({from: `${currentDirectory}/${filename}`, to: `${currentDirectory}/${new_filename}`})}))
     // TODO: update view with successful file rename
+  }
+});
+
+// refactor then replace...
+
+$('#download-btn').click(() => {
+  let selection = table.rows({selected: true}).data();
+  if(selection.length != 1){
+    Swal.fire('Select only 1 file to download', 'You have selected none or multiple rows', 'error')
+  }
+  else if(selection[0].type == "dir"){
+    Swal.fire('Cannot download directory', 'Can only download files', 'error')
+    // TODO
+  }
+  else {
+    // creating the temporary iframe is exactly what the CloudCmd does
+    // so this just repeats the status quo
+
+    // FIXME: currentDirectoryUrl possible escaping issues... what if path has spaces etc.
+    let filename = $($.parseHTML(selection[0].name)).text(),
+        downloadUrl = `${currentDirectoryUrl}/${encodeURI(filename)}?download=${Date.now().toString()}`,
+        iframe = document.createElement('iframe'),
+        TIME = 30 * 1000;
+    iframe.setAttribute('class', 'hidden');
+    iframe.setAttribute('src', downloadUrl);
+
+    document.body.appendChild(iframe);
+
+    setTimeout(function() { document.body.removeChild(iframe); }, TIME);
   }
 });
 </script>
