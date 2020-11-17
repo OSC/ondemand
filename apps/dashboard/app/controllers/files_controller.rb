@@ -92,6 +92,26 @@ class FilesController < ApplicationController
     end
   end
 
+  # POST
+  def upload
+    # FIXME: uppy uses "null" :-P
+    #
+    # File.join '/a/b', '/c' => '/a/b/c'
+    # Pathname.new('/a/b').join('/c') => '/c'
+    if params["relativePath"] && params["relativePath"] != "null"
+      path = Pathname.new(File.join(params["parent"], params["relativePath"]))
+    else
+      path = Pathname.new(File.join(params["parent"], params["name"]))
+    end
+
+    path.mkpath unless path.parent.directory?
+
+    FileUtils.mv params["file"].tempfile, path.to_s
+    # render :body => "save: ok(#{path}) }"
+    # TODO: uppy: could add url to the file
+    render json: {}
+  end
+
   # FIXME: TransfersController
   def cp
     params = ActionController::Parameters.new(JSON.parse(request.body.read).merge(params.to_h))

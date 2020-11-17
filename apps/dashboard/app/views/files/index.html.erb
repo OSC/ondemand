@@ -7,7 +7,7 @@
   <button type="button" class="btn btn-default btn-sm"><i class="fas fa-terminal" aria-hidden="true"></i> Open in Terminal</button>
   <button id="new-file-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-plus" aria-hidden="true"></i> New File</button>
   <button id="new-dir-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-folder-plus" aria-hidden="true"></i> New Directory</button>
-  <button type="button" class="btn btn-default btn-sm"><i class="fas fa-upload" aria-hidden="true"></i> Upload</button>
+  <button id="upload-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-upload" aria-hidden="true"></i> Upload</button>
   <label>
     <input type="checkbox" id="show-dotfiles"> Show Dotfiles
   </label>
@@ -221,4 +221,41 @@ $('#download-btn').click(() => {
     setTimeout(function() { document.body.removeChild(iframe); }, TIME);
   }
 });
+
+//TODO: uppy locales supported - pull from server side locales
+//TODO: accessibility analysis of solution
+
+(function(){
+  function closeAndResetUppyModal(uppy){
+    uppy.getPlugin('Dashboard').closeModal();
+    uppy.reset();
+  }
+
+  var csrf_token = document.getElementsByName('csrf-token')[0].content
+  var uppy = Uppy.Core();
+  uppy.use(Uppy.Dashboard, {
+    trigger: '#upload-btn',
+    fileManagerSelectionType: 'both',
+    disableThumbnailGenerator: true,
+    showLinkToFileUploadResult: false,
+    closeModalOnClickOutside: true,
+    closeAfterFinish: true,
+    allowMultipleUploads: false,
+    onRequestCloseModal: () => closeAndResetUppyModal(uppy),
+  });
+  uppy.use(Uppy.XHRUpload, {
+    endpoint: '<%= files_upload_path %>',
+    withCredentials: true,
+    fieldName: 'file',
+    limit: 1,
+    headers: { 'X-CSRF-Token': csrf_token }
+  });
+
+  uppy.on('file-added', (file) => {
+    uppy.setFileMeta(file.id, { parent: currentDirectory });
+    if(file.meta.relativePath == null && file.data.webkitRelativePath){
+      uppy.setFileMeta(file.id, { relativePath: file.data.webkitRelativePath });
+    }
+  });
+})();
 </script>
