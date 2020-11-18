@@ -58,7 +58,16 @@
     </tr>
   </thead>
   <tbody>
-  <%= render partial: "file_table_row", collection: @files, as: :file, locals: { path: @path } %>
+  <% @files.each do |f| %>
+    <tr>
+      <td><%= f[:directory] ? 'dir' : 'file' %></td>
+      <td><%= link_to f[:name], files_path(@path.join(f[:name]).to_s) %></td>
+      <td><%= f[:size] %></td>
+      <td><%= f[:date] %></td>
+      <td><%= f[:owner] %></td>
+      <td><%= f[:mode] %></td>
+    </tr>
+  <% end %>
   </tbody>
 </table>
 
@@ -97,7 +106,6 @@ var table = $('#directory-contents').DataTable({
 // is this escaped correctly?
 var currentDirectory = '<%= @path %>';
 var currentDirectoryUrl = '<%= files_path(@path) %>';
-var currentDirectoryUpdateUrl = currentDirectoryUrl.replace('fs', 'js');
 
 $('#show-dotfiles').change(() => table.draw());
 
@@ -181,9 +189,6 @@ $('#rename-btn').click(() => {
     // error cases
     .then((result) => { if(result.isConfirmed){ return Promise.resolve(result.value); }})
     .then((new_filename) => fetch('<%= files_mv_path %>', {method: 'put', body: JSON.stringify({from: `${currentDirectory}/${filename}`, to: `${currentDirectory}/${new_filename}`})}))
-    .then(() => {
-      $.getScript(currentDirectoryUpdateUrl);
-    })
     // TODO: update view with successful file rename
   }
 });

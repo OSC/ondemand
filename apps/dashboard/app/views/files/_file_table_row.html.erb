@@ -1,8 +1,0 @@
-<tr>
-  <td><%= file[:directory] ? 'dir' : 'file' %></td>
-  <td><%= link_to file[:name], files_path(path.join(file[:name]).to_s) %></td>
-  <td><%= file[:size] %></td>
-  <td><%= file[:date] %></td>
-  <td><%= file[:owner] %></td>
-  <td><%= file[:mode] %></td>
-</tr>
