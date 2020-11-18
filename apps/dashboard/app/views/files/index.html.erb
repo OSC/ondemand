@@ -141,11 +141,17 @@ $('#new-file-btn').click(() => {
     }
   })
   // FIXME: do not allow / in the filename or ..
-  // error cases
-  .then((result) => { if(result.isConfirmed){ return Promise.resolve(result.value); }})
+  .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
+  // FIXME: handle error cases
   .then((filename) => fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}`, {method: 'put'}))
   // TODO: parse JSON response to get id of file created
   .then(() => reloadTable())
+  .catch(e => {
+      if(e != 'cancelled'){
+        //FIXME: error
+        console.error(e);
+      }
+  })
 });
 
 $('#new-dir-btn').click(() => {
@@ -171,10 +177,16 @@ $('#new-dir-btn').click(() => {
   })
   // FIXME: do not allow / in the filename or ..
   // error cases
-  .then((result) => { if(result.isConfirmed){ return Promise.resolve(result.value); }})
+  .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
   .then((filename) => fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put'}))
   // TODO: parse JSON response to get id of file created
   .then(() => reloadTable())
+  .catch(e => {
+      if(e != 'cancelled'){
+        //FIXME: error
+        console.error(e);
+      }
+  })
 });
 
 $('#rename-btn').click(() => {
@@ -212,9 +224,15 @@ $('#rename-btn').click(() => {
     })
     // FIXME: do not allow / in the filename or ..
     // error cases
-    .then((result) => { if(result.isConfirmed){ return Promise.resolve(result.value); }})
+    .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
     .then((new_filename) => fetch('<%= files_mv_path %>', {method: 'put', body: JSON.stringify({from: `${history.state.currentDirectory}/${filename}`, to: `${history.state.currentDirectory}/${new_filename}`})}))
     .then(() => reloadTable())
+    .catch(e => {
+        if(e != 'cancelled'){
+          //FIXME: error
+          console.error(e);
+        }
+    })
   }
 });
 
