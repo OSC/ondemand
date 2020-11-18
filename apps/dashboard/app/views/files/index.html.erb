@@ -23,10 +23,10 @@
 <div class="row">
 <div class="col-md-3">
 <%# FIXME: need a better solution instead of favorite links tied to an app? duplicates code in OodApp#links %>
-<ul class="nav nav-pills nav-stacked well well-sm">
+<ul id="#favorites" class="nav nav-pills nav-stacked well well-sm">
   <li role="presentation"><%= link_to 'Home Directory', files_path(Dir.home), style: "padding-top: 5px;padding-bottom: 5px;", class: "d" %></li>
   <% OodFilesApp.new.favorite_paths.each do |p| %>
-    <li><%= link_to p.title || p.path.to_s, files_path(p.path.to_s), style: "padding-top: 5px;padding-bottom: 5px;" %>
+    <li><%= link_to p.title || p.path.to_s, files_path(p.path.to_s), style: "padding-top: 5px;padding-bottom: 5px;", class: "d" %>
   <% end %>
 </ul>
 </div>
@@ -287,9 +287,10 @@ $('#download-btn').click(() => {
 
 function goto(url, pushState = true){
   // update URL
+  //FIXME: reload includes callback so if there is an error - we display it and change url back :-P
+  // for example - you try to access a directory you do not have permission to access
   table.ajax.url(url);
 
-  //FIXME: reload includes callback so if there is an error - we display it and change url back :-P
   table.ajax.reload(function(data){
     $('#breadcrumbs').html(data.breadcrumbs_html);
 
@@ -328,7 +329,7 @@ function clickEventIsSignificant(event) {
   )
 }
 
-$('#directory-contents tbody, #breadcrumbs').on('click', 'a.d', function(){
+$('#directory-contents tbody, #breadcrumbs, #favorites').on('click', 'a.d', function(){
   if(clickEventIsSignificant(event)){
     event.preventDefault();
     event.cancelBubble = true;
