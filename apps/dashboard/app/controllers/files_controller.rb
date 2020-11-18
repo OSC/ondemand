@@ -16,6 +16,10 @@ class FilesController < ApplicationController
   end
 
   def fs
+    # FIXME: force format for accept header
+    request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
+
+
     @path = Pathname.new("/" + params[:filepath].chomp("/"))
 
     respond_to do |format|
@@ -35,10 +39,8 @@ class FilesController < ApplicationController
         #the current API does a GET on the file to get the file contents AND
         #a GET on the directory to get the JSON for the directory
         if @path.directory?
-          render :json => {
-              "path": @path.to_s,
-              "files": Files.new.ls(@path.to_s)
-          }
+          @files = Files.new.ls(@path.to_s)
+          render :index
         else
           #FIXME: type, inline
           send_file @path

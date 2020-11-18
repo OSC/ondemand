@@ -58,16 +58,6 @@
     </tr>
   </thead>
   <tbody>
-  <% @files.each do |f| %>
-    <tr>
-      <td><%= f[:directory] ? 'dir' : 'file' %></td>
-      <td><%= link_to f[:name], files_path(@path.join(f[:name]).to_s) %></td>
-      <td><%= f[:size] %></td>
-      <td><%= f[:date] %></td>
-      <td><%= f[:owner] %></td>
-      <td><%= f[:mode] %></td>
-    </tr>
-  <% end %>
   </tbody>
 </table>
 
@@ -76,6 +66,11 @@
 
 <%# FIXME: problem with not using tables %>
 <script>
+// is this escaped correctly?
+var currentDirectory = '<%= @path %>';
+var currentDirectoryUrl = '<%= files_path(@path) %>';
+
+
 $.fn.dataTable.ext.search.push(
     function( settings, data, dataIndex  ) {
       return $('#show-dotfiles').is(':checked') || ! data[1].startsWith('.');
@@ -83,6 +78,11 @@ $.fn.dataTable.ext.search.push(
 )
 
 var table = $('#directory-contents').DataTable({
+  ajax: {
+    url: currentDirectoryUrl,
+    dataSrc: 'files'
+  },
+  rowId: 'id',
   paging:false,
   //FIXME: need some mixture of flexbox to control height
   scrollY: '65vh',
@@ -93,8 +93,8 @@ var table = $('#directory-contents').DataTable({
     toggleable: false
   },
   columns: [
-    { data: 'type', render: (data, type, row, meta) => data == 'dir' ? '<span title="directory" class="fa fa-folder" style="color: gold"></span>' : '<span title="file" class="fa fa-file" style="color: lightgrey"></span>' }, // type
-    { data: 'name' }, // name
+    { data: 'type', render: (data, type, row, meta) => data == 'd' ? '<span title="directory" class="fa fa-folder" style="color: gold"></span>' : '<span title="file" class="fa fa-file" style="color: lightgrey"></span>' }, // type
+    { data: 'name', render: (data, type, row, meta) => `<a class="${row.type}" href="${row.url}">${Handlebars.escapeExpression(data)}</a>` }, // name
     { data: 'size' }, // size
     { data: 'modified_at' }, // modified_at
     { data: 'owner', visible: $('#show-owner-mode').is(':checked') }, // owner
@@ -102,10 +102,13 @@ var table = $('#directory-contents').DataTable({
   ]
 });
 
+function reloadTable(id){
+  table.ajax.reload();
 
-// is this escaped correctly?
-var currentDirectory = '<%= @path %>';
-var currentDirectoryUrl = '<%= files_path(@path) %>';
+  if(id){
+    table.row(id).select();
+  }
+}
 
 $('#show-dotfiles').change(() => table.draw());
 

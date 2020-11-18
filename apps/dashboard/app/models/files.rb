@@ -11,7 +11,7 @@ class Files
     s = path.stat
 
     {
-      id: "#{s.dev}-#{s.ino}",
+      id: "dev-#{s.dev}-inode-#{s.ino}",
       name: path.basename,
       size: s.directory? ? 'dir' : s.size,
       directory: s.directory?,
