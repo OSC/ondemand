@@ -16,19 +16,15 @@
   </label>
 </div>
 
-<ol class="breadcrumb">
-  <% @path.descend do |f| %>
-  <li>
-    <%= link_to f.basename, files_path(f) %>
-  </li>
-  <% end %>
+<ol id="breadcrumbs" class="breadcrumb">
+  <%= render partial: 'breadcrumb', collection: @path.descend, as: :file %>
 </ol>
 
 <div class="row">
 <div class="col-md-3">
 <%# FIXME: need a better solution instead of favorite links tied to an app? duplicates code in OodApp#links %>
 <ul class="nav nav-pills nav-stacked well well-sm">
-  <li role="presentation"><%= link_to 'Home Directory', files_path(Dir.home), style: "padding-top: 5px;padding-bottom: 5px;" %></li>
+  <li role="presentation"><%= link_to 'Home Directory', files_path(Dir.home), style: "padding-top: 5px;padding-bottom: 5px;", class: "d" %></li>
   <% OodFilesApp.new.favorite_paths.each do |p| %>
     <li><%= link_to p.title || p.path.to_s, files_path(p.path.to_s), style: "padding-top: 5px;padding-bottom: 5px;" %>
   <% end %>
@@ -66,10 +62,10 @@
 
 <%# FIXME: problem with not using tables %>
 <script>
-// is this escaped correctly?
-var currentDirectory = '<%= @path %>';
-var currentDirectoryUrl = '<%= files_path(@path) %>';
-
+history.replaceState({
+  currentDirectory: '<%= @path %>',
+  currentDirectoryUrl: '<%= files_path(@path) %>'
+}, null);
 
 $.fn.dataTable.ext.search.push(
     function( settings, data, dataIndex  ) {
@@ -79,7 +75,7 @@ $.fn.dataTable.ext.search.push(
 
 var table = $('#directory-contents').DataTable({
   ajax: {
-    url: currentDirectoryUrl,
+    url: history.state.currentDirectoryUrl,
     dataSrc: 'files'
   },
   rowId: 'id',
@@ -147,8 +143,9 @@ $('#new-file-btn').click(() => {
   // FIXME: do not allow / in the filename or ..
   // error cases
   .then((result) => { if(result.isConfirmed){ return Promise.resolve(result.value); }})
-  .then((filename) => fetch(`${currentDirectoryUrl}/${encodeURI(filename)}`, {method: 'put'}))
-  // TODO: update view with successful file creation
+  .then((filename) => fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}`, {method: 'put'}))
+  // TODO: parse JSON response to get id of file created
+  .then(() => reloadTable())
 });
 
 $('#new-dir-btn').click(() => {
@@ -175,8 +172,9 @@ $('#new-dir-btn').click(() => {
   // FIXME: do not allow / in the filename or ..
   // error cases
   .then((result) => { if(result.isConfirmed){ return Promise.resolve(result.value); }})
-  .then((filename) => fetch(`${currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put'}))
-  // TODO: update view with successful file creation
+  .then((filename) => fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put'}))
+  // TODO: parse JSON response to get id of file created
+  .then(() => reloadTable())
 });
 
 $('#rename-btn').click(() => {
@@ -215,8 +213,8 @@ $('#rename-btn').click(() => {
     // FIXME: do not allow / in the filename or ..
     // error cases
     .then((result) => { if(result.isConfirmed){ return Promise.resolve(result.value); }})
-    .then((new_filename) => fetch('<%= files_mv_path %>', {method: 'put', body: JSON.stringify({from: `${currentDirectory}/${filename}`, to: `${currentDirectory}/${new_filename}`})}))
-    // TODO: update view with successful file rename
+    .then((new_filename) => fetch('<%= files_mv_path %>', {method: 'put', body: JSON.stringify({from: `${history.state.currentDirectory}/${filename}`, to: `${history.state.currentDirectory}/${new_filename}`})}))
+    .then(() => reloadTable())
   }
 });
 
@@ -237,7 +235,7 @@ $('#download-btn').click(() => {
 
     // FIXME: currentDirectoryUrl possible escaping issues... what if path has spaces etc.
     let filename = $($.parseHTML(selection[0].name)).text(),
-        downloadUrl = `${currentDirectoryUrl}/${encodeURI(filename)}?download=${Date.now().toString()}`,
+        downloadUrl = `${history.state.currentDirectoryUrl}/${encodeURI(filename)}?download=${Date.now().toString()}`,
         iframe = document.createElement('iframe'),
         TIME = 30 * 1000;
     iframe.setAttribute('class', 'hidden');
@@ -279,10 +277,71 @@ $('#download-btn').click(() => {
   });
 
   uppy.on('file-added', (file) => {
-    uppy.setFileMeta(file.id, { parent: currentDirectory });
+    uppy.setFileMeta(file.id, { parent: history.state.currentDirectory });
     if(file.meta.relativePath == null && file.data.webkitRelativePath){
       uppy.setFileMeta(file.id, { relativePath: file.data.webkitRelativePath });
     }
   });
 })();
+
+
+function goto(url, pushState = true){
+  // update URL
+  table.ajax.url(url);
+
+  //FIXME: reload includes callback so if there is an error - we display it and change url back :-P
+  table.ajax.reload(function(data){
+    $('#breadcrumbs').html(data.breadcrumbs_html);
+
+    //FIXME: control coupling
+    //
+    // update(url, callback)
+    // goto(url)
+    //
+    if(pushState){
+      history.pushState({
+        currentDirectory: data.path,
+        currentDirectoryUrl: data.url
+      }, data.name, data.url)
+    }
+  });
+}
+
+window.onpopstate = function(event){
+  // FIXME: handle edge case if state ! exist
+  setTimeout(() => {
+    goto(event.state.currentDirectoryUrl, false);
+  }, 0);
+};
+
+// borrowed from Turbolinks
+// event: MouseEvent
+function clickEventIsSignificant(event) {
+  return !(
+    // (event.target && (event.target as any).isContentEditable)
+       event.defaultPrevented
+    || event.which > 1
+    || event.altKey
+    || event.ctrlKey
+    || event.metaKey
+    || event.shiftKey
+  )
+}
+
+$('#directory-contents tbody, #breadcrumbs').on('click', 'a.d', function(){
+  if(clickEventIsSignificant(event)){
+    event.preventDefault();
+    event.cancelBubble = true;
+    if(event.stopPropagation) event.stopPropagation();
+
+    goto(event.target.getAttribute("href"));
+  }
+});
+
+$('#directory-contents tbody').on('dblclick', 'tr', function(){
+    // handle doubleclick
+    let a = this.querySelector('a');
+    if(a.classList.contains('d')) goto(a.getAttribute("href"));
+});
+
 </script>
