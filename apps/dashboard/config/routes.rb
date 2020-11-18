@@ -10,6 +10,9 @@ Rails.application.routes.draw do
   put "files/zip/*filepath" => "files#zip", :format => false, :defaults => { :format => 'json' }, :constraints => { :filepath => /.+/ }
   post "files/upload"
 
+  # FIXME: format.js did not get called when Accept header was text/javascript
+  get "files/js/*filepath" => "files#js", :defaults => { :format => 'js' }, :format => false, :constraints => { :filepath => /.+/ }
+
   namespace :batch_connect do
     resources :sessions, only: [:index, :destroy]
     scope "*token", constraints: { token: /((usr\/[^\/]+)|dev|sys)\/[^\/]+(\/[^\/]+)?/ } do

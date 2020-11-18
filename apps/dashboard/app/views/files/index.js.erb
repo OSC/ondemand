@@ -1,0 +1,7 @@
+// path: <%= @path %>
+
+// updating dom contents - would be nice to know which file(s) to highlight (new, updated, etc.) with an id that would be possible
+$('#directory-contents tbody').html('<%=j render partial: "file_table_row", collection: @files, as: :file, locals: { path: @path } %>');
+
+// reload datatables cache from DOM
+table.rows().invalidate().draw();

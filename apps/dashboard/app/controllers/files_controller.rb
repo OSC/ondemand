@@ -44,6 +44,31 @@ class FilesController < ApplicationController
           send_file @path
         end
       }
+      format.js { # show.js.erb
+        # FIXME: this never gets called
+        if @path.directory?
+          @files = Files.new.ls(@path.to_s)
+          render :index
+        else
+          raise "Not implemented for files"
+        end
+      }
+    end
+  end
+
+  # FIXME: format.js did not get called when Accept header was text/javascript
+  def js
+    @path = Pathname.new("/" + params[:filepath].chomp("/"))
+
+    respond_to do |format|
+      format.js { # show.js.erb
+        if @path.directory?
+          @files = Files.new.ls(@path.to_s)
+          render :index
+        else
+          raise "Not implemented for files"
+        end
+      }
     end
   end
 
