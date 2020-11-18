@@ -134,6 +134,14 @@ $('#new-file-btn').click(() => {
         // TODO: validate filenames against listing
         return 'Provide a filename'
       }
+    },
+    showClass: {
+      popup: 'swal2-noanimation',
+      backdrop: 'swal2-noanimation'
+    },
+    hideClass: {
+      popup: '',
+      backdrop: ''
     }
   })
   // FIXME: do not allow / in the filename or ..
@@ -154,6 +162,14 @@ $('#new-dir-btn').click(() => {
         // TODO: validate filenames against listing
         return 'Provide a directory name'
       }
+    },
+    showClass: {
+      popup: 'swal2-noanimation',
+      backdrop: 'swal2-noanimation'
+    },
+    hideClass: {
+      popup: '',
+      backdrop: ''
     }
   })
   // FIXME: do not allow / in the filename or ..
@@ -186,6 +202,14 @@ $('#rename-btn').click(() => {
         else if (value.includes('/') || value.includes('..')){
          return 'Filename cannot include / or ..';
         }
+      },
+      showClass: {
+        popup: 'swal2-noanimation',
+        backdrop: 'swal2-noanimation'
+      },
+      hideClass: {
+        popup: '',
+        backdrop: ''
       }
     })
     // FIXME: do not allow / in the filename or ..
