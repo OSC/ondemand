@@ -1,7 +1,7 @@
 <h2>files index page</h2>
 
 <div class="text-right">
-  <button type="button" class="btn btn-default btn-sm"><i class="fas fa-folder" aria-hidden="true"></i> Go To...</button>
+  <button id="goto-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-folder" aria-hidden="true"></i> Go To...</button>
 
   <%# FIXME: open in terminal should be dropdown of all clusters (with default) %>
   <button type="button" class="btn btn-default btn-sm"><i class="fas fa-terminal" aria-hidden="true"></i> Open in Terminal</button>
@@ -115,9 +115,41 @@ $('#show-owner-mode').change(() => {
   table.column(5).visible(visible);
 });
 
-// FIXME:
-// upon creating new dir or new file
-// should actually update view AND set file as selected
+$('#goto-btn').click(() => {
+  Swal.fire({
+    title: 'Go To...',
+    input: 'text',
+    inputLabel: 'Path',
+    inputValue: history.state.currentDirectory,
+    showCancelButton: true,
+    inputValidator: (value) => {
+      if (! value) {
+        // TODO: validate filenames against listing
+        return 'Provide an absolute pathname'
+      }
+    },
+    showClass: {
+      popup: 'swal2-noanimation',
+      backdrop: 'swal2-noanimation'
+    },
+    hideClass: {
+      popup: '',
+      backdrop: ''
+    }
+  })
+  // FIXME: do not allow / in the filename or ..
+  .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
+  // FIXME: handle error cases
+
+  //FIXME: relative urls too or just absolute?
+  .then((pathname) => goto('https://ondemand-test.osc.edu/pun/dev/dashxdmod/files/fs/' + pathname))
+  .catch(e => {
+      if(e != 'cancelled'){
+        //FIXME: error
+        console.error(e);
+      }
+  })
+});
 
 $('#new-file-btn').click(() => {
   Swal.fire({
@@ -307,6 +339,9 @@ function goto(url, pushState = true){
   // update URL
   //FIXME: reload includes callback so if there is an error - we display it and change url back :-P
   // for example - you try to access a directory you do not have permission to access
+  //
+  // the only way to handle this might be to fetch the json directly, handle errors, and update the table with
+  // the new JSON data - and avoid using datatables AJAX
   table.ajax.url(url);
 
   table.ajax.reload(function(data){
