@@ -35,7 +35,7 @@
 
 <div>
   <button type="button" class="btn btn-default btn-sm"><i class="fas fa-eye" aria-hidden="true"></i> View</button>
-  <button type="button" class="btn btn-default btn-sm"><i class="fas fa-edit" aria-hidden="true"></i> Edit</button>
+  <button id="edit-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-edit" aria-hidden="true"></i> Edit</button>
   <button id="rename-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-font" aria-hidden="true"></i> Rename</button>
   <button id="download-btn" type="button" class="btn btn-primary btn-sm"><i class="fas fa-download" aria-hidden="true"></i> Download</button>
   <button type="button" class="btn btn-default btn-sm"><i class="fas fa-copy" aria-hidden="true"></i> Copy/Move</button>
@@ -275,7 +275,7 @@ $('#download-btn').click(() => {
   if(selection.length != 1){
     Swal.fire('Select only 1 file to download', 'You have selected none or multiple rows', 'error')
   }
-  else if(selection[0].type == "dir"){
+  else if(selection[0].type == "d"){
     Swal.fire('Cannot download directory', 'Can only download files', 'error')
     // TODO
   }
@@ -294,6 +294,22 @@ $('#download-btn').click(() => {
     document.body.appendChild(iframe);
 
     setTimeout(function() { document.body.removeChild(iframe); }, TIME);
+  }
+});
+
+$('#edit-btn').click(() => {
+  let selection = table.rows({selected: true}).data();
+  if(selection.length != 1){
+  // FIXME: modals here not great user experience
+  // better to disable the button - react
+
+    Swal.fire('Select only 1 file to edit', 'You have selected none or multiple rows', 'error')
+  }
+  else if(selection[0].type == "d"){
+  //  Swal.fire('Cannot download directory', 'Can only download files', 'error')
+  }
+  else {
+    window.open(selection[0].edit_url);
   }
 });
 

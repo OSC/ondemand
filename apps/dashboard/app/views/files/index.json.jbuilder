@@ -7,9 +7,12 @@ json.files @files do |f|
 
   # FIXME: do this join clientside?
   json.url files_path(@path.join(f[:name]).to_s)
+  json.edit_url OodAppkit.editor.edit(path:@path.join(f[:name])).to_s
+
   json.size f[:size]
   json.modified_at f[:date]
   json.owner f[:owner]
   json.mode f[:mode]
+
 end
 json.breadcrumbs_html render partial: 'breadcrumb.html.erb', collection: @path.descend, as: :file
