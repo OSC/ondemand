@@ -109,3 +109,13 @@ pre.motd-monospaced {
 @import "insufficient_balance";
 @import "fa_shims";
 @import "fontawesome-iconpicker";
+
+#directory-contents .selected {
+  color: white;
+  background-color: rgb(0, 136, 204);
+}
+
+#directory-contents .selected a {
+  color: white;
+  font-weight: bold;
+}
