@@ -136,6 +136,8 @@ class FilesController < ApplicationController
     # parse json body :-P
     # content type sending is its problem
     #
+    # if device same for dest as for src, do move synchronously
+    #
     params = ActionController::Parameters.new(JSON.parse(request.body.read).merge(params.to_h))
     normalize_transfer_params(params).select { |transfer|
       if transfer.include?(:from) && transfer.include?(:to)
@@ -160,6 +162,7 @@ class FilesController < ApplicationController
         { from: File.join(params['from'], name), to: File.join(params['to'], name)  }
       end
     else
+      # FIXME: need to join to with filename
       [{ from: params['from'], to: params['to']  }]
     end
   end

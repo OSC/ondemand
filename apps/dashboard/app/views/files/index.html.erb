@@ -23,12 +23,46 @@
 <div class="row">
 <div class="col-md-3">
 <%# FIXME: need a better solution instead of favorite links tied to an app? duplicates code in OodApp#links %>
-<ul id="#favorites" class="nav nav-pills nav-stacked well well-sm">
+<ul id="#favorites" class="nav nav-pills nav-stacked well well-sm" style="max-height: 400px; overflow: scroll">
   <li role="presentation"><%= link_to 'Home Directory', files_path(Dir.home), style: "padding-top: 5px;padding-bottom: 5px;", class: "d" %></li>
   <% OodFilesApp.new.favorite_paths.each do |p| %>
     <li><%= link_to p.title || p.path.to_s, files_path(p.path.to_s), style: "padding-top: 5px;padding-bottom: 5px;", class: "d" %>
   <% end %>
 </ul>
+
+<div id="clipboard">
+  <!--
+  <div class="well">
+    <button id="clipboard-clear" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <p style="margin-top: 30px">Copy or move the files below to the current directory:</p>
+    <ul class="list-group">
+      <li class="list-group-item"><span title="directory" class="fa fa-folder" style="color: gold"></span> openhouse</li>
+      <li class="list-group-item"><span title="directory" class="fa fa-file" style="color: lightgrey"></span> ts180.png</li>
+    </ul>
+    <button id="clipboard-copy-to-dir" class="btn btn-primary">Copy</button>  <button id="clipboard-move-to-dir" class="btn btn-danger pull-right">Move</button>
+  </div>
+-->
+</div>
+
+<script id="clipboard-template" type="text/template">
+{{#if files}}
+  <div class="well">
+    <button id="clipboard-clear" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <p style="margin-top: 30px">Copy or move the files below from <code>{{from}}</code>to the current directory:</p>
+    <ul class="list-group">
+      {{#each files}}
+        {{#if directory}}
+          <li class="list-group-item"><span title="directory" class="fa fa-folder" style="color: gold"></span> {{name}}</li>
+        {{else}}
+          <li class="list-group-item"><span title="file" class="fa fa-file" style="color: lightgrey"></span> {{name}}</li>
+        {{/if}}
+      {{/each}}
+    </ul>
+    <button id="clipboard-copy-to-dir" class="btn btn-primary">Copy</button>  <button id="clipboard-move-to-dir" class="btn btn-danger pull-right">Move</button>
+  </div>
+{{/if}}
+</script>
+
 </div>
 
 <div class="col-md-9">
@@ -38,7 +72,7 @@
   <button id="edit-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-edit" aria-hidden="true"></i> Edit</button>
   <button id="rename-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-font" aria-hidden="true"></i> Rename</button>
   <button id="download-btn" type="button" class="btn btn-primary btn-sm"><i class="fas fa-download" aria-hidden="true"></i> Download</button>
-  <button type="button" class="btn btn-default btn-sm"><i class="fas fa-copy" aria-hidden="true"></i> Copy/Move</button>
+  <button id="copy-move-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-copy" aria-hidden="true"></i> Copy/Move</button>
   <button type="button" class="btn btn-danger pull-right btn-sm"><i class="fas fa-trash" aria-hidden="true"></i> Delete</button>
 </div>
 
@@ -85,8 +119,8 @@ var table = $('#directory-contents').DataTable({
   scrollCollapse: true,
   select: {
     style: 'os',
-    className: 'selected info',
-    toggleable: false
+    className: 'selected',
+    toggleable: true
   },
   columns: [
     { data: 'type', render: (data, type, row, meta) => data == 'd' ? '<span title="directory" class="fa fa-folder" style="color: gold"></span>' : '<span title="file" class="fa fa-file" style="color: lightgrey"></span>' }, // type
@@ -258,6 +292,7 @@ $('#rename-btn').click(() => {
     // error cases
     .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
     .then((new_filename) => fetch('<%= files_mv_path %>', {method: 'put', body: JSON.stringify({from: `${history.state.currentDirectory}/${filename}`, to: `${history.state.currentDirectory}/${new_filename}`})}))
+    //FIXME: check for request failure
     .then(() => reloadTable())
     .catch(e => {
         if(e != 'cancelled'){
@@ -414,4 +449,149 @@ $('#directory-contents tbody').on('dblclick', 'tr', function(){
     if(a.classList.contains('d')) goto(a.getAttribute("href"));
 });
 
+function clearClipboard(){
+   localStorage.removeItem('filesClipboard');
+}
+
+function updateClipboardFromSelection(){
+  let selection = table.rows({selected: true}).data();
+  if(selection.length == 0){
+    clearClipboard();
+  }
+  else {
+    let clipboardData = {
+      from: history.state.currentDirectory,
+      files: selection.toArray().map((f) => {
+          return { directory: f.type == 'd', name: f.name };
+      })
+    };
+
+    localStorage.setItem('filesClipboard', JSON.stringify(clipboardData));
+  }
+}
+
+function loading(title){
+  Swal.fire({
+    title: title,
+    allowOutsideClick: false,
+    showConfirmButton: false,
+    willOpen: () => { Swal.showLoading()  }
+  });
+}
+
+function doneLoading(){
+  Swal.close();
+}
+
+function updateViewForClipboard(){
+  let clipboard = JSON.parse(localStorage.getItem('filesClipboard') || '{}'),
+      template_str  = $('#clipboard-template').html(),
+      template = Handlebars.compile(template_str);
+
+  $('#clipboard').html(template(clipboard));
+
+  $('#clipboard-clear').click(() => {
+      clearClipboard();
+      updateViewForClipboard();
+  });
+
+
+  $('#clipboard-copy-to-dir').click(() => {
+    let clipboard = JSON.parse(localStorage.getItem('filesClipboard') || 'null');
+
+    if(clipboard){
+      clipboard.to = history.state.currentDirectory;
+
+      if(clipboard.from == clipboard.to){
+        console.error('clipboard from and to are identical')
+
+        // TODO: we want to support this use case
+        // copy and paste as a new filename
+        // but lots of edge cases
+        // (overwrite or rename duplicates)
+        // _copy
+        // _copy_2
+        // _copy_3
+        // _copy_4
+      }
+      else{
+        console.log('copy files to current directory:')
+        console.log(clipboard);
+
+        loading('Copying files...');
+
+        fetch('<%= files_cp_path %>', {
+          method: 'put',
+          body: JSON.stringify({
+            from: clipboard.from,
+            to: history.state.currentDirectory,
+            names: clipboard.files.map((f) => f.name)
+          })
+        })
+        .then(() => {
+          reloadTable();
+          clearClipboard();
+          updateViewForClipboard();
+          doneLoading();
+        })
+
+      }
+    }
+    else{
+      console.error('files clipboard is empty');
+    }
+  });
+
+  $('#clipboard-move-to-dir').click(() => {
+    let clipboard = JSON.parse(localStorage.getItem('filesClipboard') || 'null');
+
+    if(clipboard){
+      clipboard.to = history.state.currentDirectory;
+
+      if(clipboard.from == clipboard.to){
+        console.error('clipboard from and to are identical')
+      }
+      else{
+        console.log('move files to current directory:')
+        console.log(clipboard);
+
+        loading('Moving files...');
+
+        fetch('<%= files_mv_path %>', {
+          method: 'put',
+          body: JSON.stringify({
+            from: clipboard.from,
+            to: history.state.currentDirectory,
+            names: clipboard.files.map((f) => f.name)
+          })
+        })
+        .then(() => {
+          reloadTable();
+          clearClipboard();
+          updateViewForClipboard();
+          doneLoading();
+        })
+      }
+    }
+    else{
+      console.error('files clipboard is empty');
+    }
+
+  });
+}
+
+$('#copy-move-btn').click(() => {
+    updateClipboardFromSelection();
+    updateViewForClipboard();
+});
+
+// TODO: move all functionality out of click handlers to functions
+// TODO: hide copy/move buttons if no local storage
+
+//FIXME: so need to handle updateViewForClipboard based on EVENTS emitted by local storage modifications
+updateViewForClipboard();
+window.addEventListener('storage', () => {
+  updateViewForClipboard();
+  reloadTable();
+});
 </script>
