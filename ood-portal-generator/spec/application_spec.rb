@@ -53,6 +53,15 @@ describe OodPortalGenerator::Application do
       described_class.generate()
     end
 
+    it 'generates a template with all configurations supplied' do
+      context = YAML.load(read_fixture('ood_portal.yaml.all'))
+      allow(described_class).to receive(:context).and_return(context)
+      expected_rendered = read_fixture('ood-portal.conf.all')
+
+      expect(described_class.output).to receive(:write).with(expected_rendered)
+      described_class.generate()
+    end
+
     it 'generates without maintenance' do
       allow(described_class).to receive(:context).and_return({use_maintenance: false})
       expected_rendered = read_fixture('ood-portal.conf.nomaint')
@@ -66,6 +75,7 @@ describe OodPortalGenerator::Application do
       expect(described_class.output).to receive(:write).with(expected_rendered)
       described_class.generate()
     end
+
     it 'generates maintenance template with IP whitelist already escaped' do
       allow(described_class).to receive(:context).and_return({maintenance_ip_whitelist: ['192\.168\.1\..*', '10\.0\.0\..*']})
       expected_rendered = read_fixture('ood-portal.conf.maint_with_ips')

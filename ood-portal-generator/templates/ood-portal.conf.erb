@@ -155,6 +155,15 @@ Listen <%= addr_port %>
   #
   SetEnv OOD_PUN_STAGE_CMD "<%= @pun_stage_cmd %>"
 
+  <%- if @pun_pre_hook_root_cmd -%>
+  # Run a root level pre hook before starting nginx
+  SetEnv OOD_PUN_PRE_HOOK_ROOT_CMD "<%= @pun_pre_hook_root_cmd %>"
+  <%- if @pun_pre_hook_exports -%>
+  # Environment variables to export to the PUN pre hook.
+  SetEnv OOD_PUN_PRE_HOOK_EXPORTS "<%= @pun_pre_hook_exports %>"
+  <%- end -%>
+
+  <%- end -%>
   #
   # Below is used for sub-uri's this Open OnDemand portal supports
   #

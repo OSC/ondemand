@@ -1,4 +1,5 @@
 require 'securerandom'
+require 'syslog/logger'
 
 module NginxStage
   # This generator stages and generates the per-user NGINX environment.
@@ -49,6 +50,20 @@ module NginxStage
       }
     end
 
+    # @!method pre_hook_root_cmd
+    #   The command to execute as root before starting the PUN
+    #
+    #   @return [String] the command
+    add_option :pre_hook_root_cmd do
+      {
+        opt_args: ["-P", "--pre-hook-root=ROOT_HOOK", "# Run ROOT_HOOK as root before the PUN starts"],
+        default: nil,
+        before_init: -> (hook) do
+          hook
+        end
+      }
+    end
+
     # Create the user's personal per-user NGINX `/tmp` location for the various
     # nginx cache directories
     add_hook :create_user_tmp_root do
@@ -93,6 +108,31 @@ module NginxStage
     # Generate the per-user NGINX config from the 'pun.conf.erb' template
     add_hook :create_config do
       template "pun.conf.erb", config_path
+    end
+
+    # Run the pre hook command. This eats the output and doesn't affect
+    # the overall status of the PUN startup
+    add_hook :exec_pre_hook do
+      unless pre_hook_root_cmd.nil?
+        args = ["--user", user.to_s]
+        env = {}
+        log = Syslog::Logger.new 'ood_nginx_stage'
+
+        unless STDIN.tty?
+          STDIN.each_line do |line|
+            key_values = line.split('=')
+            env[key_values[0]] = key_values[1].to_s.chomp if key_values.size == 2
+          end
+        end
+
+        begin
+          _, err, s = Open3.capture3(env, pre_hook_root_cmd, *args)
+          log.error "#{pre_hook_root_cmd} exited with #{s.exitstatus} for user #{user}. stderr was '#{err}'" unless s.success?
+        rescue StandardError => e
+          log = Syslog::Logger.new 'ood_nginx_stage'
+          log.error "#{pre_hook_root_cmd} threw exception '#{e.message}' for #{user}"
+        end
+      end
     end
 
     # Run the per-user NGINX process (exit quietly on success)
