@@ -25,6 +25,23 @@ $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
 });
 
+var entityMap = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+  '/': '&#x2F;',
+  '`': '&#x60;',
+  '=': '&#x3D;'
+};
+
+function escapeHtml (string) {
+  return String(string).replace(/[&<>"'`=\/]/g, function fromEntityMap (s) {
+    return entityMap[s];
+  });
+}
+
 function human_time(seconds_total) {
   var hours = parseInt(seconds_total / 3600),
       minutes = parseInt((seconds_total - (hours * 3600)) / 60),
@@ -63,7 +80,7 @@ function fetch_job_data(tr, row, options) {
       // Open this row
       row.child(data.html_ganglia_graphs_table).show();
       // Add the data panel to the view
-      $(`div[data-jobid="${row.data().pbsid}"]`)
+      $(`div[data-jobid="${escapeHtml(row.data().pbsid)}"]`)
         .hide()
         .html(data.html_extended_panel)
         .fadeIn(250);
@@ -155,7 +172,7 @@ function status_label(status){
     labelclass = "label-warning";
   }
 
-  return `<span class="label ${labelclass}">${label}</span>`;
+  return `<span class="label ${labelclass}">${escapeHtml(label)}</span>`;
 }
 
 function create_datatable(options){
@@ -212,6 +229,7 @@ function create_datatable(options){
                 className:          "small",
                 "autoWidth":        true,
                 render: function (data) {
+                  var data = escapeHtml(data)
                   return `<span title="${data}">${data}</span>`;
                 },
             },
@@ -220,6 +238,7 @@ function create_datatable(options){
                 className:          "small",
                 width:              '25%',
                 render: function (data) {
+                  var data = escapeHtml(data)
                   return `<span title="${data}">${data}</span>`;
                 },
             },
@@ -228,6 +247,7 @@ function create_datatable(options){
                 className:          "small",
                 "autoWidth":        true,
                 render: function (data) {
+                  var data = escapeHtml(data)
                   return `<span title="${data}">${data}</span>`;
                 },
             },
@@ -236,6 +256,7 @@ function create_datatable(options){
                 className:          "small",
                 "autoWidth":        true,
                 render: function (data) {
+                  var data = escapeHtml(data)
                   return `<span title="${data}">${data}</span>`;
                 },
             },
@@ -256,6 +277,7 @@ function create_datatable(options){
                 className:          "small",
                 "autoWidth":        true,
                 "render":           function(data) {
+                  var data = escapeHtml(data)
                   return `<span title="${data}">${data}</span>`;
                 }
             },
@@ -276,8 +298,8 @@ function create_datatable(options){
                 data:               null,
                 className:          "small",
                 "autoWidth":        true,
-                "render":           function(data){
-                  if(data.delete_path == "" || data.status == "completed"){
+                "render":           function(data) {
+                  if(data.delete_path == "" || data.status == "completed") {
                     return ""
                   } else {
                     return `
@@ -285,8 +307,8 @@ function create_datatable(options){
                         <a
                           class="btn btn-danger btn-xs action-btn"
                           data-method="delete"
-                          data-confirm="Are you sure you want to delete ${data.jobname} - ${data.pbsid}"
-                          href="${data.delete_path}"
+                          data-confirm="Are you sure you want to delete ${escapeHtml(data.jobname)} - ${escapeHtml(data.pbsid)}"
+                          href="${escapeHtml(data.delete_path)}"
                           aria-labeled-by"title"
                           data-toggle="tooltip"
                           title="Delete Job"
