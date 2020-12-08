@@ -8,6 +8,7 @@ on:
 
 jobs:
   triage:
+    name: Add labels to PR
     runs-on: ubuntu-latest
     steps:
     - uses: actions/labeler@main
