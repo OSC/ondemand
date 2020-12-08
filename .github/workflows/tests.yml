@@ -23,11 +23,10 @@ jobs:
         uses: actions/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
 
       - name: Cache dependencies
         uses: actions/cache@v2
-        with:
-          bundler-cache: true
 
       - name: Setup Bundler ${{ matrix.bundler }}
         run: |
@@ -53,10 +52,14 @@ jobs:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v2
 
+      - name: Setup Ruby ${{ matrix.ruby }}
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+
       - name: Cache dependencies
         uses: actions/cache@v2
-        with:
-          bundler-cache: true
 
       - name: Run E2E tests
         run: rake test:e2e
