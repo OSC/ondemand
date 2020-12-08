@@ -16,7 +16,7 @@ jobs:
     name: Unit tests
 
     steps:
-      - name: Checkout ${{ github.sha	}}
+      - name: Checkout
         uses: actions/checkout@v2
 
       - name: Setup Ruby ${{ matrix.ruby }}
@@ -51,7 +51,7 @@ jobs:
     name: End-to-end tests
 
     steps:
-      - name: Checkout ${{ github.sha	}}
+      - name: Checkout
         uses: actions/checkout@v2
 
       - name: Cache dependencies
