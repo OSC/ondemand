@@ -25,9 +25,6 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
 
-      - name: Cache dependencies
-        uses: actions/cache@v2
-
       - name: Setup Bundler ${{ matrix.bundler }}
         run: |
           gem install bundler -v ${{ matrix.bundler }}
@@ -57,9 +54,6 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
-
-      - name: Cache dependencies
-        uses: actions/cache@v2
 
       - name: Run E2E tests
         run: rake test:e2e
