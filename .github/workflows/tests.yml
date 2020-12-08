@@ -9,8 +9,8 @@ jobs:
   unit-tests:
     strategy:
       matrix:
-        os: [ 'ubuntu-20.04' ]
-        ruby: [ '2.5.5' ]
+        os: [ 'ubuntu-latest' ]
+        ruby: [ '2.5' ]
         bundler: [ '1.17.3' ]
     runs-on: ${{ matrix.os }}
     name: Unit tests
@@ -44,8 +44,8 @@ jobs:
   e2e-tests:
     strategy:
       matrix:
-        os: [ 'ubuntu-20.04' ]
-        ruby: [ '2.5.5' ]
+        os: [ 'ubuntu-latest' ]
+        ruby: [ '2.5' ]
         bundler: [ '1.17.3' ]
     runs-on: ${{ matrix.os }}
     name: End-to-end tests
