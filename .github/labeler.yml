@@ -30,3 +30,6 @@ component/ood_auth_map:
 
 component/ood_portal_generator:
   - ood-portal-generator/**/*
+
+area/build:
+  - lib/tasks/**/*
