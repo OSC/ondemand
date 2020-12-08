@@ -54,5 +54,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('apps/*/Gemfile.lock') }}
+
       - name: Run E2E tests
         run: rake test:e2e
