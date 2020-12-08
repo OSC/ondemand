@@ -12,22 +12,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v2
-      - uses: actions/setup-ruby@v1
+      - name: Setup Ruby
+        uses: actions/setup-ruby@v1
         with:
           ruby-version: '2.5'
-      - uses: actions/cache@v2
+      - name: Cache dependencies
+        uses: actions/cache@v2
         with:
           path: ~/vendor/bundle
           key: ${{ runner.os }}-gems-${{ hashFiles('apps/*/Gemfile.lock') }}
-      - name: setup bundler
+      - name: Setup Bundler
         run: |
           gem install bundler -v 1.17.3
           bundle config path ~/vendor/bundle
-      - name: shellcheck
+      - name: Run ShellCheck
         run: rake test:shellcheck
-      - name: unit tests
+      - name: Run unit tests
         run: rake test:unit
   
   e2e-tests:
@@ -36,7 +38,7 @@ jobs:
     needs: unit-tests
 
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v2
-      - name: e2e tests
+      - name: Run E2E tests
         run: rake test:e2e
