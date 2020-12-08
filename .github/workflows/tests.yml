@@ -1,0 +1,40 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.5'
+      - uses: actions/cache@v2
+        with:
+          path: ~/vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('apps/*/Gemfile.lock') }}
+      - name: setup bundler
+        run: |
+          gem install bundler -v 1.17.3
+          bundle config path ~/vendor/bundle
+      - name: shellcheck
+        run: rake test:shellcheck
+      - name: unit tests
+        run: rake test:unit
+  
+  e2e-tests:
+    runs-on: ubuntu-latest
+    needs: unit-tests
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: e2e tests
+        run: rake test:e2e
