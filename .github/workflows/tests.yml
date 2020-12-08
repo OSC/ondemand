@@ -11,8 +11,6 @@ jobs:
     strategy:
       matrix:
         os: [ 'ubuntu-latest' ]
-        ci_node_total: 5
-        ci_node_index: [0, 1, 2, 3, 4]
         ruby: [ '2.5' ]
         bundler: [ '1.17.3' ]
     runs-on: ${{ matrix.os }}
