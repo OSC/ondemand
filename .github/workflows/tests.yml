@@ -30,7 +30,7 @@ jobs:
           path: ~/vendor/bundle
           key: ${{ runner.os }}-gems-${{ hashFiles('apps/*/Gemfile.lock') }}
 
-      - name: Setup Bundler
+      - name: Setup Bundler ${{ matrix.bundler }}
         run: |
           gem install bundler -v ${{ matrix.bundler }}
           bundle config path ~/vendor/bundle
