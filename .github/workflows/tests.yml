@@ -5,16 +5,14 @@ on:
     branches: [master]
   pull_request:
 
-defaults:
-  strategy:
-    matrix:
-      os: [ 'ubuntu-latest' ]
-      ruby: [ '2.5' ]
-      bundler: [ '1.17.3' ]
-  runs-on: ${{ matrix.os }}
-
 jobs:
   unit-tests:
+    strategy:
+      matrix:
+        os: [ 'ubuntu-latest' ]
+        ruby: [ '2.5' ]
+        bundler: [ '1.17.3' ]
+    runs-on: ${{ matrix.os }}
     name: Unit tests
 
     steps:
@@ -44,6 +42,12 @@ jobs:
         run: rake test:unit
 
   e2e-tests:
+    strategy:
+      matrix:
+        os: [ 'ubuntu-latest' ]
+        ruby: [ '2.5' ]
+        bundler: [ '1.17.3' ]
+    runs-on: ${{ matrix.os }}
     name: End-to-end tests
 
     steps:
