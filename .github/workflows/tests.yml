@@ -8,6 +8,7 @@ on:
 
 jobs:
   unit-tests:
+    name: Unit tests
     runs-on: ubuntu-latest
 
     steps:
@@ -30,6 +31,7 @@ jobs:
         run: rake test:unit
   
   e2e-tests:
+    name: End-to-end tests
     runs-on: ubuntu-latest
     needs: unit-tests
 
