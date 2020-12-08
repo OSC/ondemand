@@ -1,0 +1,18 @@
+# This action runs when a new PR is opened and will add labels to the PR
+# if the files changed glob match any of the defined rules in .github/labeler.yml
+name: Pull Request Labeler
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  triage:
+    name: Add labels to PR
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/labeler@main
+      with:
+        repo-token: ${{ secrets.OSCWIAG_ISSUE_TOKEN }}
+        configuration-path: .github/labeler.yml
+        sync-labels: true # Revert the labels applied to the PR when changes are reverted.
