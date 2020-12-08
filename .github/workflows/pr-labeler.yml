@@ -1,5 +1,7 @@
-# 
+# This action runs when a new PR is opened and will add labels to the PR
+# if the files changed glob match any of the defined rules in .github/labeler.yml
 name: Pull Request Labeler
+
 on:
   workflow_dispatch:
   pull_request:
