@@ -7,6 +7,7 @@ namespace :test do
 
   testing = {
     'ood-portal-generator': 'spec',
+    'nginx_stage': 'spec',
     'apps/activejobs': 'spec',
     'apps/dashboard': 'test',
     'apps/file-editor': 'test',
