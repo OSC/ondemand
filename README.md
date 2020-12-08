@@ -1,6 +1,6 @@
 # Open OnDemand
 ![GitHub Release](https://img.shields.io/github/release/osc/ondemand.svg?color=informational)
-[![Build Status](https://img.shields.io/travis/OSC/ondemand/master?color=success)](https://travis-ci.org/OSC/ondemand)
+[![Build Status](https://github.com/osc/ondemand/workflows/Tests/badge.svg)](https://github.com/OSC/ondemand/actions?query=workflow%3ATests)
 [![GitHub License](https://img.shields.io/badge/license-MIT-green.svg?color=success)](https://opensource.org/licenses/MIT)
 > Supercomputing. Seamlessly. Open, Interactive HPC Via the Web
 
