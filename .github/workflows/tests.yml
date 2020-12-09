@@ -36,22 +36,12 @@ jobs:
     strategy:
       matrix:
         os: [ 'ubuntu-latest' ]
-        ruby: [ '2.5' ]
-        bundler: [ '1.17.3' ]
     runs-on: ${{ matrix.os }}
     name: End-to-end tests
 
     steps:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v2
-
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: ~/vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('apps/*/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-
 
       - name: Run E2E tests
         run: rake test:e2e
