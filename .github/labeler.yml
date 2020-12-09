@@ -5,7 +5,7 @@ component/bc_desktop:
   - apps/bc_desktop/**/*
 
 component/dashboard:
-  - apps/activejobs/**/*
+  - apps/dashboard/**/*
 
 component/file_editor:
   - apps/file-editor/**/*
