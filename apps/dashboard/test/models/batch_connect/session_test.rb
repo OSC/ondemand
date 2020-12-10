@@ -259,4 +259,84 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
     assert_equal false, save
     assert_equal I18n.t('dashboard.batch_connect_missing_cluster'), session.errors[:save].first
   end
+
+  test "session returns connection info from info.native" do
+    connect = {
+      :host => 'some.host.edu',
+      :port => 8080,
+      :password => 'superSecretPassword'
+    }
+    info = OodCore::Job::Info.new(
+        id: 'test-123',
+        status: :running,
+        native: { ood_connection_info: connect }
+      )
+    BatchConnect::Session.any_instance.stubs(:info).returns(info)
+    session = BatchConnect::Session.new
+
+    # holds the right connection info
+    assert session.native_connection_info?
+    assert_equal session.connect.to_h, connect
+  end
+
+  test "queued sessions with native connection info are starting" do
+    connect = {
+      :host => 'some.host.edu',
+      :port => 8080,
+      :password => 'superSecretPassword'
+    }
+    info = OodCore::Job::Info.new(
+        id: 'test-123',
+        status: :queued,
+        native: { ood_connection_info: connect }
+      )
+    BatchConnect::Session.any_instance.stubs(:info).returns(info)
+    session = BatchConnect::Session.new
+
+    # queued state is starting starting for certain adapters (namely k8s)
+    # that use native_connection_info
+    assert session.starting?
+    assert session.native_connection_info?
+  end
+
+  test "session is starting? when info.running but no connection.yml" do
+    Dir.mktmpdir("staged_root") do |dir|
+      info = OodCore::Job::Info.new(
+        id: 'test-123',
+        status: :running,
+        native: {}
+      )
+      BatchConnect::Session.stubs(:dataroot).returns(Pathname.new(dir))
+      BatchConnect::Session.any_instance.stubs(:id).returns('test-id')
+      BatchConnect::Session.any_instance.stubs(:info).returns(info)
+      session = BatchConnect::Session.new
+
+      assert !session.native_connection_info?
+      assert session.starting?
+    end
+  end
+
+  test "session is running? when info.running and connection.yml exists" do
+    Dir.mktmpdir("staged_root") do |dir|
+      info = OodCore::Job::Info.new(
+        id: 'test-123',
+        status: :running,
+        native: {}
+      )
+      connect = {
+        'host' => 'some.host.edu',
+        'port' => 8080,
+        'password' => 'superSecretPassword'
+      }
+      BatchConnect::Session.stubs(:dataroot).returns(Pathname.new(dir.to_s))
+      BatchConnect::Session.any_instance.stubs(:id).returns('test-id')
+      BatchConnect::Session.any_instance.stubs(:info).returns(info)
+      session = BatchConnect::Session.new
+
+      File.open(session.connect_file, 'w') { |file| file.write(connect.to_yaml) }
+
+      assert session.running?
+      assert_equal session.connect.to_h, connect.symbolize_keys
+    end
+  end
 end
