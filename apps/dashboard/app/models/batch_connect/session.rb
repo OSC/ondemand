@@ -388,7 +388,7 @@ module BatchConnect
     # @return [Boolean] whether starting
     def starting?
       if native_connection_info?
-        status.queued?
+        status.queued? && !connect.to_h.compact.empty?
       else
         status.running? && !connect_file.file?
       end
