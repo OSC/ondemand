@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- A pre hook that runs as root before the PUN starts [#535](https://github.com/OSC/ondemand/pull/535)
+- end-to-end tests in rake tasks that build containers [#695](https://github.com/OSC/ondemand/pull/695)
+- add labels to PRs in a github action [#743](https://github.com/OSC/ondemand/pull/743)
+
+### Fixed
+- escape html in activejobs table [#739](https://github.com/OSC/ondemand/pull/739)
+
+### Changed
+- run tests in github action instead of travis-ci in [#742](https://github.com/OSC/ondemand/pull/742)
+- add ondemand-dex to the Dockerfile in [#727](httpqs://github.com/OSC/ondemand/pull/727)
+
+## [1.8.19] - 2020-12-14
+### Fixed
+ - don't use cached cluster value if it's not available [#748](https://github.com/OSC/ondemand/pull/748)
+ - fix accessability of buttons in active jobs table [#732](https://github.com/OSC/ondemand/pull/732)
+
+### Changed
+- use specific versions of packaging repo in [#735](https://github.com/OSC/ondemand/pull/735)
+
 ## [1.8.18] - 2020-11-03
 ### Fixed
 - [Fix name of setting security_csp_frame_ancestors](b7e115cfd35c6c2135c8935fe582fb77342dc7b6) in example ood_portal_example.yml file
@@ -36,7 +56,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.8.14] - 2020-10-06
 ### Added
-- log formatting options for apache and nginx access logs [#677] (https://github.com/OSC/ondemand/pull/677)
+- log formatting options for apache and nginx access logs [#677](https://github.com/OSC/ondemand/pull/677)
 
 ### Changed
 - Changed language to 'Open XDMoD' [#687](https://github.com/OSC/ondemand/pull/687).
@@ -605,6 +625,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 
 [Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.18...HEAD
+[1.8.19]: https://github.com/OSC/ondemand/compare/v1.8.18...v1.8.19
 [1.8.18]: https://github.com/OSC/ondemand/compare/v1.8.17...v1.8.18
 [1.8.17]: https://github.com/OSC/ondemand/compare/v1.8.16...v1.8.17
 [1.8.16]: https://github.com/OSC/ondemand/compare/v1.8.15...v1.8.16
