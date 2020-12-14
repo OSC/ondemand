@@ -8,9 +8,8 @@ class BatchConnect::SessionContextsController < ApplicationController
     set_session_context
 
     if @app.valid?
-      # Read in context from cache file if cache is disabled and context.json exist
       begin
-       @session_context.update_with_cache(JSON.parse(cache_file.read))  if cache_file.file?
+        update_session_with_cache
       rescue => e
         flash.now[:alert] = t('dashboard.batch_connect_form_attr_cache_error',error_message: e.message)
       end
@@ -81,5 +80,22 @@ class BatchConnect::SessionContextsController < ApplicationController
     # Store session context into a cache file
     def cache_file
       BatchConnect::Session.dataroot(@app.token).tap { |p| p.mkpath unless p.exist? }.join("context.json")
-    end 
+    end
+
+    # Read in context from cache file if cache is disabled and context.json exist
+    def update_session_with_cache
+      cache = cache_file.file? ? JSON.parse(cache_file.read) : {}
+      cache.delete('cluster') if delete_cached_cluster?(cache['cluster'].to_s)
+
+      @session_context.update_with_cache(cache)
+    end
+
+    def delete_cached_cluster?(cached_cluster)
+
+      # if you've cached a cluster that no longer exists
+      !OodAppkit.clusters.include?(cached_cluster) ||
+        # OR the app only has 1 cluster, and it's changed since the previous cluster was cached.
+        # I.e., admin wants to override what you've cached.
+        (@app.clusters.size == 1 && @app.clusters[0] != cached_cluster)
+    end
 end
