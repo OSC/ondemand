@@ -85,17 +85,10 @@ class BatchConnect::SessionContextsController < ApplicationController
     # Read in context from cache file if cache is disabled and context.json exist
     def update_session_with_cache
       cache = cache_file.file? ? JSON.parse(cache_file.read) : {}
-      cache.delete('cluster') if delete_cached_cluster?(cache['cluster'].to_s)
 
+      # you could be trying to use a cluster that no longer exists or the app
+      # was changed to a different cluster (and does not provide the user with a choice)
+      cache.delete('cluster') unless @app.clusters.include?(cache['cluster'].to_s)
       @session_context.update_with_cache(cache)
-    end
-
-    def delete_cached_cluster?(cached_cluster)
-
-      # if you've cached a cluster that no longer exists
-      !OodAppkit.clusters.include?(cached_cluster) ||
-        # OR the app only has 1 cluster, and it's changed since the previous cluster was cached.
-        # I.e., admin wants to override what you've cached.
-        (@app.clusters.size == 1 && @app.clusters[0] != cached_cluster)
     end
 end
