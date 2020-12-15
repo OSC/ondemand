@@ -2,22 +2,25 @@ name: Create Document issue for Merge Request
 
 # Run this action when we merge into master
 on:
-  push:
+  pull_request:
     branches:
       - master
+    types: [closed]
 
 jobs:
   # Create an issue on the documentation repository to document whatever was just pulled in.
   create-doc-issue:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
     steps:
-      - uses: actions/checkout@v2
       - name: Create an issue on the documentation repository
+        if: contains(github.event.pull_request.labels.*.name, 'needs doc')
         run: |
-          TITLE=$(git log --oneline | head -n 1 | cut -d' ' -f2-)
+          PR_NUM=${{ github.event.pull_request.number }}
+          TITLE="Create Docs for OOD PR #$PR_NUM"
           BODY="{
-             \"title\": \"OOD PR $TITLE\",
-             \"body\": \"Create documentation for https://github.com/OSC/ondemand/commit/$GITHUB_SHA\"
+             \"title\": \"$TITLE\",
+             \"body\": \"Create documentation for https://github.com/OSC/ondemand/pull/$PR_NUM\"
           }"
 
           curl --silent --output /dev/null --request POST \
