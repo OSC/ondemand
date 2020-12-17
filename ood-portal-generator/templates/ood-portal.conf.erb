@@ -142,7 +142,11 @@ Listen <%= addr_port %>
 
   # Authenticated-user to system-user mapping configuration
   #
+  <%- if @user_map_cmd -%>
   SetEnv OOD_USER_MAP_CMD "<%= @user_map_cmd %>"
+  <%- elsif @user_map_match -%>
+  SetEnv OOD_USER_MAP_MATCH "<%= @user_map_match %>"
+  <%- end -%>
   <%- if @user_env -%>
   SetEnv OOD_USER_ENV "<%= @user_env %>"
   <%- end -%>

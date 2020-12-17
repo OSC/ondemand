@@ -1,58 +1,22 @@
-#!/usr/bin/env ruby
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+#!/usr/bin/env bash
 
-require 'ood_auth_map'
+# The purpose of this script is to wrap up the necessary environment for the
+# per-user NGINX (PUN) processes to run under. The PUN requires the ondemand
+# Software Collection.
 
-class Mapfile < OodAuthMap
-  # Default mapfile to use when parsing file
-  DEFAULT_MAPFILE = "/etc/grid-security/grid-mapfile"
+# Root directory for this library
+#
+ROOT_DIR="$(dirname "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")"
 
-  # Body of option parser
-  define_body do |parser|
-    parser.separator ""
-    parser.separator "Used to scan a grid-mapfile for a mapped authenticated user."
+SCL_PKGS=${SCL_PKGS:-"ondemand"}
+SCL_SOURCE="$(command -v scl_source)"
+[[ "${SCL_SOURCE}" ]] && source "${SCL_SOURCE}" enable ${SCL_PKGS}
 
-    parser.separator ""
-    parser.separator "General options:"
-
-    options[:file] = DEFAULT_MAPFILE
-    parser.on("-f", "--file=FILE", "# File to scan for matches", "# Default: #{DEFAULT_MAPFILE}") do |file|
-      options[:file] = file
-    end
-  end
-
-  # Footer of option parser
-  define_footer do |parser|
-    parser.separator ""
-    parser.separator <<-EOF.gsub(/^ {6}/, "")
-      Examples:
-          To scan the default grid-mapfile using a url-encoded authenticated
-          username:
-
-              #{File.basename($0)} http%3A%2F%2Fcilogon.org%2FserverA%2Fusers%2F58606%40cilogon.org
-
-          this will return an empty string if no matches are found.
-
-          To scan a custom grid-mapfile using authenticated username:
-
-              #{File.basename($0)} --file=/path/to/mapfile http://cilogon.org/serverA/users/53756@cilogon.org
-
-          this file must follow the rules for grid-mapfile's listed at
-          http://toolkit.globus.org/toolkit/docs/2.4/gsi/grid-mapfile_v11.html
-    EOF
-    parser.separator ""
-  end
-
-  # Find the user in the mapfile
-  define_run do |auth_user|
-    if sys_user = Helpers.parse_mapfile(options[:file], auth_user)
-      puts sys_user
-    else
-      puts ""
-      exit(false)
-    end
-  end
-end
-
-# Start the workflow of the Mapfile CLI
-Mapfile.run
+# Environment is set, so call Ruby now
+#
+exec \
+  /usr/bin/env ruby \
+    -I"${ROOT_DIR}/lib" \
+    -rood_auth_map/mapfile \
+    -e "Mapfile.run" \
+    -- "${@}"
