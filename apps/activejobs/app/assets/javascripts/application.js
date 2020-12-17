@@ -221,7 +221,8 @@ function create_datatable(options){
                 "width":            "20px",
                 "searchable":       false,
                 render: function (data, type, row, meta) {
-                  return '<button class="details-control fa fa-chevron-right btn btn-default" aria-expanded="false" aria-label="Toggle visibility of job details row"></button>';
+                  let { cluster_title, jobname, } = row
+                  return `<button class="details-control fa fa-chevron-right btn btn-default" aria-expanded="false" aria-label="Toggle visibility of job details for job ${escapeHtml(jobname)} on ${cluster_title}"></button>`;
                 },
             },
             {
@@ -298,7 +299,8 @@ function create_datatable(options){
                 data:               null,
                 className:          "small",
                 "autoWidth":        true,
-                "render":           function(data) {
+                render: function(data, type, row, meta) {
+                  let { jobname, pbsid, delete_path } = data
                   if(data.delete_path == "" || data.status == "completed") {
                     return ""
                   } else {
@@ -307,9 +309,10 @@ function create_datatable(options){
                         <a
                           class="btn btn-danger btn-xs action-btn"
                           data-method="delete"
-                          data-confirm="Are you sure you want to delete ${escapeHtml(data.jobname)} - ${escapeHtml(data.pbsid)}"
-                          href="${escapeHtml(data.delete_path)}"
+                          data-confirm="Are you sure you want to delete ${escapeHtml(jobname)} - ${pbsid}"
+                          href="${escapeHtml(delete_path)}"
                           aria-labeled-by"title"
+                          aria-label="Delete job ${escapeHtml(jobname)} with ID ${pbsid}"
                           data-toggle="tooltip"
                           title="Delete Job"
                         >
