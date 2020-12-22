@@ -1,4 +1,4 @@
- require "smart_attributes"
+require "smart_attributes"
 
 module BatchConnect
   class App
