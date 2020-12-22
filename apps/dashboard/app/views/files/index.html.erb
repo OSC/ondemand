@@ -23,7 +23,7 @@
 <div class="row">
 <div class="col-md-3">
 <%# FIXME: need a better solution instead of favorite links tied to an app? duplicates code in OodApp#links %>
-<ul id="#favorites" class="nav nav-pills nav-stacked well well-sm" style="max-height: 400px; overflow: scroll">
+<ul id="favorites" class="nav nav-pills nav-stacked well well-sm" style="max-height: 400px; overflow: scroll">
   <li role="presentation"><%= link_to 'Home Directory', files_path(Dir.home), style: "padding-top: 5px;padding-bottom: 5px;", class: "d" %></li>
   <% OodFilesApp.new.favorite_paths.each do |p| %>
     <li><%= link_to p.title || p.path.to_s, files_path(p.path.to_s), style: "padding-top: 5px;padding-bottom: 5px;", class: "d" %>
