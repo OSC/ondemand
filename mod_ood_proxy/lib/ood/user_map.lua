@@ -11,7 +11,7 @@ function map(r, user_map_match, user_map_cmd, remote_user)
   if user_map_match ~= nil then
     sys_user = string.match(remote_user, user_map_match)
   -- run user_map_cmd and read in stdout
-  elseif user_map_cmd ~= nil. then
+  elseif user_map_cmd ~= nil then
     local handle = io.popen(user_map_cmd .. " '" .. r:escape(remote_user) .. "'")
     sys_user = handle:read()
     handle:close()
