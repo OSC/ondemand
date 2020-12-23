@@ -8,10 +8,11 @@ on:
 jobs:
   unit-tests:
     strategy:
+      fail-fast: false
       matrix:
-        os: [ 'ubuntu-latest' ]
-        ruby: [ '2.5.5' ]
-        bundler: [ '1.17.3' ]
+        os: ["ubuntu-latest"]
+        ruby: ["2.5.5", "2.7"]
+        bundler: ["1.17.3"]
     runs-on: ${{ matrix.os }}
     name: Unit tests
 
@@ -19,12 +20,21 @@ jobs:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v2
 
-      - name: Setup Ruby ${{ matrix.ruby }} and Bundler ${{ matrix.bundler }}
+      - name: Setup Ruby ${{ matrix.ruby }} using Bundler ${{ matrix.bundler }}
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-          bundler-cache: true
           bundler: ${{ matrix.bundler }}
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('apps/*/Gemfile.lock') }}
+
+      - name: Setup Bundler
+        run: |
+          bundle config path ~/vendor/bundle
 
       - name: Run ShellCheck
         run: rake test:shellcheck
@@ -35,7 +45,7 @@ jobs:
   e2e-tests:
     strategy:
       matrix:
-        os: [ 'ubuntu-latest' ]
+        os: ["ubuntu-latest"]
     runs-on: ${{ matrix.os }}
     name: End-to-end tests
 
