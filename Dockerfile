@@ -36,6 +36,7 @@ COPY ood-portal-generator   /opt/ood/ood-portal-generator
 COPY ood_auth_map           /opt/ood/ood_auth_map
 COPY apps                   /opt/ood/apps
 COPY Rakefile               /opt/ood/Rakefile
+COPY lib                    /opt/ood/lib
 
 RUN  cd /opt/ood && \
     scl enable ondemand -- rake -mj4 build && \
