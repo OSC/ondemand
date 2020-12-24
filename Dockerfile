@@ -1,13 +1,15 @@
-FROM centos:7
+FROM centos:8
 LABEL maintainer="tdockendorf@osc.edu; johrstrom@osc.edu"
 
+ARG VERSION=latest
+ARG CONCURRENCY=4
+
 # setup the ondemand repositories
-RUN yum -y install https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-6.noarch.rpm
+RUN dnf -y install https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-6.noarch.rpm
 
 # install all the dependencies
-RUN yum install -y centos-release-scl && \
-    yum -y update && \
-    yum install -y \
+RUN dnf -y update && \
+    dnf install -y \
         file \
         lsof \
         sudo \
@@ -15,15 +17,17 @@ RUN yum install -y centos-release-scl && \
         gcc-c++ \
         git \
         patch \
+        ondemand-gems \
         ondemand-runtime \
         ondemand-build \
         ondemand-apache \
         ondemand-ruby \
         ondemand-nodejs \
+        ondemand-python \
+        ondemand-dex \
         ondemand-passenger \
-        ondemand-nginx \
-        ondemand-dex && \
-    yum clean all && rm -rf /var/cache/yum/*
+        ondemand-nginx && \
+    dnf clean all && rm -rf /var/cache/dnf/*
 
 RUN mkdir -p /opt/ood
 RUN mkdir -p /var/www/ood/{apps,public,discover}
@@ -31,17 +35,17 @@ RUN mkdir -p /var/www/ood/apps/{sys,dev,usr}
 
 COPY docker/launch-ood      /opt/ood/launch
 COPY mod_ood_proxy          /opt/ood/mod_ood_proxy
-COPY nginx_stage/           /opt/ood/nginx_stage
+COPY nginx_stage            /opt/ood/nginx_stage
 COPY ood-portal-generator   /opt/ood/ood-portal-generator
 COPY ood_auth_map           /opt/ood/ood_auth_map
 COPY apps                   /opt/ood/apps
 COPY Rakefile               /opt/ood/Rakefile
 COPY lib                    /opt/ood/lib
 
-RUN  cd /opt/ood && \
-    scl enable ondemand -- rake -mj4 build && \
+RUN source /opt/rh/ondemand/enable && \
+    rake -f /opt/ood/Rakefile -mj$CONCURRENCY build && \
     mv /opt/ood/apps/* /var/www/ood/apps/sys/ && \
-	rm -rf /opt/ood/Rakefile /opt/ood/apps
+    rm -rf /opt/ood/Rakefile /opt/ood/apps /opt/ood/lib
 
 # copy configuration files
 RUN mkdir -p /etc/ood/config
@@ -51,7 +55,6 @@ RUN sed -i -r \
   -e 's/^#listen_addr_port:.*/listen_addr_port: 8080/g' \
   -e 's/^#port:.*/port: 8080/g' \
   -e 's/^#servername:.*/servername: localhost/g' \
-  -e "s/^#lua_log_level:.*/lua_log_level: 'debug'/g" \
   /etc/ood/config/ood_portal.yml
 
 # make some misc directories & files
@@ -66,9 +69,10 @@ apache ALL=(ALL) NOPASSWD: /opt/ood/nginx_stage/sbin/nginx_stage' >/etc/sudoers.
 # run the OOD executables to setup the env
 RUN /opt/ood/ood-portal-generator/sbin/update_ood_portal
 RUN /opt/ood/nginx_stage/sbin/update_nginx_stage
-RUN sed -i 's#HTTPD24_HTTPD_SCLS_ENABLED=.*#HTTPD24_HTTPD_SCLS_ENABLED="httpd24 ondemand"#g'  /opt/rh/httpd24/service-environment
-RUN groupadd ood
-RUN useradd --create-home --gid ood ood
+RUN echo $VERSION > /opt/ood/VERSION
+# this one bc centos:8 doesn't generate localhost cert
+RUN /usr/libexec/httpd-ssl-gencerts
 
 EXPOSE 8080
+EXPOSE 5556
 CMD [ "/opt/ood/launch" ]
