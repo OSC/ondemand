@@ -97,3 +97,6 @@ tags
 /packaging/*.pp
 /packaging/*.if
 /packaging/tmp
+
+# Ignore files downloaded for testing
+/tests/*.zip
