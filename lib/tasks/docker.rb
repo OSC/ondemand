@@ -11,7 +11,11 @@ namespace :docker do
 
     desc "Run Docker container"
     task :run do
-      sh "#{container_runtime} run -p 8080:8080 -p 5556:5556 -v '#{PROJ_DIR}:/ondemand' --name #{DOCKER_NAME} --rm --detach #{DOCKER_NAME}:latest"
+      args = [ container_runtime, 'run', '-p 8080:8080', '-p 5556:5556', "--name #{DOCKER_NAME}" ]
+      args.concat [ "--rm", "--detach", "-v '#{PROJ_DIR}:/ondemand'" ]
+      args.concat mount_args
+      args.concat [ "#{DOCKER_NAME}:latest" ]
+      sh args.join(' ')
     end
 
     desc "Kill Docker container"

@@ -79,7 +79,7 @@ namespace :test do
   end
 
   def mount_args
-    []
+    ["-v", "#{PROJ_DIR.join('docker', 'ood_portal.yml')}:/etc/ood/config/ood_portal.yml:ro"]
   end
 
   def rt_specific_flags

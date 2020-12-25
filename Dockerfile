@@ -51,11 +51,6 @@ RUN source /opt/rh/ondemand/enable && \
 RUN mkdir -p /etc/ood/config
 RUN cp /opt/ood/nginx_stage/share/nginx_stage_example.yml            /etc/ood/config/nginx_stage.yml
 RUN cp /opt/ood/ood-portal-generator/share/ood_portal_example.yml    /etc/ood/config/ood_portal.yml
-RUN sed -i -r \
-  -e 's/^#listen_addr_port:.*/listen_addr_port: 8080/g' \
-  -e 's/^#port:.*/port: 8080/g' \
-  -e 's/^#servername:.*/servername: localhost/g' \
-  /etc/ood/config/ood_portal.yml
 
 # make some misc directories & files
 RUN mkdir -p /var/lib/ondemand-nginx/config/apps/{sys,dev,usr}
