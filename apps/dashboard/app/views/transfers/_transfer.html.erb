@@ -1,0 +1,7 @@
+<%# popover to show details %>
+<%= transfer.id %>
+<div class="progress">
+  <div class="progress-bar" role="progressbar" aria-valuenow="<%= transfer.percent %>" aria-valuemin="0" aria-valuemax="100" style="width: <%= transfer.percent %>%;">
+    <span class="sr-only"><%= transfer.percent %>% Complete</span>
+  </div>
+</div>

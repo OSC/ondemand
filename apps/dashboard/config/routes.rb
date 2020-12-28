@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   put "files/zip/*filepath" => "files#zip", :format => false, :defaults => { :format => 'json' }, :constraints => { :filepath => /.+/ }
   post "files/upload"
 
+  resources :transfers, only: [:index, :show, :destroy]
+
   namespace :batch_connect do
     resources :sessions, only: [:index, :destroy]
     scope "*token", constraints: { token: /((usr\/[^\/]+)|dev|sys)\/[^\/]+(\/[^\/]+)?/ } do
