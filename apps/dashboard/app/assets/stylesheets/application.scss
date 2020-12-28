@@ -1,5 +1,5 @@
 // Load bootstrap/font-awesome sprockets first
-@import "bootstrap-sprockets";
+@import "bootstrap";
 @import "font-awesome-sprockets";
 //@import "awesim";
 
@@ -50,7 +50,7 @@ $ood-blue: rgb(0, 95, 133);
 @import "bootstrap";
 @import "font-awesome";
 
-@import "ood_appkit";
+// @import "ood_appkit";
 
 // Load up dataTables bootstrap specific styles
 @import "dataTables/bootstrap/3/jquery.dataTables.bootstrap";
@@ -83,22 +83,6 @@ pre.motd-monospaced {
   font-size: 14px;
   border: none;
   white-space: pre-wrap;
-}
-
-// Add branded panels
-.panel-ood-blue {
-  @include panel-variant($ood-blue, $ood-white, $ood-blue, $ood-blue);
-}
-.panel-ood-burgundy {
-  @include panel-variant($ood-burgundy, $ood-white, $ood-burgundy, $ood-burgundy);
-}
-
-@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max + 125) {
-  @include responsive-invisibility('.hidden-sm-nav');
-}
-
-@media (min-width: $screen-md-min) and (max-width: $screen-md-max + 135) {
-  @include responsive-invisibility('.hidden-md-nav');
 }
 
 // Your custom css styles below (must be manually added)
