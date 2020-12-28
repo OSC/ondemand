@@ -1,4 +1,20 @@
 // Load bootstrap/font-awesome sprockets first
+
+$theme-colors: (
+  "white": rgb(255, 255, 255),
+  "red": rgb(242, 0, 23),
+  "burgundy": rgb(112, 0, 23),
+  "light-gray": rgb(151, 153, 155),
+  "gray": rgb(83, 86, 90),
+  "black": rgb(45, 51, 38),
+  "blue": rgb(0, 95, 133),
+);
+
+$enable-responsive-font-sizes: true;
+$enable-shadows: true;
+$dropdown-link-active-bg: rgb(108, 172, 228);
+$navbar-dark-color: #ffffff;
+
 @import "bootstrap";
 @import "font-awesome-sprockets";
 //@import "awesim";
