@@ -11,8 +11,8 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        ruby: ["2.5.5"]
-        bundler: ["1.17.3"]
+        ruby: ["2.7.1"]
+        bundler: ["2.1.4"]
     runs-on: ${{ matrix.os }}
     name: Unit tests
 
@@ -56,9 +56,9 @@ jobs:
       - name: Setup Ruby using Bundler
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "2.5.5"
+          ruby-version: "2.7.1"
           bundler-cache: true
-          bundler: "1.17.3"
+          bundler: "2.1.4"
 
       - name: Run E2E tests
         run: bundle exec rake test:e2e
