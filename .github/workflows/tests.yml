@@ -56,9 +56,9 @@ jobs:
       - name: Setup Ruby using Bundler
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "2.5.5"
+          ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
-          bundler: "1.17.3"
+          bundler: ${{ matrix.bundler }}
 
       - name: Run E2E tests
         run: bundle exec rake test:e2e
