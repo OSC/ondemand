@@ -3,12 +3,9 @@ locals:
 title - required - text for the link
 url - required - link url string
 faicon - optional, default "cog" - font awesome icon to use
-target - optional, default "_self" - link target
+target - optional, default nil - link target
 role - optional, default ""
 %>
-
-<li <%= "class=\"#{local_assigns[:role]}\"" unless local_assigns[:role].blank? %>>
-  <%= link_to url, target: local_assigns.fetch(:target, "_self") do %>
-    <i class="fas fa-<%= local_assigns.fetch(:faicon, "cog") %> fa-fw" aria-hidden="true"></i> <%= title %>
-  <% end %>
-</li>
+<%= link_to url, target: local_assigns.fetch(:target, nil), class: "dropdown-item #{ local_assigns[:role] unless local_assigns[:role].blank? }" do %>
+  <i class="fas fa-<%= local_assigns.fetch(:faicon, "cog") %> fa-fw" aria-hidden="true"></i> <%= title %>
+<% end %>
