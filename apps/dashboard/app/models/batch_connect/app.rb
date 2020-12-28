@@ -1,4 +1,4 @@
- require "smart_attributes"
+require "smart_attributes"
 
 module BatchConnect
   class App
@@ -150,7 +150,6 @@ module BatchConnect
         (self.clusters.size == 1 && self.clusters[0] != cached_cluster)
     end
 
-
     # The clusters that the batch connect app can use. It's a combination
     # of what the app is configured to use and what the user is allowed
     # to use.
@@ -185,7 +184,7 @@ module BatchConnect
         ""
       end
     end
-    
+       
     # The session context described by this batch connect app
     # @return [SessionContext] the session context
     def build_session_context
@@ -205,8 +204,12 @@ module BatchConnect
         SmartAttributes::AttributeFactory.build(attribute_id, attribute_opts)
       end
 
-     BatchConnect::SessionContext.new(attributes, form_config.fetch(:cacheable, nil)  ) #form_config.fetch(:cacheable, nil)  
+     BatchConnect::SessionContext.new(attributes, get_cacheable_value(local_attribs))  
        
+    end
+
+    def cacheable_val
+      get_cacheable_value(form_config.fetch(:attributes, {}))
     end
 
     #
@@ -367,6 +370,12 @@ module BatchConnect
             widget: "hidden_field"
           }
         end
+      end
+
+      # grab the cluster attrib's cacheable field value 
+      def get_cacheable_value(local_attribs)
+        cluster_attrib = local_attribs.fetch(:cluster, {})
+        cluster_attrib.fetch(:cacheable, nil)
       end
   end
 end
