@@ -1,7 +1,6 @@
-<div class="panel panel-<%= local_assigns.fetch(:style, "default") %>">
-  <div class="panel-heading"><%= title %></div>
-  <div class="list-group">
-
+<div class="card panel-<%= local_assigns.fetch(:style, "default") %><%= " mt-4" if local_assigns[:style] %>">
+  <div class="card-header border-0"><%= title %></div>
+  <ul class="list-group list-group-flush">
   <%-
     OodAppGroup.groups_for(
       apps: apps,
@@ -10,7 +9,7 @@
   -%>
     <%=
       content_tag(
-        "p",
+        "a",
         app_group.title,
         class: "list-group-item header"
       ) unless app_group.title.empty?
@@ -27,5 +26,5 @@
       )
     %>
   <%- end -%>
-  </div>
+  </ul>
 </div>

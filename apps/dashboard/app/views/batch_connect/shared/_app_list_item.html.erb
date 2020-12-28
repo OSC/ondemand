@@ -2,7 +2,7 @@
   <%=
     link_to(
       link.url.to_s,
-      class: "list-group-item #{"active" if local_assigns[:current_url] == link.url}",
+      class: "list-group-item list-group-item-action #{"active" if local_assigns[:current_url] == link.url}",
       data: {
         toggle: "popover",
         content: manifest_markdown(link.description),
