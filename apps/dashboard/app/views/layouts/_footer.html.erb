@@ -1,20 +1,15 @@
 <footer>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-md-6 col-sm-6">
-        <%= link_to "https://osc.github.io/Open-OnDemand/" do %>
-          <%= image_tag(
-                "OpenOnDemand_powered_by_RGB.svg",
-                class: "footer-logo",
-                alt: "Powered by Open OnDemand",
-                height: "40",
-                style: "margin-bottom: 20px"
-              ) %>
-        <% end %>
-      </div>
-      <div class="col-md-6 col-sm-6">
-        <p class="pull-right">OnDemand version: <%= Configuration.ood_version %></p>
-      </div>
-    </div>
-  </div><!-- /.container -->
+  <div class="d-flex justify-content-between align-items-center mt-4 border-top px-4 py-4">
+    <%= link_to "https://osc.github.io/Open-OnDemand/" do %>
+      <%=
+        image_tag(
+          "OpenOnDemand_powered_by_RGB.svg",
+          class: "footer-logo",
+          alt: "Powered by Open OnDemand",
+          height: "40px",
+        )
+      %>
+    <% end %>
+    <span>OnDemand version: <%= Configuration.ood_version %></span>
+  </div>
 </footer>
