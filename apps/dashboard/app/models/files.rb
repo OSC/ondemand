@@ -8,7 +8,25 @@ class Files
   end
 
   def stat(path)
-    s = path.stat
+    begin
+      s = path.stat
+    rescue
+      # FIXME: this is tricky - what should a copy do with a valid symlink? a move?
+      # we should tell people when they have a symlink; also you can't "fix" symlinks... in the files app yet
+      s = path.lstat
+    end
+
+    # path.stat will not work for a symlink
+    # and will raise 
+    # path.readlink returns string of the target of the symlink
+    # if the symlink is broken, could report this
+    # could also report the symlink target (if it exists) for every file
+    #
+    # FIXME: in what other file states will an exception be raised?
+    # FIXME: in this case copying, moving, etc. might also be problematic?
+    # also we can't do the id here...
+    # what if its a socket file?
+
 
     {
       id: "dev-#{s.dev}-inode-#{s.ino}",
