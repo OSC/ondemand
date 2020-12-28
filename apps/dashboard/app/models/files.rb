@@ -59,14 +59,12 @@ class Files
   end
 
   def num_files(from, names)
-    Dir.chdir(from) do
-      # FIXME: a directory
-      o, e, s = Open3.capture3('du', '--inodes', '-c', '-s', *names)
+    # FIXME: a directory
+    o, e, s = Open3.capture3('du', '--inodes', '-c', '-s', *names, chdir: from)
 
-      # FIXME: handle status error
-      # FIXME: we could use this SAME strategy with mv and copy INSTEAD of rsync
-      o.lines.last.to_i
-    end
+    # FIXME: handle status error
+    # FIXME: we could use this SAME strategy with mv and copy INSTEAD of rsync
+    o.lines.last.to_i
   end
 
   # FIXME: timeout when checking for the large size
@@ -74,24 +72,22 @@ class Files
     files_to_rm = num_files(from, names)
 
     # progress could show all of the files selected to delete and their status
-    Dir.chdir(from) do
-      # rm -rfv outputs one line per directory/file removed
+    # rm -rfv outputs one line per directory/file removed
 
-      # FIXME: if you raise an exception do you lose the Dir.chdir pop?
-      Open3.popen3('rm', '-rfv', *names) do |i, o, e, t|
-        err_reader = Thread.new { e.read  }
+    # FIXME: if you raise an exception do you lose the Dir.chdir pop?
+    Open3.popen3('rm', '-rfv', *names, chdir: from) do |i, o, e, t|
+      err_reader = Thread.new { e.read  }
 
-        if block_given?
-          o.each_line.with_index { |l, index|
-            # percent complete
-            block.call(100.0*(index.to_f/files_to_rm))
-          }
-          o.close
+      if block_given?
+        o.each_line.with_index { |l, index|
+          # percent complete
+          block.call(100.0*(index.to_f/files_to_rm))
+        }
+        o.close
 
-          [t.value, err_reader.value]
-        else
-          [t.value, err_reader.value]
-        end
+        [t.value, err_reader.value]
+      else
+        [t.value, err_reader.value]
       end
     end
   end
@@ -102,24 +98,22 @@ class Files
     args = names + [to]
 
     # progress could show all of the files selected to delete and their status
-    Dir.chdir(from) do
-      # rm -rfv outputs one line per directory/file removed
+    # rm -rfv outputs one line per directory/file removed
 
-      # FIXME: if you raise an exception do you lose the Dir.chdir pop?
-      Open3.popen3('mv', '-v', *args) do |i, o, e, t|
-        err_reader = Thread.new { e.read  }
+    # FIXME: if you raise an exception do you lose the Dir.chdir pop?
+    Open3.popen3('mv', '-v', *args, chdir: from) do |i, o, e, t|
+      err_reader = Thread.new { e.read  }
 
-        if block_given?
-          o.each_line.with_index { |l, index|
-            # percent complete
-            block.call(100.0*(index.to_f/steps))
-          }
-          o.close
+      if block_given?
+        o.each_line.with_index { |l, index|
+          # percent complete
+          block.call(100.0*(index.to_f/steps))
+        }
+        o.close
 
-          [t.value, err_reader.value]
-        else
-          [t.value, err_reader.value]
-        end
+        [t.value, err_reader.value]
+      else
+        [t.value, err_reader.value]
       end
     end
   end
@@ -130,24 +124,22 @@ class Files
     args = names + [to]
 
     # progress could show all of the files selected to delete and their status
-    Dir.chdir(from) do
-      # rm -rfv outputs one line per directory/file removed
+    # rm -rfv outputs one line per directory/file removed
 
-      # FIXME: if you raise an exception do you lose the Dir.chdir pop?
-      Open3.popen3('cp', '-rv', *args) do |i, o, e, t|
-        err_reader = Thread.new { e.read  }
+    # FIXME: if you raise an exception do you lose the Dir.chdir pop?
+    Open3.popen3('cp', '-rv', *args, chdir: from) do |i, o, e, t|
+      err_reader = Thread.new { e.read  }
 
-        if block_given?
-          o.each_line.with_index { |l, index|
-            # percent complete
-            block.call(100.0*(index.to_f/steps))
-          }
-          o.close
+      if block_given?
+        o.each_line.with_index { |l, index|
+          # percent complete
+          block.call(100.0*(index.to_f/steps))
+        }
+        o.close
 
-          [t.value, err_reader.value]
-        else
-          [t.value, err_reader.value]
-        end
+        [t.value, err_reader.value]
+      else
+        [t.value, err_reader.value]
       end
     end
   end
@@ -160,26 +152,24 @@ class Files
     to = to.chomp("/") + "/"
     args = rsync_args + names + [to]
 
-    Dir.chdir(from) do
-      Open3.popen3('rsync', *args) do |i, o, e, t|
-        err_reader = Thread.new { e.read  }
+    Open3.popen3('rsync', *args, chdir: from) do |i, o, e, t|
+      err_reader = Thread.new { e.read  }
 
-        output = ""
-        if block_given?
-          o.each_line("\r") { |l|
-            block.call(l)
+      output = ""
+      if block_given?
+        o.each_line("\r") { |l|
+          block.call(l)
 
-            output += l
-          }
-          o.close
+          output += l
+        }
+        o.close
 
-          [t.value, err_reader.value]
-        else
-          output = o.read
-          o.close
+        [t.value, err_reader.value]
+      else
+        output = o.read
+        o.close
 
-          [t.value, err_reader.value]
-        end
+        [t.value, err_reader.value]
       end
     end
   end
@@ -189,12 +179,10 @@ class Files
     to = to.chomp("/") + "/"
     args = rsync_args + names + [to]
 
-    Dir.chdir(from) do
-      out, err, status = Open3.capture3('rsync', '--dry-run', *args)
-      out = out.each_line("\r").to_a.last
+    out, err, status = Open3.capture3('rsync', '--dry-run', *args, chdir: from)
+    out = out.each_line("\r").to_a.last
 
-      [out, err, status]
-    end
+    [out, err, status]
   end
 
   def rsync_args
