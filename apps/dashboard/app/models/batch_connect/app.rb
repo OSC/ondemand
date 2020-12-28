@@ -132,6 +132,24 @@ module BatchConnect
         File.fnmatch(pattern, cluster.id.to_s, File::FNM_EXTGLOB)
       end
     end
+    
+    # Read in context from cache file if cache is disabled and context.json exist
+    def update_session_with_cache(session_context, cache_file)
+      cache = cache_file.file? ? JSON.parse(cache_file.read) : {}
+      cache.delete('cluster') if delete_cached_cluster?(cache['cluster'].to_s)
+
+      session_context.update_with_cache(cache)
+    end
+
+    def delete_cached_cluster?(cached_cluster)
+
+      # if you've cached a cluster that no longer exists
+      !OodAppkit.clusters.include?(cached_cluster) ||
+        # OR the app only has 1 cluster, and it's changed since the previous cluster was cached.
+        # I.e., admin wants to override what you've cached.
+        (self.clusters.size == 1 && self.clusters[0] != cached_cluster)
+    end
+
 
     # The clusters that the batch connect app can use. It's a combination
     # of what the app is configured to use and what the user is allowed
