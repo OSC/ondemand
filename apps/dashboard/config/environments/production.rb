@@ -86,5 +86,6 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   # config.active_record.dump_schema_after_migration = false
-
+  config.active_job.queue_adapter = ActiveJob::QueueAdapters::AsyncAdapter.new \
+    min_threads: 1, max_threads: 1
 end
