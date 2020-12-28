@@ -10,7 +10,11 @@ module DashboardHelper
     if url
       uri = Addressable::URI.parse(url)
       uri.query_values = (uri.query_values || {}).merge({timestamp: Time.now.to_i})
-      tag.img src: uri, alt: "logo", height: Configuration.logo_height, style: "margin-bottom: 10px"
+      content_tag(:div, :class => "mb-2") do
+        content_tag(:picture) do
+          tag.img src: uri, alt: "Logo", height: Configuration.logo_height
+        end
+      end
     else # default logo image
       image_tag("OpenOnDemand_stack_RGB.svg", alt: "logo", height: "85px", style: "margin-bottom: 10px")
     end
