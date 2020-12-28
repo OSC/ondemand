@@ -9,6 +9,7 @@ RUN dnf -y install https://yum.osc.edu/ondemand/latest/ondemand-release-web-late
 
 # install all the dependencies
 RUN dnf -y update && \
+    dnf -y module enable nodejs:12 ruby:2.7 && \
     dnf install -y \
         file \
         lsof \
