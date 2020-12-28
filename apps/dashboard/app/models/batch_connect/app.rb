@@ -184,7 +184,7 @@ module BatchConnect
         ""
       end
     end
-       
+
     # The session context described by this batch connect app
     # @return [SessionContext] the session context
     def build_session_context
