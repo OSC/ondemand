@@ -53,5 +53,12 @@ jobs:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v2
 
+      - name: Setup Ruby using Bundler
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "2.5.5"
+          bundler-cache: true
+          bundler: "1.17.3"
+
       - name: Run E2E tests
-        run: rake test:e2e
+        run: bundle exec rake test:e2e
