@@ -1,0 +1,4 @@
+$('#transfers').html('<%=j render partial: 'transfers/transfer', collection: @transfers, as: :transfer %>')
+
+// If there are running transfers, update view every second
+<%=raw 'setTimeout(() => updateViewForTransfers(), 1000);' if @transfers.any? {|t| ! t.status.completed? } %>

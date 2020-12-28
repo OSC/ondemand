@@ -25,6 +25,7 @@ class FilesController < ApplicationController
     respond_to do |format|
       format.html { # show.html.erb
         if @path.directory?
+          @transfers = TransferLocalJob.progress.values
           @files = Files.new.ls(@path.to_s)
           render :index
         else
@@ -39,6 +40,7 @@ class FilesController < ApplicationController
         #the current API does a GET on the file to get the file contents AND
         #a GET on the directory to get the JSON for the directory
         if @path.directory?
+          @transfers = TransferLocalJob.progress.values
           @files = Files.new.ls(@path.to_s)
           render :index
         else
@@ -116,54 +118,42 @@ class FilesController < ApplicationController
 
   # FIXME: TransfersController
   def cp
+    # TODO: validate data (no bad copy/move commands) - using file system abstraction ideally
     params = ActionController::Parameters.new(JSON.parse(request.body.read).merge(params.to_h))
-    normalize_transfer_params(params).select { |transfer|
-      if transfer.include?(:from) && transfer.include?(:to)
-        transfer
-      else
-        raise "args needed from and to" unless transfer.include?(:from) && transfer.include?(:to)
-      end
-    }.each { |transfer|
-      FileUtils.cp transfer[:from], transfer[:to]
-    }
 
-    render :body => "copy: ok('') }"
+    @job = TransferLocalJob.perform_later('cp', params['from'], params['names'], params['to'])
+    @transfers = TransferLocalJob.progress.values
+
+    respond_to do |format|
+      format.json {
+        render :body => "copy started"
+      }
+      format.js {
+        render "transfers/index"
+      }
+    end
   end
 
   # FIXME: TransfersController
   def mv
-    #
-    # parse json body :-P
-    # content type sending is its problem
-    #
-    # if device same for dest as for src, do move synchronously
-    #
+    # TODO: validate data (no bad copy/move commands) - using file system abstraction ideally
+    # TODO: if device is same for dest as for src, do move synchronously
     params = ActionController::Parameters.new(JSON.parse(request.body.read).merge(params.to_h))
-    normalize_transfer_params(params).select { |transfer|
-      if transfer.include?(:from) && transfer.include?(:to)
-        transfer
-      else
-        raise "args needed from and to" unless transfer.include?(:from) && transfer.include?(:to)
-      end
-    }.each { |transfer|
-      FileUtils.mv transfer[:from], transfer[:to]
-    }
 
-    render :body => "move: ok('') }"
+    @job = TransferLocalJob.perform_later('mv', params['from'], params['names'], params['to'])
+    @transfers = TransferLocalJob.progress.values
+
+    respond_to do |format|
+      format.json {
+        render :body => "move started"
+      }
+      format.js {
+        render "transfers/index"
+      }
+    end
   end
 
   def zip
     raise "not yet impl"
-  end
-
-  def normalize_transfer_params(params)
-    if params.include?('names')
-      params['names'].map do |name|
-        { from: File.join(params['from'], name), to: File.join(params['to'], name)  }
-      end
-    else
-      # FIXME: need to join to with filename
-      [{ from: params['from'], to: params['to']  }]
-    end
   end
 end

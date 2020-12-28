@@ -30,6 +30,10 @@
   <% end %>
 </ul>
 
+<div id="transfers">
+  <%= render partial: 'transfers/transfer', collection: @transfers, as: :transfer %>
+</div>
+
 <div id="clipboard">
   <!--
   <div class="well">
@@ -43,6 +47,7 @@
   </div>
 -->
 </div>
+
 
 <script id="clipboard-template" type="text/template">
 {{#if files}}
@@ -483,6 +488,10 @@ function doneLoading(){
   Swal.close();
 }
 
+var updateViewForTransfers = _.throttle(function(){
+  $.getScript('<%=raw transfers_path(format: "js") %>');
+}, 1000);
+
 function updateViewForClipboard(){
   let clipboard = JSON.parse(localStorage.getItem('filesClipboard') || '{}'),
       template_str  = $('#clipboard-template').html(),
@@ -520,7 +529,7 @@ function updateViewForClipboard(){
 
         loading('Copying files...');
 
-        fetch('<%= files_cp_path %>', {
+        fetch('<%= files_cp_path(format: "js") %>', {
           method: 'put',
           body: JSON.stringify({
             from: clipboard.from,
@@ -528,13 +537,14 @@ function updateViewForClipboard(){
             names: clipboard.files.map((f) => f.name)
           })
         })
-        .then(() => {
-          reloadTable();
+        //TODO: if(response.status != 200){ fail!
+        .then(response => response.text())
+        .then((response_js) => {
+          eval(response_js);
           clearClipboard();
           updateViewForClipboard();
           doneLoading();
         })
-
       }
     }
     else{
@@ -550,6 +560,7 @@ function updateViewForClipboard(){
 
       if(clipboard.from == clipboard.to){
         console.error('clipboard from and to are identical')
+        // TODO:
       }
       else{
         console.log('move files to current directory:')
@@ -557,7 +568,7 @@ function updateViewForClipboard(){
 
         loading('Moving files...');
 
-        fetch('<%= files_mv_path %>', {
+        fetch('<%= files_mv_path(format: "js") %>', {
           method: 'put',
           body: JSON.stringify({
             from: clipboard.from,
@@ -565,18 +576,20 @@ function updateViewForClipboard(){
             names: clipboard.files.map((f) => f.name)
           })
         })
-        .then(() => {
-          reloadTable();
+        //TODO: if(response.status != 200){ fail!
+        .then(response => response.text())
+        .then((response_js) => {
+          eval(response_js);
           clearClipboard();
           updateViewForClipboard();
           doneLoading();
+          updateViewForTransfers();
         })
       }
     }
     else{
       console.error('files clipboard is empty');
     }
-
   });
 }
 
@@ -594,4 +607,7 @@ window.addEventListener('storage', () => {
   updateViewForClipboard();
   reloadTable();
 });
+
+// If there are running transfers, update view in 1 seconds
+<%=raw 'setTimeout(() => updateViewForTransfers(), 1000);' if @transfers.any? {|t| ! t.status.completed? } %>
 </script>
