@@ -107,11 +107,19 @@
 # Default: 'info' (get verbose logs)
 #lua_log_level: 'info'
 
-# System command used to map authenticated-user to system-user
+# Lua regular expression used to map authenticated-user to system-user
+# This configuration is ignored if user_map_cmd is defined
 # Example:
-#     user_map_cmd: '/opt/ood/ood_auth_map/bin/ood_auth_map.regex --regex=''^(\w+)@example.com$'''
-# Default: '/opt/ood/ood_auth_map/bin/ood_auth_map.regex' (this echo's back auth-user)
-#user_map_cmd: '/opt/ood/ood_auth_map/bin/ood_auth_map.regex'
+#     user_map_match: '^([^@]+)@.*$'
+# Default: '.*'
+# user_map_match: '.*'
+
+# System command used to map authenticated-user to system-user
+# This option takes precedence over user_map_match
+# Example:
+#     user_map_cmd: '/usr/local/bin/ondemand-usermap'
+# Default: null (use user_map_match)
+#user_map_cmd: null
 
 # Use an alternative CGI environment variable instead of REMOTE_USER for
 # determining the authenticated-user fed to the mapping script
