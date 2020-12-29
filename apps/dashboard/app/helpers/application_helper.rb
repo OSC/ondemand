@@ -1,3 +1,5 @@
+require 'nokogiri'
+
 module ApplicationHelper
   def clusters
     OodCore::Clusters.new(OodAppkit.clusters.select(&:allow?).reject { |c| c.metadata.hidden })
@@ -51,8 +53,7 @@ module ApplicationHelper
     if app.icon_path_png.file?
       image_tag app_icon_path(app.name, app.type, app.owner), class: 'app-icon', title: app.icon_path_png
     elsif app.icon_path_svg.file?
-      image_tag app_icon_path(app.name, app.type, app.owner), class: 'app-icon', title: app.icon_path_svg, width: 100, height: 100
-      # "<svg viewBox=\"0 0 100 100\" xmlns=\"https://www.w3.org/2000/svg\" class=\"app-icon\" title=\"#{app.icon_path_svg}\"><use xlink:href=\"#{app_icon_path(app.name, app.type, app.owner)}\"></svg>".html_safe
+      svg_tag(app.icon_path_svg, class: 'app-icon')
     else # default to font awesome icon
       if app.manifest.icon =~ /^(fa[bsrl]?):\/\/(.*)/
         icon = $2
@@ -67,9 +68,20 @@ module ApplicationHelper
   def icon_tag(icon_uri)
     if %w(fa fas far fab fal).include?(icon_uri.scheme)
       fa_icon(icon_uri.host, fa_style: icon_uri.scheme)
-    else
+    elsif !icon_uri.to_s.include? "svg"
       image_tag icon_uri.to_s, class: "app-icon", title: icon_uri.to_s, "aria-hidden": true
+    else
+      svg_tag(icon_uri.to_s, class: 'app-icon')
     end
   end
 
+  def svg_tag(path, options={})
+    file = File.read(path)
+    doc = Nokogiri::HTML::DocumentFragment.parse(file)
+    svg = doc.at_css 'svg'
+
+    options.each { |attr, value| svg[attr.to_s] = value }
+
+    doc.to_html.html_safe
+  end
 end
