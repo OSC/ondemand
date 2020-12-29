@@ -48,8 +48,10 @@ module ApplicationHelper
   end
 
   def app_icon_tag(app)
-    if app.icon_path.file?
-      image_tag app_icon_path(app.name, app.type, app.owner), class: 'app-icon', title: app.icon_path
+    if app.icon_path_png.file?
+      image_tag app_icon_path(app.name, app.type, app.owner), class: 'app-icon', title: app.icon_path_png
+    elsif app.icon_path_svg.file?
+      image_tag app_icon_path(app.name, app.type, app.owenr), class: 'app-icon', title: app.icon_path_svg
     else # default to font awesome icon
       if app.manifest.icon =~ /^(fa[bsrl]?):\/\/(.*)/
         icon = $2

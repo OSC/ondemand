@@ -44,9 +44,16 @@
     })
   });
 </script>
-<% if product.app.icon_path.file? %>
+<% if product.app.icon_path_png.file? %>
   <p class="text-center">
-    <%= image_tag app_icon_path(product.app.name, product.app.type, product.app.owner), class: 'app-icon', title: product.app.icon_path %>
+    <%= image_tag app_icon_path(product.app.name, product.app.type, product.app.owner), class: 'app-icon', title: product.app.icon_path_png %>
+  </p>
+  <div class="alert alert-info">
+    <small>This app uses the icon.png shown. To use a FontAwesome icon, remove or rename the icon.png file in <a class="alert-link" href="<%= OodAppkit.files.url(path: product.app.path) %>" target="_blank">this</a> directory.</small>
+  </div>
+<% elsif product.app.icon_path_svg.file? %>
+  <p class="text-center">
+    <%= image_tag app_icon_path(product.app.name, product.app.type, product.app.owner), class: 'app-icon', title: product.app.icon_path_svg %>
   </p>
   <div class="alert alert-info">
     <small>This app uses the icon.png shown. To use a FontAwesome icon, remove or rename the icon.png file in <a class="alert-link" href="<%= OodAppkit.files.url(path: product.app.path) %>" target="_blank">this</a> directory.</small>
