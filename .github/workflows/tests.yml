@@ -30,7 +30,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('apps/*/Gemfile.lock') }}
+          key: ${{ runner.os }}-${{ matrix.ruby }}-gems-${{ hashFiles('apps/*/Gemfile.lock') }}
 
       - name: Setup Bundler
         run: |
