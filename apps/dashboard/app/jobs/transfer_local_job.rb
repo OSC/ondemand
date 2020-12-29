@@ -2,7 +2,7 @@ class TransferLocalJob < ApplicationJob
   queue_as :default
 
   # job_id vs provider_job_id?
-  Progress = Struct.new(:id, :status, :percent, :message, :cancelable, :data, :exit_status)
+  Progress = Struct.new(:id, :status, :action, :from, :names, :to, :percent, :message, :cancelable, :data, :exit_status)
 
   class << self
     attr_writer :progress
@@ -21,7 +21,8 @@ class TransferLocalJob < ApplicationJob
   def progress
     self.class.progress[job_id] ||= Progress.new(
       job_id,
-      OodCore::Job::Status.new(state: :queued)
+      OodCore::Job::Status.new(state: :queued),
+      *arguments
     )
   end
 
