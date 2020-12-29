@@ -181,12 +181,16 @@ class OodApp
     path.join("manifest.yml")
   end
 
-  def icon_path
+  def icon_path_png
     path.join("icon.png")
   end
 
+  def icon_path_svg
+    path.join("icon.svg")
+  end
+
   def icon_uri
-    if icon_path.file?
+    if icon_path_png.file? || icon_path_svg.file?
       app_icon_path(name, type, owner)
     elsif manifest.icon =~ /^fa[bsrl]?:\/\//
       manifest.icon
