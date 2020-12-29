@@ -53,6 +53,9 @@ jobs:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v2
 
+      - name: Ensure tags exist for container packaging
+        run: git fetch --prune --unshallow --tags
+
       - name: Setup Ruby using Bundler
         uses: ruby/setup-ruby@v1
         with:
