@@ -9,18 +9,28 @@ namespace :package do
     !`#{cmd}`.empty?
   end
 
-  def buildah_build_cmd(docker_file, image_name)
+  def buildah_build_cmd(docker_file, image_name, extra_args: [])
     args = ["bud", "--build-arg", "VERSION=#{ood_version}"]
     args.concat ["-t", "#{image_name}:#{image_tag}", "-f", docker_file]
+    args.concat extra_args
 
     "buildah #{args.join(' ')}"
   end
 
-  def docker_build_cmd(docker_file, image_name)
+  def docker_build_cmd(docker_file, image_name, extra_args: [])
     args = ["build", "--build-arg", "VERSION=#{ood_version}"]
     args.concat ["-t", "#{image_name}:#{image_tag}", "-f", docker_file, "."]
+    args.concat extra_args
 
     "docker #{args.join(' ')}"
+  end
+
+  def build_cmd(file, image_name, extra_args: [])
+    if podman_runtime?
+      buildah_build_cmd(file, image_name, extra_args: extra_args)
+    else
+      docker_build_cmd(file, image_name, extra_args: extra_args)
+    end
   end
 
   def tag_latest_container_cmd(image_name)
@@ -48,19 +58,29 @@ namespace :package do
   end
 
   task container: [:clean] do
-    file = "Dockerfile"
-    cmd = podman_runtime? ? buildah_build_cmd(file, image_name) : docker_build_cmd(file, image_name)
-    sh cmd unless image_exists?("ood:#{image_tag}")
+    sh build_cmd("Dockerfile", image_name) unless image_exists?("#{image_name}:#{image_tag}")
   end
 
   task latest_container: [:container] do
-    sh tag_latest_container_cmd("ood")
+    sh tag_latest_container_cmd(image_name)
   end
 
   task test_container: [:latest_container] do
-    file = "Dockerfile.test"
-    build_cmd = podman_runtime? ? buildah_build_cmd(file, test_image_name) : docker_build_cmd(file, test_image_name)
-    sh build_cmd unless image_exists?("#{test_image_name}:#{image_tag}")
+    sh build_cmd("Dockerfile.test", test_image_name) unless image_exists?("#{test_image_name}:#{image_tag}")
     sh tag_latest_container_cmd(test_image_name)
+  end
+
+  task dev_container: [:latest_container] do
+    if ENV['OOD_KEEP_USERNS'].to_s.empty?
+      extra = []
+    else
+      username = Etc.getlogin
+      extra = ["--build-arg", "USER=#{username}"]
+      extra.concat ["--build-arg", "UID=#{Etc.getpwnam(username).uid}"]
+      extra.concat ["--build-arg", "GID=#{Etc.getpwnam(username).uid}"]
+    end
+
+    sh build_cmd("Dockerfile.dev", dev_image_name, extra_args: extra) unless image_exists?("#{dev_image_name}:#{image_tag}")
+    sh tag_latest_container_cmd(dev_image_name)
   end
 end
