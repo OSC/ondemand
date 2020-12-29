@@ -66,7 +66,7 @@ class TransferLocalJob < ApplicationJob
 
       o.each_line.with_index do |l, index|
         # percent complete
-        progress.percent = (100.0*(index.to_f/steps)).to_i
+        progress.percent = (100.0*((index+1).to_f/steps)).to_i
       end
       o.close
 
