@@ -51,7 +51,8 @@ module ApplicationHelper
     if app.icon_path_png.file?
       image_tag app_icon_path(app.name, app.type, app.owner), class: 'app-icon', title: app.icon_path_png
     elsif app.icon_path_svg.file?
-      image_tag app_icon_path(app.name, app.type, app.owenr), class: 'app-icon', title: app.icon_path_svg
+      image_tag app_icon_path(app.name, app.type, app.owner), class: 'app-icon', title: app.icon_path_svg, width: 100, height: 100
+      # "<svg viewBox=\"0 0 100 100\" xmlns=\"https://www.w3.org/2000/svg\" class=\"app-icon\" title=\"#{app.icon_path_svg}\"><use xlink:href=\"#{app_icon_path(app.name, app.type, app.owner)}\"></svg>".html_safe
     else # default to font awesome icon
       if app.manifest.icon =~ /^(fa[bsrl]?):\/\/(.*)/
         icon = $2
