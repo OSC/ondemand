@@ -190,8 +190,10 @@ class OodApp
   end
 
   def icon_uri
-    if icon_path_png.file? || icon_path_svg.file?
+    if icon_path_png.file? 
       app_icon_path(name, type, owner)
+    elsif icon_path_svg.file?
+      icon_path_svg
     elsif manifest.icon =~ /^fa[bsrl]?:\/\//
       manifest.icon
     else
