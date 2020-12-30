@@ -56,7 +56,7 @@ class AppsController < ApplicationController
     if @app.icon_path_png.file? 
       send_file @app.icon_path_png, :type => 'image/png', :disposition => 'inline'
     elsif @app.icon_path_svg.file?
-      send_file @app.icon_path_svg, :type => 'image/png', :disposition => 'inline'
+      send_file @app.icon_path_svg, :type => 'image/svg', :disposition => 'inline'
     else
       raise ActionController::RoutingError.new('Not Found')
     end
