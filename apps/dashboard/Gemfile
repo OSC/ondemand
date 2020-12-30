@@ -63,6 +63,7 @@ gem 'autoprefixer-rails', '~> 9.1.0'
 gem 'dotiw'
 gem 'local_time', '~> 1.0.3'
 gem 'turbolinks', '~> 5.2.0'
+gem 'popper_js', '~> 1.9', '>= 1.9.9'
 
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'

@@ -1,5 +1,5 @@
 <div class="card panel-<%= local_assigns.fetch(:style, "default") %><%= " mt-4" if local_assigns[:style] %>">
-  <div class="card-header border-0"><%= title %></div>
+  <div class="card-header"><%= title %></div>
   <ul class="list-group list-group-flush">
   <%-
     OodAppGroup.groups_for(

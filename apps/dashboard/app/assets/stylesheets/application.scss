@@ -8,7 +8,15 @@ $theme-colors: (
   "gray": rgb(83, 86, 90),
   "black": rgb(45, 51, 38),
   "blue": rgb(233, 243, 247),
+  "green": #4ADE80,
 );
+
+$primary: #0284C7;
+$link-color: #18181B;
+
+body {
+  font-family: 'ui-sans-serif'
+}
 
 $enable-responsive-font-sizes: true;
 $enable-shadows: true;
@@ -46,7 +54,7 @@ $navbar-dark-color: #ffffff;
 // for inverse, lets make the text slightliy darker so its
 // different than the links
 .navbar.navbar-inverse .navbar-text{
-  color: #ddd;
+    color: #ddd;
 }
 
 // Add colors

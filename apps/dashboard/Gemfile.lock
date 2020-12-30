@@ -259,6 +259,7 @@ DEPENDENCIES
   ood_core (~> 0.11)
   ood_support (~> 0.0.2)
   pbs (~> 2.2.1)
+  popper_js (~> 1.9, >= 1.9.9)
   rails (= 5.2.4.4)
   rails_12factor
   redcarpet (~> 3.3)
