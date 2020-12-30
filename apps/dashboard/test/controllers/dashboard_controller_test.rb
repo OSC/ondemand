@@ -154,10 +154,10 @@ class DashboardControllerTest < ActionController::TestCase
     assert_select "nav a[href='#{batch_connect_sessions_path}']", 0
   end
 
-  test "should not create app menus if NavConfig.categories is empty and whitelist is enabled" do
+  test "should not create app menus if NavConfig.categories is empty and show_only_specified_categories is enabled" do
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
-    NavConfig.stubs(:categories_whitelist?).returns(true)
+    NavConfig.stubs(:show_only_specified_categories?).returns(true)
     NavConfig.stubs(:categories).returns([])
     
     get :index
@@ -165,10 +165,10 @@ class DashboardControllerTest < ActionController::TestCase
     assert_select ".navbar-collapse > .nav li.dropdown[title]", 0
   end
 
-  test "should exclude gateway apps if NavConfig.categories is set to default and whitelist is enabled" do
+  test "should exclude gateway apps if NavConfig.categories is set to default and show_only_specified_categories is enabled" do
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
-    NavConfig.stubs(:categories_whitelist?).returns(true)
+    NavConfig.stubs(:show_only_specified_categories?).returns(true)
     NavConfig.stubs(:categories).returns(["Files", "Jobs", "Clusters", "Interactive Apps"])
 
     get :index
@@ -176,10 +176,10 @@ class DashboardControllerTest < ActionController::TestCase
     assert_select ".navbar-collapse > .nav li.dropdown[title='Gateway Apps']", 0
   end
 
-  test "uses NavConfig.categories as sort order if whitelist is false" do
+  test "uses NavConfig.categories as sort order if show_only_specified_categories is false" do
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
-    NavConfig.stubs(:categories_whitelist?).returns(false)
+    NavConfig.stubs(:show_only_specified_categories?).returns(false)
     NavConfig.stubs(:categories).returns(["Files", "Jobs", "Clusters", "Interactive Apps"])
     
     get :index
@@ -193,14 +193,14 @@ class DashboardControllerTest < ActionController::TestCase
   end
 
   test "verify default values for NavConfig" do
-    refute NavConfig.categories_whitelist?
+    refute NavConfig.show_only_specified_categories?
     assert NavConfig
   end
 
-  test "display all app menus in alphabetical order if NavConfig.whitelist false & NavConfig.categories nil or []" do
+  test "display all app menus in alphabetical order if NavConfig.show_only_specified_categories false & NavConfig.categories nil or []" do
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
-    NavConfig.stubs(:categories_whitelist?).returns(false)
+    NavConfig.stubs(:show_only_specified_categories?).returns(false)
     NavConfig.stubs(:categories).returns([])
 
     get :index
@@ -216,7 +216,7 @@ class DashboardControllerTest < ActionController::TestCase
   test "apps with no category should not appear in menu" do
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
-    NavConfig.stubs(:categories_whitelist?).returns(false)
+    NavConfig.stubs(:show_only_specified_categories?).returns(false)
 
     get :index
 
