@@ -182,11 +182,11 @@ class OodApp
   end
 
   def svg_icon?
-    path.join("icon.svg").file?
+    @svg_icon ||= path.join("icon.svg").file?
   end
 
   def png_icon?
-    path.join("icon.png").file?
+    @png_icon ||= path.join("icon.png").file?
   end
 
   def icon_path
