@@ -1,11 +1,13 @@
-<ol class="breadcrumb">
-  <li>
-    <%= link_to t('dashboard.breadcrumbs_home'), root_path %>
-  </li>
-  <li class="active">
-    <%= t('dashboard.breadcrumbs_all_apps') %>
-  </li>
-</ol>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <%= link_to t('dashboard.breadcrumbs_home'), root_path %>
+    </li>
+    <li class="breadcrumb-item active">
+      <%= t('dashboard.breadcrumbs_all_apps') %>
+    </li>
+  </ol>
+</nav>
 
 <div class="row">
   <div class="col-md-3">

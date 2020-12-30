@@ -7,18 +7,15 @@ $theme-colors: (
   "light-gray": rgb(151, 153, 155),
   "gray": rgb(83, 86, 90),
   "black": rgb(45, 51, 38),
-  "blue": rgb(0, 95, 133),
+  "blue": rgb(233, 243, 247),
 );
 
 $enable-responsive-font-sizes: true;
 $enable-shadows: true;
-$dropdown-link-active-bg: rgb(108, 172, 228);
+$dropdown-link-active-bg: rgb(92, 155, 209);
 $navbar-dark-color: #ffffff;
 
-@import "bootstrap";
 @import "font-awesome-sprockets";
-//@import "awesim";
-
 @import "ood_appkit/bootstrap-overrides";
 
 //TODO:
@@ -49,7 +46,7 @@ $navbar-dark-color: #ffffff;
 // for inverse, lets make the text slightliy darker so its
 // different than the links
 .navbar.navbar-inverse .navbar-text{
-     color: #ddd;
+  color: #ddd;
 }
 
 // Add colors
