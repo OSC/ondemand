@@ -1,5 +1,3 @@
-require 'nokogiri'
-
 module ApplicationHelper
   def clusters
     OodCore::Clusters.new(OodAppkit.clusters.select(&:allow?).reject { |c| c.metadata.hidden })
@@ -52,7 +50,7 @@ module ApplicationHelper
   def app_icon_tag(app)
     if app.png_icon? || app.svg_icon?
       image_tag app_icon_path(app.name, app.type, app.owner), class: 'app-icon', title: app.icon_path
-    else 
+    else # default to font awesome icon 
       if app.manifest.icon =~ /^(fa[bsrl]?):\/\/(.*)/
         icon = $2
         style = $1
