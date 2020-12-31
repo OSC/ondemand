@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.1",
+    "@popperjs/core": "^2.6.0",
+    "@rails/ujs": "^6.1.0",
+    "@rails/webpacker": "5.2.1",
+    "bootstrap": "^3.4.1",
+    "datatables": "^1.10.18",
+    "datatables.net": "^1.10.23",
+    "datatables.net-bs": "^1.10.23",
+    "jquery": "^3.5.1",
+    "loader-utils": "^1.1.0",
+    "lodash": "^4.17.20"
+  },
+  "devDependencies": {
+    "coffee-loader": "^1.0.1",
+    "coffeescript": "^1.12.0",
+    "expose-loader": "^1.0.3",
+    "file-loader": "^6.2.0",
+    "webpack-dev-server": "^3.11.1"
+  }
+}

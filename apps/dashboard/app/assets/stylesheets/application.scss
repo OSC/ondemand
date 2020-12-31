@@ -1,26 +1,15 @@
-// Load bootstrap/font-awesome sprockets first
-@import "bootstrap-sprockets";
-@import "font-awesome-sprockets";
-//@import "awesim";
+@import 'ood_appkit/bootstrap-overrides';
 
-@import "ood_appkit/bootstrap-overrides";
+$fa-font-path: '@fortawesome/fontawesome-free/webfonts'; 
+@import '@fortawesome/fontawesome-free/scss/fontawesome';
+@import '@fortawesome/fontawesome-free/scss/regular';
+@import '@fortawesome/fontawesome-free/scss/solid';
+@import '@fortawesome/fontawesome-free/scss/brands';
+@import '@fortawesome/fontawesome-free/scss/v4-shims';
 
-//TODO:
-// overrides for navbar-default to get the same look and feel
-// this way we could have 2 different navbars on the same app
-// one that is styled darker and tiny (navbar-inverse) and one
-// that is red:
-// $navbar-default-bg:  rgb(200,16,46);
-// $navbar-default-color: rgb(255, 255, 255);
-// $navbar-default-link-color: rgb(255, 255, 255);
-// $navbar-default-link-hover-color: rgb(255, 255, 255);
-// $navbar-default-brand-hover-color: rgb(255, 255, 255);
-// $navbar-default-link-active-color: rgb(255, 255, 255);
+@import 'dataTables/bootstrap/3/jquery.dataTables.bootstrap';
 
-//TODO: consider this to be the default height to use on other pages
-// then make the navbar larger on the main pages where the larger navbar doesn't
-// get in the way
-// $navbar-height: 20px;
+@import 'bootstrap';
 
 // styles to make a logo fill the navbar height if using a logo for the navbar title
 .navbar-brand.navbar-brand-logo{
@@ -33,7 +22,7 @@
 // for inverse, lets make the text slightliy darker so its
 // different than the links
 .navbar.navbar-inverse .navbar-text{
-     color: #ddd;
+  color: #ddd;
 }
 
 // Add colors
@@ -45,18 +34,6 @@ $ood-gray: rgb(83, 86, 90);
 $ood-black: rgb(45, 51, 38);
 $ood-blue: rgb(0, 95, 133);
 
-
-// Load up bootstrap/font-awesome style sheet
-@import "bootstrap";
-@import "font-awesome";
-
-@import "ood_appkit";
-
-// Load up dataTables bootstrap specific styles
-@import "dataTables/bootstrap/3/jquery.dataTables.bootstrap";
-
-// Use sticky footer in body of layout
-// See: https://css-tricks.com/couple-takes-sticky-footer/
 html, body {
   height: 100%;
 }
@@ -85,23 +62,6 @@ pre.motd-monospaced {
   white-space: pre-wrap;
 }
 
-// Add branded panels
-.panel-ood-blue {
-  @include panel-variant($ood-blue, $ood-white, $ood-blue, $ood-blue);
-}
-.panel-ood-burgundy {
-  @include panel-variant($ood-burgundy, $ood-white, $ood-burgundy, $ood-burgundy);
-}
-
-@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max + 125) {
-  @include responsive-invisibility('.hidden-sm-nav');
-}
-
-@media (min-width: $screen-md-min) and (max-width: $screen-md-max + 135) {
-  @include responsive-invisibility('.hidden-md-nav');
-}
-
-// Your custom css styles below (must be manually added)
 @import "dashboard";
 @import "navbar";
 @import "apps";
@@ -110,5 +70,3 @@ pre.motd-monospaced {
 @import "batch_connect/session_contexts";
 @import "insufficient_quota";
 @import "insufficient_balance";
-@import "fa_shims";
-@import "fontawesome-iconpicker";
