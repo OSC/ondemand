@@ -7,17 +7,16 @@
   <%= stylesheet_link_tag 'application', media: 'all' %>
   <%= javascript_include_tag 'turbolinks' if Configuration.turbolinks_enabled? %>
   <%= stylesheet_packs_with_chunks_tag 'application', media: 'all' %>
-  <%= javascript_packs_with_chunks_tag 'application', defer: true %>
+  <%= javascript_packs_with_chunks_tag 'application' %>
 
   <%= csrf_meta_tags %>
 
   <%= yield :head %>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <% if Configuration.turbolinks_enabled? %>
-    <meta name="turbolinks-root" content="<%= ENV['RAILS_RELATIVE_URL_ROOT'] || "/" %>">
-  <% end %>
-<%= render partial: '/layouts/nav/styles', locals: { bg_color: Configuration.brand_bg_color, link_active_color: Configuration.brand_link_active_bg_color } %>
+  <%= tag.meta name: 'viewport', content: 'width=device-width, initial-scale=1' %>
+  <%= tag.meta name: 'turbolinks-root', content: ENV['RAILS_RELATIVE_URL_ROOT'] || '/' if Configuration.turbolinks_enabled? %>
+
+  <%= render partial: '/layouts/nav/styles', locals: { bg_color: Configuration.brand_bg_color, link_active_color: Configuration.brand_link_active_bg_color } %>
 </head>
 <body>
   <header <%= 'data-turbolinks-permanent' if Configuration.turbolinks_enabled? %>>
