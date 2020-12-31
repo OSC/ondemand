@@ -7,7 +7,7 @@
   <%= stylesheet_link_tag 'application', media: 'all' %>
   <%= javascript_include_tag 'turbolinks' if Configuration.turbolinks_enabled? %>
   <%= stylesheet_packs_with_chunks_tag 'application', media: 'all' %>
-  <%= javascript_packs_with_chunks_tag 'application', defer: true %>
+  <%= javascript_packs_with_chunks_tag 'application' %>
 
   <%= csrf_meta_tags %>
 
