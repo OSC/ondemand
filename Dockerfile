@@ -7,27 +7,32 @@ ARG CONCURRENCY=4
 # setup the ondemand repositories
 RUN dnf -y install https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-6.noarch.rpm
 
+# setup yarn repository
+RUN curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo && \
+    rpm --import https://dl.yarnpkg.com/rpm/pubkey.gpg
 # install all the dependencies
 RUN dnf -y update && \
     dnf -y module enable nodejs:12 ruby:2.7 && \
     dnf install -y \
-        file \
-        lsof \
-        sudo \
-        gcc \
-        gcc-c++ \
-        git \
-        patch \
-        ondemand-gems \
-        ondemand-runtime \
-        ondemand-build \
-        ondemand-apache \
-        ondemand-ruby \
-        ondemand-nodejs \
-        ondemand-python \
-        ondemand-dex \
-        ondemand-passenger \
-        ondemand-nginx && \
+    yarn \
+    file \
+    lsof \
+    sudo \
+    gcc \
+    gcc-c++ \
+    git \
+    patch \
+    yarn \
+    ondemand-gems \
+    ondemand-runtime \
+    ondemand-build \
+    ondemand-apache \
+    ondemand-ruby \
+    ondemand-nodejs \
+    ondemand-python \
+    ondemand-dex \
+    ondemand-passenger \
+    ondemand-nginx && \
     dnf clean all && rm -rf /var/cache/dnf/*
 
 RUN mkdir -p /opt/ood
@@ -59,8 +64,8 @@ RUN touch /var/lib/ondemand-nginx/config/apps/sys/{dashboard,shell,files,file-ed
 
 # setup sudoers for apache
 RUN echo -e 'Defaults:apache !requiretty, !authenticate \n\
-Defaults:apache env_keep += "NGINX_STAGE_* OOD_*" \n\
-apache ALL=(ALL) NOPASSWD: /opt/ood/nginx_stage/sbin/nginx_stage' >/etc/sudoers.d/ood
+    Defaults:apache env_keep += "NGINX_STAGE_* OOD_*" \n\
+    apache ALL=(ALL) NOPASSWD: /opt/ood/nginx_stage/sbin/nginx_stage' >/etc/sudoers.d/ood
 
 # run the OOD executables to setup the env
 RUN /opt/ood/ood-portal-generator/sbin/update_ood_portal
