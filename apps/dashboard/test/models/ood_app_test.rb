@@ -99,4 +99,113 @@ class OodAppTest < ActiveSupport::TestCase
       assert OodApp.new(SysRouter.new(app_dir.basename.to_s)).should_appear_in_nav?
     end
   end
+
+  # icon tests 
+  test "app with no icons should return an empty path" do
+    Dir.mktmpdir "apps" do |dir|
+      dir = Pathname.new(dir)
+      app_dir = dir.join("app").tap(&:mkdir)
+      
+      path = OodApp.new(PathRouter.new(app_dir)).icon_path
+      expected_path = Pathname.new('')
+
+      assert_equal path, expected_path
+    end
+  end
+
+  test "app with only a png icon should return png path" do
+    Dir.mktmpdir "apps" do |dir|
+      dir = Pathname.new(dir)
+      app_dir = dir.join("app").tap(&:mkdir)
+
+      app_dir.join("icon.png").write("")
+
+      path = OodApp.new(PathRouter.new(app_dir)).icon_path
+      expected_path = app_dir.join("icon.png")
+
+      assert_equal path, expected_path
+    end
+  end
+
+  test "app with only a svg icon should return svg path" do
+    Dir.mktmpdir "apps" do |dir|
+      dir = Pathname.new(dir)
+      app_dir = dir.join("app").tap(&:mkdir)
+
+      app_dir.join("icon.svg").write("")
+
+      path = OodApp.new(PathRouter.new(app_dir)).icon_path
+      expected_path = app_dir.join("icon.svg")
+
+      assert_equal path, expected_path
+    end
+  end
+
+  test "app with both png and svg icons should return only the svg icon path" do
+    Dir.mktmpdir "apps" do |dir|
+      dir = Pathname.new(dir)
+      app_dir = dir.join("app").tap(&:mkdir)
+      
+      app_dir.join("icon.svg").write("")
+      app_dir.join("icon.png").write("")
+
+      path = OodApp.new(PathRouter.new(app_dir)).icon_path
+      expected_path = app_dir.join("icon.svg")
+
+      assert_equal path, expected_path
+    end
+  end
+
+  test "app with svg icon should return the app icon uri" do
+    Dir.mktmpdir "apps" do |dir|
+      dir = Pathname.new(dir)
+      app_dir = dir.join("app").tap(&:mkdir)
+
+      app_dir.join("icon.svg").write("")
+    
+      router = PathRouter.new(app_dir)
+      uri = OodApp.new(router).icon_uri
+      expected_uri = "/apps/icon/app/path/#{router.owner}" 
+
+      assert_equal uri, expected_uri
+    end
+  end
+
+  test "app with png icon should return the app icon uri" do
+    Dir.mktmpdir "apps" do |dir|
+      dir = Pathname.new(dir)
+      app_dir = dir.join("app").tap(&:mkdir)
+
+      app_dir.join("icon.png").write("")
+
+      router = PathRouter.new(app_dir)
+      uri = OodApp.new(router).icon_uri
+      expected_uri = "/apps/icon/app/path/#{router.owner}" 
+
+      assert_equal uri, expected_uri
+    end
+  end
+
+  test "app only with valid manifest icon should return respective manifest icon" do
+    Dir.mktmpdir "apps" do |dir|
+      dir = Pathname.new(dir)
+      app_dir = dir.join("app").tap(&:mkdir)
+
+      app_dir.join("manifest.yml").write("---\nicon: fa://code")
+      
+      app = OodApp.new(PathRouter.new(app_dir))
+      manifest = Manifest.load(app_dir.join("manifest.yml"))
+
+      assert_equal app.icon_uri, manifest.icon
+    end
+  end
+
+  test "app without icons should only return font awesome's cog uri" do
+    Dir.mktmpdir "apps" do |dir|
+      dir = Pathname.new(dir)
+      app_dir = dir.join("app").tap(&:mkdir)
+      
+      assert_equal "fas://cog", OodApp.new(PathRouter.new(app_dir)).icon_uri
+    end
+  end
 end
