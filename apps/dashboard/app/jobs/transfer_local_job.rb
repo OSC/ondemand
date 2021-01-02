@@ -2,7 +2,7 @@ class TransferLocalJob < ApplicationJob
   queue_as :default
 
   # job_id vs provider_job_id?
-  Progress = Struct.new(:id, :status, :action, :from, :names, :to, :percent, :message, :cancelable, :data, :exit_status)
+  Progress = Struct.new(:id, :status, :action, :from, :names, :to, :created_at, :completed_at, :percent, :message, :cancelable, :data, :exit_status)
 
   class << self
     attr_writer :progress
@@ -22,7 +22,8 @@ class TransferLocalJob < ApplicationJob
     self.class.progress[job_id] ||= Progress.new(
       job_id,
       OodCore::Job::Status.new(state: :queued),
-      *arguments
+      *arguments,
+      Time.now.to_i
     )
   end
 
@@ -78,6 +79,7 @@ class TransferLocalJob < ApplicationJob
       # FIXME: did it fail? need fail status?
       progress.exit_status = t.value.exitstatus
       progress.message = err_reader.value
+      progress.completed_at = Time.now.to_i
     end
   end
 end
