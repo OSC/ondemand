@@ -59,11 +59,10 @@ class Files
   end
 
   def num_files(from, names)
-    # FIXME: a directory
-    o, e, s = Open3.capture3('du', '--inodes', '-c', '-s', *names, chdir: from)
+    args = names.map {|n| Shellwords.escape(n) }.join(' ')
+    o, e, s = Open3.capture3("find 2>/dev/null #{args} | wc -l", chdir: from)
 
     # FIXME: handle status error
-    # FIXME: we could use this SAME strategy with mv and copy INSTEAD of rsync
     o.lines.last.to_i
   end
 
