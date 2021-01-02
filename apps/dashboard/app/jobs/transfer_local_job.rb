@@ -37,6 +37,10 @@ class TransferLocalJob < ApplicationJob
     job.progress.status = OodCore::Job::Status.new(state: :completed)
   end
 
+  def update_progress(percent)
+    progress.percent = percent
+  end
+
   def perform(action, from, names, to=nil)
     # FIXME: wanted to use separate functions but then we can't set the pid
     # unless we execute popen3 without a block
@@ -67,7 +71,7 @@ class TransferLocalJob < ApplicationJob
 
       o.each_line.with_index do |l, index|
         # percent complete
-        progress.percent = (100.0*((index+1).to_f/steps)).to_i
+        update_progress((100.0*((index+1).to_f/steps)).to_i)
       end
       o.close
 
