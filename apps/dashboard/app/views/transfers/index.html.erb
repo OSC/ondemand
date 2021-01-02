@@ -1,3 +1,3 @@
 <h2>Transfers</h2>
 
-<%= render partial: 'transfer', collection: @transfers, as: :transfer %>
+<%= render partial: 'transfer', collection: sort_by_created_at(@transfers), as: :transfer %>

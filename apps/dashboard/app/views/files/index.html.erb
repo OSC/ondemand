@@ -31,7 +31,7 @@
 </ul>
 
 <div id="transfers">
-  <%= render partial: 'transfers/transfer', collection: @transfers, as: :transfer %>
+  <%= render partial: 'transfers/transfer', collection: sort_by_created_at(@transfers), as: :transfer %>
 </div>
 
 <div id="clipboard">
