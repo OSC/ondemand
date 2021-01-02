@@ -103,7 +103,8 @@
 <script>
 history.replaceState({
   currentDirectory: '<%= @path %>',
-  currentDirectoryUrl: '<%= files_path(@path) %>'
+  currentDirectoryUrl: '<%= files_path(@path) %>',
+  currentDirectoryUpdatedAt: '<%= Time.now.to_i %>'
 }, null);
 
 $.fn.dataTable.ext.search.push(
@@ -112,7 +113,12 @@ $.fn.dataTable.ext.search.push(
     }
 )
 
-var table = $('#directory-contents').DataTable({
+var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, xhr ) {
+  // new ajax request for new data so update date/time
+  if(json && json.time){
+    history.replaceState(_.merge({}, history.state, {currentDirectoryUpdatedAt: json.time}), null);
+  }
+}).DataTable({
   ajax: {
     url: history.state.currentDirectoryUrl,
     dataSrc: 'files'
@@ -489,7 +495,16 @@ function doneLoading(){
 }
 
 var updateViewForTransfers = _.throttle(function(){
-  $.getScript('<%=raw transfers_path(format: "js") %>');
+  //FIXME: error handling when this fails
+  $.ajax({
+    url: '<%=raw transfers_path(format: "js") %>',
+    dataType: "script",
+    data: {
+      //TODO: verify this escapes query params
+      current_directory: history.state.currentDirectory,
+      current_directory_updated_at: history.state.currentDirectoryUpdatedAt
+    }
+  });
 }, 1000);
 
 function updateViewForClipboard(){

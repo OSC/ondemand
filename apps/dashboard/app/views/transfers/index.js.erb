@@ -1,5 +1,12 @@
 $('#transfers').html('<%=j render partial: 'transfers/transfer', collection: sort_by_created_at(@transfers), as: :transfer %>');
 
+<% if @table_needs_reloaded %>
+reloadTable();
+<% end %>
 
 // If there are running transfers, update view every second
-<%=raw 'setTimeout(() => updateViewForTransfers(), 1000);' if @transfers.any? {|t| ! t.status.completed? } %>
+<% if @transfers.any? {|t| ! t.status.completed? } %>
+setTimeout(() => updateViewForTransfers(), 1000);
+<% end %>
+
+<%# TODO: if all transfers completed, we want to hide them past a certain time period - that can be CSS rule on completed in the template for the transfer, and then omit from server %>

@@ -16,3 +16,4 @@ json.files @files do |f|
 
 end
 json.breadcrumbs_html render partial: 'breadcrumb.html.erb', collection: @path.descend, as: :file
+json.time Time.now.to_i
