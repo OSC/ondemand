@@ -6,23 +6,18 @@
 //
 // To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
 // layout file, like app/views/layouts/application.html.erb
-import OnDemand from 'ondemand'
+import 'core-js/stable'
+import Rails from '@rails/ujs'
 
 const images = require.context('../images', true)
 const imagePath = (name) => images(name, true)
 
-window.$ = jQuery;
-window.DataTable = require('datatables.net-bs')
+import 'bootstrap'
+import 'src/plugins'
+import 'src/coffee'
 
-require('bootstrap/dist/js/bootstrap')
-require('@popperjs/core')
+import 'stylesheets/dashboard'
 
-// Import OnDemand styles
-require('../../assets/javascripts/application')
+console.log('Hey there')
 
-require('./dashboard')
-require('./products')
-
-require('stylesheets/application')
-
-console.log(OnDemand)
+Rails.start()
