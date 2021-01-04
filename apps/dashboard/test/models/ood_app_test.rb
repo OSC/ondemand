@@ -106,10 +106,13 @@ class OodAppTest < ActiveSupport::TestCase
       dir = Pathname.new(dir)
       app_dir = dir.join("app").tap(&:mkdir)
       
-      path = OodApp.new(PathRouter.new(app_dir)).icon_path
+      app  = OodApp.new(PathRouter.new(app_dir))
+      path = app.icon_path
       expected_path = Pathname.new('')
 
       assert_equal path, expected_path
+      assert_equal false, app.svg_icon?
+      assert_equal false, app.png_icon?
     end
   end
 
@@ -119,11 +122,13 @@ class OodAppTest < ActiveSupport::TestCase
       app_dir = dir.join("app").tap(&:mkdir)
 
       app_dir.join("icon.png").write("")
-
-      path = OodApp.new(PathRouter.new(app_dir)).icon_path
+      app  = OodApp.new(PathRouter.new(app_dir))
+      path = app.icon_path
       expected_path = app_dir.join("icon.png")
 
       assert_equal path, expected_path
+      assert_equal false, app.svg_icon?
+      assert_equal true, app.png_icon?
     end
   end
 
@@ -133,11 +138,13 @@ class OodAppTest < ActiveSupport::TestCase
       app_dir = dir.join("app").tap(&:mkdir)
 
       app_dir.join("icon.svg").write("")
-
-      path = OodApp.new(PathRouter.new(app_dir)).icon_path
+      app  = OodApp.new(PathRouter.new(app_dir))
+      path = app.icon_path
       expected_path = app_dir.join("icon.svg")
 
       assert_equal path, expected_path
+      assert_equal true, app.svg_icon?
+      assert_equal false, app.png_icon? 
     end
   end
 
@@ -149,10 +156,13 @@ class OodAppTest < ActiveSupport::TestCase
       app_dir.join("icon.svg").write("")
       app_dir.join("icon.png").write("")
 
-      path = OodApp.new(PathRouter.new(app_dir)).icon_path
+      app  = OodApp.new(PathRouter.new(app_dir))
+      path = app.icon_path
       expected_path = app_dir.join("icon.svg")
 
       assert_equal path, expected_path
+      assert_equal true, app.svg_icon?
+      assert_equal true, app.png_icon?
     end
   end
 
@@ -164,10 +174,13 @@ class OodAppTest < ActiveSupport::TestCase
       app_dir.join("icon.svg").write("")
     
       router = PathRouter.new(app_dir)
-      uri = OodApp.new(router).icon_uri
+      app = OodApp.new(router)
+      uri = app.icon_uri
       expected_uri = "/apps/icon/app/path/#{router.owner}" 
 
       assert_equal uri, expected_uri
+      assert_equal true, app.svg_icon?
+      assert_equal false, app.png_icon?
     end
   end
 
@@ -179,10 +192,13 @@ class OodAppTest < ActiveSupport::TestCase
       app_dir.join("icon.png").write("")
 
       router = PathRouter.new(app_dir)
-      uri = OodApp.new(router).icon_uri
+      app = OodApp.new(router)
+      uri = app.icon_uri
       expected_uri = "/apps/icon/app/path/#{router.owner}" 
 
       assert_equal uri, expected_uri
+      assert_equal false, app.svg_icon?
+      assert_equal true, app.png_icon? 
     end
   end
 
@@ -197,6 +213,8 @@ class OodAppTest < ActiveSupport::TestCase
       manifest = Manifest.load(app_dir.join("manifest.yml"))
 
       assert_equal app.icon_uri, manifest.icon
+      assert_equal false, app.svg_icon?
+      assert_equal false, app.png_icon?
     end
   end
 
@@ -204,8 +222,11 @@ class OodAppTest < ActiveSupport::TestCase
     Dir.mktmpdir "apps" do |dir|
       dir = Pathname.new(dir)
       app_dir = dir.join("app").tap(&:mkdir)
-      
-      assert_equal "fas://cog", OodApp.new(PathRouter.new(app_dir)).icon_uri
+      app = OodApp.new(PathRouter.new(app_dir))
+
+      assert_equal "fas://cog", app.icon_uri
+      assert_equal false, app.svg_icon?
+      assert_equal false, app.png_icon?
     end
   end
 end
