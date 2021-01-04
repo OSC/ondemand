@@ -48,9 +48,9 @@ module ApplicationHelper
   end
 
   def app_icon_tag(app)
-    if app.icon_path.file?
-      image_tag app_icon_path(app.name, app.type, app.owner), class: 'app-icon', title: app.icon_path
-    else # default to font awesome icon
+    if app.image_icon?
+      image_tag app.icon_uri, class: 'app-icon', title: app.icon_path
+    else # default to font awesome icon 
       if app.manifest.icon =~ /^(fa[bsrl]?):\/\/(.*)/
         icon = $2
         style = $1
@@ -64,9 +64,8 @@ module ApplicationHelper
   def icon_tag(icon_uri)
     if %w(fa fas far fab fal).include?(icon_uri.scheme)
       fa_icon(icon_uri.host, fa_style: icon_uri.scheme)
-    else
+    else 
       image_tag icon_uri.to_s, class: "app-icon", title: icon_uri.to_s, "aria-hidden": true
     end
   end
-
 end
