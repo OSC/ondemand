@@ -55,7 +55,7 @@
   </nav>
   </header>
 
-  <div class="container content" role="main">
+  <main class="flex-grow container-xl content mt-4">
 
     <% @announcements.select(&:valid?).each do |announcement| %>
       <div class="alert alert-<%= announcement.type %> announcement" role="alert">
@@ -98,10 +98,8 @@
         <%= notice %>
       </div>
     <% end %>
-
     <%= yield %>
-
-  </div><!-- /.container -->
+  </main>
 
   <%= render "layouts/footer" %>
 </body>
