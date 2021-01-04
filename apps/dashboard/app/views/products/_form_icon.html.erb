@@ -44,7 +44,7 @@
     })
   });
 </script>
-<% if product.app.svg_icon? || product.app.png_icon? %>
+<% if product.app.image_icon? %>
   <p class="text-center">
     <%= image_tag product.app.icon_uri, class: 'app-icon', title: product.app.icon_path %>
   </p>
