@@ -2,19 +2,14 @@ DOCKER_NAME = ENV["DOCKER_NAME"] || "ondemand-dev"
 
 namespace :docker do
     desc "Build Docker container"
-    task :build => ["package:latest_container"] do
-      file = "Dockerfile.test"
-      build_cmd = podman_runtime? ? buildah_build_cmd(file, DOCKER_NAME) : docker_build_cmd(file, DOCKER_NAME)
-      sh build_cmd unless image_exists?("#{DOCKER_NAME}:#{image_tag}")
-      sh tag_latest_container_cmd(DOCKER_NAME)
-    end
+    task :build => ["package:test_container"]
 
     desc "Run Docker container"
-    task :run do
+    task :run => :build do
       args = [ container_runtime, 'run', '-p 8080:8080', '-p 5556:5556', "--name #{DOCKER_NAME}" ]
       args.concat [ "--rm", "--detach", "-v '#{PROJ_DIR}:/ondemand'" ]
       args.concat mount_args
-      args.concat [ "#{DOCKER_NAME}:latest" ]
+      args.concat [ "#{test_image_name}:latest" ]
       sh args.join(' ')
     end
 

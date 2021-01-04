@@ -1,0 +1,18 @@
+FROM ood:latest
+
+ARG USER=ood
+ARG UID=1000
+ARG GID=1000
+
+RUN dnf reinstall -y httpd-tools && \
+    dnf install -y \
+        strace && \
+    dnf clean all && rm -rf /var/cache/dnf/*
+
+RUN groupadd -g $GID $USER && \
+    useradd -u $UID --create-home --gid $USER $USER && \
+    echo "$USER ALL=(ALL) NOPASSWD:ALL" >>/etc/sudoers.d/$USER
+
+COPY docker/dev-entrypoint.sh /entrypoint.sh
+
+CMD [ "/entrypoint.sh" ]
