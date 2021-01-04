@@ -1,3 +1,5 @@
+require 'erb_render'
+
 class Announcement
   # List of valid announcement types
   TYPES = [:warning, :info, :success, :danger]
@@ -40,7 +42,9 @@ class Announcement
                 when ".md"
                   { msg: @path.expand_path.read }
                 when ".yml"
-                  YAML.safe_load(ERB.new(@path.expand_path.read, nil, "-").result)
+                  YAML.safe_load(
+                    ERBRender.erb_new(
+                      @path.expand_path.read).result)
                 else
                   {}
                 end
