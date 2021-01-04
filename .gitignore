@@ -10,7 +10,6 @@
 /apps/*/.bundle
 /apps/*/vendor/bundle/
 /*/.bundle
-/apps/*/bin/**
 /apps/*/public/packs
 /apps/*/public/packs-test
 
