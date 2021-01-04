@@ -111,8 +111,7 @@ class OodAppTest < ActiveSupport::TestCase
       expected_path = Pathname.new('')
 
       assert_equal path, expected_path
-      assert_equal false, app.svg_icon?
-      assert_equal false, app.png_icon?
+      assert_equal false, app.image_icon?
     end
   end
 
@@ -127,8 +126,7 @@ class OodAppTest < ActiveSupport::TestCase
       expected_path = app_dir.join("icon.png")
 
       assert_equal path, expected_path
-      assert_equal false, app.svg_icon?
-      assert_equal true, app.png_icon?
+      assert_equal true, app.image_icon?
     end
   end
 
@@ -143,8 +141,7 @@ class OodAppTest < ActiveSupport::TestCase
       expected_path = app_dir.join("icon.svg")
 
       assert_equal path, expected_path
-      assert_equal true, app.svg_icon?
-      assert_equal false, app.png_icon? 
+      assert_equal true, app.image_icon?
     end
   end
 
@@ -161,8 +158,7 @@ class OodAppTest < ActiveSupport::TestCase
       expected_path = app_dir.join("icon.svg")
 
       assert_equal path, expected_path
-      assert_equal true, app.svg_icon?
-      assert_equal true, app.png_icon?
+      assert_equal true, app.image_icon?
     end
   end
 
@@ -179,8 +175,7 @@ class OodAppTest < ActiveSupport::TestCase
       expected_uri = "/apps/icon/app/path/#{router.owner}" 
 
       assert_equal uri, expected_uri
-      assert_equal true, app.svg_icon?
-      assert_equal false, app.png_icon?
+      assert_equal true, app.image_icon?
     end
   end
 
@@ -197,8 +192,7 @@ class OodAppTest < ActiveSupport::TestCase
       expected_uri = "/apps/icon/app/path/#{router.owner}" 
 
       assert_equal uri, expected_uri
-      assert_equal false, app.svg_icon?
-      assert_equal true, app.png_icon? 
+      assert_equal true, app.image_icon? 
     end
   end
 
@@ -213,8 +207,7 @@ class OodAppTest < ActiveSupport::TestCase
       manifest = Manifest.load(app_dir.join("manifest.yml"))
 
       assert_equal app.icon_uri, manifest.icon
-      assert_equal false, app.svg_icon?
-      assert_equal false, app.png_icon?
+      assert_equal false, app.image_icon?
     end
   end
 
@@ -225,8 +218,7 @@ class OodAppTest < ActiveSupport::TestCase
       app = OodApp.new(PathRouter.new(app_dir))
 
       assert_equal "fas://cog", app.icon_uri
-      assert_equal false, app.svg_icon?
-      assert_equal false, app.png_icon?
+      assert_equal false, app.image_icon?
     end
   end
 end
