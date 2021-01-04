@@ -1,6 +1,6 @@
 module BuildUtils
   def image_tag
-    tag? ? numeric_tag : git_hash
+    tag? ? numeric_tag : "#{numeric_tag}-#{git_hash}"
   end
 
   def ood_version
@@ -33,6 +33,10 @@ module BuildUtils
 
   def test_image_name
     "ood-test"
+  end
+
+  def dev_image_name
+    "ood-dev"
   end
 
   def image_name
