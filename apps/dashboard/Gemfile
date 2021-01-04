@@ -49,13 +49,10 @@ gem 'thor', '0.19.1'
 
 # Extra third-party gems
 gem 'dotenv-rails', '~> 2.1'
-gem 'bootstrap-sass', '~> 3.4.1'
-gem 'font-awesome-sass', '5.12.0'
 gem 'redcarpet', '~> 3.3'
 gem 'browser', '~> 2.2'
 gem 'addressable', '~> 2.4'
-gem 'bootstrap_form', '~> 2.4'
-gem 'jquery-datatables-rails', '~> 3.4'
+gem 'bootstrap_form', '~> 4.0'
 gem 'data-confirm-modal', '~> 1.2'
 gem 'rails_12factor', group: :production
 gem 'mocha', '~> 1.1', group: :test
