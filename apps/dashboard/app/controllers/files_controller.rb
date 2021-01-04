@@ -153,6 +153,25 @@ class FilesController < ApplicationController
     end
   end
 
+  # FIXME: TransfersController
+  def rm
+    # TODO: validate data (no bad copy/move commands) - using file system abstraction ideally
+    # TODO: if device is same for dest as for src, do move synchronously
+    params = ActionController::Parameters.new(JSON.parse(request.body.read).merge(params.to_h))
+
+    @job = TransferLocalJob.perform_later('rm', params['from'], params['names'])
+    @transfers = TransferLocalJob.progress.values
+
+    respond_to do |format|
+      format.json {
+        render :body => "rm started"
+      }
+      format.js {
+        render "transfers/index"
+      }
+    end
+  end
+
   def zip
     raise "not yet impl"
   end

@@ -2,7 +2,7 @@ class TransferLocalJob < ApplicationJob
   queue_as :default
 
   # job_id vs provider_job_id?
-  Progress = Struct.new(:id, :status, :action, :from, :names, :to, :created_at, :completed_at, :percent, :message, :cancelable, :data, :exit_status)
+  Progress = Struct.new(:id, :status, :action, :from, :names, :to, :created_at, :completed_at, :percent, :message, :cancelable, :data, :exit_status, keyword_init: true)
 
   class << self
     attr_writer :progress
@@ -19,11 +19,16 @@ class TransferLocalJob < ApplicationJob
   end
 
   def progress
+    # FIXME: set test to verify progress attributes set
+    # then you can test arguments etc.
     self.class.progress[job_id] ||= Progress.new(
-      job_id,
-      OodCore::Job::Status.new(state: :queued),
-      *arguments,
-      Time.now.to_i
+      id: job_id,
+      status: OodCore::Job::Status.new(state: :queued),
+      action: arguments[0],
+      from: arguments[1],
+      names: arguments[2],
+      to: arguments[3],
+      created_at: Time.now.to_i
     )
   end
 
@@ -71,6 +76,8 @@ class TransferLocalJob < ApplicationJob
       err_reader = Thread.new { e.read  }
 
       o.each_line.with_index do |l, index|
+        #FIXME: slice(?).last so that we only update progress a few times per...
+
         # percent complete
         update_progress((100.0*((index+1).to_f/steps)).to_i)
       end

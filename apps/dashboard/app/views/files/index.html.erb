@@ -78,7 +78,7 @@
   <button id="rename-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-font" aria-hidden="true"></i> Rename</button>
   <button id="download-btn" type="button" class="btn btn-primary btn-sm"><i class="fas fa-download" aria-hidden="true"></i> Download</button>
   <button id="copy-move-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-copy" aria-hidden="true"></i> Copy/Move</button>
-  <button type="button" class="btn btn-danger pull-right btn-sm"><i class="fas fa-trash" aria-hidden="true"></i> Delete</button>
+  <button id="delete-btn" type="button" class="btn btn-danger pull-right btn-sm"><i class="fas fa-trash" aria-hidden="true"></i> Delete</button>
 </div>
 
 <table class="table table-striped table-condensed" id="directory-contents">
@@ -598,7 +598,6 @@ function updateViewForClipboard(){
           clearClipboard();
           updateViewForClipboard();
           doneLoading();
-          updateViewForTransfers();
         })
       }
     }
@@ -613,6 +612,57 @@ $('#copy-move-btn').click(() => {
     updateViewForClipboard();
 });
 
+$('#delete-btn').click(() => {
+  let files = table.rows({selected: true}).data().toArray().map((f) => f.name);
+  if(! files.length > 0){
+    return;
+  }
+
+  Swal.fire({
+    title: 'Delete files?',
+    text: 'Are you sure you want to delete the files: ' + files.join(', '),
+    showCancelButton: true,
+    showClass: {
+      popup: 'swal2-noanimation',
+      backdrop: 'swal2-noanimation'
+    },
+    hideClass: {
+      popup: '',
+      backdrop: ''
+    }
+  })
+  .then((result) => {
+    if(result.isConfirmed){
+      loading('Deleting files...');
+
+      return fetch('<%= files_rm_path(format: "js") %>', {
+          method: 'delete',
+          body: JSON.stringify({
+            from: history.state.currentDirectory,
+            names: files
+          })
+      });
+    }
+    else{
+      return Promise.reject('cancelled');
+    }
+  })
+  //TODO: if(response.status != 200){ fail!
+  .then(response => response.text())
+  .then((response_js) => {
+      eval(response_js);
+      doneLoading();
+  })
+  .catch(e => {
+      if(e != 'cancelled'){
+        //FIXME: error
+        console.error(e);
+      }
+
+      doneLoading();
+  })
+});
+
 // TODO: move all functionality out of click handlers to functions
 // TODO: hide copy/move buttons if no local storage
 
@@ -620,7 +670,6 @@ $('#copy-move-btn').click(() => {
 updateViewForClipboard();
 window.addEventListener('storage', () => {
   updateViewForClipboard();
-  reloadTable();
 });
 
 // If there are running transfers, update view in 1 seconds
