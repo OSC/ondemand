@@ -26,7 +26,7 @@ Installing Open OnDemand simple, use our prepacked RPM distributions or build fr
 Learn more about Open OnDemand's system architecture and request lifecycle by visiting our <a href="https://osc.github.io/ood-documentation/master/architecture.html">documentation</a>.
 
 ## Community
-Open OnDemand has an active and growing community! Don't hesistate to reach out to the developers via our [Discourse] instance if you would like more information or need help installing or configuring Open OnDemand.
+Open OnDemand has an active and growing community! Don't hesitate to reach out to the developers via our [Discourse] instance if you would like more information or need help installing or configuring Open OnDemand.
 <br/>
 <br/>
 <a href="https://discourse.osc.edu"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c2/Discourse.svg" width=150></a>
@@ -46,5 +46,5 @@ This project is maintained by the <a href="https://www.osc.edu">Ohio Supercomput
 [MIT License]: http://opensource.org/licenses/MIT
 [Open OnDemand Documentation]: https://osc.github.io/ood-documentation/master/
 [installation instructions]: https://osc.github.io/ood-documentation/master/requirements.html
-[contributing guide]: https://github.com/OSC/Open-OnDemand/blob/master/CONTRIBUTING.md
+[contributing guide]: docs/CONTRIBUTING.md
 [Discourse]: https://discourse.osc.edu
