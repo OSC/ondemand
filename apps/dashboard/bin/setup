@@ -33,6 +33,7 @@ APP = App.new(
 
 # path to your application root.
 APP_ROOT = Pathname.new File.expand_path("../../",  __FILE__)
+CACHE    = "#{ENV['HOME']}/.cache/yarn/dashboard"
 
 chdir APP_ROOT do
   # This script is a starting point to setup your application.
@@ -44,6 +45,10 @@ chdir APP_ROOT do
 
   puts "\n== Installing dependencies =="
   sh "bin/bundle check 1>/dev/null 2>&1 || bin/bundle install --jobs 4 --retry 2"
+
+  puts "\n== Installing Yarn =="
+  sh "yarn config set cache-folder #{CACHE}"
+  sh "yarn install --production"
 
   if APP.production?
     puts "\n== Compiling assets =="
