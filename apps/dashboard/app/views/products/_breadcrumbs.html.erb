@@ -1,16 +1,18 @@
-<ol class="breadcrumb">
-  <li>
-    <%= link_to "Home", root_path %>
-  </li>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <%= link_to "Home", root_path %>
+    </li>
 
-  <% if current_page?(action: "index") %>
-  <li class="active">
-    <%= products_title(@type) %>
-  </li>
-  <% else %>
-  <li>
-    <%= link_to products_title(@type), products_path(type: @type) %>
-  </li>
-  <%= yield %>
-  <% end %>
-</ol>
+    <% if current_page?(action: "index") %>
+    <li class="breadcrumb-item active" aria-current="page">
+      <%= products_title(@type) %>
+    </li>
+    <% else %>
+    <li class="breadcrumb-item">
+      <%= link_to products_title(@type), products_path(type: @type) %>
+    </li>
+    <%= yield %>
+    <% end %>
+  </ol>
+</nav>

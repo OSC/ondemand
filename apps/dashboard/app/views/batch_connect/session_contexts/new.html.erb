@@ -1,32 +1,31 @@
 <% content_for :title, "#{@app.title} - #{OodAppkit.dashboard.title}" %>
 
-<ol class="breadcrumb">
-  <li>
-    <%= link_to t('dashboard.breadcrumbs_home'), root_path %>
-  </li>
-  <li>
-    <%= link_to t('dashboard.breadcrumbs_my_sessions'), batch_connect_sessions_path %>
-  </li>
-  <li class="active">
-    <%= @app.title %>
-  </li>
-</ol>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <%= link_to t('dashboard.breadcrumbs_home'), root_path %>
+    </li>
+    <li class="breadcrumb-item">
+      <%= link_to t('dashboard.breadcrumbs_my_sessions'), batch_connect_sessions_path %>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      <%= @app.title %>
+    </li>
+  </ol>
 
 <%- if @session && @session.errors.any? -%>
   <div class="alert alert-danger alert-dismissible" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 
     <% @session.errors.each do |key, error| %>
       <% if key == :submit %>
-        <h4><%= t('dashboard.batch_connect_sessions_errors_submission') %></h4>
+        <p><%= t('dashboard.batch_connect_sessions_errors_submission') %></p>
         <pre><%= error %></pre>
       <% elsif key == :stage %>
-        <h4><%= t('dashboard.batch_connect_sessions_errors_staging') %></h4>
+        <p><%= t('dashboard.batch_connect_sessions_errors_staging') %></p>
         <pre><%= error %></pre>
       <% else %>
-        <h4><%= error %></h4>
+        <h4 class="fs-5 lh-sm alert-heading"><%= error %></h4>
       <% end %>
     <% end %>
 
@@ -42,9 +41,11 @@
             data_link_tag: link_to(
               t('dashboard.batch_connect_sessions_staged_root'),
               OodAppkit.files.url(path: @session.staged_root).to_s,
-              target: "_blank")
+              target: "_blank",
+              class: "alert-link",
             )
-            %>
+          )
+        %>
       </li>
     </ul>
   </div>

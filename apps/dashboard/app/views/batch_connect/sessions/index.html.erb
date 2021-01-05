@@ -4,14 +4,16 @@
   any_apps = (@sys_app_groups + @usr_app_groups + @dev_app_groups).any?
 -%>
 
-<ol class="breadcrumb">
-  <li>
-    <%= link_to t('dashboard.breadcrumbs_home'), root_path %>
-  </li>
-  <li class="active">
-    <%= t('dashboard.breadcrumbs_my_sessions') %>
-  </li>
-</ol>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <%= link_to t('dashboard.breadcrumbs_home'), root_path %>
+    </li>
+    <li class="breadcrumb-item active">
+      <%= t('dashboard.breadcrumbs_my_sessions') %>
+    </li>
+  </ol>
+</nav>
 
 <div class="row">
   <%- if any_apps -%>
