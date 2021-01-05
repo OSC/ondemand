@@ -1,13 +1,13 @@
-<li class="dropdown" title="<%= t('dashboard.nav_develop_title') %>">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-    <i class="fas fa-code" aria-hidden="true"></i><span class="hidden-sm hidden-sm-nav"> <%= t('dashboard.nav_develop_title') %></span><span class="caret"></span>
+<li class="nav-item dropdown" title="<%= t('dashboard.nav_develop_title') %>">
+  <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <i class="fas fa-code" aria-hidden="true"></i><span class="d-sm-none d-md-none d-lg-inline"> <%= t('dashboard.nav_develop_title') %></span><span class="caret"></span>
   </a>
-  <ul class="dropdown-menu">
-    <%= nav_link(t('dashboard.nav_restart_server'), "sync", restart_url) %>
+  <div class="dropdown-menu">
+    <%= nav_link(t('dashboard.nav_restart_server'), "sync-alt", restart_url) %>
     <%= nav_link(t('dashboard.nav_develop_docs'), "book", Configuration.developer_docs_url, target: "_blank") %>
     <%= nav_link(products_title(:dev), "cog", products_path(type: "dev")) %>
     <% if Configuration.app_sharing_enabled? %>
       <%= nav_link(products_title(:usr), "share-alt", products_path(type: "usr")) %>
     <% end %>
-  </ul>
+  </div>
 </li>

@@ -12,12 +12,19 @@ import Rails from '@rails/ujs'
 const images = require.context('../images', true)
 const imagePath = (name) => images(name, true)
 
-import 'bootstrap'
+import { library, dom } from '@fortawesome/fontawesome-svg-core'
+import { fas } from '@fortawesome/free-solid-svg-icons'
+
+library.add(fas)
+
 import 'src/plugins'
 import 'src/coffee'
 
 import 'stylesheets/dashboard'
 
-console.log('Hey there')
+// Kicks off the process of finding <i> tags and replacing with <svg>
+dom.watch()
+
+console.log('Bootstrap 5')
 
 Rails.start()
