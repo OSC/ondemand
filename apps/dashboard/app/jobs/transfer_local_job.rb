@@ -69,6 +69,7 @@ class TransferLocalJob < ApplicationJob
 
     # FIXME: validation :-P
 
+
     Open3.popen3(*args, chdir: from) do |i, o, e, t|
       progress.data = t.pid
       progress.cancelable = true
@@ -84,9 +85,11 @@ class TransferLocalJob < ApplicationJob
       o.close
 
       # FIXME: did it fail? need fail status?
-      progress.exit_status = t.value.exitstatus
+      progress.exit_status = t.value
       progress.message = err_reader.value
       progress.completed_at = Time.now.to_i
+
+      self
     end
   end
 end
