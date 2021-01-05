@@ -46,5 +46,5 @@ This project is maintained by the <a href="https://www.osc.edu">Ohio Supercomput
 [MIT License]: http://opensource.org/licenses/MIT
 [Open OnDemand Documentation]: https://osc.github.io/ood-documentation/master/
 [installation instructions]: https://osc.github.io/ood-documentation/master/requirements.html
-[contributing guide]: docs/CONTRIBUTING.md
+[contributing guide]: CONTRIBUTING.md
 [Discourse]: https://discourse.osc.edu
