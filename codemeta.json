@@ -1,0 +1,65 @@
+{
+  "@context": "https://raw.githubusercontent.com/codemeta/codemeta/master/codemeta.jsonld",
+  "@type": "Code",
+  "author": [
+    {
+      "@id": "https://orcid.org/0000-0002-9043-0850",
+      "@type": "Person",
+      "email": "dhudak@osc.edu",
+      "name": "Dave Hudak",
+      "affiliation": "Ohio Supercomputer Center"
+    },
+    {
+      "@id": "https://orcid.org/0000-0002-4331-8508",
+      "@type": "Person",
+      "email": "djohnson@osc.edu",
+      "name": "Doug Johnson",
+      "affiliation": "Ohio Supercomputer Center"
+    },
+    {
+      "@id": "https://orcid.org/0000-0002-5475-8779",
+      "@type": "Person",
+      "email": "alanc@osc.edu",
+      "name": "Alan Chalker",
+      "affiliation": "Ohio Supercomputer Center"
+    },
+    {
+      "@id": "https://orcid.org/0000-0003-3208-7588",
+      "@type": "Person",
+      "email": "jnicklas@osc.edu",
+      "name": "Jeremy Nicklas",
+      "affiliation": "Ohio Supercomputer Center"
+    },
+    {
+      "@id": "https://orcid.org/0000-0002-9662-412X",
+      "@type": "Person",
+      "email": "efranz@osc.edu",
+      "name": "Eric Franz",
+      "affiliation": "Ohio Supercomputer Center"
+    },
+    {
+      "@id": "https://orcid.org/0000-0002-5494-0968",
+      "@type": "Person",
+      "email": "tdockendorf@osc.edu",
+      "name": "Trey Dockendorf",
+      "affiliation": "Ohio Supercomputer Center"
+    },
+    {
+      "@id": "https://orcid.org/0000-0001-7455-6691",
+      "@type": "Person",
+      "email": "bmcmichael@osc.edu",
+      "name": "Brian L. McMichael",
+      "affiliation": "Ohio Supercomputer Center"
+    }
+  ],
+  "identifier": "http://dx.doi.org/10.1145/2949550.2949644",
+  "codeRepository": "https://github.com/OSC/ondemand",
+  "datePublished": "2017-03-08",
+  "dateModified": "2017-11-03",
+  "dateCreated": "2015-07-01",
+  "description": "Open-source software project that enables HPC centers to install and deploy advanced web and graphical interfaces for their users.",
+  "keywords": "HPC, apps, portal, gateway, web platform",
+  "license": "MIT",
+  "title": "Open OnDemand",
+  "version": "v1.2.0"
+}
