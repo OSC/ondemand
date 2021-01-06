@@ -2,7 +2,7 @@ FROM centos:8
 LABEL maintainer="tdockendorf@osc.edu; johrstrom@osc.edu"
 
 ARG VERSION=latest
-ARG CONCURRENCY=4
+ARG CONCURRENCY=16
 
 # setup the ondemand repositories
 RUN dnf -y install https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-6.noarch.rpm
@@ -10,6 +10,7 @@ RUN dnf -y install https://yum.osc.edu/ondemand/latest/ondemand-release-web-late
 # setup yarn repository
 RUN curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo && \
     rpm --import https://dl.yarnpkg.com/rpm/pubkey.gpg
+
 # install all the dependencies
 RUN dnf -y update && \
     dnf -y module enable nodejs:12 ruby:2.7 && \

@@ -10,8 +10,8 @@
 /apps/*/.bundle
 /apps/*/vendor/bundle/
 /*/.bundle
-/apps/*/public/packs
-/apps/*/public/packs-test
+!/apps/*/public/packs/.keep
+!/apps/*/public/packs-test/.keep
 
 # files used for deployment should not be versioned
 /apps/*/.htaccess
