@@ -1,7 +1,4 @@
-require "tasks/erb_render_utils"
-
 class Announcement
-  include ERBRenderUtils
   # List of valid announcement types
   TYPES = [:warning, :info, :success, :danger]
 
@@ -43,7 +40,7 @@ class Announcement
                 when ".md"
                   { msg: @path.expand_path.read }
                 when ".yml"
-                  YAML.safe_load(erb(@path.expand_path.read))
+                  YAML.safe_load(erb(@path.expand_path.read)
                 else
                   {}
                 end

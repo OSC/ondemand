@@ -1,5 +1,3 @@
-require 'tasks/erb_render_utils'
-
 class MotdFormatterPlaintextErb
   attr_reader :content, :title
   include ERBRenderUtils
