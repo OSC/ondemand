@@ -2,6 +2,7 @@ module BatchConnect
   class Session
     include ActiveModel::Model
     include ActiveModel::Serializers::JSON
+    include ERBRenderUtils
 
     # This class describes the object that is bound to the ERB template file
     # when it is rendered
@@ -59,7 +60,7 @@ module BatchConnect
     # Return parsed markdown from info.{md, html}.erb
     # @return [String, nil] return HTML if no error while parsing, else return nil
     def render_info_view
-      @render_info_view ||= OodAppkit.markdown.render(ERB.new(self.app.session_info_view, nil, "-").result(binding)).html_safe if self.app.session_info_view
+      @render_info_view ||= OodAppkit.markdown.render(erb(self.app.session_info_view, binding: binding)).html_safe if self.app.session_info_view
     rescue => e
       @render_info_view_error_message = "Error when rendering info view: #{e.class} - #{e.message}"
       Rails.logger.error(@render_info_view_error_message)
@@ -509,7 +510,7 @@ module BatchConnect
         files.each do |file|
           rendered_file = remove_extension ? file.sub_ext("") : file
           template = file.read
-          rendered = ERB.new(template, nil, "-").result(binding)
+          rendered = erb(template, binding: binding)
           file.rename rendered_file     # keep same file permissions
           rendered_file.write(rendered)
         end
