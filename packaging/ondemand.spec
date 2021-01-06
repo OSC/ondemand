@@ -49,12 +49,6 @@ Source4:   favicon.ico
 %define htcacheclean_service httpd24-htcacheclean
 %endif
 
-# Work around issue with EL6 builds
-# https://stackoverflow.com/a/48801417
-%if 0%{?rhel} < 7
-%define __strip /opt/rh/devtoolset-6/root/usr/bin/strip
-%endif
-
 # Disable automatic dependencies as it causes issues with bundled gems and
 # node.js packages used in the apps
 AutoReqProv:     no
