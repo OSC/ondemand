@@ -74,3 +74,8 @@ gem 'pbs', '~> 2.2.1'
 gem "sinatra", require: false
 gem "sinatra-contrib", require: false
 gem "erubi", require: false
+
+group :test do
+  gem "capybara"
+  gem "selenium-webdriver"
+end

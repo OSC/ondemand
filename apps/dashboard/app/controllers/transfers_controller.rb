@@ -16,7 +16,7 @@ class TransfersController < ApplicationController
     @table_needs_reloaded = @transfers.any? {|t|
       # FIXME: better handled by a Transfer model
 
-      if t.status.completed? && t.completed_at && t.completed_at > params['current_directory_updated_at'].to_i
+      if t.status.completed? && t.completed_at && t.completed_at >= params['current_directory_updated_at'].to_i
         if t.action == "rm"
           Pathname.new(t.from).cleanpath == Pathname.new(params['current_directory']).cleanpath
         else

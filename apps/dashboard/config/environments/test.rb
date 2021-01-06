@@ -26,7 +26,10 @@ Rails.application.configure do
   config.action_dispatch.show_exceptions = false
 
   # Disable request forgery protection in test environment.
-  config.action_controller.allow_forgery_protection = false
+  # FIXME: normally this is disabled, we enable it because our code actually assumes it will
+  # be enabled (and thus system tests fail when it is disabled)
+  #
+  # config.action_controller.allow_forgery_protection = false
   config.action_mailer.perform_caching = false
 
   # Tell Action Mailer not to deliver emails to the real world.
