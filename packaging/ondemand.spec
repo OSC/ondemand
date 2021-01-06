@@ -35,13 +35,6 @@ Source4:   favicon.ico
 # Avoid duplicate build-id files between builds of ondemand-gems
 %global _build_id_links none
 
-# Check if system uses systemd by default
-%if 0%{?rhel} >= 7 || 0%{?fedora} >= 16
-%bcond_without systemd
-%else
-%bcond_with systemd
-%endif
-
 %if 0%{?rhel} >= 8
 %bcond_with scl_apache
 %define apache_confd /etc/httpd/conf.d
@@ -89,10 +82,8 @@ Requires:        ondemand-nodejs >= %{runtime_version}, ondemand-nodejs < %{next
 Requires:        ondemand-runtime >= %{runtime_version}, ondemand-runtime < %{next_major_version}, ondemand-runtime < %{next_minor_version}
 Requires:        %{gems_name}
 
-%if %{with systemd}
 BuildRequires: systemd
 %{?systemd_requires}
-%endif
 
 %description
 Open OnDemand is an open source release of OSC's OnDemand platform to provide
@@ -236,7 +227,6 @@ EOF
 }
 EOF
 
-%if %{with systemd}
 %__mkdir_p %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d
 %__cat >> %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood.conf << EOF
 [Service]
@@ -253,7 +243,6 @@ ExecReload=-/opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm
 ExecReload=%{apache_daemon} \$OPTIONS -k graceful
 EOF
 %__chmod 444 %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood-portal.conf
-%endif
 EOS
 
 %post
@@ -262,9 +251,7 @@ EOS
     /opt/rh/httpd24/service-environment
 %endif
 
-%if %{with systemd}
 /bin/systemctl daemon-reload &>/dev/null || :
-%endif
 
 # These NGINX app configs need to exist before rebuilding them
 touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/dashboard.conf
@@ -307,14 +294,8 @@ semodule -r %{name}-selinux 2>/dev/null || :
 
 %postun
 if [ "$1" -eq 0 ]; then
-%if %{with systemd}
 /bin/systemctl daemon-reload &>/dev/null || :
 /bin/systemctl try-restart %{apache_service}.service %{htcacheclean_service}.service &>/dev/null || :
-%else
-/sbin/service %{apache_service} condrestart &>/dev/null
-/sbin/service %{htcacheclean_service} condrestart &>/dev/null
-exit 0
-%endif
 fi
 
 %postun selinux
@@ -341,13 +322,7 @@ touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 # Rebuild Apache config and restart Apache httpd if config changed
 /opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm --detailed-exitcodes
 if [[ $? -eq 3 ]] ; then
-%if %{with systemd}
 /bin/systemctl try-restart %{apache_service}.service %{htcacheclean_service}.service &>/dev/null || :
-%else
-/sbin/service %{apache_service} condrestart &>/dev/null
-/sbin/service %{htcacheclean_service} condrestart &>/dev/null
-exit 0
-%endif
 fi
 
 
@@ -406,10 +381,8 @@ fi
 %config(noreplace) %{_sysconfdir}/cron.d/ood
 %config(noreplace) %{_sysconfdir}/logrotate.d/ood
 %ghost %{apache_confd}/ood-portal.conf
-%if %{with systemd}
 %config(noreplace) %{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood.conf
 %config(noreplace,missingok) %{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood-portal.conf
-%endif
 
 %files -n %{gems_name}
 %{gem_home}/*
