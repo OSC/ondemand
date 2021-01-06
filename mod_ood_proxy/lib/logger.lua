@@ -19,7 +19,8 @@ function logger(r)
     msg["log_hook"] = "ood"
 
     -- log
-    msg["log_time"] = os.date("!%Y-%m-%dT%T", time / 1000000) .. "." .. time % 1000000 .. "Z"
+    -- msg["log_time"] = os.date("!%Y-%m-%dT%T", time / 1000000) .. "." .. time % 1000000 .. "Z"
+    msg["log_time"] = os.date("!%Y-%m-%dT%TZ")
     msg["log_id"]   = r.log_id
 
     -- user
