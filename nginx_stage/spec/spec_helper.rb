@@ -111,3 +111,9 @@ def read_fixture(name)
   fixture = File.join(fixture_dir, name)
   File.read(fixture)
 end
+
+RSpec::Matchers.define :opt_exists? do |config_opts|
+  match do |example_config_opts|
+    example_config_opts.any? { |opt| opt.include?(config_opts) }
+  end
+end

@@ -31,7 +31,7 @@
 # Custom environment variables to set for the PUN environment
 # Below is an example of the use for setting env vars.
 #
-# pun_custom_env:
+#pun_custom_env:
 #   OOD_DASHBOARD_TITLE: "Open OnDemand"
 #   OOD_BRAND_BG_COLOR: "#53565a"
 #   OOD_BRAND_LINK_ACTIVE_BG_COLOR: "#fff"
@@ -40,12 +40,17 @@
 # from /etc/ood/profile. Example below shows some default
 # env vars that are declared.
 #
-# pun_custom_env_declarations:
+#pun_custom_env_declarations:
 #  - PATH
 #  - LD_LIBRARY_PATH
 #  - MANPATH
 #  - SCLS
 #  - X_SCLS
+
+# Path to the root directory for custom html files
+# that NGINX can serve. Currently only the missing_home_directory.html
+# error page can be customized with this mechanism.
+#pun_custom_html_root: '/etc/ood/config/pun/html'
 
 # Location of the ERB templates used in the generation of the NGINX configs
 #
@@ -109,6 +114,10 @@
 # Path to the per-user NGINX error log
 #
 #pun_error_log_path: '/var/log/ondemand-nginx/%{user}/error.log'
+
+# Path to generated per-user NGINX secret key base file   
+#
+#pun_secret_key_base_path: '/var/lib/ondemand-nginx/config/puns/bob.secret_key_base.txt' 
 
 # Custom format configuration for access log
 #

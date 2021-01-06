@@ -1,0 +1,20 @@
+require 'nginx_stage'
+require 'spec_helper'
+
+describe NginxStage::Configuration do
+  describe 'does config match with example file?' do
+    it 'returns true if config matches example file' do
+      public_inst_methods = NginxStage::Configuration.public_instance_methods
+      attr_setter_names = public_inst_methods.map(
+          &:to_s).select { |name| name.end_with?("=") }.uniq
+
+      config_opts = attr_setter_names.map { |name| name.delete("=") } 
+      example_config_opts = File.read(
+        './share/nginx_stage_example.yml').scan(/#[\w_]+:/)
+
+      config_opts.each do |opt|
+        expect(example_config_opts).to opt_exists?(opt)
+      end
+    end
+  end
+end
