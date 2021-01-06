@@ -18,7 +18,6 @@ RUN dnf -y update && \
         gcc-c++ \
         git \
         patch \
-        sqlite-devel \
         ondemand-gems \
         ondemand-runtime \
         ondemand-build \
