@@ -41,14 +41,12 @@ Source4:   favicon.ico
 %define apache_service httpd
 %define apache_daemon /usr/sbin/httpd
 %define htcacheclean_service htcacheclean
-%define sqlite_package sqlite-devel
 %else
 %bcond_without scl_apache
 %define apache_confd /opt/rh/httpd24/root/etc/httpd/conf.d
 %define apache_service httpd24-httpd
 %define apache_daemon /opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper
 %define htcacheclean_service httpd24-htcacheclean
-%define sqlite_package ondemand-sqlite-devel
 %endif
 
 # Work around issue with EL6 builds
@@ -67,7 +65,6 @@ BuildRequires:   curl, make, zlib-devel, libxslt-devel
 BuildRequires:   ondemand-ruby >= %{runtime_version}, ondemand-ruby < %{next_major_version}, ondemand-ruby < %{next_minor_version}
 BuildRequires:   ondemand-python >= %{runtime_version}, ondemand-python < %{next_major_version}, ondemand-python < %{next_minor_version}
 BuildRequires:   ondemand-nodejs >= %{runtime_version}, ondemand-nodejs < %{next_major_version}, ondemand-nodejs < %{next_minor_version}
-BuildRequires:   %{sqlite_package} >= 3.26.0
 BuildRequires:   rsync
 BuildRequires:   git
 Requires:        git
@@ -75,7 +72,6 @@ Requires:        sudo, lsof, cronie, wget, curl, make, rsync, file, libxml2, lib
 Requires:        ondemand-apache >= %{runtime_version}, ondemand-apache < %{next_major_version}, ondemand-apache < %{next_minor_version}
 Requires:        ondemand-nginx = 1.18.0
 Requires:        ondemand-passenger = 6.0.7
-Requires:        %{sqlite_package} >= 3.26.0
 Requires:        ondemand-ruby >= %{runtime_version}, ondemand-ruby < %{next_major_version}, ondemand-ruby < %{next_minor_version}
 Requires:        ondemand-python >= %{runtime_version}, ondemand-python < %{next_major_version}, ondemand-python < %{next_minor_version}
 Requires:        ondemand-nodejs >= %{runtime_version}, ondemand-nodejs < %{next_major_version}, ondemand-nodejs < %{next_minor_version}
