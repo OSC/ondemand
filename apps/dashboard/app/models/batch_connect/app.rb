@@ -2,7 +2,6 @@ require "smart_attributes"
 
 module BatchConnect
   class App
-    include ERBRenderUtils
     # Router for a deployed batch connect app
     # @return [DevRouter, UsrRouter, SysRouter] router for batch connect app
     attr_accessor :router
@@ -304,7 +303,7 @@ module BatchConnect
       # pure function to render erb, properly setting the filename attribute
       # before rendering
       def render_erb_file(path:, contents:, binding:)
-        erb = erb(contents)
+        erb = ERB.new(contents, nil, "-")
         erb.filename = path.to_s
         erb.result(binding)
       end
