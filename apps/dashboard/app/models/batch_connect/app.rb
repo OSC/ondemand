@@ -1,4 +1,5 @@
 require "smart_attributes"
+require "tasks/erb_render_utils"
 
 module BatchConnect
   class App
@@ -304,9 +305,7 @@ module BatchConnect
       # pure function to render erb, properly setting the filename attribute
       # before rendering
       def render_erb_file(path:, contents:, binding:)
-        erb = erb(contents)
-        erb.filename = path.to_s
-        erb.result(binding)
+        erb(contents, filename_path: path, binding: binding)
       end
 
       # Hash describing the full form object
