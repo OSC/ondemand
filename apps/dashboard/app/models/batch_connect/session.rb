@@ -1,5 +1,3 @@
-require 'erb_render'
-
 module BatchConnect
   class Session
     include ActiveModel::Model
@@ -61,7 +59,7 @@ module BatchConnect
     # Return parsed markdown from info.{md, html}.erb
     # @return [String, nil] return HTML if no error while parsing, else return nil
     def render_info_view
-      @render_info_view ||= OodAppkit.markdown.render(ERBRender.erb_new(self.app.session_info_view).result(binding)).html_safe if self.app.session_info_view
+      @render_info_view ||= OodAppkit.markdown.render(ERB.new(self.app.session_info_view, nil, "-").result(binding)).html_safe if self.app.session_info_view
     rescue => e
       @render_info_view_error_message = "Error when rendering info view: #{e.class} - #{e.message}"
       Rails.logger.error(@render_info_view_error_message)
@@ -236,7 +234,7 @@ module BatchConnect
       user_defined_context_file.write(JSON.pretty_generate context.as_json)
 
       # Render all template files using ERB
-      ERBRender.render_erb_files(
+      render_erb_files(
         template_files,
         binding: TemplateBinding.new(self, context).get_binding
       )
@@ -504,6 +502,17 @@ module BatchConnect
           ENV["RAILS_RELATIVE_URL_ROOT"].sub(/^\/[^\/]+\//, ""),  # the OOD app
           token                 # the Batch Connect app
         ].reject(&:blank?).join("/")
+      end
+
+      # Render a list of files using ERB
+      def render_erb_files(files, binding: nil, remove_extension: true)
+        files.each do |file|
+          rendered_file = remove_extension ? file.sub_ext("") : file
+          template = file.read
+          rendered = ERB.new(template, nil, "-").result(binding)
+          file.rename rendered_file     # keep same file permissions
+          rendered_file.write(rendered)
+        end
       end
   end
 end

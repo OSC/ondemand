@@ -1,1 +1,1 @@
-<%= OodAppkit.markdown.render(erb_new(view).result(connect.instance_eval { binding })).html_safe %>
+<%= OodAppkit.markdown.render(ERB.new(view, nil, "-").result(connect.instance_eval { binding })).html_safe %>
