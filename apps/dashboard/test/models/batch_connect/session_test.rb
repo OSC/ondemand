@@ -260,7 +260,7 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
     assert_equal I18n.t('dashboard.batch_connect_missing_cluster'), session.errors[:save].first
   end
 
-  test "session returns connection info from info.native" do
+  test "session returns connection info from info.ood_connection_info" do
     connect = {
       :host => 'some.host.edu',
       :port => 8080,
@@ -268,18 +268,18 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
     }
     info = OodCore::Job::Info.new(
         id: 'test-123',
-        status: :running,
-        native: { ood_connection_info: connect }
+        status: :running
       )
     BatchConnect::Session.any_instance.stubs(:info).returns(info)
+    OodCore::Job::Info.any_instance.stubs(:ood_connection_info).returns(connect)
     session = BatchConnect::Session.new
 
     # holds the right connection info
-    assert session.native_connection_info?
+    assert session.connection_in_info?
     assert_equal session.connect.to_h, connect
   end
 
-  test "queued sessions with native connection info are starting when there is connect info" do
+  test "queued sessions with ood connection info are starting when there is connect info" do
     connect = {
       :host => 'some.host.edu',
       :port => 8080,
@@ -287,46 +287,49 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
     }
     info = OodCore::Job::Info.new(
         id: 'test-123',
-        status: :queued,
-        native: { ood_connection_info: connect }
+        status: :queued
       )
     BatchConnect::Session.any_instance.stubs(:info).returns(info)
+    OodCore::Job::Info.any_instance.stubs(:ood_connection_info).returns(connect)
     session = BatchConnect::Session.new
 
     # starting should be queued + non empty ood_connection_info
-    assert session.native_connection_info?
+    assert session.connection_in_info?
     assert session.starting?
+    assert session.queued?
+    assert_equal session.connect.to_h, connect
   end
 
-  test "queued sessions with native connection info are not starting when there is no connect info" do
+  test "queued sessions with connection in info are not starting when there is no connect info" do
+    # this is the important bit. The BatchConnect::Session has to call to_h.compact to get an
+    # empty hash because the connect info has nil keys.
+    connect = { host: nil }
     info = OodCore::Job::Info.new(
         id: 'test-123',
         status: :queued,
-        # this bit is important becuase ood_connection_info should be gaurenteed as a key, but the dasbhoard
-        # needs to compact.empty? to be sure it's anything useful
-        native: { ood_connection_info: { host: nil } }
       )
     BatchConnect::Session.any_instance.stubs(:info).returns(info)
+    OodCore::Job::Info.any_instance.stubs(:ood_connection_info).returns(connect)
     session = BatchConnect::Session.new
 
-    assert session.native_connection_info?
+    assert session.connection_in_info?
     assert !session.starting?
     assert session.queued?
+    assert_equal session.connect.to_h, connect
   end
 
   test "session is starting? when info.running but no connection.yml" do
     Dir.mktmpdir("staged_root") do |dir|
       info = OodCore::Job::Info.new(
         id: 'test-123',
-        status: :running,
-        native: {}
+        status: :running
       )
       BatchConnect::Session.stubs(:dataroot).returns(Pathname.new(dir))
       BatchConnect::Session.any_instance.stubs(:id).returns('test-id')
       BatchConnect::Session.any_instance.stubs(:info).returns(info)
       session = BatchConnect::Session.new
 
-      assert !session.native_connection_info?
+      assert !session.connection_in_info?
       assert session.starting?
     end
   end
