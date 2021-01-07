@@ -1,6 +1,10 @@
 module ERBRenderHelper
   # To add in common use cases in ERB rendering when needed
   def groups
-      @groups ||= OodSupport::Process.groups.map(&:name)
+    @groups ||= OodSupport::Process.groups.map(&:name)
+  end
+
+  def user_in_group(group)
+    groups.include?(group.to_s)
   end
 end

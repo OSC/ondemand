@@ -1,4 +1,7 @@
+require "tasks/erb_render_helper"
+
 class MotdFormatterPlaintextErb
+  include ERBRenderHelper
   attr_reader :content, :title
 
   def initialize(motd_file)

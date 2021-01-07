@@ -1,4 +1,7 @@
+require "tasks/erb_render_helper"
+
 class Announcement
+  include ERBRenderHelper
   # List of valid announcement types
   TYPES = [:warning, :info, :success, :danger]
 

@@ -229,4 +229,13 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
       assert_equal good_clusters, app.clusters
     }
   end
+  
+  test "should recognize ERBRenderHelper#groups" do
+    assert_nothing_raised { ERB.new("<%= groups.size %>") }
+  end
+
+  test "should recognize ERBRenderHelper#user_in_group" do
+    assert_nothing_raised { 
+      ERB.new("<%= user_in_group(OodSupport::Group.new)%>") }
+  end
 end

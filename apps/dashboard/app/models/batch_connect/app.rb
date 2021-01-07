@@ -1,7 +1,9 @@
 require "smart_attributes"
+require "tasks/erb_render_helper"
 
 module BatchConnect
   class App
+    include ERBRenderHelper
     # Router for a deployed batch connect app
     # @return [DevRouter, UsrRouter, SysRouter] router for batch connect app
     attr_accessor :router

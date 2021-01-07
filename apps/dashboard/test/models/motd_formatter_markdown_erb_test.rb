@@ -50,5 +50,15 @@ class MotdTest < ActiveSupport::TestCase
 
     assert_not_nil formatted_motd.content
   end
+  
+  test "motd-formatter-md-erb should recognize ERBRenderHelper#groups" do
+    assert_nothing_raised { ERB.new("<%= groups.size %>") }
+  end
+
+  test "motd-formatter-md-erb should recognize ERBRenderHelper#user_in_group" do
+    assert_nothing_raised { 
+      ERB.new("<%= user_in_group(OodSupport::Group.new)%>") }
+  end
+
 end
 

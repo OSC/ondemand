@@ -259,4 +259,14 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
     assert_equal false, save
     assert_equal I18n.t('dashboard.batch_connect_missing_cluster'), session.errors[:save].first
   end
+  
+  test "should recognize ERBRenderHelper#groups" do
+    assert_nothing_raised { ERB.new("<%= groups.size %>") }
+  end
+
+  test "should recognize ERBRenderHelper#user_in_group" do
+    assert_nothing_raised { 
+      ERB.new("<%= user_in_group(OodSupport::Group.new)%>") }
+  end
+
 end
