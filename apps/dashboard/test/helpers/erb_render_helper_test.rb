@@ -6,6 +6,6 @@ class ERBRenderHelperTest < ActionView::TestCase
   end
 
   test 'users group should exist in groups' do
-    assert_equal user_in_group(OodSupport::Group.new), true
+    assert_equal user_in_group?(OodSupport::Group.new), true
   end
 end

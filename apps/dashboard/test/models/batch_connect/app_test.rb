@@ -234,8 +234,8 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     assert_nothing_raised { ERB.new("<%= groups.size %>") }
   end
 
-  test "should recognize ERBRenderHelper#user_in_group" do
+  test "should recognize ERBRenderHelper#user_in_group?" do
     assert_nothing_raised { 
-      ERB.new("<%= user_in_group(OodSupport::Group.new)%>") }
+      ERB.new("<%= user_in_group?(OodSupport::Group.new)%>") }
   end
 end

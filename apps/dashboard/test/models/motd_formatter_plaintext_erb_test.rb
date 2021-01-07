@@ -55,9 +55,9 @@ class MotdTest < ActiveSupport::TestCase
     assert_nothing_raised { ERB.new("<%= groups.size %>") }
   end
 
-  test "plaintext-formatter-erb should recognize ERBRenderHelper#user_in_group" do
+  test "plaintext-formatter-erb should recognize ERBRenderHelper#user_in_group?" do
     assert_nothing_raised { 
-      ERB.new("<%= user_in_group(OodSupport::Group.new)%>") }
+      ERB.new("<%= user_in_group?(OodSupport::Group.new)%>") }
   end
 
 end

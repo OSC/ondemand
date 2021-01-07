@@ -1,4 +1,4 @@
-require "tasks/erb_render_helper"
+require "erb/erb_render_helper"
 
 class MotdFormatterMarkdownErb
   include ERBRenderHelper

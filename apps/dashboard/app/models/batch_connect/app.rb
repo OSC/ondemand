@@ -1,5 +1,5 @@
 require "smart_attributes"
-require "tasks/erb_render_helper"
+require "erb/erb_render_helper"
 
 module BatchConnect
   class App
