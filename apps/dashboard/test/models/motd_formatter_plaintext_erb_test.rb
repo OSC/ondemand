@@ -51,14 +51,23 @@ class MotdTest < ActiveSupport::TestCase
     assert_not_nil formatted_motd.content
   end
   
-  test "plaintext-formatter-erb should recognize ERBRenderHelper#groups" do
-    assert_nothing_raised { ERB.new("<%= groups.size %>") }
-  end
+  test "plaintext-formatter-erb should recognize ERBRenderHelper methods" do
+    path = "#{Rails.root}/test/fixtures/files/motd_erb_render_helpers"
+    motd_file = MotdFile.new(path)
+    formatted_motd = MotdFormatterPlaintextErb.new(motd_file)
 
-  test "plaintext-formatter-erb should recognize ERBRenderHelper#user_in_group?" do
-    assert_nothing_raised { 
-      ERB.new("<%= user_in_group?(OodSupport::Group.new)%>") }
-  end
+    groups = OodSupport::User.new.groups.map(&:name)
+    group  = OodSupport::Group.new.to_s
+    user_in_group = groups.include? group 
 
+    expected_file = Tempfile.new("tmp")
+    expected_file.write(
+      "\nYou're in #{groups.size} groups\nincluding #{group}.\n")
+    expected_file.rewind 
+
+    assert_equal expected_file.read, formatted_motd.content
+    expected_file.close
+    expected_file.unlink
+  end
 end
 

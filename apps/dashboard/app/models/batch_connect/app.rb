@@ -311,9 +311,9 @@ module BatchConnect
       end
 
       # Hash describing the full form object
-      def form_config(binding: nil)
+      def form_config(binding: get_binding)
         return @form_config if @form_config
-
+        
         raise AppNotFound, "This app does not exist under the directory '#{root}'" unless root.directory?
         file = form_file(root: root)
         raise AppNotFound, "This app does not supply a form file under the directory '#{root}'" unless file
@@ -331,9 +331,9 @@ module BatchConnect
         @validation_reason = "#{e.class.name}: #{e.message}"
         return {}
       end
-
+      
       # Hash describing the full submission properties
-      def submit_config(binding: nil)
+      def submit_config(binding: get_binding)
         return @submit_config if @submit_config
 
         file = submit_file(root: root)
@@ -348,6 +348,10 @@ module BatchConnect
       # The OOD app object describing this app
       def ood_app
         @ood_app ||= OodApp.new(router)
+      end
+
+      def get_binding
+        binding
       end
 
       # add a widget for choosing the cluster if one doesn't already exist

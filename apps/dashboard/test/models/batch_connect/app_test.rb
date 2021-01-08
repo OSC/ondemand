@@ -230,12 +230,41 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     }
   end
   
-  test "should recognize ERBRenderHelper#groups" do
-    assert_nothing_raised { ERB.new("<%= groups.size %>") }
+  test "should recognize ERBRenderHelper methods in submit configs" do
+    Dir.mktmpdir do |dir|
+      r = PathRouter.new(dir)
+      r.path.join("submit.yml.erb").write(
+        "---\n 
+        user_in_group: <%= user_in_group? OodSupport::Group.new %>\n\n
+        groupsize: <%= groups.size %>") 
+      
+      app = BatchConnect::App.new(router: r)
+      groups = OodSupport::User.new.groups.map(&:name)
+      user_in_group = groups.include?(OodSupport::Group.new.to_s)
+
+      assert_equal app.send(
+        :submit_config).fetch(:groupsize), groups.size
+      assert_equal app.send(
+        :submit_config).fetch(:user_in_group), user_in_group
+    end
   end
 
-  test "should recognize ERBRenderHelper#user_in_group?" do
-    assert_nothing_raised { 
-      ERB.new("<%= user_in_group?(OodSupport::Group.new)%>") }
+  test "should recognize ERBRenderHelper methods in form configs" do
+    Dir.mktmpdir do |dir|
+      r = PathRouter.new(dir)
+      r.path.join("form.yml.erb").write(
+        "---\n 
+        user_in_group: <%= user_in_group? OodSupport::Group.new %>\n\n
+        groupsize: <%= groups.size %>")
+
+      app = BatchConnect::App.new(router: r)
+      groups = OodSupport::User.new.groups.map(&:name)
+      user_in_group = groups.include?(OodSupport::Group.new.to_s)
+
+      assert_equal app.send(
+        :form_config).fetch(:groupsize), groups.size
+      assert_equal app.send(
+        :form_config).fetch(:user_in_group), user_in_group
+    end
   end
 end

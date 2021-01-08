@@ -43,7 +43,9 @@ class Announcement
                 when ".md"
                   { msg: @path.expand_path.read }
                 when ".yml"
-                  YAML.safe_load(ERB.new(@path.expand_path.read, nil, "-").result)
+                  YAML.safe_load(
+                    ERB.new(
+                      @path.expand_path.read, nil, "-").result(binding))
                 else
                   {}
                 end
@@ -52,6 +54,6 @@ class Announcement
       @opts = {}
     rescue => e
       Rails.logger.warn "Error parsing announcement file '#{@path}': #{e.message}"
-      @opts = {}
+      @opts = {} 
     end
 end

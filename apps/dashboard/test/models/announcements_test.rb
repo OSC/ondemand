@@ -140,13 +140,4 @@ class AnnouncementsTest < ActiveSupport::TestCase
     assert_equal 12, announcements.count
     assert_equal 4, announcements.select(&:valid?).count
   end
-
-  test "should recognize ERBRenderHelper#groups" do
-    assert_nothing_raised { ERB.new("<%= groups.size %>") }
-  end
-
-  test "should recognize ERBRenderHelper#user_in_group?" do
-    assert_nothing_raised { 
-      ERB.new("<%= user_in_group?(OodSupport::Group.new)%>") }
-  end
 end

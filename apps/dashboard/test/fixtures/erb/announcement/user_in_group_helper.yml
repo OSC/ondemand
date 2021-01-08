@@ -1,0 +1,2 @@
+<% group = OodSupport::Group.new %>
+msg: <%= "#{group} is in your groups" if user_in_group? group %>

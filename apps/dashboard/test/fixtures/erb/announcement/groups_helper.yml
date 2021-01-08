@@ -1,0 +1,1 @@
+msg: "You're in <%= groups.size %> groups"
