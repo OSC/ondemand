@@ -19,7 +19,7 @@
 
 <body>
   <div id="terminal">
-    
+
     <nav class="navbar navbar-inverse navbar-static-top navbar-expand" role="navigation">
       <div class="container-fluid" >
       <ul class="navbar-nav left-padding-none">
@@ -65,18 +65,53 @@
 </body>
 
 <script>
+  var combinedArr = [...darkThemes, ...brightThemes];
+  var storage = window.localStorage;
   var oodShell,
   dirElement = document.getElementById("directory"),
   schemeSelect = document.getElementById("colors");
   setupHterm = function () {
     // Global variables that define the terminal
       var terminalContainer = document.getElementById('terminal'),
-      webSocketUrl      = urlWithToken(),
-      terminalPrefs     = {
-        'use-default-window-copy': true,
-        'ctrl-v-paste': true,
-        'ctrl-c-copy': true
-      };
+      webSocketUrl      = urlWithToken();
+      terminalPrefs     = {};
+      if (storage.getItem('scheme') !== null) {
+        var schemeTheme = storage.getItem('scheme');
+        var schemeObject;
+        combinedArr.forEach(function(ele) {
+          if (storage.getItem('scheme') === "default") {
+            schemeObject = {
+              'use-default-window-copy': true,
+              'ctrl-v-paste': true,
+              'ctrl-c-copy': true,
+              'cursor-blink': true,
+              'background-color': '#101010',
+              'foreground-color': '#F0F0F0',
+              'color-palette-overrides': null,
+              'cursor-color': '#FF0000' + '50',
+            };
+
+          } else if (storage.getItem('scheme') === ele.name) {
+              schemeObject = {
+              'use-default-window-copy': true,
+              'ctrl-v-paste': true,
+              'ctrl-c-copy': true,
+              'cursor-blink': true,
+              'background-color': ele.scheme.background,
+              'foreground-color': ele.scheme.text,
+              'color-palette-overrides': ele.scheme.colorPaletteOverrides,
+              'cursor-color': ele.scheme.cursor + '50',
+            };
+          }
+        })
+        terminalPrefs     =  schemeObject;
+      } else {
+        terminalPrefs     = {
+          'use-default-window-copy': true,
+          'ctrl-v-paste': true,
+          'ctrl-c-copy': true
+        };
+      }
 
     // hterm default preferences are defined here. Switch to the tag that we're using.
     // https://chromium.googlesource.com/apps/libapps/+/master/hterm/js/hterm_preference_manager.js
@@ -92,7 +127,7 @@
   var urlWithToken = function(){
     var base = document.URL.replace(/^http/, 'ws').replace(/#.*$/, '');
     var separator = '?';
-    
+
     if(base.includes('?')){
       separator = '&';
     }
@@ -110,8 +145,10 @@ dirElement.textContent += directory;
 
 
 schemeSelect.addEventListener("change", function(ev) {
-  combinedArr = [...darkThemes, ...brightThemes];
+
   var choice  = ev.target.value;
+  storage.setItem('scheme', choice);
+
 
   combinedArr.forEach(function(ele) {
     var schemeObject;
@@ -126,7 +163,7 @@ schemeSelect.addEventListener("change", function(ev) {
         'color-palette-overrides': null,
         'cursor-color': '#FF0000' + '50',
       };
-        
+
     } else if (choice === ele.name) {
         schemeObject = {
         'use-default-window-copy': true,
