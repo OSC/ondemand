@@ -33,7 +33,7 @@ class BatchConnect::SessionContextsControllerTest < ActionController::TestCase
 
       get :new, params: { token: 'dev/test' }
       assert_response :success
-      assert_select "div .alert", 1 # OnDemand requires a newer version of the browser
+      assert_select "main > div.alert", 1 # OnDemand requires a newer version of the browser
       assert_select "input[type=hidden][id='batch_connect_session_context_cluster'][value=?]", "new"
     end
   end
@@ -68,7 +68,7 @@ class BatchConnect::SessionContextsControllerTest < ActionController::TestCase
 
       get :new, params: { token: 'dev/test' }
       assert_response :success
-      assert_select "div .alert", 1 # OnDemand requires a newer version of the browser
+      assert_select "main > div.alert", 1 # OnDemand requires a newer version of the browser
       assert_select "input[type=hidden][id='batch_connect_session_context_cluster'][value=?]", "new"
     end
   end
@@ -113,7 +113,7 @@ class BatchConnect::SessionContextsControllerTest < ActionController::TestCase
       get :new, params: { token: 'dev/test' }
       assert_response :success
 
-      assert_select "div .alert", 1 # OnDemand requires a newer version of the browser
+      assert_select "main > div.alert", 1 # OnDemand requires a newer version of the browser
       assert_select "select#batch_connect_session_context_cluster option[selected][value=?]", "second"
     end
   end
