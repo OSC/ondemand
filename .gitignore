@@ -12,6 +12,8 @@
 /*/.bundle
 !/apps/*/public/packs/.keep
 !/apps/*/public/packs-test/.keep
+/apps/*/public/packs/
+/apps/*/public/packs-test/
 
 # files used for deployment should not be versioned
 /apps/*/.htaccess
