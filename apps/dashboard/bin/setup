@@ -47,8 +47,8 @@ chdir APP_ROOT do
   sh "bin/bundle check 1>/dev/null 2>&1 || bin/bundle install --jobs 4 --retry 2"
 
   puts "\n== Installing Yarn =="
-  sh "yarn config set cache-folder #{CACHE}"
-  sh "yarn install --production"
+  sh "bundle exec yarn config set cache-folder #{CACHE}"
+  sh "bundle exec yarn install --production"
 
   if APP.production?
     puts "\n== Compiling assets =="
