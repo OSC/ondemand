@@ -48,7 +48,7 @@ end
 gem 'thor', '0.19.1'
 
 # Extra third-party gems
-gem 'dotenv-rails', '~> 2.1'
+gem 'dotenv', '~> 2.2.0'
 gem 'redcarpet', '~> 3.3'
 gem 'browser', '~> 2.2'
 gem 'addressable', '~> 2.4'
