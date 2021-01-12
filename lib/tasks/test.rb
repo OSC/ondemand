@@ -18,7 +18,7 @@ namespace :test do
   task :setup do
     testing.each_pair do |app, _task|
       chdir PROJ_DIR.join(app.to_s) do
-        sh "rake assets:precompile" if app.to_s == "dashboard"
+        sh "rake assets:precompile" if app.to_s == "apps/dashboard"
         sh "bundle install --with development test"
       end
     end
