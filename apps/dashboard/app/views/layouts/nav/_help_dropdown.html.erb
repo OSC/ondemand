@@ -1,15 +1,17 @@
-<li class="nav-item dropdown" title="<%= t('dashboard.nav_help_title') %>" >
-  <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <i class="fas fa-question-circle" aria-hidden="true"></i><span class="d-sm-none d-md-none d-lg-inline"> <%= t('dashboard.nav_help_title') %></span><span class="caret"></span>
-  </a>
-  <div class="dropdown-menu">
-    <%= nav_link(t('dashboard.nav_help_support'), "question-circle", support_url, target: "_blank") %>
-    <%= nav_link(t('dashboard.nav_help_docs'), "info-circle", docs_url, target: "_blank") %>
-    <%= nav_link(t('dashboard.nav_help_change_password'), "key", passwd_url, target: "_blank") %>
-    <%= nav_link(t('dashboard.nav_help_two_factor'), "mobile-alt", configure_2fa_url, target: "_blank") %>
-    <%- if help_custom_url -%>
-      <%= nav_link(t('dashboard.nav_help_custom'), "question-circle", help_custom_url, target: "_blank" ) %>
-    <%- end -%>
-    <%= nav_link(t('dashboard.nav_restart_server'), "sync", restart_url) %>
-  </div>
-</li>
+<ul class="navbar-nav">
+  <li class="nav-item dropdown" title="<%= t('dashboard.nav_help_title') %>" >
+    <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <i class="fas fa-question-circle" aria-hidden="true"></i><span class="d-sm-none d-md-none d-lg-inline"> <%= t('dashboard.nav_help_title') %></span><span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+      <li><%= nav_link(t('dashboard.nav_help_support'), "question-circle", support_url, target: "_blank") %></li>
+      <li><%= nav_link(t('dashboard.nav_help_docs'), "info-circle", docs_url, target: "_blank") %></li>
+      <li><%= nav_link(t('dashboard.nav_help_change_password'), "key", passwd_url, target: "_blank") %></li>
+      <li><%= nav_link(t('dashboard.nav_help_two_factor'), "mobile-alt", configure_2fa_url, target: "_blank") %></li>
+      <%- if help_custom_url -%>
+        <li><%= nav_link(t('dashboard.nav_help_custom'), "question-circle", help_custom_url, target: "_blank" ) %></li>
+      <%- end -%>
+      <li><%= nav_link(t('dashboard.nav_restart_server'), "sync", restart_url) %></li>
+    </ul>
+  </li>
+</ul>

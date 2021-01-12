@@ -7,18 +7,22 @@ class DashboardControllerTest < ActionController::TestCase
   end
 
   def dropdown_list(title)
-    css_select("li.dropdown[title='#{title}'] ul")
+    css_select("#navbar > ul.navbar-nav > li.dropdown[title='#{title}'] > ul")
   end
   
   def dropdown_link(order)
-    ".navbar-collapse > .nav li.dropdown:nth-of-type(#{order}) a"
+    ".dropdown-menu > li:nth-child(#{order}) > a"
+  end
+
+  def navbar_link(order)
+    "li:nth-child(#{order}) > a.nav-link"
   end
 
   # given a dropdown list, return the list items as an array of strings
   # with symbols for header or divider
   def dropdown_list_items(list)
     css_select(list, "li").map do |item|
-      if item['class'] && item['class'].include?("divider")
+      if item['class'] && item['class'].include?("dropdown-divider")
         :divider
       elsif item['class'] && item['class'].include?("dropdown-header")
         { :header => item.text.strip }
@@ -162,7 +166,7 @@ class DashboardControllerTest < ActionController::TestCase
     
     get :index
     assert_response :success
-    assert_select ".navbar-collapse > .nav li.dropdown[title]", 0
+    assert_select "#navbar > ul > li.dropdown > a", 0
   end
 
   test "should exclude gateway apps if NavConfig.categories is set to default and whitelist is enabled" do
@@ -176,20 +180,35 @@ class DashboardControllerTest < ActionController::TestCase
     assert_select ".navbar-collapse > .nav li.dropdown[title='Gateway Apps']", 0
   end
 
+  # Processing by DashboardController#index as HTML
+  # Rendering dashboard/index.html.erb within layouts/application
+  # [Webpacker] Everything's up-to-date. Nothing to do
+  #   Rendered shared/_welcome.html.erb (3.7ms)
+  #   Rendered dashboard/index.html.erb within layouts/application (3.9ms)
+  # [Webpacker] Everything's up-to-date. Nothing to do
+  #   Rendered layouts/nav/_styles.html.erb (0.0ms)
+  #   Rendered collection of layouts/nav/_group.html.erb [5 times] (12.5ms)
+  #   Rendered layouts/nav/_sessions.html.erb (0.2ms)
+  #   Rendered layouts/nav/_link.html.erb (0.1ms)
+  #   Rendered layouts/nav/_help_dropdown.html.erb (0.7ms)
+  #   Rendered layouts/_browser_warning.html.erb (0.3ms)
+  # [Webpacker] Everything's up-to-date. Nothing to do
+  #   Rendered layouts/_footer.html.erb (2.6ms)
+  # Completed 200 OK in 39ms (Views: 31.9ms)
   test "uses NavConfig.categories as sort order if whitelist is false" do
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
     NavConfig.stubs(:categories_whitelist?).returns(false)
     NavConfig.stubs(:categories).returns(["Files", "Jobs", "Clusters", "Interactive Apps"])
-    
+
     get :index
     assert_response :success
-    assert_select ".navbar-collapse > .nav li.dropdown[title]", 5
-    assert_select  dropdown_link(1), text: "Files"
-    assert_select  dropdown_link(2), text: "Jobs"
-    assert_select  dropdown_link(3), text: "Clusters"
-    assert_select  dropdown_link(4), text: "Interactive Apps"
-    assert_select  dropdown_link(5), text: "Gateway Apps"
+    assert_select "#navbar > ul.navbar-nav > li.dropdown[title]", 5
+    assert_select navbar_link(1), text: "Files"
+    assert_select navbar_link(2), text: "Jobs"
+    assert_select navbar_link(3), text: "Clusters"
+    assert_select navbar_link(4), text: "Interactive Apps"
+    assert_select navbar_link(5), text: "Gateway Apps"
   end
 
   test "verify default values for NavConfig" do
@@ -205,12 +224,12 @@ class DashboardControllerTest < ActionController::TestCase
 
     get :index
     assert_response :success
-    assert_select ".navbar-collapse > .nav li.dropdown[title]", 5
-    assert_select dropdown_link(1), text: "Clusters"
-    assert_select dropdown_link(2), text: "Files"
-    assert_select dropdown_link(3), text: "Gateway Apps"
-    assert_select dropdown_link(4), text: "Interactive Apps"
-    assert_select dropdown_link(5), text: "Jobs"
+    assert_select "#navbar > ul.navbar-nav > li.dropdown[title] > ul", 5
+    assert_select navbar_link(1), text: "Clusters"
+    assert_select navbar_link(2), text: "Files"
+    assert_select navbar_link(3), text: "Gateway Apps"
+    assert_select navbar_link(4), text: "Interactive Apps"
+    assert_select navbar_link(5), text: "Jobs"
   end
 
   test "apps with no category should not appear in menu" do

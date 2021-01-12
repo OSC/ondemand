@@ -1,29 +1,34 @@
 <li class="nav-item dropdown" title="<%= group.title %>" >
   <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <%= group.title %>
+    <span class="d-sm-none d-md-none d-lg-inline">
+      <%= group.title %>
+    </span>
     <span class="caret"></span>
   </a>
-  <div class="dropdown-menu">
+  <ul class="dropdown-menu" id="group-dropdown">
     <% OodAppGroup.groups_for(apps: group.apps, group_by: :subcategory).each_with_index do |g, index| %>
-      <%= content_tag(:div, nil, class: ["dropdown-divider"], role: "separator") if index > 0 %>
-      <%= content_tag(:h6, g.title, class: ["dropdown-header"]) unless g.title.empty? %>
+      <%= content_tag(:li, nil, class: ["dropdown-divider"], role: "separator") if index > 0 %>
+      <%= content_tag(:li, g.title, class: ["dropdown-header"]) unless g.title.empty? %>
       <% g.apps.each do |app| %>
         <% app.links.each do |link| %>
-            <%=
-              link_to(
-                link.url.to_s,
-                title: link.title,
-                class: "dropdown-item",
-                target: link.new_tab? ? "_blank" : nil
-              ) do
-            %>
-            <%= icon_tag(link.icon_uri) %> <%= link.title %>
+        <li>
+          <%=
+            link_to(
+              link.url.to_s,
+              title: link.title,
+              class: "dropdown-item",
+              target: link.new_tab? ? "_blank" : nil
+            ) do
+          %>
+            <%= icon_tag(link.icon_uri) %>
+            <%= link.title %>
             <% if link.subtitle.present? %>
               <%= content_tag(:small, link.subtitle, style: "text-indent: 20px", class: 'visible-xs-block visible-sm-inline visible-md-inline visible-lg-inline') %>
             <% end %>
           <% end %>
+        </li>
         <% end %>
       <% end %>
     <% end %>
-  </div>
+  </ul>
 </li>

@@ -20,7 +20,7 @@
 <body>
   <header <%= 'data-turbolinks-permanent' if Configuration.turbolinks_enabled? %>>
     <!-- <nav class="navbar navbar-<%= ENV['OOD_NAVBAR_TYPE'].present? ? ENV['OOD_NAVBAR_TYPE'] : 'inverse' %> navbar-static-top"> -->
-    <nav class="navbar navbar-expand-lg navbar-dark ondemand-blue" style="background-color: rgba(96, 165, 250);">
+    <nav class="navbar navbar-expand-lg navbar-dark ondemand-blue" style="background-color: rgba(96, 165, 250);" role="navigation">
       <div class="container-fluid">
         <a class="navbar-brand" href="<%= root_path %>"><%= OodAppkit.dashboard.title.html_safe %></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,22 +32,22 @@
             <%= render partial: 'layouts/nav/sessions', nav_groups: @nav_groups if Configuration.app_development_enabled? || @nav_groups.any?(&:has_batch_connect_apps?) %>
             <%= render partial: 'layouts/nav/all_apps' if Configuration.show_all_apps_link? %>
           </ul>
+
           <ul class="navbar-nav">
             <%= render partial: 'layouts/nav/develop_dropdown' if Configuration.app_development_enabled? %>
             <%= render partial: "layouts/nav/help_dropdown" %>
-            <li class="nav-item" data-container="body" data-toggle="popover" data-content="<%= t('dashboard.nav_user', username: @user.name) %>" data-placement="bottom">
-              <a class="nav-link disabled">
-                <i class="fas fa-user" aria-hidden="true" title="<%= t('dashboard.nav_user', username: @user.name) %>" aria-hidden="true"></i><span class="d-sm-none d-md-none d-lg-inline"> <%= t('dashboard.nav_user', username: @user.name) %></span>
-              </a>
+
+            <li class="nav-item navbar-text" data-container="body" data-toggle="popover" data-content="<%= t('dashboard.nav_user', username: @user.name) %>" data-placement="bottom">
+              <i class="fas fa-user" aria-hidden="true" title="<%= t('dashboard.nav_user', username: @user.name) %>" aria-hidden="true"></i><span class="d-sm-none d-md-none d-lg-inline"> <%= t('dashboard.nav_user', username: @user.name) %></span>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/logout">
-                <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
-                <span class="d-sm-none d-md-none d-lg-inline">
-                  <%= t('dashboard.nav_logout') %>
-                </span>
-              </a>
-            </li>
+
+            <a class="nav-link" href="/logout">
+              <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+              <span class="d-sm-none d-md-none d-lg-inline">
+                <%= t('dashboard.nav_logout') %>
+              </span>
+            </a>
+
           </ul>
         </div>
       </div>

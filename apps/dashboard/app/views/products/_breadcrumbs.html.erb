@@ -4,7 +4,7 @@
       <%= link_to "Home", root_path %>
     </li>
 
-    <% if current_page?(action: "index") %>
+    <% if current_page?(products_path) %>
     <li class="breadcrumb-item active" aria-current="page">
       <%= products_title(@type) %>
     </li>

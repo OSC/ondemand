@@ -1,3 +1,4 @@
 <%= link_to url, target: local_assigns.fetch(:target, nil), class: "dropdown-item #{ local_assigns[:role] unless local_assigns[:role].blank? }" do %>
-  <i class="fas fa-<%= local_assigns.fetch(:faicon, "cogs") %> fa-fw" aria-hidden="true"></i> <%= title %>
+  <i class="fas fa-<%= local_assigns.fetch(:faicon, "cogs") %> fa-fw" aria-hidden="true"></i>
+  <span><%= title %></span>
 <% end %>
