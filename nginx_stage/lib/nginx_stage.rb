@@ -128,6 +128,7 @@ module NginxStage
   def self.nginx_env(user:)
     {
       "USER" => user,
+      "LOGNAME" => user,
       "ONDEMAND_VERSION" => ondemand_version,
       "ONDEMAND_PORTAL" => portal,
       "ONDEMAND_TITLE" => title,
