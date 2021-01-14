@@ -34,11 +34,6 @@ require('datatables.net-bs/js/dataTables.bootstrap')
 import 'bootstrap/dist/css/bootstrap'
 import 'bootstrap/dist/js/bootstrap'
 
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('Loaded!')
-  $('[data-toggle="popover"]').popover()
-})
-
 // Legacy JS imports
 import '../legacy/application'
 import '../legacy/products.coffee'
