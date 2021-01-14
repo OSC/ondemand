@@ -1,13 +1,11 @@
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://coffeescript.org/
+import { FA5iconinfo } from '../legacy/icon-picker'
+
+window.FA5iconinfo = FA5iconinfo
 
 jQuery ->
-  # Create data table
   $('#productTable').DataTable()
 
-  # Add CLI modal feature
-  $(document).on {
+  $(document).on { 
     'click': ->
       id = '#productCliModal'
       title = $(@).data('title')
