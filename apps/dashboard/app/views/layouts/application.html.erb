@@ -7,7 +7,7 @@
 
   <%= stylesheet_pack_tag 'application', media: 'all' %>
   <%= javascript_pack_tag 'application' %>
-  <%= javascript_link_tag 'turbolinks' if Configuration.turbolinks_enabled? %>
+  <%= javascript_pack_tag 'turbolinks' if Configuration.turbolinks_enabled? %>
 
   <%= yield :head %>
 

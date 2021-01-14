@@ -3,6 +3,7 @@
     "@fortawesome/fontawesome-free": "^5.15.2",
     "@fortawesome/fontawesome-svg-core": "^1.2.34",
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
+    "@hotwired/turbo": "^7.0.0-beta.3",
     "@rails/ujs": "^6.1.1",
     "@rails/webpacker": "5.2.1",
     "bootstrap": "3.4.1",
