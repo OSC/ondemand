@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 // Legacy JS imports
+import '../legacy/application'
 import '../legacy/products.coffee'
 import '../legacy/dashboard.coffee'
 import '../legacy/batch_connect/sessions.coffee'
-
