@@ -1,0 +1,20 @@
+{
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.2",
+    "@fortawesome/fontawesome-svg-core": "^1.2.34",
+    "@fortawesome/free-solid-svg-icons": "^5.15.2",
+    "@rails/ujs": "^6.1.1",
+    "@rails/webpacker": "5.2.1",
+    "bootstrap": "3.4.1",
+    "coffee-loader": "^1.0.1",
+    "coffeescript": "^1.12.0",
+    "coffescript": "^0.0.1-security",
+    "datatables": "^1.10.18",
+    "datatables.net-bs": "^1.10.23",
+    "jquery": "^3.5.1",
+    "loader-utils": "^2.0.0"
+  },
+  "devDependencies": {
+    "webpack-dev-server": "^3.11.1"
+  }
+}

@@ -5,11 +5,14 @@
 #   git config --global core.excludesfile '~/.gitignore_global'
 
 # Ignore bundler config.
-/vendor/bundle
+/vendor/bundle/*
+/.vendor/bundle
 /.bundle
 /apps/*/.bundle
 /apps/*/vendor/bundle/
 /*/.bundle
+/apps/*/public/packs/
+/apps/*/public/packs-test/
 
 # files used for deployment should not be versioned
 /apps/*/.htaccess
