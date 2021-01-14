@@ -36,6 +36,10 @@ import 'bootstrap/dist/js/bootstrap'
 
 // Legacy JS imports
 import '../legacy/application'
+
+import '../legacy/icon-picker'
+import '../legacy/icon-info'
+
 import '../legacy/products.coffee'
 import '../legacy/dashboard.coffee'
 import '../legacy/batch_connect/sessions.coffee'
