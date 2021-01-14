@@ -1,8 +1,3 @@
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://coffeescript.org/
-#
-
 $ ->
   $("a[target=_blank]").on "click", (event) ->
     # open url using javascript, instead of following directly
@@ -16,4 +11,3 @@ $ ->
 
       # replace message in alert and add to main div of layout
       $("div[role=main]").prepend(html.split("ALERT_MSG").join(msg))
-
