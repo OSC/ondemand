@@ -1,0 +1,74 @@
+// Place all the styles related to the App controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+tr.app {
+  td.icon {
+    width: 100px;
+  }
+
+  td.title {
+    width: 200px;
+  }
+}
+
+.apps-section-header {
+  font-size: 24px;
+
+  color: #fff;
+  font-weight: 300;
+
+  padding-left: 105px;
+  padding-top: 5px;
+  padding-bottom: 10px;
+
+  // awesim grey
+  background-color: rgb(128, 130, 133);
+
+}
+
+.app-icon {
+  width: 100px;
+  height: 100px;
+  font-size: 100px;
+}
+
+.navbar .app-icon {
+  width: 14px;
+  height: 14px;
+  font-size: 14px;
+}
+
+// awesim colors - FIXME: aweful lot for a list of colors to cycle through
+// would be better to gave a default grey and then cycle based on a list in an
+// initializer
+.apps-section-header-blue {
+  @extend .apps-section-header;
+  background-color: rgb(0, 95, 133);
+}
+
+.apps-section-header-red {
+  @extend .apps-section-header;
+  background-color: rgb(196, 32, 50);
+}
+
+.apps-section-header-teal {
+  @extend .apps-section-header;
+  background-color: rgb(28, 115, 127);
+}
+
+.apps-section-header-purple {
+  @extend .apps-section-header;
+  background-color: rgb(86, 44, 135);
+}
+
+
+a.thumbnail.app {
+  color: black;
+  text-decoration: none;
+
+  &:hover {
+    color: rgb(0, 95, 133);
+    text-decoration: none;
+  }
+}
