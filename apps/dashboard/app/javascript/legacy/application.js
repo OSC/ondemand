@@ -1,3 +1,4 @@
+import { memoize } from 'lodash'
 
 //FIXME: move to coffescript
 $(function(){
@@ -107,7 +108,7 @@ function promiseLoginToXDMoD(xdmodUrl){
 }
 
 var promiseLoggedIntoXDMoD = (function(){
-  return _.memoize(function(xdmodUrl){
+  return memoize(function(xdmodUrl){
     return fetch(xdmodUrl + '/rest/v1/users/current', { credentials: 'include' })
       .then((response) => {
         if(response.ok){

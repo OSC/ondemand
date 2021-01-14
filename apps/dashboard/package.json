@@ -12,7 +12,8 @@
     "datatables": "^1.10.18",
     "datatables.net-bs": "^1.10.23",
     "jquery": "^3.5.1",
-    "loader-utils": "^2.0.0"
+    "loader-utils": "^2.0.0",
+    "lodash": "^4.17.20"
   },
   "devDependencies": {
     "webpack-dev-server": "^3.11.1"
