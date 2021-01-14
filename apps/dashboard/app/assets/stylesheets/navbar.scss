@@ -10,13 +10,15 @@
 
 // make navbar the grey default color
 // changed from the red color we use for branding
-.navbar-inverse-ood-grey-color{
+.navbar-inverse-ood-grey-color {
   .navbar-inverse {
     background-color: #53565a;
     border-color: #3b3d3f;
   }
 
-  .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {
+  .navbar-inverse .navbar-nav>.active>a,
+  .navbar-inverse .navbar-nav>.active>a:hover,
+  .navbar-inverse .navbar-nav>.active>a:focus {
     background-color: #3b3d3f;
   }
 
@@ -25,25 +27,31 @@
     border-color: #424447;
   }
 
-  .navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus {
+  .navbar-inverse .navbar-nav>.open>a,
+  .navbar-inverse .navbar-nav>.open>a:hover,
+  .navbar-inverse .navbar-nav>.open>a:focus {
     background-color: #3b3d3f;
   }
 
   @media (max-width: 767px) {
-    .navbar-inverse .navbar-nav .open .dropdown-menu > .dropdown-header {
+    .navbar-inverse .navbar-nav .open .dropdown-menu>.dropdown-header {
       border-color: #3b3d3f;
     }
+
     .navbar-inverse .navbar-nav .open .dropdown-menu .divider {
       background-color: #3b3d3f;
     }
-    .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a, .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:hover, .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:focus {
+
+    .navbar-inverse .navbar-nav .open .dropdown-menu>.active>a,
+    .navbar-inverse .navbar-nav .open .dropdown-menu>.active>a:hover,
+    .navbar-inverse .navbar-nav .open .dropdown-menu>.active>a:focus {
       background-color: #3b3d3f;
     }
   }
 }
 
 // make navbar 20px high
-.navbar-inverse-ood-size-sm{
+.navbar-inverse-ood-size-sm {
   .navbar {
     min-height: 20px;
   }
@@ -66,7 +74,7 @@
 
 
   @media (min-width: 768px) {
-    .navbar-nav > li > a {
+    .navbar-nav>li>a {
       padding-top: 0px;
       padding-bottom: 0px;
     }
@@ -81,34 +89,41 @@
     margin-top: -7px;
     margin-bottom: -7px;
   }
-  .navbar-btn.btn-sm, .btn-group-sm > .navbar-btn.btn {
+
+  .navbar-btn.btn-sm,
+  .btn-group-sm>.navbar-btn.btn {
     margin-top: -5px;
     margin-bottom: -5px;
   }
-  .navbar-btn.btn-xs, .btn-group-xs > .navbar-btn.btn {
+
+  .navbar-btn.btn-xs,
+  .btn-group-xs>.navbar-btn.btn {
     margin-top: -1px;
     margin-bottom: -1px;
   }
+
   .navbar-text {
     margin-top: 0px;
     margin-bottom: 0px;
   }
 
-  .ood-app.navbar ul.navbar-breadcrumbs > li > a, .ood-app.navbar ul.navbar-breadcrumbs > li + li:before {
+  .ood-app.navbar ul.navbar-breadcrumbs>li>a,
+  .ood-app.navbar ul.navbar-breadcrumbs>li+li:before {
     padding-top: 0px;
     padding-bottom: 0px;
     height: 20px;
   }
 
-  .ood-app.navbar ul.navbar-breadcrumbs > li + li:before {
+  .ood-app.navbar ul.navbar-breadcrumbs>li+li:before {
     padding-top: 0px;
     padding-bottom: 0px;
   }
 
-  .ood-app.navbar ul.navbar-breadcrumbs > li + li:before {
+  .ood-app.navbar ul.navbar-breadcrumbs>li+li:before {
     padding-top: 0px;
     padding-bottom: 0px;
   }
+
   body {
     padding-top: 30px;
   }
