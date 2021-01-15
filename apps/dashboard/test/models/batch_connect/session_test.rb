@@ -259,14 +259,61 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
     assert_equal false, save
     assert_equal I18n.t('dashboard.batch_connect_missing_cluster'), session.errors[:save].first
   end
-  
-  test "should recognize ERBRenderHelper#groups" do
-    assert_nothing_raised { ERB.new("<%= groups.size %>") }
+
+  test "sessions TemplateBinding should recognize ERBRenderHelper methods" do
+    Dir.mktmpdir do |dir| 
+      r = PathRouter.new(dir)
+      
+      r.path.join("file1.erb").write("<%= groups %>")
+      r.path.join("file2.erb").write(
+        "<%= user_in_group? OodSupport::Group.new %>")
+
+      session = BatchConnect::Session.new
+
+      assert_nothing_raised { session.send(
+        :render_erb_files,
+        r.path.children,
+        binding: BatchConnect::Session::TemplateBinding.new(
+          session).get_binding) }
+    end
   end
 
-  test "should recognize ERBRenderHelper#user_in_group?" do
-    assert_nothing_raised { 
-      ERB.new("<%= user_in_group?(OodSupport::Group.new)%>") }
+  test "session should recognize ERBRenderHelper methods for info.md.erb" do
+    Dir.mktmpdir do |dir|
+      r = PathRouter.new(dir)
+
+      r.path.join("info.md.erb").write("
+        <%= groups %>\n
+        <%= user_in_group? OodSupport::Group.new %>")
+
+
+      session = BatchConnect::Session.new
+      app     = BatchConnect::App.new(router: r)
+      
+
+      session.stubs(:app).returns(app)
+      parsed_file = session.render_info_view
+
+      assert parsed_file != nil
+    end
+  end
+
+  test "session should recognize ERBRenderHelper methods for info.html.erb" do
+    Dir.mktmpdir do |dir|
+      r = PathRouter.new(dir)
+
+      r.path.join("info.html.erb").write("
+        <%= groups %>\n
+        <%= user_in_group? OodSupport::Group.new %>")
+
+      session = BatchConnect::Session.new
+      app     = BatchConnect::App.new(router: r)
+
+      session.stubs(:app).returns(app)
+      parsed_file = session.render_info_view
+
+      assert parsed_file != nil
+    end
   end
 
 end

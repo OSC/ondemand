@@ -1,11 +1,16 @@
+require "erb/erb_render_helper.rb"
+
 module BatchConnect
   class Session
     include ActiveModel::Model
     include ActiveModel::Serializers::JSON
+    include ERBRenderHelper
 
     # This class describes the object that is bound to the ERB template file
     # when it is rendered
     TemplateBinding = Struct.new(:session, :context) do
+      include ERBRenderHelper
+
       # Get the binding for this object
       # @return [Binding] this object's binding
       def get_binding

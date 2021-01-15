@@ -54,6 +54,6 @@ class Announcement
       @opts = {}
     rescue => e
       Rails.logger.warn "Error parsing announcement file '#{@path}': #{e.message}"
-      @opts = {} 
+      @opts = {}
     end
 end

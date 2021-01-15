@@ -152,7 +152,6 @@ module BatchConnect
         (self.clusters.size == 1 && self.clusters[0] != cached_cluster)
     end
 
-
     # The clusters that the batch connect app can use. It's a combination
     # of what the app is configured to use and what the user is allowed
     # to use.
@@ -313,7 +312,7 @@ module BatchConnect
       # Hash describing the full form object
       def form_config(binding: get_binding)
         return @form_config if @form_config
-        
+
         raise AppNotFound, "This app does not exist under the directory '#{root}'" unless root.directory?
         file = form_file(root: root)
         raise AppNotFound, "This app does not supply a form file under the directory '#{root}'" unless file
@@ -331,7 +330,7 @@ module BatchConnect
         @validation_reason = "#{e.class.name}: #{e.message}"
         return {}
       end
-      
+
       # Hash describing the full submission properties
       def submit_config(binding: get_binding)
         return @submit_config if @submit_config
