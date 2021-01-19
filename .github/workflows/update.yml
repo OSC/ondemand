@@ -45,8 +45,8 @@ jobs:
         with:
           token: ${{ secrets.OSCWIAG_ISSUE_TOKEN }}
           commit-message: update dependencies
-          committer: OSC WIAG <oscwiag@osc.edu>
-          author: oscwiag <oscwiag@osc.edu>
+          committer: OSC WIAG <oscwiag@gmail.com>
+          author: oscwiag <oscwiag@gmail.com>
           branch: oscwiag/dependency-updates
           delete-branch: true
           title: 'Update Dependencies'
