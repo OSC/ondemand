@@ -3,7 +3,7 @@ require "motd_formatter/markdown_erb.rb"
 require "motd_formatter/osc.rb"
 require "motd_formatter/plaintext.rb"
 require "motd_formatter/plaintext_erb.rb"
-require "rss.rb"
+require "motd_formatter/rss.rb"
 
 module MotdFormatter
   # aliasing motd classes for backwards compatibility 
