@@ -1,1 +1,14 @@
-../tmp/node_modules/.bin/yarn
+#!/usr/bin/env ruby
+APP_ROOT = File.expand_path('..', __dir__)
+Dir.chdir(APP_ROOT) do
+  begin
+    # favor tmp/node_modules/yarn/bin/yarnpkg
+    ENV['PATH'] = File.join(File.expand_path("../../",  __FILE__), 'tmp', 'node_modules', 'yarn', 'bin') + ":" + ENV['PATH'].to_s
+
+    exec "yarnpkg", *ARGV
+  rescue Errno::ENOENT
+    $stderr.puts "Yarn executable was not detected in the system."
+    $stderr.puts "Install: npm install --production --prefix tmp yarn"
+    exit 1
+  end
+end

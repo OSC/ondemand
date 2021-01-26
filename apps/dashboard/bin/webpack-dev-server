@@ -3,6 +3,9 @@
 ENV["RAILS_ENV"] ||= ENV["RACK_ENV"] || "development"
 ENV["NODE_ENV"]  ||= "development"
 
+# favor tmp/node_modules/yarn/bin/yarnpkg
+ENV['PATH'] = File.join(File.expand_path("../../",  __FILE__), 'tmp', 'node_modules', 'yarn', 'bin') + ":" + ENV['PATH'].to_s
+
 require "pathname"
 ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../../Gemfile",
   Pathname.new(__FILE__).realpath)
