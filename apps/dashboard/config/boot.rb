@@ -1,3 +1,6 @@
+# favor tmp/node_modules/yarn/bin/yarnpkg
+ENV['PATH'] = File.join(File.expand_path("../../",  __FILE__), 'tmp', 'node_modules', 'yarn', 'bin') + ":" + ENV['PATH'].to_s
+
 # Set up gems listed in the Gemfile.
 ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../Gemfile', __dir__)
 
