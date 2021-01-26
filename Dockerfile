@@ -7,6 +7,10 @@ ARG CONCURRENCY=4
 # setup the ondemand repositories
 RUN dnf -y install https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-6.noarch.rpm
 
+# setup yarn repository
+RUN curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo && \
+    rpm --import https://dl.yarnpkg.com/rpm/pubkey.gpg
+
 # install all the dependencies
 RUN dnf -y update && \
     dnf -y module enable nodejs:12 ruby:2.7 && \
@@ -18,6 +22,7 @@ RUN dnf -y update && \
         gcc-c++ \
         git \
         patch \
+        yarn \
         ondemand-gems \
         ondemand-runtime \
         ondemand-build \
