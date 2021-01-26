@@ -86,7 +86,6 @@ BuildRequires:      selinux-policy, selinux-policy-devel, checkpolicy, policycor
 Requires:           %{name} = %{version}
 Requires:           selinux-policy >= %{selinux_policy_ver}
 Requires(post):     /usr/sbin/semodule, /sbin/restorecon, /usr/sbin/setsebool, /usr/sbin/selinuxenabled, /usr/sbin/semanage
-Requires(post):     policycoreutils-python
 Requires(post):     selinux-policy-targeted
 Requires(postun):   /usr/sbin/semodule, /sbin/restorecon
 
