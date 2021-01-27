@@ -8,7 +8,7 @@ class TransfersController < ApplicationController
   # 2 controllers, 1 model?
   #
   def index
-    @transfers = TransferLocalJob.progress.values
+    @transfers = Transfer.transfers
 
     #FIXME: refactor
     # determine whether or not we need to reload the table view

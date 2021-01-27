@@ -14,7 +14,7 @@ class FilesController < ApplicationController
     respond_to do |format|
       format.html { # show.html.erb
         if @path.directory?
-          @transfers = TransferLocalJob.progress.values
+          @transfers = Transfer.transfers
           @files = Files.new.ls(@path.to_s)
           render :index
         else
@@ -29,7 +29,7 @@ class FilesController < ApplicationController
         #the current API does a GET on the file to get the file contents AND
         #a GET on the directory to get the JSON for the directory
         if @path.directory?
-          @transfers = TransferLocalJob.progress.values
+          @transfers = Transfer.transfers
           @files = Files.new.ls(@path.to_s)
           render :index
         else
@@ -110,8 +110,11 @@ class FilesController < ApplicationController
     # TODO: validate data (no bad copy/move commands) - using file system abstraction ideally
     params = ActionController::Parameters.new(JSON.parse(request.body.read).merge(params.to_h))
 
-    @job = TransferLocalJob.perform_later('cp', params['from'], params['names'], params['to'])
-    @transfers = TransferLocalJob.progress.values
+    transfer = Transfer.new(action: 'cp', from: params['from'], names: params['names'], to: params['to'])
+    transfer.save
+    TransferLocalJob.perform_later(transfer)
+
+    @transfers = Transfer.transfers
 
     respond_to do |format|
       format.json {
@@ -128,13 +131,13 @@ class FilesController < ApplicationController
     # TODO: if device is same for dest as for src, do move synchronously
     params = ActionController::Parameters.new(JSON.parse(request.body.read).merge(params.to_h))
 
-    if mv_sync?(params)
+    transfer = Transfer.new(action: 'mv', from: params['from'], names: params['names'], to: params['to'])
+    if transfer.synchronous?
       # FIXME: we want to do TransferLocalJob.perform_now, and bypass/ignore progress reporting
       # would need to handle the error here too
       # this is where using the ActiveModel approach is preferable
       #
-      TransferLocalJob.perform_now('mv', params['from'], params['names'], params['to'])
-      # FileUtils.mv params['names'].map {|n| File.join(params['from'])}
+      transfer.perform
 
       respond_to do |format|
         format.json {
@@ -145,8 +148,9 @@ class FilesController < ApplicationController
         }
       end
     else
-      @job = TransferLocalJob.perform_later('mv', params['from'], params['names'], params['to'])
-      @transfers = TransferLocalJob.progress.values
+      transfer.save
+      TransferLocalJob.perform_later(transfer)
+      @transfers = Transfer.transfers
 
       respond_to do |format|
         format.json {
@@ -165,8 +169,11 @@ class FilesController < ApplicationController
     # TODO: if device is same for dest as for src, do move synchronously
     params = ActionController::Parameters.new(JSON.parse(request.body.read).merge(params.to_h))
 
-    @job = TransferLocalJob.perform_later('rm', params['from'], params['names'])
-    @transfers = TransferLocalJob.progress.values
+    transfer = Transfer.new(action: 'rm', from: params['from'], names: params['names'])
+    transfer.save
+    TransferLocalJob.perform_later(transfer)
+
+    @transfers = Transfer.transfers
 
     respond_to do |format|
       format.json {
@@ -180,10 +187,5 @@ class FilesController < ApplicationController
 
   def zip
     raise "not yet impl"
-  end
-
-  def mv_sync?(params)
-    # FIXME: validate first! Transfer object then it is easier to validate
-    Files.stat(params['from'])[:dev] == Files.stat(File.dirname(params['to']))[:dev]
   end
 end

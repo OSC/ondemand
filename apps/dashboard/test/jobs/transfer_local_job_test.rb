@@ -10,29 +10,19 @@ class TransferLocalJobTest < ActiveJob::TestCase
       File.write(testfile, 'this is a test file')
       FileUtils.mkpath destdir
 
-
       # FIXME: from, name, to does not allow for copying tot he same
       # location/same directory but with a new name
       # so we need a NEW SOLUTION...
       # or we do "to" but "with_prefix" added if from and to are the same
       # directory
-
-      # FIXME: perform_now SKIPS the enqueue step
-      # TransferLocalJob.perform_now(dir, ['test'], destdir)
-      # perform_enqueued_jobs do
-      #  job = TransferLocalJob.perform_later(dir, ['test'], destdir)
-      #  assert job.job_id != nil
-      #  assert_enqueued_jobs 1
       # end
-      TransferLocalJob.perform_now('cp', dir, ['test'], destdir)
-      # assert_equal 0, TransferLocalJob.progress[job.job_id]
-      progress = TransferLocalJob.progress.values.last
-      assert_equal 0, progress.exit_status, "job exited with error #{progress.message}"
-      assert FileUtils.compare_file(testfile, File.join(destdir, 'test')), "file was not copied"
-      assert_equal 100, progress.percent
-    end
+      transfer = Transfer.new(action: 'cp', from: dir, names: ['test'], to: destdir)
+      transfer.perform
 
-    TransferLocalJob.progress = nil
+      assert_equal 0, transfer.exit_status, "job exited with error #{transfer.message}"
+      assert FileUtils.compare_file(testfile, File.join(destdir, 'test')), "file was not copied"
+      assert_equal 100, transfer.percent
+    end
   end
 
   test "job queues in queued state" do
@@ -42,12 +32,14 @@ class TransferLocalJobTest < ActiveJob::TestCase
       File.write(testfile, 'this is a test file')
       FileUtils.mkpath destdir
 
-      job = TransferLocalJob.perform_later(dir, ['test'], destdir)
+      transfer = Transfer.new(action: 'cp', from: dir, names: ['test'], to: destdir)
+      transfer.save
+      job = TransferLocalJob.perform_later(transfer)
       assert job.job_id != nil
-      assert job.progress.status.queued?
+      assert transfer.status.queued?
     end
 
-    TransferLocalJob.progress = nil
+    Transfer.transfers.clear
   end
 
   # FIXME: need to change this interface to something simpler
@@ -66,16 +58,14 @@ class TransferLocalJobTest < ActiveJob::TestCase
       # this tests the number of calls to update_progress
       # note: progress.percent is not called because this mocks the method
       num_files = Files.new.num_files(dir, ['app'])
-      TransferLocalJob.any_instance.expects(:update_progress).times(num_files)
+      transfer = Transfer.new(action: 'cp', from: dir, names: ['app'], to: destdir)
+      transfer.expects(:percent=).times(num_files)
 
-      TransferLocalJob.perform_now('cp', dir, ['app'], destdir)
+      transfer.perform
 
-      progress = TransferLocalJob.progress.values.last
-      assert_equal 0, progress.exit_status, "job exited with error #{progress.message}"
+      assert_equal 0, transfer.exit_status, "job exited with error #{transfer.message}"
       assert_equal '', `diff -r #{srcdir} #{resultdir}`.strip
     end
-
-    TransferLocalJob.progress = nil
   end
 
   ################################################################################################
