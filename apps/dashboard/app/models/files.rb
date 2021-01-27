@@ -3,11 +3,13 @@ class Files
   # foreach and ndjson
   def ls(dirpath)
     Pathname.new(dirpath).each_child.map do |path|
-      stat(path)
+      Files.stat(path)
     end.sort_by { |p| p[:directory] ? 0 : 1 }
   end
 
-  def stat(path)
+  def self.stat(path)
+    path = Pathname.new(path)
+
     begin
       s = path.stat
     rescue
@@ -17,7 +19,7 @@ class Files
     end
 
     # path.stat will not work for a symlink
-    # and will raise 
+    # and will raise
     # path.readlink returns string of the target of the symlink
     # if the symlink is broken, could report this
     # could also report the symlink target (if it exists) for every file
@@ -26,8 +28,6 @@ class Files
     # FIXME: in this case copying, moving, etc. might also be problematic?
     # also we can't do the id here...
     # what if its a socket file?
-
-
     {
       id: "dev-#{s.dev}-inode-#{s.ino}",
       name: path.basename,
@@ -36,7 +36,8 @@ class Files
       date: s.mtime.strftime("%d.%m.%Y"),
       owner: username(s.uid),
       #todo: this value converted here or server side
-      mode: s.mode
+      mode: s.mode,
+      dev: s.dev
     }
   end
 
@@ -52,7 +53,7 @@ class Files
   # end
 
   # FIXME: cache
-  def username(uid)
+  def self.username(uid)
     Etc.getpwuid(uid).name
   rescue
     uid

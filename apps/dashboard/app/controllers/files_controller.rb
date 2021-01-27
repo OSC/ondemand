@@ -123,22 +123,39 @@ class FilesController < ApplicationController
     end
   end
 
-  # FIXME: TransfersController
   def mv
     # TODO: validate data (no bad copy/move commands) - using file system abstraction ideally
     # TODO: if device is same for dest as for src, do move synchronously
     params = ActionController::Parameters.new(JSON.parse(request.body.read).merge(params.to_h))
 
-    @job = TransferLocalJob.perform_later('mv', params['from'], params['names'], params['to'])
-    @transfers = TransferLocalJob.progress.values
+    if mv_sync?(params)
+      # FIXME: we want to do TransferLocalJob.perform_now, and bypass/ignore progress reporting
+      # would need to handle the error here too
+      # this is where using the ActiveModel approach is preferable
+      #
+      TransferLocalJob.perform_now('mv', params['from'], params['names'], params['to'])
+      # FileUtils.mv params['names'].map {|n| File.join(params['from'])}
 
-    respond_to do |format|
-      format.json {
-        render :body => "move started"
-      }
-      format.js {
-        render "transfers/index"
-      }
+      respond_to do |format|
+        format.json {
+          render :body => "move completed"
+        }
+        format.js {
+          render :body => "reloadTable();"
+        }
+      end
+    else
+      @job = TransferLocalJob.perform_later('mv', params['from'], params['names'], params['to'])
+      @transfers = TransferLocalJob.progress.values
+
+      respond_to do |format|
+        format.json {
+          render :body => "move started"
+        }
+        format.js {
+          render "transfers/index"
+        }
+      end
     end
   end
 
@@ -163,5 +180,10 @@ class FilesController < ApplicationController
 
   def zip
     raise "not yet impl"
+  end
+
+  def mv_sync?(params)
+    # FIXME: validate first! Transfer object then it is easier to validate
+    Files.stat(params['from'])[:dev] == Files.stat(File.dirname(params['to']))[:dev]
   end
 end
