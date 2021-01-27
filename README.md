@@ -30,7 +30,7 @@ Learn more about Open OnDemand's system architecture and request lifecycle by vi
 Open OnDemand has an active and growing community! Don't hesitate to reach out to the developers via our [Discourse] instance if you would like more information or need help installing or configuring Open OnDemand.
 <br/>
 <br/>
-<a href="https://discourse.osc.edu"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c2/Discourse.svg" width=150></a>
+<a href="https://discourse.osc.edu"><img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Discourse_icon.svg" width=150></a>
 
 ## Contributing
 
