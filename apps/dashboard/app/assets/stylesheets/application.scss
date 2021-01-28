@@ -43,7 +43,7 @@ a.navbar-brand.navbar-brand-logo {
   height: 100%;
 }
 
-// for inverse, lets make the text slightliy darker so its
+// for inverse, lets make the text slightly darker so its
 // different than the links
 .navbar.navbar-inverse .navbar-text {
   color: #ddd;
@@ -130,5 +130,6 @@ pre.motd-monospaced {
 @import "insufficient_quota";
 @import "insufficient_balance";
 @import "fa_shims";
+@import "file_editor";
 @import "fontawesome-iconpicker";
 @import "breadcrumb";

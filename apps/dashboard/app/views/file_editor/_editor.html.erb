@@ -1,0 +1,43 @@
+<div class="container">
+
+  <% if alert %>
+      <div class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert">
+          <span aria-hidden="true">&times;</span>
+          <span class="sr-only">Close</span>
+        </button>
+        <%= alert %>
+      </div>
+  <% end %>
+
+  <% if notice %>
+      <div class="alert alert-success" role="alert">
+        <button type="button" class="close" data-dismiss="alert">
+          <span aria-hidden="true">&times;</span>
+          <span class="sr-only">Close</span>
+        </button>
+        <%= notice %>
+      </div>
+  <% end %>
+
+  <%= yield %>
+</div><!-- /.container -->
+
+<nav class="navbar navbar-inverse navbar-static-top file-editor-navbar" role="file-editer-options">
+  <div class="container-fluid">
+
+    <ul class="nav navbar-nav navbar-text">
+      <%= render partial: "save" %>
+    </ul>
+
+    <ul class="nav navbar-nav navbar-text navbar-right form-inline">
+      <%= render partial: "key_bindings" %>
+      <%= render partial: "font_size" %>
+      <%= render partial: "mode" %>
+      <%= render partial: "theme" %>
+      <%= render partial: "word_wrap" %>
+    </ul>
+  </div>
+</nav>
+
+<pre id="editor"></pre>

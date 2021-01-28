@@ -15,7 +15,6 @@ namespace :test do
     'nginx_stage': 'spec',
     'apps/activejobs': 'spec',
     'apps/dashboard': 'test',
-    'apps/file-editor': 'test',
     'apps/myjobs': 'test'
   }
 
