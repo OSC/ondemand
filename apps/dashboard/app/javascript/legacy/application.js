@@ -1,4 +1,4 @@
-import { memoize } from 'lodash'
+import memoize from 'lodash/memoize'
 
 //FIXME: move to coffescript
 $(function(){
