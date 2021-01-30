@@ -24,12 +24,13 @@ function importAll (r) {
 // Import images
 importAll(require.context('../../assets/images', true))
 
-// Import legacy javascript
+// Import legacy Javascript and CoffeeScript
 importAll(require.context('../legacy', true, /\.(js|coffee)$/))
 
 // Import legacy stylesheets
 importAll(require.context('../../assets/stylesheets', true))
 
+// Import Font Awesome icons.
 import '@fortawesome/fontawesome-free'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
