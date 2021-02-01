@@ -70,6 +70,11 @@
   var oodShell,
   dirElement = document.getElementById("directory"),
   schemeSelect = document.getElementById("colors");
+
+  if (storage.getItem('scheme') !== null) {
+    schemeSelect.value = storage.getItem('scheme');
+  }
+
   setupHterm = function () {
     // Global variables that define the terminal
       var terminalContainer = document.getElementById('terminal'),
