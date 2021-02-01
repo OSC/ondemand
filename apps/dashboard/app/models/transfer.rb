@@ -3,15 +3,20 @@ class Transfer
   include GlobalID::Identification
 
   # for progress tracking and retrieval
-  attr_accessor :id, :status, :created_at, :completed_at, :percent
+  attr_accessor :id, :status, :created_at, :completed_at
+  attr_writer :percent
+
+  def percent
+    (status && status.completed?) ? 100 : (@percent || 0)
+  end
 
   # error reporting (use different tool?)
   attr_accessor :exit_status, :message
 
   attr_accessor :pid
 
-  #TODO: change
-  attr_accessor :action, :from, :names, :to
+  # files could either be an array of strings or an array of hashes (string=>string)
+  attr_accessor :action, :files
 
   class << self
     def transfers
@@ -78,39 +83,116 @@ class Transfer
     ! id.nil?
   end
 
+  #FIXME: when dealing with a single file, steps 0 (instead of 1)
+  # Files.new.num_files(from, names) might be returning an error
+  #
+  # number of files to copy, move or delete
+  def steps
+    return @steps if @steps
+
+    names = files.keys.map {|f| File.basename(f)}
+
+    # a move to a different device does a cp then mv
+    if action == 'mv' && mv_to_same_device?
+      @steps = files.count
+    else
+      @steps = Files.new.num_files(from, names)
+      @steps *= 2 if action == 'mv'
+    end
+
+    if(steps == 0)
+      raise "steps == 0 with from: #{from.to_s} && names: #{names.inspect} and files.count: #{files.count}"
+    end
+
+
+    @steps
+  end
+
+  # array of arguments that will be executed
+  def command
+    # command is executed in the directory containing the "from" files
+
+    # TODO: want to support variations on cp from and cp to so the whole
+    # cp file1 file2 file3 file4 destionation
+    # because copy in same directory may result in something different
+    #
+    # i.e.
+    #
+    # cp file1 file1_cp
+    #
+    # actually would be turned into
+    #
+    # cp file1 file1_cp
+    #
+    # not
+    #
+    # cp file1 dirname(file1_cp)
+    #
+    #
+    # so this one is difficult... but easy to test, fortunately
+
+    # -v is used for progress reporting
+
+    if action == 'mv'
+      args = [action.to_s, '-v']
+
+      if files.count == 1
+        # for renaming a single file
+        # { file_src => file_dest} changes to [file_src, file_dest] and absolute paths are fine here
+        args += files.to_a.flatten
+      else
+        args += files.keys.map { |f| File.basename(f) }
+        args << to
+      end
+    elsif action == 'cp'
+      args = [action.to_s, '-v']
+      args << '-r'
+
+      # FIXME: doesn't work for copy to from in same directory
+      # though there may not be a single command that accomplishes that
+      # copy to and from in same directory multiple files of different destination names
+      # you may need multiple copies
+      args += files.keys.map { |f| File.basename(f) }
+      args << to
+    elsif action == 'rm'
+      args = [action.to_s, '-v']
+      args << '-r'
+
+      args += files.keys
+    else
+      raise "Unknown action: #{action.inspect}"
+    end
+
+    # FIXME: we assume here ALL files are being copied/moved to same basedir
+    # TODO: what we really want is either a single mv/cp command or a set of mv/cp commands (an array of commands) that would resolve the request
+
+    args
+  end
+
+  def update_percent(step)
+    self.percent = steps == 0 ? 100 : (100.0*((step).to_f/steps)).to_i
+  end
+
+  #FIXME: validate that files (either array or hash)
+  #FIXME: logging of ACTIONS
+
   def perform
     self.status = OodCore::Job::Status.new(state: :running)
 
-    # FIXME: wanted to use separate functions but then we can't set the pid
-    # unless we execute popen3 without a block
-    #
-    # FIXME: logging of ACTIONS
+    # calculate number of steps prior to starting the removal of files
+    steps
 
-    # number of files to copy, move or delete
-    steps = Files.new.num_files(from, names)
+    puts "command: #{command.inspect}"
+    puts "files: #{files.inspect}"
 
-    args = [action.to_s, '-v']
-
-    if action == 'mv'
-      steps *= 2
-    else
-      args << '-r'
-    end
-
-    args += names
-    args << to if to
-
-    # FIXME: validation :-P
-    Open3.popen3(*args, chdir: from) do |i, o, e, t|
+    Open3.popen3(*command, chdir: from) do |i, o, e, t|
       self.pid = t.pid
 
       err_reader = Thread.new { e.read  }
 
       o.each_line.with_index do |l, index|
         #FIXME: slice(?).last so that we only update progress a few times per...
-
-        # percent complete
-        self.percent = (100.0*((index+1).to_f/steps)).to_i
+        update_percent(index+1)
       end
       o.close
 
@@ -125,7 +207,24 @@ class Transfer
     self.status = OodCore::Job::Status.new(state: :completed)
   end
 
+  def perform_later
+    save
+    TransferLocalJob.perform_later(self)
+  end
+
+  def from
+    File.dirname(files.keys.first)
+  end
+
+  def to
+    File.dirname(files.values.first)
+  end
+
   def synchronous?
-    action == "mv" && Files.stat(from)[:dev] == Files.stat(File.dirname(to))[:dev]
+    mv_to_same_device?
+  end
+
+  def mv_to_same_device?
+    action == "mv" && Files.stat(from)[:dev] == Files.stat(File.dirname(to))[:dev] if from && to
   end
 end

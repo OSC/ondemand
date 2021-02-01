@@ -544,12 +544,17 @@ function updateViewForClipboard(){
 
         loading('Copying files...');
 
+        // [{"/from/file/path":"/to/file/path" }]
+        let files = {};
+        clipboard.files.forEach((f) => {
+          files[`${clipboard.from}/${f.name}`] = `${history.state.currentDirectory}/${f.name}`
+        });
+
         fetch('<%= files_cp_path(format: "js") %>', {
           method: 'put',
           body: JSON.stringify({
-            from: clipboard.from,
-            to: history.state.currentDirectory,
-            names: clipboard.files.map((f) => f.name)
+            command: 'cp',
+            files: files
           })
         })
         //TODO: if(response.status != 200){ fail!
@@ -583,12 +588,16 @@ function updateViewForClipboard(){
 
         loading('Moving files...');
 
+        let files = {};
+        clipboard.files.forEach((f) => {
+          files[`${clipboard.from}/${f.name}`] = `${history.state.currentDirectory}/${f.name}`
+        });
+
         fetch('<%= files_mv_path(format: "js") %>', {
           method: 'put',
           body: JSON.stringify({
-            from: clipboard.from,
-            to: history.state.currentDirectory,
-            names: clipboard.files.map((f) => f.name)
+            command: 'mv',
+            files: files
           })
         })
         //TODO: if(response.status != 200){ fail!
@@ -638,8 +647,8 @@ $('#delete-btn').click(() => {
       return fetch('<%= files_rm_path(format: "js") %>', {
           method: 'delete',
           body: JSON.stringify({
-            from: history.state.currentDirectory,
-            names: files
+            command: 'rm',
+            files: files.map(f => [history.state.currentDirectory, f].join('/'))
           })
       });
     }

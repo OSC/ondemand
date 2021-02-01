@@ -6,9 +6,9 @@ class TransferLocalJobTest < ActiveJob::TestCase
   test "copy job copies a file" do
     Dir.mktmpdir do |dir|
       testfile = File.join(dir, 'test')
-      destdir = File.join(dir, 'dest')
+      destfile = File.join(dir, 'dest', 'test')
       File.write(testfile, 'this is a test file')
-      FileUtils.mkpath destdir
+      FileUtils.mkpath File.dirname(destfile)
 
       # FIXME: from, name, to does not allow for copying tot he same
       # location/same directory but with a new name
@@ -16,11 +16,11 @@ class TransferLocalJobTest < ActiveJob::TestCase
       # or we do "to" but "with_prefix" added if from and to are the same
       # directory
       # end
-      transfer = Transfer.new(action: 'cp', from: dir, names: ['test'], to: destdir)
+      transfer = Transfer.new(action: 'cp', files: {testfile => destfile})
       transfer.perform
 
       assert_equal 0, transfer.exit_status, "job exited with error #{transfer.message}"
-      assert FileUtils.compare_file(testfile, File.join(destdir, 'test')), "file was not copied"
+      assert FileUtils.compare_file(testfile, destfile), "file was not copied"
       assert_equal 100, transfer.percent
     end
   end
@@ -28,11 +28,11 @@ class TransferLocalJobTest < ActiveJob::TestCase
   test "job queues in queued state" do
     Dir.mktmpdir do |dir|
       testfile = File.join(dir, 'test')
-      destdir = File.join(dir, 'dest')
+      destfile = File.join(dir, 'dest', 'test')
       File.write(testfile, 'this is a test file')
-      FileUtils.mkpath destdir
+      FileUtils.mkpath File.dirname(destfile)
 
-      transfer = Transfer.new(action: 'cp', from: dir, names: ['test'], to: destdir)
+      transfer = Transfer.new(action: 'cp', files: {testfile => destfile})
       transfer.save
       job = TransferLocalJob.perform_later(transfer)
       assert job.job_id != nil
@@ -58,7 +58,7 @@ class TransferLocalJobTest < ActiveJob::TestCase
       # this tests the number of calls to update_progress
       # note: progress.percent is not called because this mocks the method
       num_files = Files.new.num_files(dir, ['app'])
-      transfer = Transfer.new(action: 'cp', from: dir, names: ['app'], to: destdir)
+      transfer = Transfer.new(action: 'cp', files: {testdir => File.join(destdir, 'app')})
       transfer.expects(:percent=).times(num_files)
 
       transfer.perform

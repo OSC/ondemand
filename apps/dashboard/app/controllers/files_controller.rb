@@ -107,12 +107,11 @@ class FilesController < ApplicationController
 
   # FIXME: TransfersController
   def cp
-    # TODO: validate data (no bad copy/move commands) - using file system abstraction ideally
-    params = ActionController::Parameters.new(JSON.parse(request.body.read).merge(params.to_h))
-
-    transfer = Transfer.new(action: 'cp', from: params['from'], names: params['names'], to: params['to'])
-    transfer.save
-    TransferLocalJob.perform_later(transfer)
+    # FIXME: validating using ActionController::Parameters is fraught with difficulty,
+    # especially when the value of a parameter is a hash
+    body_params = JSON.parse(request.body.read).symbolize_keys
+    transfer = Transfer.new(action: body_params[:command], files: body_params[:files])
+    transfer.perform_later
 
     @transfers = Transfer.transfers
 
@@ -127,11 +126,8 @@ class FilesController < ApplicationController
   end
 
   def mv
-    # TODO: validate data (no bad copy/move commands) - using file system abstraction ideally
-    # TODO: if device is same for dest as for src, do move synchronously
-    params = ActionController::Parameters.new(JSON.parse(request.body.read).merge(params.to_h))
-
-    transfer = Transfer.new(action: 'mv', from: params['from'], names: params['names'], to: params['to'])
+    body_params = JSON.parse(request.body.read).symbolize_keys
+    transfer = Transfer.new(action: body_params[:command], files: body_params[:files])
     if transfer.synchronous?
       # FIXME: we want to do TransferLocalJob.perform_now, and bypass/ignore progress reporting
       # would need to handle the error here too
@@ -148,8 +144,7 @@ class FilesController < ApplicationController
         }
       end
     else
-      transfer.save
-      TransferLocalJob.perform_later(transfer)
+      transfer.perform_later
       @transfers = Transfer.transfers
 
       respond_to do |format|
@@ -167,11 +162,10 @@ class FilesController < ApplicationController
   def rm
     # TODO: validate data (no bad copy/move commands) - using file system abstraction ideally
     # TODO: if device is same for dest as for src, do move synchronously
-    params = ActionController::Parameters.new(JSON.parse(request.body.read).merge(params.to_h))
+    body_params = JSON.parse(request.body.read).symbolize_keys
+    transfer = Transfer.new(action: body_params[:command], files: Hash[body_params[:files].map {|f| [f, nil]}])
 
-    transfer = Transfer.new(action: 'rm', from: params['from'], names: params['names'])
-    transfer.save
-    TransferLocalJob.perform_later(transfer)
+    transfer.perform_later
 
     @transfers = Transfer.transfers
 
