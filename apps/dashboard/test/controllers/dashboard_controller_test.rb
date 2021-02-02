@@ -156,7 +156,7 @@ class DashboardControllerTest < ActionController::TestCase
       'sys/bc_jupyter',
       'sys/bc_paraview',
       'sys/bc_desktop/oakley',
-      'sys/pseduofun'
+      'sys/pseudofun'
     ])
 
     get :index
@@ -166,7 +166,7 @@ class DashboardControllerTest < ActionController::TestCase
     assert_select 'a.thumbnail.app', 4
     assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_jupyter/session_contexts/new']", 1
     assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_paraview/session_contexts/new']", 1
-    assert_select "a.thumbnail.app[href='/batch_connect/sys/pseduofun/session_contexts/new']", 1
+    assert_select "a.thumbnail.app[href='/apps/show/pseudofun']", 1
     assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_desktop/oakley/session_contexts/new']", 1
   end
 
