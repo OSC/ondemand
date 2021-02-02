@@ -124,6 +124,52 @@ class DashboardControllerTest < ActionController::TestCase
     end
   end
 
+  test "should create Apps dropdown when pinned apps are available" do
+      SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
+      OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
+      pinned_apps = [
+        FeaturedApp.new(SysRouter.new('bc_jupyter')),
+        FeaturedApp.new(SysRouter.new('bc_paraview')),
+        FeaturedApp.new(SysRouter.new('bc_desktop/oakley')),
+        FeaturedApp.new(SysRouter.new('pseudofun'))
+      ]
+      Router.stubs(:pinned_apps).returns(pinned_apps)
+
+      get :index
+
+      dd = dropdown_list('Apps')
+      dditems = dropdown_list_items(dd)
+      assert dditems.any?, "dropdown list items not found"
+      assert_equal [
+        { header: "Pinned Apps" },
+        "Bc Desktop/Oakley",
+        "Jupyter Notebook",
+        "Paraview",
+        "PseudoFuN"
+      ], dditems
+  end
+
+  test "should create Pinned app icons when pinned apps are available" do
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
+    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
+    Configuration.stubs(:pinned_apps).returns([
+      'sys/bc_jupyter',
+      'sys/bc_paraview',
+      'sys/bc_desktop/oakley',
+      'sys/pseduofun'
+    ])
+
+    get :index
+
+    assert_response :success
+
+    assert_select 'a.thumbnail.app', 4
+    assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_jupyter/session_contexts/new']", 1
+    assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_paraview/session_contexts/new']", 1
+    assert_select "a.thumbnail.app[href='/batch_connect/sys/pseduofun/session_contexts/new']", 1
+    assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_desktop/oakley/session_contexts/new']", 1
+  end
+
   test "should create My Interactive Apps link if Interactive Apps exist and not developer" do
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_interactive_apps"))
     Configuration.stubs(:app_development_enabled?).returns(false)
