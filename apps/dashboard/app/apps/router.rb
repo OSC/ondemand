@@ -20,14 +20,11 @@ class Router
   end
 
   def self.pinned_apps
-    # @pinned_apps ||= begin
-      Configuration.pinned_apps.to_a.map do |token|
-        router = router_from_token(token.to_s)
-        next if router.nil?
+    Configuration.pinned_apps.to_a.map do |token|
+      router = router_from_token(token.to_s)
+      next if router.nil?
 
-        FeaturedApp.new(router)
-      end.reject(&:invalid_batch_connect_app?)
-    # end
+      FeaturedApp.new(router)
+    end
   end
-
 end
