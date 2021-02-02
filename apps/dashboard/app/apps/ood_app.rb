@@ -278,6 +278,12 @@ class OodApp
     @version ||= (version_from_file || version_from_git || "unknown").strip
   end
 
+  # test whether this object is equal to another.
+  # @return [Boolean]
+  def ==(other)
+    other.respond_to?(:url) ? url == other.url : false
+  end
+
   private
 
   # @return [String, nil] version string from git describe, or nil if not git repo
