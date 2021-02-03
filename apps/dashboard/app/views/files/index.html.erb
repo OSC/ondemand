@@ -84,6 +84,7 @@
 <table class="table table-striped table-condensed" id="directory-contents">
   <thead>
     <tr>
+      <th>Select</th>
       <th>Type</th>
       <th>Name</th>
       <th>Size</th>
@@ -109,7 +110,10 @@ history.replaceState({
 
 $.fn.dataTable.ext.search.push(
     function( settings, data, dataIndex  ) {
-      return $('#show-dotfiles').is(':checked') || ! data[1].startsWith('.');
+      //FIXME:
+      // let api = new $.fn.dataTable.Api( settings );
+      // let column = api.column('name:name').index().column();
+      return $('#show-dotfiles').is(':checked') || ! data[2].startsWith('.');
     }
 )
 
@@ -121,25 +125,39 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
 }).DataTable({
   ajax: {
     url: history.state.currentDirectoryUrl,
-    dataSrc: 'files'
+    dataSrc: 'files',
   },
+  order: [[1, "asc"], [2, "asc"]],
   rowId: 'id',
   paging:false,
-  //FIXME: need some mixture of flexbox to control height
+  //FIXME: switch with flexbox; calc() does not work here (as setting inline value calc to max height doesn't work either in Firefox)
   scrollY: '65vh',
   scrollCollapse: true,
   select: {
     style: 'os',
     className: 'selected',
-    toggleable: true
+    toggleable: true,
+    // don't trigger select checkbox column as select
+    // if you need to omit more columns, use a "selectable" class on the columns you want to support selection
+    selector: 'td:not(:first-child)'
+    //TODO: select should work on only static (non button fields)
   },
   columns: [
-    { data: 'type', render: (data, type, row, meta) => data == 'd' ? '<span title="directory" class="fa fa-folder" style="color: gold"></span>' : '<span title="file" class="fa fa-file" style="color: lightgrey"></span>' }, // type
-    { data: 'name', render: (data, type, row, meta) => `<a class="${row.type}" href="${row.url}">${Handlebars.escapeExpression(data)}</a>` }, // name
+    {
+      data: null,
+      defaultContent: '<input type="checkbox">',
+      render: function(data, type, row, meta) {
+        var api = new $.fn.dataTable.Api( meta.settings );
+        let selected = api.rows(meta.row, { selected: true }).count() > 0;
+        return `<input type="checkbox" ${selected ? 'checked' : ''}> ${selected ? 'checked' : ''}`;
+      }
+    },
+    { data: 'type', render: (data, type, row, meta) => data == 'd' ? '<span title="directory" class="fa fa-folder" style="color: gold"><span class="sr-only"> dir</span></span>' : '<span title="file" class="fa fa-file" style="color: lightgrey"><span class="sr-only"> file</span></span>' }, // type
+    { name: 'name', data: 'name', render: (data, type, row, meta) => `<a class="${row.type}" href="${row.url}">${Handlebars.escapeExpression(data)}</a>` }, // name
     { data: 'size' }, // size
     { data: 'modified_at' }, // modified_at
-    { data: 'owner', visible: $('#show-owner-mode').is(':checked') }, // owner
-    { data: 'mode', visible: $('#show-owner-mode').is(':checked') } // mode
+    { name: 'owner', data: 'owner', visible: $('#show-owner-mode').is(':checked') }, // owner
+    { name: 'mode', data: 'mode', visible: $('#show-owner-mode').is(':checked') } // mode
   ]
 });
 
@@ -156,8 +174,8 @@ $('#show-dotfiles').change(() => table.draw());
 // TODO: https://datatables.net/reference/button/colvis
 $('#show-owner-mode').change(() => {
   let visible = $('#show-owner-mode').is(':checked');
-  table.column(4).visible(visible);
-  table.column(5).visible(visible);
+  table.column('owner:name').visible(visible);
+  table.column('mode:name').visible(visible);
 });
 
 $('#goto-btn').click(() => {
@@ -454,9 +472,9 @@ $('#directory-contents tbody, #breadcrumbs, #favorites').on('click', 'a.d', func
   }
 });
 
-$('#directory-contents tbody').on('dblclick', 'tr', function(){
+$('#directory-contents tbody').on('dblclick', 'tr td:not(:first-child)', function(){
     // handle doubleclick
-    let a = this.querySelector('a');
+    let a = this.parentElement.querySelector('a');
     if(a.classList.contains('d')) goto(a.getAttribute("href"));
 });
 
@@ -539,9 +557,6 @@ function updateViewForClipboard(){
         // _copy_4
       }
       else{
-        console.log('copy files to current directory:')
-        console.log(clipboard);
-
         loading('Copying files...');
 
         // [{"/from/file/path":"/to/file/path" }]
@@ -583,9 +598,6 @@ function updateViewForClipboard(){
         // TODO:
       }
       else{
-        console.log('move files to current directory:')
-        console.log(clipboard);
-
         loading('Moving files...');
 
         let files = {};
@@ -673,7 +685,7 @@ $('#delete-btn').click(() => {
 });
 
 // TODO: move all functionality out of click handlers to functions
-// TODO: hide copy/move buttons if no local storage
+// TODO: disable copy/move buttons if no local storage
 
 //FIXME: so need to handle updateViewForClipboard based on EVENTS emitted by local storage modifications
 updateViewForClipboard();
@@ -684,11 +696,61 @@ window.addEventListener('storage', () => {
 // If there are running transfers, update view in 1 seconds
 <%=raw 'setTimeout(() => updateViewForTransfers(), 1000);' if @transfers.any? {|t| ! t.status.completed? } %>
 
+let selection_indexes = [];
 // if only 1 selected item, do not allow to de-select
-table.on( 'user-select', function ( e, dt, type, cell, originalEvent  ) {
+table.on('user-select', function ( e, dt, type, cell, originalEvent  ) {
     var selected_rows = dt.rows( { selected: true  }  );
     if(selected_rows.count() == 1 && cell.index().row == selected_rows.indexes()[0] ){
       e.preventDefault();
     }
+    else{
+      // row need to find the checkbox to give it the focus
+      cell.node().closest('tr').querySelector('input[type=checkbox]').focus();
+    }
 });
+
+
+table.on( 'deselect', function ( e, dt, type, indexes ) {
+  dt.rows(indexes).nodes().toArray().forEach(e => $(e).find('input[type=checkbox]').prop('checked', false));
+});
+
+table.on( 'select', function ( e, dt, type, indexes ) {
+  dt.rows(indexes).nodes().toArray().forEach(e => $(e).find('input[type=checkbox]').prop('checked', true));
+});
+
+$('#directory-contents tbody').on('click', 'tr td:first-child input[type=checkbox]', function(){
+  // input checkbox checked or not
+
+  if($(this).is(':checked')){
+    // select row
+    table.row(this.closest('tr')).select();
+  }
+  else{
+    // deselect row
+    table.row(this.closest('tr')).deselect();
+  }
+
+  this.focus();
+});
+
+$('#directory-contents tbody').on('keydown', 'input[type=checkbox]', function(e){
+  if(event.key == "ArrowDown"){
+    e.preventDefault();
+
+    // let tr = this.closest('tr').nextSibling;
+    let tr = $(this.closest('tr')).next('tr').get(0);
+    if(tr){
+      tr.querySelector('input[type=checkbox]').focus();
+    }
+  }
+  else if(event.key == "ArrowUp"){
+    e.preventDefault();
+
+    let tr = $(this.closest('tr')).prev('tr').get(0);
+    if(tr){
+      tr.querySelector('input[type=checkbox]').focus();
+    }
+  }
+});
+
 </script>
