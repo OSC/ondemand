@@ -1,12 +1,12 @@
 <div class="row">
   <%- Router.pinned_apps.each do |app| %>
     <%- link = app.links.first -%>
-    <div class="col-sm-3 col-md-3">
+    <div class="col-sm-3 col-md-3 text-center">
       <a class="thumbnail app" href="<%= link.url %>">
-        <div class="center-block" style="text-align: center">
-          <img class="app-icon" src="<%= link.icon_uri %>" alt="<%= link.title %>">
-          <p><%= link.title %></p>
+        <div class="center-block">
+          <%= icon_tag(link.icon_uri) %>
         </div>
+        <%= link.title %>
       </a>
     </div>
   <%- end %>
