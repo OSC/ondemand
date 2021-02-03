@@ -1,5 +1,5 @@
 <div class="row">
-  <%- Router.pinned_apps.each do |app| %>
+  <%- Router.pinned_apps.each_with_index do |app, index| %>
     <%- link = app.links.first -%>
     <div class="col-sm-3 col-md-3 text-center">
       <a class="thumbnail app" href="<%= link.url %>">
@@ -9,5 +9,6 @@
         <%= link.title %>
       </a>
     </div>
+    <%= tag.div class: %w(clearfix visible-lg-block visible-md-block visible-sm-block) if (index+1) % 4 == 0 %>
   <%- end %>
 </div>
