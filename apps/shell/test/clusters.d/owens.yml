@@ -1,0 +1,60 @@
+---
+v2:
+  metadata:
+    title: "Owens"
+    url: "https://www.osc.edu/supercomputing/computing/owens"
+    hidden: false
+  login:
+    host: "owens.osc.edu"
+    default: true
+  job:
+    adapter: "torque"
+    host: "owens-batch.ten.osc.edu"
+    lib: "/opt/torque/lib64"
+    bin: "/opt/torque/bin"
+    version: "6.0.1"
+  custom:
+    pbs:
+      host: "owens-batch.ten.osc.edu"
+      lib: "/opt/torque/lib64"
+      bin: "/opt/torque/bin"
+      version: "6.0.1"
+    moab:
+      host: "owens-batch.ten.osc.edu"
+      bin: "/opt/moab/bin"
+      version: "9.0.1"
+      homedir: "/var/spool/moab"
+    rsv_query:
+      torque_host: "owens-batch.ten.osc.edu"
+      torque_lib: "/opt/torque/lib64"
+      torque_bin: "/opt/torque/bin"
+      torque_version: "6.0.1"
+      moab_host: "owens-batch.ten.osc.edu"
+      moab_bin: "/opt/moab/bin"
+      moab_version: "9.0.1"
+      moab_homedir: "/var/spool/moab"
+      acls:
+        - adapter: "group"
+          groups:
+            - "sysall"
+            - "sappall"
+            - "clntall"
+          type: "blacklist"
+    grafana:
+      host: "https://grafana-test.osc.edu"
+      orgId: 1
+      dashboard:
+        name: "ondemand-clusters"
+        uid: "aaba6Ahbauquag"
+        panels:
+          cpu: 20
+          memory: 24
+      labels:
+        cluster: "cluster"
+        host: "host"
+        jobid: "jobid"
+  batch_connect:
+      basic:
+        script_wrapper: "module restore\n%s"
+      vnc:
+        script_wrapper: "module restore\nmodule load ondemand-vnc\n%s"
