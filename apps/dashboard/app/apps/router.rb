@@ -24,7 +24,7 @@ class Router
       router = router_from_token(token.to_s)
       next if router.nil?
 
-      FeaturedApp.new(router)
+      FeaturedApp.new(router, token: token)
     end
   end
 end
