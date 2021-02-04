@@ -10,11 +10,10 @@ describe NginxStage::Configuration do
 
       config_opts = attr_setter_names.map { |name| name.delete("=") } 
       example_config_opts = File.read(
-        './share/nginx_stage_example.yml').scan(/#[\w_]+:/)
+        './share/nginx_stage_example.yml').scan(/#([\w_]+):/).flatten
 
-      config_opts.each do |opt|
-        expect(example_config_opts).to opt_exists?(opt)
-      end
+      expect(
+        config_opts + example_config_opts - (config_opts & example_config_opts)).to be_empty 
     end
   end
 end

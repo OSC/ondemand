@@ -7,16 +7,16 @@ describe OodPortalGenerator::View do
       config_opts = OodPortalGenerator::View.new
         .instance_variables.map(&:to_s).map { |opt| opt.delete("@") }
       example_config_opts = File.read(
-          './share/ood_portal_example.yml').scan(/#[\w_]+:/)
+        './share/ood_portal_example.yml').scan(/#([\w_]+):/).flatten
+
+      # remove dex as it's not part of the view
+      example_config_opts -= %w(dex) 
       
       # delete inst vars that are not actual options in the example file
-      config_opts.delete('protocol')
-      config_opts.delete('oidc_redirect_uri')
-      config_opts.delete('oidc_crypto_passphrase')
+      config_opts -= %w(protocol oidc_redirect_uri oidc_crypto_passphrase)
 
-      config_opts.map(&:to_s).each do |opt|
-        expect(example_config_opts).to opt_exists?(opt)  
-      end
+      expect(
+        config_opts + example_config_opts - (config_opts & example_config_opts)).to be_empty
     end
   end
 end
