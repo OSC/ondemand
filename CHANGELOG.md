@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - A pre hook that runs as root before the PUN starts [#535](https://github.com/OSC/ondemand/pull/535)
 - end-to-end tests in rake tasks that build containers [#695](https://github.com/OSC/ondemand/pull/695)
 - add labels to PRs in a github action [#743](https://github.com/OSC/ondemand/pull/743)
+- support `markdown_erb` and `txt_erb` MOTD formats [#647](https://github.com/OSC/ondemand/pull/647)
 
 ### Fixed
 - escape html in activejobs table [#739](https://github.com/OSC/ondemand/pull/739)
@@ -17,6 +18,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - run tests in github action instead of travis-ci in [#742](https://github.com/OSC/ondemand/pull/742)
 - add ondemand-dex to the Dockerfile in [#727](httpqs://github.com/OSC/ondemand/pull/727)
+
+## [2.0.0] - 2021-02-03
+
+### TODO
+- will update changelog in 2.0.1 for changes here and in 2.0.1
 
 ## [1.8.19] - 2020-12-14
 ### Fixed
@@ -624,7 +630,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.18...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/OSC/ondemand/compare/v1.8.19...v2.0.0
 [1.8.19]: https://github.com/OSC/ondemand/compare/v1.8.18...v1.8.19
 [1.8.18]: https://github.com/OSC/ondemand/compare/v1.8.17...v1.8.18
 [1.8.17]: https://github.com/OSC/ondemand/compare/v1.8.16...v1.8.17
