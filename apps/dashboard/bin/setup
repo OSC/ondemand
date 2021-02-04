@@ -23,6 +23,14 @@ class App
   def production?
     env == "production"
   end
+
+  def development?
+    env == "development"
+  end
+
+  def test?
+    env == "test"
+  end
 end
 
 # set application settings
@@ -33,6 +41,7 @@ APP = App.new(
 
 # path to your application root.
 APP_ROOT = Pathname.new File.expand_path("../../",  __FILE__)
+CACHE = "#{ENV['HOME']}/.cache/yarn/ood-dashboard-app"
 
 chdir APP_ROOT do
   # This script is a starting point to setup your application.
@@ -44,6 +53,10 @@ chdir APP_ROOT do
 
   puts "\n== Installing dependencies =="
   sh "bin/bundle check 1>/dev/null 2>&1 || bin/bundle install --jobs 4 --retry 2"
+
+  puts "\n== Installing yarn =="
+  sh "npm install --production --prefix tmp yarn"
+  sh "tmp/node_modules/yarn/bin/yarn --production install --cache-folder #{CACHE}"
 
   if APP.production?
     puts "\n== Compiling assets =="
