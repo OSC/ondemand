@@ -387,7 +387,11 @@ module BatchConnect
     # Whether job is running but still hasn't generated the connection file
     # @return [Boolean] whether starting
     def starting?
-      status.running? && !connect_file.file?
+      if connection_in_info?
+        status.queued? && !connect.to_h.compact.empty?
+      else
+        status.running? && !connect_file.file?
+      end
     end
 
     # Whether job is running and connection file is generated
@@ -479,7 +483,17 @@ module BatchConnect
     # The connection information for this session (job must be running)
     # @return [OpenStruct] connection information
     def connect
-      OpenStruct.new YAML.safe_load(connect_file.read)
+      if connection_in_info?
+        OpenStruct.new(info.ood_connection_info || {})
+      else
+        OpenStruct.new YAML.safe_load(connect_file.read)
+      end
+    end
+
+    # Whether the session info has connection information
+    # @return [Boolean] whether there is host and port information in this session.
+    def connection_in_info?
+      info.respond_to?(:ood_connection_info)
     end
 
     # A unique identifier that details the current state of a session
