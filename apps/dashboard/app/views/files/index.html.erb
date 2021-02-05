@@ -386,25 +386,16 @@ function getEmptyDirs(entry){
       resolve([]);
     }
     else{
-      // directory; is it an empty directory?
-      //FIXME: logDropError is a func
-      //
+      //FIXME: logDropError is a function that is typically used internally by uppy dashboard
+
       // getFilesAndDirectoriesFromDirectory has no return value, so turn this into a promise
       getFilesAndDirectoriesFromDirectory(entry.createReader(), [], function(error){ console.error(error)}, {
         onSuccess: (entries) => {
           if(entries.length == 0){
-            console.log('this is an empty dir: ')
-            console.log(entry)
             // this is an empty directory
             resolve([entry]);
           }
           else{
-            console.log(entry);
-            console.log(' has these entries ')
-            console.log(entries);
-            // FACT: this is HARD. Spending 8 hours on this is not worth it.
-            // compared to replacing file upload altogether???
-            //
             Promise.all(entries.map(e => getEmptyDirs(e))).then((dirs) => resolve(_.flattenDeep(dirs)));
           }
         }
