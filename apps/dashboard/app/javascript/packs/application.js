@@ -17,13 +17,6 @@
 import 'jquery-migrate'
 import 'jquery-ujs'
 
-// Import Font Awesome icons.
-import '@fortawesome/fontawesome-free'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { fas } from '@fortawesome/free-solid-svg-icons'
-
-library.add(fas)
-
 // Import DataTables
 require('datatables.net-bs/js/dataTables.bootstrap')
 

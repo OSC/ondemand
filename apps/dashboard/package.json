@@ -1,8 +1,6 @@
 {
+  "name": "openondemand-dashboard",
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.2",
-    "@fortawesome/fontawesome-svg-core": "^1.2.34",
-    "@fortawesome/free-solid-svg-icons": "^5.15.2",
     "@rails/webpacker": "5.2.1",
     "bootstrap": "3.4.1",
     "datatables.net-bs": "^1.10.23",
