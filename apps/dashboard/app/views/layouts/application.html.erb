@@ -3,9 +3,17 @@
 <head>
   <title><%= content_for?(:title) ? yield(:title) : "Dashboard - #{OodAppkit.dashboard.title}" %></title>
   <%= favicon_link_tag 'favicon.ico', href: OodAppkit.public.url.join('favicon.ico'), skip_pipeline: true %>
-  <%= stylesheet_link_tag    'application', media: 'all' %>
+
+  <%= stylesheet_link_tag 'application', media: 'all' %>
+  <%= stylesheet_pack_tag 'application', media: 'all' %>
+
+  <!-- Webpacker -->
+  <%= javascript_pack_tag 'application' %>
+
+  <!-- (Legacy) Sprockets -->
   <%= javascript_include_tag 'application' %>
   <%= javascript_include_tag 'turbolinks' if Configuration.turbolinks_enabled? %>
+
   <%= csrf_meta_tags %>
 
   <%= yield :head %>
