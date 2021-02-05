@@ -380,14 +380,133 @@ $('#edit-btn').click(() => {
 //TODO: uppy locales supported - pull from server side locales
 //TODO: accessibility analysis of solution
 
+function getEmptyDirs(entry){
+  return new Promise((resolve) => {
+    if(entry.isFile){
+      resolve([]);
+    }
+    else{
+      // directory; is it an empty directory?
+      //FIXME: logDropError is a func
+      //
+      // getFilesAndDirectoriesFromDirectory has no return value, so turn this into a promise
+      getFilesAndDirectoriesFromDirectory(entry.createReader(), [], function(error){ console.error(error)}, {
+        onSuccess: (entries) => {
+          if(entries.length == 0){
+            console.log('this is an empty dir: ')
+            console.log(entry)
+            // this is an empty directory
+            resolve([entry]);
+          }
+          else{
+            console.log(entry);
+            console.log(' has these entries ')
+            console.log(entries);
+            // FACT: this is HARD. Spending 8 hours on this is not worth it.
+            // compared to replacing file upload altogether???
+            //
+            Promise.all(entries.map(e => getEmptyDirs(e))).then((dirs) => resolve(_.flattenDeep(dirs)));
+          }
+        }
+      })
+    }
+  });
+}
+
+// https://github.com/transloadit/uppy/blob/7ce58beeb620df3df0640cb369f5d71e3d3f751f/packages/%40uppy/utils/src/getDroppedFiles/utils/webkitGetAsEntryApi/getFilesAndDirectoriesFromDirectory.js
+/**
+ * Recursive function, calls the original callback() when the directory is entirely parsed.
+ *
+ * @param {FileSystemDirectoryReader} directoryReader
+ * @param {Array} oldEntries
+ * @param {Function} logDropError
+ * @param {Function} callback - called with ([ all files and directories in that directoryReader ])
+ */
+function getFilesAndDirectoriesFromDirectory (directoryReader, oldEntries, logDropError, { onSuccess }) {
+  directoryReader.readEntries(
+    (entries) => {
+      const newEntries = [...oldEntries, ...entries]
+      // According to the FileSystem API spec, getFilesAndDirectoriesFromDirectory() must be called until it calls the onSuccess with an empty array.
+      if (entries.length) {
+        setTimeout(() => {
+          getFilesAndDirectoriesFromDirectory(directoryReader, newEntries, logDropError, { onSuccess })
+        }, 0)
+      // Done iterating this particular directory
+      } else {
+        onSuccess(newEntries)
+      }
+    },
+    // Make sure we resolve on error anyway, it's fine if only one directory couldn't be parsed!
+    (error) => {
+      logDropError(error)
+      onSuccess(oldEntries)
+    }
+  )
+}
+
 (function(){
+  class EmptyDirCreator extends Uppy.Core.Plugin {
+    constructor (uppy, opts){
+      super(uppy, opts)
+      this.id = this.opts.id || 'EmptyDirUploaderCatcher';
+      this.type = 'acquirer';
+
+      this.empty_dirs = [];
+      this.last_entries = [];
+
+      this.handleRootDrop = this.handleRootDrop.bind(this);
+      this.createEmptyDirs = this.createEmptyDirs.bind(this);
+    }
+
+    handleRootDrop (e) {
+      // from https://github.com/transloadit/uppy/blob/7ce58beeb620df3df0640cb369f5d71e3d3f751f/packages/%40uppy/utils/src/getDroppedFiles/index.js
+      if (e.dataTransfer.items && e.dataTransfer.items[0] && 'webkitGetAsEntry' in e.dataTransfer.items[0]) {
+        // toArray https://github.com/transloadit/uppy/blob/7ce58beeb620df3df0640cb369f5d71e3d3f751f/packages/%40uppy/utils/src/toArray.js#L4
+        let items = Array.prototype.slice.call(e.dataTransfer.items || [], 0);
+        let entries = items.map(i => i.webkitGetAsEntry()).filter(i => i);
+
+        Promise.all(entries.map(i => getEmptyDirs(i))).then((dirs) => {
+          this.empty_dirs = this.empty_dirs.concat(_.flattenDeep(dirs));
+        });
+      }
+      //else we don't have access to directory information
+    }
+
+    createEmptyDirs () {
+      // PostProcessor:
+      // returns a promise that resolves when processing completes; its resolution value is ignored
+
+      //TODO: error checking and reporting
+      Promise.all(this.empty_dirs.map((d) => {
+        // "fullPath" should actually be the path relative to the current directory
+        //TODO: could remove the currentDirectoryPath if present though...
+        let filename = _.trimStart(d.fullPath, '/');
+
+        return fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put'})
+        //TODO: parse json response verify if there was an error creating directory and handle error
+      })).then(() => this.empty_dirs = []);
+    }
+
+    install () {
+      //TEST: does this get called if upload fails???
+      this.uppy.addPostProcessor(this.createEmptyDirs);
+
+      //TODO: subscribe to event on dashboard close?! to clear empty_dirs?
+    }
+
+    uninstall () {
+      this.uppy.removePostProcessor(this.createEmptyDirs);
+    }
+  }
+
   function closeAndResetUppyModal(uppy){
     uppy.getPlugin('Dashboard').closeModal();
     uppy.reset();
   }
 
   var csrf_token = document.getElementsByName('csrf-token')[0].content
-  var uppy = Uppy.Core();
+  window.uppy = Uppy.Core();
+  uppy.use(EmptyDirCreator);
   uppy.use(Uppy.Dashboard, {
     trigger: '#upload-btn',
     fileManagerSelectionType: 'both',
