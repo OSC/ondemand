@@ -71,4 +71,5 @@ RUN /usr/libexec/httpd-ssl-gencerts
 
 EXPOSE 8080
 EXPOSE 5556
+EXPOSE 3035
 CMD [ "/opt/ood/launch" ]
