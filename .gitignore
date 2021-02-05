@@ -8,6 +8,8 @@
 /vendor/bundle
 /.bundle
 /apps/*/.bundle
+/apps/*/public/packs
+/apps/*/public/packs-test
 /apps/*/vendor/bundle/
 /*/.bundle
 
