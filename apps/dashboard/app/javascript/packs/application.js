@@ -25,5 +25,3 @@ import 'popper.js'
 
 // Import Bootstrap 3
 import 'bootstrap/dist/js/bootstrap'
-
-console.log('Hello World from Open OnDemand!')
