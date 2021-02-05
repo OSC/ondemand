@@ -815,7 +815,6 @@ window.addEventListener('storage', () => {
 // If there are running transfers, update view in 1 seconds
 <%=raw 'setTimeout(() => updateViewForTransfers(), 1000);' if @transfers.any? {|t| ! t.status.completed? } %>
 
-let selection_indexes = [];
 // if only 1 selected item, do not allow to de-select
 table.on('user-select', function ( e, dt, type, cell, originalEvent  ) {
     var selected_rows = dt.rows( { selected: true  }  );
