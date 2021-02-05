@@ -10,12 +10,6 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require jquery3
-//= require jquery-migrate-3.1.0.min.js
-//= require jquery_ujs
-//= require bootstrap-sprockets
-//= require dataTables/jquery.dataTables
-//= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
 //= require data-confirm-modal
 //= require handlebars.js/4.4.2/handlebars.min
 //= require lodash/4.17.15/lodash.min.js
