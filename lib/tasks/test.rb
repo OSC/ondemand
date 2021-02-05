@@ -1,6 +1,11 @@
 desc "Test OnDemand"
 task :test => 'test:all'
 
+def yarn_app?(path)
+  @path = Pathname.new(path)
+  @path.join('yarn.lock').exist?
+end
+
 namespace :test do
   require_relative 'build_utils'
   include BuildUtils
@@ -18,7 +23,12 @@ namespace :test do
   task :setup do
     testing.each_pair do |app, _task|
       chdir PROJ_DIR.join(app.to_s) do
-        sh "bin/yarn install" if app.to_s == "apps/dashboard"
+
+        @path = PROJ_DIR.join(app.to_s)
+        if yarn_app?(@path)
+          sh 'bin/yarn install'
+        end
+
         sh "bundle install --with development test"
       end
     end
