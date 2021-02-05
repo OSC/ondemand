@@ -531,6 +531,41 @@ function getFilesAndDirectoriesFromDirectory (directoryReader, oldEntries, logDr
       uppy.setFileMeta(file.id, { relativePath: file.data.webkitRelativePath });
     }
   });
+
+  // https://stackoverflow.com/questions/6756583/prevent-browser-from-loading-a-drag-and-dropped-file
+  window.addEventListener("dragover",function(e){
+    e = e || event;
+    e.preventDefault();
+  },false);
+  window.addEventListener("drop",function(e){
+    e = e || event;
+    e.preventDefault();
+  },false);
+
+  $('#directory-contents').on('drop', function(e){
+    this.classList.remove('dragover');
+    console.log('File(s) dropped');
+    // Prevent default behavior (Prevent file from being opened)
+
+    // pass drop event to uppy dashboard
+    uppy.getPlugin('Dashboard').openModal().then(() => uppy.getPlugin('Dashboard').handleDrop(e.originalEvent))
+  });
+
+  $('#directory-contents').on('dragover', function(e){
+    this.classList.add('dragover');
+
+    // Prevent default behavior (Prevent file from being opened)
+    e.preventDefault();
+
+    // specifies what feedback will be shown to the user by setting the dropEffect attribute of the DataTransfer associated with the event
+    // too bad we can't show an indicator (no dragstart/end when dragging from OS to browser)
+    e.originalEvent.dataTransfer.dropEffect = 'copy';
+  });
+
+  $('#directory-contents').on('dragleave', function(e){
+    this.classList.remove('dragover');
+  });
+
 })();
 
 
