@@ -6,23 +6,32 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-### Added
-- A pre hook that runs as root before the PUN starts [#535](https://github.com/OSC/ondemand/pull/535)
-- end-to-end tests in rake tasks that build containers [#695](https://github.com/OSC/ondemand/pull/695)
-- add labels to PRs in a github action [#743](https://github.com/OSC/ondemand/pull/743)
-- support `markdown_erb` and `txt_erb` MOTD formats [#647](https://github.com/OSC/ondemand/pull/647)
-
-### Fixed
-- escape html in activejobs table [#739](https://github.com/OSC/ondemand/pull/739)
-
-### Changed
-- run tests in github action instead of travis-ci in [#742](https://github.com/OSC/ondemand/pull/742)
-- add ondemand-dex to the Dockerfile in [#727](httpqs://github.com/OSC/ondemand/pull/727)
 
 ## [2.0.0] - 2021-02-03
 
-### TODO
-- will update changelog in 2.0.1 for changes here and in 2.0.1
+### Added
+- support `markdown_erb` and `txt_erb` MOTD formats [#647](https://github.com/OSC/ondemand/pull/647)
+- A pre hook that runs as root before the PUN starts [#535](https://github.com/OSC/ondemand/pull/535)
+- end-to-end test in rake tasks that build containers [#695](https://github.com/OSC/ondemand/pull/695)
+
+### Fixed
+- escape html in activejobs table [#739](https://github.com/OSC/ondemand/pull/739)
+- don't use cached cluster value in session form cache if it is no longer a valid value
+  [#748](https://github.com/OSC/ondemand/pull/748) [#761](https://github.com/OSC/ondemand/pull/761)
+- ensure LOGNAME set to PUN user [#836](https://github.com/OSC/ondemand/pull/836)
+
+### Changed
+- move regex mapping to Lua [#729](https://github.com/OSC/ondemand/pull/729) which removes
+  the need to make Apache aware of SCL Ruby and not rely on system Ruby to launch the mapping
+  script
+- upgrade dependencies nginx to 1.18.0 and passenger to 6.0.7
+- upgrade dependencies ruby 2.5.5 => 2.7.1 and bundler 1.17.3 => 2.1.4
+- upgrade dependency nodejs 10 => 12
+- upgrade dependency sqlite3 to 3.26.0 (will ship custom SCL for newer sqlite3 build)
+- add ondemand-dex to the Dockerfile in [#727](httpqs://github.com/OSC/ondemand/pull/727)
+- start using GitHub actions instead of Travis CI [#742](https://github.com/OSC/ondemand/pull/742)
+  [#743](https://github.com/OSC/ondemand/pull/743) [#747](https://github.com/OSC/ondemand/pull/747)
+- move JOSS publication to OSC/ondemand repo
 
 ## [1.8.19] - 2020-12-14
 ### Fixed
