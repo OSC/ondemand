@@ -127,14 +127,14 @@ class DashboardControllerTest < ActionController::TestCase
   test "should create Apps dropdown when pinned apps are available" do
       SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
       OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
-      pinned_apps = [
-        FeaturedApp.new(SysRouter.new('bc_jupyter')),
-        FeaturedApp.new(SysRouter.new('bc_paraview')),
-        FeaturedApp.new(SysRouter.new('bc_desktop/owens')),
-        FeaturedApp.new(SysRouter.new('pseudofun')),
-        FeaturedApp.new(SysRouter.new('should_get_filtered'))
-      ]
-      Router.stubs(:pinned_apps).returns(pinned_apps)
+      Configuration.stubs(:pinned_apps).returns([
+        'sys/bc_jupyter',
+        'sys/bc_paraview',
+        'sys/bc_desktop/owens',
+        'sys/bc_desktop/doesnt_exist',
+        'sys/pseudofun',
+        'sys/should_get_filtered'
+      ])
 
       get :index
 
@@ -143,7 +143,7 @@ class DashboardControllerTest < ActionController::TestCase
       assert dditems.any?, "dropdown list items not found"
       assert_equal [
         { header: "Pinned Apps" },
-        "Bc Desktop/Owens",
+        "Owens Desktop",
         "Jupyter Notebook",
         "Paraview",
         "PseudoFuN"
@@ -157,6 +157,7 @@ class DashboardControllerTest < ActionController::TestCase
       'sys/bc_jupyter',
       'sys/bc_paraview',
       'sys/bc_desktop/owens',
+      'sys/bc_desktop/doesnt_exist',
       'sys/pseudofun',
       'sys/should_get_filtered'
     ])
