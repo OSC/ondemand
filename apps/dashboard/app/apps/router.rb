@@ -25,6 +25,6 @@ class Router
       next if router.nil?
 
       FeaturedApp.new(router, token: token)
-    end
+    end.reject { |app| !app.accessible? || app.hidden? || app.backup? || app.invalid_batch_connect_app? }
   end
 end

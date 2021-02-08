@@ -131,7 +131,8 @@ class DashboardControllerTest < ActionController::TestCase
         FeaturedApp.new(SysRouter.new('bc_jupyter')),
         FeaturedApp.new(SysRouter.new('bc_paraview')),
         FeaturedApp.new(SysRouter.new('bc_desktop/owens')),
-        FeaturedApp.new(SysRouter.new('pseudofun'))
+        FeaturedApp.new(SysRouter.new('pseudofun')),
+        FeaturedApp.new(SysRouter.new('should_get_filtered'))
       ]
       Router.stubs(:pinned_apps).returns(pinned_apps)
 
@@ -156,7 +157,8 @@ class DashboardControllerTest < ActionController::TestCase
       'sys/bc_jupyter',
       'sys/bc_paraview',
       'sys/bc_desktop/owens',
-      'sys/pseudofun'
+      'sys/pseudofun',
+      'sys/should_get_filtered'
     ])
 
     get :index
