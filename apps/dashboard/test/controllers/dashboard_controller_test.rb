@@ -4,6 +4,7 @@ class DashboardControllerTest < ActionController::TestCase
 
   def setup
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys"))
+    Router.instance_variable_set('@pinned_apps', nil)
   end
 
   def dropdown_list(title)

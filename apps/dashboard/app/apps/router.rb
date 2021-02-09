@@ -20,7 +20,7 @@ class Router
   end
 
   def self.pinned_apps
-    Configuration.pinned_apps.to_a.map do |token|
+    @pinned_apps ||= Configuration.pinned_apps.to_a.map do |token|
       router = router_from_token(token.to_s)
       next if router.nil?
 
