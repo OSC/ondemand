@@ -16,5 +16,8 @@
 // const imagePath = (name) => images(name, true)
 
 import 'jquery-migrate'
+import 'jquery-ujs'
+
+import 'bootstrap/dist/js/bootstrap'
 
 console.log('Hello World from Open OnDemand!')
