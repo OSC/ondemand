@@ -18,7 +18,7 @@ import 'jquery-migrate'
 import 'jquery-ujs'
 
 // Import DataTables
-require('datatables.net-bs/js/dataTables.bootstrap')
+import 'datatables.net-bs/js/dataTables.bootstrap'
 
 // Import popper.js for Bootstrap 3
 import 'popper.js'
