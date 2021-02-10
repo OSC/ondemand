@@ -243,4 +243,30 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     ENV["OOD_NATIVE_VNC_LOGIN_HOST"] = "owens.osc.edu"
     assert_equal ENV["OOD_NATIVE_VNC_LOGIN_HOST"], ConfigurationSingleton.new.native_vnc_login_host
   end
+
+  test "reads pinned apps from config.yml" do
+    Dir.mktmpdir do |dir|
+      cfg_file = Pathname.new(dir).join("ondemand.yml")
+      expected_cfg = {
+        pinned_apps: [
+          "sys/bc_osc_jupyter",
+          "sys/bc_osc_rstudio_server",
+          "sys/iqmol",
+        ]
+      }
+      File.open cfg_file, "w" do |f|
+        f.write(expected_cfg.transform_keys(&:to_s).to_yaml)
+      end
+
+      with_modified_env(OOD_CONFIG_FILE: cfg_file.to_s) do
+        assert_equal expected_cfg[:pinned_apps], ConfigurationSingleton.new.pinned_apps
+      end
+    end
+  end
+
+  test "does not throw error when it can't read ondemand.yml" do
+    with_modified_env(OOD_CONFIG_FILE: "/dev/null") do
+      assert_equal ConfigurationSingleton.new.pinned_apps, []
+    end
+  end
 end

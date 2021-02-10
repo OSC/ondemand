@@ -26,7 +26,7 @@ class OodApp
   end
 
   def invalid_batch_connect_app?
-    batch_connect_app? && batch_connect.sub_app_list.none?(&:valid?)
+    batch_connect_app? && sub_app_list.none?(&:valid?)
   end
 
   def should_appear_in_nav?
@@ -115,7 +115,7 @@ class OodApp
         end.sort_by { |lnk| lnk.title }
       end
     elsif role == "batch_connect"
-      batch_connect.sub_app_list.select(&:valid?).map(&:link)
+      sub_app_list.select(&:valid?).map(&:link)
     else
       [
         OodAppLink.new(
@@ -134,8 +134,8 @@ class OodApp
     # hack - but at least this hack is in a method next to the method it is
     # coupled with and this prevents control coupling from the outside by doing
     # something atrocious like links(validate: false)
-    if role == "batch_connect"
-      batch_connect.sub_app_list.map(&:link)
+    if batch_connect_app?
+      sub_app_list.map(&:link)
     else
       links
     end
@@ -276,6 +276,18 @@ class OodApp
   # @return [String] memoized version string
   def version
     @version ||= (version_from_file || version_from_git || "unknown").strip
+  end
+
+  # test whether this object is equal to another.
+  # @return [Boolean]
+  def ==(other)
+    other.respond_to?(:url) ? url == other.url : false
+  end
+
+  protected
+
+  def sub_app_list
+    batch_connect.sub_app_list
   end
 
   private

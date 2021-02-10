@@ -5,6 +5,7 @@
   <div class="row">
     <% if @motd %>
       <div class="col-md-8">
+        <%= render "pinned_apps" if pinned_apps? %>
         <%# This assumes @motd_file responds to `to_partial_path` %>
         <%= render @motd %>
       </div>
@@ -28,5 +29,6 @@
     <% end %>
   </div>
 <% else %>
+  <%= render "pinned_apps" if pinned_apps? %>
   <%= render @motd if @motd %>
 <% end %>
