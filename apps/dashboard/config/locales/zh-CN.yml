@@ -130,3 +130,8 @@ zh-CN:
     sharing_welcome_msg_html: |
       可以从上方导航栏中的下拉菜单访问群集访问应用程序。
       <br>自定义共享应用程序可以在下面使用。
+
+    # all_apps_table_app_column: "Name"
+    # all_apps_table_install_column: "Install Location"
+    # all_apps_table_category_column: "Category"
+    # all_apps_table_sub_category_column: "Sub Category"

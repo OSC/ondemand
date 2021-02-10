@@ -38,6 +38,16 @@ tr.app {
    font-size: 14px;
 }
 
+.apps-table .app-icon {
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+}
+
+.apps-table p {
+  display: inline-block;
+}
+
 // awesim colors - FIXME: aweful lot for a list of colors to cycle through
 // would be better to gave a default grey and then cycle based on a list in an
 // initializer

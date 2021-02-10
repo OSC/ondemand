@@ -7,15 +7,26 @@
   </li>
 </ol>
 
-<div class="row">
-  <div class="col-md-3">
-    <div class="panel panel-default">
-      <div class="panel-heading"><%= t('dashboard.apps_system_apps_title') %></div>
-      <div class="panel-body">
-        <%= render partial: "app_list", collection: @core_app_groups %>
-      </div>
-    </div>
-  </div>
+<table class="table apps-table" id="all-apps-table">
+  <thead>
+    <tr>
+      <th scope="col"><%= t('dashboard.all_apps_table_app_column') %></th>
+      <th scope="col"><%= t('dashboard.all_apps_table_install_column') %></th>
+      <th scope="col"><%= t('dashboard.all_apps_table_category_column') %></th>
+      <th scope="col"><%= t('dashboard.all_apps_table_sub_category_column') %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%- @sys_apps.each do |group| -%>
+      <%= render partial: "app_group_rows", locals: { group: group, install_location: 'System App' } %>
+    <% end %>
 
-  <%= render partial: "app_list", collection: @app_groups, layout: "col3_layout" %>
-</div>
+    <%- @usr_apps.each do |group| -%>
+      <%= render partial: "app_group_rows", locals: { group: group, install_location: 'Shared App' } %>
+    <% end %>
+
+    <%- @dev_apps.each do |group| -%>
+      <%= render partial: "app_group_rows", locals: { group: group, install_location: 'Developer App' } %>
+    <% end %>
+  </tbody>
+</table>

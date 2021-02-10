@@ -149,3 +149,8 @@ en:
     sharing_welcome_msg_html: |
       Cluster access applications are available from the dropdown menus in the navbar above.
       <br>Custom shared apps are available below.
+
+    all_apps_table_app_column: "Name"
+    all_apps_table_install_column: "Install Location"
+    all_apps_table_category_column: "Category"
+    all_apps_table_sub_category_column: "Sub Category"
