@@ -1,0 +1,10 @@
+<%- group.apps.each do |app| %>
+  <%- app.links.each do |link| %>
+    <tr>
+      <th><%= render partial: "link", locals: { link: link } %></th>
+      <td><%= install_location %></td>
+      <td><%= app.category %></td>
+      <td><%= app.subcategory %></td>
+    </tr>
+  <%- end -%>
+<%- end -%>

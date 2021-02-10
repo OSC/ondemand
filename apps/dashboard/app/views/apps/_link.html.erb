@@ -1,19 +1,22 @@
-<% app.links.each do |link| %>
+<div>
   <%=
     link_to(
       link.url.to_s,
-      class: "list-group-item",
-      title: link.title,
       data: {
         toggle: "popover",
         content: manifest_markdown(link.description),
         html: true,
         trigger: "hover",
+        title: link.title,
         container: "body"
       },
       target: link.new_tab? ? "_blank" : nil
     ) do
   %>
-    <%= icon_tag(link.icon_uri) %> <%= link.title %>
+    <div class="center-block">
+      <%= icon_tag(link.icon_uri) %>
+      <%= content_tag(:p, link.title, class: "text-center") %>
+    </div>
   <% end %>
-<% end %>
+</div>
+
