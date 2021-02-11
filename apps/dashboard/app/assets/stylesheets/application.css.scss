@@ -119,3 +119,8 @@ pre.motd-monospaced {
   color: white;
   font-weight: bold;
 }
+
+#path-breadcrumbs.breadcrumb > li:nth-of-type(2)::before {
+  // as long as the first path item is /, we will omit the divider
+  content: "";
+}

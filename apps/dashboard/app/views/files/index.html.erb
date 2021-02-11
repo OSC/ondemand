@@ -16,7 +16,7 @@
   </label>
 </div>
 
-<ol id="breadcrumbs" class="breadcrumb">
+<ol id="path-breadcrumbs" class="breadcrumb">
   <%= render partial: 'breadcrumb', collection: @path.descend, as: :file %>
 </ol>
 
@@ -570,7 +570,7 @@ function goto(url, pushState = true){
   table.ajax.url(url);
 
   table.ajax.reload(function(data){
-    $('#breadcrumbs').html(data.breadcrumbs_html);
+    $('#path-breadcrumbs').html(data.breadcrumbs_html);
 
     //FIXME: control coupling
     //
@@ -607,7 +607,7 @@ function clickEventIsSignificant(event) {
   )
 }
 
-$('#directory-contents tbody, #breadcrumbs, #favorites').on('click', 'a.d', function(){
+$('#directory-contents tbody, #path-breadcrumbs, #favorites').on('click', 'a.d', function(){
   if(clickEventIsSignificant(event)){
     event.preventDefault();
     event.cancelBubble = true;
