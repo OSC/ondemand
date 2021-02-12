@@ -1,10 +1,31 @@
-<%- group.apps.each do |app| %>
-  <%- app.links.each do |link| %>
+<%- group.apps.each do |app| -%>
+  <%- if app.role == "files" -%>
     <tr>
-      <th><%= render partial: "link", locals: { link: link } %></th>
+      <th>
+        <div class="btn-group">
+          <button type="button" class="btn dropdown-toggle btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Files
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <%- app.links.each do |link| -%>
+            <li><%= render partial: "link", locals: { link: link } %></li>
+            <%- end -%>
+          </ul>
+        </div>
+      </th>
       <td><%= install_location %></td>
       <td><%= app.category %></td>
       <td><%= app.subcategory %></td>
     </tr>
+  <%- else -%>
+    <%- app.links.each do |link| -%>
+      <tr>
+        <th><%= render partial: "link", locals: { link: link } %></th>
+        <td><%= install_location %></td>
+        <td><%= app.category %></td>
+        <td><%= app.subcategory %></td>
+      </tr>
+    <%- end -%>
   <%- end -%>
 <%- end -%>
