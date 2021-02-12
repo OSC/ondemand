@@ -3,7 +3,7 @@ require 'ostruct'
 class AppsController < ApplicationController
 
   def index
-    @sys_apps = sys_app_groups.reject {|g| g.title == "Files" }
+    @sys_apps = sys_app_groups
     @dev_apps = OodAppGroup.groups_for(apps: dev_apps)
     @usr_apps = OodAppGroup.groups_for(apps: usr_apps)
   end
