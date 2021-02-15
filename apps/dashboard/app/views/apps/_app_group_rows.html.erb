@@ -14,7 +14,7 @@
           </ul>
         </div>
       </th>
-      <td><%= install_location %></td>
+      <td><%= install_location(app) %></td>
       <td><%= app.category %></td>
       <td><%= app.subcategory %></td>
     </tr>
@@ -22,7 +22,7 @@
     <%- app.links.each do |link| -%>
       <tr>
         <th><%= render partial: "link", locals: { link: link } %></th>
-        <td><%= install_location %></td>
+        <td><%= install_location(app) %></td>
         <td><%= app.category %></td>
         <td><%= app.subcategory %></td>
       </tr>

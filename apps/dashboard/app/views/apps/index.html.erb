@@ -18,15 +18,15 @@
   </thead>
   <tbody>
     <%- @sys_apps.each do |group| -%>
-      <%= render partial: "app_group_rows", locals: { group: group, install_location: 'System App' } %>
+      <%= render partial: "app_group_rows", locals: { group: group } %>
     <% end %>
 
     <%- @usr_apps.each do |group| -%>
-      <%= render partial: "app_group_rows", locals: { group: group, install_location: 'Shared App' } %>
+      <%= render partial: "app_group_rows", locals: { group: group } %>
     <% end %>
 
     <%- @dev_apps.each do |group| -%>
-      <%= render partial: "app_group_rows", locals: { group: group, install_location: 'Developer App' } %>
+      <%= render partial: "app_group_rows", locals: { group: group } %>
     <% end %>
   </tbody>
 </table>
