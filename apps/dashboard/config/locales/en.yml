@@ -154,3 +154,8 @@ en:
     all_apps_table_install_column: "Install Location"
     all_apps_table_category_column: "Category"
     all_apps_table_sub_category_column: "Sub Category"
+    all_apps_table_install_location_dev: "Developer Apps"
+    all_apps_table_install_location_sys: "System Apps"
+    all_apps_table_install_location_usr: "Shared Apps"
+
+    unknown: "Unknown"
