@@ -1,0 +1,179 @@
+---
+cluster:
+  - "owens"
+form:
+  - version
+  - account
+  - bc_num_hours
+  - node_type
+  - num_cores
+  - include_tutorials
+  - bc_email_on_started
+attributes:
+  num_cores:
+    widget: "number_field"
+    label: "Number of cores"
+    value: 1
+    help: |
+      Number of cores on node type (4 GB per core unless requesting whole
+      node). Leave blank if requesting full node.
+    min: 1
+    max: 28
+    step: 1
+  account:
+    label: "Project"
+  node_type:
+    widget: select
+    label: "Node type"
+    help: |
+      - **Standard Compute** <br>
+        These are standard HPC machines. Owens has 648 of these nodes with 40
+        cores and 128 GB of memory. Pitzer has 224 with 40 cores and
+        340 with 48. All pitzer nodes have 192 GB of RAM. Chosing any will decrease
+        your wait time.
+      - **GPU Enabled** <br>
+        These are HPC machines GPUs. Owens has 160 nodes with 1 [NVIDIA Tesla P100 GPU]
+        on Owens and Pitzer has 74 with 2 [NVIDIA Tesla V100 GPUs]. They have the same
+        CPU and memory characteristics of standard compute. Though Pitzer's 40 core machines
+        have 2 GPUs with 16 GB of RAM and 48 core machines have 2with 32 GB of RAM.
+        Densegpu types have 4 GPUs with 16 GB of RAM.
+      - **Large Memory** <br>
+        These are HPC machines with very large amounts of memory. Owens has 16 hugemem
+        with 48 cores and 1.5 TB of RAM. Pitzer has 4 with 3 TB of RAM and 80 cores.
+        Pitzer also has 12 Largmem nodes have 48 cores with 768 GB of RAM.
+
+      [NVIDIA Tesla P100 GPU]: http://www.nvidia.com/object/tesla-p100.html
+      [NVIDIA Tesla V100 GPUs]: https://www.nvidia.com/en-us/data-center/v100/
+    options:
+      - [
+          "any",     "any",
+          data-min-ppn-owens: 1,
+          data-max-ppn-owens: 28,
+          data-min-ppn-pitzer: 1,
+          data-max-ppn-pitzer: 48,
+          data-option-for-owens: true,
+          data-option-for-pitzer: true
+        ]
+      - [
+          "40 core",     "any-40core",
+          data-min-ppn-pitzer: 1,
+          data-max-ppn-pitzer: 40,
+          data-option-for-owens: false,
+          data-option-for-pitzer: true
+        ]
+      - [
+          "48 core",     "any-48core",
+          data-min-ppn-pitzer: 1,
+          data-max-ppn-pitzer: 48,
+          data-option-for-owens: false,
+          data-option-for-pitzer: true
+        ]
+      - [
+          "any gpu",     "gpu",
+          data-min-ppn-owens: 1,
+          data-max-ppn-owens: 28,
+          data-min-ppn-pitzer: 1,
+          data-max-ppn-pitzer: 48,
+          data-option-for-owens: true,
+          data-option-for-pitzer: true
+        ]
+      - [
+          "40 core gpu",     "gpu-40core",
+          data-min-ppn-pitzer: 1,
+          data-max-ppn-pitzer: 40,
+          data-option-for-owens: false,
+          data-option-for-pitzer: true
+        ]
+      - [
+          "48 core gpu",     "gpu-48core",
+          data-min-ppn-pitzer: 1,
+          data-max-ppn-pitzer: 48,
+          data-option-for-owens: false,
+          data-option-for-pitzer: true
+        ]
+      - [
+          "hugemem", "hugemem",
+          data-min-ppn-owens: 48,
+          data-max-ppn-owens: 48,
+          data-min-ppn-pitzer: 80,
+          data-max-ppn-pitzer: 80,
+          data-option-for-owens: true,
+          data-option-for-pitzer: true
+        ]
+      - [
+          "largemem", "largemem",
+          data-min-ppn-pitzer: 48,
+          data-max-ppn-pitzer: 48,
+          data-option-for-owens: false,
+          data-option-for-pitzer: true
+        ]
+      - [
+          "debug",   "debug",
+          data-min-ppn-owens: 1,
+          data-max-ppn-owens: 28,
+          data-min-ppn-pitzer: 1,
+          data-max-ppn-pitzer: 48,
+          data-option-for-owens: true,
+          data-option-for-pitzer: true
+        ]
+  version:
+    widget: select
+    label: "R version"
+    help: "This defines the version of R you want to load."
+    options:
+      - [
+          "4.0.2", "app_rstudio_server/4.0.2",
+          data-option-for-owens: true,
+          data-option-for-pitzer: true
+        ]
+      - [
+          "3.6.3", "app_rstudio_server/3.6.3",
+          data-option-for-owens: true,
+          data-option-for-pitzer: true
+        ]
+      - [
+          "3.6.1", "gnu/9.1.0 mkl/2019.0.3 R/3.6.1 rstudio/1.1.380_server texlive",
+          data-option-for-owens: true,
+          data-option-for-pitzer: false
+        ]
+      - [
+          "3.6.0", "gnu/7.3.0 mkl/2018.0.3 R/3.6.0 rstudio/1.1.380_server texlive",
+          data-option-for-owens: true,
+          data-option-for-pitzer: false
+        ]
+      - [
+          "3.6.0", "gnu/7.3.0 mkl/2018.0.3 R/3.6.0 rstudio/1.2.1335 texlive",
+          data-option-for-owens: false,
+          data-option-for-pitzer: true
+        ]
+      - [
+          "3.5.2", "intel/18.0.4 R/3.5.2 rstudio/1.1.456 texlive",
+          data-option-for-owens: false,
+          data-option-for-pitzer: true
+        ]
+      - [
+          "3.5.1", "intel/18.0.4 R/3.5.1 rstudio/1.1.456 texlive",
+          data-option-for-owens: false,
+          data-option-for-pitzer: true
+        ]
+      - [
+          "3.5.0", "intel/18.0.3 R/3.5.0 rstudio/1.1.380_server texlive",
+          data-option-for-owens: true,
+          data-option-for-pitzer: false
+        ]
+      - [
+          "3.4.2", "intel/16.0.3 R/3.4.2 rstudio/1.1.380_server texlive",
+          data-option-for-owens: true,
+          data-option-for-pitzer: false
+        ]
+      - [
+          "3.3.2", "intel/16.0.3 R/3.3.2 rstudio/1.0.136_server texlive",
+          data-option-for-owens: true,
+          data-option-for-pitzer: false
+        ]
+  include_tutorials:
+    widget: "check_box"
+    label: Include access to OSC tutorial/workshop materials.
+    help: |
+      Accessing the tutorial materials will start you with a clean environment.
+      While running in tutorial mode you will not have access to the files your $HOME.
