@@ -1,7 +1,7 @@
 <%- group.apps.each do |app| -%>
   <%- if app.role == "files" -%>
-    <tr>
-      <th>
+    <tr id="<%= row_id(app.url) %>">
+      <td>
         <div class="btn-group">
           <button type="button" class="btn dropdown-toggle btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Files
@@ -13,15 +13,15 @@
             <%- end -%>
           </ul>
         </div>
-      </th>
+      </td>
       <td><%= install_location(app) %></td>
       <td><%= app.category %></td>
       <td><%= app.subcategory %></td>
     </tr>
   <%- else -%>
     <%- app.links.each do |link| -%>
-      <tr>
-        <th><%= render partial: "link", locals: { link: link } %></th>
+      <tr id="<%= row_id(link.url) %>">
+        <td><%= render partial: "link", locals: { link: link } %></td>
         <td><%= install_location(app) %></td>
         <td><%= app.category %></td>
         <td><%= app.subcategory %></td>

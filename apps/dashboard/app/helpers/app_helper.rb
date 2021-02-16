@@ -18,4 +18,8 @@ module AppHelper
       I18n.t('dashboard.unknown')
     end
   end
+
+  def row_id(url)
+    url.gsub("/", "-").slice(1, url.length)
+  end
 end

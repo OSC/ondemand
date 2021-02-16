@@ -1,0 +1,13 @@
+---
+name: RStudio Server
+category: Interactive Apps
+subcategory: Servers
+role: batch_connect
+description: |
+  This app will launch [RStudio Server] an IDE for [R] on the [Owens] or [Pitzer]
+  clusters.
+
+  [RStudio Server]: https://www.rstudio.com/products/rstudio-server/
+  [R]: https://www.r-project.org/
+  [Owens]: https://www.osc.edu/resources/technical_support/supercomputers/owens
+  [Pitzer]: https://www.osc.edu/resources/technical_support/supercomputers/pitzer
