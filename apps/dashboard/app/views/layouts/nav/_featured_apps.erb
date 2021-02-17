@@ -4,7 +4,9 @@
     <% OodAppGroup.groups_for(apps: group.apps, group_by: :subcategory).each_with_index do |g, index| %>
       <%= content_tag "li", "", class: "divider", role: "separator" if index > 0 %>
       <%= content_tag "li", g.title, class: "dropdown-header" unless g.title.empty? %>
-      <% g.apps.each do |app| %>
+      <% g.apps.each_with_index do |app, app_index| %>
+        <%- rendering_pinned_apps = app.subcategory == "Pinned Apps" -%>
+        <%- break if rendering_pinned_apps && app_index >= Configuration.pinned_apps_menu_length -%>
         <% app.links.each do |link| %>
           <li>
             <%=
@@ -14,6 +16,9 @@
                 target: link.new_tab? ? "_blank" : nil
               ) do
             %>
+              <%- if rendering_pinned_apps && g.apps.size > Configuration.pinned_apps_menu_length -%>
+                </span>(<%= app_index+1 %>/<%= g.apps.size %>)</span>
+              <%- end -%>
               <%= icon_tag(link.icon_uri) %> <%=link.title %>
               <% if link.subtitle.present? %>
                 <%= content_tag(:small, link.subtitle, style: "text-indent: 20px", class: 'visible-xs-block visible-sm-inline visible-md-inline visible-lg-inline') %>
