@@ -24,7 +24,7 @@ class DashboardControllerTest < ActionController::TestCase
       elsif item['class'] && item['class'].include?("dropdown-header")
         { :header => item.text.strip }
       else
-        item.text.squish
+        item.text.strip
       end
     end
   end
@@ -172,9 +172,9 @@ class DashboardControllerTest < ActionController::TestCase
     dditems = dropdown_list_items(dd)
     assert dditems.any?, "dropdown list items not found"
     assert_equal [
-      { header: "Pinned Apps" },
-      "(1/4) Owens Desktop",
-      "(2/4) Jupyter Notebook",
+      { header: "Pinned Apps (showing 2 of 4)" },
+      "Owens Desktop",
+      "Jupyter Notebook",
       :divider,
       "All Apps"
     ], dditems
