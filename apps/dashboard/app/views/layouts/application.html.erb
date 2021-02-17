@@ -36,6 +36,7 @@
       </div>
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
         <ul class="nav navbar-nav">
+          <%= render partial: 'layouts/nav/featured_apps', locals: { group: @featured_group } if pinned_apps? %>
           <%= render partial: 'layouts/nav/group', collection: @nav_groups %>
           <%= render partial: 'layouts/nav/sessions', nav_groups: @nav_groups if Configuration.app_development_enabled? || @nav_groups.any?(&:has_batch_connect_apps?) %>
           <%= render partial: 'layouts/nav/all_apps' if Configuration.show_all_apps_link? %>
