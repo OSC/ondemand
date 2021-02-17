@@ -17,7 +17,7 @@
               ) do
             %>
               <%- if rendering_pinned_apps && g.apps.size > Configuration.pinned_apps_menu_length -%>
-                </span>(<%= app_index+1 %>/<%= g.apps.size %>)</span>
+                <%= content_tag(:small, "(#{app_index+1}/#{g.apps.size})", style: "text-indent: 20px", class: 'visible-xs-block visible-sm-inline visible-md-inline visible-lg-inline') %>
               <%- end -%>
               <%= icon_tag(link.icon_uri) %> <%=link.title %>
               <% if link.subtitle.present? %>
