@@ -2,9 +2,16 @@
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= group.title %><span class="caret"></span></a>
   <ul class="dropdown-menu">
     <% OodAppGroup.groups_for(apps: group.apps, group_by: :subcategory).each_with_index do |g, index| %>
+      <%- rendering_pinned_apps = g.apps.first.subcategory == "Pinned Apps" -%>
+      <%- if rendering_pinned_apps && g.apps.size > Configuration.pinned_apps_menu_length -%>
+        <%- title = "#{g.title} (showing #{Configuration.pinned_apps_menu_length} of #{g.apps.size})" %>
+      <%- else -%>
+        <%- title = g.title.to_s -%>
+      <%- end -%>
+
       <%= content_tag "li", "", class: "divider", role: "separator" if index > 0 %>
-      <%= content_tag "li", g.title, class: "dropdown-header" unless g.title.empty? %>
-      <% g.apps.each do |app| %>
+      <%= content_tag "li", title, class: "dropdown-header" unless g.title.empty? %>
+      <% g.apps.take(Configuration.pinned_apps_menu_length).each do |app| %>
         <% app.links.each do |link| %>
           <li>
             <%=
@@ -23,5 +30,8 @@
         <% end %>
       <% end %>
     <% end %>
+
+    <%= content_tag "li", "", class: "divider", role: "separator" %>
+    <%= render partial: 'layouts/nav/all_apps' %>
   </ul>
 </li>
