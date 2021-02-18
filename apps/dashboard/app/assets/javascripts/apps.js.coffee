@@ -3,4 +3,7 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 $(document).on 'ready turbolinks:load', ->
-  $('#all-apps-table').DataTable()
+  if($('#all-apps-table').length != 0)
+    $('#all-apps-table').DataTable({
+      stateSave: true
+    })
