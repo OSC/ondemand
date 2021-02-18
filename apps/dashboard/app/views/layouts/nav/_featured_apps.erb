@@ -11,8 +11,7 @@
 
       <%= content_tag "li", "", class: "divider", role: "separator" if index > 0 %>
       <%= content_tag "li", title, class: "dropdown-header" unless g.title.empty? %>
-      <% g.apps.each_with_index do |app, app_index| %>
-        <%- break if rendering_pinned_apps && app_index >= Configuration.pinned_apps_menu_length -%>
+      <% g.apps.take(Configuration.pinned_apps_menu_length).each do |app| %>
         <% app.links.each do |link| %>
           <li>
             <%=
