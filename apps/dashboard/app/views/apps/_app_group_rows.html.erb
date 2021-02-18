@@ -3,8 +3,10 @@
     <tr id="<%= row_id(app.url) %>">
       <td>
         <div class="btn-group">
+          <%= link_to app.links.first.url, class: 'btn btn-primary', target: '_blank' do %>
+          <span title="FontAwesome icon specified: folder" aria-hidden="true" class="fas fa-folder fa-fw"></span> Files
+          <% end %>
           <button type="button" class="btn dropdown-toggle btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Files
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu">
