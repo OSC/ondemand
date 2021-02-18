@@ -34,6 +34,9 @@ http {
 
   <%- end -%>
 
+  server_tokens off;
+  passenger_show_version_in_header off;
+
   # Kill all apps after they idle timeout
   passenger_min_instances 0;
 
