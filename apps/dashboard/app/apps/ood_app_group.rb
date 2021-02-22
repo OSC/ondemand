@@ -18,13 +18,23 @@ class OodAppGroup
   def title
     @title ||= begin
       if @_title == "Pinned Apps"
-        if apps.size > ::Configuration.pinned_apps_menu_length
-          "Pinned Apps (showing #{::Configuration.pinned_apps_menu_length} of #{apps.size})"
+        if apps.size > nav_limit
+          "Pinned Apps (showing #{nav_limit} of #{apps.size})"
         else
           "Pinned Apps"
         end
       else
         @_title
+      end
+    end
+  end
+
+  def nav_limit
+    @nav_limit ||= begin
+      if @_title == "Pinned Apps"
+        ::Configuration.pinned_apps_menu_length
+      else
+        apps.size
       end
     end
   end
