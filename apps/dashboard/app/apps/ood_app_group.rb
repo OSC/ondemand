@@ -1,9 +1,9 @@
 class OodAppGroup
-  attr_accessor :apps, :title
+  attr_accessor :apps
 
   def initialize(title: "", apps: [])
     @apps = apps
-    @title = title
+    @_title = title
   end
 
   def has_apps?
@@ -13,6 +13,30 @@ class OodAppGroup
   def has_batch_connect_apps?
     return @has_batch_connect_apps unless @has_batch_connect_apps.nil?
     @has_batch_connect_apps = apps.any?(&:batch_connect_app?)
+  end
+
+  def title
+    @title ||= begin
+      if @_title == "Pinned Apps"
+        if apps.size > nav_limit
+          "Pinned Apps (showing #{nav_limit} of #{apps.size})"
+        else
+          "Pinned Apps"
+        end
+      else
+        @_title
+      end
+    end
+  end
+
+  def nav_limit
+    @nav_limit ||= begin
+      if @_title == "Pinned Apps"
+        ::Configuration.pinned_apps_menu_length
+      else
+        apps.size
+      end
+    end
   end
 
   # given an array of apps, group those apps by app category (or the attribute)

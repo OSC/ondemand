@@ -260,6 +260,11 @@ end
     config.fetch(:pinned_apps, [])
   end
 
+  # The length of the "Pinned Apps" navbar menu
+  def pinned_apps_menu_length
+    config.fetch(:pinned_apps_menu_length, 6)
+  end
+
   private
 
   def config
