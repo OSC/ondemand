@@ -63,7 +63,42 @@
 </body>
 
 <script>
-  var combinedArr = [...darkThemes, ...brightThemes];
+  var getThemeTerminalPreferences = (function(){
+    var combinedArr = [...darkThemes, ...brightThemes];
+
+    return function(name){
+      // default theme terminal preferences
+      let prefs = {
+        'use-default-window-copy': true,
+        'ctrl-v-paste': true,
+        'ctrl-c-copy': true,
+        'cursor-blink': true,
+        'background-color': '#101010',
+        'foreground-color': '#F0F0F0',
+        'color-palette-overrides': null,
+        'cursor-color': '#FF0000' + '50',
+      };
+
+      let theme = combinedArr.find(t => t.name == name);
+
+      if(theme){
+        // return name
+        prefs = {
+          'use-default-window-copy': true,
+          'ctrl-v-paste': true,
+          'ctrl-c-copy': true,
+          'cursor-blink': true,
+          'background-color': theme.scheme.background,
+          'foreground-color': theme.scheme.text,
+          'color-palette-overrides': theme.scheme.colorPaletteOverrides,
+          'cursor-color': theme.scheme.cursor + '50',
+        };
+      }
+
+      return prefs;
+    }
+  })();
+
   var storage = window.localStorage;
   var oodShell,
   dirElement = document.getElementById("directory"),
@@ -77,44 +112,8 @@
     // Global variables that define the terminal
       var terminalContainer = document.getElementById('terminal'),
       webSocketUrl      = urlWithToken();
-      terminalPrefs     = {};
-      if (storage.getItem('scheme') !== null) {
-        var schemeTheme = storage.getItem('scheme');
-        var schemeObject;
-        combinedArr.forEach(function(ele) {
-          if (storage.getItem('scheme') === "default") {
-            schemeObject = {
-              'use-default-window-copy': true,
-              'ctrl-v-paste': true,
-              'ctrl-c-copy': true,
-              'cursor-blink': true,
-              'background-color': '#101010',
-              'foreground-color': '#F0F0F0',
-              'color-palette-overrides': null,
-              'cursor-color': '#FF0000' + '50',
-            };
 
-          } else if (storage.getItem('scheme') === ele.name) {
-              schemeObject = {
-              'use-default-window-copy': true,
-              'ctrl-v-paste': true,
-              'ctrl-c-copy': true,
-              'cursor-blink': true,
-              'background-color': ele.scheme.background,
-              'foreground-color': ele.scheme.text,
-              'color-palette-overrides': ele.scheme.colorPaletteOverrides,
-              'cursor-color': ele.scheme.cursor + '50',
-            };
-          }
-        })
-        terminalPrefs     =  schemeObject;
-      } else {
-        terminalPrefs     = {
-          'use-default-window-copy': true,
-          'ctrl-v-paste': true,
-          'ctrl-c-copy': true
-        };
-      }
+      terminalPrefs     = getThemeTerminalPreferences(storage.getItem('scheme'));
 
     // hterm default preferences are defined here. Switch to the tag that we're using.
     // https://chromium.googlesource.com/apps/libapps/+/master/hterm/js/hterm_preference_manager.js
@@ -148,41 +147,9 @@ dirElement.textContent += directory;
 
 
 schemeSelect.addEventListener("change", function(ev) {
-
   var choice  = ev.target.value;
   storage.setItem('scheme', choice);
-
-
-  combinedArr.forEach(function(ele) {
-    var schemeObject;
-    if (choice === "default") {
-      schemeObject = {
-        'use-default-window-copy': true,
-        'ctrl-v-paste': true,
-        'ctrl-c-copy': true,
-        'cursor-blink': true,
-        'background-color': '#101010',
-        'foreground-color': '#F0F0F0',
-        'color-palette-overrides': null,
-        'cursor-color': '#FF0000' + '50',
-      };
-
-    } else if (choice === ele.name) {
-        schemeObject = {
-        'use-default-window-copy': true,
-        'ctrl-v-paste': true,
-        'ctrl-c-copy': true,
-        'cursor-blink': true,
-        'background-color': ele.scheme.background,
-        'foreground-color': ele.scheme.text,
-        'color-palette-overrides': ele.scheme.colorPaletteOverrides,
-        'cursor-color': ele.scheme.cursor + '50',
-      };
-    }
-
-    oodShell.changeTheme(schemeObject);
-  })
-
+  oodShell.changeTheme(getThemeTerminalPreferences(choice));
 })
 </script>
 
