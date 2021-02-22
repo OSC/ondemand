@@ -250,9 +250,9 @@ end
     ENV['OOD_NATIVE_VNC_LOGIN_HOST']
   end
 
-  # Set the global configuration file
-  def config_file
-    Pathname.new(ENV['OOD_CONFIG_FILE'] || "/etc/ood/config/ondemand.yml")
+  # Set the global configuration directory
+  def config_directory
+    Pathname.new(ENV['OOD_CONFIG_D_DIRECTORY'] || "/etc/ood/config/ondemand.d")
   end
 
   # The configured pinned apps
@@ -267,11 +267,15 @@ end
   end
 
   def read_config
-    f = Configuration.config_file
-    YAML.safe_load(File.open(f.to_s)).symbolize_keys
-  rescue => e
-    Rails.logger.error("Can't read or parse #{Configuration.config_file} because of error #{e}")
-    {}
+    files = Pathname.glob([config_directory.join("*.yml"), config_directory.join("*.yaml")])
+    files.each_with_object({}) do |f, config|
+      begin
+        yml = YAML.safe_load(File.open(f.to_s)) || {}
+        config.deep_merge!(yml.deep_symbolize_keys)
+      rescue => e
+        Rails.logger.error("Can't read or parse #{f} because of error #{e}")
+      end
+    end
   end
 
   # The environment

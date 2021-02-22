@@ -1,0 +1,4 @@
+pinned_apps:
+  - "sys/bc_osc_jupyter"
+  - "sys/bc_osc_rstudio_server"
+  - "sys/iqmol"

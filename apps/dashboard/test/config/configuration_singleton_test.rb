@@ -12,6 +12,12 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     ENV.update(@env)
   end
 
+  def config_fixtures
+    {
+      OOD_CONFIG_D_DIRECTORY: "#{Rails.root}/test/fixtures/config/ondemand.d"
+    }
+  end
+
   test "should have default config root" do
     assert_equal Pathname.new("/etc/ood/config/apps/dashboard"), ConfigurationSingleton.new.config_root
   end
@@ -244,29 +250,46 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     assert_equal ENV["OOD_NATIVE_VNC_LOGIN_HOST"], ConfigurationSingleton.new.native_vnc_login_host
   end
 
-  test "reads pinned apps from config.yml" do
-    Dir.mktmpdir do |dir|
-      cfg_file = Pathname.new(dir).join("ondemand.yml")
-      expected_cfg = {
-        pinned_apps: [
-          "sys/bc_osc_jupyter",
-          "sys/bc_osc_rstudio_server",
-          "sys/iqmol",
-        ]
-      }
-      File.open cfg_file, "w" do |f|
-        f.write(expected_cfg.transform_keys(&:to_s).to_yaml)
-      end
+  test "reads pinned apps from config files" do
+    pinned_apps = [
+      "sys/bc_osc_jupyter",
+      "sys/bc_osc_rstudio_server",
+      "sys/iqmol",
+    ]
 
-      with_modified_env(OOD_CONFIG_FILE: cfg_file.to_s) do
-        assert_equal expected_cfg[:pinned_apps], ConfigurationSingleton.new.pinned_apps
-      end
+    with_modified_env(config_fixtures) do
+      assert_equal pinned_apps, ConfigurationSingleton.new.pinned_apps
     end
   end
 
-  test "does not throw error when it can't read ondemand.yml" do
-    with_modified_env(OOD_CONFIG_FILE: "/dev/null") do
+  test "does not throw error when it can't read config files" do
+    with_modified_env(OOD_CONFIG_FILE: "/dev/null", OOD_CONFIG_D_DIRECTORY: "/dev/null") do
       assert_equal ConfigurationSingleton.new.pinned_apps, []
+      assert_equal ConfigurationSingleton.new.send(:config), {}
+    end
+  end
+
+  test "does not read .bak files" do
+    with_modified_env(config_fixtures) do
+      cfg = ConfigurationSingleton.new.send(:config)
+      assert_nil cfg[:key_in_bak_file]
+    end
+  end
+
+  test "reads yaml with an a files" do
+    with_modified_env(config_fixtures) do
+      cfg = ConfigurationSingleton.new.send(:config)
+      assert_equal 'I got read!', cfg[:key_from_yaml_file]
+    end
+  end
+
+  test "reads arbitrary keys" do
+    with_modified_env(config_fixtures) do
+      cfg = ConfigurationSingleton.new.send(:config)
+      assert_equal 'test_value', cfg[:test_key]
+      assert_equal ['one', 'two', 'three'], cfg[:test_array]
+      assert_equal 'some_value', cfg[:test_hash][:some_key]
+      assert_equal ['four', 'five', 'six'], cfg[:test_hash][:another_array]
     end
   end
 end
