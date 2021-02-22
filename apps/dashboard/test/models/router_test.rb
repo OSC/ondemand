@@ -52,10 +52,10 @@ class RouterTest < ActiveSupport::TestCase
     dev_apps = sys_apps.map { |app| "dev/#{app.split("/")[1]}"}
     usr_apps = ["usr/me/my_shared_app", "usr/shared/bc_with_subapps", "usr/shared/bc_app"]
 
-    assert_equal sys_apps, Router.sys_apps.map { |app| app.token }
-    assert_equal dev_apps, Router.dev_apps.map { |app| app.token }
-    assert_equal usr_apps, Router.usr_apps.map { |app| app.token }
-    assert_equal sys_apps + usr_apps + dev_apps, Router.apps.map { |app| app.token }
+    assert_equal sys_apps.to_set, Router.sys_apps.map { |app| app.token }.to_set
+    assert_equal dev_apps.to_set, Router.dev_apps.map { |app| app.token }.to_set
+    assert_equal usr_apps.to_set, Router.usr_apps.map { |app| app.token }.to_set
+    assert_equal (sys_apps + usr_apps + dev_apps).to_set, Router.apps.map { |app| app.token }.to_set
   end
 
   test "pinned apps with specific dev apps" do
@@ -71,7 +71,7 @@ class RouterTest < ActiveSupport::TestCase
       'sys/should_get_filtered'
     ])
     
-    assert_equal real_apps, Router.pinned_apps.map { |app| app.token }
+    assert_equal real_apps.to_set, Router.pinned_apps.map { |app| app.token }.to_set
   end
 
   test "pinned apps with specific sys apps" do
@@ -88,7 +88,7 @@ class RouterTest < ActiveSupport::TestCase
       'sys/should_get_filtered'
     ])
     
-    assert_equal real_apps, Router.pinned_apps.map { |app| app.token }
+    assert_equal real_apps.to_set, Router.pinned_apps.map { |app| app.token }.to_set
   end
 
   test "pinned apps with wildcarded sys apps" do
@@ -111,7 +111,7 @@ class RouterTest < ActiveSupport::TestCase
     ]
     Configuration.stubs(:pinned_apps).returns(['sys/*'])
     
-    assert_equal all_apps, Router.pinned_apps.map { |app| app.token }
+    assert_equal all_apps.to_set, Router.pinned_apps.map { |app| app.token }.to_set
   end
 
   test "pinned apps with wildcarded sys sub apps" do
@@ -129,7 +129,7 @@ class RouterTest < ActiveSupport::TestCase
       "sys/pseudofun"
     ])
     
-    assert_equal apps, Router.pinned_apps.map { |app| app.token }
+    assert_equal apps.to_set, Router.pinned_apps.map { |app| app.token }.to_set
   end
 
   test "pinned apps with specific usr apps" do
@@ -150,7 +150,7 @@ class RouterTest < ActiveSupport::TestCase
       'usr/cant_see/app_two',
     ])
 
-    assert_equal real_apps, Router.pinned_apps.map { |app| app.token }
+    assert_equal real_apps.to_set, Router.pinned_apps.map { |app| app.token }.to_set
   end
 
   test "pinned apps with wildcarded usr apps" do
@@ -169,7 +169,7 @@ class RouterTest < ActiveSupport::TestCase
       'usr/should_get_filtered'
     ])
 
-    assert_equal apps, Router.pinned_apps.map { |app| app.token }
+    assert_equal apps.to_set, Router.pinned_apps.map { |app| app.token }.to_set
   end
 
   test "pinned apps with wildcarded usr sub apps apps" do
@@ -187,7 +187,7 @@ class RouterTest < ActiveSupport::TestCase
       'usr/should_get_filtered'
     ])
 
-    assert_equal apps, Router.pinned_apps.map { |app| app.token }
+    assert_equal apps.to_set, Router.pinned_apps.map { |app| app.token }.to_set
   end
 
   test "pinned apps with usr sys and dev apps" do
@@ -226,7 +226,7 @@ class RouterTest < ActiveSupport::TestCase
       'dev/*'
     ])
 
-    assert_equal apps, Router.pinned_apps.map { |app| app.token }
+    assert_equal apps.to_set, Router.pinned_apps.map { |app| app.token }.to_set
   end
 
   test "pinned apps wont duplicate entries" do
@@ -235,7 +235,7 @@ class RouterTest < ActiveSupport::TestCase
     Configuration.stubs(:pinned_apps).returns(['sys/bc_jupyter', 'sys/*', 'sys/bc_jupyter', 'sys/pseudofun'])
 
     all_apps = [
-      "sys/bc_jupyter", # sys/bc_jupyter configured first
+      "sys/bc_jupyter",
       "sys/activejobs",
       "sys/bc_desktop/oakley", # picks up sub-apps instead of the main app
       "sys/bc_desktop/owens",
@@ -249,6 +249,7 @@ class RouterTest < ActiveSupport::TestCase
       "sys/systemstatus"
     ]
 
-    assert_equal all_apps, Router.pinned_apps.map { |app| app.token }
+    assert_equal all_apps.size, Router.pinned_apps.size
+    assert_equal all_apps.to_set, Router.pinned_apps.map { |app| app.token }.to_set
   end
 end
