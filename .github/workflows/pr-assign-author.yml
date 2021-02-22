@@ -1,0 +1,15 @@
+# This action runs when a new PR is opened or repoened and automatically
+# assigns the PR to the author.
+name: Assign to author PR
+
+on:
+  pull_request_target:
+    types: [opened, reopened]
+
+jobs:
+  assign-author:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: toshimaru/auto-author-assign@v1.2.0
+        with:
+          repo-token: ${{ secrets.OSCWIAG_ISSUE_TOKEN }}
