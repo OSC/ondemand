@@ -24,10 +24,19 @@ OodShell.prototype.runTerminal = function () {
   // Create an instance of hterm.Terminal
   this.term = new hterm.Terminal();
 
-  // Set preferences for terminal
-  for (var k in this.prefs) {
-    this.term.prefs_.set(k, this.prefs[k]);
-  }
+  // FIXME:
+  // instead of changing theme here, idealy we would initialize
+  // the custom storage used by preferences to associate a profile_id with a set of preferences
+  // then above we would do new hterm.Terminal(profile_id)
+  // and when we change the theme we would do
+  // term.setProfile(profile_id)
+  //
+  // but as you see from https://gist.github.com/russelldavies/5745528 as an example
+  // there isn't a clear approach to doing this because the way to create a profile appears to be through a term object
+  // though we could create a throw-away term object as an experiment
+  //
+  // for now we change the theme here but add guard clauses to hterm when screen doesn't exist yet
+  this.changeTheme(this.prefs)
 
   // Handler that fires when terminal is initialized and ready for use
   this.term.onTerminalReady = function () {
@@ -41,10 +50,14 @@ OodShell.prototype.runTerminal = function () {
     io.sendString       = that.sendString.bind(that);
     io.onTerminalResize = that.onTerminalResize.bind(that);
 
+    // FIXME: can't changeTheme here because the default theme which is dark flashes first
+    // Set preferences for terminal
+    // that.changeTheme(that.prefs)
+
     // Capture all keyboard input
     this.installKeyboard();
   };
-  
+
   // Patch cursor setting
   this.term.options_.cursorVisible = true;
 
@@ -94,7 +107,7 @@ OodShell.prototype.sendString = function (str) {
 };
 
 OodShell.prototype.changeTheme = function (theme) {
-    for (var k in theme) {
+  for (var k in theme) {
     this.term.prefs_.set(k, theme[k]);
   }
 }

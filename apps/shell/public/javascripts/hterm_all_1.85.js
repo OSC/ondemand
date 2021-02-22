@@ -10859,9 +10859,12 @@ hterm.ScrollPort.prototype.getForegroundColor = function() {
 };
 
 hterm.ScrollPort.prototype.setForegroundColor = function(color) {
-  this.screen_.style.color = color;
-  this.scrollUpButton_.style.backgroundColor = color;
-  this.scrollDownButton_.style.backgroundColor = color;
+  if(this.screen_)
+    this.screen_.style.color = color;
+  if(this.scrollUpButton_)
+    this.scrollUpButton_.style.backgroundColor = color;
+  if(this.scrollDownButton_)
+    this.scrollDownButton_.style.backgroundColor = color;
 };
 
 hterm.ScrollPort.prototype.getBackgroundColor = function() {
@@ -10869,13 +10872,17 @@ hterm.ScrollPort.prototype.getBackgroundColor = function() {
 };
 
 hterm.ScrollPort.prototype.setBackgroundColor = function(color) {
-  this.screen_.style.backgroundColor = color;
-  this.scrollUpButton_.style.color = color;
-  this.scrollDownButton_.style.color = color;
+  if(this.screen_)
+    this.screen_.style.backgroundColor = color;
+  if(this.scrollUpButton_)
+    this.scrollUpButton_.style.color = color;
+  if(this.scrollDownButton_)
+    this.scrollDownButton_.style.color = color;
 };
 
 hterm.ScrollPort.prototype.setBackgroundImage = function(image) {
-  this.screen_.style.backgroundImage = image;
+  if(this.screen_)
+    this.screen_.style.backgroundImage = image;
 };
 
 hterm.ScrollPort.prototype.setBackgroundSize = function(size) {
