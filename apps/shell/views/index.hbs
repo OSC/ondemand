@@ -27,7 +27,7 @@
       </ul>
             <ul class="navbar-nav left-padding-some">
           <li class="nav-item hidden-xs">
-            <label id="directory" class="label hidden-xs"></label>
+            <label id="directory" class="label hidden-xs">{{#if dir}}Initial directory: {{dir}}{{/if}}</label>
           </li>
       </ul>
           <ul class="navbar-nav form-inline navbar-right left-padding-none">
@@ -101,7 +101,6 @@
 
   var storage = window.localStorage;
   var oodShell,
-  dirElement = document.getElementById("directory"),
   schemeSelect = document.getElementById("colors");
 
   if (storage.getItem('scheme') !== null) {
@@ -136,15 +135,6 @@
 
     return base + separator + "csrf={{csrfToken}}";
   }
-
-var directory = "{{dir}}";
-
-if (directory != "") {
-  directory = "Initial Directory: {{dir}}";
-}
-
-dirElement.textContent += directory;
-
 
 schemeSelect.addEventListener("change", function(ev) {
   var choice  = ev.target.value;
