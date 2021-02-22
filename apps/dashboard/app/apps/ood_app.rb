@@ -289,7 +289,7 @@ class OodApp
   end
 
   # The subapp list may only be of size 1 and actually contains
-  # this appp. This returns true if there are indeed sub apps that
+  # this app. This returns true if there are indeed sub apps that
   # that differ from this object.
   def has_sub_apps?
     if batch_connect_app?
