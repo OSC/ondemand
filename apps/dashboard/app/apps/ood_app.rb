@@ -284,10 +284,19 @@ class OodApp
     other.respond_to?(:url) ? url == other.url : false
   end
 
-  protected
-
   def sub_app_list
-    batch_connect.sub_app_list
+    batch_connect_app? ? batch_connect.sub_app_list : []
+  end
+
+  # The subapp list may only be of size 1 and actually contains
+  # this appp. This returns true if there are indeed sub apps that
+  # that differ from this object.
+  def has_sub_apps?
+    if batch_connect_app?
+      sub_app_list.size > 1 || sub_app_list[0] != batch_connect
+    else
+      false
+    end
   end
 
   private
