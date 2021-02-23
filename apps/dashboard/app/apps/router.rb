@@ -1,25 +1,5 @@
 class Router
 
-  # All the system install apps
-  def self.sys_apps
-    @sys_apps ||= SysRouter.apps
-  end
-
-  # All the developer apps
-  def self.dev_apps
-    @dev_apps ||= DevRouter.apps
-  end
-
-  # All the shared apps, from all possible owners
-  def self.usr_apps
-    @usr_apps ||= UsrRouter.all_apps(owners: UsrRouter.owners)
-  end
-
-  # A combination of all sys, dev and usr apps
-  def self.apps
-    @apps ||= sys_apps + usr_apps + dev_apps
-  end
-
   # Return a Router [SysRouter, UsrRouter or DevRouter] based off
   # of the input token. Returns nil if nothing is parsed correctly.
   #
@@ -44,9 +24,9 @@ class Router
   # an empty array.
   #
   # @return [FeaturedApp]
-  def self.pinned_apps
-    @pinned_apps ||= Configuration.pinned_apps.to_a.each_with_object([]) do |token, apps|
-      apps.concat pinned_apps_from_token(token)
+  def self.pinned_apps(tokens, all_apps)
+    @pinned_apps ||= tokens.to_a.each_with_object([]) do |token, pinned_apps|
+      pinned_apps.concat pinned_apps_from_token(token, all_apps)
     end.uniq do |app|
       app.token.to_s
     end.reject do |app|
@@ -56,8 +36,8 @@ class Router
 
   private
 
-  def self.pinned_apps_from_token(token)
-    apps.select do |app|
+  def self.pinned_apps_from_token(token, all_apps)
+    all_apps.select do |app|
       glob_match = File.fnmatch(token, app.token, File::FNM_EXTGLOB)
       sub_app_match = token.start_with?(app.token) # find bc/desktop/pitzer from sys/bc_desktop
 
