@@ -292,4 +292,21 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       assert_equal ['four', 'five', 'six'], cfg[:test_hash][:another_array]
     end
   end
+
+  test "reads from good erb file" do
+    with_modified_env(config_fixtures) do
+      cfg = ConfigurationSingleton.new.send(:config)
+      assert_equal 42, cfg[:the_erb_answer]
+    end
+  end
+
+  test "logs read and parse errors" do
+    with_modified_env(config_fixtures) do
+      bad_erb_rex = /bad_erb.yml.erb because of error undefined local variable or method `wont_find_this_functon/
+      bad_yml_rex = /not_good_yml.yml because of error \(<unknown>\): did not find expected '-' indicator while parsing a block collection at line 2 column 3/
+      Rails.logger.expects(:error).with(regexp_matches(bad_erb_rex)).at_least_once
+      Rails.logger.expects(:error).with(regexp_matches(bad_yml_rex)).at_least_once
+      ConfigurationSingleton.new.send(:config)
+    end
+  end
 end

@@ -267,10 +267,11 @@ end
   end
 
   def read_config
-    files = Pathname.glob([config_directory.join("*.yml"), config_directory.join("*.yaml")])
+    files = Pathname.glob([config_directory.join("*.{yml,yaml}"), config_directory.join("*.{yml,yaml}.erb")])
     files.each_with_object({}) do |f, config|
       begin
-        yml = YAML.safe_load(File.open(f.to_s)) || {}
+        content = ERB.new(f.read, nil, "-").result(binding)
+        yml = YAML.safe_load(content) || {}
         config.deep_merge!(yml.deep_symbolize_keys)
       rescue => e
         Rails.logger.error("Can't read or parse #{f} because of error #{e}")
