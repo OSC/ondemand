@@ -25,3 +25,6 @@ import 'popper.js'
 
 // Import Bootstrap 3
 import 'bootstrap/dist/js/bootstrap'
+
+// Import application stylesheets
+require.context('../stylesheets', true)
