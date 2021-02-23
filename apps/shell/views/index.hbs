@@ -10,6 +10,7 @@
 
   <link rel="stylesheet" href="{{baseURI}}/stylesheets/style.css">
 
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
   <script src="{{baseURI}}/javascripts/hterm_all_1.85.js"></script>
   <script src="{{baseURI}}/javascripts/ood_shell.1.js"></script>
   <script src="{{baseURI}}/javascripts/themes.js"></script>
@@ -63,48 +64,62 @@
 </body>
 
 <script>
-  var getThemeTerminalPreferences = (function(){
-    var combinedArr = [...darkThemes, ...brightThemes];
-
-    return function(name){
-      // default theme terminal preferences
-      let prefs = {
-        'use-default-window-copy': true,
-        'ctrl-v-paste': true,
-        'ctrl-c-copy': true,
-        'cursor-blink': false,
-        'background-color': '#101010',
-        'foreground-color': '#F0F0F0',
-        'color-palette-overrides': null,
-        'cursor-color': '#FF0000' + '50',
-      };
-
-      let theme = combinedArr.find(t => t.name == name);
-
-      if(theme){
-        // return name
-        prefs = {
-          'use-default-window-copy': true,
-          'ctrl-v-paste': true,
-          'ctrl-c-copy': true,
-          'cursor-blink': false,
-          'background-color': theme.scheme.background,
-          'foreground-color': theme.scheme.text,
-          'color-palette-overrides': theme.scheme.colorPaletteOverrides,
-          'cursor-color': theme.scheme.cursor + '50',
-        };
-      }
-
-      return prefs;
+  // the structure we should want is
+  // themes {
+  //   "name": {
+  //     theme
+  //   }
+  // }
+  var themes = {};
+  [...darkThemes, ...brightThemes].forEach((theme) => {
+    themes[theme.name] = {
+      'use-default-window-copy': true,
+      'ctrl-v-paste': true,
+      'ctrl-c-copy': true,
+      'cursor-blink': false,
+      'background-color': theme.scheme.background,
+      'foreground-color': theme.scheme.text,
+      'color-palette-overrides': theme.scheme.colorPaletteOverrides,
+      'cursor-color': theme.scheme.cursor + '50'
     }
-  })();
+  });
+  themes["default"] = {
+    'use-default-window-copy': true,
+    'ctrl-v-paste': true,
+    'ctrl-c-copy': true,
+    'cursor-blink': false,
+  }
+
+  // Set backing store that hterm uses to read/write preferences
+  hterm.defaultStorage = new lib.Storage.Memory();
+
+  // profile preferences look like this:
+  //
+  // "/hterm/profiles/default/ctrl-c-copy": "true"
+  // "/hterm/profiles/default/ctrl-v-paste": "true"
+  // "/hterm/profiles/default/use-default-window-copy": "true"
+  //
+  // is there an underscore method? lodash perhaps
+  //
+  // lodash: once to ensure it is only executed one time
+  //
+  // _snakeCase the theme profile name?
+  _.forIn(themes, (theme, name) => {
+    _.forIn(theme, (value, key) => {
+      hterm.defaultStorage.setItem(`/hterm/profiles/${name}/${key}`, value);
+    })
+  });
 
   var storage = window.localStorage;
-  var oodShell,
+
   schemeSelect = document.getElementById("colors");
 
+
+  var profile = "default";
+
   if (storage.getItem('scheme') !== null) {
-    schemeSelect.value = storage.getItem('scheme');
+    profile = storage.getItem('scheme');
+    schemeSelect.value = profile;
   }
 
   setupHterm = function () {
@@ -112,12 +127,7 @@
       var terminalContainer = document.getElementById('terminal'),
       webSocketUrl      = urlWithToken();
 
-      terminalPrefs     = getThemeTerminalPreferences(storage.getItem('scheme'));
-
-    // hterm default preferences are defined here. Switch to the tag that we're using.
-    // https://chromium.googlesource.com/apps/libapps/+/master/hterm/js/hterm_preference_manager.js
-
-    oodShell = new OodShell(terminalContainer, webSocketUrl, terminalPrefs);
+    window.oodShell = new OodShell(terminalContainer, webSocketUrl, profile);
     oodShell.createTerminal();
   }
 
@@ -139,7 +149,7 @@
 schemeSelect.addEventListener("change", function(ev) {
   var choice  = ev.target.value;
   storage.setItem('scheme', choice);
-  oodShell.changeTheme(getThemeTerminalPreferences(choice));
+  oodShell.changeTheme(choice);
 })
 </script>
 
