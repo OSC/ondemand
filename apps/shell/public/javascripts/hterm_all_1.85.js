@@ -15356,7 +15356,7 @@ hterm.Terminal.prototype.getSelectionText = function() {
     // somewhere inside the x-row.  Add any characters from previous siblings
     // into the start offset.
 
-    if (node.nodeName == '#text' && node.parentNode.nodeName == 'SPAN') {
+    if (node.nodeName == '#text' && node.parentNode && node.parentNode.nodeName == 'SPAN') {
       // If node is the text node in a styled span, move up to the span node.
       node = node.parentNode;
     }
@@ -15387,6 +15387,9 @@ hterm.Terminal.prototype.getSelectionText = function() {
       endOffset += hterm.TextAttributes.nodeWidth(node);
     }
   }
+
+  if(!selection.startRow || !selection.endRow)
+    return null;
 
   var rv = this.getRowsText(selection.startRow.rowIndex,
                             selection.endRow.rowIndex + 1);
