@@ -30,7 +30,7 @@ class Router
     end.uniq do |app|
       app.token.to_s
     end.reject do |app|
-      !app.accessible? || app.hidden? || app.backup? || app.invalid_batch_connect_app?
+      app.invalid_batch_connect_app?
     end
   end
 
