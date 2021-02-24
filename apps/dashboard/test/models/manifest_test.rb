@@ -93,4 +93,36 @@ class ManifestTest < ActiveSupport::TestCase
     assert_equal "", manifest_three.role, "nil role should return empty string"
   end
 
+  test "keys are read correctly" do
+    manifest = Manifest.load("test/fixtures/files/manifest_valid")
+    metadata = {
+      "tags" => 'test',
+      "field_of_science" => 'CS'
+    }
+    description = "**Ruby VDI** provides a remote desktop on an Ruby shared node at the Ohio\n" +
+      "Supercomputer Center (OSC). Care must be taken to avoid heavy computation as\n" +
+      "the resources are shared with many users."
+
+    assert_equal "Ruby VDI", manifest.name
+    assert_equal description, manifest.description
+    assert_equal "vdi", manifest.role
+    assert_equal "fa://desktop", manifest.icon
+    assert_equal "Desktops", manifest.category
+    assert_equal "Virtual Desktop Interface", manifest.subcategory
+    assert_equal "/pun/sys/vncsim/%{app_token}/sessions", manifest.url
+    assert_equal metadata, manifest.metadata
+  end
+
+  test "default keys are safe" do
+    manifest = Manifest.load("test/fixtures/files/manifest_invalid")
+
+    assert_equal "", manifest.name
+    assert_equal "", manifest.description
+    assert_equal "", manifest.role
+    assert_equal "", manifest.icon
+    assert_equal "", manifest.category
+    assert_equal "", manifest.subcategory
+    assert_equal "", manifest.url
+    assert_equal({}, manifest.metadata)
+  end
 end

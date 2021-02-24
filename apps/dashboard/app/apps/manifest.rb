@@ -58,6 +58,7 @@ category: OSC
   # @option opts [String] :icon The icon used on the dashboard, optionally a Font Awesome tag
   # @option opts [String] :role Dashboard categorization
   # @option opts [String] :url An optional redirect URL
+  # @option opts [Hash]   :metadata An optional hash of key value pairs
   def initialize(opts)
     raise InvalidContentError.new unless(opts && opts.respond_to?(:to_h))
 
@@ -111,6 +112,13 @@ category: OSC
   # @return [String] role as string
   def role
     @manifest_options[:role] || ""
+  end
+
+  # Return the app metadata
+  #
+  # @return [Hash] metadata as a hash
+  def metadata
+    @manifest_options[:metadata] || {}
   end
 
   # Manifest objects are valid
