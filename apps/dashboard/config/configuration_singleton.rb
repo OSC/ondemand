@@ -267,7 +267,7 @@ end
   end
 
   def read_config
-    files = Pathname.glob([config_directory.join("*.{yml,yaml}"), config_directory.join("*.{yml,yaml}.erb")])
+    files = Pathname.glob(config_directory.join("*.{yml,yaml,yml.erb,yaml.erb}"))
     files.each_with_object({}) do |f, config|
       begin
         content = ERB.new(f.read, nil, "-").result(binding)
