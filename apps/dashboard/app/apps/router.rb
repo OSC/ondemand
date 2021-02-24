@@ -29,8 +29,6 @@ class Router
       pinned_apps.concat pinned_apps_from_token(token, all_apps)
     end.uniq do |app|
       app.token.to_s
-    end.reject do |app|
-      app.invalid_batch_connect_app?
     end
   end
 
