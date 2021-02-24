@@ -38,8 +38,8 @@ class ApplicationController < ActionController::Base
     @usr_apps ||= ::Configuration.app_sharing_enabled? ? UsrRouter.all_apps(owners: UsrRouter.owners) : []
   end
 
-  def all_apps
-    @all_apps ||= sys_apps + usr_apps + dev_apps
+  def nav_all_apps
+    @nav_all_apps ||= nav_sys_apps + nav_usr_apps + nav_dev_apps
   end
 
   def nav_sys_apps
@@ -63,7 +63,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_pinned_apps
-    @pinned_apps ||= Router.pinned_apps(::Configuration.pinned_apps, all_apps)
+    @pinned_apps ||= Router.pinned_apps(::Configuration.pinned_apps, nav_all_apps)
   end
 
   def set_announcements
