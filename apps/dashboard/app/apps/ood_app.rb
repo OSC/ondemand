@@ -173,6 +173,10 @@ class OodApp
     manifest.role
   end
 
+  def metadata
+    manifest.metadata
+  end
+
   def manifest
     @manifest ||= Manifest.load(manifest_path)
   end

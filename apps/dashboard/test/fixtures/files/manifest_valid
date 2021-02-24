@@ -9,3 +9,6 @@ category: Desktops
 subcategory: Virtual Desktop Interface
 role: vdi
 url: /pun/sys/vncsim/%{app_token}/sessions
+metadata:
+  tags: test
+  field_of_science: CS
