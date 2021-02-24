@@ -114,7 +114,7 @@ wss.on('connection', function connection (ws, req) {
   process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
 
   term = pty.spawn(cmd, args, {
-    name: 'xterm-256color',
+    name: 'xterm-16color',
     cols: 80,
     rows: 30
   });
