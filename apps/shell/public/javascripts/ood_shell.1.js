@@ -33,10 +33,6 @@ OodShell.prototype.runTerminal = function () {
     io.sendString       = that.sendString.bind(that);
     io.onTerminalResize = that.onTerminalResize.bind(that);
 
-    // FIXME: can't changeTheme here because the default theme which is dark flashes first
-    // Set preferences for terminal
-    // that.changeTheme(that.prefs)
-
     // Capture all keyboard input
     this.installKeyboard();
   };
