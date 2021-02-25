@@ -37,12 +37,12 @@
           <select id="colors" class="form-control custom-select">
         <option value="default">Default</option>
         <optgroup label="Bright">
-        {{#each colorSchemes.light}}
+        {{#each colorThemes.light}}
 	  <option value="{{name}}">{{name}}</option>
         {{/each}}
         </optgroup>
         <optgroup label="Dark">
-        {{#each colorSchemes.dark}}
+        {{#each colorThemes.dark}}
 	  <option value="{{name}}">{{name}}</option>
         {{/each}}
         </optgroup>
@@ -62,7 +62,7 @@
   //   }
   // }
   var themes = {};
-  {{{colorSchemes.json_array}}}.forEach((theme) => {
+  {{{colorThemes.json_array}}}.forEach((theme) => {
     themes[theme.name] = {
       'use-default-window-copy': true,
       'ctrl-v-paste': true,
@@ -122,14 +122,14 @@
 
   var storage = window.localStorage;
 
-  schemeSelect = document.getElementById("colors");
+  themeSelect = document.getElementById("colors");
 
 
   var profile = "default";
 
-  if (storage.getItem('scheme') !== null) {
-    profile = storage.getItem('scheme');
-    schemeSelect.value = profile;
+  if (storage.getItem('theme') !== null) {
+    profile = storage.getItem('theme');
+    themeSelect.value = profile;
   }
 
   setupHterm = function () {
@@ -156,9 +156,9 @@
     return base + separator + "csrf={{csrfToken}}";
   }
 
-schemeSelect.addEventListener("change", function(ev) {
+themeSelect.addEventListener("change", function(ev) {
   var choice  = ev.target.value;
-  storage.setItem('scheme', choice);
+  storage.setItem('theme', choice);
   oodShell.changeTheme(choice);
 })
 </script>

@@ -27,11 +27,11 @@ if (fs.existsSync('.env')) {
   dotenv.config({path: '.env'});
 }
 
-// Load color schemes
-var color_schemes = {dark: [], light: []};
-glob.sync('./color_schemes/light/*').forEach(f => color_schemes.light.push(require(path.resolve(f))));
-glob.sync('./color_schemes/dark/*').forEach(f => color_schemes.dark.push(require(path.resolve(f))));
-color_schemes.json_array = JSON.stringify([...color_schemes.light, ...color_schemes.dark]);
+// Load color themes
+var color_themes = {dark: [], light: []};
+glob.sync('./color_themes/light/*').forEach(f => color_themes.light.push(require(path.resolve(f))));
+glob.sync('./color_themes/dark/*').forEach(f => color_themes.dark.push(require(path.resolve(f))));
+color_themes.json_array = JSON.stringify([...color_themes.light, ...color_themes.dark]);
 
 
 const tokens = new Tokens({});
@@ -52,7 +52,7 @@ router.get('/ssh*', function (req, res) {
       csrfToken: tokens.create(secret),
       host: theHost,
       dir: theDir,
-      colorSchemes: color_schemes,
+      colorThemes: color_themes,
       siteTitle: (process.env.OOD_DASHBOARD_TITLE || "Open OnDemand"),
     });
 });
