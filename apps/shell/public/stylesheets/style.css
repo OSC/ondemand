@@ -5,10 +5,9 @@ html, body {
 }
 
 #terminal {
-  display:  block;
-  position: relative;
-  height:   100%;
-  width:    100%;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
 .error {
@@ -23,3 +22,54 @@ html, body {
   border: 1px solid;
   border-radius: 4px;
 }
+
+.navbar {
+  margin-bottom: 0px;
+  min-height: 5px;
+  padding: 1px 3px 1px 3px;
+  max-height: 27px;
+  overflow: hidden;
+}
+
+@media only screen and (max-width: 768px) {
+  .custom-form {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  .custom-select {
+    width: 60%;
+    display: inline;
+  }
+
+  .custom-host {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding-left: 20px;
+  }
+
+
+}
+
+.left-padding-none {
+padding-left: 0;
+}
+
+.left-padding-some {
+  padding-left: 20px;
+}
+
+#colors {
+  margin-right: 20px;
+  font-size: 10px;
+  height: 20px;
+  padding: 0px;
+}
+
+iframe {
+   flex-grow: 1;
+   height: auto !important;
+   position: static !important;
+   width: auto !important;
+} 

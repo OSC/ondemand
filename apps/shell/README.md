@@ -92,6 +92,15 @@ To specify a host and directory:
 
 `http://localhost:3000/ssh/<host>/<dir>`
 
+## Terminal Color Themes
+
+Color Themes from https://github.com/mbadolato/iTerm2-Color-Schemes:
+
+- windowsterminal themes used (since they are JSON format) with "cursorColor": specified
+- renamed Builtin Pastel Dark to Pastel Dark
+- renamed Builtin Solarized Light to Solarized Light
+- see [iTerm-Color-Schemes](https://github.com/mbadolato/iTerm2-Color-Schemes) for access to individual theme licenses
+
 ## Development
 
 For development purposes the environment variables must be specified in the

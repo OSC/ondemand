@@ -1,9 +1,8 @@
-
 // Object that defines a terminal element
-function OodShell(element, url, prefs) {
+function OodShell(element, url, profile) {
   this.element = element;
   this.url     = url;
-  this.prefs   = prefs || {};
+  this.profile   = profile || "default";
   this.socket  = null;
   this.term    = null;
 }
@@ -15,19 +14,12 @@ OodShell.prototype.createTerminal = function () {
   this.socket.onclose   = this.closeTerminal.bind(this);
 };
 
+
 OodShell.prototype.runTerminal = function () {
   var that = this;
 
-  // Set backing store that hterm uses to read/write preferences
-  hterm.defaultStorage = new lib.Storage.Memory();
-
   // Create an instance of hterm.Terminal
-  this.term = new hterm.Terminal();
-
-  // Set preferences for terminal
-  for (var k in this.prefs) {
-    this.term.prefs_.set(k, this.prefs[k]);
-  }
+  this.term = new hterm.Terminal(this.profile);
 
   // Handler that fires when terminal is initialized and ready for use
   this.term.onTerminalReady = function () {
@@ -44,7 +36,7 @@ OodShell.prototype.runTerminal = function () {
     // Capture all keyboard input
     this.installKeyboard();
   };
-  
+
   // Patch cursor setting
   this.term.options_.cursorVisible = true;
 
@@ -92,6 +84,10 @@ OodShell.prototype.sendString = function (str) {
   // Most likely you'll do the same this as onVTKeystroke.
   this.onVTKeystroke(str)
 };
+
+OodShell.prototype.changeTheme = function (theme) {
+  this.term.setProfile(theme);
+}
 
 OodShell.prototype.onTerminalResize = function (columns, rows) {
   // React to size changes here.

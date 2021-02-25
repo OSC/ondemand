@@ -14,6 +14,7 @@ const port      = 3000;
 const host_path_rx = '/ssh/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$';
 const helpers   = require('./utils/helpers');
 
+
 // Read in environment variables
 dotenv.config({path: '.env.local'});
 if (process.env.NODE_ENV === 'production') {
@@ -26,6 +27,13 @@ if (fs.existsSync('.env')) {
   dotenv.config({path: '.env'});
 }
 
+// Load color themes
+var color_themes = {dark: [], light: []};
+glob.sync('./color_themes/light/*').forEach(f => color_themes.light.push(require(path.resolve(f))));
+glob.sync('./color_themes/dark/*').forEach(f => color_themes.dark.push(require(path.resolve(f))));
+color_themes.json_array = JSON.stringify([...color_themes.light, ...color_themes.dark]);
+
+
 const tokens = new Tokens({});
 const secret = tokens.secretSync();
 
@@ -36,10 +44,15 @@ router.get(['/', '/ssh'], function (req, res) {
 });
 
 router.get('/ssh*', function (req, res) {
+  var theHost, theDir;
+  [theHost, theDir] = host_and_dir_from_url(req.url);
   res.render('index',
     {
       baseURI: req.baseUrl,
       csrfToken: tokens.create(secret),
+      host: theHost,
+      dir: theDir,
+      colorThemes: color_themes,
       siteTitle: (process.env.OOD_DASHBOARD_TITLE || "Open OnDemand"),
     });
 });
@@ -107,7 +120,7 @@ wss.on('connection', function connection (ws, req) {
   process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
 
   term = pty.spawn(cmd, args, {
-    name: 'xterm-256color',
+    name: 'xterm-16color',
     cols: 80,
     rows: 30
   });

@@ -10859,9 +10859,12 @@ hterm.ScrollPort.prototype.getForegroundColor = function() {
 };
 
 hterm.ScrollPort.prototype.setForegroundColor = function(color) {
-  this.screen_.style.color = color;
-  this.scrollUpButton_.style.backgroundColor = color;
-  this.scrollDownButton_.style.backgroundColor = color;
+  if(this.screen_)
+    this.screen_.style.color = color;
+  if(this.scrollUpButton_)
+    this.scrollUpButton_.style.backgroundColor = color;
+  if(this.scrollDownButton_)
+    this.scrollDownButton_.style.backgroundColor = color;
 };
 
 hterm.ScrollPort.prototype.getBackgroundColor = function() {
@@ -10869,13 +10872,17 @@ hterm.ScrollPort.prototype.getBackgroundColor = function() {
 };
 
 hterm.ScrollPort.prototype.setBackgroundColor = function(color) {
-  this.screen_.style.backgroundColor = color;
-  this.scrollUpButton_.style.color = color;
-  this.scrollDownButton_.style.color = color;
+  if(this.screen_)
+    this.screen_.style.backgroundColor = color;
+  if(this.scrollUpButton_)
+    this.scrollUpButton_.style.color = color;
+  if(this.scrollDownButton_)
+    this.scrollDownButton_.style.color = color;
 };
 
 hterm.ScrollPort.prototype.setBackgroundImage = function(image) {
-  this.screen_.style.backgroundImage = image;
+  if(this.screen_)
+    this.screen_.style.backgroundImage = image;
 };
 
 hterm.ScrollPort.prototype.setBackgroundSize = function(size) {
@@ -15349,7 +15356,7 @@ hterm.Terminal.prototype.getSelectionText = function() {
     // somewhere inside the x-row.  Add any characters from previous siblings
     // into the start offset.
 
-    if (node.nodeName == '#text' && node.parentNode.nodeName == 'SPAN') {
+    if (node.nodeName == '#text' && node.parentNode && node.parentNode.nodeName == 'SPAN') {
       // If node is the text node in a styled span, move up to the span node.
       node = node.parentNode;
     }
@@ -15380,6 +15387,9 @@ hterm.Terminal.prototype.getSelectionText = function() {
       endOffset += hterm.TextAttributes.nodeWidth(node);
     }
   }
+
+  if(!selection.startRow || !selection.endRow)
+    return null;
 
   var rv = this.getRowsText(selection.startRow.rowIndex,
                             selection.endRow.rowIndex + 1);

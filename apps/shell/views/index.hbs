@@ -2,33 +2,142 @@
 <html lang="en">
 
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{baseURI}}/stylesheets/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="{{baseURI}}/stylesheets/bootstrap.min.css">
+
   <title>Shell - {{ siteTitle }}</title>
+
   <link rel="stylesheet" href="{{baseURI}}/stylesheets/style.css">
 
+  <script src="{{baseURI}}/javascripts/lodash-4.17.21/lodash.min.js"></script>
   <script src="{{baseURI}}/javascripts/hterm_all_1.85.js"></script>
   <script src="{{baseURI}}/javascripts/ood_shell.1.js"></script>
 </head>
 
 <body>
-  <div id="terminal"></div>
+  <div id="terminal">
+
+    <nav class="navbar navbar-inverse navbar-static-top navbar-expand" role="navigation">
+      <div class="container-fluid" >
+      <ul class="navbar-nav left-padding-none">
+            <li class="nav-item custom-host">
+            <label id="host" class="label">Host: {{host}} </label>
+          </li>
+      </ul>
+            <ul class="navbar-nav left-padding-some">
+          <li class="nav-item hidden-xs">
+            <label id="directory" class="label hidden-xs">{{#if dir}}Initial directory: {{dir}}{{/if}}</label>
+          </li>
+      </ul>
+          <ul class="navbar-nav form-inline navbar-right left-padding-none">
+          <li class="nav-item">
+            <div class="form-group custom-form">
+            <label class="label" for="colors">Themes:</label>
+          <select id="colors" class="form-control custom-select">
+        <option value="default">Default</option>
+        <optgroup label="Bright">
+        {{#each colorThemes.light}}
+	  <option value="{{name}}">{{name}}</option>
+        {{/each}}
+        </optgroup>
+        <optgroup label="Dark">
+        {{#each colorThemes.dark}}
+	  <option value="{{name}}">{{name}}</option>
+        {{/each}}
+        </optgroup>
+      </select>
+            </div>
+          </li>
+        </ul>
+  </nav>
+  </div>
 </body>
 
 <script>
+  // the structure we should want is
+  // themes {
+  //   "name": {
+  //     theme
+  //   }
+  // }
+  var themes = {};
+  {{{colorThemes.json_array}}}.forEach((theme) => {
+    themes[theme.name] = {
+      'use-default-window-copy': true,
+      'ctrl-v-paste': true,
+      'ctrl-c-copy': true,
+      'cursor-blink': false,
+      'background-color': theme.background,
+      'foreground-color': theme.foreground,
+      'color-palette-overrides': _.at(theme,
+        [
+          "black",
+          "red",
+          "green",
+          "yellow",
+          "blue",
+          "purple",
+          "cyan",
+          "white",
+          "brightBlack",
+          "brightRed",
+          "brightGreen",
+          "brightYellow",
+          "brightBlue",
+          "brightPurple",
+          "brightCyan",
+          "brightWhite"
+        ]
+      ),
+      'cursor-color': theme.cursorColor
+    }
+  });
+  themes["default"] = {
+    'use-default-window-copy': true,
+    'ctrl-v-paste': true,
+    'ctrl-c-copy': true,
+    'cursor-blink': false,
+  }
+
+  // Set backing store that hterm uses to read/write preferences
+  hterm.defaultStorage = new lib.Storage.Memory();
+
+  // profile preferences look like this:
+  //
+  // "/hterm/profiles/default/ctrl-c-copy": "true"
+  // "/hterm/profiles/default/ctrl-v-paste": "true"
+  // "/hterm/profiles/default/use-default-window-copy": "true"
+  //
+  // is there an underscore method? lodash perhaps
+  //
+  // lodash: once to ensure it is only executed one time
+  //
+  // _snakeCase the theme profile name?
+  _.forIn(themes, (theme, name) => {
+    _.forIn(theme, (value, key) => {
+      hterm.defaultStorage.setItem(`/hterm/profiles/${name}/${key}`, value);
+    })
+  });
+
+  var storage = window.localStorage;
+
+  themeSelect = document.getElementById("colors");
+
+
+  var profile = "default";
+
+  if (storage.getItem('ood_shell_theme') !== null) {
+    profile = storage.getItem('ood_shell_theme');
+    themeSelect.value = profile;
+  }
+
   setupHterm = function () {
     // Global variables that define the terminal
-    var oodShell,
-      terminalContainer = document.getElementById('terminal'),
-      webSocketUrl      = urlWithToken(),
-      terminalPrefs     = {
-        'use-default-window-copy': true,
-        'ctrl-v-paste': true,
-        'ctrl-c-copy': true
-      };
+      var terminalContainer = document.getElementById('terminal'),
+      webSocketUrl      = urlWithToken();
 
-    // hterm default preferences are defined here. Switch to the tag that we're using.
-    // https://chromium.googlesource.com/apps/libapps/+/master/hterm/js/hterm_preference_manager.js
-
-    oodShell = new OodShell(terminalContainer, webSocketUrl, terminalPrefs);
+    window.oodShell = new OodShell(terminalContainer, webSocketUrl, profile);
     oodShell.createTerminal();
   }
 
@@ -39,7 +148,7 @@
   var urlWithToken = function(){
     var base = document.URL.replace(/^http/, 'ws').replace(/#.*$/, '');
     var separator = '?';
-    
+
     if(base.includes('?')){
       separator = '&';
     }
@@ -47,6 +156,11 @@
     return base + separator + "csrf={{csrfToken}}";
   }
 
+themeSelect.addEventListener("change", function(ev) {
+  var choice  = ev.target.value;
+  storage.setItem('ood_shell_theme', choice);
+  oodShell.changeTheme(choice);
+})
 </script>
 
 </html>
