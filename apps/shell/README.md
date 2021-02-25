@@ -94,15 +94,12 @@ To specify a host and directory:
 
 ## Terminal Color Schemes
 
-To compile your own themes run the following command:
+Color Schemes from https://github.com/mbadolato/iTerm2-Color-Schemes:
 
-```console
-npm run compile:themes
-```
-
-This will create a themes.js file with all of your themes converted in the public/javascripts folder.
-
-Credit for the terminal color schemes in use goes to https://github.com/mbadolato/iTerm2-Color-Schemes.
+- windowsterminal themes used (since they are JSON format) with "cursorColor": specified
+- renamed Builtin Pastel Dark to Pastel Dark
+- renamed Builtin Solarized Light to Solarized Light
+- see iTerm-Color-Schemes for access to individual theme licenses
 
 ## Development
 

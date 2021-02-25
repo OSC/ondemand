@@ -14,6 +14,7 @@ const port      = 3000;
 const host_path_rx = '/ssh/([^\\/\\?]+)([^\\?]+)?(\\?.*)?$';
 const helpers   = require('./utils/helpers');
 
+
 // Read in environment variables
 dotenv.config({path: '.env.local'});
 if (process.env.NODE_ENV === 'production') {
@@ -25,6 +26,13 @@ if (fs.existsSync('.env')) {
   console.warn('[DEPRECATION] The file \'.env\' is being deprecated. Please move this file to \'/etc/ood/config/apps/shell/env\'.');
   dotenv.config({path: '.env'});
 }
+
+// Load color schemes
+var color_schemes = {dark: [], light: []};
+glob.sync('./color_schemes/light/*').forEach(f => color_schemes.light.push(require(path.resolve(f))));
+glob.sync('./color_schemes/dark/*').forEach(f => color_schemes.dark.push(require(path.resolve(f))));
+color_schemes.json_array = JSON.stringify([...color_schemes.light, ...color_schemes.dark]);
+
 
 const tokens = new Tokens({});
 const secret = tokens.secretSync();
@@ -42,12 +50,10 @@ router.get('/ssh*', function (req, res) {
     {
       baseURI: req.baseUrl,
       csrfToken: tokens.create(secret),
-
       host: theHost,
       dir: theDir,
-
+      colorSchemes: color_schemes,
       siteTitle: (process.env.OOD_DASHBOARD_TITLE || "Open OnDemand"),
-
     });
 });
 

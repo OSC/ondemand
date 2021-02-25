@@ -13,7 +13,6 @@
   <script src="{{baseURI}}/javascripts/lodash-4.17.21/lodash.min.js"></script>
   <script src="{{baseURI}}/javascripts/hterm_all_1.85.js"></script>
   <script src="{{baseURI}}/javascripts/ood_shell.1.js"></script>
-  <script src="{{baseURI}}/javascripts/themes.js"></script>
 </head>
 
 <body>
@@ -38,21 +37,14 @@
           <select id="colors" class="form-control custom-select">
         <option value="default">Default</option>
         <optgroup label="Bright">
-        <option value="CLRS">CLRS</option>
-        <option value="Github">Github</option>
-        <option value="Solarized Light">Solarized Light</option>
-        <option value="Tomorrow">Tomorrow</option>
+        {{#each colorSchemes.light}}
+	  <option value="{{name}}">{{name}}</option>
+        {{/each}}
         </optgroup>
         <optgroup label="Dark">
-        <option value="Cobalt">Cobalt</option>
-        <option value="idle Fingers">Idle Fingers</option>
-        <option value="Monokai">Monokai</option>
-        <option value="Pastel Dark">Pastel Dark</option>
-        <option value="Solarized Dark">Solarized Dark</option>
-        <option value="Tomorrow Night Blue">Tomorrow Night Blue</option>
-        <option value="Tomorrow Night Bright">Tomorrow Night Bright</option>
-        <option value="Tomorrow Night Eighties">Tomorrow Night Eighties</option>
-        <option value="Tomorrow Night">Tomorrow Night</option>
+        {{#each colorSchemes.dark}}
+	  <option value="{{name}}">{{name}}</option>
+        {{/each}}
         </optgroup>
       </select>
             </div>
@@ -70,16 +62,35 @@
   //   }
   // }
   var themes = {};
-  [...darkThemes, ...brightThemes].forEach((theme) => {
+  {{{colorSchemes.json_array}}}.forEach((theme) => {
     themes[theme.name] = {
       'use-default-window-copy': true,
       'ctrl-v-paste': true,
       'ctrl-c-copy': true,
       'cursor-blink': false,
-      'background-color': theme.scheme.background,
-      'foreground-color': theme.scheme.text,
-      'color-palette-overrides': theme.scheme.colorPaletteOverrides,
-      'cursor-color': theme.scheme.cursor
+      'background-color': theme.background,
+      'foreground-color': theme.foreground,
+      'color-palette-overrides': _.at(theme,
+        [
+          "black",
+          "red",
+          "green",
+          "yellow",
+          "blue",
+          "purple",
+          "cyan",
+          "white",
+          "brightBlack",
+          "brightRed",
+          "brightGreen",
+          "brightYellow",
+          "brightBlue",
+          "brightPurple",
+          "brightCyan",
+          "brightWhite"
+        ]
+      ),
+      'cursor-color': theme.cursorColor
     }
   });
   themes["default"] = {
