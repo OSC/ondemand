@@ -127,8 +127,8 @@
 
   var profile = "default";
 
-  if (storage.getItem('theme') !== null) {
-    profile = storage.getItem('theme');
+  if (storage.getItem('ood_shell_theme') !== null) {
+    profile = storage.getItem('ood_shell_theme');
     themeSelect.value = profile;
   }
 
@@ -158,7 +158,7 @@
 
 themeSelect.addEventListener("change", function(ev) {
   var choice  = ev.target.value;
-  storage.setItem('theme', choice);
+  storage.setItem('ood_shell_theme', choice);
   oodShell.changeTheme(choice);
 })
 </script>
