@@ -34,11 +34,9 @@
     "lodash": "4.17.21"
   },
   "devDependencies": {
-    "jest": "^26.1.0",
-    "term-schemes": "^1.2.1"
+    "jest": "^26.1.0"
   },
   "scripts": {
-    "test": "jest --verbose",
-    "compile:themes": "node scheme_generator.js"
+    "test": "jest --verbose"
   }
 }
