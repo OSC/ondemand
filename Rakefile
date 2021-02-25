@@ -8,6 +8,7 @@ GEMFILE           = PROJ_DIR.join('Gemfile')
 INSTALL_ROOT      = Pathname.new(ENV["PREFIX"] || "/opt/ood")
 VENDOR_BUNDLE     = (ENV['VENDOR_BUNDLE'] == "yes" || ENV['VENDOR_BUNDLE'] == "true")
 PASSENGER_APP_ENV = ENV["PASSENGER_APP_ENV"] || "production"
+SHELL_APP         = Pathname("#{APPS_DIR}/shell")
 
 require "#{TASK_DIR}/packaging"
 require "#{TASK_DIR}/test"
@@ -130,9 +131,11 @@ task :update do
     sh "bin/bundle update"
   end
 
-  # update the shell app as well
-  chdir Pathname.new("#{APPS_DIR}/shell")
+  # update the shell app
+  chdir SHELL_APP
   sh "bin/setup"
+  sh "tmp/node_modules/yarn/bin/yarn install"
+  sh "tmp/node_modules/yarn/bin/yarn upgrade"
 end
 
 
