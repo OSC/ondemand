@@ -29,7 +29,8 @@
     "ms": "2.1.1",
     "minimist": "1.2.5",
     "inherits": "2.0.3",
-    "http-errors": "1.7.2"
+    "http-errors": "1.7.2",
+    "node-notifier": "^8.0.1"
   },
   "devDependencies": {
     "jest": "^26.1.0",
