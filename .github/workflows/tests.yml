@@ -1,0 +1,67 @@
+name: Tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  unit-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest"]
+        ruby: ["2.7.1"]
+        bundler: ["2.1.4"]
+    runs-on: ${{ matrix.os }}
+    name: Unit tests
+
+    steps:
+      - name: Checkout ${{ github.sha	}}
+        uses: actions/checkout@v2
+
+      - name: Setup Ruby ${{ matrix.ruby }} using Bundler ${{ matrix.bundler }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler: ${{ matrix.bundler }}
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/vendor/bundle
+          key: ${{ runner.os }}-${{ matrix.ruby }}-gems-${{ hashFiles('apps/*/Gemfile.lock') }}
+
+      - name: Setup Bundler
+        run: |
+          bundle config path ~/vendor/bundle
+
+      - name: Run ShellCheck
+        run: rake test:shellcheck
+
+      - name: Run unit tests
+        run: rake test:unit
+
+  e2e-tests:
+    strategy:
+      matrix:
+        os: ["ubuntu-latest"]
+    runs-on: ${{ matrix.os }}
+    name: End-to-end tests
+
+    steps:
+      - name: Checkout ${{ github.sha	}}
+        uses: actions/checkout@v2
+
+      - name: Ensure tags exist for container packaging
+        run: git fetch --prune --unshallow --tags
+
+      - name: Setup Ruby using Bundler
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "2.7.1"
+          bundler-cache: true
+          bundler: "2.1.4"
+
+      - name: Run E2E tests
+        run: bundle exec rake test:e2e

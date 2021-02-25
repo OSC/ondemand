@@ -26,7 +26,7 @@ class OodApp
   end
 
   def invalid_batch_connect_app?
-    batch_connect_app? && batch_connect.sub_app_list.none?(&:valid?)
+    batch_connect_app? && sub_app_list.none?(&:valid?)
   end
 
   def should_appear_in_nav?
@@ -115,7 +115,7 @@ class OodApp
         end.sort_by { |lnk| lnk.title }
       end
     elsif role == "batch_connect"
-      batch_connect.sub_app_list.select(&:valid?).map(&:link)
+      sub_app_list.select(&:valid?).map(&:link)
     else
       [
         OodAppLink.new(
@@ -134,8 +134,8 @@ class OodApp
     # hack - but at least this hack is in a method next to the method it is
     # coupled with and this prevents control coupling from the outside by doing
     # something atrocious like links(validate: false)
-    if role == "batch_connect"
-      batch_connect.sub_app_list.map(&:link)
+    if batch_connect_app?
+      sub_app_list.map(&:link)
     else
       links
     end
@@ -173,6 +173,10 @@ class OodApp
     manifest.role
   end
 
+  def metadata
+    manifest.metadata
+  end
+
   def manifest
     @manifest ||= Manifest.load(manifest_path)
   end
@@ -181,12 +185,30 @@ class OodApp
     path.join("manifest.yml")
   end
 
-  def icon_path
-    path.join("icon.png")
+  def svg_icon?
+    @svg_icon ||= path.join("icon.svg").file?
   end
 
+  def png_icon?
+    @png_icon ||= path.join("icon.png").file?
+  end
+
+  def image_icon?
+    png_icon? || svg_icon?
+  end
+
+  def icon_path
+    if svg_icon?
+      path.join("icon.svg")
+    elsif png_icon?
+      path.join("icon.png")
+    else
+      Pathname.new('')
+    end
+  end
+  
   def icon_uri
-    if icon_path.file?
+    if image_icon? 
       app_icon_path(name, type, owner)
     elsif manifest.icon =~ /^fa[bsrl]?:\/\//
       manifest.icon
@@ -258,6 +280,18 @@ class OodApp
   # @return [String] memoized version string
   def version
     @version ||= (version_from_file || version_from_git || "unknown").strip
+  end
+
+  # test whether this object is equal to another.
+  # @return [Boolean]
+  def ==(other)
+    other.respond_to?(:url) ? url == other.url : false
+  end
+
+  protected
+
+  def sub_app_list
+    batch_connect.sub_app_list
   end
 
   private

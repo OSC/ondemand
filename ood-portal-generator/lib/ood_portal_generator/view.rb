@@ -5,7 +5,7 @@ module OodPortalGenerator
   # A view class that renders an OOD portal Apache configuration file
   class View
     attr_reader :ssl, :protocol, :servername, :port
-    attr_accessor :user_map_cmd, :logout_redirect
+    attr_accessor :user_map_match, :user_map_cmd, :logout_redirect
     attr_accessor :oidc_uri, :oidc_client_secret, :oidc_remote_user_claim, :oidc_client_id, :oidc_provider_metadata_url, :oidc_redirect_uri
     # @param opts [#to_h] the options describing the context used to render the
     #   template
@@ -28,7 +28,8 @@ module OodPortalGenerator
       @use_rewrites     = opts.fetch(:use_rewrites, true)
       @lua_root         = opts.fetch(:lua_root, "/opt/ood/mod_ood_proxy/lib")
       @lua_log_level    = opts.fetch(:lua_log_level, "info")
-      @user_map_cmd     = opts.fetch(:user_map_cmd, "/opt/ood/ood_auth_map/bin/ood_auth_map.regex")
+      @user_map_cmd     = opts.fetch(:user_map_cmd, nil)
+      @user_map_match   = @user_map_cmd ? nil : opts.fetch(:user_map_match, ".*")
       @user_env         = opts.fetch(:user_env, nil)
       @map_fail_uri     = opts.fetch(:map_fail_uri, nil)
       @pun_stage_cmd    = opts.fetch(:pun_stage_cmd, "sudo /opt/ood/nginx_stage/sbin/nginx_stage")
@@ -38,7 +39,7 @@ module OodPortalGenerator
       @maintenance_ip_whitelist = Array(opts.fetch(:maintenance_ip_whitelist, []))
 
       # Security configuration
-      @security_disable_frames = opts.fetch(:security_disable_frames, true)
+      @security_csp_frame_ancestors = opts.fetch(:security_csp_frame_ancestors, "#{@protocol}#{@servername ?  @servername : OodPortalGenerator.fqdn}")
       @security_strict_transport = opts.fetch(:security_strict_transport, !@ssl.nil?)
 
       # Portal authentication
@@ -71,10 +72,12 @@ module OodPortalGenerator
       @rnode_uri  = opts.fetch(:rnode_uri, nil)
 
       # Per-user NGINX sub-uri
-      @nginx_uri       = opts.fetch(:nginx_uri, "/nginx")
-      @pun_uri         = opts.fetch(:pun_uri, "/pun")
-      @pun_socket_root = opts.fetch(:pun_socket_root, "/var/run/ondemand-nginx")
-      @pun_max_retries = opts.fetch(:pun_max_retries, 5)
+      @nginx_uri              = opts.fetch(:nginx_uri, "/nginx")
+      @pun_uri                = opts.fetch(:pun_uri, "/pun")
+      @pun_socket_root        = opts.fetch(:pun_socket_root, "/var/run/ondemand-nginx")
+      @pun_max_retries        = opts.fetch(:pun_max_retries, 5)
+      @pun_pre_hook_exports   = opts.fetch(:pun_pre_hook_exports, nil)
+      @pun_pre_hook_root_cmd  = opts.fetch(:pun_pre_hook_root_cmd, nil)
 
       # OpenID Connect sub-uri
       @oidc_uri           = opts.fetch(:oidc_uri, nil)

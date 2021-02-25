@@ -8,6 +8,8 @@
 /vendor/bundle
 /.bundle
 /apps/*/.bundle
+/apps/*/public/packs
+/apps/*/public/packs-test
 /apps/*/vendor/bundle/
 /*/.bundle
 
@@ -97,3 +99,6 @@ tags
 /packaging/*.pp
 /packaging/*.if
 /packaging/tmp
+
+# Ignore files downloaded for testing
+/tests/*.zip

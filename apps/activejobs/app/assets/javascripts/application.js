@@ -25,6 +25,23 @@ $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
 });
 
+var entityMap = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+  '/': '&#x2F;',
+  '`': '&#x60;',
+  '=': '&#x3D;'
+};
+
+function escapeHtml (string) {
+  return String(string).replace(/[&<>"'`=\/]/g, function fromEntityMap (s) {
+    return entityMap[s];
+  });
+}
+
 function human_time(seconds_total) {
   var hours = parseInt(seconds_total / 3600),
       minutes = parseInt((seconds_total - (hours * 3600)) / 60),
@@ -37,12 +54,21 @@ function human_time(seconds_total) {
 }
 
 function fetch_job_data(tr, row, options) {
+  let btn = tr.find('button.details-control');
   if (row.child.isShown()) {
     // This row is already open - close it
     row.child.hide();
     tr.removeClass("shown");
+
+    btn.removeClass("fa-chevron-down");
+    btn.addClass("fa-chevron-right");
+    btn.attr("aria-expanded", false);
   } else {
     tr.addClass("shown");
+
+    btn.removeClass("fa-chevron-right");
+    btn.addClass("fa-chevron-down");
+    btn.attr("aria-expanded", true);
 
     let data = {
       pbsid: row.data().pbsid,
@@ -54,7 +80,7 @@ function fetch_job_data(tr, row, options) {
       // Open this row
       row.child(data.html_ganglia_graphs_table).show();
       // Add the data panel to the view
-      $(`div[data-jobid="${row.data().pbsid}"]`)
+      $(`div[data-jobid="${escapeHtml(row.data().pbsid)}"]`)
         .hide()
         .html(data.html_extended_panel)
         .fadeIn(250);
@@ -146,7 +172,7 @@ function status_label(status){
     labelclass = "label-warning";
   }
 
-  return `<span class="label ${labelclass}">${label}</span>`;
+  return `<span class="label ${labelclass}">${escapeHtml(label)}</span>`;
 }
 
 function create_datatable(options){
@@ -168,8 +194,6 @@ function create_datatable(options){
             "sSearch": "Filter: "
         },
         "fnCreatedRow": function( nRow, aData, iDataIndex ) {
-          $(nRow).attr("tabindex", 0);
-          
           $(nRow).children("td").css("overflow", "hidden");
           $(nRow).children("td").css("white-space", "nowrap");
           $(nRow).children("td").css("text-overflow", "ellipsis");
@@ -196,13 +220,9 @@ function create_datatable(options){
                 "defaultContent":   '',
                 "width":            "20px",
                 "searchable":       false,
-                "fnCreatedCell":    function(nTd, data) {
-                                        if (data) {
-                                            $(nTd).addClass('details-control');
-                                        }
-                                    },
-                render: function () {
-                  return "";
+                render: function (data, type, row, meta) {
+                  let { cluster_title, jobname, } = row
+                  return `<button class="details-control fa fa-chevron-right btn btn-default" aria-expanded="false" aria-label="Toggle visibility of job details for job ${escapeHtml(jobname)} on ${cluster_title}"></button>`;
                 },
             },
             {
@@ -210,6 +230,7 @@ function create_datatable(options){
                 className:          "small",
                 "autoWidth":        true,
                 render: function (data) {
+                  var data = escapeHtml(data)
                   return `<span title="${data}">${data}</span>`;
                 },
             },
@@ -218,6 +239,7 @@ function create_datatable(options){
                 className:          "small",
                 width:              '25%',
                 render: function (data) {
+                  var data = escapeHtml(data)
                   return `<span title="${data}">${data}</span>`;
                 },
             },
@@ -226,6 +248,7 @@ function create_datatable(options){
                 className:          "small",
                 "autoWidth":        true,
                 render: function (data) {
+                  var data = escapeHtml(data)
                   return `<span title="${data}">${data}</span>`;
                 },
             },
@@ -234,6 +257,7 @@ function create_datatable(options){
                 className:          "small",
                 "autoWidth":        true,
                 render: function (data) {
+                  var data = escapeHtml(data)
                   return `<span title="${data}">${data}</span>`;
                 },
             },
@@ -254,6 +278,7 @@ function create_datatable(options){
                 className:          "small",
                 "autoWidth":        true,
                 "render":           function(data) {
+                  var data = escapeHtml(data)
                   return `<span title="${data}">${data}</span>`;
                 }
             },
@@ -274,8 +299,9 @@ function create_datatable(options){
                 data:               null,
                 className:          "small",
                 "autoWidth":        true,
-                "render":           function(data){
-                  if(data.delete_path == "" || data.status == "completed"){
+                render: function(data, type, row, meta) {
+                  let { jobname, pbsid, delete_path } = data
+                  if(data.delete_path == "" || data.status == "completed") {
                     return ""
                   } else {
                     return `
@@ -283,9 +309,10 @@ function create_datatable(options){
                         <a
                           class="btn btn-danger btn-xs action-btn"
                           data-method="delete"
-                          data-confirm="Are you sure you want to delete ${data.jobname} - ${data.pbsid}"
-                          href="${data.delete_path}"
+                          data-confirm="Are you sure you want to delete ${escapeHtml(jobname)} - ${pbsid}"
+                          href="${escapeHtml(delete_path)}"
                           aria-labeled-by"title"
+                          aria-label="Delete job ${escapeHtml(jobname)} with ID ${pbsid}"
                           data-toggle="tooltip"
                           title="Delete Job"
                         >

@@ -11,5 +11,4 @@ class MotdFormatterPlaintext
   def to_partial_path
     "dashboard/motd_plaintext"
   end
-
 end

@@ -6,6 +6,56 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [2.0.0] - 2021-02-03
+
+### Added
+- support `markdown_erb` and `txt_erb` MOTD formats [#647](https://github.com/OSC/ondemand/pull/647)
+- A pre hook that runs as root before the PUN starts [#535](https://github.com/OSC/ondemand/pull/535)
+- end-to-end test in rake tasks that build containers [#695](https://github.com/OSC/ondemand/pull/695)
+
+### Fixed
+- escape html in activejobs table [#739](https://github.com/OSC/ondemand/pull/739)
+- don't use cached cluster value in session form cache if it is no longer a valid value
+  [#748](https://github.com/OSC/ondemand/pull/748) [#761](https://github.com/OSC/ondemand/pull/761)
+- ensure LOGNAME set to PUN user [#836](https://github.com/OSC/ondemand/pull/836)
+
+### Changed
+- move regex mapping to Lua [#729](https://github.com/OSC/ondemand/pull/729) which removes
+  the need to make Apache aware of SCL Ruby and not rely on system Ruby to launch the mapping
+  script
+- upgrade dependencies nginx to 1.18.0 and passenger to 6.0.7
+- upgrade dependencies ruby 2.5.5 => 2.7.1 and bundler 1.17.3 => 2.1.4
+- upgrade dependency nodejs 10 => 12
+- upgrade dependency sqlite3 to 3.26.0 (will ship custom SCL for newer sqlite3 build)
+- add ondemand-dex to the Dockerfile in [#727](httpqs://github.com/OSC/ondemand/pull/727)
+- start using GitHub actions instead of Travis CI [#742](https://github.com/OSC/ondemand/pull/742)
+  [#743](https://github.com/OSC/ondemand/pull/743) [#747](https://github.com/OSC/ondemand/pull/747)
+- move JOSS publication to OSC/ondemand repo
+
+## [1.8.19] - 2020-12-14
+### Fixed
+ - don't use cached cluster value if it's not available [#748](https://github.com/OSC/ondemand/pull/748)
+ - fix accessability of buttons in active jobs table [#732](https://github.com/OSC/ondemand/pull/732)
+
+### Changed
+- use specific versions of packaging repo in [#735](https://github.com/OSC/ondemand/pull/735)
+
+## [1.8.18] - 2020-11-03
+### Fixed
+- [Fix name of setting security_csp_frame_ancestors](b7e115cfd35c6c2135c8935fe582fb77342dc7b6) in example ood_portal_example.yml file
+
+## [1.8.17] - 2020-10-30
+### Fixed
+- build bin from nginx_stage gemspec which can end up placing the
+  ruby/node/python wrappers in your PATH which causes issues
+  [#719](https://github.com/OSC/ondemand/pull/719)
+
+### Changed
+- replace `security_disable_frames` with `security_csp_frame_ancestors` setting
+  that lets you set the value of this header and defaults header to servername
+  instead of none [#721](https://github.com/OSC/ondemand/pull/721)
+
 ## [1.8.16] - 2020-10-23
 ### Fixed
 - accessibility: update html titles of apps to be a little more specific to reduce ambiguity [#698](https://github.com/OSC/ondemand/pull/698)
@@ -21,7 +71,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.8.14] - 2020-10-06
 ### Added
-- log formatting options for apache and nginx access logs [#677] (https://github.com/OSC/ondemand/pull/677)
+- log formatting options for apache and nginx access logs [#677](https://github.com/OSC/ondemand/pull/677)
 
 ### Changed
 - Changed language to 'Open XDMoD' [#687](https://github.com/OSC/ondemand/pull/687).
@@ -589,7 +639,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.16...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/OSC/ondemand/compare/v1.8.19...v2.0.0
+[1.8.19]: https://github.com/OSC/ondemand/compare/v1.8.18...v1.8.19
+[1.8.18]: https://github.com/OSC/ondemand/compare/v1.8.17...v1.8.18
+[1.8.17]: https://github.com/OSC/ondemand/compare/v1.8.16...v1.8.17
 [1.8.16]: https://github.com/OSC/ondemand/compare/v1.8.15...v1.8.16
 [1.8.15]: https://github.com/OSC/ondemand/compare/v1.8.14...v1.8.15
 [1.8.14]: https://github.com/OSC/ondemand/compare/v1.8.13...v1.8.14

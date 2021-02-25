@@ -1,11 +1,12 @@
 # Open OnDemand
 ![GitHub Release](https://img.shields.io/github/release/osc/ondemand.svg?color=informational)
-[![Build Status](https://img.shields.io/travis/OSC/ondemand/master?color=success)](https://travis-ci.org/OSC/ondemand)
+[![Build Status](https://github.com/osc/ondemand/workflows/Tests/badge.svg)](https://github.com/OSC/ondemand/actions?query=workflow%3ATests)
 [![GitHub License](https://img.shields.io/badge/license-MIT-green.svg?color=success)](https://opensource.org/licenses/MIT)
+[![DOI](http://joss.theoj.org/papers/10.21105/joss.00622/status.svg)](https://doi.org/10.21105/joss.00622)
 > Supercomputing. Seamlessly. Open, Interactive HPC Via the Web
 
 - Website: http://openondemand.org/
-- Website repo with JOSS publication: https://github.com/OSC/Open-OnDemand
+- Website repo: https://github.com/OSC/openondemand.org
 - Documentation: https://osc.github.io/ood-documentation/latest/
 - Main code repo: https://github.com/OSC/ondemand
 - Core library repo: https://github.com/OSC/ood_core
@@ -26,10 +27,10 @@ Installing Open OnDemand simple, use our prepacked RPM distributions or build fr
 Learn more about Open OnDemand's system architecture and request lifecycle by visiting our <a href="https://osc.github.io/ood-documentation/master/architecture.html">documentation</a>.
 
 ## Community
-Open OnDemand has an active and growing community! Don't hesistate to reach out to the developers via our [Discourse] instance if you would like more information or need help installing or configuring Open OnDemand.
+Open OnDemand has an active and growing community! Don't hesitate to reach out to the developers via our [Discourse] instance if you would like more information or need help installing or configuring Open OnDemand.
 <br/>
 <br/>
-<a href="https://discourse.osc.edu"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c2/Discourse.svg" width=150></a>
+<a href="https://discourse.osc.edu"><img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Discourse_icon.svg" width=150></a>
 
 ## Contributing
 
@@ -46,5 +47,5 @@ This project is maintained by the <a href="https://www.osc.edu">Ohio Supercomput
 [MIT License]: http://opensource.org/licenses/MIT
 [Open OnDemand Documentation]: https://osc.github.io/ood-documentation/master/
 [installation instructions]: https://osc.github.io/ood-documentation/master/requirements.html
-[contributing guide]: https://github.com/OSC/Open-OnDemand/blob/master/CONTRIBUTING.md
+[contributing guide]: CONTRIBUTING.md
 [Discourse]: https://discourse.osc.edu

@@ -1,0 +1,35 @@
+component/activejobs:
+  - apps/activejobs/**/*
+
+component/bc_desktop:
+  - apps/bc_desktop/**/*
+
+component/dashboard:
+  - apps/dashboard/**/*
+
+component/file_editor:
+  - apps/file-editor/**/*
+
+component/file_browser:
+  - apps/files/**/*
+
+component/jobcomposer:
+  - apps/myjobs/**/*
+
+component/shell:
+  - apps/shell/**/*
+
+component/nginx_stage:
+  - nginx_stage/**/*
+
+component/mod_ood_proxy:
+  - mod_ood_proxy/**/*
+
+component/ood_auth_map:
+  - ood_auth_map/**/*
+
+component/ood_portal_generator:
+  - ood-portal-generator/**/*
+
+area/build:
+  - lib/tasks/**/*

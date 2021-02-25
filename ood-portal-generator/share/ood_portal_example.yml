@@ -80,11 +80,13 @@
 # Default: [] (no IPs whitelisted)
 #maintenance_ip_whitelist: []
 
-# Set Header Content-Security-Policy to disallow OnDemand beind loaded in an iFrame.
+# Set Header Content-Security-Policy frame-ancestors.
 # Example:
-#   security_disable_frames: false
-# Default: true
-#security_disable_frames: true
+#   security_csp_frame_ancestors: https://ondemand.osc.edu
+# Example to disable setting:
+#   security_csp_frame_ancestors: false
+# Default: based on servername and ssl settings
+#security_csp_frame_ancestors:
 
 # Set Header Strict-Transport-Security to help enforce SSL
 # Example:
@@ -105,11 +107,19 @@
 # Default: 'info' (get verbose logs)
 #lua_log_level: 'info'
 
-# System command used to map authenticated-user to system-user
+# Lua regular expression used to map authenticated-user to system-user
+# This configuration is ignored if user_map_cmd is defined
 # Example:
-#     user_map_cmd: '/opt/ood/ood_auth_map/bin/ood_auth_map.regex --regex=''^(\w+)@example.com$'''
-# Default: '/opt/ood/ood_auth_map/bin/ood_auth_map.regex' (this echo's back auth-user)
-#user_map_cmd: '/opt/ood/ood_auth_map/bin/ood_auth_map.regex'
+#     user_map_match: '^([^@]+)@.*$'
+# Default: '.*'
+# user_map_match: '.*'
+
+# System command used to map authenticated-user to system-user
+# This option takes precedence over user_map_match
+# Example:
+#     user_map_cmd: '/usr/local/bin/ondemand-usermap'
+# Default: null (use user_map_match)
+#user_map_cmd: null
 
 # Use an alternative CGI environment variable instead of REMOTE_USER for
 # determining the authenticated-user fed to the mapping script
@@ -244,6 +254,21 @@
 #     pun_max_retries: 25
 # Default: 5 (only try 5 times)
 #pun_max_retries: 5
+
+# The PUN pre hook command to execute as root
+#
+# Example:
+#    pun_pre_hook_root_cmd: '/opt/hpc-site/ood_pun_prehook'
+# Default: null (do not run any PUN pre hook as root)
+#pun_pre_hook_root_cmd: null
+
+# Comma separated list of environment variables to pass from the apache context
+# into the PUN pre hook. Defaults to null so nothing is exported.
+#
+# Example:
+#    pun_pre_hook_exports: 'OIDC_ACCESS_TOKEN,OIDC_CLAIM_EMAIL'
+# Default: null (pass nothing)
+#pun_pre_hook_exports: null
 
 #
 # Support for OpenID Connect

@@ -31,6 +31,7 @@ en:
       Please be patient as your job currently sits in queue. The wait time depends
       on the number of cores as well as time requested.
 
+    motd_erb_render_error: "MOTD was not parsed or rendered correctly: %{error_message}"
     nav_help_change_password: "Change HPC Password"
     nav_help_docs: "Online Documentation"
     nav_help_support: "Contact Support"

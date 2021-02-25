@@ -9,16 +9,6 @@ table td {
   word-wrap:break-word;
 }
 
-td.details-control {
-  background: url(image_path('arrowright.png')) no-repeat center center;
-  background-size: 75%;
-  cursor: pointer;
-}
-tr.shown td.details-control {
-  background: url(image_path('arrowdown.png')) no-repeat center center;
-  background-size: 75%;
-}
-
 .job_label_data {
   word-wrap: break-word;
   bottom: 0;

@@ -4,6 +4,7 @@ class DashboardControllerTest < ActionController::TestCase
 
   def setup
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys"))
+    Router.instance_variable_set('@pinned_apps', nil)
   end
 
   def dropdown_list(title)
@@ -122,6 +123,84 @@ class DashboardControllerTest < ActionController::TestCase
     assert_select dd, "li a", "Oakley Desktop" do |link|
       assert_equal "/batch_connect/sys/bc_desktop/oakley/session_contexts/new", link.first['href'], "Desktops link is incorrect"
     end
+  end
+
+  test "should create Apps dropdown when pinned apps are available" do
+      SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
+      OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
+      Configuration.stubs(:pinned_apps).returns([
+        'sys/bc_jupyter',
+        'sys/bc_paraview',
+        'sys/bc_desktop/owens',
+        'sys/bc_desktop/doesnt_exist',
+        'sys/pseudofun',
+        'sys/should_get_filtered'
+      ])
+
+      get :index
+
+      dd = dropdown_list('Apps')
+      dditems = dropdown_list_items(dd)
+      assert dditems.any?, "dropdown list items not found"
+      assert_equal [
+        { header: "Pinned Apps" },
+        "Owens Desktop",
+        "Jupyter Notebook",
+        "Paraview",
+        "PseudoFuN",
+        :divider,
+        "All Apps"
+      ], dditems
+  end
+
+  test "should limit list of Pinned Apps in dropdown" do
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
+    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
+    Configuration.stubs(:pinned_apps).returns([
+      'sys/bc_jupyter',
+      'sys/bc_paraview',
+      'sys/bc_desktop/owens',
+      'sys/bc_desktop/doesnt_exist',
+      'sys/pseudofun',
+      'sys/should_get_filtered'
+    ])
+    Configuration.stubs(:pinned_apps_menu_length).returns(2)
+
+    get :index
+
+    dd = dropdown_list('Apps')
+    dditems = dropdown_list_items(dd)
+    assert dditems.any?, "dropdown list items not found"
+    assert_equal [
+      { header: "Pinned Apps (showing 2 of 4)" },
+      "Owens Desktop",
+      "Jupyter Notebook",
+      :divider,
+      "All Apps"
+    ], dditems
+end
+
+  test "should create Pinned app icons when pinned apps are available" do
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
+    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
+    Configuration.stubs(:pinned_apps).returns([
+      'sys/bc_jupyter',
+      'sys/bc_paraview',
+      'sys/bc_desktop/owens',
+      'sys/bc_desktop/doesnt_exist',
+      'sys/pseudofun',
+      'sys/should_get_filtered'
+    ])
+
+    get :index
+
+    assert_response :success
+
+    assert_select 'a.thumbnail.app', 4
+    assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_jupyter/session_contexts/new']", 1
+    assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_paraview/session_contexts/new']", 1
+    assert_select "a.thumbnail.app[href='/apps/show/pseudofun']", 1
+    assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_desktop/owens/session_contexts/new']", 1
   end
 
   test "should create My Interactive Apps link if Interactive Apps exist and not developer" do

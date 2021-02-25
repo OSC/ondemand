@@ -19,4 +19,8 @@ module DashboardHelper
   def invalid_clusters
     @invalid_clusters ||= OodCore::Clusters.new(OodAppkit.clusters.select { |c| not c.valid? })
   end
+
+  def pinned_apps?
+    !Router.pinned_apps.empty?
+  end
 end

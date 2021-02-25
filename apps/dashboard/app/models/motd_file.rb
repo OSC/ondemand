@@ -39,8 +39,12 @@ class MotdFile
         @motd = MotdFormatterOsc.new(self)
       when 'markdown'
         @motd = MotdFormatterMarkdown.new(self)
+      when 'markdown_erb'
+        @motd = MotdFormatterMarkdownErb.new(self)
       when 'rss'
         @motd = MotdFormatterRss.new(self)
+      when 'text_erb'
+        @motd = MotdFormatterPlaintextErb.new(self)
       else
         @motd = MotdFormatterPlaintext.new(self)
     end if self.exist?

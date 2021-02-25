@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
 
   before_action :set_user, :set_nav_groups, :set_announcements, :set_locale
   before_action :set_my_balances, only: [:index, :new, :featured]
+  before_action :set_featured_group
 
   def set_locale
     I18n.locale = ::Configuration.locale
@@ -18,11 +19,11 @@ class ApplicationController < ActionController::Base
 
   def set_nav_groups
     #TODO: for AweSim, what if we added the shared apps here?
-    if NavConfig.categories_whitelist?
-        @nav_groups = OodAppGroup.select(titles: NavConfig.categories, groups: sys_app_groups)
-    else
-        @nav_groups = OodAppGroup.order(titles: NavConfig.categories, groups: sys_app_groups)
-    end
+    @nav_groups = filter_groups(sys_app_groups)
+  end
+
+  def set_featured_group
+    @featured_group = filter_groups(pinned_app_group).first # 1 single group called 'Apps'
   end
 
   def sys_apps
@@ -53,6 +54,10 @@ class ApplicationController < ActionController::Base
     OodAppGroup.groups_for(apps: nav_sys_apps)
   end
 
+  def pinned_app_group
+    OodAppGroup.groups_for(apps: Router.pinned_apps)
+  end
+
   def set_announcements
     @announcements = Announcements.all(::Configuration.announcement_path)
   rescue => e
@@ -74,5 +79,15 @@ class ApplicationController < ActionController::Base
     @my_balances = []
     ::Configuration.balance_paths.each { |path| @my_balances += Balance.find(path, OodSupport::User.new.name) }
     @my_balances
+  end
+
+  private
+
+  def filter_groups(groups)
+    if NavConfig.categories_whitelist?
+      OodAppGroup.select(titles: NavConfig.categories, groups: groups)
+    else
+      OodAppGroup.order(titles: NavConfig.categories, groups: groups)
+    end
   end
 end

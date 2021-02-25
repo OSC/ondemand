@@ -8,9 +8,8 @@ class BatchConnect::SessionContextsController < ApplicationController
     set_session_context
 
     if @app.valid?
-      # Read in context from cache file if cache is disabled and context.json exist
       begin
-       @session_context.update_with_cache(JSON.parse(cache_file.read))  if cache_file.file?
+        @app.update_session_with_cache(@session_context, cache_file)
       rescue => e
         flash.now[:alert] = t('dashboard.batch_connect_form_attr_cache_error',error_message: e.message)
       end
@@ -81,5 +80,5 @@ class BatchConnect::SessionContextsController < ApplicationController
     # Store session context into a cache file
     def cache_file
       BatchConnect::Session.dataroot(@app.token).tap { |p| p.mkpath unless p.exist? }.join("context.json")
-    end 
+    end
 end

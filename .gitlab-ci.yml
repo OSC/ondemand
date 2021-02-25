@@ -1,7 +1,10 @@
 before_script:
   - docker info
   - '[ -d tmp ] || mkdir tmp'
-  - git clone https://github.com/OSC/ondemand-packaging.git tmp/ondemand-packaging
+  - MAJOR_VERSION=$(echo "${CI_COMMIT_TAG#v}" | cut -d'.' -f1)
+  - MINOR_VERSION=$(echo "${CI_COMMIT_TAG#v}" | cut -d'.' -f2)
+  - RELEASE="${MAJOR_VERSION}.${MINOR_VERSION}"
+  - git clone --single-branch --branch $RELEASE https://github.com/OSC/ondemand-packaging.git tmp/ondemand-packaging
   - cp /systems/osc_certs/gpg/ondemand/.gpgpass $CI_PROJECT_DIR/tmp/ondemand-packaging/
   - cp /systems/osc_certs/gpg/ondemand/ondemand.sec $CI_PROJECT_DIR/tmp/ondemand-packaging/
 stages:
@@ -32,6 +35,13 @@ rpm-build-el8:
     paths:
       - tmp/output
     name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+rpm-deploy-build:
+  stage: deploy
+  only:
+    - tags
+  script:
+    - ./tmp/ondemand-packaging/release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c build -r $CI_COMMIT_TAG ./tmp/output/*
 
 rpm-deploy-ci:
   stage: deploy

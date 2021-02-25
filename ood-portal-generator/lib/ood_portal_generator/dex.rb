@@ -231,7 +231,7 @@ module OodPortalGenerator
       }
       attrs[:oidc_remote_user_claim] = 'email' if connectors.nil?
       if @view.oidc_remote_user_claim == 'email' || attrs[:oidc_remote_user_claim] == 'email'
-        attrs[:user_map_cmd] = "/opt/ood/ood_auth_map/bin/ood_auth_map.regex --regex='^([^@]+)@.*$'"
+        attrs[:user_map_match] = "^([^@]+)@.*$"
       end
       attrs[:logout_redirect] = "/oidc?logout=#{client_url}".gsub('://', '%3A%2F%2F')
       attrs

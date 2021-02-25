@@ -250,7 +250,34 @@ end
     ENV['OOD_NATIVE_VNC_LOGIN_HOST']
   end
 
+  # Set the global configuration file
+  def config_file
+    Pathname.new(ENV['OOD_CONFIG_FILE'] || "/etc/ood/config/ondemand.yml")
+  end
+
+  # The configured pinned apps
+  def pinned_apps
+    config.fetch(:pinned_apps, [])
+  end
+
+  # The length of the "Pinned Apps" navbar menu
+  def pinned_apps_menu_length
+    config.fetch(:pinned_apps_menu_length, 6)
+  end
+
   private
+
+  def config
+    @config ||= read_config
+  end
+
+  def read_config
+    f = Configuration.config_file
+    YAML.safe_load(File.open(f.to_s)).symbolize_keys
+  rescue => e
+    Rails.logger.error("Can't read or parse #{Configuration.config_file} because of error #{e}")
+    {}
+  end
 
   # The environment
   # @return [String] "development", "test", or "production"
