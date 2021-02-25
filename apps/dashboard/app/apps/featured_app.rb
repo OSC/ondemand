@@ -4,11 +4,15 @@
 class FeaturedApp < OodApp
   attr_reader :category, :subcategory, :token
 
+  def self.from_ood_app(app, token: nil)
+    FeaturedApp.new(app.router, token: token)
+  end
+
   def initialize(router, category: "Apps", subcategory: "Pinned Apps", token: nil)
     super(router)
     @category = category.to_s
     @subcategory = subcategory.to_s
-    @token = token
+    @token = token || router.token
   end
 
   protected

@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  before_action :set_user, :set_nav_groups, :set_announcements, :set_locale
+  before_action :set_user, :set_pinned_apps, :set_nav_groups, :set_announcements, :set_locale
   before_action :set_my_balances, only: [:index, :new, :featured]
   before_action :set_featured_group
 
@@ -38,6 +38,10 @@ class ApplicationController < ActionController::Base
     @usr_apps ||= ::Configuration.app_sharing_enabled? ? UsrRouter.all_apps(owners: UsrRouter.owners) : []
   end
 
+  def nav_all_apps
+    @nav_all_apps ||= nav_sys_apps + nav_usr_apps + nav_dev_apps
+  end
+
   def nav_sys_apps
     sys_apps.select(&:should_appear_in_nav?)
   end
@@ -55,7 +59,11 @@ class ApplicationController < ActionController::Base
   end
 
   def pinned_app_group
-    OodAppGroup.groups_for(apps: Router.pinned_apps)
+    OodAppGroup.groups_for(apps: @pinned_apps)
+  end
+
+  def set_pinned_apps
+    @pinned_apps ||= Router.pinned_apps(::Configuration.pinned_apps, nav_all_apps)
   end
 
   def set_announcements
