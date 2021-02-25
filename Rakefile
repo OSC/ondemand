@@ -129,6 +129,10 @@ task :update do
     chdir app.path
     sh "bin/bundle update"
   end
+
+  # update the shell app as well
+  chdir Pathname.new("#{APPS_DIR}/shell")
+  sh "bin/setup"
 end
 
 
