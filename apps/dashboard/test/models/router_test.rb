@@ -18,6 +18,7 @@ class RouterTest < ActiveSupport::TestCase
 
   def teardown
     FileUtils.chmod 0755, 'test/fixtures/usr/cant_see/'
+    Router.instance_variable_set('@pinned_apps', nil)
   end
 
   def all_apps
