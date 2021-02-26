@@ -7,9 +7,9 @@ class MotdFile
   # Initialize the Motd Controller object based on the current user.
   #
   # @param [String] path The path to the motd file as a URI
-  def initialize(path = ENV['MOTD_PATH'])
+  def initialize(path = ENV['MOTD_PATH'] || Rails.root.join("default_motd").to_s)
     @motd_path = path
-    @content = load(path)
+    @content   = load(path)
   end
 
   # Checks the path URI to see if it can be opened
@@ -17,7 +17,7 @@ class MotdFile
   # Uses open-uri to check local or remote path for contents
   # @return [String] the motd raw content as string
   def content
-    @content || ""
+    @content || "" 
   end
 
   # A title for the message of the day.
@@ -46,7 +46,11 @@ class MotdFile
       when 'text_erb'
         @motd = MotdFormatterPlaintextErb.new(self)
       else
-        @motd = MotdFormatterPlaintext.new(self)
+        if self.motd_path.include?("default_motd")
+          @motd = MotdFormatterMarkdownErb.new(self)
+        else
+          @motd = MotdFormatterPlaintext.new(self)
+        end
     end if self.exist?
   end
 
@@ -72,6 +76,3 @@ class MotdFile
     nil
   end
 end
-
-
-
