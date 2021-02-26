@@ -25,6 +25,23 @@ class RouterTest < ActiveSupport::TestCase
     DevRouter.apps + SysRouter.apps + UsrRouter.all_apps(owners: UsrRouter.owners)
   end
 
+  def sys_with_gateway_tokens
+    [
+      "sys/bc_jupyter",
+      "sys/activejobs",
+      "sys/bc_desktop/oakley", # picks up sub-apps instead of the main app
+      "sys/bc_desktop/owens",
+      "sys/bc_paraview",
+      "sys/dashboard",
+      "sys/file-editor",
+      "sys/files",
+      "sys/myjobs",
+      "sys/pseudofun",
+      "sys/shell",
+      "sys/systemstatus"
+    ]
+  end
+
   test "pinned apps returns at least empty" do
     UsrRouter.stubs(:base_path).returns(Pathname.new("/dev/null"))
     assert_equal [], Router.pinned_apps([], [])
@@ -43,9 +60,9 @@ class RouterTest < ActiveSupport::TestCase
       'sys/bc_desktop/doesnt_exist',
       'sys/should_get_filtered'
     ]
-    
+
     pinned_apps = Router.pinned_apps(tokens, all_apps)
-    assert_equal real_tokens.to_set, pinned_apps.map { |app| app.token }.to_set
+    assert_equal real_tokens.to_set, pinned_apps.map(&:token).to_set
   end
 
   test "pinned apps with specific sys apps" do
@@ -62,30 +79,16 @@ class RouterTest < ActiveSupport::TestCase
       'sys/should_get_filtered'
     ]
 
-    pinned_apps = Router.pinned_apps(tokens, all_apps)    
-    assert_equal real_tokens.to_set, pinned_apps.map { |app| app.token }.to_set
+    pinned_apps = Router.pinned_apps(tokens, all_apps)
+    assert_equal real_tokens.to_set, pinned_apps.map(&:token).to_set
   end
 
   test "pinned apps with wildcarded sys apps" do
     SysRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
     DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
 
-    tokens = [
-      "sys/activejobs",
-      "sys/bc_desktop/oakley", # picks up sub-apps instead of the main app
-      "sys/bc_desktop/owens",
-      "sys/bc_jupyter",
-      "sys/bc_paraview",
-      "sys/dashboard",
-      "sys/file-editor",
-      "sys/files",
-      "sys/myjobs",
-      "sys/pseudofun",
-      "sys/shell",
-      "sys/systemstatus"
-    ]
-    pinned_apps = Router.pinned_apps(['sys/*'], all_apps)    
-    assert_equal tokens.to_set, pinned_apps.map { |app| app.token }.to_set
+    pinned_apps = Router.pinned_apps(['sys/*'], all_apps)
+    assert_equal sys_with_gateway_tokens.to_set, pinned_apps.map(&:token).to_set
   end
 
   test "pinned apps with wildcarded sys sub apps" do
@@ -104,7 +107,7 @@ class RouterTest < ActiveSupport::TestCase
     ]
 
     pinned_apps = Router.pinned_apps(cfg, all_apps)    
-    assert_equal tokens.to_set, pinned_apps.map { |app| app.token }.to_set
+    assert_equal tokens.to_set, pinned_apps.map(&:token).to_set
   end
 
   test "pinned apps with specific usr apps" do
@@ -126,7 +129,7 @@ class RouterTest < ActiveSupport::TestCase
     ]
 
     pinned_apps = Router.pinned_apps(tokens, all_apps)
-    assert_equal real_tokens.to_set, pinned_apps.map { |app| app.token }.to_set
+    assert_equal real_tokens.to_set, pinned_apps.map(&:token).to_set
   end
 
   test "pinned apps with wildcarded usr apps" do
@@ -146,7 +149,7 @@ class RouterTest < ActiveSupport::TestCase
     ]
 
     pinned_apps = Router.pinned_apps(cfg, all_apps)
-    assert_equal tokens.to_set, pinned_apps.map { |app| app.token }.to_set
+    assert_equal tokens.to_set, pinned_apps.map(&:token).to_set
   end
 
   test "pinned apps with wildcarded usr sub apps apps" do
@@ -165,7 +168,7 @@ class RouterTest < ActiveSupport::TestCase
     ]
 
     pinned_apps = Router.pinned_apps(cfg, all_apps)
-    assert_equal tokens.to_set, pinned_apps.map { |app| app.token }.to_set
+    assert_equal tokens.to_set, pinned_apps.map(&:token).to_set
   end
 
   test "pinned apps with usr sys and dev apps" do
@@ -205,7 +208,7 @@ class RouterTest < ActiveSupport::TestCase
     ]
 
     pinned_apps = Router.pinned_apps(cfg, all_apps)
-    assert_equal tokens.to_set, pinned_apps.map { |app| app.token }.to_set
+    assert_equal tokens.to_set, pinned_apps.map(&:token).to_set
   end
 
   test "pinned apps wont duplicate entries" do
@@ -213,22 +216,7 @@ class RouterTest < ActiveSupport::TestCase
     DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
     cfg = ['sys/bc_jupyter', 'sys/*', 'sys/bc_jupyter', 'sys/pseudofun']
 
-    tokens = [
-      "sys/bc_jupyter",
-      "sys/activejobs",
-      "sys/bc_desktop/oakley", # picks up sub-apps instead of the main app
-      "sys/bc_desktop/owens",
-      "sys/bc_paraview",
-      "sys/dashboard",
-      "sys/file-editor",
-      "sys/files",
-      "sys/myjobs",
-      "sys/pseudofun",
-      "sys/shell",
-      "sys/systemstatus"
-    ]
-
     pinned_apps = Router.pinned_apps(cfg, all_apps)
-    assert_equal tokens.to_set, pinned_apps.map { |app| app.token }.to_set
+    assert_equal sys_with_gateway_tokens.to_set, pinned_apps.map(&:token).to_set
   end
 end
