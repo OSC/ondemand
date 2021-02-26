@@ -4,8 +4,8 @@ class AppsController < ApplicationController
 
   def index
     @sys_apps = sys_app_groups
-    @dev_apps = OodAppGroup.groups_for(apps: dev_apps)
-    @usr_apps = OodAppGroup.groups_for(apps: usr_apps)
+    @dev_apps = OodAppGroup.groups_for(apps: nav_dev_apps)
+    @usr_apps = OodAppGroup.groups_for(apps: nav_usr_apps)
   end
 
   def featured
