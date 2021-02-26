@@ -219,4 +219,179 @@ class RouterTest < ActiveSupport::TestCase
     pinned_apps = Router.pinned_apps(cfg, all_apps)
     assert_equal sys_with_gateway_tokens.to_set, pinned_apps.map(&:token).to_set
   end
+
+  test "specifying type is same as glob" do
+    SysRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    cfg = [{ type: 'sys' }]
+
+    pinned_apps = Router.pinned_apps(cfg, all_apps)
+    assert_equal sys_with_gateway_tokens.to_set, pinned_apps.map(&:token).to_set
+  end
+
+  test "specifying category" do
+    SysRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    cfg = [{ category: 'Interactive Apps' }]
+
+    interactive_apps = [
+      "dev/bc_jupyter",
+      "dev/bc_paraview",
+      "dev/bc_desktop/oakley",
+      "dev/bc_desktop/owens",
+
+      "sys/bc_jupyter",
+      "sys/bc_paraview",
+      "sys/bc_desktop/oakley",
+      "sys/bc_desktop/owens",
+
+      "usr/shared/bc_app",
+      "usr/shared/bc_with_subapps/oakley",
+      "usr/shared/bc_with_subapps/owens"
+    ]
+
+    pinned_apps = Router.pinned_apps(cfg, all_apps)
+    assert_equal interactive_apps.to_set, pinned_apps.map(&:token).to_set
+  end
+
+  test "specifying category and type" do
+    SysRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    cfg = [{ type: 'sys', category: 'Interactive Apps' }]
+
+    interactive_sys_apps = [
+      "sys/bc_jupyter",
+      "sys/bc_paraview",
+      "sys/bc_desktop/oakley",
+      "sys/bc_desktop/owens",
+    ]
+
+    pinned_apps = Router.pinned_apps(cfg, all_apps)
+    assert_equal interactive_sys_apps.to_set, pinned_apps.map(&:token).to_set
+  end
+
+  test "specifying category, subcategory and type" do
+    SysRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    cfg = [{ type: 'sys', category: 'Interactive Apps', subcategory: 'Desktops' }]
+
+    desktops = [
+      "sys/bc_desktop/oakley",
+      "sys/bc_desktop/owens",
+    ]
+
+    pinned_apps = Router.pinned_apps(cfg, all_apps)
+    assert_equal desktops.to_set, pinned_apps.map(&:token).to_set
+  end
+
+  test "specifying non existant categories and subcategories" do
+    SysRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    cfg = [{ type: 'sys', category: 'Fiction', subcategory: 'Science Fiction' }]
+
+    pinned_apps = Router.pinned_apps(cfg, all_apps)
+    assert_equal [].to_set, pinned_apps.map(&:token).to_set
+  end
+
+  test "specifying the wrong type" do
+    SysRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    cfg = [{ type: 'other' }]
+
+    pinned_apps = Router.pinned_apps(cfg, all_apps)
+    assert_equal [].to_set, pinned_apps.map(&:token).to_set
+  end
+
+  test "mixed hash and string configurations" do
+    SysRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    cfg = [
+      "dev/*",
+      { type: 'sys', category: 'Interactive Apps', subcategory: 'Desktops' }
+    ]
+
+    tokens = [
+      "dev/activejobs",
+      "dev/bc_desktop/oakley",  # dev/* gives the 2 subapps, not the main app
+      "dev/bc_desktop/owens",
+      "dev/bc_jupyter",
+      "dev/bc_paraview",
+      "dev/dashboard",
+      "dev/file-editor",
+      "dev/files",
+      "dev/myjobs",
+      "dev/shell",
+      "dev/systemstatus",
+      "dev/pseudofun",
+
+      "sys/bc_desktop/oakley",
+      "sys/bc_desktop/owens",
+    ]
+
+    pinned_apps = Router.pinned_apps(cfg, all_apps)
+    assert_equal tokens.to_set, pinned_apps.map(&:token).to_set
+  end
+
+  test "metadata works with other fields" do
+    SysRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    cfg = [
+      {
+        type: 'sys',
+        category: 'Interactive Apps',
+        machine_learning: 'true'
+      }
+    ]
+
+    tokens = [
+      "sys/bc_jupyter"
+    ]
+
+    pinned_apps = Router.pinned_apps(cfg, all_apps)
+    assert_equal tokens.to_set, pinned_apps.map(&:token).to_set
+  end
+
+  test "multiple metadata matches work" do
+    SysRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    cfg = [
+      { machine_learning: 'true' },
+      { field_of_science: 'biology' }
+    ]
+
+    tokens = [
+      "sys/bc_jupyter",
+      "sys/pseudofun",
+
+      "dev/bc_jupyter",
+      "dev/pseudofun"
+    ]
+
+    pinned_apps = Router.pinned_apps(cfg, all_apps)
+    assert_equal tokens.to_set, pinned_apps.map(&:token).to_set
+  end
+
+  test "bad metadata returns emtpy" do
+    SysRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    cfg = [
+      { machine_learning: 'false' },
+      { field_of_science: 'magic' }
+    ]
+
+    pinned_apps = Router.pinned_apps(cfg, all_apps)
+    assert_equal [].to_set, pinned_apps.map(&:token).to_set
+  end
+
+  test "empty hashes and string return nothing" do
+    SysRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    cfg = [
+      "",
+      {}
+    ]
+
+    pinned_apps = Router.pinned_apps(cfg, all_apps)
+    assert_equal [].to_set, pinned_apps.map(&:token).to_set
+  end
 end

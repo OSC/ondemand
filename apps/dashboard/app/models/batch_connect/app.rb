@@ -10,6 +10,8 @@ module BatchConnect
     # @return [String, nil] sub app
     attr_accessor :sub_app
 
+    delegate :type, :category, :subcategory, :metadata, to: :ood_app
+
     # Raised when batch connect app components could not be found
     class AppNotFound < StandardError; end
 

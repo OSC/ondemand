@@ -4,3 +4,5 @@ category: Interactive Apps
 subcategory: Apps
 icon: fa://gear
 role: batch_connect
+metadata:
+  machine_learning: 'true'
