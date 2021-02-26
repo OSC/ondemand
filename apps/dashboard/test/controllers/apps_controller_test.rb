@@ -1,13 +1,27 @@
 require 'test_helper'
 
 class AppsControllerTest < ActionController::TestCase
+
+  UserDouble = Struct.new(:name)
+
   def setup
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_interactive_apps"))
     DevRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/dev"))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
 
-    UsrRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/usr"))
-    UsrRouter.stubs(:owners).returns([Etc.getlogin])
+    Router.instance_variable_set('@pinned_apps', nil)
+    OodSupport::Process.stubs(:user).returns(UserDouble.new('me'))
+    OodSupport::User.stubs(:new).returns(UserDouble.new('me'))
+    FileUtils.chmod 0000, 'test/fixtures/usr/cant_see/'
+    UsrRouter.stubs(:base_path).with(:owner => "me").returns(Pathname.new("test/fixtures/usr/me"))
+    UsrRouter.stubs(:base_path).with(:owner => 'shared').returns(Pathname.new("test/fixtures/usr/shared"))
+    UsrRouter.stubs(:base_path).with(:owner => 'cant_see').returns(Pathname.new("test/fixtures/usr/cant_see"))
+    UsrRouter.stubs(:owners).returns(['me', 'shared', 'cant_see'])
+  end
+
+  def teardown
+    FileUtils.chmod 0755, 'test/fixtures/usr/cant_see/'
+    Router.instance_variable_set('@pinned_apps', nil)
   end
 
   test "default table is correct" do
@@ -45,12 +59,18 @@ class AppsControllerTest < ActionController::TestCase
   test "table shows interactive sys apps with dev and usr apps" do
     Configuration.stubs(:app_development_enabled?).returns(true)
     Configuration.stubs(:app_sharing_enabled?).returns(true)
-    puts "all usr apps: #{UsrRouter.all_apps(owners: UsrRouter.owners)[0].links[0].url}"
+    UsrRouter.stubs(:base_path).with(:owner => "me").returns(Pathname.new("test/fixtures/usr/me"))
+    UsrRouter.stubs(:base_path).with(:owner => 'shared').returns(Pathname.new("test/fixtures/usr/shared"))
+    UsrRouter.stubs(:base_path).with(:owner => 'cant_see').returns(Pathname.new("test/fixtures/usr/cant_see"))
+    UsrRouter.stubs(:owners).returns(['me', 'shared', 'cant_see'])
+
+    OodSupport::Process.stubs(:user).returns(UserDouble.new('me'))
+
     get :index
 
     data_rows = css_select('table[id="all-apps-table"] tr').slice(1, 100)
 
-    assert_equal 11, data_rows.size
+    assert_equal 14, data_rows.size
 
     # difference here is shell apps have hosts in them (and there are 2 of them)
     # all interactive apps are shown along with the dev and usr apps
@@ -65,7 +85,10 @@ class AppsControllerTest < ActionController::TestCase
       "apps-show-activejobs",
       "apps-show-myjobs",
       "batch_connect-dev-bc_rstudio-session_contexts-new",  # the dev app
-      "apps-show-results_manager_v2-usr-#{Etc.getlogin}"    # the usr app
+      "apps-show-my_shared_app-usr-me",                     # the usr apps
+      "batch_connect-usr-shared-bc_app-session_contexts-new",
+      "batch_connect-usr-shared-bc_with_subapps-owens-session_contexts-new",
+      "batch_connect-usr-shared-bc_with_subapps-oakley-session_contexts-new"
     ]
 
     row_ids.each do |id|
