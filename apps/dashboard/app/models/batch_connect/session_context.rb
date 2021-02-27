@@ -80,7 +80,6 @@ module BatchConnect
     def to_bool(value)
      ! FALSE_VALUES.include?(value)
     end
-    
 
     # @return [Boolean]
     def app_specific_cache_enabled?
@@ -90,12 +89,10 @@ module BatchConnect
           to_bool(@app_specific_cache_setting)
        end
     end
-      
   
     # @return [Boolean]   
     def global_cache_enabled? 
       Configuration.batch_connect_global_cache_enabled?
     end
-
   end
 end

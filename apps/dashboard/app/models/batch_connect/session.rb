@@ -208,7 +208,11 @@ module BatchConnect
       self.view       = app.session_view
       self.created_at = Time.now.to_i
 
-      submit_script = app.submit_opts(context, fmt: format) # could raise an exception
+      # add staged_root to rendering context
+      bind = context.get_binding
+      bind.local_variable_set(:staged_root, self.staged_root)
+
+      submit_script = app.submit_opts(bind, context, fmt: format) # could raise an exception
 
       self.cluster_id = submit_script.fetch(:cluster, context.try(:cluster)).to_s
       raise(ClusterNotFound, I18n.t('dashboard.batch_connect_missing_cluster')) unless self.cluster_id.present?
