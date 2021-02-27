@@ -66,6 +66,8 @@ en:
       <h4>Stack trace:</h4>
       <pre>%{exception_trace}</pre>
     apps_system_apps_title: "System Apps"
+    
+    shell_app_title: "%{cluster_title} Shell Access"
 
     batch_connect_form_attr_cache_error: "Unable to use previously cached values, using defaults instead. (%{error_message})"
     batch_connect_form_data_root: "data root directory"
