@@ -8,7 +8,6 @@ module BatchConnect
 
     attr_accessor :app_specific_cache_setting
 
-
     # Attributes used for serialization
     # @return [Hash{String => String, nil}] attributes to be serialized
     def attributes
@@ -81,7 +80,6 @@ module BatchConnect
      ! FALSE_VALUES.include?(value)
     end
     
-
     # @return [Boolean]
     def app_specific_cache_enabled?
        if @app_specific_cache_setting.nil?
@@ -91,11 +89,9 @@ module BatchConnect
        end
     end
       
-  
     # @return [Boolean]   
     def global_cache_enabled? 
       Configuration.batch_connect_global_cache_enabled?
     end
-
   end
 end
