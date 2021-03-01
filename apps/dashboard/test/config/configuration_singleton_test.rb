@@ -255,6 +255,12 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       "sys/bc_osc_jupyter",
       "sys/bc_osc_rstudio_server",
       "sys/iqmol",
+      {
+        type: 'sys',
+        category: 'Interactive Apps',
+        subcategory: 'Servers',
+        field_of_science: 'Biology'
+      }
     ]
 
     with_modified_env(config_fixtures) do

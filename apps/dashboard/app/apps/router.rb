@@ -35,24 +35,22 @@ class Router
   private
 
   def self.pinned_apps_from_token(token, all_apps)
-    all_apps.select do |app|
-      glob_match = File.fnmatch(token, app.token, File::FNM_EXTGLOB)
-      sub_app_match = token.start_with?(app.token) # find bc/desktop/pitzer from sys/bc_desktop
+    matcher = TokenMatcher.new(token)
 
-      glob_match || sub_app_match
+    all_apps.select do |app|
+      matcher.matches_app?(app)
     end.each_with_object([]) do |app, apps|
       if app.has_sub_apps?
-        apps.concat(featured_apps_from_sub_app(app, token))
+        apps.concat(featured_apps_from_sub_app(app, matcher))
       else
         apps.append(FeaturedApp.from_ood_app(app))
       end
     end
   end
 
-  def self.featured_apps_from_sub_app(app, token)
+  def self.featured_apps_from_sub_app(app, matcher)
     app.sub_app_list.each_with_object([]) do |sub_app, apps|
-      glob_match = File.fnmatch(token, sub_app.token, File::FNM_EXTGLOB)
-      apps.append(FeaturedApp.from_ood_app(app, token: sub_app.token)) if glob_match
+      apps.append(FeaturedApp.from_ood_app(app, token: sub_app.token)) if matcher.matches_app?(sub_app)
     end
   end
 end
