@@ -1,0 +1,3 @@
+<%= link_to(link.url.to_s, target: link.new_tab? ? "_blank" : nil) do %>
+  <%= icon_tag(link.icon_uri) %> <%= link.title %>
+<% end %>

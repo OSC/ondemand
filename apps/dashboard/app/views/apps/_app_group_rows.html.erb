@@ -1,0 +1,33 @@
+<%- group.apps.each do |app| -%>
+  <%- if app.role == "files" -%>
+    <tr id="<%= row_id(app.url) %>">
+      <td>
+        <div class="btn-group">
+          <%= link_to app.links.first.url, class: 'btn btn-primary', target: '_blank' do %>
+          <span title="FontAwesome icon specified: folder" aria-hidden="true" class="fas fa-folder fa-fw"></span> Files
+          <% end %>
+          <button type="button" class="btn dropdown-toggle btn-primary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <%- app.links.each do |link| -%>
+            <li><%= render partial: "link", locals: { link: link } %></li>
+            <%- end -%>
+          </ul>
+        </div>
+      </td>
+      <td><%= install_location(app) %></td>
+      <td><%= app.category %></td>
+      <td><%= app.subcategory %></td>
+    </tr>
+  <%- else -%>
+    <%- app.links.each do |link| -%>
+      <tr id="<%= row_id(link.url) %>">
+        <td><%= render partial: "link", locals: { link: link } %></td>
+        <td><%= install_location(app) %></td>
+        <td><%= app.category %></td>
+        <td><%= app.subcategory %></td>
+      </tr>
+    <%- end -%>
+  <%- end -%>
+<%- end -%>

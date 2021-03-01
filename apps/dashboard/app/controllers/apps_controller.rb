@@ -3,8 +3,9 @@ require 'ostruct'
 class AppsController < ApplicationController
 
   def index
-    @core_app_groups = OodAppGroup.select(titles: %w(Files Jobs Clusters), groups: sys_app_groups)
-    @app_groups = sys_app_groups.select {|g| ! %w(Files Jobs Clusters).include?(g.title) }
+    @sys_apps = sys_app_groups
+    @dev_apps = OodAppGroup.groups_for(apps: nav_dev_apps)
+    @usr_apps = OodAppGroup.groups_for(apps: nav_usr_apps)
   end
 
   def featured

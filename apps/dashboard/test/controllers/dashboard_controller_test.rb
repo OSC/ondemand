@@ -7,6 +7,10 @@ class DashboardControllerTest < ActionController::TestCase
     Router.instance_variable_set('@pinned_apps', nil)
   end
 
+  def teardown
+    Router.instance_variable_set('@pinned_apps', nil)
+  end
+
   def dropdown_list(title)
     css_select("li.dropdown[title='#{title}'] ul")
   end
