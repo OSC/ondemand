@@ -8,9 +8,11 @@ require 'bundler/setup' # Set up gems listed in the Gemfile.
 
 # load dotenv files before "before_configuration" callback
 require File.expand_path('../configuration_singleton', __FILE__)
+require File.expand_path('../current_user_singleton', __FILE__)
 
 # global instance to access and use
 Configuration = ConfigurationSingleton.new
+CurrentUser   = CurrentUserSingleton.new
 Configuration.load_dotenv_files
 
 # set defaults to address OodAppkit.dataroot issue
