@@ -1,9 +1,9 @@
 // Load bootstrap/font-awesome sprockets first
 @import "bootstrap-sprockets";
 @import "font-awesome-sprockets";
+
 //@import "awesim";
 
-@import "ood_appkit/bootstrap-overrides";
 
 //TODO:
 // overrides for navbar-default to get the same look and feel
@@ -23,17 +23,18 @@
 // $navbar-height: 20px;
 
 // styles to make a logo fill the navbar height if using a logo for the navbar title
-.navbar-brand.navbar-brand-logo{
+.navbar-brand.navbar-brand-logo {
   padding: 0px;
 }
-.navbar-brand.navbar-brand-logo img{
+
+.navbar-brand.navbar-brand-logo img {
   height: 100%;
 }
 
 // for inverse, lets make the text slightliy darker so its
 // different than the links
-.navbar.navbar-inverse .navbar-text{
-     color: #ddd;
+.navbar.navbar-inverse .navbar-text {
+  color: #ddd;
 }
 
 // Add colors
@@ -57,9 +58,12 @@ $ood-blue: rgb(0, 95, 133);
 
 // Use sticky footer in body of layout
 // See: https://css-tricks.com/couple-takes-sticky-footer/
-html, body {
+
+html,
+body {
   height: 100%;
 }
+
 body {
   display: flex;
   flex-direction: column;
@@ -67,6 +71,7 @@ body {
   div.content {
     flex: 1 0 auto;
   }
+
   .footer {
     flex-shrink: 0;
   }
@@ -86,9 +91,12 @@ pre.motd-monospaced {
 }
 
 // Add branded panels
+
+/**
 .panel-ood-blue {
   @include panel-variant($ood-blue, $ood-white, $ood-blue, $ood-blue);
 }
+
 .panel-ood-burgundy {
   @include panel-variant($ood-burgundy, $ood-white, $ood-burgundy, $ood-burgundy);
 }
@@ -100,8 +108,10 @@ pre.motd-monospaced {
 @media (min-width: $screen-md-min) and (max-width: $screen-md-max + 135) {
   @include responsive-invisibility('.hidden-md-nav');
 }
+**/
 
 // Your custom css styles below (must be manually added)
+
 @import "dashboard";
 @import "navbar";
 @import "apps";
