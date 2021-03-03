@@ -56,9 +56,7 @@ class MotdTest < ActiveSupport::TestCase
     motd_file = MotdFile.new(path)
     formatted_motd = MotdFormatterMarkdownErb.new(motd_file)
 
-    groups = OodSupport::User.new.groups.sort_by(&:id).tap { |groups|
-      groups.unshift(groups.delete(OodSupport::Process.group))
-    }.map(&:name).grep(/^P./)
+    groups = OodSupport::Process.groups.map(&:name)
 
     group  = OodSupport::Group.new
     user_in_group = groups.include? group

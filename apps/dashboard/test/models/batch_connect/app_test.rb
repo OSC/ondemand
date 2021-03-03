@@ -239,9 +239,7 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
         group_size: <%= CurrentUser.groups.size %>")
 
       app = BatchConnect::App.new(router: r)
-      groups = OodSupport::User.new.groups.sort_by(&:id).tap {
-        |groups| groups.unshift(groups.delete(OodSupport::Process.group))
-      }.map(&:name).grep(/^P./)
+      groups = OodSupport::Process.groups.map(&:name)
       
       user_in_group = OodSupport::Process.groups.include?(OodSupport::Group.new)
 
@@ -261,9 +259,7 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
         group_size: <%= CurrentUser.groups.size %>")
 
       app = BatchConnect::App.new(router: r)
-      groups = OodSupport::User.new.groups.sort_by(&:id).tap {
-        |groups| groups.unshift(groups.delete(OodSupport::Process.group))
-      }.map(&:name).grep(/^P./)
+      groups = OodSupport::Process.groups.map(&:name) 
       
       user_in_group = OodSupport::Process.groups.include?(OodSupport::Group.new)
 

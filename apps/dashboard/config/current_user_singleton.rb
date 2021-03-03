@@ -1,8 +1,6 @@
 class CurrentUserSingleton
   def groups
-    @groups ||= OodSupport::User.new.groups.sort_by(&:id).tap { |groups|
-      groups.unshift(groups.delete(OodSupport::Process.group))
-    }.map(&:name).grep(/^P./) 
+    @groups ||= OodSupport::Process.groups.map(&:name) 
   end
 
   def user_in_group?(group)
