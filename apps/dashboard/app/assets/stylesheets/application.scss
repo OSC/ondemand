@@ -2,8 +2,10 @@
 @import "bootstrap-sprockets";
 @import "font-awesome-sprockets";
 
-//@import "awesim";
+// Import Markdown styling
+@import "app_kit/markdown";
 
+//@import "awesim";
 
 //TODO:
 // overrides for navbar-default to get the same look and feel
