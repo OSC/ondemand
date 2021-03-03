@@ -1,0 +1,3 @@
+<% group = OodSupport::Group.new %>
+<%= "You're in #{CurrentUser.groups.size} groups" %>
+<%= "including #{group}." if CurrentUser.user_in_group? group %>

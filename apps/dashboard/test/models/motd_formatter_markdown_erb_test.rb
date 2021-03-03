@@ -50,5 +50,23 @@ class MotdTest < ActiveSupport::TestCase
 
     assert_not_nil formatted_motd.content
   end
+
+  test "motd-formatter-md-erb should recognize CurrentUserSingleton methods" do
+    path = "#{Rails.root}/test/fixtures/files/motd_current_user"
+    motd_file = MotdFile.new(path)
+    formatted_motd = MotdFormatterMarkdownErb.new(motd_file)
+
+    groups = OodSupport::User.new.groups.sort_by(&:id).tap { |groups|
+      groups.unshift(groups.delete(OodSupport::Process.group))
+    }.map(&:name).grep(/^P./)
+
+    group  = OodSupport::Group.new
+    user_in_group = groups.include? group
+
+    expected_file = OodAppkit.markdown.render(
+      "You're in #{groups.size} groups\nincluding #{group}.")
+
+    assert_equal expected_file, formatted_motd.content
+  end
 end
 

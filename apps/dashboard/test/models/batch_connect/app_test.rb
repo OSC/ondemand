@@ -229,4 +229,48 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
       assert_equal good_clusters, app.clusters
     }
   end
+
+  test "should recognize CurrentUserSingleton methods in submit configs" do
+    Dir.mktmpdir do |dir|
+      r = PathRouter.new(dir)
+      r.path.join("submit.yml.erb").write(
+        "---\n
+        user_in_group: <%= CurrentUser.user_in_group? OodSupport::Group.new %>\n\n
+        group_size: <%= CurrentUser.groups.size %>")
+
+      app = BatchConnect::App.new(router: r)
+      groups = OodSupport::User.new.groups.sort_by(&:id).tap {
+        |groups| groups.unshift(groups.delete(OodSupport::Process.group))
+      }.map(&:name).grep(/^P./)
+      
+      user_in_group = OodSupport::Process.groups.include?(OodSupport::Group.new)
+
+      assert_equal app.send(
+        :submit_config).fetch(:group_size), groups.size
+      assert_equal app.send(
+        :submit_config).fetch(:user_in_group), user_in_group
+    end
+  end
+
+  test "should recognize CurrentUserSingleton methods in form configs" do
+    Dir.mktmpdir do |dir|
+      r = PathRouter.new(dir)
+      r.path.join("form.yml.erb").write(
+        "---\n
+        user_in_group: <%= CurrentUser.user_in_group? OodSupport::Group.new %>\n\n
+        group_size: <%= CurrentUser.groups.size %>")
+
+      app = BatchConnect::App.new(router: r)
+      groups = OodSupport::User.new.groups.sort_by(&:id).tap {
+        |groups| groups.unshift(groups.delete(OodSupport::Process.group))
+      }.map(&:name).grep(/^P./)
+      
+      user_in_group = OodSupport::Process.groups.include?(OodSupport::Group.new)
+
+      assert_equal app.send(
+        :form_config).fetch(:group_size), groups.size
+      assert_equal app.send(
+        :form_config).fetch(:user_in_group), user_in_group
+    end
+  end
 end

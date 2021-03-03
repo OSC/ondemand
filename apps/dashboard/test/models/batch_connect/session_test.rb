@@ -357,4 +357,61 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       assert_equal session.connect.to_h, connect.symbolize_keys
     end
   end
+
+  test "sessions TemplateBinding should recognize CurrentUserSingleton methods" do
+    Dir.mktmpdir do |dir|
+      r = PathRouter.new(dir)
+
+      r.path.join("file1.erb").write("<%= CurrentUser.groups %>")
+      r.path.join("file2.erb").write(
+        "<%= CurrentUser.user_in_group? OodSupport::Group.new %>")
+
+      session = BatchConnect::Session.new
+
+      assert_nothing_raised { session.send(
+        :render_erb_files,
+        r.path.children,
+        binding: BatchConnect::Session::TemplateBinding.new(
+          session).get_binding) }
+    end
+  end
+
+  test "session should recognize CurrentUserSingleton methods for info.md.erb" do
+    Dir.mktmpdir do |dir|
+      r = PathRouter.new(dir)
+
+      r.path.join("info.md.erb").write("
+        <%= CurrentUser.groups %>\n
+        <%= CurrentUser.user_in_group? OodSupport::Group.new %>")
+
+
+      session = BatchConnect::Session.new
+      app     = BatchConnect::App.new(router: r)
+
+
+      session.stubs(:app).returns(app)
+      parsed_file = session.render_info_view
+
+      assert parsed_file != nil
+    end
+  end
+
+  test "session should recognize CurrentUserSingleton methods for info.html.erb" do
+    Dir.mktmpdir do |dir|
+      r = PathRouter.new(dir)
+
+      r.path.join("info.html.erb").write("
+        <p><%= CurrentUser.groups %></p>\n
+        <p><%= CurrentUser.user_in_group? OodSupport::Group.new %></p>")
+
+      session = BatchConnect::Session.new
+      app     = BatchConnect::App.new(router: r)
+
+      session.stubs(:app).returns(app)
+      parsed_file = session.render_info_view
+
+      assert parsed_file != nil
+    end
+  end
+
 end
