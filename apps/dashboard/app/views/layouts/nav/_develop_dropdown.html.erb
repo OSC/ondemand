@@ -1,7 +1,14 @@
-<li class="dropdown" title="<%= t('dashboard.nav_develop_title') %>">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+<li class="nav-item dropdown" title="<%= t('dashboard.nav_develop_title') %>">
+  <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
     <i class="fas fa-code" aria-hidden="true"></i><span class="hidden-sm hidden-sm-nav"> <%= t('dashboard.nav_develop_title') %></span><span class="caret"></span>
   </a>
+
+  <div class="dropdown-menu">
+    <%= tag.a t('dashboard.nav_restart_server'), href: restart_url, class: 'dropdown-item' %>
+    <%= tag.a t('dashboard.nav_develop_docs'), target: '_blank', href: Configuration.developer_docs_url, class: 'dropdown-item' %>
+    <%= tag.a products_title(:dev), href: products_path(type: 'dev'), class: 'dropdown-item' %>
+  </div>
+
   <ul class="dropdown-menu">
     <%= nav_link(t('dashboard.nav_restart_server'), "sync", restart_url) %>
     <%= nav_link(t('dashboard.nav_develop_docs'), "book", Configuration.developer_docs_url, target: "_blank") %>

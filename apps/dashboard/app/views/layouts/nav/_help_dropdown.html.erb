@@ -1,8 +1,17 @@
-<li class="dropdown" title="<%= t('dashboard.nav_help_title') %>" >
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+<li class="nav-item dropdown" title="<%= t('dashboard.nav_help_title') %>" >
+  <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
     <i class="fas fa-question-circle" aria-hidden="true"></i><span class="hidden-sm hidden-sm-nav"> <%= t('dashboard.nav_help_title') %></span><span class="caret"></span>
   </a>
-  <ul class="dropdown-menu">
+  <div class="dropdown-menu">
+    <%= tag.a t('dashboard.nav_restart_server'), target: '_blank', href: support_url, class: 'dropdown-item' %>
+    <%= tag.a t('dashboard.nav_help_docs'), target: '_blank', href: docs_url, class: 'dropdown-item' %>
+    <%= tag.a t('dashboard.nav_help_change_password'), target: '_blank', href: passwd_url, class: 'dropdown-item' %>
+    <%= tag.a t('dashboard.nav_help_two_factor'), target: '_blank', href: configure_2fa_url, class: 'dropdown-item' %>
+    <%- if help_custom_url -%>
+      <%= tag.a t('dashboard.nav_help_two_factor'), target: '_blank', href: help_custom_url, class: 'dropdown-item' %>
+    <%- end -%>
+    <%= tag.a t('dashboard.nav_restart_server'), href: restart_url, class: 'dropdown-item' %>
+    <!--
     <%= nav_link(t('dashboard.nav_help_support'), "question-circle", support_url, target: "_blank") %>
     <%= nav_link(t('dashboard.nav_help_docs'), "info-circle", docs_url, target: "_blank") %>
     <%= nav_link(t('dashboard.nav_help_change_password'), "key", passwd_url, target: "_blank") %>
@@ -11,5 +20,6 @@
       <%= nav_link(t('dashboard.nav_help_custom'), "question-circle", help_custom_url, target: "_blank" ) %>
     <%- end -%>
     <%= nav_link(t('dashboard.nav_restart_server'), "sync", restart_url) %>
-  </ul>
+    -->
+  </div>
 </li>
