@@ -1,5 +1,7 @@
 // Load bootstrap/font-awesome sprockets first
-@import "bootstrap-sprockets";
+@import "custom";
+@import "bootstrap";
+
 @import "font-awesome-sprockets";
 
 // Import Markdown styling
@@ -50,10 +52,7 @@ $ood-blue: rgb(0, 95, 133);
 
 
 // Load up bootstrap/font-awesome style sheet
-@import "bootstrap";
 @import "font-awesome";
-
-@import "ood_appkit";
 
 // Load up dataTables bootstrap specific styles
 @import "dataTables/bootstrap/3/jquery.dataTables.bootstrap";
