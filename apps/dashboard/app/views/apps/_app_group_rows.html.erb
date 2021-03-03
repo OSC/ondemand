@@ -19,6 +19,9 @@
       <td><%= install_location(app) %></td>
       <td><%= app.category %></td>
       <td><%= app.subcategory %></td>
+      <%- @metadata_columns.each do |column| -%>
+      <td><%= app.metadata.fetch(column, "") %></td>
+      <%- end -%>
     </tr>
   <%- else -%>
     <%- app.links.each do |link| -%>
@@ -27,6 +30,9 @@
         <td><%= install_location(app) %></td>
         <td><%= app.category %></td>
         <td><%= app.subcategory %></td>
+        <%- @metadata_columns.each do |column| -%>
+        <td><%= app.metadata.fetch(column, "") %></td>
+        <%- end -%>
       </tr>
     <%- end -%>
   <%- end -%>
