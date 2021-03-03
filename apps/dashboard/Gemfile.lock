@@ -47,10 +47,6 @@ GEM
     arel (9.0.0)
     autoprefixer-rails (9.8.6.5)
       execjs
-    bootstrap (4.6.0)
-      autoprefixer-rails (>= 9.1.0)
-      popper_js (>= 1.14.3, < 2)
-      sassc-rails (>= 2.0.0)
     bootstrap_form (2.7.0)
     browser (2.7.1)
     builder (3.2.4)
@@ -134,7 +130,6 @@ GEM
     ood_support (0.0.3)
     pbs (2.2.1)
       ffi (~> 1.9, >= 1.9.6)
-    popper_js (1.16.0)
     public_suffix (4.0.6)
     racc (1.5.2)
     rack (2.2.3)
@@ -195,12 +190,6 @@ GEM
       tilt (>= 1.1, < 3)
     sassc (2.4.0)
       ffi (~> 1.9)
-    sassc-rails (2.1.2)
-      railties (>= 4.0.0)
-      sassc (>= 2.0)
-      sprockets (> 3.0)
-      sprockets-rails
-      tilt
     sdoc (2.0.4)
       rdoc (>= 5.0)
     semantic_range (2.3.1)
@@ -248,7 +237,6 @@ PLATFORMS
 DEPENDENCIES
   addressable (~> 2.4)
   autoprefixer-rails (~> 9.1)
-  bootstrap (~> 4.6)
   bootstrap_form (~> 2.4)
   browser (~> 2.2)
   byebug
