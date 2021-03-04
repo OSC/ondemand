@@ -57,9 +57,7 @@ class MotdTest < ActiveSupport::TestCase
     formatted_motd = MotdFormatterMarkdownErb.new(motd_file)
 
     groups = OodSupport::Process.groups.map(&:name)
-
     group  = OodSupport::Group.new
-    user_in_group = groups.include? group
 
     expected_file = OodAppkit.markdown.render(
       "You're in #{groups.size} groups\nincluding #{group}.")

@@ -57,9 +57,7 @@ class MotdTest < ActiveSupport::TestCase
     formatted_motd = MotdFormatterPlaintextErb.new(motd_file)
 
     groups = OodSupport::Process.groups.map(&:name)
-
     group  = OodSupport::Group.new
-    user_in_group = groups.include? group
 
     expected_file = "\nYou're in #{groups.size} groups\nincluding #{group}.\n"
 
