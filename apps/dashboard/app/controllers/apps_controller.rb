@@ -86,9 +86,13 @@ class AppsController < ApplicationController
   end
 
   def set_metadata_columns
-    @metadata_columns = nav_all_apps.each_with_object([]) do |app, columns|
-      app.metadata.each do |k,v|
-        columns.append(k.to_s)
+    @metadata_columns = begin
+      nav_all_apps.each_with_object([]) do |app, columns|
+        app.metadata.each do |k,v|
+          columns.append(k.to_s)
+        end
+      end.sort_by do |column|
+        column.to_s
       end
     end
   end

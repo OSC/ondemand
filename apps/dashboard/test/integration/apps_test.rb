@@ -14,8 +14,8 @@ class AppsTest < ActionDispatch::IntegrationTest
     headers = css_select('tr[id="all-apps-table-header"] th')
   
     assert_equal 6, headers.size
-    assert_equal 'Machine Learning', headers[4].text
-    assert_equal 'Field Of Science', headers[5].text
+    assert_equal 'Field Of Science', headers[4].text
+    assert_equal 'Machine Learning', headers[5].text
 
     rows_test_data = {
       "pun-sys-shell-ssh-owens.osc.edu": ["", ""],
@@ -25,10 +25,10 @@ class AppsTest < ActionDispatch::IntegrationTest
       "apps-show-activejobs": ["", ""],
       "apps-show-myjobs": [ "", "" ],
       "batch_connect-sys-bc_paraview-session_contexts-new": ["", ""],
-      "batch_connect-sys-bc_jupyter-session_contexts-new": ["true", ""], # machine learning metadata
+      "batch_connect-sys-bc_jupyter-session_contexts-new": ["", "true"], # machine learning metadata
       "batch_connect-sys-bc_desktop-owens-session_contexts-new": ["", ""],
       "batch_connect-sys-bc_desktop-oakley-session_contexts-new": ["", ""],
-      "apps-show-pseudofun": ["", "biology"] # field of science metadata
+      "apps-show-pseudofun": ["biology", ""] # field of science metadata
     }
 
     rows_test_data.each do |row_id, data|
