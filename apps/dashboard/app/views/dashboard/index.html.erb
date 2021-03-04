@@ -23,6 +23,7 @@
       </div>
       <div class="col-md-8">
         <div class="xdmod">
+          <%= render "pinned_apps" unless @pinned_apps.empty? %>
           <%= render "xdmod_widget_jobs" %>
         </div>
       </div>
