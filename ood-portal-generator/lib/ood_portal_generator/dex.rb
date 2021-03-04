@@ -8,13 +8,12 @@ module OodPortalGenerator
   class Dex
     # @param opts [#to_h] the options describing the context used to render the Dex config
     def initialize(opts = {}, view)
-      opts = opts.to_h.each_with_object({}) { |(k, v), h| h[k.to_sym] = v unless v.nil? }
+      opts = opts.to_h.deep_symbolize_keys
       config = opts.fetch(:dex, {})
       if config.nil? || config == false
         @enable = false
         return
       else
-        config = config.to_h.each_with_object({}) { |(k, v), h| h[k.to_sym] = v unless v.nil? }
         @config = config
         @enable = true
       end
@@ -47,10 +46,7 @@ module OodPortalGenerator
           userID: '08a8684b-db88-4b73-90a9-3cd1661f5466',
         }]
       end
-      @dex_config[:frontend] = {
-        dir: '/usr/share/ondemand-dex/web',
-        theme: 'ondemand',
-      }.merge(frontend)
+      @dex_config[:frontend] = frontend
       # Pass values back to main ood-portal.conf view
       if enabled? && self.class.installed?
         view.update_oidc_attributes(oidc_attributes)
@@ -196,7 +192,10 @@ module OodPortalGenerator
     end
 
     def frontend
-      @config.fetch(:frontend, {})
+      {
+        dir: '/usr/share/ondemand-dex/web',
+        theme: 'ondemand',
+      }.merge(@config.fetch(:frontend, {}))
     end
 
     def copy_ssl_certs

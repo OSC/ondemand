@@ -1,0 +1,8 @@
+---
+dex:
+  frontend:
+    theme: "custom-test-theme"
+    dir: /etc/site/custom-dex-themes
+    extra:
+      loginButtonText: "Test login Text"
+
