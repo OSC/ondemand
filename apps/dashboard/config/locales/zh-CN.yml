@@ -119,6 +119,8 @@ zh-CN:
       您的小组成员资格已更改，这会影响您对应用程序的访问。 您的dashboard将自动重启。
       如果没有重启，请点击 <a href="%{restart_url}">来重启网页服务器</a>.
     shared_apps_title: "共享应用"
+    # shared_apps_caption: "Shared by %{owner_title} (%{owner})"
+    # shared_apps_caption_short: "Shared by %{owner}"
     sharing_catalog_title: "应用目录"
     sharing_no_shared_apps_html: |
       <strong>没有可用的自定义共享应用。</strong>
@@ -132,11 +134,9 @@ zh-CN:
       <br>自定义共享应用程序可以在下面使用。
 
     # all_apps_table_app_column: "Name"
-    # all_apps_table_install_column: "Install Location"
     # all_apps_table_category_column: "Category"
     # all_apps_table_sub_category_column: "Sub Category"
-    # all_apps_table_install_location_dev: "Developer Apps"
-    # all_apps_table_install_location_sys: "System Apps"
-    # all_apps_table_install_location_usr: "Shared Apps"
 
     # unknown: "Unknown"
+
+    # development_apps_caption: "Sandbox App"

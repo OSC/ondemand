@@ -16,7 +16,6 @@
           </ul>
         </div>
       </td>
-      <td><%= install_location(app) %></td>
       <td><%= app.category %></td>
       <td><%= app.subcategory %></td>
       <%- @metadata_columns.each do |column| -%>
@@ -26,8 +25,12 @@
   <%- else -%>
     <%- app.links.each do |link| -%>
       <tr id="<%= row_id(link.url) %>">
-        <td><%= render partial: "link", locals: { link: link } %></td>
-        <td><%= install_location(app) %></td>
+        <td>
+          <%= render partial: "link", locals: { link: link } %>
+          <%- if caption_app?(app) %>
+            <div class="text-muted pull-right"><%= link.caption %></div>
+          <%- end -%>
+        </td>
         <td><%= app.category %></td>
         <td><%= app.subcategory %></td>
         <%- @metadata_columns.each do |column| -%>

@@ -30,19 +30,12 @@ class AppsTest < ActionDispatch::IntegrationTest
 
     headers = css_select('tr[id="all-apps-table-header"] th')
     assert_equal I18n.t('dashboard.all_apps_table_app_column'), headers[0].text
-    assert_equal I18n.t('dashboard.all_apps_table_install_column'), headers[1].text
-    assert_equal I18n.t('dashboard.all_apps_table_category_column'), headers[2].text
-    assert_equal I18n.t('dashboard.all_apps_table_sub_category_column'), headers[3].text
+    assert_equal I18n.t('dashboard.all_apps_table_category_column'), headers[1].text
+    assert_equal I18n.t('dashboard.all_apps_table_sub_category_column'), headers[2].text
 
     data_rows = css_select('table[id="all-apps-table"] tr').slice(1, 100)
 
     # ensure the table has only system installed apps
-    assert_equal 5, data_rows.size
-    system_install = I18n.t('dashboard.all_apps_table_install_location_sys')
-    data_rows.each do |row|
-      assert_equal system_install, row.xpath('./td[2]').text
-    end
-
     row_ids = [
       "pun-sys-shell-ssh-default",
       "apps-show-systemstatus",
@@ -59,12 +52,6 @@ class AppsTest < ActionDispatch::IntegrationTest
   test "table shows interactive sys apps with dev and usr apps" do
     Configuration.stubs(:app_development_enabled?).returns(true)
     Configuration.stubs(:app_sharing_enabled?).returns(true)
-    UsrRouter.stubs(:base_path).with(:owner => "me").returns(Pathname.new("test/fixtures/usr/me"))
-    UsrRouter.stubs(:base_path).with(:owner => 'shared').returns(Pathname.new("test/fixtures/usr/shared"))
-    UsrRouter.stubs(:base_path).with(:owner => 'cant_see').returns(Pathname.new("test/fixtures/usr/cant_see"))
-    UsrRouter.stubs(:owners).returns(['me', 'shared', 'cant_see'])
-
-    OodSupport::Process.stubs(:user).returns(UserDouble.new('me'))
 
     get "/apps/index"
 
@@ -107,9 +94,9 @@ class AppsTest < ActionDispatch::IntegrationTest
   
     headers = css_select('tr[id="all-apps-table-header"] th')
   
-    assert_equal 6, headers.size
-    assert_equal 'Field Of Science', headers[4].text
-    assert_equal 'Machine Learning', headers[5].text
+    assert_equal 5, headers.size
+    assert_equal 'Field Of Science', headers[3].text
+    assert_equal 'Machine Learning', headers[4].text
 
     rows_test_data = {
       "pun-sys-shell-ssh-owens.osc.edu": ["", ""],
@@ -127,8 +114,8 @@ class AppsTest < ActionDispatch::IntegrationTest
 
     rows_test_data.each do |row_id, data|
       assert_select "tr[id='#{row_id}']", 1
-      meta0 = css_select("tr[id='#{row_id}']").xpath('./td[5]').text
-      meta1 = css_select("tr[id='#{row_id}']").xpath('./td[6]').text
+      meta0 = css_select("tr[id='#{row_id}']").xpath('./td[4]').text
+      meta1 = css_select("tr[id='#{row_id}']").xpath('./td[5]').text
       
       assert_equal data[0], meta0
       assert_equal data[1], meta1

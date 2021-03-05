@@ -13,9 +13,9 @@ class UsrRouter
   # @return [String] human readable owner string
   def caption
     if owner_title == owner
-      "Shared by #{owner}"
+      I18n.t('dashboard.shared_apps_caption_short', owner: owner)
     else
-      "Shared by #{owner_title} (#{owner})"
+      I18n.t('dashboard.shared_apps_caption', owner: owner, owner_title: owner_title)
     end
   end
 
