@@ -2,16 +2,21 @@
 <%-
   any_apps = (@sys_app_groups + @usr_app_groups + @dev_app_groups).any?
 -%>
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item">
-      <%= link_to t('dashboard.breadcrumbs_home'), root_path %>
-    </li>
-    <li class="breadcrumb-item active">
-      <%= t('dashboard.breadcrumbs_my_sessions') %>
-    </li>
-  </ol>
-</nav>
+
+<%= render partial: 'batch_connect/shared/breadcrumb',
+locals: {
+  links: [
+  {
+    text: t('dashboard.breadcrumbs_home'),
+    href: root_path
+  },
+  {
+    text: t('dashboard.breadcrumbs_my_sessions'),
+    href: batch_connect_sessions_path
+  }]
+}
+%>
+
 <div class="row">
   <%- if any_apps -%>
     <div class="col-md-3">

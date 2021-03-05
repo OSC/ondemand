@@ -1,0 +1,9 @@
+<nav aria-label="Breadcrumb">
+  <ol class="breadcrumb">
+    <% links.each do |link, idx| %>
+      <%= tag.li class: current_page?(link) ? 'breadcrumb-item' : 'breadcrumb-item active' do %>
+        <%= tag.a link[:text], href: (link[:href] unless link.key?('href') || link[:disabled]) %>
+      <% end %>
+    <% end %>
+  </ol>
+</nav>
