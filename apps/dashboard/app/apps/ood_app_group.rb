@@ -1,6 +1,8 @@
 class OodAppGroup
   attr_accessor :apps
-
+  
+  PINNED_APPS_TITLE = I18n.t('dashboard.pinned_apps_title')
+  
   def initialize(title: "", apps: [])
     @apps = apps
     @_title = title
@@ -17,11 +19,11 @@ class OodAppGroup
 
   def title
     @title ||= begin
-      if @_title == "Pinned Apps"
+      if @_title == PINNED_APPS_TITLE
         if apps.size > nav_limit
-          "Pinned Apps (showing #{nav_limit} of #{apps.size})"
+          "#{PINNED_APPS_TITLE} (showing #{nav_limit} of #{apps.size})"
         else
-          "Pinned Apps"
+          PINNED_APPS_TITLE
         end
       else
         @_title
@@ -31,7 +33,7 @@ class OodAppGroup
 
   def nav_limit
     @nav_limit ||= begin
-      if @_title == "Pinned Apps"
+      if @_title == PINNED_APPS_TITLE
         ::Configuration.pinned_apps_menu_length
       else
         apps.size

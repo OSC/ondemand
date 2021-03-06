@@ -116,6 +116,8 @@ en:
 
     motd_title: "Message of the Day"
 
+    pinned_apps_title: "Pinned Apps"
+
     nav_all_apps: "All Apps"
     nav_develop_docs: "Developer Documentation"
     nav_develop_my_sandbox_apps_dev: "My Sandbox Apps (Development)"
