@@ -20,10 +20,10 @@ import 'jquery-ujs'
 // Import DataTables
 import 'datatables.net-bs/js/dataTables.bootstrap'
 
-// Import popper.js for Bootstrap 3
+// Import popper.js for Bootstrap 4
 import 'popper.js'
 
-// Import Bootstrap 3
+// Import Bootstrap 4
 import 'bootstrap/dist/js/bootstrap'
 
 // Import application stylesheets
