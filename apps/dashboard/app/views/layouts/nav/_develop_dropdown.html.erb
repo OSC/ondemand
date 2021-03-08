@@ -4,17 +4,11 @@
   </a>
 
   <div class="dropdown-menu">
-    <%= tag.a t('dashboard.nav_restart_server'), href: restart_url, class: 'dropdown-item' %>
-    <%= tag.a t('dashboard.nav_develop_docs'), target: '_blank', href: Configuration.developer_docs_url, class: 'dropdown-item' %>
-    <%= tag.a products_title(:dev), href: products_path(type: 'dev'), class: 'dropdown-item' %>
-  </div>
-
-  <ul class="dropdown-menu">
     <%= nav_link(t('dashboard.nav_restart_server'), "sync", restart_url) %>
     <%= nav_link(t('dashboard.nav_develop_docs'), "book", Configuration.developer_docs_url, target: "_blank") %>
     <%= nav_link(products_title(:dev), "cog", products_path(type: "dev")) %>
     <% if Configuration.app_sharing_enabled? %>
       <%= nav_link(products_title(:usr), "share-alt", products_path(type: "usr")) %>
     <% end %>
-  </ul>
+  </div>
 </li>
