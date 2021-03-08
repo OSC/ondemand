@@ -13,11 +13,3 @@ role - optional, default ""
     <%= local_assigns.fetch(:title, 'No title') %>
   <% end %>
 <% end %>
-
-<!--
-<li <%= "class=\"dropdown-item #{local_assigns[:role]}\"" unless local_assigns[:role].blank? %>>
-  <%= link_to url, target: local_assigns.fetch(:target, "_self") do %>
-    <i class="fas fa-<%= local_assigns.fetch(:faicon, "cog") %> fa-fw" aria-hidden="true"></i> <%= title %>
-  <% end %>
-</li>
--->
