@@ -1,6 +1,10 @@
 // Load bootstrap/font-awesome sprockets first
-@import "custom";
+
+@import "variables";
+
 @import "../node_modules/bootstrap/scss/bootstrap";
+
+@import "custom";
 
 @import "font-awesome-sprockets";
 

@@ -1,0 +1,11 @@
+// Bootstrap custom CSS
+
+@media (min-width: media-breakpoint-up(md)) {
+  .body {
+    background-color: var(--primary);
+  }
+}
+
+.navbar-color {
+  background-color: <%= Configuration.brand_bg_color || "map-get($theme-colors, 'blue-gray')" %>;
+}

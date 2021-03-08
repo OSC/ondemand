@@ -1,0 +1,21 @@
+// Place all Bootstrap 4 variable overrides in this file.
+// Bootstrap 4 SASS variables list: https://github.com/twbs/bootstrap/blob/main/scss/_variables.scss
+
+// Miscellaneous
+$enable-responsive-font-sizes: "true";
+
+// Colors
+$body-bg: #FFF;
+$body-color: #111827;
+$blue: #0e99e9f1;
+
+$theme-colors: ("blue-gray": #334155, "warm-gray": #F5F5F4);
+
+// Navigation bar
+$nav-link-disabled-color: map-get($theme-colors, "blue-gray");
+
+// Link color
+$navbar-dark-color: <%= Configuration.brand_link_active_bg_color || "map-get($theme-colors, 'warm-gray')" %>;
+$navbar-dark-active-color: <%= Configuration.brand_link_active_bg_color || "map-get($theme-colors, 'warm-gray')" %>;
+
+$navbar-dark-disabled-color: color-yiq(map-get($theme-colors, 'warm-gray'));
