@@ -138,6 +138,8 @@ en:
       If it doesn't please, click: <a href="%{restart_url}">restart web server</a>.
 
     shared_apps_title: "Shared Apps"
+    shared_apps_caption: "Shared by %{owner_title} (%{owner})"
+    shared_apps_caption_short: "Shared by %{owner}"
     sharing_catalog_title: "App Catalog"
     sharing_no_shared_apps_html: |
       <strong>No custom shared apps available.</strong>
@@ -151,11 +153,9 @@ en:
       <br>Custom shared apps are available below.
 
     all_apps_table_app_column: "Name"
-    all_apps_table_install_column: "Install Location"
     all_apps_table_category_column: "Category"
     all_apps_table_sub_category_column: "Sub Category"
-    all_apps_table_install_location_dev: "Developer Apps"
-    all_apps_table_install_location_sys: "System Apps"
-    all_apps_table_install_location_usr: "Shared Apps"
 
     unknown: "Unknown"
+
+    development_apps_caption: "Sandbox App"

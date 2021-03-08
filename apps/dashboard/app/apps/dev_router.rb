@@ -4,7 +4,7 @@ class DevRouter
   def initialize(name, owner=OodSupport::Process.user.name)
     @name = name.to_s
     @owner = owner
-    @caption = "Sandbox App"
+    @caption = I18n.t('dashboard.development_apps_caption')
     @category = "Sandbox Apps"
   end
 
