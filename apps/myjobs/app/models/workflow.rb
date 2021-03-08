@@ -45,7 +45,7 @@ class Workflow < ApplicationRecord
     path = Pathname.new(path).expand_path rescue Pathname.new(path)
     workflow = Workflow.new
     workflow.name = ''
-    workflow.batch_host = OODClusters.first.id
+    workflow.batch_host = Configuration.default_batch_host || ''
     workflow.script_name = ''
     workflow.staging_template_dir = path.to_s
 
