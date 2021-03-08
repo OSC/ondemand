@@ -1,11 +1,15 @@
-<ol class="breadcrumb">
-  <li>
-    <%= link_to t('dashboard.breadcrumbs_home'), root_path %>
-  </li>
-  <li class="active">
-    <%= t('dashboard.breadcrumbs_all_apps') %>
-  </li>
-</ol>
+<%= render partial: 'batch_connect/shared/breadcrumb',
+locals: {
+  links: [
+  {
+    text: t('dashboard.breadcrumbs_home'),
+    href: root_path
+  },
+  {
+    text: t('dashboard.breadcrumbs_all_apps')
+  }]
+}
+%>
 
 <table class="table apps-table" id="all-apps-table">
   <thead>
