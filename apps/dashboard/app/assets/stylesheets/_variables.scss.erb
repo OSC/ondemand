@@ -3,6 +3,7 @@
 
 // Miscellaneous
 $enable-responsive-font-sizes: "true";
+$enable-shadows: "true";
 
 // Colors
 $body-bg: #FFF;
@@ -19,3 +20,19 @@ $navbar-dark-color: <%= Configuration.brand_link_active_bg_color || "map-get($th
 $navbar-dark-active-color: <%= Configuration.brand_link_active_bg_color || "map-get($theme-colors, 'warm-gray')" %>;
 
 $navbar-dark-disabled-color: color-yiq(map-get($theme-colors, 'warm-gray'));
+
+$container-max-widths: (
+  xs: 0,
+  sm: 768px,
+  md: 920px,
+  lg: 1100px,
+  xl: 1300px
+);
+
+$grid-breakpoints: (
+  xs: 0,
+  sm: 676px,
+  md: 768px,
+  lg: 1320px,
+  xl: 1300px
+);
