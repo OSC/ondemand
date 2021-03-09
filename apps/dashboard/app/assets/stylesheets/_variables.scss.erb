@@ -19,8 +19,10 @@ $nav-link-disabled-color: map-get($theme-colors, "blue-gray");
 $navbar-dark-color: <%= Configuration.brand_link_active_bg_color || "map-get($theme-colors, 'warm-gray')" %>;
 $navbar-dark-active-color: <%= Configuration.brand_link_active_bg_color || "map-get($theme-colors, 'warm-gray')" %>;
 
+// Navbar dark link text-muted disabled color.
 $navbar-dark-disabled-color: color-yiq(map-get($theme-colors, 'warm-gray'));
 
+// Grid layout
 $container-max-widths: (
   xs: 0,
   sm: 768px,
@@ -34,5 +36,8 @@ $grid-breakpoints: (
   sm: 676px,
   md: 768px,
   lg: 1320px,
-  xl: 1300px
+  xl: 1340px
 );
+
+// Navigation bar link gutter spacing x-axis.
+$navbar-nav-link-padding-x: 0.75rem;
