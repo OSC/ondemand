@@ -128,8 +128,8 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_select "a.thumbnail.app[href='/apps/show/pseudofun']", 1
     assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_desktop/owens/session_contexts/new']", 1
 
-    assert_select 'h3', 1
-    assert_equal I18n.t('dashboard.motd_title'), css_select('h3').text
+    assert_select 'h3', 2
+    assert_equal I18n.t('dashboard.motd_title'), css_select('h3')[1].text
 
     assert_select "div[class='motd']", 3
     assert_select "h4[class='motd_title']", 3
@@ -197,8 +197,8 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_select "a.thumbnail.app[href='/apps/show/pseudofun']", 1
     assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_desktop/owens/session_contexts/new']", 1
 
-    assert_select 'h3', 1
-    assert_equal I18n.t('dashboard.motd_title'), css_select('h3').text
+    assert_select 'h3', 2
+    assert_equal I18n.t('dashboard.motd_title'), css_select('h3')[1].text
 
     assert_select "div[class='motd']", 3
     assert_select "h4[class='motd_title']", 3
