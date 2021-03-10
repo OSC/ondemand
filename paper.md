@@ -66,6 +66,6 @@ AppKit technology is included as part of the Open OnDemand project.
 
 # Acknowledgements
 
-This work is supported by the National Science Foundation of the United States under the award NSF SI2-SSE-1534949.
+This work is supported by the National Science Foundation of the United States under the award [NSF SI2-SSE-1534949](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1534949) and [NSF CSSI-Frameworks-1835725](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1835725).
 
 # References
