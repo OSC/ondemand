@@ -3,8 +3,8 @@
 
   <ul class="dropdown-menu" role="menu">
     <% OodAppGroup.groups_for(apps: group.apps, group_by: :subcategory).each_with_index do |g, index| %>
-      <%= content_tag(:div, nil, class: ["dropdown-divider"], role: "separator") if index > 0 %>
-      <%= content_tag(:h6, g.title, class: ["dropdown-header"]) unless g.title.empty? %>
+      <%= content_tag(:li, nil, class: ["dropdown-divider"], role: "separator") if index > 0 %>
+      <%= content_tag(:li, g.title, class: ["dropdown-header"]) unless g.title.empty? %>
       <% g.apps.each do |app| %>
         <% app.links.each do |link| %>
             <%=
@@ -12,7 +12,8 @@
                 link.url.to_s,
                 title: link.title,
                 class: "dropdown-item",
-                target: link.new_tab? ? "_blank" : nil
+                target: link.new_tab? ? "_blank" : nil,
+                aria: ({ current: ('page' if (current_page?(link.url))) })
               ) do
             %>
             <%= icon_tag(link.icon_uri) %> <%= link.title %>
