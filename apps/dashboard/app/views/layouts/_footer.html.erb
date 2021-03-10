@@ -1,13 +1,15 @@
 <footer class="d-flex m-0 justify-content-between align-items-center p-4">
-  <%= link_to "https://openondemand.org" do %>
-    <%=
-      image_tag(
-        "OpenOnDemand_powered_by_RGB.svg",
-        class: "footer-logo",
-        alt: "Powered by Open OnDemand",
-        height: "40px",
-      )
-    %>
-  <% end %>
+  <div class="mr-2">
+    <%= link_to "https://openondemand.org" do %>
+      <%=
+        image_tag(
+          "OpenOnDemand_powered_by_RGB.svg",
+          class: "footer-logo",
+          alt: "Powered by Open OnDemand",
+          height: "40px",
+        )
+      %>
+    <% end %>
+  </div>
   <span>OnDemand version: <%= Configuration.ood_version %></span>
 </footer>
