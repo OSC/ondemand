@@ -25,7 +25,7 @@
 </head>
 <body>
   <header <%= 'data-turbolinks-permanent' if Configuration.turbolinks_enabled? %>>
-    <nav class="navbar navbar-expand-md shadow-sm navbar-dark navbar-color">
+    <nav class="navbar navbar-expand-md shadow-sm navbar-dark navbar-color" aria-label="Navigation">
       <a class="navbar-brand" href="<%= root_path %>">
         <%= OodAppkit.dashboard.title.html_safe %>
       </a>
@@ -59,7 +59,7 @@
     </nav>
   </header>
 
-  <div class="container-xl content mt-4" role="main">
+  <div class="container-md content mt-4" role="main">
 
     <% @announcements.select(&:valid?).each do |announcement| %>
       <div class="alert alert-<%= announcement.type %> announcement" role="alert">
