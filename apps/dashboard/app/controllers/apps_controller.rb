@@ -6,6 +6,7 @@ class AppsController < ApplicationController
     @sys_apps = sys_app_groups
     @dev_apps = OodAppGroup.groups_for(apps: nav_dev_apps)
     @usr_apps = OodAppGroup.groups_for(apps: nav_usr_apps)
+    set_metadata_columns
   end
 
   def featured
@@ -81,6 +82,18 @@ class AppsController < ApplicationController
     else
       #FIXME: app type doesn't exit
       raise ActionController::RoutingError.new('Not Found')
+    end
+  end
+
+  def set_metadata_columns
+    @metadata_columns = begin
+      nav_all_apps.each_with_object([]) do |app, columns|
+        app.metadata.each do |k,v|
+          columns.append(k.to_s)
+        end
+      end.sort_by do |column|
+        column.to_s
+      end
     end
   end
 end
