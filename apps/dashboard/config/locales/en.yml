@@ -158,4 +158,5 @@ en:
 
     unknown: "Unknown"
 
+    pinned_apps_caption_html: 'A featured subset of <a href="%{all_apps_url}">all available apps</a>'
     development_apps_caption: "Sandbox App"
