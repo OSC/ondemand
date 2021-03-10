@@ -194,6 +194,14 @@ describe OodPortalGenerator::Application do
         described_class.generate()
       end
 
+      it 'generates custom dex configs' do
+        with_modified_env CONFIG: 'spec/fixtures/ood_portal.dex.yaml' do
+          expected_dex_yaml = read_fixture('dex.custom.yaml').gsub('/etc/ood/dex', config_dir)
+          expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
+          described_class.generate()
+        end
+      end
+
       it 'generates copies SSL certs' do
         certdir = Dir.mktmpdir
         cert = File.join(certdir, 'cert')

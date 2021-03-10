@@ -25,6 +25,10 @@
     <% end %>
 
     <%= content_tag "li", "", class: "divider", role: "separator" %>
-    <%= render partial: 'layouts/nav/all_apps' %>
+    <li title="<%= t('dashboard.nav_all_apps') %>">
+      <a href="<%= apps_index_path %>">
+        <i class="fas fa-th" aria-hidden="true"></i> <%= t('dashboard.nav_all_apps') %>
+      </a>
+    </li>
   </ul>
 </li>

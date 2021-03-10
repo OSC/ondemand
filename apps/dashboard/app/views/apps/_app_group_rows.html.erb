@@ -15,18 +15,26 @@
             <%- end -%>
           </ul>
         </div>
+        <%= tag.div app.caption, class: "text-muted pull-right" if caption_app?(app) %>
       </td>
-      <td><%= install_location(app) %></td>
       <td><%= app.category %></td>
       <td><%= app.subcategory %></td>
+      <%- @metadata_columns.each do |column| -%>
+      <td><%= app.metadata.fetch(column, "") %></td>
+      <%- end -%>
     </tr>
   <%- else -%>
     <%- app.links.each do |link| -%>
       <tr id="<%= row_id(link.url) %>">
-        <td><%= render partial: "link", locals: { link: link } %></td>
-        <td><%= install_location(app) %></td>
+        <td>
+          <%= render partial: "link", locals: { link: link } %>
+          <%= tag.div link.caption, class: "text-muted pull-right" if caption_app?(app) %>
+        </td>
         <td><%= app.category %></td>
         <td><%= app.subcategory %></td>
+        <%- @metadata_columns.each do |column| -%>
+        <td><%= app.metadata.fetch(column, "") %></td>
+        <%- end -%>
       </tr>
     <%- end -%>
   <%- end -%>

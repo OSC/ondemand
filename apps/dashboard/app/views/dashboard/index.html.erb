@@ -3,11 +3,11 @@
 
 <% if Configuration.xdmod_integration_enabled? %>
   <div class="row">
-    <% if @motd %>
+    <% if @motd || @pinned_apps.present? %>
       <div class="col-md-8">
-        <%= render "pinned_apps" unless @pinned_apps.empty? %>
+        <%= render "pinned_apps" if @pinned_apps.present? %>
         <%# This assumes @motd_file responds to `to_partial_path` %>
-        <%= render @motd %>
+        <%= render @motd if @motd %>
       </div>
       <div class="col-md-4">
         <div class="xdmod">
@@ -29,6 +29,6 @@
     <% end %>
   </div>
 <% else %>
-  <%= render "pinned_apps" unless @pinned_apps.empty? %>
+  <%= render "pinned_apps" if @pinned_apps.present? %>
   <%= render @motd if @motd %>
 <% end %>
