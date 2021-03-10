@@ -3,3 +3,7 @@
 .navbar-color {
   background-color: <%= Configuration.brand_bg_color || "map-get($theme-colors, 'blue-gray')" %>;
 }
+
+table.dataTable > thead .sorting:before, table.dataTable > thead .sorting_asc:before, table.dataTable > thead .sorting_desc:before, table.dataTable > thead .sorting_asc_disabled:before, table.dataTable > thead .sorting_desc_disabled:before {
+    right: 1.25em !important;
+}
