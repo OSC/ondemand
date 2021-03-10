@@ -11,6 +11,8 @@
 - Main code repo: https://github.com/OSC/ondemand
 - Core library repo: https://github.com/OSC/ood_core
 
+This work is supported by the National Science Foundation of the United States under the award [NSF SI2-SSE-1534949](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1534949) and [NSF CSSI-Frameworks-1835725](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1835725).
+
 ## Overview
 Open OnDemand is an NSF-funded open-source HPC portal. The goal of Open OnDemand is to provide an easy way for system administrators to provide web access to their HPC resources, including, but not limited to:
 
