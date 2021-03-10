@@ -1,6 +1,7 @@
 <li class="nav-item dropdown" title="<%= group.title %>">
   <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= group.title %><span class="caret"></span></a>
-  <ul class="dropdown-menu">
+
+  <ul class="dropdown-menu" role="menu">
     <% OodAppGroup.groups_for(apps: group.apps, group_by: :subcategory).each_with_index do |g, index| %>
       <%= content_tag(:div, nil, class: ["dropdown-divider"], role: "separator") if index > 0 %>
       <%= content_tag(:h6, g.title, class: ["dropdown-header"]) unless g.title.empty? %>
