@@ -84,7 +84,7 @@
 <table class="table table-striped table-condensed" id="directory-contents">
   <thead>
     <tr>
-      <th>Select</th>
+      <th><span class="sr-only">Select</span></th>
       <th>Type</th>
       <th>Name</th>
       <th>Size</th>
@@ -145,6 +145,7 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
   columns: [
     {
       data: null,
+      orderable: false,
       defaultContent: '<input type="checkbox">',
       render: function(data, type, row, meta) {
         var api = new $.fn.dataTable.Api( meta.settings );
