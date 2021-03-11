@@ -877,22 +877,40 @@ $('#directory-contents tbody').on('click', 'tr td:first-child input[type=checkbo
   this.focus();
 });
 
-$('#directory-contents tbody').on('keydown', 'input[type=checkbox]', function(e){
-  if(event.key == "ArrowDown"){
+$('#directory-contents tbody').on('keydown', 'input, a', function(e){
+  if(e.key == "ArrowDown"){
     e.preventDefault();
 
     // let tr = this.closest('tr').nextSibling;
     let tr = $(this.closest('tr')).next('tr').get(0);
     if(tr){
       tr.querySelector('input[type=checkbox]').focus();
+
+      // deselect if not holding shift key to work
+      // like native file browsers
+      if(! e.shiftKey){
+        table.rows().deselect();
+      }
+
+      // select if moving down
+      table.row(tr).select();
     }
   }
-  else if(event.key == "ArrowUp"){
+  else if(e.key == "ArrowUp"){
     e.preventDefault();
 
     let tr = $(this.closest('tr')).prev('tr').get(0);
     if(tr){
       tr.querySelector('input[type=checkbox]').focus();
+
+      // deselect if not holding shift key to work
+      // like native file browsers
+      if(! e.shiftKey){
+        table.rows().deselect();
+      }
+
+      // select if moving up
+      table.row(tr).select();
     }
   }
 });
