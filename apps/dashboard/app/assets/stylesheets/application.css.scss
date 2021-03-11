@@ -124,3 +124,7 @@ pre.motd-monospaced {
   // as long as the first path item is /, we will omit the divider
   content: "";
 }
+
+#directory-contents.dragover {
+  border: 5px solid rgb(51, 122, 183) !important;
+}
