@@ -394,7 +394,7 @@ class RouterTest < ActiveSupport::TestCase
     SysRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
     DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
     cfg = [
-      { languages: '{*ruby*,*erlang*}' }
+      { languages: '{*ruby*,*ErlanG*}' } # note case in erlang. manifests have erLANG and Ruby
     ]
 
     tokens = [

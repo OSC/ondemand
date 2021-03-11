@@ -108,10 +108,10 @@ class AppsTest < ActionDispatch::IntegrationTest
       "apps-show-activejobs": ["", "", ""],
       "apps-show-myjobs": [ "", "", ""],
       "batch_connect-sys-bc_paraview-session_contexts-new": ["", "", ""],
-      "batch_connect-sys-bc_jupyter-session_contexts-new": ["", "python julia R ruby", "true"],
+      "batch_connect-sys-bc_jupyter-session_contexts-new": ["", "python julia R Ruby", "true"],
       "batch_connect-sys-bc_desktop-owens-session_contexts-new": ["", "", ""],
       "batch_connect-sys-bc_desktop-oakley-session_contexts-new": ["", "", ""],
-      "apps-show-pseudofun": ["biology", "go erlang python", ""]
+      "apps-show-pseudofun": ["biology", "go erLANG python", ""]
     }
 
     rows_test_data.each do |row_id, data|
