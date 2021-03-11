@@ -371,6 +371,61 @@ class RouterTest < ActiveSupport::TestCase
     assert_equal tokens.to_set, pinned_apps.map(&:token).to_set
   end
 
+  test "metadata * globs work" do
+    SysRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    cfg = [
+      { languages: '*python*' }
+    ]
+
+    tokens = [
+      "sys/bc_jupyter", # both apps have python
+      "sys/pseudofun",
+
+      "dev/bc_jupyter",
+      "dev/pseudofun"
+    ]
+
+    pinned_apps = Router.pinned_apps(cfg, all_apps)
+    assert_equal tokens.to_set, pinned_apps.map(&:token).to_set
+  end
+
+  test "multiple metadata globs pull multiple apps" do
+    SysRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    cfg = [
+      { languages: '{*ruby*,*erlang*}' }
+    ]
+
+    tokens = [
+      "sys/bc_jupyter", # jupyter has ruby but not erlang
+      "sys/pseudofun", # pseduofun has erlang but not ruby
+
+      "dev/bc_jupyter",
+      "dev/pseudofun"
+    ]
+
+    pinned_apps = Router.pinned_apps(cfg, all_apps)
+    assert_equal tokens.to_set, pinned_apps.map(&:token).to_set
+  end
+
+  test "multiple metadata globs filter apps" do
+    SysRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    cfg = [
+      { languages: '*ruby*' }
+    ]
+
+    # only jupyter matches ruby
+    tokens = [
+      "sys/bc_jupyter",
+      "dev/bc_jupyter"
+    ]
+
+    pinned_apps = Router.pinned_apps(cfg, all_apps)
+    assert_equal tokens.to_set, pinned_apps.map(&:token).to_set
+  end
+
   test "bad metadata returns emtpy" do
     SysRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
     DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
@@ -392,6 +447,14 @@ class RouterTest < ActiveSupport::TestCase
     ]
 
     pinned_apps = Router.pinned_apps(cfg, all_apps)
+    assert_equal [].to_set, pinned_apps.map(&:token).to_set
+  end
+
+  test "nils return nothing" do
+    SysRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+
+    pinned_apps = Router.pinned_apps(nil, nil)
     assert_equal [].to_set, pinned_apps.map(&:token).to_set
   end
 end

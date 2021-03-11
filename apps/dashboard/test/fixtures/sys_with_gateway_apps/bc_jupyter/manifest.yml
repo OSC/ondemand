@@ -6,3 +6,4 @@ icon: fa://gear
 role: batch_connect
 metadata:
   machine_learning: 'true'
+  languages: python julia R ruby
