@@ -374,10 +374,10 @@ $('#edit-btn').click(() => {
   // FIXME: modals here not great user experience
   // better to disable the button - react
 
-    Swal.fire('Select only 1 file to edit', 'You have selected none or multiple rows', 'error')
+    Swal.fire('Select only 1 file to edit', 'You have selected none or multiple rows', 'warning')
   }
   else if(selection[0].type == "d"){
-  //  Swal.fire('Cannot download directory', 'Can only download files', 'error')
+    Swal.fire('Select only 1 file to edit', 'You have selected a directory', 'warning')
   }
   else {
     window.open(selection[0].edit_url);
