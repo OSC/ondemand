@@ -27,7 +27,7 @@ module BatchConnect::SessionContextsHelper
       concat form.label(id, opts[:label])
       concat form.hidden_field(id, id: "#{id}_field")
       concat(
-        content_tag(:div, class: "row") do
+        content_tag(:div, class: "container card-body row") do
           concat (
             content_tag(:div, class: "col-sm-6") do
               concat (
