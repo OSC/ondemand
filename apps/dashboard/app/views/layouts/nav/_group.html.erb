@@ -1,12 +1,13 @@
 <li class="nav-item dropdown" title="<%= group.title %>">
   <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= group.title %><span class="caret"></span></a>
 
-  <ul class="dropdown-menu" role="menu">
+  <ul class="dropdown-menu">
     <% OodAppGroup.groups_for(apps: group.apps, group_by: :subcategory).each_with_index do |g, index| %>
       <%= content_tag(:li, nil, class: ["dropdown-divider"], role: "separator") if index > 0 %>
       <%= content_tag(:li, g.title, class: ["dropdown-header"]) unless g.title.empty? %>
       <% g.apps.each do |app| %>
         <% app.links.each do |link| %>
+          <li>
             <%=
               link_to(
                 link.url.to_s,
@@ -21,6 +22,7 @@
               <%= content_tag(:small, link.subtitle, style: "text-indent: 20px", class: 'visible-xs-block visible-sm-inline visible-md-inline visible-lg-inline') %>
             <% end %>
           <% end %>
+          </li>
         <% end %>
       <% end %>
     <% end %>
