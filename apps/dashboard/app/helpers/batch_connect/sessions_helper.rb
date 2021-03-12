@@ -1,32 +1,31 @@
 module BatchConnect::SessionsHelper
   def session_panel(session)
-    content_tag(:div, id: session.id, class: "panel panel-#{status_context(session)} session-panel", data: { hash: session.to_hash }) do
+    content_tag(:div, id: session.id, class: "card panel-#{status_context(session)} session-panel", data: { hash: session.to_hash }) do
       concat(
-        content_tag(:div, class: "panel-heading") do
-          content_tag(:h1, class: "panel-title") do
-            concat link_to(content_tag(:strong, session.title), new_batch_connect_session_context_path(token: session.token))
-            concat " (#{session.job_id})"
+        content_tag(:div, class: "card-heading bg-#{status_context(session)}") do
+          content_tag(:h5, class: "card-header") do
+            concat link_to(content_tag(:span, session.title, class: 'card-text text-white'), new_batch_connect_session_context_path(token: session.token))
+            concat tag.span(" (#{session.job_id})", class: 'card-text text-white')
             concat(
-              content_tag(:div, class: "pull-right") do
+              content_tag(:div, class: "float-right") do
                 num_nodes = session.info.allocated_nodes.size
                 num_cores = session.info.procs.to_i
 
                 # Generate nice status display
                 status = []
                 if session.starting? || session.running?
-                  status << content_tag(:span, pluralize(num_nodes, "node"), class: "badge") unless num_nodes.zero?
-                  status << content_tag(:span, pluralize(num_cores, "core"), class: "badge") unless num_cores.zero?
+                  status << content_tag(:span, pluralize(num_nodes, "node"), class: "badge badge-pill bg-dark text-white") unless num_nodes.zero?
+                  status << content_tag(:span, pluralize(num_cores, "core"), class: "badge badge-pill bg-dark text-white") unless num_cores.zero?
                 end
                 status << "#{status session}"
-                status.join(" | ").html_safe
+                tag.span(status.join(" | ").html_safe, class: 'card-text text-white')
               end
             )
-            concat content_tag(:div, "", class: "clearfix")
           end
         end
       )
       concat(
-        content_tag(:div, class: "panel-body") do
+        content_tag(:div, class: "card-body") do
           yield
         end
       )
@@ -37,7 +36,7 @@ module BatchConnect::SessionsHelper
     capture do
       concat(
         content_tag(:div) do
-          concat content_tag(:div, delete(session))
+          concat content_tag(:div, delete(session), class: 'float-right')
           concat host(session)
           concat created(session)
           concat time(session)
@@ -204,8 +203,8 @@ module BatchConnect::SessionsHelper
         concat(
           content_tag(:ul, class: "nav nav-tabs") do
             tabs.map { |t| t[:title] }.map.with_index do |title, idx|
-              content_tag(:li, class: "#{"active" if idx.zero?}") do
-                link_to title, "##{id}_#{idx}", data: { toggle: "tab" }
+              content_tag(:li, class: "#{"nav-item active" if idx.zero?}") do
+                link_to title, "##{id}_#{idx}", data: { toggle: "tab" }, class: "nav-link #{"nav-item active" if idx.zero?}"
               end
             end.join("\n").html_safe
           end
