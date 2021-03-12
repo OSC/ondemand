@@ -1,0 +1,10 @@
+
+.breadcrumb-item + .breadcrumb-item::before {
+  display: inline-block;
+  margin: 0.15em 1em 0 0;
+  transform: rotate(25deg);
+  border-right: 0.1em solid currentColor;
+  padding-right: 0.5em;
+  height: 75%;
+}
+
