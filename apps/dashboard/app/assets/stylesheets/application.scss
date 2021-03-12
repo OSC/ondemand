@@ -2,7 +2,7 @@
 
 @import "variables";
 
-@import "../node_modules/bootstrap/scss/bootstrap";
+@import "bootstrap/scss/bootstrap";
 
 @import "custom";
 
@@ -59,7 +59,7 @@ $ood-blue: rgb(0, 95, 133);
 @import "font-awesome";
 
 // Load up dataTables bootstrap specific styles
-@import "../node_modules/datatables.net-bs4/css/dataTables.bootstrap4";
+@import "datatables.net-bs4/css/dataTables.bootstrap4";
 
 // Use sticky footer in body of layout
 // See: https://css-tricks.com/couple-takes-sticky-footer/
