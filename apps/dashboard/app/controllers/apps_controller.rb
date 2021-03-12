@@ -91,7 +91,7 @@ class AppsController < ApplicationController
         app.metadata.each do |k,v|
           columns.append(k.to_s)
         end
-      end.sort_by do |column|
+      end.uniq.sort_by do |column|
         column.to_s
       end
     end

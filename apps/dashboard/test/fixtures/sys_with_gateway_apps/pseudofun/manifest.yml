@@ -13,3 +13,5 @@ subcategory: Biomedical Informatics
 icon: fa://search
 metadata:
   field_of_science: 'biology'
+  languages: go erLANG python
+

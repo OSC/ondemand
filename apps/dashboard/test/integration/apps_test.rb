@@ -93,32 +93,36 @@ class AppsTest < ActionDispatch::IntegrationTest
     assert_response :success
   
     headers = css_select('tr[id="all-apps-table-header"] th')
-  
-    assert_equal 5, headers.size
+
+    assert_equal 6, headers.size
     assert_equal 'Field Of Science', headers[3].text
-    assert_equal 'Machine Learning', headers[4].text
+    assert_equal 'Languages', headers[4].text
+    assert_equal 'Machine Learning', headers[5].text
 
     rows_test_data = {
-      "pun-sys-shell-ssh-owens.osc.edu": ["", ""],
-      "pun-sys-shell-ssh-oakley.osc.edu": ["", ""],
-      "apps-show-systemstatus": ["", ""],
-      "pun-sys-files": ["", ""],
-      "apps-show-activejobs": ["", ""],
-      "apps-show-myjobs": [ "", "" ],
-      "batch_connect-sys-bc_paraview-session_contexts-new": ["", ""],
-      "batch_connect-sys-bc_jupyter-session_contexts-new": ["", "true"], # machine learning metadata
-      "batch_connect-sys-bc_desktop-owens-session_contexts-new": ["", ""],
-      "batch_connect-sys-bc_desktop-oakley-session_contexts-new": ["", ""],
-      "apps-show-pseudofun": ["biology", ""] # field of science metadata
+      # items are field of science, language, and machine learning
+      "pun-sys-shell-ssh-owens.osc.edu": ["", "", ""],
+      "pun-sys-shell-ssh-oakley.osc.edu": ["", "", ""],
+      "apps-show-systemstatus": ["", "", ""],
+      "pun-sys-files": ["", "", ""],
+      "apps-show-activejobs": ["", "", ""],
+      "apps-show-myjobs": [ "", "", ""],
+      "batch_connect-sys-bc_paraview-session_contexts-new": ["", "", ""],
+      "batch_connect-sys-bc_jupyter-session_contexts-new": ["", "python julia R Ruby", "true"],
+      "batch_connect-sys-bc_desktop-owens-session_contexts-new": ["", "", ""],
+      "batch_connect-sys-bc_desktop-oakley-session_contexts-new": ["", "", ""],
+      "apps-show-pseudofun": ["biology", "go erLANG python", ""]
     }
 
     rows_test_data.each do |row_id, data|
       assert_select "tr[id='#{row_id}']", 1
       meta0 = css_select("tr[id='#{row_id}']").xpath('./td[4]').text
       meta1 = css_select("tr[id='#{row_id}']").xpath('./td[5]').text
+      meta2 = css_select("tr[id='#{row_id}']").xpath('./td[6]').text
       
       assert_equal data[0], meta0
       assert_equal data[1], meta1
+      assert_equal data[2], meta2
     end
   end
 end

@@ -59,7 +59,7 @@ class TokenMatcher
 
   def metadata_match?(app)
     app.metadata.select do |key, value|
-      token[key.to_sym] == value
+      File.fnmatch(token[key.to_sym].to_s, value, File::FNM_EXTGLOB | File::FNM_CASEFOLD)
     end.any?
   end
 end
