@@ -7,9 +7,7 @@
     <% end %>
     <%= render partial: "catalog_link" %>
 
-    <div class="dropdown-menu">
-      <%= render(partial: "group", collection: @groups) || t('dashboard.sharing_no_shared_apps_html') %>
-    </div>
+    <%= render(partial: "group", collection: @groups) || t('dashboard.sharing_no_shared_apps_html') %>
   </div>
   <div class="col-md-3">
     <%# This assumes @motd_file responds to `to_partial_path` %>
