@@ -8,7 +8,7 @@ GEMFILE           = PROJ_DIR.join('Gemfile')
 INSTALL_ROOT      = Pathname.new(ENV["PREFIX"] || "/opt/ood")
 VENDOR_BUNDLE     = (ENV['VENDOR_BUNDLE'] == "yes" || ENV['VENDOR_BUNDLE'] == "true")
 PASSENGER_APP_ENV = ENV["PASSENGER_APP_ENV"] || "production"
-SHELL_APP         = Pathname("#{APPS_DIR}/shell")
+SHELL_APP         = APPS_DIR.join('shell')
 
 require "#{TASK_DIR}/packaging"
 require "#{TASK_DIR}/test"
