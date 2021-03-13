@@ -208,13 +208,13 @@ module BatchConnect
       self.view       = app.session_view
       self.created_at = Time.now.to_i
 
-      submit_script = app.submit_opts(context, fmt: format) # could raise an exception
+      # could raise an exception
+      submit_script = app.submit_opts(context, staged_root: staged_root, fmt: format)
 
       self.cluster_id = submit_script.fetch(:cluster, context.try(:cluster)).to_s
       raise(ClusterNotFound, I18n.t('dashboard.batch_connect_missing_cluster')) unless self.cluster_id.present?
 
-      stage(app.root.join("template"), context: context) &&
-        submit(submit_script)
+      stage(app.root.join("template"), context: context) && submit(submit_script)
     rescue => e   # rescue from all standard exceptions (app never crashes)
       errors.add(:save, e.message)
       Rails.logger.error("ERROR: #{e.class} - #{e.message}")
@@ -226,6 +226,8 @@ module BatchConnect
     # @param context [Object] context available when rendering staged files
     # @return [Boolean] whether staged successfully
     def stage(root, context: nil)
+      staged_root.mkpath unless staged_root.exist?
+
       # Sync the template files over
       oe, s = Open3.capture2e("rsync", "-a", "#{root}/", "#{staged_root}")
       raise oe unless s.success?
@@ -409,7 +411,7 @@ module BatchConnect
     # Root directory where a job is staged and run in
     # @return [Pathname] staged root directory
     def staged_root
-      self.class.dataroot(token).join("output", id).tap { |p| p.mkpath unless p.exist? }
+      self.class.dataroot(token).join("output", id)
     end
 
     # List of template files that need to be rendered
