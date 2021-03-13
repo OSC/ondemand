@@ -28,6 +28,45 @@ class Transfer
     end
   end
 
+  def bootstrap_label_class
+    # TODO: if error occurs, need to display error label! (and pop error alert above page)
+    if status&.completed?
+      'label-success'
+    elsif status&.running?
+      'label-info'
+    else
+      'label-default'
+    end
+  end
+
+  def fa_label
+    if status&.completed?
+      'fa-check'
+    elsif status&.running?
+      'fa-spinner fa-spin'
+    else
+      'fa-pause'
+    end
+  end
+
+  def action_title
+    t = status&.queued? ? 'waiting to ' : ''
+
+    if action == 'mv'
+      t + 'move files'
+    elsif action == 'rm'
+      t + 'remove files'
+    elsif action == 'cp'
+      t + 'copy files'
+    else
+      t + "#{action} files"
+    end
+  end
+
+  def to_s
+    "#{percent}% #{action_title}"
+  end
+
   #FIXME: So one idea here was to create a generic transfer object
   # that was used to render the view
   # and that this was the generic transfer object:

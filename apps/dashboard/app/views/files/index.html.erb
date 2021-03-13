@@ -26,9 +26,9 @@
   <% end %>
 </ul>
 
-<div id="transfers">
+<ul id="transfers">
   <%= render partial: 'transfers/transfer', collection: sort_by_created_at(@transfers), as: :transfer %>
-</div>
+</ul>
 
 <div id="clipboard">
   <!--
