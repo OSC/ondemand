@@ -7,9 +7,6 @@
   <button id="new-dir-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-folder-plus" aria-hidden="true"></i> New Directory</button>
   <button id="upload-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-upload" aria-hidden="true"></i> Upload</button>
   <label>
-    <input type="checkbox" id="show-dotfiles"> Show Dotfiles
-  </label>
-  <label>
     <input type="checkbox" id="show-owner-mode"> Show Owner/Mode
   </label>
 </div>
@@ -123,6 +120,14 @@ $.fn.dataTable.ext.search.push(
     }
 )
 
+function update_datatables_status(api){
+  // from "function info ( api )" of https://cdn.datatables.net/select/1.3.1/js/dataTables.select.js
+  let rows    = api.rows( { selected: true } ).flatten().length,
+      page_info = api.page.info(),
+      msg = page_info.recordsTotal == page_info.recordsDisplay ? `Showing ${page_info.recordsDisplay} rows` : `Showing ${page_info.recordsDisplay} of ${page_info.recordsTotal} rows`;
+  $('.datatables-status').html(`${msg} - ${rows} rows selected - ` + '<span class="text-info"><b><i class="fas fa-spinner fa-spin"></i> 26% copy files</b></span>');
+}
+
 var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, xhr ) {
   // new ajax request for new data so update date/time
   if(json && json.time){
@@ -148,6 +153,14 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
     selector: 'td:not(:first-child)'
     //TODO: select should work on only static (non button fields)
   },
+  // https://datatables.net/reference/option/dom
+  // dom: '', dataTables_info nowrap
+  //
+  // put breadcrmbs below filter!!!
+  dom: "<'row'<'col-sm-12'f>>" + // normally <'row'<'col-sm-6'l><'col-sm-6'f>> but we disabled pagination so l is not needed (dropdown for selecting # rows)
+       "<'row'<'col-sm-12'<'datatables-status'>>>"+
+       "<'row'<'col-sm-12'tr>>" +
+       "<'row'<'col-sm-12'<'datatables-status'>>>", // normally this is <'row'<'col-sm-5'i><'col-sm-7'p>> but we disabled pagination so have info take whole row
   columns: [
     {
       data: null,
@@ -166,6 +179,14 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
     { name: 'owner', data: 'owner', visible: $('#show-owner-mode').is(':checked') }, // owner
     { name: 'mode', data: 'mode', visible: $('#show-owner-mode').is(':checked') } // mode
   ]
+});
+
+//FIXME: race cond?
+// prepend show dotfiles checkbox to search box
+$('#directory-contents_filter').prepend('<label style="margin-right: 20px"><input type="checkbox" id="show-dotfiles"> Show Dotfiles</label>')
+
+table.on('draw.dtSelect.dt select.dtSelect.dt deselect.dtSelect.dt info.dt', function () {
+  update_datatables_status(table);
 });
 
 function reloadTable(id){
@@ -922,6 +943,7 @@ $('#directory-contents tbody').on('keydown', 'input, a', function(e){
   }
 });
 
+
 // https://stackoverflow.com/questions/19274028/changing-dom-element-position-of-searchbox-in-datatables/19276854
-$("#search_box").html($(".dataTables_filter"));
+// $("#search_box").html($(".dataTables_filter"));
 </script>
