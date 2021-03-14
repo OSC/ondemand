@@ -18,6 +18,7 @@
 //= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
 //= require js-routes
 //= require local_time
+//= require handlebars-4.7.7.min.js
 //= require_tree .
 
 jQuery.fn.visible = function() {
