@@ -4,10 +4,10 @@
 <script id="job-efficiency-template" type="text/x-handlebars-template">
 <div class="card mt-3">
 
-  <h6 class="card-header">
-    {{title}}
+  <div class="card-header">
     <a href="{{xdmod_url}}" class="float-right">Open XDMoD <span class="fa fa-external-link-square-alt"></span></a>
-  </h6>
+    <h3>{{title}} - {{date_range}}</h3>
+  </div>
 
   <div class="card-body">
     {{#if error}}
@@ -28,10 +28,6 @@
       </p>
       {{/if}}
     {{/if}}
-  </div>
-
-  <div class="card-footer">
-    <small class="text-muted">{{date_range}}</small>
   </div>
 </div>
 </script>
