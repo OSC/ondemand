@@ -2,10 +2,10 @@ module BatchConnect::SessionsHelper
   def session_panel(session)
     content_tag(:div, id: session.id, class: "card panel-#{status_context(session)} session-panel", data: { hash: session.to_hash }) do
       concat(
-        content_tag(:div, class: "card-heading bg-#{status_context(session)}") do
-          content_tag(:h5, class: "card-header") do
-            concat link_to(content_tag(:span, session.title, class: 'card-text text-white'), new_batch_connect_session_context_path(token: session.token))
-            concat tag.span(" (#{session.job_id})", class: 'card-text text-white')
+        content_tag(:div, class: "card-heading") do
+          content_tag(:h5, class: "card-header alert-#{status_context(session)}") do
+            concat link_to(content_tag(:span, session.title, class: "card-text alert-#{status_context(session)}"), new_batch_connect_session_context_path(token: session.token))
+            concat tag.span(" (#{session.job_id})", class: 'card-text')
             concat(
               content_tag(:div, class: "float-right") do
                 num_nodes = session.info.allocated_nodes.size
@@ -14,11 +14,11 @@ module BatchConnect::SessionsHelper
                 # Generate nice status display
                 status = []
                 if session.starting? || session.running?
-                  status << content_tag(:span, pluralize(num_nodes, "node"), class: "badge badge-pill bg-dark text-white") unless num_nodes.zero?
-                  status << content_tag(:span, pluralize(num_cores, "core"), class: "badge badge-pill bg-dark text-white") unless num_cores.zero?
+                  status << content_tag(:span, pluralize(num_nodes, "node"), class: "badge badge-#{status_context(session)} badge-pill") unless num_nodes.zero?
+                  status << content_tag(:span, pluralize(num_cores, "core"), class: "badge badge-#{status_context(session)} badge-pill") unless num_cores.zero?
                 end
                 status << "#{status session}"
-                tag.span(status.join(" | ").html_safe, class: 'card-text text-white')
+                tag.span(status.join(" | ").html_safe, class: "card-text")
               end
             )
           end
@@ -204,7 +204,7 @@ module BatchConnect::SessionsHelper
           content_tag(:ul, class: "nav nav-tabs") do
             tabs.map { |t| t[:title] }.map.with_index do |title, idx|
               content_tag(:li, class: "#{"nav-item active" if idx.zero?}") do
-                link_to title, "##{id}_#{idx}", data: { toggle: "tab" }, class: "nav-link #{"nav-item active" if idx.zero?}"
+                link_to title, "##{id}_#{idx}", data: { toggle: "tab" }, class: "nav-link #{"active" if idx.zero?}"
               end
             end.join("\n").html_safe
           end
