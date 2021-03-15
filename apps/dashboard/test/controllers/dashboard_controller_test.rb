@@ -189,6 +189,16 @@ class DashboardControllerTest < ActionController::TestCase
     assert_select dropdown_link(4), text: "Interactive Apps"
     assert_select dropdown_link(5), text: "Jobs"
   end
+
+  test "apps with no category should not appear in menu" do
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
+    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
+    NavConfig.stubs(:categories_whitelist?).returns(false)
+
+    get :index
+
+    assert_select ".navbar-expand-md > #navbar li.dropdown[title='System Installed Apps']", 0, 'Apps with no category should not appear in menus (thus System Installed Apps)'
+  end
   
   test "should not create any empty links" do
     get :index
