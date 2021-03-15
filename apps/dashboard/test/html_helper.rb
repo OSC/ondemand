@@ -5,9 +5,9 @@ class ActiveSupport::TestCase
   def dropdown_list(title)
     css_select("li.dropdown[title='#{title}'] ul")
   end
-  
+
   def dropdown_link(order)
-    ".navbar-collapse > .nav li.dropdown:nth-of-type(#{order}) a"
+    ".navbar-expand-md > #navbar li.dropdown:nth-of-type(#{order}) a"
   end
 
   # given a dropdown list, return the list items as an array of strings
