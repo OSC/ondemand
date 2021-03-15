@@ -35,6 +35,10 @@
   padding: 0px;
 }
 
+.navbar-brand.navbar-brand-logo img[src$=".svg"] {
+  height: 2em;
+}
+
 .navbar-brand.navbar-brand-logo img {
   height: 100%;
 }

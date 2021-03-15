@@ -26,9 +26,11 @@
 <body>
   <header <%= 'data-turbolinks-permanent' if Configuration.turbolinks_enabled? %>>
     <nav class="navbar navbar-expand-md shadow-sm navbar-dark navbar-color" aria-label="Navigation">
-      <a class="navbar-brand" href="<%= root_path %>">
-        <%= OodAppkit.dashboard.title.html_safe %>
-      </a>
+    <% if ENV['OOD_DASHBOARD_HEADER_IMG_LOGO'].present? %>
+      <a class="navbar-brand navbar-brand-logo" href="<%= root_path %>"><img src="<%= ENV['OOD_DASHBOARD_HEADER_IMG_LOGO'] %>"></a>
+    <% else %>
+      <a class="navbar-brand" href="<%= root_path %>"><%= OodAppkit.dashboard.title.html_safe %></a>
+    <% end %>
       
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
