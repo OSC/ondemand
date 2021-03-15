@@ -1,9 +1,9 @@
 <li class="dropdown" title="<%= group.title %>" >
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= group.title %><span class="caret"></span></a>
   <ul class="dropdown-menu">
-    <% OodAppGroup.groups_for(apps: group.apps, group_by: :subcategory).each_with_index do |g, index| %>
+    <% OodAppGroup.groups_for(apps: group.apps, group_by: :subcategory, nav_limit: group.nav_limit).each_with_index do |g, index| %>
       <%= content_tag "li", "", class: "divider", role: "separator" if index > 0 %>
-      <%= content_tag "li", g.title, class: "dropdown-header" unless g.title.empty? %>
+      <%= content_tag "li", g.title_with_nav_limit_caption, class: "dropdown-header" unless g.title.empty? %>
       <% g.apps.take(g.nav_limit).each do |app| %>
         <% app.links.each do |link| %>
           <li>
