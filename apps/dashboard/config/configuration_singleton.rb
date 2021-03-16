@@ -203,7 +203,7 @@ end
   def navbar_type
     if ENV['OOD_NAVBAR_TYPE'] == ('inverse' || 'dark')
       'dark'
-    elsif ENV['OOD_NAVBAR_TYPE'] == 'default'
+    elsif ENV['OOD_NAVBAR_TYPE'] == ('default' || 'light'))
       'light'
     else
       'dark'
