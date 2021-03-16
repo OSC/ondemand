@@ -15,7 +15,7 @@ jQuery ->
       target =$(@).data('target')
       header = "$ <code><strong>#{cmd}</strong></code>\n"
       $("#{id} .modal-title").html """
-        <i class="fa fa-spinner fa-spin pull-right" aria-hidden="true" id="#{id.substring(1)}Spinner"></i>
+        <i class="fa fa-spinner fa-spin float-right" aria-hidden="true" id="#{id.substring(1)}Spinner"></i>
         #{title}
       """
       $("#{id} .product-cli-body").html header
@@ -26,7 +26,7 @@ jQuery ->
           $("#{id} .product-cli-body").scrollTop $("#{id} .product-cli-body")[0].scrollHeight
       xhr.onloadend = ->
         $("#{id}Spinner").replaceWith """
-          <button class="close pull-right" data-dismiss="modal">&times;</button>
+          <button class="close float-right" data-dismiss="modal">&times;</button>
         """
         if @status != 200
           $("#{id} .product-cli-body").html "#{header}A fatal error has occurred"

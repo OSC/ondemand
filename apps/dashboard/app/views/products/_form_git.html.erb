@@ -4,19 +4,19 @@
 </div>
 <div class="alert alert-<%= ssh_key ? "success" : "danger" %> clearfix alert-ssh-key">
   <% if ssh_key %>
-      <a class="text-success" role="button" data-toggle="collapse" href="#sshKeyValue" aria-expanded="false" aria-controls="collapseSshKeyValue">
-        <i class="fas fa-check" aria-hidden="true"></i> Detected locally generated SSH key
-      </a>
-      <div class="collapse" id="sshKeyValue">
-        <p>
-        <pre><%= ssh_key %></pre>
-        Copy and add the above SSH key into a Git service provider of your choosing (e.g., GitHub, Bitbucket, ...)
-        </p>
-      </div>
+    <a class="text-success" role="button" data-toggle="collapse" href="#sshKeyValue" aria-expanded="false" aria-controls="collapseSshKeyValue">
+      <i class="fas fa-check" aria-hidden="true"></i> Detected locally generated SSH key
+    </a>
+    <div class="collapse" id="sshKeyValue">
+      <p>
+      <pre><%= ssh_key %></pre>
+      Copy and add the above SSH key into a Git service provider of your choosing (e.g., GitHub, Bitbucket, ...)
+      </p>
+    </div>
   <% else %>
-      <div class="pull-left">
-        <i class="fas fa-times" aria-hidden="true"></i> No SSH key was found. You will need to generate a locally installed SSH key to clone the git repo using SSH.
-      </div>
-      <%= link_to 'Generate SSH Key', create_key_products_path(type: type), class: 'btn btn-default pull-right' %>
+    <div class="float-left">
+      <i class="fas fa-times" aria-hidden="true"></i> No SSH key was found. You will need to generate a locally installed SSH key to clone the git repo using SSH.
+    </div>
+    <%= link_to 'Generate SSH Key', create_key_products_path(type: type), class: 'btn btn-default float-right' %>
   <% end %>
 </div>
