@@ -25,7 +25,7 @@
 </head>
 <body>
   <header <%= 'data-turbolinks-permanent' if Configuration.turbolinks_enabled? %>>
-    <nav class="navbar navbar-expand-md shadow-sm navbar-dark navbar-color" aria-label="Navigation">
+    <nav class="navbar navbar-expand-md shadow-sm navbar-color navbar-<%= Configuration.navbar_type %>" aria-label="Navigation">
     <% if ENV['OOD_DASHBOARD_HEADER_IMG_LOGO'].present? %>
       <a class="navbar-brand navbar-brand-logo" href="<%= root_path %>"><img class="img-fluid" src="<%= ENV['OOD_DASHBOARD_HEADER_IMG_LOGO'] %>"></a>
     <% else %>
