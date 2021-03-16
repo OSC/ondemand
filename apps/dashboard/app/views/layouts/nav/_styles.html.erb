@@ -1,23 +1,24 @@
 <style>
+.navbar-color {
+  background-color: <%= Configuration.brand_bg_color || "#334155" %> !important;
+}
+
 <% if bg_color %>
 .navbar-inverse {
-  background-color: <%= bg_color %>;
-}
-.navbar-color {
-  background-color: <%= Configuration.brand_bg_color || "#334155" %>;
+  background-color: <%= bg_color %> !important;
 }
 <% end %>
-
 <% if link_active_color %>
-.navbar-inverse {
-  border-color: <%= link_active_color %>;
-}
-
 .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {
   background-color: <%= link_active_color %>;
 }
 
-.navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus {
+#navbar > ul.navbar-nav > li.nav-item > a:hover {
+  background-color: <%= link_active_color %>;
+  border-radius: 0.25em;
+}
+
+.navbar > .dropdown-menu {
   background-color: <%= link_active_color %>;
 }
 
