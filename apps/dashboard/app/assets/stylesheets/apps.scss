@@ -67,13 +67,21 @@ tr.app {
   background-color: rgb(86, 44, 135);
 }
 
+.app-card {
+  @extend .card;
+  @extend .rounded;
+  @extend .p-2;
+  @extend .mb-3;
 
-a.thumbnail.app {
   color: black;
-  text-decoration: none;
+
+  // HACK: this happens to make the icons mostly fill space below & line up
+  height: 95%;
 
   &:hover {
     color: rgb(0, 95, 133);
+    border-color: rgb(0, 95, 133);
+
     text-decoration: none;
   }
 }
