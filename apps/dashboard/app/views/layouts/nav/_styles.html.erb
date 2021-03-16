@@ -3,6 +3,9 @@
 .navbar-inverse {
   background-color: <%= bg_color %>;
 }
+.navbar-color {
+  background-color: <%= Configuration.brand_bg_color || "#334155" %>;
+}
 <% end %>
 
 <% if link_active_color %>
