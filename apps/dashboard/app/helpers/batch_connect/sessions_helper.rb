@@ -201,19 +201,19 @@ module BatchConnect::SessionsHelper
       content_tag(:div) do
         # menu
         concat(
-          content_tag(:ul, class: "nav nav-tabs") do
+          content_tag(:ul, class: "nav nav-tabs", id: id) do
             tabs.map { |t| t[:title] }.map.with_index do |title, idx|
-              content_tag(:li, class: "#{"nav-item active" if idx.zero?}") do
-                link_to title, "##{id}_#{idx}", data: { toggle: "tab" }, class: "nav-link #{"active" if idx.zero?}"
+              content_tag(:li, class: "nav-item #{"active" if idx.zero?}") do
+                link_to title, "##{id}_#{idx}", data: { toggle: "tab" }, aria: { selected: (true if idx.zero?) }, class: "nav-link #{"active" if idx.zero?}"
               end
             end.join("\n").html_safe
           end
         )
         # content
         concat(
-          content_tag(:div, class: "tab-content") do
+          content_tag(:div, class: "tab-content", id: "#{id}Content") do
             tabs.map.with_index do |tab, idx|
-              content_tag(:div, id: "#{id}_#{idx}", class: "tab-pane ood-appkit markdown #{"active" if idx == 0}") do
+              content_tag(:div, id: "#{id}_#{idx}", class: "tab-pane ood-appkit markdown #{"active" if idx.zero?}", role: 'tabpanel') do
                 render partial: "batch_connect/sessions/connections/#{tab[:partial]}", locals: tab[:locals]
               end
             end.join("\n").html_safe
