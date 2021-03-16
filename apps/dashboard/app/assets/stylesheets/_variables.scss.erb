@@ -4,27 +4,29 @@
 // Miscellaneous
 $enable-responsive-font-sizes: "true";
 $enable-shadows: "true";
+$font-size-base: 0.95rem;
 
 // Colors
+$green: #639e0f;
+$blue-gray: #334155;
+$warm-gray: #FAFAF9;
+
 $body-bg: #FFF;
 $body-color: #111827;
 
-// $blue: #0e99e9f1;
-
-$blue: #0284C7;
-$green: #639e0f;
-
-$theme-colors: ("blue-gray": #334155, "warm-gray": #FAFAF9);
+$primary: #337ab7;
+$danger: #d9534f;
+$info: #5bc0de;
 
 // Navigation bar
-$nav-link-disabled-color: map-get($theme-colors, "blue-gray");
+$nav-link-disabled-color: $blue-gray;
 
 // Link color
-$navbar-dark-color: <%= Configuration.brand_link_active_bg_color || "map-get($theme-colors, 'warm-gray')" %>;
-$navbar-dark-active-color: <%= Configuration.brand_link_active_bg_color || "map-get($theme-colors, 'warm-gray')" %>;
+$navbar-dark-color: <%= Configuration.brand_link_active_bg_color || "$warm-gray" %>;
+$navbar-dark-active-color: <%= Configuration.brand_link_active_bg_color || "$warm-gray" %>;
 
 // Navbar dark link text-muted disabled color.
-$navbar-dark-disabled-color: color-yiq(map-get($theme-colors, 'warm-gray'));
+$navbar-dark-disabled-color: color-yiq($warm-gray);
 
 // Grid layout
 $container-max-widths: (
