@@ -21,7 +21,13 @@ class OodAppGroup
   end
 
   def nav_limit_caption
-    @nav_limit_caption ||= nav_limit < apps.size ? "showing #{nav_limit} of #{apps.size}" : ""
+    @nav_limit_caption ||= begin
+      if nav_limit < apps.size
+        I18n.t('dashboard.nav_limit_caption', subset_count: nav_limit, total_count: apps.size)
+      else
+        ''
+      end
+    end
   end
 
   def title_with_nav_limit_caption
