@@ -1,6 +1,6 @@
 <%= render layout: 'products/breadcrumbs' do %>
-  <li><%= link_to @product.title, product_path(@product.name, type: @type) %></li>
-  <li class="active">Edit</li>
+  <li class="breadcrumb-item"><%= link_to @product.title, product_path(@product.name, type: @type) %></li>
+  <li class="breadcrumb-item active">Edit</li>
 <% end %>
 
 <div class="page-header">
@@ -14,7 +14,7 @@
   <%= render "form_manifest", f: f, product: @product %>
   <div class="row actions">
     <div class="col-md-12">
-      <%= f.submit 'Save', class: 'btn btn-primary pull-right' %>
+      <%= f.submit 'Save', class: 'btn btn-primary float-right' %>
     </div>
   </div>
 <% end %>
