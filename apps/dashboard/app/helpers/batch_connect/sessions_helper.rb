@@ -170,7 +170,7 @@ module BatchConnect::SessionsHelper
       icon("fas", "trash-alt", t('dashboard.batch_connect_sessions_delete_title'), class: "fa-fw"),
       session,
       method: :delete,
-      class: "btn btn-danger pull-right btn-delete",
+      class: "btn btn-danger float-right btn-delete",
       title: t('dashboard.batch_connect_sessions_delete_hover'),
       data: { confirm: t('dashboard.batch_connect_sessions_delete_confirm'), toggle: "tooltip", placement: "bottom"}
     )
