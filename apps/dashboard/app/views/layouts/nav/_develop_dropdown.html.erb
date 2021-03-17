@@ -1,8 +1,9 @@
-<li class="dropdown" title="<%= t('dashboard.nav_develop_title') %>">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-    <i class="fas fa-code" aria-hidden="true"></i><span class="hidden-sm hidden-sm-nav"> <%= t('dashboard.nav_develop_title') %></span><span class="caret"></span>
+<li class="nav-item dropdown" title="<%= t('dashboard.nav_develop_title') %>">
+  <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+    <i class="fas fa-code" aria-hidden="true"></i><span class="d-sm-none d-md-none d-lg-inline"> <%= t('dashboard.nav_develop_title') %></span><span class="caret"></span>
   </a>
-  <ul class="dropdown-menu">
+
+  <ul class="dropdown-menu" role="menu">
     <%= nav_link(t('dashboard.nav_restart_server'), "sync", restart_url) %>
     <%= nav_link(t('dashboard.nav_develop_docs'), "book", Configuration.developer_docs_url, target: "_blank") %>
     <%= nav_link(products_title(:dev), "cog", products_path(type: "dev")) %>

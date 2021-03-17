@@ -2,30 +2,32 @@
 <div id="coreHoursEfficiencyReportPanelDiv"></div>
 
 <script id="job-efficiency-template" type="text/x-handlebars-template">
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <a href="{{xdmod_url}}" class="pull-right">Open XDMoD <span class="fa fa-external-link-square-alt"></span></a>
-    <h3 class="panel-title">{{title}}</h3>
+<div class="card mt-3">
+
+  <div class="card-header">
+    <a href="{{xdmod_url}}" class="float-right">Open XDMoD <span class="fa fa-external-link-square-alt"></span></a>
+    <h3>{{title}} - {{date_range}}</h3>
   </div>
-  <div class="panel-body">
-  {{#if error}}
-    <div class="alert alert-danger">{{error}} Please ensure you are <a href="{{xdmod_url}}">logged into Open XDMoD first</a>, and then try again.</div>
-  {{else}}
-    {{#if nodata}}
-      <p>{{msg}}</p>
+
+  <div class="card-body">
+    {{#if error}}
+      <div class="alert alert-danger mb-0">{{error}} Please ensure you are <a href="{{xdmod_url}}">logged into Open XDMoD first</a>, and then try again.</div>
     {{else}}
-    <p style="font-weight: bold; display: flex; justify-content: space-between"><span class="text-success">{{good_percent}}% efficient</span> <span class="text-danger">{{bad_percent}}% inefficent</span></p>
-    <div class="progress progress-custom">
-      <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{good_percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{good_percent}}%">
+      {{#if nodata}}
+        <p class="card-text">{{msg}}</p>
+      {{else}}
+      <p class="d-flex justify-content-between card-text font-weight-bold"><span class="text-success">{{good_percent}}% efficient</span> <span class="text-danger">{{bad_percent}}% inefficent</span></p>
+      <div class="progress progress-custom">
+        <div class="progress-bar bg-success" role="progressbar" aria-valuenow="{{good_percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{good_percent}}%">
+        </div>
+        <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="{{bad_percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{bad_percent}}%">
+        </div>
       </div>
-      <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{bad_percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{bad_percent}}%">
-      </div>
-    </div>
-    <p class="text-center">
-      <span class="text-danger">{{count_bad}} inefficent {{unit}} </span> &frasl; {{count}} total {{unit}}
-    </p>
+      <p class="card-text text-center mt-2">
+        <span class="text-danger">{{count_bad}} inefficent {{unit}} </span> &frasl; {{count}} total {{unit}}
+      </p>
+      {{/if}}
     {{/if}}
-  {{/if}}
   </div>
 </div>
 </script>
@@ -64,7 +66,10 @@ var template_source = $('#job-efficiency-template').html();
 var template = Handlebars.compile(template_source);
 var helpers = {
   title: function(){
-    return this.unit_title + " Efficiency Report - " + thirtyDaysAgo + " to " + today;
+    return this.unit_title + " Efficiency Report";
+  },
+  date_range: function() {
+    return thirtyDaysAgo + " to " + today;
   },
   xdmod_url: function(){
     return '<%= Configuration.xdmod_host %>';

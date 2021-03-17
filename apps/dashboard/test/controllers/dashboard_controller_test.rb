@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'html_helper'
 
 class DashboardControllerTest < ActionController::TestCase
 
@@ -10,36 +11,6 @@ class DashboardControllerTest < ActionController::TestCase
   def teardown
     Router.instance_variable_set('@pinned_apps', nil)
   end
-
-  def dropdown_list(title)
-    css_select("li.dropdown[title='#{title}'] ul")
-  end
-  
-  def dropdown_link(order)
-    ".navbar-collapse > .nav li.dropdown:nth-of-type(#{order}) a"
-  end
-
-  # given a dropdown list, return the list items as an array of strings
-  # with symbols for header or divider
-  def dropdown_list_items(list)
-    css_select(list, "li").map do |item|
-      if item['class'] && item['class'].include?("divider")
-        :divider
-      elsif item['class'] && item['class'].include?("dropdown-header")
-        { :header => item.text.strip }
-      else
-        item.text.strip
-      end
-    end
-  end
-
-  # given a dropdown list, return the list items as an array of URL strings
-  def dropdown_list_items_urls(list)
-    css_select(list, "a").map do |item|
-      item.attributes['href'].try(:value) || ""
-    end
-  end
-
 
   test "should create Jobs dropdown" do
     get :index
@@ -186,10 +157,10 @@ class DashboardControllerTest < ActionController::TestCase
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
     NavConfig.stubs(:categories_whitelist?).returns(false)
     NavConfig.stubs(:categories).returns(["Files", "Jobs", "Clusters", "Interactive Apps"])
-    
+
     get :index
     assert_response :success
-    assert_select ".navbar-collapse > .nav li.dropdown[title]", 5
+    assert_select ".navbar-expand-md > #navbar li.dropdown[title]", 6 # +1 here is 'Help'
     assert_select  dropdown_link(1), text: "Files"
     assert_select  dropdown_link(2), text: "Jobs"
     assert_select  dropdown_link(3), text: "Clusters"
@@ -210,7 +181,8 @@ class DashboardControllerTest < ActionController::TestCase
 
     get :index
     assert_response :success
-    assert_select ".navbar-collapse > .nav li.dropdown[title]", 5
+    assert_select ".navbar-expand-md > #navbar li.dropdown[title]", 6 # +1 here is 'Help'
+
     assert_select dropdown_link(1), text: "Clusters"
     assert_select dropdown_link(2), text: "Files"
     assert_select dropdown_link(3), text: "Gateway Apps"
@@ -225,7 +197,7 @@ class DashboardControllerTest < ActionController::TestCase
 
     get :index
 
-    assert_select ".navbar-collapse > .nav li.dropdown[title='System Installed Apps']", 0, 'Apps with no category should not appear in menus (thus System Installed Apps)'
+    assert_select ".navbar-expand-md > #navbar li.dropdown[title='System Installed Apps']", 0, 'Apps with no category should not appear in menus (thus System Installed Apps)'
   end
   
   test "should not create any empty links" do
