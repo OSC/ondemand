@@ -49,17 +49,16 @@ gem 'thor', '0.19.1'
 
 # Extra third-party gems
 gem 'dotenv-rails', '~> 2.1'
-gem 'bootstrap-sass', '~> 3.4.1'
 gem 'font-awesome-sass', '5.12.0'
 gem 'redcarpet', '~> 3.3'
 gem 'browser', '~> 2.2'
 gem 'addressable', '~> 2.4'
-gem 'bootstrap_form', '~> 2.4'
+gem 'bootstrap_form', '~> 4.0'
 gem 'jquery-datatables-rails', '~> 3.4'
 gem 'data-confirm-modal', '~> 1.2'
 gem 'rails_12factor', group: :production
 gem 'mocha', '~> 1.1', group: :test
-gem 'autoprefixer-rails', '~> 8.4'
+gem 'autoprefixer-rails', '~> 9.1'
 gem 'dotiw'
 gem 'local_time', '~> 1.0.3'
 gem 'turbolinks', '~> 5.2.0'

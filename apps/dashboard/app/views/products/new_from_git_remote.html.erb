@@ -1,6 +1,6 @@
 <%= render layout: 'products/breadcrumbs' do %>
-  <li><%= link_to 'New App', new_product_path(type: @type) %></li>
-  <li class="active">New From Git Repo</li>
+  <li class="breadcrumb-item"><%= link_to 'New App', new_product_path(type: @type) %></li>
+  <li class="breadcrumb-item active">New From Git Repo</li>
 <% end %>
 
 <%= bootstrap_form_for(@product, as: :product, url: create_from_git_remote_products_path(type: @type)) do |f| %>

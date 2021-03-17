@@ -1,0 +1,27 @@
+// Bootstrap custom CSS
+
+table.dataTable > thead .sorting:before, table.dataTable > thead .sorting_asc:before, table.dataTable > thead .sorting_desc:before, table.dataTable > thead .sorting_asc_disabled:before, table.dataTable > thead .sorting_desc_disabled:before {
+  right: 1.25em !important;
+}
+
+.card {
+  a {
+    text-decoration: none !important;
+  }
+}
+
+.card-header h3 {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+// Shim for buttons that still use old Bootstrap 3 default button class.
+.btn-default {
+  color: #393939;
+  background-color: #f8f8f8;
+  border-color: #cbcbcb;
+}
+
+.btn-default:hover {
+  background-color: darken(#f8f8f8, 10%);
+}

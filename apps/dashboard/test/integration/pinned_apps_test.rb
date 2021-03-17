@@ -82,11 +82,11 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
 
     assert_response :success
 
-    assert_select 'a.thumbnail.app', 4
-    assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_jupyter/session_contexts/new']", 1
-    assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_paraview/session_contexts/new']", 1
-    assert_select "a.thumbnail.app[href='/apps/show/pseudofun']", 1
-    assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_desktop/owens/session_contexts/new']", 1
+    assert_select 'a.app-card', 4
+    assert_select "a.app-card[href='/batch_connect/sys/bc_jupyter/session_contexts/new']", 1
+    assert_select "a.app-card[href='/batch_connect/sys/bc_paraview/session_contexts/new']", 1
+    assert_select "a.app-card[href='/apps/show/pseudofun']", 1
+    assert_select "a.app-card[href='/batch_connect/sys/bc_desktop/owens/session_contexts/new']", 1
   end
 
   test "does not create pinned apps when no configuration" do
@@ -98,7 +98,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
 
     assert_response :success
 
-    assert_select 'a.thumbnail.app', 0
+    assert_select 'a.app-card', 0
   end
 
   test "shows pinned apps when MOTD is present" do
@@ -122,11 +122,11 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
       get '/'
     end
 
-    assert_select 'a.thumbnail.app', 4
-    assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_jupyter/session_contexts/new']", 1
-    assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_paraview/session_contexts/new']", 1
-    assert_select "a.thumbnail.app[href='/apps/show/pseudofun']", 1
-    assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_desktop/owens/session_contexts/new']", 1
+    assert_select 'a.app-card', 4
+    assert_select "a.app-card[href='/batch_connect/sys/bc_jupyter/session_contexts/new']", 1
+    assert_select "a.app-card[href='/batch_connect/sys/bc_paraview/session_contexts/new']", 1
+    assert_select "a.app-card[href='/apps/show/pseudofun']", 1
+    assert_select "a.app-card[href='/batch_connect/sys/bc_desktop/owens/session_contexts/new']", 1
 
     assert_select 'h3', 2
     assert_equal I18n.t('dashboard.motd_title'), css_select('h3')[1].text
@@ -156,11 +156,11 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
       get '/'
     end
 
-    assert_select 'a.thumbnail.app', 4
-    assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_jupyter/session_contexts/new']", 1
-    assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_paraview/session_contexts/new']", 1
-    assert_select "a.thumbnail.app[href='/apps/show/pseudofun']", 1
-    assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_desktop/owens/session_contexts/new']", 1
+    assert_select 'a.app-card', 4
+    assert_select "a.app-card[href='/batch_connect/sys/bc_jupyter/session_contexts/new']", 1
+    assert_select "a.app-card[href='/batch_connect/sys/bc_paraview/session_contexts/new']", 1
+    assert_select "a.app-card[href='/apps/show/pseudofun']", 1
+    assert_select "a.app-card[href='/batch_connect/sys/bc_desktop/owens/session_contexts/new']", 1
 
     assert_select "div[class='xdmod']", 1
     assert_select "div[id='jobsEfficiencyReportPanelDiv']", 1
@@ -191,11 +191,11 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
       get '/'
     end
 
-    assert_select 'a.thumbnail.app', 4
-    assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_jupyter/session_contexts/new']", 1
-    assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_paraview/session_contexts/new']", 1
-    assert_select "a.thumbnail.app[href='/apps/show/pseudofun']", 1
-    assert_select "a.thumbnail.app[href='/batch_connect/sys/bc_desktop/owens/session_contexts/new']", 1
+    assert_select 'a.app-card', 4
+    assert_select "a.app-card[href='/batch_connect/sys/bc_jupyter/session_contexts/new']", 1
+    assert_select "a.app-card[href='/batch_connect/sys/bc_paraview/session_contexts/new']", 1
+    assert_select "a.app-card[href='/apps/show/pseudofun']", 1
+    assert_select "a.app-card[href='/batch_connect/sys/bc_desktop/owens/session_contexts/new']", 1
 
     assert_select 'h3', 2
     assert_equal I18n.t('dashboard.motd_title'), css_select('h3')[1].text
