@@ -78,10 +78,9 @@ tr.app {
   // HACK: this happens to make the icons mostly fill space below & line up
   height: 95%;
 
-  &:hover {
+  &:hover, &:focus {
     color: rgb(0, 95, 133);
     border-color: rgb(0, 95, 133);
-
     text-decoration: none;
   }
 }
