@@ -1,0 +1,81 @@
+.ood-appkit.markdown {
+  font-size: 16px;
+  line-height: 1.6;
+
+  h1 {
+    margin-right: 150px;
+    font-size: 30px;
+    font-weight: normal;
+    line-height: 1.1;
+  }
+
+  h2 {
+    padding-bottom: 0.3em;
+    margin-top: 1em;
+    margin-bottom: 16px;
+    font-size: 1.75em;
+    font-weight: bold;
+    line-height: 1.225;
+  }
+
+  h3 {
+    margin-top: 1em;
+    margin-bottom: 16px;
+    font-size: 1.5em;
+    font-weight: bold;
+    line-height: 1.43;
+  }
+
+  h4 {
+    margin-top: 1em;
+    margin-bottom: 16px;
+    font-size: 1.25em;
+    font-weight: bold;
+    line-height: 1.4;
+  }
+
+  img {
+    border: 0;
+    max-width: 100%;
+  }
+
+  p {
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+
+  li>p {
+    margin-top: 16px;
+  }
+
+  table {
+    display: block;
+    width: 100%;
+    overflow: auto;
+    word-break: keep-all;
+
+    // .markdown p, .markdown table, ...
+    margin-top: 0;
+    margin-bottom: 16px;
+
+    tr {
+      border-top: 1px solid #ccc;
+    }
+
+    tr:nth-child(2n) td {
+      background-color: #f8f8f8;
+    }
+
+    th,
+    td {
+      padding: 6px 13px;
+      border: 1px solid #ddd;
+    }
+  }
+
+  pre {
+    code {
+      white-space: pre;
+    }
+  }
+}
