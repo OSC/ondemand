@@ -197,6 +197,19 @@ end
     ENV["OOD_DASHBOARD_LOGO_HEIGHT"]
   end
 
+  # Sets the Bootstrap 4 navbar type
+  # See more about Bootstrap color schemes: https://getbootstrap.com/docs/4.6/components/navbar/#color-schemes
+  # @return [String, 'dark'] Default to dark
+  def navbar_type
+    if ENV['OOD_NAVBAR_TYPE'] == ('inverse' || 'dark')
+      'dark'
+    elsif ENV['OOD_NAVBAR_TYPE'] == ('default' || 'light')
+      'light'
+    else
+      'dark'
+    end
+  end
+
   def brand_bg_color
     ENV.values_at('OOD_BRAND_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_BG', 'BOOTSTRAP_NAVBAR_INVERSE_BG').compact.first
   end
