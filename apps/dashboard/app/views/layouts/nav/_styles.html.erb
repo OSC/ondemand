@@ -1,37 +1,18 @@
 <style>
-.navbar-color {
-  background-color: <%= Configuration.brand_bg_color || "#334155" %> !important;
+.navbar-dark {
+  background-color: <%= bg_color || 'rgb(83, 86, 90)' %>;
 }
 
-<% if bg_color %>
-.navbar-inverse {
-  background-color: <%= bg_color %> !important;
-}
-<% end %>
-<% if link_active_color %>
-.navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {
-  background-color: <%= link_active_color %>;
+.navbar-light {
+  background-color: <%= bg_color || 'rgb(248, 248, 248)' %>;
 }
 
-#navbar > ul.navbar-nav > li.nav-item > a:focus {
-  background-color: <%= link_active_color %>;
+.navbar-dark ul.navbar-nav > li.nav-item > a:focus, .navbar-dark ul.navbar-nav > li.nav-item.show > a {
+  background-color: <%= link_active_color || 'rgb(59, 61, 63)' %>;
   border-radius: 0.25em;
 }
-
-.navbar > .dropdown-menu {
-  background-color: <%= link_active_color %>;
+.navbar-light ul.navbar-nav > li.nav-item > a:focus, .navbar-light ul.navbar-nav > li.nav-item.show > a {
+  background-color: <%= link_active_color || 'rgb(231, 231, 231)' %>;
+  border-radius: 0.25em;
 }
-
-@media (max-width: 767px) {
-  .navbar-inverse .navbar-nav .open .dropdown-menu > .dropdown-header {
-    border-color: <%= link_active_color %>;
-  }
-  .navbar-inverse .navbar-nav .open .dropdown-menu .divider {
-    background-color: <%= link_active_color %>;
-  }
-  .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a, .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:hover, .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:focus {
-    background-color: <%= link_active_color %>;
-  }
-}
-<% end %>
 </style>
