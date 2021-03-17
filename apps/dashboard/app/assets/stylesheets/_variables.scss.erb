@@ -1,5 +1,5 @@
 // Place all Bootstrap 4 variable overrides in this file.
-// Bootstrap 4 SASS variables list: https://github.com/twbs/bootstrap/blob/main/scss/_variables.scss
+// Bootstrap 4 SASS variables list: https://github.com/twbs/bootstrap/blob/v4.6.0/scss/_variables.scss
 
 // Miscellaneous
 $enable-responsive-font-sizes: "true";
@@ -7,25 +7,21 @@ $enable-shadows: "true";
 
 // Colors
 $green: #639e0f;
-$blue-gray: #334155;
-$warm-gray: #FAFAF9;
 
-$body-bg: #FFF;
 $body-color: #111827;
 
 $primary: #337ab7;
 $danger: #d9534f;
 $info: #5bc0de;
 
-// Navigation bar
-$nav-link-disabled-color: $blue-gray;
+$navbar-light-color: rgb(119, 119, 119);
+$navbar-light-disabled-color: rgb(119, 119, 119);
+$navbar-dark-brand-color: rgb(119, 119, 119);
 
-// Link color
-$navbar-dark-color: <%= Configuration.brand_link_active_bg_color || "$warm-gray" %>;
-$navbar-dark-active-color: <%= Configuration.brand_link_active_bg_color || "$warm-gray" %>;
-
-// Navbar dark link text-muted disabled color.
-$navbar-dark-disabled-color: color-yiq($warm-gray);
+$navbar-dark-color: #fff;
+$navbar-dark-active-color: rgba(#fff, .75);
+$navbar-dark-brand-color: #fff;
+$navbar-dark-disabled-color: rgba(#fff, .75);
 
 // Grid layout
 $container-max-widths: (
@@ -47,5 +43,5 @@ $grid-breakpoints: (
 // Navigation bar link gutter spacing x-axis.
 $navbar-nav-link-padding-x: 0.75rem;
 
-// breadcrumbs are purely visual for accessability
+// breadcrumbs are purely visual for accessibility
 $breadcrumb-divider: '';
