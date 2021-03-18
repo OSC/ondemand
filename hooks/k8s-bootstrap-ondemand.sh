@@ -20,7 +20,7 @@ NAMESPACE="${NAMESPACE_PREFIX}${ONDEMAND_USERNAME}"
 
 SCRIPT=$(readlink -f "$0")
 BASEDIR=$(dirname "$SCRIPT")
-YAML_DIR=${BASEDIR}/k8-bootstrap
+YAML_DIR=${BASEDIR}/k8s-bootstrap
 
 NAMESPACE_TMPFILE=$(mktemp "/tmp/k8-bootstrap-namespace-${ONDEMAND_USERNAME}.XXXXXX")
 cat ${YAML_DIR}/namespace.yaml | envsubst > "$NAMESPACE_TMPFILE"
