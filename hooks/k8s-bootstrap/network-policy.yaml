@@ -11,4 +11,4 @@ spec:
   - from:
     - podSelector: {}
     - ipBlock:
-        cidr: ${NETWORK_POLICY_ALLOW_CIDR}
+        cidr: $NETWORK_POLICY_ALLOW_CIDR

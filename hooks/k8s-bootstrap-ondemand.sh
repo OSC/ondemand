@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ONDEMAND_USERNAME="$1"
+export ONDEMAND_USERNAME="$1"
 if [ "x${ONDEMAND_USERNAME}" = "x" ]; then
   echo "Must specify username"
   exit 1
@@ -14,9 +14,10 @@ fi
 set -e
 
 source $HOOK_ENV
+export $(egrep -v "^#" $HOOK_ENV | cut -d= -f1)
 
 export PATH=/usr/local/bin:/bin:$PATH
-NAMESPACE="${NAMESPACE_PREFIX}${ONDEMAND_USERNAME}"
+export NAMESPACE="${NAMESPACE_PREFIX}${ONDEMAND_USERNAME}"
 
 SCRIPT=$(readlink -f "$0")
 BASEDIR=$(dirname "$SCRIPT")
