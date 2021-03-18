@@ -1,5 +1,5 @@
 class OodAppGroup
-  attr_accessor :apps
+  attr_accessor :apps, :title
 
   def initialize(title: "", apps: [], nav_limit: nil)
     @apps = apps
@@ -14,10 +14,6 @@ class OodAppGroup
   def has_batch_connect_apps?
     return @has_batch_connect_apps unless @has_batch_connect_apps.nil?
     @has_batch_connect_apps = apps.any?(&:batch_connect_app?)
-  end
-
-  def title
-    @title
   end
 
   def nav_limit_caption
