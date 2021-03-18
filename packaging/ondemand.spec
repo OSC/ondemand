@@ -191,6 +191,9 @@ touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/myjobs.conf
 
 touch %{buildroot}%{_sysconfdir}/ood/config/ood_portal.sha256sum
 
+%__cp -R hooks %{buildroot}/opt/ood/hooks
+%__install -D -m 644 hooks/hook.env.example %{buildroot}%{_sysconfdir}/ood/config/hook.env
+
 %__mkdir_p %{buildroot}%{_sysconfdir}/sudoers.d
 %__cat >> %{buildroot}%{_sysconfdir}/sudoers.d/ood << EOF
 Defaults:apache !requiretty, !authenticate
@@ -323,6 +326,7 @@ fi
 /opt/ood/nginx_stage
 /opt/ood/ood-portal-generator
 /opt/ood/ood_auth_map
+/opt/ood/hooks
 %{_localstatedir}/www/ood/apps/sys/dashboard
 %{_localstatedir}/www/ood/apps/sys/shell
 %{_localstatedir}/www/ood/apps/sys/files
@@ -349,6 +353,7 @@ fi
 %dir %{_sysconfdir}/ood/config
 %config(noreplace,missingok) %{_sysconfdir}/ood/config/nginx_stage.yml
 %config(noreplace,missingok) %{_sysconfdir}/ood/config/ood_portal.yml
+%config(noreplace,missingok) %{_sysconfdir}/ood/config/hook.env
 %ghost %{_sysconfdir}/ood/config/ood_portal.sha256sum
 
 %dir %{_sharedstatedir}/ondemand-nginx/config
