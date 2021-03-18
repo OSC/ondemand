@@ -72,4 +72,15 @@ class OodAppGroupTest < ActiveSupport::TestCase
     assert_equal "VDI", subgroups2[0].title
     assert_equal "IHPC", subgroups2[1].title
   end
+
+  test "group nav_limit" do
+    assert_equal 6, OodAppGroup.new(nav_limit: 6).nav_limit
+  end
+
+  test "group nav_limit set for each group when setting in .groups_for" do
+    apps = []
+    apps.concat(build_apps("Desktops", "IHPC", ["Abaqus/CAE", "ANSYS Workbench", "COMSOL", "Oakley Desktop", "Ruby Desktop"] ))
+    apps.concat(build_apps("Desktops", "VDI", ["Oakley VDI", "Ruby VDI", "Paraview"] ))
+    assert_equal 6, OodAppGroup.groups_for(apps: apps, nav_limit: 6).first.nav_limit
+  end
 end

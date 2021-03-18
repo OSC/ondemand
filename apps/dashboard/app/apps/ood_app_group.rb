@@ -1,9 +1,10 @@
 class OodAppGroup
-  attr_accessor :apps
+  attr_accessor :apps, :title
 
-  def initialize(title: "", apps: [])
+  def initialize(title: "", apps: [], nav_limit: nil)
     @apps = apps
-    @_title = title
+    @title = title
+    @nav_limit = nav_limit
   end
 
   def has_apps?
@@ -15,37 +16,35 @@ class OodAppGroup
     @has_batch_connect_apps = apps.any?(&:batch_connect_app?)
   end
 
-  def title
-    @title ||= begin
-      if @_title == "Pinned Apps"
-        if apps.size > nav_limit
-          "Pinned Apps (showing #{nav_limit} of #{apps.size})"
-        else
-          "Pinned Apps"
-        end
+  def nav_limit_caption
+    @nav_limit_caption ||= begin
+      if nav_limit < apps.size
+        I18n.t('dashboard.nav_limit_caption', subset_count: nav_limit, total_count: apps.size)
       else
-        @_title
+        ''
       end
+    end
+  end
+
+  def title_with_nav_limit_caption
+    if nav_limit_caption.present?
+      "#{title} (#{nav_limit_caption})"
+    else
+      title
     end
   end
 
   def nav_limit
-    @nav_limit ||= begin
-      if @_title == "Pinned Apps"
-        ::Configuration.pinned_apps_menu_length
-      else
-        apps.size
-      end
-    end
+    @nav_limit || apps.size
   end
 
   # given an array of apps, group those apps by app category (or the attribute)
   # specified by 'group_by', sorting both groups and apps arrays by title
-  def self.groups_for(apps: [], group_by: :category)
+  def self.groups_for(apps: [], group_by: :category, nav_limit: nil)
     apps.group_by { |app|
       app.send(group_by)
     }.map { |k,v|
-      OodAppGroup.new(title: k, apps: v.sort_by { |a| a.title })
+      OodAppGroup.new(title: k, apps: v.sort_by { |a| a.title }, nav_limit: nav_limit)
     }.sort_by { |g| g.title }
   end
 

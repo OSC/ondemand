@@ -29,7 +29,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     dditems = dropdown_list_items(dd)
     assert dditems.any?, "dropdown list items not found"
     assert_equal [
-      { header: "Pinned Apps" },
+      { header: I18n.t('dashboard.pinned_apps_title') },
       "Owens Desktop",
       "Jupyter Notebook",
       "Paraview",
