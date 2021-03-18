@@ -85,7 +85,8 @@ jobs:
       - name: Setup kubectl
         run: |
           kubectl config set-credentials ondemand --token="${{ steps.token.outputs.ondemand }}"
-          kubectl config set-context ondemand --cluster=kind --user=ondemand
-          kubectl config use-context ondemand
+          kubectl config set-context kind-kind --user=ondemand
+          kubectl config use-context kind-kind
+          kubectl cluster-info
       - name: Test k8s-bootstrap
         run: /bin/bash hooks/k8s-bootstrap-ondemand.sh test hooks/hook.env.example
