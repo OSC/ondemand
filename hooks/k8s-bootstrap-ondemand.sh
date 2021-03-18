@@ -19,8 +19,7 @@ export $(egrep -v "^#" $HOOK_ENV | cut -d= -f1)
 export PATH=/usr/local/bin:/bin:$PATH
 export NAMESPACE="${NAMESPACE_PREFIX}${ONDEMAND_USERNAME}"
 
-SCRIPT=$(readlink -f "$0")
-BASEDIR=$(dirname "$SCRIPT")
+BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 YAML_DIR=${BASEDIR}/k8s-bootstrap
 
 NAMESPACE_TMPFILE=$(mktemp "/tmp/k8-bootstrap-namespace-${ONDEMAND_USERNAME}.XXXXXX")
