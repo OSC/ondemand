@@ -1,0 +1,103 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ondemand
+  labels:
+    name: ondemand
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: ondemand
+  namespace: ondemand
+rules:
+- apiGroups: [""]
+  resources:
+  - namespaces
+  - serviceaccounts
+  verbs:
+  - get
+  - create
+  - update
+  - patch
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - rolebindings
+  - roles
+  verbs:
+  - get
+  - create
+  - update
+  - patch
+# Only added to enable cluster-info subcommand
+- apiGroups: [""]
+  resources:
+  - services
+  verbs:
+  - list
+# rules necessary to give these permissions to ondemand users
+- apiGroups: [""]
+  resources: ["services", "pods", "configmaps", "secrets", "pods/log"]
+  verbs: ["get", "watch", "list", "create", "update", "patch", "delete"]
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - networkpolicies
+  verbs:
+  - get
+  - create
+  - update
+  - patch
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ondemand
+  namespace: ondemand
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: ondemand
+  namespace: ondemand
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: ondemand
+subjects:
+- kind: ServiceAccount
+  name: ondemand
+  namespace: ondemand
+---
+# ood-initializer is the role given to service accounts to initialize and 
+# configure ood configmaps and services within init containers.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: ood-initializer
+  namespace: ondemand
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "create", "update", "patch"]
+- apiGroups: [""]
+  resources: ["services", "pods"]
+  verbs: ["get"]
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["update", "get", "patch"]
+---
+# ood-user role allows users to manipulate their services/pods/configmaps/secrets and logs
+# should be applied as a RoleBinding not ClusterRoleBinding so they're limited to their 
+# own namespace
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: ood-user
+  namespace: ondemand
+rules:
+- apiGroups: [""]
+  resources: ["services", "pods", "configmaps", "secrets", "pods/log"]
+  verbs: ["get", "watch", "list", "create", "update", "patch", "delete"]
