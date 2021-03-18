@@ -59,7 +59,7 @@ class ApplicationController < ActionController::Base
   end
 
   def pinned_app_group
-    OodAppGroup.groups_for(apps: @pinned_apps)
+    OodAppGroup.groups_for(apps: @pinned_apps, nav_limit: ::Configuration.pinned_apps_menu_length)
   end
 
   def set_pinned_apps
