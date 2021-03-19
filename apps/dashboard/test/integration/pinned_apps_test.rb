@@ -342,4 +342,27 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_select "a.app-card", 3
     assert_equal I18n.t('dashboard.not_grouped'), css_select("h4[class='apps-section-header-blue']")[0].text
   end
+
+  test "group by metadata fields works" do
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
+    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
+    Configuration.stubs(:pinned_apps).returns([
+      'sys/bc_jupyter',
+      'sys/bc_paraview',
+      'sys/pseudofun',
+    ])
+    Configuration.stubs(:pinned_apps_group_by).returns("languages")
+
+    env = {}
+
+    with_modified_env(env) do
+      get '/'
+    end
+
+    assert_select "h4[class='apps-section-header-blue']", 3
+    assert_select "a.app-card", 3
+    assert_equal "go erLANG python", css_select("h4[class='apps-section-header-blue']")[0].text
+    assert_equal "python julia R Ruby", css_select("h4[class='apps-section-header-blue']")[1].text
+    assert_equal I18n.t('dashboard.not_grouped'), css_select("h4[class='apps-section-header-blue']")[2].text
+  end
 end

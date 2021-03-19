@@ -42,10 +42,10 @@ class OodAppGroup
   # specified by 'group_by', sorting both groups and apps arrays by title
   def self.groups_for(apps: [], group_by: :category, nav_limit: nil)
     apps.group_by { |app|
-      app.try(group_by)
+      app.respond_to?(group_by) ? app.send(group_by) : app.metadata[group_by]
     }.map { |k,v|
       OodAppGroup.new(title: k, apps: v.sort_by { |a| a.title }, nav_limit: nav_limit)
-    }.sort_by { |g| g.title }
+    }.sort_by { |g| [ g.title.nil? ? 1 : 0, g.title ] } # make sure that the ungroupable app is always last
   end
 
   # select a subset of groups by the specified array of titles

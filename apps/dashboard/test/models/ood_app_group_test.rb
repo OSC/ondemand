@@ -3,7 +3,7 @@ require 'test_helper'
 class OodAppGroupTest < ActiveSupport::TestCase
 
   def app(title, category, subcategory)
-    OpenStruct.new(title: title, category: category, subcategory: subcategory)
+    OpenStruct.new(title: title, category: category, subcategory: subcategory, metadata: {})
   end
 
   def build_apps(category, subcategory, titles)
@@ -44,6 +44,7 @@ class OodAppGroupTest < ActiveSupport::TestCase
     assert_equal 4, groups2.count
     assert_equal nav_group_titles, groups2.map(&:title)
   end
+
 
   test "group by subcategory" do
     apps = []
@@ -98,6 +99,23 @@ class OodAppGroupTest < ActiveSupport::TestCase
     assert_equal 1, groups.size
     assert_equal 14, groups.first.apps.size
     assert_nil groups.first.title
+  end
+
+  test "group by metadata field" do
+    app_dir = Pathname.new("#{Rails.root}/test/fixtures/sys_with_gateway_apps")
+    apps = app_dir.children.map { |d| OodApp.new PathRouter.new(d) }
+
+    groups = OodAppGroup.groups_for(apps: apps, group_by: :languages)
+
+    assert_equal 3, groups.size
+    assert_equal "go erLANG python", groups[0].title
+    assert_equal 1, groups[0].apps.count
+    assert_equal "python julia R Ruby", groups[1].title
+    assert_equal 1, groups[1].apps.count
+
+    # groups with a nil title are last
+    assert_nil groups[2].title
+    assert_equal 9, groups[2].apps.count
   end
 
 end
