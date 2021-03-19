@@ -15,5 +15,5 @@ json.files @files do |f|
   json.mode f[:mode]
 
 end
-json.breadcrumbs_html render partial: 'breadcrumb.html.erb', collection: @path.descend, as: :file
+json.breadcrumbs_html render partial: 'breadcrumb.html.erb', collection: @path.descend, as: :file, locals: { file_count: @path.descend.count, full_path: @path }
 json.time Time.now.to_i

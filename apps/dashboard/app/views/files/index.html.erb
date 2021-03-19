@@ -1,5 +1,4 @@
 <div class="text-right">
-  <button id="goto-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-folder" aria-hidden="true"></i> Go To...</button>
 
   <%# FIXME: open in terminal should be dropdown of all clusters (with default) %>
   <button type="button" class="btn btn-default btn-sm"><i class="fas fa-terminal" aria-hidden="true"></i> Open in Terminal</button>
@@ -80,7 +79,7 @@
     <div id="search_box" class="text-right"></div>
 
     <ol id="path-breadcrumbs" class="breadcrumb">
-      <%= render partial: 'breadcrumb', collection: @path.descend, as: :file %>
+      <%= render partial: 'breadcrumb', collection: @path.descend, as: :file, locals: { file_count: @path.descend.count, full_path: @path } %>
     </ol>
 
     <table class="table table-striped table-condensed" id="directory-contents">
@@ -105,6 +104,20 @@
 
 <%# FIXME: problem with not using tables %>
 <script>
+// this uses event delegation so it captures events even if dom element is recreated
+var clipboardjs = new ClipboardJS('#copy-path');
+clipboardjs.on('success', function(e) {
+  $(e.trigger).tooltip({title: 'Copied path to clipboard!', trigger: 'manual', placement: 'bottom'}).tooltip('show');
+  setTimeout(() => $(e.trigger).tooltip('hide'), 2000);
+  e.clearSelection();
+});
+clipboardjs.on('error', function(e) {
+  // TODO: provide alternate? display text in a box below and say "highlight to copy"
+  // copying to clipboard failed, you can manually copy here:
+  // e.trigger
+  e.clearSelection();
+});
+
 history.replaceState({
   currentDirectory: '<%= @path %>',
   currentDirectoryUrl: '<%= files_path(@path) %>',
@@ -206,15 +219,15 @@ $('#show-owner-mode').change(() => {
   table.column('mode:name').visible(visible);
 });
 
-$('#goto-btn').click(() => {
+$('#path-breadcrumbs').on('click', '#goto-btn', function(){
   Swal.fire({
-    title: 'Go To...',
+    title: 'Change Directory',
     input: 'text',
     inputLabel: 'Path',
     inputValue: history.state.currentDirectory,
     showCancelButton: true,
     inputValidator: (value) => {
-      if (! value) {
+      if (! value || ! value.startsWith('/')) {
         // TODO: validate filenames against listing
         return 'Provide an absolute pathname'
       }
@@ -233,7 +246,7 @@ $('#goto-btn').click(() => {
   // FIXME: handle error cases
 
   //FIXME: relative urls too or just absolute?
-  .then((pathname) => goto('https://ondemand-test.osc.edu/pun/dev/dashxdmod/files/fs/' + pathname))
+  .then((pathname) => goto('<%= files_path('/') %>' + pathname))
   .catch(e => {
       if(e != 'cancelled'){
         //FIXME: error
