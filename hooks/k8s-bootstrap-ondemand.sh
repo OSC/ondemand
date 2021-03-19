@@ -33,6 +33,9 @@ kubectl apply -f "$TMPFILE"
 rm -f "$TMPFILE"
 
 if [ "x$IMAGE_PULL_SECRET" != "x" ]; then
-  kubectl create secret generic "$IMAGE_PULL_SECRET" --from-file=.dockerconfigjson="$REGISTRY_DOCKER_CONFIG_JSON" --type=kubernetes.io/dockerconfigjson -n "$NAMESPACE" -o yaml --dry-run=client | kubectl apply -f-
+  kubectl create secret generic "$IMAGE_PULL_SECRET" \
+    --from-file=.dockerconfigjson="$REGISTRY_DOCKER_CONFIG_JSON" \
+    --type=kubernetes.io/dockerconfigjson -n "$NAMESPACE" \
+    -o yaml --dry-run=client | kubectl apply -f-
   kubectl patch serviceaccount default -n "$NAMESPACE" -p "{\"imagePullSecrets\": [{\"name\": \"${IMAGE_PULL_SECRET}\"}]}"
 fi
