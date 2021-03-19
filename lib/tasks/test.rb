@@ -48,6 +48,7 @@ namespace :test do
     sh "shellcheck -x ood-portal-generator/sbin/update_ood_portal"
     sh "shellcheck -x nginx_stage/sbin/nginx_stage"
     sh "shellcheck nginx_stage/sbin/update_nginx_stage"
+    sh "shellcheck hooks/*.sh"
   end
 
   begin

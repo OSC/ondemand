@@ -11,7 +11,8 @@ if [ "x${HOOK_ENV}" = "x" ]; then
   exit 1
 fi
 
-source $HOOK_ENV
+# shellcheck disable=SC1090
+source "$HOOK_ENV"
 
 K8S_USERNAME="${K8S_USERNAME_PREFIX}${ONDEMAND_USERNAME}"
 

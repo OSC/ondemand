@@ -13,23 +13,25 @@ fi
 
 set -e
 
-source $HOOK_ENV
-export $(egrep -v "^#" $HOOK_ENV | cut -d= -f1)
+# shellcheck disable=SC1090
+source "$HOOK_ENV"
+# shellcheck disable=SC2046
+export $(grep -Ev "^#" "$HOOK_ENV" | cut -d= -f1)
 
 export PATH=/usr/local/bin:/bin:$PATH
 export NAMESPACE="${NAMESPACE_PREFIX}${ONDEMAND_USERNAME}"
 
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-YAML_DIR=${BASEDIR}/k8s-bootstrap
+YAML_DIR="${BASEDIR}/k8s-bootstrap"
 
 NAMESPACE_TMPFILE=$(mktemp "/tmp/k8-bootstrap-namespace-${ONDEMAND_USERNAME}.XXXXXX")
-cat ${YAML_DIR}/namespace.yaml | envsubst > "$NAMESPACE_TMPFILE"
+envsubst < "${YAML_DIR}/namespace.yaml" > "$NAMESPACE_TMPFILE"
 
 NETWORK_POLICY_TMPFILE=$(mktemp "/tmp/k8-bootstrap-network-policy-${ONDEMAND_USERNAME}.XXXXXX")
-cat ${YAML_DIR}/network-policy.yaml | envsubst > "$NETWORK_POLICY_TMPFILE"
+envsubst < "${YAML_DIR}/network-policy.yaml" > "$NETWORK_POLICY_TMPFILE"
 
 ROLEBINDING_TMPFILE=$(mktemp "/tmp/k8-bootstrap-rolebinding-${ONDEMAND_USERNAME}.XXXXXX")
-cat ${YAML_DIR}/rolebinding.yaml | envsubst > "$ROLEBINDING_TMPFILE"
+envsubst < "${YAML_DIR}/rolebinding.yaml" > "$ROLEBINDING_TMPFILE"
 
 TMPFILE=$(mktemp "/tmp/k8-ondemand-bootstrap-${ONDEMAND_USERNAME}.XXXXXX")
 cat "$NAMESPACE_TMPFILE" "$NETWORK_POLICY_TMPFILE" "$ROLEBINDING_TMPFILE" > "$TMPFILE"

@@ -13,7 +13,8 @@ fi
 
 set -e
 
-source $HOOK_ENV
+# shellcheck disable=SC1090
+source "$HOOK_ENV"
 
 NAMESPACE="${NAMESPACE_PREFIX}${ONDEMAND_USERNAME}"
 

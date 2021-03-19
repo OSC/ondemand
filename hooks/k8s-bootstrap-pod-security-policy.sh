@@ -13,7 +13,8 @@ fi
 
 set -e
 
-source $HOOK_ENV
+# shellcheck disable=SC1090
+source "$HOOK_ENV"
 
 TMPFILE=$(mktemp "/tmp/k8-ondemand-bootstrap-${ONDEMAND_USERNAME}.XXXXXX")
 PASSWD=$(getent passwd "$ONDEMAND_USERNAME")
