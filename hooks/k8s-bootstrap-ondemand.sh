@@ -23,20 +23,14 @@ export NAMESPACE="${NAMESPACE_PREFIX}${ONDEMAND_USERNAME}"
 
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 YAML_DIR="${BASEDIR}/k8s-bootstrap"
-
-NAMESPACE_TMPFILE=$(mktemp "/tmp/k8-bootstrap-namespace-${ONDEMAND_USERNAME}.XXXXXX")
-envsubst < "${YAML_DIR}/namespace.yaml" > "$NAMESPACE_TMPFILE"
-
-NETWORK_POLICY_TMPFILE=$(mktemp "/tmp/k8-bootstrap-network-policy-${ONDEMAND_USERNAME}.XXXXXX")
-envsubst < "${YAML_DIR}/network-policy.yaml" > "$NETWORK_POLICY_TMPFILE"
-
-ROLEBINDING_TMPFILE=$(mktemp "/tmp/k8-bootstrap-rolebinding-${ONDEMAND_USERNAME}.XXXXXX")
-envsubst < "${YAML_DIR}/rolebinding.yaml" > "$ROLEBINDING_TMPFILE"
-
 TMPFILE=$(mktemp "/tmp/k8-ondemand-bootstrap-${ONDEMAND_USERNAME}.XXXXXX")
-cat "$NAMESPACE_TMPFILE" "$NETWORK_POLICY_TMPFILE" "$ROLEBINDING_TMPFILE" > "$TMPFILE"
+
+envsubst < "${YAML_DIR}/namespace.yaml" > "$TMPFILE"
+envsubst < "${YAML_DIR}/network-policy.yaml" >> "$TMPFILE"
+envsubst < "${YAML_DIR}/rolebinding.yaml" >> "$TMPFILE"
+
 kubectl apply -f "$TMPFILE"
-rm -f "$NAMESPACE_TMPFILE" "$NETWORK_POLICY_TMPFILE" "$ROLEBINDING_TMPFILE" "$TMPFILE"
+rm -f "$TMPFILE"
 
 if [ "x$IMAGE_PULL_SECRET" != "x" ]; then
   kubectl create secret generic "$IMAGE_PULL_SECRET" --from-file=.dockerconfigjson="$REGISTRY_DOCKER_CONFIG_JSON" --type=kubernetes.io/dockerconfigjson -n "$NAMESPACE"
