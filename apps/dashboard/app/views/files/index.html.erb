@@ -5,9 +5,9 @@
   <button id="new-file-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-plus" aria-hidden="true"></i> New File</button>
   <button id="new-dir-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-folder-plus" aria-hidden="true"></i> New Directory</button>
   <button id="upload-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-upload" aria-hidden="true"></i> Upload</button>
-  <label>
-    <input type="checkbox" id="show-owner-mode"> Show Owner/Mode
-  </label>
+  <button id="download-btn" type="button" class="btn btn-primary btn-sm"><i class="fas fa-download" aria-hidden="true"></i> Download</button>
+  <button id="copy-move-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-copy" aria-hidden="true"></i> Copy/Move</button>
+  <button id="delete-btn" type="button" class="btn btn-danger btn-sm"><i class="fas fa-trash" aria-hidden="true"></i> Delete</button>
 </div>
 
 <hr>
@@ -60,18 +60,42 @@
 {{/if}}
 </script>
 
+
+<script id="actions-btn-template" type="text/template">
+<div class="btn-group">
+  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="fa fa-ellipsis-v"></span>
+  </button>
+  <ul class="dropdown-menu">
+    <!-- whats the accessibility rules for href and it acting like a button -->
+    {{#if file}}
+    <li><a href="#" class="view-file" data-row-index="{{row_index}}">View</a></li>
+    <li><a href="#" class="edit-file" data-row-index="{{row_index}}">Edit</a></li>
+    {{/if}}
+    <li><a href="#" class="rename-file" data-row-index="{{row_index}}">Rename</a></li>
+    <!--
+    <li role="separator" class="divider"></li>
+    <li><a href="#" class="download-file" data-row-index="{{row_index}}">Download</a></li>
+    <li role="separator" class="divider"></li>
+    <li><a href="#" class="delete-file" data-row-index="{{row_index}}">Delete</a></li>
+      -->
+  </ul>
+</div>
+</script>
+
+
 </div>
 
 <div class="col-md-9">
 
-  <div>
+  <!-- <div>
     <button type="button" class="btn btn-default btn-sm"><i class="fas fa-eye" aria-hidden="true"></i> View</button>
     <button id="edit-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-edit" aria-hidden="true"></i> Edit</button>
     <button id="rename-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-font" aria-hidden="true"></i> Rename</button>
     <button id="download-btn" type="button" class="btn btn-primary btn-sm"><i class="fas fa-download" aria-hidden="true"></i> Download</button>
     <button id="copy-move-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-copy" aria-hidden="true"></i> Copy/Move</button>
     <button id="delete-btn" type="button" class="btn btn-danger pull-right btn-sm"><i class="fas fa-trash" aria-hidden="true"></i> Delete</button>
-  </div>
+  </div> -->
 
   <%# put search box ABOVE the breadcrumbs %>
   <div style="margin-top: 20px">
@@ -88,6 +112,7 @@
           <th><span class="sr-only">Select</span></th>
           <th>Type</th>
           <th>Name</th>
+          <th><span class="sr-only">Actions</span></th>
           <th>Size</th>
           <th>Modified at</th>
           <th>Owner</th>
@@ -132,6 +157,11 @@ $.fn.dataTable.ext.search.push(
       return $('#show-dotfiles').is(':checked') || ! data[2].startsWith('.');
     }
 )
+
+let actionsBtnTemplate = (function(){
+  let template_str  = $('#actions-btn-template').html();
+  return Handlebars.compile(template_str);
+})();
 
 function update_datatables_status(api){
   // from "function info ( api )" of https://cdn.datatables.net/select/1.3.1/js/dataTables.select.js
@@ -186,7 +216,8 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
       }
     },
     { data: 'type', render: (data, type, row, meta) => data == 'd' ? '<span title="directory" class="fa fa-folder" style="color: gold"><span class="sr-only"> dir</span></span>' : '<span title="file" class="fa fa-file" style="color: lightgrey"><span class="sr-only"> file</span></span>' }, // type
-    { name: 'name', data: 'name', render: (data, type, row, meta) => `<a class="${row.type}" href="${row.url}">${Handlebars.escapeExpression(data)}</a>` }, // name
+    { name: 'name', data: 'name', render: (data, type, row, meta) => `<a class="${row.type} name" href="${row.url}">${Handlebars.escapeExpression(data)}</a>` }, // name
+    { name: 'actions', orderable: false, data: null, render: (data, type, row, meta) => actionsBtnTemplate({ row_index: meta.row, file: row.type != 'd'  }) }, // FIXME: pass row index or something needed for finding item
     { data: 'size' }, // size
     { data: 'modified_at' }, // modified_at
     { name: 'owner', data: 'owner', visible: $('#show-owner-mode').is(':checked') }, // owner
@@ -197,6 +228,7 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
 //FIXME: race cond?
 // prepend show dotfiles checkbox to search box
 $('#directory-contents_filter').prepend('<label style="margin-right: 20px"><input type="checkbox" id="show-dotfiles"> Show Dotfiles</label>')
+$('#directory-contents_filter').prepend('<label style="margin-right: 14px"><input type="checkbox" id="show-owner-mode"> Show Owner/Mode</label>')
 
 table.on('draw.dtSelect.dt select.dtSelect.dt deselect.dtSelect.dt info.dt', function () {
   update_datatables_status(table);
@@ -325,56 +357,6 @@ $('#new-dir-btn').click(() => {
   })
 });
 
-$('#rename-btn').click(() => {
-  let selection = table.rows({selected: true}).data();
-  if(selection.length != 1){
-    Swal.fire('Cannot rename selection', 'Need only 1 item selected to rename', 'error')
-  }
-  else{
-    // if there was some other attribute that just had the name...
-    let filename = $($.parseHTML(selection[0].name)).text();
-
-    Swal.fire({
-      title: 'Rename',
-      input: 'text',
-      inputLabel: 'Filename',
-      inputValue: filename,
-      showCancelButton: true,
-      inputValidator: (value) => {
-        if (! value) {
-          // TODO: validate filenames against listing
-          return 'Provide a filename to rename this to';
-        }
-        else if (value.includes('/') || value.includes('..')){
-         return 'Filename cannot include / or ..';
-        }
-      },
-      showClass: {
-        popup: 'swal2-noanimation',
-        backdrop: 'swal2-noanimation'
-      },
-      hideClass: {
-        popup: '',
-        backdrop: ''
-      }
-    })
-    // FIXME: do not allow / in the filename or ..
-    // error cases
-    .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
-    .then((new_filename) => fetch('<%= files_mv_path %>', {method: 'put', body: JSON.stringify({from: `${history.state.currentDirectory}/${filename}`, to: `${history.state.currentDirectory}/${new_filename}`})}))
-    //FIXME: check for request failure
-    .then(() => reloadTable())
-    .catch(e => {
-        if(e != 'cancelled'){
-          //FIXME: error
-          console.error(e);
-        }
-    })
-  }
-});
-
-// refactor then replace...
-
 $('#download-btn').click(() => {
   let selection = table.rows({selected: true}).data();
   if(selection.length != 1){
@@ -402,21 +384,7 @@ $('#download-btn').click(() => {
   }
 });
 
-$('#edit-btn').click(() => {
-  let selection = table.rows({selected: true}).data();
-  if(selection.length != 1){
-  // FIXME: modals here not great user experience
-  // better to disable the button - react
 
-    Swal.fire('Select only 1 file to edit', 'You have selected none or multiple rows', 'warning')
-  }
-  else if(selection[0].type == "d"){
-    Swal.fire('Select only 1 file to edit', 'You have selected a directory', 'warning')
-  }
-  else {
-    window.open(selection[0].edit_url);
-  }
-});
 
 //TODO: uppy locales supported - pull from server side locales
 //TODO: accessibility analysis of solution
@@ -647,6 +615,85 @@ function clickEventIsSignificant(event) {
     || event.shiftKey
   )
 }
+
+// this would be perfect for stimulus FYI
+$('#directory-contents tbody').on('click', '.view-file', function(e){
+  e.preventDefault();
+
+  let row = table.row(this.dataset.rowIndex).data();
+
+  //TODO: view either opens file in new directory OR opens in viewer
+  // the more we shift this to the API the better!
+  // including URL templates
+
+});
+
+$('#directory-contents tbody').on('click', '.edit-file', function(e){
+  e.preventDefault();
+
+  let row = table.row(this.dataset.rowIndex).data();
+  window.open(row.edit_url);
+});
+
+// FIXME: i broke rename :-P
+$('#directory-contents tbody').on('click', '.rename-file', function(e){
+  e.preventDefault();
+
+  let row = table.row(this.dataset.rowIndex).data();
+
+  // if there was some other attribute that just had the name...
+  let filename = $($.parseHTML(row.name)).text();
+
+  Swal.fire({
+    title: 'Rename',
+    input: 'text',
+    inputLabel: 'Filename',
+    inputValue: filename,
+    showCancelButton: true,
+    inputValidator: (value) => {
+      if (! value) {
+        // TODO: validate filenames against listing
+        return 'Provide a filename to rename this to';
+      }
+      else if (value.includes('/') || value.includes('..')){
+       return 'Filename cannot include / or ..';
+      }
+    },
+    showClass: {
+      popup: 'swal2-noanimation',
+      backdrop: 'swal2-noanimation'
+    },
+    hideClass: {
+      popup: '',
+      backdrop: ''
+    }
+  })
+  // FIXME: do not allow / in the filename or ..
+  // error cases
+  .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
+  .then((new_filename) => fetch('<%= files_mv_path %>', {method: 'put', body: JSON.stringify({from: `${history.state.currentDirectory}/${filename}`, to: `${history.state.currentDirectory}/${new_filename}`})}))
+  //FIXME: check for request failure
+  .then(() => reloadTable())
+  .catch(e => {
+      if(e != 'cancelled'){
+        //FIXME: error
+        console.error(e);
+      }
+  })
+});
+
+//TODO:
+// $('#directory-contents tbody').on('click', '.download-file', function(){
+//   console.log(this);
+//   //
+// });
+//
+// $('#directory-contents tbody').on('click', '.delete-file', function(){
+//   //
+//   console.log(this);
+// });
+
+
 
 $('#directory-contents tbody, #path-breadcrumbs, #favorites').on('click', 'a.d', function(){
   if(clickEventIsSignificant(event)){
