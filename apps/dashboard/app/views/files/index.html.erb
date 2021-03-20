@@ -194,16 +194,15 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
     // don't trigger select checkbox column as select
     // if you need to omit more columns, use a "selectable" class on the columns you want to support selection
     selector: 'td:not(:first-child)'
-    //TODO: select should work on only static (non button fields)
   },
   // https://datatables.net/reference/option/dom
   // dom: '', dataTables_info nowrap
   //
   // put breadcrmbs below filter!!!
   dom: "<'row'<'col-sm-12'f>>" + // normally <'row'<'col-sm-6'l><'col-sm-6'f>> but we disabled pagination so l is not needed (dropdown for selecting # rows)
-       "<'row'<'col-sm-12'<'datatables-status'>>>"+
+       "<'row'<'col-sm-12'<'dt-status-bar'<'datatables-status'><'transfers-status'>>>>"+
        "<'row'<'col-sm-12'tr>>" +
-       "<'row'<'col-sm-12'<'datatables-status'>>>", // normally this is <'row'<'col-sm-5'i><'col-sm-7'p>> but we disabled pagination so have info take whole row
+       "<'row'<'col-sm-12'<'dt-status-bar'<'datatables-status'><'transfers-status'>>>>", // normally this is <'row'<'col-sm-5'i><'col-sm-7'p>> but we disabled pagination so have info take whole row
   columns: [
     {
       data: null,
