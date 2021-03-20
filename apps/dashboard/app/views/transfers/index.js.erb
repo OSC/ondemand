@@ -1,4 +1,4 @@
-$('#transfers').html('<%=j render partial: 'transfers/transfer', collection: sort_by_created_at(@transfers), as: :transfer %>');
+$('.transfers-status').html('<%=j render partial: 'transfers/transfer', collection: sort_by_created_at(@transfers), as: :transfer %>');
 
 <% if @table_needs_reloaded %>
 reloadTable();

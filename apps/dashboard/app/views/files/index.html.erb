@@ -22,10 +22,6 @@
   <% end %>
 </ul>
 
-<ul id="transfers">
-  <%= render partial: 'transfers/transfer', collection: sort_by_created_at(@transfers), as: :transfer %>
-</ul>
-
 <div id="clipboard">
   <!--
   <div class="well">
@@ -168,8 +164,15 @@ function update_datatables_status(api){
   let rows    = api.rows( { selected: true } ).flatten().length,
       page_info = api.page.info(),
       msg = page_info.recordsTotal == page_info.recordsDisplay ? `Showing ${page_info.recordsDisplay} rows` : `Showing ${page_info.recordsDisplay} of ${page_info.recordsTotal} rows`;
-  $('.datatables-status').html(`${msg} - ${rows} rows selected - ` + '<span class="text-info"><b><i class="fas fa-spinner fa-spin"></i> 26% copy files</b></span>');
+
+  // TODO: replace this with a single react widget that:
+  // a) saves it the props to state
+  // b) during update of props, set to state (and ignore undefined vs [] for transfers)
+  //
+  // then when setting a value you can know when it changed from running to completed for example and know to show that for only a short time
+  $('.datatables-status').html(`${msg} - ${rows} rows selected`);
 }
+
 
 var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, xhr ) {
   // new ajax request for new data so update date/time
@@ -199,6 +202,7 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
   // dom: '', dataTables_info nowrap
   //
   // put breadcrmbs below filter!!!
+  initComplete: () => $('.transfers-status').html('<%=j render partial: 'transfers/transfer', collection: sort_by_created_at(@transfers), as: :transfer %>'),
   dom: "<'row'<'col-sm-12'f>>" + // normally <'row'<'col-sm-6'l><'col-sm-6'f>> but we disabled pagination so l is not needed (dropdown for selecting # rows)
        "<'row'<'col-sm-12'<'dt-status-bar'<'datatables-status'><'transfers-status'>>>>"+
        "<'row'<'col-sm-12'tr>>" +

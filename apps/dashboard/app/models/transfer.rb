@@ -28,14 +28,14 @@ class Transfer
     end
   end
 
-  def bootstrap_label_class
+  def bootstrap_class
     # TODO: if error occurs, need to display error label! (and pop error alert above page)
     if status&.completed?
-      'label-success'
+      'success'
     elsif status&.running?
-      'label-info'
+      'info'
     else
-      'label-default'
+      'default'
     end
   end
 
