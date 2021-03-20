@@ -96,8 +96,6 @@
   <%# put search box ABOVE the breadcrumbs %>
   <div style="margin-top: 20px">
 
-    <div id="search_box" class="text-right"></div>
-
     <ol id="path-breadcrumbs" class="breadcrumb">
       <%= render partial: 'breadcrumb', collection: @path.descend, as: :file, locals: { file_count: @path.descend.count, full_path: @path } %>
     </ol>
@@ -188,7 +186,7 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
   rowId: 'id',
   paging:false,
   //FIXME: switch with flexbox; calc() does not work here (as setting inline value calc to max height doesn't work either in Firefox)
-  scrollY: '65vh',
+  // scrollY: '65vh',
   scrollCollapse: true,
   select: {
     style: 'os',
@@ -748,6 +746,8 @@ function doneLoading(){
   Swal.close();
 }
 
+//FIXME: if getting JS, JS crafted server side can access globals clientside
+// so we don't need to determine serverside what changed
 var updateViewForTransfers = _.throttle(function(){
   //FIXME: error handling when this fails
   $.ajax({
