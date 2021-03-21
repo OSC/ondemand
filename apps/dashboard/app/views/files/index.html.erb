@@ -672,7 +672,16 @@ $('#directory-contents tbody').on('click', '.rename-file', function(e){
   // FIXME: do not allow / in the filename or ..
   // error cases
   .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
-  .then((new_filename) => fetch('<%= files_mv_path %>', {method: 'put', body: JSON.stringify({from: `${history.state.currentDirectory}/${filename}`, to: `${history.state.currentDirectory}/${new_filename}`})}))
+  .then((new_filename) => {
+    let payload = {
+      command: 'mv',
+      files: {}
+    };
+    payload.files[`${history.state.currentDirectory}/${filename}`] = `${history.state.currentDirectory}/${new_filename}`;
+    console.log(payload);
+
+    return fetch('<%= files_mv_path %>', {method: 'put', body: JSON.stringify(payload)});
+  })
   //FIXME: check for request failure
   .then(() => reloadTable())
   .catch(e => {

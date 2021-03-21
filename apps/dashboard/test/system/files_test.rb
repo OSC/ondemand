@@ -52,6 +52,25 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test "rename file" do
+    Dir.mktmpdir do |dir|
+      FileUtils.touch File.join(dir, 'foo.txt')
+
+      visit files_url(dir)
+      tr = find('a', exact_text: 'foo.txt').ancestor('tr')
+      tr.find('button.dropdown-toggle').click
+      tr.find('.rename-file').click
+
+      # rename dialog input
+      find('#swal2-input').set('bar.txt')
+      find('.swal2-confirm').click
+
+
+      assert_selector 'tbody a', exact_text: 'bar.txt', wait: 10
+      assert File.file? File.join(dir, 'bar.txt')
+    end
+  end
+
   test "moving files" do
     Dir.mktmpdir do |dir|
       # copy to dest/app

@@ -10,9 +10,12 @@ class TransfersController < ApplicationController
   def index
     @transfers = Transfer.transfers
 
-    #FIXME: refactor
-    # determine whether or not we need to reload the table view
-    # if a transfer is completed AND to parent dir == current_directory
+    # FIXME: this can be addressed by react based transfers view
+    # or otherwise clientside
+    #
+    # or would just be handled by SSE events if we could maintain this
+    # or actioncable for server events (like these directories CHANGED)
+    #
     @table_needs_reloaded = @transfers.any? {|t|
       # FIXME: better handled by a Transfer model
 
