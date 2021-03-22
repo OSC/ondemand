@@ -123,6 +123,8 @@
 
 <%# FIXME: problem with not using tables %>
 <script>
+const csrf_token = document.querySelector('meta[name="csrf-token"]').content;
+
 // this uses event delegation so it captures events even if dom element is recreated
 var clipboardjs = new ClipboardJS('#copy-path');
 clipboardjs.on('success', function(e) {
@@ -505,7 +507,7 @@ function getFilesAndDirectoriesFromDirectory (directoryReader, oldEntries, logDr
     uppy.reset();
   }
 
-  var csrf_token = document.getElementsByName('csrf-token')[0].content
+
   window.uppy = Uppy.Core();
   uppy.use(EmptyDirCreator);
   uppy.use(Uppy.Dashboard, {
@@ -681,7 +683,7 @@ $('#directory-contents tbody').on('click', '.rename-file', function(e){
     console.log(payload);
 
     //FIXME: format: "js" like the other transfers?
-    return fetch('<%= transfers_path(format: "json") %>', {method: 'post', body: JSON.stringify(payload)});
+    return fetch('<%= transfers_path(format: "json") %>', {method: 'post', body: JSON.stringify(payload), headers: { 'X-CSRF-Token': csrf_token }});
   })
   //FIXME: check for request failure
   .then(() => reloadTable())
@@ -816,7 +818,8 @@ function updateViewForClipboard(){
           body: JSON.stringify({
             command: 'cp',
             files: files
-          })
+          }),
+          headers: { 'X-CSRF-Token': csrf_token }
         })
         //TODO: if(response.status != 200){ fail!
         .then(response => response.text())
@@ -856,7 +859,8 @@ function updateViewForClipboard(){
           body: JSON.stringify({
             command: 'mv',
             files: files
-          })
+          }),
+          headers: { 'X-CSRF-Token': csrf_token }
         })
         //TODO: if(response.status != 200){ fail!
         .then(response => response.text())
@@ -907,7 +911,8 @@ $('#delete-btn').click(() => {
           body: JSON.stringify({
             command: 'rm',
             files: files.map(f => [history.state.currentDirectory, f].join('/'))
-          })
+          }),
+          headers: { 'X-CSRF-Token': csrf_token }
       });
     }
     else{

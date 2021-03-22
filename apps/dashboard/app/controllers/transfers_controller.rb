@@ -1,6 +1,4 @@
 class TransfersController < ApplicationController
-  skip_before_action :verify_authenticity_token
-
   # before_action only: [:show, :destroy] do
   #   request.format = :json
   # end
