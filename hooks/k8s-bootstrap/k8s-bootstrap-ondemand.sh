@@ -22,7 +22,7 @@ export PATH=/usr/local/bin:/bin:$PATH
 export NAMESPACE="${NAMESPACE_PREFIX}${ONDEMAND_USERNAME}"
 
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-YAML_DIR="${BASEDIR}/k8s-bootstrap"
+YAML_DIR="${BASEDIR}/yaml"
 TMPFILE=$(mktemp "/tmp/k8-ondemand-bootstrap-${ONDEMAND_USERNAME}.XXXXXX")
 
 envsubst < "${YAML_DIR}/namespace.yaml" > "$TMPFILE"

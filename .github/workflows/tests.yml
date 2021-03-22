@@ -75,7 +75,7 @@ jobs:
       - name: Create kind cluster
         uses: container-tools/kind-action@v1
       - name: Apply ondemand RBAC
-        run: kubectl apply -f hooks/ondemand.yaml
+        run: kubectl apply -f hooks/k8s-bootstrap/ondemand.yaml
       - name: Get ondemand token
         id: token
         run: |
@@ -89,4 +89,4 @@ jobs:
           kubectl config use-context kind-kind
           kubectl cluster-info
       - name: Test k8s-bootstrap
-        run: /bin/bash hooks/k8s-bootstrap-ondemand.sh test hooks/hook.env.example
+        run: /bin/bash hooks/k8s-bootstrap/k8s-bootstrap-ondemand.sh test hooks/hook.env.example
