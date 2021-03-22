@@ -1,4 +1,6 @@
 class TransfersController < ApplicationController
+  skip_before_action :verify_authenticity_token
+
   # before_action only: [:show, :destroy] do
   #   request.format = :json
   # end
@@ -40,6 +42,35 @@ class TransfersController < ApplicationController
       render json: @transfer
     else
       render json: {}, status: 404
+    end
+  end
+
+  def create
+    body_params = JSON.parse(request.body.read).symbolize_keys
+    transfer = Transfer.build(action: body_params[:command], files: body_params[:files])
+    if transfer.synchronous?
+      transfer.perform
+
+      respond_to do |format|
+        format.json {
+          render :body => "#{transfer.action} completed"
+        }
+        format.js {
+          render :body => "reloadTable();"
+        }
+      end
+    else
+      transfer.perform_later
+      @transfers = Transfer.transfers
+
+      respond_to do |format|
+        format.json {
+          render :body => "#{transfer.action} started"
+        }
+        format.js {
+          render "transfers/index"
+        }
+      end
     end
   end
 

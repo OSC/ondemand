@@ -26,6 +26,17 @@ class Transfer
     def find(id)
       transfers.find {|t| t.id == id }
     end
+
+    def build(action:, files:)
+      if files.kind_of?(Array)
+        # rm action will want to provide an array of files
+        #
+        # convert [a1, a2, a3] to {a1 => nil, a2 => nil, a3 => nil}
+        files = Hash[files.map {|f| [f, nil]}]
+      end
+
+      Transfer.new(action: action, files: files)
+    end
   end
 
   def bootstrap_class
@@ -252,11 +263,11 @@ class Transfer
   end
 
   def from
-    File.dirname(files.keys.first)
+    File.dirname(files.keys.first) if files.keys.first
   end
 
   def to
-    File.dirname(files.values.first)
+    File.dirname(files.values.first) if files.values.first
   end
 
   def synchronous?
@@ -264,6 +275,6 @@ class Transfer
   end
 
   def mv_to_same_device?
-    action == "mv" && Files.stat(from)[:dev] == Files.stat(File.dirname(to))[:dev] if from && to
+    action == "mv" && from && to && Files.stat(from)[:dev] == Files.stat(File.dirname(to))[:dev]
   end
 end

@@ -4,13 +4,11 @@ Rails.application.routes.draw do
 
   get "files/fs(/*filepath)" => "files#fs", :defaults => { :format => 'html', :filepath => '/' }, :format => false, :constraints => { :filepath => /.+/ }, as: :files
   put "files/fs/*filepath" => "files#update", :format => false, :defaults => { :format => 'text' }, :constraints => { :filepath => /.+/ }
-  put "files/mv" => "files#mv", :defaults => { :format => 'json' }
-  put "files/cp" => "files#cp", :defaults => { :format => 'json' }
-  delete "files/rm" => "files#rm", :defaults => { :format => 'json' }
+
   put "files/zip/*filepath" => "files#zip", :format => false, :defaults => { :format => 'json' }, :constraints => { :filepath => /.+/ }
   post "files/upload"
 
-  resources :transfers, only: [:index, :show, :destroy]
+  resources :transfers, only: [:index, :show, :create, :destroy]
 
   namespace :batch_connect do
     resources :sessions, only: [:index, :destroy]
