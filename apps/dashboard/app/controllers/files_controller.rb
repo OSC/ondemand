@@ -13,9 +13,10 @@ class FilesController < ApplicationController
           @transfers = Transfer.transfers
           @files = Files.new.ls(@path.to_s)
           render :index
-        else
-          #FIXME: type, inline
+        elsif params[:download]
           send_file @path
+        else
+          send_file @path, disposition: 'inline'
         end
       }
       # TODO: generate files listing below! then we have it...
