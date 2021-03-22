@@ -1,8 +1,4 @@
 class FilesController < ApplicationController
-  # FIXME:
-  skip_before_action :verify_authenticity_token
-
-  # TODO: how do we support legacy ability to control access to files app through file permissions?
 
   def fs
     # FIXME: force format for accept header
@@ -41,18 +37,6 @@ class FilesController < ApplicationController
   end
 
   # put - create or update
-  # an empty put wants to create or touch a file
-  # Content-Length: 0
-  #
-  # a put with contents wants to do something else
-  # Content-Type: application/x-www-form-urlencoded; charset=UTF-8
-  #
-  # request payload: the content of the file
-  #
-  # but an empty payload might be
-  #
-  # so their new file request actually creates a file of 0 size instead of touching a file
-  #
   # FIXME: separate from touching a file (for new) vs saving content of 0 to a file
   def update
     # 1.find the path

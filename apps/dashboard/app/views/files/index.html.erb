@@ -314,7 +314,7 @@ $('#new-file-btn').click(() => {
   // FIXME: do not allow / in the filename or ..
   .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
   // FIXME: handle error cases
-  .then((filename) => fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}`, {method: 'put'}))
+  .then((filename) => fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token }}))
   // TODO: parse JSON response to get id of file created
   .then(() => reloadTable())
   .catch(e => {
@@ -349,7 +349,7 @@ $('#new-dir-btn').click(() => {
   // FIXME: do not allow / in the filename or ..
   // error cases
   .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
-  .then((filename) => fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put'}))
+  .then((filename) => fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token }}))
   // TODO: parse JSON response to get id of file created
   .then(() => reloadTable())
   .catch(e => {
