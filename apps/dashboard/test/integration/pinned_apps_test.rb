@@ -286,6 +286,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
       'sys/bc_paraview',
       'sys/pseudofun',
     ])
+    Configuration.stubs(:pinned_apps_group_by).returns("original_category")
 
     env = {}
 
@@ -294,7 +295,51 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     end
 
     assert_select "h4[class='apps-section-header-blue']", 2
+    assert_select "a.app-card", 3
     assert_equal "Gateway Apps", css_select("h4[class='apps-section-header-blue']")[0].text
     assert_equal "Interactive Apps", css_select("h4[class='apps-section-header-blue']")[1].text
+  end
+
+  test "groups the apps by sub-categories" do
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
+    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
+    Configuration.stubs(:pinned_apps).returns([
+      'sys/bc_jupyter',
+      'sys/bc_paraview',
+      'sys/pseudofun',
+    ])
+    Configuration.stubs(:pinned_apps_group_by).returns("original_subcategory")
+
+    env = {}
+
+    with_modified_env(env) do
+      get '/'
+    end
+
+    assert_select "h4[class='apps-section-header-blue']", 2
+    assert_select "a.app-card", 3
+    assert_equal "Apps", css_select("h4[class='apps-section-header-blue']")[0].text
+    assert_equal "Biomedical Informatics", css_select("h4[class='apps-section-header-blue']")[1].text
+  end
+
+  test "still shows ungroupable apps" do
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
+    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
+    Configuration.stubs(:pinned_apps).returns([
+      'sys/bc_jupyter',
+      'sys/bc_paraview',
+      'sys/pseudofun',
+    ])
+    Configuration.stubs(:pinned_apps_group_by).returns("some_unknown_field")
+
+    env = {}
+
+    with_modified_env(env) do
+      get '/'
+    end
+
+    assert_select "h4[class='apps-section-header-blue']", 1
+    assert_select "a.app-card", 3
+    assert_equal I18n.t('dashboard.not_grouped'), css_select("h4[class='apps-section-header-blue']")[0].text
   end
 end

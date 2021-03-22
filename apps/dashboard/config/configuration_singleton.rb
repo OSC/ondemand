@@ -278,6 +278,16 @@ end
     config.fetch(:pinned_apps_menu_length, 6)
   end
 
+  # What to group pinned apps by
+  def pinned_apps_group_by
+    group_by = config.fetch(:pinned_apps_group_by, "")
+    if group_by == 'category' || group_by == 'subcategory'
+      "original_#{group_by}"
+    else
+      group_by
+    end
+  end
+
   private
 
   def config

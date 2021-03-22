@@ -45,6 +45,7 @@ class OodAppGroupTest < ActiveSupport::TestCase
     assert_equal nav_group_titles, groups2.map(&:title)
   end
 
+
   test "group by subcategory" do
     apps = []
     apps.concat(build_apps("Desktops", "IHPC", ["Abaqus/CAE", "ANSYS Workbench", "COMSOL", "Oakley Desktop", "Ruby Desktop"] ))
@@ -83,4 +84,21 @@ class OodAppGroupTest < ActiveSupport::TestCase
     apps.concat(build_apps("Desktops", "VDI", ["Oakley VDI", "Ruby VDI", "Paraview"] ))
     assert_equal 6, OodAppGroup.groups_for(apps: apps, nav_limit: 6).first.nav_limit
   end
+
+  test "ungroupable apps" do
+    apps = []
+    apps.concat(build_apps("Desktops", "IHPC", ["Abaqus/CAE", "ANSYS Workbench", "COMSOL", "Oakley Desktop", "Ruby Desktop"] ))
+    apps.concat(build_apps("Desktops", "VDI", ["Oakley VDI", "Ruby VDI", "Paraview"] ))
+    apps.concat(build_apps("Clusters", "", ["Shell Access", "System Status"]))
+    apps.concat(build_apps("Jobs", "", ["My Jobs", "Active Jobs"] ))
+    apps.concat(build_apps("Files", "", ["Files"] ))
+    apps.concat(build_apps("OSC WIAG", "", ["Container Fill Sim"] ))
+    apps.shuffle!
+
+    groups = OodAppGroup.groups_for(apps: apps, group_by: :user_defined_field)
+    assert_equal 1, groups.size
+    assert_equal 14, groups.first.apps.size
+    assert_equal I18n.t('dashboard.not_grouped'), groups.first.title
+  end
+
 end

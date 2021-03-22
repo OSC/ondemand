@@ -42,9 +42,9 @@ class OodAppGroup
   # specified by 'group_by', sorting both groups and apps arrays by title
   def self.groups_for(apps: [], group_by: :category, nav_limit: nil)
     apps.group_by { |app|
-      app.send(group_by)
+      app.try(group_by)
     }.map { |k,v|
-      OodAppGroup.new(title: k, apps: v.sort_by { |a| a.title }, nav_limit: nav_limit)
+      OodAppGroup.new(title: k || I18n.t('dashboard.not_grouped'), apps: v.sort_by { |a| a.title }, nav_limit: nav_limit)
     }.sort_by { |g| g.title }
   end
 
