@@ -711,7 +711,7 @@ $('#directory-contents tbody, #path-breadcrumbs, #favorites').on('click', 'a.d',
     event.cancelBubble = true;
     if(event.stopPropagation) event.stopPropagation();
 
-    goto(event.target.getAttribute("href"));
+    goto(this.getAttribute("href"));
   }
 });
 
