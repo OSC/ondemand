@@ -33,9 +33,8 @@ class Files
       name: path.basename,
       size: s.directory? ? 'dir' : s.size,
       directory: s.directory?,
-      date: s.mtime.strftime("%d.%m.%Y"),
+      date: s.mtime.utc.iso8601,
       owner: username(s.uid),
-      #todo: this value converted here or server side
       mode: s.mode,
       dev: s.dev
     }
