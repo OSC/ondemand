@@ -4,37 +4,57 @@ class FilesController < ApplicationController
     # FIXME: force format for accept header
     request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
 
-
     @path = Pathname.new("/" + params[:filepath].chomp("/"))
+    if @path.directory?
+      show_directory
+    elsif @path.file?
+      show_file
+    else
+      # error handling
+    end
+  end
+
+  def show_directory
+    @transfers = Transfer.transfers
+    @files = Files.new.ls(@path.to_s)
 
     respond_to do |format|
-      format.html { # show.html.erb
-        if @path.directory?
-          @transfers = Transfer.transfers
-          @files = Files.new.ls(@path.to_s)
-          render :index
-        elsif params[:download]
-          send_file @path
-        else
-          send_file @path, disposition: 'inline'
-        end
-      }
-      # TODO: generate files listing below! then we have it...
-      # then we can add the other things till the backend is re-implemented
-      format.json {
-        #FIXME:
-        #the current API does a GET on the file to get the file contents AND
-        #a GET on the directory to get the JSON for the directory
-        if @path.directory?
-          @transfers = Transfer.transfers
-          @files = Files.new.ls(@path.to_s)
-          render :index
-        else
-          #FIXME: type, inline
-          send_file @path
-        end
-      }
+      format.html { render :index }
+      format.json { render :index }
     end
+    # rescue exceptions
+  end
+
+  def show_file
+    #FIXME: this is not RESTFUL (you ask for JSON or HTML or any other representation, you get file contents)
+    # but there is no clear solution that also enables using SAME URI INTERFACE for both directories and files
+    # which is what a file system does with file system paths
+    #
+    # solution could be to use different URLs, one to get different representations of a single inode
+    # (i.e. SHOW the file or directory)
+    # and the other to get the inode children and other information (i.e. INDEX for the directory)
+    #
+    # files/index/(/*dirpath)
+    # files/show/(/*filepath)
+    #
+    # the issue is "goto" where you place in the path to a file instead of a directory
+    # the solution is files/index/(/*dirpath) could show the parent directory (and highlight the file)
+    # or redirect the user to the parent directory (and highlight the file)
+    #
+    # another problem here is when we do a listing and want to generate a URL for
+    # EACH file (a directory OR a file) => here we have to do control flow (if directory, link to index,
+    # if file, link to file)
+    #
+    # but we do have control flow client side - to determine what to do with a directory or a file
+    # so this would shift that to the server side (or have it serverside and client side)
+
+    if params[:download]
+      send_file @path
+    else
+      send_file @path, disposition: 'inline'
+    end
+
+    # rescue exceptions
   end
 
   # put - create or update
@@ -72,6 +92,16 @@ class FilesController < ApplicationController
 
   # POST
   def upload
+    # TODO: this can be merged with the update for creating a new directory or new file
+    # using create
+    #
+    # if params["file"] => a file upload
+    # else if
+    # else bad!
+    #
+    # that way creating a new directory can do nothing, creating a new file will just touch the file
+    # instead of overwriting it (or reject as "file already exists")
+
     # FIXME: uppy uses "null" :-P
     #
     # File.join '/a/b', '/c' => '/a/b/c'
