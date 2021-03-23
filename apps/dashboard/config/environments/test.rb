@@ -26,7 +26,10 @@ Rails.application.configure do
   config.action_dispatch.show_exceptions = false
 
   # Disable request forgery protection in test environment.
-  config.action_controller.allow_forgery_protection = false
+  # FIXME: normally this is disabled, we enable it because our code actually assumes it will
+  # be enabled (and thus system tests fail when it is disabled)
+  #
+  # config.action_controller.allow_forgery_protection = false
   config.action_mailer.perform_caching = false
 
   # Tell Action Mailer not to deliver emails to the real world.
@@ -39,4 +42,7 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+  #
+  config.active_job.queue_adapter = ActiveJob::QueueAdapters::AsyncAdapter.new \
+    min_threads: 1, max_threads: 1
 end
