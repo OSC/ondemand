@@ -1,6 +1,15 @@
 require "authz/app_developer_constraint"
 
 Rails.application.routes.draw do
+  constraints filepath: /.+/ do
+    get "files/fs(/*filepath)" => "files#fs", :defaults => { :format => 'html', :filepath => '/' }, :format => false, as: :files
+    put "files/fs/*filepath" => "files#update", :format => false, :defaults => { :format => 'text' }
+    put "files/zip/*filepath" => "files#zip", :format => false, :defaults => { :format => 'json' }
+  end
+  post "files/upload"
+
+  resources :transfers, only: [:index, :show, :create, :destroy]
+
   namespace :batch_connect do
     resources :sessions, only: [:index, :destroy]
     scope "*token", constraints: { token: /((usr\/[^\/]+)|dev|sys)\/[^\/]+(\/[^\/]+)?/ } do

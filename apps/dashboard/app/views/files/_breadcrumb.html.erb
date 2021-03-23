@@ -1,0 +1,11 @@
+<% if file_counter == 0 %>
+<li><a href="<%= files_path(full_path.parent) %>" style="margin-right: 20px;" class="d btn btn-default btn-xs"><span class="fa fa-arrow-up"></span></a></li>
+<% end %>
+<li>
+  <%= link_to file.basename, files_path(file), class: 'd' %>
+</li>
+<% if file_counter == (file_count - 1) %>
+<li><button id="goto-btn" type="button" class="btn btn-default btn-xs"><i class="fas fa-edit" aria-hidden="true"></i> Change directory</button></li>
+
+<li class="pull-right"><button id="copy-path" class="btn btn-default btn-xs pull-right" data-clipboard-text="<%= file.to_s %>"><span class="fa fa-copy"></span> Copy path</button></li>
+<% end %>
