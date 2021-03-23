@@ -71,7 +71,7 @@
     </nav>
   </header>
 
-  <div class="container-md content mt-4" role="main">
+  <div class="<%= @layout_container_class || 'container-md' %> content mt-4" role="main">
 
     <% @announcements.select(&:valid?).each do |announcement| %>
       <div class="alert alert-<%= announcement.type %> announcement" role="alert">

@@ -15,6 +15,8 @@ class FilesController < ApplicationController
   end
 
   def show_directory
+    @layout_container_class = "container-fluid"
+
     @transfers = Transfer.transfers
     @files = Files.new.ls(@path.to_s)
 
