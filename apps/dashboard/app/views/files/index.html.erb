@@ -212,7 +212,16 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
     { data: 'size' }, // size
     { data: 'modified_at' }, // modified_at
     { name: 'owner', data: 'owner', visible: $('#show-owner-mode').is(':checked') }, // owner
-    { name: 'mode', data: 'mode', visible: $('#show-owner-mode').is(':checked') } // mode
+    { name: 'mode', data: 'mode', visible: $('#show-owner-mode').is(':checked'), render: (data, type, row, meta) => {
+
+      // mode after base conversion is a string such as "100755"
+      let mode = data.toString(8)
+
+      // only care about the last 3 bits (755)
+      let chmodDisplay = mode.substring(mode.length - 3)
+
+      return chmodDisplay
+    }} // mode
   ]
 });
 
