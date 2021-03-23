@@ -1,12 +1,12 @@
 <div class="text-right">
 
   <%# FIXME: open in terminal should be dropdown of all clusters (with default) %>
-  <button type="button" class="btn btn-default btn-sm"><i class="fas fa-terminal" aria-hidden="true"></i> Open in Terminal</button>
-  <button id="new-file-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-plus" aria-hidden="true"></i> New File</button>
-  <button id="new-dir-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-folder-plus" aria-hidden="true"></i> New Directory</button>
-  <button id="upload-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-upload" aria-hidden="true"></i> Upload</button>
+  <button type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-terminal" aria-hidden="true"></i> Open in Terminal</button>
+  <button id="new-file-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-plus" aria-hidden="true"></i> New File</button>
+  <button id="new-dir-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-folder-plus" aria-hidden="true"></i> New Directory</button>
+  <button id="upload-btn" type="button" class="btn btn-primary btn-sm"><i class="fas fa-upload" aria-hidden="true"></i> Upload</button>
   <button id="download-btn" type="button" class="btn btn-primary btn-sm"><i class="fas fa-download" aria-hidden="true"></i> Download</button>
-  <button id="copy-move-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-copy" aria-hidden="true"></i> Copy/Move</button>
+  <button id="copy-move-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-copy" aria-hidden="true"></i> Copy/Move</button>
   <button id="delete-btn" type="button" class="btn btn-danger btn-sm"><i class="fas fa-trash" aria-hidden="true"></i> Delete</button>
 </div>
 
@@ -14,61 +14,59 @@
 
 <div class="row">
 <div class="col-md-3">
-<%# FIXME: need a better solution instead of favorite links tied to an app? duplicates code in OodApp#links %>
-<ul id="favorites" class="nav nav-pills nav-stacked well well-sm" style="max-height: 400px; overflow: scroll">
-  <li role="presentation"><%= link_to 'Home Directory', files_path(Dir.home), style: "padding-top: 5px;padding-bottom: 5px;", class: "d" %></li>
-  <% OodFilesApp.new.favorite_paths.each do |p| %>
-    <li><%= link_to p.title || p.path.to_s, files_path(p.path.to_s), style: "padding-top: 5px;padding-bottom: 5px;", class: "d" %>
-  <% end %>
-</ul>
-
-<div id="clipboard">
-  <!--
-  <div class="well">
-    <button id="clipboard-clear" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    <p style="margin-top: 30px">Copy or move the files below to the current directory:</p>
-    <ul class="list-group">
-      <li class="list-group-item"><span title="directory" class="fa fa-folder" style="color: gold"></span> openhouse</li>
-      <li class="list-group-item"><span title="directory" class="fa fa-file" style="color: lightgrey"></span> ts180.png</li>
-    </ul>
-    <button id="clipboard-copy-to-dir" class="btn btn-primary">Copy</button>  <button id="clipboard-move-to-dir" class="btn btn-danger pull-right">Move</button>
+  <div id="clipboard">
   </div>
--->
-</div>
+
+  <%# FIXME: better solution esp to handle too many links (progressive disclosure?) + title+path for long names %>
+  <ul id="favorites" class="nav nav-pills flex-column">
+    <li role="presentation" class="nav-item"><%= link_to 'Home Directory', files_path(Dir.home), class: "nav-link d bg-light" %></li>
+    <% OodFilesApp.new.favorite_paths.each do |p| %>
+      <li class="nav-item bg-light"><%= link_to p.title || p.path.to_s, files_path(p.path.to_s), class: "nav-link d" %>
+    <% end %>
+  </ul>
+
 
 
 <script id="clipboard-template" type="text/template">
 {{#if files}}
-  <div class="well">
+<div class="card mb-3">
+  <div class="card-body">
     <button id="clipboard-clear" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
     <p style="margin-top: 30px">Copy or move the files below from <code>{{from}}</code>to the current directory:</p>
-    <ul class="list-group">
-      {{#each files}}
-        {{#if directory}}
-          <li class="list-group-item"><span title="directory" class="fa fa-folder" style="color: gold"></span> {{name}}</li>
-        {{else}}
-          <li class="list-group-item"><span title="file" class="fa fa-file" style="color: lightgrey"></span> {{name}}</li>
-        {{/if}}
-      {{/each}}
-    </ul>
-    <button id="clipboard-copy-to-dir" class="btn btn-primary">Copy</button>  <button id="clipboard-move-to-dir" class="btn btn-danger pull-right">Move</button>
   </div>
+  <ul class="list-group list-group-flush">
+    {{#each files}}
+      {{#if directory}}
+        <li class="list-group-item"><span title="directory" class="fa fa-folder" style="color: gold"></span> {{name}}</li>
+      {{else}}
+        <li class="list-group-item"><span title="file" class="fa fa-file" style="color: lightgrey"></span> {{name}}</li>
+      {{/if}}
+    {{/each}}
+  </ul>
+  <div class="card-body">
+    <button id="clipboard-copy-to-dir" class="btn btn-primary">Copy</button>  <button id="clipboard-move-to-dir" class="btn btn-danger float-right">Move</button>
+  </div>
+</div>
 {{/if}}
 </script>
 
 
 <script id="actions-btn-template" type="text/template">
 <div class="btn-group">
-  <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+  <%# FIXME: outline dark is easy to see unless the row is selected, then it is difficult to see; consider a different row selection color or indicator
+  for example the border-left: 4px solid #0088cc on the checkbox td
+  and then some very very light blue highlight that still has the necessary contrast ratio with black on white/black on grey for WCAG
+   %>
+  <button type="button" class="btn btn-outline-dark btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <span class="fa fa-ellipsis-v"></span>
   </button>
   <ul class="dropdown-menu">
     <!-- whats the accessibility rules for href and it acting like a button -->
     {{#if file}}
-    <li><a href="#" class="view-file" data-row-index="{{row_index}}">View</a></li>
-    <li><a href="#" class="edit-file" data-row-index="{{row_index}}">Edit</a></li>
+    <li><a href="#" class="view-file dropdown-item" data-row-index="{{row_index}}">View</a></li>
+    <li><a href="#" class="edit-file dropdown-item" data-row-index="{{row_index}}">Edit</a></li>
     {{/if}}
-    <li><a href="#" class="rename-file" data-row-index="{{row_index}}">Rename</a></li>
+    <li><a href="#" class="rename-file dropdown-item" data-row-index="{{row_index}}">Rename</a></li>
     <!--
     <li role="separator" class="divider"></li>
     <li><a href="#" class="download-file" data-row-index="{{row_index}}">Download</a></li>
@@ -83,17 +81,7 @@
 </div>
 
 <div class="col-md-9">
-
-  <!-- <div>
-    <button type="button" class="btn btn-default btn-sm"><i class="fas fa-eye" aria-hidden="true"></i> View</button>
-    <button id="edit-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-edit" aria-hidden="true"></i> Edit</button>
-    <button id="rename-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-font" aria-hidden="true"></i> Rename</button>
-    <button id="download-btn" type="button" class="btn btn-primary btn-sm"><i class="fas fa-download" aria-hidden="true"></i> Download</button>
-    <button id="copy-move-btn" type="button" class="btn btn-default btn-sm"><i class="fas fa-copy" aria-hidden="true"></i> Copy/Move</button>
-    <button id="delete-btn" type="button" class="btn btn-danger pull-right btn-sm"><i class="fas fa-trash" aria-hidden="true"></i> Delete</button>
-  </div> -->
-
-  <%# put search box ABOVE the breadcrumbs %>
+  <%# TODO put search box ABOVE the breadcrumbs %>
   <div style="margin-top: 20px">
 
     <ol id="path-breadcrumbs" class="breadcrumb">
@@ -204,9 +192,9 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
   // put breadcrmbs below filter!!!
   initComplete: () => $('.transfers-status').html('<%=j render partial: 'transfers/transfer', collection: sort_by_created_at(@transfers), as: :transfer %>'),
   dom: "<'row'<'col-sm-12'f>>" + // normally <'row'<'col-sm-6'l><'col-sm-6'f>> but we disabled pagination so l is not needed (dropdown for selecting # rows)
-       "<'row'<'col-sm-12'<'dt-status-bar'<'datatables-status'><'transfers-status'>>>>"+
+       "<'row'<'col-sm-12'<'dt-status-bar'<'datatables-status'><'transfers-status float-right'>>>>"+
        "<'row'<'col-sm-12'tr>>" +
-       "<'row'<'col-sm-12'<'dt-status-bar'<'datatables-status'><'transfers-status'>>>>", // normally this is <'row'<'col-sm-5'i><'col-sm-7'p>> but we disabled pagination so have info take whole row
+       "<'row'<'col-sm-12'<'dt-status-bar'<'datatables-status'><'transfers-status float-right'>>>>", // normally this is <'row'<'col-sm-5'i><'col-sm-7'p>> but we disabled pagination so have info take whole row
   columns: [
     {
       data: null,
