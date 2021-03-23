@@ -1,65 +1,12 @@
 # OOD Dashboard
 
-[![Build Status](https://travis-ci.org/OSC/ood-dashboard.svg?branch=master)](https://travis-ci.org/OSC/ood-dashboard)
-[![GitHub version](https://badge.fury.io/gh/OSC%2Food-dashboard.svg)](https://badge.fury.io/gh/OSC%2Food-dashboard)
-[![GitHub License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
-
 This app is a Rails app for Open OnDemand that serves as a gateway to launching
 other Open OnDemand apps. It is meant to be run as the user (and on behalf of
 the user) using the app. Thus, at an HPC center if I log into OnDemand using
 the `efranz` account, this app should run as `efranz`. This Rails app doesn't
 use a database.
 
-## New Install
 
-
-1. Start in the **build directory** for all sys apps, clone and check out the
-   latest version of the dashboard app (make sure the app directory's name is
-   `dashboard`):
-
-    ```sh
-    scl enable git29 -- git clone https://github.com/OSC/ood-dashboard.git dashboard
-    cd dashboard
-    scl enable git29 -- git checkout tags/v1.31.0
-    ```
-
-2. Install the app for a production environment:
-
-    ```sh
-    RAILS_ENV=production scl enable rh-git29 rh-nodejs6 rh-ruby24 -- bin/setup
-    ```
-
-    this will setup a default Open OnDemand install.
-
-3. Copy the built app directory to the deployment directory, and start the
-   server. i.e.:
-
-    ```sh
-    sudo mkdir -p /var/www/ood/apps/sys/dashboard
-    sudo cp -r . /var/www/ood/apps/sys/dashboard
-    ```
-
-## Updating to a New Stable Version
-
-1. Navigate to the app's build directory and check out the latest version:
-
-    ```sh
-    cd dashboard # cd to build directory
-    scl enable git29 -- git fetch
-    scl enable git29 -- git checkout tags/v1.31.0
-    ```
-
-2. Update the app for a production environment:
-
-    ```sh
-    RAILS_ENV=production scl enable rh-git29 rh-nodejs6 rh-ruby24 -- bin/setup
-    ```
-
-3. Copy the built app directory to the deployment directory:
-
-    ```sh
-    sudo rsync -rlptv --delete . /var/www/ood/apps/sys/dashboard
-    ```
 
 ## iHPC App Development
 
@@ -77,27 +24,6 @@ See the wiki page https://github.com/OSC/ood-dashboard/wiki/Message-of-the-Day
 
 See the wiki page https://github.com/OSC/ood-dashboard/wiki/Site-Wide-Announcement
 
-### Safari Warning
-
-We currently display an alert message at the top of the Dashboard mentioning
-that we don't currently support the Safari browser. This is because of an issue
-in Safari where it fails to connect to websockets if the Apache proxy uses
-Basic Auth for user authentication (on by default for new OOD installations).
-
-If you ever change the authentication mechanism to a cookie-based mechanism
-(e.g., Shibboleth or OpenID Connect), then it is recommended you disable this
-alert message in the dashboard.
-
-You can do this by modifying the `.env.local` file as such:
-
-```sh
-# .env.local
-
-# ... all of your other settings ...
-
-# Set this to disable Safari + Basic Auth warning
-DISABLE_SAFARI_BASIC_AUTH_WARNING=1
-```
 
 ### Disk Quota Warnings
 
@@ -398,6 +324,30 @@ app/helpers/batch_connect/sessions_helper.rb
 ```
 
 And modify `BatchConnect::SessionsHelper#novnc_link` with the new version.
+
+
+### Running the system tests
+
+The Rails system tests are currently using the Rails default: capybara + selenium headless chrome. These tests are not meant to be a replacement for
+actual end to end acceptance tests, which we may also use selenium to write (though via waitr and waitr-rails).
+
+To run the tests, do the following:
+
+1. Install the chromedriver from https://chromedriver.chromium.org/ and https://chromedriver.storage.googleapis.com/index.html?path=87.0.4280.88/
+2. Add the downloaded chromedriver binary to your path
+3. Run `bin/rake test:system`
+
+There are some possible issues when switching from headless chrome to chrome, which lets you watch the browser be driven as the tests
+are run that may have been fixed in Rails 6. Also, while failed tests auto-generate a screenshot, we might want to also extend that to
+print out any javascript errors. You can get an array of these errors by doing:
+
+    messages = page.driver.browser.manage.logs.get(:browser)
+
+These errors reference files and line numbers. Unfortunately, it isn't clear to me yet how to access those files to print the corresopnding lines which would also be useful.
+
+We may consider switching to waitr and waitr-rails.
+
+
 
 ## Contributing
 
