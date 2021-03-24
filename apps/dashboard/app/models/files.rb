@@ -1,4 +1,12 @@
 class Files
+
+
+  def self.raise_if_cant_access_directory_contents(path)
+    # try to actually access directory contents
+    # if an exception is raised, we do not have access
+    path.each_child.first
+  end
+
   # TODO: could do streaming instead
   # foreach and ndjson
   def ls(dirpath)

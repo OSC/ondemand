@@ -168,10 +168,10 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
     history.replaceState(_.merge({}, history.state, {currentDirectoryUpdatedAt: json.time}), null);
   }
 }).DataTable({
-  ajax: {
-    url: history.state.currentDirectoryUrl,
-    dataSrc: 'files',
-  },
+  // ajax: {
+  //   url: history.state.currentDirectoryUrl,
+  //   dataSrc: 'files',
+  // },
   order: [[1, "asc"], [2, "asc"]],
   rowId: 'id',
   paging:false,
@@ -234,13 +234,72 @@ table.on('draw.dtSelect.dt select.dtSelect.dt deselect.dtSelect.dt info.dt', fun
   update_datatables_status(table);
 });
 
-function reloadTable(id){
-  table.ajax.reload();
 
-  if(id){
-    table.row(id).select();
-  }
+// function handleApiError(response){
+//   return Promise.resolve(response)
+//     .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
+//     .then(response => response.json())
+//     .then(data => data.error_message ? Promise.reject(new Error(data.error_message)) : Promise.resolve(data))
+//     .catch()
+// }
+
+function reloadTable(url){
+  var request_url = url || history.state.currentDirectoryUrl;
+
+  return fetch(request_url, {headers: {'Accept':'application/json'}})
+    .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
+    .then(response => response.json())
+    .then(data => data.error_message ? Promise.reject(new Error(data.error_message)) : Promise.resolve(data))
+    .then(function(data){
+      table.clear();
+      table.rows.add(data.files);
+      table.draw();
+
+      return Promise.resolve(data);
+    })
+    .catch((e) => {
+      // FIXME: change to modeless feedback
+      // this should be an alert above "failed to load table with data from X due to error: ..."
+      // or even a smaller message, such as in the status bar but with the alert background color etc.
+      Swal.fire(e.message, `Error occurred when attempting to access ${request_url}`, 'error');
+      return Promise.reject(e);
+    });
 }
+
+function goto(url, pushState = true, show_processing_indicator = true){
+  //FIXME: https://datatables.net/plug-ins/api/processing()???
+  // or use other busy signal...
+  //
+  // if(show_processing_indicator)
+  //   table.processing(true);
+  //
+  //FIXME: odd thing - with history - if you go forward, then backwards, then forward again
+  // you get JSON representation instead of HTML representation
+
+  // FIXME: if url == history.state.currentDirectoryUrl
+  // do not pushState regardless!
+  if(url == history.state.currentDirectoryUrl)
+    pushState = false;
+
+  reloadTable(url)
+    .then((data) =>{
+      $('#path-breadcrumbs').html(data.breadcrumbs_html);
+      if(pushState){
+        history.pushState({
+          currentDirectory: data.path,
+          currentDirectoryUrl: data.url
+        }, data.name, data.url);
+      }
+    })
+    .finally(() => {
+      // if(show_processing_indicator)
+      //   table.processing(false)
+    });
+}
+
+// initial data load
+reloadTable();
+
 
 $('#show-dotfiles').change(() => table.draw());
 
@@ -567,33 +626,6 @@ function getFilesAndDirectoriesFromDirectory (directoryReader, oldEntries, logDr
   });
 
 })();
-
-
-function goto(url, pushState = true){
-  // update URL
-  //FIXME: reload includes callback so if there is an error - we display it and change url back :-P
-  // for example - you try to access a directory you do not have permission to access
-  //
-  // the only way to handle this might be to fetch the json directly, handle errors, and update the table with
-  // the new JSON data - and avoid using datatables AJAX
-  table.ajax.url(url);
-
-  table.ajax.reload(function(data){
-    $('#path-breadcrumbs').html(data.breadcrumbs_html);
-
-    //FIXME: control coupling
-    //
-    // update(url, callback)
-    // goto(url)
-    //
-    if(pushState){
-      history.pushState({
-        currentDirectory: data.path,
-        currentDirectoryUrl: data.url
-      }, data.name, data.url)
-    }
-  });
-}
 
 window.onpopstate = function(event){
   // FIXME: handle edge case if state ! exist

@@ -5,12 +5,26 @@ class FilesController < ApplicationController
     request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
 
     @path = Pathname.new("/" + params[:filepath].chomp("/"))
-    if @path.directory?
+    if @path.stat.directory?
+      Files.raise_if_cant_access_directory_contents(@path)
+
       show_directory
-    elsif @path.file?
-      show_file
     else
-      # error handling
+      show_file
+    end
+  rescue => e
+    @transfers = []
+    @files = []
+    flash.now[:alert] = "#{e.message}"
+
+    # FIXME: if broken symlink and the link is clicked to download the file (or view the file)
+    # you are redirected to the other page
+    # probably the best way to handle this is to properly handle symlinks in the view, especially
+    # broken symlinks
+
+    respond_to do |format|
+      format.html { render :index }
+      format.json { render :index }
     end
   end
 
@@ -18,6 +32,9 @@ class FilesController < ApplicationController
     @layout_container_class = "container-fluid"
 
     @transfers = Transfer.transfers
+
+    # FIXME: html view doesn't use @files (and should it?) though we do
+    # check for the existence of the directory (thus alert)
     @files = Files.new.ls(@path.to_s)
 
     respond_to do |format|
