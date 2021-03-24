@@ -32,6 +32,7 @@ class Files
       id: "dev-#{s.dev}-inode-#{s.ino}",
       name: path.basename,
       size: s.directory? ? 'dir' : s.size,
+      human_size: ::ApplicationController.helpers.number_to_human_size(s.size, precision: 3),
       directory: s.directory?,
       date: s.mtime.utc.iso8601,
       owner: username(s.uid),
