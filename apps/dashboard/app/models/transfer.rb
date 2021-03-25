@@ -1,5 +1,6 @@
 class Transfer
   include ActiveModel::Model
+  include ActiveModel::Validations
   include GlobalID::Identification
 
   # for progress tracking and retrieval
@@ -251,8 +252,12 @@ class Transfer
       self.message = err_reader.value
       self.completed_at = Time.now.to_i
 
+      errors.add :base, :action, "#{self.command} exited with status #{self.exit_status.exitstatus} with error output: #{self.message}" unless self.exit_status.success?
+
       self
     end
+  rescue => e
+    errors.add :base, :exception, message: e.message
   ensure
     self.status = OodCore::Job::Status.new(state: :completed)
   end
