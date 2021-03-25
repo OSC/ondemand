@@ -37,7 +37,7 @@ class TransfersController < ApplicationController
   def show
     @transfer = TransferLocalJob.progress[params[:id]]
     if(@transfer)
-      render json: @transfer
+      render :show
     else
       render json: {}, status: 404
     end
@@ -45,25 +45,22 @@ class TransfersController < ApplicationController
 
   def create
     body_params = JSON.parse(request.body.read).symbolize_keys
-    transfer = Transfer.build(action: body_params[:command], files: body_params[:files])
-    if transfer.synchronous?
-      transfer.perform
+    @transfer = Transfer.build(action: body_params[:command], files: body_params[:files])
+    if @transfer.synchronous?
+      @transfer.perform
+
+      flash.now[:alert] = @transfer.errors.full_messages.join("\n\n") if @transfer.errors.any?
 
       respond_to do |format|
-        format.json {
-          render :body => "#{transfer.action} completed"
-        }
-        format.js {
-          render :body => "reloadTable();"
-        }
+        format.json { render :show }
       end
     else
-      transfer.perform_later
+      @transfer.perform_later
       @transfers = Transfer.transfers
 
       respond_to do |format|
         format.json {
-          render :body => "#{transfer.action} started"
+          render :body => "#{@transfer.action} started"
         }
         format.js {
           render "transfers/index"

@@ -4,7 +4,7 @@ class Transfer
   include GlobalID::Identification
 
   # for progress tracking and retrieval
-  attr_accessor :id, :status, :created_at, :completed_at
+  attr_accessor :id, :status, :created_at, :started_at, :completed_at
   attr_writer :percent
 
   def percent
@@ -229,6 +229,7 @@ class Transfer
 
   def perform
     self.status = OodCore::Job::Status.new(state: :running)
+    self.started_at = Time.now.to_i
 
     # calculate number of steps prior to starting the removal of files
     steps
