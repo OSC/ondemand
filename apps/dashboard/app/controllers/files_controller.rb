@@ -4,7 +4,7 @@ class FilesController < ApplicationController
     # FIXME: force format for accept header
     request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
 
-    @path = Pathname.new("/" + params[:filepath].chomp("/"))
+    @path = normalized_path
     if @path.stat.directory?
       Files.raise_if_cant_access_directory_contents(@path)
 
@@ -28,85 +28,23 @@ class FilesController < ApplicationController
     end
   end
 
-  def show_directory
-    @layout_container_class = "container-fluid"
-
-    @transfers = Transfer.transfers
-
-    # FIXME: html view doesn't use @files (and should it?) though we do
-    # check for the existence of the directory (thus alert)
-    @files = Files.new.ls(@path.to_s)
-
-    respond_to do |format|
-      format.html { render :index }
-      format.json { render :index }
-    end
-    # rescue exceptions
-  end
-
-  def show_file
-    #FIXME: this is not RESTFUL (you ask for JSON or HTML or any other representation, you get file contents)
-    # but there is no clear solution that also enables using SAME URI INTERFACE for both directories and files
-    # which is what a file system does with file system paths
-    #
-    # solution could be to use different URLs, one to get different representations of a single inode
-    # (i.e. SHOW the file or directory)
-    # and the other to get the inode children and other information (i.e. INDEX for the directory)
-    #
-    # files/index/(/*dirpath)
-    # files/show/(/*filepath)
-    #
-    # the issue is "goto" where you place in the path to a file instead of a directory
-    # the solution is files/index/(/*dirpath) could show the parent directory (and highlight the file)
-    # or redirect the user to the parent directory (and highlight the file)
-    #
-    # another problem here is when we do a listing and want to generate a URL for
-    # EACH file (a directory OR a file) => here we have to do control flow (if directory, link to index,
-    # if file, link to file)
-    #
-    # but we do have control flow client side - to determine what to do with a directory or a file
-    # so this would shift that to the server side (or have it serverside and client side)
-
-    if params[:download]
-      send_file @path
-    else
-      send_file @path, disposition: 'inline'
-    end
-
-    # rescue exceptions
-  end
 
   # put - create or update
   # FIXME: separate from touching a file (for new) vs saving content of 0 to a file
   def update
-    # 1.find the path
-    # 2. if it is a file, write the content to it
-    # 3. if it doesn't exist, create the file
-    #
-    # format.html { # show.html.erb
-    #   raise ActionController::RoutingError.new('Not Found')
-    # }
-    # format.json {
-    respond_to do |format|
-      format.text {
-        path = "/" + params[:filepath]
+    path = normalized_path
 
-        if params.include?("dir")
-          #TODO: separate FilesController and DirectoriesController
-          # and separate TransfersController (create new transfer)
-          Dir.mkdir path
-          render :body => "make dir: ok(#{File.basename(path)}) }"
-        elsif params.include?("file")
-          FileUtils.mv params["file"].tempfile, path
-          render :body => "save: ok(#{File.basename(path)}) }"
-        else
-          # so... this is file upload instead...
-          # so... we need to preserve the content type
-          File.write(path, request.body.read)
-          render :body => "save: ok(#{File.basename(path)}) }"
-        end
-       }
+    if params.include?("dir")
+      Dir.mkdir path
+    elsif params.include?("file")
+      FileUtils.mv params["file"].tempfile, path
+    else
+      File.write(path, request.body.read)
     end
+
+    render json: {}
+  rescue => e
+    render json: { error_message: e.message }
   end
 
   # POST
@@ -137,9 +75,62 @@ class FilesController < ApplicationController
     # render :body => "save: ok(#{path}) }"
     # TODO: uppy: could add url to the file
     render json: {}
+  rescue => e
+    render json: { error_message: e.message }
   end
 
   def zip
     raise "not yet impl"
+  end
+
+  private
+
+  def normalized_path
+    Pathname.new("/" + params[:filepath].chomp("/"))
+  end
+
+  def show_directory
+    @layout_container_class = "container-fluid"
+
+    @transfers = Transfer.transfers
+
+    # FIXME: html view doesn't use @files (and should it?) though we do
+    # check for the existence of the directory (thus alert)
+    @files = Files.new.ls(@path.to_s)
+
+    respond_to do |format|
+      format.html { render :index }
+      format.json { render :index }
+    end
+  end
+
+  def show_file
+    #FIXME: this is not RESTFUL (you ask for JSON or HTML or any other representation, you get file contents)
+    # but there is no clear solution that also enables using SAME URI INTERFACE for both directories and files
+    # which is what a file system does with file system paths
+    #
+    # solution could be to use different URLs, one to get different representations of a single inode
+    # (i.e. SHOW the file or directory)
+    # and the other to get the inode children and other information (i.e. INDEX for the directory)
+    #
+    # files/index/(/*dirpath)
+    # files/show/(/*filepath)
+    #
+    # the issue is "goto" where you place in the path to a file instead of a directory
+    # the solution is files/index/(/*dirpath) could show the parent directory (and highlight the file)
+    # or redirect the user to the parent directory (and highlight the file)
+    #
+    # another problem here is when we do a listing and want to generate a URL for
+    # EACH file (a directory OR a file) => here we have to do control flow (if directory, link to index,
+    # if file, link to file)
+    #
+    # but we do have control flow client side - to determine what to do with a directory or a file
+    # so this would shift that to the server side (or have it serverside and client side)
+
+    if params[:download]
+      send_file @path
+    else
+      send_file @path, disposition: 'inline'
+    end
   end
 end

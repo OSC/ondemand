@@ -243,13 +243,43 @@ table.on('draw.dtSelect.dt select.dtSelect.dt deselect.dtSelect.dt info.dt', fun
 //     .catch()
 // }
 
+function alertError(error_title, error_message){
+  Swal.fire(e.message, `Error occurred when attempting to access ${request_url}`, 'error');
+}
+
+function dataFromJsonResponse(response){
+  return new Promise((resolve, reject) => {
+    Promise.resolve(response)
+    .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
+    .then(response => response.json())
+    .then(data => data.error_message ? Promise.reject(new Error(data.error_message)) : resolve(data))
+    .catch((e) => reject(e))
+  });
+}
+
+function newFile(filename){
+  fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token }})
+  .then(response => dataFromJsonResponse(response))
+  // TODO: parse JSON response to get id of file created
+  // TODO: should return JSON of the created file (similar to the JSON array returned when getting a list of files...)
+  .then(() => reloadTable())
+  .catch(e => alertError('Error occurred when attempting to create new file', e.message));
+}
+
+function newDirectory(filename){
+  fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token }})
+  .then(response => dataFromJsonResponse(response))
+  // TODO: parse JSON response to get id of file created
+  // TODO: should return JSON of the created file (similar to the JSON array returned when getting a list of files...)
+  .then(() => reloadTable())
+  .catch(e => alertError('Error occurred when attempting to create new directory', e.message));
+}
+
 function reloadTable(url){
   var request_url = url || history.state.currentDirectoryUrl;
 
   return fetch(request_url, {headers: {'Accept':'application/json'}})
-    .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
-    .then(response => response.json())
-    .then(data => data.error_message ? Promise.reject(new Error(data.error_message)) : Promise.resolve(data))
+    .then(response => dataFromJsonResponse(response))
     .then(function(data){
       table.clear();
       table.rows.add(data.files);
@@ -298,6 +328,7 @@ function goto(url, pushState = true, show_processing_indicator = true){
 }
 
 // initial data load
+// FIXME: avoid if we detect there is a problem server side
 reloadTable();
 
 
@@ -353,9 +384,9 @@ $('#new-file-btn').click(() => {
     inputLabel: 'Filename',
     showCancelButton: true,
     inputValidator: (value) => {
-      if (! value) {
+      if (! value || value.includes("/")) {
         // TODO: validate filenames against listing
-        return 'Provide a filename'
+        return 'Provide a filenamethat does not have / in it'
       }
     },
     showClass: {
@@ -369,16 +400,7 @@ $('#new-file-btn').click(() => {
   })
   // FIXME: do not allow / in the filename or ..
   .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
-  // FIXME: handle error cases
-  .then((filename) => fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token }}))
-  // TODO: parse JSON response to get id of file created
-  .then(() => reloadTable())
-  .catch(e => {
-      if(e != 'cancelled'){
-        //FIXME: error
-        console.error(e);
-      }
-  })
+  .then((filename) => newFile(filename));
 });
 
 $('#new-dir-btn').click(() => {
@@ -388,9 +410,9 @@ $('#new-dir-btn').click(() => {
     inputLabel: 'Directory name',
     showCancelButton: true,
     inputValidator: (value) => {
-      if (! value) {
+      if (! value || value.includes("/")) {
         // TODO: validate filenames against listing
-        return 'Provide a directory name'
+        return 'Provide a directory name that does not have / in it'
       }
     },
     showClass: {
@@ -402,18 +424,8 @@ $('#new-dir-btn').click(() => {
       backdrop: ''
     }
   })
-  // FIXME: do not allow / in the filename or ..
-  // error cases
   .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
-  .then((filename) => fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token }}))
-  // TODO: parse JSON response to get id of file created
-  .then(() => reloadTable())
-  .catch(e => {
-      if(e != 'cancelled'){
-        //FIXME: error
-        console.error(e);
-      }
-  })
+  .then((filename) => newDirectory(filename));
 });
 
 $('#download-btn').click(() => {

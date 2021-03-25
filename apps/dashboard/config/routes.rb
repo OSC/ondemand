@@ -3,7 +3,7 @@ require "authz/app_developer_constraint"
 Rails.application.routes.draw do
   constraints filepath: /.+/ do
     get "files/fs(/*filepath)" => "files#fs", :defaults => { :format => 'html', :filepath => '/' }, :format => false, as: :files
-    put "files/fs/*filepath" => "files#update", :format => false, :defaults => { :format => 'text' }
+    put "files/fs/*filepath" => "files#update", :format => false, :defaults => { :format => 'json' }
     put "files/zip/*filepath" => "files#zip", :format => false, :defaults => { :format => 'json' }
   end
   post "files/upload"
