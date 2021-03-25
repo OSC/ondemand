@@ -77,6 +77,23 @@
 </div>
 </script>
 
+<script id="transfer-template" type="text/template">
+{{#*inline "defaultLabel"}}
+  <span id="{{id}}" class="text-{{bootstrap_class}}"><b><i class="fas {{fa_label}} %>"></i> {{summary}}</b></span>
+{{/inline}}
+
+{{#if completed}}
+  {{#if error_summary}}
+    <span id="{{id}}" class="alert alert-danger alert-dismissible fade show" role="alert"><a href="{{show_html_url}}"><i class="fas fa-exclamation-triangle"></i> {{error_summary}}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </span>
+  {{else}}
+    {{> defaultLabel}}
+  {{/if}}
+{{else}}
+  {{> defaultLabel}}
+{{/if}}
+</script>
 
 </div>
 
@@ -190,11 +207,9 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
   // dom: '', dataTables_info nowrap
   //
   // put breadcrmbs below filter!!!
-  initComplete: () => $('.transfers-status').html('<%=j render partial: 'transfers/transfer', collection: sort_by_created_at(@transfers), as: :transfer %>'),
   dom: "<'row'<'col-sm-12'f>>" + // normally <'row'<'col-sm-6'l><'col-sm-6'f>> but we disabled pagination so l is not needed (dropdown for selecting # rows)
        "<'row'<'col-sm-12'<'dt-status-bar'<'datatables-status float-right'><'transfers-status'>>>>"+
-       "<'row'<'col-sm-12'tr>>" +
-       "<'row'<'col-sm-12'<'dt-status-bar'<'datatables-status float-right'><'transfers-status'>>>>", // normally this is <'row'<'col-sm-5'i><'col-sm-7'p>> but we disabled pagination so have info take whole row
+       "<'row'<'col-sm-12'tr>>", // normally this is <'row'<'col-sm-5'i><'col-sm-7'p>> but we disabled pagination so have info take whole row
   columns: [
     {
       data: null,
@@ -609,24 +624,9 @@ $('#directory-contents tbody').on('click', '.rename-file', function(e){
       backdrop: ''
     }
   })
-  // FIXME: do not allow / in the filename or ..
-  // error cases
   .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
   .then((new_filename) => renameFile(filename, new_filename))
 });
-
-//TODO:
-// $('#directory-contents tbody').on('click', '.download-file', function(){
-//   console.log(this);
-//   //
-// });
-//
-// $('#directory-contents tbody').on('click', '.delete-file', function(){
-//   //
-//   console.log(this);
-// });
-
-
 
 $('#directory-contents tbody, #path-breadcrumbs, #favorites').on('click', 'a.d', function(){
   if(clickEventIsSignificant(event)){
@@ -665,81 +665,105 @@ function updateClipboardFromSelection(){
   }
 }
 
-//FIXME: if getting JS, JS crafted server side can access globals clientside
-// so we don't need to determine serverside what changed
-var updateViewForTransfers = _.throttle(function(){
-  //FIXME: error handling when this fails
-  $.ajax({
-    url: '<%=raw transfers_path(format: "js") %>',
-    dataType: "script",
-    data: {
-      //TODO: verify this escapes query params
-      current_directory: history.state.currentDirectory,
-      current_directory_updated_at: history.state.currentDirectoryUpdatedAt
-    }
-  });
-}, 1000);
+function transferFiles(files, action, summary){
+  loading(_.startCase(summary));
 
+  return fetch('<%= transfers_path(format: "json") %>', {
+    method: 'post',
+    body: JSON.stringify({
+      command: action,
+      files: files
+    }),
+    headers: { 'X-CSRF-Token': csrf_token }
+  })
+  .then(response => dataFromJsonResponse(response))
+  .then((data) => {
+
+    if(! data.completed){
+      // was async, gotta report on progress and start polling
+      reportTransfer(data);
+    }
+    else {
+      if(data.target_dir == history.state.currentDirectory){
+        reloadTable();
+      }
+    }
+
+    if(action == 'mv' || action == 'cp'){
+      clearClipboard();
+      updateViewForClipboard();
+    }
+  })
+  .then(() => doneLoading())
+  .catch(e => alertError('Error occurred when attempting to ' + summary, e.message))
+  // smart alert is not great in that - loading is an alert, which is replaced by the error alert
+  // so doneLoading would close both
+  // .finally(() => doneLoading());
+}
+
+const reportTransferTemplate = (function(){
+  let template_str  = $('#transfer-template').html();
+  return Handlebars.compile(template_str);
+})();
+
+function find_and_update_transfer_status(data){
+  let id = `#${data.id}`;
+
+  if($(id).length){
+    $(id).replaceWith(reportTransferTemplate(data));
+  }
+  else{
+    $('.transfers-status').append(reportTransferTemplate(data));
+  }
+}
+
+function reportTransfer(data){
+  // 1. add the transfer label
+  find_and_update_transfer_status(data);
+
+  // 2. poll for the updates
+  var poll = function(){
+   $.getJSON(data.show_json_url, function(newdata){
+     find_and_update_transfer_status(newdata);
+
+     if(newdata.completed){
+       if(! newdata.error_message){
+         if(newdata.target_dir == history.state.currentDirectory){
+           reloadTable();
+         }
+
+         // 3. fade out after 5 seconds
+         $(`#${newdata.id}`).fadeOut(4000);
+       }
+     }
+     else{
+       // not completed yet, so poll again
+       setTimeout(poll, 1000);
+     }
+   }).fail(function(){
+     setTimeout(poll, 1000);
+   });
+  }
+
+  poll();
+}
 
 function renameFile(filename, new_filename){
   let files = {};
   files[`${history.state.currentDirectory}/${filename}`] = `${history.state.currentDirectory}/${new_filename}`;
-  moveFiles(files, csrf_token)
+  transferFiles(files, "mv", "rename file")
 }
 
-function moveFiles(files, csrf_token){
-  return fetch('<%= transfers_path(format: "js") %>', {
-    method: 'post',
-    body: JSON.stringify({
-      command: 'mv',
-      files: files
-    }),
-    headers: { 'X-CSRF-Token': csrf_token }
-  })
-  //TODO: if(response.status != 200){ fail!
-  .then(response => response.text())
-  .then((response_js) => {
-    eval(response_js);
-    clearClipboard();
-    updateViewForClipboard();
-    doneLoading();
-  })
+function moveFiles(files, summary = "move files"){
+  transferFiles(files, "mv", "move files")
 }
 
-
-function copyFiles(files, csrf_token){
-  fetch('<%= transfers_path(format: "js") %>', {
-    method: 'post',
-    body: JSON.stringify({
-      command: 'cp',
-      files: files
-    }),
-    headers: { 'X-CSRF-Token': csrf_token }
-  })
-  //TODO: if(response.status != 200){ fail!
-  .then(response => response.text())
-  .then((response_js) => {
-    eval(response_js);
-    clearClipboard();
-    updateViewForClipboard();
-    doneLoading();
-  })
+function copyFiles(files){
+  transferFiles(files, "cp", "copy files")
 }
 
-function removeFiles(files, csrf_token){
-  fetch('<%= transfers_path(format: "js") %>', {
-      method: 'post',
-      body: JSON.stringify({
-        command: 'rm',
-        files: files
-      }),
-      headers: { 'X-CSRF-Token': csrf_token }
-  })
-  .then(response => response.text())
-  .then((response_js) => {
-      eval(response_js);
-      doneLoading();
-  });
+function removeFiles(files){
+  transferFiles(files, "rm", "remove files")
 }
 
 function updateViewForClipboard(){
@@ -774,8 +798,6 @@ function updateViewForClipboard(){
         // _copy_4
       }
       else{
-        loading('Copying files...');
-
         // [{"/from/file/path":"/to/file/path" }]
         let files = {};
         clipboard.files.forEach((f) => {
@@ -801,8 +823,6 @@ function updateViewForClipboard(){
         // TODO:
       }
       else{
-        loading('Moving files...');
-
         let files = {};
         clipboard.files.forEach((f) => {
           files[`${clipboard.from}/${f.name}`] = `${history.state.currentDirectory}/${f.name}`
@@ -858,8 +878,6 @@ window.addEventListener('storage', () => {
   updateViewForClipboard();
 });
 
-// If there are running transfers, update view in 1 seconds
-<%=raw 'setTimeout(() => updateViewForTransfers(), 1000);' if @transfers.any? {|t| ! t.status.completed? } %>
 
 // if only 1 selected item, do not allow to de-select
 table.on('user-select', function ( e, dt, type, cell, originalEvent  ) {

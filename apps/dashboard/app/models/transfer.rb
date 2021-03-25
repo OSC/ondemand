@@ -12,7 +12,7 @@ class Transfer
   end
 
   # error reporting (use different tool?)
-  attr_accessor :exit_status, :message
+  attr_accessor :exit_status, :stderr
 
   attr_accessor :pid
 
@@ -248,12 +248,14 @@ class Transfer
       end
       o.close
 
-      # FIXME: did it fail? need fail status?
       self.exit_status = t.value
-      self.message = err_reader.value
       self.completed_at = Time.now.to_i
 
-      errors.add :base, :action, "#{self.command} exited with status #{self.exit_status.exitstatus} with error output: #{self.message}" unless self.exit_status.success?
+      # FIXME: figure out what we are going to do here, since we save the stderr output twice
+      self.stderr = err_reader.value.to_s.strip
+      if self.stderr.present? || ! self.exit_status.success?
+        errors.add :base, :action, "#{self.command} exited with status #{self.exit_status.exitstatus} with error output: #{self.stderr}"
+      end
 
       self
     end
@@ -274,6 +276,15 @@ class Transfer
 
   def to
     File.dirname(files.values.first) if files.values.first
+  end
+
+  def target_dir
+    # directory where files are being moved/copied to OR removed from
+    if action == "rm"
+      Pathname.new(from).cleanpath if from
+    else
+      Pathname.new(to).cleanpath if to
+    end
   end
 
   def synchronous?

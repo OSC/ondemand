@@ -35,11 +35,17 @@ class TransfersController < ApplicationController
   end
 
   def show
-    @transfer = TransferLocalJob.progress[params[:id]]
+    @transfer = Transfer.find(params[:id])
     if(@transfer)
-      render :show
+      respond_to do |format|
+        format.html
+        format.json
+      end
     else
-      render json: {}, status: 404
+      respond_to do |format|
+        format.html
+        format.json { render json: {}, status: 404 }
+      end
     end
   end
 
@@ -59,12 +65,7 @@ class TransfersController < ApplicationController
       @transfers = Transfer.transfers
 
       respond_to do |format|
-        format.json {
-          render :body => "#{@transfer.action} started"
-        }
-        format.js {
-          render "transfers/index"
-        }
+        format.json { render :show }
       end
     end
   end
