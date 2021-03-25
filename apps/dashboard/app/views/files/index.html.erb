@@ -235,98 +235,6 @@ table.on('draw.dtSelect.dt select.dtSelect.dt deselect.dtSelect.dt info.dt', fun
 });
 
 
-// function handleApiError(response){
-//   return Promise.resolve(response)
-//     .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
-//     .then(response => response.json())
-//     .then(data => data.error_message ? Promise.reject(new Error(data.error_message)) : Promise.resolve(data))
-//     .catch()
-// }
-
-function alertError(error_title, error_message){
-  Swal.fire(e.message, `Error occurred when attempting to access ${request_url}`, 'error');
-}
-
-function dataFromJsonResponse(response){
-  return new Promise((resolve, reject) => {
-    Promise.resolve(response)
-    .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
-    .then(response => response.json())
-    .then(data => data.error_message ? Promise.reject(new Error(data.error_message)) : resolve(data))
-    .catch((e) => reject(e))
-  });
-}
-
-function newFile(filename){
-  fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token }})
-  .then(response => dataFromJsonResponse(response))
-  // TODO: parse JSON response to get id of file created
-  // TODO: should return JSON of the created file (similar to the JSON array returned when getting a list of files...)
-  .then(() => reloadTable())
-  .catch(e => alertError('Error occurred when attempting to create new file', e.message));
-}
-
-function newDirectory(filename){
-  fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token }})
-  .then(response => dataFromJsonResponse(response))
-  // TODO: parse JSON response to get id of file created
-  // TODO: should return JSON of the created file (similar to the JSON array returned when getting a list of files...)
-  .then(() => reloadTable())
-  .catch(e => alertError('Error occurred when attempting to create new directory', e.message));
-}
-
-function reloadTable(url){
-  var request_url = url || history.state.currentDirectoryUrl;
-
-  return fetch(request_url, {headers: {'Accept':'application/json'}})
-    .then(response => dataFromJsonResponse(response))
-    .then(function(data){
-      table.clear();
-      table.rows.add(data.files);
-      table.draw();
-
-      return Promise.resolve(data);
-    })
-    .catch((e) => {
-      // FIXME: change to modeless feedback
-      // this should be an alert above "failed to load table with data from X due to error: ..."
-      // or even a smaller message, such as in the status bar but with the alert background color etc.
-      Swal.fire(e.message, `Error occurred when attempting to access ${request_url}`, 'error');
-      return Promise.reject(e);
-    });
-}
-
-function goto(url, pushState = true, show_processing_indicator = true){
-  //FIXME: https://datatables.net/plug-ins/api/processing()???
-  // or use other busy signal...
-  //
-  // if(show_processing_indicator)
-  //   table.processing(true);
-  //
-  //FIXME: odd thing - with history - if you go forward, then backwards, then forward again
-  // you get JSON representation instead of HTML representation
-
-  // FIXME: if url == history.state.currentDirectoryUrl
-  // do not pushState regardless!
-  if(url == history.state.currentDirectoryUrl)
-    pushState = false;
-
-  reloadTable(url)
-    .then((data) =>{
-      $('#path-breadcrumbs').html(data.breadcrumbs_html);
-      if(pushState){
-        history.pushState({
-          currentDirectory: data.path,
-          currentDirectoryUrl: data.url
-        }, data.name, data.url);
-      }
-    })
-    .finally(() => {
-      // if(show_processing_indicator)
-      //   table.processing(false)
-    });
-}
-
 // initial data load
 // FIXME: avoid if we detect there is a problem server side
 reloadTable();
@@ -363,18 +271,8 @@ $('#path-breadcrumbs').on('click', '#goto-btn', function(){
       backdrop: ''
     }
   })
-  // FIXME: do not allow / in the filename or ..
   .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
-  // FIXME: handle error cases
-
-  //FIXME: relative urls too or just absolute?
   .then((pathname) => goto('<%= files_path('/') %>' + pathname))
-  .catch(e => {
-      if(e != 'cancelled'){
-        //FIXME: error
-        console.error(e);
-      }
-  })
 });
 
 $('#new-file-btn').click(() => {
@@ -398,7 +296,6 @@ $('#new-file-btn').click(() => {
       backdrop: ''
     }
   })
-  // FIXME: do not allow / in the filename or ..
   .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
   .then((filename) => newFile(filename));
 });
@@ -715,25 +612,7 @@ $('#directory-contents tbody').on('click', '.rename-file', function(e){
   // FIXME: do not allow / in the filename or ..
   // error cases
   .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
-  .then((new_filename) => {
-    let payload = {
-      command: 'mv',
-      files: {}
-    };
-    payload.files[`${history.state.currentDirectory}/${filename}`] = `${history.state.currentDirectory}/${new_filename}`;
-    console.log(payload);
-
-    //FIXME: format: "js" like the other transfers?
-    return fetch('<%= transfers_path(format: "json") %>', {method: 'post', body: JSON.stringify(payload), headers: { 'X-CSRF-Token': csrf_token }});
-  })
-  //FIXME: check for request failure
-  .then(() => reloadTable())
-  .catch(e => {
-      if(e != 'cancelled'){
-        //FIXME: error
-        console.error(e);
-      }
-  })
+  .then((new_filename) => renameFile(filename, new_filename))
 });
 
 //TODO:
@@ -786,19 +665,6 @@ function updateClipboardFromSelection(){
   }
 }
 
-function loading(title){
-  Swal.fire({
-    title: title,
-    allowOutsideClick: false,
-    showConfirmButton: false,
-    willOpen: () => { Swal.showLoading()  }
-  });
-}
-
-function doneLoading(){
-  Swal.close();
-}
-
 //FIXME: if getting JS, JS crafted server side can access globals clientside
 // so we don't need to determine serverside what changed
 var updateViewForTransfers = _.throttle(function(){
@@ -813,6 +679,68 @@ var updateViewForTransfers = _.throttle(function(){
     }
   });
 }, 1000);
+
+
+function renameFile(filename, new_filename){
+  let files = {};
+  files[`${history.state.currentDirectory}/${filename}`] = `${history.state.currentDirectory}/${new_filename}`;
+  moveFiles(files, csrf_token)
+}
+
+function moveFiles(files, csrf_token){
+  return fetch('<%= transfers_path(format: "js") %>', {
+    method: 'post',
+    body: JSON.stringify({
+      command: 'mv',
+      files: files
+    }),
+    headers: { 'X-CSRF-Token': csrf_token }
+  })
+  //TODO: if(response.status != 200){ fail!
+  .then(response => response.text())
+  .then((response_js) => {
+    eval(response_js);
+    clearClipboard();
+    updateViewForClipboard();
+    doneLoading();
+  })
+}
+
+
+function copyFiles(files, csrf_token){
+  fetch('<%= transfers_path(format: "js") %>', {
+    method: 'post',
+    body: JSON.stringify({
+      command: 'cp',
+      files: files
+    }),
+    headers: { 'X-CSRF-Token': csrf_token }
+  })
+  //TODO: if(response.status != 200){ fail!
+  .then(response => response.text())
+  .then((response_js) => {
+    eval(response_js);
+    clearClipboard();
+    updateViewForClipboard();
+    doneLoading();
+  })
+}
+
+function removeFiles(files, csrf_token){
+  fetch('<%= transfers_path(format: "js") %>', {
+      method: 'post',
+      body: JSON.stringify({
+        command: 'rm',
+        files: files
+      }),
+      headers: { 'X-CSRF-Token': csrf_token }
+  })
+  .then(response => response.text())
+  .then((response_js) => {
+      eval(response_js);
+      doneLoading();
+  });
+}
 
 function updateViewForClipboard(){
   let clipboard = JSON.parse(localStorage.getItem('filesClipboard') || '{}'),
@@ -854,22 +782,7 @@ function updateViewForClipboard(){
           files[`${clipboard.from}/${f.name}`] = `${history.state.currentDirectory}/${f.name}`
         });
 
-        fetch('<%= transfers_path(format: "js") %>', {
-          method: 'post',
-          body: JSON.stringify({
-            command: 'cp',
-            files: files
-          }),
-          headers: { 'X-CSRF-Token': csrf_token }
-        })
-        //TODO: if(response.status != 200){ fail!
-        .then(response => response.text())
-        .then((response_js) => {
-          eval(response_js);
-          clearClipboard();
-          updateViewForClipboard();
-          doneLoading();
-        })
+        copyFiles(files, csrf_token);
       }
     }
     else{
@@ -895,22 +808,7 @@ function updateViewForClipboard(){
           files[`${clipboard.from}/${f.name}`] = `${history.state.currentDirectory}/${f.name}`
         });
 
-        fetch('<%= transfers_path(format: "js") %>', {
-          method: 'post',
-          body: JSON.stringify({
-            command: 'mv',
-            files: files
-          }),
-          headers: { 'X-CSRF-Token': csrf_token }
-        })
-        //TODO: if(response.status != 200){ fail!
-        .then(response => response.text())
-        .then((response_js) => {
-          eval(response_js);
-          clearClipboard();
-          updateViewForClipboard();
-          doneLoading();
-        })
+        moveFiles(files, csrf_token);
       }
     }
     else{
@@ -946,33 +844,8 @@ $('#delete-btn').click(() => {
   .then((result) => {
     if(result.isConfirmed){
       loading('Deleting files...');
-
-      return fetch('<%= transfers_path(format: "js") %>', {
-          method: 'post',
-          body: JSON.stringify({
-            command: 'rm',
-            files: files.map(f => [history.state.currentDirectory, f].join('/'))
-          }),
-          headers: { 'X-CSRF-Token': csrf_token }
-      });
+      removeFiles(files.map(f => [history.state.currentDirectory, f].join('/')), csrf_token);
     }
-    else{
-      return Promise.reject('cancelled');
-    }
-  })
-  //TODO: if(response.status != 200){ fail!
-  .then(response => response.text())
-  .then((response_js) => {
-      eval(response_js);
-      doneLoading();
-  })
-  .catch(e => {
-      if(e != 'cancelled'){
-        //FIXME: error
-        console.error(e);
-      }
-
-      doneLoading();
   })
 });
 
