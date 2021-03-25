@@ -240,10 +240,10 @@ table.on('draw.dtSelect.dt select.dtSelect.dt deselect.dtSelect.dt info.dt', fun
 reloadTable();
 
 
-$('#show-dotfiles').change(() => table.draw());
+$('#show-dotfiles').on("change", () => table.draw());
 
 // TODO: https://datatables.net/reference/button/colvis
-$('#show-owner-mode').change(() => {
+$('#show-owner-mode').on("change", () => {
   let visible = $('#show-owner-mode').is(':checked');
   table.column('owner:name').visible(visible);
   table.column('mode:name').visible(visible);
@@ -275,7 +275,7 @@ $('#path-breadcrumbs').on('click', '#goto-btn', function(){
   .then((pathname) => goto('<%= files_path('/') %>' + pathname))
 });
 
-$('#new-file-btn').click(() => {
+$('#new-file-btn').on("click", () => {
   Swal.fire({
     title: 'New File',
     input: 'text',
@@ -300,7 +300,7 @@ $('#new-file-btn').click(() => {
   .then((filename) => newFile(filename));
 });
 
-$('#new-dir-btn').click(() => {
+$('#new-dir-btn').on("click", () => {
   Swal.fire({
     title: 'New Directory',
     input: 'text',
@@ -325,7 +325,7 @@ $('#new-dir-btn').click(() => {
   .then((filename) => newDirectory(filename));
 });
 
-$('#download-btn').click(() => {
+$('#download-btn').on("click", () => {
   let selection = table.rows({selected: true}).data();
   if(selection.length != 1){
     Swal.fire('Select only 1 file to download', 'You have selected none or multiple rows', 'error')
@@ -749,13 +749,13 @@ function updateViewForClipboard(){
 
   $('#clipboard').html(template(clipboard));
 
-  $('#clipboard-clear').click(() => {
+  $('#clipboard-clear').on("click", () => {
       clearClipboard();
       updateViewForClipboard();
   });
 
 
-  $('#clipboard-copy-to-dir').click(() => {
+  $('#clipboard-copy-to-dir').on("click", () => {
     let clipboard = JSON.parse(localStorage.getItem('filesClipboard') || 'null');
 
     if(clipboard){
@@ -790,7 +790,7 @@ function updateViewForClipboard(){
     }
   });
 
-  $('#clipboard-move-to-dir').click(() => {
+  $('#clipboard-move-to-dir').on("click", () => {
     let clipboard = JSON.parse(localStorage.getItem('filesClipboard') || 'null');
 
     if(clipboard){
@@ -817,12 +817,12 @@ function updateViewForClipboard(){
   });
 }
 
-$('#copy-move-btn').click(() => {
+$('#copy-move-btn').on("click", () => {
     updateClipboardFromSelection();
     updateViewForClipboard();
 });
 
-$('#delete-btn').click(() => {
+$('#delete-btn').on("click", () => {
   let files = table.rows({selected: true}).data().toArray().map((f) => f.name);
   if(! files.length > 0){
     return;
