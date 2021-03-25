@@ -55,14 +55,11 @@ class TransfersController < ApplicationController
     if @transfer.synchronous?
       @transfer.perform
 
-      flash.now[:alert] = @transfer.errors.full_messages.join("\n\n") if @transfer.errors.any?
-
       respond_to do |format|
         format.json { render :show }
       end
     else
       @transfer.perform_later
-      @transfers = Transfer.transfers
 
       respond_to do |format|
         format.json { render :show }

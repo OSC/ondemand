@@ -84,9 +84,10 @@
 
 {{#if completed}}
   {{#if error_summary}}
-    <span id="{{id}}" class="alert alert-danger alert-dismissible fade show" role="alert"><a href="{{show_html_url}}"><i class="fas fa-exclamation-triangle"></i> {{error_summary}}
+    <div id="{{id}}" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <a style="font-weight: bold; text-decoration: underline" href="{{show_html_url}}"><i class="fas fa-exclamation-triangle"></i> {{error_summary}}</a>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    </span>
+    </div>
   {{else}}
     {{> defaultLabel}}
   {{/if}}

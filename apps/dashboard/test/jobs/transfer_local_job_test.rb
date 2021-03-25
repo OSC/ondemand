@@ -19,9 +19,60 @@ class TransferLocalJobTest < ActiveJob::TestCase
       transfer = Transfer.new(action: 'cp', files: {testfile => destfile})
       transfer.perform
 
-      assert_equal 0, transfer.exit_status, "job exited with error #{transfer.message}"
+      assert_equal 0, transfer.exit_status, "job exited with error #{transfer.stderr}"
       assert FileUtils.compare_file(testfile, destfile), "file was not copied"
       assert_equal 100, transfer.percent
+    end
+  end
+
+  # server side needs to support copying into the SAME directory with a different name
+  test "copy supports copying to same directory with different name" do
+    Dir.mktmpdir do |dir|
+
+      Dir.chdir(dir) do
+        FileUtils.mkdir_p 'foo/bar'
+        FileUtils.touch ['foo/foo.txt', 'foo/bar/bar.txt']
+      end
+
+      testfile = File.join(dir, 'foo')
+      destfile = File.join(dir, 'dest')
+
+      transfer = Transfer.new(action: 'cp', files: {testfile => destfile})
+      transfer.perform
+
+      assert transfer.stderr.empty?, 'copy should have resulted in no errors'
+      assert_equal 0, transfer.exit_status, "job exited with error #{transfer.stderr}"
+    end
+  end
+
+  test "copy job reports errors during copy" do
+    Dir.mktmpdir do |dir|
+      begin
+        Dir.chdir(dir) do
+          FileUtils.mkdir_p ['foo/bar', 'dest']
+          FileUtils.touch ['foo/foo.txt', 'foo/bar/bar.txt']
+          FileUtils.chmod 0000, 'foo/bar'
+        end
+
+        testfile = File.join(dir, 'foo')
+        destfile = File.join(dir, 'dest/foo')
+
+        transfer = Transfer.new(action: 'cp', files: {testfile => destfile})
+        transfer.perform
+
+        puts transfer.stderr
+        
+        assert transfer.stderr.present?, 'copy should have preserved stderr of job'
+        assert transfer.stderr.include?('foo/bar')
+        assert_equal 1, transfer.exit_status.exitstatus, "job exited with error #{transfer.stderr}"
+        refute transfer.exit_status.success?
+        assert_equal 1, transfer.errors.count
+
+        assert File.file?(File.join(dir, 'dest/foo.foo.txt')), 'copy should have done a partial copy foo/foo.txt but skipped bar'
+
+      ensure
+        FileUtils.chmod 0755, File.join(dir, 'foo/bar')
+      end
     end
   end
 
@@ -63,7 +114,7 @@ class TransferLocalJobTest < ActiveJob::TestCase
 
       transfer.perform
 
-      assert_equal 0, transfer.exit_status, "job exited with error #{transfer.message}"
+      assert_equal 0, transfer.exit_status, "job exited with error #{transfer.stderr}"
       assert_equal '', `diff -r #{srcdir} #{resultdir}`.strip
     end
   end

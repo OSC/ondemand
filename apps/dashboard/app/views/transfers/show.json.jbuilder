@@ -8,5 +8,5 @@ json.summary @transfer.to_s
 json.show_html_url transfer_path(@transfer.id, format: 'html') if @transfer.id
 json.show_json_url transfer_path(@transfer.id, format: 'json') if @transfer.id
 
-json.error_message alert if alert
-json.error_summary "An error occurred: #{@transfer.action_title}" if alert
+json.error_message @transfer.errors.full_messages.join("\n\n") if @transfer.errors.any?
+json.error_summary "An error occurred: #{@transfer.action_title}" if @transfer.errors.any?
