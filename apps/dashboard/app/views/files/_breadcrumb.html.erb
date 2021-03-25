@@ -7,5 +7,5 @@
 <% if file_counter == (file_count - 1) %>
 <li class="breadcrumb-item"><button id="goto-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-edit" aria-hidden="true"></i> Change directory</button></li>
 
-<li class="pull-right breadcrumb-item"><button id="copy-path" class="btn btn-outline-dark btn-sm " data-clipboard-text="<%= file.to_s %>"><span class="fa fa-copy"></span> Copy path</button></li>
+<li class="pull-right breadcrumb-item"><button id="copy-path" class="btn btn-outline-dark btn-sm " data-clipboard-text="<%= file.to_s %>"><span class="fa fa-clipboard"></span> Copy path</button></li>
 <% end %>
