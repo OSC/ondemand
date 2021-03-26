@@ -112,7 +112,9 @@ class Transfer
     # save has no effect if already persisted because this is in memory
     # if we change the storage, we change this method
     unless persisted?
-      self.id = SecureRandom.uuid
+      # HACK: we use the id as a dom id as well, so it is beneficial to have this be compatible HTML ID
+      # if the id doesn't start with a letter, it can cause problems with Bootstrap 4 sometimes
+      self.id = 't' + SecureRandom.uuid
       self.status = OodCore::Job::Status.new(state: :queued)
       self.created_at = Time.now.to_i
 
