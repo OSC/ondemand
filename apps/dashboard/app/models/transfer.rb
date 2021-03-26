@@ -151,6 +151,8 @@ class Transfer
       @steps *= 2 if action == 'mv'
     end
 
+    # FIXME: if you identify 1 item to copy that cannot be copied due to an issue we hit this:
+    # well its 0 because num_files failed to generate the list of files to copy
     if(steps == 0)
       raise "steps == 0 with from: #{from.to_s} && names: #{names.inspect} and files.count: #{files.count}"
     end
@@ -254,7 +256,7 @@ class Transfer
       # FIXME: figure out what we are going to do here, since we save the stderr output twice
       self.stderr = err_reader.value.to_s.strip
       if self.stderr.present? || ! self.exit_status.success?
-        errors.add :base, "#{self.command} exited with status #{self.exit_status.exitstatus} with error output: #{self.stderr}"
+        errors.add :base, "#{self.command} exited with status #{self.exit_status.exitstatus}\n\n#{self.stderr}"
       end
 
       self

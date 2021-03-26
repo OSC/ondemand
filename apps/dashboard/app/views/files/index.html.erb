@@ -85,7 +85,11 @@
 {{#if completed}}
   {{#if error_summary}}
     <div id="{{id}}" class="alert alert-danger alert-dismissible fade show" role="alert">
-      <a style="font-weight: bold; text-decoration: underline" href="{{show_html_url}}"><i class="fas fa-exclamation-triangle"></i> {{error_summary}}</a>
+      <b><i class="fas fa-exclamation-triangle"></i> {{error_summary}}</b>
+      <button class="btn btn-outline-dark btn-sm ml-3 collapsed" type="button" data-toggle="collapse" data-target="#{{id}}-error-report" aria-expanded="false" aria-controls="#{{id}}-error-report">See details</button>
+      <div id="{{id}}-error-report" class="collapse mt-3 card">
+        <pre class="card-body">{{error_message}}</pre>
+      </div>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
     </div>
   {{else}}
