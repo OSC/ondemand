@@ -278,6 +278,10 @@ end
     config.fetch(:pinned_apps_menu_length, 6)
   end
 
+  def console_log_performance_report?
+    dataroot.join("debug").file? || rails_env != 'production'
+  end
+
   private
 
   def config

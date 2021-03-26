@@ -1,4 +1,4 @@
-module JobsHelper
+module ActiveJobsHelper
 
 	def build_ganglia_link( host, start_seconds, report_type, node_num, size )
     ganglia_uri = ""
@@ -57,5 +57,37 @@ module JobsHelper
 
   def has_grafana(host)
     OODClusters[host].try { |cluster| cluster.custom_allow?(:grafana) } || false
+  end
+
+  def status_label(status)
+    case status
+    when "completed"
+      label = "Completed"
+      labelclass = "label-success"
+    when "running"
+      label = "Running"
+      labelclass = "label-primary"
+    when "queued"
+      label = "Queued"
+      labelclass = "label-info"
+    when "queued_held"
+      label = "Hold"
+      labelclass = "label-warning"
+    when "suspended"
+      label = "Suspend"
+      labelclass = "label-warning"
+    else
+      label = "Undetermined"
+      labelclass = "label-default"
+    end
+    "<div style='white-space: nowrap;'><span class='label #{labelclass}'>#{label}</span></div>".html_safe
+  end
+
+  def filters
+    ::ActiveJobs::Filter.list
+  end
+
+  def default_filter_id
+    ::ActiveJobs::Filter.default_id.to_s
   end
 end
