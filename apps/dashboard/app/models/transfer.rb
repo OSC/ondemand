@@ -134,9 +134,6 @@ class Transfer
     ! id.nil?
   end
 
-  #FIXME: when dealing with a single file, steps 0 (instead of 1)
-  # Files.new.num_files(from, names) might be returning an error
-  #
   # number of files to copy, move or delete
   def steps
     return @steps if @steps
@@ -150,13 +147,6 @@ class Transfer
       @steps = Files.new.num_files(from, names)
       @steps *= 2 if action == 'mv'
     end
-
-    # FIXME: if you identify 1 item to copy that cannot be copied due to an issue we hit this:
-    # well its 0 because num_files failed to generate the list of files to copy
-    if(steps == 0)
-      raise "steps == 0 with from: #{from.to_s} && names: #{names.inspect} and files.count: #{files.count}"
-    end
-
 
     @steps
   end
