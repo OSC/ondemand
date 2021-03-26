@@ -1,0 +1,26 @@
+<% if has_ganglia(data.cluster) || has_grafana(data.cluster) %>
+<div class="col-md-12">
+  <tr>
+    <td>
+      <div class="panel panel-default">
+        <% if has_ganglia(data.cluster) %>
+          <div class="panel-heading"><h3 class="panel-title"> <%= node %> <span class="pull-right"> <%= data.pbsid %> </span></h3></div>
+          <div class="panel-body">
+            <%= link_to  image_tag( build_ganglia_link(data.cluster, data.starttime, 'cpu_report', node, 'small'), class:"img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" ), build_ganglia_link(data.cluster, data.starttime, 'cpu_report', node, 'large'), data: { lightbox: "cpu-report", title: "CPU Report " + node } %>
+            <%= link_to  image_tag( build_ganglia_link(data.cluster, data.starttime, 'load_report', node, 'small'), class:"img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" ), build_ganglia_link(data.cluster, data.starttime, 'load_report', node, 'large'), data: { lightbox: "load-report", title: "Load Report " + node } %>
+            <%= link_to  image_tag( build_ganglia_link(data.cluster, data.starttime, 'mem_report', node, 'small'), class:"img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" ), build_ganglia_link(data.cluster, data.starttime, 'mem_report', node, 'large'), data: { lightbox: "mem-report", title: "Memory Report " + node } %>
+            <%= link_to  image_tag( build_ganglia_link(data.cluster, data.starttime, 'network_report', node, 'small'), class:"img-responsive col-lg-3 col-md-3 col-sm-6 col-xs-6" ), build_ganglia_link(data.cluster, data.starttime, 'network_report', node, 'large'), data: { lightbox: "network-report", title: "Network Report " + node } %>
+          </div>
+        <% elsif has_grafana(data.cluster) %>
+          <div class="panel-heading"><h3 class="panel-title"><%= node %> <span><a href="<%= build_grafana_link(data.cluster, data.starttime, 'node', node) %>" target="_blank">Detailed Metrics</a></span> <span class="pull-right"> <%= data.pbsid %> <a href="<%= build_grafana_link(data.cluster, data.starttime, 'job', node, data.pbsid) %>" target="_blank">Detailed Metrics</a></span></h3></div>
+          <div class="panel-body">
+            <iframe src="<%= build_grafana_link(data.cluster, data.starttime, 'cpu', node, data.pbsid) %>" width="450" height="200" frameborder="0"></iframe>
+            <iframe src="<%= build_grafana_link(data.cluster, data.starttime, 'memory', node, data.pbsid) %>" width="450" height="200" frameborder="0"></iframe>
+          </div>
+        <% end %>
+        </div>
+      </div>
+    </td>
+  </tr>
+</div>
+<% end %>
