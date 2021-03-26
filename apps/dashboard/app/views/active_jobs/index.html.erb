@@ -1,0 +1,96 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="pull-right">
+      <div class="btn-group">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span id="selected-filter-label"></span> <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+          <% Filter.list.each do |filter| %>
+            <%= '<li class="divider"></li>'.html_safe if filter == Filter.list.last %>
+            <li class="filter-dropdown-option" id="filter-id-<%= filter.filter_id %>" onclick="set_filter_id('<%= filter.filter_id %>');"><a href="#"><%= filter.title %></a></li>
+          <% end %>
+        </ul>
+      </div>
+
+        <div class="btn-group">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span id="selected-cluster-label"></span> <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+          <% OODClusters.sort_by {|cluster| cluster.metadata.title || cluster.id.to_s.titleize }.each do |cluster| %>
+              <li class="cluster-dropdown-option" id="cluster-id-<%= cluster.id %>" onclick="set_cluster_id('<%= cluster.id %>');"><a href="#"><%= cluster.metadata.title || cluster.id.to_s.titleize %></a></li>
+          <% end %>
+          <li class="divider"></li>
+          <li class="cluster-dropdown-option" id="cluster-id-all" onclick="set_cluster_id('all');" data-title="All Clusters"><a href="#">All Clusters</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <h2>Active Jobs</h2>
+    <table id="job_status_table" class="table datatable display table-hover" cellspacing="0" width="100%">
+      <thead>
+      <tr>
+        <th></th>
+        <th>ID</th>
+        <th>Name</th>
+        <th>User</th>
+        <th>Account</th>
+        <th>Time Used</th>
+        <th>Queue</th>
+        <th>Status</th>
+        <th>Cluster</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+    </table>
+  </div>
+</div>
+
+<script>
+var filter_id = <%= (@jobfilter ? "'#{@jobfilter}'" : "localStorage.getItem('jobfilter') || '#{Filter.default_id}'").html_safe %>;
+var cluster_id = <%= (@jobcluster ? "'#{@jobcluster}'" : "localStorage.getItem('jobcluster') || 'all'").html_safe %>;
+var performance_tracking_enabled = false;
+
+<% if Configuration.console_log_performance_report? %>
+function report_performance(){
+  var marks = performance.getEntriesByType('mark');
+  marks.forEach(function(entry){
+    console.log(entry.startTime + "," + entry.name);
+  });
+
+  // hack but only one mark for document ready, and rest are draw times
+  if(marks.length > 1){
+    console.log("version,documentReady,firstDraw,lastDraw");
+    console.log(`<%= `git describe --always --tags`.strip() %>,${marks[0].startTime},${marks[1].startTime},${marks.slice(-1)[0].startTime}`);
+  }
+}
+
+performance_tracking_enabled = true;
+performance.mark('document ready - build table and make ajax request for jobs');
+<% end %>
+
+var table = create_datatable({
+  drawCallback: function(settings){
+    // do a performance mark every time we draw the table (which happens when new records are downloaded)
+    if(performance_tracking_enabled && settings.aoData.length > 0){
+      performance.mark('draw records - ' + settings.aoData.length);
+    }
+  },
+  base_uri: '<%= controller.relative_url_root %>'
+});
+
+fetch_table_data(table, {
+  doneCallback: function(){
+    // generate report after done fetching records
+    if(performance_tracking_enabled){
+      setTimeout(report_performance, 2000);
+    }
+  },
+  base_uri: '<%= controller.relative_url_root %>'
+});
+</script>

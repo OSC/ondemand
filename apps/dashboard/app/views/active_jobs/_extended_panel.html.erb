@@ -1,0 +1,58 @@
+<% if data.error %>
+  <div class="alert alert-warning" role="alert">
+    <%= data.error %>
+  </div>
+<% else %>
+<div>
+  <div class="panel panel-default container-fluid">
+    <div class="panel-heading row clearfix">
+      <strong>
+        <div class="col-xs-1">
+          <div style="white-space: nowrap;">
+            <%= data.status %>
+          </div>
+        </div>
+        <div class="col-xs-11" style="word-wrap: break-word;"><%= data.jobname %>
+          <div><%= data.pbsid %></div>
+        </div>
+      </strong>
+    </div>
+    <div class="panel-body">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <table class="table table-condensed table-striped">
+            <tbody>
+            <% data.native_attribs.each do |attrib| %>
+              <tr>
+                <td class="col-xs-2"><strong><%= attrib.name %></strong></td>
+                <td class="col-xs-10"><%= attrib.value %></td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+      <% if data.submit_args %>
+      <div class="col-md-12">
+        <span class="col-md-2">Submit Args: </span>
+        <pre class="col-md-10" style="white-space: pre-wrap;"><%= data.submit_args %></pre>
+      </div>
+      <% end %>
+      <% if data.output_path %>
+      <div class="col-md-12">
+        <span class="col-md-2">Output Location: </span>
+        <pre class="col-md-10" style="white-space: pre-wrap;"><%= data.output_path %></pre>
+      </div>
+      <% end %>
+      <div class="col-md-12">
+        <% if ENV["USER"] == data.username %>
+            <%= link_to "#{icon("fas", "folder-open")} Open in File Manager".html_safe, data.file_explorer_url, :class => "btn btn-default", :target => "_blank", :style => "margin: 10px;" if data.file_explorer_url %>
+            <%= link_to "#{icon("fas", "terminal")} Open in Terminal".html_safe, data.shell_url, :class => "btn btn-default", :target => "_blank", :style => "margin: 10px;" if data.shell_url %>
+            <%= link_to "#{icon("fas", "trash-o")} Delete".html_safe, delete_job_path(pbsid: data.pbsid, cluster: data.cluster), :class => "btn btn-danger pull-right", :style => "margin: 10px;", data: { method: "delete", confirm: "Are you sure you want to delete #{data.pbsid}" } %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<% end %>
