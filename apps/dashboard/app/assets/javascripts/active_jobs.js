@@ -1,25 +1,5 @@
-// This is a manifest file that'll be compiled into application.js, which will include all the files
-// listed below.
-//
-// Any JavaScript/Coffee file within this directory, lib/assets/javascripts, vendor/assets/javascripts,
-// or vendor/assets/javascripts of plugins, if any, can be referenced here using a relative path.
-//
-// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
-// compiled file.
-//
-// Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
-// about supported directives.
-//
-//= require jquery3
-//= require jquery-migrate-3.1.0.min.js
-//= require jquery_ujs
-//= require bootstrap-sprockets
-//= require dataTables/jquery.dataTables
-//= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
-//= require lightbox2/javascripts/lightbox
-//= require oboe/oboe-browser.min
-//= require datatables_plugins/api/processing
-//= require_tree .
+//= require oboe/dist/oboe-browser.min
+//= require datatables.net-plugins/api/processing()
 
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
@@ -74,7 +54,7 @@ function fetch_job_data(tr, row, options) {
       pbsid: row.data().pbsid,
       cluster: row.data().cluster,
     };
-    let jobDataUrl = `${options.base_uri}/json?${new URLSearchParams(data)}`;
+    let jobDataUrl = `${options.base_uri}/activejobs/json?${new URLSearchParams(data)}`;
 
     $.getJSON(jobDataUrl, function (data) {
       // Open this row
@@ -108,7 +88,7 @@ function fetch_table_data(table, options){
   if (!options.base_uri) options.base_uri = window.location.pathname;
 
   oboe({
-    url: options.base_uri + '/jobs.json?'+get_request_params(),
+    url: options.base_uri + '/activejobs.json?'+get_request_params(),
     headers: {
       'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
       'X-Requested-With': 'XMLHttpRequest',
