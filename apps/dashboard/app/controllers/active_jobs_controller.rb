@@ -1,5 +1,5 @@
-class JobsController < ApplicationController
-  include ApplicationHelper
+class ActiveJobsController < ApplicationController
+  include ActiveJobsHelper
   include ActionController::Live
 
   def index
@@ -9,7 +9,7 @@ class JobsController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.json {
-        JobsJsonRequestHandler.new(
+        ActiveJobs::JobsJsonRequestHandler.new(
           filter_id: @jobfilter,
           cluster_id: params[:jobcluster],
           controller: self,
@@ -28,7 +28,7 @@ class JobsController < ApplicationController
       format.json {
         #Only allow the configured servers to respond
         if cluster = OODClusters[params[:cluster].to_s.to_sym]
-          render '/jobs/extended_data', :locals => {:jobstatusdata => get_job(params[:pbsid], cluster) }
+          render '/active_jobs/extended_data', :locals => {:jobstatusdata => get_job(params[:pbsid], cluster) }
         else
           msg = "Request did not specify an available cluster. "
           msg += "Available clusters are: #{OODClusters.map(&:id).join(',')} "
@@ -53,12 +53,12 @@ class JobsController < ApplicationController
         # It takes a couple of seconds for the job to clear out
         # Using the sleep to wait before reload
         sleep(2.0)
-        redirect_to root_url, :notice => "Successfully deleted " + job_id
+        redirect_to activejobs_path, :notice => "Successfully deleted " + job_id
       rescue
-        redirect_to root_url, :alert => "Failed to delete " + job_id
+        redirect_to activejobs_path, :alert => "Failed to delete " + job_id
       end
     else
-      redirect_to root_url, :alert => "Failed to delete."
+      redirect_to activejobs_path, :alert => "Failed to delete."
     end
   end
 
@@ -75,11 +75,13 @@ class JobsController < ApplicationController
       data = cluster.job_adapter.info(jobid)
 
       raise OodCore::JobAdapterError if data.native.nil?
-      Jobstatusdata.new(data, cluster, true)
+      ActiveJobs::Jobstatusdata.new(data, cluster, true)
 
     rescue OodCore::JobAdapterError
       OpenStruct.new(name: jobid, error: "No job details because job has already left the queue." , status: status_label("completed") )
     rescue => e
+      Rails.logger.info("#{e}:#{e.message}")
+      Rails.logger.info(e.backtrace.join("\n"))
       OpenStruct.new(name: jobid, error: "No job details available.\n" + e.backtrace.to_s, status: status_label("") )
     end
   end
@@ -88,7 +90,7 @@ class JobsController < ApplicationController
   #
   # @return [String, nil] the filter id if valid
   def get_filter
-    if params[:jobfilter] && Filter.list.any? { |f| f.filter_id == params[:jobfilter] }
+    if params[:jobfilter] && filters.any? { |f| f.filter_id == params[:jobfilter] }
       params[:jobfilter]
     end
   end

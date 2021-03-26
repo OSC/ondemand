@@ -5,9 +5,11 @@
     "bootstrap": "4.6.0",
     "datatables.net-bs": "^1.10.23",
     "datatables.net-bs4": "^1.10.24",
+    "datatables.net-plugins": "^1.10.24",
     "jquery": "^3.5.1",
     "jquery-migrate": "3.3.2",
     "jquery-ujs": "^1.2.2",
+    "oboe": "^2.1.5",
     "popper.js": "1.14.3"
   },
   "devDependencies": {

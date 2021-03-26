@@ -6,8 +6,8 @@
           <span id="selected-filter-label"></span> <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
-          <% Filter.list.each do |filter| %>
-            <%= '<li class="divider"></li>'.html_safe if filter == Filter.list.last %>
+          <% filters.each do |filter| %>
+            <%= '<li class="divider"></li>'.html_safe if filter == filters.last %>
             <li class="filter-dropdown-option" id="filter-id-<%= filter.filter_id %>" onclick="set_filter_id('<%= filter.filter_id %>');"><a href="#"><%= filter.title %></a></li>
           <% end %>
         </ul>
@@ -52,7 +52,7 @@
 </div>
 
 <script>
-var filter_id = <%= (@jobfilter ? "'#{@jobfilter}'" : "localStorage.getItem('jobfilter') || '#{Filter.default_id}'").html_safe %>;
+var filter_id = <%= (@jobfilter ? "'#{@jobfilter}'" : "localStorage.getItem('jobfilter') || default_filter_id").html_safe %>;
 var cluster_id = <%= (@jobcluster ? "'#{@jobcluster}'" : "localStorage.getItem('jobcluster') || 'all'").html_safe %>;
 var performance_tracking_enabled = false;
 
