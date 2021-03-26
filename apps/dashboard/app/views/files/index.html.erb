@@ -713,7 +713,7 @@ const reportTransferTemplate = (function(){
   return Handlebars.compile(template_str);
 })();
 
-function find_and_update_transfer_status(data){
+function findAndUpdateTransferStatus(data){
   let id = `#${data.id}`;
 
   if($(id).length){
@@ -724,14 +724,20 @@ function find_and_update_transfer_status(data){
   }
 }
 
+function fadeOutTransferStatus(data){
+  let id = `#${data.id}`;
+  $(id).fadeOut(4000);
+}
+
+
 function reportTransfer(data){
   // 1. add the transfer label
-  find_and_update_transfer_status(data);
+  findAndUpdateTransferStatus(data);
 
   // 2. poll for the updates
   var poll = function(){
    $.getJSON(data.show_json_url, function(newdata){
-     find_and_update_transfer_status(newdata);
+     findAndUpdateTransferStatus(newdata);
 
      if(newdata.completed){
        if(! newdata.error_message){
@@ -740,7 +746,7 @@ function reportTransfer(data){
          }
 
          // 3. fade out after 5 seconds
-         $(`#${newdata.id}`).fadeOut(4000);
+         fadeOutTransferStatus(newdata)
        }
      }
      else{
