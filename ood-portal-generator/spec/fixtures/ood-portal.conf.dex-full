@@ -19,7 +19,7 @@
 #    You can find more information about the ood-portal-generator configuration
 #    at:
 #
-#      https://osc.github.io/ood-documentation/master/infrastructure/ood-portal-generator.html
+#      https://osc.github.io/ood-documentation/latest/reference/commands/ood-portal-generator.html
 #
 # 2. Then build/install the updated Apache config with:
 #
