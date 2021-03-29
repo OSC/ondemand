@@ -277,6 +277,9 @@ $('#path-breadcrumbs').on('click', '#goto-btn', function(){
     input: 'text',
     inputLabel: 'Path',
     inputValue: history.state.currentDirectory,
+    inputAttributes: {
+      spellcheck: 'false',
+    },
     showCancelButton: true,
     inputValidator: (value) => {
       if (! value || ! value.startsWith('/')) {
@@ -327,6 +330,9 @@ $('#new-dir-btn').on("click", () => {
     title: 'New Directory',
     input: 'text',
     inputLabel: 'Directory name',
+    inputAttributes: {
+      spellcheck: 'false',
+    },
     showCancelButton: true,
     inputValidator: (value) => {
       if (! value || value.includes("/")) {
@@ -612,6 +618,9 @@ $('#directory-contents tbody').on('click', '.rename-file', function(e){
     input: 'text',
     inputLabel: 'Filename',
     inputValue: filename,
+    inputAttributes: {
+      spellcheck: 'false',
+    },
     showCancelButton: true,
     inputValidator: (value) => {
       if (! value) {
