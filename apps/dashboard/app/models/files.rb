@@ -34,7 +34,7 @@ class Files
       size: s.directory? ? 'dir' : s.size,
       human_size: ::ApplicationController.helpers.number_to_human_size(s.size, precision: 3),
       directory: s.directory?,
-      date: s.mtime.utc.iso8601,
+      date: s.mtime.to_i,
       owner: username(s.uid),
       mode: s.mode,
       dev: s.dev

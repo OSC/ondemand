@@ -215,7 +215,7 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
       }
     }, // human_size
     { data: 'modified_at', render: (data, type, row, meta) => {
-      let date = new Date(Date.parse(data))
+      let date = new Date(data * 1000)
 
       if (isNaN(date)) {
         return 'Invalid Date'
