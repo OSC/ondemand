@@ -1,14 +1,44 @@
+
 (function() {
   var sessions = [];
   var $target;
 
   <%# Replace sessions whose state has changed %>
   <% @sessions.each do |session| %>
+    var starting = false;
     sessions.push('<%= session.id %>');
     $target = $('#<%= session.id %>');
     if ( $target.data('hash') !== '<%= session.to_hash %>' ) {
       $target.replaceWith('<%= j render(partial: "panel", locals: { session: session }) %>');
+
+      if ('<%= session.starting? %>' === 'true') {
+        starting = true;
+      }
+
+      window.notifiedSessions['<%= session.id %>'].info = {
+        status: '<%= session.status %>',
+        title: '<%= session.title %>',
+        jobId: '<%= session.job_id %>',
+        starting: starting
+      }
+
+      if ('<%= session.running? %>' === 'true') {
+        if (("Notification" in window)) {
+          if (Notification.permission === "granted") {
+              if (window.notifiedSessions["<%= session.id %>"].didNotify !== true && tabNotInFocus) {
+                console.log("Session notified via Notification")
+                var options = {
+                  body: "Job ID: <%= session.job_id %>"
+                }
+                var notify = new Notification("<%= session.title %> is Running", options);
+              }
+
+            window.notifiedSessions["<%= session.id %>"].didNotify = true;
+          }
+        }
+      }
     }
+    document.title = getTitle(getLatestSession());
   <% end %>
 
   <%# Remove sessions that don't exist anymore %>

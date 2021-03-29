@@ -1,4 +1,121 @@
 <% content_for :title, "#{t('dashboard.breadcrumbs_my_sessions')} - #{OodAppkit.dashboard.title}" %>
+<% content_for :js do %>
+  <script>
+    var tabNotInFocus = false;
+    var hidden, visibilityChange;
+    if (typeof document.hidden !== "undefined") {
+        hidden = "hidden";
+        visibilityChange = "visibilitychange";
+        state = "visibilityState";
+    } else if (typeof document.mozHidden !== "undefined") {
+        hidden = "mozHidden";
+        visibilityChange = "mozvisibilitychange";
+        state = "mozVisibilityState";
+    } else if (typeof document.msHidden !== "undefined") {
+        hidden = "msHidden";
+        visibilityChange = "msvisibilitychange";
+        state = "msVisibilityState";
+    } else if (typeof document.webkitHidden !== "undefined") {
+        hidden = "webkitHidden";
+        visibilityChange = "webkitvisibilitychange";
+        state = "webkitVisibilityState";
+    }
+
+    window.notifiedSessions = {};
+
+    <% @sessions.each do |session| %>
+    var notified = false
+    if ('<%= session.running? %>' === 'true') {
+    notified = true;
+    }
+
+
+    window.notifiedSessions['<%= session.id %>'] = {
+      didNotify: notified,
+      date: Date(),
+      info: {
+        status: '',
+        title: '',
+        jobId: ''
+      }
+
+    };
+    window.notifiedSessions['<%= session.id %>'].date = parseInt('<%= session.created_at %>');
+    window.notifiedSessions['<%= session.id %>'].info = {
+      status: '<%= session.status %>',
+      title: '<%= session.title %>',
+      jobId: '<%= session.job_id %>',
+      starting: false
+    }
+
+    if ('<%= session.starting? %>' === 'true') {
+      window.notifiedSessions['<%= session.id %>'].info.starting = true;
+    } else {
+      window.notifiedSessions['<%= session.id %>'].info.starting = false;
+    }
+    <% end %>
+    document.addEventListener(visibilityChange, function() {
+      if (document[hidden]) {
+        tabNotInFocus = true;
+      } else {
+        tabNotInFocus = false;
+      }
+    });
+
+    if (Notification.permission !== "denied" && Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+
+    function getTitle(sessionId) {
+    var sessionObject = window.notifiedSessions[sessionId]
+    var status = sessionObject.info.status;
+    var state = status.charAt(0).toUpperCase() + status.slice(1);
+    var jobId = sessionObject.info.jobId;
+    var sessionTitle = sessionObject.info.title;
+
+    if (sessionObject.info.starting) {
+      state = "Starting";
+    }
+
+    return state + ' ' + sessionTitle + ' (' + jobId + ') ' + ` - ${getActiveSessions()} active sessions - My Interactive Sessions`;
+
+    }
+
+    function getLatestSession() {
+      const keys = Object.keys(window.notifiedSessions);
+      var initialDate = null;
+      var sessionId = '';
+
+      for (var i = 0; i < keys.length; i++) {
+        var id = keys[i];
+                if (initialDate === null || (window.notifiedSessions[id].date > initialDate) ) {
+          initialDate = window.notifiedSessions[id].date;
+          sessionId = id; 
+        }
+      }
+
+      return sessionId;
+    }
+
+    function getActiveSessions() {
+      var num = 0;
+      <% @sessions.each do |session| %>
+      if ('<%= session.running? %>' === 'true') {
+        num++;
+      }
+      <% end %>
+
+      return num;
+    }
+      <% if !(@sessions.empty?) %>
+      
+      document.title = getTitle('<%= @sessions[0].id %>');
+
+      <% end %>
+    
+  </script>
+<% end %>
+
 <%-
   any_apps = (@sys_app_groups + @usr_app_groups + @dev_app_groups).any?
 -%>
