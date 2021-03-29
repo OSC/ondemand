@@ -24,36 +24,38 @@
     window.notifiedSessions = {};
 
     <% @sessions.each do |session| %>
-    var notified = false
-    if ('<%= session.running? %>' === 'true') {
-    notified = true;
-    }
-
-
-    window.notifiedSessions['<%= session.id %>'] = {
-      didNotify: notified,
-      date: Date(),
-      info: {
-        status: '',
-        title: '',
-        jobId: ''
+      var notified = false
+      if ('<%= session.running? %>' === 'true') {
+        notified = true;
       }
 
-    };
-    window.notifiedSessions['<%= session.id %>'].date = parseInt('<%= session.created_at %>');
-    window.notifiedSessions['<%= session.id %>'].info = {
-      status: '<%= session.status %>',
-      title: '<%= session.title %>',
-      jobId: '<%= session.job_id %>',
-      starting: false
-    }
 
-    if ('<%= session.starting? %>' === 'true') {
-      window.notifiedSessions['<%= session.id %>'].info.starting = true;
-    } else {
-      window.notifiedSessions['<%= session.id %>'].info.starting = false;
-    }
+      window.notifiedSessions['<%= session.id %>'] = {
+        didNotify: notified,
+        date: Date(),
+        info: {
+          status: '',
+          title: '',
+          jobId: ''
+        }
+      };
+      
+      window.notifiedSessions['<%= session.id %>'].date = parseInt('<%= session.created_at %>');
+      window.notifiedSessions['<%= session.id %>'].info = {
+        status: '<%= session.status %>',
+        title: '<%= session.title %>',
+        jobId: '<%= session.job_id %>',
+        starting: false
+      }
+
+      if ('<%= session.starting? %>' === 'true') {
+        window.notifiedSessions['<%= session.id %>'].info.starting = true;
+      } else {
+        window.notifiedSessions['<%= session.id %>'].info.starting = false;
+      }
+
     <% end %>
+    
     document.addEventListener(visibilityChange, function() {
       if (document[hidden]) {
         tabNotInFocus = true;
@@ -67,17 +69,17 @@
     }
 
     function getTitle(sessionId) {
-    var sessionObject = window.notifiedSessions[sessionId]
-    var status = sessionObject.info.status;
-    var state = status.charAt(0).toUpperCase() + status.slice(1);
-    var jobId = sessionObject.info.jobId;
-    var sessionTitle = sessionObject.info.title;
+      var sessionObject = window.notifiedSessions[sessionId]
+      var status = sessionObject.info.status;
+      var state = status.charAt(0).toUpperCase() + status.slice(1);
+      var jobId = sessionObject.info.jobId;
+      var sessionTitle = sessionObject.info.title;
 
-    if (sessionObject.info.starting) {
-      state = "Starting";
-    }
+      if (sessionObject.info.starting) {
+        state = "Starting";
+      }
 
-    return state + ' ' + sessionTitle + ' (' + jobId + ') ' + ` - ${getActiveSessions()} active sessions - My Interactive Sessions`;
+      return state + ' ' + sessionTitle + ' (' + jobId + ') ' + ` - ${getActiveSessions()} active sessions - My Interactive Sessions`;
 
     }
 
@@ -88,7 +90,7 @@
 
       for (var i = 0; i < keys.length; i++) {
         var id = keys[i];
-                if (initialDate === null || (window.notifiedSessions[id].date > initialDate) ) {
+        if (initialDate === null || (window.notifiedSessions[id].date > initialDate) ) {
           initialDate = window.notifiedSessions[id].date;
           sessionId = id; 
         }
@@ -100,18 +102,19 @@
     function getActiveSessions() {
       var num = 0;
       <% @sessions.each do |session| %>
-      if ('<%= session.running? %>' === 'true') {
-        num++;
-      }
+        if ('<%= session.running? %>' === 'true') {
+          num++;
+        }
       <% end %>
 
       return num;
     }
-      <% if !(@sessions.empty?) %>
+    
+    <% if !(@sessions.empty?) %>
       
       document.title = getTitle('<%= @sessions[0].id %>');
 
-      <% end %>
+    <% end %>
     
   </script>
 <% end %>
