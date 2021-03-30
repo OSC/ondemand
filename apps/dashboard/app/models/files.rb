@@ -40,10 +40,10 @@ class Files
       id: "dev-#{s.dev}-inode-#{s.ino}",
       name: path.basename,
       size: s.directory? ? 'dir' : s.size,
+      human_size: ::ApplicationController.helpers.number_to_human_size(s.size, precision: 3),
       directory: s.directory?,
-      date: s.mtime.strftime("%d.%m.%Y"),
+      date: s.mtime.to_i,
       owner: username(s.uid),
-      #todo: this value converted here or server side
       mode: s.mode,
       dev: s.dev
     }
