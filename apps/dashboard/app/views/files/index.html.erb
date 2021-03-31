@@ -162,7 +162,7 @@ $.fn.dataTable.ext.search.push(
       //FIXME:
       // let api = new $.fn.dataTable.Api( settings );
       // let column = api.column('name:name').index().column();
-      return $('#show-dotfiles').is(':checked') || ! data[2].startsWith('.');
+      return getShowDotFiles() || ! data[2].startsWith('.');
     }
 )
 
@@ -186,11 +186,11 @@ function update_datatables_status(api){
 }
 
 function getShowOwnerMode() {
-  return localStorage.getItem('show-owner-mode') || 'false'
+  return localStorage.getItem('show-owner-mode') == 'true'
 }
 
 function getShowDotFiles() {
-  return localStorage.getItem('show-dotfiles') || 'false'
+  return localStorage.getItem('show-dotfiles') == 'true'
 }
 
 var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, xhr ) {
@@ -199,16 +199,6 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
     history.replaceState(_.merge({}, history.state, {currentDirectoryUpdatedAt: json.time}), null);
   }
 }).DataTable({
-  initComplete: () => {
-    if ($('#show-dotfiles').is(':checked')) {
-      table.column('owner:name').visible(true);
-      table.column('mode:name').visible(true);
-    }
-
-    if ($('#show-dotfiles').is('checked')) {
-      table.draw();
-    }
-  },
   // ajax: {
   //   url: history.state.currentDirectoryUrl,
   //   dataSrc: 'files',
@@ -263,8 +253,8 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
       // Return formatted date "3/23/2021 10:52:28 AM"
       return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
     }}, // modified_at
-    { name: 'owner', data: 'owner', visible: $('#show-owner-mode').is(':checked') }, // owner
-    { name: 'mode', data: 'mode', visible: $('#show-owner-mode').is(':checked'), render: (data, type, row, meta) => {
+    { name: 'owner', data: 'owner', visible: getShowOwnerMode() }, // owner
+    { name: 'mode', data: 'mode', visible: getShowOwnerMode(), render: (data, type, row, meta) => {
 
       // mode after base conversion is a string such as "100755"
       let mode = data.toString(8)
@@ -279,8 +269,8 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
 
 //FIXME: race cond?
 // prepend show dotfiles checkbox to search box
-$('#directory-contents_filter').prepend(`<label style="margin-right: 14px"><input type="checkbox" id="show-owner-mode" ${ getShowOwnerMode() == "true" ? 'checked' : ""}> Show Owner/Mode</label>`)
-$('#directory-contents_filter').prepend(`<label style="margin-right: 20px"><input type="checkbox" id="show-dotfiles" ${ getShowDotFiles() == "true" ? 'checked' : ""}> Show Dotfiles</label>`)
+$('#directory-contents_filter').prepend(`<label style="margin-right: 14px"><input type="checkbox" id="show-owner-mode" ${ getShowOwnerMode() ? 'checked' : ''}> Show Owner/Mode</label>`)
+$('#directory-contents_filter').prepend(`<label style="margin-right: 20px"><input type="checkbox" id="show-dotfiles" ${ getShowDotFiles() ? 'checked' : ''}> Show Dotfiles</label>`)
 
 table.on('draw.dtSelect.dt select.dtSelect.dt deselect.dtSelect.dt info.dt', function () {
   update_datatables_status(table);
@@ -293,7 +283,7 @@ reloadTable();
 
 $('#show-dotfiles').on('change', () => {
   let visible = $('#show-dotfiles').is(':checked');
-  localStorage.setItem('show-dotfiles', visible);
+  localStorage.setItem('show-dotfiles', new Boolean(visible));
 
   table.draw();
 });
@@ -301,7 +291,7 @@ $('#show-dotfiles').on('change', () => {
 // TODO: https://datatables.net/reference/button/colvis
 $('#show-owner-mode').on('change', () => {
   let visible = $('#show-owner-mode').is(':checked');
-  localStorage.setItem('show-owner-mode', visible);
+  localStorage.setItem('show-owner-mode', new Boolean(visible));
 
   table.column('owner:name').visible(visible);
   table.column('mode:name').visible(visible);
