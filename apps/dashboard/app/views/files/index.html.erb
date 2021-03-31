@@ -466,6 +466,8 @@ function getFilesAndDirectoriesFromDirectory (directoryReader, oldEntries, logDr
 
       this.handleRootDrop = this.handleRootDrop.bind(this);
       this.createEmptyDirs = this.createEmptyDirs.bind(this);
+
+      this.uppy = uppy;
     }
 
     handleRootDrop (e) {
@@ -475,30 +477,31 @@ function getFilesAndDirectoriesFromDirectory (directoryReader, oldEntries, logDr
         let items = Array.prototype.slice.call(e.dataTransfer.items || [], 0);
         let entries = items.map(i => i.webkitGetAsEntry()).filter(i => i);
 
-        Promise.all(entries.map(i => getEmptyDirs(i))).then((dirs) => {
+        return Promise.all(entries.map(i => getEmptyDirs(i))).then((dirs) => {
           this.empty_dirs = this.empty_dirs.concat(_.flattenDeep(dirs));
+
+          console.log(this.empty_dirs);
         });
       }
       //else we don't have access to directory information
     }
 
-    createEmptyDirs () {
-      // PostProcessor:
-      // returns a promise that resolves when processing completes; its resolution value is ignored
+    createEmptyDirs (ids) {
+      if(! this.uppy.getState().error){ // avoid creating empty dirs if error occurred during upload
 
-      //TODO: error checking and reporting
-      Promise.all(this.empty_dirs.map((d) => {
-        // "fullPath" should actually be the path relative to the current directory
-        //TODO: could remove the currentDirectoryPath if present though...
-        let filename = _.trimStart(d.fullPath, '/');
+        //TODO: error checking and reporting
+        return Promise.all(this.empty_dirs.map((d) => {
+          // "fullPath" should actually be the path relative to the current directory
+          let filename = _.trimStart(d.fullPath, '/');
 
-        return fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put'})
-        //TODO: parse json response verify if there was an error creating directory and handle error
-      })).then(() => this.empty_dirs = []);
+          return fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put'})
+          //TODO: parse json response verify if there was an error creating directory and handle error
+
+        })).then(() => this.empty_dirs = []);
+      }
     }
 
     install () {
-      //TEST: does this get called if upload fails???
       this.uppy.addPostProcessor(this.createEmptyDirs);
 
       //TODO: subscribe to event on dashboard close?! to clear empty_dirs?
