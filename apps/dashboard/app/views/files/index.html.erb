@@ -270,9 +270,10 @@ table.on('draw.dtSelect.dt select.dtSelect.dt deselect.dtSelect.dt info.dt', fun
 });
 
 
+<% unless alert %>
 // initial data load
-// FIXME: avoid if we detect there is a problem server side
 reloadTable();
+<% end %>
 
 
 $('#show-dotfiles').on("change", () => table.draw());
