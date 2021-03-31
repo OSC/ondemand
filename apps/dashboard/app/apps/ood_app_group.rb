@@ -44,7 +44,7 @@ class OodAppGroup
     apps.group_by { |app|
       app.try(group_by)
     }.map { |k,v|
-      OodAppGroup.new(title: k || I18n.t('dashboard.not_grouped'), apps: v.sort_by { |a| a.title }, nav_limit: nav_limit)
+      OodAppGroup.new(title: k, apps: v.sort_by { |a| a.title }, nav_limit: nav_limit)
     }.sort_by { |g| g.title }
   end
 
