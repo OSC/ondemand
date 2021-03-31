@@ -185,6 +185,13 @@ function update_datatables_status(api){
   $('.datatables-status').html(`${msg} - ${rows} rows selected`);
 }
 
+function getShowOwnerMode() {
+  return localStorage.getItem('show-owner-mode') || 'false'
+}
+
+function getShowDotFiles() {
+  return localStorage.getItem('show-dotfiles') || 'false'
+}
 
 var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, xhr ) {
   // new ajax request for new data so update date/time
@@ -192,6 +199,16 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
     history.replaceState(_.merge({}, history.state, {currentDirectoryUpdatedAt: json.time}), null);
   }
 }).DataTable({
+  initComplete: () => {
+    if ($('#show-dotfiles').is(':checked')) {
+      table.column('owner:name').visible(true);
+      table.column('mode:name').visible(true);
+    }
+
+    if ($('#show-dotfiles').is('checked')) {
+      table.draw();
+    }
+  },
   // ajax: {
   //   url: history.state.currentDirectoryUrl,
   //   dataSrc: 'files',
@@ -262,25 +279,30 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
 
 //FIXME: race cond?
 // prepend show dotfiles checkbox to search box
-$('#directory-contents_filter').prepend('<label style="margin-right: 20px"><input type="checkbox" id="show-dotfiles"> Show Dotfiles</label>')
-$('#directory-contents_filter').prepend('<label style="margin-right: 14px"><input type="checkbox" id="show-owner-mode"> Show Owner/Mode</label>')
+$('#directory-contents_filter').prepend(`<label style="margin-right: 14px"><input type="checkbox" id="show-owner-mode" ${ getShowOwnerMode() == "true" ? 'checked' : ""}> Show Owner/Mode</label>`)
+$('#directory-contents_filter').prepend(`<label style="margin-right: 20px"><input type="checkbox" id="show-dotfiles" ${ getShowDotFiles() == "true" ? 'checked' : ""}> Show Dotfiles</label>`)
 
 table.on('draw.dtSelect.dt select.dtSelect.dt deselect.dtSelect.dt info.dt', function () {
   update_datatables_status(table);
 });
-
 
 <% unless alert %>
 // initial data load
 reloadTable();
 <% end %>
 
+$('#show-dotfiles').on('change', () => {
+  let visible = $('#show-dotfiles').is(':checked');
+  localStorage.setItem('show-dotfiles', visible);
 
-$('#show-dotfiles').on("change", () => table.draw());
+  table.draw();
+});
 
 // TODO: https://datatables.net/reference/button/colvis
-$('#show-owner-mode').on("change", () => {
+$('#show-owner-mode').on('change', () => {
   let visible = $('#show-owner-mode').is(':checked');
+  localStorage.setItem('show-owner-mode', visible);
+
   table.column('owner:name').visible(visible);
   table.column('mode:name').visible(visible);
 });
