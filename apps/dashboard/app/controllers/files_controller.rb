@@ -8,12 +8,23 @@ class FilesController < ApplicationController
     if @path.stat.directory?
       Files.raise_if_cant_access_directory_contents(@path)
 
-      show_directory
+      @layout_container_class = "container-fluid"
+
+      respond_to do |format|
+        format.html {
+          @layout_container_class = "container-fluid"
+
+          render :index
+        }
+        format.json {
+          @files = Files.new.ls(@path.to_s)
+          render :index
+        }
+      end
     else
       show_file
     end
   rescue => e
-    @transfers = []
     @files = []
     flash.now[:alert] = "#{e.message}"
 
@@ -21,13 +32,21 @@ class FilesController < ApplicationController
     # you are redirected to the other page
     # probably the best way to handle this is to properly handle symlinks in the view, especially
     # broken symlinks
+    @layout_container_class = "container-fluid"
 
     respond_to do |format|
-      format.html { render :index }
-      format.json { render :index }
+      format.html {
+        @layout_container_class = "container-fluid"
+
+        render :index
+      }
+      format.json {
+        @files = []
+
+        render :index
+      }
     end
   end
-
 
   # put - create or update
   # FIXME: separate from touching a file (for new) vs saving content of 0 to a file
@@ -87,21 +106,6 @@ class FilesController < ApplicationController
 
   def normalized_path
     Pathname.new("/" + params[:filepath].chomp("/"))
-  end
-
-  def show_directory
-    @layout_container_class = "container-fluid"
-
-    @transfers = Transfer.transfers
-
-    # FIXME: html view doesn't use @files (and should it?) though we do
-    # check for the existence of the directory (thus alert)
-    @files = Files.new.ls(@path.to_s)
-
-    respond_to do |format|
-      format.html { render :index }
-      format.json { render :index }
-    end
   end
 
   def show_file
