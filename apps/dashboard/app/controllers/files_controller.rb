@@ -91,11 +91,12 @@ class FilesController < ApplicationController
     path.mkpath unless path.parent.directory?
 
     FileUtils.mv params["file"].tempfile, path.to_s
-    # render :body => "save: ok(#{path}) }"
-    # TODO: uppy: could add url to the file
+
     render json: {}
+  rescue Errno::EACCES => e
+    render json: { error_message: e.message }, status: :forbidden
   rescue => e
-    render json: { error_message: e.message }
+    render json: { error_message: e.message }, status: :internal_server_error
   end
 
   def zip
