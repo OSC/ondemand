@@ -16,7 +16,7 @@ function dataFromJsonResponse(response){
 }
 
 function newFile(filename){
-  fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token }})
+  fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?touch=true`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token }})
   .then(response => dataFromJsonResponse(response))
   // TODO: parse JSON response to get id of file created
   // TODO: should return JSON of the created file (similar to the JSON array returned when getting a list of files...)

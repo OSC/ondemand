@@ -57,6 +57,8 @@ class FilesController < ApplicationController
       Dir.mkdir path
     elsif params.include?("file")
       FileUtils.mv params["file"].tempfile, path
+    elsif params.include?("touch")
+      FileUtils.touch path
     else
       File.write(path, request.body.read)
     end
