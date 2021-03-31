@@ -25,7 +25,6 @@ class ErrorsController < ApplicationController
 
     #TODO: log exception information you want to log here
     # after removing it from the normal logging via lograge
-    render status: 500
 
     respond_to do |format|
       format.html { render status: :internal_server_error }
