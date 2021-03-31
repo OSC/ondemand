@@ -542,6 +542,12 @@ function getFilesAndDirectoriesFromDirectory (directoryReader, oldEntries, logDr
     }
   });
 
+  uppy.on('complete', (result) => {
+    if(result.successful.length > 0){
+      reloadTable();
+    }
+  });
+
   // https://stackoverflow.com/questions/6756583/prevent-browser-from-loading-a-drag-and-dropped-file
   window.addEventListener("dragover",function(e){
     e = e || event;
