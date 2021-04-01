@@ -57,7 +57,7 @@
   for example the border-left: 4px solid #0088cc on the checkbox td
   and then some very very light blue highlight that still has the necessary contrast ratio with black on white/black on grey for WCAG
    %>
-  <button type="button" class="btn btn-outline-dark btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+  <button type="button" class="actions-btn btn btn-outline-dark btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <span class="fa fa-ellipsis-v"></span>
   </button>
   <ul class="dropdown-menu">
@@ -950,11 +950,16 @@ window.addEventListener('storage', () => {
   updateViewForClipboard();
 });
 
-
 // if only 1 selected item, do not allow to de-select
 table.on('user-select', function ( e, dt, type, cell, originalEvent  ) {
     var selected_rows = dt.rows( { selected: true  }  );
-    if(selected_rows.count() == 1 && cell.index().row == selected_rows.indexes()[0] ){
+
+    if(originalEvent.target.classList.contains('actions-btn')){
+      // dont do user select event when opening dropdown
+      e.preventDefault();
+    }
+    else if(selected_rows.count() == 1 && cell.index().row == selected_rows.indexes()[0] ){
+      // dont do user select because already selected
       e.preventDefault();
     }
     else{
@@ -962,7 +967,6 @@ table.on('user-select', function ( e, dt, type, cell, originalEvent  ) {
       cell.node().closest('tr').querySelector('input[type=checkbox]').focus();
     }
 });
-
 
 table.on( 'deselect', function ( e, dt, type, indexes ) {
   dt.rows(indexes).nodes().toArray().forEach(e => $(e).find('input[type=checkbox]').prop('checked', false));
@@ -1025,7 +1029,4 @@ $('#directory-contents tbody').on('keydown', 'input, a', function(e){
   }
 });
 
-
-// https://stackoverflow.com/questions/19274028/changing-dom-element-position-of-searchbox-in-datatables/19276854
-// $("#search_box").html($(".dataTables_filter"));
 </script>
