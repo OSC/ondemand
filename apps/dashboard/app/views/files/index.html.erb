@@ -52,7 +52,7 @@
 
 
 <script id="actions-btn-template" type="text/template">
-<div class="btn-group">
+<div class="btn-group actions-btn-group">
   <%# FIXME: outline dark is easy to see unless the row is selected, then it is difficult to see; consider a different row selection color or indicator
   for example the border-left: 4px solid #0088cc on the checkbox td
   and then some very very light blue highlight that still has the necessary contrast ratio with black on white/black on grey for WCAG
@@ -954,8 +954,8 @@ window.addEventListener('storage', () => {
 table.on('user-select', function ( e, dt, type, cell, originalEvent  ) {
     var selected_rows = dt.rows( { selected: true  }  );
 
-    if(originalEvent.target.classList.contains('actions-btn')){
-      // dont do user select event when opening dropdown
+    if(originalEvent.target.closest('.actions-btn-group')){
+      // dont do user select event when opening or working with actions btn dropdown
       e.preventDefault();
     }
     else if(selected_rows.count() == 1 && cell.index().row == selected_rows.indexes()[0] ){
