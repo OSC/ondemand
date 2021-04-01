@@ -133,11 +133,17 @@ class FilesController < ApplicationController
     #
     # but we do have control flow client side - to determine what to do with a directory or a file
     # so this would shift that to the server side (or have it serverside and client side)
-
     if params[:download]
       send_file @path
     else
-      send_file @path, disposition: 'inline'
+      begin
+        type = Files.mime_type_by_extension(@path).presence || Files.mime_type(@path)
+
+        send_file @path, disposition: 'inline', type: type
+      rescue => e
+        Rails.logger.warn("failed to determine mime type for file: #{@path} due to error #{e.message}")
+        send_file @path, disposition: 'inline'
+      end
     end
   end
 end
