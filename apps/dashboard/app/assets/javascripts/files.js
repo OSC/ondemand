@@ -43,6 +43,9 @@ function reloadTable(url){
       table.rows.add(data.files);
       table.draw();
 
+      $('#open-in-terminal-btn').attr('href', data.shell_url);
+      $('#open-in-terminal-btn').removeClass('disabled');
+
       return Promise.resolve(data);
     })
     .catch((e) => {
@@ -50,6 +53,8 @@ function reloadTable(url){
       // this should be an alert above "failed to load table with data from X due to error: ..."
       // or even a smaller message, such as in the status bar but with the alert background color etc.
       Swal.fire(e.message, `Error occurred when attempting to access ${request_url}`, 'error');
+
+      $('#open-in-terminal-btn').addClass('disabled');
       return Promise.reject(e);
     });
 }

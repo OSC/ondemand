@@ -1,5 +1,9 @@
 json.path @path.to_s
 json.url files_path(@path).to_s
+
+#TODO: support array of shell urls, along with the default shell url which could be above
+json.shell_url OodAppkit.shell.url(path: @path.to_s).to_s
+
 json.files @files do |f|
   json.id f[:id]
   json.type f[:directory] ? 'd' : 'f'
