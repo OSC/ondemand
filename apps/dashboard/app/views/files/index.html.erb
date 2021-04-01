@@ -614,10 +614,7 @@ $('#directory-contents tbody').on('click', '.view-file', function(e){
 
   let row = table.row(this.dataset.rowIndex).data();
 
-  //TODO: view either opens file in new directory OR opens in viewer
-  // the more we shift this to the API the better!
-  // including URL templates
-
+  window.open(row.url, 'ViewFile', "location=yes,resizable=yes,scrollbars=yes,status=yes");
 });
 
 $('#directory-contents tbody').on('click', '.edit-file', function(e){
