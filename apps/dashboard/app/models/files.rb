@@ -66,22 +66,15 @@ class Files
     Mime::Type.lookup_by_extension(Pathname.new(path.to_s).extname.delete_prefix('.'))
   end
 
-  #TODO: better cache (like persistent but memory limited)
-  #https://www.justinweiss.com/articles/4-simple-memoization-patterns-in-ruby-and-one-gem/
-  #
-  #
-  # def self.top_cities(order_by)
-  #   @top_cities ||= Hash.new do |h, key|
-  #     h[key] = where(top_city: true).order(key).to_a
-  #   end
-  #   @top_cities[order_by]
-  # end
-
-  # FIXME: cache
   def self.username(uid)
-    Etc.getpwuid(uid).name
-  rescue
-    uid
+    @username_for_ids ||= Hash.new do |h, key|
+      h[key] = begin
+        Etc.getpwuid(uid).name
+      rescue
+        uid
+      end
+    end
+    @username_for_ids[uid]
   end
 
   def num_files(from, names)
