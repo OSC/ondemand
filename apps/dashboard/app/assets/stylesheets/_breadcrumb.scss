@@ -1,5 +1,4 @@
-
-.breadcrumb-item + .breadcrumb-item::before {
+.breadcrumb:not(.breadcrumb-no-delimiter) > .breadcrumb-item + .breadcrumb-item::before {
   display: inline-block;
   margin: 0.25em 1em 0 0;
   transform: rotate(25deg);
@@ -8,3 +7,6 @@
   height: 0.8em;
 }
 
+.breadcrumb-no-delimiter .breadcrumb-item + .breadcrumb-item::before {
+  padding-right: 0;
+}
