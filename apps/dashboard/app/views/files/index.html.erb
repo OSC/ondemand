@@ -67,11 +67,37 @@ end
   </button>
   <ul class="dropdown-menu">
     <!-- whats the accessibility rules for href and it acting like a button -->
+<!--
+    FIXME: need to decide what to do on selection and directory actions, which are not doable when scrolling down
+    also are inconvenient from a keyboard (select, then jump to top to activate button on selection)
+
+    We could fix the button header to the top of the screen when you scroll for sighted mouse users...
+
+    <li class="dropdown-header">Row actions</li>
+-->
     {{#if file}}
-    <li><a href="#" class="view-file dropdown-item" data-row-index="{{row_index}}">View</a></li>
-    <li><a href="#" class="edit-file dropdown-item" data-row-index="{{row_index}}">Edit</a></li>
+    <li><a href="#" class="view-file dropdown-item" data-row-index="{{row_index}}"><i class="fas fa-eye" aria-hidden="true"></i> View</a></li>
+    <li><a href="#" class="edit-file dropdown-item" data-row-index="{{row_index}}"><i class="fas fa-edit" aria-hidden="true"></i> Edit</a></li>
     {{/if}}
-    <li><a href="#" class="rename-file dropdown-item" data-row-index="{{row_index}}">Rename</a></li>
+    <li><a href="#" class="rename-file dropdown-item" data-row-index="{{row_index}}"><i class="fas fa-font" aria-hidden="true"></i> Rename</a></li>
+    {{#if file}}
+    <li><a href="#" class="download-file dropdown-item" data-row-index="{{row_index}}"><i class="fas fa-download" aria-hidden="true"></i> Download</a></li>
+    {{/if}}
+    <li class="dropdown-divider mt-4"></li>
+    <li><a href="#" class="delete-file dropdown-item text-danger" data-row-index="{{row_index}}"><i class="fas fa-trash" aria-hidden="true"></i> Delete</a></li>
+<!--
+    <li class="dropdown-divider"></li>
+    <li class="dropdown-header">Selection actions</li>
+    <li><a href="#" class="dropdown-item"><i class="fas fa-copy" aria-hidden="true"></i> Copy/Move</a></li>
+    <li class="mt-4"><a href="#" class="dropdown-item text-danger"><i class="fas fa-trash" aria-hidden="true"></i> Delete</a></li>
+    <li class="dropdown-divider"></li>
+    <li class="dropdown-header">Current directory actions</li>
+    <li><a href="#" class="dropdown-item"><i class="fas fa-terminal" aria-hidden="true"></i> Open In Terminal</a></li>
+    <li><a href="#" class="dropdown-item"><i class="fas fa-plus" aria-hidden="true"></i> New File</a></li>
+    <li><a href="#" class="dropdown-item"><i class="fas fa-folder-plus" aria-hidden="true"></i> New Directory</a></li>
+    <li><a href="#" class="dropdown-item"><i class="fas fa-upload" aria-hidden="true"></i> Upload</a></li>
+-->
+
     <!--
     <li role="separator" class="divider"></li>
     <li><a href="#" class="download-file" data-row-index="{{row_index}}">Download</a></li>
@@ -402,6 +428,23 @@ $('#new-dir-btn').on("click", () => {
   .then((filename) => newDirectory(filename));
 });
 
+function downloadFile(file){
+  // creating the temporary iframe is exactly what the CloudCmd does
+  // so this just repeats the status quo
+
+  // FIXME: currentDirectoryUrl possible escaping issues... what if path has spaces etc.
+  let filename = $($.parseHTML(file.name)).text(),
+      downloadUrl = `${history.state.currentDirectoryUrl}/${encodeURI(filename)}?download=${Date.now().toString()}`,
+      iframe = document.createElement('iframe'),
+      TIME = 30 * 1000;
+  iframe.setAttribute('class', 'hidden');
+  iframe.setAttribute('src', downloadUrl);
+
+  document.body.appendChild(iframe);
+
+  setTimeout(function() { document.body.removeChild(iframe); }, TIME);
+}
+
 $('#download-btn').on("click", () => {
   let selection = table.rows({selected: true}).data();
   if(selection.length != 1){
@@ -412,20 +455,7 @@ $('#download-btn').on("click", () => {
     // TODO
   }
   else {
-    // creating the temporary iframe is exactly what the CloudCmd does
-    // so this just repeats the status quo
-
-    // FIXME: currentDirectoryUrl possible escaping issues... what if path has spaces etc.
-    let filename = $($.parseHTML(selection[0].name)).text(),
-        downloadUrl = `${history.state.currentDirectoryUrl}/${encodeURI(filename)}?download=${Date.now().toString()}`,
-        iframe = document.createElement('iframe'),
-        TIME = 30 * 1000;
-    iframe.setAttribute('class', 'hidden');
-    iframe.setAttribute('src', downloadUrl);
-
-    document.body.appendChild(iframe);
-
-    setTimeout(function() { document.body.removeChild(iframe); }, TIME);
+    downloadFile(selection[0]);
   }
 });
 
@@ -648,7 +678,6 @@ $('#directory-contents tbody').on('click', '.view-file', function(e){
   e.preventDefault();
 
   let row = table.row(this.dataset.rowIndex).data();
-
   window.open(row.url, 'ViewFile', "location=yes,resizable=yes,scrollbars=yes,status=yes");
 });
 
@@ -657,6 +686,20 @@ $('#directory-contents tbody').on('click', '.edit-file', function(e){
 
   let row = table.row(this.dataset.rowIndex).data();
   window.open(row.edit_url);
+});
+
+$('#directory-contents tbody').on('click', '.delete-file', function(e){
+  e.preventDefault();
+
+  let row = table.row(this.dataset.rowIndex).data();
+  deleteFiles([row.name]);
+});
+
+$('#directory-contents tbody').on('click', '.download-file', function(e){
+  e.preventDefault();
+
+  let row = table.row(this.dataset.rowIndex).data();
+  downloadFile(row);
 });
 
 // FIXME: i broke rename :-P
@@ -919,8 +962,7 @@ $('#copy-move-btn').on("click", () => {
     updateViewForClipboard();
 });
 
-$('#delete-btn').on("click", () => {
-  let files = table.rows({selected: true}).data().toArray().map((f) => f.name);
+function deleteFiles(files){
   if(! files.length > 0){
     return;
   }
@@ -944,6 +986,11 @@ $('#delete-btn').on("click", () => {
       removeFiles(files.map(f => [history.state.currentDirectory, f].join('/')), csrf_token);
     }
   })
+}
+
+$('#delete-btn').on("click", () => {
+  let files = table.rows({selected: true}).data().toArray().map((f) => f.name);
+  deleteFiles(files);
 });
 
 // TODO: move all functionality out of click handlers to functions
