@@ -2,6 +2,9 @@
   "name": "openondemand-dashboard",
   "dependencies": {
     "@rails/webpacker": "5.2.1",
+    "@uppy/core": "^1.17.0",
+    "@uppy/dashboard": "^1.18.0",
+    "@uppy/xhr-upload": "^1.7.2",
     "bootstrap": "4.6.0",
     "clipboard": "^2.0.8",
     "datatables.net-bs": "^1.10.23",
