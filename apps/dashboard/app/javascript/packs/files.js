@@ -69,7 +69,13 @@ window.EmptyDirCreator = EmptyDirCreator
 
 function getUppyEndpoint() {
   let directoryContentsDiv = "#directory-contents"
-  let { dataset } = document.querySelector(directoryContentsDiv)
+  let el = document.querySelector(directoryContentsDiv)
+
+  if (el == null) {
+    return null
+  }
+
+  let { dataset } = el
 
   return dataset.uppyEndpoint
 }
