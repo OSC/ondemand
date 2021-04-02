@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-md-12">
-    <div class="pull-right">
+    <div class="float-right">
       <div class="btn-group">
         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <span id="selected-filter-label"></span> <span class="caret"></span>
@@ -8,7 +8,9 @@
         <ul class="dropdown-menu">
           <% filters.each do |filter| %>
             <%= '<li class="divider"></li>'.html_safe if filter == filters.last %>
-            <li class="filter-dropdown-option" id="filter-id-<%= filter.filter_id %>" onclick="set_filter_id('<%= filter.filter_id %>');"><a href="#"><%= filter.title %></a></li>
+            <li id="filter-id-<%= filter.filter_id %>" onclick="set_filter_id('<%= filter.filter_id %>');">
+              <a class="dropdown-item" href="#"><%= filter.title %></a>
+            </li>
           <% end %>
         </ul>
       </div>
@@ -19,10 +21,14 @@
         </button>
         <ul class="dropdown-menu">
           <% OODClusters.sort_by {|cluster| cluster.metadata.title || cluster.id.to_s.titleize }.each do |cluster| %>
-              <li class="cluster-dropdown-option" id="cluster-id-<%= cluster.id %>" onclick="set_cluster_id('<%= cluster.id %>');"><a href="#"><%= cluster.metadata.title || cluster.id.to_s.titleize %></a></li>
+              <li class="cluster-dropdown-option" id="cluster-id-<%= cluster.id %>" onclick="set_cluster_id('<%= cluster.id %>');">
+                <a class="dropdown-item href="#"><%= cluster.metadata.title || cluster.id.to_s.titleize %></a>
+              </li>
           <% end %>
           <li class="divider"></li>
-          <li class="cluster-dropdown-option" id="cluster-id-all" onclick="set_cluster_id('all');" data-title="All Clusters"><a href="#">All Clusters</a></li>
+          <li id="cluster-id-all" onclick="set_cluster_id('all');" data-title="All Clusters">
+            <a class="dropdown-item" href="#">All Clusters</a>
+          </li>
         </ul>
       </div>
     </div>
