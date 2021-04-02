@@ -128,31 +128,31 @@ function fetch_table_data(table, options){
 
 
 function status_label(status){
-  var label = "Undetermined", labelclass = "label-default";
+  var label = "Undetermined", labelclass = "badge-default";
 
   if(status == "completed"){
     label = "Completed";
-    labelclass = "label-success";
+    labelclass = "badge-success";
   }
 
   if(status == "running"){
     label = "Running";
-    labelclass = "label-primary";
+    labelclass = "badge-primary";
   }
   if(status == "queued"){
     label = "Queued";
-    labelclass = "label-info";
+    labelclass = "badge-info";
   }
   if(status == "queued_held"){
     label = "Hold";
-    labelclass = "label-warning";
+    labelclass = "badge-warning";
   }
   if(status == "suspended"){
     label = "Suspend";
-    labelclass = "label-warning";
+    labelclass = "badge-warning";
   }
 
-  return `<span class="label ${labelclass}">${escapeHtml(label)}</span>`;
+  return `<span class="badge ${labelclass}">${escapeHtml(label)}</span>`;
 }
 
 function create_datatable(options){
@@ -172,11 +172,6 @@ function create_datatable(options){
         "pageLength": 50,           // Set the number of rows
         "oLanguage": {
             "sSearch": "Filter: "
-        },
-        "fnCreatedRow": function( nRow, aData, iDataIndex ) {
-          $(nRow).children("td").css("overflow", "hidden");
-          $(nRow).children("td").css("white-space", "nowrap");
-          $(nRow).children("td").css("text-overflow", "ellipsis");
         },
         "fnInitComplete":           function( oSettings ) {
                                         for ( var i=0, iLen=oSettings.aoData.length ; i<iLen ; i++ )
@@ -216,7 +211,7 @@ function create_datatable(options){
             },
             {
                 data:               "jobname",
-                className:          "small",
+                className:          "small text-break",
                 width:              '25%',
                 render: function (data) {
                   var data = escapeHtml(data)
@@ -255,7 +250,7 @@ function create_datatable(options){
             },
             {
                 data:               "queue",
-                className:          "small",
+                className:          "small text-break",
                 "autoWidth":        true,
                 "render":           function(data) {
                   var data = escapeHtml(data)
@@ -287,7 +282,7 @@ function create_datatable(options){
                     return `
                       <div>
                         <a
-                          class="btn btn-danger btn-xs action-btn"
+                          class="btn btn-danger btn-xs"
                           data-method="delete"
                           data-confirm="Are you sure you want to delete ${escapeHtml(jobname)} - ${pbsid}"
                           href="${escapeHtml(delete_path)}"
@@ -296,7 +291,7 @@ function create_datatable(options){
                           data-toggle="tooltip"
                           title="Delete Job"
                         >
-                          <i class='glyphicon glyphicon-trash' aria-hidden='true'></i>
+                          <i class='fas fa-trash-alt fa-fw' aria-hidden='true'></i>
                         </a>
                       </div>
                     `;
