@@ -108,7 +108,7 @@
   <%# TODO put search box ABOVE the breadcrumbs %>
   <div style="margin-top: 20px">
 
-    <ol id="path-breadcrumbs" class="breadcrumb">
+    <ol id="path-breadcrumbs" class="breadcrumb breadcrumb-no-delimiter">
       <%= render partial: 'breadcrumb', collection: @path.descend, as: :file, locals: { file_count: @path.descend.count, full_path: @path } %>
     </ol>
 
