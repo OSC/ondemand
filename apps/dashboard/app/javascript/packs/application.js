@@ -30,24 +30,5 @@ import 'popper.js'
 // Import Bootstrap 4
 import 'bootstrap/dist/js/bootstrap'
 
-const Uppy = require("@uppy/core")
-const Dashboard = require("@uppy/dashboard")
-const XHRUpload = require("@uppy/xhr-upload")
-
-const uppy = Uppy({
-    debug: true,
-  })
-  .use(XHRUpload, {
-
-  })
-
-uppy.on('file-added', file => {
-  
-})
-
-uppy.on('complete', result => {
-  
-})
-
 // Import application stylesheets
 require.context('../stylesheets', true)
