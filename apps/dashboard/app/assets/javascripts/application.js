@@ -12,7 +12,8 @@
 //
 //= require data-confirm-modal
 //= require handlebars.js/4.4.2/handlebars.min
-//= require lodash/4.17.15/lodash.min.js
+//= require lodash/4.17.15/lodash.min
+//= require uppy/dist/uppy.min
 //= require_tree .
 
 //FIXME: move to coffescript
