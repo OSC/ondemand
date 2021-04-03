@@ -12,7 +12,8 @@
     "jquery-migrate": "3.3.2",
     "jquery-ujs": "^1.2.2",
     "popper.js": "1.14.3",
-    "sweetalert2": "^10.15.7"
+    "sweetalert2": "^10.15.7",
+    "uppy": "^1.27.0"
   },
   "devDependencies": {
     "webpack-dev-server": "^3.11.2"
