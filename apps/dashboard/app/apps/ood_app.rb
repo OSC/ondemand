@@ -55,11 +55,15 @@ class OodApp
         app_name: name,
         app_token: token
       }
-      if(Addressable::URI.parse(custom_url).relative? && ! custom_url.include?('.'))
-        File.join Rails.application.routes.url_helpers.root_path, custom_url
-      else
-        custom_url
-      end
+      self.class.fix_if_internal_url(custom_url, Rails.application.routes.url_helpers.root_path)
+    end
+  end
+
+  def self.fix_if_internal_url(url, base_url)
+    if(Addressable::URI.parse(url).relative? && ! url.include?('.') && ! url.start_with?('/'))
+      File.join base_url, url
+    else
+      url
     end
   end
 

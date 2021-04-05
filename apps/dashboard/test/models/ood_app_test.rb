@@ -242,4 +242,11 @@ class OodAppTest < ActiveSupport::TestCase
 
     assert_equal '/files', app.url
   end
+
+  test "fix_if_internal_url avoids changing url prefixed with /" do
+    #FIXME: not sure how to stub base uri of the app...this did not work
+    # Rails.application.routes.url_helpers.stubs(:root_path).returns('/pun/sys/dashboard')
+
+    assert_equal '/files', OodApp.fix_if_internal_url('/files', '/pun/sys/dashboard')
+  end
 end
