@@ -21,8 +21,8 @@
         </button>
         <ul class="dropdown-menu">
           <% OODClusters.sort_by {|cluster| cluster.metadata.title || cluster.id.to_s.titleize }.each do |cluster| %>
-              <li class="cluster-dropdown-option" id="cluster-id-<%= cluster.id %>" onclick="set_cluster_id('<%= cluster.id %>');">
-                <a class="dropdown-item href="#"><%= cluster.metadata.title || cluster.id.to_s.titleize %></a>
+              <li id="cluster-id-<%= cluster.id %>" onclick="set_cluster_id('<%= cluster.id %>');">
+                <a class="dropdown-item" href="#"><%= cluster.metadata.title || cluster.id.to_s.titleize %></a>
               </li>
           <% end %>
           <li class="divider"></li>
