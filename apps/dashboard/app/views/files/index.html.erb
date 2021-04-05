@@ -319,8 +319,8 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
 
 //FIXME: race cond?
 // prepend show dotfiles checkbox to search box
-$('#directory-contents_filter').prepend(`<label style="margin-right: 20px"><input type="checkbox" id="show-dotfiles" ${ getShowDotFiles() ? 'checked' : ''}> Show Dotfiles</label>`)
-$('#directory-contents_filter').prepend(`<label style="margin-right: 14px"><input type="checkbox" id="show-owner-mode" ${ getShowOwnerMode() ? 'checked' : ''}> Show Owner/Mode</label>`)
+$('#directory-contents_filter').prepend(`<label style="margin-right: 20px" for="show-dotfiles"><input type="checkbox" id="show-dotfiles" ${ getShowDotFiles() ? 'checked' : ''}> Show Dotfiles</label>`)
+$('#directory-contents_filter').prepend(`<label style="margin-right: 14px" for="show-owner-mode"><input type="checkbox" id="show-owner-mode" ${ getShowOwnerMode() ? 'checked' : ''}> Show Owner/Mode</label>`)
 
 table.on('draw.dtSelect.dt select.dtSelect.dt deselect.dtSelect.dt info.dt', function () {
   update_datatables_status(table);
