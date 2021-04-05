@@ -1,14 +1,18 @@
 require "authz/app_developer_constraint"
 
 Rails.application.routes.draw do
-  constraints filepath: /.+/ do
-    get "files/fs(/*filepath)" => "files#fs", :defaults => { :format => 'html', :filepath => '/' }, :format => false, as: :files
-    put "files/fs/*filepath" => "files#update", :format => false, :defaults => { :format => 'json' }
-    put "files/zip/*filepath" => "files#zip", :format => false, :defaults => { :format => 'json' }
-  end
-  post "files/upload"
 
-  resources :transfers, only: [:index, :show, :create, :destroy]
+  # in production, if the user doesn't have access to the files app directory, we hide the routes
+  if ! Rails.env.production? || File.file?('/var/www/ood/apps/sys/files/manifest.yml')
+    constraints filepath: /.+/ do
+      get "files/fs(/*filepath)" => "files#fs", :defaults => { :format => 'html', :filepath => '/' }, :format => false, as: :files
+      put "files/fs/*filepath" => "files#update", :format => false, :defaults => { :format => 'json' }
+      put "files/zip/*filepath" => "files#zip", :format => false, :defaults => { :format => 'json' }
+    end
+    post "files/upload"
+
+    resources :transfers, only: [:index, :show, :create, :destroy]
+  end
 
   namespace :batch_connect do
     resources :sessions, only: [:index, :destroy]
