@@ -40,7 +40,7 @@ class TransferLocalJobTest < ActiveJob::TestCase
       transfer = Transfer.new(action: 'cp', files: {testfile => destfile})
       transfer.perform
 
-      assert transfer.stderr.empty?, 'copy should have resulted in no errors'
+      assert transfer.stderr.empty?, "copy should have resulted in no errors but had stderr: #{transfer.stderr}"
       assert_equal 0, transfer.exit_status, "job exited with error #{transfer.stderr}"
     end
   end
