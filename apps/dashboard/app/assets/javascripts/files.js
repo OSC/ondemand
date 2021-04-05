@@ -59,7 +59,7 @@ function reloadTable(url){
     });
 }
 
-function goto(url, pushState = true, show_processing_indicator = true){
+function goto(url, pushState = true, show_processing_indicator = true) {
   //FIXME: https://datatables.net/plug-ins/api/processing()???
   // or use other busy signal...
   //
@@ -75,9 +75,13 @@ function goto(url, pushState = true, show_processing_indicator = true){
     pushState = false;
 
   reloadTable(url)
-    .then((data) =>{
+    .then((data) => {
       $('#path-breadcrumbs').html(data.breadcrumbs_html);
-      if(pushState){
+
+      if(pushState) {
+        // Clear search query when moving to another directory.
+        table.search('').draw();
+
         history.pushState({
           currentDirectory: data.path,
           currentDirectoryUrl: data.url
