@@ -249,6 +249,7 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
     history.replaceState(_.merge({}, history.state, {currentDirectoryUpdatedAt: json.time}), null);
   }
 }).DataTable({
+  autoWidth: false,
   // ajax: {
   //   url: history.state.currentDirectoryUrl,
   //   dataSrc: 'files',
