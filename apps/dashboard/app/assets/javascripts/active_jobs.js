@@ -173,11 +173,6 @@ function create_datatable(options){
         "oLanguage": {
             "sSearch": "Filter: "
         },
-        "fnCreatedRow": function( nRow, aData, iDataIndex ) {
-          $(nRow).children("td").css("overflow", "hidden");
-          $(nRow).children("td").css("white-space", "nowrap");
-          $(nRow).children("td").css("text-overflow", "ellipsis");
-        },
         "fnInitComplete":           function( oSettings ) {
                                         for ( var i=0, iLen=oSettings.aoData.length ; i<iLen ; i++ )
                                         {
@@ -216,7 +211,7 @@ function create_datatable(options){
             },
             {
                 data:               "jobname",
-                className:          "small",
+                className:          "small text-break",
                 width:              '25%',
                 render: function (data) {
                   var data = escapeHtml(data)
@@ -255,7 +250,7 @@ function create_datatable(options){
             },
             {
                 data:               "queue",
-                className:          "small",
+                className:          "small text-break",
                 "autoWidth":        true,
                 "render":           function(data) {
                   var data = escapeHtml(data)
