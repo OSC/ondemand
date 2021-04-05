@@ -221,4 +221,25 @@ class OodAppTest < ActiveSupport::TestCase
       assert_equal false, app.image_icon?
     end
   end
+
+  test "with absolute manifest#url in app#url" do
+    app = OodApp.new(OpenStruct.new(type: '', owner: '', name: '', token: ''))
+    app.stubs(:manifest).returns(OpenStruct.new(:url => 'http://www.google.com'))
+
+    assert_equal 'http://www.google.com', app.url
+  end
+
+  test "with relative manifest#url preserve in app#url" do
+    app = OodApp.new(OpenStruct.new(type: '', owner: '', name: '', token: ''))
+    app.stubs(:manifest).returns(OpenStruct.new(:url => 'www.google.com'))
+
+    assert_equal 'www.google.com', app.url
+  end
+
+  test "with relative manifest#url without dot change app#url to internal url" do
+    app = OodApp.new(OpenStruct.new(type: '', owner: '', name: '', token: ''))
+    app.stubs(:manifest).returns(OpenStruct.new(:url => 'files'))
+
+    assert_equal '/files', app.url
+  end
 end

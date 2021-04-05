@@ -49,12 +49,17 @@ class OodApp
         router.url
       end
     else
-      manifest.url % {
+      custom_url = manifest.url % {
         app_type: type,
         app_owner: owner,
         app_name: name,
         app_token: token
       }
+      if(Addressable::URI.parse(custom_url).relative? && ! custom_url.include?('.'))
+        File.join Rails.application.routes.url_helpers.root_path, custom_url
+      else
+        custom_url
+      end
     end
   end
 
@@ -206,9 +211,9 @@ class OodApp
       Pathname.new('')
     end
   end
-  
+
   def icon_uri
-    if image_icon? 
+    if image_icon?
       app_icon_path(name, type, owner)
     elsif manifest.icon =~ /^fa[bsrl]?:\/\//
       manifest.icon
