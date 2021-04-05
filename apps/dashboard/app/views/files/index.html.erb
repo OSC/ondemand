@@ -286,7 +286,7 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
       }
     },
     { data: 'type', render: (data, type, row, meta) => data == 'd' ? '<span title="directory" class="fa fa-folder" style="color: gold"><span class="sr-only"> dir</span></span>' : '<span title="file" class="fa fa-file" style="color: lightgrey"><span class="sr-only"> file</span></span>' }, // type
-    { name: 'name', data: 'name', render: (data, type, row, meta) => `<a class="${row.type} name" href="${row.type == 'd' ? row.url : row.download_url}">${Handlebars.escapeExpression(data)}</a>` }, // name
+    { name: 'name', data: 'name', className: 'text-break', render: (data, type, row, meta) => `<a class="${row.type} name" href="${row.type == 'd' ? row.url : row.download_url}">${Handlebars.escapeExpression(data)}</a>` }, // name
     { name: 'actions', orderable: false, data: null, render: (data, type, row, meta) => actionsBtnTemplate({ row_index: meta.row, file: row.type != 'd'  }) }, // FIXME: pass row index or something needed for finding item
     { data: 'size',
       render: (data, type, row, meta) => {
