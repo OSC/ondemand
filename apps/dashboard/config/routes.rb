@@ -50,7 +50,7 @@ Rails.application.routes.draw do
   end
 
   # Jobs
-  if Rails.root.join('apps', 'activejobs', 'manifest.yml').file?
+  if Rails.root.join('..', 'activejobs', 'manifest.yml').file?
     get "/activejobs" => "active_jobs#index"
     get "/activejobs/json" => "active_jobs#json", :defaults => { :format => 'json' }
     delete "/activejobs" => "active_jobs#delete_job",  as: 'delete_job'
