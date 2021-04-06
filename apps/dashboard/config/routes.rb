@@ -50,9 +50,11 @@ Rails.application.routes.draw do
   end
 
   # Jobs
-  get "/activejobs" => "active_jobs#index"
-  get "/activejobs/json" => "active_jobs#json", :defaults => { :format => 'json' }
-  delete "/activejobs" => "active_jobs#delete_job",  as: 'delete_job'
+  if Rails.root.join('apps', 'activejobs', 'manifest.yml').file?
+    get "/activejobs" => "active_jobs#index"
+    get "/activejobs/json" => "active_jobs#json", :defaults => { :format => 'json' }
+    delete "/activejobs" => "active_jobs#delete_job",  as: 'delete_job'
+  end
 
   match "/404", :to => "errors#not_found", :via => :all
   match "/500", :to => "errors#internal_server_error", :via => :all
