@@ -974,7 +974,7 @@ function deleteFiles(files){
   }
 
   Swal.fire({
-    title: 'Delete files?',
+    title: files.length == 1 ? `Delete ${files[0]}?` : `Delete ${files.length} selected files?`,
     text: 'Are you sure you want to delete the files: ' + files.join(', '),
     showCancelButton: true,
     showClass: {
