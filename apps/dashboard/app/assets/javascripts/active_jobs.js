@@ -282,7 +282,7 @@ function create_datatable(options){
                     return `
                       <div>
                         <a
-                          class="btn btn-danger"
+                          class="btn btn-danger btn-xs"
                           data-method="delete"
                           data-confirm="Are you sure you want to delete ${escapeHtml(jobname)} - ${pbsid}"
                           href="${escapeHtml(delete_path)}"
