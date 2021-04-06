@@ -39,7 +39,7 @@ class Files
     {
       id: "dev-#{s.dev}-inode-#{s.ino}",
       name: path.basename,
-      size: s.directory? ? 'dir' : s.size,
+      size: s.directory? ? nil : s.size,
       human_size: s.directory? ? '-' : ::ApplicationController.helpers.number_to_human_size(s.size, precision: 3),
       directory: s.directory?,
       date: s.mtime.to_i,
