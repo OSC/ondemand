@@ -563,7 +563,7 @@ function getFilesAndDirectoriesFromDirectory (directoryReader, oldEntries, logDr
           // "fullPath" should actually be the path relative to the current directory
           let filename = _.trimStart(d.fullPath, '/');
 
-          return fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put'})
+          return fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token }})
           //TODO: parse json response verify if there was an error creating directory and handle error
 
         })).then(() => this.empty_dirs = []);
