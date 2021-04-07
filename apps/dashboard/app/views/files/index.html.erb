@@ -3,10 +3,10 @@ content_for :head do
   javascript_pack_tag 'files'
 end
 %>
+
 <div class="text-right">
 
-  <%# FIXME: open in terminal should be dropdown of all clusters (with default) %>
-  <a id="open-in-terminal-btn" class="btn btn-outline-dark btn-sm disabled" href="#"><i class="fas fa-terminal" aria-hidden="true"></i> Open in Terminal</a>
+  <%= render partial: 'shell', locals: { clusters: OodAppkit.clusters } %>
   <button id="new-file-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-plus" aria-hidden="true"></i> New File</button>
   <button id="new-dir-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-folder-plus" aria-hidden="true"></i> New Directory</button>
   <button id="upload-btn" type="button" class="btn btn-primary btn-sm"><i class="fas fa-upload" aria-hidden="true"></i> Upload</button>

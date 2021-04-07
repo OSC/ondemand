@@ -82,6 +82,9 @@ function goto(url, pushState = true, show_processing_indicator = true) {
         // Clear search query when moving to another directory.
         table.search('').draw();
 
+        // Update Open in Terminal dropdown.
+        $('#shell-wrapper').html(data.shell_dropdown_html)
+
         history.pushState({
           currentDirectory: data.path,
           currentDirectoryUrl: data.url
