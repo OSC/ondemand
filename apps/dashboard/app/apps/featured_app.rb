@@ -2,6 +2,9 @@
 # and subcategory to allow for groupings other than what's
 # provided in the app's manifest & definition.
 class FeaturedApp < OodApp
+  alias_method :original_category, :category
+  alias_method :original_subcategory, :subcategory
+
   attr_reader :category, :subcategory, :token
 
   def self.from_ood_app(app, token: nil)
@@ -10,6 +13,7 @@ class FeaturedApp < OodApp
 
   def initialize(router, category: "Apps", subcategory: I18n.t('dashboard.pinned_apps_title'), token: nil)
     super(router)
+
     @category = category.to_s
     @subcategory = subcategory.to_s
     @token = token || router.token
