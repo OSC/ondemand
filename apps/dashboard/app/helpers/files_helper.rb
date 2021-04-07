@@ -8,13 +8,14 @@ module FilesHelper
     html = ""
 
     Configuration.login_clusters.each{ |cluster|
-      html.concat(tag.a(
-        cluster.title,
-        href: OodAppkit.shell.url(path: cluster.title.lower).to_s,
-        class: 'dropdown-item',
-        role: 'menuitem',
-        target: '_blank'
-      ))
+      link = OodAppLink.new(
+        title: cluster.title,
+        url: OodAppkit::Urls::Shell.new(base_url: '/').url(host: cluster.title.downcase),
+        icon_uri: 'fas://terminal',
+        new_tab: true
+      ).url
+
+      html.concat(link)
     }
 
     html.html_safe
