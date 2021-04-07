@@ -50,9 +50,8 @@ Rails.application.routes.draw do
   end
 
   # App file editor
-  get "/edit/*path" => "file_editor#index", defaults: { :path => "/" , :format => 'html' }, format: false
-  get "/edit" => "file_editor#index", :defaults => { :path => "/", :format => 'html' }, format: false
-  get get "/file_editor" => "file_editor#index"
+  get "files/edit/*path" => "file_editor#index", defaults: { :path => "/" , :format => 'html' }, format: false
+  get "files/edit" => "file_editor#index", :defaults => { :path => "/", :format => 'html' }, format: false
 
   # Errors
   match "/404", :to => "errors#not_found", :via => :all

@@ -25,7 +25,4 @@ class FileEditorController < ApplicationController
       render status: 404
     end
   end
-
-  def about
-  end
 end
