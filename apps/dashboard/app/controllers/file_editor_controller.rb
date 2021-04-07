@@ -18,8 +18,7 @@ class FileEditorController < ApplicationController
         render status: 404
       end
     elsif @pathname.directory?
-      @directory_content = Dir.glob(@pathname + "*").sort
-      @file_edit_url = Pathname.new(ENV['RAILS_RELATIVE_URL_ROOT'] || '/').join('edit')
+      # just render error message
     else
       @not_found = true
       render status: 404
