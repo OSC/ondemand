@@ -7,6 +7,13 @@ class Transfer
   attr_accessor :id, :status, :created_at, :started_at, :completed_at
   attr_writer :percent
 
+  validates_each :files do |record, attr, value|
+    if record.action == 'mv' || record.action == 'cp'
+      conflicts = value.values.select {|f| File.exist?(f) }
+      record.errors.add :files, "these files already exist: #{conflicts.join(', ')}" if conflicts.present?
+    end
+  end
+
   def percent
     (status && status.completed?) ? 100 : (@percent || 0)
   end
@@ -228,8 +235,8 @@ class Transfer
     # calculate number of steps prior to starting the removal of files
     steps
 
-    puts "command: #{command.inspect}"
-    puts "files: #{files.inspect}"
+    # puts "command: #{command.inspect}"
+    # puts "files: #{files.inspect}"
 
     Open3.popen3(*command, chdir: from) do |i, o, e, t|
       self.pid = t.pid

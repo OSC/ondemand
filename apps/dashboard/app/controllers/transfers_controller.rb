@@ -52,7 +52,10 @@ class TransfersController < ApplicationController
   def create
     body_params = JSON.parse(request.body.read).symbolize_keys
     @transfer = Transfer.build(action: body_params[:command], files: body_params[:files])
-    if @transfer.synchronous?
+    if ! @transfer.valid?
+      # error
+      render json: { error_message: @transfer.errors.full_messages.join('. ') }
+    elsif @transfer.synchronous?
       @transfer.perform
 
       respond_to do |format|
