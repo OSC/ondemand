@@ -4,12 +4,18 @@
     Open in Terminal
   <% end %>
 
-  <% if OodAppkit.clusters.count > 0 %>
+  <% if Configuration.login_clusters.count > 0 %>
     <button type="button" class="btn btn-sm btn-outline-dark dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <ul class="dropdown-menu" x-placement="right-start" id="shell-dropdown-items">
       <%
-      clusters.each{ |cluster|
-        tag.a cluster.title, href: 'link', class: 'dropdown-item', role: 'menuitem'
+      Configuration.login_clusters.each{ |cluster|
+        tag.a(
+          cluster.title,
+          href: OodAppkit.shell.url(path: cluster.title.lower).to_s,
+          class: 'dropdown-item',
+          role: 'menuitem',
+          target: '_blank'
+        )
       }
       %>
     </ul>
