@@ -3,6 +3,7 @@ json.url files_path(@path).to_s
 
 #TODO: support array of shell urls, along with the default shell url which could be above
 json.shell_url OodAppkit.shell.url(path: @path.to_s).to_s
+json.shell_dropdown_html render partial: 'shell.html.erb', locals: { cluster: OodAppkit.clusters }
 
 json.files @files do |f|
   json.id f[:id]
@@ -19,6 +20,7 @@ json.files @files do |f|
   json.owner f[:owner]
   json.mode f[:mode]
 end
+
 json.breadcrumbs_html render partial: 'breadcrumb.html.erb', collection: @path.descend, as: :file, locals: { file_count: @path.descend.count, full_path: @path }
 json.time Time.now.to_i
 json.error_message alert if alert
