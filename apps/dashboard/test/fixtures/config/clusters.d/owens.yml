@@ -50,6 +50,19 @@ v2:
       opt_query:
         h: "%{h}.ten.osc.edu"
       version: "3"
+    grafana:
+      host: "https://grafana.osc.edu"
+      orgId: 1
+      dashboard:
+        name: "ondemand-clusters"
+        uid: "aaba6Ahbauquag"
+        panels:
+          cpu: 20
+          memory: 24
+      labels:
+        cluster: "cluster"
+        host: "host"
+        jobid: "jobid"
   batch_connect:
       basic:
         script_wrapper: "module restore\n%s"

@@ -1,25 +1,5 @@
-// This is a manifest file that'll be compiled into application.js, which will include all the files
-// listed below.
-//
-// Any JavaScript/Coffee file within this directory, lib/assets/javascripts, vendor/assets/javascripts,
-// or vendor/assets/javascripts of plugins, if any, can be referenced here using a relative path.
-//
-// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
-// compiled file.
-//
-// Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
-// about supported directives.
-//
-//= require jquery3
-//= require jquery-migrate-3.1.0.min.js
-//= require jquery_ujs
-//= require bootstrap-sprockets
-//= require dataTables/jquery.dataTables
-//= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
-//= require lightbox2/javascripts/lightbox
-//= require oboe/oboe-browser.min
-//= require datatables_plugins/api/processing
-//= require_tree .
+//= require oboe/dist/oboe-browser.min
+//= require datatables.net-plugins/api/processing()
 
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
@@ -74,7 +54,7 @@ function fetch_job_data(tr, row, options) {
       pbsid: row.data().pbsid,
       cluster: row.data().cluster,
     };
-    let jobDataUrl = `${options.base_uri}/json?${new URLSearchParams(data)}`;
+    let jobDataUrl = `${options.base_uri}/activejobs/json?${new URLSearchParams(data)}`;
 
     $.getJSON(jobDataUrl, function (data) {
       // Open this row
@@ -108,7 +88,7 @@ function fetch_table_data(table, options){
   if (!options.base_uri) options.base_uri = window.location.pathname;
 
   oboe({
-    url: options.base_uri + '/jobs.json?'+get_request_params(),
+    url: options.base_uri + '/activejobs.json?'+get_request_params(),
     headers: {
       'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
       'X-Requested-With': 'XMLHttpRequest',
@@ -148,31 +128,31 @@ function fetch_table_data(table, options){
 
 
 function status_label(status){
-  var label = "Undetermined", labelclass = "label-default";
+  var label = "Undetermined", labelclass = "badge-default";
 
   if(status == "completed"){
     label = "Completed";
-    labelclass = "label-success";
+    labelclass = "badge-success";
   }
 
   if(status == "running"){
     label = "Running";
-    labelclass = "label-primary";
+    labelclass = "badge-primary";
   }
   if(status == "queued"){
     label = "Queued";
-    labelclass = "label-info";
+    labelclass = "badge-info";
   }
   if(status == "queued_held"){
     label = "Hold";
-    labelclass = "label-warning";
+    labelclass = "badge-warning";
   }
   if(status == "suspended"){
     label = "Suspend";
-    labelclass = "label-warning";
+    labelclass = "badge-warning";
   }
 
-  return `<span class="label ${labelclass}">${escapeHtml(label)}</span>`;
+  return `<span class="badge ${labelclass}">${escapeHtml(label)}</span>`;
 }
 
 function create_datatable(options){
@@ -192,11 +172,6 @@ function create_datatable(options){
         "pageLength": 50,           // Set the number of rows
         "oLanguage": {
             "sSearch": "Filter: "
-        },
-        "fnCreatedRow": function( nRow, aData, iDataIndex ) {
-          $(nRow).children("td").css("overflow", "hidden");
-          $(nRow).children("td").css("white-space", "nowrap");
-          $(nRow).children("td").css("text-overflow", "ellipsis");
         },
         "fnInitComplete":           function( oSettings ) {
                                         for ( var i=0, iLen=oSettings.aoData.length ; i<iLen ; i++ )
@@ -236,7 +211,7 @@ function create_datatable(options){
             },
             {
                 data:               "jobname",
-                className:          "small",
+                className:          "small text-break",
                 width:              '25%',
                 render: function (data) {
                   var data = escapeHtml(data)
@@ -275,7 +250,7 @@ function create_datatable(options){
             },
             {
                 data:               "queue",
-                className:          "small",
+                className:          "small text-break",
                 "autoWidth":        true,
                 "render":           function(data) {
                   var data = escapeHtml(data)
@@ -307,7 +282,7 @@ function create_datatable(options){
                     return `
                       <div>
                         <a
-                          class="btn btn-danger btn-xs action-btn"
+                          class="btn btn-danger btn-xs"
                           data-method="delete"
                           data-confirm="Are you sure you want to delete ${escapeHtml(jobname)} - ${pbsid}"
                           href="${escapeHtml(delete_path)}"
@@ -316,7 +291,7 @@ function create_datatable(options){
                           data-toggle="tooltip"
                           title="Delete Job"
                         >
-                          <i class='glyphicon glyphicon-trash' aria-hidden='true'></i>
+                          <i class='fas fa-trash-alt fa-fw' aria-hidden='true'></i>
                         </a>
                       </div>
                     `;

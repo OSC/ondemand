@@ -7,7 +7,7 @@
     	</tr>
 	<% if !d.nodes.nil? %>
 		<% d.nodes.each do |node| %>
-			<%= render partial: 'jobs/job_details_node_view.html.erb', :locals => {:data => d, :node => node } %>
+			<%= render partial: 'active_jobs/job_details_node_view.html.erb', :locals => {:data => d, :node => node } %>
 		<% end %>
 	<% end %>
 </div>
