@@ -1,5 +1,6 @@
 //= require oboe/dist/oboe-browser.min
 //= require datatables.net-plugins/api/processing()
+//= require lightbox2/src/js/lightbox
 
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
