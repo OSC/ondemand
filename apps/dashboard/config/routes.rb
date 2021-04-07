@@ -50,7 +50,7 @@ Rails.application.routes.draw do
   end
 
   # ActiveJobs which can be disabled in production
-  if ! Rails.env.production? || File.file?('/var/www/ood/apps/sys/activejobs/manifest.yml')
+  if ! Rails.env.production? || File.readable?('/var/www/ood/apps/sys/activejobs/manifest.yml')
     get "/activejobs" => "active_jobs#index"
     get "/activejobs/json" => "active_jobs#json", :defaults => { :format => 'json' }
     delete "/activejobs" => "active_jobs#delete_job",  as: 'delete_job'
