@@ -3,7 +3,7 @@ json.url files_path(@path).to_s
 
 #TODO: support array of shell urls, along with the default shell url which could be above
 json.shell_url OodAppkit.shell.url(path: @path.to_s).to_s
-json.shell_dropdown_html render partial: 'shell.html.erb', locals: { cluster: OodAppkit.clusters }
+json.shell_dropdown_html render partial: 'shell.html.erb'
 
 json.files @files do |f|
   json.id f[:id]
