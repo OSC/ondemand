@@ -186,7 +186,6 @@ touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/dashboard.co
 touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/shell.conf
 touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/files.conf
 touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/file-editor.conf
-touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/activejobs.conf
 touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/myjobs.conf
 
 touch %{buildroot}%{_sysconfdir}/ood/config/ood_portal.sha256sum
@@ -247,7 +246,6 @@ touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/dashboard.conf
 touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/shell.conf
 touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/files.conf
 touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/file-editor.conf
-touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/activejobs.conf
 touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/myjobs.conf
 
 %post selinux
@@ -305,7 +303,6 @@ touch %{_localstatedir}/www/ood/apps/sys/dashboard/tmp/restart.txt
 touch %{_localstatedir}/www/ood/apps/sys/shell/tmp/restart.txt
 touch %{_localstatedir}/www/ood/apps/sys/files/tmp/restart.txt
 touch %{_localstatedir}/www/ood/apps/sys/file-editor/tmp/restart.txt
-touch %{_localstatedir}/www/ood/apps/sys/activejobs/tmp/restart.txt
 touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 
 # Rebuild Apache config and restart Apache httpd if config changed
@@ -361,7 +358,6 @@ fi
 %ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/shell.conf
 %ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/files.conf
 %ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/file-editor.conf
-%ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/activejobs.conf
 %ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/myjobs.conf
 %dir %{_tmppath}/ondemand-nginx
 %dir %{_rundir}/ondemand-nginx
