@@ -278,6 +278,11 @@ end
     config.fetch(:pinned_apps_menu_length, 6)
   end
 
+  # Report performance of activejobs table rendering
+  def console_log_performance_report?
+    dataroot.join("debug").file? || rails_env != 'production'
+  end
+
   # What to group pinned apps by
   def pinned_apps_group_by
     group_by = config.fetch(:pinned_apps_group_by, "")
