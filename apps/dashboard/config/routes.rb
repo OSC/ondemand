@@ -16,7 +16,7 @@ Rails.application.routes.draw do
     end
     post "files/upload"
 
-    resources :transfers, only: [:index, :show, :create, :destroy]
+    resources :transfers, only: [:show, :create, :destroy]
   end
 
   namespace :batch_connect do
