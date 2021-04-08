@@ -1,6 +1,3 @@
-//TODO: FilesApi https://stackoverflow.com/questions/22734188/javascript-module-pattern-with-anonymous-functions
-// for now...
-//
 function alertError(error_title, error_message){
   Swal.fire(error_title, error_message, 'error');
 }
@@ -18,8 +15,6 @@ function dataFromJsonResponse(response){
 function newFile(filename){
   fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?touch=true`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token }})
   .then(response => dataFromJsonResponse(response))
-  // TODO: parse JSON response to get id of file created
-  // TODO: should return JSON of the created file (similar to the JSON array returned when getting a list of files...)
   .then(() => reloadTable())
   .catch(e => alertError('Error occurred when attempting to create new file', e.message));
 }
@@ -27,8 +22,6 @@ function newFile(filename){
 function newDirectory(filename){
   fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token }})
   .then(response => dataFromJsonResponse(response))
-  // TODO: parse JSON response to get id of file created
-  // TODO: should return JSON of the created file (similar to the JSON array returned when getting a list of files...)
   .then(() => reloadTable())
   .catch(e => alertError('Error occurred when attempting to create new directory', e.message));
 }
@@ -49,9 +42,6 @@ function reloadTable(url){
       return Promise.resolve(data);
     })
     .catch((e) => {
-      // FIXME: change to modeless feedback
-      // this should be an alert above "failed to load table with data from X due to error: ..."
-      // or even a smaller message, such as in the status bar but with the alert background color etc.
       Swal.fire(e.message, `Error occurred when attempting to access ${request_url}`, 'error');
 
       $('#open-in-terminal-btn').addClass('disabled');
@@ -60,17 +50,6 @@ function reloadTable(url){
 }
 
 function goto(url, pushState = true, show_processing_indicator = true) {
-  //FIXME: https://datatables.net/plug-ins/api/processing()???
-  // or use other busy signal...
-  //
-  // if(show_processing_indicator)
-  //   table.processing(true);
-  //
-  //FIXME: odd thing - with history - if you go forward, then backwards, then forward again
-  // you get JSON representation instead of HTML representation
-
-  // FIXME: if url == history.state.currentDirectoryUrl
-  // do not pushState regardless!
   if(url == history.state.currentDirectoryUrl)
     pushState = false;
 
@@ -89,6 +68,7 @@ function goto(url, pushState = true, show_processing_indicator = true) {
       }
     })
     .finally(() => {
+      //TODO: after processing is available via ActiveJobs merge
       // if(show_processing_indicator)
       //   table.processing(false)
     });
