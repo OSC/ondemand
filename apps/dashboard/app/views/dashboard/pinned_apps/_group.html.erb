@@ -1,0 +1,5 @@
+<h4 class="apps-section-header-blue"><%= group.title || I18n.t('dashboard.not_grouped') %></h4>
+
+<div class="row">
+  <%= render partial: "/dashboard/pinned_apps/app", collection: group.apps %>
+</div>

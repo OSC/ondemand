@@ -157,6 +157,7 @@ en:
     all_apps_table_sub_category_column: "Sub Category"
 
     unknown: "Unknown"
+    not_grouped: "Other Apps"
 
     nav_limit_caption: 'showing %{subset_count} of %{total_count}'
     pinned_apps_title: 'Pinned Apps'

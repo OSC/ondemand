@@ -315,4 +315,22 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       ConfigurationSingleton.new.send(:config)
     end
   end
+
+  test "pinned_apps_group_by returns original category when configured with category" do
+    cfg = ConfigurationSingleton.new
+    cfg.stubs(:config).returns({pinned_apps_group_by: "category"})
+    assert_equal "original_category", cfg.pinned_apps_group_by
+  end
+
+  test "pinned_apps_group_by returns original subcategory when configured with subcategory" do
+    cfg = ConfigurationSingleton.new
+    cfg.stubs(:config).returns({pinned_apps_group_by: "subcategory"})
+    assert_equal "original_subcategory", cfg.pinned_apps_group_by
+  end
+
+  test "pinned_apps_group_by returns an empty string by default" do
+    cfg = ConfigurationSingleton.new
+    cfg.stubs(:config).returns({})
+    assert_equal "", cfg.pinned_apps_group_by
+  end
 end
