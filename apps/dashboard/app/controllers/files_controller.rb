@@ -7,12 +7,8 @@ class FilesController < ApplicationController
     if @path.stat.directory?
       Files.raise_if_cant_access_directory_contents(@path)
 
-      @layout_container_class = "container-fluid"
-
       respond_to do |format|
         format.html {
-          @layout_container_class = "container-fluid"
-
           render :index
         }
         format.json {
@@ -27,12 +23,8 @@ class FilesController < ApplicationController
     @files = []
     flash.now[:alert] = "#{e.message}"
 
-    @layout_container_class = "container-fluid"
-
     respond_to do |format|
       format.html {
-        @layout_container_class = "container-fluid"
-
         render :index
       }
       format.json {
