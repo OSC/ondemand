@@ -1,9 +1,0 @@
-=> #<OodCore::Job::Info:0x00000006f0ce08 @id="8724294.oak-batch.osc.edu", @status=#<OodCore::Job::Status:0x00000006f0cc28 @state=:queued_held>, @a
-llocated_nodes=[], @submit_host="oakley02.osc.edu", @job_name="parallel_fluent", @job_owner="osu0842", @accounting_id="PAS0228", @procs=0, @queue_
-name="serial", @wallclock_time=0, @cpu_time=0, @submission_time=2017-01-17 11:53:32 -0500, @dispatch_time=1969-12-31 19:00:00 -0500, @native={:Job
-_Name=>"parallel_fluent", :Job_Owner=>"osu0842@oakley02.osc.edu", :job_state=>"H", :queue=>"serial", :server=>"oak-batch.osc.edu:15001", :Account_
-Name=>"PAS0228", :Checkpoint=>"u", :ctime=>"1484672012", :Error_Path=>"oakley02.osc.edu:/users/PAS0228/osu0842/parallel_fluent.e8724294", :Hold_Ty
-pes=>"u", :Join_Path=>"oe", :Keep_Files=>"n", :Mail_Points=>"a", :mtime=>"1487687837", :Output_Path=>"oakley02.osc.edu:/users/PAS0228/osu0842/para
-llel_fluent.o8724294", :Priority=>"0", :qtime=>"1484672012", :Rerunable=>"True", :Resource_List=>{:gattr=>"PAS0228", :nodect=>"1", :nodes=>"1:ppn=
-12", :walltime=>"168:00:00"}, :Shell_Path_List=>"/bin/bash", :euser=>"osu0842", :egroup=>"PAS0228", :queue_type=>"E", :submit_args=>"job502.txt",
-:fault_tolerant=>"False", :job_radix=>"0", :submit_host=>"oakley02.osc.edu", :x=>"GRES:fluent+1%ansyspar+8"}>
