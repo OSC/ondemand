@@ -18,7 +18,6 @@ class Transfer
     (status && status.completed?) ? 100 : (@percent || 0)
   end
 
-  # error reporting (use different tool?)
   attr_accessor :exit_status, :stderr
 
   attr_accessor :pid
@@ -38,6 +37,7 @@ class Transfer
     def build(action:, files:)
       if files.kind_of?(Array)
         # rm action will want to provide an array of files
+        # so if it is an Array we convert it to a hash:
         #
         # convert [a1, a2, a3] to {a1 => nil, a2 => nil, a3 => nil}
         files = Hash[files.map {|f| [f, nil]}]
@@ -86,35 +86,9 @@ class Transfer
     "#{percent}% #{action_title}"
   end
 
-  #FIXME: So one idea here was to create a generic transfer object
-  # that was used to render the view
-  # and that this was the generic transfer object:
-  #
-  # Progress = Struct.new(:id, :status, :action, :from, :names, :to, :created_at, :completed_at, :percent, :message, :cancelable, :data, :exit_status, keyword_init: true
-  #
-  # lets abstract later after we add OneDrive or Globus
-  # especially since we might not have percent but just busy signal
-
-  # TODO:
-  # def submit
-  #   if synchronous?
-  #     perform
-  #   else
-  #     TransferLocalJob.perform_later(self)
-  #   end
-  # end
-  #
-  # include GlobalID::Identification
-  #
-  # def self.find(id)
-  # end
-  #
-  # and
-  #
-  # id
-  #
+  # we use GlobalID::Identification so that TransferLocalJob is very simple and knows how to find the object
   # https://dev.mikamai.com/2014/09/01/rails-42-new-gems-active-job-and-global-id/
-  # PORO class example
+
   def save
     # save has no effect if already persisted because this is in memory
     # if we change the storage, we change this method
@@ -164,27 +138,6 @@ class Transfer
   def command
     # command is executed in the directory containing the "from" files
 
-    # TODO: want to support variations on cp from and cp to so the whole
-    # cp file1 file2 file3 file4 destionation
-    # because copy in same directory may result in something different
-    #
-    # i.e.
-    #
-    # cp file1 file1_cp
-    #
-    # actually would be turned into
-    #
-    # cp file1 file1_cp
-    #
-    # not
-    #
-    # cp file1 dirname(file1_cp)
-    #
-    #
-    # so this one is difficult... but easy to test, fortunately
-
-    # -v is used for progress reporting
-
     if action == 'mv'
       args = [action.to_s, '-v']
 
@@ -199,11 +152,6 @@ class Transfer
     elsif action == 'cp'
       args = [action.to_s, '-v']
       args << '-r'
-
-      # FIXME: doesn't work for copy to from in same directory
-      # though there may not be a single command that accomplishes that
-      # copy to and from in same directory multiple files of different destination names
-      # you may need multiple copies
       args += files.keys.map { |f| File.basename(f) }
       args << to
     elsif action == 'rm'
@@ -215,9 +163,6 @@ class Transfer
       raise "Unknown action: #{action.inspect}"
     end
 
-    # FIXME: we assume here ALL files are being copied/moved to same basedir
-    # TODO: what we really want is either a single mv/cp command or a set of mv/cp commands (an array of commands) that would resolve the request
-
     args
   end
 
@@ -225,18 +170,12 @@ class Transfer
     self.percent = steps == 0 ? 100 : (100.0*((step).to_f/steps)).to_i
   end
 
-  #FIXME: validate that files (either array or hash)
-  #FIXME: logging of ACTIONS
-
   def perform
     self.status = OodCore::Job::Status.new(state: :running)
     self.started_at = Time.now.to_i
 
     # calculate number of steps prior to starting the removal of files
     steps
-
-    # puts "command: #{command.inspect}"
-    # puts "files: #{files.inspect}"
 
     Open3.popen3(*command, chdir: from) do |i, o, e, t|
       self.pid = t.pid
