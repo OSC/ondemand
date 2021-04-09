@@ -7,11 +7,22 @@ Rails.application.routes.draw do
     constraints filepath: /.+/ do
       get "files/fs(/*filepath)" => "files#fs", :defaults => { :format => 'html', :filepath => '/' }, :format => false, as: :files
       put "files/fs/*filepath" => "files#update", :format => false, :defaults => { :format => 'json' }
-      put "files/zip/*filepath" => "files#zip", :format => false, :defaults => { :format => 'json' }
+
+      # TODO: deprecate these routes after updating OodAppkit to use the new routes above
+      # backwards compatibility with the "api" routes that OodAppkit provides
+      # and are used by File Editor and Job Composer
+      get "files/api/v1/fs(/*filepath)" => "files#fs", :defaults => { :format => 'html', :filepath => '/' }, :format => false
+      put "files/api/v1/fs/*filepath" => "files#update", :format => false, :defaults => { :format => 'json' }
     end
     post "files/upload"
 
-    resources :transfers, only: [:index, :show, :create, :destroy]
+    resources :transfers, only: [:show, :create, :destroy]
+  end
+
+  if ! Rails.env.production? || File.file?('/var/www/ood/apps/sys/file-editor/manifest.yml')
+    # App file editor
+    get "files/edit/*path" => "files#edit", defaults: { :path => "/" , :format => 'html' }, format: false
+    get "files/edit" => "files#edit", :defaults => { :path => "/", :format => 'html' }, format: false
   end
 
   namespace :batch_connect do

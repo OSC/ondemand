@@ -5,7 +5,6 @@ end
 %>
 
 <div class="text-right">
-
   <%= render partial: 'shell' %>
   <button id="new-file-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-plus" aria-hidden="true"></i> New File</button>
   <button id="new-dir-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-folder-plus" aria-hidden="true"></i> New Directory</button>
@@ -22,15 +21,12 @@ end
   <div id="clipboard">
   </div>
 
-  <%# FIXME: better solution esp to handle too many links (progressive disclosure?) + title+path for long names %>
   <ul id="favorites" class="nav nav-pills flex-column">
     <li role="presentation" class="nav-item"><%= link_to 'Home Directory', files_path(Dir.home), class: "nav-link d bg-light" %></li>
     <% OodFilesApp.new.favorite_paths.each do |p| %>
       <li class="nav-item bg-light"><%= link_to p.title || p.path.to_s, files_path(p.path.to_s), class: "nav-link d" %>
     <% end %>
   </ul>
-
-
 
 <script id="clipboard-template" type="text/template">
 {{#if files}}
@@ -66,15 +62,6 @@ end
     <span class="fa fa-ellipsis-v"></span>
   </button>
   <ul class="dropdown-menu">
-    <!-- whats the accessibility rules for href and it acting like a button -->
-<!--
-    FIXME: need to decide what to do on selection and directory actions, which are not doable when scrolling down
-    also are inconvenient from a keyboard (select, then jump to top to activate button on selection)
-
-    We could fix the button header to the top of the screen when you scroll for sighted mouse users...
-
-    <li class="dropdown-header">Row actions</li>
--->
     {{#if file}}
     <li><a href="#" class="view-file dropdown-item" data-row-index="{{row_index}}"><i class="fas fa-eye" aria-hidden="true"></i> View</a></li>
     <li><a href="#" class="edit-file dropdown-item" data-row-index="{{row_index}}"><i class="fas fa-edit" aria-hidden="true"></i> Edit</a></li>
@@ -85,25 +72,6 @@ end
     {{/if}}
     <li class="dropdown-divider mt-4"></li>
     <li><a href="#" class="delete-file dropdown-item text-danger" data-row-index="{{row_index}}"><i class="fas fa-trash" aria-hidden="true"></i> Delete</a></li>
-<!--
-    <li class="dropdown-divider"></li>
-    <li class="dropdown-header">Selection actions</li>
-    <li><a href="#" class="dropdown-item"><i class="fas fa-copy" aria-hidden="true"></i> Copy/Move</a></li>
-    <li class="mt-4"><a href="#" class="dropdown-item text-danger"><i class="fas fa-trash" aria-hidden="true"></i> Delete</a></li>
-    <li class="dropdown-divider"></li>
-    <li class="dropdown-header">Current directory actions</li>
-    <li><a href="#" class="dropdown-item"><i class="fas fa-terminal" aria-hidden="true"></i> Open In Terminal</a></li>
-    <li><a href="#" class="dropdown-item"><i class="fas fa-plus" aria-hidden="true"></i> New File</a></li>
-    <li><a href="#" class="dropdown-item"><i class="fas fa-folder-plus" aria-hidden="true"></i> New Directory</a></li>
-    <li><a href="#" class="dropdown-item"><i class="fas fa-upload" aria-hidden="true"></i> Upload</a></li>
--->
-
-    <!--
-    <li role="separator" class="divider"></li>
-    <li><a href="#" class="download-file" data-row-index="{{row_index}}">Download</a></li>
-    <li role="separator" class="divider"></li>
-    <li><a href="#" class="delete-file" data-row-index="{{row_index}}">Delete</a></li>
-      -->
   </ul>
 </div>
 </script>
@@ -164,7 +132,6 @@ end
 
 </div>
 
-<%# FIXME: problem with not using tables %>
 <script>
 const csrf_token = document.querySelector('meta[name="csrf-token"]').content;
 
@@ -176,9 +143,6 @@ clipboardjs.on('success', function(e) {
   e.clearSelection();
 });
 clipboardjs.on('error', function(e) {
-  // TODO: provide alternate? display text in a box below and say "highlight to copy"
-  // copying to clipboard failed, you can manually copy here:
-  // e.trigger
   e.clearSelection();
 });
 
@@ -190,9 +154,6 @@ history.replaceState({
 
 $.fn.dataTable.ext.search.push(
     function( settings, data, dataIndex  ) {
-      //FIXME:
-      // let api = new $.fn.dataTable.Api( settings );
-      // let column = api.column('name:name').index().column();
       return getShowDotFiles() || ! data[2].startsWith('.');
     }
 )
@@ -208,11 +169,6 @@ function update_datatables_status(api){
       page_info = api.page.info(),
       msg = page_info.recordsTotal == page_info.recordsDisplay ? `Showing ${page_info.recordsDisplay} rows` : `Showing ${page_info.recordsDisplay} of ${page_info.recordsTotal} rows`;
 
-  // TODO: replace this with a single react widget that:
-  // a) saves it the props to state
-  // b) during update of props, set to state (and ignore undefined vs [] for transfers)
-  //
-  // then when setting a value you can know when it changed from running to completed for example and know to show that for only a short time
   $('.datatables-status').html(`${msg} - ${rows} rows selected`);
 }
 
@@ -249,18 +205,13 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
     history.replaceState(_.merge({}, history.state, {currentDirectoryUpdatedAt: json.time}), null);
   }
 }).DataTable({
-  // ajax: {
-  //   url: history.state.currentDirectoryUrl,
-  //   dataSrc: 'files',
-  // },
+  autoWidth: false,
   language: {
     search: 'Filter:',
   },
   order: [[1, "asc"], [2, "asc"]],
   rowId: 'id',
   paging:false,
-  //FIXME: switch with flexbox; calc() does not work here (as setting inline value calc to max height doesn't work either in Firefox)
-  // scrollY: '65vh',
   scrollCollapse: true,
   select: {
     style: 'os',
@@ -293,18 +244,19 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
     { name: 'actions', orderable: false, data: null, render: (data, type, row, meta) => actionsBtnTemplate({ row_index: meta.row, file: row.type != 'd'  }) }, // FIXME: pass row index or something needed for finding item
     { data: 'size',
       render: (data, type, row, meta) => {
-        return row.human_size;
+        return type == "display" ? row.human_size : data;
       }
     }, // human_size
     { data: 'modified_at', render: (data, type, row, meta) => {
-      let date = new Date(data * 1000)
+      if(type == "display"){
+        let date = new Date(data * 1000)
 
-      if (isNaN(date)) {
-        return 'Invalid Date'
+        // Return formatted date "3/23/2021 10:52:28 AM"
+        return isNaN(data) ? 'Invalid Date' : `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
       }
-
-      // Return formatted date "3/23/2021 10:52:28 AM"
-      return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
+      else{
+        return data;
+      }
     }}, // modified_at
     { name: 'owner', data: 'owner', visible: getShowOwnerMode() }, // owner
     { name: 'mode', data: 'mode', visible: getShowOwnerMode(), render: (data, type, row, meta) => {
@@ -320,7 +272,6 @@ var table = $('#directory-contents').on('xhr.dt', function ( e, settings, json, 
   ]
 });
 
-//FIXME: race cond?
 // prepend show dotfiles checkbox to search box
 $('#directory-contents_filter').prepend(`<label style="margin-right: 20px" for="show-dotfiles"><input type="checkbox" id="show-dotfiles" ${ getShowDotFiles() ? 'checked' : ''}> Show Dotfiles</label>`)
 $('#directory-contents_filter').prepend(`<label style="margin-right: 14px" for="show-owner-mode"><input type="checkbox" id="show-owner-mode" ${ getShowOwnerMode() ? 'checked' : ''}> Show Owner/Mode</label>`)
@@ -341,7 +292,6 @@ $('#show-dotfiles').on('change', () => {
   updateDotFileVisibility();
 });
 
-// TODO: https://datatables.net/reference/button/colvis
 $('#show-owner-mode').on('change', () => {
   let visible = $('#show-owner-mode').is(':checked');
 
@@ -435,7 +385,6 @@ function downloadFile(file){
   // creating the temporary iframe is exactly what the CloudCmd does
   // so this just repeats the status quo
 
-  // FIXME: currentDirectoryUrl possible escaping issues... what if path has spaces etc.
   let filename = $($.parseHTML(file.name)).text(),
       downloadUrl = `${history.state.currentDirectoryUrl}/${encodeURI(filename)}?download=${Date.now().toString()}`,
       iframe = document.createElement('iframe'),
@@ -462,19 +411,12 @@ $('#download-btn').on("click", () => {
   }
 });
 
-
-
-//TODO: uppy locales supported - pull from server side locales
-//TODO: accessibility analysis of solution
-
 function getEmptyDirs(entry){
   return new Promise((resolve) => {
     if(entry.isFile){
       resolve([]);
     }
     else{
-      //FIXME: logDropError is a function that is typically used internally by uppy dashboard
-
       // getFilesAndDirectoriesFromDirectory has no return value, so turn this into a promise
       getFilesAndDirectoriesFromDirectory(entry.createReader(), [], function(error){ console.error(error)}, {
         onSuccess: (entries) => {
@@ -562,7 +504,7 @@ function getFilesAndDirectoriesFromDirectory (directoryReader, oldEntries, logDr
           // "fullPath" should actually be the path relative to the current directory
           let filename = _.trimStart(d.fullPath, '/');
 
-          return fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put'})
+          return fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token }})
           //TODO: parse json response verify if there was an error creating directory and handle error
 
         })).then(() => this.empty_dirs = []);
@@ -571,8 +513,6 @@ function getFilesAndDirectoriesFromDirectory (directoryReader, oldEntries, logDr
 
     install () {
       this.uppy.addPostProcessor(this.createEmptyDirs);
-
-      //TODO: subscribe to event on dashboard close?! to clear empty_dirs?
     }
 
     uninstall () {
@@ -597,6 +537,7 @@ function getFilesAndDirectoriesFromDirectory (directoryReader, oldEntries, logDr
     closeAfterFinish: true,
     allowMultipleUploads: false,
     onRequestCloseModal: () => closeAndResetUppyModal(uppy),
+    note: 'Empty directories will be included in the upload only when a directory upload is initiated via drag and drop. This is because the File and Directory Entries API is available only on a drop event, not during an input change event.'
   });
   uppy.use(Uppy.XHRUpload, {
     endpoint: '<%= files_upload_path %>',
@@ -705,7 +646,6 @@ $('#directory-contents tbody').on('click', '.download-file', function(e){
   downloadFile(row);
 });
 
-// FIXME: i broke rename :-P
 $('#directory-contents tbody').on('click', '.rename-file', function(e){
   e.preventDefault();
 
@@ -813,9 +753,6 @@ function transferFiles(files, action, summary){
   })
   .then(() => doneLoading())
   .catch(e => alertError('Error occurred when attempting to ' + summary, e.message))
-  // smart alert is not great in that - loading is an alert, which is replaced by the error alert
-  // so doneLoading would close both
-  // .finally(() => doneLoading());
 }
 
 const reportTransferTemplate = (function(){
@@ -971,7 +908,7 @@ function deleteFiles(files){
   }
 
   Swal.fire({
-    title: 'Delete files?',
+    title: files.length == 1 ? `Delete ${files[0]}?` : `Delete ${files.length} selected files?`,
     text: 'Are you sure you want to delete the files: ' + files.join(', '),
     showCancelButton: true,
     showClass: {
