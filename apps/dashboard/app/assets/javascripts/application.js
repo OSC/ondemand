@@ -15,6 +15,7 @@
 //= require lodash/4.17.15/lodash.min
 //= require uppy/dist/uppy.min
 //= require_tree .
+//= stub editor
 
 //FIXME: move to coffescript
 $(function(){

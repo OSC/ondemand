@@ -83,6 +83,33 @@ class FilesController < ApplicationController
     raise "not yet impl"
   end
 
+  def edit
+    path = params[:path] || "/"
+    path = "/" + path unless path.start_with?("/")
+
+    status = 200
+
+    @pathname = Pathname.new(path)
+
+    if @pathname.file? && @pathname.readable?
+      fileinfo = %x[ file -b --mime-type #{@pathname.to_s.shellescape} ]
+      if fileinfo =~ /text\/|\/(x-empty|(.*\+)?xml)/ || params.has_key?(:force)
+        @editor_content = ""
+        @file_api_url = OodAppkit.files.api(path: @pathname).to_s
+      else
+        @invalid_file_type = fileinfo
+        status = 404
+      end
+    elsif @pathname.directory?
+      # just render error message
+    else
+      @not_found = true
+      status = 404
+    end
+
+    render :edit, status: status, layout: 'editor'
+  end
+
   private
 
   def normalized_path
