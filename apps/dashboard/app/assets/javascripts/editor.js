@@ -171,6 +171,7 @@ $( document ).ready(function () {
                     url: apiUrl,
                     type: 'PUT',
                     data: editor.getValue(),
+                    contentType: 'text/plain',
                     success: function (data) {
                         toggleSaveSpinner();
                         toggleSaveConfirmed();
