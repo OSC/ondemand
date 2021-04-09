@@ -19,6 +19,12 @@ Rails.application.routes.draw do
     resources :transfers, only: [:show, :create, :destroy]
   end
 
+  if ! Rails.env.production? || File.file?('/var/www/ood/apps/sys/file-editor/manifest.yml')
+    # App file editor
+    get "files/edit/*path" => "files#edit", defaults: { :path => "/" , :format => 'html' }, format: false
+    get "files/edit" => "files#edit", :defaults => { :path => "/", :format => 'html' }, format: false
+  end
+
   namespace :batch_connect do
     resources :sessions, only: [:index, :destroy]
     scope "*token", constraints: { token: /((usr\/[^\/]+)|dev|sys)\/[^\/]+(\/[^\/]+)?/ } do
