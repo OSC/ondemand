@@ -162,7 +162,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_select "a.app-card[href='/apps/show/pseudofun']", 1
     assert_select "a.app-card[href='/batch_connect/sys/bc_desktop/owens/session_contexts/new']", 1
 
-    assert_select "div[class='xdmod']", 1
+    assert_select "div[class='xdmod']", 2
     assert_select "div[id='jobsEfficiencyReportPanelDiv']", 1
     assert_select "div[id='coreHoursEfficiencyReportPanelDiv']", 1
     assert_select "div[id='jobsPanelDiv']", 1
@@ -203,7 +203,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_select "div[class='motd']", 3
     assert_select "h4[class='motd_title']", 3
 
-    assert_select "div[class='xdmod']", 1
+    assert_select "div[class='xdmod']", 2
     assert_select "div[id='jobsEfficiencyReportPanelDiv']", 1
     assert_select "div[id='coreHoursEfficiencyReportPanelDiv']", 1
     assert_select "div[id='jobsPanelDiv']", 1
@@ -272,7 +272,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_select "div[class='motd']", 3
     assert_select "h4[class='motd_title']", 3
 
-    assert_select "div[class='xdmod']", 1
+    assert_select "div[class='xdmod']", 2
     assert_select "div[id='jobsEfficiencyReportPanelDiv']", 1
     assert_select "div[id='coreHoursEfficiencyReportPanelDiv']", 1
     assert_select "div[id='jobsPanelDiv']", 1

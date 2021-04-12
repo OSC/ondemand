@@ -1,34 +1,13 @@
 <%= render partial: 'shared/welcome' %>
 
-
-<% if Configuration.xdmod_integration_enabled? %>
-  <div class="row">
-    <% if @motd || @pinned_apps.present? %>
-      <div class="col-md-8">
-        <%= render "pinned_apps" if @pinned_apps.present? %>
-        <%# This assumes @motd_file responds to `to_partial_path` %>
-        <%= render @motd if @motd %>
-      </div>
-      <div class="col-md-4">
-        <div class="xdmod">
-          <%= render "xdmod_widget_job_efficiency" %>
-          <%= render "xdmod_widget_jobs" %>
-        </div>
-      </div>
-    <% else %>
-      <div class="col-md-4">
-        <div class="xdmod">
-          <%= render "xdmod_widget_job_efficiency" %>
-        </div>
-      </div>
-      <div class="col-md-8">
-        <div class="xdmod">
-          <%= render "xdmod_widget_jobs" %>
-        </div>
-      </div>
-    <% end %>
+<%- landing_page_layout.fetch(:rows, []).each do |row| -%>
+<div class="row">
+  <%- row.fetch(:columns, []).each do |col| -%>
+  <div class='<%= "col-md-#{col[:width]}" %>'> <%# FIXME: what if width is not specified!? %>
+    <%- Array(col.fetch(:widgets, [])).each do |widget| -%>
+      <%= render_widget(widget.to_s) %>
+    <%- end -%>
   </div>
-<% else %>
-  <%= render "pinned_apps" if @pinned_apps.present? %>
-  <%= render @motd if @motd %>
-<% end %>
+  <%- end -%>
+</div>
+<%- end -%>
