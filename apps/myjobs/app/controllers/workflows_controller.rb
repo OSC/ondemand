@@ -13,7 +13,7 @@ class WorkflowsController < ApplicationController
 
     @selected_id = session[:selected_id]
     session[:selected_id] = nil
-    @workflows = Workflow.preload(:jobs)
+    @workflows = Workflow.eager_load(:jobs)
   end
 
   # GET /workflows/1
