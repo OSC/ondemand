@@ -43,9 +43,5 @@ module Dashboard
       config.paths["config/initializers"] << ::Configuration.config_root.join("initializers").to_s
       config.paths["app/views"].unshift ::Configuration.config_root.join("views").to_s
     end
-
-    if Rails.env.test?
-      config.paths["app/views"].unshift "test/fixtures/config/views"
-    end
   end
 end
