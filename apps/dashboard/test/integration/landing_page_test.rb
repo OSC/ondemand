@@ -131,6 +131,44 @@ class LandingPageTest < ActionDispatch::IntegrationTest
     assert_select 'div.row > div.col-md-4 > div.xdmod > [id="jobsPanelDiv"]', 1
   end
 
+  test "app sharing layout" do
+
+    # MOTD + pinned apps, but no XDMOD
+    env = {
+      MOTD_FORMAT: 'osc',
+      MOTD_PATH: Rails.root.join("test/fixtures/files/motd_valid").to_s,
+    }
+
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
+    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
+    Configuration.stubs(:pinned_apps).returns([
+      'sys/bc_jupyter',
+      'sys/bc_paraview',
+      'sys/bc_desktop/owens',
+      'sys/pseudofun'
+    ])
+
+    with_modified_env(env) do
+      get '/'
+    end
+
+    assert_select 'div.row', 2 # one extra row because pinned_apps makes rows for every 'group'
+    assert_select 'div.row > div.col-md-4', 1
+    assert_select 'div.row > div.col-md-8', 1
+
+    assert_select 'div.row > div.col-md-4', 1
+    assert_select 'div.row > div.col-md-4 > div.motd', 3
+    assert_select 'div.row > div.col-md-4 > div.motd > h4', 3
+    assert_select 'div.row > div.col-md-4 > div.motd > div.motd_body', 3
+
+    assert_select 'div.row > div.col-md-8 > div.row > div.col-sm-3.col-md-3', 4
+    assert_select pinned_app_css_query("8", '/batch_connect/sys/bc_jupyter/session_contexts/new'), 1
+    assert_select pinned_app_css_query("8", '/batch_connect/sys/bc_paraview/session_contexts/new'), 1
+    assert_select pinned_app_css_query("8", '/apps/show/pseudofun'), 1
+    assert_select pinned_app_css_query("8", '/batch_connect/sys/bc_desktop/owens/session_contexts/new'), 1
+  end
+
+
   test "shows widgets on a second row" do
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))

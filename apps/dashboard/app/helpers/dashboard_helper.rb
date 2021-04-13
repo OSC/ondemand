@@ -56,6 +56,9 @@ module DashboardHelper
         left_column = { width: 4, widgets: ['xdmod_widget_job_efficiency'] }
         right_column = { width: 8, widgets: ['xdmod_widget_jobs'] }
       end
+    elsif pinned_apps? && motd?
+      left_column = { width: 8, widgets: ['pinned_apps'] }
+      right_column = { width: 4, widgets: ['motd'] }
     else
       left_column = { width: 12, widgets: ['pinned_apps', 'motd'] }
       right_column = nil
