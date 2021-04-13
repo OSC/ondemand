@@ -4,7 +4,10 @@ module ApplicationHelper
   end
 
   def login_clusters
-    OodCore::Clusters.new(clusters.select(&:login_allow?))
+    OodAppkit.clusters
+      .select(&:allow?)
+      .reject { |c| c.metadata.hidden }
+      .select(&:login_allow?)
   end
 
   def restart_url
