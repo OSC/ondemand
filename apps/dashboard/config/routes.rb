@@ -15,6 +15,8 @@ Rails.application.routes.draw do
       put "files/api/v1/fs/*filepath" => "files#update", :format => false, :defaults => { :format => 'json' }
     end
     post "files/upload"
+
+    resources :transfers, only: [:show, :create, :destroy]
   end
 
   namespace :batch_connect do
