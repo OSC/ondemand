@@ -21,4 +21,26 @@ class FilesTest < ApplicationSystemTestCase
     find('tbody a', exact_text: 'config').ancestor('tr').click(:meta)
     assert_selector '.selected', count: 2
   end
+
+  test "adding new file" do
+    Dir.mktmpdir do |dir|
+      visit files_url(dir)
+      find('#new-file-btn').click
+      find('#swal2-input').set('bar.txt')
+      find('.swal2-confirm').click
+      assert_selector 'tbody a', exact_text: 'bar.txt', wait: 10
+      assert File.file? File.join(dir, 'bar.txt')
+    end
+  end
+
+  test "adding a new directory" do
+    Dir.mktmpdir do |dir|
+      visit files_url(dir)
+      find('#new-dir-btn').click
+      find('#swal2-input').set('bar')
+      find('.swal2-confirm').click
+      assert_selector 'tbody a.d', exact_text: 'bar', wait: 10
+      assert File.directory? File.join(dir, 'bar')
+    end
+  end
 end

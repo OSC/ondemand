@@ -272,6 +272,59 @@ $('#path-breadcrumbs').on('click', '#goto-btn', function(){
   .then((pathname) => goto('<%= files_path('/') %>' + pathname))
 });
 
+$('#new-file-btn').on("click", () => {
+  Swal.fire({
+    title: 'New File',
+    input: 'text',
+    inputLabel: 'Filename',
+    showCancelButton: true,
+    inputValidator: (value) => {
+      if (! value || value.includes("/")) {
+        // TODO: validate filenames against listing
+        return 'Provide a filenamethat does not have / in it'
+      }
+    },
+    showClass: {
+      popup: 'swal2-noanimation',
+      backdrop: 'swal2-noanimation'
+    },
+    hideClass: {
+      popup: '',
+      backdrop: ''
+    }
+  })
+  .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
+  .then((filename) => newFile(filename));
+});
+
+$('#new-dir-btn').on("click", () => {
+  Swal.fire({
+    title: 'New Directory',
+    input: 'text',
+    inputLabel: 'Directory name',
+    inputAttributes: {
+      spellcheck: 'false',
+    },
+    showCancelButton: true,
+    inputValidator: (value) => {
+      if (! value || value.includes("/")) {
+        // TODO: validate filenames against listing
+        return 'Provide a directory name that does not have / in it'
+      }
+    },
+    showClass: {
+      popup: 'swal2-noanimation',
+      backdrop: 'swal2-noanimation'
+    },
+    hideClass: {
+      popup: '',
+      backdrop: ''
+    }
+  })
+  .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
+  .then((filename) => newDirectory(filename));
+});
+
 window.onpopstate = function(event){
   // FIXME: handle edge case if state ! exist
   setTimeout(() => {

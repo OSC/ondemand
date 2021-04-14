@@ -12,6 +12,20 @@ function dataFromJsonResponse(response){
   });
 }
 
+function newFile(filename){
+  fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?touch=true`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token }})
+  .then(response => dataFromJsonResponse(response))
+  .then(() => reloadTable())
+  .catch(e => alertError('Error occurred when attempting to create new file', e.message));
+}
+
+function newDirectory(filename){
+  fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token }})
+  .then(response => dataFromJsonResponse(response))
+  .then(() => reloadTable())
+  .catch(e => alertError('Error occurred when attempting to create new directory', e.message));
+}
+
 function reloadTable(url){
   var request_url = url || history.state.currentDirectoryUrl;
 

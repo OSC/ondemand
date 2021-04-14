@@ -35,6 +35,25 @@ class FilesController < ApplicationController
     end
   end
 
+  # PUT - create or update
+  def update
+    path = normalized_path
+
+    if params.include?("dir")
+      Dir.mkdir path
+    elsif params.include?("file")
+      FileUtils.mv params["file"].tempfile, path
+    elsif params.include?("touch")
+      FileUtils.touch path
+    else
+      File.write(path, request.body.read)
+    end
+
+    render json: {}
+  rescue => e
+    render json: { error_message: e.message }
+  end
+
   private
 
   def normalized_path
