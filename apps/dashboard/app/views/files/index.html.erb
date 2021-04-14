@@ -336,7 +336,7 @@ $('#new-file-btn').on("click", () => {
     inputValidator: (value) => {
       if (! value || value.includes("/")) {
         // TODO: validate filenames against listing
-        return 'Provide a filenamethat does not have / in it'
+        return 'Provide a filename that does not have / in it'
       }
     },
     showClass: {
@@ -380,7 +380,12 @@ $('#new-dir-btn').on("click", () => {
   .then((filename) => newDirectory(filename));
 });
 
-function downloadFile(file){
+function downloadFile(file) {
+  if (file.size > <%= Configuration.file_download_max %>) {
+    Swal.fire('File size exceeds the maximum of <%= number_to_human_size(Configuration.file_download_max, precision: 0) %>', `"${file.name}" is ${file.human_size}`, 'warning')
+    return
+  }
+
   // creating the temporary iframe is exactly what the CloudCmd does
   // so this just repeats the status quo
 
@@ -525,7 +530,21 @@ function getFilesAndDirectoriesFromDirectory (directoryReader, oldEntries, logDr
   }
 
 
-  window.uppy = Uppy.Core();
+  window.uppy = Uppy.Core({
+    onBeforeDownload (files) {
+      for (const [key, file] of Object.entries(files)) {
+        console.log(file)
+
+        if (file.data.size > <%= Configuration.file_upload_max %>) {
+          throw new Error('Cannot download file big')
+        }
+      }
+    },
+    restrictions: {
+      maxFileSize: <%= Configuration.file_upload_max %>,
+    }
+  });
+
   uppy.use(EmptyDirCreator);
   uppy.use(Uppy.Dashboard, {
     trigger: '#upload-btn',
