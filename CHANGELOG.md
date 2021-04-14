@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.8.20] - 2020-04-14
+### Fixed
+- Ensure that LOGNAME is set correctly in the PUN in [837](https://github.com/OSC/ondemand/pull/837).
+- Remove unused SELinux dependencies in [853](https://github.com/OSC/ondemand/pull/853).
+- Fixed specifiying dex custom frontend themes in [930](https://github.com/OSC/ondemand/pull/930).
+
+### Changed
+- Hide Nginx and Passenger versions in the http headers in [892](https://github.com/OSC/ondemand/pull/892).
+- Update to Rails 5.2.5 to avoid broken mimemagic dependency in [1028](https://github.com/OSC/ondemand/pull/1028).
+
 ## [1.8.19] - 2020-12-14
 ### Fixed
 - don't use cached cluster value if it's not available [#748](https://github.com/OSC/ondemand/pull/748)
@@ -612,7 +623,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.19...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v1.8.20...release_1.8
+[1.8.20]: https://github.com/OSC/ondemand/compare/v1.8.19...v1.8.20
 [1.8.19]: https://github.com/OSC/ondemand/compare/v1.8.18...v1.8.19
 [1.8.18]: https://github.com/OSC/ondemand/compare/v1.8.17...v1.8.18
 [1.8.17]: https://github.com/OSC/ondemand/compare/v1.8.16...v1.8.17
