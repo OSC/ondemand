@@ -1,6 +1,22 @@
 require "authz/app_developer_constraint"
 
 Rails.application.routes.draw do
+
+  # in production, if the user doesn't have access to the files app directory, we hide the routes
+  if ! Rails.env.production? || File.file?('/var/www/ood/apps/sys/files/manifest.yml')
+    constraints filepath: /.+/ do
+      get "files/fs(/*filepath)" => "files#fs", :defaults => { :format => 'html', :filepath => '/' }, :format => false, as: :files
+      put "files/fs/*filepath" => "files#update", :format => false, :defaults => { :format => 'json' }
+
+      # TODO: deprecate these routes after updating OodAppkit to use the new routes above
+      # backwards compatibility with the "api" routes that OodAppkit provides
+      # and are used by File Editor and Job Composer
+      get "files/api/v1/fs(/*filepath)" => "files#fs", :defaults => { :format => 'html', :filepath => '/' }, :format => false
+      put "files/api/v1/fs/*filepath" => "files#update", :format => false, :defaults => { :format => 'json' }
+    end
+    post "files/upload"
+  end
+
   namespace :batch_connect do
     resources :sessions, only: [:index, :destroy]
     scope "*token", constraints: { token: /((usr\/[^\/]+)|dev|sys)\/[^\/]+(\/[^\/]+)?/ } do
