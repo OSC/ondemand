@@ -54,6 +54,31 @@ class FilesController < ApplicationController
     render json: { error_message: e.message }
   end
 
+  # POST
+  def upload
+    # careful:
+    #
+    #     File.join '/a/b', '/c' => '/a/b/c'
+    #     Pathname.new('/a/b').join('/c') => '/c'
+    #
+    # handle case where uppy.js sets relativePath to "null"
+    if params["relativePath"] && params["relativePath"] != "null"
+      path = Pathname.new(File.join(params["parent"], params["relativePath"]))
+    else
+      path = Pathname.new(File.join(params["parent"], params["name"]))
+    end
+
+    path.mkpath unless path.parent.directory?
+
+    FileUtils.mv params["file"].tempfile, path.to_s
+
+    render json: {}
+  rescue Errno::EACCES => e
+    render json: { error_message: e.message }, status: :forbidden
+  rescue => e
+    render json: { error_message: e.message }, status: :internal_server_error
+  end
+
   private
 
   def normalized_path
