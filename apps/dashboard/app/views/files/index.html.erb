@@ -12,12 +12,38 @@
 
 <div class="row">
 <div class="col-md-3">
+  <div id="clipboard">
+  </div>
+
   <ul id="favorites" class="nav nav-pills flex-column">
     <li role="presentation" class="nav-item"><%= link_to 'Home Directory', files_path(Dir.home), class: "nav-link d bg-light" %></li>
     <% OodFilesApp.new.favorite_paths.each do |p| %>
       <li class="nav-item bg-light"><%= link_to p.title || p.path.to_s, files_path(p.path.to_s), class: "nav-link d" %>
     <% end %>
   </ul>
+
+<script id="clipboard-template" type="text/template">
+{{#if files}}
+<div class="card mb-3">
+  <div class="card-body">
+    <button id="clipboard-clear" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <p style="margin-top: 30px">Copy or move the files below from <code>{{from}}</code>to the current directory:</p>
+  </div>
+  <ul class="list-group list-group-flush">
+    {{#each files}}
+      {{#if directory}}
+        <li class="list-group-item"><span title="directory" class="fa fa-folder" style="color: gold"></span> {{name}}</li>
+      {{else}}
+        <li class="list-group-item"><span title="file" class="fa fa-file" style="color: lightgrey"></span> {{name}}</li>
+      {{/if}}
+    {{/each}}
+  </ul>
+  <div class="card-body">
+    <button id="clipboard-copy-to-dir" class="btn btn-primary">Copy</button>  <button id="clipboard-move-to-dir" class="btn btn-danger float-right">Move</button>
+  </div>
+</div>
+{{/if}}
+</script>
 
 
 <script id="actions-btn-template" type="text/template">
@@ -596,6 +622,54 @@ $('#directory-contents tbody').on('dblclick', 'tr td:not(:first-child)', functio
     // handle doubleclick
     let a = this.parentElement.querySelector('a');
     if(a.classList.contains('d')) goto(a.getAttribute("href"));
+});
+
+function clearClipboard(){
+   localStorage.removeItem('filesClipboard');
+}
+
+function updateClipboardFromSelection(){
+  let selection = table.rows({selected: true}).data();
+  if(selection.length == 0){
+    clearClipboard();
+  }
+  else {
+    let clipboardData = {
+      from: history.state.currentDirectory,
+      files: selection.toArray().map((f) => {
+          return { directory: f.type == 'd', name: f.name };
+      })
+    };
+
+    localStorage.setItem('filesClipboard', JSON.stringify(clipboardData));
+  }
+}
+
+function updateViewForClipboard(){
+  let clipboard = JSON.parse(localStorage.getItem('filesClipboard') || '{}'),
+      template_str  = $('#clipboard-template').html(),
+      template = Handlebars.compile(template_str);
+
+  $('#clipboard').html(template(clipboard));
+
+  $('#clipboard-clear').on("click", () => {
+      clearClipboard();
+      updateViewForClipboard();
+  });
+}
+
+$('#copy-move-btn').on("click", () => {
+    updateClipboardFromSelection();
+    updateViewForClipboard();
+});
+
+// TODO: move all functionality out of click handlers to functions
+// TODO: disable copy/move buttons if no local storage
+
+//FIXME: so need to handle updateViewForClipboard based on EVENTS emitted by local storage modifications
+updateViewForClipboard();
+window.addEventListener('storage', () => {
+  updateViewForClipboard();
 });
 
 // if only 1 selected item, do not allow to de-select
