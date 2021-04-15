@@ -46,7 +46,8 @@
 # Ignore staged app
 /apps/dashboard/vendor/my_app
 
-/apps/dashboard/config/clusters.d
+/apps/*/config/clusters.d
+/apps/*/clusters.d
 
 # SSHFS
 ._*

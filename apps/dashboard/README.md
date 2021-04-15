@@ -399,6 +399,29 @@ app/helpers/batch_connect/sessions_helper.rb
 
 And modify `BatchConnect::SessionsHelper#novnc_link` with the new version.
 
+
+### Running the system tests
+
+The Rails system tests are currently using the Rails default: capybara + selenium headless chrome. These tests are not meant to be a replacement for
+actual end to end acceptance tests, which we may also use selenium to write (though via waitr and waitr-rails).
+
+To run the tests, do the following:
+
+1. Install the chromedriver from https://chromedriver.chromium.org/ and https://chromedriver.storage.googleapis.com/index.html?path=87.0.4280.88/
+2. Add the downloaded chromedriver binary to your path
+3. Run `bin/rake test:system`
+
+There are some possible issues when switching from headless chrome to chrome, which lets you watch the browser be driven as the tests
+are run that may have been fixed in Rails 6. Also, while failed tests auto-generate a screenshot, we might want to also extend that to
+print out any javascript errors. You can get an array of these errors by doing:
+
+    messages = page.driver.browser.manage.logs.get(:browser)
+
+These errors reference files and line numbers. Unfortunately, it isn't clear to me yet how to access those files to print the corresopnding lines which would also be useful.
+
+We may consider switching to waitr and waitr-rails.
+
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at

@@ -97,7 +97,7 @@ class OodAppGroupTest < ActiveSupport::TestCase
     groups = OodAppGroup.groups_for(apps: apps, group_by: :user_defined_field)
     assert_equal 1, groups.size
     assert_equal 14, groups.first.apps.size
-    assert_equal nil, groups.first.title
+    assert_nil groups.first.title
   end
 
 end
