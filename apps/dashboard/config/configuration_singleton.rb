@@ -47,14 +47,8 @@ class ConfigurationSingleton
   # @example 20 gigabyte file size upload limit.
   #   file_upload_max #=> "21474840000"
   # @return [String] Maximum upload size for nginx.
-  def file_upload_max(default: "10737420000")
-    upload_max = ENV['FILE_UPLOAD_MAX'].to_s.strip
-
-    if upload_max.empty?
-      default.to_i
-    else
-      upload_max.to_i
-    end
+  def file_upload_max
+    (ENV['FILE_UPLOAD_MAX'].presence || 10737420000).to_i
   end
 
   # Maximum file download size that nginx will allow.
@@ -64,14 +58,8 @@ class ConfigurationSingleton
   # @example 20 gigabyte file size upload limit.
   #   file_download_max #=> "21474840000"
   # @return [String] Maximum download size for nginx.
-  def file_download_max(default: "10737420000")
-    download_max = ENV['FILE_DOWNLOAD_MAX'].to_s.strip
-
-    if download_max.empty?
-      default.to_i
-    else
-      download_max.to_i
-    end
+  def file_download_max
+    (ENV['FILE_DOWNLOAD_MAX'].presence || 10737420000).to_i
   end
 
   # @return [String, nil] version string from git describe, or nil if not git repo
