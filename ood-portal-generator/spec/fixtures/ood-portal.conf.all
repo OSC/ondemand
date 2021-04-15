@@ -66,6 +66,9 @@ Listen 8080
   RewriteCond %{HTTP_HOST} !^(test.proxy.name(:8080)?)?$ [NC]
   RewriteRule ^(.*) https://test.proxy.name:8080$1 [R=301,NE,L]
 
+  RewriteEngine On
+  RewriteRule "^/my_pun_apps/sys/activejobs"  "/my_pun_apps/sys/dashboard/activejobs"  [R=301,L]
+
   # Support maintenance page during outages of OnDemand
   RewriteEngine On
   RewriteCond /var/www/configured/public/maintenance/index.html -f

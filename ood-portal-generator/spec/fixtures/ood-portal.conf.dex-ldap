@@ -60,6 +60,9 @@
   RewriteCond %{HTTP_HOST} !^(example.com(:443)?)?$ [NC]
   RewriteRule ^(.*) https://example.com:443$1 [R=301,NE,L]
 
+  RewriteEngine On
+  RewriteRule "^/pun/sys/activejobs"  "/pun/sys/dashboard/activejobs"  [R=301,L]
+
   # Support maintenance page during outages of OnDemand
   RewriteEngine On
   RewriteCond /var/www/ood/public/maintenance/index.html -f

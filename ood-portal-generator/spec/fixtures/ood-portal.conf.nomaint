@@ -48,6 +48,9 @@
   CustomLog "logs/access.log" combined
 
 
+  RewriteEngine On
+  RewriteRule "^/pun/sys/activejobs"  "/pun/sys/dashboard/activejobs"  [R=301,L]
+
   Header always set Content-Security-Policy "frame-ancestors http://example.com;"
 
   # Lua configuration
