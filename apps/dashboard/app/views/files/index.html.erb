@@ -383,7 +383,7 @@ function downloadFile(file){
       downloadUrl = `${history.state.currentDirectoryUrl}/${encodeURI(filename)}?download=${Date.now().toString()}`,
       iframe = document.createElement('iframe'),
       TIME = 30 * 1000;
-  iframe.setAttribute('class', 'hidden');
+  iframe.setAttribute('class', 'd-none');
   iframe.setAttribute('src', downloadUrl);
 
   document.body.appendChild(iframe);
