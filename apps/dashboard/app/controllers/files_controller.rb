@@ -118,7 +118,11 @@ class FilesController < ApplicationController
 
   def show_file
     if params[:download]
-      send_file @path
+      if Files.downloadable?(@path)
+        send_file @path
+      else
+        render json: { error_message: "#{@path} exceeds the maximum configured download size #{ ::Configuration.file_download_max } bytes" }, status: :forbidden
+      end
     else
       begin
         type = Files.mime_type_by_extension(@path).presence || Files.mime_type(@path)

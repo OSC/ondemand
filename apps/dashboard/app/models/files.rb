@@ -36,6 +36,15 @@ class Files
     }
   end
 
+  # Returns if the File size exceeds Configuration.file_download_max
+  #
+  # @return [Boolean]
+  def self.downloadable?(path)
+    path = Pathname.new(path)
+
+    true unless (path.stat.size > Configuration.file_download_max)
+  end
+
   # TODO: move to PosixFile
   def self.mime_type(path)
     path = Pathname.new(path.to_s)
