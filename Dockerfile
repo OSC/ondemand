@@ -55,7 +55,7 @@ RUN cp /opt/ood/ood-portal-generator/share/ood_portal_example.yml    /etc/ood/co
 
 # make some misc directories & files
 RUN mkdir -p /var/lib/ondemand-nginx/config/apps/{sys,dev,usr}
-RUN touch /var/lib/ondemand-nginx/config/apps/sys/{dashboard,shell,files,file-editor,activejobs,myjobs}.conf
+RUN touch /var/lib/ondemand-nginx/config/apps/sys/{dashboard,shell,files,file-editor,myjobs}.conf
 
 # setup sudoers for apache
 RUN echo -e 'Defaults:apache !requiretty, !authenticate \n\
