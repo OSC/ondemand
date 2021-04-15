@@ -61,8 +61,6 @@ class TransferLocalJobTest < ActiveJob::TestCase
         transfer = Transfer.new(action: 'cp', files: {testfile => destfile})
         transfer.perform
 
-        puts transfer.stderr
-
         assert transfer.stderr.present?, 'copy should have preserved stderr of job'
         assert transfer.stderr.include?('foo/bar')
         assert_equal 1, transfer.exit_status.exitstatus, "job exited with error #{transfer.stderr}"
@@ -73,6 +71,17 @@ class TransferLocalJobTest < ActiveJob::TestCase
 
       ensure
         FileUtils.chmod 0755, File.join(dir, 'foo/bar')
+
+        # HACK:
+        # even after changing the directory permissions back, Dir.mktmpdir block
+        # is still not removing the directory
+        #
+        #     Errno::ENOTEMPTY: Directory not empty @ dir_s_rmdir - /tmp/d20210414-82646-osj7pv
+        #
+        # per definition, the block form is supposed to remove the directory
+        # but since it doesn't here we do it
+        FileUtils.rm_rf File.join(dir, 'foo')
+        FileUtils.rm_rf File.join(dir, 'dest')
       end
     end
   end
