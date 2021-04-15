@@ -531,15 +531,6 @@ function getFilesAndDirectoriesFromDirectory (directoryReader, oldEntries, logDr
 
 
   window.uppy = Uppy.Core({
-    onBeforeDownload (files) {
-      for (const [key, file] of Object.entries(files)) {
-        console.log(file)
-
-        if (file.data.size > <%= Configuration.file_upload_max %>) {
-          throw new Error('Cannot download file big')
-        }
-      }
-    },
     restrictions: {
       maxFileSize: <%= Configuration.file_upload_max %>,
     }
