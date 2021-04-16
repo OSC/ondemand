@@ -298,6 +298,11 @@ end
     end
   end
 
+  # The landing page layout. Defaults to nil.
+  def landing_page_layout
+    config.fetch(:landing_page_layout, nil)
+  end
+
   private
 
   def config
