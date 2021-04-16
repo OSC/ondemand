@@ -36,9 +36,31 @@ class ConfigurationSingleton
     @ood_version ||= (ood_version_from_env || version_from_file('/opt/ood') || version_from_git('/opt/ood') || "Unknown").strip
   end
 
-def ood_bc_ssh_to_compute_node
-  to_bool(ENV['OOD_BC_SSH_TO_COMPUTE_NODE'] || true)
-end
+  def ood_bc_ssh_to_compute_node
+    to_bool(ENV['OOD_BC_SSH_TO_COMPUTE_NODE'] || true)
+  end
+
+  # Maximum file upload size that nginx will allow from clients in bytes
+  #
+  # @example No maximum upload size supplied.
+  #   file_upload_max #=> "10737420000"
+  # @example 20 gigabyte file size upload limit.
+  #   file_upload_max #=> "21474840000"
+  # @return [String] Maximum upload size for nginx.
+  def file_upload_max
+    (ENV['FILE_UPLOAD_MAX'].presence || 10737420000).to_i
+  end
+
+  # Maximum file download size that nginx will allow.
+  #
+  # @example No maximum upload size supplied.
+  #   file_download_max #=> "10737420000"
+  # @example 20 gigabyte file size upload limit.
+  #   file_download_max #=> "21474840000"
+  # @return [String] Maximum download size for nginx.
+  def file_download_max
+    (ENV['FILE_DOWNLOAD_MAX'].presence || 10737420000).to_i
+  end
 
   # @return [String, nil] version string from git describe, or nil if not git repo
   def version_from_git(dir)
