@@ -1,4 +1,5 @@
-<div class="text-right sticky-top bg-white border-bottom p-2 m-3">
+<%# z-index:999 cause dropdowns are 1000 default sticky-top is 1020 https://getbootstrap.com/docs/4.6/layout/overview/#z-index %>
+<div class="text-right sticky-top bg-white border-bottom p-2 m-3" style="z-index: 999">
   <a id="open-in-terminal-btn" class="btn btn-outline-dark btn-sm disabled" href="#"><i class="fas fa-terminal" aria-hidden="true"></i> Open in Terminal</a>
   <button id="new-file-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-plus" aria-hidden="true"></i> New File</button>
   <button id="new-dir-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-folder-plus" aria-hidden="true"></i> New Directory</button>
