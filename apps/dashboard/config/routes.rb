@@ -3,7 +3,7 @@ require "authz/app_developer_constraint"
 Rails.application.routes.draw do
 
   # in production, if the user doesn't have access to the files app directory, we hide the routes
-  if ! Rails.env.production? || File.file?('/var/www/ood/apps/sys/files/manifest.yml')
+  if Configuration.can_access_files?
     constraints filepath: /.+/ do
       get "files/fs(/*filepath)" => "files#fs", :defaults => { :format => 'html', :filepath => '/' }, :format => false, as: :files
       put "files/fs/*filepath" => "files#update", :format => false, :defaults => { :format => 'json' }
@@ -19,7 +19,7 @@ Rails.application.routes.draw do
     resources :transfers, only: [:show, :create, :destroy]
   end
 
-  if ! Rails.env.production? || File.file?('/var/www/ood/apps/sys/file-editor/manifest.yml')
+  if  Configuration.can_access_file_editor?
     # App file editor
     get "files/edit/*path" => "files#edit", defaults: { :path => "/" , :format => 'html' }, format: false
     get "files/edit" => "files#edit", :defaults => { :path => "/", :format => 'html' }, format: false
@@ -74,7 +74,7 @@ Rails.application.routes.draw do
   end
 
   # ActiveJobs which can be disabled in production
-  if ! Rails.env.production? || File.readable?('/var/www/ood/apps/sys/activejobs/manifest.yml')
+  if Configuration.can_access_activejobs?
     get "/activejobs" => "active_jobs#index"
     get "/activejobs/json" => "active_jobs#json", :defaults => { :format => 'json' }
     delete "/activejobs" => "active_jobs#delete_job",  as: 'delete_job'
