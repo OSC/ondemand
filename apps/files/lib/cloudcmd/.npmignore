@@ -1,6 +1,0 @@
-.travis.yml
-.appveyor.yml
-manifest.yml
-Dockerfile
-.dockerignore
-docker-compose.yml

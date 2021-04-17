@@ -1,8 +1,0 @@
-node_modules
-npm-debug.log*
-
-modules/fancybox/lib/
-modules/jquery/src
-modules/fancybox/demo
-
-.nyc_output
