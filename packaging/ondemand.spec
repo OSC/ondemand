@@ -152,14 +152,6 @@ echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION
 %__mv %{buildroot}/opt/ood/apps/dashboard %{buildroot}%{_localstatedir}/www/ood/apps/sys/dashboard
 %__mv %{buildroot}/opt/ood/apps/shell %{buildroot}%{_localstatedir}/www/ood/apps/sys/shell
 %__mv %{buildroot}/opt/ood/apps/files %{buildroot}%{_localstatedir}/www/ood/apps/sys/files
-# Work around issues where node modules go from a directory to symlink which breaks RPM updates
-if [ -L %{buildroot}%{_localstatedir}/www/ood/apps/sys/files/node_modules/cloudcmd ]; then
-    pushd %{buildroot}%{_localstatedir}/www/ood/apps/sys/files/node_modules
-    dest=$(readlink %{buildroot}%{_localstatedir}/www/ood/apps/sys/files/node_modules/cloudcmd)
-    unlink %{buildroot}%{_localstatedir}/www/ood/apps/sys/files/node_modules/cloudcmd
-    cp -pr $dest %{buildroot}%{_localstatedir}/www/ood/apps/sys/files/node_modules/
-    popd
-fi
 %__mv %{buildroot}/opt/ood/apps/file-editor %{buildroot}%{_localstatedir}/www/ood/apps/sys/file-editor
 %__mv %{buildroot}/opt/ood/apps/activejobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/activejobs
 %__mv %{buildroot}/opt/ood/apps/myjobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/myjobs
@@ -184,8 +176,6 @@ touch %{buildroot}%{apache_confd}/ood-portal.conf
     %{buildroot}%{_sysconfdir}/ood/config/nginx_stage.yml
 touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/dashboard.conf
 touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/shell.conf
-touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/files.conf
-touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/file-editor.conf
 touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/myjobs.conf
 
 touch %{buildroot}%{_sysconfdir}/ood/config/ood_portal.sha256sum
@@ -244,8 +234,6 @@ EOS
 # These NGINX app configs need to exist before rebuilding them
 touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/dashboard.conf
 touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/shell.conf
-touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/files.conf
-touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/file-editor.conf
 touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/myjobs.conf
 
 %post selinux
@@ -301,8 +289,6 @@ fi
 # Restart apps in case PUN wasn't restarted
 touch %{_localstatedir}/www/ood/apps/sys/dashboard/tmp/restart.txt
 touch %{_localstatedir}/www/ood/apps/sys/shell/tmp/restart.txt
-touch %{_localstatedir}/www/ood/apps/sys/files/tmp/restart.txt
-touch %{_localstatedir}/www/ood/apps/sys/file-editor/tmp/restart.txt
 touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 
 # Rebuild Apache config and restart Apache httpd if config changed
@@ -356,8 +342,6 @@ fi
 %dir %{_sharedstatedir}/ondemand-nginx/config/apps/dev
 %ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/dashboard.conf
 %ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/shell.conf
-%ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/files.conf
-%ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/file-editor.conf
 %ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/myjobs.conf
 %dir %{_tmppath}/ondemand-nginx
 %dir %{_rundir}/ondemand-nginx
