@@ -14,7 +14,6 @@ namespace :test do
     'ood-portal-generator': 'spec',
     'nginx_stage': 'spec',
     'apps/dashboard': 'test',
-    'apps/file-editor': 'test',
     'apps/myjobs': 'test'
   }
 
