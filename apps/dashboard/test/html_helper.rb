@@ -30,4 +30,9 @@ class ActiveSupport::TestCase
       item.attributes['href'].try(:value) || ""
     end
   end
+
+  def pinned_app_css_query(col_size, ref)
+    "div.row > div.col-md-#{col_size} > div.row > div.col-sm-3.col-md-3 > a.app-card[href='#{ref}']"
+  end
+
 end
