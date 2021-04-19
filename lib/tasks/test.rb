@@ -28,7 +28,7 @@ namespace :test do
           sh 'bin/yarn install'
         end
 
-        sh "bundle install --with development test"
+        sh "bundle install"
       end
     end
   end

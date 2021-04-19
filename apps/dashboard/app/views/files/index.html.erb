@@ -1,4 +1,5 @@
-<div class="text-right">
+<%# z-index:999 cause dropdowns are 1000 default sticky-top is 1020 https://getbootstrap.com/docs/4.6/layout/overview/#z-index %>
+<div class="text-right sticky-top bg-white border-bottom p-2 m-3" style="z-index: 999">
   <a id="open-in-terminal-btn" class="btn btn-outline-dark btn-sm disabled" href="#"><i class="fas fa-terminal" aria-hidden="true"></i> Open in Terminal</a>
   <button id="new-file-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-plus" aria-hidden="true"></i> New File</button>
   <button id="new-dir-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-folder-plus" aria-hidden="true"></i> New Directory</button>
@@ -12,15 +13,17 @@
 
 <div class="row">
 <div class="col-md-3">
-  <div id="clipboard">
+  <div id="clipboard" class="sticky-top">
   </div>
 
-  <ul id="favorites" class="nav nav-pills flex-column">
-    <li role="presentation" class="nav-item"><%= link_to 'Home Directory', files_path(Dir.home), class: "nav-link d bg-light" %></li>
-    <% OodFilesApp.new.favorite_paths.each do |p| %>
-      <li class="nav-item bg-light"><%= link_to p.title || p.path.to_s, files_path(p.path.to_s), class: "nav-link d" %>
-    <% end %>
-  </ul>
+  <nav>
+    <ul id="favorites" class="nav nav-pills flex-column">
+      <li role="presentation" class="nav-item"><%= link_to 'Home Directory', files_path(Dir.home), class: "nav-link d bg-light" %></li>
+      <% OodFilesApp.new.favorite_paths.each do |p| %>
+        <li class="nav-item bg-light"><%= link_to p.title || p.path.to_s, files_path(p.path.to_s), class: "nav-link d" %>
+      <% end %>
+    </ul>
+  </nav>
 
 <script id="clipboard-template" type="text/template">
 {{#if files}}

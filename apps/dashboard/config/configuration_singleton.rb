@@ -303,7 +303,24 @@ end
     config.fetch(:landing_page_layout, nil)
   end
 
+  def can_access_activejobs?
+    can_access_core_app? 'activejobs'
+  end
+
+  def can_access_files?
+    can_access_core_app? 'files'
+  end
+
+  def can_access_file_editor?
+    can_access_core_app? 'file-editor'
+  end
+
   private
+
+  def can_access_core_app?(name)
+    app_dir = Rails.root.realpath.parent.join(name)
+    app_dir.directory? && app_dir.join('manifest.yml').readable?
+  end
 
   def config
     @config ||= read_config
