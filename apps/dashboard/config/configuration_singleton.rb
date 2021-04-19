@@ -59,7 +59,7 @@ class ConfigurationSingleton
   #   file_download_max #=> "21474840000"
   # @return [String] Maximum download size for nginx.
   def file_download_max
-    (ENV['FILE_DOWNLOAD_MAX'].presence || 10737420000).to_i
+    ENV['FILE_DOWNLOAD_MAX'].presence.try(:to_i)
   end
 
   # @return [String, nil] version string from git describe, or nil if not git repo

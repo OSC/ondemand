@@ -40,7 +40,7 @@ class Files
   #
   # @return [Boolean]
   def self.downloadable?(path)
-    path.stat.size < Configuration.file_download_max
+    Configuration.file_download_max ? (path.stat.size < Configuration.file_download_max) : true
   end
 
   # TODO: move to PosixFile
