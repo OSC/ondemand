@@ -16,6 +16,8 @@ Rails.application.routes.draw do
     end
     post "files/upload"
 
+    get "files", to: redirect("files/fs#{Dir.home}")
+
     resources :transfers, only: [:show, :create, :destroy]
   end
 
