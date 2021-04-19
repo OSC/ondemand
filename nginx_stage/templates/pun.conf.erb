@@ -95,6 +95,9 @@ http {
       alias <%= default_html_root %>/$1;
     }
 
+    # redirect all the old apps to the dashboard
+    rewrite ^/pun/sys/activejobs(.*)$ /pun/sys/dashboard/activejobs$1 permanent;
+
     # Include all app configs user has access to
     <%- app_configs.each do |app_config| -%>
     include <%= app_config %>;
