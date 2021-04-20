@@ -96,9 +96,9 @@ http {
     }
 
     # redirect all the old apps to the dashboard
-    rewrite ^/pun/sys/activejobs(.*)$ /pun/sys/dashboard/activejobs$1 permanent;
-    rewrite ^/pun/sys/files(.*)$ /pun/sys/dashboard/files$1 permanent;
-    rewrite ^/pun/sys/file-editor(?>\/edit)*(.*)$ /pun/sys/dashboard/files/edit$1 permanent;
+    rewrite ^/pun/sys/activejobs(/.*|$)$ /pun/sys/dashboard/activejobs$1 permanent;
+    rewrite ^/pun/sys/files(/.*|$)$ /pun/sys/dashboard/files$1 permanent;
+    rewrite ^/pun/sys/file-editor(/.*|$)$ /pun/sys/dashboard/files$1 permanent;
 
     # Include all app configs user has access to
     <%- app_configs.each do |app_config| -%>
