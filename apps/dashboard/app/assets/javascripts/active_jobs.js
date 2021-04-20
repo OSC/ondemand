@@ -202,7 +202,6 @@ function create_datatable(options){
             },
             {
                 data:               "pbsid",
-                className:          "small",
                 "autoWidth":        true,
                 render: function (data) {
                   var data = escapeHtml(data)
@@ -211,16 +210,14 @@ function create_datatable(options){
             },
             {
                 data:               "jobname",
-                className:          "small text-break",
                 width:              '25%',
                 render: function (data) {
                   var data = escapeHtml(data)
-                  return `<span title="${data}">${data}</span>`;
+                  return `<span title="${data}" class="text-break">${data}</span>`;
                 },
             },
             {
                 data:               "username",
-                className:          "small",
                 "autoWidth":        true,
                 render: function (data) {
                   var data = escapeHtml(data)
@@ -229,7 +226,6 @@ function create_datatable(options){
             },
             {
                 data:               "account",
-                className:          "small",
                 "autoWidth":        true,
                 render: function (data) {
                   var data = escapeHtml(data)
@@ -238,7 +234,7 @@ function create_datatable(options){
             },
             {
                 data:               "walltime_used",
-                className:          "small text-right",
+                className:          "text-right",
                 "autoWidth":        true,
                 render: function (data) {
                   return `
@@ -250,7 +246,6 @@ function create_datatable(options){
             },
             {
                 data:               "queue",
-                className:          "small text-break",
                 "autoWidth":        true,
                 "render":           function(data) {
                   var data = escapeHtml(data)
@@ -259,7 +254,7 @@ function create_datatable(options){
             },
             {
                 data:               "status",
-                className:          "small status-label",
+                className:          "status-label",
                 "autoWidth":        true,
                 "render":           function(data) {
                   return status_label(data);
@@ -267,12 +262,10 @@ function create_datatable(options){
             },
             {
                 data:               "cluster_title",
-                className:          "small",
                 "autoWidth":        true
             },
             {
                 data:               null,
-                className:          "small",
                 "autoWidth":        true,
                 render: function(data, type, row, meta) {
                   let { jobname, pbsid, delete_path } = data

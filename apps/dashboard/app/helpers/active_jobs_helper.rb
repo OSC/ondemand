@@ -78,9 +78,9 @@ module ActiveJobsHelper
       labelclass = "badge-warning"
     else
       label = "Undetermined"
-      labelclass = "badge-default"
+      labelclass = "badge-secondary"
     end
-    "<div style='white-space: nowrap;'><span class='badge #{labelclass}'>#{label}</span></div>".html_safe
+    "<span class='badge #{labelclass}'>#{label}</span>".html_safe
   end
 
   def filters
