@@ -1,6 +1,7 @@
 require 'test_helper'
 
-class MotdTest < ActiveSupport::TestCase
+class MotdFormatter::OscTest < ActiveSupport::TestCase
+  include MotdFormatter
   # test date order of example Motd file
   #
   test "motd message date format" do

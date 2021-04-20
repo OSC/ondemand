@@ -36,17 +36,17 @@ class MotdFile
   def formatter
     case ENV['MOTD_FORMAT']
       when 'osc'
-        @motd = MotdFormatterOsc.new(self)
+        @motd = MotdFormatter::Osc.new(self)
       when 'markdown'
-        @motd = MotdFormatterMarkdown.new(self)
+        @motd = MotdFormatter::Markdown.new(self)
       when 'markdown_erb'
-        @motd = MotdFormatterMarkdownErb.new(self)
+        @motd = MotdFormatter::MarkdownErb.new(self)
       when 'rss'
-        @motd = MotdFormatterRss.new(self)
+        @motd = MotdFormatter::Rss.new(self)
       when 'text_erb'
-        @motd = MotdFormatterPlaintextErb.new(self)
+        @motd = MotdFormatter::PlaintextErb.new(self)
       else
-        @motd = MotdFormatterPlaintext.new(self)
+        @motd = MotdFormatter::Plaintext.new(self)
     end if self.exist?
   end
 

@@ -1,7 +1,7 @@
 require 'test_helper'
 
-class MotdTest < ActiveSupport::TestCase
-
+class MotdFormatterMarkdownTest < ActiveSupport::TestCase
+  include MotdFormatter
   test "test when motd formatter_markdown_valid" do
 
     path = "#{Rails.root}/test/fixtures/files/motd_valid"
