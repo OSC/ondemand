@@ -125,6 +125,12 @@ pre {
   @extend .rounded;
 }
 
+// bootstrap_form creates <small class="form-text" for help text
+// which is too small at 80% so we change it to be close to default
+small.form-text {
+   font-size: 96%;
+}
+
 // Your custom css styles below (must be manually added)
 
 @import "dashboard";
