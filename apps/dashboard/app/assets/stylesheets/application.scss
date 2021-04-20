@@ -119,6 +119,12 @@ pre.motd-monospaced {
 }
 **/
 
+pre {
+  @extend .bg-light;
+  @extend .p-2;
+  @extend .rounded;
+}
+
 // Your custom css styles below (must be manually added)
 
 @import "dashboard";
