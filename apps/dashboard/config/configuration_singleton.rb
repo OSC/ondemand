@@ -174,7 +174,7 @@ end
     @app_sharing_enabled = to_bool(ENV['OOD_APP_SHARING'])
   end
   alias_method :app_sharing_enabled, :app_sharing_enabled?
-  
+
   def batch_connect_global_cache_enabled?
     to_bool(ENV["OOD_BATCH_CONNECT_CACHE_ATTR_VALUES"] || true )
   end
@@ -313,6 +313,17 @@ end
 
   def can_access_file_editor?
     can_access_core_app? 'file-editor'
+  end
+
+  # Maximum file upload size that nginx will allow from clients in bytes
+  #
+  # @example No maximum upload size supplied.
+  #   file_upload_max #=> "10737420000"
+  # @example 20 gigabyte file size upload limit.
+  #   file_upload_max #=> "21474840000"
+  # @return [String] Maximum upload size for nginx.
+  def file_upload_max
+    [ENV['FILE_UPLOAD_MAX']&.to_i, ENV['NGINX_FILE_UPLOAD_MAX']&.to_i].compact.min || 10737420000
   end
 
   private
