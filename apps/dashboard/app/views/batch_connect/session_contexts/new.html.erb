@@ -82,7 +82,7 @@ locals: {
 
       <%- if @session_context -%>
         <%= render "form" %>
-        <p class="small">
+        <p>
           <%= t('dashboard.batch_connect_form_session_data_html',
                 title: @app.title,
                 data_link_tag: link_to(

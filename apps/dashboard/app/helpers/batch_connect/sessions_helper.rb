@@ -1,6 +1,6 @@
 module BatchConnect::SessionsHelper
   def session_panel(session)
-    content_tag(:div, id: session.id, class: "card panel-#{status_context(session)} session-panel", data: { hash: session.to_hash }) do
+    content_tag(:div, id: session.id, class: "card session-panel mb-4", data: { hash: session.to_hash }) do
       concat(
         content_tag(:div, class: "card-heading") do
           content_tag(:h5, class: "card-header alert-#{status_context(session)}") do
