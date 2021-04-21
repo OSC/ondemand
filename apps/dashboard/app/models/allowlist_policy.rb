@@ -23,7 +23,7 @@ class AllowlistPolicy
   # @raises ArgumentError if any allowlist path or permitted? argument
   #         has the form ~user/some/path where user doesn't exist
   def validate!(path)
-    raise AllowlistPolicy::Forbidden, "#{path} not a child of a directory specified in ALLOWLIST_PATH" unless permitted?(path)
+    raise AllowlistPolicy::Forbidden, "#{path} does not have an ancestor directory specified in ALLOWLIST_PATH" unless permitted?(path)
   end
 
   protected
