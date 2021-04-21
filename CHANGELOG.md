@@ -7,6 +7,58 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+- The ability to add pinned apps to the dashboard along with a new menu item titled 'Apps' in 
+  [870](https://github.com/OSC/ondemand/pull/870). This change also started added a new general
+  purpose configuration file. It added the `pinned_apps` configuration item.
+  Other additions to this feature are:
+  - Pinned apps menu items are limited in the navbar in [894](https://github.com/OSC/ondemand/pull/894).
+    This is configurable by `pinned_apps_menu_length`.
+  - Pinned apps can be configured through globs in [898](https://github.com/OSC/ondemand/pull/898).
+  - Pinned apps can be configured through app manifest data like category, subcategory or metadata
+    in [912](https://github.com/OSC/ondemand/pull/912) and [939](https://github.com/OSC/ondemand/pull/939)
+  - This widget has an internationalizable header in [921](https://github.com/OSC/ondemand/pull/921).
+  - The string 'Pinned Apps' is internationalizable in [992](https://github.com/OSC/ondemand/pull/992).
+  - Pinned apps can be grouped by known fields in [996](https://github.com/OSC/ondemand/pull/996) and by
+    metadata in [1026](https://github.com/OSC/ondemand/pull/1026). This adds the `pinned_apps_group_by`
+    configuration item.
+- Apps can now supply a metadata map in their mainfest files in [903](https://github.com/OSC/ondemand/pull/903).
+- Read configurations from an ondemand.d directory in [893](https://github.com/OSC/ondemand/pull/893).
+  This directory is configurable through the `OOD_CONFIG_D_DIRECTORY` environment variable.
+- The shell app now supports themes in [630](https://github.com/OSC/ondemand/pull/630).
+- The dashboard's landing page is now configurable. Users can redefine the layout of defined widgets
+  and add entirely new widgets in [1038](https://github.com/OSC/ondemand/pull/1038). This adds the
+  `landing_page_layout` configuration item.
+
+### Fixed
+- Webpacker now uses it's own yarn in tmp in [862](https://github.com/OSC/ondemand/pull/862).
+- Nginx no longer returns the versions in the Server and X-Powered-By headers in [891](https://github.com/OSC/ondemand/pull/891).
+- All rails apps now use the secure cookies in [897](https://github.com/OSC/ondemand/pull/897).
+- Corrected a broken link in the footer in [899](https://github.com/OSC/ondemand/pull/899)
+- Users can now speicfy the dex frontend theme in [929](https://github.com/OSC/ondemand/pull/929).
+- Users with specialized conda environments will no longer have issues launching an XFCE desktop
+  in [942](https://github.com/OSC/ondemand/pull/942).
+- Potential XSS with the Job composer in [949](https://github.com/OSC/ondemand/pull/949).
+- Wrong link to docs in ood-portal.conf comments in [1010](https://github.com/OSC/ondemand/pull/1010).
+- ood-portal-generator now supports Oracle Linux in [1049](https://github.com/OSC/ondemand/pull/1049).
+- Job composer can now store more than 1000 workflows which would previously cause crashes 
+  in [1039](https://github.com/OSC/ondemand/pull/1039).
+
+### Changed
+- The all apps page is now a table instead of panels holding lists in [884](https://github.com/OSC/ondemand/pull/884).
+  - This table also shows metadata fields in [924](https://github.com/OSC/ondemand/pull/924).
+- Upgraded the dashboard to bootstrap 4 in [991](https://github.com/OSC/ondemand/pull/991).
+- Upgreaded all rials apps to 2.2.5 in [1014](https://github.com/OSC/ondemand/pull/1014).
+- The active jobs app is now a part of the dashboard instead of it's own webapp in
+  [1034](https://github.com/OSC/ondemand/pull/1034). This breaks some previous behaviour regarding
+  this app. See the PR's initial comment for details.
+- The files app has been completely replaced in [1040](https://github.com/OSC/ondemand/pull/1040)
+  and is now a part of the dashboard. The file-editor was also migrated in into the dashbaord in
+  this change. The old files app's source files were removed in [1051](https://github.com/OSC/ondemand/pull/1051).
+- The PUN will now redirect old app URLs to new apps in [1056](https://github.com/OSC/ondemand/pull/1056).
+- `ood_core` version bumped from 0.15.0 to 0.16.0. See
+  [the ood_core's changelog](https://github.com/OSC/ood_core/blob/master/CHANGELOG.md) for details.
+
 ## [2.0.0] - 2021-02-03
 
 ### Added
