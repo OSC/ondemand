@@ -43,11 +43,11 @@ class FilesController < ApplicationController
     path = normalized_path
     AllowlistPolicy.default.validate!(path)
 
-    if params.include?("dir")
+    if params.include?(:dir)
       Dir.mkdir path
-    elsif params.include?("file")
-      FileUtils.mv params["file"].tempfile, path
-    elsif params.include?("touch")
+    elsif params.include?(:file)
+      FileUtils.mv params[:file].tempfile, path
+    elsif params.include?(:touch)
       FileUtils.touch path
     else
       File.write(path, request.body.read)
@@ -65,7 +65,7 @@ class FilesController < ApplicationController
 
     path.mkpath unless path.parent.directory?
 
-    FileUtils.mv params["file"].tempfile, path.to_s
+    FileUtils.mv params[:file].tempfile, path.to_s
 
     render json: {}
   rescue AllowlistPolicy::Forbidden => e
@@ -119,10 +119,10 @@ class FilesController < ApplicationController
     #     Pathname.new('/a/b').join('/c') => '/c'
     #
     # handle case where uppy.js sets relativePath to "null"
-    if params["relativePath"] && params["relativePath"] != "null"
-      Pathname.new(File.join(params["parent"], params["relativePath"]))
+    if params[:relativePath] && params[:relativePath] != "null"
+      Pathname.new(File.join(params[:parent], params[:relativePath]))
     else
-      Pathname.new(File.join(params["parent"], params["name"]))
+      Pathname.new(File.join(params[:parent], params[:name]))
     end
   end
 
