@@ -326,6 +326,10 @@ end
     [ENV['FILE_UPLOAD_MAX']&.to_i, ENV['NGINX_FILE_UPLOAD_MAX']&.to_i].compact.min || 10737420000
   end
 
+  def allowlist_paths
+    (ENV['ALLOWLIST_PATH'] || ENV['WHITELIST_PATH'] || "").split(':').map{ |s| Pathname.new(s) }
+  end
+
   private
 
   def can_access_core_app?(name)
