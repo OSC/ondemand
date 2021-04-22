@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.1] - 2021-22-04
 ### Added
 - The ability to add pinned apps to the dashboard along with a new menu item titled 'Apps' in 
   [870](https://github.com/OSC/ondemand/pull/870). This change also started added a new general
@@ -701,7 +702,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.1...HEAD
+[2.0.1]: https://github.com/OSC/ondemand/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/OSC/ondemand/compare/v1.8.19...v2.0.0
 [1.8.20]: https://github.com/OSC/ondemand/compare/v1.8.19...v1.8.20
 [1.8.19]: https://github.com/OSC/ondemand/compare/v1.8.18...v1.8.19
