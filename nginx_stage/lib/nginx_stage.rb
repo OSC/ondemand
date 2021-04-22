@@ -138,6 +138,9 @@ module NginxStage
       "OOD_DASHBOARD_TITLE" => title(default: nil),
       "OOD_PORTAL" => portal(default: nil),
       "OOD_DEV_APPS_ROOT" => apps_root(env: :dev, owner: user),
+      "OOD_FILES_URL" => "/pun/sys/dashboard/files",
+      # this is not a typo => the editor is /edit off of the base url
+      "OOD_EDITOR_URL" => "/pun/sys/dashboard/files"
     }.merge(pun_custom_env)
   end
 
