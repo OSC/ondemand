@@ -61,6 +61,20 @@ class Files
     end
   end
 
+  # Guards MIME types by converting types into formats
+  # that are usable for previewing content in the browser.
+  #
+  # @return [String] the converted MIME type.
+  def self.mime_type_for_preview(type)
+    override = {
+      "text/javascript" => "text/plain",
+      "text/css" => "text/javascript"
+    }
+
+    # Return preview MIME type.
+    return override["#{type}"]
+  end
+
   # returns mime type string if found, "" otherwise
   def self.mime_type_by_extension(path)
     Mime::Type.lookup_by_extension(Pathname.new(path.to_s).extname.delete_prefix('.'))
