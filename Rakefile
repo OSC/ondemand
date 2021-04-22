@@ -30,6 +30,10 @@ def ruby_apps
   apps.select(&:ruby_app?)
 end
 
+def yarn_apps
+  apps.select(&:package_json?)
+end
+
 class Component
   attr_reader :name
   attr_reader :path
@@ -45,6 +49,10 @@ class Component
 
   def node_app?
     @path.join('app.js').exist?
+  end
+
+  def package_json?
+    @path.join('package.json').exist?
   end
 
   def gemfile?
@@ -128,6 +136,12 @@ task :update do
   ruby_apps.each do |app|
     chdir app.path
     sh "bin/bundle update"
+  end
+
+  yarn_apps.each do |app|
+    chdir app.path
+    sh "npm install --production --prefix tmp yarn"
+    sh "tmp/node_modules/yarn/bin/yarn  upgrade"
   end
 end
 
