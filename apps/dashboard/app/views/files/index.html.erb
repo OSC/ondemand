@@ -523,7 +523,11 @@ function getFilesAndDirectoriesFromDirectory (directoryReader, oldEntries, logDr
   }
 
 
-  window.uppy = Uppy.Core();
+  window.uppy = Uppy.Core({
+    restrictions: {
+      maxFileSize: <%= Configuration.file_upload_max %>,
+    }
+  });
   uppy.use(EmptyDirCreator);
   uppy.use(Uppy.Dashboard, {
     trigger: '#upload-btn',

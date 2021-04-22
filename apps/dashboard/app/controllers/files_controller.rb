@@ -4,6 +4,9 @@ class FilesController < ApplicationController
     request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
 
     @path = normalized_path
+    AllowlistPolicy.default.validate!(@path)
+
+
     if @path.stat.directory?
       Files.raise_if_cant_access_directory_contents(@path)
 
@@ -38,12 +41,13 @@ class FilesController < ApplicationController
   # PUT - create or update
   def update
     path = normalized_path
+    AllowlistPolicy.default.validate!(path)
 
-    if params.include?("dir")
+    if params.include?(:dir)
       Dir.mkdir path
-    elsif params.include?("file")
-      FileUtils.mv params["file"].tempfile, path
-    elsif params.include?("touch")
+    elsif params.include?(:file)
+      FileUtils.mv params[:file].tempfile, path
+    elsif params.include?(:touch)
       FileUtils.touch path
     else
       File.write(path, request.body.read)
@@ -56,23 +60,16 @@ class FilesController < ApplicationController
 
   # POST
   def upload
-    # careful:
-    #
-    #     File.join '/a/b', '/c' => '/a/b/c'
-    #     Pathname.new('/a/b').join('/c') => '/c'
-    #
-    # handle case where uppy.js sets relativePath to "null"
-    if params["relativePath"] && params["relativePath"] != "null"
-      path = Pathname.new(File.join(params["parent"], params["relativePath"]))
-    else
-      path = Pathname.new(File.join(params["parent"], params["name"]))
-    end
+    path = uppy_upload_path
+    AllowlistPolicy.default.validate!(path)
 
     path.mkpath unless path.parent.directory?
 
-    FileUtils.mv params["file"].tempfile, path.to_s
+    FileUtils.mv params[:file].tempfile, path.to_s
 
     render json: {}
+  rescue AllowlistPolicy::Forbidden => e
+    render json: { error_message: e.message }, status: :forbidden
   rescue Errno::EACCES => e
     render json: { error_message: e.message }, status: :forbidden
   rescue => e
@@ -80,14 +77,17 @@ class FilesController < ApplicationController
   end
 
   def edit
-    path = params[:path] || "/"
+    path = params[:filepath] || "/"
     path = "/" + path unless path.start_with?("/")
 
     status = 200
 
     @pathname = Pathname.new(path)
 
-    if @pathname.file? && @pathname.readable?
+    if ! AllowlistPolicy.default.permitted?(@pathname)
+      @path_forbidden = true
+      status = 403
+    elsif @pathname.file? && @pathname.readable?
       fileinfo = %x[ file -b --mime-type #{@pathname.to_s.shellescape} ]
       if fileinfo =~ /text\/|\/(x-empty|(.*\+)?xml)/ || params.has_key?(:force)
         @editor_content = ""
@@ -110,6 +110,20 @@ class FilesController < ApplicationController
 
   def normalized_path
     Pathname.new("/" + params[:filepath].chomp("/"))
+  end
+
+  def uppy_upload_path
+    # careful:
+    #
+    #     File.join '/a/b', '/c' => '/a/b/c'
+    #     Pathname.new('/a/b').join('/c') => '/c'
+    #
+    # handle case where uppy.js sets relativePath to "null"
+    if params[:relativePath] && params[:relativePath] != "null"
+      Pathname.new(File.join(params[:parent], params[:relativePath]))
+    else
+      Pathname.new(File.join(params[:parent], params[:name]))
+    end
   end
 
   def show_file

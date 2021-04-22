@@ -23,7 +23,7 @@ Rails.application.routes.draw do
 
   if  Configuration.can_access_file_editor?
     # App file editor
-    get "files/edit/*path" => "files#edit", defaults: { :path => "/" , :format => 'html' }, format: false
+    get "files/edit/*filepath" => "files#edit", defaults: { :path => "/" , :format => 'html' }, format: false
     get "files/edit" => "files#edit", :defaults => { :path => "/", :format => 'html' }, format: false
   end
 
