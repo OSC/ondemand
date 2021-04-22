@@ -68,6 +68,64 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test "should load environment variable overload" do
+    Dir.mktmpdir do |dir|
+      ENV['FOO'] = '123'
+
+      Pathname.new(dir).join(".env.overload").write <<-EOT
+        FOO=456
+      EOT
+
+      cfg = ConfigurationSingleton.new
+      cfg.stubs(:app_root).returns(Pathname.new(dir))
+      cfg.load_dotenv_files
+
+      assert_equal "456", ENV['FOO']
+    end
+  end
+
+  test "should load environment variable local overloads" do
+    Dir.mktmpdir do |dir|
+      ENV['FOO'] = '123'
+
+      Configuration
+
+      Pathname.new(dir).join(".env.#{Rails.env}.overload").write <<-EOT
+        FOO=456
+      EOT
+
+      Pathname.new(dir).join(".env.#{Rails.env}.local.overload").write <<-EOT
+        FOO=789
+      EOT
+
+      cfg = ConfigurationSingleton.new
+      cfg.stubs(:app_root).returns(Pathname.new(dir))
+      cfg.load_dotenv_files
+
+      assert_equal "789", ENV['FOO']
+    end
+  end
+
+  test "rails_env specific env var overloads have precendent over env overloads" do
+    Dir.mktmpdir do |dir|
+      ENV['FOO'] = '123'
+
+      Pathname.new(dir).join(".env.overload").write <<-EOT
+        FOO=456
+      EOT
+
+      Pathname.new(dir).join(".env.#{Rails.env}.overload").write <<-EOT
+        FOO=789
+      EOT
+
+      cfg = ConfigurationSingleton.new
+      cfg.stubs(:app_root).returns(Pathname.new(dir))
+      cfg.load_dotenv_files
+
+      assert_equal "789", ENV['FOO']
+    end
+  end
+
   test "should have default bc config root" do
     assert_equal Pathname.new("/etc/ood/config/apps"), ConfigurationSingleton.new.bc_config_root
   end
