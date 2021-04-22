@@ -157,6 +157,10 @@ end
 
     # load the rest of the dotenv files
     Dotenv.load(*dotenv_files)
+
+    # load overloads
+    Dotenv.overload(*(overload_files(dotenv_files)))
+    Dotenv.overload(*(overload_files(dotenv_local_files)))
   end
 
   def dev_apps_root_path
@@ -379,6 +383,11 @@ end
       app_root.join(".env.#{rails_env}"),
       app_root.join(".env")
     ].compact
+  end
+
+  # reverse list and suffix every path with '.overload'
+  def overload_files(files)
+    files.reverse.map {|p| p.sub(/$/, '.overload')}
   end
 
   FALSE_VALUES=[nil, false, '', 0, '0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF', 'no', 'NO']
