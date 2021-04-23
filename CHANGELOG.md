@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [2.0.2] - 2021-23-04
+
+### Changed
+- `ood_core` version bumped from 0.16.0 to 0.16.1. See
+  [the ood_core's changelog](https://github.com/OSC/ood_core/blob/master/CHANGELOG.md) for details.
+- Set a max PUN per app to 1 in [1069](https://github.com/OSC/ondemand/pull/1069)
 
 ## [2.0.1] - 2021-22-04
 ### Added
@@ -702,7 +708,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.1...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.2...HEAD
+[2.0.2]: https://github.com/OSC/ondemand/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/OSC/ondemand/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/OSC/ondemand/compare/v1.8.19...v2.0.0
 [1.8.20]: https://github.com/OSC/ondemand/compare/v1.8.19...v1.8.20
