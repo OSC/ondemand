@@ -40,6 +40,9 @@ http {
   # Kill all apps after they idle timeout
   passenger_min_instances 0;
 
+  # Limit app instances to 1 so apps can safely utilize in memory session data
+  passenger_max_instances_per_app 1;
+
   # Take advantage of Ruby preloader
   #passenger_spawn_method smart;
   #passenger_max_preloader_idle_time 0;
