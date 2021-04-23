@@ -32,7 +32,7 @@
           </thead>
           <tbody>
             {{#each results}}
-            <tr title="{{job_name}} - {{local_job_id}}" data-toggle="tooltip" data-placement="left">
+            <tr title="{{job_name}} - {{local_job_id}}">
               <td style="white-space: no-wrap"><a target="_blank" href="{{job_url}}">{{local_job_id}}&nbsp;<span class="fa fa-external-link-square-alt"></span></a></td>
               <td style="max-width: 150px; text-overflow: ellipsis; overflow: hidden;">{{job_name}}</td>
               <td>{{date}}</td>
@@ -131,7 +131,7 @@ var helpers = {
         severity = "danger";
       }
 
-      label = `<span class="label label-${severity}">${Handlebars.escapeExpression(value.toString().padStart(4,0))}</span>`;
+      label = `<span class="badge badge-${severity}">${Handlebars.escapeExpression(value.toString().padStart(4,0))}</span>`;
     }
 
     return new Handlebars.SafeString(label);
@@ -140,7 +140,6 @@ var helpers = {
 
 var render_template = function(context){
   $('#jobsPanelDiv').html(template(context, {helpers: helpers}));
-  $('#jobsPanelDiv [data-toggle="tooltip"]').tooltip();
 }
 
 render_template({loading: true});
