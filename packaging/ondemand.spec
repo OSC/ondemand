@@ -224,10 +224,12 @@ EOF
 EOS
 
 %post
+if [ "$1" -eq 2 ]; then
 %if %{with scl_apache}
-%__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24 %{?scl_ondemand_ruby}"/' \
+%__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24"/' \
     /opt/rh/httpd24/service-environment
 %endif
+fi
 
 /bin/systemctl daemon-reload &>/dev/null || :
 
@@ -256,11 +258,6 @@ restorecon -R %{_localstatedir}/log/ondemand-nginx
 restorecon -R %{_localstatedir}/www/ood
 
 %preun
-if [ "$1" -eq 0 ]; then
-%if %{with scl_apache}
-%__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24"/' \
-    /opt/rh/httpd24/service-environment
-%endif
 /opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force &>/dev/null || :
 fi
 
