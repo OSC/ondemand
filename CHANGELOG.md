@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [2.0.4] - 2021-23-04
+### Fixed
+- Cosmetic and accessibility defects with XDMoD jobs widget [#1076](https://github.com/OSC/ondemand/pull/1076)
+
 ## [2.0.3] - 2021-23-04
 ### Fixed
 - Change `HTTPD24_HTTPD_SCLS_ENABLED` back to default value since we no longer
@@ -714,7 +718,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.3...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.4...HEAD
+[2.0.4]: https://github.com/OSC/ondemand/compare/v2.0.3...v2.0.4
 [2.0.3]: https://github.com/OSC/ondemand/compare/v2.0.2...v2.0.3
 [2.0.2]: https://github.com/OSC/ondemand/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/OSC/ondemand/compare/v2.0.0...v2.0.1
