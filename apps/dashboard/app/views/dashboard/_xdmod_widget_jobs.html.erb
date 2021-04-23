@@ -131,7 +131,7 @@ var helpers = {
         severity = "danger";
       }
 
-      label = `<span class="label label-${severity}">${Handlebars.escapeExpression(value.toString().padStart(4,0))}</span>`;
+      label = `<span class="badge badge-${severity}">${Handlebars.escapeExpression(value.toString().padStart(4,0))}</span>`;
     }
 
     return new Handlebars.SafeString(label);
