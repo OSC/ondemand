@@ -258,6 +258,7 @@ restorecon -R %{_localstatedir}/log/ondemand-nginx
 restorecon -R %{_localstatedir}/www/ood
 
 %preun
+if [ "$1" -eq 0 ]; then
 /opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force &>/dev/null || :
 fi
 
