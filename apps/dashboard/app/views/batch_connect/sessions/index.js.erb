@@ -5,7 +5,7 @@
   <%# Replace sessions whose state has changed %>
   <% @sessions.each do |session| %>
     sessions.push('<%= session.id %>');
-    $target = $('#<%= session.id %>');
+    $target = $('#id_<%= session.id %>');
     if ( $target.data('hash') !== '<%= session.to_hash %>' ) {
       $target.replaceWith('<%= j render(partial: "panel", locals: { session: session }) %>');
     }
@@ -13,7 +13,7 @@
 
   <%# Remove sessions that don't exist anymore %>
   $('.session-panel').each(function () {
-    if ( $.inArray($(this).attr('id'), sessions) < 0 ) {
+    if ( $.inArray($(this).attr('data-id'), sessions) < 0 ) {
       $(this).remove();
     }
   });

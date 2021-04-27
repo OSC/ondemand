@@ -1,6 +1,6 @@
 module BatchConnect::SessionsHelper
   def session_panel(session)
-    content_tag(:div, id: session.id, class: "card session-panel mb-4", data: { hash: session.to_hash }) do
+    content_tag(:div, id: "id_#{session.id}", class: "card session-panel mb-4", data: { id: session.id, hash: session.to_hash }) do
       concat(
         content_tag(:div, class: "card-heading") do
           content_tag(:h5, class: "card-header alert-#{status_context(session)}") do
@@ -201,19 +201,19 @@ module BatchConnect::SessionsHelper
       content_tag(:div) do
         # menu
         concat(
-          content_tag(:ul, class: "nav nav-tabs", id: id) do
+          content_tag(:ul, class: "nav nav-tabs") do
             tabs.map { |t| t[:title] }.map.with_index do |title, idx|
               content_tag(:li, class: "nav-item #{"active" if idx.zero?}") do
-                link_to title, "##{id}_#{idx}", data: { toggle: "tab" }, aria: { selected: (true if idx.zero?) }, class: "nav-link #{"active" if idx.zero?}"
+                link_to title, "#c_#{id}_#{idx}", data: { toggle: "tab" }, aria: { selected: (true if idx.zero?) }, class: "nav-link #{"active" if idx.zero?}"
               end
             end.join("\n").html_safe
           end
         )
         # content
         concat(
-          content_tag(:div, class: "tab-content", id: "#{id}Content") do
+          content_tag(:div, class: "tab-content") do
             tabs.map.with_index do |tab, idx|
-              content_tag(:div, id: "#{id}_#{idx}", class: "tab-pane ood-appkit markdown #{"active" if idx.zero?}", role: 'tabpanel') do
+              content_tag(:div, id: "c_#{id}_#{idx}", class: "tab-pane ood-appkit markdown #{"active" if idx.zero?}", role: 'tabpanel') do
                 render partial: "batch_connect/sessions/connections/#{tab[:partial]}", locals: tab[:locals]
               end
             end.join("\n").html_safe
