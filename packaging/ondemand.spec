@@ -62,7 +62,7 @@ BuildRequires:   ondemand-nodejs >= %{runtime_version}, ondemand-nodejs < %{next
 BuildRequires:   rsync
 BuildRequires:   git
 Requires:        git
-Requires:        sudo, lsof, cronie, wget, curl, make, rsync, file, libxml2, libxslt, zlib
+Requires:        sudo, lsof, cronie, wget, curl, make, rsync, file, libxml2, libxslt, zlib, lua-posix
 Requires:        ondemand-apache >= %{runtime_version}, ondemand-apache < %{next_major_version}, ondemand-apache < %{next_minor_version}
 Requires:        ondemand-nginx = 1.18.0
 Requires:        ondemand-passenger = 6.0.7

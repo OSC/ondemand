@@ -115,21 +115,12 @@ module NginxStage
     add_hook :exec_pre_hook do
       unless pre_hook_root_cmd.nil?
         args = ["--user", user.to_s]
-        env = {}
         log = Syslog::Logger.new 'ood_nginx_stage'
 
-        unless STDIN.tty?
-          STDIN.each_line do |line|
-            key_values = line.split('=')
-            env[key_values[0]] = key_values[1].to_s.chomp if key_values.size == 2
-          end
-        end
-
         begin
-          _, err, s = Open3.capture3(env, pre_hook_root_cmd, *args)
+          _, err, s = Open3.capture3(pre_hook_root_cmd, *args)
           log.error "#{pre_hook_root_cmd} exited with #{s.exitstatus} for user #{user}. stderr was '#{err}'" unless s.success?
         rescue StandardError => e
-          log = Syslog::Logger.new 'ood_nginx_stage'
           log.error "#{pre_hook_root_cmd} threw exception '#{e.message}' for #{user}"
         end
       end
