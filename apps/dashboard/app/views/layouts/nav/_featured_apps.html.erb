@@ -5,8 +5,7 @@
     <% OodAppGroup.groups_for(apps: group.apps, group_by: :subcategory, nav_limit: group.nav_limit).each_with_index do |g, index| %>
       <%= content_tag "li", "", class: "dropdown-divider", role: "separator" if index > 0 %>
       <%= content_tag "li", g.title_with_nav_limit_caption, class: "dropdown-header" unless g.title_with_nav_limit_caption.empty? %>
-      <% g.apps.take(g.nav_limit).each do |app| %>
-        <%- link = app.links.first -%>
+      <% g.apps.take(g.nav_limit).map { |app| app.links.first }.compact.each do |link| %>
           <li>
             <%=
               link_to(
