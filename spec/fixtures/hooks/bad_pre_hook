@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo "running bad pre hook" /tmp/hook.out 2>&1
+wont_find_cmd > /tmp/hook.out 2>&1
+
+exit 1

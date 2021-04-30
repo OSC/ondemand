@@ -8,7 +8,7 @@ namespace :docker do
     task :run => :build do
       args = [ container_runtime, 'run', '-p 8080:8080', '-p 5556:5556', "--name #{DOCKER_NAME}" ]
       args.concat [ "--rm", "--detach", "-v '#{PROJ_DIR}:/ondemand'" ]
-      args.concat mount_args
+      args.concat default_mount_args
       args.concat [ "#{test_image_name}:latest" ]
       sh args.join(' ')
     end

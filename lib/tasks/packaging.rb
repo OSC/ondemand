@@ -5,8 +5,7 @@ namespace :package do
   include BuildUtils
 
   def image_exists?(image_name)
-    cmd = "#{container_runtime} images #{image_name} --format '{{.ID}}'"
-    !`#{cmd}`.empty?
+    `#{container_runtime} inspect --type image --format exists #{image_name} || true`.chomp.eql?('exists')
   end
 
   def buildah_build_cmd(docker_file, image_name, extra_args: [])
