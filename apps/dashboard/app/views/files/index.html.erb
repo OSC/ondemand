@@ -66,9 +66,7 @@
     <li><a href="{{data.edit_url}}" class="edit-file dropdown-item" target="_blank" data-row-index="{{row_index}}"><i class="fas fa-edit" aria-hidden="true"></i> Edit</a></li>
     {{/if}}
     <li><a href="#" class="rename-file dropdown-item" data-row-index="{{row_index}}"><i class="fas fa-font" aria-hidden="true"></i> Rename</a></li>
-    {{#if file}}
     <li><a href="{{data.download_url}}" class="download-file dropdown-item" data-row-index="{{row_index}}"><i class="fas fa-download" aria-hidden="true"></i> Download</a></li>
-    {{/if}}
     <li class="dropdown-divider mt-4"></li>
     <li><a href="#" class="delete-file dropdown-item text-danger" data-row-index="{{row_index}}"><i class="fas fa-trash" aria-hidden="true"></i> Delete</a></li>
   </ul>
@@ -400,10 +398,6 @@ $('#download-btn').on("click", () => {
   let selection = table.rows({selected: true}).data();
   if(selection.length != 1){
     Swal.fire('Select only 1 file to download', 'You have selected none or multiple rows', 'error')
-  }
-  else if(selection[0].type == "d"){
-    Swal.fire('Cannot download directory', 'Can only download files', 'error')
-    // TODO
   }
   else {
     downloadFile(selection[0]);

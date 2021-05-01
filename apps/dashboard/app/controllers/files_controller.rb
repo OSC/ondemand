@@ -1,4 +1,6 @@
 class FilesController < ApplicationController
+  # include ActionController::Live
+  include ZipTricks::RailsStreaming
 
   def fs
     request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
@@ -10,6 +12,8 @@ class FilesController < ApplicationController
     if @path.stat.directory?
       Files.raise_if_cant_access_directory_contents(@path)
 
+      request.format = 'zip' if params[:download]
+
       respond_to do |format|
         format.html {
           render :index
@@ -18,6 +22,30 @@ class FilesController < ApplicationController
           @files = Files.new.ls(@path.to_s)
           render :index
         }
+        format.zip {
+          zipname = @path.basename.to_s.gsub('"', '\"') + '.zip'
+          response.set_header 'Content-Disposition', "attachment; filename=\"#{zipname}\""
+          response.set_header 'Content-Type', 'application/zip'
+          response.set_header 'Last-Modified', Time.now.httpdate
+          response.sending_file = true
+          response.cache_control[:public] ||= false
+
+          # FIXME: strategy 1: is below, use zip_tricks
+          # strategy 2: use actual zip command (likely much faster) and ActionController::Live
+          zip_tricks_stream do |zip|
+            Files.files_to_zip(@path).each do |file|
+              begin
+                if File.file?(file.path) && File.readable?(file.path)
+                  zip.write_deflated_file(file.relative_path.to_s) do |zip_file|
+                    IO.copy_stream(file.path, zip_file)
+                  end
+                end
+              rescue => e
+                Rails.logger.warn("error writing file #{file.path} to zip: #{e.message}")
+              end
+            end
+          end
+        }
       end
     else
       show_file
@@ -25,6 +53,8 @@ class FilesController < ApplicationController
   rescue => e
     @files = []
     flash.now[:alert] = "#{e.message}"
+
+    Rails.logger.error(e.message)
 
     respond_to do |format|
       format.html {

@@ -6,6 +6,18 @@ class Files
     path.each_child.first
   end
 
+  #FIXME: a more generic name for this?
+  FileToZip = Struct.new(:path, :relative_path)
+
+  def self.files_to_zip(path)
+    path = path.expand_path
+
+    Pathname.new(path).glob('**/*').map {|p|
+      FileToZip.new(p.to_s, p.relative_path_from(path).to_s)
+    }
+  end
+
+
   def ls(dirpath)
     Pathname.new(dirpath).each_child.map do |path|
       Files.stat(path)
