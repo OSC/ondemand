@@ -7,10 +7,15 @@ class Transfer
   attr_accessor :id, :status, :created_at, :started_at, :completed_at
   attr_writer :percent
 
-  validates_each :files do |record, attr, value|
+  validates_each :files do |record, attr, files|
     if record.action == 'mv' || record.action == 'cp'
-      conflicts = value.values.select {|f| File.exist?(f) }
+      conflicts = files.values.select {|f| File.exist?(f) }
       record.errors.add :files, "these files already exist: #{conflicts.join(', ')}" if conflicts.present?
+    end
+
+    files.each do |k,v|
+      record.errors.add :files, "#{k} is not included under ALLOWLIST_PATH" unless AllowlistPolicy.default.permitted?(k)
+      record.errors.add :files, "#{v} is not included under ALLOWLIST_PATH" unless AllowlistPolicy.default.permitted?(v)
     end
   end
 
