@@ -5,3 +5,4 @@ icon: fa://terminal
 description: |-
   Open OnDemand web-based terminal
 role: shell
+new_window: true

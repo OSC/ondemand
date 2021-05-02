@@ -6,3 +6,4 @@ category: Files
 icon: fa://folder
 role: files
 url: files
+new_window: false
