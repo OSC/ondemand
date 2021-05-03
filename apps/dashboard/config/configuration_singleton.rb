@@ -302,9 +302,9 @@ end
     end
   end
 
-  # The landing page layout. Defaults to nil.
-  def landing_page_layout
-    config.fetch(:landing_page_layout, nil)
+  # The dashboard's landing page layout. Defaults to nil.
+  def dashboard_layout
+    config.fetch(:dashboard_layout, nil)
   end
 
   def can_access_activejobs?
