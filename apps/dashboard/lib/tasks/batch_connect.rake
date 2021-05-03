@@ -8,6 +8,7 @@ namespace :batch_connect do
 
     # Initialize objects
     app   = BatchConnect::App.from_token app
+    app.load_form_config
     fmt ||= app.cluster.job_config[:adapter] if app.cluster
     session_ctx = app.build_session_context
     session_ctx.from_json(ctx)

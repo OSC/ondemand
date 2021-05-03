@@ -53,6 +53,7 @@ class BatchConnect::SessionContextsController < ApplicationController
     # Set the app from the token
     def set_app
       @app = BatchConnect::App.from_token params[:token]
+      @app.load_form_config
     end
 
     # Set list of app lists for navigation

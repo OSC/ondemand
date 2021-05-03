@@ -10,6 +10,8 @@ module BatchConnect
     # @return [String, nil] sub app
     attr_accessor :sub_app
 
+    attr_reader :form_config
+
     delegate :type, :category, :subcategory, :metadata, to: :ood_app
 
     # Raised when batch connect app components could not be found
@@ -39,9 +41,10 @@ module BatchConnect
     # @param router [DevRouter, UsrRouter, SysRouter] router for batch connect
     #   app
     # @param sub_app [String, nil] sub app
-    def initialize(router:, sub_app: nil)
+    def initialize(router:, sub_app: nil, form_config: {})
       @router  = router
       @sub_app = sub_app && sub_app.to_s
+      @form_config = form_config
     end
 
     # Generate a token from this object
@@ -134,7 +137,7 @@ module BatchConnect
         File.fnmatch(pattern, cluster.id.to_s, File::FNM_EXTGLOB)
       end
     end
-    
+
     # Read in context from cache file if cache is disabled and context.json exist
     def update_session_with_cache(session_context, cache_file)
       cache = cache_file.file? ? JSON.parse(cache_file.read) : {}
@@ -164,13 +167,14 @@ module BatchConnect
     # Whether this is a valid app the user can use
     # @return [Boolean] whether valid app
     def valid?
-      if form_config.empty?
-        false
-      elsif configured_clusters.any?
-        clusters.any?
-      else
-        true
-      end
+      true
+      # if form_config.empty?
+      #   false
+      # elsif configured_clusters.any?
+      #   clusters.any?
+      # else
+      #   true
+      # end
     end
 
     # The reason why this app may or may not be valid
@@ -187,7 +191,7 @@ module BatchConnect
         ""
       end
     end
-    
+
     # The session context described by this batch connect app
     # @return [SessionContext] the session context
     def build_session_context
@@ -207,8 +211,8 @@ module BatchConnect
         SmartAttributes::AttributeFactory.build(attribute_id, attribute_opts)
       end
 
-     BatchConnect::SessionContext.new(attributes, form_config.fetch(:cacheable, nil)  ) #form_config.fetch(:cacheable, nil)  
-       
+     BatchConnect::SessionContext.new(attributes, form_config.fetch(:cacheable, nil)  ) #form_config.fetch(:cacheable, nil)
+
     end
 
     #
@@ -273,6 +277,24 @@ module BatchConnect
       token == other.to_s
     end
 
+    # Hash describing the full form object
+    def load_form_config(binding: nil)
+      raise AppNotFound, "This app does not exist under the directory '#{root}'" unless root.directory?
+      file = form_file(root: root)
+      raise AppNotFound, "This app does not supply a form file under the directory '#{root}'" unless file
+      hsh = read_yaml_erb(path: file, binding: binding)
+      if sub_app
+        file = form_file(root: sub_app_root, name: sub_app)
+        raise AppNotFound, "This app does not supply a sub app form file under the directory '#{sub_app_root}'" unless file
+        hsh = hsh.deep_merge read_yaml_erb(path: file, binding: binding)
+      end
+      @form_config = hsh
+    rescue AppNotFound => e
+      @validation_reason = e.message
+    rescue => e
+      @validation_reason = "#{e.class.name}: #{e.message}"
+    end
+
     private
       def build_sub_app_list
         return [self] unless sub_app_root.directory? && sub_app_root.readable? && sub_app_root.executable?
@@ -308,28 +330,6 @@ module BatchConnect
         erb = ERB.new(contents, nil, "-")
         erb.filename = path.to_s
         erb.result(binding)
-      end
-
-      # Hash describing the full form object
-      def form_config(binding: nil)
-        return @form_config if @form_config
-
-        raise AppNotFound, "This app does not exist under the directory '#{root}'" unless root.directory?
-        file = form_file(root: root)
-        raise AppNotFound, "This app does not supply a form file under the directory '#{root}'" unless file
-        hsh = read_yaml_erb(path: file, binding: binding)
-        if sub_app
-          file = form_file(root: sub_app_root, name: sub_app)
-          raise AppNotFound, "This app does not supply a sub app form file under the directory '#{sub_app_root}'" unless file
-          hsh = hsh.deep_merge read_yaml_erb(path: file, binding: binding)
-        end
-        @form_config = hsh
-      rescue AppNotFound => e
-        @validation_reason = e.message
-        return {}
-      rescue => e
-        @validation_reason = "#{e.class.name}: #{e.message}"
-        return {}
       end
 
       # Hash describing the full submission properties
