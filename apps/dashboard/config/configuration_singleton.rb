@@ -334,6 +334,19 @@ end
     (ENV['OOD_ALLOWLIST_PATH'] || ENV['WHITELIST_PATH'] || "").split(':').map{ |s| Pathname.new(s) }
   end
 
+  # default value for opening apps in new window
+  # that is used if app's manifest doesn't specify
+  # if not set default is true
+  #
+  # @return [Boolean] true if by default open apps in new window
+  def open_apps_in_new_window?
+    if ENV['OOD_OPEN_APPS_IN_NEW_WINDOW']
+      to_bool(ENV['OOD_OPEN_APPS_IN_NEW_WINDOW'])
+    else
+      true
+    end
+  end
+
   private
 
   def can_access_core_app?(name)

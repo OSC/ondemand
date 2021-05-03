@@ -121,6 +121,13 @@ category: OSC
     @manifest_options[:metadata] || {}
   end
 
+  # Return the app's hint of whether to open app in new window
+  #
+  # @return [Boolean, nil] if set, Boolean value, otherwise nil
+  def new_window
+    @manifest_options[:new_window]
+  end
+
   # Manifest objects are valid
   #
   # @return [true] Always return true
