@@ -1,6 +1,6 @@
 <%= render partial: 'shared/welcome' %>
 
-<%- landing_page_layout.fetch(:rows, []).each do |row| -%>
+<%- dashboard_layout.fetch(:rows, []).each do |row| -%>
 <div class="row">
   <%- row.fetch(:columns, []).each do |col| -%>
   <div class='<%= "col-md-#{col[:width]}" %>'> <%# FIXME: what if width is not specified!? %>

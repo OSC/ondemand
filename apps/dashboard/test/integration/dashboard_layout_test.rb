@@ -1,12 +1,12 @@
 require 'html_helper'
 require 'test_helper'
 
-# Test the feature for configuring landing pages through ConfigurationSingleton#landing_page_layout.
+# Test the feature for configuring landing pages through ConfigurationSingleton#dashboard_layout.
 
-# Note that the default layout (having no ConfigurationSingleton#landing_page_layout set)
+# Note that the default layout (having no ConfigurationSingleton#dashboard_layout set)
 # and variants (MOTD enabled/disabled, XDMOD & MOTD enabled/disabled and so on) are handled
 # by pinned_apps_test.rb.
-class LandingPageTest < ActionDispatch::IntegrationTest
+class DashboardLayoutTest < ActionDispatch::IntegrationTest
 
   def setup
     Router.instance_variable_set('@pinned_apps', nil)
@@ -27,7 +27,7 @@ class LandingPageTest < ActionDispatch::IntegrationTest
 
   test "should show nothing when nothing is given" do
     # XDMOD here isn't really 
-    Configuration.stubs(:landing_page_layout).returns({})
+    Configuration.stubs(:dashboard_layout).returns({})
 
     get '/'
 
@@ -35,7 +35,7 @@ class LandingPageTest < ActionDispatch::IntegrationTest
   end
 
   test "nil MOTD and pinned apps render empty elements" do
-    Configuration.stubs(:landing_page_layout).returns({
+    Configuration.stubs(:dashboard_layout).returns({
       rows: [
         {
           columns: [
@@ -70,7 +70,7 @@ class LandingPageTest < ActionDispatch::IntegrationTest
   end
 
   test "shows MOTD a single row, single column" do
-    Configuration.stubs(:landing_page_layout).returns({
+    Configuration.stubs(:dashboard_layout).returns({
       rows: [
         {
           columns: [
@@ -97,7 +97,7 @@ class LandingPageTest < ActionDispatch::IntegrationTest
   end
 
   test "shows widgets with one row and two columns" do
-    Configuration.stubs(:landing_page_layout).returns({
+    Configuration.stubs(:dashboard_layout).returns({
       rows: [
         {
           columns: [
@@ -178,7 +178,7 @@ class LandingPageTest < ActionDispatch::IntegrationTest
       'sys/bc_desktop/owens',
       'sys/pseudofun',
     ])
-    Configuration.stubs(:landing_page_layout).returns({
+    Configuration.stubs(:dashboard_layout).returns({
       rows: [
         {
           columns: [
@@ -230,7 +230,7 @@ class LandingPageTest < ActionDispatch::IntegrationTest
   end
 
   test "bad widgets don't throw errors" do
-    Configuration.stubs(:landing_page_layout).returns({
+    Configuration.stubs(:dashboard_layout).returns({
       rows: [
         {
           columns: [
@@ -261,7 +261,7 @@ class LandingPageTest < ActionDispatch::IntegrationTest
   end
 
   test "should render brand new widgets with shipped widgets" do
-    Configuration.stubs(:landing_page_layout).returns({
+    Configuration.stubs(:dashboard_layout).returns({
       rows: [
         {
           columns: [
