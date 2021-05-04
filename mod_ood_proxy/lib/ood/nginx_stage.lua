@@ -15,7 +15,7 @@ function pun(r, bin, user, app_init_url, exports, pre_hook_root_cmd)
   if pre_hook_root_cmd then
     local env_table = exports_to_table(r, exports)
     cmd = cmd .. " -P '" .. r:escape(pre_hook_root_cmd) .. "'"
-    err = fork_and_exec(cmd, env_table)
+    err = capture2e_with_env(cmd, env_table)
   else
     err = capture2e(cmd)
   end
@@ -90,12 +90,12 @@ function capture2e(cmd)
 end
 
 --[[
-  fork_and_exec
+  capture2e_with_env
 
   fork this process, modify the environment of the child and execute the
   command.  This returns a string that is the stdout & stderr combined.
 --]]
-function fork_and_exec(cmd, env_table)
+function capture2e_with_env(cmd, env_table)
   local posix = require 'posix'
 
   local read_pipe, write_pipe = posix.pipe()
