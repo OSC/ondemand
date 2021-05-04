@@ -1,0 +1,29 @@
+<div class="shell-wrapper btn-group dropright">
+  <%= link_to OodAppkit.shell.url(path: @path.to_s).to_s, id: 'open-in-terminal-btn', class: 'btn btn-outline-dark btn-sm disabled', target: '_blank' do %>
+    <i class="fas fa-terminal" aria-hidden="true"></i>
+    Open in Terminal
+  <% end %>
+  <% if Configuration.login_clusters.count > 0 %>
+    <button type="button" class="btn btn-sm btn-outline-dark dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <ul class="dropdown-menu" x-placement="right-start" id="shell-dropdown-items">
+      <% Configuration.login_clusters.each{ |cluster| %>
+        <%=
+          # <li>
+          #   <a href="" title="" target="_blank" class="dropdown-item"></a>
+          # </li>
+          tag.li(
+            tag.a(
+              cluster.title,
+              href: OodAppLink.new(
+                url: OodAppkit::Urls::Shell.new().url(host: cluster.title.downcase),
+              ).url,
+              title: cluster.title,
+              target: '_blank',
+              class: 'dropdown-item'
+            )
+          )
+        %>
+      <% } %>
+    </ul>
+  <% end %>
+</div>
