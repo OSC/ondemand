@@ -2,10 +2,10 @@
 
 echo "input args are $@" > /tmp/hook.out 2>&1
 
-if [[ -n "$OIDC_ACCESS_TOKEN" ]]; then
+if [[ -n "$OOD_OIDC_ACCESS_TOKEN" ]]; then
   echo "access token set" >> /tmp/hook.out 2>&1
 fi
 
-if [[ -n "$OIDC_CLAIM_EMAIL" ]]; then
+if [[ -n "$OOD_OIDC_CLAIM_EMAIL" ]]; then
   echo "email claim set" >> /tmp/hook.out 2>&1
 fi
