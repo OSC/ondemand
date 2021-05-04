@@ -36,9 +36,9 @@ class ConfigurationSingleton
     @ood_version ||= (ood_version_from_env || version_from_file('/opt/ood') || version_from_git('/opt/ood') || "Unknown").strip
   end
 
-def ood_bc_ssh_to_compute_node
-  to_bool(ENV['OOD_BC_SSH_TO_COMPUTE_NODE'] || true)
-end
+  def ood_bc_ssh_to_compute_node
+    to_bool(ENV['OOD_BC_SSH_TO_COMPUTE_NODE'] || true)
+  end
 
   # @return [String, nil] version string from git describe, or nil if not git repo
   def version_from_git(dir)
@@ -48,6 +48,15 @@ end
     end
   rescue Errno::ENOENT
     nil
+  end
+
+  def login_clusters
+    OodCore::Clusters.new(
+      OodAppkit.clusters
+        .select(&:allow?)
+        .reject { |c| c.metadata.hidden }
+        .select(&:login_allow?)
+    )
   end
 
   # @return [String, nil] version string from VERSION file, or nil if no file avail
