@@ -19,6 +19,7 @@ def browser_login(browser)
   end
 
   browser.goto ctr_base_url
+  browser.text_field(id: 'username').wait_until_present(timeout: 60)
   browser.text_field(id: 'username').set "ood@localhost"
   browser.text_field(id: 'password').set "password"
   browser.button(id: 'submit-login').click
