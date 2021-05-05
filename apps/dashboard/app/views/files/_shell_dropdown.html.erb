@@ -1,4 +1,4 @@
-<div class="shell-wrapper btn-group dropright">
+<div id="shell-wrapper" class="btn-group dropright">
   <%= link_to OodAppkit.shell.url(path: @path.to_s).to_s, id: 'open-in-terminal-btn', class: 'btn btn-outline-dark btn-sm', target: '_blank' do %>
     <i class="fas fa-terminal" aria-hidden="true"></i>
     Open in Terminal
@@ -13,11 +13,9 @@
           # </li>
           tag.li(
             tag.a(
-              cluster.title,
-              href: OodAppLink.new(
-                url: OodAppkit::Urls::Shell.new().url(host: cluster.title.downcase),
-              ).url,
-              title: cluster.title,
+              "#{cluster.metadata.title || cluster.id.to_s.titleize}",
+              href: OodAppkit::Urls::Shell.new(base_url: root_path).url(host: cluster.login.host, path: @path.to_s),
+              title: "#{cluster.metadata.title || cluster.id.to_s.titleize}",
               target: '_blank',
               class: 'dropdown-item'
             )
