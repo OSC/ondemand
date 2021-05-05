@@ -14,12 +14,17 @@ end
 def browser_login(browser)
   # sometimes you need to retry to let the container start up, so retry to make the tests
   # a little less flaky
-  Watir::Wait.until(timeout: 30, interval: 3) do
-    `curl --head -w '%{http_code}' -o /dev/null -s http://localhost:8080/`.eql?('302')
+  Watir::Wait.until(timeout: 60, interval: 3) do
+    head = `curl --head -w '%{http_code}' -o /dev/null -s http://localhost:8080/`.to_s
+    if head == '302'
+      browser.goto ctr_base_url
+      browser.text_field(id: 'username').present?
+    else
+      false
+    end
   end
 
   browser.goto ctr_base_url
-  browser.text_field(id: 'username').wait_until_present(timeout: 60)
   browser.text_field(id: 'username').set "ood@localhost"
   browser.text_field(id: 'password').set "password"
   browser.button(id: 'submit-login').click
