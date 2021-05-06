@@ -48,6 +48,37 @@ class Files
     }
   end
 
+  def self.can_download_as_zip?(path, timeout: 10, max_download_as_zip_size: 10*1024*1024*1024)
+    path = Pathname.new(path)
+
+    can_download = false
+    error = nil
+
+    if ! (path.directory? && path.readable? && path.executable?)
+      error = "You can only download a directory as zip that you have read and execute access to"
+    else
+      o, e, s = Open3.capture3("timeout", "#{timeout}s", "du", "-cbs", path.to_s)
+
+      if s.exitstatus == 124
+        error = "Timeout while trying to determine directory size"
+      elsif ! s.success?
+        error = "Error with status #{s} when trying to determine directory size: #{e}"
+      else
+        size = o&.split&.first
+
+        if size.blank?
+          error "Failed to properly parse the output of the du command when trying to determine directory size."
+        elsif size.to_i > max_download_as_zip_size
+          error = "The directory is too large to download as a zip. The directory should be less than #{max_download_as_zip_size} bytes."
+        else
+          can_download = true
+        end
+      end
+    end
+
+    return can_download, error
+  end
+
   # TODO: move to PosixFile
   def self.mime_type(path)
     path = Pathname.new(path.to_s)

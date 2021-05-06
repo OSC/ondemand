@@ -19,8 +19,14 @@ class FilesController < ApplicationController
           render :index
         }
         format.json {
-          @files = Files.new.ls(@path.to_s)
-          render :index
+          if params[:can_download]
+            # check to see if this directory can be downloaded as a zip
+            can_download, error_message = Files.can_download_as_zip?(@path)
+            render json: { can_download: can_download, error_message: error_message }
+          else
+            @files = Files.new.ls(@path.to_s)
+            render :index
+          end
         }
         format.zip {
           zipname = @path.basename.to_s.gsub('"', '\"') + '.zip'
