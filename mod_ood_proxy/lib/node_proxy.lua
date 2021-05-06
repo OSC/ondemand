@@ -38,7 +38,7 @@ function node_proxy_handler(r)
 
   -- last ditch effort to ensure that the uri is at least something
   -- because the request-line of an HTTP request _has_ to have something for a URL
-  if conn.uri == '' then
+  if conn.uri == nil or conn.uri == '' then
     conn.uri = '/'
   end
 
