@@ -57,13 +57,24 @@ class Files
     if ! (path.directory? && path.readable? && path.executable?)
       error = "You can only download a directory as zip that you have read and execute access to"
     else
+      # Determine the size of the directory.
       o, e, s = Open3.capture3("timeout", "#{timeout}s", "du", "-cbs", path.to_s)
 
+      # Catch SIGTERM.
       if s.exitstatus == 124
         error = "Timeout while trying to determine directory size"
       elsif ! s.success?
         error = "Error with status #{s} when trying to determine directory size: #{e}"
       else
+        # Example output from: du -cbs $path
+        # 
+        #    496184  .
+        #    64      ./ood-portal-generator/lib/ood_portal_generator
+        #    72      ./ood-portal-generator/lib
+        #    24      ./ood-portal-generator/templates
+        #    40      ./ood-portal-generator/share
+        #    576     ./ood-portal-generator
+        #
         size = o&.split&.first
 
         if size.blank?
