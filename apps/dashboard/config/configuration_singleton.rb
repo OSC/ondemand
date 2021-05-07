@@ -332,18 +332,18 @@ end
 
   # The timeout (seconds) for "generating" a .zip from a directory.
   #
-  # Default for FILE_ZIP_TIMEOUT is "5" (seconds).
+  # Default for OOD_DOWNLOAD_DIR_TIMEOUT is "5" (seconds).
   # @return [Integer]
-  def file_zip_timeout
-    ENV['FILE_ZIP_TIMEOUT']&.to_i || 5
+  def file_download_dir_timeout
+    ENV['OOD_DOWNLOAD_DIR_TIMEOUT']&.to_i || 5
   end
 
   # The maximum size of a .zip file that can be downloaded.
   #
-  # Default for FILE_ZIP_MAX_SIZE is 10*1024*1024*1024 bytes.
+  # Default for OOD_DOWNLOAD_DIR_MAX is 10*1024*1024*1024 bytes.
   # @return [Integer]
-  def max_download_as_zip_size
-    ENV['FILE_ZIP_MAX_SIZE']&.to_i || 10737418240
+  def file_download_dir_max
+    ENV['OOD_DOWNLOAD_DIR_MAX']&.to_i || 10737418240
   end
 
   def allowlist_paths
