@@ -67,6 +67,9 @@ class FilesController < ApplicationController
 
     FileUtils.mv params[:file].tempfile, path.to_s
 
+    mode = 666 - File.umask.to_s(8).to_i
+    File.chmod(mode.to_s.to_i(8), path.to_s)
+
     render json: {}
   rescue AllowlistPolicy::Forbidden => e
     render json: { error_message: e.message }, status: :forbidden
