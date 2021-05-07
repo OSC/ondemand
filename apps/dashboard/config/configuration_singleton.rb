@@ -330,6 +330,22 @@ end
     [ENV['FILE_UPLOAD_MAX']&.to_i, ENV['NGINX_FILE_UPLOAD_MAX']&.to_i].compact.min || 10737420000
   end
 
+  # The timeout (seconds) for "generating" a .zip from a directory.
+  #
+  # Default for FILE_ZIP_TIMEOUT is "5" (seconds).
+  # @return [Integer]
+  def file_zip_timeout
+    ENV['FILE_ZIP_TIMEOUT']&.to_i || 5
+  end
+
+  # The maximum size of a .zip file that can be downloaded.
+  #
+  # Default for FILE_ZIP_MAX_SIZE is 10*1024*1024*1024 bytes.
+  # @return [Integer]
+  def max_download_as_zip_size
+    ENV['FILE_ZIP_MAX_SIZE']&.to_i || 10737418240
+  end
+
   def allowlist_paths
     (ENV['OOD_ALLOWLIST_PATH'] || ENV['WHITELIST_PATH'] || "").split(':').map{ |s| Pathname.new(s) }
   end
