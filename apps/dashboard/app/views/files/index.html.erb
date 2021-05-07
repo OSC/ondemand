@@ -378,29 +378,60 @@ $('#new-dir-btn').on("click", () => {
   .then((filename) => newDirectory(filename));
 });
 
-function downloadFile(file){
+function downloadFile(file) {
   // creating the temporary iframe is exactly what the CloudCmd does
   // so this just repeats the status quo
 
   let filename = $($.parseHTML(file.name)).text(),
       downloadUrl = `${history.state.currentDirectoryUrl}/${encodeURI(filename)}?download=${Date.now().toString()}`,
       iframe = document.createElement('iframe'),
-      TIME = 30 * 1000;
+      TIME = 30 * 1000,
+      canDownload = true;
+
   iframe.setAttribute('class', 'd-none');
   iframe.setAttribute('src', downloadUrl);
 
-  document.body.appendChild(iframe);
+  if (file.type == 'd') {
+    let canDownloadReq = `${history.state.currentDirectoryUrl}/${encodeURI(filename)}?can_download=${Date.now().toString()}`
 
-  setTimeout(function() { document.body.removeChild(iframe); }, TIME);
+    fetch(canDownloadReq, {
+        method: 'GET',
+        headers: {
+          'X-CSRF-Token': csrf_token,
+          'Accept': 'application/json'
+        }
+      })
+      .then(response => dataFromJsonResponse(response))
+      .then(data => {
+        canDownload = data.can_download
+
+        if (canDownload) {
+          // Directory download
+          document.body.appendChild(iframe);
+        }
+      })
+      .catch(e => {
+        Swal.fire('Directory too large to download', e.message, 'error')
+      })
+
+  } else {
+    // File download
+    document.body.appendChild(iframe);
+  }
+
+  setTimeout(function() {
+    canDownload ? document.body.removeChild(iframe) : null;
+  }, TIME);
 }
 
 $('#download-btn').on("click", () => {
-  let selection = table.rows({selected: true}).data();
-  if(selection.length != 1){
+  let selection = table.rows({ selected: true }).data();
+  let file = selection[0]
+
+  if (selection.length != 1){
     Swal.fire('Select only 1 file to download', 'You have selected none or multiple rows', 'error')
-  }
-  else {
-    downloadFile(selection[0]);
+  } else {
+    downloadFile(file);
   }
 });
 
