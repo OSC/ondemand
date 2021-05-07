@@ -29,27 +29,33 @@ class FilesController < ApplicationController
           end
         }
         format.zip {
-          zipname = @path.basename.to_s.gsub('"', '\"') + '.zip'
-          response.set_header 'Content-Disposition', "attachment; filename=\"#{zipname}\""
-          response.set_header 'Content-Type', 'application/zip'
-          response.set_header 'Last-Modified', Time.now.httpdate
-          response.sending_file = true
-          response.cache_control[:public] ||= false
+          can_download, error_message = Files.can_download_as_zip?(@path)
 
-          # FIXME: strategy 1: is below, use zip_tricks
-          # strategy 2: use actual zip command (likely much faster) and ActionController::Live
-          zip_tricks_stream do |zip|
-            Files.files_to_zip(@path).each do |file|
-              begin
-                if File.file?(file.path) && File.readable?(file.path)
-                  zip.write_deflated_file(file.relative_path.to_s) do |zip_file|
-                    IO.copy_stream(file.path, zip_file)
+          if can_download
+            zipname = @path.basename.to_s.gsub('"', '\"') + '.zip'
+            response.set_header 'Content-Disposition', "attachment; filename=\"#{zipname}\""
+            response.set_header 'Content-Type', 'application/zip'
+            response.set_header 'Last-Modified', Time.now.httpdate
+            response.sending_file = true
+            response.cache_control[:public] ||= false
+
+            # FIXME: strategy 1: is below, use zip_tricks
+            # strategy 2: use actual zip command (likely much faster) and ActionController::Live
+            zip_tricks_stream do |zip|
+              Files.files_to_zip(@path).each do |file|
+                begin
+                  if File.file?(file.path) && File.readable?(file.path)
+                    zip.write_deflated_file(file.relative_path.to_s) do |zip_file|
+                      IO.copy_stream(file.path, zip_file)
+                    end
                   end
+                rescue => e
+                  Rails.logger.warn("error writing file #{file.path} to zip: #{e.message}")
                 end
-              rescue => e
-                Rails.logger.warn("error writing file #{file.path} to zip: #{e.message}")
               end
             end
+          else
+            render :nothing => true, :status => :bad_request
           end
         }
       end
