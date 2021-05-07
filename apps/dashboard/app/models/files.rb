@@ -48,7 +48,7 @@ class Files
     }
   end
 
-  def self.can_download_as_zip?(path, timeout: 10, max_download_as_zip_size: 10*1024*1024*1024)
+  def self.can_download_as_zip?(path, timeout: Configuration.file_zip_timeout, max_download_as_zip_size: Configuration.max_download_as_zip_size)
     path = Pathname.new(path)
 
     can_download = false
