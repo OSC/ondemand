@@ -411,7 +411,7 @@ function downloadFile(file) {
         }
       })
       .catch(e => {
-        Swal.fire('Directory too large to download', e.message, 'error')
+        Swal.fire('<%= t('dashboard.files_directory_download_error_modal_title') %>', e.message, 'error')
       })
 
   } else {

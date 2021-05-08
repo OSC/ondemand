@@ -55,16 +55,16 @@ class Files
     error = nil
 
     if ! (path.directory? && path.readable? && path.executable?)
-      error = "You can only download a directory as zip that you have read and execute access to"
+      error = I18n.t('dashboard.files_directory_download_unauthorized')
     else
       # Determine the size of the directory.
       o, e, s = Open3.capture3("timeout", "#{timeout}s", "du", "-cbs", path.to_s)
 
       # Catch SIGTERM.
       if s.exitstatus == 124
-        error = "Timeout while trying to determine directory size"
+        error = I18n.t('dashboard.files_directory_size_calculation_timeout')
       elsif ! s.success?
-        error = "Error with status #{s} when trying to determine directory size: #{e}"
+        error = I18n.t('dashboard.files_directory_size_unknown', exit_code: s, error: e)
       else
         # Example output from: du -cbs $path
         # 
@@ -78,9 +78,9 @@ class Files
         size = o&.split&.first
 
         if size.blank?
-          error "Failed to properly parse the output of the du command when trying to determine directory size."
+          error = I18n.t('dashboard.files_directory_size_parse_error')
         elsif size.to_i > max_download_as_zip_size
-          error = "The directory is too large to download as a zip. The directory should be less than #{max_download_as_zip_size} bytes."
+          error = I18n.t('dashboard.files_directory_too_large', max_download_as_zip_size: max_download_as_zip_size)
         else
           can_download = true
         end
