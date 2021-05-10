@@ -171,6 +171,10 @@ class Transfer
     args
   end
 
+  def command_str
+    command.join(" ")
+  end
+
   def update_percent(step)
     self.percent = steps == 0 ? 100 : (100.0*((step).to_f/steps)).to_i
   end

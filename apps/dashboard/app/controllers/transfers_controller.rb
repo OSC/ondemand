@@ -22,12 +22,14 @@ class TransfersController < ApplicationController
       # error
       render json: { error_message: @transfer.errors.full_messages.join('. ') }
     elsif @transfer.synchronous?
+      logger.info "files: executing synchronous commmand in directory #{@transfer.from.to_s}: #{@transfer.command_str}"
       @transfer.perform
 
       respond_to do |format|
         format.json { render :show }
       end
     else
+      logger.info "files: initiating asynchronous commmand in directory #{@transfer.from.to_s}: #{@transfer.command_str}"
       @transfer.perform_later
 
       respond_to do |format|
