@@ -128,18 +128,19 @@ class FilesController < ApplicationController
 
   def show_file
     type = Files.mime_type_by_extension(@path).presence || Files.mime_type(@path)
-    # we want to show the file inline as plain text, not JavaScript that should be executed by the browser
-    type = "text/plain" if type == "text/javascript"
 
     if params[:download]
       send_file @path, type: type
     else
-      begin
-        send_file @path, disposition: 'inline', type: type
-      rescue => e
-        Rails.logger.warn("failed to determine mime type for file: #{@path} due to error #{e.message}")
-        send_file @path, disposition: 'inline'
-      end
+      send_file @path, disposition: 'inline', type: Files.mime_type_for_preview(type)
+    end
+  rescue => e
+    Rails.logger.warn("failed to determine mime type for file: #{@path} due to error #{e.message}")
+
+    if params[:download]
+      send_file @path
+    else
+      send_file @path, disposition: 'inline'
     end
   end
 end
