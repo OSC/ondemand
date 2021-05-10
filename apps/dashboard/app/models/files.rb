@@ -78,7 +78,7 @@ class Files
         size = o&.split&.first
 
         if size.blank?
-          error = I18n.t('dashboard.files_directory_size_parse_error')
+          error = I18n.t('dashboard.files_directory_size_calculation_error')
         elsif size.to_i > download_directory_size_limit
           error = I18n.t('dashboard.files_directory_too_large', download_directory_size_limit: download_directory_size_limit)
         else
