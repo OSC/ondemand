@@ -256,7 +256,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
 
     error_widgets = css_select('div.row > div.col-md-6 > div.alert.alert-danger.card > div.card-body')
     assert_equal 2, error_widgets.size
-    assert_equal true, /Missing partial dashboard\/_this_widget_doesnt_exist/.match?(error_widgets[0].text)
+    assert_equal true, /Missing partial widgets\/_this_widget_doesnt_exist/.match?(error_widgets[0].text)
     assert_equal true, /undefined method `woops!'/.match?(error_widgets[1].text)
   end
 
