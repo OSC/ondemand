@@ -1,0 +1,11 @@
+---
+#
+# Portal configuration
+#
+
+listen_addr_port: 8080
+servername: localhost
+port: 8080
+
+rnode_uri: '/rnode'
+node_uri: '/node'

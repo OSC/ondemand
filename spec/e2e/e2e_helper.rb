@@ -38,6 +38,10 @@ def portal_fixture(file)
   "#{File.expand_path('.')}/spec/fixtures/config/ood_portal/#{file}"
 end
 
+def extra_fixtures
+  "#{File.expand_path('.')}/spec/fixtures/extras"
+end
+
 def container_exec(cmd)
   `#{container_runtime} exec #{test_image_name} #{cmd}`.to_s
 end
