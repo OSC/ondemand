@@ -11,8 +11,8 @@
 // about supported directives.
 //
 //= require data-confirm-modal
-//= require handlebars.js/4.4.2/handlebars.min
-//= require lodash/4.17.15/lodash.min
+//= require handlebars/dist/handlebars.min
+//= require lodash/lodash.min
 //= require uppy/dist/uppy.min
 //= require_tree .
 //= stub editor
