@@ -385,8 +385,7 @@ function downloadFile(file) {
   let filename = $($.parseHTML(file.name)).text(),
       downloadUrl = `${history.state.currentDirectoryUrl}/${encodeURI(filename)}?download=${Date.now().toString()}`,
       iframe = document.createElement('iframe'),
-      TIME = 30 * 1000,
-      canDownload = true;
+      TIME = 30 * 1000;
 
   iframe.setAttribute('class', 'd-none');
   iframe.setAttribute('src', downloadUrl);
@@ -403,9 +402,7 @@ function downloadFile(file) {
       })
       .then(response => dataFromJsonResponse(response))
       .then(data => {
-        canDownload = data.can_download
-
-        if (canDownload) {
+        if (data.can_download) {
           // Directory download
           document.body.appendChild(iframe);
         }
