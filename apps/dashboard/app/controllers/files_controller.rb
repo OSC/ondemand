@@ -67,6 +67,12 @@ class FilesController < ApplicationController
 
     FileUtils.mv params[:file].tempfile, path.to_s
 
+    # umasks apply on top of 666 (-rw-rw-rw-) permissions. So a u mask of 022 would result
+    # in 666 - 022 = 644. Umasks are base 8 octal so we have to cast back and forth between
+    # decimal (ruby integers) and octal (what all this stuff expects).
+    mode = 666 - File.umask.to_s(8).to_i
+    File.chmod(mode.to_s.to_i(8), path.to_s)
+
     render json: {}
   rescue AllowlistPolicy::Forbidden => e
     render json: { error_message: e.message }, status: :forbidden
