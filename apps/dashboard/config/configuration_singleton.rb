@@ -332,10 +332,10 @@ end
 
   # The timeout (seconds) for "generating" a .zip from a directory.
   #
-  # Default for OOD_DOWNLOAD_DIR_TIMEOUT is "5" (seconds).
+  # Default for OOD_DOWNLOAD_DIR_TIMEOUT_SECONDS is "5" (seconds).
   # @return [Integer]
   def file_download_dir_timeout
-    ENV['OOD_DOWNLOAD_DIR_TIMEOUT']&.to_i || 5
+    ENV['OOD_DOWNLOAD_DIR_TIMEOUT_SECONDS']&.to_i || 5
   end
 
   # The maximum size of a .zip file that can be downloaded.
