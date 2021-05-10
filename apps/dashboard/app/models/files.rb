@@ -48,7 +48,7 @@ class Files
     }
   end
 
-  def self.can_download_as_zip?(path, timeout: Configuration.file_download_dir_timeout, max_download_as_zip_size: Configuration.file_download_dir_max)
+  def self.can_download_as_zip?(path, timeout: Configuration.file_download_dir_timeout, download_directory_size_limit: Configuration.file_download_dir_max)
     path = Pathname.new(path)
 
     can_download = false
@@ -79,8 +79,8 @@ class Files
 
         if size.blank?
           error = I18n.t('dashboard.files_directory_size_parse_error')
-        elsif size.to_i > max_download_as_zip_size
-          error = I18n.t('dashboard.files_directory_too_large', max_download_as_zip_size: max_download_as_zip_size)
+        elsif size.to_i > download_directory_size_limit
+          error = I18n.t('dashboard.files_directory_too_large', download_directory_size_limit: download_directory_size_limit)
         else
           can_download = true
         end
