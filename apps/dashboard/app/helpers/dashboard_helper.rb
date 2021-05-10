@@ -39,7 +39,7 @@ module DashboardHelper
 
   def render_widget(widget)
     begin
-      render partial: widget.to_s
+      render partial: "widgets/#{widget}"
     rescue SyntaxError, StandardError => e
       render partial: "widget_error", locals: { error: e, widget: widget.to_s }
     end
