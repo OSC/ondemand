@@ -39,19 +39,13 @@ module DashboardHelper
 
   def render_widget(widget)
     begin
-      render partial: internal_widget?(widget) ? widget.to_s : "widgets/#{widget}"
+      render partial: "widgets/#{widget}"
     rescue SyntaxError, StandardError => e
       render partial: "widget_error", locals: { error: e, widget: widget.to_s }
     end
   end
 
   private
-
-  def internal_widget?(widget)
-    [
-      'motd', 'pinned_apps', 'xdmod_widget_job_efficiency' , 'xdmod_widget_jobs'
-    ].include?(widget.to_s)
-  end
 
   def default_dashboard_layout
     if xdmod?
