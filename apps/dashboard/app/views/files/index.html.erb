@@ -378,6 +378,30 @@ $('#new-dir-btn').on("click", () => {
   .then((filename) => newDirectory(filename));
 });
 
+function downloadDirectory(file) {
+  let filename = $($.parseHTML(file.name)).text(),
+      canDownloadReq = `${history.state.currentDirectoryUrl}/${encodeURI(filename)}?can_download=${Date.now().toString()}`
+
+  fetch(canDownloadReq, {
+      method: 'GET',
+      headers: {
+        'X-CSRF-Token': csrf_token,
+        'Accept': 'application/json'
+      }
+    })
+    .then(response => dataFromJsonResponse(response))
+    .then(data => {
+      if (data.can_download) {
+        downloadFile(file)
+      } else {
+        Swal.fire('<%= t('dashboard.files_directory_download_error_modal_title') %>', data.error_message, 'error')
+      }
+    })
+    .catch(e => {
+      Swal.fire('<%= t('dashboard.files_directory_download_error_modal_title') %>', e.message, 'error')
+    })
+}
+
 function downloadFile(file) {
   // creating the temporary iframe is exactly what the CloudCmd does
   // so this just repeats the status quo
@@ -385,42 +409,15 @@ function downloadFile(file) {
   let filename = $($.parseHTML(file.name)).text(),
       downloadUrl = `${history.state.currentDirectoryUrl}/${encodeURI(filename)}?download=${Date.now().toString()}`,
       iframe = document.createElement('iframe'),
-      TIME = 30 * 1000,
-      canDownload = true;
+      TIME = 30 * 1000;
 
   iframe.setAttribute('class', 'd-none');
   iframe.setAttribute('src', downloadUrl);
 
-  if (file.type == 'd') {
-    let canDownloadReq = `${history.state.currentDirectoryUrl}/${encodeURI(filename)}?can_download=${Date.now().toString()}`
-
-    fetch(canDownloadReq, {
-        method: 'GET',
-        headers: {
-          'X-CSRF-Token': csrf_token,
-          'Accept': 'application/json'
-        }
-      })
-      .then(response => dataFromJsonResponse(response))
-      .then(data => {
-        canDownload = data.can_download
-
-        if (canDownload) {
-          // Directory download
-          document.body.appendChild(iframe);
-        }
-      })
-      .catch(e => {
-        Swal.fire('<%= t('dashboard.files_directory_download_error_modal_title') %>', e.message, 'error')
-      })
-
-  } else {
-    // File download
-    document.body.appendChild(iframe);
-  }
+  document.body.appendChild(iframe);
 
   setTimeout(function() {
-    canDownload ? document.body.removeChild(iframe) : null;
+    document.body.removeChild(iframe);
   }, TIME);
 }
 
@@ -431,7 +428,11 @@ $('#download-btn').on("click", () => {
   if (selection.length != 1){
     Swal.fire('Select only 1 file to download', 'You have selected none or multiple rows', 'error')
   } else {
-    downloadFile(file);
+    if (file.type == 'd') {
+      downloadDirectory(file)
+    } else {
+      downloadFile(file)
+    }
   }
 });
 
