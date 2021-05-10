@@ -66,13 +66,22 @@ class Files
   #
   # @return [String] the converted MIME type.
   def self.mime_type_for_preview(type)
-    override = {
-      "text/javascript" => "text/plain",
-      "text/css" => "text/javascript"
-    }
-
-    # Return preview MIME type.
-    return override["#{type}"]
+    # NOTE: use case statement here, not a hash so that we can
+    # take advantage of the fact that Mime::Type in Ruby implements == to support multiple values
+    # for example
+    #
+    #     x = Files.mime_type_by_extension('foo.yml')
+    #     x === 'text/yaml'
+    #     # => true
+    #     x === 'application/x-yaml'
+    #     # => true
+    #
+    case type
+    when 'text/javascript', 'text/css', 'text/yaml', 'text/yml'
+      'text/plain'
+    else
+      type
+    end
   end
 
   # returns mime type string if found, "" otherwise
