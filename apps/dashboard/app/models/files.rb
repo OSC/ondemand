@@ -6,6 +6,18 @@ class Files
     path.each_child.first
   end
 
+  #FIXME: a more generic name for this?
+  FileToZip = Struct.new(:path, :relative_path)
+
+  def self.files_to_zip(path)
+    path = path.expand_path
+
+    Pathname.new(path).glob('**/*').map {|p|
+      FileToZip.new(p.to_s, p.relative_path_from(path).to_s)
+    }
+  end
+
+
   def ls(dirpath)
     Pathname.new(dirpath).each_child.map do |path|
       Files.stat(path)
@@ -34,6 +46,48 @@ class Files
       mode: s.mode,
       dev: s.dev
     }
+  end
+
+  def self.can_download_as_zip?(path, timeout: Configuration.file_download_dir_timeout, download_directory_size_limit: Configuration.file_download_dir_max)
+    path = Pathname.new(path)
+
+    can_download = false
+    error = nil
+
+    if ! (path.directory? && path.readable? && path.executable?)
+      error = I18n.t('dashboard.files_directory_download_unauthorized')
+    else
+      # Determine the size of the directory.
+      o, e, s = Open3.capture3("timeout", "#{timeout}s", "du", "-cbs", path.to_s)
+
+      # Catch SIGTERM.
+      if s.exitstatus == 124
+        error = I18n.t('dashboard.files_directory_size_calculation_timeout')
+      elsif ! s.success?
+        error = I18n.t('dashboard.files_directory_size_unknown', exit_code: s, error: e)
+      else
+        # Example output from: du -cbs $path
+        # 
+        #    496184  .
+        #    64      ./ood-portal-generator/lib/ood_portal_generator
+        #    72      ./ood-portal-generator/lib
+        #    24      ./ood-portal-generator/templates
+        #    40      ./ood-portal-generator/share
+        #    576     ./ood-portal-generator
+        #
+        size = o&.split&.first
+
+        if size.blank?
+          error = I18n.t('dashboard.files_directory_size_calculation_error')
+        elsif size.to_i > download_directory_size_limit
+          error = I18n.t('dashboard.files_directory_too_large', download_directory_size_limit: download_directory_size_limit)
+        else
+          can_download = true
+        end
+      end
+    end
+
+    return can_download, error
   end
 
   # TODO: move to PosixFile

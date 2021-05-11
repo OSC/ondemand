@@ -80,3 +80,4 @@ gem "erubi", require: false
 gem "dalli", require: false
 
 gem 'webpacker', '~> 5.2', '>= 5.2.1'
+gem 'zip_tricks', '~> 5.5'

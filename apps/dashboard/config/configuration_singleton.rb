@@ -339,6 +339,22 @@ class ConfigurationSingleton
     [ENV['FILE_UPLOAD_MAX']&.to_i, ENV['NGINX_FILE_UPLOAD_MAX']&.to_i].compact.min || 10737420000
   end
 
+  # The timeout (seconds) for "generating" a .zip from a directory.
+  #
+  # Default for OOD_DOWNLOAD_DIR_TIMEOUT_SECONDS is "5" (seconds).
+  # @return [Integer]
+  def file_download_dir_timeout
+    ENV['OOD_DOWNLOAD_DIR_TIMEOUT_SECONDS']&.to_i || 5
+  end
+
+  # The maximum size of a .zip file that can be downloaded.
+  #
+  # Default for OOD_DOWNLOAD_DIR_MAX is 10*1024*1024*1024 bytes.
+  # @return [Integer]
+  def file_download_dir_max
+    ENV['OOD_DOWNLOAD_DIR_MAX']&.to_i || 10737418240
+  end
+
   def allowlist_paths
     (ENV['OOD_ALLOWLIST_PATH'] || ENV['WHITELIST_PATH'] || "").split(':').map{ |s| Pathname.new(s) }
   end
