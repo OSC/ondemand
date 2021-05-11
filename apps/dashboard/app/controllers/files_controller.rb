@@ -68,6 +68,14 @@ class FilesController < ApplicationController
             head :internal_server_error
           end
         rescue => e
+          # Third party API requests (from outside of OnDemand) will see this error
+          # message if there's an error while downloading a directory.
+          # 
+          # The client side code in the Files App performs checks before downloading
+          # a directory with the ?can_download query parameter but other implementations
+          # that don't perform this check will see HTTP 500 returned and the error
+          # error message will be in the "X-OOD-Failure-Reason" header.
+          #
           Rails.logger.warn "exception raised when attempting to download directory #{@path.to_s}: #{e.message}"
           response.set_header 'X-OOD-Failure-Reason', e.message
           head :internal_server_error
