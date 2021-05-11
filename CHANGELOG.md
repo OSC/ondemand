@@ -6,6 +6,35 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [2.0.6] - 2021-11-05
+
+### Fixed
+
+- node and rnode proxies now gaurentees a URL in the request in
+  [1105](https://github.com/OSC/ondemand/pull/1105).
+- Uploading files now respects the users umask in [1110](https://github.com/OSC/ondemand/pull/1110).
+
+### Changed
+
+- Disable the audio bell in the shell by default in [1089](https://github.com/OSC/ondemand/pull/1089).
+- Dashboard widgets are now expected to be in views/widgets in
+  [1116](https://github.com/OSC/ondemand/pull/1116).
+- pun_pre_hook now uses lua-posix to fork the apache process and set's environment instead
+  of feeding nginx_stage stdin in [1091](https://github.com/OSC/ondemand/pull/1091).
+- Removed the rails_12factor dependency in [1112](https://github.com/OSC/ondemand/pull/1112).
+
+### Added
+
+- Apps can now define the open in new window behaviour through their manifest in
+  [1094](https://github.com/OSC/ondemand/pull/1094).
+- Dalli is now added as a dependency to be provided for folks in ondemand-gems in
+  [1102](https://github.com/OSC/ondemand/pull/1102).
+- The files app can now choose which cluster to open in terminal in
+  [1107](https://github.com/OSC/ondemand/pull/1107).
+- The files app can now download a directory as a zip in [1108](https://github.com/OSC/ondemand/pull/1108).
+- The files app now shows javascript, css and yaml as plain text
+  in [1068](https://github.com/OSC/ondemand/pull/1068)
+
 ## [2.0.5] - 2021-27-04
 ### Fixed
 - fix file editor bug with opening files with ampersands in their names [#1082](https://github.com/OSC/ondemand/pull/1082)
@@ -727,7 +756,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.5...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.6...HEAD
+[2.0.6]: https://github.com/OSC/ondemand/compare/v2.0.5...v2.0.6
 [2.0.5]: https://github.com/OSC/ondemand/compare/v2.0.4...v2.0.5
 [2.0.4]: https://github.com/OSC/ondemand/compare/v2.0.3...v2.0.4
 [2.0.3]: https://github.com/OSC/ondemand/compare/v2.0.2...v2.0.3
