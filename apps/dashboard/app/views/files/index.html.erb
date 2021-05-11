@@ -642,8 +642,14 @@ $('#directory-contents tbody').on('click', '.delete-file', function(e){
 $('#directory-contents tbody').on('click', '.download-file', function(e){
   e.preventDefault();
 
-  let row = table.row(this.dataset.rowIndex).data();
-  downloadFile(row);
+  let file = table.row(this.dataset.rowIndex).data();
+
+  if(file.type == 'd') {
+    downloadDirectory(file)
+  }
+  else {
+    downloadFile(file)
+  }
 });
 
 $('#directory-contents tbody').on('click', '.rename-file', function(e){
