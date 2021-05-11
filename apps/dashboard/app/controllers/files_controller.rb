@@ -15,10 +15,12 @@ class FilesController < ApplicationController
       request.format = 'zip' if params[:download]
 
       respond_to do |format|
-        format.html {
+
+        format.html do
           render :index
-        }
-        format.json {
+        end
+
+        format.json do
           if params[:can_download]
             # check to see if this directory can be downloaded as a zip
             can_download, error_message = Files.can_download_as_zip?(@path)
@@ -27,8 +29,14 @@ class FilesController < ApplicationController
             @files = Files.new.ls(@path.to_s)
             render :index
           end
-        }
-        format.zip {
+        end
+
+        # FIXME: below is a large block that should be moved to a model
+        # if moved to a model the exceptions can be handled there and
+        # then this code will be simpler to read
+        # and we can avoid rescuing in a block so we can reintroduce
+        # the block braces which is the Rails convention with the respond_to formats.
+        format.zip do
           can_download, error_message = Files.can_download_as_zip?(@path)
 
           if can_download
@@ -50,14 +58,20 @@ class FilesController < ApplicationController
                     end
                   end
                 rescue => e
-                  Rails.logger.warn("error writing file #{file.path} to zip: #{e.message}")
+                  logger.warn("error writing file #{file.path} to zip: #{e.message}")
                 end
               end
             end
           else
-            render :nothing => true, :status => :bad_request
+            logger.warn "unable to download directory #{@path.to_s}: #{error_message}"
+            response.set_header 'X-OOD-Failure-Reason', error_message
+            head :internal_server_error
           end
-        }
+        rescue => e
+          Rails.logger.warn "exception raised when attempting to download directory #{@path.to_s}: #{e.message}"
+          response.set_header 'X-OOD-Failure-Reason', e.message
+          head :internal_server_error
+        end
       end
     else
       show_file
@@ -66,7 +80,7 @@ class FilesController < ApplicationController
     @files = []
     flash.now[:alert] = "#{e.message}"
 
-    Rails.logger.error(e.message)
+    logger.error(e.message)
 
     respond_to do |format|
       format.html {
@@ -179,7 +193,7 @@ class FilesController < ApplicationController
       begin
         send_file @path, disposition: 'inline', type: type
       rescue => e
-        Rails.logger.warn("failed to determine mime type for file: #{@path} due to error #{e.message}")
+        logger.warn("failed to determine mime type for file: #{@path} due to error #{e.message}")
         send_file @path, disposition: 'inline'
       end
     end
