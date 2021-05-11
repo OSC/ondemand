@@ -358,6 +358,8 @@ function downloadDirectory(file) {
   let filename = $($.parseHTML(file.name)).text(),
       canDownloadReq = `${history.state.currentDirectoryUrl}/${encodeURI(filename)}?can_download=${Date.now().toString()}`
 
+  loading('preparing to download directory: ' + file.name)
+
   fetch(canDownloadReq, {
       method: 'GET',
       headers: {
@@ -368,6 +370,7 @@ function downloadDirectory(file) {
     .then(response => dataFromJsonResponse(response))
     .then(data => {
       if (data.can_download) {
+        doneLoading();
         downloadFile(file)
       } else {
         Swal.fire('<%= t('dashboard.files_directory_download_error_modal_title') %>', data.error_message, 'error')
