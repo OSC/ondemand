@@ -427,12 +427,12 @@ $('#download-btn').on("click", () => {
 
   if (selection.length != 1){
     Swal.fire('Select only 1 file to download', 'You have selected none or multiple rows', 'error')
-  } else {
-    if (file.type == 'd') {
-      downloadDirectory(file)
-    } else {
-      downloadFile(file)
-    }
+  }
+  else if(file.type == 'd') {
+    downloadDirectory(file)
+  }
+  else {
+    downloadFile(file)
   }
 });
 
