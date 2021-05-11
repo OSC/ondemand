@@ -41,6 +41,14 @@ class OodApp
     manifest.name.empty? ? name.titleize : manifest.name
   end
 
+  def open_in_new_window?
+    if manifest.new_window.nil?
+      Configuration.open_apps_in_new_window?
+    else
+      manifest.new_window
+    end
+  end
+
   def url
     if manifest.url.empty?
       if batch_connect_app?
@@ -78,7 +86,7 @@ class OodApp
           url: OodAppkit::Urls::Files.new(base_url: url).url(path: Dir.home),
           icon_uri: "fas://home",
           caption: caption,
-          new_tab: true
+          new_tab: open_in_new_window?
         )
       ].concat(
         OodFilesApp.new.favorite_paths.map do |favorite_path|
@@ -89,7 +97,7 @@ class OodApp
             url: OodAppkit::Urls::Files.new(base_url: url).url(path: favorite_path.path.to_s),
             icon_uri: "fas://folder",
             caption: caption,
-            new_tab: true
+            new_tab: open_in_new_window?
           )
         end
       )
@@ -108,7 +116,7 @@ class OodApp
             url: OodAppkit::Urls::Shell.new(base_url: url).url,
             icon_uri: "fas://terminal",
             caption: caption,
-            new_tab: true
+            new_tab: open_in_new_window?
           )
         ]
       else
@@ -119,7 +127,7 @@ class OodApp
             url: OodAppkit::Urls::Shell.new(base_url: url).url(host: cluster.login.host),
             icon_uri: "fas://terminal",
             caption: caption,
-            new_tab: true
+            new_tab: open_in_new_window?
           )
         end.sort_by { |lnk| lnk.title }
       end
@@ -133,7 +141,7 @@ class OodApp
           url: (type == :sys && owner == :sys) ? app_path(name, nil, nil) : app_path(name, type, owner),
           icon_uri: icon_uri,
           caption: caption,
-          new_tab: true
+          new_tab: open_in_new_window?
         )
       ]
     end

@@ -13,9 +13,9 @@ function pun(r, bin, user, app_init_url, exports, pre_hook_root_cmd)
   end
 
   if pre_hook_root_cmd then
-    local stdin = parse_exports(r, exports)
+    local env_table = exports_to_table(r, exports)
     cmd = cmd .. " -P '" .. r:escape(pre_hook_root_cmd) .. "'"
-    err = capture2e_with_stdin(cmd, stdin)
+    err = capture2e_with_env(cmd, env_table)
   else
     err = capture2e(cmd)
   end
@@ -90,50 +90,71 @@ function capture2e(cmd)
 end
 
 --[[
-  capture2e_with_stdin
+  capture2e_with_env
 
-  Give a command and some standard in, get a string for merged stdout and stderr
+  fork this process, modify the environment of the child and execute the
+  command.  This returns a string that is the stdout & stderr combined.
 --]]
-function capture2e_with_stdin(cmd, stdin)
-  local output_file = os.tmpname()
-  local redir_cmd = cmd .. " > " .. output_file .. " 2>&1"
+function capture2e_with_env(cmd, env_table)
+  local posix = require 'posix'
 
-  local stdin_handle = io.popen(redir_cmd, "w")
-  stdin_handle:write(stdin)
-  output = stdin_handle:close()
+  local read_pipe, write_pipe = posix.pipe()
+  local childpid, errmsg = posix.fork()
 
-  local output_handle = io.open(output_file, "r")
-  output = output_handle:read("*all")
-  output_handle:close()
+  if childpid == nil then
+    return "failed to fork " .. cmd .. " with error message: '" .. errmsg .. "'"
 
-  os.remove(output_file)
+  -- child pid
+  elseif childpid == 0 then
+    posix.close(read_pipe)
 
-  return output
+    for key,value in pairs(env_table) do
+      posix.setenv("OOD_" .. key, value) -- sudo rules allow for OOD_* env vars
+    end
+
+    local output = capture2e(cmd)
+    posix.write(write_pipe, output)
+    posix.close(write_pipe)
+    os.exit(0)
+
+  -- child pid
+  else
+    posix.close(write_pipe)
+
+    posix.wait(childpid)
+
+     -- FIXME: probably a better way than to read byte by byte
+    local output = ""
+    local b = posix.read(read_pipe, 1)
+    while #b == 1 do
+       output = output .. b
+       b = posix.read(read_pipe, 1)
+    end
+
+    posix.close(read_pipe)
+    return output
+  end
 end
 
 --[[
-  parse_exports
-
+  export_table
   Given exports to be a comma seperated list of environment variable
   names: split that string, extract the variable values from the request's
-  environment and return a string of key=value pairs seperated by newlines
-  like "KEY=VALUE\nNEXT=THEOTHER\n".
+  environment and return a table of the environment variable key:value pairs
 --]]
-function parse_exports(r, exports)
+function exports_to_table(r, exports)
+  local export_table = {}
+
   if exports then
-      environment = ""
-
-      for key in string.gmatch(exports, '([^,]+)') do
-          value = r.subprocess_env[key]
-          if value then
-            environment = environment .. key .. "=" .. value .. "\n"
-          end
-      end
-
-      return environment
-  else
-      return ""
+    for key in string.gmatch(exports, '([^,]+)') do
+        value = r.subprocess_env[key]
+        if value then
+          export_table[key] = value
+        end
+    end
   end
+
+  return export_table
 end
 
 return {

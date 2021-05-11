@@ -39,45 +39,19 @@ describe NginxStage::PunConfigGenerator do
     }
 
     it 'invokes the right root pre hook' do
-      allow(Open3).to receive(:capture3).with({}, '/opt/pre_hook', '--user', test_user)
-      generator.instance_eval(&hook)
-    end
-
-    it 'correctly reads stdin when given good data' do
-      env = {
-        "FOO" => "BAR",
-        "OIDC_ACCESS_TOKEN" => "TOKEN_BLAH_BLAH",
-      }
-
-      io = StringIO.new
-      io.puts "FOO=BAR"
-      io.puts "OIDC_ACCESS_TOKEN=TOKEN_BLAH_BLAH"
-      io.rewind
-      STDIN = io
-
-      allow(Open3).to receive(:capture3).with(env, '/opt/pre_hook', '--user', test_user)
-      generator.instance_eval(&hook)
-    end
-
-    it 'disregards bad stdin input' do
-      io = StringIO.new
-      io.puts "as;dnf2354noasdfnaabn55243-aoasdf\n\n\n\n\n\nasf2n35235badsfnbasdf\n\r\n"
-      io.rewind
-      STDIN = io
-
-      allow(Open3).to receive(:capture3).with({}, '/opt/pre_hook', '--user', test_user)
+      allow(Open3).to receive(:capture3).with('/opt/pre_hook', '--user', test_user)
       generator.instance_eval(&hook)
     end
 
     it 'logs exceptions from underlying script' do
-      allow(Open3).to receive(:capture3).with({}, '/opt/pre_hook', '--user', test_user).and_raise(StandardError.new "this is a test")
+      allow(Open3).to receive(:capture3).with('/opt/pre_hook', '--user', test_user).and_raise(StandardError.new "this is a test")
       allow_any_instance_of(Syslog::Logger).to receive(:error).with("/opt/pre_hook threw exception 'this is a test' for spec")
       generator.instance_eval(&hook)
     end
 
     it 'logs non-zero exits from underlying script' do
       allow(Open3).to receive(:capture3)
-        .with({}, '/opt/pre_hook', '--user', test_user)
+        .with('/opt/pre_hook', '--user', test_user)
         .and_return(["", "this is the test stderr message", double(:success? => false, :exitstatus => 3)])
 
       allow_any_instance_of(Syslog::Logger).to receive(:error)

@@ -36,9 +36,9 @@ class ConfigurationSingleton
     @ood_version ||= (ood_version_from_env || version_from_file('/opt/ood') || version_from_git('/opt/ood') || "Unknown").strip
   end
 
-def ood_bc_ssh_to_compute_node
-  to_bool(ENV['OOD_BC_SSH_TO_COMPUTE_NODE'] || true)
-end
+  def ood_bc_ssh_to_compute_node
+    to_bool(ENV['OOD_BC_SSH_TO_COMPUTE_NODE'] || true)
+  end
 
   # @return [String, nil] version string from git describe, or nil if not git repo
   def version_from_git(dir)
@@ -48,6 +48,15 @@ end
     end
   rescue Errno::ENOENT
     nil
+  end
+
+  def login_clusters
+    OodCore::Clusters.new(
+      OodAppkit.clusters
+        .select(&:allow?)
+        .reject { |c| c.metadata.hidden }
+        .select(&:login_allow?)
+    )
   end
 
   # @return [String, nil] version string from VERSION file, or nil if no file avail
@@ -302,9 +311,9 @@ end
     end
   end
 
-  # The landing page layout. Defaults to nil.
-  def landing_page_layout
-    config.fetch(:landing_page_layout, nil)
+  # The dashboard's landing page layout. Defaults to nil.
+  def dashboard_layout
+    config.fetch(:dashboard_layout, nil)
   end
 
   def can_access_activejobs?
@@ -348,6 +357,19 @@ end
 
   def allowlist_paths
     (ENV['OOD_ALLOWLIST_PATH'] || ENV['WHITELIST_PATH'] || "").split(':').map{ |s| Pathname.new(s) }
+  end
+
+  # default value for opening apps in new window
+  # that is used if app's manifest doesn't specify
+  # if not set default is true
+  #
+  # @return [Boolean] true if by default open apps in new window
+  def open_apps_in_new_window?
+    if ENV['OOD_OPEN_APPS_IN_NEW_WINDOW']
+      to_bool(ENV['OOD_OPEN_APPS_IN_NEW_WINDOW'])
+    else
+      true
+    end
   end
 
   private

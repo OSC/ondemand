@@ -1,5 +1,5 @@
 <% if has_ganglia(data.cluster) || has_grafana(data.cluster) %>
-<div class="card ml-5">
+<div class="card ml-5 mt-3">
         <% if has_ganglia(data.cluster) %>
           <div class="card-header">Node: <%= node %> <span class="float-right">Job: <%= data.pbsid %> </span></div>
           <div class="card-body">

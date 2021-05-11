@@ -4,3 +4,4 @@ description: |-
   A text editor for files on OSC systems
 documentation: |-
 url: files/edit
+new_window: true

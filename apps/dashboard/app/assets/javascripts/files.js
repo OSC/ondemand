@@ -31,7 +31,9 @@ function reloadTable(url){
 
   return fetch(request_url, {headers: {'Accept':'application/json'}})
     .then(response => dataFromJsonResponse(response))
-    .then(function(data){
+    .then(function(data) {
+      $('#shell-wrapper').replaceWith((data.shell_dropdown_html))
+
       table.clear();
       table.rows.add(data.files);
       table.draw();

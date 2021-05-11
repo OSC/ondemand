@@ -4,22 +4,11 @@ require_relative 'e2e_helper'
 describe 'OnDemand browser test' do
 
   def browser
-    @browser ||= Watir::Browser.new :chrome, headless: true, options: { args: ['--disable-dev-shm-usage'] }
+    @browser ||= new_browser
   end
 
   before(:all) do
-    # sometimes you need to retry to let the container start up, so retry to make the tests
-    # a little less flaky
-    [*1..3].each do |try|
-      begin
-        browser_login(browser)
-        break
-      rescue => e
-        raise e if try == 3
-
-        `sleep 1`
-      end
-    end
+    browser_login(browser)
   end
 
   after(:all) do

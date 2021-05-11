@@ -32,14 +32,14 @@ module DashboardHelper
     @motd.present?
   end
 
-  def landing_page_layout
+  def dashboard_layout
     #FIXME: should sanitize the landing_page_layout or cast somethings to Array in the upper layers
-    Configuration.landing_page_layout || default_landing_page_layout
+    Configuration.dashboard_layout || default_dashboard_layout
   end
 
   def render_widget(widget)
     begin
-      render partial: widget.to_s
+      render partial: "widgets/#{widget}"
     rescue SyntaxError, StandardError => e
       render partial: "widget_error", locals: { error: e, widget: widget.to_s }
     end
@@ -47,7 +47,7 @@ module DashboardHelper
 
   private
 
-  def default_landing_page_layout
+  def default_dashboard_layout
     if xdmod?
       if pinned_apps? || motd?
         left_column = { width: 8, widgets: ['pinned_apps', 'motd'] }

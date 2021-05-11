@@ -6,7 +6,7 @@ ARG GID=1000
 
 RUN dnf reinstall -y httpd-tools && \
     dnf install -y \
-        strace && \
+        strace lua python3 && \
     dnf clean all && rm -rf /var/cache/dnf/*
 
 RUN groupadd -g $GID $USER && \

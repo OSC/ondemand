@@ -1,0 +1,12 @@
+---
+#
+# Portal configuration
+#
+
+listen_addr_port: 8080
+servername: localhost
+port: 8080
+
+
+pun_pre_hook_root_cmd: '/opt/hooks/pun_pre_hook'
+pun_pre_hook_exports: 'OIDC_ACCESS_TOKEN,OIDC_CLAIM_EMAIL'

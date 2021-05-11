@@ -140,7 +140,8 @@ module NginxStage
       "OOD_DEV_APPS_ROOT" => apps_root(env: :dev, owner: user),
       "OOD_FILES_URL" => "/pun/sys/dashboard/files",
       # this is not a typo => the editor is /edit off of the base url
-      "OOD_EDITOR_URL" => "/pun/sys/dashboard/files"
+      "OOD_EDITOR_URL" => "/pun/sys/dashboard/files",
+      "RAILS_LOG_TO_STDOUT" => "true"
     }.merge(pun_custom_env)
   end
 

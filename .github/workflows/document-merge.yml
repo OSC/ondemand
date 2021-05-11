@@ -17,7 +17,7 @@ jobs:
         if: contains(github.event.pull_request.labels.*.name, 'needs doc')
         run: |
           PR_NUM=${{ github.event.pull_request.number }}
-          TITLE="Create Docs for OOD PR #$PR_NUM"
+          TITLE="${{ github.event.pull_request.title }}"
           BODY="{
              \"title\": \"$TITLE\",
              \"body\": \"Create documentation for https://github.com/OSC/ondemand/pull/$PR_NUM\"
