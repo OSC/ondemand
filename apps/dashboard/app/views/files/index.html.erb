@@ -311,14 +311,6 @@ $('#path-breadcrumbs').on('click', '#goto-btn', function(){
         // TODO: validate filenames against listing
         return 'Provide an absolute pathname'
       }
-    },
-    showClass: {
-      popup: 'swal2-noanimation',
-      backdrop: 'swal2-noanimation'
-    },
-    hideClass: {
-      popup: '',
-      backdrop: ''
     }
   })
   .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
@@ -336,14 +328,6 @@ $('#new-file-btn').on("click", () => {
         // TODO: validate filenames against listing
         return 'Provide a filenamethat does not have / in it'
       }
-    },
-    showClass: {
-      popup: 'swal2-noanimation',
-      backdrop: 'swal2-noanimation'
-    },
-    hideClass: {
-      popup: '',
-      backdrop: ''
     }
   })
   .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
@@ -365,14 +349,6 @@ $('#new-dir-btn').on("click", () => {
         return 'Provide a directory name that does not have / in it'
       }
     },
-    showClass: {
-      popup: 'swal2-noanimation',
-      backdrop: 'swal2-noanimation'
-    },
-    hideClass: {
-      popup: '',
-      backdrop: ''
-    }
   })
   .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
   .then((filename) => newDirectory(filename));
@@ -692,14 +668,6 @@ $('#directory-contents tbody').on('click', '.rename-file', function(e){
       else if (value.includes('/') || value.includes('..')){
        return 'Filename cannot include / or ..';
       }
-    },
-    showClass: {
-      popup: 'swal2-noanimation',
-      backdrop: 'swal2-noanimation'
-    },
-    hideClass: {
-      popup: '',
-      backdrop: ''
     }
   })
   .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
@@ -932,14 +900,6 @@ function deleteFiles(files){
     title: files.length == 1 ? `Delete ${files[0]}?` : `Delete ${files.length} selected files?`,
     text: 'Are you sure you want to delete the files: ' + files.join(', '),
     showCancelButton: true,
-    showClass: {
-      popup: 'swal2-noanimation',
-      backdrop: 'swal2-noanimation'
-    },
-    hideClass: {
-      popup: '',
-      backdrop: ''
-    }
   })
   .then((result) => {
     if(result.isConfirmed){
