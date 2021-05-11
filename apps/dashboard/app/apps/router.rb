@@ -29,6 +29,10 @@ class Router
       pinned_apps.concat pinned_apps_from_token(token, all_apps)
     end.uniq do |app|
       app.token.to_s
+    end.reject do |app|
+      # subapps are featured apps and this is the easiest way to tell if it's valid.
+      # instead of say app.send(:sub_app_list).first.valid?
+      app.links.empty?
     end
   end
 
