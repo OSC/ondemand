@@ -202,12 +202,15 @@ class FilesController < ApplicationController
     if params[:download]
       send_file @path, type: type
     else
-      begin
-        send_file @path, disposition: 'inline', type: type
-      rescue => e
-        logger.warn("failed to determine mime type for file: #{@path} due to error #{e.message}")
-        send_file @path, disposition: 'inline'
-      end
+      send_file @path, disposition: 'inline', type: Files.mime_type_for_preview(type)
+    end
+  rescue => e
+    logger.warn("failed to determine mime type for file: #{@path} due to error #{e.message}")
+
+    if params[:downlaod]
+      send_file @path
+    else
+      send_file @path, disposition: 'inline'
     end
   end
 end
