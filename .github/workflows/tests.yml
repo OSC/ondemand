@@ -65,3 +65,28 @@ jobs:
 
       - name: Run E2E tests
         run: bundle exec rake test:e2e
+
+  k8s-tests:
+    runs-on: ubuntu-latest
+    name: Kubernetes tests
+    steps:
+      - name: Checkout ${{ github.sha	}}
+        uses: actions/checkout@v2
+      - name: Create kind cluster
+        uses: container-tools/kind-action@v1
+      - name: Apply ondemand RBAC
+        run: kubectl apply -f hooks/k8s-bootstrap/ondemand.yaml
+      - name: Get ondemand token
+        id: token
+        run: |
+           TOKEN_NAME=$(kubectl describe serviceaccount ondemand -n ondemand | grep Tokens | awk '{ print $2 }')
+           TOKEN=$(kubectl describe secret $TOKEN_NAME -n ondemand | grep "token:" | awk '{ print $2 }')
+           echo "::set-output name=ondemand::${TOKEN}"
+      - name: Setup kubectl
+        run: |
+          kubectl config set-credentials ondemand --token="${{ steps.token.outputs.ondemand }}"
+          kubectl config set-context kind-kind --user=ondemand
+          kubectl config use-context kind-kind
+          kubectl cluster-info
+      - name: Test k8s-bootstrap
+        run: /bin/bash hooks/k8s-bootstrap/k8s-bootstrap-ondemand.sh test hooks/hook.env.example

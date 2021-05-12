@@ -1,0 +1,30 @@
+---
+# give the service account the ood-initializer role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: "$NAMESPACE"
+  name: "$ONDEMAND_USERNAME-ood-initializer"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: "ood-initializer"
+subjects:
+  - kind: ServiceAccount
+    name: "default"
+    namespace: "$NAMESPACE"
+---
+# give the user the ood-user role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: "$NAMESPACE"
+  name: "$ONDEMAND_USERNAME-ood-user"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: "ood-user"
+subjects:
+  - kind: User
+    name: "$ONDEMAND_USERNAME"
+    namespace: "$NAMESPACE"

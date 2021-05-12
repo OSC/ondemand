@@ -1,0 +1,14 @@
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  namespace: $NAMESPACE
+  name: deny-from-other-namespaces
+spec:
+  podSelector:
+    matchLabels:
+  ingress:
+  - from:
+    - podSelector: {}
+    - ipBlock:
+        cidr: $NETWORK_POLICY_ALLOW_CIDR
