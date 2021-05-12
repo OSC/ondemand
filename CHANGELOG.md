@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [2.0.8] - 2021-12-05
+
+### Fixed
+
+- Fixed an issue with hooks prefixing usernames in [1132](https://github.com/OSC/ondemand/pull/1132)
+
 ## [2.0.7] - 2021-12-05
 
 ### Fixed
@@ -767,7 +774,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.7...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.8...HEAD
+[2.0.8]: https://github.com/OSC/ondemand/compare/v2.0.7...v2.0.8
 [2.0.7]: https://github.com/OSC/ondemand/compare/v2.0.6...v2.0.7
 [2.0.6]: https://github.com/OSC/ondemand/compare/v2.0.5...v2.0.6
 [2.0.5]: https://github.com/OSC/ondemand/compare/v2.0.4...v2.0.5
