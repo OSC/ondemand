@@ -152,13 +152,11 @@ class Files
   end
 
   def self.username_from_cache(uid)
-    @username_for_ids ||= {}
-
-    if @username_for_ids.key?(uid)
-      @username_for_ids[uid]
-    else
-      @username_for_ids[uid] = username(uid)
+    @username_for_ids ||= Hash.new do |h, key|
+      h[key] = username(key)
     end
+
+    @username_for_ids[uid]
   end
 
   def num_files(from, names)
