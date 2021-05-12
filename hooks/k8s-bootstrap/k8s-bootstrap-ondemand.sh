@@ -29,7 +29,7 @@ envsubst < "${YAML_DIR}/namespace.yaml" > "$TMPFILE"
 envsubst < "${YAML_DIR}/network-policy.yaml" >> "$TMPFILE"
 envsubst < "${YAML_DIR}/rolebinding.yaml" >> "$TMPFILE"
 
-if $USE_POD_SECURITY_POLICY ; then
+if [ "$USE_POD_SECURITY_POLICY" = "true" ] ; then
   PASSWD=$(getent passwd "$ONDEMAND_USERNAME")
   if ! [[ "$PASSWD" =~ "${ONDEMAND_USERNAME}:"* ]]; then
     echo "level=error msg=\"Unable to perform lookup of user\" user=$ONDEMAND_USERNAME"
@@ -42,7 +42,7 @@ if $USE_POD_SECURITY_POLICY ; then
   envsubst < "${YAML_DIR}/pod-security-policy.yaml" >> "$TMPFILE"
 fi
 
-if $USE_JOB_POD_REAPER ; then
+if [ "$USE_JOB_POD_REAPER" = "true" ] ; then
   envsubst < "${YAML_DIR}/job-pod-reaper.yaml" >> "$TMPFILE"
 fi
 
