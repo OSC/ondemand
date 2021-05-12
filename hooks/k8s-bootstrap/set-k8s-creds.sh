@@ -22,5 +22,5 @@ sudo -u "$ONDEMAND_USERNAME" kubectl config set-credentials "$K8S_USERNAME" \
    --auth-provider-arg=idp-issuer-url="$IDP_ISSUER_URL" \
    --auth-provider-arg=client-id="$CLIENT_ID" \
    --auth-provider-arg=client-secret="$CLIENT_SECRET" \
-   --auth-provider-arg=refresh-token="$OIDC_REFRESH_TOKEN" \
-   --auth-provider-arg=id-token="$OIDC_ACCESS_TOKEN"
+   --auth-provider-arg=refresh-token="$OOD_OIDC_REFRESH_TOKEN" \
+   --auth-provider-arg=id-token="$OOD_OIDC_ACCESS_TOKEN"
