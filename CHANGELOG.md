@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [2.0.7] - 2021-12-05
+
+### Fixed
+
+- Fixed an issue the in the files app where the wrong file ownder was being shown in
+  [1125](https://github.com/OSC/ondemand/pull/1125).
+
+### Added
+
+- Added some helper hook scripts in [995](https://github.com/OSC/ondemand/pull/995).
+
 ## [2.0.6] - 2021-11-05
 
 ### Fixed
@@ -756,7 +767,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.6...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.7...HEAD
+[2.0.7]: https://github.com/OSC/ondemand/compare/v2.0.6...v2.0.7
 [2.0.6]: https://github.com/OSC/ondemand/compare/v2.0.5...v2.0.6
 [2.0.5]: https://github.com/OSC/ondemand/compare/v2.0.4...v2.0.5
 [2.0.4]: https://github.com/OSC/ondemand/compare/v2.0.3...v2.0.4
