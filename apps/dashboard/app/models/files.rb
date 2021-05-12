@@ -42,7 +42,7 @@ class Files
       human_size: s.directory? ? '-' : ::ApplicationController.helpers.number_to_human_size(s.size, precision: 3),
       directory: s.directory?,
       date: s.mtime.to_i,
-      owner: username(s.uid),
+      owner: username_from_cache(s.uid),
       mode: s.mode,
       dev: s.dev
     }
@@ -144,14 +144,21 @@ class Files
   end
 
   def self.username(uid)
-    @username_for_ids ||= Hash.new do |h, key|
-      h[key] = begin
-        Etc.getpwuid(uid).name
-      rescue
-        uid
-      end
+    begin
+      Etc.getpwuid(uid).name
+    rescue
+      uid
     end
-    @username_for_ids[uid]
+  end
+
+  def self.username_from_cache(uid)
+    @username_for_ids ||= {}
+
+    if @username_for_ids.key?(uid)
+      @username_for_ids[uid]
+    else
+      @username_for_ids[uid] = username(uid)
+    end
   end
 
   def num_files(from, names)
