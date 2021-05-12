@@ -14,7 +14,11 @@ fi
 # shellcheck disable=SC1090
 source "$HOOK_ENV"
 
-K8S_USERNAME="${K8S_USERNAME_PREFIX}${ONDEMAND_USERNAME}"
+if [ "x${K8S_USERNAME_PREFIX}" != "x" ]; then
+  K8S_USERNAME="${K8S_USERNAME_PREFIX}-${ONDEMAND_USERNAME}"
+else
+  K8S_USERNAME="${ONDEMAND_USERNAME}"
+fi
 
 # we use pass ACCESS_TOKEN into the id-token arg. That's OK, it works and refreshes.
 sudo -u "$ONDEMAND_USERNAME" kubectl config set-credentials "$K8S_USERNAME" \
