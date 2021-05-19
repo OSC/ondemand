@@ -1,9 +1,11 @@
 ---
 issuer: http://example.com:5556
 storage:
-  type: sqlite3
+  type: mysql
   config:
-    file: "/etc/ood/dex/dex.db"
+    database: dex
+    user: dex
+    password: secret
 web:
   http: 0.0.0.0:5556
 telemetry:

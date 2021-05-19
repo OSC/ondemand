@@ -1,5 +1,11 @@
 ---
 dex:
+  storage:
+    type: mysql
+    config:
+      database: dex
+      user: dex
+      password: secret
   frontend:
     theme: "custom-test-theme"
     dir: /etc/site/custom-dex-themes
