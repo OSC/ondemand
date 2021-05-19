@@ -6,12 +6,20 @@ from flask import Flask, redirect, request, Blueprint, url_for
 app = Blueprint('app', 'simple_origin_server_blueprint')
 
 @app.route("/one/two/three/relative-redirect")
-def relative_redirect():
-    return redirect(url_for('app.one_level_down'), code=302)
+def three_level_relative_redirect():
+    return redirect('../../../one/one-level-down', code=302)
+
+@app.route("/one/two/relative-redirect")
+def two_level_relative_redirect():
+    return redirect('../../simple-page', code=302)
+
+@app.route("/one/relative-redirect")
+def one_level_relative_redirect():
+    return redirect('../one/one-level-down', code=302)
 
 @app.route("/one/one-level-down")
 def one_level_down():
-    simple_page()
+    return "<html><body><div id='test-div'>A very simple page for testing</div></body></html>"
 
 @app.route("/simple-redirect")
 def simple_redirect():
