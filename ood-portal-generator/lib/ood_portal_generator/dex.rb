@@ -20,10 +20,7 @@ module OodPortalGenerator
       @view = view
       @dex_config = {}
       @dex_config[:issuer] = issuer
-      @dex_config[:storage] = {
-        type: 'sqlite3',
-        config: { file: storage_file },
-      }
+      @dex_config[:storage] = storage
       @dex_config[:web] = {
         http: "0.0.0.0:#{http_port}",
       }
@@ -108,6 +105,13 @@ module OodPortalGenerator
 
     def issuer
       "#{protocol}#{servername}:#{port}"
+    end
+
+    def storage
+      {
+        type: 'sqlite3',
+        config: { file: storage_file },
+      }.merge(@config.fetch(:storage, {}))
     end
 
     def storage_file
