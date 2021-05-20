@@ -42,6 +42,9 @@ jobs:
       - name: Run unit tests
         run: rake test:unit
 
+      - name: Run System Dashboard tests
+        run: cd apps/dashboard; bin/rake test:system
+
   e2e-tests:
     strategy:
       matrix:
