@@ -216,7 +216,7 @@ module BatchConnect
     # @param session_context [SessionContext] object with attributes
     # @param fmt [String, nil] formatting used for attributes in submit hash
     # @return [Hash] hash of submission options
-    def submit_opts(session_context, staged_root: staged_root, fmt: nil)
+    def submit_opts(session_context, staged_root: nil, fmt: nil)
       hsh = {}
       session_context.each do |attribute|
         hsh = hsh.deep_merge attribute.submit(fmt: fmt)
