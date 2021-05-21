@@ -208,13 +208,12 @@ module BatchConnect
       self.view       = app.session_view
       self.created_at = Time.now.to_i
 
-      submit_script = app.submit_opts(context, fmt: format) # could raise an exception
+      submit_script = app.submit_opts(context, fmt: format, staged_root: staged_root) # could raise an exception
 
       self.cluster_id = submit_script.fetch(:cluster, context.try(:cluster)).to_s
       raise(ClusterNotFound, I18n.t('dashboard.batch_connect_missing_cluster')) unless self.cluster_id.present?
 
-      stage(app.root.join("template"), context: context) &&
-        submit(submit_script)
+      stage(app.root.join("template"), context: context) && submit(submit_script)
     rescue => e   # rescue from all standard exceptions (app never crashes)
       errors.add(:save, e.message)
       Rails.logger.error("ERROR: #{e.class} - #{e.message}")
