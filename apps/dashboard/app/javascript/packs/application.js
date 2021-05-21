@@ -17,6 +17,8 @@
 import 'jquery-migrate'
 import 'jquery-ujs'
 
+jQuery.migrateMute = true
+
 // Import DataTables
 import 'datatables.net'
 import 'datatables.net-bs4/js/dataTables.bootstrap4'
