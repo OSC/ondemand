@@ -33,4 +33,8 @@ class FilesTest < ActiveSupport::TestCase
       assert_equal "text/plain", Files.mime_type(f), 'should treat "inode/x-empty" as "text/plain"'
     end
   end
+
+  test "Ensuring Files.username(uid) returns string" do
+    assert_equal "9999999", Files.username(9999999)
+  end
 end
