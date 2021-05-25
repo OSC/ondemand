@@ -234,9 +234,8 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     OodAppkit.stubs(:clusters).returns(good_clusters)
     r = PathRouter.new("test/fixtures/sys_with_interactive_apps/bc_jupyter")
     app = BatchConnect::App.new(router: r)
-    
-    Dir.mktmpdir do |dir|
 
+    Dir.mktmpdir do |dir|
       opts = app.submit_opts(app.build_session_context, staged_root: dir)
       assert_equal opts[:script][:error_path], "#{dir}/error.log"
     end

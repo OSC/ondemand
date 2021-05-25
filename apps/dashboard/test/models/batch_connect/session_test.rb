@@ -1,6 +1,12 @@
 require 'test_helper'
 
 class BatchConnect::SessionTest < ActiveSupport::TestCase
+
+  def bc_jupyter_app
+    r = PathRouter.new("test/fixtures/sys_with_interactive_apps/bc_jupyter")
+    BatchConnect::App.new(router: r)
+  end
+
   test "should return no sessions if dbroot is empty" do
     Dir.mktmpdir("dbroot") do |dir|
       dir = Pathname.new(dir)
@@ -310,7 +316,9 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       )
     BatchConnect::Session.any_instance.stubs(:info).returns(info)
     OodCore::Job::Info.any_instance.stubs(:ood_connection_info).returns(connect)
+    OodAppkit.stubs(:clusters).returns([OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}})])
     session = BatchConnect::Session.new
+    session.stage(app: bc_jupyter_app, context: bc_jupyter_app.build_session_context)
 
     assert session.connection_in_info?
     assert !session.starting?
@@ -327,7 +335,9 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       BatchConnect::Session.stubs(:dataroot).returns(Pathname.new(dir))
       BatchConnect::Session.any_instance.stubs(:id).returns('test-id')
       BatchConnect::Session.any_instance.stubs(:info).returns(info)
+      OodAppkit.stubs(:clusters).returns([OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}})])
       session = BatchConnect::Session.new
+      session.stage(app: bc_jupyter_app, context: bc_jupyter_app.build_session_context)
 
       assert !session.connection_in_info?
       assert session.starting?
@@ -349,12 +359,27 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       BatchConnect::Session.stubs(:dataroot).returns(Pathname.new(dir.to_s))
       BatchConnect::Session.any_instance.stubs(:id).returns('test-id')
       BatchConnect::Session.any_instance.stubs(:info).returns(info)
+      OodAppkit.stubs(:clusters).returns([OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}})])
       session = BatchConnect::Session.new
+      session.stage(app: bc_jupyter_app, context: bc_jupyter_app.build_session_context)
 
       File.open(session.connect_file, 'w') { |file| file.write(connect.to_yaml) }
 
       assert session.running?
       assert_equal session.connect.to_h, connect.symbolize_keys
+    end
+  end
+
+  test "staged_root does not exist until we call session.stage" do
+    Dir.mktmpdir("staged_root") do |dir|
+      BatchConnect::Session.stubs(:dataroot).returns(Pathname.new(dir))
+      BatchConnect::Session.any_instance.stubs(:id).returns('test-id')
+      OodAppkit.stubs(:clusters).returns([OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}})])
+      session = BatchConnect::Session.new
+
+      assert !Dir.exist?(session.staged_root)
+      session.stage(app: bc_jupyter_app, context: bc_jupyter_app.build_session_context)
+      assert Dir.exist?(session.staged_root)
     end
   end
 end

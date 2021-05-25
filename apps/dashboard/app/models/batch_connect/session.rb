@@ -225,6 +225,8 @@ module BatchConnect
     # @param context [Object] context available when rendering staged files
     # @return [Boolean] whether staged successfully
     def stage(root, context: nil)
+      staged_root.tap { |p| p.mkpath unless p.exist? }
+
       # Sync the template files over
       oe, s = Open3.capture2e("rsync", "-a", "#{root}/", "#{staged_root}")
       raise oe unless s.success?
@@ -408,7 +410,7 @@ module BatchConnect
     # Root directory where a job is staged and run in
     # @return [Pathname] staged root directory
     def staged_root
-      self.class.dataroot(token).join("output", id).tap { |p| p.mkpath unless p.exist? }
+      self.class.dataroot(token).join("output", id)
     end
 
     # List of template files that need to be rendered
