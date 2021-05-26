@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.9] - 2021-26-05
+
+### Fixed
+
+- Fixed [1164](https://github.com/OSC/ondemand/issues/1164). Uploading directories
+  now correctly uploads files and any subdirectories.
+- Fixed [1109](https://github.com/OSC/ondemand/issues/1109). Active jobs buttons
+  now pull to the left.
+
+### Changed
+
+- update to ood_core 0.17.0 in [1169](https://github.com/OSC/ondemand/pull/1169).
+
+### Added
+
+- `staged_root` is now available in the `submit.yml.erb`'s context completing
+  [864](https://github.com/OSC/ondemand/issues/864).
+
 ## [2.0.8] - 2021-12-05
 
 ### Fixed
@@ -774,7 +792,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.8...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.9...HEAD
+[2.0.9]: https://github.com/OSC/ondemand/compare/v2.0.8...v2.0.9
 [2.0.8]: https://github.com/OSC/ondemand/compare/v2.0.7...v2.0.8
 [2.0.7]: https://github.com/OSC/ondemand/compare/v2.0.6...v2.0.7
 [2.0.6]: https://github.com/OSC/ondemand/compare/v2.0.5...v2.0.6
