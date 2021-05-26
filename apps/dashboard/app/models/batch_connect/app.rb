@@ -215,13 +215,18 @@ module BatchConnect
     # Generate a hash of the submission options
     # @param session_context [SessionContext] object with attributes
     # @param fmt [String, nil] formatting used for attributes in submit hash
+    # @param staged_root [String, nil] the staged_root you want to pass into the submit_opts
     # @return [Hash] hash of submission options
-    def submit_opts(session_context, fmt: nil)
+    def submit_opts(session_context, fmt: nil, staged_root: nil)
       hsh = {}
       session_context.each do |attribute|
         hsh = hsh.deep_merge attribute.submit(fmt: fmt)
       end
-      hsh = hsh.deep_merge submit_config(binding: session_context.get_binding)
+
+      ctx_binding = session_context.get_binding
+      ctx_binding.local_variable_set(:staged_root, staged_root.to_s)
+
+      hsh = hsh.deep_merge submit_config(binding: ctx_binding)
     end
 
     # View used for session if it exists
