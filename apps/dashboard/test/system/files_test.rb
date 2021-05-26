@@ -43,4 +43,98 @@ class FilesTest < ApplicationSystemTestCase
       assert File.directory? File.join(dir, 'bar')
     end
   end
+
+  test "copying files" do
+    visit files_url(Rails.root.to_s)
+    %w(app config manifest.yml).each do |f|
+      find('a', exact_text: f).ancestor('tr').click(:meta)
+    end
+    assert_selector '.selected', count: 3
+
+    find('#copy-move-btn').click
+
+    assert_selector '#clipboard li', count: 3
+
+    Dir.mktmpdir do |dir|
+      visit files_url(dir)
+
+      # one row: No data available in table
+      assert_selector '#directory-contents tbody tr', count: 1
+      find('#clipboard-copy-to-dir').click
+
+      # if this fails it is due to the directory table not reloading
+      assert_selector '#directory-contents tbody tr', count: 3, wait: 10
+
+      assert_equal "", `diff -rq #{File.join(dir, 'app')} #{Rails.root.join('app').to_s}`.strip, "failed to recursively copy app dir"
+      assert_equal "", `diff -rq #{File.join(dir, 'config')} #{Rails.root.join('config').to_s}`.strip, "failed to recursively copy config dir"
+      assert_equal "", `diff -q #{File.join(dir, 'manifest.yml')} #{Rails.root.join('manifest.yml').to_s}`.strip, "failed to copy manifest.yml"
+    end
+  end
+
+  test "rename file" do
+    Dir.mktmpdir do |dir|
+      FileUtils.touch File.join(dir, 'foo.txt')
+
+      visit files_url(dir)
+      tr = find('a', exact_text: 'foo.txt').ancestor('tr')
+      tr.find('button.dropdown-toggle').click
+      tr.find('.rename-file').click
+
+      # rename dialog input
+      find('#swal2-input').set('bar.txt')
+      find('.swal2-confirm').click
+
+
+      assert_selector 'tbody a', exact_text: 'bar.txt', wait: 10
+      assert File.file? File.join(dir, 'bar.txt')
+    end
+  end
+
+  test "moving files" do
+    Dir.mktmpdir do |dir|
+      # copy to dest/app
+      src = File.join(dir, 'app')
+      dest = File.join(dir, 'dest')
+      FileUtils.mkpath dest
+
+      `cp -r #{Rails.root.join('app').to_s} #{src}`
+
+
+      # select dir to move
+      visit files_url(dir)
+      find('tbody a', exact_text: 'app').ancestor('tr').click
+      find('#copy-move-btn').click
+
+      # move to new location
+      visit files_url(dest)
+      find('#clipboard-move-to-dir').click
+      assert_selector 'tbody a', exact_text: 'app', wait: 10
+
+      # verify contents moved
+      assert_equal "", `diff -rq #{File.join(dest, 'app')} #{Rails.root.join('app').to_s}`.strip, "failed to mv app and all contents"
+
+      # verify original does not exist
+      refute File.directory?(src)
+    end
+  end
+
+  test "removing files" do
+    Dir.mktmpdir do |dir|
+      # copy to dest/app
+      src = File.join(dir, 'app')
+      `cp -r #{Rails.root.join('app').to_s} #{src}`
+
+      # select dir to move
+      visit files_url(dir)
+      find('tbody a', exact_text: 'app').ancestor('tr').click
+      find('#delete-btn').click
+      find('button.swal2-confirm').click
+
+      # verify app dir deleted according to UI
+      assert_no_selector 'tbody a', exact_text: 'app', wait: 10
+
+      # verify app dir actually deleted
+      refute File.exist?(src)
+    end
+  end
 end
