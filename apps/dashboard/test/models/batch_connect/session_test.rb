@@ -384,16 +384,22 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
   end
 
   test "ssh_to_compute_node? default" do
-    assert BatchConnect::Session.new({}).ssh_to_compute_node?
+    session = BatchConnect::Session.new
+    session.stubs(:cluster).returns(OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}}))
+    assert session.ssh_to_compute_node?
   end
 
   test "ssh_to_compute_node? disabled by cluster" do
-    OodAppkit.stubs(:clusters).returns([OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}, batch_connect: {ssh_allow: false}})])
-    refute BatchConnect::Session.new({}).ssh_to_compute_node?
+    session = BatchConnect::Session.new
+    session.stubs(:cluster).returns(OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}, batch_connect: {ssh_allow: false}}))
+    Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(true)
+    refute session.ssh_to_compute_node?
   end
 
   test "ssh_to_compute_node? disabled globally" do
+    session = BatchConnect::Session.new
+    session.stubs(:cluster).returns(OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}}))
     Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
-    refute BatchConnect::Session.new({}).ssh_to_compute_node?
+    refute session.ssh_to_compute_node?
   end
 end
