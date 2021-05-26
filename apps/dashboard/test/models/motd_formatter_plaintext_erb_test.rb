@@ -50,5 +50,13 @@ class MotdTest < ActiveSupport::TestCase
 
     assert_not_nil formatted_motd.content
   end
+
+  test "plaintext-formatter-erb should recognize CurrentUserSingleton methods" do
+    refute_equal "", MotdFormatterPlaintextErb.new(
+                       MotdFile.new(
+                       File.join(
+                         file_fixture_path,
+                         'motd_current_user'))).content.to_s
+  end
 end
 
