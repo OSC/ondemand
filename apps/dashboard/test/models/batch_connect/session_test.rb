@@ -382,4 +382,18 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       assert Dir.exist?(session.staged_root)
     end
   end
+
+  test "ssh_to_compute_node? default" do
+    assert BatchConnect::Session.new({}).ssh_to_compute_node?
+  end
+
+  test "ssh_to_compute_node? disabled by cluster" do
+    OodAppkit.stubs(:clusters).returns([OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}, batch_connect: {ssh_allow: false}})])
+    refute BatchConnect::Session.new({}).ssh_to_compute_node?
+  end
+
+  test "ssh_to_compute_node? disabled globally" do
+    Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
+    refute BatchConnect::Session.new({}).ssh_to_compute_node?
+  end
 end

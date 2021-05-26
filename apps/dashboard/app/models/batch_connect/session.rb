@@ -497,6 +497,28 @@ module BatchConnect
       info.respond_to?(:ood_connection_info)
     end
 
+    # Whether to allow SSH to node running the job
+    # @return [Boolean] whether to allow SSH to node running the job
+    def ssh_to_compute_node?
+      if !cluster_ssh_to_compute_node?
+        return false
+      elsif !global_ssh_to_compute_node?
+        return false
+      else
+        return true
+      end
+    end
+
+    # @return [Boolean]
+    def cluster_ssh_to_compute_node?
+      cluster.batch_connect_ssh_allow?
+    end
+
+    # @return [Boolean]
+    def global_ssh_to_compute_node?
+      Configuration.ood_bc_ssh_to_compute_node
+    end
+
     # A unique identifier that details the current state of a session
     # @return [String] hash of session
     def to_hash

@@ -95,7 +95,7 @@ module BatchConnect::SessionsHelper
   end
 
   def host(session)
-    if ::Configuration.ood_bc_ssh_to_compute_node && session.cluster.batch_connect_ssh_allow?
+    if session.ssh_to_compute_node?
       content_tag(:p) do
         concat content_tag(:strong, t('dashboard.batch_connect_sessions_stats_host'))
         concat " "
