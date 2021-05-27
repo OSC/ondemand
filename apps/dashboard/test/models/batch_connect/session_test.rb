@@ -402,4 +402,11 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
     Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
     refute session.ssh_to_compute_node?
   end
+
+  test "ssh_to_compute_node? disabled globally allowed for cluster" do
+    session = BatchConnect::Session.new
+    session.stubs(:cluster).returns(OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}, batch_connect: {ssh_allow: true}}))
+    Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
+    assert session.ssh_to_compute_node?
+  end
 end
