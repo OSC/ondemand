@@ -7,16 +7,15 @@
   <!-- Webpacker -->
   <%= javascript_pack_tag 'application' %>
   <%= stylesheet_pack_tag 'application', media: 'all' %>
+  <%= yield :js %>
 
   <!-- (Legacy) Sprockets -->
   <%= stylesheet_link_tag 'application', media: 'all' %>
   <%= javascript_include_tag 'application' %>
   <%= javascript_include_tag 'turbolinks' if Configuration.turbolinks_enabled? %>
-
   <%= csrf_meta_tags %>
-
-  <%= yield :head %>
-
+  <%= yield :head %> 
+  
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <% if Configuration.turbolinks_enabled? %>
     <meta name="turbolinks-root" content="<%= ENV['RAILS_RELATIVE_URL_ROOT'] || "/" %>">
@@ -31,7 +30,6 @@
     <% else %>
       <a class="navbar-brand" href="<%= root_path %>"><%= OodAppkit.dashboard.title.html_safe %></a>
     <% end %>
-      
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
