@@ -385,11 +385,11 @@ class ConfigurationSingleton
 
   def read_config
     files = Pathname.glob(config_directory.join("*.{yml,yaml,yml.erb,yaml.erb}"))
-    files.each_with_object({}) do |f, config|
+    files.each_with_object({}) do |f, conf|
       begin
         content = ERB.new(f.read, nil, "-").result(binding)
         yml = YAML.safe_load(content) || {}
-        config.deep_merge!(yml.deep_symbolize_keys)
+        conf.deep_merge!(yml.deep_symbolize_keys)
       rescue => e
         Rails.logger.error("Can't read or parse #{f} because of error #{e}")
       end
