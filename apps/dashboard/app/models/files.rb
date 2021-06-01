@@ -149,7 +149,7 @@ class Files
     begin
       Etc.getpwuid(uid).name
     rescue
-      uid
+      uid.to_s
     end
   end
 

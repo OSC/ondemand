@@ -127,7 +127,7 @@ class FilesController < ApplicationController
     path = uppy_upload_path
     AllowlistPolicy.default.validate!(path)
 
-    path.mkpath unless path.parent.directory?
+    path.parent.mkpath unless path.parent.directory?
 
     FileUtils.mv params[:file].tempfile, path.to_s
 
