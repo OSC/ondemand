@@ -33,4 +33,13 @@ class FilesTest < ActiveSupport::TestCase
       assert_equal "text/plain", Files.mime_type(f), 'should treat "inode/x-empty" as "text/plain"'
     end
   end
+
+  test "directory download size is 0" do
+    Dir.mktmpdir do |dir|
+      f = File.join(dir, 'foo.txt')
+      FileUtils.touch f
+
+      assert_equal true, File.zero?(f)
+    end
+  end
 end
