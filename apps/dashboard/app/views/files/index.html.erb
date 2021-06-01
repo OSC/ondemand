@@ -402,17 +402,17 @@ function downloadFile(file) {
 
 $('#download-btn').on("click", () => {
   let selection = table.rows({ selected: true }).data();
-  let file = selection[0]
-
-  if (selection.length != 1){
-    Swal.fire('Select only 1 file to download', 'You have selected none or multiple rows', 'error')
+  if(selection.length == 0) {
+    Swal.fire('Select a file, files, or directory to download', 'You have selected none.', 'error');
   }
-  else if(file.type == 'd') {
-    downloadDirectory(file)
-  }
-  else {
-    downloadFile(file)
-  }
+  selection.toArray().forEach( (f) => {
+    if(f.type == 'd') {
+      downloadDirectory(f)
+    }
+    else if(f.type == 'f') {
+      downloadFile(f)
+    }
+  })
 });
 
 function getEmptyDirs(entry){
