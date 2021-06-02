@@ -18,6 +18,14 @@ class ActiveSupport::TestCase
   def with_modified_env(options, &block)
     ClimateControl.modify(options, &block)
   end
+
+  def exit_success
+    OpenStruct.new(:success? => true, :exitstatus => 0)
+  end
+
+  def exit_failure(exit_status=1)
+    OpenStruct.new(:success? => false, :exitstatus => exit_status)
+  end
 end
 
 require 'mocha/minitest'
