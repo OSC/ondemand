@@ -34,13 +34,14 @@ class FilesTest < ActiveSupport::TestCase
     end
   end
 
-  test "directory download size is 0" do
+  test "can_download_as_zip handles directory size of 0" do
     Dir.mktmpdir do |dir|
-      f = File.join(dir, 'foo.txt')
-      FileUtils.touch f
+      path = Pathname.new(dir)
+      o, e, s = Open3.stubs(:capture3).returns("blarb","", )
 
-      assert_equal true, File.zero?(f)
-    end
+      assert_equal I18n.t('dashboard.files_directory_download_size_0', cmd: "timeout 10s du -cbs #{path}"), Files.can_download_as_zip?(dir)  
+    end 
+  end
 
   test "Ensuring Files.username(uid) returns string" do
     assert_equal "9999999", Files.username(9999999)
