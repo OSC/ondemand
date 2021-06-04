@@ -117,7 +117,7 @@
 
 # Path to generated per-user NGINX secret key base file   
 #
-#pun_secret_key_base_path: '/var/lib/ondemand-nginx/config/puns/bob.secret_key_base.txt' 
+#pun_secret_key_base_path: '/var/lib/ondemand-nginx/config/puns/%{user}.secret_key_base.txt' 
 
 # Custom format configuration for access log
 #
