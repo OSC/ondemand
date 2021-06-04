@@ -28,3 +28,18 @@ subjects:
   - kind: User
     name: "$ONDEMAND_USERNAME"
     namespace: "$NAMESPACE"
+---
+# give the ondemand serviceaccount ability to cleanup ondemand namespaces
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: "$NAMESPACE"
+  name: "ondemand-clean-namespaces"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: "ondemand-clean-namespaces"
+subjects:
+  - kind: ServiceAccount
+    name: "ondemand"
+    namespace: "ondemand"
