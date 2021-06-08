@@ -6,4 +6,4 @@ metadata:
   labels:
     app.kubernetes.io/name: open-ondemand
   annotations:
-    last-hook-execution: "$TIMESTAMP"
+    openondemand.org/last-hook-execution: "$TIMESTAMP"
