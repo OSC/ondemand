@@ -47,6 +47,8 @@ Rails.application.routes.draw do
   get "apps/icon/:name(/:type(/:owner))" => "apps#icon", as: "app_icon", defaults: { type: "sys" }
   get "apps/index" => "apps#index"
 
+  get "widgets/image/:image_name" => "widgets#image", constraints: { image_name: %r{[^\/]+} }
+
   if Configuration.app_sharing_enabled?
     get "apps/restart" => "apps#restart"
     get "apps/featured" => "apps#featured"

@@ -372,6 +372,10 @@ class ConfigurationSingleton
     end
   end
 
+  def widget_images_path
+    config.fetch(:widget_images_path, nil)
+  end
+
   private
 
   def can_access_core_app?(name)
