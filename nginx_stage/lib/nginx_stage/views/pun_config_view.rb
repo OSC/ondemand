@@ -67,6 +67,12 @@ module NginxStage
       NginxStage.passenger_pool_idle_time
     end
 
+    # Hash of Passenger configuration options
+    # @return [Hash] Hash of Passenger configuration options
+    def passenger_options
+      NginxStage.passenger_options
+    end
+
     # Max file upload size in bytes (e.g., 10737420000)
     # @return [String] the max file size clients can upload
     def nginx_file_upload_max

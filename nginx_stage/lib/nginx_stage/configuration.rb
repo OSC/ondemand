@@ -67,6 +67,10 @@ module NginxStage
     # @return [Integer] the value for passenger_pool_idle_time
     attr_accessor :passenger_pool_idle_time
 
+    # Hash of Passenger configuration options
+    # @return [Hash] Hash of Passenger configuration options
+    attr_accessor :passenger_options
+
     #
     # per-user NGINX configuration options
     #
@@ -422,6 +426,7 @@ module NginxStage
       self.passenger_python = "#{root}/bin/python"
 
       self.passenger_pool_idle_time = 300
+      self.passenger_options = {}
 
       self.pun_custom_env      = {}
       self.pun_custom_env_declarations = []
