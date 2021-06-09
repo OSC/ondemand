@@ -51,7 +51,7 @@ http {
   passenger_spawn_method direct;
 
   <%- if passenger_pool_idle_time -%>
-  passenger_pool_idle_time = <%= passenger_pool_idle_time %>;
+  passenger_pool_idle_time <%= passenger_pool_idle_time %>;
 
   <%- end -%>
   # Set an array of temp and cache file options for the per-user environment
