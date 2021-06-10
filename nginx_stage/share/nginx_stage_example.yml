@@ -90,6 +90,11 @@
 #
 #passenger_python: '/opt/ood/nginx_stage/bin/python'
 
+# The maximum number of seconds that an application process may be idle.
+# Set to `false` if you don't want this specified in the nginx config
+#
+#passenger_pool_idle_time: 300
+
 # Max file upload size in bytes (e.g., 10737420000)
 #
 #nginx_file_upload_max: '10737420000'

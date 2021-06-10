@@ -50,6 +50,10 @@ http {
   # Load all apps directly
   passenger_spawn_method direct;
 
+  <%- if passenger_pool_idle_time -%>
+  passenger_pool_idle_time <%= passenger_pool_idle_time %>;
+
+  <%- end -%>
   # Set an array of temp and cache file options for the per-user environment
   client_body_temp_path   <%= tmp_root %>/client_body;
   proxy_temp_path         <%= tmp_root %>/proxy_temp;
