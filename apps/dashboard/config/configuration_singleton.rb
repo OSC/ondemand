@@ -296,10 +296,6 @@ class ConfigurationSingleton
     config.fetch(:launchers, [])
   end
 
-  def launchers_path
-    config.fetch(:launchers_path, [])
-  end
-
   # Report performance of activejobs table rendering
   def console_log_performance_report?
     dataroot.join("debug").file? || rails_env != 'production'

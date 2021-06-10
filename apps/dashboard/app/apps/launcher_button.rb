@@ -3,16 +3,6 @@ class LauncherButton
   def self.launchers
     app_launchers = ::Configuration.launchers.map{ |system_launcher| LauncherButton.new({ type: "system" }, system_launcher) }
 
-    #EXTERNAL CONFIGURED LAUNCHERS
-    ::Configuration.launchers_path.each do |path_string|
-      launcher_path = Pathname.new(path_string)
-      if launcher_path.directory? && launcher_path.readable?
-        launcher_path.children.each do |launcher_file|
-          app_launchers.concat parse_launcher_file(launcher_file: launcher_file)
-        end
-      end
-    end
-
     #ODER BY order field. ITEMS WITHOUT order field WILL GO LAST
     app_launchers.compact.sort
   end
@@ -62,25 +52,6 @@ class LauncherButton
   end
 
   private
-  def self.read_yaml(path:)
-    contents = path.read
-    YAML.safe_load(contents).to_h.deep_symbolize_keys
-  end
-
-  def self.parse_launcher_file(launcher_file:)
-    file_config = read_yaml(path: launcher_file)
-    #SUPPORT FOR SINGLE LAUNCHER CONFIG PER FILE OR AS AN ARRAY UNDER launchers:
-    launchers_config_array = file_config.fetch(:launchers, [file_config])
-    launchers_config_array.each_with_object([]) do |launcher_config, result|
-      metadata = { type: "external" }
-      metadata[:path] = launcher_file.to_s
-
-      result << LauncherButton.new(metadata, launcher_config)
-    end
-    rescue => e
-      Rails.logger.error("Can't parse launcher from:#{launcher_file} because of error: #{e}")
-      return []
-  end
 
   def set_cluster
     ood_app = BatchConnect::App.from_token @form[:token]
