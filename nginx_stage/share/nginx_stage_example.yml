@@ -95,6 +95,11 @@
 #
 #passenger_pool_idle_time: 300
 
+# Hash of Passenger configuration options
+# Keys without passenger_ prefix will be ignored
+#
+#passenger_options: {}
+
 # Max file upload size in bytes (e.g., 10737420000)
 #
 #nginx_file_upload_max: '10737420000'

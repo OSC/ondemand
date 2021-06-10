@@ -54,6 +54,10 @@ http {
   passenger_pool_idle_time <%= passenger_pool_idle_time %>;
 
   <%- end -%>
+<%- passenger_options.to_h.each_pair do |key, value| -%>
+  <%= key %> <%= value %>;
+<%- end -%>
+
   # Set an array of temp and cache file options for the per-user environment
   client_body_temp_path   <%= tmp_root %>/client_body;
   proxy_temp_path         <%= tmp_root %>/proxy_temp;
