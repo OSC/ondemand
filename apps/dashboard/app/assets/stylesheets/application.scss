@@ -101,15 +101,17 @@ pre.motd-monospaced {
 
 // Add branded panels
 
+.sandboxAppsHeader {
+  background-color: $ood-burgundy;
+  color: $ood-white;
+}
+
+.systemAppsHeader {
+  background-color: $ood-blue;
+  color: $ood-white;
+}
+
 /**
-.panel-ood-blue {
-  @include panel-variant($ood-blue, $ood-white, $ood-blue, $ood-blue);
-}
-
-.panel-ood-burgundy {
-  @include panel-variant($ood-burgundy, $ood-white, $ood-burgundy, $ood-burgundy);
-}
-
 @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max + 125) {
   @include responsive-invisibility('.hidden-sm-nav');
 }
