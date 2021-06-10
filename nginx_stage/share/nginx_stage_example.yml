@@ -96,7 +96,7 @@
 #passenger_pool_idle_time: 300
 
 # Hash of Passenger configuration options
-# Leave off the 'passenger_' prefix, this is added automatically
+# Keys without passenger_ prefix will be ignored
 #
 #passenger_options: {}
 
