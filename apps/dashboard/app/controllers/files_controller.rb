@@ -114,7 +114,14 @@ class FilesController < ApplicationController
     elsif params.include?(:touch)
       FileUtils.touch path
     else
-      File.write(path, request.body.read)
+      content = request.body.read
+
+      # forcing utf-8 because File.write seems to require it. request bodies are
+      # in ASCII-8BIT and need to be re encoded otherwise errors are thrown.
+      # see test cases for plain text, utf-8 text, images and binary files
+      content.force_encoding('UTF-8')
+
+      File.write(path, content)
     end
 
     render json: {}
