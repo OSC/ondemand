@@ -104,11 +104,13 @@ pre.motd-monospaced {
 .sandbox-apps-header {
   background-color: $ood-burgundy;
   color: $ood-white;
+  margin-bottom: 2rem;
 }
 
-.system-apps-header {
+.system-and-shared-apps-header {
   background-color: $ood-blue;
   color: $ood-white;
+  margin-bottom: 2rem;
 }
 
 /**
