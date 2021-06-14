@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Administrators can now configure `passenger_pool_idle_time` in [1209](https://github.com/OSC/ondemand/pull/1209).
 - Administrators can now configure any passenger configuration in [1211](https://github.com/OSC/ondemand/pull/1211).
 
+### Changed
+
+- Updated ood_core to 0.17.1 in [1223](https://github.com/OSC/ondemand/pull/1223).
+
 ## [2.0.9] - 2021-26-05
 
 ### Fixed
