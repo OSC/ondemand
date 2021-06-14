@@ -35,7 +35,7 @@ Rails.application.routes.draw do
     end
   end
 
-  if  Configuration.api_enabled?
+  if  Configuration.batch_connect_api_enabled?
     scope module: "api", path: "/api/v1", as: "api" do
       resources :sessions, only: [:index, :create, :show, :destroy], controller: "api_sessions"
       resources :applications, only: [:index], controller: "api_applications"

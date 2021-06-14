@@ -372,8 +372,8 @@ class ConfigurationSingleton
     end
   end
 
-  def api_enabled?
-    to_bool(ENV['OOD_API_ENABLED'])
+  def batch_connect_api_enabled?
+    to_bool(ENV['OOD_BATCH_CONNECT_API_ENABLED'])
   end
 
   private

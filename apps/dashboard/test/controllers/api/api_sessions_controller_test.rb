@@ -3,6 +3,8 @@ require 'test_helper'
 
 class Api::ApiSessionsControllerTest < ActionController::TestCase
 
+  # ENV['OOD_BATCH_CONNECT_API_ENABLED'] NEEDS TO BE ENABLED => config/environments/test
+
   test ":index should return :internal_server_error when Session throws error" do
     BatchConnect::Session.stubs(:all).raises(Exception, 'error')
     get :index
@@ -10,13 +12,13 @@ class Api::ApiSessionsControllerTest < ActionController::TestCase
   end
 
   test ":show should return :not_found when session_id does not exists" do
-    BatchConnect::Session.stubs(:exist).returns(false)
+    BatchConnect::Session.stubs(:exist?).returns(false)
     get :show, params: { id: '12345' }
     assert_response :not_found
   end
 
   test ":show should return session information when session_id exists" do
-    BatchConnect::Session.stubs(:exist).returns(true)
+    BatchConnect::Session.stubs(:exist?).returns(true)
     BatchConnect::Session.stubs(:find).returns(mock("session"))
     @controller.stubs(:create_session_data).returns({})
 
@@ -103,13 +105,13 @@ class Api::ApiSessionsControllerTest < ActionController::TestCase
   end
 
   test ":destroy should return :not_found when session_id does not exists" do
-    BatchConnect::Session.stubs(:exist).returns(false)
+    BatchConnect::Session.stubs(:exist?).returns(false)
     delete :destroy, params: { id: '12345' }
     assert_response :not_found
   end
 
   test ":destroy should return :no_content when session successfully deleted" do
-    BatchConnect::Session.stubs(:exist).returns(true)
+    BatchConnect::Session.stubs(:exist?).returns(true)
     session_mock = mock("session")
     session_mock.stubs(:destroy).returns(true)
     BatchConnect::Session.stubs(:find).returns(session_mock)
@@ -119,7 +121,7 @@ class Api::ApiSessionsControllerTest < ActionController::TestCase
   end
 
   test ":destroy should return :internal_server_error when session cannon be deleted" do
-    BatchConnect::Session.stubs(:exist).returns(true)
+    BatchConnect::Session.stubs(:exist?).returns(true)
     errors_mock = mock("errors")
     errors_mock.stubs(:full_messages).returns("error message")
 
@@ -136,7 +138,7 @@ class Api::ApiSessionsControllerTest < ActionController::TestCase
   end
 
   test ":destroy should return :internal_server_error when exception is thrown" do
-    BatchConnect::Session.stubs(:exist).returns(true)
+    BatchConnect::Session.stubs(:exist?).returns(true)
 
     session_mock = mock("session")
     session_mock.stubs(:destroy).raises(Exception, 'error')

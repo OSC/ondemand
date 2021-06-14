@@ -3,6 +3,8 @@ require 'test_helper'
 
 class Api::ApiApplicationsControllerTest < ActionController::TestCase
 
+  # ENV['OOD_BATCH_CONNECT_API_ENABLED'] NEEDS TO BE ENABLED => config/environments/test
+
   def setup
     mock_application = mock("application")
     mock_application.stubs(:name).returns("app_name")

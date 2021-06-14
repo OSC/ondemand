@@ -45,4 +45,6 @@ Rails.application.configure do
   #
   config.active_job.queue_adapter = ActiveJob::QueueAdapters::AsyncAdapter.new \
     min_threads: 1, max_threads: 1
+
+  ENV["OOD_BATCH_CONNECT_API_ENABLED"] = "true"
 end

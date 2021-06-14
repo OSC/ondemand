@@ -17,7 +17,7 @@ class Api::ApiSessionsController < ApiController
 
   def show
     session_id = params[:id]
-    if !BatchConnect::Session.exist(session_id)
+    if !BatchConnect::Session.exist?(session_id)
       render json: { message: "Not found session_id: #{session_id}" }, status: :not_found
       return
     end
@@ -53,7 +53,7 @@ class Api::ApiSessionsController < ApiController
 
   def destroy
     session_id = params[:id]
-    if !BatchConnect::Session.exist(session_id)
+    if !BatchConnect::Session.exist?(session_id)
       render json: { message: "Not found sessionId: #{session_id}" }, status: :not_found
       return
     end

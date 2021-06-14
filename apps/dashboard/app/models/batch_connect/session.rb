@@ -128,7 +128,7 @@ module BatchConnect
         new.from_json(db_root.join(id).read)
       end
 
-      def exist(id)
+      def exist?(id)
         db_root.join(id).exist?
       end
     end
