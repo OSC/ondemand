@@ -127,6 +127,10 @@ module BatchConnect
       def find(id)
         new.from_json(db_root.join(id).read)
       end
+
+      def exist(id)
+        db_root.join(id).exist?
+      end
     end
 
     # Path to database file for this object

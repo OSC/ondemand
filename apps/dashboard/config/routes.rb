@@ -34,6 +34,11 @@ Rails.application.routes.draw do
       root "session_contexts#new"
     end
   end
+
+  namespace :ws do
+    resources :sessions, only: [:index, :create, :show, :destroy], controller: "ws_sessions"
+  end
+
   get "errors/not_found"
   get "errors/internal_server_error"
   get "dashboard/index"
