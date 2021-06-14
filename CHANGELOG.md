@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.10] - 2021-14-06
+
+### Fixed
+
+- Fixed [1207](https://github.com/OSC/ondemand/issues/1207) a bug in the file editor that was saving
+  0 byte files when the file being edited has UTF-8 encoded characters.
+- Cosmetic fixes to the apps panels in [1213](https://github.com/OSC/ondemand/pull/1213) and
+  [1217](https://github.com/OSC/ondemand/pull/1217).
+
+### Added
+
+- Asers can now download multiple files at a time in [1181](https://github.com/OSC/ondemand/pull/1181).
+- Administrators can now configure `passenger_pool_idle_time` in [1209](https://github.com/OSC/ondemand/pull/1209).
+- Administrators can now configure any passenger configuration in [1211](https://github.com/OSC/ondemand/pull/1211).
+
 ## [2.0.9] - 2021-26-05
 
 ### Fixed
@@ -792,7 +807,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.9...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.10...HEAD
+[2.0.10]: https://github.com/OSC/ondemand/compare/v2.0.9...v2.0.10
 [2.0.9]: https://github.com/OSC/ondemand/compare/v2.0.8...v2.0.9
 [2.0.8]: https://github.com/OSC/ondemand/compare/v2.0.7...v2.0.8
 [2.0.7]: https://github.com/OSC/ondemand/compare/v2.0.6...v2.0.7
