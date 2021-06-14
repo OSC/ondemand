@@ -1,7 +1,7 @@
 require 'test_helper'
 
 
-class Ws::WsApplicationsControllerTest < ActionController::TestCase
+class Api::ApiApplicationsControllerTest < ActionController::TestCase
 
   def setup
     mock_application = mock("application")

@@ -1,7 +1,7 @@
 require 'test_helper'
 
 
-class Ws::WsSessionsControllerTest < ActionController::TestCase
+class Api::ApiSessionsControllerTest < ActionController::TestCase
 
   test ":index should return :internal_server_error when Session throws error" do
     BatchConnect::Session.stubs(:all).raises(Exception, 'error')

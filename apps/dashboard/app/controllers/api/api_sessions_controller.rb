@@ -1,4 +1,4 @@
-class Ws::WsSessionsController < ApiController
+class Api::ApiSessionsController < ApiController
 
   def index
     @sessions = BatchConnect::Session.all

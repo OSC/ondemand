@@ -1,4 +1,4 @@
-class Ws::WsApplicationsController < ApiController
+class Api::ApiApplicationsController < ApiController
 
   def index
 

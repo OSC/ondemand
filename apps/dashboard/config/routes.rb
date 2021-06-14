@@ -36,9 +36,9 @@ Rails.application.routes.draw do
   end
 
   if  Configuration.api_enabled?
-    namespace :ws do
-      resources :sessions, only: [:index, :create, :show, :destroy], controller: "ws_sessions"
-      resources :applications, only: [:index], controller: "ws_applications"
+    scope module: "api", path: "/api/v1", as: "api" do
+      resources :sessions, only: [:index, :create, :show, :destroy], controller: "api_sessions"
+      resources :applications, only: [:index], controller: "api_applications"
     end
   end
 
