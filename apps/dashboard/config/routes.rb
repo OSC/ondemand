@@ -35,8 +35,11 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace :ws do
-    resources :sessions, only: [:index, :create, :show, :destroy], controller: "ws_sessions"
+  if  Configuration.api_enabled?
+    namespace :ws do
+      resources :sessions, only: [:index, :create, :show, :destroy], controller: "ws_sessions"
+      resources :applications, only: [:index], controller: "ws_applications"
+    end
   end
 
   get "errors/not_found"
