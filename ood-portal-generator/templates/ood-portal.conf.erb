@@ -287,8 +287,8 @@ Listen <%= addr_port %>
     RewriteCond %{REQUEST_METHOD} OPTIONS
     RewriteRule ^(.*)$ $1 [R=204,L]
   </Location>
-  <%- end -%>
 
+  <%- end -%>
   # Control backend PUN for authenticated user:
   # NB: See mod_ood_proxy for more details.
   #
