@@ -71,12 +71,13 @@ jobs:
 
       - name: DELME - let's see what's in vendor bundle
         run: |
+          pwd
           ls -lrt vendor/bundle/ruby/2.7.0/gems
           ls -lrt vendor/bundle/ruby/2.7.0/gems
           ls -lrt vendor/bundle/ruby/2.7.0/gems/rspec-core-3.10.0/exe/rspec
 
       - name: Run E2E tests
-        run: bundle exec rake test:e2e
+        run: rake test:e2e
 
   k8s-tests:
     runs-on: ubuntu-latest
