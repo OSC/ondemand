@@ -66,6 +66,9 @@ jobs:
           bundler-cache: true
           bundler: "2.1.4"
 
+      - name: Install top level Gems
+        run: bundle install
+
       - name: Run E2E tests
         run: bundle exec rake test:e2e
 
