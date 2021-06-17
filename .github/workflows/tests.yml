@@ -69,6 +69,12 @@ jobs:
       - name: Install top level Gems
         run: bundle install
 
+      - name: DELME - let's see what's in vendor bundle
+        run: |
+          ls -lrt vendor/bundle/ruby/2.7.0/gems
+          ls -lrt vendor/bundle/ruby/2.7.0/gems
+          ls -lrt vendor/bundle/ruby/2.7.0/gems/rspec-core-3.10.0/exe/rspec
+
       - name: Run E2E tests
         run: bundle exec rake test:e2e
 
