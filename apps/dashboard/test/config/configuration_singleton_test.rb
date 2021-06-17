@@ -393,12 +393,20 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "api is disabled by default" do
-    ENV.delete("OOD_BATCH_CONNECT_API_ENABLED")
-    refute ConfigurationSingleton.new.batch_connect_api_enabled?
+    env = {
+      OOD_BATCH_CONNECT_API_ENABLED: nil
+    }
+    with_modified_env(env) do
+      refute ConfigurationSingleton.new.batch_connect_api_enabled?
+    end
   end
 
   test "api can be enabled with environment variable" do
-    ENV["OOD_BATCH_CONNECT_API_ENABLED"] = "true"
-    assert ConfigurationSingleton.new.batch_connect_api_enabled?
+    env = {
+      OOD_BATCH_CONNECT_API_ENABLED: "true"
+    }
+    with_modified_env(env) do
+      assert ConfigurationSingleton.new.batch_connect_api_enabled?
+    end
   end
 end
