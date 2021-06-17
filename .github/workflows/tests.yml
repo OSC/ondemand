@@ -30,11 +30,12 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/vendor/bundle
-          key: ${{ runner.os }}-${{ matrix.ruby }}-gems-${{ hashFiles('apps/*/Gemfile.lock') }}
+          key: ${{ runner.os }}-${{ matrix.ruby }}-gems-${{ hashFiles('apps/*/Gemfile.lock', 'Gemfile.lock') }}
 
       - name: Setup Bundler
         run: |
           bundle config path ~/vendor/bundle
+          bundle install
 
       - name: Run ShellCheck
         run: rake test:shellcheck
@@ -63,11 +64,18 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: "2.7.1"
-          bundler-cache: true
           bundler: "2.1.4"
 
-      - name: Install top level Gems
-        run: bundle install
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/vendor/bundle
+          key: ${{ runner.os }}-${{ matrix.ruby }}-gems-${{ hashFiles('apps/*/Gemfile.lock', 'Gemfile.lock') }}
+
+      - name: Setup Bundler
+        run: |
+          bundle config path ~/vendor/bundle
+          bundle install
 
       - name: DELME - let's see what's in vendor bundle
         run: |

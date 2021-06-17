@@ -7,6 +7,7 @@ def yarn_app?(path)
 end
 
 namespace :test do
+  require "rspec/core/rake_task"
   require_relative 'build_utils'
   include BuildUtils
 
@@ -49,13 +50,9 @@ namespace :test do
     sh "shellcheck hooks/k8s-bootstrap/*.sh"
   end
 
-  begin
-    require "rspec/core/rake_task"
-    RSpec::Core::RakeTask.new(:e2e_spec) do |task|
-      task.pattern = "#{PROJ_DIR.join('spec', 'e2e')}/*_spec.rb"
-      task.rspec_opts = ['--format documentation']
-    end
-  rescue LoadError
+  RSpec::Core::RakeTask.new(:e2e_spec) do |task|
+    task.pattern = "#{PROJ_DIR.join('spec', 'e2e')}/*_spec.rb"
+    task.rspec_opts = ['--format documentation']
   end
 
   desc "Get chromedriver"
