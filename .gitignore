@@ -60,6 +60,7 @@
 # Build artifacts
 /apps/*/.built
 /packaging/*.tar.gz
+/build
 
 lib-cov
 *.seed

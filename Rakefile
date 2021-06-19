@@ -7,9 +7,11 @@ APPS_DIR          = PROJ_DIR.join('apps')
 GEMFILE           = PROJ_DIR.join('Gemfile')
 INSTALL_ROOT      = Pathname.new(ENV["PREFIX"] || "/opt/ood")
 VENDOR_BUNDLE     = (ENV['VENDOR_BUNDLE'] == "yes" || ENV['VENDOR_BUNDLE'] == "true")
+VENDOR_BUNDLE_PATH = Pathname.new(ENV['VENDOR_BUNDLE_PATH'] || "vendor/bundle")
 PASSENGER_APP_ENV = ENV["PASSENGER_APP_ENV"] || "production"
 
 require "#{TASK_DIR}/rake_helper"
+require "#{TASK_DIR}/build"
 require "#{TASK_DIR}/packaging"
 require "#{TASK_DIR}/test"
 require "#{TASK_DIR}/lint"
@@ -23,7 +25,7 @@ namespace :build do
   task :gems do
     bundle_args = ["--jobs 4", "--retry 2"]
     if VENDOR_BUNDLE
-      bundle_args << "--path vendor/bundle"
+      bundle_args << "--path #{VENDOR_BUNDLE_PATH}"
     end
     if PASSENGER_APP_ENV == "production"
       bundle_args << "--without doc"
