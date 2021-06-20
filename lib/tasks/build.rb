@@ -47,6 +47,10 @@ namespace :build do
     tar = "#{build_src_dir}/#{passenger_tar}"
     sh "wget #{passenger_tar_url} -O #{tar}" unless File.exist?(tar)
 
+    # agent tar isn't versioned, so let's do that now.
+    agent_tar = "#{build_src_dir}/passenger-agent-#{passenger_version}.tar.gz"
+    sh "wget #{passenger_agent_tar_url} -O #{agent_tar}" unless File.exist?(agent_tar)
+
     work_dir = "/build"
     passenger_host = "#{build_dir(args)}/passenger".tap { |p| sh "mkdir -p #{p}" }
     sh "tar --strip-components=1 -xzf #{tar} -C #{passenger_host}"
