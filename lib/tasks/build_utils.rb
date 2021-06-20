@@ -7,6 +7,20 @@ module BuildUtils
     tag? ? git_tag : "#{git_tag}-#{git_hash}"
   end
 
+  def ood_packaged_version
+    @ood_packaged_version ||= begin
+      if ! ENV['VERSION']
+        tag? ? git_tag : "#{git_tag}-#{build_timestamp}-#{git_hash}"
+      else
+        ENV['VERSION'].to_s
+      end
+    end
+  end
+
+  def build_timestamp
+    @build_timestamp ||= Time.now.strftime("%s")
+  end
+
   def git_hash
     @git_hash ||= `git rev-parse HEAD`.strip[0..6]
   end
@@ -29,6 +43,11 @@ module BuildUtils
 
   def container_runtime
     podman_runtime? ? "podman" : "docker"
+  end
+
+  def tar
+    `which gtar 1>/dev/null 2>&1`
+    $?.success? ? 'gtar' : 'tar'
   end
 
   def test_image_name

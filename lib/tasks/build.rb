@@ -53,7 +53,7 @@ namespace :build do
 
     work_dir = "/build"
     passenger_host = "#{build_dir(args)}/passenger".tap { |p| sh "mkdir -p #{p}" }
-    sh "tar --strip-components=1 -xzf #{tar} -C #{passenger_host}"
+    sh "#{tar} --strip-components=1 -xzf #{tar} -C #{passenger_host}"
 
     base_args = ["--rm", "-v", "#{passenger_host}:#{work_dir}", "-w", "#{work_dir}"]
     base_args.concat [ build_box_image(args) ]

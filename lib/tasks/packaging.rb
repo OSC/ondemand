@@ -4,24 +4,10 @@ namespace :package do
   require_relative 'build_utils'
   include BuildUtils
 
-  task :tar do
-    `which gtar 1>/dev/null 2>&1`
-    if $?.success?
-      tar = 'gtar'
-    else
-      tar = 'tar'
-    end
-
-    version = ENV['VERSION']
-
-    if ! version
-      latest_commit = `git rev-list --tags --max-count=1`.strip[0..6]
-      latest_tag = `git describe --tags #{latest_commit}`.strip[1..-1]
-      datetime = Time.now.strftime("%Y%m%d-%H%M")
-      version = "#{latest_tag}-#{datetime}-#{latest_commit}"
-    end
-
-    sh "git ls-files | #{tar} -c --transform 's,^,ondemand-#{version}/,' -T - | gzip > packaging/v#{version}.tar.gz"
+  task :tar, [:output_dir] do
+    v = ood_packaged_version
+    tar = "#{args[output_dir] || 'packaging'}/v#{v}.tar.gz"
+    sh "git ls-files | #{tar} -c --transform 's,^,ondemand-#{v}/,' -T - | gzip > #{tar}"
   end
 
   task container: [:clean] do
