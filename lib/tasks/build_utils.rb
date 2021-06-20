@@ -61,6 +61,10 @@ module BuildUtils
     }.freeze
   end
 
+  def build_dir(platform, version)
+    "#{PROJ_DIR}/build/#{platform}/#{version}"
+  end
+
   def image_exists?(image_name)
     `#{container_runtime} inspect --type image --format exists #{image_name} || true`.chomp.eql?('exists')
   end
