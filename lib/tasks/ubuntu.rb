@@ -8,9 +8,8 @@ namespace :package do
 
   namespace :ubuntu do
   
-    task build: ['build:build_box'] do
-      sh "mkdir -p build/ubuntu"
-      Rake::Task['build:build_in_image'].invoke
+    task :build do
+      Rake::Task['build:build_in_image'].invoke('ubuntu', '20.04')
     end
-  end 
+  end
 end

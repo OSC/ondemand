@@ -61,8 +61,21 @@ module BuildUtils
     }.freeze
   end
 
-  def build_dir(platform, version)
-    "#{PROJ_DIR}/build/#{platform}/#{version}"
+  def build_dir(args)
+    "#{PROJ_DIR}/build/#{build_box_tag(args)}"
+  end
+
+  def build_box_tag(args)
+    base_name = "#{args[:platform]}-#{args[:version]}"
+    @version_lookup ||= {
+      'ubuntu-20.04': "1"
+    }.freeze
+
+    "#{base_name}-#{@version_lookup[base_name.to_sym]}"
+  end
+
+  def build_box_image(args)
+    "#{image_names[:build_box]}:#{build_box_tag(args)}"
   end
 
   def image_exists?(image_name)
