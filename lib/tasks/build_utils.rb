@@ -7,8 +7,8 @@ module BuildUtils
     tag? ? git_tag : "#{git_tag}-#{git_hash}"
   end
 
-  def ood_packaged_version
-    @ood_packaged_version ||= begin
+  def ood_package_version
+    @ood_package_version ||= begin
       if ! ENV['VERSION']
         tag? ? git_tag : "#{git_tag}-#{build_timestamp}-#{git_hash}"
       else
@@ -48,6 +48,18 @@ module BuildUtils
   def tar
     `which gtar 1>/dev/null 2>&1`
     $?.success? ? 'gtar' : 'tar'
+  end
+
+  def ood_package_name
+    "ondemand"
+  end
+
+  def versioned_ood_package
+    "#{ood_package_name}-#{ood_package_version}"
+  end
+
+  def ood_package_tar
+    "#{versioned_ood_package}.tar.gz"
   end
 
   def test_image_name

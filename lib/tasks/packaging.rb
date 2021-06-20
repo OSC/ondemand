@@ -4,10 +4,12 @@ namespace :package do
   require_relative 'build_utils'
   include BuildUtils
 
-  task :tar, [:output_dir] do
-    v = ood_packaged_version
-    tar = "#{args[output_dir] || 'packaging'}/v#{v}.tar.gz"
-    sh "git ls-files | #{tar} -c --transform 's,^,ondemand-#{v}/,' -T - | gzip > #{tar}"
+  task :tar, [:output_dir] do |task, args|
+    dir = "#{args[:output_dir] || 'packaging'}".tap { |p| sh "mkdir -p #{p}" }
+    tar_file = "#{dir}/#{ood_package_tar}"
+
+    sh "rm #{tar}" if File.exist?(tar)
+    sh "git ls-files | #{tar} -c --transform 's,^,#{versioned_ood_package}/,' -T - | gzip > #{tar_file}"
   end
 
   task container: [:clean] do

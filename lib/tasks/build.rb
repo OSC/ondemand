@@ -38,6 +38,19 @@ namespace :build do
     sh "#{container_runtime} run #{build_args.join(' ')}"
   end
 
+  task :debmake, [:platform, :version] => [:build_box] do |task, args|
+    dir = build_dir(args)
+    Rake::Task['package:tar'].invoke(dir)
+    sh "#{tar} -xzf #{dir}/#{ood_package_tar} -C #{dir}"
+
+    work_dir = "/build/#{versioned_ood_package}"
+    build_args = ["--rm"]
+    build_args.concat ["-v", "#{dir}:/build", "-w", "#{work_dir}"]
+
+    build_args.concat [ build_box_image(args), 'debmake']
+    sh "#{container_runtime} run #{build_args.join(' ')}"
+  end
+
   task :nginx, [:platform, :version] => [:build_box] do |task, args|
     tar = "#{build_src_dir}/#{nginx_tar}"
     sh "wget #{nginx_tar_url} -O #{tar}" unless File.exist?(tar)

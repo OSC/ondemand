@@ -9,7 +9,8 @@ namespace :package do
   namespace :ubuntu do
   
     task :build do
-      Rake::Task['build:build_in_image'].invoke('ubuntu', '20.04')
+      # Rake::Task['build:build_in_image'].invoke('ubuntu', '20.04')
+      Rake::Task['build:debmake'].invoke('ubuntu', '20.04')
     end
   end
 end
