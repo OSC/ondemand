@@ -37,4 +37,25 @@ namespace :build do
     build_args.concat [ build_box_image(args), "rake", "build" ]
     sh "#{container_runtime} run #{build_args.join(' ')}"
   end
+
+  task :nginx, [:platform, :version] => [:build_box] do |task, args|
+    tar = "#{build_src_dir}/#{nginx_tar}"
+    sh "wget #{nginx_tar_url} -O #{tar}" unless File.exist?(tar)
+  end
+
+  task :passenger, [:platform, :version] => [:build_box] do |task, args|
+    tar = "#{build_src_dir}/#{passenger_tar}"
+    sh "wget #{passenger_tar_url} -O #{tar}" unless File.exist?(tar)
+
+    work_dir = "/build"
+    passenger_host = "#{build_dir(args)}/passenger".tap { |p| sh "mkdir -p #{p}" }
+    sh "tar --strip-components=1 -xzf #{tar} -C #{passenger_host}"
+
+    base_args = ["--rm", "-v", "#{passenger_host}:#{work_dir}", "-w", "#{work_dir}"]
+    base_args.concat [ build_box_image(args) ]
+    makefile_args = base_args + [ "ruby", "#{work_dir}/src/ruby_native_extension/extconf.rb" ]
+
+    sh "#{container_runtime} run #{makefile_args.join(' ')}"
+    sh "#{container_runtime} run #{base_args.join(' ')} make"
+  end
 end

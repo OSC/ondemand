@@ -65,6 +65,10 @@ module BuildUtils
     "#{PROJ_DIR}/build/#{build_box_tag(args)}"
   end
 
+  def build_src_dir
+    "#{PROJ_DIR}/build/src".tap { |p| sh "mkdir -p #{p}" }
+  end
+
   def build_box_tag(args)
     base_name = "#{args[:platform]}-#{args[:version]}"
     @version_lookup ||= {
@@ -80,6 +84,38 @@ module BuildUtils
 
   def image_exists?(image_name)
     `#{container_runtime} inspect --type image --format exists #{image_name} || true`.chomp.eql?('exists')
+  end
+
+  def nginx_version
+    "1.18.0"
+  end
+
+  def passenger_version
+    "6.0.7"
+  end
+
+  def nginx_tar
+    "nginx-#{nginx_version}-x86_64-linux.tar.gz"
+  end
+
+  def nginx_tar_url
+    "#{passenger_release_url}/#{nginx_tar}"
+  end
+
+  def passenger_base_url
+    "https://github.com/phusion/passenger/releases/download"
+  end
+
+  def passenger_release_url
+    "#{passenger_base_url}/release-#{passenger_version}"
+  end
+
+  def passenger_tar
+    "passenger-#{passenger_version}.tar.gz"
+  end
+
+  def passenger_tar_url
+    "#{passenger_release_url}/#{passenger_tar}"
   end
 
   def buildah_build_cmd(docker_file, image_name, image_tag: ood_image_tag, extra_args: [])
