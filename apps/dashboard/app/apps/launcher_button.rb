@@ -3,7 +3,7 @@ class LauncherButton
   def self.launchers
     app_launchers = ::Configuration.launchers.map{ |system_launcher| LauncherButton.new({ type: "system" }, system_launcher) }
 
-    #ODER BY order field. ITEMS WITHOUT order field WILL GO LAST
+    #order by order field. Items without order field will go last.
     app_launchers.compact.sort
   end
 
