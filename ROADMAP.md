@@ -2,8 +2,11 @@
 
 ## Projects
 
+The [entire project board](https://github.com/OSC/ondemand/projects/10)
+is a very high level view of the project as a whole.
+
 Check the [projects page](https://github.com/OSC/ondemand/projects)
-for very large upcoming features.
+for a more detailed view of the progress to a very large upcoming features.
 
 ## Next Release
 
@@ -22,7 +25,6 @@ We use labels to identify areas and components. For example if you're instereste
 batch connect component [search the issues](https://github.com/OSC/ondemand/issues)
 with the `component/batch_connect` label.  
 
-If you're interested in large features try looking at [epic tickets](https://github.com/OSC/ondemand/issues?q=is%3Aissue+is%3Aopen+label%3Aepic).
-
-
+If you're interested in any large feature not already in a project, try looking at 
+[epic tickets](https://github.com/OSC/ondemand/issues?q=is%3Aissue+is%3Aopen+label%3Aepic).
 
