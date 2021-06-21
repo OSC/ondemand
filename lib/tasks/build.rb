@@ -20,35 +20,24 @@ namespace :build do
     sh cmd unless image_exists?(build_box_image(args))
   end
 
-  task :build_in_image, [:platform, :version] => [:build_box] do |task, args|
-    platform = args[:platform].to_s
-    version = args[:version].to_s
-
-    work_dir = "/build"
-    bundle_host = "#{build_dir(args)}/vendor/bundle".tap { |p| sh "mkdir -p #{p}" }
-    node_host = "#{build_dir(args)}/node_modules".tap { |p| sh "mkdir -p #{p}" }
-    bundle_ctr = "/vendor/bundle"
-    node_ctr = "#{work_dir}/apps/dashboard/node_modules"
-    build_args = ["--rm", "-v", "#{bundle_host}:#{bundle_ctr}"]
-    build_args.concat [ "-e", "VENDOR_BUNDLE_PATH=#{bundle_ctr}", "-e", "VENDOR_BUNDLE=true"]
-    build_args.concat ["-v", "#{node_host}:#{node_ctr}"]
-    build_args.concat ["-v", "#{PROJ_DIR}:#{work_dir}", "-w", "#{work_dir}"]
-
-    build_args.concat [ build_box_image(args), "rake", "build" ]
-    sh "#{container_runtime} run #{build_args.join(' ')}"
-  end
-
-  task :debmake, [:platform, :version] => [:build_box] do |task, args|
+  task :debuild, [:platform, :version] => [:build_box] do |task, args|
     dir = build_dir(args)
     Rake::Task['package:tar'].invoke(dir)
     sh "#{tar} -xzf #{dir}/#{ood_package_tar} -C #{dir}"
 
     work_dir = "/build/#{versioned_ood_package}"
-    build_args = ["--rm"]
-    build_args.concat ["-v", "#{dir}:/build", "-w", "#{work_dir}"]
+    bundle_ctr = "#{work_dir}/vendor/bundle"
 
-    build_args.concat [ build_box_image(args), 'debmake']
-    sh "#{container_runtime} run #{build_args.join(' ')}"
+    base_args = ["--rm"]
+    base_args.concat ["-v", "#{dir}:/build", "-w", "#{work_dir}"]
+    base_args.concat [ "-e", "VENDOR_BUNDLE_PATH=#{bundle_ctr}", "-e", "VENDOR_BUNDLE=true"]
+    base_args.concat ["-e", "DEBUILD_DPKG_BUILDPACKAGE_OPTS='-us -uc -I -i'"]
+    base_args.concat [ build_box_image(args)]
+    sh "#{container_runtime} run #{base_args.join(' ')} debmake -b':ruby'"
+
+    debuild_args = ["debuild", "-e", "VENDOR_BUNDLE_PATH", "-e", "VENDOR_BUNDLE"]
+    debuild_args.concat ["--no-lintian"]
+    sh "#{container_runtime} run #{base_args.join(' ')} #{debuild_args.join(' ')}"
   end
 
   task :nginx, [:platform, :version] => [:build_box] do |task, args|

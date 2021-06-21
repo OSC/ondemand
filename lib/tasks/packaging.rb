@@ -12,6 +12,10 @@ namespace :package do
     sh "git ls-files | #{tar} -c --transform 's,^,#{versioned_ood_package}/,' -T - | gzip > #{tar_file}"
   end
 
+  task :deb, [:platoform, :version] do |task, args|
+    Rake::Task['build:debuild'].invoke('ubuntu', args[:version] || '20.04')
+  end
+
   task container: [:clean] do
     sh build_cmd("Dockerfile", image_name) unless image_exists?("#{image_name}:#{image_tag}")
   end
