@@ -104,7 +104,8 @@ module OodPortalGenerator
     end
 
     def issuer
-      "#{protocol}#{servername}:#{port}"
+      host = @config.fetch(:issuer, servername)
+      "#{protocol}#{host}:#{port}"
     end
 
     def storage
