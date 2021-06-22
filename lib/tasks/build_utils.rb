@@ -169,7 +169,7 @@ module BuildUtils
     "docker #{args.join(' ')}"
   end
 
-  def build_cmd(file, image_name, image_tag: nil, extra_args: [])
+  def build_cmd(file, image_name, image_tag: ood_image_tag, extra_args: [])
     if podman_runtime?
       buildah_build_cmd(file, image_name, image_tag: image_tag, extra_args: extra_args)
     else
