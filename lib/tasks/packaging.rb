@@ -17,15 +17,15 @@ namespace :package do
   end
 
   task container: [:clean] do
-    sh build_cmd("Dockerfile", image_name) unless image_exists?("#{image_name}:#{image_tag}")
+    sh build_cmd("Dockerfile", image_names[:ood]) unless image_exists?("#{image_names[:ood]}:#{ood_image_tag}")
   end
 
   task latest_container: [:container] do
-    sh tag_latest_container_cmd(image_name)
+    sh tag_latest_container_cmd(image_names[:ood])
   end
 
   task test_container: [:latest_container] do
-    sh build_cmd("Dockerfile.test", test_image_name) unless image_exists?("#{test_image_name}:#{image_tag}")
+    sh build_cmd("Dockerfile.test", test_image_name) unless image_exists?("#{test_image_name}:#{ood_image_tag}")
     sh tag_latest_container_cmd(test_image_name)
   end
 
@@ -39,7 +39,7 @@ namespace :package do
       extra.concat ["--build-arg", "GID=#{Etc.getpwnam(username).uid}"]
     end
 
-    sh build_cmd("Dockerfile.dev", dev_image_name, extra_args: extra) unless image_exists?("#{dev_image_name}:#{image_tag}")
+    sh build_cmd("Dockerfile.dev", dev_image_name, extra_args: extra) unless image_exists?("#{dev_image_name}:#{ood_image_tag}")
     sh tag_latest_container_cmd(dev_image_name)
   end
 end
