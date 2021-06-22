@@ -104,8 +104,8 @@ module OodPortalGenerator
 
       # CORS setup
       @api_cors_enabled                 = opts.fetch(:api_cors_enabled, false)
-      @api_cors_uri                     = opts.fetch(:api_cors_uri, '/pun/sys/dashboard/api')
-      @api_cors_origin                  = opts.fetch(:api_cors_origin, '*')
+      @api_cors_uri                     = opts.fetch(:api_cors_uri, "#{@pun_uri}/sys/dashboard/api")
+      @api_cors_origin                  = opts.fetch(:api_cors_origin, nil)
     end
 
     # Helper method to set the filename and path for access and error logs

@@ -430,5 +430,5 @@ register_root: '/var/www/ood/register'
 #    theme: ondemand
 #    dir: /usr/share/ondemand-dex/web
 api_cors_enabled: true
-api_cors_uri: "/pun/test"
-api_cors_origin: "test:8080"
+api_cors_uri: "/pun/sys/application/api"
+api_cors_origin: "https://test.com:8080"

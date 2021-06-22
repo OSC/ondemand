@@ -196,15 +196,15 @@ Listen 8080
   </Location>
 
   # CORS setup for API requests
-  <Location "/pun/test">
-    Header always set Access-Control-Allow-Origin "test:8080"
+  <Location "/pun/sys/application/api">
+    Header always set Access-Control-Allow-Origin "https://test.com:8080"
     Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS, DELETE, PUT"
     Header always set Access-Control-Allow-Headers "x-requested-with, content-type, origin, authorization, accept, client-security-token"
     Header always set Access-Control-Expose-Headers "Content-Security-Policy, Location"
     Header always set Access-Control-Allow-Credentials "false"
     Header always set Access-Control-Max-Age "600"
 
-    # CORS PREFLIGHT REQUESTS ARE NOT AUTHENTICATED.
+    # CORS preflight requests are not authenticated as per specification
     <Limit OPTIONS>
       allow from all
       Satisfy Any

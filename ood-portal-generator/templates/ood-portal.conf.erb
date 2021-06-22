@@ -277,7 +277,7 @@ Listen <%= addr_port %>
     Header always set Access-Control-Allow-Credentials "false"
     Header always set Access-Control-Max-Age "600"
 
-    # CORS PREFLIGHT REQUESTS ARE NOT AUTHENTICATED.
+    # CORS preflight requests are not authenticated as per specification
     <Limit OPTIONS>
       allow from all
       Satisfy Any
