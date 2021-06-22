@@ -177,7 +177,7 @@ module BuildUtils
     end
   end
 
-  def tag_latest_container_cmd(image_name)
+  def tag_latest_container_cmd(image_name, image_tag: ood_image_tag)
     "#{container_runtime} tag #{image_name}:#{image_tag} #{image_name}:latest"
   end
 
