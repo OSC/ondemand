@@ -1,5 +1,5 @@
 ---
-issuer: https://example.com:5554
+issuer: https://example-proxy.com:5554
 storage:
   type: sqlite3
   config:

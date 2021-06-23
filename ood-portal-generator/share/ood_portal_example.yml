@@ -381,8 +381,6 @@
 # If the value for "dex" key is false or null, Dex support is disabled
 # Dex support will auto-enable if ondemand-dex package is installed
 #dex:
-  # Set the issuer for dex config behind reverse proxy, defaults to servername
-#  issuer: null
   # Default based on if ssl key for ood-portal-generator is defined
 #  ssl: false
   # Only used if SSL is disabled

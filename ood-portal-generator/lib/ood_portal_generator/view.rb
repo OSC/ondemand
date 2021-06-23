@@ -4,7 +4,7 @@ require "erb"
 module OodPortalGenerator
   # A view class that renders an OOD portal Apache configuration file
   class View
-    attr_reader :ssl, :protocol, :servername, :port
+    attr_reader :ssl, :protocol, :servername, :proxy_server, :port
     attr_accessor :user_map_match, :user_map_cmd, :logout_redirect
     attr_accessor :oidc_uri, :oidc_client_secret, :oidc_remote_user_claim, :oidc_client_id, :oidc_provider_metadata_url, :oidc_redirect_uri
     # @param opts [#to_h] the options describing the context used to render the

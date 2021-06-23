@@ -159,6 +159,7 @@ describe OodPortalGenerator::Application do
       it 'generates full dex configs with SSL' do
         allow(described_class).to receive(:context).and_return({
           servername: 'example.com',
+          proxy_server: 'example-proxy.com',
           port: '443',
           ssl: [
             'SSLCertificateFile /etc/pki/tls/certs/example.com.crt',

@@ -80,7 +80,7 @@ module OodPortalGenerator
     end
 
     def servername
-      @view.servername || OodPortalGenerator.fqdn
+      @view.proxy_server || @view.servername || OodPortalGenerator.fqdn
     end
 
     def http_port
@@ -104,8 +104,7 @@ module OodPortalGenerator
     end
 
     def issuer
-      host = @config.fetch(:issuer, servername)
-      "#{protocol}#{host}:#{port}"
+      "#{protocol}#{servername}:#{port}"
     end
 
     def storage
