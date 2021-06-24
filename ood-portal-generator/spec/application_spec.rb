@@ -156,10 +156,28 @@ describe OodPortalGenerator::Application do
         described_class.generate()
       end
 
-      it 'generates full dex configs with SSL' do
+      it 'generates full dex configs with SSL using proxy' do
         allow(described_class).to receive(:context).and_return({
           servername: 'example.com',
           proxy_server: 'example-proxy.com',
+          port: '443',
+          ssl: [
+            'SSLCertificateFile /etc/pki/tls/certs/example.com.crt',
+            'SSLCertificateKeyFile /etc/pki/tls/private/example.com.key',
+            'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
+          ],
+        })
+        expected_rendered = read_fixture('ood-portal.dex-full.proxy.conf')
+        expect(described_class.output).to receive(:write).with(expected_rendered)
+        expected_dex_yaml = read_fixture('dex.full.proxy.yaml').gsub('/etc/ood/dex', config_dir)
+        expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
+        described_class.generate()
+      end
+
+      it 'generates full dex configs with SSL' do
+        allow(described_class).to receive(:context).and_return({
+          servername: 'example.com',
+          #proxy_server: 'example-proxy.com',
           port: '443',
           ssl: [
             'SSLCertificateFile /etc/pki/tls/certs/example.com.crt',
