@@ -297,6 +297,7 @@ class ConfigurationSingleton
   end
 
   # What to group pinned apps by
+  # @return [String, ""] Defaults to ""
   def pinned_apps_group_by
     group_by = config.fetch(:pinned_apps_group_by, "")
 

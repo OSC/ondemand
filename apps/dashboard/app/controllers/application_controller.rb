@@ -63,7 +63,17 @@ class ApplicationController < ActionController::Base
   end
 
   def set_pinned_apps
-    @pinned_apps ||= Router.pinned_apps(::Configuration.pinned_apps, nav_all_apps)
+    @pinned_apps ||= begin
+      apps = Router.pinned_apps(::Configuration.pinned_apps, nav_all_apps)
+
+      # here you have app sharing enabled, yet we're not pinning any. So, pin all
+      # usr apps so have the same look as 1.8.x- without having to add the configuration.
+      if ::Configuration.app_sharing_enabled? && apps.none? { |a| a.type == :usr }
+        apps.concat Router.pinned_apps(['usr/*'], nav_all_apps)
+      end
+
+      apps
+    end
   end
 
   def set_announcements
