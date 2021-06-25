@@ -111,7 +111,7 @@ class OodApp
       if login_clusters.none?
         [
           OodAppLink.new(
-            title: I18n.t('shell_app_title', cluster_title: nil).to_s.strip,
+            title: I18n.t('dashboard.shell_app_title', cluster_title: nil).to_s.strip,
             description: manifest.description,
             url: OodAppkit::Urls::Shell.new(base_url: url).url,
             icon_uri: "fas://terminal",
