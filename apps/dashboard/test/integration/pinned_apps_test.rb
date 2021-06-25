@@ -98,6 +98,17 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_select 'a.app-card', 0
   end
 
+  test "does not create pinned apps when no configuration and app sharing is enabled" do
+    Configuration.stubs(:pinned_apps).returns([])
+    Configuration.stubs(:app_sharing_enabled?).returns(true)
+
+    get '/'
+
+    assert_response :success
+
+    assert_select 'a.app-card', 0
+  end
+
   test "shows pinned apps when MOTD is present" do
     Configuration.stubs(:pinned_apps).returns([
       'sys/bc_jupyter',
@@ -344,29 +355,6 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_equal I18n.t('dashboard.not_grouped'), css_select("h4[class='apps-section-header-blue']")[2].text
   end
 
-  test "shows all shared apps even though pinned_apps is not configured" do
-    Configuration.stubs(:app_sharing_enabled?).returns(true)
-    Configuration.stubs(:pinned_apps).returns([])
-
-    with_modified_env({}) do
-      get '/'
-    end
-
-    assert_select 'a.app-card', 4
-    assert_select "a.app-card[href='/apps/show/my_shared_app/usr/me']", 1
-    assert_select "a.app-card[href='/batch_connect/usr/shared/bc_app/session_contexts/new']", 1
-    assert_select "a.app-card[href='/batch_connect/usr/shared/bc_with_subapps/oakley/session_contexts/new']", 1
-    assert_select "a.app-card[href='/batch_connect/usr/shared/bc_with_subapps/owens/session_contexts/new']", 1
-
-    assert_select 'h3', 1
-    assert css_select('h3')[0].text.to_s.start_with?(I18n.t('dashboard.pinned_apps_title'))
-
-    # no MOTD or xdmod
-    assert_select "div[class='motd']", 0
-    assert_select "h4[class='motd_title']", 0
-    assert_select "div[class='xdmod']", 0
-  end
-
   test "shows only the shared apps that have been configured" do
     Configuration.stubs(:app_sharing_enabled?).returns(true)
     Configuration.stubs(:pinned_apps).returns([{
@@ -394,6 +382,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   test "shows all shared and sys apps" do
     Configuration.stubs(:app_sharing_enabled?).returns(true)
     Configuration.stubs(:pinned_apps).returns([
+      'usr/*',
       'sys/bc_jupyter',
       'sys/bc_desktop/owens',
       'sys/bc_desktop/oakley',
