@@ -111,7 +111,7 @@ class OodApp
       if login_clusters.none?
         [
           OodAppLink.new(
-            title: "Shell Access",
+            title: I18n.t('dashboard.shell_app_title', cluster_title: nil).to_s.strip,
             description: manifest.description,
             url: OodAppkit::Urls::Shell.new(base_url: url).url,
             icon_uri: "fas://terminal",
@@ -122,7 +122,7 @@ class OodApp
       else
         login_clusters.map do |cluster|
           OodAppLink.new(
-            title: "#{cluster.metadata.title || cluster.id.to_s.titleize} Shell Access",
+            title: I18n.t('dashboard.shell_app_title', cluster_title: cluster.metadata.title || cluster.id.to_s.titleize),
             description: manifest.description,
             url: OodAppkit::Urls::Shell.new(base_url: url).url(host: cluster.login.host),
             icon_uri: "fas://terminal",
