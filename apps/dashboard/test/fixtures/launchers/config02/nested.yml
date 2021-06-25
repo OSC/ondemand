@@ -1,0 +1,12 @@
+launchers:
+  - id: "nested"
+    order: 50
+    form:
+      token: "sys/nested"
+      bc_account: ""
+      bc_num_slots: "1"
+      bc_num_hours: "1"
+    view:
+      p1: "Run Test Server"
+      p2: "2 CPU cores and 4GB RAM"
+      p3: "[4hr] Job run time"

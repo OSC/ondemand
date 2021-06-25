@@ -291,6 +291,11 @@ class ConfigurationSingleton
     config.fetch(:pinned_apps_menu_length, 6)
   end
 
+  # The configured launcher buttons
+  def launchers
+    config.fetch(:launchers, [])
+  end
+
   # Report performance of activejobs table rendering
   def console_log_performance_report?
     dataroot.join("debug").file? || rails_env != 'production'

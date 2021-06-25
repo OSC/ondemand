@@ -37,6 +37,10 @@ module DashboardHelper
     Configuration.dashboard_layout || default_dashboard_layout
   end
 
+  def dashboard_launchers
+    LauncherButton.launchers
+  end
+
   def render_widget(widget)
     begin
       render partial: "widgets/#{widget}"

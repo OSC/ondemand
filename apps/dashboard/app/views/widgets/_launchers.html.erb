@@ -1,0 +1,8 @@
+<%- if dashboard_launchers.length > 0 -%>
+<h3>Launchers</h3>
+<div>
+  <%- dashboard_launchers.each do |launcher| -%>
+    <p><%= launcher.to_h %></p>
+  <%- end -%>
+</div>
+<%- end -%>
