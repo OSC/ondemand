@@ -101,6 +101,11 @@ module OodPortalGenerator
       @oidc_state_max_number_of_cookies = opts.fetch(:oidc_state_max_number_of_cookies, '10 true')
       @oidc_cookie_same_site            = opts.fetch(:oidc_cookie_same_site, @ssl ? 'Off' : 'On')
       @oidc_settings                    = opts.fetch(:oidc_settings, {})
+
+      # CORS setup
+      @api_cors_enabled                 = opts.fetch(:api_cors_enabled, false)
+      @api_cors_uri                     = opts.fetch(:api_cors_uri, "#{@pun_uri}/sys/dashboard/api")
+      @api_cors_origin                  = opts.fetch(:api_cors_origin, nil)
     end
 
     # Helper method to set the filename and path for access and error logs
