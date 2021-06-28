@@ -74,8 +74,8 @@ class Api::ApiSessionsController < ApiController
   private
 
   def create_session_data(session)
-    sessionDataUrl = OodAppkit.files.url(path: session.staged_root).to_s
-    sessionShellUrl = OodAppkit.shell.url(host: session.connect.host).to_s if session.running? && session.connect.host
+    session_data_url = OodAppkit.files.url(path: session.staged_root).to_s
+    session_shell_url = OodAppkit.shell.url(host: session.connect.host).to_s if session.running? && session.connect.host
     connect = create_connect_data session
 
     {
@@ -92,8 +92,8 @@ class Api::ApiSessionsController < ApiController
       wallClockTimeSeconds: session.info.wallclock_time,
       wallClockLimitSeconds: session.info.wallclock_limit,
       deletedInDays: session.days_till_old,
-      sessionDataUrl: sessionDataUrl,
-      sessionShellUrl: sessionShellUrl,
+      sessionDataUrl: session_data_url,
+      sessionShellUrl: session_shell_url,
     }
   end
 
@@ -112,7 +112,7 @@ class Api::ApiSessionsController < ApiController
   end
 
   def parse_form_action(session)
-    #RENDER VIEW HTML AS OOD AND GET THE ACTION URL FROM THE FORM
+    #Render view HTML and get the action URL from the form
     view = OodAppkit.markdown.render(ERB.new(session.view, nil, "-").result(session.connect.instance_eval { binding }))
     view_html = Nokogiri::HTML(view)
     view_html.at("form")["action"]
@@ -124,7 +124,7 @@ class Api::ApiSessionsController < ApiController
   def create_session
     session_context = app.build_session_context
     render_format = app.clusters.first.job_config[:adapter] unless app.clusters.empty?
-    #READ ATTRIBUTES FROM PAYLOAD
+    #Read attributes from payload
     session_context.attributes = params.permit(session_context.attributes.keys)
 
     cache_file = BatchConnect::Session.dataroot(app.token).tap { |p| p.mkpath unless p.exist? }.join("context.json")
