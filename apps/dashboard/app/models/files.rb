@@ -134,7 +134,7 @@ class Files
     #
     case type
     when 'text/javascript', 'text/css', 'text/yaml', 'text/yml'
-      'text/plain'
+      'text/plain; charset=utf-8'
     else
       type
     end
