@@ -38,7 +38,7 @@ module DashboardHelper
   end
 
   def dashboard_launchers
-    LauncherButton.launchers
+    LauncherButton.launchers.select(&:operational?)
   end
 
   def render_widget(widget)

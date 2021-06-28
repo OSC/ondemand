@@ -1,8 +1,115 @@
 <%- if dashboard_launchers.length > 0 -%>
-<h3>Launchers</h3>
-<div>
-  <%- dashboard_launchers.each do |launcher| -%>
-    <p><%= launcher.to_h %></p>
-  <%- end -%>
-</div>
+  <style>
+      .launcher-button-spinner {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: 30px;
+          background-color: rgba(0, 0, 0, 0.5);
+          color: #fff;
+          z-index: 1;
+      }
+
+      .launcher-button-spinner .spinner-border {
+          width: 60px;
+          height: 60px;
+      }
+
+      .launcher-button-container {
+          position: relative;
+          height: 220px;
+          margin-bottom: 20px;
+      }
+
+      .launcher-button {
+          position: relative;
+          box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+          border: 4px solid #2D9BF0;
+          border-radius: 30px;
+          margin-bottom: 20px;
+          height: 100%;
+          overflow: hidden;
+          cursor: pointer;
+      }
+
+      .launcher-button:hover {
+          transform: scale(0.98);
+      }
+
+      .launcher-button .launcher-button-image {
+          text-align: center;
+          padding-top: 0.5rem;
+          height: 120px;
+          overflow: hidden;
+      }
+
+      .launcher-button .launcher-button-image i {
+          width: 100%;
+          height: 100%;
+      }
+
+      .launcher-button .launcher-button-text {
+          padding: 0 20px 15px 20px;
+          white-space: nowrap;
+      }
+
+      .launcher-button-text .title-text {
+          font-size: 18px;
+          font-weight: 400;
+      }
+
+      .launcher-button-text .small-text {
+          font-size: 14px;
+          font-weight: 300;
+      }
+
+      .launcher-button-text p {
+          margin: 0;
+          padding: 0;
+      }
+
+      .launcher-button a {
+          text-decoration: none;
+          color: inherit;
+      }
+
+  </style>
+
+  <script>
+      const LaunchButtonService = (function (){
+          let buttonEnabled = true
+
+          function submitJobToCluster(event) {
+              const launcherButtonId = event.currentTarget.id
+              if(!buttonEnabled) {
+                  console.log(`Launchers are not enabled. Trying to submit: ${launcherButtonId}`)
+                  return
+              }
+              buttonEnabled = false
+              $(`#${launcherButtonId} .launcher-button-spinner`).show()
+              $(`#form-${launcherButtonId}`).submit();
+          }
+
+          $(function() {
+              $("[data-toggle='launcher-button']").each((index, element) => {
+                  const launcherButton = $(element);
+                  const launcherButtonId = $(launcherButton).attr("id")
+                  launcherButton.on("click", submitJobToCluster)
+                  console.log(`Launch button handler attached: ${launcherButtonId}`)
+              })
+          });
+
+          return { submitJobToCluster }
+      })()
+  </script>
+
+  <h3><%= t('dashboard.launchers_title') %></h3>
+  <div class="row">
+    <%- dashboard_launchers.each do |launcher| -%>
+      <%= render partial: "/widgets/launchers/launcher_button", locals: { launcher_button_id: launcher.id, launcher_button: launcher.to_h } %>
+    <%- end -%>
+  </div>
 <%- end -%>

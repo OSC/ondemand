@@ -3,12 +3,35 @@ require 'securerandom'
 
 class LauncherButtonTest < ActiveSupport::TestCase
 
+  def setup
+    @cluster_mock = mock("cluster")
+    @cluster_mock.stubs(:id).returns("mock_cluster_id")
+
+    @link_mock = mock("link")
+    @link_mock.stubs(:icon_uri).returns("mock_icon_uri")
+
+
+    @app_mock = mock("app")
+    @app_mock.stubs(:clusters).returns([@cluster_mock])
+    @app_mock.stubs(:link).returns(@link_mock)
+  end
+
+
+
   test "should throw exception when token is not provided" do
     assert_raises(ArgumentError) { create_launcher(app_token:nil) }
   end
 
   test "should throw exception when id is not provided" do
     assert_raises(ArgumentError) { create_launcher(id:nil) }
+  end
+
+  test "should throw exception when id is not valid" do
+    assert_raises(ArgumentError) { create_launcher(id:"id with spaces") }
+
+    assert_raises(ArgumentError) { create_launcher(id:"id$%with/()") }
+
+    assert_raises(ArgumentError) { create_launcher(id:"id@with.com") }
   end
 
   test "Implements <=> to order by order field with nulls last" do
@@ -23,6 +46,24 @@ class LauncherButtonTest < ActiveSupport::TestCase
   test "status should default to active" do
     under_test = create_launcher
     assert_equal "active", under_test.to_h[:metadata][:status]
+  end
+
+  test "cluster should be populated from BatchConnect app clusters id" do
+    BatchConnect::App.stubs(:from_token).returns(@app_mock)
+    under_test = create_launcher
+    assert_equal "mock_cluster_id", under_test.to_h[:form][:cluster]
+  end
+
+  test "default_logo should be populated from BatchConnect app icon uri" do
+    BatchConnect::App.stubs(:from_token).returns(@app_mock)
+    under_test = create_launcher
+    assert_equal "mock_icon_uri", under_test.to_h[:view][:default_logo]
+  end
+
+  test "operational? should be true if token is valid" do
+    BatchConnect::App.stubs(:from_token).returns(@app_mock)
+    under_test = create_launcher
+    assert_equal true, under_test.operational?
   end
 
   test "operational? should be false if token is invalid" do

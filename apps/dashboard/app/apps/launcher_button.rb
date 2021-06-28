@@ -1,4 +1,5 @@
 class LauncherButton
+  VALID_ID_CHARACTERS = ('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a + %w[_ -]
 
   def self.launchers
     app_launchers = ::Configuration.launchers.map{ |system_launcher| LauncherButton.new({ type: "system" }, system_launcher) }
@@ -9,17 +10,22 @@ class LauncherButton
 
   def initialize(metadata, config)
     @metadata = metadata
-    @form = config[:form]
-    @view = config[:view]
+    @form = config[:form] || {}
+    @view = config[:view] || {}
 
     @metadata[:id] = config[:id]&.downcase
 
     raise ArgumentError, "launch button config must defined an id metadata=#{metadata}" unless @metadata[:id]
+    raise ArgumentError, "launch button config must defined a valid id id=#{@metadata[:id]}" unless valid_id?
     raise ArgumentError, "launch button config must defined a token field id=#{@metadata[:id]} metadata=#{metadata}" unless @form[:token]
 
-    set_cluster
+
     @metadata[:order] = config[:order]
     @metadata[:status] = config[:status] ? config[:status].downcase : "active"
+
+    ood_app = BatchConnect::App.from_token @form[:token]
+    @cluster = ood_app.clusters.first.id.to_s if ood_app.clusters.any?
+    @view[:default_logo] = ood_app.link.icon_uri
   end
 
   def id
@@ -52,10 +58,8 @@ class LauncherButton
   end
 
   private
-
-  def set_cluster
-    ood_app = BatchConnect::App.from_token @form[:token]
-    @cluster = ood_app.clusters.first.id.to_s if ood_app.clusters.any?
+  def valid_id?
+    id.chars.all? { |ch| VALID_ID_CHARACTERS.include?(ch) }
   end
 
 end

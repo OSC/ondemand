@@ -1,0 +1,33 @@
+<% if launcher_button  %>
+  <%- view = launcher_button[:view] -%>
+  <%- form = launcher_button[:form] -%>
+  <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+    <div id="<%= launcher_button_id %>" data-toggle="launcher-button" class="launcher-button-container">
+    <div class="launcher-button-spinner" style="display: none;">
+      <div class="spinner-border" role="status"></div>
+    </div>
+    <div class="launcher-button">
+      <div class="launcher-button-image">
+        <%- if view[:logo] -%>
+          <img aria-hidden="true" src="<%= view[:logo] %>" width="<%= view[:logo_width] %>" class="center-block"  style="<%= view[:logo_style] %>">
+        <%- else -%>
+          <%= icon_tag(view[:default_logo]) %>
+        <%- end -%>
+      </div>
+      <div class="launcher-button-text">
+        <p class="title-text"><%= view[:p1] || "&nbsp;".html_safe %></p>
+        <p class="small-text"><%= view[:p2] || "&nbsp;".html_safe %></p>
+        <p class="small-text"><%= view[:p3] || "&nbsp;".html_safe %></p>
+      </div>
+    </div>
+  </div>
+    <form role="form" id="<%= "form-" + launcher_button_id %>" action="<%= batch_connect_session_contexts_path token: form[:token]  %>" accept-charset="UTF-8" method="post">
+      <input type="hidden" name="utf8" value="✓">
+      <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+      <%-  form.each do |form_field, form_value| -%>
+        <input type="hidden" name="batch_connect_session_context[<%= form_field %>]" value="<%= form_value %>">
+      <%-  end -%>
+    </form>
+  </div>
+<% end %>
+

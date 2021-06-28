@@ -171,3 +171,5 @@ en:
     files_directory_size_calculation_error: "Timeout while trying to determine directory size."
     files_directory_size_calculation_timeout: "Timeout while trying to determine directory size."
     files_directory_size_unknown: "Error with status %{exit_code} when trying to determine directory size: %{error}"
+
+    launchers_title: "Launchers"
