@@ -201,7 +201,7 @@ Listen 8080
     # Client API auth check
     RewriteCond "%{HTTP:X-OOD-API-ID}" !^[a-z0-9-]+$ [NC,OR]
     RewriteCond "%{HTTP:X-OOD-API-CLIENT-SECRET}" !^[a-z0-9-]+$ [NC,OR]
-    RewriteCond "/opt/ood/api/clients/%{HTTP:X-OOD-API-ID}.%{HTTP:X-OOD-API-CLIENT-SECRET}" !-f
+    RewriteCond "/etc/ood/api/clients/%{HTTP:X-OOD-API-ID}.%{HTTP:X-OOD-API-CLIENT-SECRET}" !-f
     RewriteRule ^.*$ - [R=401,L]
 
     # CORS setup

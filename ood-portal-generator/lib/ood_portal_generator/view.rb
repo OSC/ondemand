@@ -106,7 +106,7 @@ module OodPortalGenerator
       @api_uri                          = opts.fetch(:api_cors_uri, "#{@pun_uri}/sys/dashboard/api")
       # API auth
       @api_auth_enabled                 = opts.fetch(:api_auth_enabled, false)
-      @api_auth_root                    = opts.fetch(:api_auth_root, "/opt/ood/api")
+      @api_auth_root                    = opts.fetch(:api_auth_root, "/etc/ood/api")
       # CORS
       @api_cors_enabled                 = opts.fetch(:api_cors_enabled, false)
       @api_cors_origin                  = opts.fetch(:api_cors_origin, nil)
