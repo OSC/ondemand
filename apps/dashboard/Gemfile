@@ -62,7 +62,7 @@ gem 'bootstrap_form', '~> 4.0'
 gem 'jquery-datatables-rails', '~> 3.4'
 gem 'data-confirm-modal', '~> 1.2'
 gem 'mocha', '~> 1.1', group: :test
-gem 'autoprefixer-rails', '~> 9.1'
+gem 'autoprefixer-rails', '~> 10.2.5'
 gem 'dotiw'
 gem 'local_time', '~> 1.0.3'
 gem 'turbolinks', '~> 5.2.0'
