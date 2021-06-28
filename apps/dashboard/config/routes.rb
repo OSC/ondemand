@@ -50,11 +50,9 @@ Rails.application.routes.draw do
   if Configuration.app_sharing_enabled?
     get "apps/restart" => "apps#restart"
     get "apps/featured" => "apps#featured"
-
-    root "apps#featured"
-  else
-    root "dashboard#index"
   end
+
+  root "dashboard#index"
 
   # App administration
   scope 'admin/:type', constraints: Authz::AppDeveloperConstraint do

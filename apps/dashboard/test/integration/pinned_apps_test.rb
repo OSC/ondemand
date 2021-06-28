@@ -4,16 +4,19 @@ require 'test_helper'
 class PinnedAppsTest < ActionDispatch::IntegrationTest
 
   def setup
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
+    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
+    stub_usr_router
+    setup_usr_fixtures
     Router.instance_variable_set('@pinned_apps', nil)
   end
 
   def teardown
+    teardown_usr_fixtures
     Router.instance_variable_set('@pinned_apps', nil)
   end
 
   test "should create Apps dropdown when pinned apps are available" do
-    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
-    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
     Configuration.stubs(:pinned_apps).returns([
       'sys/bc_jupyter',
       'sys/bc_paraview',
@@ -40,8 +43,6 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "should limit list of Pinned Apps in dropdown" do
-    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
-    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
     Configuration.stubs(:pinned_apps).returns([
       'sys/bc_jupyter',
       'sys/bc_paraview',
@@ -67,8 +68,6 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "should create Pinned app icons when pinned apps are available" do
-    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
-    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
     Configuration.stubs(:pinned_apps).returns([
       'sys/bc_jupyter',
       'sys/bc_paraview',
@@ -90,8 +89,6 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "does not create pinned apps when no configuration" do
-    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
-    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
     Configuration.stubs(:pinned_apps).returns([])
 
     get '/'
@@ -101,9 +98,18 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_select 'a.app-card', 0
   end
 
+  test "does not create pinned apps when no configuration and app sharing is enabled" do
+    Configuration.stubs(:pinned_apps).returns([])
+    Configuration.stubs(:app_sharing_enabled?).returns(true)
+
+    get '/'
+
+    assert_response :success
+
+    assert_select 'a.app-card', 0
+  end
+
   test "shows pinned apps when MOTD is present" do
-    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
-    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
     Configuration.stubs(:pinned_apps).returns([
       'sys/bc_jupyter',
       'sys/bc_paraview',
@@ -136,8 +142,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "shows pinned apps when XDMOD is present" do
-    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
-    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
+
     Configuration.stubs(:pinned_apps).returns([
       'sys/bc_jupyter',
       'sys/bc_paraview',
@@ -169,8 +174,6 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "shows pinned apps when both MOTD and XDMOD is present" do
-    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
-    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
     Configuration.stubs(:pinned_apps).returns([
       'sys/bc_jupyter',
       'sys/bc_paraview',
@@ -210,8 +213,6 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "still shows MOTD when no pinned apps" do
-    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
-    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
     Configuration.stubs(:pinned_apps).returns([])
 
     env = {
@@ -231,8 +232,6 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "still shows XDMOD when no pinned apps" do
-    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
-    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
     Configuration.stubs(:pinned_apps).returns([])
 
     env = {
@@ -251,8 +250,6 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "still shows MOTD and XDMOD when no pinned apps" do
-    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
-    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
     Configuration.stubs(:pinned_apps).returns([])
 
     env = {
@@ -279,8 +276,6 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "groups the apps by categories" do
-    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
-    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
     Configuration.stubs(:pinned_apps).returns([
       'sys/bc_jupyter',
       'sys/bc_paraview',
@@ -301,8 +296,6 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "groups the apps by sub-categories" do
-    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
-    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
     Configuration.stubs(:pinned_apps).returns([
       'sys/bc_jupyter',
       'sys/bc_paraview',
@@ -323,8 +316,6 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "still shows ungroupable apps" do
-    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
-    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
     Configuration.stubs(:pinned_apps).returns([
       'sys/bc_jupyter',
       'sys/bc_paraview',
@@ -344,8 +335,6 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "group by metadata fields works" do
-    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
-    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
     Configuration.stubs(:pinned_apps).returns([
       'sys/bc_jupyter',
       'sys/bc_paraview',
@@ -364,5 +353,67 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_equal "go erLANG python", css_select("h4[class='apps-section-header-blue']")[0].text
     assert_equal "python julia R Ruby", css_select("h4[class='apps-section-header-blue']")[1].text
     assert_equal I18n.t('dashboard.not_grouped'), css_select("h4[class='apps-section-header-blue']")[2].text
+  end
+
+  test "shows only the shared apps that have been configured" do
+    Configuration.stubs(:app_sharing_enabled?).returns(true)
+    Configuration.stubs(:pinned_apps).returns([{
+      type: 'usr',
+      category: 'Me'
+    }])
+
+    with_modified_env({}) do
+      get '/'
+    end
+
+    # only show's my apps in test/fixtures/usr/me
+    assert_select 'a.app-card', 1
+    assert_select "a.app-card[href='/apps/show/my_shared_app/usr/me']", 1
+
+    assert_select 'h3', 1
+    assert css_select('h3')[0].text.to_s.start_with?(I18n.t('dashboard.pinned_apps_title'))
+
+    # no MOTD or xdmod
+    assert_select "div[class='motd']", 0
+    assert_select "h4[class='motd_title']", 0
+    assert_select "div[class='xdmod']", 0
+  end
+
+  test "shows all shared and sys apps" do
+    Configuration.stubs(:app_sharing_enabled?).returns(true)
+    Configuration.stubs(:pinned_apps).returns([
+      'usr/*',
+      'sys/bc_jupyter',
+      'sys/bc_desktop/owens',
+      'sys/bc_desktop/oakley',
+      'sys/bc_paraview',
+      'sys/pseudofun',
+    ])
+
+    with_modified_env({}) do
+      get '/'
+    end
+
+    assert_select 'a.app-card', 9
+    # usr apps
+    assert_select "a.app-card[href='/apps/show/my_shared_app/usr/me']", 1
+    assert_select "a.app-card[href='/batch_connect/usr/shared/bc_app/session_contexts/new']", 1
+    assert_select "a.app-card[href='/batch_connect/usr/shared/bc_with_subapps/oakley/session_contexts/new']", 1
+    assert_select "a.app-card[href='/batch_connect/usr/shared/bc_with_subapps/owens/session_contexts/new']", 1
+
+    # sys apps
+    assert_select "a.app-card[href='/apps/show/pseudofun']", 1
+    assert_select "a.app-card[href='/batch_connect/sys/bc_desktop/oakley/session_contexts/new']", 1
+    assert_select "a.app-card[href='/batch_connect/sys/bc_desktop/owens/session_contexts/new']", 1
+    assert_select "a.app-card[href='/batch_connect/sys/bc_jupyter/session_contexts/new']", 1
+    assert_select "a.app-card[href='/batch_connect/sys/bc_paraview/session_contexts/new']", 1
+
+    assert_select 'h3', 1
+    assert css_select('h3')[0].text.to_s.start_with?(I18n.t('dashboard.pinned_apps_title'))
+
+    # no MOTD or xdmod
+    assert_select "div[class='motd']", 0
+    assert_select "h4[class='motd_title']", 0
+    assert_select "div[class='xdmod']", 0
   end
 end
