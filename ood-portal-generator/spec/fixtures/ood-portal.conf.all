@@ -202,7 +202,7 @@ Listen 8080
     RewriteCond "%{HTTP:X-OOD-API-ID}" !^[a-z0-9-]+$ [NC,OR]
     RewriteCond "%{HTTP:X-OOD-API-CLIENT-SECRET}" !^[a-z0-9-]+$ [NC,OR]
     RewriteCond "/etc/ood/api/clients/%{HTTP:X-OOD-API-ID}.%{HTTP:X-OOD-API-CLIENT-SECRET}" !-f
-    RewriteRule ^.*$ - [R=401,L]
+    RewriteRule ^.*$ - [F,L]
 
     # CORS setup
     Header always set Access-Control-Allow-Origin "https://test.com:8080"

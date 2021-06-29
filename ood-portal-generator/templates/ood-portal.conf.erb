@@ -276,7 +276,7 @@ Listen <%= addr_port %>
     RewriteCond "%{HTTP:X-OOD-API-ID}" !^[a-z0-9-]+$ [NC,OR]
     RewriteCond "%{HTTP:X-OOD-API-CLIENT-SECRET}" !^[a-z0-9-]+$ [NC,OR]
     RewriteCond "<%= @api_auth_root %>/clients/%{HTTP:X-OOD-API-ID}.%{HTTP:X-OOD-API-CLIENT-SECRET}" !-f
-    RewriteRule ^.*$ - [R=401,L]
+    RewriteRule ^.*$ - [F,L]
     <%- end -%>
 
     <%- if @api_cors_enabled -%>
