@@ -102,9 +102,13 @@ module OodPortalGenerator
       @oidc_cookie_same_site            = opts.fetch(:oidc_cookie_same_site, @ssl ? 'Off' : 'On')
       @oidc_settings                    = opts.fetch(:oidc_settings, {})
 
-      # CORS setup
+      # API setup
+      @api_uri                          = opts.fetch(:api_cors_uri, "#{@pun_uri}/sys/dashboard/api")
+      # API auth
+      @api_auth_enabled                 = opts.fetch(:api_auth_enabled, false)
+      @api_auth_root                    = opts.fetch(:api_auth_root, "/etc/ood/api")
+      # CORS
       @api_cors_enabled                 = opts.fetch(:api_cors_enabled, false)
-      @api_cors_uri                     = opts.fetch(:api_cors_uri, "#{@pun_uri}/sys/dashboard/api")
       @api_cors_origin                  = opts.fetch(:api_cors_origin, nil)
     end
 

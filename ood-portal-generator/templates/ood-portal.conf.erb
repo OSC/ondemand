@@ -267,12 +267,23 @@ Listen <%= addr_port %>
     <%- end -%>
   </Location>
 
-  <%- if @api_cors_enabled -%>
-  # CORS setup for API requests
-  <Location "<%= @api_cors_uri %>">
+  <%- if @api_auth_enabled || @api_cors_enabled -%>
+  # Setup for API requests
+  <Location "<%= @api_uri %>">
+    RewriteEngine On
+    <%- if @api_auth_enabled -%>
+    # Client API auth check
+    RewriteCond "%{HTTP:X-OOD-API-ID}" !^[a-z0-9-]+$ [NC,OR]
+    RewriteCond "%{HTTP:X-OOD-API-CLIENT-SECRET}" !^[a-z0-9-]+$ [NC,OR]
+    RewriteCond "<%= @api_auth_root %>/clients/%{HTTP:X-OOD-API-ID}.%{HTTP:X-OOD-API-CLIENT-SECRET}" !-f
+    RewriteRule ^.*$ - [F,L]
+    <%- end -%>
+
+    <%- if @api_cors_enabled -%>
+    # CORS setup
     Header always set Access-Control-Allow-Origin "<%= @api_cors_origin %>"
     Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS, DELETE, PUT"
-    Header always set Access-Control-Allow-Headers "x-requested-with, content-type, origin, authorization, accept, client-security-token"
+    Header always set Access-Control-Allow-Headers "x-requested-with, content-type, origin, authorization, accept, client-security-token, x-ood-api-id, x-ood-api-client-secret"
     Header always set Access-Control-Expose-Headers "Content-Security-Policy, Location"
     Header always set Access-Control-Allow-Credentials "false"
     Header always set Access-Control-Max-Age "600"
@@ -283,9 +294,9 @@ Listen <%= addr_port %>
       Satisfy Any
     </Limit>
 
-    RewriteEngine On
     RewriteCond %{REQUEST_METHOD} OPTIONS
     RewriteRule ^(.*)$ $1 [R=204,L]
+    <%- end -%>
   </Location>
 
   <%- end -%>

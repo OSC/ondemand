@@ -195,11 +195,19 @@ Listen 8080
     LuaHookLog analytics.lua analytics_handler
   </Location>
 
-  # CORS setup for API requests
-  <Location "/pun/sys/application/api">
+  # Setup for API requests
+  <Location "/my_pun_apps/sys/dashboard/api">
+    RewriteEngine On
+    # Client API auth check
+    RewriteCond "%{HTTP:X-OOD-API-ID}" !^[a-z0-9-]+$ [NC,OR]
+    RewriteCond "%{HTTP:X-OOD-API-CLIENT-SECRET}" !^[a-z0-9-]+$ [NC,OR]
+    RewriteCond "/etc/ood/api/clients/%{HTTP:X-OOD-API-ID}.%{HTTP:X-OOD-API-CLIENT-SECRET}" !-f
+    RewriteRule ^.*$ - [F,L]
+
+    # CORS setup
     Header always set Access-Control-Allow-Origin "https://test.com:8080"
     Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS, DELETE, PUT"
-    Header always set Access-Control-Allow-Headers "x-requested-with, content-type, origin, authorization, accept, client-security-token"
+    Header always set Access-Control-Allow-Headers "x-requested-with, content-type, origin, authorization, accept, client-security-token, x-ood-api-id, x-ood-api-client-secret"
     Header always set Access-Control-Expose-Headers "Content-Security-Policy, Location"
     Header always set Access-Control-Allow-Credentials "false"
     Header always set Access-Control-Max-Age "600"
@@ -210,7 +218,6 @@ Listen 8080
       Satisfy Any
     </Limit>
 
-    RewriteEngine On
     RewriteCond %{REQUEST_METHOD} OPTIONS
     RewriteRule ^(.*)$ $1 [R=204,L]
   </Location>
