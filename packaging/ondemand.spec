@@ -332,6 +332,7 @@ fi
 
 %dir %{_sysconfdir}/ood
 %dir %{_sysconfdir}/ood/config
+%dir %attr(0700, apache, apache) %{_sysconfdir}/ood/api
 %config(noreplace,missingok) %{_sysconfdir}/ood/config/nginx_stage.yml
 %config(noreplace,missingok) %{_sysconfdir}/ood/config/ood_portal.yml
 %config(noreplace,missingok) %{_sysconfdir}/ood/config/hook.env
