@@ -132,11 +132,10 @@ class Files
     #     x === 'application/x-yaml'
     #     # => true
     #
-    case type
-    when 'text/javascript', 'text/css', 'text/yaml', 'text/yml'
-      'text/plain; charset=utf-8'
-    else
+    if %r{text/.*}.match(type).nil?
       type
+    else
+      'text/plain; charset=utf-8'
     end
   end
 
