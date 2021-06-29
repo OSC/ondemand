@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.11] - 2021-06-21
+
+### Fixed
+
+- File preview now correctly shows utf8 characters in [1254](https://github.com/OSC/ondemand/pull/1254).
+
+### Changed
+
+- Sites that enable user sharing now have to configure pinned apps to get them to show
+  on the landing page in [1248](https://github.com/OSC/ondemand/pull/1248).
+
+### Added
+
+- Batch connect now respects cluster level settings enable sshing into the compute nodes
+  in [1173](https://github.com/OSC/ondemand/pull/1173).
+- Cluster shell access menu items are now internationalizeable in [916](https://github.com/OSC/ondemand/pull/916).
+
+
 ## [2.0.10] - 2021-14-06
 
 ### Fixed
@@ -811,7 +829,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.10...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.11...HEAD
+[2.0.11]: https://github.com/OSC/ondemand/compare/v2.0.10...v2.0.11
 [2.0.10]: https://github.com/OSC/ondemand/compare/v2.0.9...v2.0.10
 [2.0.9]: https://github.com/OSC/ondemand/compare/v2.0.8...v2.0.9
 [2.0.8]: https://github.com/OSC/ondemand/compare/v2.0.7...v2.0.8
