@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.12] - 2021-07-01
+
+### Fixed
+
+- Fixed [1273](https://github.com/OSC/ondemand/issues/1273) where the sessions page crashes when the
+  db file contains a nonexistant cluster in [1247](https://github.com/OSC/ondemand/pull/1274).
+
 ## [2.0.11] - 2021-06-21
 
 ### Fixed
@@ -829,7 +836,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.11...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.12...HEAD
+[2.0.12]: https://github.com/OSC/ondemand/compare/v2.0.11...v2.0.12
 [2.0.11]: https://github.com/OSC/ondemand/compare/v2.0.10...v2.0.11
 [2.0.10]: https://github.com/OSC/ondemand/compare/v2.0.9...v2.0.10
 [2.0.9]: https://github.com/OSC/ondemand/compare/v2.0.8...v2.0.9
