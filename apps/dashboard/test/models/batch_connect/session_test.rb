@@ -409,4 +409,11 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
     Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
     assert session.ssh_to_compute_node?
   end
+
+  test "ssh_to_compute_node? handles non-existant cluster and disabled globally" do
+    session = BatchConnect::Session.new
+    session.stubs(:cluster).raises(BatchConnect::Session::ClusterNotFound, "Session specifies nonexistent")
+    Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
+    refute session.ssh_to_compute_node?
+  end
 end

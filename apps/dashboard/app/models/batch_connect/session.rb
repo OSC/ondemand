@@ -510,6 +510,8 @@ module BatchConnect
     # @return [Boolean]
     def cluster_ssh_to_compute_node?
       cluster.batch_connect_ssh_allow?
+    rescue ClusterNotFound
+      return nil
     end
 
     # @return [Boolean]
