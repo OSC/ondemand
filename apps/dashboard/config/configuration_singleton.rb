@@ -291,6 +291,11 @@ class ConfigurationSingleton
     config.fetch(:pinned_apps_menu_length, 6)
   end
 
+  # Setting terminal functionality in files app
+  def files_app_can_launch_terminal?
+    config.fetch(:files_app_can_launch_terminal, true)
+  end
+
   # Report performance of activejobs table rendering
   def console_log_performance_report?
     dataroot.join("debug").file? || rails_env != 'production'

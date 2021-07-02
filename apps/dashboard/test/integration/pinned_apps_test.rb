@@ -66,6 +66,14 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     ], dditems
   end
 
+  test "Files app displays terminal button when configuration is set to true" do
+    Configuration.stubs(:files_app_can_launch_terminal?).returns(true)
+
+    get '/files/fs/tmp'
+
+    assert_select "div[id='shell-wrapper']", 1
+  end
+
   test "should create Pinned app icons when pinned apps are available" do
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
