@@ -391,4 +391,15 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     cfg.stubs(:config).returns({})
     assert_equal "", cfg.pinned_apps_group_by
   end
+
+  test "files_enable_shell_button returns true by default" do
+    cfg = ConfigurationSingleton.new 
+    assert_equal true, cfg.files_enable_shell_button
+  end
+
+  test "files_enable_shell_button returns false when set" do
+    cfg = ConfigurationSingleton.new 
+    cfg.stubs(:config).returns({files_enable_shell_button: false})
+    assert_equal false, cfg.files_enable_shell_button
+  end
 end
