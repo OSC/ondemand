@@ -39,8 +39,8 @@ module NginxStage
     # @return [String] the system-installed NGINX binary
     attr_accessor :nginx_bin
 
-    # A whitelist of signals that can be sent to the NGINX process
-    # @return [Array<Symbol>] whitelist of NGINX process signals
+    # An allowlist of signals that can be sent to the NGINX process
+    # @return [Array<Symbol>] allowlist of NGINX process signals
     attr_accessor :nginx_signals
 
     # Path to system-installed NGINX mime.types config file
