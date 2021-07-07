@@ -358,7 +358,7 @@ module BatchConnect
       # add a widget for choosing the cluster if one doesn't already exist
       # and if users aren't defining they're own form.cluster and attributes.cluster
       def add_cluster_widget(attributes, attribute_list)
-        return unless configured_clusters.any?
+        return unless clusters.any?
 
         attribute_list.prepend("cluster") unless attribute_list.include?("cluster")
 
