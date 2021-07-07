@@ -231,7 +231,6 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
   end
 
   test "staged root is available to the submit options" do
-    OodAppkit.stubs(:clusters).returns(good_clusters)
     r = PathRouter.new("test/fixtures/sys_with_interactive_apps/bc_jupyter")
     app = BatchConnect::App.new(router: r)
 
