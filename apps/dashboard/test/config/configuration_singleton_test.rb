@@ -391,4 +391,28 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     cfg.stubs(:config).returns({})
     assert_equal "", cfg.pinned_apps_group_by
   end
+
+  test "inverse navbar is dark" do
+    with_modified_env(OOD_NAVBAR_TYPE: 'inverse') do
+      assert_equal 'dark', ConfigurationSingleton.new.navbar_type
+    end
+  end
+
+  test "dark navbar is dark" do
+    with_modified_env(OOD_NAVBAR_TYPE: 'dark') do
+      assert_equal 'dark', ConfigurationSingleton.new.navbar_type
+    end
+  end
+
+  test "default navbar is light" do
+    with_modified_env(OOD_NAVBAR_TYPE: 'default') do
+      assert_equal 'light', ConfigurationSingleton.new.navbar_type
+    end
+  end
+
+  test "light navbar is light" do
+    with_modified_env(OOD_NAVBAR_TYPE: 'light') do
+      assert_equal 'light', ConfigurationSingleton.new.navbar_type
+    end
+  end
 end
