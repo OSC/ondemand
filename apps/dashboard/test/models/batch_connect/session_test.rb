@@ -316,7 +316,6 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       )
     BatchConnect::Session.any_instance.stubs(:info).returns(info)
     OodCore::Job::Info.any_instance.stubs(:ood_connection_info).returns(connect)
-    OodAppkit.stubs(:clusters).returns([OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}})])
     session = BatchConnect::Session.new
     session.stage(app: bc_jupyter_app, context: bc_jupyter_app.build_session_context)
 
@@ -335,7 +334,6 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       BatchConnect::Session.stubs(:dataroot).returns(Pathname.new(dir))
       BatchConnect::Session.any_instance.stubs(:id).returns('test-id')
       BatchConnect::Session.any_instance.stubs(:info).returns(info)
-      OodAppkit.stubs(:clusters).returns([OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}})])
       session = BatchConnect::Session.new
       session.stage(app: bc_jupyter_app, context: bc_jupyter_app.build_session_context)
 
@@ -359,7 +357,6 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       BatchConnect::Session.stubs(:dataroot).returns(Pathname.new(dir.to_s))
       BatchConnect::Session.any_instance.stubs(:id).returns('test-id')
       BatchConnect::Session.any_instance.stubs(:info).returns(info)
-      OodAppkit.stubs(:clusters).returns([OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}})])
       session = BatchConnect::Session.new
       session.stage(app: bc_jupyter_app, context: bc_jupyter_app.build_session_context)
 
