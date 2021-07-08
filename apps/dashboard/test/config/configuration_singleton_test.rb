@@ -415,4 +415,8 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       assert_equal 'light', ConfigurationSingleton.new.navbar_type
     end
   end
+
+  test "no navbar environment variable is dark" do
+    assert_equal 'dark', ConfigurationSingleton.new.navbar_type
+  end
 end
