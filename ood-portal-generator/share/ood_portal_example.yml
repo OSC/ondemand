@@ -24,7 +24,7 @@
 # The port specification for the Virtual Host
 # Example:
 #     port: 8080
-#Default: null (use default port 80 or 443 if SSL enabled)
+# Default: null (use default port 80 or 443 if SSL enabled)
 #port: null
 
 # List of SSL Apache directives
@@ -59,6 +59,7 @@
 # Example:
 #     logformat: '"%v %h \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %{SSL_PROTOCOL}x %T"'
 # Default: Apache combined format
+#logformat: Apache combine format
 
 # Should RewriteEngine be used
 # Example:
@@ -112,7 +113,7 @@
 # Example:
 #     user_map_match: '^([^@]+)@.*$'
 # Default: '.*'
-# user_map_match: '.*'
+#user_map_match: '.*'
 
 # System command used to map authenticated-user to system-user
 # This option takes precedence over user_map_match
@@ -376,6 +377,7 @@
 #       OIDCPassIDTokenAs: serialized
 #       OIDCPassRefreshToken: On
 # Default: {} (empty hash)
+#oidc_settings: {}
 
 # Dex configurations, values inside the "dex" structure are directly used to configure Dex
 # If the value for "dex" key is false or null, Dex support is disabled
