@@ -214,9 +214,9 @@ class ConfigurationSingleton
   # See more about Bootstrap color schemes: https://getbootstrap.com/docs/4.6/components/navbar/#color-schemes
   # @return [String, 'dark'] Default to dark
   def navbar_type
-    if ENV['OOD_NAVBAR_TYPE'] == ('inverse' || 'dark')
+    if ENV['OOD_NAVBAR_TYPE'] == 'inverse' || ENV['OOD_NAVBAR_TYPE'] == 'dark'
       'dark'
-    elsif ENV['OOD_NAVBAR_TYPE'] == ('default' || 'light')
+    elsif ENV['OOD_NAVBAR_TYPE'] == 'default' || ENV['OOD_NAVBAR_TYPE'] == 'light'
       'light'
     else
       'dark'
