@@ -34,6 +34,14 @@ Rails.application.routes.draw do
       root "session_contexts#new"
     end
   end
+
+  if  Configuration.batch_connect_api_enabled?
+    scope module: "api", path: "/api/v1", as: "api" do
+      resources :sessions, only: [:index, :create, :show, :destroy], controller: "api_sessions"
+      resources :applications, only: [:index], controller: "api_applications"
+    end
+  end
+
   get "errors/not_found"
   get "errors/internal_server_error"
   get "dashboard/index"
