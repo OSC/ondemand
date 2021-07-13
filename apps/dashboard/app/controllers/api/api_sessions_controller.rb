@@ -11,7 +11,7 @@ class Api::ApiSessionsController < ApiController
     render json: { items: response }
 
   rescue Exception => error
-    logger.error "action=getSessions user=#{@user} error=#{error}"
+    logger.error("ERROR: Error getting session information --- #{error.class} - #{error.message}")
     render json: { message: error }, status: :internal_server_error
   end
 
@@ -42,12 +42,12 @@ class Api::ApiSessionsController < ApiController
     if success
       render json: { id: session.id }
     else
-      logger.error "action=createSession user=#{@user} errors=#{session.errors.full_messages}"
+      logger.error("ERROR: Error creating session --- #{session.errors.full_messages}")
       render json: { message: "Unable to create session", errors: session.errors.full_messages }, status: :internal_server_error
     end
 
   rescue Exception => error
-    logger.error "action=createSession user=#{@user} error=#{error}"
+    logger.error("ERROR: Error creating session --- #{error.class} - #{error.message}")
     render json: { message: "Exception while creating session", errors: error }, status: :internal_server_error
   end
 
@@ -62,12 +62,12 @@ class Api::ApiSessionsController < ApiController
     if session.destroy
       render json: {}, status: :no_content
     else
-      logger.error "action=deleteSession user=#{@user} errors=#{session.errors.full_messages}"
+      logger.error("ERROR: Error deleting session --- #{session.errors.full_messages}")
       render json: { message: "Unable to delete session", errors: session.errors.full_messages }, status: :internal_server_error
     end
 
   rescue Exception => error
-    logger.error "action=deleteSession user=#{@user} error=#{error}"
+    logger.error("ERROR: Error deleting session --- #{error.class} - #{error.message}")
     render json: { message: "Exception while deleting session", errors: error }, status: :internal_server_error
   end
 
