@@ -392,6 +392,17 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     assert_equal "", cfg.pinned_apps_group_by
   end
 
+  test "files_enable_shell_button returns true by default" do
+    cfg = ConfigurationSingleton.new 
+    assert_equal true, cfg.files_enable_shell_button
+  end
+
+  test "files_enable_shell_button returns false when set" do
+    cfg = ConfigurationSingleton.new 
+    cfg.stubs(:config).returns({files_enable_shell_button: false})
+    assert_equal false, cfg.files_enable_shell_button
+  end
+
   test "inverse navbar is dark" do
     with_modified_env(OOD_NAVBAR_TYPE: 'inverse') do
       assert_equal 'dark', ConfigurationSingleton.new.navbar_type

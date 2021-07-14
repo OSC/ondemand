@@ -291,6 +291,11 @@ class ConfigurationSingleton
     config.fetch(:pinned_apps_menu_length, 6)
   end
 
+  # Setting terminal functionality in files app
+  def files_enable_shell_button
+    to_bool(config.fetch(:files_enable_shell_button, true))
+  end
+
   # Report performance of activejobs table rendering
   def console_log_performance_report?
     dataroot.join("debug").file? || rails_env != 'production'
