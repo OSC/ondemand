@@ -188,6 +188,8 @@ touch %{buildroot}%{_sysconfdir}/ood/config/ood_portal.sha256sum
 Defaults:apache !requiretty, !authenticate
 Defaults:apache env_keep += "NGINX_STAGE_* OOD_*"
 apache ALL=(ALL) NOPASSWD: /opt/ood/nginx_stage/sbin/nginx_stage
+Cmnd_Alias KUBECTL = /usr/local/bin/kubectl, /usr/bin/kubectl, /bin/kubectl
+Defaults!KUBECTL !syslog
 EOF
 %__chmod 440 %{buildroot}%{_sysconfdir}/sudoers.d/ood
 
