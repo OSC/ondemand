@@ -316,7 +316,6 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       )
     BatchConnect::Session.any_instance.stubs(:info).returns(info)
     OodCore::Job::Info.any_instance.stubs(:ood_connection_info).returns(connect)
-    OodAppkit.stubs(:clusters).returns([OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}})])
     session = BatchConnect::Session.new
     session.stage(app: bc_jupyter_app, context: bc_jupyter_app.build_session_context)
 
@@ -335,7 +334,6 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       BatchConnect::Session.stubs(:dataroot).returns(Pathname.new(dir))
       BatchConnect::Session.any_instance.stubs(:id).returns('test-id')
       BatchConnect::Session.any_instance.stubs(:info).returns(info)
-      OodAppkit.stubs(:clusters).returns([OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}})])
       session = BatchConnect::Session.new
       session.stage(app: bc_jupyter_app, context: bc_jupyter_app.build_session_context)
 
@@ -359,7 +357,6 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       BatchConnect::Session.stubs(:dataroot).returns(Pathname.new(dir.to_s))
       BatchConnect::Session.any_instance.stubs(:id).returns('test-id')
       BatchConnect::Session.any_instance.stubs(:info).returns(info)
-      OodAppkit.stubs(:clusters).returns([OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}})])
       session = BatchConnect::Session.new
       session.stage(app: bc_jupyter_app, context: bc_jupyter_app.build_session_context)
 
@@ -381,5 +378,39 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       session.stage(app: bc_jupyter_app, context: bc_jupyter_app.build_session_context)
       assert Dir.exist?(session.staged_root)
     end
+  end
+
+  test "ssh_to_compute_node? default" do
+    session = BatchConnect::Session.new
+    session.stubs(:cluster).returns(OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}}))
+    assert session.ssh_to_compute_node?
+  end
+
+  test "ssh_to_compute_node? disabled by cluster" do
+    session = BatchConnect::Session.new
+    session.stubs(:cluster).returns(OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}, batch_connect: {ssh_allow: false}}))
+    Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(true)
+    refute session.ssh_to_compute_node?
+  end
+
+  test "ssh_to_compute_node? disabled globally" do
+    session = BatchConnect::Session.new
+    session.stubs(:cluster).returns(OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}}))
+    Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
+    refute session.ssh_to_compute_node?
+  end
+
+  test "ssh_to_compute_node? disabled globally allowed for cluster" do
+    session = BatchConnect::Session.new
+    session.stubs(:cluster).returns(OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}, batch_connect: {ssh_allow: true}}))
+    Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
+    assert session.ssh_to_compute_node?
+  end
+
+  test "ssh_to_compute_node? handles non-existant cluster and disabled globally" do
+    session = BatchConnect::Session.new
+    session.stubs(:cluster).raises(BatchConnect::Session::ClusterNotFound, "Session specifies nonexistent")
+    Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
+    refute session.ssh_to_compute_node?
   end
 end

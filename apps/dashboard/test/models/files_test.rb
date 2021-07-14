@@ -34,6 +34,25 @@ class FilesTest < ActiveSupport::TestCase
     end
   end
 
+  test "can_download_as_zip handles erroneous output from du" do
+    Dir.mktmpdir do |dir|
+      path = Pathname.new(dir)
+      Open3.stubs(:capture3).returns(["blarg \n 28d", "", exit_success])
+
+      assert_equal [false, I18n.t('dashboard.files_directory_download_size_0', cmd: "timeout 10s du -cbs #{path}")], Files.can_download_as_zip?(dir)  
+    end 
+  end
+
+  test "can_download_as_zip handles files sizes of 0" do
+    Dir.mktmpdir do |dir|
+      path = Pathname.new(dir)
+      Open3.stubs(:capture3).returns(["0 /dev
+        0 total", "", exit_success])
+
+      assert_equal [false, I18n.t('dashboard.files_directory_download_size_0', cmd: "timeout 10s du -cbs #{path}")], Files.can_download_as_zip?(dir)  
+    end 
+  end
+
   test "Ensuring Files.username(uid) returns string" do
     assert_equal "9999999", Files.username(9999999)
   end

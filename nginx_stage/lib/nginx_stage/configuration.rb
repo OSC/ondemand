@@ -63,6 +63,19 @@ module NginxStage
     # @return [String] the system-installed python binary
     attr_accessor :passenger_python
 
+    # The maximum number of seconds that an application process may be idle.
+    # @return [Integer] the value for passenger_pool_idle_time
+    attr_accessor :passenger_pool_idle_time
+
+    # Hash of Passenger configuration options
+    # @return [Hash] Hash of Passenger configuration options
+    attr_writer :passenger_options
+
+    def passenger_options
+      # Ensure that all options begin with passenger_
+      @passenger_options.select { |key, value| key.to_s.starts_with?('passenger_') }
+    end
+
     #
     # per-user NGINX configuration options
     #
@@ -416,6 +429,9 @@ module NginxStage
       self.passenger_ruby   = "#{root}/bin/ruby"
       self.passenger_nodejs = "#{root}/bin/node"
       self.passenger_python = "#{root}/bin/python"
+
+      self.passenger_pool_idle_time = 300
+      self.passenger_options = {}
 
       self.pun_custom_env      = {}
       self.pun_custom_env_declarations = []

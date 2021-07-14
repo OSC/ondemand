@@ -7,7 +7,6 @@
           apps: app_group.apps,
           current_url: local_assigns[:current_url],
           group_by: :category,
-          style: "ood-blue",
           show_owner: true
         }
     )
@@ -33,7 +32,7 @@
           title: "#{app_group.title}" + t('dashboard.batch_connect_sandbox'),
           apps: app_group.apps,
           current_url: local_assigns[:current_url],
-          style: "ood-burgundy"
+          style: "sandbox-apps-header"
         }
     )
   %>

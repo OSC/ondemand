@@ -2,25 +2,19 @@ require 'test_helper'
 
 class AppsTest < ActionDispatch::IntegrationTest
 
-  UserDouble = Struct.new(:name)
-
   def setup
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_interactive_apps"))
     DevRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/dev"))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
 
     Router.instance_variable_set('@pinned_apps', nil)
-    OodSupport::Process.stubs(:user).returns(UserDouble.new('me'))
-    OodSupport::User.stubs(:new).returns(UserDouble.new('me'))
-    FileUtils.chmod 0000, 'test/fixtures/usr/cant_see/'
-    UsrRouter.stubs(:base_path).with(:owner => "me").returns(Pathname.new("test/fixtures/usr/me"))
-    UsrRouter.stubs(:base_path).with(:owner => 'shared').returns(Pathname.new("test/fixtures/usr/shared"))
-    UsrRouter.stubs(:base_path).with(:owner => 'cant_see').returns(Pathname.new("test/fixtures/usr/cant_see"))
-    UsrRouter.stubs(:owners).returns(['me', 'shared', 'cant_see'])
+
+    stub_usr_router
+    setup_usr_fixtures
   end
 
   def teardown
-    FileUtils.chmod 0755, 'test/fixtures/usr/cant_see/'
+    teardown_usr_fixtures
     Router.instance_variable_set('@pinned_apps', nil)
   end
 

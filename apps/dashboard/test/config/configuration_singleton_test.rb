@@ -402,4 +402,32 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     cfg.stubs(:config).returns({files_enable_shell_button: false})
     assert_equal false, cfg.files_enable_shell_button
   end
+
+  test "inverse navbar is dark" do
+    with_modified_env(OOD_NAVBAR_TYPE: 'inverse') do
+      assert_equal 'dark', ConfigurationSingleton.new.navbar_type
+    end
+  end
+
+  test "dark navbar is dark" do
+    with_modified_env(OOD_NAVBAR_TYPE: 'dark') do
+      assert_equal 'dark', ConfigurationSingleton.new.navbar_type
+    end
+  end
+
+  test "default navbar is light" do
+    with_modified_env(OOD_NAVBAR_TYPE: 'default') do
+      assert_equal 'light', ConfigurationSingleton.new.navbar_type
+    end
+  end
+
+  test "light navbar is light" do
+    with_modified_env(OOD_NAVBAR_TYPE: 'light') do
+      assert_equal 'light', ConfigurationSingleton.new.navbar_type
+    end
+  end
+
+  test "no navbar environment variable is dark" do
+    assert_equal 'dark', ConfigurationSingleton.new.navbar_type
+  end
 end

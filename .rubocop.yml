@@ -1,0 +1,14 @@
+# style
+Style/MultilineBlockChain:
+  Enabled: false
+Style/HashSyntax:
+  EnforcedStyle: 'no_mixed_keys'
+Style/ClassAndModuleChildren:
+  EnforcedStyle: 'compact'
+Style/WordArray:
+  EnforcedStyle: 'brackets'
+
+# layout
+Layout/HashAlignment:
+  EnforcedStyle: table
+

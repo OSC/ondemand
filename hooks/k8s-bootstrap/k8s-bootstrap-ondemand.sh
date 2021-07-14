@@ -20,6 +20,8 @@ export $(grep -Ev "^#" "$HOOK_ENV" | cut -d= -f1)
 
 export PATH=/usr/local/bin:/bin:$PATH
 export NAMESPACE="${NAMESPACE_PREFIX}${ONDEMAND_USERNAME}"
+# shellcheck disable=SC2155
+export TIMESTAMP=$(date +%s)
 
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 YAML_DIR="${BASEDIR}/yaml"
