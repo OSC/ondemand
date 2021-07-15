@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.13] - 2121-07-15
+
+### Fixed
+
+- Fixed in `OOD_NAVBAR_TYPE` bug in [1283](https://github.com/OSC/ondemand/pull/1283).
+- `kubectl` commands no longer log to syslog in [1290](https://github.com/OSC/ondemand/pull/1290).
+- `rake test` works directly now without having to force `RAILS_ENV` in [1285](https://github.com/OSC/ondemand/pull/1285).
+
 ## [2.0.12] - 2021-07-01
 
 ### Fixed
