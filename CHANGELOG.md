@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `kubectl` commands no longer log to syslog in [1290](https://github.com/OSC/ondemand/pull/1290).
 - `rake test` works directly now without having to force `RAILS_ENV` in [1285](https://github.com/OSC/ondemand/pull/1285).
 
+### Changed
+
+- Updated `ood_core` to v0.17.2.
+
 ## [2.0.12] - 2021-07-01
 
 ### Fixed
