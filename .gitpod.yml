@@ -10,26 +10,16 @@ github:
     addBadge: true
 
 tasks:
-  - name: Rails
+  - name: Start Development Container
     init: >
-      gem install bundler &&
-      bin/bundle install &&
-      bin/rails db:migrate &&
-      bin/rails db:seed &&
-      bin/yarn install --check-files &&
-      gp sync-done bundle
-    command: rails server
+      rake docker:development &&
+      gp sync-done start-dev-container
+    command: rake docker:connect
     openMode: split-left
-
-  - name: Yarn
-    init: >
-      gp sync-await bundle
-    command: bin/webpack-dev-server
-    openMode: split-right
 
 ports:
   # Rails web server
-  - port: 3000
+  - port: 8080
     onOpen: open-preview
   
   # Webpacker HMR server
