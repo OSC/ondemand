@@ -804,7 +804,7 @@ function reportTransfer(data){
       }
     }).fail(function() {
       if (attempts >= 3) {
-        Swal.fire('File operation failed after 3 attempts', 'Failed to delete file.', 'error');
+        Swal.fire('Operation may not have happened', 'Failed to retrieve file operation status.', 'error');
       } else {
         setTimeout(poll, 1000);
         attempts++
