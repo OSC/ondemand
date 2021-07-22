@@ -36,6 +36,7 @@ namespace :package do
     "#{container_runtime} tag #{image_name}:#{image_tag} #{image_name}:latest"
   end
 
+  desc "Tar and zip OnDemand into packaging dir with version name v#<version>"
   task :tar do
     `which gtar 1>/dev/null 2>&1`
     if $?.success?
@@ -56,19 +57,23 @@ namespace :package do
     sh "git ls-files | #{tar} -c --transform 's,^,ondemand-#{version}/,' -T - | gzip > packaging/v#{version}.tar.gz"
   end
 
+  desc "Build clean docker container from ood image"
   task container: [:clean] do
     sh build_cmd("Dockerfile", image_name) unless image_exists?("#{image_name}:#{image_tag}")
   end
 
+  desc "Build docker container and create image"
   task latest_container: [:container] do
     sh tag_latest_container_cmd(image_name)
   end
 
+  desc "Build container with Dockerfile.test"
   task test_container: [:latest_container] do
     sh build_cmd("Dockerfile.test", test_image_name) unless image_exists?("#{test_image_name}:#{image_tag}")
     sh tag_latest_container_cmd(test_image_name)
   end
 
+  desc "Build container with Dockerfile.dev"
   task dev_container: [:latest_container] do
     if ENV['OOD_KEEP_USERNS'].to_s.empty?
       extra = []
