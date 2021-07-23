@@ -1,5 +1,6 @@
 require 'pathname'
 
+# AllowlistPolicy allows or denies access to directories based off of a configuration.
 class AllowlistPolicy
   attr_reader :allowlist
 
@@ -16,7 +17,7 @@ class AllowlistPolicy
   # @raises ArgumentError if any allowlist path or permitted? argument
   #         has the form ~user/some/path where user doesn't exist
   def permitted?(path)
-    allowlist.blank? || allowlist.any?{ |parent| child?(Pathname.new(parent), real_expanded_path(path)) }
+    allowlist.blank? || allowlist.any? { |parent| child?(Pathname.new(parent), real_expanded_path(path)) }
   end
 
   # @raises AllowlistPolicy::Forbidden if path is not permitted by allowlist
@@ -30,12 +31,12 @@ class AllowlistPolicy
 
   # call realpath to ensure symlinks are handled
   def real_expanded_path(path)
-     # call realpath to ensure symlinks are resolved
-     Pathname.new(path).expand_path.realpath
-   rescue SystemCallError
-     # path doesn't exist, so we just get absolute version then
-     Pathname.new(path).expand_path
-   end
+    # call realpath to ensure symlinks are resolved
+    Pathname.new(path).expand_path.realpath
+  rescue SystemCallError
+    # path doesn't exist, so we just get absolute version then
+    Pathname.new(path).expand_path
+  end
 
   # Determine if child is a subpath of parent
   #
@@ -46,7 +47,7 @@ class AllowlistPolicy
   # @param child [Pathname]
   # @return Boolean
   def child?(parent, child)
-    ! child.expand_path.relative_path_from(
+    !child.expand_path.relative_path_from(
       parent.expand_path
     ).each_filename.to_a.include?(
       '..'
