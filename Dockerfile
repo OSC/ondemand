@@ -45,6 +45,9 @@ COPY ood_auth_map           /opt/ood/ood_auth_map
 COPY apps                   /opt/ood/apps
 COPY Rakefile               /opt/ood/Rakefile
 COPY lib                    /opt/ood/lib
+COPY Gemfile                /opt/ood/Gemfile
+
+RUN cd /opt/ood; bundle install
 
 RUN source /opt/rh/ondemand/enable && \
     rake -f /opt/ood/Rakefile -mj$CONCURRENCY build && \
