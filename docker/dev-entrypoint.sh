@@ -9,12 +9,11 @@ APP_DEV_DIR="/home/$USER/ondemand/dev"
 OOD_DEV_DIR="/var/www/ood/apps/dev/$USER"
 
 sudo su root <<SETUP
-  mkdir -p $OOD_DEV_DIR 
-  chmod 755 $OOD_DEV_DIR
+  mkdir -p $OOD_DEV_DIR
   cd $OOD_DEV_DIR
   ln -s $APP_DEV_DIR gateway
 
-  /opt/ood/ood-portal-generator/sbin/update_ood_portal
+  /opt/ood/ood-portal-generator/sbin/update_ood_portal --force
 
   if [ -n "$OOD_STATIC_USER" ] && [ -f "$OOD_STATIC_USER" ]; then
     cat "$OOD_STATIC_USER" >>  /etc/ood/dex/config.yaml
