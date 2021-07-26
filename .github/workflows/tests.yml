@@ -35,6 +35,7 @@ jobs:
       - name: Setup Bundler
         run: |
           bundle config path ~/vendor/bundle
+          bundle install
 
       - name: Run ShellCheck
         run: rake test:shellcheck
