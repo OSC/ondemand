@@ -25,7 +25,9 @@ namespace :test do
           sh 'bin/yarn install'
         end
 
-        sh "bundle install --gemfile=#{Dir.pwd}/Gemfile"
+        Bundler.with_unbundled_env do
+          sh "bundle install"
+        end
       end
     end
   end
@@ -34,7 +36,9 @@ namespace :test do
   task :unit => [:setup] do
     testing.each_pair do |app, task|
       chdir PROJ_DIR.join(app.to_s) do
-        sh "bundle exec --gemfile=#{Dir.pwd}/Gemfile rake #{task}"
+        Bundler.with_unbundled_env do
+          sh "bundle exec rake #{task}"
+        end
       end
     end
   end
