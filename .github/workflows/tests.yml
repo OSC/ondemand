@@ -38,9 +38,7 @@ jobs:
           bundle install
 
       - name: Run ShellCheck
-        run: |
-          bundle env
-          bundle exec rake test:shellcheck
+        run: rake test:shellcheck
 
       - name: Run unit tests
         run: rake test:unit
@@ -81,7 +79,7 @@ jobs:
           bundle install
 
       - name: Run E2E tests
-        run: bundle exec rake test:e2e
+        run: rake test:e2e
 
   k8s-tests:
     runs-on: ubuntu-latest

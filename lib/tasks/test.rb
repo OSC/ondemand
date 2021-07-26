@@ -36,8 +36,7 @@ namespace :test do
   task :unit => [:setup] do
     testing.each_pair do |app, task|
       chdir PROJ_DIR.join(app.to_s) do
-        sh "bundle env"
-        sh "bundle exec rake #{task}"
+        sh "rake #{task}"
       end
     end
   end
