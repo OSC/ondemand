@@ -38,7 +38,9 @@ jobs:
           bundle install
 
       - name: Run ShellCheck
-        run: rake test:shellcheck
+        run: |
+          bundle env
+          bundle exec rake test:shellcheck
 
       - name: Run unit tests
         run: rake test:unit
