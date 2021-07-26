@@ -1,1 +1,1 @@
-inherit_from: 'sapps/dashboard/.rubocop.yml'
+inherit_from: '../apps/dashboard/.rubocop.yml'
