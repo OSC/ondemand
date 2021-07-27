@@ -87,7 +87,9 @@ namespace :dev do
   end
 
   desc 'Start development container'
-  task :start => ['package:dev_container', 'ensure_dev_files'] do
+  task :start => ['ensure_dev_files'] do
+    Rake::Task['package:dev_container'].invoke unless image_exists?("#{dev_image_name}:latest")
+
     ctr_args = [container_runtime, 'run', '-p 8080:8080', '-p 5556:5556']
     ctr_args.concat ["--name #{dev_container_name}"]
     ctr_args.concat ['--rm', '--detach']
@@ -106,6 +108,9 @@ namespace :dev do
 
   desc 'Restart development container'
   task :restart => [:stop, :start]
+
+  desc 'Rebuild the ood-dev:latest container'
+  task :rebuild => ['package:dev_container']
 
   desc 'Bash exec into the development container'
   task :exec do
