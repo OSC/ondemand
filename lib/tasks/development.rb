@@ -11,10 +11,8 @@ namespace :dev do
   end
 
   def init_ood_portal
-    file = "#{config_directory}/config/ood_portal.yml"
+    file = "#{config_directory}/ood_portal.yml"
     return if File.exist?(file)
-
-    FileUtils.mkdir_p("#{config_directory}/config")
 
     File.open(file, File::WRONLY|File::CREAT|File::EXCL) do |f|
       f.write({
@@ -35,11 +33,11 @@ namespace :dev do
 
   def init_ctr_user
     file = "#{config_directory}/static_user.yml"
-    return if File.exists?(file)
+    return if File.exist?(file)
 
     require 'io/console'
     puts 'Enter password:'
-    plain_password = STDIN.noecho(&:gets).chomp
+    plain_password = $stdin.noecho(&:gets).chomp
     bcrypted = BCrypt::Password.create(plain_password)
 
     content = <<~CONTENT
@@ -51,7 +49,7 @@ namespace :dev do
         userID: "71e63e31-7af3-41d7-add2-575568f4525f"
     CONTENT
 
-    File.open(file, File::WRONLY|File::CREAT|File::EXCL) do |f|
+    File.open(file, File::WRONLY | File::CREAT | File::EXCL) do |f|
       f.write(content)
     end
   end
@@ -67,21 +65,21 @@ namespace :dev do
   def podman_rt_args
     [
       '--userns', 'keep-id',
-      '--cap-add', 'sys_ptrace'
+      '--cap-add', 'sys_ptrace',
+      '--security-opt', 'label=disable'
     ].freeze
   end
 
   def config_directory
     @config_directory ||= begin
-      dir = "#{user.dir}/.config/ondemand/container"
-      FileUtils.mkdir_p(dir)
-      dir
+      base_dir = "#{user.dir}/.config/ondemand/container/config".tap { |dir| FileUtils.mkdir_p(dir) }
+      base_dir
     end
   end
 
   def dev_mounts
     [
-      '-v', "#{config_directory}:/etc/ood",
+      '-v', "#{config_directory}:/etc/ood/config",
       '-v', "#{user.dir}/ondemand:#{user.dir}/ondemand"
     ]
   end
@@ -104,6 +102,11 @@ namespace :dev do
   desc 'Stop development container'
   task :stop do
     sh "#{container_runtime} stop #{dev_container_name}"
+  end
+
+  desc 'See the development container\'s logs'
+  task :logs do
+    sh "#{container_runtime} logs #{dev_container_name}"
   end
 
   desc 'Restart development container'
