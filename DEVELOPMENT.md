@@ -53,3 +53,12 @@ new configurations.
 
 Remove `~/.config/ondemand/container/static_user.yml` to reset your
 container's password.
+
+### Rebuilding the image
+
+All the development tasks will use the `ood-dev:latest` image.  If
+you want to rebuild to a newer version use the rebuild task.
+
+```text
+rake dev:rebuild
+```
