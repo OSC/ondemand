@@ -77,7 +77,7 @@ namespace :package do
   task dev_container: [:latest_container] do
     extra = ["--build-arg", "USER=#{user.name}"]
     extra.concat ["--build-arg", "UID=#{user.uid}"]
-    extra.concat ["--build-arg", "GID=#{user.uid}"]
+    extra.concat ["--build-arg", "GID=#{user.gid}"]
 
     sh build_cmd("Dockerfile.dev", dev_image_name, extra_args: extra) unless image_exists?("#{dev_image_name}:#{image_tag}")
     sh tag_latest_container_cmd(dev_image_name)

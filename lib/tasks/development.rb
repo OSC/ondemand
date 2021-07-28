@@ -59,7 +59,9 @@ namespace :dev do
   end
 
   def docker_rt_args
-    [].freeze
+    [
+      '--user', "#{user.uid}:#{user.gid}"
+    ].freeze
   end
 
   def podman_rt_args
