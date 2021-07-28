@@ -8,11 +8,11 @@ with the same group and user id.  Starting the container will prompt
 you to set a password.  This is only credentials for web access to the
 container.
 
-Pull down this source code and start the container. 
+Pull down this source code and start the container.
 
 ```text
 mkdir -p ~/ondemand
-git clone ~/ondemand/src
+git clone https://github.com/OSC/ondemand.git ~/ondemand/src
 cd ~/ondemand/src
 rake dev:start
 ```
