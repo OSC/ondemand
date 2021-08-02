@@ -16,7 +16,9 @@ ports:
   # Dex
   - port: 5556
     onOpen: ignore
+    visibility: public
 
   # OnDemand
   - port: 8080
     onOpen: open-browser
+    visibility: public
