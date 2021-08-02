@@ -37,7 +37,7 @@ namespace :dev do
 
     require 'io/console'
     puts 'Enter password:'
-    plain_password = tty? ? $stdin.noecho(&:gets).chomp : "ondemand"
+    plain_password = $stdin.noecho(&:gets).chomp
     bcrypted = BCrypt::Password.create(plain_password)
 
     content = <<~CONTENT

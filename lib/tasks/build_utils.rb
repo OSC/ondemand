@@ -48,8 +48,4 @@ module BuildUtils
   def user
     @user ||= Etc.getpwnam(Etc.getlogin || Etc.getpwuid.name)
   end
-
-  def tty?
-    $stdout.isatty
-  end
 end
