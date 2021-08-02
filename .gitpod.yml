@@ -1,0 +1,20 @@
+image:
+  file: .gitpod.Dockerfile
+
+tasks:
+  - name: Start dev container
+    init: bundle install
+    command: rake dev:start
+
+  - name: Enter dev container
+    command: rake dev:exec
+    openMode: split-left
+
+ports:
+  # Dex
+  - port: 5556
+    onOpen: ignore
+
+  # OnDemand
+  - port: 8080
+    onOpen: open-browser
