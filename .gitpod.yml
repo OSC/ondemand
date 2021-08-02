@@ -11,14 +11,8 @@ tasks:
 
   - name: Start dev container
     init: >
-      gp sync-await bundle &&
-      rake dev:start
-      gp sync-done dev
-
-  - name: Enter dev container
-    init: gp sync-await dev
-    command: rake dev:exec
-    openMode: split-left
+      gp sync-await bundle
+    command: rake dev:start
 
 ports:
   # Dex
