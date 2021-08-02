@@ -2,15 +2,14 @@ image:
   file: .gitpod.Dockerfile
 
 tasks:
-  - name: Bundle install
+  - name: Bundle install and container startup
     init: >
       bundle install &&
-      gp sync-done bundle
+      rake dev:start &&
+      gp sync-done startup
 
   - name: Start dev container
-    init: >
-      rake dev:start &&
-      gp sync-done boot
+    init: gp sync-await startup
     command: rake dev:exec
     openMode: split-left
 

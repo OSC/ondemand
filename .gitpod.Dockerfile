@@ -5,3 +5,5 @@ RUN sudo apt-get update \
   && sudo rm -rf /var/lib/apt/lists/*
 
 RUN brew install hub
+
+ENV OOD_DEV_CONTAINER_PASS=password
