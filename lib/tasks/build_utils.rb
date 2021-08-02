@@ -46,6 +46,6 @@ module BuildUtils
   end
 
   def user
-    @user ||= Etc.getpwnam(Etc.getlogin)
+    @user ||= Etc.getpwnam(Etc.getlogin || Etc.getpwuid.name)
   end
 end
