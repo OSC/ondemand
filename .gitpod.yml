@@ -1,6 +1,8 @@
 image:
   file: .gitpod.Dockerfile
 
+workspaceLocation: "/ondemand"
+
 tasks:
   - name: Start dev container
     init: bundle install
