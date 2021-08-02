@@ -17,7 +17,7 @@ tasks:
 
   - name: Enter dev container
     init: gp sync-await dev
-    command: rake dev:exec
+    command: rake dev:exec <<< "ondemand"
     openMode: split-left
 
 ports:
