@@ -1,8 +1,6 @@
 image:
   file: .gitpod.Dockerfile
 
-workspaceLocation: "/ondemand"
-
 tasks:
   - name: Bundle install
     init: >
@@ -12,7 +10,9 @@ tasks:
   - name: Start dev container
     init: >
       gp sync-await bundle
-    command: rake dev:start
+      rake dev:start
+    command: rake dev:exec
+    openMode: split-left
 
 ports:
   # Dex
