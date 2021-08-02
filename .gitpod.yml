@@ -9,8 +9,8 @@ tasks:
 
   - name: Start dev container
     init: >
-      gp sync-await bundle
-      rake dev:start
+      rake dev:start &&
+      gp sync-done boot
     command: rake dev:exec
     openMode: split-left
 
