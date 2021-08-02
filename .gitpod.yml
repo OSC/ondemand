@@ -4,8 +4,13 @@ image:
 workspaceLocation: "/ondemand"
 
 tasks:
+  - name: Boot
+    init: >
+      bundle install &&
+      gp sync-done bundle
+
   - name: Start dev container
-    init: bundle install
+    init: gp sync-await bundle
     command: rake dev:start
 
   - name: Enter dev container
