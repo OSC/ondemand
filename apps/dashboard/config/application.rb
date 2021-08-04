@@ -32,7 +32,7 @@ module Dashboard
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
     # config.time_zone = 'Central Time (US & Canada)'
 
-    # locale's are handled in config/initializers/locales.rb
+    # Locales are handled in config/initializers/locales.rb.
 
     # Custom error pages
     config.exceptions_app = self.routes
