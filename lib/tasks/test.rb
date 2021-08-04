@@ -2,8 +2,7 @@ desc "Test OnDemand"
 task :test => 'test:all'
 
 def yarn_app?(path)
-  @path = Pathname.new(path)
-  @path.join('yarn.lock').exist?
+  Pathname.new(path).join('yarn.lock').exist?
 end
 
 namespace :test do
@@ -22,12 +21,13 @@ namespace :test do
     testing.each_pair do |app, _task|
       chdir PROJ_DIR.join(app.to_s) do
 
-        @path = PROJ_DIR.join(app.to_s)
-        if yarn_app?(@path)
+        if yarn_app?(Dir.pwd)
           sh 'bin/yarn install'
         end
 
-        sh "bundle install"
+        Bundler.with_unbundled_env do
+          sh "bundle install"
+        end
       end
     end
   end
@@ -36,7 +36,9 @@ namespace :test do
   task :unit => [:setup] do
     testing.each_pair do |app, task|
       chdir PROJ_DIR.join(app.to_s) do
-        sh "bundle exec rake #{task}"
+        Bundler.with_unbundled_env do
+          sh "bundle exec rake #{task}"
+        end
       end
     end
   end

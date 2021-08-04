@@ -57,8 +57,8 @@ namespace :package do
     sh "git ls-files | #{tar} -c --transform 's,^,ondemand-#{version}/,' -T - | gzip > packaging/v#{version}.tar.gz"
   end
 
-  desc "Build clean docker container from ood image"
-  task container: [:clean] do
+  desc "Build the ood image"
+  task :container do
     sh build_cmd("Dockerfile", image_name) unless image_exists?("#{image_name}:#{image_tag}")
   end
 
@@ -75,14 +75,9 @@ namespace :package do
 
   desc "Build container with Dockerfile.dev"
   task dev_container: [:latest_container] do
-    if ENV['OOD_KEEP_USERNS'].to_s.empty?
-      extra = []
-    else
-      username = Etc.getlogin
-      extra = ["--build-arg", "USER=#{username}"]
-      extra.concat ["--build-arg", "UID=#{Etc.getpwnam(username).uid}"]
-      extra.concat ["--build-arg", "GID=#{Etc.getpwnam(username).uid}"]
-    end
+    extra = ["--build-arg", "USER=#{user.name}"]
+    extra.concat ["--build-arg", "UID=#{user.uid}"]
+    extra.concat ["--build-arg", "GID=#{user.gid}"]
 
     sh build_cmd("Dockerfile.dev", dev_image_name, extra_args: extra) unless image_exists?("#{dev_image_name}:#{image_tag}")
     sh tag_latest_container_cmd(dev_image_name)

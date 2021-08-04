@@ -30,17 +30,18 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/vendor/bundle
-          key: ${{ runner.os }}-${{ matrix.ruby }}-gems-${{ hashFiles('apps/*/Gemfile.lock', 'Gemfile.lock') }}
+          key: ${{ runner.os }}-${{ matrix.ruby }}-unit-gems-${{ hashFiles('apps/*/Gemfile.lock', 'Gemfile.lock') }}
 
       - name: Setup Bundler
         run: |
           bundle config path ~/vendor/bundle
+          bundle install
 
       - name: Run ShellCheck
-        run: rake test:shellcheck
+        run: bundle exec rake test:shellcheck
 
       - name: Run unit tests
-        run: rake test:unit
+        run: bundle exec rake test:unit
 
       - name: Run System Dashboard tests
         run: cd apps/dashboard; bin/rake test:system
@@ -64,17 +65,7 @@ jobs:
         with:
           ruby-version: "2.7.1"
           bundler: "2.1.4"
-
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: ~/vendor/bundle
-          key: ${{ runner.os }}-${{ matrix.ruby }}-gems-${{ hashFiles('apps/*/Gemfile.lock', 'Gemfile.lock') }}
-
-      - name: Setup Bundler
-        run: |
-          bundle config path ~/vendor/bundle
-          bundle install
+          bundler-cache: true
 
       - name: Run E2E tests
         run: bundle exec rake test:e2e

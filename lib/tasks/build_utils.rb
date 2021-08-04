@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BuildUtils
   def image_tag
     tag? ? numeric_tag : "#{numeric_tag}-#{git_hash}"
@@ -41,5 +43,9 @@ module BuildUtils
 
   def image_name
     "ood"
+  end
+
+  def user
+    @user ||= Etc.getpwnam(Etc.getlogin)
   end
 end
