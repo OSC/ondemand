@@ -1,15 +1,25 @@
 image:
   file: .gitpod.Dockerfile
 
+github:
+  prebuilds:
+    master: true
+    branches: true
+    pullRequests: true
+    # Updates PR description to include Open in Gitpod button
+    addBadge: true
+
 tasks:
   - name: Bundle install and container startup
-    init: >
-      bundle install &&
-      rake dev:start &&
+    init: |
+      touch /tmp/.ood-lock
+      bundle install
+      rake dev:start
+      rm /tmp/.ood-lock
       gp sync-done startup
 
   - name: Start dev container
-    init: gp sync-await startup
+    init: sleep 1 && while [ -f /tmp/.ood-lock ]; do sleep 1; done
     command: rake dev:exec
     openMode: split-left
 
@@ -21,5 +31,5 @@ ports:
 
   # OnDemand
   - port: 8080
-    onOpen: open-browser
+    onOpen: ignore
     visibility: public
