@@ -13,6 +13,7 @@ require "#{TASK_DIR}/packaging"
 require "#{TASK_DIR}/test"
 require "#{TASK_DIR}/docker"
 require "#{TASK_DIR}/development"
+require "#{TASK_DIR}/ood-proxy"
 
 def infrastructure
   [
@@ -20,6 +21,7 @@ def infrastructure
     'nginx_stage',
     'ood_auth_map',
     'ood-portal-generator',
+    'ood-proxy-rs',
   ].map { |d| Component.new(d) }
 end
 
@@ -50,6 +52,10 @@ class Component
 
   def node_app?
     @path.join('app.js').exist?
+  end
+
+  def rust_app?
+    @path.join('Cargo.toml').exist?
   end
 
   def package_json?
