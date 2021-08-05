@@ -3,15 +3,9 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  before_action :set_user, :set_pinned_apps, :set_nav_groups, :set_announcements, :set_locale
+  before_action :set_user, :set_pinned_apps, :set_nav_groups, :set_announcements
   before_action :set_my_balances, only: [:index, :new, :featured]
   before_action :set_featured_group
-
-  def set_locale
-    I18n.locale = ::Configuration.locale
-  rescue I18n::InvalidLocale => e
-    logger.warn "I18n::InvalidLocale #{::Configuration.locale}: #{e.message}"
-  end
 
   def set_user
     @user = User.new
