@@ -60,6 +60,8 @@
 # Build artifacts
 /apps/*/.built
 /packaging/*.tar.gz
+/ood-proxy-rs/target
+/ood-proxy-rs/resources
 
 lib-cov
 *.seed
