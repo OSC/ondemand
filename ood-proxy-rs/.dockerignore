@@ -1,0 +1,4 @@
+.env
+target/
+Dockerfile
+release/
