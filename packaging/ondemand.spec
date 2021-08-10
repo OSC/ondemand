@@ -125,6 +125,7 @@ set -x
 set -e
 export GEM_HOME=$(pwd)/gems-build
 export GEM_PATH=$(pwd)/gems-build:$GEM_PATH
+bundle install
 rake --trace -mj%{ncpus} build
 EOS
 
