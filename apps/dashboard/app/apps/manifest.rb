@@ -32,7 +32,9 @@ category: OSC
 
   def self.load(yaml_path)
     if File.exist? yaml_path
-      Manifest.new(YAML.load_file yaml_path)
+      File.open(yaml_path) do |content|
+        Manifest.new(YAML.safe_load(content))
+      end
     else
       MissingManifest.new({})
     end
@@ -45,7 +47,7 @@ category: OSC
   end
 
   def self.load_from_string(yaml)
-    Manifest.new(YAML.load(yaml))
+    Manifest.new(YAML.safe_load(yaml))
   rescue Exception => e
     InvalidManifest.new(e)
   end
@@ -179,7 +181,7 @@ category: OSC
   #
   # @return [String] The populated contents of the object as YAML string.
   def to_yaml
-    self.to_h.compact.to_yaml
+    self.to_h.deep_stringify_keys.compact.to_yaml
   end
 
 end
