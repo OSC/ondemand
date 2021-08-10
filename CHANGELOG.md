@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.14] - 2021-08-10
+
+### Fixed
+
+- Files app shell buttons now correctly redirect to the given cluster in [1317](https://github.com/OSC/ondemand/pull/1317).
+- Locales now correctly fallback to english in [1314](https://github.com/OSC/ondemand/pull/1314).
+- Manifest YAMLs are now read safely in [1325](https://github.com/OSC/ondemand/pull/1325).
+
+### Changed
+
+- Updated `ood_core` to v0.17.4.
+
+### Added
+
+- Development container tooling in [1305](https://github.com/OSC/ondemand/pull/1305).
+
 ## [2.0.13] - 2021-07-16
 
 ### Fixed
@@ -848,7 +864,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.13...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.14...HEAD
+[2.0.14]: https://github.com/OSC/ondemand/compare/v2.0.13...v2.0.14
 [2.0.13]: https://github.com/OSC/ondemand/compare/v2.0.12...v2.0.13
 [2.0.12]: https://github.com/OSC/ondemand/compare/v2.0.11...v2.0.12
 [2.0.11]: https://github.com/OSC/ondemand/compare/v2.0.10...v2.0.11
