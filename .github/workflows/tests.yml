@@ -110,9 +110,10 @@ jobs:
         run: git fetch --prune --unshallow --tags
 
       - name: Set version
+        id: version
         run: |
           version=$(git describe --tags --abbrev=0)
-          echo ::set-env name=VERSION::$(echo ${version#v})
+          echo ::set-output name=version::${version#v}
 
       - name: Setup Ruby using Bundler
         uses: ruby/setup-ruby@v1
@@ -123,6 +124,10 @@ jobs:
 
       - name: Package EL7
         run: bundle exec rake package:rpm[el7]
+        env:
+          VERSION: "${{ steps.version.outputs.version }}"
 
       - name: Package EL8
         run: bundle exec rake package:rpm[el8]
+        env:
+          VERSION: "${{ steps.version.outputs.version }}"
