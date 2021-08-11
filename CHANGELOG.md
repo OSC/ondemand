@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.15] - 2021-08-11
+
+### Fixed
+
+- Fix RPM builds to work with top-level Gemfile changes
+
 ## [2.0.14] - 2021-08-10
 
 ### Fixed
