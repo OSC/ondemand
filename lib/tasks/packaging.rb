@@ -36,6 +36,21 @@ namespace :package do
     "#{container_runtime} tag #{image_name}:#{image_tag} #{image_name}:latest"
   end
 
+  def git_clone_packaging(branch, dir)
+    args = ["clone", "--single-branch"]
+    args.concat ["--branch", branch]
+    args.concat ["https://github.com/OSC/ondemand-packaging.git", dir]
+
+    "git #{args.join(' ')}"
+  end
+
+  def rpm_build_cmd(packaging_dir, work_dir, output_dir, dist, version, extra_args)
+    args = ["-w", work_dir, "-o", output_dir]
+    args.concat ["-d", dist, "-V", "v#{version}"]
+
+    "#{File.join(packaging_dir, 'build.sh')} #{args.join(' ')} #{extra_args} #{File.join(Dir.pwd, 'packaging')}"
+  end
+
   desc "Tar and zip OnDemand into packaging dir with version name v#<version>"
   task :tar do
     `which gtar 1>/dev/null 2>&1`
@@ -81,5 +96,19 @@ namespace :package do
 
     sh build_cmd("Dockerfile.dev", dev_image_name, extra_args: extra) unless image_exists?("#{dev_image_name}:#{image_tag}")
     sh tag_latest_container_cmd(dev_image_name)
+  end
+
+  desc "Build RPM"
+  task :rpm, [:dist, :extra_args] => :tar do |t, args|
+    version = ENV['VERSION']
+    version_major, version_minor, version_patch = version.split('.', 3)
+    dist = args[:dist]
+    extra_args = args[:extra_args].nil? ? '' : args[:extra_args]
+    tmp_dir = File.join(Dir.pwd, 'tmp')
+    packaging_dir = File.join(tmp_dir, "ondemand-packaging")
+
+    Dir.mkdir(tmp_dir) unless Dir.exist?(tmp_dir)
+    sh git_clone_packaging("#{version_major}.#{version_minor}", packaging_dir) unless Dir.exist?(packaging_dir)
+    sh rpm_build_cmd(packaging_dir, File.join(tmp_dir, "work"), File.join(tmp_dir, "output"), dist, version, extra_args)
   end
 end

@@ -103,3 +103,6 @@ tags
 
 # Ignore files downloaded for testing
 /tests/*.zip
+
+# Ignore temporary files
+/tmp
