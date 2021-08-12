@@ -2,6 +2,7 @@ require 'active_support'
 require 'active_support/core_ext'
 require 'securerandom'
 require 'fileutils'
+require 'bcrypt'
 
 module OodPortalGenerator
   # A view class that renders a Dex configuration
@@ -34,14 +35,12 @@ module OodPortalGenerator
       @dex_config[:staticClients] = static_clients
       @dex_config[:connectors] = connectors unless connectors.nil?
       @dex_config[:oauth2] = { skipApprovalScreen: true }
-      @dex_config[:enablePasswordDB] = connectors.nil?
-      if connectors.nil?
-        @dex_config[:staticPasswords] = [{
-          email: 'ood@localhost',
-          hash: '$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W',
-          username: 'ood',
-          userID: '08a8684b-db88-4b73-90a9-3cd1661f5466',
-        }]
+      configured_static_passwords = @config.fetch(:static_passwords, nil)
+      if (connectors.nil? || !configured_static_passwords.nil?)
+        @dex_config[:enablePasswordDB] = true
+        @dex_config[:staticPasswords] = static_passwords(configured_static_passwords)
+      else
+        @dex_config[:enablePasswordDB] = false
       end
       @dex_config[:frontend] = frontend
       # Pass values back to main ood-portal.conf view
@@ -193,6 +192,29 @@ module OodPortalGenerator
 
     def connectors
       @config.fetch(:connectors, nil)
+    end
+
+    def hash_password(password)
+      BCrypt::Password.create(password).to_s
+    end
+
+    def static_passwords(configured = nil)
+      passwords = []
+      if configured.nil?
+        default = {
+          email: 'ood@localhost',
+          hash: '$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W',
+          username: 'ood',
+          userID: '08a8684b-db88-4b73-90a9-3cd1661f5466',
+        }
+        passwords << default
+      else
+        configured.each do |conf|
+          conf[:hash] = hash_password(conf[:password]) if conf.key?(:password)
+          passwords << conf.except(:password)
+        end
+      end
+      passwords
     end
 
     def frontend
