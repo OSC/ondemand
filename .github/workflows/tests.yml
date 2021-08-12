@@ -94,3 +94,35 @@ jobs:
           kubectl cluster-info
       - name: Test k8s-bootstrap
         run: /bin/bash hooks/k8s-bootstrap/k8s-bootstrap-ondemand.sh test hooks/hook.env.example
+
+  rpm-packaging-tests:
+    strategy:
+      matrix:
+        dist: ["el7", "el8"]
+    runs-on: "ubuntu-latest"
+    name: RPM packaging tests ${{ matrix.dist }}
+
+    steps:
+      - name: Checkout ${{ github.sha	}}
+        uses: actions/checkout@v2
+
+      - name: Ensure tags exist for packaging
+        run: git fetch --prune --unshallow --tags
+
+      - name: Set version
+        id: version
+        run: |
+          version=$(git describe --tags --abbrev=0)
+          echo ::set-output name=version::${version#v}
+
+      - name: Setup Ruby using Bundler
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "2.7.1"
+          bundler: "2.1.4"
+          bundler-cache: true
+
+      - name: Build package
+        run: bundle exec rake package:rpm[${{ matrix.dist }}]
+        env:
+          VERSION: "${{ steps.version.outputs.version }}"
