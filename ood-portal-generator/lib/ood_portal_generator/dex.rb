@@ -35,10 +35,9 @@ module OodPortalGenerator
       @dex_config[:staticClients] = static_clients
       @dex_config[:connectors] = connectors unless connectors.nil?
       @dex_config[:oauth2] = { skipApprovalScreen: true }
-      configured_static_passwords = @config.fetch(:static_passwords, nil)
-      if (connectors.nil? || !configured_static_passwords.nil?)
+      if connectors.nil?
         @dex_config[:enablePasswordDB] = true
-        @dex_config[:staticPasswords] = static_passwords(configured_static_passwords)
+        @dex_config[:staticPasswords] = static_passwords(@config.fetch(:static_passwords, nil))
       else
         @dex_config[:enablePasswordDB] = false
       end

@@ -24,11 +24,6 @@ namespace :dev do
         'listen_addr_port': 8080,
         'oidc_remote_user_claim': 'email',
         'dex': {
-          'connectors': [{
-            'type': 'mockCallback',
-            'id': 'mock',
-            'name': 'Mock'
-          }],
           'static_passwords': [{
             'email': "#{user.name}@localhost",
             'password': plain_password,
