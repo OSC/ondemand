@@ -36,8 +36,10 @@ namespace :dev do
     return if File.exist?(file)
 
     require 'io/console'
-    puts 'Enter password:'
-    plain_password = $stdin.noecho(&:gets).chomp
+    plain_password = ENV.fetch('OOD_DEV_CONTAINER_PASS') {
+      puts 'Enter password:'
+      $stdin.noecho(&:gets).chomp
+    }
     bcrypted = BCrypt::Password.create(plain_password)
 
     content = <<~CONTENT
