@@ -1,0 +1,24 @@
+image:
+  file: .gitpod.Dockerfile
+
+tasks:
+  - name: Bundle install and container startup
+    init: >
+      bundle install &&
+      rake dev:start &&
+      gp sync-done startup
+  - name: Start dev container
+    init: gp sync-await startup
+    command: rake dev:exec
+    openMode: split-left
+
+ports:
+  # Dex
+  - port: 5556
+    onOpen: ignore
+    visibility: public
+
+  # OnDemand
+  - port: 8080
+    onOpen: open-browser
+    visibility: public
