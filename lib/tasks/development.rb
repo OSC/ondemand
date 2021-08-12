@@ -68,8 +68,7 @@ namespace :dev do
   def dev_mounts
     [
       '-v', "#{config_directory}:/etc/ood/config",
-      '-v', "#{user.dir}/ondemand:#{user.dir}/ondemand",
-      '-v', "#{proj_root}:/ondemand"
+      '-v', "#{user.dir}/ondemand:#{user.dir}/ondemand"
     ]
   end
 
