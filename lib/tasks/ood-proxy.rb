@@ -8,9 +8,17 @@ namespace :build do
     'ood-proxy-rs' || ENV['OOD_PROXY_CONTAINER_NAME'].to_s
   end
 
-  task :proxy do
+  task :proxy_docker do
     sh build_cmd("Dockerfile.proxy", proxy_container_name)
     sh tag_latest_container_cmd(proxy_container_name)
+  end
+
+  task :proxy do
+    build_args = ['cargo', 'build']
+    build_args.concat ['--release']
+    build_args.concat ["--manifest-path #{PROJ_DIR.join('ood-proxy-rs')}/Cargo.toml"]
+
+    sh build_args.join(' ')
   end
 end
 
