@@ -230,12 +230,12 @@ EOF
 EOS
 
 %post
-if [ "$1" -eq 2 ]; then
 %if %{with scl_apache}
+if [ "$1" -eq 2 ]; then
 %__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24"/' \
     /opt/rh/httpd24/service-environment
-%endif
 fi
+%endif
 
 /bin/systemctl daemon-reload &>/dev/null || :
 
