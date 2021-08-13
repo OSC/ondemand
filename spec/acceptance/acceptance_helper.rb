@@ -38,6 +38,9 @@ def bootstrap_repos
     repos << 'epel-release'
     if host_inventory['platform_version'] =~ /^7/
       repos << 'centos-release-scl yum-plugin-priorities'
+    else
+      on hosts, "dnf -y module enable ruby:2.7"
+      on hosts, "dnf -y module enable nodejs:12"
     end
   end
   install_packages(repos)
