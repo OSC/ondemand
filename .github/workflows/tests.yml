@@ -127,38 +127,7 @@ jobs:
         env:
           VERSION: "${{ steps.version.outputs.version }}"
 
-      - name: Upload RPMs
-        uses: actions/upload-artifact@v2
-        with:
-          name: rpms-${{ matrix.dist }}
-          path: dist/${{ matrix.dist }}/*.x86_64.rpm
-
-  rpm-acceptance-tests:
-    needs: [rpm-packaging-tests]
-    strategy:
-      matrix:
-        dist: ["el7", "el8"]
-    runs-on: "ubuntu-latest"
-    name: RPM acceptance tests ${{ matrix.dist }}
-
-    steps:
-      - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v2
-
-      - name: Download RPMs
-        uses: actions/download-artifact@v2
-        with:
-          name: rpms-${{ matrix.dist }}
-          path: dist/${{ matrix.dist }}
-
-      - name: Setup Ruby using Bundler
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "2.7.1"
-          bundler: "2.1.4"
-          bundler-cache: true
-
-      - name: Run acceptance tests
-        run: bundle exec rake test:acceptance
+      - name: Run package tests
+        run: bundle exec rake test:package
         env:
           BEAKER_set: ${{ matrix.dist }}

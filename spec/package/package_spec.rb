@@ -1,4 +1,4 @@
-require 'spec_helper_acceptance'
+require 'spec_helper_package'
 
 describe 'OnDemand installed with packages' do
   describe package('ondemand') do

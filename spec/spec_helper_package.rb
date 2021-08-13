@@ -1,5 +1,5 @@
 require 'beaker-rspec'
-require 'acceptance/acceptance_helper'
+require 'package/package_helper'
 require 'support/e2e_examples'
 
 RSpec.configure do |c|
