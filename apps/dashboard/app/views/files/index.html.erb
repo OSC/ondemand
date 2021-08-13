@@ -915,7 +915,7 @@ function deleteFiles(files){
   .then((result) => {
     if(result.isConfirmed){
       loading('Deleting files...');
-      removeFiles(files.map(f => [history.state.currentDirectory, f].join('/')), csrf_token);
+      removeFiles(Object.fromEntries(files.map(f => [[history.state.currentDirectory, f].join('/'), [history.state.currentDirectory, f].join('/')])), csrf_token);
     }
   })
 }
