@@ -57,6 +57,10 @@ namespace :test do
       task.pattern = "#{PROJ_DIR.join('spec', 'e2e')}/*_spec.rb"
       task.rspec_opts = ['--format documentation']
     end
+    RSpec::Core::RakeTask.new(:acceptance) do |task|
+      task.pattern = "#{PROJ_DIR.join('spec', 'acceptance')}/*_spec.rb"
+      task.rspec_opts = ['--format documentation']
+    end
   rescue LoadError
   end
 

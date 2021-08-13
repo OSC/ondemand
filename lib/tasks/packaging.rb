@@ -105,10 +105,12 @@ namespace :package do
     dist = args[:dist]
     extra_args = args[:extra_args].nil? ? '' : args[:extra_args]
     tmp_dir = File.join(Dir.pwd, 'tmp')
+    dist_dir = File.join(Dir.pwd, "dist")
     packaging_dir = File.join(tmp_dir, "ondemand-packaging")
 
     Dir.mkdir(tmp_dir) unless Dir.exist?(tmp_dir)
+    Dir.mkdir(dist_dir) unless Dir.exist?(dist_dir)
     sh git_clone_packaging("#{version_major}.#{version_minor}", packaging_dir) unless Dir.exist?(packaging_dir)
-    sh rpm_build_cmd(packaging_dir, File.join(tmp_dir, "work"), File.join(tmp_dir, "output"), dist, version, extra_args)
+    sh rpm_build_cmd(packaging_dir, File.join(tmp_dir, "work"), dist_dir, dist, version, extra_args)
   end
 end
