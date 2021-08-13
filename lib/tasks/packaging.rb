@@ -46,7 +46,7 @@ namespace :package do
 
   def rpm_build_cmd(packaging_dir, work_dir, output_dir, dist, version, extra_args)
     args = ["-w", work_dir, "-o", output_dir]
-    args.concat ["-d", dist, "-V", "v#{version}"]
+    args.concat ["-d", dist, "-V", "v#{version}", "-C"]
 
     "#{File.join(packaging_dir, 'build.sh')} #{args.join(' ')} #{extra_args} #{File.join(Dir.pwd, 'packaging')}"
   end
