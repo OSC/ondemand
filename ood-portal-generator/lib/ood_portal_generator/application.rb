@@ -59,6 +59,10 @@ module OodPortalGenerator
         detailed_exitcodes ? 4 : 0
       end
 
+      def insecure
+        @insecure.nil? ? false : @insecure
+      end
+
       def apache
         ENV['APACHE'] || (OodPortalGenerator.scl_apache? ? '/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf' : '/etc/httpd/conf.d/ood-portal.conf')
       end
@@ -140,7 +144,7 @@ module OodPortalGenerator
 
       def generate()
         view = View.new(context)
-        dex = Dex.new(context, view)
+        dex = Dex.new(context, view, insecure)
         rendered_template = view.render(template.read)
         output.write(rendered_template)
         if Dex.installed? && dex.enabled?
@@ -305,6 +309,10 @@ module OodPortalGenerator
 
         parser.on("-t", "--template TEMPLATE", String, "ERB template that is rendered") do |v|
           @template = v
+        end
+
+        parser.on("-i", "--insecure", TrueClass, "Generate insecure configs if configured") do |v|
+          @insecure = v
         end
 
         parser.on("-v", "--version", "Print current version") do

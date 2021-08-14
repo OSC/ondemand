@@ -8,7 +8,7 @@ module OodPortalGenerator
   # A view class that renders a Dex configuration
   class Dex
     # @param opts [#to_h] the options describing the context used to render the Dex config
-    def initialize(opts = {}, view)
+    def initialize(opts = {}, view = nil, insecure = false)
       opts = opts.to_h.deep_symbolize_keys
       config = opts.fetch(:dex, {})
       if config.nil? || config == false
@@ -35,9 +35,9 @@ module OodPortalGenerator
       @dex_config[:staticClients] = static_clients
       @dex_config[:connectors] = connectors unless connectors.nil?
       @dex_config[:oauth2] = { skipApprovalScreen: true }
-      if connectors.nil?
+      if insecure
         @dex_config[:enablePasswordDB] = true
-        @dex_config[:staticPasswords] = static_passwords(@config.fetch(:static_passwords, nil))
+        @dex_config[:staticPasswords] = static_passwords
       else
         @dex_config[:enablePasswordDB] = false
       end
@@ -197,8 +197,9 @@ module OodPortalGenerator
       BCrypt::Password.create(password).to_s
     end
 
-    def static_passwords(configured = nil)
+    def static_passwords
       passwords = []
+      configured = @config.fetch(:static_passwords, nil)
       if configured.nil?
         default = {
           email: 'ood@localhost',

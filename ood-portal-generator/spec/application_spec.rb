@@ -157,6 +157,7 @@ describe OodPortalGenerator::Application do
       end
 
       it 'generates default dex configs with custom static password' do
+        allow(described_class).to receive(:insecure).and_return(true)
         allow_any_instance_of(OodPortalGenerator::Dex).to receive(:hash_password).with('secret').and_return('$2a$12$iKLecAIN9MrxOZ0UltRb.OQOms/bgQbs5F.qCehq15oc3CvGFYzLy')
         allow(described_class).to receive(:context).and_return({
           dex: {
@@ -176,6 +177,7 @@ describe OodPortalGenerator::Application do
       end
 
       it 'generates full dex configs with SSL using proxy' do
+        allow(described_class).to receive(:insecure).and_return(true)
         allow(described_class).to receive(:context).and_return({
           servername: 'example.com',
           proxy_server: 'example-proxy.com',
@@ -194,6 +196,7 @@ describe OodPortalGenerator::Application do
       end
 
       it 'generates full dex configs with SSL' do
+        allow(described_class).to receive(:insecure).and_return(true)
         allow(described_class).to receive(:context).and_return({
           servername: 'example.com',
           port: '443',
@@ -211,6 +214,7 @@ describe OodPortalGenerator::Application do
       end
 
       it 'generates full dex configs with SSL and multiple redirect URIs' do
+        allow(described_class).to receive(:insecure).and_return(true)
         allow(described_class).to receive(:context).and_return({
           servername: 'example.com',
           port: '443',
@@ -233,6 +237,7 @@ describe OodPortalGenerator::Application do
 
       it 'generates custom dex configs' do
         with_modified_env CONFIG: 'spec/fixtures/ood_portal.dex.yaml' do
+          allow(described_class).to receive(:insecure).and_return(true)
           expected_dex_yaml = read_fixture('dex.custom.yaml').gsub('/etc/ood/dex', config_dir)
           expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
           described_class.generate()
@@ -306,6 +311,7 @@ describe OodPortalGenerator::Application do
       end
 
       it 'generates Dex config using secure secret' do
+        allow(described_class).to receive(:insecure).and_return(true)
         secret = Tempfile.new('secret')
         File.write(secret.path, "supersecret\n")
         allow(described_class).to receive(:context).and_return({
