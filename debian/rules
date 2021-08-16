@@ -9,4 +9,8 @@ override_dh_auto_configure:
 	# nothing to configure
 
 override_dh_auto_build:
-	rake build
+	rake --trace build
+
+override_dh_auto_install:
+	env
+	rake --trace install DESTDIR=$(CURDIR)/debian/ondemand
