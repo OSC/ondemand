@@ -324,9 +324,13 @@ $('#new-file-btn').on("click", () => {
     inputLabel: 'Filename',
     showCancelButton: true,
     inputValidator: (value) => {
-      if (! value || value.includes("/")) {
+      if (! value ) {
         // TODO: validate filenames against listing
-        return 'Provide a filenamethat does not have / in it'
+        return 'Provide a non-empty filename.'
+      }
+      else if (value.includes("/")) {
+        // TODO: validate filenames against listing
+        return 'Illegal character (/) not allowed in filename.'
       }
     }
   })
