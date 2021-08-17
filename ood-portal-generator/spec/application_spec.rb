@@ -43,6 +43,15 @@ describe OodPortalGenerator::Application do
   end
 
   describe 'generate' do
+    def test_generate(input, output)
+      expected = read_fixture(output)
+
+      with_modified_env({'CONFIG' => fixture_path(input).to_s }) do
+        expect(described_class.output).to receive(:write).with(expected)
+        described_class.generate()
+      end
+    end
+
     it 'runs generate' do
       expect { described_class.generate() }.to output(/VirtualHost/).to_stdout
     end
@@ -75,12 +84,26 @@ describe OodPortalGenerator::Application do
       expect(described_class.output).to receive(:write).with(expected_rendered)
       described_class.generate()
     end
-    it 'generates maintenance template with IP allowlist already escaped' do
-      allow(described_class).to receive(:context).and_return({maintenance_ip_allowlist: ['192\.168\.1\..*', '10\.0\.0\..*']})
+
+    it 'generates maintenance template with IP whitelist already escaped' do
+      allow(described_class).to receive(:context).and_return({maintenance_ip_whitelist: ['192\.168\.1\..*', '10\.0\.0\..*']})
       expected_rendered = read_fixture('ood-portal.conf.maint_with_ips')
       expect(described_class.output).to receive(:write).with(expected_rendered)
       described_class.generate()
     end
+
+    it 'adheres to maintenance_ip_allowlist' do
+      test_generate('input/allowlist.yml', 'output/allowlist.conf')
+    end
+
+    it 'continue to support maintenance_ip_allowlist' do
+      test_generate('input/whitelist.yml', 'output/allowlist.conf')
+    end
+
+    it 'allowlist takes precedence over whitelist' do
+      test_generate('input/both_lists.yml', 'output/allowlist.conf')
+    end
+
     it 'generates full OIDC config' do
       config = {
         servername: 'ondemand.example.com',

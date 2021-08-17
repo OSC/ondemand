@@ -111,3 +111,7 @@ def read_fixture(name)
   fixture = File.join(fixture_dir, name)
   File.read(fixture)
 end
+
+def fixture_path(name)
+    Pathname.new(File.dirname(__FILE__)).join('fixtures').join(name)
+end
