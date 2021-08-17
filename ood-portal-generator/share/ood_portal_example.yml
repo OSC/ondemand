@@ -72,13 +72,13 @@
 # Default: true
 #use_maintenance: true
 
-# List of IPs to whitelist when maintenance is enabled
+# List of IPs to allowed when maintenance is enabled
 # Example:
-#   maintenance_ip_whitelist:
+#   maintenance_ip_allowlist:
 #     - 192.168.0..*
 #     - 192.168.1..*
-# Default: [] (no IPs whitelisted)
-#maintenance_ip_whitelist: []
+# Default: [] (no IPs allowed)
+#maintenance_ip_allowlist: []
 
 # Set Header Content-Security-Policy frame-ancestors.
 # Example:
