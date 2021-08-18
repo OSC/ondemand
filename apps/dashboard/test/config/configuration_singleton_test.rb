@@ -391,4 +391,22 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     cfg.stubs(:config).returns({})
     assert_equal "", cfg.pinned_apps_group_by
   end
+
+  test "api is disabled by default" do
+    env = {
+      OOD_BATCH_CONNECT_API_ENABLED: nil
+    }
+    with_modified_env(env) do
+      refute ConfigurationSingleton.new.batch_connect_api_enabled?
+    end
+  end
+
+  test "api can be enabled with environment variable" do
+    env = {
+      OOD_BATCH_CONNECT_API_ENABLED: "true"
+    }
+    with_modified_env(env) do
+      assert ConfigurationSingleton.new.batch_connect_api_enabled?
+    end
+  end
 end
