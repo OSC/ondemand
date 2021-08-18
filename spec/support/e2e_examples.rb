@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'watir'
 require_relative '../e2e/e2e_helper'
 
@@ -78,76 +80,76 @@ shared_examples_for 'node-rnode-proxies' do
   it 'rnode proxies directly to the origin' do
     browser.goto "#{ctr_base_url}/rnode/localhost/5000/simple-page"
     expect(browser.url).to eq("#{ctr_base_url}/rnode/localhost/5000/simple-page")
-    expect(browser.div(id: "test-div").present?).to be true
+    expect(browser.div(id: 'test-div').present?).to be true
   end
 
   it 'rnode redirects to the origin' do
     browser.goto "#{ctr_base_url}/rnode/localhost/5000/simple-redirect"
     expect(browser.url).to eq("#{ctr_base_url}/rnode/localhost/5000/simple-page")
-    expect(browser.div(id: "test-div").present?).to be true
+    expect(browser.div(id: 'test-div').present?).to be true
   end
 
   it 'rnode redirects to the origin when no path is given' do
     browser.goto "#{ctr_base_url}/rnode/localhost/5000"
     expect(browser.url).to eq("#{ctr_base_url}/rnode/localhost/5000/simple-page")
-    expect(browser.div(id: "test-div").present?).to be true
+    expect(browser.div(id: 'test-div').present?).to be true
   end
 
   it 'rnode redirects to the origin when only root is given' do
     browser.goto "#{ctr_base_url}/rnode/localhost/5000/"
     expect(browser.url).to eq("#{ctr_base_url}/rnode/localhost/5000/simple-page")
-    expect(browser.div(id: "test-div").present?).to be true
+    expect(browser.div(id: 'test-div').present?).to be true
   end
 
   it 'rnode correctly redirects relative urls' do
     browser.goto "#{ctr_base_url}/rnode/localhost/5000/one/two/three/relative-redirect"
     expect(browser.url).to eq("#{ctr_base_url}/rnode/localhost/5000/one/one-level-down")
-    expect(browser.div(id: "test-div").present?).to be true
+    expect(browser.div(id: 'test-div').present?).to be true
 
     browser.goto "#{ctr_base_url}/rnode/localhost/5000/one/two/relative-redirect"
     expect(browser.url).to eq("#{ctr_base_url}/rnode/localhost/5000/simple-page")
-    expect(browser.div(id: "test-div").present?).to be true
+    expect(browser.div(id: 'test-div').present?).to be true
 
     browser.goto "#{ctr_base_url}/rnode/localhost/5000/one/relative-redirect"
     expect(browser.url).to eq("#{ctr_base_url}/rnode/localhost/5000/one/one-level-down")
-    expect(browser.div(id: "test-div").present?).to be true
+    expect(browser.div(id: 'test-div').present?).to be true
   end
 
   it 'node proxies directly to the origin' do
     browser.goto "#{ctr_base_url}/node/localhost/5001/simple-page"
     expect(browser.url).to eq("#{ctr_base_url}/node/localhost/5001/simple-page")
-    expect(browser.div(id: "test-div").present?).to be true
+    expect(browser.div(id: 'test-div').present?).to be true
   end
 
   it 'node redirects to the origin' do
     browser.goto "#{ctr_base_url}/node/localhost/5001/simple-redirect"
     expect(browser.url).to eq("#{ctr_base_url}/node/localhost/5001/simple-page")
-    expect(browser.div(id: "test-div").present?).to be true
+    expect(browser.div(id: 'test-div').present?).to be true
   end
 
   it 'node redirects to the origin with nothing extra in the path' do
     browser.goto "#{ctr_base_url}/node/localhost/5001"
     expect(browser.url).to eq("#{ctr_base_url}/node/localhost/5001/simple-page")
-    expect(browser.div(id: "test-div").present?).to be true
+    expect(browser.div(id: 'test-div').present?).to be true
   end
 
   it 'node redirects to the origin when only root is given' do
     browser.goto "#{ctr_base_url}/node/localhost/5001/"
     expect(browser.url).to eq("#{ctr_base_url}/node/localhost/5001/simple-page")
-    expect(browser.div(id: "test-div").present?).to be true
+    expect(browser.div(id: 'test-div').present?).to be true
   end
 
   it 'node correctly redirects relative urls' do
     browser.goto "#{ctr_base_url}/node/localhost/5001/one/two/three/relative-redirect"
     expect(browser.url).to eq("#{ctr_base_url}/node/localhost/5001/one/one-level-down")
-    expect(browser.div(id: "test-div").present?).to be true
+    expect(browser.div(id: 'test-div').present?).to be true
 
     browser.goto "#{ctr_base_url}/node/localhost/5001/one/two/relative-redirect"
     expect(browser.url).to eq("#{ctr_base_url}/node/localhost/5001/simple-page")
-    expect(browser.div(id: "test-div").present?).to be true
+    expect(browser.div(id: 'test-div').present?).to be true
 
     browser.goto "#{ctr_base_url}/node/localhost/5001/one/relative-redirect"
     expect(browser.url).to eq("#{ctr_base_url}/node/localhost/5001/one/one-level-down")
-    expect(browser.div(id: "test-div").present?).to be true
+    expect(browser.div(id: 'test-div').present?).to be true
   end
 end

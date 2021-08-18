@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_package'
 
 describe 'OnDemand installed with packages' do
@@ -18,7 +20,8 @@ describe 'OnDemand installed with packages' do
       restart_apache
 
       on hosts, '/opt/extras/simple_origin_server.py >/tmp/rnode.out 2>&1 &'
-      on hosts, 'FLASK_PORT=5001 FLASK_BASE_URL=/node/localhost/5001 /opt/extras/simple_origin_server.py >/tmp/node.out 2>&1 &'
+      on hosts,
+         'FLASK_PORT=5001 FLASK_BASE_URL=/node/localhost/5001 /opt/extras/simple_origin_server.py >/tmp/node.out 2>&1 &'
     end
 
     include_examples 'node-rnode-proxies'
