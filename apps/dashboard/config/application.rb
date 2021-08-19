@@ -40,7 +40,7 @@ module Dashboard
     if ::Configuration.load_external_config?
       # Setting system /etc initializers before OOD initializers allowing users flexibility
       # for container and POC deployments.
-      config.paths["config/initializers"].unshift ::Configuration.config_root.join("initializers").to_s
+      config.paths["config/initializers"] << ::Configuration.config_root.join("initializers").to_s
       config.paths["app/views"].unshift ::Configuration.config_root.join("views").to_s
     end
   end
