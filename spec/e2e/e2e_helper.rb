@@ -131,7 +131,7 @@ def upload_portal_config(file)
 end
 
 def update_ood_portal
-  on hosts, '/opt/ood/ood-portal-generator/sbin/update_ood_portal'
+  on hosts, '/opt/ood/ood-portal-generator/sbin/update_ood_portal --insecure'
 end
 
 def restart_apache
