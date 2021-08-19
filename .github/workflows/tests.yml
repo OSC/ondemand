@@ -126,3 +126,8 @@ jobs:
         run: bundle exec rake package:rpm[${{ matrix.dist }}]
         env:
           VERSION: "${{ steps.version.outputs.version }}"
+
+      - name: Run package tests
+        run: bundle exec rake test:package
+        env:
+          BEAKER_set: ${{ matrix.dist }}

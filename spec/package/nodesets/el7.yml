@@ -1,0 +1,30 @@
+HOSTS:
+  centos-7:
+    roles:
+      - agent
+    platform: el-7-x86_64
+    hypervisor: docker
+    image: centos:7
+    docker_preserve_image: true
+    docker_cmd:
+      - '/usr/sbin/init'
+    docker_image_commands:
+      - 'yum install -y yum-utils wget which cronie iproute initscripts'
+    docker_env:
+      - LANG=en_US.UTF-8
+      - LANGUAGE=en_US.UTF-8
+      - LC_ALL=en_US.UTF-8
+    docker_container_name: 'ondemand-el7'
+    docker_port_bindings:
+      8080/tcp:
+        - HostPort: '8080'
+          HostIp: '0.0.0.0'
+      5556/tcp:
+        - HostPort: '5556'
+          HostIp: '0.0.0.0'
+CONFIG:
+  log_level: debug
+  type: foss
+ssh:
+  password: root
+  auth_methods: ["password"]
