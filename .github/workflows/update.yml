@@ -36,9 +36,10 @@ jobs:
       - name: Setup Bundler
         run: |
           bundle config path ~/vendor/bundle
+          bundle install
 
       - name: Run Rake Update
-        run: rake update
+        run: bundle exec rake update
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
