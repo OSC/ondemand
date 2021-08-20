@@ -137,7 +137,7 @@ task :update do
   ruby_apps.each do |app|
     chdir app.path
     Bundler.with_unbundled_env do
-      sh "bundle install"
+      sh "bundle update"
     end
   end
 
