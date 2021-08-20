@@ -136,7 +136,9 @@ desc "Update Ondemand"
 task :update do
   ruby_apps.each do |app|
     chdir app.path
-    sh "bin/bundle update"
+    Bundler.with_unbundled_env do
+      sh "bundle install"
+    end
   end
 
   yarn_apps.each do |app|
