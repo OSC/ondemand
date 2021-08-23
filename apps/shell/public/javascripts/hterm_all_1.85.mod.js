@@ -6952,10 +6952,6 @@ hterm.Keyboard.KeyMap.prototype.reset = function() {
       var keycapEP = 61;      // =+
       var keycapMU = 173;     // -_
 
-      this.addKeyDefs(
-        // Firefox Italian +*.
-        [171, '+*', DEFAULT, c('onPlusMinusZero_'), DEFAULT, c('onPlusMinusZero_')]
-      );
     } else {
       // All other browsers use these mappings.
       var keycapMute = 173;   // Mute
@@ -6975,7 +6971,11 @@ hterm.Keyboard.KeyMap.prototype.reset = function() {
   var DEFAULT = hterm.Keyboard.KeyActions.DEFAULT;
   var PASS = hterm.Keyboard.KeyActions.PASS;
   var STRIP = hterm.Keyboard.KeyActions.STRIP;
-
+  
+  this.addKeyDefs(
+    // Firefox Italian +*.
+    [171, '+*', DEFAULT, c('onPlusMinusZero_'), DEFAULT, c('onPlusMinusZero_')]
+  );
   this.addKeyDefs(
     // These fields are: [keycode, keycap, normal, control, alt, meta]
 
