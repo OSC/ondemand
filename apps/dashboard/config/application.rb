@@ -38,8 +38,8 @@ module Dashboard
     config.exceptions_app = self.routes
 
     if ::Configuration.load_external_config?
-      # Setting system /etc initializers before OOD initializers allowing users flexibility
-      # for container and POC deployments.
+      # Ensuring OOD initializers run last so they that user's can't override what we 
+      # specify unless we allow the override as well in our own initializers.
       config.paths["config/initializers"] << ::Configuration.config_root.join("initializers").to_s
       config.paths["app/views"].unshift ::Configuration.config_root.join("views").to_s
     end
