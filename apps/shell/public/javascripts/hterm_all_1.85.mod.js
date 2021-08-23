@@ -6737,7 +6737,7 @@ hterm.Keyboard.Bindings.prototype.addBindings = function(map) {
  *   more boolean properties representing key modifiers.  These property names
  *   must match those defined in hterm.Keyboard.KeyPattern.modifiers.
  */
-hterm.Keyboard.Bindings.prototype.getBinding = function(keyDown) {
+ hterm.Keyboard.Bindings.prototype.getBinding = function(keyDown) {
   var list = this.bindings_[keyDown.keyCode];
   if (!list)
     return null;
@@ -6815,7 +6815,7 @@ hterm.Keyboard.KeyMap = function(keyboard) {
  * state of the modifier keys, as specified in the final table of "PC-Style
  * Function Keys" from [XTERM].
  */
-hterm.Keyboard.KeyMap.prototype.addKeyDef = function(keyCode, def) {
+ hterm.Keyboard.KeyMap.prototype.addKeyDef = function(keyCode, def) {
   if (keyCode in this.keyDefs)
     console.warn('Duplicate keyCode: ' + keyCode);
 
@@ -6952,10 +6952,7 @@ hterm.Keyboard.KeyMap.prototype.reset = function() {
       var keycapEP = 61;      // =+
       var keycapMU = 173;     // -_
 
-      this.addKeyDefs(
-        // Firefox Italian +*.
-        [171, '+*', DEFAULT, c('onPlusMinusZero_'), DEFAULT, c('onPlusMinusZero_')]
-      );
+    
     } else {
       // All other browsers use these mappings.
       var keycapMute = 173;   // Mute
@@ -6977,6 +6974,10 @@ hterm.Keyboard.KeyMap.prototype.reset = function() {
   var STRIP = hterm.Keyboard.KeyActions.STRIP;
 
   this.addKeyDefs(
+    // Firefox Italian +*.
+    [171, '+*', DEFAULT, c('onPlusMinusZero_'), DEFAULT, c('onPlusMinusZero_')]
+  );
+  this.addKeyDefs(
     // These fields are: [keycode, keycap, normal, control, alt, meta]
 
     // The browser sends the keycode 0 for some keys.  We'll just assume it's
@@ -6987,6 +6988,7 @@ hterm.Keyboard.KeyMap.prototype.reset = function() {
     // These bindings match xterm for lack of a better standard.  The emitted
     // values might look like they're skipping values, but it's what xterm does.
     // https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h2-PC-Style-Function-Keys
+    
     [27,  '[ESC]', ESC,                       DEFAULT, DEFAULT,     DEFAULT],
     [112, '[F1]',  mod(SS3 + 'P', CSI + 'P'), DEFAULT, CSI + "23~", DEFAULT],
     [113, '[F2]',  mod(SS3 + 'Q', CSI + 'Q'), DEFAULT, CSI + "24~", DEFAULT],
@@ -19857,6 +19859,7 @@ hterm.VT.CharacterMaps.DefaultMaps['5'] = new hterm.VT.CharacterMap(
       '\x7c': '\u00f6',  // | -> 'o' umlaut
       '\x7d': '\u00e5',  // } -> 'a' ring
       '\x7e': '\u00fc',  // ~ -> 'u' umlaut
+      // '\xab': '\u002b', // + -> +
     });
 
 /**
@@ -19979,6 +19982,7 @@ hterm.VT.CharacterMaps.DefaultMaps['Z'] = new hterm.VT.CharacterMap(
       '\x7b': '\u00b0',  // { -> ring
       '\x7c': '\u00f1',  // | -> 'n' tilde
       '\x7d': '\u00e7',  // } -> 'c' cedilla
+      // '\x72': '\u00a1',// r -> '!' inverted 
     });
 
 /**
