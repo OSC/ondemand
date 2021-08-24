@@ -9,13 +9,14 @@ class Transfer
 
   validates_each :files do |record, attr, files|
     if record.action == 'mv' || record.action == 'cp'
-      conflicts = files.values.select {|f| File.exist?(f) }
+      conflicts = files.values.select { |f| File.exist?(f) }
       record.errors.add :files, "these files already exist: #{conflicts.join(', ')}" if conflicts.present?
     end
 
-    files.each do |k,v|
-      record.errors.add :files, "#{k} is not included under ALLOWLIST_PATH" unless AllowlistPolicy.default.permitted?(k)
-      record.errors.add :files, "#{v} is not included under ALLOWLIST_PATH" unless AllowlistPolicy.default.permitted?(v)
+    files.each do |k, v|
+      record.errors.add :files, "#{k} is not included under ALLOWLIST_PATH" unless AllowlistPolicy.default.permitted?(k.to_s)
+      # rm commands are [{ k => nil}] - nil values
+      record.errors.add :files, "#{v} is not included under ALLOWLIST_PATH" if !v.nil? && !AllowlistPolicy.default.permitted?(v.to_s)
     end
   end
 
@@ -40,12 +41,12 @@ class Transfer
     end
 
     def build(action:, files:)
-      if files.kind_of?(Array)
+      if files.is_a?(Array)
         # rm action will want to provide an array of files
         # so if it is an Array we convert it to a hash:
         #
         # convert [a1, a2, a3] to {a1 => nil, a2 => nil, a3 => nil}
-        files = Hash[files.map {|f| [f, nil]}]
+        files = Hash[files.map { |f| [f, nil] }]
       end
 
       Transfer.new(action: action, files: files)
