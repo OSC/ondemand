@@ -46,30 +46,6 @@ jobs:
       - name: Run System Dashboard tests
         run: cd apps/dashboard; bin/rake test:system
 
-  e2e-tests:
-    strategy:
-      matrix:
-        os: ["ubuntu-latest"]
-    runs-on: ${{ matrix.os }}
-    name: End-to-end tests
-
-    steps:
-      - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v2
-
-      - name: Ensure tags exist for container packaging
-        run: git fetch --prune --unshallow --tags
-
-      - name: Setup Ruby using Bundler
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "2.7.1"
-          bundler: "2.1.4"
-          bundler-cache: true
-
-      - name: Run E2E tests
-        run: bundle exec rake test:e2e
-
   k8s-tests:
     runs-on: ubuntu-latest
     name: Kubernetes tests
@@ -95,25 +71,19 @@ jobs:
       - name: Test k8s-bootstrap
         run: /bin/bash hooks/k8s-bootstrap/k8s-bootstrap-ondemand.sh test hooks/hook.env.example
 
-  rpm-packaging-tests:
+  e2e-tests:
     strategy:
       matrix:
         dist: ["el7", "el8"]
+        version: ["2.0"]
     runs-on: "ubuntu-latest"
-    name: RPM packaging tests ${{ matrix.dist }}
+    name: E2E test ${{ matrix.dist }} (ondemand-${{ matrix.version }})
 
     steps:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v2
-
-      - name: Ensure tags exist for packaging
-        run: git fetch --prune --unshallow --tags
-
-      - name: Set version
-        id: version
-        run: |
-          version=$(git describe --tags --abbrev=0)
-          echo ::set-output name=version::${version#v}
+        with:
+          fetch-depth: 0
 
       - name: Setup Ruby using Bundler
         uses: ruby/setup-ruby@v1
@@ -125,9 +95,9 @@ jobs:
       - name: Build package
         run: bundle exec rake package:rpm[${{ matrix.dist }}]
         env:
-          VERSION: "${{ steps.version.outputs.version }}"
+          VERSION: "${{ matrix.version }}.0"
 
       - name: Run package tests
-        run: bundle exec rake test:package
+        run: bundle exec rake test:e2e
         env:
           BEAKER_set: ${{ matrix.dist }}

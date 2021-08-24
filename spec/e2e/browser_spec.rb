@@ -1,8 +1,6 @@
-require 'watir'
-require_relative 'e2e_helper'
+require 'spec_helper_e2e'
 
 describe 'OnDemand browser test' do
-
   def browser
     @browser ||= new_browser
   end
