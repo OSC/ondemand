@@ -1,6 +1,5 @@
 require 'beaker-rspec'
-require 'package/package_helper'
-require 'support/e2e_examples'
+require 'e2e/e2e_helper'
 
 RSpec.configure do |c|
   # Readable test descriptions
