@@ -6952,10 +6952,6 @@ hterm.Keyboard.KeyMap.prototype.reset = function() {
       var keycapEP = 61;      // =+
       var keycapMU = 173;     // -_
 
-      this.addKeyDefs(
-        // Firefox Italian +*.
-        [171, '+*', DEFAULT, c('onPlusMinusZero_'), DEFAULT, c('onPlusMinusZero_')]
-      );
     } else {
       // All other browsers use these mappings.
       var keycapMute = 173;   // Mute
@@ -7015,6 +7011,10 @@ hterm.Keyboard.KeyMap.prototype.reset = function() {
     [48,  '0)', DEFAULT, c('onPlusMinusZero_'),c('onAltNum_'),c('onPlusMinusZero_')],
     [keycapMU, '-_', DEFAULT, c('onPlusMinusZero_'), DEFAULT, c('onPlusMinusZero_')],
     [keycapEP, '=+', DEFAULT, c('onPlusMinusZero_'), DEFAULT, c('onPlusMinusZero_')],
+
+    // was Firefox Italian +* but applies to all browsers (and lots of EU keyboard layouts).
+    // see https://github.com/OSC/ondemand/issues/1214
+    [171, '+*', DEFAULT, c('onPlusMinusZero_'), DEFAULT, c('onPlusMinusZero_')],
 
     [8,   '[BKSP]', bs('\x7f', '\b'), bs('\b', '\x7f'), DEFAULT,     DEFAULT],
 
