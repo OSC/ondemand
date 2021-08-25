@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.16] - 2021-08-25
+
+### Fixed
+
+- Fixed an issue with non US keyboards could not use `+` keys in the shell app -
+  [1214](https://github.com/OSC/ondemand/issues/1214).
+- Fixed Ganglia panels visually and semantically - [1031](https://github.com/OSC/ondemand/issues/1031).
+- Fixed error messages in creating invalid files - [1322](https://github.com/OSC/ondemand/issues/1322).
+
+### Added
+
+- RPM building and e2e testing in several pull requests.
+  - [1329](https://github.com/OSC/ondemand/pull/1329)
+  - [1340](https://github.com/OSC/ondemand/pull/1340)
+
+### Changed
+
+- Sessions stores can now be overridden in [1321](https://github.com/OSC/ondemand/pull/1321).
+- upgraded `ood_core` from v0.17.4 to v0.17.6.
+
 ## [2.0.15] - 2021-08-11
 
 ### Fixed
@@ -870,7 +890,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.14...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.16...HEAD
+[2.0.16]: https://github.com/OSC/ondemand/compare/v2.0.15...v2.0.16
+[2.0.15]: https://github.com/OSC/ondemand/compare/v2.0.14...v2.0.15
 [2.0.14]: https://github.com/OSC/ondemand/compare/v2.0.13...v2.0.14
 [2.0.13]: https://github.com/OSC/ondemand/compare/v2.0.12...v2.0.13
 [2.0.12]: https://github.com/OSC/ondemand/compare/v2.0.11...v2.0.12
