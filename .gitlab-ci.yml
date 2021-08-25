@@ -20,6 +20,7 @@ rpm-build-nightly-el7:
     - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
     - export VERSION="$(git describe --tags --abbrev=0)-99.$(date +%Y%m%d).nightly"
+    - rake package:tar
     - ./tmp/ondemand-packaging/build.sh -w $CI_PROJECT_DIR/tmp/work -o $CI_PROJECT_DIR/tmp/output -V $VERSION -u -v -C -d el7 $CI_PROJECT_DIR/packaging
   artifacts:
     paths:
@@ -32,6 +33,7 @@ rpm-build-nightly-el8:
     - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
     - export VERSION="$(git describe --tags --abbrev=0)-99.$(date +%Y%m%d).nightly"
+    - rake package:tar
     - ./tmp/ondemand-packaging/build.sh -w $CI_PROJECT_DIR/tmp/work -o $CI_PROJECT_DIR/tmp/output -V $VERSION -u -v -C -d el8 $CI_PROJECT_DIR/packaging
   artifacts:
     paths:
