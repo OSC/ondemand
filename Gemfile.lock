@@ -107,12 +107,16 @@ GEM
       ast
       ruby-ll (~> 2.1)
     open_uri_redirections (0.2.1)
+    parallel (1.20.1)
+    parser (3.0.2.0)
+      ast (~> 2.4.1)
     pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
     pry-byebug (3.9.0)
       byebug (~> 11.0)
       pry (~> 0.13.0)
+    rainbow (3.0.0)
     rake (13.0.6)
     rb-readline (0.5.5)
     regexp_parser (2.1.1)
@@ -135,9 +139,21 @@ GEM
       rspec-support (~> 3.10.0)
     rspec-support (3.10.2)
     rsync (1.0.9)
+    rubocop (1.19.0)
+      parallel (~> 1.10)
+      parser (>= 3.0.0.0)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8, < 3.0)
+      rexml
+      rubocop-ast (>= 1.9.1, < 2.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 1.4.0, < 3.0)
+    rubocop-ast (1.10.0)
+      parser (>= 3.0.1.1)
     ruby-ll (2.1.2)
       ansi
       ast
+    ruby-progressbar (1.11.0)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
     selenium-webdriver (3.142.7)
@@ -156,6 +172,7 @@ GEM
       sfl
     stringify-hash (0.0.2)
     thor (1.1.0)
+    unicode-display_width (2.0.0)
     vmfloaty (1.4.0)
       colorize (~> 0.8.1)
       commander (>= 4.4.3, < 4.7.0)
@@ -174,6 +191,7 @@ DEPENDENCIES
   beaker-rspec
   rake
   rspec
+  rubocop
   watir
 
 BUNDLED WITH
