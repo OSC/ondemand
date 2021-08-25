@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [1214](https://github.com/OSC/ondemand/issues/1214).
 - Fixed Ganglia panels visually and semantically - [1031](https://github.com/OSC/ondemand/issues/1031).
 - Fixed error messages in creating invalid files - [1322](https://github.com/OSC/ondemand/issues/1322).
+- Fixed removing files when allowlists are in place - [1337](https://github.com/OSC/ondemand/issues/1337).
 
 ### Added
 
