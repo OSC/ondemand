@@ -1,4 +1,5 @@
 require 'rubocop/rake_task'
+require 'fileutils'
 
 desc "Test OnDemand"
 task :test => 'test:all'
@@ -45,18 +46,29 @@ namespace :test do
     end
   end
 
-  begin
-    RuboCop::RakeTask.new(:lint) do |t|
-      t.options = ["--config=#{File.join(proj_root, "apps/dashboard/.rubocop.yml")}"]
-      t.patterns = [
-      "apps/**/*.rb",
-      "lib/**/*.rb",
-      "nginx_stage/**/*.rb",
-      "ood-portal-generator/**/*.rb",
-      "spec/**/*.rb",
-    ]
+  namespace :lint do
+    begin
+      RuboCop::RakeTask.new(:rubocop, [:path]) do |t, args|
+        t.options = ["--config=#{File.join(proj_root, ".rubocop.yml")}"]
+        default_patterns = [
+          "apps/**/*.rb",
+          "lib/**/*.rb",
+          "nginx_stage/**/*.rb",
+          "ood-portal-generator/**/*.rb",
+          "spec/**/*.rb",
+        ]
+        t.patterns = args[:path].nil? ? default_patterns : [args[:path]]
+      end
+    rescue LoadError
     end
-  rescue LoadError
+
+    desc "Setup .rubocop.yml files"
+    task :setup do
+      source = File.join(proj_root, '.rubocop.yml')
+      testing.each_pair do |app, _task|
+        FileUtils.cp(source, PROJ_DIR.join(app.to_s, '.rubocop.yml'), verbose: true)
+      end
+    end
   end
 
   desc "Run shellcheck"
