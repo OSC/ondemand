@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 module BuildUtils
+  def proj_root
+    File.expand_path(File.join(File.dirname(__FILE__), '../..'))
+  end
+
   def image_tag
     tag? ? numeric_tag : "#{numeric_tag}-#{git_hash}"
   end

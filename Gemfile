@@ -10,6 +10,7 @@ gem "bcrypt"
 group :test do
   gem "rspec"
   gem "watir"
+  gem "rubocop"
 
   gem "beaker"
   gem "beaker-rspec"

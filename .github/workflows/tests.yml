@@ -43,6 +43,9 @@ jobs:
       - name: Run unit tests
         run: bundle exec rake test:unit
 
+      - name: Run lint tests
+        run: bundle exec rake test:lint || true
+
       - name: Run System Dashboard tests
         run: cd apps/dashboard; bin/rake test:system
 
