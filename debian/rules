@@ -12,14 +12,14 @@ override_dh_auto_configure:
 	# nothing to configure
 
 override_dh_auto_build:
-	whoami
 	env
-	gem env
 	bundle install
 	rake --trace build
+	rake build:nginx
 
 override_dh_auto_install:
 	env
-	rake --trace install DESTDIR=$(DESTDIR)
+	rake --trace install
+	rake --trace install:nginx
 	mkdir -p $(DESTDIR)/opt/ood/gems
 	mv $(GEM_HOME)/* $(DESTDIR)/opt/ood/gems

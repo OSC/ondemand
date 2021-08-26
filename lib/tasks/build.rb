@@ -39,9 +39,9 @@ namespace :build do
     sh "#{container_runtime} run #{base_args.join(' ')} #{debuild_args.join(' ')}"
   end
 
-  task :nginx, [:platform, :version] => [:build_box] do |task, args|
-    tar = "#{build_src_dir}/#{nginx_tar}"
-    sh "wget #{nginx_tar_url} -O #{tar}" unless File.exist?(tar)
+  task :nginx do
+    tar = "#{vendor_src_dir}/#{nginx_tar}"
+    sh "curl -L #{nginx_tar_url} -o #{tar}" unless File.exist?(tar)
   end
 
   task :passenger, [:platform, :version] => [:build_box] do |task, args|

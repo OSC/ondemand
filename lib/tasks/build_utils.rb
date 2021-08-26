@@ -96,8 +96,9 @@ module BuildUtils
     "#{PROJ_DIR}/build/#{build_box_tag(args)}"
   end
 
-  def build_src_dir
-    "#{PROJ_DIR}/build/src".tap { |p| sh "mkdir -p #{p}" }
+  # TODO: continue vendor/ convention? Seems as good as any other name.
+  def vendor_src_dir
+    "vendor/src".tap { |p| sh "mkdir -p #{p}" }
   end
 
   def build_box_tag(args)
@@ -184,5 +185,9 @@ module BuildUtils
   def template_file(filename)
     cwd = "#{File.expand_path(__dir__)}"
     "#{cwd}/templates/#{filename}"
+  end
+
+  def ood_bin_dir
+    "#{INSTALL_ROOT}/bin"
   end
 end
