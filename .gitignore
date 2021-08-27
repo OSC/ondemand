@@ -109,3 +109,7 @@ tags
 
 # Ignore distribution files
 /dist
+
+# Ignore copies of .rubocop.yml
+.rubocop.yml
+!/.rubocop.yml

@@ -9,57 +9,14 @@ INSTALL_ROOT      = Pathname.new(ENV["PREFIX"] || "/opt/ood")
 VENDOR_BUNDLE     = (ENV['VENDOR_BUNDLE'] == "yes" || ENV['VENDOR_BUNDLE'] == "true")
 PASSENGER_APP_ENV = ENV["PASSENGER_APP_ENV"] || "production"
 
+require "#{TASK_DIR}/rake_helper"
 require "#{TASK_DIR}/packaging"
 require "#{TASK_DIR}/test"
+require "#{TASK_DIR}/lint"
 require "#{TASK_DIR}/docker"
 require "#{TASK_DIR}/development"
 
-def infrastructure
-  [
-    'mod_ood_proxy',
-    'nginx_stage',
-    'ood_auth_map',
-    'ood-portal-generator',
-  ].map { |d| Component.new(d) }
-end
-
-def apps
-  Dir["#{APPS_DIR}/*"].map { |d| Component.new(d) }
-end
-
-def ruby_apps
-  apps.select(&:ruby_app?)
-end
-
-def yarn_apps
-  apps.select(&:package_json?)
-end
-
-class Component
-  attr_reader :name
-  attr_reader :path
-
-  def initialize(app)
-    @name = File.basename(app)
-    @path = Pathname.new(app)
-  end
-
-  def ruby_app?
-    @path.join('config.ru').exist?
-  end
-
-  def node_app?
-    @path.join('app.js').exist?
-  end
-
-  def package_json?
-    @path.join('package.json').exist?
-  end
-
-  def gemfile?
-    @path.join('Gemfile.lock').exist?
-  end
-end
+include RakeHelper
 
 namespace :build do
   desc "Build gems"
