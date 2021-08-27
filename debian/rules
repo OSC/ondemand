@@ -15,11 +15,13 @@ override_dh_auto_build:
 	env
 	bundle install
 	rake --trace build
-	rake build:nginx
+	rake --trace build:nginx
+	rake --trace build:passenger
 
 override_dh_auto_install:
 	env
 	rake --trace install
 	rake --trace install:nginx
+	rake --trace install:passenger
 	mkdir -p $(DESTDIR)/opt/ood/gems
 	mv $(GEM_HOME)/* $(DESTDIR)/opt/ood/gems

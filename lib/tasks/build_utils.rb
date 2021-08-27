@@ -98,7 +98,11 @@ module BuildUtils
 
   # TODO: continue vendor/ convention? Seems as good as any other name.
   def vendor_src_dir
-    "vendor/src".tap { |p| sh "mkdir -p #{p}" }
+    "vendor/ood/src".tap { |p| sh "mkdir -p #{p}" }
+  end
+
+  def vendor_build_dir
+    "vendor/ood/build".tap { |p| sh "mkdir -p #{p}" }
   end
 
   def build_box_tag(args)
