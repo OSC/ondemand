@@ -9,4 +9,7 @@ RUN apt update && \
     make g++ gcc sqlite3 libsqlite3-dev \
     debmake debhelper
 
+RUN groupadd -g 1000 deb && \
+    useradd -u 1000 --create-home --gid 1000 deb
+
 RUN ln -s /bin/bundle2.7 /bin/bundle

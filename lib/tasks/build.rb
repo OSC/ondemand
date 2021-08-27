@@ -26,17 +26,16 @@ namespace :build do
     sh "#{tar} -xzf #{dir}/#{ood_package_tar} -C #{dir}"
 
     work_dir = "/build/#{versioned_ood_package}"
-    bundle_ctr = "#{work_dir}/vendor/bundle"
 
-    base_args = ["--rm"]
+    # FIXME - --userns is a podman flag
+    base_args = ["--rm", "--user", "1000:1000", "--userns", "keep-id"]
     base_args.concat ["-v", "#{dir}:/build", "-w", "#{work_dir}"]
-    base_args.concat [ "-e", "VENDOR_BUNDLE_PATH=#{bundle_ctr}", "-e", "VENDOR_BUNDLE=true"]
     base_args.concat ["-e", "DEBUILD_DPKG_BUILDPACKAGE_OPTS='-us -uc -I -i'"]
+    base_args.concat ["-e", "HOME=/home/deb", "-e", "USER=deb"]
     base_args.concat [ build_box_image(args)]
     sh "#{container_runtime} run #{base_args.join(' ')} debmake -b':ruby'"
 
-    debuild_args = ["debuild", "-e", "VENDOR_BUNDLE_PATH", "-e", "VENDOR_BUNDLE"]
-    debuild_args.concat ["--no-lintian"]
+    debuild_args = ["debuild", "--no-lintian"]
     sh "#{container_runtime} run #{base_args.join(' ')} #{debuild_args.join(' ')}"
   end
 
