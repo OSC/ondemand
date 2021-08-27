@@ -1,6 +1,9 @@
 #!/usr/bin/make -f
 # You must remove unused comment lines for the released package.
-# export DH_VERBOSE = 1
+export DH_VERBOSE = 1
+export DESTDIR = $(CURDIR)/debian/ondemand
+export GEM_HOME	=	$(CURDIR)/gems
+export GEM_PATH	=	$(GEM_HOME):$(shell printenv GEM_PATH)
 
 %:
 	dh $@
@@ -9,4 +12,14 @@ override_dh_auto_configure:
 	# nothing to configure
 
 override_dh_auto_build:
-	rake build
+	whoami
+	env
+	gem env
+	bundle install
+	rake --trace build
+
+override_dh_auto_install:
+	env
+	rake --trace install DESTDIR=$(DESTDIR)
+	mkdir -p $(DESTDIR)/opt/ood/gems
+	mv $(GEM_HOME)/* $(DESTDIR)/opt/ood/gems

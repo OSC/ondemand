@@ -5,7 +5,7 @@ PROJ_DIR          = Pathname.new(__dir__)
 TASK_DIR          = "#{PROJ_DIR}/lib/tasks"
 APPS_DIR          = PROJ_DIR.join('apps')
 GEMFILE           = PROJ_DIR.join('Gemfile')
-INSTALL_ROOT      = Pathname.new(ENV["PREFIX"] || "/opt/ood")
+INSTALL_ROOT      = Pathname.new(ENV["PREFIX"] || "#{ENV['DESTDIR']}/opt/ood")
 VENDOR_BUNDLE     = (ENV['VENDOR_BUNDLE'] == "yes" || ENV['VENDOR_BUNDLE'] == "true")
 VENDOR_BUNDLE_PATH = Pathname.new(ENV['VENDOR_BUNDLE_PATH'] || "vendor/bundle")
 PASSENGER_APP_ENV = ENV["PASSENGER_APP_ENV"] || "production"
@@ -68,12 +68,14 @@ task :build => 'build:all'
 directory INSTALL_ROOT.to_s
 
 namespace :install do
+
   desc "Install OnDemand infrastructure"
   task :infrastructure => [INSTALL_ROOT] do
     infrastructure.each do |infra|
       sh "cp -r #{infra.name} #{INSTALL_ROOT}/"
     end
   end
+
   desc "Install OnDemand apps"
   task :apps => [INSTALL_ROOT] do
     sh "cp -r #{APPS_DIR} #{INSTALL_ROOT}/"
