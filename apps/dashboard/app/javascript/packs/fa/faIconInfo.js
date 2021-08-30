@@ -1,3 +1,5 @@
+// TODO: I wonder how to update these fa icon lists?
+
 FA5iconinfo = [{
     "title": "fab fa-500px",
     "searchTerms": []
@@ -2966,6 +2968,7 @@ FA5iconinfo = [{
     "title": "fab fa-youtube-square",
     "searchTerms": []
 }];
+
 FA4iconinfo = [{
     "title": "fa fa-glass",
     "searchTerms": ["martini", "drink", "bar", "alcohol", "liquor"]
