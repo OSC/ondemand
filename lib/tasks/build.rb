@@ -39,28 +39,26 @@ namespace :build do
     sh "#{container_runtime} run #{base_args.join(' ')} #{debuild_args.join(' ')}"
   end
 
-  task :nginx, [:platform, :version] => [:build_box] do |task, args|
-    tar = "#{build_src_dir}/#{nginx_tar}"
-    sh "wget #{nginx_tar_url} -O #{tar}" unless File.exist?(tar)
+  task :nginx do
+    tar_file = "#{vendor_src_dir}/#{nginx_tar}"
+    sh "curl -L #{nginx_tar_url} -o #{tar_file}" unless File.exist?(tar_file)
   end
 
-  task :passenger, [:platform, :version] => [:build_box] do |task, args|
-    tar = "#{build_src_dir}/#{passenger_tar}"
-    sh "wget #{passenger_tar_url} -O #{tar}" unless File.exist?(tar)
+  task :passenger do
+    passenger_tar_full = "#{vendor_src_dir}/#{passenger_tar}"
+    sh "curl -L #{passenger_tar_url} -o #{passenger_tar_full}" unless File.exist?(passenger_tar_full)
 
     # agent tar isn't versioned, so let's do that now.
-    agent_tar = "#{build_src_dir}/passenger-agent-#{passenger_version}.tar.gz"
-    sh "wget #{passenger_agent_tar_url} -O #{agent_tar}" unless File.exist?(agent_tar)
+    agent_tar = "#{vendor_src_dir}/passenger-agent-#{passenger_version}.tar.gz"
+    sh "curl -L #{passenger_agent_tar_url} -o #{agent_tar}" unless File.exist?(agent_tar)
 
-    work_dir = "/build"
-    passenger_host = "#{build_dir(args)}/passenger".tap { |p| sh "mkdir -p #{p}" }
-    sh "#{tar} --strip-components=1 -xzf #{tar} -C #{passenger_host}"
+    work_dir = "#{vendor_build_dir}/passenger".tap { |p| sh "mkdir -p #{p}" }
+    sh "ls -lRta #{work_dir}"
+    sh "#{tar} --strip-components=1 -xzf #{passenger_tar_full} -C #{work_dir}"
 
-    base_args = ["--rm", "-v", "#{passenger_host}:#{work_dir}", "-w", "#{work_dir}"]
-    base_args.concat [ build_box_image(args) ]
-    makefile_args = base_args + [ "ruby", "#{work_dir}/src/ruby_native_extension/extconf.rb" ]
-
-    sh "#{container_runtime} run #{makefile_args.join(' ')}"
-    sh "#{container_runtime} run #{base_args.join(' ')} make"
+    chdir work_dir do
+      sh "ruby src/ruby_native_extension/extconf.rb"
+      sh "make"
+    end
   end
 end

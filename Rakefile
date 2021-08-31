@@ -5,7 +5,8 @@ PROJ_DIR          = Pathname.new(__dir__)
 TASK_DIR          = "#{PROJ_DIR}/lib/tasks"
 APPS_DIR          = PROJ_DIR.join('apps')
 GEMFILE           = PROJ_DIR.join('Gemfile')
-INSTALL_ROOT      = Pathname.new(ENV["PREFIX"] || "#{ENV['DESTDIR']}/opt/ood")
+DESTDIR           = Pathname.new(ENV['DESTDIR'].to_s)
+INSTALL_ROOT      = Pathname.new(ENV["PREFIX"] || "#{DESTDIR}/opt/ood")
 VENDOR_BUNDLE     = (ENV['VENDOR_BUNDLE'] == "yes" || ENV['VENDOR_BUNDLE'] == "true")
 VENDOR_BUNDLE_PATH = Pathname.new(ENV['VENDOR_BUNDLE_PATH'] || "vendor/bundle")
 PASSENGER_APP_ENV = ENV["PASSENGER_APP_ENV"] || "production"
@@ -17,6 +18,7 @@ require "#{TASK_DIR}/test"
 require "#{TASK_DIR}/lint"
 require "#{TASK_DIR}/docker"
 require "#{TASK_DIR}/development"
+require "#{TASK_DIR}/install"
 
 include RakeHelper
 
