@@ -1,11 +1,14 @@
+
+<%= javascript_pack_tag 'batchConnect' %>
+
+<% @app.custom_javascript_files.each do |jsfile| %>
+  <%= javascript_tag "(function(){\n" + jsfile.read + "\n}());" %>
+<% end %>
+
 <%= bootstrap_form_for(@session_context) do |f| %>
   <% f.object.each do |attrib| %>
     <%= create_widget(f, attrib, format: @render_format) %>
   <% end %>
 
   <%= f.submit t('dashboard.batch_connect_form_launch'), class: "btn btn-primary btn-block" %>
-<% end %>
-
-<% @app.custom_javascript_files.each do |jsfile| %>
-  <%= javascript_tag "(function(){\n" + jsfile.read + "\n}());" %>
 <% end %>
