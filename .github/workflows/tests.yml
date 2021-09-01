@@ -96,7 +96,7 @@ jobs:
           bundler-cache: true
 
       - name: Build package
-        run: bundle exec rake package:rpm[${{ matrix.dist }}]
+        run: bundle exec rake package:rpm[${{ matrix.dist }},'-v']
         env:
           VERSION: "${{ matrix.version }}.0"
 
