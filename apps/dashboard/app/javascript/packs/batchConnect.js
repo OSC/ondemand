@@ -6,16 +6,34 @@ function bcElement(name) {
   return `${bcPrefix}_${name.toLowerCase()}`;
 };
 
+
+const bcItemRex = new RegExp(`${bcPrefix}_([\\w\\-]+)`);
+// const bcItemRex = /optionFor([A-Z][a-z]+){1}([\w]+)/;
+
+
+// here the simple name for 'batch_connect_session_context_cluster'
+// is just 'cluster'.
+function idToSimpleName(elementId) {
+  match = elementId.match(bcItemRex);
+  console.log(`match is ${match}`);
+
+  if (match.length >= 1) {
+    return match[1];
+  } else {
+    return '';
+  }
+};
+
 /**
- * Capitalize the words in a string and remove and '-'.  In the simplest case
- * it simple capitalizes.  It assumes 'words' are hyphenated.
+ * Mountain case the words from a string, by tokenizing on [-_].  In the
+ * simplest case it simple capitalizes.
  *
  * @param      {string}  str     The word string to capitalize
  *
  * @example  given 'foo' this returns 'Foo'
  * @example  given 'foo-bar' this returns 'FooBar'
  */
- function capitalizeWords(str) {
+ function mountainCaseWords(str) {
   var camelCase = "";
   var capitalize = true;
 
@@ -51,6 +69,7 @@ function makeChangeHandlers(){
               tokens = optionTokens(key);
               if(tokens.length >= 3) {
                 console.log(`looking for #${bcElement(tokens[1])}`);
+                console.log(tokens);
                 addChangeHandler(bcElement(tokens[1]), element['id']);
               }
             });
@@ -61,15 +80,23 @@ function makeChangeHandlers(){
 };
 
 function addChangeHandler(cause, effect) {
+  console.log(`adding change handler for ${cause} and ${effect}`);
   causeElement = $(`#${cause}`);
   console.log(`adding change handler to #${cause}`);
   // TODO: fails if you can't find the cause 
   causeElement.on('change', (event) => {
     toggleOptionsFor(event, effect);
   });
+
+  console.log(`looking to target #${cause}`);
+  //trigger a face change to initialze the effect
+  toggleOptionsFor(
+    { target: document.querySelector(`#${cause}`) },
+    effect
+  );
 };
 
-const tokenRex = /optionFor([A-Z][a-z]+){1}([\w]+)/;
+const tokenRex = /optionFor([A-Z][a-z]+){1}([\w\-]+)/;
 
 /**
  @example
@@ -80,6 +107,8 @@ const tokenRex = /optionFor([A-Z][a-z]+){1}([\w]+)/;
     [2] Foo
  
   @param {string} data - the string to tokenize
+
+  function is small, kept for the docs.
  */
 function optionTokens(data) {
   return data.match(tokenRex);
@@ -97,8 +126,8 @@ function optionTokens(data) {
 
   // If I'm changing cluster to 'oakely', optionFor is 'Cluster'
   // and optionTo is 'Oakley'.
-  const optionTo = capitalizeWords(event.target.value);
-  const optionFor = optionForEvent();
+  const optionTo = mountainCaseWords(event.target.value);
+  const optionFor = optionForEvent(event.target);
 
   console.log(`changing options for ${optionFor}`);
 
@@ -129,9 +158,9 @@ function optionTokens(data) {
   });
 };
 
-function optionForEvent(event){
-  // TODO: hardcoded cluster here!
-  return 'Cluster';
+function optionForEvent(target){
+  simpleName = idToSimpleName(target['id']);
+  return mountainCaseWords(simpleName);
 };
 
 jQuery(function(){
