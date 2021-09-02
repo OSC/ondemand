@@ -7,6 +7,7 @@ before_script:
   - git clone --single-branch --branch $RELEASE https://github.com/OSC/ondemand-packaging.git tmp/ondemand-packaging
   - cp /systems/osc_certs/gpg/ondemand/.gpgpass $CI_PROJECT_DIR/tmp/ondemand-packaging/
   - cp /systems/osc_certs/gpg/ondemand/ondemand.sec $CI_PROJECT_DIR/tmp/ondemand-packaging/
+  - bundle install --path vendor/bundle --without test
 stages:
   - build
   - deploy
@@ -19,16 +20,10 @@ rpm-build-nightly-el7:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
-    - export SHA=$(git rev-parse --short HEAD)
-    - export LAST_TAG=$(git describe --tags --abbrev=0)
-    - export MAJOR_MINOR=${LAST_TAG%.*}
-    - bundle install --path vendor/bundle --without test
-    - export VERSION="${MAJOR_MINOR#v}.$(date +%Y%m%d)-1.${SHA}.nightly"
-    - bundle exec rake package:tar
-    - ./tmp/ondemand-packaging/build.sh -w $CI_PROJECT_DIR/tmp/work -o $CI_PROJECT_DIR/tmp/output -V v${VERSION} -u -v -C -d el7 $CI_PROJECT_DIR/packaging
+    - bundle exec rake package:rpm:nightly[el7,'-u -v -C']
   artifacts:
     paths:
-      - tmp/output
+      - dist
     name: "$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA"
 
 rpm-build-nightly-el8:
@@ -36,16 +31,10 @@ rpm-build-nightly-el8:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
-    - export SHA=$(git rev-parse --short HEAD)
-    - export LAST_TAG=$(git describe --tags --abbrev=0)
-    - export MAJOR_MINOR=${LAST_TAG%.*}
-    - bundle install --path vendor/bundle --without test
-    - export VERSION="${MAJOR_MINOR#v}.$(date +%Y%m%d)-1.${SHA}.nightly"
-    - bundle exec rake package:tar
-    - ./tmp/ondemand-packaging/build.sh -w $CI_PROJECT_DIR/tmp/work -o $CI_PROJECT_DIR/tmp/output -V v${VERSION} -u -v -C -d el8 $CI_PROJECT_DIR/packaging
+    - bundle exec rake package:rpm:nightly[el7,'-u -v -C']
   artifacts:
     paths:
-      - tmp/output
+      - dist
     name: "$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA"
 
 rpm-build-el7:
@@ -75,7 +64,7 @@ rpm-deploy-nightly:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
-    - ./tmp/ondemand-packaging/release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c nightly ./tmp/output/*
+    - ./tmp/ondemand-packaging/release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c nightly ./dist/*
 
 rpm-deploy-build:
   stage: deploy

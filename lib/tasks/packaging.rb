@@ -113,4 +113,14 @@ namespace :package do
     sh git_clone_packaging("#{version_major}.#{version_minor}", packaging_dir) unless Dir.exist?(packaging_dir)
     sh rpm_build_cmd(packaging_dir, File.join(tmp_dir, "work"), dist_dir, dist, version, extra_args)
   end
+
+  namespace :rpm do
+    desc "Build nightly RPM"
+    task :nightly, [:dist, :extra_args] do |t, args|
+      last_tag = git_tag.gsub(/^v/, '').split('.')
+      date = Time.now.strftime("%Y%m%d")
+      ENV['VERSION'] = "#{last_tag[0]}.#{last_tag[1]}.#{date}-1.#{git_hash}.nightly"
+      Rake::Task['package:rpm'].invoke(args[:dist], args[:extra_args])
+    end
+  end
 end
