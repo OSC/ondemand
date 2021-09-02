@@ -117,10 +117,10 @@ namespace :package do
   namespace :rpm do
     desc "Build nightly RPM"
     task :nightly, [:dist, :extra_args] do |t, args|
-      last_tag = git_tag.gsub(/^v/, '').split('.')
+      version_major, version_minor, version_patch = git_tag.gsub(/^v/, '').split('.', 3)
       date = Time.now.strftime("%Y%m%d")
       id = ENV['CI_PIPELINE_ID'] || Time.now.strftime("%H%M%S")
-      ENV['VERSION'] = "#{last_tag[0]}.#{last_tag[1]}.#{date}-#{id}.#{git_hash}.nightly"
+      ENV['VERSION'] = "#{version_major}.#{version_minor}.#{date}-#{id}.#{git_hash}.nightly"
       Rake::Task['package:rpm'].invoke(args[:dist], args[:extra_args])
     end
   end
