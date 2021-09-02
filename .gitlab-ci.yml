@@ -31,7 +31,7 @@ rpm-build-nightly-el8:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
-    - bundle exec rake package:rpm:nightly[el7,'-u -v -C']
+    - bundle exec rake package:rpm:nightly[el8,'-u -v -C']
   artifacts:
     paths:
       - dist
