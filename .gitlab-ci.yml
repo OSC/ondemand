@@ -42,10 +42,10 @@ rpm-build-el7:
   only:
     - tags
   script:
-    - ./tmp/ondemand-packaging/build.sh -w $CI_PROJECT_DIR/tmp/work -o $CI_PROJECT_DIR/tmp/output -V $CI_COMMIT_TAG -u -v -C -d el7 $CI_PROJECT_DIR/packaging
+    - bundle exec rake package:rpm[el7,'-u -v -C']
   artifacts:
     paths:
-      - tmp/output
+      - dist
     name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
 
 rpm-build-el8:
@@ -53,10 +53,10 @@ rpm-build-el8:
   only:
     - tags
   script:
-    - ./tmp/ondemand-packaging/build.sh -w $CI_PROJECT_DIR/tmp/work -o $CI_PROJECT_DIR/tmp/output -V $CI_COMMIT_TAG -u -v -C -d el8 $CI_PROJECT_DIR/packaging
+    - bundle exec rake package:rpm[el8,'-u -v -C']
   artifacts:
     paths:
-      - tmp/output
+      - dist
     name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
 
 rpm-deploy-nightly:
@@ -71,11 +71,11 @@ rpm-deploy-build:
   only:
     - tags
   script:
-    - ./tmp/ondemand-packaging/release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c build -r $CI_COMMIT_TAG ./tmp/output/*
+    - ./tmp/ondemand-packaging/release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c build -r $CI_COMMIT_TAG ./dist/*
 
 rpm-deploy:
   stage: deploy
   only:
     - tags
   script:
-    - ./tmp/ondemand-packaging/release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c main ./tmp/output/*
+    - ./tmp/ondemand-packaging/release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c main ./dist/*
