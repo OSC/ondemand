@@ -84,19 +84,9 @@ rpm-deploy-build:
   script:
     - ./tmp/ondemand-packaging/release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c build -r $CI_COMMIT_TAG ./tmp/output/*
 
-rpm-deploy-ci:
-  stage: deploy
-  only:
-    - tags
-  script:
-    - ./tmp/ondemand-packaging/release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c ci ./tmp/output/*
-
 rpm-deploy:
   stage: deploy
   only:
     - tags
-  except:
-    variables:
-      - $CI_COMMIT_TAG =~ /.*_.*/
   script:
     - ./tmp/ondemand-packaging/release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c main ./tmp/output/*
