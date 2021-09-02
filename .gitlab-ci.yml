@@ -20,8 +20,10 @@ rpm-build-nightly-el7:
     - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
     - export SHA=$(git rev-parse --short HEAD)
+    - export LAST_TAG=$(git describe --tags --abbrev=0)
+    - export MAJOR_MINOR=${LAST_TAG%.*}
     - bundle install --path vendor/bundle --without test
-    - export VERSION="$(date +%Y%m%d)-0.${SHA}.nightly"
+    - export VERSION="${MAJOR_MINOR#v}.$(date +%Y%m%d)-1.${SHA}.nightly"
     - bundle exec rake package:tar
     - ./tmp/ondemand-packaging/build.sh -w $CI_PROJECT_DIR/tmp/work -o $CI_PROJECT_DIR/tmp/output -V v${VERSION} -u -v -C -d el7 $CI_PROJECT_DIR/packaging
   artifacts:
@@ -35,8 +37,10 @@ rpm-build-nightly-el8:
     - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
     - export SHA=$(git rev-parse --short HEAD)
+    - export LAST_TAG=$(git describe --tags --abbrev=0)
+    - export MAJOR_MINOR=${LAST_TAG%.*}
     - bundle install --path vendor/bundle --without test
-    - export VERSION="$(date +%Y%m%d)-0.${SHA}.nightly"
+    - export VERSION="${MAJOR_MINOR#v}.$(date +%Y%m%d)-1.${SHA}.nightly"
     - bundle exec rake package:tar
     - ./tmp/ondemand-packaging/build.sh -w $CI_PROJECT_DIR/tmp/work -o $CI_PROJECT_DIR/tmp/output -V v${VERSION} -u -v -C -d el8 $CI_PROJECT_DIR/packaging
   artifacts:
