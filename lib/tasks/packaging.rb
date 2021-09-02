@@ -102,7 +102,7 @@ namespace :package do
   desc "Build RPM"
   task :rpm, [:dist, :extra_args] => :tar do |t, args|
     version = ENV['VERSION'] || ENV['CI_COMMIT_TAG']
-    version.gsub!(/^v/, '') unless version.nil?
+    version = version.gsub(/^v/, '') unless version.nil?
     version_major, version_minor, version_patch = version.split('.', 3)
     dist = args[:dist]
     extra_args = args[:extra_args].nil? ? '' : args[:extra_args]
