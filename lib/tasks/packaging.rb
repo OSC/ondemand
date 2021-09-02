@@ -119,7 +119,7 @@ namespace :package do
     task :nightly, [:dist, :extra_args] do |t, args|
       last_tag = git_tag.gsub(/^v/, '').split('.')
       date = Time.now.strftime("%Y%m%d")
-      id = ENV['CI_JOB_ID'] || '1'
+      id = ENV['CI_PIPELINE_ID'] || Time.now.strftime("%H%M%S")
       ENV['VERSION'] = "#{last_tag[0]}.#{last_tag[1]}.#{date}-#{id}.#{git_hash}.nightly"
       Rake::Task['package:rpm'].invoke(args[:dist], args[:extra_args])
     end
