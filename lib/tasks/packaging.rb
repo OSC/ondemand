@@ -60,7 +60,8 @@ namespace :package do
       tar = 'tar'
     end
 
-    version = ENV['VERSION']
+    version = ENV['VERSION'] || ENV['CI_COMMIT_TAG']
+    version.gsub!(/^v/, '') unless version.nil?
 
     if ! version
       latest_commit = `git rev-list --tags --max-count=1`.strip[0..6]
