@@ -7,21 +7,19 @@ function bcElement(name) {
 };
 
 
-const bcItemRex = new RegExp(`${bcPrefix}_([\\w\\-]+)`);
-// const bcItemRex = /optionFor([A-Z][a-z]+){1}([\w]+)/;
-
+const shortNameRex = new RegExp(`${bcPrefix}_([\\w\\-]+)`);
 
 // here the simple name for 'batch_connect_session_context_cluster'
 // is just 'cluster'.
-function idToSimpleName(elementId) {
-  match = elementId.match(bcItemRex);
+function shortId(elementId) {
+  match = elementId.match(shortNameRex);
   console.log(`match is ${match}`);
 
   if (match.length >= 1) {
     return match[1];
   } else {
     return '';
-  }
+  };
 };
 
 /**
@@ -41,7 +39,7 @@ function idToSimpleName(elementId) {
     if (capitalize) {
       camelCase += c.toUpperCase();
       capitalize = false;
-    } else if(c == '-') {
+    } else if(c == '-' || c == '_') {
       capitalize = true;
     } else {
       camelCase += c;
@@ -51,8 +49,40 @@ function idToSimpleName(elementId) {
   return camelCase;
 }
 
+function snakeCaseWords(str) {
+  var snakeCase = "";
+  var first = true;
+
+  str.split('').forEach((c) => {
+    if (first){
+      first = false;
+      snakeCase += c.toLowerCase();
+    } else if(c == c.toUpperCase()) {
+      snakeCase += `_${c.toLowerCase()}`;
+    } else {
+      snakeCase += c;
+    }
+  });
+
+  return snakeCase;
+}
+
+// @example ['NodeType', 'Cluster']
+const optionTokens = [];
+
+/**
+ *
+ * @param {Array} elements
+ */
+function memorizeElements(elements) {
+  elements.each((_i, ele) => {
+    optionTokens.push(mountainCaseWords(shortId(ele['id'])));
+  });
+};
+
 function makeChangeHandlers(){
   allElements = $(`[id^=${bcPrefix}]`);
+  memorizeElements(allElements);
 
   allElements.each((_i, element) => {
     if (element['type'] == "select-one"){
@@ -66,12 +96,8 @@ function makeChangeHandlers(){
           keys = Object.keys(data);
           if(keys.length !== 0) {
             keys.forEach((key) => {
-              tokens = optionTokens(key);
-              if(tokens.length >= 3) {
-                console.log(`looking for #${bcElement(tokens[1])}`);
-                console.log(tokens);
-                addChangeHandler(bcElement(tokens[1]), element['id']);
-              }
+              const changeId = parseOptions(key);
+              addChangeHandler(changeId, element['id']);
             });
           }
       });
@@ -79,40 +105,61 @@ function makeChangeHandlers(){
   });
 };
 
-function addChangeHandler(cause, effect) {
-  console.log(`adding change handler for ${cause} and ${effect}`);
-  causeElement = $(`#${cause}`);
-  console.log(`adding change handler to #${cause}`);
-  // TODO: fails if you can't find the cause 
-  causeElement.on('change', (event) => {
-    toggleOptionsFor(event, effect);
-  });
+function addChangeHandler(causeId, targetId) {
 
-  console.log(`looking to target #${cause}`);
-  //trigger a face change to initialze the effect
-  toggleOptionsFor(
-    { target: document.querySelector(`#${cause}`) },
-    effect
-  );
+  causeElement = $(`#${causeId}`);
+
+  if(causeId && targetId && causeElement){
+    console.log(`adding change handler for ${causeId} and ${targetId}`);
+    causeElement.on('change', (event) => {
+      toggleOptionsFor(event, targetId);
+    });
+
+    //fake an even to initialize
+    toggleOptionsFor(
+      { target: document.querySelector(`#${causeId}`) },
+      targetId
+    );
+  } else {
+    console.log(`can't attach '${causeId}' to target '${targetId}'`);
+  }
 };
 
-const tokenRex = /optionFor([A-Z][a-z]+){1}([\w\-]+)/;
+const tokenRex = /([A-Z][a-z]+){1}([\w\-]+)/;
 
 /**
  @example
 
-  optionForClusterFoo -> 
-    [0] optionForClusterFoo
-    [1] Cluster
-    [2] Foo
+  optionForNodeTypeFoo ->
+    batch_connect_session_context_node_type
+    or
+    undefined if it can't parse anything
  
-  @param {string} data - the string to tokenize
+  @param {string} data - the option string to parse
 
-  function is small, kept for the docs.
  */
-function optionTokens(data) {
-  return data.match(tokenRex);
+function parseOptions(input) {
+  // looking for NodeType when i know i have node_type\
+  const str = input.replace('optionFor','');
+  console.log(`trying to parse ${input}`);
+
+  // just return the first one you find
+  return optionTokens.map((token) => {
+    match = str.match(`^${token}{1}`);
+
+    if (match && match.length >= 1) {
+      ele = snakeCaseWords(match[0]);
+      console.log(`parsed option: ${bcElement(ele)}`);
+      return bcElement(ele);
+    } else {
+      console.log(`couldn't match ${token} in ${str}`);
+    }
+  }).filter((id) => {
+    return id !== undefined;
+  });
 }
+
+
 
 /**
  * Hide or show options of an element based on which cluster is
@@ -159,7 +206,7 @@ function optionTokens(data) {
 };
 
 function optionForEvent(target){
-  simpleName = idToSimpleName(target['id']);
+  simpleName = shortId(target['id']);
   return mountainCaseWords(simpleName);
 };
 
