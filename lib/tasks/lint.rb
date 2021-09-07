@@ -1,4 +1,3 @@
-require 'rubocop/rake_task'
 require 'fileutils'
 
 desc "Lint OnDemand"
@@ -9,6 +8,7 @@ namespace :lint do
   include RakeHelper
 
   begin
+    require 'rubocop/rake_task'
     RuboCop::RakeTask.new(:rubocop, [:path]) do |t, args|
       t.options = ["--config=#{PROJ_DIR.join(".rubocop.yml")}"]
       default_patterns = [

@@ -60,7 +60,8 @@ namespace :package do
       tar = 'tar'
     end
 
-    version = ENV['VERSION']
+    version = ENV['VERSION'] || ENV['CI_COMMIT_TAG']
+    version = version.gsub(/^v/, '') unless version.nil?
 
     if ! version
       latest_commit = `git rev-list --tags --max-count=1`.strip[0..6]
@@ -100,7 +101,8 @@ namespace :package do
 
   desc "Build RPM"
   task :rpm, [:dist, :extra_args] => :tar do |t, args|
-    version = ENV['VERSION']
+    version = ENV['VERSION'] || ENV['CI_COMMIT_TAG']
+    version = version.gsub(/^v/, '') unless version.nil?
     version_major, version_minor, version_patch = version.split('.', 3)
     dist = args[:dist]
     extra_args = args[:extra_args].nil? ? '' : args[:extra_args]
@@ -112,5 +114,16 @@ namespace :package do
     Dir.mkdir(dist_dir) unless Dir.exist?(dist_dir)
     sh git_clone_packaging("#{version_major}.#{version_minor}", packaging_dir) unless Dir.exist?(packaging_dir)
     sh rpm_build_cmd(packaging_dir, File.join(tmp_dir, "work"), dist_dir, dist, version, extra_args)
+  end
+
+  namespace :rpm do
+    desc "Build nightly RPM"
+    task :nightly, [:dist, :extra_args] do |t, args|
+      version_major, version_minor, version_patch = git_tag.gsub(/^v/, '').split('.', 3)
+      date = Time.now.strftime("%Y%m%d")
+      id = ENV['CI_PIPELINE_ID'] || Time.now.strftime("%H%M%S")
+      ENV['VERSION'] = "#{version_major}.#{version_minor}.#{date}-#{id}.#{git_hash}.nightly"
+      Rake::Task['package:rpm'].invoke(args[:dist], args[:extra_args])
+    end
   end
 end
