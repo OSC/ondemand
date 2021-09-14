@@ -96,8 +96,7 @@ function makeChangeHandlers(){
           keys = Object.keys(data);
           if(keys.length !== 0) {
             keys.forEach((key) => {
-              const changeId = parseOptions(key);
-              addChangeHandler(changeId, element['id']);
+              addChangeHandler(parseOptions(key), element['id']);
             });
           }
       });
@@ -106,10 +105,14 @@ function makeChangeHandlers(){
 };
 
 function addChangeHandler(causeId, targetId) {
+  const changeId = String(causeId || '');
+  var causeElement = undefined;
 
-  causeElement = $(`#${causeId}`);
+  if(changeId.length > 0) {
+    causeElement = $(`#${causeId}`);
+  }
 
-  if(causeId && targetId && causeElement){
+  if(targetId && causeElement) {
     console.log(`adding change handler for ${causeId} and ${targetId}`);
     causeElement.on('change', (event) => {
       toggleOptionsFor(event, targetId);
@@ -156,7 +159,7 @@ function parseOptions(input) {
     }
   }).filter((id) => {
     return id !== undefined;
-  });
+  })[0];
 }
 
 
