@@ -39,12 +39,21 @@ class ActiveSupport::TestCase
     UsrRouter.stubs(:owners).returns(['me', 'shared', 'cant_see'])
   end
 
+  def stub_sys_apps
+    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
+    SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys_with_gateway_apps'))
+  end
+
   def setup_usr_fixtures
     FileUtils.chmod 0000, 'test/fixtures/usr/cant_see/'
   end
 
   def teardown_usr_fixtures
     FileUtils.chmod 0755, 'test/fixtures/usr/cant_see/'
+  end
+
+  def bc_ele_id(ele)
+    "batch_connect_session_context_#{ele}"
   end
 end
 
