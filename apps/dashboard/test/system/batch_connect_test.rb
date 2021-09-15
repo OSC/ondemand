@@ -5,6 +5,7 @@ require 'application_system_test_case'
 class BatchConnectTest < ApplicationSystemTestCase
   def setup
     stub_sys_apps
+    Configuration.stubs(:bc_dynamic_js?).returns(true)
   end
 
   test 'cluster choice changes node types' do

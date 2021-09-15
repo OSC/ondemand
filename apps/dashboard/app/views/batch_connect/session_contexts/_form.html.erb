@@ -1,5 +1,5 @@
 
-<%= javascript_pack_tag 'batchConnect' %>
+<%= javascript_pack_tag 'batchConnect' if Configuration.bc_dynamic_js? %>
 
 <% @app.custom_javascript_files.each do |jsfile| %>
   <%= javascript_tag "(function(){\n" + jsfile.read + "\n}());" %>
