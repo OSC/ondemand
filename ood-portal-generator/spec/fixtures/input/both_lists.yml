@@ -1,0 +1,8 @@
+maintenance_ip_allowlist:
+  - 192.168.1..*
+  - 10.0.0..*
+
+# the program shouldn't use these configs
+maintenance_ip_whitelist:
+  - 4.8.15..*
+  - 16.23.42..*
