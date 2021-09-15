@@ -3,7 +3,6 @@
 namespace :dev do
   require_relative 'build_utils'
   require 'yaml'
-  require 'bcrypt'
   include BuildUtils
 
   def dev_container_name
@@ -13,6 +12,10 @@ namespace :dev do
   def init_ood_portal
     file = "#{config_directory}/ood_portal.yml"
     return if File.exist?(file)
+
+    require 'io/console'
+    puts 'Enter password:'
+    plain_password = $stdin.noecho(&:gets).chomp
 
     File.open(file, File::WRONLY|File::CREAT|File::EXCL) do |f|
       f.write({
@@ -25,32 +28,15 @@ namespace :dev do
             'type': 'mockCallback',
             'id': 'mock',
             'name': 'Mock'
+          }],
+          'static_passwords': [{
+            'email': "#{user.name}@localhost",
+            'password': plain_password,
+            'username': "#{user.name}",
+            'userID': "71e63e31-7af3-41d7-add2-575568f4525f"
           }]
         }
       }.to_yaml)
-    end
-  end
-
-  def init_ctr_user
-    file = "#{config_directory}/static_user.yml"
-    return if File.exist?(file)
-
-    require 'io/console'
-    puts 'Enter password:'
-    plain_password = $stdin.noecho(&:gets).chomp
-    bcrypted = BCrypt::Password.create(plain_password)
-
-    content = <<~CONTENT
-      enablePasswordDB: true
-      staticPasswords:
-      - email: "#{user.name}@localhost"
-        hash: "#{bcrypted}"
-        username: "#{user.name}"
-        userID: "71e63e31-7af3-41d7-add2-575568f4525f"
-    CONTENT
-
-    File.open(file, File::WRONLY | File::CREAT | File::EXCL) do |f|
-      f.write(content)
     end
   end
 
@@ -134,7 +120,6 @@ namespace :dev do
   task :ensure_dev_files do
     [
       :init_ood_portal,
-      :init_ctr_user
     ].each do |initer|
       send(initer)
     end

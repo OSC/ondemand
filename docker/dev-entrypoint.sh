@@ -13,11 +13,7 @@ sudo su root <<SETUP
   cd $OOD_DEV_DIR
   ln -s $APP_DEV_DIR gateway
 
-  /opt/ood/ood-portal-generator/sbin/update_ood_portal --force
-
-  if [ -n "$OOD_STATIC_USER" ] && [ -f "$OOD_STATIC_USER" ]; then
-    cat "$OOD_STATIC_USER" >>  /etc/ood/dex/config.yaml
-  fi
+  /opt/ood/ood-portal-generator/sbin/update_ood_portal --force --insecure
 SETUP
 
 sudo runuser -u ondemand-dex /usr/sbin/ondemand-dex serve /etc/ood/dex/config.yaml &

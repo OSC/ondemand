@@ -2,12 +2,13 @@ require 'active_support'
 require 'active_support/core_ext'
 require 'securerandom'
 require 'fileutils'
+require 'bcrypt'
 
 module OodPortalGenerator
   # A view class that renders a Dex configuration
   class Dex
     # @param opts [#to_h] the options describing the context used to render the Dex config
-    def initialize(opts = {}, view)
+    def initialize(opts = {}, view = nil, insecure = false)
       opts = opts.to_h.deep_symbolize_keys
       config = opts.fetch(:dex, {})
       if config.nil? || config == false
@@ -34,14 +35,11 @@ module OodPortalGenerator
       @dex_config[:staticClients] = static_clients
       @dex_config[:connectors] = connectors unless connectors.nil?
       @dex_config[:oauth2] = { skipApprovalScreen: true }
-      @dex_config[:enablePasswordDB] = connectors.nil?
-      if connectors.nil?
-        @dex_config[:staticPasswords] = [{
-          email: 'ood@localhost',
-          hash: '$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W',
-          username: 'ood',
-          userID: '08a8684b-db88-4b73-90a9-3cd1661f5466',
-        }]
+      if insecure
+        @dex_config[:enablePasswordDB] = true
+        @dex_config[:staticPasswords] = static_passwords
+      else
+        @dex_config[:enablePasswordDB] = false
       end
       @dex_config[:frontend] = frontend
       # Pass values back to main ood-portal.conf view
@@ -193,6 +191,30 @@ module OodPortalGenerator
 
     def connectors
       @config.fetch(:connectors, nil)
+    end
+
+    def hash_password(password)
+      BCrypt::Password.create(password).to_s
+    end
+
+    def static_passwords
+      passwords = []
+      configured = @config.fetch(:static_passwords, nil)
+      if configured.nil?
+        default = {
+          email: 'ood@localhost',
+          hash: '$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W',
+          username: 'ood',
+          userID: '08a8684b-db88-4b73-90a9-3cd1661f5466',
+        }
+        passwords << default
+      else
+        configured.each do |conf|
+          conf[:hash] = hash_password(conf[:password]) if conf.key?(:password)
+          passwords << conf.except(:password)
+        end
+      end
+      passwords
     end
 
     def frontend

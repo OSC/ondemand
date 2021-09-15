@@ -123,6 +123,9 @@ def install_ondemand
                      end
     on hosts, "#{config_manager} --save --setopt ondemand-web.exclude='ondemand ondemand-gems* ondemand-selinux'"
     install_packages(['ondemand', 'ondemand-dex', 'ondemand-selinux'])
+    # Avoid 'update_ood_portal --rpm' so that --insecure can be used
+    on hosts, "sed -i 's|--rpm|--rpm --insecure|g' /etc/systemd/system/#{apache_service}.service.d/ood-portal.conf"
+    on hosts, "systemctl daemon-reload"
   end
 end
 
@@ -131,7 +134,7 @@ def upload_portal_config(file)
 end
 
 def update_ood_portal
-  on hosts, '/opt/ood/ood-portal-generator/sbin/update_ood_portal'
+  on hosts, '/opt/ood/ood-portal-generator/sbin/update_ood_portal --insecure'
 end
 
 def restart_apache

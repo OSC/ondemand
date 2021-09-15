@@ -70,7 +70,7 @@ Defaults:apache env_keep += "NGINX_STAGE_* OOD_*" \n\
 apache ALL=(ALL) NOPASSWD: /opt/ood/nginx_stage/sbin/nginx_stage' >/etc/sudoers.d/ood
 
 # run the OOD executables to setup the env
-RUN /opt/ood/ood-portal-generator/sbin/update_ood_portal
+RUN /opt/ood/ood-portal-generator/sbin/update_ood_portal --insecure
 RUN /opt/ood/nginx_stage/sbin/update_nginx_stage
 RUN echo $VERSION > /opt/ood/VERSION
 # this one bc centos:8 doesn't generate localhost cert
