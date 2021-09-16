@@ -10,4 +10,8 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1400]
 
   Capybara.server = :webrick
+
+  def find_option_style(ele, opt)
+    find("##{bc_ele_id(ele)} option[value='#{opt}']")['style'].to_s
+  end
 end

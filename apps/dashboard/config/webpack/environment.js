@@ -4,6 +4,7 @@ const config = environment.toWebpackConfig();
 config.resolve.alias = {
  jquery: 'jquery/src/jquery',
  fa: '/app/javascript/packs/fa',
+ batchConnect: '/apps/javascript/packs/batchConnect'
 }
 
 module.exports = environment
