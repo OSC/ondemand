@@ -10,6 +10,17 @@ namespace :dev do
     'ood-dev' || ENV['OOD_DEV_CONTAINER_NAME'].to_s
   end
 
+
+  def term_container_args
+    cols = `tput cols 2>/dev/null`.chomp
+    rows = `tput lines 2>/dev/null`.chomp
+
+    [
+      '-e', "COLUMNS=#{cols}",
+      '-e', "LINES=#{rows}"
+    ]
+  end
+
   def init_ood_portal
     file = "#{config_directory}/ood_portal.yml"
     return if File.exist?(file)
@@ -122,6 +133,7 @@ namespace :dev do
     ctr_args = [container_runtime, 'exec', '-it']
     # home is set to /root? could be bug for me
     ctr_args.concat ['-e', "HOME=#{user.dir}"]
+    ctr_args.concat term_container_args
     ctr_args.concat ['--workdir', user.dir.to_s]
     ctr_args.concat [dev_container_name, '/bin/bash']
 
