@@ -1,16 +1,33 @@
+require_relative 'build_utils'
+
 namespace :install do
 
+  include BuildUtils
 
+  def nginx_root
+    "#{INSTALL_ROOT}/nginx"
+  end
+
+  def nginx_conf
+    "#{nginx_root}/conf"
+  end
+
+  def nginx_bin_dir
+    "#{nginx_root}/bin"
+  end
 
   task :install_root do
     sh "mkdir -p #{INSTALL_ROOT}"
   end
 
   task nginx: [:install_root] do
-    tar = "#{vendor_src_dir}/#{nginx_tar}"
-    sh "#{tar} -xzf #{tar} -C #{INSTALL_ROOT}/bin"
-    sh "mv #{INSTALL_ROOT}/bin/nginx-#{nginx_version} #{INSTALL_ROOT}/bin/nginx"
-    sh "chmod 755 #{INSTALL_ROOT}/bin/nginx"
+    tar_file = "#{vendor_src_dir}/#{nginx_tar}"
+    sh "mkdir -p #{nginx_bin_dir}"
+    sh "#{tar} -xzf #{tar_file} -C #{nginx_bin_dir}"
+    sh "install -m 755 #{nginx_bin_dir}/nginx-#{nginx_version} #{nginx_bin_dir}/nginx"
+
+    sh "mkdir -p #{nginx_conf}"
+    sh "install -m 644 #{task_file('mime.types')} #{nginx_conf}/mime.types"
   end
 
   task passenger: [:install_root] do
