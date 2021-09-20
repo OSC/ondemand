@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require_relative 'build_utils'
 require 'erb'
 
 namespace :install do
-
   include BuildUtils
 
   def nginx_root
@@ -51,7 +52,7 @@ namespace :install do
 
   task passenger: [:install_root] do
     # best way to find the ruby system lib dir?
-    lib_dir = $:.select do |p|
+    lib_dir = $LOAD_PATH.select do |p|
       p.start_with?('/usr/lib')
     end.first.tap do |p|
       sh "mkdir -p #{DESTDIR}/#{p}"
