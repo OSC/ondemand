@@ -10,5 +10,5 @@ Style/WordArray:
 
 # layout
 Layout/HashAlignment:
-  EnforcedStyle: table
-
+  EnforcedColonStyle: table
+  EnforcedHashRocketStyle: table
