@@ -1,19 +1,20 @@
-
+'use strict';
 
 const bcPrefix = 'batch_connect_session_context';
+const shortNameRex = new RegExp(`${bcPrefix}_([\\w\\-]+)`);
+const tokenRex = /([A-Z][a-z]+){1}([\w\-]+)/;
+
+// @example ['NodeType', 'Cluster']
+const optionTokens = [];
 
 function bcElement(name) {
   return `${bcPrefix}_${name.toLowerCase()}`;
 };
 
-
-const shortNameRex = new RegExp(`${bcPrefix}_([\\w\\-]+)`);
-
 // here the simple name for 'batch_connect_session_context_cluster'
 // is just 'cluster'.
 function shortId(elementId) {
-  match = elementId.match(shortNameRex);
-  console.log(`match is ${match}`);
+  const match = elementId.match(shortNameRex);
 
   if (match.length >= 1) {
     return match[1];
@@ -32,8 +33,8 @@ function shortId(elementId) {
  * @example  given 'foo-bar' this returns 'FooBar'
  */
  function mountainCaseWords(str) {
-  var camelCase = "";
-  var capitalize = true;
+  let camelCase = "";
+  let capitalize = true;
 
   str.split('').forEach((c) => {
     if (capitalize) {
@@ -50,8 +51,8 @@ function shortId(elementId) {
 }
 
 function snakeCaseWords(str) {
-  var snakeCase = "";
-  var first = true;
+  let snakeCase = "";
+  let first = true;
 
   str.split('').forEach((c) => {
     if (first){
@@ -67,9 +68,6 @@ function snakeCaseWords(str) {
   return snakeCase;
 }
 
-// @example ['NodeType', 'Cluster']
-const optionTokens = [];
-
 /**
  *
  * @param {Array} elements
@@ -81,19 +79,19 @@ function memorizeElements(elements) {
 };
 
 function makeChangeHandlers(){
-  allElements = $(`[id^=${bcPrefix}]`);
+  const allElements = $(`[id^=${bcPrefix}]`);
   memorizeElements(allElements);
 
   allElements.each((_i, element) => {
     if (element['type'] == "select-one"){
-      optionSearch = `#${element['id']} option`;
-      options = $(optionSearch);
+      let optionSearch = `#${element['id']} option`;
+      let options = $(optionSearch);
       options.each((_i, opt) => {
           // the variable 'opt' is just a data structure, not a jQuery result. 
           // it has no attr, data, show or hide methods so we have to query
           // for it again
-          data = $(`${optionSearch}[value='${opt.value}']`).data();
-          keys = Object.keys(data);
+          let data = $(`${optionSearch}[value='${opt.value}']`).data();
+          let keys = Object.keys(data);
           if(keys.length !== 0) {
             keys.forEach((key) => {
               addChangeHandler(parseOptions(key), element['id']);
@@ -106,29 +104,21 @@ function makeChangeHandlers(){
 
 function addChangeHandler(causeId, targetId) {
   const changeId = String(causeId || '');
-  var causeElement = undefined;
+  let causeElement = undefined;
 
   if(changeId.length > 0) {
     causeElement = $(`#${causeId}`);
   }
 
   if(targetId && causeElement) {
-    console.log(`adding change handler for ${causeId} and ${targetId}`);
     causeElement.on('change', (event) => {
       toggleOptionsFor(event, targetId);
     });
 
-    //fake an even to initialize
-    toggleOptionsFor(
-      { target: document.querySelector(`#${causeId}`) },
-      targetId
-    );
-  } else {
-    console.log(`can't attach '${causeId}' to target '${targetId}'`);
+    // fake an event to initialize
+    toggleOptionsFor({ target: document.querySelector(`#${causeId}`) }, targetId);
   }
 };
-
-const tokenRex = /([A-Z][a-z]+){1}([\w\-]+)/;
 
 /**
  @example
@@ -142,27 +132,21 @@ const tokenRex = /([A-Z][a-z]+){1}([\w\-]+)/;
 
  */
 function parseOptions(input) {
-  // looking for NodeType when i know i have node_type\
+  // looking for NodeType when i know i have node_type
   const str = input.replace('optionFor','');
-  console.log(`trying to parse ${input}`);
 
   // just return the first one you find
   return optionTokens.map((token) => {
-    match = str.match(`^${token}{1}`);
+    let match = str.match(`^${token}{1}`);
 
     if (match && match.length >= 1) {
-      ele = snakeCaseWords(match[0]);
-      console.log(`parsed option: ${bcElement(ele)}`);
+      let ele = snakeCaseWords(match[0]);
       return bcElement(ele);
-    } else {
-      console.log(`couldn't match ${token} in ${str}`);
     }
   }).filter((id) => {
     return id !== undefined;
   })[0];
 }
-
-
 
 /**
  * Hide or show options of an element based on which cluster is
@@ -179,13 +163,10 @@ function parseOptions(input) {
   const optionTo = mountainCaseWords(event.target.value);
   const optionFor = optionForEvent(event.target);
 
-  console.log(`changing options for ${optionFor}`);
-
   options.each(function(_i, option) {
     // the variable 'option' is just a data structure. it has no attr, data, show
     // or hide methods so we have to query for it again
     let optionElement = $(`#${elementId} option[value='${option.value}']`);
-    console.log(`data: ${optionElement.data()}`)
     let data = optionElement.data();
     let hide = data[`optionFor${optionFor}${optionTo}`] === false;
 
@@ -208,11 +189,11 @@ function parseOptions(input) {
   });
 };
 
-function optionForEvent(target){
-  simpleName = shortId(target['id']);
+function optionForEvent(target) {
+  let simpleName = shortId(target['id']);
   return mountainCaseWords(simpleName);
 };
 
-jQuery(function(){
+jQuery(function() {
   makeChangeHandlers();
 });
