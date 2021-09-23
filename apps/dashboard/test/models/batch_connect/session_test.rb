@@ -49,6 +49,23 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
     end
   end
 
+  test "Session.all should fail if valid session fields are not present" do
+    double_session = create_double_session
+
+    Dir.mktmpdir("dbroot") do |dir|
+      dir = Pathname.new(dir)
+      double_session.stubs(:db_root).returns(dir)
+
+      [
+        { id: "A", job_id: "COMPLETED", created_at: 100, cluster_id: "owens" },
+        { id: "B", job_id: "COMPLETED", created_at: 100 }
+      ].each { |v| File.write dir.join(v[:id]), v.to_json }
+
+      sessions = double_session.all
+      assert_equal ["A"], sessions.map(&:id), "'B' should not to be added since it's missing cluster_id."
+    end
+  end
+
   test "Session.all should return recently completed sessions" do
     double_session = create_double_session
 
@@ -57,8 +74,8 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       double_session.stubs(:db_root).returns(dir)
 
       [
-        { id: "A", job_id: "RUNNING",   created_at: 500 },
-        { id: "B", job_id: "COMPLETED",   created_at: 100 }
+        { id: "A", job_id: "RUNNING", created_at: 500, cluster_id: "owens"  },
+        { id: "B", job_id: "COMPLETED", created_at: 100, cluster_id: "owens" }
       ].each { |v| File.write dir.join(v[:id]), v.to_json }
 
       sessions = double_session.all
@@ -74,8 +91,8 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       double_session.stubs(:db_root).returns(dir)
 
       [
-        { id: "A", job_id: "RUNNING",   created_at: 100 },
-        { id: "OLD", job_id: "COMPLETED",   created_at: 100 }
+        { id: "A", job_id: "RUNNING",   created_at: 100, cluster_id: "owens" },
+        { id: "OLD", job_id: "COMPLETED",   created_at: 100, cluster_id: "owens" }
       ].each { |v| File.write dir.join(v[:id]), v.to_json }
 
       Timecop.freeze((BatchConnect::Session::OLD_IN_DAYS+1).days.from_now) do
@@ -95,10 +112,10 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       double_session.stubs(:db_root).returns(dir)
 
       [
-        { id: "A", job_id: "RUNNING",   created_at: 500 },
-        { id: "B", job_id: "RUNNING",   created_at: 100 },
-        { id: "C", job_id: "RUNNING",   created_at: 300 },
-        { id: "D", job_id: "RUNNING", created_at: 400 },
+        { id: "A", job_id: "RUNNING", created_at: 500, cluster_id: "owens" },
+        { id: "B", job_id: "RUNNING", created_at: 100, cluster_id: "owens" },
+        { id: "C", job_id: "RUNNING", created_at: 300, cluster_id: "owens" },
+        { id: "D", job_id: "RUNNING", created_at: 400, cluster_id: "owens" },
       ].each { |v| File.write dir.join(v[:id]), v.to_json }
 
       sessions = double_session.all
@@ -114,10 +131,10 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       double_session.stubs(:db_root).returns(dir)
 
       [
-        { id: "A", job_id: "COMPLETED",   created_at: 500 },
-        { id: "B", job_id: "RUNNING",   created_at: 100 },
-        { id: "C", job_id: "RUNNING",   created_at: 300 },
-        { id: "D", job_id: "RUNNING", created_at: 400 }
+        { id: "A", job_id: "COMPLETED", created_at: 500, cluster_id: "owens" },
+        { id: "B", job_id: "RUNNING", created_at: 100, cluster_id: "owens" },
+        { id: "C", job_id: "RUNNING", created_at: 300, cluster_id: "owens" },
+        { id: "D", job_id: "RUNNING", created_at: 400, cluster_id: "owens" }
       ].each { |v| File.write dir.join(v[:id]), v.to_json }
 
       sessions = double_session.all
@@ -135,7 +152,7 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       double_session.stubs(:db_root).returns(dir)
 
       [
-        { id: "A", job_id: "RUNNING",   created_at: 500 },
+        { id: "A", job_id: "RUNNING", created_at: 500, cluster_id: "owens" },
       ].each { |v| File.write dir.join(v[:id]), v.to_json }
 
       File.write dir.join("bad1"), ""
@@ -155,9 +172,9 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       BatchConnect::Session.any_instance.stubs(:completed?).returns(false)
 
       [
-        { id: "A", created_at: 500 },
-        { id: "B", created_at: 100 },
-        { id: "C", created_at: 300 }
+        { id: "A", job_id: "COMPLETED", created_at: 500, cluster_id: "owens" },
+        { id: "B", job_id: "COMPLETED", created_at: 100, cluster_id: "owens" },
+        { id: "C", job_id: "COMPLETED", created_at: 300, cluster_id: "owens" }
       ].each do |v|
         File.open(dir.join(v[:id]), "w") do |f|
           f.write v.to_json
@@ -218,7 +235,7 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       dir = Pathname.new(dir)
       BatchConnect::Session.stubs(:db_root).returns(dir)
 
-      dir.join("A").write({id: "A", job_id: "123", created_at: 100 }.to_json)
+      dir.join("A").write({id: "A", job_id: "123", created_at: 100, cluster_id: "owens" }.to_json)
 
       session = BatchConnect::Session.all.first
 
