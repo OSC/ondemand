@@ -7,6 +7,11 @@ const tokenRex = /([A-Z][a-z]+){1}([\w\-]+)/;
 // @example ['NodeType', 'Cluster']
 const optionTokens = [];
 
+// simple lookup table to indicate that the change handler is setup between two
+// elements. I.e., {'cluster': [ 'node_type' ] } means that changes to cluster
+// trigger changes to node_type
+const handlerCache = {};
+
 function bcElement(name) {
   return `${bcPrefix}_${name.toLowerCase()}`;
 };
@@ -75,6 +80,7 @@ function snakeCaseWords(str) {
 function memorizeElements(elements) {
   elements.each((_i, ele) => {
     optionTokens.push(mountainCaseWords(shortId(ele['id'])));
+    handlerCache[ele['id']] = [];
   });
 };
 
@@ -104,13 +110,18 @@ function makeChangeHandlers(){
 
 function addChangeHandler(causeId, targetId) {
   const changeId = String(causeId || '');
-  let causeElement = undefined;
 
-  if(changeId.length > 0) {
-    causeElement = $(`#${causeId}`);
+  if(changeId.length == 0 || handlerCache[causeId].includes(targetId)) {
+    // nothing to do. invalid causeId or we already have a handler between the 2
+    return;
   }
 
+  let causeElement = $(`#${causeId}`);
+
   if(targetId && causeElement) {
+    // cache the fact that there's a new handler here
+    handlerCache[causeId].push(targetId);
+
     causeElement.on('change', (event) => {
       toggleOptionsFor(event, targetId);
     });
