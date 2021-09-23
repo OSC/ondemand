@@ -89,6 +89,10 @@ module BatchConnect
       end if params
     end
 
+    def valid_session_fields?
+      !( created_at.nil? || cluster_id.nil? || job_id.nil? )
+    end
+
     class << self
       # The data root directory for this namespace
       # @param token [#to_s] The data root directory for a given app token
@@ -114,9 +118,11 @@ module BatchConnect
             f.rename("#{f}.bak")
             nil
           end
-        }.compact.map { |s|
+        }.compact.select { |s| 
+          s.valid_session_fields? 
+        }.map { |s|
           (s.completed? && s.old? && s.destroy) ? nil : s
-        }.compact.sort_by {|s|
+        }.compact.sort_by { |s|
           # sort by completed status, then created_at date
           [s.completed? ? 0 : 1, s.created_at]
         }.reverse
