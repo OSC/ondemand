@@ -193,6 +193,11 @@ module BuildUtils
     "#{cwd}/templates/#{filename}"
   end
 
+  def task_file(filename)
+    cwd = "#{File.expand_path(__dir__)}"
+    "#{cwd}/files/#{filename}"
+  end
+
   def ood_bin_dir
     "#{INSTALL_ROOT}/bin"
   end
