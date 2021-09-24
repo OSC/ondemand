@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Update changelog
         run: |
@@ -31,12 +33,12 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.OSC_ROBOT_GH_PUB_REPO_TOKEN }}
-          commit-message: update dependencies
-          committer: OSC ROBOT <osc-bot@gmail.com>
-          author: osc-bot <osc-bot@gmail.com>
+          commit-message: update changelog
+          committer: OSC ROBOT <osc.bot@gmail.com>
+          author: osc-bot <osc.bot@gmail.com>
           branch: osc-bot/changelog-update
           delete-branch: true
-          title: 'Update Dependencies'
+          title: 'Update Changelog'
           body: |
             Changelog updates from the last 7 days
 
