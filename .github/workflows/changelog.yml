@@ -33,7 +33,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.OSC_ROBOT_GH_PUB_REPO_TOKEN }}
-          commit-message: update dependencies
+          commit-message: update changelog
           committer: OSC ROBOT <osc.bot@gmail.com>
           author: osc-bot <osc.bot@gmail.com>
           branch: osc-bot/changelog-update
