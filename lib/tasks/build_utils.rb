@@ -199,4 +199,12 @@ module BuildUtils
   def ood_bin_dir
     "#{INSTALL_ROOT}/bin"
   end
+
+  def rt_specific_flags
+    if podman_runtime?
+      ['--security-opt', 'label=disable'] # SELinux doesn't like it if you're mounting from $HOME
+    else
+      []
+    end
+  end
 end

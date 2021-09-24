@@ -99,14 +99,6 @@ namespace :test do
     ["-v", "#{PROJ_DIR.join('docker', 'ood_portal.yml')}:/etc/ood/config/ood_portal.yml:ro"]
   end
 
-  def rt_specific_flags
-    if podman_runtime?
-      ["--security-opt", "label=disable"] # SELinux doesn't like it if you're mounting from $HOME
-    else
-      []
-    end
-  end
-
   desc "Run end to end tests"
   task :e2e => ["package:test_container"] do
     Rake::Task['test:start_test_container'].invoke

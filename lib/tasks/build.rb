@@ -32,6 +32,7 @@ namespace :build do
     base_args.concat ["-v", "#{dir}:/build", "-w", "#{work_dir}"]
     base_args.concat ["-e", "DEBUILD_DPKG_BUILDPACKAGE_OPTS='-us -uc -I -i'"]
     base_args.concat ["-e", "HOME=/home/deb", "-e", "USER=deb"]
+    base_args.concat rt_specific_flags
     base_args.concat [ build_box_image(args)]
     sh "#{container_runtime} run #{base_args.join(' ')} debmake -b':ruby'"
 

@@ -33,14 +33,14 @@ override_dh_auto_install:
 	# make some directories
 	mkdir -p "$(APACHE_DIR)/public"
 	mkdir -p "$(APACHE_DIR)/discover"
-	mkdir -p "$(APACHE_DIR),register"
+	mkdir -p "$(APACHE_DIR)/register"
 	mkdir -p "$(APACHE_DIR)/apps/sys"
-	mkdir -p "$(APACHE_DIR)/usr"
-	mkdir -p "$(APACHE_DIR)/dev"
+	mkdir -p "$(APACHE_DIR)/apps/usr"
+	mkdir -p "$(APACHE_DIR)/apps/dev"
 	mkdir -p "$(CONFIG_DIR)/clusters.d"
 	mkdir -p "$(CONFIG_DIR)/ondemand.d"
 
-	mv $(DESTDIR)/opt/ood/apps/ $(APACHE_DIR)/sys
+	mv $(DESTDIR)/opt/ood/apps/* $(APACHE_DIR)/apps/sys
 	rm -rf $(DESTDIR)/opt/ood/apps
 
 	rake package:version > $(DESTDIR)/opt/ood/VERSION
