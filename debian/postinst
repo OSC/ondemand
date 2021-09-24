@@ -1,0 +1,16 @@
+#!/bin/bash
+
+cat << HEREDOC > /etc/ood/profile
+#!/bin/bash
+
+export GEM_PATH="/opt/ood/gems:$GEM_PATH"
+HEREDOC
+
+[ -e /etc/ood/profile ] && . /etc/ood/profile
+
+export APACHE="/etc/apache2/conf-available/ood-portal.conf"
+/opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm 
+
+cd /etc/apache2/conf-enabled; ln -s ../conf-available/ood-portal.conf
+
+exit 0

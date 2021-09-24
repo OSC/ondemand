@@ -16,6 +16,10 @@ namespace :package do
     Rake::Task['build:debuild'].invoke('ubuntu', args[:version] || '20.04')
   end
 
+  task :version do
+    puts ood_package_version
+  end
+
   task container: [:clean] do
     sh build_cmd("Dockerfile", image_names[:ood]) unless image_exists?("#{image_names[:ood]}:#{ood_image_tag}")
   end
