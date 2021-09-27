@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+### Added
+
+- Batch connect apps can now enable automatic js change handlers for options in [1380](https://github.com/OSC/ondemand/pull/1380).
+- Test cases for example files for both ood_portal and nginx_stage in [832](https://github.com/OSC/ondemand/pull/832).
+
+### Fixed
+
+- Batch connect now safely reads files in db in [1402](https://github.com/OSC/ondemand/pull/1402).
+
 ## [2.0.16] - 2021-08-25
 
 ### Fixed
