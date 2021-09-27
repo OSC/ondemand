@@ -3,7 +3,7 @@ require 'test_helper'
 class BatchConnect::SessionTest < ActiveSupport::TestCase
 
   def bc_jupyter_app
-    r = PathRouter.new("test/fixtures/sys_with_interactive_apps/bc_jupyter")
+    r = PathRouter.new("test/fixtures/sys_with_gateway_apps/bc_jupyter")
     BatchConnect::App.new(router: r)
   end
 
