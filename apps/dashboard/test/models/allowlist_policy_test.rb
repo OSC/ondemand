@@ -52,6 +52,9 @@ class AllowlistPolicyTest < ActiveSupport::TestCase
     assert_raise AllowlistPolicy::Forbidden do
       allowlist.validate!(non_permitted_path)
     end
+    assert_raise AllowlistPolicy::Forbidden do
+       allowlist.validate!(nil)
+    end
   end
 
   test "validate! should return nil if no error or no bad input is encountered" do
