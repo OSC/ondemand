@@ -429,10 +429,11 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
 
       assert session.save(app: bc_jupyter_app, context: ctx)
       base_dir = Pathname.new("#{dir}/batch_connect/owens/bc_jupyter/output")
+      puts `ls -lrt #{dir}`
+      puts `ls -lrt #{dir}/batch_connect/owens`
+      puts `ls -lrt #{base_dir}/..`
       assert base_dir.directory?
       assert_equal 1, base_dir.children.size
-      puts `ls -lrt #{dir}`
-      puts `ls -lrt #{dir}/batch_connect`
       refute File.directory?("#{dir}/batch_connect/oakley/bc_jupyter/output")
 
       # now let's switch to the oakley cluster
