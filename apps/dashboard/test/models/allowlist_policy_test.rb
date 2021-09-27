@@ -24,7 +24,6 @@ class AllowlistPolicyTest < ActiveSupport::TestCase
 
     cfg = Configuration.allowlist_paths 
     cfg.stubs(:allowlist_paths).returns([permitted_path])
-
     allowlist = AllowlistPolicy.new(cfg.allowlist_paths)
 
     assert allowlist.permitted?(permitted_path)
