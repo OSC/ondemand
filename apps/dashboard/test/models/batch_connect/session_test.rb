@@ -427,11 +427,8 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       ctx = bc_jupyter_app.build_session_context
       ctx.attributes = { 'cluster' => 'owens' }
 
-      assert session.save(app: bc_jupyter_app, context: ctx)
+      assert session.save(app: bc_jupyter_app, context: ctx), "#{session.errors.each do |e| e.to_s end }"
       base_dir = Pathname.new("#{dir}/batch_connect/owens/bc_jupyter/output")
-      puts `ls -lrt #{dir}`
-      puts `ls -lrt #{dir}/batch_connect/owens`
-      puts `ls -lrt #{base_dir}/..`
       assert base_dir.directory?
       assert_equal 1, base_dir.children.size
       refute File.directory?("#{dir}/batch_connect/oakley/bc_jupyter/output")
@@ -441,11 +438,6 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       assert session.save(app: bc_jupyter_app, context: ctx)
       base_dir = Pathname.new("#{dir}/batch_connect/oakley/bc_jupyter/output")
       assert base_dir.directory?
-      puts `ls -lrt #{dir}`
-      puts `ls -lrt #{dir}/batch_connect`
-      puts `ls -lrt #{dir}/batch_connect/oakley`
-      puts `ls -lrt #{dir}/batch_connect/oakley/bc_jupyter`
-      puts `ls -lrt #{dir}/batch_connect/oakley/bc_jupyter/output`
       assert_equal 1, base_dir.children.size
     end
   end
