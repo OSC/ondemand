@@ -25,7 +25,7 @@ class AllowlistPolicyTest < ActiveSupport::TestCase
     end
   end
 
-  test "permitted? should return false if bad input or non-subpath is passed" do
+  test "permitted? should return false if bad input, non-subpath, or nil is passed" do
     permitted_path = "/somebody/home/dir"
     not_subpath = "/sombody/home/../dir"
     bad_input = "123456"
@@ -38,9 +38,10 @@ class AllowlistPolicyTest < ActiveSupport::TestCase
     refute allowlist.permitted?(not_subpath)
     refute allowlist.permitted?(bad_input)
     refute allowlist.permitted?(strange_char)
+    refute allowlist.permitted?(nil)
   end
 
-  test "validate? should raise AllowlistPolicy::Forbidden error if not permitted by allowlist" do
+  test "validate! should raise AllowlistPolicy::Forbidden error if not permitted by allowlist" do
     permitted_path = "/somebody/home/dir"
     non_permitted_path = "/nobody/dir/home"
 
@@ -53,7 +54,7 @@ class AllowlistPolicyTest < ActiveSupport::TestCase
     end
   end
 
-  test "validate? should return nil if no error or no bad input is encountered" do
+  test "validate! should return nil if no error or no bad input is encountered" do
     permitted_path = "/somebody/home/dir"
 
     cfg = Configuration.allowlist_paths 
