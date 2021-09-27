@@ -94,8 +94,7 @@ module BatchConnect
       # @param token [#to_s] The data root directory for a given app token
       # @return [Pathname] data root directory
       def dataroot(token = "", cluster: nil)
-        root = cluster.present? ? OodAppkit.dataroot.join(cluster.to_s) : OodAppkit.dataroot
-        root.join("batch_connect", token.to_s)
+        OodAppkit.dataroot.join('batch_connect').join(cluster.to_s).join(token.to_s)
       end
 
       # Root directory for file system database
