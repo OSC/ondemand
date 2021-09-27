@@ -6,15 +6,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-changelog workflow use right email (#1408)\
-fix update changelog workflow (#1406)\
-add workflow regularly update changelog (#1404)\
-optimize the batch connect js a little (#1403)\
-Added helper for field validation, test, and updated other tests whic… (#1402)\
-clean up batchConnect.js a little (#1400)\
-fix HashAlignment rubocop (#1399)\
-add test cases for example files for both ood_portal and nginx_stage (#832)\
-update dependencies (#1389)
+
+### Changed
+
+### Added
+
+- Batch connect apps can now enable automatic js change handlers for options in [1380](https://github.com/OSC/ondemand/pull/1380).
+- Test cases for example files for both ood_portal and nginx_stage in [832](https://github.com/OSC/ondemand/pull/832).
+
+### Fixed
+
+- Batch connect now safely reads files in db in [1402](https://github.com/OSC/ondemand/pull/1402).
 
 ## [2.0.16] - 2021-08-25
 
