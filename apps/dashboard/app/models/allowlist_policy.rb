@@ -17,14 +17,14 @@ class AllowlistPolicy
   # @raises ArgumentError if any allowlist path or permitted? argument
   #         has the form ~user/some/path where user doesn't exist
   def permitted?(path)
-    allowlist.blank? || allowlist.any? { |parent| child?(Pathname.new(parent), real_expanded_path(path)) }
+    allowlist.blank? || allowlist.any? { |parent| child?(Pathname.new(parent), real_expanded_path(path.to_s)) }
   end
 
   # @raises AllowlistPolicy::Forbidden if path is not permitted by allowlist
   # @raises ArgumentError if any allowlist path or permitted? argument
   #         has the form ~user/some/path where user doesn't exist
   def validate!(path)
-    raise AllowlistPolicy::Forbidden, "#{path} does not have an ancestor directory specified in ALLOWLIST_PATH" unless permitted?(path)
+    raise AllowlistPolicy::Forbidden, "#{path} does not have an ancestor directory specified in ALLOWLIST_PATH" unless permitted?(path.to_s)
   end
 
   protected
