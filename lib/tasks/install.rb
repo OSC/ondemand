@@ -61,6 +61,7 @@ namespace :install do
     # mv probably not right here. install? didn't work at first
     sh "mv #{vendor_build_dir}/passenger/passenger_native_support.so #{DESTDIR}/#{lib_dir}"
     sh "mv #{vendor_build_dir}/passenger #{INSTALL_ROOT}"
+    sh "#{tar} -xzf #{vendor_src_dir}/#{passenger_agent_tar} -C #{passenger_lib_dir}"
 
     File.open("#{passenger_ini_dir}/locations.ini", 'w') do |f|
       content = File.read(template_file('locations.ini.erb'))

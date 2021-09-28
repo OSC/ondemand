@@ -1,14 +1,14 @@
 [locations]
 packaging_method=deb
-bin_dir=<%= passenger_bin_dir %>
-support_binaries_dir=/dev/null
-lib_dir=<%= passenger_lib_dir %>
-helper_scripts_dir=<%= passenger_src_dir %>/helper-scripts
-resources_dir=<%= passenger_root %>/resources
+bin_dir=<%= passenger_bin_dir.sub(DESTDIR.to_s, '') %>
+support_binaries_dir=<%= passenger_lib_dir.sub(DESTDIR.to_s, '') %>
+lib_dir=<%= passenger_lib_dir.sub(DESTDIR.to_s, '') %>
+helper_scripts_dir=<%= passenger_src_dir.sub(DESTDIR.to_s, '') %>/helper-scripts
+resources_dir=<%= passenger_root.sub(DESTDIR.to_s, '') %>/resources
 include_dir=/dev/null
-doc_dir=<%= passenger_root %>/doc
-ruby_libdir=<%= passenger_src_dir %>/ruby_supportlib
-node_libdir=<%= passenger_src_dir %>/nodejs_supportlib
+doc_dir=<%= passenger_root.sub(DESTDIR.to_s, '') %>/doc
+ruby_libdir=<%= passenger_src_dir.sub(DESTDIR.to_s, '') %>/ruby_supportlib
+node_libdir=<%= passenger_src_dir.sub(DESTDIR.to_s, '') %>/nodejs_supportlib
 apache2_module_path=/dev/null
-ruby_extension_source_dir=<%= passenger_src_dir %>/ruby_native_extension
-nginx_module_source_dir=<%= passenger_src_dir %>/nginx_module
+ruby_extension_source_dir=<%= passenger_src_dir.sub(DESTDIR.to_s, '') %>/ruby_native_extension
+nginx_module_source_dir=<%= passenger_src_dir.sub(DESTDIR.to_s, '') %>/nginx_module

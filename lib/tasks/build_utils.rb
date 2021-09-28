@@ -158,6 +158,10 @@ module BuildUtils
     "#{passenger_release_url}/agent-x86_64-linux.tar.gz"
   end
 
+  def passenger_agent_tar
+    "passenger-agent-#{passenger_version}.tar.gz"
+  end
+
   def buildah_build_cmd(docker_file, image_name, image_tag: ood_image_tag, extra_args: [])
     args = ["bud", "--build-arg", "VERSION=#{ood_version}"]
     args.concat ["-t", "#{image_name}:#{image_tag}", "-f", docker_file]
