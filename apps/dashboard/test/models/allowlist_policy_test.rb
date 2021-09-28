@@ -14,7 +14,6 @@ class AllowlistPolicyTest < ActiveSupport::TestCase
     with_modified_env({OOD_ALLOWLIST_PATH: "/somebody/home/dir"}) do
       wrong_user = "~user/some/path"
       allowlist = AllowlistPolicy.new(Configuration.allowlist_paths)
-
       assert_raise ArgumentError do
         allowlist.permitted?(wrong_user)
       end
@@ -26,9 +25,7 @@ class AllowlistPolicyTest < ActiveSupport::TestCase
       not_subpath = "/sombody/home/../dir"
       bad_input = "123456"
       strange_char = "🐱"
-
       allowlist = AllowlistPolicy.new(Configuration.allowlist_paths)
-
       refute allowlist.permitted?(not_subpath)
       refute allowlist.permitted?(bad_input)
       refute allowlist.permitted?(strange_char)
@@ -40,7 +37,6 @@ class AllowlistPolicyTest < ActiveSupport::TestCase
     with_modified_env({OOD_ALLOWLIST_PATH: "/somebody/home/dir"}) do
       non_permitted_path = "/nobody/dir/home"
       allowlist = AllowlistPolicy.new(Configuration.allowlist_paths)
-
       assert_raise AllowlistPolicy::Forbidden do
         allowlist.validate!(non_permitted_path)
       end
