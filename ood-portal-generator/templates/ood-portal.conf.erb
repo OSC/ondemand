@@ -92,7 +92,6 @@ Listen <%= addr_port %>
   <%- end -%>
   RewriteRule ^.*$ <%= @public_uri %>/maintenance/index.html [R=503,L]
   ErrorDocument 503 <%= @public_uri %>/maintenance/index.html
-  Header Set Cache-Control "max-age=0, no-store"
 
   <%- end -%>
   <%- if @security_csp_frame_ancestors -%>

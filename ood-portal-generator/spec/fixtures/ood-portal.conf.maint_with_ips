@@ -57,7 +57,6 @@
   RewriteCond %{REMOTE_ADDR} !^10\.0\.0\..*
   RewriteRule ^.*$ /public/maintenance/index.html [R=503,L]
   ErrorDocument 503 /public/maintenance/index.html
-  Header Set Cache-Control "max-age=0, no-store"
 
   Header always set Content-Security-Policy "frame-ancestors http://example.com;"
 
