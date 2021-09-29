@@ -97,8 +97,8 @@ module BatchConnect
       # The data root directory for this namespace
       # @param token [#to_s] The data root directory for a given app token
       # @return [Pathname] data root directory
-      def dataroot(token = "")
-        OodAppkit.dataroot.join("batch_connect", token.to_s)
+      def dataroot(token = "", cluster: nil)
+        OodAppkit.dataroot.join('batch_connect').join(cluster.to_s).join(token.to_s)
       end
 
       # Root directory for file system database
@@ -215,11 +215,12 @@ module BatchConnect
       self.title      = app.title
       self.view       = app.session_view
       self.created_at = Time.now.to_i
+      self.cluster_id = context.try(:cluster).to_s
 
       submit_script = app.submit_opts(context, fmt: format, staged_root: staged_root) # could raise an exception
 
-      self.cluster_id = submit_script.fetch(:cluster, context.try(:cluster)).to_s
-      raise(ClusterNotFound, I18n.t('dashboard.batch_connect_missing_cluster')) unless self.cluster_id.present?
+      self.cluster_id = submit_script.fetch(:cluster, cluster_id).to_s
+      raise(ClusterNotFound, I18n.t('dashboard.batch_connect_missing_cluster')) unless cluster_id.present?
 
       stage(app.root.join("template"), context: context) && submit(submit_script)
     rescue => e   # rescue from all standard exceptions (app never crashes)
@@ -418,7 +419,8 @@ module BatchConnect
     # Root directory where a job is staged and run in
     # @return [Pathname] staged root directory
     def staged_root
-      self.class.dataroot(token).join("output", id)
+      c = Configuration.per_cluster_dataroot? ? cluster_id : nil
+      self.class.dataroot(token, cluster: c).join("output", id)
     end
 
     # List of template files that need to be rendered
@@ -544,7 +546,7 @@ module BatchConnect
       def job_name
         [
           ENV["OOD_PORTAL"],    # the OOD portal id
-          ENV["RAILS_RELATIVE_URL_ROOT"].sub(/^\/[^\/]+\//, ""),  # the OOD app
+          ENV["RAILS_RELATIVE_URL_ROOT"].to_s.sub(/^\/[^\/]+\//, ""),  # the OOD app
           token                 # the Batch Connect app
         ].reject(&:blank?).join("/")
       end

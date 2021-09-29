@@ -3,7 +3,7 @@ require 'test_helper'
 class BatchConnect::SessionTest < ActiveSupport::TestCase
 
   def bc_jupyter_app
-    r = PathRouter.new("test/fixtures/sys_with_interactive_apps/bc_jupyter")
+    r = PathRouter.new("test/fixtures/sys_with_gateway_apps/bc_jupyter")
     BatchConnect::App.new(router: r)
   end
 
@@ -348,7 +348,7 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
         id: 'test-123',
         status: :running
       )
-      BatchConnect::Session.stubs(:dataroot).returns(Pathname.new(dir))
+      OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
       BatchConnect::Session.any_instance.stubs(:id).returns('test-id')
       BatchConnect::Session.any_instance.stubs(:info).returns(info)
       session = BatchConnect::Session.new
@@ -371,7 +371,7 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
         'port' => 8080,
         'password' => 'superSecretPassword'
       }
-      BatchConnect::Session.stubs(:dataroot).returns(Pathname.new(dir.to_s))
+      OodAppkit.stubs(:dataroot).returns(Pathname.new(dir.to_s))
       BatchConnect::Session.any_instance.stubs(:id).returns('test-id')
       BatchConnect::Session.any_instance.stubs(:info).returns(info)
       session = BatchConnect::Session.new
@@ -386,7 +386,7 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
 
   test "staged_root does not exist until we call session.stage" do
     Dir.mktmpdir("staged_root") do |dir|
-      BatchConnect::Session.stubs(:dataroot).returns(Pathname.new(dir))
+      OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
       BatchConnect::Session.any_instance.stubs(:id).returns('test-id')
       OodAppkit.stubs(:clusters).returns([OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}})])
       session = BatchConnect::Session.new
@@ -429,5 +429,54 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
     session.stubs(:cluster).raises(BatchConnect::Session::ClusterNotFound, "Session specifies nonexistent")
     Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
     refute session.ssh_to_compute_node?
+  end
+
+  test 'saves the cluser id in the staged_root path' do
+    # stub open3 and system apps because :save stages and submits the job
+    # and expects certain things - like a valid cluster.d directory
+    stub_sys_apps
+    Open3.stubs(:capture3).returns(['the-job-id', '', exit_success])
+
+    with_modified_env({ OOD_PER_CLUSTER_DATAROOT: 'true' }) do
+      Dir.mktmpdir('staged_root') do |dir|
+        OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
+
+        session = BatchConnect::Session.new
+        ctx = bc_jupyter_app.build_session_context
+        ctx.attributes = { 'cluster' => 'owens' }
+
+        assert session.save(app: bc_jupyter_app, context: ctx), session.errors.each { |e| e.to_s }.to_s
+        base_dir = Pathname.new("#{dir}/batch_connect/owens/bc_jupyter/output")
+        assert base_dir.directory?
+        assert_equal 1, base_dir.children.size
+        refute File.directory?("#{dir}/batch_connect/oakley/bc_jupyter/output")
+
+        # now let's switch to the oakley cluster
+        ctx.attributes = { 'cluster' => 'oakley' }
+        assert session.save(app: bc_jupyter_app, context: ctx)
+        base_dir = Pathname.new("#{dir}/batch_connect/oakley/bc_jupyter/output")
+        assert base_dir.directory?
+        assert_equal 1, base_dir.children.size
+      end
+    end
+  end
+
+  test 'no cluster in dataroot by default' do
+    stub_sys_apps
+    Open3.stubs(:capture3).returns(['the-job-id', '', exit_success])
+
+    Dir.mktmpdir('staged_root') do |dir|
+      OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
+
+      session = BatchConnect::Session.new
+      ctx = bc_jupyter_app.build_session_context
+      ctx.attributes = { 'cluster' => 'owens' }
+
+      assert session.save(app: bc_jupyter_app, context: ctx), session.errors.each { |e| e.to_s }.to_s
+      # owens is not here in the path
+      base_dir = Pathname.new("#{dir}/batch_connect/bc_jupyter/output")
+      assert base_dir.directory?
+      assert_equal 1, base_dir.children.size
+    end
   end
 end
