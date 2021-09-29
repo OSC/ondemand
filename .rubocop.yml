@@ -7,6 +7,8 @@ Style/ClassAndModuleChildren:
   EnforcedStyle: 'compact'
 Style/WordArray:
   EnforcedStyle: 'brackets'
+Style/SymbolArray:
+  EnforcedStyle: 'brackets'
 
 # layout
 Layout/HashAlignment:
