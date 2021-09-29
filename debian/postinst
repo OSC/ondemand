@@ -1,19 +1,5 @@
 #!/bin/bash
 
-cat << HEREDOC > /etc/ood/profile
-#!/bin/bash
-
-export GEM_PATH="/opt/ood/gems:$GEM_PATH"
-HEREDOC
-
-cat << HEREDOC > /etc/sudoers.d/ood
-Defaults:www-data !requiretty, !authenticate
-Defaults:www-data env_keep += "NGINX_STAGE_* OOD_*"
-www-data ALL=(ALL) NOPASSWD: /opt/ood/nginx_stage/sbin/nginx_stage
-HEREDOC
-
-chmod 440 /etc/sudoers.d/ood
-
 mkdir -p /var/lib/ondemand-nginx
 mkdir -p /var/lob/ondemand-nginx
 mkdir -p /var/tmp/ondemand-nginx
