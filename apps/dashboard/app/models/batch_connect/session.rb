@@ -411,7 +411,8 @@ module BatchConnect
     # Root directory where a job is staged and run in
     # @return [Pathname] staged root directory
     def staged_root
-      self.class.dataroot(token, cluster: cluster_id).join("output", id)
+      c = Configuration.per_cluster_dataroot? ? cluster_id : nil
+      self.class.dataroot(token, cluster: c).join("output", id)
     end
 
     # List of template files that need to be rendered

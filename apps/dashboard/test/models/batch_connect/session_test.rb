@@ -420,6 +420,34 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
     stub_sys_apps
     Open3.stubs(:capture3).returns(['the-job-id', '', exit_success])
 
+    with_modified_env({ OOD_PER_CLUSTER_DATAROOT: 'true' }) do
+      Dir.mktmpdir('staged_root') do |dir|
+        OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
+
+        session = BatchConnect::Session.new
+        ctx = bc_jupyter_app.build_session_context
+        ctx.attributes = { 'cluster' => 'owens' }
+
+        assert session.save(app: bc_jupyter_app, context: ctx), session.errors.each { |e| e.to_s }.to_s
+        base_dir = Pathname.new("#{dir}/batch_connect/owens/bc_jupyter/output")
+        assert base_dir.directory?
+        assert_equal 1, base_dir.children.size
+        refute File.directory?("#{dir}/batch_connect/oakley/bc_jupyter/output")
+
+        # now let's switch to the oakley cluster
+        ctx.attributes = { 'cluster' => 'oakley' }
+        assert session.save(app: bc_jupyter_app, context: ctx)
+        base_dir = Pathname.new("#{dir}/batch_connect/oakley/bc_jupyter/output")
+        assert base_dir.directory?
+        assert_equal 1, base_dir.children.size
+      end
+    end
+  end
+
+  test 'no cluster in dataroot by default' do
+    stub_sys_apps
+    Open3.stubs(:capture3).returns(['the-job-id', '', exit_success])
+
     Dir.mktmpdir('staged_root') do |dir|
       OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
 
@@ -427,19 +455,11 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       ctx = bc_jupyter_app.build_session_context
       ctx.attributes = { 'cluster' => 'owens' }
 
-      assert session.save(app: bc_jupyter_app, context: ctx), "#{session.errors.each do |e| e.to_s end }"
-      base_dir = Pathname.new("#{dir}/batch_connect/owens/bc_jupyter/output")
-      assert base_dir.directory?
-      assert_equal 1, base_dir.children.size
-      refute File.directory?("#{dir}/batch_connect/oakley/bc_jupyter/output")
-
-      # now let's switch to the oakley cluster
-      ctx.attributes = { 'cluster' => 'oakley' }
-      assert session.save(app: bc_jupyter_app, context: ctx)
-      base_dir = Pathname.new("#{dir}/batch_connect/oakley/bc_jupyter/output")
+      assert session.save(app: bc_jupyter_app, context: ctx), session.errors.each { |e| e.to_s }.to_s
+      # owens is not here in the path
+      base_dir = Pathname.new("#{dir}/batch_connect/bc_jupyter/output")
       assert base_dir.directory?
       assert_equal 1, base_dir.children.size
     end
   end
-
 end

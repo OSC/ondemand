@@ -386,6 +386,14 @@ class ConfigurationSingleton
     end
   end
 
+  def per_cluster_dataroot?
+    if ENV['OOD_PER_CLUSTER_DATAROOT']
+      to_bool(ENV['OOD_PER_CLUSTER_DATAROOT'])
+    else
+      to_bool(config.fetch(:per_cluster_dataroot, false))
+    end
+  end
+
   private
 
   def can_access_core_app?(name)
