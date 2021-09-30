@@ -1,0 +1,9 @@
+---
+v2:
+  metadata:
+    title: "Owens"
+    url: "https://www.osc.edu/supercomputing/computing/owens"
+    hidden: false
+  login:
+    host: "owens.osc.edu"
+    default: true
