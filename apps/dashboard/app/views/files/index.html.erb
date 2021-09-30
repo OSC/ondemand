@@ -807,7 +807,7 @@ function reportTransfer(data){
         Swal.fire('Operation may not have happened', 'Failed to retrieve file operation status.', 'error');
       } else {
         setTimeout(poll, 1000);
-        attempts++
+        attempts++;
       }
     });
   }
