@@ -188,8 +188,6 @@ touch %{buildroot}%{_sysconfdir}/ood/config/ood_portal.sha256sum
 Defaults:apache !requiretty, !authenticate
 Defaults:apache env_keep += "NGINX_STAGE_* OOD_*"
 apache ALL=(ALL) NOPASSWD: /opt/ood/nginx_stage/sbin/nginx_stage
-Cmnd_Alias KUBECTL = /usr/local/bin/kubectl, /usr/bin/kubectl, /bin/kubectl
-Defaults!KUBECTL !syslog
 EOF
 %__chmod 440 %{buildroot}%{_sysconfdir}/sudoers.d/ood
 
@@ -229,12 +227,12 @@ EOF
 EOS
 
 %post
-%if %{with scl_apache}
 if [ "$1" -eq 2 ]; then
+%if %{with scl_apache}
 %__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24"/' \
     /opt/rh/httpd24/service-environment
-fi
 %endif
+fi
 
 /bin/systemctl daemon-reload &>/dev/null || :
 
