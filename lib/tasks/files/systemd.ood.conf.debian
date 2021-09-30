@@ -1,0 +1,4 @@
+[Service]
+KillSignal=SIGTERM
+KillMode=process
+PrivateTmp=false
