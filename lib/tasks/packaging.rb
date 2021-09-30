@@ -48,7 +48,7 @@ namespace :package do
     args = ["-w", work_dir, "-o", output_dir]
     args.concat ["-d", dist, "-V", "v#{version}", "-C"]
 
-    "#{File.join(packaging_dir, 'build.sh')} #{args.join(' ')} #{extra_args} #{File.join(Dir.pwd, 'packaging')}"
+    "#{File.join(packaging_dir, 'build.sh')} #{args.join(' ')} #{extra_args} #{File.join(Dir.pwd, 'packaging', 'rpm')}"
   end
 
   desc "Tar and zip OnDemand into packaging dir with version name v#<version>"
@@ -70,7 +70,7 @@ namespace :package do
       version = "#{latest_tag}-#{datetime}-#{latest_commit}"
     end
 
-    sh "git ls-files | #{tar} -c --transform 's,^,ondemand-#{version}/,' -T - | gzip > packaging/v#{version}.tar.gz"
+    sh "git ls-files | #{tar} -c --transform 's,^,ondemand-#{version}/,' -T - | gzip > packaging/rpm/v#{version}.tar.gz"
   end
 
   desc "Build the ood image"
