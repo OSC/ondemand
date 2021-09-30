@@ -8330,9 +8330,6 @@ hterm.Keyboard.KeyMap.prototype.reset = function() {
     keycapSC = 59;      // ;:
     keycapEP = 61;      // =+
     keycapMU = 173;     // -_
-
-    // Firefox Italian +*.
-    add(171, '+*', DEFAULT, c('onZoom_'), DEFAULT, c('onZoom_'));
   } else {
     // All other browsers use these mappings.
     // keycapMute = 173;   // Mute
@@ -8349,6 +8346,9 @@ hterm.Keyboard.KeyMap.prototype.reset = function() {
 
   // These fields are: [keycode, keycap, normal, control, alt, meta]
   /* eslint-disable no-multi-spaces */
+
+  // Firefox Italian +*.
+  add(171, '+*', DEFAULT, c('onZoom_'), DEFAULT, c('onZoom_'));
 
   // The browser sends the keycode 0 for some keys.  We'll just assume it's
   // going to do the right thing by default for those keys.
