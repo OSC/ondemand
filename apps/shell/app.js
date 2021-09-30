@@ -73,25 +73,16 @@ app.use(process.env.PASSENGER_BASE_URI || '/', router);
 const server = new http.createServer(app);
 const wss = new WebSocket.Server({ noServer: true });
 
-let host_allowlist = new Set;
+let host_allowlist = [];
 if (process.env.OOD_SSHHOST_ALLOWLIST){
-  host_allowlist = new Set(process.env.OOD_SSHHOST_ALLOWLIST.split(':'));
+  host_allowlist = Array.from(new Set(process.env.OOD_SSHHOST_ALLOWLIST.split(':')));
 }
 
-let default_sshhost, first_available_host;
-glob.sync(path.join((process.env.OOD_CLUSTERS || '/etc/ood/config/clusters.d'), '*.y*ml'))
-  .map(yml => yaml.safeLoad(fs.readFileSync(yml)))
-  .filter(config => (config.v2 && config.v2.login && config.v2.login.host) && ! (config.v2 && config.v2.metadata && config.v2.metadata.hidden))
-  .forEach((config) => {
-    let host = config.v2.login.host; //Already did checking above
-    let isDefault = config.v2.login.default;
-    host_allowlist.add(host);
-    if (isDefault) default_sshhost = host;
-    if (!first_available_host) first_available_host = host;
-  });
-
-default_sshhost = process.env.OOD_DEFAULT_SSHHOST || process.env.DEFAULT_SSHHOST || default_sshhost || first_available_host;
-if (default_sshhost) host_allowlist.add(default_sshhost);
+let hosts = helpers.definedHosts();
+let default_sshhost = hosts['default'];
+hosts['hosts'].forEach((host) => {
+  host_allowlist.push(host);
+});
 
 function host_and_dir_from_url(url){
   let match = url.match(host_path_rx), 
