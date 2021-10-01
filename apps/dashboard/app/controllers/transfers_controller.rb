@@ -10,7 +10,7 @@ class TransfersController < ApplicationController
     else
       respond_to do |format|
         format.html
-        format.json { render json: {}, status: 404 }
+        format.json { render json:{ }, status: 404 }
       end
     end
   end
