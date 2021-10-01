@@ -31,6 +31,11 @@ function definedHosts() {
       }
     });
 
+  // couldn't find a defined default, so let's just make one now if we can
+  if(hosts['default'] === null && hosts['hosts'].length > 0) {
+    hosts['default'] = hosts['hosts'][0];
+  }
+
   return hosts;
 }
 

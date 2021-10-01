@@ -76,5 +76,16 @@ describe('Helper function definedHosts()', () => {
 
     expect(defaultHost).toEqual('the.new.default.host');
   });
+
+  test('when no default is defined', () => {
+    // no default is defined in these cluster files or through an environment variable.
+    // so, the default cluster is just the first one we found.
+    process.env['OOD_CLUSTERS'] = 'test/no.defaults.clusters.d';
+
+    let defaultHost = helpers.definedHosts()['default'];
+
+    expect(defaultHost).toEqual('pitzer.osc.edu');
+    expect(helpers.definedHosts()['hosts']).toEqual(['pitzer.osc.edu', 'ruby.osc.edu']);
+  })
 });
 
