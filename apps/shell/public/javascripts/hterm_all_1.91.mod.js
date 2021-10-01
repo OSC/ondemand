@@ -8347,9 +8347,6 @@ hterm.Keyboard.KeyMap.prototype.reset = function() {
   // These fields are: [keycode, keycap, normal, control, alt, meta]
   /* eslint-disable no-multi-spaces */
 
-  // Firefox Italian +*.
-  add(171, '+*', DEFAULT, c('onZoom_'), DEFAULT, c('onZoom_'));
-
   // The browser sends the keycode 0 for some keys.  We'll just assume it's
   // going to do the right thing by default for those keys.
   add(0,   '[UNKNOWN]', PASS, PASS, PASS, PASS);
@@ -8386,6 +8383,9 @@ hterm.Keyboard.KeyMap.prototype.reset = function() {
   add(48,  '0)', DEFAULT, c('onZoom_'),       c('onAltNum_'), c('onZoom_'));
   add(keycapMU, '-_', DEFAULT, c('onZoom_'),  DEFAULT,        c('onZoom_'));
   add(keycapEP, '=+', DEFAULT, c('onZoom_'),  DEFAULT,        c('onZoom_'));
+
+  // Firefox Italian +*.
+  add(171, '+*', DEFAULT, c('onZoom_'), DEFAULT, c('onZoom_'));
 
   add(8,   '[BKSP]', bs('\x7f', '\b'), bs('\b', '\x7f'), DEFAULT,     DEFAULT);
 
