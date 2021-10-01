@@ -13,7 +13,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should create Jobs dropdown" do
-    get '/'
+    get root_path
 
     dditems = dropdown_list_items(dropdown_list('Jobs'))
     assert dditems.any?, "dropdown list items not found"
@@ -27,7 +27,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     missing_path = "/test/fixtures/dummy_fs/missing"
     OodFilesApp.stubs(:candidate_favorite_paths).returns([FavoritePath.new(scratch_path, title: "Scratch"), project_path, project_path2, missing_path])
     
-    get '/'
+    get root_path
 
     dditems = dropdown_list_items(dropdown_list('Files'))
     assert dditems.any?, "dropdown list items not found"
@@ -59,7 +59,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
       ].map {|h| OodCore::Cluster.new(h)})
     )
 
-    get '/'
+    get root_path
 
     dd = dropdown_list('Clusters')
     dditems = dropdown_list_items(dd)
@@ -82,7 +82,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_interactive_apps"))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
 
-    get '/'
+    get root_path
 
     dd = dropdown_list('Interactive Apps')
     dditems = dropdown_list_items(dd)
@@ -105,7 +105,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     Configuration.stubs(:app_development_enabled?).returns(false)
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
 
-    get '/'
+    get root_path
     assert_response :success
     assert_select "nav a[href='#{batch_connect_sessions_path}']", 1
   end
@@ -115,7 +115,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     Configuration.stubs(:app_development_enabled?).returns(true)
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
 
-    get '/'
+    get root_path
     assert_response :success
     assert_select "nav a[href='#{batch_connect_sessions_path}']", 1
   end
@@ -125,7 +125,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     Configuration.stubs(:app_development_enabled?).returns(false)
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
 
-    get '/'
+    get root_path
     assert_response :success
     assert_select "nav a[href='#{batch_connect_sessions_path}']", 0
   end
@@ -136,7 +136,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     NavConfig.stubs(:categories_whitelist?).returns(true)
     NavConfig.stubs(:categories).returns([])
     
-    get '/'
+    get root_path
     assert_response :success
     assert_select ".navbar-collapse > .nav li.dropdown[title]", 0
   end
@@ -147,7 +147,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     NavConfig.stubs(:categories_whitelist?).returns(true)
     NavConfig.stubs(:categories).returns(["Files", "Jobs", "Clusters", "Interactive Apps"])
 
-    get '/'
+    get root_path
     assert_response :success
     assert_select ".navbar-collapse > .nav li.dropdown[title='Gateway Apps']", 0
   end
@@ -158,7 +158,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     NavConfig.stubs(:categories_whitelist?).returns(false)
     NavConfig.stubs(:categories).returns(["Files", "Jobs", "Clusters", "Interactive Apps"])
 
-    get '/'
+    get root_path
     assert_response :success
     assert_select ".navbar-expand-md > #navbar li.dropdown[title]", 6 # +1 here is 'Help'
     assert_select  dropdown_link(1), text: "Files"
@@ -179,7 +179,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     NavConfig.stubs(:categories_whitelist?).returns(false)
     NavConfig.stubs(:categories).returns([])
 
-    get '/'
+    get root_path
     assert_response :success
     assert_select ".navbar-expand-md > #navbar li.dropdown[title]", 6 # +1 here is 'Help'
 
@@ -195,13 +195,13 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
     NavConfig.stubs(:categories_whitelist?).returns(false)
 
-    get '/'
+    get root_path
 
     assert_select ".navbar-expand-md > #navbar li.dropdown[title='System Installed Apps']", 0, 'Apps with no category should not appear in menus (thus System Installed Apps)'
   end
   
   test "should not create any empty links" do
-    get '/'
+    get root_path
 
     assert_response :success
     assert_select "a[href='']", count: 0

@@ -4,10 +4,6 @@ require 'test_helper'
 
 class BatchConnect::SessionContextsControllerTest < ActionDispatch::IntegrationTest
 
-  def batch_connect_path(token: 'dev/test')
-    "/batch_connect/#{:token}"
-  end
-
   test "create new session when cached cluster is no longer exists" do
     Dir.mktmpdir("session_context_controller_test") do |tmpdir|
 
@@ -33,7 +29,7 @@ class BatchConnect::SessionContextsControllerTest < ActionDispatch::IntegrationT
         OodCore::Cluster.new({ id: 'new', job: { some: 'job config' }})
       ])
 
-      get batch_connect_path
+      get new_batch_connect_session_context_path('dev/test')
       assert_response :success
       assert_select "div .alert", 1 # OnDemand requires a newer version of the browser
       assert_select "input[type=hidden][id='batch_connect_session_context_cluster'][value=?]", "new"
@@ -66,7 +62,7 @@ class BatchConnect::SessionContextsControllerTest < ActionDispatch::IntegrationT
         OodCore::Cluster.new({ id: 'old', job: { some: 'job config' }})
       ])
 
-      get batch_connect_path
+      get new_batch_connect_session_context_path('dev/test')
       assert_response :success
       assert_select "div .alert", 1 # OnDemand requires a newer version of the browser
       assert_select "input[type=hidden][id='batch_connect_session_context_cluster'][value=?]", "new"
@@ -108,7 +104,7 @@ class BatchConnect::SessionContextsControllerTest < ActionDispatch::IntegrationT
         OodCore::Cluster.new({ id: 'second', job: { some: 'job config' }})
       ])
 
-      get batch_connect_path      
+      get new_batch_connect_session_context_path('dev/test')      
       assert_response :success
       assert_select "div .alert", 1 # OnDemand requires a newer version of the browser
       assert_select "select#batch_connect_session_context_cluster option[value=?]", "second"
