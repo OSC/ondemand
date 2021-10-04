@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+- Update hterm to 1.91 in  [#1426](https://github.com/OSC/ondemand/pull/1426).
+- Batch connect apps can now use a per cluster dataroot to support sites that have multiple storages
+  in [#1409](https://github.com/OSC/ondemand/pull/1409).
+- The dashboard now uses strict same site cookies in [#1418](https://github.com/OSC/ondemand/pull/1418).
+
 ### Added
 
 - Batch connect apps can now enable automatic js change handlers for options in [1380](https://github.com/OSC/ondemand/pull/1380).
@@ -17,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Batch connect now safely reads files in db in [1402](https://github.com/OSC/ondemand/pull/1402).
+- Add retry attempt counter to 404 loop to fix client side loop in [#1298](https://github.com/OSC/ondemand/pull/1298).
 
 ## [2.0.16] - 2021-08-25
 
