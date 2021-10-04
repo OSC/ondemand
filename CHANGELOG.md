@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-
 ### Changed
 
 - Update hterm to 1.91 in  [#1426](https://github.com/OSC/ondemand/pull/1426).
