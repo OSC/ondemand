@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Removing controller tests and adding integrations. (#1430)\
+bugfix to define the default ssh host if it is not specified (#1429)\
+Update hterm to 1.91 (shells) (#1426)\
+Add retry attempt counter to 404 loop to fix client side loop (#1298)\
+mv default & defined hosts to the helper class (#1427)\
+rm Cache-Control header so we can cache images (#1420)\
+set term widths for rake dev:exec (#1396)\
+add shell app to unit tests (#1424)\
+batch connect apps to use a per cluster dataroot (#1409)\
+use strict same site cookies (#1418)\
+Adding tests for AllowlistPolicy class. (#1415)\
+Bump nokogiri from 1.12.4 to 1.12.5 in /apps/myjobs (#1417)\
+Bump nokogiri from 1.12.4 to 1.12.5 in /apps/dashboard (#1416)\
+update dependencies (#1412)\
+Update Changelog (#1411)
 
 ### Changed
 
