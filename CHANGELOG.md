@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.17] - 2021-10-05
+
+### Security
+
+- .svg files in the file browser are now being forced to be downloaded as they could
+  contain malicous javascript that would execute in the browser within a site's context.
+
 ## [2.0.16] - 2021-08-25
 
 ### Fixed
