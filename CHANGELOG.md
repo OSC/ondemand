@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [2.0.18] - 2021-10-06
+
+### Security
+
+- The svg patch in 2.0.17 needs to account for files with .SVG (all caps) extensions too.
 
 ## [2.0.17] - 2021-10-05
 
@@ -898,7 +903,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.16...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.18...HEAD
+[2.0.18]: https://github.com/OSC/ondemand/compare/v2.0.17...v2.0.18
+[2.0.17]: https://github.com/OSC/ondemand/compare/v2.0.16...v2.0.17
 [2.0.16]: https://github.com/OSC/ondemand/compare/v2.0.15...v2.0.16
 [2.0.15]: https://github.com/OSC/ondemand/compare/v2.0.14...v2.0.15
 [2.0.14]: https://github.com/OSC/ondemand/compare/v2.0.13...v2.0.14

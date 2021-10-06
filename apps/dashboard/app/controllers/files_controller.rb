@@ -207,8 +207,8 @@ class FilesController < ApplicationController
     type = Files.mime_type_by_extension(@path).presence || Files.mime_type(@path)
 
     # svgs aren't safe to view until we update our CSP
-    if params[:download] || type.symbol == :svg
-      type = 'text/plain; charset=utf-8' if type.symbol == :svg
+    if params[:download] || type.to_s == 'image/svg+xml'
+      type = 'text/plain; charset=utf-8' if type.to_s == 'image/svg+xml'
       send_file @path, type: type
     else
       send_file @path, disposition: 'inline', type: Files.mime_type_for_preview(type)
