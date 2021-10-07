@@ -5,12 +5,12 @@ const shortNameRex = new RegExp(`${bcPrefix}_([\\w\\-]+)`);
 const tokenRex = /([A-Z][a-z]+){1}([\w\-]+)/;
 
 // @example ['NodeType', 'Cluster']
-const optionTokens = [];
+const formTokens = [];
 
 // simple lookup table to indicate that the change handler is setup between two
 // elements. I.e., {'cluster': [ 'node_type' ] } means that changes to cluster
 // trigger changes to node_type
-const handlerCache = {};
+const optionForHandlerCache = {};
 
 function bcElement(name) {
   return `${bcPrefix}_${name.toLowerCase()}`;
@@ -63,6 +63,8 @@ function snakeCaseWords(str) {
     if (first){
       first = false;
       snakeCase += c.toLowerCase();
+    } else if(c === '-') {
+      snakeCase += '_';
     } else if(c == c.toUpperCase()) {
       snakeCase += `_${c.toLowerCase()}`;
     } else {
@@ -79,8 +81,8 @@ function snakeCaseWords(str) {
  */
 function memorizeElements(elements) {
   elements.each((_i, ele) => {
-    optionTokens.push(mountainCaseWords(shortId(ele['id'])));
-    handlerCache[ele['id']] = [];
+    formTokens.push(mountainCaseWords(shortId(ele['id'])));
+    optionForHandlerCache[ele['id']] = [];
   });
 };
 
@@ -100,7 +102,12 @@ function makeChangeHandlers(){
           let keys = Object.keys(data);
           if(keys.length !== 0) {
             keys.forEach((key) => {
-              addChangeHandler(parseOptions(key), element['id']);
+              if(key.startsWith('optionFor')) {
+                let token = key.replace('optionFor','');
+                addOptionForHandler(idFromToken(token), element['id']);
+              } else if(key.startsWith('max') || key.startsWith('min')) {
+                addMinMaxForHandler(element['id'], parseMinMaxFor(key, opt.value, data[key]));
+              }
             });
           }
       });
@@ -108,10 +115,41 @@ function makeChangeHandlers(){
   });
 };
 
-function addChangeHandler(causeId, targetId) {
+
+function addMinMaxForHandler(causeId, targetObject) {
+  let causeElement = $(`#${causeId}`);
+
+  causeElement.on('change', (event) => {
+    toggleMinMax(event, targetObject);
+  });
+}
+
+    // {
+    //   subjectId: "batch_connect_session_context_num_cores",
+    //   predicateId: "batch_connect_session_context_cluster",
+    //   predicateValue: "Owens",
+    //   value: 28,
+    //   option: "any"
+    // }
+
+// data-max-num-cores-for-cluster-owens: 28
+function toggleMinMax(event, targetObject) {
+  const eventValue = event.target.value;
+  const predicate = $(`#${targetObject['predicateId']}`).val();
+  const predicateNormalized = snakeCaseWords(predicate);
+  const targetPredicate = snakeCaseWords(targetObject['predicateValue']);
+
+  // 'owens' == 'owens' && 'any' == 'any'
+  if(predicateNormalized === targetPredicate && eventValue === targetObject['option']) {
+    const chageElement = $(`#${targetObject['subjectId']}`);
+    chageElement.attr('max', targetObject['value']);
+  }
+}
+
+function addOptionForHandler(causeId, targetId) {
   const changeId = String(causeId || '');
 
-  if(changeId.length == 0 || handlerCache[causeId].includes(targetId)) {
+  if(changeId.length == 0 || optionForHandlerCache[causeId].includes(targetId)) {
     // nothing to do. invalid causeId or we already have a handler between the 2
     return;
   }
@@ -120,7 +158,7 @@ function addChangeHandler(causeId, targetId) {
 
   if(targetId && causeElement) {
     // cache the fact that there's a new handler here
-    handlerCache[causeId].push(targetId);
+    optionForHandlerCache[causeId].push(targetId);
 
     causeElement.on('change', (event) => {
       toggleOptionsFor(event, targetId);
@@ -131,23 +169,66 @@ function addChangeHandler(causeId, targetId) {
   }
 };
 
+function parseMinMaxFor(key, option, value) {
+  //trying to parse maxNumCoresForClusterOwens
+  const tokens = key.replace(/^min/,'').replace(/^max/, '').match(/^(\w+)For(\w+)$/);
+  let predicateId = undefined;
+  let predicateValue = undefined;
+  let subjectId = undefined;
+
+  if(tokens.length == 3) {
+    const subject = tokens[1];
+    const predicateFull = tokens[2];
+    subjectId = idFromToken(subject);
+
+    const predicateTokens = predicateFull.split(/(?=[A-Z])/);
+    if(predicateTokens && predicateTokens.length >= 2) {
+
+      // if there are only 2 tokens then it's like 'ClusterOwens' which is easy
+      if(predicateTokens.length == 2) {
+        predicateId = idFromToken(predicateTokens[0]);
+        predicateValue = predicateTokens[1];
+
+      // else it's like NodeTypeFooBar, so it's a little more difficult
+      } else {
+        let tokenString = '';
+        let done = false;
+        predicateTokens.forEach((pt, idx) => {
+          if(done) { return; }
+
+          tokenString = `${tokenString}${pt}`
+          let tokenId = idFromToken(tokenString);
+          if(tokenId !== undefined) {
+            done = true;
+            predicateId = tokenId;
+            predicateValue = predicateTokens.slice(idx+1).join('');
+          }
+        })
+      }
+    }
+  }
+
+  return {
+    'subjectId': subjectId,
+    'predicateId': predicateId,
+    'predicateValue': predicateValue,
+    'value': value,
+    'option': option
+  }
+}
+
 /**
- @example
-
-  optionForNodeTypeFoo ->
-    batch_connect_session_context_node_type
-    or
-    undefined if it can't parse anything
- 
-  @param {string} data - the option string to parse
-
+ * Turn a MountainCase token into a form element id
+ *
+ * @example
+ *  NodeType -> batch_connect_session_context_node_type
+ *
+ * @param {*} str
+ * @returns
  */
-function parseOptions(input) {
-  // looking for NodeType when i know i have node_type
-  const str = input.replace('optionFor','');
 
-  // just return the first one you find
-  return optionTokens.map((token) => {
+function idFromToken(str) {
+  return formTokens.map((token) => {
     let match = str.match(`^${token}{1}`);
 
     if (match && match.length >= 1) {
