@@ -14,4 +14,12 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   def find_option_style(ele, opt)
     find("##{bc_ele_id(ele)} option[value='#{opt}']")['style'].to_s
   end
+
+  def find_max(ele)
+    find("##{bc_ele_id(ele)}")['max'].to_i
+  end
+
+  def find_min(ele)
+    find("##{bc_ele_id(ele)}")['min'].to_i
+  end
 end

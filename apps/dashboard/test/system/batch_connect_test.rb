@@ -40,4 +40,36 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 'display: none;', find_option_style('python_version', '3.2')
     assert_equal '3.6', find("##{bc_ele_id('python_version')}").value
   end
+
+  test 'changing node type changes mins & maxs' do
+    # max starts out at 20
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    assert_equal 20, find_max('bc_num_slots')
+    assert_equal 1, find_min('bc_num_slots')
+    select('owens', from: bc_ele_id('cluster'))
+
+    # change the node type and we should have some new max
+    select('gpu', from: bc_ele_id('node_type'))
+    assert_equal 28, find_max('bc_num_slots')
+    assert_equal 2, find_min('bc_num_slots')
+
+    select('hugemem', from: bc_ele_id('node_type'))
+    assert_equal 42, find_max('bc_num_slots')
+    assert_equal 42, find_min('bc_num_slots')
+  end
+
+  # TODO: make this test work
+  # test 'changing the cluster changes max' do
+  #   # max starts out at 20
+  #   visit new_batch_connect_session_context_url('sys/bc_jupyter')
+  #   assert_equal 20, find_max('bc_num_slots')
+  #   select('owens', from: bc_ele_id('cluster'))
+
+  #   select('gpu', from: bc_ele_id('node_type'))
+  #   assert_equal 28, find_max('bc_num_slots')
+
+  #   # changing the cluster changes the max
+  #   select('oakley', from: bc_ele_id('cluster'))
+  #   assert_equal 40, find_max('bc_num_slots')
+  # end
 end

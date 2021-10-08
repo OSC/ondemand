@@ -142,7 +142,7 @@ function toggleMinMax(event, targetObject) {
   // 'owens' == 'owens' && 'any' == 'any'
   if(predicateNormalized === targetPredicate && eventValue === targetObject['option']) {
     const chageElement = $(`#${targetObject['subjectId']}`);
-    chageElement.attr('max', targetObject['value']);
+    chageElement.attr(targetObject['minMax'], targetObject['value']);
   }
 }
 
@@ -213,9 +213,21 @@ function parseMinMaxFor(key, option, value) {
     'predicateId': predicateId,
     'predicateValue': predicateValue,
     'value': value,
-    'option': option
+    'option': option,
+    'minMax': minOrMax(key)
   }
 }
+
+function minOrMax(key) {
+  if(key.startsWith('min')){
+    return 'min';
+  } else if(key.startsWith('max')){
+    return 'max';
+  } else {
+    return null;
+  }
+}
+
 
 /**
  * Turn a MountainCase token into a form element id
