@@ -12,6 +12,9 @@ const formTokens = [];
 // trigger changes to node_type
 const optionForHandlerCache = {};
 
+// TODO: what's this?
+const lookup = {};
+
 function bcElement(name) {
   return `${bcPrefix}_${name.toLowerCase()}`;
 };
@@ -106,7 +109,7 @@ function makeChangeHandlers(){
                 let token = key.replace('optionFor','');
                 addOptionForHandler(idFromToken(token), element['id']);
               } else if(key.startsWith('max') || key.startsWith('min')) {
-                addMinMaxForHandler(element['id'], parseMinMaxFor(key, opt.value, data[key]));
+                addMinMaxForHandler(element['id'], opt.value, key, data[key]);
               }
             });
           }
@@ -115,35 +118,108 @@ function makeChangeHandlers(){
   });
 };
 
+/**
+ *
+ * @param {*} changeOnId batch_connect_session_context_node_type
+ * @param {*} option gpu
+ * @param {*} configKey maxNumCoresForClusterAnnieOakley
+ * @param {*} configValue 42
+ *
+ * node_type:
+ *   widget: select
+ *   options:
+ *    - [
+ *        'gpu',
+ *        data-max-num-cores-for-cluster-annie-oakley: 42
+ *      ]
+ */
+function addMinMaxForHandler(optionId, option, key,  configValue) {
+  optionId = String(optionId || '');
 
-function addMinMaxForHandler(causeId, targetObject) {
-  let causeElement = $(`#${causeId}`);
+  const configObj = parseMinMaxFor(key);
+  const id = configObj['subjectId'];
+  // this is the id of the target object we're setting the min/max for.
+  // if it's undefined - there's nothing to do, it was likely configured wrong.
+  if(id === undefined) return;
 
-  causeElement.on('change', (event) => {
-    toggleMinMax(event, targetObject);
+  const secondDimId = configObj['predicateId'];
+  const secondDimValue = configObj['predicateValue'];
+
+  if(lookup[id] === undefined) lookup[id] = new Table(optionId, secondDimId);
+
+  const table = lookup[id];
+  table.put(option, secondDimValue, {[minOrMax(key)] : configValue });
+
+  const changeElement = $(`#${optionId}`);
+  changeElement.on('change', (event) => {
+    toggleMinMax(event, id, secondDimId);
   });
 }
 
-    // {
-    //   subjectId: "batch_connect_session_context_num_cores",
-    //   predicateId: "batch_connect_session_context_cluster",
-    //   predicateValue: "Owens",
-    //   value: 28,
-    //   option: "any"
-    // }
+/**
+ *
+ *  This is a simple table class to describe the relationship between
+ *  two different element types as a table with named columns.
+ *
+ *  table.get('gpu','owens') would return the value shown.
+ *
+ *      'oakley'   |                    |                |
+ *      'owens'    | { min: 3, max: 42} |                |
+ *                 |  'gpu'             |   'hugemem'    |
+ */
+class Table {
+  constructor(x, y) {
+    this.x = x;
+    this.xIdxLookup = {};
 
-// data-max-num-cores-for-cluster-owens: 28
-function toggleMinMax(event, targetObject) {
-  const eventValue = event.target.value;
-  const predicate = $(`#${targetObject['predicateId']}`).val();
-  const predicateNormalized = snakeCaseWords(predicate);
-  const targetPredicate = snakeCaseWords(targetObject['predicateValue']);
+    this.y = y;
+    this.yIdxLookup = {};
 
-  // 'owens' == 'owens' && 'any' == 'any'
-  if(predicateNormalized === targetPredicate && eventValue === targetObject['option']) {
-    const chageElement = $(`#${targetObject['subjectId']}`);
-    chageElement.attr(targetObject['minMax'], targetObject['value']);
+    this.table = [[]];
   }
+
+  put(x, y, value) {
+    if(this.xIdxLookup[x] === undefined) this.xIdxLookup[x] = Object.keys(this.xIdxLookup).length;
+    if(this.yIdxLookup[y] === undefined) this.yIdxLookup[y] = Object.keys(this.yIdxLookup).length;
+
+    const xIdx = this.xIdxLookup[x];
+    const yIdx = this.yIdxLookup[y];
+
+    if(this.table[xIdx] === undefined ){
+      this.table[xIdx] = [];
+    }
+
+    if(this.table[xIdx][yIdx] === undefined){
+      this.table[xIdx][yIdx] = value;
+    } else {
+      const prev = this.table[xIdx][yIdx];
+      const newer = value;
+      this.table[xIdx][yIdx] = Object.assign(prev, newer);
+    }
+  }
+
+  get(x, y) {
+    const xIdx = this.xIdxLookup[x];
+    const yIdx = this.yIdxLookup[y];
+
+    if(this.table[xIdx] === undefined){
+      return undefined;
+    }else {
+      return this.table[xIdx][yIdx];
+    }
+  }
+
+}
+
+function toggleMinMax(event, changeId, otherId) {
+  const x = snakeCaseWords(event.target.value);
+  const y = snakeCaseWords($(`#${otherId}`).val());
+
+  const chageElement = $(`#${changeId}`);
+  const mm = lookup[changeId].get(x, y);
+
+  if(mm && mm['max'] !== undefined) chageElement.attr('max', mm['max']);
+  if(mm && mm['min'] !== undefined) chageElement.attr('min', mm['min']);
 }
 
 function addOptionForHandler(causeId, targetId) {
@@ -169,7 +245,18 @@ function addOptionForHandler(causeId, targetId) {
   }
 };
 
-function parseMinMaxFor(key, option, value) {
+/**
+ *
+ * @param {*} key minNumCoresForClusterAnnieOakley
+ * @returns
+ *
+ *  {
+ *    'subjectId': 'batch_connect_session_context_num_cores',
+ *    'predicateId': 'batch_connect_session_context_cluster',
+ *    'predicateValue': 'annie_oakley'
+ *  }
+ */
+function parseMinMaxFor(key) {
   //trying to parse maxNumCoresForClusterOwens
   const tokens = key.replace(/^min/,'').replace(/^max/, '').match(/^(\w+)For(\w+)$/);
   let predicateId = undefined;
@@ -211,10 +298,7 @@ function parseMinMaxFor(key, option, value) {
   return {
     'subjectId': subjectId,
     'predicateId': predicateId,
-    'predicateValue': predicateValue,
-    'value': value,
-    'option': option,
-    'minMax': minOrMax(key)
+    'predicateValue': snakeCaseWords(predicateValue),
   }
 }
 
