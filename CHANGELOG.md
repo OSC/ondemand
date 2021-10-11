@@ -6,11 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-svg downloads need to account for .SVG (all caps) files too (#1437)\
-force SVGs to be downloaded (#1435)\
-Move RPM files to packaging/rpm directory (#1428)\
-update dependencies (#1434)\
-Update Changelog (#1433)
 
 ### Changed
 
@@ -28,6 +23,11 @@ Update Changelog (#1433)
 
 - Batch connect now safely reads files in db in [1402](https://github.com/OSC/ondemand/pull/1402).
 - Add retry attempt counter to 404 loop to fix client side loop in [#1298](https://github.com/OSC/ondemand/pull/1298).
+
+### Security
+
+- SVGs, being unsafe to preview, are now downloaded in [1435](https://github.com/OSC/ondemand/pull/1435)
+  and [1437](https://github.com/OSC/ondemand/pull/1437).
 
 ## [2.0.16] - 2021-08-25
 
