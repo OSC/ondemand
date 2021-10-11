@@ -72,14 +72,13 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 40, find_max('bc_num_slots')
   end
 
-  #  TODO get this test to work
   test 'using same node sets min/max' do
     # max starts out at 20
-    # visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    # assert_equal 20, find_max('bc_num_slots')
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    assert_equal 20, find_max('bc_num_slots')
 
-    # select('same', from: bc_ele_id('node_type'))
-    # assert_equal 100, find_min('bc_num_slots')
-    # assert_equal 200, find_max('bc_num_slots')
+    select('same', from: bc_ele_id('node_type'))
+    assert_equal 100, find_min('bc_num_slots')
+    assert_equal 200, find_max('bc_num_slots')
   end
 end

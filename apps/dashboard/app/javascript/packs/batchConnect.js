@@ -63,6 +63,8 @@ function shortId(elementId) {
 }
 
 function snakeCaseWords(str) {
+  if(str === undefined) return undefined;
+
   let snakeCase = "";
   let first = true;
 
@@ -187,6 +189,9 @@ function addMinMaxForHandler(optionId, option, key,  configValue) {
  *      'oakley'   |                    |                |
  *      'owens'    | { min: 3, max: 42} |                |
  *                 |  'gpu'             |   'hugemem'    |
+ *
+ * In the simple case, it's a 1d vector instead of a 2d matrix. This
+ * allows for, say, gpu to have the same min & max across clusters.
  */
 class Table {
   constructor(x, y) {
@@ -200,8 +205,10 @@ class Table {
   }
 
   put(x, y, value) {
+    if(!x) return;
+
     if(this.xIdxLookup[x] === undefined) this.xIdxLookup[x] = Object.keys(this.xIdxLookup).length;
-    if(this.yIdxLookup[y] === undefined) this.yIdxLookup[y] = Object.keys(this.yIdxLookup).length;
+    if(y && this.yIdxLookup[y] === undefined) this.yIdxLookup[y] = Object.keys(this.yIdxLookup).length;
 
     const xIdx = this.xIdxLookup[x];
     const yIdx = this.yIdxLookup[y];
@@ -210,12 +217,23 @@ class Table {
       this.table[xIdx] = [];
     }
 
-    if(this.table[xIdx][yIdx] === undefined){
-      this.table[xIdx][yIdx] = value;
+    // if y's index is defined, then it's a 2d matrix. Otherwise a 1d vector.
+    if(yIdx) {
+      if(this.table[xIdx][yIdx] === undefined){
+        this.table[xIdx][yIdx] = value;
+      } else {
+        const prev = this.table[xIdx][yIdx];
+        const newer = value;
+        this.table[xIdx][yIdx] = Object.assign(prev, newer);
+      }
     } else {
-      const prev = this.table[xIdx][yIdx];
-      const newer = value;
-      this.table[xIdx][yIdx] = Object.assign(prev, newer);
+      if(this.table[xIdx] === undefined){
+        this.table[xIdx] = value;
+      } else {
+        const prev = this.table[xIdx];
+        const newer = value;
+        this.table[xIdx] = Object.assign(prev, newer);
+      }
     }
   }
 
@@ -225,16 +243,19 @@ class Table {
 
     if(this.table[xIdx] === undefined){
       return undefined;
+    }else if(y === undefined){
+      return this.table[xIdx];
     }else {
       return this.table[xIdx][yIdx];
     }
   }
-
 }
 
 function toggleMinMax(event, changeId, otherId) {
   let x = undefined, y = undefined;
 
+  // in the example of gpu & node_type, either element can trigger a change
+  // so let's figure out the axis' based on the change element's id.
   if(event.target['id'] == lookup[changeId].x) {
     x = snakeCaseWords(event.target.value);
     y = snakeCaseWords($(`#${otherId}`).val());
@@ -285,13 +306,25 @@ function addOptionForHandler(causeId, targetId) {
  *  }
  */
 function parseMinMaxFor(key) {
-  //trying to parse maxNumCoresForClusterOwens
-  const tokens = key.replace(/^min/,'').replace(/^max/, '').match(/^(\w+)For(\w+)$/);
+  let k = undefined;
   let predicateId = undefined;
   let predicateValue = undefined;
   let subjectId = undefined;
 
-  if(tokens.length == 3) {
+  if(key.startsWith('min')) {
+    k = key.replace(/^min/,'');
+  } else if(key.startsWith('max')) {
+    k = key.replace(/^max/, '')
+  }
+
+  //trying to parse maxNumCoresForClusterOwens
+  const tokens = k.match(/^(\w+)For(\w+)$/);
+
+  if(tokens == null) {
+    // the key is likely just maxNumCores with no For clause
+    subjectId = idFromToken(k);
+
+  } else if(tokens.length == 3) {
     const subject = tokens[1];
     const predicateFull = tokens[2];
     subjectId = idFromToken(subject);

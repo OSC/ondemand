@@ -23,11 +23,11 @@ attributes:
           "gpu",
           # this bad option is kept here so that in testing, it doesn't throw errors
           data-option-for-not-real-choice: false,
+          data-max-some-element-for-3rd-element-value: 10,
           data-max-bc-num-slots-for-cluster-owens: 28,
           data-min-bc-num-slots-for-cluster-owens: 2,
           data-max-bc-num-slots-for-cluster-oakley: 40,
           data-min-bc-num-slots-for-cluster-oakley: 3,
-          # data-max-some-element-for-3rd-element-value: 10,
         ]
       - [
           "hugemem",
@@ -44,8 +44,8 @@ attributes:
       # TODO: this currently breaks tests
       - [
           "same",
-          # data-min-bc-num-slots: 100,
-          # data-max-bc-num-slots: 200
+          data-min-bc-num-slots: 100,
+          data-max-bc-num-slots: 200
         ]
   python_version:
     widget: select
