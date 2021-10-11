@@ -16,7 +16,7 @@ const optionForHandlerCache = {};
 // a simple array of elements that already have change handlers attached to them.
 const minMaxHandlerCache = [];
 
-// TODO: what's this?
+// Lookup table for setting min & max values.
 const lookup = {};
 
 function bcElement(name) {
