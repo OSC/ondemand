@@ -5,18 +5,20 @@ mkdir -p /var/lob/ondemand-nginx
 mkdir -p /var/tmp/ondemand-nginx
 mkdir -p /var/run/ondemand-nginx
 
-mkidir -p /var/lib/ondemand-nginx/config/{puns,apps}
-mkidir -p /var/lib/ondemand-nginx/config/apps/{sys,dev,usr}
+mkdir -p /var/lib/ondemand-nginx/config/{puns,apps}
+mkdir -p /var/lib/ondemand-nginx/config/apps/{sys,dev,usr}
 touch /var/lib/ondemand-nginx/config/apps/sys/dashboard.conf
 touch /var/lib/ondemand-nginx/config/apps/sys/shell.conf
 touch /var/lib/ondemand-nginx/config/apps/sys/myjobs.conf
-
+touch /etc/ood/config/ood_portal.sha256sum
 
 # shellcheck disable=SC1091
 [ -e /etc/ood/profile ] && . /etc/ood/profile
 
 export APACHE="/etc/apache2/conf-available/ood-portal.conf"
 /opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm 
+
+/opt/ood/nginx_stage/sbin/update_nginx_stage
 
 cd /etc/apache2/conf-enabled || exit 1
 ln -s ../conf-available/ood-portal.conf . || true
