@@ -218,21 +218,21 @@ class Table {
     }
 
     // if y's index is defined, then it's a 2d matrix. Otherwise a 1d vector.
-    if(yIdx) {
-      if(this.table[xIdx][yIdx] === undefined){
-        this.table[xIdx][yIdx] = value;
-      } else {
-        const prev = this.table[xIdx][yIdx];
-        const newer = value;
-        this.table[xIdx][yIdx] = Object.assign(prev, newer);
-      }
-    } else {
+    if(yIdx === undefined) {
       if(this.table[xIdx] === undefined){
         this.table[xIdx] = value;
       } else {
         const prev = this.table[xIdx];
         const newer = value;
         this.table[xIdx] = Object.assign(prev, newer);
+      }
+    } else {
+      if(this.table[xIdx][yIdx] === undefined){
+        this.table[xIdx][yIdx] = value;
+      } else {
+        const prev = this.table[xIdx][yIdx];
+        const newer = value;
+        this.table[xIdx][yIdx] = Object.assign(prev, newer);
       }
     }
   }
