@@ -24,6 +24,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Batch connect now safely reads files in db in [1402](https://github.com/OSC/ondemand/pull/1402).
 - Add retry attempt counter to 404 loop to fix client side loop in [#1298](https://github.com/OSC/ondemand/pull/1298).
 
+### Security
+
+- SVGs, being unsafe to preview, are now downloaded in [1435](https://github.com/OSC/ondemand/pull/1435)
+  and [1437](https://github.com/OSC/ondemand/pull/1437).
+
 ## [2.0.16] - 2021-08-25
 
 ### Fixed
