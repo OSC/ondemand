@@ -12,6 +12,10 @@ const formTokens = [];
 // trigger changes to node_type
 const optionForHandlerCache = {};
 
+
+// a simple array of elements that already have change handlers attached to them.
+const minMaxHandlerCache = [];
+
 // TODO: what's this?
 const lookup = {};
 
@@ -150,10 +154,27 @@ function addMinMaxForHandler(optionId, option, key,  configValue) {
   const table = lookup[id];
   table.put(option, secondDimValue, {[minOrMax(key)] : configValue });
 
-  const changeElement = $(`#${optionId}`);
-  changeElement.on('change', (event) => {
-    toggleMinMax(event, id, secondDimId);
-  });
+  let cacheKey = `${optionId}_${secondDimId}`;
+  if(!minMaxHandlerCache.includes(cacheKey)) {
+    const changeElement = $(`#${optionId}`);
+
+    changeElement.on('change', (event) => {
+      toggleMinMax(event, id, secondDimId);
+    });
+
+    minMaxHandlerCache.push(cacheKey);
+  }
+
+  cacheKey = `${secondDimId}_${optionId}`;
+  if(secondDimId !== undefined && !minMaxHandlerCache.includes(cacheKey)){
+    const secondEle = $(`#${secondDimId}`);
+
+    secondEle.on('change', (event) => {
+      toggleMinMax(event, id, optionId);
+    });
+
+    minMaxHandlerCache.push(cacheKey);
+  }
 }
 
 /**
@@ -212,8 +233,15 @@ class Table {
 }
 
 function toggleMinMax(event, changeId, otherId) {
-  const x = snakeCaseWords(event.target.value);
-  const y = snakeCaseWords($(`#${otherId}`).val());
+  let x = undefined, y = undefined;
+
+  if(event.target['id'] == lookup[changeId].x) {
+    x = snakeCaseWords(event.target.value);
+    y = snakeCaseWords($(`#${otherId}`).val());
+  } else {
+    y = snakeCaseWords(event.target.value);
+    x = snakeCaseWords($(`#${otherId}`).val());
+  }
 
   const chageElement = $(`#${changeId}`);
   const mm = lookup[changeId].get(x, y);
