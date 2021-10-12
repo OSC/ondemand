@@ -32,7 +32,9 @@ namespace :build do
     base_args.concat ["-v", "#{dir}:/build", "-w", "#{work_dir}"]
     base_args.concat ["-e", "DEBUILD_DPKG_BUILDPACKAGE_OPTS='-us -uc -I -i'"]
     base_args.concat ["-e", "HOME=/home/deb", "-e", "USER=deb"]
-    base_args.concat [ build_box_image(args)]
+    base_args.concat ["-e", "VERSION=#{ENV['VERSION']}"] unless ENV['VERSION'].nil?
+    base_args.concat rt_specific_flags
+    base_args.concat [build_box_image(args)]
     sh "#{container_runtime} run #{base_args.join(' ')} debmake -b':ruby'"
 
     debuild_args = ["debuild", "--no-lintian"]
@@ -46,11 +48,9 @@ namespace :build do
 
   task :passenger do
     passenger_tar_full = "#{vendor_src_dir}/#{passenger_tar}"
+    agent_tar_full = "#{vendor_src_dir}/#{passenger_agent_tar}"
     sh "curl -L #{passenger_tar_url} -o #{passenger_tar_full}" unless File.exist?(passenger_tar_full)
-
-    # agent tar isn't versioned, so let's do that now.
-    agent_tar = "#{vendor_src_dir}/passenger-agent-#{passenger_version}.tar.gz"
-    sh "curl -L #{passenger_agent_tar_url} -o #{agent_tar}" unless File.exist?(agent_tar)
+    sh "curl -L #{passenger_agent_tar_url} -o #{agent_tar_full}" unless File.exist?(agent_tar_full)
 
     work_dir = "#{vendor_build_dir}/passenger".tap { |p| sh "mkdir -p #{p}" }
     sh "ls -lRta #{work_dir}"

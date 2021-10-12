@@ -88,5 +88,45 @@ namespace :test do
     end
   end
 
+  desc "Start test container"
+  task :start_test_container, [:mount_args] do |t, task_args|
+    args = [ container_runtime, "run", "--name", test_image_name, "--detach", "--rm", "-p", "8080:8080", "-p", "5556:5556"]
+    args.concat task_args[:mount_args] || default_mount_args
+    args.concat rt_specific_flags
+    args.concat ["#{test_image_name}:latest"]
+
+    Rake::Task['test:stop_test_container'].execute
+    sh args.join(' ')
+  end
+
+  desc "Stop test container"
+  task :stop_test_container do
+    sh "#{container_runtime} stop #{test_image_name}" if test_container_running?
+  end
+
+  def test_container_running?
+    `#{container_runtime} inspect --format '{{ .State.Status }}' #{test_image_name} 2>/dev/null || true`.chomp.eql?("running")
+  end
+
+  def default_mount_args
+    ["-v", "#{PROJ_DIR.join('docker', 'ood_portal.yml')}:/etc/ood/config/ood_portal.yml:ro"]
+  end
+
+  desc "Run end to end tests"
+  task :e2e => ["package:test_container"] do
+    Rake::Task['test:start_test_container'].invoke
+
+    ENV['PATH'] = PROJ_DIR.join('tests').to_s + ":#{ENV['PATH']}"
+    Rake::Task['test:e2e_spec'].invoke
+
+    Rake::Task['test:stop_test_container'].execute
+  rescue SystemExit => e
+    Rake::Task['test:stop_test_container'].execute
+    raise e
+  rescue => e
+    Rake::Task['test:stop_test_container'].execute
+    raise e
+  end
+
   task :all => [:unit, :shellcheck]
 end

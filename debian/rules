@@ -4,6 +4,10 @@ export DH_VERBOSE = 1
 export DESTDIR = $(CURDIR)/debian/ondemand
 export GEM_HOME	=	$(CURDIR)/gems
 export GEM_PATH	=	$(GEM_HOME):$(shell printenv GEM_PATH)
+export APACHE_DIR = "$(DESTDIR)/var/www/ood"
+export APACHE_SYSTEMD_DIR= "$(DESTDIR)/lib/systemd/system/apache2.service.d"
+export CONFIG_DIR = "$(DESTDIR)/etc/ood/config"
+
 
 %:
 	dh $@
@@ -23,5 +27,37 @@ override_dh_auto_install:
 	rake --trace install
 	rake --trace install:nginx
 	rake --trace install:passenger
+
+	# install gems
 	mkdir -p $(DESTDIR)/opt/ood/gems
 	mv $(GEM_HOME)/* $(DESTDIR)/opt/ood/gems
+
+	# make some directories
+	mkdir -p "$(APACHE_DIR)/public"
+	mkdir -p "$(APACHE_DIR)/discover"
+	mkdir -p "$(APACHE_DIR)/register"
+	mkdir -p "$(APACHE_DIR)/apps/sys"
+	mkdir -p "$(APACHE_DIR)/apps/usr"
+	mkdir -p "$(APACHE_DIR)/apps/dev"
+	mkdir -p "$(CONFIG_DIR)/clusters.d"
+	mkdir -p "$(CONFIG_DIR)/ondemand.d"
+
+	mv $(DESTDIR)/opt/ood/apps/* $(APACHE_DIR)/apps/sys
+	rm -rf $(DESTDIR)/opt/ood/apps
+
+	# ood config files
+	rake package:version > $(DESTDIR)/opt/ood/VERSION
+	install -m 644 nginx_stage/share/nginx_stage_example.yml $(CONFIG_DIR)/nginx_stage.yml
+	install -m 640 ood-portal-generator/share/ood_portal_example.yml $(CONFIG_DIR)/ood_portal.yml
+	install -D -m 644 hooks/hook.env.example $(CONFIG_DIR)/hook.env
+
+	# extra infrastructure files
+	install -D -m 440 lib/tasks/files/sudo.debian $(DESTDIR)/etc/sudoers.d/ood
+	install -m 440 lib/tasks/files/profile.debian $(DESTDIR)/etc/ood/profile
+	install -D -m 644 lib/tasks/files/crontab.debian $(DESTDIR)/etc/cron.d/ood
+	install -D -m 644 lib/tasks/files/logrotate.debian $(DESTDIR)/etc/logrotate.d/ood
+	install -D -m 644 lib/tasks/files/systemd.ood.conf.debian $(APACHE_SYSTEMD_DIR)/ood.conf
+	install -D -m 644 lib/tasks/files/systemd.ood-portal.conf.debian $(APACHE_SYSTEMD_DIR)/ood-portal.conf
+	install -D -m 644 packaging/logo.png $(APACHE_DIR)/public/logo.png
+	install -D -m 644 packaging/favicon.ico $(APACHE_DIR)/public/favicon.ico
+
