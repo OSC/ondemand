@@ -22,4 +22,8 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   def find_min(ele)
     find("##{bc_ele_id(ele)}")['min'].to_i
   end
+
+  def find_value(ele)
+    find("##{bc_ele_id(ele)}").value
+  end
 end
