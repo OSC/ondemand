@@ -233,6 +233,7 @@ function setValue(event, changeId) {
   if(changeVal !== undefined) {
     const innerElement = $(`#${changeId}`);
     innerElement.attr('value', changeVal);
+    innerElement.val(changeVal);
   }
 }
 
