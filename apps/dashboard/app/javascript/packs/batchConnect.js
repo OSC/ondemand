@@ -254,7 +254,7 @@ class Table {
 function toggleMinMax(event, changeId, otherId) {
   let x = undefined, y = undefined;
 
-  // in the example of gpu & node_type, either element can trigger a change
+  // in the example of cluster & node_type, either element can trigger a change
   // so let's figure out the axis' based on the change element's id.
   if(event.target['id'] == lookup[changeId].x) {
     x = snakeCaseWords(event.target.value);
