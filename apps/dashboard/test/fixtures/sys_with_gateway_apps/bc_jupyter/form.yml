@@ -48,19 +48,23 @@ attributes:
           data-max-bc-num-slots: 200
         ]
   python_version:
+    # let's set the account used by the python version for some reason
     widget: select
     options:
       - [
           "2.7",
-          data-option-for-node-type-advanced: false
+          data-option-for-node-type-advanced: false,
+          data-set-account: 'python27'
         ]
       - [
           "3.1",
-          data-option-for-node-type-advanced: false
+          data-option-for-node-type-advanced: false,
+          data-set-account: 'python31'
         ]
       - [
           "3.2",
-          data-option-for-node-type-advanced: false
+          data-option-for-node-type-advanced: false,
+          data-set-account: 'python32'
         ]
       - [
           "3.6",
