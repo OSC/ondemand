@@ -117,4 +117,22 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 200, find_max('bc_num_slots')
     assert_equal 100, find_min('bc_num_slots')
   end
+
+  test 'python choice sets account' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    assert_equal 'python27', find_value('bc_account')
+
+    select('3.1', from: bc_ele_id('python_version'))
+    assert_equal 'python31', find_value('bc_account')
+
+    select('2.7', from: bc_ele_id('python_version'))
+    assert_equal 'python27', find_value('bc_account')
+
+    select('3.2', from: bc_ele_id('python_version'))
+    assert_equal 'python32', find_value('bc_account')
+
+    # 3.7 isn't configured to change the account, so it stays 3.2
+    select('3.7', from: bc_ele_id('python_version'))
+    assert_equal 'python32', find_value('bc_account')
+  end
 end

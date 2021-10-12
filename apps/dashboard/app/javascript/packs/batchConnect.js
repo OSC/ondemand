@@ -13,11 +13,16 @@ const formTokens = [];
 const optionForHandlerCache = {};
 
 
-// a simple array of elements that already have change handlers attached to them.
+// simples array of string ids for elements that have a handler
 const minMaxHandlerCache = [];
+const setHandlerCache = [];
 
 // Lookup table for setting min & max values.
+// TODO: changeme to minMaxDirectiveLookup
 const lookup = {};
+
+// Lookup table for setting values of other elements
+const setDirectiveLookup = {};
 
 function bcElement(name) {
   return `${bcPrefix}_${name.toLowerCase()}`;
@@ -116,6 +121,8 @@ function makeChangeHandlers(){
                 addOptionForHandler(idFromToken(token), element['id']);
               } else if(key.startsWith('max') || key.startsWith('min')) {
                 addMinMaxForHandler(element['id'], opt.value, key, data[key]);
+              } else if(key.startsWith('set')) {
+                addSetHandler(element['id'], opt.value, key, data[key]);
               }
             });
           }
@@ -126,9 +133,9 @@ function makeChangeHandlers(){
 
 /**
  *
- * @param {*} changeOnId batch_connect_session_context_node_type
+ * @param {*} optionId batch_connect_session_context_node_type
  * @param {*} option gpu
- * @param {*} configKey maxNumCoresForClusterAnnieOakley
+ * @param {*} key maxNumCoresForClusterAnnieOakley
  * @param {*} configValue 42
  *
  * node_type:
@@ -152,7 +159,6 @@ function addMinMaxForHandler(optionId, option, key,  configValue) {
   const secondDimValue = configObj['predicateValue'];
 
   if(lookup[id] === undefined) lookup[id] = new Table(optionId, secondDimId);
-
   const table = lookup[id];
   table.put(option, secondDimValue, {[minOrMax(key)] : configValue });
 
@@ -181,6 +187,57 @@ function addMinMaxForHandler(optionId, option, key,  configValue) {
 
 /**
  *
+ * @param {*} optionId batch_connect_session_context_classroom
+ * @param {*} option 'PHY_9000'
+ * @param {*} key setAccount
+ * @param {*} configValue 'phy3005'
+ *
+ * classroom:
+ *   widget: select
+ *   options:
+ *    - [
+ *        'Physics Maximum', 'PHY_9000',
+ *        data-set-account: 'phy3005'
+ *      ]
+ */
+function addSetHandler(optionId, option, key,  configValue) {
+  const k = key.replace(/^set/,'');
+  const id = String(idFromToken(k));
+  if(id === 'undefined') return;
+
+  // id is account. optionId is classroom
+  if(setDirectiveLookup[id] === undefined) setDirectiveLookup[id] = new Table(optionId, undefined);
+  const table = setDirectiveLookup[id];
+  table.put(option, undefined, configValue);
+
+  if(!setHandlerCache.includes(optionId)) {
+    const changeElement = $(`#${optionId}`);
+
+    changeElement.on('change', (event) => {
+      setValue(event, id);
+    });
+
+    setHandlerCache.push(optionId);
+  }
+
+  setValue({ target: document.querySelector(`#${optionId}`) }, id);
+}
+
+function setValue(event, changeId) {
+  const chosenVal = event.target.value;
+  const table = setDirectiveLookup[changeId];
+  if (table === undefined) return;
+
+  const changeVal = table.get(chosenVal, undefined);
+
+  if(changeVal !== undefined) {
+    const innerElement = $(`#${changeId}`);
+    innerElement.attr('value', changeVal);
+  }
+}
+
+/**
+ *
  *  This is a simple table class to describe the relationship between
  *  two different element types as a table with named columns.
  *
@@ -200,8 +257,7 @@ class Table {
 
     this.y = y;
     this.yIdxLookup = {};
-
-    this.table = [[]];
+    this.table = y === undefined ? [] : [[]];
   }
 
   put(x, y, value) {
@@ -214,7 +270,7 @@ class Table {
     const yIdx = this.yIdxLookup[y];
 
     if(this.table[xIdx] === undefined ){
-      this.table[xIdx] = [];
+      this.table[xIdx] = y === undefined ? undefined : [];
     }
 
     // if y's index is defined, then it's a 2d matrix. Otherwise a 1d vector.
