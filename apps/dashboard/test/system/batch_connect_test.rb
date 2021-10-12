@@ -135,4 +135,21 @@ class BatchConnectTest < ApplicationSystemTestCase
     select('3.7', from: bc_ele_id('python_version'))
     assert_equal 'python32', find_value('bc_account')
   end
+
+  test 'inline edits dont affect updating values' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    assert_equal 'python27', find_value('bc_account')
+
+    select('3.1', from: bc_ele_id('python_version'))
+    assert_equal 'python31', find_value('bc_account')
+
+    # insert some text into the field
+    account_element = find("##{bc_ele_id('bc_account')}")
+    account_element.send_keys " & some typed value"
+    assert_equal 'python31 & some typed value', find_value('bc_account')
+
+    # now change it and confirm the value
+    select('3.2', from: bc_ele_id('python_version'))
+    assert_equal 'python32', find_value('bc_account')
+  end
 end
