@@ -136,6 +136,24 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 'python32', find_value('bc_account')
   end
 
+  test 'python choice sets hidden change thing' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    assert_equal 'default', find_value('hidden_change_thing')
+
+    select('3.1', from: bc_ele_id('python_version'))
+    assert_equal 'python31', find_value('bc_account')
+    assert_equal 'default', find_value('hidden_change_thing')
+
+    select('3.6', from: bc_ele_id('python_version'))
+    assert_equal 'python37', find_value('hidden_change_thing')
+
+    select('3.7', from: bc_ele_id('python_version'))
+    assert_equal 'python37', find_value('hidden_change_thing')
+
+    select('4.0.nightly', from: bc_ele_id('python_version'))
+    assert_equal 'python40nightly', find_value('hidden_change_thing')
+  end
+
   test 'inline edits dont affect updating values' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     assert_equal 'python27', find_value('bc_account')
@@ -152,4 +170,15 @@ class BatchConnectTest < ApplicationSystemTestCase
     select('3.2', from: bc_ele_id('python_version'))
     assert_equal 'python32', find_value('bc_account')
   end
+
+  # TODO: inline changes to hidden fields
+  # test 'changes hidden fields too' do
+  #   visit new_batch_connect_session_context_url('sys/bc_jupyter')
+  #   assert_equal 'python27', find_value('bc_account')
+
+  #   select('3.6', from: bc_ele_id('python_version'))
+  #   assert_equal 'python36', find_value('hidden_change_thing')
+
+  #   # get capybara to edit the values in (maybe through a js script)?
+  # end
 end
