@@ -138,20 +138,21 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   test 'python choice sets hidden change thing' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    assert_equal 'default', find_value('hidden_change_thing')
+    select('advanced', from: bc_ele_id('node_type'))
+    assert_equal 'default', find_value('hidden_change_thing', visible: false)
 
     select('3.1', from: bc_ele_id('python_version'))
     assert_equal 'python31', find_value('bc_account')
-    assert_equal 'default', find_value('hidden_change_thing')
+    assert_equal 'default', find_value('hidden_change_thing', visible: false)
 
     select('3.6', from: bc_ele_id('python_version'))
-    assert_equal 'python37', find_value('hidden_change_thing')
+    assert_equal 'python36', find_value('hidden_change_thing', visible: false)
 
     select('3.7', from: bc_ele_id('python_version'))
-    assert_equal 'python37', find_value('hidden_change_thing')
+    assert_equal 'python37', find_value('hidden_change_thing', visible: false)
 
     select('4.0.nightly', from: bc_ele_id('python_version'))
-    assert_equal 'python40nightly', find_value('hidden_change_thing')
+    assert_equal 'python4nightly', find_value('hidden_change_thing', visible: false)
   end
 
   test 'inline edits dont affect updating values' do
@@ -171,14 +172,23 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 'python32', find_value('bc_account')
   end
 
-  # TODO: inline changes to hidden fields
-  # test 'changes hidden fields too' do
-  #   visit new_batch_connect_session_context_url('sys/bc_jupyter')
-  #   assert_equal 'python27', find_value('bc_account')
+  test 'inline changes to hidden fields get overwritten too' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    assert_equal 'default', find_value('hidden_change_thing')
 
-  #   select('3.6', from: bc_ele_id('python_version'))
-  #   assert_equal 'python36', find_value('hidden_change_thing')
+    select('3.7', from: bc_ele_id('python_version'))
+    assert_equal 'python37', find_value('hidden_change_thing', visible: false)
 
-  #   # get capybara to edit the values in (maybe through a js script)?
-  # end
+    update_script = <<~JAVASCRIPT
+      let ele = $('#batch_connect_session_context_hidden_change_thing');
+      ele.val('some new value');
+      ele.attr('value', 'some new value');
+    JAVASCRIPT
+
+    execute_script(update_script)
+    assert_equal 'some new value', find_value('hidden_change_thing', visible: false)
+
+    select('4.0.nightly', from: bc_ele_id('python_version'))
+    assert_equal 'python4nightly', find_value('hidden_change_thing', visible: false)
+  end
 end

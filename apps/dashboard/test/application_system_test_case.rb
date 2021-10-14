@@ -23,7 +23,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     find("##{bc_ele_id(ele)}")['min'].to_i
   end
 
-  def find_value(ele)
-    find("##{bc_ele_id(ele)}").value
+  def find_value(ele, visible: false)
+    find("##{bc_ele_id(ele)}", visible: visible).value
   end
 end
