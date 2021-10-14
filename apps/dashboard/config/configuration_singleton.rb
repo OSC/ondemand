@@ -379,8 +379,8 @@ class ConfigurationSingleton
   end
 
   def bc_dynamic_js?
-    if ENV['OOD_OPEN_APPS_IN_NEW_WINDOW']
-      to_bool(ENV['OOD_OPEN_APPS_IN_NEW_WINDOW'])
+    if ENV['OOD_BC_DYNAMIC_JS']
+      to_bool(ENV['OOD_BC_DYNAMIC_JS'])
     else
       to_bool(config.fetch(:bc_dynamic_js, false))
     end
