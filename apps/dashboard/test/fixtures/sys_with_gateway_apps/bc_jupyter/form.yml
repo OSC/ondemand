@@ -6,6 +6,9 @@ cluster:
 description: |
   This is a test jupyter app.
 attributes:
+  hidden_change_thing:
+    widget: 'hidden_field'
+    value: 'default'
   bc_num_slots:
     max: 20
     min: 1
@@ -68,9 +71,15 @@ attributes:
         ]
       - [
           "3.6",
+          data-set-hidden-change-thing: 'python36'
         ]
       - [
           "3.7",
+          data-set-hidden-change-thing: 'python37',
+        ]
+      - [
+          "4.0.nightly",
+          data-set-hidden-change-thing: 'python4nightly',
         ]
 form:
   - bc_num_hours
@@ -79,3 +88,4 @@ form:
   - bc_account
   - bc_email_on_started
   - python_version
+  - hidden_change_thing

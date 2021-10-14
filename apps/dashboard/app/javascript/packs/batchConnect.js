@@ -206,18 +206,19 @@ function addSetHandler(optionId, option, key,  configValue) {
   if(id === 'undefined') return;
 
   // id is account. optionId is classroom
-  if(setDirectiveLookup[id] === undefined) setDirectiveLookup[id] = new Table(optionId, undefined);
-  const table = setDirectiveLookup[id];
+  let cacheKey = `${id}_${optionId}`
+  if(setDirectiveLookup[cacheKey] === undefined) setDirectiveLookup[cacheKey] = new Table(optionId, undefined);
+  const table = setDirectiveLookup[cacheKey];
   table.put(option, undefined, configValue);
 
-  if(!setHandlerCache.includes(optionId)) {
+  if(!setHandlerCache.includes(cacheKey)) {
     const changeElement = $(`#${optionId}`);
 
     changeElement.on('change', (event) => {
       setValue(event, id);
     });
 
-    setHandlerCache.push(optionId);
+    setHandlerCache.push(cacheKey);
   }
 
   setValue({ target: document.querySelector(`#${optionId}`) }, id);
@@ -225,7 +226,8 @@ function addSetHandler(optionId, option, key,  configValue) {
 
 function setValue(event, changeId) {
   const chosenVal = event.target.value;
-  const table = setDirectiveLookup[changeId];
+  const cacheKey = `${changeId}_${event.target['id']}`
+  const table = setDirectiveLookup[cacheKey];
   if (table === undefined) return;
 
   const changeVal = table.get(chosenVal, undefined);
