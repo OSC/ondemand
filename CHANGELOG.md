@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+fix env variable for bc_dynamic_js (#1453)\
+Js update hidden fields (#1452)\
+Bugfix/js set value (#1450)\
+Feature/javascript set values (#1449)\
+add min/max javascript functionality (#1441)\
+update dependencies (#1443)\
+Update Changelog (#1442)
 
 ### Changed
 
