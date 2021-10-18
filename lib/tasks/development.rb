@@ -9,7 +9,6 @@ namespace :dev do
     'ood-dev' || ENV['OOD_DEV_CONTAINER_NAME'].to_s
   end
 
-
   def term_container_args
     cols = `tput cols 2>/dev/null`.chomp
     rows = `tput lines 2>/dev/null`.chomp
@@ -28,23 +27,18 @@ namespace :dev do
     puts 'Enter password:'
     plain_password = $stdin.noecho(&:gets).chomp
 
-    File.open(file, File::WRONLY|File::CREAT|File::EXCL) do |f|
+    File.open(file, File::WRONLY | File::CREAT | File::EXCL, 0o600) do |f|
       f.write({
-        'servername': 'localhost',
-        'port': 8080,
-        'listen_addr_port': 8080,
-        'oidc_remote_user_claim': 'email',
-        'dex': {
-          'connectors': [{
-            'type': 'mockCallback',
-            'id': 'mock',
-            'name': 'Mock'
-          }],
-          'static_passwords': [{
-            'email': "#{user.name}@localhost",
-            'password': plain_password,
-            'username': "#{user.name}",
-            'userID': "71e63e31-7af3-41d7-add2-575568f4525f"
+        'servername'             => 'localhost',
+        'port'                   => 8080,
+        'listen_addr_port'       => 8080,
+        'oidc_remote_user_claim' => 'email',
+        'dex'                    => {
+          'static_passwords' => [{
+            'email'    => "#{user.name}@localhost",
+            'password' => plain_password,
+            'username' => user.name.to_s,
+            'userID'   => '71e63e31-7af3-41d7-add2-575568f4525f'
           }]
         }
       }.to_yaml)
@@ -131,7 +125,7 @@ namespace :dev do
   # let advanced users know this, not --tasks
   task :ensure_dev_files do
     [
-      :init_ood_portal,
+      :init_ood_portal
     ].each do |initer|
       send(initer)
     end
