@@ -1,9 +1,9 @@
+# frozen_string_literal: true
+
 class Permission
   include ActiveModel::Model
 
-  attr_accessor :product
-  attr_accessor :name
-  attr_accessor :owner
+  attr_accessor :product, :name, :owner
 
   validate :principle_exists, on: :create_permission
   validate :permission_does_not_exist, on: :create_permission
@@ -12,17 +12,17 @@ class Permission
 
   def principle_exists
     principle_class.new(name)
-  rescue
-    errors.add(:name, "does not exist on the system")
+  rescue StandardError
+    errors.add(:name, 'does not exist on the system')
   end
 
   def path_to_app_exists
-    errors.add(:product, "does not exist in the file system") unless product.router.path.exist?
+    errors.add(:product, 'does not exist in the file system') unless product.router.path.exist?
   end
 
   def permission_does_not_exist
-    errors.add(:name, "is already given access to this product") if self.class.find(product, name)
-  rescue
+    errors.add(:name, 'is already given access to this product') if self.class.find(product, name)
+  rescue StandardError
   end
 
   def not_owner_permission
@@ -34,14 +34,15 @@ class Permission
   class << self
     def permission_types
       {
-        user: UserPermission,
+        user:  UserPermission,
         group: GroupPermission
       }
     end
 
     def build(arguments = {})
       context = arguments.delete(:context)
-      raise ArgumentError, "Need to specify context of permission" unless context
+      raise ArgumentError, 'Need to specify context of permission' unless context
+
       permission_types[context].new arguments
     end
 
@@ -52,6 +53,13 @@ class Permission
     def find(context, product, name)
       permission_types[context].find(product, name)
     end
+
+    def acls(product)
+      product.router.path.exist? ? OodSupport::ACLs::Nfs4ACL.get_facl(path: product.router.path).entries : []
+    rescue StandardError => e
+      Rails.logger.error("cannot list facls for #{product.router.path}: #{e.class}:#{e.message}")
+      []
+    end
   end
 
   def group
@@ -59,7 +67,7 @@ class Permission
   end
 
   def save
-    if self.valid?(:create_permission)
+    if valid?(:create_permission)
       add_entry
       true
     else
@@ -68,7 +76,7 @@ class Permission
   end
 
   def destroy
-    if self.valid?(:destroy_permission)
+    if valid?(:destroy_permission)
       rem_entry
     else
       false
@@ -76,21 +84,23 @@ class Permission
   end
 
   private
-    def self.acls(product)
-      product.router.path.exist? ? OodSupport::ACLs::Nfs4ACL.get_facl(path: product.router.path).entries : []
-    end
 
-    def acl_entry(principle)
-      flags = []
-      flags << :g if group
-      OodSupport::ACLs::Nfs4Entry.new(type: :A, flags: flags, principle: principle.to_s, domain: "osc.edu", permissions: [:r, :x])
-    end
+  def acl_entry(principle)
+    flags = []
+    flags << :g if group
+    OodSupport::ACLs::Nfs4Entry.new(type: :A, flags: flags, principle: principle.to_s, domain: 'osc.edu',
+                                    permissions: [:r, :x])
+  end
 
-    def add_entry
-      OodSupport::ACLs::Nfs4ACL.add_facl(path: product.router.path, entry: acl_entry(name))
-    end
+  def add_entry
+    OodSupport::ACLs::Nfs4ACL.add_facl(path: product.router.path, entry: acl_entry(name))
+  rescue StandardError => e
+    Rails.logger.error("cannot add facl for #{name}: #{e.class}:#{e.message}")
+  end
 
-    def rem_entry
-      OodSupport::ACLs::Nfs4ACL.rem_facl(path: product.router.path, entry: acl_entry(name))
-    end
+  def rem_entry
+    OodSupport::ACLs::Nfs4ACL.rem_facl(path: product.router.path, entry: acl_entry(name))
+  rescue StandardError => e
+    Rails.logger.error("cannot remove facl for #{name}: #{e.class}:#{e.message}")
+  end
 end
