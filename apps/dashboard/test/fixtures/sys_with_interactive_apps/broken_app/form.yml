@@ -9,7 +9,7 @@ attributes:
     label: "broken yaml"
     options: 
       - something
-      - 
+      -
       - another
 form:
   - node_type

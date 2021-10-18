@@ -34,22 +34,29 @@ module SmartAttributes
     # Check select widget has options values provided
     # @return [StandardError] if missing any values
     def validate!
-      if widget == 'select' && !opts[:options].nil?
-        opts.fetch(:options).each do |v|
-          if v.nil?
-            raise StandardError, "Missing options were supplied to the select widget in the form.yml"
-          end
-        end
-      elsif widget == 'select' && !opts[:options].nil? && select_choices.empty?
-        opts.fetch(:options).each do |v|
-          if v.nil?
-            raise StandardError, "Missing options were supplied to the select widget in the form.yml"
-          end
-        end
-      elsif widget == 'select' && opts[:options].nil?
+      if widget == 'select' && opts[:options].nil?
         raise StandardError, "Missing options were supplied to the select widget in the form.yml"
+      elsif  widget == 'select' && (select_choices.size != select_choices.compact.size)
+        raise StandardError, "Missing options were supplied to the select widget in the form.yml"
+      else
+        return self
       end
-      return self
+      # if widget == 'select' && !opts[:options].nil?
+      #   opts.fetch(:options).each do |v|
+      #     if v.nil?
+      #       raise StandardError, "Missing options were supplied to the select widget in the form.yml"
+      #     end
+      #   end
+      # elsif widget == 'select' && !opts[:options].nil? && select_choices.empty?
+      #   opts.fetch(:options).each do |v|
+      #     if v.nil?
+      #       raise StandardError, "Missing options were supplied to the select widget in the form.yml"
+      #     end
+      #   end
+      # elsif widget == 'select' && opts[:options].nil?
+      #   raise StandardError, "Missing options were supplied to the select widget in the form.yml"
+      # end
+      # return self
     end
 
     def value=(other)
