@@ -34,9 +34,7 @@ module SmartAttributes
     # Check select widget has options values provided
     # @return [StandardError] if missing any values
     def validate!
-      if widget == 'select' && opts[:options].nil?
-        raise StandardError, "Missing options were supplied to the select widget in the form.yml"
-      elsif  widget == 'select' && (select_choices.size != select_choices.compact.size)
+      if widget == 'select' && (select_choices.size != select_choices.compact.size)
         raise StandardError, "Missing options were supplied to the select widget in the form.yml"
       else
         return self
@@ -137,7 +135,8 @@ module SmartAttributes
     # Array of choices for select fields used to build <option> tags
     # @return [Array] choices in form [name, value], [name, value]
     def select_choices
-      opts.fetch(:options, [])
+      o = opts.fetch(:options, [])
+      o.nil? ? [] : o
     end
 
     # String value if this attribute is "checked" (relevant for checkboxes)
