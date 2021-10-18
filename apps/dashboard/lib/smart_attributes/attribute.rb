@@ -31,9 +31,31 @@ module SmartAttributes
       end
     end
 
+    # Check select widget has options values provided
+    # @return [StandardError] if missing any values
+    def validate!
+      if widget == 'select' && !opts[:options].nil?
+        opts.fetch(:options).each do |v|
+          if v.nil?
+            raise StandardError, "Missing options were supplied to the select widget in the form.yml"
+          end
+        end
+      elsif widget == 'select' && !opts[:options].nil? && select_choices.empty?
+        opts.fetch(:options).each do |v|
+          if v.nil?
+            raise StandardError, "Missing options were supplied to the select widget in the form.yml"
+          end
+        end
+      elsif widget == 'select' && opts[:options].nil?
+        raise StandardError, "Missing options were supplied to the select widget in the form.yml"
+      end
+      return self
+    end
+
     def value=(other)
       @opts[:value] = other
     end
+    
     def cacheable?(default_value) 
       if opts[:cacheable].nil?
         default_value
@@ -41,6 +63,7 @@ module SmartAttributes
         to_bool(opts[:cacheable])
       end
     end
+
     # Type of form widget used for this attribute
     # @return [String] widget type
     def widget
