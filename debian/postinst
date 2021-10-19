@@ -29,8 +29,6 @@ ln -s ../mods-available/lua.load . || true
 ln -s ../mods-available/headers.load . || true
 ln -s ../mods-available/proxy.load . || true
 ln -s ../mods-available/proxy_http.load . || true
-ln -s ../mods-available/rewrite.load . || true
-
 
 # shellcheck disable=SC1091
 [ -e /etc/apache2/envvars ] && . /etc/apache2/envvars

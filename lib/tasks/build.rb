@@ -12,7 +12,7 @@ namespace :build do
     platform = args[:platform].to_s
     image_tag = "#{platform}-#{args[:version]}"
     cmd = build_cmd(
-      template_file("Dockerfile.#{platform}.erb"), 
+      template_file("Dockerfile.#{platform}.erb"),
       image_names[:build_box],
       image_tag: build_box_tag(args)
     )
@@ -22,7 +22,7 @@ namespace :build do
 
   task :debuild, [:platform, :version] => [:build_box] do |task, args|
     dir = build_dir(args)
-    Rake::Task['package:tar'].invoke(dir)
+    Rake::Task['package:debian_tar'].invoke(dir)
     sh "#{tar} -xzf #{dir}/#{ood_package_tar} -C #{dir}"
 
     work_dir = "/build/#{versioned_ood_package}"

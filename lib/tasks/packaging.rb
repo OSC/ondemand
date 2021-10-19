@@ -20,7 +20,23 @@ namespace :package do
   end
 
   desc "Tar and zip OnDemand into packaging dir with version name v#<version>"
-  task :tar, [:output_dir] do |task, args|
+  task :tar do
+    version = ENV['VERSION'] || ENV['CI_COMMIT_TAG']
+    version = version.gsub(/^v/, '') unless version.nil?
+
+    if ! version
+      latest_commit = `git rev-list --tags --max-count=1`.strip[0..6]
+      latest_tag = `git describe --tags #{latest_commit}`.strip[1..-1]
+      datetime = Time.now.strftime("%Y%m%d-%H%M")
+      version = "#{latest_tag}-#{datetime}-#{latest_commit}"
+    end
+
+    sh "git ls-files | #{tar} -c --transform 's,^,ondemand-#{version}/,' -T - | gzip > packaging/rpm/v#{version}.tar.gz"
+  end
+
+  # TODO: refactor these 2 tar tasks. Debian and RHEL expect slightly different names and
+  # what's worse is the whole v prefixing mess
+  task :debian_tar, [:output_dir] do |task, args|
     dir = "#{args[:output_dir] || 'packaging'}".tap { |p| sh "mkdir -p #{p}" }
     tar_file = "#{dir}/#{ood_package_tar}"
 
