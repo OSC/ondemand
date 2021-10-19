@@ -7,5 +7,5 @@ OodAppkit.clusters.select(&:kubernetes?).each do |cluster|
 
   OodCore::Job::Adapters::Kubernetes::Batch.configure_kube!(cluster.job_config)
 rescue StandardError, LoadError => e
-  Rails.logger.error("could not initialize #{cluster} because of error '#{e.message}'")
+  Rails.logger.error("could not initialize k8s cluster #{cluster.id} because of error '#{e.message}'")
 end
