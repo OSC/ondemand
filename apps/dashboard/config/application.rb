@@ -1,20 +1,17 @@
-require 'uri'
 require_relative 'boot'
 
-# require "rails"
-
-# This is not loaded in rails/all but inside active_record so add it if
-# you want your models work as expected
-require "active_model/railtie" 
+require "rails"
+# Pick the frameworks you want:
+require "active_model/railtie"
 require "active_job/railtie"
-# require "active_record/railtie"  # Enable if we start using ActiveRecord
-
-# And now the rest
+# require "active_record/railtie"
+# require "active_storage/engine"
 require "action_controller/railtie"
 require "action_mailer/railtie"
+# require "action_mailbox/engine"
+# require "action_text/engine"
 require "action_view/railtie"
-# require "action_cable/engine"  # Enable if we start using ActionCable (websockets)
-# require "active_storage/engine"  # Enable if we start using ActiveRecord
+# require "action_cable/engine"
 require "sprockets/railtie"
 require "rails/test_unit/railtie"
 
@@ -24,6 +21,10 @@ Bundler.require(*Rails.groups)
 
 module Dashboard
   class Application < Rails::Application
+    # Initialize configuration defaults for originally generated Rails version.
+    # TODO: update to 6
+    config.load_defaults 5.0
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
