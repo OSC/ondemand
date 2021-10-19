@@ -14,6 +14,7 @@ stages:
 
 variables:
   GIT_STRATEGY: clone
+  GIT_DEPTH: 0
 
 rpm-build-nightly-el7:
   stage: build
