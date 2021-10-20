@@ -5,7 +5,7 @@ export DESTDIR            = $(CURDIR)/debian/ondemand
 export GEM_HOME           = $(CURDIR)/gems
 export GEM_PATH           = $(GEM_HOME):$(shell printenv GEM_PATH)
 export APACHE_DIR         = "$(DESTDIR)/var/www/ood"
-export APACHE_SYSTEMD_DIR = "$(DESTDIR)/lib/systemd/system/apache2.service.d"
+export APACHE_SYSTEMD_DIR = "$(DESTDIR)/etc/systemd/system/apache2.service.d"
 export CONFIG_DIR         = "$(DESTDIR)/etc/ood/config"
 
 
