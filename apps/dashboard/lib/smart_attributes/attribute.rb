@@ -31,9 +31,20 @@ module SmartAttributes
       end
     end
 
+    # Check select widget has options values provided
+    # @return [StandardError] if missing any values
+    def validate!
+      if widget == 'select' && (select_choices.size != select_choices.compact.size)
+        raise StandardError, I18n.t('dashboard.batch_connect_form_invalid', id: id)
+      end
+
+      self
+    end
+
     def value=(other)
       @opts[:value] = other
     end
+    
     def cacheable?(default_value) 
       if opts[:cacheable].nil?
         default_value
@@ -41,6 +52,7 @@ module SmartAttributes
         to_bool(opts[:cacheable])
       end
     end
+
     # Type of form widget used for this attribute
     # @return [String] widget type
     def widget
@@ -123,7 +135,8 @@ module SmartAttributes
     # Array of choices for select fields used to build <option> tags
     # @return [Array] choices in form [name, value], [name, value]
     def select_choices
-      opts.fetch(:options, [])
+      o = opts.fetch(:options, [])
+      o.nil? ? [] : o
     end
 
     # String value if this attribute is "checked" (relevant for checkboxes)

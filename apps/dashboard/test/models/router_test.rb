@@ -179,6 +179,7 @@ class RouterTest < ActiveSupport::TestCase
       "sys/pseudofun", 
       "dev/activejobs", 
       "dev/bc_desktop/oakley",  # dev/* gives the 1 subapp, not the main app
+      "dev/broken_app",
       "dev/bc_jupyter", 
       "dev/bc_paraview", 
       "dev/dashboard", 
