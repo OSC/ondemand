@@ -76,6 +76,7 @@ en:
     batch_connect_form_session_data_html: |
       * The %{title} session data for this session can be accessed
         under the %{data_link_tag}.
+    batch_connect_form_invalid: "The form.yml has missing options in the %{id} form field."
     batch_connect_no_apps: "There are no available Interactive Apps."
     batch_connect_no_sessions: "You have no active sessions."
     batch_connect_sandbox: " [Sandbox]"

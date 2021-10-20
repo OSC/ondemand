@@ -51,7 +51,7 @@ class AppsTest < ActionDispatch::IntegrationTest
 
     data_rows = css_select('table[id="all-apps-table"] tr').slice(1, 100)
 
-    assert_equal 14, data_rows.size
+    assert_equal 15, data_rows.size
 
     # difference here is shell apps have hosts in them (and there are 2 of them)
     # all interactive apps are shown along with the dev and usr apps

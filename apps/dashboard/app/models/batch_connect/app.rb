@@ -204,7 +204,7 @@ module BatchConnect
         # Hide resolution if not using native vnc clients
         attribute_opts = { value: nil, fixed: true } if attribute_id.to_s == "bc_vnc_resolution" && !ENV["ENABLE_NATIVE_VNC"]
 
-        SmartAttributes::AttributeFactory.build(attribute_id, attribute_opts)
+        SmartAttributes::AttributeFactory.build(attribute_id, attribute_opts).validate!
       end
 
      BatchConnect::SessionContext.new(attributes, form_config.fetch(:cacheable, nil)  ) #form_config.fetch(:cacheable, nil)  
