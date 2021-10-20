@@ -240,45 +240,16 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     end
   end
 
-  test "form element is not an array" do
-    form_yml = <<~HEREDOC
-      ---
-      form:
-        should_have_been_an_array
-    HEREDOC
+  test "select widgets with no options values throws error" do
+    OodAppkit.stubs(:clusters).returns(good_clusters)
+    r = PathRouter.new("test/fixtures/sys_with_interactive_apps/broken_app")
+    app = BatchConnect::App.new(router: r)
 
     Dir.mktmpdir do |dir|
-      app_dir = "#{dir}/app".tap { |d| Dir.mkdir(d) }
-      r = PathRouter.new(app_dir)
-      app = BatchConnect::App.new(router: r)
-      File.open("#{app_dir}/form.yml", 'w') { |file| file.write(form_yml) }
-      assert !app.valid?
-      assert_equal I18n.t('dashboard.batch_connect_invalid_form_array'), app.validation_reason 
-
-      # also just to be sure, builds an empty session_context
-      assert_equal Hash.new, app.build_session_context.attributes
-    end
-  end
-
-  test "attributes element is not a map" do
-    form_yml = <<~HEREDOC
-      ---
-      form:
-        - is_an_array
-      attributes:
-        should_be_a_map
-    HEREDOC
-
-    Dir.mktmpdir do |dir|
-      app_dir = "#{dir}/app".tap { |d| Dir.mkdir(d) }
-      r = PathRouter.new(app_dir)
-      app = BatchConnect::App.new(router: r)
-      File.open("#{app_dir}/form.yml", 'w') { |file| file.write(form_yml) }
-      assert !app.valid?
-      assert_equal I18n.t('dashboard.batch_connect_invalid_form_attributes'), app.validation_reason
-
-      # also just to be sure, builds an empty session_context
-      assert_equal Hash.new, app.build_session_context.attributes
+      exception = assert_raise StandardError do 
+        app.submit_opts(app.build_session_context, staged_root: dir)
+      end
+      assert_equal "The form.yml has missing options in the node_type form field.", exception.message
     end
   end
 end

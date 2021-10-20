@@ -88,6 +88,8 @@ class DashboardControllerTest < ActionController::TestCase
     dditems = dropdown_list_items(dd)
     assert dditems.any?, "dropdown list items not found"
     assert_equal [
+      "Broken App", 
+      :divider,
       {header: "Apps"},
       "Jupyter Notebook",
       "Paraview",
