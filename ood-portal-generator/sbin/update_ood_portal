@@ -4,6 +4,7 @@ SCL_SOURCE=$(command -v scl_source)
 # Source in the custom environment
 # shellcheck source=/dev/null
 [[ "${SCL_SOURCE}" ]] && source "${SCL_SOURCE}" enable ondemand &> /dev/null
+# shellcheck source=/dev/null
 [[ -f '/etc/ood/profile' ]] && source '/etc/ood/profile'
 
 ROOT_DIR="$(dirname "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")"
