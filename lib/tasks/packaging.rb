@@ -4,38 +4,6 @@ namespace :package do
   require_relative 'build_utils'
   include BuildUtils
 
-  def image_exists?(image_name)
-    `#{container_runtime} inspect --type image --format exists #{image_name} || true`.chomp.eql?('exists')
-  end
-
-  def buildah_build_cmd(docker_file, image_name, extra_args: [])
-    args = ["bud", "--build-arg", "VERSION=#{ood_version}"]
-    args.concat ["-t", "#{image_name}:#{image_tag}", "-f", docker_file]
-    args.concat extra_args
-
-    "buildah #{args.join(' ')}"
-  end
-
-  def docker_build_cmd(docker_file, image_name, extra_args: [])
-    args = ["build", "--build-arg", "VERSION=#{ood_version}"]
-    args.concat ["-t", "#{image_name}:#{image_tag}", "-f", docker_file, "."]
-    args.concat extra_args
-
-    "docker #{args.join(' ')}"
-  end
-
-  def build_cmd(file, image_name, extra_args: [])
-    if podman_runtime?
-      buildah_build_cmd(file, image_name, extra_args: extra_args)
-    else
-      docker_build_cmd(file, image_name, extra_args: extra_args)
-    end
-  end
-
-  def tag_latest_container_cmd(image_name)
-    "#{container_runtime} tag #{image_name}:#{image_tag} #{image_name}:latest"
-  end
-
   def git_clone_packaging(branch, dir)
     args = ["clone", "--single-branch"]
     args.concat ["--branch", branch]
@@ -53,13 +21,6 @@ namespace :package do
 
   desc "Tar and zip OnDemand into packaging dir with version name v#<version>"
   task :tar do
-    `which gtar 1>/dev/null 2>&1`
-    if $?.success?
-      tar = 'gtar'
-    else
-      tar = 'tar'
-    end
-
     version = ENV['VERSION'] || ENV['CI_COMMIT_TAG']
     version = version.gsub(/^v/, '') unless version.nil?
 
@@ -73,19 +34,36 @@ namespace :package do
     sh "git ls-files | #{tar} -c --transform 's,^,ondemand-#{version}/,' -T - | gzip > packaging/rpm/v#{version}.tar.gz"
   end
 
-  desc "Build the ood image"
-  task :container do
-    sh build_cmd("Dockerfile", image_name) unless image_exists?("#{image_name}:#{image_tag}")
+  # TODO: refactor these 2 tar tasks. Debian and RHEL expect slightly different names and
+  # what's worse is the whole v prefixing mess
+  task :debian_tar, [:output_dir] do |task, args|
+    dir = "#{args[:output_dir] || 'packaging'}".tap { |p| sh "mkdir -p #{p}" }
+    tar_file = "#{dir}/#{ood_package_tar}"
+
+    sh "rm #{tar_file}" if File.exist?(tar_file)
+    sh "git ls-files | #{tar} -c --transform 's,^,#{versioned_ood_package}/,' -T - | gzip > #{tar_file}"
+  end
+
+  task :deb, [:platoform, :version] do |task, args|
+    Rake::Task['build:debuild'].invoke('ubuntu', args[:version] || '20.04')
+  end
+
+  task :version do
+    puts ood_package_version
+  end
+
+  task container: [:clean] do
+    sh build_cmd("Dockerfile", image_names[:ood]) unless image_exists?("#{image_names[:ood]}:#{ood_image_tag}")
   end
 
   desc "Build docker container and create image"
   task latest_container: [:container] do
-    sh tag_latest_container_cmd(image_name)
+    sh tag_latest_container_cmd(image_names[:ood])
   end
 
   desc "Build container with Dockerfile.test"
   task test_container: [:latest_container] do
-    sh build_cmd("Dockerfile.test", test_image_name) unless image_exists?("#{test_image_name}:#{image_tag}")
+    sh build_cmd("Dockerfile.test", test_image_name) unless image_exists?("#{test_image_name}:#{ood_image_tag}")
     sh tag_latest_container_cmd(test_image_name)
   end
 
@@ -95,7 +73,7 @@ namespace :package do
     extra.concat ["--build-arg", "UID=#{user.uid}"]
     extra.concat ["--build-arg", "GID=#{user.gid}"]
 
-    sh build_cmd("Dockerfile.dev", dev_image_name, extra_args: extra) unless image_exists?("#{dev_image_name}:#{image_tag}")
+    sh build_cmd("Dockerfile.dev", dev_image_name, extra_args: extra) unless image_exists?("#{dev_image_name}:#{ood_image_tag}")
     sh tag_latest_container_cmd(dev_image_name)
   end
 

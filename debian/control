@@ -1,0 +1,15 @@
+Source: ondemand
+Section: unknown
+Priority: optional
+Maintainer: Ohio Super Computer Center
+Build-Depends: debhelper (>=11~), ruby
+Standards-Version: 4.1.4
+Homepage: https://openondemand.org
+
+Package: ondemand
+Architecture: all
+Multi-Arch: foreign
+Depends: ruby, apache2, sudo, nodejs, lsof
+Description: Open OnDemand is an open source release of the Ohio SuperComputer Center's
+  OnDemand platform to provide HPC access via a web browser, supporting web based file
+  management, shell access, job submission and interactive work on compute nodes.

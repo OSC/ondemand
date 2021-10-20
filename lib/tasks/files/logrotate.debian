@@ -1,0 +1,6 @@
+/var/log/ondemand-nginx/*/access.log /var/log/ondemand-nginx/*/error.log { 
+  compress
+  copytruncate
+  missingok
+  notifempty
+}

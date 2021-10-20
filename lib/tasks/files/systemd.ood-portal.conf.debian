@@ -1,0 +1,6 @@
+[Service]
+Environment="APACHE=/etc/apache2/conf-available/ood-portal.conf"
+ExecStartPre=-/opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm
+ExecReload=
+ExecReload=-/opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm
+ExecReload=apache2 \$OPTIONS -k graceful

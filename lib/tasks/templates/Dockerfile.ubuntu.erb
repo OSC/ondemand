@@ -1,0 +1,15 @@
+from ubuntu:20.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt update && \
+  apt install -y \
+    ruby=1:2.7+1 ruby-dev=1:2.7+1 \
+    nodejs npm \
+    make g++ gcc sqlite3 libsqlite3-dev \
+    debmake debhelper
+
+RUN groupadd -g 1000 deb && \
+    useradd -u 1000 --create-home --gid 1000 deb
+
+RUN ln -s /bin/bundle2.7 /bin/bundle

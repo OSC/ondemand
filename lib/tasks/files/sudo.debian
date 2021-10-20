@@ -1,0 +1,5 @@
+Defaults:www-data !requiretty, !authenticate
+Defaults:www-data env_keep += "NGINX_STAGE_* OOD_*"
+www-data ALL=(ALL) NOPASSWD: /opt/ood/nginx_stage/sbin/nginx_stage
+Cmnd_Alias KUBECTL = /usr/local/bin/kubectl, /usr/bin/kubectl, /bin/kubectl
+Defaults!KUBECTL !syslog

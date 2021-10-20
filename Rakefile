@@ -5,16 +5,19 @@ PROJ_DIR          = Pathname.new(__dir__)
 TASK_DIR          = "#{PROJ_DIR}/lib/tasks"
 APPS_DIR          = PROJ_DIR.join('apps')
 GEMFILE           = PROJ_DIR.join('Gemfile')
-INSTALL_ROOT      = Pathname.new(ENV["PREFIX"] || "/opt/ood")
+DESTDIR           = Pathname.new(ENV['DESTDIR'].to_s)
+INSTALL_ROOT      = Pathname.new(ENV["PREFIX"] || "#{DESTDIR}/opt/ood")
 VENDOR_BUNDLE     = (ENV['VENDOR_BUNDLE'] == "yes" || ENV['VENDOR_BUNDLE'] == "true")
 PASSENGER_APP_ENV = ENV["PASSENGER_APP_ENV"] || "production"
 
 require "#{TASK_DIR}/rake_helper"
+require "#{TASK_DIR}/build"
 require "#{TASK_DIR}/packaging"
 require "#{TASK_DIR}/test"
 require "#{TASK_DIR}/lint"
 require "#{TASK_DIR}/docker"
 require "#{TASK_DIR}/development"
+require "#{TASK_DIR}/install"
 
 include RakeHelper
 
@@ -66,12 +69,14 @@ task :build => 'build:all'
 directory INSTALL_ROOT.to_s
 
 namespace :install do
+
   desc "Install OnDemand infrastructure"
   task :infrastructure => [INSTALL_ROOT] do
     infrastructure.each do |infra|
       sh "cp -r #{infra.name} #{INSTALL_ROOT}/"
     end
   end
+
   desc "Install OnDemand apps"
   task :apps => [INSTALL_ROOT] do
     sh "cp -r #{APPS_DIR} #{INSTALL_ROOT}/"
