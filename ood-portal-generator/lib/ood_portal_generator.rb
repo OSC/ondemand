@@ -27,7 +27,15 @@ module OodPortalGenerator
       return true if os_release_file.nil?
       env = Dotenv.parse(os_release_file)
       return false if ("#{env['ID']} #{env['ID_LIKE']}" =~ /(rhel|fedora)/ && env['VERSION_ID'] =~ /^8/)
+      return false if debian?
       true
+    end
+
+    def debian?
+      return false if os_release_file.nil?
+      env = Dotenv.parse(os_release_file)
+      return true if (env['ID'] =~ /(ubuntu|debian)/ or env['ID_LIKE'] == 'debian')
+      false
     end
 
     def fqdn
