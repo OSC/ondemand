@@ -36,9 +36,9 @@ module SmartAttributes
     def validate!
       if widget == 'select' && (select_choices.size != select_choices.compact.size)
         raise StandardError, I18n.t('dashboard.validate_options_message', id: id)
-      else
-        self
       end
+      
+      self
     end
 
     def value=(other)
