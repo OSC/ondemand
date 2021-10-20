@@ -1,0 +1,15 @@
+---
+title: "Broken yaml app"
+cluster: "owens"
+description: |
+  This app is broken and should fail because no options are passed to the select widget.
+attributes:
+  node_type:
+    widget: select
+    label: "broken yaml"
+    options: 
+      - something
+      -
+      - another
+form:
+  - node_type
