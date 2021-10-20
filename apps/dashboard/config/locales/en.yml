@@ -173,3 +173,5 @@ en:
     files_directory_size_calculation_error: "Timeout while trying to determine directory size."
     files_directory_size_calculation_timeout: "Timeout while trying to determine directory size."
     files_directory_size_unknown: "Error with status %{exit_code} when trying to determine directory size: %{error}"
+
+    validate_options_message: "The form.yml has missing options in the %{id} form field."

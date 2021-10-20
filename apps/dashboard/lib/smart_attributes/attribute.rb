@@ -35,9 +35,9 @@ module SmartAttributes
     # @return [StandardError] if missing any values
     def validate!
       if widget == 'select' && (select_choices.size != select_choices.compact.size)
-        raise StandardError, "Missing options were supplied to the select widget in the form.yml"
+        raise StandardError, I18n.t('dashboard.validate_options_message', id: id)
       else
-        return self
+        self
       end
     end
 

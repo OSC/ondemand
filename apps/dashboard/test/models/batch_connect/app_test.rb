@@ -249,7 +249,7 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
       exception = assert_raise StandardError do 
         app.submit_opts(app.build_session_context, staged_root: dir)
       end
-      assert_equal "Missing options were supplied to the select widget in the form.yml", exception.message
+      assert_equal "The form.yml has missing options in the node_type form field.", exception.message
     end
   end
 end
