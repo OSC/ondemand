@@ -15,7 +15,6 @@ touch /etc/ood/config/ood_portal.sha256sum
 # shellcheck disable=SC1091
 [ -e /etc/ood/profile ] && . /etc/ood/profile
 
-export APACHE="/etc/apache2/conf-available/ood-portal.conf"
 /opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm 
 
 /opt/ood/nginx_stage/sbin/update_nginx_stage

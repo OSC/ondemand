@@ -357,12 +357,20 @@ describe OodPortalGenerator::Application do
 
     it 'should use SCL apache' do
       allow(OodPortalGenerator).to receive(:scl_apache?).and_return(true)
+      allow(OodPortalGenerator).to receive(:debian?).and_return(false)
       expect(described_class.apache).to eq('/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf')
     end
 
     it 'should not use SCL apache' do
       allow(OodPortalGenerator).to receive(:scl_apache?).and_return(false)
+      allow(OodPortalGenerator).to receive(:debian?).and_return(false)
       expect(described_class.apache).to eq('/etc/httpd/conf.d/ood-portal.conf')
+    end
+
+    it 'should work for Debian systems' do
+      allow(OodPortalGenerator).to receive(:scl_apache?).and_return(false)
+      allow(OodPortalGenerator).to receive(:debian?).and_return(true)
+      expect(described_class.apache).to eq('/etc/apache2/conf-available/ood-portal.conf')
     end
   end
 
@@ -370,6 +378,7 @@ describe OodPortalGenerator::Application do
     before(:each) do
       allow(File).to receive(:exist?).with('/dne.conf').and_return(true)
       allow(OodPortalGenerator).to receive(:scl_apache?).and_return(true)
+      allow(OodPortalGenerator).to receive(:debian?).and_return(false)
     end
 
     it 'saves checksum file' do
