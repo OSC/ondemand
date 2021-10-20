@@ -30,10 +30,10 @@ describe OodPortalGenerator do
     end
 
     it 'returns true if RHEL7' do
-      os_release = <<-EOS
-ID="rhel"
-ID_LIKE="fedora"
-VERSION_ID="7.7"
+      os_release = <<~EOS
+        ID="rhel"
+        ID_LIKE="fedora"
+        VERSION_ID="7.7"
       EOS
       File.write(os_release_file.path, os_release)
       allow(described_class).to receive(:os_release_file).and_return(os_release_file.path)
@@ -41,10 +41,10 @@ VERSION_ID="7.7"
     end
 
     it 'returns true if CentOS7' do
-      os_release = <<-EOS
-ID="centos"
-ID_LIKE="rhel fedora"
-VERSION_ID="7"
+      os_release = <<~EOS
+        ID="centos"
+        ID_LIKE="rhel fedora"
+        VERSION_ID="7"
       EOS
       File.write(os_release_file.path, os_release)
       allow(described_class).to receive(:os_release_file).and_return(os_release_file.path)
@@ -52,10 +52,10 @@ VERSION_ID="7"
     end
 
     it 'returns false if RHEL8' do
-      os_release = <<-EOS
-ID="rhel"
-ID_LIKE="fedora"
-VERSION_ID="8.0"
+      os_release = <<~EOS
+        ID="rhel"
+        ID_LIKE="fedora"
+        VERSION_ID="8.0"
       EOS
       File.write(os_release_file.path, os_release)
       allow(described_class).to receive(:os_release_file).and_return(os_release_file.path)
@@ -63,10 +63,10 @@ VERSION_ID="8.0"
     end
 
     it 'returns false if CentOS8' do
-      os_release = <<-EOS
-ID="centos"
-ID_LIKE="rhel fedora"
-VERSION_ID="8"
+      os_release = <<~EOS
+        ID="centos"
+        ID_LIKE="rhel fedora"
+        VERSION_ID="8"
       EOS
       File.write(os_release_file.path, os_release)
       allow(described_class).to receive(:os_release_file).and_return(os_release_file.path)
@@ -74,10 +74,10 @@ VERSION_ID="8"
     end
 
     it 'returns false for Ubuntu 20.04' do
-      os_release = <<-EOS
-ID=ubuntu
-ID_LIKE=debian
-VERSION_ID="20.04"
+      os_release = <<~EOS
+        ID=ubuntu
+        ID_LIKE=debian
+        VERSION_ID="20.04"
       EOS
       File.write(os_release_file.path, os_release)
       allow(described_class).to receive(:os_release_file).and_return(os_release_file.path)
@@ -87,10 +87,10 @@ VERSION_ID="20.04"
 
   describe 'debian?' do
     it 'returns false if CentOS8' do
-      os_release = <<-EOS
-ID="centos"
-ID_LIKE="rhel fedora"
-VERSION_ID="8"
+      os_release = <<~EOS
+        ID="centos"
+        ID_LIKE="rhel fedora"
+        VERSION_ID="8"
       EOS
       File.write(os_release_file.path, os_release)
       allow(described_class).to receive(:os_release_file).and_return(os_release_file.path)
@@ -98,10 +98,10 @@ VERSION_ID="8"
     end
 
     it 'returns true for Ubuntu 20.04' do
-      os_release = <<-EOS
-ID=ubuntu
-ID_LIKE=debian
-VERSION_ID="20.04"
+      os_release = <<~EOS
+        ID=ubuntu
+        ID_LIKE=debian
+        VERSION_ID="20.04"
       EOS
       File.write(os_release_file.path, os_release)
       allow(described_class).to receive(:os_release_file).and_return(os_release_file.path)
