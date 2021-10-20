@@ -35,9 +35,9 @@ module SmartAttributes
     # @return [StandardError] if missing any values
     def validate!
       if widget == 'select' && (select_choices.size != select_choices.compact.size)
-        raise StandardError, I18n.t('dashboard.validate_options_message', id: id)
+        raise StandardError, I18n.t('dashboard.batch_connect_form_invalid', id: id)
       end
-      
+
       self
     end
 
