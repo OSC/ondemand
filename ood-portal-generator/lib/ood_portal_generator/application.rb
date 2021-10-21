@@ -74,7 +74,9 @@ module OodPortalGenerator
       end
 
       def apache_services
-        if OodPortalGenerator.scl_apache?
+        if OodPortalGenerator.debian?
+          ['apache2']
+        elsif OodPortalGenerator.scl_apache?
           ['httpd24-httpd', 'httpd24-htcacheclean']
         else
           ['httpd', 'htcacheclean']
@@ -224,11 +226,12 @@ module OodPortalGenerator
 
         puts "Completed successfully!"
         if changed
+          apache_units = apache_services.map {|a| "#{a}.service"}.join(' ')
           puts ""
           puts "Restart the #{apache_services[0]} service now."
           puts ""
           puts "Suggested command:"
-          puts "    sudo systemctl try-restart #{apache_services[0]}.service #{apache_services[1]}.service"
+          puts "    sudo systemctl try-restart #{apache_units}"
           puts ""
         end
 
