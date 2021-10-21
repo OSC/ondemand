@@ -13,7 +13,7 @@ module SmartAttributes
       # Type of form widget used for this attribute
       # @return [String] widget type
       def widget
-        "text_field"
+        (opts[:widget] || "text_field").to_s
       end
 
       # Form label for this attribute
