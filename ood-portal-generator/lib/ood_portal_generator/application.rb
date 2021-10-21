@@ -146,6 +146,17 @@ module OodPortalGenerator
         end
       end
 
+      def apache_changed_output
+        apache_units = apache_services.map {|a| "#{a}.service"}.join(' ')
+        output = [""]
+        output << "Restart the #{apache_services[0]} service now."
+        output << ""
+        output << "Suggested command:"
+        output << "    sudo systemctl try-restart #{apache_units}"
+        output << ""
+        output
+      end
+
       def generate()
         view = View.new(context)
         dex = Dex.new(context, view, insecure)
@@ -226,13 +237,7 @@ module OodPortalGenerator
 
         puts "Completed successfully!"
         if changed
-          apache_units = apache_services.map {|a| "#{a}.service"}.join(' ')
-          puts ""
-          puts "Restart the #{apache_services[0]} service now."
-          puts ""
-          puts "Suggested command:"
-          puts "    sudo systemctl try-restart #{apache_units}"
-          puts ""
+          apache_changed_output.join("\n")
         end
 
         if dex_changed

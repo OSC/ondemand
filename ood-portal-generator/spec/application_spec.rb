@@ -456,6 +456,24 @@ describe OodPortalGenerator::Application do
     end
   end
 
+  describe 'apache_changed_output' do
+    it 'SCL apache' do
+      allow(OodPortalGenerator).to receive(:debian?).and_return(false)
+      allow(OodPortalGenerator).to receive(:scl_apache?).and_return(true)
+      expect(described_class.apache_changed_output.join("\n")).to match(%r{httpd24-httpd.service httpd24-htcacheclean.service})
+    end
+    it 'EL non-SCL apache' do
+      allow(OodPortalGenerator).to receive(:debian?).and_return(false)
+      allow(OodPortalGenerator).to receive(:scl_apache?).and_return(false)
+      expect(described_class.apache_changed_output.join("\n")).to match(%r{httpd.service htcacheclean.service})
+    end
+    it 'Debian apache' do
+      allow(OodPortalGenerator).to receive(:debian?).and_return(true)
+      allow(OodPortalGenerator).to receive(:scl_apache?).and_return(false)
+      expect(described_class.apache_changed_output.join("\n")).to match(%r{apache2.service$})
+    end
+  end
+
   describe 'update_ood_portal' do
     it 'does not replace if no changes detected' do
       allow(described_class).to receive(:checksum_exists?).and_return(true)
