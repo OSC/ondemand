@@ -53,7 +53,6 @@ override_dh_auto_install:
 
 	# extra infrastructure files
 	install -D -m 440 lib/tasks/files/sudo.debian $(DESTDIR)/etc/sudoers.d/ood
-	install -m 440 lib/tasks/files/profile.debian $(DESTDIR)/etc/ood/profile
 	install -D -m 644 lib/tasks/files/crontab.debian $(DESTDIR)/etc/cron.d/ood
 	install -D -m 644 lib/tasks/files/logrotate.debian $(DESTDIR)/etc/logrotate.d/ood
 	install -D -m 644 lib/tasks/files/systemd.ood.conf.debian $(APACHE_SYSTEMD_DIR)/ood.conf

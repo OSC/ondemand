@@ -12,9 +12,6 @@ touch /var/lib/ondemand-nginx/config/apps/sys/shell.conf
 touch /var/lib/ondemand-nginx/config/apps/sys/myjobs.conf
 touch /etc/ood/config/ood_portal.sha256sum
 
-# shellcheck disable=SC1091
-[ -e /etc/ood/profile ] && . /etc/ood/profile
-
 /opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm 
 
 /opt/ood/nginx_stage/sbin/update_nginx_stage

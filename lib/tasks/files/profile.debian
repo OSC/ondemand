@@ -1,3 +1,0 @@
-#!/bin/bash
-
-export GEM_PATH="/opt/ood/gems:$GEM_PATH"
