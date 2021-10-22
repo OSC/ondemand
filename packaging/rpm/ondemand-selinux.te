@@ -14,7 +14,12 @@ require {
   type net_conf_t;
   type krb5_conf_t;
   type sssd_var_run_t;
+  type admin_home_t;
+  type usr_t;
+  type initrc_var_run_t;
   class dbus send_msg;
+  class passwd rootok;
+  class passwd passwd;
 }
 
 # Define custom types
@@ -217,20 +222,21 @@ tunable_policy(`ondemand_use_kubernetes',`
   allow ood_pun_t admin_home_t:dir { add_name remove_name write };
   allow ood_pun_t admin_home_t:file { create open read rename setattr unlink write };
   # Needed to execute sudo for kubectl
-  allow ood_pun_t self:capability { setuid setgid sys_resource };
+  allow ood_pun_t self:capability { setuid setgid sys_resource audit_write };
   allow ood_pun_t self:process { setrlimit setsched };
   allow ood_pun_t self:key write;
   allow ood_pun_t self:passwd { passwd rootok };
+  sudo_exec(ood_pun_t)
   auth_exec_chkpwd(ood_pun_t)
+  auth_domtrans_chkpwd(ood_pun_t)
   auth_rw_lastlog(ood_pun_t)
   auth_rw_faillog(ood_pun_t)
   systemd_write_inherited_logind_sessions_pipes(ood_pun_t)
   systemd_dbus_chat_logind(ood_pun_t)
-  #allow ood_pun_t initrc_var_run_t:file { lock open read };
-  #allow ood_pun_t self:capability audit_write;
-  #allow ood_pun_t self:process setrlimit;
+  allow ood_pun_t initrc_var_run_t:file { lock open read };
   # Needed to execute kubectl
-  allow ood_pun_t self:netlink_route_socket { create_netlink_socket_perms nlmsg_relay };
+  allow ood_pun_t self:netlink_route_socket { create_netlink_socket_perms };
+  allow ood_pun_t self:netlink_audit_socket { create nlmsg_relay };
   corenet_tcp_connect_generic_port(ood_pun_t)
   # Neded for /usr/local/bin/kubectl location
   allow ood_pun_t usr_t:file { execute execute_no_trans };
