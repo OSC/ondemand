@@ -263,8 +263,10 @@ tunable_policy(`ondemand_use_kubernetes',`
   allow ood_pun_t self:netlink_route_socket { create_netlink_socket_perms };
   allow ood_pun_t self:netlink_audit_socket { create nlmsg_relay };
   corenet_tcp_connect_generic_port(ood_pun_t)
-  # Neded for /usr/local/bin/kubectl location
-  allow ood_pun_t usr_t:file { execute execute_no_trans };
+  # Needed to submit pods
+  allow ood_pun_t node_t:udp_socket node_bind;
+  corenet_tcp_connect_generic_port(ood_pun_t)
+  corenet_udp_bind_generic_port(ood_pun_t)
 ')
 
 ## <desc>
@@ -305,6 +307,8 @@ exec_files_pattern(ood_pun_t, bin_t, bin_t)
 exec_files_pattern(ood_pun_t, shell_exec_t, shell_exec_t)
 # Allow PUN to execute rsync
 exec_files_pattern(ood_pun_t, rsync_exec_t, rsync_exec_t)
+# Allow PUN to execute usr_t (like /opt)
+exec_files_pattern(ood_pun_t, usr_t, usr_t)
 
 # Allow PUN to connect to Apache
 corenet_tcp_connect_http_port(ood_pun_t)
