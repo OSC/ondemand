@@ -11,6 +11,8 @@ require {
   type vmblock_t;
   type ssh_exec_t;
   type ssh_home_t;
+  type sshd_key_t;
+  type ssh_keysign_exec_t;
   type net_conf_t;
   type krb5_conf_t;
   type sssd_var_run_t;
@@ -145,18 +147,40 @@ optional_policy(`
 ## <desc>
 ## <p>
 ## Allow OnDemand to use Shell app
+## DEPRECATED, use ondemand_use_ssh instead
 ## </p>
 ## </desc>
-gen_tunable(ondemand_use_shell_app, true)
+gen_tunable(ondemand_use_shell_app, false)
 
 tunable_policy(`ondemand_use_shell_app',`
   allow ood_pun_t ptmx_t:chr_file { ioctl open read write };
-  can_exec(ood_pun_t, ssh_exec_t)
+  ssh_exec(ood_pun_t)
   corenet_tcp_connect_ssh_port(ood_pun_t)
   allow ood_pun_t self:key { read view write };
 ')
 
 tunable_policy(`ondemand_use_shell_app && ondemand_manage_user_home_dir',`
+  manage_dirs_pattern(ood_pun_t, ssh_home_t, ssh_home_t)
+  manage_files_pattern(ood_pun_t, ssh_home_t, ssh_home_t)
+')
+
+## <desc>
+## <p>
+## Allow OnDemand to use SSH
+## </p>
+## </desc>
+gen_tunable(ondemand_use_ssh, true)
+
+tunable_policy(`ondemand_use_ssh',`
+  allow ood_pun_t ptmx_t:chr_file { ioctl open read write };
+  ssh_exec(ood_pun_t)
+  can_exec(ood_pun_t, ssh_keysign_exec_t)
+  corenet_tcp_connect_ssh_port(ood_pun_t)
+  allow ood_pun_t sshd_key_t:file read_file_perms;
+  allow ood_pun_t self:key { read view write };
+')
+
+tunable_policy(`ondemand_use_ssh && ondemand_manage_user_home_dir',`
   manage_dirs_pattern(ood_pun_t, ssh_home_t, ssh_home_t)
   manage_files_pattern(ood_pun_t, ssh_home_t, ssh_home_t)
 ')
