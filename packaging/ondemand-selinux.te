@@ -229,6 +229,7 @@ tunable_policy(`ondemand_use_kubernetes',`
   sudo_exec(ood_pun_t)
   auth_exec_chkpwd(ood_pun_t)
   auth_domtrans_chkpwd(ood_pun_t)
+  auth_tunable_read_shadow(ood_pun_t)
   auth_rw_lastlog(ood_pun_t)
   auth_rw_faillog(ood_pun_t)
   systemd_write_inherited_logind_sessions_pipes(ood_pun_t)
