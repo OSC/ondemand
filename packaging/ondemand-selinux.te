@@ -244,7 +244,7 @@ gen_tunable(ondemand_use_kubernetes, false)
 tunable_policy(`ondemand_use_kubernetes',`
   # Access /root/.kube
   allow ood_pun_t admin_home_t:dir { add_name remove_name write };
-  allow ood_pun_t admin_home_t:file { create open read rename setattr unlink write };
+  allow ood_pun_t admin_home_t:file { getattr create open read rename setattr unlink write };
   # Needed to execute sudo for kubectl
   allow ood_pun_t self:capability { setuid setgid sys_resource audit_write };
   allow ood_pun_t self:process { setrlimit setsched };
@@ -259,9 +259,10 @@ tunable_policy(`ondemand_use_kubernetes',`
   systemd_write_inherited_logind_sessions_pipes(ood_pun_t)
   systemd_dbus_chat_logind(ood_pun_t)
   allow ood_pun_t initrc_var_run_t:file { lock open read };
-  # Needed to execute kubectl
+  # Needed to execute kubectl via sudo
   allow ood_pun_t self:netlink_route_socket { create_netlink_socket_perms };
-  allow ood_pun_t self:netlink_audit_socket { create nlmsg_relay };
+  logging_send_audit_msgs(ood_pun_t)
+  # Execute kubectl
   corenet_tcp_connect_generic_port(ood_pun_t)
   # Needed to submit pods
   allow ood_pun_t node_t:udp_socket node_bind;
