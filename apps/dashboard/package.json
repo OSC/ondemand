@@ -2,7 +2,7 @@
   "name": "openondemand-dashboard",
   "dependencies": {
     "@rails/webpacker": "^5.4.0",
-    "bootstrap": "4.6.0",
+    "bootstrap": "^4.6.0",
     "clipboard": "^2.0.8",
     "datatables.net-bs": "^1.10.23",
     "datatables.net-bs4": "^1.10.24",
