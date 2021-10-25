@@ -1,6 +1,7 @@
 require 'yaml'
 require 'etc'
 require 'pathname'
+require 'dotenv'
 
 module NginxStage
   # An object that stores the configuration options to control NginxStage's
@@ -419,10 +420,17 @@ module NginxStage
       self.ondemand_title        = nil
       self.template_root         = "#{root}/templates"
 
-      self.proxy_user       = 'apache'
-      self.nginx_bin        = '/opt/ood/ondemand/root/usr/sbin/nginx'
+      if debian?
+        self.proxy_user       = 'www-data'
+        self.nginx_bin        = '/opt/ood/nginx/bin/nginx'
+        self.mime_types_path  = '/opt/ood/nginx/conf/mime.types'
+      else
+        self.proxy_user       = 'apache'
+        self.nginx_bin        = '/opt/ood/ondemand/root/usr/sbin/nginx'
+        self.mime_types_path  = '/opt/ood/ondemand/root/etc/nginx/mime.types'
+      end
+
       self.nginx_signals    = %i(stop quit reopen reload)
-      self.mime_types_path  = '/opt/ood/ondemand/root/etc/nginx/mime.types'
 
       self.passenger_root = '/opt/ood/ondemand/root/usr/share/ruby/vendor_ruby/phusion_passenger/locations.ini'
 
@@ -506,6 +514,12 @@ module NginxStage
           $stderr.puts %{Warning: invalid configuration option "#{k}"}
         end
       end
+    end
+
+    def debian?
+      env = Dotenv.parse('/etc/os-release')
+      return true if (env['ID'] =~ /(ubuntu|debian)/ or env['ID_LIKE'] == 'debian')
+      false
     end
 
     private
