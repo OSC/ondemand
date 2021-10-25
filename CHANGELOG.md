@@ -6,27 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Fix helper output for ood-portal-generator on Debian systems (#1484)\
-Make ood-portal-generator handle profile files like nginx_stage (#1495)\
-update main gemfile (#1476)\
-Allow bc_account field to customize widget type (#1482)\
-Update ood-portal-generator to work better on Debian/Ubuntu (#1481)\
-Use correct path for service.d unit overrides. (#1480)\
-Catching missing select options in app yaml. (#1455)\
-Merge pull request #1466 from OSC/feature/deb-sync-master\
-sync feature/deb-packaging with master (#1466)\
-Build RPMs in CI/CD pipelines using -s flag to disable source download (#1471)\
-Init k8s (#1465)\
-debian install more files (#1410)\
-Debian files (#1397)\
-Deb build deps (#1373)\
-Update deb packaging (#1344)\
-initial build:ubuntu task (#1231)\
-Disable shallow clone depth for Gitlab pipelines (#1464)\
-correctly write dev's ood_portal.yml (#1462)\
-rescue in getfacl permissions and enable the sharing in the dev container (#1461)\
-update dependencies (#1460)\
-Update Changelog (#1459)
+
 
 ### Changed
 
@@ -34,6 +14,7 @@ Update Changelog (#1459)
 - Batch connect apps can now use a per cluster dataroot to support sites that have multiple storages
   in [#1409](https://github.com/OSC/ondemand/pull/1409).
 - The dashboard now uses strict same site cookies in [#1418](https://github.com/OSC/ondemand/pull/1418).
+- Build RPMs in CI/CD pipelines using -s flag to disable source download in [1471](https://github.com/OSC/ondemand/pull/1471).
 
 ### Added
 
@@ -42,6 +23,12 @@ Update Changelog (#1459)
   - Min and maxes in [#1441](https://github.com/OSC/ondemand/pull/1441).
   - Other fields in [#1449](https://github.com/OSC/ondemand/pull/1449).
 - Test cases for example files for both ood_portal and nginx_stage in [832](https://github.com/OSC/ondemand/pull/832).
+- Debian packaging in [1466](https://github.com/OSC/ondemand/pull/1466). Additionally:
+  - Update ood-portal-generator to work better on Debian/Ubuntu in [1481](https://github.com/OSC/ondemand/pull/1481).
+  - Use correct path for service.d unit overrides in [1480](https://github.com/OSC/ondemand/pull/1480).
+  - Make ood-portal-generator handle profile files like nginx_stage in [1495](https://github.com/OSC/ondemand/pull/1495).
+  - Fix helper output for ood-portal-generator on Debian systems in [1484](https://github.com/OSC/ondemand/pull/1484).
+    
 
 ### Fixed
 
