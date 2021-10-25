@@ -19,7 +19,11 @@ module OodPortalGenerator
       @servername       = opts.fetch(:servername, nil)
       @proxy_server     = opts.fetch(:proxy_server, @servername)
       @port             = opts.fetch(:port, @ssl ? "443" : "80")
-      @logroot          = opts.fetch(:logroot, "logs")
+      if OodPortalGenerator.debian?
+        @logroot        = opts.fetch(:logroot, "/var/log/apache2")
+      else
+        @logroot        = opts.fetch(:logroot, "logs")
+      end
       access_log        = opts.fetch(:accesslog, nil)
       error_log         = opts.fetch(:errorlog, nil)
       @accesslog        = log_filename(access_log,"access")
