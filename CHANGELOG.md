@@ -7,12 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+
 ### Changed
 
 - Update hterm to 1.91 in  [#1426](https://github.com/OSC/ondemand/pull/1426).
 - Batch connect apps can now use a per cluster dataroot to support sites that have multiple storages
   in [#1409](https://github.com/OSC/ondemand/pull/1409).
 - The dashboard now uses strict same site cookies in [#1418](https://github.com/OSC/ondemand/pull/1418).
+- Build RPMs in CI/CD pipelines using -s flag to disable source download in [1471](https://github.com/OSC/ondemand/pull/1471).
 
 ### Added
 
@@ -21,6 +23,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - Min and maxes in [#1441](https://github.com/OSC/ondemand/pull/1441).
   - Other fields in [#1449](https://github.com/OSC/ondemand/pull/1449).
 - Test cases for example files for both ood_portal and nginx_stage in [832](https://github.com/OSC/ondemand/pull/832).
+- Debian packaging in [1466](https://github.com/OSC/ondemand/pull/1466). Additionally:
+  - Update ood-portal-generator to work better on Debian/Ubuntu in [1481](https://github.com/OSC/ondemand/pull/1481).
+  - Use correct path for service.d unit overrides in [1480](https://github.com/OSC/ondemand/pull/1480).
+  - Make ood-portal-generator handle profile files like nginx_stage in [1495](https://github.com/OSC/ondemand/pull/1495).
+  - Fix helper output for ood-portal-generator on Debian systems in [1484](https://github.com/OSC/ondemand/pull/1484).
+    
 
 ### Fixed
 
