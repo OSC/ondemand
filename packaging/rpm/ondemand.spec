@@ -210,6 +210,12 @@ EOF
 }
 EOF
 
+%__mkdir_p %{buildroot}%{_tmpfilesdir}
+%__cat >> %{buildroot}%{_tmpfilesdir}/ondemand-nginx.conf <<EOF
+d %{_rundir}/ondemand-nginx 0755 root root -   -
+Z %{_rundir}/ondemand-nginx -    -    -    -   -
+EOF
+
 %__mkdir_p %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d
 %__cat >> %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood.conf << EOF
 [Service]
@@ -357,6 +363,7 @@ fi
 %ghost %{apache_confd}/ood-portal.conf
 %config(noreplace) %{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood.conf
 %config(noreplace,missingok) %{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood-portal.conf
+%{_tmpfilesdir}/ondemand-nginx.conf
 
 %files -n %{gems_name}
 %{gem_home}/*
