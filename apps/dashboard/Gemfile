@@ -62,8 +62,8 @@ gem 'turbolinks', '~> 5.2.0'
 
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'
-gem 'ood_appkit', '~> 1.1',  git: 'https://github.com/osc/ood_appkit.git', branch: 'rails-6'
-gem 'ood_core'
+gem 'ood_appkit', '~> 2.0.2'
+gem 'ood_core', '~> 0.11'
 gem 'pbs', '~> 2.2.1'
 
 # gems to include in ondemand-gems repo for status apps to use
