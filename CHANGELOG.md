@@ -6,6 +6,27 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Fix helper output for ood-portal-generator on Debian systems (#1484)\
+Make ood-portal-generator handle profile files like nginx_stage (#1495)\
+update main gemfile (#1476)\
+Allow bc_account field to customize widget type (#1482)\
+Update ood-portal-generator to work better on Debian/Ubuntu (#1481)\
+Use correct path for service.d unit overrides. (#1480)\
+Catching missing select options in app yaml. (#1455)\
+Merge pull request #1466 from OSC/feature/deb-sync-master\
+sync feature/deb-packaging with master (#1466)\
+Build RPMs in CI/CD pipelines using -s flag to disable source download (#1471)\
+Init k8s (#1465)\
+debian install more files (#1410)\
+Debian files (#1397)\
+Deb build deps (#1373)\
+Update deb packaging (#1344)\
+initial build:ubuntu task (#1231)\
+Disable shallow clone depth for Gitlab pipelines (#1464)\
+correctly write dev's ood_portal.yml (#1462)\
+rescue in getfacl permissions and enable the sharing in the dev container (#1461)\
+update dependencies (#1460)\
+Update Changelog (#1459)
 
 ### Changed
 
