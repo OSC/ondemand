@@ -11,10 +11,17 @@ require {
   type vmblock_t;
   type ssh_exec_t;
   type ssh_home_t;
+  type sshd_key_t;
+  type ssh_keysign_exec_t;
   type net_conf_t;
   type krb5_conf_t;
   type sssd_var_run_t;
+  type admin_home_t;
+  type usr_t;
+  type initrc_var_run_t;
   class dbus send_msg;
+  class passwd rootok;
+  class passwd passwd;
 }
 
 # Define custom types
@@ -139,19 +146,21 @@ optional_policy(`
 
 ## <desc>
 ## <p>
-## Allow OnDemand to use Shell app
+## Allow OnDemand to use SSH
 ## </p>
 ## </desc>
-gen_tunable(ondemand_use_shell_app, true)
+gen_tunable(ondemand_use_ssh, true)
 
-tunable_policy(`ondemand_use_shell_app',`
+tunable_policy(`ondemand_use_ssh',`
   allow ood_pun_t ptmx_t:chr_file { ioctl open read write };
-  can_exec(ood_pun_t, ssh_exec_t)
+  ssh_exec(ood_pun_t)
+  can_exec(ood_pun_t, ssh_keysign_exec_t)
   corenet_tcp_connect_ssh_port(ood_pun_t)
+  allow ood_pun_t sshd_key_t:file read_file_perms;
   allow ood_pun_t self:key { read view write };
 ')
 
-tunable_policy(`ondemand_use_shell_app && ondemand_manage_user_home_dir',`
+tunable_policy(`ondemand_use_ssh && ondemand_manage_user_home_dir',`
   manage_dirs_pattern(ood_pun_t, ssh_home_t, ssh_home_t)
   manage_files_pattern(ood_pun_t, ssh_home_t, ssh_home_t)
 ')
@@ -201,6 +210,44 @@ tunable_policy(`ondemand_use_slurm',`
   corenet_tcp_connect_generic_port(ood_pun_t)
   # Access munge socket
   allow ood_pun_t var_run_t:sock_file { getattr write };
+  # SLURM commands like squeue
+  allow ood_pun_t self:netlink_route_socket { create_netlink_socket_perms };
+')
+
+## <desc>
+## <p>
+## Allow OnDemand to use Kubernetes
+## </p>
+## </desc>
+gen_tunable(ondemand_use_kubernetes, false)
+
+tunable_policy(`ondemand_use_kubernetes',`
+  # Access /root/.kube
+  allow ood_pun_t admin_home_t:dir { add_name remove_name write };
+  allow ood_pun_t admin_home_t:file { getattr create open read rename setattr unlink write };
+  # Needed to execute sudo for kubectl
+  allow ood_pun_t self:capability { setuid setgid sys_resource audit_write };
+  allow ood_pun_t self:process { setrlimit setsched };
+  allow ood_pun_t self:key write;
+  allow ood_pun_t self:passwd { passwd rootok };
+  sudo_exec(ood_pun_t)
+  auth_exec_chkpwd(ood_pun_t)
+  auth_domtrans_chkpwd(ood_pun_t)
+  auth_tunable_read_shadow(ood_pun_t)
+  auth_rw_lastlog(ood_pun_t)
+  auth_rw_faillog(ood_pun_t)
+  systemd_write_inherited_logind_sessions_pipes(ood_pun_t)
+  systemd_dbus_chat_logind(ood_pun_t)
+  allow ood_pun_t initrc_var_run_t:file { lock open read };
+  # Needed to execute kubectl via sudo
+  allow ood_pun_t self:netlink_route_socket { create_netlink_socket_perms };
+  logging_send_audit_msgs(ood_pun_t)
+  # Execute kubectl
+  corenet_tcp_connect_generic_port(ood_pun_t)
+  # Needed to submit pods
+  allow ood_pun_t node_t:udp_socket node_bind;
+  corenet_tcp_connect_generic_port(ood_pun_t)
+  corenet_udp_bind_generic_port(ood_pun_t)
 ')
 
 ## <desc>
@@ -241,6 +288,8 @@ exec_files_pattern(ood_pun_t, bin_t, bin_t)
 exec_files_pattern(ood_pun_t, shell_exec_t, shell_exec_t)
 # Allow PUN to execute rsync
 exec_files_pattern(ood_pun_t, rsync_exec_t, rsync_exec_t)
+# Allow PUN to execute usr_t (like /opt)
+exec_files_pattern(ood_pun_t, usr_t, usr_t)
 
 # Allow PUN to connect to Apache
 corenet_tcp_connect_http_port(ood_pun_t)
