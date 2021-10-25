@@ -421,16 +421,14 @@ module NginxStage
       self.template_root         = "#{root}/templates"
 
       if debian?
-        self.proxy_user       = 'www-data'
-        self.nginx_bin        = '/opt/ood/nginx/bin/nginx'
-        self.mime_types_path  = '/opt/ood/nginx/conf/mime.types'
+        self.proxy_user = 'www-data'
       else
-        self.proxy_user       = 'apache'
-        self.nginx_bin        = '/opt/ood/ondemand/root/usr/sbin/nginx'
-        self.mime_types_path  = '/opt/ood/ondemand/root/etc/nginx/mime.types'
+        self.proxy_user = 'apache'
       end
 
+      self.nginx_bin        = '/opt/ood/ondemand/root/usr/sbin/nginx'
       self.nginx_signals    = %i(stop quit reopen reload)
+      self.mime_types_path  = '/opt/ood/ondemand/root/etc/nginx/mime.types'
 
       self.passenger_root = '/opt/ood/ondemand/root/usr/share/ruby/vendor_ruby/phusion_passenger/locations.ini'
 
