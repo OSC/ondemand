@@ -6,16 +6,12 @@ require 'erb'
 namespace :install do
   include BuildUtils
 
-  def nginx_root
-    "#{INSTALL_ROOT}/nginx".tap { |d| sh "mkdir -p #{d}" }
-  end
-
   def nginx_conf
-    "#{nginx_root}/conf".tap { |d| sh "mkdir -p #{d}" }
+    "#{INSTALL_ROOT}/ondemand/root/etc/nginx".tap { |d| sh "mkdir -p #{d}" }
   end
 
-  def nginx_bin_dir
-    "#{nginx_root}/bin".tap { |d| sh "mkdir -p #{d}" }
+  def nginx_sbin_dir
+    "#{INSTALL_ROOT}/ondemand/root/usr/sbin".tap { |d| sh "mkdir -p #{d}" }
   end
 
   def passenger_root
@@ -45,8 +41,8 @@ namespace :install do
 
   task nginx: [:install_root] do
     tar_file = "#{vendor_src_dir}/#{nginx_tar}"
-    sh "#{tar} -xzf #{tar_file} -C #{nginx_bin_dir}"
-    sh "install -m 755 #{nginx_bin_dir}/nginx-#{nginx_version} #{nginx_bin_dir}/nginx"
+    sh "#{tar} -xzf #{tar_file} -C #{vendor_src_dir}"
+    sh "install -m 755 #{vendor_src_dir}/nginx-#{nginx_version} #{nginx_sbin_dir}/nginx"
     sh "install -m 644 #{task_file('mime.types')} #{nginx_conf}/mime.types"
   end
 
@@ -60,7 +56,7 @@ namespace :install do
 
     # mv probably not right here. install? didn't work at first
     sh "mv #{vendor_build_dir}/passenger/passenger_native_support.so #{DESTDIR}/#{lib_dir}"
-    sh "mv #{vendor_build_dir}/passenger #{INSTALL_ROOT}"
+    sh "mv #{vendor_build_dir}/passenger #{INSTALL_ROOT}/passenger"
     sh "#{tar} -xzf #{vendor_src_dir}/#{passenger_agent_tar} -C #{passenger_lib_dir}"
 
     File.open("#{passenger_ini_dir}/locations.ini", 'w') do |f|
