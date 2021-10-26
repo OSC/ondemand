@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
 # You must remove unused comment lines for the released package.
 export DH_VERBOSE         = 1
+export NCPUS              = 4
 export DESTDIR            = $(CURDIR)/debian/ondemand
 export GEM_HOME           = $(CURDIR)/gems
 export GEM_PATH           = $(GEM_HOME):$(shell printenv GEM_PATH)
@@ -17,8 +18,8 @@ override_dh_auto_configure:
 
 override_dh_auto_build:
 	env
-	bundle install
-	rake --trace build
+	bundle install --without test
+	rake --trace -mj$(NCPUS) build
 	rake --trace build:nginx
 	rake --trace build:passenger
 
@@ -58,6 +59,6 @@ override_dh_auto_install:
 	install -D -m 644 lib/tasks/files/systemd.ood.conf.debian $(APACHE_SYSTEMD_DIR)/ood.conf
 	install -D -m 644 lib/tasks/files/systemd.ood-portal.conf.debian $(APACHE_SYSTEMD_DIR)/ood-portal.conf
 	install -D -m 644 lib/tasks/files/ondemand-nginx-tmpfiles.debian $(DESTDIR)/usr/lib/tmpfiles.d/ondemand-nginx.conf
-	install -D -m 644 packaging/logo.png $(APACHE_DIR)/public/logo.png
-	install -D -m 644 packaging/favicon.ico $(APACHE_DIR)/public/favicon.ico
+	install -D -m 644 packaging/rpm/logo.png $(APACHE_DIR)/public/logo.png
+	install -D -m 644 packaging/rpm/favicon.ico $(APACHE_DIR)/public/favicon.ico
 

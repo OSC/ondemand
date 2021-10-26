@@ -36,6 +36,7 @@ namespace :package do
 
   # TODO: refactor these 2 tar tasks. Debian and RHEL expect slightly different names and
   # what's worse is the whole v prefixing mess
+  desc 'Build deb tar'
   task :debian_tar, [:output_dir] do |task, args|
     dir = "#{args[:output_dir] || 'packaging'}".tap { |p| sh "mkdir -p #{p}" }
     tar_file = "#{dir}/#{ood_package_tar}"
@@ -44,8 +45,9 @@ namespace :package do
     sh "git ls-files | #{tar} -c --transform 's,^,#{versioned_ood_package}/,' -T - | gzip > #{tar_file}"
   end
 
-  task :deb, [:platoform, :version] do |task, args|
-    Rake::Task['build:debuild'].invoke('ubuntu', args[:version] || '20.04')
+  desc 'Build deb package'
+  task :deb, [:platform, :version] do |task, args|
+    Rake::Task['build:debuild'].invoke(args[:platform] || 'ubuntu', args[:version] || '20.04')
   end
 
   task :version do
