@@ -36,9 +36,9 @@ jobs:
           commit-message: update changelog
           committer: OSC ROBOT <osc.robot@gmail.com>
           author: osc-bot <osc.robot@gmail.com>
-          branch: osc-bot/changelog-update
           delete-branch: true
           title: 'Update Changelog'
+          push-to-fork: osc-bot/ondemand
           body: |
             Changelog updates from the last 7 days
 
