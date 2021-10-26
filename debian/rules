@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
 # You must remove unused comment lines for the released package.
 export DH_VERBOSE         = 1
+export NCPUS              = 4
 export DESTDIR            = $(CURDIR)/debian/ondemand
 export GEM_HOME           = $(CURDIR)/gems
 export GEM_PATH           = $(GEM_HOME):$(shell printenv GEM_PATH)
@@ -17,8 +18,8 @@ override_dh_auto_configure:
 
 override_dh_auto_build:
 	env
-	bundle install
-	rake --trace build
+	bundle install --without test
+	rake --trace -mj$(NCPUS) build
 	rake --trace build:nginx
 	rake --trace build:passenger
 
