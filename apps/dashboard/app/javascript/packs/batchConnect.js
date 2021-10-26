@@ -331,11 +331,11 @@ function toggleMinMax(event, changeId, otherId) {
     val: changeElement.val()
   };
 
-  [ 'min', 'max' ].forEach((dim) => {
+  [ 'max', 'min' ].forEach((dim) => {
     if(mm && mm[dim] !== undefined) {
       changeElement.attr(dim, mm[dim]);
 
-      let val = clamp(prev[val], prev[dim], mm[dim])
+      let val = clamp(prev['val'], prev[dim], mm[dim], dim)
       if (val !== undefined) {
         changeElement.attr('value', val);
         changeElement.val(val);
@@ -344,8 +344,13 @@ function toggleMinMax(event, changeId, otherId) {
   });
 }
 
-function clamp(previous, previousBoundary, currentBoundary){
-  if(previous === previousBoundary) {
+function clamp(previous, previousBoundary, currentBoundary, comparator){
+  const pb = parseInt(previousBoundary) || undefined;
+  const p  = parseInt(previous) || undefined;
+
+  if(comparator == 'min' && p <= pb) {
+    return currentBoundary;
+  } else if(comparator == 'max' && p >= pb) {
     return currentBoundary;
   } else {
     return undefined;
