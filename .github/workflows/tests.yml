@@ -96,13 +96,13 @@ jobs:
           bundler-cache: true
 
       - name: Build RPM package
-        if: ${{ matrix.dist =~ ^el }}
+        if: "startsWith(matrix.dist, 'el')"
         run: bundle exec rake package:rpm[${{ matrix.dist }},'-v -s']
         env:
           VERSION: "${{ matrix.version }}.0"
 
       - name: Build Deb package
-        if: ${{ matrix.dist =~ ^ubuntu }}
+        if: "startsWith(matrix.dist, 'ubuntu')"
         run: |
           platform=$(echo ${{ matrix.dist }} | cut -d'-' -f1)
           version=$(echo ${{ matrix.dist }} | cut -d'-' -f2)
