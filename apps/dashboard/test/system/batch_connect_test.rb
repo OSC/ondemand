@@ -191,4 +191,27 @@ class BatchConnectTest < ApplicationSystemTestCase
     select('4.0.nightly', from: bc_ele_id('python_version'))
     assert_equal 'python4nightly', find_value('hidden_change_thing', visible: false)
   end
+
+
+  test 'sessions respond to cache file' do
+    Dir.mktmpdir('bc_cache_test') do |tmpdir|
+      OodAppkit.stubs(:dataroot).returns(Pathname.new(tmpdir.to_s))
+
+      # puts "cache root is #{BatchConnect::Session.cache_root}"
+
+      visit new_batch_connect_session_context_url('sys/bc_jupyter')
+      assert_equal 'owens', find_value('cluster')
+      assert_equal 'any', find_value('node_type')
+      assert_equal '2.7', find_value('python_version')
+
+      cache_json = File.new("#{BatchConnect::Session.cache_root}/sys_bc_jupyter.json", 'w+')
+      cache_json.write({ cluster: 'oakley', node_type: 'gpu', python_version: '3.2' }.to_json)
+      cache_json.close
+
+      visit new_batch_connect_session_context_url('sys/bc_jupyter')
+      assert_equal 'oakley', find_value('cluster')
+      assert_equal 'gpu', find_value('node_type')
+      assert_equal '3.2', find_value('python_version')
+    end
+  end
 end
