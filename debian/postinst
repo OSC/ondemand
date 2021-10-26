@@ -1,7 +1,7 @@
 #!/bin/bash
 
 mkdir -p /var/lib/ondemand-nginx
-mkdir -p /var/lob/ondemand-nginx
+mkdir -p /var/log/ondemand-nginx
 mkdir -p /var/tmp/ondemand-nginx
 mkdir -p /var/run/ondemand-nginx
 
