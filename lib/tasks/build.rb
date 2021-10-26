@@ -27,8 +27,8 @@ namespace :build do
 
     work_dir = "/build/#{versioned_ood_package}"
 
-    # FIXME - --userns is a podman flag
-    base_args = ["--rm", "--user", "1000:1000", "--userns", "keep-id"]
+    base_args = ["--rm", "--user", "1000:1000"]
+    base_args.concat container_userns_flag
     base_args.concat ["-v", "#{dir}:/build", "-w", "#{work_dir}"]
     base_args.concat ["-e", "DEBUILD_DPKG_BUILDPACKAGE_OPTS='-us -uc -I -i'"]
     base_args.concat ["-e", "HOME=/home/deb", "-e", "USER=deb"]

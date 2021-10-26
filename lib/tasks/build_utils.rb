@@ -213,4 +213,9 @@ module BuildUtils
       []
     end
   end
+
+  def container_userns_flag
+    return ["--userns", "keep-id"] if container_runtime == "podman"
+    []
+  end
 end
