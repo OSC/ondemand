@@ -107,6 +107,12 @@ module BatchConnect
         dataroot.join("db").tap { |p| p.mkpath unless p.exist? }
       end
 
+      # Root directory for file system database
+      # @return [Pathname] the cache directory
+      def cache_root
+        dataroot.join('cache').tap { |p| p.mkpath unless p.exist? }
+      end
+
       # Find all active session jobs
       # @return [Array<Session>] list of sessions
       def all

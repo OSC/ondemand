@@ -4,7 +4,7 @@ Style/MultilineBlockChain:
 Style/HashSyntax:
   EnforcedStyle: 'no_mixed_keys'
 Style/ClassAndModuleChildren:
-  EnforcedStyle: 'compact'
+  EnforcedStyle: 'nested'
 Style/WordArray:
   EnforcedStyle: 'brackets'
 Style/SymbolArray:

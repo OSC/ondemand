@@ -1,55 +1,61 @@
-class BatchConnect::SessionContextsController < ApplicationController
-  include BatchConnectConcern
+# frozen_string_literal: true
 
-  # GET /batch_connect/<app_token>/session_contexts/new
-  def new
-    set_app
-    set_render_format
-    set_session_context
+module BatchConnect
+  class SessionContextsController < ApplicationController
+    include BatchConnectConcern
 
-    if @app.valid?
-      begin
-        @app.update_session_with_cache(@session_context, cache_file)
-      rescue => e
-        flash.now[:alert] = t('dashboard.batch_connect_form_attr_cache_error',error_message: e.message)
-      end
-    else
-      @session_context = nil  # do not display session context form
-      flash.now[:alert] = @app.validation_reason
-    end
+    # GET /batch_connect/<app_token>/session_contexts/new
+    def new
+      set_app
+      set_render_format
+      set_session_context
 
-    set_app_groups
-    set_my_quotas
-  end
-
-  # POST /batch_connect/<app_token>/session_contexts
-  # POST /batch_connect/<app_token>/session_contexts.json
-  def create
-    set_app
-    set_render_format
-    set_session_context
-
-    # Read in context from form parameters
-    @session_context.attributes = session_contexts_param
-
-    @session = BatchConnect::Session.new
-    respond_to do |format|
-      if @session.save(app: @app, context: @session_context, format: @render_format)
-        cache_file.write(@session_context.to_json)  # save context to cache file
-    
-        format.html { redirect_to batch_connect_sessions_url, notice: t('dashboard.batch_connect_sessions_status_blurb_create_success') }
-        format.json { head :no_content }
-      else
-        format.html do
-          set_app_groups
-          render :new
+      if @app.valid?
+        begin
+          @app.update_session_with_cache(@session_context, cache_file)
+        rescue StandardError => e
+          flash.now[:alert] = t('dashboard.batch_connect_form_attr_cache_error', error_message: e.message)
         end
-        format.json { render json: @session_context.errors, status: :unprocessable_entity }
+      else
+        @session_context = nil # do not display session context form
+        flash.now[:alert] = @app.validation_reason
+      end
+
+      set_app_groups
+      set_my_quotas
+    end
+
+    # POST /batch_connect/<app_token>/session_contexts
+    # POST /batch_connect/<app_token>/session_contexts.json
+    def create
+      set_app
+      set_render_format
+      set_session_context
+
+      # Read in context from form parameters
+      @session_context.attributes = session_contexts_param
+
+      @session = BatchConnect::Session.new
+      respond_to do |format|
+        if @session.save(app: @app, context: @session_context, format: @render_format)
+          cache_file.write(@session_context.to_json) # save context to cache file
+
+          format.html do
+            redirect_to batch_connect_sessions_url, notice: t('dashboard.batch_connect_sessions_status_blurb_create_success')
+          end
+          format.json { head :no_content }
+        else
+          format.html do
+            set_app_groups
+            render :new
+          end
+          format.json { render json: @session_context.errors, status: :unprocessable_entity }
+        end
       end
     end
-  end
 
-  private
+    private
+
     # Set the app from the token
     def set_app
       @app = BatchConnect::App.from_token params[:token]
@@ -79,6 +85,12 @@ class BatchConnect::SessionContextsController < ApplicationController
 
     # Store session context into a cache file
     def cache_file
-      BatchConnect::Session.dataroot(@app.token).tap { |p| p.mkpath unless p.exist? }.join("context.json")
+      token = normalize_app_token(@app.token)
+      BatchConnect::Session.cache_root.join("#{token}.json")
     end
+
+    def normalize_app_token(token)
+      token.gsub('/', '_')
+    end
+  end
 end
