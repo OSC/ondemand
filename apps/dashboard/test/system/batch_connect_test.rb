@@ -15,13 +15,13 @@ class BatchConnectTest < ApplicationSystemTestCase
     select('oakley', from: bc_ele_id('cluster'))
 
     # FIXME: no idea why .visible? doesn't work here. Selenium/chrome native still shows element as visible?
-    assert_equal 'display: none;', find_option_style('node_type', 'advanced')
-    assert_equal 'display: none;', find_option_style('node_type', 'hugemem')
+    assert_equal('display: none;', find_option_style('node_type', 'advanced'))
+    assert_equal('display: none;', find_option_style('node_type', 'hugemem'))
 
     # select owens and now they're available
     select('owens', from: bc_ele_id('cluster'))
-    assert_equal '', find_option_style('node_type', 'advanced')
-    assert_equal '', find_option_style('node_type', 'hugemem')
+    assert_equal('', find_option_style('node_type', 'advanced'))
+    assert_equal('', find_option_style('node_type', 'hugemem'))
   end
 
   test 'node type choice changes python versions' do
@@ -240,7 +240,6 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 'python4nightly', find_value('hidden_change_thing', visible: false)
   end
 
-
   test 'sessions respond to cache file' do
     Dir.mktmpdir('bc_cache_test') do |tmpdir|
       OodAppkit.stubs(:dataroot).returns(Pathname.new(tmpdir.to_s))
@@ -261,5 +260,21 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'gpu', find_value('node_type')
       assert_equal '3.2', find_value('python_version')
     end
+  end
+
+  test 'hiding cuda version' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    # default is any, so we can't see cuda_version
+    assert_equal 'any', find_value('node_type')
+    assert !find("##{bc_ele_id('cuda_version')}", visible: false).visible?
+
+    # select gpu and you can
+    select('gpu', from: bc_ele_id('node_type'))
+    assert find("##{bc_ele_id('cuda_version')}").visible?
+
+    # toggle back to 'same' and it's gone
+    select('same', from: bc_ele_id('node_type'))
+    assert !find("##{bc_ele_id('cuda_version')}", visible: false).visible?
   end
 end
