@@ -13,12 +13,14 @@ Rails.application.configure do
   config.consider_all_requests_local = true
 
   # Enable/disable caching. By default caching is disabled.
-  if Rails.root.join('tmp/caching-dev.txt').exist?
+  # Run rails dev:cache to toggle caching.
+  if Rails.root.join('tmp', 'caching-dev.txt').exist?
     config.action_controller.perform_caching = true
+    config.action_controller.enable_fragment_cache_logging = true
 
     config.cache_store = :memory_store
     config.public_file_server.headers = {
-      'Cache-Control' => 'public, max-age=172800'
+      'Cache-Control' => "public, max-age=#{2.days.to_i}"
     }
   else
     config.action_controller.perform_caching = false
@@ -34,26 +36,14 @@ Rails.application.configure do
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
-  # Raise an error on page load if there are pending migrations.
-  # config.active_record.migration_error = :page_load
-
-  # # Debug mode disables concatenation and preprocessing of assets.
-  # # This option may cause significant delays in view rendering with a large
-  # # number of complex assets.
+  # Debug mode disables concatenation and preprocessing of assets.
+  # This option may cause significant delays in view rendering with a large
+  # number of complex assets.
   # config.assets.debug = true
 
-  # # Asset digests allow you to set far-future HTTP expiration dates on all assets,
-  # # yet still be able to expire them through the digest params.
-  # config.assets.digest = true
-
-  # # Adds additional error checking when serving assets at runtime.
-  # # Checks for improperly declared sprockets dependencies.
-  # # Raises helpful error messages.
-  # config.assets.raise_runtime_errors = true
-  
   # Suppress logger output for asset requests.
   config.assets.quiet = true
- 
+
   # Raises error for missing translations
   config.action_view.raise_on_missing_translations = true
 
