@@ -6,6 +6,7 @@ on:
     branches:
       - master
       - 'feature/**'
+      - 'release/**'
     types: [closed]
 
 jobs:
@@ -26,7 +27,7 @@ jobs:
 
           curl --silent --output /dev/null --request POST \
           --url https://api.github.com/repos/OSC/ood-documentation/issues \
-          --header 'Authorization: token ${{ secrets.OSCWIAG_ISSUE_TOKEN }}' \
+          --header 'Authorization: token ${{ secrets.OSC_ROBOT_GH_PUB_REPO_TOKEN }}' \
           --header 'content-type: application/json' \
           --data "$BODY"
 
@@ -42,7 +43,7 @@ jobs:
 
           curl --silent --output /dev/null --request POST \
           --url https://api.github.com/repos/OSC/puppet-module-openondemand/issues \
-          --header 'Authorization: token ${{ secrets.OSCWIAG_ISSUE_TOKEN }}' \
+          --header 'Authorization: token ${{ secrets.OSC_ROBOT_GH_PUB_REPO_TOKEN }}' \
           --header 'content-type: application/json' \
           --data "$BODY"
 
@@ -58,6 +59,6 @@ jobs:
 
           curl --silent --output /dev/null --request POST \
           --url https://api.github.com/repos/OSC/ood-ansible/issues \
-          --header 'Authorization: token ${{ secrets.OSCWIAG_ISSUE_TOKEN }}' \
+          --header 'Authorization: token ${{ secrets.OSC_ROBOT_GH_PUB_REPO_TOKEN }}' \
           --header 'content-type: application/json' \
           --data "$BODY"
