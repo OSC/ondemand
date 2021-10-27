@@ -103,7 +103,7 @@ jobs:
 
       - name: Build Deb package
         if: "startsWith(matrix.dist, 'ubuntu')"
-        run: bundle exec rake package:deb[${{ matrix.dist }}, '-v -s']
+        run: bundle exec rake package:deb[${{ matrix.dist }},'-v -s']
         env:
           VERSION: "${{ matrix.version }}.0"
 
