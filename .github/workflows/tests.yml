@@ -76,6 +76,7 @@ jobs:
 
   e2e-tests:
     strategy:
+      fail-fast: false
       matrix:
         dist: ["el7", "el8", "ubuntu-20.04"]
         version: ["2.0"]
