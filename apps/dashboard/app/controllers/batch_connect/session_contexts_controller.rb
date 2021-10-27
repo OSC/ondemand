@@ -79,6 +79,8 @@ class BatchConnect::SessionContextsController < ApplicationController
 
     # Store session context into a cache file
     def cache_file
-      BatchConnect::Session.dataroot(@app.token).tap { |p| p.mkpath unless p.exist? }.join("context.json")
+      BatchConnect::Session.cache_root.tap do |p|
+        p.mkpath unless p.exist?
+      end.join("#{@app.token.gsub('/', '_')}.json")
     end
 end
