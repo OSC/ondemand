@@ -4,14 +4,6 @@ namespace :package do
   require_relative 'build_utils'
   include BuildUtils
 
-  def git_clone_packaging(branch, dir)
-    args = ["clone", "--single-branch"]
-    args.concat ["--branch", branch]
-    args.concat ["https://github.com/OSC/ondemand-packaging.git", dir]
-
-    "git #{args.join(' ')}"
-  end
-
   def rpm_build_cmd(packaging_dir, work_dir, output_dir, dist, version, extra_args)
     args = ["-w", work_dir, "-o", output_dir]
     args.concat ["-d", dist, "-V", "v#{version}", "-C"]
@@ -19,35 +11,44 @@ namespace :package do
     "#{File.join(packaging_dir, 'build.sh')} #{args.join(' ')} #{extra_args} #{File.join(Dir.pwd, 'packaging', 'rpm')}"
   end
 
-  desc "Tar and zip OnDemand into packaging dir with version name v#<version>"
-  task :tar do
-    version = ENV['VERSION'] || ENV['CI_COMMIT_TAG']
-    version = version.gsub(/^v/, '') unless version.nil?
+  def deb_build_cmd(packaging_dir, work_dir, output_dir, dist, version, extra_args)
+    args = ["-w", work_dir, "-o", output_dir]
+    args.concat ["-D", dist, "-V", version, "-C"]
 
-    if ! version
-      latest_commit = `git rev-list --tags --max-count=1`.strip[0..6]
-      latest_tag = `git describe --tags #{latest_commit}`.strip[1..-1]
-      datetime = Time.now.strftime("%Y%m%d-%H%M")
-      version = "#{latest_tag}-#{datetime}-#{latest_commit}"
+    "#{File.join(packaging_dir, 'build.sh')} #{args.join(' ')} #{extra_args} #{Dir.pwd}"
+  end
+
+  desc 'Git clone packaging repo'
+  task :packaging_repo, [:branch, :dir] do |t, args|
+    branch = ENV['PACKAGING_REPO_BRANCH'] || args[:branch] || 'master'
+    if args[:dir]
+      dir = args[:dir]
+    else
+      tmp_dir = File.join(Dir.pwd, 'tmp').tap { |d| "mkdir -p #{d}" }
+      dir = File.join(tmp_dir, 'ondemand-packaging')
+    end
+    cmd = ['git', 'clone', '--single-branch']
+    cmd.concat ["--branch", branch]
+    cmd.concat ["https://github.com/OSC/ondemand-packaging.git", dir]
+
+    sh "rm -rf #{dir}" if Dir.exist?(dir)
+    sh cmd.join(' ')
+  end
+
+  desc "Tar and zip OnDemand into packaging dir"
+  task :tar, [:dist] do |task, args|
+    dist = args[:dist] || 'el8'
+    if dist =~ /^el/
+      version = ood_package_version
+      tar_file = "packaging/rpm/v#{version}.tar.gz"
+    else
+      dir = File.join(Dir.pwd, 'build').tap { |p| sh "mkdir -p #{p}" }
+      version = ood_package_version.gsub('-', '.')
+      tar_file = "#{dir}/#{ood_package_name}-#{version}.tar.gz"
     end
 
-    sh "git ls-files | #{tar} -c --transform 's,^,ondemand-#{version}/,' -T - | gzip > packaging/rpm/v#{version}.tar.gz"
-  end
-
-  # TODO: refactor these 2 tar tasks. Debian and RHEL expect slightly different names and
-  # what's worse is the whole v prefixing mess
-  desc 'Build deb tar'
-  task :debian_tar, [:output_dir] do |task, args|
-    dir = "#{args[:output_dir] || 'packaging'}".tap { |p| sh "mkdir -p #{p}" }
-    tar_file = "#{dir}/#{ood_package_tar}"
-
     sh "rm #{tar_file}" if File.exist?(tar_file)
-    sh "git ls-files | #{tar} -c --transform 's,^,#{versioned_ood_package}/,' -T - | gzip > #{tar_file}"
-  end
-
-  desc 'Build deb package'
-  task :deb, [:platform, :version] do |task, args|
-    Rake::Task['build:debuild'].invoke(args[:platform] || 'ubuntu', args[:version] || '20.04')
+    sh "git ls-files | #{tar} -c --transform 's,^,#{ood_package_name}-#{version}/,' -T - | gzip > #{tar_file}"
   end
 
   task :version do
@@ -80,9 +81,8 @@ namespace :package do
   end
 
   desc "Build RPM"
-  task :rpm, [:dist, :extra_args] => :tar do |t, args|
-    version = ENV['VERSION'] || ENV['CI_COMMIT_TAG']
-    version = version.gsub(/^v/, '') unless version.nil?
+  task :rpm, [:dist, :extra_args] => [:tar] do |t, args|
+    version = ood_package_version
     version_major, version_minor, version_patch = version.split('.', 3)
     dist = args[:dist]
     extra_args = args[:extra_args].nil? ? '' : args[:extra_args]
@@ -92,7 +92,7 @@ namespace :package do
 
     Dir.mkdir(tmp_dir) unless Dir.exist?(tmp_dir)
     Dir.mkdir(dist_dir) unless Dir.exist?(dist_dir)
-    sh git_clone_packaging("#{version_major}.#{version_minor}", packaging_dir) unless Dir.exist?(packaging_dir)
+    Rake::Task['package:packaging_repo'].invoke("#{version_major}.#{version_minor}", packaging_dir)
     sh rpm_build_cmd(packaging_dir, File.join(tmp_dir, "work"), dist_dir, dist, version, extra_args)
   end
 
@@ -105,5 +105,21 @@ namespace :package do
       ENV['VERSION'] = "#{version_major}.#{version_minor}.#{date}-#{id}.#{git_hash}.nightly"
       Rake::Task['package:rpm'].invoke(args[:dist], args[:extra_args])
     end
+  end
+
+  desc "Build deb package"
+  task :deb, [:dist, :extra_args] => [:tar] do |t, args|
+    version = ood_package_version.gsub('-', '.')
+    version_major, version_minor, version_patch = version.split('.', 3)
+    dist = args[:dist]
+    extra_args = args[:extra_args].nil? ? '' : args[:extra_args]
+    tmp_dir = File.join(Dir.pwd, 'tmp')
+    dist_dir = File.join(Dir.pwd, "dist")
+    packaging_dir = File.join(tmp_dir, "ondemand-packaging")
+
+    Dir.mkdir(tmp_dir) unless Dir.exist?(tmp_dir)
+    Dir.mkdir(dist_dir) unless Dir.exist?(dist_dir)
+    Rake::Task['package:packaging_repo'].invoke("#{version_major}.#{version_minor}", packaging_dir)
+    sh deb_build_cmd(packaging_dir, File.join(tmp_dir, "work"), dist_dir, dist, version, extra_args)
   end
 end

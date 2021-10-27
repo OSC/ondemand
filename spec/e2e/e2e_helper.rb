@@ -130,7 +130,7 @@ def ondemand_repo
     on hosts, 'createrepo /repo'
   elsif host_inventory['platform'] == 'ubuntu'
     install_packages(['dpkg-dev'])
-    copy_files_to_dir(File.join(proj_root, "build/#{dist}*/*.deb"), '/repo')
+    copy_files_to_dir(File.join(proj_root, "dist/#{dist}*/*.deb"), '/repo')
     on hosts, 'cd /repo ; dpkg-scanpackages .  | gzip -9c > Packages.gz'
     repo_file = <<~EOS
       deb [trusted=yes] file:///repo ./

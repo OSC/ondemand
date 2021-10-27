@@ -108,7 +108,7 @@ jobs:
           version=$(echo ${{ matrix.dist }} | cut -d'-' -f2)
           bundle exec rake package:deb[$platform,$version]
         env:
-          VERSION: "${{ matrix.version }}.10"
+          VERSION: "${{ matrix.version }}.0"
 
       - name: Run package tests
         run: bundle exec rake test:e2e

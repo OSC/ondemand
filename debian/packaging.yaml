@@ -1,0 +1,10 @@
+dependencies:
+  - ruby
+  - ruby-dev
+  - nodejs
+  - npm
+  - sqlite3
+  - libsqlite3-dev
+  - make
+  - g++
+  - gcc
