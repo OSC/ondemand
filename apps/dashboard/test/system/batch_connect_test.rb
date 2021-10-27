@@ -48,14 +48,16 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 1, find_min('bc_num_slots')
     select('owens', from: bc_ele_id('cluster'))
 
-    # change the node type and we should have some new max
+    # change the node type and we should have some new min/max & value
     select('gpu', from: bc_ele_id('node_type'))
     assert_equal 28, find_max('bc_num_slots')
     assert_equal 2, find_min('bc_num_slots')
+    assert_equal '2', find_value('bc_num_slots')
 
     select('hugemem', from: bc_ele_id('node_type'))
     assert_equal 42, find_max('bc_num_slots')
     assert_equal 42, find_min('bc_num_slots')
+    assert_equal '42', find_value('bc_num_slots')
   end
 
   test 'changing the cluster changes max' do
@@ -80,32 +82,38 @@ class BatchConnectTest < ApplicationSystemTestCase
     select('same', from: bc_ele_id('node_type'))
     assert_equal 100, find_min('bc_num_slots')
     assert_equal 200, find_max('bc_num_slots')
+    assert_equal '100', find_value('bc_num_slots')
 
     # toggle the cluster back and forth and it's still the same
     select('oakley', from: bc_ele_id('cluster'))
     select('owens', from: bc_ele_id('cluster'))
     assert_equal 100, find_min('bc_num_slots')
     assert_equal 200, find_max('bc_num_slots')
+    assert_equal '100', find_value('bc_num_slots')
 
     select('oakley', from: bc_ele_id('cluster'))
     assert_equal 100, find_min('bc_num_slots')
     assert_equal 200, find_max('bc_num_slots')
+    assert_equal '100', find_value('bc_num_slots')
   end
 
   test 'nothing applied to any node type' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     assert_equal 20, find_max('bc_num_slots')
     assert_equal 1, find_min('bc_num_slots')
+    assert_equal '1', find_value('bc_num_slots')
 
     # changing clusters does nothing.
     select('owens', from: bc_ele_id('cluster'))
     select('any', from: bc_ele_id('node_type'))
     assert_equal 20, find_max('bc_num_slots')
     assert_equal 1, find_min('bc_num_slots')
+    assert_equal '1', find_value('bc_num_slots')
 
     select('oakley', from: bc_ele_id('cluster'))
     assert_equal 20, find_max('bc_num_slots')
     assert_equal 1, find_min('bc_num_slots')
+    assert_equal '1', find_value('bc_num_slots')
 
     # choose same to get a min & max set. Change back to
     # any and we keep the same min & max from same.
@@ -113,9 +121,49 @@ class BatchConnectTest < ApplicationSystemTestCase
     select('same', from: bc_ele_id('node_type'))
     assert_equal 200, find_max('bc_num_slots')
     assert_equal 100, find_min('bc_num_slots')
+    assert_equal '100', find_value('bc_num_slots')
     select('any', from: bc_ele_id('node_type'))
     assert_equal 200, find_max('bc_num_slots')
     assert_equal 100, find_min('bc_num_slots')
+    assert_equal '100', find_value('bc_num_slots')
+  end
+
+  test 'clamp min values' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    assert_equal '1', find_value('bc_num_slots')
+
+    select('owens', from: bc_ele_id('cluster'))
+    select('gpu', from: bc_ele_id('node_type'))
+    # value gets set to the new min
+    assert_equal '2', find_value('bc_num_slots')
+
+    # change clusters and it bumps up again
+    select('oakley', from: bc_ele_id('cluster'))
+    assert_equal '3', find_value('bc_num_slots')
+
+    # edit the values, then change the cluster to ensure
+    # the change overwrites the edit
+    fill_in bc_ele_id('bc_num_slots'), with: 1
+    assert_equal '1', find_value('bc_num_slots')
+    select('owens', from: bc_ele_id('cluster'))
+    assert_equal '2', find_value('bc_num_slots')
+  end
+
+  test 'clamp max values' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    assert_equal '1', find_value('bc_num_slots')
+    # this tests filling values by design, bc we have to set a giant max right off the bat
+    fill_in bc_ele_id('bc_num_slots'), with: 1000
+    assert_equal '1000', find_value('bc_num_slots')
+
+    select('owens', from: bc_ele_id('cluster'))
+    select('gpu', from: bc_ele_id('node_type'))
+    # value gets set to the new max
+    assert_equal '28', find_value('bc_num_slots')
+
+    # change clusters and it bumps up again
+    select('oakley', from: bc_ele_id('cluster'))
+    assert_equal '40', find_value('bc_num_slots')
   end
 
   test 'python choice sets account' do

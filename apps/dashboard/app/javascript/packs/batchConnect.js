@@ -323,11 +323,38 @@ function toggleMinMax(event, changeId, otherId) {
     x = snakeCaseWords($(`#${otherId}`).val());
   }
 
-  const chageElement = $(`#${changeId}`);
+  const changeElement = $(`#${changeId}`);
   const mm = lookup[changeId].get(x, y);
+  const prev = {
+    min: changeElement.attr('min'),
+    max: changeElement.attr('max'),
+    val: changeElement.val()
+  };
 
-  if(mm && mm['max'] !== undefined) chageElement.attr('max', mm['max']);
-  if(mm && mm['min'] !== undefined) chageElement.attr('min', mm['min']);
+  [ 'max', 'min' ].forEach((dim) => {
+    if(mm && mm[dim] !== undefined) {
+      changeElement.attr(dim, mm[dim]);
+
+      let val = clamp(prev['val'], prev[dim], mm[dim], dim)
+      if (val !== undefined) {
+        changeElement.attr('value', val);
+        changeElement.val(val);
+      }
+    }
+  });
+}
+
+function clamp(previous, previousBoundary, currentBoundary, comparator){
+  const pb = parseInt(previousBoundary) || undefined;
+  const p  = parseInt(previous) || undefined;
+
+  if(comparator == 'min' && p <= pb) {
+    return currentBoundary;
+  } else if(comparator == 'max' && p >= pb) {
+    return currentBoundary;
+  } else {
+    return undefined;
+  }
 }
 
 function addOptionForHandler(causeId, targetId) {
