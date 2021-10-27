@@ -477,6 +477,10 @@ module BatchConnect
     def connect_file
       # flush nfs cache when checking for this file
       staged_root.join("connection.yml").tap { |f| Dir.open(f.dirname.to_s).close }
+
+    rescue StandardError => e
+      Rails.logger.error("can't read connection file because of error '#{e.message}'")
+      Pathname.new('/dev/null')
     end
 
     # Path to file that job pipes stdout/stderr to
