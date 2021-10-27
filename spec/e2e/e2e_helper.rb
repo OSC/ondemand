@@ -48,6 +48,17 @@ def dist
   if host_inventory['platform'] == 'redhat'
     major_version = host_inventory['platform_version'].split('.')[0]
     "el#{major_version}"
+  elsif host_inventory['platform'] == 'ubuntu'
+    "ubuntu-#{host_inventory['platform_version']}"
+  end
+end
+
+def codename
+  case "#{host_inventory['platform']}-#{host_inventory['platform_version']}"
+  when 'ubuntu-20.04'
+    'focal'
+  else
+    nil
   end
 end
 
@@ -58,14 +69,20 @@ def packager
     else
       'dnf'
     end
+  else
+    'apt'
   end
 end
 
 def apache_service
-  if host_inventory['platform_version'] =~ /^7/
-     'httpd24-httpd'
+  if host_inventory['platform'] == 'redhat'
+    if host_inventory['platform_version'] =~ /^7/
+       'httpd24-httpd'
+     else
+       'httpd'
+     end
    else
-     'httpd'
+     'apache2'
    end
 end
 
@@ -90,11 +107,14 @@ def bootstrap_repos
       on hosts, 'dnf -y module enable ruby:2.7'
       on hosts, 'dnf -y module enable nodejs:12'
     end
+  elsif host_inventory['platform'] == 'ubuntu'
+    on hosts, 'apt-get update'
   end
-  install_packages(repos)
+  install_packages(repos) unless repos.empty?
 end
 
 def ondemand_repo
+  on hosts, 'mkdir -p /repo'
   if host_inventory['platform'] == 'redhat'
     install_packages(['createrepo'])
     repo_file = <<~EOS
@@ -106,9 +126,23 @@ def ondemand_repo
       priority=1
     EOS
     create_remote_file(hosts, '/etc/yum.repos.d/ondemand.repo', repo_file)
-    on hosts, 'mkdir -p /repo'
     copy_files_to_dir(File.join(proj_root, "dist/#{dist}/*.rpm"), '/repo')
     on hosts, 'createrepo /repo'
+  elsif host_inventory['platform'] == 'ubuntu'
+    install_packages(['dpkg-dev'])
+    copy_files_to_dir(File.join(proj_root, "dist/#{dist}*/*.deb"), '/repo')
+    on hosts, 'cd /repo ; dpkg-scanpackages .  | gzip -9c > Packages.gz'
+    repo_file = <<~EOS
+      deb [trusted=yes] file:///repo ./
+    EOS
+    preference = <<~EOS
+      Package: *
+      Pin: origin ""
+      Pin-Priority: 1001
+    EOS
+    create_remote_file(hosts, '/etc/apt/sources.list.d/ondemand.list', repo_file)
+    create_remote_file(hosts, '/etc/apt/preferences.d/ondemand', preference)
+    on hosts, 'apt-get update'
   end
 end
 
@@ -123,10 +157,16 @@ def install_ondemand
                      end
     on hosts, "#{config_manager} --save --setopt ondemand-web.exclude='ondemand ondemand-gems* ondemand-selinux'"
     install_packages(['ondemand', 'ondemand-dex', 'ondemand-selinux'])
-    # Avoid 'update_ood_portal --rpm' so that --insecure can be used
-    on hosts, "sed -i 's|--rpm|--rpm --insecure|g' /etc/systemd/system/#{apache_service}.service.d/ood-portal.conf"
-    on hosts, "systemctl daemon-reload"
+  elsif host_inventory['platform'] == 'ubuntu'
+    install_packages(['wget'])
+    on hosts, "wget -O /tmp/ondemand-release.deb https://apt.osc.edu/ondemand/latest/ondemand-release-web-latest-#{codename}_1-1_all.deb"
+    install_packages(['/tmp/ondemand-release.deb'])
+    on hosts, 'apt-get update'
+    install_packages(['ondemand', 'ondemand-dex'])
   end
+  # Avoid 'update_ood_portal --rpm' so that --insecure can be used
+  on hosts, "sed -i 's|--rpm|--rpm --insecure|g' /etc/systemd/system/#{apache_service}.service.d/ood-portal.conf"
+  on hosts, "systemctl daemon-reload"
 end
 
 def upload_portal_config(file)
@@ -153,6 +193,8 @@ end
 def bootstrap_flask
   if host_inventory['platform'] == 'redhat'
     install_packages(['python3'])
-    on hosts, 'python3 -m pip install flask'
+  elsif host_inventory['platform'] == 'ubuntu'
+    install_packages(['python3', 'python3-pip'])
   end
+  on hosts, 'python3 -m pip install flask'
 end

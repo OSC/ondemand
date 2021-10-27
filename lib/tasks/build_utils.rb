@@ -15,12 +15,15 @@ module BuildUtils
 
   def ood_package_version
     @ood_package_version ||= begin
-      if ! ENV['VERSION']
-        tag? ? git_tag : "#{git_tag}-#{build_timestamp}-#{git_hash}"
-      else
+      if ENV['VERSION']
         ENV['VERSION'].to_s
+      elsif ENV['CI_COMMIT_TAG']
+        ENV['CI_COMMIT_TAG'].to_s
+      else
+        tag? ? git_tag : "#{git_tag}.#{build_timestamp}-#{git_hash}"
       end
     end
+    @ood_package_version.gsub(/^v/, '')
   end
 
   def build_timestamp

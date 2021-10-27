@@ -282,8 +282,9 @@ module OodPortalGenerator
           exitcode = update_ood_portal()
           exit!(exitcode)
         end
-      rescue
+      rescue => exception
         $stderr.puts "#{$!.to_s}"
+        $stderr.puts exception.backtrace
         $stderr.puts "Run '#{mode} --help' to see a full list of available options."
         exit!(false)
       end

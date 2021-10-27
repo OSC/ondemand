@@ -76,8 +76,9 @@ jobs:
 
   e2e-tests:
     strategy:
+      fail-fast: false
       matrix:
-        dist: ["el7", "el8"]
+        dist: ["el7", "el8", "ubuntu-20.04"]
         version: ["2.0"]
     runs-on: "ubuntu-latest"
     name: E2E test ${{ matrix.dist }} (ondemand-${{ matrix.version }})
@@ -95,8 +96,15 @@ jobs:
           bundler: "2.1.4"
           bundler-cache: true
 
-      - name: Build package
+      - name: Build RPM package
+        if: "startsWith(matrix.dist, 'el')"
         run: bundle exec rake package:rpm[${{ matrix.dist }},'-v -s']
+        env:
+          VERSION: "${{ matrix.version }}.0"
+
+      - name: Build Deb package
+        if: "startsWith(matrix.dist, 'ubuntu')"
+        run: bundle exec rake package:deb[${{ matrix.dist }},'-v -s']
         env:
           VERSION: "${{ matrix.version }}.0"
 
