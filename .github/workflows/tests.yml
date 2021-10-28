@@ -96,6 +96,12 @@ jobs:
           bundler: "2.1.4"
           bundler-cache: true
 
+      - name: Get packaging repo branch
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/master" ] || [ "${{ github.base_ref }}" = "master" ]; then
+            echo "PACKAGING_REPO_BRANCH=master" >> $GITHUB_ENV
+          fi
+
       - name: Build RPM package
         if: "startsWith(matrix.dist, 'el')"
         run: bundle exec rake package:rpm[${{ matrix.dist }},'-v -s']
