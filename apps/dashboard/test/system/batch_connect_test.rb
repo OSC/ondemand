@@ -15,13 +15,13 @@ class BatchConnectTest < ApplicationSystemTestCase
     select('oakley', from: bc_ele_id('cluster'))
 
     # FIXME: no idea why .visible? doesn't work here. Selenium/chrome native still shows element as visible?
-    assert_equal('display: none;', find_option_style('node_type', 'advanced'))
-    assert_equal('display: none;', find_option_style('node_type', 'hugemem'))
+    assert_equal 'display: none;', find_option_style('node_type', 'advanced')
+    assert_equal 'display: none;', find_option_style('node_type', 'hugemem')
 
     # select owens and now they're available
     select('owens', from: bc_ele_id('cluster'))
-    assert_equal('', find_option_style('node_type', 'advanced'))
-    assert_equal('', find_option_style('node_type', 'hugemem'))
+    assert_equal '', find_option_style('node_type', 'advanced')
+    assert_equal '', find_option_style('node_type', 'hugemem')
   end
 
   test 'node type choice changes python versions' do
