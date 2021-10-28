@@ -39,6 +39,17 @@ rpm-build-nightly-el8:
       - dist
     name: "$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA"
 
+deb-build-nightly-ubuntu-2004:
+  stage: build
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+  script:
+    - bundle exec rake package:deb:nightly[ubuntu-20.04,'-u -v -C -s']
+  artifacts:
+    paths:
+      - dist
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA"
+
 rpm-build-el7:
   stage: build
   only:
@@ -61,21 +72,32 @@ rpm-build-el8:
       - dist
     name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
 
-rpm-deploy-nightly:
+deb-build-ubuntu-2004:
+  stage: build
+  only:
+    - tags
+  script:
+    - bundle exec rake package:deb[ubuntu-20.04,'-u -v -C -s']
+  artifacts:
+    paths:
+      - dist
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+deploy-nightly:
   stage: deploy
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
     - ./tmp/ondemand-packaging/release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c nightly ./dist/*
 
-rpm-deploy-build:
+deploy-build:
   stage: deploy
   only:
     - tags
   script:
     - ./tmp/ondemand-packaging/release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c build -r $CI_COMMIT_TAG ./dist/*
 
-rpm-deploy:
+deploy:
   stage: deploy
   only:
     - tags

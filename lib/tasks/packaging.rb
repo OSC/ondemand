@@ -98,10 +98,7 @@ namespace :package do
   namespace :rpm do
     desc "Build nightly RPM"
     task :nightly, [:dist, :extra_args] do |t, args|
-      version_major, version_minor, version_patch = git_tag.gsub(/^v/, '').split('.', 3)
-      date = Time.now.strftime("%Y%m%d")
-      id = ENV['CI_PIPELINE_ID'] || Time.now.strftime("%H%M%S")
-      ENV['VERSION'] = "#{version_major}.#{version_minor}.#{date}-#{id}.#{git_hash}.nightly"
+      ENV['VERSION'] = nightly_version
       Rake::Task['package:rpm'].invoke(args[:dist], args[:extra_args])
     end
   end
@@ -120,5 +117,13 @@ namespace :package do
     Dir.mkdir(dist_dir) unless Dir.exist?(dist_dir)
     Rake::Task['package:packaging_repo'].invoke("#{version_major}.#{version_minor}", packaging_dir)
     sh deb_build_cmd(packaging_dir, File.join(tmp_dir, "work"), dist_dir, dist, version, extra_args)
+  end
+
+  namespace :deb do
+    desc "Build nightly deb package"
+    task :nightly, [:dist, :extra_args] do |t, args|
+      ENV['VERSION'] = nightly_version.gsub('-', '.')
+      Rake::Task['package:deb'].invoke(args[:dist], args[:extra_args])
+    end
   end
 end
