@@ -18,6 +18,12 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     }
   end
 
+  def no_config_env
+    {
+      OOD_CONFIG_D_DIRECTORY: '/dev/null'
+    }
+  end
+
   test "should have default config root" do
     assert_equal Pathname.new("/etc/ood/config/apps/dashboard"), ConfigurationSingleton.new.config_root
   end
@@ -429,5 +435,57 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
 
   test "no navbar environment variable is dark" do
     assert_equal 'dark', ConfigurationSingleton.new.navbar_type
+  end
+
+  test 'boolean configs have correct default' do
+    c = ConfigurationSingleton.new
+
+    with_modified_env(no_config_env) do
+      c.boolean_configs.each do |config, default|
+        assert_equal default, c.send(config), "#{config} should have been #{default} through the default value."
+      end
+    end
+  end
+
+  test 'boolean configs respond to env variables' do
+    c = ConfigurationSingleton.new
+
+    c.boolean_configs.each do |config, default|
+      env_var = "OOD_#{config.upcase}"
+      with_modified_env(no_config_env.merge({ env_var => (!default).to_s })) do
+        assert_equal !default, c.send(config), "#{config} should have responded to ENV['#{env_var}']=#{ENV[env_var]}."
+      end
+    end
+  end
+
+  test 'boolean configs respond config files' do
+    with_modified_env(config_fixtures) do
+      c = ConfigurationSingleton.new
+      c.boolean_configs.each do |config, default|
+        assert_equal !default, c.send(config), "#{config} should have been #{!default} through a fixture file."
+      end
+    end
+  end
+
+  test 'env variables have precedence in boolean configs' do
+    env = ConfigurationSingleton.new.boolean_configs.map do |config, default|
+      ["OOD_#{config.upcase}", default.to_s]
+    end.to_h
+
+    with_modified_env(config_fixtures.merge(env)) do
+      c = ConfigurationSingleton.new
+      c.boolean_configs.each do |config, default|
+        env_var = "OOD_#{config.upcase}"
+        assert_equal default, c.send(config), "#{config} should have responded to ENV['#{env_var}']=#{ENV[env_var]}."
+      end
+    end
+
+    # just to be sure, let's assert the opposite with a different env
+    with_modified_env(config_fixtures) do
+      c = ConfigurationSingleton.new
+      c.boolean_configs.each do |config, default|
+        assert_equal !default, c.send(config), "#{config} should have been #{!default} through a fixture file."
+      end
+    end
   end
 end
