@@ -16,13 +16,13 @@ const optionForHandlerCache = {};
 // simples array of string ids for elements that have a handler
 const minMaxHandlerCache = [];
 const setHandlerCache = [];
+const hideHandlerCache = [];
 
-// Lookup table for setting min & max values.
-// TODO: changeme to minMaxDirectiveLookup
-const lookup = {};
-
-// Lookup table for setting values of other elements
-const setDirectiveLookup = {};
+// Lookup tables for setting min & max values
+// for different directives.
+const minMaxLookup = {};
+const setValueLookup = {};
+const hideLookup = {};
 
 function bcElement(name) {
   return `${bcPrefix}_${name.toLowerCase()}`;
@@ -117,12 +117,14 @@ function makeChangeHandlers(){
           if(keys.length !== 0) {
             keys.forEach((key) => {
               if(key.startsWith('optionFor')) {
-                let token = key.replace('optionFor','');
+                let token = key.replace(/^optionFor/,'');
                 addOptionForHandler(idFromToken(token), element['id']);
               } else if(key.startsWith('max') || key.startsWith('min')) {
                 addMinMaxForHandler(element['id'], opt.value, key, data[key]);
               } else if(key.startsWith('set')) {
                 addSetHandler(element['id'], opt.value, key, data[key]);
+              } else if(key.startsWith('hide')) {
+                addHideHandler(element['id'], opt.value, key, data[key]);
               }
             });
           }
@@ -130,6 +132,26 @@ function makeChangeHandlers(){
     }
   });
 };
+
+function addHideHandler(optionId, option, key,  configValue) {
+  const changeId = idFromToken(key.replace(/^hide/,''));
+
+  if(hideLookup[optionId] === undefined) hideLookup[optionId] = new Table(changeId, undefined);
+  const table = hideLookup[optionId];
+  table.put(option, undefined, configValue);
+
+  if(!hideHandlerCache.includes(optionId)) {
+    const changeElement = $(`#${optionId}`);
+
+    changeElement.on('change', (event) => {
+      updateVisibility(event, changeId);
+    });
+
+    hideHandlerCache.push(optionId);
+  }
+
+  updateVisibility({ target: document.querySelector(`#${optionId}`) }, changeId);
+}
 
 /**
  *
@@ -158,8 +180,8 @@ function addMinMaxForHandler(optionId, option, key,  configValue) {
   const secondDimId = configObj['predicateId'];
   const secondDimValue = configObj['predicateValue'];
 
-  if(lookup[id] === undefined) lookup[id] = new Table(optionId, secondDimId);
-  const table = lookup[id];
+  if(minMaxLookup[id] === undefined) minMaxLookup[id] = new Table(optionId, secondDimId);
+  const table = minMaxLookup[id];
   table.put(option, secondDimValue, {[minOrMax(key)] : configValue });
 
   let cacheKey = `${optionId}_${secondDimId}`;
@@ -207,8 +229,8 @@ function addSetHandler(optionId, option, key,  configValue) {
 
   // id is account. optionId is classroom
   let cacheKey = `${id}_${optionId}`
-  if(setDirectiveLookup[cacheKey] === undefined) setDirectiveLookup[cacheKey] = new Table(optionId, undefined);
-  const table = setDirectiveLookup[cacheKey];
+  if(setValueLookup[cacheKey] === undefined) setValueLookup[cacheKey] = new Table(optionId, undefined);
+  const table = setValueLookup[cacheKey];
   table.put(option, undefined, configValue);
 
   if(!setHandlerCache.includes(cacheKey)) {
@@ -227,7 +249,7 @@ function addSetHandler(optionId, option, key,  configValue) {
 function setValue(event, changeId) {
   const chosenVal = event.target.value;
   const cacheKey = `${changeId}_${event.target['id']}`
-  const table = setDirectiveLookup[cacheKey];
+  const table = setValueLookup[cacheKey];
   if (table === undefined) return;
 
   const changeVal = table.get(chosenVal, undefined);
@@ -310,12 +332,32 @@ class Table {
   }
 }
 
+/**
+ * Update the visibility of `changeId` based on the
+ * event and what's in the hideLookup table.
+ */
+function updateVisibility(event, changeId) {
+  const val = event.target.value;
+  const id = event.target['id'];
+  const changeElement = $(`#${changeId}`).parent();
+
+  if (changeElement.size() <= 0) return;
+
+  // safe to access directly?
+  const hide = hideLookup[id].get(val, undefined);
+  if(hide === undefined) {
+    changeElement.show();
+  }else if(hide === true) {
+    changeElement.hide();
+  }
+}
+
 function toggleMinMax(event, changeId, otherId) {
   let x = undefined, y = undefined;
 
   // in the example of cluster & node_type, either element can trigger a change
   // so let's figure out the axis' based on the change element's id.
-  if(event.target['id'] == lookup[changeId].x) {
+  if(event.target['id'] == minMaxLookup[changeId].x) {
     x = snakeCaseWords(event.target.value);
     y = snakeCaseWords($(`#${otherId}`).val());
   } else {
@@ -324,7 +366,7 @@ function toggleMinMax(event, changeId, otherId) {
   }
 
   const changeElement = $(`#${changeId}`);
-  const mm = lookup[changeId].get(x, y);
+  const mm = minMaxLookup[changeId].get(x, y);
   const prev = {
     min: changeElement.attr('min'),
     max: changeElement.attr('max'),
@@ -458,7 +500,6 @@ function minOrMax(key) {
     return null;
   }
 }
-
 
 /**
  * Turn a MountainCase token into a form element id
