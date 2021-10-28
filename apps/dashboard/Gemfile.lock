@@ -77,16 +77,16 @@ GEM
       xpath (~> 3.2)
     childprocess (4.1.0)
     climate_control (0.2.0)
-    coffee-rails (4.2.2)
+    coffee-rails (5.0.0)
       coffee-script (>= 2.2.0)
-      railties (>= 4.0.0)
+      railties (>= 5.2.0)
     coffee-script (2.4.1)
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
     concurrent-ruby (1.1.9)
     crass (1.0.6)
-    dalli (3.0.3)
+    dalli (3.0.4)
     data-confirm-modal (1.6.3)
       railties (>= 3.0)
     dotenv (2.7.6)
@@ -142,11 +142,11 @@ GEM
     nokogiri (1.12.5)
       mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
-    ood_appkit (2.0.2)
+    ood_appkit (2.1.0)
       addressable (~> 2.4)
       lograge (~> 0.3)
       ood_core (~> 0.1)
-      rails (>= 5.0.0, < 7)
+      rails (>= 6.0.0, < 7)
       redcarpet (~> 3.2)
     ood_core (0.18.1)
       ffi (~> 1.9, >= 1.9.6)
@@ -274,7 +274,7 @@ DEPENDENCIES
   byebug
   capybara
   climate_control (~> 0.2)
-  coffee-rails (~> 4.2)
+  coffee-rails (~> 5.0)
   dalli
   data-confirm-modal (~> 1.2)
   dotenv-rails (~> 2.1)
@@ -286,7 +286,7 @@ DEPENDENCIES
   jquery-rails
   local_time (~> 1.0.3)
   mocha (~> 1.1)
-  ood_appkit (~> 2.0.2)
+  ood_appkit (~> 2.1.0)
   ood_core (~> 0.11)
   ood_support (~> 0.0.2)
   pbs (~> 2.2.1)
