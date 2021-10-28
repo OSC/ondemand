@@ -1,6 +1,7 @@
 require 'test_helper'
 
-class MotdTest < ActiveSupport::TestCase
+class MotdFormatterMarkdownErbTest < ActiveSupport::TestCase
+  include MotdFormatter
   test "motd-formatter-md-erb returns valid motd file when given a valid motd file" do
     path = "#{Rails.root}/test/fixtures/files/motd_valid"
     motd_file = MotdFile.new(path)
