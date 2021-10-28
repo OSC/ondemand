@@ -1,4 +1,4 @@
-FROM centos:8
+FROM rockylinux/rockylinux:8
 LABEL maintainer="tdockendorf@osc.edu; johrstrom@osc.edu"
 
 ARG VERSION=latest
