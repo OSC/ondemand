@@ -31,8 +31,7 @@ namespace :package do
     cmd.concat ["--branch", branch]
     cmd.concat ["https://github.com/OSC/ondemand-packaging.git", dir]
 
-    sh "rm -rf #{dir}" if Dir.exist?(dir)
-    sh cmd.join(' ')
+    sh cmd.join(' ') unless Dir.exist?(dir)
   end
 
   desc "Tar and zip OnDemand into packaging dir"
