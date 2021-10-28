@@ -4,6 +4,7 @@ before_script:
   - MAJOR_VERSION=$(echo "${CI_COMMIT_TAG#v}" | cut -d'.' -f1)
   - MINOR_VERSION=$(echo "${CI_COMMIT_TAG#v}" | cut -d'.' -f2)
   - '[ "x$CI_COMMIT_TAG" != "x" ] && RELEASE="${MAJOR_VERSION}.${MINOR_VERSION}" || RELEASE=master'
+  - echo "Clone ondemand-packaging branch ${RELEASE}"
   - git clone --single-branch --branch $RELEASE https://github.com/OSC/ondemand-packaging.git tmp/ondemand-packaging
   - cp /systems/osc_certs/gpg/ondemand/.gpgpass $CI_PROJECT_DIR/tmp/ondemand-packaging/
   - cp /systems/osc_certs/gpg/ondemand/ondemand.sec $CI_PROJECT_DIR/tmp/ondemand-packaging/
