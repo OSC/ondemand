@@ -26,6 +26,23 @@ class ConfigurationSingleton
   attr_accessor :app_sharing_facls_enabled
   alias_method :app_sharing_facls_enabled?, :app_sharing_facls_enabled
 
+  def initialize
+    add_boolean_configs
+  end
+
+  # All the boolean configurations that can be read through
+  # environment variables or through the config file.
+  #
+  # @return [Hash] key/value pairs of boolean configurations.
+  def boolean_configs
+    {
+      :csp_enabled          => false,
+      :csp_report_only      => false,
+      :bc_dynamic_js        => false,
+      :per_cluster_dataroot => false
+    }.freeze
+  end
+
   # @return [String] memoized version string
   def app_version
     @app_version ||= (version_from_file(Rails.root) || version_from_git(Rails.root) || "Unknown").strip
@@ -378,22 +395,6 @@ class ConfigurationSingleton
     end
   end
 
-  def bc_dynamic_js?
-    if ENV['OOD_BC_DYNAMIC_JS']
-      to_bool(ENV['OOD_BC_DYNAMIC_JS'])
-    else
-      to_bool(config.fetch(:bc_dynamic_js, false))
-    end
-  end
-
-  def per_cluster_dataroot?
-    if ENV['OOD_PER_CLUSTER_DATAROOT']
-      to_bool(ENV['OOD_PER_CLUSTER_DATAROOT'])
-    else
-      to_bool(config.fetch(:per_cluster_dataroot, false))
-    end
-  end
-
   private
 
   def can_access_core_app?(name)
@@ -450,12 +451,31 @@ class ConfigurationSingleton
     files.reverse.map {|p| p.sub(/$/, '.overload')}
   end
 
-  FALSE_VALUES=[nil, false, '', 0, '0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF', 'no', 'NO']
+  FALSE_VALUES = [nil, false, '', 0, '0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF', 'no', 'NO'].freeze
 
   # Bool coersion pulled from ActiveRecord::Type::Boolean#cast_value
   #
   # @return [Boolean] false for falsy value, true for everything else
   def to_bool(value)
-    ! FALSE_VALUES.include?(value)
+    !FALSE_VALUES.include?(value)
+  end
+
+  # private method to add the boolean_config methods to this instances
+  def add_boolean_configs
+    boolean_configs.each do |cfg_item, default|
+      define_singleton_method(cfg_item.to_sym) do
+        e = ENV["OOD_#{cfg_item.to_s.upcase}"]
+
+        if e.nil?
+          config.fetch(cfg_item, default)
+        else
+          to_bool(e.to_s)
+        end
+      end
+    end.each do |cfg_item, _|
+      define_singleton_method("#{cfg_item}?".to_sym) do
+        send(cfg_item)
+      end
+    end
   end
 end
