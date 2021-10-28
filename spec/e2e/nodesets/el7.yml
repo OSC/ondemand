@@ -1,5 +1,5 @@
 HOSTS:
-  centos-7:
+  el7:
     roles:
       - agent
     platform: el-7-x86_64
