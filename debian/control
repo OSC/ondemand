@@ -8,7 +8,7 @@ Standards-Version: 4.1.4
 Homepage: https://openondemand.org
 
 Package: ondemand
-Architecture: all
+Architecture: any
 Multi-Arch: foreign
 Depends: ${misc:Depends}, ${shlibs:Depends},
   ruby, apache2, sudo, nodejs, lsof, lua-posix
