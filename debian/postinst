@@ -6,6 +6,7 @@
 touch /var/lib/ondemand-nginx/config/apps/sys/dashboard.conf
 touch /var/lib/ondemand-nginx/config/apps/sys/shell.conf
 touch /var/lib/ondemand-nginx/config/apps/sys/myjobs.conf
+touch /etc/ood/config/ood_portal.sha256sum
 
 /opt/ood/nginx_stage/sbin/update_nginx_stage
 
