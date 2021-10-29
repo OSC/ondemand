@@ -38,6 +38,13 @@ module BuildUtils
     @git_tag ||= `git describe --tags --abbrev=0`.chomp
   end
 
+  def nightly_version
+    version_major, version_minor, version_patch = git_tag.gsub(/^v/, '').split('.', 3)
+    date = Time.now.strftime("%Y%m%d")
+    id = ENV['CI_PIPELINE_ID'] || Time.now.strftime("%H%M%S")
+    "#{version_major}.#{version_minor}.#{date}-#{id}.#{git_hash}.nightly"
+  end
+
   def numeric_tag
     @numeric_tag ||= git_tag.delete_prefix('v')
   end
