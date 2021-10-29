@@ -1,6 +1,9 @@
 #!/bin/bash
 
 if [[ "$1" == "remove" || "$1" == "purge" ]]; then
+	rm -rf /var/tmp/ondemand-nginx &>/dev/null || true
+	rm -rf /var/run/ondemand-ngin &>/dev/null || true
+
 	unlink /etc/apache2/conf-enabled/ood-portal.conf &>/dev/null || true
 	unlink /etc/apache2/conf-available/ood-portal.conf &>/dev/null || true
 
@@ -15,6 +18,7 @@ if [[ "$1" == "purge" ]]; then
 	rm -f /etc/ood/profile &>/dev/null || true
 	rm -rf /var/www/ood &>/dev/null || true
 	rm -rf /var/lib/ondemand-nginx &>/dev/null || true
+	rm -rf /var/log/ondemand-nginx &>/dev/null || true
 fi
 
 exit 0
