@@ -20,6 +20,8 @@ override_dh_auto_build:
 	env
 	bundle install --without test
 	rake --trace -mj$(NCPUS) build
+	rm -rf $(GEM_HOME)/cache
+	rm -rf apps/*/node_modules/.cache
 	rake --trace build:nginx
 	rake --trace build:passenger
 
