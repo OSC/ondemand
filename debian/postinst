@@ -1,33 +1,37 @@
 #!/bin/bash
 
-mkdir -p /var/lib/ondemand-nginx
-mkdir -p /var/log/ondemand-nginx
-mkdir -p /var/tmp/ondemand-nginx
-mkdir -p /var/run/ondemand-nginx
+# Make apache2.service.d changes available
+/bin/systemctl daemon-reload &>/dev/null || true
 
-mkdir -p /var/lib/ondemand-nginx/config/{puns,apps}
-mkdir -p /var/lib/ondemand-nginx/config/apps/{sys,dev,usr}
 touch /var/lib/ondemand-nginx/config/apps/sys/dashboard.conf
 touch /var/lib/ondemand-nginx/config/apps/sys/shell.conf
 touch /var/lib/ondemand-nginx/config/apps/sys/myjobs.conf
 touch /etc/ood/config/ood_portal.sha256sum
 
-/opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm 
-
 /opt/ood/nginx_stage/sbin/update_nginx_stage
 
+# Restart apps in case PUN wasn't restarted
+touch /var/www/ood/apps/sys/dashboard/tmp/restart.txt
+touch /var/www/ood/apps/sys/shell/tmp/restart.txt
+touch /var/www/ood/apps/sys/myjobs/tmp/restart.txt
+
 cd /etc/apache2/conf-enabled || exit 1
-ln -s ../conf-available/ood-portal.conf . || true
+ln -sf ../conf-available/ood-portal.conf . || true
 
 cd /etc/apache2/mods-enabled || exit 1
-ln -s ../mods-available/rewrite.load . || true
-ln -s ../mods-available/lua.load . || true
-ln -s ../mods-available/headers.load . || true
-ln -s ../mods-available/proxy.load . || true
-ln -s ../mods-available/proxy_http.load . || true
+ln -sf ../mods-available/rewrite.load . || true
+ln -sf ../mods-available/lua.load . || true
+ln -sf ../mods-available/headers.load . || true
+ln -sf ../mods-available/proxy.load . || true
+ln -sf ../mods-available/proxy_http.load . || true
 
 # shellcheck disable=SC1091
 [ -e /etc/apache2/envvars ] && . /etc/apache2/envvars
 [ ! -d "$APACHE_RUN_DIR" ] && mkdir -p "$APACHE_RUN_DIR"
+
+/opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm --detailed-exitcodes
+if [[ $? -eq 3 || "${2}x" == "x" ]] ; then
+	/bin/systemctl try-restart apache2.service
+fi
 
 exit 0
