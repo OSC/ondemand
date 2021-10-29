@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [[ "$1" == "remove" || "$1" == "purge" ]]; then
+	/opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force &>/dev/null || :
+fi
+
+exit 0

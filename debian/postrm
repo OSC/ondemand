@@ -1,0 +1,20 @@
+#!/bin/bash
+
+if [[ "$1" == "remove" || "$1" == "purge" ]]; then
+	unlink /etc/apache2/conf-enabled/ood-portal.conf &>/dev/null || true
+	unlink /etc/apache2/conf-available/ood-portal.conf &>/dev/null || true
+
+	unlink /etc/systemd/system/apache2.service.d/ood.conf &>/dev/null || true
+	unlink /etc/systemd/system/apache2.service.d/ood-portal.conf &>/dev/null || true
+	/bin/systemctl daemon-reload &>/dev/null || true
+	/bin/systemctl try-restart apache2.service &>/dev/null || true
+fi
+
+if [[ "$1" == "purge" ]]; then
+	rm -rf /etc/ood/config &>/dev/null || true
+	rm -f /etc/ood/profile &>/dev/null || true
+	rm -rf /var/www/ood &>/dev/null || true
+	rm -rf /var/lib/ondemand-nginx &>/dev/null || true
+fi
+
+exit 0
