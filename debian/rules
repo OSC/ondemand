@@ -67,10 +67,8 @@ override_dh_auto_install:
 	mkdir -p $(DESTDIR)/var/log/ondemand-nginx
 	mkdir -p $(DESTDIR)/var/tmp/ondemand-nginx
 	mkdir -p $(DESTDIR)/var/run/ondemand-nginx
-	mkdir -p $(DESTDIR)/var/lib/ondemand-nginx/config/puns
-	mkdir -p $(DESTDIR)/var/lib/ondemand-nginx/config/apps/sys
-	mkdir -p $(DESTDIR)/var/lib/ondemand-nginx/config/apps/usr
-	mkdir -p $(DESTDIR)/var/lib/ondemand-nginx/config/apps/dev
+	mkdir -p $(DESTDIR)/var/lib/ondemand-nginx/config/{puns,apps}
+	mkdir -p $(DESTDIR)/var/lib/ondemand-nginx/config/apps/{sys,dev,usr}
 
 override_dh_strip:
 	# Do not strip debug symbols
