@@ -62,3 +62,5 @@ override_dh_auto_install:
 	install -D -m 644 packaging/rpm/logo.png $(APACHE_DIR)/public/logo.png
 	install -D -m 644 packaging/rpm/favicon.ico $(APACHE_DIR)/public/favicon.ico
 
+override_dh_strip:
+	# Do not strip debug symbols
