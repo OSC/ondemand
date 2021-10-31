@@ -84,7 +84,6 @@ namespace :dev do
     ctr_args = [container_runtime, 'run', '-p 8080:8080', '-p 5556:5556']
     ctr_args.concat ["--name #{dev_container_name}"]
     ctr_args.concat ['--rm', '--detach']
-    ctr_args.concat ['-e', 'OOD_STATIC_USER=/etc/ood/config/static_user.yml']
     ctr_args.concat dev_mounts
     ctr_args.concat container_rt_args
 
