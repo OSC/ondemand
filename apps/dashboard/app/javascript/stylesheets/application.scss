@@ -1,17 +1,11 @@
-// Load bootstrap/font-awesome sprockets first
-
 @import "variables";
 
 @import "bootstrap/scss/bootstrap";
 
 @import "custom";
 
-@import "font-awesome-sprockets";
-
 // Import Markdown styling
 @import "app_kit/markdown";
-
-//@import "awesim";
 
 //TODO:
 // overrides for navbar-default to get the same look and feel
@@ -60,7 +54,7 @@ $ood-blue: rgb(0, 95, 133);
 
 
 // Load up bootstrap/font-awesome style sheet
-@import "font-awesome";
+@import "~font-awesome/scss/font-awesome";
 
 // Load up dataTables bootstrap specific styles
 @import "datatables.net-bs4/css/dataTables.bootstrap4";
