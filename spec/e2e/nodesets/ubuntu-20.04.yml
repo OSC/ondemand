@@ -18,6 +18,9 @@ HOSTS:
       - DEBIAN_FRONTEND=noninteractive
     docker_container_name: 'ondemand-ubuntu2004'
     docker_port_bindings:
+      22/tcp:
+        - HostPort: '2222'
+          HostIp: '127.0.0.1'
       8080/tcp:
         - HostPort: '8080'
           HostIp: '0.0.0.0'

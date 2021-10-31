@@ -219,3 +219,12 @@ def bootstrap_flask
   end
   on hosts, 'python3 -m pip install flask'
 end
+
+def dl_ctr_logs
+  dir = 'tmp/e2e_ctr/'.tap { |d| `mkdir -p #{d}` }
+
+  hosts.each do |host|
+    host_dir = "#{dir}/#{host}".tap { |d| `mkdir -p #{d}` }
+    scp_from(host, '/var/log/ondemand-nginx/error.log', host_dir)
+  end
+end

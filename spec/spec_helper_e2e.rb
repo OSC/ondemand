@@ -16,4 +16,8 @@ RSpec.configure do |c|
     # Need by node/rnode proxy tests
     bootstrap_flask
   end
+
+  c.after(:suite) do
+    dl_ctr_logs
+  end
 end
