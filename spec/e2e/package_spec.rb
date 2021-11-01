@@ -18,7 +18,7 @@ describe 'OnDemand installed with packages' do
 
   describe file('/etc/logrotate.d/ood') do
     it { is_expected.to be_file }
-    its(:content) { is_expected.to include '/var/log/ondemand-nginx/\*/access.log /var/log/ondemand-nginx/\*/error.log' }
+    its(:content) { is_expected.to include '/var/log/ondemand-nginx/*/access.log /var/log/ondemand-nginx/*/error.log' }
   end
 
   describe file("/etc/systemd/system/#{apache_service}.service.d/ood.conf") do
