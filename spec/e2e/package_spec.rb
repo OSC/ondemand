@@ -9,7 +9,7 @@ describe 'OnDemand installed with packages' do
 
   describe file('/etc/sudoers.d/ood') do
     it { is_expected.to be_file }
-    its(:content) { is_expected.to match %r{Defaults:#{apache_user}} }
+    its(:content) { is_expected.to include "Defaults:#{apache_user}" }
   end
 
   describe file('/etc/cron.d/ood') do
@@ -18,7 +18,7 @@ describe 'OnDemand installed with packages' do
 
   describe file('/etc/logrotate.d/ood') do
     it { is_expected.to be_file }
-    its(:content) { is_expected.to match %r{/var/log/ondemand-nginx/\*/access.log /var/log/ondemand-nginx/\*/error.log} }
+    its(:content) { is_expected.to include '/var/log/ondemand-nginx/\*/access.log /var/log/ondemand-nginx/\*/error.log' }
   end
 
   describe file("/etc/systemd/system/#{apache_service}.service.d/ood.conf") do
@@ -27,7 +27,7 @@ describe 'OnDemand installed with packages' do
 
   describe file("/etc/systemd/system/#{apache_service}.service.d/ood-portal.conf") do
     it { is_expected.to be_file }
-    its(:content) { is_expected.to match %r{ExecReload=#{apache_reload}} }
+    its(:content) { is_expected.to include "ExecReload=#{apache_reload}" }
   end
 
   describe file('/usr/lib/tmpfiles.d/ondemand-nginx.conf') do
