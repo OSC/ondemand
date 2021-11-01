@@ -192,7 +192,7 @@ touch %{buildroot}%{_sysconfdir}/ood/config/ood_portal.sha256sum
 
 %__install -D -m 644 %{files_dir}/ondemand-nginx-tmpfiles %{buildroot}%{_tmpfilesdir}/ondemand-nginx.conf
 %__install -D -m 444 %{files_dir}/apache-systemd.ood.conf %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood.conf
-%__sed 's/@APACHE_SERVICE@/%{apache_service}/g' %{files_dir}/apache-systemd.ood-portal.conf > %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood-portal.conf
+%__sed 's|@APACHE_RELOAD@|%{apache_daemon} $OPTIONS -k graceful|g' %{files_dir}/apache-systemd.ood-portal.conf > %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood-portal.conf
 %__chmod 0444 %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood-portal.conf
 EOS
 
