@@ -207,11 +207,6 @@ module BuildUtils
     "#{cwd}/templates/#{filename}"
   end
 
-  def task_file(filename)
-    cwd = "#{File.expand_path(__dir__)}"
-    "#{cwd}/files/#{filename}"
-  end
-
   def package_file(filename)
     File.join(proj_root, 'packaging/files', filename)
   end
