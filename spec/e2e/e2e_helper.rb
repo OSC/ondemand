@@ -86,6 +86,27 @@ def apache_service
    end
 end
 
+def apache_reload
+  if host_inventory['platform'] == 'redhat'
+    if host_inventory['platform_version'] =~ /^7/
+       '/opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper $OPTIONS -k graceful'
+     else
+       '/usr/sbin/httpd $OPTIONS -k graceful'
+     end
+   else
+     '/usr/sbin/apachectl graceful'
+   end
+end
+
+def apache_user
+  case host_inventory['platform']
+  when 'ubuntu'
+    'www-data'
+  else
+    'apache'
+  end
+end
+
 def install_packages(packages)
   on hosts, "#{packager} install -y #{packages.join(' ')}"
 end

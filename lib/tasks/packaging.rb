@@ -37,17 +37,21 @@ namespace :package do
   desc "Tar and zip OnDemand into packaging dir"
   task :tar, [:dist] do |task, args|
     dist = args[:dist] || 'el8'
+    cmd = ['git', 'ls-files', '|', tar, '-c']
     if dist =~ /^el/
-      version = ood_package_version
+      version = rpm_version
       tar_file = "packaging/rpm/v#{version}.tar.gz"
     else
       dir = File.join(Dir.pwd, 'build').tap { |p| sh "mkdir -p #{p}" }
-      version = ood_package_version.gsub('-', '.')
+      version = deb_version
       tar_file = "#{dir}/#{ood_package_name}-#{version}.tar.gz"
+      cmd.concat ["--transform 'flags=r;s,packaging/deb,debian,'"]
     end
+    cmd.concat ["--transform 's,^,#{ood_package_name}-#{version}/,'"]
+    cmd.concat ['-T', '-', '|', "gzip > #{tar_file}"]
 
     sh "rm #{tar_file}" if File.exist?(tar_file)
-    sh "git ls-files | #{tar} -c --transform 's,^,#{ood_package_name}-#{version}/,' -T - | gzip > #{tar_file}"
+    sh cmd.join(' ')
   end
 
   task :version do
@@ -81,7 +85,7 @@ namespace :package do
 
   desc "Build RPM"
   task :rpm, [:dist, :extra_args] => [:tar] do |t, args|
-    version = ood_package_version
+    version = rpm_version
     version_major, version_minor, version_patch = version.split('.', 3)
     dist = args[:dist]
     extra_args = args[:extra_args].nil? ? '' : args[:extra_args]
@@ -98,14 +102,14 @@ namespace :package do
   namespace :rpm do
     desc "Build nightly RPM"
     task :nightly, [:dist, :extra_args] do |t, args|
-      ENV['VERSION'] = nightly_version
+      ENV['VERSION'] = rpm_nightly_version
       Rake::Task['package:rpm'].invoke(args[:dist], args[:extra_args])
     end
   end
 
   desc "Build deb package"
   task :deb, [:dist, :extra_args] => [:tar] do |t, args|
-    version = ood_package_version.gsub('-', '.')
+    version = deb_version
     version_major, version_minor, version_patch = version.split('.', 3)
     dist = args[:dist]
     extra_args = args[:extra_args].nil? ? '' : args[:extra_args]
@@ -122,7 +126,7 @@ namespace :package do
   namespace :deb do
     desc "Build nightly deb package"
     task :nightly, [:dist, :extra_args] do |t, args|
-      ENV['VERSION'] = nightly_version.gsub('-', '.')
+      ENV['VERSION'] = deb_nightly_version
       Rake::Task['package:deb'].invoke(args[:dist], args[:extra_args])
     end
   end
