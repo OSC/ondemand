@@ -6,32 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Add nightly Ubuntu 20.04 builds (#1542)\
-Deb packaging improvements (#1543)\
-fix #1531 (#1539)\
-enable reporting on CSP and refactor configs a little (#1538)\
-add functionality for hiding or showing elements (#1529)\
-refactor motd formatter classes (#764)\
-use the new ood_appkit and coffee-rails to get rid of deprecation warnings (#1535)\
-Added custom range class for contrast with range slider. (#1537)\
-Use ondemand-packaging master branch under certain conditions (#1536)\
-Fix Gitlab package builds (#1533)\
-Switch dev container and EL8 e2e tests to use Rocky Linux 8 (#1534)\
-Update E2E tests for Ubuntu package testing (#1525)\
-Feature/new context location (#1526)\
-shift min an max when they change (#1509)\
-safely read connection yml (#1523)\
-use osc robot instead of osc wiag (#1522)\
-upgrade to rails 6 (#1474)\
-Fix Debian paths and other misc fixes (#1510)\
-Fix nginx_stage defaults to work on Debian (#1507)\
-Fix default log location for Debian based systems (#1505)\
-Selinux updates (#1496)\
-Add tmpfiles.d file for ondemand-nginx (#1503)\
-update dashboard developer docs (#1494)\
-update dependencies (#1499)\
-Update Changelog (#1498)
-
 
 ### Changed
 
@@ -40,19 +14,24 @@ Update Changelog (#1498)
   in [#1409](https://github.com/OSC/ondemand/pull/1409).
 - The dashboard now uses strict same site cookies in [#1418](https://github.com/OSC/ondemand/pull/1418).
 - Build RPMs in CI/CD pipelines using -s flag to disable source download in [1471](https://github.com/OSC/ondemand/pull/1471).
+- Upgraded to rails 6 in [1474](https://github.com/OSC/ondemand/pull/1474).
+- `context.json` files have moved in location and filename in [1526](https://github.com/OSC/ondemand/pull/1526).
+- Switch dev container and EL8 e2e tests to use Rocky Linux 8 [1534](https://github.com/OSC/ondemand/pull/1534).
 
 ### Added
 
 - Batch connect apps can now enable automatic javascript to dynamically update:
   - Options in [1380](https://github.com/OSC/ondemand/pull/1380).
-  - Min and maxes in [#1441](https://github.com/OSC/ondemand/pull/1441).
-  - Other fields in [#1449](https://github.com/OSC/ondemand/pull/1449).
+  - Min and maxes in [1441](https://github.com/OSC/ondemand/pull/1441).
+  - Other fields in [1449](https://github.com/OSC/ondemand/pull/1449).
+  - Add functionality for hiding or showing elements in [1529](https://github.com/OSC/ondemand/pull/1529).
 - Test cases for example files for both ood_portal and nginx_stage in [832](https://github.com/OSC/ondemand/pull/832).
 - Debian packaging in [1466](https://github.com/OSC/ondemand/pull/1466). Additionally:
   - Update ood-portal-generator to work better on Debian/Ubuntu in [1481](https://github.com/OSC/ondemand/pull/1481).
   - Use correct path for service.d unit overrides in [1480](https://github.com/OSC/ondemand/pull/1480).
   - Make ood-portal-generator handle profile files like nginx_stage in [1495](https://github.com/OSC/ondemand/pull/1495).
   - Fix helper output for ood-portal-generator on Debian systems in [1484](https://github.com/OSC/ondemand/pull/1484).
+  - nightly builds in [1542](https://github.com/OSC/ondemand/pull/1542).
     
 
 ### Fixed
@@ -63,7 +42,8 @@ Update Changelog (#1498)
 ### Security
 
 - SVGs, being unsafe to preview, are now downloaded in [1435](https://github.com/OSC/ondemand/pull/1435)
-  and [1437](https://github.com/OSC/ondemand/pull/1437).
+  and [1437](https://github.com/OSC/ondemand/pull/1437)
+- Selinux updates in [1496](https://github.com/OSC/ondemand/pull/1496).
 
 ## [2.0.16] - 2021-08-25
 
