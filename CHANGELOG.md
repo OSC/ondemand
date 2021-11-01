@@ -6,6 +6,31 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Add nightly Ubuntu 20.04 builds (#1542)\
+Deb packaging improvements (#1543)\
+fix #1531 (#1539)\
+enable reporting on CSP and refactor configs a little (#1538)\
+add functionality for hiding or showing elements (#1529)\
+refactor motd formatter classes (#764)\
+use the new ood_appkit and coffee-rails to get rid of deprecation warnings (#1535)\
+Added custom range class for contrast with range slider. (#1537)\
+Use ondemand-packaging master branch under certain conditions (#1536)\
+Fix Gitlab package builds (#1533)\
+Switch dev container and EL8 e2e tests to use Rocky Linux 8 (#1534)\
+Update E2E tests for Ubuntu package testing (#1525)\
+Feature/new context location (#1526)\
+shift min an max when they change (#1509)\
+safely read connection yml (#1523)\
+use osc robot instead of osc wiag (#1522)\
+upgrade to rails 6 (#1474)\
+Fix Debian paths and other misc fixes (#1510)\
+Fix nginx_stage defaults to work on Debian (#1507)\
+Fix default log location for Debian based systems (#1505)\
+Selinux updates (#1496)\
+Add tmpfiles.d file for ondemand-nginx (#1503)\
+update dashboard developer docs (#1494)\
+update dependencies (#1499)\
+Update Changelog (#1498)
 
 
 ### Changed
