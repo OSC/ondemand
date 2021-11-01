@@ -37,6 +37,7 @@ namespace :package do
   desc "Tar and zip OnDemand into packaging dir"
   task :tar, [:dist] do |task, args|
     dist = args[:dist] || 'el8'
+    cmd = ['git', 'ls-files', '|', tar, '-c']
     if dist =~ /^el/
       version = ood_package_version
       tar_file = "packaging/rpm/v#{version}.tar.gz"
@@ -44,10 +45,13 @@ namespace :package do
       dir = File.join(Dir.pwd, 'build').tap { |p| sh "mkdir -p #{p}" }
       version = ood_package_version.gsub('-', '.')
       tar_file = "#{dir}/#{ood_package_name}-#{version}.tar.gz"
+      cmd.concat ["--transform 'flags=r;s,packaging/deb,debian,'"]
     end
+    cmd.concat ["--transform 's,^,#{ood_package_name}-#{version}/,'"]
+    cmd.concat ['-T', '-', '|', "gzip > #{tar_file}"]
 
     sh "rm #{tar_file}" if File.exist?(tar_file)
-    sh "git ls-files | #{tar} -c --transform 's,^,#{ood_package_name}-#{version}/,' -T - | gzip > #{tar_file}"
+    sh cmd.join(' ')
   end
 
   task :version do

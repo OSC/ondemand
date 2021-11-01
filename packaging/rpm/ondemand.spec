@@ -12,6 +12,7 @@
 %global selinux_module_version %{package_version}.%{package_release}
 %global gem_home %{scl_ondemand_core_gem_home}/%{version}
 %global gems_name ondemand-gems-%{version}
+%global files_dir ./packaging/files
 
 %define __brp_mangle_shebangs /bin/true
 
@@ -26,8 +27,6 @@ URL:       https://osc.github.io/Open-OnDemand
 Source0:   https://github.com/OSC/%{package_name}/archive/%{git_tag}.tar.gz
 Source1:   ondemand-selinux.te
 Source2:   ondemand-selinux.fc
-Source3:   logo.png
-Source4:   favicon.ico
 
 # Disable debuginfo as it causes issues with bundled gems that build libraries
 %global debug_package %{nil}
@@ -145,8 +144,8 @@ rake --trace install PREFIX=%{buildroot}/opt/ood
 %__rm %{buildroot}/opt/ood/apps/*/log/production.log
 echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/public
-%__cp %{SOURCE3} %{buildroot}%{_localstatedir}/www/ood/public/logo.png
-%__cp %{SOURCE4} %{buildroot}%{_localstatedir}/www/ood/public/favicon.ico
+%__cp %{files_dir}/logo.png %{buildroot}%{_localstatedir}/www/ood/public/logo.png
+%__cp %{files_dir}/favicon.ico %{buildroot}%{_localstatedir}/www/ood/public/favicon.ico
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/discover
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/register
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/apps/sys
@@ -185,55 +184,15 @@ touch %{buildroot}%{_sysconfdir}/ood/config/ood_portal.sha256sum
 %__cp -R hooks %{buildroot}/opt/ood/hooks
 %__install -D -m 644 hooks/hook.env.example %{buildroot}%{_sysconfdir}/ood/config/hook.env
 
-%__mkdir_p %{buildroot}%{_sysconfdir}/sudoers.d
-%__cat >> %{buildroot}%{_sysconfdir}/sudoers.d/ood << EOF
-Defaults:apache !requiretty, !authenticate
-Defaults:apache env_keep += "NGINX_STAGE_* OOD_*"
-apache ALL=(ALL) NOPASSWD: /opt/ood/nginx_stage/sbin/nginx_stage
-Cmnd_Alias KUBECTL = /usr/local/bin/kubectl, /usr/bin/kubectl, /bin/kubectl
-Defaults!KUBECTL !syslog
-EOF
-%__chmod 440 %{buildroot}%{_sysconfdir}/sudoers.d/ood
+%__sed 's/@APACHE_USER@/apache/g' %{files_dir}/sudo > %{buildroot}%{_sysconfdir}/sudoers.d/ood
+%__chmod 0440 %{buildroot}%{_sysconfdir}/sudoers.d/ood
+%__install -D -m 644 %{files_dir}/crontab %{buildroot}%{_sysconfdir}/cron.d/ood
+%__install -D -m 644 %{files_dir}/logrotate %{buildroot}%{_sysconfdir}/logrotate.d/ood
 
-%__mkdir_p %{buildroot}%{_sysconfdir}/cron.d
-%__cat >> %{buildroot}%{_sysconfdir}/cron.d/ood << EOF
-#!/bin/bash
-PATH=/sbin:/bin:/usr/sbin:/usr/bin
-0 */2 * * * root [ -f /opt/ood/nginx_stage/sbin/nginx_stage ] && /opt/ood/nginx_stage/sbin/nginx_stage nginx_clean 2>&1 | logger -t nginx_clean
-EOF
-
-%__mkdir_p %{buildroot}%{_sysconfdir}/logrotate.d
-%__cat >> %{buildroot}%{_sysconfdir}/logrotate.d/ood << EOF
-%{_localstatedir}/log/ondemand-nginx/*/access.log %{_localstatedir}/log/ondemand-nginx/*/error.log {
-  compress
-  copytruncate
-  missingok
-  notifempty
-}
-EOF
-
-%__mkdir_p %{buildroot}%{_tmpfilesdir}
-%__cat >> %{buildroot}%{_tmpfilesdir}/ondemand-nginx.conf <<EOF
-d %{_rundir}/ondemand-nginx 0755 root root -   -
-Z %{_rundir}/ondemand-nginx -    -    -    -   -
-EOF
-
-%__mkdir_p %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d
-%__cat >> %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood.conf << EOF
-[Service]
-KillSignal=SIGTERM
-KillMode=process
-PrivateTmp=false
-EOF
-%__chmod 444 %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood.conf
-%__cat >> %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood-portal.conf << EOF
-[Service]
-ExecStartPre=-/opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm
-ExecReload=
-ExecReload=-/opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm
-ExecReload=%{apache_daemon} \$OPTIONS -k graceful
-EOF
-%__chmod 444 %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood-portal.conf
+%__install -D -m 644 %{files_dir}/ondemand-nginx-tmpfiles %{buildroot}%{_tmpfilesdir}/ondemand-nginx.conf
+%__install -D -m 444 %{files_dir}/apache-systemd.ood.conf %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood.conf
+%__sed 's/@APACHE_SERVICE@/%{apache_service}/g' %{files_dir}/apache-systemd.ood-portal.conf > %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood-portal.conf
+%__chmod 0444 %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood-portal.conf
 EOS
 
 %post

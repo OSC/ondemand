@@ -43,7 +43,7 @@ namespace :install do
     tar_file = "#{vendor_src_dir}/#{nginx_tar}"
     sh "#{tar} -xzf #{tar_file} -C #{vendor_src_dir}"
     sh "install -m 755 #{vendor_src_dir}/nginx-#{nginx_version} #{nginx_sbin_dir}/nginx"
-    sh "install -m 644 #{task_file('mime.types')} #{nginx_conf}/mime.types"
+    sh "install -m 644 #{package_file('mime.types')} #{nginx_conf}/mime.types"
   end
 
   task passenger: [:install_root] do

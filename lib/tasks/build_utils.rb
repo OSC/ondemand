@@ -212,6 +212,10 @@ module BuildUtils
     "#{cwd}/files/#{filename}"
   end
 
+  def package_file(filename)
+    File.join(proj_root, 'packaging/files', filename)
+  end
+
   def ood_bin_dir
     "#{INSTALL_ROOT}/bin"
   end
