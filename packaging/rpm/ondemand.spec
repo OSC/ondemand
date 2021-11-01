@@ -184,6 +184,7 @@ touch %{buildroot}%{_sysconfdir}/ood/config/ood_portal.sha256sum
 %__cp -R hooks %{buildroot}/opt/ood/hooks
 %__install -D -m 644 hooks/hook.env.example %{buildroot}%{_sysconfdir}/ood/config/hook.env
 
+%__mkdir_p %{buildroot}%{_sysconfdir}/sudoers.d
 %__sed 's/@APACHE_USER@/apache/g' %{files_dir}/sudo > %{buildroot}%{_sysconfdir}/sudoers.d/ood
 %__chmod 0440 %{buildroot}%{_sysconfdir}/sudoers.d/ood
 %__install -D -m 644 %{files_dir}/crontab %{buildroot}%{_sysconfdir}/cron.d/ood
