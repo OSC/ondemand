@@ -45,6 +45,22 @@ module BuildUtils
     "#{version_major}.#{version_minor}.#{date}-#{id}.#{git_hash}.nightly"
   end
 
+  def rpm_nightly_version
+    nightly_version
+  end
+
+  def deb_nightly_version
+    nightly_version.gsub('-', '.')
+  end
+
+  def rpm_version
+    ood_package_version
+  end
+
+  def deb_version
+    ood_package_version.gsub('-', '.')
+  end
+
   def numeric_tag
     @numeric_tag ||= git_tag.delete_prefix('v')
   end
