@@ -917,7 +917,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.18...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.19...HEAD
+[2.0.19]: https://github.com/OSC/ondemand/compare/v2.0.18...v2.0.19
 [2.0.18]: https://github.com/OSC/ondemand/compare/v2.0.17...v2.0.18
 [2.0.17]: https://github.com/OSC/ondemand/compare/v2.0.16...v2.0.17
 [2.0.16]: https://github.com/OSC/ondemand/compare/v2.0.15...v2.0.16
