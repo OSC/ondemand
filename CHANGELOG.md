@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-
 ### Changed
 
 - Update hterm to 1.91 in  [#1426](https://github.com/OSC/ondemand/pull/1426).
@@ -15,19 +14,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   in [#1409](https://github.com/OSC/ondemand/pull/1409).
 - The dashboard now uses strict same site cookies in [#1418](https://github.com/OSC/ondemand/pull/1418).
 - Build RPMs in CI/CD pipelines using -s flag to disable source download in [1471](https://github.com/OSC/ondemand/pull/1471).
+- Upgraded to rails 6 in [1474](https://github.com/OSC/ondemand/pull/1474).
+- `context.json` files have moved in location and filename in [1526](https://github.com/OSC/ondemand/pull/1526).
+- Switch dev container and EL8 e2e tests to use Rocky Linux 8 [1534](https://github.com/OSC/ondemand/pull/1534).
 
 ### Added
 
 - Batch connect apps can now enable automatic javascript to dynamically update:
   - Options in [1380](https://github.com/OSC/ondemand/pull/1380).
-  - Min and maxes in [#1441](https://github.com/OSC/ondemand/pull/1441).
-  - Other fields in [#1449](https://github.com/OSC/ondemand/pull/1449).
+  - Min and maxes in [1441](https://github.com/OSC/ondemand/pull/1441).
+  - Other fields in [1449](https://github.com/OSC/ondemand/pull/1449).
+  - Add functionality for hiding or showing elements in [1529](https://github.com/OSC/ondemand/pull/1529).
 - Test cases for example files for both ood_portal and nginx_stage in [832](https://github.com/OSC/ondemand/pull/832).
 - Debian packaging in [1466](https://github.com/OSC/ondemand/pull/1466). Additionally:
   - Update ood-portal-generator to work better on Debian/Ubuntu in [1481](https://github.com/OSC/ondemand/pull/1481).
   - Use correct path for service.d unit overrides in [1480](https://github.com/OSC/ondemand/pull/1480).
   - Make ood-portal-generator handle profile files like nginx_stage in [1495](https://github.com/OSC/ondemand/pull/1495).
   - Fix helper output for ood-portal-generator on Debian systems in [1484](https://github.com/OSC/ondemand/pull/1484).
+  - nightly builds in [1542](https://github.com/OSC/ondemand/pull/1542).
     
 
 ### Fixed
@@ -38,7 +42,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Security
 
 - SVGs, being unsafe to preview, are now downloaded in [1435](https://github.com/OSC/ondemand/pull/1435)
-  and [1437](https://github.com/OSC/ondemand/pull/1437).
+  and [1437](https://github.com/OSC/ondemand/pull/1437)
+- Selinux updates in [1496](https://github.com/OSC/ondemand/pull/1496).
 
 ## [2.0.16] - 2021-08-25
 
