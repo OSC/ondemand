@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [2.0.19] - 2021-10-29
+
+### Fixed
+
+- Fixed CSS issue where the noVNC range sliders looked washed out and hard to notice - 
+  [1384](https://github.com/OSC/ondemand/issues/1384). 
+- Selinux updates mostly for k8s - [1497](https://github.com/OSC/ondemand/pull/1497)
+
+### Added
+
+- Add tmpfiles.d file for ondemand-nginx - [1501](https://github.com/OSC/ondemand/pull/1501)
+- Initialize k8s - [1493](https://github.com/OSC/ondemand/pull/1493)
+
 ## [2.0.18] - 2021-10-06
 
 ### Security
@@ -903,7 +917,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.18...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.19...HEAD
+[2.0.19]: https://github.com/OSC/ondemand/compare/v2.0.18...v2.0.19
 [2.0.18]: https://github.com/OSC/ondemand/compare/v2.0.17...v2.0.18
 [2.0.17]: https://github.com/OSC/ondemand/compare/v2.0.16...v2.0.17
 [2.0.16]: https://github.com/OSC/ondemand/compare/v2.0.15...v2.0.16
