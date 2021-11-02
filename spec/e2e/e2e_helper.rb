@@ -126,7 +126,7 @@ def bootstrap_repos
       repos << 'centos-release-scl yum-plugin-priorities'
     else
       on hosts, 'dnf -y module enable ruby:2.7'
-      on hosts, 'dnf -y module enable nodejs:12'
+      on hosts, 'dnf -y module enable nodejs:14'
     end
   elsif host_inventory['platform'] == 'ubuntu'
     on hosts, 'apt-get update'
