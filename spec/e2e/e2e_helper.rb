@@ -229,11 +229,11 @@ def dl_ctr_logs
 
   hosts.each do |host|
     host_dir = "#{dir}/#{host}".tap { |d| `mkdir -p #{d}` }
-    [
-      '/var/log/ondemand-nginx/ood/error.log',
-      "#{apache_log_dir}/localhost_error.log"
-    ].each do |log|
-      scp_from(host, log, host_dir)
+    {
+      '/var/log/ondemand-nginx/ood': 'error.log',
+      apache_log_dir.to_s: 'localhost_error.log',
+    }.each do |ctr_dir, file|
+      scp_from(host, "#{ctr_dir}/#{file}", "#{host_dir}/file")
     end
   end
 end
