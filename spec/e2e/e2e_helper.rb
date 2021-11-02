@@ -107,6 +107,10 @@ def apache_user
   end
 end
 
+def apache_log_dir
+  "/var/log/#{apache_service.split('-').first}"
+end
+
 def install_packages(packages)
   on hosts, "#{packager} install -y #{packages.join(' ')}"
 end
@@ -225,6 +229,11 @@ def dl_ctr_logs
 
   hosts.each do |host|
     host_dir = "#{dir}/#{host}".tap { |d| `mkdir -p #{d}` }
-    scp_from(host, '/var/log/ondemand-nginx/error.log', host_dir)
+    [
+      '/var/log/ondemand-nginx/ood/error.log',
+      "#{apache_log_dir}/localhost_error.log"
+    ].each do |log|
+      scp_from(host, log, host_dir)
+    end
   end
 end
