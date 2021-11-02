@@ -225,7 +225,7 @@ def bootstrap_flask
 end
 
 def dl_ctr_logs
-  dir = 'tmp/e2e_ctr/'.tap { |d| `mkdir -p #{d}` }
+  dir = File.join(proj_root, 'tmp/e2e_ctr').tap { |d| `mkdir -p #{d}` }
 
   hosts.each do |host|
     host_dir = "#{dir}/#{host}".tap { |d| `mkdir -p #{d}` }
