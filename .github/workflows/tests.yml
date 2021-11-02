@@ -125,5 +125,5 @@ jobs:
           ls -lrt
           pwd
           ls tmp/
-          ls tmp/e2e_ctr/
+          ls -lRt tmp/e2e_ctr/
           bash -c 'cat tmp/e2e_ctr/**/*.log'
