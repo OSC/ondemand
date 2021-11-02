@@ -121,4 +121,9 @@ jobs:
 
       - name: Debug failure
         if: failure()
-        run: cat tmp/e2e_ctr/**/*.log
+        run: |
+          ls -lrt
+          pwd
+          ls tmp/
+          ls tmp/e2e_ctr/
+          bash -c 'cat tmp/e2e_ctr/**/*.log'
