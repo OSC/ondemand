@@ -40,12 +40,14 @@ Source2:   ondemand-selinux.fc
 %define apache_service httpd
 %define apache_daemon /usr/sbin/httpd
 %define htcacheclean_service htcacheclean
+%define python_dep python2
 %else
 %bcond_without scl_apache
 %define apache_confd /opt/rh/httpd24/root/etc/httpd/conf.d
 %define apache_service httpd24-httpd
 %define apache_daemon /opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper
 %define htcacheclean_service httpd24-htcacheclean
+%define python_dep python
 %endif
 
 # Disable automatic dependencies as it causes issues with bundled gems and
@@ -56,17 +58,18 @@ BuildRequires:   ondemand-runtime >= %{runtime_version}, ondemand-runtime < %{ne
 BuildRequires:   ondemand-scldevel >= %{runtime_version}, ondemand-scldevel < %{next_major_version}, ondemand-scldevel < %{next_minor_version}
 BuildRequires:   ondemand-build >= %{runtime_version}, ondemand-build < %{next_major_version}, ondemand-build < %{next_minor_version}
 BuildRequires:   ondemand-ruby >= %{runtime_version}, ondemand-ruby < %{next_major_version}, ondemand-ruby < %{next_minor_version}
-BuildRequires:   ondemand-python >= %{runtime_version}, ondemand-python < %{next_major_version}, ondemand-python < %{next_minor_version}
 BuildRequires:   ondemand-nodejs >= %{runtime_version}, ondemand-nodejs < %{next_major_version}, ondemand-nodejs < %{next_minor_version}
 BuildRequires:   rsync
 BuildRequires:   git
+BuildRequires:   %{python_dep}
+
 Requires:        git
 Requires:        sudo, lsof, cronie, wget, curl, make, rsync, file, libxml2, libxslt, zlib, lua-posix
+Requires:        %{python_dep}
 Requires:        ondemand-apache >= %{runtime_version}, ondemand-apache < %{next_major_version}, ondemand-apache < %{next_minor_version}
-Requires:        ondemand-nginx = 1.18.0
-Requires:        ondemand-passenger = 6.0.7
+Requires:        ondemand-nginx = 1.20.1
+Requires:        ondemand-passenger = 6.0.11
 Requires:        ondemand-ruby >= %{runtime_version}, ondemand-ruby < %{next_major_version}, ondemand-ruby < %{next_minor_version}
-Requires:        ondemand-python >= %{runtime_version}, ondemand-python < %{next_major_version}, ondemand-python < %{next_minor_version}
 Requires:        ondemand-nodejs >= %{runtime_version}, ondemand-nodejs < %{next_major_version}, ondemand-nodejs < %{next_minor_version}
 Requires:        ondemand-runtime >= %{runtime_version}, ondemand-runtime < %{next_major_version}, ondemand-runtime < %{next_minor_version}
 Requires:        %{gems_name}
