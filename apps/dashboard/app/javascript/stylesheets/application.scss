@@ -53,8 +53,13 @@ $ood-black: rgb(45, 51, 38);
 $ood-blue: rgb(0, 95, 133);
 
 
-// Load up bootstrap/font-awesome style sheet
-@import "~font-awesome/scss/font-awesome";
+// add font-awesome styles & fonts
+@import "@fortawesome/fontawesome-free/scss/fontawesome";
+@import '@fortawesome/fontawesome-free/scss/regular';
+@import '@fortawesome/fontawesome-free/scss/solid';
+@import '@fortawesome/fontawesome-free/scss/brands';
+// TODO: upgrade to fontawesome 5!
+@import '@fortawesome/fontawesome-free/scss/v4-shims';
 
 // Load up dataTables bootstrap specific styles
 @import "datatables.net-bs4/css/dataTables.bootstrap4";

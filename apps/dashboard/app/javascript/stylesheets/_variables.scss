@@ -54,5 +54,5 @@ $navbar-nav-link-padding-x: 0.75rem;
 // breadcrumbs are purely visual for accessibility
 $breadcrumb-divider: '';
 
-// have to set the font awesome path or it won't compile
-$fa-font-path: "~font-awesome/fonts/";
+// needs to be set by webpack
+// $fa-font-path:
