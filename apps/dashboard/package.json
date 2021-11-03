@@ -20,8 +20,5 @@
     "sweetalert2": "^10.15.7",
     "uppy": "^1.27.0",
     "webpack-merge": "^5.8.0"
-  },
-  "devDependencies": {
-    "webpack-dev-server": "^3.11.2"
   }
 }
