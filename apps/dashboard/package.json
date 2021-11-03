@@ -18,12 +18,5 @@
     "popper.js": "1.14.3",
     "sweetalert2": "^10.15.7",
     "uppy": "^1.27.0"
-  },
-  "devDependencies": {
-    "webpack-dev-server": "^3.11.2"
-  },
-  "resolutions": {
-    "postcss": "8.2.10",
-    "xmlhttprequest-ssl": "1.6.2"
   }
 }
