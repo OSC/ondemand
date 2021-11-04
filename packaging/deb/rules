@@ -23,14 +23,10 @@ override_dh_auto_build:
 	rake --trace -mj$(NCPUS) build
 	rm -rf $(GEM_HOME)/cache
 	rm -rf apps/*/node_modules/.cache
-	rake --trace build:nginx
-	rake --trace build:passenger
 
 override_dh_auto_install:
 	env
 	rake --trace install
-	rake --trace install:nginx
-	rake --trace install:passenger
 
 	# install gems
 	mkdir -p $(DESTDIR)/opt/ood/gems
@@ -69,8 +65,6 @@ override_dh_auto_install:
 	install -D -m 644 $(FILESDIR)/logo.png $(APACHE_DIR)/public/logo.png
 	install -D -m 644 $(FILESDIR)/favicon.ico $(APACHE_DIR)/public/favicon.ico
 
-	mkdir -p $(DESTDIR)/var/lib/ondemand-nginx
-	mkdir -p $(DESTDIR)/var/log/ondemand-nginx
 	mkdir -p $(DESTDIR)/var/tmp/ondemand-nginx
 	mkdir -p $(DESTDIR)/var/run/ondemand-nginx
 	mkdir -p $(DESTDIR)/var/lib/ondemand-nginx/config/puns
