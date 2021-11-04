@@ -27,22 +27,17 @@ jobs:
         run: bundle exec rake package:tar
         env:
           VERSION: ${{ steps.version.outputs.version }}
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.3
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: true
-          prerelease: true
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Upload Release files
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: packaging/rpm/ondemand-${{ steps.version.outputs.version }}.tar.gz
           asset_name: ondemand-${{ steps.version.outputs.version }}.tar.gz
           asset_content_type: application/gzip
