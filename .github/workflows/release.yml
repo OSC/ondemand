@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    name: Release OnDemand
+    steps:
+      - name: Set version
+        id: version
+        run: echo ::set-output name=version::${GITHUB_REF#refs/*/v}
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Ruby using Bundler
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "2.7.1"
+          bundler: "2.1.4"
+          bundler-cache: true
+      - name: Generate tar.gz
+        run: bundle exec rake package:tar
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.3
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Upload Release files
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: packaging/rpm/ondemand-${{ steps.version.outputs.version }}.tar.gz
+          asset_name: ondemand-${{ steps.version.outputs.version }}.tar.gz
+          asset_content_type: application/gzip
