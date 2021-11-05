@@ -8,7 +8,6 @@ export GEM_HOME           = $(CURDIR)/gems
 export GEM_PATH           = $(GEM_HOME):$(shell printenv GEM_PATH)
 export APACHE_DIR         = "$(DESTDIR)/var/www/ood"
 export APACHE_SYSTEMD_DIR = "$(DESTDIR)/etc/systemd/system/apache2.service.d"
-export APACHE_CONF_DIR    = "$(DESTDIR)/etc/apache2/sites-available"
 export CONFIG_DIR         = "$(DESTDIR)/etc/ood/config"
 
 
@@ -50,9 +49,6 @@ override_dh_auto_install:
 	rake package:version > $(DESTDIR)/opt/ood/VERSION
 	install -m 644 nginx_stage/share/nginx_stage_example.yml $(CONFIG_DIR)/nginx_stage.yml
 	install -m 640 ood-portal-generator/share/ood_portal_example.yml $(CONFIG_DIR)/ood_portal.yml
-	touch $(CONFIG_DIR)/ood_portal.sha256sum
-	mkdir -p $(APACHE_CONF_DIR)
-	touch $(APACHE_CONF_DIR)/ood-portal.conf
 	install -m 644 ood-portal-generator/share/maintenance.html $(APACHE_DIR)/public/maintenance/index.html
 	install -m 644 hooks/hook.env.example $(CONFIG_DIR)/hook.env
 
