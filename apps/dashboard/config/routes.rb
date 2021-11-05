@@ -2,6 +2,21 @@ require "authz/app_developer_constraint"
 
 Rails.application.routes.draw do
 
+  resources :jobs_runner do
+    root "jobs_runner#index"
+    :new
+    :edit
+    :destroy
+    :submit
+
+    get 'jobs_runner/new'
+    get 'jobs_runner/create'
+    get 'jobs_runner/destroy'
+    get 'jobs_runner/edit'
+    get 'jobs_runner/update'
+    get 'jobs_runner/submit'
+  end
+
   # in production, if the user doesn't have access to the files app directory, we hide the routes
   if Configuration.can_access_files?
     constraints filepath: /.+/ do
