@@ -180,7 +180,7 @@ def install_ondemand
     install_packages(['ondemand', 'ondemand-dex', 'ondemand-selinux'])
   elsif host_inventory['platform'] == 'ubuntu'
     install_packages(['wget'])
-    on hosts, "wget -O /tmp/ondemand-release.deb https://apt.osc.edu/ondemand/latest/ondemand-release-web-latest-#{codename}_1-1_all.deb"
+    on hosts, 'wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest_1_all.deb'
     install_packages(['/tmp/ondemand-release.deb'])
     on hosts, 'apt-get update'
     install_packages(['ondemand', 'ondemand-dex'])
