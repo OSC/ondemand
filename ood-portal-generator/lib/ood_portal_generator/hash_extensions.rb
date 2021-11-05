@@ -1,4 +1,6 @@
 module OodPortalGenerator
+  # Some elements have been taken from Rails (https://github.com/rails/rails)
+  # and it's LICENSE has been added as RAILS-LICENSE in the root directory of this project.
   module HashExtensions
     refine Hash do
       # Returns a hash that includes everything except given keys.
