@@ -14,3 +14,9 @@ Style/SymbolArray:
 Layout/HashAlignment:
   EnforcedColonStyle: table
   EnforcedHashRocketStyle: table
+
+# metrics
+Metrics/MethodLength:
+  Max: 20
+  CountAsOne:
+    - 'heredoc'

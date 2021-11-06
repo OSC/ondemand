@@ -33,20 +33,35 @@ it first before putting a lot of work into coding something that may not be acce
 let this discourage you though! Feel free to open tickets and engage with the development
 team on proposed changes.
 
-1. [Fork this repo].
-2. Branch off of the master branch.
-3. Create a PR to merge into the master upstream branch.  Make sure at least
-  unit tests continue to pass by executing `rake test`.
-4. We will review it and either add comments for requested changes or merge.
-  If changes are being requested, don't let this discourage you! This is a
-  natural part of getting changes right and ensuring quality in what we're building.
+1.  [Fork this repo].
+2.  Branch off of the master branch.
+3.  Now create a pull request to this repository!  At this point a maintainer will be notified
+    and will start reviwing it.
+4.  If changes are being requested, don't let this discourage you! This is a
+    natural part of getting changes right and ensuring quality in what we're building.
 
-### Tips
+## Project StyleGuide
 
-1. Contributions accompanied by unit tests are recommended.
-2. For Ruby code we add [yarndoc] comments above all of our public interface methods as this is used to generate helpful documentation on http://www.rubydoc.info/. We do not yet have adopted a strong style guide for code in JavaScript and Python.
-3. With the PR for the change, add to the CHANGELOG a line under the "Unreleased" section specifying https://keepachangelog.com/en/1.0.0/.
-4. Follow best conventions with Ruby coding style. We haven't yet adopted a strict style guide, so unless you are using tabs or 4 spaces instead of 2 spaces you will probably not find an objection from us.
+### Linters
+
+For any Ruby librares/apps there is a `.rubocop.yml` at the top of this project. If you
+work in IDEs where you want to only open a part of this project, executing `rake lint:setup`
+and it will copy copy lint config files to various locations. Watch out though, `rake clean`
+will remove them!
+
+### Ruby Style
+
+In addition to the [RuboCop] styles configured described above, we follow common Ruby style
+and idioms. For example `snake_case` methods and variable names and favoring functional style
+methods.
+
+### JavaScript Style
+
+Beyond the [ESLint] configuration files, we follow these styles:
+
+* File names use underscores, `_`, for word seperators.
+* Variables are `camelCase` named and are `const` or `let`. Using `var` is discouraged.
+* Function names are `camelCase`.
 
 
 [Discourse]: https://discourse.osc.edu
@@ -55,3 +70,5 @@ team on proposed changes.
 [code of conduct]: CODE_OF_CONDUCT.md
 [issue labels]: https://github.com/OSC/ondemand/labels
 [good first issues]: https://github.com/OSC/ondemand/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22+
+[RuboCop]: https://docs.rubocop.org/
+[ESLint]: https://eslint.org/
