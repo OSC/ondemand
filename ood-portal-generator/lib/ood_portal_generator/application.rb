@@ -65,7 +65,7 @@ module OodPortalGenerator
 
       def apache
         return ENV['APACHE'] unless ENV['APACHE'].nil?
-        return '/etc/apache2/conf-available/ood-portal.conf' if OodPortalGenerator.debian?
+        return '/etc/apache2/sites-available/ood-portal.conf' if OodPortalGenerator.debian?
         OodPortalGenerator.scl_apache? ? '/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf' : '/etc/httpd/conf.d/ood-portal.conf'
       end
 
