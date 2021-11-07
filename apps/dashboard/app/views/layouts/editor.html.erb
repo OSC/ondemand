@@ -6,12 +6,10 @@
   <title><%= "File Editor - #{OodAppkit.dashboard.title}" %><%= @pathname.nil? ? "" : " - #{@pathname.basename.to_s}" %></title>
   <%= favicon_link_tag 'favicon.ico', href: OodAppkit.public.url.join('favicon.ico') %>
 
-  <%= javascript_pack_tag 'application' %>
+  <%= javascript_pack_tag 'application', nonce: true %>
+  <%= javascript_pack_tag 'editor', nonce: true %>
   <%= stylesheet_pack_tag 'application', media: 'all' %>
 
-  <%= stylesheet_link_tag "editor", media: "all" %>
-
-  <%= javascript_include_tag "editor" %>
   <%= csrf_meta_tags %>
 </head>
 <body>
