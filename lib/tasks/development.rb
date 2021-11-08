@@ -74,7 +74,11 @@ namespace :dev do
     [
       '-v', "#{config_directory}:/etc/ood/config",
       '-v', "#{user.dir}/ondemand:#{user.dir}/ondemand"
-    ]
+    ].tap do |mnts|
+      mnts.concat(['-v', "#{proj_root}/ood-portal-generator:/opt/ood/ood-portal-generator"]) unless ENV['OOD_MNT_PORTAL'].nil?
+      mnts.concat(['-v', "#{proj_root}/nginx_stage:/opt/ood/nginx_stage"]) unless ENV['OOD_MNT_NGINX'].nil?
+      mnts.concat(['-v', "#{proj_root}/mod_ood_proxy:/opt/ood/mod_ood_proxy"]) unless ENV['OOD_MNT_PROXY'].nil?
+    end
   end
 
   desc 'Start development container'
