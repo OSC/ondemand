@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+update changelog (#1562)\
+Numerous fixes for deb package (#1576)\
+Remove active support dependency for ood-portal-generator (#1572)\
+cant get rid of sass-rails just yet (#1574)\
+Use ondemand-nginx and ondemand-passenger with deb packages (#1567)\
+move apps.js to webpack (#1570)\
+icon provided by font-awesome-sass no longer provided (#1569)\
+fix yarn lock (#1563)\
+Push ondemand tar.gz to release page on tags (#1564)\
+migrate the css pipeline to webpack (#1550)\
+rm webpack dev server and resolutions we no longer need (#1553)\
+reset developer docs bc it got wiped (#1549)\
+Prepare for 2.1 (#1555)\
+Packaging improvements (#1551)\
+Update Changelog (#1552)
 
 ### Changed
 
