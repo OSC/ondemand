@@ -39,6 +39,7 @@ jobs:
           delete-branch: true
           title: 'Update Changelog'
           push-to-fork: osc-bot/ondemand
+          branch: osc-bot/changelog-update
           body: |
             Changelog updates from the last 7 days
 

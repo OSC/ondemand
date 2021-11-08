@@ -51,5 +51,6 @@ jobs:
           delete-branch: true
           title: 'Update Dependencies'
           push-to-fork: osc-bot/ondemand
+          branch: osc-bot/dep-updates
           body: |
             Update dependencies generated from `rake update`
