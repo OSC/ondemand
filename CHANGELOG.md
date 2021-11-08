@@ -6,21 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-update changelog (#1562)\
-Numerous fixes for deb package (#1576)\
-Remove active support dependency for ood-portal-generator (#1572)\
-cant get rid of sass-rails just yet (#1574)\
-Use ondemand-nginx and ondemand-passenger with deb packages (#1567)\
-move apps.js to webpack (#1570)\
-icon provided by font-awesome-sass no longer provided (#1569)\
-fix yarn lock (#1563)\
-Push ondemand tar.gz to release page on tags (#1564)\
-migrate the css pipeline to webpack (#1550)\
-rm webpack dev server and resolutions we no longer need (#1553)\
-reset developer docs bc it got wiped (#1549)\
-Prepare for 2.1 (#1555)\
-Packaging improvements (#1551)\
-Update Changelog (#1552)
 
 ### Changed
 
@@ -32,6 +17,8 @@ Update Changelog (#1552)
 - Upgraded to rails 6 in [1474](https://github.com/OSC/ondemand/pull/1474).
 - `context.json` files have moved in location and filename in [1526](https://github.com/OSC/ondemand/pull/1526).
 - Switch dev container and EL8 e2e tests to use Rocky Linux 8 [1534](https://github.com/OSC/ondemand/pull/1534).
+- The CSS pipeline is now handled in webpack in [1550](https://github.com/OSC/ondemand/pull/1550).
+- Remove active support dependency for ood-portal-generator in [1572](https://github.com/OSC/ondemand/pull/1572).
 
 ### Added
 
@@ -41,12 +28,8 @@ Update Changelog (#1552)
   - Other fields in [1449](https://github.com/OSC/ondemand/pull/1449).
   - Add functionality for hiding or showing elements in [1529](https://github.com/OSC/ondemand/pull/1529).
 - Test cases for example files for both ood_portal and nginx_stage in [832](https://github.com/OSC/ondemand/pull/832).
-- Debian packaging in [1466](https://github.com/OSC/ondemand/pull/1466). Additionally:
-  - Update ood-portal-generator to work better on Debian/Ubuntu in [1481](https://github.com/OSC/ondemand/pull/1481).
-  - Use correct path for service.d unit overrides in [1480](https://github.com/OSC/ondemand/pull/1480).
-  - Make ood-portal-generator handle profile files like nginx_stage in [1495](https://github.com/OSC/ondemand/pull/1495).
-  - Fix helper output for ood-portal-generator on Debian systems in [1484](https://github.com/OSC/ondemand/pull/1484).
-  - nightly builds in [1542](https://github.com/OSC/ondemand/pull/1542).
+- Debian packaging in [1466](https://github.com/OSC/ondemand/pull/1466). With many many subsequent patches.
+- Automation will now push ondemand tar.gz to release page on tags in [1564](https://github.com/OSC/ondemand/pull/1564).
     
 
 ### Fixed
