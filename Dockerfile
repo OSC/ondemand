@@ -3,6 +3,7 @@ LABEL maintainer="tdockendorf@osc.edu; johrstrom@osc.edu"
 
 ARG VERSION=latest
 ARG CONCURRENCY=4
+ENV PYTHON=/usr/libexec/platform-python
 
 # setup the ondemand repositories
 RUN dnf -y install https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-6.noarch.rpm
@@ -11,7 +12,7 @@ RUN dnf -y install https://yum.osc.edu/ondemand/latest/ondemand-release-web-late
 RUN dnf -y update && \
     dnf install -y dnf-utils && \
     dnf config-manager --set-enabled powertools && \
-    dnf -y module enable nodejs:12 ruby:2.7 && \
+    dnf -y module enable nodejs:14 ruby:2.7 && \
     dnf install -y \
         file \
         lsof \
