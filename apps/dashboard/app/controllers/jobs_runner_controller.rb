@@ -2,7 +2,6 @@ require 'fileutils'
 
 class JobsRunnerController < ApplicationController
   def index
-
   end
 
   def new
