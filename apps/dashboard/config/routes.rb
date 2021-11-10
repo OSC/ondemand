@@ -2,10 +2,9 @@ require "authz/app_developer_constraint"
 
 Rails.application.routes.draw do
 
-  namespace :jobs_runner do
-    get "/" => "#index"
-    resources :projects do
-    end
+  namespace :jobs do
+    root "projects#index"
+    resources :projects
   end
 
   # in production, if the user doesn't have access to the files app directory, we hide the routes

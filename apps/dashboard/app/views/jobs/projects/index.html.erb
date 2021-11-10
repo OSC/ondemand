@@ -1,5 +1,5 @@
 <div class="page-header" >
-  <h2>Jobs Runner</h2>
+  <h2>Jobs Runner Projects index</h2>
 </div>
 <br>
 <div>
@@ -7,7 +7,7 @@
     <a  data-method="get" 
         data-toggle="tooltip" 
         title="Create a new Project" 
-        href="<%= new_jobs_runner_path %>"
+        href="<%= new_jobs_project_path %>"
     >   
     <button type="button" id="new_job_button" class="btn btn-primary">New Project</button></a>
   </div>
@@ -31,9 +31,9 @@
       <% # @project.each do |project| %>
         <tr>
           <td><%= link_to 'Project name' %>
-          <td><%= link_to 'Work in', jobs_runner_path(:id), class: 'btn btn-success btn-sm' %>
-          <td><%= link_to 'Edit', edit_jobs_runner_path(:id), class: 'btn btn-info btn-sm' %>
-          <td><%= link_to 'Delete', jobs_runner_path(:id), :method => :delete,
+          <td><%= link_to 'Work in', jobs_projects_path, class: 'btn btn-success btn-sm' %>
+          <td><%= link_to 'Edit', edit_jobs_project_path(:id), class: 'btn btn-info btn-sm' %>
+          <td><%= link_to 'Delete', jobs_project_path(:id), :method => :delete,
             data: {confirm: "Are you sure?"}, class: 'btn btn-danger btn-sm' %>
         <tr>
       <% # end %>
