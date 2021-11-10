@@ -1,6 +1,6 @@
 require 'fileutils'
 
-class JobsRunnerController < ApplicationController
+class JobsRunner::ProjectsController < ApplicationController
   def index
   end
 
