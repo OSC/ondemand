@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+update dockerfile with all the recent developments (#1588)\
+doc updates surrounding styleguides, with some updates to styleguides (#1581)\
+add ability to mount infra apps in dev container (#1584)\
+fixes #1575 (#1585)\
+Update Changelog (#1586)\
+update changelog (#1583)
 
 ### Changed
 
