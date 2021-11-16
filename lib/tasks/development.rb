@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 namespace :dev do
-  require_relative 'build_utils'
+  require_relative 'rake_helper'
   require 'yaml'
-  include BuildUtils
+  include RakeHelper
 
   def dev_container_name
     'ood-dev' || ENV['OOD_DEV_CONTAINER_NAME'].to_s

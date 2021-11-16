@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'build_utils'
-require_relative 'install_utils'
-require 'erb'
-require 'dotenv'
+require_relative 'rake_helper'
 
 directory INSTALL_ROOT.to_s
 
@@ -11,8 +8,7 @@ desc "Install OnDemand"
 task :install => 'install:all'
 
 namespace :install do
-  include BuildUtils
-  include InstallUtils
+  include RakeHelper
 
   desc "Install OnDemand infrastructure"
   task :infrastructure => [INSTALL_ROOT] do

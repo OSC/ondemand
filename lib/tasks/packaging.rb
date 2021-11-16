@@ -1,8 +1,8 @@
 desc "Package OnDemand"
 namespace :package do
 
-  require_relative 'build_utils'
-  include BuildUtils
+  require_relative 'rake_helper'
+  include RakeHelper
 
   def rpm_build_cmd(packaging_dir, work_dir, output_dir, dist, version, extra_args)
     args = ["-w", work_dir, "-o", output_dir]
