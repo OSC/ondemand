@@ -1,3 +1,9 @@
+PATH
+  remote: ../ondemand-packaging
+  specs:
+    ood_packaging (0.0.1)
+      rake (~> 13.0.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -182,6 +188,7 @@ DEPENDENCIES
   beaker-docker (~> 1.0.1)
   beaker-rspec
   dotenv (~> 2.1)
+  ood_packaging!
   rake
   rspec
   rubocop

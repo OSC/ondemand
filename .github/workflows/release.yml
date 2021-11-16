@@ -27,6 +27,7 @@ jobs:
         run: bundle exec rake package:tar
         env:
           VERSION: ${{ steps.version.outputs.version }}
+          OOD_PACKAGING_DEBUG: 'true'
       - name: Get release
         id: get_release
         uses: bruceadams/get-release@v1.2.3
