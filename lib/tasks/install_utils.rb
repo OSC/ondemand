@@ -53,7 +53,7 @@ module InstallUtils
     ]
   end
 
-  def package_file_render(name)
+  def render_package_file(name)
     src = File.join(proj_root, 'packaging/files', name)
     return src unless File.extname(name) == '.erb'
 
