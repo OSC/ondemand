@@ -1,15 +1,17 @@
+# frozen_string_literal: true
+
 require 'spec_helper_e2e'
 
-describe 'OnDemand browser test' do
+describe 'OnDemand browser test' do # rubocop:disable RSpec/DescribeClass
   def browser
     @browser ||= new_browser
   end
 
-  before(:all) do
+  before do
     browser_login(browser)
   end
 
-  after(:all) do
+  after do
     browser.close
   end
 

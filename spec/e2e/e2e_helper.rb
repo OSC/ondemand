@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'watir'
 
 def new_browser
@@ -6,7 +7,7 @@ def new_browser
 end
 
 def ctr_base_url
-  "http://localhost:8080"
+  'http://localhost:8080'
 end
 
 def browser_login(browser)
@@ -23,8 +24,8 @@ def browser_login(browser)
   end
 
   browser.goto ctr_base_url
-  browser.text_field(id: 'username').set "ood@localhost"
-  browser.text_field(id: 'password').set "password"
+  browser.text_field(id: 'username').set 'ood@localhost'
+  browser.text_field(id: 'password').set 'password'
   browser.button(id: 'submit-login').click
 end
 
@@ -45,10 +46,11 @@ def proj_root
 end
 
 def dist
-  if host_inventory['platform'] == 'redhat'
+  case host_inventory['platform']
+  when 'redhat'
     major_version = host_inventory['platform_version'].split('.')[0]
     "el#{major_version}"
-  elsif host_inventory['platform'] == 'ubuntu'
+  when 'ubuntu'
     "ubuntu-#{host_inventory['platform_version']}"
   end
 end
@@ -57,8 +59,6 @@ def codename
   case "#{host_inventory['platform']}-#{host_inventory['platform_version']}"
   when 'ubuntu-20.04'
     'focal'
-  else
-    nil
   end
 end
 
@@ -77,25 +77,25 @@ end
 def apache_service
   if host_inventory['platform'] == 'redhat'
     if host_inventory['platform_version'] =~ /^7/
-       'httpd24-httpd'
-     else
-       'httpd'
-     end
-   else
-     'apache2'
-   end
+      'httpd24-httpd'
+    else
+      'httpd'
+    end
+  else
+    'apache2'
+  end
 end
 
 def apache_reload
   if host_inventory['platform'] == 'redhat'
     if host_inventory['platform_version'] =~ /^7/
-       '/opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper $OPTIONS -k graceful'
-     else
-       '/usr/sbin/httpd $OPTIONS -k graceful'
-     end
-   else
-     '/usr/sbin/apachectl graceful'
-   end
+      '/opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper $OPTIONS -k graceful'
+    else
+      '/usr/sbin/httpd $OPTIONS -k graceful'
+    end
+  else
+    '/usr/sbin/apachectl graceful'
+  end
 end
 
 def apache_user
@@ -120,7 +120,8 @@ end
 
 def bootstrap_repos
   repos = []
-  if host_inventory['platform'] == 'redhat'
+  case host_inventory['platform']
+  when 'redhat'
     repos << 'epel-release'
     if host_inventory['platform_version'] =~ /^7/
       repos << 'centos-release-scl yum-plugin-priorities'
@@ -128,7 +129,7 @@ def bootstrap_repos
       on hosts, 'dnf -y module enable ruby:2.7'
       on hosts, 'dnf -y module enable nodejs:14'
     end
-  elsif host_inventory['platform'] == 'ubuntu'
+  when 'ubuntu'
     on hosts, 'apt-get update'
   end
   install_packages(repos) unless repos.empty?
@@ -136,31 +137,32 @@ end
 
 def ondemand_repo
   on hosts, 'mkdir -p /repo'
-  if host_inventory['platform'] == 'redhat'
+  case host_inventory['platform']
+  when 'redhat'
     install_packages(['createrepo'])
-    repo_file = <<~EOS
+    repo_file = <<~REPO
       [ondemand-local]
       name=OnDemand
       enabled=1
       gpgcheck=0
       baseurl=file:///repo
       priority=1
-    EOS
+    REPO
     create_remote_file(hosts, '/etc/yum.repos.d/ondemand.repo', repo_file)
     copy_files_to_dir(File.join(proj_root, "dist/#{dist}/*.rpm"), '/repo')
     on hosts, 'createrepo /repo'
-  elsif host_inventory['platform'] == 'ubuntu'
+  when 'ubuntu'
     install_packages(['dpkg-dev'])
     copy_files_to_dir(File.join(proj_root, "dist/#{dist}*/*.deb"), '/repo')
     on hosts, 'cd /repo ; dpkg-scanpackages .  | gzip -9c > Packages.gz'
-    repo_file = <<~EOS
+    repo_file = <<~REPO
       deb [trusted=yes] file:///repo ./
-    EOS
-    preference = <<~EOS
+    REPO
+    preference = <<~PREF
       Package: *
       Pin: origin ""
       Pin-Priority: 1001
-    EOS
+    PREF
     create_remote_file(hosts, '/etc/apt/sources.list.d/ondemand.list', repo_file)
     create_remote_file(hosts, '/etc/apt/preferences.d/ondemand', preference)
     on hosts, 'apt-get update'
@@ -168,7 +170,8 @@ def ondemand_repo
 end
 
 def install_ondemand
-  if host_inventory['platform'] == 'redhat'
+  case host_inventory['platform']
+  when 'redhat'
     release_rpm = 'https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-6.noarch.rpm'
     on hosts, "[ -f /etc/yum.repos.d/ondemand-web.repo ] || #{packager} install -y #{release_rpm}"
     config_manager = if host_inventory['platform_version'] =~ /^7/
@@ -178,7 +181,7 @@ def install_ondemand
                      end
     on hosts, "#{config_manager} --save --setopt ondemand-web.exclude='ondemand ondemand-gems* ondemand-selinux'"
     install_packages(['ondemand', 'ondemand-dex', 'ondemand-selinux'])
-  elsif host_inventory['platform'] == 'ubuntu'
+  when 'ubuntu'
     install_packages(['wget'])
     on hosts, 'wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest_1_all.deb'
     install_packages(['/tmp/ondemand-release.deb'])
@@ -187,7 +190,7 @@ def install_ondemand
   end
   # Avoid 'update_ood_portal --rpm' so that --insecure can be used
   on hosts, "sed -i 's|--rpm|--rpm --insecure|g' /etc/systemd/system/#{apache_service}.service.d/ood-portal.conf"
-  on hosts, "systemctl daemon-reload"
+  on hosts, 'systemctl daemon-reload'
 end
 
 def upload_portal_config(file)
@@ -212,9 +215,10 @@ def bootstrap_user
 end
 
 def bootstrap_flask
-  if host_inventory['platform'] == 'redhat'
+  case host_inventory['platform']
+  when 'redhat'
     install_packages(['python3'])
-  elsif host_inventory['platform'] == 'ubuntu'
+  when 'ubuntu'
     install_packages(['python3', 'python3-pip'])
   end
   on hosts, 'python3 -m pip install flask'

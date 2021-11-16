@@ -2,11 +2,13 @@
 
 require 'spec_helper_e2e'
 
-describe 'OnDemand installed with packages' do
+describe 'OnDemand installed with packages' do # rubocop:disable RSpec/DescribeClass
   describe package('ondemand') do
     it { is_expected.to be_installed }
   end
 
+  # rubocop:disable RSpec/RepeatedExampleGroupBody
+  # rubocop:disable RSpec/RepeatedDescription
   describe file('/etc/sudoers.d/ood') do
     it { is_expected.to be_file }
     its(:content) { is_expected.to include "Defaults:#{apache_user}" }
@@ -43,4 +45,6 @@ describe 'OnDemand installed with packages' do
   describe file('/var/www/ood/public/favicon.ico') do
     it { is_expected.to be_file }
   end
+  # rubocop:enable RSpec/RepeatedExampleGroupBody
+  # rubocop:enable RSpec/RepeatedDescription
 end

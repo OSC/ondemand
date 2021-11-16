@@ -1,12 +1,13 @@
+# frozen_string_literal: true
+
 require 'spec_helper_e2e'
 
-describe 'Node and Rnode proxies' do
-
+describe 'Node and Rnode proxies' do # rubocop:disable RSpec/DescribeClass
   def browser
     @browser ||= new_browser
   end
 
-  before(:all) do
+  before do
     on hosts, 'mkdir -p /opt/extras'
     copy_files_to_dir("#{extra_fixtures}/*", '/opt/extras')
     upload_portal_config('portal_with_proxies.yml')
@@ -20,7 +21,7 @@ describe 'Node and Rnode proxies' do
     browser_login(browser)
   end
 
-  after(:all) do
+  after do
     browser.close
   end
 
