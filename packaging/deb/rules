@@ -4,7 +4,7 @@ export DH_VERBOSE         = 1
 export NCPUS              = 4
 export DESTDIR            = $(CURDIR)/debian/ondemand
 export GEM_HOME           = $(CURDIR)/gems
-export GEM_PATH           = $(GEM_HOME):$(shell printenv GEM_PATH)
+export GEM_PATH           = $(GEM_HOME):$(DESTDIR)/opt/ood/gems:$(shell printenv GEM_PATH)
 export APACHE_DIR         = "$(DESTDIR)/var/www/ood"
 export CONFIG_DIR         = "$(DESTDIR)/etc/ood/config"
 
