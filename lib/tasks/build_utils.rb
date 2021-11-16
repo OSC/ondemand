@@ -113,81 +113,14 @@ module BuildUtils
   def image_names
     @image_names ||=
     {
-      build_box: "ood-buildbox",
       ood: "ood",
       test: "ood-test",
       dev: "ood-dev"
     }.freeze
   end
 
-  def build_dir(args)
-    "#{PROJ_DIR}/build/#{build_box_tag(args)}"
-  end
-
-  # TODO: continue vendor/ convention? Seems as good as any other name.
-  def vendor_src_dir
-    "vendor/ood/src".tap { |p| sh "mkdir -p #{p}" }
-  end
-
-  def vendor_build_dir
-    "vendor/ood/build".tap { |p| sh "mkdir -p #{p}" }
-  end
-
-  def build_box_tag(args)
-    base_name = "#{args[:platform]}-#{args[:version]}"
-    @version_lookup ||= {
-      'ubuntu-20.04': "1"
-    }.freeze
-
-    "#{base_name}-#{@version_lookup[base_name.to_sym]}"
-  end
-
-  def build_box_image(args)
-    "#{image_names[:build_box]}:#{build_box_tag(args)}"
-  end
-
   def image_exists?(image_name)
     `#{container_runtime} inspect --type image --format exists #{image_name} || true`.chomp.eql?('exists')
-  end
-
-  def nginx_version
-    "1.18.0"
-  end
-
-  def passenger_version
-    "6.0.7"
-  end
-
-  def nginx_tar
-    "nginx-#{nginx_version}-x86_64-linux.tar.gz"
-  end
-
-  def nginx_tar_url
-    "#{passenger_release_url}/#{nginx_tar}"
-  end
-
-  def passenger_base_url
-    "https://github.com/phusion/passenger/releases/download"
-  end
-
-  def passenger_release_url
-    "#{passenger_base_url}/release-#{passenger_version}"
-  end
-
-  def passenger_tar
-    "passenger-#{passenger_version}.tar.gz"
-  end
-
-  def passenger_tar_url
-    "#{passenger_release_url}/#{passenger_tar}"
-  end
-
-  def passenger_agent_tar_url
-    "#{passenger_release_url}/agent-x86_64-linux.tar.gz"
-  end
-
-  def passenger_agent_tar
-    "passenger-agent-#{passenger_version}.tar.gz"
   end
 
   def buildah_build_cmd(docker_file, image_name, image_tag: ood_image_tag, extra_args: [])
@@ -218,11 +151,6 @@ module BuildUtils
     "#{container_runtime} tag #{image_name}:#{image_tag} #{image_name}:latest"
   end
 
-  def template_file(filename)
-    cwd = "#{File.expand_path(__dir__)}"
-    "#{cwd}/templates/#{filename}"
-  end
-
   def package_file(filename)
     File.join(proj_root, 'packaging/files', filename)
   end
@@ -242,5 +170,51 @@ module BuildUtils
   def container_userns_flag
     return ["--userns", "keep-id"] if container_runtime == "podman"
     []
+  end
+
+  def os_release
+    @os_release ||= begin
+      if File.exist?('/etc/os-release')
+        Dotenv.parse('/etc/os-release')
+      else
+        {}
+      end
+    end
+  end
+
+  def scl_apache?
+    return true if (el? && os_release['VERSION_ID'] =~ /^7/)
+    false
+  end
+
+  def el?
+    return true if "#{os_release['ID']} #{os_release['ID_LIKE']}" =~ /(rhel|fedora)/
+    false
+  end
+
+  def debian?
+    return true if (os_release['ID'] =~ /(ubuntu|debian)/ or os_release['ID_LIKE'] == 'debian')
+    false
+  end
+
+  def apache_daemon
+    return '/opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper' if scl_apache?
+    "/usr/sbin/#{apache_service}"
+  end
+
+  def apache_reload
+    return '/usr/sbin/apachectl graceful' if debian?
+    "#{apache_daemon} $OPTIONS -k graceful"
+  end
+
+  def apache_user
+    return 'www-data' if debian?
+    'apache'
+  end
+
+  def apache_service
+    return 'apache2' if debian?
+    return 'httpd24-httpd' if scl_apache?
+    'httpd'
   end
 end

@@ -61,6 +61,7 @@ GEM
     docker-api (2.2.0)
       excon (>= 0.47.0)
       multi_json
+    dotenv (2.7.6)
     excon (0.87.0)
     faraday (1.8.0)
       faraday-em_http (~> 1.0)
@@ -180,6 +181,7 @@ DEPENDENCIES
   beaker
   beaker-docker (~> 1.0.1)
   beaker-rspec
+  dotenv (~> 2.1)
   rake
   rspec
   rubocop
