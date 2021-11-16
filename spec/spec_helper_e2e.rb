@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'beaker-rspec'
 require 'e2e/e2e_helper'
 

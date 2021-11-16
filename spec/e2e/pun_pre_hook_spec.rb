@@ -1,13 +1,11 @@
-# frozen_string_literal: true
-
 require 'spec_helper_e2e'
 
-describe 'Pun Pre Hook' do # rubocop:disable RSpec/DescribeClass
+describe 'Pun Pre Hook' do
   def browser
     @browser ||= new_browser
   end
 
-  before do
+  before(:all) do
     on hosts, '/opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force'
     on hosts, 'mkdir -p /opt/hooks'
     upload_portal_config('portal_with_prehook.yml')
@@ -15,13 +13,13 @@ describe 'Pun Pre Hook' do # rubocop:disable RSpec/DescribeClass
     restart_apache
   end
 
-  after do
+  after(:each) do
     browser.close
     on hosts, '/opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force'
   end
 
-  context 'with pre hook crash' do
-    before do
+  context 'pre hook crash' do
+    before(:all) do
       scp_to(hosts, hook_fixture('bad_pre_hook'), '/opt/hooks/pun_pre_hook')
     end
 
@@ -36,8 +34,8 @@ describe 'Pun Pre Hook' do # rubocop:disable RSpec/DescribeClass
     end
   end
 
-  context 'with missing pre hook' do
-    before do
+  context 'missing pre hook' do
+    before(:all) do
       on hosts, 'rm -f /opt/hooks/pun_pre_hook'
     end
 
@@ -48,8 +46,8 @@ describe 'Pun Pre Hook' do # rubocop:disable RSpec/DescribeClass
     end
   end
 
-  context 'with environment variables' do
-    before do
+  context 'environment variables' do
+    before(:all) do
       scp_to(hosts, hook_fixture('good_pre_hook'), '/opt/hooks/pun_pre_hook')
     end
 
