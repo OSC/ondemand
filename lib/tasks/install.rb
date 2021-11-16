@@ -26,7 +26,7 @@ namespace :install do
     desc 'Install infrastructure files'
     task :files do
       infrastructure_files.each do |file|
-        src = package_file_render(file[:src])
+        src = render_package_file(file[:src])
         FileUtils.mkdir_p(File.dirname(file[:dest]), verbose: true) unless Dir.exist?(File.dirname(file[:dest]))
         FileUtils.cp(src, file[:dest], verbose: true)
         FileUtils.chmod(file[:mode], file[:dest], verbose: true)
