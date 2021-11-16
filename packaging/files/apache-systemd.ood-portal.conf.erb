@@ -2,4 +2,4 @@
 ExecStartPre=-/opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm
 ExecReload=
 ExecReload=-/opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm
-ExecReload=@APACHE_RELOAD@
+ExecReload=<%= apache_reload %>

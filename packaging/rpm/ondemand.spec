@@ -12,7 +12,6 @@
 %global selinux_module_version %{package_version}.%{package_release}
 %global gem_home %{scl_ondemand_core_gem_home}/%{version}
 %global gems_name ondemand-gems-%{version}
-%global files_dir ./packaging/files
 
 %define __brp_mangle_shebangs /bin/true
 
@@ -38,14 +37,12 @@ Source2:   ondemand-selinux.fc
 %bcond_with scl_apache
 %define apache_confd /etc/httpd/conf.d
 %define apache_service httpd
-%define apache_daemon /usr/sbin/httpd
 %define htcacheclean_service htcacheclean
 %define python_dep python2
 %else
 %bcond_without scl_apache
 %define apache_confd /opt/rh/httpd24/root/etc/httpd/conf.d
 %define apache_service httpd24-httpd
-%define apache_daemon /opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper
 %define htcacheclean_service httpd24-htcacheclean
 %define python_dep python
 %endif
@@ -127,6 +124,7 @@ set -x
 set -e
 export GEM_HOME=$(pwd)/gems-build
 export GEM_PATH=$(pwd)/gems-build:$GEM_PATH
+bundle install --without test
 rake --trace -mj%{ncpus} build
 rm -rf ${GEM_HOME}/cache
 rm -rf apps/*/node_modules/.cache
@@ -142,13 +140,11 @@ set -e
 %__mkdir_p %{buildroot}%{gem_home}
 %__mv ./gems-build/* %{buildroot}%{gem_home}/
 export GEM_PATH=%{buildroot}%{gem_home}:$GEM_PATH
-rake --trace install PREFIX=%{buildroot}/opt/ood
+rake --trace install DESTDIR=%{buildroot}
 
 %__rm %{buildroot}/opt/ood/apps/*/log/production.log
 echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/public
-%__cp %{files_dir}/logo.png %{buildroot}%{_localstatedir}/www/ood/public/logo.png
-%__cp %{files_dir}/favicon.ico %{buildroot}%{_localstatedir}/www/ood/public/favicon.ico
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/discover
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/register
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/apps/sys
@@ -186,17 +182,6 @@ touch %{buildroot}%{_sysconfdir}/ood/config/ood_portal.sha256sum
 
 %__cp -R hooks %{buildroot}/opt/ood/hooks
 %__install -D -m 644 hooks/hook.env.example %{buildroot}%{_sysconfdir}/ood/config/hook.env
-
-%__mkdir_p %{buildroot}%{_sysconfdir}/sudoers.d
-%__sed 's/@APACHE_USER@/apache/g' %{files_dir}/sudo > %{buildroot}%{_sysconfdir}/sudoers.d/ood
-%__chmod 0440 %{buildroot}%{_sysconfdir}/sudoers.d/ood
-%__install -D -m 644 %{files_dir}/crontab %{buildroot}%{_sysconfdir}/cron.d/ood
-%__install -D -m 644 %{files_dir}/logrotate %{buildroot}%{_sysconfdir}/logrotate.d/ood
-
-%__install -D -m 644 %{files_dir}/ondemand-nginx-tmpfiles %{buildroot}%{_tmpfilesdir}/ondemand-nginx.conf
-%__install -D -m 444 %{files_dir}/apache-systemd.ood.conf %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood.conf
-%__sed 's|@APACHE_RELOAD@|%{apache_daemon} $OPTIONS -k graceful|g' %{files_dir}/apache-systemd.ood-portal.conf > %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood-portal.conf
-%__chmod 0444 %{buildroot}%{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood-portal.conf
 EOS
 
 %post

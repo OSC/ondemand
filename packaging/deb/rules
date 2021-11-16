@@ -3,11 +3,9 @@
 export DH_VERBOSE         = 1
 export NCPUS              = 4
 export DESTDIR            = $(CURDIR)/debian/ondemand
-export FILESDIR           = $(CURDIR)/packaging/files
 export GEM_HOME           = $(CURDIR)/gems
-export GEM_PATH           = $(GEM_HOME):$(shell printenv GEM_PATH)
+export GEM_PATH           = $(GEM_HOME):$(DESTDIR)/opt/ood/gems:$(shell printenv GEM_PATH)
 export APACHE_DIR         = "$(DESTDIR)/var/www/ood"
-export APACHE_SYSTEMD_DIR = "$(DESTDIR)/etc/systemd/system/apache2.service.d"
 export CONFIG_DIR         = "$(DESTDIR)/etc/ood/config"
 
 
@@ -51,19 +49,6 @@ override_dh_auto_install:
 	install -m 640 ood-portal-generator/share/ood_portal_example.yml $(CONFIG_DIR)/ood_portal.yml
 	install -m 644 ood-portal-generator/share/maintenance.html $(APACHE_DIR)/public/maintenance/index.html
 	install -m 644 hooks/hook.env.example $(CONFIG_DIR)/hook.env
-
-	# extra infrastructure files
-	mkdir -p $(DESTDIR)/etc/sudoers.d
-	sed 's/@APACHE_USER@/www-data/g' $(FILESDIR)/sudo > $(DESTDIR)/etc/sudoers.d/ood
-	chmod 440 $(DESTDIR)/etc/sudoers.d/ood
-	install -D -m 644 $(FILESDIR)/crontab $(DESTDIR)/etc/cron.d/ood
-	install -D -m 644 $(FILESDIR)/logrotate $(DESTDIR)/etc/logrotate.d/ood
-	install -D -m 444 $(FILESDIR)/apache-systemd.ood.conf $(APACHE_SYSTEMD_DIR)/ood.conf
-	sed 's|@APACHE_RELOAD@|/usr/sbin/apachectl graceful|g' $(FILESDIR)/apache-systemd.ood-portal.conf > $(APACHE_SYSTEMD_DIR)/ood-portal.conf
-	chmod 444 $(APACHE_SYSTEMD_DIR)/ood-portal.conf
-	install -D -m 644 $(FILESDIR)/ondemand-nginx-tmpfiles $(DESTDIR)/usr/lib/tmpfiles.d/ondemand-nginx.conf
-	install -D -m 644 $(FILESDIR)/logo.png $(APACHE_DIR)/public/logo.png
-	install -D -m 644 $(FILESDIR)/favicon.ico $(APACHE_DIR)/public/favicon.ico
 
 	mkdir -p $(DESTDIR)/var/tmp/ondemand-nginx
 	mkdir -p $(DESTDIR)/var/run/ondemand-nginx
