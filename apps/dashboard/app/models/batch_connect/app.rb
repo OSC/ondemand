@@ -366,6 +366,7 @@ module BatchConnect
           attributes[:cluster] = {
             widget: "select",
             label: "Cluster",
+            # clusters.map doesn't seem to preserve the order of the clusters across platforms
             options: clusters.each_with_object([]) { |c, clusters| clusters.concat [c.id.to_s] }
           }
         else
