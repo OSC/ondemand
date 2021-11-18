@@ -16,7 +16,27 @@ Layout/HashAlignment:
   EnforcedHashRocketStyle: table
 
 # metrics
+Metrics/ModuleLength:
+  Enabled: false
+Metrics/BlockLength:
+  Enabled: false
 Metrics/MethodLength:
   Max: 20
   CountAsOne:
     - 'heredoc'
+Metrics/ClassLength:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Max: 10
+Metrics/AbcSize:
+  Max: 30
+
+# rspec
+RSpec/MultipleMemoizedHelpers:
+  Max: 10
+RSpec/MultipleExpectations:
+  Enabled: false
+RSpec/ExampleLength:
+  Enabled: false
+RSpec/MessageSpies:
+  EnforcedStyle: receive
