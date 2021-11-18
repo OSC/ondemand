@@ -16,9 +16,7 @@ module BatchConnect::SessionContextsHelper
         form.check_box attrib.id, all_options, attrib.checked_value, attrib.unchecked_value
       end
     when "radio", "radio_button"
-      form.form_group attrib.id, help: field_options[:help] do
-        form.collection_radio_buttons attrib.id,  attrib.select_choices, :first, :second, { label: label_tag(attrib.id, attrib.label), checked: (attrib.value.presence || attrib.field_options[:checked]) }
-      end
+      form.collection_radio_buttons attrib.id,   attrib.select_choices, :second, :first, checked: (attrib.value.presence || attrib.field_options[:checked])
     else
       form.send widget, attrib.id, all_options
     end
