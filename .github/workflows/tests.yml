@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        ruby: ["2.7.1"]
+        ruby: ["2.7"]
         bundler: ["2.1.4"]
     runs-on: ${{ matrix.os }}
     name: Unit tests
