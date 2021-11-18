@@ -1,0 +1,8 @@
+v2:
+  job:
+    foo: bar
+  acls:
+    - adapter: 'group'
+      groups: 
+        - 'hopefully-doesnt-exist'
+      type: 'whitelist'
