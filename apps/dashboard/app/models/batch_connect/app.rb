@@ -366,7 +366,7 @@ module BatchConnect
           attributes[:cluster] = {
             widget: "select",
             label: "Cluster",
-            options: clusters.map { |cluster| cluster.id.to_s }
+            options: clusters.each_with_object([]) { |c, clusters| clusters.concat [c.id.to_s] }
           }
         else
           attributes[:cluster] = {
