@@ -92,7 +92,7 @@ jobs:
       - name: Setup Ruby using Bundler
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "2.7.1"
+          ruby-version: "2.7"
           bundler: "2.1.4"
           bundler-cache: true
 
