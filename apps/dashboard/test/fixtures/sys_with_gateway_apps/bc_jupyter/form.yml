@@ -6,6 +6,12 @@ cluster:
 description: |
   This is a test jupyter app.
 attributes:
+  mode:
+    widget: "radio"
+    value: "1"
+    options:
+      - ["1","Jupyter Lab"]
+      - ["0", "Jupyter Notebook"]
   hidden_change_thing:
     widget: 'hidden_field'
     value: 'default'
@@ -94,6 +100,7 @@ attributes:
 form:
   - bc_num_hours
   - bc_num_slots
+  - mode
   - node_type
   - bc_account
   - bc_email_on_started
