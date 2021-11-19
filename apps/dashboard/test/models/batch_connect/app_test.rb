@@ -7,6 +7,7 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
   end
 
   def expected_clusters(*args)
+    # want the return value to have the same order as *args so OodAppkit.clusters.select won't work
     args.each_with_object([]) do |arg, clusters|
       clusters.append(OodAppkit.clusters[arg.to_s])
     end.compact
@@ -91,7 +92,7 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
       r.path.join("form.yml").write("cluster:\n  - ruby")
 
       app = BatchConnect::App.new(router: r)
-      assert ! app.valid?
+      assert !app.valid?
       assert_equal [], app.clusters
     }
   end
@@ -104,7 +105,7 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
 
       app = BatchConnect::App.new(router: r)
       assert app.valid?
-      assert_equal [ OodCore::Cluster.new({id: 'owens', job: {foo: 'bar'}}) ], app.clusters
+      assert_equal [OodCore::Cluster.new({ id: 'owens', job: { foo: 'bar' } })], app.clusters
     }
   end
 
@@ -152,7 +153,7 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
       app = BatchConnect::App.new(router: r)
       # it's valid but there are no clusters. they're user defined and not validated by us
       assert app.valid?
-      assert_equal [], app.clusters
+      assert_equal expected_clusters, app.clusters
     }
   end
 

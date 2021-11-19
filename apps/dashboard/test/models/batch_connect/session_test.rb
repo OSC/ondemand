@@ -411,7 +411,7 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
     Dir.mktmpdir('staged_root') do |dir|
       OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
       BatchConnect::Session.any_instance.stubs(:id).returns('test-id')
-      OodAppkit.stubs(:clusters).returns([OodCore::Cluster.new({ id: 'owens', job: { foo: 'bar' } })])
+      OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
       session = BatchConnect::Session.new
 
       assert !Dir.exist?(session.staged_root)
