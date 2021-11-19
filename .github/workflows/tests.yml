@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        ruby: ["2.7"]
+        ruby: ["2.7.1"]
         bundler: ["2.1.4"]
     runs-on: ${{ matrix.os }}
     name: Unit tests
@@ -92,7 +92,7 @@ jobs:
       - name: Setup Ruby using Bundler
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "2.7"
+          ruby-version: "2.7.1"
           bundler: "2.1.4"
           bundler-cache: true
 
