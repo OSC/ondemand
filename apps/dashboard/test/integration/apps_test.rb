@@ -19,7 +19,7 @@ class AppsTest < ActionDispatch::IntegrationTest
   end
 
   test "default table is correct" do
-    OodAppkit.stubs(:clusters).returns([]) # this gets rid of interactive apps
+    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.new([])) # this gets rid of interactive apps
     get "/apps/index"
 
     headers = css_select('tr[id="all-apps-table-header"] th')

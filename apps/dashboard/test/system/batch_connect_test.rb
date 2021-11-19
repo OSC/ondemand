@@ -244,7 +244,6 @@ class BatchConnectTest < ApplicationSystemTestCase
     Dir.mktmpdir('bc_cache_test') do |tmpdir|
       OodAppkit.stubs(:dataroot).returns(Pathname.new(tmpdir.to_s))
 
-      # puts "cache root is #{BatchConnect::Session.cache_root}"
 
       visit new_batch_connect_session_context_url('sys/bc_jupyter')
       assert_equal 'owens', find_value('cluster')
