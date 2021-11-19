@@ -366,13 +366,21 @@ module BatchConnect
           attributes[:cluster] = {
             widget: "select",
             label: "Cluster",
-            options: clusters.map { |cluster| cluster.id.to_s }
+            options: sorted_clusters
           }
         else
           attributes[:cluster] = {
             value: clusters.first.id.to_s,
             widget: "hidden_field"
           }
+        end
+      end
+
+      def sorted_clusters
+        OodAppkit.clusters.select do |cluster|
+          cluster_allowed(cluster)
+        end.sort_by do |cluster|
+          configured_clusters.index(cluster.id) || cluster.id
         end
       end
   end
