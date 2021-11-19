@@ -246,7 +246,6 @@ class BatchConnectTest < ApplicationSystemTestCase
 
 
       visit new_batch_connect_session_context_url('sys/bc_jupyter')
-      puts  find("##{bc_ele_id('cluster')}")['innerHTML']
       assert_equal 'owens', find_value('cluster')
       assert_equal 'any', find_value('node_type')
       assert_equal '2.7', find_value('python_version')
