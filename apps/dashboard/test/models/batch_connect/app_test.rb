@@ -118,7 +118,8 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
 
       app = BatchConnect::App.new(router: r)
       assert app.valid?
-      assert_equal expected_clusters(:owens, :oakley, :pitzer, :quick), app.clusters # make sure you only allow good clusters
+      # have to cast to set here because globs ordering is not gaurenteed.
+      assert_equal expected_clusters(:owens, :oakley, :pitzer, :quick).to_set, app.clusters.to_set
     }
   end
 
