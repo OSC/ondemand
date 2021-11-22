@@ -1,0 +1,25 @@
+<%= bootstrap_form_tag  do |form| %>
+
+<div class="card card-default">
+  <div class="card-body">
+    <h5 class="card-title">
+      Project Details
+    </h5>
+    <div class="card-body", role="main">
+      <%= form.text_field :name, label: 'Project Name', required: true %>
+      <%= form.select :cluster, ['Owens', 'Pitzer'], required: true %>
+      <%= form.text_field :account, label: 'Account', required: true %>
+      <%= form.text_field :directory, label: 'Directory', 'data-filepicker': 'true',
+        'data-target_file_type': 'dirs' %>
+      <%= form.text_area :description, label: 'Description' %>
+    </div>
+  </div>
+</div>
+<br>
+  <p>
+    <%= form.submit 'Save', class: 'btn btn-primary' %>
+    <%= form.button 'Reset', type: :reset, class: 'btn btn-default' %>
+    <%= link_to 'Back', jobs_projects_path, class: 'btn btn-default' %>
+  <p>
+
+<% end %>

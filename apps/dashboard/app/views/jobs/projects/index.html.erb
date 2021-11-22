@@ -1,0 +1,41 @@
+<div class="page-header" >
+  <h2>Jobs</h2>
+</div>
+
+<div>
+  <div class="btn-group open">
+    <a  data-method="get" 
+        data-toggle="tooltip" 
+        title="Create a new Project" 
+        href="<%= new_jobs_project_path %>"
+    >   
+    <button type="button" id="new_job_button" class="btn btn-primary" > New Project </button></a>
+  </div>
+</div>
+
+<br>
+<br>
+<div id="submission-list-view" class="card">
+  <h3 class="card-header">Projects</h3>
+  <div class="card-body">
+    <table id="submission-list-table" class="table table-borderless" >
+      <thead>
+        <tr>
+          <th>Project Name</th>
+          <th>Actions</th>
+        <tr>
+      </thead>
+      <tbody>
+      <% @files.each do |project| %>
+        <tr>
+          <td><%= link_to  project, jobs_project_path(project)  %></td>
+          <td><%= link_to 'Work in', jobs_project_path(:id), class: 'btn btn-success btn-sm' %>
+          <td><%= link_to 'Edit', edit_jobs_project_path(:id), class: 'btn btn-info btn-sm' %>
+          <td><%= link_to 'Delete', jobs_project_path(:id), :method => :delete,
+            data: {confirm: "Are you sure?"}, class: 'btn btn-danger btn-sm' %>
+        <tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
