@@ -118,7 +118,7 @@ Listen 8080
   #
   Alias "/assets" "/var/www/configured/public"
   <Directory "/var/www/configured/public">
-    Options Indexes FollowSymLinks
+    Options FollowSymLinks
     AllowOverride None
     Require all granted
   </Directory>
@@ -239,7 +239,7 @@ Listen 8080
   #
   Alias "/discover" "/var/www/ood/discover"
   <Directory "/var/www/ood/discover">
-    Options Indexes FollowSymLinks
+    Options FollowSymLinks
     AllowOverride None
     Require all granted
   </Directory>
@@ -253,7 +253,7 @@ Listen 8080
   #
   Alias "/register" "/var/www/ood/register"
   <Directory "/var/www/ood/register">
-    Options Indexes FollowSymLinks
+    Options FollowSymLinks
     AllowOverride None
 
     AuthType openid-connect
