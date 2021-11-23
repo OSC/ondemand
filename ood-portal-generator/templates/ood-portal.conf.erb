@@ -179,7 +179,11 @@ Listen <%= addr_port %>
   #
   Alias "<%= @public_uri %>" "<%= @public_root %>"
   <Directory "<%= @public_root %>">
-    Options Indexes FollowSymLinks
+    ######################
+    # Removed Index from Public RootOptions as to not allow Directory Indexing
+    # Issue #1617 - https://github.com/OSC/ondemand/issues/1617
+    Options FollowSymLinks
+    ######################
     AllowOverride None
     Require all granted
   </Directory>
