@@ -558,7 +558,8 @@ function getFilesAndDirectoriesFromDirectory (directoryReader, oldEntries, logDr
     withCredentials: true,
     fieldName: 'file',
     limit: 1,
-    headers: { 'X-CSRF-Token': csrf_token }
+    headers: { 'X-CSRF-Token': csrf_token },
+    timeout: 128 * 1000,
   });
 
   uppy.on('file-added', (file) => {
