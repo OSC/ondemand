@@ -179,7 +179,7 @@ Listen <%= addr_port %>
   #
   Alias "<%= @public_uri %>" "<%= @public_root %>"
   <Directory "<%= @public_root %>">
-    Options FollowSymLinks
+    Options Indexes FollowSymLinks
     AllowOverride None
     Require all granted
   </Directory>
@@ -321,7 +321,7 @@ Listen <%= addr_port %>
   #
   Alias "<%= @oidc_discover_uri %>" "<%= @oidc_discover_root %>"
   <Directory "<%= @oidc_discover_root %>">
-    Options FollowSymLinks
+    Options Indexes FollowSymLinks
     AllowOverride None
     Require all granted
   </Directory>
@@ -336,7 +336,7 @@ Listen <%= addr_port %>
   #
   Alias "<%= @register_uri %>" "<%= @register_root %>"
   <Directory "<%= @register_root %>">
-    Options FollowSymLinks
+    Options Indexes FollowSymLinks
     AllowOverride None
 
     <%- @auth.each do |line| -%>
