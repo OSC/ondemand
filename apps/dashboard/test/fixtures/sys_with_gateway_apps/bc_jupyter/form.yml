@@ -8,6 +8,7 @@ description: |
 attributes:
   mode:
     widget: "radio"
+    label: "The Mode"
     value: "1"
     options:
       - ["1","Jupyter Lab"]

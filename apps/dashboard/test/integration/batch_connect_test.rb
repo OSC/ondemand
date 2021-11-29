@@ -12,20 +12,17 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
     stub_sys_apps
   end
 
-  test 'batch_connect_session_context_mode_0 exists in' do
+  test 'radio buttons and labels appear correctly' do
     get new_batch_connect_session_context_url('sys/bc_jupyter')
-    assert_select 'form input[id="batch_connect_session_context_mode_0"]'   
-  end 
+    assert_select 'form input[id="batch_connect_session_context_mode_0"]' 
 
-
-  test 'batch_connect_session_context_mode_1 exists in' do
     get new_batch_connect_session_context_url('sys/bc_jupyter')
     assert_select 'form input[id="batch_connect_session_context_mode_1"]'   
-  end 
-
-  test 'label for batch_connect_session_context_mode exists in' do
+    
     get new_batch_connect_session_context_url('sys/bc_jupyter')
-    assert_select 'label[for="batch_connect_session_context_mode"]'   
+    assert_equal 'The Mode', css_select('label[for="batch_connect_session_context_mode"]').text
+    assert_equal 'Jupyter Lab', css_select('label[for="batch_connect_session_context_mode_1"]').text
+    assert_equal 'Jupyter Notebook', css_select('label[for="batch_connect_session_context_mode_0"]').text    
   end 
 
 end
