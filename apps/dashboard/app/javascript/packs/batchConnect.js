@@ -74,12 +74,12 @@ function snakeCaseWords(str) {
   let first = true;
 
   str.split('').forEach((c) => {
-    if (first){
+    if (first) {
       first = false;
       snakeCase += c.toLowerCase();
-    } else if(c === '-') {
+    } else if(c === '-' || c === '_') {
       snakeCase += '_';
-    } else if(c == c.toUpperCase()) {
+    } else if(c == c.toUpperCase() && !(c >= '0' && c <= '9')) {
       snakeCase += `_${c.toLowerCase()}`;
     } else {
       snakeCase += c;
@@ -276,17 +276,18 @@ function setValue(event, changeId) {
  * allows for, say, gpu to have the same min & max across clusters.
  */
 class Table {
+  // FIXME: probably need to make Vector class? Wouldn't want to add a flag to the constructor.
   constructor(x, y) {
-    this.x = x;
     this.xIdxLookup = {};
 
-    this.y = y;
     this.yIdxLookup = {};
     this.table = y === undefined ? [] : [[]];
   }
 
   put(x, y, value) {
     if(!x) return;
+    x = snakeCaseWords(x);
+    y = snakeCaseWords(y);
 
     if(this.xIdxLookup[x] === undefined) this.xIdxLookup[x] = Object.keys(this.xIdxLookup).length;
     if(y && this.yIdxLookup[y] === undefined) this.yIdxLookup[y] = Object.keys(this.yIdxLookup).length;
@@ -319,8 +320,8 @@ class Table {
   }
 
   get(x, y) {
-    const xIdx = this.xIdxLookup[x];
-    const yIdx = this.yIdxLookup[y];
+    const xIdx = this.xIdxLookup[snakeCaseWords(x)];
+    const yIdx = this.yIdxLookup[snakeCaseWords(y)];
 
     if(this.table[xIdx] === undefined){
       return undefined;
