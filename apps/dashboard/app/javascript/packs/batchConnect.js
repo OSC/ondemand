@@ -276,10 +276,13 @@ function setValue(event, changeId) {
  * allows for, say, gpu to have the same min & max across clusters.
  */
 class Table {
-  // FIXME: probably need to make Vector class? Wouldn't want to add a flag to the constructor.
   constructor(x, y) {
+    // FIXME: probably need to make Vector class? Wouldn't want to add a flag to the constructor.
+    // we don't use x or y internally, though x is used externally.
+    this.x = x;
     this.xIdxLookup = {};
 
+    this.y = y;
     this.yIdxLookup = {};
     this.table = y === undefined ? [] : [[]];
   }
