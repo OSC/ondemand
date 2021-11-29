@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Removed Index from Public RootOptions as to not allow Directory Index… (#1618)\
+extend the timeout for uppy uploads (#1600)
 
 ### Changed
 
