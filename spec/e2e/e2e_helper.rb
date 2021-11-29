@@ -112,10 +112,15 @@ def ondemand_repo
   end
 end
 
+def build_repo_version
+  ENV['OOD_BUILD_REPO'] || '2.0'
+end
+
 def install_ondemand
   if host_inventory['platform'] == 'redhat'
     release_rpm = 'https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-6.noarch.rpm'
     on hosts, "[ -f /etc/yum.repos.d/ondemand-web.repo ] || #{packager} install -y #{release_rpm}"
+    on hosts, "sed -i 's|/latest/|/build/#{build_repo_version}/|g' /etc/yum.repos.d/ondemand-web.repo"
     config_manager = if host_inventory['platform_version'] =~ /^7/
                        'yum-config-manager'
                      else
