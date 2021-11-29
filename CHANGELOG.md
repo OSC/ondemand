@@ -6,8 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Removed Index from Public RootOptions as to not allow Directory Index… (#1618)\
-extend the timeout for uppy uploads (#1600)
 
 ### Changed
 
@@ -38,6 +36,8 @@ extend the timeout for uppy uploads (#1600)
 
 - Batch connect now safely reads files in db in [1402](https://github.com/OSC/ondemand/pull/1402).
 - Add retry attempt counter to 404 loop to fix client side loop in [#1298](https://github.com/OSC/ondemand/pull/1298).
+- Removed Index from Public RootOptions in [#1618](https://github.com/OSC/ondemand/pull/1618).
+- File uploads have longer upload time limits more in line with TCP TTLs in [#1600](https://github.com/OSC/ondemand/pull/1600).
 
 ### Security
 
