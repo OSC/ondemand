@@ -104,3 +104,4 @@ jobs:
         run: bundle exec rake test:e2e
         env:
           BEAKER_set: ${{ matrix.dist }}
+          OOD_BUILD_REPO: ${{ matrix.version }}
