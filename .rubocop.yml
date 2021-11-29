@@ -1,6 +1,6 @@
 # style
 Style/MultilineBlockChain:
-  Enabled: false
+  Enabled: true
 Style/HashSyntax:
   EnforcedStyle: 'no_mixed_keys'
 Style/ClassAndModuleChildren:
@@ -20,3 +20,5 @@ Metrics/MethodLength:
   Max: 20
   CountAsOne:
     - 'heredoc'
+AllCops: 
+  NewCops: enable
