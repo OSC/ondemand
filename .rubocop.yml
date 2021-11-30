@@ -40,3 +40,4 @@ RSpec/ExampleLength:
   Enabled: false
 RSpec/MessageSpies:
   EnforcedStyle: receive
+  
