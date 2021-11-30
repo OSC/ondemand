@@ -1,23 +1,13 @@
-<%-
-
-  relativeDirPath = "../bc_desktop/template/desktops/"
-  files = Dir.entries(relativeDirPath).select { |f| File.file? File.join(relativeDirPath, f) }
-  templates = Array.new
-  files.each do |template|
-    templates.push(File.basename(template, '.*'))
-  end
-
--%>
-
 ---
 attributes:
   desktop:
     label: "Desktop Template"
     widget: select
     options:
-    <%- templates.each do |template| %>
-      - "<%= template %>"
-    <%- end %>
+      - "gnome"
+      - "kde"
+      - "mate"
+      - "xfce"
   bc_vnc_idle: 0
   bc_vnc_resolution:
     required: true
