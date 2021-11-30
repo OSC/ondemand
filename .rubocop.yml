@@ -1,6 +1,6 @@
 # style
 Style/MultilineBlockChain:
-  Enabled: true
+  Enabled: false
 Style/HashSyntax:
   EnforcedStyle: 'no_mixed_keys'
 Style/ClassAndModuleChildren:
