@@ -50,9 +50,9 @@ module ProductsHelper
     html = %Q(<span data-toggle="popover" data-trigger="hover" data-placement="bottom" title="Git Status" data-content="<strong>Staged:</strong> #{staged}<br><strong>Unstaged:</strong> #{unstaged}<br><strong>Untracked:</strong> #{untracked}#{"<br>Please commit any changes or add necessary files to <code>.gitignore</code>" if total != 0}" data-html="true">)
     html += %Q(<small>[#{version} S:#{staged} U:#{unstaged} ?:#{untracked}]</small> )
     if total == 0
-      html += %Q(<span class="text-success">#{icon('fas', 'check')}</span>)
+      html += %Q(<span class="text-success">#{fa_icon('check')}</span>)
     else
-      html += %Q(<span class="text-danger">#{icon('fas', 'times')}</span>)
+      html += %Q(<span class="text-danger">#{fa_icon('times')}</span>)
     end
     html += %Q(</span>)
     html.html_safe
@@ -74,6 +74,7 @@ module ProductsHelper
     button_tag(title,
       class: "btn btn-#{color} btn-block",
       title: help,
+      id: "#{key.to_s.downcase}_btn",
       data: {
         toggle: "cli",
         target: cli_product_path(key, name: @product.name, type: @type),
