@@ -68,7 +68,7 @@ Beyond the [ESLint] configuration files, we follow these styles:
 In general, when making html elements (or Ruby/Js/Etc models of)
 we'll follow this style.
 
-* IDs use underscores `_` for word seperation.
+* IDs use underscores `_` for word seperation. This follows the Rails `form_for` convention.
 
 [Discourse]: https://discourse.osc.edu
 [yardoc]: https://yardoc.org/
