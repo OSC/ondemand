@@ -56,8 +56,8 @@ attributes:
         ]
       - [
           "other-40ish-option",
-          data-min-bc-num-slots-for-cluster-owens: 40,
-          data-min-bc-num-slots-for-cluster-oakley: 48,
+          data-max-bc-num-slots-for-cluster-owens: 40,
+          data-max-bc-num-slots-for-cluster-oakley: 48,
         ]
   python_version:
     # let's set the account used by the python version for some reason
