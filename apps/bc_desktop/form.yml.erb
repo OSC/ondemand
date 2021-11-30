@@ -1,0 +1,43 @@
+<%-
+
+  relativeDirPath = "../bc_desktop/template/desktops/"
+  files = Dir.entries(relativeDirPath).select { |f| File.file? File.join(relativeDirPath, f) }
+  templates = Array.new
+  files.each do |template|
+    templates.push(File.basename(template, '.*'))
+  end
+
+-%>
+
+---
+attributes:
+  desktop:
+    label: "Desktop Template"
+    widget: select
+    options:
+    <%- templates.each do |template| %>
+      - "<%= template %>"
+    <%- end %>
+  bc_vnc_idle: 0
+  bc_vnc_resolution:
+    required: true
+  node_type: null
+  cluster:
+    label: "Which Cluster" 
+    widget: "radio"
+    value: "pitzer"
+    options:
+      - ["pitzer","Pitzer"]
+      - ["owens", "Owens"]
+
+form:
+  - bc_vnc_idle
+  - desktop
+  - cluster
+  - bc_account
+  - bc_num_hours
+  - bc_num_slots
+  - node_type
+  - bc_queue
+  - bc_vnc_resolution
+  - bc_email_on_started
