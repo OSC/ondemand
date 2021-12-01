@@ -378,6 +378,14 @@ class ConfigurationSingleton
     end
   end
 
+  def bc_dynamic_js?
+    if ENV['OOD_BC_DYNAMIC_JS']
+      to_bool(ENV['OOD_BC_DYNAMIC_JS'])
+    else
+      to_bool(config.fetch(:bc_dynamic_js, false))
+    end
+  end
+
   private
 
   def can_access_core_app?(name)
