@@ -6,6 +6,8 @@
   <%= f.submit t('dashboard.batch_connect_form_launch'), class: "btn btn-primary btn-block" %>
 <% end %>
 
+<%= javascript_pack_tag 'batchConnect' if Configuration.bc_dynamic_js? %>
+
 <% @app.custom_javascript_files.each do |jsfile| %>
   <%= javascript_tag "(function(){\n" + jsfile.read + "\n}());" %>
 <% end %>

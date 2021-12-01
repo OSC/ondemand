@@ -1,29 +1,115 @@
 ---
 title: "Jupyter Notebook"
-cluster: "owens"
+cluster:
+  - "owens"
+  - "oakley"
 description: |
-  This app will launch a Jupyter Notebook server on one or more Owens nodes.
+  This is a test jupyter app.
 attributes:
-  bc_account:
-    help: "You can leave this blank if **not** in multiple projects."
+  mode:
+    widget: "radio"
+    label: "The Mode"
+    value: "1"
+    options:
+      - ["1","Jupyter Lab"]
+      - ["0", "Jupyter Notebook"]
+  hidden_change_thing:
+    widget: 'hidden_field'
+    value: 'default'
+  bc_num_slots:
+    max: 20
+    min: 1
   node_type:
     widget: select
     label: "Node type"
-    help: |
-      - **any** - (*28 cores*) Chooses anyone of the available Owens nodes.
-        This reduces the wait time as you have no requirements.
-      - **gpu** -  (*28 cores*) This node includes an NVIDIA Tesla P100 GPU
-        allowing for CUDA computations. There are currently only 160 of these
-        nodes on Owens.
-      - **hugemem** - (*48 cores*) This Owens node has 1.5TB of available RAM
-        as well as 48 cores. There are 16 of these nodes on Owens.
     options:
-      - ["any", ":ppn=28"]
-      - ["gpu", ":ppn=28:gpus=1"]
-      - ["hugemem", ":ppn=48:hugemem"]
+      - [
+          "any",
+          data-hide-cuda-version: true,
+          data-minnn-bc-not-found-for-cluster-mistype: 30,
+          data-max-bc-not-found-for-cluster-mistype: 30,
+          data-maximum-bc-not-found-for-cluster-mistype: 30
+        ]
+      - [
+          "gpu",
+          # this bad option is kept here so that in testing, it doesn't throw errors
+          data-option-for-not-real-choice: false,
+          data-max-some-element-for-3rd-element-value: 10,
+          data-max-bc-num-slots-for-cluster-owens: 28,
+          data-min-bc-num-slots-for-cluster-owens: 2,
+          data-max-bc-num-slots-for-cluster-oakley: 40,
+          data-min-bc-num-slots-for-cluster-oakley: 3,
+        ]
+      - [
+          "hugemem",
+          data-option-for-cluster-oakley: false,
+          data-hide-cuda-version: true,
+          data-max-bc-num-slots-for-cluster-owens: 42,
+          data-min-bc-num-slots-for-cluster-owens: 42,
+        ]
+      - [
+          "advanced",
+          data-option-for-cluster-oakley: false,
+          data-hide-cuda-version: true,
+          data-max-bc-num-slots-for-cluster-oakley: 9001
+        ]
+      # this node type is the same for both clusters, so there's no 'for-cluster-...' clause
+      # TODO: this currently breaks tests
+      - [
+          "same",
+          data-hide-cuda-version: true,
+          data-min-bc-num-slots: 100,
+          data-max-bc-num-slots: 200
+        ]
+      - [
+          "other-40ish-option",
+          data-max-bc-num-slots-for-cluster-owens: 40,
+          data-max-bc-num-slots-for-cluster-oakley: 48,
+        ]
+  python_version:
+    # let's set the account used by the python version for some reason
+    widget: select
+    options:
+      - [
+          "2.7",
+          data-option-for-node-type-advanced: false,
+          data-set-bc-account: 'python27'
+        ]
+      - [
+          "3.1",
+          data-option-for-node-type-advanced: false,
+          data-set-bc-account: 'python31'
+        ]
+      - [
+          "3.2",
+          data-option-for-node-type-advanced: false,
+          data-set-bc-account: 'python32'
+        ]
+      - [
+          "3.6",
+          data-set-hidden-change-thing: 'python36'
+        ]
+      - [
+          "3.7",
+          data-set-hidden-change-thing: 'python37',
+        ]
+      - [
+          "4.0.nightly",
+          data-set-hidden-change-thing: 'python4nightly',
+        ]
+  cuda_version:
+    widget: select
+    options:
+      - "4"
+      - "7"
+      - "38"
 form:
   - bc_num_hours
   - bc_num_slots
+  - mode
   - node_type
   - bc_account
   - bc_email_on_started
+  - python_version
+  - cuda_version
+  - hidden_change_thing
