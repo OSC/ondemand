@@ -8,10 +8,8 @@ class Jobs::Project
   def self.stat(dir)
     path = Pathname.new(dir)
       {
-        id: "dev-#{path.stat.dev}-inode-#{path.stat.ino}",
         name: path.basename,
-        directory: path.stat.directory?,
-        size: path.stat.size
+        directory: path.stat.directory?
       }
   end
 
