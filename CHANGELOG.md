@@ -11,24 +11,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Security
 
-- Removed Index from Public RootOptions as to not allow Directory Indexing
-  [1617](https://github.com/OSC/ondemand/issues/1617)
+- Removed Index from Public RootOptions as to not allow Directory Indexing in [1617](https://github.com/OSC/ondemand/issues/1617).
 
 ### Fixed
 
-- Fix mod_ood_proxy Lua errors with Lua 5.3
-  [1627](https://github.com/OSC/ondemand/pull/1627)
-- Uppy claims failure but upload succeeds
-  [1378](https://github.com/OSC/ondemand/issues/1378)
-- Extend the timeout for uppy uploads 
-  [1600](https://github.com/OSC/ondemand/pull/1600)
+- Fixed lua warnings `bad argument #2 to 'date'` in [1627](https://github.com/OSC/ondemand/pull/1627).
+- Uppy claims failure but upload succeeds. This has been fixed in [1600](https://github.com/OSC/ondemand/pull/1600)
+  by extending the timeout.
 
 ### Added
 
-- Use versioned build repo for E2E tests.
-  [1623](https://github.com/OSC/ondemand/pull/1623)
-- Added Dynamic JavaScript functionality
-  [1639](https://github.com/OSC/ondemand/pull/1639)
+- Batch connect apps can now have dynamic behaviour through configuration in [1639](https://github.com/OSC/ondemand/pull/1639).
+  This means we now ship a lot of functionality that sites previously had to code themselves in `form.js`.
+  This introduces the `OOD_BC_DYNAMIC_JS` that sites must set to enable this feature.
 
 ## [2.0.19] - 2021-10-29
 
