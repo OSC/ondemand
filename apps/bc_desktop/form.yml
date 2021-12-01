@@ -1,7 +1,7 @@
 ---
 attributes:
   desktop:
-    label: "Desktop Template"
+    label: "Desktop Environment"
     widget: select
     options:
       - "gnome"
