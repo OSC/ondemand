@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.20] - 2021-12-01
+
+### Security
+
+- Removed Index from Public RootOptions as to not allow Directory Indexing in [1617](https://github.com/OSC/ondemand/issues/1617).
+
+### Fixed
+
+- Fixed lua warnings `bad argument #2 to 'date'` in [1627](https://github.com/OSC/ondemand/pull/1627).
+- Uppy claims failure but upload succeeds. This has been fixed in [1600](https://github.com/OSC/ondemand/pull/1600)
+  by extending the timeout.
+
+### Added
+
+- Batch connect apps can now have dynamic behaviour through configuration in [1639](https://github.com/OSC/ondemand/pull/1639).
+  This means we now ship a lot of functionality that sites previously had to code themselves in `form.js`.
+  This introduces the `OOD_BC_DYNAMIC_JS` that sites must set to enable this feature.
+
 ## [2.0.19] - 2021-10-29
 
 ### Fixed
@@ -917,7 +935,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.19...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.20...release_2.0
+[2.0.20]: https://github.com/OSC/ondemand/compare/v2.0.19...v2.0.20
 [2.0.19]: https://github.com/OSC/ondemand/compare/v2.0.18...v2.0.19
 [2.0.18]: https://github.com/OSC/ondemand/compare/v2.0.17...v2.0.18
 [2.0.17]: https://github.com/OSC/ondemand/compare/v2.0.16...v2.0.17
