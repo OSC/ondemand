@@ -1,6 +1,13 @@
 ---
 attributes:
-  desktop: "mate"
+  desktop:
+    label: "Desktop Environment"
+    widget: select
+    options:
+      - "gnome"
+      - "kde"
+      - "mate"
+      - "xfce"
   bc_vnc_idle: 0
   bc_vnc_resolution:
     required: true
