@@ -27,51 +27,30 @@ function getUserPreference(key) {
   return getLocalStorage(normalizeKey(key));
 }
 
-var editorContent = "";
 
-const editorElement = document.querySelector('#editor');
-const apiUrl = editorElement.dataset.api;
-const filePath = editorElement.dataset.path;
 
 
 jQuery(function () {
 
   $('[data-toggle="tooltip"]').tooltip();
 
+  const editorElement = document.querySelector('#editor');
+  const apiUrl = editorElement.dataset.api;
+  const filePath = editorElement.dataset.path;
+
   // Do not load the ace editor if the element is not available
   // ex. for directory views
   if ($('#editor').length) {
     $('#error').hide();
     // Initialize the ace editor
-    var editor = ace.edit("editor");
+    const editor = ace.edit("editor");
+    const loading = false;
+
     setOptions();
-    editor.setReadOnly(true);
-    $("#loading-notice").toggle();
-    var loading = true;
-    // Load the file via ajax
-    $.ajax({
-      url: apiUrl,
-      type: 'GET',
-      dataType: "text",
-      success: function (data) {
-        editorContent = data;
-        $("#editor").text(editorContent);
-        editor.destroy();
-        editor = ace.edit("editor");
-        initializeEditor();
-        setModeFromModelist();
-        $("#loading-notice").toggle();
-        setBeforeUnloadState();
-        loading = false;
-      },
-      error: function (request, status, error) {
-        $('#error').show();
-        editor.destroy();
-        $('#editor').remove();
-        $('#ajaxErrorResponse').text(error);
-        $("#loading-notice").toggle();
-      }
-    });
+    initializeEditor();
+    setBeforeUnloadState();
+    editor.setReadOnly(false);
+
     function initializeEditor() {
 
       // Disables/enables the save button and binds the window popup if there are changes
