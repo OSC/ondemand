@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Added functionality to Select desktop environment (#1638)\
+add html styleguide (#1637)\
+normalize keys in table to account for options with hyphens (#1630)\
+migrate product assets to webpack (#1579)\
+Jupyter form to radio button selection (#1611)\
+Update Changelog (#1612)\
+update changelog (#1613)\
+Fix mod_ood_proxy Lua errors with Lua 5.3 (#1628)\
+Use versioned build repo for E2E tests (#1624)
 
 ### Changed
 
