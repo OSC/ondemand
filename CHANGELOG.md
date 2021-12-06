@@ -6,15 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Added functionality to Select desktop environment (#1638)\
-add html styleguide (#1637)\
-normalize keys in table to account for options with hyphens (#1630)\
-migrate product assets to webpack (#1579)\
-Jupyter form to radio button selection (#1611)\
-Update Changelog (#1612)\
-update changelog (#1613)\
-Fix mod_ood_proxy Lua errors with Lua 5.3 (#1628)\
-Use versioned build repo for E2E tests (#1624)
 
 ### Changed
 
@@ -28,6 +19,9 @@ Use versioned build repo for E2E tests (#1624)
 - Switch dev container and EL8 e2e tests to use Rocky Linux 8 [1534](https://github.com/OSC/ondemand/pull/1534).
 - The CSS pipeline is now handled in webpack in [1550](https://github.com/OSC/ondemand/pull/1550).
 - Remove active support dependency for ood-portal-generator in [1572](https://github.com/OSC/ondemand/pull/1572).
+- All desktop options now show in bc_desktop [1638](https://github.com/OSC/ondemand/pull/1638).
+- Radio buttons are now grouped for labeling. We also changed the ordering of labels and values in radio buttons
+  in [1611](https://github.com/OSC/ondemand/pull/1611).
 
 ### Added
 
@@ -38,8 +32,7 @@ Use versioned build repo for E2E tests (#1624)
   - Add functionality for hiding or showing elements in [1529](https://github.com/OSC/ondemand/pull/1529).
 - Test cases for example files for both ood_portal and nginx_stage in [832](https://github.com/OSC/ondemand/pull/832).
 - Debian packaging in [1466](https://github.com/OSC/ondemand/pull/1466). With many many subsequent patches.
-- Automation will now push ondemand tar.gz to release page on tags in [1564](https://github.com/OSC/ondemand/pull/1564).
-    
+- Automation will now push ondemand tar.gz to release page on tags in [1564](https://github.com/OSC/ondemand/pull/1564).    
 
 ### Fixed
 
