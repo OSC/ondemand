@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Switch dev container and EL8 e2e tests to use Rocky Linux 8 [1534](https://github.com/OSC/ondemand/pull/1534).
 - The CSS pipeline is now handled in webpack in [1550](https://github.com/OSC/ondemand/pull/1550).
 - Remove active support dependency for ood-portal-generator in [1572](https://github.com/OSC/ondemand/pull/1572).
+- All desktop options now show in bc_desktop [1638](https://github.com/OSC/ondemand/pull/1638).
+- Radio buttons are now grouped for labeling. We also changed the ordering of labels and values in radio buttons
+  in [1611](https://github.com/OSC/ondemand/pull/1611).
 
 ### Added
 
@@ -29,8 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - Add functionality for hiding or showing elements in [1529](https://github.com/OSC/ondemand/pull/1529).
 - Test cases for example files for both ood_portal and nginx_stage in [832](https://github.com/OSC/ondemand/pull/832).
 - Debian packaging in [1466](https://github.com/OSC/ondemand/pull/1466). With many many subsequent patches.
-- Automation will now push ondemand tar.gz to release page on tags in [1564](https://github.com/OSC/ondemand/pull/1564).
-    
+- Automation will now push ondemand tar.gz to release page on tags in [1564](https://github.com/OSC/ondemand/pull/1564).    
 
 ### Fixed
 
