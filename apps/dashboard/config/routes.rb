@@ -4,12 +4,13 @@ Rails.application.routes.draw do
 
   if Configuration.jobs_app_alpha?
     namespace :jobs do
-      root "projects#index"
+      root 'projects#index'
       resources :projects do
         resources :scripts
       end
     end
   end
+  
   # in production, if the user doesn't have access to the files app directory, we hide the routes
   if Configuration.can_access_files?
     constraints filepath: /.+/ do

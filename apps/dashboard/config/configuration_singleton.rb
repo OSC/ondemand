@@ -40,7 +40,7 @@ class ConfigurationSingleton
       :csp_report_only      => false,
       :bc_dynamic_js        => false,
       :per_cluster_dataroot => false,
-      :jobs_app_alpha       => true
+      :jobs_app_alpha       => false
     }.freeze
   end
 

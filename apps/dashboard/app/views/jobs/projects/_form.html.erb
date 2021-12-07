@@ -9,12 +9,6 @@
         <div class='col-md-5'>
           <%= form.text_field :name, label: 'Directory/Project Name', class: 'form-control', required: true %>
         </div>
-        <div class='col-md-5'>
-          <%= form.text_field :account, label: 'Account', class: 'form-control', required: true %>
-        </div>
-        <div class='col-md-3'>
-          <%= form.select :cluster, ['Owens', 'Pitzer'], class: 'form-control', required: true %>
-        </div>
         <div class='col-md-12'>
           <%= form.text_area :description, label: 'Description', class: 'form-control' %>
         </div>
