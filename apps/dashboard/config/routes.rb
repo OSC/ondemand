@@ -10,7 +10,7 @@ Rails.application.routes.draw do
       end
     end
   end
-  
+
   # in production, if the user doesn't have access to the files app directory, we hide the routes
   if Configuration.can_access_files?
     constraints filepath: /.+/ do
