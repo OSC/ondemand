@@ -3,7 +3,7 @@
 const KEY_PREFIX = "ood_editor_store_";
 
 function normalizeKey(key) {
-  return `${KEY_PREFIX}key`;
+  return `${KEY_PREFIX}${key}`;
 }
 
 // Set localStorage. Adds a key prefix to reduce overlap likelihood.
@@ -26,9 +26,6 @@ function setUserPreference(key, value) {
 function getUserPreference(key) {
   return getLocalStorage(normalizeKey(key));
 }
-
-
-
 
 jQuery(function () {
 

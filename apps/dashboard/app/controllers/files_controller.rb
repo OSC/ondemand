@@ -160,14 +160,12 @@ class FilesController < ApplicationController
     @path = Pathname.new(p)
     @file_api_url = OodAppkit.files.api(path: @path).to_s
 
-    @content =  if @path.file? && @path.readable?
-                  File.read(@path.to_s)
-                else
-                  # TODO throw a warning here that you can't edit this file
-                  ''
-                end
-
-    render :edit, status: status, layout: 'editor'
+    if @path.file? && @path.readable? && @path.writable?
+      @content = File.read(@path.to_s)
+      render :edit, status: status, layout: 'editor'
+    else
+      redirect_to root_path, alert: "#{@path} is not an editable file"
+    end
   end
 
   private
