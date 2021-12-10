@@ -127,4 +127,4 @@ jobs:
           pwd
           ls tmp/
           ls -lRt tmp/e2e_ctr/
-          bash -c 'cat tmp/e2e_ctr/**/*.log'
+          find tmp/e2e_ctr/ -type f -name *.log -exec cat {} +
