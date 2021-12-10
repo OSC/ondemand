@@ -33,4 +33,4 @@ import 'popper.js'
 import 'bootstrap/dist/js/bootstrap'
 
 // Import application stylesheets
-require.context('../stylesheets', true)
+import '../stylesheets/application'

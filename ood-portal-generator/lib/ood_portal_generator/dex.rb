@@ -1,8 +1,9 @@
-require 'active_support'
-require 'active_support/core_ext'
+require 'ood_portal_generator/hash_extensions'
 require 'securerandom'
 require 'fileutils'
 require 'bcrypt'
+
+using OodPortalGenerator::HashExtensions
 
 module OodPortalGenerator
   # A view class that renders a Dex configuration

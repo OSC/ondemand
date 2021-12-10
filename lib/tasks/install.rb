@@ -1,67 +1,39 @@
 # frozen_string_literal: true
 
-require_relative 'build_utils'
-require 'erb'
+require_relative 'rake_helper'
+
+directory INSTALL_ROOT.to_s
+
+desc "Install OnDemand"
+task :install => 'install:all'
 
 namespace :install do
-  include BuildUtils
+  include RakeHelper
 
-  def nginx_conf
-    "#{INSTALL_ROOT}/ondemand/root/etc/nginx".tap { |d| sh "mkdir -p #{d}" }
-  end
-
-  def nginx_sbin_dir
-    "#{INSTALL_ROOT}/ondemand/root/usr/sbin".tap { |d| sh "mkdir -p #{d}" }
-  end
-
-  def passenger_root
-    "#{INSTALL_ROOT}/passenger".tap { |d| sh "mkdir -p #{d}" }
-  end
-
-  def passenger_lib_dir
-    "#{passenger_root}/lib".tap { |d| sh "mkdir -p #{d}" }
-  end
-
-  def passenger_src_dir
-    "#{passenger_root}/src"
-  end
-
-  def passenger_bin_dir
-    "#{passenger_root}/bin"
-  end
-
-  def passenger_ini_dir
-    # easier to use default then to try another path
-    "#{INSTALL_ROOT}/ondemand/root/usr/share/ruby/vendor_ruby/phusion_passenger".tap { |d| sh "mkdir -p #{d}" }
-  end
-
-  task :install_root do
-    sh "mkdir -p #{INSTALL_ROOT}"
-  end
-
-  task nginx: [:install_root] do
-    tar_file = "#{vendor_src_dir}/#{nginx_tar}"
-    sh "#{tar} -xzf #{tar_file} -C #{vendor_src_dir}"
-    sh "install -m 755 #{vendor_src_dir}/nginx-#{nginx_version} #{nginx_sbin_dir}/nginx"
-    sh "install -m 644 #{package_file('mime.types')} #{nginx_conf}/mime.types"
-  end
-
-  task passenger: [:install_root] do
-    # best way to find the ruby system lib dir?
-    lib_dir = $LOAD_PATH.select do |p|
-      p.start_with?('/usr/lib')
-    end.first.tap do |p|
-      sh "mkdir -p #{DESTDIR}/#{p}"
-    end
-
-    # mv probably not right here. install? didn't work at first
-    sh "mv #{vendor_build_dir}/passenger/passenger_native_support.so #{DESTDIR}/#{lib_dir}"
-    sh "mv #{vendor_build_dir}/passenger #{INSTALL_ROOT}/passenger"
-    sh "#{tar} -xzf #{vendor_src_dir}/#{passenger_agent_tar} -C #{passenger_lib_dir}"
-
-    File.open("#{passenger_ini_dir}/locations.ini", 'w') do |f|
-      content = File.read(template_file('locations.ini.erb'))
-      f.write(ERB.new(content, nil, '-').result(binding))
+  desc "Install OnDemand infrastructure"
+  task :infrastructure => [INSTALL_ROOT] do
+    infrastructure.each do |infra|
+      sh "cp -r #{infra.name} #{INSTALL_ROOT}/"
     end
   end
+
+  desc "Install OnDemand apps"
+  task :apps => [INSTALL_ROOT] do
+    sh "cp -r #{APPS_DIR} #{INSTALL_ROOT}/"
+  end
+
+  namespace :infrastructure do
+    desc 'Install infrastructure files'
+    task :files do
+      infrastructure_files.each do |file|
+        src = render_package_file(file[:src])
+        FileUtils.mkdir_p(File.dirname(file[:dest]), verbose: true) unless Dir.exist?(File.dirname(file[:dest]))
+        FileUtils.cp(src, file[:dest], verbose: true)
+        FileUtils.chmod(file[:mode], file[:dest], verbose: true)
+      end
+    end
+  end
+
+  desc "Install OnDemand infrastructure and apps"
+  task :all => [:infrastructure, :apps, 'infrastructure:files']
 end

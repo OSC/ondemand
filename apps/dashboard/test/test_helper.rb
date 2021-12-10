@@ -15,7 +15,7 @@ require 'timecop'
 class ActiveSupport::TestCase
   # Add more helper methods to be used by all tests here...
 
-  UserDouble = Struct.new(:name)
+  UserDouble = Struct.new(:name, :groups)
 
   def with_modified_env(options, &block)
     ClimateControl.modify(options, &block)
@@ -30,8 +30,8 @@ class ActiveSupport::TestCase
   end
 
   def stub_usr_router
-    OodSupport::Process.stubs(:user).returns(UserDouble.new('me'))
-    OodSupport::User.stubs(:new).returns(UserDouble.new('me'))
+    OodSupport::Process.stubs(:user).returns(UserDouble.new('me', ['me']))
+    OodSupport::User.stubs(:new).returns(UserDouble.new('me', ['me']))
 
     UsrRouter.stubs(:base_path).with(:owner => "me").returns(Pathname.new("test/fixtures/usr/me"))
     UsrRouter.stubs(:base_path).with(:owner => 'shared').returns(Pathname.new("test/fixtures/usr/shared"))

@@ -61,6 +61,7 @@ GEM
     docker-api (2.2.0)
       excon (>= 0.47.0)
       multi_json
+    dotenv (2.7.6)
     excon (0.87.0)
     faraday (1.8.0)
       faraday-em_http (~> 1.0)
@@ -141,6 +142,8 @@ GEM
       unicode-display_width (>= 1.4.0, < 3.0)
     rubocop-ast (1.12.0)
       parser (>= 3.0.1.1)
+    rubocop-rspec (2.6.0)
+      rubocop (~> 1.19)
     ruby-ll (2.1.2)
       ansi
       ast
@@ -180,9 +183,11 @@ DEPENDENCIES
   beaker
   beaker-docker (~> 1.0.1)
   beaker-rspec
+  dotenv (~> 2.1)
   rake
   rspec
   rubocop
+  rubocop-rspec
   watir
 
 BUNDLED WITH

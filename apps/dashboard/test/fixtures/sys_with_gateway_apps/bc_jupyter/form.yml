@@ -6,6 +6,13 @@ cluster:
 description: |
   This is a test jupyter app.
 attributes:
+  mode:
+    widget: "radio"
+    label: "The Mode"
+    value: "1"
+    options:
+      - ["1","Jupyter Lab"]
+      - ["0", "Jupyter Notebook"]
   hidden_change_thing:
     widget: 'hidden_field'
     value: 'default'
@@ -54,6 +61,11 @@ attributes:
           data-min-bc-num-slots: 100,
           data-max-bc-num-slots: 200
         ]
+      - [
+          "other-40ish-option",
+          data-max-bc-num-slots-for-cluster-owens: 40,
+          data-max-bc-num-slots-for-cluster-oakley: 48,
+        ]
   python_version:
     # let's set the account used by the python version for some reason
     widget: select
@@ -94,6 +106,7 @@ attributes:
 form:
   - bc_num_hours
   - bc_num_slots
+  - mode
   - node_type
   - bc_account
   - bc_email_on_started

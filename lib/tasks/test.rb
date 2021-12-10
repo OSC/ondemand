@@ -3,13 +3,9 @@
 desc 'Test OnDemand'
 task :test => 'test:all'
 
-def yarn_app?(path)
-  Pathname.new(path).join('yarn.lock').exist?
-end
-
 namespace :test do
-  require_relative 'build_utils'
-  include BuildUtils
+  require_relative 'rake_helper'
+  include RakeHelper
 
   testing = {
     'ood-portal-generator': 'spec',

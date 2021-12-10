@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 namespace :dev do
-  require_relative 'build_utils'
+  require_relative 'rake_helper'
   require 'yaml'
-  include BuildUtils
+  include RakeHelper
 
   def dev_container_name
     'ood-dev' || ENV['OOD_DEV_CONTAINER_NAME'].to_s
@@ -74,7 +74,11 @@ namespace :dev do
     [
       '-v', "#{config_directory}:/etc/ood/config",
       '-v', "#{user.dir}/ondemand:#{user.dir}/ondemand"
-    ]
+    ].tap do |mnts|
+      mnts.concat(['-v', "#{proj_root}/ood-portal-generator:/opt/ood/ood-portal-generator"]) unless ENV['OOD_MNT_PORTAL'].nil?
+      mnts.concat(['-v', "#{proj_root}/nginx_stage:/opt/ood/nginx_stage"]) unless ENV['OOD_MNT_NGINX'].nil?
+      mnts.concat(['-v', "#{proj_root}/mod_ood_proxy:/opt/ood/mod_ood_proxy"]) unless ENV['OOD_MNT_PROXY'].nil?
+    end
   end
 
   desc 'Start development container'
@@ -84,7 +88,6 @@ namespace :dev do
     ctr_args = [container_runtime, 'run', '-p 8080:8080', '-p 5556:5556']
     ctr_args.concat ["--name #{dev_container_name}"]
     ctr_args.concat ['--rm', '--detach']
-    ctr_args.concat ['-e', 'OOD_STATIC_USER=/etc/ood/config/static_user.yml']
     ctr_args.concat dev_mounts
     ctr_args.concat container_rt_args
 

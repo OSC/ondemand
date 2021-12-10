@@ -1,8 +1,8 @@
 desc "Package OnDemand"
 namespace :package do
 
-  require_relative 'build_utils'
-  include BuildUtils
+  require_relative 'rake_helper'
+  include RakeHelper
 
   def rpm_build_cmd(packaging_dir, work_dir, output_dir, dist, version, extra_args)
     args = ["-w", work_dir, "-o", output_dir]
@@ -39,14 +39,14 @@ namespace :package do
     dist = args[:dist] || 'el8'
     cmd = ['git', 'ls-files', '|', tar, '-c']
     if dist =~ /^el/
+      dir = File.join(proj_root, 'packaging/rpm')
       version = rpm_version
-      tar_file = "packaging/rpm/v#{version}.tar.gz"
     else
       dir = File.join(Dir.pwd, 'build').tap { |p| sh "mkdir -p #{p}" }
       version = deb_version
-      tar_file = "#{dir}/#{ood_package_name}-#{version}.tar.gz"
       cmd.concat ["--transform 'flags=r;s,packaging/deb,debian,'"]
     end
+    tar_file = "#{dir}/#{ood_package_name}-#{version}.tar.gz"
     cmd.concat ["--transform 's,^,#{ood_package_name}-#{version}/,'"]
     cmd.concat ['-T', '-', '|', "gzip > #{tar_file}"]
 

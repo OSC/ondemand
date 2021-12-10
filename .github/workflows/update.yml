@@ -45,11 +45,12 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.OSC_ROBOT_GH_PUB_REPO_TOKEN }}
-          commit-message: update changelog
+          commit-message: update dependencies
           committer: OSC ROBOT <osc.robot@gmail.com>
           author: osc-bot <osc.robot@gmail.com>
           delete-branch: true
           title: 'Update Dependencies'
           push-to-fork: osc-bot/ondemand
+          branch: osc-bot/dep-updates
           body: |
             Update dependencies generated from `rake update`

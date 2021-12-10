@@ -124,16 +124,6 @@ module BatchConnect
         .map { |c| c.to_s.strip }
         .compact
     end
-
-    # Wheter the cluster is allowed or not based on the configured
-    # clusters and if the cluster allows jobs (job_allow?)
-    #
-    # @return [Boolean] whether the cluster is allowed or not
-    def cluster_allowed(cluster)
-      cluster.job_allow? && configured_clusters.any? do |pattern|
-        File.fnmatch(pattern, cluster.id.to_s, File::FNM_EXTGLOB)
-      end
-    end
     
     # Read in context from cache file if cache is disabled and context.json exist
     def update_session_with_cache(session_context, cache_file)
@@ -152,13 +142,17 @@ module BatchConnect
         (self.clusters.size == 1 && self.clusters[0] != cached_cluster)
     end
 
-
     # The clusters that the batch connect app can use. It's a combination
     # of what the app is configured to use and what the user is allowed
-    # to use.
-    # @return [OodCore::Clusters] clusters available to the app user
+    # to use. If the app has clusters configured, it preserves the order
+    # when it can. glob configurations' order may be platform dependent.
+    #
+    # @return [Array<OodCore::Cluster>] clusters available to the app user
     def clusters
-      OodAppkit.clusters.select { |cluster| cluster_allowed(cluster) }
+      @clusters ||=
+        configured_clusters.map do |config|
+          cfg_to_clusters(config)
+        end.flatten.compact.select(&:job_allow?)
     end
 
     # Whether this is a valid app the user can use
@@ -279,6 +273,17 @@ module BatchConnect
     end
 
     private
+
+      def cfg_to_clusters(config)
+        c = OodAppkit.clusters[config.to_sym] || nil
+        return [c] unless c.nil?
+
+        # cluster may be a glob at this point
+        OodAppkit.clusters.select do |cluster|
+          File.fnmatch(config, cluster.id.to_s, File::FNM_EXTGLOB)
+        end
+      end
+
       def build_sub_app_list
         return [self] unless sub_app_root.directory? && sub_app_root.readable? && sub_app_root.executable?
         list = sub_app_root.children.select(&:file?).map do |f|
@@ -366,7 +371,7 @@ module BatchConnect
           attributes[:cluster] = {
             widget: "select",
             label: "Cluster",
-            options: clusters.map { |cluster| cluster.id.to_s }
+            options: clusters.map(&:id)
           }
         else
           attributes[:cluster] = {

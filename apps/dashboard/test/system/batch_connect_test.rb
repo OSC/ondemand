@@ -244,7 +244,6 @@ class BatchConnectTest < ApplicationSystemTestCase
     Dir.mktmpdir('bc_cache_test') do |tmpdir|
       OodAppkit.stubs(:dataroot).returns(Pathname.new(tmpdir.to_s))
 
-      # puts "cache root is #{BatchConnect::Session.cache_root}"
 
       visit new_batch_connect_session_context_url('sys/bc_jupyter')
       assert_equal 'owens', find_value('cluster')
@@ -276,5 +275,21 @@ class BatchConnectTest < ApplicationSystemTestCase
     # toggle back to 'same' and it's gone
     select('same', from: bc_ele_id('node_type'))
     assert !find("##{bc_ele_id('cuda_version')}", visible: false).visible?
+  end
+
+  test 'options with hyphens' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    # defaults
+    assert_equal 'owens', find_value('cluster')
+    assert_equal 'any', find_value('node_type')
+    assert_equal 20, find_max('bc_num_slots')
+
+    select('other-40ish-option', from: bc_ele_id('node_type'))
+    assert_equal 40, find_max('bc_num_slots')
+
+    # now change the cluster and the max changes
+    select('oakley', from: bc_ele_id('cluster'))
+    assert_equal 48, find_max('bc_num_slots')
   end
 end

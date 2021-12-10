@@ -6,6 +6,9 @@
 touch /var/lib/ondemand-nginx/config/apps/sys/dashboard.conf
 touch /var/lib/ondemand-nginx/config/apps/sys/shell.conf
 touch /var/lib/ondemand-nginx/config/apps/sys/myjobs.conf
+# ood-portal.conf cannot be in package rules to avoid
+# a prompt when changed during postinst
+touch /etc/apache2/sites-available/ood-portal.conf
 touch /etc/ood/config/ood_portal.sha256sum
 
 /opt/ood/nginx_stage/sbin/update_nginx_stage
@@ -15,15 +18,15 @@ touch /var/www/ood/apps/sys/dashboard/tmp/restart.txt
 touch /var/www/ood/apps/sys/shell/tmp/restart.txt
 touch /var/www/ood/apps/sys/myjobs/tmp/restart.txt
 
-cd /etc/apache2/conf-enabled || exit 1
-ln -sf ../conf-available/ood-portal.conf . || true
+cd /etc/apache2/sites-enabled || exit 1
+ln -sf /etc/apache2/sites-available/ood-portal.conf . || true
 
 cd /etc/apache2/mods-enabled || exit 1
-ln -sf ../mods-available/rewrite.load . || true
-ln -sf ../mods-available/lua.load . || true
-ln -sf ../mods-available/headers.load . || true
-ln -sf ../mods-available/proxy.load . || true
-ln -sf ../mods-available/proxy_http.load . || true
+ln -sf /etc/apache2/mods-available/rewrite.load . || true
+ln -sf /etc/apache2/mods-available/lua.load . || true
+ln -sf /etc/apache2/mods-available/headers.load . || true
+ln -sf /etc/apache2/mods-available/proxy.load . || true
+ln -sf /etc/apache2/mods-available/proxy_http.load . || true
 
 # shellcheck disable=SC1091
 [ -e /etc/apache2/envvars ] && . /etc/apache2/envvars
