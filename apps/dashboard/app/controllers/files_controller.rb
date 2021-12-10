@@ -154,33 +154,18 @@ class FilesController < ApplicationController
   end
 
   def edit
-    path = params[:filepath] || "/"
-    path = "/" + path unless path.start_with?("/")
+    p = params[:filepath] || '/'
+    p = "/#{p}" unless p.start_with?('/')
 
-    status = 200
+    @path = Pathname.new(p)
+    @file_api_url = OodAppkit.files.api(path: @path).to_s
 
-    @pathname = Pathname.new(path)
-
-    if ! AllowlistPolicy.default.permitted?(@pathname)
-      @path_forbidden = true
-      status = 403
-    elsif @pathname.file? && @pathname.readable?
-      fileinfo = %x[ file -b --mime-type #{@pathname.to_s.shellescape} ]
-      if fileinfo =~ /text\/|\/(x-empty|(.*\+)?xml)/ || params.has_key?(:force)
-        @editor_content = ""
-        @file_api_url = OodAppkit.files.api(path: @pathname).to_s
-      else
-        @invalid_file_type = fileinfo
-        status = 404
-      end
-    elsif @pathname.directory?
-      # just render error message
+    if @path.file? && @path.readable? && @path.writable?
+      @content = File.read(@path.to_s)
+      render :edit, status: status, layout: 'editor'
     else
-      @not_found = true
-      status = 404
+      redirect_to root_path, alert: "#{@path} is not an editable file"
     end
-
-    render :edit, status: status, layout: 'editor'
   end
 
   private
