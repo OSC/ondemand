@@ -2,10 +2,18 @@
 #editor {
   margin: 0;
   position: absolute;
-  top: 25px;
+  top: 5em;
   bottom: 0;
   left: 0;
   right: 0;
+}
+
+#save-button {
+  :hover {
+    cursor: pointer;
+  }
+
+  margin-bottom: auto !important;
 }
 
 .glyphicon-spin {
