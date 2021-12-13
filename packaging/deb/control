@@ -11,7 +11,8 @@ Package: ondemand
 Architecture: any
 Multi-Arch: foreign
 Depends: ${misc:Depends}, ${shlibs:Depends},
-  ruby, apache2, sudo, nodejs, lsof, lua-posix,
+  ruby, apache2, sudo, lsof, lua-posix,
+  nodejs (>= 14.0), nodejs (<< 15.0),
   ondemand-nginx (= 1.20.1), ondemand-passenger (= 6.0.11)
 Description: Open OnDemand is an open source release of the Ohio SuperComputer Center's
   OnDemand platform to provide HPC access via a web browser, supporting web based file
