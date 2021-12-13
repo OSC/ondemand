@@ -103,6 +103,23 @@ attributes:
       - "4"
       - "7"
       - "38"
+  classroom:
+    widget: select
+    options:
+      - [ 'Physics 1234', 'physics_1234' ]
+      - [ 'Astronomy 5678', 'astronomy_5678' ]
+  classroom_size:
+    widget: select
+    options:
+      - [ 'small', 'small' ]
+      - [
+          'medium', 'medium',
+          data-option-for-classroom-astronomy-5678: false,
+        ]
+      - [
+          'large', 'large',
+          data-option-for-classroom-astronomy-5678: false,
+        ]
 form:
   - bc_num_hours
   - bc_num_slots
@@ -113,3 +130,5 @@ form:
   - python_version
   - cuda_version
   - hidden_change_thing
+  - classroom
+  - classroom_size
