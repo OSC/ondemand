@@ -1,5 +1,7 @@
-PATH
-  remote: ../ondemand-packaging
+GIT
+  remote: https://github.com/OSC/ondemand-packaging
+  revision: 1176cfda7debd26840f1335c8e787ea9ee4ea3ea
+  branch: feature/rake-task-gem
   specs:
     ood_packaging (0.0.1)
       rake (~> 13.0.1)
