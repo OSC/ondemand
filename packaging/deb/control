@@ -3,7 +3,9 @@ Section: unknown
 Priority: optional
 Maintainer: Ohio Super Computer Center
 Build-Depends: debhelper (>=11~), curl, build-essential,
-  ruby, ruby-dev, nodejs, npm, sqlite, libsqlite3-dev, python
+  ruby, ruby-dev,
+  nodejs (>= 14.0), nodejs (<< 15.0),
+  sqlite, libsqlite3-dev, python
 Standards-Version: 4.1.4
 Homepage: https://openondemand.org
 
