@@ -97,7 +97,6 @@ jobs:
           bundler-cache: true
 
       - name: Build package
-        if: "startsWith(matrix.dist, 'el')"
         run: bundle exec rake package:build[${{ matrix.dist }}]
         env:
           VERSION: "${{ matrix.version }}.0"
