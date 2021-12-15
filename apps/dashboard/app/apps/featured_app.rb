@@ -11,7 +11,7 @@ class FeaturedApp < OodApp
     FeaturedApp.new(app.router, token: token)
   end
 
-  def initialize(router, category: "Apps", subcategory: I18n.t('dashboard.pinned_apps_title'), token: nil)
+  def initialize(router, category: I18n.t("dashboard.pinned_apps_category"), subcategory: I18n.t('dashboard.pinned_apps_title'), token: nil)
     super(router)
 
     @category = category.to_s

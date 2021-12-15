@@ -173,6 +173,7 @@ en:
     not_grouped: "Other Apps"
 
     nav_limit_caption: 'showing %{subset_count} of %{total_count}'
+    pinned_apps_category: "Apps"
     pinned_apps_title: 'Pinned Apps'
     pinned_apps_caption_html: 'A featured subset of <a href="%{all_apps_url}">all available apps</a>'
     development_apps_caption: "Sandbox App"

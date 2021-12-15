@@ -28,7 +28,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
 
     get '/'
 
-    dd = dropdown_list('Apps')
+    dd = dropdown_list(I18n.t('dashboard.pinned_apps_category'))
     dditems = dropdown_list_items(dd)
     assert dditems.any?, "dropdown list items not found"
     assert_equal [
@@ -55,7 +55,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
 
     get '/'
 
-    dd = dropdown_list('Apps')
+    dd = dropdown_list(I18n.t('dashboard.pinned_apps_category'))
     dditems = dropdown_list_items(dd)
     assert dditems.any?, "dropdown list items not found"
     assert_equal [
