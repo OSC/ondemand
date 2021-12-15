@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_featured_group
-    @featured_group = filter_groups(pinned_app_group).first # 1 single group called 'Apps'
+    @featured_group = filter_groups(pinned_app_group).first if ::Configuration.show_featured_apps # 1 single group called 'Apps'
   end
 
   def sys_apps

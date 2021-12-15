@@ -437,6 +437,22 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     assert_equal 'dark', ConfigurationSingleton.new.navbar_type
   end
 
+  test "featured apps are shown by default" do
+    assert ConfigurationSingleton.new.show_featured_apps
+  end
+
+  test "featured apps can be hidden" do
+    with_modified_env(OOD_SHOW_FEATURED_APPS: "false") do
+      refute ConfigurationSingleton.new.show_featured_apps
+    end
+  end
+
+  test "show featured apps enabled shows apps" do
+    with_modified_env(OOD_SHOW_FEATURED_APPS: "true") do
+      assert ConfigurationSingleton.new.show_featured_apps
+    end
+  end
+
   test 'boolean configs have correct default' do
     c = ConfigurationSingleton.new
 

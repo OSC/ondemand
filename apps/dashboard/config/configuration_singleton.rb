@@ -334,6 +334,10 @@ class ConfigurationSingleton
     end
   end
 
+  def show_featured_apps
+    to_bool(ENV["OOD_SHOW_FEATURED_APPS"] || true)
+  end
+
   # The dashboard's landing page layout. Defaults to nil.
   def dashboard_layout
     config.fetch(:dashboard_layout, nil)
