@@ -292,4 +292,19 @@ class BatchConnectTest < ApplicationSystemTestCase
     select('oakley', from: bc_ele_id('cluster'))
     assert_equal 48, find_max('bc_num_slots')
   end
+
+  test 'options with numbers' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    # defaults
+    assert_equal 'physics_1234', find_value('classroom')
+    assert_equal 'small', find_value('classroom_size')
+    assert_equal '', find_option_style('classroom_size', 'medium')
+    assert_equal '', find_option_style('classroom_size', 'large')
+
+    # now change the classroom and see the other sizes disappear
+    select('Astronomy 5678', from: bc_ele_id('classroom'))
+    assert_equal 'display: none;', find_option_style('classroom_size', 'medium')
+    assert_equal 'display: none;', find_option_style('classroom_size', 'large')
+  end
 end

@@ -24,6 +24,9 @@ const minMaxLookup = {};
 const setValueLookup = {};
 const hideLookup = {};
 
+// the regular expression for mountain casing
+const mcRex = /[[-_]([a-z])|([_-][0-9])/g;
+
 function bcElement(name) {
   return `${bcPrefix}_${name.toLowerCase()}`;
 };
@@ -42,29 +45,26 @@ function shortId(elementId) {
 
 /**
  * Mountain case the words from a string, by tokenizing on [-_].  In the
- * simplest case it simple capitalizes.
+ * simplest case it just capitalizes.
  *
- * @param      {string}  str     The word string to capitalize
+ * There is a special case where seperators are followed numbers. In this case
+ * The seperator is kept as a hyphen because that's how jQuery expects it.
+ *
+ * @param      {string}  str     The word string to mountain case
  *
  * @example  given 'foo' this returns 'Foo'
  * @example  given 'foo-bar' this returns 'FooBar'
+ * @example  given 'physics_1234' this returns 'Physics-1234'
  */
- function mountainCaseWords(str) {
-  let camelCase = "";
-  let capitalize = true;
-
-  str.split('').forEach((c) => {
-    if (capitalize) {
-      camelCase += c.toUpperCase();
-      capitalize = false;
-    } else if(c == '-' || c == '_') {
-      capitalize = true;
-    } else {
-      camelCase += c;
-    }
+// Convert dashed to camelCase
+function mountainCaseWords(str) {
+  const lower = str.toLowerCase();
+  const first = lower.charAt(0).toUpperCase();
+  const rest = lower.slice(1).replace(mcRex, function(_all, letter, prefixedNumber) {
+    return letter ? letter.toUpperCase() : prefixedNumber.replace('_','-');
   });
 
-  return camelCase;
+  return  `${first}${rest}`;
 }
 
 function snakeCaseWords(str) {
