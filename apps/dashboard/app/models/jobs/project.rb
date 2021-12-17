@@ -1,30 +1,17 @@
 class Jobs::Project
-
-  def self.stat(dir)
-    # need to get:
-    # { name: path.basename 
-    # directory: path.stat.directory }
-    #hash back for ERB to work.
-    path = Pathname.new(dir)
-    {
-      name: path.basename,
-      directory: path.stat.directory?
-    }
-  end
-
-  def ls
-    dir_contents = files
-    dir_contents.each_child.map do |path|
-      Jobs::Project.stat(path)
+    def self.all
+      # return [Array] of all projects in ~/ondemand/data/sys/myjobs/projects
+      @projects_path = ENV['HOME'] + '/ondemand/data/sys/myjobs/projects/'
+      Dir.children(@projects_path)
     end
-  end
 
+  attr_reader :dir
 
-  def pwd
-    @pwd = Pathname.new(Dir.pwd)
+  def initialize
+    @dir = dir.to_s
   end
 
   def files
-    @files = Dir.entries(pwd)
+    #return [Array] of all files in current project dir
   end
 end
