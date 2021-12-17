@@ -277,6 +277,31 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert !find("##{bc_ele_id('cuda_version')}", visible: false).visible?
   end
 
+  # similar to the use case above, but for https://github.com/OSC/ondemand/issues/1666
+  test 'hiding a second option' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    # default is any, so we can't see cuda_version or advanced_options
+    assert_equal 'any', find_value('node_type')
+    assert !find("##{bc_ele_id('cuda_version')}", visible: false).visible?
+    assert !find("##{bc_ele_id('advanced_options')}", visible: false).visible?
+
+    # gpu shows both cuda_version and advanced_options
+    select('gpu', from: bc_ele_id('node_type'))
+    assert find("##{bc_ele_id('cuda_version')}").visible?
+    assert find("##{bc_ele_id('advanced_options')}").visible?
+
+    # toggle back to 'same' and both are gone
+    select('same', from: bc_ele_id('node_type'))
+    assert !find("##{bc_ele_id('cuda_version')}", visible: false).visible?
+    assert !find("##{bc_ele_id('advanced_options')}", visible: false).visible?
+
+    # now select advanced and cuda is hidden, but advanced is shown
+    select('advanced', from: bc_ele_id('node_type'))
+    assert !find("##{bc_ele_id('cuda_version')}", visible: false).visible?
+    assert find("##{bc_ele_id('advanced_options')}").visible?
+  end
+
   test 'options with hyphens' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
