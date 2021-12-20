@@ -227,6 +227,17 @@ module BatchConnect
       ctx_binding.local_variable_set(:staged_root, staged_root.to_s)
 
       hsh = hsh.deep_merge submit_config(binding: ctx_binding)
+
+    # let's write the file out if it's a submit.yml.erb that isn't valid yml
+    rescue Psych::SyntaxError => e
+      unless staged_root.nil?
+        yml = submit_file(root: root)
+        bad_content = render_erb_file(path: yml, contents: yml.read, binding: ctx_binding)
+        Pathname.new(staged_root).tap { |p| p.mkpath unless p.exist? }
+        File.open("#{staged_root}/submit.yml", 'w+') { |file| file.write(bad_content) }
+      end
+
+      raise e
     end
 
     # View used for session if it exists
