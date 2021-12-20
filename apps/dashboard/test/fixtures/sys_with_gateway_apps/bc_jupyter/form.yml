@@ -26,6 +26,7 @@ attributes:
       - [
           "any",
           data-hide-cuda-version: true,
+          data-hide-advanced-options: true,
           data-minnn-bc-not-found-for-cluster-mistype: 30,
           data-max-bc-not-found-for-cluster-mistype: 30,
           data-maximum-bc-not-found-for-cluster-mistype: 30
@@ -44,6 +45,7 @@ attributes:
           "hugemem",
           data-option-for-cluster-oakley: false,
           data-hide-cuda-version: true,
+          data-hide-advanced-options: true,
           data-max-bc-num-slots-for-cluster-owens: 42,
           data-min-bc-num-slots-for-cluster-owens: 42,
         ]
@@ -58,11 +60,13 @@ attributes:
       - [
           "same",
           data-hide-cuda-version: true,
+          data-hide-advanced-options: true,
           data-min-bc-num-slots: 100,
           data-max-bc-num-slots: 200
         ]
       - [
           "other-40ish-option",
+          data-hide-advanced-options: true,
           data-max-bc-num-slots-for-cluster-owens: 40,
           data-max-bc-num-slots-for-cluster-oakley: 48,
         ]
@@ -132,3 +136,4 @@ form:
   - hidden_change_thing
   - classroom
   - classroom_size
+  - advanced_options

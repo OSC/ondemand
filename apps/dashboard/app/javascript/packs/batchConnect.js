@@ -16,7 +16,8 @@ const optionForHandlerCache = {};
 // simples array of string ids for elements that have a handler
 const minMaxHandlerCache = [];
 const setHandlerCache = [];
-const hideHandlerCache = [];
+// hide handler cache is a map in the form '{ from: [hideThing1, hideThing2] }'
+const hideHandlerCache = {};
 
 // Lookup tables for setting min & max values
 // for different directives.
@@ -136,18 +137,20 @@ function makeChangeHandlers(){
 function addHideHandler(optionId, option, key,  configValue) {
   const changeId = idFromToken(key.replace(/^hide/,''));
 
-  if(hideLookup[optionId] === undefined) hideLookup[optionId] = new Table(changeId, undefined);
+  if(hideLookup[optionId] === undefined) hideLookup[optionId] = new Table(changeId, 'option_value');
   const table = hideLookup[optionId];
-  table.put(option, undefined, configValue);
+  table.put(changeId, option, configValue);
 
-  if(!hideHandlerCache.includes(optionId)) {
+  if(hideHandlerCache[optionId] === undefined) hideHandlerCache[optionId] = [];
+
+  if(!hideHandlerCache[optionId].includes(changeId)) {
     const changeElement = $(`#${optionId}`);
 
     changeElement.on('change', (event) => {
       updateVisibility(event, changeId);
     });
 
-    hideHandlerCache.push(optionId);
+    hideHandlerCache[optionId].push(changeId);
   }
 
   updateVisibility({ target: document.querySelector(`#${optionId}`) }, changeId);
@@ -348,7 +351,7 @@ function updateVisibility(event, changeId) {
   if (changeElement.size() <= 0) return;
 
   // safe to access directly?
-  const hide = hideLookup[id].get(val, undefined);
+  const hide = hideLookup[id].get(changeId, val);
   if(hide === undefined) {
     changeElement.show();
   }else if(hide === true) {
