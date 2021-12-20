@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.21] - 2021-12-20
+
+### Fixed
+
+- Dynamic javascript now correctly clamps values correcting [1649](https://github.com/OSC/ondemand/issues/1649).
+- Dynamic javascript can hide multiple elements correcting [1666](https://github.com/OSC/ondemand/issues/1666).
+- Dynamic javascript now correctly handles options with numbers, hyphens and underscores
+  back-porting [1656](https://github.com/OSC/ondemand/pull/1656).
+
 ## [2.0.20] - 2021-12-01
 
 ### Security
@@ -935,7 +944,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.20...release_2.0
+[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.21...release_2.0
+[2.0.21]: https://github.com/OSC/ondemand/compare/v2.0.20...v2.0.21
 [2.0.20]: https://github.com/OSC/ondemand/compare/v2.0.19...v2.0.20
 [2.0.19]: https://github.com/OSC/ondemand/compare/v2.0.18...v2.0.19
 [2.0.18]: https://github.com/OSC/ondemand/compare/v2.0.17...v2.0.18

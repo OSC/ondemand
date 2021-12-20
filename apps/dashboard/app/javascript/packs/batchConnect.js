@@ -16,13 +16,17 @@ const optionForHandlerCache = {};
 // simples array of string ids for elements that have a handler
 const minMaxHandlerCache = [];
 const setHandlerCache = [];
-const hideHandlerCache = [];
+// hide handler cache is a map in the form '{ from: [hideThing1, hideThing2] }'
+const hideHandlerCache = {};
 
 // Lookup tables for setting min & max values
 // for different directives.
 const minMaxLookup = {};
 const setValueLookup = {};
 const hideLookup = {};
+
+// the regular expression for mountain casing
+const mcRex = /[[-_]([a-z])|([_-][0-9])/g;
 
 function bcElement(name) {
   return `${bcPrefix}_${name.toLowerCase()}`;
@@ -42,29 +46,26 @@ function shortId(elementId) {
 
 /**
  * Mountain case the words from a string, by tokenizing on [-_].  In the
- * simplest case it simple capitalizes.
+ * simplest case it just capitalizes.
  *
- * @param      {string}  str     The word string to capitalize
+ * There is a special case where seperators are followed numbers. In this case
+ * The seperator is kept as a hyphen because that's how jQuery expects it.
+ *
+ * @param      {string}  str     The word string to mountain case
  *
  * @example  given 'foo' this returns 'Foo'
  * @example  given 'foo-bar' this returns 'FooBar'
+ * @example  given 'physics_1234' this returns 'Physics-1234'
  */
- function mountainCaseWords(str) {
-  let camelCase = "";
-  let capitalize = true;
-
-  str.split('').forEach((c) => {
-    if (capitalize) {
-      camelCase += c.toUpperCase();
-      capitalize = false;
-    } else if(c == '-' || c == '_') {
-      capitalize = true;
-    } else {
-      camelCase += c;
-    }
+// Convert dashed to camelCase
+function mountainCaseWords(str) {
+  const lower = str.toLowerCase();
+  const first = lower.charAt(0).toUpperCase();
+  const rest = lower.slice(1).replace(mcRex, function(_all, letter, prefixedNumber) {
+    return letter ? letter.toUpperCase() : prefixedNumber.replace('_','-');
   });
 
-  return camelCase;
+  return  `${first}${rest}`;
 }
 
 function snakeCaseWords(str) {
@@ -136,18 +137,20 @@ function makeChangeHandlers(){
 function addHideHandler(optionId, option, key,  configValue) {
   const changeId = idFromToken(key.replace(/^hide/,''));
 
-  if(hideLookup[optionId] === undefined) hideLookup[optionId] = new Table(changeId, undefined);
+  if(hideLookup[optionId] === undefined) hideLookup[optionId] = new Table(changeId, 'option_value');
   const table = hideLookup[optionId];
-  table.put(option, undefined, configValue);
+  table.put(changeId, option, configValue);
 
-  if(!hideHandlerCache.includes(optionId)) {
+  if(hideHandlerCache[optionId] === undefined) hideHandlerCache[optionId] = [];
+
+  if(!hideHandlerCache[optionId].includes(changeId)) {
     const changeElement = $(`#${optionId}`);
 
     changeElement.on('change', (event) => {
       updateVisibility(event, changeId);
     });
 
-    hideHandlerCache.push(optionId);
+    hideHandlerCache[optionId].push(changeId);
   }
 
   updateVisibility({ target: document.querySelector(`#${optionId}`) }, changeId);
@@ -348,7 +351,7 @@ function updateVisibility(event, changeId) {
   if (changeElement.size() <= 0) return;
 
   // safe to access directly?
-  const hide = hideLookup[id].get(val, undefined);
+  const hide = hideLookup[id].get(changeId, val);
   if(hide === undefined) {
     changeElement.show();
   }else if(hide === true) {
@@ -374,30 +377,36 @@ function toggleMinMax(event, changeId, otherId) {
   const prev = {
     min: changeElement.attr('min'),
     max: changeElement.attr('max'),
-    val: changeElement.val()
   };
 
   [ 'max', 'min' ].forEach((dim) => {
     if(mm && mm[dim] !== undefined) {
       changeElement.attr(dim, mm[dim]);
-
-      let val = clamp(prev['val'], prev[dim], mm[dim], dim)
-      if (val !== undefined) {
-        changeElement.attr('value', val);
-        changeElement.val(val);
-      }
     }
   });
+
+  const val = clamp(changeElement.val(), prev, mm)
+  if (val !== undefined) {
+    changeElement.attr('value', val);
+    changeElement.val(val);
+  }
 }
 
-function clamp(previous, previousBoundary, currentBoundary, comparator){
-  const pb = parseInt(previousBoundary) || undefined;
-  const p  = parseInt(previous) || undefined;
+function clamp(currentValue, previous, next) {
+  if(next === undefined){
+    return undefined;
 
-  if(comparator == 'min' && p <= pb) {
-    return currentBoundary;
-  } else if(comparator == 'max' && p >= pb) {
-    return currentBoundary;
+  // you've set the boundary, so when you go to the next value - keep it at the next's boundary
+  } else if(previous && previous['max'] && currentValue == previous['max']) {
+    return next['max'];
+  } else if(previous && previous['min'] && currentValue == previous['min']) {
+    return next['min'];
+
+  // otherwise you could be up or down shifting to fit within the next's boundaries
+  } else if(next['max'] && currentValue >= next['max']) {
+    return next['max'];
+  } else if(next['min'] && currentValue <= next['min']) {
+    return next['min'];
   } else {
     return undefined;
   }
