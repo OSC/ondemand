@@ -374,30 +374,36 @@ function toggleMinMax(event, changeId, otherId) {
   const prev = {
     min: changeElement.attr('min'),
     max: changeElement.attr('max'),
-    val: changeElement.val()
   };
 
   [ 'max', 'min' ].forEach((dim) => {
     if(mm && mm[dim] !== undefined) {
       changeElement.attr(dim, mm[dim]);
-
-      let val = clamp(prev['val'], prev[dim], mm[dim], dim)
-      if (val !== undefined) {
-        changeElement.attr('value', val);
-        changeElement.val(val);
-      }
     }
   });
+
+  const val = clamp(changeElement.val(), prev, mm)
+  if (val !== undefined) {
+    changeElement.attr('value', val);
+    changeElement.val(val);
+  }
 }
 
-function clamp(previous, previousBoundary, currentBoundary, comparator){
-  const pb = parseInt(previousBoundary) || undefined;
-  const p  = parseInt(previous) || undefined;
+function clamp(currentValue, previous, next) {
+  if(next === undefined){
+    return undefined;
 
-  if(comparator == 'min' && p <= pb) {
-    return currentBoundary;
-  } else if(comparator == 'max' && p >= pb) {
-    return currentBoundary;
+  // you've set the boundary, so when you go to the next value - keep it at the next's boundary
+  } else if(previous && previous['max'] && currentValue == previous['max']) {
+    return next['max'];
+  } else if(previous && previous['min'] && currentValue == previous['min']) {
+    return next['min'];
+
+  // otherwise you could be up or down shifting to fit within the next's boundaries
+  } else if(next['max'] && currentValue >= next['max']) {
+    return next['max'];
+  } else if(next['min'] && currentValue <= next['min']) {
+    return next['min'];
   } else {
     return undefined;
   }
