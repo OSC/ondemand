@@ -60,6 +60,74 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal '42', find_value('bc_num_slots')
   end
 
+  test 'clamping works on maxes' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    
+    # defaults
+    assert_equal 20, find_max('bc_num_slots')
+    assert_equal 1, find_min('bc_num_slots')
+    assert_equal 'any', find_value('node_type')
+
+    # put the max for 'any'
+    fill_in bc_ele_id('bc_num_slots'), with: 20
+
+    # now toggle to gpu. Max is 28 and the value is 28
+    select('gpu', from: bc_ele_id('node_type'))
+    assert_equal 28, find_max('bc_num_slots')
+    assert_equal '28', find_value('bc_num_slots')
+  end
+
+  test 'clamping works on mins' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    
+    # defaults
+    assert_equal 20, find_max('bc_num_slots')
+    assert_equal 1, find_min('bc_num_slots')
+    assert_equal 'any', find_value('node_type')
+
+    # put the max for 'any'
+    fill_in bc_ele_id('bc_num_slots'), with: 1
+
+    # now toggle to gpu. min is 2 and the value is 2
+    select('gpu', from: bc_ele_id('node_type'))
+    assert_equal 2, find_min('bc_num_slots')
+    assert_equal '2', find_value('bc_num_slots')
+  end
+
+  test 'clamping shifts left' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    
+    # setup to start with same
+    select('same', from: bc_ele_id('node_type'))
+    assert_equal 200, find_max('bc_num_slots')
+    assert_equal 100, find_min('bc_num_slots')
+
+    # less than current max, but greater than the next choices'
+    fill_in bc_ele_id('bc_num_slots'), with: 150
+    
+    # toggle back to 'gpu' and it should clamp to 150 down to 28
+    select('gpu', from: bc_ele_id('node_type'))
+    assert_equal 28, find_max('bc_num_slots')
+    assert_equal '28', find_value('bc_num_slots')
+  end
+
+  test 'clamping shifts right' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    
+    # start with defaults
+    assert_equal 1, find_min('bc_num_slots')
+    assert_equal 20, find_max('bc_num_slots')
+    assert_equal 'any', find_value('node_type')
+
+    # not the max, but less than the next choices'
+    fill_in bc_ele_id('bc_num_slots'), with: 18
+
+    # toggle back to 'oakley' and it should clamp 18 up to 100 (same's minimum)
+    select('same', from: bc_ele_id('node_type'))
+    assert_equal 100, find_min('bc_num_slots')
+    assert_equal '100', find_value('bc_num_slots')
+  end
+
   test 'changing the cluster changes max' do
     # max starts out at 20
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
