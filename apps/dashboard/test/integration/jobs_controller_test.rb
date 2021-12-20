@@ -3,6 +3,7 @@ require 'test_helper'
 class JobsControllerTest < ActionDispatch::IntegrationTest
 
   def setup
+    SysRouter.stubs(:base_path).returns(Pathname.new('test/fixtures/jobs/projects'))
     Configuration.stubs(:jobs_app_alpha?).returns(true)
     Rails.application.reload_routes!
   end
