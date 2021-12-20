@@ -1,12 +1,13 @@
 class Jobs::Project
-  def self.all
-    # return [Array] of all projects in ~/ondemand/data/sys/myjobs/projects
-    @projects_path = ENV['HOME'] + '/ondemand/data/sys/myjobs/projects/'
-    Dir.children(@projects_path)
+  self << class
+    def all
+      # return [Array] of all projects in ~/ondemand/data/sys/myjobs/projects
+      Dir.children(base_path)
   end
 
-  def self.base_path
-    ENV['HOME'] + '/ondemand/data/sys/myjobs/projects/'
+  def base_path
+      ENV['HOME'] + '/ondemand/data/sys/myjobs/projects/'
+    end
   end
 
   attr_reader :dir
