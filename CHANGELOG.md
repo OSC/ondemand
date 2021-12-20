@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+account for options with numbers after hyphens & underscores (#1656)\
+update dependencies (#1653)\
+Internationalize Apps menu title (#1665)\
+Update Changelog (#1652)\
+Depend on NodeJS 14 for deb packages (#1660)
 
 ### Changed
 
