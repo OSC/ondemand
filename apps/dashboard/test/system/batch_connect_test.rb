@@ -4,8 +4,7 @@ require 'application_system_test_case'
 
 class BatchConnectTest < ApplicationSystemTestCase
   def setup
-    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
-    SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys_with_gateway_apps'))
+    stub_sys_apps
     Configuration.stubs(:bc_dynamic_js?).returns(true)
   end
 
@@ -59,6 +58,74 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 42, find_max('bc_num_slots')
     assert_equal 42, find_min('bc_num_slots')
     assert_equal '42', find_value('bc_num_slots')
+  end
+
+  test 'clamping works on maxes' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    
+    # defaults
+    assert_equal 20, find_max('bc_num_slots')
+    assert_equal 1, find_min('bc_num_slots')
+    assert_equal 'any', find_value('node_type')
+
+    # put the max for 'any'
+    fill_in bc_ele_id('bc_num_slots'), with: 20
+
+    # now toggle to gpu. Max is 28 and the value is 28
+    select('gpu', from: bc_ele_id('node_type'))
+    assert_equal 28, find_max('bc_num_slots')
+    assert_equal '28', find_value('bc_num_slots')
+  end
+
+  test 'clamping works on mins' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    
+    # defaults
+    assert_equal 20, find_max('bc_num_slots')
+    assert_equal 1, find_min('bc_num_slots')
+    assert_equal 'any', find_value('node_type')
+
+    # put the max for 'any'
+    fill_in bc_ele_id('bc_num_slots'), with: 1
+
+    # now toggle to gpu. min is 2 and the value is 2
+    select('gpu', from: bc_ele_id('node_type'))
+    assert_equal 2, find_min('bc_num_slots')
+    assert_equal '2', find_value('bc_num_slots')
+  end
+
+  test 'clamping shifts left' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    
+    # setup to start with same
+    select('same', from: bc_ele_id('node_type'))
+    assert_equal 200, find_max('bc_num_slots')
+    assert_equal 100, find_min('bc_num_slots')
+
+    # less than current max, but greater than the next choices'
+    fill_in bc_ele_id('bc_num_slots'), with: 150
+    
+    # toggle back to 'gpu' and it should clamp to 150 down to 28
+    select('gpu', from: bc_ele_id('node_type'))
+    assert_equal 28, find_max('bc_num_slots')
+    assert_equal '28', find_value('bc_num_slots')
+  end
+
+  test 'clamping shifts right' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    
+    # start with defaults
+    assert_equal 1, find_min('bc_num_slots')
+    assert_equal 20, find_max('bc_num_slots')
+    assert_equal 'any', find_value('node_type')
+
+    # not the max, but less than the next choices'
+    fill_in bc_ele_id('bc_num_slots'), with: 18
+
+    # toggle back to 'oakley' and it should clamp 18 up to 100 (same's minimum)
+    select('same', from: bc_ele_id('node_type'))
+    assert_equal 100, find_min('bc_num_slots')
+    assert_equal '100', find_value('bc_num_slots')
   end
 
   test 'changing the cluster changes max' do
@@ -257,6 +324,31 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert !find("##{bc_ele_id('cuda_version')}", visible: false).visible?
   end
 
+  # similar to the use case above, but for https://github.com/OSC/ondemand/issues/1666
+  test 'hiding a second option' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    # default is any, so we can't see cuda_version or advanced_options
+    assert_equal 'any', find_value('node_type')
+    assert !find("##{bc_ele_id('cuda_version')}", visible: false).visible?
+    assert !find("##{bc_ele_id('advanced_options')}", visible: false).visible?
+
+    # gpu shows both cuda_version and advanced_options
+    select('gpu', from: bc_ele_id('node_type'))
+    assert find("##{bc_ele_id('cuda_version')}").visible?
+    assert find("##{bc_ele_id('advanced_options')}").visible?
+
+    # toggle back to 'same' and both are gone
+    select('same', from: bc_ele_id('node_type'))
+    assert !find("##{bc_ele_id('cuda_version')}", visible: false).visible?
+    assert !find("##{bc_ele_id('advanced_options')}", visible: false).visible?
+
+    # now select advanced and cuda is hidden, but advanced is shown
+    select('advanced', from: bc_ele_id('node_type'))
+    assert !find("##{bc_ele_id('cuda_version')}", visible: false).visible?
+    assert find("##{bc_ele_id('advanced_options')}").visible?
+  end
+
   test 'options with hyphens' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
@@ -271,5 +363,20 @@ class BatchConnectTest < ApplicationSystemTestCase
     # now change the cluster and the max changes
     select('oakley', from: bc_ele_id('cluster'))
     assert_equal 48, find_max('bc_num_slots')
+  end
+
+  test 'options with numbers' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    # defaults
+    assert_equal 'physics_1234', find_value('classroom')
+    assert_equal 'small', find_value('classroom_size')
+    assert_equal '', find_option_style('classroom_size', 'medium')
+    assert_equal '', find_option_style('classroom_size', 'large')
+
+    # now change the classroom and see the other sizes disappear
+    select('Astronomy 5678', from: bc_ele_id('classroom'))
+    assert_equal 'display: none;', find_option_style('classroom_size', 'medium')
+    assert_equal 'display: none;', find_option_style('classroom_size', 'large')
   end
 end

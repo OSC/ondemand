@@ -26,6 +26,7 @@ attributes:
       - [
           "any",
           data-hide-cuda-version: true,
+          data-hide-advanced-options: true,
           data-minnn-bc-not-found-for-cluster-mistype: 30,
           data-max-bc-not-found-for-cluster-mistype: 30,
           data-maximum-bc-not-found-for-cluster-mistype: 30
@@ -44,6 +45,7 @@ attributes:
           "hugemem",
           data-option-for-cluster-oakley: false,
           data-hide-cuda-version: true,
+          data-hide-advanced-options: true,
           data-max-bc-num-slots-for-cluster-owens: 42,
           data-min-bc-num-slots-for-cluster-owens: 42,
         ]
@@ -58,11 +60,13 @@ attributes:
       - [
           "same",
           data-hide-cuda-version: true,
+          data-hide-advanced-options: true,
           data-min-bc-num-slots: 100,
           data-max-bc-num-slots: 200
         ]
       - [
           "other-40ish-option",
+          data-hide-advanced-options: true,
           data-max-bc-num-slots-for-cluster-owens: 40,
           data-max-bc-num-slots-for-cluster-oakley: 48,
         ]
@@ -103,6 +107,23 @@ attributes:
       - "4"
       - "7"
       - "38"
+  classroom:
+    widget: select
+    options:
+      - [ 'Physics 1234', 'physics_1234' ]
+      - [ 'Astronomy 5678', 'astronomy_5678' ]
+  classroom_size:
+    widget: select
+    options:
+      - [ 'small', 'small' ]
+      - [
+          'medium', 'medium',
+          data-option-for-classroom-astronomy-5678: false,
+        ]
+      - [
+          'large', 'large',
+          data-option-for-classroom-astronomy-5678: false,
+        ]
 form:
   - bc_num_hours
   - bc_num_slots
@@ -113,3 +134,6 @@ form:
   - python_version
   - cuda_version
   - hidden_change_thing
+  - classroom
+  - classroom_size
+  - advanced_options
