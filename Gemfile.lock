@@ -1,11 +1,3 @@
-GIT
-  remote: https://github.com/OSC/ondemand-packaging
-  revision: 1176cfda7debd26840f1335c8e787ea9ee4ea3ea
-  branch: feature/rake-task-gem
-  specs:
-    ood_packaging (0.0.1)
-      rake (~> 13.0.1)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -106,6 +98,8 @@ GEM
     oga (3.3)
       ast
       ruby-ll (~> 2.1)
+    ood_packaging (0.0.1.rc.4)
+      rake (~> 13.0.1)
     open_uri_redirections (0.2.1)
     parallel (1.21.0)
     parser (3.0.2.0)
@@ -190,7 +184,7 @@ DEPENDENCIES
   beaker-docker (~> 1.0.1)
   beaker-rspec
   dotenv (~> 2.1)
-  ood_packaging!
+  ood_packaging (= 0.0.1.rc.4)
   rake
   rspec
   rubocop
