@@ -302,7 +302,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert find("##{bc_ele_id('advanced_options')}").visible?
   end
 
-  test 'options with hyphens' do
+  test 'options with hyphens set min & max' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
     # defaults
@@ -316,6 +316,23 @@ class BatchConnectTest < ApplicationSystemTestCase
     # now change the cluster and the max changes
     select('oakley', from: bc_ele_id('cluster'))
     assert_equal 48, find_max('bc_num_slots')
+  end
+
+  test 'options with hyphens get hidden' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    # defaults
+    assert_equal 'owens', find_value('cluster')
+    assert_equal 'any', find_value('node_type')
+    assert_equal '2.7', find_value('python_version')
+
+    # now switch node type and find that 2.7, and more, are hidden and 3.6 is the choice now
+    # even when the options has hyphens in it
+    select('other-40ish-option', from: bc_ele_id('node_type'))
+    assert_equal 'display: none;', find_option_style('python_version', '2.7')
+    assert_equal 'display: none;', find_option_style('python_version', '3.1')
+    assert_equal 'display: none;', find_option_style('python_version', '3.2')
+    assert_equal '3.6', find("##{bc_ele_id('python_version')}").value
   end
 
   test 'options with numbers' do

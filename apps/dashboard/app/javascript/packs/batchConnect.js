@@ -26,7 +26,7 @@ const setValueLookup = {};
 const hideLookup = {};
 
 // the regular expression for mountain casing
-const mcRex = /[[-_]([a-z])|([_-][0-9])/g;
+const mcRex = /[-_]([a-z])|([_-][0-9])/g;
 
 function bcElement(name) {
   return `${bcPrefix}_${name.toLowerCase()}`;
