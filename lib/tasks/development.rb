@@ -82,10 +82,7 @@ namespace :dev do
   end
 
   def additional_caps
-    caps = ENV['OOD_CTR_CAPABILITIES'].to_s
-    return [] if caps.empty?
-
-    caps.split(',').map do |cap|
+    ENV['OOD_CTR_CAPABILITIES'].to_s.split(',').map do |cap|
       [ '--cap-add', cap.downcase ]
     end
   end
