@@ -7,7 +7,9 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 gem 'rake'
 gem 'dotenv', '~> 2.1'
 
-gem 'ood_packaging', '0.0.1.rc.5'
+group :build do
+  gem 'ood_packaging', '0.0.1.rc.6'
+end
 
 group :test do
   gem 'rspec'
