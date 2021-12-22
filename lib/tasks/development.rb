@@ -81,6 +81,15 @@ namespace :dev do
     end
   end
 
+  def additional_caps
+    caps = ENV['OOD_CTR_CAPABILITIES'].to_s
+    return [] if caps.empty?
+
+    caps.split(',').map do |cap|
+      [ '--cap-add', cap.downcase ]
+    end
+  end
+
   desc 'Start development container'
   task :start => ['ensure_dev_files'] do
     Rake::Task['package:dev_container'].invoke unless image_exists?("#{dev_image_name}:latest")
@@ -89,6 +98,7 @@ namespace :dev do
     ctr_args.concat ["--name #{dev_container_name}"]
     ctr_args.concat ['--rm', '--detach']
     ctr_args.concat dev_mounts
+    ctr_args.concat additional_caps
     ctr_args.concat container_rt_args
 
     ctr_args.concat ["#{dev_image_name}:latest"]
