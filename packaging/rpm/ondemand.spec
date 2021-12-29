@@ -124,7 +124,7 @@ set -x
 set -e
 export GEM_HOME=$(pwd)/gems-build
 export GEM_PATH=$(pwd)/gems-build:$GEM_PATH
-bundle install --without test build
+bundle install --without test package
 rake --trace -mj%{ncpus} build
 rm -rf ${GEM_HOME}/cache
 rm -rf apps/*/node_modules/.cache
