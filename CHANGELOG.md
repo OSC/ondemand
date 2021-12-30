@@ -6,13 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-options with hyphens still dont work right (#1676)\
-Fix backbutton issue on new app page (#1675)\
-write the submit yml when there are yml errors (#1636)\
-fix 1593 (#1673)\
-Bugfix/clamp (#1671)\
-update dependencies (#1672)\
-add the ability to hide multiple items on a change (#1667)
 
 ### Changed
 
@@ -40,7 +33,8 @@ add the ability to hide multiple items on a change (#1667)
   - Add functionality for hiding or showing elements in [1529](https://github.com/OSC/ondemand/pull/1529).
 - Test cases for example files for both ood_portal and nginx_stage in [832](https://github.com/OSC/ondemand/pull/832).
 - Debian packaging in [1466](https://github.com/OSC/ondemand/pull/1466). With many many subsequent patches.
-- Automation will now push ondemand tar.gz to release page on tags in [1564](https://github.com/OSC/ondemand/pull/1564).    
+- Automation will now push ondemand tar.gz to release page on tags in [1564](https://github.com/OSC/ondemand/pull/1564).
+- Submit.yml's will now be written to the staged root if they have ERB/YML related errors in [1636](https://github.com/OSC/ondemand/pull/1636).
 
 ### Fixed
 
