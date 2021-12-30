@@ -58,9 +58,10 @@ namespace :dev do
   def podman_rt_args
     [
       '--userns', 'keep-id',
-      '--cap-add', 'sys_ptrace',
       '--security-opt', 'label=disable'
-    ].freeze
+    ].tap do |arr|
+      arr.concat [ '--cap-add', 'sys_ptrace'] unless additional_caps.include?('--privileged')
+    end.freeze
   end
 
   def config_directory
@@ -82,7 +83,10 @@ namespace :dev do
   end
 
   def additional_caps
-    ENV['OOD_CTR_CAPABILITIES'].to_s.split(',').map do |cap|
+    caps = ENV['OOD_CTR_CAPABILITIES'].to_s
+    return ['--privileged'] if caps.include?('privileged')
+
+    caps.to_s.split(',').map do |cap|
       [ '--cap-add', cap.downcase ]
     end
   end

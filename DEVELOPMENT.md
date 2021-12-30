@@ -79,6 +79,9 @@ variables you may want and/or need.
 For example if you need additional Linux capabilities you can use `OOD_CTR_CAPABILITIES`
 with a comma separated list of the capabilities you want.
 
+If `privileged` is in this list, no capabilies are used and the container is ran with
+the `--privileged` flag.
+
 ```shell
 OOD_CTR_CAPABILITIES=net_raw,net_admin
 ```
