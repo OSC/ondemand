@@ -123,8 +123,4 @@ jobs:
       - name: Debug failure
         if: failure()
         run: |
-          ls -lrt
-          pwd
-          ls tmp/
-          ls -lRt tmp/e2e_ctr/
           find tmp/e2e_ctr/ -type f -name *.log -exec cat {} +
