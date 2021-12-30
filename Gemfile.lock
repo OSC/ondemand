@@ -184,7 +184,7 @@ DEPENDENCIES
   beaker-docker (~> 1.0.1)
   beaker-rspec
   dotenv (~> 2.1)
-  ood_packaging (= 0.1.0)
+  ood_packaging (~> 0.1)
   rake
   rspec
   rubocop
