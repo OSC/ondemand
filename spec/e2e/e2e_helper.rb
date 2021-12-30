@@ -107,6 +107,10 @@ def apache_user
   end
 end
 
+def apache_log_dir
+  "/var/log/#{apache_service.split('-').first}"
+end
+
 def install_packages(packages)
   on hosts, "#{packager} install -y #{packages.join(' ')}"
 end
@@ -224,4 +228,18 @@ def bootstrap_flask
     install_packages(['python3', 'python3-pip'])
   end
   on hosts, 'python3 -m pip install flask'
+end
+
+def dl_ctr_logs
+  dir = File.join(proj_root, 'tmp/e2e_ctr').tap { |d| `mkdir -p #{d}` }
+
+  hosts.each do |host|
+    host_dir = "#{dir}/#{host}".tap { |d| `mkdir -p #{d}` }
+    {
+      '/var/log/ondemand-nginx/ood' => 'error.log',
+      apache_log_dir.to_s => 'localhost_error.log',
+    }.each do |ctr_dir, file|
+      `docker cp ondemand-#{host}:#{ctr_dir}/#{file} #{host_dir}/#{file}`
+    end
+  end
 end
