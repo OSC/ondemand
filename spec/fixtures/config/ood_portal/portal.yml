@@ -3,6 +3,6 @@
 # Portal configuration
 #
 
-listen_addr_port: 8083
+listen_addr_port: 8080
 servername: localhost
-port: 8083
+port: 8080
