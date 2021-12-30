@@ -239,7 +239,7 @@ def dl_ctr_logs
       '/var/log/ondemand-nginx/ood' => 'error.log',
       apache_log_dir.to_s => 'localhost_error.log',
     }.each do |ctr_dir, file|
-      `docker cp #{host}:#{ctr_dir}/#{file} #{host_dir}/#{file}`
+      `docker cp #{host['id']}:#{ctr_dir}/#{file} #{host_dir}/#{file}`
     end
   end
 end
