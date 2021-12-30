@@ -159,22 +159,6 @@ module RakeHelper
     "#{version_major}.#{version_minor}.#{date}-#{id}.#{git_hash}.nightly"
   end
 
-  def rpm_nightly_version
-    nightly_version
-  end
-
-  def deb_nightly_version
-    nightly_version.gsub('-', '.')
-  end
-
-  def rpm_version
-    ood_package_version
-  end
-
-  def deb_version
-    ood_package_version.gsub('-', '.')
-  end
-
   def numeric_tag
     @numeric_tag ||= git_tag.delete_prefix('v')
   end
@@ -189,23 +173,6 @@ module RakeHelper
 
   def container_runtime
     podman_runtime? ? "podman" : "docker"
-  end
-
-  def tar
-    `which gtar 1>/dev/null 2>&1`
-    $?.success? ? 'gtar' : 'tar'
-  end
-
-  def ood_package_name
-    "ondemand"
-  end
-
-  def versioned_ood_package
-    "#{ood_package_name}-#{ood_package_version}"
-  end
-
-  def ood_package_tar
-    "#{versioned_ood_package}.tar.gz"
   end
 
   def test_image_name

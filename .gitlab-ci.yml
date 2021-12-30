@@ -6,9 +6,7 @@ before_script:
   - '[ "x$CI_COMMIT_TAG" != "x" ] && RELEASE="${MAJOR_VERSION}.${MINOR_VERSION}" || RELEASE=master'
   - echo "Clone ondemand-packaging branch ${RELEASE}"
   - git clone --single-branch --branch $RELEASE https://github.com/OSC/ondemand-packaging.git tmp/ondemand-packaging
-  - cp /systems/osc_certs/gpg/ondemand/.gpgpass $CI_PROJECT_DIR/tmp/ondemand-packaging/
-  - cp /systems/osc_certs/gpg/ondemand/ondemand.sec $CI_PROJECT_DIR/tmp/ondemand-packaging/
-  - bundle install --path vendor/bundle --without test
+  - bundle install --path vendor/bundle --without test package
 stages:
   - build
   - deploy
@@ -16,13 +14,16 @@ stages:
 variables:
   GIT_STRATEGY: clone
   GIT_DEPTH: 0
+  OOD_PACKAGING_DEBUG: 'true'
+  OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
+  OOD_PACKAGING_GPG_PASSPHRASE: /systems/osc_certs/gpg/ondemand/.gpgpass
 
 rpm-build-nightly-el7:
   stage: build
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
-    - bundle exec rake package:rpm:nightly[el7,'-u -v -C -s']
+    - bundle exec rake package:build[el7,true]
   artifacts:
     paths:
       - dist
@@ -33,7 +34,7 @@ rpm-build-nightly-el8:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
-    - bundle exec rake package:rpm:nightly[el8,'-u -v -C -s']
+    - bundle exec rake package:build[el8,true]
   artifacts:
     paths:
       - dist
@@ -44,7 +45,7 @@ deb-build-nightly-ubuntu-2004:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
-    - bundle exec rake package:deb:nightly[ubuntu-20.04,'-u -v -C -s']
+    - bundle exec rake package:build[ubuntu-20.04,true]
   artifacts:
     paths:
       - dist
@@ -55,7 +56,7 @@ rpm-build-el7:
   only:
     - tags
   script:
-    - bundle exec rake package:rpm[el7,'-u -v -C -s']
+    - bundle exec rake package:build[el7]
   artifacts:
     paths:
       - dist
@@ -66,7 +67,7 @@ rpm-build-el8:
   only:
     - tags
   script:
-    - bundle exec rake package:rpm[el8,'-u -v -C -s']
+    - bundle exec rake package:build[el8]
   artifacts:
     paths:
       - dist
@@ -77,7 +78,7 @@ deb-build-ubuntu-2004:
   only:
     - tags
   script:
-    - bundle exec rake package:deb[ubuntu-20.04,'-u -v -C -s']
+    - bundle exec rake package:build[ubuntu-20.04]
   artifacts:
     paths:
       - dist
