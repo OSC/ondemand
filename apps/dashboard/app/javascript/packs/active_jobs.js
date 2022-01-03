@@ -1,9 +1,8 @@
 
 import oboe from 'oboe';
-//= require datatables.net-plugins/api/processing()
 import 'datatables.net-plugins/api/processing()';
 
-$(document).ready(function(){
+jQuery(function(){
     $('[data-toggle="tooltip"]').tooltip();
 });
 
