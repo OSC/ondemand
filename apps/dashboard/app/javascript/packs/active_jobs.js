@@ -1,9 +1,15 @@
-//= require oboe/dist/oboe-browser.min
-//= require datatables.net-plugins/api/processing()
 
-$(document).ready(function(){
+import oboe from 'oboe';
+import 'datatables.net-plugins/api/processing()';
+
+jQuery(function(){
     $('[data-toggle="tooltip"]').tooltip();
 });
+
+window.fetch_table_data = fetch_table_data;
+window.create_datatable = create_datatable;
+window.set_cluster_id = set_cluster_id;
+window.set_filter_id = set_filter_id;
 
 var entityMap = {
   '&': '&amp;',
