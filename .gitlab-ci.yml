@@ -1,6 +1,9 @@
 before_script:
   - docker info
   - '[ -d tmp ] || mkdir tmp'
+  - MAJOR_VERSION=$(echo "${CI_COMMIT_TAG#v}" | cut -d'.' -f1)
+  - MINOR_VERSION=$(echo "${CI_COMMIT_TAG#v}" | cut -d'.' -f2)
+  - '[ "x$CI_COMMIT_TAG" != "x" ] && OOD_PACKAGING_RELEASE="${MAJOR_VERSION}.${MINOR_VERSION}" || OOD_PACKAGING_RELEASE=main'
   - bundle install --path vendor/bundle --without test
 stages:
   - build
@@ -84,6 +87,8 @@ deploy-nightly:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
+    - echo "Clone ondemand-packaging branch ${RELEASE}"
+    - git clone --single-branch --branch $RELEASE https://github.com/OSC/ondemand-packaging.git tmp/ondemand-packaging
     - ./tmp/ondemand-packaging/release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c nightly ./dist/*
 
 deploy-build:
@@ -91,6 +96,8 @@ deploy-build:
   only:
     - tags
   script:
+    - echo "Clone ondemand-packaging branch ${RELEASE}"
+    - git clone --single-branch --branch $RELEASE https://github.com/OSC/ondemand-packaging.git tmp/ondemand-packaging
     - ./tmp/ondemand-packaging/release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c build -r $CI_COMMIT_TAG ./dist/*
 
 deploy:
@@ -98,4 +105,6 @@ deploy:
   only:
     - tags
   script:
+    - echo "Clone ondemand-packaging branch ${RELEASE}"
+    - git clone --single-branch --branch $RELEASE https://github.com/OSC/ondemand-packaging.git tmp/ondemand-packaging
     - ./tmp/ondemand-packaging/release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c main ./dist/*
