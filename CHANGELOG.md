@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Radio buttons are now grouped for labeling. We also changed the ordering of labels and values in radio buttons
   in [1611](https://github.com/OSC/ondemand/pull/1611).
 - Changed the file editor navbar in [1582](https://github.com/OSC/ondemand/pull/1582).
+- CI now uses the `ood_packaging` gem to build artifacts in [1661](https://github.com/OSC/ondemand/pull/1661).
 
 ### Added
 
