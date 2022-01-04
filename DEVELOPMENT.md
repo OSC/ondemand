@@ -68,3 +68,29 @@ you want to rebuild to a newer version use the rebuild task.
 ```text
 rake dev:rebuild
 ```
+
+## Advanced setups
+
+### Additional Capabilities
+
+While starting this container, this library will respond to some environment
+variables you may want and/or need.
+
+For example if you need additional Linux capabilities you can use `OOD_CTR_CAPABILITIES`
+with a comma separated list of the capabilities you want.
+
+If `privileged` is in this list, no capabilies are used and the container is ran with
+the `--privileged` flag.
+
+```shell
+OOD_CTR_CAPABILITIES=net_raw,net_admin
+```
+
+### Additional Mounts
+
+You can mount the current directory to override what exists in the container
+by setting _anything_ in the `OOD_MNT_` environment variables.
+
+* `OOD_MNT_PORTAL` mounts <project_root>/ood-portal-generator to /opt/ood/ood-portal-generator
+* `OOD_MNT_NGINX` mounts <project_root>/nginx_stage to /opt/ood/nginx_stage
+* `OOD_MNT_PROXY` mounts <project_root>/ood_proxy to /opt/ood/ood_proxy
