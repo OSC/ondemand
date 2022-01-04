@@ -6,7 +6,7 @@ ARG GID=1000
 
 RUN dnf reinstall -y httpd-tools && \
     dnf install -y \
-        strace lua python3 && \
+        strace lua python3 iptables && \
     dnf clean all && rm -rf /var/cache/dnf/*
 
 RUN sed -i 's#^CREATE_MAIL_SPOOL=yes#CREATE_MAIL_SPOOL=no#' /etc/default/useradd; \
