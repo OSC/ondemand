@@ -3,6 +3,8 @@
   any_apps = (@sys_app_groups + @usr_app_groups + @dev_app_groups).any?
 -%>
 
+<%= javascript_pack_tag 'batch_connect_sessions', nonce: true %>
+
 <%= render partial: 'batch_connect/shared/breadcrumb',
 locals: {
   links: [
@@ -31,7 +33,7 @@ locals: {
       %>
     </div>
     <div class="col-md-9">
-      <div class="batch-connect sessions" data-toggle="poll" data-url="<%= batch_connect_sessions_path(format: :js) %>" data-delay="<%= ENV["POLL_DELAY"] || 10000 %>">
+      <div id="batch_connect_sessions" class="batch-connect sessions" data-toggle="poll" data-url="<%= batch_connect_sessions_path(format: :js) %>" data-delay="<%= ENV["POLL_DELAY"] || 10000 %>">
         <% if @sessions.empty? %>
           <div class="ood-appkit markdown">
             <p><%= t('dashboard.batch_connect_no_sessions') %></p>
