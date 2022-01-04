@@ -87,8 +87,8 @@ deploy-nightly:
     - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
     - mkdir tmp
-    - echo "Clone ondemand-packaging branch ${OOD_PACKAGE_RELEASE}"
-    - git clone --single-branch --branch $OOD_PACKAGE_RELEASE https://github.com/OSC/ondemand-packaging.git tmp/ondemand-packaging
+    - echo "Clone ondemand-packaging branch ${OOD_PACKAGING_RELEASE}"
+    - git clone --single-branch --branch $OOD_PACKAGING_RELEASE https://github.com/OSC/ondemand-packaging.git tmp/ondemand-packaging
     - ./tmp/ondemand-packaging/release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c nightly ./dist/*
 
 deploy-build:
@@ -97,8 +97,8 @@ deploy-build:
     - tags
   script:
     - mkdir tmp
-    - echo "Clone ondemand-packaging branch ${OOD_PACKAGE_RELEASE}"
-    - git clone --single-branch --branch $OOD_PACKAGE_RELEASE https://github.com/OSC/ondemand-packaging.git tmp/ondemand-packaging
+    - echo "Clone ondemand-packaging branch ${OOD_PACKAGING_RELEASE}"
+    - git clone --single-branch --branch $OOD_PACKAGING_RELEASE https://github.com/OSC/ondemand-packaging.git tmp/ondemand-packaging
     - ./tmp/ondemand-packaging/release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c build -r $CI_COMMIT_TAG ./dist/*
 
 deploy:
@@ -107,6 +107,6 @@ deploy:
     - tags
   script:
     - mkdir tmp
-    - echo "Clone ondemand-packaging branch ${OOD_PACKAGE_RELEASE}"
-    - git clone --single-branch --branch $OOD_PACKAGE_RELEASE https://github.com/OSC/ondemand-packaging.git tmp/ondemand-packaging
+    - echo "Clone ondemand-packaging branch ${OOD_PACKAGING_RELEASE}"
+    - git clone --single-branch --branch $OOD_PACKAGING_RELEASE https://github.com/OSC/ondemand-packaging.git tmp/ondemand-packaging
     - ./tmp/ondemand-packaging/release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c main ./dist/*
