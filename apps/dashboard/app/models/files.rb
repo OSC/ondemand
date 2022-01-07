@@ -132,12 +132,24 @@ class Files
     #     x === 'application/x-yaml'
     #     # => true
     #
-    if %r{text/.*}.match(type).nil?
-      type
-    else
-      'text/plain; charset=utf-8'
-    end
-  end
+
+    # NOTE:  due to how most modern browsers are handling the yaml mime-types,
+    # we have to cast the yaml mime-types to text/plain mime-type so we can
+    # view the yaml files inline with the browser.
+    # would like to have a pattern match for something like application/*yml and application/*yaml
+    # but couldn't find one that worked. Therefore, for now we're using full mime-type names for yaml mime-types.
+
+    castToTextArray = ['text/*','application/x-yml','application/x-yaml','application/yml']
+    castToTextArray.each { |mime| 
+      Rails.logger.info('Mime: ' + mime)
+      if ! %r{#{mime}}.match(type).nil?
+        type = 'text/plain; charset=utf-8'
+      end
+    }
+
+    type
+
+end
 
   # returns mime type string if found, "" otherwise
   def self.mime_type_by_extension(path)
