@@ -475,7 +475,7 @@ function getFilesAndDirectoriesFromDirectory (directoryReader, oldEntries, logDr
 }
 
 (function(){
-  class EmptyDirCreator extends Uppy.Core.Plugin {
+  class EmptyDirCreator extends Uppy.Core.BasePlugin {
     constructor (uppy, opts){
       super(uppy, opts)
       this.id = this.opts.id || 'EmptyDirUploaderCatcher';
@@ -536,7 +536,7 @@ function getFilesAndDirectoriesFromDirectory (directoryReader, oldEntries, logDr
   }
 
 
-  window.uppy = Uppy.Core({
+  window.uppy = new Uppy.Core({
     restrictions: {
       maxFileSize: <%= Configuration.file_upload_max %>,
     }
