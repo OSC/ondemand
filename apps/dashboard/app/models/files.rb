@@ -139,7 +139,7 @@ class Files
     # Would like to have a pattern match for the  yaml mime-types; something like application/*yml and application/*yaml
     # but couldn't find one that worked. Therefore, for now we're using full mime-type names for yaml mime-types.
 
-    castToTextArray = ['text/*','application/x-yml','application/x-yaml','application/yml']
+    castToTextArray = ['text/*','application/x-yml','application/x-yaml','application/yml','application/yaml']
 
     castToTextArray.each { |mime| 
       if ! %r{#{mime}}.match(type).nil?
