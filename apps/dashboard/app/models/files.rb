@@ -141,11 +141,7 @@ class Files
 
     castToTextArray = ['text/*','application/x-yml','application/x-yaml','application/yml','application/yaml']
 
-    castToTextArray.each { |mime| 
-      if ! %r{#{mime}}.match(type).nil?
-        type = 'text/plain; charset=utf-8'
-      end
-    }
+    type = 'text/plain; charset=utf-8' if plain_cast_array.any? { |mime| /#{mime}/.match?(type) }
 
     type
 
