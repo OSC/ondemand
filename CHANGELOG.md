@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+allow for additonal capabilites in the dev container (#1683)\
+migrate session_contexts.coffee to plain js (#1740)\
+migrate files js from webpacker (#1743)\
+Update Changelog (#1745)\
+migrate activejobs javascript to webpack (#1748)\
+Fix nightlies (#1750)\
+Fix nightly builds (#1744)
 
 ### Changed
 
