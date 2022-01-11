@@ -475,7 +475,7 @@ function getFilesAndDirectoriesFromDirectory (directoryReader, oldEntries, logDr
 }
 
 (function(){
-  class EmptyDirCreator extends Uppy.Core.BasePlugin {
+  class EmptyDirCreator extends BasePlugin {
     constructor (uppy, opts){
       super(uppy, opts)
       this.id = this.opts.id || 'EmptyDirUploaderCatcher';
@@ -536,13 +536,13 @@ function getFilesAndDirectoriesFromDirectory (directoryReader, oldEntries, logDr
   }
 
 
-  window.uppy = new Uppy.Core({
+  window.uppy = new Uppy({
     restrictions: {
       maxFileSize: <%= Configuration.file_upload_max %>,
     }
   });
   uppy.use(EmptyDirCreator);
-  uppy.use(Uppy.Dashboard, {
+  uppy.use(Dashboard, {
     trigger: '#upload-btn',
     fileManagerSelectionType: 'both',
     disableThumbnailGenerator: true,
@@ -553,7 +553,7 @@ function getFilesAndDirectoriesFromDirectory (directoryReader, oldEntries, logDr
     onRequestCloseModal: () => closeAndResetUppyModal(uppy),
     note: 'Empty directories will be included in the upload only when a directory upload is initiated via drag and drop. This is because the File and Directory Entries API is available only on a drop event, not during an input change event.'
   });
-  uppy.use(Uppy.XHRUpload, {
+  uppy.use(XHRUpload, {
     endpoint: '<%= files_upload_path %>',
     withCredentials: true,
     fieldName: 'file',
