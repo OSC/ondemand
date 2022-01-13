@@ -19,17 +19,13 @@ module BatchConnect::SessionContextsHelper
       form.form_group attrib.id, help: field_options[:help] do
         form.collection_radio_buttons attrib.id, attrib.select_choices, :first, :second, { label: label_tag(attrib.id, attrib.label), checked: (attrib.value.presence || attrib.field_options[:checked]) }
       end
-    when 'file_field'
-      file_navigator(form, attrib.id, all_options)
+    when 'file_navigator'
+      form.form_group attrib.id, help: field_options[:help] do
+        render :partial => "file_navigator", :locals => { attrib: attrib, field_options: field_options }
+      end
     else
       form.send widget, attrib.id, all_options
     end
-  end
-
-  def file_navigator(form, id, opts = {})
-    Rails.logger.info('Gerald - IN FILE NAVIGATOR')
-    Rails.logger.info("Gerald - #{id.inspect}")
-    Rails.logger.info("Gerald - #{opts.inspect}")
   end
 
   def resolution_field(form, id, opts = {})
