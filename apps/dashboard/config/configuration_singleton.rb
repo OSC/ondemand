@@ -36,10 +36,11 @@ class ConfigurationSingleton
   # @return [Hash] key/value pairs of boolean configurations.
   def boolean_configs
     {
-      :csp_enabled          => false,
-      :csp_report_only      => false,
-      :bc_dynamic_js        => false,
-      :per_cluster_dataroot => false
+      :csp_enabled                  => false,
+      :csp_report_only              => false,
+      :bc_dynamic_js                => false,
+      :per_cluster_dataroot         => false,
+      :file_navigator               => false
     }.freeze
   end
 

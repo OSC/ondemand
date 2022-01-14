@@ -4,8 +4,8 @@ module BatchConnect::SessionContextsHelper
 
     widget = attrib.widget
     field_options = attrib.field_options(fmt: format)
-    all_options = attrib.all_options(fmt: format)
-
+    all_options = attrib.all_options(fmt: format) 
+  
     case widget
     when 'select'
       form.select attrib.id, attrib.select_choices, field_options, attrib.html_options
@@ -20,8 +20,12 @@ module BatchConnect::SessionContextsHelper
         form.collection_radio_buttons attrib.id, attrib.select_choices, :first, :second, { label: label_tag(attrib.id, attrib.label), checked: (attrib.value.presence || attrib.field_options[:checked]) }
       end
     when 'file_navigator'
-      form.form_group attrib.id, help: field_options[:help] do
-        render :partial => "file_navigator", :locals => { attrib: attrib, field_options: field_options }
+      if Configuration.file_navigator?
+        form.form_group attrib.id, help: field_options[:help] do
+          render :partial => "file_navigator", :locals => { attrib: attrib, field_options: field_options }
+        end
+      else
+        form.send widget, attrib.id, all_options
       end
     else
       form.send widget, attrib.id, all_options
