@@ -109,7 +109,6 @@ class ProductsTest < ApplicationSystemTestCase
     stub_dev
     visit products_path(:dev)
     find(id: 'productTable')
-    take_screenshot
     assert_selector 'tr', count: 12
   end
 end
