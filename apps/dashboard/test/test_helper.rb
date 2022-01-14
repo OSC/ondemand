@@ -38,7 +38,6 @@ class ActiveSupport::TestCase
     UsrRouter.stubs(:base_path).with(:owner => "me").returns(Pathname.new("test/fixtures/usr/me"))
     UsrRouter.stubs(:base_path).with(:owner => 'shared').returns(Pathname.new("test/fixtures/usr/shared"))
     UsrRouter.stubs(:base_path).with(:owner => 'cant_see').returns(Pathname.new("test/fixtures/usr/cant_see"))
-    UsrRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/usr/me"))
     UsrRouter.stubs(:owners).returns(['me', 'shared', 'cant_see'])
   end
 

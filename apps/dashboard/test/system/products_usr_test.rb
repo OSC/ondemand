@@ -14,6 +14,7 @@ class ProductsUsrTest < ApplicationSystemTestCase
   end
 
   test 'Index of my_shared_app can be accessed' do
+    UsrRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/usr/me"))
     visit products_path(:usr)
   end
 
