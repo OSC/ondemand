@@ -15,7 +15,7 @@ class ProductsDevTest < ApplicationSystemTestCase
   end
 
   test 'New App route is correct' do
-    button_link('New App', '/pun/sys/dashboard/admin/dev/products/new')
+    button_link?('New App', '/pun/sys/dashboard/admin/dev/products/new')
   end
 
   test 'Launch Shell route is correct' do
@@ -24,7 +24,7 @@ class ProductsDevTest < ApplicationSystemTestCase
   end
 
   test 'Launch Files route is correct' do
-    button_link('Launch Files', '/pun/sys/dashboard/files/fs')
+    button_link?('Launch Files', '/pun/sys/dashboard/files/fs')
   end
 
   test 'Can click dev Launch Jupyter' do
@@ -44,19 +44,19 @@ class ProductsDevTest < ApplicationSystemTestCase
   end
 
   test 'Can click dev Launch Active Jobs' do
-    button_link('Launch Active Jobs', '/pun/sys/dashboard/apps/show/activejobs/dev/')
+    button_link?('Launch Active Jobs', '/pun/sys/dashboard/apps/show/activejobs/dev/')
   end
 
   test 'Can click dev Launch Home Directory' do
-    button_link('Launch Active Jobs', '/pun/sys/dashboard/apps/show/activejobs/dev/')
+    button_link?('Launch Active Jobs', '/pun/sys/dashboard/apps/show/activejobs/dev/')
   end
 
   test 'Can click dev Launch file-editor' do
-    button_link('Launch osc-editor', '/pun/sys/dashboard/apps/show/file-editor/dev/')
+    button_link?('Launch osc-editor', '/pun/sys/dashboard/apps/show/file-editor/dev/')
   end
 
   test 'Can click dev Launch My Jobs' do
-    button_link('Launch My Jobs', '/pun/sys/dashboard/apps/show/myjobs/dev/')
+    button_link?('Launch My Jobs', '/pun/sys/dashboard/apps/show/myjobs/dev/')
   end
 
   test 'HTML renders 12 rows for 12 apps in Product Table' do

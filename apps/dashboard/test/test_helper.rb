@@ -58,7 +58,7 @@ class ActiveSupport::TestCase
     "batch_connect_session_context_#{ele}"
   end
 
-  def button_link(text, link)
+  def button_link?(text, link)
     find('.btn', text: text)
     has_link?(link)
   end
