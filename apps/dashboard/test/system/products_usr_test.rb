@@ -15,11 +15,9 @@ class ProductsUsrTest < ApplicationSystemTestCase
 
   test 'Index of my_shared_app can be accessed' do
     visit products_path(:usr)
-    teardown_usr_fixtures
   end
 
   test 'Show of my_shared_app url can be accessed' do
     visit product_path(:usr, 'my_shared_app')
-    teardown_usr_fixtures
   end
 end
