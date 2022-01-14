@@ -57,6 +57,11 @@ class ActiveSupport::TestCase
   def bc_ele_id(ele)
     "batch_connect_session_context_#{ele}"
   end
+
+  def button_link(text, link)
+    find('.btn', text: text)
+    has_link?(link)
+  end
 end
 
 require 'mocha/minitest'
