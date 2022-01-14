@@ -30,6 +30,8 @@ class ActiveSupport::TestCase
   end
 
   def stub_usr_router
+    Configuration.stubs(:app_sharing_enabled?).returns(true)
+    Configuration.stubs(:app_development_enabled?).returns(true)
     OodSupport::Process.stubs(:user).returns(UserDouble.new('me', ['me']))
     OodSupport::User.stubs(:new).returns(UserDouble.new('me', ['me']))
 
