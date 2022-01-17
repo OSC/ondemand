@@ -6,10 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Add jobid to detail view link. (#1766)\
-move all the js out of application.js to js packs (#1755)\
-upgrade uppy to 2.3.x (#1761)\
-Added functionality to view yaml files inline with browser (#1758)
 
 ### Changed
 
@@ -28,6 +24,7 @@ Added functionality to view yaml files inline with browser (#1758)
   in [1611](https://github.com/OSC/ondemand/pull/1611).
 - Changed the file editor navbar in [1582](https://github.com/OSC/ondemand/pull/1582).
 - CI now uses the `ood_packaging` gem to build artifacts in [1661](https://github.com/OSC/ondemand/pull/1661).
+- Yaml files now preview in [1758](https://github.com/OSC/ondemand/pull/1758).
 
 ### Added
 
