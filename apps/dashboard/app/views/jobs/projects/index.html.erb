@@ -1,0 +1,33 @@
+<div class='page-header text-center'>
+  <h1>Jobs App</h1>
+  <%= link_to 'New Project', new_jobs_project_path, class: 'btn btn-info', 
+  title: 'Create a new project directory' %>
+</div>
+<br>
+<div class='card'>
+  <h3 class='card-header'>Projects</h3>
+  <div class='card-body'>
+    <table class='table table-borderless' >
+      <thead>
+        <tr>
+          <th>Project Name</th>
+          <th>Actions</th>
+        <tr>
+      </thead>
+      <tbody>
+      <% @projects.each do |project| %>
+        <tr>
+          <td><%= project %></td>
+          <td><%= link_to 'Work in', jobs_project_path(:id), class: 'btn btn-success', 
+          title: 'View project directory contents' %>
+          <td><%= link_to 'Edit', edit_jobs_project_path(:id), class: 'btn btn-info',
+          title: 'Edit project directory' %>
+          <td><%= link_to 'Delete', jobs_project_path(:id), class: 'btn btn-danger', :method => :delete,
+          title: 'Deletes the entire project directory including ALL jobs content',
+          data: {confirm: 'Delete the entire project directory including all jobs content?'} %>
+        <tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

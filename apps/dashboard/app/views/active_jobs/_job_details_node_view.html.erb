@@ -16,7 +16,7 @@
             Node: <%= node %>
             <span class="ml-3">Job: <%= data.pbsid %></span>
             <span class="ml-3">
-              <a href="<%= build_grafana_link(data.cluster, data.starttime, 'node', node) %>" target="_blank">
+              <a href="<%= build_grafana_link(data.cluster, data.starttime, 'node', node, data.pbsid) %>" target="_blank">
                     <span class="fa fa-external-link-square-alt"></span> Detailed Metrics
               </a>
             </span>

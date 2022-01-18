@@ -30,6 +30,8 @@ class ActiveSupport::TestCase
   end
 
   def stub_usr_router
+    Configuration.stubs(:app_sharing_enabled?).returns(true)
+    Configuration.stubs(:app_development_enabled?).returns(true)
     OodSupport::Process.stubs(:user).returns(UserDouble.new('me', ['me']))
     OodSupport::User.stubs(:new).returns(UserDouble.new('me', ['me']))
 
@@ -54,6 +56,11 @@ class ActiveSupport::TestCase
 
   def bc_ele_id(ele)
     "batch_connect_session_context_#{ele}"
+  end
+
+  def button_link?(text, link)
+    find('.btn', text: text)
+    has_link?(link)
   end
 end
 
