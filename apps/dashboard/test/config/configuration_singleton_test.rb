@@ -460,7 +460,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
 
   test 'boolean configs respond config files' do
     Dir.mktmpdir do |dir|
-      with_modified_env(config_fixtures) do
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
         # write !defaults out
         File.open("#{dir}/config.yml", 'w+') do |file|
           cfg = ConfigurationSingleton.new.boolean_configs.each_with_object({}) do |(config, default), hsh|
