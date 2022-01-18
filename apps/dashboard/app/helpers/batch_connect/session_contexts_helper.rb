@@ -4,8 +4,8 @@ module BatchConnect::SessionContextsHelper
 
     widget = attrib.widget
     field_options = attrib.field_options(fmt: format)
-    all_options = attrib.all_options(fmt: format) 
-  
+    all_options = attrib.all_options(fmt: format)
+
     case widget
     when 'select'
       form.select attrib.id, attrib.select_choices, field_options, attrib.html_options
