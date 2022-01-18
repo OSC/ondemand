@@ -459,10 +459,20 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test 'boolean configs respond config files' do
-    with_modified_env(config_fixtures) do
-      c = ConfigurationSingleton.new
-      c.boolean_configs.each do |config, default|
-        assert_equal !default, c.send(config), "#{config} should have been #{!default} through a fixture file."
+    Dir.mktmpdir do |dir|
+      with_modified_env(config_fixtures) do
+        # write !defaults out
+        File.open("#{dir}/config.yml", 'w+') do |file|
+          cfg = ConfigurationSingleton.new.boolean_configs.each_with_object({}) do |(config, default), hsh|
+            hsh[config.to_s] = !default
+          end
+          file.write(cfg.to_yaml)
+        end
+
+        c = ConfigurationSingleton.new
+        c.boolean_configs.each do |config, default|
+          assert_equal !default, c.send(config), "#{config} should have been #{!default} through a fixture file."
+        end
       end
     end
   end
