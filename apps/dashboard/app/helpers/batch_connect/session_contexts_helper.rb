@@ -1,23 +1,31 @@
 module BatchConnect::SessionContextsHelper
   def create_widget(form, attrib, format: nil)
-    return "" if attrib.fixed?
+    return '' if attrib.fixed?
 
     widget = attrib.widget
     field_options = attrib.field_options(fmt: format)
     all_options = attrib.all_options(fmt: format)
 
     case widget
-    when "select"
+    when 'select'
       form.select attrib.id, attrib.select_choices, field_options, attrib.html_options
-    when "resolution_field"
+    when 'resolution_field'
       resolution_field(form, attrib.id, all_options)
-    when "check_box"
+    when 'check_box'
       form.form_group attrib.id, help: field_options[:help] do
         form.check_box attrib.id, all_options, attrib.checked_value, attrib.unchecked_value
       end
-    when "radio", "radio_button"
+    when 'radio', 'radio_button'
       form.form_group attrib.id, help: field_options[:help] do
-        form.collection_radio_buttons attrib.id,  attrib.select_choices, :first, :second, { label: label_tag(attrib.id, attrib.label), checked: (attrib.value.presence || attrib.field_options[:checked]) }
+        form.collection_radio_buttons attrib.id, attrib.select_choices, :first, :second, { label: label_tag(attrib.id, attrib.label), checked: (attrib.value.presence || attrib.field_options[:checked]) }
+      end
+    when 'file_navigator'
+      if Configuration.file_navigator?
+        form.form_group attrib.id, help: field_options[:help] do
+          render :partial => "file_navigator", :locals => { attrib: attrib, field_options: field_options }
+        end
+      else
+        form.send widget, attrib.id, all_options
       end
     else
       form.send widget, attrib.id, all_options
