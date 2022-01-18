@@ -3,4 +3,4 @@ csp_report_only: true
 bc_dynamic_js: true
 per_cluster_dataroot: true
 file_navigator: true
-jobs_alpha: true
+jobs_app_alpha: true
