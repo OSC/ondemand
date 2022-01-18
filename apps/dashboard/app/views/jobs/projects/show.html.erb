@@ -1,0 +1,50 @@
+<%= bootstrap_form_tag  do |form| %>
+
+<div class='page-header text-center'>
+  <h1>Project Space</h1>
+</div> 
+<br>
+<div class='row row-cols-1 row-cols-md-2'>
+    <div class='card'>
+      <h3 class='card-header'>Project Files</h3>
+      <div class='card-body'>
+      <!--dir iteration -->
+      </div>
+    </div>
+    <div class='card'>
+      <h3 class='card-header'>Project Details</h3>
+        <div class='card-body'>
+          <p>Project location:  <pre><!-- current proj space --></pre></p>
+        </div>
+        <div class='card-body'>
+        <div class='col-md-7'>
+          <%= form.text_field :name, label: 'Job Name', class: 'form-control', required: true,
+          title: 'Script name for job' %>
+          <%= form.text_field :name, label: 'Account', class: 'form-control', required: true %>
+        </div>
+        <div class='col-md-7'>
+          <%= form.select :cluster, ['Owens', 'Pitzer'], label: 'Cluster', class: 'form-control', required: true %>
+        </div>
+        </div>
+        <div class='card-body'>
+          <h4>Script contents:</h4>
+            <p>
+              <%= form.button 'Open Editor', class: 'btn btn-info glyphicon glyphicon-pencil', style: 'margin: 5px', 
+              title: 'Open job script in editor', target: '_blank' %>
+              <%= form.button 'Open Terminal', class: 'btn btn-info btn-default pull-right glyphicon glyphicon-console', style: 'margin: 5px', 
+              title: 'Open directory in terminal', target: '_blank' %>
+            </p>
+        </div>
+        <div class='card-body'>
+        <p>
+          <%= form.submit 'Submit', class: 'btn btn-success', title: 'Submit job to cluster' %>
+          <%= form.submit 'Save', class: 'btn btn-primary', title: 'Save changes to script' %>
+          <%= form.button 'Reset', type: :reset, class: 'btn btn-default', title: 'Clear form fields' %>
+          <%= link_to 'Back', jobs_projects_path, class: 'btn btn-default', title: 'Return to projects page' %>
+        </p>
+        </div>
+      </div>
+    </div>
+</div>
+
+<% end %>
