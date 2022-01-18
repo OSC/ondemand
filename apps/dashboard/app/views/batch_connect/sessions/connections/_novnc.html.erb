@@ -12,13 +12,14 @@
    <%= f.number_field(:qualitysetting, class: 'custom-range', type: 'range', min: 0, max: 9, value: 2, label: "Image Quality", help: "0 (low) to 9 (high)") %>
   </div>
  </div>
- <script type="text/javascript">
-  // Functions defined in application.js
-  for(var name of ['compressionsetting', 'qualitysetting']) {
-    tryUpdateSetting(name);
-    installSettingHandlers(name);
-  }
- </script>
+
+  <%= javascript_tag nonce: true do -%>
+    // Functions defined in batch_connect_sessions.js
+    for(var name of ['compressionsetting', 'qualitysetting']) {
+      tryUpdateSetting(name);
+      installSettingHandlers(name);
+    }
+  <% end -%>
 
  <%= f.submit( t('dashboard.batch_connect_sessions_novnc_launch', app_title: app_title), class: 'btn btn-primary', :formtarget => "_blank") %>
  <%= link_to t('dashboard.batch_connect_sessions_novnc_view_only'), novnc_link(connect, view_only: true), class: 'btn btn-light float-right', target: '_blank' %>

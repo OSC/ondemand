@@ -1,3 +1,4 @@
+<%= javascript_pack_tag 'dashboard', nonce: true %>
 <%= render partial: 'shared/welcome' %>
 
 <%- dashboard_layout.fetch(:rows, []).each do |row| -%>

@@ -1,7 +1,14 @@
 import ClipboardJS from 'clipboard'
 import Swal from 'sweetalert2'
+import { Uppy, BasePlugin } from '@uppy/core'
+import Dashboard from '@uppy/dashboard'
+import XHRUpload from '@uppy/xhr-upload'
 
 window.ClipboardJS = ClipboardJS
+window.Uppy = Uppy
+window.BasePlugin = BasePlugin
+window.Dashboard = Dashboard
+window.XHRUpload = XHRUpload
 window.Swal        = Swal.mixin({
   showClass: {
     popup: 'swal2-noanimation',
