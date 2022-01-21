@@ -31,4 +31,35 @@ class Jobs::Project
   def files
     #return [Array] of all files in current project dir
   end
+
+
+  # .ondemand methods
+  # recognize .ondemand dir in project space
+  # return [String] with .ondemand directory
+  def dot_ondemand_dir
+    Dir.entries(:dir).find do |entry|
+     entry =~ /^.ondemand/
+    end
+  end
+
+  # remove .ondemand dir in project space
+  def del_dot_ondemand_dir
+    raise StandardError, "#{dot_ondemand_dir} does not exist yet." unless Dir.exists?(dot_ondemand_dir)
+    
+    Dir.rmdir(Jobs::Project.dataroot.join(dot_ondemand_dir))
+  end
+
+  # create .ondemand dir in project space
+  def create_dot_ondemand_dir
+    raise StandardError, "#{dot_ondemand_dir} already exists." if Dir.exists?(dot_ondemand_dir)
+
+    Dir.mkdir(Jobs::Project.dataroot.join(dot_ondemand_dir))
+  end
+
+  # manifest methods
+
+  
+  # read contents of .ondemand dir and the manifest.yml file located there
+  def project_manifest_reader
+  end
 end
