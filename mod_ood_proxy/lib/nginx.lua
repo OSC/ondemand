@@ -52,7 +52,9 @@ function nginx_handler(r)
     -- stop PUN process
     err = nginx_stage.nginx(r, pun_stage_cmd, user, "stop")
     if redir then
-      return http.http302(r, redir)  -- ignore errors
+      local pun_app_request = redir:match("^" .. pun_uri .. "(/.+)$")
+      if not pun_app_request then return http.http404(r, "bad `redir` request (" .. redir .. ")") end
+      return http.http302(r, pun_app_request)  -- ignore errors
     else
       return err and http.http404(r, err) or http.http200(r)
     end
