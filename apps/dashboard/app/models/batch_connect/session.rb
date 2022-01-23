@@ -73,7 +73,7 @@ module BatchConnect
     end
     
     # How many days before a Session record is considered old and ready to delete
-    OLD_IN_DAYS=7
+    OLD_IN_DAYS=Configuration.ood_bc_card_time
 
     # Attributes used for serialization
     # @return [Hash] attributes to be serialized
