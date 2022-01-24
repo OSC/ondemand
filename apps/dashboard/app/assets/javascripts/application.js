@@ -10,7 +10,6 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require data-confirm-modal
 //= require handlebars/dist/handlebars.min
 //= require lodash/lodash.min
 //= require_tree .
