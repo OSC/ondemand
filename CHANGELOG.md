@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+migrate dashboard coffeescript to plain js in webpack (#1764)\
+correctly initialize the shell app with the right profile (#1772)\
+Fix boolean test (#1774)\
+Feature/file picker (#1765)\
+use dataroot and ensure its safe to use & traverse (#1771)\
+Merge pull request #1773 from OSC/feature/new-jobs-app\
+Update Changelog (#1768)\
+update dependencies (#1769)\
+Adding systems tests for products. (#1767)
 
 ### Changed
 
