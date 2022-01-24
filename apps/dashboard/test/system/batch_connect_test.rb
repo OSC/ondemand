@@ -296,9 +296,8 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 'python37', find_value('hidden_change_thing', visible: false)
 
     update_script = <<~JAVASCRIPT
-      let ele = $('#batch_connect_session_context_hidden_change_thing');
-      ele.val('some new value');
-      ele.attr('value', 'some new value');
+      let ele = document.getElementById('batch_connect_session_context_hidden_change_thing');
+      ele.value = 'some new value';
     JAVASCRIPT
 
     execute_script(update_script)
