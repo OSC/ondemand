@@ -1,5 +1,7 @@
 'use strict';
 
+import _ from 'lodash';
+
 function promiseLoginToXDMoD(xdmodUrl){
   return new Promise(function(resolve, reject){
 

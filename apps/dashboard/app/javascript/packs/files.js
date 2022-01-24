@@ -3,6 +3,8 @@ import Swal from 'sweetalert2'
 import { Uppy, BasePlugin } from '@uppy/core'
 import Dashboard from '@uppy/dashboard'
 import XHRUpload from '@uppy/xhr-upload'
+import Handlebars from 'handlebars';
+import _ from 'lodash';
 import 'datatables.net';
 import 'datatables.net-bs4/js/dataTables.bootstrap4';
 import 'datatables.net-select';
@@ -33,6 +35,8 @@ window.loading = loading;
 window.doneLoading = doneLoading;
 window.$ = $;
 window.jQuery = jQuery;
+window._ = _;
+window.Handlebars = Handlebars;
 
 function alertError(error_title, error_message){
   Swal.fire(error_title, error_message, 'error');
