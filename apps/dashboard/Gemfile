@@ -12,8 +12,6 @@ gem 'coffee-rails', '~> 5.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 
-# Use jquery as the JavaScript library
-gem 'jquery-rails'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
@@ -51,7 +49,6 @@ gem 'redcarpet', '~> 3.3'
 gem 'browser', '~> 2.2'
 gem 'addressable', '~> 2.4'
 gem 'bootstrap_form', '~> 4.0'
-gem 'jquery-datatables-rails', '~> 3.4'
 gem 'data-confirm-modal', '~> 1.2'
 gem 'mocha', '~> 1.1', group: :test
 gem 'autoprefixer-rails', '~> 10.2.5'
