@@ -1,11 +1,9 @@
 'use strict';
 
 import oboe from 'oboe';
+import 'datatables.net';
+import 'datatables.net-bs4/js/dataTables.bootstrap4';
 import 'datatables.net-plugins/api/processing()';
-
-jQuery(function(){
-    $('[data-toggle="tooltip"]').tooltip();
-});
 
 window.fetch_table_data = fetch_table_data;
 window.create_datatable = create_datatable;
