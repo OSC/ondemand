@@ -31,6 +31,8 @@ window.reloadTable = reloadTable;
 window.goto = goto;
 window.loading = loading;
 window.doneLoading = doneLoading;
+window.$ = $;
+window.jQuery = jQuery;
 
 function alertError(error_title, error_message){
   Swal.fire(error_title, error_message, 'error');
