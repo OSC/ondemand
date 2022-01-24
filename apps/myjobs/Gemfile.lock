@@ -171,7 +171,7 @@ GEM
       ffi (~> 1.0)
     rdoc (6.3.3)
     redcarpet (3.5.1)
-    request_store (1.5.0)
+    request_store (1.5.1)
       rack (>= 1.4)
     sass (3.7.4)
       sass-listen (~> 4.0.0)
