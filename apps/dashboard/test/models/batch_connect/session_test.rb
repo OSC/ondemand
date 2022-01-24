@@ -33,9 +33,9 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       session = BatchConnect::Session.new({})
 
       refute session.old?, 'A newly created session should not be identified as old'
-      Timecop.freeze((BatchConnect::Session::OLD_IN_DAYS + 1).days.from_now) do
+      Timecop.freeze((BatchConnect::Session.old_in_days + 1).days.from_now) do
         assert session.old?,
-               "A session unmodified for #{BatchConnect::Session::OLD_IN_DAYS + 1} days should be identified as old"
+               "A session unmodified for #{BatchConnect::Session.old_in_days + 1} days should be identified as old"
       end
     end
   end
@@ -45,10 +45,10 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
     assert_equal 0, BatchConnect::Session.new(id: 'A').days_till_old, 'should be 0 since no db file exists'
 
     File.stubs(:stat).returns(OpenStruct.new(mtime: Time.now))
-    assert_equal BatchConnect::Session::OLD_IN_DAYS, BatchConnect::Session.new(id: 'A').days_till_old
+    assert_equal BatchConnect::Session.old_in_days, BatchConnect::Session.new(id: 'A').days_till_old
 
     File.stubs(:stat).returns(OpenStruct.new(mtime: 1.day.ago))
-    assert_equal BatchConnect::Session::OLD_IN_DAYS - 1, BatchConnect::Session.new(id: 'A').days_till_old
+    assert_equal BatchConnect::Session.old_in_days - 1, BatchConnect::Session.new(id: 'A').days_till_old
   end
 
   test 'Session.all should fail if valid session fields are not present' do
@@ -97,7 +97,7 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
         { id: 'OLD', job_id: 'COMPLETED', created_at: 100, cluster_id: 'owens' }
       ].each { |v| File.write dir.join(v[:id]), v.to_json }
 
-      Timecop.freeze((BatchConnect::Session::OLD_IN_DAYS + 1).days.from_now) do
+      Timecop.freeze((BatchConnect::Session.old_in_days + 1).days.from_now) do
         assert_equal ['A', 'OLD'], dir.children.map(&:basename).map(&:to_s).sort
         sessions = double_session.all
         assert_equal ['A'], sessions.map(&:id)
@@ -502,6 +502,12 @@ batch_connect: { ssh_allow: true } }))
       base_dir = Pathname.new("#{dir}/batch_connect/bc_jupyter/output")
       assert base_dir.directory?
       assert_equal 1, base_dir.children.size
+    end
+  end
+
+  test 'can configure bc days old' do
+    with_modified_env({OOD_BC_DAYS_OLD: '3'}) do
+      assert 3, BatchConnect::Session.old_in_days
     end
   end
 end
