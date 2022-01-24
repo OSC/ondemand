@@ -1,3 +1,4 @@
+'use strict';
 
 import oboe from 'oboe';
 import 'datatables.net-plugins/api/processing()';
