@@ -36,6 +36,7 @@ import 'data-confirm-modal';
 // Import application stylesheets
 import '../stylesheets/application'
 
+
 jQuery(function(){
 
   $('li.vdi').popover({
