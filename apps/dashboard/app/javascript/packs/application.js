@@ -18,17 +18,21 @@ import 'jquery'
 import 'jquery-migrate'
 import 'jquery-ujs'
 
+jQuery.migrateMute = true
+
 // Import popper.js for Bootstrap 4
 import 'popper.js'
 
 // Import Bootstrap 4
-import 'bootstrap/dist/js/bootstrap'
+import 'bootstrap/js/dist/tooltip';
+import 'bootstrap/js/dist/popover';
 
 // Import application stylesheets
 import '../stylesheets/application'
 
 
 jQuery(function(){
+
 
   $('li.vdi').popover({
     trigger: "hover",
