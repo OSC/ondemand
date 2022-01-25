@@ -15,11 +15,9 @@
 // const imagePath = (name) => images(name, true)
 
 import 'jquery';
-import 'jquery-migrate'
 import 'jquery-ujs'
 
-// FIXME: remove migrateMute. other window stuff may have to stay for a bit.
-jQuery.migrateMute = true
+// lot's of inline scripts and stuff rely on jquery just being available
 window.jQuery = jQuery;
 window.$ = $;
 
