@@ -20,8 +20,8 @@ import 'jquery-ujs'
 
 // hacks until we get jquery all sorted
 jQuery.migrateMute = true
-// window.jQuery = jQuery;
-// window.$ = $;
+window.jQuery = jQuery;
+window.$ = $;
 
 // Import popper.js for Bootstrap 4
 import 'popper.js'
