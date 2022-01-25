@@ -44,3 +44,44 @@
 .container {
   max-width: 100%;
 }
+
+#icon_search {
+  max-width: 98%;
+}
+
+// this is a ul element
+#icon_list {
+  list-style-type: none;
+  padding: 0;
+
+  // this is the main styling
+  li {
+    display: inline-flex;
+
+    width: 3em;
+    height: 3em;
+    padding: .5em;
+    border-radius: 3px;
+    margin: .3em;
+    justify-content: center;
+    align-items: center;
+
+    i {
+      box-sizing: inheret;
+      font-size: 2em;
+    }
+    
+
+    // float: left;
+    // width: 14px;
+    // height: 14px;
+    // padding: 12px;
+    // margin: 0 12px 12px 0;
+    // text-align: center;
+    // cursor: pointer;
+    // border-radius: 3px;
+    // font-size: 14px;
+    // box-shadow: 0 0 0 
+
+  }
+}

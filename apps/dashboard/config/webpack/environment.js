@@ -13,12 +13,6 @@ const { environment } = require('@rails/webpacker');
 const config = environment.toWebpackConfig();
 const { merge } = require('webpack-merge');
 
-config.resolve.alias = {
- jquery: 'jquery/src/jquery',
- fa: '/app/javascript/packs/fa',
- batchConnect: '/apps/javascript/packs/batchConnect'
-};
-
 const faPath = "~@fortawesome/fontawesome-free/webfonts/";
 const sassOptions = {
   additionalData: `$fa-font-path: '${faPath}';`,

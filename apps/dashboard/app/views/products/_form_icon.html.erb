@@ -1,10 +1,4 @@
-<%= javascript_pack_tag 'fa/faIconPicker' %>
-
-<style>
-  .iconpicker .iconpicker-items {
-    max-height: 98px;
-  }
-</style>
+<%= javascript_pack_tag 'icon_picker' %>
 
 <% if product.app.image_icon? %>
   <p class="text-center">
@@ -17,22 +11,30 @@
   <% if product.app.manifest.icon =~ /^(fa[bsrl]?):\/\/(.*)/ %>
     <% icon = $2; style = $1 %>
     <p class="text-center">
-      <%= fa_icon(icon, fa_style: style, id: "product-icon") %>
+      <%= fa_icon(icon, fa_style: style, id: "product_icon") %>
     </p>
   <% else %>
     <p class="text-center">
-      <%= fa_icon("cog", fa_style: "fas", id: "product-icon") %>
+      <%= fa_icon("cog", fa_style: "fas", id: "product_icon") %>
     </p>
     <div class="alert alert-warning">
       <small>There is no icon specified for this app. Default is fas://cog.</small>
     </div>
   <% end %>
-  <div class="field">
-    <%= f.text_field :icon, placeholder: "fas://cog", id: "uri-box" %>
-    <p id="icp" class="text-center"><!-- inline icon picker placeholder --></p>
-    <div class="checkbox">
-      <label><input id="alias" type="checkbox" /> Use Font Awesome 4 icons</label>
+  <div class="field" id="icon_select_list">
+    <%= f.text_field :icon, placeholder: "fas://cog", id: "product_icon_select" %>
+
+
+    <div class="card">
+      <div class="card-header lead">
+        <input type="text" id="icon_search" name="icon_search" placeholder="search">
+      </div>
+      <div class="card-body">
+        <ul id="icon_list">
+        </ul>
+      </div>
     </div>
+
   </div>
   <div class="alert alert-info">
     <small>To use a custom icon, add an icon.png file in <a class="alert-link" href="<%= OodAppkit.files.url(path: product.app.path) %>" target="_blank">this</a> directory.</small>
