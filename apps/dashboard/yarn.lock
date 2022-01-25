@@ -931,6 +931,11 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
+"@rails/ujs@^7.0.1":
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/@rails/ujs/-/ujs-7.0.1.tgz#cb515d52c85be107908dd00822042f04e52cdea7"
+  integrity sha512-ZUkgsbz5KFLfBwjIQ2D/kvyq+2w5BuNnkUJf3940VVJxov9GECu6n2BSXUTmyNAx+R6JQdibzXBuR7nz3crZYw==
+
 "@rails/webpacker@^5.4.0":
   version "5.4.3"
   resolved "https://registry.yarnpkg.com/@rails/webpacker/-/webpacker-5.4.3.tgz#cfe2d8faffe7db5001bad50a1534408b4f2efb2f"
@@ -2534,6 +2539,11 @@ cyclist@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
   integrity sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=
+
+data-confirm-modal@^1.6.2:
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/data-confirm-modal/-/data-confirm-modal-1.6.2.tgz#81fc8ea298cfd9311d066915d1710b3cfa57d96b"
+  integrity sha512-UYYgx8hS65X8Y336YRp1x6A5Gfkhh4iYkLq5jw7oS++hTcq/3yO8JOrbfHvvr7qqqQxBSPRyvUXnFEFIr4ja4w==
 
 datatables.net-bs4@>=1.11.3, datatables.net-bs4@^1.10.24:
   version "1.11.4"

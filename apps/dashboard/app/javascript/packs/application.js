@@ -18,10 +18,13 @@ import 'jquery';
 import 'jquery-migrate'
 import 'jquery-ujs'
 
-// hacks until we get jquery all sorted
+// FIXME: remove migrateMute. other window stuff may have to stay for a bit.
 jQuery.migrateMute = true
 window.jQuery = jQuery;
 window.$ = $;
+
+import Rails from '@rails/ujs';
+Rails.start();
 
 // Import popper.js for Bootstrap 4
 import 'popper.js'
@@ -29,9 +32,11 @@ import 'popper.js'
 // Import Bootstrap 4
 import 'bootstrap/dist/js/bootstrap'
 
+// confim modals
+import 'data-confirm-modal';
+
 // Import application stylesheets
 import '../stylesheets/application'
-
 
 jQuery(function(){
 
