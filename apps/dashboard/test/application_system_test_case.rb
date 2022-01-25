@@ -26,4 +26,8 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   def find_value(ele, visible: false)
     find("##{bc_ele_id(ele)}", visible: visible).value
   end
+
+  def find_css_class(id)
+    find("##{id}")['class'].to_s
+  end
 end
