@@ -102,7 +102,7 @@ describe 'Node and Rnode proxies' do
 
   it 'node correctly returns redir error when no redirect is given on init' do
     browser.goto "#{ctr_base_url}/nginx/init"
-    expect(browser.selector(name: 'pre')).to eq('Error -- requires a `redir` query parameter')
+    expect(browser.pre).to eq('Error -- requires a `redir` query parameter')
   end 
 
   it 'redirects to /pun/sys/dashboard when redirect is given on init' do
@@ -113,17 +113,17 @@ describe 'Node and Rnode proxies' do
 
   it 'node correctly returns "bad redir error" when redirect to "github.com" given on init' do
     browser.goto "#{ctr_base_url}/nginx/init?redir=github.com"
-    expect(browser.selector(name: 'pre')).to eq('Error -- bad `redir` request (github.com)')
+    expect(browser.pre).to eq('Error -- bad `redir` request (github.com)')
   end
 
   it 'node correctly returns "bad redir error" when redirect to "https://github.com" given on init' do
     browser.goto "#{ctr_base_url}/nginx/init?redir=https://github.com"
-    expect(browser.selector(name: 'pre')).to eq('Error -- bad `redir` request (https://github.com)')
+    expect(browser.pre).to eq('Error -- bad `redir` request (https://github.com)')
   end
 
   it 'node correctly returns "bad redir error" when redirect to "/node/localhost/5001" is given on init' do
     browser.goto "#{ctr_base_url}/nginx/init?redir=/node/localhost/5001"
-    expect(browser.selector(name: 'pre')).to eq('Error -- bad `redir` request (/node/localhost/5001)')
+    expect(browser.pre).to eq('Error -- bad `redir` request (/node/localhost/5001)')
   end
 
   # TODO returns 404 and error message when it can't correctly boot the PUN
@@ -146,17 +146,17 @@ describe 'Node and Rnode proxies' do
 
   it 'node correctly returns "bad redir error" when redirect to "github.com" given on stop' do
     browser.goto "#{ctr_base_url}/nginx/stop?redir=github.com"
-    expect(browser.selector(name: 'pre')).to eq('Error -- bad `redir` request (github.com)')
+    expect(browser.pre).to eq('Error -- bad `redir` request (github.com)')
   end
 
   it 'node correctly returns "bad redir error" when redirect to "https://github.com" given on stop' do
     browser.goto "#{ctr_base_url}/nginx/stop?redir=https://github.com"
-    expect(browser.selector(name: 'pre')).to eq('Error -- bad `redir` request (https://github.com)')
+    expect(browser.pre).to eq('Error -- bad `redir` request (https://github.com)')
   end
 
   it 'node correctly returns "bad redir error" when redirect to "/node/localhost/5001" is given on stop' do
     browser.goto "#{ctr_base_url}/nginx/stop?redir=/node/localhost/5001"
-    expect(browser.selector(name: 'pre')).to eq('Error -- bad `redir` request (/node/localhost/5001)')
+    expect(browser.pre).to eq('Error -- bad `redir` request (/node/localhost/5001)')
   end
 
   # TODO returns correct error page on stop when a redirect is given
@@ -166,7 +166,7 @@ describe 'Node and Rnode proxies' do
 
   it 'node correctly returns 200 when no redirect is given on noop' do
     browser.goto "#{ctr_base_url}/nginx/noop"
-    expect(browser.selector(name: 'pre')).to eq('Success')
+    expect(browser.pre).to eq('Success')
   end 
 
   it 'node correctly redirects to /pun/sys/dashboard with 307 when no redirect is given on noop' do
@@ -177,17 +177,17 @@ describe 'Node and Rnode proxies' do
 
   it 'node correctly returns "bad redir error" when redirect to "github.com" given on noop' do
     browser.goto "#{ctr_base_url}/nginx/noop?redir=github.com"
-    expect(browser.selector(name: 'pre')).to eq('Error -- bad `redir` request (github.com)')
+    expect(browser.pre).to eq('Error -- bad `redir` request (github.com)')
   end
 
   it 'node correctly returns "bad redir error" when redirect to "https://github.com" given on noop' do
     browser.goto "#{ctr_base_url}/nginx/noop?redir=https://github.com"
-    expect(browser.selector(name: 'pre')).to eq('Error -- bad `redir` request (https://github.com)')
+    expect(browser.pre).to eq('Error -- bad `redir` request (https://github.com)')
   end
 
   it 'node correctly returns "bad redir error" when redirect to "/node/localhost/5001" is given on noop' do
     browser.goto "#{ctr_base_url}/nginx/noop?redir=/node/localhost/5001"
-    expect(browser.selector(name: 'pre')).to eq('Error -- bad `redir` request ()')
+    expect(browser.pre).to eq('Error -- bad `redir` request ()')
   end
 
   # TODO: check content of page.
