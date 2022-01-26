@@ -1,0 +1,11 @@
+  <div id="clipboard" class="sticky-top">
+  </div>
+
+  <nav>
+    <ul id="favorites" class="nav nav-pills flex-column">
+      <li role="presentation" class="nav-item"><%= link_to 'Home Directory', files_path(Dir.home), class: "nav-link d bg-light" %></li>
+      <% OodFilesApp.new.favorite_paths.each do |p| %>
+        <li class="nav-item"><%= link_to p.title || p.path.to_s, files_path(p.path.to_s), class: "nav-link d bg-light" %>
+      <% end %>
+    </ul>
+  </nav>
