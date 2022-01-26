@@ -348,7 +348,7 @@ function updateVisibility(event, changeId) {
   const id = event.target['id'];
   const changeElement = $(`#${changeId}`).parent();
 
-  if (changeElement.size() <= 0) return;
+  if (changeElement.length <= 0) return;
 
   // safe to access directly?
   const hide = hideLookup[id].get(changeId, val);

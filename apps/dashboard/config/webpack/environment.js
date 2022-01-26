@@ -12,9 +12,9 @@ if (process.env.RAILS_RELATIVE_URL_ROOT || process.env.WEBPACKER_RELATIVE_URL_RO
 const { environment } = require('@rails/webpacker');
 const config = environment.toWebpackConfig();
 const { merge } = require('webpack-merge');
+const webpack = require('webpack');
 
 config.resolve.alias = {
- jquery: 'jquery/src/jquery',
  fa: '/app/javascript/packs/fa',
  batchConnect: '/apps/javascript/packs/batchConnect'
 };
@@ -27,5 +27,13 @@ const sassOptions = {
 
 const SASSLoader = environment.loaders.get('sass').use.find(el => el.loader === 'sass-loader');
 SASSLoader.options = merge(SASSLoader.options, sassOptions);
+
+environment.plugins.prepend(
+  'Provide',
+  new webpack.ProvidePlugin({
+    $: 'jquery',
+    jQuery: 'jquery',
+  })
+)
 
 module.exports = environment

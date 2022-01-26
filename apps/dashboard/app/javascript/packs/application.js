@@ -14,23 +14,24 @@
 // const images = require.context('../images', true)
 // const imagePath = (name) => images(name, true)
 
-import 'jquery-migrate'
+import 'jquery';
 import 'jquery-ujs'
 
-jQuery.migrateMute = true
+// lot's of inline scripts and stuff rely on jquery just being available
+window.jQuery = jQuery;
+window.$ = $;
 
-// Import DataTables
-import 'datatables.net'
-import 'datatables.net-bs4/js/dataTables.bootstrap4'
-
-import 'datatables.net-select'
-import 'datatables.net-select-bs4'
+import Rails from '@rails/ujs';
+Rails.start();
 
 // Import popper.js for Bootstrap 4
 import 'popper.js'
 
 // Import Bootstrap 4
 import 'bootstrap/dist/js/bootstrap'
+
+// confim modals
+import 'data-confirm-modal';
 
 // Import application stylesheets
 import '../stylesheets/application'

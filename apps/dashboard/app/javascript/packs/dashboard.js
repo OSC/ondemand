@@ -1,5 +1,7 @@
 'use strict';
 
+import _ from 'lodash';
+
 function promiseLoginToXDMoD(xdmodUrl){
   return new Promise(function(resolve, reject){
 
@@ -80,6 +82,10 @@ var promiseLoggedIntoXDMoD = (function(){
 
 window.promiseLoginToXDMoD = promiseLoginToXDMoD;
 window.promiseLoggedIntoXDMoD = promiseLoggedIntoXDMoD;
+
+// FIXME: move the javascript that requires this (app/views/widgets/_xdmod_widget*) to packs
+import Handlebars from 'handlebars';
+window.Handlebars = Handlebars;
 
 jQuery(function(){
   $("a[target=_blank]").on("click", function(event) {
