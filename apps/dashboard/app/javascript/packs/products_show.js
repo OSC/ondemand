@@ -53,5 +53,7 @@ function updateModal(event){
   xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
   xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
   xhr.send();
-  $(`#${id}`).modal('show');
+  // FIXMME: using window here bc modal is a bootstrap import and there are multiple
+  // $ and jQuery's out there.
+  window.jQuery(`#${id}`).modal('show');
 }
