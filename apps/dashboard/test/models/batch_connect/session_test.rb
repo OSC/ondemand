@@ -505,9 +505,29 @@ batch_connect: { ssh_allow: true } }))
     end
   end
 
+  test 'default bc days old is set to 7' do
+    assert_equal 7, BatchConnect::Session.old_in_days
+  end
+
   test 'can configure bc days old' do
-    with_modified_env({OOD_BC_DAYS_OLD: '3'}) do
-      assert 3, BatchConnect::Session.old_in_days
+    with_modified_env({OOD_BC_CARD_TIME: '3'}) do
+      assert_equal 3, BatchConnect::Session.old_in_days
+    end
+  end
+
+  test 'return default if bc days old is less than or equal to 0' do
+    with_modified_env({OOD_BC_CARD_TIME: '-1'}) do
+      assert_equal 7, BatchConnect::Session.old_in_days
+    end
+
+    with_modified_env({OOD_BC_CARD_TIME: '0'}) do
+      assert_equal 7, BatchConnect::Session.old_in_days
+    end
+  end
+
+  test 'return default if bc days old cant be converted to integer' do
+    with_modified_env({OOD_BC_CARD_TIME: 'three'}) do
+      assert_equal 7, BatchConnect::Session.old_in_days
     end
   end
 end
