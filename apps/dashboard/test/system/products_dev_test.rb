@@ -89,7 +89,8 @@ class ProductsDevTest < ApplicationSystemTestCase
   test 'pressing app restart' do
     visit(product_url('dev', 'dashboard'))
     assert find('#product_cli_modal', visible: :hidden)
-# tests cannot handle the transition when the modal closes.
+ 
+    # tests cannot handle the transition when the modal closes.
     update_script = <<~JAVASCRIPT
       document.getElementById("product_cli_modal").classList.remove('fade');
     JAVASCRIPT
