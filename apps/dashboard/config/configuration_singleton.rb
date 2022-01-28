@@ -399,8 +399,13 @@ class ConfigurationSingleton
 
   # How many days before a Session record is considered old and ready to delete
   def ood_bc_card_time
-    ood_bc_card_time = ENV['OOD_BC_CARD_TIME']&.to_i
-    (ood_bc_card_time.blank? || ood_bc_card_time <= 0) ? 7 : ood_bc_card_time
+    ood_bc_card_time = ENV['OOD_BC_CARD_TIME']
+    return 7 if ood_bc_card_time.blank?
+
+    ood_bc_card_time_int = Integer(ood_bc_card_time)
+    (ood_bc_card_time_int < 0) ? 0 : ood_bc_card_time_int
+  rescue ArgumentError
+    7
   end
 
   private
