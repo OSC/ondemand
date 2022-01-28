@@ -29,18 +29,22 @@ class ProductsDevTest < ApplicationSystemTestCase
 
   test 'Can click dev Launch Jupyter' do
     click_on 'Launch Jupyter'
+    assert_equal current_path, new_batch_connect_session_context_path('dev/bc_jupyter')
   end
 
   test 'Can click Launch Oakley Desktop' do
     click_on 'Launch Oakley Desktop'
+    assert_equal current_path, new_batch_connect_session_context_path('dev/bc_desktop/oakley')
   end
 
   test 'Can click Launch Owens Desktop' do
     click_on 'Launch Owens Desktop'
+    assert_equal current_path, new_batch_connect_session_context_path('dev/bc_desktop/owens')
   end
 
   test 'Can click dev Launch Paraview' do
     click_on 'Launch Paraview'
+    assert_equal current_path, new_batch_connect_session_context_path('dev/bc_paraview')
   end
 
   test 'Can click dev Launch Active Jobs' do
@@ -62,5 +66,41 @@ class ProductsDevTest < ApplicationSystemTestCase
   test 'HTML renders 12 rows for 12 apps in Product Table' do
     find(id: 'productTable')
     assert_selector 'tr', count: 12
+  end
+
+  test 'pressing bundle install' do
+    visit(product_url('dev', 'dashboard'))
+    assert find('#product_cli_modal', visible: :hidden)
+
+    # tests cannot handle the transition when the modal closes.
+    update_script = <<~JAVASCRIPT
+      document.getElementById("product_cli_modal").classList.remove('fade');
+    JAVASCRIPT
+
+    execute_script(update_script)
+
+    # now the modal pops up and you can click to dismiss it
+    click_on 'Bundle Install'
+    assert find('#product_cli_modal', visible: :visible)
+    click_button('product_cli_modal_button')
+    assert find('#product_cli_modal', visible: :hidden)
+  end
+
+  test 'pressing app restart' do
+    visit(product_url('dev', 'dashboard'))
+    assert find('#product_cli_modal', visible: :hidden)
+ 
+    # tests cannot handle the transition when the modal closes.
+    update_script = <<~JAVASCRIPT
+      document.getElementById("product_cli_modal").classList.remove('fade');
+    JAVASCRIPT
+
+    execute_script(update_script)
+
+    # now the modal pops up and you can click to dismiss it
+    click_on 'Restart App'
+    assert find('#product_cli_modal', visible: :visible)
+    click_button('product_cli_modal_button')
+    assert find('#product_cli_modal', visible: :hidden)
   end
 end
