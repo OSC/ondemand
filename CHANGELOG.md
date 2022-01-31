@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+add test cases for pressing buttons in products show (#1795)\
+Merge pull request #1796 from OSC/redirect-proxy-tests\
+validate the redir on stop requests (#1775)\
+Fix passenger_options missing method (#1793)\
+Migrate jquery (#1782)\
+Initial Refactoring of Code - Step 1 - Move everything out of index.html.erb that makes sense (#1786)\
+update dependencies (#1778)
 
 ### Changed
 
