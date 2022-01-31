@@ -525,9 +525,21 @@ batch_connect: { ssh_allow: true } }))
     end
   end
 
-  test 'return default if bc days old cant be converted to integer' do
+  test 'return correct values if bc days old cant be converted to integer' do
     with_modified_env({OOD_BC_CARD_TIME: 'three'}) do
       assert_equal 7, BatchConnect::Session.old_in_days
+    end
+
+    with_modified_env({OOD_BC_CARD_TIME: '3three'}) do
+      assert_equal 3, BatchConnect::Session.old_in_days
+    end
+
+    with_modified_env({OOD_BC_CARD_TIME: '+3three'}) do
+      assert_equal 3, BatchConnect::Session.old_in_days
+    end
+
+    with_modified_env({OOD_BC_CARD_TIME: '-3three'}) do
+      assert_equal 0, BatchConnect::Session.old_in_days
     end
   end
 end
