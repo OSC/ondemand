@@ -5,8 +5,6 @@ import ALL_ICONS from 'icons';
 const ICON_SHOW_ID = "product_icon"
 const ICON_SELECT_ID = "product_icon_select"
 
-
-
 function listItem(name) {
   return `<li 
               id="${iconId(name)}" 
@@ -35,15 +33,13 @@ function populateList() {
   const list = $("#icon_picker_list");
   if(list.length == 0 || ALL_ICONS.length == 0) { return; }
 
-  // let's (re)-set the first icon since the ul has no li, then
-  // we can slice it out below.
-  list.html(listItem(ALL_ICONS[0]));
+  const listContent = ALL_ICONS.map(name => {
+    return listItem(name);
+  }).join('');
+  list.html(listContent);
 
-  ALL_ICONS.slice(1).forEach(name => {
-    list.append(listItem(name));
-
-    const id = iconId(name);
-    $(`#${id}`).on('click', (event) => { picked(event)});
+  ALL_ICONS.forEach(name => {
+    $(`#${iconId(name)}`).on('click', (event) => { picked(event)});
   });
 };
 
