@@ -44,12 +44,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add retry attempt counter to 404 loop to fix client side loop in [#1298](https://github.com/OSC/ondemand/pull/1298).
 - Removed Index from Public RootOptions in [#1618](https://github.com/OSC/ondemand/pull/1618).
 - File uploads have longer upload time limits more in line with TCP TTLs in [#1600](https://github.com/OSC/ondemand/pull/1600).
+- passenger_options now works correctly in [#1793](https://github.com/OSC/ondemand/pull/1793).
 
 ### Security
 
 - SVGs, being unsafe to preview, are now downloaded in [1435](https://github.com/OSC/ondemand/pull/1435)
   and [1437](https://github.com/OSC/ondemand/pull/1437)
 - Selinux updates in [1496](https://github.com/OSC/ondemand/pull/1496).
+- nginx APIs now validate the redirect on stop requests in [#1775](https://github.com/OSC/ondemand/pull/1175).
 
 ## [2.0.16] - 2021-08-25
 
