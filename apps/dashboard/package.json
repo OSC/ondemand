@@ -19,5 +19,8 @@
     "sweetalert2": "^10.15.7",
     "uppy": "^2.3.3",
     "webpack-merge": "^5.8.0"
+  },
+  "resolutions": {
+    "postcss": "^8.2.13"
   }
 }
