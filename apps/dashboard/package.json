@@ -17,8 +17,7 @@
     "oboe": "^2.1.5",
     "popper.js": "1.14.3",
     "sweetalert2": "^10.15.7",
-    "uppy": "^2.3.3",
-    "webpack-merge": "^5.8.0"
+    "uppy": "^2.3.3"
   },
   "resolutions": {
     "postcss": "^8.2.13"
