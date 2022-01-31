@@ -72,9 +72,6 @@ module BatchConnect
       BatchConnect::App.from_token(self.token)
     end
     
-    # How many days before a Session record is considered old and ready to delete
-    OLD_IN_DAYS=7
-
     # Attributes used for serialization
     # @return [Hash] attributes to be serialized
     def attributes
@@ -141,6 +138,11 @@ module BatchConnect
       def find(id)
         new.from_json(db_root.join(id).read)
       end
+
+      # How many days before a Session record is considered old and ready to delete
+      def old_in_days
+        Configuration.ood_bc_card_time
+      end
     end
 
     # Path to database file for this object
@@ -158,14 +160,14 @@ module BatchConnect
       nil
     end
 
-    # Return true if session record has not been modified in OLD_IN_DAYS days
+    # Return true if session record has not been modified in old_in_days days
     #
     # @return [Boolean] true if old, false otherwise
     def old?
       if modified_at.nil?
         false
       else
-        modified_at < self.class::OLD_IN_DAYS.days.ago.to_i
+        modified_at < self.class.old_in_days.days.ago.to_i
       end
     end
 
@@ -179,7 +181,7 @@ module BatchConnect
       if modified_at.nil? || old?
         0
       else
-        (modified_at - self.class::OLD_IN_DAYS.days.ago.to_i)/(1.day.to_i)
+        (modified_at - self.class.old_in_days.days.ago.to_i)/(1.day.to_i)
       end
     end
 
