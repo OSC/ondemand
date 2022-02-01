@@ -5,7 +5,7 @@
 %define git_tag_minus_v %(echo %{git_tag} | sed -r 's/^v//')
 %define major_version %(echo %{git_tag_minus_v} | cut -d. -f1)
 %define minor_version %(echo %{git_tag_minus_v} | cut -d. -f2)
-%define runtime_version %{major_version}.%{minor_version}-1
+%define runtime_version %{major_version}.%{minor_version}-2
 %define next_major_version %(echo $((%{major_version}+1))).0
 %define next_minor_version %{major_version}.%(echo $((%{minor_version}+1)))
 %define selinux_policy_ver %(rpm --qf "%%{version}-%%{release}" -q selinux-policy)
