@@ -51,6 +51,12 @@ jobs:
           chromedriver --version
           cd apps/dashboard; bin/rake test:system
 
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+         name: system-test-screenshots
+         path: apps/dashboard/tmp/screenshots/*
+
   k8s-tests:
     runs-on: ubuntu-latest
     name: Kubernetes tests
