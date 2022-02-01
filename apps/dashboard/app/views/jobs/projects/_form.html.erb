@@ -7,7 +7,7 @@
           <%= form.text_field :directory, label: 'Directory'%>
         </div>
         <div class='col-md-5'>
-          <%= form.text_field :name, label: 'Directory/Project Name', class: 'form-control', required: true %>
+          <%= form.text_field :name, label: 'Project Name', class: 'form-control', required: true %>
         </div>
         <div class='col-md-12'>
           <%= form.text_area :description, label: 'Description', class: 'form-control' %>
@@ -16,7 +16,7 @@
 </div>
 <br>
   <p>
-    <%= form.submit 'Save', class: 'btn btn-primary', title: 'Save project' %>
+    <%= link_to 'Save', new_jobs_project_path, class: 'btn btn-primary', title: 'Save project' %>
     <%= form.button 'Reset', type: :reset, class: 'btn btn-default', title: 'Clear form fields' %>
     <%= link_to 'Back', jobs_projects_path, class: 'btn btn-default', title: 'Return to projects page' %>
   <p>
