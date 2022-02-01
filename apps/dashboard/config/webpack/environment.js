@@ -14,15 +14,14 @@ const config = environment.toWebpackConfig();
 const { merge } = require('webpack-merge');
 const webpack = require('webpack');
 
-config.resolve.alias = {
- fa: '/app/javascript/packs/fa',
- batchConnect: '/apps/javascript/packs/batchConnect'
-};
-
 const faPath = "~@fortawesome/fontawesome-free/webfonts/";
 const sassOptions = {
   additionalData: `$fa-font-path: '${faPath}';`,
   sourceMap: true,
+};
+
+config.resolve.alias = {
+  icons: '/app/javascript/packs/icons',
 };
 
 const SASSLoader = environment.loaders.get('sass').use.find(el => el.loader === 'sass-loader');

@@ -103,4 +103,29 @@ class ProductsDevTest < ApplicationSystemTestCase
     click_button('product_cli_modal_button')
     assert find('#product_cli_modal', visible: :hidden)
   end
+
+  test 'picking a new icon' do
+    Dir.mktmpdir do |dir|
+      FileUtils.cp_r("test/fixtures/sys_with_gateway_apps/dashboard", dir)
+      DevRouter.stubs(:base_path).returns(Pathname.new(dir))
+
+      visit edit_product_path('dev', 'dashboard')
+      assert_equal 'fas fa-cog fa-fw app-icon', find_css_class('product_icon')
+
+      find('#icon_dumpster_fire').click
+
+      assert_equal 'fas fa-dumpster-fire fa-fw app-icon', find_css_class('product_icon')
+      click_on 'Save'
+      actual_manifest = File.read("#{dir}/dashboard/manifest.yml")
+      expected_manifest = <<~HEREDOC
+        ---
+        name: Ood Dashboard
+        description: stuff
+        icon: fas://dumpster-fire
+      HEREDOC
+
+      assert_equal current_path, product_path('dev', 'dashboard')
+      assert_equal expected_manifest, actual_manifest
+    end
+  end
 end
