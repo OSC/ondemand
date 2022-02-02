@@ -87,8 +87,6 @@ GEM
     concurrent-ruby (1.1.9)
     crass (1.0.6)
     dalli (3.2.0)
-    data-confirm-modal (1.6.3)
-      railties (>= 3.0)
     dotenv (2.7.6)
     dotenv-rails (2.7.6)
       dotenv (= 2.7.6)
@@ -180,9 +178,6 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.20.3, < 2.0)
     rake (13.0.6)
-    rb-fsevent (0.11.0)
-    rb-inotify (0.10.1)
-      ffi (~> 1.0)
     rdoc (6.3.3)
     redcarpet (3.5.1)
     regexp_parser (2.2.0)
@@ -191,17 +186,6 @@ GEM
     rexml (3.2.5)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
-    sass (3.7.4)
-      sass-listen (~> 4.0.0)
-    sass-listen (4.0.0)
-      rb-fsevent (~> 0.9, >= 0.9.4)
-      rb-inotify (~> 0.9, >= 0.9.7)
-    sass-rails (5.1.0)
-      railties (>= 5.2.0)
-      sass (~> 3.1)
-      sprockets (>= 2.8, < 4.0)
-      sprockets-rails (>= 2.0, < 4.0)
-      tilt (>= 1.1, < 3)
     sdoc (2.3.0)
       rdoc (>= 5.0, < 6.4.0)
     selenium-webdriver (4.1.0)
@@ -220,7 +204,7 @@ GEM
       rack-protection (= 2.1.0)
       sinatra (= 2.1.0)
       tilt (~> 2.0)
-    sprockets (3.7.2)
+    sprockets (4.0.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
     sprockets-rails (3.4.2)
@@ -236,8 +220,6 @@ GEM
     turbolinks-source (5.2.0)
     tzinfo (1.2.9)
       thread_safe (~> 0.1)
-    uglifier (4.2.0)
-      execjs (>= 0.3.0, < 3)
     webpacker (5.4.3)
       activesupport (>= 5.2)
       rack-proxy (>= 0.6.1)
@@ -262,9 +244,7 @@ DEPENDENCIES
   byebug
   capybara
   climate_control (~> 0.2)
-  coffee-rails (~> 5.0)
   dalli
-  data-confirm-modal (~> 1.2)
   dotenv-rails (~> 2.1)
   dotiw
   erubi
@@ -277,14 +257,12 @@ DEPENDENCIES
   pbs (~> 2.2.1)
   rails (= 6.0.4.1)
   redcarpet (~> 3.3)
-  sass-rails (~> 5.0)
   sdoc
   selenium-webdriver
   sinatra
   sinatra-contrib
   timecop (~> 0.9)
   turbolinks (~> 5.2.0)
-  uglifier (>= 1.3.0)
   webpacker (~> 5.4)
   zip_tricks (~> 5.5)
 

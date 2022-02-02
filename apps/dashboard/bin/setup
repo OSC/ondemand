@@ -60,8 +60,8 @@ chdir APP_ROOT do
 
   if APP.production?
     puts "\n== Compiling assets =="
-    sh "bin/rake assets:clobber"
-    sh "bin/rake assets:precompile"
+    sh "bin/rake webpacker:clobber"
+    sh "bin/rake webpacker:compile"
   end
 
   puts "\n== Removing old logs and tempfiles =="
