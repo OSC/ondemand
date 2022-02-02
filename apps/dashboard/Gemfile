@@ -3,14 +3,6 @@ source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '6.0.4.1'
-# TODO: remove me once we migrate all js & css to webpack
-gem 'sass-rails', '~> 5.0'
-# Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
-# Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 5.0'
-# See https://github.com/rails/execjs#readme for more supported runtimes
-# gem 'therubyracer', platforms: :ruby
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
@@ -49,7 +41,6 @@ gem 'redcarpet', '~> 3.3'
 gem 'browser', '~> 2.2'
 gem 'addressable', '~> 2.4'
 gem 'bootstrap_form', '~> 4.0'
-gem 'data-confirm-modal', '~> 1.2'
 gem 'mocha', '~> 1.1', group: :test
 gem 'autoprefixer-rails', '~> 10.2.5'
 gem 'dotiw'
