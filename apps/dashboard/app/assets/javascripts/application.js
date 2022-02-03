@@ -13,7 +13,6 @@
 //= require data-confirm-modal
 //= require handlebars/dist/handlebars.min
 //= require lodash/lodash.min
-//= require uppy/dist/uppy.min
 //= require_tree .
 //= stub editor
 
