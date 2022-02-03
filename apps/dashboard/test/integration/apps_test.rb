@@ -51,7 +51,7 @@ class AppsTest < ActionDispatch::IntegrationTest
 
     data_rows = css_select('table[id="all-apps-table"] tr').slice(1, 100)
 
-    assert_equal 14, data_rows.size
+    assert_equal 15, data_rows.size
 
     # difference here is shell apps have hosts in them (and there are 2 of them)
     # all interactive apps are shown along with the dev and usr apps
@@ -67,7 +67,7 @@ class AppsTest < ActionDispatch::IntegrationTest
       "apps-show-myjobs",
       "batch_connect-dev-bc_rstudio-session_contexts-new",  # the dev app
       "apps-show-my_shared_app-usr-me",                     # the usr apps
-      # "batch_connect-usr-shared-bc_app-session_contexts-new", bc_app is invalid
+      "batch_connect-usr-shared-bc_app-session_contexts-new",
       "batch_connect-usr-shared-bc_with_subapps-owens-session_contexts-new",
       "batch_connect-usr-shared-bc_with_subapps-oakley-session_contexts-new"
     ]
