@@ -250,4 +250,38 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
       assert_equal expected_file, File.read("#{dir}/submit.yml")
     end
   end
+
+  test "form element is not an array" do
+    form_yml = <<~HEREDOC
+      ---
+      form:
+        should_have_been_an_array
+    HEREDOC
+
+    Dir.mktmpdir do |dir|
+      r = PathRouter.new(dir)
+      app = BatchConnect::App.new(router: r)
+      File.open("#{dir}/form.yml", 'w') { |file| file.write(form_yml) }
+      assert !app.valid?
+      assert_equal I18n.t('dashboard.batch_connect_invalid_form_array'), app.validation_reason 
+    end
+  end
+
+  test "attributes element is not a map" do
+    form_yml = <<~HEREDOC
+      ---
+      form:
+        - is_an_array
+      attributes:
+        should_be_a_map
+    HEREDOC
+
+    Dir.mktmpdir do |dir|
+      r = PathRouter.new(dir)
+      app = BatchConnect::App.new(router: r)
+      File.open("#{dir}/form.yml", 'w') { |file| file.write(form_yml) }
+      assert !app.valid?
+      assert_equal I18n.t('dashboard.batch_connect_invalid_form_attributes'), app.validation_reason 
+    end
+  end
 end

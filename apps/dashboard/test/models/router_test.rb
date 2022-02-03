@@ -129,7 +129,7 @@ class RouterTest < ActiveSupport::TestCase
     tokens = [
       'usr/shared/bc_with_subapps/oakley',
       'usr/shared/bc_with_subapps/owens',
-      'usr/shared/bc_app',
+      # 'usr/shared/bc_app', is invalid
       'usr/me/my_shared_app'
     ]
 
@@ -239,7 +239,7 @@ class RouterTest < ActiveSupport::TestCase
       "sys/bc_desktop/oakley",
       "sys/bc_desktop/owens",
 
-      "usr/shared/bc_app",
+      # "usr/shared/bc_app" is invalid
       "usr/shared/bc_with_subapps/oakley",
       "usr/shared/bc_with_subapps/owens"
     ]

@@ -394,10 +394,10 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
       get '/'
     end
 
-    assert_select 'a.app-card', 9
+    assert_select 'a.app-card', 8
     # usr apps
     assert_select "a.app-card[href='/apps/show/my_shared_app/usr/me']", 1
-    assert_select "a.app-card[href='/batch_connect/usr/shared/bc_app/session_contexts/new']", 1
+    # assert_select "a.app-card[href='/batch_connect/usr/shared/bc_app/session_contexts/new']", 1 this app is invalid
     assert_select "a.app-card[href='/batch_connect/usr/shared/bc_with_subapps/oakley/session_contexts/new']", 1
     assert_select "a.app-card[href='/batch_connect/usr/shared/bc_with_subapps/owens/session_contexts/new']", 1
 
