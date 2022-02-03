@@ -4,7 +4,7 @@
   <title><%= content_for?(:title) ? yield(:title) : "Dashboard - #{OodAppkit.dashboard.title}" %></title>
   <%= favicon_link_tag 'favicon.ico', href: OodAppkit.public.url.join('favicon.ico'), skip_pipeline: true %>
 
-  <%= javascript_pack_tag 'application' %>
+  <%= javascript_pack_tag 'application', nonce: true %>
   <%= stylesheet_pack_tag 'application', media: 'all' %>
 
   <%= csrf_meta_tags %>
