@@ -4,25 +4,18 @@
   <title><%= content_for?(:title) ? yield(:title) : "Dashboard - #{OodAppkit.dashboard.title}" %></title>
   <%= favicon_link_tag 'favicon.ico', href: OodAppkit.public.url.join('favicon.ico'), skip_pipeline: true %>
 
-  <!-- Webpacker -->
   <%= javascript_pack_tag 'application' %>
   <%= stylesheet_pack_tag 'application', media: 'all' %>
-
-  <!-- (Legacy) Sprockets -->
-  <%= javascript_include_tag 'turbolinks' if Configuration.turbolinks_enabled? %>
 
   <%= csrf_meta_tags %>
 
   <%= yield :head %>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <% if Configuration.turbolinks_enabled? %>
-    <meta name="turbolinks-root" content="<%= ENV['RAILS_RELATIVE_URL_ROOT'] || "/" %>">
-  <% end %>
 <%= render partial: '/layouts/nav/styles', locals: { bg_color: Configuration.brand_bg_color, link_active_color: Configuration.brand_link_active_bg_color } %>
 </head>
 <body>
-  <header <%= 'data-turbolinks-permanent' if Configuration.turbolinks_enabled? %>>
+  <header>
     <nav class="navbar navbar-expand-md shadow-sm navbar-color navbar-<%= Configuration.navbar_type %>" aria-label="Navigation">
     <% if ENV['OOD_DASHBOARD_HEADER_IMG_LOGO'].present? %>
       <a class="navbar-brand navbar-brand-logo" href="<%= root_path %>"><img class="img-fluid" src="<%= ENV['OOD_DASHBOARD_HEADER_IMG_LOGO'] %>"></a>
