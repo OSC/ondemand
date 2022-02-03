@@ -12,7 +12,8 @@
                 link.url.to_s,
                 title: link.title,
                 class: "dropdown-item",
-                target: link.new_tab? ? "_blank" : nil
+                target: link.new_tab? ? "_blank" : nil,
+                data: link.data
               ) do
             %>
               <%= icon_tag(link.icon_uri) %> <%=link.title %>

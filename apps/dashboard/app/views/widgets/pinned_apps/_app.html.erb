@@ -4,7 +4,8 @@
     link_to(
       link.url.to_s,
       class: "app-card",
-      target: link.new_tab? ? "_blank" : nil
+      target: link.new_tab? ? "_blank" : nil,
+      data: link.data
     ) do
   %>
     <div class="center-block text-center">

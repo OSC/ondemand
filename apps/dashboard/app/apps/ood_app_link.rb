@@ -5,6 +5,7 @@ class OodAppLink
   attr_reader :icon_uri
   attr_reader :caption
   attr_reader :subtitle
+  attr_reader :data
 
   def initialize(config = {})
     config = config.to_h.compact.symbolize_keys
@@ -16,6 +17,7 @@ class OodAppLink
     @icon_uri    = URI(config.fetch(:icon_uri, "fas://cog").to_s)
     @caption     = config.fetch(:caption, nil)
     @new_tab     = !!config.fetch(:new_tab, true)
+    @data        = config.fetch(:data, {}).to_h
   end
 
   def new_tab?
