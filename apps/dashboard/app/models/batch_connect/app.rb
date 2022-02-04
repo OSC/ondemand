@@ -171,6 +171,12 @@ module BatchConnect
     def valid?
       if form_config.empty?
         false
+      elsif !form_config.fetch(:form, []).is_a?(Array)
+        @validation_reason = I18n.t('dashboard.batch_connect_invalid_form_array')
+        false
+      elsif !form_config.fetch(:attributes, {}).is_a?(Hash)
+        @validation_reason = I18n.t('dashboard.batch_connect_invalid_form_attributes')
+        false
       elsif configured_clusters.any?
         clusters.any?
       else
@@ -192,28 +198,34 @@ module BatchConnect
         ""
       end
     end
-    
+
+    def attributes
+      @attributes ||= begin
+        return [] unless valid?
+
+        local_attribs = form_config.fetch(:attributes, {})
+        attrib_list   = form_config.fetch(:form, [])
+        add_cluster_widget(local_attribs, attrib_list)
+
+        attrib_list.map do |attribute_id|
+          attribute_opts = local_attribs.fetch(attribute_id.to_sym, {})
+
+          # Developer wanted a fixed value
+          attribute_opts = { value: attribute_opts, fixed: true } unless attribute_opts.is_a?(Hash)
+
+          # Hide resolution if not using native vnc clients
+          attribute_opts = { value: nil, fixed: true } if attribute_id.to_s == "bc_vnc_resolution" && !ENV["ENABLE_NATIVE_VNC"]
+
+          SmartAttributes::AttributeFactory.build(attribute_id, attribute_opts)
+        end
+      end
+    end
+
     # The session context described by this batch connect app
     # @return [SessionContext] the session context
     def build_session_context
-
-      local_attribs = form_config.fetch(:attributes, {})
-      attrib_list   = form_config.fetch(:form, [])
-      add_cluster_widget(local_attribs, attrib_list)
-      attributes = attrib_list.map do |attribute_id|
-        attribute_opts = local_attribs.fetch(attribute_id.to_sym, {})
-
-        # Developer wanted a fixed value
-        attribute_opts = { value: attribute_opts, fixed: true } unless attribute_opts.is_a?(Hash)
-
-        # Hide resolution if not using native vnc clients
-        attribute_opts = { value: nil, fixed: true } if attribute_id.to_s == "bc_vnc_resolution" && !ENV["ENABLE_NATIVE_VNC"]
-
-        SmartAttributes::AttributeFactory.build(attribute_id, attribute_opts)
-      end
-
-     BatchConnect::SessionContext.new(attributes, form_config.fetch(:cacheable, nil)  ) #form_config.fetch(:cacheable, nil)  
-       
+      attributes.each(&:validate!)
+      BatchConnect::SessionContext.new(attributes, form_config.fetch(:cacheable, nil))
     end
 
     #
@@ -397,7 +409,7 @@ module BatchConnect
         else
           attributes[:cluster] = {
             value: clusters.first.id.to_s,
-            widget: "hidden_field"
+            fixed: true
           }
         end
       end
