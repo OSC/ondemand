@@ -259,11 +259,15 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     HEREDOC
 
     Dir.mktmpdir do |dir|
-      r = PathRouter.new(dir)
+      app_dir = "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      r = PathRouter.new(app_dir)
       app = BatchConnect::App.new(router: r)
-      File.open("#{dir}/form.yml", 'w') { |file| file.write(form_yml) }
+      File.open("#{app_dir}/form.yml", 'w') { |file| file.write(form_yml) }
       assert !app.valid?
       assert_equal I18n.t('dashboard.batch_connect_invalid_form_array'), app.validation_reason 
+
+      # also just to be sure, builds an empty session_context
+      assert_equal Hash.new, app.build_session_context.attributes
     end
   end
 
@@ -277,11 +281,15 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     HEREDOC
 
     Dir.mktmpdir do |dir|
-      r = PathRouter.new(dir)
+      app_dir = "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      r = PathRouter.new(app_dir)
       app = BatchConnect::App.new(router: r)
-      File.open("#{dir}/form.yml", 'w') { |file| file.write(form_yml) }
+      File.open("#{app_dir}/form.yml", 'w') { |file| file.write(form_yml) }
       assert !app.valid?
-      assert_equal I18n.t('dashboard.batch_connect_invalid_form_attributes'), app.validation_reason 
+      assert_equal I18n.t('dashboard.batch_connect_invalid_form_attributes'), app.validation_reason
+
+      # also just to be sure, builds an empty session_context
+      assert_equal Hash.new, app.build_session_context.attributes
     end
   end
 end
