@@ -215,9 +215,6 @@ GEM
     thread_safe (0.3.6)
     tilt (2.0.10)
     timecop (0.9.4)
-    turbolinks (5.2.1)
-      turbolinks-source (~> 5.2)
-    turbolinks-source (5.2.0)
     tzinfo (1.2.9)
       thread_safe (~> 0.1)
     webpacker (5.4.3)
@@ -262,7 +259,6 @@ DEPENDENCIES
   sinatra
   sinatra-contrib
   timecop (~> 0.9)
-  turbolinks (~> 5.2.0)
   webpacker (~> 5.4)
   zip_tricks (~> 5.5)
 

@@ -45,7 +45,6 @@ gem 'mocha', '~> 1.1', group: :test
 gem 'autoprefixer-rails', '~> 10.2.5'
 gem 'dotiw'
 gem 'local_time', '~> 1.0.3'
-gem 'turbolinks', '~> 5.2.0'
 
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'

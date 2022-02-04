@@ -258,11 +258,6 @@ class ConfigurationSingleton
     ENV['OOD_DASHBOARD_DEV_DOCS_URL'] || "https://go.osu.edu/ood-app-dev"
   end
 
-  # Turbolinks feature flag
-  def turbolinks_enabled?
-    to_bool(ENV['OOD_TURBOLINKS_ENABLED'])
-  end
-
   def dataroot
     # copied from OodAppkit::AppConfig#set_default_configuration
     # then modified to ensure dataroot is never nil
