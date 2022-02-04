@@ -2,5 +2,5 @@
 title: "Oakley Usr App"
 cluster: "oakley"
 form:
-  first_item
+  - first_item
 submit: submit/pbs.yml.erb
