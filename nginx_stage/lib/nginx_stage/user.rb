@@ -36,6 +36,18 @@ module NginxStage
       @passwd = Etc.getpwnam user.to_s
       @group = Etc.getgrgid gid
       @groups = get_groups
+
+      if name.to_s != user.to_s
+        err_msg = <<~HEREDOC
+          Username '#{user}' is being mapped to '#{name}' in SSSD and they don't match.
+          Users with domain names cannot be mapped correctly. If '#{name}' still has the
+          domain in it you'll need to set SSSD's full_name_format to '%1$s'.
+
+          See https://github.com/OSC/ondemand/issues/1759 for more details.
+        HEREDOC
+
+        raise StandardError, err_msg
+      end
     end
 
     # User's primary group name
