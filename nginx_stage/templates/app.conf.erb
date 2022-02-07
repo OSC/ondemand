@@ -1,4 +1,5 @@
 location ~ ^<%= app_request_uri %>(/.*|$) {
+  error_page 404 @error_404;
   alias <%= app_root %>/public$1;
   passenger_base_uri <%= app_request_uri %>;
   passenger_app_root <%= app_root %>;
