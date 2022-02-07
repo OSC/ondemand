@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Upgraded to rails 6 in [1474](https://github.com/OSC/ondemand/pull/1474).
 - `context.json` files have moved in location and filename in [1526](https://github.com/OSC/ondemand/pull/1526).
 - Switch dev container and EL8 e2e tests to use Rocky Linux 8 [1534](https://github.com/OSC/ondemand/pull/1534).
-- The CSS pipeline is now handled in webpack in [1550](https://github.com/OSC/ondemand/pull/1550).
+- The entire Javascript and CSS pipeline is now handled in webpack, closing [1005](https://github.com/OSC/ondemand/pull/1005).
 - Remove active support dependency for ood-portal-generator in [1572](https://github.com/OSC/ondemand/pull/1572).
 - All desktop options now show in bc_desktop [1638](https://github.com/OSC/ondemand/pull/1638).
 - Radio buttons are now grouped for labeling. We also changed the ordering of labels and values in radio buttons
