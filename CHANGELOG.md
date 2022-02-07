@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+add validation around the form and attributes (#1812)\
+remove turobolinks (#1813)\
+remove sprockets entirely (#1808)\
+start of a new icon picker. (#1794)\
+Migrate/images (#1803)\
+Update Changelog (#1798)\
+Make the batch connect session delete duration configurable. (#1776)\
+Merge pull request #1799 from osc-bot/osc-bot/dep-updates\
+update dependencies
 
 ### Changed
 
