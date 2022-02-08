@@ -26,4 +26,14 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   def find_value(ele, visible: false)
     find("##{bc_ele_id(ele)}", visible: visible).value
   end
+
+  def find_css_class(id)
+    find("##{id}")['class'].to_s
+  end
+
+  def verify_bc_alert(token, err_msg)
+    assert_equal batch_connect_session_contexts_path(token), current_path
+    assert_equal err_msg, find('div[role="alert"]').find('h4').text
+    find('div[role="alert"]').find('button').click
+  end
 end
