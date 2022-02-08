@@ -109,10 +109,11 @@ module BatchConnect
         # FIXME: better to use default_title and "" description
         title: title,
         description: description,
-        url: Rails.application.routes.url_helpers.new_batch_connect_session_context_path(token: token),
+        url: url,
         icon_uri: ood_app.icon_uri,
         caption: ood_app.caption,
-        new_tab: false
+        new_tab: false,
+        data: preset? ? { 'method': 'post' } : {}
       )
     end
 
@@ -159,6 +160,10 @@ module BatchConnect
     # @return [OodCore::Clusters] clusters available to the app user
     def clusters
       OodAppkit.clusters.select { |cluster| cluster_allowed(cluster) }
+    end
+
+    def preset?
+      valid? && attributes.all?(&:fixed?)
     end
 
     # Whether this is a valid app the user can use
@@ -279,6 +284,17 @@ module BatchConnect
     end
 
     private
+
+      def url
+        helpers = Rails.application.routes.url_helpers
+
+        if preset?
+          helpers.batch_connect_session_contexts_path(token: token)
+        else
+          helpers.new_batch_connect_session_context_path(token: token)
+        end
+      end
+
       def build_sub_app_list
         return [self] unless sub_app_root.directory? && sub_app_root.readable? && sub_app_root.executable?
         list = sub_app_root.children.select(&:file?).map do |f|

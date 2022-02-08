@@ -74,7 +74,7 @@ class BatchConnect::SessionContextsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def session_contexts_param
-      params.require(:batch_connect_session_context).permit(@session_context.attributes.keys)
+      params.require(:batch_connect_session_context).permit(@session_context.attributes.keys) if params[:batch_connect_session_context].present?
     end
 
     # Store session context into a cache file
