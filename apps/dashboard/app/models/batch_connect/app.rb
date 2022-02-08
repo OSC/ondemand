@@ -109,10 +109,11 @@ module BatchConnect
         # FIXME: better to use default_title and "" description
         title: title,
         description: description,
-        url: Rails.application.routes.url_helpers.new_batch_connect_session_context_path(token: token),
+        url: url,
         icon_uri: ood_app.icon_uri,
         caption: ood_app.caption,
-        new_tab: false
+        new_tab: false,
+        data: preset? ? { 'method': 'post' } : {}
       )
     end
 
@@ -153,6 +154,10 @@ module BatchConnect
         configured_clusters.map do |config|
           cfg_to_clusters(config)
         end.flatten.compact.select(&:job_allow?)
+    end
+
+    def preset?
+      valid? && attributes.all?(&:fixed?)
     end
 
     # Whether this is a valid app the user can use
@@ -296,6 +301,16 @@ module BatchConnect
     end
 
     private
+
+      def url
+        helpers = Rails.application.routes.url_helpers
+
+        if preset?
+          helpers.batch_connect_session_contexts_path(token: token)
+        else
+          helpers.new_batch_connect_session_context_path(token: token)
+        end
+      end
 
       def cfg_to_clusters(config)
         c = OodAppkit.clusters[config.to_sym] || nil

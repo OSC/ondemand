@@ -1,0 +1,8 @@
+---
+name: Test App
+category: Interactive Apps
+subcategory: Servers
+role: batch_connect
+description: |
+  This is an app that has some preset sub apps. Preset subapps
+  automatically submit (#create) instead of presenting a form (#new)

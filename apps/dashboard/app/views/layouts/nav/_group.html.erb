@@ -14,7 +14,8 @@
                 title: link.title,
                 class: "dropdown-item",
                 target: link.new_tab? ? "_blank" : nil,
-                aria: ({ current: ('page' if (current_page?(link.url))) })
+                aria: ({ current: ('page' if (current_page?(link.url))) }),
+                data: link.data
               ) do
             %>
             <%= icon_tag(link.icon_uri) %> <%= link.title %>
