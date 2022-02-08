@@ -9,8 +9,8 @@
         html: true,
         trigger: "hover",
         title: link.title,
-        container: "body"
-      }
+        container: "body",
+      }.merge(link.data)
     ) do
   %>
     <%= icon_tag(link.icon_uri) %> <%= link.title %>
