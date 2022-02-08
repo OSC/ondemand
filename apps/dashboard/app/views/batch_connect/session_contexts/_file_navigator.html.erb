@@ -1,4 +1,5 @@
 <%= javascript_pack_tag 'files/filenavigator' %>
 <%= label attrib.id, "#{field_options[:label]}" %>
 <%= text_field :batch_connect_session_context, attrib.id, class: 'form-control' %>
+<%= hidden_field_tag 'relative_root_id', files_path %>
 <%= button_tag 'Select Path', type: 'button', class: 'btn btn-primary', style: 'margin-top: 15px;', id: 'btnFileNavigator' %>
