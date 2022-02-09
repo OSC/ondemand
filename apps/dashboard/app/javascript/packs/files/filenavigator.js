@@ -1,5 +1,103 @@
+import ClipboardJS from 'clipboard'
+import Swal from 'sweetalert2'
+import Handlebars from 'handlebars';
+import _ from 'lodash';
+import 'datatables.net';
+import 'datatables.net-bs4/js/dataTables.bootstrap4';
+import 'datatables.net-select';
+import 'datatables.net-select-bs4';
+
+window.ClipboardJS = ClipboardJS
+window.alertError = alertError;
+window.dataFromJsonResponse = dataFromJsonResponse;
+window.reloadTable = reloadTable;
+window.goto = goto;
+window.loading = loading;
+window.doneLoading = doneLoading;
+window.$ = $;
+window.jQuery = jQuery;
+window._ = _;
+window.Handlebars = Handlebars;
+
 $(document).ready(function(){
     $("#btnFileNavigator").on("click", function(){
         $('#divFileNavigator').show();
     });        
 });
+
+function alertError(error_title, error_message){
+  Swal.fire(error_title, error_message, 'error');
+}
+
+function dataFromJsonResponse(response){
+  return new Promise((resolve, reject) => {
+    Promise.resolve(response)
+    .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
+    .then(response => response.json())
+    .then(data => data.error_message ? Promise.reject(new Error(data.error_message)) : resolve(data))
+    .catch((e) => reject(e))
+  });
+}
+
+function reloadTable(url){
+  var request_url = url || history.state.currentDirectoryUrl;
+
+  return fetch(request_url, {headers: {'Accept':'application/json'}})
+    .then(response => dataFromJsonResponse(response))
+    .then(function(data) {
+      $('#shell-wrapper').replaceWith((data.shell_dropdown_html))
+
+      table.clear();
+      table.rows.add(data.files);
+      table.draw();
+
+      $('#open-in-terminal-btn').attr('href', data.shell_url);
+      $('#open-in-terminal-btn').removeClass('disabled');
+
+      return Promise.resolve(data);
+    })
+    .catch((e) => {
+      Swal.fire(e.message, `Error occurred when attempting to access ${request_url}`, 'error');
+
+      $('#open-in-terminal-btn').addClass('disabled');
+      return Promise.reject(e);
+    });
+}
+
+function goto(url, pushState = true, show_processing_indicator = true) {
+  if(url == history.state.currentDirectoryUrl)
+    pushState = false;
+
+  reloadTable(url)
+    .then((data) => {
+      $('#path-breadcrumbs').html(data.breadcrumbs_html);
+
+      if(pushState) {
+        // Clear search query when moving to another directory.
+        table.search('').draw();
+
+        history.pushState({
+          currentDirectory: data.path,
+          currentDirectoryUrl: data.url
+        }, data.name, data.url);
+      }
+    })
+    .finally(() => {
+      //TODO: after processing is available via ActiveJobs merge
+      // if(show_processing_indicator)
+      //   table.processing(false)
+    });
+}
+
+function loading(title){
+  Swal.fire({
+    title: title,
+    allowOutsideClick: false,
+    showConfirmButton: false,
+    willOpen: () => { Swal.showLoading()  }
+  });
+}
+
+function doneLoading(){
+  Swal.close();
+}

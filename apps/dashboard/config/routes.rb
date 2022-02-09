@@ -11,6 +11,21 @@ Rails.application.routes.draw do
     end
   end
 
+  # This is the minified version of files app.  Used for browsing.
+  constraints filepath: /.+/ do
+    get "filenavigator/fs(/*filepath)" => "filenavigator#fs", :defaults => { :format => 'html', :filepath => '/' }, :format => false, as: :filenavigator
+    put "filenavigator/fs/*filepath" => "filenavigator#update", :format => false, :defaults => { :format => 'json' }
+
+    # TODO: deprecate these routes after updating OodAppkit to use the new routes above
+    # backwards compatibility with the "api" routes that OodAppkit provides
+    # and are used by File Editor and Job Composer
+    get "filenavigator/api/v1/fs(/*filepath)" => "filenavigator#fs", :defaults => { :format => 'html', :filepath => '/' }, :format => false
+    put "filenavigator/api/v1/fs/*filepath" => "filenavigator#update", :format => false, :defaults => { :format => 'json' }
+    resources :transfers, only: [:show, :create, :destroy]
+  end
+
+  get "filenavigator", to: redirect("filenavigator/fs#{Dir.home}")
+
   # in production, if the user doesn't have access to the files app directory, we hide the routes
   if Configuration.can_access_files?
     constraints filepath: /.+/ do

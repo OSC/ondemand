@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="<%= Configuration.locale %>">
+<head>
+  <!-- Webpacker -->
+  <%= javascript_pack_tag 'application' %>
+  <%= stylesheet_pack_tag 'application', media: 'all' %>
+
+  <!-- (Legacy) Sprockets -->
+  <%= javascript_include_tag 'application' %>
+
+  <%= csrf_meta_tags %>
+
+  <%= yield :head %>
+
+</head>
+<body>
+
+  <div class="<%= local_assigns[:layout_container_class] || 'container-md' %> content mt-4" role="main">
+    <%= yield %>
+  </div><!-- /.container -->
+</body>
+</html>

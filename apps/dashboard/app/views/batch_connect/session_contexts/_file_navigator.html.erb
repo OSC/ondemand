@@ -1,10 +1,9 @@
 <%= javascript_pack_tag 'files/filenavigator' %>
 <%= label attrib.id, "#{field_options[:label]}" %>
 <%= text_field :batch_connect_session_context, attrib.id, class: 'form-control' %>
-<%= hidden_field_tag 'relative_root_id', files_path %>
 <%= button_tag 'Select Path', id: 'btnFileNavigator' ,type: 'button', class: 'btn btn-primary', style: 'margin-top: 15px;' %> 
 
 <div id='divFileNavigator' style='display:none;' class='modal fade show'> 
-    <object type='text/html' data='<%= files_path %>' width='800px' height='600px' style='overflow:auto;border:5px ridge blue;margin-left:auto;margin-right:auto;'>
+    <object type='text/html' data='<%= filenavigator_path %>' width='800px' height='600px' style='overflow:auto;border:5px ridge blue;margin-left:auto;margin-right:auto;'>
     </object>
 </div>
