@@ -6,11 +6,13 @@ class FilesController < ApplicationController
     request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
 
     @path = normalized_path
+
     AllowlistPolicy.default.validate!(@path)
 
+    path = PosixFile.new(@path)
 
-    if @path.stat.directory?
-      PosixFile.raise_if_cant_access_directory_contents(@path)
+    if path.directory?
+      path.raise_if_cant_access_directory_contents
 
       request.format = 'zip' if params[:download]
 
@@ -23,10 +25,10 @@ class FilesController < ApplicationController
         format.json do
           if params[:can_download]
             # check to see if this directory can be downloaded as a zip
-            can_download, error_message = PosixFile.can_download_as_zip?(@path)
+            can_download, error_message = path.can_download_as_zip?
             render json: { can_download: can_download, error_message: error_message }
           else
-            @files = PosixFile.new.ls(@path.to_s)
+            @files = path.ls
             render :index
           end
         end
@@ -37,7 +39,7 @@ class FilesController < ApplicationController
         # and we can avoid rescuing in a block so we can reintroduce
         # the block braces which is the Rails convention with the respond_to formats.
         format.zip do
-          can_download, error_message = PosixFile.can_download_as_zip?(@path)
+          can_download, error_message = path.can_download_as_zip?
 
           if can_download
             zipname = @path.basename.to_s.gsub('"', '\"') + '.zip'
@@ -50,7 +52,7 @@ class FilesController < ApplicationController
             # FIXME: strategy 1: is below, use zip_tricks
             # strategy 2: use actual zip command (likely much faster) and ActionController::Live
             zip_tricks_stream do |zip|
-              PosixFile.files_to_zip(@path).each do |file|
+              path.files_to_zip.each do |file|
                 begin
                   if File.file?(file.path) && File.readable?(file.path)
                     zip.write_deflated_file(file.relative_path.to_s) do |zip_file|
@@ -189,7 +191,7 @@ class FilesController < ApplicationController
   end
 
   def show_file
-    type = Files.mime_type_by_extension(@path).presence || PosixFile.mime_type(@path)
+    type = Files.mime_type_by_extension(@path).presence || PosixFile.new(@path).mime_type
 
     # svgs aren't safe to view until we update our CSP
     if params[:download] || type.to_s == 'image/svg+xml'

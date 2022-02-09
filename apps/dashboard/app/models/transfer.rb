@@ -133,7 +133,7 @@ class Transfer
     if action == 'mv' && mv_to_same_device?
       @steps = files.count
     else
-      @steps = PosixFile.new.num_files(from, names)
+      @steps = PosixFile.num_files(from, names)
       @steps *= 2 if action == 'mv'
     end
 

@@ -2,7 +2,7 @@ require 'test_helper'
 
 class FilesTest < ActiveSupport::TestCase
   test "mime_type raises exception for non-file" do
-    assert_raises { PosixFile.mime_type("/dev/nulll") }
+    assert_raises { PosixFile.new("/dev/nulll").mime_type }
   end
 
   test "mime_type handles default types" do
@@ -10,7 +10,7 @@ class FilesTest < ActiveSupport::TestCase
       f = File.join(dir, 'foo.txt')
       File.write(f, "one two three")
 
-      assert_equal "text/plain", PosixFile.mime_type(f)
+      assert_equal "text/plain", PosixFile.new(f).mime_type
     end
   end
 
@@ -19,7 +19,7 @@ class FilesTest < ActiveSupport::TestCase
       f = File.join(dir, 'foo.svg')
       FileUtils.cp(Rails.root.join('app/javascript/images/OpenOnDemand_powered_by_RGB.svg').to_s, f)
 
-      assert_equal "image/svg+xml", PosixFile.mime_type(f)
+      assert_equal "image/svg+xml", PosixFile.new(f).mime_type
     end
   end
 
@@ -30,7 +30,7 @@ class FilesTest < ActiveSupport::TestCase
       f = File.join(dir, 'foo.txt')
       FileUtils.touch f
 
-      assert_equal "text/plain", PosixFile.mime_type(f), 'should treat "inode/x-empty" as "text/plain"'
+      assert_equal "text/plain", PosixFile.new(f).mime_type, 'should treat "inode/x-empty" as "text/plain"'
     end
   end
 
@@ -39,7 +39,7 @@ class FilesTest < ActiveSupport::TestCase
       path = Pathname.new(dir)
       Open3.stubs(:capture3).returns(["blarg \n 28d", "", exit_success])
 
-      assert_equal [false, I18n.t('dashboard.files_directory_download_size_0', cmd: "timeout 10s du -cbs #{path}")], PosixFile.can_download_as_zip?(dir)
+      assert_equal [false, I18n.t('dashboard.files_directory_download_size_0', cmd: "timeout 10s du -cbs #{path}")], PosixFile.new(dir).can_download_as_zip?
     end 
   end
 
@@ -49,7 +49,7 @@ class FilesTest < ActiveSupport::TestCase
       Open3.stubs(:capture3).returns(["0 /dev
         0 total", "", exit_success])
 
-      assert_equal [false, I18n.t('dashboard.files_directory_download_size_0', cmd: "timeout 10s du -cbs #{path}")], PosixFile.can_download_as_zip?(dir)
+      assert_equal [false, I18n.t('dashboard.files_directory_download_size_0', cmd: "timeout 10s du -cbs #{path}")], PosixFile.new(dir).can_download_as_zip?
     end 
   end
 

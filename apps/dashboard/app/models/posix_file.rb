@@ -1,6 +1,14 @@
 class PosixFile
 
-  def self.raise_if_cant_access_directory_contents(path)
+  attr_reader :path
+
+  def initialize(path)
+    # accepts both String and Pathname
+    # avoids converting to Pathname in every function
+    @path = Pathname.new(path)
+  end
+
+  def raise_if_cant_access_directory_contents
     # try to actually access directory contents
     # if an exception is raised, we do not have access
     path.each_child.first
@@ -9,17 +17,21 @@ class PosixFile
   #FIXME: a more generic name for this?
   FileToZip = Struct.new(:path, :relative_path)
 
-  def self.files_to_zip(path)
+  def files_to_zip
     path = path.expand_path
 
-    Pathname.new(path).glob('**/*').map {|p|
-      FileToZip.new(p.to_s, p.relative_path_from(path).to_s)
+    path.glob('**/*').map { |p|
+      Files.FileToZip.new(p.to_s, p.relative_path_from(path).to_s)
     }
   end
 
-  def ls(dirpath)
-    Pathname.new(dirpath).each_child.map do |path|
-      PosixFile.stat(path)
+  def directory?
+    path.stat.directory?
+  end
+
+  def ls
+    path.each_child.map do |child_path|
+      PosixFile.stat(child_path)
     end.sort_by { |p| p[:directory] ? 0 : 1 }
   end
 
@@ -47,9 +59,7 @@ class PosixFile
     }
   end
 
-  def self.can_download_as_zip?(path, timeout: Configuration.file_download_dir_timeout, download_directory_size_limit: Configuration.file_download_dir_max)
-    path = Pathname.new(path)
-
+  def can_download_as_zip?(timeout: Configuration.file_download_dir_timeout, download_directory_size_limit: Configuration.file_download_dir_max)
     can_download = false
     error = nil
 
@@ -91,9 +101,7 @@ class PosixFile
     return can_download, error
   end
 
-  def self.mime_type(path)
-    path = Pathname.new(path.to_s)
-
+  def mime_type
     type = %x[ file -b --mime-type #{path.to_s.shellescape} ].strip
 
     # unfortunately, with the file command, we have this:
@@ -115,7 +123,7 @@ class PosixFile
     end
   end
 
-  def num_files(from, names)
+  def self.num_files(from, names)
     args = names.map {|n| Shellwords.escape(n) }.join(' ')
     o, e, s = Open3.capture3("find 2>/dev/null #{args} | wc -l", chdir: from)
 
