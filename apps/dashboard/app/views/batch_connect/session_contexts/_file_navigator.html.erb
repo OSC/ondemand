@@ -2,20 +2,9 @@
 <%= label attrib.id, "#{field_options[:label]}" %>
 <%= text_field :batch_connect_session_context, attrib.id, class: 'form-control' %>
 <%= hidden_field_tag 'relative_root_id', files_path %>
+<%= button_tag 'Select Path', id: 'btnFileNavigator' ,type: 'button', class: 'btn btn-primary', style: 'margin-top: 15px;' %> 
 
-<%=
-    link_to(
-    "Select Path",
-    files_path,
-    class: "btn btn-primary",
-    data: {
-        toggle: "popover",
-        content: manifest_markdown('Select your project directory; defaults to your home directory on the server.'),
-        html: true,
-        trigger: "hover",
-        title: 'Select path',
-        container: "body",
-    },
-    target: "_blank"
-    )
-%>
+<div id='divFileNavigator' style='display:none;' class='modal fade show'> 
+    <object type='text/html' data='<%= files_path %>' width='800px' height='600px' style='overflow:auto;border:5px ridge blue;margin-left:auto;margin-right:auto;'>
+    </object>
+</div>
