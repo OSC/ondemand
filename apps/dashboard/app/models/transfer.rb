@@ -133,7 +133,7 @@ class Transfer
     if action == 'mv' && mv_to_same_device?
       @steps = files.count
     else
-      @steps = Files.new.num_files(from, names)
+      @steps = PosixFile.new.num_files(from, names)
       @steps *= 2 if action == 'mv'
     end
 
@@ -242,6 +242,6 @@ class Transfer
   end
 
   def mv_to_same_device?
-    action == "mv" && from && to && Files.stat(from)[:dev] == Files.stat(File.dirname(to))[:dev]
+    action == "mv" && from && to && PosixFile.stat(from)[:dev] == PosixFile.stat(File.dirname(to))[:dev]
   end
 end
