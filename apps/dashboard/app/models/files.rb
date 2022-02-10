@@ -33,20 +33,4 @@ class Files
   def self.mime_type_by_extension(path)
     Mime::Type.lookup_by_extension(Pathname.new(path.to_s).extname.delete_prefix('.'))
   end
-
-  def self.username(uid)
-    begin
-      Etc.getpwuid(uid).name
-    rescue
-      uid.to_s
-    end
-  end
-
-  def self.username_from_cache(uid)
-    @username_for_ids ||= Hash.new do |h, key|
-      h[key] = username(key)
-    end
-
-    @username_for_ids[uid]
-  end
 end

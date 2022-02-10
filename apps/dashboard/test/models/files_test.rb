@@ -53,7 +53,7 @@ class FilesTest < ActiveSupport::TestCase
     end 
   end
 
-  test "Ensuring Files.username(uid) returns string" do
-    assert_equal "9999999", Files.username(9999999)
+  test "Ensuring PosixFile.username(uid) returns string" do
+    assert_equal "9999999", PosixFile.username(9999999)
   end
 end

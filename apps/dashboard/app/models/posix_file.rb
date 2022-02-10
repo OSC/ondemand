@@ -53,7 +53,7 @@ class PosixFile
       human_size: s.directory? ? '-' : ::ApplicationController.helpers.number_to_human_size(s.size, precision: 3),
       directory: s.directory?,
       date: s.mtime.to_i,
-      owner: Files.username_from_cache(s.uid),
+      owner: username_from_cache(s.uid),
       mode: s.mode,
       dev: s.dev
     }
@@ -129,5 +129,21 @@ class PosixFile
 
     # FIXME: handle status error
     o.lines.last.to_i
+  end
+
+  def self.username(uid)
+    begin
+      Etc.getpwuid(uid).name
+    rescue
+      uid.to_s
+    end
+  end
+
+  def self.username_from_cache(uid)
+    @username_for_ids ||= Hash.new do |h, key|
+      h[key] = username(key)
+    end
+
+    @username_for_ids[uid]
   end
 end
