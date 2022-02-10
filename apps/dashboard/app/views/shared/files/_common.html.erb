@@ -1,5 +1,6 @@
 <%= javascript_pack_tag 'files/clipboard' %>
 <%= javascript_pack_tag 'files/datatable' %>
+<%= javascript_pack_tag 'files/common' %>
 
 <script>
 const csrf_token = document.querySelector('meta[name="csrf-token"]').content;
@@ -18,20 +19,6 @@ history.replaceState({
 // initial data load
 reloadTable();
 <% end %>
-
-$('#show-dotfiles').on('change', () => {
-  let visible = $('#show-dotfiles').is(':checked');
-
-  setShowDotFiles(visible);
-  updateDotFileVisibility();
-});
-
-$('#show-owner-mode').on('change', () => {
-  let visible = $('#show-owner-mode').is(':checked');
-
-  setShowOwnerMode(visible);
-  updateShowOwnerModeVisibility();
-});
 
 $('#path-breadcrumbs').on('click', '#goto-btn', function(){
   Swal.fire({
