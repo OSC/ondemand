@@ -1,3 +1,5 @@
+require "active_support/core_ext/integer/time"
+
 # The test environment is used exclusively to run your application's
 # test suite. You never need to work with it otherwise. Remember that
 # your test database is "scratch space" for the test suite and is wiped
@@ -27,11 +29,9 @@ Rails.application.configure do
   # Raise exceptions instead of rendering exception templates.
   config.action_dispatch.show_exceptions = false
 
-  # Disable request forgery protection in test environment.
-  # FIXME: normally this is disabled, we enable it because our code actually assumes it will
-  # be enabled (and thus system tests fail when it is disabled)
-  #
-  # config.action_controller.allow_forgery_protection = false
+  # Enable request forgery protection in test environment because we want our tests to be secure.
+  config.action_controller.allow_forgery_protection = true
+
   config.action_mailer.perform_caching = false
 
   # Tell Action Mailer not to deliver emails to the real world.
@@ -42,10 +42,18 @@ Rails.application.configure do
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
 
-  # Raises error for missing translations.
-  config.action_view.raise_on_missing_translations = true
+  # Raise exceptions for disallowed deprecations.
+  config.active_support.disallowed_deprecation = :raise
 
-  # job queues
+  # Tell Active Support which deprecation messages to disallow.
+  config.active_support.disallowed_deprecation_warnings = []
+
+  # Raises error for missing translations.
+  config.i18n.raise_on_missing_translations = true
+
+  # Annotate rendered view with file names.
+  # config.action_view.annotate_rendered_view_with_filenames = true
+
   config.active_job.queue_adapter = ActiveJob::QueueAdapters::AsyncAdapter.new \
     min_threads: 1, max_threads: 1
 end

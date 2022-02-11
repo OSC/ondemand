@@ -1,5 +1,5 @@
 # favor tmp/node_modules/yarn/bin/yarnpkg
-ENV['PATH'] = File.join(File.expand_path("../../",  __FILE__), 'tmp', 'node_modules', 'yarn', 'bin') + ":" + ENV['PATH'].to_s
+ENV['PATH'] = "#{File.join(File.expand_path('..', __dir__), 'tmp', 'node_modules', 'yarn', 'bin')}:#{ENV['PATH']}"
 
 # Set up gems listed in the Gemfile.
 ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../Gemfile', __dir__)
@@ -7,7 +7,7 @@ ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../Gemfile', __dir__)
 require 'bundler/setup' # Set up gems listed in the Gemfile.
 
 # load dotenv files before "before_configuration" callback
-require File.expand_path('../configuration_singleton', __FILE__)
+require File.expand_path('configuration_singleton', __dir__)
 
 # global instance to access and use
 Configuration = ConfigurationSingleton.new
