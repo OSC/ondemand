@@ -1,21 +1,16 @@
 class Jobs::Project 
-  attr_reader :dir
-
-  def initialize(dir: nil)
-    # raise StandardError, "#{dir} is not a directory" unless dir File.directory?(directory.to_s)
-
-    @dir = dir.to_s
-  end
-
+  include ActiveModel::Model
+ 
   class << self
     def all
       # return [Array] of all projects in ~/ondemand/data/sys/projects
       return [] unless dataroot.directory? && dataroot.executable? && dataroot.readable?
       
       dataroot.children.map do |d|
-        Project.new(d)
+        Jobs::Project.new({:dir => d.to_s})
       rescue StandardError => e
         Rails.logger.warn("Didn't create project. #{e.message}")
+        nil
       end.compact
     end
   
@@ -28,38 +23,36 @@ class Jobs::Project
         Pathname.new('')
       end
     end
+  end
 
-    # def files
-    # return [Array] of all files in current project dir
-    # end
+  attr_reader :dir
 
-    # .ondemand methods
-    # recognize .ondemand dir in project space
-    # return [String] with .ondemand directory
-    def dot_ondemand_dir
-      Dir.entries(dir).find do |entry|
-        entry =~ /^.ondemand/
-      end
-    end
+  def initialize(args = {})
+    # raise StandardError, "#{dir} is not a directory" unless File.directory?(dir.to_s)
 
-      # remove .ondemand dir in project space
-    def del_dot_ondemand_dir
-      raise StandardError, "#{self.dot_ondemand_dir} does not exist yet." unless Dir.exists?(self.dot_ondemand_dir)
-    
-      Dir.rmdir(Jobs::Project.dataroot.join(self.dot_ondemand_dir))
-    end
+    @dir = args.fetch(:dir, nil)
+  end
 
-    # create .ondemand dir in project space
-    def create_dot_ondemand_dir
-      raise StandardError, "#{self.dot_ondemand_dir} already exists." if Dir.exists?(self.dot_ondemand_dir)
+  def config_dir
+    Rails.logger.debug("The dir: #{dir}")
+    Pathname.new("#{​​​dir}​​​/.ondemand").tap {​ |p| p.mkpath unless p.exist?​ }
+   end
 
-      Dir.mkdir(Jobs::Project.dataroot.join(self.dot_ondemand_dir))
-    end
+  def manifest_path
+    "#{config_dir}/manifest.yml"
+  end
 
-    # manifest methods
+  def manifest
+    @manifest ||= Manifest.load(manifest_path)
+  end
 
-    # read contents of .ondemand dir and the manifest.yml file located there
-    # def project_manifest_reader
-    # end
+  def save!
+    # for the @project.save api you see in frame renderer
+    Dir.mkdir(Jobs::Project.dataroot.join(dir)) # assertions later for what willing to accept
+  end
+
+  def destroy!
+    #FileUtils.rmdir "#{dir}/.ondemand"
+    FileUtils.rmdir(Jobs::Project.dataroot.join(dir))
   end
 end
