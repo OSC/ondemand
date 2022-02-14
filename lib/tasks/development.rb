@@ -93,7 +93,7 @@ namespace :dev do
 
   desc 'Start development container'
   task :start => ['ensure_dev_files'] do
-    Rake::Task['package:dev_container'].invoke unless image_exists?("#{dev_image_name}:latest")
+    Rake::Task['package:dev_container'].invoke unless image_exists?("#{image_names[:dev]}:latest")
 
     ctr_args = [container_runtime, 'run', '-p 8080:8080', '-p 5556:5556']
     ctr_args.concat ["--name #{dev_container_name}"]
@@ -102,7 +102,7 @@ namespace :dev do
     ctr_args.concat additional_caps
     ctr_args.concat container_rt_args
 
-    ctr_args.concat ["#{dev_image_name}:latest"]
+    ctr_args.concat ["#{image_names[:dev]}:latest"]
     sh ctr_args.join(' ')
   end
 
