@@ -6,12 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-upgrade dashboard to rails 6.1 (#1830)\
-preset apps can just launch (#1815)\
-upgrade rails for bugfixes (#1824)\
-Update Changelog (#1817)\
-check to see if user is same from etc (#1816)\
-use nonces for javascript packs (#1814)
 
 ### Changed
 
@@ -20,7 +14,7 @@ use nonces for javascript packs (#1814)
   in [#1409](https://github.com/OSC/ondemand/pull/1409).
 - The dashboard now uses strict same site cookies in [#1418](https://github.com/OSC/ondemand/pull/1418).
 - Build RPMs in CI/CD pipelines using -s flag to disable source download in [1471](https://github.com/OSC/ondemand/pull/1471).
-- Upgraded to rails 6 in [1474](https://github.com/OSC/ondemand/pull/1474).
+- Upgraded to rails 6.1 in [1830](https://github.com/OSC/ondemand/pull/1830).
 - `context.json` files have moved in location and filename in [1526](https://github.com/OSC/ondemand/pull/1526).
 - Switch dev container and EL8 e2e tests to use Rocky Linux 8 [1534](https://github.com/OSC/ondemand/pull/1534).
 - The entire Javascript and CSS pipeline is now handled in webpack, closing [1005](https://github.com/OSC/ondemand/pull/1005).
@@ -43,6 +37,7 @@ use nonces for javascript packs (#1814)
 - Debian packaging in [1466](https://github.com/OSC/ondemand/pull/1466). With many many subsequent patches.
 - Automation will now push ondemand tar.gz to release page on tags in [1564](https://github.com/OSC/ondemand/pull/1564).
 - Submit.yml's will now be written to the staged root if they have ERB/YML related errors in [1636](https://github.com/OSC/ondemand/pull/1636).
+- Apps recognize if they're preset. Preset apps don't show forms, they just launch in [#1815](https://github.com/OSC/ondemand/pull/1815).
 
 ### Fixed
 
