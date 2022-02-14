@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+upgrade dashboard to rails 6.1 (#1830)\
+preset apps can just launch (#1815)\
+upgrade rails for bugfixes (#1824)\
+Update Changelog (#1817)\
+check to see if user is same from etc (#1816)\
+use nonces for javascript packs (#1814)
 
 ### Changed
 
