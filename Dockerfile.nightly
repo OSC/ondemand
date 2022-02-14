@@ -1,0 +1,19 @@
+FROM rockylinux/rockylinux:8
+LABEL maintainer="tdockendorf@osc.edu; johrstrom@osc.edu"
+
+RUN dnf install -y https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-6.noarch.rpm
+
+RUN cp /etc/yum.repos.d/ondemand-web.repo /etc/yum.repos.d/ondemand-nightly-web.repo && \
+    sed -i 's/latest/nightly/g' /etc/yum.repos.d/ondemand-nightly-web.repo && \
+    sed -i 's/ondemand-web/ondemand-web-nightly/g' /etc/yum.repos.d/ondemand-nightly-web.repo
+
+
+RUN dnf -y update && \
+    dnf install -y dnf-utils && \
+    dnf config-manager --set-enabled powertools && \
+    dnf -y module enable nodejs:14 ruby:2.7 && \
+    dnf install -y ondemand
+
+EXPOSE 8080
+EXPOSE 5556
+EXPOSE 3035

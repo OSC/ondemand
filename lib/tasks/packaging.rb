@@ -17,20 +17,31 @@ namespace :package do
     sh tag_latest_container_cmd(image_names[:ood])
   end
 
-  desc "Build container with Dockerfile.test"
-  task test_container: [:latest_container] do
-    sh build_cmd("Dockerfile.test", test_image_name) unless image_exists?("#{test_image_name}:#{ood_image_tag}")
-    sh tag_latest_container_cmd(test_image_name)
-  end
-
   desc "Build container with Dockerfile.dev"
   task dev_container: [:latest_container] do
+    image = image_names[:dev]
+    tag = ENV['_OOD_PKG_NIGHTLY'].nil? ? ood_image_tag : nightly_version_simple
+
+
     extra = ["--build-arg", "USER=#{user.name}"]
     extra.concat ["--build-arg", "UID=#{user.uid}"]
     extra.concat ["--build-arg", "GID=#{user.gid}"]
 
-    sh build_cmd("Dockerfile.dev", dev_image_name, extra_args: extra) unless image_exists?("#{dev_image_name}:#{ood_image_tag}")
-    sh tag_latest_container_cmd(dev_image_name)
+    sh build_cmd("Dockerfile.dev", image, extra_args: extra) unless image_exists?("#{image}:#{ood_image_tag}")
+    sh tag_latest_container_cmd(image)
+  end
+
+  desc "Build a container with last night's package"
+  task :nightly_container do
+    image = image_names[:ood] # making a real ood image
+    tag = nightly_version_simple
+
+    sh build_cmd("Dockerfile.nightly", image, image_tag: tag) unless image_exists?("#{image}:#{tag}")
+    sh tag_latest_container_cmd(image, image_tag: tag)
+
+    # FIXME: this really the best way to pass args to this task?
+    ENV['_OOD_PKG_NIGHTLY'] = 'true'
+    Rake::Task['package:dev_container'].invoke
   end
 
   begin

@@ -159,6 +159,10 @@ module RakeHelper
     "#{version_major}.#{version_minor}.#{date}-#{id}.#{git_hash}.nightly"
   end
 
+  def nightly_version_simple
+    Time.now.strftime("%Y%m%d")
+  end
+
   def numeric_tag
     @numeric_tag ||= git_tag.delete_prefix('v')
   end
@@ -175,18 +179,6 @@ module RakeHelper
     podman_runtime? ? "podman" : "docker"
   end
 
-  def test_image_name
-    "ood-test"
-  end
-
-  def dev_image_name
-    "ood-dev"
-  end
-
-  def image_name
-    "ood"
-  end
-
   def user
     @user ||= Etc.getpwnam(Etc.getlogin)
   end
@@ -195,7 +187,6 @@ module RakeHelper
     @image_names ||=
     {
       ood: "ood",
-      test: "ood-test",
       dev: "ood-dev"
     }.freeze
   end
