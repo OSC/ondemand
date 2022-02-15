@@ -189,6 +189,15 @@ $(document).ready(function(){
     }
   )
 
+
+  $('#directory-contents tbody').on('click', '.delete-file', function(e){
+    e.preventDefault();
+  
+    let row = table.row(this.dataset.rowIndex).data();
+    deleteFiles([row.name]);
+  });
+  
+
 });
 
 function update_datatables_status(api){

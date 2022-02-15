@@ -9,7 +9,8 @@ window.Uppy = Uppy
 window.BasePlugin = BasePlugin
 window.Dashboard = Dashboard
 window.XHRUpload = XHRUpload
-window.Swal        = Swal.mixin({
+
+window.Swal  = Swal.mixin({
   showClass: {
     popup: 'swal2-noanimation',
     backdrop: 'swal2-noanimation'
@@ -19,6 +20,7 @@ window.Swal        = Swal.mixin({
     backdrop: ''
   }
 });
+
 window.alertError = alertError;
 window.dataFromJsonResponse = dataFromJsonResponse;
 window.newFile = newFile;
@@ -122,3 +124,4 @@ function loading(title){
 function doneLoading(){
   Swal.close();
 }
+
