@@ -2,6 +2,9 @@ window.getEmptyDirs = getEmptyDirs;
 window.downloadFile = downloadFile;
 window.downloadDirectory = downloadDirectory;
 window.getFilesAndDirectoriesFromDirectory = getFilesAndDirectoriesFromDirectory;
+window.reportTransfer = reportTransfer;
+window.copyFiles = copyFiles;
+window.moveFiles = moveFiles;
 
 const reportTransferTemplate = (function(){
   let template_str  = $('#transfer-template').html();
@@ -239,43 +242,6 @@ function getFilesAndDirectoriesFromDirectory (directoryReader, oldEntries, logDr
     }
   )
 }
-
-
-function transferFiles(files, action, summary){
-  loading(_.startCase(summary));
-
-  return fetch('<%= transfers_path(format: "json") %>', {
-    method: 'post',
-    body: JSON.stringify({
-      command: action,
-      files: files
-    }),
-    headers: { 'X-CSRF-Token': csrf_token }
-  })
-  .then(response => dataFromJsonResponse(response))
-  .then((data) => {
-
-    if(! data.completed){
-      // was async, gotta report on progress and start polling
-      reportTransfer(data);
-    }
-    else {
-      if(data.target_dir == history.state.currentDirectory){
-        reloadTable();
-      }
-    }
-
-    if(action == 'mv' || action == 'cp'){
-      clearClipboard();
-      updateViewForClipboard();
-    }
-  })
-  .then(() => doneLoading())
-  .catch(e => alertError('Error occurred when attempting to ' + summary, e.message))
-}
-
-
-
 
 function findAndUpdateTransferStatus(data){
   let id = `#${data.id}`;

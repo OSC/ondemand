@@ -4,6 +4,7 @@ import ClipboardJS from 'clipboard'
 window.ClipboardJS = ClipboardJS
 window.updateViewForClipboard = updateViewForClipboard;
 window.updateClipboardFromSelection = updateClipboardFromSelection;
+window.clearClipboard = clearClipboard;
 
 //FIXME: so need to handle updateViewForClipboard based on EVENTS emitted by local storage modifications
 updateViewForClipboard();
@@ -50,6 +51,10 @@ $(document).ready(function(){
 
 
 });
+
+function clearClipboard(){
+  localStorage.removeItem('filesClipboard');
+}
 
 function updateClipboardFromSelection() {
   let selection = table.rows({selected: true}).data();
@@ -114,10 +119,5 @@ function updateViewForClipboard(){
       console.error('files clipboard is empty');
     }
   });
-
-
-  function clearClipboard(){
-    localStorage.removeItem('filesClipboard');
-  }
 
 }

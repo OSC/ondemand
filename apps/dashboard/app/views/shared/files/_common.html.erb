@@ -6,7 +6,7 @@
 
 <script>
 const csrf_token = document.querySelector('meta[name="csrf-token"]').content;
-
+const filesApp = "<%= filesApp %>";
 // this uses event delegation so it captures events even if dom element is recreated
 var clipboardjs = new ClipboardJS('#copy-path');
 
@@ -44,5 +44,39 @@ $('#path-breadcrumbs').on('click', '#goto-btn', function(){
   .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
   .then((pathname) => goto('<%= files_path('/') %>' + pathname))
 });
+
+// contains ruby, must stay here.
+function transferFiles(files, action, summary){
+  loading(_.startCase(summary));
+
+  return fetch('<%= transfers_path(format: "json") %>', {
+    method: 'post',
+    body: JSON.stringify({
+      command: action,
+      files: files
+    }),
+    headers: { 'X-CSRF-Token': csrf_token }
+  })
+  .then(response => dataFromJsonResponse(response))
+  .then((data) => {
+
+    if(! data.completed){
+      // was async, gotta report on progress and start polling
+      reportTransfer(data);
+    }
+    else {
+      if(data.target_dir == history.state.currentDirectory){
+        reloadTable();
+      }
+    }
+
+    if(action == 'mv' || action == 'cp'){
+      clearClipboard();
+      updateViewForClipboard();
+    }
+  })
+  .then(() => doneLoading())
+  .catch(e => alertError('Error occurred when attempting to ' + summary, e.message))
+}
 
 </script>
