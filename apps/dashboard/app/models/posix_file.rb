@@ -68,10 +68,10 @@ class PosixFile
   FileToZip = Struct.new(:path, :relative_path)
 
   def files_to_zip
-    path = path.expand_path
+    expanded = path.expand_path
 
-    path.glob('**/*').map { |p|
-      Files.FileToZip.new(p.to_s, p.relative_path_from(path).to_s)
+    expanded.glob('**/*').map { |p|
+      FileToZip.new(p.to_s, p.relative_path_from(expanded).to_s)
     }
   end
 
