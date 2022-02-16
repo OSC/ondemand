@@ -2,6 +2,56 @@ class PosixFile
 
   attr_reader :path
 
+  class << self
+    def stat(path)
+      path = Pathname.new(path)
+
+      # path.stat will not work for a symlink and will raise an exception
+      # if the directory or file being pointed at does not exist
+      begin
+        s = path.stat
+      rescue
+        s = path.lstat
+      end
+
+      {
+        id: "dev-#{s.dev}-inode-#{s.ino}",
+        name: path.basename,
+        size: s.directory? ? nil : s.size,
+        human_size: s.directory? ? '-' : ::ApplicationController.helpers.number_to_human_size(s.size, precision: 3),
+        directory: s.directory?,
+        date: s.mtime.to_i,
+        owner: username_from_cache(s.uid),
+        mode: s.mode,
+        dev: s.dev
+      }
+    end
+
+    def num_files(from, names)
+      args = names.map {|n| Shellwords.escape(n) }.join(' ')
+      o, e, s = Open3.capture3("find 2>/dev/null #{args} | wc -l", chdir: from)
+
+      # FIXME: handle status error
+      o.lines.last.to_i
+    end
+
+    def username(uid)
+      begin
+        Etc.getpwuid(uid).name
+      rescue
+        uid.to_s
+      end
+    end
+
+    def username_from_cache(uid)
+      @username_for_ids ||= Hash.new do |h, key|
+        h[key] = username(key)
+      end
+
+      @username_for_ids[uid]
+    end
+  end
+
   def initialize(path)
     # accepts both String and Pathname
     # avoids converting to Pathname in every function
@@ -33,30 +83,6 @@ class PosixFile
     path.each_child.map do |child_path|
       PosixFile.stat(child_path)
     end.sort_by { |p| p[:directory] ? 0 : 1 }
-  end
-
-  def self.stat(path)
-    path = Pathname.new(path)
-
-    # path.stat will not work for a symlink and will raise an exception
-    # if the directory or file being pointed at does not exist
-    begin
-      s = path.stat
-    rescue
-      s = path.lstat
-    end
-
-    {
-      id: "dev-#{s.dev}-inode-#{s.ino}",
-      name: path.basename,
-      size: s.directory? ? nil : s.size,
-      human_size: s.directory? ? '-' : ::ApplicationController.helpers.number_to_human_size(s.size, precision: 3),
-      directory: s.directory?,
-      date: s.mtime.to_i,
-      owner: username_from_cache(s.uid),
-      mode: s.mode,
-      dev: s.dev
-    }
   end
 
   def can_download_as_zip?(timeout: Configuration.file_download_dir_timeout, download_directory_size_limit: Configuration.file_download_dir_max)
@@ -121,29 +147,5 @@ class PosixFile
     else
       type
     end
-  end
-
-  def self.num_files(from, names)
-    args = names.map {|n| Shellwords.escape(n) }.join(' ')
-    o, e, s = Open3.capture3("find 2>/dev/null #{args} | wc -l", chdir: from)
-
-    # FIXME: handle status error
-    o.lines.last.to_i
-  end
-
-  def self.username(uid)
-    begin
-      Etc.getpwuid(uid).name
-    rescue
-      uid.to_s
-    end
-  end
-
-  def self.username_from_cache(uid)
-    @username_for_ids ||= Hash.new do |h, key|
-      h[key] = username(key)
-    end
-
-    @username_for_ids[uid]
   end
 end
