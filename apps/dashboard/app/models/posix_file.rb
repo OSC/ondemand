@@ -2,6 +2,8 @@ class PosixFile
 
   attr_reader :path
 
+  delegate :basename, :descend, :parent, :join, :to_s, to: :path
+
   class << self
     def stat(path)
       path = Pathname.new(path)
@@ -147,5 +149,10 @@ class PosixFile
     else
       type
     end
+  end
+
+  # allow implicit conversion to String
+  def to_str
+    to_s
   end
 end
