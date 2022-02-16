@@ -118,7 +118,7 @@ class TransferLocalJobTest < ActiveJob::TestCase
 
       # this tests the number of calls to update_progress
       # note: progress.percent is not called because this mocks the method
-      num_files = Files.new.num_files(dir, ['app'])
+      num_files = PosixFile.num_files(dir, ['app'])
       transfer = Transfer.new(action: 'cp', files: {testdir => File.join(destdir, 'app')})
       transfer.expects(:percent=).times(num_files)
 
