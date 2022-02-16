@@ -1,3 +1,5 @@
+window.clickEventIsSignificant = clickEventIsSignificant;
+
 window.actionsBtnTemplate = (function(){
   let template_str  = $('#actions-btn-template').html();
   return Handlebars.compile(template_str);
@@ -33,6 +35,28 @@ $(document).ready(function(){
     window.open(this.href, 'ViewFile', "location=yes,resizable=yes,scrollbars=yes,status=yes");
   });
 
+
+  $('#path-breadcrumbs').on('click', '#goto-btn', function(){
+    Swal.fire({
+      title: 'Change Directory',
+      input: 'text',
+      inputLabel: 'Path',
+      inputValue: history.state.currentDirectory,
+      inputAttributes: {
+        spellcheck: 'false',
+      },
+      showCancelButton: true,
+      inputValidator: (value) => {
+        if (! value || ! value.startsWith('/')) {
+          // TODO: validate filenames against listing
+          return 'Provide an absolute pathname'
+        }
+      }
+    })
+    .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
+    .then((pathname) => goto(filesPath + pathname))
+  });
+  
 });
 
 

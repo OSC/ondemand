@@ -6,7 +6,11 @@
 
 <script>
 const csrf_token = document.querySelector('meta[name="csrf-token"]').content;
-const filesApp = "<%= filesApp %>";
+const filesApp = '<%= filesApp %>';
+const filesUploadPath = '<%= files_upload_path %>';
+const maxFileSize = <%= Configuration.file_upload_max %>;
+const filesPath = "<%= files_path('/') %>";
+const transfersPath = '<%= transfers_path(format: "json") %>';
 // this uses event delegation so it captures events even if dom element is recreated
 var clipboardjs = new ClipboardJS('#copy-path');
 
@@ -22,61 +26,5 @@ history.replaceState({
 // initial data load
 reloadTable();
 <% end %>
-
-// contains ruby, must stay here.
-$('#path-breadcrumbs').on('click', '#goto-btn', function(){
-  Swal.fire({
-    title: 'Change Directory',
-    input: 'text',
-    inputLabel: 'Path',
-    inputValue: history.state.currentDirectory,
-    inputAttributes: {
-      spellcheck: 'false',
-    },
-    showCancelButton: true,
-    inputValidator: (value) => {
-      if (! value || ! value.startsWith('/')) {
-        // TODO: validate filenames against listing
-        return 'Provide an absolute pathname'
-      }
-    }
-  })
-  .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
-  .then((pathname) => goto('<%= files_path('/') %>' + pathname))
-});
-
-// contains ruby, must stay here.
-function transferFiles(files, action, summary){
-  loading(_.startCase(summary));
-
-  return fetch('<%= transfers_path(format: "json") %>', {
-    method: 'post',
-    body: JSON.stringify({
-      command: action,
-      files: files
-    }),
-    headers: { 'X-CSRF-Token': csrf_token }
-  })
-  .then(response => dataFromJsonResponse(response))
-  .then((data) => {
-
-    if(! data.completed){
-      // was async, gotta report on progress and start polling
-      reportTransfer(data);
-    }
-    else {
-      if(data.target_dir == history.state.currentDirectory){
-        reloadTable();
-      }
-    }
-
-    if(action == 'mv' || action == 'cp'){
-      clearClipboard();
-      updateViewForClipboard();
-    }
-  })
-  .then(() => doneLoading())
-  .catch(e => alertError('Error occurred when attempting to ' + summary, e.message))
-}
 
 </script>

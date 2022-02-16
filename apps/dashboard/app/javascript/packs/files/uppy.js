@@ -7,7 +7,7 @@ window.BasePlugin = BasePlugin
 window.Dashboard = Dashboard
 window.XHRUpload = XHRUpload
 
-(function(){
+$(document).ready(function(){
   class EmptyDirCreator extends BasePlugin {
     constructor (uppy, opts){
       super(uppy, opts)
@@ -71,9 +71,10 @@ window.XHRUpload = XHRUpload
 
   window.uppy = new Uppy({
     restrictions: {
-      maxFileSize: 100,
+      maxFileSize: maxFileSize,
     }
   });
+  
   uppy.use(EmptyDirCreator);
   uppy.use(Dashboard, {
     trigger: '#upload-btn',
@@ -87,7 +88,7 @@ window.XHRUpload = XHRUpload
     note: 'Empty directories will be included in the upload only when a directory upload is initiated via drag and drop. This is because the File and Directory Entries API is available only on a drop event, not during an input change event.'
   });
   uppy.use(XHRUpload, {
-    endpoint: '<%= files_upload_path %>',
+    endpoint: filesUploadPath,
     withCredentials: true,
     fieldName: 'file',
     limit: 1,
@@ -142,4 +143,4 @@ window.XHRUpload = XHRUpload
     this.classList.remove('dragover');
   });
 
-})();
+});

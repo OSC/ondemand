@@ -5,6 +5,8 @@ window.getFilesAndDirectoriesFromDirectory = getFilesAndDirectoriesFromDirectory
 window.reportTransfer = reportTransfer;
 window.copyFiles = copyFiles;
 window.moveFiles = moveFiles;
+window.transferFiles = transferFiles;
+window.deleteFiles = deleteFiles;
 
 const reportTransferTemplate = (function(){
   let template_str  = $('#transfer-template').html();
@@ -141,6 +143,40 @@ $(document).ready(function(){
     });
     
 });
+
+function transferFiles(files, action, summary){
+  loading(_.startCase(summary));
+
+  return fetch(transfersPath, {
+    method: 'post',
+    body: JSON.stringify({
+      command: action,
+      files: files
+    }),
+    headers: { 'X-CSRF-Token': csrf_token }
+  })
+  .then(response => dataFromJsonResponse(response))
+  .then((data) => {
+
+    if(! data.completed){
+      // was async, gotta report on progress and start polling
+      reportTransfer(data);
+    }
+    else {
+      if(data.target_dir == history.state.currentDirectory){
+        reloadTable();
+      }
+    }
+
+    if(action == 'mv' || action == 'cp'){
+      clearClipboard();
+      updateViewForClipboard();
+    }
+  })
+  .then(() => doneLoading())
+  .catch(e => alertError('Error occurred when attempting to ' + summary, e.message))
+}
+
 
 function downloadDirectory(file) {
   let filename = $($.parseHTML(file.name)).text(),

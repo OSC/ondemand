@@ -1,14 +1,14 @@
 import Swal from 'sweetalert2'
-import { Uppy, BasePlugin } from '@uppy/core'
-import Dashboard from '@uppy/dashboard'
-import XHRUpload from '@uppy/xhr-upload'
+// import { Uppy, BasePlugin } from '@uppy/core'
+// import Dashboard from '@uppy/dashboard'
+// import XHRUpload from '@uppy/xhr-upload'
 import Handlebars from 'handlebars';
 import _ from 'lodash';
 
-window.Uppy = Uppy
-window.BasePlugin = BasePlugin
-window.Dashboard = Dashboard
-window.XHRUpload = XHRUpload
+// window.Uppy = Uppy;
+// window.BasePlugin = BasePlugin;
+// window.Dashboard = Dashboard;
+// window.XHRUpload = XHRUpload;
 
 window.Swal  = Swal.mixin({
   showClass: {
