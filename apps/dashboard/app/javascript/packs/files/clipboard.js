@@ -13,31 +13,6 @@ window.addEventListener('storage', () => {
 });
 
 
-$('#clipboard-move-to-dir').on("click", () => {
-  let clipboard = JSON.parse(localStorage.getItem('filesClipboard') || 'null');
-
-  if(clipboard){
-    clipboard.to = history.state.currentDirectory;
-
-    if(clipboard.from == clipboard.to){
-      console.error('clipboard from and to are identical')
-      // TODO:
-    }
-    else{
-      let files = {};
-      clipboard.files.forEach((f) => {
-        files[`${clipboard.from}/${f.name}`] = `${history.state.currentDirectory}/${f.name}`
-      });
-
-      moveFiles(files, csrf_token);
-    }
-  }
-  else{
-    console.error('files clipboard is empty');
-  }
-});
-
-
 $(document).ready(function(){
   clipboardjs.on('success', function(e) {
     $(e.trigger).tooltip({title: 'Copied path to clipboard!', trigger: 'manual', placement: 'bottom'}).tooltip('show');
@@ -48,8 +23,6 @@ $(document).ready(function(){
     e.clearSelection();
   });
    
-
-
 });
 
 function clearClipboard(){
@@ -84,6 +57,29 @@ function updateViewForClipboard(){
   $('#clipboard-clear').on("click", () => {
       clearClipboard();
       updateViewForClipboard();
+  });
+
+  $('#clipboard-move-to-dir').on("click", () => {
+    let clipboard = JSON.parse(localStorage.getItem('filesClipboard') || 'null');
+    if(clipboard){
+      clipboard.to = history.state.currentDirectory;
+  
+      if(clipboard.from == clipboard.to){
+        console.error('clipboard from and to are identical')
+        // TODO:
+      }
+      else{
+        let files = {};
+        clipboard.files.forEach((f) => {
+          files[`${clipboard.from}/${f.name}`] = `${history.state.currentDirectory}/${f.name}`
+        });
+  
+        moveFiles(files, csrf_token);
+      }
+    }
+    else{
+      console.error('files clipboard is empty');
+    }
   });
 
 

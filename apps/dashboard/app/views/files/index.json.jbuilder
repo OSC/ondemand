@@ -20,7 +20,7 @@ json.files @files do |f|
   json.mode f[:mode]
 end
 
-json.breadcrumbs_html render partial: 'breadcrumb.html.erb', collection: @path.descend, as: :file, locals: { file_count: @path.descend.count, full_path: @path }
-json.shell_dropdown_html render partial: 'shell_dropdown.html.erb'
+json.breadcrumbs_html render partial: 'shared/files/breadcrumb.html.erb', collection: @path.descend, as: :file, locals: { file_count: @path.descend.count, full_path: @path }
+json.shell_dropdown_html render partial: 'shared/files/shell_dropdown.html.erb'
 json.time Time.now.to_i
 json.error_message alert if alert
