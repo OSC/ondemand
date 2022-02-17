@@ -133,24 +133,29 @@ describe 'Node and Rnode proxies' do
   # end
 
   # TODO: examine "stop" else logic as it is skipping to "or http.http200(r)" choice each run
-  # it 'node correctly returns "bad redir error" when no redirect is given on stop' do
-  #   browser.goto "#{ctr_base_url}/nginx/stop"
-  #   expect(browser.selector(name: 'pre')).to eq('Error -- bad `redir` request ()')
-  # end
+  it '/nginx/stop needs a redirect' do
+    browser.goto "#{ctr_base_url}/nginx/stop"
+    expect(browser.selector(name: 'pre')).to eq('Error -- bad `redir` request ()')
+  end
 
-  it 'node correctly returns "bad redir error" when redirect to "github.com" given on stop' do
+  it '/nginx/stop wont redirect to another host' do
     browser.goto "#{ctr_base_url}/nginx/stop?redir=github.com"
     expect(browser.text).to eq('Error -- bad `redir` request (github.com)')
   end
 
-  it 'node correctly returns "bad redir error" when redirect to "https://github.com" given on stop' do
+  it '/nginx/stop wont redirect to a url with a scheme' do
     browser.goto "#{ctr_base_url}/nginx/stop?redir=https://github.com"
     expect(browser.text).to eq('Error -- bad `redir` request (https://github.com)')
   end
 
-  it 'node correctly returns "bad redir error" when redirect to "/node/localhost/5001" is given on stop' do
+  it '/nginx/stop wont redirect to /node' do
     browser.goto "#{ctr_base_url}/nginx/stop?redir=/node/localhost/5001"
     expect(browser.text).to eq('Error -- bad `redir` request (/node/localhost/5001)')
+  end
+
+  it '/nginx/stop will redirect to /pun/*' do
+    browser.goto "#{ctr_base_url}/nginx/stop?redir=/pun/sys/dashboard"
+    expect(browser.url).to eq('/pun/sys/dashboard')
   end
 
   # TODO: stub PUN that does not boot
