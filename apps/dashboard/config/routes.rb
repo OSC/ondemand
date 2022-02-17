@@ -6,12 +6,7 @@ Rails.application.routes.draw do
     namespace :jobs do
       root 'projects#index'
       resources :projects do
-
-        delete '/jobs/projects/', to: 'project#destroy', as: :delete_project
-
-        
-        #delete :filepath, to: 'jobs/projects#destroy', constraints: { filepath: /.+/ }
-        #resources :scripts
+        # resources :scripts
       end
     end
   end

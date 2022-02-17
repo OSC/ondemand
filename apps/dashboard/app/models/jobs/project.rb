@@ -35,7 +35,7 @@ module Jobs
       end
     end
 
-    attr_accessor :dir
+    attr_reader :dir
 
     def initialize(args = {})
       @dir = args.fetch(:dir, nil).to_s
