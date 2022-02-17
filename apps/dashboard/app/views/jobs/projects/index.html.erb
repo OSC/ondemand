@@ -23,7 +23,7 @@
           title: 'View project directory contents' %>
           <td><%= link_to 'Edit', edit_jobs_project_path(project.dir), class: 'btn btn-info',
           title: 'Edit project directory' %>
-          <td><%= link_to 'Delete', delete_project(project.dir.to_s), class: 'btn btn-danger', :method => :delete,
+          <td><%= link_to 'Delete', jobs_project_path(project.dir), class: 'btn btn-danger', :method => :delete,
           data: {confirm: 'Delete all contents of project directory?'} %>
         <tr>
       <% end %>

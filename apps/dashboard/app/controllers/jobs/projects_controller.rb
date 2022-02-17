@@ -1,50 +1,47 @@
-class Jobs::ProjectsController < ApplicationController
-  def show
-    # files in current project
-  end
+# frozen_string_literal: true
 
-  def index
-    @projects = Jobs::Project.all
-  end
+module Jobs
+  class ProjectsController < ApplicationController
+    def show
+      # files in current project
+    end
 
-  # def new
-  #   @project = Jobs::Project.new
-  # end
+    def index
+      @projects = Jobs::Project.all
+    end
 
-  def create
-    @project = Jobs::Project.new(project_params)
+    def new
+      @project = Jobs::Project.new
+    end
 
-    respond_to do |format|
+    def edit
+      @project = Jobs::Project.find(params[:id])
+    end
+
+    def create
+      @project = Jobs::Project.new(project_params)
+
       if @project.save!
         @project.config_dir
-        format.html { redirect_to jobs_projects_path, 
-          notice: 'Project successfully created!' }
+        redirect_to jobs_projects_path, notice: 'Project successfully created!'
+      else
+        redirect_to jobs_projects_path, alert: 'Failed to save project'
       end
     end
-  end
 
-  # DELETE /jobs/projects/.id(.:format)
-  def destroy
-    Rails.logger.debug("########################")
-    Rails.logger.debug("")
-    Rails.logger.debug("The destroy params are: #{params}")
-    Rails.logger.debug("")
-    Rails.logger.debug("########################")
+    # DELETE /jobs/projects/.id(.:format)
+    def destroy
+      @project = Jobs::Project.find(params[:id])
 
-
-    if @project.destroy!
-      respond_to do |format|
-        format.html { redirect_to jobs_projects_path, 
-          notice: 'Project successfully deleted!' }
-      end
+      redirect_to jobs_projects_path, notice: 'Project successfully deleted!' if @project.destroy!
     end
-  end
 
-  private
+    private
 
     def project_params
       params
         .require(:jobs_project)
         .permit(:dir)
     end
+  end
 end
