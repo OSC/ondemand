@@ -1,6 +1,6 @@
 class Jobs::Project 
   include ActiveModel::Model
- 
+
   class << self
     def all
       # return [Array] of all projects in ~/ondemand/data/sys/projects
@@ -25,18 +25,15 @@ class Jobs::Project
     end
   end
 
-  attr_reader :dir
+  attr_accessor :dir
 
   def initialize(args = {})
-    # raise StandardError, "#{dir} is not a directory" unless File.directory?(dir.to_s)
-
-    @dir = args.fetch(:dir, nil)
+    @dir = args.fetch(:dir, nil).to_s
   end
 
   def config_dir
-    Rails.logger.debug("The dir: #{dir}")
-    Pathname.new("#{​​​dir}​​​/.ondemand").tap {​ |p| p.mkpath unless p.exist?​ }
-   end
+    Pathname.new(Jobs::Project.dataroot.join("#{dir}/.ondemand")).tap { |p| p.mkpath unless p.exist? }
+  end
 
   def manifest_path
     "#{config_dir}/manifest.yml"
@@ -48,11 +45,21 @@ class Jobs::Project
 
   def save!
     # for the @project.save api you see in frame renderer
-    Dir.mkdir(Jobs::Project.dataroot.join(dir)) # assertions later for what willing to accept
+    FileUtils.mkdir(dir_dataroot) #unless Jobs::Project.dataroot.join(dir).exist?
+  #rescue => e
+    #Rails.logger.debug("This directory #{dir} already exists")
   end
 
   def destroy!
     #FileUtils.rmdir "#{dir}/.ondemand"
-    FileUtils.rmdir(Jobs::Project.dataroot.join(dir))
+    FileUtils.rmdir(dot_ondemand)
+  end
+
+  def dot_ondemand
+    Jobs::Project.dataroot.join("#{dir}/.ondemand")
+  end
+
+  def dir_dataroot
+    Jobs::Project.dataroot.join(dir)
   end
 end

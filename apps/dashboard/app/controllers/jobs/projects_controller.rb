@@ -7,28 +7,30 @@ class Jobs::ProjectsController < ApplicationController
     @projects = Jobs::Project.all
   end
 
-  def new
-    @project = Jobs::Project.new
-  end
+  # def new
+  #   @project = Jobs::Project.new
+  # end
 
   def create
     @project = Jobs::Project.new(project_params)
-    Rails.logger.debug("")
-    Rails.logger.debug("#################################")
-    Rails.logger.debug("project inspect: #{@project.inspect}")
-    Rails.logger.debug("project methods: #{@project.methods}")
-    @project.
 
     respond_to do |format|
       if @project.save!
+        @project.config_dir
         format.html { redirect_to jobs_projects_path, 
           notice: 'Project successfully created!' }
       end
     end
   end
 
+  # DELETE /jobs/projects/.id(.:format)
   def destroy
-    # Jobs::Project.find()
+    Rails.logger.debug("########################")
+    Rails.logger.debug("")
+    Rails.logger.debug("The destroy params are: #{params}")
+    Rails.logger.debug("")
+    Rails.logger.debug("########################")
+
 
     if @project.destroy!
       respond_to do |format|
