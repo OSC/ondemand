@@ -108,11 +108,10 @@ describe 'Node and Rnode proxies' do
   end 
 
   it '/nginx/init correctly redirects to /pun/sys/dashboard' do
-    url = "#{ctr_base_url}/nginx/init?redir=/pun/sys/dashboard"
-    browser.goto url
+    browser.goto "#{ctr_base_url}/nginx/init?redir=/pun/sys/dashboard"
     # TODO somehow ensure it's a 302 response on redirect
     # no status response codes available so urls or page elements need used somehow
-    expect(browser.url).to eq(url)
+    expect(browser.url).to eq("#{ctr_base_url}/pun/sys/dashboard")
   end
 
   it '/nginx/init will not redirect to another host' do
@@ -142,10 +141,10 @@ describe 'Node and Rnode proxies' do
   # end
 
   # TODO: examine "stop" else logic as it is skipping to "or http.http200(r)" choice each run
-  it '/nginx/stop needs a redirect' do
+  it '/nginx/stop does not needs a redirect' do
     url = "#{ctr_base_url}/nginx/stop"
     browser.goto url
-    expect(browser.text).to eq('Error -- bad `redir` request ()')
+    expect(browser.text).to eq('Success')
     expect(browser.url).to eq(url)
   end
 
