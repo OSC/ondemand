@@ -24,8 +24,14 @@ class JobsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get edit" do
-    get edit_jobs_project_path(:id)
-    assert_response :success
+    # I think the project needs to exist to edit, :dir is missing in template
+    Dir.mktmpdir do |dir|
+      Jobs::Project.stubs(dir).returns(Pathname.new("#{dir}/projects/project_1"))
+      assert  !Dir.exist?("#{dir}/projects/project_1")
+
+      get edit_jobs_project_path(dir)
+      assert_response :success
+    end
   end
 
   test "safe to get with invalid dataroot" do

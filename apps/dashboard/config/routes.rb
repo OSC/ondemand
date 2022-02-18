@@ -6,7 +6,7 @@ Rails.application.routes.draw do
     namespace :jobs do
       root 'projects#index'
       resources :projects do
-        resources :scripts
+        # resources :scripts
       end
     end
   end
