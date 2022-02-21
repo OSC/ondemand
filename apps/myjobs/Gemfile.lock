@@ -74,7 +74,7 @@ GEM
       sassc (>= 1.11)
     globalid (1.0.0)
       activesupport (>= 5.0)
-    i18n (1.9.1)
+    i18n (1.10.0)
       concurrent-ruby (~> 1.0)
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
