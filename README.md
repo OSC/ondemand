@@ -5,7 +5,7 @@
 [![DOI](http://joss.theoj.org/papers/10.21105/joss.00622/status.svg)](https://doi.org/10.21105/joss.00622)
 > Supercomputing. Seamlessly. Open, Interactive HPC Via the Web
 
-- Website: http://openondemand.org/
+- Website: https://openondemand.org/
 - Website repo: https://github.com/OSC/openondemand.org
 - Documentation: https://osc.github.io/ood-documentation/latest/
 - Main code repo: https://github.com/OSC/ondemand
