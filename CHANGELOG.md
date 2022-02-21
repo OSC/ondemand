@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Jobs app/check manifest (#1839)\
+Refactor parts of FilesController to use a PosixFile model (#1828)\
+Update Changelog (#1831)\
+update dependencies (#1832)
 
 ### Changed
 
