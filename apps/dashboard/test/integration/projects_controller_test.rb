@@ -1,42 +1,42 @@
 require 'test_helper'
 
-class JobsControllerTest < ActionDispatch::IntegrationTest
+class ProjectsControllerTest < ActionDispatch::IntegrationTest
 
   def setup
-    OodAppkit.stubs(:dataroot).returns(Rails.root.join('test/fixtures/jobs'))
+    OodAppkit.stubs(:dataroot).returns(Rails.root.join('test/fixtures/projects'))
     Configuration.stubs(:jobs_app_alpha?).returns(true)
     Rails.application.reload_routes!
   end
 
   test "should get index" do 
-    get jobs_projects_path
+    get projects_path
     assert_response :success
   end
 
   test "should get new" do
-    get new_jobs_project_path
+    get new_project_path
     assert_response :success
   end
 
   test "should get destroy" do
-    get jobs_project_path(:id)
+    get project_path(:id)
     assert_response :success
   end
 
   test "should get edit" do
     # I think the project needs to exist to edit, :dir is missing in template
     Dir.mktmpdir do |dir|
-      Jobs::Project.stubs(dir).returns(Pathname.new("#{dir}/projects/project_1"))
+      Project.stubs(dir).returns(Pathname.new("#{dir}/projects/project_1"))
       assert  !Dir.exist?("#{dir}/projects/project_1")
 
-      get edit_jobs_project_path(dir)
+      get edit_project_path(dir)
       assert_response :success
     end
   end
 
   test "safe to get with invalid dataroot" do
     OodAppkit.stubs(:dataroot).returns(Pathname.new('/dev/null'))
-    get jobs_projects_path
+    get projects_path
     assert_response :success
   end
 
@@ -45,7 +45,7 @@ class JobsControllerTest < ActionDispatch::IntegrationTest
         OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
         assert  !Dir.exist?("#{dir}/projects")
 
-        get jobs_projects_path
+        get projects_path
         assert_response :success
 
         assert Dir.exist?("#{dir}/projects")

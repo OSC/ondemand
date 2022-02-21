@@ -3,11 +3,9 @@ require "authz/app_developer_constraint"
 Rails.application.routes.draw do
 
   if Configuration.jobs_app_alpha?
-    namespace :jobs do
+    resources :projects do
       root 'projects#index'
-      resources :projects do
-        # resources :scripts
-      end
+      # resources :scripts
     end
   end
 
