@@ -54,7 +54,7 @@ function nginx_handler(r)
     if redir then
       local pun_app_request = redir:match("^" .. pun_uri .. "(/.+)$")
       if not pun_app_request then return http.http404(r, "bad `redir` request (" .. redir .. ")") end
-      return http.http302(r, pun_app_request)  -- ignore errors
+      return http.http302(r, redir)  -- ignore errors
     else
       return err and http.http404(r, err) or http.http200(r)
     end
