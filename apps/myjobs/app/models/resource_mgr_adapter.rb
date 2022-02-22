@@ -31,7 +31,8 @@ class ResourceMgrAdapter
     script = OodCore::Job::Script.new(
       content: script_path.read,
       accounting_id: account_string,
-      job_array_request: workflow.job_array_request.presence
+      job_array_request: workflow.job_array_request.presence,
+      copy_environment: workflow.copy_environment.eql?("1") ? true: false
     )
     adapter(cluster).submit( script, **depends_on)
 
