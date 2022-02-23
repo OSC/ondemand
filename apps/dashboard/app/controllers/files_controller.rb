@@ -143,6 +143,8 @@ class FilesController < ApplicationController
     mode = 0666 & (0777 ^ File.umask)
     File.chmod(mode, path.to_s)
 
+    path.chown(nil, path.parent.stat.gid) if path.parent.setgid?
+
     render json: {}
   rescue AllowlistPolicy::Forbidden => e
     render json: { error_message: e.message }, status: :forbidden
