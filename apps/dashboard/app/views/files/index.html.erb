@@ -1,28 +1,31 @@
 <%# z-index:999 cause dropdowns are 1000 default sticky-top is 1020 https://getbootstrap.com/docs/4.6/layout/overview/#z-index %>
+
 <div class="text-right sticky-top bg-white border-bottom p-2 m-3" style="z-index: 999">
   <!-- terminal button href is set via JavaScript because the URL is based on the current directory -->
   <% if Configuration.files_enable_shell_button %>
     <%= render partial: 'shell_dropdown' %>
   <% end %>
 
-  <button id="new-file-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-plus" aria-hidden="true"></i> New File</button>
-  <button id="new-dir-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-folder-plus" aria-hidden="true"></i> New Directory</button>
-  <button id="upload-btn" type="button" class="btn btn-primary btn-sm"><i class="fas fa-upload" aria-hidden="true"></i> Upload</button>
-  <button id="download-btn" type="button" class="btn btn-primary btn-sm"><i class="fas fa-download" aria-hidden="true"></i> Download</button>
-  <button id="copy-move-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-copy" aria-hidden="true"></i> Copy/Move</button>
-  <button id="delete-btn" type="button" class="btn btn-danger btn-sm"><i class="fas fa-trash" aria-hidden="true"></i> Delete</button>
+  <!--
+    <button id="new-file-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-plus" aria-hidden="true"></i> New File</button>
+    <button id="new-dir-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-folder-plus" aria-hidden="true"></i> New Directory</button>
+    <button id="upload-btn" type="button" class="btn btn-primary btn-sm"><i class="fas fa-upload" aria-hidden="true"></i> Upload</button>
+    <button id="download-btn" type="button" class="btn btn-primary btn-sm"><i class="fas fa-download" aria-hidden="true"></i> Download</button>
+    <button id="copy-move-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-copy" aria-hidden="true"></i> Copy/Move</button>
+    <button id="delete-btn" type="button" class="btn btn-danger btn-sm"><i class="fas fa-trash" aria-hidden="true"></i> Delete</button>
+  -->
 </div>
 
 <hr>
 
 <div class="row">
   <div class="col-md-3">
-    <%= render partial: "favorites" %>
-    <%= render partial: "copy_move_popup" %>
-    <%= render partial: "file_action_menu" %>
-    <%= render partial: "default_label_error_messages" %>
+    <%= render partial: "favorites", :locals => { :files => @files } %>
+    <%= render partial: "copy_move_popup", :locals => { :files => @files } %>
+    <%= render partial: "file_action_menu", :locals => { :files => @files } %>
+    <%= render partial: "default_label_error_messages", :locals => { :files => @files } %>
   </div>
-  <%= render partial: "files_table" %>
+  <%= render partial: "files_table", :locals => { :files => @files } %>
 </div>
-<%= render partial: "buttons" %>
-<%= render partial: "inline_js" %>
+<%= render partial: "buttons", :locals => { :files => @files } %>
+<%= render partial: "inline_js", :locals => { :files => @files } %>
