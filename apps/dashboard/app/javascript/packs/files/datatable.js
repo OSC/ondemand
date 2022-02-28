@@ -8,12 +8,15 @@ import { Swal } from './sweet_alert.js';
 let table = null;
 
 
-export { actionsBtnTemplate, reportTransferTemplate, table, dataFromJsonResponse, getEmptyDirs, getFilesAndDirectoriesFromDirectory, getShowDotFiles, getShowOwnerMode, update_datatables_status };
+export { 
+  actionsBtnTemplate, reportTransferTemplate, table, dataFromJsonResponse, getEmptyDirs, getFilesAndDirectoriesFromDirectory, 
+  getShowDotFiles, getShowOwnerMode, reloadTable, update_datatables_status 
+};
+
 let actionsBtnTemplate = null;
 let reportTransferTemplate = null;
 
-window.dataFromJsonResponse = dataFromJsonResponse;
-window.reloadTable = reloadTable;
+global.reloadTable = reloadTable; // Required to be marked as global since we are using this in the template.
 
 $(document).ready(function() {
 
