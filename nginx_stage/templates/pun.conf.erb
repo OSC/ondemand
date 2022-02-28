@@ -78,10 +78,14 @@ http {
     listen      unix:<%= socket_path %>;
     server_name localhost;
 
-    <%- if app_init_url -%>
-    location / {
+    location @error_404 {
       default_type text/html;
       return 404 '<%= restart_confirmation %>';
+    }
+
+    <%- if app_init_url -%>
+    location / {
+      error_page 404 @error_404;
     }
     <%- end -%>
 
