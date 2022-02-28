@@ -46,6 +46,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Removed Index from Public RootOptions in [#1618](https://github.com/OSC/ondemand/pull/1618).
 - File uploads have longer upload time limits more in line with TCP TTLs in [#1600](https://github.com/OSC/ondemand/pull/1600).
 - passenger_options now works correctly in [#1793](https://github.com/OSC/ondemand/pull/1793).
+- File uploads now respect setgid in [1851](https://github.com/OSC/ondemand/pull/1851).
+- Fix uploaded correctly set umasks other than 0022 in [1845](https://github.com/OSC/ondemand/pull/1845).
 
 ### Security
 
