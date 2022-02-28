@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Adding basic systems tests. (#1855)\
+Fix uploaded file group (#1851)\
+allow for job composer to copy environment (#1847)\
+Update README.md (#1849)\
+Removing jobs namespace across the new jobs-app project. (#1850)\
+Fix uploaded file umask handling (#1845)\
+update dependencies (#1842)\
+fix /nginx/stop redirections (#1840)
 
 ### Changed
 
