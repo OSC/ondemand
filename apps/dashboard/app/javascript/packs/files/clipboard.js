@@ -1,7 +1,7 @@
 import ClipboardJS from 'clipboard'
 
 
-window.ClipboardJS = ClipboardJS
+global.ClipboardJS = ClipboardJS
 
 var clipboardjs = new ClipboardJS('#copy-path');
 
