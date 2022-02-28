@@ -39,6 +39,8 @@ import '../stylesheets/application'
 import '../images/OpenOnDemand_powered_by_RGB.svg';
 import '../images/OpenOnDemand_stack_RGB.svg';
 
+import { setNavbarColor } from './config';
+
 jQuery(function(){
 
   $('li.vdi').popover({
@@ -55,4 +57,6 @@ jQuery(function(){
 
   $('[data-toggle="popover"]').popover();
   $('[data-toggle="tooltip"]').tooltip();
+
+  setNavbarColor();
 });
