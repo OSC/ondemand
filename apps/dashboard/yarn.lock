@@ -940,6 +940,11 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
+"@novnc/novnc@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@novnc/novnc/-/novnc-1.3.0.tgz#06db5ff55eae646a623d3717d8bffaf131ffb93a"
+  integrity sha512-tR87mY5ADtaELadmZfW937JO/p8fRdz3wkPoqwhqB/vY1XnTQeLSWwkp4yMlr4iIDY0iCficfzFYX5EHMh4MHw==
+
 "@npmcli/fs@^1.0.0":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@npmcli/fs/-/fs-1.1.1.tgz#72f719fe935e687c56a4faecf3c03d06ba593257"

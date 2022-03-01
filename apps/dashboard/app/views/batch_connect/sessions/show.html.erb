@@ -1,0 +1,12 @@
+
+<%= javascript_pack_tag 'vnc', nonce: true %>
+
+<div id='novnc_info' style='display: none;'
+  data-password="<%= @session.connect.password %>"
+  data-host="<%= @session.connect.host %>"
+  data-port="<%= @session.connect.port %>"
+  data-websocket="<%= @session.connect.websocket %>"
+  >
+</div>
+
+<div id='novnc_screen'></div>

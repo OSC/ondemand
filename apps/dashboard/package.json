@@ -2,6 +2,7 @@
   "name": "openondemand-dashboard",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
+    "@novnc/novnc": "^1.3.0",
     "@rails/ujs": "^7.0.1",
     "@rails/webpacker": "^5.4.0",
     "bootstrap": "^4.6.0",
