@@ -1,5 +1,5 @@
-import {Swal, alertError} from './sweet_alert.js';
-import {dataFromJsonResponse} from './datatable.js';
+import {Swal, alertError, doneLoading, loading} from './sweet_alert.js';
+import {dataFromJsonResponse, table} from './datatable.js';
 
 export {getEmptyDirs, downloadDirectory, downloadFile};
 
