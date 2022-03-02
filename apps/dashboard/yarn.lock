@@ -1053,13 +1053,13 @@
     "@uppy/utils" "^4.0.4"
     preact "^10.5.13"
 
-"@uppy/aws-s3-multipart@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@uppy/aws-s3-multipart/-/aws-s3-multipart-2.2.0.tgz#1172506657834a2792bf62c1471a46a5aaf79a0e"
-  integrity sha512-y+hkrtQpABOF7QMIkJOXxp1Kqqh/Gn350C8K3vAJG/iAhIW+NI5bNAOQ0xx0uDjSqonLbrIFT/o+JdYpWlvXXA==
+"@uppy/aws-s3-multipart@^2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@uppy/aws-s3-multipart/-/aws-s3-multipart-2.2.1.tgz#385705b3ae6b56abee28fb086c046eeaeceee62a"
+  integrity sha512-57MZw2hxcBVeXp7xxdPNna+7HMckiJsrq/vwNM74aforLpNNSYE1B3JsiBeXU7fvIWx/W+5udtl8aAIKQxpJqw==
   dependencies:
-    "@uppy/companion-client" "^2.0.4"
-    "@uppy/utils" "^4.0.4"
+    "@uppy/companion-client" "^2.0.5"
+    "@uppy/utils" "^4.0.5"
 
 "@uppy/aws-s3@^2.0.7":
   version "2.0.7"
@@ -2605,25 +2605,25 @@ data-confirm-modal@^1.6.2:
   integrity sha512-UYYgx8hS65X8Y336YRp1x6A5Gfkhh4iYkLq5jw7oS++hTcq/3yO8JOrbfHvvr7qqqQxBSPRyvUXnFEFIr4ja4w==
 
 datatables.net-bs4@>=1.11.3, datatables.net-bs4@^1.10.24:
-  version "1.11.4"
-  resolved "https://registry.yarnpkg.com/datatables.net-bs4/-/datatables.net-bs4-1.11.4.tgz#caa82ab1a989bf1462f075b91213df865060d1ec"
-  integrity sha512-4V2uSxFloX1jRIsy4eAt1INyp5M5Pq5SV017/naq3zpVKraaFwqFjLhtkx64UHGXqcPj7egvj27dVcdnNIKnNA==
+  version "1.11.5"
+  resolved "https://registry.yarnpkg.com/datatables.net-bs4/-/datatables.net-bs4-1.11.5.tgz#7767a27991c75716ce7fef1aa6a41d01bfeaefbd"
+  integrity sha512-tYE9MnyWIW4P8nm41yQnCqW4dUPK3M7qsuxQY5rViFFKDEU0bUUNAnE9+69P5/4Exe4uyXaY05xFkD00niPZUA==
   dependencies:
     datatables.net ">=1.11.3"
     jquery ">=1.7"
 
 datatables.net-bs@^1.10.23:
-  version "1.11.4"
-  resolved "https://registry.yarnpkg.com/datatables.net-bs/-/datatables.net-bs-1.11.4.tgz#96a5f4e8cdff5d5e819476d1986f99b026ea3e47"
-  integrity sha512-lQaytqSOcSv51jFoT7RyDbaoziCStSDl5Ym1yOBP+ZXIOsS9fd4zOFZyDQlmGFyUpa8JAy84C4r8jM1GQ3/olA==
+  version "1.11.5"
+  resolved "https://registry.yarnpkg.com/datatables.net-bs/-/datatables.net-bs-1.11.5.tgz#d1ff9075fb911d27a1b73e19c8e87e3bbe1c302c"
+  integrity sha512-thj90yxWnJpAkKdiPtdFMHlDTHCg1VRrzAE7juABYaw3hNQdvf1Veh7a/1hvuqOfn2g7ORzQUFXP8oxJ4SJWfg==
   dependencies:
     datatables.net ">=1.11.3"
     jquery ">=1.7"
 
 datatables.net-plugins@^1.10.24:
-  version "1.11.4"
-  resolved "https://registry.yarnpkg.com/datatables.net-plugins/-/datatables.net-plugins-1.11.4.tgz#8eb7915cd9f43ba8ba256b89e06917aa24d1ac41"
-  integrity sha512-39yyyoCCavagE0mO1BFsrRPeak5BwOlbtSACdGpPNf3jG5Lm7D6vEUPPcpGy6eLxjCiG/orMxlAqb8E5lSZtoA==
+  version "1.11.5"
+  resolved "https://registry.yarnpkg.com/datatables.net-plugins/-/datatables.net-plugins-1.11.5.tgz#c53ebbd0ab3473a08c6ae36eb1990a66de599b89"
+  integrity sha512-+Rsf/fyLG8GyFqp7Bvd1ElqWGQO3NPsx2VADn9X8QaZbctshGVW0sqvR5V7iHHgY6OY1LR0+t6qIMhan9BM4gA==
 
 datatables.net-select-bs4@^1.3.3:
   version "1.3.4"
@@ -2643,9 +2643,9 @@ datatables.net-select@>=1.3.3, datatables.net-select@^1.3.3:
     jquery ">=1.7"
 
 datatables.net@>=1.11.3:
-  version "1.11.4"
-  resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.11.4.tgz#5f3e1ec134fa532e794fbd47c13f8333d7a5c455"
-  integrity sha512-z9LG4O0VYOYzp+rnArLExvnUWV8ikyWBcHYZEKDfVuz7BKxQdEq4a/tpO0Trbm+FL1+RY7UEIh+UcYNY/hwGxA==
+  version "1.11.5"
+  resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.11.5.tgz#858a69953a01e1d5b18786769802117b04b8e3c9"
+  integrity sha512-nlFst2xfwSWaQgaOg5sXVG3cxYC0tH8E8d65289w9ROgF2TmLULOOpcdMpyxxUim/qEwVSEem42RjkTWEpr3eA==
   dependencies:
     jquery ">=1.7"
 
@@ -2778,9 +2778,9 @@ duplexify@^3.4.2, duplexify@^3.6.0:
     stream-shift "^1.0.0"
 
 electron-to-chromium@^1.4.71:
-  version "1.4.73"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.73.tgz#422f6f514315bcace9615903e4a9b6b9fa283137"
-  integrity sha512-RlCffXkE/LliqfA5m29+dVDPB2r72y2D2egMMfIy3Le8ODrxjuZNVo4NIC2yPL01N4xb4nZQLwzi6Z5tGIGLnA==
+  version "1.4.75"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.75.tgz#d1ad9bb46f2f1bf432118c2be21d27ffeae82fdd"
+  integrity sha512-LxgUNeu3BVU7sXaKjUDD9xivocQLxFtq6wgERrutdY/yIOps3ODOZExK1jg8DTEg4U8TUCb5MLGeWFOYuxjF3Q==
 
 elliptic@^6.5.3:
   version "6.5.4"
@@ -3325,9 +3325,9 @@ has-flag@^4.0.0:
   integrity sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==
 
 has-symbols@^1.0.1, has-symbols@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/has-symbols/-/has-symbols-1.0.2.tgz#165d3070c00309752a1236a479331e3ac56f1423"
-  integrity sha512-chXa79rL/UC2KlX17jo3vRGz0azaWEx5tGqZg5pO3NUyEJVB17dMruQlzCCOfUvElghKcm5194+BCRvi2Rv/Gw==
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/has-symbols/-/has-symbols-1.0.3.tgz#bb7b2c4349251dce87b125f7bdf874aa7c8b39f8"
+  integrity sha512-l3LCuF6MgDNwTDKkdYGEihYjt5pRPbEg46rtlmnSPlUbgmB8LOIrKJbYYFBSbnPaJexMKtiPO8hmeRjRz2Td+A==
 
 has-tostringtag@^1.0.0:
   version "1.0.0"
@@ -6292,9 +6292,9 @@ terser@^4.1.2:
     source-map-support "~0.5.12"
 
 terser@^5.3.4:
-  version "5.11.0"
-  resolved "https://registry.yarnpkg.com/terser/-/terser-5.11.0.tgz#2da5506c02e12cd8799947f30ce9c5b760be000f"
-  integrity sha512-uCA9DLanzzWSsN1UirKwylhhRz3aKPInlfmpGfw8VN6jHsAtu8HJtIpeeHHK23rxnE/cDc+yvmq5wqkIC6Kn0A==
+  version "5.12.0"
+  resolved "https://registry.yarnpkg.com/terser/-/terser-5.12.0.tgz#728c6bff05f7d1dcb687d8eace0644802a9dae8a"
+  integrity sha512-R3AUhNBGWiFc77HXag+1fXpAxTAFRQTJemlJKjAgD9r8xXTpjNKqIXwHM/o7Rh+O0kUJtS3WQVdBeMKFk5sw9A==
   dependencies:
     acorn "^8.5.0"
     commander "^2.20.0"
@@ -6487,13 +6487,13 @@ upath@^1.1.1:
   integrity sha512-aZwGpamFO61g3OlfT7OQCHqhGnW43ieH9WZeP7QxN/G/jS4jfqUkZxoryvJgVPEcrl5NL/ggHsSmLMHuH64Lhg==
 
 uppy@^2.3.3:
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/uppy/-/uppy-2.6.0.tgz#5045d934826ba57d1d9262d1045693b0d64f22ac"
-  integrity sha512-LPDdXarziAST6adeCq5DqbEJ87v1NwMrizWguOvTrC73pkzdOQRrwaJ+Ddx9kilyYuOXOX5BETQ90m568GQn1Q==
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/uppy/-/uppy-2.7.0.tgz#227c2da8b62e6592f5916f611e462b9f2caab8bb"
+  integrity sha512-2Q3dkU7NlYBP17hYlcfWKCjt+OEfPqnLNcNklxA3zHqtp8frAHhCfJxFe9Tewqvk00ZeFj0Kvp+CuI+RTIX4kA==
   dependencies:
     "@uppy/audio" "^0.2.1"
     "@uppy/aws-s3" "^2.0.7"
-    "@uppy/aws-s3-multipart" "^2.2.0"
+    "@uppy/aws-s3-multipart" "^2.2.1"
     "@uppy/box" "^1.0.5"
     "@uppy/companion-client" "^2.0.5"
     "@uppy/compressor" "^0.2.2"
