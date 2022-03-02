@@ -4,6 +4,7 @@ const dashboard_files_directory_download_error_modal_title = '<%= t('dashboard.f
 const filesPath = '<%= files_path('/') %>';
 const maxFileSize = '<%= Configuration.file_upload_max %>';
 const filesUploadPath = '<%= files_upload_path %>';
+const transfersPath = '<%= transfers_path(format: "json") %>';
 
 history.replaceState({
   currentDirectory: '<%= @path %>',
