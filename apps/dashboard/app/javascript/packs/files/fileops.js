@@ -126,6 +126,11 @@ $(document).ready(function(){
     }
   });
 
+  $('#delete-btn').on("click", () => {
+    let files = table.rows({selected: true}).data().toArray().map((f) => f.name);
+    deleteFiles(files);
+  });
+  
 });
 
 function newDirectory(filename){
@@ -315,3 +320,20 @@ function fadeOutTransferStatus(data){
   $(id).fadeOut(4000);
 }
 
+function deleteFiles(files){
+  if(! files.length > 0){
+    return;
+  }
+
+  Swal.fire({
+    title: files.length == 1 ? `Delete ${files[0]}?` : `Delete ${files.length} selected files?`,
+    text: 'Are you sure you want to delete the files: ' + files.join(', '),
+    showCancelButton: true,
+  })
+  .then((result) => {
+    if(result.isConfirmed){
+      loading('Deleting files...');
+      removeFiles(files.map(f => [history.state.currentDirectory, f].join('/')), csrf_token);
+    }
+  })
+}
