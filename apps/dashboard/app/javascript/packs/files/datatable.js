@@ -160,6 +160,10 @@ $(document).ready(function() {
     dt.rows(indexes).nodes().toArray().forEach(e => $(e).find('input[type=checkbox]').prop('checked', true));
   });
   
+  table.on('draw.dtSelect.dt select.dtSelect.dt deselect.dtSelect.dt info.dt', function () {
+    update_datatables_status(table);
+  });
+  
   $('#directory-contents tbody').on('click', 'tr td:first-child input[type=checkbox]', function(){
     // input checkbox checked or not
   
