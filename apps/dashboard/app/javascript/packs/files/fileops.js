@@ -130,6 +130,44 @@ $(document).ready(function(){
     let files = table.rows({selected: true}).data().toArray().map((f) => f.name);
     deleteFiles(files);
   });
+
+  $('#directory-contents tbody').on('click', '.rename-file', function(e){
+    e.preventDefault();
+  
+    let row = table.row(this.dataset.rowIndex).data();
+  
+    // if there was some other attribute that just had the name...
+    let filename = $($.parseHTML(row.name)).text();
+  
+    Swal.fire({
+      title: 'Rename',
+      input: 'text',
+      inputLabel: 'Filename',
+      inputValue: filename,
+      inputAttributes: {
+        spellcheck: 'false',
+      },
+      showCancelButton: true,
+      inputValidator: (value) => {
+        if (! value) {
+          // TODO: validate filenames against listing
+          return 'Provide a filename to rename this to';
+        }
+        else if (value.includes('/') || value.includes('..')){
+         return 'Filename cannot include / or ..';
+        }
+      }
+    })
+    .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
+    .then((new_filename) => renameFile(filename, new_filename))
+  });
+    
+  $('#directory-contents tbody').on('click', '.delete-file', function(e){
+    e.preventDefault();
+  
+    let row = table.row(this.dataset.rowIndex).data();
+    deleteFiles([row.name]);
+  });
   
 });
 
