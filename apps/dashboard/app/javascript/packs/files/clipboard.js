@@ -1,17 +1,33 @@
 import ClipboardJS from 'clipboard'
+import {Handlebars} from './datatable.js';
 
+export {ClipboardJS, clipboardjs, clearClipboard, updateClipboardFromSelection, updateViewForClipboard };
 
 global.ClipboardJS = ClipboardJS
 
-var clipboardjs = new ClipboardJS('#copy-path');
+var clipboardjs = null;
 
-clipboardjs.on('success', function(e) {
-  $(e.trigger).tooltip({title: 'Copied path to clipboard!', trigger: 'manual', placement: 'bottom'}).tooltip('show');
-  setTimeout(() => $(e.trigger).tooltip('hide'), 2000);
-  e.clearSelection();
-});
-clipboardjs.on('error', function(e) {
-  e.clearSelection();
+$(document).ready(function(){
+  
+  clipboardjs = new ClipboardJS('#copy-path');
+  
+  clipboardjs.on('success', function(e) {
+    //FIXME: for some reason the jQuery function tooltip is not being recognized.  Will need to figure out why or move on to new tooltip plugin.
+    
+    // $(e.trigger).tooltip({title: 'Copied path to clipboard!', trigger: 'manual', placement: 'bottom'}).tooltip('show');
+    // setTimeout(() => $(e.trigger).tooltip('hide'), 2000);
+    e.clearSelection();
+  });
+  clipboardjs.on('error', function(e) {
+    e.clearSelection();
+  });
+
+  //FIXME: so need to handle updateViewForClipboard based on EVENTS emitted by local storage modifications
+  updateViewForClipboard();
+  global.addEventListener('storage', () => {
+    updateViewForClipboard();
+  });
+  
 });
 
 function updateClipboardFromSelection(){
@@ -105,10 +121,3 @@ function updateViewForClipboard(){
     }
   });
 }
-
-//FIXME: so need to handle updateViewForClipboard based on EVENTS emitted by local storage modifications
-updateViewForClipboard();
-window.addEventListener('storage', () => {
-  updateViewForClipboard();
-});
-
