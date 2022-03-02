@@ -6,13 +6,14 @@ import Handlebars from 'handlebars';
 import { Swal } from './sweet_alert.js';
 import {} from './fileops.js';
 import {} from './uppy.js';
+import {} from './clipboard.js';
 
 let table = null;
 
 
 export { 
   actionsBtnTemplate, reportTransferTemplate, table, dataFromJsonResponse, getEmptyDirs, getFilesAndDirectoriesFromDirectory, 
-  getShowDotFiles, getShowOwnerMode, reloadTable, update_datatables_status 
+  getShowDotFiles, getShowOwnerMode, Handlebars, reloadTable, update_datatables_status 
 };
 
 let actionsBtnTemplate = null;
@@ -21,7 +22,7 @@ let reportTransferTemplate = null;
 global.reloadTable = reloadTable; // Required to be marked as global since we are using this in the template.
 
 $(document).ready(function() {
-
+  
   reportTransferTemplate = (function(){
     let template_str  = $('#transfer-template').html();
     return Handlebars.compile(template_str);
@@ -157,6 +158,10 @@ $(document).ready(function() {
   
   table.on( 'select', function ( e, dt, type, indexes ) {
     dt.rows(indexes).nodes().toArray().forEach(e => $(e).find('input[type=checkbox]').prop('checked', true));
+  });
+  
+  table.on('draw.dtSelect.dt select.dtSelect.dt deselect.dtSelect.dt info.dt', function () {
+    update_datatables_status(table);
   });
   
   $('#directory-contents tbody').on('click', 'tr td:first-child input[type=checkbox]', function(){

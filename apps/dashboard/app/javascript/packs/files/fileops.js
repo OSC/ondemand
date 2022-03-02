@@ -1,10 +1,18 @@
-import {Swal, alertError} from './sweet_alert.js';
-import {dataFromJsonResponse} from './datatable.js';
+import {Swal, alertError, doneLoading, loading} from './sweet_alert.js';
+import {dataFromJsonResponse,Handlebars, table} from './datatable.js';
+import {clearClipboard, updateViewForClipboard } from './clipboard.js';
 
-export {getEmptyDirs, downloadDirectory, downloadFile};
+export {copyFiles, downloadDirectory, downloadFile, getEmptyDirs, reportTransferTemplate};
+
+var reportTransferTemplate = null;
 
 $(document).ready(function(){
 
+  reportTransferTemplate = (function(){
+    let template_str  = $('#transfer-template').html();
+    return Handlebars.compile(template_str);
+  })();
+  
   $('#new-file-btn').on("click", () => {
     Swal.fire({
       title: 'New File',
@@ -60,7 +68,64 @@ $(document).ready(function(){
       }
     })
   });
-    
+
+  $('#clipboard-move-to-dir').on("click", () => {
+    let clipboard = JSON.parse(localStorage.getItem('filesClipboard') || 'null');
+
+    if(clipboard){
+      clipboard.to = history.state.currentDirectory;
+
+      if(clipboard.from == clipboard.to){
+        console.error('clipboard from and to are identical')
+        // TODO:
+      }
+      else{
+        let files = {};
+        clipboard.files.forEach((f) => {
+          files[`${clipboard.from}/${f.name}`] = `${history.state.currentDirectory}/${f.name}`
+        });
+
+        moveFiles(files, csrf_token);
+      }
+    }
+    else{
+      console.error('files clipboard is empty');
+    }
+  });
+  
+  $('#clipboard-copy-to-dir').on("click", () => {
+    let clipboard = JSON.parse(localStorage.getItem('filesClipboard') || 'null');
+
+    if(clipboard){
+      clipboard.to = history.state.currentDirectory;
+
+      if(clipboard.from == clipboard.to){
+        console.error('clipboard from and to are identical')
+
+        // TODO: we want to support this use case
+        // copy and paste as a new filename
+        // but lots of edge cases
+        // (overwrite or rename duplicates)
+        // _copy
+        // _copy_2
+        // _copy_3
+        // _copy_4
+      }
+      else{
+        // [{"/from/file/path":"/to/file/path" }]
+        let files = {};
+        clipboard.files.forEach((f) => {
+          files[`${clipboard.from}/${f.name}`] = `${history.state.currentDirectory}/${f.name}`
+        });
+
+        copyFiles(files, csrf_token);
+      }
+    }
+    else{
+      console.error('files clipboard is empty');
+    }
+  });
+
 });
 
 function newDirectory(filename){
@@ -144,3 +209,109 @@ function downloadFile(file) {
     document.body.removeChild(iframe);
   }, TIME);
 }
+
+function transferFiles(files, action, summary){
+  loading(_.startCase(summary));
+
+  return fetch(transfersPath, {
+    method: 'post',
+    body: JSON.stringify({
+      command: action,
+      files: files
+    }),
+    headers: { 'X-CSRF-Token': csrf_token }
+  })
+  .then(response => dataFromJsonResponse(response))
+  .then((data) => {
+
+    if(! data.completed){
+      // was async, gotta report on progress and start polling
+      reportTransfer(data);
+    }
+    else {
+      if(data.target_dir == history.state.currentDirectory){
+        reloadTable();
+      }
+    }
+
+    if(action == 'mv' || action == 'cp'){
+      clearClipboard();
+      updateViewForClipboard();
+    }
+  })
+  .then(() => doneLoading())
+  .catch(e => alertError('Error occurred when attempting to ' + summary, e.message))
+}
+
+function copyFiles(files){
+  transferFiles(files, "cp", "copy files")
+}
+
+function reportTransfer(data){
+  // 1. add the transfer label
+  findAndUpdateTransferStatus(data);
+
+  let attempts = 0
+
+  // 2. poll for the updates
+  var poll = function() {
+    $.getJSON(data.show_json_url, function (newdata) {
+      findAndUpdateTransferStatus(newdata);
+
+      if(newdata.completed) {
+        if(! newdata.error_message) {
+          if(newdata.target_dir == history.state.currentDirectory) {
+            reloadTable();
+          }
+
+          // 3. fade out after 5 seconds
+          fadeOutTransferStatus(newdata)
+        }
+      }
+      else {
+        // not completed yet, so poll again
+        setTimeout(poll, 1000);
+      }
+    }).fail(function() {
+      if (attempts >= 3) {
+        Swal.fire('Operation may not have happened', 'Failed to retrieve file operation status.', 'error');
+      } else {
+        setTimeout(poll, 1000);
+        attempts++;
+      }
+    });
+  }
+
+  poll();
+}
+
+function renameFile(filename, new_filename){
+  let files = {};
+  files[`${history.state.currentDirectory}/${filename}`] = `${history.state.currentDirectory}/${new_filename}`;
+  transferFiles(files, "mv", "rename file")
+}
+
+function moveFiles(files, summary = "move files"){
+  transferFiles(files, "mv", "move files")
+}
+
+function removeFiles(files){
+  transferFiles(files, "rm", "remove files")
+}
+
+function findAndUpdateTransferStatus(data){
+  let id = `#${data.id}`;
+
+  if($(id).length){
+    $(id).replaceWith(reportTransferTemplate(data));
+  }
+  else{
+    $('.transfers-status').append(reportTransferTemplate(data));
+  }
+}
+
+function fadeOutTransferStatus(data){
+  let id = `#${data.id}`;
+  $(id).fadeOut(4000);
+}
+
