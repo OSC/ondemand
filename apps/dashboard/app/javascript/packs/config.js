@@ -10,11 +10,11 @@ function setNavbarColor() {
   const cfgData = configData();
   const styles = document.styleSheets[0];
 
-  styles.insertRule(navbar('light', cfgData['bgColor']), styles.lenth);
-  styles.insertRule(navbar('dark', cfgData['bgColor']), styles.lenth);
+  styles.insertRule(navbar('light', cfgData['bgColor']), styles.rules.length);
+  styles.insertRule(navbar('dark', cfgData['bgColor']), styles.rules.length);
   
-  styles.insertRule(navbarHighlight('light', cfgData['linkBgColor']), styles.lenth);
-  styles.insertRule(navbarHighlight('dark', cfgData['linkBgColor']), styles.lenth);
+  styles.insertRule(navbarHighlight('light', cfgData['linkBgColor']), styles.rules.length);
+  styles.insertRule(navbarHighlight('dark', cfgData['linkBgColor']), styles.rules.length);
 }
 
 function navbar(theme, color){
