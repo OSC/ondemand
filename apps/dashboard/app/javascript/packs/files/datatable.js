@@ -197,7 +197,92 @@ $(document).ready(function() {
     }
   });
 
+  $('#show-dotfiles').on('change', () => {
+    let visible = $('#show-dotfiles').is(':checked');
+  
+    setShowDotFiles(visible);
+    updateDotFileVisibility();
+  });
+  
+  $('#show-owner-mode').on('change', () => {
+    let visible = $('#show-owner-mode').is(':checked');
+  
+    setShowOwnerMode(visible);
+    updateShowOwnerModeVisibility();
+  });
+
+  $('#path-breadcrumbs').on('click', '#goto-btn', function(){
+    Swal.fire({
+      title: 'Change Directory',
+      input: 'text',
+      inputLabel: 'Path',
+      inputValue: history.state.currentDirectory,
+      inputAttributes: {
+        spellcheck: 'false',
+      },
+      showCancelButton: true,
+      inputValidator: (value) => {
+        if (! value || ! value.startsWith('/')) {
+          // TODO: validate filenames against listing
+          return 'Provide an absolute pathname'
+        }
+      }
+    })
+    .then((result) => result.isConfirmed ? Promise.resolve(result.value) : Promise.reject('cancelled'))
+    .then((pathname) => goto(filesPath + pathname))
+  });
+
+  $('#directory-contents tbody, #path-breadcrumbs, #favorites').on('click', 'a.d', function(){
+    if(clickEventIsSignificant(event)){
+      event.preventDefault();
+      event.cancelBubble = true;
+      if(event.stopPropagation) event.stopPropagation();
+  
+      goto(this.getAttribute("href"));
+    }
+  });
+  
 });
+
+function goto(url, pushState = true, show_processing_indicator = true) {
+  if(url == history.state.currentDirectoryUrl)
+    pushState = false;
+
+  reloadTable(url)
+    .then((data) => {
+      $('#path-breadcrumbs').html(data.breadcrumbs_html);
+
+      if(pushState) {
+        // Clear search query when moving to another directory.
+        table.search('').draw();
+
+        history.pushState({
+          currentDirectory: data.path,
+          currentDirectoryUrl: data.url
+        }, data.name, data.url);
+      }
+    })
+    .finally(() => {
+      //TODO: after processing is available via ActiveJobs merge
+      // if(show_processing_indicator)
+      //   table.processing(false)
+    });
+}
+
+
+// borrowed from Turbolinks
+// event: MouseEvent
+function clickEventIsSignificant(event) {
+  return !(
+    // (event.target && (event.target as any).isContentEditable)
+       event.defaultPrevented
+    || event.which > 1
+    || event.altKey
+    || event.ctrlKey
+    || event.metaKey
+    || event.shiftKey
+  )
+}
 
 function dataFromJsonResponse(response){
   return new Promise((resolve, reject) => {

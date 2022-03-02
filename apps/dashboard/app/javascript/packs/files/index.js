@@ -91,30 +91,6 @@ function reloadTable(url){
     });
 }
 
-function goto(url, pushState = true, show_processing_indicator = true) {
-  if(url == history.state.currentDirectoryUrl)
-    pushState = false;
-
-  reloadTable(url)
-    .then((data) => {
-      $('#path-breadcrumbs').html(data.breadcrumbs_html);
-
-      if(pushState) {
-        // Clear search query when moving to another directory.
-        table.search('').draw();
-
-        history.pushState({
-          currentDirectory: data.path,
-          currentDirectoryUrl: data.url
-        }, data.name, data.url);
-      }
-    })
-    .finally(() => {
-      //TODO: after processing is available via ActiveJobs merge
-      // if(show_processing_indicator)
-      //   table.processing(false)
-    });
-}
 
 function loading(title){
   Swal.fire({
