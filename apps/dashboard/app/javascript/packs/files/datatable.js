@@ -4,13 +4,16 @@ import 'datatables.net-select';
 import 'datatables.net-select-bs4';
 import Handlebars from 'handlebars';
 import { Swal } from './sweet_alert.js';
+import {} from './fileops.js';
+import {} from './uppy.js';
+import {} from './clipboard.js';
 
 let table = null;
 
 
 export { 
   actionsBtnTemplate, reportTransferTemplate, table, dataFromJsonResponse, getEmptyDirs, getFilesAndDirectoriesFromDirectory, 
-  getShowDotFiles, getShowOwnerMode, reloadTable, update_datatables_status 
+  getShowDotFiles, getShowOwnerMode, Handlebars, reloadTable, update_datatables_status 
 };
 
 let actionsBtnTemplate = null;
@@ -19,7 +22,7 @@ let reportTransferTemplate = null;
 global.reloadTable = reloadTable; // Required to be marked as global since we are using this in the template.
 
 $(document).ready(function() {
-
+  
   reportTransferTemplate = (function(){
     let template_str  = $('#transfer-template').html();
     return Handlebars.compile(template_str);

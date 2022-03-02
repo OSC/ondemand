@@ -2,7 +2,7 @@ import Swal from 'sweetalert2'
 
 export { Swal, alertError, loading, doneLoading };
 
-window.Swal = Swal.mixin({
+global.Swal = Swal.mixin({
   showClass: {
     popup: 'swal2-noanimation',
     backdrop: 'swal2-noanimation'
