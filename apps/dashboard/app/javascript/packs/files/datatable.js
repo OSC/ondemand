@@ -5,6 +5,7 @@ import 'datatables.net-select-bs4';
 import Handlebars from 'handlebars';
 import { Swal } from './sweet_alert.js';
 import {} from './fileops.js';
+import {} from './uppy.js';
 
 let table = null;
 
