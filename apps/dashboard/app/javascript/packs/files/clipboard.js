@@ -33,7 +33,6 @@ $(document).ready(function(){
     updateClipboardFromSelection();
     updateViewForClipboard();
   });
-
 });
 
 function updateClipboardFromSelection(){
