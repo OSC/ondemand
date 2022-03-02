@@ -1,7 +1,20 @@
 <div class='page-header text-center'>
-  <h1>Edit Project</h1>
+  <h1>
+    Editing: <%= @project.name %>
+  </h1>
 </div>
 
 <br>
 
-<%= render 'form' %>
+<%= bootstrap_form_for(@project, url: project_path, method: :patch) do |form| %>
+  <%= render "form_manifest", form: form %>
+  <div class="row actions">
+    <div class='col-md-6'>
+      <%= form.submit 'Save', class: 'btn btn-primary' %>
+      <%= link_to 'Back', projects_path, class: 'btn btn-default', 
+      title: 'Return to projects page' %>
+    </div>
+  </div>
+<% end %>
+
+<hr />

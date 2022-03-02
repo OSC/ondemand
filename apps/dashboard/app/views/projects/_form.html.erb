@@ -4,9 +4,15 @@
     <h5 class='card-header'>Project Details</h5>
     <div class='card-body'>
         <div class='col-md-5'>
-          <%= form.text_field :dir, label: 'Project Name', class: 'form-control', 
-          required: true %>
+        <div class="field">
+          <%= form.text_field :dir, label: 'Project Name', 
+          class: 'form-control', required: true %>
         </div>
+        <div class="field">
+          <%= form.text_area :description, label: 'Project Description', 
+          class: 'form-control' %>
+        </div>
+      </div>
     </div>
 </div>
 <br>
