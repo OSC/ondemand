@@ -51,7 +51,7 @@ namespace :release do
       request['Content-type'] = 'application/json'
       request.body = { "metadata" => 
             {
-              "version" => "#{version}-1", "publication_date" => Date.today,
+              "version" => "#{version}", "publication_date" => Date.today,
               "upload_type" => "software", 
               "description" => "This is the source code for Open OnDemand. You can find all releases on github at https://github.com/OSC/ondemand/releases.",
               "title" => "Open OnDemand Source Code",
