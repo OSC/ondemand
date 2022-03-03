@@ -242,7 +242,47 @@ $(document).ready(function() {
     }
   });
   
+  // prepend show dotfiles checkbox to search box
+  $('#directory-contents_filter').prepend(`<label style="margin-right: 20px" for="show-dotfiles"><input type="checkbox" id="show-dotfiles" ${ getShowDotFiles() ? 'checked' : ''}> Show Dotfiles</label>`)
+  $('#directory-contents_filter').prepend(`<label style="margin-right: 14px" for="show-owner-mode"><input type="checkbox" id="show-owner-mode" ${ getShowOwnerMode() ? 'checked' : ''}> Show Owner/Mode</label>`)
+
+
+  $('#show-dotfiles').on('change', () => {
+    let visible = $('#show-dotfiles').is(':checked');
+
+    setShowDotFiles(visible);
+    updateDotFileVisibility();
+  });
+
+  $('#show-owner-mode').on('change', () => {
+    let visible = $('#show-owner-mode').is(':checked');
+
+    setShowOwnerMode(visible);
+    updateShowOwnerModeVisibility();
+  });
+
+
 });
+
+function setShowOwnerMode(visible) {
+  localStorage.setItem('show-owner-mode', new Boolean(visible));
+}
+
+function setShowDotFiles(visible) {
+  localStorage.setItem('show-dotfiles', new Boolean(visible));
+}
+
+function updateDotFileVisibility() {
+  table.draw();
+}
+
+function updateShowOwnerModeVisibility() {
+  let visible = getShowOwnerMode();
+
+  table.column('owner:name').visible(visible);
+  table.column('mode:name').visible(visible);
+}
+
 
 function goto(url, pushState = true, show_processing_indicator = true) {
   if(url == history.state.currentDirectoryUrl)
