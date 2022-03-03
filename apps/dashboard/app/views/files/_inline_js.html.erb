@@ -17,4 +17,18 @@ history.replaceState({
 reloadTable();
 <% end %>
 
+$(document).ready(function(){
+  clipboardjs = new ClipboardJS('#copy-path');
+  clipboardjs.on('success', function(e) {
+    //FIXME: Have to put this in the template so it will recognize tooltip.
+    
+    $(e.trigger).tooltip({title: 'Copied path to clipboard!', trigger: 'manual', placement: 'bottom'}).tooltip('show');
+    setTimeout(() => $(e.trigger).tooltip('hide'), 2000);
+    e.clearSelection();
+  });
+  clipboardjs.on('error', function(e) {
+    e.clearSelection();
+  });
+});
+
 </script>

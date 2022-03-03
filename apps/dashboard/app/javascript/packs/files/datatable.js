@@ -9,15 +9,14 @@ import {} from './uppy.js';
 import {} from './clipboard.js';
 
 let table = null;
-
+let onpopstate = null;
+let actionsBtnTemplate = null;
+let reportTransferTemplate = null;
 
 export { 
   actionsBtnTemplate, reportTransferTemplate, table, dataFromJsonResponse, getEmptyDirs, getFilesAndDirectoriesFromDirectory, 
-  getShowDotFiles, getShowOwnerMode, Handlebars, reloadTable, update_datatables_status 
+  getShowDotFiles, getShowOwnerMode, Handlebars, onpopstate, reloadTable, update_datatables_status 
 };
-
-let actionsBtnTemplate = null;
-let reportTransferTemplate = null;
 
 global.reloadTable = reloadTable; // Required to be marked as global since we are using this in the template.
 
@@ -261,6 +260,12 @@ $(document).ready(function() {
     updateShowOwnerModeVisibility();
   });
 
+  onpopstate = function(event){
+    // FIXME: handle edge case if state ! exist
+    setTimeout(() => {
+      goto(event.state.currentDirectoryUrl, false);
+    }, 0);
+  };
 
 });
 

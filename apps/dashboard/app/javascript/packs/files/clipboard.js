@@ -11,16 +11,19 @@ $(document).ready(function(){
   
   clipboardjs = new ClipboardJS('#copy-path');
   
+  /*
+  NOTE: Had to move the following functionality to the template (_inline_js.html.erb) so the tooltip would be recognized.
+
   clipboardjs.on('success', function(e) {
-    //FIXME: for some reason the jQuery function tooltip is not being recognized.  Will need to figure out why or move on to new tooltip plugin.
-    
-    // $(e.trigger).tooltip({title: 'Copied path to clipboard!', trigger: 'manual', placement: 'bottom'}).tooltip('show');
-    // setTimeout(() => $(e.trigger).tooltip('hide'), 2000);
+    //FIXME: for some reason the jQuery function tooltip is not being recognized.  Will need to figure out why or move on to new tooltip plugin. - gerald    
+    $(e.trigger).popover({title: 'Copied path to clipboard!', trigger: 'manual', placement: 'bottom'}).tooltip('show');
+    setTimeout(() => $(e.trigger).tooltip('hide'), 2000);
     e.clearSelection();
   });
   clipboardjs.on('error', function(e) {
     e.clearSelection();
   });
+  */
 
   //FIXME: so need to handle updateViewForClipboard based on EVENTS emitted by local storage modifications
   updateViewForClipboard();
