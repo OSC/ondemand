@@ -47,7 +47,6 @@ namespace :release do
       # edit the metadata to reflect new publish date and new version
       version = /ondemand-(.+).zip/.match(p.basename.to_s)[1]
       uri = URI("https://zenodo.org/api/deposit/depositions/#{id}?access_token=#{token}")
-      # uri = URI("https://zenodo.org/api/deposit/depositions/#{id}/actions/edit?access_token=#{token}")
       request = Net::HTTP::Put.new(uri)
       request['Content-type'] = 'application/json'
       request.body = { "metadata" => 
