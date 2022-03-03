@@ -1,0 +1,14 @@
+@software{OSC_software_2022_6323791,
+  author       = {Jeff Ohrstrom and
+                  Travis Ravert and
+                  Gerald Byrket and
+                  Trey Dockendorf and
+                  Alan Chalker},
+  title        = {Open OnDemand Source Code},
+  month        = mar,
+  year         = 2022,
+  publisher    = {Zenodo},
+  version      = {2.0.23},
+  doi          = {10.5281/zenodo.6323791},
+  url          = {https://doi.org/10.5281/zenodo.6323791}
+}

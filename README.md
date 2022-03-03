@@ -2,7 +2,8 @@
 ![GitHub Release](https://img.shields.io/github/release/osc/ondemand.svg?color=informational)
 [![Build Status](https://github.com/osc/ondemand/workflows/Tests/badge.svg)](https://github.com/OSC/ondemand/actions?query=workflow%3ATests)
 [![GitHub License](https://img.shields.io/badge/license-MIT-green.svg?color=success)](https://opensource.org/licenses/MIT)
-[![DOI](http://joss.theoj.org/papers/10.21105/joss.00622/status.svg)](https://doi.org/10.21105/joss.00622)
+[![Paper DOI](http://joss.theoj.org/papers/10.21105/joss.00622/status.svg)](https://doi.org/10.21105/joss.00622)
+[![Source DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6323791.svg)](https://doi.org/10.5281/zenodo.6323791)
 > Supercomputing. Seamlessly. Open, Interactive HPC Via the Web
 
 - Website: https://openondemand.org/
