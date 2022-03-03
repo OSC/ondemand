@@ -33,22 +33,60 @@ namespace :release do
       response = http.request(request)
       raise StandardError.new("Cannot upload archive. Zenodo Server responded with #{response.code}:#{response.body}") unless response.code.to_i == 201
 
-
-      # TODO remove the existing file
+      # remove the existing (old) files
+      request = Net::HTTP::Get.new(URI("https://zenodo.org/api/deposit/depositions/#{id}/files?access_token=#{token}"))
+      response = http.request(request)
+      body = JSON.parse(response.body)
+      body.reject do |file|
+        file['filename'] == p.basename.to_s
+      end.each do |file|
+        request = Net::HTTP::Delete.new(URI("https://zenodo.org/api/deposit/depositions/#{id}/files/#{file['id']}?access_token=#{token}"))
+        http.request(request)
+      end
 
       # edit the metadata to reflect new publish date and new version
       version = /ondemand-(.+).zip/.match(p.basename.to_s)[1]
       uri = URI("https://zenodo.org/api/deposit/depositions/#{id}?access_token=#{token}")
       # uri = URI("https://zenodo.org/api/deposit/depositions/#{id}/actions/edit?access_token=#{token}")
       request = Net::HTTP::Put.new(uri)
-      request.set_form_data("metadata" => {"version" => "#{version}-1", "publication_date" => Date.today})
+      request['Content-type'] = 'application/json'
+      request.body = { "metadata" => 
+            {
+              "version" => "#{version}-1", "publication_date" => Date.today,
+              "upload_type" => "software", 
+              "description" => "This is the source code for Open OnDemand. You can find all releases on github at https://github.com/OSC/ondemand/releases.",
+              "title" => "Open OnDemand Source Code",
+              "creators" => [
+                {
+                  "affiliation": "Ohio SuperComputer Center",
+                  "name": "Jeff Ohrstrom"
+                },
+                {
+                  "affiliation": "Ohio SuperComputer Center",
+                  "name": "Travis Ravert"
+                },
+                {
+                  "affiliation": "Ohio SuperComputer Center",
+                  "name": "Gerald Byrket"
+                },
+                {
+                  "affiliation": "Ohio SuperComputer Center",
+                  "name": "Trey Dockendorf"
+                },
+                {
+                  "affiliation": "Ohio SuperComputer Center",
+                  "name": "Alan Chalker"
+                }
+              ],
+            }
+          }.to_json
       response = http.request(request)
-      puts response.body
-      raise StandardError.new("Cannot edit new version. Zenodo Server responded with #{response.code}:#{response.body}") unless response.code.to_i == 201
+      raise StandardError.new("Cannot edit new version. Zenodo Server responded with #{response.code}:#{response.body}") unless response.code.to_i == 200
     end
 
     uri = URI("#{data['links']['publish']}?access_token=#{token}")
     
+    # now publish
     Net::HTTP.start(uri.host, uri.port, :use_ssl => true) do |http|
       request = Net::HTTP::Post.new(uri)
       request['Accept'] = 'application/json'
