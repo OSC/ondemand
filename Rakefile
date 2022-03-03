@@ -18,6 +18,7 @@ require "#{TASK_DIR}/lint"
 require "#{TASK_DIR}/docker"
 require "#{TASK_DIR}/development"
 require "#{TASK_DIR}/install"
+require "#{TASK_DIR}/release"
 
 include RakeHelper
 
