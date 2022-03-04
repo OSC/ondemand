@@ -42,3 +42,10 @@ jobs:
           asset_path: packaging/rpm/ondemand-${{ steps.version.outputs.version }}.tar.gz
           asset_name: ondemand-${{ steps.version.outputs.version }}.tar.gz
           asset_content_type: application/gzip
+      - name: Upload to Zenodo
+        uses: rseng/zenodo-release@main
+        with:
+          token: ${{ secrets.ZENODO_TOKEN }}
+          version: ${{ steps.version.outputs.version }}
+          zenodo_json: .zenodo.json
+          archive: packaging/rpm/ondemand-${{ steps.version.outputs.version }}.tar.gz

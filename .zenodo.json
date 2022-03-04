@@ -1,0 +1,29 @@
+{
+  "upload_type": "software", 
+  "description": "This is the source code for Open OnDemand. You can find all releases on github at https://github.com/OSC/ondemand/releases.",
+  "title": "Open OnDemand Source Code",
+  "creators": [
+    {
+      "affiliation": "Ohio SuperComputer Center",
+      "name": "Jeff Ohrstrom"
+    },
+    {
+      "affiliation": "Ohio SuperComputer Center",
+      "name": "Travis Ravert"
+    },
+    {
+      "affiliation": "Ohio SuperComputer Center",
+      "name": "Gerald Byrket"
+    },
+    {
+      "affiliation": "Ohio SuperComputer Center",
+      "name": "Trey Dockendorf"
+    },
+    {
+      "affiliation": "Ohio SuperComputer Center",
+      "name": "Alan Chalker"
+    }
+  ],
+  "keywords": ["gateway", "hpc", "ruby", "rails"],
+  "license": "MIT"
+}
