@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+add a CITATION.cff for the citation links (#1887)\
+update dependencies (#1875)\
+correctly append css rules to the end of the list (#1872)\
+stop inlining css and instead add the rules through javascript (#1863)\
+Bump ood_packaging Gem (#1867)\
+Use the same 404 error message in app.conf.erb as in pun.conf.erb . (#1854)\
+Update Changelog (#1858)\
+update dependencies (#1859)
 
 ### Changed
 
