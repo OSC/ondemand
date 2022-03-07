@@ -6,15 +6,22 @@ function configData() {
   return $(`#${CONFIG_ID}`).data();
 }
 
+
 function setNavbarColor() {
   const cfgData = configData();
   const styles = document.styleSheets[0];
 
-  styles.insertRule(navbar('light', cfgData['bgColor']), styles.rules.length);
-  styles.insertRule(navbar('dark', cfgData['bgColor']), styles.rules.length);
+  const bgLightColor = cfgData['bgColor'] === '' ? 'rgb(248, 248, 248)' : cfgData['linkBgColor'];
+  const bgDarkColor = cfgData['bgColor'] === '' ? 'rgb(83, 86, 90)' : cfgData['linkBgColor'];
+
+  const linkLightColor = cfgData['bgColor'] === '' ? 'rgb(59, 61, 63)' : cfgData['linkBgColor'];
+  const linkDarkColor = cfgData['bgColor'] === '' ? 'rgb(231, 231, 231)' : cfgData['linkBgColor'];
+
+  styles.insertRule(navbar('light', bgLightColor), styles.rules.length);
+  styles.insertRule(navbar('dark', bgDarkColor), styles.rules.length);
   
-  styles.insertRule(navbarHighlight('light', cfgData['linkBgColor']), styles.rules.length);
-  styles.insertRule(navbarHighlight('dark', cfgData['linkBgColor']), styles.rules.length);
+  styles.insertRule(navbarHighlight('light', linkLightColor), styles.rules.length);
+  styles.insertRule(navbarHighlight('dark', linkDarkColor), styles.rules.length);
 }
 
 function navbar(theme, color){
