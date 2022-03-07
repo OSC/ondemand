@@ -6,7 +6,6 @@ function configData() {
   return $(`#${CONFIG_ID}`).data();
 }
 
-
 function setNavbarColor() {
   const cfgData = configData();
   const styles = document.styleSheets[0];
