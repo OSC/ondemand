@@ -10,11 +10,11 @@ function setNavbarColor() {
   const cfgData = configData();
   const styles = document.styleSheets[0];
 
-  const bgLightColor = cfgData['bgColor'] === '' ? 'rgb(248, 248, 248)' : cfgData['linkBgColor'];
-  const bgDarkColor = cfgData['bgColor'] === '' ? 'rgb(83, 86, 90)' : cfgData['linkBgColor'];
+  const bgLightColor = cfgData['bgColor'] === '' ? 'rgb(248, 248, 248)' : cfgData['bgColor'];
+  const bgDarkColor = cfgData['bgColor'] === '' ? 'rgb(83, 86, 90)' : cfgData['bgColor'];
 
-  const linkLightColor = cfgData['bgColor'] === '' ? 'rgb(59, 61, 63)' : cfgData['linkBgColor'];
-  const linkDarkColor = cfgData['bgColor'] === '' ? 'rgb(231, 231, 231)' : cfgData['linkBgColor'];
+  const linkLightColor = cfgData['linkBgColor'] === '' ? 'rgb(59, 61, 63)' : cfgData['linkBgColor'];
+  const linkDarkColor = cfgData['linkBgColor'] === '' ? 'rgb(231, 231, 231)' : cfgData['linkBgColor'];
 
   styles.insertRule(navbar('light', bgLightColor), styles.rules.length);
   styles.insertRule(navbar('dark', bgDarkColor), styles.rules.length);
