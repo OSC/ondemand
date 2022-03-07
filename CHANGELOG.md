@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Automation will now push ondemand tar.gz to release page on tags in [1564](https://github.com/OSC/ondemand/pull/1564).
 - Submit.yml's will now be written to the staged root if they have ERB/YML related errors in [1636](https://github.com/OSC/ondemand/pull/1636).
 - Apps recognize if they're preset. Preset apps don't show forms, they just launch in [#1815](https://github.com/OSC/ondemand/pull/1815).
+- Citation information for this source is now available in [1887](https://github.com/OSC/ondemand/pull/1887).
 
 ### Fixed
 
@@ -48,6 +49,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - passenger_options now works correctly in [#1793](https://github.com/OSC/ondemand/pull/1793).
 - File uploads now respect setgid in [1851](https://github.com/OSC/ondemand/pull/1851).
 - Fix uploaded correctly set umasks other than 0022 in [1845](https://github.com/OSC/ondemand/pull/1845).
+- Home directories can now change in [1854](https://github.com/OSC/ondemand/pull/1854).
 
 ### Security
 
