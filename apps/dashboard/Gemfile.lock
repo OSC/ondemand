@@ -217,7 +217,7 @@ GEM
       sprockets (>= 3.0.0)
     thor (1.2.1)
     tilt (2.0.10)
-    timecop (0.9.4)
+    timecop (0.9.5)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     webpacker (5.4.3)
