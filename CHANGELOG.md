@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+add an action to release archives to zenodo (#1888)\
+bugfix versions for rails (#1897)\
+ensure navbar has default colors (#1895)\
+Update Changelog (#1892)\
+update dependencies (#1893)
 
 ### Changed
 
