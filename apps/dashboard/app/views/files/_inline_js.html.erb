@@ -5,6 +5,7 @@ const filesPath = '<%= files_path('/') %>';
 const maxFileSize = '<%= Configuration.file_upload_max %>';
 const filesUploadPath = '<%= files_upload_path %>';
 const transfersPath = '<%= transfers_path(format: "json") %>';
+const alert = '<%= alert %>';
 
 history.replaceState({
   currentDirectory: '<%= @path %>',
@@ -12,11 +13,7 @@ history.replaceState({
   currentDirectoryUpdatedAt: '<%= Time.now.to_i %>'
 }, null);
 
-<% unless alert %>
-// initial data load
-reloadTable();
-<% end %>
-
+/*
 $(document).ready(function(){
   clipboardjs = new ClipboardJS('#copy-path');
   clipboardjs.on('success', function(e) {
@@ -30,5 +27,5 @@ $(document).ready(function(){
     e.clearSelection();
   });
 });
-
+*/
 </script>
