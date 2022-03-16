@@ -6,11 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-add an action to release archives to zenodo (#1888)\
-bugfix versions for rails (#1897)\
-ensure navbar has default colors (#1895)\
-Update Changelog (#1892)\
-update dependencies (#1893)
 
 ### Changed
 
@@ -43,7 +38,8 @@ update dependencies (#1893)
 - Automation will now push ondemand tar.gz to release page on tags in [1564](https://github.com/OSC/ondemand/pull/1564).
 - Submit.yml's will now be written to the staged root if they have ERB/YML related errors in [1636](https://github.com/OSC/ondemand/pull/1636).
 - Apps recognize if they're preset. Preset apps don't show forms, they just launch in [#1815](https://github.com/OSC/ondemand/pull/1815).
-- Citation information for this source is now available in [1887](https://github.com/OSC/ondemand/pull/1887).
+- Citation information for this source is now available in [1887](https://github.com/OSC/ondemand/pull/1887) and releases are made
+  in [1888](https://github.com/OSC/ondemand/pull/1887).
 
 ### Fixed
 
