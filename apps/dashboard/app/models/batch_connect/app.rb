@@ -375,7 +375,7 @@ module BatchConnect
       rescue AppNotFound => e
         @validation_reason = e.message
         return {}
-      rescue => e
+      rescue StandardError, Exception => e
         @validation_reason = "#{e.class.name}: #{e.message}"
         return {}
       end
