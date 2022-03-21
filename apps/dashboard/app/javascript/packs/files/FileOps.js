@@ -18,6 +18,10 @@ $(document).ready(function () {
     fileOps.newFolder(options.value);
   });
 
+  $("#directory-contents").on("fileOpsUpload", function (e, options) {
+    fileOps.newFolder(options.value);
+  });
+
 });
 
 class FileOps {

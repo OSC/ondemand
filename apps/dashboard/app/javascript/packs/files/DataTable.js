@@ -5,13 +5,14 @@ import 'datatables.net-select-bs4';
 import Handlebars from 'handlebars';
 import {} from './SweetAlert.js';
 import {} from './FileOps.js';
+import {} from './UppyOps.js';
 
 
 let table = null;
 $(document).ready(function () {
     table = new DataTable();
 
-    // listen for new file button click then trigger new file functionality.
+    /* BUTTON ACTIONS */
     $("#new-file-btn").on("click", function () {
         $("#directory-contents").trigger('fileOpsNewFile');
     });
@@ -20,6 +21,14 @@ $(document).ready(function () {
         $("#directory-contents").trigger('fileOpsNewFolder');
     });
 
+    // $("#upload-btn").on("click", function () {
+    //     $("#directory-contents").trigger('uppyOpsUpload');
+    // });
+
+    /* END BUTTON ACTIONS */
+
+    /* TABLE ACTIONS */
+
     $("#directory-contents").on("reloadTable", function () {
         table.reloadTable();
     });
@@ -27,6 +36,8 @@ $(document).ready(function () {
     $("#directory-contents").on("getDataFromJsonResponse", function (e, options) {
         table.dataFromJsonResponse(options.response);
     });
+
+    /* END TABLE ACTIONS */
     
 });
 
