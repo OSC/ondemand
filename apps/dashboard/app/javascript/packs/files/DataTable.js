@@ -13,11 +13,19 @@ $(document).ready(function () {
 
     // listen for new file button click then trigger new file functionality.
     $("#new-file-btn").on("click", function () {
-        $("#directory-contents").trigger('newFile');
+        $("#directory-contents").trigger('fileOpsNewFile');
+    });
+
+    $("#new-folder-btn").on("click", function () {
+        $("#directory-contents").trigger('fileOpsNewFolder');
     });
 
     $("#directory-contents").on("reloadTable", function () {
         table.reloadTable();
+    });
+
+    $("#directory-contents").on("getDataFromJsonResponse", function (e, options) {
+        table.dataFromJsonResponse(options.response);
     });
     
 });
