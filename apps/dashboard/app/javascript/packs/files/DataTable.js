@@ -21,8 +21,10 @@ $(document).ready(function () {
         $("#directory-contents").trigger('fileOpsNewFolder');
     });
 
+    // Will have to work on this one later.  Not so straight forward.
+    //
     // $("#upload-btn").on("click", function () {
-    //     $("#directory-contents").trigger('uppyOpsUpload');
+    //     $("#directory-contents").trigger('uppyShowUploadPrompt');
     // });
 
     /* END BUTTON ACTIONS */
