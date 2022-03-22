@@ -184,35 +184,36 @@ category: OSC
     self.to_h.deep_stringify_keys.compact.to_yaml
   end
 
+end
 
-  class InvalidManifest < Manifest
+class InvalidManifest < Manifest
 
-    def initialize(exception)
-      super({})
+  def initialize(exception)
+    super({})
 
-      @exception = exception
-    end
-
-    def valid?
-      false
-    end
-
-    def save(path)
-      false
-    end
+    @exception = exception
   end
 
-  class MissingManifest < Manifest
-    def valid?
-      false
-    end
+  def valid?
+    false
+  end
 
-    def exist?
-      false
-    end
-
-    def save(path)
-      false
-    end
+  def save(path)
+    false
   end
 end
+
+class MissingManifest < Manifest
+  def valid?
+    false
+  end
+
+  def exist?
+    false
+  end
+
+  def save(path)
+    false
+  end
+end
+
