@@ -46,6 +46,10 @@ gem 'autoprefixer-rails', '~> 10.2.5'
 gem 'dotiw'
 gem 'local_time', '~> 1.0.3'
 
+# we don't really need sprockets, but rails depends on it. 4.0+ conflicts
+# with Manifest. See https://github.com/OSC/ondemand/issues/1868
+gem 'sprockets', '~> 3.7.2'
+
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'
 gem 'ood_appkit', '~> 2.1.0'
