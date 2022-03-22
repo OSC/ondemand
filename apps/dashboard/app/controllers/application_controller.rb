@@ -21,15 +21,21 @@ class ApplicationController < ActionController::Base
   end
 
   def sys_apps
-    @sys_apps ||= SysRouter.apps
+    Rails.cache.fetch('sys_apps', expires_in: 6.hours) do
+      SysRouter.apps
+    end
   end
 
   def dev_apps
-    @dev_apps ||= ::Configuration.app_development_enabled? ? DevRouter.apps : []
+    Rails.cache.fetch('dev_apps', expires_in: 1.hours) do
+      ::Configuration.app_development_enabled? ? DevRouter.apps : []
+    end
   end
 
   def usr_apps
-    @usr_apps ||= ::Configuration.app_sharing_enabled? ? UsrRouter.all_apps(owners: UsrRouter.owners) : []
+    Rails.cache.fetch('usr_apps', expires_in: 6.hours) do
+      ::Configuration.app_sharing_enabled? ? UsrRouter.all_apps(owners: UsrRouter.owners) : []
+    end
   end
 
   def nav_all_apps
