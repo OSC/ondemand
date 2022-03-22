@@ -16,6 +16,14 @@ $(document).ready(function(){
     sweetAlert.input(options);
   });
 
+  $("#directory-contents").on("swalShowLoading", function(e,options) {
+    sweetAlert.loading(options.message);
+  });
+
+  $("#directory-contents").on("swalClose", function() {
+    sweetAlert.close();
+  });
+
 });
 
 class SweetAlert {
@@ -54,7 +62,7 @@ class SweetAlert {
     this._swal.fire(error_title, error_message, 'error');
   }
   
-  loading(title) {
+  async loading(title) {
     this._swal.fire({
       title: title,
       allowOutsideClick: false,
@@ -63,7 +71,7 @@ class SweetAlert {
     });
   }
   
-  doneLoading() {
+  close() {
     this._swal.close();
   }  
 }

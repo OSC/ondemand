@@ -21,6 +21,26 @@ $(document).ready(function () {
         $("#directory-contents").trigger('fileOpsNewFolder');
     });
 
+    $("#download-btn").on("click", function () {
+        let selection = table.getTable().rows({ selected: true }).data();
+        if(selection.length == 0) {
+            const eventData = {
+                'title': 'Select a file, files, or directory to download',
+                'message': 'You have selected none.',
+            };
+
+            $("#directory-contents").trigger('swalShowError', eventData);
+
+        } else {
+            const eventData = {
+                selection: selection
+            };
+      
+            $("#directory-contents").trigger('fileOpsDownload', eventData);    
+        }
+            
+    });
+
     // Will have to work on this one later.  Not so straight forward.
     //
     // $("#upload-btn").on("click", function () {
@@ -41,6 +61,99 @@ $(document).ready(function () {
 
     /* END TABLE ACTIONS */
     
+    /* DATATABLE LISTENERS */
+    // prepend show dotfiles checkbox to search box
+
+    table.getTable().on('draw.dtSelect.dt select.dtSelect.dt deselect.dtSelect.dt info.dt', function () {
+        table.updateDatatablesStatus();
+    });
+
+    // if only 1 selected item, do not allow to de-select
+    table.getTable().on('user-select', function ( e, dt, type, cell, originalEvent  ) {
+        var selected_rows = dt.rows( { selected: true  }  );
+
+        if(originalEvent.target.closest('.actions-btn-group')){
+        // dont do user select event when opening or working with actions btn dropdown
+        e.preventDefault();
+        }
+        else if(selected_rows.count() == 1 && cell.index().row == selected_rows.indexes()[0] ){
+        // dont do user select because already selected
+        e.preventDefault();
+        }
+        else{
+        // row need to find the checkbox to give it the focus
+        cell.node().closest('tr').querySelector('input[type=checkbox]').focus();
+        }
+    });
+
+    table.getTable().on( 'deselect', function ( e, dt, type, indexes ) {
+        dt.rows(indexes).nodes().toArray().forEach(e => $(e).find('input[type=checkbox]').prop('checked', false));
+        });
+
+        table.getTable().on( 'select', function ( e, dt, type, indexes ) {
+        dt.rows(indexes).nodes().toArray().forEach(e => $(e).find('input[type=checkbox]').prop('checked', true));
+    });
+
+    $('#directory-contents tbody').on('click', 'tr td:first-child input[type=checkbox]', function(){
+        // input checkbox checked or not
+
+        if($(this).is(':checked')){
+        // select row
+        table.getTable().row(this.closest('tr')).select();
+        }
+        else{
+        // deselect row
+        table.getTable().row(this.closest('tr')).deselect();
+        }
+
+        this.focus();
+    });
+
+    $('#directory-contents tbody').on('keydown', 'input, a', function(e){
+        if(e.key == "ArrowDown"){
+        e.preventDefault();
+
+        // let tr = this.closest('tr').nextSibling;
+        let tr = $(this.closest('tr')).next('tr').get(0);
+        if(tr){
+            tr.querySelector('input[type=checkbox]').focus();
+
+            // deselect if not holding shift key to work
+            // like native file browsers
+            if(! e.shiftKey){
+                table.getTable().rows().deselect();
+            }
+
+            // select if moving down
+            table.getTable().row(tr).select();
+        }
+        }
+        else if(e.key == "ArrowUp"){
+        e.preventDefault();
+
+        let tr = $(this.closest('tr')).prev('tr').get(0);
+        if(tr){
+            tr.querySelector('input[type=checkbox]').focus();
+
+            // deselect if not holding shift key to work
+            // like native file browsers
+            if(! e.shiftKey){
+                table.getTable().rows().deselect();
+            }
+
+            // select if moving up
+            table.getTable().row(tr).select();
+        }
+        }
+    });
+
+    $.fn.dataTable.ext.search.push(
+        function( settings, data, dataIndex  ) {
+        return table.getShowDotFiles() || ! data[2].startsWith('.');
+        }
+    )
+
+    /* END DATATABLE LISTENERS */
 });
 
 class DataTable {
@@ -135,6 +248,9 @@ class DataTable {
             ]
         });
 
+        $('#directory-contents_filter').prepend(`<label style="margin-right: 20px" for="show-dotfiles"><input type="checkbox" id="show-dotfiles" ${ this.getShowDotFiles() ? 'checked' : ''}> Show Dotfiles</label>`)
+        $('#directory-contents_filter').prepend(`<label style="margin-right: 14px" for="show-owner-mode"><input type="checkbox" id="show-owner-mode" ${ this.getShowOwnerMode() ? 'checked' : ''}> Show Owner/Mode</label>`)
+    
     }
 
     async reloadTable(url) {
@@ -164,6 +280,10 @@ class DataTable {
         }
     }
 
+    getShowDotFiles() {
+        return localStorage.getItem('show-dotfiles') == 'true'
+    }
+
     getShowOwnerMode() {
         return localStorage.getItem('show-owner-mode') == 'true'
     }
@@ -183,4 +303,14 @@ class DataTable {
         return Handlebars.compile(template_str);
     }
 
+    updateDatatablesStatus(){
+        // from "function info ( api )" of https://cdn.datatables.net/select/1.3.1/js/dataTables.select.js
+        let api = this._table;
+        let rows    = api.rows( { selected: true } ).flatten().length,
+            page_info = api.page.info(),
+            msg = page_info.recordsTotal == page_info.recordsDisplay ? `Showing ${page_info.recordsDisplay} rows` : `Showing ${page_info.recordsDisplay} of ${page_info.recordsTotal} rows`;
+      
+        $('.datatables-status').html(`${msg} - ${rows} rows selected`);
+      }
+      
 }
