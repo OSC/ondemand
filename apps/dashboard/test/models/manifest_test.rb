@@ -50,7 +50,7 @@ class ManifestTest < ActiveSupport::TestCase
       save_result = manifest.save(manifest_file + "empty")
       new_manifest = Manifest.load(manifest_file + "empty")
       assert_equal false, save_result, "Result should not save"
-      assert_instance_of MissingManifest, new_manifest, "Should not exist"
+      assert_instance_of Manifest::MissingManifest, new_manifest, "Should not exist"
     }
   end
 
@@ -61,7 +61,7 @@ class ManifestTest < ActiveSupport::TestCase
       save_result = manifest.save(manifest_file + "empty")
       new_manifest = Manifest.load(manifest_file + "empty")
       assert_equal false, save_result, "Result should not save"
-      assert_instance_of MissingManifest, new_manifest, "Should not exist"
+      assert_instance_of Manifest::MissingManifest, new_manifest, "Should not exist"
     }
   end
 
