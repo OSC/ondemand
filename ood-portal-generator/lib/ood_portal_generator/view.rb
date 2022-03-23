@@ -43,7 +43,7 @@ module OodPortalGenerator
       @maintenance_ip_allowlist = Array(opts.fetch(:maintenance_ip_allowlist, nil) || opts.fetch(:maintenance_ip_whitelist, []))
 
       # Security configuration
-      @security_csp_frame_ancestors = opts.fetch(:security_csp_frame_ancestors, "#{@protocol}#{@servername ?  @servername : OodPortalGenerator.fqdn}")
+      @security_csp_frame_ancestors = opts.fetch(:security_csp_frame_ancestors, "#{@protocol}#{@proxy_server ? @proxy_server : OodPortalGenerator.fqdn}")
       @security_strict_transport = opts.fetch(:security_strict_transport, !@ssl.nil?)
 
       # Portal authentication
