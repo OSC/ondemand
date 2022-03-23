@@ -41,6 +41,26 @@ $(document).ready(function () {
             
     });
 
+    $("#delete-btn").on("click", function () {
+        let files = table.getTable().rows({selected: true}).data().toArray().map((f) => f.name);
+        if(files.length == 0) {
+            const eventData = {
+                'title': 'Select a file, files, or directory to delete.',
+                'message': 'You have selected none.',
+            };
+
+            $("#directory-contents").trigger('swalShowError', eventData);
+
+        } else {
+            const eventData = {
+                files: files
+            };
+      
+            $("#directory-contents").trigger('fileOpsDeletePrompt', eventData);    
+        }
+            
+    });
+
     // Will have to work on this one later.  Not so straight forward.
     //
     // $("#upload-btn").on("click", function () {

@@ -1,3 +1,5 @@
+import Handlebars from 'handlebars';
+
 let fileOps = null;
 
 $(document).ready(function () {
@@ -26,10 +28,22 @@ $(document).ready(function () {
     fileOps.download(options.selection);
   });
 
+  $("#directory-contents").on("fileOpsDeletePrompt", function (e, options) {
+    fileOps.deletePrompt(options.files);
+  });
+
+  $("#directory-contents").on("fileOpsDelete", function (e, options) {
+    fileOps.delete(options.files);
+  });
+
+
 });
 
 class FileOps {
+  _handleBars = null;
+
   constructor() {
+    this._handleBars = Handlebars;
   }
 
 
@@ -198,5 +212,141 @@ class FileOps {
             .catch((e) => reject(e))
     });
   }
+ 
+   deletePrompt(files) {
+    const eventData = {
+      action: 'fileOpsDelete',
+      files: files,
+      'inputOptions': {
+        title: files.length == 1 ? `Delete ${files[0]}?` : `Delete ${files.length} selected files?`,
+        text: 'Are you sure you want to delete the files: ' + files.join(', '),
+        showCancelButton: true,
+      }
+    };
+
+    $("#directory-contents").trigger('swalShowInput', eventData);
+
+  }
+
+  
+  removeFiles(files){
+    this.transferFiles(files, "rm", "remove files")
+    $("#directory-contents").trigger('swalClose');
+    $("#directory-contents").trigger('reloadTable');
+
+  }    
+  
+  delete(files) {
+    const eventData = {
+      'message': 'Deleting files...: ',
+    };
+
+    $("#directory-contents").trigger('swalShowLoading', eventData);
+
+    this.removeFiles(files.map(f => [history.state.currentDirectory, f].join('/')), csrf_token);
+  }
+
+  async transferFiles(files, action, summary) {
+    const eventData = {
+      'message': _.startCase(summary),
+    };
+
+    $("#directory-contents").trigger('swalShowLoading', eventData);
+  
+    try {
+      const response = await fetch(transfersPath, {
+        method: 'post',
+        body: JSON.stringify({
+          command: action,
+          files: files
+        }),
+        headers: { 'X-CSRF-Token': csrf_token }
+      });
+      const data = await this.dataFromJsonResponse(response);
+      if (!data.completed) {
+        // was async, gotta report on progress and start polling
+        this.reportTransfer(data);
+      }
+      else {
+        if (data.target_dir == history.state.currentDirectory) {
+          $("#directory-contents").trigger('reloadTable');
+        }
+      }
+
+      if (action == 'mv' || action == 'cp') {
+        // clearClipboard();
+        // updateViewForClipboard();
+      }
+
+      return;
+    } catch (e) {
+      const eventData = {
+        'title': 'Error occurred when attempting to ' + summary,
+        'message': e.message,
+      };
+
+      $("#directory-contents").trigger('showError', eventData);
+    }
+  }
+  
+  reportTransfer(data) {
+    // 1. add the transfer label
+    findAndUpdateTransferStatus(data);
+
+    let attempts = 0
+
+    // 2. poll for the updates
+    var poll = function() {
+      $.getJSON(data.show_json_url, function (newdata) {
+        findAndUpdateTransferStatus(newdata);
+
+        if(newdata.completed) {
+          if(! newdata.error_message) {
+            if(newdata.target_dir == history.state.currentDirectory) {
+              // reloadTable();
+            }
+
+            // 3. fade out after 5 seconds
+            fadeOutTransferStatus(newdata)
+          }
+        }
+        else {
+          // not completed yet, so poll again
+          setTimeout(poll, 1000);
+        }
+      }).fail(function() {
+        if (attempts >= 3) {
+          // Swal.fire('Operation may not have happened', 'Failed to retrieve file operation status.', 'error');
+        } else {
+          setTimeout(poll, 1000);
+          attempts++;
+        }
+      });
+    }
+
+    poll();
+
+  }
+  
+  findAndUpdateTransferStatus(data) {
+    let id = `#${data.id}`;
+  
+    if($(id).length){
+      $(id).replaceWith(this.reportTransferTemplate(data));
+    }
+    else{
+      $('.transfers-status').append(this.reportTransferTemplate(data));
+    }
+  }
+  
+  fadeOutTransferStatus(data){
+    let id = `#${data.id}`;
+    $(id).fadeOut(4000);
+  }
+
+  reportTransferTemplate = (function(){
+    let template_str  = $('#transfer-template').html();
+    return Handlebars.compile(template_str);
+  })();
   
 }

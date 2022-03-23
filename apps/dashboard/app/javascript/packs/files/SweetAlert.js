@@ -38,7 +38,12 @@ class SweetAlert {
     this._swal.fire(options.inputOptions)
     .then (function(result){
       if(result.isConfirmed) {
-        $("#directory-contents").trigger(options.action, result);
+        const eventData = {
+          result: result,
+          files: options.files ? options.files : null
+        };
+
+        $("#directory-contents").trigger(options.action, eventData);
       } else {
         $("#directory-contents").trigger('reloadTable');
       }
