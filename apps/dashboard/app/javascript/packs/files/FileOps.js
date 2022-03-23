@@ -13,16 +13,16 @@ $(document).ready(function () {
   });
 
   $("#directory-contents").on("fileOpsCreateFile", function (e, options) {
-    fileOps.newFile(options.value);
+    fileOps.newFile(options.result.value);
   });
 
   $("#directory-contents").on("fileOpsCreateFolder", function (e, options) {
-    fileOps.newFolder(options.value);
+    fileOps.newFolder(options.result.value);
   });
 
-  $("#directory-contents").on("fileOpsUpload", function (e, options) {
-    fileOps.newFolder(options.value);
-  });
+  // $("#directory-contents").on("fileOpsUpload", function (e, options) {
+  //   fileOps.newFolder(options.value);
+  // });
 
   $("#directory-contents").on("fileOpsDownload", function (e, options) {
     fileOps.download(options.selection);
@@ -36,6 +36,13 @@ $(document).ready(function () {
     fileOps.delete(options.files);
   });
 
+  $("#directory-contents").on("fileOpsMove", function (e, options) {
+    fileOps.move(options.files, options.token);
+  });
+
+  $("#directory-contents").on("fileOpsCopy", function (e, options) {
+    fileOps.copy(options.files, options.token);
+  });
 
 });
 
@@ -274,8 +281,8 @@ class FileOps {
       }
 
       if (action == 'mv' || action == 'cp') {
-        // clearClipboard();
-        // updateViewForClipboard();
+        $("#directory-contents").trigger('clipboardClear');
+        $("#directory-contents").trigger('reloadTable');
       }
 
       return;
@@ -298,7 +305,7 @@ class FileOps {
     // 2. poll for the updates
     var poll = function() {
       $.getJSON(data.show_json_url, function (newdata) {
-        findAndUpdateTransferStatus(newdata);
+        this.findAndUpdateTransferStatus(newdata);
 
         if(newdata.completed) {
           if(! newdata.error_message) {
@@ -307,7 +314,7 @@ class FileOps {
             }
 
             // 3. fade out after 5 seconds
-            fadeOutTransferStatus(newdata)
+            this.fadeOutTransferStatus(newdata)
           }
         }
         else {
@@ -344,9 +351,19 @@ class FileOps {
     $(id).fadeOut(4000);
   }
 
+  move(files, token) {
+    this.transferFiles(files, 'mv', 'move files');
+    $("#directory-contents").trigger('swalClose');  
+  }
+
+  copy(files, token) {
+    this.transferFiles(files, 'cp', 'copy files');  
+    $("#directory-contents").trigger('swalClose');
+  }
+
   reportTransferTemplate = (function(){
     let template_str  = $('#transfer-template').html();
     return Handlebars.compile(template_str);
   })();
-  
+ 
 }

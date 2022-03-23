@@ -6,6 +6,7 @@ import Handlebars from 'handlebars';
 import {} from './SweetAlert.js';
 import {} from './FileOps.js';
 import {} from './UppyOps.js';
+import {} from './ClipBoard.js';
 
 
 let table = null;
@@ -60,6 +61,28 @@ $(document).ready(function () {
         }
             
     });
+
+    $("#copy-move-btn").on("click", function () {
+        let selection = table.getTable().rows({selected: true}).data();
+        if(selection.length == 0) {
+            const eventData = {
+                'title': 'Select a file, files, or directory to copy or move.',
+                'message': 'You have selected none.',
+            };
+
+            $("#directory-contents").trigger('swalShowError', eventData);
+            $("#directory-contents").trigger('clipboardClear', eventData);
+
+        } else {
+            const eventData = {
+                selection: selection
+            };
+      
+            $("#directory-contents").trigger('updateClipboardFromSelection', eventData);
+        }
+            
+    });
+
 
     // Will have to work on this one later.  Not so straight forward.
     //
@@ -286,6 +309,8 @@ class DataTable {
 
             $('#open-in-terminal-btn').attr('href', data.shell_url);
             $('#open-in-terminal-btn').removeClass('disabled');
+            
+            $("#directory-contents").trigger('updateViewForClipboard');
             return await Promise.resolve(data);
         } catch (e) {
             const eventData = {
