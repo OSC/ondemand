@@ -28,12 +28,13 @@ class ConfigurationSingleton
 
   def initialize
     add_boolean_configs
+    add_string_configs
   end
 
   # All the boolean configurations that can be read through
   # environment variables or through the config file.
   #
-  # @return [Hash] key/value pairs of boolean configurations.
+  # @return [Hash] key/value pairs of defaults
   def boolean_configs
     {
       :csp_enabled                  => false,
@@ -42,6 +43,16 @@ class ConfigurationSingleton
       :per_cluster_dataroot         => false,
       :file_navigator               => false,
       :jobs_app_alpha               => false
+    }.freeze
+  end
+
+  # All the boolean configurations that can be read through
+  # environment variables or through the config file.
+  #
+  # @return [Hash] key/value pairs of defaults
+  def string_configs
+    {
+      :module_file_dir      => nil,
     }.freeze
   end
 
@@ -481,6 +492,20 @@ class ConfigurationSingleton
     end.each do |cfg_item, _|
       define_singleton_method("#{cfg_item}?".to_sym) do
         send(cfg_item)
+      end
+    end
+  end
+
+  def add_string_configs
+    string_configs.each do |cfg_item, default|
+      define_singleton_method(cfg_item.to_sym) do
+        e = ENV["OOD_#{cfg_item.to_s.upcase}"]
+
+        e.nil? ? config.fetch(cfg_item, default) : e.to_s
+      end
+    end.each do |cfg_item, _|
+      define_singleton_method("#{cfg_item}?".to_sym) do
+        send(cfg_item).nil?
       end
     end
   end
