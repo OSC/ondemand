@@ -54,7 +54,7 @@ class ProjectsTest < ApplicationSystemTestCase
       setup_project(dir)
 
       find('tbody .btn.btn-info').click
-      assert_selector 'h1', text: 'Edit Project'
+      assert_selector 'h1', text: 'Editing: test_project'
       assert_selector '.btn.btn-default', text: 'Back'
     end
   end
