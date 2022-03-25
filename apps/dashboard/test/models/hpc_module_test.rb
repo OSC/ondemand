@@ -43,5 +43,7 @@ class HpcModuleTest < ActiveSupport::TestCase
 
     assert m1 == m2
     assert m1.eql?(m2)
+    assert m1 == "test/9001" && m2 == "test/9001"
+    assert m1.eql?("test/9001") && m2.eql?("test/9001")
   end
 end
