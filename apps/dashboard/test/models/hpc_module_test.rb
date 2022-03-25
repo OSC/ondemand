@@ -36,14 +36,4 @@ class HpcModuleTest < ActiveSupport::TestCase
     assert !m.default?
     assert_equal m.version, '9001' # we gave an int, got back a string
   end
-
-  test 'module equivalence' do
-    m1 = HpcModule.new('test', version: 9001)
-    m2 = HpcModule.new('test', version: 9001)
-
-    assert m1 == m2
-    assert m1.eql?(m2)
-    assert m1 == "test/9001" && m2 == "test/9001"
-    assert m1.eql?("test/9001") && m2.eql?("test/9001")
-  end
 end

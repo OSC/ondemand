@@ -12,7 +12,7 @@ class HpcModule
               spider_output.map do |_, mod|
                 HpcModule.new(name, version: mod['Version'])
               end
-            end.flatten.uniq(&:to_s)
+            end.flatten.uniq
           rescue StandardError => e
             Rails.logger.warn("Did not read #{file} correctly because #{e.class}:#{e.message}")
             []
@@ -35,21 +35,6 @@ class HpcModule
   def to_s
     @to_s ||= version.nil? ? name : "#{name}/#{version}"
   end
-
-  # Equivlance is based on the a string of the name and version of 
-  # the module, much like in real life.
-  # Two modules are equal if they have the same name and version.
-  #
-  # We want to be sure that uniqeness is by value, not by
-  # identity.
-  #
-  #   new('rstudio', vesrion: 3) == new('rstudio', version: 3) is true.
-  #   and
-  #   new('rstudio', 3) == 'rstudio/3' is also true
-  def ==(other)
-    to_s == other.to_s
-  end
-  alias eql? ==
 
   def default?
     version.nil?
