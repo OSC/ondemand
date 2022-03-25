@@ -26,8 +26,9 @@ class ProjectsController < ApplicationController
   def update
     @project = Project.find(params[:id])
 
-    if @project.update(project_params)
-      @project.write_manifeset
+    if @project.save!
+      @project.update(project_params)
+
       redirect_to projects_path, notice: 'Project manifest updated!'
     end
   end
@@ -36,11 +37,10 @@ class ProjectsController < ApplicationController
   def create
     @project = Project.new(project_params)
 
+    # saving .ondemand in project_dataroot 
     if @project.save!
-      @project.config_dir
-      @project.make_manifest
       redirect_to projects_path, notice: 'Project successfully created!'
-    else
+    else     
       redirect_to projects_path, alert: 'Failed to save project'
     end
   end
@@ -57,6 +57,6 @@ class ProjectsController < ApplicationController
   def project_params
     params
       .require(:project)
-      .permit(:dir, :icon, :description, :title)
+      .permit(:dir, :title, :description, :icon)
   end
 end

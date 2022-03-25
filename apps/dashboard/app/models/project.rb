@@ -4,14 +4,6 @@
 class Project
   include ActiveModel::Model
 
-  validates :dir, presence: true
-  validates :dir, format: {
-    with: /[\w-]+\z/,
-    message: 'Name may only contain letters, digits, dashes, and underscores'
-  }
-
-  validates :description, length: { maximum: 140 }
-
   class << self
     def all
       # return [Array] of all projects in ~/ondemand/data/sys/projects
@@ -35,7 +27,8 @@ class Project
     def dataroot
       Rails.logger.debug("project path is: #{OodAppkit.dataroot.join('projects')}")
 
-      OodAppkit.dataroot.join('projects').tap do |p|
+      OodAppkit.dataroot.join('projects').tap do |path|
+        Rails.logger.debug("tap dataroot running on path = #{path}")
         p.mkpath unless p.exist?
       rescue StandardError => e
         Pathname.new('')
@@ -43,42 +36,48 @@ class Project
     end
   end
 
-  attr_reader :dir, :description, :icon, :title
+  validates :dir, presence: true
+  validates :dir, format: {
+    with: /[\w-]+\z/,
+    message: 'Name may only contain letters, digits, dashes, and underscores'
+  }
+
+  attr_reader :dir
+  delegate :icon, :title, :description, to: :manifest
 
   def initialize(attributes = {})
     @dir            = attributes.fetch(:dir, nil).to_s
-    @title          = attributes.fetch(:title, nil).to_s
-    @description    = attributes.fetch(:description, nil).to_s
-    @icon           = attributes.fetch(:icon, nil).to_s
-  end
-
-  def config_dir
-    Pathname.new("#{absolute_dir}/.ondemand").tap { |p| p.mkpath unless p.exist? }
-  end
-
-  def absolute_dir
-    Project.dataroot.join(dir)
   end
 
   def save!
-    true
+    make_manifest
+    write_manifest
   end
 
   def update(attributes)
-    @title          = attributes[:title] if attributes[:title]
-    @description    = attributes[:description] if attributes[:description]
-    @icon           = attributes[:icon] if attributes[:icon]
-
-    if self.valid?
-      write_manifeset
-      true
-    else
-      false
-    end
+    manifest = Manifest.load(manifest_path)
+    manifest = manifest.merge(attributes)
+    manifest.valid? ? manifest.save(manifest_path) : false
   end
 
   def destroy!
-    FileUtils.remove_dir(absolute_dir, force = true)
+    FileUtils.remove_dir(project_dataroot, force = true)
+  end
+
+  def make_manifest
+    File.new(manifest_path, 'w+') # try this: unless Dir.pwd != Project.dataroot
+  end
+  
+  def manifest_path
+    File.join(configuration_directory, 'manifest.yml')
+  end
+
+  def configuration_directory
+    Pathname.new("#{project_dataroot}/.ondemand").tap { |path| path.mkpath unless path.exist? } 
+  end
+
+  def project_dataroot
+    Project.dataroot.join(dir)
   end
 
   def manifest
@@ -89,25 +88,22 @@ class Project
     manifest.metadata
   end
 
-  def manifest_path
-    File.join(config_dir, 'manifest.yml')
+  def title
+    manifest.metadata[:title]
   end
 
-  def make_manifest
-    File.new(manifest_path, 'w+') # try this: unless Dir.pwd != Project.dataroot
+  def description
+    manifest.description
   end
 
   def name
     proj = dir.scan(/[\w-]+\z/)
-    proj[0]
+    proj[0].titleize
   end
 
-  def write_manifeset
+  def write_manifest
     manifest = Manifest.load(manifest_path)
     manifest = manifest.merge({ title: title, description: description, icon: icon })
-    
-    # manifest_path.exist? not working, method missing for the manifest_path
-    manifest.save(manifest_path) unless ( title.blank? || description.blank? ) # || manifest_path.exist?
-    true
+    manifest.save(manifest_path)
   end
 end
