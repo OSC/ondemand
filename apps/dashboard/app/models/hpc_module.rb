@@ -36,6 +36,16 @@ class HpcModule
     @to_s ||= version.nil? ? name : "#{name}/#{version}"
   end
 
+  # Equivlance is based on the a string of the name and version of 
+  # the module, much like in real life.
+  # Two modules are equal if they have the same name and version.
+  #
+  # We want to be sure that uniqeness is by value, not by
+  # identity.
+  #
+  #   new('rstudio', vesrion: 3) == new('rstudio', version: 3) is true.
+  #   and
+  #   new('rstudio', 3) == 'rstudio/3' is also true
   def ==(other)
     to_s == other.to_s
   end
