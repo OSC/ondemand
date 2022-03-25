@@ -2,8 +2,17 @@ import Handlebars from 'handlebars';
 
 let fileOps = null;
 
+let reportTransferTemplate = null;
+
 $(document).ready(function () {
   fileOps = new FileOps();
+
+  reportTransferTemplate = (function(){
+    let template_str  = $('#transfer-template').html();
+    return Handlebars.compile(template_str);
+  })();
+  
+
   $("#directory-contents").on("fileOpsNewFile", function () {
     fileOps.newFilePrompt();
   });
@@ -48,7 +57,8 @@ $(document).ready(function () {
 
 class FileOps {
   _handleBars = null;
-
+  _timeout = 2000;
+  
   constructor() {
     this._handleBars = Handlebars;
   }
@@ -84,16 +94,10 @@ class FileOps {
     fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?touch=true`, { method: 'put', headers: { 'X-CSRF-Token': csrf_token } })
       .then(response => this.dataFromJsonResponse(response))
       .then(function () {
-        $("#directory-contents").trigger('reloadTable');
+        this.reloadTable();
       })
       .catch(function (e) {
-        const eventData = {
-          'title': 'Error occurred when attempting to create new file',
-          'message': e.message,
-        };
-
-        $("#directory-contents").trigger('swalShowError', eventData);
-
+        this.alertError('Error occurred when attempting to create new file', e.message);
       });
   }
 
@@ -123,16 +127,10 @@ class FileOps {
     fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token }})
       .then(response => this.dataFromJsonResponse(response))
       .then(function () {
-        $("#directory-contents").trigger('reloadTable');
+        this.reloadTable();
       })
       .catch(function (e) {
-        const eventData = {
-          'title': 'Error occurred when attempting to create new folder',
-          'message': e.message,
-        };
-
-        $("#directory-contents").trigger('swalShowError', eventData);
-
+        this.alertError('Error occurred when attempting to create new folder', e.message);
       });
   }
 
@@ -149,12 +147,8 @@ class FileOps {
   downloadDirectory(file) {
     let filename = $($.parseHTML(file.name)).text(),
         canDownloadReq = `${history.state.currentDirectoryUrl}/${encodeURI(filename)}?can_download=${Date.now().toString()}`
-  
-    const eventData = {
-      'message': 'preparing to download directory: ' + file.name,
-    };
 
-    $("#directory-contents").trigger('swalShowLoading', eventData);
+    this.showSwalLoading('preparing to download directory: ' + file.name);
   
     fetch(canDownloadReq, {
         method: 'GET',
@@ -166,17 +160,11 @@ class FileOps {
       .then(response => this.dataFromJsonResponse(response))
       .then(data => {
         if (data.can_download) {
-          $("#directory-contents").trigger('swalClose');
+          this.doneLoading();
           this.downloadFile(file)
         } else {
-          const eventData = {
-            'title': 'Error while downloading',
-            'message': data.error_message,
-          };
-
-          $("#directory-contents").trigger('swalClose');
-          $("#directory-contents").trigger('showError', eventData);
-
+          this.doneLoading();
+          this.alertError('Error while downloading', data.error_message);
         }
       })
       .catch(e => {
@@ -185,8 +173,8 @@ class FileOps {
           'message': e.message,
         };
 
-        $("#directory-contents").trigger('swalClose');
-        $("#directory-contents").trigger('showError', eventData);
+        this.doneLoading();
+        this.alertError('Error while downloading', data.error_message);
       })
   }
   
@@ -238,104 +226,52 @@ class FileOps {
   
   removeFiles(files){
     this.transferFiles(files, "rm", "remove files")
-    $("#directory-contents").trigger('swalClose');
-    $("#directory-contents").trigger('reloadTable');
-
+    this.doneLoading();
+    this.reloadTable();
   }    
   
   delete(files) {
-    const eventData = {
-      'message': 'Deleting files...: ',
-    };
-
-    $("#directory-contents").trigger('swalShowLoading', eventData);
+    this.showSwalLoading('Deleting files...: ');
 
     this.removeFiles(files.map(f => [history.state.currentDirectory, f].join('/')), csrf_token);
   }
 
-  async transferFiles(files, action, summary) {
-    const eventData = {
-      'message': _.startCase(summary),
-    };
+  transferFiles(files, action, summary){
 
-    $("#directory-contents").trigger('swalShowLoading', eventData);
+    this.showSwalLoading(_.startCase(summary));
   
-    try {
-      const response = await fetch(transfersPath, {
-        method: 'post',
-        body: JSON.stringify({
-          command: action,
-          files: files
-        }),
-        headers: { 'X-CSRF-Token': csrf_token }
-      });
-      const data = await this.dataFromJsonResponse(response);
-      if (!data.completed) {
+    return fetch(transfersPath, {
+      method: 'post',
+      body: JSON.stringify({
+        command: action,
+        files: files
+      }),
+      headers: { 'X-CSRF-Token': csrf_token }
+    })
+    .then(response => dataFromJsonResponse(response))
+    .then((data) => {
+  
+      if(! data.completed){
         // was async, gotta report on progress and start polling
         this.reportTransfer(data);
       }
       else {
-        if (data.target_dir == history.state.currentDirectory) {
-          $("#directory-contents").trigger('reloadTable');
+        if(data.target_dir == history.state.currentDirectory){
+          this.reloadTable();
         }
       }
-
-      if (action == 'mv' || action == 'cp') {
-        $("#directory-contents").trigger('clipboardClear');
-        $("#directory-contents").trigger('reloadTable');
+  
+      if(action == 'mv' || action == 'cp') {
+        this.clearClipboard();
       }
-
-      return;
-    } catch (e) {
-      const eventData = {
-        'title': 'Error occurred when attempting to ' + summary,
-        'message': e.message,
-      };
-
-      $("#directory-contents").trigger('showError', eventData);
-    }
+    })
+    .then(
+      () => this.doneLoading()
+    )
+    .catch(e => this.alertError('Error occurred when attempting to ' + summary, e.message))
   }
   
-  reportTransfer(data) {
-    // 1. add the transfer label
-    findAndUpdateTransferStatus(data);
-
-    let attempts = 0
-
-    // 2. poll for the updates
-    var poll = function() {
-      $.getJSON(data.show_json_url, function (newdata) {
-        this.findAndUpdateTransferStatus(newdata);
-
-        if(newdata.completed) {
-          if(! newdata.error_message) {
-            if(newdata.target_dir == history.state.currentDirectory) {
-              // reloadTable();
-            }
-
-            // 3. fade out after 5 seconds
-            this.fadeOutTransferStatus(newdata)
-          }
-        }
-        else {
-          // not completed yet, so poll again
-          setTimeout(poll, 1000);
-        }
-      }).fail(function() {
-        if (attempts >= 3) {
-          // Swal.fire('Operation may not have happened', 'Failed to retrieve file operation status.', 'error');
-        } else {
-          setTimeout(poll, 1000);
-          attempts++;
-        }
-      });
-    }
-
-    poll();
-
-  }
-  
-  findAndUpdateTransferStatus(data) {
+  findAndUpdateTransferStatus(data){
     let id = `#${data.id}`;
   
     if($(id).length){
@@ -350,20 +286,87 @@ class FileOps {
     let id = `#${data.id}`;
     $(id).fadeOut(4000);
   }
+  
+  
+  reportTransfer(data){
+    // 1. add the transfer label
+    findAndUpdateTransferStatus(data);
+  
+    let attempts = 0
+  
+    // 2. poll for the updates
+    var poll = function() {
+      $.getJSON(data.show_json_url, function (newdata) {
+        findAndUpdateTransferStatus(newdata);
+  
+        if(newdata.completed) {
+          if(! newdata.error_message) {
+            if(newdata.target_dir == history.state.currentDirectory) {
+              this.reloadTable();
+            }
+  
+            // 3. fade out after 5 seconds
+            this.fadeOutTransferStatus(newdata)
+          }
+        }
+        else {
+          // not completed yet, so poll again
+          setTimeout(function(){
+            attempts++;
+          }, this._timeout);
+        }
+      }).fail(function() {
+        if (attempts >= 3) {
+          this.alertError('Operation may not have happened', 'Failed to retrieve file operation status.');  
+        } else {
+          setTimeout(function(){
+            attempts++;
+          }, this._timeout);
+        }
+      });
+    }
+  
+    poll();
+  } 
 
   move(files, token) {
     this.transferFiles(files, 'mv', 'move files');
-    $("#directory-contents").trigger('swalClose');  
+    this.doneLoading();
   }
 
   copy(files, token) {
     this.transferFiles(files, 'cp', 'copy files');  
+    this.doneLoading();
+  }
+
+  alertError(title, message) {
+    const eventData = {
+      'title': title,
+      'message': message,
+    };
+
+    $("#directory-contents").trigger('showError', eventData);
+
+  }
+
+  doneLoading() {
     $("#directory-contents").trigger('swalClose');
   }
 
-  reportTransferTemplate = (function(){
-    let template_str  = $('#transfer-template').html();
-    return Handlebars.compile(template_str);
-  })();
- 
+  clearClipboard() {
+    $("#directory-contents").trigger('clipboardClear');
+  }
+
+  reloadTable() {
+    $("#directory-contents").trigger('reloadTable');
+  }
+
+  showSwalLoading (message) {
+    const eventData = {
+      'message': message,
+    };
+
+    $("#directory-contents").trigger('swalShowLoading', eventData);
+
+  }
 }
