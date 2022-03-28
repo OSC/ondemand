@@ -21,15 +21,15 @@ class ApplicationController < ActionController::Base
   end
 
   def sys_apps
-    @sys_apps ||= SysRouter.apps
+    @sys_apps ||= AppRouter.apps(:sys)
   end
 
   def dev_apps
-    @dev_apps ||= ::Configuration.app_development_enabled? ? DevRouter.apps : []
+    @dev_apps ||= ::Configuration.app_development_enabled? ? AppRouter.apps(:dev) : []
   end
 
   def usr_apps
-    @usr_apps ||= ::Configuration.app_sharing_enabled? ? UsrRouter.all_apps(owners: UsrRouter.owners) : []
+    @usr_apps ||= ::Configuration.app_sharing_enabled? ? AppRouter.apps(:usr) : []
   end
 
   def nav_all_apps

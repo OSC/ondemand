@@ -3,23 +3,7 @@ class OodApp
 
   attr_reader :router
   delegate :owner, :caption, :type, :path, :name, :token, to: :router
-
-  def accessible?
-    path.executable? && path.readable?
-  end
-  alias_method :rx?, :accessible?
-
-  def directory?
-    path.directory?
-  end
-
-  def hidden?
-    path.basename.to_s.start_with?(".")
-  end
-
-  def backup?
-    !hidden? && path.basename.to_s.include?(".")
-  end
+  delegate :dev?, :sys?, :usr?, to: :router
 
   def manifest?
     manifest.valid?
@@ -175,10 +159,30 @@ class OodApp
   end
 
   def category
-    if (! router.category.empty?) && manifest.category.empty?
-      router.category
-    else
-      manifest.category
+    return manifest.category unless manifest.category.empty?
+
+    return "Sandbox Apps" if dev?
+    return "" if sys?
+
+    begin
+      Etc.getpwnam(owner).gecos
+    rescue
+      owner
+    end
+  end
+
+  def caption
+    case type
+      when :dev
+        "Sandbox Apps"
+      when :sys
+        "System Installed App"
+      when :usr
+        if caption == owner
+          I18n.t('dashboard.shared_apps_caption_short', owner: owner)
+        else
+          I18n.t('dashboard.shared_apps_caption', owner: owner, owner_title: caption)
+        end
     end
   end
 
