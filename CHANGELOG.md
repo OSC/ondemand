@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+add support for reading modules and dynamic string configs (#1925)\
+subclass manifests within the class to avoid superclass mismatches (#1918)\
+add nonces to inline js and change this elements tag (#1919)\
+Revert "fix Manifest superclass issue (#1914)" (#1917)\
+stop inlining style and instead use a bootstrap class (#1913)\
+enable nonces on js and css assets (#1912)\
+fix ERB errors in the dashboard (#1908)\
+fix Manifest superclass issue (#1914)\
+update dependencies (#1911)
 
 ### Changed
 
