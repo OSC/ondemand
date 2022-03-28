@@ -23,10 +23,14 @@ class PresetAppsPinnedTest < ApplicationSystemTestCase
     'This is just a test'
   end
 
+  def err_header
+    'save'
+  end
+
   test 'preset apps in pinned apps directly launch' do
     visit root_path
     click_on 'Test App: Preset'
-    verify_bc_alert('sys/preset_app/preset', err_msg)
+    verify_bc_alert('sys/preset_app/preset', err_header, err_msg)
   end
 
   test 'choice apps in pinned apps still redirect to the form' do
@@ -37,8 +41,6 @@ class PresetAppsPinnedTest < ApplicationSystemTestCase
     assert_equal new_batch_connect_session_context_path('sys/preset_app/choice'), current_path
     click_on 'Launch'
 
-    verify_bc_alert('sys/preset_app/choice', err_msg)
+    verify_bc_alert('sys/preset_app/choice', err_header, err_msg)
   end
-
-
 end

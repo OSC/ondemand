@@ -31,9 +31,10 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     find("##{id}")['class'].to_s
   end
 
-  def verify_bc_alert(token, err_msg)
+  def verify_bc_alert(token, header, message)
     assert_equal batch_connect_session_contexts_path(token), current_path
-    assert_equal err_msg, find('div[role="alert"]').find('h4').text
+    assert_equal header, find('div[role="alert"]').find('h4').text
+    assert_equal message, find('div[role="alert"]').find('pre').text
     find('div[role="alert"]').find('button').click
   end
 end
