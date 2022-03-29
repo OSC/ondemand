@@ -28,7 +28,7 @@ class Project
       Rails.logger.debug("project path is: #{OodAppkit.dataroot.join('projects')}")
 
       OodAppkit.dataroot.join('projects').tap do |path|
-        p.mkpath unless p.exist?
+        path.mkpath unless path.exist?
       rescue StandardError => e
         Pathname.new('')
       end
@@ -38,8 +38,8 @@ class Project
   validates :dir, presence: true
   validates :dir, format: {
 
-    with: /[\w-]+\z/,
-    message: 'Name may only contain letters, digits, dashes, and underscores'
+    with: /\A[\w-]+\z/,
+    message: 'Directory may only contain letters, digits, dashes, and underscores'
   }
 
   attr_reader :dir
