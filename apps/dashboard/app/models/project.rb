@@ -39,7 +39,7 @@ class Project
   validates :dir, presence: true
   validates :dir, format: {
 
-    with: /[\w-]+\z/,
+    with: /\A[\w-]+\z/,
     message: 'Directory may only contain letters, digits, dashes, and underscores'
   }
 
