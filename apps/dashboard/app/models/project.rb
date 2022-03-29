@@ -83,30 +83,13 @@ class Project
     Project.dataroot.join(dir)
   end
 
-  def proj_name
-    proj = dir.scan(/[\w-]+\z/)
-    proj[0].titleize
-  end
-
   def manifest
     @manifest ||= Manifest.load(manifest_path)
   end
 
-  def title
-    manifest.name.empty? ? name.titleize : manifest.name
-  end
-
-  def description
-    manifest.description unless manifest.description.nil?
-  end
-
-  def icon
-    manifest.icon
-  end
-
   def write_manifest
     manifest = Manifest.load(manifest_path)
-    manifest = manifest.merge({ name: title, description: description, icon: icon })
+    manifest = manifest.merge({ name: name, description: description, icon: icon })
     manifest.valid? ? manifest.save(manifest_path) : false
   end
 end

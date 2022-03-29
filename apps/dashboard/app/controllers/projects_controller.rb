@@ -36,7 +36,7 @@ class ProjectsController < ApplicationController
     @project = Project.new(project_params)
 
     # saving .ondemand in project_dataroot 
-    if @project.save!
+    if @project.save
       redirect_to projects_path, notice: 'Project successfully created!'
     else
       redirect_to projects_path, alert: 'Failed to save project'
@@ -57,6 +57,6 @@ class ProjectsController < ApplicationController
   def project_params
     params
       .require(:project)
-      .permit(:dir, :title, :description, :icon)
+      .permit(:dir, :name, :description, :icon)
   end
 end
