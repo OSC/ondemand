@@ -20,8 +20,6 @@ class ProjectsTest < ActiveSupport::TestCase
       Project.stubs(:dataroot).returns(projects_path)
       attrs = { dir: 'test_project' }
       project = Project.new(attrs)
-      #project.config_dir
-      #project.make_manifest
       project.save!
 
       dot_ondemand_path = Pathname.new("#{projects_path}/#{project.dir}")
@@ -36,8 +34,6 @@ class ProjectsTest < ActiveSupport::TestCase
       Project.stubs(:dataroot).returns(projects_path)
       attrs = { dir: 'test_project' }
       project = Project.new(attrs)
-      #project.config_dir
-      #project.make_manifest
       project.save!
       manifest_path = Pathname.new("#{projects_path}/#{project.dir}/.ondemand")
 
@@ -51,8 +47,6 @@ class ProjectsTest < ActiveSupport::TestCase
       Project.stubs(:dataroot).returns(projects_path)
       attrs = { dir: 'test_project' }
       project = Project.new(attrs)
-      #project.config_dir
-      #project.make_manifest
       project.save!
 
       project.destroy!
@@ -67,8 +61,6 @@ class ProjectsTest < ActiveSupport::TestCase
       Project.stubs(:dataroot).returns(projects_path)
       attrs = { dir: 'test_project' }
       project = Project.new(attrs)
-      #project.config_dir
-      #project.make_manifest
       project.save!
 
       #title         = "some title"
