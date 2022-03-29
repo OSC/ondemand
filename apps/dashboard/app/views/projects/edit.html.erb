@@ -1,10 +1,8 @@
-<div class='page-header text-center'>
+<div class='page-header text-center pb-3'>
   <h1>
     Editing: <%= @project.proj_name %>
   </h1>
 </div>
-
-<br>
 
 <%= bootstrap_form_for(@project, url: project_path, method: :patch) do |form| %>
   <%= render "project_edit_form", form: form %>
