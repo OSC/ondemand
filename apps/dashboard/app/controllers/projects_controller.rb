@@ -36,10 +36,11 @@ class ProjectsController < ApplicationController
     @project = Project.new(project_params)
 
     # saving .ondemand in project_dataroot 
-    if @project.save
+    if @project.valid? 
+      @project.save
       redirect_to projects_path, notice: 'Project successfully created!'
     else
-      redirect_to projects_path, alert: 'Failed to save project'
+      render :new
     end
   end
 
