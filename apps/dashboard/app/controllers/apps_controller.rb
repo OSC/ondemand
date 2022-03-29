@@ -31,7 +31,7 @@ class AppsController < ApplicationController
     #FIXME: the only thing about this action that feels wrong
     #is it is a GET and we are doing a setup (changing something) in response to
     #this request
-    @app.run_setup_production unless @app.type == :dev
+    @app.run_setup_production unless @app.dev?
 
     app_url = @app.url
 
@@ -67,22 +67,10 @@ class AppsController < ApplicationController
   private
 
   def set_app
-    @app = ::OodApp.new(router_for_type(params[:type], params[:owner], params[:name], params[:path]))
-  end
+    r = AppRouter.new(name: params[:name], type: params[:type], owner: params[:owner])
+    @app = AppRouter.find(r.token)
 
-  # keyword args?
-  def router_for_type(type, owner, app_name, path)
-    if type.to_sym == :sys
-      ::SysRouter.new(app_name)
-    elsif type.to_sym == :usr
-      ::UsrRouter.new(app_name, owner)
-    elsif type.to_sym == :dev
-      # FIXME: right now just return my dev apps router
-      ::DevRouter.new(app_name)
-    else
-      #FIXME: app type doesn't exit
-      raise ActionController::RoutingError.new('Not Found')
-    end
+    raise ActionController::RoutingError.new('Not Found') if @app.nil?
   end
 
   def set_metadata_columns

@@ -15,27 +15,6 @@ module BatchConnect
     # Raised when batch connect app components could not be found
     class AppNotFound < StandardError; end
 
-    class << self
-      # Generate an object from a token
-      # @param token [String] the token
-      # @return [App] generated object
-      def from_token(token)
-        type, *app = token.split("/")
-        case type
-        when "dev"
-          name, sub_app = app
-          router = DevRouter.new(name)
-        when "usr"
-          owner, name, sub_app = app
-          router = UsrRouter.new(name, owner)
-        else  # "sys"
-          name, sub_app = app
-          router = SysRouter.new(name)
-        end
-        new(router: router, sub_app: sub_app)
-      end
-    end
-
     # @param router [DevRouter, UsrRouter, SysRouter] router for batch connect
     #   app
     # @param sub_app [String, nil] sub app

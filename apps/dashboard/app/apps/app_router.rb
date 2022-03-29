@@ -17,6 +17,10 @@ class AppRouter
       type.nil? ? apps : apps.select { |a| a.type == type.to_sym }
     end
 
+    def find(token)
+      apps.select { |a| a.token == token.to_s }.first
+    end
+
     def base_path(type, owner: nil)
       case type
       when :sys
@@ -89,7 +93,6 @@ class AppRouter
   def accessible?
     path.executable? && path.readable?
   end
-  alias_method :rx?, :accessible?
 
   def directory?
     path.directory?

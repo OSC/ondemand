@@ -2,8 +2,8 @@ class OodApp
   include Rails.application.routes.url_helpers
 
   attr_reader :router
-  delegate :owner, :caption, :type, :path, :name, :token, to: :router
-  delegate :dev?, :sys?, :usr?, to: :router
+  delegate :owner, :type, :path, :name, :token, to: :router
+  delegate :accessible?, :dev?, :sys?, :usr?, to: :router
 
   def manifest?
     manifest.valid?
@@ -19,6 +19,11 @@ class OodApp
 
   def initialize(router)
     @router = router
+
+    Rails.logger.debug("new #{@router.token} with id #{object_id}")
+    caller.to_a.slice(0, 15).each do |line|
+      Rails.logger.debug(line)
+    end
   end
 
   def title
