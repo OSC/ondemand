@@ -6,13 +6,7 @@ let reportTransferTemplate = null;
 
 $(document).ready(function () {
   fileOps = new FileOps();
-
-  reportTransferTemplate = (function(){
-    let template_str  = $('#transfer-template').html();
-    return Handlebars.compile(template_str);
-  })();
   
-
   $("#directory-contents").on("fileOpsNewFile", function () {
     fileOps.newFilePrompt();
   });
@@ -57,7 +51,7 @@ $(document).ready(function () {
 
 class FileOps {
   _handleBars = null;
-  _timeout = 2000;
+  _timeout = 1000;
   
   constructor() {
     this._handleBars = Handlebars;
@@ -248,26 +242,25 @@ class FileOps {
       }),
       headers: { 'X-CSRF-Token': csrf_token }
     })
-    .then(response => dataFromJsonResponse(response))
+    .then(response => this.dataFromJsonResponse(response))
     .then((data) => {
   
       if(! data.completed){
         // was async, gotta report on progress and start polling
         this.reportTransfer(data);
-      }
-      else {
+      } else {
         if(data.target_dir == history.state.currentDirectory){
-          this.reloadTable();
         }
+        this.doneLoading();
+        this.reloadTable();
       }
   
       if(action == 'mv' || action == 'cp') {
         this.clearClipboard();
+        this.reloadTable();
       }
     })
-    .then(
-      () => this.doneLoading()
-    )
+    .then(() => this.doneLoading())
     .catch(e => this.alertError('Error occurred when attempting to ' + summary, e.message))
   }
   
@@ -276,8 +269,7 @@ class FileOps {
   
     if($(id).length){
       $(id).replaceWith(this.reportTransferTemplate(data));
-    }
-    else{
+    } else{
       $('.transfers-status').append(this.reportTransferTemplate(data));
     }
   }
@@ -287,17 +279,22 @@ class FileOps {
     $(id).fadeOut(4000);
   }
   
+  reportTransferTemplate = (function(){
+    let template_str  = $('#transfer-template').html();
+    return Handlebars.compile(template_str);
+  })();
+
   
   reportTransfer(data){
     // 1. add the transfer label
-    findAndUpdateTransferStatus(data);
+    this.findAndUpdateTransferStatus(data);
   
     let attempts = 0
   
     // 2. poll for the updates
     var poll = function() {
       $.getJSON(data.show_json_url, function (newdata) {
-        findAndUpdateTransferStatus(newdata);
+        this.findAndUpdateTransferStatus(newdata);
   
         if(newdata.completed) {
           if(! newdata.error_message) {
@@ -336,7 +333,6 @@ class FileOps {
 
   copy(files, token) {
     this.transferFiles(files, 'cp', 'copy files');  
-    this.doneLoading();
   }
 
   alertError(title, message) {
