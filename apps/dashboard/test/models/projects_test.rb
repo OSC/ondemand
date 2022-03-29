@@ -8,7 +8,7 @@ class ProjectsTest < ActiveSupport::TestCase
       Project.stubs(:dataroot).returns(projects_path)
       attrs = { dir: 'test_project' }
       project = Project.new(attrs)
-      project.save!
+      project.save
 
       assert Dir.entries(projects_path).include?("test_project")
     end
@@ -20,7 +20,7 @@ class ProjectsTest < ActiveSupport::TestCase
       Project.stubs(:dataroot).returns(projects_path)
       attrs = { dir: 'test_project' }
       project = Project.new(attrs)
-      project.save!
+      project.save
 
       dot_ondemand_path = Pathname.new("#{projects_path}/#{project.dir}")
 
@@ -32,9 +32,10 @@ class ProjectsTest < ActiveSupport::TestCase
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
       Project.stubs(:dataroot).returns(projects_path)
-      attrs = { dir: 'test_project' }
+      attrs = { dir: 'test"authenticity_token"=>"[FILTERED]", "project"=>{"dir"=>"project4"}, "commit"=>"Save"}
+      _project' }
       project = Project.new(attrs)
-      project.save!
+      project.save
       manifest_path = Pathname.new("#{projects_path}/#{project.dir}/.ondemand")
 
       assert Dir.entries(manifest_path).include?("manifest.yml")
@@ -47,7 +48,7 @@ class ProjectsTest < ActiveSupport::TestCase
       Project.stubs(:dataroot).returns(projects_path)
       attrs = { dir: 'test_project' }
       project = Project.new(attrs)
-      project.save!
+      project.save
 
       project.destroy!
 
@@ -61,20 +62,18 @@ class ProjectsTest < ActiveSupport::TestCase
       Project.stubs(:dataroot).returns(projects_path)
       attrs = { dir: 'test_project' }
       project = Project.new(attrs)
-      project.save!
+      project.save
 
-      #title         = "some title"
-      description   = "some description"
-      icon          = "fa://abell_1689"
+      name          = 'galaxies and galaxies'
+      description   = 'a view into the past'
+      icon          = 'fa://abell_1689'
 
-      # removed the title for now
-      test_attributes = { description: description, icon: icon }
-
-      # figure out how to set title in manifest class and insert again below
+      test_attributes = {name: name, description: description, icon: icon }
 
       expected_manifest_yml = <<~HEREDOC
         ---
-        description: some description
+        name: galaxies and galaxies
+        description: a view into the past
         icon: fa://abell_1689
       HEREDOC
 
