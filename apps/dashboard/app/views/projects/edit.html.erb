@@ -1,13 +1,13 @@
 <div class='page-header text-center'>
   <h1>
-    Editing: <%= @project.name %>
+    Editing: <%= @project.proj_name %>
   </h1>
 </div>
 
 <br>
 
 <%= bootstrap_form_for(@project, url: project_path, method: :patch) do |form| %>
-  <%= render "form_manifest", form: form %>
+  <%= render "project_edit_form", form: form %>
   <div class="row actions">
     <div class='col-md-6'>
       <%= form.submit 'Save', class: 'btn btn-primary' %>

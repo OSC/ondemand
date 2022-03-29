@@ -26,9 +26,7 @@ class ProjectsController < ApplicationController
   def update
     @project = Project.find(params[:id])
 
-    if @project.save!
-      @project.update(project_params)
-
+    if @project.update(project_params)
       redirect_to projects_path, notice: 'Project manifest updated!'
     end
   end
@@ -40,7 +38,7 @@ class ProjectsController < ApplicationController
     # saving .ondemand in project_dataroot 
     if @project.save!
       redirect_to projects_path, notice: 'Project successfully created!'
-    else     
+    else
       redirect_to projects_path, alert: 'Failed to save project'
     end
   end
@@ -49,7 +47,9 @@ class ProjectsController < ApplicationController
   def destroy
     @project = Project.find(params[:id])
 
-    redirect_to projects_path, notice: 'Project successfully deleted!' if @project.destroy!
+    if @project.destroy!
+      redirect_to projects_path, notice: 'Project successfully deleted!'
+    end
   end
 
   private

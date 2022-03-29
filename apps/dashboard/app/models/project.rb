@@ -28,7 +28,6 @@ class Project
       Rails.logger.debug("project path is: #{OodAppkit.dataroot.join('projects')}")
 
       OodAppkit.dataroot.join('projects').tap do |path|
-        Rails.logger.debug("tap dataroot running on path = #{path}")
         p.mkpath unless p.exist?
       rescue StandardError => e
         Pathname.new('')
@@ -38,12 +37,13 @@ class Project
 
   validates :dir, presence: true
   validates :dir, format: {
+
     with: /[\w-]+\z/,
     message: 'Name may only contain letters, digits, dashes, and underscores'
   }
 
   attr_reader :dir
-  delegate :icon, :title, :description, to: :manifest
+  delegate :icon, :name, :description, to: :manifest
 
   def initialize(attributes = {})
     @dir            = attributes.fetch(:dir, nil).to_s
@@ -76,34 +76,35 @@ class Project
     Pathname.new("#{project_dataroot}/.ondemand").tap { |path| path.mkpath unless path.exist? } 
   end
 
+
   def project_dataroot
     Project.dataroot.join(dir)
+  end
+
+  def proj_name
+    proj = dir.scan(/[\w-]+\z/)
+    proj[0].titleize
   end
 
   def manifest
     @manifest ||= Manifest.load(manifest_path)
   end
 
-  def metadata
-    manifest.metadata
-  end
-
   def title
-    manifest.metadata[:title]
+    manifest.name.empty? ? name.titleize : manifest.name
   end
 
   def description
-    manifest.description
+    manifest.description unless manifest.description.nil?
   end
 
-  def name
-    proj = dir.scan(/[\w-]+\z/)
-    proj[0].titleize
+  def icon
+    manifest.icon
   end
 
   def write_manifest
     manifest = Manifest.load(manifest_path)
-    manifest = manifest.merge({ title: title, description: description, icon: icon })
+    manifest = manifest.merge({ name: title, description: description, icon: icon })
     manifest.save(manifest_path)
   end
 end
