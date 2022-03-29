@@ -48,7 +48,6 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
         get projects_path
         assert_response :success
 
-        # no projects directory created 
         assert Dir.exist?("#{dir}/projects")
     end
   end
