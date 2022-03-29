@@ -54,7 +54,7 @@ class Project
       Rails.logger.debug("Writing manifest to: #{manifest_path}")
       write_manifest
     rescue StandardError => error
-      Rails.logger.debug("Writting manifest failed: #{error}")
+      Rails.logger.debug("Writing manifest failed: #{error}")
     rescue Errno::ENOENT => error
       Rails.logger.debug("manifest.yml file not found: #{error}")
     end
