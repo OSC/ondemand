@@ -51,7 +51,8 @@ $(document).ready(function () {
 
 class FileOps {
   _handleBars = null;
-  _timeout = 1000;
+  _timeout = 2000;
+  _attempts = 0;
   
   constructor() {
     this._handleBars = Handlebars;
@@ -218,10 +219,8 @@ class FileOps {
   }
 
   
-  removeFiles(files){
+  removeFiles(files) {
     this.transferFiles(files, "rm", "remove files")
-    this.doneLoading();
-    this.reloadTable();
   }    
   
   delete(files) {
@@ -231,6 +230,8 @@ class FileOps {
   }
 
   transferFiles(files, action, summary){
+
+    this._attempts = 0;
 
     this.showSwalLoading(_.startCase(summary));
   
@@ -248,23 +249,28 @@ class FileOps {
       if(! data.completed){
         // was async, gotta report on progress and start polling
         this.reportTransfer(data);
+        this.findAndUpdateTransferStatus(data);
       } else {
-        if(data.target_dir == history.state.currentDirectory){
-        }
-        this.doneLoading();
-        this.reloadTable();
+        // if(data.target_dir == history.state.currentDirectory){
+        // }
+        this.findAndUpdateTransferStatus(data);
       }
   
       if(action == 'mv' || action == 'cp') {
-        this.clearClipboard();
         this.reloadTable();
+        this.clearClipboard();
       }
+
+      this.doneLoading();
+      this.reloadTable();
+      this.fadeOutTransferStatus(data);
+
     })
     .then(() => this.doneLoading())
     .catch(e => this.alertError('Error occurred when attempting to ' + summary, e.message))
   }
   
-  findAndUpdateTransferStatus(data){
+  findAndUpdateTransferStatus(data) {
     let id = `#${data.id}`;
   
     if($(id).length){
@@ -284,51 +290,48 @@ class FileOps {
     return Handlebars.compile(template_str);
   })();
 
+  poll(data) {
+    $.getJSON(data.show_json_url, function (newdata) {
+      // because of getJSON not being an actual piece of the object, we need to instantiate an instance FileOps for this section of code.
+      let myFileOp = new FileOps();
+      myFileOp.findAndUpdateTransferStatus(newdata);
+
+      if(newdata.completed) {
+        if(! newdata.error_message) {
+          if(newdata.target_dir == history.state.currentDirectory) {
+            myFileOp.reloadTable();
+          }
+
+          // 3. fade out after 5 seconds
+          myFileOp.fadeOutTransferStatus(newdata)
+        }
+      }
+      else {
+        // not completed yet, so poll again
+        setTimeout(function(){
+          myFileOp._attempts++;
+        }, myFileOp._timeout);
+      }
+    }).fail(function() {
+      if (myFileOp._attempts >= 3) {
+        myFileOp.alertError('Operation may not have happened', 'Failed to retrieve file operation status.');  
+      } else {
+        setTimeout(function(){
+          tmyFileOphis._attempts++;
+        }, myFileOp._timeout);
+      }
+    });
+  }
   
-  reportTransfer(data){
+
+  reportTransfer(data) {
     // 1. add the transfer label
     this.findAndUpdateTransferStatus(data);
-  
-    let attempts = 0
-  
-    // 2. poll for the updates
-    var poll = function() {
-      $.getJSON(data.show_json_url, function (newdata) {
-        this.findAndUpdateTransferStatus(newdata);
-  
-        if(newdata.completed) {
-          if(! newdata.error_message) {
-            if(newdata.target_dir == history.state.currentDirectory) {
-              this.reloadTable();
-            }
-  
-            // 3. fade out after 5 seconds
-            this.fadeOutTransferStatus(newdata)
-          }
-        }
-        else {
-          // not completed yet, so poll again
-          setTimeout(function(){
-            attempts++;
-          }, this._timeout);
-        }
-      }).fail(function() {
-        if (attempts >= 3) {
-          this.alertError('Operation may not have happened', 'Failed to retrieve file operation status.');  
-        } else {
-          setTimeout(function(){
-            attempts++;
-          }, this._timeout);
-        }
-      });
-    }
-  
-    poll();
+    this.poll(data);
   } 
 
   move(files, token) {
     this.transferFiles(files, 'mv', 'move files');
-    this.doneLoading();
   }
 
   copy(files, token) {
