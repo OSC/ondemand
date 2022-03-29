@@ -49,9 +49,16 @@ class Project
     @dir            = attributes.fetch(:dir, nil).to_s
   end
 
-  def save!
-    make_manifest
-    write_manifest
+  def save
+    begin
+      Rails.logger.debug("Writing manifest to: #{manifest_path}")
+      write_manifest
+    rescue StandardError => error
+      Rails.logger.debug("Writting manifest failed: #{error}")
+    rescue Errno::ENOENT => error
+      Rails.logger.debug("manifest.yml file not found: #{error}")
+    end
+    true
   end
 
   def update(attributes)
@@ -63,10 +70,6 @@ class Project
   def destroy!
     FileUtils.remove_dir(project_dataroot, force = true)
   end
-
-  def make_manifest
-    File.new(manifest_path, 'w+') # try this: unless Dir.pwd != Project.dataroot
-  end
   
   def manifest_path
     File.join(configuration_directory, 'manifest.yml')
@@ -75,7 +78,6 @@ class Project
   def configuration_directory
     Pathname.new("#{project_dataroot}/.ondemand").tap { |path| path.mkpath unless path.exist? } 
   end
-
 
   def project_dataroot
     Project.dataroot.join(dir)
@@ -105,6 +107,6 @@ class Project
   def write_manifest
     manifest = Manifest.load(manifest_path)
     manifest = manifest.merge({ name: title, description: description, icon: icon })
-    manifest.save(manifest_path)
+    manifest.valid? ? manifest.save(manifest_path) : false
   end
 end
