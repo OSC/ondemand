@@ -89,6 +89,15 @@ class ConfigurationSingleton
     )
   end
 
+  # clusters you can submit jobs to
+  def job_clusters
+    @job_clusters ||= OodCore::Clusters.new(
+      OodAppkit.clusters
+        .select(&:job_allow?)
+        .reject { |c| c.metadata.hidden }
+    )
+  end
+
   # @return [String, nil] version string from VERSION file, or nil if no file avail
   def version_from_file(dir)
     file = Pathname.new(dir).join("VERSION")
