@@ -3,6 +3,7 @@
 
 class Project
   include ActiveModel::Model
+  include ActiveModel::Validations
 
   class << self
     def all
@@ -38,7 +39,7 @@ class Project
   validates :dir, presence: true
   validates :dir, format: {
 
-    with: /\A[\w-]+\z/,
+    with: /[\w-]+\z/,
     message: 'Directory may only contain letters, digits, dashes, and underscores'
   }
 
