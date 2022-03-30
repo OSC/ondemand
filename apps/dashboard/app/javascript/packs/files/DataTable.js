@@ -84,6 +84,9 @@ $(document).ready(function () {
             
     });
 
+    $("#goto-btn").on("click", function () {
+        $("#directory-contents").trigger('changeDirectoryPrompt');
+    });
 
     // Will have to work on this one later.  Not so straight forward.
     //
@@ -95,8 +98,8 @@ $(document).ready(function () {
 
     /* TABLE ACTIONS */
 
-    $("#directory-contents").on("reloadTable", function () {
-        table.reloadTable();
+    $("#directory-contents").on("reloadTable", function (e, options) {
+        table.reloadTable(options.url);
     });
 
     $("#directory-contents").on("getDataFromJsonResponse", function (e, options) {

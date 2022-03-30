@@ -55,15 +55,53 @@ $(document).ready(function () {
     fileOps.copy(options.files, options.token);
   });
 
+  $("#directory-contents").on("changeDirectoryPrompt", function () {
+    fileOps.changeDirectoryPrompt();
+  });
+
+  $("#directory-contents").on("changeDirectory", function (e, options) {
+    fileOps.changeDirectory(options.result.value);
+  });
+
 });
 
 class FileOps {
   _handleBars = null;
   _timeout = 2000;
   _attempts = 0;
-  
+  _filesPath = filesPath;
+
   constructor() {
     this._handleBars = Handlebars;
+  }
+
+  changeDirectory(path) {
+    this.goto(filesPath + path);
+  }
+
+  changeDirectoryPrompt() {
+    const eventData = {
+      action: 'changeDirectory',
+      'inputOptions': {
+        title: 'Change Directory',
+        input: 'text',
+        inputLabel: 'Path',
+        inputValue:  history.state.currentDirectory,
+        inputAttributes: {
+          spellcheck: 'false',
+        },
+        showCancelButton: true,
+        inputValidator: (value) => {
+          if (! value || ! value.startsWith('/')) {
+            // TODO: validate filenames against listing
+            return 'Provide an absolute pathname'
+          }
+        }
+      }
+    };
+
+    $("#directory-contents").trigger('swalShowInput', eventData);
+
   }
 
 
@@ -420,8 +458,12 @@ class FileOps {
     $("#directory-contents").trigger('clipboardClear');
   }
 
-  reloadTable() {
-    $("#directory-contents").trigger('reloadTable');
+  reloadTable(url) {
+    const eventData = {
+      'url': url,
+    };
+
+    $("#directory-contents").trigger('reloadTable', eventData);
   }
 
   showSwalLoading (message) {
@@ -432,4 +474,8 @@ class FileOps {
     $("#directory-contents").trigger('swalShowLoading', eventData);
 
   }
+
+  goto(url) {
+    window.open(url,"_self");
+  }  
 }
