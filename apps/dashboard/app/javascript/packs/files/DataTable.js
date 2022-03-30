@@ -255,7 +255,7 @@ class DataTable {
                 },
                 { data: 'type', render: (data, type, row, meta) => data == 'd' ? '<span title="directory" class="fa fa-folder" style="color: gold"><span class="sr-only"> dir</span></span>' : '<span title="file" class="fa fa-file" style="color: lightgrey"><span class="sr-only"> file</span></span>' }, // type
                 { name: 'name', data: 'name', className: 'text-break', render: (data, type, row, meta) => `<a class="${row.type} name ${row.type == 'd' ? '' : 'view-file'}" href="${row.url}">${Handlebars.escapeExpression(data)}</a>` }, // name
-                { name: 'actions', orderable: false, data: null, render: (data, type, row, meta) => this.actionsBtnTemplate({ row_index: meta.row, file: row.type != 'd', data: row }) }, // FIXME: pass row index or something needed for finding item
+                { name: 'actions', orderable: false, data: null, render: (data, type, row, meta) => this.actionsBtnTemplate({ row_index: meta.row, file: row.type != 'd', data: row  }) },
                 {
                     data: 'size',
                     render: (data, type, row, meta) => {
@@ -343,9 +343,11 @@ class DataTable {
         });
     }
 
-    actionsBtnTemplate() {
+    actionsBtnTemplate(options) {
         let template_str = $('#actions-btn-template').html();
-        return Handlebars.compile(template_str);
+        let compiled = Handlebars.compile(template_str);
+        let results = compiled(options);
+        return results;        
     }
 
     updateDatatablesStatus(){
