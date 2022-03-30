@@ -15,6 +15,14 @@ $(document).ready(function () {
     fileOps.newFolderPrompt();
   });
 
+  $("#directory-contents").on("fileOpsRenameFilePrompt", function (e, options) {
+    fileOps.renameFilePrompt(options.file);
+  });
+
+  $("#directory-contents").on("fileOpsRenameFile", function (e, options) {
+    fileOps.renameFile(options.files, options.result.value);
+  });
+
   $("#directory-contents").on("fileOpsCreateFile", function (e, options) {
     fileOps.newFile(options.result.value);
   });
@@ -59,6 +67,60 @@ class FileOps {
   }
 
 
+  deleteFile(fileName, newFileName) {
+    let files = {};
+    files[`${history.state.currentDirectory}/${fileName}`] = `${history.state.currentDirectory}/${newFileName}`;
+    this.transferFiles(files, "mv", "rename file")
+  }
+
+  deleteFilePrompt(files) {
+    const eventData = {
+      action: 'fileOpsDeleteFile',
+      title: files.length == 1 ? `Delete ${files[0]}?` : `Delete ${files.length} selected files?`,
+      text: 'Are you sure you want to delete the files: ' + files.join(', '),
+      showCancelButton: true,
+    }
+
+    $("#directory-contents").trigger('swalShowPrompt', eventData);
+  }
+
+
+  renameFile(fileName, newFileName) {
+    let files = {};
+    files[`${history.state.currentDirectory}/${fileName}`] = `${history.state.currentDirectory}/${newFileName}`;
+    this.transferFiles(files, "mv", "rename file")
+  }
+
+  renameFilePrompt(fileName) {
+    const eventData = {
+      action: 'fileOpsRenameFile',
+      files: fileName,
+      'inputOptions': {
+        title: 'Rename',
+        input: 'text',
+        inputLabel: 'Filename',
+        inputValue: fileName,
+        inputAttributes: {
+          spellcheck: 'false',
+        },
+        showCancelButton: true,
+        inputValidator: (value) => {
+          if (! value) {
+            // TODO: validate filenames against listing
+            return 'Provide a filename to rename this to';
+          } else if (value.includes('/') || value.includes('..')) {
+           return 'Filename cannot include / or ..';
+          }
+        }
+      }
+    };
+
+    $("#directory-contents").trigger('swalShowInput', eventData);
+
+  }
+
+
+
   newFilePrompt() {
 
     const eventData = {
@@ -86,13 +148,14 @@ class FileOps {
   }
 
   newFile(filename) {
+    let myFileOp = new FileOps();
     fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?touch=true`, { method: 'put', headers: { 'X-CSRF-Token': csrf_token } })
       .then(response => this.dataFromJsonResponse(response))
       .then(function () {
-        this.reloadTable();
+        myFileOp.reloadTable();
       })
       .catch(function (e) {
-        this.alertError('Error occurred when attempting to create new file', e.message);
+        myFileOp.alertError('Error occurred when attempting to create new file', e.message);
       });
   }
 
@@ -119,13 +182,14 @@ class FileOps {
   }
 
   newFolder(filename) {
+    let myFileOp = new FileOps();
     fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token }})
       .then(response => this.dataFromJsonResponse(response))
       .then(function () {
-        this.reloadTable();
+        myFileOp.reloadTable();
       })
       .catch(function (e) {
-        this.alertError('Error occurred when attempting to create new folder', e.message);
+        myFileOp.alertError('Error occurred when attempting to create new folder', e.message);
       });
   }
 
@@ -253,7 +317,7 @@ class FileOps {
       } else {
         // if(data.target_dir == history.state.currentDirectory){
         // }
-        this.findAndUpdateTransferStatus(data);
+        // this.findAndUpdateTransferStatus(data);
       }
   
       if(action == 'mv' || action == 'cp') {
@@ -261,9 +325,9 @@ class FileOps {
         this.clearClipboard();
       }
 
+      this.fadeOutTransferStatus(data);
       this.doneLoading();
       this.reloadTable();
-      this.fadeOutTransferStatus(data);
 
     })
     .then(() => this.doneLoading())

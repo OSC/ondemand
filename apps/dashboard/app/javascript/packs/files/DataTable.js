@@ -10,6 +10,7 @@ import {} from './ClipBoard.js';
 
 
 let table = null;
+
 $(document).ready(function () {
     table = new DataTable();
 
@@ -101,6 +102,49 @@ $(document).ready(function () {
     $("#directory-contents").on("getDataFromJsonResponse", function (e, options) {
         table.dataFromJsonResponse(options.response);
     });
+
+    $(document).on('click','.rename-file', function(e) {
+        e.preventDefault();
+        let rowId = e.currentTarget.dataset.rowIndex;
+        let row = table.getTable().row(rowId).data();
+        let fileName = $($.parseHTML(row.name)).text();
+
+        const eventData = {
+            file: fileName,
+        };
+  
+        $("#directory-contents").trigger('fileOpsRenameFilePrompt', eventData);    
+
+     });    
+
+     $(document).on('click','.delete-file', function(e) {
+        e.preventDefault();
+        let rowId = e.currentTarget.dataset.rowIndex;
+        let row = table.getTable().row(rowId).data();
+        let fileName = $($.parseHTML(row.name)).text();
+
+        const eventData = {
+            files: [fileName]
+        };
+  
+        $("#directory-contents").trigger('fileOpsDeletePrompt', eventData);    
+
+     });    
+
+     $('#show-dotfiles').on('change', () => {
+        let visible = $('#show-dotfiles').is(':checked');
+      
+        table.setShowDotFiles(visible);
+        table.updateDotFileVisibility();
+      });
+      
+      $('#show-owner-mode').on('change', () => {
+        let visible = $('#show-owner-mode').is(':checked');
+      
+        table.setShowOwnerMode(visible);
+        table.updateShowOwnerModeVisibility();
+      });
+      
 
     /* END TABLE ACTIONS */
     
@@ -324,6 +368,27 @@ class DataTable {
             return await Promise.reject(e);
         }
     }
+
+    updateDotFileVisibility() {
+        this.reloadTable();
+    }
+      
+    updateShowOwnerModeVisibility() {
+        let visible = this.getShowOwnerMode();
+        
+        this._table.column('owner:name').visible(visible);
+        this._table.column('mode:name').visible(visible);
+    }
+      
+      
+    setShowOwnerMode(visible) {
+        localStorage.setItem('show-owner-mode', new Boolean(visible));
+    }
+            
+    setShowDotFiles(visible) {
+        localStorage.setItem('show-dotfiles', new Boolean(visible));
+    }
+            
 
     getShowDotFiles() {
         return localStorage.getItem('show-dotfiles') == 'true'
