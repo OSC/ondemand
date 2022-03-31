@@ -416,4 +416,36 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 'display: none;', find_option_style('classroom_size', 'medium')
     assert_equal 'display: none;', find_option_style('classroom_size', 'large')
   end
+
+  test 'stage errors are shown' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    err_msg = 'this is a just a test for staging error messages'
+    Open3.stubs(:capture2e).raises(StandardError.new(err_msg))
+
+    # defaults
+    click_on('Launch')
+    verify_bc_alert('sys/bc_jupyter', I18n.t('dashboard.batch_connect_sessions_errors_staging'), err_msg)
+  end
+
+  test 'submit errors are shown' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    err_msg = BrokenAdapter::SUBMIT_ERR_MSG
+    Open3.stubs(:capture2e).returns(['', exit_success])
+    BatchConnect::Session.any_instance.stubs(:adapter).returns(BrokenAdapter.new)
+
+    # defaults
+    click_on('Launch')
+    verify_bc_alert('sys/bc_jupyter', I18n.t('dashboard.batch_connect_sessions_errors_submission'), err_msg)
+  end
+
+  test 'save errors are shown' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    err_msg = 'this is a just a test for staging error messages'
+    # Open3.stubs(:capture2e).returns(['', exit_failure])
+    BatchConnect::Session.any_instance.stubs(:stage).raises(StandardError.new(err_msg))
+
+    # defaults
+    click_on('Launch')
+    verify_bc_alert('sys/bc_jupyter', 'save', err_msg)
+  end
 end

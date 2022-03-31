@@ -23,15 +23,16 @@ locals: {
       <span aria-hidden="true">&times;</span>
     </button>
 
-    <% @session.errors.each do |key, error| %>
-      <% if key == :submit %>
+    <% @session.errors.each do |error| %>
+      <% if error.attribute == :submit %>
         <h4><%= t('dashboard.batch_connect_sessions_errors_submission') %></h4>
-        <pre><%= error %></pre>
-      <% elsif key == :stage %>
+        <pre><%= error.message %></pre>
+      <% elsif error.attribute == :stage %>
         <h4><%= t('dashboard.batch_connect_sessions_errors_staging') %></h4>
-        <pre><%= error %></pre>
+        <pre><%= error.message %></pre>
       <% else %>
-        <h4><%= error %></h4>
+        <h4><%= error.attribute %></h4>
+        <pre><%= error.message %></pre>
       <% end %>
     <% end %>
 
