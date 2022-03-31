@@ -51,13 +51,9 @@ class Project
   end
 
   def save
-    begin
-      Rails.logger.debug("Writing manifest to: #{manifest_path}")
-      write_manifest
-    rescue StandardError => error
-      Rails.logger.debug("Writing manifest failed: #{error}")
-    rescue Errno::ENOENT => error
-      Rails.logger.debug("manifest.yml file not found: #{error}")
+    write_manifest
+    if false
+      Rails.logger.debug("Manifest failed to save in: #{configuration_directory}")
     end
     true
   end
