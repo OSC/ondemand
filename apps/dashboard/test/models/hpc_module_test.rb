@@ -25,13 +25,6 @@ class HpcModuleTest < ActiveSupport::TestCase
     end
   end
 
-  test 'reads a simple file' do
-    with_modified_env({ OOD_MODULE_FILE_DIR: fixture_dir }) do
-      # NOTE: that there are no duplicates and rstudio has no version
-      assert_equal(['jupyter/1', 'jupyter/2', 'rstudio'], HpcModule.all('simple').map(&:to_s))
-    end
-  end
-
   test 'all versions is corrrect, sorted and unique' do
     stub_sys_apps
     with_modified_env({ OOD_MODULE_FILE_DIR: fixture_dir }) do
