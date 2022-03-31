@@ -52,10 +52,10 @@ class Project
 
   def save
     write_manifest
-    if false
-      Rails.logger.debug("Manifest failed to save in: #{configuration_directory}")
-    end
-    true
+  rescue => error
+    errors.add(:save, error.message)
+    Rails.logger.error("ERROR: #{error.class} - #{error.message}")
+    false
   end
 
   def update(attributes)
