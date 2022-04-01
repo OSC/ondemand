@@ -4,7 +4,7 @@ let fileOps = null;
 
 let reportTransferTemplate = null;
 
-$(document).ready(function () {
+jQuery(function() {
   fileOps = new FileOps();
   
   $("#directory-contents").on("fileOpsNewFile", function () {

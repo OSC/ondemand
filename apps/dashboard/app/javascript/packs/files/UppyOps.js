@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 let uppy = null;
 
-$(document).ready(function() {
+Query(function() {
 
   class EmptyDirCreator extends BasePlugin {
     constructor (uppy, opts){

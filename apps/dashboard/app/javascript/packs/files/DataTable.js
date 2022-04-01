@@ -3,15 +3,11 @@ import 'datatables.net-bs4/js/dataTables.bootstrap4';
 import 'datatables.net-select';
 import 'datatables.net-select-bs4';
 import Handlebars from 'handlebars';
-import {} from './SweetAlert.js';
-import {} from './FileOps.js';
-import {} from './UppyOps.js';
-import {} from './ClipBoard.js';
 
 
 let table = null;
 
-$(document).ready(function () {
+jQuery(function() {
     table = new DataTable();
 
     /* BUTTON ACTIONS */

@@ -1,7 +1,7 @@
 import ClipboardJS from 'clipboard'
 import Handlebars from 'handlebars';
 
-$(document).ready(function() {
+jQuery(function() {
   
   var clipBoard = new ClipBoard();
 

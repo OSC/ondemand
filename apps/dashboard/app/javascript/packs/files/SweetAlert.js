@@ -2,7 +2,7 @@ import Swal from 'sweetalert2'
 
 let sweetAlert = null;
 
-$(document).ready(function(){
+jQuery(function() {
   sweetAlert = new SweetAlert();
   $("#directory-contents").on("swalShowError", function(e,options) {
     sweetAlert.alertError(options.title, options.message);
