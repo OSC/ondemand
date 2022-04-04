@@ -1,31 +1,32 @@
 import ClipboardJS from 'clipboard'
 import Handlebars from 'handlebars';
+import {CONTENTID, TRIGGERID} from './DataTable.js';
 
 jQuery(function() {
   
   var clipBoard = new ClipBoard();
 
-  $("#directory-contents").on('success', function(e) {
+  $(CONTENTID.table).on('success', function(e) {
     $(e.trigger).tooltip({title: 'Copied path to clipboard!', trigger: 'manual', placement: 'bottom'}).tooltip('show');
     setTimeout(() => $(e.trigger).tooltip('hide'), 2000);
     e.clearSelection();
   });
   
-  $("#directory-contents").on('error', function(e) {
+  $(CONTENTID.table).on('error', function(e) {
     e.clearSelection();
   });
 
-  $("#directory-contents").on("clipboardClear", function (e, options) {
+  $(CONTENTID.table).on(TRIGGERID.clearClipboard, function (e, options) {
     clipBoard.clearClipboard();
     clipBoard.updateViewForClipboard();
   });
 
-  $("#directory-contents").on("updateClipboardFromSelection", function (e, options) {
+  $(CONTENTID.table).on(TRIGGERID.updateClipboard, function (e, options) {
     clipBoard.updateClipboardFromSelection(options.selection);
     clipBoard.updateViewForClipboard();
   });
 
-  $("#directory-contents").on("updateViewForClipboard", function (e, options) {
+  $(CONTENTID.table).on(TRIGGERID.updateClipboardView, function (e, options) {
     clipBoard.updateViewForClipboard();
   });
 
@@ -34,20 +35,14 @@ jQuery(function() {
 
 class ClipBoard {
   _clipBoard = null;
-  _handleBars = null;
 
   constructor() {
     this._clipBoard = new ClipboardJS('#copy-path');
-    this._handleBars = Handlebars;
   }
 
   getClipBoard() {
     return this._clipBoard;
   }
-
-  getHandleBars() {
-    return this._handleBars;
-  } 
 
   clearClipboard() {
     localStorage.removeItem('filesClipboard');
@@ -73,7 +68,7 @@ class ClipBoard {
   updateViewForClipboard() {
     let clipboard = JSON.parse(localStorage.getItem('filesClipboard') || '{}'),
         template_str  = $('#clipboard-template').html(),
-        template = this._handleBars.compile(template_str);
+        template = Handlebars.compile(template_str);
   
     $('#clipboard').html(template(clipboard));
   
@@ -102,7 +97,7 @@ class ClipBoard {
             'token': csrf_token
           };
   
-          $("#directory-contents").trigger('fileOpsMove', eventData);    
+          $(CONTENTID.table).trigger(TRIGGERID.moveFile, eventData);    
         }
       }
       else{
@@ -141,7 +136,7 @@ class ClipBoard {
             'token': csrf_token
           };
         
-          $("#directory-contents").trigger('fileOpsCopy', eventData);    
+          $(CONTENTID.table).trigger(TRIGGERID.copyFile, eventData);    
         }
       }
       else{

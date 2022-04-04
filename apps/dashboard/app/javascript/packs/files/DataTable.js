@@ -3,7 +3,37 @@ import 'datatables.net-bs4/js/dataTables.bootstrap4';
 import 'datatables.net-select';
 import 'datatables.net-select-bs4';
 import Handlebars from 'handlebars';
+export {CONTENTID, TRIGGERID};
 
+const TRIGGERID = {
+	changeDirectory: 'changeDirectory',
+    changeDirectoryPrompt: 'changeDirectoryPrompt',	
+	clearClipboard: 'clearClipboard',
+	closeSwal: 'closeSwal',
+    copyFile: 'copyFile',
+	createFile: 'createFile',
+	createFolder: 'createFolder',
+	deleteFile: 'deleteFile',
+    deletePrompt: 'deletePrompt',	
+    download: 'download',	
+    getJsonResponse: 'getJsonResponse',	
+	moveFile: 'moveFile',
+    newFile: 'newFile',	
+    newFolder: 'newFolder',	
+    reloadTable: 'reloadTable',	
+	renameFile: 'renameFile',
+    renameFilePrompt: 'renameFilePrompt',	
+    showError: 'showError',
+	showInput: 'showInput',
+	showLoading: 'showLoading',
+	showPrompt: 'showPrompt',
+    updateClipboard: 'updateClipboard',	
+    updateClipboardView: 'updateClipboardView',	
+};
+
+const CONTENTID = {
+    table: '#directory-contents',
+};
 
 let table = null;
 
@@ -12,11 +42,11 @@ jQuery(function() {
 
     /* BUTTON ACTIONS */
     $("#new-file-btn").on("click", function () {
-        $("#directory-contents").trigger('fileOpsNewFile');
+        $(CONTENTID.table).trigger(TRIGGERID.newFile);
     });
 
     $("#new-folder-btn").on("click", function () {
-        $("#directory-contents").trigger('fileOpsNewFolder');
+        $(CONTENTID.table).trigger(TRIGGERID.newFolder);
     });
 
     $("#download-btn").on("click", function () {
@@ -27,14 +57,14 @@ jQuery(function() {
                 'message': 'You have selected none.',
             };
 
-            $("#directory-contents").trigger('swalShowError', eventData);
+            $(CONTENTID.table).trigger(TRIGGERID.showError, eventData);
 
         } else {
             const eventData = {
                 selection: selection
             };
       
-            $("#directory-contents").trigger('fileOpsDownload', eventData);    
+            $(CONTENTID.table).trigger(TRIGGERID.download, eventData);    
         }
             
     });
@@ -47,14 +77,14 @@ jQuery(function() {
                 'message': 'You have selected none.',
             };
 
-            $("#directory-contents").trigger('swalShowError', eventData);
+            $(CONTENTID.table).trigger(TRIGGERID.showError, eventData);
 
         } else {
             const eventData = {
                 files: files
             };
       
-            $("#directory-contents").trigger('fileOpsDeletePrompt', eventData);    
+            $(CONTENTID.table).trigger(TRIGGERID.deletePrompt, eventData);    
         }
             
     });
@@ -67,38 +97,39 @@ jQuery(function() {
                 'message': 'You have selected none.',
             };
 
-            $("#directory-contents").trigger('swalShowError', eventData);
-            $("#directory-contents").trigger('clipboardClear', eventData);
+            $(CONTENTID.table).trigger(TRIGGERID.showError, eventData);
+            $(CONTENTID.table).trigger(TRIGGERID.clearClipbaord, eventData);
 
         } else {
             const eventData = {
                 selection: selection
             };
       
-            $("#directory-contents").trigger('updateClipboardFromSelection', eventData);
+            $(CONTENTID.table).trigger(TRIGGERID.updateClipboard, eventData);
         }
             
     });
 
     $("#goto-btn").on("click", function () {
-        $("#directory-contents").trigger('changeDirectoryPrompt');
+        $(CONTENTID.table).trigger(TRIGGERID.changeDirectoryPrompt);
     });
 
+    // TODO:
     // Will have to work on this one later.  Not so straight forward.
     //
     // $("#upload-btn").on("click", function () {
-    //     $("#directory-contents").trigger('uppyShowUploadPrompt');
+    //     $(CONTENTID.table).trigger('uppyShowUploadPrompt');
     // });
 
     /* END BUTTON ACTIONS */
 
     /* TABLE ACTIONS */
 
-    $("#directory-contents").on("reloadTable", function (e, options) {
+    $(CONTENTID.table).on(TRIGGERID.reloadTable, function (e, options) {
         table.reloadTable(options.url);
     });
 
-    $("#directory-contents").on("getDataFromJsonResponse", function (e, options) {
+    $(CONTENTID.table).on(TRIGGERID.getJsonResponse, function (e, options) {
         table.dataFromJsonResponse(options.response);
     });
 
@@ -112,7 +143,7 @@ jQuery(function() {
             file: fileName,
         };
   
-        $("#directory-contents").trigger('fileOpsRenameFilePrompt', eventData);    
+        $(CONTENTID.table).trigger(TRIGGERID.renameFilePrompt, eventData);    
 
      });    
 
@@ -126,7 +157,7 @@ jQuery(function() {
             files: [fileName]
         };
   
-        $("#directory-contents").trigger('fileOpsDeletePrompt', eventData);    
+        $(CONTENTID.table).trigger(TRIGGERID.deletePrompt, eventData);    
 
      });    
 
@@ -255,7 +286,7 @@ class DataTable {
     }
 
     loadDataTable() {
-        this._table = $('#directory-contents').on('xhr.dt', function (e, settings, json, xhr) {
+        this._table = $(CONTENTID.table).on('xhr.dt', function (e, settings, json, xhr) {
             // new ajax request for new data so update date/time
             // if(json && json.time){
             if (json && json.time) {
@@ -353,7 +384,7 @@ class DataTable {
             $('#open-in-terminal-btn').attr('href', data.shell_url);
             $('#open-in-terminal-btn').removeClass('disabled');
             
-            $("#directory-contents").trigger('updateViewForClipboard');
+            $(CONTENTID.table).trigger(TRIGGERID.updateClipboardView);
             return await Promise.resolve(data);
         } catch (e) {
             const eventData = {
@@ -361,7 +392,7 @@ class DataTable {
                 'message': e.message,
             };
 
-            $("#directory-contents").trigger('swalShowError', eventData);
+            $(CONTENTID.table).trigger(TRIGGERID.showError, eventData);
 
             $('#open-in-terminal-btn').addClass('disabled');
             return await Promise.reject(e);

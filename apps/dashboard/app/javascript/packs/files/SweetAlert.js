@@ -1,41 +1,40 @@
 import Swal from 'sweetalert2'
+import {CONTENTID, TRIGGERID} from './DataTable.js';
 
 let sweetAlert = null;
 
 jQuery(function() {
   sweetAlert = new SweetAlert();
-  $("#directory-contents").on("swalShowError", function(e,options) {
+  $(CONTENTID.table).on(TRIGGERID.showError, function(e,options) {
     sweetAlert.alertError(options.title, options.message);
   });
 
-  $("#directory-contents").on("swalShowPrompt", function(e,options) {
+  $(CONTENTID.table).on(TRIGGERID.showPrompt, function(e,options) {
     sweetAlert.alertError(options.title, options.message);
   });
 
-  $("#directory-contents").on("swalShowInput", function(e,options) {
+  $(CONTENTID.table).on(TRIGGERID.showInput, function(e,options) {
     sweetAlert.input(options);
   });
 
-  $("#directory-contents").on("swalShowLoading", function(e,options) {
+  $(CONTENTID.table).on(TRIGGERID.showLoading, function(e,options) {
     sweetAlert.loading(options.message);
   });
 
-  $("#directory-contents").on("swalClose", function() {
+  $(CONTENTID.table).on(TRIGGERID.closeSwal, function() {
     sweetAlert.close();
   });
 
 });
 
 class SweetAlert {
-  _swal = null;
 
   constructor() {
-    this._swal = Swal;
     this.setMixin();
   }
 
   input(options) {
-    this._swal.fire(options.inputOptions)
+    Swal.fire(options.inputOptions)
     .then (function(result){
       if(result.isConfirmed) {
         const eventData = {
@@ -43,15 +42,15 @@ class SweetAlert {
           files: options.files ? options.files : null
         };
 
-        $("#directory-contents").trigger(options.action, eventData);
+        $(CONTENTID.table).trigger(options.action, eventData);
       } else {
-        $("#directory-contents").trigger('reloadTable');
+        $(CONTENTID.table).trigger(TRIGGERID.reloadTable);
       }
     });
   }
 
   setMixin() {
-    this._swal.mixIn = ({
+    Swal.mixIn = ({
       showClass: {
         popup: 'swal2-noanimation',
         backdrop: 'swal2-noanimation'
@@ -64,22 +63,19 @@ class SweetAlert {
   }
 
   alertError(error_title, error_message) {
-    this._swal.fire(error_title, error_message, 'error');
+    Swal.fire(error_title, error_message, 'error');
   }
   
   async loading(title) {
-    this._swal.fire({
+    Swal.fire({
       title: title,
       allowOutsideClick: false,
       showConfirmButton: false,
-      willOpen: () => { this._swal.showLoading()  }
+      willOpen: () => { Swal.showLoading()  }
     });
   }
   
   close() {
-    this._swal.close();
+    Swal.close();
   }  
 }
-
-
-

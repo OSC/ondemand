@@ -1,4 +1,5 @@
 import Handlebars from 'handlebars';
+import {CONTENTID, TRIGGERID} from './DataTable.js';
 
 let fileOps = null;
 
@@ -7,72 +8,66 @@ let reportTransferTemplate = null;
 jQuery(function() {
   fileOps = new FileOps();
   
-  $("#directory-contents").on("fileOpsNewFile", function () {
+  $(CONTENTID.table).on(TRIGGERID.newFilePrompt, function () {
     fileOps.newFilePrompt();
   });
 
-  $("#directory-contents").on("fileOpsNewFolder", function () {
+  $(CONTENTID.table).on(TRIGGERID.newFolderPrompt, function () {
     fileOps.newFolderPrompt();
   });
 
-  $("#directory-contents").on("fileOpsRenameFilePrompt", function (e, options) {
+  $(CONTENTID.table).on(TRIGGERID.renameFilePrompt, function (e, options) {
     fileOps.renameFilePrompt(options.file);
   });
 
-  $("#directory-contents").on("fileOpsRenameFile", function (e, options) {
+  $(CONTENTID.table).on(TRIGGERID.renameFile, function (e, options) {
     fileOps.renameFile(options.files, options.result.value);
   });
 
-  $("#directory-contents").on("fileOpsCreateFile", function (e, options) {
+  $(CONTENTID.table).on(TRIGGERID.createFile, function (e, options) {
     fileOps.newFile(options.result.value);
   });
 
-  $("#directory-contents").on("fileOpsCreateFolder", function (e, options) {
+  $(CONTENTID.table).on(TRIGGERID.createFolder, function (e, options) {
     fileOps.newFolder(options.result.value);
   });
 
-  // $("#directory-contents").on("fileOpsUpload", function (e, options) {
-  //   fileOps.newFolder(options.value);
-  // });
-
-  $("#directory-contents").on("fileOpsDownload", function (e, options) {
+  $(CONTENTID.table).on(TRIGGERID.download, function (e, options) {
     fileOps.download(options.selection);
   });
 
-  $("#directory-contents").on("fileOpsDeletePrompt", function (e, options) {
+  $(CONTENTID.table).on(TRIGGERID.deletePrompt, function (e, options) {
     fileOps.deletePrompt(options.files);
   });
 
-  $("#directory-contents").on("fileOpsDelete", function (e, options) {
+  $(CONTENTID.table).on(TRIGGERID.deleteFile, function (e, options) {
     fileOps.delete(options.files);
   });
 
-  $("#directory-contents").on("fileOpsMove", function (e, options) {
+  $(CONTENTID.table).on(TRIGGERID.moveFile, function (e, options) {
     fileOps.move(options.files, options.token);
   });
 
-  $("#directory-contents").on("fileOpsCopy", function (e, options) {
+  $(CONTENTID.table).on(TRIGGERID.copyFile, function (e, options) {
     fileOps.copy(options.files, options.token);
   });
 
-  $("#directory-contents").on("changeDirectoryPrompt", function () {
+  $(CONTENTID.table).on(TRIGGERID.changeDirectoryPrompt, function () {
     fileOps.changeDirectoryPrompt();
   });
 
-  $("#directory-contents").on("changeDirectory", function (e, options) {
+  $(CONTENTID.table).on(TRIGGERID.changeDirectory, function (e, options) {
     fileOps.changeDirectory(options.result.value);
   });
 
 });
 
 class FileOps {
-  _handleBars = null;
   _timeout = 2000;
   _attempts = 0;
   _filesPath = filesPath;
 
   constructor() {
-    this._handleBars = Handlebars;
   }
 
   changeDirectory(path) {
@@ -100,7 +95,7 @@ class FileOps {
       }
     };
 
-    $("#directory-contents").trigger('swalShowInput', eventData);
+    $(CONTENTID.table).trigger(TRIGGERID.showInput, eventData);
 
   }
 
@@ -119,7 +114,7 @@ class FileOps {
       showCancelButton: true,
     }
 
-    $("#directory-contents").trigger('swalShowPrompt', eventData);
+    $(CONTENTID.table).trigger(TRIGGERID.showPrompt, eventData);
   }
 
 
@@ -153,7 +148,7 @@ class FileOps {
       }
     };
 
-    $("#directory-contents").trigger('swalShowInput', eventData);
+    $(CONTENTID.table).trigger(TRIGGERID.showInput, eventData);
 
   }
 
@@ -181,7 +176,7 @@ class FileOps {
       }
     };
 
-    $("#directory-contents").trigger('swalShowInput', eventData);
+    $(CONTENTID.table).trigger(TRIGGERID.showInput, eventData);
 
   }
 
@@ -215,7 +210,7 @@ class FileOps {
       }
     };
 
-    $("#directory-contents").trigger('swalShowInput', eventData);
+    $(CONTENTID.table).trigger(TRIGGERID.showInput, eventData);
 
   }
 
@@ -316,7 +311,7 @@ class FileOps {
       }
     };
 
-    $("#directory-contents").trigger('swalShowInput', eventData);
+    $(CONTENTID.table).trigger(TRIGGERID.showInput, eventData);
 
   }
 
@@ -446,16 +441,16 @@ class FileOps {
       'message': message,
     };
 
-    $("#directory-contents").trigger('showError', eventData);
+    $(CONTENTID.table).trigger(TRIGGERID.showError, eventData);
 
   }
 
   doneLoading() {
-    $("#directory-contents").trigger('swalClose');
+    $(CONTENTID.table).trigger(TRIGGERID.closeSwal);
   }
 
   clearClipboard() {
-    $("#directory-contents").trigger('clipboardClear');
+    $(CONTENTID.table).trigger(TRIGGERID.clearClipboard);
   }
 
   reloadTable(url) {
@@ -463,7 +458,7 @@ class FileOps {
       'url': url,
     };
 
-    $("#directory-contents").trigger('reloadTable', eventData);
+    $(CONTENTID.table).trigger(TRIGGERID.reloadTable, eventData);
   }
 
   showSwalLoading (message) {
@@ -471,7 +466,7 @@ class FileOps {
       'message': message,
     };
 
-    $("#directory-contents").trigger('swalShowLoading', eventData);
+    $(CONTENTID.table).trigger(TRIGGERID.showLoading, eventData);
 
   }
 
