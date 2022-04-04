@@ -80,6 +80,10 @@ class Project
     Project.dataroot.join(dir)
   end
 
+  def title
+    manifest.name.titleize
+  end
+
   def manifest
     @manifest ||= Manifest.load(manifest_path)
   end

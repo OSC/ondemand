@@ -12,10 +12,10 @@ class ProjectsTest < ApplicationSystemTestCase
   test 'create a new project on fs and display the table entry' do
     Dir.mktmpdir do |dir|
       setup_project(dir)
-      
+
       assert_selector '.alert-success', text: 'Project successfully created!'
       assert_selector 'tbody tr td', text: 'test_project'
-      assert File.directory? File.join(dir, 'test_project')
+      assert File.directory? File.join("#{dir}/projects", 'test_project')
     end
   end
 
@@ -23,19 +23,19 @@ class ProjectsTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       setup_project(dir)
 
-      assert File.directory? File.join(dir, 'test_project/.ondemand')
+      assert File.directory? File.join("#{dir}/projects", 'test_project/.ondemand')
     end
   end
 
   test 'delete a project from the fs and ensure no table entry' do
     Dir.mktmpdir do |dir|
       setup_project(dir)
-      
+
       click_on 'Delete'
       find('.btn.commit.btn-danger').click
       assert_selector '.alert-success', text: 'Project successfully deleted!'
       assert_no_selector 'tbody tr td', text: 'test_project'
-      assert_not File.directory? File.join(dir, 'test_project')
+      assert_not File.directory? File.join("#{dir}/projects", 'test_project')
     end
   end
 
@@ -54,22 +54,20 @@ class ProjectsTest < ApplicationSystemTestCase
       setup_project(dir)
 
       find('tbody .btn.btn-info').click
-      assert_selector 'h1', text: 'Editing: test_project'
+      find('#project_name').set("my test project")
+      click_on 'Save'
+      find('tbody .btn.btn-info').click
+      assert_selector 'h1', text: 'Editing: My Test Project'
       assert_selector '.btn.btn-default', text: 'Back'
     end
   end
 
-  def create_test_project(src)
+  def setup_project(dir)
+    OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
+    src = 'test_project'
     visit projects_path
     click_on 'New Project'
-
     find('#project_dir').set(src)
     click_on 'Save'
-  end
-
-  def setup_project(dir)
-    Project.stubs(:dataroot).returns(Pathname.new(dir))
-    src = File.join(dir, 'test_project')
-    create_test_project(src)
   end
 end
