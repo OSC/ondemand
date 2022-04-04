@@ -448,4 +448,25 @@ class BatchConnectTest < ApplicationSystemTestCase
     click_on('Launch')
     verify_bc_alert('sys/bc_jupyter', 'save', err_msg)
   end
+
+  test 'auto generated modules are dynamic' do
+    with_modified_env({ OOD_MODULE_FILE_DIR: 'test/fixtures/modules' }) do
+      visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+      # defaults
+      assert_equal '3.0.17', find_value('auto_modules')
+      assert_equal 'owens', find_value('cluster')
+      # versions not available on owens
+      assert_equal 'display: none;', find_option_style('auto_modules', '3.1.18')
+      assert_equal 'display: none;', find_option_style('auto_modules', '1.2.16')
+      assert_equal 'display: none;', find_option_style('auto_modules', '0.35.6')
+
+      # select oakley and now they're available
+      select('oakley', from: bc_ele_id('cluster'))
+      assert_equal '3.0.17', find_value('auto_modules')
+      assert_equal '', find_option_style('auto_modules', '3.1.18')
+      assert_equal '', find_option_style('auto_modules', '1.2.16')
+      assert_equal '', find_option_style('auto_modules', '0.35.6')
+    end
+  end
 end
