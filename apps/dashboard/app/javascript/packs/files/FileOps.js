@@ -33,14 +33,34 @@ jQuery(function() {
   });
 
   $(CONTENTID.table).on(TRIGGERID.download, function (e, options) {
-    fileOps.download(options.selection);
+    if(options.selection.length == 0) {
+      const eventData = {
+          'title': 'Select a file, files, or directory to download',
+          'message': 'You have selected none.',
+      };
+
+      $(CONTENTID.table).trigger(TRIGGERID.showError, eventData);
+
+    } else {
+      fileOps.download(options.selection);
+    }
   });
 
   $(CONTENTID.table).on(TRIGGERID.deletePrompt, function (e, options) {
-    fileOps.deletePrompt(options.files);
+    if(options.files.length == 0) {
+      const eventData = {
+          'title': 'Select a file, files, or directory to delete.',
+          'message': 'You have selected none.',
+      };
+
+      $(CONTENTID.table).trigger(TRIGGERID.showError, eventData);
+
+    } else {
+      fileOps.deletePrompt(options.files);
+    }
   });
 
-  $(CONTENTID.table).on(TRIGGERID.deleteFile, function (e, options) {
+  $(CONTENTID.table).on(TRIGGERID.deleteFile, function (e, options) {    
     fileOps.delete(options.files);
   });
 
@@ -99,24 +119,25 @@ class FileOps {
 
   }
 
-
-  deleteFile(fileName, newFileName) {
-    let files = {};
-    files[`${history.state.currentDirectory}/${fileName}`] = `${history.state.currentDirectory}/${newFileName}`;
-    this.transferFiles(files, "mv", "rename file")
-  }
-
-  deleteFilePrompt(files) {
+  deletePrompt(files) {
     const eventData = {
-      action: 'fileOpsDeleteFile',
-      title: files.length == 1 ? `Delete ${files[0]}?` : `Delete ${files.length} selected files?`,
-      text: 'Are you sure you want to delete the files: ' + files.join(', '),
-      showCancelButton: true,
-    }
+      action: TRIGGERID.deleteFile,
+      files: files,
+      'inputOptions': {
+        title: files.length == 1 ? `Delete ${files[0]}?` : `Delete ${files.length} selected files?`,
+        text: 'Are you sure you want to delete the files: ' + files.join(', '),
+        showCancelButton: true,
+      }
+    };
 
-    $(CONTENTID.table).trigger(TRIGGERID.showPrompt, eventData);
+    $(CONTENTID.table).trigger(TRIGGERID.showInput, eventData);
+
   }
 
+  
+  removeFiles(files) {
+    this.transferFiles(files, "rm", "remove files")
+  } 
 
   renameFile(fileName, newFileName) {
     let files = {};
@@ -126,7 +147,7 @@ class FileOps {
 
   renameFilePrompt(fileName) {
     const eventData = {
-      action: 'fileOpsRenameFile',
+      action: TRIGGERID.renameFile,
       files: fileName,
       'inputOptions': {
         title: 'Rename',
@@ -157,7 +178,7 @@ class FileOps {
   newFilePrompt() {
 
     const eventData = {
-      action: 'fileOpsCreateFile',
+      action: TRIGGERID.createFile,
       'inputOptions': {
         title: 'New File',
         input: 'text',
@@ -195,7 +216,7 @@ class FileOps {
   newFolderPrompt() {
 
     const eventData = {
-      action: 'fileOpsCreateFolder',
+      action: TRIGGERID.createFolder,
       'inputOptions': {
         title: 'New Folder',
         input: 'text',
@@ -299,26 +320,7 @@ class FileOps {
             .catch((e) => reject(e))
     });
   }
- 
-   deletePrompt(files) {
-    const eventData = {
-      action: 'fileOpsDelete',
-      files: files,
-      'inputOptions': {
-        title: files.length == 1 ? `Delete ${files[0]}?` : `Delete ${files.length} selected files?`,
-        text: 'Are you sure you want to delete the files: ' + files.join(', '),
-        showCancelButton: true,
-      }
-    };
-
-    $(CONTENTID.table).trigger(TRIGGERID.showInput, eventData);
-
-  }
-
-  
-  removeFiles(files) {
-    this.transferFiles(files, "rm", "remove files")
-  }    
+    
   
   delete(files) {
     this.showSwalLoading('Deleting files...: ');

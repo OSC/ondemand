@@ -22,8 +22,19 @@ jQuery(function() {
   });
 
   $(CONTENTID.table).on(TRIGGERID.updateClipboard, function (e, options) {
-    clipBoard.updateClipboardFromSelection(options.selection);
-    clipBoard.updateViewForClipboard();
+    if(options.selection.length == 0) {
+      const eventData = {
+          'title': 'Select a file, files, or directory to copy or move.',
+          'message': 'You have selected none.',
+      };
+
+      $(CONTENTID.table).trigger(TRIGGERID.showError, eventData);
+      $(CONTENTID.table).trigger(TRIGGERID.clearClipbaord, eventData);
+
+    } else {
+      clipBoard.updateClipboardFromSelection(options.selection);
+      clipBoard.updateViewForClipboard();
+    }
   });
 
   $(CONTENTID.table).on(TRIGGERID.updateClipboardView, function (e, options) {

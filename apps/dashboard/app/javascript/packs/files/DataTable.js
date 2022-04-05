@@ -51,62 +51,31 @@ jQuery(function() {
 
     $("#download-btn").on("click", function () {
         let selection = table.getTable().rows({ selected: true }).data();
-        if(selection.length == 0) {
-            const eventData = {
-                'title': 'Select a file, files, or directory to download',
-                'message': 'You have selected none.',
-            };
-
-            $(CONTENTID.table).trigger(TRIGGERID.showError, eventData);
-
-        } else {
-            const eventData = {
-                selection: selection
-            };
-      
-            $(CONTENTID.table).trigger(TRIGGERID.download, eventData);    
-        }
+        const eventData = {
+            selection: selection
+        };
+    
+        $(CONTENTID.table).trigger(TRIGGERID.download, eventData);    
             
     });
 
     $("#delete-btn").on("click", function () {
         let files = table.getTable().rows({selected: true}).data().toArray().map((f) => f.name);
-        if(files.length == 0) {
-            const eventData = {
-                'title': 'Select a file, files, or directory to delete.',
-                'message': 'You have selected none.',
-            };
-
-            $(CONTENTID.table).trigger(TRIGGERID.showError, eventData);
-
-        } else {
-            const eventData = {
-                files: files
-            };
-      
-            $(CONTENTID.table).trigger(TRIGGERID.deletePrompt, eventData);    
-        }
+        const eventData = {
+            files: files
+        };
+    
+        $(CONTENTID.table).trigger(TRIGGERID.deletePrompt, eventData);    
             
     });
 
     $("#copy-move-btn").on("click", function () {
         let selection = table.getTable().rows({selected: true}).data();
-        if(selection.length == 0) {
-            const eventData = {
-                'title': 'Select a file, files, or directory to copy or move.',
-                'message': 'You have selected none.',
-            };
-
-            $(CONTENTID.table).trigger(TRIGGERID.showError, eventData);
-            $(CONTENTID.table).trigger(TRIGGERID.clearClipbaord, eventData);
-
-        } else {
-            const eventData = {
-                selection: selection
-            };
-      
-            $(CONTENTID.table).trigger(TRIGGERID.updateClipboard, eventData);
-        }
+        const eventData = {
+            selection: selection
+        };
+    
+        $(CONTENTID.table).trigger(TRIGGERID.updateClipboard, eventData);
             
     });
 
