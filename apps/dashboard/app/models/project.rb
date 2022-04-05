@@ -51,7 +51,7 @@ class Project
   end
 
   def save
-    result = update({ name: name, description: description, icon: icon })
+    result = update( {} )
     errors.add(:save, 'Cannot save manifest') unless result
     result
   end
