@@ -5,24 +5,24 @@ class ProjectsTest < ActiveSupport::TestCase
   test "creates project" do
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
-      Project.stubs(:dataroot).returns(projects_path)
+      OodAppkit.stubs(:dataroot).returns(projects_path)
       attrs = { dir: 'test_project' }
       project = Project.new(attrs)
       project.save
 
-      assert Dir.entries(projects_path).include?("test_project")
+      assert Dir.entries("#{projects_path}/projects").include?("test_project")
     end
   end
 
   test "creates .ondemand configuration directory" do
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
-      Project.stubs(:dataroot).returns(projects_path)
+      OodAppkit.stubs(:dataroot).returns(projects_path)
       attrs = { dir: 'test_project' }
       project = Project.new(attrs)
       project.save
 
-      dot_ondemand_path = Pathname.new("#{projects_path}/#{project.dir}")
+      dot_ondemand_path = Pathname.new("#{projects_path}/projects/#{project.dir}")
 
       assert Dir.entries(dot_ondemand_path).include?(".ondemand")
     end
@@ -31,12 +31,12 @@ class ProjectsTest < ActiveSupport::TestCase
   test "creates manifest.yml in .ondemand config directory" do
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
-      Project.stubs(:dataroot).returns(projects_path)
+      OodAppkit.stubs(:dataroot).returns(projects_path)
       attrs = { dir: 'test"authenticity_token"=>"[FILTERED]", "project"=>{"dir"=>"project4"}, "commit"=>"Save"}
       _project' }
       project = Project.new(attrs)
       project.save
-      manifest_path = Pathname.new("#{projects_path}/#{project.dir}/.ondemand")
+      manifest_path = Pathname.new("#{projects_path}/projects/#{project.dir}/.ondemand")
 
       assert Dir.entries(manifest_path).include?("manifest.yml")
     end
@@ -45,21 +45,22 @@ class ProjectsTest < ActiveSupport::TestCase
   test "deletes project" do
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
-      Project.stubs(:dataroot).returns(projects_path)
+      OodAppkit.stubs(:dataroot).returns(projects_path)
       attrs = { dir: 'test_project' }
       project = Project.new(attrs)
+
       project.save
+      assert Dir.entries("#{projects_path}/projects/").include?('test_project')
 
       project.destroy!
-
-      assert_not Dir.entries(projects_path).include?('test_project')
+      assert_not Dir.entries("#{projects_path}/projects/").include?('test_project')
     end
   end
 
   test "update project manifest.yml file" do
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
-      Project.stubs(:dataroot).returns(projects_path)
+      OodAppkit.stubs(:dataroot).returns(projects_path)
       attrs = { dir: 'test_project' }
       project = Project.new(attrs)
       project.save

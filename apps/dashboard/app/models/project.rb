@@ -51,11 +51,9 @@ class Project
   end
 
   def save
-    write_manifest
-  rescue => error
-    errors.add(:save, error.message)
-    Rails.logger.error("ERROR: #{error.class} - #{error.message}")
-    false
+    result = update({ name: name, description: description, icon: icon })
+    errors.add(:save, 'Cannot save manifest') unless result
+    result
   end
 
   def update(attributes)
@@ -86,11 +84,5 @@ class Project
 
   def manifest
     @manifest ||= Manifest.load(manifest_path)
-  end
-
-  def write_manifest
-    manifest = Manifest.load(manifest_path)
-    manifest = manifest.merge({ name: name, description: description, icon: icon })
-    manifest.valid? ? manifest.save(manifest_path) : false
   end
 end
