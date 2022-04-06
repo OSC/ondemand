@@ -32,13 +32,21 @@ class ProjectsTest < ActiveSupport::TestCase
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
-      attrs = { dir: 'test"authenticity_token"=>"[FILTERED]", "project"=>{"dir"=>"project4"}, "commit"=>"Save"}
-      _project' }
-      project = Project.new(attrs)
+      # attrs = { dir: 'test"authenticity_token"=>"[FILTERED]", "project"=>{"dir"=>"project4"}, "commit"=>"Save"}_project' }
+      project = Project.new(dir: 'test_project')
       project.save
-      manifest_path = Pathname.new("#{projects_path}/projects/#{project.dir}/.ondemand")
 
-      assert Dir.entries(manifest_path).include?("manifest.yml")
+      assert_equal 'test_project', project.dir
+
+      manifest_path = Pathname.new("#{projects_path}/projects/#{project.dir}/.ondemand/manifest.yml")
+
+      assert File.file?(manifest_path)
+
+      expected_manifest_yml = <<~HEREDOC
+        --- {}
+      HEREDOC
+
+      assert_equal expected_manifest_yml, File.read(manifest_path)
     end
   end
 
