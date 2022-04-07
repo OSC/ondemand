@@ -448,4 +448,51 @@ class BatchConnectTest < ApplicationSystemTestCase
     click_on('Launch')
     verify_bc_alert('sys/bc_jupyter', 'save', err_msg)
   end
+
+  test 'auto generated modules are dynamic' do
+    with_modified_env({ OOD_MODULE_FILE_DIR: 'test/fixtures/modules' }) do
+      visit new_batch_connect_session_context_url('sys/bc_jupyter')
+      intel_both_clusters  = []
+
+      # defaults
+      assert_equal '3.0.17', find_value('auto_modules_app_jupyter')
+      assert_equal '2021.3.0', find_value('auto_modules_intel')
+      assert_equal 'owens', find_value('cluster')
+      # versions not available on owens
+      assert_equal 'display: none;', find_option_style('auto_modules_app_jupyter', '3.1.18')
+      assert_equal 'display: none;', find_option_style('auto_modules_app_jupyter', '1.2.16')
+      assert_equal 'display: none;', find_option_style('auto_modules_app_jupyter', '0.35.6')
+      assert_equal 'display: none;', find_option_style('auto_modules_intel', '18.0.4')
+
+      # select oakley and now they're available
+      select('oakley', from: bc_ele_id('cluster'))
+      assert_equal '3.0.17', find_value('auto_modules_app_jupyter')
+      assert_equal '', find_option_style('auto_modules_app_jupyter', '3.1.18')
+      assert_equal '', find_option_style('auto_modules_app_jupyter', '1.2.16')
+      assert_equal '', find_option_style('auto_modules_app_jupyter', '0.35.6')
+
+      # and lots of intel versions aren't
+      assert_equal 'display: none;', find_option_style('auto_modules_intel', '18.0.2')
+      assert_equal 'display: none;', find_option_style('auto_modules_intel', '18.0.0')
+      assert_equal 'display: none;', find_option_style('auto_modules_intel', '17.0.5')
+      assert_equal 'display: none;', find_option_style('auto_modules_intel', '17.0.2')
+      assert_equal 'display: none;', find_option_style('auto_modules_intel', '16.0.8')
+      assert_equal 'display: none;', find_option_style('auto_modules_intel', '16.0.3')
+    end
+  end
 end
+
+
+# <select class="form-control" name="batch_connect_session_context[auto_modules]" id="batch_connect_session_context_auto_modules"><option value="2021.3.0">2021.3.0</option>
+# <option value="19.1.3">19.1.3</option>
+# <option value="19.0.5">19.0.5</option>
+# <option value="19.0.3">19.0.3</option>
+# <option data-option-for-cluster-owens="false" value="18.0.4" style="display: none;">18.0.4</option>
+# <option value="18.0.3">18.0.3</option>
+# <option data-option-for-cluster-pitzer="false" value="18.0.2" style="">18.0.2</option>
+# <option data-option-for-cluster-pitzer="false" value="18.0.0" style="">18.0.0</option>
+# <option value="17.0.7">17.0.7</option>
+# <option data-option-for-cluster-pitzer="false" value="17.0.5" style="">17.0.5</option>
+# <option data-option-for-cluster-pitzer="false" value="17.0.2" style="">17.0.2</option>
+# <option data-option-for-cluster-pitzer="false" value="16.0.8" style="">16.0.8</option>
+# <option data-option-for-cluster-pitzer="false" value="16.0.3" style="">16.0.3</option></select>
