@@ -141,3 +141,4 @@ form:
   - classroom_size
   - advanced_options
   - auto_modules_app_jupyter
+  - auto_modules_intel

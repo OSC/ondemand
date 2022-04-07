@@ -19,17 +19,11 @@ module SmartAttributes
         super
 
         @hpc_module = @opts[:module]
+        @id = "#{id}_#{@hpc_module}" # reset the id to be unique from other auto_module_*
       end
 
       def widget
         'select'
-      end
-
-      # Form label for this attribute
-      # @param fmt [String, nil] formatting of form label
-      # @return [String] form label
-      def label(*)
-        (opts[:label] || 'Module Version').to_s
       end
 
       def select_choices
