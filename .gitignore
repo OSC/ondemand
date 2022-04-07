@@ -114,3 +114,6 @@ tags
 # Ignore copies of .rubocop.yml
 .rubocop.yml
 !/.rubocop.yml
+
+# Ignore .vscode
+.vscode

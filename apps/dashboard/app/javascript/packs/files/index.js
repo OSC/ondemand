@@ -1,6 +1,6 @@
-import {} from './ClipBoard.js';
-import {} from './DataTable.js';
-import {} from './FileOps.js';
-import {} from './SweetAlert.js';
-import {} from './UppyOps.js';
+import {} from './clip_board.js';
+import {} from './data_table.js';
+import {} from './file_ops.js';
+import {} from './sweet_alert.js';
+import {} from './uppy_ops.js';
 
