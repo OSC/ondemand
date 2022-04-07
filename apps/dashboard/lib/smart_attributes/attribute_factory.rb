@@ -2,7 +2,7 @@ module SmartAttributes
   class AttributeFactory
     extend ActiveSupport::Autoload
 
-    AUTO_MODULES_REX = /^auto_modules_([\w_]+)$/.freeze
+    AUTO_MODULES_REX = /\Aauto_modules_([\w]+)\z/.freeze
 
     class << self
       # Build an attribute object from an id and its options
