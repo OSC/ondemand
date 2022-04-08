@@ -111,6 +111,7 @@ class ManifestTest < ActiveSupport::TestCase
     assert_equal "Virtual Desktop Interface", manifest.subcategory
     assert_equal "/pun/sys/vncsim/%{app_token}/sessions", manifest.url
     assert_equal metadata, manifest.metadata
+    assert_equal 'this is the caption from a manifest', manifest.caption
   end
 
   test "default keys are safe" do

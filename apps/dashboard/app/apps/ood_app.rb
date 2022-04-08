@@ -2,7 +2,7 @@ class OodApp
   include Rails.application.routes.url_helpers
 
   attr_reader :router
-  delegate :owner, :caption, :type, :path, :name, :token, to: :router
+  delegate :owner, :type, :path, :name, :token, to: :router
 
   def accessible?
     path.executable? && path.readable?
@@ -180,6 +180,10 @@ class OodApp
     else
       manifest.category
     end
+  end
+
+  def caption
+    manifest.caption.empty? ? router.caption : manifest.caption
   end
 
   def subcategory

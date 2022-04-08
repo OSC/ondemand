@@ -86,6 +86,10 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_select "a.app-card[href='/batch_connect/sys/bc_paraview/session_contexts/new']", 1
     assert_select "a.app-card[href='/apps/show/pseudofun']", 1
     assert_select "a.app-card[href='/batch_connect/sys/bc_desktop/owens/session_contexts/new']", 1
+
+    # pinned apps show captions
+    assert_equal  'A really cool Jupyter app', css_select("a.app-card[href='/batch_connect/sys/bc_jupyter/session_contexts/new'] p.text-muted").text
+    assert_equal  'System Installed App', css_select("a.app-card[href='/batch_connect/sys/bc_paraview/session_contexts/new'] p.text-muted").text
   end
 
   test "does not create pinned apps when no configuration" do
