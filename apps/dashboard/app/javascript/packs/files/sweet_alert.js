@@ -1,27 +1,37 @@
 import Swal from 'sweetalert2'
-import {CONTENTID, TRIGGERID} from './data_table.js';
+import {CONTENTID, EVENTNAME as DATATABLE_EVENTNAME} from './data_table.js';
+
+export {EVENTNAME};
+
+const EVENTNAME = {
+  showError: 'showError',
+  showInput: 'showInput',
+  showLoading: 'showLoading',
+  showPrompt: 'showPrompt',
+  closeSwal: 'closeSwal',
+}
 
 let sweetAlert = null;
 
 jQuery(function() {
   sweetAlert = new SweetAlert();
-  $(CONTENTID.table).on(TRIGGERID.showError, function(e,options) {
+  $(CONTENTID.table).on(EVENTNAME.showError, function(e,options) {
     sweetAlert.alertError(options.title, options.message);
   });
 
-  $(CONTENTID.table).on(TRIGGERID.showPrompt, function(e,options) {
+  $(CONTENTID.table).on(EVENTNAME.showPrompt, function(e,options) {
     sweetAlert.alertError(options.title, options.message);
   });
 
-  $(CONTENTID.table).on(TRIGGERID.showInput, function(e,options) {
+  $(CONTENTID.table).on(EVENTNAME.showInput, function(e,options) {
     sweetAlert.input(options);
   });
 
-  $(CONTENTID.table).on(TRIGGERID.showLoading, function(e,options) {
+  $(CONTENTID.table).on(EVENTNAME.showLoading, function(e,options) {
     sweetAlert.loading(options.message);
   });
 
-  $(CONTENTID.table).on(TRIGGERID.closeSwal, function() {
+  $(CONTENTID.table).on(EVENTNAME.closeSwal, function() {
     sweetAlert.close();
   });
 
@@ -44,7 +54,7 @@ class SweetAlert {
 
         $(CONTENTID.table).trigger(options.action, eventData);
       } else {
-        $(CONTENTID.table).trigger(TRIGGERID.reloadTable);
+        $(CONTENTID.table).trigger(DATATABLE_EVENTNAME.reloadTable);
       }
     });
   }

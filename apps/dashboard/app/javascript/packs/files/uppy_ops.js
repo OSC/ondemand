@@ -2,7 +2,7 @@ import { Uppy, BasePlugin } from '@uppy/core'
 import Dashboard from '@uppy/dashboard'
 import XHRUpload from '@uppy/xhr-upload'
 import _ from 'lodash';
-
+import {CONTENTID, EVENTNAME as DATATABLE_EVENTNAME} from './data_table.js';
 
 let uppy = null;
 
@@ -168,5 +168,5 @@ function getEmptyDirs(entry){
 }
 
 function reloadTable() {
-  $("#directory-contents").trigger('reloadTable');
+  $(CONTENTID.table).trigger(DATATABLE_EVENTNAME.reloadTable,{});
 }

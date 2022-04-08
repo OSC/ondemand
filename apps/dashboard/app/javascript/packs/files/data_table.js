@@ -3,34 +3,15 @@ import 'datatables.net-bs4/js/dataTables.bootstrap4';
 import 'datatables.net-select';
 import 'datatables.net-select-bs4';
 import Handlebars from 'handlebars';
-export { CONTENTID, TRIGGERID };
+import {EVENTNAME as CLIPBOARD_EVENTNAME} from './clip_board.js';
+import {EVENTNAME as FILEOPS_EVENTNAME} from './file_ops.js';
+import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 
-const TRIGGERID = {
-    changeDirectory: 'changeDirectory',
-    changeDirectoryPrompt: 'changeDirectoryPrompt',
-    clearClipboard: 'clearClipboard',
-    closeSwal: 'closeSwal',
-    copyFile: 'copyFile',
-    createFile: 'createFile',
-    createFolder: 'createFolder',
-    deleteFile: 'deleteFile',
-    deletePrompt: 'deletePrompt',
-    download: 'download',
+export { CONTENTID, EVENTNAME };
+
+const EVENTNAME = {
     getJsonResponse: 'getJsonResponse',
-    moveFile: 'moveFile',
-    newFile: 'newFile',
-    newFilePrompt: 'newFilePrompt',
-    newFolderPrompt: 'newFolderPrompt',
-    newFolder: 'newFolder',
     reloadTable: 'reloadTable',
-    renameFile: 'renameFile',
-    renameFilePrompt: 'renameFilePrompt',
-    showError: 'showError',
-    showInput: 'showInput',
-    showLoading: 'showLoading',
-    showPrompt: 'showPrompt',
-    updateClipboard: 'updateClipboard',
-    updateClipboardView: 'updateClipboardView',
 };
 
 const CONTENTID = {
@@ -44,11 +25,11 @@ jQuery(function () {
 
     /* BUTTON ACTIONS */
     $("#new-file-btn").on("click", function () {
-        $(CONTENTID.table).trigger(TRIGGERID.newFilePrompt);
+        $(CONTENTID.table).trigger(FILEOPS_EVENTNAME.newFilePrompt);
     });
 
     $("#new-folder-btn").on("click", function () {
-        $(CONTENTID.table).trigger(TRIGGERID.newFolderPrompt);
+        $(CONTENTID.table).trigger(FILEOPS_EVENTNAME.newFolderPrompt);
     });
 
     $("#download-btn").on("click", function () {
@@ -57,7 +38,7 @@ jQuery(function () {
             selection: selection
         };
 
-        $(CONTENTID.table).trigger(TRIGGERID.download, eventData);
+        $(CONTENTID.table).trigger(FILEOPS_EVENTNAME.download, eventData);
 
     });
 
@@ -67,7 +48,7 @@ jQuery(function () {
             files: files
         };
 
-        $(CONTENTID.table).trigger(TRIGGERID.deletePrompt, eventData);
+        $(CONTENTID.table).trigger(FILEOPS_EVENTNAME.deletePrompt, eventData);
 
     });
 
@@ -77,12 +58,12 @@ jQuery(function () {
             selection: selection
         };
 
-        $(CONTENTID.table).trigger(TRIGGERID.updateClipboard, eventData);
+        $(CONTENTID.table).trigger(CLIPBOARD_EVENTNAME.updateClipboard, eventData);
 
     });
 
     $("#goto-btn").on("click", function () {
-        $(CONTENTID.table).trigger(TRIGGERID.changeDirectoryPrompt);
+        $(CONTENTID.table).trigger(FILEOPS_EVENTNAME.changeDirectoryPrompt);
     });
 
     // TODO:
@@ -96,11 +77,11 @@ jQuery(function () {
 
     /* TABLE ACTIONS */
 
-    $(CONTENTID.table).on(TRIGGERID.reloadTable, function (e, options) {
+    $(CONTENTID.table).on(EVENTNAME.reloadTable, function (e, options) {
         table.reloadTable(options.url);
     });
 
-    $(CONTENTID.table).on(TRIGGERID.getJsonResponse, function (e, options) {
+    $(CONTENTID.table).on(EVENTNAME.getJsonResponse, function (e, options) {
         table.dataFromJsonResponse(options.response);
     });
 
@@ -114,7 +95,7 @@ jQuery(function () {
             file: fileName,
         };
 
-        $(CONTENTID.table).trigger(TRIGGERID.renameFilePrompt, eventData);
+        $(CONTENTID.table).trigger(FILEOPS_EVENTNAME.renameFilePrompt, eventData);
 
     });
 
@@ -128,7 +109,7 @@ jQuery(function () {
             files: [fileName]
         };
 
-        $(CONTENTID.table).trigger(TRIGGERID.deletePrompt, eventData);
+        $(CONTENTID.table).trigger(FILEOPS_EVENTNAME.deletePrompt, eventData);
 
     });
 
@@ -355,7 +336,7 @@ class DataTable {
             $('#open-in-terminal-btn').attr('href', data.shell_url);
             $('#open-in-terminal-btn').removeClass('disabled');
 
-            $(CONTENTID.table).trigger(TRIGGERID.updateClipboardView);
+            $(CONTENTID.table).trigger(CLIPBOARD_EVENTNAME.updateClipboardView);
             return await Promise.resolve(data);
         } catch (e) {
             const eventData = {
@@ -363,7 +344,7 @@ class DataTable {
                 'message': e.message,
             };
 
-            $(CONTENTID.table).trigger(TRIGGERID.showError, eventData);
+            $(CONTENTID.table).trigger(SWAL_EVENTNAME.showError, eventData);
 
             $('#open-in-terminal-btn').addClass('disabled');
             return await Promise.reject(e);
