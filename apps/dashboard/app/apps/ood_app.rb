@@ -127,7 +127,7 @@ class OodApp
         OodAppLink.new(
           title: title,
           description: manifest.description,
-          url: (type == :sys && owner == :sys) ? app_path(name, nil, nil) : app_path(name, type, owner),
+          url: usr? ? app_path(name, type, owner) : app_path(name, nil, nil),
           icon_uri: icon_uri,
           caption: caption,
           new_tab: open_in_new_window?
@@ -177,17 +177,16 @@ class OodApp
   end
 
   def caption
-    case type
-      when :dev
-        "Sandbox Apps"
-      when :sys
-        "System Installed App"
-      when :usr
-        if caption == owner
-          I18n.t('dashboard.shared_apps_caption_short', owner: owner)
-        else
-          I18n.t('dashboard.shared_apps_caption', owner: owner, owner_title: caption)
-        end
+    if dev?
+      "Sandbox Apps"
+    elsif sys?
+      "System Installed App"
+    elsif usr?
+      if category == owner
+        I18n.t('dashboard.shared_apps_caption_short', owner: owner)
+      else
+        I18n.t('dashboard.shared_apps_caption', owner: owner, owner_title: category)
+      end
     end
   end
 

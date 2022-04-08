@@ -6,19 +6,20 @@ class AppRouter
 
   class << self
     def apps(type = nil)
-      apps = Rails.cache.fetch('apps') do
-        routers.map do |router|
+      apps = routers.map do |router|
+        Rails.cache.fetch("app_#{router.token}") do
           OodApp.new(router)
         end
       end
-
-      # raise StandardError, apps.inspect
 
       type.nil? ? apps : apps.select { |a| a.type == type.to_sym }
     end
 
     def find(token)
-      apps.select { |a| a.token == token.to_s }.first
+      Rails.cache.fetch("app_#{token}") do
+        router = router_from_token(token)
+        OodApp.new(router)
+      end
     end
 
     def base_path(type, owner: nil)
@@ -33,29 +34,24 @@ class AppRouter
     end
 
     def routers
-      Rails.cache.fetch("app_routers", expires_in: 24.hours) do
-        [].tap do |arr|
-          APP_TYPES.map do |type|
-            if type == :usr
-              routers = owners.map do |owner|
-                # code smell, passing owner all over the place
-                target = self.base_path(type, owner: owner)
-                routers_from_dir(target, type, owner: owner)
-              end.flatten
-              arr.concat(routers)
-            else
-              target = base_path(type)
-              arr.concat(routers_from_dir(target, type))
-            end
+      @routers ||= APP_TYPES.map do |type|
+        if type == :usr
+          owners.map do |owner|
+            # code smell, passing owner all over the place
+            target = self.base_path(type, owner: owner)
+            routers_from_dir(target, type, owner: owner)
           end
-        end.flatten
-      end
+        else
+          target = base_path(type)
+          routers_from_dir(target, type)
+        end
+      end.flatten
     end
 
     def routers_from_dir(target, type, owner: nil)
       if target.directory? && target.executable? && target.readable?
         target.children.map do |dir| 
-          self.new(name: dir.basename, type: type, owner: nil)
+          self.new(name: dir.basename, type: type, owner: owner)
         end.select do |router|
           router.directory? && router.accessible?
         end.reject do |router| 
@@ -64,6 +60,19 @@ class AppRouter
       else
         []
       end
+    end
+
+    def router_from_token(token)
+      type, *app = token.split("/")
+
+      if type == 'usr'
+        owner, name, = app
+      else
+        name, = app
+        owner = nil
+      end
+
+      new(name: name, type: type, owner: owner)
     end
 
     def owners
@@ -77,7 +86,7 @@ class AppRouter
   def initialize(name: nil, type: nil, owner: nil)
     @name = name.to_s
     @type = type.to_sym
-    @owner = owner.to_s
+    @owner = owner && owner.to_s
 
     raise StandardError, 'some message' unless APP_TYPES.include?(@type)
   end

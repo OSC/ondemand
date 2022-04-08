@@ -52,7 +52,7 @@ class BatchConnect::SessionContextsController < ApplicationController
   private
     # Set the app from the token
     def set_app
-      @app = BatchConnect::App.from_token params[:token]
+      @app = AppRouter.find(params[:token]).batch_connect
     end
 
     # Set list of app lists for navigation
