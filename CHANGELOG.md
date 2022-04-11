@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-add a smart attribute for automatically loading modules (#1930)
+
 
 ### Changed
 
@@ -41,6 +41,7 @@ add a smart attribute for automatically loading modules (#1930)
 - Apps recognize if they're preset. Preset apps don't show forms, they just launch in [#1815](https://github.com/OSC/ondemand/pull/1815).
 - Citation information for this source is now available in [1887](https://github.com/OSC/ondemand/pull/1887) and releases are made
   in [1888](https://github.com/OSC/ondemand/pull/1887).
+- Modules can be automatically loaded in batch connect forms in (1930)(https://github.com/OSC/ondemand/pull/1930).
 
 ### Fixed
 
