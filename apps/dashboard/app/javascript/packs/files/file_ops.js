@@ -29,8 +29,35 @@ let fileOps = null;
 let reportTransferTemplate = null;
 
 jQuery(function() {
-  fileOps = new FileOps();
+  fileOps = new FileOps();  
+
+  $('#directory-contents tbody, #path-breadcrumbs, #favorites').on('click', 'a.d', function(event){
+    if(fileOps.clickEventIsSignificant(event)){
+      event.preventDefault();
+      event.cancelBubble = true;
+      if(event.stopPropagation) event.stopPropagation();
+
+      const eventData = {
+        'path': this.getAttribute("href"),
+      };
   
+      $(CONTENTID.table).trigger(DATATABLE_EVENTNAME.goto, eventData);
+  
+    }
+  });
+  
+  $('#directory-contents tbody').on('dblclick', 'tr td:not(:first-child)', function(){
+    // handle doubleclick
+    let a = this.parentElement.querySelector('a');
+    if(a.classList.contains('d')) {
+      const eventData = {
+        'path': a.getAttribute("href"),
+      };
+  
+      $(CONTENTID.table).trigger(DATATABLE_EVENTNAME.goto, eventData);
+    }
+  });
+
   $(CONTENTID.table).on(EVENTNAME.newFilePrompt, function () {
     fileOps.newFilePrompt();
   });
@@ -113,8 +140,25 @@ class FileOps {
   constructor() {
   }
 
+  clickEventIsSignificant(event) {
+    return !(
+      // (event.target && (event.target as any).isContentEditable)
+         event.defaultPrevented
+      || event.which > 1
+      || event.altKey
+      || event.ctrlKey
+      || event.metaKey
+      || event.shiftKey
+    )
+  }
+
   changeDirectory(path) {
-    this.goto(filesPath + path);
+    const eventData = {
+      'path': filesPath + path,
+    };
+
+    $(CONTENTID.table).trigger(DATATABLE_EVENTNAME.goto, eventData);
+
   }
 
   changeDirectoryPrompt() {
@@ -495,7 +539,4 @@ class FileOps {
 
   }
 
-  goto(url) {
-    window.open(url,"_self");
-  }  
 }

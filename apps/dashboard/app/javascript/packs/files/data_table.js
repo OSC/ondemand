@@ -12,6 +12,7 @@ export { CONTENTID, EVENTNAME };
 const EVENTNAME = {
     getJsonResponse: 'getJsonResponse',
     reloadTable: 'reloadTable',
+    goto: 'goto',
 };
 
 const CONTENTID = {
@@ -83,6 +84,10 @@ jQuery(function () {
 
     $(CONTENTID.table).on(EVENTNAME.getJsonResponse, function (e, options) {
         table.dataFromJsonResponse(options.response);
+    });
+
+    $(CONTENTID.table).on(EVENTNAME.goto, function (e, options) {
+        table.goto(options.path)
     });
 
     $(document).on('click', '.rename-file', function (e) {
@@ -329,6 +334,7 @@ class DataTable {
             const response = await fetch(request_url, { headers: { 'Accept': 'application/json' } });
             const data = await this.dataFromJsonResponse(response);
             $('#shell-wrapper').replaceWith((data.shell_dropdown_html));
+
             this._table.clear();
             this._table.rows.add(data.files);
             this._table.draw();
@@ -406,5 +412,30 @@ class DataTable {
 
         $('.datatables-status').html(`${msg} - ${rows} rows selected`);
     }
+
+    goto(url, pushState = true, show_processing_indicator = true) {
+        if(url == history.state.currentDirectoryUrl)
+          pushState = false;
+      
+        this.reloadTable(url)
+          .then((data) => {
+            $('#path-breadcrumbs').html(data.breadcrumbs_html);
+      
+            if(pushState) {
+              // Clear search query when moving to another directory.
+              this._table.search('').draw();
+      
+              history.pushState({
+                currentDirectory: data.path,
+                currentDirectoryUrl: data.url
+              }, data.name, data.url);
+            }
+          })
+          .finally(() => {
+            //TODO: after processing is available via ActiveJobs merge
+            // if(show_processing_indicator)
+            //   table.processing(false)
+          });
+      }    
 
 }
