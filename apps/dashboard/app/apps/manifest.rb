@@ -130,6 +130,13 @@ category: OSC
     @manifest_options[:new_window]
   end
 
+  # Return the app's caption
+  #
+  #  @return [String] caption as string
+  def caption
+    @manifest_options[:caption].to_s
+  end
+
   # Manifest objects are valid
   #
   # @return [true] Always return true
