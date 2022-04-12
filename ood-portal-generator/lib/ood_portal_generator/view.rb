@@ -114,7 +114,7 @@ module OodPortalGenerator
     def log_filename(value,log_type)
       return "#{@logroot}/#{value}" unless value.nil?
 
-      prefix = @servername ? "#{@servername}_#{log_type}" : "#{log_type}"
+      prefix = "#{servername}_#{log_type}"
       suffix = @ssl ? '_ssl.log' : '.log'
       "#{@logroot}/#{prefix}#{suffix}"
     end
