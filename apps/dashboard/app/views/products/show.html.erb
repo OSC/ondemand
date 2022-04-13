@@ -1,4 +1,4 @@
-<%= javascript_pack_tag 'products_show', nonce: true %>
+<%= javascript_include_tag 'products_show', nonce: true %>
 
 <%= render layout: 'products/breadcrumbs' do %>
   <li class="breadcrumb-item"><%= @product.title %></li>

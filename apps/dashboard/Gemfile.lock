@@ -90,6 +90,8 @@ GEM
     coffee-script-source (1.12.2)
     concurrent-ruby (1.1.10)
     crass (1.0.6)
+    cssbundling-rails (1.1.0)
+      railties (>= 6.0.0)
     dalli (3.2.1)
     dotenv (2.7.6)
     dotenv-rails (2.7.6)
@@ -108,6 +110,8 @@ GEM
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
+    jsbundling-rails (1.0.2)
+      railties (>= 6.0.0)
     local_time (1.0.3)
       coffee-rails
     lograge (0.12.0)
@@ -150,8 +154,6 @@ GEM
     racc (1.6.0)
     rack (2.2.3)
     rack-protection (2.2.0)
-      rack
-    rack-proxy (0.7.2)
       rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
@@ -196,7 +198,6 @@ GEM
       childprocess (>= 0.5, < 5.0)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2)
-    semantic_range (3.0.0)
     sinatra (2.2.0)
       mustermann (~> 1.0)
       rack (~> 2.2)
@@ -220,11 +221,6 @@ GEM
     timecop (0.9.5)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
-    webpacker (5.4.3)
-      activesupport (>= 5.2)
-      rack-proxy (>= 0.6.1)
-      railties (>= 5.2)
-      semantic_range (>= 2.3.0)
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -244,11 +240,13 @@ DEPENDENCIES
   byebug
   capybara
   climate_control (~> 0.2)
+  cssbundling-rails (~> 1.1)
   dalli
   dotenv-rails (~> 2.1)
   dotiw
   erubi
   jbuilder (~> 2.0)
+  jsbundling-rails (~> 1.0)
   local_time (~> 1.0.3)
   mocha (~> 1.1)
   ood_appkit (~> 2.1.0)
@@ -262,7 +260,6 @@ DEPENDENCIES
   sinatra
   sinatra-contrib
   timecop (~> 0.9)
-  webpacker (~> 5.4)
   zip_tricks (~> 5.5)
 
 BUNDLED WITH

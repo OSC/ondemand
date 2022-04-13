@@ -4,7 +4,7 @@
 // a relevant structure within app/javascript and only use these pack files to reference
 // that code so it'll be compiled.
 //
-// To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
+// To reference this file, add <%= javascript_include_tag 'application' %> to the appropriate
 // layout file, like app/views/layouts/application.html.erb
 //
 // Uncomment to copy all static images under ../images to the output folder and reference
@@ -14,8 +14,8 @@
 // const images = require.context('../images', true)
 // const imagePath = (name) => images(name, true)
 
-import 'jquery';
-import 'jquery-ujs'
+import jQuery from 'jquery';
+import 'jquery-ujs';
 
 // lot's of inline scripts and stuff rely on jquery just being available
 window.jQuery = jQuery;
@@ -32,12 +32,6 @@ import 'bootstrap/dist/js/bootstrap'
 
 // confim modals
 import 'data-confirm-modal';
-
-// Import application stylesheets
-import '../stylesheets/application'
-
-import '../images/OpenOnDemand_powered_by_RGB.svg';
-import '../images/OpenOnDemand_stack_RGB.svg';
 
 import { setNavbarColor } from './config';
 
