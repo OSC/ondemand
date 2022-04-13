@@ -208,6 +208,8 @@ function addMinMaxForHandler(optionId, option, key,  configValue) {
 
     minMaxHandlerCache.push(cacheKey);
   }
+
+  toggleMinMax({ target: document.querySelector(`#${optionId}`) }, id, secondDimId);
 }
 
 /**
