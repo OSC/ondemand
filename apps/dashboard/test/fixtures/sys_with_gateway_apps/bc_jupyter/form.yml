@@ -27,9 +27,18 @@ attributes:
           "any",
           data-hide-cuda-version: true,
           data-hide-advanced-options: true,
+          # 'any' is the default node_type and here are are overrides for the min & max
+          # in bc_num_slots definition above.
+          data-min-bc-num-slots-for-cluster-owens: 3,
+          data-max-bc-num-slots-for-cluster-owens: 7,
+          data-min-bc-num-slots-for-cluster-oakley: 4,
+          data-max-bc-num-slots-for-cluster-oakley: 8,
+        ]
+      - [
+          "broken",
           data-minnn-bc-not-found-for-cluster-mistype: 30,
           data-max-bc-not-found-for-cluster-mistype: 30,
-          data-maximum-bc-not-found-for-cluster-mistype: 30
+          data-maximum-bc-not-found-for-cluster-mistype: 30,
         ]
       - [
           "gpu",
