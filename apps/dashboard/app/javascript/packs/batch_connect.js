@@ -361,6 +361,10 @@ function updateVisibility(event, changeId) {
   }
 }
 
+/**
+ * Update the min & max values of `changeId` based on the
+ * event, the `otherId` and the settings in minMaxLookup table.
+ */
 function toggleMinMax(event, changeId, otherId) {
   let x = undefined, y = undefined;
 
