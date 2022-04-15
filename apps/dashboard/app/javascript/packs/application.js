@@ -19,7 +19,7 @@ import 'jquery-ujs';
 
 // lot's of inline scripts and stuff rely on jquery just being available
 window.jQuery = jQuery;
-window.$ = $;
+window.$ = jQuery;
 
 import Rails from '@rails/ujs';
 Rails.start();
@@ -30,8 +30,8 @@ import 'popper.js'
 // Import Bootstrap 4
 import 'bootstrap/dist/js/bootstrap'
 
-// confim modals
-import 'data-confirm-modal';
+// FIXME: confim modals don't work in esbuild.
+// import 'data-confirm-modal';
 
 import { setNavbarColor } from './config';
 

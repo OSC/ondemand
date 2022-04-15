@@ -23,7 +23,7 @@
     "uppy": "^2.3.3"
   },
   "scripts": {
-    "build": "esbuild app/javascript/packs/*.* --bundle --sourcemap  --external:fs --outdir=app/assets/builds",
-    "build:css": "sass ./app/javascript/stylesheets/application.scss ./app/assets/builds/application.css --no-source-map --load-path=node_modules"
+    "build": "node esbuild.config.js",
+    "build:css": "sass ./app/javascript/stylesheets/application.scss ./app/assets/builds/application.css --load-path=node_modules"
   }
 }

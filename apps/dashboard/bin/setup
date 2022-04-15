@@ -9,7 +9,13 @@ ENV["RAILS_ENV"]               ||= ENV["PASSENGER_APP_ENV"] || "development"
 ENV["RAILS_RELATIVE_URL_ROOT"] ||= ENV["PASSENGER_BASE_URI"]
 
 # if relative url root not set, use default for this app
-ENV['RAILS_RELATIVE_URL_ROOT'] ||= "/pun/sys/dashboard" if ENV['RAILS_ENV'] == 'production'
+if ENV['RAILS_ENV'] != 'development'
+  ENV['RAILS_RELATIVE_URL_ROOT'] ||= "/pun/sys/dashboard"
+else
+  ENV['RAILS_RELATIVE_URL_ROOT'] ||= "/pun/dev/dashboard"
+end
+
+puts ENV["RAILS_ENV"]
 
 # define application object
 class App
@@ -58,11 +64,9 @@ chdir APP_ROOT do
   sh "npm install --production --prefix tmp yarn"
   sh "tmp/node_modules/yarn/bin/yarn --production install --cache-folder #{CACHE}"
 
-  if APP.production?
-    puts "\n== Compiling assets =="
-    sh "bin/rails assets:clobber"
-    sh "bin/rails assets:precompile"
-  end
+  puts "\n== Compiling assets =="
+  sh "bin/rails assets:clobber"
+  sh "bin/rails assets:precompile"
 
   puts "\n== Removing old logs and tempfiles =="
   sh "bin/rake log:clear tmp:clear"
