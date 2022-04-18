@@ -26,8 +26,6 @@ const EVENTNAME = {
 
 let fileOps = null;
 
-let reportTransferTemplate = null;
-
 jQuery(function() {
   fileOps = new FileOps();  
 
@@ -41,7 +39,7 @@ jQuery(function() {
         'path': this.getAttribute("href"),
       };
   
-      $(CONTENTID.table).trigger(DATATABLE_EVENTNAME.goto, eventData);
+      $(CONTENTID).trigger(DATATABLE_EVENTNAME.goto, eventData);
   
     }
   });
@@ -54,79 +52,144 @@ jQuery(function() {
         'path': a.getAttribute("href"),
       };
   
-      $(CONTENTID.table).trigger(DATATABLE_EVENTNAME.goto, eventData);
+      $(CONTENTID).trigger(DATATABLE_EVENTNAME.goto, eventData);
     }
   });
 
-  $(CONTENTID.table).on(EVENTNAME.newFilePrompt, function () {
+  $("#new-file-btn").on("click", function () {
+    $(CONTENTID).trigger(EVENTNAME.newFilePrompt);
+  });
+
+  $("#new-folder-btn").on("click", function () {
+      $(CONTENTID).trigger(EVENTNAME.newFolderPrompt);
+  });
+
+  $("#download-btn").on("click", function () {
+    let table = $(CONTENTID).DataTable();
+    let selection = table.rows({ selected: true }).data();
+    const eventData = {
+        selection: selection
+    };
+
+    $(CONTENTID).trigger(EVENTNAME.download, eventData);
+
+  });
+
+  $("#delete-btn").on("click", function () {
+
+    let table = $(CONTENTID).DataTable();
+    let files = table.rows({ selected: true }).data().toArray().map((f) => f.name);
+    const eventData = {
+        files: files
+    };
+
+    $(CONTENTID).trigger(EVENTNAME.deletePrompt, eventData);
+
+  });
+
+  $("#goto-btn").on("click", function () {
+      $(CONTENTID).trigger(EVENTNAME.changeDirectoryPrompt);
+  });
+
+  $(document).on('click', '.rename-file', function (e) {
+    e.preventDefault();
+    let table = $(CONTENTID).DataTable();
+    let rowId = e.currentTarget.dataset.rowIndex;
+    let row = table.row(rowId).data();
+    let fileName = $($.parseHTML(row.name)).text();
+
+    const eventData = {
+        file: fileName,
+    };
+
+    $(CONTENTID).trigger(EVENTNAME.renameFilePrompt, eventData);
+
+  });
+
+  $(document).on('click', '.delete-file', function (e) {
+      e.preventDefault();
+      let table = $(CONTENTID).DataTable();
+      let rowId = e.currentTarget.dataset.rowIndex;
+      let row = table.row(rowId).data();
+      let fileName = $($.parseHTML(row.name)).text();
+
+      const eventData = {
+          files: [fileName]
+      };
+
+      $(CONTENTID).trigger(EVENTNAME.deletePrompt, eventData);
+
+  });
+
+  $(CONTENTID).on(EVENTNAME.newFilePrompt, function () {
     fileOps.newFilePrompt();
   });
 
-  $(CONTENTID.table).on(EVENTNAME.newFolderPrompt, function () {
+  $(CONTENTID).on(EVENTNAME.newFolderPrompt, function () {
     fileOps.newFolderPrompt();
   });
 
-  $(CONTENTID.table).on(EVENTNAME.renameFilePrompt, function (e, options) {
+  $(CONTENTID).on(EVENTNAME.renameFilePrompt, function (e, options) {
     fileOps.renameFilePrompt(options.file);
   });
 
-  $(CONTENTID.table).on(EVENTNAME.renameFile, function (e, options) {
+  $(CONTENTID).on(EVENTNAME.renameFile, function (e, options) {
     fileOps.renameFile(options.files, options.result.value);
   });
 
-  $(CONTENTID.table).on(EVENTNAME.createFile, function (e, options) {
+  $(CONTENTID).on(EVENTNAME.createFile, function (e, options) {
     fileOps.newFile(options.result.value);
   });
 
-  $(CONTENTID.table).on(EVENTNAME.createFolder, function (e, options) {
+  $(CONTENTID).on(EVENTNAME.createFolder, function (e, options) {
     fileOps.newFolder(options.result.value);
   });
 
-  $(CONTENTID.table).on(EVENTNAME.download, function (e, options) {
+  $(CONTENTID).on(EVENTNAME.download, function (e, options) {
     if(options.selection.length == 0) {
       const eventData = {
           'title': 'Select a file, files, or directory to download',
           'message': 'You have selected none.',
       };
 
-      $(CONTENTID.table).trigger(SWAL_EVENTNAME.showError, eventData);
+      $(CONTENTID).trigger(SWAL_EVENTNAME.showError, eventData);
 
     } else {
       fileOps.download(options.selection);
     }
   });
 
-  $(CONTENTID.table).on(EVENTNAME.deletePrompt, function (e, options) {
+  $(CONTENTID).on(EVENTNAME.deletePrompt, function (e, options) {
     if(options.files.length == 0) {
       const eventData = {
           'title': 'Select a file, files, or directory to delete.',
           'message': 'You have selected none.',
       };
 
-      $(CONTENTID.table).trigger(SWAL_EVENTNAME.showError, eventData);
+      $(CONTENTID).trigger(SWAL_EVENTNAME.showError, eventData);
 
     } else {
       fileOps.deletePrompt(options.files);
     }
   });
 
-  $(CONTENTID.table).on(EVENTNAME.deleteFile, function (e, options) {    
+  $(CONTENTID).on(EVENTNAME.deleteFile, function (e, options) {    
     fileOps.delete(options.files);
   });
 
-  $(CONTENTID.table).on(EVENTNAME.moveFile, function (e, options) {
+  $(CONTENTID).on(EVENTNAME.moveFile, function (e, options) {
     fileOps.move(options.files, options.token);
   });
 
-  $(CONTENTID.table).on(EVENTNAME.copyFile, function (e, options) {
+  $(CONTENTID).on(EVENTNAME.copyFile, function (e, options) {
     fileOps.copy(options.files, options.token);
   });
 
-  $(CONTENTID.table).on(EVENTNAME.changeDirectoryPrompt, function () {
+  $(CONTENTID).on(EVENTNAME.changeDirectoryPrompt, function () {
     fileOps.changeDirectoryPrompt();
   });
 
-  $(CONTENTID.table).on(EVENTNAME.changeDirectory, function (e, options) {
+  $(CONTENTID).on(EVENTNAME.changeDirectory, function (e, options) {
     fileOps.changeDirectory(options.result.value);
   });
 
@@ -157,7 +220,7 @@ class FileOps {
       'path': filesPath + path,
     };
 
-    $(CONTENTID.table).trigger(DATATABLE_EVENTNAME.goto, eventData);
+    $(CONTENTID).trigger(DATATABLE_EVENTNAME.goto, eventData);
 
   }
 
@@ -182,7 +245,7 @@ class FileOps {
       }
     };
 
-    $(CONTENTID.table).trigger(SWAL_EVENTNAME.showInput, eventData);
+    $(CONTENTID).trigger(SWAL_EVENTNAME.showInput, eventData);
 
   }
 
@@ -197,7 +260,7 @@ class FileOps {
       }
     };
 
-    $(CONTENTID.table).trigger(SWAL_EVENTNAME.showInput, eventData);
+    $(CONTENTID).trigger(SWAL_EVENTNAME.showInput, eventData);
 
   }
 
@@ -236,7 +299,7 @@ class FileOps {
       }
     };
 
-    $(CONTENTID.table).trigger(SWAL_EVENTNAME.showInput, eventData);
+    $(CONTENTID).trigger(SWAL_EVENTNAME.showInput, eventData);
 
   }
 
@@ -264,7 +327,7 @@ class FileOps {
       }
     };
 
-    $(CONTENTID.table).trigger(SWAL_EVENTNAME.showInput, eventData);
+    $(CONTENTID).trigger(SWAL_EVENTNAME.showInput, eventData);
 
   }
 
@@ -298,7 +361,7 @@ class FileOps {
       }
     };
 
-    $(CONTENTID.table).trigger(SWAL_EVENTNAME.showInput, eventData);
+    $(CONTENTID).trigger(SWAL_EVENTNAME.showInput, eventData);
 
   }
 
@@ -510,16 +573,16 @@ class FileOps {
       'message': message,
     };
 
-    $(CONTENTID.table).trigger(SWAL_EVENTNAME.showError, eventData);
+    $(CONTENTID).trigger(SWAL_EVENTNAME.showError, eventData);
 
   }
 
   doneLoading() {
-    $(CONTENTID.table).trigger(SWAL_EVENTNAME.closeSwal);
+    $(CONTENTID).trigger(SWAL_EVENTNAME.closeSwal);
   }
 
   clearClipboard() {
-    $(CONTENTID.table).trigger(CLIPBOARD_EVENTNAME.clearClipboard);
+    $(CONTENTID).trigger(CLIPBOARD_EVENTNAME.clearClipboard);
   }
 
   reloadTable(url) {
@@ -527,7 +590,7 @@ class FileOps {
       'url': url,
     };
 
-    $(CONTENTID.table).trigger(DATATABLE_EVENTNAME.reloadTable, eventData);
+    $(CONTENTID).trigger(DATATABLE_EVENTNAME.reloadTable, eventData);
   }
 
   showSwalLoading (message) {
@@ -535,7 +598,7 @@ class FileOps {
       'message': message,
     };
 
-    $(CONTENTID.table).trigger(SWAL_EVENTNAME.showLoading, eventData);
+    $(CONTENTID).trigger(SWAL_EVENTNAME.showLoading, eventData);
 
   }
 

@@ -15,23 +15,23 @@ let sweetAlert = null;
 
 jQuery(function() {
   sweetAlert = new SweetAlert();
-  $(CONTENTID.table).on(EVENTNAME.showError, function(e,options) {
+  $(CONTENTID).on(EVENTNAME.showError, function(e,options) {
     sweetAlert.alertError(options.title, options.message);
   });
 
-  $(CONTENTID.table).on(EVENTNAME.showPrompt, function(e,options) {
+  $(CONTENTID).on(EVENTNAME.showPrompt, function(e,options) {
     sweetAlert.alertError(options.title, options.message);
   });
 
-  $(CONTENTID.table).on(EVENTNAME.showInput, function(e,options) {
+  $(CONTENTID).on(EVENTNAME.showInput, function(e,options) {
     sweetAlert.input(options);
   });
 
-  $(CONTENTID.table).on(EVENTNAME.showLoading, function(e,options) {
+  $(CONTENTID).on(EVENTNAME.showLoading, function(e,options) {
     sweetAlert.loading(options.message);
   });
 
-  $(CONTENTID.table).on(EVENTNAME.closeSwal, function() {
+  $(CONTENTID).on(EVENTNAME.closeSwal, function() {
     sweetAlert.close();
   });
 
@@ -52,9 +52,9 @@ class SweetAlert {
           files: options.files ? options.files : null
         };
 
-        $(CONTENTID.table).trigger(options.action, eventData);
+        $(CONTENTID).trigger(options.action, eventData);
       } else {
-        $(CONTENTID.table).trigger(DATATABLE_EVENTNAME.reloadTable);
+        $(CONTENTID).trigger(DATATABLE_EVENTNAME.reloadTable);
       }
     });
   }

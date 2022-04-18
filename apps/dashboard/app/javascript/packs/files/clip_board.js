@@ -16,30 +16,43 @@ jQuery(function () {
 
   var clipBoard = new ClipBoard();
 
-  $(CONTENTID.table).on('success', function (e) {
+  $("#copy-move-btn").on("click", function () {
+    let table = $(CONTENTID).DataTable();
+    let selection = table.rows({ selected: true }).data();
+
+    const eventData = {
+      selection: selection
+    };
+
+    $(CONTENTID).trigger(EVENTNAME.updateClipboard, eventData);
+
+  });
+
+
+  $(CONTENTID).on('success', function (e) {
     $(e.trigger).tooltip({ title: 'Copied path to clipboard!', trigger: 'manual', placement: 'bottom' }).tooltip('show');
     setTimeout(() => $(e.trigger).tooltip('hide'), 2000);
     e.clearSelection();
   });
 
-  $(CONTENTID.table).on('error', function (e) {
+  $(CONTENTID).on('error', function (e) {
     e.clearSelection();
   });
 
-  $(CONTENTID.table).on(EVENTNAME.clearClipboard, function (e, options) {
+  $(CONTENTID).on(EVENTNAME.clearClipboard, function (e, options) {
     clipBoard.clearClipboard();
     clipBoard.updateViewForClipboard();
   });
 
-  $(CONTENTID.table).on(EVENTNAME.updateClipboard, function (e, options) {
+  $(CONTENTID).on(EVENTNAME.updateClipboard, function (e, options) {
     if (options.selection.length == 0) {
       const eventData = {
         'title': 'Select a file, files, or directory to copy or move.',
         'message': 'You have selected none.',
       };
 
-      $(CONTENTID.table).trigger(SWAL_EVENTNAME.showError, eventData);
-      $(CONTENTID.table).trigger(EVENTNAME.clearClipbaord, eventData);
+      $(CONTENTID).trigger(SWAL_EVENTNAME.showError, eventData);
+      $(CONTENTID).trigger(EVENTNAME.clearClipbaord, eventData);
 
     } else {
       clipBoard.updateClipboardFromSelection(options.selection);
@@ -47,7 +60,7 @@ jQuery(function () {
     }
   });
 
-  $(CONTENTID.table).on(EVENTNAME.updateClipboardView, function (e, options) {
+  $(CONTENTID).on(EVENTNAME.updateClipboardView, function (e, options) {
     clipBoard.updateViewForClipboard();
   });
 
@@ -118,7 +131,7 @@ class ClipBoard {
             'token': csrf_token
           };
 
-          $(CONTENTID.table).trigger(FILEOPS_EVENTNAME.moveFile, eventData);
+          $(CONTENTID).trigger(FILEOPS_EVENTNAME.moveFile, eventData);
         }
       }
       else {
@@ -157,7 +170,7 @@ class ClipBoard {
             'token': csrf_token
           };
 
-          $(CONTENTID.table).trigger(FILEOPS_EVENTNAME.copyFile, eventData);
+          $(CONTENTID).trigger(FILEOPS_EVENTNAME.copyFile, eventData);
         }
       }
       else {

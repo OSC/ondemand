@@ -168,5 +168,5 @@ function getEmptyDirs(entry){
 }
 
 function reloadTable() {
-  $(CONTENTID.table).trigger(DATATABLE_EVENTNAME.reloadTable,{});
+  $(CONTENTID).trigger(DATATABLE_EVENTNAME.reloadTable,{});
 }

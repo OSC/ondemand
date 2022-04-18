@@ -4,7 +4,6 @@ import 'datatables.net-select';
 import 'datatables.net-select-bs4';
 import Handlebars from 'handlebars';
 import {EVENTNAME as CLIPBOARD_EVENTNAME} from './clip_board.js';
-import {EVENTNAME as FILEOPS_EVENTNAME} from './file_ops.js';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 
 export { CONTENTID, EVENTNAME };
@@ -15,107 +14,29 @@ const EVENTNAME = {
     goto: 'goto',
 };
 
-const CONTENTID = {
-    table: '#directory-contents',
-};
+const CONTENTID = '#directory-contents';
 
 let table = null;
 
 jQuery(function () {
     table = new DataTable();
 
-    /* BUTTON ACTIONS */
-    $("#new-file-btn").on("click", function () {
-        $(CONTENTID.table).trigger(FILEOPS_EVENTNAME.newFilePrompt);
-    });
-
-    $("#new-folder-btn").on("click", function () {
-        $(CONTENTID.table).trigger(FILEOPS_EVENTNAME.newFolderPrompt);
-    });
-
-    $("#download-btn").on("click", function () {
-        let selection = table.getTable().rows({ selected: true }).data();
-        const eventData = {
-            selection: selection
-        };
-
-        $(CONTENTID.table).trigger(FILEOPS_EVENTNAME.download, eventData);
-
-    });
-
-    $("#delete-btn").on("click", function () {
-        let files = table.getTable().rows({ selected: true }).data().toArray().map((f) => f.name);
-        const eventData = {
-            files: files
-        };
-
-        $(CONTENTID.table).trigger(FILEOPS_EVENTNAME.deletePrompt, eventData);
-
-    });
-
-    $("#copy-move-btn").on("click", function () {
-        let selection = table.getTable().rows({ selected: true }).data();
-        const eventData = {
-            selection: selection
-        };
-
-        $(CONTENTID.table).trigger(CLIPBOARD_EVENTNAME.updateClipboard, eventData);
-
-    });
-
-    $("#goto-btn").on("click", function () {
-        $(CONTENTID.table).trigger(FILEOPS_EVENTNAME.changeDirectoryPrompt);
-    });
-
-    // TODO:
-    // Will have to work on this one later.  Not so straight forward.
-    //
-    // $("#upload-btn").on("click", function () {
-    //     $(CONTENTID.table).trigger('uppyShowUploadPrompt');
-    // });
 
     /* END BUTTON ACTIONS */
 
     /* TABLE ACTIONS */
-
-    $(CONTENTID.table).on(EVENTNAME.reloadTable, function (e, options) {
-        table.reloadTable(options.url);
+    
+    $(CONTENTID).on(EVENTNAME.reloadTable, function (e, options) {
+        let url = options.url ? options.url : '';
+        table.reloadTable(url);
     });
 
-    $(CONTENTID.table).on(EVENTNAME.getJsonResponse, function (e, options) {
+    $(CONTENTID).on(EVENTNAME.getJsonResponse, function (e, options) {
         table.dataFromJsonResponse(options.response);
     });
 
-    $(CONTENTID.table).on(EVENTNAME.goto, function (e, options) {
+    $(CONTENTID).on(EVENTNAME.goto, function (e, options) {
         table.goto(options.path)
-    });
-
-    $(document).on('click', '.rename-file', function (e) {
-        e.preventDefault();
-        let rowId = e.currentTarget.dataset.rowIndex;
-        let row = table.getTable().row(rowId).data();
-        let fileName = $($.parseHTML(row.name)).text();
-
-        const eventData = {
-            file: fileName,
-        };
-
-        $(CONTENTID.table).trigger(FILEOPS_EVENTNAME.renameFilePrompt, eventData);
-
-    });
-
-    $(document).on('click', '.delete-file', function (e) {
-        e.preventDefault();
-        let rowId = e.currentTarget.dataset.rowIndex;
-        let row = table.getTable().row(rowId).data();
-        let fileName = $($.parseHTML(row.name)).text();
-
-        const eventData = {
-            files: [fileName]
-        };
-
-        $(CONTENTID.table).trigger(FILEOPS_EVENTNAME.deletePrompt, eventData);
-
     });
 
     $('#show-dotfiles').on('change', () => {
@@ -243,7 +164,7 @@ class DataTable {
     }
 
     loadDataTable() {
-        this._table = $(CONTENTID.table).on('xhr.dt', function (e, settings, json, xhr) {
+        this._table = $(CONTENTID).on('xhr.dt', function (e, settings, json, xhr) {
             // new ajax request for new data so update date/time
             // if(json && json.time){
             if (json && json.time) {
@@ -342,7 +263,7 @@ class DataTable {
             $('#open-in-terminal-btn').attr('href', data.shell_url);
             $('#open-in-terminal-btn').removeClass('disabled');
 
-            $(CONTENTID.table).trigger(CLIPBOARD_EVENTNAME.updateClipboardView);
+            $(CONTENTID).trigger(CLIPBOARD_EVENTNAME.updateClipboardView);
             return await Promise.resolve(data);
         } catch (e) {
             const eventData = {
@@ -350,7 +271,7 @@ class DataTable {
                 'message': e.message,
             };
 
-            $(CONTENTID.table).trigger(SWAL_EVENTNAME.showError, eventData);
+            $(CONTENTID).trigger(SWAL_EVENTNAME.showError, eventData);
 
             $('#open-in-terminal-btn').addClass('disabled');
             return await Promise.reject(e);
