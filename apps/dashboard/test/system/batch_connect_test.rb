@@ -42,10 +42,10 @@ class BatchConnectTest < ApplicationSystemTestCase
   end
 
   test 'changing node type changes mins & maxs' do
-    # max starts out at 20
+    # max starts out at 7
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    assert_equal 20, find_max('bc_num_slots')
-    assert_equal 1, find_min('bc_num_slots')
+    assert_equal 7, find_max('bc_num_slots')
+    assert_equal 3, find_min('bc_num_slots')
     select('owens', from: bc_ele_id('cluster'))
 
     # change the node type and we should have some new min/max & value
@@ -64,12 +64,12 @@ class BatchConnectTest < ApplicationSystemTestCase
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     
     # defaults
-    assert_equal 20, find_max('bc_num_slots')
-    assert_equal 1, find_min('bc_num_slots')
+    assert_equal 7, find_max('bc_num_slots')
+    assert_equal 3, find_min('bc_num_slots')
     assert_equal 'any', find_value('node_type')
 
     # put the max for 'any'
-    fill_in bc_ele_id('bc_num_slots'), with: 20
+    fill_in bc_ele_id('bc_num_slots'), with: 7
 
     # now toggle to gpu. Max is 28 and the value is 28
     select('gpu', from: bc_ele_id('node_type'))
@@ -81,12 +81,12 @@ class BatchConnectTest < ApplicationSystemTestCase
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     
     # defaults
-    assert_equal 20, find_max('bc_num_slots')
-    assert_equal 1, find_min('bc_num_slots')
+    assert_equal 7, find_max('bc_num_slots')
+    assert_equal 3, find_min('bc_num_slots')
     assert_equal 'any', find_value('node_type')
 
-    # put the max for 'any'
-    fill_in bc_ele_id('bc_num_slots'), with: 1
+    # put the min for 'any'
+    fill_in bc_ele_id('bc_num_slots'), with: 3
 
     # now toggle to gpu. min is 2 and the value is 2
     select('gpu', from: bc_ele_id('node_type'))
@@ -115,8 +115,8 @@ class BatchConnectTest < ApplicationSystemTestCase
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     
     # start with defaults
-    assert_equal 1, find_min('bc_num_slots')
-    assert_equal 20, find_max('bc_num_slots')
+    assert_equal 3, find_min('bc_num_slots')
+    assert_equal 7, find_max('bc_num_slots')
     assert_equal 'any', find_value('node_type')
 
     # not the max, but less than the next choices'
@@ -129,9 +129,9 @@ class BatchConnectTest < ApplicationSystemTestCase
   end
 
   test 'changing the cluster changes max' do
-    # max starts out at 20
+    # max starts out at 7
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    assert_equal 20, find_max('bc_num_slots')
+    assert_equal 7, find_max('bc_num_slots')
     select('owens', from: bc_ele_id('cluster'))
 
     select('gpu', from: bc_ele_id('node_type'))
@@ -143,9 +143,9 @@ class BatchConnectTest < ApplicationSystemTestCase
   end
 
   test 'using same node sets min/max' do
-    # max starts out at 20
+    # max starts out at 7
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    assert_equal 20, find_max('bc_num_slots')
+    assert_equal 7, find_max('bc_num_slots')
 
     select('same', from: bc_ele_id('node_type'))
     assert_equal 100, find_min('bc_num_slots')
@@ -165,32 +165,32 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal '100', find_value('bc_num_slots')
   end
 
-  test 'nothing applied to any node type' do
+  test 'nothing applied to broken node type' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    assert_equal 20, find_max('bc_num_slots')
-    assert_equal 1, find_min('bc_num_slots')
-    assert_equal '1', find_value('bc_num_slots')
+    assert_equal 7, find_max('bc_num_slots')
+    assert_equal 3, find_min('bc_num_slots')
+    assert_equal '3', find_value('bc_num_slots')
+    select('broken', from: bc_ele_id('node_type'))
 
     # changing clusters does nothing.
     select('owens', from: bc_ele_id('cluster'))
-    select('any', from: bc_ele_id('node_type'))
-    assert_equal 20, find_max('bc_num_slots')
-    assert_equal 1, find_min('bc_num_slots')
-    assert_equal '1', find_value('bc_num_slots')
+    assert_equal 7, find_max('bc_num_slots')
+    assert_equal 3, find_min('bc_num_slots')
+    assert_equal '3', find_value('bc_num_slots')
 
     select('oakley', from: bc_ele_id('cluster'))
-    assert_equal 20, find_max('bc_num_slots')
-    assert_equal 1, find_min('bc_num_slots')
-    assert_equal '1', find_value('bc_num_slots')
+    assert_equal 7, find_max('bc_num_slots')
+    assert_equal 3, find_min('bc_num_slots')
+    assert_equal '3', find_value('bc_num_slots')
 
     # choose same to get a min & max set. Change back to
-    # any and we keep the same min & max from same.
+    # broken and we keep the same min & max from same.
     # TODO this is _current_ behaviour, will probably break
     select('same', from: bc_ele_id('node_type'))
     assert_equal 200, find_max('bc_num_slots')
     assert_equal 100, find_min('bc_num_slots')
     assert_equal '100', find_value('bc_num_slots')
-    select('any', from: bc_ele_id('node_type'))
+    select('broken', from: bc_ele_id('node_type'))
     assert_equal 200, find_max('bc_num_slots')
     assert_equal 100, find_min('bc_num_slots')
     assert_equal '100', find_value('bc_num_slots')
@@ -198,7 +198,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   test 'clamp min values' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    assert_equal '1', find_value('bc_num_slots')
+    assert_equal '3', find_value('bc_num_slots')
 
     select('owens', from: bc_ele_id('cluster'))
     select('gpu', from: bc_ele_id('node_type'))
@@ -219,7 +219,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   test 'clamp max values' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    assert_equal '1', find_value('bc_num_slots')
+    assert_equal '3', find_value('bc_num_slots')
     # this tests filling values by design, bc we have to set a giant max right off the bat
     fill_in bc_ele_id('bc_num_slots'), with: 1000
     assert_equal '1000', find_value('bc_num_slots')
@@ -375,7 +375,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     # defaults
     assert_equal 'owens', find_value('cluster')
     assert_equal 'any', find_value('node_type')
-    assert_equal 20, find_max('bc_num_slots')
+    assert_equal 7, find_max('bc_num_slots')
 
     select('other-40ish-option', from: bc_ele_id('node_type'))
     assert_equal 40, find_max('bc_num_slots')
@@ -416,4 +416,83 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 'display: none;', find_option_style('classroom_size', 'medium')
     assert_equal 'display: none;', find_option_style('classroom_size', 'large')
   end
+
+  test 'stage errors are shown' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    err_msg = 'this is a just a test for staging error messages'
+    Open3.stubs(:capture2e).raises(StandardError.new(err_msg))
+
+    # defaults
+    click_on('Launch')
+    verify_bc_alert('sys/bc_jupyter', I18n.t('dashboard.batch_connect_sessions_errors_staging'), err_msg)
+  end
+
+  test 'submit errors are shown' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    err_msg = BrokenAdapter::SUBMIT_ERR_MSG
+    Open3.stubs(:capture2e).returns(['', exit_success])
+    BatchConnect::Session.any_instance.stubs(:adapter).returns(BrokenAdapter.new)
+
+    # defaults
+    click_on('Launch')
+    verify_bc_alert('sys/bc_jupyter', I18n.t('dashboard.batch_connect_sessions_errors_submission'), err_msg)
+  end
+
+  test 'save errors are shown' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    err_msg = 'this is a just a test for staging error messages'
+    # Open3.stubs(:capture2e).returns(['', exit_failure])
+    BatchConnect::Session.any_instance.stubs(:stage).raises(StandardError.new(err_msg))
+
+    # defaults
+    click_on('Launch')
+    verify_bc_alert('sys/bc_jupyter', 'save', err_msg)
+  end
+
+  test 'auto generated modules are dynamic' do
+    with_modified_env({ OOD_MODULE_FILE_DIR: 'test/fixtures/modules' }) do
+      visit new_batch_connect_session_context_url('sys/bc_jupyter')
+      intel_both_clusters  = []
+
+      # defaults
+      assert_equal '3.0.17', find_value('auto_modules_app_jupyter')
+      assert_equal '2021.3.0', find_value('auto_modules_intel')
+      assert_equal 'owens', find_value('cluster')
+      # versions not available on owens
+      assert_equal 'display: none;', find_option_style('auto_modules_app_jupyter', '3.1.18')
+      assert_equal 'display: none;', find_option_style('auto_modules_app_jupyter', '1.2.16')
+      assert_equal 'display: none;', find_option_style('auto_modules_app_jupyter', '0.35.6')
+      assert_equal 'display: none;', find_option_style('auto_modules_intel', '18.0.4')
+
+      # select oakley and now they're available
+      select('oakley', from: bc_ele_id('cluster'))
+      assert_equal '3.0.17', find_value('auto_modules_app_jupyter')
+      assert_equal '', find_option_style('auto_modules_app_jupyter', '3.1.18')
+      assert_equal '', find_option_style('auto_modules_app_jupyter', '1.2.16')
+      assert_equal '', find_option_style('auto_modules_app_jupyter', '0.35.6')
+
+      # and lots of intel versions aren't
+      assert_equal 'display: none;', find_option_style('auto_modules_intel', '18.0.2')
+      assert_equal 'display: none;', find_option_style('auto_modules_intel', '18.0.0')
+      assert_equal 'display: none;', find_option_style('auto_modules_intel', '17.0.5')
+      assert_equal 'display: none;', find_option_style('auto_modules_intel', '17.0.2')
+      assert_equal 'display: none;', find_option_style('auto_modules_intel', '16.0.8')
+      assert_equal 'display: none;', find_option_style('auto_modules_intel', '16.0.3')
+    end
+  end
 end
+
+
+# <select class="form-control" name="batch_connect_session_context[auto_modules]" id="batch_connect_session_context_auto_modules"><option value="2021.3.0">2021.3.0</option>
+# <option value="19.1.3">19.1.3</option>
+# <option value="19.0.5">19.0.5</option>
+# <option value="19.0.3">19.0.3</option>
+# <option data-option-for-cluster-owens="false" value="18.0.4" style="display: none;">18.0.4</option>
+# <option value="18.0.3">18.0.3</option>
+# <option data-option-for-cluster-pitzer="false" value="18.0.2" style="">18.0.2</option>
+# <option data-option-for-cluster-pitzer="false" value="18.0.0" style="">18.0.0</option>
+# <option value="17.0.7">17.0.7</option>
+# <option data-option-for-cluster-pitzer="false" value="17.0.5" style="">17.0.5</option>
+# <option data-option-for-cluster-pitzer="false" value="17.0.2" style="">17.0.2</option>
+# <option data-option-for-cluster-pitzer="false" value="16.0.8" style="">16.0.8</option>
+# <option data-option-for-cluster-pitzer="false" value="16.0.3" style="">16.0.3</option></select>

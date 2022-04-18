@@ -76,7 +76,7 @@ Listen 8080
   RewriteRule ^.*$ /assets/maintenance/index.html [R=503,L]
   ErrorDocument 503 /assets/maintenance/index.html
 
-  Header always set Content-Security-Policy "frame-ancestors https://test.server.name;"
+  Header always set Content-Security-Policy "frame-ancestors https://test.proxy.name;"
   Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
 
   SSLEngine On
@@ -155,7 +155,7 @@ Listen 8080
     Require valid-user
 
     # ProxyPassReverse implementation
-    Header edit Location "^([^/]+//[^/]+)|(?=/)" "/configured-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
+    Header edit Location "^([^/]+//[^/]+)|(?=/)|^([\./]{1,}(?<!/))" "/configured-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
 
     # ProxyPassReverseCookieDomain implemenation
     Header edit* Set-Cookie ";\s*(?i)Domain[^;]*" ""

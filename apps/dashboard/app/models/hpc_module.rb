@@ -23,6 +23,12 @@ class HpcModule
         end
       end
     end
+
+    def all_versions(module_name)
+      Configuration.job_clusters.map do |cluster|
+        all(cluster.id).select { |m| m.name == module_name.to_s }
+      end.flatten.uniq(&:to_s).sort_by(&:version).reverse
+    end
   end
 
   attr_reader :name, :version
@@ -38,5 +44,9 @@ class HpcModule
 
   def default?
     version.nil?
+  end
+
+  def on_cluster?(cluster_name)
+    HpcModule.all(cluster_name).any? { |m| m.to_s == self.to_s }
   end
 end
