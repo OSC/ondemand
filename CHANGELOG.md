@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+init min & maxes to the right values (#1955)\
+Proxy frame ancestors (#1954)\
+update minimist (#1952)\
+Split Transfer class for file transfers on the local filesystem (#1940)\
+using . in the file names here is deprecated. Instead specify the formats (#1946)\
+allow for manifests to override the caption (#1941)\
+Update Changelog (#1942)\
+update dependencies (#1951)
 
 
 ### Changed
