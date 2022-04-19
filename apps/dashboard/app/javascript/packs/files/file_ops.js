@@ -87,7 +87,7 @@ jQuery(function() {
 
   });
 
-  $("#goto-btn").on("click", function () {
+  $(document).on("click", '#goto-btn', function () {
       $(CONTENTID).trigger(EVENTNAME.changeDirectoryPrompt);
   });
 
