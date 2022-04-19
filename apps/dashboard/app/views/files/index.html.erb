@@ -18,11 +18,11 @@
 
 <div class="row">
   <div class="col-md-3">
-    <%= render partial: "favorites", :locals => { :files => @files } %>
-    <%= render partial: "copy_move_popup", :locals => { :files => @files } %>
-    <%= render partial: "file_action_menu", :locals => { :files => @files } %>
-    <%= render partial: "default_label_error_messages", :locals => { :files => @files } %>
+    <%= render partial: "favorites" %>
+    <%= render partial: "copy_move_popup" %>
+    <%= render partial: "file_action_menu" %>
+    <%= render partial: "default_label_error_messages" %>
   </div>
-  <%= render partial: "files_table", :locals => { :files => @files } %>
+  <%= render partial: "files_table" %>
 </div>
-<%= render partial: "inline_js", :locals => { :files => @files } %>
+<%= render partial: "inline_js" %>
