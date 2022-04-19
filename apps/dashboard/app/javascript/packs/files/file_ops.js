@@ -488,6 +488,7 @@ class FileOps {
       if(action == 'mv' || action == 'cp') {
         this.reloadTable();
         this.clearClipboard();
+        this.updateClipboard();
       }
 
       this.fadeOutTransferStatus(data);
@@ -600,6 +601,10 @@ class FileOps {
 
     $(CONTENTID).trigger(SWAL_EVENTNAME.showLoading, eventData);
 
+  }
+
+  updateClipboard() {
+    $(CONTENTID).trigger(CLIPBOARD_EVENTNAME.updateClipboardView);
   }
 
 }

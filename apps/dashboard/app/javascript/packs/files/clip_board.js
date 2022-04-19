@@ -100,6 +100,8 @@ class ClipBoard {
 
 
   updateViewForClipboard() {
+    console.log("updateViewForClipboard");
+    
     let clipboard = JSON.parse(localStorage.getItem('filesClipboard') || '{}'),
       template_str = $('#clipboard-template').html(),
       template = Handlebars.compile(template_str);

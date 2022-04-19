@@ -3,7 +3,6 @@ import 'datatables.net-bs4/js/dataTables.bootstrap4';
 import 'datatables.net-select';
 import 'datatables.net-select-bs4';
 import Handlebars from 'handlebars';
-import {EVENTNAME as CLIPBOARD_EVENTNAME} from './clip_board.js';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 
 export { CONTENTID, EVENTNAME };
@@ -263,7 +262,6 @@ class DataTable {
             $('#open-in-terminal-btn').attr('href', data.shell_url);
             $('#open-in-terminal-btn').removeClass('disabled');
 
-            $(CONTENTID).trigger(CLIPBOARD_EVENTNAME.updateClipboardView);
             return await Promise.resolve(data);
         } catch (e) {
             const eventData = {
