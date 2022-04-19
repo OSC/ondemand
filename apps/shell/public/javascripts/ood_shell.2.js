@@ -87,8 +87,10 @@ OodShell.prototype.closeTerminal = function (ev) {
   window.onbeforeunload = null;
 
   // Inform user that they cannot connect to websocket. Do not add another error message if one already exists
-  if ( this.term === null && !document.getElementById('errorMessageBox')) {
-    displayErrorMessage('Failed to establish a websocket connection. Be sure you are using a browser that supports websocket connections.');
+  if ( this.term === null ) {
+    if (!document.getElementById('errorMessageBox')) {
+      displayErrorMessage('Failed to establish a websocket connection. Be sure you are using a browser that supports websocket connections.');
+    }
   } else {
     this.term.io.print('\r\nYour connection to the remote server has been terminated.');
   }
