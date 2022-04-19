@@ -27,7 +27,7 @@ jQuery(function () {
     /* TABLE ACTIONS */
     
     $(CONTENTID).on(EVENTNAME.reloadTable, function (e, options) {
-        let url = options.url ? options.url : '';
+        let url = $.isEmptyObject(options) ? '' : options.url;
         table.reloadTable(url);
     });
 

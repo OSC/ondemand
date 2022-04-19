@@ -36,7 +36,7 @@ class FilesTest < ApplicationSystemTestCase
   test "adding a new directory" do
     Dir.mktmpdir do |dir|
       visit files_url(dir)
-      find('#new-folder-btn').click
+      find('#new-dir-btn').click
       find('#swal2-input').set('bar')
       find('.swal2-confirm').click
       assert_selector 'tbody a.d', exact_text: 'bar', wait: 10
