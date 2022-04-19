@@ -121,6 +121,17 @@ router.get('/ssh*', function (req, res) {
     });
 });
 
+router.get('/authCheck/:host/:requestToken', function (req, res) {
+  // Verify that user is authorized to connect to the server. If not, return error stating why
+  // Not intended to prevent user from connecting, just to tell the user why they can't
+
+  const client_origin = req.headers['origin'],
+        server_origin = custom_server_origin(default_server_origin(req.headers));
+
+  var authError = detect_auth_error(req.params.requestToken, client_origin, server_origin, req.params.host);
+  res.send(authError);
+})
+
 router.use(express.static(path.join(__dirname, 'public')));
 
 // Setup app

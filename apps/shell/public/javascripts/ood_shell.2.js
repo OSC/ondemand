@@ -8,12 +8,41 @@ function OodShell(element, url, profile) {
 }
 
 OodShell.prototype.createTerminal = function () {
+  this.verifyAuthorization();
   this.socket = new WebSocket(this.url);
   this.socket.onopen    = this.runTerminal.bind(this);
   this.socket.onmessage = this.getMessage.bind(this);
   this.socket.onclose   = this.closeTerminal.bind(this);
 };
 
+function displayErrorMessage (errorMessage) {
+  var errorDiv;
+  errorDiv = document.createElement('div');
+  errorDiv.id = 'errorMessageBox';
+  errorDiv.className = 'error';
+  errorDiv.innerHTML = errorMessage;
+  document.getElementById('terminal').appendChild(errorDiv);
+}
+
+OodShell.prototype.verifyAuthorization = function () {
+  // Build request url
+  var verifyAuthUrl = this.url;
+  verifyAuthUrl = verifyAuthUrl.replace('wss','https');
+  verifyAuthUrl = verifyAuthUrl.replace('/ssh','/authCheck');
+  verifyAuthUrl = verifyAuthUrl.replace('?csrf=', '/');
+  // Send and handle request
+  var xhr = new XMLHttpRequest();
+  xhr.open("get", verifyAuthUrl);
+  xhr.onload = function () {
+    if (xhr.response) {
+      displayErrorMessage(xhr.response);
+    }
+  };
+  xhr.onerror = function () {
+    console.log("Error verifying authorization: ", xhr.response);
+  };
+  xhr.send();
+}
 
 OodShell.prototype.runTerminal = function () {
   var that = this;
@@ -54,17 +83,12 @@ OodShell.prototype.getMessage = function (ev) {
 }
 
 OodShell.prototype.closeTerminal = function (ev) {
-  var errorDiv;
-
-  // Do not need to warn user if he/she unloads page
+  // Do not need to warn user if they unload the page
   window.onbeforeunload = null;
 
-  // Inform user they lost connection
-  if ( this.term === null ) {
-    errorDiv = document.createElement('div');
-    errorDiv.className = 'error';
-    errorDiv.innerHTML = 'Failed to establish a websocket connection. Be sure you are using a browser that supports websocket connections.';
-    this.element.appendChild(errorDiv);
+  // Inform user that they cannot connect to websocket. Do not add another error message if one already exists
+  if ( this.term === null && !document.getElementById('errorMessageBox')) {
+    displayErrorMessage('Failed to establish a websocket connection. Be sure you are using a browser that supports websocket connections.');
   } else {
     this.term.io.print('\r\nYour connection to the remote server has been terminated.');
   }
