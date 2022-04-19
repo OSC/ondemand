@@ -16,24 +16,30 @@
 
 import jQuery from 'jquery';
 import 'jquery-ujs';
-
-// lot's of inline scripts and stuff rely on jquery just being available
-window.jQuery = jQuery;
-window.$ = jQuery;
+import datatables from 'datatables.net';
+import datatablesBs4 from 'datatables.net-bs4/js/dataTables.bootstrap4';
 
 import Rails from '@rails/ujs';
-Rails.start();
 
 // Import popper.js for Bootstrap 4
-import 'popper.js'
+import 'popper.js';
 
 // Import Bootstrap 4
-import 'bootstrap/dist/js/bootstrap'
+import 'bootstrap/dist/js/bootstrap';
 
 // FIXME: confim modals don't work in esbuild.
 // import 'data-confirm-modal';
 
 import { setNavbarColor } from './config';
+
+// lot's of inline scripts and stuff rely on jquery just being available
+window.jQuery = jQuery;
+window.$ = jQuery;
+
+datatables(window, jQuery);
+datatablesBs4(window, jQuery);
+
+Rails.start();
 
 jQuery(function(){
 
