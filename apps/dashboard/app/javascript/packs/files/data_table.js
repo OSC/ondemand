@@ -272,7 +272,9 @@ class DataTable {
             $(CONTENTID).trigger(SWAL_EVENTNAME.showError, eventData);
 
             $('#open-in-terminal-btn').addClass('disabled');
-            return await Promise.reject(e);
+            
+            // Removed this as it was causing a JS Error and there is no reprocution from removing it.
+            // return await Promise.reject(e);
         }
     }
 
@@ -338,16 +340,17 @@ class DataTable {
       
         this.reloadTable(url)
           .then((data) => {
-            $('#path-breadcrumbs').html(data.breadcrumbs_html);
-      
-            if(pushState) {
-              // Clear search query when moving to another directory.
-              this._table.search('').draw();
-      
-              history.pushState({
-                currentDirectory: data.path,
-                currentDirectoryUrl: data.url
-              }, data.name, data.url);
+            if(data) {
+                $('#path-breadcrumbs').html(data.breadcrumbs_html);
+                if(pushState) {
+                    // Clear search query when moving to another directory.
+                    this._table.search('').draw();
+            
+                    history.pushState({
+                        currentDirectory: data.path,
+                        currentDirectoryUrl: data.url
+                    }, data.name, data.url);
+                }      
             }
           })
           .finally(() => {
