@@ -37,6 +37,56 @@ color_themes.json_array = JSON.stringify([...color_themes.light, ...color_themes
 const tokens = new Tokens({});
 const secret = tokens.secretSync();
 
+// Build host_allowlist
+let host_allowlist = [];
+if (process.env.OOD_SSHHOST_ALLOWLIST){
+  host_allowlist = Array.from(new Set(process.env.OOD_SSHHOST_ALLOWLIST.split(':')));
+}
+let hosts = helpers.definedHosts();
+let default_sshhost = hosts['default'];
+hosts['hosts'].forEach((host) => {
+  host_allowlist.push(host);
+});
+
+// Utility functions
+function host_and_dir_from_url(url){
+  let match = url.match(host_path_rx), 
+  hostname = null, 
+  directory = null;
+
+  if (match) {
+    hostname = match[1] === "default" ? default_sshhost : match[1];
+    directory = match[2] ? decodeURIComponent(match[2]) : null;
+  }
+  return [hostname, directory];
+}
+
+function custom_server_origin(default_value = null){
+  var custom_origin = null;
+
+  if(process.env.OOD_SHELL_ORIGIN_CHECK) {
+    // if ENV is set, do not use default!
+    if(process.env.OOD_SHELL_ORIGIN_CHECK.startsWith('http')){
+      custom_origin = process.env.OOD_SHELL_ORIGIN_CHECK;
+    }
+  }
+  else {
+    custom_origin = default_value;
+  }
+
+  return custom_origin;
+}
+
+function default_server_origin(headers){
+  var origin = null;
+
+  if (headers['x-forwarded-proto'] && headers['x-forwarded-host']){
+    origin = headers['x-forwarded-proto'] + "://" + headers['x-forwarded-host']
+  }
+
+  return origin;
+}
+
 // Create all your routes
 var router = express.Router();
 router.get(['/', '/ssh'], function (req, res) {
@@ -72,29 +122,6 @@ app.use(process.env.PASSENGER_BASE_URI || '/', router);
 // Setup websocket server
 const server = new http.createServer(app);
 const wss = new WebSocket.Server({ noServer: true });
-
-let host_allowlist = [];
-if (process.env.OOD_SSHHOST_ALLOWLIST){
-  host_allowlist = Array.from(new Set(process.env.OOD_SSHHOST_ALLOWLIST.split(':')));
-}
-
-let hosts = helpers.definedHosts();
-let default_sshhost = hosts['default'];
-hosts['hosts'].forEach((host) => {
-  host_allowlist.push(host);
-});
-
-function host_and_dir_from_url(url){
-  let match = url.match(host_path_rx), 
-  hostname = null, 
-  directory = null;
-
-  if (match) {
-    hostname = match[1] === "default" ? default_sshhost : match[1];
-    directory = match[2] ? decodeURIComponent(match[2]) : null;
-  }
-  return [hostname, directory];
-}
 
 wss.on('connection', function connection (ws, req) {
   var dir,
@@ -143,32 +170,6 @@ wss.on('connection', function connection (ws, req) {
     console.log('Closed terminal: ' + term.pid);
   });
 });
-
-function custom_server_origin(default_value = null){
-  var custom_origin = null;
-
-  if(process.env.OOD_SHELL_ORIGIN_CHECK) {
-    // if ENV is set, do not use default!
-    if(process.env.OOD_SHELL_ORIGIN_CHECK.startsWith('http')){
-      custom_origin = process.env.OOD_SHELL_ORIGIN_CHECK;
-    }
-  }
-  else {
-    custom_origin = default_value;
-  }
-
-  return custom_origin;
-}
-
-function default_server_origin(headers){
-  var origin = null;
-
-  if (headers['x-forwarded-proto'] && headers['x-forwarded-host']){
-    origin = headers['x-forwarded-proto'] + "://" + headers['x-forwarded-host']
-  }
-
-  return origin;
-}
 
 server.on('upgrade', function upgrade(request, socket, head) {
   const requestToken = new URLSearchParams(url.parse(request.url).search).get('csrf'),
