@@ -59,3 +59,9 @@ namespace :test do
   desc "Test all clusters"
   task :jobs => "jobs:all"
 end
+
+
+# unit tests need the assets compiled too.
+if Rake::Task.task_defined?('test')
+  Rake::Task['test'].enhance(['javascript:build', 'css:build'])
+end
