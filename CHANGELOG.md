@@ -6,15 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-init min & maxes to the right values (#1955)\
-Proxy frame ancestors (#1954)\
-update minimist (#1952)\
-Split Transfer class for file transfers on the local filesystem (#1940)\
-using . in the file names here is deprecated. Instead specify the formats (#1946)\
-allow for manifests to override the caption (#1941)\
-Update Changelog (#1942)\
-update dependencies (#1951)
-
 
 ### Changed
 
@@ -34,6 +25,7 @@ update dependencies (#1951)
 - Changed the file editor navbar in [1582](https://github.com/OSC/ondemand/pull/1582).
 - CI now uses the `ood_packaging` gem to build artifacts in [1661](https://github.com/OSC/ondemand/pull/1661).
 - Yaml files now preview in [1758](https://github.com/OSC/ondemand/pull/1758).
+- Manifests can now specify and override an app's caption in [1941](https://github.com/OSC/ondemand/pull/1758).
 
 ### Added
 
