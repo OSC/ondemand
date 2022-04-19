@@ -87,6 +87,20 @@ function default_server_origin(headers){
   return origin;
 }
 
+function detect_auth_error(requestToken, client_origin, server_origin, host) {
+  if (client_origin &&
+    client_origin.startsWith('http') &&
+    server_origin && client_origin !== server_origin) {
+    return "Invalid Origin.";
+  } else if (!tokens.verify(secret, requestToken)) {
+    return "Bad CSRF Token.";
+  } else if (!helpers.hostInAllowList(host_allowlist, host)) {
+    return "Host not specified in allowlist or cluster configs.";
+  } else {
+    return null;
+  }
+}
+
 // Create all your routes
 var router = express.Router();
 router.get(['/', '/ssh'], function (req, res) {
@@ -179,35 +193,14 @@ server.on('upgrade', function upgrade(request, socket, head) {
   var host, dir;
   [host, dir] = host_and_dir_from_url(request.url);
 
-  if (client_origin &&
-      client_origin.startsWith('http') &&
-      server_origin && client_origin !== server_origin) {
+  var authError = detect_auth_error(requestToken, client_origin, server_origin, host);
+  if (authError) {
     socket.write([
       'HTTP/1.1 401 Unauthorized',
       'Content-Type: text/html; charset=UTF-8',
       'Content-Encoding: UTF-8',
       'Connection: close',
-      'X-OOD-Failure-Reason: invalid origin',
-    ].join('\r\n') + '\r\n\r\n');
-
-    socket.destroy();
-  } else if (!tokens.verify(secret, requestToken)) {
-    socket.write([
-      'HTTP/1.1 401 Unauthorized',
-      'Content-Type: text/html; charset=UTF-8',
-      'Content-Encoding: UTF-8',
-      'Connection: close',
-      'X-OOD-Failure-Reason: bad csrf token',
-    ].join('\r\n') + '\r\n\r\n');
-
-    socket.destroy();
-  } else if (!helpers.hostInAllowList(host_allowlist, host)) { // host not in allowlist
-    socket.write([
-      'HTTP/1.1 401 Unauthorized',
-      'Content-Type: text/html; charset=UTF-8',
-      'Content-Encoding: UTF-8',
-      'Connection: close',
-      'X-OOD-Failure-Reason: host not specified in allowlist or cluster configs',
+      `X-OOD-Failure-Reason: ${authError}`,
     ].join('\r\n') + '\r\n\r\n');
 
     socket.destroy();
