@@ -88,7 +88,9 @@ function default_server_origin(headers){
 }
 
 function detect_auth_error(requestToken, client_origin, server_origin, host) {
-  if (client_origin &&
+  if (host_allowlist.length == 0) {
+    return "No clusters defined.";
+  } else if (client_origin &&
     client_origin.startsWith('http') &&
     server_origin && client_origin !== server_origin) {
     return "Invalid Origin.";
