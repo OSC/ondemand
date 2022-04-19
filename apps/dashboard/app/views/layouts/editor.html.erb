@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 
   <title><%= "File Editor - #{OodAppkit.dashboard.title}" %><%= @path.nil? ? "" : " - #{@path.basename.to_s}" %></title>
-  <%= favicon_link_tag 'favicon.ico', href: OodAppkit.public.url.join('favicon.ico') %>
+  <%= favicon_link_tag 'favicon.ico', href: OodAppkit.public.url.join('favicon.ico'), skip_pipeline: true %>
 
   <%= javascript_include_tag 'application', nonce: true %>
   <%= javascript_include_tag 'editor', nonce: true %>
