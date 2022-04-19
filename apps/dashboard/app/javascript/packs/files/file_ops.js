@@ -10,15 +10,15 @@ const EVENTNAME = {
   changeDirectoryPrompt: 'changeDirectoryPrompt',
   copyFile: 'copyFile',
   createFile: 'createFile',
-  createFolder: 'createFolder',
+  createDirectory: 'createDirectory',
   deleteFile: 'deleteFile',
   deletePrompt: 'deletePrompt',
   download: 'download',
   moveFile: 'moveFile',
   newFile: 'newFile',
   newFilePrompt: 'newFilePrompt',
-  newFolderPrompt: 'newFolderPrompt',
-  newFolder: 'newFolder',
+  newDirectoryPrompt: 'newDirectoryPrompt',
+  newDirectory: 'newDirectory',
   renameFile: 'renameFile',
   renameFilePrompt: 'renameFilePrompt',
 }
@@ -60,8 +60,8 @@ jQuery(function() {
     $(CONTENTID).trigger(EVENTNAME.newFilePrompt);
   });
 
-  $("#new-folder-btn").on("click", function () {
-      $(CONTENTID).trigger(EVENTNAME.newFolderPrompt);
+  $("#new-dir-btn").on("click", function () {
+      $(CONTENTID).trigger(EVENTNAME.newDirectoryPrompt);
   });
 
   $("#download-btn").on("click", function () {
@@ -125,8 +125,8 @@ jQuery(function() {
     fileOps.newFilePrompt();
   });
 
-  $(CONTENTID).on(EVENTNAME.newFolderPrompt, function () {
-    fileOps.newFolderPrompt();
+  $(CONTENTID).on(EVENTNAME.newDirectoryPrompt, function () {
+    fileOps.newDirectoryPrompt();
   });
 
   $(CONTENTID).on(EVENTNAME.renameFilePrompt, function (e, options) {
@@ -141,8 +141,8 @@ jQuery(function() {
     fileOps.newFile(options.result.value);
   });
 
-  $(CONTENTID).on(EVENTNAME.createFolder, function (e, options) {
-    fileOps.newFolder(options.result.value);
+  $(CONTENTID).on(EVENTNAME.createDirectory, function (e, options) {
+    fileOps.newDirectory(options.result.value);
   });
 
   $(CONTENTID).on(EVENTNAME.download, function (e, options) {
@@ -343,14 +343,14 @@ class FileOps {
       });
   }
 
-  newFolderPrompt() {
+  newDirectoryPrompt() {
 
     const eventData = {
-      action: EVENTNAME.createFolder,
+      action: EVENTNAME.createDirectory,
       'inputOptions': {
-        title: 'New Folder',
+        title: 'New Directory',
         input: 'text',
-        inputLabel: 'Folder name',
+        inputLabel: 'Directory name',
         showCancelButton: true,
         inputValidator: (value) => {
           if (!value || value.includes("/")) {
@@ -365,7 +365,7 @@ class FileOps {
 
   }
 
-  newFolder(filename) {
+  newDirectory(filename) {
     let myFileOp = new FileOps();
     fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token }})
       .then(response => this.dataFromJsonResponse(response))
@@ -373,7 +373,7 @@ class FileOps {
         myFileOp.reloadTable();
       })
       .catch(function (e) {
-        myFileOp.alertError('Error occurred when attempting to create new folder', e.message);
+        myFileOp.alertError('Error occurred when attempting to create new directory', e.message);
       });
   }
 
