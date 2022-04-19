@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-
 ### Changed
 
 - Update hterm to 1.91 in  [#1426](https://github.com/OSC/ondemand/pull/1426).
@@ -26,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Changed the file editor navbar in [1582](https://github.com/OSC/ondemand/pull/1582).
 - CI now uses the `ood_packaging` gem to build artifacts in [1661](https://github.com/OSC/ondemand/pull/1661).
 - Yaml files now preview in [1758](https://github.com/OSC/ondemand/pull/1758).
+- Manifests can now specify and override an app's caption in [1941](https://github.com/OSC/ondemand/pull/1758).
 
 ### Added
 
