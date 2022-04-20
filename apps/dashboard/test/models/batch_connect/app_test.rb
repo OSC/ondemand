@@ -292,4 +292,22 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
       assert_equal Hash.new, app.build_session_context.attributes
     end
   end
+
+  test 'subapps use caption from form' do
+    r = PathRouter.new('test/fixtures/usr/shared/bc_with_subapps/')
+    app = BatchConnect::App.new(router: r)
+    sub_apps = app.sub_app_list
+
+    assert_equal 2, sub_apps.size
+    assert_equal 'Oakley Desktop', sub_apps[0].title
+    assert_equal 'Owens Desktop', sub_apps[1].title
+
+    # path router's default caption is nil. But owens overrides
+    assert_nil sub_apps[0].caption
+    assert_equal 'gnome desktop on the owens cluster', app.sub_app_list[1].caption
+
+    # links hold the right caption too
+    assert_nil sub_apps[0].link.caption
+    assert_equal 'gnome desktop on the owens cluster', sub_apps[1].link.caption
+  end
 end
