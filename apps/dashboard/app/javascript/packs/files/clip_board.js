@@ -72,6 +72,7 @@ class ClipBoard {
 
   constructor() {
     this._clipBoard = new ClipboardJS('#copy-path');
+    this.updateViewForClipboard();
   }
 
   getClipBoard() {
