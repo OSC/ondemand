@@ -35,12 +35,10 @@ class ProjectsController < ApplicationController
   def create
     @project = Project.new(project_params)
 
-    # saving .ondemand in project_dataroot 
-    if @project.valid? && @project.save
+    if @project.valid? && @project.save(project_params)
       redirect_to projects_path, notice: 'Project successfully created!'
     else
-      project_error = @project.errors.where(:dir).last
-      redirect_to new_project_path, alert: project_error.message
+      redirect_to new_project_path, alert: @project.errors[:dir].last
     end
   end
 
@@ -54,10 +52,9 @@ class ProjectsController < ApplicationController
   end
 
   private
-
   def project_params
     params
       .require(:project)
-      .permit(:dir, :name, :description, :icon)
+      .permit(:name, :description, :icon)
   end
 end

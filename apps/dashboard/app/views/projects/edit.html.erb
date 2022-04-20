@@ -5,14 +5,7 @@
 </div>
 
 <%= bootstrap_form_for(@project, url: project_path, method: :patch) do |form| %>
-  <%= render "project_edit_form", form: form %>
-  <div class="row actions">
-    <div class='col-md-6'>
-      <%= form.submit 'Save', class: 'btn btn-primary' %>
-      <%= link_to 'Back', projects_path, class: 'btn btn-default', 
-      title: 'Return to projects page' %>
-    </div>
-  </div>
+  <%= render partial: "form" %>
 <% end %>
 
 <hr />

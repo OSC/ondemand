@@ -3,10 +3,16 @@
 <div class='card'>
     <h5 class='card-header'>Project Details</h5>
     <div class='card-body'>
-        <div class='col-md-5'>
-        <div class="field">
-          <%= form.text_field :dir, label: 'Project Name', 
-          class: 'form-control', required: true %>
+      <div class="col-md-3">
+        <p> icon placeholder </p>
+      </div>
+        <div class="col-md-9">
+          <div class="field">
+            <%= form.text_field :name, placeholder: "Project name" %>
+          </div>
+          <div class="field">
+            <%= form.text_area :description, placeholder: "Project description" %>
+          </div>
         </div>
       </div>
     </div>
