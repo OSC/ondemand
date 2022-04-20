@@ -96,54 +96,6 @@ function host_and_dir_from_url(url){
   return [hostname, directory];
 }
 
-wss.on('connection', function connection (ws, req) {
-  var dir,
-      term,
-      args,
-      host,
-      cmd = process.env.OOD_SSH_WRAPPER || 'ssh';
-
-  console.log('Connection established');
-
-  [host, dir] = host_and_dir_from_url(req.url);
-  args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
-
-  process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
-
-  term = pty.spawn(cmd, args, {
-    name: 'xterm-16color',
-    cols: 80,
-    rows: 30
-  });
-
-  console.log('Opened terminal: ' + term.pid);
-
-  term.on('data', function (data) {
-    ws.send(data, function (error) {
-      if (error) console.log('Send error: ' + error.message);
-    });
-  });
-
-  term.on('error', function (error) {
-    ws.close();
-  });
-
-  term.on('close', function () {
-    ws.close();
-  });
-
-  ws.on('message', function (msg) {
-    msg = JSON.parse(msg);
-    if (msg.input)  term.write(msg.input);
-    if (msg.resize) term.resize(parseInt(msg.resize.cols), parseInt(msg.resize.rows));
-  });
-
-  ws.on('close', function () {
-    term.end();
-    console.log('Closed terminal: ' + term.pid);
-  });
-});
-
 function custom_server_origin(default_value = null){
   var custom_origin = null;
 
@@ -170,51 +122,83 @@ function default_server_origin(headers){
   return origin;
 }
 
-server.on('upgrade', function upgrade(request, socket, head) {
-  const requestToken = new URLSearchParams(url.parse(request.url).search).get('csrf'),
-        client_origin = request.headers['origin'],
-        server_origin = custom_server_origin(default_server_origin(request.headers));
-
-  var host, dir;
-  [host, dir] = host_and_dir_from_url(request.url);
-
-  if (client_origin &&
-      client_origin.startsWith('http') &&
-      server_origin && client_origin !== server_origin) {
-    socket.write([
-      'HTTP/1.1 401 Unauthorized',
-      'Content-Type: text/html; charset=UTF-8',
-      'Content-Encoding: UTF-8',
-      'Connection: close',
-      'X-OOD-Failure-Reason: invalid origin',
-    ].join('\r\n') + '\r\n\r\n');
-
-    socket.destroy();
+function detect_auth_error(requestToken, client_origin, server_origin, host) {
+  if (host_allowlist.length == 0) {
+    return "No clusters defined.";
+  } else if (client_origin &&
+    client_origin.startsWith('http') &&
+    server_origin && client_origin !== server_origin) {
+    return "Invalid Origin.";
   } else if (!tokens.verify(secret, requestToken)) {
-    socket.write([
-      'HTTP/1.1 401 Unauthorized',
-      'Content-Type: text/html; charset=UTF-8',
-      'Content-Encoding: UTF-8',
-      'Connection: close',
-      'X-OOD-Failure-Reason: bad csrf token',
-    ].join('\r\n') + '\r\n\r\n');
-
-    socket.destroy();
-  } else if (!helpers.hostInAllowList(host_allowlist, host)) { // host not in allowlist
-    socket.write([
-      'HTTP/1.1 401 Unauthorized',
-      'Content-Type: text/html; charset=UTF-8',
-      'Content-Encoding: UTF-8',
-      'Connection: close',
-      'X-OOD-Failure-Reason: host not specified in allowlist or cluster configs',
-    ].join('\r\n') + '\r\n\r\n');
-
-    socket.destroy();
+    return "Bad CSRF Token.";
+  } else if (!helpers.hostInAllowList(host_allowlist, host)) {
+    return "Host not specified in allowlist or cluster configs.";
   } else {
-    wss.handleUpgrade(request, socket, head, function done(ws) {
-      wss.emit('connection', ws, request);
+    return null;
+  }
+}
+
+wss.on('connection', function connection (ws, req) {
+  var dir,
+      term,
+      args,
+      host,
+      cmd = process.env.OOD_SSH_WRAPPER || 'ssh';
+
+  console.log('Connection established');
+
+  [host, dir] = host_and_dir_from_url(req.url);
+
+  // Verify authentication
+  token = req.url.match(/csrf=([^&]*)/)[1];
+  authError = detect_auth_error(token, req.origin, custom_server_origin(), host);
+  if (authError) {
+    // 3146 has no meaning, any number between 3000-3999 is fair to use
+    ws.close(3146, authError);
+  } else {
+    args = dir ? [host, '-t', 'cd \'' + dir.replace(/\'/g, "'\\''") + '\' ; exec ${SHELL} -l'] : [host];
+
+    process.env.LANG = 'en_US.UTF-8'; // this patch (from b996d36) lost when removing wetty (2c8a022)
+
+    term = pty.spawn(cmd, args, {
+      name: 'xterm-16color',
+      cols: 80,
+      rows: 30
+    });
+
+    console.log('Opened terminal: ' + term.pid);
+
+    term.on('data', function (data) {
+      ws.send(data, function (error) {
+        if (error) console.log('Send error: ' + error.message);
+      });
+    });
+
+    term.on('error', function (error) {
+      ws.close();
+    });
+
+    term.on('close', function () {
+      ws.close();
+    });
+
+    ws.on('message', function (msg) {
+      msg = JSON.parse(msg);
+      if (msg.input)  term.write(msg.input);
+      if (msg.resize) term.resize(parseInt(msg.resize.cols), parseInt(msg.resize.rows));
+    });
+
+    ws.on('close', function () {
+      term.end();
+      console.log('Closed terminal: ' + term.pid);
     });
   }
+});
+
+server.on('upgrade', function upgrade(request, socket, head) {
+  wss.handleUpgrade(request, socket, head, function done(ws) {
+    wss.emit('connection', ws, request);
+  });
 });
 
 server.listen(port, function () {
