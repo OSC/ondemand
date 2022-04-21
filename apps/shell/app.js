@@ -132,7 +132,7 @@ function detect_auth_error(requestToken, client_origin, server_origin, host) {
   } else if (!tokens.verify(secret, requestToken)) {
     return "Bad CSRF Token.";
   } else if (!helpers.hostInAllowList(host_allowlist, host)) {
-    return "Host not specified in allowlist or cluster configs.";
+    return `Host "${host}" not specified in allowlist or cluster configs.`;
   } else {
     return null;
   }
