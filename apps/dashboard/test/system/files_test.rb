@@ -63,7 +63,8 @@ class FilesTest < ApplicationSystemTestCase
       find('#clipboard-copy-to-dir').click
 
       # if this fails it is due to the directory table not reloading
-      assert_selector '#directory-contents tbody tr', count: 3, wait: 10
+      # assert_selector '#directory-contents tbody tr', count: 3, wait: 10
+      assert_selector 'tbody a', exact_text: 'app', wait: 10
 
       assert_equal "", `diff -rq #{File.join(dir, 'app')} #{Rails.root.join('app').to_s}`.strip, "failed to recursively copy app dir"
       assert_equal "", `diff -rq #{File.join(dir, 'config')} #{Rails.root.join('config').to_s}`.strip, "failed to recursively copy config dir"
