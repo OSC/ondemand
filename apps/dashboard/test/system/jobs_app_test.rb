@@ -67,7 +67,7 @@ class ProjectsTest < ApplicationSystemTestCase
     src = 'test_project'
     visit projects_path
     click_on 'New Project'
-    find('#project_dir').set(src)
+    find('#project_name').set(src)
     click_on 'Save'
   end
 end
