@@ -151,7 +151,7 @@ wss.on('connection', function connection (ws, req) {
 
   // Verify authentication
   token = req.url.match(/csrf=([^&]*)/)[1];
-  authError = detect_auth_error(token, req.origin, custom_server_origin(), host);
+  authError = detect_auth_error(token, req.origin, custom_server_origin(default_server_origin(req)), host);
   if (authError) {
     // 3146 has no meaning, any number between 3000-3999 is fair to use
     ws.close(3146, authError);
