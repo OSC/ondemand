@@ -6,9 +6,9 @@ class ProjectsTest < ActiveSupport::TestCase
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
-      attrs = { dir: 'test_project' }
+      attrs = { name: 'test project' }
       project = Project.new(attrs)
-      project.save
+      project.save(attrs)
 
       assert Dir.entries("#{projects_path}/projects").include?("test_project")
     end
@@ -18,9 +18,9 @@ class ProjectsTest < ActiveSupport::TestCase
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
-      attrs = { dir: 'test_project' }
+      attrs = { name: 'test project' }
       project = Project.new(attrs)
-      project.save
+      project.save(attrs)
 
       dot_ondemand_path = Pathname.new("#{projects_path}/projects/#{project.dir}")
 
@@ -32,9 +32,9 @@ class ProjectsTest < ActiveSupport::TestCase
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
-      # attrs = { dir: 'test"authenticity_token"=>"[FILTERED]", "project"=>{"dir"=>"project4"}, "commit"=>"Save"}_project' }
-      project = Project.new(dir: 'test_project')
-      project.save
+      attrs = { name: 'test project'}
+      project = Project.new(name: 'test project')
+      project.save(attrs)
 
       assert_equal 'test_project', project.dir
 
@@ -43,7 +43,8 @@ class ProjectsTest < ActiveSupport::TestCase
       assert File.file?(manifest_path)
 
       expected_manifest_yml = <<~HEREDOC
-        --- {}
+        ---
+        name: test project
       HEREDOC
 
       assert_equal expected_manifest_yml, File.read(manifest_path)
@@ -54,10 +55,10 @@ class ProjectsTest < ActiveSupport::TestCase
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
-      attrs = { dir: 'test_project' }
+      attrs = { name: 'test project' }
       project = Project.new(attrs)
 
-      project.save
+      project.save(attrs)
       assert Dir.entries("#{projects_path}/projects/").include?('test_project')
 
       project.destroy!
@@ -69,9 +70,9 @@ class ProjectsTest < ActiveSupport::TestCase
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
-      attrs = { dir: 'test_project' }
+      attrs = { name: 'test project' }
       project = Project.new(attrs)
-      project.save
+      project.save(attrs)
 
       name          = 'galaxies and galaxies'
       description   = 'a view into the past'
