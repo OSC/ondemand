@@ -19,7 +19,7 @@ class CurrentUser
   alias_method :home, :dir
 
   def initialize
-    @pwuid ||= Etc.getpwuid
+    @pwuid = Etc.getpwuid
   end
 
   def primary_group
