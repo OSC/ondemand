@@ -14,12 +14,18 @@ function definedHosts() {
     'default': process.env.OOD_DEFAULT_SSHHOST || process.env.DEFAULT_SSHHOST || null,
     'hosts': []
   };
-
   glob.sync(path.join((process.env.OOD_CLUSTERS || '/etc/ood/config/clusters.d'), '*.y*ml'))
-    .map((yml) => {
+    .filter((yml) => {
+      // Verify read access to yml files
       try {
-        return yaml.safeLoad(fs.readFileSync(yml));
-      } catch(err) { /** just keep going. dashboard should have an alert about it */}
+        fs.accessSync(yml, fs.constants.R_OK);
+        return true;
+      } catch {
+        return false;
+      }
+    })
+    .map((yml) => {
+      return yaml.safeLoad(fs.readFileSync(yml));
     }).filter(config => (config && config.v2 && config.v2.login && config.v2.login.host) && ! (config.v2 && config.v2.metadata && config.v2.metadata.hidden))
     .forEach((config) => {
       let host = config.v2.login.host; //Already did checking above
