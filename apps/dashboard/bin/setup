@@ -8,14 +8,12 @@ include FileUtils
 ENV["RAILS_ENV"]               ||= ENV["PASSENGER_APP_ENV"] || "development"
 ENV["RAILS_RELATIVE_URL_ROOT"] ||= ENV["PASSENGER_BASE_URI"]
 
-# if relative url root not set, use default for this app
-if ENV['RAILS_ENV'] != 'development'
-  ENV['RAILS_RELATIVE_URL_ROOT'] ||= "/pun/sys/dashboard"
-else
+# force the default relative urls so that assets compile correctly.
+if ENV['RAILS_ENV'] == 'development'
   ENV['RAILS_RELATIVE_URL_ROOT'] ||= "/pun/dev/dashboard"
+else
+  ENV['RAILS_RELATIVE_URL_ROOT'] ||= "/pun/sys/dashboard"
 end
-
-puts ENV["RAILS_ENV"]
 
 # define application object
 class App
