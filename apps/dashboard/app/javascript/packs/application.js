@@ -18,6 +18,7 @@ import jQuery from 'jquery';
 import 'jquery-ujs';
 import datatables from 'datatables.net';
 import datatablesBs4 from 'datatables.net-bs4/js/dataTables.bootstrap4';
+import datatablesSelect from 'datatables.net-select';
 
 import Rails from '@rails/ujs';
 
@@ -38,6 +39,7 @@ window.$ = jQuery;
 
 datatables(window, jQuery);
 datatablesBs4(window, jQuery);
+datatablesSelect(window, jQuery);
 
 Rails.start();
 
