@@ -63,5 +63,5 @@ end
 
 # unit tests need the assets compiled too.
 if Rake::Task.task_defined?('test')
-  Rake::Task['test'].enhance(['javascript:build', 'css:build'])
+  Rake::Task['test'].enhance(['assets:clobber', 'javascript:build', 'css:build'])
 end
