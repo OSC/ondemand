@@ -37,6 +37,7 @@ import { setNavbarColor } from './config';
 window.jQuery = jQuery;
 window.$ = jQuery;
 
+// these plugins don't automatically load, so this loads them.
 datatables(window, jQuery);
 datatablesBs4(window, jQuery);
 datatablesSelect(window, jQuery);
