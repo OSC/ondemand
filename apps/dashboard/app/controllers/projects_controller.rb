@@ -4,7 +4,7 @@ class ProjectsController < ApplicationController
   
   # GET /projects/:id
   def show
-    # files in current project
+    @project = Project.find(params[:id])
   end
 
   # GET /projects
@@ -28,6 +28,8 @@ class ProjectsController < ApplicationController
 
     if @project.update(project_params)
       redirect_to projects_path, notice: 'Project manifest updated!'
+    else
+      flash.now[:alert] = @project.errors
     end
   end
 
@@ -38,7 +40,7 @@ class ProjectsController < ApplicationController
     if @project.valid? && @project.save(project_params)
       redirect_to projects_path, notice: 'Project successfully created!'
     else
-      redirect_to new_project_path, alert: @project.errors[:dir].last
+      redirect_to new_project_path, alert: @project.errors[:directory].last
     end
   end
 

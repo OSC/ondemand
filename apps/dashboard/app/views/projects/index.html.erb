@@ -17,12 +17,12 @@
       <tbody>
       <% @projects.each do |project| %>
         <tr>
-          <td><%= project.dir %></td>
-          <td><%= link_to 'Work in', project_path(project.dir), class: 'btn btn-success', 
+          <td><%= project.name %></td>
+          <td><%= link_to 'Work in', project_path(project.directory), class: 'btn btn-success', 
           title: 'View project directory contents' %>
-          <td><%= link_to 'Edit', edit_project_path(project.dir), class: 'btn btn-info',
+          <td><%= link_to 'Edit', edit_project_path(project.directory), class: 'btn btn-info',
           title: 'Edit project directory' %>
-          <td><%= link_to 'Delete', project_path(project.dir), class: 'btn btn-danger', :method => :delete,
+          <td><%= link_to 'Delete', project_path(project.directory), class: 'btn btn-danger', :method => :delete,
           data: {confirm: 'Delete all contents of project directory?'} %>
         <tr>
       <% end %>

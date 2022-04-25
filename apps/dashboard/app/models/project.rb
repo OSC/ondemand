@@ -34,18 +34,18 @@ class Project
     end
   end
 
-  validates :dir, presence: true
-  validates :dir, format: {
+  validates :directory, presence: true
+  validates :directory, format: {
     with: /\A[\w-]+\z/,
     message: 'Directory may only contain letters, digits, dashes, and underscores'
   }
 
-  attr_reader :name, :description
+  attr_reader :directory, :description
   
   delegate :icon, :name, :description, to: :manifest
 
   def initialize(attributes = {})
-    @name         = attributes.fetch(:name, nil).to_s
+    @name    = attributes.fetch(:name, nil).to_s
     @description  = attributes.fetch(:description, nil).to_s
   end
  
@@ -53,10 +53,6 @@ class Project
   # @return [Bool]
   def save(attributes)
     result = update(attributes)
-    # errors.add(:save, 'Cannot save manifest') unless result
-    unless result
-      Rails.logger.debug("result is #{result}, need it to be true")
-    end
     result
   end
 
@@ -74,21 +70,22 @@ class Project
   end
 
   def configuration_directory
-    unless dir.blank?
+    unless directory.blank?
       Pathname.new("#{project_dataroot}/.ondemand").tap { |path| path.mkpath unless path.exist? }
     end
   end
 
   def project_dataroot
-    Project.dataroot.join(dir)
+    Project.dataroot.join(directory)
   end
 
-  def dir
+  def directory
+    # need the project.name here at initialization not Manifest.name
     @name.downcase.tr_s(' ', '_')
   end
 
   def title
-    name.titleize
+    directory.titleize
   end
 
   def manifest
