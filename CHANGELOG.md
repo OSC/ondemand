@@ -6,9 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-add the ability for sub apps to have their own caption (#1962)\
-Feature/refactor js data table (#1883)\
-Update Changelog (#1958)
 
 ### Changed
 
@@ -28,7 +25,8 @@ Update Changelog (#1958)
 - Changed the file editor navbar in [1582](https://github.com/OSC/ondemand/pull/1582).
 - CI now uses the `ood_packaging` gem to build artifacts in [1661](https://github.com/OSC/ondemand/pull/1661).
 - Yaml files now preview in [1758](https://github.com/OSC/ondemand/pull/1758).
-- Manifests can now specify and override an app's caption in [1941](https://github.com/OSC/ondemand/pull/1758).
+- Manifests can now specify and override an app's caption in [1941](https://github.com/OSC/ondemand/pull/1941).
+- The file explorer table has been heavily refactored to be more reusable in [1883](https://github.com/OSC/ondemand/pull/1883).
 
 ### Added
 
