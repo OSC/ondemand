@@ -62,7 +62,16 @@ class Project
     # only have side effects in update
     new_manifest = Manifest.load(manifest_path)
     new_manifest = manifest.merge(attributes)
-    new_manifest.valid? ? new_manifest.save(manifest_path) : false
+    # all manifest.valid? does is check if .to_h works on object passed
+    # need to check that the name accepts only letters, underscore, dash, digits
+    if attributes_valid?(attributes)
+      new_manifest.valid? ? new_manifest.save(manifest_path) : false
+    else
+      Rails.logger.error("Attributes passed to manifest invalid")
+      # need to pass back error here
+      @project.errors <<  'May only contain letters, digits, dashes, and underscores'
+      false
+    end
   end
 
   def destroy!
@@ -95,4 +104,9 @@ class Project
   def manifest_path
     File.join(configuration_directory, 'manifest.yml') unless configuration_directory.nil?
   end
+
+  private
+    def attributes_valid?(attributes)
+      attributes[:name].match?(/\A[\w -]+\z/)
+    end
 end

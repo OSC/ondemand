@@ -22,7 +22,7 @@ class ProjectsTest < ActiveSupport::TestCase
       project = Project.new(attrs)
       project.save(attrs)
 
-      dot_ondemand_path = Pathname.new("#{projects_path}/projects/#{project.dir}")
+      dot_ondemand_path = Pathname.new("#{projects_path}/projects/#{project.directory}")
 
       assert Dir.entries(dot_ondemand_path).include?(".ondemand")
     end
@@ -36,9 +36,9 @@ class ProjectsTest < ActiveSupport::TestCase
       project = Project.new(name: 'test project')
       project.save(attrs)
 
-      assert_equal 'test_project', project.dir
+      assert_equal 'test_project', project.directory
 
-      manifest_path = Pathname.new("#{projects_path}/projects/#{project.dir}/.ondemand/manifest.yml")
+      manifest_path = Pathname.new("#{projects_path}/projects/#{project.directory}/.ondemand/manifest.yml")
 
       assert File.file?(manifest_path)
 
