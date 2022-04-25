@@ -65,6 +65,12 @@ OodShell.prototype.closeTerminal = function (ev) {
     errorDiv.className = 'error';
     errorDiv.innerHTML = 'Failed to establish a websocket connection. Be sure you are using a browser that supports websocket connections.';
     this.element.appendChild(errorDiv);
+  } else if (ev.code === 3146) {
+    document.querySelector('iframe').remove();
+    errorDiv = document.createElement('div');
+    errorDiv.className = 'error';
+    errorDiv.innerHTML = ev.reason;
+    this.element.appendChild(errorDiv);
   } else {
     this.term.io.print('\r\nYour connection to the remote server has been terminated.');
   }
