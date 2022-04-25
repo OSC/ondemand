@@ -68,8 +68,6 @@ class Project
       new_manifest.valid? ? new_manifest.save(manifest_path) : false
     else
       Rails.logger.error("Attributes passed to manifest invalid")
-      # need to pass back error here
-      @project.errors <<  'May only contain letters, digits, dashes, and underscores'
       false
     end
   end
