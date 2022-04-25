@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+add the ability for sub apps to have their own caption (#1962)\
+Feature/refactor js data table (#1883)\
+Update Changelog (#1958)
 
 ### Changed
 
