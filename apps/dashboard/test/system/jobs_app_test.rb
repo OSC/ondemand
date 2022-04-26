@@ -31,8 +31,9 @@ class ProjectsTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       setup_project(dir)
       
-      click_on 'Delete'
-      find('.btn.commit.btn-danger').click
+      accept_confirm do
+        click_on 'Delete'
+      end
       assert_selector '.alert-success', text: 'Project successfully deleted!'
       assert_no_selector 'tbody tr td', text: 'test_project'
       assert_not File.directory? File.join(dir, 'test_project')

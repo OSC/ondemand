@@ -45,6 +45,10 @@ gem 'mocha', '~> 1.1', group: :test
 gem 'autoprefixer-rails', '~> 10.2.5'
 gem 'dotiw'
 gem 'local_time', '~> 1.0.3'
+gem 'zip_tricks', '~> 5.5'
+
+gem 'jsbundling-rails', '~> 1.0'
+gem 'cssbundling-rails', '~> 1.1'
 
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'
@@ -58,5 +62,3 @@ gem "sinatra-contrib", require: false
 gem "erubi", require: false
 gem "dalli", require: false
 
-gem 'webpacker', '~> 5.4'
-gem 'zip_tricks', '~> 5.5'

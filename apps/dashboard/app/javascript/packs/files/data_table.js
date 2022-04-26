@@ -1,7 +1,3 @@
-import 'datatables.net';
-import 'datatables.net-bs4/js/dataTables.bootstrap4';
-import 'datatables.net-select';
-import 'datatables.net-select-bs4';
 import Handlebars from 'handlebars';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 
@@ -198,11 +194,6 @@ class DataTable {
                     data: null,
                     orderable: false,
                     defaultContent: '<input type="checkbox">',
-                    render: function (data, type, row, meta) {
-                        var api = new $.fn.dataTable.Api(meta.settings);
-                        let selected = api.rows(meta.row, { selected: true }).count() > 0;
-                        return `<input type="checkbox" ${selected ? 'checked' : ''}> ${selected ? 'checked' : ''}`;
-                    }
                 },
                 { data: 'type', render: (data, type, row, meta) => data == 'd' ? '<span title="directory" class="fa fa-folder" style="color: gold"><span class="sr-only"> dir</span></span>' : '<span title="file" class="fa fa-file" style="color: lightgrey"><span class="sr-only"> file</span></span>' }, // type
                 { name: 'name', data: 'name', className: 'text-break', render: (data, type, row, meta) => `<a class="${row.type} name ${row.type == 'd' ? '' : 'view-file'}" href="${row.url}">${Handlebars.escapeExpression(data)}</a>` }, // name

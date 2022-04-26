@@ -154,7 +154,10 @@ jQuery(function () {
           url: apiUrl,
           type: 'PUT',
           data: editor.getValue(),
-          contentType: 'text/plain',
+          headers: {
+            'Content-Type': 'text/plain',
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          },
           success: function (data) {
             toggleSaveSpinner();
             toggleSaveConfirmed();

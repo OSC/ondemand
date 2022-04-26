@@ -54,5 +54,5 @@ $navbar-nav-link-padding-x: 0.75rem;
 // breadcrumbs are purely visual for accessibility
 $breadcrumb-divider: '';
 
-// needs to be set by webpack
-// $fa-font-path:
+// files get copied during 'yarn build' in esbuild.config.js
+$fa-font-path: "../builds";

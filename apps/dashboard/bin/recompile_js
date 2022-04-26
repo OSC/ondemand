@@ -1,0 +1,8 @@
+#!/bin/bash
+
+export RAILS_ENV='development'
+export RAILS_RELATIVE_URL_ROOT='/pun/dev/dashboard'
+
+bin/rails assets:clobber
+bin/rails assets:precompile
+touch tmp/restart.txt

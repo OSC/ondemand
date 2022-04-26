@@ -105,12 +105,12 @@ jQuery(function() {
   });
 
   // https://stackoverflow.com/questions/6756583/prevent-browser-from-loading-a-drag-and-dropped-file
-  global.addEventListener("dragover",function(e){
+  window.addEventListener("dragover",function(e){
     e = e || event;
     e.preventDefault();
   },false);
   
-  global.addEventListener("drop",function(e){
+  window.addEventListener("drop",function(e){
     e = e || event;
     e.preventDefault();
   },false);
