@@ -46,8 +46,22 @@ jobs:
       - name: Run lint tests
         run: bundle exec rake lint || true
 
-      - name: Run System Dashboard tests
+      - name: Run Dashboard System tests
         run: cd apps/dashboard; bin/rake test:system
+
+      - name: Run Dashboard benchmarks
+        if: contains(github.event.pull_request.labels.*.name, 'area/performance')
+        run: |
+          cd apps/dashboard
+          bin/rake test:benchmark 2>/dev/null
+          bin/rake test:profile 2>/dev/null
+
+      - name: upload benchmark files
+        if: contains(github.event.pull_request.labels.*.name, 'area/performance')
+        uses: actions/upload-artifact@v3
+        with:
+          name: benchmarks
+          path: apps/dashboard/tmp/performance/*.html
 
   k8s-tests:
     runs-on: ubuntu-latest
