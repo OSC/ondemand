@@ -521,10 +521,14 @@ class FileOps {
     return Handlebars.compile(template_str);
   })();
 
-  poll(data) {
+  /**
+   * we pass myFileOp to the poller because we cannot 
+   * use "this" inside the poller to reference the object.
+   */
+  poll(data, myFileOp) {
+
     $.getJSON(data.show_json_url, function (newdata) {
       // because of getJSON not being an actual piece of the object, we need to instantiate an instance FileOps for this section of code.
-      let myFileOp = new FileOps();
       myFileOp.findAndUpdateTransferStatus(newdata);
 
       if(newdata.completed) {
@@ -532,15 +536,17 @@ class FileOps {
           if(newdata.target_dir == history.state.currentDirectory) {
             myFileOp.reloadTable();
           }
-
           // 3. fade out after 5 seconds
           myFileOp.fadeOutTransferStatus(newdata)
         }
-      }
-      else {
+      } else {
         // not completed yet, so poll again
         setTimeout(function(){
           myFileOp._attempts++;
+          // this is required to re-poll the action status until action is completed.
+          // currently we re-poll every 2 seconds   
+          myFileOp.poll(data, myFileOp);
+          
         }, myFileOp._timeout);
       }
     }).fail(function() {
@@ -558,7 +564,9 @@ class FileOps {
   reportTransfer(data) {
     // 1. add the transfer label
     this.findAndUpdateTransferStatus(data);
-    this.poll(data);
+    let myFileOp = new FileOps();
+    // we pass myFileOp to the poller because we cannot use "this" inside the poller to reference the object.
+    this.poll(data, myFileOp);
   } 
 
   move(files, token) {
