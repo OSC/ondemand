@@ -524,6 +524,7 @@ class FileOps {
   /**
    * we pass myFileOp to the poller because we cannot 
    * use "this" inside the poller to reference the object.
+   * If we instantiate a new instance of FileOp, we lose the ongoing count information.
    */
   poll(data, myFileOp) {
 
