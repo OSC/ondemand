@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ProjectsController < ApplicationController
-  
   # GET /projects/:id
   def show
     @project = Project.find(params[:id])
@@ -26,10 +25,12 @@ class ProjectsController < ApplicationController
   def update
     @project = Project.find(params[:id])
 
-    if @project.update(project_params)
+    # this validation does not have access to the new name yet to check
+    if @project.valid? && @project.update(project_params)
       redirect_to projects_path, notice: 'Project manifest updated!'
     else
-      flash[:alert] = @project.errors
+      @project.validate!
+      flash[:alert] = @project.errors[:name].last
       redirect_to edit_project_path
     end
   end
@@ -41,7 +42,8 @@ class ProjectsController < ApplicationController
     if @project.valid? && @project.save(project_params)
       redirect_to projects_path, notice: 'Project successfully created!'
     else
-      redirect_to new_project_path, alert: @project.errors[:directory].last
+      flash[:alert] = @project.errors[:directory].last
+      redirect_to new_project_path
     end
   end
 
@@ -49,12 +51,11 @@ class ProjectsController < ApplicationController
   def destroy
     @project = Project.find(params[:id])
 
-    if @project.destroy!
-      redirect_to projects_path, notice: 'Project successfully deleted!'
-    end
+    redirect_to projects_path, notice: 'Project successfully deleted!' if @project.destroy!
   end
 
   private
+
   def project_params
     params
       .require(:project)

@@ -17,9 +17,7 @@ class Project
     end
 
     def find(project_path)
-      Rails.logger.debug("project_path: #{project_path}")
       full_path = dataroot.join(project_path)
-      Rails.logger.debug("full_path: #{full_path}")
       return nil unless full_path.directory?
 
       Project.new({ name: full_path.basename })
@@ -34,40 +32,33 @@ class Project
     end
   end
 
-  validates :directory, presence: true
   validates :directory, format: {
-    with: /\A[\w-]+\z/,
-    message: 'Directory may only contain letters, digits, dashes, and underscores'
+    with:    /\A[\w-]+\z/,
+    message: 'Project name may only contain letters, digits, dashes, and underscores'
   }
 
-  attr_reader :directory, :description
-  
   delegate :icon, :name, :description, to: :manifest
 
   def initialize(attributes = {})
-    @name    = attributes.fetch(:name, nil).to_s
+    @proj_name    = attributes.fetch(:name, nil).to_s
     @description  = attributes.fetch(:description, nil).to_s
   end
- 
-  # @params [Hash] 
+
+  # @params [Hash]
   # @return [Bool]
   def save(attributes)
-    result = update(attributes)
-    result
+    update(attributes)
   end
 
-  # @params [Hash] 
+  # @params [Hash]
   # @return [Bool]
   def update(attributes)
-    # only have side effects in update
     new_manifest = Manifest.load(manifest_path)
     new_manifest = manifest.merge(attributes)
-    # all manifest.valid? does is check if .to_h works on object passed
-    # need to check that the name accepts only letters, underscore, dash, digits
-    if attributes_valid?(attributes)
+    # validate new manifest name is acceptable for project name
+    if project_name_valid?(attributes)
       new_manifest.valid? ? new_manifest.save(manifest_path) : false
     else
-      Rails.logger.error("Attributes passed to manifest invalid")
       false
     end
   end
@@ -87,15 +78,15 @@ class Project
   end
 
   def directory
-    # need the project.name here at initialization not Manifest.name
-    @name.downcase.tr_s(' ', '_')
+    @proj_name.downcase.tr_s(' ', '_')
   end
 
   def title
-    directory.titleize
+    name.titleize
   end
 
   def manifest
+    # attach a manifest attr to isolate and access manifest object
     @manifest ||= Manifest.load(manifest_path)
   end
 
@@ -104,7 +95,14 @@ class Project
   end
 
   private
-    def attributes_valid?(attributes)
-      attributes[:name].match?(/\A[\w -]+\z/)
+
+  def project_name_valid?(attributes)
+    # check attributes[:name] being passed in update
+    if !attributes[:name].match?(/\A[\w -]+\z/)
+      errors.add(:name, :bad_format, message: 'Can only contain letters, underscores, digits and dashes')
+      false
+    else
+      true
     end
+  end
 end

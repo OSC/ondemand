@@ -17,7 +17,7 @@
       <tbody>
       <% @projects.each do |project| %>
         <tr>
-          <td><%= project.name %></td>
+          <td><%= project.title %></td>
           <td><%= link_to 'Work in', project_path(project.directory), class: 'btn btn-success', 
           title: 'View project directory contents' %>
           <td><%= link_to 'Edit', edit_project_path(project.directory), class: 'btn btn-info',
