@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/rails/rails-perftest
+  revision: 92ff7d0666306e2b7ff5cd33ad986742ba8e15b9
+  specs:
+    rails-perftest (0.0.7)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -190,6 +196,7 @@ GEM
     request_store (1.5.1)
       rack (>= 1.4)
     rexml (3.2.5)
+    ruby-prof (0.18.0)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
     sdoc (2.3.1)
@@ -254,7 +261,9 @@ DEPENDENCIES
   ood_support (~> 0.0.2)
   pbs (~> 2.2.1)
   rails (= 6.1.4.7)
+  rails-perftest!
   redcarpet (~> 3.3)
+  ruby-prof (= 0.18.0)
   sdoc
   selenium-webdriver
   sinatra

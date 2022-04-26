@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 ENV['RAILS_ENV'] ||= 'test'
-ENV['OOD_LOCALES_ROOT'] = Rails.root.join('config/locales').to_s
+ENV['OOD_LOCALES_ROOT'] = File.expand_path('../config/locales', __dir__)
 
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'

@@ -28,11 +28,9 @@ end
 group :test do
   gem "capybara"
   gem "selenium-webdriver"
-end
-
-group :development do
-  # Access an IRB console on exception pages or by using <%= console %> in views
-  # gem 'web-console', '~> 2.0'
+  # waiting for https://github.com/rails/rails-perftest/pull/44 to be released
+  gem 'rails-perftest', git: 'https://github.com/rails/rails-perftest'
+  gem 'ruby-prof', '0.18.0'
 end
 
 # Extra third-party gems
