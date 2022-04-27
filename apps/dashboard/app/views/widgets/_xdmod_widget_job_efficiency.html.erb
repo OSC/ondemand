@@ -34,7 +34,7 @@
 </script>
 
 
-<script>
+<%= javascript_tag nonce: true do -%>
 (function(){
 
 var startOfYear = '<%= Date.today.beginning_of_year.strftime("%Y-%m-%d") %>',
@@ -137,5 +137,5 @@ promiseLoggedIntoXDMoD(xdmodUrl)
     fetch(analyticsUrl);
   });
 }());
-</script>
+<%- end -%>
 </div>

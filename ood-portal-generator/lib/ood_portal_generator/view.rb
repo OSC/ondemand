@@ -4,7 +4,7 @@ require "erb"
 module OodPortalGenerator
   # A view class that renders an OOD portal Apache configuration file
   class View
-    attr_reader :ssl, :protocol, :servername, :proxy_server, :port
+    attr_reader :ssl, :protocol, :proxy_server, :port
     attr_accessor :user_map_match, :user_map_cmd, :logout_redirect
     attr_accessor :oidc_uri, :oidc_client_secret, :oidc_remote_user_claim, :oidc_client_id, :oidc_provider_metadata_url, :oidc_redirect_uri
     # @param opts [#to_h] the options describing the context used to render the
@@ -17,7 +17,7 @@ module OodPortalGenerator
       @protocol         = @ssl ? "https://" : "http://"
       @listen_addr_port = opts.fetch(:listen_addr_port, nil)
       @servername       = opts.fetch(:servername, nil)
-      @proxy_server     = opts.fetch(:proxy_server, @servername)
+      @proxy_server     = opts.fetch(:proxy_server, servername)
       @port             = opts.fetch(:port, @ssl ? "443" : "80")
       if OodPortalGenerator.debian?
         @logroot        = opts.fetch(:logroot, "/var/log/apache2")
@@ -43,7 +43,7 @@ module OodPortalGenerator
       @maintenance_ip_allowlist = Array(opts.fetch(:maintenance_ip_allowlist, nil) || opts.fetch(:maintenance_ip_whitelist, []))
 
       # Security configuration
-      @security_csp_frame_ancestors = opts.fetch(:security_csp_frame_ancestors, "#{@protocol}#{@servername ?  @servername : OodPortalGenerator.fqdn}")
+      @security_csp_frame_ancestors = opts.fetch(:security_csp_frame_ancestors, "#{@protocol}#{@proxy_server}")
       @security_strict_transport = opts.fetch(:security_strict_transport, !@ssl.nil?)
 
       # Portal authentication
@@ -92,7 +92,6 @@ module OodPortalGenerator
       @register_uri  = opts.fetch(:register_uri, nil)
       @register_root = opts.fetch(:register_root, nil)
 
-      servername = @servername || OodPortalGenerator.fqdn
       @oidc_provider_metadata_url       = opts.fetch(:oidc_provider_metadata_url, nil)
       @oidc_client_id                   = opts.fetch(:oidc_client_id, nil)
       @oidc_client_secret               = opts.fetch(:oidc_client_secret, nil)
@@ -107,11 +106,15 @@ module OodPortalGenerator
       @oidc_settings                    = opts.fetch(:oidc_settings, {})
     end
 
+    def servername
+      @servername || OodPortalGenerator.fqdn
+    end
+
     # Helper method to set the filename and path for access and error logs
     def log_filename(value,log_type)
       return "#{@logroot}/#{value}" unless value.nil?
 
-      prefix = @servername ? "#{@servername}_#{log_type}" : "#{log_type}"
+      prefix = "#{servername}_#{log_type}"
       suffix = @ssl ? '_ssl.log' : '.log'
       "#{@logroot}/#{prefix}#{suffix}"
     end

@@ -2,7 +2,7 @@ require 'test_helper'
 
 class TransferTest < ActiveSupport::TestCase
   test 'copy command' do
-    transfer = Transfer.new action: 'cp', files: {
+    transfer = Transfer.build action: 'cp', files: {
       '/Users/efranz/dev/ondemand/apps/dashboard/app' => '/var/folders/w7/fn8w83s10510pkc5j2wq8cpnhxtn3j/T/d20210201-68201-u3azoj/app',
       '/Users/efranz/dev/ondemand/apps/dashboard/config' => '/var/folders/w7/fn8w83s10510pkc5j2wq8cpnhxtn3j/T/d20210201-68201-u3azoj/config',
       '/Users/efranz/dev/ondemand/apps/dashboard/manifest.yml' => '/var/folders/w7/fn8w83s10510pkc5j2wq8cpnhxtn3j/T/d20210201-68201-u3azoj/manifest.yml'
@@ -38,7 +38,7 @@ class TransferTest < ActiveSupport::TestCase
   end
 
   test 'steps for cp bin' do
-    assert_equal Dir['bin/*'].count + 1, Transfer.new(action: 'cp', files: { 'bin' => 'bin.2' }).steps
+    assert_equal Dir['bin/*'].count + 1, Transfer.build(action: 'cp', files: { 'bin' => 'bin.2' }).steps
   end
 
   # This tests https://github.com/OSC/ondemand/issues/1337 and fails if it's not patched

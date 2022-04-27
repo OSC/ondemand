@@ -12,3 +12,4 @@ url: /pun/sys/vncsim/%{app_token}/sessions
 metadata:
   tags: test
   field_of_science: CS
+caption: 'this is the caption from a manifest'

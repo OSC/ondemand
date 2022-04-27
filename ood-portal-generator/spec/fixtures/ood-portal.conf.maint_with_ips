@@ -44,8 +44,8 @@
 #
 <VirtualHost *:80>
 
-  ErrorLog  "logs/error.log"
-  CustomLog "logs/access.log" combined
+  ErrorLog  "logs/example.com_error.log"
+  CustomLog "logs/example.com_access.log" combined
 
 
   # Support maintenance page during outages of OnDemand

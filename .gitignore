@@ -11,6 +11,8 @@
 /apps/*/public/packs
 /apps/*/public/packs-test
 /apps/*/vendor/bundle/
+/apps/*/app/assets/builds/
+!/apps/*/app/assets/builds/.keep
 /*/.bundle
 
 # files used for deployment should not be versioned
@@ -114,3 +116,6 @@ tags
 # Ignore copies of .rubocop.yml
 .rubocop.yml
 !/.rubocop.yml
+
+# Ignore .vscode
+.vscode

@@ -33,6 +33,7 @@ class ProjectsTest < ApplicationSystemTestCase
 
       click_on 'Delete'
       find('.btn.commit.btn-danger').click
+
       assert_selector '.alert-success', text: 'Project successfully deleted!'
       assert_no_selector 'tbody tr td', text: 'test_project'
       assert_not File.directory? File.join("#{dir}/projects", 'test_project')

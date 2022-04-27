@@ -4,14 +4,19 @@
   <meta charset="UTF-8">
 
   <title><%= "File Editor - #{OodAppkit.dashboard.title}" %><%= @path.nil? ? "" : " - #{@path.basename.to_s}" %></title>
-  <%= favicon_link_tag 'favicon.ico', href: OodAppkit.public.url.join('favicon.ico') %>
+  <%= favicon_link_tag 'favicon.ico', href: OodAppkit.public.url.join('favicon.ico'), skip_pipeline: true %>
 
-  <%= javascript_pack_tag 'application', nonce: true %>
-  <%= javascript_pack_tag 'editor', nonce: true %>
-  <%= stylesheet_pack_tag 'application', media: 'all' %>
-  <%= render partial: '/layouts/nav/styles', locals: { bg_color: Configuration.brand_bg_color, link_active_color: Configuration.brand_link_active_bg_color } %>
+  <%= javascript_include_tag 'application', nonce: true %>
+  <%= javascript_include_tag 'editor', nonce: true %>
+  <%= stylesheet_link_tag 'application', nonce: true, media: 'all' %>
 
   <%= csrf_meta_tags %>
+
+  <!-- configuration options exposed to javascript -->
+  <meta id="ood_config"
+    data-bg-color="<%= Configuration.brand_bg_color %>"
+    data-link-bg-color="<%= Configuration.brand_link_active_bg_color %>"
+  />
 </head>
 <body>
 
