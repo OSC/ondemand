@@ -14,6 +14,10 @@ class PresetAppsNavbarTest < ApplicationSystemTestCase
     'This is just a test'
   end
 
+  def err_header
+    'save'
+  end
+
   # the best we can do in this test is stub out BatchConnect::Session#stage 
   # and verify that the error we threw is on the page. The link at least tries to submit.
   # TODO: get enough stubs to submit the job and get a 'queued' card to show
@@ -22,7 +26,7 @@ class PresetAppsNavbarTest < ApplicationSystemTestCase
     click_on 'Interactive Apps'
     click_on 'Test App: Preset'
 
-    verify_bc_alert('sys/preset_app/preset', err_msg)
+    verify_bc_alert('sys/preset_app/preset', err_header, err_msg)
   end
 
   test 'choice apps in navbar still redirect to the form' do
@@ -34,6 +38,6 @@ class PresetAppsNavbarTest < ApplicationSystemTestCase
     assert_equal new_batch_connect_session_context_path('sys/preset_app/choice'), current_path
     click_on 'Launch'
 
-    verify_bc_alert('sys/preset_app/choice', err_msg)
+    verify_bc_alert('sys/preset_app/choice', err_header, err_msg)
   end
 end

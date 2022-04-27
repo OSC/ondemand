@@ -447,6 +447,21 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test 'string configs have correct default' do
+    c = ConfigurationSingleton.new
+
+    with_modified_env(no_config_env) do
+      c.string_configs.each do |config, default|
+        if default.nil?
+          # assert_equal on nil is deprecated
+          assert_nil c.send(config), "#{config} should have been nil through the default value."
+        else
+          assert_equal default, c.send(config), "#{config} should have been #{default} through the default value."
+        end
+      end
+    end
+  end
+
   test 'boolean configs respond to env variables' do
     c = ConfigurationSingleton.new
 
@@ -458,14 +473,31 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
-  test 'boolean configs respond config files' do
+  test 'string configs respond to env variables' do
+    c = ConfigurationSingleton.new
+
+    c.string_configs.each do |config, _|
+      env_var = "OOD_#{config.upcase}"
+      other_string = 'some other string that can never be a real value 2073423rnabsdf0y3b4123kbasdoifgadf'
+      with_modified_env(no_config_env.merge({ env_var => other_string })) do
+        assert_equal other_string, c.send(config), "#{config} should have responded to ENV['#{env_var}']=#{ENV[env_var]}."
+      end
+    end
+  end
+
+  test 'dynamic configs respond config files' do
     Dir.mktmpdir do |dir|
       with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
         # write !defaults out
+        other_string = 'another random string asdfn31-ndf12nadsnfsad[nf-5t2fwnasdfm'
         File.open("#{dir}/config.yml", 'w+') do |file|
           cfg = ConfigurationSingleton.new.boolean_configs.each_with_object({}) do |(config, default), hsh|
             hsh[config.to_s] = !default
-          end
+          end.merge(
+            ConfigurationSingleton.new.string_configs.each_with_object({}) do |(config, _), hsh|
+              hsh[config.to_s] = other_string
+            end
+          )
           file.write(cfg.to_yaml)
         end
 
@@ -473,14 +505,22 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
         c.boolean_configs.each do |config, default|
           assert_equal !default, c.send(config), "#{config} should have been #{!default} through a fixture file."
         end
+        c.string_configs.each do |config, _|
+          assert_equal other_string, c.send(config), "#{config} should have been #{other_string} through a fixture file."
+        end
       end
     end
   end
 
-  test 'env variables have precedence in boolean configs' do
+  test 'env variables have precedence in dynamic configs' do
+    other_string = 'string in env variable'
     env = ConfigurationSingleton.new.boolean_configs.map do |config, default|
       ["OOD_#{config.upcase}", default.to_s]
-    end.to_h
+    end.concat(
+      ConfigurationSingleton.new.string_configs.map do |config, _|
+        ["OOD_#{config.upcase}", other_string]
+      end
+    ).compact.to_h
 
     with_modified_env(config_fixtures.merge(env)) do
       c = ConfigurationSingleton.new
@@ -495,6 +535,9 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       c = ConfigurationSingleton.new
       c.boolean_configs.each do |config, default|
         assert_equal !default, c.send(config), "#{config} should have been #{!default} through a fixture file."
+      end
+      c.string_configs.each do |config, _|
+        assert_equal 'string from file', c.send(config), "#{config} should have been 'string from file' through a fixture file."
       end
     end
   end

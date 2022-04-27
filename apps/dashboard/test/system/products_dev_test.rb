@@ -63,9 +63,9 @@ class ProductsDevTest < ApplicationSystemTestCase
     button_link?('Launch My Jobs', '/pun/sys/dashboard/apps/show/myjobs/dev/')
   end
 
-  test 'HTML renders 12 rows for 12 apps in Product Table' do
+  test 'HTML renders all rows for apps in Product Table' do
     find(id: 'productTable')
-    assert_selector 'tr', count: 12
+    assert_selector 'tr', count: 13
   end
 
   test 'pressing bundle install' do

@@ -17,7 +17,7 @@ class FilesTest < ActiveSupport::TestCase
   test "mime_type handles png" do
     Dir.mktmpdir do |dir|
       f = File.join(dir, 'foo.svg')
-      FileUtils.cp(Rails.root.join('app/javascript/images/OpenOnDemand_powered_by_RGB.svg').to_s, f)
+      FileUtils.cp(Rails.root.join('app/assets/images/OpenOnDemand_powered_by_RGB.svg').to_s, f)
 
       assert_equal "image/svg+xml", PosixFile.new(f).mime_type
     end

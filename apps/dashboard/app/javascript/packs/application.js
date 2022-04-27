@@ -4,7 +4,7 @@
 // a relevant structure within app/javascript and only use these pack files to reference
 // that code so it'll be compiled.
 //
-// To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
+// To reference this file, add <%= javascript_include_tag 'application' %> to the appropriate
 // layout file, like app/views/layouts/application.html.erb
 //
 // Uncomment to copy all static images under ../images to the output folder and reference
@@ -14,30 +14,35 @@
 // const images = require.context('../images', true)
 // const imagePath = (name) => images(name, true)
 
-import 'jquery';
-import 'jquery-ujs'
+import jQuery from 'jquery';
+import 'jquery-ujs';
+import datatables from 'datatables.net';
+import datatablesBs4 from 'datatables.net-bs4/js/dataTables.bootstrap4';
+import datatablesSelect from 'datatables.net-select';
+
+import Rails from '@rails/ujs';
+
+// Import popper.js for Bootstrap 4
+import 'popper.js';
+
+// Import Bootstrap 4
+import 'bootstrap/dist/js/bootstrap';
+
+// FIXME: confim modals don't work in esbuild.
+// import 'data-confirm-modal';
+
+import { setNavbarColor } from './config';
 
 // lot's of inline scripts and stuff rely on jquery just being available
 window.jQuery = jQuery;
-window.$ = $;
+window.$ = jQuery;
 
-import Rails from '@rails/ujs';
+// these plugins don't automatically load, so this loads them.
+datatables(window, jQuery);
+datatablesBs4(window, jQuery);
+datatablesSelect(window, jQuery);
+
 Rails.start();
-
-// Import popper.js for Bootstrap 4
-import 'popper.js'
-
-// Import Bootstrap 4
-import 'bootstrap/dist/js/bootstrap'
-
-// confim modals
-import 'data-confirm-modal';
-
-// Import application stylesheets
-import '../stylesheets/application'
-
-import '../images/OpenOnDemand_powered_by_RGB.svg';
-import '../images/OpenOnDemand_stack_RGB.svg';
 
 jQuery(function(){
 
@@ -55,4 +60,6 @@ jQuery(function(){
 
   $('[data-toggle="popover"]').popover();
   $('[data-toggle="tooltip"]').tooltip();
+
+  setNavbarColor();
 });

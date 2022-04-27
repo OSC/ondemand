@@ -16,7 +16,7 @@ class TransferLocalJobTest < ActiveJob::TestCase
       # or we do "to" but "with_prefix" added if from and to are the same
       # directory
       # end
-      transfer = Transfer.new(action: 'cp', files: {testfile => destfile})
+      transfer = Transfer.build(action: 'cp', files: {testfile => destfile})
       transfer.perform
 
       assert_equal 0, transfer.exit_status, "job exited with error #{transfer.stderr}"
@@ -58,7 +58,7 @@ class TransferLocalJobTest < ActiveJob::TestCase
         testfile = File.join(dir, 'foo')
         destfile = File.join(dir, 'dest/foo')
 
-        transfer = Transfer.new(action: 'cp', files: {testfile => destfile})
+        transfer = Transfer.build(action: 'cp', files: {testfile => destfile})
         transfer.perform
 
         assert transfer.stderr.present?, 'copy should have preserved stderr of job'
@@ -93,7 +93,7 @@ class TransferLocalJobTest < ActiveJob::TestCase
       File.write(testfile, 'this is a test file')
       FileUtils.mkpath File.dirname(destfile)
 
-      transfer = Transfer.new(action: 'cp', files: {testfile => destfile})
+      transfer = Transfer.build(action: 'cp', files: {testfile => destfile})
       transfer.save
       job = TransferLocalJob.perform_later(transfer)
       assert job.job_id != nil
@@ -119,7 +119,7 @@ class TransferLocalJobTest < ActiveJob::TestCase
       # this tests the number of calls to update_progress
       # note: progress.percent is not called because this mocks the method
       num_files = PosixFile.num_files(dir, ['app'])
-      transfer = Transfer.new(action: 'cp', files: {testdir => File.join(destdir, 'app')})
+      transfer = Transfer.build(action: 'cp', files: {testdir => File.join(destdir, 'app')})
       transfer.expects(:percent=).times(num_files)
 
       transfer.perform

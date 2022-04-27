@@ -1,0 +1,10 @@
+---
+name: Broken App
+category: Interactive Apps
+subcategory: Apps
+icon: fa://dumpster-fire
+role: batch_connect
+description: |
+  This app is broken and won't render in the UI. It's here so we can test
+  to be sure that broken apps don't break the dashboard.
+

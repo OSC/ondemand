@@ -50,7 +50,7 @@ class ManifestTest < ActiveSupport::TestCase
       save_result = manifest.save(manifest_file + "empty")
       new_manifest = Manifest.load(manifest_file + "empty")
       assert_equal false, save_result, "Result should not save"
-      assert_instance_of MissingManifest, new_manifest, "Should not exist"
+      assert_instance_of Manifest::MissingManifest, new_manifest, "Should not exist"
     }
   end
 
@@ -61,7 +61,7 @@ class ManifestTest < ActiveSupport::TestCase
       save_result = manifest.save(manifest_file + "empty")
       new_manifest = Manifest.load(manifest_file + "empty")
       assert_equal false, save_result, "Result should not save"
-      assert_instance_of MissingManifest, new_manifest, "Should not exist"
+      assert_instance_of Manifest::MissingManifest, new_manifest, "Should not exist"
     }
   end
 
@@ -111,6 +111,7 @@ class ManifestTest < ActiveSupport::TestCase
     assert_equal "Virtual Desktop Interface", manifest.subcategory
     assert_equal "/pun/sys/vncsim/%{app_token}/sessions", manifest.url
     assert_equal metadata, manifest.metadata
+    assert_equal 'this is the caption from a manifest', manifest.caption
   end
 
   test "default keys are safe" do

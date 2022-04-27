@@ -104,6 +104,10 @@ module BatchConnect
       ood_app.manifest.description
     end
 
+    def caption
+      form_config.fetch(:caption, ood_app.caption)
+    end
+
     def link
       OodAppLink.new(
         # FIXME: better to use default_title and "" description
@@ -111,7 +115,7 @@ module BatchConnect
         description: description,
         url: url,
         icon_uri: ood_app.icon_uri,
-        caption: ood_app.caption,
+        caption: caption,
         new_tab: false,
         data: preset? ? { 'method': 'post' } : {}
       )
@@ -375,7 +379,7 @@ module BatchConnect
       rescue AppNotFound => e
         @validation_reason = e.message
         return {}
-      rescue => e
+      rescue StandardError, Exception => e
         @validation_reason = "#{e.class.name}: #{e.message}"
         return {}
       end

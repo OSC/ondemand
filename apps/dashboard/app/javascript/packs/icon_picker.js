@@ -1,6 +1,6 @@
 'use strict';
 
-import ALL_ICONS from 'icons';
+import ALL_ICONS from './icons';
 
 const ICON_SHOW_ID = "product_icon"
 const ICON_SELECT_ID = "product_icon_select"
