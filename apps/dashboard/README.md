@@ -38,7 +38,8 @@ themselves.
 It should be noted here that any Ruby module installation needs configured with
 `--enable-shared` flag to be compatible with the Ruby running on the webnode.
 
-To build run `bin/setup` from within this directory.
+Now build run `bin/setup` from within this directory to fetch all the dependencies
+and compile.
 
 ```
 # advanced users may not need to configure bundle. Container users must do this.
@@ -49,6 +50,13 @@ bin/setup
 
 Now you should be able to navigate to `/pun/dev/dashboard` and see the app
 in the developer views.
+
+### Re-compiling Javascript
+
+Since we migrated to `esbuild` assets are no longer built automatically. If you are
+editing any css, javascript or images during development, you may find the
+helper script `bin/recompile_js` useful to run the asset pipeline for your changes
+to become available to the app.
 
 ## Customizing
 

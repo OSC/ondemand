@@ -1,82 +1,69 @@
 # OOD Shell
 
-![GitHub Release](https://img.shields.io/github/release/osc/ood-shell.svg)
-![GitHub License](https://img.shields.io/github/license/osc/ood-shell.svg)
+This app is distributed as a part of Open OnDemand.  Configure a File Access Control List
+on this directory and or the `manifest.yml` file to disable it for some users.
 
-This app is a Node.js app for Open OnDemand providing a web based terminal
-using Chrome OS's hterm. It is meant to be run as the user (and on behalf of
-the user) using the app. Thus, at an HPC center if I log into OnDemand using
-the `ood` account, this app should run as `ood`.
+This documentation assumes you have [development enabled](https://osc.github.io/ood-documentation/latest/app-development/enabling-development-mode.html)
+for yourself.  Containers built in [the development documentation](../../DEVELOPMENT.md)
+have development enabled automatically.
 
-## New Install
+This is a guide for developing this aplication and assumes you have nodejs available on the system.
 
-1.  Start in the **build directory** for all sys apps, clone and check out the
-    latest version of the shell app (make sure the app directory's name is
-    `shell`):
+You can refer to the [documentation on customizing](https://osc.github.io/ood-documentation/latest/customization.html)
+if you're looking to update your installation.
 
-    ```sh
-    scl enable rh-git29 -- git clone https://github.com/OSC/ood-shell.git shell
-    cd shell
-    scl enable rh-git29 -- git checkout tags/v1.4.2
-    ```
+## Development
 
-2.  Install the app:
+First, you'll need to clone this repo and make a symlink if you haven't don so already.
 
-    ```sh
-    scl enable rh-git29 rh-ruby24 rh-nodejs6 -- bin/setup
-    ```
-
-3.  Copy the built app directory to the deployment directory, and start the
-    server. i.e.:
-
-    ```sh
-    sudo mkdir -p /var/www/ood/apps/sys
-    sudo cp -r . /var/www/ood/apps/sys/shell
-    ```
-
-## Updating to a New Stable Version
-
-1.  Navigate to the app's build directory and check out the latest version:
-
-    ```sh
-    cd shell # cd to build directory
-    scl enable rh-git29 -- git fetch
-    scl enable rh-git29 -- git checkout tags/v1.4.2
-    ```
-
-2.  Update the app:
-
-    ```sh
-    scl enable rh-git29 rh-ruby24 rh-nodejs6 -- bin/setup
-    ```
-
-3.  Copy the built app directory to the deployment directory:
-
-    ```sh
-    sudo rsync -rlptv --delete . /var/www/ood/apps/sys/shell
-    ```
-
-## Configuration
-
-The app can be configured by editing the global environment file:
-
-```
-/etc/ood/config/apps/shell/env
+```text
+mkdir -p ~/ondemand/dev
+git clone https://github.com/OSC/ondemand.git ~/ondemand/src
+cd ~/ondemand/dev
+ln -s ../src/apps/shell
 ```
 
-An example environment file is:
 
-```sh
-# /etc/ood/config/apps/shell/env
-
-# The default ssh host the user is logged into if the user doesn't specify a
-# host in the url
-DEFAULT_SSHHOST="localhost"
+```text
+cd ~/ondemand/dev/shell
+bin/setup
 ```
 
-## Usage
+Now you should be able to navigate to `/pun/dev/shell` and see the app
+in the developer views.
 
-Open a terminal to the default SSH host:
+### Failures to start
+
+If you ever encounter an error like this, it's because you ran `bin/setup` to compile the javascript
+against a higher version of `/lib64/libstdc++` than what's available on the webnode.
+
+You may be building it on a login node, but the runtime is always the webnode (where Open OnDemand is installed).
+
+If you use modules, check the g++/c++ modules you have enabled when you build or simply `module purge` and rebuild
+with the default, system installed c++ binay.
+
+```
+Error: /lib64/libstdc++.so.6: version `CXXABI_1.3.9' not found (required by /users/PZS0714/johrstrom/ondemand/src/apps/shell/node_modules/node-pty/build/Release/pty.node)
+    at Object.Module._extensions..node (internal/modules/cjs/loader.js:1057:18)
+    at Module.load (internal/modules/cjs/loader.js:863:32)
+```
+
+### Customizing
+
+Now you can refer to the [documentation on customizing](https://osc.github.io/ood-documentation/latest/customization.html)
+and make those changes to a `.env.local` file in the same directory as this README.md.
+
+### Running this app locally
+
+You can also boot this app locally outside of Open OnDemand infrastructure.
+
+Run this command:
+```text
+node app.js
+```
+And you should see it's listening on port 3000.
+
+You can now navigate to the app in a web-browser.
 
 `http://localhost:3000/`
 
@@ -92,7 +79,7 @@ To specify a host and directory:
 
 `http://localhost:3000/ssh/<host>/<dir>`
 
-## Terminal Color Themes
+### Terminal Color Themes
 
 Color Themes from https://github.com/mbadolato/iTerm2-Color-Schemes:
 
@@ -100,35 +87,6 @@ Color Themes from https://github.com/mbadolato/iTerm2-Color-Schemes:
 - renamed Builtin Pastel Dark to Pastel Dark
 - renamed Builtin Solarized Light to Solarized Light
 - see [iTerm-Color-Schemes](https://github.com/mbadolato/iTerm2-Color-Schemes) for access to individual theme licenses
-
-## Development
-
-For development purposes the environment variables must be specified in the
-local environment file:
-
-```
-.env.local
-```
-
-underneath the root directory of this app in your sandbox.
-
-To mimic the production environment you may have to copy the production
-environment variables down or set up a symbolic link:
-
-```sh
-# Copy production env vars
-cp /etc/ood/config/apps/shell/env .env.local
-
-# or setup a symlink
-ln -s /etc/ood/config/apps/shell/env .env.local
-```
-
-Any changes made to the environment files require an app restart in order for
-the changes to take effect:
-
-```console
-$ touch tmp/restart.txt
-```
 
 ### Updating `hterm`
 
@@ -153,13 +111,3 @@ changes. If you're lucky you may be able to cherry pick them, if not, hopefully 
 
 * 0cbc84e3d53386064e278a0495c940a217f4f18b - that fixed [issue 64](https://github.com/OSC/ood-shell/issues/64)
 * a9e2e3980b0f491d0478a20e21aad022285b64ee - that fixed [issue 1214](https://github.com/OSC/ondemand/issues/1214)
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at
-https://github.com/OSC/ood-shell.
-
-## License
-
-The gem is available as open source under the terms of the [MIT
-License](http://opensource.org/licenses/MIT).
