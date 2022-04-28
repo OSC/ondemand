@@ -14,7 +14,7 @@ class ProjectsTest < ApplicationSystemTestCase
       setup_project(dir)
 
       assert_selector '.alert-success', text: 'Project successfully created!'
-      assert_selector 'tbody tr td', text: 'test_project'
+      assert_selector 'tbody tr td', text: 'Test Project'
       assert File.directory? File.join("#{dir}/projects", 'test_project')
     end
   end
@@ -31,11 +31,12 @@ class ProjectsTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       setup_project(dir)
 
-      click_on 'Delete'
-      find('.btn.commit.btn-danger').click
-
+      accept_confirm do
+        click_on 'Delete'
+      end
+      
       assert_selector '.alert-success', text: 'Project successfully deleted!'
-      assert_no_selector 'tbody tr td', text: 'test_project'
+      assert_no_selector 'tbody tr td', text: 'Test Project'
       assert_not File.directory? File.join("#{dir}/projects", 'test_project')
     end
   end
@@ -65,7 +66,7 @@ class ProjectsTest < ApplicationSystemTestCase
 
   def setup_project(dir)
     OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
-    src = 'test_project'
+    src = 'test project'
     visit projects_path
     click_on 'New Project'
     find('#project_name').set(src)
