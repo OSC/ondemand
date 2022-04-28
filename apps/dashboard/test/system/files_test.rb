@@ -68,10 +68,16 @@ class FilesTest < ApplicationSystemTestCase
       # if this fails it is due to the directory table not reloading
       # assert_selector '#directory-contents tbody tr', count: 3, wait: 10
       assert_selector 'tbody a', exact_text: 'app', wait: MAX_WAIT
-
+      
+      # we need to wait due to the nature of how the "% copy files" displays
+      assert_selector 'span', text: 'copy files', count: 1, wait: MAX_WAIT 
+      
       assert_equal "", `diff -rq #{File.join(dir, 'app')} #{Rails.root.join('app').to_s}`.strip, "failed to recursively copy app dir"
       assert_equal "", `diff -rq #{File.join(dir, 'config')} #{Rails.root.join('config').to_s}`.strip, "failed to recursively copy config dir"
       assert_equal "", `diff -q #{File.join(dir, 'manifest.yml')} #{Rails.root.join('manifest.yml').to_s}`.strip, "failed to copy manifest.yml"
+      
+      # we need to wait due to the nature of how the "% copy files" hides
+      assert_selector 'span', text: 'copy files', count: 0, wait: MAX_WAIT
     end
   end
 
