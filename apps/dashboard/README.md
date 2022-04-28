@@ -38,7 +38,7 @@ themselves.
 It should be noted here that any Ruby module installation needs configured with
 `--enable-shared` flag to be compatible with the Ruby running on the webnode.
 
-Now build run `bin/setup` from within this directory to fetch all the dependencies
+Now run `bin/setup` from within this directory to fetch all the dependencies
 and compile.
 
 ```
