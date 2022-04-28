@@ -18,7 +18,7 @@ cd ~/ondemand/dev
 ln -s ../src/apps/myjobs
 ```
 
-Now build run `bin/setup` from within this directory to fetch all the dependencies
+Now run `bin/setup` from within this directory to fetch all the dependencies
 and compile.
 
 Now you should be able to navigate to `/pun/dev/myjobs` and see the app
