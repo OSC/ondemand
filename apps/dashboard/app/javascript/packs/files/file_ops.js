@@ -521,42 +521,36 @@ class FileOps {
     return Handlebars.compile(template_str);
   })();
 
-  /**
-   * we pass myFileOp to the poller because we cannot 
-   * use "this" inside the poller to reference the object.
-   * If we instantiate a new instance of FileOp, we lose the ongoing count information.
-   */
-  poll(data, myFileOp) {
+  poll(data) {
+
+    let that = this;
 
     $.getJSON(data.show_json_url, function (newdata) {
       // because of getJSON not being an actual piece of the object, we need to instantiate an instance FileOps for this section of code.
-      myFileOp.findAndUpdateTransferStatus(newdata);
+      that.findAndUpdateTransferStatus(newdata);
 
       if(newdata.completed) {
         if(! newdata.error_message) {
           if(newdata.target_dir == history.state.currentDirectory) {
-            myFileOp.reloadTable();
+            that.reloadTable();
           }
           // 3. fade out after 5 seconds
-          myFileOp.fadeOutTransferStatus(newdata)
+          that.fadeOutTransferStatus(newdata)
         }
       } else {
         // not completed yet, so poll again
-        setTimeout(function(){
-          myFileOp._attempts++;
-          // this is required to re-poll the action status until action is completed.
-          // currently we re-poll every 2 seconds   
-          myFileOp.poll(data, myFileOp);
-          
-        }, myFileOp._timeout);
+        setTimeout(function() {
+          that.poll(data);
+        }, that._timeout);
       }
     }).fail(function() {
-      if (myFileOp._attempts >= 3) {
-        myFileOp.alertError('Operation may not have happened', 'Failed to retrieve file operation status.');  
+      if (that._attempts >= 3) {
+        that.alertError('Operation may not have happened', 'Failed to retrieve file operation status.');  
       } else {
         setTimeout(function(){
-          tmyFileOphis._attempts++;
-        }, myFileOp._timeout);
+          that._attempts++;
+          that.poll(data);
+        }, that._timeout);
       }
     });
   }
@@ -565,9 +559,7 @@ class FileOps {
   reportTransfer(data) {
     // 1. add the transfer label
     this.findAndUpdateTransferStatus(data);
-    let myFileOp = new FileOps();
-    // we pass myFileOp to the poller because we cannot use "this" inside the poller to reference the object.
-    this.poll(data, myFileOp);
+    this.poll(data);
   } 
 
   move(files, token) {
