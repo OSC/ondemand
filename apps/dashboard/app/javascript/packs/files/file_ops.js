@@ -198,7 +198,7 @@ jQuery(function() {
 
 class FileOps {
   _timeout = 2000;
-  _attempts = 0;
+  _failures = 0;
   _filesPath = filesPath;
 
   constructor() {
@@ -461,7 +461,7 @@ class FileOps {
 
   transferFiles(files, action, summary){
 
-    this._attempts = 0;
+    this._failures = 0;
 
     this.showSwalLoading(_.startCase(summary));
   
@@ -543,11 +543,11 @@ class FileOps {
         }, that._timeout);
       }
     }).fail(function() {
-      if (that._attempts >= 3) {
+      if (that._failures >= 3) {
         that.alertError('Operation may not have happened', 'Failed to retrieve file operation status.');  
       } else {
         setTimeout(function(){
-          that._attempts++;
+          that._failures++;
           that.poll(data);
         }, that._timeout);
       }
