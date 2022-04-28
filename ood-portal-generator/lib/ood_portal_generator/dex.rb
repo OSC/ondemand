@@ -64,6 +64,10 @@ module OodPortalGenerator
       File.directory?(config_dir) && File.executable?('/usr/sbin/ondemand-dex')
     end
 
+    def self.default_auth
+      ['AuthType openid-connect', 'Require valid-user'].freeze
+    end
+
     def self.config_dir
       '/etc/ood/dex'
     end

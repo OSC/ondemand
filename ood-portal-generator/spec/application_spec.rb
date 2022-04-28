@@ -25,6 +25,10 @@ describe OodPortalGenerator::Application do
     group = Etc.getgrgid(gid).name
   end
 
+  let(:oidc_auth){
+    { auth: [ 'AuthType openid-connect', 'Require valid-user' ] }
+  }
+
   before(:each) do
     stub_const('ARGV', [])
     allow(described_class).to receive(:sum_path).and_return(sum_path.path)
@@ -58,16 +62,12 @@ describe OodPortalGenerator::Application do
     end
 
     it 'generates default template' do
-      expected_rendered = read_fixture('ood-portal.conf.default')
-      expect(described_class.output).to receive(:write).with(expected_rendered)
-      described_class.generate()
+      test_generate('/dev/null', 'ood-portal.conf.default')
     end
 
     it 'generates default template for Debian based systems' do
       allow(OodPortalGenerator).to receive(:debian?).and_return(true)
-      expected_rendered = read_fixture('ood-portal.conf.default.deb')
-      expect(described_class.output).to receive(:write).with(expected_rendered)
-      described_class.generate()
+      test_generate('/dev/null', 'ood-portal.conf.default.deb')
     end
 
     it 'generates a template with all configurations supplied' do
@@ -80,24 +80,21 @@ describe OodPortalGenerator::Application do
     end
 
     it 'generates without maintenance' do
-      allow(described_class).to receive(:context).and_return({use_maintenance: false})
-      expected_rendered = read_fixture('ood-portal.conf.nomaint')
-      expect(described_class.output).to receive(:write).with(expected_rendered)
-      described_class.generate()
+      config = { use_maintenance: false }.merge(oidc_auth)
+      allow(described_class).to receive(:context).and_return(config)
+      test_generate('/dev/null', 'ood-portal.conf.nomaint')
     end
 
     it 'generates maintenance template with IP whitelist' do
-      allow(described_class).to receive(:context).and_return({maintenance_ip_whitelist: ['192.168.1..*', '10.0.0..*']})
-      expected_rendered = read_fixture('ood-portal.conf.maint_with_ips')
-      expect(described_class.output).to receive(:write).with(expected_rendered)
-      described_class.generate()
+      config = { maintenance_ip_whitelist: ['192.168.1..*', '10.0.0..*'] }.merge(oidc_auth)
+      allow(described_class).to receive(:context).and_return(config)
+      test_generate('/dev/null', 'ood-portal.conf.maint_with_ips')
     end
 
     it 'generates maintenance template with IP whitelist already escaped' do
-      allow(described_class).to receive(:context).and_return({maintenance_ip_whitelist: ['192\.168\.1\..*', '10\.0\.0\..*']})
-      expected_rendered = read_fixture('ood-portal.conf.maint_with_ips')
-      expect(described_class.output).to receive(:write).with(expected_rendered)
-      described_class.generate()
+      config = {maintenance_ip_whitelist: ['192\.168\.1\..*', '10\.0\.0\..*']}.merge(oidc_auth)
+      allow(described_class).to receive(:context).and_return(config)
+      test_generate('/dev/null', 'ood-portal.conf.maint_with_ips')
     end
 
     it 'adheres to maintenance_ip_allowlist' do
@@ -130,7 +127,7 @@ describe OodPortalGenerator::Application do
           OIDCPassClaimsAs: 'environment',
           OIDCStripCookies: 'mod_auth_openidc_session mod_auth_openidc_session_chunks mod_auth_openidc_session_0 mod_auth_openidc_session_1',
         },
-      }
+      }.merge(oidc_auth)
       allow(described_class).to receive(:context).and_return(config)
       expected_rendered = read_fixture('ood-portal.conf.oidc')
       expect(described_class.output).to receive(:write).with(expected_rendered)
@@ -160,7 +157,7 @@ describe OodPortalGenerator::Application do
           OIDCPassClaimsAs: 'environment',
           OIDCStripCookies: 'mod_auth_openidc_session mod_auth_openidc_session_chunks mod_auth_openidc_session_0 mod_auth_openidc_session_1',
         },
-      }
+      }.merge(oidc_auth)
       allow(described_class).to receive(:context).and_return(config)
       expected_rendered = read_fixture('ood-portal.conf.oidc-ssl')
       expect(described_class.output).to receive(:write).with(expected_rendered)

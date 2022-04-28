@@ -7,6 +7,10 @@ module OodPortalGenerator
     attr_reader :ssl, :protocol, :proxy_server, :port
     attr_accessor :user_map_match, :user_map_cmd, :logout_redirect
     attr_accessor :oidc_uri, :oidc_client_secret, :oidc_remote_user_claim, :oidc_client_id, :oidc_provider_metadata_url, :oidc_redirect_uri
+
+    # let the application set the auth if it needs to
+    attr_writer :auth
+
     # @param opts [#to_h] the options describing the context used to render the
     #   template
     def initialize(opts = {})
@@ -47,10 +51,7 @@ module OodPortalGenerator
       @security_strict_transport = opts.fetch(:security_strict_transport, !@ssl.nil?)
 
       # Portal authentication
-      @auth = opts.fetch(:auth, [
-        %q{AuthType openid-connect},
-        %q{Require valid-user}
-      ])
+      @auth = opts.fetch(:auth, [])
 
       # Redirect for the root uri
       @root_uri = opts.fetch(:root_uri, "/pun/sys/dashboard")
@@ -110,6 +111,10 @@ module OodPortalGenerator
       @servername || OodPortalGenerator.fqdn
     end
 
+    def auth?
+      !@auth.empty?
+    end
+
     # Helper method to set the filename and path for access and error logs
     def log_filename(value,log_type)
       return "#{@logroot}/#{value}" unless value.nil?
@@ -139,6 +144,8 @@ module OodPortalGenerator
       attrs.each_pair do |key, value|
         instance_variable_set("@#{key}", value)
       end
+
+      @auth = Dex.default_auth unless auth?
     end
   end
 end

@@ -6,3 +6,7 @@ maintenance_ip_allowlist:
 maintenance_ip_whitelist:
   - 4.8.15..*
   - 16.23.42..*
+
+auth:
+  - 'AuthType openid-connect'
+  - 'Require valid-user'

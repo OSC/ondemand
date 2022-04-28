@@ -58,27 +58,27 @@ describe 'update_ood_portal' do
 
   it 'updates ood-portal.conf' do
     with_modified_env APACHE: apache.path, SUM: sum.path, CONFIG: config.path do
-      File.write(config.path, read_fixture('ood_portal.yaml.port'))
+      File.write(config.path, read_fixture('input/auth.yml'))
       File.write(apache.path, read_fixture('ood-portal.conf.default'))
       File.write(sum.path, read_fixture('sum.default'))
       expect(FileUtils).to receive(:chown).with('root', 'apache', apache.path, verbose: true)
       expect(FileUtils).to receive(:chmod).with(0640, apache.path, verbose: true)
       expect(OodPortalGenerator::Application).to receive(:exit!).with(0)
       OodPortalGenerator::Application.start('update_ood_portal', [])
-      expect(File.read(apache.path)).to match(/^<VirtualHost \*:8080>$/)
+      expect(File.read(apache.path)).to eq(read_fixture('output/auth.conf'))
     end
   end
 
   it 'does not update ood-portal.conf if checksum differs' do
     with_modified_env APACHE: apache.path, SUM: sum.path, CONFIG: config.path do
-      File.write(config.path, read_fixture('ood_portal.yaml.port'))
+      File.write(config.path, read_fixture('input/auth.yml'))
       File.write(apache.path, read_fixture('ood-portal.conf.default'))
       File.write(sum.path, read_fixture('sum.not-default'))
       expect(FileUtils).not_to receive(:chown).with('root', 'apache', apache.path, verbose: true)
       expect(FileUtils).not_to receive(:chmod).with(0640, apache.path, verbose: true)
       expect(OodPortalGenerator::Application).to receive(:exit!).with(0)
       OodPortalGenerator::Application.start('update_ood_portal', [])
-      expect(File.read(apache.path)).to match(/^<VirtualHost \*:80>$/)
+      expect(File.read(apache.path)).to eq(read_fixture('ood-portal.conf.default'))
     end
   end
 
@@ -95,27 +95,27 @@ describe 'update_ood_portal' do
 
   it 'updates ood-portal.conf exits 3' do
     with_modified_env APACHE: apache.path, SUM: sum.path, CONFIG: config.path do
-      File.write(config.path, read_fixture('ood_portal.yaml.port'))
+      File.write(config.path, read_fixture('input/auth.yml'))
       File.write(apache.path, read_fixture('ood-portal.conf.default'))
       File.write(sum.path, read_fixture('sum.default'))
       expect(FileUtils).to receive(:chown).with('root', 'apache', apache.path, verbose: true)
       expect(FileUtils).to receive(:chmod).with(0640, apache.path, verbose: true)
       expect(OodPortalGenerator::Application).to receive(:exit!).with(3)
       OodPortalGenerator::Application.start('update_ood_portal', ['--detailed-exitcodes'])
-      expect(File.read(apache.path)).to match(/^<VirtualHost \*:8080>$/)
+      expect(File.read(apache.path)).to eq(read_fixture('output/auth.conf'))
     end
   end
 
   it 'does not update ood-portal.conf if checksum differs exits 4' do
     with_modified_env APACHE: apache.path, SUM: sum.path, CONFIG: config.path do
-      File.write(config.path, read_fixture('ood_portal.yaml.port'))
+      File.write(config.path, read_fixture('input/auth.yml'))
       File.write(apache.path, read_fixture('ood-portal.conf.default'))
       File.write(sum.path, read_fixture('sum.not-default'))
       expect(FileUtils).not_to receive(:chown).with('root', 'apache', apache.path, verbose: true)
       expect(FileUtils).not_to receive(:chmod).with(0640, apache.path, verbose: true)
       expect(OodPortalGenerator::Application).to receive(:exit!).with(4)
       OodPortalGenerator::Application.start('update_ood_portal', ['--detailed-exitcodes'])
-      expect(File.read(apache.path)).to match(/^<VirtualHost \*:80>$/)
+      expect(File.read(apache.path)).to eq(read_fixture('ood-portal.conf.default'))
     end
   end
 

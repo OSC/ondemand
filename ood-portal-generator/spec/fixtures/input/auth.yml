@@ -1,0 +1,4 @@
+---
+auth:
+ - 'AuthType openid-connect'
+ - 'Require valid-user'

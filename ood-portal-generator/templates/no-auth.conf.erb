@@ -1,4 +1,7 @@
-<VirtualHost *:80>
+<VirtualHost *:<%= @port %>>
+  <%- if @servername -%>
+  ServerName <%= @servername %>
+  <%- end -%>
 
   Redirect / /public/need_auth.html
 

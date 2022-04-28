@@ -171,6 +171,8 @@ touch %{buildroot}%{apache_confd}/ood-portal.conf
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/public/maintenance
 %__install -D -m 644 ood-portal-generator/share/maintenance.html \
     %{buildroot}%{_localstatedir}/www/ood/public/maintenance/index.html
+%__install -D -m 644 ood-portal-generator/share/need_auth.html \
+    %{buildroot}%{_localstatedir}/www/ood/public/need_auth.html
 
 %__install -D -m 644 nginx_stage/share/nginx_stage_example.yml \
     %{buildroot}%{_sysconfdir}/ood/config/nginx_stage.yml
