@@ -1,6 +1,6 @@
 # Job Composer (renamed from My Jobs)
 
-This app is a Rails app for Open OnDemandfor creating and managing batch jobs
+This app is a Rails app we ship with Open OnDemand that used to create and manage batch jobs
 from template directories. Like all Open OnDemand apps, it's meant to run as a non-root user.
 
 This is a guide for developing this aplication and assumes you have nodejs & ruby available on the system.
