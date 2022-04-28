@@ -2,7 +2,7 @@ require "application_system_test_case"
 
 class FilesTest < ApplicationSystemTestCase
 
-  MAX_WAIT = 60
+  MAX_WAIT = 5
 
   test "visiting files app doesn't raise js errors" do
     visit files_url(Rails.root.to_s)
@@ -31,7 +31,7 @@ class FilesTest < ApplicationSystemTestCase
       find('#new-file-btn').click
       find('#swal2-input').set('bar.txt')
       find('.swal2-confirm').click
-      assert_selector 'tbody a', exact_text: 'bar.txt', wait: MAX_WAIT
+      find('tbody a', exact_text: 'bar.txt', wait: MAX_WAIT)
       assert File.file? File.join(dir, 'bar.txt')
     end
   end
@@ -42,7 +42,7 @@ class FilesTest < ApplicationSystemTestCase
       find('#new-dir-btn').click
       find('#swal2-input').set('bar')
       find('.swal2-confirm').click
-      assert_selector 'tbody a.d', exact_text: 'bar', wait: MAX_WAIT
+      find('tbody a.d', exact_text: 'bar', wait: MAX_WAIT)
       assert File.directory? File.join(dir, 'bar')
     end
   end
@@ -65,13 +65,13 @@ class FilesTest < ApplicationSystemTestCase
       assert_selector '#directory-contents tbody tr', count: 1
       find('#clipboard-copy-to-dir').click
 
-      # if this fails it is due to the directory table not reloading
-      # assert_selector '#directory-contents tbody tr', count: 3, wait: 10
-      assert_selector 'tbody a', exact_text: 'app', wait: MAX_WAIT
-      
-      # we need to wait due to the nature of how the "% copy files" displays
-      assert_selector 'span', text: 'copy files', count: 1, wait: MAX_WAIT 
-      
+      find('span', exact_text: 'copy files' wait: MAX_WAIT)
+
+      # files are copying but it takes a little while
+      find('tbody a', exact_text: 'app', wait: MAX_WAIT)
+      find('tbody a', exact_text: 'config', wait: MAX_WAIT)
+      find('tbody a', exact_text: 'manifest.yml', wait: MAX_WAIT)
+
       assert_equal "", `diff -rq #{File.join(dir, 'app')} #{Rails.root.join('app').to_s}`.strip, "failed to recursively copy app dir"
       assert_equal "", `diff -rq #{File.join(dir, 'config')} #{Rails.root.join('config').to_s}`.strip, "failed to recursively copy config dir"
       assert_equal "", `diff -q #{File.join(dir, 'manifest.yml')} #{Rails.root.join('manifest.yml').to_s}`.strip, "failed to copy manifest.yml"
@@ -94,8 +94,7 @@ class FilesTest < ApplicationSystemTestCase
       find('#swal2-input').set('bar.txt')
       find('.swal2-confirm').click
 
-
-      assert_selector 'tbody a', exact_text: 'bar.txt', wait: MAX_WAIT
+      find('tbody a', exact_text: 'bar.txt', wait: MAX_WAIT)
       assert File.file? File.join(dir, 'bar.txt')
     end
   end
@@ -118,7 +117,7 @@ class FilesTest < ApplicationSystemTestCase
       # move to new location
       visit files_url(dest)
       find('#clipboard-move-to-dir').click
-      assert_selector 'tbody a', exact_text: 'app', wait: MAX_WAIT
+      find('tbody a', exact_text: 'app', wait: MAX_WAIT)
 
       # verify contents moved
       assert_equal "", `diff -rq #{File.join(dest, 'app')} #{Rails.root.join('app').to_s}`.strip, "failed to mv app and all contents"
