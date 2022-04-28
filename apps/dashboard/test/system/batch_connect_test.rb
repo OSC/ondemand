@@ -481,18 +481,3 @@ class BatchConnectTest < ApplicationSystemTestCase
     end
   end
 end
-
-
-# <select class="form-control" name="batch_connect_session_context[auto_modules]" id="batch_connect_session_context_auto_modules"><option value="2021.3.0">2021.3.0</option>
-# <option value="19.1.3">19.1.3</option>
-# <option value="19.0.5">19.0.5</option>
-# <option value="19.0.3">19.0.3</option>
-# <option data-option-for-cluster-owens="false" value="18.0.4" style="display: none;">18.0.4</option>
-# <option value="18.0.3">18.0.3</option>
-# <option data-option-for-cluster-pitzer="false" value="18.0.2" style="">18.0.2</option>
-# <option data-option-for-cluster-pitzer="false" value="18.0.0" style="">18.0.0</option>
-# <option value="17.0.7">17.0.7</option>
-# <option data-option-for-cluster-pitzer="false" value="17.0.5" style="">17.0.5</option>
-# <option data-option-for-cluster-pitzer="false" value="17.0.2" style="">17.0.2</option>
-# <option data-option-for-cluster-pitzer="false" value="16.0.8" style="">16.0.8</option>
-# <option data-option-for-cluster-pitzer="false" value="16.0.3" style="">16.0.3</option></select>

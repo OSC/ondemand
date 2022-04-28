@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   before_action :set_featured_group
 
   def set_user
-    @user = User.new
+    @user = CurrentUser
   end
 
   def set_nav_groups

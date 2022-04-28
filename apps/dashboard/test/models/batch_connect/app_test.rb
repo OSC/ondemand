@@ -310,4 +310,24 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     assert_nil sub_apps[0].link.caption
     assert_equal 'gnome desktop on the owens cluster', sub_apps[1].link.caption
   end
+
+  test "auto primary group submits correctly" do
+    form_yml = <<~HEREDOC
+      ---
+      cluster: 'oakley'
+      form:
+        - auto_primary_group
+    HEREDOC
+
+    Dir.mktmpdir do |dir|
+      app_dir = "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      r = PathRouter.new(app_dir)
+      app = BatchConnect::App.new(router: r)
+      File.open("#{app_dir}/form.yml", 'w') { |file| file.write(form_yml) }
+      app.build_session_context
+      assert app.valid?
+      expected_opts = { script: { accounting_id: Etc.getgrgid(Etc.getpwuid.gid).name } }
+      assert_equal expected_opts, app.submit_opts(app.build_session_context)
+    end
+  end
 end
