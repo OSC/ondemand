@@ -2,7 +2,7 @@ require "application_system_test_case"
 
 class FilesTest < ApplicationSystemTestCase
 
-  MAX_WAIT = 30
+  MAX_WAIT = 60
 
   test "visiting files app doesn't raise js errors" do
     visit files_url(Rails.root.to_s)
