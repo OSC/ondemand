@@ -286,6 +286,7 @@ fi
 %dir %{_localstatedir}/www/ood/apps/sys
 %dir %{_localstatedir}/www/ood/apps/usr
 %config(noreplace,missingok) %{_localstatedir}/www/ood/public/maintenance/index.html
+%{_localstatedir}/www/ood/public/need_auth.html
 %ghost %{_sysconfdir}/ood/maintenance.enable
 %config(noreplace,missingok) %{_localstatedir}/www/ood/public/logo.png
 %config(noreplace,missingok) %{_localstatedir}/www/ood/public/favicon.ico
