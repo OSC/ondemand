@@ -40,7 +40,7 @@ against a higher version of `/lib64/libstdc++` than what's available on the webn
 You may be building it on a login node, but the runtime is always the webnode (where Open OnDemand is installed).
 
 If you use modules, check the g++/c++ modules you have enabled when you build or simply `module purge` and rebuild
-with the default, system installed c++ binay.
+with the default, system installed c++ binary.
 
 ```
 Error: /lib64/libstdc++.so.6: version `CXXABI_1.3.9' not found (required by /users/PZS0714/johrstrom/ondemand/src/apps/shell/node_modules/node-pty/build/Release/pty.node)
