@@ -33,7 +33,8 @@
     "node-notifier": "^8.0.1",
     "lodash": "4.17.21",
     "setprototypeof": "1.2.0",
-    "toidentifier": "1.0.1"
+    "toidentifier": "1.0.1",
+    "body-parser": "1.19.2"
   },
   "devDependencies": {
     "jest": "^26.1.0"
