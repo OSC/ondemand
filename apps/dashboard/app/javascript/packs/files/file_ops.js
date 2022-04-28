@@ -526,7 +526,6 @@ class FileOps {
     let that = this;
 
     $.getJSON(data.show_json_url, function (newdata) {
-      // because of getJSON not being an actual piece of the object, we need to instantiate an instance FileOps for this section of code.
       that.findAndUpdateTransferStatus(newdata);
 
       if(newdata.completed) {
