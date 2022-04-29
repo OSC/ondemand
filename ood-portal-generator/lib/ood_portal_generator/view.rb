@@ -14,6 +14,7 @@ module OodPortalGenerator
     # @param opts [#to_h] the options describing the context used to render the
     #   template
     def initialize(opts = {})
+      opts = {} unless opts.respond_to?(:to_h)
       opts = opts.to_h.each_with_object({}) { |(k, v), h| h[k.to_sym] = v unless v.nil? }
 
       # Portal configuration
