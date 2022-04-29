@@ -187,3 +187,10 @@ en:
     files_directory_size_calculation_error: "Timeout while trying to determine directory size."
     files_directory_size_calculation_timeout: "Timeout while trying to determine directory size."
     files_directory_size_unknown: "Error with status %{exit_code} when trying to determine directory size: %{error}"
+
+    jobs_project_created: "Project successfully created!"
+    jobs_project_deleted: "Project successfully deleted!"
+    jobs_project_delete_project_confirmation: "Delete all contents of project directory?"
+    jobs_project_manifest_updated: "Project manifest updated!"
+    jobs_project_name_validation: "Project name may only contain letters, digits, dashes, and underscores"
+    jobs_project_create_new_project_directory: "Create a new project directory"

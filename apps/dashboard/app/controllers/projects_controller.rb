@@ -27,7 +27,7 @@ class ProjectsController < ApplicationController
 
     # this validation does not have access to the new name yet to check
     if @project.valid? && @project.update(project_params)
-      redirect_to projects_path, notice: 'Project manifest updated!'
+      redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_manifest_updated')
     else
       # @project.validate!
       flash[:alert] = @project.errors[:name].last
@@ -40,7 +40,7 @@ class ProjectsController < ApplicationController
     @project = Project.new(project_params)
 
     if @project.valid? && @project.save(project_params)
-      redirect_to projects_path, notice: 'Project successfully created!'
+      redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_created')
     else
       flash[:alert] = @project.errors[:directory].last
       redirect_to new_project_path
@@ -51,7 +51,7 @@ class ProjectsController < ApplicationController
   def destroy
     @project = Project.find(params[:id])
 
-    redirect_to projects_path, notice: 'Project successfully deleted!' if @project.destroy!
+    redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_deleted') if @project.destroy!
   end
 
   private

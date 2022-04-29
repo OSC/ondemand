@@ -9,7 +9,7 @@
         <div class="col-md-9">
           <div class="field">
             <%= form.text_field :name, placeholder: "Project name", 
-                  help: "May only contain letters, digits, dashes, and underscores." %>
+                  help: I18n.t('dashboard.jobs_project_name_validation') %>
           </div>
           <div class="field">
             <%= form.text_area :description, placeholder: "Project description" %>
