@@ -71,7 +71,7 @@ class FilesTest < ApplicationSystemTestCase
       find('tbody a', exact_text: 'manifest.yml', wait: MAX_WAIT)
 
       # with copying done, let's assert on the UI and the file system
-      assert_selector 'span', text: '100% copy files', count: 0
+      assert_selector 'span', text: '100% copy files', count: 1
       assert_equal "", `diff -rq #{File.join(dir, 'app')} #{Rails.root.join('app').to_s}`.strip, "failed to recursively copy app dir"
       assert_equal "", `diff -rq #{File.join(dir, 'config')} #{Rails.root.join('config').to_s}`.strip, "failed to recursively copy config dir"
       assert_equal "", `diff -q #{File.join(dir, 'manifest.yml')} #{Rails.root.join('manifest.yml').to_s}`.strip, "failed to copy manifest.yml"
