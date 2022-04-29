@@ -67,7 +67,8 @@ describe OodPortalGenerator::Application do
 
     it 'generates default template for Debian based systems' do
       allow(OodPortalGenerator).to receive(:debian?).and_return(true)
-      test_generate('/dev/null', 'ood-portal.conf.default.deb')
+      # same file as above
+      test_generate('/dev/null', 'ood-portal.conf.default')
     end
 
     it 'generates a template with all configurations supplied' do
@@ -162,6 +163,11 @@ describe OodPortalGenerator::Application do
       expected_rendered = read_fixture('ood-portal.conf.oidc-ssl')
       expect(described_class.output).to receive(:write).with(expected_rendered)
       described_class.generate()
+    end
+
+    it 'genereates the correct debian portal with auth' do
+      allow(OodPortalGenerator).to receive(:debian?).and_return(true)
+      test_generate('input/auth.yml', 'output/auth_deb.conf')
     end
 
     context 'dex' do
