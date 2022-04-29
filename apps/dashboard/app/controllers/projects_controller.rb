@@ -29,7 +29,7 @@ class ProjectsController < ApplicationController
     if @project.valid? && @project.update(project_params)
       redirect_to projects_path, notice: 'Project manifest updated!'
     else
-      @project.validate!
+      # @project.validate!
       flash[:alert] = @project.errors[:name].last
       redirect_to edit_project_path
     end

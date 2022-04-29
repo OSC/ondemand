@@ -41,7 +41,6 @@ class Project
 
   def initialize(attributes = {})
     @proj_name    = attributes.fetch(:name, nil).to_s
-    @description  = attributes.fetch(:description, nil).to_s
   end
 
   # @params [Hash]
@@ -54,7 +53,7 @@ class Project
   # @return [Bool]
   def update(attributes)
     new_manifest = Manifest.load(manifest_path)
-    new_manifest = manifest.merge(attributes)
+    new_manifest = new_manifest.merge(attributes)
     # validate new manifest name is acceptable for project name
     if project_name_valid?(attributes)
       new_manifest.valid? ? new_manifest.save(manifest_path) : false
