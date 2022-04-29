@@ -18,13 +18,15 @@ describe 'Default install' do
   end
 
   describe 'default webpage' do
-    browser.goto '/'
-    auth_docs = 'https://osc.github.io/ood-documentation/latest/authentication.html'
+    it 'redirects from root'
+      browser.goto '/'
+      auth_docs = 'https://osc.github.io/ood-documentation/latest/authentication.html'
 
-    expect(browser.url).to eq("#{ctr_base_url}/public/need_auth.html")
-    expect(browser.heading(text: 'Welcome to Open OnDemand!').present?).to be true
-    expect(browser.anchor(text: 'the authentication documentation', href: auth_docs).present?).to be true
-    expect(browser.anchor(text: 'Go to Documentation', href: auth_docs).present?).to be true
+      expect(browser.url).to eq("#{ctr_base_url}/public/need_auth.html")
+      expect(browser.heading(text: 'Welcome to Open OnDemand!').present?).to be true
+      expect(browser.anchor(text: 'the authentication documentation', href: auth_docs).present?).to be true
+      expect(browser.anchor(text: 'Go to Documentation', href: auth_docs).present?).to be true
+    end
   end
 
 end
