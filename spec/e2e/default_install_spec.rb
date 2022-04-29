@@ -18,7 +18,7 @@ describe 'Default install' do
   end
 
   describe 'default webpage' do
-    it 'redirects from root'
+    it 'redirects from root' do
       browser.goto '/'
       auth_docs = 'https://osc.github.io/ood-documentation/latest/authentication.html'
 
