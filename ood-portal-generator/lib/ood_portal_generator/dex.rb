@@ -10,6 +10,7 @@ module OodPortalGenerator
   class Dex
     # @param opts [#to_h] the options describing the context used to render the Dex config
     def initialize(opts = {}, view = nil, insecure = false)
+      opts = {} unless opts.respond_to?(:to_h)
       opts = opts.to_h.deep_symbolize_keys
       config = opts.fetch(:dex, {})
       if config.nil? || config == false
