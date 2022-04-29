@@ -1,34 +1,53 @@
 # frozen_string_literal: true
 
 class ProjectsController < ApplicationController
+  # GET /projects/:id
   def show
-    # files in current project
+    @project = Project.find(params[:id])
   end
 
+  # GET /projects
   def index
     @projects = Project.all
   end
 
+  # GET /projects/new
   def new
     @project = Project.new
   end
 
+  # GET /projects/:id/edit
   def edit
     @project = Project.find(params[:id])
   end
 
-  def create
-    @project = Project.new(project_params)
+  # PATCH /projects/:id
+  def update
+    @project = Project.find(params[:id])
 
-    if @project.save!
-      @project.config_dir
-      redirect_to projects_path, notice: 'Project successfully created!'
+    # this validation does not have access to the new name yet to check
+    if @project.valid? && @project.update(project_params)
+      redirect_to projects_path, notice: 'Project manifest updated!'
     else
-      redirect_to projects_path, alert: 'Failed to save project'
+      # @project.validate!
+      flash[:alert] = @project.errors[:name].last
+      redirect_to edit_project_path
     end
   end
 
-  # DELETE /projects/.id(.:format)
+  # POST /projects
+  def create
+    @project = Project.new(project_params)
+
+    if @project.valid? && @project.save(project_params)
+      redirect_to projects_path, notice: 'Project successfully created!'
+    else
+      flash[:alert] = @project.errors[:directory].last
+      redirect_to new_project_path
+    end
+  end
+
+  # DELETE /projects/:id
   def destroy
     @project = Project.find(params[:id])
 
@@ -40,6 +59,6 @@ class ProjectsController < ApplicationController
   def project_params
     params
       .require(:project)
-      .permit(:dir)
+      .permit(:name, :description, :icon)
   end
 end

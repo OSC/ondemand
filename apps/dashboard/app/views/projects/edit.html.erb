@@ -1,7 +1,11 @@
-<div class='page-header text-center'>
-  <h1>Edit Project</h1>
+<div class='page-header text-center pb-3'>
+  <h1>
+    Editing: <%= @project.title %>
+  </h1>
 </div>
 
-<br>
+<%= bootstrap_form_for(@project, url: project_path, method: :patch) do |form| %>
+  <%= render partial: "form" %>
+<% end %>
 
-<%= render 'form' %>
+<hr />
