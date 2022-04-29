@@ -204,6 +204,18 @@ def upload_portal_config(file)
   scp_to(hosts, portal_fixture(file), '/etc/ood/config/ood_portal.yml')
 end
 
+def host_portal_config
+  if host_inventory['platform'] == 'redhat'
+    if host_inventory['platform_version'] =~ /^7/
+       '/opt/rh/httpd24-httpd/root/etc/httpd/conf.d/ood-portal.conf'
+     else
+      '/etc/httpd/conf.d/ood-portal.conf'
+     end
+  else
+    '/etc/apache2/sites-enabled/ood-portal.conf'
+  end
+end
+
 def update_ood_portal
   on hosts, '/opt/ood/ood-portal-generator/sbin/update_ood_portal --insecure'
 end
