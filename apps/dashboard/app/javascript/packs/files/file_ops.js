@@ -198,7 +198,7 @@ jQuery(function() {
 
 class FileOps {
   _timeout = 2000;
-  _attempts = 0;
+  _failures = 0;
   _filesPath = filesPath;
 
   constructor() {
@@ -461,7 +461,7 @@ class FileOps {
 
   transferFiles(files, action, summary){
 
-    this._attempts = 0;
+    this._failures = 0;
 
     this.showSwalLoading(_.startCase(summary));
   
@@ -522,34 +522,34 @@ class FileOps {
   })();
 
   poll(data) {
+
+    let that = this;
+
     $.getJSON(data.show_json_url, function (newdata) {
-      // because of getJSON not being an actual piece of the object, we need to instantiate an instance FileOps for this section of code.
-      let myFileOp = new FileOps();
-      myFileOp.findAndUpdateTransferStatus(newdata);
+      that.findAndUpdateTransferStatus(newdata);
 
       if(newdata.completed) {
         if(! newdata.error_message) {
           if(newdata.target_dir == history.state.currentDirectory) {
-            myFileOp.reloadTable();
+            that.reloadTable();
           }
-
           // 3. fade out after 5 seconds
-          myFileOp.fadeOutTransferStatus(newdata)
+          that.fadeOutTransferStatus(newdata)
         }
-      }
-      else {
+      } else {
         // not completed yet, so poll again
-        setTimeout(function(){
-          myFileOp._attempts++;
-        }, myFileOp._timeout);
+        setTimeout(function() {
+          that.poll(data);
+        }, that._timeout);
       }
     }).fail(function() {
-      if (myFileOp._attempts >= 3) {
-        myFileOp.alertError('Operation may not have happened', 'Failed to retrieve file operation status.');  
+      if (that._failures >= 3) {
+        that.alertError('Operation may not have happened', 'Failed to retrieve file operation status.');  
       } else {
         setTimeout(function(){
-          tmyFileOphis._attempts++;
-        }, myFileOp._timeout);
+          that._failures++;
+          that.poll(data);
+        }, that._timeout);
       }
     });
   }
