@@ -13,7 +13,7 @@ describe 'Default install' do
 
   describe file(host_portal_config) do
     it { is_expected.to be_file }
-    expected = File.expand_path("#{__dir__}/../../ood-portal-generator/spec/fixtures/ood-portal.conf.default")
+    expected = File.join(proj_root, 'ood-portal-generator/spec/fixtures/ood-portal.conf.default')
     its(:content) { is_expected.to eq(File.read(expected)) }
   end
 
