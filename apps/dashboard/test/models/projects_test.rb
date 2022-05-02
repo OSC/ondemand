@@ -24,7 +24,7 @@ class ProjectsTest < ActiveSupport::TestCase
       project = Project.new(attrs)
 
       assert !project.save(attrs)
-      assert_equal project.errors[:name].last, 'Can only contain letters, underscores, digits and dashes'
+      assert_equal project.errors[:name].last, I18n.t('dashboard.jobs_project_name_validation')
     end
   end
 
@@ -40,7 +40,7 @@ class ProjectsTest < ActiveSupport::TestCase
       bad_attrs = { name: 'b@d $ymbo!s' }
 
       assert !project.update(bad_attrs)
-      assert_equal project.errors[:name].last, 'Can only contain letters, underscores, digits and dashes'
+      assert_equal project.errors[:name].last, I18n.t('dashboard.jobs_project_name_validation')
 
       good_attrs = { name: 'good symbols' }
       manifest_path = Pathname.new("#{projects_path}/projects/#{project.directory}/.ondemand/manifest.yml")

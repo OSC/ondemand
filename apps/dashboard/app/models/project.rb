@@ -34,7 +34,7 @@ class Project
 
   validates :directory, format: {
     with:    /\A[\w-]+\z/,
-    message: 'Project name may only contain letters, digits, dashes, and underscores'
+    message: I18n.t('dashboard.jobs_project_name_validation')
   }
 
   delegate :icon, :name, :description, to: :manifest
@@ -98,7 +98,7 @@ class Project
   def project_name_valid?(attributes)
     # check attributes[:name] being passed in update
     if !attributes[:name].match?(/\A[\w -]+\z/)
-      errors.add(:name, :bad_format, message: 'Can only contain letters, underscores, digits and dashes')
+      errors.add(:name, :bad_format, message: I18n.t('dashboard.jobs_project_name_validation'))
       false
     else
       true
