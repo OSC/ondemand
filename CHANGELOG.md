@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Fix flaky tests (#1983)\
+Adding ability to edit manifest.yml for title and description fields … (#1924)\
+Fixed bug where file operations status was not updating properly for large file operations (#1975)\
+udpate dependencies. Notably rails (#1981)\
+add a wf step to upload failure images (#1978)\
+auto populate primary group (#1964)\
+Use esbuild instead of webpacker (#1957)\
+Update Changelog (#1971)\
+Shell: display specific connection error (detect on connection) (#1966)
 
 ### Changed
 
