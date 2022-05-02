@@ -27,7 +27,7 @@ Open OnDemand is an NSF-funded open-source HPC portal. The goal of Open OnDemand
 Installing Open OnDemand simple, use our prepacked RPM distributions or build from source. Get started by visiting the [installation instructions] in our documentation.
 
 ## Architecture
-Learn more about Open OnDemand's system architecture and request lifecycle by visiting our <a href="https://osc.github.io/ood-documentation/master/architecture.html">documentation</a>.
+Learn more about Open OnDemand's system architecture and request lifecycle by visiting our <a href="https://osc.github.io/ood-documentation/latest/architecture.html">documentation</a>.
 
 ## Community
 Open OnDemand has an active and growing community! Don't hesitate to reach out to the developers via our [Discourse] instance if you would like more information or need help installing or configuring Open OnDemand.
@@ -48,7 +48,7 @@ The code is available as open source under the terms of the [MIT License].
 This project is maintained by the <a href="https://www.osc.edu">Ohio Supercomputer Center (OSC)</a>, a member of the <a href="https://www.oh-tech.org/">Ohio Technology Consortium</a>, the technology and information division of the <a href="https://education.ohio.gov/">Ohio Department of Higher Education.</a>
 
 [MIT License]: http://opensource.org/licenses/MIT
-[Open OnDemand Documentation]: https://osc.github.io/ood-documentation/master/
-[installation instructions]: https://osc.github.io/ood-documentation/master/requirements.html
+[Open OnDemand Documentation]: https://osc.github.io/ood-documentation/latest/
+[installation instructions]: https://osc.github.io/ood-documentation/latest/requirements.html
 [contributing guide]: CONTRIBUTING.md
 [Discourse]: https://discourse.osc.edu
