@@ -17,7 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Upgraded to rails 6.1 in [1830](https://github.com/OSC/ondemand/pull/1830).
 - `context.json` files have moved in location and filename in [1526](https://github.com/OSC/ondemand/pull/1526).
 - Switch dev container and EL8 e2e tests to use Rocky Linux 8 [1534](https://github.com/OSC/ondemand/pull/1534).
-- The entire Javascript and CSS pipeline is now handled in webpack, closing [1005](https://github.com/OSC/ondemand/pull/1005).
+- The entire Javascript and CSS pipeline was migrated to webpack, closing [1005](https://github.com/OSC/ondemand/pull/1005).
+  It was then migrated to esbuild  in [#1957](https://github.com/OSC/ondemand/pull/1957).
 - Remove active support dependency for ood-portal-generator in [1572](https://github.com/OSC/ondemand/pull/1572).
 - All desktop options now show in bc_desktop [1638](https://github.com/OSC/ondemand/pull/1638).
 - Radio buttons are now grouped for labeling. We also changed the ordering of labels and values in radio buttons
@@ -27,6 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Yaml files now preview in [1758](https://github.com/OSC/ondemand/pull/1758).
 - Manifests can now specify and override an app's caption in [1941](https://github.com/OSC/ondemand/pull/1941).
 - The file explorer table has been heavily refactored to be more reusable in [1883](https://github.com/OSC/ondemand/pull/1883).
+- The shell app will now diplay specific errors in [#1966](https://github.com/OSC/ondemand/pull/1966).
 
 ### Added
 
@@ -35,6 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - Min and maxes in [1441](https://github.com/OSC/ondemand/pull/1441).
   - Other fields in [1449](https://github.com/OSC/ondemand/pull/1449).
   - Add functionality for hiding or showing elements in [1529](https://github.com/OSC/ondemand/pull/1529).
+  - `auto_primary_group` added in [1964](https://github.com/OSC/ondemand/pull/1964).
 - Test cases for example files for both ood_portal and nginx_stage in [832](https://github.com/OSC/ondemand/pull/832).
 - Debian packaging in [1466](https://github.com/OSC/ondemand/pull/1466). With many many subsequent patches.
 - Automation will now push ondemand tar.gz to release page on tags in [1564](https://github.com/OSC/ondemand/pull/1564).
