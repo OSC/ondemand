@@ -23,9 +23,9 @@ describe 'Default install' do
       auth_docs = 'https://osc.github.io/ood-documentation/latest/authentication.html'
 
       expect(browser.url).to eq("http://localhost:8081/public/need_auth.html")
-      expect(browser.heading(text: 'Welcome to Open OnDemand!').present?).to be true
-      expect(browser.anchor(text: 'the authentication documentation', href: auth_docs).present?).to be true
-      expect(browser.anchor(text: 'Go to Documentation', href: auth_docs).present?).to be true
+      expect(browser.h1(text: 'Welcome to Open OnDemand!').present?).to be true
+      expect(browser.a(text: 'the authentication documentation', href: auth_docs).present?).to be true
+      expect(browser.a(text: 'Go to Documentation.', href: auth_docs).present?).to be true
     end
 
     it 'is the only page' do
