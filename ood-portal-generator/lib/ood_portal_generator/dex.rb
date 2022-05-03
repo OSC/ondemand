@@ -13,13 +13,10 @@ module OodPortalGenerator
       opts = {} unless opts.respond_to?(:to_h)
       opts = opts.to_h.deep_symbolize_keys
       config = opts.fetch(:dex, {})
-      if config.nil? || config == false
-        @enable = false
-        return
-      else
-        @config = config
-        @enable = true
-      end
+      @enable = enable?(config)
+      return unless enabled?
+
+      @config = config
       @view = view
       @dex_config = {}
       @dex_config[:issuer] = issuer
@@ -74,6 +71,17 @@ module OodPortalGenerator
     end
 
     private
+
+    # determine if this config would enable dex configurations.
+    def enable?(config)
+      return false if config.nil?
+      return false if config.respond_to?(:empty?) && config.empty?
+      return false if config == false
+
+      # FIXME: should probably raise an error here if you're trying to configure dex, but it is not installed.
+
+      true
+    end
 
     def ssl?
       @config.fetch(:ssl, !@view.ssl.nil?)
