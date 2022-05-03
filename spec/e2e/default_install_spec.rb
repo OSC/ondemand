@@ -19,10 +19,10 @@ describe 'Default install' do
 
   describe 'default webpage' do
     it 'redirects from root' do
-      browser.goto ctr_base_url
+      browser.goto 'http://localhost:80/'
       auth_docs = 'https://osc.github.io/ood-documentation/latest/authentication.html'
 
-      expect(browser.url).to eq("#{ctr_base_url}/public/need_auth.html")
+      expect(browser.url).to eq("http://localhost:80/public/need_auth.html")
       expect(browser.heading(text: 'Welcome to Open OnDemand!').present?).to be true
       expect(browser.anchor(text: 'the authentication documentation', href: auth_docs).present?).to be true
       expect(browser.anchor(text: 'Go to Documentation', href: auth_docs).present?).to be true
