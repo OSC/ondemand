@@ -18,14 +18,22 @@ describe 'Default install' do
   end
 
   describe 'default webpage' do
-    it 'redirects from root' do
-      browser.goto 'http://localhost:8081/'
+    def expect_page(page)
+      browser.goto "http://localhost:8081#{page}"
       auth_docs = 'https://osc.github.io/ood-documentation/latest/authentication.html'
 
       expect(browser.url).to eq("http://localhost:8081/public/need_auth.html")
       expect(browser.heading(text: 'Welcome to Open OnDemand!').present?).to be true
       expect(browser.anchor(text: 'the authentication documentation', href: auth_docs).present?).to be true
       expect(browser.anchor(text: 'Go to Documentation', href: auth_docs).present?).to be true
+    end
+
+    it 'is the only page' do
+      expect_page('/')
+      expect_page('/anywhere')
+      expect_page('/public/maintenance/index.html')
+      expect_page('/pun/sys/dashboard')
+      expect_page('/nginx/init')
     end
   end
 
