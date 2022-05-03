@@ -19,7 +19,7 @@ describe 'Default install' do
 
   describe 'default webpage' do
     it 'redirects from root' do
-      browser.goto '/'
+      browser.goto ctr_base_url
       auth_docs = 'https://osc.github.io/ood-documentation/latest/authentication.html'
 
       expect(browser.url).to eq("#{ctr_base_url}/public/need_auth.html")
