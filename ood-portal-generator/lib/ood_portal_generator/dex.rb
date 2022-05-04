@@ -15,7 +15,7 @@ module OodPortalGenerator
       config = opts.fetch(:dex, {})
       set_enable(config)
 
-      @config = config == true || config == nil? || !enabled? ? {} : config
+      @config = config == true || config.nil? || !enabled? ? {} : config
       @view = view
       @dex_config = {}
       @dex_config[:issuer] = issuer
