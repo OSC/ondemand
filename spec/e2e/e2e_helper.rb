@@ -36,10 +36,6 @@ def portal_fixture(file)
   "#{File.expand_path('.')}/spec/fixtures/config/ood_portal/#{file}"
 end
 
-def output_fixture(file)
-  "#{File.expand_path('.')}/spec/fixtures/output/#{file}"
-end
-
 def extra_fixtures
   "#{File.expand_path('.')}/spec/fixtures/extras"
 end
