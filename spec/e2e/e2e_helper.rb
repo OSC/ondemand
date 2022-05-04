@@ -211,7 +211,7 @@ end
 def host_portal_config
   if host_inventory['platform'] == 'redhat'
     if host_inventory['platform_version'] =~ /^7/
-       '/opt/rh/httpd24-httpd/root/etc/httpd/conf.d/ood-portal.conf'
+       '/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf'
      else
       '/etc/httpd/conf.d/ood-portal.conf'
      end
