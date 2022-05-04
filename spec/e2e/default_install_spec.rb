@@ -20,7 +20,7 @@ describe 'Default install' do
   describe 'default webpage' do
     it 'is the only page' do
       [
-        '/', '/anywhere', '/public/maintenance/index.html'
+        '/', '/anywhere', '/public/maintenance/index.html',
         '/pun/sys/dashboard', '/nginx/init'
       ].each do |page|
         curl_on(hosts, "-L localhost#{page}") do |result|
