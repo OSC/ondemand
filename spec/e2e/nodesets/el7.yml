@@ -22,9 +22,6 @@ HOSTS:
       8080/tcp:
         - HostPort: '8080'
           HostIp: '0.0.0.0'
-      80/tcp:
-        - HostPort: '8081'
-          HostIp: '0.0.0.0'
       5556/tcp:
         - HostPort: '5556'
           HostIp: '0.0.0.0'
