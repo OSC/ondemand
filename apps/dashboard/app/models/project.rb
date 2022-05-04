@@ -43,6 +43,11 @@ class Project
     @proj_name    = attributes.fetch(:name, nil).to_s
   end
 
+  def project_icon
+    fa_pattern = /fa[sbrl]:\/\//
+    icon.sub(fa_pattern, '')
+  end
+
   # @params [Hash]
   # @return [Bool]
   def save(attributes)
