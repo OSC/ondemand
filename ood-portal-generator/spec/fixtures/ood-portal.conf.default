@@ -1,4 +1,4 @@
-<VirtualHost *:80>
+<VirtualHost *:*>
 
   RewriteEngine On
   RewriteCond %{REQUEST_URI} !/public/need_auth.html
