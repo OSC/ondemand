@@ -72,8 +72,8 @@ describe OodPortalGenerator::Application do
     end
 
     it 'generates a template with all configurations supplied' do
-      context = YAML.load(read_fixture('ood_portal.yaml.all'))
-      allow(described_class).to receive(:context).and_return(context)
+      config = YAML.load(read_fixture('ood_portal.yaml.all'))
+      allow(described_class).to receive(:context).and_return(config)
       expected_rendered = read_fixture('ood-portal.conf.all')
 
       expect(described_class.output).to receive(:write).with(expected_rendered)
@@ -177,11 +177,11 @@ describe OodPortalGenerator::Application do
       before(:each) do
         allow(OodPortalGenerator::Dex).to receive(:installed?).and_return(true)
         allow(OodPortalGenerator::Dex).to receive(:config_dir).and_return(config_dir)
-        allow_any_instance_of(OodPortalGenerator::Dex).to receive(:enabled?).and_return(true)
         allow(described_class).to receive(:dex_output).and_return(dex_config)
       end
 
       it 'generates default dex configs' do
+        allow(described_class).to receive(:context).and_return({ dex: true })
         expected_rendered = read_fixture('ood-portal.conf.dex')
         expect(described_class.output).to receive(:write).with(expected_rendered)
         expected_dex_yaml = read_fixture('dex.yaml.default').gsub('/etc/ood/dex', config_dir)
@@ -220,6 +220,7 @@ describe OodPortalGenerator::Application do
             'SSLCertificateKeyFile /etc/pki/tls/private/example.com.key',
             'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
           ],
+          dex: true,
         })
         expected_rendered = read_fixture('ood-portal.dex-full.proxy.conf')
         expect(described_class.output).to receive(:write).with(expected_rendered)
@@ -238,6 +239,7 @@ describe OodPortalGenerator::Application do
             'SSLCertificateKeyFile /etc/pki/tls/private/example.com.key',
             'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
           ],
+          dex: true
         })
         expected_rendered = read_fixture('ood-portal.conf.dex-full')
         expect(described_class.output).to receive(:write).with(expected_rendered)
@@ -291,12 +293,34 @@ describe OodPortalGenerator::Application do
             "SSLCertificateKeyFile #{key}",
             'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
           ],
+          dex: true
         })
         described_class.generate()
         expect(File.exists?(File.join(config_dir, 'cert'))).to eq(true)
         expect(File.read(File.join(config_dir, 'cert'))).to eq('CERT')
         expect(File.exists?(File.join(config_dir, 'key'))).to eq(true)
         expect(File.read(File.join(config_dir, 'key'))).to eq('KEY')
+      end
+
+      # super similar to the test above, only different :context stub and expects false
+      it 'generate does not copy SSL certs when dex is not enabled' do
+        certdir = Dir.mktmpdir
+        cert = File.join(certdir, 'cert')
+        File.open(cert, 'w') { |f| f.write("CERT") }
+        key = File.join(certdir, 'key')
+        File.open(key, 'w') { |f| f.write("KEY") }
+        allow(described_class).to receive(:context).and_return({
+          servername: 'example.com',
+          port: '443',
+          ssl: [
+            "SSLCertificateFile #{cert}",
+            "SSLCertificateKeyFile #{key}",
+            'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
+          ]
+        })
+        described_class.generate()
+        expect(File.exists?(File.join(config_dir, 'cert'))).to eq(false)
+        expect(File.exists?(File.join(config_dir, 'key'))).to eq(false)
       end
 
       it 'generates LDAP dex configs with SSL' do

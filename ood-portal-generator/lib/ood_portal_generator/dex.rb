@@ -12,14 +12,10 @@ module OodPortalGenerator
     def initialize(opts = {}, view = nil, insecure = false)
       opts = {} unless opts.respond_to?(:to_h)
       opts = opts.to_h.deep_symbolize_keys
-      config = opts.fetch(:dex, false)
-      if config.nil? || config == false
-        @enable = false
-        @config = {}
-      else
-        @config = config
-        @enable = true
-      end
+      config = opts.fetch(:dex, {})
+      set_enable(config)
+
+      @config = config == true || config == nil? || !enabled? ? {} : config
       @view = view
       @dex_config = {}
       @dex_config[:issuer] = issuer
@@ -74,6 +70,19 @@ module OodPortalGenerator
     end
 
     private
+
+    # determine if this config would enable dex configurations.
+    def set_enable(config)
+      @enable = if config.nil?
+                  false
+                elsif config.respond_to?(:empty?) && config.empty?
+                  false
+                elsif config == false
+                  false
+                else
+                  true
+                end
+    end
 
     def ssl?
       @config.fetch(:ssl, !@view.ssl.nil?)
@@ -231,7 +240,7 @@ module OodPortalGenerator
     end
 
     def copy_ssl_certs
-      return if !ssl? || @view.ssl.nil? || ! tls_cert.nil? || ! tls_key.nil?
+      return if !enabled? || !ssl? || @view.ssl.nil? || ! tls_cert.nil? || ! tls_key.nil?
       @view.ssl.each do |ssl_line|
         items = ssl_line.split(' ', 2)
         next unless items.size == 2
