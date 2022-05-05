@@ -189,6 +189,16 @@ describe OodPortalGenerator::Application do
         described_class.generate()
       end
 
+      it 'generates insecure default dex configs' do
+        allow(described_class).to receive(:context).and_return({ dex: true })
+        allow(described_class).to receive(:insecure).and_return(true)
+        expected_rendered = read_fixture('ood-portal.conf.dex')
+        expect(described_class.output).to receive(:write).with(expected_rendered)
+        expected_dex_yaml = read_fixture('output/dex/insecure_default_dex.yml').gsub('/etc/ood/dex', config_dir)
+        expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
+        described_class.generate()
+      end
+
       it 'generates default dex configs with custom static password' do
         allow(described_class).to receive(:insecure).and_return(true)
         allow_any_instance_of(OodPortalGenerator::Dex).to receive(:hash_password).with('secret').and_return('$2a$12$iKLecAIN9MrxOZ0UltRb.OQOms/bgQbs5F.qCehq15oc3CvGFYzLy')
