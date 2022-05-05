@@ -100,10 +100,10 @@ describe('Helper function definedHosts()', () => {
       // owens.yml has default in it
       expect(defaultHost).toEqual('owens.osc.edu');
       expect(allHosts).toEqual(['owens.osc.edu', 'ruby.osc.edu']);
-      fs.chmodSync(unreadableYmlPath, 420);
+      fs.chmodSync(unreadableYmlPath, 0o644);
     } catch (err) {
       // wait to send error until file permissions are restored 
-      fs.chmodSync(unreadableYmlPath, 420);
+      fs.chmodSync(unreadableYmlPath, 0o644);
       throw err;
     }
   })
