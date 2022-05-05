@@ -219,6 +219,26 @@ describe OodPortalGenerator::Application do
         described_class.generate()
       end
 
+      it 'will not use a custom password if not passing insecure' do
+        # same as test above, only it does not use --insecure and expects the default yaml, not static_passwords
+        allow_any_instance_of(OodPortalGenerator::Dex).to receive(:hash_password).with('secret').and_return('$2a$12$iKLecAIN9MrxOZ0UltRb.OQOms/bgQbs5F.qCehq15oc3CvGFYzLy')
+        allow(described_class).to receive(:context).and_return({
+          dex: {
+            static_passwords: [{
+              'email'    => 'username@localhost',
+              'password' => 'secret',
+              'username' => 'username',
+              'userID'   => 'D642A38C-402F-47AA-879B-FEC95745F5BA',
+            }]
+          },
+        })
+        expected_rendered = read_fixture('ood-portal.conf.dex')
+        expect(described_class.output).to receive(:write).with(expected_rendered)
+        expected_dex_yaml = read_fixture('dex.yaml.default').gsub('/etc/ood/dex', config_dir)
+        expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
+        described_class.generate()
+      end
+
       it 'generates full dex configs with SSL using proxy' do
         allow(described_class).to receive(:insecure).and_return(true)
         allow(described_class).to receive(:context).and_return({
