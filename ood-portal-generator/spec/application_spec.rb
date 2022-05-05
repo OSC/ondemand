@@ -189,6 +189,16 @@ describe OodPortalGenerator::Application do
         described_class.generate()
       end
 
+      it 'generates default dex configs from nil' do
+        # this simulates a config of 'dex: '. I.e., uncommented dex
+        allow(described_class).to receive(:context).and_return({ dex: nil })
+        expected_rendered = read_fixture('ood-portal.conf.dex')
+        expect(described_class.output).to receive(:write).with(expected_rendered)
+        expected_dex_yaml = read_fixture('dex.yaml.default').gsub('/etc/ood/dex', config_dir)
+        expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
+        described_class.generate()
+      end
+
       it 'generates insecure default dex configs' do
         allow(described_class).to receive(:context).and_return({ dex: true })
         allow(described_class).to receive(:insecure).and_return(true)

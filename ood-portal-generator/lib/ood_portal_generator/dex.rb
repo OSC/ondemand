@@ -8,14 +8,17 @@ using OodPortalGenerator::HashExtensions
 module OodPortalGenerator
   # A view class that renders a Dex configuration
   class Dex
+
+    NO_CONFIG = SecureRandom.uuid
+
     # @param opts [#to_h] the options describing the context used to render the Dex config
     def initialize(opts = {}, view = nil, insecure = false)
       opts = {} unless opts.respond_to?(:to_h)
       opts = opts.to_h.deep_symbolize_keys
-      config = opts.fetch(:dex, {})
+      config = opts.fetch(:dex, NO_CONFIG)
       set_enable(config)
 
-      @config = config == true || config.nil? || !enabled? ? {} : config
+      @config = config == true || config == NO_CONFIG || config.nil? || !enabled? ? {} : config
       @view = view
       @dex_config = {}
       @dex_config[:issuer] = issuer
@@ -73,11 +76,7 @@ module OodPortalGenerator
 
     # determine if this config would enable dex configurations.
     def set_enable(config)
-      @enable = if config.nil?
-                  false
-                elsif config.respond_to?(:empty?) && config.empty?
-                  false
-                elsif config == false
+      @enable = if config == NO_CONFIG || config == false || !Dex.installed?
                   false
                 else
                   true
