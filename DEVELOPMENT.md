@@ -60,7 +60,7 @@ Create and edit files in the host's home directory and to mount in
 new configurations.
 
 Edit or remove `~/.config/ondemand/container/config/ood_portal.yml` to change
-you container's password.
+your container's password.
 
 ### Rebuilding the image
 
