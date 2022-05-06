@@ -59,8 +59,8 @@ completely configure this Open-OnDemand container.
 Create and edit files in the host's home directory and to mount in
 new configurations.
 
-Remove `~/.config/ondemand/container/config/ood_portal.yml` to reset
-or edit your container's password.
+Edit or remove `~/.config/ondemand/container/config/ood_portal.yml` to change
+you container's password.
 
 ### Rebuilding the image
 
