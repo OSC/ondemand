@@ -188,7 +188,7 @@ module RakeHelper
   end
 
   def user
-    @user ||= Etc.getpwnam(Etc.getlogin)
+    @user ||= Etc.getpwnam(Etc.getpwuid.name)
   end
 
   def image_names

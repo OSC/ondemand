@@ -24,7 +24,7 @@ describe 'update_ood_portal' do
     Tempfile.new('secret')
   end
 
-  let(:user) { user = Etc.getlogin }
+  let(:user) { user = Etc.getpwuid.name }
   let(:group) do
     gid = Etc.getpwnam(user).gid
     group = Etc.getgrgid(gid).name
