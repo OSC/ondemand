@@ -47,7 +47,7 @@ module OodPortalGenerator
     def dex_user
       Etc.getpwnam('ondemand-dex').name
     rescue ArgumentError
-      Etc.getlogin
+      Etc.getpwuid.name
     end
 
     # Determine dex group name
@@ -55,7 +55,7 @@ module OodPortalGenerator
     def dex_group
       Etc.getgrnam('ondemand-dex').name
     rescue ArgumentError
-      gid = Etc.getpwnam(Etc.getlogin).gid
+      gid = Etc.getpwuid.gid
       Etc.getgrgid(gid).name
     end
 
