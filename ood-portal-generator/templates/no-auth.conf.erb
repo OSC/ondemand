@@ -1,4 +1,7 @@
 <VirtualHost *:*>
+  <%- if @servername -%>
+  ServerName <%= @servername %>
+  <%- end -%>
 
   RewriteEngine On
   RewriteCond %{REQUEST_URI} !/public/need_auth.html

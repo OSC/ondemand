@@ -8,17 +8,17 @@ using OodPortalGenerator::HashExtensions
 module OodPortalGenerator
   # A view class that renders a Dex configuration
   class Dex
+
+    NO_CONFIG = SecureRandom.uuid
+
     # @param opts [#to_h] the options describing the context used to render the Dex config
     def initialize(opts = {}, view = nil, insecure = false)
+      opts = {} unless opts.respond_to?(:to_h)
       opts = opts.to_h.deep_symbolize_keys
-      config = opts.fetch(:dex, {})
-      if config.nil? || config == false
-        @enable = false
-        return
-      else
-        @config = config
-        @enable = true
-      end
+      config = opts.fetch(:dex, NO_CONFIG)
+      set_enable(config)
+
+      @config = config == true || config == NO_CONFIG || config.nil? || !enabled? ? {} : config
       @view = view
       @dex_config = {}
       @dex_config[:issuer] = issuer
@@ -64,11 +64,24 @@ module OodPortalGenerator
       File.directory?(config_dir) && File.executable?('/usr/sbin/ondemand-dex')
     end
 
+    def self.default_auth
+      ['AuthType openid-connect', 'Require valid-user'].freeze
+    end
+
     def self.config_dir
       '/etc/ood/dex'
     end
 
     private
+
+    # determine if this config would enable dex configurations.
+    def set_enable(config)
+      @enable = if config == NO_CONFIG || config == false || !Dex.installed?
+                  false
+                else
+                  true
+                end
+    end
 
     def ssl?
       @config.fetch(:ssl, !@view.ssl.nil?)
@@ -226,7 +239,7 @@ module OodPortalGenerator
     end
 
     def copy_ssl_certs
-      return if !ssl? || @view.ssl.nil? || ! tls_cert.nil? || ! tls_key.nil?
+      return if !enabled? || !ssl? || @view.ssl.nil? || ! tls_cert.nil? || ! tls_key.nil?
       @view.ssl.each do |ssl_line|
         items = ssl_line.split(' ', 2)
         next unless items.size == 2

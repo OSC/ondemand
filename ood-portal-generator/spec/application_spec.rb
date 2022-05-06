@@ -25,6 +25,10 @@ describe OodPortalGenerator::Application do
     group = Etc.getgrgid(gid).name
   end
 
+  let(:oidc_auth){
+    { auth: [ 'AuthType openid-connect', 'Require valid-user' ] }
+  }
+
   before(:each) do
     stub_const('ARGV', [])
     allow(described_class).to receive(:sum_path).and_return(sum_path.path)
@@ -58,21 +62,18 @@ describe OodPortalGenerator::Application do
     end
 
     it 'generates default template' do
-      expected_rendered = read_fixture('ood-portal.conf.default')
-      expect(described_class.output).to receive(:write).with(expected_rendered)
-      described_class.generate()
+      test_generate('/dev/null', 'ood-portal.conf.default')
     end
 
     it 'generates default template for Debian based systems' do
       allow(OodPortalGenerator).to receive(:debian?).and_return(true)
-      expected_rendered = read_fixture('ood-portal.conf.default.deb')
-      expect(described_class.output).to receive(:write).with(expected_rendered)
-      described_class.generate()
+      # same file as above
+      test_generate('/dev/null', 'ood-portal.conf.default')
     end
 
     it 'generates a template with all configurations supplied' do
-      context = YAML.load(read_fixture('ood_portal.yaml.all'))
-      allow(described_class).to receive(:context).and_return(context)
+      config = YAML.load(read_fixture('ood_portal.yaml.all'))
+      allow(described_class).to receive(:context).and_return(config)
       expected_rendered = read_fixture('ood-portal.conf.all')
 
       expect(described_class.output).to receive(:write).with(expected_rendered)
@@ -80,24 +81,21 @@ describe OodPortalGenerator::Application do
     end
 
     it 'generates without maintenance' do
-      allow(described_class).to receive(:context).and_return({use_maintenance: false})
-      expected_rendered = read_fixture('ood-portal.conf.nomaint')
-      expect(described_class.output).to receive(:write).with(expected_rendered)
-      described_class.generate()
+      config = { use_maintenance: false }.merge(oidc_auth)
+      allow(described_class).to receive(:context).and_return(config)
+      test_generate('/dev/null', 'ood-portal.conf.nomaint')
     end
 
     it 'generates maintenance template with IP whitelist' do
-      allow(described_class).to receive(:context).and_return({maintenance_ip_whitelist: ['192.168.1..*', '10.0.0..*']})
-      expected_rendered = read_fixture('ood-portal.conf.maint_with_ips')
-      expect(described_class.output).to receive(:write).with(expected_rendered)
-      described_class.generate()
+      config = { maintenance_ip_whitelist: ['192.168.1..*', '10.0.0..*'] }.merge(oidc_auth)
+      allow(described_class).to receive(:context).and_return(config)
+      test_generate('/dev/null', 'ood-portal.conf.maint_with_ips')
     end
 
     it 'generates maintenance template with IP whitelist already escaped' do
-      allow(described_class).to receive(:context).and_return({maintenance_ip_whitelist: ['192\.168\.1\..*', '10\.0\.0\..*']})
-      expected_rendered = read_fixture('ood-portal.conf.maint_with_ips')
-      expect(described_class.output).to receive(:write).with(expected_rendered)
-      described_class.generate()
+      config = {maintenance_ip_whitelist: ['192\.168\.1\..*', '10\.0\.0\..*']}.merge(oidc_auth)
+      allow(described_class).to receive(:context).and_return(config)
+      test_generate('/dev/null', 'ood-portal.conf.maint_with_ips')
     end
 
     it 'adheres to maintenance_ip_allowlist' do
@@ -130,7 +128,7 @@ describe OodPortalGenerator::Application do
           OIDCPassClaimsAs: 'environment',
           OIDCStripCookies: 'mod_auth_openidc_session mod_auth_openidc_session_chunks mod_auth_openidc_session_0 mod_auth_openidc_session_1',
         },
-      }
+      }.merge(oidc_auth)
       allow(described_class).to receive(:context).and_return(config)
       expected_rendered = read_fixture('ood-portal.conf.oidc')
       expect(described_class.output).to receive(:write).with(expected_rendered)
@@ -160,11 +158,16 @@ describe OodPortalGenerator::Application do
           OIDCPassClaimsAs: 'environment',
           OIDCStripCookies: 'mod_auth_openidc_session mod_auth_openidc_session_chunks mod_auth_openidc_session_0 mod_auth_openidc_session_1',
         },
-      }
+      }.merge(oidc_auth)
       allow(described_class).to receive(:context).and_return(config)
       expected_rendered = read_fixture('ood-portal.conf.oidc-ssl')
       expect(described_class.output).to receive(:write).with(expected_rendered)
       described_class.generate()
+    end
+
+    it 'genereates the correct debian portal with auth' do
+      allow(OodPortalGenerator).to receive(:debian?).and_return(true)
+      test_generate('input/auth.yml', 'output/auth_deb.conf')
     end
 
     context 'dex' do
@@ -174,14 +177,34 @@ describe OodPortalGenerator::Application do
       before(:each) do
         allow(OodPortalGenerator::Dex).to receive(:installed?).and_return(true)
         allow(OodPortalGenerator::Dex).to receive(:config_dir).and_return(config_dir)
-        allow_any_instance_of(OodPortalGenerator::Dex).to receive(:enabled?).and_return(true)
         allow(described_class).to receive(:dex_output).and_return(dex_config)
       end
 
       it 'generates default dex configs' do
+        allow(described_class).to receive(:context).and_return({ dex: true })
         expected_rendered = read_fixture('ood-portal.conf.dex')
         expect(described_class.output).to receive(:write).with(expected_rendered)
         expected_dex_yaml = read_fixture('dex.yaml.default').gsub('/etc/ood/dex', config_dir)
+        expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
+        described_class.generate()
+      end
+
+      it 'generates default dex configs from nil' do
+        # this simulates a config of 'dex: '. I.e., uncommented dex
+        allow(described_class).to receive(:context).and_return({ dex: nil })
+        expected_rendered = read_fixture('ood-portal.conf.dex')
+        expect(described_class.output).to receive(:write).with(expected_rendered)
+        expected_dex_yaml = read_fixture('dex.yaml.default').gsub('/etc/ood/dex', config_dir)
+        expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
+        described_class.generate()
+      end
+
+      it 'generates insecure default dex configs' do
+        allow(described_class).to receive(:context).and_return({ dex: true })
+        allow(described_class).to receive(:insecure).and_return(true)
+        expected_rendered = read_fixture('ood-portal.conf.dex')
+        expect(described_class.output).to receive(:write).with(expected_rendered)
+        expected_dex_yaml = read_fixture('output/dex/insecure_default_dex.yml').gsub('/etc/ood/dex', config_dir)
         expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
         described_class.generate()
       end
@@ -206,6 +229,26 @@ describe OodPortalGenerator::Application do
         described_class.generate()
       end
 
+      it 'will not use a custom password if not passing insecure' do
+        # same as test above, only it does not use --insecure and expects the default yaml, not static_passwords
+        allow_any_instance_of(OodPortalGenerator::Dex).to receive(:hash_password).with('secret').and_return('$2a$12$iKLecAIN9MrxOZ0UltRb.OQOms/bgQbs5F.qCehq15oc3CvGFYzLy')
+        allow(described_class).to receive(:context).and_return({
+          dex: {
+            static_passwords: [{
+              'email'    => 'username@localhost',
+              'password' => 'secret',
+              'username' => 'username',
+              'userID'   => 'D642A38C-402F-47AA-879B-FEC95745F5BA',
+            }]
+          },
+        })
+        expected_rendered = read_fixture('ood-portal.conf.dex')
+        expect(described_class.output).to receive(:write).with(expected_rendered)
+        expected_dex_yaml = read_fixture('dex.yaml.default').gsub('/etc/ood/dex', config_dir)
+        expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
+        described_class.generate()
+      end
+
       it 'generates full dex configs with SSL using proxy' do
         allow(described_class).to receive(:insecure).and_return(true)
         allow(described_class).to receive(:context).and_return({
@@ -217,6 +260,7 @@ describe OodPortalGenerator::Application do
             'SSLCertificateKeyFile /etc/pki/tls/private/example.com.key',
             'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
           ],
+          dex: true,
         })
         expected_rendered = read_fixture('ood-portal.dex-full.proxy.conf')
         expect(described_class.output).to receive(:write).with(expected_rendered)
@@ -235,6 +279,7 @@ describe OodPortalGenerator::Application do
             'SSLCertificateKeyFile /etc/pki/tls/private/example.com.key',
             'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
           ],
+          dex: true
         })
         expected_rendered = read_fixture('ood-portal.conf.dex-full')
         expect(described_class.output).to receive(:write).with(expected_rendered)
@@ -288,12 +333,34 @@ describe OodPortalGenerator::Application do
             "SSLCertificateKeyFile #{key}",
             'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
           ],
+          dex: true
         })
         described_class.generate()
         expect(File.exists?(File.join(config_dir, 'cert'))).to eq(true)
         expect(File.read(File.join(config_dir, 'cert'))).to eq('CERT')
         expect(File.exists?(File.join(config_dir, 'key'))).to eq(true)
         expect(File.read(File.join(config_dir, 'key'))).to eq('KEY')
+      end
+
+      # super similar to the test above, only different :context stub and expects false
+      it 'generate does not copy SSL certs when dex is not enabled' do
+        certdir = Dir.mktmpdir
+        cert = File.join(certdir, 'cert')
+        File.open(cert, 'w') { |f| f.write("CERT") }
+        key = File.join(certdir, 'key')
+        File.open(key, 'w') { |f| f.write("KEY") }
+        allow(described_class).to receive(:context).and_return({
+          servername: 'example.com',
+          port: '443',
+          ssl: [
+            "SSLCertificateFile #{cert}",
+            "SSLCertificateKeyFile #{key}",
+            'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
+          ]
+        })
+        described_class.generate()
+        expect(File.exists?(File.join(config_dir, 'cert'))).to eq(false)
+        expect(File.exists?(File.join(config_dir, 'key'))).to eq(false)
       end
 
       it 'generates LDAP dex configs with SSL' do

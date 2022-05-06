@@ -6,6 +6,7 @@
 listen_addr_port: 8080
 servername: localhost
 port: 8080
+dex: true
 
 rnode_uri: '/rnode'
 node_uri: '/node'

@@ -21,6 +21,10 @@ module OodPortalGenerator
         Pathname.new(@template || OodPortalGenerator.root.join("templates", "ood-portal.conf.erb"))
       end
 
+      def no_auth_template
+        Pathname.new(OodPortalGenerator.root.join("templates", "no-auth.conf.erb"))
+      end
+
       # The io object that the rendered template will be written to
       # @return [Pathname, IO] io object where rendered output is written to
       def output
@@ -160,11 +164,14 @@ module OodPortalGenerator
       def generate()
         view = View.new(context)
         dex = Dex.new(context, view, insecure)
-        rendered_template = view.render(template.read)
-        output.write(rendered_template)
-        if Dex.installed? && dex.enabled?
-          dex_output.write(dex.render)
-        end
+        dex_enabled = Dex.installed? && dex.enabled?
+
+        # convienence defaults for folks who are using dex or OIDC
+        view.auth = Dex.default_auth if dex_enabled && !view.auth?
+        content = view.auth? ? view.render(template.read) : view.render(no_auth_template.read)
+
+        output.write(content)
+        dex_output.write(dex.render) if dex_enabled
       end
 
       def update_ood_portal()
