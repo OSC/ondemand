@@ -243,7 +243,7 @@ class OodApp
   # dataroot and database for the current app, if the production
   # setup script exists and can be executed
   def run_setup_production
-    Bundler.with_clean_env do
+    Bundler.with_unbundled_env do
       ENV['BUNDLE_USER_CONFIG'] = '/dev/null'
       setup = "./bin/setup-production"
       Dir.chdir(path) do
