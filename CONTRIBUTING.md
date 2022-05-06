@@ -70,6 +70,15 @@ we'll follow this style.
 
 * IDs use underscores `_` for word seperation. This follows the Rails `form_for` convention.
 
+
+### CSS Style
+
+* Applicable SASS patterns. This means having variables in `_variables.scss` and any other pattern(s) SASS
+  development has.
+* class names use hyphens, `-` for word seperators. If for no other reason than to follow bootstrap
+  which we use quite extensively.
+* classes should mostly use relative sizes (`em` and `rem`), rarely pixel values (`px`).
+
 [Discourse]: https://discourse.osc.edu
 [yardoc]: https://yardoc.org/
 [Fork this repo]: https://help.github.com/articles/fork-a-repo/
