@@ -1,4 +1,6 @@
 'use strict';
+const path = require('path');
+const fs = require('fs');
 
 /**
  * Allowlist helper function tests
@@ -86,6 +88,24 @@ describe('Helper function definedHosts()', () => {
 
     expect(defaultHost).toEqual('pitzer.osc.edu');
     expect(helpers.definedHosts()['hosts']).toEqual(['pitzer.osc.edu', 'ruby.osc.edu']);
+  })
+
+  test('when an unreadable yml file is present', () => {
+    const unreadableYmlPath = path.join(process.env.OOD_CLUSTERS, 'pitzer.yml');
+    fs.chmodSync(unreadableYmlPath, 0);
+    try {
+      let hosts = helpers.definedHosts();
+      let defaultHost = hosts['default'];
+      let allHosts = hosts['hosts'];
+      // owens.yml has default in it
+      expect(defaultHost).toEqual('owens.osc.edu');
+      expect(allHosts).toEqual(['owens.osc.edu', 'ruby.osc.edu']);
+      fs.chmodSync(unreadableYmlPath, 0o644);
+    } catch (err) {
+      // wait to send error until file permissions are restored 
+      fs.chmodSync(unreadableYmlPath, 0o644);
+      throw err;
+    }
   })
 });
 
