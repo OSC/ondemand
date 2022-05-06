@@ -73,8 +73,7 @@ we'll follow this style.
 
 ### CSS Style
 
-* Applicable SASS patterns. This means having variables in `_variables.scss` and any other pattern(s) SASS
-  development has.
+* Applicable SCSS conventions like hyphenated variables and those variables are in the `_variables.scss` file.
 * class names use hyphens, `-` for word seperators. If for no other reason than to follow bootstrap
   which we use quite extensively.
 * classes should mostly use relative sizes (`em` and `rem`), rarely pixel values (`px`).
