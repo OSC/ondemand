@@ -8,7 +8,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   # Marshaling the Configuration doesn't work because the methods are evaluated when
   # you call them: Configuration doesn't store data for most of its options.
   #
-  # Using Bundler.with_clean_env to provide several unit tests, one for loading
+  # Using Bundler.with_unbundled_env to provide several unit tests, one for loading
   # dotenv, and one for ConfigurationSingleton.new once expected env is loaded, doesn't
   # let us test dataroot because of OodAppkit's approach to storing the dataroot
   # as an instance variable.
@@ -18,7 +18,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   def runner(code, env: 'development', envvars: '')
     key = '7bf28d4575e79d7df1597758eb36d6e889943cbfa74e861112687b8d64b12f1cdf2d4cb9892ade429f142ee424ed00258ea4d186ed5b6d31c1bf642dc9f66ee2'
     Tempfile.open('runnerbin') do |f|
-      Bundler.with_clean_env do
+      Bundler.with_unbundled_env do
         f.write(code)
         f.close
         `SECRET_KEY_BASE=#{key} RAILS_ENV=#{env} #{envvars} bin/rails runner -e #{env} #{f.path}`
@@ -74,7 +74,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "setting dataroot and database path" do
-    Bundler.with_clean_env do
+    Bundler.with_unbundled_env do
       ENV['OOD_DATAROOT'] = nil
       ENV['RAILS_ENV'] = 'production'
 
@@ -97,7 +97,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "hide account field" do
-    Bundler.with_clean_env do
+    Bundler.with_unbundled_env do
       assert ConfigurationSingleton.new.show_job_options_account_field?
 
       ENV['OOD_SHOW_JOB_OPTIONS_ACCOUNT_FIELD'] = '1'
