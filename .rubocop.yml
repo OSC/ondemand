@@ -31,7 +31,9 @@ Metrics/CyclomaticComplexity:
 Metrics/AbcSize:
   Max: 30
 
+<% if Gem.loaded_specs.has_key?('rspec') %>
 # rspec
+require: 'rubocop-rspec'
 RSpec/MultipleMemoizedHelpers:
   Max: 10
 RSpec/MultipleExpectations:
@@ -40,4 +42,5 @@ RSpec/ExampleLength:
   Enabled: false
 RSpec/MessageSpies:
   EnforcedStyle: receive
+<% end %>
   

@@ -19,7 +19,6 @@ namespace :lint do
         "spec/**/*.rb",
       ]
       t.patterns = args[:path].nil? ? default_patterns : [args[:path]]
-      t.requires << 'rubocop-rspec'
     end
   rescue LoadError
   end
