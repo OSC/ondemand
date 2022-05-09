@@ -6,13 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Issue#1945 Bundler.with_clean_env has been replaced with Bundler.with_unbundled_env (#1998)\
-Issue#1990 Use Etc.getpwn.name instead of Etc.getlogin #1990 (#1992)\
-change authentication default behaviour (#1982)\
-Shell: Create test for unreadable yml file (#1987)\
-Update Changelog (#1985)\
-Update old readmes (#1979)\
-Adding I18n translations and updating tests (#1984)
 
 ### Changed
 
@@ -36,6 +29,8 @@ Adding I18n translations and updating tests (#1984)
 - Manifests can now specify and override an app's caption in [1941](https://github.com/OSC/ondemand/pull/1941).
 - The file explorer table has been heavily refactored to be more reusable in [1883](https://github.com/OSC/ondemand/pull/1883).
 - The shell app will now diplay specific errors in [#1966](https://github.com/OSC/ondemand/pull/1966).
+- The default authentication scheme for the ood portal generator has been changed to an empty array in
+  [#1982](https://github.com/OSC/ondemand/pull/1982).  The previous default was OIDC configs.
 
 ### Added
 
