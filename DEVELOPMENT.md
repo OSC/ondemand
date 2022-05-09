@@ -14,7 +14,8 @@ with the same group and user id.  Starting the container will prompt
 you to set a password.  This is only credentials for web access to the
 container.
 
-Pull down this source code and start the container.
+Pull down this source code and start the container.  We support podman
+by setting the environment variable `CONTAINER_RT=podman`.
 
 ```text
 mkdir -p ~/ondemand
@@ -27,6 +28,7 @@ See `rake --tasks` for all the `dev:` related tasks.
 
 ```
 rake dev:exec                               # Bash exec into the development container
+rake dev:bash                               # alias for dev:exec
 rake dev:restart                            # Restart development container
 rake dev:start                              # Start development container
 rake dev:stop                               # Stop development container
@@ -57,8 +59,8 @@ completely configure this Open-OnDemand container.
 Create and edit files in the host's home directory and to mount in
 new configurations.
 
-Remove `~/.config/ondemand/ood_portal.yml` to reset your
-container's password.
+Edit or remove `~/.config/ondemand/container/config/ood_portal.yml` to change
+your container's password.
 
 ### Rebuilding the image
 
