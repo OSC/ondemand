@@ -61,10 +61,13 @@ category: OSC
   # @option opts [String] :role Dashboard categorization
   # @option opts [String] :url An optional redirect URL
   # @option opts [Hash]   :metadata An optional hash of key value pairs
+  attr_reader :name, :description
   def initialize(opts)
     raise InvalidContentError.new unless(opts && opts.respond_to?(:to_h))
 
     @manifest_options = opts.to_h.with_indifferent_access
+    #@name = opts[:name]
+    #@description = opts[:description]
   end
 
   # The name of the application
@@ -158,6 +161,7 @@ category: OSC
   # @return [true, false] true if the file is saved successfully
   def save(path)
 
+    Rails.logger.debug("Self is: #{self}")
     Pathname.new(path).write(self.to_yaml)
 
     true
