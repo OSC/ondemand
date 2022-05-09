@@ -29,6 +29,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Manifests can now specify and override an app's caption in [1941](https://github.com/OSC/ondemand/pull/1941).
 - The file explorer table has been heavily refactored to be more reusable in [1883](https://github.com/OSC/ondemand/pull/1883).
 - The shell app will now diplay specific errors in [#1966](https://github.com/OSC/ondemand/pull/1966).
+- The default authentication scheme for the ood portal generator has been changed to an empty array in
+  [#1982](https://github.com/OSC/ondemand/pull/1982).  The previous default was OIDC configs.
 
 ### Added
 
