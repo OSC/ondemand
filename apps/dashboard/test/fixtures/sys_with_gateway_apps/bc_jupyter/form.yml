@@ -1,11 +1,13 @@
 ---
 title: "Jupyter Notebook"
-cluster:
-  - "owens"
-  - "oakley"
 description: |
   This is a test jupyter app.
 attributes:
+  cluster:
+    widget: select
+    options:
+      - "owens"
+      - "oakley"
   mode:
     widget: "radio"
     label: "The Mode"
@@ -128,6 +130,7 @@ attributes:
           data-option-for-classroom-astronomy-5678: false,
         ]
 form:
+  - cluster
   - bc_num_hours
   - bc_num_slots
   - mode
