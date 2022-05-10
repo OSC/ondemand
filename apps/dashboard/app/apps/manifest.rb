@@ -154,14 +154,20 @@ category: OSC
     true
   end
 
+  # Ensure only valid options are written for manifest
+  def sanitize_manifest
+    @manifest_options.reject! do |method|
+      !self.respond_to?(method)
+    end
+  end
+
   # Save the current manifest to a path.
   #
   # @param [String, Pathname] path The full path of the file to be saved as string or Pathname object
   #
   # @return [true, false] true if the file is saved successfully
   def save(path)
-
-    Rails.logger.debug("Self is: #{self}")
+    sanitize_manifest
     Pathname.new(path).write(self.to_yaml)
 
     true
