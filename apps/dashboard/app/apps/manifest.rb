@@ -61,13 +61,12 @@ category: OSC
   # @option opts [String] :role Dashboard categorization
   # @option opts [String] :url An optional redirect URL
   # @option opts [Hash]   :metadata An optional hash of key value pairs
-  attr_reader :name, :description
   def initialize(opts)
     raise InvalidContentError.new unless(opts && opts.respond_to?(:to_h))
 
     @manifest_options = opts.to_h.with_indifferent_access
-    #@name = opts[:name]
-    #@description = opts[:description]
+
+    @manifest_options.reject! { |method| !self.respond_to?(method) }
   end
 
   # The name of the application
@@ -154,20 +153,12 @@ category: OSC
     true
   end
 
-  # Ensure only valid options are written for manifest
-  def sanitize_manifest
-    @manifest_options.reject! do |method|
-      !self.respond_to?(method)
-    end
-  end
-
   # Save the current manifest to a path.
   #
   # @param [String, Pathname] path The full path of the file to be saved as string or Pathname object
   #
   # @return [true, false] true if the file is saved successfully
   def save(path)
-    sanitize_manifest
     Pathname.new(path).write(self.to_yaml)
 
     true
