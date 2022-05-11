@@ -1,7 +1,7 @@
 Source: ondemand
 Section: unknown
 Priority: optional
-Maintainer: Ohio Super Computer Center
+Maintainer: Ohio Supercomputer Center <oschelp@osc.edu>
 Build-Depends: debhelper (>=11~), curl, build-essential,
   ruby, ruby-dev,
   nodejs (>= 14.0), nodejs (<< 15.0),
