@@ -466,11 +466,18 @@ describe OodPortalGenerator::Application do
   describe 'checksum_matches?' do
     before(:each) do
       allow(File).to receive(:exist?).with('/dne.conf').and_return(true)
+      allow(described_class).to receive(:checksum_exists?).and_return(true)
     end
 
     it 'matches' do
       allow(File).to receive(:readlines).with(sum_path.path).and_return(["b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c /opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf\n"])
       allow(File).to receive(:readlines).with('/dne.conf').and_return(["# comment\n", "foo\n", "  #comment\n"])
+      expect(described_class.checksum_matches?('/dne.conf')).to eq(true)
+    end
+
+    it 'matches if checksum does not exist' do
+      allow(described_class).to receive(:checksum_exists?).and_return(false)
+      expect(File).not_to receive(:readlines)
       expect(described_class.checksum_matches?('/dne.conf')).to eq(true)
     end
 

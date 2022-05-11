@@ -114,6 +114,7 @@ module OodPortalGenerator
       end
 
       def checksum_matches?(input)
+        return true unless checksum_exists?
         checksum_str = File.readlines(sum_path)[0]
         checksum = checksum_str.split(' ')[0]
 
