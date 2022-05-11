@@ -42,10 +42,10 @@ class BatchConnectTest < ApplicationSystemTestCase
   end
 
   test 'changing node type changes mins & maxs' do
-    # max starts out at 20
+    # max starts out at 7
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    assert_equal 20, find_max('bc_num_slots')
-    assert_equal 1, find_min('bc_num_slots')
+    assert_equal 7, find_max('bc_num_slots')
+    assert_equal 3, find_min('bc_num_slots')
     select('owens', from: bc_ele_id('cluster'))
 
     # change the node type and we should have some new min/max & value
@@ -64,12 +64,12 @@ class BatchConnectTest < ApplicationSystemTestCase
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     
     # defaults
-    assert_equal 20, find_max('bc_num_slots')
-    assert_equal 1, find_min('bc_num_slots')
+    assert_equal 7, find_max('bc_num_slots')
+    assert_equal 3, find_min('bc_num_slots')
     assert_equal 'any', find_value('node_type')
 
     # put the max for 'any'
-    fill_in bc_ele_id('bc_num_slots'), with: 20
+    fill_in bc_ele_id('bc_num_slots'), with: 7
 
     # now toggle to gpu. Max is 28 and the value is 28
     select('gpu', from: bc_ele_id('node_type'))
@@ -81,12 +81,12 @@ class BatchConnectTest < ApplicationSystemTestCase
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     
     # defaults
-    assert_equal 20, find_max('bc_num_slots')
-    assert_equal 1, find_min('bc_num_slots')
+    assert_equal 7, find_max('bc_num_slots')
+    assert_equal 3, find_min('bc_num_slots')
     assert_equal 'any', find_value('node_type')
 
-    # put the max for 'any'
-    fill_in bc_ele_id('bc_num_slots'), with: 1
+    # put the min for 'any'
+    fill_in bc_ele_id('bc_num_slots'), with: 3
 
     # now toggle to gpu. min is 2 and the value is 2
     select('gpu', from: bc_ele_id('node_type'))
@@ -115,8 +115,8 @@ class BatchConnectTest < ApplicationSystemTestCase
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     
     # start with defaults
-    assert_equal 1, find_min('bc_num_slots')
-    assert_equal 20, find_max('bc_num_slots')
+    assert_equal 3, find_min('bc_num_slots')
+    assert_equal 7, find_max('bc_num_slots')
     assert_equal 'any', find_value('node_type')
 
     # not the max, but less than the next choices'
@@ -129,9 +129,9 @@ class BatchConnectTest < ApplicationSystemTestCase
   end
 
   test 'changing the cluster changes max' do
-    # max starts out at 20
+    # max starts out at 7
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    assert_equal 20, find_max('bc_num_slots')
+    assert_equal 7, find_max('bc_num_slots')
     select('owens', from: bc_ele_id('cluster'))
 
     select('gpu', from: bc_ele_id('node_type'))
@@ -143,9 +143,9 @@ class BatchConnectTest < ApplicationSystemTestCase
   end
 
   test 'using same node sets min/max' do
-    # max starts out at 20
+    # max starts out at 7
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    assert_equal 20, find_max('bc_num_slots')
+    assert_equal 7, find_max('bc_num_slots')
 
     select('same', from: bc_ele_id('node_type'))
     assert_equal 100, find_min('bc_num_slots')
@@ -165,32 +165,32 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal '100', find_value('bc_num_slots')
   end
 
-  test 'nothing applied to any node type' do
+  test 'nothing applied to broken node type' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    assert_equal 20, find_max('bc_num_slots')
-    assert_equal 1, find_min('bc_num_slots')
-    assert_equal '1', find_value('bc_num_slots')
+    assert_equal 7, find_max('bc_num_slots')
+    assert_equal 3, find_min('bc_num_slots')
+    assert_equal '3', find_value('bc_num_slots')
+    select('broken', from: bc_ele_id('node_type'))
 
     # changing clusters does nothing.
     select('owens', from: bc_ele_id('cluster'))
-    select('any', from: bc_ele_id('node_type'))
-    assert_equal 20, find_max('bc_num_slots')
-    assert_equal 1, find_min('bc_num_slots')
-    assert_equal '1', find_value('bc_num_slots')
+    assert_equal 7, find_max('bc_num_slots')
+    assert_equal 3, find_min('bc_num_slots')
+    assert_equal '3', find_value('bc_num_slots')
 
     select('oakley', from: bc_ele_id('cluster'))
-    assert_equal 20, find_max('bc_num_slots')
-    assert_equal 1, find_min('bc_num_slots')
-    assert_equal '1', find_value('bc_num_slots')
+    assert_equal 7, find_max('bc_num_slots')
+    assert_equal 3, find_min('bc_num_slots')
+    assert_equal '3', find_value('bc_num_slots')
 
     # choose same to get a min & max set. Change back to
-    # any and we keep the same min & max from same.
+    # broken and we keep the same min & max from same.
     # TODO this is _current_ behaviour, will probably break
     select('same', from: bc_ele_id('node_type'))
     assert_equal 200, find_max('bc_num_slots')
     assert_equal 100, find_min('bc_num_slots')
     assert_equal '100', find_value('bc_num_slots')
-    select('any', from: bc_ele_id('node_type'))
+    select('broken', from: bc_ele_id('node_type'))
     assert_equal 200, find_max('bc_num_slots')
     assert_equal 100, find_min('bc_num_slots')
     assert_equal '100', find_value('bc_num_slots')
@@ -198,7 +198,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   test 'clamp min values' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    assert_equal '1', find_value('bc_num_slots')
+    assert_equal '3', find_value('bc_num_slots')
 
     select('owens', from: bc_ele_id('cluster'))
     select('gpu', from: bc_ele_id('node_type'))
@@ -219,7 +219,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   test 'clamp max values' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    assert_equal '1', find_value('bc_num_slots')
+    assert_equal '3', find_value('bc_num_slots')
     # this tests filling values by design, bc we have to set a giant max right off the bat
     fill_in bc_ele_id('bc_num_slots'), with: 1000
     assert_equal '1000', find_value('bc_num_slots')
@@ -296,9 +296,8 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 'python37', find_value('hidden_change_thing', visible: false)
 
     update_script = <<~JAVASCRIPT
-      let ele = $('#batch_connect_session_context_hidden_change_thing');
-      ele.val('some new value');
-      ele.attr('value', 'some new value');
+      let ele = document.getElementById('batch_connect_session_context_hidden_change_thing');
+      ele.value = 'some new value';
     JAVASCRIPT
 
     execute_script(update_script)
@@ -355,7 +354,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     # defaults
     assert_equal 'owens', find_value('cluster')
     assert_equal 'any', find_value('node_type')
-    assert_equal 20, find_max('bc_num_slots')
+    assert_equal 7, find_max('bc_num_slots')
 
     select('other-40ish-option', from: bc_ele_id('node_type'))
     assert_equal 40, find_max('bc_num_slots')

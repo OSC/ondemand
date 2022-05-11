@@ -208,6 +208,8 @@ function addMinMaxForHandler(optionId, option, key,  configValue) {
 
     minMaxHandlerCache.push(cacheKey);
   }
+
+  toggleMinMax({ target: document.querySelector(`#${optionId}`) }, id, secondDimId);
 }
 
 /**
@@ -348,7 +350,7 @@ function updateVisibility(event, changeId) {
   const id = event.target['id'];
   const changeElement = $(`#${changeId}`).parent();
 
-  if (changeElement.size() <= 0) return;
+  if (changeElement.length <= 0) return;
 
   // safe to access directly?
   const hide = hideLookup[id].get(changeId, val);
@@ -359,6 +361,10 @@ function updateVisibility(event, changeId) {
   }
 }
 
+/**
+ * Update the min & max values of `changeId` based on the
+ * event, the `otherId` and the settings in minMaxLookup table.
+ */
 function toggleMinMax(event, changeId, otherId) {
   let x = undefined, y = undefined;
 
