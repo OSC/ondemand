@@ -490,18 +490,26 @@ describe OodPortalGenerator::Application do
 
   describe 'checksum_exists?' do
     it 'returns true' do
+      allow(File).to receive(:zero?).with(sum_path.path).and_return(false)
       allow(File).to receive(:readlines).with(sum_path.path).and_return(["b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c /opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf\n"])
       expect(described_class.checksum_exists?).to eq(true)
     end
 
     it 'returns false' do
+      allow(File).to receive(:zero?).with(sum_path.path).and_return(false)
       allow(File).to receive(:readlines).with(sum_path.path).and_return(["b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c /foo/bar\n"])
       expect(described_class.checksum_exists?).to eq(true)
     end
 
     it 'returns false if checksum does not exist' do
+      allow(File).to receive(:zero?).with(sum_path.path).and_return(false)
       allow(File).to receive(:readlines).with(sum_path.path).and_return(nil)
       sum_path.unlink
+      expect(described_class.checksum_exists?).to eq(false)
+    end
+
+    it 'returns false if checksum is empty' do
+      allow(File).to receive(:zero?).with(sum_path.path).and_return(true)
       expect(described_class.checksum_exists?).to eq(false)
     end
   end

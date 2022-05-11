@@ -126,6 +126,7 @@ module OodPortalGenerator
 
       def checksum_exists?
         return false unless File.exist?(sum_path)
+        return false if File.zero?(sum_path)
         File.readlines(sum_path).grep(apache).size == 0
       end
 
@@ -184,13 +185,6 @@ module OodPortalGenerator
         new_dex_config = Tempfile.new('dex_config')
         @dex_output = new_dex_config.path
         generate()
-
-        # Create checksum file if the path to ood-portal.conf not in checksum file
-        # Checksum is based on mktemp generated ood-portal.conf but using path of real ood-portal.conf
-        if ! checksum_exists?
-          puts "Generating Apache config checksum file: '#{sum_path}'"
-          save_checksum(new_apache.path)
-        end
 
         replace = update_replace?
 
