@@ -66,7 +66,9 @@ category: OSC
 
     @manifest_options = opts.to_h.with_indifferent_access
 
-    @manifest_options.reject! { |method| !self.respond_to?(method) }
+    @manifest_options.select! do |method| 
+      self.respond_to?(method)
+    end
   end
 
   # The name of the application
