@@ -29,12 +29,10 @@
   "resolutions": {
     "ms": "2.1.1",
     "inherits": "2.0.3",
-    "http-errors": "1.7.2",
     "node-notifier": "^8.0.1",
     "lodash": "4.17.21",
     "setprototypeof": "1.2.0",
-    "toidentifier": "1.0.1",
-    "body-parser": "1.19.2"
+    "toidentifier": "1.0.1"
   },
   "devDependencies": {
     "jest": "^26.1.0"
