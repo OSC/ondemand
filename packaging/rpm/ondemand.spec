@@ -303,7 +303,7 @@ touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 %config(noreplace) %{_sysconfdir}/sudoers.d/ood
 %config(noreplace) %{_sysconfdir}/cron.d/ood
 %config(noreplace) %{_sysconfdir}/logrotate.d/ood
-%config(noreplace) %{apache_confd}/ood-portal.conf
+%config(noreplace) %attr(0640, root, apache) %{apache_confd}/ood-portal.conf
 %config(noreplace) %{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood.conf
 %config(noreplace,missingok) %{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood-portal.conf
 %{_tmpfilesdir}/ondemand-nginx.conf

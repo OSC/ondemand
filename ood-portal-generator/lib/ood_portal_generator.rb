@@ -75,5 +75,10 @@ module OodPortalGenerator
       end
       group
     end
+
+    def apache_user
+      return 'root' if Process.uid == 0
+      Etc.getpwuid(Process.uid).name
+    end
   end
 end
