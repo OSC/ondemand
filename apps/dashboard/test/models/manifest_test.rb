@@ -126,4 +126,43 @@ class ManifestTest < ActiveSupport::TestCase
     assert_equal "", manifest.url
     assert_equal({}, manifest.metadata)
   end
+
+  test 'manifest only writes valid entries' do
+    opts = { name: 'Ruby', 
+             description: 'test hash', 
+             icon: 'fas://cog',
+             url: '/some/location',
+             category: 'some category',
+             subcategory: 'some subcategory',
+             role: 'some role',
+             metadata: { some_key: 'value' },
+             new_window: false,
+             caption: 'some caption',
+             invalid_key: 'invalid value'
+          }
+
+    valid_manifest = <<~HEREDOC
+      ---
+      name: Ruby
+      description: test hash
+      icon: fas://cog
+      url: "/some/location"
+      category: some category
+      subcategory: some subcategory
+      role: some role
+      metadata:
+        some_key: value
+      new_window: false
+      caption: some caption
+    HEREDOC
+
+    manifest = Manifest.new(opts)
+
+    Dir.mktmpdir do |dir|
+      path = dir << '/manifest.yml'
+      manifest.save(path)
+
+      assert_equal valid_manifest, File.read(path)
+    end
+  end
 end
