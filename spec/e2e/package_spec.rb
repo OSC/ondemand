@@ -11,7 +11,11 @@ describe 'OnDemand installed with packages' do
     it { is_expected.to exist }
     it { is_expected.to be_owned_by('root') }
     it { is_expected.to be_grouped_into(apache_user) }
-    it { is_expected.to be_mode(0640) }
+    it { is_expected.to be_mode('0640') }
+  end
+
+  describe file('/etc/apache2/sites-enabled/ood-portal.conf'), if: host_inventory['platform'] == 'ubuntu' do
+    it { is_expected.to be_linked_to('../sites-available/ood-portal.conf') }
   end
 
   describe file('/etc/sudoers.d/ood') do
