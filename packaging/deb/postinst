@@ -14,9 +14,6 @@ touch /var/www/ood/apps/sys/dashboard/tmp/restart.txt
 touch /var/www/ood/apps/sys/shell/tmp/restart.txt
 touch /var/www/ood/apps/sys/myjobs/tmp/restart.txt
 
-cd /etc/apache2/sites-enabled || exit 1
-ln -sf /etc/apache2/sites-available/ood-portal.conf . || true
-
 cd /etc/apache2/mods-enabled || exit 1
 ln -sf /etc/apache2/mods-available/rewrite.load . || true
 ln -sf /etc/apache2/mods-available/lua.load . || true
@@ -28,9 +25,6 @@ ln -sf /etc/apache2/mods-available/proxy_http.load . || true
 [ -e /etc/apache2/envvars ] && . /etc/apache2/envvars
 [ ! -d "$APACHE_RUN_DIR" ] && mkdir -p "$APACHE_RUN_DIR"
 
-/opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm --detailed-exitcodes
-if [[ $? -eq 3 || "${2}x" == "x" ]] ; then
-	/bin/systemctl try-restart apache2.service
-fi
+[ -e "/bin/systemctl" ] && /bin/systemctl try-restart apache2.service
 
 exit 0
