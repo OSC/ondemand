@@ -7,18 +7,11 @@ describe 'OnDemand installed with packages' do
     it { is_expected.to be_installed }
   end
 
-  describe 'debugging' do
-    it do
-      on hosts, "stat -c '%a' #{host_portal_config}"
-      on hosts, "ls -la #{host_portal_config}"
-    end
-  end
-
   describe file(host_portal_config) do
     it { is_expected.to exist }
     it { is_expected.to be_owned_by('root') }
     it { is_expected.to be_grouped_into(apache_user) }
-    it { is_expected.to be_mode('0640') }
+    it { is_expected.to be_mode('640') }
   end
 
   describe file('/etc/apache2/sites-enabled/ood-portal.conf'), if: host_inventory['platform'] == 'ubuntu' do
