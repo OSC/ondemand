@@ -7,6 +7,13 @@ describe 'OnDemand installed with packages' do
     it { is_expected.to be_installed }
   end
 
+  describe file(host_portal_config) do
+    it { is_expected.to exist }
+    it { is_expected.to be_owned_by('root') }
+    it { is_expected.to be_grouped_into(apache_user) }
+    it { is_expected.to be_mode(0640) }
+  end
+
   describe file('/etc/sudoers.d/ood') do
     it { is_expected.to be_file }
     its(:content) { is_expected.to include "Defaults:#{apache_user}" }
