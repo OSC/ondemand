@@ -15,11 +15,11 @@ touch /var/www/ood/apps/sys/shell/tmp/restart.txt
 touch /var/www/ood/apps/sys/myjobs/tmp/restart.txt
 
 cd /etc/apache2/mods-enabled || exit 1
-ln -sf /etc/apache2/mods-available/rewrite.load . || true
-ln -sf /etc/apache2/mods-available/lua.load . || true
-ln -sf /etc/apache2/mods-available/headers.load . || true
-ln -sf /etc/apache2/mods-available/proxy.load . || true
-ln -sf /etc/apache2/mods-available/proxy_http.load . || true
+ln -sf ../mods-available/rewrite.load . || true
+ln -sf ../mods-available/lua.load . || true
+ln -sf ../mods-available/headers.load . || true
+ln -sf ../mods-available/proxy.load . || true
+ln -sf ../mods-available/proxy_http.load . || true
 
 # shellcheck disable=SC1091
 [ -e /etc/apache2/envvars ] && . /etc/apache2/envvars
