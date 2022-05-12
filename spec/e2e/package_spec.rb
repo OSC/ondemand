@@ -7,6 +7,8 @@ describe 'OnDemand installed with packages' do
     it { is_expected.to be_installed }
   end
 
+  on hosts, "stat -c '%a' #{host_portal_config}"
+  on hosts, "ls -la #{host_portal_config}"
   describe file(host_portal_config) do
     it { is_expected.to exist }
     it { is_expected.to be_owned_by('root') }
