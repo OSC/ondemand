@@ -67,10 +67,20 @@ module OodPortalGenerator
         @insecure.nil? ? false : @insecure
       end
 
+      def prefix
+        ENV['DESTDIR'] || ENV['PREFIX'] || ''
+      end
+
       def apache
-        return ENV['APACHE'] unless ENV['APACHE'].nil?
-        return '/etc/apache2/sites-available/ood-portal.conf' if OodPortalGenerator.debian?
-        OodPortalGenerator.scl_apache? ? '/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf' : '/etc/httpd/conf.d/ood-portal.conf'
+        if OodPortalGenerator.debian?
+          path = '/etc/apache2/sites-available/ood-portal.conf'
+        elsif OodPortalGenerator.scl_apache?
+          path = '/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf'
+        else
+          path = '/etc/httpd/conf.d/ood-portal.conf'
+        end
+        path = ENV['APACHE'] unless ENV['APACHE'].nil?
+        File.join(prefix, path)
       end
 
       def apache_bak
@@ -88,11 +98,11 @@ module OodPortalGenerator
       end
 
       def sum_path
-        ENV['SUM'] || '/etc/ood/config/ood_portal.sha256sum'
+        ENV['SUM'] || File.join(prefix, '/etc/ood/config/ood_portal.sha256sum')
       end
 
       def dex_config
-        ENV['DEX_CONFIG'] || "/etc/ood/dex/config.yaml"
+        ENV['DEX_CONFIG'] || File.join(prefix, "/etc/ood/dex/config.yaml")
       end
 
       def dex_config_bak

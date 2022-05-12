@@ -447,6 +447,14 @@ describe OodPortalGenerator::Application do
       allow(OodPortalGenerator).to receive(:debian?).and_return(true)
       expect(described_class.apache).to eq('/etc/apache2/sites-available/ood-portal.conf')
     end
+
+    it 'handles prefix from env' do
+      allow(OodPortalGenerator).to receive(:scl_apache?).and_return(false)
+      allow(OodPortalGenerator).to receive(:debian?).and_return(false)
+      with_modified_env PREFIX: '/foo' do
+        expect(described_class.apache).to eq('/foo/etc/httpd/conf.d/ood-portal.conf')
+      end
+    end
   end
 
   describe 'save_checksum' do
