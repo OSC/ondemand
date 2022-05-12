@@ -57,7 +57,7 @@ BuildRequires:   git
 BuildRequires:   python3
 
 Requires:        git
-Requires:        sudo, lsof, cronie, wget, curl, make, rsync, file, libxml2, libxslt, zlib, lua-posix
+Requires:        sudo, lsof, cronie, wget, curl, make, rsync, file, libxml2, libxslt, zlib, lua-posix, diffutils
 Requires:        python3
 Requires:        ondemand-apache >= %{runtime_version}, ondemand-apache < %{next_major_version}, ondemand-apache < %{next_minor_version}
 Requires:        ondemand-nginx = 1.20.1
