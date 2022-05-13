@@ -72,6 +72,7 @@ module OodPortalGenerator
       end
 
       def apache
+        return ENV['APACHE'] unless ENV['APACHE'].nil?
         if OodPortalGenerator.debian?
           path = '/etc/apache2/sites-available/ood-portal.conf'
         elsif OodPortalGenerator.scl_apache?
@@ -79,7 +80,6 @@ module OodPortalGenerator
         else
           path = '/etc/httpd/conf.d/ood-portal.conf'
         end
-        path = ENV['APACHE'] unless ENV['APACHE'].nil?
         File.join(prefix, path)
       end
 
