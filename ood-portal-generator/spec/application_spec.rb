@@ -447,6 +447,14 @@ describe OodPortalGenerator::Application do
       allow(OodPortalGenerator).to receive(:debian?).and_return(true)
       expect(described_class.apache).to eq('/etc/apache2/sites-available/ood-portal.conf')
     end
+
+    it 'handles prefix from env' do
+      allow(OodPortalGenerator).to receive(:scl_apache?).and_return(false)
+      allow(OodPortalGenerator).to receive(:debian?).and_return(false)
+      with_modified_env PREFIX: '/foo' do
+        expect(described_class.apache).to eq('/foo/etc/httpd/conf.d/ood-portal.conf')
+      end
+    end
   end
 
   describe 'save_checksum' do
@@ -466,11 +474,18 @@ describe OodPortalGenerator::Application do
   describe 'checksum_matches?' do
     before(:each) do
       allow(File).to receive(:exist?).with('/dne.conf').and_return(true)
+      allow(described_class).to receive(:checksum_exists?).and_return(true)
     end
 
     it 'matches' do
       allow(File).to receive(:readlines).with(sum_path.path).and_return(["b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c /opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf\n"])
       allow(File).to receive(:readlines).with('/dne.conf').and_return(["# comment\n", "foo\n", "  #comment\n"])
+      expect(described_class.checksum_matches?('/dne.conf')).to eq(true)
+    end
+
+    it 'matches if checksum does not exist' do
+      allow(described_class).to receive(:checksum_exists?).and_return(false)
+      expect(File).not_to receive(:readlines)
       expect(described_class.checksum_matches?('/dne.conf')).to eq(true)
     end
 
@@ -483,18 +498,26 @@ describe OodPortalGenerator::Application do
 
   describe 'checksum_exists?' do
     it 'returns true' do
+      allow(File).to receive(:zero?).with(sum_path.path).and_return(false)
       allow(File).to receive(:readlines).with(sum_path.path).and_return(["b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c /opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf\n"])
       expect(described_class.checksum_exists?).to eq(true)
     end
 
     it 'returns false' do
+      allow(File).to receive(:zero?).with(sum_path.path).and_return(false)
       allow(File).to receive(:readlines).with(sum_path.path).and_return(["b5bb9d8014a0f9b1d61e21e796d78dccdf1352f23cd32812f4850b878ae4944c /foo/bar\n"])
       expect(described_class.checksum_exists?).to eq(true)
     end
 
     it 'returns false if checksum does not exist' do
+      allow(File).to receive(:zero?).with(sum_path.path).and_return(false)
       allow(File).to receive(:readlines).with(sum_path.path).and_return(nil)
       sum_path.unlink
+      expect(described_class.checksum_exists?).to eq(false)
+    end
+
+    it 'returns false if checksum is empty' do
+      allow(File).to receive(:zero?).with(sum_path.path).and_return(true)
       expect(described_class.checksum_exists?).to eq(false)
     end
   end
@@ -535,12 +558,12 @@ describe OodPortalGenerator::Application do
     it 'SCL apache' do
       allow(OodPortalGenerator).to receive(:debian?).and_return(false)
       allow(OodPortalGenerator).to receive(:scl_apache?).and_return(true)
-      expect(described_class.apache_changed_output.join("\n")).to match(%r{httpd24-httpd.service httpd24-htcacheclean.service})
+      expect(described_class.apache_changed_output.join("\n")).to match(%r{httpd24-httpd.service})
     end
     it 'EL non-SCL apache' do
       allow(OodPortalGenerator).to receive(:debian?).and_return(false)
       allow(OodPortalGenerator).to receive(:scl_apache?).and_return(false)
-      expect(described_class.apache_changed_output.join("\n")).to match(%r{httpd.service htcacheclean.service})
+      expect(described_class.apache_changed_output.join("\n")).to match(%r{httpd.service})
     end
     it 'Debian apache' do
       allow(OodPortalGenerator).to receive(:debian?).and_return(true)
@@ -574,6 +597,7 @@ describe OodPortalGenerator::Application do
       allow(described_class).to receive(:checksum_exists?).and_return(true)
       allow(described_class).to receive(:update_replace?).and_return(true)
       allow(described_class).to receive(:files_identical?).and_return(false)
+      allow(Process).to receive(:uid).and_return(0)
       expect(FileUtils).to receive(:chown).with('root', 'apache', apache.path, verbose: true)
       expect(FileUtils).to receive(:chmod).with(0640, apache.path, verbose: true)
       expect(described_class).to receive(:save_checksum).with(apache.path)
@@ -588,6 +612,7 @@ describe OodPortalGenerator::Application do
       allow(described_class).to receive(:checksum_exists?).and_return(true)
       allow(described_class).to receive(:update_replace?).and_return(true)
       allow(described_class).to receive(:files_identical?).and_return(false)
+      allow(Process).to receive(:uid).and_return(0)
       expect(FileUtils).to receive(:chown).with('root', 'apache', apache.path, verbose: true)
       expect(FileUtils).to receive(:chmod).with(0640, apache.path, verbose: true)
       expect(described_class).to receive(:save_checksum).with(apache.path)
@@ -602,6 +627,7 @@ describe OodPortalGenerator::Application do
       allow(described_class).to receive(:checksum_exists?).and_return(true)
       allow(described_class).to receive(:update_replace?).and_return(false)
       allow(described_class).to receive(:files_identical?).and_return(false)
+      allow(Process).to receive(:uid).and_return(0)
       expect(FileUtils).to receive(:chown).with('root', 'apache', "#{apache.path}.new", verbose: true)
       expect(FileUtils).to receive(:chmod).with(0640, "#{apache.path}.new", verbose: true)
       ret = described_class.update_ood_portal()

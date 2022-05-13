@@ -6,6 +6,7 @@ export DESTDIR            = $(CURDIR)/debian/ondemand
 export GEM_HOME           = $(CURDIR)/gems
 export GEM_PATH           = $(GEM_HOME):$(DESTDIR)/opt/ood/gems:$(shell printenv GEM_PATH)
 export APACHE_DIR         = "$(DESTDIR)/var/www/ood"
+export APACHE_CONF_DIR    = "$(DESTDIR)/etc/apache2"
 export CONFIG_DIR         = "$(DESTDIR)/etc/ood/config"
 
 
@@ -39,6 +40,8 @@ override_dh_auto_install:
 	mkdir -p "$(APACHE_DIR)/apps/dev"
 	mkdir -p "$(CONFIG_DIR)/clusters.d"
 	mkdir -p "$(CONFIG_DIR)/ondemand.d"
+	mkdir -p "$(APACHE_CONF_DIR)/sites-available"
+	mkdir -p "$(APACHE_CONF_DIR)/sites-enabled"
 
 	mv $(DESTDIR)/opt/ood/apps/* $(APACHE_DIR)/apps/sys
 	rm -rf $(DESTDIR)/opt/ood/apps
@@ -50,6 +53,10 @@ override_dh_auto_install:
 	install -m 644 ood-portal-generator/share/maintenance.html $(APACHE_DIR)/public/maintenance/index.html
 	install -m 644 ood-portal-generator/share/need_auth.html $(APACHE_DIR)/public/need_auth.html
 	install -m 644 hooks/hook.env.example $(CONFIG_DIR)/hook.env
+
+	$(DESTDIR)/opt/ood/ood-portal-generator/sbin/update_ood_portal
+	cd $(APACHE_CONF_DIR)/sites-enabled && ln -sf ../sites-available/ood-portal.conf ./ood-portal.conf
+	sed -i 's|$(DESTDIR)||g' $(CONFIG_DIR)/ood_portal.sha256sum
 
 	mkdir -p $(DESTDIR)/var/tmp/ondemand-nginx
 	mkdir -p $(DESTDIR)/var/run/ondemand-nginx
