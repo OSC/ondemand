@@ -116,7 +116,12 @@ module ActiveJobs
       attributes.push Attribute.new "Total CPUs", info.native[:cpus]
       attributes.push Attribute.new "Time Limit", info.native[:time_limit]
       attributes.push Attribute.new "Time Used", info.native[:time_used]
+      attributes.push Attribute.new "Start Time",
+        DateTime.parse(info.native[:start_time]).strftime("%Y-%m-%d %H:%M:%S") unless info.native[:start_time] == "N/A"
+      attributes.push Attribute.new "End Time",
+        DateTime.parse(info.native[:end_time]).strftime("%Y-%m-%d %H:%M:%S") unless info.native[:end_time] == "N/A"
       attributes.push Attribute.new "Memory", info.native[:min_memory]
+      attributes.push Attribute.new "GRES", info.native[:gres].gsub(/gres:/, "") unless info.native[:gres] == "N/A"
       self.native_attribs = attributes
 
       self.submit_args = nil
