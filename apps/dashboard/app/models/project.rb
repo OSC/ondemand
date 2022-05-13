@@ -55,7 +55,7 @@ class Project
     new_manifest = Manifest.load(manifest_path)
     new_manifest = new_manifest.merge(attributes)
     # validate new manifest name is acceptable for project name
-    if project_name_valid?(attributes)
+    if project_name_valid?(attributes) && project_icon_valid?(attributes)
       new_manifest.valid? ? new_manifest.save(manifest_path) : false
     else
       false
@@ -99,6 +99,15 @@ class Project
     # check attributes[:name] being passed in update
     if !attributes[:name].match?(/\A[\w -]+\z/)
       errors.add(:name, :bad_format, message: I18n.t('dashboard.jobs_project_name_validation'))
+      false
+    else
+      true
+    end
+  end
+
+  def project_icon_valid?(attributes)
+    unless attributes[:icon].match?(/\Afa[sbrl]:\/\/[\w-]+\z/)
+      errors.add(:icon, :bad_format, message: 'Invalid icon name')
       false
     else
       true
