@@ -193,6 +193,8 @@ GEM
     request_store (1.5.1)
       rack (>= 1.4)
     rexml (3.2.5)
+    rss (0.2.9)
+      rexml
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
     sdoc (2.3.2)
@@ -259,6 +261,7 @@ DEPENDENCIES
   pbs (~> 2.2.1)
   rails (= 6.1.5.1)
   redcarpet (~> 3.3)
+  rss (~> 0.2)
   sdoc
   selenium-webdriver
   sinatra
