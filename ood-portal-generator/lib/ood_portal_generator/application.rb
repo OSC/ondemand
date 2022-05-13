@@ -91,9 +91,9 @@ module OodPortalGenerator
         if OodPortalGenerator.debian?
           ['apache2']
         elsif OodPortalGenerator.scl_apache?
-          ['httpd24-httpd', 'httpd24-htcacheclean']
+          ['httpd24-httpd']
         else
-          ['httpd', 'htcacheclean']
+          ['httpd']
         end
       end
 

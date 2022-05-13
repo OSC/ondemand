@@ -558,12 +558,12 @@ describe OodPortalGenerator::Application do
     it 'SCL apache' do
       allow(OodPortalGenerator).to receive(:debian?).and_return(false)
       allow(OodPortalGenerator).to receive(:scl_apache?).and_return(true)
-      expect(described_class.apache_changed_output.join("\n")).to match(%r{httpd24-httpd.service httpd24-htcacheclean.service})
+      expect(described_class.apache_changed_output.join("\n")).to match(%r{httpd24-httpd.service})
     end
     it 'EL non-SCL apache' do
       allow(OodPortalGenerator).to receive(:debian?).and_return(false)
       allow(OodPortalGenerator).to receive(:scl_apache?).and_return(false)
-      expect(described_class.apache_changed_output.join("\n")).to match(%r{httpd.service htcacheclean.service})
+      expect(described_class.apache_changed_output.join("\n")).to match(%r{httpd.service})
     end
     it 'Debian apache' do
       allow(OodPortalGenerator).to receive(:debian?).and_return(true)
