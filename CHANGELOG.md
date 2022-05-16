@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The shell app will now diplay specific errors in [#1966](https://github.com/OSC/ondemand/pull/1966).
 - The default authentication scheme for the ood portal generator has been changed to an empty array in
   [#1982](https://github.com/OSC/ondemand/pull/1982).  The previous default was OIDC configs.
+- Packages now rely on python3 in [#2011](https://github.com/OSC/ondemand/pull/2011).
 
 ### Added
 
