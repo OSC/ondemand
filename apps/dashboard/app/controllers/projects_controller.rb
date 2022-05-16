@@ -40,7 +40,7 @@ class ProjectsController < ApplicationController
     if @project.valid? && @project.save(project_params)
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_created')
     else
-      flash[:alert] = @project.errors[:directory].last || @project.errors[:icon].last
+      flash[:alert] = @project.errors[:name].last || @project.errors[:icon].last
       redirect_to new_project_path
     end
   end

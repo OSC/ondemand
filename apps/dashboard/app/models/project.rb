@@ -9,6 +9,7 @@ class Project
       return [] unless dataroot.directory? && dataroot.executable? && dataroot.readable?
 
       dataroot.children.map do |d|
+        # I think the issue is here, not the title method itself?
         Project.new({ :name => d.basename })
       rescue StandardError => e
         Rails.logger.warn("Didn't create project. #{e.message}")
@@ -17,10 +18,13 @@ class Project
     end
 
     def find(project_path)
+      # previously the @proj_name kicked off a whole chain of events firing
+      # now, we are just getting that manifest entry back only
+      #
       full_path = dataroot.join(project_path)
       return nil unless full_path.directory?
 
-      Project.new({ name: full_path.basename })
+      Project.new( name: full_path.basename )
     end
 
     def dataroot
@@ -32,15 +36,22 @@ class Project
     end
   end
 
-  validates :directory, format: {
-    with:    /\A[\w-]+\z/,
-    message: I18n.t('dashboard.jobs_project_name_validation')
-  }
+  # validates :name, presence: true
+  # validates :name, format: {
+  #   with:    /\A[\w-]+\z/,
+  #   message: I18n.t('dashboard.jobs_project_name_validation')
+  # }
+
+  # validates :icon, presence: true
+
+  #attr_reader :manifest
 
   delegate :icon, :name, :description, to: :manifest
 
   def initialize(attributes = {})
-    @proj_name    = attributes.fetch(:name, nil).to_s
+    @manifest = Manifest.new(attributes)
+
+    #@proj_name    = attributes.fetch(:name, nil).to_s
   end
 
   # @params [Hash]
@@ -55,11 +66,11 @@ class Project
     new_manifest = Manifest.load(manifest_path)
     new_manifest = new_manifest.merge(attributes)
     # validate new manifest name is acceptable for project name
-    if project_name_valid?(attributes) && project_icon_valid?(attributes)
+    #if project_name_valid?(attributes) && project_icon_valid?(attributes)
       new_manifest.valid? ? new_manifest.save(manifest_path) : false
-    else
-      false
-    end
+    #else
+    #  false
+    #end
   end
 
   def destroy!
@@ -77,11 +88,12 @@ class Project
   end
 
   def directory
-    @proj_name.downcase.tr_s(' ', '_')
+    !name.blank? ? name.to_s.downcase.tr_s(' ', '_') : ''
+    #@proj_name.downcase.tr_s(' ', '_')
   end
 
   def title
-    name.titleize
+    name.to_s.titleize
   end
 
   def manifest
@@ -95,22 +107,22 @@ class Project
 
   private
 
-  def project_name_valid?(attributes)
-    # check attributes[:name] being passed in update
-    if !attributes[:name].match?(/\A[\w -]+\z/)
-      errors.add(:name, :bad_format, message: I18n.t('dashboard.jobs_project_name_validation'))
-      false
-    else
-      true
-    end
-  end
+  # def project_name_valid?(attributes)
+  #   # check attributes[:name] being passed in update
+  #   if !attributes[:name].match?(/\A[\w -]+\z/)
+  #     errors.add(:name, :bad_format, message: I18n.t('dashboard.jobs_project_name_validation'))
+  #     false
+  #   else
+  #     true
+  #   end
+  # end
 
-  def project_icon_valid?(attributes)
-    unless attributes[:icon].match?(/\Afa[sbrl]:\/\/[\w-]+\z/)
-      errors.add(:icon, :bad_format, message: 'Invalid icon name')
-      false
-    else
-      true
-    end
-  end
+  # def project_icon_valid?(attributes)
+  #   unless attributes[:icon].match?(/\Afa[sbrl]:\/\/[\w-]+\z/)
+  #     errors.add(:icon, :bad_format, message: 'Invalid icon name')
+  #     false
+  #   else
+  #     true
+  #   end
+  # end
 end
