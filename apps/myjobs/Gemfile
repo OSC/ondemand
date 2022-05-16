@@ -68,5 +68,6 @@ gem 'ood_appkit', '~> 1.1.4'
 # https://github.com/erikhuda/thor/issues/538
 gem 'thor', '0.19.1'
 
-# psych 4 does not work with this version of rails
-gem 'psych', '~> 3'
+# we have to lock rdoc because 6.4 depends on psych 4.0 which breaks with
+# Psych::BadAlias: Cannot load database configuration: Unknown alias: default
+gem 'rdoc', '6.3.3'
