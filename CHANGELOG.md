@@ -6,19 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-add a simple demo to the readme (#2024)\
-Avoid trying to read checksum file if not present (#2012)\
-Add more info about Slurm jobs (#2021)\
-Bug fix/sanitize manifest (#2008)\
-Switch format for deb packaging to make Ubuntu 22.04 builds work (#2015)\
-update apps and fix shell apps yarn lock (#2003)\
-Use python3 for Ubuntu/Debian packages (#2011)\
-Update maintainer in Debian packaging to be correct format (#2010)\
-Update Changelog (#2001)\
-only apply Rspec lint when rspec has been loaded (#1991)\
-add css style guide (#1997)\
-correct the location of this file (#1995)\
-Issue#1902 added alt text to the navbar img tag (#1999)
 
 ### Changed
 
@@ -44,6 +31,7 @@ Issue#1902 added alt text to the navbar img tag (#1999)
 - The shell app will now diplay specific errors in [#1966](https://github.com/OSC/ondemand/pull/1966).
 - The default authentication scheme for the ood portal generator has been changed to an empty array in
   [#1982](https://github.com/OSC/ondemand/pull/1982).  The previous default was OIDC configs.
+- Packages now rely on python3 in [#2011](https://github.com/OSC/ondemand/pull/2011).
 
 ### Added
 
