@@ -60,8 +60,7 @@ gem "local_time", "~> 1.0.3"
 gem 'dotenv-rails', '~> 2.1'
 gem 'jquery-datatables-rails', '~> 3.4'
 gem "js-routes", "~> 1.2.4"
-#gem 'osc_machete_rails', '~> 2.1.0'
-gem 'osc_machete_rails', path: '/users/PZS0714/johrstrom/ondemand/misc/machete_rails'
+gem 'osc_machete_rails', '~> 2.1.2'
 gem 'pbs', '~> 2.2.1'
 gem 'ood_appkit', '~> 2.0'
 
