@@ -28,6 +28,7 @@ class ProjectsController < ApplicationController
     if @project.valid? && @project.update(project_params)
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_manifest_updated')
     else
+      # ERROR BUBBLES on icon!!
       flash[:alert] = @project.errors[:name].last || @project.errors[:icon].last
       redirect_to edit_project_path
     end
