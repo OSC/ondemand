@@ -161,11 +161,11 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     assert_select 'div.row > div.col-md-4 > div.motd > h4', 3
     assert_select 'div.row > div.col-md-4 > div.motd > div.motd_body', 3
 
-    assert_select 'div.row > div.col-md-8 > div.row > div.col-sm-3.col-md-3', 4
-    assert_select pinned_app_css_query("8", '/batch_connect/sys/bc_jupyter/session_contexts/new'), 1
-    assert_select pinned_app_css_query("8", '/batch_connect/sys/bc_paraview/session_contexts/new'), 1
-    assert_select pinned_app_css_query("8", '/apps/show/pseudofun'), 1
-    assert_select pinned_app_css_query("8", '/batch_connect/sys/bc_desktop/owens/session_contexts/new'), 1
+    assert_select pinned_app_row_css_query("8"), 4
+    assert_select pinned_app_link_css_query("8", '/batch_connect/sys/bc_jupyter/session_contexts/new'), 1
+    assert_select pinned_app_link_css_query("8", '/batch_connect/sys/bc_paraview/session_contexts/new'), 1
+    assert_select pinned_app_link_css_query("8", '/apps/show/pseudofun'), 1
+    assert_select pinned_app_link_css_query("8", '/batch_connect/sys/bc_desktop/owens/session_contexts/new'), 1
   end
 
 
@@ -222,11 +222,11 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
     assert_select 'div.row > div.col-md-4 > div.xdmod > [id="jobsPanelDiv"]', 1
 
     assert_select 'div.row > div.col-md-12', 1
-    assert_select 'div.row > div.col-md-12 > div.row > div.col-sm-3.col-md-3', 4
-    assert_select pinned_app_css_query("12", '/batch_connect/sys/bc_jupyter/session_contexts/new'), 1
-    assert_select pinned_app_css_query("12", '/batch_connect/sys/bc_paraview/session_contexts/new'), 1
-    assert_select pinned_app_css_query("12", '/apps/show/pseudofun'), 1
-    assert_select pinned_app_css_query("12", '/batch_connect/sys/bc_desktop/owens/session_contexts/new'), 1
+    assert_select pinned_app_row_css_query("12"), 4
+    assert_select pinned_app_link_css_query("12", '/batch_connect/sys/bc_jupyter/session_contexts/new'), 1
+    assert_select pinned_app_link_css_query("12", '/batch_connect/sys/bc_paraview/session_contexts/new'), 1
+    assert_select pinned_app_link_css_query("12", '/apps/show/pseudofun'), 1
+    assert_select pinned_app_link_css_query("12", '/batch_connect/sys/bc_desktop/owens/session_contexts/new'), 1
   end
 
   test "bad widgets don't throw errors" do

@@ -1,0 +1,74 @@
+$launcher_border: rgb(45,155,240);
+$launcher_border_hover: rgb(0,95,133);
+
+.app-launcher-disabled::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+.app-launcher-spinner {
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+
+  .spinner-border {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+.app-launcher {
+  position: relative;
+  height: 95%;
+  margin-bottom: 20px;
+
+  border-radius: 30px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+
+
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-clip: border-box;
+
+  a {
+    height: 100%;
+    color: black;
+    text-decoration: none;
+
+    border: 4px solid $launcher_border;
+    border-radius: 30px;
+  }
+
+  i, img {
+    text-align: center;
+    padding-top: 1rem;
+    width: unset;
+    height: 120px;
+  }
+}
+
+.app-launcher-hover:hover {
+  transform: scale(0.98);
+
+  a {
+    border-color: $launcher_border_hover;
+  }
+}
