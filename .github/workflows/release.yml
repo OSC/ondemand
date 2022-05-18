@@ -1,0 +1,37 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    name: Release OnDemand
+    steps:
+      - name: Set version
+        id: version
+        run: echo ::set-output name=version::${GITHUB_REF#refs/*/v}
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Ruby using Bundler
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "2.7.1"
+          bundler: "2.1.4"
+          bundler-cache: true
+      - name: Generate tar.gz
+        run: bundle exec rake package:tar
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+      - name: Upload to Zenodo
+        uses: rseng/zenodo-release@0.0.17
+        with:
+          token: ${{ secrets.OSC_ROBOT_ZENODO_TOKEN }}
+          version: ${{ steps.version.outputs.version }}
+          zenodo_json: .zenodo.json
+          archive: packaging/v${{ steps.version.outputs.version }}.tar.gz
+          doi: '10.5281/zenodo.6323791'
