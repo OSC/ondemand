@@ -1,4 +1,6 @@
 <%- if pinned_apps? -%>
+<%= javascript_include_tag 'pinned_apps', nonce: true %>
+
 <h3><%= t('dashboard.pinned_apps_title') %> <small><%= t('dashboard.pinned_apps_caption_html', all_apps_url: apps_index_path) %></small></h3>
 
 <%- if Configuration.pinned_apps_group_by.present? -%>

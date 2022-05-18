@@ -81,15 +81,15 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
 
     assert_response :success
 
-    assert_select 'a.app-card', 4
-    assert_select "a.app-card[href='/batch_connect/sys/bc_jupyter/session_contexts/new']", 1
-    assert_select "a.app-card[href='/batch_connect/sys/bc_paraview/session_contexts/new']", 1
-    assert_select "a.app-card[href='/apps/show/pseudofun']", 1
-    assert_select "a.app-card[href='/batch_connect/sys/bc_desktop/owens/session_contexts/new']", 1
+    assert_select pinned_app_links, 4
+    assert_select pinned_app_link("/batch_connect/sys/bc_jupyter/session_contexts/new"), 1
+    assert_select pinned_app_link("/batch_connect/sys/bc_paraview/session_contexts/new"), 1
+    assert_select pinned_app_link("/apps/show/pseudofun"), 1
+    assert_select pinned_app_link("/batch_connect/sys/bc_desktop/owens/session_contexts/new"), 1
 
     # pinned apps show captions
-    assert_equal  'A really cool Jupyter app', css_select("a.app-card[href='/batch_connect/sys/bc_jupyter/session_contexts/new'] p.text-muted").text
-    assert_equal  'System Installed App', css_select("a.app-card[href='/batch_connect/sys/bc_paraview/session_contexts/new'] p.text-muted").text
+    assert_equal  'A really cool Jupyter app', css_select("a[href='/batch_connect/sys/bc_jupyter/session_contexts/new'] p.text-muted").text
+    assert_equal  'System Installed App', css_select("a[href='/batch_connect/sys/bc_paraview/session_contexts/new'] p.text-muted").text
   end
 
   test "does not create pinned apps when no configuration" do
@@ -99,7 +99,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
 
     assert_response :success
 
-    assert_select 'a.app-card', 0
+    assert_select pinned_app_links, 0
   end
 
   test "does not create pinned apps when no configuration and app sharing is enabled" do
@@ -110,7 +110,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
 
     assert_response :success
 
-    assert_select 'a.app-card', 0
+    assert_select pinned_app_links, 0
   end
 
   test "shows pinned apps when MOTD is present" do
@@ -132,11 +132,11 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
       get '/'
     end
 
-    assert_select 'a.app-card', 4
-    assert_select "a.app-card[href='/batch_connect/sys/bc_jupyter/session_contexts/new']", 1
-    assert_select "a.app-card[href='/batch_connect/sys/bc_paraview/session_contexts/new']", 1
-    assert_select "a.app-card[href='/apps/show/pseudofun']", 1
-    assert_select "a.app-card[href='/batch_connect/sys/bc_desktop/owens/session_contexts/new']", 1
+    assert_select pinned_app_links, 4
+    assert_select pinned_app_link("/batch_connect/sys/bc_jupyter/session_contexts/new"), 1
+    assert_select pinned_app_link("/batch_connect/sys/bc_paraview/session_contexts/new"), 1
+    assert_select pinned_app_link("/apps/show/pseudofun"), 1
+    assert_select pinned_app_link("/batch_connect/sys/bc_desktop/owens/session_contexts/new"), 1
 
     assert_select 'h3', 2
     assert_equal I18n.t('dashboard.motd_title'), css_select('h3')[1].text
@@ -165,11 +165,11 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
       get '/'
     end
 
-    assert_select 'a.app-card', 4
-    assert_select "a.app-card[href='/batch_connect/sys/bc_jupyter/session_contexts/new']", 1
-    assert_select "a.app-card[href='/batch_connect/sys/bc_paraview/session_contexts/new']", 1
-    assert_select "a.app-card[href='/apps/show/pseudofun']", 1
-    assert_select "a.app-card[href='/batch_connect/sys/bc_desktop/owens/session_contexts/new']", 1
+    assert_select pinned_app_links, 4
+    assert_select pinned_app_link("/batch_connect/sys/bc_jupyter/session_contexts/new"), 1
+    assert_select pinned_app_link("/batch_connect/sys/bc_paraview/session_contexts/new"), 1
+    assert_select pinned_app_link("/apps/show/pseudofun"), 1
+    assert_select pinned_app_link("/batch_connect/sys/bc_desktop/owens/session_contexts/new"), 1
 
     assert_select "div[class='xdmod']", 2
     assert_select "div[id='jobsEfficiencyReportPanelDiv']", 1
@@ -198,11 +198,11 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
       get '/'
     end
 
-    assert_select 'a.app-card', 4
-    assert_select "a.app-card[href='/batch_connect/sys/bc_jupyter/session_contexts/new']", 1
-    assert_select "a.app-card[href='/batch_connect/sys/bc_paraview/session_contexts/new']", 1
-    assert_select "a.app-card[href='/apps/show/pseudofun']", 1
-    assert_select "a.app-card[href='/batch_connect/sys/bc_desktop/owens/session_contexts/new']", 1
+    assert_select pinned_app_links, 4
+    assert_select pinned_app_link("/batch_connect/sys/bc_jupyter/session_contexts/new"), 1
+    assert_select pinned_app_link("/batch_connect/sys/bc_paraview/session_contexts/new"), 1
+    assert_select pinned_app_link("/apps/show/pseudofun"), 1
+    assert_select pinned_app_link("/batch_connect/sys/bc_desktop/owens/session_contexts/new"), 1
 
     assert_select 'h3', 2
     assert_equal I18n.t('dashboard.motd_title'), css_select('h3')[1].text
@@ -294,7 +294,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     end
 
     assert_select "h4[class='apps-section-header-blue']", 2
-    assert_select "a.app-card", 3
+    assert_select pinned_app_links, 3
     assert_equal "Gateway Apps", css_select("h4[class='apps-section-header-blue']")[0].text
     assert_equal "Interactive Apps", css_select("h4[class='apps-section-header-blue']")[1].text
   end
@@ -314,7 +314,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     end
 
     assert_select "h4[class='apps-section-header-blue']", 2
-    assert_select "a.app-card", 3
+    assert_select pinned_app_links, 3
     assert_equal "Apps", css_select("h4[class='apps-section-header-blue']")[0].text
     assert_equal "Biomedical Informatics", css_select("h4[class='apps-section-header-blue']")[1].text
   end
@@ -334,7 +334,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     end
 
     assert_select "h4[class='apps-section-header-blue']", 1
-    assert_select "a.app-card", 3
+    assert_select pinned_app_links, 3
     assert_equal I18n.t('dashboard.not_grouped'), css_select("h4[class='apps-section-header-blue']")[0].text
   end
 
@@ -353,7 +353,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     end
 
     assert_select "h4[class='apps-section-header-blue']", 3
-    assert_select "a.app-card", 3
+    assert_select pinned_app_links, 3
     assert_equal "go erLANG python", css_select("h4[class='apps-section-header-blue']")[0].text
     assert_equal "python julia R Ruby", css_select("h4[class='apps-section-header-blue']")[1].text
     assert_equal I18n.t('dashboard.not_grouped'), css_select("h4[class='apps-section-header-blue']")[2].text
@@ -371,8 +371,8 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     end
 
     # only show's my apps in test/fixtures/usr/me
-    assert_select 'a.app-card', 1
-    assert_select "a.app-card[href='/apps/show/my_shared_app/usr/me']", 1
+    assert_select pinned_app_links, 1
+    assert_select pinned_app_link("/apps/show/my_shared_app/usr/me"), 1
 
     assert_select 'h3', 1
     assert css_select('h3')[0].text.to_s.start_with?(I18n.t('dashboard.pinned_apps_title'))
@@ -398,19 +398,19 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
       get '/'
     end
 
-    assert_select 'a.app-card', 9
+    assert_select pinned_app_links, 9
     # usr apps
-    assert_select "a.app-card[href='/apps/show/my_shared_app/usr/me']", 1
-    assert_select "a.app-card[href='/batch_connect/usr/shared/bc_app/session_contexts/new']", 1
-    assert_select "a.app-card[href='/batch_connect/usr/shared/bc_with_subapps/oakley/session_contexts/new']", 1
-    assert_select "a.app-card[href='/batch_connect/usr/shared/bc_with_subapps/owens/session_contexts/new']", 1
+    assert_select pinned_app_link("/apps/show/my_shared_app/usr/me"), 1
+    assert_select pinned_app_link("/batch_connect/usr/shared/bc_app/session_contexts/new"), 1
+    assert_select pinned_app_link("/batch_connect/usr/shared/bc_with_subapps/oakley/session_contexts/new"), 1
+    assert_select pinned_app_link("/batch_connect/usr/shared/bc_with_subapps/owens/session_contexts/new"), 1
 
     # sys apps
-    assert_select "a.app-card[href='/apps/show/pseudofun']", 1
-    assert_select "a.app-card[href='/batch_connect/sys/bc_desktop/oakley/session_contexts/new']", 1
-    assert_select "a.app-card[href='/batch_connect/sys/bc_desktop/owens/session_contexts/new']", 1
-    assert_select "a.app-card[href='/batch_connect/sys/bc_jupyter/session_contexts/new']", 1
-    assert_select "a.app-card[href='/batch_connect/sys/bc_paraview/session_contexts/new']", 1
+    assert_select pinned_app_link("/apps/show/pseudofun"), 1
+    assert_select pinned_app_link("/batch_connect/sys/bc_desktop/oakley/session_contexts/new"), 1
+    assert_select pinned_app_link("/batch_connect/sys/bc_desktop/owens/session_contexts/new"), 1
+    assert_select pinned_app_link("/batch_connect/sys/bc_jupyter/session_contexts/new"), 1
+    assert_select pinned_app_link("/batch_connect/sys/bc_paraview/session_contexts/new"), 1
 
     assert_select 'h3', 1
     assert css_select('h3')[0].text.to_s.start_with?(I18n.t('dashboard.pinned_apps_title'))
@@ -419,5 +419,13 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_select "div[class='motd']", 0
     assert_select "h4[class='motd_title']", 0
     assert_select "div[class='xdmod']", 0
+  end
+
+  def pinned_app_links()
+    "div.col-sm-3.col-md-3.app-launcher-container > div > a"
+  end
+
+  def pinned_app_link(ref)
+    "div.col-sm-3.col-md-3.app-launcher-container > div > a[href='#{ref}']"
   end
 end

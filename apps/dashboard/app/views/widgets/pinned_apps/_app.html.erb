@@ -1,11 +1,13 @@
 <%- link = app.links.first -%>
-<div class="col-sm-3 col-md-3">
+<%- link_data = {:method => "get"}.merge link.data -%>
+<div class="col-sm-3 col-md-3 app-launcher-container">
+  <div class="app-launcher app-launcher-hover" data-toggle="launcher-button">
   <%=
     link_to(
       link.url.to_s,
-      class: "app-card",
+      class: "",
       target: link.new_tab? ? "_blank" : nil,
-      data: link.data
+      data: link_data
     ) do
   %>
     <div class="center-block text-center">
@@ -21,4 +23,5 @@
       %>
     </div>
   <% end %>
+  </div>
 </div>
