@@ -1,6 +1,3 @@
-$launcher_border: rgb(45,155,240);
-$launcher_border_hover: rgb(0,95,133);
-
 .app-launcher-disabled::before {
   content: '';
   position: absolute;
@@ -27,17 +24,17 @@ $launcher_border_hover: rgb(0,95,133);
   color: #fff;
 
   .spinner-border {
-    width: 60px;
-    height: 60px;
+    width: 4em;
+    height: 4em;
   }
 }
 
 .app-launcher {
   position: relative;
   height: 95%;
-  margin-bottom: 20px;
+  margin-bottom: 1.2em;
 
-  border-radius: 30px;
+  border-radius: 10%;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
   overflow: hidden;
 
@@ -54,14 +51,15 @@ $launcher_border_hover: rgb(0,95,133);
     text-decoration: none;
 
     border: 4px solid $launcher_border;
-    border-radius: 30px;
+    border-radius: 10%;
   }
 
   i, img {
     text-align: center;
     padding-top: 1rem;
     width: unset;
-    height: 120px;
+    height: 1.2em;
+    font-size: 6.25rem;
   }
 }
 
