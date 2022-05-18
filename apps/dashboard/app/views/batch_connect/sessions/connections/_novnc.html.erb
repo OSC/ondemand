@@ -1,4 +1,4 @@
-<%= bootstrap_form_tag(url: asset_path("noVNC-1.1.0/vnc.html"), method: "get") do |f| %>
+<%= bootstrap_form_tag(url: asset_path("noVNC-1.1.0/vnc.html", skip_pipeline: true), method: "get") do |f| %>
  <%= hidden_field_tag(:autoconnect, 'true') %>
  <%= hidden_field_tag(:path, "rnode/#{connect.host}/#{connect.websocket}/websockify") %>
  <%= hidden_field_tag(:resize, "remote") %>
