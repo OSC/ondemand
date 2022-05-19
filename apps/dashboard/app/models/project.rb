@@ -62,21 +62,18 @@ class Project
   end
 
   def update(attributes)
-    # error coming from here
-    # which is why it is manifest object and not from form...?
-    new_manifest = Manifest.load(manifest_path)
-    new_manifest = new_manifest.merge(attributes)
+    if valid_form_inputs?(attributes)
+      new_manifest = Manifest.load(manifest_path)
+      new_manifest = new_manifest.merge(attributes)
 
-    if new_manifest.valid?
-      if new_manifest.save(manifest_path)
+      if new_manifest.valid? && new_manifest.save(manifest_path)
         true
       else
         errors.add(:update, "Cannot save manifest to #{manifest_path}")
         false
       end
     else
-      errors.add(:update, 'Cannot save an invalid manifest')
-      Rails.logger.debug('Did not update invalid manifest')
+      errors.add(:update, 'Invalid entry')
       false
     end
   end
@@ -104,6 +101,20 @@ class Project
   private
 
   attr_reader :manifest
+
+  def valid_form_inputs?(attributes)
+    icon_pattern = /\Afa[bsrl]:\/\/[\w-]+\z/
+    name_pattern = /\A[\w-]+\z/
+    if !attributes[:icon].match?(icon_pattern)
+      errors.add(:icon, :invalid_format, message: 'Icon format invalid')
+      false
+    elsif !attributes[:name].match?(name_pattern)
+      errors.add(:name, :invalid_format, message: 'Name format invalid')
+      false
+    else
+      true
+    end
+  end
 
   def make_dir
     project_dataroot.mkpath         unless project_dataroot.exist?
