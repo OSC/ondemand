@@ -183,6 +183,10 @@ module RakeHelper
     "ood-dev"
   end
 
+  def image_name
+    "ood"
+  end
+
   def user
     @user ||= Etc.getpwuid
   end
