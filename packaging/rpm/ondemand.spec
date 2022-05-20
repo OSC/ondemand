@@ -37,12 +37,10 @@ Source2:   ondemand-selinux.fc
 %bcond_with scl_apache
 %define apache_confd /etc/httpd/conf.d
 %define apache_service httpd
-%define htcacheclean_service htcacheclean
 %else
 %bcond_without scl_apache
 %define apache_confd /opt/rh/httpd24/root/etc/httpd/conf.d
 %define apache_service httpd24-httpd
-%define htcacheclean_service httpd24-htcacheclean
 %endif
 
 # Disable automatic dependencies as it causes issues with bundled gems and
@@ -59,11 +57,11 @@ BuildRequires:   git
 BuildRequires:   python3
 
 Requires:        git
-Requires:        sudo, lsof, cronie, wget, curl, make, rsync, file, libxml2, libxslt, zlib, lua-posix
+Requires:        sudo, lsof, cronie, wget, curl, make, rsync, file, libxml2, libxslt, zlib, lua-posix, diffutils
 Requires:        python3
 Requires:        ondemand-apache >= %{runtime_version}, ondemand-apache < %{next_major_version}, ondemand-apache < %{next_minor_version}
-Requires:        ondemand-nginx = 1.20.1
-Requires:        ondemand-passenger = 6.0.11
+Requires:        ondemand-nginx = 1.20.2-1.p6.0.14.ood%{major_version}.%{minor_version}%{?dist}
+Requires:        ondemand-passenger = 6.0.14-1.ood%{major_version}.%{minor_version}%{?dist}
 Requires:        ondemand-ruby >= %{runtime_version}, ondemand-ruby < %{next_major_version}, ondemand-ruby < %{next_minor_version}
 Requires:        ondemand-nodejs >= %{runtime_version}, ondemand-nodejs < %{next_major_version}, ondemand-nodejs < %{next_minor_version}
 Requires:        ondemand-runtime >= %{runtime_version}, ondemand-runtime < %{next_major_version}, ondemand-runtime < %{next_minor_version}
@@ -165,7 +163,8 @@ echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION
 %__install -D -m 644 ood-portal-generator/share/ood_portal_example.yml \
     %{buildroot}%{_sysconfdir}/ood/config/ood_portal.yml
 %__mkdir_p %{buildroot}%{apache_confd}
-touch %{buildroot}%{apache_confd}/ood-portal.conf
+PREFIX=%{buildroot} %{buildroot}/opt/ood/ood-portal-generator/sbin/update_ood_portal
+%__sed -i 's|%{buildroot}||g' %{buildroot}%{_sysconfdir}/ood/config/ood_portal.sha256sum
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/public/maintenance
 %__install -D -m 644 ood-portal-generator/share/maintenance.html \
     %{buildroot}%{_localstatedir}/www/ood/public/maintenance/index.html
@@ -177,8 +176,6 @@ touch %{buildroot}%{apache_confd}/ood-portal.conf
 touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/dashboard.conf
 touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/shell.conf
 touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/myjobs.conf
-
-touch %{buildroot}%{_sysconfdir}/ood/config/ood_portal.sha256sum
 
 %__cp -R hooks %{buildroot}/opt/ood/hooks
 %__install -D -m 644 hooks/hook.env.example %{buildroot}%{_sysconfdir}/ood/config/hook.env
@@ -229,7 +226,7 @@ semodule -r %{name}-selinux 2>/dev/null || :
 %postun
 if [ "$1" -eq 0 ]; then
 /bin/systemctl daemon-reload &>/dev/null || :
-/bin/systemctl try-restart %{apache_service}.service %{htcacheclean_service}.service &>/dev/null || :
+/bin/systemctl try-restart %{apache_service}.service &>/dev/null || :
 fi
 
 %postun selinux
@@ -250,12 +247,7 @@ touch %{_localstatedir}/www/ood/apps/sys/dashboard/tmp/restart.txt
 touch %{_localstatedir}/www/ood/apps/sys/shell/tmp/restart.txt
 touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 
-# Rebuild Apache config and restart Apache httpd if config changed
-/opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm --detailed-exitcodes
-if [[ $? -eq 3 ]] ; then
-/bin/systemctl try-restart %{apache_service}.service %{htcacheclean_service}.service &>/dev/null || :
-fi
-
+/bin/systemctl try-restart %{apache_service}.service &>/dev/null || :
 
 %files
 %defattr(-,root,root)
@@ -294,7 +286,7 @@ fi
 %config(noreplace,missingok) %{_sysconfdir}/ood/config/nginx_stage.yml
 %config(noreplace,missingok) %{_sysconfdir}/ood/config/ood_portal.yml
 %config(noreplace,missingok) %{_sysconfdir}/ood/config/hook.env
-%ghost %{_sysconfdir}/ood/config/ood_portal.sha256sum
+%config(noreplace) %{_sysconfdir}/ood/config/ood_portal.sha256sum
 
 %dir %{_sharedstatedir}/ondemand-nginx/config
 %dir %{_sharedstatedir}/ondemand-nginx/config/puns
@@ -311,7 +303,7 @@ fi
 %config(noreplace) %{_sysconfdir}/sudoers.d/ood
 %config(noreplace) %{_sysconfdir}/cron.d/ood
 %config(noreplace) %{_sysconfdir}/logrotate.d/ood
-%ghost %{apache_confd}/ood-portal.conf
+%config(noreplace) %attr(0640, root, apache) %{apache_confd}/ood-portal.conf
 %config(noreplace) %{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood.conf
 %config(noreplace,missingok) %{_sysconfdir}/systemd/system/%{apache_service}.service.d/ood-portal.conf
 %{_tmpfilesdir}/ondemand-nginx.conf

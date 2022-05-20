@@ -20,7 +20,7 @@ $(window).focus ->
   if id?
     $.ajax
       type: 'GET'
-      url: Routes.workflow_path(id)
+      url: Routes.workflow_path(id, format: 'json')
       contentType: "application/json; charset=utf-8"
       dataType: "json"
       error: (jqXHR, textStatus, errorThrown) ->

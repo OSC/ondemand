@@ -212,7 +212,7 @@ def host_portal_config
       '/etc/httpd/conf.d/ood-portal.conf'
      end
   else
-    '/etc/apache2/sites-enabled/ood-portal.conf'
+    '/etc/apache2/sites-available/ood-portal.conf'
   end
 end
 
