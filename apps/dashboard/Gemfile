@@ -28,6 +28,7 @@ end
 group :test do
   gem "capybara"
   gem "selenium-webdriver"
+  gem "webrick"
 end
 
 group :development do

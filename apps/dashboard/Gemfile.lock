@@ -227,6 +227,7 @@ GEM
     timecop (0.9.5)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
+    webrick (1.7.0)
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -267,6 +268,7 @@ DEPENDENCIES
   sinatra
   sinatra-contrib
   timecop (~> 0.9)
+  webrick
   zip_tricks (~> 5.5)
 
 BUNDLED WITH
