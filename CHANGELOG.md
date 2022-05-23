@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Upgrade myjobs (#2032)\
+fix VNC apps by skipping the pipeline here (#2038)\
+rake update & fix shell app (again) for updating (#2028)\
+Updated pinned_apps widget look and feel (#1836) (#2031)\
+Update Changelog (#2025)\
+Depend on Passenger 6.0.14 and NGINX 1.20.2 (#2027)
 
 ### Changed
 
