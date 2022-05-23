@@ -6,12 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Upgrade myjobs (#2032)\
-fix VNC apps by skipping the pipeline here (#2038)\
-rake update & fix shell app (again) for updating (#2028)\
-Updated pinned_apps widget look and feel (#1836) (#2031)\
-Update Changelog (#2025)\
-Depend on Passenger 6.0.14 and NGINX 1.20.2 (#2027)
 
 ### Changed
 
@@ -20,7 +14,7 @@ Depend on Passenger 6.0.14 and NGINX 1.20.2 (#2027)
   in [#1409](https://github.com/OSC/ondemand/pull/1409).
 - The dashboard now uses strict same site cookies in [#1418](https://github.com/OSC/ondemand/pull/1418).
 - Build RPMs in CI/CD pipelines using -s flag to disable source download in [1471](https://github.com/OSC/ondemand/pull/1471).
-- Upgraded to rails 6.1 in [1830](https://github.com/OSC/ondemand/pull/1830).
+- Dashboard is rails 6.1 in [1830](https://github.com/OSC/ondemand/pull/1830). Myjobs is rails 6.0 in [2032](https://github.com/OSC/ondemand/pull/2032).
 - `context.json` files have moved in location and filename in [1526](https://github.com/OSC/ondemand/pull/1526).
 - Switch dev container and EL8 e2e tests to use Rocky Linux 8 [1534](https://github.com/OSC/ondemand/pull/1534).
 - The entire Javascript and CSS pipeline was migrated to webpack, closing [1005](https://github.com/OSC/ondemand/pull/1005).
@@ -38,6 +32,7 @@ Depend on Passenger 6.0.14 and NGINX 1.20.2 (#2027)
 - The default authentication scheme for the ood portal generator has been changed to an empty array in
   [#1982](https://github.com/OSC/ondemand/pull/1982).  The previous default was OIDC configs.
 - Packages now rely on python3 in [#2011](https://github.com/OSC/ondemand/pull/2011).
+- Passenger and NGINX dependencies are now 6.0.14 and NGINX repectively in [#2027](https://github.com/OSC/ondemand/pull/2027).
 
 ### Added
 
