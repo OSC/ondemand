@@ -193,6 +193,8 @@ GEM
     request_store (1.5.1)
       rack (>= 1.4)
     rexml (3.2.5)
+    rss (0.2.9)
+      rexml
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
     sdoc (2.4.0)
@@ -225,6 +227,7 @@ GEM
     timecop (0.9.5)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
+    webrick (1.7.0)
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -259,11 +262,13 @@ DEPENDENCIES
   pbs (~> 2.2.1)
   rails (= 6.1.5.1)
   redcarpet (~> 3.3)
+  rss (~> 0.2)
   sdoc
   selenium-webdriver
   sinatra
   sinatra-contrib
   timecop (~> 0.9)
+  webrick
   zip_tricks (~> 5.5)
 
 BUNDLED WITH
