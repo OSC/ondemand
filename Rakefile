@@ -15,7 +15,6 @@ require "#{TASK_DIR}/build"
 require "#{TASK_DIR}/packaging"
 require "#{TASK_DIR}/test"
 require "#{TASK_DIR}/lint"
-require "#{TASK_DIR}/docker"
 require "#{TASK_DIR}/development"
 require "#{TASK_DIR}/install"
 

@@ -17,20 +17,14 @@ namespace :package do
     sh tag_latest_container_cmd(image_names[:ood])
   end
 
-  desc "Build container with Dockerfile.test"
-  task test_container: [:latest_container] do
-    sh build_cmd("Dockerfile.test", test_image_name) unless image_exists?("#{test_image_name}:#{ood_image_tag}")
-    sh tag_latest_container_cmd(test_image_name)
-  end
-
   desc "Build container with Dockerfile.dev"
-  task dev_container: [:latest_container] do
+  task :dev_container do
     extra = ["--build-arg", "USER=#{user.name}"]
     extra.concat ["--build-arg", "UID=#{user.uid}"]
     extra.concat ["--build-arg", "GID=#{user.gid}"]
-
-    sh build_cmd("Dockerfile.dev", dev_image_name, extra_args: extra) unless image_exists?("#{dev_image_name}:#{ood_image_tag}")
-    sh tag_latest_container_cmd(dev_image_name)
+    image_name = dev_image_name
+    sh build_cmd("Dockerfile.dev", image_name, image_tag: today, extra_args: extra) unless image_exists?("#{dev_image_name}:#{today}")
+    sh tag_latest_container_cmd(dev_image_name, image_tag: today)
   end
 
   begin

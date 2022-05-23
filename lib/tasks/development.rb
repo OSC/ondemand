@@ -50,14 +50,11 @@ namespace :dev do
   end
 
   def docker_rt_args
-    [
-      '--user', "#{user.uid}:#{user.gid}"
-    ].freeze
+    [ '--tmpfs', '/run', '-v', '/sys/fs/cgroup:/sys/fs/cgroup:ro'].freeze
   end
 
   def podman_rt_args
     [
-      '--userns', 'keep-id',
       '--security-opt', 'label=disable'
     ].tap do |arr|
       arr.concat [ '--cap-add', 'sys_ptrace'] unless additional_caps.include?('--privileged')
