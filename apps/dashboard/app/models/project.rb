@@ -3,6 +3,7 @@
 class Project
   include ActiveModel::Model
   include ActiveModel::Validations
+  include ActiveModel::Validations::Callbacks
 
   class << self
     def all
@@ -41,9 +42,8 @@ class Project
     message: I18n.t('dashboard.jobs_project_name_validation')
   }
 
-  validates :icon, presence: true
   validates :icon, format: {
-    with:    /\Afa[bsrl]:\/\/[\w-]+\z/,
+    with:    %r{\Afa[bsrl]://[\w-]+\z},
     message: 'Icon format invalid'
   }
 
@@ -103,10 +103,10 @@ class Project
   attr_reader :manifest
 
   def valid_form_inputs?(attributes)
-    icon_pattern = /\Afa[bsrl]:\/\/[\w-]+\z/
+    icon_pattern = %r{\Afa[bsrl]://[\w-]+\z}
     name_pattern = /\A[\w-]+\z/
-    if !attributes[:icon].match?(icon_pattern)
-      errors.add(:icon, :invalid_format, message: 'Icon format invalid')
+    if !attributes[:icon].nil? && !attributes[:icon].match?(icon_pattern)
+      errors.add(:icon, :invalid_format, message: 'Icon format invalid or missing')
       false
     elsif !attributes[:name].match?(name_pattern)
       errors.add(:name, :invalid_format, message: 'Name format invalid')
