@@ -44,7 +44,7 @@ class Project
 
   validates :icon, format: {
     with:    %r{\Afa[bsrl]://[\w-]+\z},
-    message: 'Icon format invalid'
+    message: 'Please select or enter a valid icon'
   }
 
   attr_reader :directory
