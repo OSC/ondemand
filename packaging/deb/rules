@@ -67,3 +67,6 @@ override_dh_auto_install:
 
 override_dh_strip:
 	# Do not strip debug symbols
+
+override_dh_builddeb:
+	dh_builddeb -- -Zgzip
