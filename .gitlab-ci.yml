@@ -48,6 +48,17 @@ deb-build-nightly-ubuntu-2004:
       - dist
     name: "$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA"
 
+deb-build-nightly-ubuntu-2204:
+  stage: build
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+  script:
+    - bundle exec rake package:build[ubuntu-22.04,true]
+  artifacts:
+    paths:
+      - dist
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA"
+
 rpm-build-el7:
   stage: build
   only:
@@ -76,6 +87,17 @@ deb-build-ubuntu-2004:
     - tags
   script:
     - bundle exec rake package:build[ubuntu-20.04]
+  artifacts:
+    paths:
+      - dist
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+deb-build-ubuntu-2204:
+  stage: build
+  only:
+    - tags
+  script:
+    - bundle exec rake package:build[ubuntu-22.04]
   artifacts:
     paths:
       - dist
