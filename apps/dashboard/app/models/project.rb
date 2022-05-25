@@ -3,7 +3,6 @@
 class Project
   include ActiveModel::Model
   include ActiveModel::Validations
-  include ActiveModel::Validations::Callbacks
 
   class << self
     def all
