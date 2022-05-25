@@ -202,6 +202,14 @@ def install_ondemand
   on hosts, "systemctl daemon-reload"
 end
 
+def fix_apache
+  # ubuntu has it's own default page
+  if host_inventory['platform'] == 'ubuntu'
+    default_config = '/etc/apache2/sites-enabled/000-default.conf'
+    on hosts, "test -L #{default_config} && unlink #{default_config} || exit 0"
+  end
+end
+
 def upload_portal_config(file)
   scp_to(hosts, portal_fixture(file), '/etc/ood/config/ood_portal.yml')
 end
