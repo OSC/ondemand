@@ -24,9 +24,7 @@ describe 'Default install' do
         '/pun/sys/dashboard', '/nginx/init'
       ].each do |page|
         curl_on(hosts, "-L localhost#{page}") do |result|
-          unless host_inventory['platform'] == 'ubuntu' # ubuntu has it's own default page
-            expect(result.stdout).to eq(File.read("#{proj_root}/ood-portal-generator/share/need_auth.html"))
-          end
+          expect(result.stdout).to eq(File.read("#{proj_root}/ood-portal-generator/share/need_auth.html"))
         end
       end
     end

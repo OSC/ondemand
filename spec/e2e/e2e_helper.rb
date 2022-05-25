@@ -55,6 +55,8 @@ end
 
 def codename
   case "#{host_inventory['platform']}-#{host_inventory['platform_version']}"
+  when 'ubuntu-22.04'
+    'jammy'
   when 'ubuntu-20.04'
     'focal'
   else
@@ -70,7 +72,7 @@ def packager
       'dnf'
     end
   else
-    'apt'
+    'DEBIAN_FRONTEND=noninteractive apt --no-install-recommends'
   end
 end
 
@@ -189,7 +191,7 @@ def install_ondemand
     install_packages(['ondemand', 'ondemand-dex', 'ondemand-selinux'])
   elsif host_inventory['platform'] == 'ubuntu'
     install_packages(['wget'])
-    on hosts, 'wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest_2_all.deb'
+    on hosts, 'wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest_1_all.deb'
     install_packages(['/tmp/ondemand-release.deb'])
     on hosts, "sed -i 's|/latest/|/build/#{build_repo_version}/|g' /etc/apt/sources.list.d/ondemand-web.list"
     on hosts, 'apt-get update'
@@ -198,6 +200,14 @@ def install_ondemand
   # Avoid 'update_ood_portal --rpm' so that --insecure can be used
   on hosts, "sed -i 's|--rpm|--rpm --insecure|g' /etc/systemd/system/#{apache_service}.service.d/ood-portal.conf"
   on hosts, "systemctl daemon-reload"
+end
+
+def fix_apache
+  # ubuntu has it's own default page
+  if host_inventory['platform'] == 'ubuntu'
+    default_config = '/etc/apache2/sites-enabled/000-default.conf'
+    on hosts, "test -L #{default_config} && unlink #{default_config} || exit 0"
+  end
 end
 
 def upload_portal_config(file)

@@ -90,7 +90,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        dist: ["el7", "el8", "ubuntu-20.04"]
+        dist: ["el7", "el8", "ubuntu-20.04", "ubuntu-22.04"]
         version: ["2.1"]
     runs-on: "ubuntu-latest"
     name: E2E test ${{ matrix.dist }} (ondemand-${{ matrix.version }})
