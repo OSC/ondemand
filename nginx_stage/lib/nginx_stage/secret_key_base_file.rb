@@ -22,7 +22,7 @@ module NginxStage
       # instead of Generator#template => Generator#create_file => Generator#empty_directory
       FileUtils.mkdir_p File.dirname(path), mode: 0755
 
-      File.write path, @secret, { perm: 0600 }
+      File.write path, @secret, 0, perm: 0600
 
       @secret
     end
