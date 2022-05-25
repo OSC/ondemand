@@ -16,7 +16,6 @@ HOSTS:
       - LANGUAGE=en_US.UTF-8
       - LC_ALL=en_US.UTF-8
       - DEBIAN_FRONTEND=noninteractive
-      - TERM=linux
     docker_container_name: 'ondemand-ubuntu2204'
     docker_port_bindings:
       22/tcp:
