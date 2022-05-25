@@ -7,7 +7,7 @@
 %define minor_version %(echo %{git_tag_minus_v} | cut -d. -f2)
 %define runtime_version %{major_version}.%{minor_version}.1
 %define runtime_release 1
-%define runtime_version_full %{runtime_version}-%{runtime_release}
+%define runtime_version_full %{runtime_version}-%{runtime_release}%{?dist}
 %define selinux_policy_ver %(rpm --qf "%%{version}-%%{release}" -q selinux-policy)
 %global selinux_module_version %{package_version}.%{package_release}
 %global gem_home %{scl_ondemand_core_gem_home}/%{version}
