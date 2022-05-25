@@ -9,7 +9,6 @@ HOSTS:
     docker_cmd: '["/sbin/init"]'
     docker_image_commands:
       - "rm -f /etc/dpkg/dpkg.cfg.d/excludes"
-      - 'dpkg-reconfigure debconf --frontend=noninteractive'
       - 'apt-get install -y wget net-tools locales apt-transport-https ca-certificates'
       - 'locale-gen en_US.UTF-8'
     docker_env:
