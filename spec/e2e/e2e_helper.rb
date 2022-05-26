@@ -131,7 +131,7 @@ def bootstrap_repos
     if host_inventory['platform_version'] =~ /^7/
       repos << 'centos-release-scl yum-plugin-priorities'
     else
-      on hosts, 'dnf -y module enable ruby:2.7'
+      on hosts, 'dnf -y module enable ruby:3.0'
       on hosts, 'dnf -y module enable nodejs:14'
     end
   elsif host_inventory['platform'] == 'ubuntu'

@@ -8,7 +8,7 @@ gem 'rake'
 gem 'dotenv', '~> 2.1'
 
 group :package do
-  gem 'ood_packaging', '~> 0.1.4'
+  gem 'ood_packaging', '~> 0.2.0'
 end
 
 group :test do

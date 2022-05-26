@@ -39,7 +39,7 @@ module OodPortalGenerator
     end
 
     def fqdn
-      Socket.gethostbyname(Socket.gethostname).first
+      Addrinfo.getaddrinfo(Socket.gethostname, nil, :INET, :STREAM, nil, Socket::AI_CANONNAME).first.canonname
     end
 
     # Determine dex username
