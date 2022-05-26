@@ -41,11 +41,6 @@ class Project
     message: I18n.t('dashboard.jobs_project_name_validation')
   }
 
-  validates :icon, format: {
-    with:    %r{\Afa[bsrl]://[\w-]+\z},
-    message: 'Please select or enter a valid icon'
-  }
-
   attr_reader :directory
 
   delegate :icon, :name, :description, to: :manifest
