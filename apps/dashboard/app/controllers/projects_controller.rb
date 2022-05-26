@@ -13,7 +13,7 @@ class ProjectsController < ApplicationController
 
   # GET /projects/new
   def new
-    @project = Project.new
+    params[:name].empty? ? @project = Project.new : @project = Project.new({ name: params[:name], icon: params[:icon] })
   end
 
   # GET /projects/:id/edit
@@ -35,13 +35,15 @@ class ProjectsController < ApplicationController
 
   # POST /projects
   def create
+    Rails.logger.debug("Project params are: #{project_params}")
     @project = Project.new(project_params)
 
     if @project.valid? && @project.save(project_params)
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_created')
     else
       flash[:alert] = @project.errors[:name].last || @project.errors[:icon].last
-      redirect_to new_project_path
+      redirect_to new_project_path(name: params[:project][:name], icon: params[:project][:icon])
+      # request.parameters
     end
   end
 
