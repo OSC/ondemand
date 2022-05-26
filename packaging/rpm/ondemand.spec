@@ -78,7 +78,7 @@ access, job submission and interactive work on compute nodes.
 %package -n %{name}-selinux
 Summary: SELinux policy for OnDemand
 BuildRequires:      selinux-policy, selinux-policy-devel, checkpolicy, policycoreutils
-Requires:           %{name} = %{version}
+Requires:           %{name} = %{version}-%{release}
 Requires:           selinux-policy >= %{selinux_policy_ver}
 Requires(post):     /usr/sbin/semodule, /sbin/restorecon, /usr/sbin/setsebool, /usr/sbin/selinuxenabled, /usr/sbin/semanage
 Requires(post):     selinux-policy-targeted
