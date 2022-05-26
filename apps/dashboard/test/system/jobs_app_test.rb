@@ -105,7 +105,7 @@ class ProjectsTest < ApplicationSystemTestCase
       find('#product_icon_select').set(icon)
       click_on 'Save'
 
-      assert_selector '.alert-danger', text: 'Please select or enter a valid icon'
+      assert_selector '.alert-danger', text: 'Icon format invalid or missing'
     end
   end
 
@@ -120,7 +120,7 @@ class ProjectsTest < ApplicationSystemTestCase
       find('#product_icon_select').set(icon)
       click_on 'Save'
 
-      assert_selector '.alert-danger', text: 'Please select or enter a valid icon'
+      assert_selector '.alert-danger', text: 'Icon format invalid or missing'
     end
   end
 
