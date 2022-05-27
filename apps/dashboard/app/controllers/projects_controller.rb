@@ -13,7 +13,12 @@ class ProjectsController < ApplicationController
 
   # GET /projects/new
   def new
-    params[:name].nil? || params[:name].empty? ? @project = Project.new : @project = Project.new({ name: params[:name], icon: params[:icon] })
+    if name_or_icon_nil?
+      @project = Project.new
+    else
+      returned_params = { name: params[:name], icon: params[:icon] }
+      @project = Project.new(returned_params)
+    end
   end
 
   # GET /projects/:id/edit
@@ -43,7 +48,6 @@ class ProjectsController < ApplicationController
     else
       flash[:alert] = @project.errors[:name].last || @project.errors[:icon].last
       redirect_to new_project_path(name: params[:project][:name], icon: params[:project][:icon])
-      # request.parameters
     end
   end
 
@@ -55,6 +59,10 @@ class ProjectsController < ApplicationController
   end
 
   private
+
+  def name_or_icon_nil?
+    params[:name].nil? || params[:icon].nil?
+  end
 
   def project_params
     params
