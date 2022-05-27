@@ -8,9 +8,9 @@
 #
 SCL_PKGS=${SCL_PKGS:-"ondemand"}
 SCL_SOURCE="$(command -v scl_source)"
+DEB_SOURCE="/opt/ood/ondemand/enable"
 if [[ "${SCL_SOURCE}" ]]; then
   source "${SCL_SOURCE}" enable ${SCL_PKGS}
 else
-  export GEM_PATH="/opt/ood/gems:$GEM_PATH"
-  export RUBYLIB="/opt/ood/ondemand/root/usr/share/ruby/vendor_ruby:${RUBYLIB:+:${RUBYLIB}}"
+  [[ -e "${DEB_SOURCE}" ]] && source "${DEB_SOURCE}" || :
 fi

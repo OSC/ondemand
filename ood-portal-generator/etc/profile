@@ -6,5 +6,11 @@
 # 2. Check if Software Collections is installed, then source the defined
 #    package scripts.
 #
+SCL_PKGS=${SCL_PKGS:-"ondemand"}
 SCL_SOURCE="$(command -v scl_source)"
-[[ "${SCL_SOURCE}" ]] && source "${SCL_SOURCE}" enable "ondemand" &> /dev/null || export GEM_PATH="/opt/ood/gems:$GEM_PATH"
+DEB_SOURCE="/opt/ood/ondemand/enable"
+if [[ "${SCL_SOURCE}" ]]; then
+  source "${SCL_SOURCE}" enable ${SCL_PKGS}
+else
+  [[ -e "${DEB_SOURCE}" ]] && source "${DEB_SOURCE}" || :
+fi
