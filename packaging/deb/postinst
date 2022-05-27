@@ -20,6 +20,7 @@ ln -sf ../mods-available/lua.load . || true
 ln -sf ../mods-available/headers.load . || true
 ln -sf ../mods-available/proxy.load . || true
 ln -sf ../mods-available/proxy_http.load . || true
+ln -sf ../mods-available/proxy_wstunnel.load . || true
 
 chown root:www-data /etc/apache2/sites-available/ood-portal.conf
 chmod 0640 /etc/apache2/sites-available/ood-portal.conf
