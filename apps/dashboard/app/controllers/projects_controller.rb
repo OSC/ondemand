@@ -13,7 +13,7 @@ class ProjectsController < ApplicationController
 
   # GET /projects/new
   def new
-    params[:name].empty? ? @project = Project.new : @project = Project.new({ name: params[:name], icon: params[:icon] })
+    params[:name].nil? || params[:name].empty? ? @project = Project.new : @project = Project.new({ name: params[:name], icon: params[:icon] })
   end
 
   # GET /projects/:id/edit
