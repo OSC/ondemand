@@ -6,6 +6,7 @@ worker_processes 1;  ## Default: 1
 <%- env_declarations.each do |varname| -%>
 env <%= varname %>;
 <%- end -%>
+env PASSENGER_DOWNLOAD_NATIVE_SUPPORT_BINARY=0;
 
 events {
   worker_connections 1024;  ## Default: 1024

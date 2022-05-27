@@ -18,6 +18,12 @@ describe 'OnDemand installed with packages' do
     it { is_expected.to be_linked_to('../sites-available/ood-portal.conf') }
   end
 
+  describe file('/opt/ood/ondemand/enable'), if: host_inventory['platform'] == 'ubuntu' do
+    it { is_expected.to be_file }
+    its(:content) { is_expected.to include "GEM_PATH=" }
+    its(:content) { is_expected.to include "RUBYLIB=" }
+  end
+
   describe file('/etc/sudoers.d/ood') do
     it { is_expected.to be_file }
     its(:content) { is_expected.to include "Defaults:#{apache_user}" }

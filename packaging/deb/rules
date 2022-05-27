@@ -53,6 +53,8 @@ override_dh_auto_install:
 	install -m 644 ood-portal-generator/share/maintenance.html $(APACHE_DIR)/public/maintenance/index.html
 	install -m 644 ood-portal-generator/share/need_auth.html $(APACHE_DIR)/public/need_auth.html
 	install -m 644 hooks/hook.env.example $(CONFIG_DIR)/hook.env
+	mkdir -p $(DESTDIR)/opt/ood/ondemand
+	install -m 644 packaging/files/enable.deb $(DESTDIR)/opt/ood/ondemand/enable
 
 	$(DESTDIR)/opt/ood/ood-portal-generator/sbin/update_ood_portal
 	cd $(APACHE_CONF_DIR)/sites-enabled && ln -sf ../sites-available/ood-portal.conf ./ood-portal.conf
