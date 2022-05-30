@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Bump rack from 2.2.3 to 2.2.3.1 in /apps/myjobs (#2062)\
+Bump rack from 2.2.3 to 2.2.3.1 in /apps/dashboard (#2061)\
+Ensure Ubuntu builds can find passenger_native_support.so (#2058)\
+Enable Apache proxy_wstunnel for deb packages (#2059)\
+Ensure ondemand-selinux gets updated if only ondemand release bumped (#2056)\
+Upgrade EL builds to use Ruby 3.0 (#2053)\
+Support Ubuntu 22.04 (#2047)\
+Update Changelog (#2045)\
+Nightly dev container (#2041)\
+Several changes to allow Ubuntu 22.04 builds (#2020)\
+update dependencies (#2046)
 
 ### Changed
 
