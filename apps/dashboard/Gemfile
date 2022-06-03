@@ -55,7 +55,7 @@ gem 'cssbundling-rails', '~> 1.1'
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'
 gem 'ood_appkit', '~> 2.1.0'
-gem 'ood_core', '~> 0.11'
+gem 'ood_core', '~> 0.20'
 gem 'pbs', '~> 2.2.1'
 
 # gems to include in ondemand-gems repo for status apps to use
