@@ -76,7 +76,7 @@ for accessability.
 #### /pun/sys/dashboard/batch_connect/sessions
 
 - [Batch connect session cards are not very accessible.](https://github.com/OSC/ondemand/issues/664)
-  There are several issues with batch connect session cards. 
+  There are several issues with batch connect session cards.
     - First when they change state, say from 'Queued' to 'Running' there's no notification that this happened.
     - Secondly, there's no good organization of these cards. They should probably be in a list.
     - Lastly some of the text is off, like the session id link that is a UUID. It's an ambigous link.
@@ -84,7 +84,12 @@ for accessability.
 #### Batch connect app web forms
 
 Batch connect app forms are URLS in the form `pun/sys/dashboard/batch_connect/[TOKEN]/session_contexts/new`
-where `[TOKEN]` is a specific app at a specific site.  While these apps are 
+where `[TOKEN]` is a specific app at a specific site.  While these apps are site specific the web forms
+they create should be accessible.
+
+Sites can add extra things to these forms that we (the developers) are not in control of.  This document
+covers all the functionality that we the developers provide.  It does not cover customizations a site
+may have included.
 
 - [Dynamic form updates do not update the user.](https://github.com/OSC/ondemand/issues/2075)  When a
   user updates a form field, another form field may automatically be updated.  There is no screen reader
@@ -113,7 +118,7 @@ where we come to this conclusion.
 - [Screen-Readers read the sorting arrows in the files table](https://github.com/OSC/ondemand/issues/2081)
   when they should only read the column name.
 - [File browsing landmarks could be better.](https://github.com/OSC/ondemand/issues/2079)  There's
-  currently a little too much navigation to get anywhere interesting. 
+  currently a little too much navigation to get anywhere interesting.
 
 ### /pun/sys/shell and sub URLs
 
