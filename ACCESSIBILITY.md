@@ -15,6 +15,7 @@
   - [/pun/sys/dashboard/files and sub URLs](#/pun/sys/dashboard/files-and-sub-urls)
   - [/pun/sys/shell and sub URLs](#/pun/sys/shell-and-sub-urls)
   - [/pun/sys/myjobs and sub URLs](#/pun/sys/myjobs-and-sub-urls)
+  - [/pun/sys/dashboard/admin and sub URLs](#/pun/sys/dashboard/admin-and-sub-urls)
 
 
 ## Introduction
@@ -133,5 +134,9 @@ We have this ticket concerning [shell accessability](https://github.com/OSC/onde
 to tracks this.
 
 ### /pun/sys/myjobs and sub URLs
+
+TODO
+
+### /pun/sys/dashboard/admin and sub URLs
 
 TODO
