@@ -48,11 +48,27 @@ class RemoteFile
   end
 
   def editable?
+    # Assume file is editable if it exists and isn't a directory even though it
+    # might not actually be (e.g. permissions)
+    !directory?
+  rescue => e
     false
   end
 
   def read(&block)
     RcloneUtil.cat(remote, path, &block)
+  end
+
+  def touch
+    RcloneUtil.touch(remote, path)
+  end
+
+  def mkdir
+    RcloneUtil.mkdir(remote, path)
+  end
+
+  def write(content)
+    RcloneUtil.write(remote, path, content)
   end
 
   def mime_type

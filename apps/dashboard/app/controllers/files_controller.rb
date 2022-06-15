@@ -104,7 +104,7 @@ class FilesController < ApplicationController
 
   # PUT - create or update
   def update
-    @path = PosixFile.new(normalized_path)
+    @path = parse_path
 
     validate_path!
 
@@ -149,7 +149,7 @@ class FilesController < ApplicationController
   end
 
   def edit
-    @path = PosixFile.new(normalized_path)
+    @path = parse_path
     @file_api_url = OodAppkit.files.api(path: @path).to_s
 
     if @path.editable?
