@@ -2,7 +2,7 @@ class PosixFile
 
   attr_reader :path
 
-  delegate :basename, :descend, :parent, :join, :to_s, to: :path
+  delegate :basename, :descend, :parent, :join, :to_s, :read, to: :path
 
   class << self
     def stat(path)
@@ -85,6 +85,10 @@ class PosixFile
     path.each_child.map do |child_path|
       PosixFile.stat(child_path)
     end.sort_by { |p| p[:directory] ? 0 : 1 }
+  end
+
+  def editable?
+    path.file? && path.readable? && path.writable?
   end
 
   def can_download_as_zip?(timeout: Configuration.file_download_dir_timeout, download_directory_size_limit: Configuration.file_download_dir_max)
