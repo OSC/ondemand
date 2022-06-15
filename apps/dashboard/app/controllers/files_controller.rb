@@ -1,5 +1,5 @@
 class FilesController < ApplicationController
-  # include ActionController::Live
+  include ActionController::Live
   include ZipTricks::RailsStreaming
 
   def fs
@@ -236,21 +236,35 @@ class FilesController < ApplicationController
   end
 
   def send_remote_file
-    type = Files.mime_type_by_extension(@path).presence || mime_type
-    # svgs aren't safe to view until we update our CSP
-    if params[:download] || type.to_s == "image/svg+xml"
-      type = "text/plain; charset=utf-8" if type.to_s == "image/svg+xml"
-      send_data @path.read, type: type
-    else
-      send_data @path.read, :disposition => "inline", :type => Files.mime_type_for_preview(type)
+    type = begin
+      Files.mime_type_by_extension(@path).presence || @path.mime_type
+    rescue => e
+      logger.warn("failed to determine mime type for file: #{@path} due to error #{e}")
     end
-  rescue => e
-    logger.warn("failed to determine mime type for file: #{@path} due to error #{e}")
 
-    if params[:download]
-      send_data @path.read
+    # svgs aren't safe to view until we update our CSP
+    download = params[:download] || type.to_s == "image/svg+xml"
+    type = "text/plain; charset=utf-8" if type.to_s == "image/svg+xml"
+
+    response.set_header('X-Accel-Buffering', 'no')
+    response.sending_file = true
+    response.set_header("Last-Modified", Time.now.httpdate)
+
+    if download
+      response.set_header("Content-Type", type) if type.present?
+      response.set_header("Content-Disposition", "attachment")
     else
-      send_data @path.read, disposition: "inline"
+      response.set_header("Content-Type", Files.mime_type_for_preview(type)) if type.present?
+      response.set_header("Content-Disposition", "inline")
     end
+    begin
+      @path.read do |chunk|
+        response.stream.write(chunk)
+      end
+      # Need to rescue exception when user cancels download
+    rescue ActionController::Live::ClientDisconnected => e
+    end
+  ensure
+    response.stream.close
   end
 end

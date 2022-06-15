@@ -55,15 +55,25 @@ class RcloneUtil
       end
     end
 
-    def cat(remote, path)
+    def cat(remote, path, &block)
       full_path = "#{remote}:#{path}"
-      o, e, s = rclone("cat", full_path)
-      if s.success?
-        o
-      elsif s.exitstatus == 3 # directory not found
-        raise StandardError, "Remote file or directory '#{path}' does not exist"
+      # Read the file in 32kb chunks
+      if block_given?
+        rclone_popen("cat", full_path) do |o|
+          while data = o.read(32768)
+            yield data
+          end
+        end
       else
-        raise StandardError, "Error reading file #{full_path}: #{e}"
+        # Read the whole file
+        o, e, s = rclone("cat", full_path)
+        if s.success?
+          o
+        elsif s.exitstatus == 3 # directory not found
+          raise StandardError, "Remote file or directory '#{path}' does not exist"
+        else
+          raise StandardError, "Error reading file #{full_path}: #{e}"
+        end
       end
     end
 
@@ -87,6 +97,28 @@ class RcloneUtil
 
     def rclone(*args)
       Open3.capture3(rclone_cmd, *args)
+    end
+
+    def rclone_popen(*args, stdin_data: nil, &block)
+      # Use -q to suppress message about config file not existing
+      # need it here as we check err.present?
+      Open3.popen3(rclone_cmd, "--quiet", *args) do |i, o, e, t|
+        if stdin_data
+          i.write(stdin_data)
+        end
+        i.close
+
+        err_reader = Thread.new { e.read }
+
+        yield o
+
+        o.close
+        exit_status = t.value
+        err = err_reader.value.to_s.strip
+        if err.present? || !exit_status.success?
+          raise StandardError, "Rclone exited with status #{exit_status.exitstatus}\n#{err}"
+        end
+      end
     end
   end
 end

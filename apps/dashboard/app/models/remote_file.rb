@@ -51,8 +51,8 @@ class RemoteFile
     false
   end
 
-  def read
-    RcloneUtil.cat(remote, path)
+  def read(&block)
+    RcloneUtil.cat(remote, path, &block)
   end
 
   def mime_type
