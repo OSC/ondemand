@@ -5,9 +5,9 @@ class FilesController < ApplicationController
   def fs
     request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
 
-    @path = PosixFile.new(normalized_path)
+    @path = parse_path
 
-    AllowlistPolicy.default.validate!(@path)
+    validate_path!
 
     if @path.directory?
       @path.raise_if_cant_access_directory_contents
@@ -105,7 +105,8 @@ class FilesController < ApplicationController
   # PUT - create or update
   def update
     @path = PosixFile.new(normalized_path)
-    AllowlistPolicy.default.validate!(@path)
+
+    validate_path!
 
     if params.include?(:dir)
       @path.mkdir
@@ -134,7 +135,7 @@ class FilesController < ApplicationController
     upload_path = uppy_upload_path
     @path = PosixFile.new(upload_path)
 
-    AllowlistPolicy.default.validate!(@path)
+    validate_path!
 
     @path.handle_upload(params[:file].tempfile)
 
@@ -162,7 +163,31 @@ class FilesController < ApplicationController
   private
 
   def normalized_path
-    Pathname.new("/" + params[:filepath].chomp("/"))
+    Pathname.new("/" + params[:filepath].chomp("/").delete_prefix("/"))
+  end
+
+  def parse_path
+    match = params[:filepath].match(/^(?<remote>[0-9A-Za-z_\.\- ]+:(\/)?)?(?<path>.*)$/)
+    return PosixFile.new(normalized_path) if match[:remote].nil?
+    remote = match[:remote].chomp("/").chomp(":")
+    path = Pathname.new("/" + match[:path].chomp("/"))
+    return RemoteFile.new(path, remote)
+  end
+
+  def validate_path!
+    if posix_file?
+      AllowlistPolicy.default.validate!(@path)
+    elsif @path.remote_type.nil?
+      raise StandardError, "Remote #{@path.remote} does not exist"
+    elsif ::Configuration.allowlist_paths.present? && (@path.remote_type == "local" || @path.remote_type == "alias")
+      # local and alias remotes would allow bypassing the AllowListPolicy
+      # TODO: Attempt to evaluate the path of them and validate?
+      raise StandardError, "Remotes of type #{@path.remote_type} are not allowed due to ALLOWLIST_PATH"
+    end
+  end
+
+  def posix_file?
+    @path.is_a?(PosixFile)
   end
 
   def uppy_upload_path
@@ -180,6 +205,14 @@ class FilesController < ApplicationController
   end
 
   def show_file
+    if posix_file?
+      send_posix_file
+    else
+      send_remote_file
+    end
+  end
+
+  def send_posix_file
     type = Files.mime_type_by_extension(@path).presence || PosixFile.new(@path).mime_type
 
     # svgs aren't safe to view until we update our CSP
@@ -196,6 +229,25 @@ class FilesController < ApplicationController
       send_file @path
     else
       send_file @path, disposition: 'inline'
+    end
+  end
+
+  def send_remote_file
+    type = Files.mime_type_by_extension(@path).presence || mime_type
+    # svgs aren't safe to view until we update our CSP
+    if params[:download] || type.to_s == "image/svg+xml"
+      type = "text/plain; charset=utf-8" if type.to_s == "image/svg+xml"
+      send_data @path.read, type: type
+    else
+      send_data @path.read, :disposition => "inline", :type => Files.mime_type_for_preview(type)
+    end
+  rescue => e
+    logger.warn("failed to determine mime type for file: #{@path} due to error #{e}")
+
+    if params[:download]
+      send_data @path.read
+    else
+      send_data @path.read, disposition: "inline"
     end
   end
 end
