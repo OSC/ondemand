@@ -73,6 +73,17 @@ describe OodPortalGenerator do
       expect(described_class.scl_apache?).to eq(false)
     end
 
+    it 'returns false if RHEL9' do
+      os_release = <<~EOS
+        ID="rhel"
+        ID_LIKE="fedora"
+        VERSION_ID="9.0"
+      EOS
+      File.write(os_release_file.path, os_release)
+      allow(described_class).to receive(:os_release_file).and_return(os_release_file.path)
+      expect(described_class.scl_apache?).to eq(false)
+    end
+
     it 'returns false for Ubuntu 20.04' do
       os_release = <<~EOS
         ID=ubuntu
