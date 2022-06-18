@@ -37,10 +37,11 @@ class LocalTransfer < Transfer
     @steps
   end
 
-  # array of arguments that will be executed
-  def command
-    # command is executed in the directory containing the "from" files
+  # array of arrays containing arguments that will be executed
+  def commands
+    # commands are executed in the directory containing the "from" files
 
+    commands = []
     if action == 'mv'
       args = [action.to_s, '-v']
 
@@ -52,21 +53,16 @@ class LocalTransfer < Transfer
         args += files.keys.map { |f| File.basename(f) }
         args << to
       end
+      commands = [args]
     elsif action == 'cp'
-      args = [action.to_s, '-v']
-      args << '-r'
-      args += files.keys.map { |f| File.basename(f) }
-      args << to
+      commands = files.map { |src_file, dest_file| [action.to_s, '-v', '-r', src_file, dest_file] }
     elsif action == 'rm'
-      args = [action.to_s, '-v']
-      args << '-r'
-
-      args += files.keys
+      commands = [[action.to_s, '-v', '-r'] + files.keys]
     else
       raise "Unknown action: #{action.inspect}"
     end
 
-    args
+    commands
   end
 
   def perform
@@ -76,27 +72,29 @@ class LocalTransfer < Transfer
     # calculate number of steps prior to starting the removal of files
     steps
 
-    Open3.popen3(*command, chdir: from) do |i, o, e, t|
-      self.pid = t.pid
+    commands.each do |command|
+      Open3.popen3(*command, chdir: from) do |i, o, e, t|
+        self.pid = t.pid
 
-      err_reader = Thread.new { e.read  }
+        err_reader = Thread.new { e.read }
 
-      o.each_line.with_index do |l, index|
-        #FIXME: slice(?).last so that we only update progress a few times per...
-        update_percent(index+1)
+        o.each_line.with_index do |l, index|
+          #FIXME: slice(?).last so that we only update progress a few times per...
+          update_percent(index + 1)
+        end
+        o.close
+
+        self.exit_status = t.value
+        self.completed_at = Time.now.to_i
+
+        # FIXME: figure out what we are going to do here, since we save the stderr output twice
+        self.stderr = err_reader.value.to_s.strip
+        if self.stderr.present? || !self.exit_status.success?
+          errors.add :base, "#{self.commands} exited with status #{self.exit_status.exitstatus}\n\n#{self.stderr}"
+        end
+
+        self
       end
-      o.close
-
-      self.exit_status = t.value
-      self.completed_at = Time.now.to_i
-
-      # FIXME: figure out what we are going to do here, since we save the stderr output twice
-      self.stderr = err_reader.value.to_s.strip
-      if self.stderr.present? || ! self.exit_status.success?
-        errors.add :base, "#{self.command} exited with status #{self.exit_status.exitstatus}\n\n#{self.stderr}"
-      end
-
-      self
     end
   rescue => e
     errors.add :base, e.message

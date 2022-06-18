@@ -244,6 +244,7 @@ class DataTable {
         try {
             const response = await fetch(request_url, { headers: { 'Accept': 'application/json' } });
             const data = await this.dataFromJsonResponse(response);
+            history.state.currentFilenames = Array.from(data.files, x => x.name);
             $('#shell-wrapper').replaceWith((data.shell_dropdown_html));
 
             this._table.clear();
@@ -339,7 +340,8 @@ class DataTable {
             
                     history.pushState({
                         currentDirectory: data.path,
-                        currentDirectoryUrl: data.url
+                        currentDirectoryUrl: data.url,
+                        currentFilenames: Array.from(data.files, x => x.name)
                     }, data.name, data.url);
                 }      
             }
