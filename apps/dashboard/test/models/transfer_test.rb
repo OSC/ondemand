@@ -8,8 +8,12 @@ class TransferTest < ActiveSupport::TestCase
       '/Users/efranz/dev/ondemand/apps/dashboard/manifest.yml' => '/var/folders/w7/fn8w83s10510pkc5j2wq8cpnhxtn3j/T/d20210201-68201-u3azoj/manifest.yml'
     }
 
-    expected = ['cp', '-v', '-r', 'app', 'config', 'manifest.yml', '/var/folders/w7/fn8w83s10510pkc5j2wq8cpnhxtn3j/T/d20210201-68201-u3azoj']
-    assert_equal expected, transfer.command
+    expected = [
+      ['cp', '-v', '-r', '/Users/efranz/dev/ondemand/apps/dashboard/app', '/var/folders/w7/fn8w83s10510pkc5j2wq8cpnhxtn3j/T/d20210201-68201-u3azoj/app'],
+      ['cp', '-v', '-r', '/Users/efranz/dev/ondemand/apps/dashboard/config', '/var/folders/w7/fn8w83s10510pkc5j2wq8cpnhxtn3j/T/d20210201-68201-u3azoj/config'],
+      ['cp', '-v', '-r', '/Users/efranz/dev/ondemand/apps/dashboard/manifest.yml', '/var/folders/w7/fn8w83s10510pkc5j2wq8cpnhxtn3j/T/d20210201-68201-u3azoj/manifest.yml']
+    ]
+    assert_equal expected, transfer.commands
   end
 
   test 'percent progress' do

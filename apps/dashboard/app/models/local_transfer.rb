@@ -55,7 +55,7 @@ class LocalTransfer < Transfer
       end
       commands = [args]
     elsif action == 'cp'
-      commands = files.map { |src_file, dest_file| [action.to_s, '-v', '-r', src_file, dest_file] }
+      commands = files.map { |src_path, dest_path| [action.to_s, '-v', '-r', src_path, dest_path] }
     elsif action == 'rm'
       commands = [[action.to_s, '-v', '-r'] + files.keys]
     else
