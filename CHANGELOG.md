@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Ensure ood-portal-generator doesn't treat EL9 as SCL (#2089)\
+Add overflow-auto to batch_connect card-header (#2085)\
+update dependencies (#2087)
 
 ### Changed
 
