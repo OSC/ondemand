@@ -57,6 +57,10 @@ jQuery(function() {
     }
   });
 
+  $("#refresh-btn").on("click", function () {
+    $(CONTENTID).trigger(DATATABLE_EVENTNAME.reloadTable);
+  });
+
   $("#new-file-btn").on("click", function () {
     $(CONTENTID).trigger(EVENTNAME.newFilePrompt);
   });
