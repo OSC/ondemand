@@ -147,15 +147,16 @@ class ClipBoard {
 
       if (clipboard) {
         clipboard.to = history.state.currentDirectory;
-
-          // [{"/from/file/path":"/to/file/path" }]
-          let files = {};
-          let currentFilenames = history.state.currentFilenames;
+        
+        // files is a hashmap with keys of file current path and value as the corresponding files desired path
+        let files = {};
+        if (clipboard.from == clipboard.to) {
+          const currentFilenames = history.state.currentFilenames;
           clipboard.files.forEach((f) => {
-            let extIndex = f.name.lastIndexOf('.');
+            const extIndex = f.name.lastIndexOf('.');
             let newName = f.name.slice(0, extIndex);
-            let extension = f.name.slice(extIndex);
-            // If f.name in cur dir, try `${f.name}_copy`. 
+            const extension = f.name.slice(extIndex);
+            // If f.name in cur dir, try `${f.name}_copy`.
             if (currentFilenames.includes(newName + extension)) {
               newName += '_copy';
               // If `${f.name}_copy` exists, try `${f.name}_copy_{i}' starting at i=1 until a file doesn't exist
@@ -168,15 +169,21 @@ class ClipBoard {
                 }
               }
             }
-            files[`${clipboard.from}/${f.name}`] = `${history.state.currentDirectory}/${newName}${extension}`
+            files[`${clipboard.from}/${f.name}`] = `${clipboard.to}/${newName}${extension}`;
           });
+        } else {
+          // Don't rename files if not copying to the same directory
+          clipboard.files.forEach((f) => {
+            files[`${clipboard.from}/${f.name}`] = `${clipboard.to}/${f.name}`;
+          })
+        }
 
-          const eventData = {
-            'files': files,
-            'token': csrf_token
-          };
+        const eventData = {
+          'files': files,
+          'token': csrf_token
+        };
 
-          $(CONTENTID).trigger(FILEOPS_EVENTNAME.copyFile, eventData);
+        $(CONTENTID).trigger(FILEOPS_EVENTNAME.copyFile, eventData);
       }
       else {
         console.error('files clipboard is empty');
