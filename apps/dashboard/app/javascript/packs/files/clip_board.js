@@ -154,8 +154,15 @@ class ClipBoard {
           const currentFilenames = history.state.currentFilenames;
           clipboard.files.forEach((f) => {
             const extIndex = f.name.lastIndexOf('.');
-            let newName = f.name.slice(0, extIndex);
-            const extension = f.name.slice(extIndex);
+            let newName, extension;
+            if (extIndex == -1) {
+              // If no extension or directory, disregard extension
+              newName = f.name;
+              extension = '';
+            } else {
+              newName = f.name.slice(0, extIndex);
+              extension = f.name.slice(extIndex);
+            }
             // If f.name in cur dir, try `${f.name}_copy`.
             if (currentFilenames.includes(newName + extension)) {
               newName += '_copy';
