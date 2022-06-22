@@ -12,92 +12,36 @@ variables:
   GIT_STRATEGY: clone
   GIT_DEPTH: 0
   OOD_PACKAGING_DEBUG: 'true'
-  OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
+  OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand-sha512.sec
   OOD_PACKAGING_GPG_PASSPHRASE: /systems/osc_certs/gpg/ondemand/.gpgpass
 
-rpm-build-nightly-el7:
+build-nightly:
   stage: build
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
-    - bundle exec rake package:build[el7,true]
+    - bundle exec rake package:build[$OOD_PACKAGING_DIST,true]
+  parallel:
+    matrix:
+      - OOD_PACKAGING_DIST: el7
+        OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
+      - OOD_PACKAGING_DIST: [el8, el9, ubuntu-20.04, ubuntu-22.04]
   artifacts:
     paths:
       - dist
     name: "$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA"
 
-rpm-build-nightly-el8:
+build:
   stage: build
   rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_COMMIT_TAG
   script:
-    - bundle exec rake package:build[el8,true]
-  artifacts:
-    paths:
-      - dist
-    name: "$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA"
-
-deb-build-nightly-ubuntu-2004:
-  stage: build
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule"
-  script:
-    - bundle exec rake package:build[ubuntu-20.04,true]
-  artifacts:
-    paths:
-      - dist
-    name: "$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA"
-
-deb-build-nightly-ubuntu-2204:
-  stage: build
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule"
-  script:
-    - bundle exec rake package:build[ubuntu-22.04,true]
-  artifacts:
-    paths:
-      - dist
-    name: "$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA"
-
-rpm-build-el7:
-  stage: build
-  only:
-    - tags
-  script:
-    - bundle exec rake package:build[el7]
-  artifacts:
-    paths:
-      - dist
-    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
-
-rpm-build-el8:
-  stage: build
-  only:
-    - tags
-  script:
-    - bundle exec rake package:build[el8]
-  artifacts:
-    paths:
-      - dist
-    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
-
-deb-build-ubuntu-2004:
-  stage: build
-  only:
-    - tags
-  script:
-    - bundle exec rake package:build[ubuntu-20.04]
-  artifacts:
-    paths:
-      - dist
-    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
-
-deb-build-ubuntu-2204:
-  stage: build
-  only:
-    - tags
-  script:
-    - bundle exec rake package:build[ubuntu-22.04]
+    - bundle exec rake package:build[$OOD_PACKAGING_DIST]
+  parallel:
+    matrix:
+      - OOD_PACKAGING_DIST: el7
+        OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
+      - OOD_PACKAGING_DIST: [el8, el9, ubuntu-20.04, ubuntu-22.04]
   artifacts:
     paths:
       - dist
@@ -115,8 +59,8 @@ deploy-nightly:
 
 deploy-build:
   stage: deploy
-  only:
-    - tags
+  rules:
+    - if: $CI_COMMIT_TAG
   script:
     - mkdir tmp
     - echo "Clone ondemand-packaging branch ${OOD_PACKAGING_RELEASE}"
@@ -125,8 +69,8 @@ deploy-build:
 
 deploy:
   stage: deploy
-  only:
-    - tags
+  rules:
+    - if: $CI_COMMIT_TAG
   script:
     - mkdir tmp
     - echo "Clone ondemand-packaging branch ${OOD_PACKAGING_RELEASE}"
