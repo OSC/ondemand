@@ -130,7 +130,7 @@ def bootstrap_repos
     repos << 'epel-release'
     if host_inventory['platform_version'] =~ /^7/
       repos << 'centos-release-scl yum-plugin-priorities'
-    else
+    elsif host_inventory['platform_version'] =~ /^8/
       on hosts, 'dnf -y module enable ruby:3.0'
       on hosts, 'dnf -y module enable nodejs:14'
     end
@@ -179,7 +179,7 @@ end
 
 def install_ondemand
   if host_inventory['platform'] == 'redhat'
-    release_rpm = 'https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-6.noarch.rpm'
+    release_rpm = 'https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-7.noarch.rpm'
     on hosts, "[ -f /etc/yum.repos.d/ondemand-web.repo ] || #{packager} install -y #{release_rpm}"
     on hosts, "sed -i 's|/latest/|/build/#{build_repo_version}/|g' /etc/yum.repos.d/ondemand-web.repo"
     config_manager = if host_inventory['platform_version'] =~ /^7/
@@ -244,11 +244,7 @@ def bootstrap_user
 end
 
 def bootstrap_flask
-  if host_inventory['platform'] == 'redhat'
-    install_packages(['python3'])
-  elsif host_inventory['platform'] == 'ubuntu'
-    install_packages(['python3', 'python3-pip'])
-  end
+  install_packages(['python3', 'python3-pip'])
   on hosts, 'python3 -m pip install flask'
 end
 
