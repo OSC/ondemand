@@ -23,9 +23,9 @@ build-nightly:
     - bundle exec rake package:build[$OOD_PACKAGING_DIST,true]
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: el7
+      - OOD_PACKAGING_DIST: [el7, el8]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
-      - OOD_PACKAGING_DIST: [el8, el9, ubuntu-20.04, ubuntu-22.04]
+      - OOD_PACKAGING_DIST: [el9, ubuntu-20.04, ubuntu-22.04]
   artifacts:
     paths:
       - dist
@@ -39,9 +39,9 @@ build:
     - bundle exec rake package:build[$OOD_PACKAGING_DIST]
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: el7
+      - OOD_PACKAGING_DIST: [el7, el8]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
-      - OOD_PACKAGING_DIST: [el8, el9, ubuntu-20.04, ubuntu-22.04]
+      - OOD_PACKAGING_DIST: [el9, ubuntu-20.04, ubuntu-22.04]
   artifacts:
     paths:
       - dist
