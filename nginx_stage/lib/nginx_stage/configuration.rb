@@ -73,7 +73,7 @@ module NginxStage
 
     def passenger_options
       # Ensure that all options begin with passenger_
-      @passenger_options.select { |key, value| key.to_s.starts_with?('passenger_') }
+      @passenger_options.select { |key, value| key.to_s.start_with?('passenger_') }
     end
 
     #
