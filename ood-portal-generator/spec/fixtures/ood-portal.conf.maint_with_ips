@@ -58,6 +58,8 @@
   RewriteRule ^.*$ /public/maintenance/index.html [R=503,L]
   ErrorDocument 503 /public/maintenance/index.html
 
+  TraceEnable off
+
   Header always set Content-Security-Policy "frame-ancestors http://example.com;"
 
   # Lua configuration
