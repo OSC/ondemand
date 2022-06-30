@@ -536,6 +536,7 @@ batch_connect: { ssh_allow: true } }))
         assert_equal 1, db_dir.children.size
         assert_equal ["#{db_dir}/test_id"], db_dir.children.map(&:to_s)
         assert_equal(expected_file, JSON.parse(File.read("#{db_dir}/test_id")).to_h)
+        assert_equal('100600', File.stat("#{db_dir}/test_id").mode.to_s(8))
       end
     end
   end
