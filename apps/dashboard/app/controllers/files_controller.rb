@@ -155,14 +155,11 @@ class FilesController < ApplicationController
   end
 
   def edit
-    p = params[:filepath] || '/'
-    p = "/#{p}" unless p.start_with?('/')
-
-    @path = Pathname.new(p)
+    @path = PosixFile.new(normalized_path)
     @file_api_url = OodAppkit.files.api(path: @path).to_s
 
-    if @path.file? && @path.readable? && @path.writable?
-      @content = File.read(@path.to_s)
+    if @path.editable?
+      @content = @path.read
       render :edit, status: status, layout: 'editor'
     else
       redirect_to root_path, alert: "#{@path} is not an editable file"
