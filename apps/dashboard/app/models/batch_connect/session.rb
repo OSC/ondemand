@@ -37,10 +37,6 @@ module BatchConnect
     # @return [String] session title
     attr_accessor :title
 
-    # The view used to display the connection information for this session
-    # @return [String, nil] session view
-    attr_accessor :view
-
     # Batch connect script type
     # @return [String] script type
     attr_accessor :script_type
@@ -66,16 +62,22 @@ module BatchConnect
       nil
     end
 
+    # The view used to display the connection information for this session
+    # @return [String, nil] session view
+    def view
+      app.session_view
+    end
+
     # Return the Batch Connect app from the session token
     # @return [BatchConnect::App]
     def app
-      BatchConnect::App.from_token(self.token)
+      @app ||= BatchConnect::App.from_token(self.token)
     end
-    
+
     # Attributes used for serialization
     # @return [Hash] attributes to be serialized
     def attributes
-      %w(id cluster_id job_id created_at token title view script_type cache_completed).map do |attribute|
+      %w(id cluster_id job_id created_at token title script_type cache_completed).map do |attribute|
         [ attribute, nil ]
       end.to_h
     end
@@ -221,7 +223,6 @@ module BatchConnect
       self.id         = SecureRandom.uuid
       self.token      = app.token
       self.title      = app.title
-      self.view       = app.session_view
       self.created_at = Time.now.to_i
       self.cluster_id = context.try(:cluster).to_s
 
@@ -277,7 +278,7 @@ module BatchConnect
 
       # Submit job script
       self.job_id = adapter.submit script(content: content, options: options)
-      db_file.write(to_json)
+      db_file.write(to_json, perm: 0o0600)
       true
     rescue => e   # rescue from all standard exceptions (app never crashes)
       errors.add(:submit, e.message)
