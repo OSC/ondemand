@@ -13,7 +13,12 @@ class ProjectsController < ApplicationController
 
   # GET /projects/new
   def new
-    @project = Project.new
+    if name_or_icon_nil?
+      @project = Project.new
+    else
+      returned_params = { name: params[:name], icon: params[:icon] }
+      @project = Project.new(returned_params)
+    end
   end
 
   # GET /projects/:id/edit
@@ -25,25 +30,24 @@ class ProjectsController < ApplicationController
   def update
     @project = Project.find(params[:id])
 
-    # this validation does not have access to the new name yet to check
     if @project.valid? && @project.update(project_params)
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_manifest_updated')
     else
-      # @project.validate!
-      flash[:alert] = @project.errors[:name].last
+      flash[:alert] = @project.errors[:name].last || @project.errors[:icon].last
       redirect_to edit_project_path
     end
   end
 
   # POST /projects
   def create
+    Rails.logger.debug("Project params are: #{project_params}")
     @project = Project.new(project_params)
 
     if @project.valid? && @project.save(project_params)
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_created')
     else
-      flash[:alert] = @project.errors[:directory].last
-      redirect_to new_project_path
+      flash[:alert] = @project.errors[:name].last || @project.errors[:icon].last
+      redirect_to new_project_path(name: params[:project][:name], icon: params[:project][:icon])
     end
   end
 
@@ -55,6 +59,10 @@ class ProjectsController < ApplicationController
   end
 
   private
+
+  def name_or_icon_nil?
+    params[:name].nil? || params[:icon].nil?
+  end
 
   def project_params
     params

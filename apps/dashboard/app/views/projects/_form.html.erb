@@ -1,29 +1,53 @@
 <%= bootstrap_form_for @project do |form| %>
 
 <div class='card'>
-    <h5 class='card-header'>Project Details</h5>
-    <div class='card-body'>
-      <div class="col-md-3">
-        <p> icon placeholder </p>
-      </div>
+<h5 class='card-header'>Project Details</h5>
+  <div class='card-group'>
+      <div class='card'>
+      <div class='card-body'>
         <div class="col-md-9">
           <div class="field">
             <%= form.text_field :name, placeholder: "Project name", 
-                  help: I18n.t('dashboard.jobs_project_name_validation') %>
+                    help: I18n.t('dashboard.jobs_project_name_validation') %>
           </div>
           <div class="field">
             <%= form.text_area :description, placeholder: "Project description" %>
           </div>
         </div>
       </div>
+      </div>
+      <div class="card">
+      <div class='card-body'>
+        <div class="col-md-6">
+          <div class="field">
+          <%= javascript_include_tag 'icon_picker', nonce: true %>
+          <%= form.text_field :icon, placeholder: "fas://cog", id: "product_icon_select" %>
+            <% if @project.icon =~ /(fa[bsrl]?):\/\/(.*)/ %>
+              <% icon = $2; style = $1 %>
+              <p class="text-center">
+                <%= fa_icon(icon, fa_style: style, id: "product_icon")  %>
+              </p>
+            <% else %>
+              <p class="text-center">
+                <%= fa_icon("cog", fa_style: "fas", id: "product_icon") %>
+              </p>
+            <% end %>
+              <ul id="icon_picker_list">
+              </ul>
+          </div>
+        </div>
+      </div>
+      </div>
     </div>
-</div>
+  </div>
 <br>
-  <p>
-    <%= form.submit 'Save', class: 'btn btn-primary', title: 'Save project' %>
-    <%= form.button 'Reset', type: :reset, class: 'btn btn-default', 
-    title: 'Clear form fields' %>
-    <%= link_to 'Back', projects_path, class: 'btn btn-default', 
-    title: 'Return to projects page' %>
-  <p>
+<p>
+  <%= form.submit 'Save', class: 'btn btn-primary', title: 'Save project' %>
+  <%= form.button 'Reset', type: :reset, class: 'btn btn-default', 
+  title: 'Clear form fields' %>
+  <%= link_to 'Back', projects_path, class: 'btn btn-default', 
+  title: 'Return to projects page' %>
+<p>
 <% end %>
+</div>
+
