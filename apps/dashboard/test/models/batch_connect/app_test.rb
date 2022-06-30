@@ -240,36 +240,6 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     end
   end
 
-  test "select widgets with no options values throws error" do
-    r = PathRouter.new("test/fixtures/sys_with_interactive_apps/broken_app")
-    app = BatchConnect::App.new(router: r)
-
-    Dir.mktmpdir do |dir|
-      exception = assert_raise StandardError do 
-        app.submit_opts(app.build_session_context, staged_root: dir)
-      end
-      assert_equal "The form.yml has missing options in the node_type form field.", exception.message
-    end
-  end
-
-  test "bad submit.yml.erb files write submit.yml" do
-    r = PathRouter.new("test/fixtures/sys_with_interactive_apps/bc_paraview")
-    app = BatchConnect::App.new(router: r)
-    expected_file = <<~HEREDOC
-      ---
-      script:
-        native:
-        bad_yml_syntax
-    HEREDOC
-
-    Dir.mktmpdir do |dir|
-      assert_raise Psych::SyntaxError do 
-        app.submit_opts(app.build_session_context, staged_root: dir)
-      end
-      assert_equal expected_file, File.read("#{dir}/submit.yml")
-    end
-  end
-
   test "form element is not an array" do
     form_yml = <<~HEREDOC
       ---
