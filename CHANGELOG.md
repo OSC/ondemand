@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Adding icon picker and display, scroll bar missing border still and i… (#2019)\
+Move posix only methods in file edit route to PosixFile (#2109)\
+add an aria-label for these progress bars (#2072)\
+add accessibility doc (#2082)\
+rescue from errors here and display the error (#2084)\
+disable apache's insecure trace (#2105)
 
 ### Changed
 
