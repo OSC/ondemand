@@ -105,6 +105,15 @@ class RcloneUtil
       end
     end
 
+    def moveto(remote, path, src)
+      full_path = "#{remote}:#{path}"
+      # Move file src on the local filesystem to full_path on the remote
+      o, e, s = rclone("moveto", src, full_path)
+      if !s.success?
+        raise StandardError, "Error moving file: #{e}"
+      end
+    end
+
     def remote_type(remote)
       # Get the rclone remote type (e.g. s3) for a single remote
       o, e, s = rclone("listremotes", "--long")

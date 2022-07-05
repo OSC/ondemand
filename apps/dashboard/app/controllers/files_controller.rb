@@ -133,7 +133,7 @@ class FilesController < ApplicationController
   # POST
   def upload
     upload_path = uppy_upload_path
-    @path = PosixFile.new(upload_path)
+    @path = parse_path(upload_path)
 
     validate_path!
 
@@ -162,14 +162,14 @@ class FilesController < ApplicationController
 
   private
 
-  def normalized_path
-    Pathname.new("/" + params[:filepath].chomp("/").delete_prefix("/"))
+  def normalized_path(path = params[:filepath])
+    Pathname.new("/" + path.to_s.chomp("/").delete_prefix("/"))
   end
 
-  def parse_path
-    match = params[:filepath].match(/^(?<remote>[0-9A-Za-z_\.\- ]+:(\/)?)?(?<path>.*)$/)
+  def parse_path(path = params[:filepath])
+    match = path.to_s.match(/^(?<remote>[0-9A-Za-z_\.\- ]+:(\/)?)?(?<path>.*)$/)
     if !::Configuration.files_app_remote_files? || match[:remote].nil?
-      PosixFile.new(normalized_path)
+      PosixFile.new(normalized_path(path))
     else
       remote = match[:remote].chomp("/").chomp(":")
       path = Pathname.new("/" + match[:path].chomp("/"))
