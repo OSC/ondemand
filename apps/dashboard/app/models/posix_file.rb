@@ -99,6 +99,18 @@ class PosixFile
     FileUtils.mv(src, path)
   end
 
+  def handle_upload(tempfile)
+    path.parent.mkpath unless path.parent.directory?
+
+    FileUtils.mv tempfile, path.to_s
+
+    # Apply the user's umask on top of 0666 (-rw-rw-rw-), since the file doesn't need to be executable.
+    mode = 0666 & (0777 ^ File.umask)
+    File.chmod(mode, path.to_s)
+
+    path.chown(nil, path.parent.stat.gid) if path.parent.setgid?
+  end
+
   def can_download_as_zip?(timeout: Configuration.file_download_dir_timeout, download_directory_size_limit: Configuration.file_download_dir_max)
     can_download = false
     error = nil

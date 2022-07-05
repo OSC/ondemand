@@ -131,19 +131,12 @@ class FilesController < ApplicationController
 
   # POST
   def upload
-    path = uppy_upload_path
-    AllowlistPolicy.default.validate!(path)
+    upload_path = uppy_upload_path
+    @path = PosixFile.new(upload_path)
 
-    path.parent.mkpath unless path.parent.directory?
+    AllowlistPolicy.default.validate!(@path)
 
-    FileUtils.mv params[:file].tempfile, path.to_s
-
-    # umasks apply on top of 666 (-rw-rw-rw-) permissions. So a u mask of 022 would result
-    # in 666 - 022 = 644. Umasks are base 8 octal (what all this stuff expects).
-    mode = 0666 & (0777 ^ File.umask)
-    File.chmod(mode, path.to_s)
-
-    path.chown(nil, path.parent.stat.gid) if path.parent.setgid?
+    @path.handle_upload(params[:file].tempfile)
 
     render json: {}
   rescue AllowlistPolicy::Forbidden => e
