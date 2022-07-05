@@ -104,15 +104,15 @@ class FilesController < ApplicationController
 
   # PUT - create or update
   def update
-    path = normalized_path
-    AllowlistPolicy.default.validate!(path)
+    @path = PosixFile.new(normalized_path)
+    AllowlistPolicy.default.validate!(@path)
 
     if params.include?(:dir)
-      Dir.mkdir path
+      @path.mkdir
     elsif params.include?(:file)
-      FileUtils.mv params[:file].tempfile, path
+      @path.mv_from(params[:file].tempfile)
     elsif params.include?(:touch)
-      FileUtils.touch path
+      @path.touch
     else
       content = request.body.read
 
@@ -121,7 +121,7 @@ class FilesController < ApplicationController
       # see test cases for plain text, utf-8 text, images and binary files
       content.force_encoding('UTF-8')
 
-      File.write(path, content)
+      @path.write(content)
     end
 
     render json: {}

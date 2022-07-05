@@ -2,7 +2,7 @@ class PosixFile
 
   attr_reader :path
 
-  delegate :basename, :descend, :parent, :join, :to_s, :read, to: :path
+  delegate :basename, :descend, :parent, :join, :to_s, :read, :write, :mkdir, to: :path
 
   class << self
     def stat(path)
@@ -89,6 +89,14 @@ class PosixFile
 
   def editable?
     path.file? && path.readable? && path.writable?
+  end
+
+  def touch
+    FileUtils.touch(path)
+  end
+
+  def mv_from(src)
+    FileUtils.mv(src, path)
   end
 
   def can_download_as_zip?(timeout: Configuration.file_download_dir_timeout, download_directory_size_limit: Configuration.file_download_dir_max)
