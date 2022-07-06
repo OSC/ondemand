@@ -168,10 +168,13 @@ class FilesController < ApplicationController
 
   def parse_path
     match = params[:filepath].match(/^(?<remote>[0-9A-Za-z_\.\- ]+:(\/)?)?(?<path>.*)$/)
-    return PosixFile.new(normalized_path) if match[:remote].nil?
-    remote = match[:remote].chomp("/").chomp(":")
-    path = Pathname.new("/" + match[:path].chomp("/"))
-    return RemoteFile.new(path, remote)
+    if !::Configuration.files_app_remote_files? || match[:remote].nil?
+      PosixFile.new(normalized_path)
+    else
+      remote = match[:remote].chomp("/").chomp(":")
+      path = Pathname.new("/" + match[:path].chomp("/"))
+      RemoteFile.new(path, remote)
+    end
   end
 
   def validate_path!

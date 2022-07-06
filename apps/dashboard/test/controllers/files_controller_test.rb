@@ -1,6 +1,11 @@
 require "test_helper"
 
 class FilesControllerTest < ActionController::TestCase
+
+  def setup
+    Configuration.stubs(:files_app_remote_files?).returns(true)
+  end
+
   test "empty path is parsed" do
     @controller.stubs(:params).returns({ :filepath => "" })
     path = @controller.send(:parse_path)
@@ -67,5 +72,13 @@ class FilesControllerTest < ActionController::TestCase
     assert_kind_of RemoteFile, path
     assert_equal "/foo/bar", path.path.to_s
     assert_equal "my_REMOTE 1.2-", path.remote
+  end
+
+  test "path is posix path if remote files feature is disabled" do
+    Configuration.stubs(:files_app_remote_files?).returns(false)
+    @controller.stubs(:params).returns({ :filepath => "myremote:/foo/bar/file.txt" })
+    path = @controller.send(:parse_path)
+    assert_kind_of PosixFile, path
+    assert_equal "/myremote:/foo/bar/file.txt", path.path.to_s
   end
 end
