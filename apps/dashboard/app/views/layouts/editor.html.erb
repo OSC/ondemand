@@ -5,6 +5,7 @@
 
   <title><%= "File Editor - #{OodAppkit.dashboard.title}" %><%= @path.nil? ? "" : " - #{@path.basename.to_s}" %></title>
   <%= favicon_link_tag 'favicon.ico', href: OodAppkit.public.url.join('favicon.ico'), skip_pipeline: true %>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <%= javascript_include_tag 'application', nonce: true %>
   <%= javascript_include_tag 'editor', nonce: true %>
@@ -18,7 +19,7 @@
     data-link-bg-color="<%= Configuration.brand_link_active_bg_color %>"
   />
 </head>
-<body>
+<body class="d-flex h-100">
 
 <header>
   <!-- navbar  -->
@@ -255,7 +256,7 @@
   </nav>
 </header>
 
-<div class="container" role="main">
+<div class="flex-grow-1 mb-n5" role="main">
 
   <% if alert %>
       <div class="alert alert-danger alert-dismissible" role="alert">
