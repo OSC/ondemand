@@ -46,6 +46,7 @@
   font-size: 11px;
   height: 20px;
   padding-top: 0px;
+  padding-bottom: 0px;
 }
 
 .editor-navbar .control-label {
@@ -54,6 +55,11 @@
 
 #save-button {
   min-width: 80px;
+  background-color:rgb(2,117,216);
+  padding: 5px;
+  border-radius: 5px;
+  margin-left: 0.5rem;
+  margin-top: 3px;
 }
 
 // Custom Callouts
