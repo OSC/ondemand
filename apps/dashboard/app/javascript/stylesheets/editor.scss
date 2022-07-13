@@ -20,13 +20,6 @@
   animation: spin 1000ms infinite linear;
 }
 
-#editor-filename {
-  margin: 0;
-  color: white;
-  margin-left: 1em;
-  flex-grow: 1;
-}
-
 @-webkit-keyframes spin {
   0% {
     -webkit-transform: rotate(0deg);
