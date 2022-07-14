@@ -1,16 +1,15 @@
 require "rclone_util"
 
 class RemoteFile
-  attr_reader :path, :full_path, :remote
+  attr_reader :path, :remote
 
-  delegate :basename, :descend, :parent, :join, :to_s, to: :full_path
+  delegate :basename, :descend, :parent, :join, :to_s, to: :path
 
   def initialize(path, remote)
     # accepts both String and Pathname
     # avoids converting to Pathname in every function
     @path = Pathname.new(path)
     @remote = remote
-    @full_path = Pathname.new("#{@remote}:#{@path}")
   end
 
   def remote_type

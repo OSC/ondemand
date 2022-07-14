@@ -26,7 +26,7 @@ class RemoteFilesIntegrationTest < ActionDispatch::IntegrationTest
         src_file = "test/fixtures/files/upload/#{filename}"
         # Upload to subdirectory of tmpdir
         dest_file = "/files/#{filename}"
-        put_file("#{files_path}/alias_remote:#{dest_file}", src_file, content_type: content_type)
+        put_file(files_path('alias_remote', dest_file), src_file, content_type: content_type)
 
         assert :success
         assert_equal '{}', @response.body

@@ -67,7 +67,8 @@ jQuery(function() {
   uppy = new Uppy({
     restrictions: {
       maxFileSize: maxFileSize,
-    }
+    },
+    onBeforeUpload: updateEndpoint,
   });
   
   uppy.use(EmptyDirCreator);
@@ -83,7 +84,6 @@ jQuery(function() {
     note: 'Empty directories will be included in the upload only when a directory upload is initiated via drag and drop. This is because the File and Directory Entries API is available only on a drop event, not during an input change event.'
   });
   uppy.use(XHRUpload, {
-    endpoint: filesUploadPath,
     withCredentials: true,
     fieldName: 'file',
     limit: 1,
@@ -164,6 +164,12 @@ function getEmptyDirs(entry){
         }
       })
     }
+  });
+}
+
+function updateEndpoint() {
+  uppy.getPlugin('XHRUpload').setOptions({
+    endpoint: history.state.currentFilesUploadPath,
   });
 }
 

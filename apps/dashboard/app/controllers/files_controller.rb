@@ -2,12 +2,10 @@ class FilesController < ApplicationController
   include ActionController::Live
   include ZipTricks::RailsStreaming
 
+  before_action :parse_path, :validate_path!, except: :upload
+
   def fs
     request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
-
-    @path = parse_path
-
-    validate_path!
 
     if @path.directory?
       @path.raise_if_cant_access_directory_contents
@@ -104,9 +102,6 @@ class FilesController < ApplicationController
 
   # PUT - create or update
   def update
-    @path = parse_path
-
-    validate_path!
 
     if params.include?(:dir)
       @path.mkdir
@@ -133,8 +128,8 @@ class FilesController < ApplicationController
   # POST
   def upload
     upload_path = uppy_upload_path
-    @path = parse_path(upload_path)
 
+    parse_path(upload_path)
     validate_path!
 
     @path.handle_upload(params[:file].tempfile)
@@ -149,9 +144,6 @@ class FilesController < ApplicationController
   end
 
   def edit
-    @path = parse_path
-    @file_api_url = OodAppkit.files.api(path: @path).to_s
-
     if @path.editable?
       @content = @path.read
       render :edit, status: status, layout: 'editor'
@@ -166,14 +158,14 @@ class FilesController < ApplicationController
     Pathname.new("/" + path.to_s.chomp("/").delete_prefix("/"))
   end
 
-  def parse_path(path = params[:filepath])
-    match = path.to_s.match(/^(?<remote>[0-9A-Za-z_\.\- ]+:(\/)?)?(?<path>.*)$/)
-    if !::Configuration.files_app_remote_files? || match[:remote].nil?
-      PosixFile.new(normalized_path(path))
-    else
-      remote = match[:remote].chomp("/").chomp(":")
-      path = Pathname.new("/" + match[:path].chomp("/"))
-      RemoteFile.new(path, remote)
+  def parse_path(path = params[:filepath], filesystem = params[:fs])
+    normal_path = normalized_path(path)
+    if filesystem == 'fs'
+      @path = PosixFile.new(normal_path)
+      @filesystem = 'fs'
+    elsif ::Configuration.files_app_remote_files? && filesystem != 'fs'
+      @path = RemoteFile.new(normal_path, filesystem)
+      @filesystem = filesystem
     end
   end
 
