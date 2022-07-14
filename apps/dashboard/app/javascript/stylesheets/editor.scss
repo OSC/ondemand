@@ -1,9 +1,5 @@
-
 #editor {
   margin: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
   height: 100%;
 }
 
@@ -43,23 +39,23 @@
 }
 
 .input-xs, select.input-xs {
-  font-size: 11px;
-  height: 20px;
-  padding-top: 0px;
-  padding-bottom: 0px;
+  font-size: 0.7em;
+  height: 2em;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .editor-navbar .control-label {
-  font-size: 11px;
+  font-size: 0.7em;
 }
 
 #save-button {
-  min-width: 80px;
+  min-width: 5em;
   background-color:rgb(2,117,216);
-  padding: 5px;
-  border-radius: 5px;
+  padding: 0.3em;
+  border-radius: 0.3em;
   margin-left: 0.5rem;
-  margin-top: 3px;
+  margin-top: 0.2em;
 }
 
 // Custom Callouts
