@@ -3,7 +3,7 @@
     <li class="breadcrumb-item">
       <%= link_to "Home", root_path %>
     </li>
-    <% if current_page?(action: "index") %>
+    <% if current_page?({action: "index"}) %>
     <li class="breadcrumb-item active">
       <%= products_title(@type) %>
     </li>
