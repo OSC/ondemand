@@ -1,9 +1,9 @@
 require 'html_helper'
 require 'test_helper'
 
-# Test the feature for configuring landing pages through ConfigurationSingleton#dashboard_layout.
+# Test the feature for configuring landing pages through UserConfiguration#dashboard_layout.
 
-# Note that the default layout (having no ConfigurationSingleton#dashboard_layout set)
+# Note that the default layout (having no UserConfiguration#dashboard_layout set)
 # and variants (MOTD enabled/disabled, XDMOD & MOTD enabled/disabled and so on) are handled
 # by pinned_apps_test.rb.
 class DashboardLayoutTest < ActionDispatch::IntegrationTest
@@ -27,7 +27,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
 
   test "should show nothing when nothing is given" do
     # XDMOD here isn't really 
-    Configuration.stubs(:dashboard_layout).returns({})
+    UserConfiguration.any_instance.stubs(:dashboard_layout).returns({})
 
     get '/'
 
@@ -35,7 +35,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
   end
 
   test "nil MOTD and pinned apps render empty elements" do
-    Configuration.stubs(:dashboard_layout).returns({
+    UserConfiguration.any_instance.stubs(:dashboard_layout).returns({
       rows: [
         {
           columns: [
@@ -70,7 +70,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
   end
 
   test "shows MOTD a single row, single column" do
-    Configuration.stubs(:dashboard_layout).returns({
+    UserConfiguration.any_instance.stubs(:dashboard_layout).returns({
       rows: [
         {
           columns: [
@@ -97,7 +97,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
   end
 
   test "shows widgets with one row and two columns" do
-    Configuration.stubs(:dashboard_layout).returns({
+    UserConfiguration.any_instance.stubs(:dashboard_layout).returns({
       rows: [
         {
           columns: [
@@ -141,7 +141,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
 
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
-    Configuration.stubs(:pinned_apps).returns([
+    UserConfiguration.any_instance.stubs(:pinned_apps).returns([
       'sys/bc_jupyter',
       'sys/bc_paraview',
       'sys/bc_desktop/owens',
@@ -172,13 +172,13 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
   test "shows widgets on a second row" do
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
-    Configuration.stubs(:pinned_apps).returns([
+    UserConfiguration.any_instance.stubs(:pinned_apps).returns([
       'sys/bc_jupyter',
       'sys/bc_paraview',
       'sys/bc_desktop/owens',
       'sys/pseudofun',
     ])
-    Configuration.stubs(:dashboard_layout).returns({
+    UserConfiguration.any_instance.stubs(:dashboard_layout).returns({
       rows: [
         {
           columns: [
@@ -230,7 +230,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
   end
 
   test "bad widgets don't throw errors" do
-    Configuration.stubs(:dashboard_layout).returns({
+    UserConfiguration.any_instance.stubs(:dashboard_layout).returns({
       rows: [
         {
           columns: [
@@ -261,7 +261,7 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
   end
 
   test "should render brand new widgets with shipped widgets" do
-    Configuration.stubs(:dashboard_layout).returns({
+    UserConfiguration.any_instance.stubs(:dashboard_layout).returns({
       rows: [
         {
           columns: [

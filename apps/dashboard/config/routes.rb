@@ -87,6 +87,8 @@ Rails.application.routes.draw do
     delete "/activejobs" => "active_jobs#delete_job",  as: 'delete_job'
   end
 
+  post "settings", :to => "settings#update"
+
   match "/404", :to => "errors#not_found", :via => :all
   match "/500", :to => "errors#internal_server_error", :via => :all
 

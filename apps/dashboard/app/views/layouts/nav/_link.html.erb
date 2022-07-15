@@ -5,8 +5,9 @@ url - required - link url string
 faicon - optional, default "cog" - font awesome icon to use
 target - optional, default "_self" - link target
 role - optional, default ""
+method - optional, data-method for the link
 %>
-<%= tag.a href: local_assigns.fetch(:url), target: local_assigns.fetch(:target, '_self'), class: "dropdown-item m-auto #{local_assigns.fetch(:role, nil)}" do %>
+<%= tag.a href: local_assigns.fetch(:url), target: local_assigns.fetch(:target, '_self'), class: "dropdown-item m-auto #{local_assigns.fetch(:role, nil)}",  'data-method': local_assigns.fetch(:method, nil) do %>
   <%= tag.i class: "fas fa-fw fa-#{local_assigns.fetch(:faicon, 'cog')}" %>
   <%= tag.span do %>
     <%= local_assigns.fetch(:title, 'No title') %>

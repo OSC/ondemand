@@ -3,12 +3,16 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  before_action :set_user, :set_pinned_apps, :set_nav_groups, :set_announcements
+  before_action :set_user, :set_user_configuration, :set_pinned_apps, :set_nav_groups, :set_announcements
   before_action :set_my_balances, only: [:index, :new, :featured]
   before_action :set_featured_group
 
   def set_user
     @user = CurrentUser
+  end
+
+  def set_user_configuration
+    @user_configuration ||= UserConfiguration.new
   end
 
   def set_nav_groups
@@ -53,11 +57,11 @@ class ApplicationController < ActionController::Base
   end
 
   def pinned_app_group
-    OodAppGroup.groups_for(apps: @pinned_apps, nav_limit: ::Configuration.pinned_apps_menu_length)
+    OodAppGroup.groups_for(apps: @pinned_apps, nav_limit: @user_configuration.pinned_apps_menu_length)
   end
 
   def set_pinned_apps
-    @pinned_apps ||= Router.pinned_apps(::Configuration.pinned_apps, nav_all_apps)
+    @pinned_apps ||= Router.pinned_apps(@user_configuration.pinned_apps, nav_all_apps)
   end
 
   def set_announcements

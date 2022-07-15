@@ -20,11 +20,12 @@ module ApplicationHelper
   # @param icon [String] favicon icon name (i.e. "refresh" "for "fa "fa-refresh")
   # @param url [#to_s, nil] url to access
   # @param role [String] app role i.e. "vdi", "shell", etc.
+  # @param method [String] change the method used in this link.
   # @return nil if url not set or the HTML string for the bootstrap nav link
-  def nav_link(title, icon, url, target: '', role: nil)
+  def nav_link(title, icon, url, target: '', role: nil, method: nil)
     if url
       render partial: 'layouts/nav/link',
-             locals:  { title: title, faicon: icon, url: url.to_s, target: target, role: role }
+             locals:  { title: title, faicon: icon, url: url.to_s, target: target, role: role, method: method }
     end
   end
 
@@ -71,5 +72,14 @@ module ApplicationHelper
     else
       image_tag icon_uri.to_s, class: 'app-icon', title: icon_uri.to_s, "aria-hidden": true
     end
+  end
+
+  def profile_links
+    @user_configuration.profile_links
+  end
+
+  def profile_link(profile_info)
+    profile_id = profile_info[:id]
+    nav_link(profile_info.fetch(:name, profile_id), profile_info.fetch(:icon, "user"), settings_path("settings[profile]" => profile_id), method: "post") if profile_id
   end
 end
