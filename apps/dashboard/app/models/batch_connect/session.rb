@@ -278,7 +278,7 @@ module BatchConnect
       content = opts.fetch(:content, "")
       options = opts.fetch(:options, {})
 
-      OodCore::Job::Script.new(options.merge(content: content))
+      OodCore::Job::Script.new(**options.merge(content: content))
     end
 
     # The content of the batch script used for this session

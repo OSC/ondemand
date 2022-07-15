@@ -317,7 +317,7 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
     BatchConnect::Session.any_instance.stubs(:info).returns(info)
     OodCore::Job::Info.any_instance.stubs(:ood_connection_info).returns(connect)
     session = BatchConnect::Session.new
-    session.stage(app: bc_jupyter_app, context: bc_jupyter_app.build_session_context)
+    session.stage(bc_jupyter_app, context: bc_jupyter_app.build_session_context)
 
     assert session.connection_in_info?
     assert !session.starting?
@@ -335,7 +335,7 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       BatchConnect::Session.any_instance.stubs(:id).returns('test-id')
       BatchConnect::Session.any_instance.stubs(:info).returns(info)
       session = BatchConnect::Session.new
-      session.stage(app: bc_jupyter_app, context: bc_jupyter_app.build_session_context)
+      session.stage(bc_jupyter_app, context: bc_jupyter_app.build_session_context)
 
       assert !session.connection_in_info?
       assert session.starting?
@@ -358,7 +358,7 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       BatchConnect::Session.any_instance.stubs(:id).returns('test-id')
       BatchConnect::Session.any_instance.stubs(:info).returns(info)
       session = BatchConnect::Session.new
-      session.stage(app: bc_jupyter_app, context: bc_jupyter_app.build_session_context)
+      session.stage(bc_jupyter_app, context: bc_jupyter_app.build_session_context)
 
       File.open(session.connect_file, 'w') { |file| file.write(connect.to_yaml) }
 
@@ -375,7 +375,7 @@ class BatchConnect::SessionTest < ActiveSupport::TestCase
       session = BatchConnect::Session.new
 
       assert !Dir.exist?(session.staged_root)
-      session.stage(app: bc_jupyter_app, context: bc_jupyter_app.build_session_context)
+      session.stage(bc_jupyter_app, context: bc_jupyter_app.build_session_context)
       assert Dir.exist?(session.staged_root)
     end
   end

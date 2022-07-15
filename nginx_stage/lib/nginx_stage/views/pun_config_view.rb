@@ -107,7 +107,7 @@ module NginxStage
     # @return [Array<String>] list of wildcard app config paths
     def app_configs
       NginxStage.pun_app_configs(user: user).map do |envmt|
-        NginxStage.app_config_path envmt
+        NginxStage.app_config_path **envmt
       end
     end
 

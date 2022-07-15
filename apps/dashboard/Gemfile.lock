@@ -188,6 +188,8 @@ GEM
     request_store (1.5.1)
       rack (>= 1.4)
     rexml (3.2.5)
+    rss (0.2.9)
+      rexml
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
     sass (3.7.4)
@@ -245,6 +247,7 @@ GEM
       rack-proxy (>= 0.6.1)
       railties (>= 5.2)
       semantic_range (>= 2.3.0)
+    webrick (1.7.0)
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -281,6 +284,7 @@ DEPENDENCIES
   pbs (~> 2.2.1)
   rails (= 5.2.8)
   redcarpet (~> 3.3)
+  rss (~> 0.2)
   sass-rails (~> 5.0)
   sdoc
   selenium-webdriver
@@ -291,6 +295,7 @@ DEPENDENCIES
   turbolinks (~> 5.2.0)
   uglifier (>= 1.3.0)
   webpacker (~> 5.2, >= 5.2.1)
+  webrick
   zip_tricks (~> 5.5)
 
 BUNDLED WITH
