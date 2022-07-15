@@ -24,7 +24,9 @@ RUN dnf -y update && \
 RUN sed -i 's#^CREATE_MAIL_SPOOL=yes#CREATE_MAIL_SPOOL=no#' /etc/default/useradd; \
     grep $GID /etc/group >/dev/null || groupadd -g $GID $USER; \
     useradd -l -u $UID --create-home --gid $GID $USER && \
-    sudo -u $USER mkdir -p /home/$USER/ondemand && \
+    sudo -u $USER mkdir -p /home/$USER/ondemand/dev && \
+    mkdir -p "/var/www/ood/apps/dev/$USER" && \
+    ln -s "/home/$USER/ondemand/dev" "/var/www/ood/apps/dev/$USER/gateway" && \
     echo "$USER ALL=(ALL) NOPASSWD:ALL" >/etc/sudoers.d/$USER
 
 RUN sed -i 's|--rpm|--rpm -f --insecure|g' /etc/systemd/system/httpd.service.d/ood-portal.conf
