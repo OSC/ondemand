@@ -42,7 +42,7 @@ describe 'OnDemand browser test' do
 
   it 'redirects /pun/sys/file-editor and preserves the file' do
     browser.goto "#{ctr_base_url}/pun/sys/file-editor/edit/home/ood/.bashrc"
-    expect(browser.url).to eq("#{ctr_base_url}/pun/sys/dashboard/files/edit/home/ood/.bashrc")
+    expect(browser.url).to eq("#{ctr_base_url}/pun/sys/dashboard/files/edit/fs/home/ood/.bashrc")
     expect(browser.title).to eq('File Editor - Open OnDemand - .bashrc')
   end
 

@@ -4,3 +4,4 @@ bc_dynamic_js: true
 per_cluster_dataroot: true
 file_navigator: true
 jobs_app_alpha: true
+files_app_remote_files: true

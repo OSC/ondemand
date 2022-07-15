@@ -1,6 +1,6 @@
 <% if file_counter == 0 %>
   <li class="breadcrumb-item">
-    <a href="<%= files_path(full_path.parent) %>" style="margin-right: 20px;" class="d btn btn-outline-dark btn-sm" title="Go up directory">
+    <a href="<%= files_path(@filesystem, full_path.parent) %>" style="margin-right: 20px;" class="d btn btn-outline-dark btn-sm" title="Go up directory">
       <span class="fa fa-arrow-up"></span></a>
   </li>
 <% end %>
@@ -17,6 +17,6 @@
   </li>
 <% else %>
   <li class="breadcrumb-item">
-    <%= link_to path_segment_with_slash(file.basename.to_s, file_counter, file_count), files_path(file), class: (file_counter == (file_count - 1) ? 'd active' : 'd')  %>
+    <%= link_to path_segment_with_slash(file.basename.to_s, file_counter, file_count), files_path(@filesystem, file), class: (file_counter == (file_count - 1) ? 'd active' : 'd')  %>
   </li>
 <% end %>

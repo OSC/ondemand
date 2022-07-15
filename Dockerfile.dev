@@ -17,6 +17,8 @@ RUN dnf -y update && \
     dnf config-manager --set-enabled powertools && \
     dnf -y module enable nodejs:14 ruby:3.0 && \
     dnf install -y ondemand ondemand-dex && \
+    dnf install -y epel-release && \
+    dnf install -y rclone && \
     dnf clean all && rm -rf /var/cache/dnf/*
 
 RUN sed -i 's#^CREATE_MAIL_SPOOL=yes#CREATE_MAIL_SPOOL=no#' /etc/default/useradd; \

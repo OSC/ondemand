@@ -42,7 +42,8 @@ class ConfigurationSingleton
       :bc_dynamic_js                => false,
       :per_cluster_dataroot         => false,
       :file_navigator               => false,
-      :jobs_app_alpha               => false
+      :jobs_app_alpha               => false,
+      :files_app_remote_files       => false,
     }.freeze
   end
 
