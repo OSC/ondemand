@@ -3,8 +3,8 @@
 
 <h3><%= t('dashboard.pinned_apps_title') %> <small><%= t('dashboard.pinned_apps_caption_html', all_apps_url: apps_index_path) %></small></h3>
 
-<%- if Configuration.pinned_apps_group_by.present? -%>
-  <%= render(partial: "/widgets/pinned_apps/group", collection: OodAppGroup.groups_for(apps: @pinned_apps, group_by: Configuration.pinned_apps_group_by.to_sym))  %>
+<%- if @user_configuration.pinned_apps_group_by.present? -%>
+  <%= render(partial: "/widgets/pinned_apps/group", collection: OodAppGroup.groups_for(apps: @pinned_apps, group_by: @user_configuration.pinned_apps_group_by.to_sym))  %>
 <%- else -%>
   <div class="row">
     <%= render partial: "/widgets/pinned_apps/app", collection: @pinned_apps %>

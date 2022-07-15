@@ -1,0 +1,8 @@
+key_1: root_value_1
+key_2: root_value_2
+profiles:
+  profile1:
+    key_1: profile1_value_1
+  profile2:
+    key_1: profile2_value_1
+

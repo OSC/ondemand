@@ -34,7 +34,7 @@ module DashboardHelper
 
   def dashboard_layout
     #FIXME: should sanitize the landing_page_layout or cast somethings to Array in the upper layers
-    Configuration.dashboard_layout || default_dashboard_layout
+    @user_configuration.dashboard_layout || default_dashboard_layout
   end
 
   def render_widget(widget)
