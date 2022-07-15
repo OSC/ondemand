@@ -38,6 +38,7 @@ end
 group :test do
   gem "capybara"
   gem "selenium-webdriver"
+  gem "webrick"
 end
 
 group :development do
@@ -81,3 +82,4 @@ gem "dalli", require: false
 
 gem 'webpacker', '~> 5.2', '>= 5.2.1'
 gem 'zip_tricks', '~> 5.5'
+gem 'rss', '~> 0.2'
