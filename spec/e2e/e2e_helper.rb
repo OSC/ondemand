@@ -177,9 +177,9 @@ end
 
 def install_ondemand
   if host_inventory['platform'] == 'redhat'
-    release_rpm = 'https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-7.noarch.rpm'
+    release_rpm = "https://yum.osc.edu/ondemand/latest/ondemand-release-web-#{build_repo_version}-1.noarch.rpm"
     on hosts, "[ -f /etc/yum.repos.d/ondemand-web.repo ] || #{packager} install -y #{release_rpm}"
-    on hosts, "sed -i 's|/latest/|/build/#{build_repo_version}/|g' /etc/yum.repos.d/ondemand-web.repo"
+    on hosts, "sed -i 's|/#{build_repo_version}/|/build/#{build_repo_version}/|g' /etc/yum.repos.d/ondemand-web.repo"
     config_manager = if host_inventory['platform_version'] =~ /^7/
                        'yum-config-manager'
                      else
@@ -189,9 +189,9 @@ def install_ondemand
     install_packages(['ondemand', 'ondemand-dex', 'ondemand-selinux'])
   elsif host_inventory['platform'] == 'ubuntu'
     install_packages(['wget'])
-    on hosts, 'wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest_1_all.deb'
+    on hosts, "wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/latest/ondemand-release-web_#{build_repo_version}.0_all.deb"
     install_packages(['/tmp/ondemand-release.deb'])
-    on hosts, "sed -i 's|/latest/|/build/#{build_repo_version}/|g' /etc/apt/sources.list.d/ondemand-web.list"
+    on hosts, "sed -i 's|/#{build_repo_version}/|/build/#{build_repo_version}/|g' /etc/apt/sources.list.d/ondemand-web.list"
     on hosts, 'apt-get update'
     install_packages(['ondemand', 'ondemand-dex'])
   end
