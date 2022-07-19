@@ -13,6 +13,10 @@ module BuildUtils
     tag? ? git_tag : "#{git_tag}-#{git_hash}"
   end
 
+  def build_timestamp
+    @build_timestamp ||= Time.now.strftime("%s")
+  end
+
   def git_hash
     @git_hash ||= `git rev-parse HEAD`.strip[0..6]
   end
@@ -27,6 +31,19 @@ module BuildUtils
 
   def tag?
     @tag ||= `git describe --exact-match --tags HEAD 2>/dev/null`.to_s != ""
+  end
+
+  def ood_package_version
+    @ood_package_version ||= begin
+      if ENV['VERSION']
+        ENV['VERSION'].to_s
+      elsif ENV['CI_COMMIT_TAG']
+        ENV['CI_COMMIT_TAG'].to_s
+      else
+        tag? ? git_tag : "#{git_tag}.#{build_timestamp}-#{git_hash}"
+      end
+    end
+    @ood_package_version.gsub(/^v/, '')
   end
 
   def podman_runtime?

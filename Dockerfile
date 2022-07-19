@@ -1,11 +1,12 @@
-FROM centos:8
+FROM rockylinux:8
 LABEL maintainer="tdockendorf@osc.edu; johrstrom@osc.edu"
 
 ARG VERSION=latest
 ARG CONCURRENCY=4
 
 # setup the ondemand repositories
-RUN dnf -y install https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-6.noarch.rpm
+RUN dnf -y install https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-6.noarch.rpm && \
+    sed -i 's|/latest/|/build/2.0/|g' /etc/yum.repos.d/ondemand-web.repo
 
 # install all the dependencies
 RUN dnf -y update && \

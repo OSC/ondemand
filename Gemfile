@@ -7,6 +7,10 @@ git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 gem "rake"
 gem "bcrypt"
 
+group :package do
+  gem 'ood_packaging', '0.0.1.r2.0'
+end
+
 group :test do
   gem "rspec"
   gem "watir"

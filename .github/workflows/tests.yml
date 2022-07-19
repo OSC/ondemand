@@ -76,6 +76,7 @@ jobs:
 
   e2e-tests:
     strategy:
+      fail-fast: false
       matrix:
         dist: ["el7", "el8"]
         version: ["2.0"]
@@ -96,9 +97,10 @@ jobs:
           bundler-cache: true
 
       - name: Build package
-        run: bundle exec rake package:rpm[${{ matrix.dist }},'-v']
+        run: bundle exec rake package:build[${{ matrix.dist }}]
         env:
           VERSION: "${{ matrix.version }}.0"
+          OOD_PACKAGING_DEBUG: 'true'
 
       - name: Run package tests
         run: bundle exec rake test:e2e
