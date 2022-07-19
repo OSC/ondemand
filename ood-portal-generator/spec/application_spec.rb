@@ -310,12 +310,20 @@ describe OodPortalGenerator::Application do
 
     it 'should use SCL apache' do
       allow(OodPortalGenerator).to receive(:scl_apache?).and_return(true)
+      allow(OodPortalGenerator).to receive(:debian?).and_return(false)
       expect(described_class.apache).to eq('/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf')
     end
 
     it 'should not use SCL apache' do
       allow(OodPortalGenerator).to receive(:scl_apache?).and_return(false)
+      allow(OodPortalGenerator).to receive(:debian?).and_return(false)
       expect(described_class.apache).to eq('/etc/httpd/conf.d/ood-portal.conf')
+    end
+
+    it 'should work for Debian systems' do
+      allow(OodPortalGenerator).to receive(:scl_apache?).and_return(false)
+      allow(OodPortalGenerator).to receive(:debian?).and_return(true)
+      expect(described_class.apache).to eq('/etc/apache2/sites-available/ood-portal.conf')
     end
 
     it 'handles prefix from env' do
