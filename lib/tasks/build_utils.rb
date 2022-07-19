@@ -1,4 +1,7 @@
 # frozen_string_literal: true
+require 'erb'
+require 'dotenv'
+require 'tempfile'
 
 module BuildUtils
   def proj_root
