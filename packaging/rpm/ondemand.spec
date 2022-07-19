@@ -38,13 +38,11 @@ Source2:   ondemand-selinux.fc
 %define apache_confd /etc/httpd/conf.d
 %define apache_service httpd
 %define apache_daemon /usr/sbin/httpd
-%define htcacheclean_service htcacheclean
 %else
 %bcond_without scl_apache
 %define apache_confd /opt/rh/httpd24/root/etc/httpd/conf.d
 %define apache_service httpd24-httpd
 %define apache_daemon /opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper
-%define htcacheclean_service httpd24-htcacheclean
 %endif
 
 # Disable automatic dependencies as it causes issues with bundled gems and
@@ -225,7 +223,7 @@ semodule -r %{name}-selinux 2>/dev/null || :
 %postun
 if [ "$1" -eq 0 ]; then
 /bin/systemctl daemon-reload &>/dev/null || :
-/bin/systemctl try-restart %{apache_service}.service %{htcacheclean_service}.service &>/dev/null || :
+/bin/systemctl try-restart %{apache_service}.service &>/dev/null || :
 fi
 
 %postun selinux
@@ -249,7 +247,7 @@ touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 # Rebuild Apache config and restart Apache httpd if config changed
 /opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm --detailed-exitcodes
 if [[ $? -eq 3 ]] ; then
-/bin/systemctl try-restart %{apache_service}.service %{htcacheclean_service}.service &>/dev/null || :
+/bin/systemctl try-restart %{apache_service}.service &>/dev/null || :
 fi
 
 

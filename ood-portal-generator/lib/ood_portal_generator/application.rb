@@ -81,9 +81,9 @@ module OodPortalGenerator
 
       def apache_services
         if OodPortalGenerator.scl_apache?
-          ['httpd24-httpd', 'httpd24-htcacheclean']
+          ['httpd24-httpd']
         else
-          ['httpd', 'htcacheclean']
+          ['httpd']
         end
       end
 
