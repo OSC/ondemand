@@ -6,6 +6,7 @@ git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 
 gem "rake"
 gem "bcrypt"
+gem 'dotenv', '~> 2.1'
 
 group :package do
   gem 'ood_packaging', '0.0.1.r2.0'
