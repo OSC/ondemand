@@ -137,7 +137,7 @@ set -e
 %__mkdir_p %{buildroot}%{gem_home}
 %__mv ./gems-build/* %{buildroot}%{gem_home}/
 export GEM_PATH=%{buildroot}%{gem_home}:$GEM_PATH
-rake --trace install PREFIX=%{buildroot}/opt/ood
+rake --trace install DESTDIR=%{buildroot}
 
 %__rm %{buildroot}/opt/ood/apps/*/log/production.log
 echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION
