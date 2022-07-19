@@ -4,6 +4,10 @@ namespace :package do
   require_relative 'build_utils'
   include BuildUtils
 
+  task :version do
+    puts ood_package_version
+  end
+
   def image_exists?(image_name)
     `#{container_runtime} inspect --type image --format exists #{image_name} || true`.chomp.eql?('exists')
   end
