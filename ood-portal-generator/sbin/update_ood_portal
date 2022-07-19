@@ -1,12 +1,21 @@
 #!/usr/bin/env bash
 
-SCL_SOURCE=$(command -v scl_source)
-# Source in the custom environment
-# shellcheck source=/dev/null
-[[ "${SCL_SOURCE}" ]] && source "${SCL_SOURCE}" enable ondemand &> /dev/null
-
+# Root directory for this library
+#
 ROOT_DIR="$(dirname "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")")"
 NAME=$(basename "$0")
+
+# Source in the default environment
+# shellcheck source=/etc/profile
+source "${ROOT_DIR}/etc/profile"
+
+# Allow admin to override the environment the PUN runs in
+OOD_PROFILE=${OOD_PROFILE:-/etc/ood/profile}
+if [[ -f "${OOD_PROFILE}" ]]; then
+  # Source in the custom environment
+  # shellcheck source=ood-portal-generator/etc/profile
+  source "${OOD_PROFILE}"
+fi
 
 exec \
   /usr/bin/env ruby \
