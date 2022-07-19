@@ -8,6 +8,7 @@ RSpec.configure do |c|
     bootstrap_repos
     ondemand_repo
     install_ondemand
+    fix_apache
     upload_portal_config('portal.yml')
     update_ood_portal
     restart_apache

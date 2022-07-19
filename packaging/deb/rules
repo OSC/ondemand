@@ -1,0 +1,74 @@
+#!/usr/bin/make -f
+# You must remove unused comment lines for the released package.
+export DH_VERBOSE         = 1
+export NCPUS              = 4
+export DESTDIR            = $(CURDIR)/debian/ondemand
+export GEM_HOME           = $(CURDIR)/gems
+export GEM_PATH           = $(GEM_HOME):$(DESTDIR)/opt/ood/gems:$(shell printenv GEM_PATH)
+export APACHE_DIR         = "$(DESTDIR)/var/www/ood"
+export APACHE_CONF_DIR    = "$(DESTDIR)/etc/apache2"
+export CONFIG_DIR         = "$(DESTDIR)/etc/ood/config"
+
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	# nothing to configure
+
+override_dh_auto_build:
+	env
+	bundle install --without test package
+	rake --trace -mj$(NCPUS) build
+	rm -rf $(GEM_HOME)/cache
+	rm -rf apps/*/node_modules/.cache
+
+override_dh_auto_install:
+	env
+	rake --trace install
+
+	# install gems
+	mkdir -p $(DESTDIR)/opt/ood/gems
+	mv $(GEM_HOME)/* $(DESTDIR)/opt/ood/gems
+
+	# make some directories
+	mkdir -p "$(APACHE_DIR)/public/maintenance"
+	mkdir -p "$(APACHE_DIR)/discover"
+	mkdir -p "$(APACHE_DIR)/register"
+	mkdir -p "$(APACHE_DIR)/apps/sys"
+	mkdir -p "$(APACHE_DIR)/apps/usr"
+	mkdir -p "$(APACHE_DIR)/apps/dev"
+	mkdir -p "$(CONFIG_DIR)/clusters.d"
+	mkdir -p "$(CONFIG_DIR)/ondemand.d"
+	mkdir -p "$(APACHE_CONF_DIR)/sites-available"
+	mkdir -p "$(APACHE_CONF_DIR)/sites-enabled"
+
+	mv $(DESTDIR)/opt/ood/apps/* $(APACHE_DIR)/apps/sys
+	rm -rf $(DESTDIR)/opt/ood/apps
+
+	# ood config files
+	rake package:version > $(DESTDIR)/opt/ood/VERSION
+	install -m 644 nginx_stage/share/nginx_stage_example.yml $(CONFIG_DIR)/nginx_stage.yml
+	install -m 640 ood-portal-generator/share/ood_portal_example.yml $(CONFIG_DIR)/ood_portal.yml
+	install -m 644 ood-portal-generator/share/maintenance.html $(APACHE_DIR)/public/maintenance/index.html
+	install -m 644 ood-portal-generator/share/need_auth.html $(APACHE_DIR)/public/need_auth.html
+	install -m 644 hooks/hook.env.example $(CONFIG_DIR)/hook.env
+	mkdir -p $(DESTDIR)/opt/ood/ondemand
+	install -m 644 packaging/files/enable.deb $(DESTDIR)/opt/ood/ondemand/enable
+
+	$(DESTDIR)/opt/ood/ood-portal-generator/sbin/update_ood_portal
+	cd $(APACHE_CONF_DIR)/sites-enabled && ln -sf ../sites-available/ood-portal.conf ./ood-portal.conf
+	sed -i 's|$(DESTDIR)||g' $(CONFIG_DIR)/ood_portal.sha256sum
+
+	mkdir -p $(DESTDIR)/var/tmp/ondemand-nginx
+	mkdir -p $(DESTDIR)/var/run/ondemand-nginx
+	mkdir -p $(DESTDIR)/var/lib/ondemand-nginx/config/puns
+	mkdir -p $(DESTDIR)/var/lib/ondemand-nginx/config/apps/sys
+	mkdir -p $(DESTDIR)/var/lib/ondemand-nginx/config/apps/usr
+	mkdir -p $(DESTDIR)/var/lib/ondemand-nginx/config/apps/dev
+
+override_dh_strip:
+	# Do not strip debug symbols
+
+override_dh_builddeb:
+	dh_builddeb -- -Zgzip

@@ -1,0 +1,5 @@
+[Service]
+ExecStartPre=-/opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm
+ExecReload=
+ExecReload=-/opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm
+ExecReload=<%= apache_reload %>

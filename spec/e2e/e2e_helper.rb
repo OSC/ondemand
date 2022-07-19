@@ -48,6 +48,17 @@ def dist
   if host_inventory['platform'] == 'redhat'
     major_version = host_inventory['platform_version'].split('.')[0]
     "el#{major_version}"
+  elsif host_inventory['platform'] == 'ubuntu'
+    "ubuntu-#{host_inventory['platform_version']}"
+  end
+end
+
+def codename
+  case "#{host_inventory['platform']}-#{host_inventory['platform_version']}"
+  when 'ubuntu-20.04'
+    'focal'
+  else
+    nil
   end
 end
 
@@ -58,15 +69,46 @@ def packager
     else
       'dnf'
     end
+  else
+    'DEBIAN_FRONTEND=noninteractive apt --no-install-recommends'
   end
 end
 
 def apache_service
-  if host_inventory['platform_version'] =~ /^7/
-     'httpd24-httpd'
+  if host_inventory['platform'] == 'redhat'
+    if host_inventory['platform_version'] =~ /^7/
+       'httpd24-httpd'
+     else
+       'httpd'
+     end
    else
-     'httpd'
+     'apache2'
    end
+end
+
+def apache_reload
+  if host_inventory['platform'] == 'redhat'
+    if host_inventory['platform_version'] =~ /^7/
+       '/opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper $OPTIONS -k graceful'
+     else
+       '/usr/sbin/httpd $OPTIONS -k graceful'
+     end
+   else
+     '/usr/sbin/apachectl graceful'
+   end
+end
+
+def apache_user
+  case host_inventory['platform']
+  when 'ubuntu'
+    'www-data'
+  else
+    'apache'
+  end
+end
+
+def apache_log_dir
+  "/var/log/#{apache_service.split('-').first}"
 end
 
 def install_packages(packages)
@@ -86,15 +128,18 @@ def bootstrap_repos
     repos << 'epel-release'
     if host_inventory['platform_version'] =~ /^7/
       repos << 'centos-release-scl yum-plugin-priorities'
-    else
+    elsif host_inventory['platform_version'] =~ /^8/
       on hosts, 'dnf -y module enable ruby:2.7'
       on hosts, 'dnf -y module enable nodejs:12'
     end
+  elsif host_inventory['platform'] == 'ubuntu'
+    on hosts, 'apt-get update'
   end
-  install_packages(repos)
+  install_packages(repos) unless repos.empty?
 end
 
 def ondemand_repo
+  on hosts, 'mkdir -p /repo'
   if host_inventory['platform'] == 'redhat'
     install_packages(['createrepo'])
     repo_file = <<~EOS
@@ -106,9 +151,23 @@ def ondemand_repo
       priority=1
     EOS
     create_remote_file(hosts, '/etc/yum.repos.d/ondemand.repo', repo_file)
-    on hosts, 'mkdir -p /repo'
     copy_files_to_dir(File.join(proj_root, "dist/#{dist}/*.rpm"), '/repo')
     on hosts, 'createrepo /repo'
+  elsif host_inventory['platform'] == 'ubuntu'
+    install_packages(['dpkg-dev'])
+    copy_files_to_dir(File.join(proj_root, "dist/#{dist}*/*.deb"), '/repo')
+    on hosts, 'cd /repo ; dpkg-scanpackages .  | gzip -9c > Packages.gz'
+    repo_file = <<~EOS
+      deb [trusted=yes] file:///repo ./
+    EOS
+    preference = <<~EOS
+      Package: *
+      Pin: origin ""
+      Pin-Priority: 1001
+    EOS
+    create_remote_file(hosts, '/etc/apt/sources.list.d/ondemand.list', repo_file)
+    create_remote_file(hosts, '/etc/apt/preferences.d/ondemand', preference)
+    on hosts, 'apt-get update'
   end
 end
 
@@ -118,7 +177,7 @@ end
 
 def install_ondemand
   if host_inventory['platform'] == 'redhat'
-    release_rpm = 'https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-6.noarch.rpm'
+    release_rpm = 'https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-7.noarch.rpm'
     on hosts, "[ -f /etc/yum.repos.d/ondemand-web.repo ] || #{packager} install -y #{release_rpm}"
     on hosts, "sed -i 's|/latest/|/build/#{build_repo_version}/|g' /etc/yum.repos.d/ondemand-web.repo"
     config_manager = if host_inventory['platform_version'] =~ /^7/
@@ -128,11 +187,41 @@ def install_ondemand
                      end
     on hosts, "#{config_manager} --save --setopt ondemand-web.exclude='ondemand ondemand-gems* ondemand-selinux'"
     install_packages(['ondemand', 'ondemand-dex', 'ondemand-selinux'])
+  elsif host_inventory['platform'] == 'ubuntu'
+    install_packages(['wget'])
+    on hosts, 'wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest_1_all.deb'
+    install_packages(['/tmp/ondemand-release.deb'])
+    on hosts, "sed -i 's|/latest/|/build/#{build_repo_version}/|g' /etc/apt/sources.list.d/ondemand-web.list"
+    on hosts, 'apt-get update'
+    install_packages(['ondemand', 'ondemand-dex'])
+  end
+  # Avoid 'update_ood_portal --rpm' so that --insecure can be used
+  on hosts, "sed -i 's|--rpm|--rpm --insecure|g' /etc/systemd/system/#{apache_service}.service.d/ood-portal.conf"
+  on hosts, "systemctl daemon-reload"
+end
+
+def fix_apache
+  # ubuntu has it's own default page
+  if host_inventory['platform'] == 'ubuntu'
+    default_config = '/etc/apache2/sites-enabled/000-default.conf'
+    on hosts, "test -L #{default_config} && unlink #{default_config} || exit 0"
   end
 end
 
 def upload_portal_config(file)
   scp_to(hosts, portal_fixture(file), '/etc/ood/config/ood_portal.yml')
+end
+
+def host_portal_config
+  if host_inventory['platform'] == 'redhat'
+    if host_inventory['platform_version'] =~ /^7/
+       '/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf'
+     else
+      '/etc/httpd/conf.d/ood-portal.conf'
+     end
+  else
+    '/etc/apache2/sites-available/ood-portal.conf'
+  end
 end
 
 def update_ood_portal
