@@ -59,8 +59,20 @@ module OodPortalGenerator
         detailed_exitcodes ? 4 : 0
       end
 
+      def prefix
+        ENV['DESTDIR'] || ENV['PREFIX'] || ''
+      end
+
       def apache
-        ENV['APACHE'] || (OodPortalGenerator.scl_apache? ? '/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf' : '/etc/httpd/conf.d/ood-portal.conf')
+        return ENV['APACHE'] unless ENV['APACHE'].nil?
+        if OodPortalGenerator.debian?
+          path = '/etc/apache2/sites-available/ood-portal.conf'
+        elsif OodPortalGenerator.scl_apache?
+          path = '/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf'
+        else
+          path = '/etc/httpd/conf.d/ood-portal.conf'
+        end
+        File.join(prefix, path)
       end
 
       def apache_bak
@@ -76,11 +88,11 @@ module OodPortalGenerator
       end
 
       def sum_path
-        ENV['SUM'] || '/etc/ood/config/ood_portal.sha256sum'
+        ENV['SUM'] || File.join(prefix, '/etc/ood/config/ood_portal.sha256sum')
       end
 
       def dex_config
-        ENV['DEX_CONFIG'] || "/etc/ood/dex/config.yaml"
+        ENV['DEX_CONFIG'] || File.join(prefix, "/etc/ood/dex/config.yaml")
       end
 
       def dex_config_bak
@@ -102,6 +114,7 @@ module OodPortalGenerator
       end
 
       def checksum_matches?(input)
+        return true unless checksum_exists?
         checksum_str = File.readlines(sum_path)[0]
         checksum = checksum_str.split(' ')[0]
 
@@ -113,6 +126,7 @@ module OodPortalGenerator
 
       def checksum_exists?
         return false unless File.exist?(sum_path)
+        return false if File.zero?(sum_path)
         File.readlines(sum_path).grep(apache).size == 0
       end
 
@@ -175,7 +189,7 @@ module OodPortalGenerator
             end
             puts "Generating new Apache config at: '#{apache}'"
             `cat "#{new_apache.path}" > "#{apache}"`
-            FileUtils.chown('root', OodPortalGenerator.apache_group, apache, verbose: true)
+            FileUtils.chown(OodPortalGenerator.chown_apache_user, OodPortalGenerator.apache_group, apache, verbose: true)
             FileUtils.chmod(0640, apache, verbose: true)
             puts "Generating Apache config checksum file: '#{sum_path}'"
             save_checksum(apache)
@@ -186,7 +200,7 @@ module OodPortalGenerator
             puts "WARNING: Checksum of #{apache} does not match previous value, not replacing."
             puts "Generating new Apache config at: '#{apache_new}'"
             `cat "#{new_apache.path}" > "#{apache_new}"`
-            FileUtils.chown('root', OodPortalGenerator.apache_group, apache_new, verbose: true)
+            FileUtils.chown(OodPortalGenerator.chown_apache_user, OodPortalGenerator.apache_group, apache_new, verbose: true)
             FileUtils.chmod(0640, apache_new, verbose: true)
             ret = skip_exit
           end
