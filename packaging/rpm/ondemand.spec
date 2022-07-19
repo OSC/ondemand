@@ -5,9 +5,9 @@
 %define git_tag_minus_v %(echo %{git_tag} | sed -r 's/^v//')
 %define major_version %(echo %{git_tag_minus_v} | cut -d. -f1)
 %define minor_version %(echo %{git_tag_minus_v} | cut -d. -f2)
-%define runtime_version %{major_version}.%{minor_version}-2
-%define next_major_version %(echo $((%{major_version}+1))).0
-%define next_minor_version %{major_version}.%(echo $((%{minor_version}+1)))
+%define runtime_version %{major_version}.%{minor_version}
+%define runtime_release 2
+%define runtime_version_full %{runtime_version}-%{runtime_release}%{?dist}
 %define selinux_policy_ver %(rpm --qf "%%{version}-%%{release}" -q selinux-policy)
 %global selinux_module_version %{package_version}.%{package_release}
 %global gem_home %{scl_ondemand_core_gem_home}/%{version}
@@ -53,23 +53,23 @@ Source4:   favicon.ico
 # node.js packages used in the apps
 AutoReqProv:     no
 
-BuildRequires:   ondemand-runtime >= %{runtime_version}, ondemand-runtime < %{next_major_version}, ondemand-runtime < %{next_minor_version}
-BuildRequires:   ondemand-scldevel >= %{runtime_version}, ondemand-scldevel < %{next_major_version}, ondemand-scldevel < %{next_minor_version}
-BuildRequires:   ondemand-build >= %{runtime_version}, ondemand-build < %{next_major_version}, ondemand-build < %{next_minor_version}
-BuildRequires:   ondemand-ruby >= %{runtime_version}, ondemand-ruby < %{next_major_version}, ondemand-ruby < %{next_minor_version}
-BuildRequires:   ondemand-python >= %{runtime_version}, ondemand-python < %{next_major_version}, ondemand-python < %{next_minor_version}
-BuildRequires:   ondemand-nodejs >= %{runtime_version}, ondemand-nodejs < %{next_major_version}, ondemand-nodejs < %{next_minor_version}
+BuildRequires:   ondemand-runtime = %{runtime_version_full}
+BuildRequires:   ondemand-scldevel = %{runtime_version_full}
+BuildRequires:   ondemand-build = %{runtime_version_full}
+BuildRequires:   ondemand-ruby = %{runtime_version_full}
+BuildRequires:   ondemand-python = %{runtime_version_full}
+BuildRequires:   ondemand-nodejs = %{runtime_version_full}
 BuildRequires:   rsync
 BuildRequires:   git
 Requires:        git
 Requires:        sudo, lsof, cronie, wget, curl, make, rsync, file, libxml2, libxslt, zlib, lua-posix
-Requires:        ondemand-apache >= %{runtime_version}, ondemand-apache < %{next_major_version}, ondemand-apache < %{next_minor_version}
+Requires:        ondemand-apache = %{runtime_version_full}
 Requires:        ondemand-nginx = 1.18.0-2.p6.0.14%{?dist}
 Requires:        ondemand-passenger = 6.0.14-1%{?dist}
-Requires:        ondemand-ruby >= %{runtime_version}, ondemand-ruby < %{next_major_version}, ondemand-ruby < %{next_minor_version}
-Requires:        ondemand-python >= %{runtime_version}, ondemand-python < %{next_major_version}, ondemand-python < %{next_minor_version}
-Requires:        ondemand-nodejs >= %{runtime_version}, ondemand-nodejs < %{next_major_version}, ondemand-nodejs < %{next_minor_version}
-Requires:        ondemand-runtime >= %{runtime_version}, ondemand-runtime < %{next_major_version}, ondemand-runtime < %{next_minor_version}
+Requires:        ondemand-ruby = %{runtime_version_full}
+Requires:        ondemand-python = %{runtime_version_full}
+Requires:        ondemand-nodejs = %{runtime_version_full}
+Requires:        ondemand-runtime = %{runtime_version_full}
 Requires:        %{gems_name}
 
 BuildRequires: systemd
