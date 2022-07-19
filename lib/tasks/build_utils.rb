@@ -13,6 +13,10 @@ module BuildUtils
     tag? ? git_tag : "#{git_tag}-#{git_hash}"
   end
 
+  def build_timestamp
+    @build_timestamp ||= Time.now.strftime("%s")
+  end
+
   def git_hash
     @git_hash ||= `git rev-parse HEAD`.strip[0..6]
   end
