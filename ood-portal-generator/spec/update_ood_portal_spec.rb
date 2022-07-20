@@ -33,6 +33,7 @@ describe 'update_ood_portal' do
   before(:each) do
     allow(Process).to receive(:uid).and_return(0)
     allow(OodPortalGenerator).to receive(:apache_group).and_return('apache')
+    allow(OodPortalGenerator).to receive(:debian?).and_return(false)
     allow(OodPortalGenerator).to receive(:fqdn).and_return('example.com')
   end
 
