@@ -193,7 +193,7 @@ def install_ondemand
     install_packages(['wget'])
     on hosts, "wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/latest/ondemand-release-web_#{build_repo_version}.0_all.deb"
     install_packages(['/tmp/ondemand-release.deb'])
-    on hosts, "sed -i 's|/#{build_repo_version}/|/build/#{build_repo_version}/|g' /etc/apt/sources.list.d/ondemand-web.list"
+    on hosts, "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/build/#{build_repo_version}/web|g' /etc/apt/sources.list.d/ondemand-web.list"
     on hosts, 'apt-get update'
     install_packages(['ondemand', 'ondemand-dex'])
   end
