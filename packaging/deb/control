@@ -1,0 +1,21 @@
+Source: ondemand
+Section: unknown
+Priority: optional
+Maintainer: Ohio Supercomputer Center <oschelp@osc.edu>
+Build-Depends: debhelper (>=11~), curl, build-essential,
+  ruby, ruby-dev, tzdata,
+  nodejs (>= 12.0), nodejs (<< 13.0),
+  sqlite, libsqlite3-dev, python3
+Standards-Version: 4.1.4
+Homepage: https://openondemand.org
+
+Package: ondemand
+Architecture: any
+Multi-Arch: foreign
+Depends: ${misc:Depends}, ${shlibs:Depends},
+  ruby, apache2, sudo, lsof, lua-posix, tzdata,
+  nodejs (>= 12.0), nodejs (<< 13.0),
+  ondemand-nginx (= 1.18.0), ondemand-passenger (= 6.0.14)
+Description: Open OnDemand is an open source release of the Ohio SuperComputer Center's
+  OnDemand platform to provide HPC access via a web browser, supporting web based file
+  management, shell access, job submission and interactive work on compute nodes.

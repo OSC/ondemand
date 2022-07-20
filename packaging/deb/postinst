@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Make apache2.service.d changes available
+/bin/systemctl daemon-reload &>/dev/null || true
+
+touch /var/lib/ondemand-nginx/config/apps/sys/dashboard.conf
+touch /var/lib/ondemand-nginx/config/apps/sys/shell.conf
+touch /var/lib/ondemand-nginx/config/apps/sys/myjobs.conf
+
+/opt/ood/nginx_stage/sbin/update_nginx_stage
+
+# Restart apps in case PUN wasn't restarted
+touch /var/www/ood/apps/sys/dashboard/tmp/restart.txt
+touch /var/www/ood/apps/sys/shell/tmp/restart.txt
+touch /var/www/ood/apps/sys/myjobs/tmp/restart.txt
+
+/opt/ood/ood-portal-generator/sbin/update_ood_portal
+
+cd /etc/apache2/mods-enabled || exit 1
+ln -sf ../mods-available/rewrite.load . || true
+ln -sf ../mods-available/lua.load . || true
+ln -sf ../mods-available/headers.load . || true
+ln -sf ../mods-available/proxy.load . || true
+ln -sf ../mods-available/proxy_http.load . || true
+ln -sf ../mods-available/proxy_wstunnel.load . || true
+
+cd /etc/apache2/sites-enabled || exit 1
+ln -sf ../sites-available/ood-portal.conf . || true
+
+# shellcheck disable=SC1091
+[ -e /etc/apache2/envvars ] && . /etc/apache2/envvars
+[ ! -d "$APACHE_RUN_DIR" ] && mkdir -p "$APACHE_RUN_DIR"
+
+[ -e "/bin/systemctl" ] && /bin/systemctl try-restart apache2.service
+
+exit 0

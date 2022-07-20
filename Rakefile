@@ -5,11 +5,13 @@ PROJ_DIR          = Pathname.new(__dir__)
 TASK_DIR          = "#{PROJ_DIR}/lib/tasks"
 APPS_DIR          = PROJ_DIR.join('apps')
 GEMFILE           = PROJ_DIR.join('Gemfile')
-INSTALL_ROOT      = Pathname.new(ENV["PREFIX"] || "/opt/ood")
+DESTDIR           = Pathname.new(ENV['DESTDIR'].to_s)
+INSTALL_ROOT      = Pathname.new(ENV["PREFIX"] || "#{DESTDIR}/opt/ood")
 VENDOR_BUNDLE     = (ENV['VENDOR_BUNDLE'] == "yes" || ENV['VENDOR_BUNDLE'] == "true")
 PASSENGER_APP_ENV = ENV["PASSENGER_APP_ENV"] || "production"
 
 require "#{TASK_DIR}/rake_helper"
+require "#{TASK_DIR}/build_utils"
 require "#{TASK_DIR}/packaging"
 require "#{TASK_DIR}/test"
 require "#{TASK_DIR}/lint"
@@ -17,6 +19,7 @@ require "#{TASK_DIR}/docker"
 require "#{TASK_DIR}/development"
 
 include RakeHelper
+include BuildUtils
 
 namespace :build do
   desc "Build gems"
@@ -77,8 +80,20 @@ namespace :install do
     sh "cp -r #{APPS_DIR} #{INSTALL_ROOT}/"
   end
 
+  namespace :infrastructure do
+    desc 'Install infrastructure files'
+    task :files do
+      infrastructure_files.each do |file|
+        src = render_package_file(file[:src])
+        FileUtils.mkdir_p(File.dirname(file[:dest]), verbose: true) unless Dir.exist?(File.dirname(file[:dest]))
+        FileUtils.cp(src, file[:dest], verbose: true)
+        FileUtils.chmod(file[:mode], file[:dest], verbose: true)
+      end
+    end
+  end
+
   desc "Install OnDemand infrastructure and apps"
-  task :all => [:infrastructure, :apps]
+  task :all => [:infrastructure, :apps, 'infrastructure:files']
 end
 
 desc "Install OnDemand"

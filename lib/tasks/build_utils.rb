@@ -1,4 +1,7 @@
 # frozen_string_literal: true
+require 'erb'
+require 'dotenv'
+require 'tempfile'
 
 module BuildUtils
   def proj_root
@@ -68,5 +71,110 @@ module BuildUtils
 
   def user
     @user ||= Etc.getpwnam(Etc.getlogin)
+  end
+
+  def os_release
+    @os_release ||= begin
+      if File.exist?('/etc/os-release')
+        Dotenv.parse('/etc/os-release')
+      else
+        {}
+      end
+    end
+  end
+
+  def scl_apache?
+    return true if (el? && os_release['VERSION_ID'] =~ /^7/)
+    false
+  end
+
+  def el?
+    return true if "#{os_release['ID']} #{os_release['ID_LIKE']}" =~ /(rhel|fedora)/
+    false
+  end
+
+  def debian?
+    return true if (os_release['ID'] =~ /(ubuntu|debian)/ or os_release['ID_LIKE'] == 'debian')
+    false
+  end
+
+  def apache_daemon
+    return '/opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper' if scl_apache?
+    "/usr/sbin/#{apache_service}"
+  end
+
+  def apache_reload
+    return '/usr/sbin/apachectl graceful' if debian?
+    "#{apache_daemon} $OPTIONS -k graceful"
+  end
+
+  def apache_user
+    return 'www-data' if debian?
+    'apache'
+  end
+
+  def apache_service
+    return 'apache2' if debian?
+    return 'httpd24-httpd' if scl_apache?
+    'httpd'
+  end
+
+  def infrastructure_files
+    @infrastructure_files ||= [
+      {
+        src: 'apache-systemd.ood-portal.conf.erb',
+        dest: File.join(DESTDIR, "etc/systemd/system/#{apache_service}.service.d/ood-portal.conf"),
+        mode: 0444,
+      },
+      {
+        src: 'apache-systemd.ood.conf',
+        dest: File.join(DESTDIR, "etc/systemd/system/#{apache_service}.service.d/ood.conf"),
+        mode: 0444,
+      },
+      {
+        src: 'crontab',
+        dest: File.join(DESTDIR, 'etc/cron.d/ood'),
+        mode: 0644,
+      },
+      {
+        src: 'favicon.ico',
+        dest: File.join(DESTDIR, 'var/www/ood/public/favicon.ico'),
+        mode: 0644,
+      },
+      {
+        src: 'logo.png',
+        dest: File.join(DESTDIR, 'var/www/ood/public/logo.png'),
+        mode: 0644,
+      },
+      {
+        src: 'logrotate',
+        dest: File.join(DESTDIR, 'etc/logrotate.d/ood'),
+        mode: 0644,
+      },
+      {
+        src: 'ondemand-nginx-tmpfiles',
+        dest: File.join(DESTDIR, 'usr/lib/tmpfiles.d/ondemand-nginx.conf'),
+        mode: 0644,
+      },
+      {
+        src: 'sudo.erb',
+        dest: File.join(DESTDIR, 'etc/sudoers.d/ood'),
+        mode: 0440,
+      },
+    ]
+  end
+
+  def render_package_file(name)
+    src = File.join(proj_root, 'packaging/files', name)
+    return src unless File.extname(name) == '.erb'
+
+    content = ERB.new(File.read(src), nil, '-').result(binding)
+    begin
+      t = Tempfile.new(name)
+      t.write(content)
+      t.path
+    ensure
+      t.close
+    end
   end
 end
