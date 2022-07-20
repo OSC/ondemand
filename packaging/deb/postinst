@@ -23,7 +23,9 @@ ln -sf ../mods-available/headers.load . || true
 ln -sf ../mods-available/proxy.load . || true
 ln -sf ../mods-available/proxy_http.load . || true
 ln -sf ../mods-available/proxy_wstunnel.load . || true
-ln -sf ../sites-available/ood-portal.conf ./ood-portal.conf || true
+
+cd /etc/apache2/sites-enabled || exit 1
+ln -sf ../sites-available/ood-portal.conf . || true
 
 # shellcheck disable=SC1091
 [ -e /etc/apache2/envvars ] && . /etc/apache2/envvars
