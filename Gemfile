@@ -19,8 +19,5 @@ group :test do
 
   gem "beaker"
   gem "beaker-rspec"
-  # Use fork until merged and released
-  # https://github.com/voxpupuli/beaker-docker/pull/53
-  # https://github.com/voxpupuli/beaker-docker/pull/54
-  gem "beaker-docker", git: 'https://github.com/treydock/beaker-docker.git', branch: 'osc'
+  gem "beaker-docker", '~> 1.1.1'
 end
