@@ -55,10 +55,6 @@ override_dh_auto_install:
 	mkdir -p $(DESTDIR)/opt/ood/ondemand
 	install -m 644 packaging/files/enable.deb $(DESTDIR)/opt/ood/ondemand/enable
 
-	$(DESTDIR)/opt/ood/ood-portal-generator/sbin/update_ood_portal
-	cd $(APACHE_CONF_DIR)/sites-enabled && ln -sf ../sites-available/ood-portal.conf ./ood-portal.conf
-	sed -i 's|$(DESTDIR)||g' $(CONFIG_DIR)/ood_portal.sha256sum
-
 	mkdir -p $(DESTDIR)/var/tmp/ondemand-nginx
 	mkdir -p $(DESTDIR)/var/run/ondemand-nginx
 	mkdir -p $(DESTDIR)/var/lib/ondemand-nginx/config/puns

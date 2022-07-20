@@ -14,6 +14,8 @@ touch /var/www/ood/apps/sys/dashboard/tmp/restart.txt
 touch /var/www/ood/apps/sys/shell/tmp/restart.txt
 touch /var/www/ood/apps/sys/myjobs/tmp/restart.txt
 
+/opt/ood/ood-portal-generator/sbin/update_ood_portal
+
 cd /etc/apache2/mods-enabled || exit 1
 ln -sf ../mods-available/rewrite.load . || true
 ln -sf ../mods-available/lua.load . || true
@@ -21,9 +23,7 @@ ln -sf ../mods-available/headers.load . || true
 ln -sf ../mods-available/proxy.load . || true
 ln -sf ../mods-available/proxy_http.load . || true
 ln -sf ../mods-available/proxy_wstunnel.load . || true
-
-chown root:www-data /etc/apache2/sites-available/ood-portal.conf
-chmod 0640 /etc/apache2/sites-available/ood-portal.conf
+ln -sf ../sites-available/ood-portal.conf ./ood-portal.conf || true
 
 # shellcheck disable=SC1091
 [ -e /etc/apache2/envvars ] && . /etc/apache2/envvars
