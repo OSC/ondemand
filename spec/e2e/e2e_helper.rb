@@ -242,8 +242,6 @@ def bootstrap_user
 end
 
 def bootstrap_flask
-  if host_inventory['platform'] == 'redhat'
-    install_packages(['python3'])
-    on hosts, 'python3 -m pip install flask'
-  end
+  install_packages(['python3', 'python3-pip'])
+  on hosts, 'python3 -m pip install flask'
 end
