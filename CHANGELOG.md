@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- 2.0 now depends on a more specific ondemand-passenger version in [2043](https://github.com/OSC/ondemand/pull/2043).
+- 2.0 now depends on a more specific ondemand-passenger ondemand-nginx versions in [2043](https://github.com/OSC/ondemand/pull/2043).
 
 ## [2.0.24] - 05-19-2022
 
