@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - `passenger_options` are now safe to use in [2016](https://github.com/OSC/ondemand/pull/2016).
+- Interactive jobs now have compatability with turbovnc 3.0+ in [2153](https://github.com/OSC/ondemand/pull/2153).
+  Through the `ood_core` update.
 
 ### Added
 
