@@ -5,9 +5,11 @@ export NCPUS              = 4
 export DESTDIR            = $(CURDIR)/debian/ondemand
 export GEM_HOME           = $(CURDIR)/gems
 export GEM_PATH           = $(GEM_HOME):$(DESTDIR)/opt/ood/gems:$(shell printenv GEM_PATH)
+export PATH               = $(GEM_HOME)/bin:$(shell printenv GEM_PATH)
 export APACHE_DIR         = "$(DESTDIR)/var/www/ood"
 export APACHE_CONF_DIR    = "$(DESTDIR)/etc/apache2"
 export CONFIG_DIR         = "$(DESTDIR)/etc/ood/config"
+export OS_VERSION         = $(shell lsb_release -sr)
 
 
 %:
@@ -18,6 +20,9 @@ override_dh_auto_configure:
 
 override_dh_auto_build:
 	env
+ifeq ($(OS_VERSION),18.04)
+	gem install bundler -v 2.1.4 --no-doc
+endif
 	bundle install --without test package
 	rake --trace -mj$(NCPUS) build
 	rm -rf $(GEM_HOME)/cache
