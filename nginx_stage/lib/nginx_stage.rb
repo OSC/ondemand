@@ -147,7 +147,7 @@ module NginxStage
 
   # Replace environment with specified environment
   # @param env [Hash] the new environment
-  # @return nil
+  # @return [ENV] the reset environment
   def self.nginx_env_reset(env:)
     ENV.replace(env.merge({
       "PATH" => ENV['PATH'],
