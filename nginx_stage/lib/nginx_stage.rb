@@ -145,6 +145,15 @@ module NginxStage
     }.merge(pun_custom_env)
   end
 
+  # Replace environment with specified environment
+  # @param env [Hash] the new environment
+  # @return nil
+  def self.nginx_env_reset(env:)
+    ENV.replace(env.merge({
+      "PATH": ENV['PATH']
+    }))
+  end
+
   # Arguments used during execution of nginx binary
   # @example Start the per-user NGINX for user Bob
   #   nginx_args(user: 'bob')
