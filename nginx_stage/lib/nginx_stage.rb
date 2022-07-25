@@ -150,7 +150,11 @@ module NginxStage
   # @return nil
   def self.nginx_env_reset(env:)
     ENV.replace(env.merge({
-      "PATH": ENV['PATH']
+      "PATH" => ENV['PATH'],
+      "LD_LIBRARY_PATH" => ENV['LD_LIBRARY_PATH'],
+      "RUBYLIB" => ENV['RUBYLIB'],
+      "GEM_HOME" => ENV['GEM_HOME'],
+      "GEM_PATH" => ENV['GEM_PATH'],
     }))
   end
 
