@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Bump tzinfo from 1.2.9 to 1.2.10 in /apps/myjobs (#2155)\
+Fix e2e repo logic to avoid issues when tests are re-run (#2145)\
+Also handle doc labels for release branches (#2144)\
+Remove mime.types file no longer installed by this repo (#2143)\
+Ubuntu packaging improvements (#2142)
 
 ### Changed
 
