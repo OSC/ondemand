@@ -73,7 +73,7 @@ GEM
     coffee-script-source (1.12.2)
     concurrent-ruby (1.1.10)
     crass (1.0.6)
-    dalli (3.2.1)
+    dalli (3.2.0)
     data-confirm-modal (1.6.3)
       railties (>= 3.0)
     dotenv (2.7.6)
@@ -265,7 +265,7 @@ DEPENDENCIES
   capybara
   climate_control (~> 0.2)
   coffee-rails (~> 4.2)
-  dalli
+  dalli (<= 3.2.0)
   data-confirm-modal (~> 1.2)
   dotenv-rails (~> 2.1)
   dotiw
