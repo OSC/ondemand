@@ -27,9 +27,9 @@ module OodPortalGenerator
         http: "0.0.0.0:#{http_port}",
       }
       @dex_config[:web][:https] = "0.0.0.0:#{https_port}" if ssl?
+      @dex_config[:web][:tlsCert] = tls_cert unless tls_cert.nil?
+      @dex_config[:web][:tlsKey] = tls_key unless tls_key.nil?
       copy_ssl_certs
-      @dex_config[:web][:tlsCert] = @tls_cert unless @tls_cert.nil?
-      @dex_config[:web][:tlsKey] = @tls_key unless @tls_key.nil?
       @dex_config[:grpc] = grpc unless grpc.nil?
       @dex_config[:expiry] = expiry unless expiry.nil?
       @dex_config[:telemetry] = { http: '0.0.0.0:5558' }
@@ -247,9 +247,9 @@ module OodPortalGenerator
         newpath = File.join(self.class.config_dir, File.basename(value))
         case items[0].downcase
         when 'sslcertificatefile'
-          @tls_cert = newpath
+          @dex_config[:web][:tlsCert] = newpath
         when 'sslcertificatekeyfile'
-          @tls_key = newpath
+          @dex_config[:web][:tlsKey] = newpath
         else
           next
         end
