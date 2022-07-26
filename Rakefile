@@ -29,7 +29,7 @@ namespace :build do
       bundle_args << "--path vendor/bundle"
     end
     if PASSENGER_APP_ENV == "production"
-      bundle_args << "--without doc"
+      bundle_args << "--without doc test"
     end
     apps.each do |a|
       next unless a.ruby_app?
