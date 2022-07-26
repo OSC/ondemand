@@ -46,12 +46,12 @@ chdir APP_ROOT do
 
   if APP.production?
     puts "\n== Compiling assets =="
-    sh "bundle exec bin/rake assets:clobber"
-    sh "bundle exec bin/rake assets:precompile"
+    sh "bundle exec rake assets:clobber"
+    sh "bundle exec rake assets:precompile"
   end
 
   puts "\n== Removing old logs and tempfiles =="
-  sh "bundle exec bin/rake log:clear tmp:clear"
+  sh "bundle exec rake log:clear tmp:clear"
 
   puts "\n== Restarting application server =="
   touch "tmp/restart.txt"
