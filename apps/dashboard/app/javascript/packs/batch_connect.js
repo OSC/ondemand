@@ -71,7 +71,7 @@ function mountainCaseWords(str) {
 /**
  * Format passed string to snake_case. All characters become lowercase. Existing
  * underscores are unchanged and dashes become underscores. Underscores are added 
- * between locations where a lowercase character is followed by an uppercase character.
+ * before locations where an uppercase character is followed by a lowercase character.
  *
  * @param      {string}  str     The word string to snake case
  *
