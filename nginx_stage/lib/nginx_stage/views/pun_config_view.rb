@@ -126,7 +126,7 @@ module NginxStage
     # Array of env vars to declare in NGINX config using env directive
     # @return [Array<String>] list of env vars to declare in NGINX config
     def env_declarations
-      NginxStage.nginx_env(user: user).keys | scl_env_declarations | NginxStage.pun_custom_env_declarations
+      NginxStage.clean_nginx_env(user: user).keys | scl_env_declarations | NginxStage.pun_custom_env_declarations
     end
 
     # Array of env vars that loading SCL packages with modify that we should

@@ -119,14 +119,14 @@ module NginxStage
     app_info
   end
 
-  # Environment used during execution of nginx binary
+  # Clean environment used during execution of nginx binary
   # @example Start the per-user NGINX for user Bob
-  #   nginx_env(user: 'bob')
+  #   clean_nginx_env(user: 'bob')
   #   #=> { "USER" => "bob", ... }
   # @param user [String] the owner of the nginx process
-  # @return [Hash{String=>String}] the environment used to execute the nginx process
-  def self.nginx_env(user:)
-    {
+  # @return [ENV] the environment used to execute the nginx process
+  def self.clean_nginx_env(user:)
+    ENV.replace({
       "USER" => user,
       "LOGNAME" => user,
       "ONDEMAND_VERSION" => ondemand_version,
@@ -141,21 +141,13 @@ module NginxStage
       "OOD_FILES_URL" => "/pun/sys/dashboard/files",
       # this is not a typo => the editor is /edit off of the base url
       "OOD_EDITOR_URL" => "/pun/sys/dashboard/files",
-      "RAILS_LOG_TO_STDOUT" => "true"
-    }.merge(pun_custom_env)
-  end
-
-  # Replace environment with specified environment
-  # @param env [Hash] the new environment
-  # @return [ENV] the reset environment
-  def self.nginx_env_reset(env:)
-    ENV.replace(env.merge({
+      "RAILS_LOG_TO_STDOUT" => "true",
       "PATH" => ENV['PATH'],
       "LD_LIBRARY_PATH" => ENV['LD_LIBRARY_PATH'],
       "RUBYLIB" => ENV['RUBYLIB'],
       "GEM_HOME" => ENV['GEM_HOME'],
       "GEM_PATH" => ENV['GEM_PATH'],
-    }))
+    }.merge(pun_custom_env))
   end
 
   # Arguments used during execution of nginx binary
