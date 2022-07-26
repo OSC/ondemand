@@ -147,7 +147,7 @@ module NginxStage
       "RUBYLIB" => ENV['RUBYLIB'],
       "GEM_HOME" => ENV['GEM_HOME'],
       "GEM_PATH" => ENV['GEM_PATH'],
-    }.merge(pun_custom_env))
+    }.merge(pun_custom_env).merge(env_declarations.map { |k| [ k, ENV[k] ] }.to_h))
   end
 
   # Arguments used during execution of nginx binary
