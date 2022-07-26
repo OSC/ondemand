@@ -3,7 +3,7 @@ error_log   <%= error_log_path %>;
 pid         <%= pid_path %>;
 worker_processes 1;  ## Default: 1
 
-<%- env_declarations.each do |varname| -%>
+<%- env_declarations.sort.uniq.each do |varname| -%>
 env <%= varname %>;
 <%- end -%>
 env PASSENGER_DOWNLOAD_NATIVE_SUPPORT_BINARY=0;

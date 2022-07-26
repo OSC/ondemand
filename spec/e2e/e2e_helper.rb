@@ -181,7 +181,7 @@ def install_ondemand
   if host_inventory['platform'] == 'redhat'
     release_rpm = "https://yum.osc.edu/ondemand/latest/ondemand-release-web-#{build_repo_version}-1.noarch.rpm"
     on hosts, "[ -f /etc/yum.repos.d/ondemand-web.repo ] || #{packager} install -y #{release_rpm}"
-    on hosts, "sed -i 's|/#{build_repo_version}/|/build/#{build_repo_version}/|g' /etc/yum.repos.d/ondemand-web.repo"
+    on hosts, "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/build/#{build_repo_version}/web|g' /etc/yum.repos.d/ondemand-web.repo"
     config_manager = if host_inventory['platform_version'] =~ /^7/
                        'yum-config-manager'
                      else
