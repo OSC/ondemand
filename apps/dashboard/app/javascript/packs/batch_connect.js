@@ -68,6 +68,17 @@ function mountainCaseWords(str) {
   return  `${first}${rest}`;
 }
 
+/**
+ * Format passed string to snake_case. All characters become lowercase. Existing
+ * underscores are unchanged and dashes become underscores. Underscores are added 
+ * between locations where a lowercase character is followed by an uppercase character.
+ *
+ * @param      {string}  str     The word string to snake case
+ *
+ * @example  given 'MountainCase' this returns 'mountain_case'
+ * @example  given 'camelCase' this returns 'camel_case'
+ * @example  given 'OSC_JUPYTER' this returns 'osc_jupyter'
+ */
 function snakeCaseWords(str) {
   if(str === undefined) return undefined;
 
