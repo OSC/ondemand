@@ -54,7 +54,7 @@ namespace :build do
     task a.name.to_sym => depends do |t|
       setup_path = a.path.join("bin", "setup")
       if setup_path.exist? && setup_path.executable?
-        sh "PASSENGER_APP_ENV=#{PASSENGER_APP_ENV} bundle exec #{setup_path}"
+        sh "PASSENGER_APP_ENV=#{PASSENGER_APP_ENV} #{setup_path}"
       end
     end
   end

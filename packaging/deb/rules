@@ -24,13 +24,13 @@ ifeq ($(OS_VERSION),18.04)
 	gem install bundler -v 2.1.4 --no-doc
 endif
 	bundle install --without test package
-	bundle exec rake --trace -mj$(NCPUS) build
+	rake --trace -mj$(NCPUS) build
 	rm -rf $(GEM_HOME)/cache
 	rm -rf apps/*/node_modules/.cache
 
 override_dh_auto_install:
 	env
-	bundle exec rake --trace install
+	rake --trace install
 
 	# install gems
 	mkdir -p $(DESTDIR)/opt/ood/gems
