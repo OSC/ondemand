@@ -8,6 +8,8 @@ storage:
     password: secret
 web:
   http: 0.0.0.0:5556
+  tlsCert: dne.crt
+  tlsKey: dne.key
 telemetry:
   http: 0.0.0.0:5558
 staticClients:

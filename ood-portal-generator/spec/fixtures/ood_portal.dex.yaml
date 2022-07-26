@@ -1,5 +1,7 @@
 ---
 dex:
+  tls_cert: dne.crt
+  tls_key: dne.key
   storage:
     type: mysql
     config:
