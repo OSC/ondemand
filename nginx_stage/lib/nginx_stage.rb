@@ -147,14 +147,14 @@ module NginxStage
 
   # Array of env vars that should be preserved
   # @return [Array<String>] list of env vars to declare in NGINX config
-  def preserve_env_declarations
+  def self.preserve_env_declarations
     pun_custom_env_declarations | scl_env_declarations
   end
 
   # Array of env vars that loading SCL packages with modify that we should
   # also declare in NGINX config using env directive
   # @return [Array<String>] list of env vars to declare in NGINX config
-  def scl_env_declarations
+  def self.scl_env_declarations
     %w(PATH LD_LIBRARY_PATH X_SCLS MANPATH PCP_DIR PERL5LIB PKG_CONFIG_PATH PYTHONPATH XDG_DATA_DIRS SCLS RUBYLIB GEM_HOME GEM_PATH)
   end
 
