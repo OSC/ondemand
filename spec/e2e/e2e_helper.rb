@@ -55,6 +55,8 @@ end
 
 def codename
   case "#{host_inventory['platform']}-#{host_inventory['platform_version']}"
+  when 'ubuntu-18.04'
+    'bionic'
   when 'ubuntu-20.04'
     'focal'
   else
