@@ -9,7 +9,7 @@ gem "bcrypt"
 gem 'dotenv', '~> 2.1'
 
 group :package do
-  gem 'ood_packaging', '0.0.2.r2.0'
+  gem 'ood_packaging', '0.0.3.r2.0'
 end
 
 group :test do
