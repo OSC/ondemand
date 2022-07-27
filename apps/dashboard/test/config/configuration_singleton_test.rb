@@ -92,20 +92,22 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
 
   test "should load environment variable local overloads" do
     Dir.mktmpdir do |dir|
+      environment = "test"
       ENV['FOO'] = '123'
 
       Configuration
 
-      Pathname.new(dir).join(".env.#{Rails.env}.overload").write <<-EOT
+      Pathname.new(dir).join(".env.#{environment}.overload").write <<-EOT
         FOO=456
       EOT
 
-      Pathname.new(dir).join(".env.#{Rails.env}.local.overload").write <<-EOT
+      Pathname.new(dir).join(".env.#{environment}.local.overload").write <<-EOT
         FOO=789
       EOT
 
       cfg = ConfigurationSingleton.new
       cfg.stubs(:app_root).returns(Pathname.new(dir))
+      cfg.stubs(:rails_env).returns(environment)
       cfg.load_dotenv_files
 
       assert_equal "789", ENV['FOO']
@@ -114,18 +116,20 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
 
   test "rails_env specific env var overloads have precendent over env overloads" do
     Dir.mktmpdir do |dir|
+      environment = "test"
       ENV['FOO'] = '123'
 
       Pathname.new(dir).join(".env.overload").write <<-EOT
         FOO=456
       EOT
 
-      Pathname.new(dir).join(".env.#{Rails.env}.overload").write <<-EOT
+      Pathname.new(dir).join(".env.#{environment}.overload").write <<-EOT
         FOO=789
       EOT
 
       cfg = ConfigurationSingleton.new
       cfg.stubs(:app_root).returns(Pathname.new(dir))
+      cfg.stubs(:rails_env).returns(environment)
       cfg.load_dotenv_files
 
       assert_equal "789", ENV['FOO']
@@ -220,42 +224,6 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   test "can configure developer docs url" do
     ENV["OOD_DASHBOARD_DEV_DOCS_URL"] = "https://www.example.com"
     assert_equal "https://www.example.com", ConfigurationSingleton.new.developer_docs_url
-  end
-
-  test "should not have default brand bg color" do
-    assert_nil ConfigurationSingleton.new.brand_bg_color
-  end
-
-  test "can configure brand bg color" do
-    ENV["OOD_BRAND_BG_COLOR"] = "MY_COLOR"
-    assert_equal "MY_COLOR", ConfigurationSingleton.new.brand_bg_color
-  end
-
-  test "should not have default brand link active bg color" do
-    assert_nil ConfigurationSingleton.new.brand_link_active_bg_color
-  end
-
-  test "can configure brand link active bg color" do
-    ENV["OOD_BRAND_LINK_ACTIVE_BG_COLOR"] = "MY_COLOR"
-    assert_equal "MY_COLOR", ConfigurationSingleton.new.brand_link_active_bg_color
-  end
-
-  test "should not have default logo img" do
-    assert_nil ConfigurationSingleton.new.logo_img
-  end
-
-  test "can configure logo img" do
-    ENV["OOD_DASHBOARD_LOGO"] = "MY_LOGO"
-    assert_equal "MY_LOGO", ConfigurationSingleton.new.logo_img
-  end
-
-  test "should try to display logo img by default" do
-    assert ConfigurationSingleton.new.logo_img?
-  end
-
-  test "can disable the display of logo img" do
-    ENV["DISABLE_DASHBOARD_LOGO"] = "true"
-    refute ConfigurationSingleton.new.logo_img?
   end
 
   test "should hide the all apps link by default" do
@@ -371,34 +339,6 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     cfg = ConfigurationSingleton.new 
     cfg.stubs(:config).returns({files_enable_shell_button: false})
     assert_equal false, cfg.files_enable_shell_button
-  end
-
-  test "inverse navbar is dark" do
-    with_modified_env(OOD_NAVBAR_TYPE: 'inverse') do
-      assert_equal 'dark', ConfigurationSingleton.new.navbar_type
-    end
-  end
-
-  test "dark navbar is dark" do
-    with_modified_env(OOD_NAVBAR_TYPE: 'dark') do
-      assert_equal 'dark', ConfigurationSingleton.new.navbar_type
-    end
-  end
-
-  test "default navbar is light" do
-    with_modified_env(OOD_NAVBAR_TYPE: 'default') do
-      assert_equal 'light', ConfigurationSingleton.new.navbar_type
-    end
-  end
-
-  test "light navbar is light" do
-    with_modified_env(OOD_NAVBAR_TYPE: 'light') do
-      assert_equal 'light', ConfigurationSingleton.new.navbar_type
-    end
-  end
-
-  test "no navbar environment variable is dark" do
-    assert_equal 'dark', ConfigurationSingleton.new.navbar_type
   end
 
   test 'boolean configs have correct default' do

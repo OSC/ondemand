@@ -1,1 +1,1 @@
-<%= t('dashboard.welcome_html', logo_img_tag: Configuration.logo_img? ? logo_image_tag(Configuration.logo_img) : "") %>
+<%= t('dashboard.welcome_html', logo_img_tag: @user_configuration.disable_dashboard_logo ? "" : logo_image_tag(@user_configuration.dashboard_logo)) %>

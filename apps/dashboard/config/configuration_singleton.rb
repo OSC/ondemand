@@ -47,7 +47,7 @@ class ConfigurationSingleton
     }.freeze
   end
 
-  # All the boolean configurations that can be read through
+  # All the string configurations that can be read through
   # environment variables or through the config file.
   #
   # @return [Hash] key/value pairs of defaults
@@ -231,45 +231,6 @@ class ConfigurationSingleton
 
   def batch_connect_global_cache_enabled?
     to_bool(ENV["OOD_BATCH_CONNECT_CACHE_ATTR_VALUES"] || true )
-  end
-
-  # URL to the Dashboard logo image
-  # @return [String, nil] URL of logo image
-  def logo_img
-    ENV["OOD_DASHBOARD_LOGO"]
-  end
-
-  # Whether we display the Dashboard logo image
-  # @return [Boolean] whether display logo image
-  def logo_img?
-    !to_bool(ENV["DISABLE_DASHBOARD_LOGO"])
-  end
-
-  # Dashboard logo height used to set the height style attribute
-  # @return [String, nil] Logo height
-  def logo_height
-    ENV["OOD_DASHBOARD_LOGO_HEIGHT"]
-  end
-
-  # Sets the Bootstrap 4 navbar type
-  # See more about Bootstrap color schemes: https://getbootstrap.com/docs/4.6/components/navbar/#color-schemes
-  # @return [String, 'dark'] Default to dark
-  def navbar_type
-    if ENV['OOD_NAVBAR_TYPE'] == 'inverse' || ENV['OOD_NAVBAR_TYPE'] == 'dark'
-      'dark'
-    elsif ENV['OOD_NAVBAR_TYPE'] == 'default' || ENV['OOD_NAVBAR_TYPE'] == 'light'
-      'light'
-    else
-      'dark'
-    end
-  end
-
-  def brand_bg_color
-    ENV.values_at('OOD_BRAND_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_BG', 'BOOTSTRAP_NAVBAR_INVERSE_BG').compact.first
-  end
-
-  def brand_link_active_bg_color
-    ENV.values_at('OOD_BRAND_LINK_ACTIVE_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_LINK_ACTIVE_BG','BOOTSTRAP_NAVBAR_INVERSE_LINK_ACTIVE_BG' ).compact.first
   end
 
   def show_all_apps_link?

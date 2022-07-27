@@ -65,6 +65,16 @@ class ActiveSupport::TestCase
     find('.btn', text: text)
     has_link?(link)
   end
+
+  def stub_user_configuration(user_configuration_overrides)
+    user_configuration = UserConfiguration.new
+    user_configuration_overrides.each do |method, new_value|
+      user_configuration.stubs(method).returns(new_value)
+    end
+
+    UserConfiguration.stubs(:new).returns(user_configuration)
+
+  end
 end
 
 require 'mocha/minitest'

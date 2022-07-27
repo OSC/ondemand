@@ -10,7 +10,7 @@ class PresetAppsPinnedTest < ApplicationSystemTestCase
   def setup
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
     SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/apps'))
-    UserConfiguration.any_instance.stubs(:pinned_apps).returns(['sys/preset_app/*'])
+    stub_user_configuration({ pinned_apps: ['sys/preset_app/*']})
     BatchConnect::Session.any_instance.stubs(:stage).raises(StandardError.new(err_msg))
     Router.instance_variable_set('@pinned_apps', nil)
   end

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
 
-  <title><%= "File Editor - #{OodAppkit.dashboard.title}" %><%= @path.nil? ? "" : " - #{@path.basename.to_s}" %></title>
-  <%= favicon_link_tag 'favicon.ico', href: OodAppkit.public.url.join('favicon.ico'), skip_pipeline: true %>
+  <title><%= "File Editor - #{@user_configuration.dashboard_title}" %><%= @path.nil? ? "" : " - #{@path.basename.to_s}" %></title>
+  <%= favicon_link_tag 'favicon.ico', href: @user_configuration.public_url.join('favicon.ico'), skip_pipeline: true %>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <%= javascript_include_tag 'application', nonce: true %>
@@ -15,15 +15,15 @@
 
   <!-- configuration options exposed to javascript -->
   <meta id="ood_config"
-    data-bg-color="<%= Configuration.brand_bg_color %>"
-    data-link-bg-color="<%= Configuration.brand_link_active_bg_color %>"
+    data-bg-color="<%= @user_configuration.brand_bg_color %>"
+    data-link-bg-color="<%= @user_configuration.brand_link_active_bg_color %>"
   />
 </head>
 <body class="d-flex h-100">
 
 <header>
   <!-- navbar  -->
-  <nav class="navbar navbar-expand-md shadow-sm navbar-color navbar-<%= Configuration.navbar_type %>" role="navigation">
+  <nav class="navbar navbar-expand-md shadow-sm navbar-color navbar-<%= @user_configuration.navbar_type %>" role="navigation">
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>

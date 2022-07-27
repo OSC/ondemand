@@ -1,4 +1,4 @@
-<% content_for :title, "#{@app.title} - #{OodAppkit.dashboard.title}" %>
+<% content_for :title, "#{@app.title} - #{@user_configuration.dashboard_title}" %>
 
 <%= render partial: 'batch_connect/shared/breadcrumb',
 locals: {

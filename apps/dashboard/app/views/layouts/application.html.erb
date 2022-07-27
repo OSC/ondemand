@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="<%= Configuration.locale %>">
 <head>
-  <title><%= content_for?(:title) ? yield(:title) : "Dashboard - #{OodAppkit.dashboard.title}" %></title>
-  <%= favicon_link_tag 'favicon.ico', href: OodAppkit.public.url.join('favicon.ico'), skip_pipeline: true %>
+  <title><%= content_for?(:title) ? yield(:title) : "Dashboard - #{@user_configuration.dashboard_title}" %></title>
+  <%= favicon_link_tag 'favicon.ico', href: @user_configuration.public_url.join('favicon.ico'), skip_pipeline: true %>
 
   <%= javascript_include_tag 'application', nonce: true %>
   <%= stylesheet_link_tag 'application', nonce: true, media: 'all' %>
@@ -15,17 +15,17 @@
 
   <!-- configuration options exposed to javascript -->
   <meta id="ood_config"
-    data-bg-color="<%= Configuration.brand_bg_color %>"
-    data-link-bg-color="<%= Configuration.brand_link_active_bg_color %>"
+    data-bg-color="<%= @user_configuration.brand_bg_color %>"
+    data-link-bg-color="<%= @user_configuration.brand_link_active_bg_color %>"
   />
 </head>
 <body>
   <header>
-    <nav class="navbar navbar-expand-md shadow-sm navbar-color navbar-<%= Configuration.navbar_type %>" aria-label="Navigation">
-    <% if ENV['OOD_DASHBOARD_HEADER_IMG_LOGO'].present? %>
-      <a class="navbar-brand navbar-brand-logo" href="<%= root_path %>"><img class="img-fluid" src="<%= ENV['OOD_DASHBOARD_HEADER_IMG_LOGO'] %>" alt="<%= OodAppkit.dashboard.title.html_safe %>"></a>
+    <nav class="navbar navbar-expand-md shadow-sm navbar-color navbar-<%= @user_configuration.navbar_type %>" aria-label="Navigation">
+    <% if @user_configuration.dashboard_header_img_logo %>
+      <a class="navbar-brand navbar-brand-logo" href="<%= root_path %>"><img class="img-fluid" src="<%= @user_configuration.dashboard_header_img_logo %>" alt="<%= @user_configuration.dashboard_title %>"></a>
     <% else %>
-      <a class="navbar-brand" href="<%= root_path %>"><%= OodAppkit.dashboard.title.html_safe %></a>
+      <a class="navbar-brand" href="<%= root_path %>"><%= @user_configuration.dashboard_title %></a>
     <% end %>
       
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
