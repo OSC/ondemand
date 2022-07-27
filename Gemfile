@@ -21,4 +21,5 @@ group :test do
   gem "beaker"
   gem "beaker-rspec"
   gem "beaker-docker", '~> 1.1.1'
+  gem "net-ssh", '< 7.0.0'
 end
