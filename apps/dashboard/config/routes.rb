@@ -11,17 +11,17 @@ Rails.application.routes.draw do
 
   # in production, if the user doesn't have access to the files app directory, we hide the routes
   if Configuration.can_access_files?
-    constraints filepath: /.+/ do
-      get "files/fs(/*filepath)" => "files#fs", :defaults => { :format => 'html', :filepath => '/' }, :format => false, as: :files
-      put "files/fs/*filepath" => "files#update", :format => false, :defaults => { :format => 'json' }
+    constraints filepath: /.+/, fs: /(?!edit)[^\/]+/  do
+      get "files/:fs(/*filepath)" => "files#fs", :defaults => { :fs => 'fs', :format => 'html' }, :format => false, as: :files
+      put "files/:fs/*filepath" => "files#update", :format => false, :defaults => { :fs => 'fs', :format => 'json' }
 
       # TODO: deprecate these routes after updating OodAppkit to use the new routes above
       # backwards compatibility with the "api" routes that OodAppkit provides
       # and are used by File Editor and Job Composer
-      get "files/api/v1/fs(/*filepath)" => "files#fs", :defaults => { :format => 'html', :filepath => '/' }, :format => false
-      put "files/api/v1/fs/*filepath" => "files#update", :format => false, :defaults => { :format => 'json' }
+      get "files/api/v1/:fs(/*filepath)" => "files#fs", :defaults => { :fs => 'fs', :format => 'html' }, :format => false
+      put "files/api/v1/:fs/*filepath" => "files#update", :format => false, :defaults => { :fs => 'fs', :format => 'json' }
     end
-    post "files/upload"
+    post "files/upload/:fs" => "files#upload", :defaults => { :fs => 'fs' }
 
     get "files", to: redirect("files/fs#{Dir.home}")
 
@@ -30,8 +30,8 @@ Rails.application.routes.draw do
 
   if  Configuration.can_access_file_editor?
     # App file editor
-    get "files/edit/*filepath" => "files#edit", defaults: { :path => "/" , :format => 'html' }, format: false
-    get "files/edit" => "files#edit", :defaults => { :path => "/", :format => 'html' }, format: false
+    get "files/edit/:fs/*filepath" => "files#edit", defaults: { :fs => 'fs', :path => "/" , :format => 'html' }, format: false
+    get "files/edit/:fs" => "files#edit", :defaults => { :fs => 'fs', :path => "/", :format => 'html' }, format: false
   end
 
   namespace :batch_connect do
@@ -86,6 +86,8 @@ Rails.application.routes.draw do
     get "/activejobs/json" => "active_jobs#json", :defaults => { :format => 'json' }
     delete "/activejobs" => "active_jobs#delete_job",  as: 'delete_job'
   end
+
+  post "settings", :to => "settings#update"
 
   match "/404", :to => "errors#not_found", :via => :all
   match "/500", :to => "errors#internal_server_error", :via => :all

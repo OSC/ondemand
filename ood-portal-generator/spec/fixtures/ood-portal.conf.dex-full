@@ -68,6 +68,8 @@
   RewriteRule ^.*$ /public/maintenance/index.html [R=503,L]
   ErrorDocument 503 /public/maintenance/index.html
 
+  TraceEnable off
+
   Header always set Content-Security-Policy "frame-ancestors https://example.com;"
   Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
 

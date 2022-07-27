@@ -1,15 +1,15 @@
 <script>
 const csrf_token = document.querySelector('meta[name="csrf-token"]').content;
 const dashboard_files_directory_download_error_modal_title = '<%= t('dashboard.files_directory_download_error_modal_title') %>';
-const filesPath = '<%= files_path('/') %>';
 const maxFileSize = '<%= Configuration.file_upload_max %>';
-const filesUploadPath = '<%= files_upload_path %>';
 const transfersPath = '<%= transfers_path(format: "json") %>';
 const alert = '<%= alert %>';
 history.replaceState({
   currentDirectory: '<%= @path %>',
-  currentDirectoryUrl: '<%= files_path(@path) %>',
-  currentDirectoryUpdatedAt: '<%= Time.now.to_i %>'
+  currentDirectoryUrl: '<%= files_path(@filesystem, @path) %>',
+  currentDirectoryUpdatedAt: '<%= Time.now.to_i %>',
+  currentFilesPath: '<%= files_path(@filesystem, '/') %>',
+  currentFilesUploadPath: '<%= url_for(fs: @filesystem, action: 'upload') %>',
 }, null);
 
 </script>

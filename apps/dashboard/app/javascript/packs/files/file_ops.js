@@ -199,7 +199,8 @@ jQuery(function() {
 class FileOps {
   _timeout = 2000;
   _failures = 0;
-  _filesPath = filesPath;
+  // this seems to not be used anywhere?
+  _filesPath = history.state.currentFilesPath;
 
   constructor() {
   }
@@ -218,7 +219,7 @@ class FileOps {
 
   changeDirectory(path) {
     const eventData = {
-      'path': filesPath + path,
+      'path': history.state.currentFilesPath + path,
     };
 
     $(CONTENTID).trigger(DATATABLE_EVENTNAME.goto, eventData);

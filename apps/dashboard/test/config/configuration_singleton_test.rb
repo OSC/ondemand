@@ -314,27 +314,9 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     assert_equal ENV["OOD_NATIVE_VNC_LOGIN_HOST"], ConfigurationSingleton.new.native_vnc_login_host
   end
 
-  test "reads pinned apps from config files" do
-    pinned_apps = [
-      "sys/bc_osc_jupyter",
-      "sys/bc_osc_rstudio_server",
-      "sys/iqmol",
-      {
-        type: 'sys',
-        category: 'Interactive Apps',
-        subcategory: 'Servers',
-        field_of_science: 'Biology'
-      }
-    ]
-
-    with_modified_env(config_fixtures) do
-      assert_equal pinned_apps, ConfigurationSingleton.new.pinned_apps
-    end
-  end
-
   test "does not throw error when it can't read config files" do
     with_modified_env(OOD_CONFIG_FILE: "/dev/null", OOD_CONFIG_D_DIRECTORY: "/dev/null") do
-      assert_equal ConfigurationSingleton.new.pinned_apps, []
+      assert_equal ConfigurationSingleton.new.files_enable_shell_button, true
       assert_equal ConfigurationSingleton.new.send(:config), {}
     end
   end
@@ -378,24 +360,6 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       Rails.logger.expects(:error).with(regexp_matches(bad_yml_rex)).at_least_once
       ConfigurationSingleton.new.send(:config)
     end
-  end
-
-  test "pinned_apps_group_by returns original category when configured with category" do
-    cfg = ConfigurationSingleton.new
-    cfg.stubs(:config).returns({pinned_apps_group_by: "category"})
-    assert_equal "original_category", cfg.pinned_apps_group_by
-  end
-
-  test "pinned_apps_group_by returns original subcategory when configured with subcategory" do
-    cfg = ConfigurationSingleton.new
-    cfg.stubs(:config).returns({pinned_apps_group_by: "subcategory"})
-    assert_equal "original_subcategory", cfg.pinned_apps_group_by
-  end
-
-  test "pinned_apps_group_by returns an empty string by default" do
-    cfg = ConfigurationSingleton.new
-    cfg.stubs(:config).returns({})
-    assert_equal "", cfg.pinned_apps_group_by
   end
 
   test "files_enable_shell_button returns true by default" do
@@ -527,6 +491,9 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       c.boolean_configs.each do |config, default|
         env_var = "OOD_#{config.upcase}"
         assert_equal default, c.send(config), "#{config} should have responded to ENV['#{env_var}']=#{ENV[env_var]}."
+      end
+      c.string_configs.each do |config, _|
+        assert_equal 'string in env variable', c.send(config), "#{config} should have been 'string in env variable'."
       end
     end
 

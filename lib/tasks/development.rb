@@ -55,7 +55,9 @@ namespace :dev do
 
   def podman_rt_args
     [
-      '--security-opt', 'label=disable'
+      '--security-opt', 'label=disable',
+      "--uidmap=#{user.uid}:0:1", "--uidmap=0:1:#{user.uid}",
+      "--gidmap=#{user.gid}:0:1", "--gidmap=0:1:#{user.gid}",
     ].tap do |arr|
       arr.concat [ '--cap-add', 'sys_ptrace'] unless additional_caps.include?('--privileged')
     end.freeze

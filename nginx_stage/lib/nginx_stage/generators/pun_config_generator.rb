@@ -105,13 +105,9 @@ module NginxStage
       end
     end
 
-    # Generate the per-user NGINX config from the 'pun.conf.erb' template
-    add_hook :create_config do
-      template "pun.conf.erb", config_path
-    end
-
     # Run the pre hook command. This eats the output and doesn't affect
     # the overall status of the PUN startup
+    # This must come before anything that cleans the process environment
     add_hook :exec_pre_hook do
       unless pre_hook_root_cmd.nil?
         args = ["--user", user.to_s]
@@ -126,11 +122,16 @@ module NginxStage
       end
     end
 
+    # Generate the per-user NGINX config from the 'pun.conf.erb' template
+    add_hook :create_config do
+      template "pun.conf.erb", config_path
+    end
+
     # Run the per-user NGINX process (exit quietly on success)
     add_hook :exec_nginx do
       if !skip_nginx
+        NginxStage.clean_nginx_env(user: user)
         o, s = Open3.capture2e(
-          NginxStage.nginx_env(user: user),
           [
             NginxStage.nginx_bin,
             "(#{user})"

@@ -329,7 +329,6 @@ class DataTable {
     goto(url, pushState = true, show_processing_indicator = true) {
         if(url == history.state.currentDirectoryUrl)
           pushState = false;
-      
         this.reloadTable(url)
           .then((data) => {
             if(data) {

@@ -94,6 +94,8 @@ Listen <%= addr_port %>
   ErrorDocument 503 <%= @public_uri %>/maintenance/index.html
 
   <%- end -%>
+  TraceEnable off
+
   <%- if @security_csp_frame_ancestors -%>
   Header always set Content-Security-Policy "frame-ancestors <%= @security_csp_frame_ancestors -%>;"
   <%- end -%>

@@ -1,11 +1,6 @@
-
 #editor {
   margin: 0;
-  position: absolute;
-  top: 3em;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  height: 100%;
 }
 
 #save-button {
@@ -44,17 +39,14 @@
 }
 
 .input-xs, select.input-xs {
-  font-size: 11px;
-  height: 20px;
-  padding-top: 0px;
+  font-size: 0.7em;
+  height: 2em;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .editor-navbar .control-label {
-  font-size: 11px;
-}
-
-#save-button {
-  min-width: 80px;
+  font-size: 0.7em;
 }
 
 // Custom Callouts

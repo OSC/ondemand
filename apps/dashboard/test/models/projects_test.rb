@@ -7,7 +7,7 @@ class ProjectsTest < ActiveSupport::TestCase
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
-      attrs = { name: 'test project' }
+      attrs = { name: 'test project', icon: 'fas://arrow-right' }
       project = Project.new(attrs)
       project.save(attrs)
 
@@ -15,16 +15,16 @@ class ProjectsTest < ActiveSupport::TestCase
     end
   end
 
-  test 'save rejects bad characters at validation' do
+  test 'save rejects bad name characters at validation' do
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
 
-      attrs = { name: "b@d $ym?o|'s" }
+      attrs = { name: "b@d-$ym?o|'s", icon: 'fas://arrow-right' }
       project = Project.new(attrs)
 
       assert !project.save(attrs)
-      assert_equal project.errors[:name].last, I18n.t('dashboard.jobs_project_name_validation')
+      assert_equal project.errors[:name].last, 'Name format invalid'
     end
   end
 
@@ -33,21 +33,22 @@ class ProjectsTest < ActiveSupport::TestCase
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
 
-      attrs = { name: 'test project' }
+      attrs = { name: 'test project', icon: 'fas://arrow-right' }
       project = Project.new(attrs)
       project.save(attrs)
 
       bad_attrs = { name: 'b@d $ymbo!s' }
 
       assert !project.update(bad_attrs)
-      assert_equal project.errors[:name].last, I18n.t('dashboard.jobs_project_name_validation')
+      assert_equal project.errors[:name].last, 'Name format invalid'
 
-      good_attrs = { name: 'good symbols' }
+      good_attrs = { name: 'good-symbols', icon: 'fas://arrow-right' }
       manifest_path = Pathname.new("#{projects_path}/projects/#{project.directory}/.ondemand/manifest.yml")
 
       expected_manifest_yml = <<~HEREDOC
         ---
         name: good symbols
+        icon: fas://arrow-right
       HEREDOC
 
       assert project.update(good_attrs)
@@ -59,7 +60,7 @@ class ProjectsTest < ActiveSupport::TestCase
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
-      attrs = { name: 'test project' }
+      attrs = { name: 'test project', icon: 'fas://arrow-right' }
       project = Project.new(attrs)
       project.save(attrs)
 
@@ -73,11 +74,11 @@ class ProjectsTest < ActiveSupport::TestCase
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
-      attrs = { name: 'test project' }
-      project = Project.new(name: 'test project')
+      attrs = { name: 'test-project', icon: 'fas://arrow-right' }
+      project = Project.new(attrs)
       project.save(attrs)
 
-      assert_equal 'test_project', project.directory
+      assert_equal 'test-project', project.directory
 
       manifest_path = Pathname.new("#{projects_path}/projects/#{project.directory}/.ondemand/manifest.yml")
 
@@ -85,7 +86,8 @@ class ProjectsTest < ActiveSupport::TestCase
 
       expected_manifest_yml = <<~HEREDOC
         ---
-        name: test project
+        name: test-project
+        icon: fas://arrow-right
       HEREDOC
 
       assert_equal expected_manifest_yml, File.read(manifest_path)
@@ -96,14 +98,14 @@ class ProjectsTest < ActiveSupport::TestCase
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
-      attrs = { name: 'test project' }
+      attrs = { name: 'test-project', icon: 'fas://arrow-right' }
       project = Project.new(attrs)
 
       project.save(attrs)
-      assert Dir.entries("#{projects_path}/projects/").include?('test_project')
+      assert Dir.entries("#{projects_path}/projects/").include?('test-project')
 
       project.destroy!
-      assert_not Dir.entries("#{projects_path}/projects/").include?('test_project')
+      assert_not Dir.entries("#{projects_path}/projects/").include?('test-project')
     end
   end
 
@@ -111,24 +113,30 @@ class ProjectsTest < ActiveSupport::TestCase
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
-      attrs = { name: 'test project' }
+      attrs = { name: 'test-project', icon: 'fas://arrow-right' }
       project = Project.new(attrs)
       project.save(attrs)
 
-      name          = 'galaxies and galaxies'
-      description   = 'a view into the past'
-      icon          = 'fa://abell_1689'
+      name          = 'test-project-2'
+      description   = 'my test project'
+      icon          = 'fas://arrow-left'
 
       test_attributes = { name: name, description: description, icon: icon }
 
       expected_manifest_yml = <<~HEREDOC
         ---
-        name: galaxies and galaxies
-        description: a view into the past
-        icon: fa://abell_1689
+        name: test-project-2
+        icon: fas://arrow-left
+        description: my test project
       HEREDOC
 
+      puts "project: #{project.inspect}"
+
       project.update(test_attributes)
+
+      puts "project: #{project.inspect}"
+
+      assert File.exist?(project.manifest_path.to_s)
 
       assert_equal expected_manifest_yml, File.read(project.manifest_path.to_s)
     end

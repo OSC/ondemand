@@ -1,13 +1,11 @@
 class FilesController < ApplicationController
-  # include ActionController::Live
+  include ActionController::Live
   include ZipTricks::RailsStreaming
+
+  before_action :parse_path, :validate_path!, except: :upload
 
   def fs
     request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
-
-    @path = PosixFile.new(normalized_path)
-
-    AllowlistPolicy.default.validate!(@path)
 
     if @path.directory?
       @path.raise_if_cant_access_directory_contents
@@ -104,15 +102,13 @@ class FilesController < ApplicationController
 
   # PUT - create or update
   def update
-    path = normalized_path
-    AllowlistPolicy.default.validate!(path)
 
     if params.include?(:dir)
-      Dir.mkdir path
+      @path.mkdir
     elsif params.include?(:file)
-      FileUtils.mv params[:file].tempfile, path
+      @path.mv_from(params[:file].tempfile)
     elsif params.include?(:touch)
-      FileUtils.touch path
+      @path.touch
     else
       content = request.body.read
 
@@ -121,7 +117,7 @@ class FilesController < ApplicationController
       # see test cases for plain text, utf-8 text, images and binary files
       content.force_encoding('UTF-8')
 
-      File.write(path, content)
+      @path.write(content)
     end
 
     render json: {}
@@ -131,19 +127,12 @@ class FilesController < ApplicationController
 
   # POST
   def upload
-    path = uppy_upload_path
-    AllowlistPolicy.default.validate!(path)
+    upload_path = uppy_upload_path
 
-    path.parent.mkpath unless path.parent.directory?
+    parse_path(upload_path)
+    validate_path!
 
-    FileUtils.mv params[:file].tempfile, path.to_s
-
-    # umasks apply on top of 666 (-rw-rw-rw-) permissions. So a u mask of 022 would result
-    # in 666 - 022 = 644. Umasks are base 8 octal (what all this stuff expects).
-    mode = 0666 & (0777 ^ File.umask)
-    File.chmod(mode, path.to_s)
-
-    path.chown(nil, path.parent.stat.gid) if path.parent.setgid?
+    @path.handle_upload(params[:file].tempfile)
 
     render json: {}
   rescue AllowlistPolicy::Forbidden => e
@@ -155,14 +144,8 @@ class FilesController < ApplicationController
   end
 
   def edit
-    p = params[:filepath] || '/'
-    p = "/#{p}" unless p.start_with?('/')
-
-    @path = Pathname.new(p)
-    @file_api_url = OodAppkit.files.api(path: @path).to_s
-
-    if @path.file? && @path.readable? && @path.writable?
-      @content = File.read(@path.to_s)
+    if @path.editable?
+      @content = @path.read
       render :edit, status: status, layout: 'editor'
     else
       redirect_to root_path, alert: "#{@path} is not an editable file"
@@ -171,8 +154,35 @@ class FilesController < ApplicationController
 
   private
 
-  def normalized_path
-    Pathname.new("/" + params[:filepath].chomp("/"))
+  def normalized_path(path = params[:filepath])
+    Pathname.new("/" + path.to_s.chomp("/").delete_prefix("/"))
+  end
+
+  def parse_path(path = params[:filepath], filesystem = params[:fs])
+    normal_path = normalized_path(path)
+    if filesystem == 'fs'
+      @path = PosixFile.new(normal_path)
+      @filesystem = 'fs'
+    elsif ::Configuration.files_app_remote_files? && filesystem != 'fs'
+      @path = RemoteFile.new(normal_path, filesystem)
+      @filesystem = filesystem
+    end
+  end
+
+  def validate_path!
+    if posix_file?
+      AllowlistPolicy.default.validate!(@path)
+    elsif @path.remote_type.nil?
+      raise StandardError, "Remote #{@path.remote} does not exist"
+    elsif ::Configuration.allowlist_paths.present? && (@path.remote_type == "local" || @path.remote_type == "alias")
+      # local and alias remotes would allow bypassing the AllowListPolicy
+      # TODO: Attempt to evaluate the path of them and validate?
+      raise StandardError, "Remotes of type #{@path.remote_type} are not allowed due to ALLOWLIST_PATH"
+    end
+  end
+
+  def posix_file?
+    @path.is_a?(PosixFile)
   end
 
   def uppy_upload_path
@@ -190,6 +200,14 @@ class FilesController < ApplicationController
   end
 
   def show_file
+    if posix_file?
+      send_posix_file
+    else
+      send_remote_file
+    end
+  end
+
+  def send_posix_file
     type = Files.mime_type_by_extension(@path).presence || PosixFile.new(@path).mime_type
 
     # svgs aren't safe to view until we update our CSP
@@ -207,5 +225,38 @@ class FilesController < ApplicationController
     else
       send_file @path, disposition: 'inline'
     end
+  end
+
+  def send_remote_file
+    type = begin
+      Files.mime_type_by_extension(@path).presence || @path.mime_type
+    rescue => e
+      logger.warn("failed to determine mime type for file: #{@path} due to error #{e}")
+    end
+
+    # svgs aren't safe to view until we update our CSP
+    download = params[:download] || type.to_s == "image/svg+xml"
+    type = "text/plain; charset=utf-8" if type.to_s == "image/svg+xml"
+
+    response.set_header('X-Accel-Buffering', 'no')
+    response.sending_file = true
+    response.set_header("Last-Modified", Time.now.httpdate)
+
+    if download
+      response.set_header("Content-Type", type) if type.present?
+      response.set_header("Content-Disposition", "attachment")
+    else
+      response.set_header("Content-Type", Files.mime_type_for_preview(type)) if type.present?
+      response.set_header("Content-Disposition", "inline")
+    end
+    begin
+      @path.read do |chunk|
+        response.stream.write(chunk)
+      end
+      # Need to rescue exception when user cancels download
+    rescue ActionController::Live::ClientDisconnected => e
+    end
+  ensure
+    response.stream.close
   end
 end

@@ -42,7 +42,8 @@ class ConfigurationSingleton
       :bc_dynamic_js                => false,
       :per_cluster_dataroot         => false,
       :file_navigator               => false,
-      :jobs_app_alpha               => false
+      :jobs_app_alpha               => false,
+      :files_app_remote_files       => false,
     }.freeze
   end
 
@@ -53,6 +54,7 @@ class ConfigurationSingleton
   def string_configs
     {
       :module_file_dir      => nil,
+      :user_settings_file   => '.ood',
     }.freeze
   end
 
@@ -315,16 +317,6 @@ class ConfigurationSingleton
     Pathname.new(ENV['OOD_CONFIG_D_DIRECTORY'] || "/etc/ood/config/ondemand.d")
   end
 
-  # The configured pinned apps
-  def pinned_apps
-    config.fetch(:pinned_apps, [])
-  end
-
-  # The length of the "Pinned Apps" navbar menu
-  def pinned_apps_menu_length
-    config.fetch(:pinned_apps_menu_length, 6)
-  end
-
   # Setting terminal functionality in files app
   def files_enable_shell_button
     to_bool(config.fetch(:files_enable_shell_button, true))
@@ -333,27 +325,6 @@ class ConfigurationSingleton
   # Report performance of activejobs table rendering
   def console_log_performance_report?
     dataroot.join("debug").file? || rails_env != 'production'
-  end
-
-  # What to group pinned apps by
-  # @return [String, ""] Defaults to ""
-  def pinned_apps_group_by
-    group_by = config.fetch(:pinned_apps_group_by, "")
-
-    # FIXME: the configuration_singleton shouldn't really know the API of
-    # OodApp or subclasses. This is a hack because subclasses of OodApp overload
-    # the category and subcategory to something new while saving the original.
-    # The fix would be to move this knowledge to somewhere more appropriate than here.
-    if group_by == 'category' || group_by == 'subcategory'
-      "original_#{group_by}"
-    else
-      group_by
-    end
-  end
-
-  # The dashboard's landing page layout. Defaults to nil.
-  def dashboard_layout
-    config.fetch(:dashboard_layout, nil)
   end
 
   def can_access_activejobs?
@@ -421,15 +392,15 @@ class ConfigurationSingleton
     (ood_bc_card_time_int < 0) ? 0 : ood_bc_card_time_int
   end
 
+  def config
+    @config ||= read_config
+  end
+
   private
 
   def can_access_core_app?(name)
     app_dir = Rails.root.realpath.parent.join(name)
     app_dir.directory? && app_dir.join('manifest.yml').readable?
-  end
-
-  def config
-    @config ||= read_config
   end
 
   def read_config
