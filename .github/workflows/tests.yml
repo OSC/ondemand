@@ -42,7 +42,7 @@ jobs:
 
       - name: Run unit tests
         run: |
-          rm -f /home/runner/.gemrc
+          gem uninstall -aIx psych
           bundle exec rake test:unit
 
       - name: Run lint tests
