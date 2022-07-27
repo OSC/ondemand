@@ -41,7 +41,9 @@ jobs:
         run: bundle exec rake test:shellcheck
 
       - name: Run unit tests
-        run: bundle exec rake test:unit
+        run: |
+          rm -f /home/runner/.gemrc
+          bundle exec rake test:unit
 
       - name: Run lint tests
         run: bundle exec rake lint || true
