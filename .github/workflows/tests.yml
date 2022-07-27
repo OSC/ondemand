@@ -42,7 +42,7 @@ jobs:
 
       - name: Run unit tests
         run: |
-          gem uninstall -aIx psych
+          gem install --default -v 4.0.4 psych
           bundle exec rake test:unit
 
       - name: Run lint tests
