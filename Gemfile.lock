@@ -93,7 +93,7 @@ GEM
     inifile (3.0.0)
     method_source (1.0.0)
     minitar (0.9)
-    minitest (5.16.2)
+    minitest (5.15.0)
     multi_json (1.15.0)
     multipart-post (2.1.1)
     net-scp (1.2.1)
@@ -189,6 +189,7 @@ DEPENDENCIES
   beaker-docker (~> 1.1.1)
   beaker-rspec
   dotenv (~> 2.1)
+  minitest (= 5.15.0)
   ood_packaging (= 0.0.2.r2.0)
   rake
   rspec

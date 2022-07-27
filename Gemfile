@@ -13,6 +13,7 @@ group :package do
 end
 
 group :test do
+  gem "minitest", '5.15.0'
   gem "rspec"
   gem "watir"
   gem "rubocop"
