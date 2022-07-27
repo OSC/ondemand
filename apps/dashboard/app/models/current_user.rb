@@ -3,6 +3,9 @@
 # The CurrentUser class represents the current user on the system from Etc.
 # It has a name, a home directory, gid, uid and so on.
 #
+# It is used to manage the user settings like profile.
+# These are read and stored using the ::Configuration.dataroot directory. See user_settings_path
+#
 # It is a singleton for the simple reason that this is ran in a single
 # user context (i.e., the Per User Nginx).  And for convienence to do stuff
 # like User.home instead of User.new.home or OodSupport::User.new.home.

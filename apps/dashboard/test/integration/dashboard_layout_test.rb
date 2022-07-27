@@ -26,8 +26,8 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
   end
 
   test "should show nothing when nothing is given" do
-    # XDMOD here isn't really 
-    UserConfiguration.any_instance.stubs(:dashboard_layout).returns({})
+    # XDMOD here isn't really
+    stub_user_configuration({ dashboard_layout: {} })
 
     get '/'
 
@@ -35,21 +35,23 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
   end
 
   test "nil MOTD and pinned apps render empty elements" do
-    UserConfiguration.any_instance.stubs(:dashboard_layout).returns({
-      rows: [
-        {
-          columns: [
-            {
-              width: 8,
-              widgets: 'motd'
-            },
-            {
-              width: 4,
-              widgets: 'pinned_apps'
-            }
-          ]
-        }
-      ]
+    stub_user_configuration({
+      dashboard_layout: {
+        rows: [
+          {
+            columns: [
+              {
+                width: 8,
+                widgets: 'motd'
+              },
+              {
+                width: 4,
+                widgets: 'pinned_apps'
+              }
+            ]
+          }
+        ]
+    }
     })
 
     get '/'
@@ -70,17 +72,19 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
   end
 
   test "shows MOTD a single row, single column" do
-    UserConfiguration.any_instance.stubs(:dashboard_layout).returns({
-      rows: [
-        {
-          columns: [
-            {
-              width: 12,
-              widgets: 'motd'
-            }
-          ]
-        }
-      ]
+    stub_user_configuration({
+      dashboard_layout: {
+        rows: [
+          {
+            columns: [
+              {
+                width: 12,
+                widgets: 'motd'
+              }
+            ]
+          }
+        ]
+      }
     })
 
     with_modified_env(test_env) do
@@ -97,21 +101,23 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
   end
 
   test "shows widgets with one row and two columns" do
-    UserConfiguration.any_instance.stubs(:dashboard_layout).returns({
-      rows: [
-        {
-          columns: [
-            {
-              width: 8,
-              widgets: 'motd'
-            },
-            {
-              width: 4,
-              widgets: ['xdmod_widget_job_efficiency', 'xdmod_widget_jobs']
-            }
-          ]
-        }
-      ]
+    stub_user_configuration({
+      dashboard_layout: {
+        rows: [
+          {
+            columns: [
+              {
+                width: 8,
+                widgets: 'motd'
+              },
+              {
+                width: 4,
+                widgets: ['xdmod_widget_job_efficiency', 'xdmod_widget_jobs']
+              }
+            ]
+          }
+        ]
+      }
     })
 
     with_modified_env(test_env) do
@@ -141,12 +147,14 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
 
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
-    UserConfiguration.any_instance.stubs(:pinned_apps).returns([
-      'sys/bc_jupyter',
-      'sys/bc_paraview',
-      'sys/bc_desktop/owens',
-      'sys/pseudofun'
-    ])
+    stub_user_configuration({
+      pinned_apps: [
+        'sys/bc_jupyter',
+        'sys/bc_paraview',
+        'sys/bc_desktop/owens',
+        'sys/pseudofun'
+      ]
+    })
 
     with_modified_env(env) do
       get '/'
@@ -172,35 +180,37 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
   test "shows widgets on a second row" do
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
-    UserConfiguration.any_instance.stubs(:pinned_apps).returns([
-      'sys/bc_jupyter',
-      'sys/bc_paraview',
-      'sys/bc_desktop/owens',
-      'sys/pseudofun',
-    ])
-    UserConfiguration.any_instance.stubs(:dashboard_layout).returns({
-      rows: [
-        {
-          columns: [
-            {
-              width: 8,
-              widgets: 'motd'
-            },
-            {
-              width: 4,
-              widgets: ['xdmod_widget_job_efficiency', 'xdmod_widget_jobs']
-            }
-          ]
-        },
-        {
-          columns: [
-            {
-              width: 12,
-              widgets: 'pinned_apps'
-            }
-          ]
-        }
-      ]
+    stub_user_configuration({
+      pinned_apps: [
+        'sys/bc_jupyter',
+        'sys/bc_paraview',
+        'sys/bc_desktop/owens',
+        'sys/pseudofun'
+      ],
+      dashboard_layout: {
+        rows: [
+          {
+            columns: [
+              {
+                width: 8,
+                widgets: 'motd'
+              },
+              {
+                width: 4,
+                widgets: ['xdmod_widget_job_efficiency', 'xdmod_widget_jobs']
+              }
+            ]
+          },
+          {
+            columns: [
+              {
+                width: 12,
+                widgets: 'pinned_apps'
+              }
+            ]
+          }
+        ]
+      }
     })
 
     with_modified_env(test_env) do
@@ -230,21 +240,23 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
   end
 
   test "bad widgets don't throw errors" do
-    UserConfiguration.any_instance.stubs(:dashboard_layout).returns({
-      rows: [
-        {
-          columns: [
-            {
-              width: 6,
-              widgets: 'this_widget_doesnt_exist'
-            },
-            {
-              width: 6,
-              widgets: 'syntax_error'
-            }
-          ]
-        }
-      ]
+    stub_user_configuration({
+      dashboard_layout: {
+        rows: [
+          {
+            columns: [
+              {
+                width: 6,
+                widgets: 'this_widget_doesnt_exist'
+              },
+              {
+                width: 6,
+                widgets: 'syntax_error'
+              }
+            ]
+          }
+        ]
+      }
     })
 
     with_modified_env(test_env) do
@@ -261,21 +273,23 @@ class DashboardLayoutTest < ActionDispatch::IntegrationTest
   end
 
   test "should render brand new widgets with shipped widgets" do
-    UserConfiguration.any_instance.stubs(:dashboard_layout).returns({
-      rows: [
-        {
-          columns: [
-            {
-              width: 6,
-              widgets: 'test_partial'
-            },
-            {
-              width: 6,
-              widgets: 'motd'
-            }
-          ]
-        }
-      ]
+    stub_user_configuration({
+      dashboard_layout: {
+        rows: [
+          {
+            columns: [
+              {
+                width: 6,
+                widgets: 'test_partial'
+              },
+              {
+                width: 6,
+                widgets: 'motd'
+              }
+            ]
+          }
+        ]
+      }
     })
 
     with_modified_env(test_env) do

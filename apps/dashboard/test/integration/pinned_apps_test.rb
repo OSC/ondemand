@@ -17,14 +17,16 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "should create Apps dropdown when pinned apps are available" do
-    UserConfiguration.any_instance.stubs(:pinned_apps).returns([
-      'sys/bc_jupyter',
-      'sys/bc_paraview',
-      'sys/bc_desktop/owens',
-      'sys/bc_desktop/doesnt_exist',
-      'sys/pseudofun',
-      'sys/should_get_filtered'
-    ])
+    stub_user_configuration({
+      pinned_apps: [
+        'sys/bc_jupyter',
+        'sys/bc_paraview',
+        'sys/bc_desktop/owens',
+        'sys/bc_desktop/doesnt_exist',
+        'sys/pseudofun',
+        'sys/should_get_filtered'
+      ]
+    })
 
     get '/'
 
@@ -43,15 +45,17 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "should limit list of Pinned Apps in dropdown" do
-    UserConfiguration.any_instance.stubs(:pinned_apps).returns([
-      'sys/bc_jupyter',
-      'sys/bc_paraview',
-      'sys/bc_desktop/owens',
-      'sys/bc_desktop/doesnt_exist',
-      'sys/pseudofun',
-      'sys/should_get_filtered'
-    ])
-    UserConfiguration.any_instance.stubs(:pinned_apps_menu_length).returns(2)
+    stub_user_configuration({
+      pinned_apps: [
+        'sys/bc_jupyter',
+        'sys/bc_paraview',
+        'sys/bc_desktop/owens',
+        'sys/bc_desktop/doesnt_exist',
+        'sys/pseudofun',
+        'sys/should_get_filtered'
+      ],
+      pinned_apps_menu_length: 2
+    })
 
     get '/'
 
@@ -68,14 +72,16 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "should create Pinned app icons when pinned apps are available" do
-    UserConfiguration.any_instance.stubs(:pinned_apps).returns([
-      'sys/bc_jupyter',
-      'sys/bc_paraview',
-      'sys/bc_desktop/owens',
-      'sys/bc_desktop/doesnt_exist',
-      'sys/pseudofun',
-      'sys/should_get_filtered'
-    ])
+    stub_user_configuration({
+      pinned_apps: [
+        'sys/bc_jupyter',
+        'sys/bc_paraview',
+        'sys/bc_desktop/owens',
+        'sys/bc_desktop/doesnt_exist',
+        'sys/pseudofun',
+        'sys/should_get_filtered'
+      ]
+    })
 
     get '/'
 
@@ -93,7 +99,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "does not create pinned apps when no configuration" do
-    UserConfiguration.any_instance.stubs(:pinned_apps).returns([])
+    stub_user_configuration({ pinned_apps: [] })
 
     get '/'
 
@@ -103,7 +109,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "does not create pinned apps when no configuration and app sharing is enabled" do
-    UserConfiguration.any_instance.stubs(:pinned_apps).returns([])
+    stub_user_configuration({ pinned_apps: [] })
     Configuration.stubs(:app_sharing_enabled?).returns(true)
 
     get '/'
@@ -114,14 +120,16 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "shows pinned apps when MOTD is present" do
-    UserConfiguration.any_instance.stubs(:pinned_apps).returns([
-      'sys/bc_jupyter',
-      'sys/bc_paraview',
-      'sys/bc_desktop/owens',
-      'sys/bc_desktop/doesnt_exist',
-      'sys/pseudofun',
-      'sys/should_get_filtered'
-    ])
+    stub_user_configuration({
+      pinned_apps: [
+        'sys/bc_jupyter',
+        'sys/bc_paraview',
+        'sys/bc_desktop/owens',
+        'sys/bc_desktop/doesnt_exist',
+        'sys/pseudofun',
+        'sys/should_get_filtered'
+      ]
+   })
 
     env = {
       MOTD_FORMAT: 'osc',
@@ -146,15 +154,16 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "shows pinned apps when XDMOD is present" do
-
-    UserConfiguration.any_instance.stubs(:pinned_apps).returns([
-      'sys/bc_jupyter',
-      'sys/bc_paraview',
-      'sys/bc_desktop/owens',
-      'sys/bc_desktop/doesnt_exist',
-      'sys/pseudofun',
-      'sys/should_get_filtered'
-    ])
+    stub_user_configuration({
+      pinned_apps: [
+        'sys/bc_jupyter',
+        'sys/bc_paraview',
+        'sys/bc_desktop/owens',
+        'sys/bc_desktop/doesnt_exist',
+        'sys/pseudofun',
+        'sys/should_get_filtered'
+      ]
+    })
 
     env = {
       #this is going to fail, but that's OK - the widets will still appear
@@ -178,14 +187,16 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "shows pinned apps when both MOTD and XDMOD is present" do
-    UserConfiguration.any_instance.stubs(:pinned_apps).returns([
-      'sys/bc_jupyter',
-      'sys/bc_paraview',
-      'sys/bc_desktop/owens',
-      'sys/bc_desktop/doesnt_exist',
-      'sys/pseudofun',
-      'sys/should_get_filtered'
-    ])
+    stub_user_configuration({
+      pinned_apps: [
+        'sys/bc_jupyter',
+        'sys/bc_paraview',
+        'sys/bc_desktop/owens',
+        'sys/bc_desktop/doesnt_exist',
+        'sys/pseudofun',
+        'sys/should_get_filtered'
+      ]
+    })
 
     env = {
       MOTD_FORMAT: 'osc',
@@ -217,7 +228,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "still shows MOTD when no pinned apps" do
-    UserConfiguration.any_instance.stubs(:pinned_apps).returns([])
+    stub_user_configuration({ pinned_apps: [] })
 
     env = {
       MOTD_FORMAT: 'osc',
@@ -236,7 +247,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "still shows XDMOD when no pinned apps" do
-    UserConfiguration.any_instance.stubs(:pinned_apps).returns([])
+    stub_user_configuration({ pinned_apps: [] })
 
     env = {
       #this is going to fail, but that's OK - the widets will still appear
@@ -254,7 +265,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "still shows MOTD and XDMOD when no pinned apps" do
-    UserConfiguration.any_instance.stubs(:pinned_apps).returns([])
+    stub_user_configuration({ pinned_apps: [] })
 
     env = {
       MOTD_FORMAT: 'osc',
@@ -280,12 +291,14 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "groups the apps by categories" do
-    UserConfiguration.any_instance.stubs(:pinned_apps).returns([
-      'sys/bc_jupyter',
-      'sys/bc_paraview',
-      'sys/pseudofun',
-    ])
-    UserConfiguration.any_instance.stubs(:pinned_apps_group_by).returns("original_category")
+    stub_user_configuration({
+      pinned_apps: [
+        'sys/bc_jupyter',
+        'sys/bc_paraview',
+        'sys/pseudofun',
+      ],
+      pinned_apps_group_by: "original_category"
+    })
 
     env = {}
 
@@ -300,12 +313,14 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "groups the apps by sub-categories" do
-    UserConfiguration.any_instance.stubs(:pinned_apps).returns([
-      'sys/bc_jupyter',
-      'sys/bc_paraview',
-      'sys/pseudofun',
-    ])
-    UserConfiguration.any_instance.stubs(:pinned_apps_group_by).returns("original_subcategory")
+    stub_user_configuration({
+      pinned_apps: [
+        'sys/bc_jupyter',
+        'sys/bc_paraview',
+        'sys/pseudofun',
+      ],
+      pinned_apps_group_by: "original_subcategory"
+    })
 
     env = {}
 
@@ -320,12 +335,14 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "still shows ungroupable apps" do
-    UserConfiguration.any_instance.stubs(:pinned_apps).returns([
-      'sys/bc_jupyter',
-      'sys/bc_paraview',
-      'sys/pseudofun',
-    ])
-    UserConfiguration.any_instance.stubs(:pinned_apps_group_by).returns("some_unknown_field")
+    stub_user_configuration({
+      pinned_apps: [
+        'sys/bc_jupyter',
+        'sys/bc_paraview',
+        'sys/pseudofun',
+      ],
+      pinned_apps_group_by: "some_unknown_field"
+    })
 
     env = {}
 
@@ -339,12 +356,14 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
   end
 
   test "group by metadata fields works" do
-    UserConfiguration.any_instance.stubs(:pinned_apps).returns([
-      'sys/bc_jupyter',
-      'sys/bc_paraview',
-      'sys/pseudofun',
-    ])
-    UserConfiguration.any_instance.stubs(:pinned_apps_group_by).returns("languages")
+    stub_user_configuration({
+      pinned_apps: [
+        'sys/bc_jupyter',
+        'sys/bc_paraview',
+        'sys/pseudofun',
+      ],
+      pinned_apps_group_by: "languages"
+    })
 
     env = {}
 
@@ -361,10 +380,12 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
 
   test "shows only the shared apps that have been configured" do
     Configuration.stubs(:app_sharing_enabled?).returns(true)
-    UserConfiguration.any_instance.stubs(:pinned_apps).returns([{
-      type: 'usr',
-      category: 'Me'
-    }])
+    stub_user_configuration({
+      pinned_apps: [{
+        type: 'usr',
+        category: 'Me'
+      }]
+    })
 
     with_modified_env({}) do
       get '/'
@@ -385,14 +406,16 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
 
   test "shows all shared and sys apps" do
     Configuration.stubs(:app_sharing_enabled?).returns(true)
-    UserConfiguration.any_instance.stubs(:pinned_apps).returns([
-      'usr/*',
-      'sys/bc_jupyter',
-      'sys/bc_desktop/owens',
-      'sys/bc_desktop/oakley',
-      'sys/bc_paraview',
-      'sys/pseudofun',
-    ])
+    stub_user_configuration({
+      pinned_apps: [
+        'usr/*',
+        'sys/bc_jupyter',
+        'sys/bc_desktop/owens',
+        'sys/bc_desktop/oakley',
+        'sys/bc_paraview',
+        'sys/pseudofun',
+      ]
+    })
 
     with_modified_env({}) do
       get '/'
