@@ -231,7 +231,7 @@ def update_ood_portal
 end
 
 def restart_apache
-  on hosts, "systemctl restart #{apache_service}"
+  on hosts, "systemctl restart #{apache_service} || systemctl status #{apache_service}"
 end
 
 def restart_dex
