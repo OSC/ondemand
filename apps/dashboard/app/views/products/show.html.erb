@@ -150,7 +150,7 @@
   <p>Please fix the errors below:</p>
   <ul class="rails-bootstrap-forms-error-summary">
     <% @product.errors.full_messages.each do |msg| %>
-    <li><%= msg.html_safe %></li>
+    <li><%= msg %></li>
     <% end %>
   </ul>
 </div>

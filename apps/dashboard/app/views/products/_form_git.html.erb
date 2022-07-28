@@ -1,6 +1,6 @@
 <div class="field">
   <%= f.text_field :git_remote, help: "Example: <strong>git@github.com:Example/example.git</strong> (<a href='https://help.github.com/articles/generating-an-ssh-key/' rel='noopener' target='_blank'>requires SSH key installed</a>) or <strong>https://github.com/Example/example.git</strong>".html_safe %>
-  <%= content_tag :pre, product.errors[:git_remote_error].first.html_safe, class: "text-danger" if product.errors[:git_remote_error].any? %>
+  <%= content_tag :pre, product.errors[:git_remote_error].first, class: "text-danger" if product.errors[:git_remote_error].any? %>
 </div>
 <div class="alert alert-<%= ssh_key ? "success" : "danger" %> clearfix alert-ssh-key">
   <% if ssh_key %>

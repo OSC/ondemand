@@ -15,7 +15,7 @@
     <% unless product.valid?(:list_apps) %>
       <% product.errors.full_messages.each do |msg| %>
         <div class="alert alert-danger">
-          <p><%= msg.html_safe %></p>
+          <p><%= msg %></p>
         </div>
       <% end %>
     <% end %>
