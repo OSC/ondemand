@@ -7,6 +7,71 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- `passenger_options` are now safe to use in [2016](https://github.com/OSC/ondemand/pull/2016).
+- Interactive jobs now have compatability with turbovnc 3.0+ in [2153](https://github.com/OSC/ondemand/pull/2153).
+  Through the `ood_core` update.
+
+### Added
+
+- Support for Ubuntu 20.04 packages was added in [2141](https://github.com/OSC/ondemand/pull/2141).
+
+## [2.0.27] - 06-23-2022
+
+### Fixed
+
+- Correctly set `passenger_temp_path` under `tmp_root` in [2096](https://github.com/OSC/ondemand/pull/2096).
+
+## [2.0.26] - 06-02-2022
+
+### Fixed
+
+- The shell app now correctly skips `cluster.d` files it cannot read in [2057](https://github.com/OSC/ondemand/pull/2057).
+
+### Security
+
+- Rack dependency has been updated to 2.2.3.1 in [2063](https://github.com/OSC/ondemand/pull/2063).
+
+## [2.0.25] - 05-20-2022
+
+### Fixed
+
+- 2.0 now depends on a more specific ondemand-passenger ondemand-nginx versions in [2043](https://github.com/OSC/ondemand/pull/2043).
+
+## [2.0.24] - 05-19-2022
+
+### Fixed
+
+- Dynamic form widgets with min and max settings will now correctly initialize in [2014](https://github.com/OSC/ondemand/pull/2014).
+- The shell app now correctly skips `cluster.d` files it cannot read in [1988](https://github.com/OSC/ondemand/pull/1988).
+
+### Changed
+
+- Releases will now be added to Zenodo in [2039](https://github.com/OSC/ondemand/pull/2039)
+
+### Security
+
+- Rails has been updated to 5.2.8 up from 5.2.6.x in [2029](https://github.com/OSC/ondemand/pull/2029).
+- Passenger has been updated to 6.0.14 in [2026](https://github.com/OSC/ondemand/pull/2026)
+
+## [2.0.23] - 03-02-2022
+
+### Changed
+
+- Bump ondemand-runtime dependency for bigdecimal gem in [1807](https://github.com/OSC/ondemand/pull/1807).
+
+### Fixed
+
+- nginx_stage can now identify when a username has a @domain in it from SSSD. There are issues
+  When username have domains in them. [1852](https://github.com/OSC/ondemand/pull/1852) identifies
+  this and throws an appropriate error message.
+- File uploading now correctly sets the file permissions in [1853](https://github.com/OSC/ondemand/pull/1853).
+
+### Security
+
+- Uppy upgrade to 2.0 in [1804](https://github.com/OSC/ondemand/pull/1804).
+
 ## [2.0.22] - 2021-12-21
 
 ### Fixed
@@ -951,7 +1016,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.22...release_2.0
+[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.27...release_2.0
+[2.0.27]: https://github.com/OSC/ondemand/compare/v2.0.26...v2.0.27
+[2.0.26]: https://github.com/OSC/ondemand/compare/v2.0.25...v2.0.26
+[2.0.25]: https://github.com/OSC/ondemand/compare/v2.0.24...v2.0.25
+[2.0.24]: https://github.com/OSC/ondemand/compare/v2.0.23...v2.0.24
+[2.0.23]: https://github.com/OSC/ondemand/compare/v2.0.22...v2.0.23
 [2.0.22]: https://github.com/OSC/ondemand/compare/v2.0.21...v2.0.22
 [2.0.21]: https://github.com/OSC/ondemand/compare/v2.0.20...v2.0.21
 [2.0.20]: https://github.com/OSC/ondemand/compare/v2.0.19...v2.0.20
