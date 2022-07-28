@@ -37,6 +37,13 @@ module OodPortalGenerator
       false
     end
 
+    def debian_legacy?
+      return false unless debian?
+      env = Dotenv.parse(os_release_file)
+      return true if env['VERSION_ID'] == '18.04'
+      false
+    end
+
     def fqdn
       Socket.gethostbyname(Socket.gethostname).first
     end
