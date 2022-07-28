@@ -109,3 +109,8 @@ jobs:
         env:
           BEAKER_set: ${{ matrix.dist }}
           OOD_BUILD_REPO: ${{ matrix.version }}
+
+      - name: Debug failure
+        if: failure()
+        run: |
+          find tmp/e2e_ctr/ -type f -name *.log -exec cat {} +
