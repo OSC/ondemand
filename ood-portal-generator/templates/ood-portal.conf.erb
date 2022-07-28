@@ -131,6 +131,14 @@ Listen <%= addr_port %>
   <%= oidc_setting %> <%= @oidc_settings[oidc_setting] %>
   <%- end -%>
 
+  <%- if @dex_uri -%>
+  ProxyRequests Off
+  ProxyPreserveHost On
+  ProxyAddHeaders On
+  ProxyPass <%= @dex_uri %> http://localhost:<%= @dex_http_port %><%= @dex_uri %>
+  ProxyPassReverse <%= @dex_uri %> http://localhost:<%= @dex_http_port %><%= @dex_uri %>
+
+  <%- end -%>
   <%- end -%>
   # Lua configuration
   #
