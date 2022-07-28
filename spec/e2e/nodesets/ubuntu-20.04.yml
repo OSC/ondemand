@@ -9,7 +9,7 @@ HOSTS:
     docker_cmd: '["/sbin/init"]'
     docker_image_commands:
       - "rm -f /etc/dpkg/dpkg.cfg.d/excludes"
-      - 'apt-get install -y wget net-tools locales apt-transport-https ca-certificates'
+      - 'apt-get install -y wget net-tools locales apt-transport-https ca-certificates iproute2'
       - 'locale-gen en_US.UTF-8'
     docker_env:
       - LANG=en_US.UTF-8
