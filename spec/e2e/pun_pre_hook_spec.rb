@@ -11,6 +11,7 @@ describe 'Pun Pre Hook' do
     upload_portal_config('portal_with_prehook.yml')
     update_ood_portal
     restart_apache
+    restart_dex
   end
 
   after(:each) do

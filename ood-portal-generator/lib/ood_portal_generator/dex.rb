@@ -118,6 +118,7 @@ module OodPortalGenerator
     def issuer_port
       return '' if issuer_protocol == 'https://' && @view.port.to_s == '443' && !issuer_uri.empty?
       return '' if issuer_protocol == 'http://' && @view.port.to_s == '80' && !issuer_uri.empty?
+      return ":#{@view.port}" if !issuer_uri.empty?
       ":#{port}"
     end
 
