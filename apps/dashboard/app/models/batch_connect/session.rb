@@ -71,7 +71,7 @@ module BatchConnect
     def app
       BatchConnect::App.from_token(self.token)
     end
-    
+
     # Attributes used for serialization
     # @return [Hash] attributes to be serialized
     def attributes
@@ -277,7 +277,7 @@ module BatchConnect
 
       # Submit job script
       self.job_id = adapter.submit script(content: content, options: options)
-      db_file.write(to_json)
+      db_file.write(to_json, perm: 0o0600)
       true
     rescue => e   # rescue from all standard exceptions (app never crashes)
       errors.add(:submit, e.message)

@@ -505,6 +505,43 @@ batch_connect: { ssh_allow: true } }))
     end
   end
 
+  test 'writes db file correctly' do
+    stub_sys_apps
+    Open3.stubs(:capture3).returns(['the-job-id', '', exit_success])
+
+    Dir.mktmpdir('test_dir') do |dir|
+      OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
+      SecureRandom.stubs(:uuid).returns('test_id')
+
+      session = BatchConnect::Session.new
+      ctx = bc_jupyter_app.build_session_context
+      ctx.attributes = { 'cluster' => 'owens' }
+
+      now = Time.now
+      expected_file = {
+        'id'              => 'test_id',
+        'cluster_id'      => 'owens',
+        'job_id'          => 'the-job-id',
+        'created_at'      => now.to_i,
+        'token'           => 'bc_jupyter',
+        'title'           => 'Jupyter Notebook',
+        'view'            => nil,
+        'script_type'     => 'basic',
+        'cache_completed' => nil
+      }
+      Timecop.freeze(now) do
+        assert session.save(app: bc_jupyter_app, context: ctx), session.errors.each(&:to_s).to_s
+
+        db_dir = Pathname.new("#{dir}/batch_connect/db")
+        assert db_dir.directory?
+        assert_equal 1, db_dir.children.size
+        assert_equal ["#{db_dir}/test_id"], db_dir.children.map(&:to_s)
+        assert_equal(expected_file, JSON.parse(File.read("#{db_dir}/test_id")).to_h)
+        assert_equal('100600', File.stat("#{db_dir}/test_id").mode.to_s(8))
+      end
+    end
+  end
+
   test 'default bc days old is set to 7' do
     assert_equal 7, BatchConnect::Session.old_in_days
   end
