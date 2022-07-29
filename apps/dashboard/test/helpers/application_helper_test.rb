@@ -39,4 +39,32 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_equal true, html_doc.at_css('a[data-method="post"] i')["class"].include?(profile_link[:icon])
     assert_equal profile_link[:name], html_doc.at_css('a[data-method="post"]').text.strip
   end
+
+  test "custom_css_paths should prepend public_url to all custom css file paths" do
+    @user_configuration = stub(:custom_css_files => ['/test.css'], :public_url => Pathname.new("/public"))
+    assert_equal ['/public/test.css'], custom_css_paths
+
+    @user_configuration = stub(:custom_css_files => ['test.css'], :public_url => Pathname.new("/public"))
+    assert_equal ['/public/test.css'], custom_css_paths
+
+    @user_configuration = stub(:custom_css_files => ['/custom/css/test.css'], :public_url => Pathname.new("/public"))
+    assert_equal ['/public/custom/css/test.css'], custom_css_paths
+
+    @user_configuration = stub(:custom_css_files => ['custom/css/test.css'], :public_url => Pathname.new("/public"))
+    assert_equal ['/public/custom/css/test.css'], custom_css_paths
+  end
+
+  test "custom_css_paths should should handle nil and empty file paths" do
+    @user_configuration = stub(:custom_css_files => ['/test.css', nil, "other.css"], :public_url => Pathname.new("/public"))
+    assert_equal ['/public/test.css', '/public/other.css'], custom_css_paths
+
+    @user_configuration = stub(:custom_css_files => [nil], :public_url => Pathname.new("/public"))
+    assert_equal [], custom_css_paths
+
+    @user_configuration = stub(:custom_css_files => ['/test.css', "", "other.css"], :public_url => Pathname.new("/public"))
+    assert_equal ['/public/test.css', '/public/other.css'], custom_css_paths
+
+    @user_configuration = stub(:custom_css_files => [""], :public_url => Pathname.new("/public"))
+    assert_equal [], custom_css_paths
+  end
 end

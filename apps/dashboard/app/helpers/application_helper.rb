@@ -82,4 +82,10 @@ module ApplicationHelper
     profile_id = profile_info[:id]
     nav_link(profile_info.fetch(:name, profile_id), profile_info.fetch(:icon, "user"), settings_path("settings[profile]" => profile_id), method: "post") if profile_id
   end
+
+  def custom_css_paths
+    @user_configuration.custom_css_files.map do |css_file|
+      css_file.to_s.empty? ? nil : File.join(@user_configuration.public_url, css_file)
+    end.compact
+  end
 end

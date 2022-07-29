@@ -34,7 +34,24 @@ class UserConfiguration
     # The length of the "Pinned Apps" navbar menu
     ConfigurationProperty.property(name: :pinned_apps_menu_length, default_value: 6),
 
+    # Links to change profile under the Help navigation menu
+    # example:
+    # profile_links:
+    #   - id: default
+    #     name: "Default"
+    #     icon: "cog"
+    #   - id: profile1
+    #     name: "Team2"
+    #     icon: "user"
+    #
     ConfigurationProperty.property(name: :profile_links, default_value: []),
+
+    # Custom CSS files to add to the application.html.erb template
+    # The files need to be deployed to the Apache public directory: /var/www/ood/public
+    # The URL path will be prepended with the public_url property
+    # example:
+    # custom_css_files: ["core.css", "/custom/team1.css"]
+    ConfigurationProperty.property(name: :custom_css_files, default_value: []),
 
     ConfigurationProperty.property(name: :dashboard_title, default_value: 'Open OnDemand', read_from_env: true),
   ].freeze
@@ -77,7 +94,8 @@ class UserConfiguration
 
   def public_url
     path = ENV['OOD_PUBLIC_URL'] || fetch(:public_url, '/public')
-    Pathname.new path
+    # do not load any resources using public_url from another host. Only allow relative paths.
+    path.start_with?('/') ? Pathname.new(path) : Pathname.new('/public')
   end
 
   # The current user profile. Used to select the configuration properties.

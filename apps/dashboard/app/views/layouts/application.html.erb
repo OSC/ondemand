@@ -5,7 +5,10 @@
   <%= favicon_link_tag 'favicon.ico', href: @user_configuration.public_url.join('favicon.ico'), skip_pipeline: true %>
 
   <%= javascript_include_tag 'application', nonce: true %>
-  <%= stylesheet_link_tag 'application', nonce: true, media: 'all' %>
+  <%= stylesheet_link_tag 'application', nonce: content_security_policy_nonce, media: 'all' %>
+  <% custom_css_paths.each do |path| %>
+    <link rel="stylesheet" media="all" href="<%= path %>" nonce="<%= content_security_policy_nonce %>" />
+  <% end %>
 
   <%= csrf_meta_tags %>
 
