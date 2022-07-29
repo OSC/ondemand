@@ -45,6 +45,7 @@ class UserConfigurationTest < ActiveSupport::TestCase
       pinned_apps: [],
       pinned_apps_menu_length: 6,
       profile_links: [],
+      custom_css_files: [],
       dashboard_title: "Open OnDemand",
       public_url: Pathname.new("/public"),
 
@@ -125,6 +126,23 @@ class UserConfigurationTest < ActiveSupport::TestCase
     assert_equal pinned_apps, UserConfiguration.new.pinned_apps
   end
 
+  test "public_url should start with a forward /." do
+    Configuration.stubs(:config).returns({public_url: "https://example.com" })
+    target = UserConfiguration.new
+
+    assert_equal Pathname.new("/public"), target.public_url
+
+    Configuration.stubs(:config).returns({public_url: "test/invalid/path" })
+    target = UserConfiguration.new
+
+    assert_equal Pathname.new("/public"), target.public_url
+
+    Configuration.stubs(:config).returns({public_url: "/test/valid/path" })
+    target = UserConfiguration.new
+
+    assert_equal Pathname.new("/test/valid/path"), target.public_url
+  end
+
   test "profile should delegate to CurrentUser settings" do
     target = UserConfiguration.new
     CurrentUser.stubs(:user_settings).returns({profile: "user_settings_profile_value"})
@@ -190,22 +208,6 @@ class UserConfigurationTest < ActiveSupport::TestCase
 
     assert_nil target.send(:fetch, nil)
     assert_equal "default_value_argument", target.send(:fetch, nil, "default_value_argument")
-  end
-
-  test 'USER_PROPERTIES should have correct default' do
-    with_modified_env({}) do
-      Configuration.stubs(:config).returns({})
-      target = UserConfiguration.new
-
-      UserConfiguration::USER_PROPERTIES.each do |property|
-        if property.default_value.nil?
-          # assert_equal on nil is deprecated
-          assert_nil target.send(property.name), "#{property.name} should have been nil through the default value."
-        else
-          assert_equal property.default_value, target.send(property.name), "#{property.name} should have been #{property.default_value} through the default value"
-        end
-      end
-    end
   end
 
   test 'USER_PROPERTIES should respond to env variables when read_from_environment is enabled' do
