@@ -33,4 +33,11 @@ ln -sf ../sites-available/ood-portal.conf . || true
 
 [ -e "/bin/systemctl" ] && /bin/systemctl try-restart apache2.service
 
+# Address bug in lua-posix package
+# https://bugs.launchpad.net/ubuntu/+source/lua-posix/+bug/1752082
+. /etc/os-release
+if [ "${VERSION_ID}" = "18.04" ]; then
+  ln -snf posix_c.so /usr/lib/x86_64-linux-gnu/lua/5.2/posix.so
+fi
+
 exit 0

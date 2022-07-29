@@ -55,6 +55,8 @@ end
 
 def codename
   case "#{host_inventory['platform']}-#{host_inventory['platform_version']}"
+  when 'ubuntu-18.04'
+    'bionic'
   when 'ubuntu-20.04'
     'focal'
   else
@@ -229,7 +231,7 @@ def update_ood_portal
 end
 
 def restart_apache
-  on hosts, "systemctl restart #{apache_service}"
+  on hosts, "systemctl restart #{apache_service} || systemctl status #{apache_service}"
 end
 
 def restart_dex
@@ -244,4 +246,18 @@ end
 def bootstrap_flask
   install_packages(['python3', 'python3-pip'])
   on hosts, 'python3 -m pip install flask'
+end
+
+def dl_ctr_logs
+  dir = File.join(proj_root, 'tmp/e2e_ctr').tap { |d| `mkdir -p #{d}` }
+
+  hosts.each do |host|
+    host_dir = "#{dir}/#{host}".tap { |d| `mkdir -p #{d}` }
+    {
+      '/var/log/ondemand-nginx/ood' => 'error.log',
+      apache_log_dir.to_s => 'localhost_error.log',
+    }.each do |ctr_dir, file|
+      `docker cp ondemand-#{host}:#{ctr_dir}/#{file} #{host_dir}/#{file}`
+    end
+  end
 end

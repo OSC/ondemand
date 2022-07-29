@@ -1,2 +1,4 @@
-export GEM_PATH="/opt/ood/gems:${GEM_PATH:+:${GEM_PATH}}"
+export GEM_HOME="/opt/ood/gems"
+export PATH="${GEM_HOME}/bin:${PATH:+:${PATH}}"
+export GEM_PATH="${GEM_HOME}:${GEM_PATH:+:${GEM_PATH}}"
 export RUBYLIB="/opt/ood/ondemand/root/usr/share/ruby/vendor_ruby:${RUBYLIB:+:${RUBYLIB}}"

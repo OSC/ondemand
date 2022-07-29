@@ -36,8 +36,8 @@ group :development, :test do
 end
 
 group :test do
-  gem "capybara"
-  gem "selenium-webdriver"
+  gem "capybara", '< 3.36.0'
+  gem "selenium-webdriver", '< 4.0.0'
 end
 
 group :development do
@@ -66,6 +66,7 @@ gem 'autoprefixer-rails', '~> 10.2.5'
 gem 'dotiw'
 gem 'local_time', '~> 1.0.3'
 gem 'turbolinks', '~> 5.2.0'
+gem 'nokogiri', '~> 1.12.5'
 
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'
@@ -77,7 +78,7 @@ gem 'pbs', '~> 2.2.1'
 gem "sinatra", require: false
 gem "sinatra-contrib", require: false
 gem "erubi", require: false
-gem "dalli", require: false
+gem "dalli", '<= 3.2.0', require: false
 
 gem 'webpacker', '~> 5.2', '>= 5.2.1'
 gem 'zip_tricks', '~> 5.5'

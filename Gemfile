@@ -9,10 +9,11 @@ gem "bcrypt"
 gem 'dotenv', '~> 2.1'
 
 group :package do
-  gem 'ood_packaging', '0.0.2.r2.0'
+  gem 'ood_packaging', '0.0.3.r2.0'
 end
 
 group :test do
+  gem "minitest", '5.15.0'
   gem "rspec"
   gem "watir"
   gem "rubocop"
@@ -20,4 +21,5 @@ group :test do
   gem "beaker"
   gem "beaker-rspec"
   gem "beaker-docker", '~> 1.1.1'
+  gem "net-ssh", '< 7.0.0'
 end

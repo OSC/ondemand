@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        ruby: ["2.7.1"]
+        ruby: ["2.5.1", "2.7.1"]
         bundler: ["2.1.4"]
     runs-on: ${{ matrix.os }}
     name: Unit tests
@@ -41,7 +41,9 @@ jobs:
         run: bundle exec rake test:shellcheck
 
       - name: Run unit tests
-        run: bundle exec rake test:unit
+        run: |
+          gem install --default -v 4.0.4 psych
+          bundle exec rake test:unit
 
       - name: Run lint tests
         run: bundle exec rake lint || true
@@ -78,7 +80,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        dist: ["el7", "el8", "ubuntu-20.04"]
+        dist: ["el7", "el8", "ubuntu-18.04", "ubuntu-20.04"]
         version: ["2.0"]
     runs-on: "ubuntu-latest"
     name: E2E test ${{ matrix.dist }} (ondemand-${{ matrix.version }})
@@ -107,3 +109,8 @@ jobs:
         env:
           BEAKER_set: ${{ matrix.dist }}
           OOD_BUILD_REPO: ${{ matrix.version }}
+
+      - name: Debug failure
+        if: failure()
+        run: |
+          find tmp/e2e_ctr/ -type f -name *.log -exec cat {} +

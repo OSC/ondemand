@@ -20,7 +20,7 @@ build:
     - bundle exec rake package:build[$OOD_PACKAGING_DIST]
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el7, el8, ubuntu-20.04]
+      - OOD_PACKAGING_DIST: [el7, el8, ubuntu-18.04, ubuntu-20.04]
   artifacts:
     paths:
       - dist
