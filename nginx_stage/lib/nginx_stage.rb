@@ -155,7 +155,7 @@ module NginxStage
   # also declare in NGINX config using env directive
   # @return [Array<String>] list of env vars to declare in NGINX config
   def self.scl_env_declarations
-    %w(PATH LD_LIBRARY_PATH X_SCLS MANPATH PCP_DIR PERL5LIB PKG_CONFIG_PATH PYTHONPATH XDG_DATA_DIRS SCLS RUBYLIB GEM_PATH)
+    %w(PATH LD_LIBRARY_PATH X_SCLS MANPATH PCP_DIR PERL5LIB PKG_CONFIG_PATH PYTHON PYTHONPATH XDG_DATA_DIRS SCLS RUBYLIB GEM_HOME GEM_PATH LANG)
   end
 
   # Arguments used during execution of nginx binary
