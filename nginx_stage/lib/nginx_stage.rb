@@ -119,14 +119,14 @@ module NginxStage
     app_info
   end
 
-  # Environment used during execution of nginx binary
+  # Clean environment used during execution of nginx binary
   # @example Start the per-user NGINX for user Bob
-  #   nginx_env(user: 'bob')
+  #   clean_nginx_env(user: 'bob')
   #   #=> { "USER" => "bob", ... }
   # @param user [String] the owner of the nginx process
-  # @return [Hash{String=>String}] the environment used to execute the nginx process
-  def self.nginx_env(user:)
-    {
+  # @return [ENV] the environment used to execute the nginx process
+  def self.clean_nginx_env(user:)
+    ENV.replace({
       "USER" => user,
       "LOGNAME" => user,
       "ONDEMAND_VERSION" => ondemand_version,
@@ -141,8 +141,21 @@ module NginxStage
       "OOD_FILES_URL" => "/pun/sys/dashboard/files",
       # this is not a typo => the editor is /edit off of the base url
       "OOD_EDITOR_URL" => "/pun/sys/dashboard/files",
-      "RAILS_LOG_TO_STDOUT" => "true"
-    }.merge(pun_custom_env)
+      "RAILS_LOG_TO_STDOUT" => "true",
+    }.merge(pun_custom_env).merge(preserve_env_declarations.map { |k| [ k, ENV[k] ] }.to_h))
+  end
+
+  # Array of env vars that should be preserved
+  # @return [Array<String>] list of env vars to declare in NGINX config
+  def self.preserve_env_declarations
+    pun_custom_env_declarations | scl_env_declarations
+  end
+
+  # Array of env vars that loading SCL packages with modify that we should
+  # also declare in NGINX config using env directive
+  # @return [Array<String>] list of env vars to declare in NGINX config
+  def self.scl_env_declarations
+    %w(PATH LD_LIBRARY_PATH X_SCLS MANPATH PCP_DIR PERL5LIB PKG_CONFIG_PATH PYTHON PYTHONPATH XDG_DATA_DIRS SCLS RUBYLIB GEM_HOME GEM_PATH LANG)
   end
 
   # Arguments used during execution of nginx binary

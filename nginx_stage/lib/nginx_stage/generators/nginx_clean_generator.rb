@@ -63,8 +63,8 @@ module NginxStage
           if socket.sessions.zero? || force
             puts u
             if !skip_nginx
+              NginxStage.clean_nginx_env(user: user)
               o, s = Open3.capture2e(
-                NginxStage.nginx_env(user: u),
                 NginxStage.nginx_bin,
                 *NginxStage.nginx_args(user: u, signal: :stop)
               )
