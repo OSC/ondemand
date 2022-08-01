@@ -72,27 +72,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - nginx APIs now validate the redirect on stop requests in [#1775](https://github.com/OSC/ondemand/pull/1175).
 - Nginx PUNs correclty start with minimal environment in [2157](https://github.com/OSC/ondemand/pull/2157)
 
-## [2.0.16] - 2021-08-25
-
-### Fixed
-
-- Fixed an issue with non US keyboards could not use `+` keys in the shell app -
-  [1214](https://github.com/OSC/ondemand/issues/1214).
-- Fixed Ganglia panels visually and semantically - [1031](https://github.com/OSC/ondemand/issues/1031).
-- Fixed error messages in creating invalid files - [1322](https://github.com/OSC/ondemand/issues/1322).
-- Fixed removing files when allowlists are in place - [1337](https://github.com/OSC/ondemand/issues/1337).
-
-### Added
-
-- RPM building and e2e testing in several pull requests.
-  - [1329](https://github.com/OSC/ondemand/pull/1329)
-  - [1340](https://github.com/OSC/ondemand/pull/1340)
-
-### Changed
-
-- Sessions stores can now be overridden in [1321](https://github.com/OSC/ondemand/pull/1321).
-- upgraded `ood_core` from v0.17.4 to v0.17.6.
-
 ## [2.0.27] - 06-23-2022
 
 ### Fixed
@@ -1087,7 +1066,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.16...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.28...HEAD
+[2.0.28]: https://github.com/OSC/ondemand/compare/v2.0.27...v2.0.28
+[2.0.27]: https://github.com/OSC/ondemand/compare/v2.0.26...v2.0.27
+[2.0.26]: https://github.com/OSC/ondemand/compare/v2.0.25...v2.0.26
+[2.0.25]: https://github.com/OSC/ondemand/compare/v2.0.24...v2.0.25
+[2.0.24]: https://github.com/OSC/ondemand/compare/v2.0.23...v2.0.24
+[2.0.23]: https://github.com/OSC/ondemand/compare/v2.0.22...v2.0.23
+[2.0.22]: https://github.com/OSC/ondemand/compare/v2.0.21...v2.0.22
+[2.0.21]: https://github.com/OSC/ondemand/compare/v2.0.20...v2.0.21
+[2.0.20]: https://github.com/OSC/ondemand/compare/v2.0.19...v2.0.20
+[2.0.19]: https://github.com/OSC/ondemand/compare/v2.0.18...v2.0.19
+[2.0.18]: https://github.com/OSC/ondemand/compare/v2.0.17...v2.0.18
+[2.0.17]: https://github.com/OSC/ondemand/compare/v2.0.16...v2.0.17
 [2.0.16]: https://github.com/OSC/ondemand/compare/v2.0.15...v2.0.16
 [2.0.15]: https://github.com/OSC/ondemand/compare/v2.0.14...v2.0.15
 [2.0.14]: https://github.com/OSC/ondemand/compare/v2.0.13...v2.0.14
