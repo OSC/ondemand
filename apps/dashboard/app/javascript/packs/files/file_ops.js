@@ -571,7 +571,7 @@ class FileOps {
   }
 
   copy(files, token) {
-    this.transferFiles(files, 'cp', 'copy files');  
+    this.transferFiles(files, 'cp', 'copy files');
   }
 
   alertError(title, message) {

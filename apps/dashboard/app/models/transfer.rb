@@ -115,7 +115,7 @@ class Transfer
   end
 
   def command_str
-    command.join(" ")
+    commands.map { |v| v.join(' ') }.join('; ')
   end
 
   def update_percent(step)

@@ -118,8 +118,9 @@ class ClipBoard {
         clipboard.to = history.state.currentDirectory;
 
         if (clipboard.from == clipboard.to) {
-          console.error('clipboard from and to are identical')
-          // TODO:
+          // No files are changed, so we just have to clear and update the clipboard
+          this.clearClipboard();
+          this.updateViewForClipboard();
         }
         else {
           let files = {};
@@ -146,33 +147,50 @@ class ClipBoard {
 
       if (clipboard) {
         clipboard.to = history.state.currentDirectory;
-
+        
+        // files is a hashmap with keys of file current path and value as the corresponding files desired path
+        let files = {};
         if (clipboard.from == clipboard.to) {
-          console.error('clipboard from and to are identical')
-
-          // TODO: we want to support this use case
-          // copy and paste as a new filename
-          // but lots of edge cases
-          // (overwrite or rename duplicates)
-          // _copy
-          // _copy_2
-          // _copy_3
-          // _copy_4
-        }
-        else {
-          // [{"/from/file/path":"/to/file/path" }]
-          let files = {};
+          const currentFilenames = history.state.currentFilenames;
           clipboard.files.forEach((f) => {
-            files[`${clipboard.from}/${f.name}`] = `${history.state.currentDirectory}/${f.name}`
+            const extIndex = f.name.lastIndexOf('.');
+            let newName, extension;
+            if (extIndex == -1) {
+              // If no extension or directory, disregard extension
+              newName = f.name;
+              extension = '';
+            } else {
+              newName = f.name.slice(0, extIndex);
+              extension = f.name.slice(extIndex);
+            }
+            // If f.name in cur dir, try `${f.name}_copy`.
+            if (currentFilenames.includes(newName + extension)) {
+              newName += '_copy';
+              // If `${f.name}_copy` exists, try `${f.name}_copy_{i}' starting at i=1 until a file doesn't exist
+              if (currentFilenames.includes(newName + extension)) {
+                let copyNumber = 1;
+                newName += `_${copyNumber}`;
+                while (currentFilenames.includes(newName + extension)) {
+                  copyNumber++;
+                  newName = newName.slice(0, newName.lastIndexOf('_') + 1) + copyNumber;
+                }
+              }
+            }
+            files[`${clipboard.from}/${f.name}`] = `${clipboard.to}/${newName}${extension}`;
           });
-
-          const eventData = {
-            'files': files,
-            'token': csrf_token
-          };
-
-          $(CONTENTID).trigger(FILEOPS_EVENTNAME.copyFile, eventData);
+        } else {
+          // Don't rename files if not copying to the same directory
+          clipboard.files.forEach((f) => {
+            files[`${clipboard.from}/${f.name}`] = `${clipboard.to}/${f.name}`;
+          })
         }
+
+        const eventData = {
+          'files': files,
+          'token': csrf_token
+        };
+
+        $(CONTENTID).trigger(FILEOPS_EVENTNAME.copyFile, eventData);
       }
       else {
         console.error('files clipboard is empty');
