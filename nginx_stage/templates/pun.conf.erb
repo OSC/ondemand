@@ -32,6 +32,7 @@ http {
 
   <%- if disable_bundle_user_config? -%>
   passenger_env_var BUNDLE_USER_CONFIG /dev/null;
+  passenger_preload_bundler on;
 
   <%- end -%>
 
