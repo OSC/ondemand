@@ -380,12 +380,11 @@
 #oidc_settings: {}
 
 # The Dex URI behind Apache reverse proxy
-# Setting this value to some path will result in Dex listening on localhost
-# as well as only using HTTP for proxied communication
+# Set to false or null to disable Dex behing the Apache reverse proxy
 # Example:
-#   dex_uri: /dex
-# Default: null
-#dex_uri: null
+#   dex_uri: /auth
+# Default: /dex
+#dex_uri: /dex
 
 # Dex configurations, values inside the "dex" structure are directly used to configure Dex
 # If the value for "dex" key is false or null, Dex support is disabled

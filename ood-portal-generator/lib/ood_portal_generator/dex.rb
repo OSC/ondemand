@@ -20,6 +20,7 @@ module OodPortalGenerator
 
       @config = config == true || config == NO_CONFIG || config.nil? || !enabled? ? {} : config
       @view = view
+      @view.dex_enabled = enabled?
       @dex_config = {}
       @dex_config[:issuer] = issuer
       @dex_config[:storage] = storage
@@ -84,12 +85,12 @@ module OodPortalGenerator
     end
 
     def listen
-      return 'localhost' unless @view.dex_uri.nil?
+      return 'localhost' if @view.dex_uri
       @config.fetch(:listen, '0.0.0.0')
     end
 
     def ssl?
-      return false unless @view.dex_uri.nil?
+      return false if @view.dex_uri
       @config.fetch(:ssl, !@view.ssl.nil?)
     end
 
@@ -117,6 +118,14 @@ module OodPortalGenerator
       @tls_key ||= @config.fetch(:tls_key, nil)
     end
 
+    def issuer_default_https_port?
+      issuer_protocol == 'https://' && @view.port.to_s == '443' && !issuer_uri.empty?
+    end
+
+    def issuer_default_http_port?
+      issuer_protocol == 'http://' && @view.port.to_s == '80' && !issuer_uri.empty?
+    end
+
     def issuer_protocol
       return 'https://' if !issuer_uri.empty? && !@view.ssl.nil?
       return 'http://' if !issuer_uri.empty? && @view.ssl.nil?
@@ -124,14 +133,13 @@ module OodPortalGenerator
     end
 
     def issuer_uri
-      @view.dex_uri.nil? ? '' : @view.dex_uri
+      return @view.dex_uri if @view.dex_uri
+      ''
     end
 
     def issuer_port
-      return '' if issuer_protocol == 'https://' && @view.port.to_s == '443' && !issuer_uri.empty?
-      return '' if issuer_protocol == 'http://' && @view.port.to_s == '80' && !issuer_uri.empty?
-      return ":#{@view.port}" if !issuer_uri.empty?
-      ":#{port}"
+      return '' if issuer_default_https_port? || issuer_default_http_port?
+      issuer_uri.empty? ? ":#{port}" : ":#{@view.port}"
     end
 
     def issuer

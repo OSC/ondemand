@@ -130,7 +130,7 @@ Listen <%= addr_port %>
   <%= oidc_setting %> <%= @oidc_settings[oidc_setting] %>
   <%- end -%>
 
-  <%- if @dex_uri -%>
+  <%- if @dex_uri && @dex_enabled -%>
   ProxyRequests Off
   ProxyPreserveHost On
   ProxyAddHeaders On

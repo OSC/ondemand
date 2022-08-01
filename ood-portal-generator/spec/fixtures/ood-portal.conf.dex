@@ -62,7 +62,7 @@
 
   # OIDC configuration
   #
-  OIDCProviderMetadataURL http://example.com:5556/.well-known/openid-configuration
+  OIDCProviderMetadataURL http://example.com/dex/.well-known/openid-configuration
   OIDCClientID example.com
   OIDCClientSecret 83bc78b7-6f5e-4010-9d80-22f328aa6550
   OIDCRedirectURI http://example.com/oidc
@@ -73,6 +73,12 @@
   OIDCSessionMaxDuration 28800
   OIDCStateMaxNumberOfCookies 10 true
   OIDCCookieSameSite On
+
+  ProxyRequests Off
+  ProxyPreserveHost On
+  ProxyAddHeaders On
+  ProxyPass /dex http://localhost:5556/dex
+  ProxyPassReverse /dex http://localhost:5556/dex
 
   # Lua configuration
   #

@@ -1,14 +1,11 @@
 ---
-issuer: https://example.com:5554
+issuer: https://example.com/dex
 storage:
   type: sqlite3
   config:
     file: "/etc/ood/dex/dex.db"
 web:
-  http: 0.0.0.0:5556
-  https: 0.0.0.0:5554
-  tlsCert: "/etc/ood/dex/example.com.crt"
-  tlsKey: "/etc/ood/dex/example.com.key"
+  http: localhost:5556
 telemetry:
   http: 0.0.0.0:5558
 staticClients:
