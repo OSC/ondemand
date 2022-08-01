@@ -71,6 +71,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - nginx APIs now validate the redirect on stop requests in [#1775](https://github.com/OSC/ondemand/pull/1175).
 - Nginx PUNs correclty start with minimal environment in [2157](https://github.com/OSC/ondemand/pull/2157)
 
+## [2.0.28] - 08-01-2022
+
+### Fixed
+
+- `passenger_options` are now safe to use in [2016](https://github.com/OSC/ondemand/pull/2016).
+- Interactive jobs now have compatability with turbovnc 3.0+ in [2153](https://github.com/OSC/ondemand/pull/2153).
+  Through the `ood_core` update.
+- PUNs now start with only the environment variables required in [2156](https://github.com/OSC/ondemand/pull/2156).
+
+### Added
+
+- Support for Ubuntu 20.04 packages was added in [2141](https://github.com/OSC/ondemand/pull/2141).
+- Support for Ubuntu 18.04 packages was added in [2160](https://github.com/OSC/ondemand/pull/2160).
+- Support for `fujitsu_tcs` scheduler also through the `ood_core` update.
+- Dex can now be proxied behind Apache in [2183](https://github.com/OSC/ondemand/pull/2183).
+
 ## [2.0.27] - 06-23-2022
 
 ### Fixed
