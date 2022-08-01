@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Added support for profile based custom CSS files (#2168)\
+Preserve PYTHON and LANG in nginx_stage PUN environment (#2179)\
+Write bc session script db files with 600 permission (#2111)\
+fix #2133 so that test:jobs does not invoke asset building (#2137)\
+Moved Branding configuration to UserConfiguration Object to support profiles (#2151)\
+Added button to refresh files table (#2095)\
+Ensure tls_cert and tls_key for Dex can be set (#2163)\
+Ensure minimal environment with nginx_stage (#2157)
 
 ### Changed
 
