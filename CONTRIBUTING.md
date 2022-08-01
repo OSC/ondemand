@@ -69,6 +69,7 @@ Ensure to include what issue this fixes in the **PR comment** to help with autom
 ## Project StyleGuide
 
 * **Any new code *must* also include testing.**
+* If you need help with writing tests please include the `test help` tag.
 
 ### Linters
 
