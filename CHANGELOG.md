@@ -6,14 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Added support for profile based custom CSS files (#2168)\
-Preserve PYTHON and LANG in nginx_stage PUN environment (#2179)\
-Write bc session script db files with 600 permission (#2111)\
-fix #2133 so that test:jobs does not invoke asset building (#2137)\
-Moved Branding configuration to UserConfiguration Object to support profiles (#2151)\
-Added button to refresh files table (#2095)\
-Ensure tls_cert and tls_key for Dex can be set (#2163)\
-Ensure minimal environment with nginx_stage (#2157)
+
 
 ### Changed
 
@@ -58,6 +51,7 @@ Ensure minimal environment with nginx_stage (#2157)
 - Citation information for this source is now available in [1887](https://github.com/OSC/ondemand/pull/1887) and releases are made
   in [1888](https://github.com/OSC/ondemand/pull/1887).
 - Modules can be automatically loaded in batch connect forms in (1930)(https://github.com/OSC/ondemand/pull/1930).
+- Custom CSS files can be added in [2168](https://github.com/OSC/ondemand/pull/2168).
 
 ### Fixed
 
@@ -76,6 +70,7 @@ Ensure minimal environment with nginx_stage (#2157)
   and [1437](https://github.com/OSC/ondemand/pull/1437)
 - Selinux updates in [1496](https://github.com/OSC/ondemand/pull/1496).
 - nginx APIs now validate the redirect on stop requests in [#1775](https://github.com/OSC/ondemand/pull/1175).
+- Nginx PUNs correclty start with minimal environment in [2157](https://github.com/OSC/ondemand/pull/2157)
 
 ## [2.0.16] - 2021-08-25
 
@@ -97,6 +92,137 @@ Ensure minimal environment with nginx_stage (#2157)
 
 - Sessions stores can now be overridden in [1321](https://github.com/OSC/ondemand/pull/1321).
 - upgraded `ood_core` from v0.17.4 to v0.17.6.
+
+## [2.0.27] - 06-23-2022
+
+### Fixed
+
+- Correctly set `passenger_temp_path` under `tmp_root` in [2096](https://github.com/OSC/ondemand/pull/2096).
+
+## [2.0.26] - 06-02-2022
+
+### Fixed
+
+- The shell app now correctly skips `cluster.d` files it cannot read in [2057](https://github.com/OSC/ondemand/pull/2057).
+
+### Security
+
+- Rack dependency has been updated to 2.2.3.1 in [2063](https://github.com/OSC/ondemand/pull/2063).
+
+## [2.0.25] - 05-20-2022
+
+### Fixed
+
+- 2.0 now depends on a more specific ondemand-passenger ondemand-nginx versions in [2043](https://github.com/OSC/ondemand/pull/2043).
+
+## [2.0.24] - 05-19-2022
+
+### Fixed
+
+- Dynamic form widgets with min and max settings will now correctly initialize in [2014](https://github.com/OSC/ondemand/pull/2014).
+- The shell app now correctly skips `cluster.d` files it cannot read in [1988](https://github.com/OSC/ondemand/pull/1988).
+
+### Changed
+
+- Releases will now be added to Zenodo in [2039](https://github.com/OSC/ondemand/pull/2039)
+
+### Security
+
+- Rails has been updated to 5.2.8 up from 5.2.6.x in [2029](https://github.com/OSC/ondemand/pull/2029).
+- Passenger has been updated to 6.0.14 in [2026](https://github.com/OSC/ondemand/pull/2026)
+
+## [2.0.23] - 03-02-2022
+
+### Changed
+
+- Bump ondemand-runtime dependency for bigdecimal gem in [1807](https://github.com/OSC/ondemand/pull/1807).
+
+### Fixed
+
+- nginx_stage can now identify when a username has a @domain in it from SSSD. There are issues
+  When username have domains in them. [1852](https://github.com/OSC/ondemand/pull/1852) identifies
+  this and throws an appropriate error message.
+- File uploading now correctly sets the file permissions in [1853](https://github.com/OSC/ondemand/pull/1853).
+
+### Security
+
+- Uppy upgrade to 2.0 in [1804](https://github.com/OSC/ondemand/pull/1804).
+
+## [2.0.22] - 2021-12-21
+
+### Fixed
+
+- Back-ported [1676](https://github.com/OSC/ondemand/pull/1676) to correctly hide options
+  with hyphens.
+
+## [2.0.21] - 2021-12-20
+
+### Fixed
+
+- Dynamic javascript now correctly clamps values correcting [1649](https://github.com/OSC/ondemand/issues/1649).
+- Dynamic javascript can hide multiple elements correcting [1666](https://github.com/OSC/ondemand/issues/1666).
+- Dynamic javascript now correctly handles options with numbers, hyphens and underscores
+  back-porting [1656](https://github.com/OSC/ondemand/pull/1656).
+
+## [2.0.20] - 2021-12-01
+
+### Security
+
+- Removed Index from Public RootOptions as to not allow Directory Indexing in [1617](https://github.com/OSC/ondemand/issues/1617).
+
+### Fixed
+
+- Fixed lua warnings `bad argument #2 to 'date'` in [1627](https://github.com/OSC/ondemand/pull/1627).
+- Uppy claims failure but upload succeeds. This has been fixed in [1600](https://github.com/OSC/ondemand/pull/1600)
+  by extending the timeout.
+
+### Added
+
+- Batch connect apps can now have dynamic behaviour through configuration in [1639](https://github.com/OSC/ondemand/pull/1639).
+  This means we now ship a lot of functionality that sites previously had to code themselves in `form.js`.
+  This introduces the `OOD_BC_DYNAMIC_JS` that sites must set to enable this feature.
+
+## [2.0.19] - 2021-10-29
+
+### Fixed
+
+- Fixed CSS issue where the noVNC range sliders looked washed out and hard to notice - 
+  [1384](https://github.com/OSC/ondemand/issues/1384). 
+- Selinux updates mostly for k8s - [1497](https://github.com/OSC/ondemand/pull/1497)
+
+### Added
+
+- Add tmpfiles.d file for ondemand-nginx - [1501](https://github.com/OSC/ondemand/pull/1501)
+- Initialize k8s - [1493](https://github.com/OSC/ondemand/pull/1493)
+
+## [2.0.18] - 2021-10-06
+
+### Security
+
+- The svg patch in 2.0.17 needs to account for files with .SVG (all caps) extensions too.
+
+## [2.0.17] - 2021-10-05
+
+### Security
+
+- .svg files in the file browser are now being forced to be downloaded as they could
+  contain malicous javascript that would execute in the browser within a site's context.
+
+## [2.0.16] - 2021-08-25
+
+### Fixed
+
+- Fixed an issue with non US keyboards could not use `+` keys in the shell app -
+  [1214](https://github.com/OSC/ondemand/issues/1214).
+- Fixed Ganglia panels visually and semantically - [1031](https://github.com/OSC/ondemand/issues/1031).
+- Fixed error messages in creating invalid files - [1322](https://github.com/OSC/ondemand/issues/1322).
+- Fixed removing files when allowlists are in place - [1337](https://github.com/OSC/ondemand/issues/1337).
+
+### Added
+
+- RPM building and e2e testing in several pull requests.
+  - [1329](https://github.com/OSC/ondemand/pull/1329)
+  - [1340](https://github.com/OSC/ondemand/pull/1340)
 
 ## [2.0.15] - 2021-08-11
 
