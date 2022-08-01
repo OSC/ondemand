@@ -335,7 +335,14 @@ methods.
 
 ### Classe and Modules
 
-* Camel case for Class and Module names.
+* Mountain/Pascal case for Class and Module names.
+
+  ```ruby
+  class SomeCustomClass
+    # code
+    ...
+  end
+  ```
 
 ### JavaScript Style
 
