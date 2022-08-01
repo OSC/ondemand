@@ -15,5 +15,5 @@
       </span>
     <%- end -%>
   </div>
-  <%= content_tag :pre, product.errors[:reset_git_error].first.html_safe, class: "text-danger" if product.errors[:reset_git_error].any? %>
+  <%= content_tag :pre, product.errors[:reset_git_error].first, class: "text-danger" if product.errors[:reset_git_error].any? %>
 </div>
