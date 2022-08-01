@@ -4,8 +4,8 @@ require "erb"
 module OodPortalGenerator
   # A view class that renders an OOD portal Apache configuration file
   class View
-    attr_reader :ssl, :protocol, :proxy_server, :port
-    attr_accessor :user_map_match, :user_map_cmd, :logout_redirect
+    attr_reader :ssl, :protocol, :proxy_server, :port, :dex_uri
+    attr_accessor :user_map_match, :user_map_cmd, :logout_redirect, :dex_http_port
     attr_accessor :oidc_uri, :oidc_client_secret, :oidc_remote_user_claim, :oidc_client_id, :oidc_provider_metadata_url, :oidc_redirect_uri
 
     # let the application set the auth if it needs to
@@ -94,6 +94,8 @@ module OodPortalGenerator
       @register_uri  = opts.fetch(:register_uri, nil)
       @register_root = opts.fetch(:register_root, nil)
 
+      @dex_uri                          = opts.fetch(:dex_uri, nil)
+      @dex_http_port                    = opts.fetch(:dex_http_port, nil)
       @oidc_provider_metadata_url       = opts.fetch(:oidc_provider_metadata_url, nil)
       @oidc_client_id                   = opts.fetch(:oidc_client_id, nil)
       @oidc_client_secret               = opts.fetch(:oidc_client_secret, nil)

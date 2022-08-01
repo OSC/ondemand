@@ -24,9 +24,9 @@ module OodPortalGenerator
       @dex_config[:issuer] = issuer
       @dex_config[:storage] = storage
       @dex_config[:web] = {
-        http: "0.0.0.0:#{http_port}",
+        http: "#{listen}:#{http_port}",
       }
-      @dex_config[:web][:https] = "0.0.0.0:#{https_port}" if ssl?
+      @dex_config[:web][:https] = "#{listen}:#{https_port}" if ssl?
       @dex_config[:web][:tlsCert] = tls_cert unless tls_cert.nil?
       @dex_config[:web][:tlsKey] = tls_key unless tls_key.nil?
       copy_ssl_certs
@@ -83,12 +83,14 @@ module OodPortalGenerator
                 end
     end
 
-    def ssl?
-      @config.fetch(:ssl, !@view.ssl.nil?)
+    def listen
+      return 'localhost' unless @view.dex_uri.nil?
+      @config.fetch(:listen, '0.0.0.0')
     end
 
-    def protocol
-      ssl? ? "https://" : "http://"
+    def ssl?
+      return false unless @view.dex_uri.nil?
+      @config.fetch(:ssl, !@view.ssl.nil?)
     end
 
     def servername
@@ -115,8 +117,25 @@ module OodPortalGenerator
       @tls_key ||= @config.fetch(:tls_key, nil)
     end
 
+    def issuer_protocol
+      return 'https://' if !issuer_uri.empty? && !@view.ssl.nil?
+      return 'http://' if !issuer_uri.empty? && @view.ssl.nil?
+      ssl? ? "https://" : "http://"
+    end
+
+    def issuer_uri
+      @view.dex_uri.nil? ? '' : @view.dex_uri
+    end
+
+    def issuer_port
+      return '' if issuer_protocol == 'https://' && @view.port.to_s == '443' && !issuer_uri.empty?
+      return '' if issuer_protocol == 'http://' && @view.port.to_s == '80' && !issuer_uri.empty?
+      return ":#{@view.port}" if !issuer_uri.empty?
+      ":#{port}"
+    end
+
     def issuer
-      "#{protocol}#{servername}:#{port}"
+      "#{issuer_protocol}#{servername}#{issuer_port}#{issuer_uri}"
     end
 
     def storage
@@ -262,6 +281,7 @@ module OodPortalGenerator
 
     def oidc_attributes
       attrs = {
+        dex_http_port: http_port,
         oidc_uri: '/oidc',
         oidc_redirect_uri: client_redirect_uri,
         oidc_provider_metadata_url: "#{issuer}/.well-known/openid-configuration",
