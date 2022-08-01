@@ -40,7 +40,36 @@ team on proposed changes.
 4.  If changes are being requested, don't let this discourage you! This is a
     natural part of getting changes right and ensuring quality in what we're building.
 
+## Branch Naming and Issue Tagging
+
+### Adding a feature
+
+```git
+git checkout -b feature/<short-name>-<issue#>
+```
+
+### Fixing a bug
+
+```git
+git checkout -b bug-fix/<short-name>-<issue#>
+```
+
+## Tagging your issue
+
+A best guess is encouraged.
+
+All new issues are reviewed weekly by the OOD team to categorize correctly regardless.
+
+## Pull Request Comments
+
+Ensure to include what issue this fixes in the **PR comment** to help with automated issue closing:
+
+* "fixes #1234"
+
 ## Project StyleGuide
+
+* **Any new code *must* also include testing.**
+* If you need help with writing tests please include the `test help` tag.
 
 ### Linters
 
@@ -54,6 +83,267 @@ will remove them!
 In addition to the [RuboCop] styles configured described above, we follow common Ruby style
 and idioms. For example `snake_case` methods and variable names and favoring functional style
 methods.
+
+## Syntax and Layout
+
+* Avoid more than 3 levels of nesting.
+
+* `!` instead of `not`
+* use `&&` or `||`
+* use `unless` over `!if`
+* `{...}` for single line block
+* `do..end` for multiline block
+* omit `return` for values at end of method
+* Use `||=` to init variables *only if* they're not already initialized
+* Use `_` for unused block variables
+* Prefer
+  * `map` over `collect`
+  * `find` over `detect`
+  * `select` over `find_all`
+  * `size` over `length`
+* `utf-8` encoding of source file
+* 2 spaces indent
+* No tabs
+* avoid using semi-colons `;`
+* Spaces:
+  * around operators `=`, `+`, `-`, `*`, `%`
+  * around curly bracies `{` `}`
+  * after commas , colons, and semicolons
+
+    ```ruby
+    my_hash = { one: 'el1', two: 'el2' }
+    ```
+
+* No spaces:
+  * After shebang `!`
+  * Around square brackets `[ ]` or parentheses `( )`
+
+    ```ruby
+    my_arr = [a, b, c]
+    def my_func(arg: nil)
+      if arg != something
+        ...
+      end
+    end
+    ```
+
+* Empty line between method defintions.
+
+    ```ruby
+    def method1(arg1)
+      ...
+    end
+
+    def method2(arg1)
+      ...
+    end
+    ```
+
+* Align successive method chains with `.method` on subsequent lines:
+
+  ```ruby
+  obj
+    .compact
+    .map { |elmt| ... }
+  ```
+
+* End each file with a newline.
+* No trailing commas (`,`) for last element in `hash` or `array`:
+* Place closing brackets for multiline statements on their own line:
+
+  ```ruby
+  # fail
+    arr = [
+    this = 1,
+    that = 2, ]
+
+  # pass
+  arr = [
+    this = 1,
+    that = 2
+  ]
+  ```
+
+* Empty line around `attr_` block:
+
+  ```ruby
+  class MyClass
+    attr_reader   :name, :email
+    attr_accessor :phone
+    
+    def initialize(name, email)
+      @name   = name
+      @email  = email
+      @phone  = phone
+    end
+  end
+  ```
+
+### Classes and Modules
+
+* Set `attrs` first
+* Set `class << self` after `attrs`
+* Set  `initialize` after `class << self`
+
+  ```ruby
+  class MyClass
+    attr_reader :something, :another
+
+    class << self
+      def singleton_method
+        ...
+      end
+    end
+
+    def initialize
+      ...
+    end
+  end
+  ```
+
+* Indent `private` and keep `defs` aligned with the block
+
+  ```ruby
+  class MyClass
+    # public methods
+    def public_method
+      ...
+    end
+    
+      private
+
+      def my_private_method
+        ...
+      end
+  end
+  ```
+
+### Collections
+
+* Prefer literal array syntax over `%w` or `%i`
+
+  ```ruby
+  # fail
+  arr_1 = %w(one two three)
+
+  # pass
+  arr_1 = ["one", "two", "three"]
+  ```
+
+* Instantiate with literals for all collections if possible.
+
+  ```ruby
+  # fail
+  arr = Array.new()
+  hsh = Hash.new()
+
+  # pass
+  arr = []
+  hsh = {}
+  ```
+
+### Comments
+
+* We encourage comments in the code.
+* Use proper grammar and punctuation.
+* Focus on *why* the code is the way it is if it is not obvious.
+* Focus less on *how* the code works, that should be evident from the code.
+
+### Exceptions
+
+* Use implicit `begin` in method
+
+  ```ruby
+  # fail
+  def some_method
+    begin
+      ...
+    rescue Psych::SyntaxError => e
+      ...
+      raise e
+  end
+
+  # pass
+  def some_method
+    ...
+  rescue Psych::SyntaxError => e
+    ...
+    raise e
+  end
+
+## Naming
+
+### Variables
+
+* Use meaningful names:
+  * Ruby is not a statically typed language so we need good naming for maintainability.
+  * Consider using an objects type for the dummy variable if possible.
+  * Otherwise, try to convey what the object being passed to the block is through the name:
+
+    ```ruby
+    arr_1 = ['one', 'two', 'three']
+    arr_2 = [1, 2, 3]
+
+    # fail
+    arr_1.each { |e| puts e }
+    arr_2.each { |e| puts e }
+
+    # pass
+    arr_1.each { |str| puts str }
+    arr_2.each { |int| puts int }
+    ```
+
+### Methods
+
+* Avoid `is_` in method names.
+* Use `?` suffix for methods that return a `bool`.
+* Use `save` for boolean return and `save!` with exception returns.
+* Favor functional methods
+  * break up long logic or data transformations into their own methods
+* DRY out code as best you can
+  
+    ```ruby
+    # fail
+    def some_method
+      if var1 && bool2 && x > y || big % small > 1
+        ...
+      end
+    end
+
+    def some_other_method
+      if var1 && bool2 && x > y || big % small > 1
+        ...
+      end
+    end
+
+    # pass
+    def some_method
+      if conditions_true?
+        ...
+      end
+    end
+
+    def some_other_method
+      if conditions_true?
+        ...
+      end
+    end
+
+    def conditions_true?
+      if var1 && bool2 && x > y || big % small > 1
+    end
+    ```
+
+### Classe and Modules
+
+* Mountain/Pascal case for Class and Module names.
+
+  ```ruby
+  class SomeCustomClass
+    # code
+    ...
+  end
+  ```
 
 ### JavaScript Style
 
