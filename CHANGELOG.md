@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Support for Ubuntu 20.04 packages was added in [2141](https://github.com/OSC/ondemand/pull/2141).
+- Support for Ubuntu 18.04 packages was added in [2160](https://github.com/OSC/ondemand/pull/2160).
 - Support for `fujitsu_tcs` scheduler also through the `ood_core` update.
 - Dex can now be proxied behind Apache in [2183](https://github.com/OSC/ondemand/pull/2183).
 
