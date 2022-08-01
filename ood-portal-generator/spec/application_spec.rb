@@ -192,6 +192,24 @@ describe OodPortalGenerator::Application do
         described_class.generate()
       end
 
+      it 'generates full dex configs with Dex behind the Apache reverse proxy' do
+        allow(described_class).to receive(:context).and_return({
+          servername: 'example.com',
+          port: '443',
+          ssl: [
+            'SSLCertificateFile /etc/pki/tls/certs/example.com.crt',
+            'SSLCertificateKeyFile /etc/pki/tls/private/example.com.key',
+            'SSLCertificateChainFile /etc/pki/tls/certs/example.com-interm.crt',
+          ],
+          dex_uri: '/dex',
+        })
+        expected_rendered = read_fixture('ood-portal.conf.dex-proxy')
+        expect(described_class.output).to receive(:write).with(expected_rendered)
+        expected_dex_yaml = read_fixture('dex.yaml.proxy').gsub('/etc/ood/dex', config_dir)
+        expect(described_class.dex_output).to receive(:write).with(expected_dex_yaml)
+        described_class.generate()
+      end
+
       it 'generates full dex configs with SSL and multiple redirect URIs' do
         allow(described_class).to receive(:context).and_return({
           servername: 'example.com',

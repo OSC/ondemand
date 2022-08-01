@@ -12,6 +12,7 @@ describe 'Node and Rnode proxies' do
     upload_portal_config('portal_with_proxies.yml')
     update_ood_portal
     restart_apache
+    restart_dex
 
     on hosts, '/opt/extras/simple_origin_server.py >/tmp/rnode.out 2>&1 &'
     on hosts,
