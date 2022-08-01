@@ -68,20 +68,34 @@ function mountainCaseWords(str) {
   return  `${first}${rest}`;
 }
 
+/**
+ * Format passed string to snake_case. All characters become lowercase. Existing
+ * underscores are unchanged and dashes become underscores. Underscores are added 
+ * before locations where an uppercase character is followed by a lowercase character.
+ *
+ * @param      {string}  str     The word string to snake case
+ *
+ * @example  given 'MountainCase' this returns 'mountain_case'
+ * @example  given 'camelCase' this returns 'camel_case'
+ * @example  given 'OSC_JUPYTER' this returns 'osc_jupyter'
+ */
 function snakeCaseWords(str) {
   if(str === undefined) return undefined;
 
   let snakeCase = "";
-  let first = true;
 
-  str.split('').forEach((c) => {
-    if (first) {
-      first = false;
-      snakeCase += c.toLowerCase();
-    } else if(c === '-' || c === '_') {
+  str.split('').forEach((c, index) => {
+    if(c === '-' || c === '_') {
       snakeCase += '_';
-    } else if(c == c.toUpperCase() && !(c >= '0' && c <= '9')) {
-      snakeCase += `_${c.toLowerCase()}`;
+    } else if (index == 0) {
+      snakeCase += c.toLowerCase();
+    } else if(c == c.toUpperCase() && isNaN(c)) {
+      const nextIsUpper = (index + 1 !== str.length) ? str[index + 1] === str[index + 1].toUpperCase() : true;
+      if (str[index-1] === '_' || nextIsUpper) {
+        snakeCase += c.toLowerCase();
+      } else {
+        snakeCase += `_${c.toLowerCase()}`;
+      }
     } else {
       snakeCase += c;
     }
