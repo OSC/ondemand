@@ -34,20 +34,27 @@ jQuery(function () {
         table.goto(options.path)
     });
 
-    $('#show-dotfiles').on('change', () => {
-        let visible = $('#show-dotfiles').is(':checked');
-
-        table.setShowDotFiles(visible);
+    $('#show-dotfiles').on('change', function() {
+        table.setShowDotFiles(this.checked);
         table.updateDotFileVisibility();
     });
-
-    $('#show-owner-mode').on('change', () => {
-        let visible = $('#show-owner-mode').is(':checked');
-
-        table.setShowOwnerMode(visible);
-        table.updateShowOwnerModeVisibility();
+    $('#show-dotfiles').on('keypress', function(event) {
+        if (event.which === 13) {
+          this.checked = !this.checked;
+          this.dispatchEvent(new Event('change'));
+        }
     });
 
+    $('#show-owner-mode').on('change', function() {
+        table.setShowOwnerMode(this.checked);
+        table.updateShowOwnerModeVisibility();
+    });
+    $('#show-owner-mode').on('keypress', function(event) {
+        if (event.which === 13) {
+          this.checked = !this.checked;
+          this.dispatchEvent(new Event('change'));
+        }
+    });
 
     /* END TABLE ACTIONS */
 
@@ -254,7 +261,19 @@ class DataTable {
             $('#open-in-terminal-btn').attr('href', data.shell_url);
             $('#open-in-terminal-btn').removeClass('disabled');
 
-            return await Promise.resolve(data);
+            let result = await Promise.resolve(data);
+            $('td input[type=checkbox]').on('keypress', function(event) {
+                if (event.which === 13) {
+                    this.checked = !this.checked;
+                    this.dispatchEvent(new Event('change'));
+                    if (this.checked) {
+                        table.getTable().row(this.closest('tr')).select();
+                    } else {
+                        table.getTable().row(this.closest('tr')).deselect();
+                    }
+                }
+            })
+            return result;
         } catch (e) {
             const eventData = {
                 'title': `Error occurred when attempting to access ${request_url}`,
