@@ -217,7 +217,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - RPM building and e2e testing in several pull requests.
   - [1329](https://github.com/OSC/ondemand/pull/1329)
   - [1340](https://github.com/OSC/ondemand/pull/1340)
-  
+
 ### Changed
 
 - Sessions stores can now be overridden in [1321](https://github.com/OSC/ondemand/pull/1321).
