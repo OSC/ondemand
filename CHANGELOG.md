@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-
 ### Changed
 
 - Update hterm to 1.91 in  [#1426](https://github.com/OSC/ondemand/pull/1426).
@@ -202,6 +201,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - RPM building and e2e testing in several pull requests.
   - [1329](https://github.com/OSC/ondemand/pull/1329)
   - [1340](https://github.com/OSC/ondemand/pull/1340)
+  
+### Changed
+
+- Sessions stores can now be overridden in [1321](https://github.com/OSC/ondemand/pull/1321).
+- upgraded `ood_core` from v0.17.4 to v0.17.6.
 
 ## [2.0.15] - 2021-08-11
 
