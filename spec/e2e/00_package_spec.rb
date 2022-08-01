@@ -60,4 +60,36 @@ describe 'OnDemand installed with packages' do
   describe file('/var/www/ood/public/favicon.ico') do
     it { is_expected.to be_file }
   end
+
+  describe user('ondemand-nginx') do
+    it { is_expected.to exist }
+    it { is_expected.to belong_to_primary_group('ondemand-nginx') }
+    it { is_expected.to have_home_directory('/var/lib/ondemand-nginx') }
+    it { is_expected.to have_login_shell('/sbin/nologin') }
+  end
+
+  describe group('ondemand-nginx') do
+    it { is_expected.to exist }
+  end
+
+  describe file('/var/lib/ondemand-nginx') do
+    it { is_expected.to be_directory }
+    it { is_expected.to be_mode(700) }
+    it { is_expected.to be_owned_by('ondemand-nginx') }
+    it { is_expected.to be_grouped_into('ondemand-nginx') }
+  end
+
+  describe file('/var/lib/ondemand-nginx/tmp') do
+    it { is_expected.to be_directory }
+    it { is_expected.to be_mode(700) }
+    it { is_expected.to be_owned_by('ondemand-nginx') }
+    it { is_expected.to be_grouped_into('ondemand-nginx') }
+  end
+
+  describe file('/var/log/ondemand-nginx') do
+    it { is_expected.to be_directory }
+    it { is_expected.to be_mode(700) }
+    it { is_expected.to be_owned_by('ondemand-nginx') }
+    it { is_expected.to be_grouped_into('ondemand-nginx') }
+  end
 end
