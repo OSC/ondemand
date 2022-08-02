@@ -146,4 +146,51 @@ class FilesTest < ApplicationSystemTestCase
       refute File.exist?(src)
     end
   end
+
+  test "uploading files" do
+    Dir.mktmpdir do |dir|
+
+      FileUtils.mkpath File.join(dir, 'foo')
+
+      visit files_url(dir)
+      find('#upload-btn').click
+
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+
+      src_file = 'test/fixtures/files/upload/osc-logo.png'
+      attach_file 'files[]', src_file, visible: false, match: :first
+      find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+      assert File.exist?(File.join(dir, File.basename(src_file)))
+
+      find('tbody a', exact_text: 'foo').click
+      # Need to wait until we're in the new directory before clicking upload
+      assert_no_selector 'tbody a', exact_text: 'foo', wait: MAX_WAIT
+
+      find('#upload-btn').click
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+
+      src_file = 'test/fixtures/files/upload/hello-world.c'
+      attach_file 'files[]', src_file, visible: false, match: :first
+      find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+      find('tbody a', exact_text: 'hello-world.c', wait: MAX_WAIT)
+    end
+  end
+
+  test "changing directory" do
+    visit files_url(Rails.root.to_s)
+    find('tbody a', exact_text: 'app')
+    find('tbody a', exact_text: 'config')
+
+    find('#goto-btn').click
+    find('#swal2-input').set(Rails.root.join("app"))
+    find('.swal2-confirm').click
+    find('tbody a', exact_text: 'helpers')
+    find('tbody a', exact_text: 'controllers')
+
+    find('#goto-btn').click
+    find('#swal2-input').set(Rails.root.to_s)
+    find('.swal2-confirm').click
+    find('tbody a', exact_text: 'app')
+    find('tbody a', exact_text: 'config')
+  end
 end
