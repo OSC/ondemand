@@ -18,7 +18,7 @@ describe 'OnDemand browser test' do
   end
 
   describe port(5556) do
-    it { is_expected.to be_listening }
+    it { is_expected.to be_listening.on('127.0.0.1').with('tcp') }
   end
 
   it 'successfully loads dashboard no path' do
@@ -26,10 +26,10 @@ describe 'OnDemand browser test' do
     expect(browser.title).to eq('Dashboard - Open OnDemand')
   end
 
-  it 'has Dex issuer' do
-    on hosts, 'curl http://localhost:5556/.well-known/openid-configuration' do
+  it 'uses /dex in OIDC issuer' do
+    on hosts, 'curl http://localhost:8080/dex/.well-known/openid-configuration' do
       data = JSON.parse(stdout)
-      expect(data['issuer']).to eq('http://localhost:5556')
+      expect(data['issuer']).to eq('http://localhost:8080/dex')
     end
   end
 
