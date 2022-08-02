@@ -86,12 +86,11 @@ Listen <%= addr_port %>
   RewriteEngine On
   RewriteCond <%= @public_root %>/maintenance/index.html -f
   RewriteCond /etc/ood/maintenance.enable -f
-  RewriteCond %{REQUEST_URI} !/public/maintenance/.*$
+  RewriteCond %{REQUEST_URI} !<%= @public_uri %>/maintenance/.*$
   <%- @maintenance_ip_allowlist.each do |ip| -%>
   RewriteCond %{REMOTE_ADDR} !^<%= escape_ip(ip) %>
   <%- end -%>
-  RewriteRule ^.*$ <%= @public_uri %>/maintenance/index.html [R=503,L]
-  ErrorDocument 503 <%= @public_uri %>/maintenance/index.html
+  RewriteRule ^.*$ <%= @public_uri %>/maintenance/index.html [R=302,L]
 
   <%- end -%>
   TraceEnable off
@@ -322,7 +321,20 @@ Listen <%= addr_port %>
     <%- end -%>
   </Location>
   <%- end -%>
+  <%- if @use_rewrites && @use_maintenance -%>
 
+  # Maintenance location
+  #
+  #     <%= @ssl ? "https" : "http" %>://<%= @servername || "localhost" %>:<%= @port %><%= @public_uri %>/maintenance
+  #     #=> Displays <%= @public_root %>/maintenance/index.html
+  #
+  <Directory "<%= @public_root %>/maintenance">
+    RewriteCond %{REQUEST_URI} !<%= @public_uri %>/maintenance/index\.html$
+    RewriteRule ^.*$ <%= @public_uri %>/maintenance/index.html [R=503,L]
+    ErrorDocument 503 <%= @public_uri %>/maintenance/index.html
+  </Directory>
+
+  <%- end -%>
   <%- if @oidc_discover_uri && @oidc_discover_root -%>
   # Discover URI for OpenID Connect (used for multiple Id Providers):
   #
