@@ -68,6 +68,7 @@ jQuery(function() {
     restrictions: {
       maxFileSize: maxFileSize,
     },
+    onBeforeFileAdded: renameIfDuplicate,
     onBeforeUpload: updateEndpoint,
   });
   
@@ -167,7 +168,41 @@ function getEmptyDirs(entry){
   });
 }
 
-function updateEndpoint() {
+function dupSafeName(originalName) {
+  const currentFilenames = history.state.currentFilenames;
+  const extIndex = originalName.lastIndexOf('.');
+  let newName, extension;
+  if (extIndex == -1) {
+    // If no extension or directory, disregard extension
+    newName = originalName;
+    extension = '';
+  } else {
+    newName = originalName.slice(0, extIndex);
+    extension = originalName.slice(extIndex);
+  }
+  // If originalName in cur dir, try `${originalName}_copy`.
+  if (currentFilenames.includes(newName + extension)) {
+    newName += '_copy';
+    // If `${originalName}_copy` exists, try `${originalName}_copy_{i}' starting at i=1 until a file doesn't exist
+    if (currentFilenames.includes(newName + extension)) {
+      let copyNumber = 1;
+      newName += `_${copyNumber}`;
+      while (currentFilenames.includes(newName + extension)) {
+        copyNumber++;
+        newName = newName.slice(0, newName.lastIndexOf('_') + 1) + copyNumber;
+      }
+    }
+  }
+  return `${newName}${extension}`
+}
+
+function renameIfDuplicate(currentFile, files) {
+  let modifiedFile = {...currentFile};
+  modifiedFile.meta.name = dupSafeName(currentFile.name);
+  return modifiedFile
+}
+
+function updateEndpoint(files) {
   uppy.getPlugin('XHRUpload').setOptions({
     endpoint: history.state.currentFilesUploadPath,
   });
