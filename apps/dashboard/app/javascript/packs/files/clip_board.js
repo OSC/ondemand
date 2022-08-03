@@ -3,6 +3,7 @@ import Handlebars from 'handlebars';
 import {CONTENTID} from './data_table.js';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 import {EVENTNAME as FILEOPS_EVENTNAME} from './file_ops.js';
+import { dupSafeName } from './utils.js';
 
 export {EVENTNAME};
 
@@ -151,32 +152,8 @@ class ClipBoard {
         // files is a hashmap with keys of file current path and value as the corresponding files desired path
         let files = {};
         if (clipboard.from == clipboard.to) {
-          const currentFilenames = history.state.currentFilenames;
           clipboard.files.forEach((f) => {
-            const extIndex = f.name.lastIndexOf('.');
-            let newName, extension;
-            if (extIndex == -1) {
-              // If no extension or directory, disregard extension
-              newName = f.name;
-              extension = '';
-            } else {
-              newName = f.name.slice(0, extIndex);
-              extension = f.name.slice(extIndex);
-            }
-            // If f.name in cur dir, try `${f.name}_copy`.
-            if (currentFilenames.includes(newName + extension)) {
-              newName += '_copy';
-              // If `${f.name}_copy` exists, try `${f.name}_copy_{i}' starting at i=1 until a file doesn't exist
-              if (currentFilenames.includes(newName + extension)) {
-                let copyNumber = 1;
-                newName += `_${copyNumber}`;
-                while (currentFilenames.includes(newName + extension)) {
-                  copyNumber++;
-                  newName = newName.slice(0, newName.lastIndexOf('_') + 1) + copyNumber;
-                }
-              }
-            }
-            files[`${clipboard.from}/${f.name}`] = `${clipboard.to}/${newName}${extension}`;
+            files[`${clipboard.from}/${f.name}`] = `${clipboard.to}/${dupSafeName(f.name)}`;
           });
         } else {
           // Don't rename files if not copying to the same directory
