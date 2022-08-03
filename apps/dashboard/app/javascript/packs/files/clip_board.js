@@ -90,6 +90,7 @@ class ClipBoard {
     } else {
       let clipboardData = {
         from: history.state.currentDirectory,
+        from_fs: history.state.currentFilesystem,
         files: selection.toArray().map((f) => {
           return { directory: f.type == 'd', name: f.name };
         })
@@ -116,6 +117,7 @@ class ClipBoard {
       let clipboard = JSON.parse(localStorage.getItem('filesClipboard') || 'null');
       if (clipboard) {
         clipboard.to = history.state.currentDirectory;
+        clipboard.to_fs = history.state.currentFilesystem;
 
         if (clipboard.from == clipboard.to) {
           // No files are changed, so we just have to clear and update the clipboard
@@ -130,7 +132,9 @@ class ClipBoard {
 
           const eventData = {
             'files': files,
-            'token': csrf_token
+            'token': csrf_token,
+            'from_fs': clipboard.from_fs,
+            'to_fs': clipboard.to_fs,
           };
 
           $(CONTENTID).trigger(FILEOPS_EVENTNAME.moveFile, eventData);
@@ -147,9 +151,11 @@ class ClipBoard {
 
       if (clipboard) {
         clipboard.to = history.state.currentDirectory;
-        
+        clipboard.to_fs = history.state.currentFilesystem;
+
         // files is a hashmap with keys of file current path and value as the corresponding files desired path
         let files = {};
+
         if (clipboard.from == clipboard.to) {
           const currentFilenames = history.state.currentFilenames;
           clipboard.files.forEach((f) => {
@@ -187,7 +193,9 @@ class ClipBoard {
 
         const eventData = {
           'files': files,
-          'token': csrf_token
+          'token': csrf_token,
+          'from_fs': clipboard.from_fs,
+          'to_fs': clipboard.to_fs,
         };
 
         $(CONTENTID).trigger(FILEOPS_EVENTNAME.copyFile, eventData);
