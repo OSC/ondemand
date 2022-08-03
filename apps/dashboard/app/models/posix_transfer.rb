@@ -1,4 +1,4 @@
-class LocalTransfer < Transfer
+class PosixTransfer < Transfer
 
   validates_each :files do |record, attr, files|
     if record.action == 'mv' || record.action == 'cp'

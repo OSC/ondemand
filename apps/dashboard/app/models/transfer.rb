@@ -36,7 +36,7 @@ class Transfer
         files = Hash[files.map { |f| [f, nil] }]
       end
 
-      LocalTransfer.new(action: action, files: files)
+      PosixTransfer.new(action: action, files: files)
     end
   end
 
