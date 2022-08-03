@@ -2,6 +2,16 @@ require "json"
 require "open3"
 require "pathname"
 
+class RcloneError < StandardError
+
+  attr_reader :exitstatus
+
+  def initialize(exitstatus = 0)
+    super
+    @exitstatus = exitstatus
+  end
+end
+
 class RcloneUtil
 
   class << self
@@ -14,9 +24,9 @@ class RcloneUtil
         files = JSON.parse(o)
         files
       elsif s.exitstatus == 3 # directory not found
-        raise StandardError, "Remote file or directory '#{path}' does not exist"
+        raise RcloneError.new(s.exitstatus), "Remote file or directory '#{path}' does not exist"
       else
-        raise StandardError, "Error listing files: #{e}"
+        raise RcloneError.new(s.exitstatus), "Error listing files: #{e}"
       end
     end
 
@@ -36,9 +46,9 @@ class RcloneUtil
           match[:entry].end_with?("/")
         end
       elsif s.exitstatus == 3 # directory not found
-        raise StandardError, "Remote file or directory '#{path}' does not exist"
+        raise RcloneError.new(s.exitstatus), "Remote file or directory '#{path}' does not exist"
       else
-        raise StandardError, "Error checking info for path: #{e}"
+        raise RcloneError.new(s.exitstatus), "Error checking info for path: #{e}"
       end
     end
 
@@ -70,9 +80,9 @@ class RcloneUtil
         if s.success?
           o
         elsif s.exitstatus == 3 # directory not found
-          raise StandardError, "Remote file or directory '#{path}' does not exist"
+          raise RcloneError.new(s.exitstatus), "Remote file or directory '#{path}' does not exist"
         else
-          raise StandardError, "Error reading file #{full_path}: #{e}"
+          raise RcloneError.new(s.exitstatus), "Error reading file #{full_path}: #{e}"
         end
       end
     end
@@ -81,7 +91,7 @@ class RcloneUtil
       full_path = "#{remote}:#{path}"
       o, e, s = rclone("touch", full_path)
       if !s.success?
-        raise StandardError, "Error creating file: #{e}"
+        raise RcloneError.new(s.exitstatus), "Error creating file: #{e}"
       end
     end
 
@@ -90,9 +100,9 @@ class RcloneUtil
       o, e, s = rclone("mkdir", full_path)
       if e.include?("Warning: running mkdir on a remote which can't have empty directories does nothing")
         # TODO: Could most likely do some kind of workaround here, e.g. rclone touch remote:path/.somefile
-        raise StandardError, "Remote does not support empty directories"
+        raise RcloneError.new(s.exitstatus), "Remote does not support empty directories"
       elsif !s.success?
-        raise StandardError, "Error creating directory: #{e}"
+        raise RcloneError.new(s.exitstatus), "Error creating directory: #{e}"
       end
     end
 
@@ -101,7 +111,7 @@ class RcloneUtil
       # Write to a file on the remote by passing the file contents in stdin
       o, e, s = rclone("rcat", full_path, stdin_data: content)
       if !s.success?
-        raise StandardError, "Error writing file: #{e}"
+        raise RcloneError.new(s.exitstatus), "Error writing file: #{e}"
       end
     end
 
@@ -110,7 +120,7 @@ class RcloneUtil
       # Move file src on the local filesystem to full_path on the remote
       o, e, s = rclone("moveto", src, full_path)
       if !s.success?
-        raise StandardError, "Error moving file: #{e}"
+        raise RcloneError.new(s.exitstatus), "Error moving file: #{e}"
       end
     end
 
@@ -123,7 +133,7 @@ class RcloneUtil
 
         type = remote.split(":")[1].strip
       else
-        raise StandardError, "Error getting information about remote: #{e}"
+        raise RcloneError.new(s.exitstatus), "Error getting information about remote: #{e}"
       end
     end
 
@@ -153,7 +163,7 @@ class RcloneUtil
         exit_status = t.value
         err = err_reader.value.to_s.strip
         if err.present? || !exit_status.success?
-          raise StandardError, "Rclone exited with status #{exit_status.exitstatus}\n#{err}"
+          raise RcloneError.new(exit_status.exitstatus), "Rclone exited with status #{exit_status.exitstatus}\n#{err}"
         end
       end
     end
