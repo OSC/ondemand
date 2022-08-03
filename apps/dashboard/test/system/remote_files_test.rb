@@ -58,6 +58,192 @@ class RemoteFilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'copying files' do
+    visit files_url(Rails.root.to_s)
+    %w(app config manifest.yml).each do |f|
+      find('a', exact_text: f).ancestor('tr').click(:meta)
+    end
+    assert_selector '.selected', count: 3
+
+    find('#copy-move-btn').click
+
+    assert_selector '#clipboard li', count: 3
+
+    Dir.mktmpdir do |dir|
+      with_rclone_conf(dir) do
+        # Test in a subdir of the temp directory
+        dir = File.join(dir, 'bucket')
+        Dir.mkdir(dir)
+
+        visit files_url('alias_remote', '/bucket')
+
+        # one row: No data available in table
+        assert_selector '#directory-contents tbody tr', count: 1
+        find('#clipboard-copy-to-dir').click
+
+        # files are copying but it takes a little while
+        find('tbody a', exact_text: 'app', wait: MAX_WAIT)
+        find('tbody a', exact_text: 'config', wait: MAX_WAIT)
+        find('tbody a', exact_text: 'manifest.yml', wait: MAX_WAIT)
+
+        # with copying done, let's assert on the UI and the file system
+        assert_selector 'span', text: '100% copy files', count: 1
+        assert_equal '', `diff -rq #{File.join(dir, 'app')} #{Rails.root.join('app')}`.strip, 'failed to recursively copy app dir'
+        assert_equal '', `diff -rq #{File.join(dir, 'config')} #{Rails.root.join('config')}`.strip, 'failed to recursively copy config dir'
+        assert_equal '', `diff -q #{File.join(dir, 'manifest.yml')} #{Rails.root.join('manifest.yml')}`.strip, 'failed to copy manifest.yml'
+
+        sleep 6 # need to guarantee that this disappears after 5 seconds.
+        assert_selector 'span', text: '100% copy files', count: 0
+      end
+    end
+  end
+
+  test 'rename file' do
+    Dir.mktmpdir do |dir|
+      with_rclone_conf(dir) do
+        # Test in a subdir of the temp directory
+        dir = File.join(dir, 'bucket')
+        Dir.mkdir(dir)
+
+        FileUtils.touch File.join(dir, 'foo.txt')
+
+        visit files_url('alias_remote', '/bucket')
+        tr = find('a', exact_text: 'foo.txt').ancestor('tr')
+        tr.find('button.dropdown-toggle').click
+        tr.find('.rename-file').click
+
+        # rename dialog input
+        find('#swal2-input').set('bar.txt')
+        find('.swal2-confirm').click
+
+        find('tbody a', exact_text: 'bar.txt', wait: MAX_WAIT)
+        assert File.file? File.join(dir, 'bar.txt')
+      end
+    end
+  end
+
+  test 'rename empty directory' do
+    Dir.mktmpdir do |dir|
+      with_rclone_conf(dir) do
+        # Test in a subdir of the temp directory
+        dir = File.join(dir, 'bucket')
+        Dir.mkdir(dir)
+
+        Dir.mkdir(File.join(dir, 'foo'))
+
+        visit files_url('alias_remote', '/bucket')
+        tr = find('a', exact_text: 'foo').ancestor('tr')
+        tr.find('button.dropdown-toggle').click
+        tr.find('.rename-file').click
+
+        # rename dialog input
+        find('#swal2-input').set('bar')
+        find('.swal2-confirm').click
+
+        find('tbody a', exact_text: 'bar', wait: MAX_WAIT)
+        assert File.directory? File.join(dir, 'bar')
+      end
+    end
+  end
+
+  test 'rename directory with files' do
+    Dir.mktmpdir do |dir|
+      with_rclone_conf(dir) do
+        # Test in a subdir of the temp directory
+        dir = File.join(dir, 'bucket')
+        Dir.mkdir(dir)
+
+        Dir.mkdir(File.join(dir, 'foo'))
+        FileUtils.touch File.join(dir, 'foo', 'foo.txt')
+
+        visit files_url('alias_remote', '/bucket')
+        tr = find('a', exact_text: 'foo').ancestor('tr')
+        tr.find('button.dropdown-toggle').click
+        tr.find('.rename-file').click
+
+        # rename dialog input
+        find('#swal2-input').set('bar')
+        find('.swal2-confirm').click
+
+        find('tbody a', exact_text: 'bar', wait: MAX_WAIT)
+        assert File.directory? File.join(dir, 'bar')
+        assert File.file? File.join(dir, 'bar', 'foo.txt')
+      end
+    end
+  end
+
+  test 'moving files' do
+    Dir.mktmpdir do |dir|
+      with_rclone_conf(dir) do
+        # Test in a subdir of the temp directory
+        dir = File.join(dir, 'bucket')
+        Dir.mkdir(dir)
+
+        # copy to dest/app
+        dest = File.join(dir, 'dest')
+        FileUtils.mkpath dest
+
+        `cp -r #{Rails.root.join('app')} #{Rails.root.join('config')}  #{Rails.root.join('manifest.yml')} #{dir}`
+
+        # select dir to move
+        visit files_url('alias_remote', '/bucket')
+        %w(app config manifest.yml).each do |f|
+          find('a', exact_text: f).ancestor('tr').click(:meta)
+        end
+        assert_selector '.selected', count: 3
+
+        find('#copy-move-btn').click
+
+        # move to new location
+        visit files_url('alias_remote', '/bucket/dest')
+        find('#clipboard-move-to-dir').click
+        find('tbody a', exact_text: 'app', wait: MAX_WAIT)
+        find('tbody a', exact_text: 'config', wait: MAX_WAIT)
+        find('tbody a', exact_text: 'manifest.yml', wait: MAX_WAIT)
+
+        # verify contents moved
+        assert_equal '', `diff -rq #{File.join(dest, 'app')} #{Rails.root.join('app')}`.strip, 'failed to mv app and all contents'
+        assert_equal '', `diff -rq #{File.join(dest, 'config')} #{Rails.root.join('config')}`.strip, 'failed to recursively copy config dir'
+        assert_equal '', `diff -q #{File.join(dest, 'manifest.yml')} #{Rails.root.join('manifest.yml')}`.strip, 'failed to copy manifest.yml'
+
+        # verify original does not exist
+        refute File.directory?(File.join(dir, 'app'))
+        refute File.directory?(File.join(dir, 'config'))
+        refute File.directory?(File.join(dir, 'manifest.yml'))
+      end
+    end
+  end
+
+  test 'removing files' do
+    Dir.mktmpdir do |dir|
+      with_rclone_conf(dir) do
+        # Test in a subdir of the temp directory
+        dir = File.join(dir, 'bucket')
+        Dir.mkdir(dir)
+
+        # copy to dest/app
+        src = File.join(dir, 'app')
+        `cp -r #{Rails.root.join('app')} #{src}`
+        FileUtils.touch(File.join(dir, 'foo.txt'))
+
+        # select dir to move
+        visit files_url('alias_remote', '/bucket')
+        find('a', exact_text: 'app').ancestor('tr').click(:meta)
+        find('a', exact_text: 'foo.txt').ancestor('tr').click(:meta)
+        find('#delete-btn').click
+        find('button.swal2-confirm').click
+
+        # verify app dir deleted according to UI
+        assert_no_selector 'tbody a', exact_text: 'app', wait: 10
+        assert_no_selector 'tbody a', exact_text: 'foo.txt', wait: 10
+
+        # verify app dir actually deleted
+        refute File.exist?(src)
+        refute File.exist?(File.join(dir, 'foo.txt'))
+      end
+    end
+  end
+
   test "uploading files" do
     Dir.mktmpdir do |dir|
       with_rclone_conf(dir) do
