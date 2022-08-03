@@ -14,9 +14,20 @@ end
 
 class RcloneUtil
 
+  # Treat remotes with name `fs` as the local (posix) filesystem
+  LOCAL_FS_NAME = 'fs'
+
   class << self
+    def remote_path(remote, path)
+      if remote == LOCAL_FS_NAME
+        path
+      else
+        "#{remote}:#{path}"
+      end
+    end
+
     def ls(remote, path)
-      full_path = "#{remote}:#{path}"
+      full_path = remote_path(remote, path)
       # Use lsjson for easy parsing and more info about files
       # Rclone can hang for >20 minutes if remote isn't available and low-level-retries isn't set
       o, e, s = rclone("lsjson", "--low-level-retries=1", full_path)
@@ -31,12 +42,13 @@ class RcloneUtil
     end
 
     def directory?(remote, path)
+      path = Pathname.new(path)
       # remote:/ will always be a directory
       if path.root?
         return true
       end
       # List everything in parent and check if requested path ends with a slash and actually exists
-      full_path = "#{remote}:#{path.parent.to_s}"
+      full_path = remote_path(remote, path.parent.to_s)
       o, e, s = rclone( "lsf", "--low-level-retries=1", full_path)
       if s.success?
         match = o.match(/^(?<entry>#{Regexp.escape(path.basename.to_s)}\/?)$/)
@@ -66,7 +78,7 @@ class RcloneUtil
     end
 
     def cat(remote, path, &block)
-      full_path = "#{remote}:#{path}"
+      full_path = remote_path(remote, path)
       # Read the file in 32kb chunks
       if block_given?
         rclone_popen("cat", full_path) do |o|
@@ -88,7 +100,7 @@ class RcloneUtil
     end
 
     def touch(remote, path)
-      full_path = "#{remote}:#{path}"
+      full_path = remote_path(remote, path)
       o, e, s = rclone("touch", full_path)
       if !s.success?
         raise RcloneError.new(s.exitstatus), "Error creating file: #{e}"
@@ -96,7 +108,7 @@ class RcloneUtil
     end
 
     def mkdir(remote, path)
-      full_path = "#{remote}:#{path}"
+      full_path = remote_path(remote, path)
       o, e, s = rclone("mkdir", full_path)
       if e.include?("Warning: running mkdir on a remote which can't have empty directories does nothing")
         # TODO: Could most likely do some kind of workaround here, e.g. rclone touch remote:path/.somefile
@@ -107,7 +119,7 @@ class RcloneUtil
     end
 
     def write(remote, path, content)
-      full_path = "#{remote}:#{path}"
+      full_path = remote_path(remote, path)
       # Write to a file on the remote by passing the file contents in stdin
       o, e, s = rclone("rcat", full_path, stdin_data: content)
       if !s.success?
@@ -116,7 +128,7 @@ class RcloneUtil
     end
 
     def moveto(remote, path, src)
-      full_path = "#{remote}:#{path}"
+      full_path = remote_path(remote, path)
       # Move file src on the local filesystem to full_path on the remote
       o, e, s = rclone("moveto", src, full_path)
       if !s.success?
