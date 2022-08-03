@@ -175,7 +175,7 @@ function renameIfDuplicate(currentFile, files) {
   return modifiedFile
 }
 
-function updateEndpoint(files) {
+function updateEndpoint() {
   uppy.getPlugin('XHRUpload').setOptions({
     endpoint: history.state.currentFilesUploadPath,
   });
