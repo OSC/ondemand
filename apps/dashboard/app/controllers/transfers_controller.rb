@@ -1,3 +1,5 @@
+require "rclone_util"
+
 class TransfersController < ApplicationController
 
   def show
@@ -17,7 +19,18 @@ class TransfersController < ApplicationController
 
   def create
     body_params = JSON.parse(request.body.read).symbolize_keys
-    @transfer = PosixTransfer.build(action: body_params[:command], files: body_params[:files])
+
+    from_fs = body_params.fetch(:from_fs, RcloneUtil::LOCAL_FS_NAME)
+    to_fs = body_params.fetch(:to_fs, RcloneUtil::LOCAL_FS_NAME)
+
+    if from_fs == RcloneUtil::LOCAL_FS_NAME && to_fs == RcloneUtil::LOCAL_FS_NAME
+      @transfer = PosixTransfer.build(action: body_params[:command], files: body_params[:files])
+    elsif ::Configuration.files_app_remote_files?
+      @transfer = RemoteTransfer.build(action: body_params[:command], files: body_params[:files], src_remote: from_fs, dest_remote: to_fs)
+    else
+      render json: { error_message: "Remote file support is not enabled" }
+    end
+
     if ! @transfer.valid?
       # error
       render json: { error_message: @transfer.errors.full_messages.join('. ') }

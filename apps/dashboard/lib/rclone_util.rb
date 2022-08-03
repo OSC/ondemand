@@ -17,6 +17,11 @@ class RcloneUtil
   # Treat remotes with name `fs` as the local (posix) filesystem
   LOCAL_FS_NAME = 'fs'
 
+  # Regex for parsing progress of Rclone transfers in stdout of the commands
+  # e.g. Transferred:        1.575 GiB / 1.971 GiB, 80%, 537.544 MiB/s, ETA 0s
+  # or in newer Rclone: Transferred:   	    1.162Gi / 1.971 GiByte, 59%, 44.895 MiByte/s, ETA 18s
+  PROGRESS_REGEX = /Transferred:\s+[\d.]+ ?\w+ \/ [\d.]+ \w+, (?<progress>\d+)%/
+
   class << self
     def remote_path(remote, path)
       if remote == LOCAL_FS_NAME
@@ -33,6 +38,21 @@ class RcloneUtil
       o, e, s = rclone("lsjson", "--low-level-retries=1", full_path)
       if s.success?
         files = JSON.parse(o)
+        files
+      elsif s.exitstatus == 3 # directory not found
+        raise RcloneError.new(s.exitstatus), "Remote file or directory '#{path}' does not exist"
+      else
+        raise RcloneError.new(s.exitstatus), "Error listing files: #{e}"
+      end
+    end
+
+    # Simple list of files and directories
+    def lsf(remote, path)
+      full_path = remote_path(remote, path)
+      # Rclone can hang for >20 minutes if remote isn't available and low-level-retries isn't set
+      o, e, s = rclone("lsf", "--low-level-retries=1", "--dir-slash=false", full_path)
+      if s.success?
+        files = o.lines.map(&:strip)
         files
       elsif s.exitstatus == 3 # directory not found
         raise RcloneError.new(s.exitstatus), "Remote file or directory '#{path}' does not exist"
@@ -136,6 +156,54 @@ class RcloneUtil
       end
     end
 
+    def moveto_with_progress(src_remote, dest_remote, src_path, dest_path, &block)
+      full_src_path = remote_path(src_remote, src_path)
+      full_dest_path = remote_path(dest_remote, dest_path)
+      RcloneUtil.rclone_with_progress(
+        "moveto",
+        full_src_path,
+        full_dest_path,
+        &block
+      )
+    end
+
+    def copyto_with_progress(src_remote, dest_remote, src_path, dest_path, &block)
+      full_src_path = remote_path(src_remote, src_path)
+      full_dest_path = remote_path(dest_remote, dest_path)
+      RcloneUtil.rclone_with_progress(
+        "copyto",
+        full_src_path,
+        full_dest_path,
+        &block
+      )
+    end
+
+    def remove_with_progress(remote, path, &block)
+      full_path = remote_path(remote, path)
+      dir = directory?(remote, path)
+      if dir
+        # rclone delete doesn't seem to delete an empty directory even if we would want to delete it
+        # using purge instead
+        RcloneUtil.rclone_with_progress("purge", full_path, &block)
+      else
+        RcloneUtil.rclone_with_progress("delete", full_path, &block)
+      end
+    end
+
+    def size(remote, path)
+      full_path = remote_path(remote, path)
+      # Move file src on the local filesystem to full_path on the remote
+      o, e, s = rclone("size", "--json", full_path)
+      if s.success?
+        # rclone returns e.g. {"count":40,"bytes":2303928506}
+        JSON.parse(o)
+      elsif s.exitstatus == 3 # directory not found
+        raise RcloneError.new(s.exitstatus), "Remote file or directory '#{path}' does not exist"
+      else
+        raise RcloneError.new(s.exitstatus), "Error getting file or directory size: #{e}"
+      end
+    end
+
     def remote_type(remote)
       # Get the rclone remote type (e.g. s3) for a single remote
       o, e, s = rclone("listremotes", "--long")
@@ -176,6 +244,19 @@ class RcloneUtil
         err = err_reader.value.to_s.strip
         if err.present? || !exit_status.success?
           raise RcloneError.new(exit_status.exitstatus), "Rclone exited with status #{exit_status.exitstatus}\n#{err}"
+        end
+      end
+    end
+
+    # Calls rclone and parses stdout to track the progress of the command, yields the percentage
+    def rclone_with_progress(*args, &block)
+      rclone_popen("--progress", *args) do |o|
+        o.each_line do |line|
+          match = line.match(PROGRESS_REGEX)
+          if match
+            progress = match[:progress].to_i
+            yield progress
+          end
         end
       end
     end
