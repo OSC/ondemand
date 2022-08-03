@@ -18,6 +18,18 @@ class PosixTransfer < Transfer
       # all transfers stored in the Transfer class
       Transfer.transfers
     end
+
+    def build(action:, files:)
+      if files.is_a?(Array)
+        # rm action will want to provide an array of files
+        # so if it is an Array we convert it to a hash:
+        #
+        # convert [a1, a2, a3] to {a1 => nil, a2 => nil, a3 => nil}
+        files = Hash[files.map { |f| [f, nil] }].with_indifferent_access
+      end
+
+      self.new(action: action, files: files)
+    end
   end
 
   # number of files to copy, move or delete
