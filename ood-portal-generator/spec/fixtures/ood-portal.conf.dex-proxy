@@ -65,9 +65,7 @@
   RewriteCond /var/www/ood/public/maintenance/index.html -f
   RewriteCond /etc/ood/maintenance.enable -f
   RewriteCond %{REQUEST_URI} !/public/maintenance/.*$
-  RewriteRule ^.*$ /public/maintenance/index.html [R=503,L]
-  ErrorDocument 503 /public/maintenance/index.html
-  Header Set Cache-Control "max-age=0, no-store"
+  RewriteRule ^.*$ /public/maintenance/index.html [R=302,L]
 
   Header always set Content-Security-Policy "frame-ancestors https://example.com;"
   Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
@@ -193,6 +191,17 @@
     AuthType openid-connect
     Require valid-user
   </Location>
+
+  # Maintenance location
+  #
+  #     https://example.com:443/public/maintenance
+  #     #=> Displays /var/www/ood/public/maintenance/index.html
+  #
+  <Directory "/var/www/ood/public/maintenance">
+    RewriteCond %{REQUEST_URI} !/public/maintenance/index\.html$
+    RewriteRule ^.*$ /public/maintenance/index.html [R=503,L]
+    ErrorDocument 503 /public/maintenance/index.html
+  </Directory>
 
 
 </VirtualHost>

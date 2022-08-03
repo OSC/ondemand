@@ -53,9 +53,7 @@
   RewriteCond /var/www/ood/public/maintenance/index.html -f
   RewriteCond /etc/ood/maintenance.enable -f
   RewriteCond %{REQUEST_URI} !/public/maintenance/.*$
-  RewriteRule ^.*$ /public/maintenance/index.html [R=503,L]
-  ErrorDocument 503 /public/maintenance/index.html
-  Header Set Cache-Control "max-age=0, no-store"
+  RewriteRule ^.*$ /public/maintenance/index.html [R=302,L]
 
   Header always set Content-Security-Policy "frame-ancestors http://example.com;"
 
@@ -146,6 +144,17 @@
   #
   Redirect "/logout" "/pun/sys/dashboard/logout"
 
+
+  # Maintenance location
+  #
+  #     http://localhost:80/public/maintenance
+  #     #=> Displays /var/www/ood/public/maintenance/index.html
+  #
+  <Directory "/var/www/ood/public/maintenance">
+    RewriteCond %{REQUEST_URI} !/public/maintenance/index\.html$
+    RewriteRule ^.*$ /public/maintenance/index.html [R=503,L]
+    ErrorDocument 503 /public/maintenance/index.html
+  </Directory>
 
 
 </VirtualHost>
