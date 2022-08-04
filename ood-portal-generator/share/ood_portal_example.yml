@@ -15,6 +15,12 @@
 # Default: null (don't use name-based Virtual Host)
 #servername: null
 
+# The server aliases used for the name-based Virtual Host
+# Example:
+#     serveraliases:
+#       - foo.example.com
+#serveraliases: null
+
 # The server name used for rewrites
 # Example:
 #     proxy_server: 'proxy.example.com'
