@@ -70,12 +70,10 @@ Listen 8080
   RewriteEngine On
   RewriteCond /var/www/configured/public/maintenance/index.html -f
   RewriteCond /etc/ood/maintenance.enable -f
-  RewriteCond %{REQUEST_URI} !/public/maintenance/.*$
+  RewriteCond %{REQUEST_URI} !/assets/maintenance/.*$
   RewriteCond %{REMOTE_ADDR} !^192\.168\.0\..*
   RewriteCond %{REMOTE_ADDR} !^192\.168\.1\..*
-  RewriteRule ^.*$ /assets/maintenance/index.html [R=503,L]
-  ErrorDocument 503 /assets/maintenance/index.html
-  Header Set Cache-Control "max-age=0, no-store"
+  RewriteRule ^.*$ /assets/maintenance/index.html [R=302,L]
 
   Header always set Content-Security-Policy "frame-ancestors https://test.server.name;"
   Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
@@ -232,6 +230,20 @@ Listen 8080
     AuthType openid-connect
     Require valid-user
   </Location>
+
+  # Maintenance location
+  #
+  #     https://test.server.name:8080/assets/maintenance
+  #     #=> Displays /var/www/configured/public/maintenance/index.html
+  #
+  <Directory "/var/www/configured/public/maintenance">
+    RewriteCond /etc/ood/maintenance.enable !-f
+    ReWriteRule ^.*$ /
+
+    RewriteCond %{REQUEST_URI} !/assets/maintenance/index\.html$
+    RewriteRule ^.*$ /assets/maintenance/index.html [R=503,L]
+    ErrorDocument 503 /assets/maintenance/index.html
+  </Directory>
 
   # Discover URI for OpenID Connect (used for multiple Id Providers):
   #
