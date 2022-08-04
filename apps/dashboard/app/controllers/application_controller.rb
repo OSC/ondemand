@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_user_configuration
-    @user_configuration ||= UserConfiguration.new
+    @user_configuration ||= UserConfiguration.new(request_hostname: request.hostname)
   end
 
   def set_nav_groups

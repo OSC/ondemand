@@ -56,8 +56,9 @@ class UserConfiguration
     ConfigurationProperty.property(name: :dashboard_title, default_value: 'Open OnDemand', read_from_env: true),
   ].freeze
 
-  def initialize
+  def initialize(request_hostname: nil)
     @config = ::Configuration.config
+    @request_hostname = request_hostname.to_sym if request_hostname
     add_property_methods
   end
 
@@ -100,7 +101,11 @@ class UserConfiguration
 
   # The current user profile. Used to select the configuration properties.
   def profile
-    CurrentUser.user_settings[:profile].to_sym if CurrentUser.user_settings[:profile]
+    if Configuration.host_based_profiles
+      request_hostname
+    else
+      CurrentUser.user_settings[:profile].to_sym if CurrentUser.user_settings[:profile]
+    end
   end
 
   private
@@ -110,11 +115,11 @@ class UserConfiguration
   # If no value is defined, it looks into the root configuration.
   def fetch(key_value, default_value = nil)
     key = key_value ? key_value.to_sym : nil
-    profile_config = @config.dig(:profiles, profile) || {}
+    profile_config = config.dig(:profiles, profile) || {}
 
     # Returns the value if they key is present in the profile, even if the value is nil
     # This is to mimic the Hash.fetch behaviour that only uses the default_value when key is not present
-    profile_config.key?(key) ? profile_config[key] : @config.fetch(key, default_value)
+    profile_config.key?(key) ? profile_config[key] : config.fetch(key, default_value)
   end
 
   # Dynamically adds methods to this class based on the USER_PROPERTIES defined.
@@ -128,4 +133,8 @@ class UserConfiguration
       end
     end
   end
+
+    private
+
+    attr_reader :config, :request_hostname
 end
