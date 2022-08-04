@@ -58,8 +58,8 @@ Listen <%= addr_port %>
   <%- if @servername -%>
   ServerName <%= @servername %>
   <%- end -%>
-  <%- if @serveraliases -%>
-    <%- @serveraliases.each do |serveralias| -%>
+  <%- if @server_aliases -%>
+    <%- @server_aliases.each do |serveralias| -%>
   ServerAlias <%= serveralias %>
     <%- end -%>
   <%- end -%>
@@ -75,8 +75,8 @@ Listen <%= addr_port %>
   <%- if @servername -%>
   ServerName <%= @servername %>
   <%- end -%>
-  <%- if @serveraliases -%>
-    <%- @serveraliases.each do |serveralias| -%>
+  <%- if @server_aliases -%>
+    <%- @server_aliases.each do |serveralias| -%>
   ServerAlias <%= serveralias %>
     <%- end -%>
   <%- end -%>

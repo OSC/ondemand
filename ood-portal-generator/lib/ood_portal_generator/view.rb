@@ -22,7 +22,7 @@ module OodPortalGenerator
       @protocol         = @ssl ? "https://" : "http://"
       @listen_addr_port = opts.fetch(:listen_addr_port, nil)
       @servername       = opts.fetch(:servername, nil)
-      @serveraliases    = opts.fetch(:serveraliases, nil)
+      @server_aliases   = opts.fetch(:server_aliases, nil)
       @proxy_server     = opts.fetch(:proxy_server, servername)
       @port             = opts.fetch(:port, @ssl ? "443" : "80")
       if OodPortalGenerator.debian?

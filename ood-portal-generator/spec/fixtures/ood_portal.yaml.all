@@ -17,9 +17,9 @@ servername: test.server.name
 
 # The server aliases used for the name-based Virtual Host
 # Example:
-#     serveraliases:
+#     server_aliases:
 #       - foo.example.com
-serveraliases:
+server_aliases:
   - foo.example.com
 
 # The server name used for rewrites
