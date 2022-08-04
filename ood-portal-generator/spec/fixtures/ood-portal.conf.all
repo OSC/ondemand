@@ -239,6 +239,9 @@ Listen 8080
   #     #=> Displays /var/www/configured/public/maintenance/index.html
   #
   <Directory "/var/www/configured/public/maintenance">
+    RewriteCond /etc/ood/maintenance.enable !-f
+    ReWriteRule ^.*$ /
+
     RewriteCond %{REQUEST_URI} !/assets/maintenance/index\.html$
     RewriteRule ^.*$ /assets/maintenance/index.html [R=503,L]
     ErrorDocument 503 /assets/maintenance/index.html
