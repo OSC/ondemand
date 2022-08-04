@@ -63,6 +63,8 @@ module SmartAttributes
           native = ["-l", "select=1:ncpus=#{slots}"]
         when "lsf"
           native = ["-n", slots]
+        when "fujitsu_tcs"
+          native = ["-L", "node=#{slots}"]
         else
           native = nil
         end
