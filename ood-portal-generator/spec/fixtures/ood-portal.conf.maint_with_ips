@@ -153,6 +153,9 @@
   #     #=> Displays /var/www/ood/public/maintenance/index.html
   #
   <Directory "/var/www/ood/public/maintenance">
+    RewriteCond /etc/ood/maintenance.enable !-f
+    ReWriteRule ^.*$ /
+
     RewriteCond %{REQUEST_URI} !/public/maintenance/index\.html$
     RewriteRule ^.*$ /public/maintenance/index.html [R=503,L]
     ErrorDocument 503 /public/maintenance/index.html
