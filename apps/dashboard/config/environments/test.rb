@@ -58,4 +58,6 @@ Rails.application.configure do
     min_threads: 1, max_threads: 1
 
   config.paths["app/views"].unshift "test/fixtures/config/views"
+
+  config.hosts = nil
 end
