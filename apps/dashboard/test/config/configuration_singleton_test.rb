@@ -1,6 +1,10 @@
 require 'test_helper'
 
 class ConfigurationSingletonTest < ActiveSupport::TestCase
+  def setup
+    ENV.delete("OOD_DATAROOT")
+  end
+
   def config_fixtures
     {
       OOD_CONFIG_D_DIRECTORY: "#{Rails.root}/test/fixtures/config/ondemand.d"
