@@ -37,7 +37,7 @@
     </div>
     <% end %>
     <div class="card-body">
-      <% if ENV["USER"] == data.username %>
+      <% if CurrentUser.name == data.username %>
           <%= link_to "#{fa_icon("folder-open", classes: nil)} Open in File Manager".html_safe, data.file_explorer_url, :class => "btn btn-outline-black", :target => "_blank", :style => "margin: 10px;" if data.file_explorer_url %>
         <% if Configuration.ood_bc_ssh_to_compute_node %>
           <%= link_to "#{fa_icon("terminal", classes: nil)} Open in Terminal".html_safe, data.shell_url, :class => "btn btn-outline-black", :target => "_blank", :style => "margin: 10px;" if data.shell_url %>
