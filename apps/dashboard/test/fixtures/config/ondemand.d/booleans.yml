@@ -5,3 +5,4 @@ per_cluster_dataroot: true
 file_navigator: true
 jobs_app_alpha: true
 files_app_remote_files: true
+host_based_profiles: true

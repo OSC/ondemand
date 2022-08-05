@@ -143,11 +143,34 @@ class UserConfigurationTest < ActiveSupport::TestCase
     assert_equal Pathname.new("/test/valid/path"), target.public_url
   end
 
-  test "profile should delegate to CurrentUser settings" do
-    target = UserConfiguration.new
+  test "profile should delegate to CurrentUser settings when Configuration.host_based_profiles is false" do
+    Configuration.stubs(:host_based_profiles).returns(false)
+    target = UserConfiguration.new(request_hostname: "request_hostname")
     CurrentUser.stubs(:user_settings).returns({profile: "user_settings_profile_value"})
 
     assert_equal :user_settings_profile_value, target.profile
+  end
+
+  test "profile should return nil when when Configuration.host_based_profiles is false and CurrentUser profile is nil" do
+    Configuration.stubs(:host_based_profiles).returns(false)
+    CurrentUser.stubs(:user_settings).returns({})
+    target = UserConfiguration.new
+
+    assert_nil target.profile
+  end
+
+  test "profile should delegate to request_hostname when Configuration.host_based_profiles is true" do
+    Configuration.stubs(:host_based_profiles).returns(true)
+    target = UserConfiguration.new(request_hostname: "request_hostname")
+
+    assert_equal :request_hostname, target.profile
+  end
+
+  test "profile should return nil when when Configuration.host_based_profiles is true and request_hostname is nil" do
+    Configuration.stubs(:host_based_profiles).returns(true)
+    target = UserConfiguration.new
+
+    assert_nil target.profile
   end
 
   test "fetch should use key as symbol" do
