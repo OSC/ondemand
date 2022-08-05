@@ -1,10 +1,6 @@
 require 'test_helper'
 
 class ConfigurationSingletonTest < ActiveSupport::TestCase
-  def setup
-    ENV.delete("OOD_DATAROOT")
-  end
-
   def config_fixtures
     {
       OOD_CONFIG_D_DIRECTORY: "#{Rails.root}/test/fixtures/config/ondemand.d"
@@ -247,6 +243,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
 
   test "should have default dataroot under home dir if production" do
     with_modified_env(RAILS_ENV: 'production') do
+      ENV.delete('OOD_DATAROOT')
       assert_equal Pathname.new('~/ondemand/data/sys/dashboard').expand_path, ConfigurationSingleton.new.dataroot
     end
   end
@@ -259,12 +256,14 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
 
   test "can configure portal component of dataroot if production" do
     with_modified_env(RAILS_ENV: 'production', OOD_PORTAL: 'MY_PORTAL') do
+      ENV.delete('OOD_DATAROOT')
       assert_equal Pathname.new('~/MY_PORTAL/data/sys/dashboard').expand_path, ConfigurationSingleton.new.dataroot
     end
   end
 
   test "can configure app token component of dataroot if production" do
     with_modified_env(RAILS_ENV: 'production', APP_TOKEN: 'MY/APP/TOKEN') do
+      ENV.delete('OOD_DATAROOT')
       assert_equal Pathname.new('~/ondemand/data/MY/APP/TOKEN').expand_path, ConfigurationSingleton.new.dataroot
     end
   end
