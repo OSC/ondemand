@@ -19,7 +19,7 @@
 # Example:
 #     server_aliases:
 #       - foo.example.com
-#server_aliases: null
+#server_aliases: []
 
 # The server name used for rewrites
 # Example:
