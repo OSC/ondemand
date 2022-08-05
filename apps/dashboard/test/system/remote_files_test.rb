@@ -57,4 +57,55 @@ class RemoteFilesTest < ApplicationSystemTestCase
       end
     end
   end
+
+  test "uploading files" do
+    Dir.mktmpdir do |dir|
+      with_rclone_conf(dir) do
+        FileUtils.mkpath File.join(dir, 'foo')
+
+        visit files_url('alias_remote', '/')
+        find('#upload-btn').click
+
+        find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+
+        src_file = 'test/fixtures/files/upload/osc-logo.png'
+        attach_file 'files[]', src_file, visible: false, match: :first
+        find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+        find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
+
+        find('tbody a', exact_text: 'foo').click
+        # Need to wait until we're in the new directory before clicking upload
+        assert_no_selector 'tbody a', exact_text: 'foo', wait: MAX_WAIT
+
+        find('#upload-btn').click
+        find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+
+        src_file = 'test/fixtures/files/upload/hello-world.c'
+        attach_file 'files[]', src_file, visible: false, match: :first
+        find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+        find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
+      end
+    end
+  end
+
+  test "changing directory" do
+    with_rclone_conf(Rails.root.to_s) do
+      visit files_url('alias_remote', '/')
+
+      find('tbody a', exact_text: 'app')
+      find('tbody a', exact_text: 'config')
+
+      find('#goto-btn').click
+      find('#swal2-input').set('/app')
+      find('.swal2-confirm').click
+      find('tbody a', exact_text: 'helpers')
+      find('tbody a', exact_text: 'controllers')
+
+      find('#goto-btn').click
+      find('#swal2-input').set('/')
+      find('.swal2-confirm').click
+      find('tbody a', exact_text: 'app')
+      find('tbody a', exact_text: 'config')
+    end
+  end
 end
