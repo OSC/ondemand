@@ -50,14 +50,18 @@ Listen 8080
 #     #=> https://test.proxy.name:8080
 #
 <VirtualHost *:80>
+  ServerName test.server.name
+  ServerAlias foo.example.com
+
   RewriteEngine On
-  RewriteRule ^(.*) https://test.proxy.name:8080$1 [R=301,NE,L]
+  RewriteRule ^(.*) https://%{HTTP_HOST}:8080$1 [R=301,NE,L]
 </VirtualHost>
 
 # The Open OnDemand portal VirtualHost
 #
 <VirtualHost *:8080>
   ServerName test.server.name
+  ServerAlias foo.example.com
 
   ErrorLog  "/path/to/my/logs/test.server.name_error_ssl.log"
   CustomLog "/path/to/my/logs/test.server.name_access_ssl.log" combined

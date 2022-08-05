@@ -55,8 +55,15 @@ Listen <%= addr_port %>
 #     #=> <%= @ssl ? "https" : "http" %>://<%= @proxy_server || "localhost" %>:<%= @port %>
 #
 <VirtualHost *:80>
+  <%- if @servername -%>
+  ServerName <%= @servername %>
+  <%- end -%>
+  <%- @server_aliases.each do |serveralias| -%>
+  ServerAlias <%= serveralias %>
+  <%- end -%>
+
   RewriteEngine On
-  RewriteRule ^(.*) <%= @ssl ? "https" : "http" %>://<%= @proxy_server || "%{SERVER_NAME}" %>:<%= @port %>$1 [R=301,NE,L]
+  RewriteRule ^(.*) <%= @ssl ? "https" : "http" %>://%{HTTP_HOST}:<%= @port %>$1 [R=301,NE,L]
 </VirtualHost>
 <% end -%>
 
@@ -65,6 +72,9 @@ Listen <%= addr_port %>
 <VirtualHost *:<%= @port %>>
   <%- if @servername -%>
   ServerName <%= @servername %>
+  <%- end -%>
+  <%- @server_aliases.each do |serveralias| -%>
+  ServerAlias <%= serveralias %>
   <%- end -%>
 
   ErrorLog  "<%= @errorlog %>"
