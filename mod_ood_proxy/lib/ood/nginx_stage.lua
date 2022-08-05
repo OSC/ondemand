@@ -4,21 +4,23 @@
 
   Start PUN process for given user
 --]]
-function pun(r, bin, user, app_init_url, exports, pre_hook_root_cmd)
+function pun(r, bin, user, app_init_url, exports, pre_hook_root_cmd, rails_config_hosts)
   local cmd = bin .. " pun -u '" .. r:escape(user) .. "'"
   local err
+  local env_table = {}
 
   if app_init_url then
     cmd = cmd .. " -a '" .. r:escape(app_init_url) .. "'"
   end
 
   if pre_hook_root_cmd then
-    local env_table = exports_to_table(r, exports)
+    env_table = exports_to_table(r, exports)
     cmd = cmd .. " -P '" .. r:escape(pre_hook_root_cmd) .. "'"
-    err = capture2e_with_env(cmd, env_table)
-  else
-    err = capture2e(cmd)
   end
+  if rails_config_hosts then
+    env_table['PUN_RAILS_CONFIG_HOSTS'] = rails_config_hosts
+  end
+  err = capture2e_with_env(cmd, env_table)
 
   if err == "" then
     return nil -- success
