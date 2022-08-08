@@ -6,6 +6,25 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Do not display Open In Terminal button if SSH to compute is turned off (2.1) (#2212)\
+Fix file uploads and directory changes (#2195)\
+Support defining serveralias in Apache virtual host (#2204)\
+Make favorite paths support remote filesystems (#2140)\
+Added support automatic hostname based profiles (#2173)\
+Fix maintenance to allow redirect back to OnDemand (#2206)\
+Fix for Fujitsu TCS resource manager (#2194)\
+Improved maintenance page handling of 503 errors (#2198)\
+remove https from default CSP (#2178)\
+Put Dex behing Apache reverse proxy by default (#2192)\
+Update Changelog (#2184)\
+Enable passenger_preload_bundler for PUN (#2187)\
+First pass at adding ood coding standards. (#2182)\
+remove html_safe where nessecary (#2175)\
+Support Dex behind Apache reverse proxy (#2177)\
+enable using enter key for checkboxes in file explorer (#2147)\
+Fix snakeCaseWords not working as expected (#2158)\
+Handle copying files to same directory (#2094)\
+Test ondemand-nginx package permissions during E2E tests (#2188)
 
 ### Changed
 
