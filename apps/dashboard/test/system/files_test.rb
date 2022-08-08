@@ -160,6 +160,7 @@ class FilesTest < ApplicationSystemTestCase
       src_file = 'test/fixtures/files/upload/osc-logo.png'
       attach_file 'files[]', src_file, visible: false, match: :first
       find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+      find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
       assert File.exist?(File.join(dir, File.basename(src_file)))
 
       find('tbody a', exact_text: 'foo').click
