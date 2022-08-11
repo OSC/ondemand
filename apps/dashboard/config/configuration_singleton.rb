@@ -370,7 +370,7 @@ class ConfigurationSingleton
     files.each_with_object({}) do |f, conf|
       begin
         content = ERB.new(f.read, nil, "-").result(binding)
-        yml = YAML.safe_load(content) || {}
+        yml = YAML.safe_load(content, aliases: true) || {}
         conf.deep_merge!(yml.deep_symbolize_keys)
       rescue => e
         Rails.logger.error("Can't read or parse #{f} because of error #{e}")

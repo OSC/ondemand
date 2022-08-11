@@ -320,6 +320,18 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test "supports YAML anchors and aliases" do
+    with_modified_env({ OOD_CONFIG_D_DIRECTORY: "#{Rails.root}/test/fixtures/config/anchors_aliases" }) do
+      cfg = ConfigurationSingleton.new.send(:config)
+      assert_equal 'single_value', cfg[:single_original]
+      assert_equal 'single_value', cfg[:single_with_alias]
+
+      expect_hash = {key_one: "hash_one", key_two: "hash_two"}
+      assert_equal expect_hash, cfg[:hash_original]
+      assert_equal expect_hash, cfg[:hash_with_alias]
+    end
+  end
+
   test "logs read and parse errors" do
     with_modified_env(config_fixtures) do
       bad_erb_rex = /bad_erb.yml.erb because of error undefined local variable or method `wont_find_this_functon/
