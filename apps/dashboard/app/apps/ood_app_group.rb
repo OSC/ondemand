@@ -68,6 +68,6 @@ class OodAppGroup
   # then display other categories in alphabetical order
   def self.order(titles:[], groups:[])
       h = Hash[groups.map {|g| [g.title, g]}]
-      titles.concat(h.keys.sort).uniq.map { |t| h.has_key?(t) ? h[t] : nil }.compact 
+      (titles + h.keys.sort).uniq.map { |t| h.has_key?(t) ? h[t] : nil }.compact
   end
 end

@@ -118,4 +118,27 @@ class OodAppGroupTest < ActiveSupport::TestCase
     assert_equal 10, groups[2].apps.count
   end
 
+  test "OodAppGroup.order should sort groups based on titles array" do
+    titles = ["title1", "title2"]
+    group1 = OodAppGroup.new(title: "title1")
+    group2 = OodAppGroup.new(title: "title2")
+    group3 = OodAppGroup.new(title: "title3")
+
+    result = OodAppGroup.order(titles: titles, groups: [group3, group2, group1])
+
+    assert_equal [group1, group2, group3], result
+  end
+
+  test "OodAppGroup.order should not modify titles or groups array" do
+    titles = ["title1", "title2"]
+    group1 = OodAppGroup.new(title: SecureRandom.uuid)
+    group2 = OodAppGroup.new(title: SecureRandom.uuid)
+    groups = [group1, group2]
+
+    OodAppGroup.order(titles: titles, groups: groups)
+
+    assert_equal ["title1", "title2"], titles
+    assert_equal [group1, group2], groups
+  end
+
 end
