@@ -249,7 +249,7 @@ methods.
 * Focus on *why* the code is the way it is if it is not obvious.
 * Focus less on *how* the code works, that should be evident from the code.
 * At the top of each class and method please add a description of the intent of the Class or Method
-```ruby
+```javascript
 /**
  * Format passed string to snake_case. All characters become lowercase. Existing
  * underscores are unchanged and dashes become underscores. Underscores are added 
