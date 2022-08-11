@@ -1,0 +1,9 @@
+single_original: &single_anchor "single_value"
+single_with_alias: *single_anchor
+
+hash_original: &hash_anchor
+  key_one: "hash_one"
+  key_two: "hash_two"
+
+hash_with_alias: *hash_anchor
+
