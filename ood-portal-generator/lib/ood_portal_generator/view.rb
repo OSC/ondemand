@@ -24,6 +24,7 @@ module OodPortalGenerator
       @servername       = opts.fetch(:servername, nil)
       @server_aliases   = opts.fetch(:server_aliases, [])
       @proxy_server     = opts.fetch(:proxy_server, servername)
+      @rails_config_hosts = rails_config_hosts
       @port             = opts.fetch(:port, @ssl ? "443" : "80")
       if OodPortalGenerator.debian?
         @logroot        = opts.fetch(:logroot, "/var/log/apache2")
@@ -126,6 +127,15 @@ module OodPortalGenerator
       prefix = "#{servername}_#{log_type}"
       suffix = @ssl ? '_ssl.log' : '.log'
       "#{@logroot}/#{prefix}#{suffix}"
+    end
+
+    def rails_config_hosts
+      config_hosts = []
+      config_hosts << @servername unless @servername.nil?
+      config_hosts << @proxy_server unless @proxy_server.nil?
+      config_hosts.concat(@server_aliases)
+      return nil if config_hosts.empty?
+      config_hosts.sort.uniq
     end
 
     # Helper method to escape IP for maintenance rewrite condition

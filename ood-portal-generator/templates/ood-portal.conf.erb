@@ -186,6 +186,10 @@ Listen <%= addr_port %>
   <%- end -%>
 
   <%- end -%>
+  <%- if @rails_config_hosts -%>
+  SetEnv OOD_PUN_RAILS_CONFIG_HOSTS "<%= @rails_config_hosts.join(',') %>"
+
+  <%- end -%>
   #
   # Below is used for sub-uri's this Open OnDemand portal supports
   #
