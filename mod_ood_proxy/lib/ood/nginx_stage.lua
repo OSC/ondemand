@@ -13,10 +13,10 @@ function pun(r, bin, user, app_init_url, exports, pre_hook_root_cmd, rails_confi
   end
 
   if pre_hook_root_cmd then
+    local env_table = exports_to_table(r, exports)
     if rails_config_hosts then
       env_table["PUN_RAILS_CONFIG_HOSTS"] = rails_config_hosts
     end
-    local env_table = exports_to_table(r, exports)
     cmd = cmd .. " -P '" .. r:escape(pre_hook_root_cmd) .. "'"
     err = capture2e_with_env(cmd, env_table)
   else
