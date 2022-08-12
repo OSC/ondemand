@@ -49,6 +49,8 @@ module ActiveJobs
           extended_data_pbspro(info)
         elsif cluster.job_config[:adapter] == "sge"
           extended_data_sge(info)
+        elsif cluster.job_config[:adapter] == "fujitsu_tcs"
+          extended_data_fujitsu_tcs(info)
         else
           extended_data_default(info)
         end
@@ -257,6 +259,25 @@ module ActiveJobs
         self.file_explorer_url = build_file_explorer_url(output_pathname)
         self.shell_url = build_shell_url(output_pathname, self.cluster)
       end
+
+      self
+    end
+
+    # Store additional data about the job. (Fujitsu TCS specific)
+    #
+    # @return [Jobstatusdata] self
+    def extended_data_fujitsu_tcs(info)
+      return unless info.native
+      attributes = []
+      attributes.push Attribute.new "Nodes", info.native[:NODES]
+      attributes.push Attribute.new "Time Limit", pretty_time(info.wallclock_limit)
+      attributes.push Attribute.new "Submission Time", info.native[:ACCEPT]
+      attributes.push Attribute.new "Start Time", info.native[:START_DATE]
+      self.native_attribs = attributes
+
+      output_pathname = Pathname.new(info.native[:STD]).dirname
+      self.file_explorer_url = build_file_explorer_url(output_pathname)
+      self.shell_url = build_shell_url(output_pathname, self.cluster)
 
       self
     end
