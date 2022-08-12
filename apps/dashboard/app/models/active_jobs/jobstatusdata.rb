@@ -276,7 +276,7 @@ module ActiveJobs
       attributes = []
       attributes.push Attribute.new "Nodes", info.native[:NODES]
       attributes.push Attribute.new "Time Limit", pretty_time(info.wallclock_limit)
-      attributes.push Attribute.new "Submittion Time", info.native[:ACCEPT]
+      attributes.push Attribute.new "Submission Time", info.native[:ACCEPT]
       attributes.push Attribute.new "Start Time", info.native[:START_DATE]
       self.native_attribs = attributes
 
