@@ -59,6 +59,7 @@ BuildRequires:   python3
 Requires:        git
 Requires:        sudo, lsof, cronie, wget, curl, make, rsync, file, libxml2, libxslt, zlib, lua-posix, diffutils
 Requires:        python3
+Requires:        rclone
 Requires:        ondemand-apache = %{runtime_version_full}
 Requires:        ondemand-nginx = 1.20.2-1.p6.0.14.ood%{runtime_version}%{?dist}
 Requires:        ondemand-passenger = 6.0.14-1.ood%{runtime_version}%{?dist}
