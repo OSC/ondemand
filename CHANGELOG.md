@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Set Rails config.hosts in dashboard and myjobs (#2213)\
+Fixed memory leak for NavConfig.category (#2218)\
+Merge pull request #2226 from OSC/gerald-byrket-patch-1\
+Update CONTRIBUTING.md\
+Added support for YAML anchors and aliases when reading configuration (#2214) (#2224)\
+Update CONTRIBUTING.md\
+Update CONTRIBUTING.md\
+Enable downloading empty sub-directories with zip (#2197)\
+Fix files system tests failing sometimes (#2220)
 
 ### Changed
 
