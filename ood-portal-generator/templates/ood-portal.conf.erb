@@ -270,6 +270,8 @@ Listen <%= addr_port %>
     <%= line %>
     <%- end -%>
 
+    ProxyPreserveHost On
+    ProxyAddHeaders On
     ProxyPassReverse "http://localhost<%= @pun_uri %>"
 
     # ProxyPassReverseCookieDomain implementation (strip domain)
