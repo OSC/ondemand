@@ -186,7 +186,6 @@ Listen 8080
 
     ProxyPreserveHost On
     ProxyAddHeaders On
-    ProxyPassReverse "http://localhost/my_pun_apps"
 
     # ProxyPassReverseCookieDomain implementation (strip domain)
     Header edit* Set-Cookie ";\s*(?i)Domain[^;]*" ""
