@@ -110,6 +110,7 @@
 
     ProxyPreserveHost On
     ProxyAddHeaders On
+    ProxyPassReverse "http://localhost/pun"
 
     # ProxyPassReverseCookieDomain implementation (strip domain)
     Header edit* Set-Cookie ";\s*(?i)Domain[^;]*" ""
