@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+- Added support for YAML anchors and aliases when reading configuration (#2214) (#2224)
 - Update hterm to 1.91 in  [#1426](https://github.com/OSC/ondemand/pull/1426).
 - Batch connect apps can now use a per cluster dataroot to support sites that have multiple storages
   in [#1409](https://github.com/OSC/ondemand/pull/1409).
