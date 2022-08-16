@@ -194,4 +194,31 @@ class FilesTest < ApplicationSystemTestCase
     find('tbody a', exact_text: 'app')
     find('tbody a', exact_text: 'config')
   end
+
+  test "edit file" do
+    OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
+    OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
+
+    Dir.mktmpdir do |dir|
+      file = File.join(dir, 'foo.txt')
+      FileUtils.touch file
+
+      visit files_url(dir)
+
+      tr = find('a', exact_text: File.basename(file)).ancestor('tr')
+      tr.find('button.dropdown-toggle').click
+      edit_window = window_opened_by { tr.find('.edit-file').click }
+
+      within_window edit_window do
+        find('#editor').click
+        find('textarea.ace_text-input', visible: false).send_keys 'foobar'
+
+        find('.navbar-toggler').click
+        find('#save-button').click
+      end
+
+      sleep 1 # FIXME: should avoid using sleep here
+      assert_equal 'foobar', File.read(file)
+    end
+  end
 end
