@@ -184,6 +184,8 @@ Listen 8080
     AuthType openid-connect
     Require valid-user
 
+    ProxyPreserveHost On
+    ProxyAddHeaders On
     ProxyPassReverse "http://localhost/my_pun_apps"
 
     # ProxyPassReverseCookieDomain implementation (strip domain)
