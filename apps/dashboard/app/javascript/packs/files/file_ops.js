@@ -179,15 +179,15 @@ jQuery(function() {
   });
 
   $(CONTENTID).on(EVENTNAME.deleteFile, function (e, options) {    
-    fileOps.delete(options.files);
+    fileOps.delete(options.files, options.from_fs);
   });
 
   $(CONTENTID).on(EVENTNAME.moveFile, function (e, options) {
-    fileOps.move(options.files, options.token);
+    fileOps.move(options.files, options.token, options.from_fs, options.to_fs);
   });
 
   $(CONTENTID).on(EVENTNAME.copyFile, function (e, options) {
-    fileOps.copy(options.files, options.token);
+    fileOps.copy(options.files, options.token, options.from_fs, options.to_fs);
   });
 
   $(CONTENTID).on(EVENTNAME.changeDirectoryPrompt, function () {
@@ -272,13 +272,13 @@ class FileOps {
 
   
   removeFiles(files) {
-    this.transferFiles(files, "rm", "remove files")
+    this.transferFiles(files, "rm", "remove files", history.state.currentFilesystem)
   } 
 
   renameFile(fileName, newFileName) {
     let files = {};
     files[`${history.state.currentDirectory}/${fileName}`] = `${history.state.currentDirectory}/${newFileName}`;
-    this.transferFiles(files, "mv", "rename file")
+    this.transferFiles(files, "mv", "rename file", history.state.currentFilesystem, history.state.currentFilesystem)
   }
 
   renameFilePrompt(fileName) {
@@ -464,7 +464,7 @@ class FileOps {
     this.removeFiles(files.map(f => [history.state.currentDirectory, f].join('/')), csrf_token);
   }
 
-  transferFiles(files, action, summary){
+  transferFiles(files, action, summary, from_fs, to_fs){
 
     this._failures = 0;
 
@@ -474,7 +474,9 @@ class FileOps {
       method: 'post',
       body: JSON.stringify({
         command: action,
-        files: files
+        files: files,
+        from_fs: from_fs,
+        to_fs: to_fs,
       }),
       headers: { 'X-CSRF-Token': csrf_token }
     })
@@ -566,12 +568,12 @@ class FileOps {
     this.poll(data);
   } 
 
-  move(files, token) {
-    this.transferFiles(files, 'mv', 'move files');
+  move(files, token, from_fs, to_fs) {
+    this.transferFiles(files, 'mv', 'move files', from_fs, to_fs);
   }
 
-  copy(files, token) {
-    this.transferFiles(files, 'cp', 'copy files');
+  copy(files, token, from_fs, to_fs) {
+    this.transferFiles(files, 'cp', 'copy files', from_fs, to_fs);
   }
 
   alertError(title, message) {

@@ -4,6 +4,7 @@ json.url files_path(@filesystem, @path).to_s
 json.shell_url OodAppkit.shell.url(path: @path.to_s).to_s
 json.files_path files_path(@filesystem, '/')
 json.files_upload_path url_for(fs: @filesystem, action: 'upload')
+json.filesystem @filesystem
 
 json.files @files do |f|
   json.id f[:id]
