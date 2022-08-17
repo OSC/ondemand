@@ -41,7 +41,13 @@ class ApplicationController < ActionController::Base
   end
 
   def nav_sys_apps
-    sys_apps.select(&:should_appear_in_nav?)
+    # Using the new property selected_sys_apps to trigger new behaviour.
+    @user_configuration.selected_sys_apps ? selected_sys_apps : sys_apps.select(&:should_appear_in_nav?)
+  end
+
+  def selected_sys_apps
+    all_nav_sys_apps = Router.flat_nav_apps(sys_apps.select(&:should_appear_in_nav?))
+    @user_configuration.selected_sys_apps ? Router.filter_by_tokens(@user_configuration.selected_sys_apps, all_nav_sys_apps) : all_nav_sys_apps
   end
 
   def nav_dev_apps

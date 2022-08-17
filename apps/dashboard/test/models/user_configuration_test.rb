@@ -53,6 +53,8 @@ class UserConfigurationTest < ActiveSupport::TestCase
       brand_link_active_bg_color: nil,
       navbar_type: "dark",
       pinned_apps_group_by: "",
+
+      selected_sys_apps: nil,
     }
 
     # ensure all properties are tested

@@ -54,6 +54,10 @@ class UserConfiguration
     ConfigurationProperty.property(name: :custom_css_files, default_value: []),
 
     ConfigurationProperty.property(name: :dashboard_title, default_value: 'Open OnDemand', read_from_env: true),
+
+    # Array of tokens to select the sys applications to show in the UI
+    # Uses the same token matching logic as pinned_apps
+    ConfigurationProperty.property(name: :selected_sys_apps),
   ].freeze
 
   def initialize(request_hostname: nil)

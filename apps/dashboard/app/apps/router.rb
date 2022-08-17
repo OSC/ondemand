@@ -40,6 +40,25 @@ class Router
     end
   end
 
+  def self.flat_nav_apps(apps)
+    apps.each_with_object([]) do |app, flat_list|
+      if app.has_sub_apps?
+        flat_list.concat(app.sub_app_list.map{|sub_app| NavApp.from_app(sub_app, token: sub_app.token)})
+      else
+        flat_list.append(NavApp.from_app(app))
+      end
+    end
+  end
+
+  def self.filter_by_tokens(tokens, all_apps)
+    tokens.to_a.each_with_object([]) do |token, matched_apps|
+      matcher = TokenMatcher.new(token)
+      matched_apps.concat(all_apps.select{ |app| matcher.matches_app?(app) })
+    end.uniq do |app|
+      app.token.to_s
+    end
+  end
+
   private
 
   def self.pinned_apps_from_token(token, all_apps)
