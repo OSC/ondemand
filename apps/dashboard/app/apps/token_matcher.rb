@@ -34,7 +34,7 @@ class TokenMatcher
 
   def glob_match?(app)
     glob_match = File.fnmatch(token, app.token, File::FNM_EXTGLOB)
-    sub_app_match = app.token.start_with?(token) # find sys/bc_desktop/pitzer from sys/bc_desktop
+    sub_app_match = app.token.start_with?(token) unless token.empty?# find sys/bc_desktop/pitzer from sys/bc_desktop
 
     glob_match || sub_app_match
   end
