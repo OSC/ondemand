@@ -18,4 +18,15 @@ class FilesAppTest < ActionDispatch::IntegrationTest
 
     assert_select "div[id='shell-wrapper']", 0
   end
+
+
+  test "Files app shows error when tring to access remote files when remote files are disabled" do
+    get files_url('s3', '/')
+    assert_equal I18n.t('dashboard.files_remote_disabled'), flash[:alert]
+
+    get files_url('s3', '/'), headers: { 'Accept': 'application/json'}
+    json = JSON.parse(@response.body)
+    assert_equal I18n.t('dashboard.files_remote_disabled'), json['error_message']
+    assert_equal [], json['files']
+  end
 end
