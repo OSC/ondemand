@@ -89,3 +89,15 @@ OOD_BALANCE_THRESHOLD=50
 OOD_QUOTA_PATH="/home/annie.oakley/ondemand/misc/config/quotas/my_quota.json"
 OOD_QUOTA_THRESHOLD=0.1
 ```
+
+Along with a `.env.local` file you may also need a `.env.overload` file. Overload files have precedence over
+all other env files. This is required to override environment variables that you yourself are not in control
+of. An example of this is `OOD_EDITOR_URL` that is set in the `ood_appkit` gem that points to the system
+installed editor. While developing this app, you may want to point to the development instance of the editor
+instead. A `.env.local` setting will not override this value but a `.env.overload` will.
+
+Here's a nonexaustive list of environment variables you may be to overload while developing the dashboard.
+```
+OOD_EDITOR_URL='/pun/dev/dashboard/files'
+OOD_FILES_URL='/pun/dev/dashboard/files'
+```
