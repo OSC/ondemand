@@ -128,11 +128,20 @@ class RcloneUtil
     end
 
     def mkdir(remote, path)
+      path = Pathname.new(path)
       full_path = remote_path(remote, path)
       o, e, s = rclone("mkdir", full_path)
       if e.include?("Warning: running mkdir on a remote which can't have empty directories does nothing")
-        # TODO: Could most likely do some kind of workaround here, e.g. rclone touch remote:path/.somefile
-        raise RcloneError.new(s.exitstatus), "Remote does not support empty directories"
+        # Workaround for remotes that don't support empty directories.
+        # Touch a .directory file in the directory that is being created
+        begin
+          touch(remote, path.join(".keep"))
+          if !directory?(remote, path)
+            raise StandardError, I18n.t("dashboard.files_remote_dir_not_created", path: path.to_s)
+          end
+        rescue RcloneError => e # Actual error messages from touch and directory? are not relevant, raise new error
+          raise RcloneError.new(s.exitstatus), I18n.t("dashboard.files_remote_empty_dir_unsupported")
+        end
       elsif !s.success?
         raise RcloneError.new(s.exitstatus), "Error creating directory: #{e}"
       end
