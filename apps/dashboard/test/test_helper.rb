@@ -67,10 +67,9 @@ class ActiveSupport::TestCase
   end
 
   def stub_user_configuration(user_configuration_overrides)
+    ::Configuration.stubs(:config).returns(user_configuration_overrides)
     user_configuration = UserConfiguration.new
-    user_configuration_overrides.each do |method, new_value|
-      user_configuration.stubs(method).returns(new_value)
-    end
+    ::Configuration.unstub(:config)
 
     UserConfiguration.stubs(:new).returns(user_configuration)
 

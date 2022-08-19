@@ -226,15 +226,6 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     assert_equal "https://www.example.com", ConfigurationSingleton.new.developer_docs_url
   end
 
-  test "should hide the all apps link by default" do
-    refute ConfigurationSingleton.new.show_all_apps_link?
-  end
-
-  test "can enable the all apps link" do
-    ENV["SHOW_ALL_APPS_LINK"] = "true"
-    assert ConfigurationSingleton.new.show_all_apps_link?
-  end
-
   test "should have default dataroot under app if not production" do
     assert_equal Rails.root.join("data"), ConfigurationSingleton.new.dataroot
   end

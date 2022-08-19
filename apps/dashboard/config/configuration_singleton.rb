@@ -234,10 +234,6 @@ class ConfigurationSingleton
     to_bool(ENV["OOD_BATCH_CONNECT_CACHE_ATTR_VALUES"] || true )
   end
 
-  def show_all_apps_link?
-    to_bool(ENV['SHOW_ALL_APPS_LINK'])
-  end
-
   def developer_docs_url
     ENV['OOD_DASHBOARD_DEV_DOCS_URL'] || "https://go.osu.edu/ood-app-dev"
   end

@@ -158,16 +158,49 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
     NavConfig.stubs(:categories_whitelist?).returns(false)
-    NavConfig.stubs(:categories).returns(["Files", "Jobs", "Clusters", "Interactive Apps"])
+    NavConfig.stubs(:categories).returns(["Jobs", "Interactive Apps", "Files", "Clusters"])
 
     get root_path
     assert_response :success
     assert_select ".navbar-expand-md > #navbar li.dropdown[title]", 6 # +1 here is 'Help'
-    assert_select  dropdown_link(1), text: "Files"
-    assert_select  dropdown_link(2), text: "Jobs"
-    assert_select  dropdown_link(3), text: "Clusters"
-    assert_select  dropdown_link(4), text: "Interactive Apps"
+    assert_select  dropdown_link(1), text: "Jobs"
+    assert_select  dropdown_link(2), text: "Interactive Apps"
+    assert_select  dropdown_link(3), text: "Files"
+    assert_select  dropdown_link(4), text: "Clusters"
     assert_select  dropdown_link(5), text: "Gateway Apps"
+  end
+
+  test "UserConfiguration.categories should filter and order the navigation and have precedence over NavConfig" do
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
+    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
+    NavConfig.stubs(:categories_whitelist?).returns(false)
+    NavConfig.stubs(:categories).returns(["Jobs", "Interactive Apps", "Files", "Clusters"])
+
+    stub_user_configuration({
+      categories: ["Files", "Interactive Apps", "Clusters"]
+    })
+
+    get root_path
+    assert_response :success
+    assert_select ".navbar-expand-md > #navbar li.dropdown[title]", 4 # +1 here is 'Help'
+    assert_select  dropdown_link(1), text: "Files"
+    assert_select  dropdown_link(2), text: "Interactive Apps"
+    assert_select  dropdown_link(3), text: "Clusters"
+  end
+
+  test "should not create app menus if UserConfiguration.categories is empty" do
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
+    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
+    NavConfig.stubs(:categories_whitelist?).returns(false)
+    NavConfig.stubs(:categories).returns(["Jobs", "Interactive Apps", "Files", "Clusters"])
+
+    stub_user_configuration({
+      categories: []
+    })
+
+    get root_path
+    assert_response :success
+    assert_select ".navbar-collapse > .nav li.dropdown[title]", 0
   end
 
   test "verify default values for NavConfig" do
