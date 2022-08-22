@@ -6,16 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Moved navigation settings to profile based configuration (#2251) (#2221)\
-add .env.overload docs to the README (#2253)\
-Remove rclone install and bump ondemand up in sequence. (#2246)\
-Support cloud storage file transfers (#2186)\
-Fix files/api/v1 route (#2240)\
-Add rclone dependency (#2234)\
-Update Changelog (#2229)\
-Ensure host name is getting passed to PUN proxy (#2230)\
-update ood libraries (#2201)\
-fix misspelled Submission (#2228)
+
 
 ### Changed
 
@@ -44,6 +35,7 @@ fix misspelled Submission (#2228)
   [#1982](https://github.com/OSC/ondemand/pull/1982).  The previous default was OIDC configs.
 - Packages now rely on python3 in [#2011](https://github.com/OSC/ondemand/pull/2011).
 - Passenger and NGINX dependencies are now 6.0.14 and NGINX repectively in [#2027](https://github.com/OSC/ondemand/pull/2027).
+- NavConfig settings have been deprecated and replaced in [2221](https://github.com/OSC/ondemand/pull/2221).
 
 ### Added
 
@@ -62,6 +54,11 @@ fix misspelled Submission (#2228)
   in [1888](https://github.com/OSC/ondemand/pull/1887).
 - Modules can be automatically loaded in batch connect forms in (1930)(https://github.com/OSC/ondemand/pull/1930).
 - Custom CSS files can be added in [2168](https://github.com/OSC/ondemand/pull/2168).
+- Cloud Storage.
+  - Support cloud storage file transfers in [2186](https://github.com/OSC/ondemand/pull/2186).
+  - RPMs and DEBs now require (or suggest) rlcone in [2234](https://github.com/OSC/ondemand/pull/2234).
+- Support for Profiles
+  - NavConfig settings have been deprecated and replaced in [2221](https://github.com/OSC/ondemand/pull/2221).
 
 ### Fixed
 
