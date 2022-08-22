@@ -4,6 +4,8 @@ class FilesController < ApplicationController
 
   before_action :parse_path, :validate_path!, except: :upload
 
+  rescue_from Exception, with: :handle_error
+
   def fs
     request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
 
@@ -86,22 +88,6 @@ class FilesController < ApplicationController
     else
       show_file
     end
-  rescue => e
-    @files = []
-    flash.now[:alert] = "#{e.message}"
-
-    logger.error(e.message)
-
-    respond_to do |format|
-      format.html {
-        render :index
-      }
-      format.json {
-        @files = []
-
-        render :index
-      }
-    end
   end
 
   # PUT - create or update
@@ -125,8 +111,6 @@ class FilesController < ApplicationController
     end
 
     render json: {}
-  rescue => e
-    render json: { error_message: e.message }
   end
 
   # POST
@@ -139,12 +123,6 @@ class FilesController < ApplicationController
     @path.handle_upload(params[:file].tempfile)
 
     render json: {}
-  rescue AllowlistPolicy::Forbidden => e
-    render json: { error_message: e.message }, status: :forbidden
-  rescue Errno::EACCES => e
-    render json: { error_message: e.message }, status: :forbidden
-  rescue => e
-    render json: { error_message: e.message }, status: :internal_server_error
   end
 
   def edit
@@ -153,6 +131,32 @@ class FilesController < ApplicationController
       render :edit, status: status, layout: 'editor'
     else
       redirect_to root_path, alert: "#{@path} is not an editable file"
+    end
+  end
+
+  def handle_error(error)
+    if action_name == "fs"
+      request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
+
+      @files = []
+      flash.now[:alert] = "#{error.message}"
+
+      logger.error(error.message)
+
+      respond_to do |format|
+        format.html {
+          render :index
+        }
+        format.json {
+          render :index
+        }
+      end
+    elsif action_name == "edit"
+      redirect_to root_path, alert: error.message
+    elsif error.is_a?(AllowlistPolicy::Forbidden) || error.is_a?(Errno::EACCES)
+      render json: { error_message: error.message }, status: :forbidden
+    else
+      render json: { error_message: error.message }, status: :internal_server_error
     end
   end
 
@@ -170,6 +174,10 @@ class FilesController < ApplicationController
     elsif ::Configuration.files_app_remote_files? && filesystem != 'fs'
       @path = RemoteFile.new(normal_path, filesystem)
       @filesystem = filesystem
+    else
+      @path = PosixFile.new(normal_path)
+      @filesystem = filesystem
+      raise StandardError, I18n.t('dashboard.files_remote_disabled')
     end
   end
 

@@ -188,6 +188,7 @@ en:
     files_directory_size_calculation_timeout: "Timeout while trying to determine directory size."
     files_directory_size_unknown: "Error with status %{exit_code} when trying to determine directory size: %{error}"
 
+    files_remote_disabled: "Remote file support is not enabled"
     files_remote_empty_dir_unsupported: "Remote does not support empty directories"
     files_remote_dir_not_created: "Did not create directory %{path}"
 
