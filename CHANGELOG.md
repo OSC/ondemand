@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Moved navigation settings to profile based configuration (#2251) (#2221)\
+add .env.overload docs to the README (#2253)\
+Remove rclone install and bump ondemand up in sequence. (#2246)\
+Support cloud storage file transfers (#2186)\
+Fix files/api/v1 route (#2240)\
+Add rclone dependency (#2234)\
+Update Changelog (#2229)\
+Ensure host name is getting passed to PUN proxy (#2230)\
+update ood libraries (#2201)\
+fix misspelled Submission (#2228)
 
 ### Changed
 
