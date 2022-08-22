@@ -59,7 +59,7 @@ class UserConfigurationTest < ActiveSupport::TestCase
 
       show_all_apps_link: false,
       filter_nav_categories?: false,
-      categories: ["Apps", "Files", "Jobs", "Clusters", "Interactive Apps"],
+      nav_categories: ["Apps", "Files", "Jobs", "Clusters", "Interactive Apps"],
     }
 
     # ensure all properties are tested
@@ -151,7 +151,7 @@ class UserConfigurationTest < ActiveSupport::TestCase
   end
 
   test "filter_nav_categories? should return true when categories is set in config" do
-    Configuration.stubs(:config).returns({categories: []})
+    Configuration.stubs(:config).returns({nav_categories: []})
     assert_equal true, UserConfiguration.new.filter_nav_categories?
   end
 

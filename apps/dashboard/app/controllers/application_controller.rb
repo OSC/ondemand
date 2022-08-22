@@ -91,9 +91,9 @@ class ApplicationController < ActionController::Base
 
   def filter_groups(groups)
     if @user_configuration.filter_nav_categories?
-      OodAppGroup.select(titles: @user_configuration.categories, groups: groups)
+      OodAppGroup.select(titles: @user_configuration.nav_categories, groups: groups)
     else
-      OodAppGroup.order(titles: @user_configuration.categories, groups: groups)
+      OodAppGroup.order(titles: @user_configuration.nav_categories, groups: groups)
     end
   end
 end

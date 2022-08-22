@@ -177,7 +177,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     NavConfig.stubs(:categories).returns(["Jobs", "Interactive Apps", "Files", "Clusters"])
 
     stub_user_configuration({
-      categories: ["Files", "Interactive Apps", "Clusters"]
+      nav_categories: ["Files", "Interactive Apps", "Clusters"]
     })
 
     get root_path
@@ -195,7 +195,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     NavConfig.stubs(:categories).returns(["Jobs", "Interactive Apps", "Files", "Clusters"])
 
     stub_user_configuration({
-      categories: []
+      nav_categories: []
     })
 
     get root_path
