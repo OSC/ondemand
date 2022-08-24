@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   [#1982](https://github.com/OSC/ondemand/pull/1982).  The previous default was OIDC configs.
 - Packages now rely on python3 in [#2011](https://github.com/OSC/ondemand/pull/2011).
 - Passenger and NGINX dependencies are now 6.0.14 and NGINX repectively in [#2027](https://github.com/OSC/ondemand/pull/2027).
+- NavConfig settings have been deprecated and replaced in [2221](https://github.com/OSC/ondemand/pull/2221).
 
 ### Added
 
@@ -52,6 +53,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   in [1888](https://github.com/OSC/ondemand/pull/1887).
 - Modules can be automatically loaded in batch connect forms in (1930)(https://github.com/OSC/ondemand/pull/1930).
 - Custom CSS files can be added in [2168](https://github.com/OSC/ondemand/pull/2168).
+- Cloud Storage.
+  - Support cloud storage file transfers in [2186](https://github.com/OSC/ondemand/pull/2186).
+  - RPMs and DEBs now require (or suggest) rlcone in [2234](https://github.com/OSC/ondemand/pull/2234).
+- Support for Profiles
+  - NavConfig settings have been deprecated and replaced in [2221](https://github.com/OSC/ondemand/pull/2221).
 
 ### Fixed
 
