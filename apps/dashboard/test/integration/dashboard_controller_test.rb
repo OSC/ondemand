@@ -25,7 +25,16 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     project_path = File.expand_path "test/fixtures/dummy_fs/project"
     project_path2 = Pathname.new("test/fixtures/dummy_fs/project2").expand_path
     missing_path = "/test/fixtures/dummy_fs/missing"
-    OodFilesApp.stubs(:candidate_favorite_paths).returns([FavoritePath.new(scratch_path, title: "Scratch"), project_path, project_path2, missing_path])
+
+    OodFilesApp.stubs(:candidate_favorite_paths).returns(
+      [
+        FavoritePath.new(scratch_path, title: "Scratch"),
+        project_path,
+        project_path2,
+        missing_path,
+        FavoritePath.new("/mybucket", title: "S3", filesystem: "s3")
+      ]
+    )
     
     get root_path
 
@@ -35,7 +44,8 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
       "Home Directory",
       "Scratch #{scratch_path}",
       project_path,
-      project_path2.to_s
+      project_path2.to_s,
+      "S3 /mybucket"
     ], dditems.map { |e| e.gsub(/\s+/, ' ')  }, "Files dropdown item text is incorrect"
 
     dditemurls = dropdown_list_items_urls(dropdown_list('Files'))
@@ -43,7 +53,8 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
       "/pun/sys/files/fs" + Dir.home,
       "/pun/sys/files/fs" + scratch_path,
       "/pun/sys/files/fs" + project_path,
-      "/pun/sys/files/fs" + project_path2.to_s
+      "/pun/sys/files/fs" + project_path2.to_s,
+      "/pun/sys/files/s3/mybucket"
     ], dditemurls, "Files dropdown URLs are incorrect"
   end
 

@@ -94,7 +94,7 @@ class OodApp
             title: favorite_path.title || favorite_path.path.to_s,
             subtitle: favorite_path.title ? favorite_path.path.to_s : nil,
             description: manifest.description,
-            url: OodAppkit::Urls::Files.new(base_url: url).url(path: favorite_path.path.to_s),
+            url: OodAppkit::Urls::Files.new(base_url: url).url(path: favorite_path.path.to_s, fs: favorite_path.filesystem),
             icon_uri: "fas://folder",
             caption: caption,
             new_tab: open_in_new_window?
