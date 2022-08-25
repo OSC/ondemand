@@ -1,4 +1,4 @@
-# This class matches pinned apps configuration tokens to a given OodApp
+# This class matches apps configuration tokens to a given OodApp
 # Tokens can either be strings that are globs like 'sys/*', specific apps like
 # 'sys/jupyter' or 'sys/bc_desktop/pitzer' for subapps. They can also be hashes
 # Hashes can be known attributes like category, subcategory, type to filter off
@@ -34,7 +34,7 @@ class TokenMatcher
 
   def glob_match?(app)
     glob_match = File.fnmatch(token, app.token, File::FNM_EXTGLOB)
-    sub_app_match = token.start_with?(app.token) # find sys/bc_desktop/pitzer from sys/bc_desktop
+    sub_app_match = app.token.start_with?(token) unless token.empty?# find sys/bc_desktop/pitzer from sys/bc_desktop
 
     glob_match || sub_app_match
   end
