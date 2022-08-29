@@ -7,14 +7,9 @@ class FilesTest < ApplicationSystemTestCase
   test "visiting files app doesn't raise js errors" do
     visit files_url(Rails.root.to_s)
 
-    messages = page.driver.browser.manage.logs.get(:browser)
+    messages = page.driver.browser.logs.get(:browser)
     content = messages.join("\n")
     assert_equal 0, messages.length, "console error messages include:\n\n#{content}\n\n"
-
-    # problem with using capybara and the Rails system tests:
-    # https://github.com/rails/rails/issues/39987
-    # though supposedly it still works with headless chrome https://github.com/rails/rails/pull/37792
-    # but watching it visually makes it easier to debug
   end
 
   test "visiting files app directory" do
