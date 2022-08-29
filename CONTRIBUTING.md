@@ -73,7 +73,7 @@ Ensure to include what issue this fixes in the **PR comment** to help with autom
 
 ### Project Conventions
 
-* Prefer **read-only** objects.  You'll mostly read only objects spread throughout this code base.
+* Prefer **read-only** objects.  You'll find mostly read only objects spread throughout this code base.
   This means that `attr_writer` or `attr_accessor` are to be avoided and only `attr_reader` should be used.
   It follows then, that most objects should accept a large number of parameters in their initializers
   and set the attributes accordingly.
