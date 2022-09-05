@@ -1,0 +1,14 @@
+<li>
+  <%=
+    link_to(
+      nav_item.url.to_s,
+      title: nav_item.title,
+      class: parent.nil? ? "nav-link" : "dropdown-item",
+      target: nav_item.new_tab ? "_blank" : nil,
+      aria: ({ current: ('page' if (current_page?(nav_item.url))) }),
+      data: nav_item.data
+    ) do
+  %>
+    <%= icon_tag(nav_item.icon) %> <%= nav_item.title %>
+  <% end %>
+</li>

@@ -1,0 +1,22 @@
+
+<% links = nav_item.respond_to?(:links) ? nav_item.links : [nav_item.link] %>
+<% links.each do |link| %>
+<% title = nav_item.title ? nav_item.title : link.title %>
+  <li>
+    <%=
+      link_to(
+        link.url.to_s,
+        title: title,
+        class: parent.nil? ? "nav-link" : "dropdown-item",
+        target: link.new_tab? ? "_blank" : nil,
+        aria: ({ current: ('page' if (current_page?(link.url))) }),
+        data: link.data
+      ) do
+    %>
+    <%= icon_tag(link.icon_uri) %> <%= title %>
+    <% if link.subtitle.present? %>
+      <%= content_tag(:small, link.subtitle, style: "text-indent: 20px", class: 'visible-xs-block visible-sm-inline visible-md-inline visible-lg-inline') %>
+    <% end %>
+  <% end %>
+  </li>
+<% end %>

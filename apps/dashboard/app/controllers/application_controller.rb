@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
 
   before_action :set_user, :set_user_configuration, :set_pinned_apps, :set_nav_groups, :set_announcements
   before_action :set_my_balances, only: [:index, :new, :featured]
-  before_action :set_featured_group
+  before_action :set_featured_group, :set_custom_navigation
 
   def set_user
     @user = CurrentUser
@@ -13,6 +13,10 @@ class ApplicationController < ActionController::Base
 
   def set_user_configuration
     @user_configuration ||= UserConfiguration.new(request_hostname: request.hostname)
+  end
+
+  def set_custom_navigation
+    @nav_bar = NavBar.from_config(@user_configuration.nav_bar)
   end
 
   def set_nav_groups
@@ -57,7 +61,7 @@ class ApplicationController < ActionController::Base
   end
 
   def pinned_app_group
-    OodAppGroup.groups_for(apps: @pinned_apps, nav_limit: @user_configuration.pinned_apps_menu_length)
+    OodAppGroup.groups_for(apps: @pinned_apps, group_by: :feature, nav_limit: @user_configuration.pinned_apps_menu_length)
   end
 
   def set_pinned_apps

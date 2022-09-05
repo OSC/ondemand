@@ -1,21 +1,19 @@
-# A simple subclass of OodApp that overrides category
-# and subcategory to allow for groupings other than what's
+# A simple subclass of OodApp that provides 2 new properties feature
+# and sub_feature to allow for groupings other than what's
 # provided in the app's manifest & definition.
 class FeaturedApp < OodApp
-  alias_method :original_category, :category
-  alias_method :original_subcategory, :subcategory
 
-  attr_reader :category, :subcategory, :token
+  attr_reader :feature, :sub_feature, :token
 
-  def self.from_ood_app(app, token: nil)
-    FeaturedApp.new(app.router, token: token)
+  def self.from_app(app, token: nil, feature: nil, sub_feature: nil)
+    FeaturedApp.new(app.router, token: token, feature: feature, sub_feature: sub_feature)
   end
 
-  def initialize(router, category: I18n.t("dashboard.pinned_apps_category"), subcategory: I18n.t('dashboard.pinned_apps_title'), token: nil)
+  def initialize(router, token: nil, feature: nil, sub_feature: nil)
     super(router)
 
-    @category = category.to_s
-    @subcategory = subcategory.to_s
+    @feature = feature.to_s
+    @sub_feature = sub_feature.to_s
     @token = token || router.token
   end
 

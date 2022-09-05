@@ -41,6 +41,7 @@ class RouterTest < ActiveSupport::TestCase
   end
 
   test "pinned apps with specific dev apps" do
+    SysRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
     DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
     real_tokens = [
       'dev/bc_jupyter',

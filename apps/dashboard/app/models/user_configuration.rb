@@ -36,6 +36,10 @@ class UserConfiguration
     ConfigurationProperty.property(name: :pinned_apps, default_value: []),
     # The length of the "Pinned Apps" navbar menu
     ConfigurationProperty.property(name: :pinned_apps_menu_length, default_value: 6),
+    # What to group pinned apps by
+    # @return [String, ""] Defaults to ""
+    ConfigurationProperty.property(name: :pinned_apps_group_by, read_from_env: true, default_value: ""),
+
 
     # Links to change profile under the Help navigation menu
     # example:
@@ -60,6 +64,8 @@ class UserConfiguration
 
     # Navigation properties
     ConfigurationProperty.with_boolean_mapper(name: :show_all_apps_link, default_value: false, read_from_env: true, env_names: ['SHOW_ALL_APPS_LINK']),
+    # New navigation definition property
+    ConfigurationProperty.property(name: :nav_bar, default_value: []),
   ].freeze
 
   def initialize(request_hostname: nil)
@@ -80,22 +86,6 @@ class UserConfiguration
       'light'
     else
       'dark'
-    end
-  end
-
-  # What to group pinned apps by
-  # @return [String, ""] Defaults to ""
-  def pinned_apps_group_by
-    group_by = ENV['OOD_PINNED_APPS_GROUP_BY'] || fetch(:pinned_apps_group_by, '')
-
-    # FIXME: the user_configuration shouldn't really know the API of
-    # OodApp or subclasses. This is a hack because subclasses of OodApp overload
-    # the category and subcategory to something new while saving the original.
-    # The fix would be to move this knowledge to somewhere more appropriate than here.
-    if group_by == 'category' || group_by == 'subcategory'
-      "original_#{group_by}"
-    else
-      group_by
     end
   end
 

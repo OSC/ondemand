@@ -1,0 +1,3 @@
+<% @nav_bar.nav_items.each do |nav_item| %>
+  <%= render partial: nav_item.template, locals: { nav_item: nav_item, parent: nil } %>
+<% end %>

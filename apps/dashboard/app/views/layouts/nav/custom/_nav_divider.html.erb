@@ -1,0 +1,5 @@
+<% if nav_item.title %>
+  <%= content_tag(:li, nav_item.title, class: ["dropdown-header"]) %>
+<% else %>
+  <%= content_tag(:li, nil, class: ["dropdown-divider"], role: "separator") %>
+<% end %>

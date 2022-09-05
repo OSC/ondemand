@@ -29,8 +29,17 @@ class Router
     tokens_key = ActiveSupport::Cache.expand_cache_key(tokens)
     return @pinned_apps[tokens_key] if @pinned_apps.key?(tokens_key)
 
-    @pinned_apps[tokens_key] = tokens.to_a.each_with_object([]) do |token, pinned_apps|
-      pinned_apps.concat pinned_apps_from_token(token, all_apps)
+    @pinned_apps[tokens_key] = self.feature_apps(tokens, all_apps, feature: I18n.t("dashboard.pinned_apps_category"), sub_feature: I18n.t('dashboard.pinned_apps_title'))
+  end
+
+  # Returns an array of unique apps that match at least one of the tokens provided.
+  # It uses the TokenMatcher to match tokens with apps
+  # Should at least return an empty array.
+  #
+  # @return [FeaturedApp]
+  def self.feature_apps(tokens, all_apps, feature: nil, sub_feature: nil)
+    tokens.to_a.each_with_object([]) do |token, pinned_apps|
+      pinned_apps.concat featured_apps_from_token(token, all_apps, feature, sub_feature)
     end.uniq do |app|
       app.token.to_s
     end.reject do |app|
@@ -42,21 +51,21 @@ class Router
 
   private
 
-  def self.pinned_apps_from_token(token, all_apps)
+  def self.featured_apps_from_token(token, all_apps, feature, sub_feature)
     matcher = TokenMatcher.new(token)
 
     all_apps.each_with_object([]) do |app, apps|
       if app.has_sub_apps?
-        apps.concat(featured_apps_from_sub_app(app, matcher))
+        apps.concat(featured_apps_from_sub_app(app, matcher, feature, sub_feature))
       else
-        apps.append(FeaturedApp.from_ood_app(app)) if matcher.matches_app?(app)
+        apps.append(FeaturedApp.from_app(app, feature: feature, sub_feature: sub_feature)) if matcher.matches_app?(app)
       end
     end
   end
 
-  def self.featured_apps_from_sub_app(app, matcher)
+  def self.featured_apps_from_sub_app(app, matcher, feature, sub_feature)
     app.sub_app_list.each_with_object([]) do |sub_app, apps|
-      apps.append(FeaturedApp.from_ood_app(app, token: sub_app.token)) if matcher.matches_app?(sub_app)
+      apps.append(FeaturedApp.from_app(app, token: sub_app.token, feature: feature, sub_feature: sub_feature)) if matcher.matches_app?(sub_app)
     end
   end
 end

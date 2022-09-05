@@ -1,0 +1,11 @@
+<li class="nav-item dropdown" title="<%= nav_item.title %>">
+  <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= nav_item.title %><span class="caret"></span></a>
+
+  <% if nav_item.items? %>
+    <ul class="dropdown-menu">
+      <% nav_item.items.each do |item| %>
+        <%= render partial: item.template, locals: { nav_item: item, parent: nav_item } %>
+      <% end %>
+    </ul>
+  <% end %>
+</li>

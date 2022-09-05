@@ -297,7 +297,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
         'sys/bc_paraview',
         'sys/pseudofun',
       ],
-      pinned_apps_group_by: "original_category"
+      pinned_apps_group_by: "category"
     })
 
     env = {}
@@ -319,7 +319,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
         'sys/bc_paraview',
         'sys/pseudofun',
       ],
-      pinned_apps_group_by: "original_subcategory"
+      pinned_apps_group_by: "subcategory"
     })
 
     env = {}
