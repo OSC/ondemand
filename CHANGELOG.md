@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Show error accessing remote fs when disabled (#2251)\
+Make creating directories possible on remotes that don't support empty dirs (#2252)\
+init and access browser logs differently for selenium 4.0+ (#2249)
 
 ### Changed
 
