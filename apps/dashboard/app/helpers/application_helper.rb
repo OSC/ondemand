@@ -22,10 +22,11 @@ module ApplicationHelper
   # @param role [String] app role i.e. "vdi", "shell", etc.
   # @param method [String] change the method used in this link.
   # @return nil if url not set or the HTML string for the bootstrap nav link
-  def nav_link(title, icon, url, target: '', role: nil, method: nil)
+  def nav_link(title, icon, url, new_tab: false, role: nil, method: nil)
     if url
+      icon_uri = URI("fa://#{icon}")
       render partial: 'layouts/nav/link',
-             locals:  { title: title, faicon: icon, url: url.to_s, target: target, role: role, method: method }
+             locals:  { title: title, class: 'dropdown-item', icon_uri: icon_uri, url: url.to_s, new_tab: new_tab, role: role, method: method }
     end
   end
 
