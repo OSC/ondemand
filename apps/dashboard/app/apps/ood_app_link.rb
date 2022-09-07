@@ -29,5 +29,24 @@ class OodAppLink
       hash[var.to_s.gsub('@', '').to_sym] = instance_variable_get(var)
     end
   end
+
+  # make an OodAppLink look like an OodApp
+  class AppDecorator < SimpleDelegator
+    attr_reader :category, :subcategory
+
+    def initialize(link, category: nil, subcategory: nil)
+      super(link)
+      @category = category
+      @subcategory = subcategory
+    end
+
+    def links
+      [self]
+    end
+
+    def metadata
+      {}
+    end
+  end
 end
 
