@@ -4,12 +4,12 @@
   </a>
 
   <ul class="dropdown-menu dropdown-menu-right" role="menu">
-    <%= nav_link(t('dashboard.nav_help_support'), "question-circle", support_url, target: "_blank") %>
-    <%= nav_link(t('dashboard.nav_help_docs'), "info-circle", docs_url, target: "_blank") %>
-    <%= nav_link(t('dashboard.nav_help_change_password'), "key", passwd_url, target: "_blank") %>
-    <%= nav_link(t('dashboard.nav_help_two_factor'), "mobile-alt", configure_2fa_url, target: "_blank") %>
+    <%= nav_link(t('dashboard.nav_help_support'), "question-circle", support_url, new_tab: true) %>
+    <%= nav_link(t('dashboard.nav_help_docs'), "info-circle", docs_url, new_tab: true) %>
+    <%= nav_link(t('dashboard.nav_help_change_password'), "key", passwd_url, new_tab: true) %>
+    <%= nav_link(t('dashboard.nav_help_two_factor'), "mobile-alt", configure_2fa_url, new_tab: true) %>
     <% if help_custom_url %>
-      <%= nav_link(t('dashboard.nav_help_custom'), "question-circle", help_custom_url, target: "_blank" ) %>
+      <%= nav_link(t('dashboard.nav_help_custom'), "question-circle", help_custom_url, new_tab: true) %>
     <% end %>
     <%= nav_link(t('dashboard.nav_restart_server'), "sync", restart_url) %>
     <% unless profile_links.empty? %>

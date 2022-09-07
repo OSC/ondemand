@@ -1,10 +1,11 @@
 class OodAppGroup
-  attr_accessor :apps, :title
+  attr_accessor :apps, :title, :sort
 
-  def initialize(title: "", apps: [], nav_limit: nil)
+  def initialize(title: "", apps: [], nav_limit: nil, sort: true)
     @apps = apps
     @title = title
     @nav_limit = nav_limit
+    @sort = sort
   end
 
   def has_apps?
@@ -38,14 +39,25 @@ class OodAppGroup
     @nav_limit || apps.size
   end
 
+  def to_h
+    {
+      :group => self,
+      :apps => apps,
+      :title => title,
+      :nav_limit => nav_limit,
+      :sort => sort
+    }
+  end
+
   # given an array of apps, group those apps by app category (or the attribute)
   # specified by 'group_by', sorting both groups and apps arrays by title
-  def self.groups_for(apps: [], group_by: :category, nav_limit: nil)
-    apps.group_by { |app|
+  def self.groups_for(apps: [], group_by: :category, nav_limit: nil, sort: true)
+    groups = apps.group_by { |app|
       app.respond_to?(group_by) ? app.send(group_by) : app.metadata[group_by]
     }.map { |k,v|
-      OodAppGroup.new(title: k, apps: v.sort_by { |a| a.title }, nav_limit: nav_limit)
-    }.sort_by { |g| [ g.title.nil? ? 1 : 0, g.title ] } # make sure that the ungroupable app is always last
+      OodAppGroup.new(title: k, apps: sort ? v.sort_by { |a| a.title } : v, nav_limit: nav_limit)
+    }
+    sort ? groups.sort_by { |g| [ g.title.nil? ? 1 : 0, g.title ] } : groups # make sure that the ungroupable app is always last
   end
 
   # select a subset of groups by the specified array of titles
