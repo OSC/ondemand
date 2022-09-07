@@ -53,7 +53,7 @@ class NavBar
   end
 
   def self.nav_link(item, category, subcategory)
-    OodAppLink::AppDecorator.new(OodAppLink.new(item), category: category, subcategory: subcategory)
+    OodAppLink.new(item).categorize(category: category, subcategory: subcategory)
   end
 
   def self.nav_apps(item, category, subcategory)
@@ -73,7 +73,7 @@ class NavBar
     profile_data[:url] = Rails.application.routes.url_helpers.settings_path('settings[profile]' => profile)
     profile_data[:data] = { method: 'post' }
     profile_data[:new_tab] = false
-    OodAppLink::AppDecorator.new(OodAppLink.new(profile_data), category: category, subcategory: subcategory)
+    OodAppLink.new(profile_data).categorize(category: category, subcategory: subcategory)
   end
 
   def self.item_from_token(token)

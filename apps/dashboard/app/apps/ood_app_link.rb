@@ -30,8 +30,14 @@ class OodAppLink
     end
   end
 
+  def categorize(category: nil, subcategory: nil)
+    LinkCategorizer.new(self, category: category, subcategory: subcategory)
+  end
+
+  private
+
   # make an OodAppLink look like an OodApp
-  class AppDecorator < SimpleDelegator
+  class LinkCategorizer < SimpleDelegator
     attr_reader :category, :subcategory
 
     def initialize(link, category: nil, subcategory: nil)
