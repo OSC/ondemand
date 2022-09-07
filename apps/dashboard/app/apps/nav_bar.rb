@@ -86,7 +86,7 @@ class NavBar
     if matched_apps.size == 1
       extend_link(matched_apps.first.links.first)
     elsif matched_apps.size > 1
-      extend_group(OodAppGroup.groups_for(apps: matched_apps))
+      extend_group(OodAppGroup.groups_for(apps: matched_apps).first)
     else
       group = OodAppGroup.groups_for(apps: SysRouter.apps).select { |g| g.title.downcase == token.downcase }.first
       group.nil? ? nil : extend_group(group)

@@ -21,6 +21,7 @@ class NavBarTest < ActiveSupport::TestCase
 
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
+    assert_equal "layouts/nav/link",  result[0].partial_path
     assert_equal "Jupyter Notebook",  result[0].title
     assert_equal "/batch_connect/sys/bc_jupyter/session_contexts/new",  result[0].url
   end
@@ -30,6 +31,7 @@ class NavBarTest < ActiveSupport::TestCase
 
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
+    assert_equal "layouts/nav/group",  result[0].partial_path
     assert_equal "Apps",  result[0].title
     assert_equal 4,  result[0].apps.size
   end
@@ -39,6 +41,7 @@ class NavBarTest < ActiveSupport::TestCase
 
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
+    assert_equal "layouts/nav/group",  result[0].partial_path
     assert_equal "Interactive Apps",  result[0].title
     assert_equal 4,  result[0].apps.size
   end
@@ -51,6 +54,7 @@ class NavBarTest < ActiveSupport::TestCase
 
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
+    assert_equal "layouts/nav/group",  result[0].partial_path
     assert_equal "menu title",  result[0].title
   end
 
@@ -62,6 +66,7 @@ class NavBarTest < ActiveSupport::TestCase
 
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
+    assert_equal "layouts/nav/link",  result[0].partial_path
     assert_equal "link title",  result[0].title
     assert_equal "/path/test",  result[0].url
   end
@@ -74,6 +79,7 @@ class NavBarTest < ActiveSupport::TestCase
     expected_data_property = { method: 'post' }
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
+    assert_equal "layouts/nav/link",  result[0].partial_path
     assert_equal "profile title",  result[0].title
     assert_equal "/settings?settings%5Bprofile%5D=profile1",  result[0].url
     assert_equal expected_data_property,  result[0].data
@@ -87,6 +93,7 @@ class NavBarTest < ActiveSupport::TestCase
 
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
+    assert_equal "layouts/nav/link",  result[0].partial_path
     assert_equal "Jupyter Notebook",  result[0].title
   end
 
@@ -97,6 +104,7 @@ class NavBarTest < ActiveSupport::TestCase
 
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
+    assert_equal "layouts/nav/link",  result[0].partial_path
     assert_equal "Jupyter Notebook",  result[0].title
   end
 
@@ -123,6 +131,12 @@ class NavBarTest < ActiveSupport::TestCase
     result = NavBar.items([stub(), valid_item, stub()])
     assert_equal 1,  result.size
     assert_equal "Jupyter Notebook",  result[0].title
+  end
+
+  test "Check supported static links" do
+    NavBar::STATIC_LINKS.each do |name, template|
+      assert_equal true,  [:all_apps, :featured_apps, :sessions].include?(name)
+    end
   end
 
 end
