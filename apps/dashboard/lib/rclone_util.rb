@@ -226,6 +226,17 @@ class RcloneUtil
       end
     end
 
+    # Lists remotes configured in default rclone.conf or environment variables
+    # @return [Array<String>] Rclone remotes
+    def list_remotes
+      o, e, s = rclone("listremotes")
+      if s.success?
+        o.lines.map { |l| l.strip.delete_suffix(":") }
+      else
+        raise RcloneError.new(s.exitstatus), I18n.t("dashboard.files_remote_error_listing_remotes", error: e)
+      end
+    end
+
     def rclone_cmd
       # TODO: Make this configurable
       "rclone"

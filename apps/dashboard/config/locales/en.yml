@@ -191,6 +191,7 @@ en:
     files_remote_disabled: "Remote file support is not enabled"
     files_remote_empty_dir_unsupported: "Remote does not support empty directories"
     files_remote_dir_not_created: "Did not create directory %{path}"
+    files_remote_error_listing_remotes: "Error listing Rclone remotes: %{error}"
 
     jobs_project_created: "Project successfully created!"
     jobs_project_deleted: "Project successfully deleted!"
