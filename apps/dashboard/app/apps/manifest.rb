@@ -1,9 +1,12 @@
 require 'yaml'
 
+# Manifests provide metadata for applications (OodApp).
 class Manifest
 
   attr_reader :exception
 
+  # InvalidContentError is helper error class that'll give the user
+  # a nice message should the underlying file throw errors parsing.
   class InvalidContentError < StandardError
     def initialize
       super %q(Manifest is not formatted correctly! 
@@ -30,6 +33,11 @@ category: OSC
     end
   end
 
+  # Load the manifest from a path. Can return the error subclasses
+  # if there are issues reading the file.
+  #
+  # @param [String] The path of the manifest.yml file.
+  # @return [Manifest] The manifest.
   def self.load(yaml_path)
     if File.exist? yaml_path
       File.open(yaml_path) do |content|
@@ -46,21 +54,26 @@ category: OSC
     InvalidManifest.new(e)
   end
 
+  # Load the manifest from a string. Can return the error subclasses
+  # if there are issues reading the file.
+  #
+  # @param [String] The contents of manifest.yml in a string.
+  # @return [Manifest] The manifest.
   def self.load_from_string(yaml)
     Manifest.new(YAML.safe_load(yaml))
   rescue Exception => e
     InvalidManifest.new(e)
   end
 
-  # @param [Hash, Manifest] opts A hash of the options in the manifest
-  # @option opts [String] :name The name of the application
-  # @option opts [String] :description The description of the application
-  # @option opts [String] :category The category of the application
-  # @option opts [String] :subcategory The subcategory of the application
-  # @option opts [String] :icon The icon used on the dashboard, optionally a Font Awesome tag
-  # @option opts [String] :role Dashboard categorization
-  # @option opts [String] :url An optional redirect URL
-  # @option opts [Hash]   :metadata An optional hash of key value pairs
+  # @param [Hash, Manifest] opts A hash of the options in the manifest.
+  # @option opts [String] :name The name of the application.
+  # @option opts [String] :description The description of the application.
+  # @option opts [String] :category The category of the application.
+  # @option opts [String] :subcategory The subcategory of the application.
+  # @option opts [String] :icon The icon used on the dashboard, optionally a Font Awesome tag.
+  # @option opts [String] :role Dashboard categorization.
+  # @option opts [String] :url An optional redirect URL.
+  # @option opts [Hash]   :metadata An optional hash of key value pairs.
   def initialize(opts)
     raise InvalidContentError.new unless(opts && opts.respond_to?(:to_h))
 
@@ -69,95 +82,95 @@ category: OSC
     end
   end
 
-  # The name of the application
+  # The name of the application.
   #
-  # @return [String] name as string
+  # @return [String] The name as string.
   def name
     @manifest_options[:name] || ""
   end
 
-  # The description of the application
+  # The description of the application.
   #
-  # @return [String] description as string
+  # @return [String] The description as string.
   def description
     @manifest_options[:description] || ""
   end
 
-  # The icon used on the dashboard, optionally a Font Awesome tag
+  # The icon used on the dashboard, optionally a Font Awesome tag.
   #
-  # @return [String] icon as string
+  # @return [String] The icon as string.
   def icon
     @manifest_options[:icon] || ""
   end
 
-  # Return the optional redirect URL string
+  # Return the optional redirect URL string.
   #
-  # @return [String] url as string
+  # @return [String] The url as string.
   def url
     @manifest_options[:url] || ""
   end
 
-  # Return the app category
+  # Return the app category.
   #
-  # @return [String] category as string
+  # @return [String] The category as string.
   def category
     @manifest_options[:category] || ""
   end
 
-  # Return the app subcategory
+  # Return the app subcategory.
   #
-  # @return [String] subcategory as string
+  # @return [String] The subcategory as string.
   def subcategory
     @manifest_options[:subcategory] || ""
   end
 
-  # Return the app role
+  # Return the app role.
   #
-  # @return [String] role as string
+  # @return [String] The role as string.
   def role
     @manifest_options[:role] || ""
   end
 
-  # Return the app metadata
+  # Return the app metadata.
   #
-  # @return [Hash] metadata as a hash
+  # @return [Hash] The metadata as a hash.
   def metadata
     @manifest_options[:metadata] || {}
   end
 
-  # Return the app's hint of whether to open app in new window
+  # Return the app's hint of whether to open app in new window.
   #
-  # @return [Boolean, nil] if set, Boolean value, otherwise nil
+  # @return [Boolean, nil] if set, Boolean value, otherwise nil.
   def new_window
     @manifest_options[:new_window]
   end
 
-  # Return the app's caption
+  # Return the app's caption.
   #
-  #  @return [String] caption as string
+  #  @return [String] The caption as string.
   def caption
     @manifest_options[:caption].to_s
   end
 
-  # Manifest objects are valid
+  # Manifest objects are valid.
   #
-  # @return [true] Always return true
+  # @return [true] Always return true.
   def valid?
     true
   end
 
-  # Manifest objects exist
+  # Manifest objects exist.
   #
-  # @return [true] Always return true
+  # @return [true] Always return true.
   def exist?
     true
   end
 
   # Save the current manifest to a path.
   #
-  # @param [String, Pathname] path The full path of the file to be saved as string or Pathname object
+  # @param [String, Pathname] path The full path of the file to be saved as string or Pathname object.
   #
-  # @return [true, false] true if the file is saved successfully
+  # @return [true, false] true if the file is saved successfully.
   def save(path)
     Pathname.new(path).write(self.to_yaml)
 
@@ -167,11 +180,11 @@ category: OSC
     false
   end
 
-  # Merge the contents of a hash into this Manifest's options
+  # Merge the contents of a hash into this Manifest's options.
   #
-  # @param [Hash, Manifest] opts The options to update
+  # @param [Hash, Manifest] opts The options to update.
   #
-  # @return [Manifest] A new manifest with the updated options
+  # @return [Manifest] A new manifest with the updated options.
   def merge(opts)
     raise InvalidContentError.new unless(opts && opts.respond_to?(:to_h))
 
@@ -192,6 +205,7 @@ category: OSC
     self.to_h.deep_stringify_keys.compact.to_yaml
   end
 
+  # InvalidManifests are Manifests that are invalid in someway.
   class InvalidManifest < Manifest
 
     def initialize(exception)
@@ -200,24 +214,41 @@ category: OSC
       @exception = exception
     end
 
+    # InvalidManifests are not valid.
+    #
+    # @return [false] Always return false.
     def valid?
       false
     end
 
+
+    # InvalidManifests cannot save.
+    #
+    # @return [false] Always return false.
     def save(path)
       false
     end
   end
 
+  # MissingManifests are Manifests that are emtpy.
   class MissingManifest < Manifest
+    # MissingManifests are not valid.
+    #
+    # @return [false] Always return false.
     def valid?
       false
     end
 
+    # MissingManifests do not exist.
+    #
+    # @return [false] Always return false.
     def exist?
       false
     end
 
+    # MissingManifests cannot save.
+    #
+    # @return [false] Always return false.
     def save(path)
       false
     end
