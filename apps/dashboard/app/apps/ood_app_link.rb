@@ -1,3 +1,4 @@
+# OodAppLink is a representation of an HTML link to an OodApp.
 class OodAppLink
   attr_reader :title
   attr_reader :description
@@ -36,7 +37,8 @@ class OodAppLink
 
   private
 
-  # make an OodAppLink look like an OodApp
+  # Decorate an OodAppLink to look like an OodApp so it can be recategorized
+  # in the menus.
   class LinkCategorizer < SimpleDelegator
     attr_reader :category, :subcategory
 

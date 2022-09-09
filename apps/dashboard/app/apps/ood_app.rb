@@ -1,3 +1,4 @@
+# OodApp is an Open OnDemand application.
 class OodApp
   include Rails.application.routes.url_helpers
 
@@ -75,7 +76,9 @@ class OodApp
     end
   end
 
-  # the problem is we need the context :-P
+  # Return the links for this app based on this app's role. One app may have several links.
+  #
+  # @return [Array<OodAppLink>] The links for this app.
   def links
     if role == "files"
       # assumes Home Directory is primary...

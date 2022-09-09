@@ -1,4 +1,4 @@
-# utility class for dealing with apps that play "files" role
+# Utility class for dealing with apps that play "files" role.
 class OodFilesApp
   class << self
     # an array of Pathname objects to check for the existence of and access to

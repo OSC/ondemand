@@ -1,6 +1,6 @@
 #
 # Deprecated.
-# This is now configurable through configuration. See UserConfiguration class
+# This is now configurable through configuration. See UserConfiguration class.
 class NavConfig
     class << self
       attr_accessor :categories, :categories_whitelist

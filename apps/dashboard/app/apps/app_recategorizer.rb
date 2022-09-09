@@ -1,5 +1,5 @@
-# Wrapper around OodApp to override category and subcategory
-# This is to create artificial groups and subgroups for a custom navigation
+# Wrapper around OodApp to override category and subcategory.
+# This is to create artificial groups and subgroups for a custom navigation.
 class AppRecategorizer < SimpleDelegator
 
   def initialize(ood_app, category: nil, subcategory: nil)

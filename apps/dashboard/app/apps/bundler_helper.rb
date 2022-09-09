@@ -1,7 +1,7 @@
 require 'bundler'
 
-# inspired by heroku-buildpack-ruby (MIT Licensed)
-# some code snippets pulled from there
+# Inspired by heroku-buildpack-ruby (MIT Licensed).
+# some code snippets pulled from there.
 # https://github.com/heroku/heroku-buildpack-ruby
 class BundlerHelper
   def initialize(dir)
