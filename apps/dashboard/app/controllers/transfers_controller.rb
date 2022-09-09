@@ -1,5 +1,6 @@
 require "rclone_util"
 
+# The controller for transer pages /dashboard/transfers
 class TransfersController < ApplicationController
 
   def show

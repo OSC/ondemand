@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# The controller for project pages /dashboard/projects.
 class ProjectsController < ApplicationController
   # GET /projects/:id
   def show

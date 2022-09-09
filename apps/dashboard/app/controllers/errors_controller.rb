@@ -1,3 +1,4 @@
+# The controller for error responses.
 class ErrorsController < ApplicationController
   # https://mattbrictson.com/dynamic-rails-error-pages
   #

@@ -1,3 +1,4 @@
+# The controller for all the files pages /dashboard/files
 class FilesController < ApplicationController
   include ActionController::Live
   include ZipTricks::RailsStreaming
