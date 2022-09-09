@@ -39,13 +39,16 @@ class NavBar
         item = { apps: item }
       end
 
-      group_title = item.fetch(:group, group_title)
       if item.fetch(:url, nil)
         nav_link(item, menu_title, group_title)
       elsif item.fetch(:apps, nil)
         nav_apps(item, menu_title, group_title)
       elsif item.fetch(:profile, nil)
         nav_profile(item, menu_title, group_title)
+      else
+        # Update subcategory if title was provided
+        group_title = item.fetch(:group, group_title)
+        next nil
       end
     end.flatten.compact
 
@@ -84,7 +87,7 @@ class NavBar
 
     matched_apps = Router.pinned_apps_from_token(token, SysRouter.apps)
     if matched_apps.size == 1
-      extend_link(matched_apps.first.links.first)
+      extend_link(matched_apps.first.links.first) if matched_apps.first.links.first
     elsif matched_apps.size > 1
       extend_group(OodAppGroup.groups_for(apps: matched_apps).first)
     else
