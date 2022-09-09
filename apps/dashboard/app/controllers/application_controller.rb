@@ -17,6 +17,7 @@ class ApplicationController < ActionController::Base
 
   def set_custom_navigation
     @nav_bar = NavBar.items(@user_configuration.nav_bar)
+    @help_bar = NavBar.items(@user_configuration.help_bar)
   end
 
   def set_nav_groups

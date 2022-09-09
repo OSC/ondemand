@@ -61,6 +61,7 @@ class UserConfigurationTest < ActiveSupport::TestCase
       filter_nav_categories?: false,
       nav_categories: ["Apps", "Files", "Jobs", "Clusters", "Interactive Apps"],
       nav_bar: [],
+      help_bar: [],
     }
 
     # ensure all properties are tested

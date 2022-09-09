@@ -6,6 +6,8 @@ class NavBar
     all_apps: "layouts/nav/all_apps",
     featured_apps: "layouts/nav/featured_apps",
     sessions: "layouts/nav/sessions",
+    log_out: "layouts/nav/log_out",
+    user: "layouts/nav/user",
   }
 
   def self.items(nav_config)
