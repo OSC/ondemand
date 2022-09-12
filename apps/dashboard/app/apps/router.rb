@@ -1,4 +1,4 @@
-# Generic Router class (as a pose to SysRouter that is specific to system apps)
+# Generic Router class (as opposed to SysRouter that is specific to system apps)
 # is a utility class to query for applications.
 class Router
 
