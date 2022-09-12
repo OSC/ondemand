@@ -1,3 +1,4 @@
+# PosixFile is a class representing a file on a local file system.
 class PosixFile
 
   attr_reader :path

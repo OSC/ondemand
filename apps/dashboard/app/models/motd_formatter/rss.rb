@@ -1,6 +1,7 @@
 module MotdFormatter
   require 'rss'
 
+  # Utility class for rendering RSS files as the MOTD.
   class Rss
 
     attr_reader :content, :title

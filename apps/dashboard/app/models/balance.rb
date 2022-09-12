@@ -1,6 +1,6 @@
-# This describes balances for a given user
 require 'open-uri'
 
+# This describes file or project balances for a given user.
 class Balance
   class InvalidBalanceFile < StandardError; end
 

@@ -1,4 +1,5 @@
 module MotdFormatter
+  # Utility class for rendering plain text MOTD files after ERB rendering them.
   class PlaintextErb
     attr_reader :content, :title
 

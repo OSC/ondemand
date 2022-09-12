@@ -1,3 +1,4 @@
+# Parent ActiveModel class for transfer files.
 class Transfer
   include ActiveModel::Model
   include ActiveModel::Validations

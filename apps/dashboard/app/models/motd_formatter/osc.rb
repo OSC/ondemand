@@ -1,4 +1,5 @@
 module MotdFormatter
+  # Utility class for rendering MOTD files in the OSC format.
   class Osc
 
     attr_reader :content, :title

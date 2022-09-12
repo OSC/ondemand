@@ -1,3 +1,4 @@
+# Announcements are the Enumerable collection of the Announcement class.
 class Announcements
   include Enumerable
 

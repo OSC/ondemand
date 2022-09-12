@@ -1,3 +1,4 @@
+# Utility class for rendering markdown README files for products.
 class ProductReadmeMarkdownRenderer < Redcarpet::Render::HTML
   attr_reader :app_path
 

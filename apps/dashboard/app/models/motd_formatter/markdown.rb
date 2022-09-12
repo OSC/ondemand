@@ -1,4 +1,5 @@
 module MotdFormatter
+  # Utility class for rendering Markdown MOTD files.
   class Markdown
 
     attr_reader :content, :title

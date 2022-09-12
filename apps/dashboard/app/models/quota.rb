@@ -1,6 +1,6 @@
-# This describes disk quota utilization for a given user and volume
 require 'open-uri'
 
+# This describes disk quota utilization for a given user and volume.
 class Quota
   class InvalidQuotaFile < StandardError; end
 

@@ -1,3 +1,4 @@
+# Announcements show up on the dashboard to convey a message to users.
 class Announcement
   # List of valid announcement types
   TYPES = [:warning, :info, :success, :danger]

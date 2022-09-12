@@ -1,3 +1,4 @@
+# RemoteTransfer is a class for transfering remote files.
 class RemoteTransfer < Transfer
 
   validates_each :src_remote, :dest_remote do |record, _, remote|

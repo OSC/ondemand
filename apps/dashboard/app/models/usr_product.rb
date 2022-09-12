@@ -1,3 +1,4 @@
+# A Product class for shard (usr) apps.
 class UsrProduct < Product
   validate :assets_exist, on: :show_app, if: :passenger_rails_app?
 
