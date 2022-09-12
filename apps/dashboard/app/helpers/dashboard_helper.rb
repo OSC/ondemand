@@ -1,3 +1,4 @@
+# Helper for the dashboard (root) page(s).
 module DashboardHelper
   #FIXME: copied from awesim-dev-dashboard
   def markdown(text)

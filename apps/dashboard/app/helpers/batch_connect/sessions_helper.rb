@@ -1,3 +1,7 @@
+# Helper for active batch connect sessions.
+#
+# Note that this module programatically generates the cards for
+# active batch connect sessions.
 module BatchConnect::SessionsHelper
   def session_panel(session)
     content_tag(:div, id: "id_#{session.id}", class: "card session-panel mb-4", data: { id: session.id, hash: session.to_hash }) do
