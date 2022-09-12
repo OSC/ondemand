@@ -26,6 +26,18 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal "/batch_connect/sys/bc_jupyter/session_contexts/new",  result[0].url
   end
 
+  test "NavBar.items should ignore nav_items when is a string and matching app has no links" do
+    mock_app = stub()
+    mock_app.stubs(:links).returns([])
+    Router.stubs(:pinned_apps_from_token).returns([mock_app])
+
+    assert_equal [],  NavBar.items(["test/token"])
+  end
+
+  test "NavBar.items should ignore nav_items when is a string and does not match any sys applications" do
+    assert_equal [],  NavBar.items(["sys/not_found"])
+  end
+
   test "NavBar.items should return navigation group when nav_item is a string matching multiple app tokens" do
     nav_item = "sys/bc_*"
 
@@ -36,8 +48,18 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal 4,  result[0].apps.size
   end
 
-  test "NavBar.items should return navigation group when nav_item is a string matching an sys application category" do
+  test "NavBar.items should return navigation group when nav_item is a string matching a sys application category" do
     nav_item = "Interactive Apps"
+
+    result = NavBar.items([nav_item])
+    assert_equal 1,  result.size
+    assert_equal "layouts/nav/group",  result[0].partial_path
+    assert_equal "Interactive Apps",  result[0].title
+    assert_equal 4,  result[0].apps.size
+  end
+
+  test "nav_item string category matching should be case insensitive" do
+    nav_item = "intEractivE APPs"
 
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
@@ -56,6 +78,28 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal 1,  result.size
     assert_equal "layouts/nav/group",  result[0].partial_path
     assert_equal "menu title",  result[0].title
+  end
+
+  test "NavBar.items should set subcategory to groups inside links when nav_item only known property is group" do
+    nav_item = {
+      title: "menu title",
+      links: [
+        {group: "subcategory1"},
+        "sys/bc_jupyter",
+        {group: "subcategory2"},
+        "sys/bc_jupyter"
+      ]
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal 1,  result.size
+    assert_equal "layouts/nav/group",  result[0].partial_path
+    assert_equal "menu title",  result[0].title
+    assert_equal 2,  result[0].apps.size
+    assert_equal "menu title",  result[0].apps[0].category
+    assert_equal "subcategory1",  result[0].apps[0].subcategory
+    assert_equal "menu title",  result[0].apps[1].category
+    assert_equal "subcategory2",  result[0].apps[1].subcategory
   end
 
   test "NavBar.items should return navigation link when nav_item has url property" do
