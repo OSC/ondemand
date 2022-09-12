@@ -2,7 +2,7 @@
 # object if all you have is the path to the app.
 #
 # Not used at runtime in any environment except for test.
-# This is a helper class for unit testing when SysRouter or similar is to heavy.
+# This is a helper class for unit testing when SysRouter or similar is too heavy.
 class PathRouter
   attr_reader :category, :caption, :url, :type, :path, :name, :token
 
