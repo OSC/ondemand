@@ -151,7 +151,7 @@ GEM
     ood_support (0.0.3)
     pbs (2.2.1)
       ffi (~> 1.9, >= 1.9.6)
-    psych (4.0.4)
+    psych (4.0.5)
       stringio
     public_suffix (5.0.0)
     racc (1.6.0)
