@@ -6,9 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Add method for listing Rclone remotes (#2264)\
-Added full navigation definition in UserConfiguration (Group/Link) (#2270)\
-update dependencies (#2103)
 
 ### Changed
 
@@ -61,6 +58,7 @@ update dependencies (#2103)
   - RPMs and DEBs now require (or suggest) rlcone in [2234](https://github.com/OSC/ondemand/pull/2234).
 - Support for Profiles
   - NavConfig settings have been deprecated and replaced in [2221](https://github.com/OSC/ondemand/pull/2221).
+  - The Navbar can be completely defined in [2270](https://github.com/OSC/ondemand/pull/2270).
 
 ### Fixed
 
