@@ -1,3 +1,4 @@
+# Helper for app permission pages.
 module PermissionsHelper
   def permissions_title(context)
     if context == :user

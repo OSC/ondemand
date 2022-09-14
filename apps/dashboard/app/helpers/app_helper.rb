@@ -1,3 +1,4 @@
+# Helper for /apps pages.
 module AppHelper
   # FIXME: show_errors is not used
   def manifest_markdown(text, show_errors: false)

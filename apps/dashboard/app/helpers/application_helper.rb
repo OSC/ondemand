@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Helper for all pages.
 module ApplicationHelper
   def clusters
     OodCore::Clusters.new(OodAppkit.clusters.select(&:allow?).reject { |c| c.metadata.hidden })

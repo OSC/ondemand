@@ -1,3 +1,4 @@
+# Helper for creating new batch connect sessions.
 module BatchConnect::SessionContextsHelper
   def create_widget(form, attrib, format: nil)
     return '' if attrib.fixed?

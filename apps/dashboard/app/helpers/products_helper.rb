@@ -1,3 +1,4 @@
+# helper for product pages.
 module ProductsHelper
 
   def products_title(type)
