@@ -1,3 +1,4 @@
+# The router class for all user shared apps.
 class UsrRouter
   attr_reader :name, :owner
 

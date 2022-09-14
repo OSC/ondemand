@@ -1,4 +1,4 @@
-# This class matches apps configuration tokens to a given OodApp
+# This class matches apps configuration tokens to a given OodApp.
 # Tokens can either be strings that are globs like 'sys/*', specific apps like
 # 'sys/jupyter' or 'sys/bc_desktop/pitzer' for subapps. They can also be hashes
 # Hashes can be known attributes like category, subcategory, type to filter off

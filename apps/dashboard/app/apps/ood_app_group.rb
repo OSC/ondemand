@@ -1,3 +1,5 @@
+# OodAppGroup groups OodApps mostly through class methods. The object
+# OodAppGroup is itself a group of OodApps.
 class OodAppGroup
   attr_accessor :apps, :title, :sort
 
@@ -49,8 +51,8 @@ class OodAppGroup
     }
   end
 
-  # given an array of apps, group those apps by app category (or the attribute)
-  # specified by 'group_by', sorting both groups and apps arrays by title
+  # Given an array of apps, group those apps by app category (or the attribute)
+  # specified by 'group_by', potentially sorting both groups and apps arrays by title if sort is true.
   def self.groups_for(apps: [], group_by: :category, nav_limit: nil, sort: true)
     groups = apps.group_by { |app|
       app.respond_to?(group_by) ? app.send(group_by) : app.metadata[group_by]
@@ -60,11 +62,11 @@ class OodAppGroup
     sort ? groups.sort_by { |g| [ g.title.nil? ? 1 : 0, g.title ] } : groups # make sure that the ungroupable app is always last
   end
 
-  # select a subset of groups by the specified array of titles
-  # maintaining the order specified by the titles array
+  # Select a subset of groups by the specified array of titles
+  # maintaining the order specified by the titles array.
   #
   # This way we can get a list of deployed sys apps, then group them by category
-  # then select only the categories we want to display in the menu
+  # then select only the categories we want to display in the menu.
   def self.select(titles:[], groups:[])
     # only one group per title; this just makes it easy to get the group
     # Hash[ [:title1,:group1], [:title2,:group2]] => {title1: :group1, title2: :group2 }
@@ -73,7 +75,7 @@ class OodAppGroup
   end
   
   # Append groups not in the specified array in alphabetical order at the end of
-  # subset of groups in the titles array maintaining the order specified by the titles array
+  # subset of groups in the titles array maintaining the order specified by the titles array.
   #
   # This way we can get a list of deployed sys apps, then group them by category,
   # then display categories in titles array in specific order,

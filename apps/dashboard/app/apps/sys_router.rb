@@ -1,3 +1,4 @@
+# The router class for all system apps.
 class SysRouter
   attr_reader :name
 

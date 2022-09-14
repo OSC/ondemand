@@ -1,3 +1,8 @@
+# FavoritePath is a class that the dashboard uses to build
+# links to various directories.
+#
+# Sites use initializers to create FavoritePaths and add them to
+# OodFilesApp.candidate_favorite_paths.
 class FavoritePath
   def initialize(path, title:nil, filesystem:nil)
     @title = title || path.try(:title)

@@ -1,3 +1,5 @@
+# Generic Router class (as opposed to SysRouter that is specific to system apps)
+# is a utility class to query for applications.
 class Router
 
   # Return a Router [SysRouter, UsrRouter or DevRouter] based off
