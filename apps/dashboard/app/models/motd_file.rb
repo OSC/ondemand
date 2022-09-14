@@ -1,5 +1,6 @@
 require 'open-uri'
 
+# The Message of the Day (MOTD) file.
 class MotdFile
 
   attr_reader :motd_path

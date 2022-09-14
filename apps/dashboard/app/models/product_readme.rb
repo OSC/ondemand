@@ -1,3 +1,4 @@
+# Class representing the README file of a product.
 class ProductReadme
   
   def initialize(product)

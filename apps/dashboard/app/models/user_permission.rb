@@ -1,3 +1,4 @@
+# Utility class for setting FACL user permissions.
 class UserPermission < Permission
   class << self
     def all(product)

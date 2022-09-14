@@ -1,6 +1,9 @@
 require "smart_attributes"
 
 module BatchConnect
+  # This is the model representing a batch connect app. It's mostly a data object
+  # holding and interpreting the configurations (notable form.yml.erb) and rendering
+  # submit options based off of what's been chosen by the user.
   class App
     # Router for a deployed batch connect app
     # @return [DevRouter, UsrRouter, SysRouter] router for batch connect app

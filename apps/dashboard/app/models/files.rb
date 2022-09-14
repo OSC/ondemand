@@ -1,3 +1,4 @@
+# The parent class for Files (local or otherwise).
 class Files
 
   # Guards MIME types by converting types into formats

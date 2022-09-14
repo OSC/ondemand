@@ -1,4 +1,6 @@
 module BatchConnect
+  # An active batch connect session. Once a batch connect app launches, we use
+  # this class to hold it's runtime attributes.
   class Session
     include ActiveModel::Model
     include ActiveModel::Serializers::JSON

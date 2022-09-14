@@ -1,4 +1,6 @@
 module BatchConnect
+  # The context of a given batch connect session. It encapsulates all the paramters
+  # available from the app and the choices made by the user.
   class SessionContext
     include Enumerable
 

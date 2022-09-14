@@ -1,5 +1,6 @@
 require "rclone_util"
 
+# PosixFile is a class representing a file on a remote file system.
 class RemoteFile
   attr_reader :path, :remote
 
