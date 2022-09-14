@@ -71,6 +71,13 @@ Ensure to include what issue this fixes in the **PR comment** to help with autom
 * **Any new code *must* also include testing.**
 * If you need help with writing tests please include the `test help` tag.
 
+### Project Conventions
+
+* Prefer **read-only** objects.  You'll find mostly read only objects spread throughout this code base.
+  This means that `attr_writer` or `attr_accessor` are to be avoided and only `attr_reader` should be used.
+  It follows then, that most objects should accept a large number of parameters in their initializers
+  and set the attributes accordingly.
+
 ### Linters
 
 For any Ruby librares/apps there is a `.rubocop.yml` at the top of this project. If you
