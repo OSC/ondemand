@@ -16,7 +16,7 @@ data - optional, data parameter for the link_to helper
   link_to(
     url,
     title: title,
-    class: "#{local_assigns.fetch(:class, 'nav-link')} m-auto #{local_assigns.fetch(:role, nil)}",
+    class: "#{local_assigns.fetch(:class, 'nav-link')} #{local_assigns.fetch(:role, nil)}",
     target: local_assigns.fetch(:new_tab, false) ? "_blank" : nil,
     aria: ({ current: ('page' if (current_page?(url))) }),
     data: local_assigns.fetch(:data, nil)
