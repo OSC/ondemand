@@ -1,3 +1,4 @@
+# Concerns for the batch connect controllers.
 module BatchConnectConcern
   extend ActiveSupport::Concern
 

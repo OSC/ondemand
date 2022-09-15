@@ -1,3 +1,4 @@
+# The Controller for user level settings /dashboard/settings.
 class SettingsController < ApplicationController
 
   ALLOWED_SETTINGS = [:profile].freeze

@@ -1,3 +1,5 @@
+# The controller for editing a shared app's permissions
+# /dashboard/admin/usr/products/<token>/user/permissions.
 class PermissionsController < ApplicationController
   # GET /permissions
   # GET /permissions.json
