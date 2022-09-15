@@ -27,6 +27,7 @@ function filesFromDir(dir) {
 esbuild.build({
   entryPoints: entryPoints,
   bundle: true,
+  sourcemap: true,
   format: 'esm',
   outdir: 'app/assets/builds',
   external: ['fs'],
