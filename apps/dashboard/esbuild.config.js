@@ -27,9 +27,9 @@ function filesFromDir(dir) {
 esbuild.build({
   entryPoints: entryPoints,
   bundle: true,
-  sourcemap: true,
   format: 'esm',
   outdir: 'app/assets/builds',
   external: ['fs'],
+  minify: process.env.RAILS_ENV == 'production' ? true : false,
 }).catch((e) => console.error(e.message));
 
