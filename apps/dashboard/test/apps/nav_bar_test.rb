@@ -179,7 +179,7 @@ class NavBarTest < ActiveSupport::TestCase
 
   test "Check supported static links" do
     NavBar::STATIC_LINKS.each do |name, template|
-      assert_equal true,  [:all_apps, :featured_apps, :sessions].include?(name)
+      assert_equal true,  [:all_apps, :featured_apps, :sessions, :log_out, :user].include?(name)
     end
   end
 

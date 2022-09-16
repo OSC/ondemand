@@ -60,8 +60,9 @@ class UserConfiguration
 
     # Navigation properties
     ConfigurationProperty.with_boolean_mapper(name: :show_all_apps_link, default_value: false, read_from_env: true, env_names: ['SHOW_ALL_APPS_LINK']),
-    # New navigation definition property
+    # New navigation definition properties
     ConfigurationProperty.property(name: :nav_bar, default_value: []),
+    ConfigurationProperty.property(name: :help_bar, default_value: []),
   ].freeze
 
   def initialize(request_hostname: nil)

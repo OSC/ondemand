@@ -1,0 +1,3 @@
+<% navigation.each do |nav_item| %>
+  <%= render partial: nav_item.partial_path, locals: nav_item.to_h %>
+<% end %>
