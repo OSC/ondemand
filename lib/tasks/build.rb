@@ -15,7 +15,7 @@ namespace :build do
       next unless a.ruby_app?
 
       chdir a.path do
-        sh  "#{bundle_env} bin/bundle install #{bundle_args.join(' ')}"
+        sh "#{bundle_env} bin/bundle install #{bundle_args.join(' ')}"
       end
     end
 
