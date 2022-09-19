@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Added help navigation definition in UserConfiguration (#2277)\
+upgrade job composer to 6.1 and set dashboard defaults to 6.1 (#2290)\
+rm js source maps and minify for production builds (#2289)\
+add some class documentation for controllers (#2279)\
+Custom navigation CSS fix for small screen (#2287)\
+add class level docs for models (#2284)\
+add class comments for jobs (#2283)\
+add module comments for helpers (#2282)\
+Update Changelog (#2280)\
+add project conventions (#2262)\
+add some class level comments to the files in apps/ (#2278)\
+update our security policy (#2285)\
+update dependencies (#2281)\
+Full navigation configuration - improved test coverage (#2275)
 
 ### Changed
 
