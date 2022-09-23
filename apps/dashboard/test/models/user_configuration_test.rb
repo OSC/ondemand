@@ -55,7 +55,7 @@ class UserConfigurationTest < ActiveSupport::TestCase
       brand_bg_color: nil,
       brand_link_active_bg_color: nil,
       navbar_type: "dark",
-      pinned_apps_group_by: "",
+      pinned_apps_group_by: nil,
 
       show_all_apps_link: false,
       filter_nav_categories?: false,
@@ -104,16 +104,6 @@ class UserConfigurationTest < ActiveSupport::TestCase
     with_modified_env(OOD_NAVBAR_TYPE: 'light') do
       assert_equal 'light', UserConfiguration.new.navbar_type
     end
-  end
-
-  test "pinned_apps_group_by returns original category when configured with category" do
-    Configuration.stubs(:config).returns({pinned_apps_group_by: "category"})
-    assert_equal "original_category", UserConfiguration.new.pinned_apps_group_by
-  end
-
-  test "pinned_apps_group_by returns original subcategory when configured with subcategory" do
-    Configuration.stubs(:config).returns({pinned_apps_group_by: "subcategory"})
-    assert_equal "original_subcategory", UserConfiguration.new.pinned_apps_group_by
   end
 
   test "reads pinned apps from config" do
