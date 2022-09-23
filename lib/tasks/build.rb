@@ -5,23 +5,23 @@ require_relative 'rake_helper'
 namespace :build do
   include RakeHelper
 
-  desc "Build gems"
+  desc 'Build gems'
   task :gems do
-    bundle_args = ["--jobs 4", "--retry 2"]
-    if VENDOR_BUNDLE
-      bundle_args << "--path vendor/bundle"
-    end
-    if PASSENGER_APP_ENV == "production"
-      bundle_args << "--without doc"
-    end
+    bundle_args = ['--jobs 4', '--retry 2']
+    bundle_args << '--path vendor/bundle' if VENDOR_BUNDLE
+    bundle_env = "BUNDLE_WITHOUT='doc'" if PASSENGER_APP_ENV == 'production'
+
     apps.each do |a|
       next unless a.ruby_app?
+
       chdir a.path do
-        sh "bin/bundle install #{bundle_args.join(' ')}"
+        sh "#{bundle_env} bin/bundle install #{bundle_args.join(' ')}"
       end
     end
+
     infrastructure.each do |a|
       next unless a.gemfile?
+
       chdir a.path do
         sh "bundle install #{bundle_args.join(' ')}"
       end
