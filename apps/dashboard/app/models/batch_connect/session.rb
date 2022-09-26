@@ -141,6 +141,12 @@ module BatchConnect
         new.from_json(db_root.join(id).read)
       end
 
+      # Checks if a session exists
+      # @return [boolean]
+      def exist?(id)
+        db_root.join(id).exist?
+      end
+
       # How many days before a Session record is considered old and ready to delete
       def old_in_days
         Configuration.ood_bc_card_time

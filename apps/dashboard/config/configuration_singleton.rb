@@ -195,6 +195,15 @@ class ConfigurationSingleton
     xdmod_host.present?
   end
 
+  # Support ticket configuration
+  def support_ticket_config
+    config.fetch(:support_ticket, {})
+  end
+
+  def support_ticket_enabled?
+    !support_ticket_config.empty?
+  end
+
   # Load the dotenv local files first, then the /etc dotenv files and
   # the .env and .env.production or .env.development files.
   #

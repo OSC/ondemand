@@ -45,6 +45,7 @@ module BatchConnect::SessionsHelper
           concat created(session)
           concat time(session)
           concat id(session)
+          concat support_ticket(session) if Configuration.support_ticket_enabled?
           safe_concat custom_info_view(session) if session.app.session_info_view
         end
       )
@@ -130,6 +131,19 @@ module BatchConnect::SessionsHelper
           session.id,
           OodAppkit.files.url(path: session.staged_root).to_s,
           target: "_blank"
+        )
+      )
+    end
+  end
+
+  def support_ticket(session)
+    content_tag(:p) do
+      concat content_tag(:strong, t('dashboard.batch_connect_sessions_stats_support_ticket'))
+      concat " "
+      concat(
+        link_to(
+          t('dashboard.batch_connect_sessions_stats_support_ticket_link_text'),
+          support_path(session_id: session.id)
         )
       )
     end

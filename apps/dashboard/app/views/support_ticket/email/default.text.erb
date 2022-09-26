@@ -1,0 +1,29 @@
+Support ticket submitted from the dashboard application
+<% if @context.support_ticket.session %>
+  User selected session: <%= @context.support_ticket.session.id %>
+  Title: <%=@context.support_ticket.session.title %>
+  Job id: <%= @context.support_ticket.session.job_id %>
+  Status: <%= @context.support_ticket.session.status.to_sym %>
+<% end %>
+
+Description:
+<%= @context.support_ticket.description %>
+
+-------------------------------------
+Interactive Session Information:
+<% if @context.support_ticket.session %>
+  <%= JSON.pretty_generate(
+        {
+          id: @context.support_ticket.session.id,
+          clusterId: @context.support_ticket.session.cluster_id,
+          jobId: @context.support_ticket.session.job_id,
+          createdAt: Time.at(@context.support_ticket.session.created_at).iso8601,
+          token: @context.support_ticket.session.token,
+          title: @context.support_ticket.session.title,
+          info: @context.support_ticket.session.info.to_h,
+          deletedInDays: @context.support_ticket.session.days_till_old,
+        })
+  %>
+<% else %>
+  No session was selected.
+<% end %>

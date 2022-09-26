@@ -89,6 +89,12 @@ Rails.application.routes.draw do
 
   post "settings", :to => "settings#update"
 
+  # Support ticket routes
+  if Configuration.support_ticket_enabled?
+    get "/support", to: "support_ticket#new"
+    post "/support", to: "support_ticket#create"
+  end
+
   match "/404", :to => "errors#not_found", :via => :all
   match "/500", :to => "errors#internal_server_error", :via => :all
 
