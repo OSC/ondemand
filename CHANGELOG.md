@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Packages now rely on python3 in [#2011](https://github.com/OSC/ondemand/pull/2011).
 - Passenger and NGINX dependencies are now 6.0.14 and NGINX repectively in [#2027](https://github.com/OSC/ondemand/pull/2027).
 - NavConfig settings have been deprecated and replaced in [2221](https://github.com/OSC/ondemand/pull/2221).
+- noNVC is now 1.3.0, up from 1.1.0 in [2295](https://github.com/OSC/ondemand/pull/2295).
 
 ### Added
 
