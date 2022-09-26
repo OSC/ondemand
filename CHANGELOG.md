@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+enable dev mode in dev container (#2131)\
+some bundler fixups (#2299)\
+upgrade noNVC from 1.1.0 to 1.3.0 (#2295)\
+update dependencies (#2298)
 
 ### Changed
 
