@@ -1,3 +1,5 @@
+# Model class to hold the support ticket form data needed to submit a support ticket
+#
 class SupportTicket
   include ActiveModel::Model
 

@@ -1,3 +1,4 @@
+# helper for the support ticket page
 module SupportTicketHelper
 
   def support_ticket_add_error_class(field)

@@ -4,8 +4,8 @@
 class SupportTicketMailer < ActionMailer::Base
   default template_path: ["support_ticket/email"]
 
-  def support_email
-    @context  = params[:context]
+  def support_email(context)
+    @context = context
 
     @context.support_ticket.attachments.to_a.each do |request_file|
       attachments[request_file.original_filename] = File.read(request_file.tempfile)
