@@ -14,11 +14,6 @@ class SupportTicketMailer < ActionMailer::Base
 
     email_service_config = ::Configuration.support_ticket_config.fetch(:email, {})
 
-    # Override Rails defaults with support ticket configuration only if provided
-    # This will allow admins to use standard Rails configuration settings if required.
-    ActionMailer::Base.raise_delivery_errors = email_service_config[:raise_delivery_errors] if email_service_config.key?(:raise_delivery_errors)
-    ActionMailer::Base.perform_deliveries = email_service_config[:perform_deliveries] if email_service_config.key?(:perform_deliveries)
-
       mail_data = {}.tap do |settings|
       settings[:from] = email_service_config.fetch(:from, @context.support_ticket.email)
       settings[:reply_to] = @context.support_ticket.email

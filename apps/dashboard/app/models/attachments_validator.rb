@@ -38,12 +38,6 @@ class AttachmentsValidator < ActiveModel::EachValidator
 
   # Human readable string for the file size
   def size_to_string(size)
-    if size < 1024
-      "#{size}bytes"
-    elsif size >= 1024 && size < 1048576
-      "%.1fKB" % (size/1024).round(1)
-    elsif size >= 1048576
-      "%.1fMB" % (size/1048576).round(1)
-    end
+    ::ApplicationController.helpers.number_to_human_size(size, precision: 1, significant: false, strip_insignificant_zeros: false)
   end
 end
