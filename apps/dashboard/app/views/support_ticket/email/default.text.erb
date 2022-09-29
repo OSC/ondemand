@@ -20,7 +20,7 @@ Interactive Session Information:
           createdAt: Time.at(@context.support_ticket.session.created_at).iso8601,
           token: @context.support_ticket.session.token,
           title: @context.support_ticket.session.title,
-          info: @context.support_ticket.session.info.to_h,
+          info: filter_session_parameters(@context.support_ticket.session.info),
           deletedInDays: @context.support_ticket.session.days_till_old,
         })
   %>

@@ -2,6 +2,7 @@
 # It supports emailer settings in standard Rails configuration
 # or provided in the support_ticket configuration object.
 class SupportTicketMailer < ActionMailer::Base
+  helper :support_ticket
   default template_path: ["support_ticket/email"]
 
   def support_email(context)

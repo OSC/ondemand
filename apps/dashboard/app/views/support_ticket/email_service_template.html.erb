@@ -1,6 +1,6 @@
 <%= javascript_include_tag 'support_ticket', nonce: true %>
 
-<script>
+<%= javascript_tag nonce: true do -%>
 
     const SUPPORT_TICKET_RESTRICTIONS = <%= raw AttachmentsValidator.restrictions.to_json %>
     const SUPPORT_TICKET_MESSAGES = {
@@ -8,7 +8,7 @@
         "size.attachments": "<%= t('dashboard.support_ticket.validation.size.attachments_js') %>",
     }
 
-</script>
+<% end  %>
 
 <div>
   <% content_for :title, t('dashboard.support_ticket.title') %>
@@ -65,7 +65,7 @@
       </div>
       <% end %>
       <div class="form-group <%= support_ticket_add_error_class(:attachments) %>" id="form-files">
-        <label class="form-label">Attachments</label>
+        <label class="form-label" for="attachments">Attachments</label>
         <p data-toggle="form-validate" id="attachments">Click the box to attach a file. Screenshots or other files can help troubleshoot your problem.</p>
         <%= support_ticket_add_error_message(:attachments) %>
         <div id="attachments-container">
