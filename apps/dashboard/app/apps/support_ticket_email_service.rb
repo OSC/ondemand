@@ -19,6 +19,7 @@ class SupportTicketEmailService
   end
 
   # Uses SupportTicket model to create and validate the request data.
+  # The model needs to be validated before returning
   #
   # @param [Hash] request_data Request data posted to the controller
   #
@@ -26,6 +27,7 @@ class SupportTicketEmailService
   def validate_support_ticket(request_data = {})
     support_ticket = SupportTicket.new(request_data)
     set_session(support_ticket)
+    support_ticket.tap{|ticket| ticket.validate }
   end
 
   # Sends and email with the support ticket data

@@ -21,12 +21,10 @@ class SupportTicketController < ApplicationController
 
   # POST /support
   def create
-    read_support_ticket_from_request
-
     support_service = create_service_class
     @support_ticket = support_service.validate_support_ticket(read_support_ticket_from_request)
 
-    if @support_ticket.invalid? || !@support_ticket.errors.empty?
+    if !@support_ticket.errors.empty?
       flash.now[:alert] = t('dashboard.support_ticket.validation_error')
       render get_ui_template
       return

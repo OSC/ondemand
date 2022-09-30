@@ -72,7 +72,7 @@ class SupportTicketControllerTest < ActiveSupport::TestCase
     # Configure the SupportTicketEmailService
     Configuration.stubs(:support_ticket_config).returns({email: { }})
     # Stub a valid support ticket
-    support_ticket_stub = stub("support_ticket", {invalid?: false, errors: []})
+    support_ticket_stub = stub("support_ticket", {errors: []})
     # We expect the service to validate the request data
     SupportTicketEmailService.any_instance.stubs(:validate_support_ticket).returns(support_ticket_stub)
     # We expect the service to deliver the support ticket
@@ -86,7 +86,8 @@ class SupportTicketControllerTest < ActiveSupport::TestCase
   test "create should delegate to service class validate_support_ticket method and render support ticket template when validation fails" do
     # Configure the SupportTicketEmailService
     Configuration.stubs(:support_ticket_config).returns({email: { }})
-    support_ticket_stub = stub("support_ticket").tap {|s| s.expects(:invalid?).returns(true)}
+    # Stub a support ticket with errors
+    support_ticket_stub = stub("support_ticket", {errors: ["not_empty"]})
     SupportTicketEmailService.any_instance.stubs(:validate_support_ticket).returns(support_ticket_stub)
 
     flash_data = {}

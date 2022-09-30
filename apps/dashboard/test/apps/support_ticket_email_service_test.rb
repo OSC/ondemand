@@ -9,13 +9,14 @@ class SupportTicketEmailServiceTest < ActiveSupport::TestCase
       }
     })
     @target = SupportTicketEmailService.new
+    attachment_mock = stub({size: 100})
     @params = {
       username: "username",
       email: "test@example.com",
       cc: "cc@example.com",
       subject: "support ticket subject",
       description: "support ticket description",
-      attachments: [stub(), stub()],
+      attachments: [attachment_mock, attachment_mock],
       session_id: "123456"
     }
   end
@@ -60,6 +61,17 @@ class SupportTicketEmailServiceTest < ActiveSupport::TestCase
 
     assert_equal "1234", result.session_id
     assert_equal session_mock, result.session
+  end
+
+  test "validate_support_ticket should set errors if any" do
+    result = @target.validate_support_ticket({})
+
+    assert_equal false, result.errors.empty?
+    assert_equal false, result.errors['username'].blank?
+    assert_equal false, result.errors['email'].blank?
+    assert_equal false, result.errors['subject'].blank?
+    assert_equal false, result.errors['description'].blank?
+
   end
 
   test "deliver_support_ticket should delegate to SupportTicketMailer class and return success message" do
