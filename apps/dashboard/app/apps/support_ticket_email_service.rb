@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 # Service class responsible to create a support ticket and delivery it via email
 #
 # It implements the support ticket interface as defined in the SupportTicketController
 class SupportTicketEmailService
-
   # Creates a support ticket model with default data.
   # will load an interactive session if a session_id provided in the request parameters.
   #
@@ -36,11 +37,12 @@ class SupportTicketEmailService
     email_service_config = ::Configuration.support_ticket_config.fetch(:email, {})
 
     context = OpenStruct.new({
-      support_ticket: support_ticket,
-    })
+                               support_ticket: support_ticket
+                             })
 
     SupportTicketMailer.support_email(context).deliver_now
-    email_service_config.fetch(:success_message, I18n.t('dashboard.support_ticket.creation_success', to: email_service_config.fetch(:to)))
+    email_service_config.fetch(:success_message,
+                               I18n.t('dashboard.support_ticket.creation_success', to: email_service_config.fetch(:to)))
   end
 
   private

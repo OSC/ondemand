@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # The controller to create support tickets
 #
 # It uses a support ticket service class that must implement the interface:
@@ -8,7 +10,6 @@
 #  - deliver_support_ticket(support_ticket):
 #  Sends the support ticket to the third party system.
 class SupportTicketController < ApplicationController
-
   # GET /support?session_id=<session_UUID>
   # session_id [UUID] optional session to add data to the support ticket
   def new
@@ -33,11 +34,10 @@ class SupportTicketController < ApplicationController
 
     support_ticket_response = support_service.deliver_support_ticket(@support_ticket)
     redirect_to root_url, :flash => { :notice => support_ticket_response }
-
-    rescue => error
-      logger.error "Could not create support ticket. support_service=#{support_service} error=#{error}"
-      flash.now[:alert] = t('dashboard.support_ticket.generic_error', error: error)
-      render get_ui_template
+  rescue StandardError => e
+    logger.error "Could not create support ticket. support_service=#{support_service} error=#{e}"
+    flash.now[:alert] = t('dashboard.support_ticket.generic_error', error: e)
+    render get_ui_template
   end
 
   private
@@ -45,14 +45,13 @@ class SupportTicketController < ApplicationController
   # Load support ticket service class based on the configuration
   def create_service_class
     # Supported delivery mechanism
-    if ::Configuration.support_ticket_config[:email]
-      return SupportTicketEmailService.new
-    end
-    raise StandardError, "No support ticket service class configured"
+    return SupportTicketEmailService.new if ::Configuration.support_ticket_config[:email]
+
+    raise StandardError, 'No support ticket service class configured'
   end
 
   def get_ui_template
-    ::Configuration.support_ticket_config.fetch(:ui_template, "email_service_template")
+    ::Configuration.support_ticket_config.fetch(:ui_template, 'email_service_template')
   end
 
   def read_support_ticket_from_request

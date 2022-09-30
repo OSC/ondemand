@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Support ticket attachment validator
 # Checks the number of files and the size are within the configured limits
 # Defaults: 4 attachments and 6MB each
@@ -11,7 +13,7 @@ class AttachmentsValidator < ActiveModel::EachValidator
     @@restrictions ||= {}.tap do |hash|
       config = ::Configuration.support_ticket_config.fetch(:attachments, {})
       hash[:max_items] = config.fetch(:max_items, 4)
-      hash[:max_size] = config.fetch(:max_size, 6291456)
+      hash[:max_size] = config.fetch(:max_size, 6_291_456)
     end
   end
 
@@ -27,10 +29,10 @@ class AttachmentsValidator < ActiveModel::EachValidator
     end
 
     value.each do |attachment|
-      if attachment.size > AttachmentsValidator.restrictions[:max_size]
-        record.errors.add attribute, I18n.t('dashboard.support_ticket.validation.size.attachments', max: size_to_string(AttachmentsValidator.restrictions[:max_size]))
-        return
-      end
+      next unless attachment.size > AttachmentsValidator.restrictions[:max_size]
+
+      record.errors.add attribute, I18n.t('dashboard.support_ticket.validation.size.attachments', max: size_to_string(AttachmentsValidator.restrictions[:max_size]))
+      return
     end
   end
 
