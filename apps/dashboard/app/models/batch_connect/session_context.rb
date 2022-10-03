@@ -70,7 +70,7 @@ module BatchConnect
     context_attrs = Hash[*map { |a| [a.id.to_sym, a.value] }.flatten]
     illegal_attrs = OpenStruct.new.methods & context_attrs.keys
 
-    raise "#{illegal_attrs.inspect} are keywords that cannot be used as names for form items" unless illegal_attrs.empty?
+    raise ArgumentError, "#{illegal_attrs.inspect} are keywords that cannot be used as names for form items" unless illegal_attrs.empty?
 
     OpenStruct.new(context_attrs.merge(addons.symbolize_keys))
   end

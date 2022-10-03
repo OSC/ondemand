@@ -117,7 +117,7 @@ class BatchConnect::SessionContextTest < ActiveSupport::TestCase
     app.stubs(:form_config).returns(attributes: { table: { value: "the_table" } }, form: ["bc_account", "table"])
     context = app.build_session_context
 
-    assert_raises RuntimeError do
+    assert_raises ArgumentError do
       context.to_openstruct
     end
   end
@@ -146,14 +146,5 @@ class BatchConnect::SessionContextTest < ActiveSupport::TestCase
     struct = context.to_openstruct(addons: {:new_thing => "some_new_thing"})
 
     assert_equal struct.to_h, {:bc_account => "", :queue => "gpu", :new_thing=>"some_new_thing"}
-  end
-
-  test "to_openstruct responds to get_binding" do
-    app = BatchConnect::App.new(router: nil)
-    app.stubs(:form_config).returns(attributes: { queue: { value: "gpu" } }, form: ["bc_account", "queue"])
-    context = app.build_session_context
-
-    assert context.to_openstruct.respond_to?(:get_binding)
-    assert_equal false, context.to_openstruct.get_binding.nil?
   end
 end

@@ -242,7 +242,8 @@ module BatchConnect
       end
 
       struct = session_context.to_openstruct(addons: { staged_root: staged_root })
-      hsh.deep_merge(submit_config(binding: struct.instance_eval { binding }))
+      ctx_binding = struct.instance_eval { binding }
+      hsh.deep_merge(submit_config(binding: ctx_binding))
 
     # let's write the file out if it's a submit.yml.erb that isn't valid yml
     rescue Psych::SyntaxError => e
