@@ -46,6 +46,7 @@ en:
     nav_help_docs: "Online Documentation"
     nav_help_support: "Contact Support"
     nav_help_two_factor: "Configure Two-Factor Authentication"
+    nav_help_support_ticket: "Submit Support Ticket"
 
     quota_additional_message: "Consider deleting or archiving files to free up disk space."
     quota_reload_message: "Reload page to see updated quota. Quotas are updated every 5 minutes."
@@ -117,6 +118,8 @@ en:
     batch_connect_sessions_stats_time_requested: "Time Requested:"
     batch_connect_sessions_stats_time_used: "Time Used:"
     batch_connect_sessions_stats_undetermined_host: "Undetermined"
+    batch_connect_sessions_stats_support_ticket: "Problems with this session?"
+    batch_connect_sessions_stats_support_ticket_link_text:  "Submit support ticket"
     batch_connect_sessions_status_blurb_create_success: "Session was successfully created."
     batch_connect_sessions_status_blurb_delete_failure: "Failed to delete session."
     batch_connect_sessions_status_blurb_delete_success: "Session was successfully deleted."
@@ -203,3 +206,27 @@ en:
     settings_updated: "Settings updated"
 
     profile_links_title: "Profiles"
+
+    breadcrumbs_support_ticket: "Support Ticket"
+    support_ticket:
+      title: "Support Ticket"
+      header: "Support Ticket Header"
+      description_html: "Support Ticket Description with HTML"
+      creation_success: "Support ticket email sent to: %{to}"
+      generic_error: "There was an error processing your request: %{error}"
+      validation_error: "Invalid Request. Please review the error messages below"
+      validation:
+        required:
+          username: "The username is required"
+          email: "The email is required"
+          subject: "The subject is required"
+          description: "The description is required"
+        format:
+          email: "The email format is invalid. Expected a valid email address"
+          cc: "The cc format is invalid. Expected a valid email address"
+        items:
+          attachments: "Attachments are invalid. %{items} added, maximum number of attachments is %{max}"
+          attachments_js: "No more attachments allowed"
+        size:
+          attachments: "Attachments are invalid. Maximum attachment size is %{max}"
+          attachments_js: "Max attachment size is %{max}. Selected file size is %{size}"

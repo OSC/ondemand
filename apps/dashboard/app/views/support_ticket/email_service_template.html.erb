@@ -1,0 +1,92 @@
+<%= javascript_include_tag 'support_ticket', nonce: true %>
+
+<%= javascript_tag nonce: true do -%>
+
+    const SUPPORT_TICKET_RESTRICTIONS = <%= raw AttachmentsValidator.restrictions.to_json %>
+    const SUPPORT_TICKET_MESSAGES = {
+        "items.attachments": "<%= t('dashboard.support_ticket.validation.items.attachments_js') %>",
+        "size.attachments": "<%= t('dashboard.support_ticket.validation.size.attachments_js') %>",
+    }
+
+<% end  %>
+
+<div>
+  <% content_for :title, t('dashboard.support_ticket.title') %>
+
+  <%= render partial: 'batch_connect/shared/breadcrumb',
+   locals: {
+     links: [
+       {
+         text: t('dashboard.breadcrumbs_home'),
+         href: root_path
+       },
+       {
+         text: t('dashboard.breadcrumbs_support_ticket')
+       }]
+   }
+  %>
+
+  <div id="support-ticket-content-container" class="mb-4">
+    <h2><%= t('dashboard.support_ticket.header') %></h2>
+    <p>
+      <%= t('dashboard.support_ticket.description_html') %>
+    </p>
+  </div>
+
+
+  <div id="form-container" class="mb-5">
+    <form id="new_support_ticket" role="form" novalidate action="<%= support_path %>" accept-charset="UTF-8" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="<%= request_forgery_protection_token %>" value="<%= form_authenticity_token %>" />
+
+      <div class="form-group">
+        <label class="form-label" for="username">User name</label>
+        <input value="<%= @user.name %>" class="form-control" type="text" name="support_ticket[username]" id="username" readonly />
+      </div>
+      <div class="form-group <%= support_ticket_add_error_class(:email) %>">
+        <label class="form-label" for="email">Your email <span class="compulsory">*</span></label>
+        <input data-toggle="form-validate" class="form-control mb-1" type="email" name="support_ticket[email]" id="email" placeholder="The email address you want this response to go to" value="<%= @support_ticket.email %>" required />
+        <%= support_ticket_add_error_message(:email) %>
+      </div>
+      <div class="form-group <%= support_ticket_add_error_class(:cc) %>">
+        <label class="form-label" for="cc">Cc</label>
+        <input data-toggle="form-validate" class="form-control mb-1" type="email" name="support_ticket[cc]" id="cc" value="<%= @support_ticket.cc %>" />
+        <%= support_ticket_add_error_message(:cc) %>
+      </div>
+      <div class="form-group <%= support_ticket_add_error_class(:subject) %>">
+        <label class="form-label" for="subject">Subject <span class="compulsory">*</span></label>
+        <input data-toggle="form-validate" class="form-control mb-1" type="text" name="support_ticket[subject]" id="subject" value="<%= @support_ticket.subject %>" required />
+        <%= support_ticket_add_error_message(:subject) %>
+      </div>
+      <% if @support_ticket.session %>
+      <div class="form-group">
+        <label class="form-label" for="username">Selected Session</label>
+        <input type="hidden" name="support_ticket[session_id]" id="session_id" value="<%= @support_ticket.session.id %>" />
+        <input class="form-control" type="text" name="session_description" id="session_description" value="<%= "#{@support_ticket.session.title}(#{@support_ticket.session.job_id}) - #{@support_ticket.session.status} - #{Time.at(@support_ticket.session.created_at).localtime.strftime("%Y-%m-%d %H:%M:%S %Z")}" %>" disabled />
+      </div>
+      <% end %>
+      <div class="form-group <%= support_ticket_add_error_class(:attachments) %>" id="form-files">
+        <label class="form-label" for="attachments">Attachments</label>
+        <p data-toggle="form-validate" id="attachments">Click the box to attach a file. Screenshots or other files can help troubleshoot your problem.</p>
+        <%= support_ticket_add_error_message(:attachments) %>
+        <div id="attachments-container">
+
+        </div>
+        <p class="attachments-add" data-toggle="attachments-add"><i class="far fa-plus-square" title="Add attachment"></i> <span>Add attachment</span></p>
+      </div>
+
+      <div class="form-group <%= support_ticket_add_error_class(:description) %>">
+        <label class="form-label" for="description">Description <span class="compulsory">*</span></label>
+        <%= support_ticket_add_error_message(:description) %>
+        <textarea data-toggle="form-validate" data-validation-location="before" class="form-control" name="support_ticket[description]" id="description" rows="10" required ><%= @support_ticket.description %></textarea>
+      </div>
+
+      <input type="submit" name="commit" value="Submit support ticket" class="btn btn-primary btn-block" />
+
+    </form>
+  </div>
+
+</div>
+<div id="full-page-spinner" style="display:none;">
+  <div class="spinner-border" role="status"></div>
+</div>
+
