@@ -6,7 +6,7 @@
 %define major_version %(echo %{git_tag_minus_v} | cut -d. -f1)
 %define minor_version %(echo %{git_tag_minus_v} | cut -d. -f2)
 %define runtime_version %{major_version}.%{minor_version}
-%define runtime_release 2
+%define runtime_release 3
 %define runtime_version_full %{runtime_version}-%{runtime_release}%{?dist}
 %define selinux_policy_ver %(rpm --qf "%%{version}-%%{release}" -q selinux-policy)
 %global selinux_module_version %{package_version}.%{package_release}
