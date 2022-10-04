@@ -57,6 +57,7 @@ gem 'ood_support', '~> 0.0.2'
 gem 'ood_appkit', '~> 2.1.0'
 gem 'ood_core', '~> 0.20'
 gem 'pbs', '~> 2.2.1'
+gem 'rest-client', '~> 2.0'
 
 # gems to include in ondemand-gems repo for status apps to use
 gem "sinatra", require: false

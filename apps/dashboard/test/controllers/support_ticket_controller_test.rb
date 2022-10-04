@@ -35,6 +35,13 @@ class SupportTicketControllerTest < ActiveSupport::TestCase
     assert_equal "SupportTicketEmailService", service.class.name
   end
 
+  test "create_service_class returns SupportTicketRtService when rt_api configuration object defined" do
+    # Configure the SupportTicketRtService
+    Configuration.stubs(:support_ticket_config).returns({rt_api: { }})
+    service = @controller.send(:create_service_class)
+    assert_equal "SupportTicketRtService", service.class.name
+  end
+
   test "create_service_class throws exception when no service class configured" do
     Configuration.stubs(:support_ticket_config).returns({})
     assert_raise StandardError do
