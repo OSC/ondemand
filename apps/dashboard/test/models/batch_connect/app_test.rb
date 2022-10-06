@@ -218,6 +218,8 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     Dir.mktmpdir do |dir|
       opts = app.submit_opts(app.build_session_context, staged_root: dir)
       assert_equal opts[:script][:error_path], "#{dir}/error.log"
+
+      assert_equal opts[:script][:queue], 'the-best-one'
     end
   end
 

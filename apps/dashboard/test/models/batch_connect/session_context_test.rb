@@ -111,4 +111,40 @@ class BatchConnect::SessionContextTest < ActiveSupport::TestCase
 
      assert_equal ["PZS0714", "28"], [context["bc_account"].value, context["num_cores"].value]
    end
+
+  test "to_openstruct throws error when using OpenStruct methods" do
+    app = BatchConnect::App.new(router: nil)
+    app.stubs(:form_config).returns(attributes: { table: { value: "the_table" } }, form: ["bc_account", "table"])
+    context = app.build_session_context
+
+    assert_raises ArgumentError do
+      context.to_openstruct
+    end
+  end
+
+  test "to_openstruct accepts empty values" do
+    app = BatchConnect::App.new(router: nil)
+    app.stubs(:form_config).returns(attributes: { queue: { value: "gpu" } }, form: ["bc_account", "queue"])
+    context = app.build_session_context
+
+    assert_equal context.to_openstruct.to_h, {:bc_account => "", :queue => "gpu"}
+  end
+
+  test "to_openstruct accepts accepts hashes with string keys" do
+    app = BatchConnect::App.new(router: nil)
+    app.stubs(:form_config).returns(attributes: { queue: { value: "gpu" } }, form: ["bc_account", "queue"])
+    context = app.build_session_context
+    struct = context.to_openstruct(addons: {"new_thing": "some_new_thing"})
+
+    assert_equal struct.to_h, {:bc_account => "", :queue => "gpu", :new_thing=>"some_new_thing"}
+  end
+
+  test "to_openstruct accepts accepts hashes with symbol keys" do
+    app = BatchConnect::App.new(router: nil)
+    app.stubs(:form_config).returns(attributes: { queue: { value: "gpu" } }, form: ["bc_account", "queue"])
+    context = app.build_session_context
+    struct = context.to_openstruct(addons: {:new_thing => "some_new_thing"})
+
+    assert_equal struct.to_h, {:bc_account => "", :queue => "gpu", :new_thing=>"some_new_thing"}
+  end
 end

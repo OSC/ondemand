@@ -21,9 +21,12 @@ attributes:
       - ["any", ":ppn=28"]
       - ["gpu", ":ppn=28:gpus=1"]
       - ["hugemem", ":ppn=48:hugemem"]
+  partition:
+    value: "the-best-one"
 form:
   - bc_num_hours
   - bc_num_slots
   - node_type
   - bc_account
   - bc_email_on_started
+  - partition
