@@ -33,16 +33,12 @@ class RequestTrackerClient
   attr_reader :server, :rt_client, :resource, :timeout, :verify_ssl
 
   def initialize(config)
-    # DEFAULTS
-    @auth_token = nil
-    @timeout = 30
-    @verify_ssl = false
     # FROM CONFIGURATION
     @user = config[:user]
     @pass = config[:pass]
     @auth_token = config[:auth_token]
-    @timeout = config[:timeout] if config[:timeout]
-    @verify_ssl = config[:verify_ssl] if config[:verify_ssl]
+    @timeout = config[:timeout] || 30
+    @verify_ssl = config[:verify_ssl] || false
     if config[:server]
       @server = config[:server]
       @server += '/' if @server !~ %r{/$}
@@ -71,7 +67,6 @@ class RequestTrackerClient
     options[:proxy] = config[:proxy] if config[:proxy]
 
     @rt_client = RestClient::Resource.new(@resource, options)
-    untaint
   end
 
   def create(field_hash)
@@ -82,7 +77,7 @@ class RequestTrackerClient
     if new_id.instance_of?(MatchData)
       new_id[1]
     else
-      raise "Unable to create ticket. Server response: #{resp}"
+      raise StandardError, "Unable to create ticket. Server response: #{resp}"
     end
   end
 
