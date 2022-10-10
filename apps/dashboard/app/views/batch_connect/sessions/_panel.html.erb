@@ -5,7 +5,7 @@
         if session.view
           views = { partial: "custom", locals: { view: session.view, connect: session.connect } }
         else
-          if session.script_type == "vnc" || session.script_type == "vnc_container"
+          if session.vnc
             views = []
             views << { title: "noVNC Connection",    partial: "novnc",      locals: { connect: session.connect, app_title: session.title } }
             views << { title: "Native Instructions", partial: "native_vnc", locals: { connect: session.connect } } if ENV["ENABLE_NATIVE_VNC"]
