@@ -6,9 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Safer form rendering (#2314)\
-Added support ticket functionality (#2292)\
-update dependencies (#2313)
 
 ### Changed
 
@@ -63,6 +60,7 @@ update dependencies (#2313)
 - Support for Profiles
   - NavConfig settings have been deprecated and replaced in [2221](https://github.com/OSC/ondemand/pull/2221).
   - The Navbar can be completely defined in [2270](https://github.com/OSC/ondemand/pull/2270).
+- Support for opening support tickets in [2292](https://github.com/OSC/ondemand/pull/2292).
 
 ### Fixed
 
