@@ -528,7 +528,7 @@ module BatchConnect
         connect: running? ? connect.to_h : nil,
         time: info.wallclock_time.to_i / 60     # only update every minute
       }
-      Digest::MD5.hexdigest(hsh.to_json)
+      Digest::SHA1.hexdigest(hsh.to_json)
     end
 
     private
