@@ -316,6 +316,10 @@ module BatchConnect
       }.merge opts
     end
 
+    def vnc?
+      script_type == "vnc" || script_type == "vnc_container"
+    end
+
     # Delete this session's job and database record
     # @return [Boolean] whether successfully deleted
     def destroy
