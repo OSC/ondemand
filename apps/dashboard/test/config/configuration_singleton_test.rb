@@ -232,8 +232,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "should have default dataroot under home dir if production" do
-    with_modified_env(RAILS_ENV: 'production') do
-      ENV.delete('OOD_DATAROOT')
+    with_modified_env(RAILS_ENV: 'production', OOD_DATAROOT: nil) do
       assert_equal Pathname.new('~/ondemand/data/sys/dashboard').expand_path, ConfigurationSingleton.new.dataroot
     end
   end
@@ -245,15 +244,13 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "can configure portal component of dataroot if production" do
-    with_modified_env(RAILS_ENV: 'production', OOD_PORTAL: 'MY_PORTAL') do
-      ENV.delete('OOD_DATAROOT')
+    with_modified_env(RAILS_ENV: 'production', OOD_DATAROOT: nil, OOD_PORTAL: 'MY_PORTAL') do
       assert_equal Pathname.new('~/MY_PORTAL/data/sys/dashboard').expand_path, ConfigurationSingleton.new.dataroot
     end
   end
 
   test "can configure app token component of dataroot if production" do
-    with_modified_env(RAILS_ENV: 'production', APP_TOKEN: 'MY/APP/TOKEN') do
-      ENV.delete('OOD_DATAROOT')
+    with_modified_env(RAILS_ENV: 'production', APP_TOKEN: 'MY/APP/TOKEN', OOD_DATAROOT: nil) do
       assert_equal Pathname.new('~/ondemand/data/MY/APP/TOKEN').expand_path, ConfigurationSingleton.new.dataroot
     end
   end
