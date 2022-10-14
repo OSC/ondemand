@@ -165,6 +165,48 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal '100', find_value('bc_num_slots')
   end
 
+  test 'can set multiple min/maxes' do
+    # ensure defaults
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    assert_equal 1, find_min('bc_num_hours')
+    assert_equal 20, find_max('bc_num_hours')
+    assert_equal 3, find_min('bc_num_slots')
+    assert_equal 7, find_max('bc_num_slots')
+    assert_equal 'any', find_value('node_type')
+
+    # changing the same node changes both bc_num_slots and bc_num_hours
+    select('same', from: bc_ele_id('node_type'))
+    assert_equal 100, find_min('bc_num_slots')
+    assert_equal 200, find_max('bc_num_slots')
+    assert_equal 444, find_min('bc_num_hours')
+    assert_equal 555, find_max('bc_num_hours')
+  end
+
+  test 'can set multiple min/maxes with for clauses' do
+    # ensure defaults
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    assert_equal 1, find_min('bc_num_hours')
+    assert_equal 20, find_max('bc_num_hours')
+    assert_equal 3, find_min('bc_num_slots')
+    assert_equal 7, find_max('bc_num_slots')
+    assert_equal 'any', find_value('node_type')
+    assert_equal 'owens', find_value('cluster')
+
+    # changing to the gpu node changes both bc_num_slots and bc_num_hours
+    select('gpu', from: bc_ele_id('node_type'))
+    assert_equal 2, find_min('bc_num_slots')
+    assert_equal 28, find_max('bc_num_slots')
+    assert_equal 80, find_min('bc_num_hours')
+    assert_equal 88, find_max('bc_num_hours')
+
+    # change the cluster and these change again (the for clause)
+    select('oakley', from: bc_ele_id('cluster'))
+    assert_equal 3, find_min('bc_num_slots')
+    assert_equal 40, find_max('bc_num_slots')
+    assert_equal 90, find_min('bc_num_hours')
+    assert_equal 99, find_max('bc_num_hours')
+  end
+
   test 'nothing applied to broken node type' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     assert_equal 7, find_max('bc_num_slots')

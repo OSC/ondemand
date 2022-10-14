@@ -201,7 +201,7 @@ function addMinMaxForHandler(optionId, option, key,  configValue) {
   const table = minMaxLookup[id];
   table.put(option, secondDimValue, {[minOrMax(key)] : configValue });
 
-  let cacheKey = `${optionId}_${secondDimId}`;
+  let cacheKey = `${id}_${optionId}_${secondDimId}`;
   if(!minMaxHandlerCache.includes(cacheKey)) {
     const changeElement = $(`#${optionId}`);
 
@@ -212,7 +212,7 @@ function addMinMaxForHandler(optionId, option, key,  configValue) {
     minMaxHandlerCache.push(cacheKey);
   }
 
-  cacheKey = `${secondDimId}_${optionId}`;
+  cacheKey = `${id}_${secondDimId}_${optionId}`;
   if(secondDimId !== undefined && !minMaxHandlerCache.includes(cacheKey)){
     const secondEle = $(`#${secondDimId}`);
 
