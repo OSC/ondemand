@@ -402,7 +402,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal '3.6', find("##{bc_ele_id('python_version')}").value
   end
 
-  test 'options with numbers' do
+  test 'options with numbers and slashes' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
     # defaults
@@ -413,6 +413,19 @@ class BatchConnectTest < ApplicationSystemTestCase
 
     # now change the classroom and see the other sizes disappear
     select('Astronomy 5678', from: bc_ele_id('classroom'))
+    assert_equal 'display: none;', find_option_style('classroom_size', 'medium')
+    assert_equal 'display: none;', find_option_style('classroom_size', 'large')
+
+    # go back to default
+    select('Physics 1234', from: bc_ele_id('classroom'))
+    assert_equal 'physics_1234', find_value('classroom')
+    assert_equal 'small', find_value('classroom_size')
+    assert_equal '', find_option_style('classroom_size', 'medium')
+    assert_equal '', find_option_style('classroom_size', 'large')
+
+    # choose the option with slashes, and large and medium are gone
+    select('Economics 8846', from: bc_ele_id('classroom'))
+    assert_equal 'small', find_value('classroom_size')
     assert_equal 'display: none;', find_option_style('classroom_size', 'medium')
     assert_equal 'display: none;', find_option_style('classroom_size', 'large')
   end
