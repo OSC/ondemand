@@ -2,7 +2,7 @@ require 'test_helper'
 
 class TransferTest < ActiveSupport::TestCase
   test 'copy command' do
-    transfer = Transfer.build action: 'cp', files: {
+    transfer = PosixTransfer.build action: 'cp', files: {
       '/Users/efranz/dev/ondemand/apps/dashboard/app' => '/var/folders/w7/fn8w83s10510pkc5j2wq8cpnhxtn3j/T/d20210201-68201-u3azoj/app',
       '/Users/efranz/dev/ondemand/apps/dashboard/config' => '/var/folders/w7/fn8w83s10510pkc5j2wq8cpnhxtn3j/T/d20210201-68201-u3azoj/config',
       '/Users/efranz/dev/ondemand/apps/dashboard/manifest.yml' => '/var/folders/w7/fn8w83s10510pkc5j2wq8cpnhxtn3j/T/d20210201-68201-u3azoj/manifest.yml'
@@ -30,19 +30,19 @@ class TransferTest < ActiveSupport::TestCase
   end
 
   test '1 step for file copy' do
-    assert_equal 1, Transfer.build(action: 'cp', files: { 'config.ru' => '/tmp/config.ru' }).steps
+    assert_equal 1, PosixTransfer.build(action: 'cp', files: { 'config.ru' => '/tmp/config.ru' }).steps
   end
 
   test '1 step for file removal' do
-    assert_equal 1, Transfer.build(action: 'rm', files: ['config.ru']).steps
+    assert_equal 1, PosixTransfer.build(action: 'rm', files: ['config.ru']).steps
   end
 
   test '1 step for file mv' do
-    assert_equal 1, Transfer.build(action: 'mv', files: { 'config.ru' => 'config.ru.2' }).steps
+    assert_equal 1, PosixTransfer.build(action: 'mv', files: { 'config.ru' => 'config.ru.2' }).steps
   end
 
   test 'steps for cp bin' do
-    assert_equal Dir['bin/*'].count + 1, Transfer.build(action: 'cp', files: { 'bin' => 'bin.2' }).steps
+    assert_equal Dir['bin/*'].count + 1, PosixTransfer.build(action: 'cp', files: { 'bin' => 'bin.2' }).steps
   end
 
   # This tests https://github.com/OSC/ondemand/issues/1337 and fails if it's not patched
@@ -54,7 +54,7 @@ class TransferTest < ActiveSupport::TestCase
       FileUtils.touch f
       assert_equal true, File.exist?(f)
 
-      t = Transfer.build(action: 'rm', files: [f])
+      t = PosixTransfer.build(action: 'rm', files: [f])
       assert_equal true, t.valid?, t.errors.full_messages.join('. ')
       assert_equal 1, t.steps
 

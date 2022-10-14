@@ -71,6 +71,13 @@ Ensure to include what issue this fixes in the **PR comment** to help with autom
 * **Any new code *must* also include testing.**
 * If you need help with writing tests please include the `test help` tag.
 
+### Project Conventions
+
+* Prefer **read-only** objects.  You'll find mostly read only objects spread throughout this code base.
+  This means that `attr_writer` or `attr_accessor` are to be avoided and only `attr_reader` should be used.
+  It follows then, that most objects should accept a large number of parameters in their initializers
+  and set the attributes accordingly.
+
 ### Linters
 
 For any Ruby librares/apps there is a `.rubocop.yml` at the top of this project. If you
@@ -244,10 +251,19 @@ methods.
 
 ### Comments
 
-* We encourage comments in the code.
+* We require comments in the code.
 * Use proper grammar and punctuation.
 * Focus on *why* the code is the way it is if it is not obvious.
 * Focus less on *how* the code works, that should be evident from the code.
+* At the top of each class and method please add a description of the intent of the Class or Method
+```javascript
+/**
+ * Format passed string to snake_case. All characters become lowercase. Existing
+ * underscores are unchanged and dashes become underscores. Underscores are added 
+ * before locations where an uppercase character is followed by a lowercase character.
+ */
+function snakeCaseWords(str) { 
+```
 
 ### Exceptions
 

@@ -5,7 +5,10 @@
 # For backwards compatibility, properties can be configured to read values from the environment object: ENV.
 # Environment values will have precedence over values defined in configuration files.
 #
-# Property lookup is hierarchical based on a profile value defined in CurrentUser.user_settings[:profile].
+# Property lookup is hierarchical based on a profile value.
+# The profile value will be the CurrentUser.user_settings[:profile] by default.
+# This can be overridden using Configuration.host_based_profiles, in which case, the current request hostname will be used.
+#
 # First the lookup is done in the profile configuration if any, if no value is defined, the root configuration is used.
 #
 # Example configuration with a team1 profile:
@@ -54,10 +57,17 @@ class UserConfiguration
     ConfigurationProperty.property(name: :custom_css_files, default_value: []),
 
     ConfigurationProperty.property(name: :dashboard_title, default_value: 'Open OnDemand', read_from_env: true),
+
+    # Navigation properties
+    ConfigurationProperty.with_boolean_mapper(name: :show_all_apps_link, default_value: false, read_from_env: true, env_names: ['SHOW_ALL_APPS_LINK']),
+    # New navigation definition properties
+    ConfigurationProperty.property(name: :nav_bar, default_value: []),
+    ConfigurationProperty.property(name: :help_bar, default_value: []),
   ].freeze
 
-  def initialize
+  def initialize(request_hostname: nil)
     @config = ::Configuration.config
+    @request_hostname = request_hostname.to_sym if request_hostname
     add_property_methods
   end
 
@@ -98,9 +108,23 @@ class UserConfiguration
     path.start_with?('/') ? Pathname.new(path) : Pathname.new('/public')
   end
 
+  # Filtering is controlled with NavConfig.categories_whitelist? unless the configuration property categories is defined.
+  # If categories are defined, filter_nav_categories? will always be true.
+  def filter_nav_categories?
+    fetch(:nav_categories, nil).nil? ? NavConfig.categories_whitelist? : true
+  end
+
+  def nav_categories
+    fetch(:nav_categories, NavConfig.categories)
+  end
+
   # The current user profile. Used to select the configuration properties.
   def profile
-    CurrentUser.user_settings[:profile].to_sym if CurrentUser.user_settings[:profile]
+    if Configuration.host_based_profiles
+      request_hostname
+    else
+      CurrentUser.user_settings[:profile].to_sym if CurrentUser.user_settings[:profile]
+    end
   end
 
   private
@@ -110,11 +134,11 @@ class UserConfiguration
   # If no value is defined, it looks into the root configuration.
   def fetch(key_value, default_value = nil)
     key = key_value ? key_value.to_sym : nil
-    profile_config = @config.dig(:profiles, profile) || {}
+    profile_config = config.dig(:profiles, profile) || {}
 
     # Returns the value if they key is present in the profile, even if the value is nil
     # This is to mimic the Hash.fetch behaviour that only uses the default_value when key is not present
-    profile_config.key?(key) ? profile_config[key] : @config.fetch(key, default_value)
+    profile_config.key?(key) ? profile_config[key].freeze : config.fetch(key, default_value).freeze
   end
 
   # Dynamically adds methods to this class based on the USER_PROPERTIES defined.
@@ -128,4 +152,8 @@ class UserConfiguration
       end
     end
   end
+
+    private
+
+    attr_reader :config, :request_hostname
 end

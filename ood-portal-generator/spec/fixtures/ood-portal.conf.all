@@ -50,14 +50,18 @@ Listen 8080
 #     #=> https://test.proxy.name:8080
 #
 <VirtualHost *:80>
+  ServerName test.server.name
+  ServerAlias foo.example.com
+
   RewriteEngine On
-  RewriteRule ^(.*) https://test.proxy.name:8080$1 [R=301,NE,L]
+  RewriteRule ^(.*) https://%{HTTP_HOST}:8080$1 [R=301,NE,L]
 </VirtualHost>
 
 # The Open OnDemand portal VirtualHost
 #
 <VirtualHost *:8080>
   ServerName test.server.name
+  ServerAlias foo.example.com
 
   ErrorLog  "/path/to/my/logs/test.server.name_error_ssl.log"
   CustomLog "/path/to/my/logs/test.server.name_access_ssl.log" combined
@@ -70,11 +74,10 @@ Listen 8080
   RewriteEngine On
   RewriteCond /var/www/configured/public/maintenance/index.html -f
   RewriteCond /etc/ood/maintenance.enable -f
-  RewriteCond %{REQUEST_URI} !/public/maintenance/.*$
+  RewriteCond %{REQUEST_URI} !/assets/maintenance/.*$
   RewriteCond %{REMOTE_ADDR} !^192\.168\.0\..*
   RewriteCond %{REMOTE_ADDR} !^192\.168\.1\..*
-  RewriteRule ^.*$ /assets/maintenance/index.html [R=503,L]
-  ErrorDocument 503 /assets/maintenance/index.html
+  RewriteRule ^.*$ /assets/maintenance/index.html [R=302,L]
 
   TraceEnable off
 
@@ -108,6 +111,8 @@ Listen 8080
   SetEnv OOD_PUN_PRE_HOOK_ROOT_CMD "/opt/hpc-site/ood_pun_prehook"
   # Environment variables to export to the PUN pre hook.
   SetEnv OOD_PUN_PRE_HOOK_EXPORTS "OIDC_ACCESS_TOKEN,OIDC_CLAIM_EMAIL"
+
+  SetEnv OOD_PUN_RAILS_CONFIG_HOSTS "foo.example.com,test.proxy.name,test.server.name"
 
   #
   # Below is used for sub-uri's this Open OnDemand portal supports
@@ -179,6 +184,8 @@ Listen 8080
     AuthType openid-connect
     Require valid-user
 
+    ProxyPreserveHost On
+    ProxyAddHeaders On
     ProxyPassReverse "http://localhost/my_pun_apps"
 
     # ProxyPassReverseCookieDomain implementation (strip domain)
@@ -233,6 +240,20 @@ Listen 8080
     AuthType openid-connect
     Require valid-user
   </Location>
+
+  # Maintenance location
+  #
+  #     https://test.server.name:8080/assets/maintenance
+  #     #=> Displays /var/www/configured/public/maintenance/index.html
+  #
+  <Directory "/var/www/configured/public/maintenance">
+    RewriteCond /etc/ood/maintenance.enable !-f
+    ReWriteRule ^.*$ /
+
+    RewriteCond %{REQUEST_URI} !/assets/maintenance/index\.html$
+    RewriteRule ^.*$ /assets/maintenance/index.html [R=503,L]
+    ErrorDocument 503 /assets/maintenance/index.html
+  </Directory>
 
   # Discover URI for OpenID Connect (used for multiple Id Providers):
   #

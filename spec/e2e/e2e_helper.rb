@@ -72,7 +72,7 @@ def packager
       'dnf'
     end
   else
-    'DEBIAN_FRONTEND=noninteractive apt --no-install-recommends'
+    'DEBIAN_FRONTEND=noninteractive apt'
   end
 end
 

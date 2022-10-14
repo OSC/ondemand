@@ -9,7 +9,8 @@ class ActiveSupport::TestCase
       OOD_FILES_APP_REMOTE_FILES:        'true',
       RCLONE_CONFIG_LOCAL_REMOTE_TYPE:   'local',
       RCLONE_CONFIG_ALIAS_REMOTE_TYPE:   'alias',
-      RCLONE_CONFIG_ALIAS_REMOTE_REMOTE: "local_remote:#{root_dir}"
+      RCLONE_CONFIG_ALIAS_REMOTE_REMOTE: "local_remote:#{root_dir}",
+      RCLONE_CONFIG: Rails.root.join('test/fixtures/config/rclone/rclone.conf').to_s
     }
   end
 

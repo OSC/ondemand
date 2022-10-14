@@ -1,3 +1,6 @@
+# Similar to an OodApp in that it represents an application. It differs
+# in the view and mutation of that application. OodApps are what customers
+# interact with. Products are what app developers interact with.
 class Product
   include ActiveModel::Model
 

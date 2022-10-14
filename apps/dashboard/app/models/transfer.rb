@@ -1,3 +1,4 @@
+# Parent ActiveModel class for transfer files.
 class Transfer
   include ActiveModel::Model
   include ActiveModel::Validations
@@ -25,18 +26,6 @@ class Transfer
 
     def find(id)
       transfers.find {|t| t.id == id }
-    end
-
-    def build(action:, files:)
-      if files.is_a?(Array)
-        # rm action will want to provide an array of files
-        # so if it is an Array we convert it to a hash:
-        #
-        # convert [a1, a2, a3] to {a1 => nil, a2 => nil, a3 => nil}
-        files = Hash[files.map { |f| [f, nil] }]
-      end
-
-      LocalTransfer.new(action: action, files: files)
     end
   end
 

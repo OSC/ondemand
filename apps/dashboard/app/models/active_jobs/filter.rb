@@ -1,4 +1,5 @@
 module ActiveJobs
+  # Utility class to be able to filter the activejobs by some dimension.
   class Filter
     attr_accessor :title, :filter_id, :filter_block
 

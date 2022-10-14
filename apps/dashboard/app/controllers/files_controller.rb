@@ -1,11 +1,13 @@
+# The controller for all the files pages /dashboard/files
 class FilesController < ApplicationController
   include ActionController::Live
   include ZipTricks::RailsStreaming
 
-  before_action :parse_path, :validate_path!, except: :upload
-
   def fs
     request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
+
+    parse_path
+    validate_path!
 
     if @path.directory?
       @path.raise_if_cant_access_directory_contents
@@ -50,10 +52,14 @@ class FilesController < ApplicationController
             zip_tricks_stream do |zip|
               @path.files_to_zip.each do |file|
                 begin
-                  if File.file?(file.path) && File.readable?(file.path)
+                  next unless File.readable?(file.path)
+
+                  if File.file?(file.path)
                     zip.write_deflated_file(file.relative_path.to_s) do |zip_file|
                       IO.copy_stream(file.path, zip_file)
                     end
+                  else
+                    zip.add_empty_directory(dirname: file.relative_path.to_s)
                   end
                 rescue => e
                   logger.warn("error writing file #{file.path} to zip: #{e.message}")
@@ -102,6 +108,8 @@ class FilesController < ApplicationController
 
   # PUT - create or update
   def update
+    parse_path
+    validate_path!
 
     if params.include?(:dir)
       @path.mkdir
@@ -144,12 +152,17 @@ class FilesController < ApplicationController
   end
 
   def edit
+    parse_path
+    validate_path!
+
     if @path.editable?
       @content = @path.read
       render :edit, status: status, layout: 'editor'
     else
       redirect_to root_path, alert: "#{@path} is not an editable file"
     end
+  rescue => e
+    redirect_to root_path, alert: e.message
   end
 
   private
@@ -166,6 +179,10 @@ class FilesController < ApplicationController
     elsif ::Configuration.files_app_remote_files? && filesystem != 'fs'
       @path = RemoteFile.new(normal_path, filesystem)
       @filesystem = filesystem
+    else
+      @path = PosixFile.new(normal_path)
+      @filesystem = filesystem
+      raise StandardError, I18n.t('dashboard.files_remote_disabled')
     end
   end
 

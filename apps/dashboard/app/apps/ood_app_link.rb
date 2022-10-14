@@ -1,3 +1,4 @@
+# OodAppLink is a representation of an HTML link to an OodApp.
 class OodAppLink
   attr_reader :title
   attr_reader :description
@@ -22,6 +23,38 @@ class OodAppLink
 
   def new_tab?
     @new_tab
+  end
+
+  def to_h
+    instance_variables.each_with_object({}) do |var, hash|
+      hash[var.to_s.gsub('@', '').to_sym] = instance_variable_get(var)
+    end
+  end
+
+  def categorize(category: nil, subcategory: nil)
+    LinkCategorizer.new(self, category: category, subcategory: subcategory)
+  end
+
+  private
+
+  # Decorate an OodAppLink to look like an OodApp so it can be recategorized
+  # in the menus.
+  class LinkCategorizer < SimpleDelegator
+    attr_reader :category, :subcategory
+
+    def initialize(link, category: nil, subcategory: nil)
+      super(link)
+      @category = category
+      @subcategory = subcategory
+    end
+
+    def links
+      [self]
+    end
+
+    def metadata
+      {}
+    end
   end
 end
 

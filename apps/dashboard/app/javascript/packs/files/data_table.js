@@ -359,6 +359,9 @@ class DataTable {
                     history.pushState({
                         currentDirectory: data.path,
                         currentDirectoryUrl: data.url,
+                        currentFilesPath: data.files_path,
+                        currentFilesUploadPath: data.files_upload_path,
+                        currentFilesystem: data.filesystem,
                         currentFilenames: Array.from(data.files, x => x.name)
                     }, data.name, data.url);
                 }      

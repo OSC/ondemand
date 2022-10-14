@@ -227,16 +227,6 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
-  test "should hide the all apps link by default" do
-    refute ConfigurationSingleton.new.show_all_apps_link?
-  end
-
-  test "can enable the all apps link" do
-    with_modified_env(SHOW_ALL_APPS_LINK: 'true') do
-      assert ConfigurationSingleton.new.show_all_apps_link?
-    end
-  end
-
   test "should have default dataroot under app if not production" do
     assert_equal Rails.root.join("data"), ConfigurationSingleton.new.dataroot
   end
@@ -329,6 +319,18 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     with_modified_env(config_fixtures) do
       cfg = ConfigurationSingleton.new.send(:config)
       assert_equal 42, cfg[:the_erb_answer]
+    end
+  end
+
+  test "supports YAML anchors and aliases" do
+    with_modified_env({ OOD_CONFIG_D_DIRECTORY: "#{Rails.root}/test/fixtures/config/anchors_aliases" }) do
+      cfg = ConfigurationSingleton.new.send(:config)
+      assert_equal 'single_value', cfg[:single_original]
+      assert_equal 'single_value', cfg[:single_with_alias]
+
+      expect_hash = {key_one: "hash_one", key_two: "hash_two"}
+      assert_equal expect_hash, cfg[:hash_original]
+      assert_equal expect_hash, cfg[:hash_with_alias]
     end
   end
 

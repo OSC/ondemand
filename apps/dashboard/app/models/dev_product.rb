@@ -1,3 +1,4 @@
+# A Product class for development apps.
 class DevProduct < Product
   class << self
     def all

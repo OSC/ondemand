@@ -55,8 +55,15 @@ Listen <%= addr_port %>
 #     #=> <%= @ssl ? "https" : "http" %>://<%= @proxy_server || "localhost" %>:<%= @port %>
 #
 <VirtualHost *:80>
+  <%- if @servername -%>
+  ServerName <%= @servername %>
+  <%- end -%>
+  <%- @server_aliases.each do |serveralias| -%>
+  ServerAlias <%= serveralias %>
+  <%- end -%>
+
   RewriteEngine On
-  RewriteRule ^(.*) <%= @ssl ? "https" : "http" %>://<%= @proxy_server || "%{SERVER_NAME}" %>:<%= @port %>$1 [R=301,NE,L]
+  RewriteRule ^(.*) <%= @ssl ? "https" : "http" %>://%{HTTP_HOST}:<%= @port %>$1 [R=301,NE,L]
 </VirtualHost>
 <% end -%>
 
@@ -65,6 +72,9 @@ Listen <%= addr_port %>
 <VirtualHost *:<%= @port %>>
   <%- if @servername -%>
   ServerName <%= @servername %>
+  <%- end -%>
+  <%- @server_aliases.each do |serveralias| -%>
+  ServerAlias <%= serveralias %>
   <%- end -%>
 
   ErrorLog  "<%= @errorlog %>"
@@ -86,12 +96,11 @@ Listen <%= addr_port %>
   RewriteEngine On
   RewriteCond <%= @public_root %>/maintenance/index.html -f
   RewriteCond /etc/ood/maintenance.enable -f
-  RewriteCond %{REQUEST_URI} !/public/maintenance/.*$
+  RewriteCond %{REQUEST_URI} !<%= @public_uri %>/maintenance/.*$
   <%- @maintenance_ip_allowlist.each do |ip| -%>
   RewriteCond %{REMOTE_ADDR} !^<%= escape_ip(ip) %>
   <%- end -%>
-  RewriteRule ^.*$ <%= @public_uri %>/maintenance/index.html [R=503,L]
-  ErrorDocument 503 <%= @public_uri %>/maintenance/index.html
+  RewriteRule ^.*$ <%= @public_uri %>/maintenance/index.html [R=302,L]
 
   <%- end -%>
   TraceEnable off
@@ -177,6 +186,10 @@ Listen <%= addr_port %>
   <%- end -%>
 
   <%- end -%>
+  <%- if @rails_config_hosts -%>
+  SetEnv OOD_PUN_RAILS_CONFIG_HOSTS "<%= @rails_config_hosts.join(',') %>"
+
+  <%- end -%>
   #
   # Below is used for sub-uri's this Open OnDemand portal supports
   #
@@ -257,6 +270,8 @@ Listen <%= addr_port %>
     <%= line %>
     <%- end -%>
 
+    ProxyPreserveHost On
+    ProxyAddHeaders On
     ProxyPassReverse "http://localhost<%= @pun_uri %>"
 
     # ProxyPassReverseCookieDomain implementation (strip domain)
@@ -322,7 +337,23 @@ Listen <%= addr_port %>
     <%- end -%>
   </Location>
   <%- end -%>
+  <%- if @use_rewrites && @use_maintenance -%>
 
+  # Maintenance location
+  #
+  #     <%= @ssl ? "https" : "http" %>://<%= @servername || "localhost" %>:<%= @port %><%= @public_uri %>/maintenance
+  #     #=> Displays <%= @public_root %>/maintenance/index.html
+  #
+  <Directory "<%= @public_root %>/maintenance">
+    RewriteCond /etc/ood/maintenance.enable !-f
+    ReWriteRule ^.*$ /
+
+    RewriteCond %{REQUEST_URI} !<%= @public_uri %>/maintenance/index\.html$
+    RewriteRule ^.*$ <%= @public_uri %>/maintenance/index.html [R=503,L]
+    ErrorDocument 503 <%= @public_uri %>/maintenance/index.html
+  </Directory>
+
+  <%- end -%>
   <%- if @oidc_discover_uri && @oidc_discover_root -%>
   # Discover URI for OpenID Connect (used for multiple Id Providers):
   #

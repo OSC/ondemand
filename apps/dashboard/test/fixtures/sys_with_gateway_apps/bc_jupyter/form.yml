@@ -19,6 +19,9 @@ attributes:
   bc_num_slots:
     max: 20
     min: 1
+  bc_num_hours:
+    max: 20
+    min: 1
   node_type:
     widget: select
     label: "Node type"
@@ -49,6 +52,11 @@ attributes:
           data-min-bc-num-slots-for-cluster-owens: 2,
           data-max-bc-num-slots-for-cluster-oakley: 40,
           data-min-bc-num-slots-for-cluster-oakley: 3,
+
+          data-max-bc-num-hours-for-cluster-owens: 88,
+          data-min-bc-num-hours-for-cluster-owens: 80,
+          data-max-bc-num-hours-for-cluster-oakley: 99,
+          data-min-bc-num-hours-for-cluster-oakley: 90,
         ]
       - [
           "hugemem",
@@ -71,7 +79,9 @@ attributes:
           data-hide-cuda-version: true,
           data-hide-advanced-options: true,
           data-min-bc-num-slots: 100,
-          data-max-bc-num-slots: 200
+          data-max-bc-num-slots: 200,
+          data-min-bc-num-hours: 444,
+          data-max-bc-num-hours: 555,
         ]
       - [
           "other-40ish-option",

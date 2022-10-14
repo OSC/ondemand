@@ -1,9 +1,12 @@
 require 'yaml'
 
+# Manifests provide metadata for applications (OodApps).
 class Manifest
 
   attr_reader :exception
 
+  # InvalidContentError is an error helper class to give users a nice
+  # error message when there are validation errors.
   class InvalidContentError < StandardError
     def initialize
       super %q(Manifest is not formatted correctly! 
@@ -52,15 +55,15 @@ category: OSC
     InvalidManifest.new(e)
   end
 
-  # @param [Hash, Manifest] opts A hash of the options in the manifest
-  # @option opts [String] :name The name of the application
-  # @option opts [String] :description The description of the application
-  # @option opts [String] :category The category of the application
-  # @option opts [String] :subcategory The subcategory of the application
-  # @option opts [String] :icon The icon used on the dashboard, optionally a Font Awesome tag
-  # @option opts [String] :role Dashboard categorization
-  # @option opts [String] :url An optional redirect URL
-  # @option opts [Hash]   :metadata An optional hash of key value pairs
+  # @param [Hash, Manifest] opts A hash of the options in the manifest.
+  # @option opts [String] :name The name of the application.
+  # @option opts [String] :description The description of the application.
+  # @option opts [String] :category The category of the application.
+  # @option opts [String] :subcategory The subcategory of the application.
+  # @option opts [String] :icon The icon used on the dashboard, optionally a Font Awesome tag.
+  # @option opts [String] :role Dashboard categorization.
+  # @option opts [String] :url An optional redirect URL.
+  # @option opts [Hash]   :metadata An optional hash of key value pairs.
   def initialize(opts)
     raise InvalidContentError.new unless(opts && opts.respond_to?(:to_h))
 

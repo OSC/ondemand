@@ -11,7 +11,7 @@ Rails.application.routes.draw do
 
   # in production, if the user doesn't have access to the files app directory, we hide the routes
   if Configuration.can_access_files?
-    constraints filepath: /.+/, fs: /(?!edit)[^\/]+/  do
+    constraints filepath: /.+/, fs: /(?!(edit|api\/v1))[^\/]+/  do
       get "files/:fs(/*filepath)" => "files#fs", :defaults => { :fs => 'fs', :format => 'html' }, :format => false, as: :files
       put "files/:fs/*filepath" => "files#update", :format => false, :defaults => { :fs => 'fs', :format => 'json' }
 
@@ -88,6 +88,12 @@ Rails.application.routes.draw do
   end
 
   post "settings", :to => "settings#update"
+
+  # Support ticket routes
+  if Configuration.support_ticket_enabled?
+    get "/support", to: "support_ticket#new"
+    post "/support", to: "support_ticket#create"
+  end
 
   match "/404", :to => "errors#not_found", :via => :all
   match "/500", :to => "errors#internal_server_error", :via => :all

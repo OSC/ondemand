@@ -1,4 +1,6 @@
 module BatchConnect
+  # The context of a given batch connect session. It encapsulates all the paramters
+  # available from the app and the choices made by the user.
   class SessionContext
     include Enumerable
 
@@ -41,12 +43,6 @@ module BatchConnect
       @attributes.each(&block)
     end
 
-    # Get the binding for this object
-    # @return [Binding] binding of this object
-    def get_binding
-      binding
-    end
-
     # Delegate to attribute object's value getter/setter
     # @param method_name the method name called
     # @param arguments the arguments to the call
@@ -69,6 +65,15 @@ module BatchConnect
    def update_with_cache(cache)
       self.attributes = cache.select { |k,v| self[k.to_sym] && self[k.to_sym].cacheable?(app_specific_cache_enabled?)  }
    end 
+
+  def to_openstruct(addons: {})
+    context_attrs = Hash[*map { |a| [a.id.to_sym, a.value] }.flatten]
+    illegal_attrs = OpenStruct.new.methods & context_attrs.keys
+
+    raise ArgumentError, "#{illegal_attrs.inspect} are keywords that cannot be used as names for form items" unless illegal_attrs.empty?
+
+    OpenStruct.new(context_attrs.merge(addons.symbolize_keys))
+  end
 
    private
     

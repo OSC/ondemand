@@ -31,5 +31,6 @@ esbuild.build({
   format: 'esm',
   outdir: 'app/assets/builds',
   external: ['fs'],
+  minify: process.env.RAILS_ENV == 'production' ? true : false,
 }).catch((e) => console.error(e.message));
 

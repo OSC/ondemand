@@ -44,6 +44,7 @@ class ConfigurationSingleton
       :file_navigator               => false,
       :jobs_app_alpha               => false,
       :files_app_remote_files       => false,
+      :host_based_profiles          => false,
     }.freeze
   end
 
@@ -194,6 +195,15 @@ class ConfigurationSingleton
     xdmod_host.present?
   end
 
+  # Support ticket configuration
+  def support_ticket_config
+    config.fetch(:support_ticket, {})
+  end
+
+  def support_ticket_enabled?
+    !support_ticket_config.empty?
+  end
+
   # Load the dotenv local files first, then the /etc dotenv files and
   # the .env and .env.production or .env.development files.
   #
@@ -231,10 +241,6 @@ class ConfigurationSingleton
 
   def batch_connect_global_cache_enabled?
     to_bool(ENV["OOD_BATCH_CONNECT_CACHE_ATTR_VALUES"] || true )
-  end
-
-  def show_all_apps_link?
-    to_bool(ENV['SHOW_ALL_APPS_LINK'])
   end
 
   def developer_docs_url
@@ -369,7 +375,7 @@ class ConfigurationSingleton
     files.each_with_object({}) do |f, conf|
       begin
         content = ERB.new(f.read, nil, "-").result(binding)
-        yml = YAML.safe_load(content) || {}
+        yml = YAML.safe_load(content, aliases: true) || {}
         conf.deep_merge!(yml.deep_symbolize_keys)
       rescue => e
         Rails.logger.error("Can't read or parse #{f} because of error #{e}")

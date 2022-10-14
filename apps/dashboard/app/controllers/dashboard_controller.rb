@@ -1,3 +1,4 @@
+# The controller for dashboard (root) pages /dashboard
 class DashboardController < ApplicationController
   def index
     begin

@@ -1,4 +1,6 @@
 module ActiveJobs
+  # Utility class for responding to json activejobs requests. This class generates
+  # the resulting json body that the controller will ultimately repond with.
   class JobsJsonRequestHandler
     attr_reader :controller, :params, :response, :filter_id, :cluster_id
 

@@ -1,3 +1,4 @@
+# Job class for local file transfers.
 class TransferLocalJob < ApplicationJob
   queue_as :default
 

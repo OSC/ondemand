@@ -1,3 +1,4 @@
+# Helper for /activejobs pages.
 module ActiveJobsHelper
 
 	def build_ganglia_link( host, start_seconds, report_type, node_num, size )

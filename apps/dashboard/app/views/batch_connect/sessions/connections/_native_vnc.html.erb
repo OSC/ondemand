@@ -1,5 +1,5 @@
 <%# Random port from 10000 - 65535 deterministically generated %>
-<% localport = Digest::MD5.hexdigest("#{connect.host}:#{connect.port}").to_i(16) % 55535 + 10000 %>
+<% localport = Digest::SHA1.hexdigest("#{connect.host}:#{connect.port}").to_i(16) % 55535 + 10000 %>
 
 <% if browser.platform == :windows %>
 

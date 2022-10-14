@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Helper for all pages.
 module ApplicationHelper
   def clusters
     OodCore::Clusters.new(OodAppkit.clusters.select(&:allow?).reject { |c| c.metadata.hidden })
@@ -20,12 +21,13 @@ module ApplicationHelper
   # @param icon [String] favicon icon name (i.e. "refresh" "for "fa "fa-refresh")
   # @param url [#to_s, nil] url to access
   # @param role [String] app role i.e. "vdi", "shell", etc.
-  # @param method [String] change the method used in this link.
+  # @param data [Hash] data parameter for the link_to helper.
   # @return nil if url not set or the HTML string for the bootstrap nav link
-  def nav_link(title, icon, url, target: '', role: nil, method: nil)
+  def nav_link(title, icon, url, new_tab: false, role: nil, data: nil)
     if url
+      icon_uri = URI("fa://#{icon}")
       render partial: 'layouts/nav/link',
-             locals:  { title: title, faicon: icon, url: url.to_s, target: target, role: role, method: method }
+             locals:  { title: title, class: 'dropdown-item', icon_uri: icon_uri, url: url.to_s, new_tab: new_tab, role: role, data: data }
     end
   end
 
@@ -80,7 +82,7 @@ module ApplicationHelper
 
   def profile_link(profile_info)
     profile_id = profile_info[:id]
-    nav_link(profile_info.fetch(:name, profile_id), profile_info.fetch(:icon, "user"), settings_path("settings[profile]" => profile_id), method: "post") if profile_id
+    nav_link(profile_info.fetch(:name, profile_id), profile_info.fetch(:icon, "user"), settings_path("settings[profile]" => profile_id), data: {method: "post"}) if profile_id
   end
 
   def custom_css_paths

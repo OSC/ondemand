@@ -1,3 +1,4 @@
+# Module for all the different Message of the Day (MOTD) formatters.
 module MotdFormatter
   # aliasing motd classes for backwards compatibility 
   MotdFormatterOsc          = MotdFormatter::Osc

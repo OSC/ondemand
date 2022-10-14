@@ -44,8 +44,10 @@
 #     #=> https://example.com:443
 #
 <VirtualHost *:80>
+  ServerName example.com
+
   RewriteEngine On
-  RewriteRule ^(.*) https://example.com:443$1 [R=301,NE,L]
+  RewriteRule ^(.*) https://%{HTTP_HOST}:443$1 [R=301,NE,L]
 </VirtualHost>
 
 # The Open OnDemand portal VirtualHost
@@ -65,8 +67,7 @@
   RewriteCond /var/www/ood/public/maintenance/index.html -f
   RewriteCond /etc/ood/maintenance.enable -f
   RewriteCond %{REQUEST_URI} !/public/maintenance/.*$
-  RewriteRule ^.*$ /public/maintenance/index.html [R=503,L]
-  ErrorDocument 503 /public/maintenance/index.html
+  RewriteRule ^.*$ /public/maintenance/index.html [R=302,L]
 
   TraceEnable off
 
@@ -109,6 +110,8 @@
   #
   SetEnv OOD_PUN_STAGE_CMD "sudo /opt/ood/nginx_stage/sbin/nginx_stage"
 
+  SetEnv OOD_PUN_RAILS_CONFIG_HOSTS "example.com"
+
   #
   # Below is used for sub-uri's this Open OnDemand portal supports
   #
@@ -137,6 +140,8 @@
     AuthType openid-connect
     Require valid-user
 
+    ProxyPreserveHost On
+    ProxyAddHeaders On
     ProxyPassReverse "http://localhost/pun"
 
     # ProxyPassReverseCookieDomain implementation (strip domain)
@@ -188,6 +193,20 @@
     AuthType openid-connect
     Require valid-user
   </Location>
+
+  # Maintenance location
+  #
+  #     https://example.com:443/public/maintenance
+  #     #=> Displays /var/www/ood/public/maintenance/index.html
+  #
+  <Directory "/var/www/ood/public/maintenance">
+    RewriteCond /etc/ood/maintenance.enable !-f
+    ReWriteRule ^.*$ /
+
+    RewriteCond %{REQUEST_URI} !/public/maintenance/index\.html$
+    RewriteRule ^.*$ /public/maintenance/index.html [R=503,L]
+    ErrorDocument 503 /public/maintenance/index.html
+  </Directory>
 
 
 </VirtualHost>

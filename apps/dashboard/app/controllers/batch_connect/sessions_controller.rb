@@ -1,3 +1,4 @@
+# The controller for active batch connect sessions.
 class BatchConnect::SessionsController < ApplicationController
   include BatchConnectConcern
 

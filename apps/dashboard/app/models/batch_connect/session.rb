@@ -1,4 +1,6 @@
 module BatchConnect
+  # An active batch connect session. Once a batch connect app launches, we use
+  # this class to hold it's runtime attributes.
   class Session
     include ActiveModel::Model
     include ActiveModel::Serializers::JSON
@@ -137,6 +139,12 @@ module BatchConnect
       # @return [Session] the session
       def find(id)
         new.from_json(db_root.join(id).read)
+      end
+
+      # Checks if a session exists
+      # @return [boolean]
+      def exist?(id)
+        db_root.join(id).exist?
       end
 
       # How many days before a Session record is considered old and ready to delete
@@ -331,6 +339,10 @@ module BatchConnect
         output_path: output_file,
         shell_path: shell_path
       }.merge opts
+    end
+
+    def vnc?
+      script_type == "vnc" || script_type == "vnc_container"
     end
 
     # Delete this session's job and database record
@@ -550,7 +562,7 @@ module BatchConnect
         connect: running? ? connect.to_h : nil,
         time: info.wallclock_time.to_i / 60     # only update every minute
       }
-      Digest::MD5.hexdigest(hsh.to_json)
+      Digest::SHA1.hexdigest(hsh.to_json)
     end
 
     private

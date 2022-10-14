@@ -7,6 +7,7 @@ class UserConfigurationTest < ActiveSupport::TestCase
     key_2: "default_value_2",
     key_3: "default_value_3",
     key_4: nil,
+    key_array: ["array_value"],
     profiles: {
       profile_test: {
         key_1: "test_value_1",
@@ -33,6 +34,8 @@ class UserConfigurationTest < ActiveSupport::TestCase
     'OOD_NAVBAR_TYPE' => [:navbar_type, "light"],
     'OOD_PINNED_APPS_GROUP_BY' => [:pinned_apps_group_by, "setup-#{SecureRandom.uuid}"],
     'OOD_PUBLIC_URL' => [:public_url, Pathname.new("/#{SecureRandom.uuid}")],
+
+    'SHOW_ALL_APPS_LINK' => [:show_all_apps_link, true],
   }
 
   test "properties expected defaults" do
@@ -53,6 +56,12 @@ class UserConfigurationTest < ActiveSupport::TestCase
       brand_link_active_bg_color: nil,
       navbar_type: "dark",
       pinned_apps_group_by: "",
+
+      show_all_apps_link: false,
+      filter_nav_categories?: false,
+      nav_categories: ["Apps", "Files", "Jobs", "Clusters", "Interactive Apps"],
+      nav_bar: [],
+      help_bar: [],
     }
 
     # ensure all properties are tested
@@ -143,11 +152,48 @@ class UserConfigurationTest < ActiveSupport::TestCase
     assert_equal Pathname.new("/test/valid/path"), target.public_url
   end
 
-  test "profile should delegate to CurrentUser settings" do
-    target = UserConfiguration.new
+  test "filter_nav_categories? should return true when categories is set in config" do
+    Configuration.stubs(:config).returns({nav_categories: []})
+    assert_equal true, UserConfiguration.new.filter_nav_categories?
+  end
+
+  test "filter_nav_categories? should return default value NavConfig.categories_whitelist? when categories is not set in config" do
+    Configuration.stubs(:config).returns({})
+    NavConfig.stubs(:categories_whitelist?).returns(false)
+    assert_equal false, UserConfiguration.new.filter_nav_categories?
+
+    NavConfig.stubs(:categories_whitelist?).returns(true)
+    assert_equal true, UserConfiguration.new.filter_nav_categories?
+  end
+
+  test "profile should delegate to CurrentUser settings when Configuration.host_based_profiles is false" do
+    Configuration.stubs(:host_based_profiles).returns(false)
+    target = UserConfiguration.new(request_hostname: "request_hostname")
     CurrentUser.stubs(:user_settings).returns({profile: "user_settings_profile_value"})
 
     assert_equal :user_settings_profile_value, target.profile
+  end
+
+  test "profile should return nil when when Configuration.host_based_profiles is false and CurrentUser profile is nil" do
+    Configuration.stubs(:host_based_profiles).returns(false)
+    CurrentUser.stubs(:user_settings).returns({})
+    target = UserConfiguration.new
+
+    assert_nil target.profile
+  end
+
+  test "profile should delegate to request_hostname when Configuration.host_based_profiles is true" do
+    Configuration.stubs(:host_based_profiles).returns(true)
+    target = UserConfiguration.new(request_hostname: "request_hostname")
+
+    assert_equal :request_hostname, target.profile
+  end
+
+  test "profile should return nil when when Configuration.host_based_profiles is true and request_hostname is nil" do
+    Configuration.stubs(:host_based_profiles).returns(true)
+    target = UserConfiguration.new
+
+    assert_nil target.profile
   end
 
   test "fetch should use key as symbol" do
@@ -208,6 +254,26 @@ class UserConfigurationTest < ActiveSupport::TestCase
 
     assert_nil target.send(:fetch, nil)
     assert_equal "default_value_argument", target.send(:fetch, nil, "default_value_argument")
+  end
+
+  test "fetch should return nil for undefined keys" do
+    Configuration.stubs(:config).returns(DEFAULT_CONFIG)
+    CurrentUser.stubs(:user_settings).returns({})
+    target = UserConfiguration.new
+
+    assert_nil target.send(:fetch, "missing_key")
+  end
+
+  test "fetch should return objects that cannot be modified" do
+    Configuration.stubs(:config).returns(DEFAULT_CONFIG)
+    CurrentUser.stubs(:user_settings).returns({})
+    target = UserConfiguration.new
+
+    result = target.send(:fetch, "key_array")
+
+    assert_raise FrozenError do
+      result.append("new_value")
+    end
   end
 
   test 'USER_PROPERTIES should respond to env variables when read_from_environment is enabled' do

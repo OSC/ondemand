@@ -1,3 +1,4 @@
+# The controller for activejobs pages /dashboard/activejobs
 class ActiveJobsController < ApplicationController
   include ActiveJobsHelper
   include ActionController::Live

@@ -25,7 +25,16 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     project_path = File.expand_path "test/fixtures/dummy_fs/project"
     project_path2 = Pathname.new("test/fixtures/dummy_fs/project2").expand_path
     missing_path = "/test/fixtures/dummy_fs/missing"
-    OodFilesApp.stubs(:candidate_favorite_paths).returns([FavoritePath.new(scratch_path, title: "Scratch"), project_path, project_path2, missing_path])
+
+    OodFilesApp.stubs(:candidate_favorite_paths).returns(
+      [
+        FavoritePath.new(scratch_path, title: "Scratch"),
+        project_path,
+        project_path2,
+        missing_path,
+        FavoritePath.new("/mybucket", title: "S3", filesystem: "s3")
+      ]
+    )
     
     get root_path
 
@@ -35,7 +44,8 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
       "Home Directory",
       "Scratch #{scratch_path}",
       project_path,
-      project_path2.to_s
+      project_path2.to_s,
+      "S3 /mybucket"
     ], dditems.map { |e| e.gsub(/\s+/, ' ')  }, "Files dropdown item text is incorrect"
 
     dditemurls = dropdown_list_items_urls(dropdown_list('Files'))
@@ -43,7 +53,8 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
       "/pun/sys/files/fs" + Dir.home,
       "/pun/sys/files/fs" + scratch_path,
       "/pun/sys/files/fs" + project_path,
-      "/pun/sys/files/fs" + project_path2.to_s
+      "/pun/sys/files/fs" + project_path2.to_s,
+      "/pun/sys/files/s3/mybucket"
     ], dditemurls, "Files dropdown URLs are incorrect"
   end
 
@@ -158,16 +169,49 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
     NavConfig.stubs(:categories_whitelist?).returns(false)
-    NavConfig.stubs(:categories).returns(["Files", "Jobs", "Clusters", "Interactive Apps"])
+    NavConfig.stubs(:categories).returns(["Jobs", "Interactive Apps", "Files", "Clusters"])
 
     get root_path
     assert_response :success
     assert_select ".navbar-expand-md > #navbar li.dropdown[title]", 6 # +1 here is 'Help'
-    assert_select  dropdown_link(1), text: "Files"
-    assert_select  dropdown_link(2), text: "Jobs"
-    assert_select  dropdown_link(3), text: "Clusters"
-    assert_select  dropdown_link(4), text: "Interactive Apps"
+    assert_select  dropdown_link(1), text: "Jobs"
+    assert_select  dropdown_link(2), text: "Interactive Apps"
+    assert_select  dropdown_link(3), text: "Files"
+    assert_select  dropdown_link(4), text: "Clusters"
     assert_select  dropdown_link(5), text: "Gateway Apps"
+  end
+
+  test "UserConfiguration.categories should filter and order the navigation and have precedence over NavConfig" do
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
+    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
+    NavConfig.stubs(:categories_whitelist?).returns(false)
+    NavConfig.stubs(:categories).returns(["Jobs", "Interactive Apps", "Files", "Clusters"])
+
+    stub_user_configuration({
+      nav_categories: ["Files", "Interactive Apps", "Clusters"]
+    })
+
+    get root_path
+    assert_response :success
+    assert_select ".navbar-expand-md > #navbar li.dropdown[title]", 4 # +1 here is 'Help'
+    assert_select  dropdown_link(1), text: "Files"
+    assert_select  dropdown_link(2), text: "Interactive Apps"
+    assert_select  dropdown_link(3), text: "Clusters"
+  end
+
+  test "should not create app menus if UserConfiguration.categories is empty" do
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
+    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
+    NavConfig.stubs(:categories_whitelist?).returns(false)
+    NavConfig.stubs(:categories).returns(["Jobs", "Interactive Apps", "Files", "Clusters"])
+
+    stub_user_configuration({
+      nav_categories: []
+    })
+
+    get root_path
+    assert_response :success
+    assert_select ".navbar-collapse > .nav li.dropdown[title]", 0
   end
 
   test "verify default values for NavConfig" do

@@ -1,3 +1,5 @@
+# A generic class to map configurations to Ruby runtime objects like Intgers, Strings
+# and Booleans.
 class ConfigurationProperty
 
   def self.with_boolean_mapper(name:, default_value: nil, read_from_env: false, env_names: nil)

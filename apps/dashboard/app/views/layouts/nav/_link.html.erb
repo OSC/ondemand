@@ -2,14 +2,28 @@
 locals:
 title - required - text for the link
 url - required - link url string
-faicon - optional, default "cog" - font awesome icon to use
-target - optional, default "_self" - link target
+class - optional, default "nav-link" - main css class for the link.
+icon_uri - optional, default "fas://cog" - font awesome icon to use
+new_tab - optional, default false - link target
 role - optional, default ""
-method - optional, data-method for the link
+data - optional, data parameter for the link_to helper
 %>
-<%= tag.a href: local_assigns.fetch(:url), target: local_assigns.fetch(:target, '_self'), class: "dropdown-item m-auto #{local_assigns.fetch(:role, nil)}",  'data-method': local_assigns.fetch(:method, nil) do %>
-  <%= tag.i class: "fas fa-fw fa-#{local_assigns.fetch(:faicon, 'cog')}" %>
+<%
+  title = local_assigns.fetch(:title, 'No title')
+  url = local_assigns.fetch(:url)
+%>
+<%=
+  link_to(
+    url,
+    title: title,
+    class: "#{local_assigns.fetch(:class, 'nav-link')} #{local_assigns.fetch(:role, nil)}",
+    target: local_assigns.fetch(:new_tab, false) ? "_blank" : nil,
+    aria: ({ current: ('page' if (current_page?(url))) }),
+    data: local_assigns.fetch(:data, nil)
+  ) do
+%>
+  <%= icon_tag(local_assigns.fetch(:icon_uri, URI("fas://cog"))) %>
   <%= tag.span do %>
-    <%= local_assigns.fetch(:title, 'No title') %>
+    <%= title %>
   <% end %>
 <% end %>

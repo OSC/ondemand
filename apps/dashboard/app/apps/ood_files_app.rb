@@ -1,4 +1,4 @@
-# utility class for dealing with apps that play "files" role
+# Utility class for dealing with apps that play "files" role.
 class OodFilesApp
   class << self
     # an array of Pathname objects to check for the existence of and access to
@@ -18,7 +18,7 @@ class OodFilesApp
   # a link to the user's home directory
   # returns an array of other paths provided as shortcuts to the user
   def favorite_paths
-    @favorite_paths ||= candidate_favorite_paths.select {|p| p.path.directory? && p.path.readable? && p.path.executable? }
+    @favorite_paths ||= candidate_favorite_paths.select {|p| p.remote? || p.path.directory? && p.path.readable? && p.path.executable? }
   end
 
 end

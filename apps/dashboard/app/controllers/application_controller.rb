@@ -1,3 +1,4 @@
+# The parent controller for all other controllers.
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -5,14 +6,19 @@ class ApplicationController < ActionController::Base
 
   before_action :set_user, :set_user_configuration, :set_pinned_apps, :set_nav_groups, :set_announcements
   before_action :set_my_balances, only: [:index, :new, :featured]
-  before_action :set_featured_group
+  before_action :set_featured_group, :set_custom_navigation
 
   def set_user
     @user = CurrentUser
   end
 
   def set_user_configuration
-    @user_configuration ||= UserConfiguration.new
+    @user_configuration ||= UserConfiguration.new(request_hostname: request.hostname)
+  end
+
+  def set_custom_navigation
+    @nav_bar = NavBar.items(@user_configuration.nav_bar)
+    @help_bar = NavBar.items(@user_configuration.help_bar)
   end
 
   def set_nav_groups
@@ -90,10 +96,10 @@ class ApplicationController < ActionController::Base
   private
 
   def filter_groups(groups)
-    if NavConfig.categories_whitelist?
-      OodAppGroup.select(titles: NavConfig.categories, groups: groups)
+    if @user_configuration.filter_nav_categories?
+      OodAppGroup.select(titles: @user_configuration.nav_categories, groups: groups)
     else
-      OodAppGroup.order(titles: NavConfig.categories, groups: groups)
+      OodAppGroup.order(titles: @user_configuration.nav_categories, groups: groups)
     end
   end
 end

@@ -7,14 +7,9 @@ class FilesTest < ApplicationSystemTestCase
   test "visiting files app doesn't raise js errors" do
     visit files_url(Rails.root.to_s)
 
-    messages = page.driver.browser.manage.logs.get(:browser)
+    messages = page.driver.browser.logs.get(:browser)
     content = messages.join("\n")
     assert_equal 0, messages.length, "console error messages include:\n\n#{content}\n\n"
-
-    # problem with using capybara and the Rails system tests:
-    # https://github.com/rails/rails/issues/39987
-    # though supposedly it still works with headless chrome https://github.com/rails/rails/pull/37792
-    # but watching it visually makes it easier to debug
   end
 
   test "visiting files app directory" do
@@ -144,6 +139,81 @@ class FilesTest < ApplicationSystemTestCase
 
       # verify app dir actually deleted
       refute File.exist?(src)
+    end
+  end
+
+  test "uploading files" do
+    Dir.mktmpdir do |dir|
+
+      FileUtils.mkpath File.join(dir, 'foo')
+
+      visit files_url(dir)
+      find('#upload-btn').click
+
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+
+      src_file = 'test/fixtures/files/upload/osc-logo.png'
+      attach_file 'files[]', src_file, visible: false, match: :first
+      find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+      find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
+      assert File.exist?(File.join(dir, File.basename(src_file)))
+
+      find('tbody a', exact_text: 'foo').click
+      # Need to wait until we're in the new directory before clicking upload
+      assert_no_selector 'tbody a', exact_text: 'foo', wait: MAX_WAIT
+
+      find('#upload-btn').click
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+
+      src_file = 'test/fixtures/files/upload/hello-world.c'
+      attach_file 'files[]', src_file, visible: false, match: :first
+      find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+      find('tbody a', exact_text: 'hello-world.c', wait: MAX_WAIT)
+    end
+  end
+
+  test "changing directory" do
+    visit files_url(Rails.root.to_s)
+    find('tbody a', exact_text: 'app')
+    find('tbody a', exact_text: 'config')
+
+    find('#goto-btn').click
+    find('#swal2-input').set(Rails.root.join("app"))
+    find('.swal2-confirm').click
+    find('tbody a', exact_text: 'helpers')
+    find('tbody a', exact_text: 'controllers')
+
+    find('#goto-btn').click
+    find('#swal2-input').set(Rails.root.to_s)
+    find('.swal2-confirm').click
+    find('tbody a', exact_text: 'app')
+    find('tbody a', exact_text: 'config')
+  end
+
+  test "edit file" do
+    OodAppkit.stubs(:files).returns(OodAppkit::Urls::Files.new(title: 'Files', base_url: '/files'))
+    OodAppkit.stubs(:editor).returns(OodAppkit::Urls::Editor.new(title: 'Editor', base_url: '/files'))
+
+    Dir.mktmpdir do |dir|
+      file = File.join(dir, 'foo.txt')
+      FileUtils.touch file
+
+      visit files_url(dir)
+
+      tr = find('a', exact_text: File.basename(file)).ancestor('tr')
+      tr.find('button.dropdown-toggle').click
+      edit_window = window_opened_by { tr.find('.edit-file').click }
+
+      within_window edit_window do
+        find('#editor').click
+        find('textarea.ace_text-input', visible: false).send_keys 'foobar'
+
+        find('.navbar-toggler').click
+        find('#save-button').click
+      end
+
+      sleep 1 # FIXME: should avoid using sleep here
+      assert_equal 'foobar', File.read(file)
     end
   end
 end

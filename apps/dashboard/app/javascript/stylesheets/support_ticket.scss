@@ -1,0 +1,112 @@
+/** FORM */
+label.form-label {
+  font-weight: 700;
+}
+
+input[type="file"] {
+  opacity: 0;
+  height: 0;
+  padding: 0;
+  margin: 0;
+ }
+
+.attachments-add {
+  display: flex;
+  gap: 10px;
+  max-width: 150px;
+  padding: 10px 0;
+  cursor: pointer;
+}
+
+.attachments-add:hover > * {
+  color: #cccccc;
+}
+
+.attachments-add i {
+  font-size: 22px;
+  color: #767676;
+}
+
+.attachments-add span {
+  margin-top: -1px ;
+}
+
+.attachment-input {
+  margin-bottom: 10px;
+}
+
+.attachment-input-content {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 12px;
+}
+
+.attachment-input-content > *:nth-child(1) {
+  flex: 1 1 70%;
+}
+
+.attachment-input-content:hover {
+  border-color: black;
+}
+.attachment-file-label {
+  margin: 0;
+  padding: 6px 0;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.attachment-delete {
+  font-size: 18px;
+  padding: 6px 5px;
+  margin-top: -2px;
+  color: $support_ticket_error;
+  cursor: pointer;
+}
+
+.attachment-delete:hover {
+  color: #e5c7c6;
+}
+
+/** ERRORS */
+.has-error {
+  .form-label {
+    color: $support_ticket_error;
+  }
+
+  .form-control {
+    border-color: $support_ticket_error;
+  }
+
+  .form-control:focus {
+    border-color: #843534;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #ce8483;
+  }
+
+  .help-block {
+    margin-bottom: 0.4rem;
+    color: $support_ticket_error;
+  }
+}
+
+/** CUSTOM FULL PAGE SPINNER*/
+#full-page-spinner {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 10;
+}
+#full-page-spinner .spinner-border{
+  display: block;
+  color: #fff;
+  width: 100px;
+  height: 100px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 40vh;
+}
+body.modal-open {
+  overflow: hidden;
+}

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Parent class for setting FACL permissions on files or directories.
 class Permission
   include ActiveModel::Model
 

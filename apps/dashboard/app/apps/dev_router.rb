@@ -1,3 +1,4 @@
+# The router class for all development apps.
 class DevRouter
   attr_reader :name, :owner, :caption, :category
 

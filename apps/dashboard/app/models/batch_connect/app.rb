@@ -1,6 +1,9 @@
 require "smart_attributes"
 
 module BatchConnect
+  # This is the model representing a batch connect app. It's mostly a data object
+  # holding and interpreting the configurations (notable form.yml.erb) and rendering
+  # submit options based off of what's been chosen by the user.
   class App
     # Router for a deployed batch connect app
     # @return [DevRouter, UsrRouter, SysRouter] router for batch connect app
@@ -238,10 +241,9 @@ module BatchConnect
         hsh = hsh.deep_merge attribute.submit(fmt: fmt)
       end
 
-      ctx_binding = session_context.get_binding
-      ctx_binding.local_variable_set(:staged_root, staged_root.to_s)
-
-      hsh = hsh.deep_merge submit_config(binding: ctx_binding)
+      struct = session_context.to_openstruct(addons: { staged_root: staged_root })
+      ctx_binding = struct.instance_eval { binding }
+      hsh.deep_merge(submit_config(binding: ctx_binding))
 
     # let's write the file out if it's a submit.yml.erb that isn't valid yml
     rescue Psych::SyntaxError => e

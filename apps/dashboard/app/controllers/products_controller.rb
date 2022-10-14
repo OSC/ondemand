@@ -1,3 +1,5 @@
+# The controller for product pages (app development)
+# /dashboard/admin/[dev,usr]/products/<token>.
 class ProductsController < ApplicationController
   # GET /products
   # GET /products.json

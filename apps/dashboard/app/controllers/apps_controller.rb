@@ -1,5 +1,6 @@
 require 'ostruct'
 
+# The controller for apps pages /dashboard/apps
 class AppsController < ApplicationController
 
   def index

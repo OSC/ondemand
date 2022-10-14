@@ -1,3 +1,4 @@
+# Utility class for setting FACL group permissions.
 class GroupPermission < Permission
   class << self
     def all(product)
