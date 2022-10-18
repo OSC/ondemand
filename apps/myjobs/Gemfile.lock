@@ -128,7 +128,7 @@ GEM
     mocha (1.15.0)
     mustache (1.1.1)
     nio4r (2.5.8)
-    nokogiri (1.13.8)
+    nokogiri (1.13.9)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     ood_appkit (2.1.1)
