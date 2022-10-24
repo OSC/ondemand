@@ -136,6 +136,7 @@ attributes:
     options:
       - [ 'Physics 1234', 'physics_1234' ]
       - [ 'Astronomy 5678', 'astronomy_5678' ]
+      - [ 'Economics 8846', 'astronomy-with/other-characters/8846.31.4' ]
   classroom_size:
     widget: select
     options:
@@ -143,10 +144,12 @@ attributes:
       - [
           'medium', 'medium',
           data-option-for-classroom-astronomy-5678: false,
+          data-option-for-classroom-astronomy-with/other-characters/8846.31.4: false,
         ]
       - [
           'large', 'large',
           data-option-for-classroom-astronomy-5678: false,
+          data-option-for-classroom-astronomy-with/other-characters/8846.31.4: false,
         ]
 form:
   - cluster

@@ -26,7 +26,7 @@ const setValueLookup = {};
 const hideLookup = {};
 
 // the regular expression for mountain casing
-const mcRex = /[-_]([a-z])|([_-][0-9])/g;
+const mcRex = /[-_]([a-z])|([_-][0-9])|([\/])/g;
 
 function bcElement(name) {
   return `${bcPrefix}_${name.toLowerCase()}`;
@@ -61,8 +61,14 @@ function shortId(elementId) {
 function mountainCaseWords(str) {
   const lower = str.toLowerCase();
   const first = lower.charAt(0).toUpperCase();
-  const rest = lower.slice(1).replace(mcRex, function(_all, letter, prefixedNumber) {
-    return letter ? letter.toUpperCase() : prefixedNumber.replace('_','-');
+  const rest = lower.slice(1).replace(mcRex, function(_all, letter, prefixedNumber, slash) {
+    if(letter){
+      return letter.toUpperCase();
+    }else if(prefixedNumber){
+      return prefixedNumber.replace('_','-');
+    }else if(slash){
+      return '_';
+    }
   });
 
   return  `${first}${rest}`;
