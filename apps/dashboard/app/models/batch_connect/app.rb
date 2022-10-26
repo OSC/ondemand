@@ -107,6 +107,10 @@ module BatchConnect
       ood_app.manifest.description
     end
 
+    def icon_uri
+      form_config.fetch(:icon_uri, ood_app.icon_uri)
+    end
+
     def caption
       form_config.fetch(:caption, ood_app.caption)
     end
@@ -117,10 +121,11 @@ module BatchConnect
         title: title,
         description: description,
         url: url,
-        icon_uri: ood_app.icon_uri,
+        icon_uri: icon_uri,
         caption: caption,
         new_tab: false,
-        data: preset? ? { 'method': 'post' } : {}
+        data: preset? ? { 'method': 'post' } : {},
+        metadata: form_config[:metadata]
       )
     end
 

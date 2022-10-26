@@ -61,6 +61,12 @@
     height: 1.2em;
     font-size: 6.25rem;
   }
+
+  p.app-description {
+    margin: 0 0 0 10px;
+    text-align: left;
+    color: rgb(108, 117, 125);
+  }
 }
 
 .app-launcher-hover:hover {

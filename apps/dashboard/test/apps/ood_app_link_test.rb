@@ -12,6 +12,7 @@ class OodAppLinkTest < ActiveSupport::TestCase
       caption: "caption",
       new_tab: false,
       data: { method: "post" },
+      metadata: { item1: "value1", item2: "value2" },
     }
   end
 
@@ -32,6 +33,7 @@ class OodAppLinkTest < ActiveSupport::TestCase
     assert_nil result.caption
     assert_equal true,  result.new_tab?
     assert_equal({},  result.data)
+    assert_equal({},  result.metadata)
   end
 
   test "OodAppLink.to_h should create a hash with all link attributes" do
@@ -44,6 +46,7 @@ class OodAppLinkTest < ActiveSupport::TestCase
     assert_equal "caption",  result[:caption]
     assert_equal false,  result[:new_tab]
     assert_equal({ method: "post" },  result[:data])
+    assert_equal({ item1: "value1", item2: "value2" }, result[:metadata])
   end
 
   test "OodAppLink.categorize should create an OodAppLink with category and subcategory" do
@@ -62,6 +65,7 @@ class OodAppLinkTest < ActiveSupport::TestCase
     assert_equal "caption",  link.caption
     assert_equal false,  link.new_tab?
     assert_equal({ method: "post" },  link.data)
+    assert_equal({ item1: "value1", item2: "value2" }, link.metadata)
   end
 
 end

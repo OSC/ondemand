@@ -1,5 +1,19 @@
 <%- link = app.links.first -%>
 <%- link_data = {:method => "get"}.merge link.data -%>
+<%- pinned_app_data = link.metadata.fetch(:pinned_app, {}) -%>
+<%- Rails.logger.info "Template: #{link.metadata}" -%>
+<style>
+
+    p.app-title {
+        margin: 0;
+    }
+
+    p.app-description {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 300;
+    }
+</style>
 <div class="col-sm-3 col-md-3 app-launcher-container">
   <div class="app-launcher app-launcher-hover" data-toggle="launcher-button">
   <%=
@@ -11,16 +25,18 @@
     ) do
   %>
     <div class="center-block text-center">
-      <%= icon_tag(link.icon_uri) %>
-      <%= content_tag(:p, link.title) %>
-      <%=
-        content_tag(
-          :p,
-          content_tag(:span, link.caption),
-          class: "text-muted",
-          style: "margin-top: 20px"
-        ) if link.caption
-      %>
+      <%= icon_tag(URI(pinned_app_data.fetch(:icon_uri, link.icon_uri).to_s)) %>
+      <%= content_tag(:p, pinned_app_data.fetch(:title, link.title), class: "app-title") %>
+
+      <% if pinned_app_data.blank? %>
+        <%= content_tag(:p, content_tag(:span, link.caption), class: "text-muted", style: "margin-top: 20px") if link.caption %>
+      <% else %>
+        <div class="mt-2 mb-1">
+        <%= content_tag(:p, pinned_app_data[:p1], class: "app-description text-muted") if pinned_app_data[:p1] %>
+        <%= content_tag(:p, pinned_app_data[:p2], class: "app-description text-muted") if pinned_app_data[:p2] %>
+        <%= content_tag(:p, pinned_app_data[:p3], class: "app-description text-muted") if pinned_app_data[:p3] %>
+        </div>
+      <% end %>
     </div>
   <% end %>
   </div>

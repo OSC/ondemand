@@ -1,6 +1,8 @@
 ---
-caption: 'gnome desktop on the owens cluster'
 title: "Owens Desktop"
+description: "Owens Description"
+icon_uri: fa://clock
+caption: 'gnome desktop on the owens cluster'
 cluster: "owens"
 attributes:
   desktop: "gnome"

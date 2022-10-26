@@ -1,8 +1,8 @@
 ---
-description: |
-  This app will launch an interactive desktop on one or more compute nodes. You
-  will have full access to the resources these nodes provide. This is analogous
-  to an interctive batch job.
+description: BC with sub apps description
+metadata:
+  key1: "value1"
+  key2: "value2"
 
 attributes:
   desktop: "mate"
