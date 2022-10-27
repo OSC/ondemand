@@ -58,6 +58,11 @@ class ConfigurationSingleton
     to_bool(ENV.fetch('OOD_SHOW_JOB_OPTIONS_ACCOUNT_FIELD', true))
   end
 
+  # Override variable for (not) showing job array in the job composer
+  def hide_job_arrays?
+    to_bool(ENV.fetch('OOD_HIDE_JOB_ARRAYS', false))
+  end
+
   # Load the dotenv local files first, then the /etc dotenv files and
   # the .env and .env.production or .env.development files.
   #
