@@ -5,7 +5,7 @@
 class SupportTicket
   include ActiveModel::Model
 
-  attr_accessor :username, :email, :cc, :subject, :session_id, :description, :attachments, :session
+  attr_accessor :username, :email, :cc, :subject, :session_id, :description, :attachments, :session, :queue
 
   validates :username, presence: { message: I18n.t('dashboard.support_ticket.validation.required.username') }
   validates :email, presence: { message: I18n.t('dashboard.support_ticket.validation.required.email') }

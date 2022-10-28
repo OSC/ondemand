@@ -230,3 +230,6 @@ en:
         size:
           attachments: "Attachments are invalid. Maximum attachment size is %{max}"
           attachments_js: "Max attachment size is %{max}. Selected file size is %{size}"
+
+      rt:
+        creation_success: "Support ticket created in RequestTracker system. TicketId: %{ticket_id}"

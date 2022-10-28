@@ -44,6 +44,7 @@ class SupportTicketController < ApplicationController
   def create_service_class
     # Supported delivery mechanism
     return SupportTicketEmailService.new if ::Configuration.support_ticket_config[:email]
+    return SupportTicketRtService.new if ::Configuration.support_ticket_config[:rt_api]
 
     raise StandardError, 'No support ticket service class configured'
   end

@@ -1,19 +1,22 @@
 # frozen_string_literal: true
 
-# Service class responsible to create a support ticket and delivery it via email
+# Service class responsible to create a support ticket and delivery it via request tracker API
 #
 # It implements the support ticket interface as defined in the SupportTicketController
-class SupportTicketEmailService
+class SupportTicketRtService
   # Creates a support ticket model with default data.
-  # will load an interactive session if a session_id provided in the request parameters.
+  # Will load an interactive session if a session_id provided in the request parameters.
+  # Accepts a queue parameter to override the default. Useful for testing.
   #
   # @param [Hash] request_params Request data sent to the controller
   #
   # @return [SupportTicket] support_ticket model
-  def default_support_ticket(request_params)
-    email_service_config = ::Configuration.support_ticket_config.fetch(:email, {})
-    defaults = email_service_config.fetch(:defaults, {})
-    defaults[:session_id] = request_params[:session_id]
+  def default_support_ticket(params)
+    defaults = {}.tap do |defaults|
+      defaults[:session_id] = params[:session_id]
+      defaults[:queue] = params[:queue]
+    end
+
     support_ticket = SupportTicket.new(defaults)
     set_session(support_ticket)
   end
@@ -27,24 +30,19 @@ class SupportTicketEmailService
   def validate_support_ticket(request_data = {})
     support_ticket = SupportTicket.new(request_data)
     set_session(support_ticket)
-    support_ticket.tap{|ticket| ticket.validate }
+    support_ticket.tap(&:validate)
   end
 
-  # Sends an email with the support ticket data
+  # Creates a support ticket in the request tracker system configured
   #
   # @param [SupportTicket] support_ticket support ticket created in validate_support_ticket
   #
   # @return [String] success message
   def deliver_support_ticket(support_ticket)
-    email_service_config = ::Configuration.support_ticket_config.fetch(:email, {})
-
-    context = OpenStruct.new({
-                               support_ticket: support_ticket
-                             })
-
-    SupportTicketMailer.support_email(context).deliver_now
-    email_service_config.fetch(:success_message,
-                               I18n.t('dashboard.support_ticket.creation_success', to: email_service_config.fetch(:to)))
+    service_config = ::Configuration.support_ticket_config.fetch(:rt_api, {})
+    rts = RequestTrackerService.new
+    ticket_id = rts.create_ticket(support_ticket)
+    service_config.fetch(:success_message, I18n.t('dashboard.support_ticket.rt.creation_success', ticket_id: ticket_id))
   end
 
   private

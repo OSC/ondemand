@@ -37,6 +37,7 @@
   <div id="form-container" class="mb-5">
     <form id="new_support_ticket" role="form" novalidate action="<%= support_path %>" accept-charset="UTF-8" method="post" enctype="multipart/form-data">
       <input type="hidden" name="<%= request_forgery_protection_token %>" value="<%= form_authenticity_token %>" />
+      <input type="hidden" name="support_ticket[queue]" id="queue" value="<%= @support_ticket.queue %>" />
 
       <div class="form-group">
         <label class="form-label" for="username">User name</label>
