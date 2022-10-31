@@ -11,11 +11,9 @@ class SupportTicket
 
   validate :support_ticket_validation
 
-  DEFAULT_FIELDS = [:username, :email, :cc, :subject, :session_id, :session_description, :attachments, :description, :queue]
-
   def self.from_config(attributes_config)
     local_opts = attributes_config.fetch(:attributes, {})
-    attrib_list = attributes_config.fetch(:form, DEFAULT_FIELDS)
+    attrib_list = attributes_config.fetch(:form, default_opts.keys)
     Rails.logger.info "SupportTicket defined attributes: #{attrib_list}"
 
     attributes = attrib_list.map do |attribute_id|
