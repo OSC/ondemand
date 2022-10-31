@@ -92,7 +92,7 @@ GEM
     crass (1.0.6)
     cssbundling-rails (1.1.1)
       railties (>= 6.0.0)
-    dalli (3.2.2)
+    dalli (3.2.3)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.8.1)
