@@ -15,6 +15,7 @@ class SupportTicketRtServiceTest < ActiveSupport::TestCase
       session_id: "123456",
       queue: "General"
     }
+    @session_mock = stub({title: 'session_title', job_id: '1234', status: "Running", created_at: nil})
   end
 
   test "default_support_ticket should return a SupportTicket model" do
@@ -23,13 +24,12 @@ class SupportTicketRtServiceTest < ActiveSupport::TestCase
   end
 
   test "default_support_ticket should set a session when session_id provided" do
-    session_mock = stub("session")
     BatchConnect::Session.expects(:exist?).with("1234").returns(true)
-    BatchConnect::Session.expects(:find).with("1234").returns(session_mock)
+    BatchConnect::Session.expects(:find).with("1234").returns(@session_mock)
     result = @target.default_support_ticket({session_id: "1234"})
 
     assert_equal "1234", result.session_id
-    assert_equal session_mock, result.session
+    assert_equal 'session_title(1234) - Running - N/A', result.session_description
   end
 
   test "default_support_ticket should set queue when provided" do
@@ -57,13 +57,12 @@ class SupportTicketRtServiceTest < ActiveSupport::TestCase
   end
 
   test "validate_support_ticket should set a session when session_id provided" do
-    session_mock = stub("session")
     BatchConnect::Session.expects(:exist?).with("1234").returns(true)
-    BatchConnect::Session.expects(:find).with("1234").returns(session_mock)
+    BatchConnect::Session.expects(:find).with("1234").returns(@session_mock)
     result = @target.validate_support_ticket({session_id: "1234"})
 
     assert_equal "1234", result.session_id
-    assert_equal session_mock, result.session
+    assert_equal 'session_title(1234) - Running - N/A', result.session_description
   end
 
   test "deliver_support_ticket should delegate to RequestTrackerService class and return success message" do

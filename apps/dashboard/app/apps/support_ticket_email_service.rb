@@ -11,10 +11,9 @@ class SupportTicketEmailService
   #
   # @return [SupportTicket] support_ticket model
   def default_support_ticket(request_params)
-    email_service_config = ::Configuration.support_ticket_config.fetch(:email, {})
-    defaults = email_service_config.fetch(:defaults, {})
-    defaults[:session_id] = request_params[:session_id]
-    support_ticket = SupportTicket.new(defaults)
+    support_ticket = SupportTicket.from_config(::Configuration.support_ticket_config)
+    support_ticket.username = CurrentUser.name
+    support_ticket.session_id = request_params[:session_id]
     set_session(support_ticket)
   end
 
@@ -25,9 +24,10 @@ class SupportTicketEmailService
   #
   # @return [SupportTicket] support_ticket model
   def validate_support_ticket(request_data = {})
-    support_ticket = SupportTicket.new(request_data)
+    support_ticket = SupportTicket.from_config(::Configuration.support_ticket_config)
+    support_ticket.attributes = request_data
     set_session(support_ticket)
-    support_ticket.tap{|ticket| ticket.validate }
+    support_ticket.tap(&:validate)
   end
 
   # Sends an email with the support ticket data
@@ -37,9 +37,10 @@ class SupportTicketEmailService
   # @return [String] success message
   def deliver_support_ticket(support_ticket)
     email_service_config = ::Configuration.support_ticket_config.fetch(:email, {})
-
+    session = get_session(support_ticket)
     context = OpenStruct.new({
-                               support_ticket: support_ticket
+                               support_ticket: support_ticket,
+                               session: session,
                              })
 
     SupportTicketMailer.support_email(context).deliver_now
@@ -50,9 +51,18 @@ class SupportTicketEmailService
   private
 
   def set_session(support_ticket)
-    if !support_ticket.session_id.blank? && BatchConnect::Session.exist?(support_ticket.session_id)
-      support_ticket.session = BatchConnect::Session.find(support_ticket.session_id)
+    session = get_session(support_ticket)
+    if session
+      created_at = session.created_at ? Time.at(session.created_at).localtime.strftime("%Y-%m-%d %H:%M:%S %Z") : "N/A"
+      support_ticket.session_description = "#{session.title}(#{session.job_id}) - #{session.status} - #{created_at}"
     end
+
     support_ticket
+  end
+
+  def get_session(support_ticket)
+    if !support_ticket.session_id.blank? && BatchConnect::Session.exist?(support_ticket.session_id)
+      BatchConnect::Session.find(support_ticket.session_id)
+    end
   end
 end

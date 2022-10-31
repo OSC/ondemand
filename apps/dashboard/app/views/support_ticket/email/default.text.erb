@@ -1,9 +1,9 @@
 Support ticket submitted from the dashboard application
-<% if @context.support_ticket.session %>
-  User selected session: <%= @context.support_ticket.session.id %>
-  Title: <%=@context.support_ticket.session.title %>
-  Job id: <%= @context.support_ticket.session.job_id %>
-  Status: <%= @context.support_ticket.session.status.to_sym %>
+<% if @context.session %>
+  User selected session: <%= @context.session.id %>
+  Title: <%=@context.session.title %>
+  Job id: <%= @context.session.job_id %>
+  Status: <%= @context.session.status.to_sym %>
 <% end %>
 
 Description:
@@ -11,17 +11,17 @@ Description:
 
 -------------------------------------
 Interactive Session Information:
-<% if @context.support_ticket.session %>
+<% if @context.session %>
   <%= JSON.pretty_generate(
         {
-          id: @context.support_ticket.session.id,
-          clusterId: @context.support_ticket.session.cluster_id,
-          jobId: @context.support_ticket.session.job_id,
-          createdAt: Time.at(@context.support_ticket.session.created_at).iso8601,
-          token: @context.support_ticket.session.token,
-          title: @context.support_ticket.session.title,
-          info: filter_session_parameters(@context.support_ticket.session.info),
-          deletedInDays: @context.support_ticket.session.days_till_old,
+          id: @context.session.id,
+          clusterId: @context.session.cluster_id,
+          jobId: @context.session.job_id,
+          createdAt: Time.at(@context.session.created_at).iso8601,
+          token: @context.session.token,
+          title: @context.session.title,
+          info: filter_session_parameters(@context.session.info),
+          deletedInDays: @context.session.days_till_old,
         })
   %>
 <% else %>

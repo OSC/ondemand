@@ -216,19 +216,13 @@ en:
       generic_error: "There was an error processing your request: %{error}"
       validation_error: "Invalid Request. Please review the error messages below"
       validation:
-        required:
-          username: "The username is required"
-          email: "The email is required"
-          subject: "The subject is required"
-          description: "The description is required"
-        format:
-          email: "The email format is invalid. Expected a valid email address"
-          cc: "The cc format is invalid. Expected a valid email address"
+        required: "The %{id} is required"
+        email: "The %{id} format is invalid. Expected a valid email address"
+        attachments_items: "The %{id} are invalid. %{items} added, maximum number of attachments is %{max}"
+        attachments_size: "The %{id} are invalid. Maximum attachment size is %{max}"
         items:
-          attachments: "Attachments are invalid. %{items} added, maximum number of attachments is %{max}"
           attachments_js: "No more attachments allowed"
         size:
-          attachments: "Attachments are invalid. Maximum attachment size is %{max}"
           attachments_js: "Max attachment size is %{max}. Selected file size is %{size}"
 
       rt:

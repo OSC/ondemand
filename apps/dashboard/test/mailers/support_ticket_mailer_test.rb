@@ -9,14 +9,15 @@ class SupportTicketMailerTest < ActionMailer::TestCase
       }
     })
 
-    @support_ticket = SupportTicket.new({
-     email: "user_email@example.com",
-     cc: "cc@example.com",
-     subject: "email subject",
-   })
+    @support_ticket = SupportTicket.from_config({})
+    @support_ticket.attributes = {
+      email: "user_email@example.com",
+      cc: "cc@example.com",
+      subject: "email subject",
+    }
     @context = OpenStruct.new({
-     support_ticket: @support_ticket,
-   })
+      support_ticket: @support_ticket,
+    })
   end
 
   test 'generates email with all expected fields' do

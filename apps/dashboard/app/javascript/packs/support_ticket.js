@@ -30,14 +30,14 @@ jQuery(function (){
     }
 
     function clearAttachmentsError() {
-        const $attachmentsElement = $("#attachments");
-        $attachmentsElement.parent().removeClass("has-error");
-        $("#attachments_error").remove();
+        const $errorElement = $("#attachments_error");
+        $errorElement.parent().removeClass("has-error");
+        $errorElement.remove();
     }
 
     function showAttachmentsError(message) {
-        const $attachmentsElement = $("#attachments");
-        $("#attachments").parent().addClass("has-error");
+        const $attachmentsElement = $("[data-toggle='attachments-error']");
+        $attachmentsElement.parent().addClass("has-error");
         $attachmentsElement.after(`<div class="help-block" id="attachments_error">${message}</div>`);
     }
 
@@ -73,7 +73,7 @@ jQuery(function (){
         const newAttachmentContainerId = createId();
         const newFileInputId = createId();
         const newAttachment =
-            `<div class="attachment-input" id="${newAttachmentContainerId}">
+        `<div class="attachment-input" id="${newAttachmentContainerId}">
            <div class="form-control attachment-input-content">
               <label class="attachment-file-label" for="${newFileInputId}">No file selected</label>
               <span class="attachment-delete" data-toggle="attachment-delete" data-attachment-container="${newAttachmentContainerId}" title="Delete attachment"><i class="fas fa-trash-alt"></i></span>
