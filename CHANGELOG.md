@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Added RequestTracker implementation to create support tickets (#2318)\
+Add ENV override for showing/hiding job arrays (#2327)\
+ternary should have a space here (#2339)\
+Dynanic batch connect with slashes bugfix (#2330)\
+update dependencies (#2335)
 
 ### Changed
 
