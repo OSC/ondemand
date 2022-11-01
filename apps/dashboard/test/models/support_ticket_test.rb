@@ -11,12 +11,20 @@ class SupportTicketTest < ActiveSupport::TestCase
       subject: "support ticket subject",
       description: "support ticket description",
       attachments: [attachment_mock, attachment_mock],
-      session_id: "123456"
+      session_id: "123456",
+      session_description: "session description",
+      queue: "queue_name"
     }
   end
 
+  test "configures default fields" do
+    target = SupportTicket.from_config({})
+    assert_equal %w[username email cc subject session_id session_description attachments description queue], target.attributes.map(&:id)
+  end
+
   test "sets all fields from hash and is valid" do
-    target = SupportTicket.new(@valid_hash)
+    target = SupportTicket.from_config({})
+    target.attributes = @valid_hash
 
     assert_equal "username", target.username
     assert_equal "test@example.com", target.email
@@ -25,22 +33,34 @@ class SupportTicketTest < ActiveSupport::TestCase
     assert_equal "support ticket description", target.description
     assert_equal @valid_hash[:attachments], target.attachments
     assert_equal "123456", target.session_id
+    assert_equal "session description", target.session_description
+    assert_equal "queue_name", target.queue
 
     assert_equal true, target.valid?
+    assert_equal true, target.errors.empty?
+  end
+
+  test "configures custom fields" do
+    config = {
+      form: ["email", "custom1", "custom2"]
+    }
+    target = SupportTicket.from_config(config)
+    assert_equal %w[email custom1 custom2], target.attributes.map(&:id)
   end
 
   test "username is required" do
     @valid_hash[:username] = nil
-    target = SupportTicket.new(@valid_hash)
+    target = SupportTicket.from_config({})
+    target.attributes = @valid_hash
 
     assert_equal false, target.valid?
     assert_equal false, target.errors[:username].blank?
-    puts target.errors
   end
 
   test "email is required" do
     @valid_hash[:email] = nil
-    target = SupportTicket.new(@valid_hash)
+    target = SupportTicket.from_config({})
+    target.attributes = @valid_hash
 
     assert_equal false, target.valid?
     assert_equal false, target.errors[:email].blank?
@@ -48,7 +68,8 @@ class SupportTicketTest < ActiveSupport::TestCase
 
   test "email should be an email address" do
     @valid_hash[:email] = "no_email"
-    target = SupportTicket.new(@valid_hash)
+    target = SupportTicket.from_config({})
+    target.attributes = @valid_hash
 
     assert_equal false, target.valid?
     assert_equal false, target.errors[:email].blank?
@@ -56,7 +77,8 @@ class SupportTicketTest < ActiveSupport::TestCase
 
   test "cc should be an email address if provided" do
     @valid_hash[:cc] = "no_email"
-    target = SupportTicket.new(@valid_hash)
+    target = SupportTicket.from_config({})
+    target.attributes = @valid_hash
 
     assert_equal false, target.valid?
     assert_equal false, target.errors[:cc].blank?
@@ -64,7 +86,8 @@ class SupportTicketTest < ActiveSupport::TestCase
 
   test "subject is required" do
     @valid_hash[:subject] = nil
-    target = SupportTicket.new(@valid_hash)
+    target = SupportTicket.from_config({})
+    target.attributes = @valid_hash
 
     assert_equal false, target.valid?
     assert_equal false, target.errors[:subject].blank?
@@ -72,7 +95,8 @@ class SupportTicketTest < ActiveSupport::TestCase
 
   test "description is required" do
     @valid_hash[:description] = nil
-    target = SupportTicket.new(@valid_hash)
+    target = SupportTicket.from_config({})
+    target.attributes = @valid_hash
 
     assert_equal false, target.valid?
     assert_equal false, target.errors[:description].blank?
@@ -81,7 +105,8 @@ class SupportTicketTest < ActiveSupport::TestCase
   test "only 4 attachments are allowed" do
     attachment_mock = stub({size: 100})
     @valid_hash[:attachments] = [attachment_mock, attachment_mock, attachment_mock, attachment_mock, attachment_mock]
-    target = SupportTicket.new(@valid_hash)
+    target = SupportTicket.from_config({})
+    target.attributes = @valid_hash
 
     assert_equal false, target.valid?
     assert_equal false, target.errors[:attachments].blank?
@@ -91,7 +116,8 @@ class SupportTicketTest < ActiveSupport::TestCase
     #10MB = 10485760
     attachment_mock = stub({size: 10485760})
     @valid_hash[:attachments] = [attachment_mock]
-    target = SupportTicket.new(@valid_hash)
+    target = SupportTicket.from_config({})
+    target.attributes = @valid_hash
 
     assert_equal false, target.valid?
     assert_equal false, target.errors[:attachments].blank?

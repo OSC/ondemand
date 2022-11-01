@@ -13,11 +13,11 @@ class RequestTrackerService
     end
   end
 
-  def create_ticket(support_ticket_request)
+  def create_ticket(support_ticket_request, session)
     rt_config = ::Configuration.support_ticket_config.fetch(:rt_api, {})
 
     ticket_template_context = {
-      session:     support_ticket_request.session,
+      session:     session,
       description: support_ticket_request.description
     }
 

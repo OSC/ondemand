@@ -12,7 +12,7 @@ class SupportTicketMailer < ActionMailer::Base
 
     @context.support_ticket.attachments.to_a.each do |request_file|
       attachments[request_file.original_filename] = File.read(request_file.tempfile)
-    end
+    end unless @context.support_ticket.attachments.blank?
 
     email_service_config = ::Configuration.support_ticket_config.fetch(:email, {})
 

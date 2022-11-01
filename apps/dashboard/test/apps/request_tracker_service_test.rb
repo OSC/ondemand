@@ -35,7 +35,8 @@ class RequestTrackerServiceTest < ActiveSupport::TestCase
     }
     Configuration.stubs(:support_ticket_config).returns(config)
 
-    support_ticket = SupportTicket.new(email: "email@example.com", cc: "cc@example.com", subject: "Subject")
+    support_ticket = SupportTicket.from_config({})
+    support_ticket.attributes = {email: "email@example.com", cc: "cc@example.com", subject: "Subject"}
 
     mock_rt_client = mock("rt_client")
     mock_rt_client.expects(:create).with do |param_hash|
@@ -47,10 +48,10 @@ class RequestTrackerServiceTest < ActiveSupport::TestCase
     end
     .returns("support_ticket_id")
 
-    BatchConnect::Session.stubs(:find).returns(mock("session"))
+    session = BatchConnect::Session.new(id: 'session', created_at: Time.now)
     RequestTrackerClient.stubs(:create).returns(mock_rt_client)
 
-    result = RequestTrackerService.new.create_ticket(support_ticket)
+    result = RequestTrackerService.new.create_ticket(support_ticket, session)
 
     assert_equal "support_ticket_id", result
   end
@@ -64,7 +65,8 @@ class RequestTrackerServiceTest < ActiveSupport::TestCase
     }
     Configuration.stubs(:support_ticket_config).returns(config)
 
-    support_ticket = SupportTicket.new(email: "email@example.com", cc: "cc@example.com", subject: "Subject", queue: "Alternate")
+    support_ticket = SupportTicket.from_config({})
+    support_ticket.attributes = {email: "email@example.com", cc: "cc@example.com", subject: "Subject", queue: "Alternate"}
 
     mock_rt_client = mock("rt_client")
     mock_rt_client.expects(:create).with do |param_hash|
@@ -76,10 +78,10 @@ class RequestTrackerServiceTest < ActiveSupport::TestCase
     end
     .returns("support_ticket_id")
 
-    BatchConnect::Session.stubs(:find).returns(mock("session"))
+    session = BatchConnect::Session.new(id: 'session', created_at: Time.now)
     RequestTrackerClient.stubs(:create).returns(mock_rt_client)
 
-    result = RequestTrackerService.new.create_ticket(support_ticket)
+    result = RequestTrackerService.new.create_ticket(support_ticket, session)
 
     assert_equal "support_ticket_id", result
   end
@@ -93,9 +95,11 @@ class RequestTrackerServiceTest < ActiveSupport::TestCase
     }
     Configuration.stubs(:support_ticket_config).returns(config)
 
-    support_ticket = SupportTicket.new(email: "email@example.com", cc: "cc@example.com", subject: "Subject", queue: "Not_A_Queue")
+    support_ticket = SupportTicket.from_config({})
+    support_ticket.attributes = {email: "email@example.com", cc: "cc@example.com", subject: "Subject", queue: "Not_A_Queue"}
+    session = BatchConnect::Session.new(id: 'session', created_at: Time.now)
 
-    assert_raises(ArgumentError) { RequestTrackerService.new.create_ticket(support_ticket) }
+    assert_raises(ArgumentError) { RequestTrackerService.new.create_ticket(support_ticket, session) }
 
   end
 end

@@ -19,6 +19,8 @@ class SupportTicketEmailServiceTest < ActiveSupport::TestCase
       attachments: [attachment_mock, attachment_mock],
       session_id: "123456"
     }
+
+    @session_mock = stub({title: 'session_title', job_id: '1234', status: "Running", created_at: nil})
   end
 
   test "default_support_ticket should return a SupportTicket model" do
@@ -26,14 +28,13 @@ class SupportTicketEmailServiceTest < ActiveSupport::TestCase
     assert_equal "SupportTicket", result.class.name
   end
 
-  test "default_support_ticket should set a session when session_id provided" do
-    session_mock = stub("session")
+  test "default_support_ticket should set session_description when session_id provided" do
     BatchConnect::Session.expects(:exist?).with("1234").returns(true)
-    BatchConnect::Session.expects(:find).with("1234").returns(session_mock)
+    BatchConnect::Session.expects(:find).with("1234").returns(@session_mock)
     result = @target.default_support_ticket({session_id: "1234"})
 
     assert_equal "1234", result.session_id
-    assert_equal session_mock, result.session
+    assert_equal 'session_title(1234) - Running - N/A', result.session_description
   end
 
   test "validate_support_ticket should return a SupportTicket model" do
@@ -53,14 +54,13 @@ class SupportTicketEmailServiceTest < ActiveSupport::TestCase
     assert_equal "123456", result.session_id
   end
 
-  test "validate_support_ticket should set a session when session_id provided" do
-    session_mock = stub("session")
+  test "validate_support_ticket should set session_description when session_id provided" do
     BatchConnect::Session.expects(:exist?).with("1234").returns(true)
-    BatchConnect::Session.expects(:find).with("1234").returns(session_mock)
+    BatchConnect::Session.expects(:find).with("1234").returns(@session_mock)
     result = @target.validate_support_ticket({session_id: "1234"})
 
     assert_equal "1234", result.session_id
-    assert_equal session_mock, result.session
+    assert_equal 'session_title(1234) - Running - N/A', result.session_description
   end
 
   test "validate_support_ticket should set errors if any" do

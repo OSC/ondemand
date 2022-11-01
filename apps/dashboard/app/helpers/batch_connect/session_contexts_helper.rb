@@ -2,6 +2,7 @@
 module BatchConnect::SessionContextsHelper
   def create_widget(form, attrib, format: nil)
     return '' if attrib.fixed?
+    return '' if attrib.hide_when_empty? && attrib.value.blank?
 
     widget = attrib.widget
     field_options = attrib.field_options(fmt: format)
@@ -28,6 +29,8 @@ module BatchConnect::SessionContextsHelper
       else
         form.send widget, attrib.id, all_options
       end
+    when 'file_attachments'
+      render :partial => "batch_connect/session_contexts/file_attachments", :locals => { form: form, attrib: attrib, field_options: field_options }
     else
       form.send widget, attrib.id, all_options
     end

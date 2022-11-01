@@ -20,21 +20,19 @@ class SupportTicketIntegrationTest < ActionDispatch::IntegrationTest
     get support_path
     assert :success
 
-    assert_select "input[type='text'][id='username']", 1
+    assert_select "input[type='hidden'][id='support_ticket_session_id']", 1
+    assert_select "input[type='hidden'][id='support_ticket_queue']", 1
 
     ["username", "email", "cc", "subject"].each do |field_id|
-      assert_select "label[for='#{field_id}']", 1
-      assert_select "input[id='#{field_id}']", 1
+      assert_select "label[for='support_ticket_#{field_id}']", 1
+      assert_select "input[id='support_ticket_#{field_id}']", 1
     end
-    assert_select "label[for='attachments']", 1
-    assert_select "label[for='description']", 1
-    assert_select "textarea[id='description']", 1
+    assert_select "label[for='support_ticket_attachments']", 1
+    assert_select "p[id='support_ticket_attachments']", 1
+    assert_select "label[for='support_ticket_description']", 1
+    assert_select "textarea[id='support_ticket_description']", 1
 
     assert_select "input[type='submit']", 1
-
-    doc = Nokogiri::XML(@response.body)
-    @token = doc.xpath("/html/head/meta[@name='csrf-token']/@content").to_s
-    @headers = { 'X-CSRF-Token' => @token }
   end
 
   test "POST should should create support ticket via email" do
