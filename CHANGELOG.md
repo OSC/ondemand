@@ -61,6 +61,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - NavConfig settings have been deprecated and replaced in [2221](https://github.com/OSC/ondemand/pull/2221).
   - The Navbar can be completely defined in [2270](https://github.com/OSC/ondemand/pull/2270).
 - Support for opening support tickets in [2292](https://github.com/OSC/ondemand/pull/2292).
+  - With support for RT in [2318](https://github.com/OSC/ondemand/pull/2318).
+- Added ENV override for showing/hiding job arrays in [2327](https://github.com/OSC/ondemand/pull/2327).
 
 ### Fixed
 
