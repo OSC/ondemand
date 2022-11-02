@@ -27,7 +27,10 @@ class ApplicationController < ActionController::Base
   end
 
   def set_featured_group
-    @featured_group = filter_groups(pinned_app_group).first # 1 single group called 'Apps'
+    apps = AppRecategorizer.recategorize(@pinned_apps, I18n.t("dashboard.pinned_apps_category"), I18n.t('dashboard.pinned_apps_title'))
+    group = OodAppGroup.groups_for(apps: apps, nav_limit: @user_configuration.pinned_apps_menu_length)
+
+    @featured_group = filter_groups(group).first # 1 single group called 'Apps'
   end
 
   def sys_apps
@@ -60,10 +63,6 @@ class ApplicationController < ActionController::Base
 
   def sys_app_groups
     OodAppGroup.groups_for(apps: nav_sys_apps)
-  end
-
-  def pinned_app_group
-    OodAppGroup.groups_for(apps: @pinned_apps, nav_limit: @user_configuration.pinned_apps_menu_length)
   end
 
   def set_pinned_apps
