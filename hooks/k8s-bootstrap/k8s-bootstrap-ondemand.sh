@@ -1,12 +1,12 @@
 #!/bin/bash
 
 export ONDEMAND_USERNAME="$1"
-if [ "x${ONDEMAND_USERNAME}" = "x" ]; then
+if [ "${ONDEMAND_USERNAME}" = "" ]; then
   echo "Must specify username"
   exit 1
 fi
 HOOK_ENV="$2"
-if [ "x${HOOK_ENV}" = "x" ]; then
+if [ "${HOOK_ENV}" = "" ]; then
   echo "Must specify hook.env path"
   exit 1
 fi
