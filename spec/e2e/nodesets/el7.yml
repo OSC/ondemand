@@ -9,7 +9,9 @@ HOSTS:
     docker_cmd:
       - '/usr/sbin/init'
     docker_image_commands:
-      - 'yum install -y yum-utils wget which cronie iproute initscripts'
+      - 'yum install -y yum-utils wget which cronie iproute initscripts strace'
+      - wget --no-check-certificate https://copr.fedorainfracloud.org/coprs/jsynacek/systemd-backports-for-centos-7/repo/epel-7/jsynacek-systemd-backports-for-centos-7-epel-7.repo -O /etc/yum.repos.d/jsynacek-systemd-centos-7.repo
+      - yum update -y systemd
     docker_env:
       - LANG=en_US.UTF-8
       - LANGUAGE=en_US.UTF-8
