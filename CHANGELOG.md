@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+fix shell scripts for shell check SC2268 (#2354)\
+refactor FeaturedApp into AppRecategorizer (#2305)\
+Update Changelog (#2346)\
+Update to support ticket feature to use SmartAttributes for form management (#2348)\
+update dependencies (#2347)
 
 ### Changed
 
