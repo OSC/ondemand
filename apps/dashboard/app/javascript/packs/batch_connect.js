@@ -401,8 +401,8 @@ function toggleMinMax(event, changeId, otherId) {
   const changeElement = $(`#${changeId}`);
   const mm = minMaxLookup[changeId].get(x, y);
   const prev = {
-    min: changeElement.attr('min'),
-    max: changeElement.attr('max'),
+    min: parseInt(changeElement.attr('min')),
+    max: parseInt(changeElement.attr('max')),
   };
 
   [ 'max', 'min' ].forEach((dim) => {
@@ -411,7 +411,7 @@ function toggleMinMax(event, changeId, otherId) {
     }
   });
 
-  const val = clamp(changeElement.val(), prev, mm)
+  const val = clamp(parseInt(changeElement.val()), prev, mm)
   if (val !== undefined) {
     changeElement.attr('value', val);
     changeElement.val(val);
