@@ -4,12 +4,12 @@ module SmartAttributes
     # @param opts [Hash] attribute's options
     # @return [Attributes::BCQueue] the attribute object
     def self.build_bc_queue(opts = {})
-      Attributes::BCQueue.new("bc_queue", opts)
+      Attributes::BcQueue.new("bc_queue", opts)
     end
   end
 
   module Attributes
-    class BCQueue < Attribute
+    class BcQueue < Attribute
       # Type of form widget used for this attribute
       # @return [String] widget type
       def widget

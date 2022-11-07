@@ -4,12 +4,12 @@ module SmartAttributes
     # @param opts [Hash] attribute's options
     # @return [Attributes::BCVncResolution] the attribute object
     def self.build_bc_vnc_resolution(opts = {})
-      Attributes::BCVncResolution.new("bc_vnc_resolution", opts)
+      Attributes::BcVncResolution.new("bc_vnc_resolution", opts)
     end
   end
 
   module Attributes
-    class BCVncResolution < Attribute
+    class BcVncResolution < Attribute
       # Type of form widget used for this attribute
       # @return [String] widget type
       def widget

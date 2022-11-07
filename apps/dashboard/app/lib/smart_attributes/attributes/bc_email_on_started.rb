@@ -4,12 +4,12 @@ module SmartAttributes
     # @param opts [Hash] attribute's options
     # @return [Attributes::BCEmailOnStarted] the attribute object
     def self.build_bc_email_on_started(opts = {})
-      Attributes::BCEmailOnStarted.new("bc_email_on_started", opts)
+      Attributes::BcEmailOnStarted.new("bc_email_on_started", opts)
     end
   end
 
   module Attributes
-    class BCEmailOnStarted < Attribute
+    class BcEmailOnStarted < Attribute
       # Type of form widget used for this attribute
       # @return [String] widget type
       def widget
