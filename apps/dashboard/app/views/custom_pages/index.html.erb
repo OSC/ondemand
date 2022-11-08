@@ -1,0 +1,13 @@
+<%= javascript_include_tag 'dashboard', nonce: true %>
+
+<%- @page_layout.fetch(:rows, []).each do |row| -%>
+<div class="row">
+  <%- row.fetch(:columns, []).each do |col| -%>
+  <div class='<%= "col-md-#{col.fetch(:width, "12")}" %>'>
+    <%- Array(col.fetch(:widgets, [])).each do |widget| -%>
+      <%= render_widget(widget.to_s) %>
+    <%- end -%>
+  </div>
+  <%- end -%>
+</div>
+<%- end -%>

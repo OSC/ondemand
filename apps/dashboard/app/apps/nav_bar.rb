@@ -24,6 +24,8 @@ class NavBar
           extend_link(matched_apps.first.links.first) if matched_apps.first && matched_apps.first.links.first
         elsif nav_item.fetch(:profile, nil)
           extend_link(nav_profile(nav_item, nil, nil))
+        elsif nav_item.fetch(:page, nil)
+          extend_link(nav_page(nav_item, nil, nil))
         end
       end
     end.flatten.compact
@@ -47,6 +49,8 @@ class NavBar
         nav_apps(item, menu_title, group_title)
       elsif item.fetch(:profile, nil)
         nav_profile(item, menu_title, group_title)
+      elsif item.fetch(:page, nil)
+        nav_page(item, menu_title, group_title)
       else
         # Update subcategory if title was provided
         group_title = item.fetch(:group, group_title)
@@ -79,6 +83,15 @@ class NavBar
     profile_data[:data] = { method: 'post' }
     profile_data[:new_tab] = false
     OodAppLink.new(profile_data).categorize(category: category, subcategory: subcategory)
+  end
+
+  def self.nav_page(item, category, subcategory)
+    page_code = item.fetch(:page)
+    page_data = item.clone
+    page_data[:title] = page_code.titleize unless page_data.fetch(:title, nil)
+    page_data[:url] = Rails.application.routes.url_helpers.custom_pages_path(page_code)
+    page_data[:new_tab] = false unless page_data.fetch(:new_tab, nil)
+    OodAppLink.new(page_data).categorize(category: category, subcategory: subcategory)
   end
 
   def self.item_from_token(token)
