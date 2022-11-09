@@ -276,6 +276,23 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal '40', find_value('bc_num_slots')
   end
 
+  test 'clamp zeros' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    assert_equal '0', find_value('gpus')
+    assert_equal 'any', find_value('node_type')
+
+    # change to gpu node type and 0 is clamped to 1 (gpu's min)
+    select('gpu', from: bc_ele_id('node_type'))
+    assert_equal '1', find_value('gpus')
+
+    fill_in bc_ele_id('gpus'), with: 3
+    assert_equal '3', find_value('gpus')
+
+    # change back to any node type and 3 is clamped to 0 (any's max)
+    select('any', from: bc_ele_id('node_type'))
+    assert_equal '0', find_value('gpus')
+  end
+
   test 'python choice sets account' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     assert_equal 'python27', find_value('bc_account')
