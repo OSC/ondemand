@@ -88,9 +88,9 @@ class NavBar
   def self.nav_page(item, category, subcategory)
     page_code = item.fetch(:page)
     page_data = item.clone
-    page_data[:title] = page_code.titleize unless page_data.fetch(:title, nil)
+    page_data[:title] = page_data.fetch(:title, page_code.titleize)
     page_data[:url] = Rails.application.routes.url_helpers.custom_pages_path(page_code)
-    page_data[:new_tab] = false unless page_data.fetch(:new_tab, nil)
+    page_data[:new_tab] = page_data.fetch(:new_tab, false)
     OodAppLink.new(page_data).categorize(category: category, subcategory: subcategory)
   end
 
