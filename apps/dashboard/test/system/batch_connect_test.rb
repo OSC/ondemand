@@ -288,7 +288,7 @@ class BatchConnectTest < ApplicationSystemTestCase
     fill_in bc_ele_id('gpus'), with: 3
     assert_equal '3', find_value('gpus')
 
-    # change back to any node type and 3 is clamped to 0 (any's max)
+    # change back to any node type and 3 is clamped to 0 (any's min)
     select('any', from: bc_ele_id('node_type'))
     assert_equal '0', find_value('gpus')
   end
