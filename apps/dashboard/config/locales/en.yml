@@ -227,3 +227,6 @@ en:
 
       rt:
         creation_success: "Support ticket created in RequestTracker system. TicketId: %{ticket_id}"
+
+    custom_pages:
+      invalid: "Invalid page code: %{page}. This page has not been configured"

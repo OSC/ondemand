@@ -130,6 +130,19 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal false,  result[0].new_tab?
   end
 
+  test "NavBar.items should return navigation page when nav_item has page property" do
+    nav_item = {
+      title: "Page Title",
+      page: "page_code"
+    }
+    result = NavBar.items([nav_item])
+    assert_equal 1,  result.size
+    assert_equal "layouts/nav/link",  result[0].partial_path
+    assert_equal "Page Title",  result[0].title
+    assert_equal "/custom/page_code",  result[0].url
+    assert_equal false,  result[0].new_tab?
+  end
+
   test "NavBar.items should return navigation link when nav_item has app property" do
     nav_item = {
       apps: "sys/bc_jupyter"

@@ -95,6 +95,9 @@ Rails.application.routes.draw do
     post "/support", to: "support_ticket#create"
   end
 
+  # Custom pages route
+  get "/custom/:page_code", to: "custom_pages#index", as: :custom_pages
+
   match "/404", :to => "errors#not_found", :via => :all
   match "/500", :to => "errors#internal_server_error", :via => :all
 
