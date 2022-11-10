@@ -39,6 +39,7 @@ class CustomNavigationTest < ActionDispatch::IntegrationTest
    assert_select nav_menu(1), text: "Custom Menu"
    assert_select nav_menu_header("Custom Menu"), text: "Custom Menu Dropdown Header"
    assert_select nav_menu_links("Custom Menu") do |elements|
+     assert_equal 2, elements.size
      assert_match /Menu Link/, elements[0].text
      assert_equal "/menu/link", elements[0]['href']
      assert_nil elements[0]['target']
@@ -53,6 +54,7 @@ class CustomNavigationTest < ActionDispatch::IntegrationTest
    assert_select nav_menu(2), text: "Custom Apps"
    assert_select nav_menu_header("Custom Apps"), text: "Custom Apps Dropdown Header"
    assert_select nav_menu_links("Custom Apps") do |elements|
+     assert_equal 1, elements.size
      assert_match /Jupyter Notebook/, elements[0].text
      assert_equal "/batch_connect/sys/bc_jupyter/session_contexts/new", elements[0]['href']
      assert_nil elements[0]['target']

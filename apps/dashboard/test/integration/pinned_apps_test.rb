@@ -98,6 +98,24 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_equal  'System Installed App', css_select("a[href='/batch_connect/sys/bc_paraview/session_contexts/new'] p.text-muted").text
   end
 
+  test "should add tile attributes to pinned app HTML" do
+    stub_user_configuration({pinned_apps: ['sys/bc_desktop/oakley']})
+
+    get '/'
+
+    assert_response :success
+
+    assert_select pinned_app_links, 1
+    assert_select pinned_app_link("/batch_connect/sys/bc_desktop/oakley/session_contexts/new") do |elements|
+      assert_equal 1, elements.size
+      assert_equal true, elements[0]['style'].include?('#1234')
+    end
+
+    assert_select "a[href='/batch_connect/sys/bc_desktop/oakley/session_contexts/new'] i.fa-configuration-icon", 1
+    assert_equal  'Configuration Title', css_select("a[href='/batch_connect/sys/bc_desktop/oakley/session_contexts/new'] p.app-title").text
+    assert_equal  'Configuration Sub Caption', css_select("a[href='/batch_connect/sys/bc_desktop/oakley/session_contexts/new'] p.app-description").text
+  end
+
   test "does not create pinned apps when no configuration" do
     stub_user_configuration({ pinned_apps: [] })
 

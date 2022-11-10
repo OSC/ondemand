@@ -1,5 +1,4 @@
 ---
-title: "Oakley Desktop"
 cluster: "oakley"
 attributes:
   desktop: "gnome"

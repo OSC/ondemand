@@ -64,6 +64,7 @@ category: OSC
   # @option opts [String] :role Dashboard categorization.
   # @option opts [String] :url An optional redirect URL.
   # @option opts [Hash]   :metadata An optional hash of key value pairs.
+  # @option opts [Hash]   :tile An optional hash of key value pairs.
   def initialize(opts)
     raise InvalidContentError.new unless(opts && opts.respond_to?(:to_h))
 
@@ -140,6 +141,13 @@ category: OSC
   #  @return [String] caption as string
   def caption
     @manifest_options[:caption].to_s
+  end
+
+  # Return the app's tile data. Used to render the pinned app tile
+  #
+  #  @return [Hash] icon as hash
+  def tile
+    @manifest_options[:tile] || {}
   end
 
   # Manifest objects are valid

@@ -61,12 +61,18 @@
     height: 1.2em;
     font-size: 6.25rem;
   }
+
+  p.app-title {
+    margin: 0;
+  }
+
+  p.app-description {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 300;
+  }
 }
 
 .app-launcher-hover:hover {
   transform: scale(0.98);
-
-  a {
-    border-color: $launcher_border_hover;
-  }
 }
