@@ -1,17 +1,6 @@
 require 'test_helper'
 
 class ConfigurationSingletonTest < ActiveSupport::TestCase
-  # Restore the state of ENV after each test
-  def setup
-    @env = ENV.to_h
-    ENV.delete("OOD_DATAROOT")
-  end
-
-  def teardown
-    ENV.clear
-    ENV.update(@env)
-  end
-
   def config_fixtures
     {
       OOD_CONFIG_D_DIRECTORY: "#{Rails.root}/test/fixtures/config/ondemand.d"
@@ -29,8 +18,9 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "can configure config root" do
-    ENV["OOD_APP_CONFIG_ROOT"] = "/path/to/config"
-    assert_equal Pathname.new("/path/to/config"), ConfigurationSingleton.new.config_root
+    with_modified_env(OOD_APP_CONFIG_ROOT: '/path/to/config') do
+      assert_equal Pathname.new('/path/to/config'), ConfigurationSingleton.new.config_root
+    end
   end
 
   test "should not load external configuration by default if not production" do
@@ -38,19 +28,21 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "can enable external configuration if not production" do
-    ENV["OOD_LOAD_EXTERNAL_CONFIG"] = "true"
-    assert ConfigurationSingleton.new.load_external_config?
+    with_modified_env(OOD_LOAD_EXTERNAL_CONFIG: 'true') do
+      assert ConfigurationSingleton.new.load_external_config?
+    end
   end
 
   test "should load external configuration by default if production" do
-    ENV["RAILS_ENV"] = "production"
-    assert ConfigurationSingleton.new.load_external_config?
+    with_modified_env(RAILS_ENV: 'production') do
+      assert ConfigurationSingleton.new.load_external_config?
+    end
   end
 
   test "can disable external configuration if production" do
-    ENV["RAILS_ENV"] = "production"
-    ENV["OOD_LOAD_EXTERNAL_CONFIG"] = "false"
-    refute ConfigurationSingleton.new.load_external_config?
+    with_modified_env(RAILS_ENV: 'production', OOD_LOAD_EXTERNAL_CONFIG: 'false') do
+      refute ConfigurationSingleton.new.load_external_config?
+    end
   end
 
   test "should load environment variables" do
@@ -64,75 +56,75 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
         EOT
       end
 
-      ENV["OOD_APP_CONFIG_ROOT"] = env.dirname.to_s
-      ENV["OOD_LOAD_EXTERNAL_CONFIG"] = "true"
-      ConfigurationSingleton.new.load_dotenv_files
-      assert_equal "test_123", ENV["TEST_UNQUOTE"]
-      assert_equal "another test", ENV["TEST_QUOTE"]
-      assert_equal "123", ENV["TEST_NUMBER"]
-      assert_nil ENV["TEST_UNDEFINED"]
+      with_modified_env(OOD_APP_CONFIG_ROOT: env.dirname.to_s, OOD_LOAD_EXTERNAL_CONFIG: 'true') do
+        ConfigurationSingleton.new.load_dotenv_files
+        assert_equal 'test_123', ENV['TEST_UNQUOTE']
+        assert_equal 'another test', ENV['TEST_QUOTE']
+        assert_equal '123', ENV['TEST_NUMBER']
+        assert_nil ENV['TEST_UNDEFINED']
+      end
     end
   end
 
   test "should load environment variable overload" do
     Dir.mktmpdir do |dir|
-      ENV['FOO'] = '123'
+      with_modified_env(FOO: '123') do
+        Pathname.new(dir).join('.env.overload').write <<-EOT
+          FOO=456
+        EOT
 
-      Pathname.new(dir).join(".env.overload").write <<-EOT
-        FOO=456
-      EOT
+        cfg = ConfigurationSingleton.new
+        cfg.stubs(:app_root).returns(Pathname.new(dir))
+        cfg.load_dotenv_files
 
-      cfg = ConfigurationSingleton.new
-      cfg.stubs(:app_root).returns(Pathname.new(dir))
-      cfg.load_dotenv_files
-
-      assert_equal "456", ENV['FOO']
+        assert_equal '456', ENV['FOO']
+      end
     end
   end
 
   test "should load environment variable local overloads" do
     Dir.mktmpdir do |dir|
       environment = "test"
-      ENV['FOO'] = '123'
+      with_modified_env(FOO: '123') do
+        Configuration
 
-      Configuration
+        Pathname.new(dir).join(".env.#{environment}.overload").write <<-EOT
+          FOO=456
+        EOT
 
-      Pathname.new(dir).join(".env.#{environment}.overload").write <<-EOT
-        FOO=456
-      EOT
+        Pathname.new(dir).join(".env.#{environment}.local.overload").write <<-EOT
+          FOO=789
+        EOT
 
-      Pathname.new(dir).join(".env.#{environment}.local.overload").write <<-EOT
-        FOO=789
-      EOT
+        cfg = ConfigurationSingleton.new
+        cfg.stubs(:app_root).returns(Pathname.new(dir))
+        cfg.stubs(:rails_env).returns(environment)
+        cfg.load_dotenv_files
 
-      cfg = ConfigurationSingleton.new
-      cfg.stubs(:app_root).returns(Pathname.new(dir))
-      cfg.stubs(:rails_env).returns(environment)
-      cfg.load_dotenv_files
-
-      assert_equal "789", ENV['FOO']
+        assert_equal '789', ENV['FOO']
+      end
     end
   end
 
   test "rails_env specific env var overloads have precendent over env overloads" do
     Dir.mktmpdir do |dir|
       environment = "test"
-      ENV['FOO'] = '123'
+      with_modified_env(FOO: '123') do
+        Pathname.new(dir).join('.env.overload').write <<-EOT
+          FOO=456
+        EOT
 
-      Pathname.new(dir).join(".env.overload").write <<-EOT
-        FOO=456
-      EOT
+        Pathname.new(dir).join(".env.#{environment}.overload").write <<-EOT
+          FOO=789
+        EOT
 
-      Pathname.new(dir).join(".env.#{environment}.overload").write <<-EOT
-        FOO=789
-      EOT
+        cfg = ConfigurationSingleton.new
+        cfg.stubs(:app_root).returns(Pathname.new(dir))
+        cfg.stubs(:rails_env).returns(environment)
+        cfg.load_dotenv_files
 
-      cfg = ConfigurationSingleton.new
-      cfg.stubs(:app_root).returns(Pathname.new(dir))
-      cfg.stubs(:rails_env).returns(environment)
-      cfg.load_dotenv_files
-
-      assert_equal "789", ENV['FOO']
+        assert_equal '789', ENV['FOO']
+      end
     end
   end
 
@@ -141,8 +133,9 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "can configure bc config root" do
-    ENV["OOD_BC_APP_CONFIG_ROOT"] = "/path/to/bc_config"
-    assert_equal Pathname.new("/path/to/bc_config"), ConfigurationSingleton.new.bc_config_root
+    with_modified_env(OOD_BC_APP_CONFIG_ROOT: '/path/to/bc_config') do
+      assert_equal Pathname.new('/path/to/bc_config'), ConfigurationSingleton.new.bc_config_root
+    end
   end
 
   test "should not load external bc configuration by default if not production" do
@@ -150,19 +143,21 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "can enable external bc configuration if not production" do
-    ENV["OOD_LOAD_EXTERNAL_BC_CONFIG"] = "true"
-    assert ConfigurationSingleton.new.load_external_bc_config?
+    with_modified_env(OOD_LOAD_EXTERNAL_BC_CONFIG: 'true') do
+      assert ConfigurationSingleton.new.load_external_bc_config?
+    end
   end
 
   test "should load external bc configuration by default if production" do
-    ENV["RAILS_ENV"] = "production"
-    assert ConfigurationSingleton.new.load_external_bc_config?
+    with_modified_env(RAILS_ENV: 'production') do
+      assert ConfigurationSingleton.new.load_external_bc_config?
+    end
   end
 
   test "can disable external bc configuration if production" do
-    ENV["RAILS_ENV"] = "production"
-    ENV["OOD_LOAD_EXTERNAL_BC_CONFIG"] = "false"
-    refute ConfigurationSingleton.new.load_external_bc_config?
+    with_modified_env(RAILS_ENV: 'production', OOD_LOAD_EXTERNAL_BC_CONFIG: 'false') do
+      refute ConfigurationSingleton.new.load_external_bc_config?
+    end
   end
 
   test "should have app development disabled by default if sandbox does not exist" do
@@ -182,11 +177,13 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "can configure whether app development is enabled or disabled" do
-    ENV["OOD_APP_DEVELOPMENT"] = "true"
-    assert ConfigurationSingleton.new.app_development_enabled?
+    with_modified_env(OOD_APP_DEVELOPMENT: 'true') do
+      assert ConfigurationSingleton.new.app_development_enabled?
+    end
 
-    ENV["OOD_APP_DEVELOPMENT"] = "false"
-    refute ConfigurationSingleton.new.app_development_enabled?
+    with_modified_env(OOD_APP_DEVELOPMENT: 'false') do
+      refute ConfigurationSingleton.new.app_development_enabled?
+    end
   end
 
   test "should have app sharing disabled by default" do
@@ -194,11 +191,13 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "can configure whether app sharing is enabled or disabled" do
-    ENV["OOD_APP_SHARING"] = "true"
-    assert ConfigurationSingleton.new.app_sharing_enabled?
+    with_modified_env(OOD_APP_SHARING: 'true') do
+      assert ConfigurationSingleton.new.app_sharing_enabled?
+    end
 
-    ENV["OOD_APP_SHARING"] = "false"
-    refute ConfigurationSingleton.new.app_sharing_enabled?
+    with_modified_env(OOD_APP_SHARING: 'false') do
+      refute ConfigurationSingleton.new.app_sharing_enabled?
+    end
   end
 
   test "should have default announcement paths" do
@@ -213,8 +212,9 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "can configure announcement path" do
-    ENV["OOD_ANNOUNCEMENT_PATH"] = "/path/to/announcement"
-    assert_equal Pathname.new("/path/to/announcement"), ConfigurationSingleton.new.announcement_path
+    with_modified_env(OOD_ANNOUNCEMENT_PATH: '/path/to/announcement') do
+      assert_equal Pathname.new('/path/to/announcement'), ConfigurationSingleton.new.announcement_path
+    end
   end
 
   test "should have default developer docs url" do
@@ -222,8 +222,9 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "can configure developer docs url" do
-    ENV["OOD_DASHBOARD_DEV_DOCS_URL"] = "https://www.example.com"
-    assert_equal "https://www.example.com", ConfigurationSingleton.new.developer_docs_url
+    with_modified_env(OOD_DASHBOARD_DEV_DOCS_URL: 'https://www.example.com') do
+      assert_equal 'https://www.example.com', ConfigurationSingleton.new.developer_docs_url
+    end
   end
 
   test "should have default dataroot under app if not production" do
@@ -231,46 +232,53 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   end
 
   test "should have default dataroot under home dir if production" do
-    ENV["RAILS_ENV"] = "production"
-    assert_equal Pathname.new("~/ondemand/data/sys/dashboard").expand_path, ConfigurationSingleton.new.dataroot
+    with_modified_env(RAILS_ENV: 'production', OOD_DATAROOT: nil) do
+      assert_equal Pathname.new('~/ondemand/data/sys/dashboard').expand_path, ConfigurationSingleton.new.dataroot
+    end
   end
 
   test "can configure full path of dataroot" do
-    ENV["OOD_DATAROOT"] = "/path/to/dataroot"
-    assert_equal Pathname.new("/path/to/dataroot"), ConfigurationSingleton.new.dataroot
+    with_modified_env(OOD_DATAROOT: '/path/to/dataroot') do
+      assert_equal Pathname.new('/path/to/dataroot'), ConfigurationSingleton.new.dataroot
+    end
   end
 
   test "can configure portal component of dataroot if production" do
-    ENV["RAILS_ENV"] = "production"
-    ENV["OOD_PORTAL"] = "MY_PORTAL"
-    assert_equal Pathname.new("~/MY_PORTAL/data/sys/dashboard").expand_path, ConfigurationSingleton.new.dataroot
+    with_modified_env(RAILS_ENV: 'production', OOD_DATAROOT: nil, OOD_PORTAL: 'MY_PORTAL') do
+      assert_equal Pathname.new('~/MY_PORTAL/data/sys/dashboard').expand_path, ConfigurationSingleton.new.dataroot
+    end
   end
 
   test "can configure app token component of dataroot if production" do
-    ENV["RAILS_ENV"] = "production"
-    ENV["APP_TOKEN"] = "MY/APP/TOKEN"
-    assert_equal Pathname.new("~/ondemand/data/MY/APP/TOKEN").expand_path, ConfigurationSingleton.new.dataroot
+    with_modified_env(RAILS_ENV: 'production', APP_TOKEN: 'MY/APP/TOKEN', OOD_DATAROOT: nil) do
+      assert_equal Pathname.new('~/ondemand/data/MY/APP/TOKEN').expand_path, ConfigurationSingleton.new.dataroot
+    end
   end
 
   test "quota_paths correctly parses OOD_QUOTA_PATH" do
-    ENV["OOD_QUOTA_PATH"] = "/path_a/quota.json:/path_b/quota.json"
-    assert_equal ["/path_a/quota.json", "/path_b/quota.json"], ConfigurationSingleton.new.quota_paths
+    with_modified_env(OOD_QUOTA_PATH: '/path_a/quota.json:/path_b/quota.json') do
+      assert_equal ['/path_a/quota.json', '/path_b/quota.json'], ConfigurationSingleton.new.quota_paths
+    end
 
-    ENV["OOD_QUOTA_PATH"] = "https://example.com/quota.json:ftp://path_b/quota.json"
-    assert_equal ["https://example.com/quota.json", "ftp://path_b/quota.json"], ConfigurationSingleton.new.quota_paths
+    with_modified_env(OOD_QUOTA_PATH: 'https://example.com/quota.json:ftp://path_b/quota.json') do
+      assert_equal ['https://example.com/quota.json', 'ftp://path_b/quota.json'], ConfigurationSingleton.new.quota_paths
+    end
   end
 
   test "balance_paths correctly parses OOD_BALANCE_PATH" do
-    ENV["OOD_BALANCE_PATH"] = "/path_a/balance.json:/path_b/balance.json"
-    assert_equal ["/path_a/balance.json", "/path_b/balance.json"], ConfigurationSingleton.new.balance_paths
+    with_modified_env(OOD_BALANCE_PATH: '/path_a/balance.json:/path_b/balance.json') do
+      assert_equal ['/path_a/balance.json', '/path_b/balance.json'], ConfigurationSingleton.new.balance_paths
+    end
 
-    ENV["OOD_BALANCE_PATH"] = "https://example.com/balance.json:ftp://path_b/balance.json"
-    assert_equal ["https://example.com/balance.json", "ftp://path_b/balance.json"], ConfigurationSingleton.new.balance_paths
+    with_modified_env(OOD_BALANCE_PATH: 'https://example.com/balance.json:ftp://path_b/balance.json') do
+      assert_equal ['https://example.com/balance.json', 'ftp://path_b/balance.json'], ConfigurationSingleton.new.balance_paths
+    end
   end
 
   test "can set native vnc login host" do
-    ENV["OOD_NATIVE_VNC_LOGIN_HOST"] = "owens.osc.edu"
-    assert_equal ENV["OOD_NATIVE_VNC_LOGIN_HOST"], ConfigurationSingleton.new.native_vnc_login_host
+    with_modified_env(OOD_NATIVE_VNC_LOGIN_HOST: 'owens.osc.edu') do
+      assert_equal ENV['OOD_NATIVE_VNC_LOGIN_HOST'], ConfigurationSingleton.new.native_vnc_login_host
+    end
   end
 
   test "does not throw error when it can't read config files" do
