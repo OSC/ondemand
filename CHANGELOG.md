@@ -6,8 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Custom pages feature (#2353)\
-Update Changelog (#2357)
 
 ### Changed
 
@@ -66,6 +64,7 @@ Update Changelog (#2357)
   - With support for RT in [2318](https://github.com/OSC/ondemand/pull/2318).
   - Additional support for making support ticket forms in [2348](https://github.com/OSC/ondemand/pull/2348).
 - Added ENV override for showing/hiding job arrays in [2327](https://github.com/OSC/ondemand/pull/2327).
+- Sites can add custom pages in Custom pages feature [2353](https://github.com/OSC/ondemand/pull/2353).
 
 ### Fixed
 
