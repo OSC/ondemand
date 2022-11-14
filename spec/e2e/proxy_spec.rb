@@ -180,34 +180,5 @@ describe 'Node and Rnode proxies' do
   #  browser.goto "#{ctr_base_url}/nginx/init?redir=/nothing"
   # end
 
-  it 'node correctly returns "Success" in browser when no redirect is given on noop' do
-    url = "#{ctr_base_url}/nginx/noop"
-    browser.goto "#{ctr_base_url}/nginx/noop"
-    expect(browser.text).to eq('Success')
-    expect(browser.url).to eq(url)
-  end 
-
-  # TODO expand "noop" logic in nginx.lua to handle redir for remaining noop tests
-  # it 'node correctly redirects to /pun/sys/dashboard with 307 when no redirect is given on noop' do
-  #   # Currently returns Success
-  #   browser.goto "#{ctr_base_url}/nginx/noop"
-  #   expect(browser.url).to eq("#{ctr_base_url}/pun/sys/dashboard")
-  # end 
-
-  # it 'node correctly returns "bad redir error" when redirect to "github.com" given on noop' do
-  #   browser.goto "#{ctr_base_url}/nginx/noop?redir=github.com"
-  #   expect(browser.text).to eq('Error -- bad `redir` request (github.com)')
-  # end
-
-  # it 'node correctly returns "bad redir error" when redirect to "https://github.com" given on noop' do
-  #   browser.goto "#{ctr_base_url}/nginx/noop?redir=https://github.com"
-  #   expect(browser.text).to eq('Error -- bad `redir` request (https://github.com)')
-  # end
-
-  # it 'node correctly returns "bad redir error" when redirect to "/node/localhost/5001" is given on noop' do
-  #   browser.goto "#{ctr_base_url}/nginx/noop?redir=/node/localhost/5001"
-  #   expect(browser.text).to eq('Error -- bad `redir` request ()')
-  # end
-
   # TODO: check content of page.
 end
