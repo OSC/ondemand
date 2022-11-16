@@ -15,6 +15,7 @@ class CurrentUser
   class << self
     delegate :name, :uid, :gid, :gecos, :dir, :shell, to: :instance
     delegate :primary_group, :home, :user_settings, :update_user_settings, to: :instance
+    delegate :group_names, :groups, to: :instance
   end
 
   attr_reader :pwuid
@@ -28,6 +29,15 @@ class CurrentUser
 
   def primary_group
     @primary_group ||= Etc.getgrgid(gid).name
+  end
+
+  def group_names
+    @group_names ||= groups.map(&:name)
+  end
+
+  def groups
+    # no better way to get this unfortunately. Etc returns /etc/group, not what's in LDAP
+    @groups ||= `id -G #{name}`.split(' ').map { |g| Etc.getgrgid(g.to_i) }
   end
 
   def user_settings
