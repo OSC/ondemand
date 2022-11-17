@@ -75,4 +75,12 @@ class CurrentUserTest < ActiveSupport::TestCase
     }
   end
 
+  test 'primary group is first in groups' do
+    gid = Etc.getpwuid.gid
+    assert_equal gid, CurrentUser.groups.first.gid
+  end
+
+  test 'groups is the same as process.groups' do
+    assert_equal Process.groups.to_set, CurrentUser.groups.map(&:gid).to_set
+  end
 end

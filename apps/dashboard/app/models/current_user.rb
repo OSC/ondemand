@@ -14,8 +14,8 @@ class CurrentUser
 
   class << self
     delegate :name, :uid, :gid, :gecos, :dir, :shell, to: :instance
-    delegate :primary_group, :home, :user_settings, :update_user_settings, to: :instance
-    delegate :group_names, :groups, to: :instance
+    delegate :home, :user_settings, :update_user_settings, to: :instance
+    delegate :primary_group, :primary_group_name, :group_names, :groups, to: :instance
   end
 
   attr_reader :pwuid
@@ -40,9 +40,11 @@ class CurrentUser
   end
 
   def groups
-    @groups ||= Process.groups.map do |g|
-      Etc.getgrgid(g.to_i)
-    end.delete!(primary_group).unshift(primary_group)
+    @groups ||= begin
+      groups = Process.groups
+      groups.delete(primary_group.gid)
+      groups.unshift(primary_group.gid).map { |gid| Etc.getgrgid(gid) }
+    end
   end
 
   def user_settings
