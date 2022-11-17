@@ -28,7 +28,11 @@ class CurrentUser
   end
 
   def primary_group
-    @primary_group ||= Etc.getgrgid(gid).name
+    @primary_group ||= Etc.getgrgid(gid)
+  end
+
+  def primary_group_name
+    @primary_group_name ||= primary_group.name
   end
 
   def group_names
@@ -36,8 +40,7 @@ class CurrentUser
   end
 
   def groups
-    # no better way to get this unfortunately. Etc returns /etc/group, not what's in LDAP
-    @groups ||= `id -G #{name}`.split(' ').map { |g| Etc.getgrgid(g.to_i) }
+    @groups ||= Process.groups.map { |g| Etc.getgrgid(g.to_i) }
   end
 
   def user_settings

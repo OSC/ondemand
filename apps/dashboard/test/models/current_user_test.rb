@@ -16,7 +16,13 @@ class CurrentUserTest < ActiveSupport::TestCase
   test "primary group is correct" do
     gid = Etc.getpwuid.gid
     assert_equal gid, CurrentUser.gid
-    assert_equal Etc.getgrgid(gid).name, CurrentUser.primary_group
+    assert_equal Etc.getgrgid(gid), CurrentUser.primary_group
+  end
+
+  test "primary group name is correct" do
+    gid = Etc.getpwuid.gid
+    assert_equal gid, CurrentUser.gid
+    assert_equal Etc.getgrgid(gid).name, CurrentUser.primary_group_name
   end
 
   test "user_settings cannot be modified" do
