@@ -40,7 +40,9 @@ class CurrentUser
   end
 
   def groups
-    @groups ||= Process.groups.map { |g| Etc.getgrgid(g.to_i) }
+    @groups ||= Process.groups.map do |g|
+      Etc.getgrgid(g.to_i)
+    end.delete!(primary_group).unshift(primary_group)
   end
 
   def user_settings
