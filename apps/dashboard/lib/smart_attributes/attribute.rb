@@ -88,6 +88,10 @@ module SmartAttributes
       !!opts[:required]
     end
 
+    def display?
+      !!opts[:display]
+    end
+
     # Submission hash describing how to submit this attribute
     # @param fmt [String, nil] formatting of hash
     # @return [Hash] submission hash
@@ -105,7 +109,7 @@ module SmartAttributes
     # The value of the attribute
     # @return [String] attribute value
     def to_s
-      value
+      value.to_s
     end
 
     # Hash of html options for Rails form helpers
