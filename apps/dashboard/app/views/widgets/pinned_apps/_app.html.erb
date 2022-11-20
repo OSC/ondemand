@@ -1,17 +1,15 @@
 <%- link = app.links.first -%>
 <%- link_data = {:method => "get"}.merge link.data -%>
 <%- tile_data = link.tile -%>
-<%- border_color = tile_data[:border_color] ? "border-color: #{tile_data[:border_color]};" : "" -%>
 
 <div class="col-sm-3 col-md-3 app-launcher-container">
   <div class="app-launcher app-launcher-hover" data-toggle="launcher-button">
   <%=
     link_to(
       link.url.to_s,
-      class: "",
+      class: tile_data[:css_class],
       target: link.new_tab? ? "_blank" : nil,
-      data: link_data,
-      style: border_color
+      data: link_data
     ) do
   %>
     <div class="center-block text-center">
