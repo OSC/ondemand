@@ -46,6 +46,7 @@ module BatchConnect::SessionsHelper
           concat time(session)
           concat id(session)
           concat support_ticket(session) if Configuration.support_ticket_enabled?
+          concat display_choices(session)
           safe_concat custom_info_view(session) if session.app.session_info_view
         end
       )
@@ -147,6 +148,18 @@ module BatchConnect::SessionsHelper
         )
       )
     end
+  end
+
+  def display_choices(session)
+    session_content = session.display_choices || {}
+    # Hash to an array with the labels and values
+    session_content.to_a.map do |label, value|
+      content_tag(:p) do
+        concat content_tag(:strong, "#{label}:")
+        concat " "
+        concat value
+      end
+    end.join.html_safe
   end
 
   def status(session)
