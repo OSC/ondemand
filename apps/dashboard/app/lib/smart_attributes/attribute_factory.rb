@@ -1,6 +1,5 @@
 module SmartAttributes
   class AttributeFactory
-    extend ActiveSupport::Autoload
 
     AUTO_MODULES_REX = /\Aauto_modules_([\w]+)\z/.freeze
 
@@ -15,15 +14,6 @@ module SmartAttributes
           hpc_mod = id.match(AUTO_MODULES_REX)[1]
           id = 'auto_modules'
           opts = opts.merge({'module' => hpc_mod})
-        end
-
-        path_to_attribute = "smart_attributes/attributes/#{id}"
-        begin
-          require path_to_attribute
-        rescue Gem::LoadError
-          raise Gem::LoadError, "Specified '#{id}' attribute, but the gem is not loaded."
-        rescue LoadError  # ignore if file doesn't exist
-          nil
         end
 
         build_method = "build_#{id}"

@@ -4,12 +4,12 @@ module SmartAttributes
     # @param opts [Hash] attribute's options
     # @return [Attributes::BCVncIdle] the attribute object
     def self.build_bc_vnc_idle(opts = {})
-      Attributes::BCVncIdle.new("bc_vnc_idle", opts)
+      Attributes::BcVncIdle.new("bc_vnc_idle", opts)
     end
   end
 
   module Attributes
-    class BCVncIdle < Attribute
+    class BcVncIdle < Attribute
       # Value of attribute
       # @return [String] attribute value
       def value

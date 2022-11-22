@@ -4,12 +4,12 @@ module SmartAttributes
     # @param opts [Hash] attribute's options
     # @return [Attributes::BCNumSlots] the attribute object
     def self.build_bc_num_slots(opts = {})
-      Attributes::BCNumSlots.new("bc_num_slots", opts)
+      Attributes::BcNumSlots.new("bc_num_slots", opts)
     end
   end
 
   module Attributes
-    class BCNumSlots < Attribute
+    class BcNumSlots < Attribute
       # Hash of options used to define this attribute
       # @return [Hash] attribute options
       def opts
