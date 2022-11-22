@@ -62,6 +62,7 @@ class UserConfigurationTest < ActiveSupport::TestCase
       nav_categories: ["Apps", "Files", "Jobs", "Clusters", "Interactive Apps"],
       nav_bar: [],
       help_bar: [],
+      custom_pages: {},
     }
 
     # ensure all properties are tested

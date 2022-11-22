@@ -58,9 +58,6 @@ function nginx_handler(r)
     else
       return err and http.http404(r, err) or http.http200(r)
     end
-  elseif task == "noop" then
-    -- do nothing
-    return redir and http.http307(r, redir) or http.http200(r)
   else
     return http.http404(r, "invalid nginx task")
   end

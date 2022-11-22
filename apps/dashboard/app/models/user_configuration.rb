@@ -64,6 +64,9 @@ class UserConfiguration
     # New navigation definition properties
     ConfigurationProperty.property(name: :nav_bar, default_value: []),
     ConfigurationProperty.property(name: :help_bar, default_value: []),
+
+    # Custom pages configuration property
+    ConfigurationProperty.property(name: :custom_pages, default_value: {}),
   ].freeze
 
   def initialize(request_hostname: nil)

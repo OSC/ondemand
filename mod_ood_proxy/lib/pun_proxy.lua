@@ -62,9 +62,6 @@ function pun_proxy_handler(r)
   -- setup request for reverse proxy
   proxy.set_reverse_proxy(r, conn)
 
-  -- handle if backend server isn't completely started yet
-  r:custom_response(502, nginx_uri .. "/noop?redir=" .. r:escape(r.unparsed_uri))
-
   -- let the proxy handler do this instead
   return apache2.DECLINED
 end

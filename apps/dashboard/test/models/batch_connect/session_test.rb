@@ -527,7 +527,8 @@ batch_connect: { ssh_allow: true } }))
         'title'           => 'Jupyter Notebook',
         'view'            => nil,
         'script_type'     => 'basic',
-        'cache_completed' => nil
+        'cache_completed' => nil,
+        'display_choices' => {},
       }
       Timecop.freeze(now) do
         assert session.save(app: bc_jupyter_app, context: ctx), session.errors.each(&:to_s).to_s
