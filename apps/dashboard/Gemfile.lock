@@ -214,7 +214,7 @@ GEM
     rubyzip (2.3.2)
     sdoc (2.4.0)
       rdoc (>= 5.0)
-    selenium-webdriver (4.6.1)
+    selenium-webdriver (4.5.0)
       childprocess (>= 0.5, < 5.0)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
@@ -285,7 +285,7 @@ DEPENDENCIES
   rest-client (~> 2.0)
   rss (~> 0.2)
   sdoc
-  selenium-webdriver
+  selenium-webdriver (= 4.5.0)
   sinatra
   sinatra-contrib
   timecop (~> 0.9)
