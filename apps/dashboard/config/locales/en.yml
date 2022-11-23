@@ -183,6 +183,10 @@ en:
     pinned_apps_caption_html: 'A featured subset of <a href="%{all_apps_url}">all available apps</a>'
     development_apps_caption: "Sandbox App"
 
+    active_sessions_title: 'Active interactive sessions'
+    active_sessions_no_sessions: 'You have no active sessions.'
+    active_sessions_caption_html: '<a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>'
+
     files_directory_download_error_modal_title: "Directory too large to download"
     files_directory_download_unauthorized: "You can only download a directory as zip that you have read and execute access to"
     files_directory_download_size_0: "The directory size is 0 and has no contents for download."
