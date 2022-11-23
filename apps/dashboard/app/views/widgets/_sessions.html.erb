@@ -1,0 +1,27 @@
+<%-
+  max_sessions = 3
+  poll_delay = ENV["POLL_DELAY"] || 10000
+  active_sessions = BatchConnect::Session.all.reject { |s| s.completed? }
+  session_selection = active_sessions.first(max_sessions)
+-%>
+
+<div class="active-sessions-header">
+  <h3>
+    <%= t('dashboard.active_sessions_title') %>
+    <small><%= t('dashboard.active_sessions_caption_html', all_sessions_url: batch_connect_sessions_path, number_of_sessions: active_sessions.length) %></small>
+  </h3>
+</div>
+
+<div class="active-sessions-content">
+<% if session_selection.empty? %>
+  <p class="lead">
+     <%= t('dashboard.active_sessions_no_sessions') %>
+  </p>
+<% else %>
+  <div class="row" data-toggle="poll" data-url="<%= batch_connect_sessions_path(format: :js) %>" data-delay="<%= poll_delay %>">
+    <div class="col-md-12">
+      <%= render partial: "/batch_connect/sessions/panel", collection: session_selection, as: :session %>
+    </div>
+  </div>
+<% end %>
+</div>
