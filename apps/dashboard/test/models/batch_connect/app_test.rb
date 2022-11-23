@@ -295,22 +295,35 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     end
   end
 
-  test 'subapps use caption from form' do
+  test 'subapps can override title, description, icon_uri, and caption from form' do
     r = PathRouter.new('test/fixtures/usr/shared/bc_with_subapps/')
     app = BatchConnect::App.new(router: r)
     sub_apps = app.sub_app_list
 
     assert_equal 2, sub_apps.size
-    assert_equal 'Oakley Desktop', sub_apps[0].title
-    assert_equal 'Owens Desktop', sub_apps[1].title
-
-    # path router's default caption is nil. But owens overrides
+    # Oakley uses defaults
+    assert_equal'Desktops: Oakley', sub_apps[0].title
+    assert_equal'BC with sub apps description', sub_apps[0].description
+    assert_equal'fa://desktop', sub_apps[0].icon_uri
     assert_nil sub_apps[0].caption
-    assert_equal 'gnome desktop on the owens cluster', app.sub_app_list[1].caption
 
-    # links hold the right caption too
-    assert_nil sub_apps[0].link.caption
-    assert_equal 'gnome desktop on the owens cluster', sub_apps[1].link.caption
+    oakley_link = sub_apps[0].link
+    assert_equal'Desktops: Oakley', oakley_link.title
+    assert_equal'BC with sub apps description', oakley_link.description
+    assert_equal URI('fa://desktop'), oakley_link.icon_uri
+    assert_nil oakley_link.caption
+
+    # Owens uses overrides
+    assert_equal'Owens Desktop', sub_apps[1].title
+    assert_equal'Owens Description', sub_apps[1].description
+    assert_equal'fa://clock', sub_apps[1].icon_uri
+    assert_equal'gnome desktop on the owens cluster', app.sub_app_list[1].caption
+
+    owens_link = sub_apps[1].link
+    assert_equal'Owens Desktop', owens_link.title
+    assert_equal'Owens Description', owens_link.description
+    assert_equal URI('fa://clock'), owens_link.icon_uri
+    assert_equal'gnome desktop on the owens cluster', owens_link.caption
   end
 
   test "auto primary group submits correctly" do

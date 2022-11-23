@@ -2,6 +2,14 @@ require 'test_helper'
 
 class TokenMatcherTest < ActiveSupport::TestCase
 
+  test "token should be return token parameter" do
+    target = TokenMatcher.new("sys/app")
+    assert_equal("sys/app" , target.token)
+
+    target = TokenMatcher.new({token: "sys/app", type: "sys"})
+    assert_equal({token: "sys/app", type: "sys"} , target.token)
+  end
+
   test "app token should match app" do
     target = TokenMatcher.new("sys/app")
     app = OodApp.new(Router.router_from_token("sys/app"))
@@ -30,6 +38,19 @@ class TokenMatcherTest < ActiveSupport::TestCase
     target = TokenMatcher.new("sys/app/sub_app")
     app = OodApp.new(Router.router_from_token("sys/app"))
     assert_equal false, target.matches_app?(app)
+  end
+
+
+  test "type, category, and subcategory should not trigger metadata match" do
+    %i[other items should match].each do |item|
+      target = TokenMatcher.new({ item => "value" })
+      assert_equal true, target.matchers.any?{|matcher| matcher == 'metadata_match?'}, "Expected field: #{item} to create a metadata_match? matcher"
+    end
+
+    %i[type category subcategory].each do |item|
+      target = TokenMatcher.new({ item => "value" })
+      assert_equal false, target.matchers.any?{|matcher| matcher == 'metadata_match?'}, "Expected field: #{item} not to create a metadata_match? matcher"
+    end
   end
 
 end

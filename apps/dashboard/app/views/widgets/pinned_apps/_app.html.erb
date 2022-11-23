@@ -1,26 +1,30 @@
 <%- link = app.links.first -%>
 <%- link_data = {:method => "get"}.merge link.data -%>
+<%- tile_data = link.tile -%>
+
 <div class="col-sm-3 col-md-3 app-launcher-container">
   <div class="app-launcher app-launcher-hover" data-toggle="launcher-button">
   <%=
     link_to(
       link.url.to_s,
-      class: "",
+      class: tile_data[:border_color],
       target: link.new_tab? ? "_blank" : nil,
       data: link_data
     ) do
   %>
     <div class="center-block text-center">
-      <%= icon_tag(link.icon_uri) %>
-      <%= content_tag(:p, link.title) %>
-      <%=
-        content_tag(
-          :p,
-          content_tag(:span, link.caption),
-          class: "text-muted",
-          style: "margin-top: 20px"
-        ) if link.caption
-      %>
+      <%= icon_tag(URI(tile_data.fetch(:icon_uri, link.icon_uri).to_s)) %>
+      <%= content_tag(:p, tile_data.fetch(:title, link.title), class: "app-title") %>
+
+      <% if tile_data.blank? %>
+        <%= content_tag(:p, content_tag(:span, link.caption), class: "text-muted", style: "margin-top: 20px") if link.caption %>
+      <% else %>
+        <div class="mt-2 mb-1">
+          <%- tile_data.fetch(:sub_caption, "").each_line do |line| -%>
+            <%= content_tag(:p, line, class: "app-description text-muted") %>
+          <%- end -%>
+        </div>
+      <% end %>
     </div>
   <% end %>
   </div>
