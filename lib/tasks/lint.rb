@@ -7,18 +7,31 @@ namespace :lint do
   require_relative 'rake_helper'
   include RakeHelper
 
+  DEFAULT_PATTERNS = [
+    "apps/**/*.rb",
+    "lib/**/*.rb",
+    "nginx_stage/**/*.rb",
+    "ood-portal-generator/**/*.rb",
+    "spec/**/*.rb",
+  ]
+
   begin
     require 'rubocop/rake_task'
     RuboCop::RakeTask.new(:rubocop, [:path]) do |t, args|
       t.options = ["--config=#{PROJ_DIR.join(".rubocop.yml")}"]
-      default_patterns = [
-        "apps/**/*.rb",
-        "lib/**/*.rb",
-        "nginx_stage/**/*.rb",
-        "ood-portal-generator/**/*.rb",
-        "spec/**/*.rb",
-      ]
-      t.patterns = args[:path].nil? ? default_patterns : [args[:path]]
+      t.patterns = args[:path].nil? ? DEFAULT_PATTERNS : [args[:path]]
+    end
+  rescue LoadError
+  end
+
+  begin
+    require 'rubocop/rake_task'
+    RuboCop::RakeTask.new(:random) do |t, args|
+      all_files = Dir.glob(DEFAULT_PATTERNS).reject { |f| f.include?('vendor/bundle') }
+      one_file = all_files[Random.rand(all_files.size)]
+
+      t.options = ["--config=#{PROJ_DIR.join(".rubocop.yml")}", "-A"]
+      t.patterns = [one_file]
     end
   rescue LoadError
   end
