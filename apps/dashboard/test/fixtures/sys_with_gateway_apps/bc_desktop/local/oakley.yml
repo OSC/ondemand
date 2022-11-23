@@ -4,7 +4,7 @@ tile:
   title: "Configuration Title"
   sub_caption: "Configuration Sub Caption"
   icon_uri: fa://configuration-icon
-  css_class: "css_class_value"
+  border_color: "css_class_value"
 cluster: "oakley"
 attributes:
   desktop: "gnome"
