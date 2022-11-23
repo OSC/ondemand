@@ -53,6 +53,106 @@
     border: 4px solid $launcher_border;
     border-radius: 10%;
   }
+/**
+  Pinned Apps border color overrides, to be used with the css_class tile property:
+  black, silver, gray, white, maroon, red, purple, fuchsia, green, lime, olive, yellow, navy, blue, teal, aqua
+  primary, secondary, success, info, warning, danger, light, and dark
+ */
+  a.black {
+    border-color: black;
+  }
+
+  a.silver {
+    border-color: silver;
+  }
+
+  a.gray {
+    border-color: gray;
+  }
+
+  a.white {
+    border-color: white;
+  }
+
+  a.maroon {
+    border-color: maroon;
+  }
+
+  a.red {
+    border-color: red;
+  }
+
+  a.purple {
+    border-color: purple;
+  }
+
+  a.fuchsia {
+    border-color: fuchsia;
+  }
+
+  a.green {
+    border-color: green;
+  }
+
+  a.lime {
+    border-color: lime;
+  }
+
+  a.olive {
+    border-color: olive;
+  }
+
+  a.yellow {
+    border-color: yellow;
+  }
+
+  a.navy {
+    border-color: navy;
+  }
+
+  a.blue {
+    border-color: blue;
+  }
+
+  a.teal {
+    border-color: teal;
+  }
+
+  a.aqua {
+    border-color: aqua;
+  }
+
+  a.primary {
+    border-color: var(--primary);
+  }
+
+  a.secondary {
+    border-color: var(--secondary);
+  }
+
+  a.success {
+    border-color: var(--success);
+  }
+
+  a.info {
+    border-color: var(--info);
+  }
+
+  a.warning {
+    border-color: var(--warning);
+  }
+
+  a.danger {
+    border-color: var(--danger);
+  }
+
+  a.light {
+    border-color: var(--light);
+  }
+
+  a.dark {
+    border-color: var(--dark);
+  }
 
   i, img {
     text-align: center;
