@@ -6,7 +6,7 @@ class SmartAttributes::AttributeFactoryTest < ActiveSupport::TestCase
     expected_classes = {
       "auto_modules": "SmartAttributes::Attributes::AutoModules",
       "auto_primary_group": "SmartAttributes::Attributes::AutoPrimaryGroup",
-      "bc_account": "SmartAttributes::Attributes::BCAccount",
+      "bc_account": "SmartAttributes::Attributes::BcAccount",
       "bc_email_on_started": "SmartAttributes::Attributes::BcEmailOnStarted",
       "bc_num_hours": "SmartAttributes::Attributes::BcNumHours",
       "bc_num_slots": "SmartAttributes::Attributes::BcNumSlots",
