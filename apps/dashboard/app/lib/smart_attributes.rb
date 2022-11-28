@@ -5,6 +5,7 @@ require "smart_attributes/attribute_factory"
 module SmartAttributes
   require "smart_attributes/attributes/auto_modules"
   require "smart_attributes/attributes/auto_primary_group"
+  require "smart_attributes/attributes/bc_account"
   require "smart_attributes/attributes/bc_email_on_started"
   require "smart_attributes/attributes/bc_num_hours"
   require "smart_attributes/attributes/bc_num_slots"

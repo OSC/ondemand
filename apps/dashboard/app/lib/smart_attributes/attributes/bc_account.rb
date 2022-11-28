@@ -4,12 +4,12 @@ module SmartAttributes
     # @param opts [Hash] attribute's options
     # @return [Attributes::BCAccount] the attribute object
     def self.build_bc_account(opts = {})
-      Attributes::BCAccount.new("bc_account", opts)
+      Attributes::BcAccount.new("bc_account", opts)
     end
   end
 
   module Attributes
-    class BCAccount < Attribute
+    class BcAccount < Attribute
       # Type of form widget used for this attribute
       # @return [String] widget type
       def widget
