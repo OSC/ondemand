@@ -48,6 +48,9 @@ jobs:
       - name: Run ShellCheck
         run: bundle exec rake test:shellcheck
 
+      - name: Run Zeitwerk check
+        run: bundle exec rake zeitwerk:check
+
       - name: Run unit tests
         run: bundle exec rake test:unit
 
