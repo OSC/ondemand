@@ -20,6 +20,7 @@ require_relative "nginx_stage/generators/nginx_clean_generator"
 require_relative "nginx_stage/application"
 
 require 'etc'
+require 'syslog/logger'
 
 # The main namespace for NginxStage. Provides a global configuration.
 module NginxStage
@@ -178,7 +179,12 @@ module NginxStage
   # List of users with nginx processes running
   # @return [Array<User>] the list of users with running nginx processes
   def self.active_users
-    Dir[pun_pid_path(user: '*')].map{|v| User.new v[/#{pun_pid_path(user: '(.+)')}/, 1]}
+    Dir[pun_pid_path(user: '*')].map do |v|
+      User.new v[/#{pun_pid_path(user: '(.+)')}/, 1]
+    rescue ArgumentError => e
+      log = Syslog::Logger.new 'ood_nginx_stage'
+      log.error "cannot create user #{v} because of error '#{e.message}'"
+    end
   end
 
   # Get a hash of all the staged app configs
