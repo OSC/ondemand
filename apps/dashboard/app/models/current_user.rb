@@ -41,6 +41,8 @@ class CurrentUser
 
   def groups
     @groups ||= begin
+      
+      # let's guarentee that the first item in this list is the primary group
       groups = Process.groups
       groups.delete(primary_group.gid)
       groups.unshift(primary_group.gid).map { |gid| Etc.getgrgid(gid) }
