@@ -151,13 +151,12 @@ module BatchConnect::SessionsHelper
   end
 
   def display_choices(session)
-    session_content = session.display_choices || {}
-    # Hash to an array with the labels and values
-    session_content.to_a.map do |label, value|
+    user_context = session.user_context
+    session.app.attributes.select(&:display?).map do |attribute|
       content_tag(:p) do
-        concat content_tag(:strong, "#{label}:")
+        concat content_tag(:strong, "#{attribute.label}:")
         concat " "
-        concat value
+        concat user_context.fetch(attribute.id, '')
       end
     end.join.html_safe
   end

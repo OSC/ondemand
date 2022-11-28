@@ -456,7 +456,7 @@ batch_connect: { ssh_allow: true } }))
     refute session.ssh_to_compute_node?
   end
 
-  test 'saves the cluser id in the staged_root path' do
+  test 'saves the cluster id in the staged_root path' do
     # stub open3 and system apps because :save stages and submits the job
     # and expects certain things - like a valid cluster.d directory
     stub_sys_apps
@@ -528,7 +528,6 @@ batch_connect: { ssh_allow: true } }))
         'view'            => nil,
         'script_type'     => 'basic',
         'cache_completed' => nil,
-        'display_choices' => {},
       }
       Timecop.freeze(now) do
         assert session.save(app: bc_jupyter_app, context: ctx), session.errors.each(&:to_s).to_s
@@ -540,6 +539,44 @@ batch_connect: { ssh_allow: true } }))
         assert_equal(expected_file, JSON.parse(File.read("#{db_dir}/test_id")).to_h)
         assert_equal('100600', File.stat("#{db_dir}/test_id").mode.to_s(8))
       end
+    end
+  end
+
+  test 'writes user_defined_context file correctly' do
+    stub_sys_apps
+    Open3.stubs(:capture3).returns(['the-job-id', '', exit_success])
+
+    Dir.mktmpdir('test_dir') do |dir|
+      OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
+      SecureRandom.stubs(:uuid).returns('test_id')
+
+      session = BatchConnect::Session.new
+      ctx = bc_jupyter_app.build_session_context
+      # Some attribute overrides
+      ctx.attributes = { 'cluster' => 'owens', 'bc_num_hours' => 100, 'cuda_version' => 'cuda_100' }
+
+      expected_user_context = {
+        'cluster'=>'owens',
+        'bc_num_hours'=>'100',
+        'bc_num_slots'=>'1',
+        'mode'=>'1',
+        'node_type'=>'',
+        'bc_account'=>'',
+        'bc_email_on_started'=>'',
+        'python_version'=>'',
+        'cuda_version'=>'cuda_100',
+        'hidden_change_thing'=>'default',
+        'classroom'=>'',
+        'classroom_size'=>'',
+        'advanced_options'=>'',
+        'auto_modules_app_jupyter'=>'',
+        'auto_modules_intel'=>''
+      }
+
+      assert session.save(app: bc_jupyter_app, context: ctx), session.errors.each(&:to_s).to_s
+
+      assert session.user_defined_context_file.exist?
+      assert_equal expected_user_context, session.user_context
     end
   end
 

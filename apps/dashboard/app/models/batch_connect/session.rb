@@ -58,10 +58,6 @@ module BatchConnect
     # @return [String] error message
     attr_reader :render_info_view_error_message
 
-    # Application parameters provided by the user that will be displayed in the session card.
-    # @return [Hash] application display choices
-    attr_accessor :display_choices
-
     # Return parsed markdown from info.{md, html}.erb
     # @return [String, nil] return HTML if no error while parsing, else return nil
     def render_info_view
@@ -81,7 +77,7 @@ module BatchConnect
     # Attributes used for serialization
     # @return [Hash] attributes to be serialized
     def attributes
-      %w(id cluster_id job_id created_at token title view script_type cache_completed display_choices).map do |attribute|
+      %w(id cluster_id job_id created_at token title view script_type cache_completed).map do |attribute|
         [ attribute, nil ]
       end.to_h
     end
@@ -94,6 +90,13 @@ module BatchConnect
 
     def valid_session_fields?
       !( created_at.nil? || cluster_id.nil? || job_id.nil? )
+    end
+
+    def user_context
+      @user_context ||= user_defined_context_file.exist? ? JSON.parse(user_defined_context_file.read) : {}
+    rescue => e
+      Rails.logger.error("ERROR: Error parsing user_context file: '#{user_defined_context_file}' --- #{e.class} - #{e.message}")
+      {}
     end
 
     class << self
@@ -236,7 +239,6 @@ module BatchConnect
       self.view       = app.session_view
       self.created_at = Time.now.to_i
       self.cluster_id = context.try(:cluster).to_s
-      self.display_choices = app.attributes.select(&:display?).map{|a| [a.label, a.value]}.to_h
 
       submit_script = app.submit_opts(context, fmt: format, staged_root: staged_root) # could raise an exception
 
