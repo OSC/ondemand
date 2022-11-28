@@ -561,6 +561,7 @@ batch_connect: { ssh_allow: true } }))
         'bc_num_slots'=>'1',
         'mode'=>'1',
         'node_type'=>'',
+        'gpus'=>'0',
         'bc_account'=>'',
         'bc_email_on_started'=>'',
         'python_version'=>'',
