@@ -17,7 +17,6 @@ override_dh_auto_configure:
 	# nothing to configure
 
 override_dh_auto_build:
-	env
 	BUNDLE_WITHOUT='test package' bundle install
 	rake --trace -mj$(NCPUS) build
 	rm -rf $(GEM_HOME)/cache
