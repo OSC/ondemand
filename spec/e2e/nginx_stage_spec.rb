@@ -15,7 +15,7 @@ describe 'Nginx stage' do
   context 'missing users' do
     before(:all) do
       on hosts, 'mkdir /var/run/ondemand-nginx/deleted_user'
-      on hosts, 'chmow 600 /var/run/ondemand-nginx/deleted_user'
+      on hosts, 'chmod 600 /var/run/ondemand-nginx/deleted_user'
       on hosts, 'echo -n 74 > /var/run/ondemand-nginx/deleted_user/passenger.pid'
     end
 
