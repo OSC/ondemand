@@ -65,6 +65,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - Additional support for making support ticket forms in [2348](https://github.com/OSC/ondemand/pull/2348).
 - Added ENV override for showing/hiding job arrays in [2327](https://github.com/OSC/ondemand/pull/2327).
 - Sites can add custom pages in Custom pages feature [2353](https://github.com/OSC/ondemand/pull/2353).
+- BC apps can now display choices made in the card in [2366](https://github.com/OSC/ondemand/pull/2366).
+- Added the active sessions widget in [2377](https://github.com/OSC/ondemand/pull/2377).
 
 ### Fixed
 
