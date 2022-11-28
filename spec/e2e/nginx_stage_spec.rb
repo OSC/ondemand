@@ -30,7 +30,7 @@ describe 'Nginx stage' do
       expect(browser.title).to eq('Dashboard - Open OnDemand')
 
       # Note there's no error here about 'deleted_user'
-      expect { `/opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force` }.to output('ood\n')
+      expect { `/opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force` }.to output('ood\n').to_stdout
     end
   end
 end
