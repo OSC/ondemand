@@ -193,6 +193,7 @@ function addHideHandler(optionId, option, key,  configValue) {
  */
 function addMinMaxForHandler(optionId, option, key,  configValue) {
   optionId = String(optionId || '');
+  configValue = parseInt(configValue);
 
   const configObj = parseMinMaxFor(key);
   const id = configObj['subjectId'];
@@ -401,8 +402,8 @@ function toggleMinMax(event, changeId, otherId) {
   const changeElement = $(`#${changeId}`);
   const mm = minMaxLookup[changeId].get(x, y);
   const prev = {
-    min: changeElement.attr('min'),
-    max: changeElement.attr('max'),
+    min: parseInt(changeElement.attr('min')),
+    max: parseInt(changeElement.attr('max')),
   };
 
   [ 'max', 'min' ].forEach((dim) => {
@@ -411,7 +412,7 @@ function toggleMinMax(event, changeId, otherId) {
     }
   });
 
-  const val = clamp(changeElement.val(), prev, mm)
+  const val = clamp(parseInt(changeElement.val()), prev, mm)
   if (val !== undefined) {
     changeElement.attr('value', val);
     changeElement.val(val);
@@ -423,16 +424,16 @@ function clamp(currentValue, previous, next) {
     return undefined;
 
   // you've set the boundary, so when you go to the next value - keep it at the next's boundary
-  } else if(previous && previous['max'] && currentValue == previous['max']) {
-    return next['max'];
-  } else if(previous && previous['min'] && currentValue == previous['min']) {
+  } else if(currentValue === previous['min']) {
     return next['min'];
+  } else if(currentValue === previous['max']) {
+    return next['max'];
 
   // otherwise you could be up or down shifting to fit within the next's boundaries
-  } else if(next['max'] && currentValue >= next['max']) {
-    return next['max'];
-  } else if(next['min'] && currentValue <= next['min']) {
+  } else if(currentValue <= next['min']) {
     return next['min'];
+  } else if(currentValue >= next['max']) {
+    return next['max'];
   } else {
     return undefined;
   }
