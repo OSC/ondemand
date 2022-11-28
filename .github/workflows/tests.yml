@@ -49,7 +49,7 @@ jobs:
         run: bundle exec rake test:shellcheck
 
       - name: Run Zeitwerk check
-        run: bundle exec rake zeitwerk:check
+        run: cd apps/dashboard; bundle exec rake zeitwerk:check
 
       - name: Run unit tests
         run: bundle exec rake test:unit
