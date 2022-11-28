@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Added active sessions widget (#2377)\
+Pinned Apps UI improvements (#2351)\
+move smart attributes out of lib/ into app/lib (#2361)\
+Added support to show form parameters in session card (#2366)
 
 ### Changed
 
