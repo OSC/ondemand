@@ -27,7 +27,9 @@ end
 
 group :test do
   gem "capybara"
-  gem "selenium-webdriver"
+  # lock selenium as it doesn't work on ubuntu 22.04
+  # https://github.com/SeleniumHQ/selenium/issues/11291
+  gem "selenium-webdriver", '4.5.0'
   gem "webrick"
 end
 
