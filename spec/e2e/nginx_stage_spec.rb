@@ -31,7 +31,7 @@ describe 'Nginx stage' do
 
       # Note there's no error here about 'deleted_user'
       on hosts, '/opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force' do
-        assert_equal stdout, 'ood\n'
+        assert_equal stdout, "ood\n"
       end
     end
   end
