@@ -19,7 +19,7 @@ describe 'Nginx stage' do
       on hosts, 'echo -n 74 > /var/run/ondemand-nginx/deleted_user/passenger.pid'
     end
 
-    before(:all) do
+    after(:all) do
       on hosts, 'rm -rf /var/run/ondemand-nginx/deleted_user'
     end
 
