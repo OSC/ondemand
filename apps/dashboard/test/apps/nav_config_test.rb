@@ -9,6 +9,12 @@ class NavConfigTest < ActiveSupport::TestCase
     NavConfig.categories_allowlist = false
   end
 
+  def teardown
+    # reset defaults for every test
+    NavConfig.categories = ['Apps', 'Files', 'Jobs', 'Clusters', 'Interactive Apps']
+    NavConfig.categories_allowlist = false
+  end
+
   test 'default values' do
     assert_equal(false, NavConfig.categories_allowlist?)
     assert_equal(false, NavConfig.categories_allowlist)
