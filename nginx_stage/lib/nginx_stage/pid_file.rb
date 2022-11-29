@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'pathname'
 
 module NginxStage
@@ -14,6 +16,7 @@ module NginxStage
       @pid_path = Pathname.new(pid_path)
       raise MissingPidFile, "missing PID file: #{pid_path}" unless @pid_path.exist?
       raise InvalidPidFile, "invalid PID file: #{pid_path}" unless @pid_path.file?
+
       @pid = @pid_path.read.to_i
     end
 
@@ -41,8 +44,8 @@ module NginxStage
     # Remove the file from the file system
     def delete
       @pid_path.delete
-    rescue
-      $stderr.puts "Unable to delete pid file at #{pid_path}"
+    rescue StandardError
+      warn "Unable to delete pid file at #{pid_path}"
     end
   end
 end
