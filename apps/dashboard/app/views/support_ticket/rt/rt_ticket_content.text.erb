@@ -20,7 +20,6 @@ Session Information:
         createdAt: Time.at(context[:session].created_at).iso8601,
         token: context[:session].token,
         title: context[:session].title,
-        user_context: context[:session].user_context,
         info: helpers.filter_session_parameters(context[:session].info),
         deletedInDays: context[:session].days_till_old,
       })
