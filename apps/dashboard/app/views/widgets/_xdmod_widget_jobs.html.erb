@@ -112,7 +112,7 @@ var helpers = {
     // month/day
     let d = new Date(this.start_time_ts*1000),
         month = d.getMonth()+1,
-        day = d.getDay()+1;
+        day = d.getUTCDate();
 
     return `${month}/${day}`;
   },
