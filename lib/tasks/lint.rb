@@ -30,7 +30,7 @@ namespace :lint do
       all_files = Dir.glob(DEFAULT_PATTERNS).reject { |f| f.include?('vendor/bundle') }
       one_file = all_files[Random.rand(all_files.size)]
 
-      t.options = ["--config=#{PROJ_DIR.join(".rubocop.yml")}", "-A"]
+      t.options = ["--config=#{PROJ_DIR.join('.rubocop.yml')}", '-A', '--fail-level', 'fatal']
       t.patterns = [one_file]
     end
   rescue LoadError
