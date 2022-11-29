@@ -5,6 +5,8 @@
   session_selection = active_sessions.first(max_sessions)
 -%>
 
+<%= javascript_include_tag 'sessions_poller', nonce: true %>
+
 <div class="active-sessions-header">
   <h3>
     <%= t('dashboard.active_sessions_title') %>
@@ -18,7 +20,7 @@
      <%= t('dashboard.active_sessions_no_sessions') %>
   </p>
 <% else %>
-  <div class="row" data-toggle="poll" data-url="<%= batch_connect_sessions_path(format: :js) %>" data-delay="<%= poll_delay %>">
+  <div id="batch_connect_sessions" class="row" data-toggle="poll" data-url="<%= batch_connect_sessions_path(format: :js) %>" data-delay="<%= poll_delay %>">
     <div class="col-md-12">
       <%= render partial: "/batch_connect/sessions/panel", collection: session_selection, as: :session %>
     </div>
