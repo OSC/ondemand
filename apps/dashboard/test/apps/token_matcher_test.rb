@@ -2,7 +2,7 @@ require 'test_helper'
 
 class TokenMatcherTest < ActiveSupport::TestCase
 
-  test "token should be return token parameter" do
+  test "token should return token parameter" do
     target = TokenMatcher.new("sys/app")
     assert_equal("sys/app" , target.token)
 
@@ -16,9 +16,27 @@ class TokenMatcherTest < ActiveSupport::TestCase
     assert_equal true, target.matches_app?(app)
   end
 
+  test "app token should not match app with the same prefix" do
+    target = TokenMatcher.new("sys/app")
+    app = OodApp.new(Router.router_from_token("sys/app_prefix"))
+    assert_equal false, target.matches_app?(app)
+  end
+
+  test "app token with asterisk should match app with the same prefix" do
+    target = TokenMatcher.new("sys/app*")
+    app = OodApp.new(Router.router_from_token("sys/app_prefix"))
+    assert_equal true, target.matches_app?(app)
+  end
+
   test "app token should match sub app" do
     target = TokenMatcher.new("sys/app")
-    app = OodApp.new(Router.router_from_token("sys/app/sub_app"))
+    app = BatchConnect::App.from_token("sys/app/sub_app")
+    assert_equal true, target.matches_app?(app)
+  end
+
+  test "app token with trailing slash should match sub app" do
+    target = TokenMatcher.new("sys/app/")
+    app = BatchConnect::App.from_token("sys/app/sub_app")
     assert_equal true, target.matches_app?(app)
   end
 
