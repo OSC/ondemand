@@ -89,7 +89,8 @@ class Permission
   def acl_entry(principle)
     flags = []
     flags << :g if group
-    OodSupport::ACLs::Nfs4Entry.new(type: :A, flags: flags, principle: principle.to_s, domain: 'osc.edu',
+    domain = Configuration.facl_domain
+    OodSupport::ACLs::Nfs4Entry.new(type: :A, flags: flags, principle: principle.to_s, domain: domain,
                                     permissions: [:r, :x])
   end
 
