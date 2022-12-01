@@ -41,18 +41,19 @@ jobs:
         run: |
           bundle config path ~/vendor/bundle
           bundle install
+          gem install rake
 
       - name: Setup rclone
         run: sudo apt-get update && sudo apt-get install rclone
+
+      - name: Run unit tests
+        run: bundle exec rake test:unit
 
       - name: Run ShellCheck
         run: bundle exec rake test:shellcheck
 
       - name: Run Zeitwerk check
         run: cd apps/dashboard; bundle exec rake zeitwerk:check
-
-      - name: Run unit tests
-        run: bundle exec rake test:unit
 
       - name: Run lint tests
         run: bundle exec rake lint || true
