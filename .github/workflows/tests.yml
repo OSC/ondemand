@@ -41,6 +41,7 @@ jobs:
         run: |
           bundle config path ~/vendor/bundle
           bundle install
+          gem install rake
 
       - name: Setup rclone
         run: sudo apt-get update && sudo apt-get install rclone
