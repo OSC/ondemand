@@ -4,7 +4,8 @@
   <%-
     OodAppGroup.groups_for(
       apps: apps,
-      group_by: local_assigns.fetch(:group_by, :subcategory)
+      group_by: local_assigns.fetch(:group_by, :subcategory),
+      sort: local_assigns.fetch(:sort, true),
     ).each do |app_group|
   -%>
     <%=
@@ -12,7 +13,7 @@
         "p",
         app_group.title,
         class: "list-group-item mb-0 header"
-      ) unless app_group.title.empty?
+      ) unless app_group.title.blank?
     %>
     <%=
       render(

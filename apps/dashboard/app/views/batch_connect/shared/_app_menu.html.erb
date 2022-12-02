@@ -1,39 +1,53 @@
-<%- usr_app_groups.each do |app_group| -%>
+<%- if apps_menu_group -%>
   <%=
     render(
-        partial: "batch_connect/shared/app_list",
-        locals: {
-          title: app_group.title,
-          apps: app_group.apps,
-          current_url: local_assigns[:current_url],
-          group_by: :category,
-          show_owner: true
-        }
+      partial: "batch_connect/shared/app_list",
+      locals: {
+        title: apps_menu_group.title,
+        apps: apps_menu_group.apps,
+        current_url: local_assigns[:current_url],
+        sort: apps_menu_group.sort,
+      }
     )
   %>
-<%- end -%>
-<%- sys_app_groups.each do |app_group| -%>
-  <%=
-    render(
-        partial: "batch_connect/shared/app_list",
-        locals: {
-          title: app_group.title,
-          apps: app_group.apps,
-          current_url: local_assigns[:current_url]
-        }
-    )
-  %>
-<%- end -%>
-<%- dev_app_groups.each do |app_group| -%>
-  <%=
-    render(
-        partial: "batch_connect/shared/app_list",
-        locals: {
-          title: "#{app_group.title}" + t('dashboard.batch_connect_sandbox'),
-          apps: app_group.apps,
-          current_url: local_assigns[:current_url],
-          style: "sandbox-apps-header"
-        }
-    )
-  %>
+<%- else -%>
+  <%- usr_app_groups.each do |app_group| -%>
+    <%=
+      render(
+          partial: "batch_connect/shared/app_list",
+          locals: {
+            title: app_group.title,
+            apps: app_group.apps,
+            current_url: local_assigns[:current_url],
+            group_by: :category,
+            show_owner: true
+          }
+      )
+    %>
+  <%- end -%>
+  <%- sys_app_groups.each do |app_group| -%>
+    <%=
+      render(
+          partial: "batch_connect/shared/app_list",
+          locals: {
+            title: app_group.title,
+            apps: app_group.apps,
+            current_url: local_assigns[:current_url]
+          }
+      )
+    %>
+  <%- end -%>
+  <%- dev_app_groups.each do |app_group| -%>
+    <%=
+      render(
+          partial: "batch_connect/shared/app_list",
+          locals: {
+            title: "#{app_group.title}" + t('dashboard.batch_connect_sandbox'),
+            apps: app_group.apps,
+            current_url: local_assigns[:current_url],
+            style: "sandbox-apps-header"
+          }
+      )
+    %>
+  <%- end -%>
 <%- end -%>

@@ -128,6 +128,7 @@ en:
       take a few minutes.
 
     batch_connect_sessions_status_completed: "For debugging purposes, this card will be retained for %{days} more days"
+    batch_connect_apps_menu_title: "Interactive Apps"
     breadcrumbs_all_apps: "All Apps"
     breadcrumbs_home: "Home"
     breadcrumbs_my_sessions: "My Interactive Sessions"

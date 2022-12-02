@@ -18,17 +18,21 @@ class NavBar
         if nav_item.fetch(:links, nil)
           extend_group(nav_menu(nav_item))
         elsif nav_item.fetch(:url, nil)
-          extend_link(nav_link(nav_item, nil, nil))
+          extend_link(nav_link(nav_item))
         elsif nav_item.fetch(:apps, nil)
-          matched_apps = nav_apps(nav_item, nil, nil)
+          matched_apps = nav_apps(nav_item)
           extend_link(matched_apps.first.links.first) if matched_apps.first && matched_apps.first.links.first
         elsif nav_item.fetch(:profile, nil)
-          extend_link(nav_profile(nav_item, nil, nil))
+          extend_link(nav_profile(nav_item))
         elsif nav_item.fetch(:page, nil)
-          extend_link(nav_page(nav_item, nil, nil))
+          extend_link(nav_page(nav_item))
         end
       end
     end.flatten.compact
+  end
+
+  def self.menu_items(menu_item)
+    extend_group(nav_menu(menu_item || {}))
   end
 
   private
@@ -61,21 +65,21 @@ class NavBar
     OodAppGroup.new(apps: apps, title: menu_title, sort: false)
   end
 
-  def self.nav_link(item, category, subcategory)
+  def self.nav_link(item, category='', subcategory='')
     OodAppLink.new(item).categorize(category: category, subcategory: subcategory)
   end
 
-  def self.nav_apps(item, category, subcategory)
+  def self.nav_apps(item, category='', subcategory='')
     app_configs = Array.wrap(item.fetch(:apps, []))
     app_configs.map do |config_string|
       matched_apps = Router.pinned_apps_from_token(config_string, SysRouter.apps)
       matched_apps.map do |reg_app|
-        AppRecategorizer.new(reg_app, category: category, subcategory: subcategory)
-      end
+        reg_app.links.map{|link| link.categorize(category: category, subcategory: subcategory, show_in_menu: reg_app.batch_connect_app?)}
+      end.flatten
     end.flatten
   end
 
-  def self.nav_profile(item, category, subcategory)
+  def self.nav_profile(item, category='', subcategory='')
     profile = item.fetch(:profile)
     profile_data = item.clone
     profile_data[:title] = profile unless item.fetch(:title, nil)
@@ -85,7 +89,7 @@ class NavBar
     OodAppLink.new(profile_data).categorize(category: category, subcategory: subcategory)
   end
 
-  def self.nav_page(item, category, subcategory)
+  def self.nav_page(item, category='', subcategory='')
     page_code = item.fetch(:page)
     page_data = item.clone
     page_data[:title] = page_data.fetch(:title, page_code.titleize)
@@ -97,34 +101,40 @@ class NavBar
   def self.item_from_token(token)
     static_link_template = STATIC_LINKS.fetch(token.to_sym, nil)
     if static_link_template
-      return NavItemDecorator.new({}, static_link_template)
+      return NavItemDecorator.new(OodAppGroup.new, static_link_template)
     end
 
     matched_apps = Router.pinned_apps_from_token(token, SysRouter.apps)
     if matched_apps.size == 1
-      extend_link(matched_apps.first.links.first) if matched_apps.first.links.first
+      app = AppRecategorizer.new(matched_apps.first, category: '', subcategory: '')
+      extend_link(app.links.first.categorize(show_in_menu: app.batch_connect_app?)) if app.links.first
     elsif matched_apps.size > 1
       extend_group(OodAppGroup.groups_for(apps: matched_apps).first)
     else
       group = OodAppGroup.groups_for(apps: SysRouter.apps).select { |g| g.title.downcase == token.downcase }.first
-      group.nil? ? nil : extend_group(group)
+      return nil if group.nil?
+      links = group.apps.map{|app| app.links.map{|link| link.categorize(category: app.category, subcategory: app.subcategory, show_in_menu: app.batch_connect_app?)}}.flatten
+      group.apps = links
+      extend_group(group)
     end
   end
 
-  def self.extend_group(item)
-    NavItemDecorator.new(item, 'layouts/nav/group')
+  def self.extend_group(group)
+    group.sort = false
+    NavItemDecorator.new(group, 'layouts/nav/group')
   end
 
-  def self.extend_link(item)
-    NavItemDecorator.new(item, 'layouts/nav/link')
+  def self.extend_link(link)
+    NavItemDecorator.new(link, 'layouts/nav/link')
   end
 
   class NavItemDecorator < SimpleDelegator
-    attr_reader :partial_path
+    attr_reader :partial_path, :links
 
     def initialize(nav_item, partial_path)
       super(nav_item)
       @partial_path = partial_path
+      @links = nav_item.links.flatten.compact
     end
   end
 end
