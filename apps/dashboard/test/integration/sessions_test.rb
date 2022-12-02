@@ -3,27 +3,13 @@
 require 'html_helper'
 require 'test_helper'
 
-# Test the new radio button functionality in the Jupyter Job Form
-# Testing that radio button with value 0 exists
-# Testing that radio button with value 1 exists
-# Testing that radio button label exists
-
-class BatchConnectTest < ActionDispatch::IntegrationTest
+class SessionsTest < ActionDispatch::IntegrationTest
   def setup
     stub_sys_apps
   end
 
-  test 'radio buttons and labels appear correctly' do
-    get new_batch_connect_session_context_url('sys/bc_jupyter')
-    assert_select 'form input[id="batch_connect_session_context_mode_0"]'
-    assert_select 'form input[id="batch_connect_session_context_mode_1"]'
-    assert_equal 'The Mode', css_select('label[for="batch_connect_session_context_mode"]').text
-    assert_equal 'Jupyter Lab', css_select('label[for="batch_connect_session_context_mode_1"]').text
-    assert_equal 'Jupyter Notebook', css_select('label[for="batch_connect_session_context_mode_0"]').text
-  end
-
   test 'default application menu renders correctly when nav_bar property defined' do
-    BatchConnect::SessionContextsController.any_instance.expects(:t).with('dashboard.batch_connect_apps_menu_title').returns('Translations title')
+    BatchConnect::SessionsController.any_instance.expects(:t).with('dashboard.batch_connect_apps_menu_title').returns('Translations title')
     stub_user_configuration({nav_bar: [
       {title: 'Custom Apps',
        links: [
@@ -33,7 +19,7 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
        ]}
     ]})
 
-    get new_batch_connect_session_context_url('sys/bc_jupyter')
+    get batch_connect_sessions_url
     assert_response :success
 
     assert_select 'div.card div.card-header', text: 'Translations title'
@@ -51,16 +37,16 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
 
   test 'interactive_apps_menu override renders correctly' do
     stub_user_configuration({
-      interactive_apps_menu: {
-        title: 'Menu Title',
-        links: [
-          {group: 'Submenu Title'},
-          {apps: 'sys/bc_jupyter'},
-          {apps: 'sys/bc_paraview'}
-        ]}
+    interactive_apps_menu: {
+      title: 'Menu Title',
+      links: [
+        {group: 'Submenu Title'},
+        {apps: 'sys/bc_jupyter'},
+        {apps: 'sys/bc_paraview'}
+      ]}
     })
 
-    get new_batch_connect_session_context_url('sys/bc_jupyter')
+    get batch_connect_sessions_url
     assert_response :success
 
     assert_select 'div.card div.card-header', text: 'Menu Title'

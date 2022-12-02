@@ -41,6 +41,10 @@ class OodAppGroup
     @nav_limit || apps.size
   end
 
+  def links
+    apps.map(&:links).flatten
+  end
+
   def to_h
     {
       :group => self,

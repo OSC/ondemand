@@ -61,6 +61,7 @@ class BatchConnect::SessionContextsController < ApplicationController
       @sys_app_groups = bc_sys_app_groups
       @usr_app_groups = bc_usr_app_groups
       @dev_app_groups = bc_dev_app_groups
+      @apps_menu_group = bc_custom_apps_group
     end
 
     # Set the session context from the app

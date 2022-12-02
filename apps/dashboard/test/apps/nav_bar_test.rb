@@ -14,6 +14,7 @@ class NavBarTest < ActiveSupport::TestCase
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
     assert_equal "layouts/nav/all_apps",  result[0].partial_path
+    assert_equal [], result[0].apps
   end
 
   test "NavBar.items should return navigation link when nav_item is a string matching one app token" do
@@ -22,12 +23,17 @@ class NavBarTest < ActiveSupport::TestCase
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
     assert_equal "layouts/nav/link",  result[0].partial_path
+    assert_equal 1,  result[0].links.size
+    assert_equal '',  result[0].links[0].category
+    assert_equal '',  result[0].links[0].subcategory
     assert_equal "Jupyter Notebook",  result[0].title
     assert_equal "/batch_connect/sys/bc_jupyter/session_contexts/new",  result[0].url
   end
 
   test "NavBar.items should ignore nav_items when is a string and matching app has no links" do
     mock_app = stub()
+    mock_app.stubs(:has_sub_apps?).returns(false)
+    mock_app.stubs(:token).returns("test/token")
     mock_app.stubs(:links).returns([])
     Router.stubs(:pinned_apps_from_token).returns([mock_app])
 
@@ -80,6 +86,7 @@ class NavBarTest < ActiveSupport::TestCase
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
     assert_equal "layouts/nav/group",  result[0].partial_path
+    assert_equal 0,  result[0].apps.size
     assert_equal "menu title",  result[0].title
   end
 
@@ -114,6 +121,7 @@ class NavBarTest < ActiveSupport::TestCase
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
     assert_equal "layouts/nav/link",  result[0].partial_path
+    assert_equal 1, result[0].links.size
     assert_equal "link title",  result[0].title
     assert_equal "/path/test",  result[0].url
   end
@@ -127,6 +135,7 @@ class NavBarTest < ActiveSupport::TestCase
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
     assert_equal "layouts/nav/link",  result[0].partial_path
+    assert_equal 1, result[0].links.size
     assert_equal "profile title",  result[0].title
     assert_equal "/settings?settings%5Bprofile%5D=profile1",  result[0].url
     assert_equal expected_data_property,  result[0].data
@@ -141,6 +150,7 @@ class NavBarTest < ActiveSupport::TestCase
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
     assert_equal "layouts/nav/link",  result[0].partial_path
+    assert_equal 1, result[0].links.size
     assert_equal "Page Title",  result[0].title
     assert_equal "/custom/page_code",  result[0].url
     assert_equal false,  result[0].new_tab?
@@ -154,6 +164,9 @@ class NavBarTest < ActiveSupport::TestCase
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
     assert_equal "layouts/nav/link",  result[0].partial_path
+    assert_equal 1,  result[0].links.size
+    assert_equal '',  result[0].links[0].category
+    assert_equal '',  result[0].links[0].subcategory
     assert_equal "Jupyter Notebook",  result[0].title
   end
 
@@ -165,6 +178,9 @@ class NavBarTest < ActiveSupport::TestCase
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
     assert_equal "layouts/nav/link",  result[0].partial_path
+    assert_equal 1,  result[0].links.size
+    assert_equal '',  result[0].links[0].category
+    assert_equal '',  result[0].links[0].subcategory
     assert_equal "Jupyter Notebook",  result[0].title
   end
 
@@ -197,6 +213,41 @@ class NavBarTest < ActiveSupport::TestCase
     NavBar::STATIC_LINKS.each do |name, template|
       assert_equal true,  [:all_apps, :featured_apps, :sessions, :log_out, :user].include?(name)
     end
+  end
+
+  test "NavBar.menu_items should return a group based NavItemDecorator" do
+    nav_item = {
+      title: "menu title",
+      links: [
+        {group: "subcategory1"},
+        "sys/bc_jupyter",
+        {group: "subcategory2"},
+        "sys/bc_jupyter"
+      ]
+    }
+
+    result = NavBar.menu_items(nav_item)
+    assert_equal "layouts/nav/group",  result.partial_path
+    assert_equal "menu title",  result.title
+    assert_equal 2,  result.apps.size
+    assert_equal "menu title",  result.apps[0].category
+    assert_equal "subcategory1",  result.apps[0].subcategory
+    assert_equal "menu title",  result.apps[1].category
+    assert_equal "subcategory2",  result.apps[1].subcategory
+  end
+
+  test "NavBar.menu_items should return empty group when nav_item is empty hash" do
+    result = NavBar.menu_items({})
+    assert_equal "layouts/nav/group",  result.partial_path
+    assert_equal "",  result.title
+    assert_equal 0,  result.apps.size
+  end
+
+  test "NavBar.menu_items should return empty group when nav_item is nil" do
+    result = NavBar.menu_items(nil)
+    assert_equal "layouts/nav/group",  result.partial_path
+    assert_equal "",  result.title
+    assert_equal 0,  result.apps.size
   end
 
 end

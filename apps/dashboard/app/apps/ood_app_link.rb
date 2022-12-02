@@ -33,8 +33,8 @@ class OodAppLink
     end
   end
 
-  def categorize(category: nil, subcategory: nil)
-    LinkCategorizer.new(self, category: category, subcategory: subcategory)
+  def categorize(category: '', subcategory: '', show_in_menu: false)
+    LinkCategorizer.new(self, category: category, subcategory: subcategory, show_in_menu: show_in_menu)
   end
 
   private
@@ -44,14 +44,19 @@ class OodAppLink
   class LinkCategorizer < SimpleDelegator
     attr_reader :category, :subcategory
 
-    def initialize(link, category: nil, subcategory: nil)
+    def initialize(link, category: '', subcategory: '', show_in_menu: false)
       super(link)
       @category = category
       @subcategory = subcategory
+      @show_in_menu = show_in_menu
     end
 
     def links
       [self]
+    end
+
+    def show_in_menu?
+      @show_in_menu
     end
   end
 end

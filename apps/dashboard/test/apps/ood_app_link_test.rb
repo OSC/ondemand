@@ -46,11 +46,20 @@ class OodAppLinkTest < ActiveSupport::TestCase
     assert_equal({ method: "post" },  result[:data])
   end
 
-  test "OodAppLink.categorize should create an OodAppLink with category and subcategory" do
-    result = OodAppLink.new(@default_link_data).categorize(category: "test_category", subcategory: "test_subcategory")
+  test "OodAppLink.categorize should create an OodAppLink with category, subcategory, and show_in_menu?" do
+    result = OodAppLink.new(@default_link_data).categorize(category: "test_category", subcategory: "test_subcategory", show_in_menu: true)
     check_default_link_data(result)
     assert_equal "test_category",  result.category
     assert_equal "test_subcategory",  result.subcategory
+    assert_equal true,  result.show_in_menu?
+  end
+
+  test "OodAppLink.categorize check defaults" do
+    result = OodAppLink.new(@default_link_data).categorize
+    check_default_link_data(result)
+    assert_equal "",  result.category
+    assert_equal "",  result.subcategory
+    assert_equal false,  result.show_in_menu?
   end
 
   def check_default_link_data(link)
