@@ -6,29 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Bump decode-uri-component from 0.2.0 to 0.2.2 in /apps/shell (#2403)\
-Added support for customizing Interactive Apps and Sessions left hand side menu (#2374)\
-Bump sinatra from 3.0.3 to 3.0.4 in /apps/dashboard (#2400)\
-reorder tests to install gems first (#2401)\
-allow for configurable facl domain (#2398)\
-Fixed token matcher string matching for apps with the same prefix (#2396)\
-Improvements to active sessions widget (#2384)\
-restore defaults when tearing down this test (#2397)\
-Fixed pinned app spinner for links opening in a new tab (#2391)\
-lint a random file (#2393)\
-use correct Date api to get the day of the month (#2390)\
-add rake zeitwerk:check to our CI (#2389)\
-navconfig to use allowlist to deprecate whitelist (#2380)\
-make nginx_clean safe to run against deleted users (#2387)\
-set fail level to fatal to avoid exiting 1 (#2388)\
-Clamp bugfix (#2365)\
-add rlcone initializer to auto populate rclone remotes (#2371)\
-add workflow and rake task to randomly lint a file (#2378)\
-Fix updates (#2375)\
-Improvements to logic for displaying form parameters in session cards (#2381)\
-Update Changelog (#2385)\
-use bundler environment vars instead of deprecated --without flag (#2379)\
-Added SmartAttributes::AttributeFactory test (#2382)
 
 ### Changed
 
@@ -59,6 +36,8 @@ Added SmartAttributes::AttributeFactory test (#2382)
 - Passenger and NGINX dependencies are now 6.0.14 and NGINX repectively in [#2027](https://github.com/OSC/ondemand/pull/2027).
 - NavConfig settings have been deprecated and replaced in [2221](https://github.com/OSC/ondemand/pull/2221).
 - noNVC is now 1.3.0, up from 1.1.0 in [2295](https://github.com/OSC/ondemand/pull/2295).
+- NavConfig should now use allowlist, deprecating whitelist in [2380](https://github.com/OSC/ondemand/pull/2380).
+- Shared apps can now correctly set FACLs in [2398](https://github.com/OSC/ondemand/pull/2398).
 
 ### Added
 
@@ -83,6 +62,7 @@ Added SmartAttributes::AttributeFactory test (#2382)
 - Support for Profiles
   - NavConfig settings have been deprecated and replaced in [2221](https://github.com/OSC/ondemand/pull/2221).
   - The Navbar can be completely defined in [2270](https://github.com/OSC/ondemand/pull/2270).
+  - Interactive App Menus can be overridden in [2374](https://github.com/OSC/ondemand/pull/2374).
 - Support for opening support tickets in [2292](https://github.com/OSC/ondemand/pull/2292).
   - With support for RT in [2318](https://github.com/OSC/ondemand/pull/2318).
   - Additional support for making support ticket forms in [2348](https://github.com/OSC/ondemand/pull/2348).
@@ -90,6 +70,7 @@ Added SmartAttributes::AttributeFactory test (#2382)
 - Sites can add custom pages in Custom pages feature [2353](https://github.com/OSC/ondemand/pull/2353).
 - BC apps can now display choices made in the card in [2366](https://github.com/OSC/ondemand/pull/2366).
 - Added the active sessions widget in [2377](https://github.com/OSC/ondemand/pull/2377).
+- BatchConnect choices now appear in the cards if display is set to true in [2381](https://github.com/OSC/ondemand/pull/2381).
 
 ### Fixed
 
