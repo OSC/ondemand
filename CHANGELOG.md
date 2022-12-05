@@ -36,6 +36,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Passenger and NGINX dependencies are now 6.0.14 and NGINX repectively in [#2027](https://github.com/OSC/ondemand/pull/2027).
 - NavConfig settings have been deprecated and replaced in [2221](https://github.com/OSC/ondemand/pull/2221).
 - noNVC is now 1.3.0, up from 1.1.0 in [2295](https://github.com/OSC/ondemand/pull/2295).
+- NavConfig should now use allowlist, deprecating whitelist in [2380](https://github.com/OSC/ondemand/pull/2380).
+- Shared apps can now correctly set FACLs in [2398](https://github.com/OSC/ondemand/pull/2398).
 
 ### Added
 
@@ -60,6 +62,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Support for Profiles
   - NavConfig settings have been deprecated and replaced in [2221](https://github.com/OSC/ondemand/pull/2221).
   - The Navbar can be completely defined in [2270](https://github.com/OSC/ondemand/pull/2270).
+  - Interactive App Menus can be overridden in [2374](https://github.com/OSC/ondemand/pull/2374).
 - Support for opening support tickets in [2292](https://github.com/OSC/ondemand/pull/2292).
   - With support for RT in [2318](https://github.com/OSC/ondemand/pull/2318).
   - Additional support for making support ticket forms in [2348](https://github.com/OSC/ondemand/pull/2348).
@@ -67,6 +70,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Sites can add custom pages in Custom pages feature [2353](https://github.com/OSC/ondemand/pull/2353).
 - BC apps can now display choices made in the card in [2366](https://github.com/OSC/ondemand/pull/2366).
 - Added the active sessions widget in [2377](https://github.com/OSC/ondemand/pull/2377).
+- BatchConnect choices now appear in the cards if display is set to true in [2381](https://github.com/OSC/ondemand/pull/2381).
 
 ### Fixed
 
