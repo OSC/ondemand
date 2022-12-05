@@ -6,6 +6,29 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Bump decode-uri-component from 0.2.0 to 0.2.2 in /apps/shell (#2403)\
+Added support for customizing Interactive Apps and Sessions left hand side menu (#2374)\
+Bump sinatra from 3.0.3 to 3.0.4 in /apps/dashboard (#2400)\
+reorder tests to install gems first (#2401)\
+allow for configurable facl domain (#2398)\
+Fixed token matcher string matching for apps with the same prefix (#2396)\
+Improvements to active sessions widget (#2384)\
+restore defaults when tearing down this test (#2397)\
+Fixed pinned app spinner for links opening in a new tab (#2391)\
+lint a random file (#2393)\
+use correct Date api to get the day of the month (#2390)\
+add rake zeitwerk:check to our CI (#2389)\
+navconfig to use allowlist to deprecate whitelist (#2380)\
+make nginx_clean safe to run against deleted users (#2387)\
+set fail level to fatal to avoid exiting 1 (#2388)\
+Clamp bugfix (#2365)\
+add rlcone initializer to auto populate rclone remotes (#2371)\
+add workflow and rake task to randomly lint a file (#2378)\
+Fix updates (#2375)\
+Improvements to logic for displaying form parameters in session cards (#2381)\
+Update Changelog (#2385)\
+use bundler environment vars instead of deprecated --without flag (#2379)\
+Added SmartAttributes::AttributeFactory test (#2382)
 
 ### Changed
 
