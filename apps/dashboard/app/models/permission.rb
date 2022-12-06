@@ -70,7 +70,7 @@ class Permission
   def save
     if valid?(:create_permission)
       add_entry
-      true
+      errors.empty? ? true : false
     else
       false
     end
@@ -79,6 +79,7 @@ class Permission
   def destroy
     if valid?(:destroy_permission)
       rem_entry
+      errors.empty? ? true : false
     else
       false
     end
@@ -89,20 +90,27 @@ class Permission
   def acl_entry(principle)
     flags = []
     flags << :g if group
-    domain = Configuration.facl_domain
-    OodSupport::ACLs::Nfs4Entry.new(type: :A, flags: flags, principle: principle.to_s, domain: domain,
+    OodSupport::ACLs::Nfs4Entry.new(type: :A, flags: flags, principle: principle.to_s, domain: facl_domain,
                                     permissions: [:r, :x])
+  end
+
+  def facl_domain
+    Configuration.facl_domain
   end
 
   def add_entry
     OodSupport::ACLs::Nfs4ACL.add_facl(path: product.router.path, entry: acl_entry(name))
   rescue StandardError => e
-    Rails.logger.error("cannot add facl for #{name}: #{e.class}:#{e.message}")
+    msg = "cannot add facl for #{name}@#{facl_domain}: #{e.class}:#{e.message}"
+    errors.add(:name, msg)
+    Rails.logger.error(msg)
   end
 
   def rem_entry
     OodSupport::ACLs::Nfs4ACL.rem_facl(path: product.router.path, entry: acl_entry(name))
   rescue StandardError => e
-    Rails.logger.error("cannot remove facl for #{name}: #{e.class}:#{e.message}")
+    msg = "cannot remove facl for #{name}@#{facl_domain}: #{e.class}:#{e.message}"
+    errors.add(:name, msg)
+    Rails.logger.error(msg)
   end
 end
