@@ -178,7 +178,7 @@ function addHideHandler(optionId, option, key,  configValue) {
 
 /**
  *
- * @param {*} optionId batch_connect_session_context_node_type
+ * @param {*} subjectId batch_connect_session_context_node_type
  * @param {*} option gpu
  * @param {*} key maxNumCoresForClusterAnnieOakley
  * @param {*} configValue 42
@@ -191,46 +191,46 @@ function addHideHandler(optionId, option, key,  configValue) {
  *        data-max-num-cores-for-cluster-annie-oakley: 42
  *      ]
  */
-function addMinMaxForHandler(optionId, option, key,  configValue) {
-  optionId = String(optionId || '');
+function addMinMaxForHandler(subjectId, option, key,  configValue) {
+  subjectId = String(subjectId || '');
   configValue = parseInt(configValue);
 
   const configObj = parseMinMaxFor(key);
-  const id = configObj['subjectId'];
+  const objectId = configObj['subjectId'];
   // this is the id of the target object we're setting the min/max for.
   // if it's undefined - there's nothing to do, it was likely configured wrong.
-  if(id === undefined) return;
+  if(objectId === undefined) return;
 
   const secondDimId = configObj['predicateId'];
   const secondDimValue = configObj['predicateValue'];
 
-  if(minMaxLookup[id] === undefined) minMaxLookup[id] = new Table(optionId, secondDimId);
-  const table = minMaxLookup[id];
+  if(minMaxLookup[objectId] === undefined) minMaxLookup[objectId] = new Table(subjectId, secondDimId);
+  const table = minMaxLookup[objectId];
   table.put(option, secondDimValue, {[minOrMax(key)] : configValue });
 
-  let cacheKey = `${id}_${optionId}_${secondDimId}`;
+  let cacheKey = `${objectId}_${subjectId}_${secondDimId}`;
   if(!minMaxHandlerCache.includes(cacheKey)) {
-    const changeElement = $(`#${optionId}`);
+    const changeElement = $(`#${subjectId}`);
 
     changeElement.on('change', (event) => {
-      toggleMinMax(event, id, secondDimId);
+      toggleMinMax(event, objectId, secondDimId);
     });
 
     minMaxHandlerCache.push(cacheKey);
   }
 
-  cacheKey = `${id}_${secondDimId}_${optionId}`;
+  cacheKey = `${objectId}_${secondDimId}_${subjectId}`;
   if(secondDimId !== undefined && !minMaxHandlerCache.includes(cacheKey)){
     const secondEle = $(`#${secondDimId}`);
 
     secondEle.on('change', (event) => {
-      toggleMinMax(event, id, optionId);
+      toggleMinMax(event, objectId, subjectId);
     });
 
     minMaxHandlerCache.push(cacheKey);
   }
 
-  toggleMinMax({ target: document.querySelector(`#${optionId}`) }, id, secondDimId);
+  toggleMinMax({ target: document.querySelector(`#${subjectId}`) }, objectId, secondDimId);
 }
 
 /**
