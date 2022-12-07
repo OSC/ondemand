@@ -204,8 +204,10 @@ function addMinMaxForHandler(subjectId, option, key,  configValue) {
   const secondDimId = configObj['predicateId'];
   const secondDimValue = configObj['predicateValue'];
 
-  if(minMaxLookup[objectId] === undefined) minMaxLookup[objectId] = new Table(subjectId, secondDimId);
-  const table = minMaxLookup[objectId];
+  // several subjects can try to change the object, so the table lookup key has to have both
+  const lookupKey = `${subjectId}_${objectId}`;
+  if(minMaxLookup[lookupKey] === undefined) minMaxLookup[lookupKey] = new Table(subjectId, secondDimId);
+  const table = minMaxLookup[lookupKey];
   table.put(option, secondDimValue, {[minOrMax(key)] : configValue });
 
   let cacheKey = `${objectId}_${subjectId}_${secondDimId}`;
@@ -389,9 +391,18 @@ function updateVisibility(event, changeId) {
 function toggleMinMax(event, changeId, otherId) {
   let x = undefined, y = undefined;
 
+  // many subjects can change the object, so we have to find the correct table
+  // in the form <subject>_<object>
+  let lookupKey = `${event.target['id']}_${changeId}`;
+  if(minMaxLookup[lookupKey] === undefined) {
+    lookupKey = `${otherId}_${changeId}`;
+  }
+
+  const table = minMaxLookup[lookupKey];
+
   // in the example of cluster & node_type, either element can trigger a change
   // so let's figure out the axis' based on the change element's id.
-  if(event.target['id'] == minMaxLookup[changeId].x) {
+  if(event.target['id'] == table.x) {
     x = snakeCaseWords(event.target.value);
     y = snakeCaseWords($(`#${otherId}`).val());
   } else {
@@ -400,7 +411,7 @@ function toggleMinMax(event, changeId, otherId) {
   }
 
   const changeElement = $(`#${changeId}`);
-  const mm = minMaxLookup[changeId].get(x, y);
+  const mm = table.get(x, y);
   const prev = {
     min: parseInt(changeElement.attr('min')),
     max: parseInt(changeElement.attr('max')),
