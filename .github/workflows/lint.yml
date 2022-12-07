@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     # every 3 days
-    - cron:  '0 2 */3 * 1'
+    - cron:  '0 2 */3 * *'
 
 defaults:
   run:
