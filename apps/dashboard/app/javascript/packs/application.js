@@ -23,7 +23,7 @@ import datatablesSelect from 'datatables.net-select/js/dataTables.select';
 import Rails from '@rails/ujs';
 
 // Import popper.js for Bootstrap 4
-import 'popper.js';
+// import Popper from 'popper.js';
 
 // Import Bootstrap 4
 import 'bootstrap/dist/js/bootstrap';
