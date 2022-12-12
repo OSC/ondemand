@@ -45,6 +45,7 @@ class ConfigurationSingleton
       :jobs_app_alpha               => false,
       :files_app_remote_files       => false,
       :host_based_profiles          => false,
+      :disable_bc_shell             => false,
     }.freeze
   end
 
