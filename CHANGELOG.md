@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Bump nokogiri from 1.13.9 to 1.13.10 in /apps/dashboard (#2415)\
+Bump nokogiri from 1.13.9 to 1.13.10 in /apps/myjobs (#2416)\
+Update Changelog (#2405)\
+update dependencies (#2406)
 
 ### Changed
 
