@@ -1,3 +1,5 @@
 <% navigation.each do |nav_item| %>
-  <%= render partial: nav_item.partial_path, locals: nav_item.to_h %>
+  <% nav_item_data = nav_item.to_h %>
+  <% nav_item_data[:menu_alignment] = local_assigns.fetch(:menu_alignment, '') %>
+  <%= render partial: nav_item.partial_path, locals: nav_item_data %>
 <% end %>
