@@ -17,7 +17,7 @@
     "jquery-ujs": "^1.2.2",
     "lodash": "^4.17.21",
     "oboe": "^2.1.5",
-    "popper.js": "1.14.3",
+    "popper.js": "^1.16.1",
     "sass": "^1.50.0",
     "sweetalert2": "^10.15.7",
     "uppy": "^2.3.3"
