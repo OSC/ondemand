@@ -519,7 +519,7 @@ module BatchConnect
     # Path to login shell used by the script
     # @return [Pathname] shell path
     def shell_path
-      Pathname.new("/bin/bash")
+      Configuration.disable_bc_shell? ? nil : Pathname.new('/bin/bash')
     end
 
     # The connection information for this session (job must be running)
