@@ -6,6 +6,7 @@ require 'test_helper'
 class SessionsTest < ActionDispatch::IntegrationTest
   def setup
     stub_sys_apps
+    BatchConnect::Session.stubs(:all).returns([])
   end
 
   test 'default application menu renders correctly when nav_bar property defined' do
