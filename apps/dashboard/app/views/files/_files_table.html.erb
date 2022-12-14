@@ -6,7 +6,7 @@
       <%= render partial: 'breadcrumb', collection: @path.descend, as: :file, locals: { file_count: @path.descend.count, full_path: @path } %>
     </ol>
 
-    <table class="table table-striped table-condensed" id="directory-contents" style="width:100%">
+    <table class="table table-striped table-condensed w-100" id="directory-contents">
       <thead>
         <tr>
           <th><span class="sr-only">Select</span></th>
