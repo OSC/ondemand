@@ -27,13 +27,13 @@
   </div>
     <% if data.submit_args %>
     <div class="card-body">
-      <p class="card-text">Submit Args: <pre class="card bg-light p-2" style="white-space: pre-wrap;"><%= data.submit_args %></pre></p>
+      <p class="card-text">Submit Args: <pre class="card bg-light p-2 text-prewrap"><%= data.submit_args %></pre></p>
     </div>
     <% end %>
     <% if data.output_path %>
     <div class="card-body">
       <%# FIXME: can use form element input with label and disabled %>
-      <p class="card-text">Output Location: <pre class="card bg-light p-2" style="white-space: pre-wrap;"><%= data.output_path %></pre></p>
+      <p class="card-text">Output Location: <pre class="card bg-light p-2 text-prewrap"><%= data.output_path %></pre></p>
     </div>
     <% end %>
     <div class="card-body">

@@ -134,6 +134,11 @@ small.form-text {
    font-size: 96%;
 }
 
+// Adds bootstrap-like text-prewrap
+.text-prewrap {
+  white-space: pre-wrap;
+}
+
 // Your custom css styles below (must be manually added)
 
 @import "dashboard";
