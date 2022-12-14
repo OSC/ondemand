@@ -241,12 +241,13 @@ function create_datatable(options){
                 data:               "walltime_used",
                 className:          "text-right",
                 "autoWidth":        true,
-                render: function (data) {
-                  return `
-                    <span title="${human_time(data)}">
-                      ${human_time(data)}
-                    </span>
-                  `;
+                render: function (data, type, _row, _meta) {
+                  if(type === 'display' || type === 'filter') {
+                    const time = human_time(data);
+                    return `<span title="${time}">${time}</span>`;
+                  } else {
+                    return data;
+                  }
                 },
             },
             {
