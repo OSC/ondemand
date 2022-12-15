@@ -1,12 +1,12 @@
 #!/bin/bash
 
 ONDEMAND_USERNAME="$1"
-if [ "x${ONDEMAND_USERNAME}" = "x" ]; then
+if [ "${ONDEMAND_USERNAME}" = "" ]; then
   echo "Must specify username"
   exit 1
 fi
 HOOK_ENV="$2"
-if [ "x${HOOK_ENV}" = "x" ]; then
+if [ "${HOOK_ENV}" = "" ]; then
   echo "Must specify hook.env path"
   exit 1
 fi
@@ -14,7 +14,7 @@ fi
 # shellcheck disable=SC1090
 source "$HOOK_ENV"
 
-if [ "x${K8S_USERNAME_PREFIX}" != "x" ]; then
+if [ "${K8S_USERNAME_PREFIX}" != "" ]; then
   K8S_USERNAME="${K8S_USERNAME_PREFIX}${ONDEMAND_USERNAME}"
 else
   K8S_USERNAME="${ONDEMAND_USERNAME}"
