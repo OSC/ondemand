@@ -38,12 +38,16 @@ attributes:
           data-max-bc-num-slots-for-cluster-owens: 7,
           data-min-bc-num-slots-for-cluster-oakley: 4,
           data-max-bc-num-slots-for-cluster-oakley: 8,
+          data-min-gpus: 0,
+          data-max-gpus: 0,
         ]
       - [
           "broken",
           data-minnn-bc-not-found-for-cluster-mistype: 30,
           data-max-bc-not-found-for-cluster-mistype: 30,
           data-maximum-bc-not-found-for-cluster-mistype: 30,
+          data-min-gpus: 0,
+          data-max-gpus: 0,
         ]
       - [
           "gpu",
@@ -59,37 +63,52 @@ attributes:
           data-min-bc-num-hours-for-cluster-owens: 80,
           data-max-bc-num-hours-for-cluster-oakley: 99,
           data-min-bc-num-hours-for-cluster-oakley: 90,
+
+          data-min-gpus: 1,
+          data-max-gpus: 4,
         ]
       - [
           "hugemem",
-          data-option-for-cluster-oakley: false,
+          data-option-for-cluster-oakley: "false",
           data-hide-cuda-version: true,
           data-hide-advanced-options: true,
           data-max-bc-num-slots-for-cluster-owens: 42,
           data-min-bc-num-slots-for-cluster-owens: 42,
+
+          data-min-gpus: 0,
+          data-max-gpus: 0,
         ]
       - [
           "advanced",
-          data-option-for-cluster-oakley: false,
+          data-option-for-cluster-oakley: "false",
           data-hide-cuda-version: true,
-          data-max-bc-num-slots-for-cluster-oakley: 9001
+          data-max-bc-num-slots-for-cluster-oakley: 9001,
+
+          data-min-gpus: 0,
+          data-max-gpus: 0,
         ]
       # this node type is the same for both clusters, so there's no 'for-cluster-...' clause
-      # TODO: this currently breaks tests
       - [
           "same",
-          data-hide-cuda-version: true,
-          data-hide-advanced-options: true,
-          data-min-bc-num-slots: 100,
-          data-max-bc-num-slots: 200,
-          data-min-bc-num-hours: 444,
-          data-max-bc-num-hours: 555,
+          # note that all these values are strings
+          data-hide-cuda-version: "true",
+          data-hide-advanced-options: "true",
+          data-min-bc-num-slots: "100",
+          data-max-bc-num-slots: "200",
+          data-min-bc-num-hours: "444",
+          data-max-bc-num-hours: "555",
+
+          data-min-gpus: 0,
+          data-max-gpus: 0,
         ]
       - [
           "other-40ish-option",
           data-hide-advanced-options: true,
-          data-max-bc-num-slots-for-cluster-owens: 40,
-          data-max-bc-num-slots-for-cluster-oakley: 48,
+          data-max-bc-num-slots-for-cluster-owens: "40",
+          data-max-bc-num-slots-for-cluster-oakley: "48",
+
+          data-min-gpus: 0,
+          data-max-gpus: 0,
         ]
   python_version:
     # let's set the account used by the python version for some reason
@@ -151,12 +170,18 @@ attributes:
           data-option-for-classroom-astronomy-5678: false,
           data-option-for-classroom-astronomy-with/other-characters/8846.31.4: false,
         ]
+  gpus:
+    widget: number_field
+    min: 0
+    max: 4
+    value: 0
 form:
   - cluster
   - bc_num_hours
   - bc_num_slots
   - mode
   - node_type
+  - gpus
   - bc_account
   - bc_email_on_started
   - python_version
