@@ -333,6 +333,13 @@ Listen <%= addr_port %>
     ReWriteRule ^.*$ /
 
     RewriteCond %{REQUEST_URI} !<%= @public_uri %>/maintenance/index\.html$
+    <%- if @maintenance_extra_uris -%>
+    # Extra maintenance URIs (i.e., paths allowed during maintenance mode):
+      <%- @maintenance_extra_uris.each do |maint_extra_uri| -%>
+      <%- escaped_maint_extra_uri = Regexp.escape(maint_extra_uri) -%>
+    RewriteCond %{REQUEST_URI} !<%= escaped_maint_extra_uri %>$
+      <%- end -%>
+    <%- end -%>
     RewriteRule ^.*$ <%= @public_uri %>/maintenance/index.html [R=503,L]
     ErrorDocument 503 <%= @public_uri %>/maintenance/index.html
   </Directory>
