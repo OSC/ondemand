@@ -10,9 +10,11 @@ class SupportTicketMailer < ActionMailer::Base
   def support_email(context)
     @context = context
 
-    @context.support_ticket.attachments.to_a.each do |request_file|
-      attachments[request_file.original_filename] = File.read(request_file.tempfile)
-    end unless @context.support_ticket.attachments.blank?
+    unless @context.support_ticket.attachments.blank?
+      @context.support_ticket.attachments.to_a.each do |request_file|
+        attachments[request_file.original_filename] = File.read(request_file.tempfile)
+      end
+    end
 
     email_service_config = ::Configuration.support_ticket_config.fetch(:email, {})
 
