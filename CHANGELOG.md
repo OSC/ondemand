@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+use cache store for sessions if you can (#2434)\
+Bump rails-html-sanitizer from 1.4.3 to 1.4.4 in /apps/dashboard (#2433)\
+correctly sort walltime column (#2420)\
+Bump rails-html-sanitizer from 1.4.3 to 1.4.4 in /apps/myjobs (#2432)\
+Bump loofah from 2.19.0 to 2.19.1 in /apps/myjobs (#2429)\
+Bump loofah from 2.19.0 to 2.19.1 in /apps/dashboard (#2430)\
+Fixed list of sessions to avoid picking up created sessions by other tests (#2427)\
+rm every sunday from crontab (#2412)\
+add the ability to disable the shell for bc apps (#2425)\
+correctly catch facl errors (#2408)\
+update popper to newer v1 version (#2426)
 
 ### Changed
 
