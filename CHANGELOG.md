@@ -38,7 +38,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - noNVC is now 1.3.0, up from 1.1.0 in [2295](https://github.com/OSC/ondemand/pull/2295).
 - NavConfig should now use allowlist, deprecating whitelist in [2380](https://github.com/OSC/ondemand/pull/2380).
 - Shared apps can now correctly set FACLs in [2398](https://github.com/OSC/ondemand/pull/2398).
-- Session info is now stored in a local filesystem instead of in cookies in 
+- Session info is now stored in a local filesystem instead of in cookies in [2434](https://github.com/OSC/ondemand/pull/2434).
 
 ### Added
 
