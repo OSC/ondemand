@@ -43,18 +43,18 @@
             <%= render partial: 'layouts/nav/sessions', nav_groups: @nav_groups if Configuration.app_development_enabled? || @nav_groups.any?(&:has_batch_connect_apps?) %>
             <%= render partial: 'layouts/nav/all_apps' if @user_configuration.show_all_apps_link %>
           <% else %>
-            <%= render partial: "layouts/nav/custom_navigation", locals: { navigation: @nav_bar }%>
+            <%= render partial: 'layouts/nav/custom_navigation', locals: { navigation: @nav_bar }%>
           <% end %>
         </ul>
 
         <ul class="navbar-nav">
           <% if @help_bar.empty? %>
             <%= render partial: 'layouts/nav/develop_dropdown' if Configuration.app_development_enabled? %>
-            <%= render partial: "layouts/nav/help_dropdown" %>
-            <%= render partial: "layouts/nav/user" %>
-            <%= render partial: "layouts/nav/log_out" %>
+            <%= render partial: 'layouts/nav/help_dropdown' %>
+            <%= render partial: 'layouts/nav/user' %>
+            <%= render partial: 'layouts/nav/log_out' %>
           <% else %>
-            <%= render partial: "layouts/nav/custom_navigation", locals: { navigation: @help_bar }%>
+            <%= render partial: 'layouts/nav/custom_navigation', locals: { navigation: @help_bar, menu_alignment: 'dropdown-menu-right' }%>
           <% end %>
         </ul>
       </div>
