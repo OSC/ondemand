@@ -33,8 +33,8 @@
           <tbody>
             {{#each results}}
             <tr title="{{job_name}} - {{local_job_id}}">
-              <td style="white-space: no-wrap"><a target="_blank" href="{{job_url}}">{{local_job_id}}&nbsp;<span class="fa fa-external-link-square-alt"></span></a></td>
-              <td style="max-width: 150px; text-overflow: ellipsis; overflow: hidden;">{{job_name}}</td>
+              <td class="text-nowrap"><a target="_blank" href="{{job_url}}">{{local_job_id}}&nbsp;<span class="fa fa-external-link-square-alt"></span></a></td>
+              <td class="overflow-hidden d-inline-block text-truncate mw-150px">{{job_name}}</td>
               <td>{{date}}</td>
               <td>{{cpu_label cpu_user}}</td>
             </tr>

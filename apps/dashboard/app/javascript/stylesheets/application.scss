@@ -134,6 +134,22 @@ small.form-text {
    font-size: 96%;
 }
 
+// Adds bootstrap-like text-prewrap
+.text-prewrap {
+  white-space: pre-wrap;
+}
+
+.mw-150px {
+  max-width: 150px;
+}
+
+// Add width classes for every whole percentage between 0 and 100
+@for $i from 1 through 100 {
+  .w-#{$i} {
+    width: $i * 1%;
+  }
+}
+
 // Your custom css styles below (must be manually added)
 
 @import "dashboard";

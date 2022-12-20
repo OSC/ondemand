@@ -19,9 +19,9 @@
       {{else}}
       <p class="d-flex justify-content-between card-text font-weight-bold"><span class="text-success">{{good_percent}}% efficient</span> <span class="text-danger">{{bad_percent}}% inefficient</span></p>
       <div class="progress progress-custom">
-        <div class="progress-bar bg-success" role="progressbar" aria-label="percent efficient" aria-valuenow="{{good_percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{good_percent}}%">
+        <div class="progress-bar bg-success w-{{good_percent}}" role="progressbar" aria-label="percent efficient" aria-valuenow="{{good_percent}}" aria-valuemin="0" aria-valuemax="100">
         </div>
-        <div class="progress-bar bg-danger" role="progressbar" aria-label="percent inefficient" aria-valuenow="{{bad_percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{bad_percent}}%">
+        <div class="progress-bar bg-danger w-{{bad_percent}}" role="progressbar" aria-label="percent inefficient" aria-valuenow="{{bad_percent}}" aria-valuemin="0" aria-valuemax="100">
         </div>
       </div>
       <p class="card-text text-center mt-2">
@@ -76,10 +76,10 @@ var helpers = {
     return '<%= Configuration.xdmod_host %>';
   },
   bad_percent: function(){
-    return (parseFloat(this.bad_ratio)).toFixed(1)
+    return (parseFloat(this.bad_ratio)).toFixed()
   },
   good_percent: function(){
-    return (100 - parseFloat(this.bad_ratio)).toFixed(1)
+    return (100 - parseFloat(this.bad_ratio)).toFixed()
   }
 };
 
