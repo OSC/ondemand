@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - noNVC is now 1.3.0, up from 1.1.0 in [2295](https://github.com/OSC/ondemand/pull/2295).
 - NavConfig should now use allowlist, deprecating whitelist in [2380](https://github.com/OSC/ondemand/pull/2380).
 - Shared apps can now correctly set FACLs in [2398](https://github.com/OSC/ondemand/pull/2398).
+- Session info is now stored in a local filesystem instead of in cookies in [2434](https://github.com/OSC/ondemand/pull/2434).
 
 ### Added
 
@@ -82,6 +83,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - File uploads now respect setgid in [1851](https://github.com/OSC/ondemand/pull/1851).
 - Fix uploaded correctly set umasks other than 0022 in [1845](https://github.com/OSC/ondemand/pull/1845).
 - Home directories can now change in [1854](https://github.com/OSC/ondemand/pull/1854).
+- Activejobs now correctly sorts the time column in [2420](https://github.com/OSC/ondemand/pull/2420).
+- Some sites can now disable the shell option for BC apps in [2425](https://github.com/OSC/ondemand/pull/2425), fixing [722](https://github.com/OSC/ondemand/issues/722)
 
 ### Security
 
