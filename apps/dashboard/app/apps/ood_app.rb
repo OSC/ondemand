@@ -308,7 +308,8 @@ class OodApp
 
   # @return [String] memoized version string
   def version
-    @version ||= (version_from_file || version_from_git || "unknown").strip
+    # hide_app_version must be first.  It is a global configuration for hiding the App Version in the forms.
+    @version ||= (hide_app_version || version_from_file || version_from_git || "unknown").strip
   end
 
   # test whether this object is equal to another.
@@ -348,6 +349,11 @@ class OodApp
   def version_from_file
     file = path.join("VERSION")
     file.read if file.file?
+  end
+
+  # @return [String, nil] version string from Configuration key 'hide_app_version' in ondemand.yml
+  def hide_app_version
+    Configuration.hide_app_version? ? 'unknown' : nil
   end
 
   # Check if Gemfile and Gemfile.lock exists, and if the Gemfile.lock specs
