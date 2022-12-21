@@ -195,7 +195,7 @@
     RewriteCond /etc/ood/maintenance.enable !-f
     ReWriteRule ^.*$ /
 
-    RewriteCond %{REQUEST_URI} !/public/maintenance/index\.html$
+    RewriteCond %{REQUEST_URI} !/public/maintenance/.*$
     RewriteRule ^.*$ /public/maintenance/index.html [R=503,L]
     ErrorDocument 503 /public/maintenance/index.html
   </Directory>

@@ -240,7 +240,7 @@ Listen 8080
     RewriteCond /etc/ood/maintenance.enable !-f
     ReWriteRule ^.*$ /
 
-    RewriteCond %{REQUEST_URI} !/assets/maintenance/index\.html$
+    RewriteCond %{REQUEST_URI} !/assets/maintenance/.*$
     RewriteRule ^.*$ /assets/maintenance/index.html [R=503,L]
     ErrorDocument 503 /assets/maintenance/index.html
   </Directory>
