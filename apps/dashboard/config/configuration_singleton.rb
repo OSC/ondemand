@@ -46,6 +46,7 @@ class ConfigurationSingleton
       :files_app_remote_files       => false,
       :host_based_profiles          => false,
       :disable_bc_shell             => false,
+      :cancel_session_enabled       => false,
     }.freeze
   end
 

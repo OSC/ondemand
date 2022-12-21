@@ -352,7 +352,21 @@ module BatchConnect
       script_type == "vnc" || script_type == "vnc_container"
     end
 
-    # Delete this session's job and database record
+    # Cancel this session's job
+    # @return [Boolean] whether successfully canceled
+    def cancel
+      adapter.delete(job_id) unless completed?
+      @info = OodCore::Job::Info.new(id: job_id, status: :completed)
+      # persist the session state
+      update_cache_completed!
+      true
+    rescue ClusterNotFound, AdapterNotAllowed, OodCore::JobAdapterError => e
+      errors.add(:delete, e.message)
+      Rails.logger.error(e.message)
+      false
+    end
+
+    # Terminate this session's job and delete its database record
     # @return [Boolean] whether successfully deleted
     def destroy
       adapter.delete(job_id) unless completed?
