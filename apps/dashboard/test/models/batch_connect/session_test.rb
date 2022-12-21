@@ -581,6 +581,88 @@ batch_connect: { ssh_allow: true } }))
     end
   end
 
+  test "destroy should should delete db file" do
+    BatchConnect::Session.any_instance.stubs(:adapter).returns(stub(delete: nil, info: OodCore::Job::Info.new(id: '1234', status: :running)))
+    BatchConnect::Session.any_instance.stubs(:info).returns(OodCore::Job::Info.new(id: '1234', status: :running))
+    Dir.mktmpdir('test_dir') do |dir|
+      dir = Pathname.new(dir)
+      BatchConnect::Session.stubs(:db_root).returns(dir)
+      session_id = 'test_id'
+
+      dir.join(session_id).write({ id: session_id, job_id: '1234', created_at: 100, cluster_id: 'owens' }.to_json)
+
+      assert BatchConnect::Session.exist?(session_id)
+      session = BatchConnect::Session.find(session_id)
+      session.destroy
+      refute BatchConnect::Session.exist?(session_id)
+    end
+  end
+
+  test "cancel should not should delete db file and persist cache_completed flag" do
+    BatchConnect::Session.any_instance.stubs(:adapter).returns(stub(delete: nil, info: OodCore::Job::Info.new(id: '1234', status: :running)))
+    Dir.mktmpdir('test_dir') do |dir|
+      dir = Pathname.new(dir)
+      BatchConnect::Session.stubs(:db_root).returns(dir)
+      session_id = 'test_id'
+
+      dir.join(session_id).write({ id: session_id, job_id: '1234', created_at: 100, cluster_id: 'owens' }.to_json)
+
+      assert BatchConnect::Session.exist?(session_id)
+      session = BatchConnect::Session.find(session_id)
+      refute session.cache_completed
+      session.cancel
+
+      assert session.completed?
+      assert BatchConnect::Session.exist?(session_id)
+      assert BatchConnect::Session.find(session_id).cache_completed
+    end
+  end
+
+  test "completed? should be true when queued? is true and session is canceled" do
+    session = create_session(status: :queued)
+    assert_equal false, session.completed?
+    assert_equal true, session.queued?
+
+    session.cancel
+    assert_equal true, session.completed?
+  end
+
+  test "completed? should be true when held? is true and session is canceled" do
+    session = create_session(status: :queued_held)
+    assert_equal false, session.completed?
+    assert_equal true, session.held?
+
+    session.cancel
+    assert_equal true, session.completed?
+  end
+
+  test "completed? should be true when suspended? is true and session is canceled" do
+    session = create_session(status: :suspended)
+    assert_equal false, session.completed?
+    assert_equal true, session.suspended?
+
+    session.cancel
+    assert_equal true, session.completed?
+  end
+
+  test "completed? should be true when starting? is true and session is canceled" do
+    session = create_session(status: :running, connect_file: false)
+    assert_equal false, session.completed?
+    assert_equal true, session.starting?
+
+    session.cancel
+    assert_equal true, session.completed?
+  end
+
+  test "completed? should be true when running? is true and session is canceled" do
+    session = create_session(status: :running, connect_file: true)
+    assert_equal false, session.completed?
+    assert_equal true, session.running?
+
+    session.cancel
+    assert_equal true, session.completed?
+  end
+
   test 'default bc days old is set to 7' do
     assert_equal 7, BatchConnect::Session.old_in_days
   end
@@ -617,5 +699,15 @@ batch_connect: { ssh_allow: true } }))
     with_modified_env({OOD_BC_CARD_TIME: '-3three'}) do
       assert_equal 0, BatchConnect::Session.old_in_days
     end
+  end
+
+  def create_session(status: nil, connect_file: false)
+    session_id = SecureRandom.uuid
+    job_id = SecureRandom.uuid
+    session = BatchConnect::Session.new.from_json({ id: session_id, job_id: job_id, created_at: 100, cluster_id: 'owens' }.to_json)
+    session.stubs(:adapter).returns(stub(delete: nil, info: OodCore::Job::Info.new(id: job_id, status: status.to_sym)))
+    session.stubs(:connect_file).returns(stub(file?: connect_file))
+    session.stubs(:db_file).returns(stub(write: nil))
+    session
   end
 end

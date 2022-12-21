@@ -40,10 +40,10 @@ module BatchConnect::SessionsHelper
     capture do
       concat(
         content_tag(:div) do
-          concat content_tag(:div, delete(session), class: 'float-right')
+          concat content_tag(:div, cancel_or_delete(session), class: 'float-right')
           concat host(session)
           concat created(session)
-          concat time(session)
+          concat session_time(session)
           concat id(session)
           concat support_ticket(session) if Configuration.support_ticket_enabled?
           concat display_choices(session)
@@ -75,7 +75,7 @@ module BatchConnect::SessionsHelper
     end
   end
 
-  def time(session)
+  def session_time(session)
     time_limit = session.info.wallclock_limit
     time_used  = session.info.wallclock_time
 
@@ -195,14 +195,34 @@ module BatchConnect::SessionsHelper
     end
   end
 
+
+  def cancel_or_delete(session)
+    if Configuration.cancel_session_enabled && !session.completed?
+      cancel(session)
+    else
+      delete(session)
+    end
+  end
+
   def delete(session)
     link_to(
       fa_icon('trash-alt', classes: nil) << ' ' << t('dashboard.batch_connect_sessions_delete_title'),
-      session,
+      batch_connect_session_path(session.id),
       method: :delete,
       class: "btn btn-danger float-right btn-delete",
       title: t('dashboard.batch_connect_sessions_delete_hover'),
       data: { confirm: t('dashboard.batch_connect_sessions_delete_confirm'), toggle: "tooltip", placement: "bottom"}
+    )
+  end
+
+  def cancel(session)
+    link_to(
+      fa_icon('times-circle', classes: nil) << ' ' << t('dashboard.batch_connect_sessions_cancel_title'),
+      batch_connect_cancel_session_path(session.id),
+      method: :post,
+      class: "btn btn-danger float-right btn-cancel",
+      title: t('dashboard.batch_connect_sessions_cancel_hover'),
+      data: { confirm: t('dashboard.batch_connect_sessions_cancel_confirm'), toggle: "tooltip", placement: "bottom"}
     )
   end
 

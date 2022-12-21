@@ -36,6 +36,7 @@ Rails.application.routes.draw do
 
   namespace :batch_connect do
     resources :sessions, only: [:index, :destroy]
+    post "sessions/:id/cancel", to: "sessions#cancel", as: 'cancel_session'
     scope "*token", constraints: { token: /((usr\/[^\/]+)|dev|sys)\/[^\/]+(\/[^\/]+)?/ } do
       resources :session_contexts, only: [:new, :create]
       root "session_contexts#new"

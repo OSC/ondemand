@@ -106,6 +106,9 @@ en:
     batch_connect_sessions_delete_confirm: "Are you sure?"
     batch_connect_sessions_delete_hover: "Delete Session"
     batch_connect_sessions_delete_title: "Delete"
+    batch_connect_sessions_cancel_confirm: "Are you sure?"
+    batch_connect_sessions_cancel_hover: "Cancel Session"
+    batch_connect_sessions_cancel_title: "Cancel"
     batch_connect_sessions_errors_staging: "Failed to stage the template with the following error:"
     batch_connect_sessions_errors_submission: "Failed to submit session with the following error:"
     batch_connect_sessions_novnc_launch: "Launch %{app_title}"
@@ -123,6 +126,8 @@ en:
     batch_connect_sessions_status_blurb_create_success: "Session was successfully created."
     batch_connect_sessions_status_blurb_delete_failure: "Failed to delete session."
     batch_connect_sessions_status_blurb_delete_success: "Session was successfully deleted."
+    batch_connect_sessions_status_blurb_cancel_failure: "Failed to cancel session."
+    batch_connect_sessions_status_blurb_cancel_success: "Session was successfully canceled."
     batch_connect_sessions_status_starting: |
       Your session is currently starting... Please be patient as this process can
       take a few minutes.
