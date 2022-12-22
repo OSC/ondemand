@@ -51,7 +51,12 @@ class Project
   def initialize(attributes = {})
     @directory = attributes.delete(:project_directory) || attributes[:name].to_s.downcase.tr_s(' ', '_')
     @manifest  = Manifest.new(attributes).merge(Manifest.load(manifest_path))
-    @scripts = Project::Script.new()
+    @scripts = Script.new({project: self})
+    # Log.write('scripts: ' + Project.scripts.inspect)
+    # @project.scripts.all
+    # Log.write('project: ' + @project.inspect)
+
+
   end
 
   def save(attributes)
