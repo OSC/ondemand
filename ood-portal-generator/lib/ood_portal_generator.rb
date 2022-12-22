@@ -1,12 +1,14 @@
-require "dotenv"
-require "etc"
-require "pathname"
-require "socket"
+# frozen_string_literal: true
 
-require "ood_portal_generator/version"
-require "ood_portal_generator/application"
-require "ood_portal_generator/view"
-require "ood_portal_generator/dex"
+require 'dotenv'
+require 'etc'
+require 'pathname'
+require 'socket'
+
+require 'ood_portal_generator/version'
+require 'ood_portal_generator/application'
+require 'ood_portal_generator/view'
+require 'ood_portal_generator/dex'
 
 # The main namespace for ood_portal_generator
 module OodPortalGenerator
@@ -20,21 +22,26 @@ module OodPortalGenerator
     def os_release_file
       path = '/etc/os-release'
       return nil unless File.exist?(path)
+
       path
     end
 
     def scl_apache?
       return true if os_release_file.nil?
       return false if debian?
+
       env = Dotenv.parse(os_release_file)
-      return true if ("#{env['ID']} #{env['ID_LIKE']}" =~ /(rhel|fedora)/ && env['VERSION_ID'] =~ /^7/)
+      return true if "#{env['ID']} #{env['ID_LIKE']}" =~ /(rhel|fedora)/ && env['VERSION_ID'] =~ /^7/
+
       false
     end
 
     def debian?
       return false if os_release_file.nil?
+
       env = Dotenv.parse(os_release_file)
-      return true if (env['ID'] =~ /(ubuntu|debian)/ or env['ID_LIKE'] == 'debian')
+      return true if env['ID'] =~ (/(ubuntu|debian)/) || (env['ID_LIKE'] == 'debian')
+
       false
     end
 
@@ -77,7 +84,8 @@ module OodPortalGenerator
     end
 
     def chown_apache_user
-      return 'root' if Process.uid == 0
+      return 'root' if Process.uid.zero?
+
       Etc.getpwuid(Process.uid).name
     end
   end
