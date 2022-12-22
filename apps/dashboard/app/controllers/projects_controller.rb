@@ -2,9 +2,13 @@
 
 # The controller for project pages /dashboard/projects.
 class ProjectsController < ApplicationController
+
+  @@script = []
+
   # GET /projects/:id
   def show
     @project = Project.find(params[:id])
+    Log.write(@project.inspect)    
   end
 
   # GET /projects

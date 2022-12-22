@@ -4,6 +4,8 @@
 class Project
   include ActiveModel::Model
   include ActiveModel::Validations
+  
+  @script = []
 
   class << self
     def all
@@ -49,6 +51,7 @@ class Project
   def initialize(attributes = {})
     @directory = attributes.delete(:project_directory) || attributes[:name].to_s.downcase.tr_s(' ', '_')
     @manifest  = Manifest.new(attributes).merge(Manifest.load(manifest_path))
+    @scripts = Project::Script.new()
   end
 
   def save(attributes)

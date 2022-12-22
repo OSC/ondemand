@@ -1,6 +1,6 @@
 require 'pathname'
 require 'dotenv'
-
+require 'logger'
 # Dashboard app specific configuration singleton definition
 # following the first proposal in:
 #
