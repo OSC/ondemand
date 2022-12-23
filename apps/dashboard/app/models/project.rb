@@ -4,8 +4,8 @@
 class Project
   include ActiveModel::Model
   include ActiveModel::Validations
-  
-  @script = []
+
+  attr_reader :scripts
 
   class << self
     def all
@@ -36,6 +36,7 @@ class Project
 
       Project.new({ project_directory: project_pathname.basename })
     end
+  
   end
 
   validates :directory, presence: true
@@ -51,12 +52,7 @@ class Project
   def initialize(attributes = {})
     @directory = attributes.delete(:project_directory) || attributes[:name].to_s.downcase.tr_s(' ', '_')
     @manifest  = Manifest.new(attributes).merge(Manifest.load(manifest_path))
-    @scripts = Script.new({project: self})
-    # Log.write('scripts: ' + Project.scripts.inspect)
-    # @project.scripts.all
-    # Log.write('project: ' + @project.inspect)
-
-
+    @scripts   = Script.all(@directory)
   end
 
   def save(attributes)
@@ -103,7 +99,7 @@ class Project
 
   private
 
-  attr_reader :manifest
+  attr_reader :manifest, :Scripts
 
   def valid_form_inputs?(attributes)
     icon_pattern = %r{\Afa[bsrl]://[\w-]+\z}

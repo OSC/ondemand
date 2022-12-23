@@ -6,7 +6,7 @@ class ProjectsController < ApplicationController
   # GET /projects/:id
   def show
     @project = Project.find(params[:id])
-    # Log.write(@project.inspect)    
+    Log.write('PROJECT SHOW: ' + @project.inspect)
   end
 
   # GET /projects

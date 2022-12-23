@@ -1,13 +1,39 @@
 <%= bootstrap_form_tag  do |form| %>
-
-<div class='page-header text-center'>
-  <h1>Project Space</h1>
-</div> 
-<br>
-<div class='row row-cols-1 row-cols-md-2'>
-  <p>
-    <%= link_to 'Back', projects_path, class: 'btn btn-default', title: 'Return to projects page' %>
-  </p>
-</div>
-
+  <div class='page-header text-center'>
+    <h1><strong><%= @project.title %></strong></h1>
+  </div> 
+  <br>
+  <div class='card'>
+    <h3 class='card-header'>Scripts</h3>
+    <div class='card-body'>
+      <table class='table table-borderless'>
+        <thead>
+          <tr>
+            <th>Script Name</th>
+            <th>Script Location</th>
+            <th>Actions</th>
+          <tr>
+        </thead>
+        <tbody>
+          <% @project.scripts.each do |script| %>
+            <tr>
+              <td><%= script.name %></td>
+              <td><%= script.directory %></td>
+              <td>
+                Edit | Delete
+              </td>
+            <tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <hr>
+  <div class='row row-cols-1 row-cols-md-2'>
+    <p>
+      <%= link_to 'Back', projects_path, class: 'btn btn-default', title: 'Return to projects page' %>
+    </p>
+  </div>
+  
 <% end %>
+  
