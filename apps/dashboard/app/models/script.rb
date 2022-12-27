@@ -3,7 +3,7 @@ class Script
   include ActiveModel::Model
   include ActiveModel::Validations
 
-  attr_reader :name, :directory
+  attr_reader :name, :directory, :description, :icon
 
   class << self
     def all(project_directory)
@@ -14,7 +14,7 @@ class Script
         Rails.logger.warn("Didn't create project. #{e.message}")
         nil
       end.compact
-
+      return []
     end
 
     def find(project_directory)

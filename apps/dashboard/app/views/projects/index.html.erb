@@ -15,6 +15,7 @@
         <tr>
       </thead>
       <tbody>
+      <% Log.write('project: ' + @projects.inspect) %>
       <% @projects.each do |project| %>
         <tr>
           <td><%= project.title %></td>

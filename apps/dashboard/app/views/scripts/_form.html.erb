@@ -1,0 +1,50 @@
+<%= bootstrap_form_for @script do |form| %>
+
+<div class='card'>
+<h5 class='card-header'>New Script</h5>
+  <div class='card-group'>
+    <div class='card'>
+      <div class='card-body'>
+        <div class="col-md-9">
+          <div class="field">
+            <%= form.text_field :name, placeholder: "Script name",  help: I18n.t('Name is required') %>
+          </div>
+          <div class="field">
+            <%= form.text_area :description, placeholder: "Script description" %>
+          </div>
+        </div>
+      </div>
+      </div>
+        <div class="card">
+          <div class='card-body'>
+            <div class="col-md-6">
+              <div class="field">
+                <%= javascript_include_tag 'icon_picker', nonce: true %>
+                <%= form.text_field :icon, placeholder: "fas://cog", id: "product_icon_select" %>
+                <% if @script.icon =~ /(fa[bsrl]?):\/\/(.*)/ %>
+                  <% icon = $2; style = $1 %>
+                  <p class="text-center">
+                    <%= fa_icon(icon, fa_style: style, id: "product_icon_select")  %>
+                  </p>
+                <% else %>
+                  <p class="text-center">
+                    <%= fa_icon("cog", fa_style: "fas", id: "product_icon_select") %>
+                  </p>
+                <% end %>
+                <ul id="icon_picker_list">
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <p>
+      <%= form.submit 'Save', class: 'btn btn-primary', title: 'Save Script' %>
+        <%= form.button 'Reset', type: :reset, class: 'btn btn-default', title: 'Clear form fields' %>
+        <%= link_to 'Back', projects_path, class: 'btn btn-default',  title: 'Return to project page' %>
+      <% end %>
+    <p>
+  </div>
+</div>

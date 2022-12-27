@@ -5,7 +5,7 @@ class Project
   include ActiveModel::Model
   include ActiveModel::Validations
 
-  attr_reader :scripts
+  attr_accessor :scripts
 
   class << self
     def all
@@ -33,7 +33,6 @@ class Project
 
     def from_directory(project_pathname)
       return nil unless project_pathname.directory? && project_pathname.executable? && project_pathname.readable?
-
       Project.new({ project_directory: project_pathname.basename })
     end
   
@@ -52,7 +51,6 @@ class Project
   def initialize(attributes = {})
     @directory = attributes.delete(:project_directory) || attributes[:name].to_s.downcase.tr_s(' ', '_')
     @manifest  = Manifest.new(attributes).merge(Manifest.load(manifest_path))
-    @scripts   = Script.all(@directory)
   end
 
   def save(attributes)
@@ -62,6 +60,7 @@ class Project
 
   def update(attributes)
     if valid_form_inputs?(attributes)
+      Log.write('ATTS: ' + attributes.inspect)
       new_manifest = Manifest.load(manifest_path)
       new_manifest = new_manifest.merge(attributes)
 
@@ -97,9 +96,13 @@ class Project
     File.join(configuration_directory, 'manifest.yml')
   end
 
+  def scripts
+    @scripts = Script.all(self.directory.to_s)
+  end
+
   private
 
-  attr_reader :manifest, :Scripts
+  attr_accessor :manifest
 
   def valid_form_inputs?(attributes)
     icon_pattern = %r{\Afa[bsrl]://[\w-]+\z}

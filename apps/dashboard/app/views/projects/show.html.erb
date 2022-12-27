@@ -1,6 +1,9 @@
 <%= bootstrap_form_tag  do |form| %>
   <div class='page-header text-center'>
     <h1><strong><%= @project.title %></strong></h1>
+    <%= link_to 'New Script', new_script_path, class: 'btn btn-info', 
+    title: I18n.t('dashboard.jobs_project_create_new_project_directory') %>
+  
   </div> 
   <br>
   <div class='card'>
@@ -15,15 +18,15 @@
           <tr>
         </thead>
         <tbody>
-          <% @project.scripts.each do |script| %>
-            <tr>
-              <td><%= script.name %></td>
-              <td><%= script.directory %></td>
-              <td>
-                Edit | Delete
-              </td>
-            <tr>
-          <% end %>
+          # <% @project.scripts.each do |script| %>
+          #   <tr>
+          #     <td><%= script.name %></td>
+          #     <td><%= script.directory %></td>
+          #     <td>
+          #       Edit | Delete
+          #     </td>
+          #   <tr>
+          # <% end %>
         </tbody>
       </table>
     </div>

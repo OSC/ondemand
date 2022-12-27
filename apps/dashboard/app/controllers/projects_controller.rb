@@ -6,12 +6,15 @@ class ProjectsController < ApplicationController
   # GET /projects/:id
   def show
     @project = Project.find(params[:id])
-    Log.write('PROJECT SHOW: ' + @project.inspect)
+    @project.scripts
+    Log.write('Project.Show: ' + @project.inspect)
+    session[:project] = @project
   end
 
   # GET /projects
   def index
     @projects = Project.all
+    Log.write('project_controller: ' + @projects.inspect)
   end
 
   # GET /projects/new
