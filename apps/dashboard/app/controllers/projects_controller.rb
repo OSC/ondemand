@@ -7,7 +7,6 @@ class ProjectsController < ApplicationController
   def show
     @project = Project.find(params[:id])
     @project.scripts
-    Log.write('Project.Show: ' + @project.inspect)
     session[:project] = @project
   end
 

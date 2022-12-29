@@ -3,12 +3,41 @@ require "authz/app_developer_constraint"
 Rails.application.routes.draw do
 
   if Configuration.jobs_app_alpha?
+
+    # resources :projects do    # /projects, /projects/1
+    #   resources :scripts     # /projects/1/scripts, /scripts/1
+    #   root to: "projects#index" # /
+    # end
+  
+  # App projects
+  scope 'projects/' do
+    resources :scripts do
+      # nested do
+      #   scope ':context' do
+      #     resources :permissions, only: [:index, :new, :create, :destroy], param: :name
+      #   end
+      # end
+      # member do
+      #   patch 'cli/:cmd', to: 'products#cli', as: 'cli'
+      # end
+      # collection do
+      #   get 'create_key'
+      #   get 'new_from_git_remote'
+      #   post 'create_from_git_remote'
+      # end
+    end
+  end
+
     resources :projects do
       root 'projects#index'
     end
-    resources :scripts do
-      root 'projects/script#index'
-    end
+
+    # namespace :projects do
+    #   resources :script do
+    #       root 'script#index'
+    #   end
+    # end
+
   end
 
   # in production, if the user doesn't have access to the files app directory, we hide the routes

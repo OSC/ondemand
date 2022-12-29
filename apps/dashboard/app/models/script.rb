@@ -14,7 +14,6 @@ class Script
         Rails.logger.warn("Didn't create project. #{e.message}")
         nil
       end.compact
-      return []
     end
 
     def find(project_directory)

@@ -18,15 +18,15 @@
           <tr>
         </thead>
         <tbody>
-          # <% @project.scripts.each do |script| %>
-          #   <tr>
-          #     <td><%= script.name %></td>
-          #     <td><%= script.directory %></td>
-          #     <td>
-          #       Edit | Delete
-          #     </td>
-          #   <tr>
-          # <% end %>
+          <% @project.scripts.each do |script| %>
+            <tr>
+              <td><%= script.name %></td>
+              <td><%= script.directory %></td>
+              <td>
+                Edit | Delete
+              </td>
+            <tr>
+          <% end %>
         </tbody>
       </table>
     </div>
