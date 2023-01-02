@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+
 ### Changed
 
 - Added support for YAML anchors and aliases when reading configuration (#2214) (#2224)
