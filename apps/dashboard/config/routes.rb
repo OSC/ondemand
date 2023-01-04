@@ -9,34 +9,17 @@ Rails.application.routes.draw do
     #   root to: "projects#index" # /
     # end
   
-  # App projects
-  scope 'projects/' do
-    resources :scripts do
-      # nested do
-      #   scope ':context' do
-      #     resources :permissions, only: [:index, :new, :create, :destroy], param: :name
-      #   end
-      # end
-      # member do
-      #   patch 'cli/:cmd', to: 'products#cli', as: 'cli'
-      # end
-      # collection do
-      #   get 'create_key'
-      #   get 'new_from_git_remote'
-      #   post 'create_from_git_remote'
-      # end
+    # App projects
+    # This handles the /projects/scripts path
+    scope 'projects/' do
+      resources :scripts do
+      end
     end
-  end
 
+    # This handles the /projects path
     resources :projects do
       root 'projects#index'
     end
-
-    # namespace :projects do
-    #   resources :script do
-    #       root 'script#index'
-    #   end
-    # end
 
   end
 
