@@ -205,25 +205,27 @@ module BatchConnect::SessionsHelper
   end
 
   def delete(session)
-    link_to(
-      fa_icon('trash-alt', classes: nil) << ' ' << t('dashboard.batch_connect_sessions_delete_title'),
+    button_to(
       batch_connect_session_path(session.id),
       method: :delete,
       class: "btn btn-danger float-right btn-delete",
-      title: t('dashboard.batch_connect_sessions_delete_hover'),
+      title: "#{t('dashboard.batch_connect_sessions_cancel_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}",
       data: { confirm: t('dashboard.batch_connect_sessions_delete_confirm'), toggle: "tooltip", placement: "bottom"}
-    )
+    ) do
+      "#{fa_icon('times-circle', classes: nil)} <span aria-hidden='true'>#{t('dashboard.batch_connect_sessions_cancel_title')}</span>".html_safe
+    end
   end
 
   def cancel(session)
-    link_to(
-      fa_icon('times-circle', classes: nil) << ' ' << t('dashboard.batch_connect_sessions_cancel_title'),
+    button_to(
       batch_connect_cancel_session_path(session.id),
       method: :post,
       class: "btn btn-danger float-right btn-cancel",
-      title: t('dashboard.batch_connect_sessions_cancel_hover'),
-      data: { confirm: t('dashboard.batch_connect_sessions_cancel_confirm'), toggle: "tooltip", placement: "bottom"}
-    )
+      title: "#{t('dashboard.batch_connect_sessions_cancel_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}",
+      data: { confirm: t('dashboard.batch_connect_sessions_cancel_confirm'), toggle: "tooltip", placement: "bottom"},
+    ) do
+      "#{fa_icon('times-circle', classes: nil)} <span aria-hidden='true'>#{t('dashboard.batch_connect_sessions_cancel_title')}</span>".html_safe
+    end
   end
 
   def novnc_link(connect, view_only: false)
