@@ -308,7 +308,13 @@ class OodApp
 
   # @return [String] memoized version string
   def version
-    @version ||= (version_from_file || version_from_git || "unknown").strip
+    #hide_app_version has to be the first entry
+    @version ||= (hide_app_version || version_from_file || version_from_git || "unknown").strip
+  end
+
+  # checks if hide_app_version is true and returns unknown; hides app version globally
+  def hide_app_version
+    Configuration.hide_app_version ? "unknown" : nil
   end
 
   # test whether this object is equal to another.
