@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'application_system_test_case'
 
 class ProductsDevTest < ApplicationSystemTestCase
   # Since :dev gives more selections page interactions are tested here.
 
   def setup
-    DevRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/sys_with_gateway_apps"))
+    DevRouter.stubs(:base_path).returns(Pathname.new('test/fixtures/sys_with_gateway_apps'))
     Configuration.stubs(:app_development_enabled?).returns(true)
     visit products_path(:dev)
   end
@@ -89,7 +91,7 @@ class ProductsDevTest < ApplicationSystemTestCase
   test 'pressing app restart' do
     visit(product_url('dev', 'dashboard'))
     assert find('#product_cli_modal', visible: :hidden)
- 
+
     # tests cannot handle the transition when the modal closes.
     update_script = <<~JAVASCRIPT
       document.getElementById("product_cli_modal").classList.remove('fade');
@@ -106,7 +108,7 @@ class ProductsDevTest < ApplicationSystemTestCase
 
   test 'picking a new icon' do
     Dir.mktmpdir do |dir|
-      FileUtils.cp_r("test/fixtures/sys_with_gateway_apps/dashboard", dir)
+      FileUtils.cp_r('test/fixtures/sys_with_gateway_apps/dashboard', dir)
       DevRouter.stubs(:base_path).returns(Pathname.new(dir))
 
       visit edit_product_path('dev', 'dashboard')
