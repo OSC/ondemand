@@ -1,11 +1,12 @@
 # OodAppGroup groups OodApps mostly through class methods. The object
 # OodAppGroup is itself a group of OodApps.
 class OodAppGroup
-  attr_accessor :apps, :title, :sort
+  attr_accessor :apps, :title, :icon_uri, :sort
 
-  def initialize(title: "", apps: [], nav_limit: nil, sort: true)
+  def initialize(title: "", icon_uri: nil, apps: [], nav_limit: nil, sort: true)
     @apps = apps
     @title = title
+    @icon_uri = URI(icon_uri.to_s) if icon_uri
     @nav_limit = nav_limit
     @sort = sort
   end
@@ -50,6 +51,7 @@ class OodAppGroup
       :group => self,
       :apps => apps,
       :title => title,
+      :icon_uri => icon_uri,
       :nav_limit => nav_limit,
       :sort => sort
     }

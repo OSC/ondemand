@@ -3,10 +3,13 @@
 require 'test_helper'
 
 class CustomNavigationTest < ActionDispatch::IntegrationTest
-  test 'should render a custom navigation menu when nav_bar is defined in UserConfiguration' do
+  def setup
     # Mock the sys installed applications
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
     SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys_with_interactive_apps'))
+  end
+
+  test 'should render a custom navigation menu when nav_bar is defined in UserConfiguration' do
     # Test a navigation item of each type
     stub_user_configuration(
       {
@@ -83,6 +86,18 @@ class CustomNavigationTest < ActionDispatch::IntegrationTest
 
     # Check all_apps static link.
     assert_select "#navbar .navbar-nav li.nav-item[title='All Apps']", text: 'All Apps'
+  end
+
+  test 'featured_apps template should not break navigation when no pinned_apps defined' do
+    stub_user_configuration(
+      {
+        pinned_apps: nil,
+        nav_bar: ['featured_apps']
+      }
+    )
+
+    get root_path
+    assert_response :success
   end
 
   def nav_menu(order)
