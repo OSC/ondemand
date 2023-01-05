@@ -12,7 +12,7 @@ attributes:
     value: "1"
     options:
       - ["1","Jupyter Lab"]
-      - ["0", "Jupyter Notebook"]
+      - ["0","Jupyter Notebook"]
   hidden_change_thing:
     widget: 'hidden_field'
     value: 'default'
