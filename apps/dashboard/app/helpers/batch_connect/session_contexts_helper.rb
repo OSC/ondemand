@@ -19,7 +19,20 @@ module BatchConnect::SessionContextsHelper
       end
     when 'radio', 'radio_button'
       form.form_group attrib.id, help: field_options[:help] do
-        form.collection_radio_buttons attrib.id, attrib.select_choices, :first, :second, { label: label_tag(attrib.id, attrib.label), checked: (attrib.value.presence || attrib.field_options[:checked]) }
+        opts = {
+          label:   label_tag(attrib.id, attrib.label),
+          checked: (attrib.value.presence || attrib.field_options[:checked])
+        }
+        label_values = if Configuration.bc_radio_3_0_compatible?
+                         [:first, :second]
+                       else
+                         msg = 'Radio button options will be in the form ["value", "label"] in 3.0.'\
+                               ' You currently have ["label", "value"]. Use the ondemand.d option'\
+                               ' bc_radio_3_0_compatible to upgrade before 3.0.'.freeze
+                         ActiveSupport::Deprecation.warn(msg) unless Rails.env.test?
+                         [:second, :first]
+                       end
+        form.collection_radio_buttons(attrib.id, attrib.select_choices, *label_values, **opts)
       end
     when 'file_navigator'
       if Configuration.file_navigator?

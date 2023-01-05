@@ -13,13 +13,34 @@ class BatchConnectTest < ActionDispatch::IntegrationTest
     stub_sys_apps
   end
 
-  test 'radio buttons and labels appear correctly' do
-    get new_batch_connect_session_context_url('sys/bc_jupyter')
-    assert_select 'form input[id="batch_connect_session_context_mode_0"]'
-    assert_select 'form input[id="batch_connect_session_context_mode_1"]'
-    assert_equal 'The Mode', css_select('label[for="batch_connect_session_context_mode"]').text
-    assert_equal 'Jupyter Lab', css_select('label[for="batch_connect_session_context_mode_1"]').text
-    assert_equal 'Jupyter Notebook', css_select('label[for="batch_connect_session_context_mode_0"]').text
+  test 'radio buttons and labels appear correctly with 3.0 compatability' do
+    with_modified_env({'OOD_BC_RADIO_3_0_COMPATIBLE': 'true'}) do
+      get new_batch_connect_session_context_url('sys/bc_jupyter')
+      assert_select 'form input[id="batch_connect_session_context_mode_0"]'
+      assert_select 'form input[id="batch_connect_session_context_mode_1"]'
+      assert_equal 'The Mode', css_select('label[for="batch_connect_session_context_mode"]').text
+      assert_equal 'Jupyter Lab', css_select('label[for="batch_connect_session_context_mode_1"]').text
+      assert_equal 'Jupyter Notebook', css_select('label[for="batch_connect_session_context_mode_0"]').text
+    end
+  end
+
+  # same as test above but for 2.0- form definitions
+  test 'radio buttons and labels appear correctly with 2.0 compatability' do
+    with_modified_env({'OOD_BC_RADIO_3_0_COMPATIBLE': 'false'}) do
+      file = 'test/fixtures/sys_with_gateway_apps/bc_jupyter/form.yml'
+
+      `sed -i 's#"1","Jupyter Lab"#"Jupyter Lab", "1"#g' #{file}`
+      `sed -i 's#"0","Jupyter Notebook"#"Jupyter Notebook", "0"#g' #{file}`
+
+      get new_batch_connect_session_context_url('sys/bc_jupyter')
+      assert_select 'form input[id="batch_connect_session_context_mode_0"]'
+      assert_select 'form input[id="batch_connect_session_context_mode_1"]'
+      assert_equal 'The Mode', css_select('label[for="batch_connect_session_context_mode"]').text
+      assert_equal 'Jupyter Lab', css_select('label[for="batch_connect_session_context_mode_1"]').text
+      assert_equal 'Jupyter Notebook', css_select('label[for="batch_connect_session_context_mode_0"]').text
+
+      `git checkout #{file}`
+    end
   end
 
   test 'default application menu renders correctly when nav_bar property defined' do

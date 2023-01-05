@@ -40,6 +40,7 @@ class ConfigurationSingleton
       :csp_enabled                  => false,
       :csp_report_only              => false,
       :bc_dynamic_js                => false,
+      :bc_radio_3_0_compatible      => false,
       :per_cluster_dataroot         => false,
       :file_navigator               => false,
       :jobs_app_alpha               => false,
