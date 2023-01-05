@@ -141,4 +141,12 @@ class OodAppGroupTest < ActiveSupport::TestCase
     assert_equal [group1, group2], groups
   end
 
+  test "group icon_uri default" do
+    assert_nil OodAppGroup.new.icon_uri
+  end
+
+  test "group icon_uri" do
+    assert_equal URI("fas://desktop"), OodAppGroup.new(icon_uri: "fas://desktop").icon_uri
+  end
+
 end

@@ -2,29 +2,43 @@
 #
 class NavBar
 
+  STATIC_TEMPLATES = {
+    all_apps: 'layouts/nav/all_apps',
+    featured_apps: 'layouts/nav/featured_apps',
+    sessions: 'layouts/nav/sessions',
+    develop: 'layouts/nav/develop_dropdown',
+    help: 'layouts/nav/help_dropdown',
+    log_out: 'layouts/nav/log_out',
+    user: 'layouts/nav/user',
+  }.freeze
+
+  url_helpers =  Rails.application.routes.url_helpers
   STATIC_LINKS = {
-    all_apps: "layouts/nav/all_apps",
-    featured_apps: "layouts/nav/featured_apps",
-    sessions: "layouts/nav/sessions",
-    log_out: "layouts/nav/log_out",
-    user: "layouts/nav/user",
-  }
+    all_apps: OodAppLink.new(title: I18n.t('dashboard.nav_all_apps'), url: url_helpers.apps_index_path, icon_uri: URI('fas://th'), new_tab: false),
+    sessions: OodAppLink.new(title: I18n.t('dashboard.nav_sessions'), url: url_helpers.batch_connect_sessions_path, icon_uri: URI('fas://window-restore'), new_tab: false),
+    support_ticket: url_helpers.respond_to?(:support_path) ? OodAppLink.new(title: I18n.t('dashboard.nav_help_support_ticket'), url: url_helpers.support_path, icon_uri: URI('fas://medkit'), new_tab: false) : nil,
+    docs: OodAppLink.new(title: I18n.t('dashboard.nav_develop_docs'), url: Configuration.developer_docs_url, icon_uri: URI('fas://book'), new_tab: true),
+    products_dev: OodAppLink.new(title: I18n.t('dashboard.nav_develop_my_sandbox_apps_dev'), url: url_helpers.products_path(type: 'dev'), icon_uri: URI('fas://cog'), new_tab: false),
+    products_usr: OodAppLink.new(title: I18n.t('dashboard.nav_develop_my_sandbox_apps_prod'), url: url_helpers.products_path(type: 'usr'), icon_uri: URI('fas://share-alt'), new_tab: false),
+    log_out: OodAppLink.new(title: I18n.t('dashboard.nav_logout'), url: '/logout', icon_uri: URI('fas://sign-out-alt'), new_tab: false),
+    restart: OodAppLink.new(title: I18n.t('dashboard.nav_restart_server'), url: '/nginx/stop?redir=#{helpers.root_path}', icon_uri: URI('fas://sync'), new_tab: false),
+  }.freeze
 
   def self.items(nav_config)
     nav_config.map do |nav_item|
       if nav_item.is_a?(String)
         item_from_token(nav_item)
       elsif nav_item.is_a?(Hash)
-        if nav_item.fetch(:links, nil)
+        if nav_item[:links]
           extend_group(nav_menu(nav_item))
-        elsif nav_item.fetch(:url, nil)
+        elsif nav_item[:url]
           extend_link(nav_link(nav_item))
-        elsif nav_item.fetch(:apps, nil)
-          matched_apps = nav_apps(nav_item)
-          extend_link(matched_apps.first.links.first) if matched_apps.first && matched_apps.first.links.first
-        elsif nav_item.fetch(:profile, nil)
+        elsif nav_item[:apps] && nav_item[:title]
+          matched_apps = nav_apps(nav_item, nav_item[:title], nil)
+          extend_group(OodAppGroup.new(apps: matched_apps, title: nav_item[:title], icon_uri: nav_item[:icon_uri], sort: true))
+        elsif nav_item[:profile]
           extend_link(nav_profile(nav_item))
-        elsif nav_item.fetch(:page, nil)
+        elsif nav_item[:page]
           extend_link(nav_page(nav_item))
         end
       end
@@ -39,53 +53,58 @@ class NavBar
 
   def self.nav_menu(hash_item)
     menu_title = hash_item.fetch(:title, '')
+    menu_icon = hash_item.fetch(:icon_uri, nil)
     menu_items = hash_item.fetch(:links, [])
 
     group_title = ''
     apps = menu_items.map do |item|
       if item.is_a?(String)
+        static_link = STATIC_LINKS.fetch(item.to_sym, nil)
+        if static_link
+          next static_link.categorize(category: menu_title, subcategory: group_title)
+        end
         item = { apps: item }
       end
 
-      if item.fetch(:url, nil)
+      if item[:url]
         nav_link(item, menu_title, group_title)
-      elsif item.fetch(:apps, nil)
+      elsif item[:apps]
         nav_apps(item, menu_title, group_title)
-      elsif item.fetch(:profile, nil)
+      elsif item[:profile]
         nav_profile(item, menu_title, group_title)
-      elsif item.fetch(:page, nil)
+      elsif item[:page]
         nav_page(item, menu_title, group_title)
       else
-        # Update subcategory if title was provided
+        # Update subcategory if group title was provided
         group_title = item.fetch(:group, group_title)
         next nil
       end
     end.flatten.compact
 
-    OodAppGroup.new(apps: apps, title: menu_title, sort: false)
+    OodAppGroup.new(apps: apps, title: menu_title, icon_uri: menu_icon, sort: false)
   end
 
   def self.nav_link(item, category='', subcategory='')
-    OodAppLink.new(item).categorize(category: category, subcategory: subcategory)
+    link_data = item.clone
+    link_data[:new_tab] = item.fetch(:new_tab, false)
+    OodAppLink.new(link_data).categorize(category: category, subcategory: subcategory)
   end
 
   def self.nav_apps(item, category='', subcategory='')
     app_configs = Array.wrap(item.fetch(:apps, []))
     app_configs.map do |config_string|
       matched_apps = Router.pinned_apps_from_token(config_string, SysRouter.apps)
-      matched_apps.map do |reg_app|
-        reg_app.links.map{|link| link.categorize(category: category, subcategory: subcategory, show_in_menu: reg_app.batch_connect_app?)}
-      end.flatten
+      extract_links(matched_apps, category: category, subcategory: subcategory)
     end.flatten
   end
 
   def self.nav_profile(item, category='', subcategory='')
     profile = item.fetch(:profile)
     profile_data = item.clone
-    profile_data[:title] = profile unless item.fetch(:title, nil)
+    profile_data[:title] = item.fetch(:title, profile.titleize)
     profile_data[:url] = Rails.application.routes.url_helpers.settings_path('settings[profile]' => profile)
     profile_data[:data] = { method: 'post' }
-    profile_data[:new_tab] = false
+    profile_data[:new_tab] = item.fetch(:new_tab, false)
     OodAppLink.new(profile_data).categorize(category: category, subcategory: subcategory)
   end
 
@@ -99,24 +118,34 @@ class NavBar
   end
 
   def self.item_from_token(token)
-    static_link_template = STATIC_LINKS.fetch(token.to_sym, nil)
-    if static_link_template
-      return NavItemDecorator.new(OodAppGroup.new, static_link_template)
+    static_template = STATIC_TEMPLATES.fetch(token.to_sym, nil)
+    if static_template
+      return NavItemDecorator.new(OodAppGroup.new, static_template)
+    end
+
+    static_link = STATIC_LINKS.fetch(token.to_sym, nil)
+    if static_link
+      return extend_link(static_link.categorize)
     end
 
     matched_apps = Router.pinned_apps_from_token(token, SysRouter.apps)
     if matched_apps.size == 1
       app = AppRecategorizer.new(matched_apps.first, category: '', subcategory: '')
       extend_link(app.links.first.categorize(show_in_menu: app.batch_connect_app?)) if app.links.first
-    elsif matched_apps.size > 1
-      extend_group(OodAppGroup.groups_for(apps: matched_apps).first)
     else
       group = OodAppGroup.groups_for(apps: SysRouter.apps).select { |g| g.title.downcase == token.downcase }.first
       return nil if group.nil?
-      links = group.apps.map{|app| app.links.map{|link| link.categorize(category: app.category, subcategory: app.subcategory, show_in_menu: app.batch_connect_app?)}}.flatten
-      group.apps = links
+      group.apps = extract_links(group.apps)
       extend_group(group)
     end
+  end
+
+  def self.extract_links(apps, category: nil, subcategory: nil)
+    apps.map do |app|
+      app.links.map do |link|
+        link.categorize(category: category || app.category, subcategory: subcategory || app.subcategory, show_in_menu: app.batch_connect_app?)
+      end
+    end.flatten
   end
 
   def self.extend_group(group)
