@@ -4,7 +4,7 @@ bc_dynamic_js: true
 per_cluster_dataroot: true
 file_navigator: true
 jobs_app_alpha: true
-files_app_remote_files: true
+remote_files_enabled: true
 host_based_profiles: true
 disable_bc_shell: true
 cancel_session_enabled: true
