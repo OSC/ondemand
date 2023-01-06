@@ -96,6 +96,7 @@ en:
     batch_connect_missing_cluster: |
       The cluster was never set. Either set it in form.yml.erb with `cluster` or `form.cluster` or
       set `cluster` in submit.yml.erb.
+    batch_connect_sessions_word: 'Session'
     batch_connect_sessions_data_html: |
       The %{title} session data for this session can be accessed
       under the %{data_link_tag}.
@@ -104,10 +105,8 @@ en:
       please ask your administrator to configure OnDemand to set the
       environment variable OOD_JOB_NAME_ILLEGAL_CHARS.
     batch_connect_sessions_delete_confirm: "Are you sure?"
-    batch_connect_sessions_delete_hover: "Delete Session"
     batch_connect_sessions_delete_title: "Delete"
     batch_connect_sessions_cancel_confirm: "Are you sure?"
-    batch_connect_sessions_cancel_hover: "Cancel Session"
     batch_connect_sessions_cancel_title: "Cancel"
     batch_connect_sessions_errors_staging: "Failed to stage the template with the following error:"
     batch_connect_sessions_errors_submission: "Failed to submit session with the following error:"
