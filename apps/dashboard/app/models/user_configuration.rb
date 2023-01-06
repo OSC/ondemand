@@ -97,14 +97,14 @@ class UserConfiguration
     path.start_with?('/') ? Pathname.new(path) : Pathname.new('/public')
   end
 
-  # Filtering is controlled with NavConfig.categories_whitelist? unless the configuration property categories is defined.
+  # Filtering is controlled with NavConfig.categories_allowlist? unless the configuration property categories is defined.
   # If categories are defined, filter_nav_categories? will always be true.
   def filter_nav_categories?
-    fetch(:nav_categories, nil).nil? ? NavConfig.categories_whitelist? : true
+    fetch(:nav_categories, nil).nil? ? NavConfig.categories_allowlist? : true
   end
 
   def nav_categories
-    fetch(:nav_categories, NavConfig.categories)
+    fetch(:nav_categories, nil) || NavConfig.categories
   end
 
   # The current user profile. Used to select the configuration properties.

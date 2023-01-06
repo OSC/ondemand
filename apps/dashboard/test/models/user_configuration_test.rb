@@ -149,12 +149,12 @@ class UserConfigurationTest < ActiveSupport::TestCase
     assert_equal true, UserConfiguration.new.filter_nav_categories?
   end
 
-  test "filter_nav_categories? should return default value NavConfig.categories_whitelist? when categories is not set in config" do
+  test "filter_nav_categories? should return default value NavConfig.categories_allowlist? when categories is not set in config" do
     Configuration.stubs(:config).returns({})
-    NavConfig.stubs(:categories_whitelist?).returns(false)
+    NavConfig.stubs(:categories_allowlist?).returns(false)
     assert_equal false, UserConfiguration.new.filter_nav_categories?
 
-    NavConfig.stubs(:categories_whitelist?).returns(true)
+    NavConfig.stubs(:categories_allowlist?).returns(true)
     assert_equal true, UserConfiguration.new.filter_nav_categories?
   end
 
