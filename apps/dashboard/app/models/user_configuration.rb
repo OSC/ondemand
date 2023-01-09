@@ -39,15 +39,6 @@ class UserConfiguration
     ConfigurationProperty.property(name: :pinned_apps_group_by, default_value: nil, read_from_env: true),
 
     # Links to change profile under the Help navigation menu
-    # example:
-    # profile_links:
-    #   - id: default
-    #     name: "Default"
-    #     icon: "cog"
-    #   - id: profile1
-    #     name: "Team2"
-    #     icon: "user"
-    #
     ConfigurationProperty.property(name: :profile_links, default_value: []),
 
     # Custom CSS files to add to the application.html.erb template

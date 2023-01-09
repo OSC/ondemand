@@ -76,13 +76,16 @@ module ApplicationHelper
     end
   end
 
+  # Creates the list of profile links to add to the help menu
   def profile_links
-    @user_configuration.profile_links
+    create_menu_links(@user_configuration.profile_links.select{ |item| item.is_a?(Hash) && !item[:profile].nil? })
   end
 
-  def profile_link(profile_info)
-    profile_id = profile_info[:id]
-    nav_link(profile_info.fetch(:name, profile_id), profile_info.fetch(:icon, "user"), settings_path("settings[profile]" => profile_id), data: {method: "post"}) if profile_id
+  # Utility method to create links specific to an existing navigation menu
+  def create_menu_links(link_items)
+    links = NavBar.items(link_items)
+    # 'dropdown-item' class is needed to render the links using the existing 'layouts/nav/link' template
+    links.map(&:to_h).each{|l| l[:class] = 'dropdown-item'}
   end
 
   def custom_css_paths
