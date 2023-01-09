@@ -18,8 +18,8 @@
     <% unless profile_links.empty? %>
       <li class="dropdown-divider" role="separator"></li>
       <li class="dropdown-header"><%= t('dashboard.profile_links_title') %></li>
-      <% profile_links.each do | profile_info | %>
-        <%= profile_link(profile_info) %>
+      <% profile_links.each do | profile_link | %>
+        <%= render partial: 'layouts/nav/link', locals: profile_link %>
       <% end %>
     <% end %>
 
