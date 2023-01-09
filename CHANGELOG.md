@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+use a button for deleting & canceling instead of link (#2458)\
+add initializer to sync cache files from 2.0 to 2.1 (#2442)\
+add deprecation warnings for NavConfig (#2454)\
+rename remote files config to remote_files_enabled (#2448)\
+use an actual button for saving file editor (#2447)\
+fix activejobs' chevron styles (#2444)\
+Configuration improvements for custom navigation bar (#2452)\
+disable passengers update check bc they cant update anyhow (#2459)\
+lint a random file (#2455)\
+update dependencies (#2451)\
+lint a random file (#2449)
 
 ### Changed
 
