@@ -6,17 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-use a button for deleting & canceling instead of link (#2458)\
-add initializer to sync cache files from 2.0 to 2.1 (#2442)\
-add deprecation warnings for NavConfig (#2454)\
-rename remote files config to remote_files_enabled (#2448)\
-use an actual button for saving file editor (#2447)\
-fix activejobs' chevron styles (#2444)\
-Configuration improvements for custom navigation bar (#2452)\
-disable passengers update check bc they cant update anyhow (#2459)\
-lint a random file (#2455)\
-update dependencies (#2451)\
-lint a random file (#2449)
 
 ### Changed
 
@@ -50,6 +39,8 @@ lint a random file (#2449)
 - NavConfig should now use allowlist, deprecating whitelist in [2380](https://github.com/OSC/ondemand/pull/2380).
 - Shared apps can now correctly set FACLs in [2398](https://github.com/OSC/ondemand/pull/2398).
 - Session info is now stored in a local filesystem instead of in cookies in [2434](https://github.com/OSC/ondemand/pull/2434).
+- NavConfig is deprecated in favor of an ondeman.d setting `nav_categories` in [2454](https://github.com/OSC/ondemand/pull/2454).
+- Passenger security update checks are disabled because users can't update outside of OSC packages in [2459](https://github.com/OSC/ondemand/pull/2459).
 
 ### Added
 
