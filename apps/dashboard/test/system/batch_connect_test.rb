@@ -182,6 +182,28 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 555, find_max('bc_num_hours')
   end
 
+  test 'several elements can set min/max' do
+    # here we see that changing the node_type can set min & max on bc_num_hours
+    # but changing classroom can also set min & max on bc_num_hours
+
+    # ensure defaults
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+    assert_equal 1, find_min('bc_num_hours')
+    assert_equal 20, find_max('bc_num_hours')
+    assert_equal 'any', find_value('node_type')
+    assert_equal 'physics_1234', find_value('classroom')
+    assert_equal 'owens', find_value('cluster')
+
+    # changing the node type sets mins & maxes
+    select('same', from: bc_ele_id('node_type'))
+    assert_equal 444, find_min('bc_num_hours')
+    assert_equal 555, find_max('bc_num_hours')
+
+    select('Astronomy 5678', from: bc_ele_id('classroom'))
+    assert_equal 100, find_min('bc_num_hours')
+    assert_equal 110, find_max('bc_num_hours')
+  end
+
   test 'can set multiple min/maxes with for clauses' do
     # ensure defaults
     visit new_batch_connect_session_context_url('sys/bc_jupyter')

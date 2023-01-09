@@ -178,7 +178,7 @@ function addHideHandler(optionId, option, key,  configValue) {
 
 /**
  *
- * @param {*} optionId batch_connect_session_context_node_type
+ * @param {*} subjectId batch_connect_session_context_node_type
  * @param {*} option gpu
  * @param {*} key maxNumCoresForClusterAnnieOakley
  * @param {*} configValue 42
@@ -191,46 +191,48 @@ function addHideHandler(optionId, option, key,  configValue) {
  *        data-max-num-cores-for-cluster-annie-oakley: 42
  *      ]
  */
-function addMinMaxForHandler(optionId, option, key,  configValue) {
-  optionId = String(optionId || '');
+function addMinMaxForHandler(subjectId, option, key,  configValue) {
+  subjectId = String(subjectId || '');
   configValue = parseInt(configValue);
 
   const configObj = parseMinMaxFor(key);
-  const id = configObj['subjectId'];
+  const objectId = configObj['subjectId'];
   // this is the id of the target object we're setting the min/max for.
   // if it's undefined - there's nothing to do, it was likely configured wrong.
-  if(id === undefined) return;
+  if(objectId === undefined) return;
 
   const secondDimId = configObj['predicateId'];
   const secondDimValue = configObj['predicateValue'];
 
-  if(minMaxLookup[id] === undefined) minMaxLookup[id] = new Table(optionId, secondDimId);
-  const table = minMaxLookup[id];
+  // several subjects can try to change the object, so the table lookup key has to have both
+  const lookupKey = `${subjectId}_${objectId}`;
+  if(minMaxLookup[lookupKey] === undefined) minMaxLookup[lookupKey] = new Table(subjectId, secondDimId);
+  const table = minMaxLookup[lookupKey];
   table.put(option, secondDimValue, {[minOrMax(key)] : configValue });
 
-  let cacheKey = `${id}_${optionId}_${secondDimId}`;
+  let cacheKey = `${objectId}_${subjectId}_${secondDimId}`;
   if(!minMaxHandlerCache.includes(cacheKey)) {
-    const changeElement = $(`#${optionId}`);
+    const changeElement = $(`#${subjectId}`);
 
     changeElement.on('change', (event) => {
-      toggleMinMax(event, id, secondDimId);
+      toggleMinMax(event, objectId, secondDimId);
     });
 
     minMaxHandlerCache.push(cacheKey);
   }
 
-  cacheKey = `${id}_${secondDimId}_${optionId}`;
+  cacheKey = `${objectId}_${secondDimId}_${subjectId}`;
   if(secondDimId !== undefined && !minMaxHandlerCache.includes(cacheKey)){
     const secondEle = $(`#${secondDimId}`);
 
     secondEle.on('change', (event) => {
-      toggleMinMax(event, id, optionId);
+      toggleMinMax(event, objectId, subjectId);
     });
 
     minMaxHandlerCache.push(cacheKey);
   }
 
-  toggleMinMax({ target: document.querySelector(`#${optionId}`) }, id, secondDimId);
+  toggleMinMax({ target: document.querySelector(`#${subjectId}`) }, objectId, secondDimId);
 }
 
 /**
@@ -389,9 +391,18 @@ function updateVisibility(event, changeId) {
 function toggleMinMax(event, changeId, otherId) {
   let x = undefined, y = undefined;
 
+  // many subjects can change the object, so we have to find the correct table
+  // in the form <subject>_<object>
+  let lookupKey = `${event.target['id']}_${changeId}`;
+  if(minMaxLookup[lookupKey] === undefined) {
+    lookupKey = `${otherId}_${changeId}`;
+  }
+
+  const table = minMaxLookup[lookupKey];
+
   // in the example of cluster & node_type, either element can trigger a change
   // so let's figure out the axis' based on the change element's id.
-  if(event.target['id'] == minMaxLookup[changeId].x) {
+  if(event.target['id'] == table.x) {
     x = snakeCaseWords(event.target.value);
     y = snakeCaseWords($(`#${otherId}`).val());
   } else {
@@ -400,7 +411,7 @@ function toggleMinMax(event, changeId, otherId) {
   }
 
   const changeElement = $(`#${changeId}`);
-  const mm = minMaxLookup[changeId].get(x, y);
+  const mm = table.get(x, y);
   const prev = {
     min: parseInt(changeElement.attr('min')),
     max: parseInt(changeElement.attr('max')),
