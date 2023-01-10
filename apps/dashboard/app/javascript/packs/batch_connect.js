@@ -28,6 +28,9 @@ const hideLookup = {};
 // the regular expression for mountain casing
 const mcRex = /[-_]([a-z])|([_-][0-9])|([\/])/g;
 
+// whether we're still initializing or not
+let initializing = true;
+
 function bcElement(name) {
   return `${bcPrefix}_${name.toLowerCase()}`;
 };
@@ -377,7 +380,7 @@ function updateVisibility(event, changeId) {
 
   // safe to access directly?
   const hide = hideLookup[id].get(changeId, val);
-  if(hide === undefined) {
+  if(hide === undefined && !initializing) {
     changeElement.show();
   }else if(hide === true) {
     changeElement.hide();
@@ -623,4 +626,5 @@ function optionForEvent(target) {
 
 jQuery(function() {
   makeChangeHandlers();
+  initializing = false;
 });
