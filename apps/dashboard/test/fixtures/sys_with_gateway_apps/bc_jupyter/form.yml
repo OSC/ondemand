@@ -11,8 +11,8 @@ attributes:
     label: "The Mode"
     value: "1"
     options:
-      - ["1","Jupyter Lab"]
-      - ["0", "Jupyter Notebook"]
+      - ["Jupyter Lab", "1"]
+      - ["Jupyter Notebook", "0"]
   hidden_change_thing:
     widget: 'hidden_field'
     value: 'default'
