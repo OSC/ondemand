@@ -25,6 +25,11 @@ APP_ROOT = Pathname.new File.expand_path('../../', __FILE__)
 chdir APP_ROOT do
   `mkdir -p #{Configuration.dataroot}`
 
+  # somehow the DB is in a bad state and it's just a file with 0 bytes
+  if Configuration.production_database_path.file? && Configuration.production_database_path.zero?
+    Configuration.production_database_path.unlink
+  end
+
   # currently SQLite-specific and not safe for Sqlite URIs
   # https://www.sqlite.org/uri.html
   if Configuration.production_database_path.file?
