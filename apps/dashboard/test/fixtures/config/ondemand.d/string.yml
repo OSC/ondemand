@@ -1,3 +1,4 @@
 module_file_dir: 'string from file'
 user_settings_file: 'string from file'
 facl_domain: 'string from file'
+auto_groups_filter: 'string from file'

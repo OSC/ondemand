@@ -59,6 +59,7 @@ class ConfigurationSingleton
       :module_file_dir      => nil,
       :user_settings_file   => '.ood',
       :facl_domain => nil,
+      :auto_groups_filter   => nil,
     }.freeze
   end
 

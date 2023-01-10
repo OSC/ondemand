@@ -5,11 +5,11 @@ module SmartAttributes
     # @param opts [Hash] attribute's options
     # @return [Attributes::BCAccount] the attribute object
     def self.build_auto_primary_group(opts = {})
-      static_opts = { 
+      static_opts = {
           fixed: true,
-          value: CurrentUser.primary_group
+          value: CurrentUser.primary_group_name
         }
-      Attributes::AutoPrimaryGroup.new("auto_primary_group", static_opts) 
+      Attributes::AutoPrimaryGroup.new("auto_primary_group", static_opts)
     end
   end
 
