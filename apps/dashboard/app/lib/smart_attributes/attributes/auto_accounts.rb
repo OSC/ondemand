@@ -2,10 +2,12 @@
 
 module SmartAttributes
   class AttributeFactory
-    # Build this attribute object. No options are used as this Attribute
-    # is meant to be dynamically generated from the users' unix groups
+    # Build this attribute object. No 'options' are used as this Attribute
+    # is meant to be dynamically generated from the users' available accounts
+    # from a given scheduler.
+    #
     # @param opts [Hash] attribute's options
-    # @return [Attributes::AutoGroups] the attribute object
+    # @return [Attributes::AutoAccounts] the attribute object
     def self.build_auto_accounts(opts = {})
       # only support for slurm atm and slurm queries all clusters.
       cluster = Configuration.job_clusters.select(&:slurm?).first
