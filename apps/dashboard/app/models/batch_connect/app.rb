@@ -315,6 +315,10 @@ module BatchConnect
       token == other.to_s
     end
 
+    def cache_file
+      "#{token.gsub('/', '_')}.json"
+    end
+
     private
 
       def url
