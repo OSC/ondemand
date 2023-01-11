@@ -309,7 +309,13 @@ class OodApp
   # @return [String] memoized version string
   def version
     #hide_app_version has to be the first entry
-    @version ||= (hide_app_version || version_from_file || version_from_git || "unknown").strip
+        @version ||= if Configuration.Configuration.hide_app_version?
+                   nil
+                 elsif version_from_file.to_s.downcase == 'unknown'
+                   nil
+                 else
+                   (file_version || version_from_git).strip
+                 end
   end
 
   # checks if hide_app_version is true and returns unknown; hides app version globally
