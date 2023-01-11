@@ -2,28 +2,6 @@
 #
 class NavBar
 
-  STATIC_TEMPLATES = {
-    all_apps: 'layouts/nav/all_apps',
-    featured_apps: 'layouts/nav/featured_apps',
-    sessions: 'layouts/nav/sessions',
-    develop: 'layouts/nav/develop_dropdown',
-    help: 'layouts/nav/help_dropdown',
-    log_out: 'layouts/nav/log_out',
-    user: 'layouts/nav/user',
-  }.freeze
-
-  url_helpers =  Rails.application.routes.url_helpers
-  STATIC_LINKS = {
-    all_apps: OodAppLink.new(title: I18n.t('dashboard.nav_all_apps'), url: url_helpers.apps_index_path, icon_uri: URI('fas://th'), new_tab: false),
-    sessions: OodAppLink.new(title: I18n.t('dashboard.nav_sessions'), url: url_helpers.batch_connect_sessions_path, icon_uri: URI('fas://window-restore'), new_tab: false),
-    support_ticket: url_helpers.respond_to?(:support_path) ? OodAppLink.new(title: I18n.t('dashboard.nav_help_support_ticket'), url: url_helpers.support_path, icon_uri: URI('fas://medkit'), new_tab: false) : nil,
-    docs: OodAppLink.new(title: I18n.t('dashboard.nav_develop_docs'), url: Configuration.developer_docs_url, icon_uri: URI('fas://book'), new_tab: true),
-    products_dev: OodAppLink.new(title: I18n.t('dashboard.nav_develop_my_sandbox_apps_dev'), url: url_helpers.products_path(type: 'dev'), icon_uri: URI('fas://cog'), new_tab: false),
-    products_usr: OodAppLink.new(title: I18n.t('dashboard.nav_develop_my_sandbox_apps_prod'), url: url_helpers.products_path(type: 'usr'), icon_uri: URI('fas://share-alt'), new_tab: false),
-    log_out: OodAppLink.new(title: I18n.t('dashboard.nav_logout'), url: '/logout', icon_uri: URI('fas://sign-out-alt'), new_tab: false),
-    restart: OodAppLink.new(title: I18n.t('dashboard.nav_restart_server'), url: '/nginx/stop?redir=#{helpers.root_path}', icon_uri: URI('fas://sync'), new_tab: false),
-  }.freeze
-
   def self.items(nav_config)
     nav_config.map do |nav_item|
       if nav_item.is_a?(String)
@@ -38,7 +16,7 @@ class NavBar
           extend_group(OodAppGroup.new(apps: matched_apps, title: nav_item[:title], icon_uri: nav_item[:icon_uri], sort: true))
         elsif nav_item[:profile]
           extend_link(nav_profile(nav_item))
-        elsif nav_item[:page]
+        elsif !nav_item[:page].blank?
           extend_link(nav_page(nav_item))
         end
       end
@@ -59,7 +37,7 @@ class NavBar
     group_title = ''
     apps = menu_items.map do |item|
       if item.is_a?(String)
-        static_link = STATIC_LINKS.fetch(item.to_sym, nil)
+        static_link = STATIC_LINKS.fetch(item.downcase.to_sym, nil)
         if static_link
           next static_link.categorize(category: menu_title, subcategory: group_title)
         end
@@ -118,12 +96,12 @@ class NavBar
   end
 
   def self.item_from_token(token)
-    static_template = STATIC_TEMPLATES.fetch(token.to_sym, nil)
+    static_template = STATIC_TEMPLATES.fetch(token.downcase.to_sym, nil)
     if static_template
       return NavItemDecorator.new(OodAppGroup.new, static_template)
     end
 
-    static_link = STATIC_LINKS.fetch(token.to_sym, nil)
+    static_link = STATIC_LINKS.fetch(token.downcase.to_sym, nil)
     if static_link
       return extend_link(static_link.categorize)
     end
@@ -166,4 +144,35 @@ class NavBar
       @links = nav_item.links.flatten.compact
     end
   end
+
+  class MultikeyHash < Hash
+    def []=(keys, value)
+      keys.each do |key|
+        super(key.to_sym, value)
+      end
+    end
+  end
+
+  STATIC_TEMPLATES = MultikeyHash.new.tap do |hash|
+    hash[['all_apps', 'all apps']] = 'layouts/nav/all_apps'
+    hash[['featured_apps', 'apps', 'pinned_apps', 'pinned apps', 'featured apps']] = 'layouts/nav/featured_apps'
+    hash[['sessions', 'my_interactive_sessions', 'my interactive sessions']] = 'layouts/nav/sessions'
+    hash[['develop']] = 'layouts/nav/develop_dropdown'
+    hash[['help']] = 'layouts/nav/help_dropdown'
+    hash[['log_out', 'logout', 'log out']] = 'layouts/nav/log_out'
+    hash[['user']] = 'layouts/nav/user'
+  end.freeze
+
+  url_helpers =  Rails.application.routes.url_helpers
+  STATIC_LINKS = MultikeyHash.new.tap do |hash|
+    hash[['all_apps', 'all apps']] = OodAppLink.new(title: I18n.t('dashboard.nav_all_apps'), url: url_helpers.apps_index_path, icon_uri: URI('fas://th'), new_tab: false)
+    hash[['sessions', 'my_interactive_sessions', 'my interactive sessions']] = OodAppLink.new(title: I18n.t('dashboard.nav_sessions'), url: url_helpers.batch_connect_sessions_path, icon_uri: URI('fas://window-restore'), new_tab: false)
+    hash[['support_ticket', 'support ticket', 'support']] = OodAppLink.new(title: I18n.t('dashboard.nav_help_support_ticket'), url: url_helpers.support_path, icon_uri: URI('fas://medkit'), new_tab: false) if url_helpers.respond_to?(:support_path)
+    hash[['docs']] = OodAppLink.new(title: I18n.t('dashboard.nav_develop_docs'), url: Configuration.developer_docs_url, icon_uri: URI('fas://book'), new_tab: true)
+    hash[['products_dev', 'products dev']] = OodAppLink.new(title: I18n.t('dashboard.nav_develop_my_sandbox_apps_dev'), url: url_helpers.products_path(type: 'dev'), icon_uri: URI('fas://cog'), new_tab: false)
+    hash[['products_usr', 'products usr']] = OodAppLink.new(title: I18n.t('dashboard.nav_develop_my_sandbox_apps_prod'), url: url_helpers.products_path(type: 'usr'), icon_uri: URI('fas://share-alt'), new_tab: false)
+    hash[['log_out', 'logout', 'log out']] = OodAppLink.new(title: I18n.t('dashboard.nav_logout'), url: '/logout', icon_uri: URI('fas://sign-out-alt'), new_tab: false)
+    hash[['restart']] = OodAppLink.new(title: I18n.t('dashboard.nav_restart_server'), url: '/nginx/stop?redir=#{helpers.root_path}', icon_uri: URI('fas://sync'), new_tab: false)
+  end.freeze
+
 end
