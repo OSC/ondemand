@@ -388,6 +388,15 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal false,  result[0].new_tab?
   end
 
+  test "navigation page ignores empty page value" do
+    nav_item = {
+      title: "Page Title",
+      page: "",
+    }
+
+    assert_equal [], NavBar.items([nav_item])
+  end
+
   test "NavBar should keep navigation order from configuration" do
     titles = (1..10).to_a.map{ |_| SecureRandom.uuid }
     config = titles.map{ |x| {title: x, links: []} }
@@ -413,13 +422,28 @@ class NavBarTest < ActiveSupport::TestCase
 
   test "Check supported static templates" do
     NavBar::STATIC_TEMPLATES.each do |name, _|
-      assert_equal true,  [:all_apps, :featured_apps, :sessions, :develop, :help, :log_out, :user].include?(name)
+      assert_equal true,  [
+        'all_apps', 'all apps',
+        'featured_apps', 'apps', 'pinned_apps', 'pinned apps', 'featured apps',
+        'sessions', 'my_interactive_sessions', 'my interactive sessions',
+        'develop',
+        'help',
+        'log_out', 'logout', 'log out',
+        'user'].include?(name.to_s)
     end
   end
 
   test "Check supported static links" do
     NavBar::STATIC_LINKS.each do |name, _|
-      assert_equal true,  [:all_apps, :sessions, :support_ticket, :docs, :products_dev, :products_usr, :log_out, :restart].include?(name)
+      assert_equal true,  [
+        'all_apps', 'all apps',
+        'sessions', 'my_interactive_sessions', 'my interactive sessions',
+        'support_ticket', 'support ticket', 'support',
+        'docs',
+        'products_dev', 'products dev',
+        'products_usr', 'products usr',
+        'log_out', 'logout', 'log out',
+        'restart'].include?(name.to_s)
     end
   end
 
