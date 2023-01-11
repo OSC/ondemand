@@ -11,7 +11,7 @@ module SmartAttributes
     def self.build_auto_accounts(opts = {})
       # only support for slurm atm and slurm queries all clusters.
       cluster = Configuration.job_clusters.select(&:slurm?).first
-      accounts = if cluster.nil? ? [] : cluster.job_adapter.accounts.map(&:to_s).uniq
+      accounts = cluster.nil? ? [] : cluster.job_adapter.accounts.map(&:to_s).uniq
 
       static_opts = {
         options: accounts
