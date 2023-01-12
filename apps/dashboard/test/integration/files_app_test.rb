@@ -3,6 +3,11 @@ require 'test_helper'
 
 class FilesAppTest < ActionDispatch::IntegrationTest
 
+  def setup
+    Configuration.stubs(:can_access_files?).returns(true)
+    Rails.application.reload_routes!
+  end
+
   test "Files app displays terminal button when configuration is set to true" do
     Configuration.stubs(:files_enable_shell_button).returns(true)
 

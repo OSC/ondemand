@@ -370,7 +370,7 @@ class ConfigurationSingleton
   private
 
   def can_access_core_app?(name)
-    app_dir = Rails.root.realpath.parent.join(name)
+    app_dir = SysRouter.base_path.join(name)
     app_dir.directory? && app_dir.join('manifest.yml').readable?
   end
 

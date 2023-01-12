@@ -9,10 +9,6 @@ class SupportTicketIntegrationTest < ActionDispatch::IntegrationTest
         to: "to_address@support.ticket.com",
       }
     })
-    Rails.application.routes.append do
-      get "/support", to: "support_ticket#new"
-      post "/support", to: "support_ticket#create"
-    end
     Rails.application.reload_routes!
   end
 

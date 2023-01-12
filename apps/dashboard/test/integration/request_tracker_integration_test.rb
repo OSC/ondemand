@@ -10,11 +10,6 @@ class RequestTrackerIntegrationTest < ActionDispatch::IntegrationTest
         priority: 10,
       }
     })
-
-    Rails.application.routes.append do
-      get "/support", to: "support_ticket#new"
-      post "/support", to: "support_ticket#create"
-    end
     Rails.application.reload_routes!
   end
 

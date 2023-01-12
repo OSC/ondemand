@@ -4,6 +4,12 @@ require 'rclone_helper'
 class RemoteFilesTest < ApplicationSystemTestCase
   MAX_WAIT = 120
 
+  def setup
+    Configuration.stubs(:can_access_files?).returns(true)
+    Configuration.stubs(:can_access_file_editor?).returns(true)
+    Rails.application.reload_routes!
+  end
+
   test "visiting files app doesn't raise js errors" do
     with_rclone_conf(Rails.root.to_s) do
       visit files_url('alias_remote', '/')

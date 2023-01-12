@@ -11,6 +11,8 @@ class RemoteFilesIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   def setup
+    Configuration.stubs(:can_access_files?).returns(true)
+    Rails.application.reload_routes!
     # lot's of setup here to get a valid csrf-token
     get files_path
     assert :success
