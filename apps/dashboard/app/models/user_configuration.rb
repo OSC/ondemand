@@ -91,7 +91,7 @@ class UserConfiguration
   # Filtering is controlled with NavConfig.categories_allowlist? unless the configuration property categories is defined.
   # If categories are defined, filter_nav_categories? will always be true.
   def filter_nav_categories?
-    fetch(:nav_categories, nil).nil? ? NavConfig.categories_allowlist? : true
+    fetch(:nav_categories, nil).nil? ? NavConfig.categories_whitelist? : true
   end
 
   def nav_categories
