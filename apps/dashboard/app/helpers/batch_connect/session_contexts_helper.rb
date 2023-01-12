@@ -19,7 +19,11 @@ module BatchConnect::SessionContextsHelper
       end
     when 'radio', 'radio_button'
       form.form_group attrib.id, help: field_options[:help] do
-        form.collection_radio_buttons attrib.id, attrib.select_choices, :first, :second, { label: label_tag(attrib.id, attrib.label), checked: (attrib.value.presence || attrib.field_options[:checked]) }
+        opts = {
+          label:   label_tag(attrib.id, attrib.label),
+          checked: (attrib.value.presence || attrib.field_options[:checked])
+        }
+        form.collection_radio_buttons(attrib.id, attrib.select_choices, :second, :first, **opts)
       end
     when 'file_navigator'
       if Configuration.file_navigator?
