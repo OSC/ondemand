@@ -39,6 +39,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - NavConfig should now use allowlist, deprecating whitelist in [2380](https://github.com/OSC/ondemand/pull/2380).
 - Shared apps can now correctly set FACLs in [2398](https://github.com/OSC/ondemand/pull/2398).
 - Session info is now stored in a local filesystem instead of in cookies in [2434](https://github.com/OSC/ondemand/pull/2434).
+- NavConfig is deprecated in favor of an ondeman.d setting `nav_categories` in [2454](https://github.com/OSC/ondemand/pull/2454).
+- Passenger security update checks are disabled because users can't update outside of OSC packages in [2459](https://github.com/OSC/ondemand/pull/2459).
 
 ### Added
 
