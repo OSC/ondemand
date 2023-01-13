@@ -8,7 +8,7 @@ class TransferLocalJob < ApplicationJob
     if transfer
       transfer.perform
     else
-      raise 'TransferLocalJobError: transfer not found'
+      raise StandardError, 'TransferLocalJobError: transfer not found'
     end
   end
 end
