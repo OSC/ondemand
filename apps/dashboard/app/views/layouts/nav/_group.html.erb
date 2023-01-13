@@ -4,30 +4,6 @@
   </a>
 
   <ul class="dropdown-menu <%= local_assigns.fetch(:menu_alignment, '') %>">
-    <% OodAppGroup.groups_for(apps: group.apps, group_by: :subcategory, sort: group.sort).each_with_index do |g, index| %>
-      <%= content_tag(:li, nil, class: ["dropdown-divider"], role: "separator") if index > 0 %>
-      <%= content_tag(:li, g.title, class: ["dropdown-header"]) unless g.title.empty? %>
-      <% g.apps.each do |app| %>
-        <% app.links.each do |link| %>
-          <li>
-            <%=
-              link_to(
-                link.url.to_s,
-                title: link.title,
-                class: "dropdown-item",
-                target: link.new_tab? ? "_blank" : nil,
-                aria: ({ current: ('page' if (current_page?(link.url))) }),
-                data: link.data
-              ) do
-            %>
-            <%= icon_tag(link.icon_uri) %> <%= link.title %>
-            <% if link.subtitle.present? %>
-              <%= content_tag(:small, link.subtitle, style: "text-indent: 20px", class: 'visible-xs-block visible-sm-inline visible-md-inline visible-lg-inline') %>
-            <% end %>
-          <% end %>
-          </li>
-        <% end %>
-      <% end %>
-    <% end %>
+    <%= render partial: 'layouts/nav/group_items', locals: local_assigns %>
   </ul>
 </li>

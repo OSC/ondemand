@@ -10,5 +10,9 @@
     <% if Configuration.app_sharing_enabled? %>
       <%= nav_link(products_title(:usr), "share-alt", products_path(type: "usr")) %>
     <% end %>
+
+    <% if development_links %>
+      <%= render partial: 'layouts/nav/group_items', locals: development_links.to_h %>
+    <% end %>
   </ul>
 </li>

@@ -38,9 +38,6 @@ class UserConfiguration
     ConfigurationProperty.property(name: :pinned_apps_menu_length, default_value: 6),
     ConfigurationProperty.property(name: :pinned_apps_group_by, default_value: nil, read_from_env: true),
 
-    # Links to change profile under the Help navigation menu
-    ConfigurationProperty.property(name: :profile_links, default_value: []),
-
     # Custom CSS files to add to the application.html.erb template
     # The files need to be deployed to the Apache public directory: /var/www/ood/public
     # The URL path will be prepended with the public_url property
@@ -56,6 +53,7 @@ class UserConfiguration
     ConfigurationProperty.property(name: :nav_bar, default_value: []),
     ConfigurationProperty.property(name: :help_bar, default_value: []),
     ConfigurationProperty.property(name: :interactive_apps_menu, default_value: []),
+    ConfigurationProperty.property(name: :navbar_attachment, default_value: []),
 
     # Custom pages configuration property
     ConfigurationProperty.property(name: :custom_pages, default_value: {}),

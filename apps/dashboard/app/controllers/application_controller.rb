@@ -62,7 +62,8 @@ class ApplicationController < ActionController::Base
   end
 
   def sys_app_groups
-    OodAppGroup.groups_for(apps: nav_sys_apps)
+    navbar_attachment = NavBar.items(@user_configuration.navbar_attachment).reject{|item| ['help', 'development'].include? item.title.downcase}.map(&:apps).flatten
+    OodAppGroup.groups_for(apps: nav_sys_apps + navbar_attachment)
   end
 
   def set_pinned_apps
