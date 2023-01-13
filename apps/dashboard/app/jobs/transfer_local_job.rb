@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Job class for local file transfers.
 class TransferLocalJob < ApplicationJob
   queue_as :default
@@ -6,7 +8,7 @@ class TransferLocalJob < ApplicationJob
     if transfer
       transfer.perform
     else
-      raise "TransferLocalJobError: transfer not found"
+      raise 'TransferLocalJobError: transfer not found'
     end
   end
 end
