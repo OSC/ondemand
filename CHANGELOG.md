@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Lint a random file (#2483)\
+Update Changelog (#2467)\
+reset navconfig back to the original 2.0 (#2481)\
+fix bc radio button definitions to be label then value (#2474)\
+Added aliases to custom navbar links and templates (#2469)\
+recognize that the db file is zero and rectify (#2461)\
+hide things when initializing, but dont show them (#2418)\
+Auto groups (#2370)\
+Fwd port maint assets (#2443)\
+lint a random file (#2471)\
+allow for 2 or more elements to set min/max on 1 element  (#2411)\
+Profile links configuration made consisten with custom navigation (#2470)\
+update dependencies (#2468)\
+lint a random file (#2466)
 
 ### Changed
 
