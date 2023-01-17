@@ -22,8 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   It was then migrated to esbuild  in [#1957](https://github.com/OSC/ondemand/pull/1957).
 - Remove active support dependency for ood-portal-generator in [1572](https://github.com/OSC/ondemand/pull/1572).
 - All desktop options now show in bc_desktop [1638](https://github.com/OSC/ondemand/pull/1638).
-- Radio buttons are now grouped for labeling. We also changed the ordering of labels and values in radio buttons
-  in [1611](https://github.com/OSC/ondemand/pull/1611).
+- Radio buttons are now grouped for labeling in [1611](https://github.com/OSC/ondemand/pull/1611).
 - Changed the file editor navbar in [1582](https://github.com/OSC/ondemand/pull/1582).
 - CI now uses the `ood_packaging` gem to build artifacts in [1661](https://github.com/OSC/ondemand/pull/1661).
 - Yaml files now preview in [1758](https://github.com/OSC/ondemand/pull/1758).
@@ -41,6 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Session info is now stored in a local filesystem instead of in cookies in [2434](https://github.com/OSC/ondemand/pull/2434).
 - NavConfig is deprecated in favor of an ondeman.d setting `nav_categories` in [2454](https://github.com/OSC/ondemand/pull/2454).
 - Passenger security update checks are disabled because users can't update outside of OSC packages in [2459](https://github.com/OSC/ondemand/pull/2459).
+- Sites can now server assets out of public/maintanence in [2443](https://github.com/OSC/ondemand/pull/2443).
 
 ### Added
 
@@ -74,6 +74,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - BC apps can now display choices made in the card in [2366](https://github.com/OSC/ondemand/pull/2366).
 - Added the active sessions widget in [2377](https://github.com/OSC/ondemand/pull/2377).
 - BatchConnect choices now appear in the cards if display is set to true in [2381](https://github.com/OSC/ondemand/pull/2381).
+- BatchConnect apps can now use `auto_group` attributes in Auto groups [2370](https://github.com/OSC/ondemand/pull/2370).
 
 ### Fixed
 
@@ -86,7 +87,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fix uploaded correctly set umasks other than 0022 in [1845](https://github.com/OSC/ondemand/pull/1845).
 - Home directories can now change in [1854](https://github.com/OSC/ondemand/pull/1854).
 - Activejobs now correctly sorts the time column in [2420](https://github.com/OSC/ondemand/pull/2420).
-- Some sites can now disable the shell option for BC apps in [2425](https://github.com/OSC/ondemand/pull/2425), fixing [722](https://github.com/OSC/ondemand/issues/722)
+- Some sites can now disable the shell option for BC apps in [2425](https://github.com/OSC/ondemand/pull/2425), fixing [722](https://github.com/OSC/ondemand/issues/722).
+- The job composers' setup script now recoginizes a 0 byte file and attempts to fix it in [2461](https://github.com/OSC/ondemand/issues/2461).
 
 ### Security
 
