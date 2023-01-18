@@ -219,8 +219,7 @@ en:
     breadcrumbs_support_ticket: "Support Ticket"
     support_ticket:
       title: "Support Ticket"
-      header: "Support Ticket Header"
-      description_html: "Support Ticket Description with HTML"
+      header: "Support Ticket"
       creation_success: "Support ticket email sent to: %{to}"
       generic_error: "There was an error processing your request: %{error}"
       validation_error: "Invalid Request. Please review the error messages below"

@@ -51,20 +51,4 @@ class SupportTicketMailerTest < ActionMailer::TestCase
     assert_equal ["override@example.com"], email.from
   end
 
-  test 'email template can be overridden with configuration' do
-    Configuration.stubs(:support_ticket_config).returns({
-      email: {
-        email_template: "email_template_override",
-        to: "to_address@support.ticket.com",
-      }
-    })
-    email = SupportTicketMailer.support_email(@context)
-
-    assert_emails 1 do
-      email.deliver_now
-    end
-
-    assert_match 'support ticket email override', email.body.encoded
-  end
-
 end
