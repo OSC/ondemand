@@ -596,9 +596,10 @@ function idFromToken(str) {
   options.each(function(_i, option) {
     // the variable 'option' is just a data structure. it has no attr, data, show
     // or hide methods so we have to query for it again
-    let optionElement = $(`#${elementId} option[value='${option.value}']`);
+    let optionElement = $(`#${elementId} ${nodeListToQueryString(option.attributes)}`);
     let data = optionElement.data();
     let hide = data[`optionFor${optionFor}${optionTo}`] === false;
+    let foundNext = false;
 
     if(hide) {
       optionElement.hide();
@@ -606,10 +607,24 @@ function idFromToken(str) {
       if(optionElement.prop('selected')) {
         optionElement.prop('selected', false);
 
+
+        let others = $(`#${elementId} option[value='${option.value}`);
+
+        // there could be other options of the same value, so let's
+        // select one of those if we can
+        if(others.length > 1) {
+          others.each((_i, ele) => {
+            let hideOther = ele.dataset[`optionFor${optionFor}${optionTo}`] === false;
+            if(!hideOther) {
+              ele.selected = true;
+              foundNext = true;
+            }
+          });
+
         // when de-selecting something, the default is to fallback to the very first
         // option. But there's an edge case where you want to hide the very first option,
         // and deselecting it does nothing.
-        if(optionElement.next()){
+        } else if(optionElement.next() && !foundNext){
           optionElement.next().prop('selected', true);
         }
       }
@@ -618,6 +633,22 @@ function idFromToken(str) {
     }
   });
 };
+
+// Turn a NodeList of attributes into a query string.
+// i.e., <option data-foo='bar' value='abc123'>
+// returns option[data-foo='bar'][value='abc123']
+function nodeListToQueryString(nodeList) {
+  const len = nodeList.length;
+  let query = 'option';
+
+  for(i = 0; i < len; i++) {
+    let item = nodeList[i];
+    query += `[${item.name}='${item.value}']`;
+  }
+
+  return query;
+}
+
 
 function optionForEvent(target) {
   let simpleName = shortId(target['id']);
