@@ -7,12 +7,9 @@ class SupportTicketIntegrationTest < ActionDispatch::IntegrationTest
     Configuration.stubs(:support_ticket_config).returns({
       email: {
         to: "to_address@support.ticket.com",
+        delivery_method: 'test'
       }
     })
-    Rails.application.routes.append do
-      get "/support", to: "support_ticket#new"
-      post "/support", to: "support_ticket#create"
-    end
     Rails.application.reload_routes!
   end
 

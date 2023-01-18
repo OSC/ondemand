@@ -6,6 +6,7 @@
 class SupportTicketMailer < ActionMailer::Base
   helper :support_ticket
   default template_path: ['support_ticket/email']
+  default template_name: 'email_layout'
 
   def support_email(context)
     @context = context
@@ -24,7 +25,6 @@ class SupportTicketMailer < ActionMailer::Base
       settings[:to] = email_service_config.fetch(:to)
       settings[:cc] = @context.support_ticket.cc
       settings[:subject] = @context.support_ticket.subject
-      settings[:template_name] = email_service_config.fetch(:email_template, 'default')
 
       # Override Rails delivery settings with support ticket configuration if provided
       # This will allow admins to use standard Rails configuration settings if required.

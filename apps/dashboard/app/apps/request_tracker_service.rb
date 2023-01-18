@@ -18,7 +18,8 @@ class RequestTrackerService
 
     ticket_template_context = {
       session:     session,
-      description: support_ticket_request.description
+      description: support_ticket_request.description,
+      username:    support_ticket_request.username
     }
 
     template = rt_config.fetch(:template, 'rt_ticket_content.text.erb')
