@@ -8,3 +8,4 @@ remote_files_enabled: true
 host_based_profiles: true
 disable_bc_shell: true
 cancel_session_enabled: true
+bc_clean_old_dirs: true

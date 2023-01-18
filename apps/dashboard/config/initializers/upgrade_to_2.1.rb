@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Rails.application.reloader.to_prepare do
+Rails.application.config.after_initialize do
   # Since https://github.com/OSC/ondemand/pull/1526 all the batch connect cache files
   # have moved. So, when folks upgrade to 2.1, let's sync these old files so that
   # they don't lose their cached choices.
