@@ -651,7 +651,7 @@ function nodeListToQueryString(nodeList) {
 
 // simple function to sanitize css query strings
 function sanitizeQuery(item) {
-  return item.replace('.', '\\.');
+  return item.replaceAll('.', '\\.');
 }
 
 
