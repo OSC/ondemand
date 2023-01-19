@@ -35,13 +35,18 @@ class ActiveSupport::TestCase
   def stub_usr_router
     Configuration.stubs(:app_sharing_enabled?).returns(true)
     Configuration.stubs(:app_development_enabled?).returns(true)
-    OodSupport::Process.stubs(:user).returns(UserDouble.new('me', ['me']))
-    OodSupport::User.stubs(:new).returns(UserDouble.new('me', ['me']))
+    stub_user
 
     UsrRouter.stubs(:base_path).with(:owner => "me").returns(Pathname.new("test/fixtures/usr/me"))
     UsrRouter.stubs(:base_path).with(:owner => 'shared').returns(Pathname.new("test/fixtures/usr/shared"))
     UsrRouter.stubs(:base_path).with(:owner => 'cant_see').returns(Pathname.new("test/fixtures/usr/cant_see"))
     UsrRouter.stubs(:owners).returns(['me', 'shared', 'cant_see'])
+  end
+
+  def stub_user
+    OodSupport::Process.stubs(:user).returns(UserDouble.new('me', ['me']))
+    OodSupport::User.stubs(:new).returns(UserDouble.new('me', ['me']))
+    Etc.stubs(:getlogin).returns('me')
   end
 
   def stub_sys_apps
