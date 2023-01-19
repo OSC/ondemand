@@ -20,7 +20,7 @@ module AccountCache
   #
   # @return [Array<String>] - the unique list of accounts
   def account_names
-    Rails.cache.fetch('account_info', expires_in: 4.hours) do
+    Rails.cache.fetch('account_names', expires_in: 4.hours) do
       accounts.map(&:to_s).uniq
     end
   end
