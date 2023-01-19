@@ -2,6 +2,9 @@
 
 module SmartAttributes
   class AttributeFactory
+
+    extend AccountCache
+
     # Build this attribute object. No 'options' are used as this Attribute
     # is meant to be dynamically generated from the users' available accounts
     # from a given scheduler.
@@ -9,12 +12,17 @@ module SmartAttributes
     # @param opts [Hash] attribute's options
     # @return [Attributes::AutoAccounts] the attribute object
     def self.build_auto_accounts(opts = {})
-      # only support for slurm atm and slurm queries all clusters.
-      cluster = Configuration.job_clusters.select(&:slurm?).first
-      accounts = cluster.nil? ? [] : cluster.job_adapter.accounts.map(&:to_s).uniq
+
+      options = if Configuration.bc_simple_auto_accounts?
+                  account_names
+                elsif Configuration.bc_dynamic_js?
+                  dynamic_accounts
+                else
+                  account_names
+                end
 
       static_opts = {
-        options: accounts
+        options: options
       }.merge(opts.without(:options).to_h)
 
       Attributes::AutoAccounts.new('auto_accounts', static_opts)

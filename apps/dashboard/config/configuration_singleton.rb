@@ -40,6 +40,7 @@ class ConfigurationSingleton
       :csp_enabled                  => false,
       :csp_report_only              => false,
       :bc_dynamic_js                => false,
+      :bc_simple_auto_accounts      => false,
       :bc_clean_old_dirs            => false,
       :per_cluster_dataroot         => false,
       :file_navigator               => false,
