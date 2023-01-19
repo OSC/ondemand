@@ -309,12 +309,12 @@ class OodApp
   # @return [String] memoized version string
   def version
     @version ||= if Configuration.Configuration.hide_app_version?
-      nil
-    elsif version_from_file.to_s.downcase == 'unknown'
-      nil
-    else
-      (version_from_git).strip
-    end
+                    nil
+                  elsif version_from_file.to_s.downcase == 'unknown'
+                    nil
+                  else
+                    (version_from_file || version_from_git).strip
+                  end
   end
 
   # test whether this object is equal to another.
