@@ -313,13 +313,8 @@ class OodApp
     elsif version_from_file.to_s.downcase == 'unknown'
       nil
     else
-      (file_version || version_from_git).strip
+      (version_from_git).strip
     end
-  end
-
-  # checks if hide_app_version is true and returns unknown; hides app version globally
-  def hide_app_version
-    Configuration.hide_app_version ? "unknown" : nil
   end
 
   # test whether this object is equal to another.

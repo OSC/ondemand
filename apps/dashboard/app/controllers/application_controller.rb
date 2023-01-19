@@ -14,7 +14,6 @@ class ApplicationController < ActionController::Base
 
   def set_user_configuration
     @user_configuration ||= UserConfiguration.new(request_hostname: request.hostname)
-    Rails.logger.debug('RS ' + @user_configuration.inspect)
   end
 
   def set_custom_navigation
