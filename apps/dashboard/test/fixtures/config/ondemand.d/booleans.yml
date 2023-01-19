@@ -8,3 +8,4 @@ files_app_remote_files: true
 host_based_profiles: true
 disable_bc_shell: true
 cancel_session_enabled: true
+hide_app_version: true
