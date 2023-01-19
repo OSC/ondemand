@@ -643,10 +643,15 @@ function nodeListToQueryString(nodeList) {
 
   for(i = 0; i < len; i++) {
     let item = nodeList[i];
-    query += `[${item.name}='${item.value}']`;
+    query += `[${sanitizeQuery(item.name)}='${item.value}']`;
   }
 
   return query;
+}
+
+// simple function to sanitize css query strings
+function sanitizeQuery(item) {
+  return item.replace('.', '\\.');
 }
 
 
