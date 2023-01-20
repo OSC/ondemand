@@ -68,7 +68,7 @@ category: OSC
   def initialize(opts)
     raise InvalidContentError.new unless(opts && opts.respond_to?(:to_h))
 
-    @manifest_options = opts.to_h.with_indifferent_access.select do |method, _val| 
+    @manifest_options = opts.to_h.with_indifferent_access.select do |method, _val|
       respond_to?(method)
     end
   end

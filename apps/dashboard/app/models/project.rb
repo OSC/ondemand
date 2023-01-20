@@ -42,6 +42,7 @@ class Project
     message: I18n.t('dashboard.jobs_project_name_validation')
   }
 
+  attr_accessor :scripts
   attr_reader :directory
 
   delegate :icon, :name, :description, to: :manifest

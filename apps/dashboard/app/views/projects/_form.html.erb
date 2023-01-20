@@ -20,8 +20,8 @@
       <div class='card-body'>
         <div class="col-md-6">
           <div class="field">
-          <%= javascript_include_tag 'icon_picker', nonce: true %>
-          <%= form.text_field :icon, placeholder: "fas://cog", id: "product_icon_select" %>
+            <%= javascript_include_tag 'icon_picker', nonce: true %>
+            <%= form.text_field :icon, placeholder: "fas://cog", id: "product_icon_select" %>
             <% if @project.icon =~ /(fa[bsrl]?):\/\/(.*)/ %>
               <% icon = $2; style = $1 %>
               <p class="text-center">

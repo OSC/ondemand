@@ -5,7 +5,9 @@ Rails.application.routes.draw do
   if Configuration.jobs_app_alpha?
     resources :projects do
       root 'projects#index'
-      # resources :scripts
+      resources :scripts do
+        root 'scripts#index'
+      end
     end
   end
 
