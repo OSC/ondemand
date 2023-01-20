@@ -24,10 +24,23 @@ class ScriptsController < ApplicationController
     @scripts = Script.new(category: params[:project_id], name: params[:id]).find
   end
 
+  # PATCH /projects/:project_id/scripts/:id
+  def update
+    @project = Project.find(params[:project_id])
+    @scripts = Script.new(category: params[:project_id], name: params[:id]).find
+
+    if @scripts.valid? && @scripts.update(script_params)
+      redirect_to projects_scripts_path, notice: I18n.t('dashboard.jobs_project_manifest_updated')
+    else
+      flash[:alert] = @project.errors[:name].last || @project.errors[:icon].last
+      redirect_to edit_project_script_path
+    end
+  end
+
   # POST /projects/:project_id/scripts/new
   def create
     @script = Script.new(script_params)
-    Rails.logger.debug("GWB create: #{@script.inspect}")
+
     if @script.save(script_params)
       redirect_to project_url({ id: params[:project_id] })
     else

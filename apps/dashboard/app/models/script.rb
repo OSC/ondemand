@@ -14,9 +14,7 @@ class Script
   attr_reader :name, :description, :icon, :subcategory, :category, :manifest
 
   def initialize(attributes = {})
-    Rails.logger.debug("GWB init attr: #{attributes.inspect}")
     @category = Project.find(attributes[:category])
-    Rails.logger.debug("GWB init cat: #{@category.inspect}")
     @directory = attributes.delete(:script_directory) || attributes[:name].to_s.downcase.tr_s(' ', '_')
     @name = attributes[:name]
     @description = attributes[:description]
@@ -42,8 +40,6 @@ class Script
   end
 
   def find
-    Rails.logger.debug("GWB SCRIPT PATH: #{@manifest.inspect}")
-    # Script.new(@manifest)
     Script.new(
       {
         category: @category.name, name: @manifest.name, description: @manifest.description,
@@ -84,7 +80,6 @@ class Script
     if valid_form_inputs?(attributes)
       new_manifest = Manifest.load(manifest_path)
       new_manifest = new_manifest.merge(attributes)
-      Rails.logger.debug("GWB update attributes: #{attributes.inspect}")
       if new_manifest.valid? && new_manifest.save(manifest_path)
         true
       else
@@ -98,15 +93,13 @@ class Script
   end
 
   def make_dir
-    Rails.logger.debug("GWB make_dir: #{manifest_path_only}")
     Pathname.new(manifest_path_only).mkpath unless File.directory?(manifest_path_only)
   end
 
   def valid_form_inputs?(attributes)
     icon_pattern = %r{\Afa[bsrl]://[\w-]+\z}
     name_pattern = /\A[\w-]+\z/
-    # if !attributes[:icon].nil? && !attributes[:icon].match?(icon_pattern)
-    if 1 == 0
+    if !attributes[:icon].nil? && !attributes[:icon].match?(icon_pattern)
       errors.add(:icon, :invalid_format, message: 'Icon format invalid or missing')
       false
     elsif !attributes[:name].match?(name_pattern)

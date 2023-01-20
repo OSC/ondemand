@@ -6,7 +6,6 @@ class ProjectsController < ApplicationController
   def show
     @project = Project.find(params[:id])
     @project.scripts = Script.new({ category: params[:id] }).all
-    Rails.logger.debug("GWB project_show: #{@project.scripts.inspect}")
   end
 
   # GET /projects
