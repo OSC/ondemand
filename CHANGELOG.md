@@ -75,6 +75,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added the active sessions widget in [2377](https://github.com/OSC/ondemand/pull/2377).
 - BatchConnect choices now appear in the cards if display is set to true in [2381](https://github.com/OSC/ondemand/pull/2381).
 - BatchConnect apps can now use `auto_group` attributes in Auto groups [2370](https://github.com/OSC/ondemand/pull/2370).
+- BatchConnect job directories will now be cleaned on some interval in [2482](https://github.com/OSC/ondemand/pull/2482).
 
 ### Fixed
 
