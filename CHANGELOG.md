@@ -6,13 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-lint a random file (#2498)\
-Improvements to the configuration for the support ticket form (#2491)\
-update dependencies (#2495)\
-add an initializer to cleanup old bc output directories (#2482)\
-update dependencies (#2490)\
-Update Changelog (#2489)\
-lint a random file (#2488)
 
 ### Changed
 
@@ -82,6 +75,7 @@ lint a random file (#2488)
 - Added the active sessions widget in [2377](https://github.com/OSC/ondemand/pull/2377).
 - BatchConnect choices now appear in the cards if display is set to true in [2381](https://github.com/OSC/ondemand/pull/2381).
 - BatchConnect apps can now use `auto_group` attributes in Auto groups [2370](https://github.com/OSC/ondemand/pull/2370).
+- BatchConnect job directories will now be cleaned on some interval in [2482](https://github.com/OSC/ondemand/pull/2482).
 
 ### Fixed
 
