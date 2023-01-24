@@ -1,7 +1,6 @@
 <script>
 const csrf_token = document.querySelector('meta[name="csrf-token"]').content;
 const dashboard_files_directory_download_error_modal_title = '<%= t('dashboard.files_directory_download_error_modal_title') %>';
-const maxFileSize = '<%= Configuration.file_upload_max %>';
 const transfersPath = '<%= transfers_path(format: "json") %>';
 const alert = '<%= alert %>';
 history.replaceState({
