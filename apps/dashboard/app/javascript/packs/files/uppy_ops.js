@@ -69,6 +69,7 @@ jQuery(function() {
     restrictions: {
       maxFileSize: maxFileSize,
     },
+    maxFileSize: maxFileSize, 
     onBeforeFileAdded: renameIfDuplicate,
     onBeforeUpload: updateEndpoint,
   });
