@@ -192,6 +192,8 @@ en:
     active_sessions_no_sessions: 'You have no active sessions.'
     active_sessions_caption_html: '<a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>'
 
+    recently_used_apps_title: 'Recently Used Apps'
+
     files_directory_download_error_modal_title: "Directory too large to download"
     files_directory_download_unauthorized: "You can only download a directory as zip that you have read and execute access to"
     files_directory_download_size_0: "The directory size is 0 and has no contents for download."
