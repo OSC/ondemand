@@ -1,7 +1,7 @@
 require 'rclone_util'
 
-Rails.application.config.after_initialize do |_|
-  break unless Configuration.remote_files_enabled?
+Rails.application.config.after_initialize do
+  next unless Configuration.remote_files_enabled?
 
   remotes = RcloneUtil.list_remotes.map { |r| FavoritePath.new('', title: r, filesystem: r) }
 
@@ -9,5 +9,5 @@ Rails.application.config.after_initialize do |_|
     paths.concat(remotes)
   end
 rescue => e
-  Rails.logger.error(e.message)
+  Rails.logger.error("Cannot add rclone favorite paths because #{e.message}")
 end
