@@ -10,9 +10,21 @@ jQuery(function (){
         $("[data-toggle='launcher-button']").removeClass("app-launcher-hover");
     }
 
-    $("[data-toggle='launcher-button'] a").each((index, element) => {
+    function hideSpinner() {
+        $(".app-launcher-container").removeClass("app-launcher-disabled");
+        $("[data-toggle='launcher-button']").addClass("app-launcher-hover");
+        $("div.app-launcher-spinner").remove();
+    }
+
+    $("[data-toggle='launcher-button'] .launcher-click").each((index, element) => {
         const $launcherButton = $(element);
         $launcherButton.on("click", showSpinner);
     });
+
+    /*
+    Back button fix. Because of browser page caching, spinner is shown when back is click
+    This event will trigger everytime the page is shown, removing the spinner if present.
+     */
+    $(window).on('pageshow', hideSpinner)
 
 });

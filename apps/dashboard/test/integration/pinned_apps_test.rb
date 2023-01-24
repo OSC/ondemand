@@ -108,7 +108,7 @@ class PinnedAppsTest < ActionDispatch::IntegrationTest
     assert_select pinned_app_links, 1
     assert_select pinned_app_link("/batch_connect/sys/bc_desktop/oakley/session_contexts/new") do |elements|
       assert_equal 1, elements.size
-      assert_equal 'css_class_value', elements[0]['class']
+      assert_equal 'launcher-click css_class_value', elements[0]['class']
     end
 
     assert_select "a[href='/batch_connect/sys/bc_desktop/oakley/session_contexts/new'] i.fa-configuration-icon", 1

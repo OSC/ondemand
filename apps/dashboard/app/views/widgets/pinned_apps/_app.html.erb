@@ -7,25 +7,13 @@
   <%=
     link_to(
       link.url.to_s,
-      class: tile_data[:border_color],
+      class: ['launcher-click', tile_data[:border_color]],
       target: link.new_tab? ? "_blank" : nil,
       data: link_data
     ) do
   %>
-    <div class="center-block text-center">
-      <%= icon_tag(URI(tile_data.fetch(:icon_uri, link.icon_uri).to_s)) %>
-      <%= content_tag(:p, tile_data.fetch(:title, link.title), class: "app-title") %>
+      <%= render partial: "/widgets/pinned_apps/app_content", locals: { link: link } %>
 
-      <% if tile_data.blank? %>
-        <%= content_tag(:p, content_tag(:span, link.caption), class: "text-muted", style: "margin-top: 20px") if link.caption %>
-      <% else %>
-        <div class="mt-2 mb-1">
-          <%- tile_data.fetch(:sub_caption, "").each_line do |line| -%>
-            <%= content_tag(:p, line, class: "app-description text-muted") %>
-          <%- end -%>
-        </div>
-      <% end %>
-    </div>
   <% end %>
   </div>
 </div>
