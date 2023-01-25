@@ -38,7 +38,38 @@ module AccountCache
     end
   end
 
+  def queues
+    Rails.cache.fetch('queues', expires_in: 4.hours) do
+      unique_queue_names.map do |queue_name|
+        data = {}
+        queues_per_cluster.each do |cluster, cluster_queues|
+          cluster_queue_names = cluster_queues.map(&:to_s)
+
+          data["data-option-for-cluster-#{cluster}"] = false unless cluster_queue_names.include?(queue_name)
+        end
+
+        [queue_name, queue_name, data]
+      end
+    end
+  end
+
   private
+
+  def unique_queue_names
+    [].tap do |queues|
+      queues_per_cluster.map do |_, cluster_queues|
+        queues << cluster_queues.map(&:to_s)
+      end
+    end.flatten.uniq
+  end
+
+  def queues_per_cluster
+    {}.tap do |hash|
+      Configuration.job_clusters.each do |cluster|
+        hash[cluster.id] = cluster.job_adapter.queues
+      end
+    end
+  end
 
   def data_for_account(account)
     data_for_clusters(account)
