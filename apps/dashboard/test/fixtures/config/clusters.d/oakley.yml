@@ -8,6 +8,7 @@ v2:
     host: "oakley.osc.edu"
   job:
     adapter: "slurm"
+    cluster: "oakley"
   custom:
     pbs:
       host: "oak-batch.osc.edu"

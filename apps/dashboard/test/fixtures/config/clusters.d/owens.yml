@@ -10,6 +10,7 @@ v2:
     host: "owens.osc.edu"
   job:
     adapter: "slurm"
+    cluster: "owens"
   custom:
     pbs:
       host: "owens-batch.ten.osc.edu"
