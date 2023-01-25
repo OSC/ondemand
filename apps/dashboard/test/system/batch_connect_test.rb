@@ -5,7 +5,18 @@ require 'application_system_test_case'
 class BatchConnectTest < ApplicationSystemTestCase
   def setup
     stub_sys_apps
+    stub_user
     Configuration.stubs(:bc_dynamic_js?).returns(true)
+
+  end
+
+  def stub_sacctmgr(dir)
+    Open3.stubs(:capture3)
+      .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc', 'format=account,cluster,partition,qos', 'where', 'user=me', { stdin_data:  ''})
+      .returns([File.read('test/fixtures/cmd_output/sacctmgr_show_accts.txt'), '', exit_success])
+    Open3.stubs(:capture3)
+      .with('git', 'describe', '--always', '--tags', { chdir: dir })
+      .returns(['1.2.3', '', exit_success])
   end
 
   test 'cluster choice changes node types' do
@@ -546,7 +557,6 @@ class BatchConnectTest < ApplicationSystemTestCase
   test 'auto generated modules are dynamic' do
     with_modified_env({ OOD_MODULE_FILE_DIR: 'test/fixtures/modules' }) do
       visit new_batch_connect_session_context_url('sys/bc_jupyter')
-      intel_both_clusters  = []
 
       # defaults
       assert_equal '3.0.17', find_value('auto_modules_app_jupyter')
@@ -572,6 +582,88 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'display: none;', find_option_style('auto_modules_intel', '17.0.2')
       assert_equal 'display: none;', find_option_style('auto_modules_intel', '16.0.8')
       assert_equal 'display: none;', find_option_style('auto_modules_intel', '16.0.3')
+    end
+  end
+
+  test 'auto accounts are cluster aware' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_sacctmgr("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+          - oakley
+        form:
+          - auto_accounts
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join("form.yml").write(form)
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults
+      assert_equal 'pzs0715', find_value('auto_accounts')
+      assert_equal 'owens', find_value('cluster')
+
+      # these accounts are only on owens
+      assert_equal '', find_option_style('auto_accounts', 'pas1754')
+      assert_equal '', find_option_style('auto_accounts', 'pas1604')
+
+      # pzs1124 exists on both, so one should be hidden and the other available
+      id = bc_ele_id('auto_accounts')
+      assert_equal 'display: none;', find("##{id} option[data-option-for-cluster-owens='false'][value='pzs1124']")['style'].to_s
+      assert_equal '', find("##{id} option[data-option-for-cluster-oakley='false'][value='pzs1124']")['style'].to_s
+
+      # pzs0715 is available on oakely, so switching clusters should keep the same value.
+      select('oakley', from: bc_ele_id('cluster'))
+      assert_equal 'pzs0715', find_value('auto_accounts')
+
+      # now these are hidden when oakley is chosen
+      assert_equal 'display: none;', find_option_style('auto_accounts', 'pas1754')
+      assert_equal 'display: none;', find_option_style('auto_accounts', 'pas1604')
+
+      # pzs1124 exists on both, so now, they flip visibility
+      id = bc_ele_id('auto_accounts')
+      assert_equal '', find("##{id} option[data-option-for-cluster-owens='false'][value='pzs1124']")['style'].to_s
+      assert_equal 'display: none;', find("##{id} option[data-option-for-cluster-oakley='false'][value='pzs1124']")['style'].to_s
+    end
+  end
+
+  test 'simple accounts are not dynamic but are full lists' do
+    with_modified_env({ OOD_BC_SIMPLE_AUTO_ACCOUNTS: '1' }) do
+      Dir.mktmpdir do |dir|
+        "#{dir}/app".tap { |d| Dir.mkdir(d) }
+        SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+        stub_sacctmgr("#{dir}/app")
+
+        form = <<~HEREDOC
+          ---
+          cluster:
+            - owens
+            - oakley
+          form:
+            - auto_accounts
+        HEREDOC
+
+        Pathname.new("#{dir}/app/").join("form.yml").write(form)
+
+        visit new_batch_connect_session_context_url('sys/app')
+
+        assert_equal 'pzs0715', find_value('auto_accounts')
+        assert_equal 'owens', find_value('cluster')
+
+        # notice that there are no duplicates. These accounts are not cluster aware
+        expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
+                            'pzs1117', 'pzs1118', 'pzs1124'].to_set
+
+        id = bc_ele_id('auto_accounts')
+        actual_accounts = page.all("##{id} option").map(&:value).to_set
+
+        assert_equal expected_accounts, actual_accounts
+      end
     end
   end
 end

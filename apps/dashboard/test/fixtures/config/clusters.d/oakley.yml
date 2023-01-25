@@ -7,11 +7,7 @@ v2:
   login:
     host: "oakley.osc.edu"
   job:
-    adapter: "torque"
-    host: "oak-batch.osc.edu"
-    lib: "/opt/torque/lib64"
-    bin: "/opt/torque/bin"
-    version: "6.0.1"
+    adapter: "slurm"
   custom:
     pbs:
       host: "oak-batch.osc.edu"

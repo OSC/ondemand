@@ -3,6 +3,8 @@ require "smart_attributes/attribute_factory"
 
 # The main namespace for SmartAttributes
 module SmartAttributes
+  require "smart_attributes/attributes/auto_accounts"
+  require "smart_attributes/attributes/auto_groups"
   require "smart_attributes/attributes/auto_modules"
   require "smart_attributes/attributes/auto_primary_group"
   require "smart_attributes/attributes/bc_account"
