@@ -26,6 +26,9 @@ class BatchConnectTest < ApplicationSystemTestCase
     Open3.stubs(:capture3)
       .with('git', 'describe', '--always', '--tags', { chdir: dir })
       .returns(['1.2.3', '', exit_success])
+    Open3.stubs(:capture3)
+      .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc', 'format=account,cluster,partition,qos', 'where', 'user=me', { stdin_data: ''})
+      .returns([File.read('test/fixtures/cmd_output/sacctmgr_show_accts.txt'), '', exit_success])
   end
 
   test 'cluster choice changes node types' do
@@ -705,6 +708,9 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'display: none;', find_option_style('auto_queues', 'serial-48core')
       assert_equal 'display: none;', find_option_style('auto_queues', 'gpudebug-48core')
 
+      # systems queue is not available on owens
+      assert_equal 'display: none;', find_option_style('auto_queues', 'systems')
+
       # batch exists on both clusters, so switching clusters does nothing
       select('oakley', from: bc_ele_id('cluster'))
       assert_equal 'batch', find_value('auto_queues')
@@ -713,6 +719,9 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal '', find_option_style('auto_queues', 'serial-40core')
       assert_equal '', find_option_style('auto_queues', 'serial-48core')
       assert_equal '', find_option_style('auto_queues', 'gpudebug-48core')
+
+      # systems queue is still not available on oakley
+      assert_equal 'display: none;', find_option_style('auto_queues', 'systems')
     end
   end
 end
