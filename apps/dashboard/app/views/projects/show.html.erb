@@ -1,8 +1,11 @@
 <%= bootstrap_form_tag  do |form| %>
-
+<hr><%= @project.directory %><hr>
 <div class='page-header text-center'>
   <h1>Project Space</h1>
 </div> 
+<p>
+  <%= link_to 'New Script', new_project_script_url(project_id: @project.directory), class: 'btn btn-default', title: 'New Script' %>
+</p>
 <br>
 <div class='row row-cols-1 row-cols-md-2'>
   <p>
