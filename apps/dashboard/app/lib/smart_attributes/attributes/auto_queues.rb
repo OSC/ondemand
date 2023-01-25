@@ -42,7 +42,7 @@ module SmartAttributes
       # @param fmt [String, nil] formatting of hash
       # @return [Hash] submission hash
       def submit(*)
-        { script: { accounting_id: value } }
+        { script: { queue_name: value } }
       end
     end
   end
