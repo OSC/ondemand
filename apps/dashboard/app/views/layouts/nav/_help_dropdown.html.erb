@@ -14,14 +14,9 @@
     <% if Configuration.support_ticket_enabled? %>
       <%= nav_link(t('dashboard.nav_help_support_ticket'), "medkit", support_path, new_tab: false) %>
     <% end %>
-    <%= nav_link(t('dashboard.nav_restart_server'), "sync", restart_url) %>
-    <% unless profile_links.empty? %>
-      <li class="dropdown-divider" role="separator"></li>
-      <li class="dropdown-header"><%= t('dashboard.profile_links_title') %></li>
-      <% profile_links.each do | profile_link | %>
-        <%= render partial: 'layouts/nav/link', locals: profile_link %>
-      <% end %>
-    <% end %>
 
+    <% if help_links %>
+      <%= render partial: 'layouts/nav/group_items', locals: help_links.to_h %>
+    <% end %>
   </ul>
 </li>

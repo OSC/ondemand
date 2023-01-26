@@ -55,6 +55,7 @@ class UserConfiguration
     # New navigation definition properties
     ConfigurationProperty.property(name: :nav_bar, default_value: []),
     ConfigurationProperty.property(name: :help_bar, default_value: []),
+    ConfigurationProperty.property(name: :help_menu, default_value: []),
     ConfigurationProperty.property(name: :interactive_apps_menu, default_value: []),
 
     # Custom pages configuration property
