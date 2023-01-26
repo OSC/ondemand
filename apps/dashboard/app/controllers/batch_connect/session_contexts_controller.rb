@@ -83,6 +83,6 @@ class BatchConnect::SessionContextsController < ApplicationController
     def cache_file
       BatchConnect::Session.cache_root.tap do |p|
         p.mkpath unless p.exist?
-      end.join("#{@app.token.gsub('/', '_')}.json")
+      end.join(@app.cache_file)
     end
 end

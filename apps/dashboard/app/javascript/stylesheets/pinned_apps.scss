@@ -45,7 +45,18 @@
   word-wrap: break-word;
   background-clip: border-box;
 
-  a {
+  form.button_to {
+    height: 100%;
+  }
+
+  button {
+    outline: none;
+    display: block;
+    background-color: inherit;
+    width: 100%;
+  }
+
+  .launcher-click {
     height: 100%;
     color: black;
     text-decoration: none;
@@ -58,99 +69,99 @@
   black, silver, gray, white, maroon, red, purple, fuchsia, green, lime, olive, yellow, navy, blue, teal, aqua
   primary, secondary, success, info, warning, danger, light, and dark
  */
-  a.black {
+  .launcher-click.black {
     border-color: black;
   }
 
-  a.silver {
+  .launcher-click.silver {
     border-color: silver;
   }
 
-  a.gray {
+  .launcher-click.gray {
     border-color: gray;
   }
 
-  a.white {
+  .launcher-click.white {
     border-color: white;
   }
 
-  a.maroon {
+  .launcher-click.maroon {
     border-color: maroon;
   }
 
-  a.red {
+  .launcher-click.red {
     border-color: red;
   }
 
-  a.purple {
+  .launcher-click.purple {
     border-color: purple;
   }
 
-  a.fuchsia {
+  .launcher-click.fuchsia {
     border-color: fuchsia;
   }
 
-  a.green {
+  .launcher-click.green {
     border-color: green;
   }
 
-  a.lime {
+  .launcher-click.lime {
     border-color: lime;
   }
 
-  a.olive {
+  .launcher-click.olive {
     border-color: olive;
   }
 
-  a.yellow {
+  .launcher-click.yellow {
     border-color: yellow;
   }
 
-  a.navy {
+  .launcher-click.navy {
     border-color: navy;
   }
 
-  a.blue {
+  .launcher-click.blue {
     border-color: blue;
   }
 
-  a.teal {
+  .launcher-click.teal {
     border-color: teal;
   }
 
-  a.aqua {
+  .launcher-click.aqua {
     border-color: aqua;
   }
 
-  a.primary {
+  .launcher-click.primary {
     border-color: var(--primary);
   }
 
-  a.secondary {
+  .launcher-click.secondary {
     border-color: var(--secondary);
   }
 
-  a.success {
+  .launcher-click.success {
     border-color: var(--success);
   }
 
-  a.info {
+  .launcher-click.info {
     border-color: var(--info);
   }
 
-  a.warning {
+  .launcher-click.warning {
     border-color: var(--warning);
   }
 
-  a.danger {
+  .launcher-click.danger {
     border-color: var(--danger);
   }
 
-  a.light {
+  .launcher-click.light {
     border-color: var(--light);
   }
 
-  a.dark {
+  .launcher-click.dark {
     border-color: var(--dark);
   }
 

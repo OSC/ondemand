@@ -3,7 +3,7 @@ require "test_helper"
 class FilesControllerTest < ActionController::TestCase
 
   def setup
-    Configuration.stubs(:files_app_remote_files?).returns(true)
+    Configuration.stubs(:remote_files_enabled?).returns(true)
   end
 
   test "empty path is parsed" do

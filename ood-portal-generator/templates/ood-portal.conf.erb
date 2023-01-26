@@ -348,7 +348,7 @@ Listen <%= addr_port %>
     RewriteCond /etc/ood/maintenance.enable !-f
     ReWriteRule ^.*$ /
 
-    RewriteCond %{REQUEST_URI} !<%= @public_uri %>/maintenance/index\.html$
+    RewriteCond %{REQUEST_URI} !<%= @public_uri %>/maintenance/.*$
     RewriteRule ^.*$ <%= @public_uri %>/maintenance/index.html [R=503,L]
     ErrorDocument 503 <%= @public_uri %>/maintenance/index.html
   </Directory>

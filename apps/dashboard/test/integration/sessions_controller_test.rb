@@ -79,9 +79,9 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     get batch_connect_sessions_path
     assert_response :success
 
-    assert_select 'div#id_1234 div.card-body div.float-right a' do |link|
-      assert_equal I18n.t('dashboard.batch_connect_sessions_delete_title'), link.first.text.strip
-      assert_equal batch_connect_session_path('1234'), link.first['href']
+    assert_select 'div#id_1234 div.card-body div.float-right form' do |form|
+      assert_equal I18n.t('dashboard.batch_connect_sessions_delete_title'), form.first.text.strip
+      assert_equal batch_connect_session_path('1234'), form.first['action']
     end
   end
 
@@ -91,9 +91,9 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     get batch_connect_sessions_path
     assert_response :success
 
-    assert_select 'div#id_1234 div.card-body div.float-right a' do |link|
-      assert_equal I18n.t('dashboard.batch_connect_sessions_cancel_title'), link.first.text.strip
-      assert_equal batch_connect_cancel_session_path('1234'), link.first['href']
+    assert_select 'div#id_1234 div.card-body div.float-right form' do |form|
+      assert_equal I18n.t('dashboard.batch_connect_sessions_cancel_title'), form.first.text.strip
+      assert_equal batch_connect_cancel_session_path('1234'), form.first['action']
     end
   end
 end

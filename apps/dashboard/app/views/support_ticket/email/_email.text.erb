@@ -1,9 +1,11 @@
-Support ticket submitted from the dashboard application
+Support ticket submitted from the dashboard application.
+
+Username: <%= @context.support_ticket.username %>
 <% if @context.session %>
-  User selected session: <%= @context.session.id %>
-  Title: <%=@context.session.title %>
-  Job id: <%= @context.session.job_id %>
-  Status: <%= @context.session.status.to_sym %>
+User selected session: <%= @context.session.id %>
+Title: <%=@context.session.title %>
+Job id: <%= @context.session.job_id %>
+Status: <%= @context.session.status.to_sym %>
 <% end %>
 
 Description:

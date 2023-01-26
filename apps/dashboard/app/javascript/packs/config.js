@@ -3,7 +3,7 @@
 const CONFIG_ID = 'ood_config'
 
 function configData() {
-  return $(`#${CONFIG_ID}`).data();
+  return document.getElementById(CONFIG_ID).dataset;
 }
 
 function setNavbarColor() {

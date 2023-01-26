@@ -11,8 +11,8 @@ attributes:
     label: "The Mode"
     value: "1"
     options:
-      - ["1","Jupyter Lab"]
-      - ["0", "Jupyter Notebook"]
+      - ["Jupyter Lab", "1"]
+      - ["Jupyter Notebook", "0"]
   hidden_change_thing:
     widget: 'hidden_field'
     value: 'default'
@@ -152,7 +152,13 @@ attributes:
     widget: select
     options:
       - [ 'Physics 1234', 'physics_1234' ]
-      - [ 'Astronomy 5678', 'astronomy_5678' ]
+      - [
+          'Astronomy 5678', 'astronomy_5678',
+          data-max-bc-num-hours-for-cluster-owens: 110,
+          data-min-bc-num-hours-for-cluster-owens: 100,
+          data-max-bc-num-hours-for-cluster-oakley: 120,
+          data-min-bc-num-hours-for-cluster-oakley: 111,
+        ]
       - [ 'Economics 8846', 'astronomy-with/other-characters/8846.31.4' ]
   classroom_size:
     widget: select

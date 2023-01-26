@@ -1,0 +1,15 @@
+---
+cluster: ["oakley", "owens", "quick"]
+title: Recently Used Sys
+description: BatchConnect app for recently used widget
+
+form:
+  - bc_vnc_idle
+  - desktop
+  - bc_num_hours
+  - bc_num_slots
+  - node_type
+  - bc_account
+  - bc_queue
+  - bc_vnc_resolution
+  - bc_email_on_started
