@@ -2,14 +2,17 @@
 
 # The controller for project pages /dashboard/projects.
 class ScriptsController < ApplicationController
-  
-  # GET /projects/:project_id/scripts/new  
-  def new
+  # GET /projects/:project_id/scripts
+  def index
     @project = Project.find(params[:project_id])
-    @script = Script.new
+    @scripts = Script.all(params[:project_id])
   end
 
-
+  # GET /projects/:project_id/scripts/new
+  def new
+    @project = Project.find(params[:project_id])
+    @script = Script.new({ project_id: params[:project_id] })
+  end
 
   private
 
@@ -20,5 +23,4 @@ class ScriptsController < ApplicationController
         :name, :batch_connect_form
       )
   end
-
 end
