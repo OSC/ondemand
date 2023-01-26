@@ -308,7 +308,7 @@ class OodApp
 
   # @return [String] memoized version string
   def version
-    @version ||= if Configuration.Configuration.hide_app_version?
+    @version ||= if Configuration.hide_app_version?
                     nil
                   elsif version_from_file.to_s.downcase == 'unknown'
                     nil
