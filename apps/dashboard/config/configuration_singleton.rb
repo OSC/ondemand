@@ -49,6 +49,7 @@ class ConfigurationSingleton
       :host_based_profiles          => false,
       :disable_bc_shell             => false,
       :cancel_session_enabled       => false,
+      :hide_app_version             => false,
     }.freeze
   end
 
