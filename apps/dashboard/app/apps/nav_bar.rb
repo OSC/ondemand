@@ -172,7 +172,7 @@ class NavBar
     hash[['products_dev', 'products dev']] = OodAppLink.new(title: I18n.t('dashboard.nav_develop_my_sandbox_apps_dev'), url: url_helpers.products_path(type: 'dev'), icon_uri: URI('fas://cog'), new_tab: false)
     hash[['products_usr', 'products usr']] = OodAppLink.new(title: I18n.t('dashboard.nav_develop_my_sandbox_apps_prod'), url: url_helpers.products_path(type: 'usr'), icon_uri: URI('fas://share-alt'), new_tab: false)
     hash[['log_out', 'logout', 'log out']] = OodAppLink.new(title: I18n.t('dashboard.nav_logout'), url: '/logout', icon_uri: URI('fas://sign-out-alt'), new_tab: false)
-    hash[['restart']] = OodAppLink.new(title: I18n.t('dashboard.nav_restart_server'), url: '/nginx/stop?redir=#{helpers.root_path}', icon_uri: URI('fas://sync'), new_tab: false)
+    hash[['restart']] = OodAppLink.new(title: I18n.t('dashboard.nav_restart_server'), url: "/nginx/stop?redir=#{url_helpers.root_path}", icon_uri: URI('fas://sync'), new_tab: false)
   end.freeze
 
 end
