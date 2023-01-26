@@ -1,0 +1,31 @@
+<%- apps = recently_used_apps -%>
+<%- unless apps.empty? -%>
+  <div class="recently-used-apps-header">
+    <h4 class="apps-section-header-blue"><%= t('dashboard.recently_used_apps_title') %></h4>
+    <div class="row">
+    <%- apps.each do |app| -%>
+      <%- link = app.link -%>
+      <%- tile_data = link.tile -%>
+      <%-
+        params = app.attributes.map{|attribute| ["batch_connect_session_context[#{attribute.id}]", attribute.value]}.to_h
+      -%>
+      <div class="col-sm-3 col-md-3 app-launcher-container">
+        <div class="app-launcher app-launcher-hover" data-toggle="launcher-button">
+          <%=
+            button_to(
+              batch_connect_session_contexts_path(token: app.token),
+              class: ['launcher-click', tile_data[:border_color]],
+              data: {:method => "post"},
+              params: params,
+              ) do
+          %>
+
+            <%= render partial: "/widgets/pinned_apps/app_content", locals: { link: link } %>
+
+          <% end %>
+        </div>
+      </div>
+    <%- end -%>
+    </div>
+  </div>
+<%- end -%>

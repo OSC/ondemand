@@ -8,13 +8,29 @@ class NavBarTest < ActiveSupport::TestCase
     SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
   end
 
-  test "NavBar.items should return navigation template when nav_item is a string matching a static link" do
-    nav_item = "all_apps"
+  test "NavBar.items should return navigation template when nav_item is a string matching a static template" do
+    NavBar::STATIC_TEMPLATES.each do |name, template|
+      result = NavBar.items([name.to_s])
+      assert_equal 1,  result.size, "Expected 1 nav item for #{name}"
+      assert_equal template,  result[0].partial_path, "Expected template for #{name}"
+      assert_equal [], result[0].apps, "No apps expected for #{name}"
+    end
+  end
 
-    result = NavBar.items([nav_item])
-    assert_equal 1,  result.size
-    assert_equal "layouts/nav/all_apps",  result[0].partial_path
-    assert_equal [], result[0].apps
+  test "NavBar.items should return navigation static link when nav_item is a string matching a static link and a navigation template when it matches a static template" do
+    #STATIC_TEMPLATES have precedence over STATIC_LINKS
+    # If static link matches static template, template will be returned.
+    NavBar::STATIC_LINKS.each do |name, link|
+      # Ignore items without a link. These could not be defined due to Route restrictions.
+      next unless link
+      expected_template = NavBar::STATIC_TEMPLATES.fetch(name, "layouts/nav/link")
+      expected_title = NavBar::STATIC_TEMPLATES.key?(name) ? "" : link.title
+
+      result = NavBar.items([name.to_s])
+      assert_equal 1,  result.size, "Expected 1 nav item for #{name}"
+      assert_equal expected_template,  result[0].partial_path, "Expected template for #{name}"
+      assert_equal expected_title, result[0].title, "Expected title for #{name}"
+    end
   end
 
   test "NavBar.items should return navigation link when nav_item is a string matching one app token" do
@@ -27,7 +43,7 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal '',  result[0].links[0].category
     assert_equal '',  result[0].links[0].subcategory
     assert_equal "Jupyter Notebook",  result[0].title
-    assert_equal "/batch_connect/sys/bc_jupyter/session_contexts/new",  result[0].url
+    assert_equal Rails.application.routes.url_helpers.new_batch_connect_session_context_path("sys/bc_jupyter"),  result[0].url
   end
 
   test "NavBar.items should ignore nav_items when is a string and matching app has no links" do
@@ -44,17 +60,11 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal [],  NavBar.items(["sys/not_found"])
   end
 
-  test "NavBar.items should return navigation group when nav_item is a string matching multiple app tokens" do
+  test "NavBar.items should ignore nav_item when nav_item is a string matching multiple app tokens" do
     nav_item = "sys/bc_*"
 
     result = NavBar.items([nav_item])
-    assert_equal 1,  result.size
-    assert_equal "layouts/nav/group",  result[0].partial_path
-    assert_equal "Interactive Apps",  result[0].title
-    # 2 sub_apps in bc_desktop
-    # bc_jupyter
-    # bc_paraview
-    assert_equal 4,  result[0].apps.size
+    assert_equal [],  result
   end
 
   test "NavBar.items should return navigation group when nav_item is a string matching a sys application category" do
@@ -77,9 +87,57 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal 4,  result[0].apps.size
   end
 
+  test "NavBar.items should return navigation group when nav_item has apps and title property" do
+    nav_item = {
+      title: "Custom Apps",
+      icon_uri: "fa://test",
+      apps: "sys/bc_jupyter"
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal 1,  result.size
+    assert_equal "layouts/nav/group",  result[0].partial_path
+    assert_equal 1,  result[0].links.size
+    assert_equal 'Custom Apps',  result[0].links[0].category
+    assert_equal 'Apps',  result[0].links[0].subcategory
+    assert_equal 'Custom Apps',  result[0].title
+    assert_equal URI("fa://test"),  result[0].icon_uri
+  end
+
+  test "icon_uri should be null for apps navigation group when nav_item has no icon_uri property" do
+    nav_item = {
+      title: "Custom Apps",
+      apps: "sys/bc_jupyter"
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal 1,  result.size
+    assert_equal "layouts/nav/group",  result[0].partial_path
+    assert_equal "Custom Apps",  result[0].title
+    assert_nil result[0].icon_uri
+  end
+
+  test "NavBar.items should return navigation group when nav_item has apps array and title property" do
+    nav_item = {
+      title: "Custom Apps",
+      icon_uri: "fa://test",
+      apps: ["sys/bc_jupyter"]
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal 1,  result.size
+    assert_equal "layouts/nav/group",  result[0].partial_path
+    assert_equal 1,  result[0].links.size
+    assert_equal 'Custom Apps',  result[0].links[0].category
+    assert_equal 'Apps',  result[0].links[0].subcategory
+    assert_equal 'Custom Apps',  result[0].title
+    assert_equal URI("fa://test"),  result[0].icon_uri
+  end
+
   test "NavBar.items should return navigation group when nav_item has links property" do
     nav_item = {
       title: "menu title",
+      icon_uri: "fa://test",
       links: []
     }
 
@@ -88,6 +146,20 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal "layouts/nav/group",  result[0].partial_path
     assert_equal 0,  result[0].apps.size
     assert_equal "menu title",  result[0].title
+    assert_equal URI("fa://test"),  result[0].icon_uri
+  end
+
+  test "icon_uri should be null for links navigation group when nav_item has no icon_uri property" do
+    nav_item = {
+      title: "menu title",
+      links: []
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal 1,  result.size
+    assert_equal "layouts/nav/group",  result[0].partial_path
+    assert_equal "menu title",  result[0].title
+    assert_nil result[0].icon_uri
   end
 
   test "NavBar.items should set subcategory to groups inside links when nav_item only known property is group" do
@@ -112,76 +184,217 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal "subcategory2",  result[0].apps[1].subcategory
   end
 
+  test "links array should support static links" do
+    nav_item = {
+      title: "menu title",
+      links: [
+        {group: "subcategory"},
+        "all_apps",
+      ]
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal 1,  result.size
+    assert_equal "layouts/nav/group",  result[0].partial_path
+    assert_equal "menu title",  result[0].title
+    assert_equal 1,  result[0].apps.size
+    assert_equal "menu title",  result[0].apps[0].category
+    assert_equal "subcategory",  result[0].apps[0].subcategory
+    assert_equal "All Apps",  result[0].apps[0].title
+  end
+
+  test "links array should support app tokens as string" do
+    nav_item = {
+      title: "menu title",
+      links: [
+        {group: "subcategory"},
+        "sys/bc_jupyter",
+      ]
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal 1,  result.size
+    assert_equal "layouts/nav/group",  result[0].partial_path
+    assert_equal "menu title",  result[0].title
+    assert_equal 1,  result[0].apps.size
+    assert_equal "menu title",  result[0].apps[0].category
+    assert_equal "subcategory",  result[0].apps[0].subcategory
+    assert_equal "Jupyter Notebook",  result[0].apps[0].title
+  end
+
+  test "links array should support url links" do
+    nav_item = {
+      title: "menu title",
+      links: [
+        {group: "subcategory"},
+        {title: "link title", url: "/path"},
+      ]
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal 1,  result.size
+    assert_equal "layouts/nav/group",  result[0].partial_path
+    assert_equal "menu title",  result[0].title
+    assert_equal 1,  result[0].apps.size
+    assert_equal "menu title",  result[0].apps[0].category
+    assert_equal "subcategory",  result[0].apps[0].subcategory
+    assert_equal "link title",  result[0].apps[0].title
+    assert_equal "/path",  result[0].apps[0].url
+  end
+
+  test "links array should support app links" do
+    nav_item = {
+      title: "menu title",
+      links: [
+        {group: "subcategory"},
+        {apps: ["sys/bc_jupyter"]},
+      ]
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal 1,  result.size
+    assert_equal "layouts/nav/group",  result[0].partial_path
+    assert_equal "menu title",  result[0].title
+    assert_equal 1,  result[0].apps.size
+    assert_equal "menu title",  result[0].apps[0].category
+    assert_equal "subcategory",  result[0].apps[0].subcategory
+    assert_equal "Jupyter Notebook",  result[0].apps[0].title
+  end
+
+  test "links array should support profile links" do
+    nav_item = {
+      title: "menu title",
+      links: [
+        {group: "subcategory"},
+        {title: "link title", profile: "profile"},
+      ]
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal 1,  result.size
+    assert_equal "layouts/nav/group",  result[0].partial_path
+    assert_equal "menu title",  result[0].title
+    assert_equal 1,  result[0].apps.size
+    assert_equal "menu title",  result[0].apps[0].category
+    assert_equal "subcategory",  result[0].apps[0].subcategory
+    assert_equal "link title",  result[0].apps[0].title
+    assert_equal Rails.application.routes.url_helpers.settings_path("settings[profile]" => "profile"),  result[0].apps[0].url
+  end
+
+  test "links array should support page links" do
+    nav_item = {
+      title: "menu title",
+      links: [
+        {group: "subcategory"},
+        {title: "link title", page: "page_code"},
+      ]
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal 1,  result.size
+    assert_equal "layouts/nav/group",  result[0].partial_path
+    assert_equal "menu title",  result[0].title
+    assert_equal 1,  result[0].apps.size
+    assert_equal "menu title",  result[0].apps[0].category
+    assert_equal "subcategory",  result[0].apps[0].subcategory
+    assert_equal "link title",  result[0].apps[0].title
+    assert_equal Rails.application.routes.url_helpers.custom_pages_path("page_code"),  result[0].apps[0].url
+  end
+
   test "NavBar.items should return navigation link when nav_item has url property" do
     nav_item = {
-      title: "link title",
-      url: "/path/test"
+      title: "Link Title",
+      url: "/path/test",
+      new_tab: true
     }
 
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
     assert_equal "layouts/nav/link",  result[0].partial_path
     assert_equal 1, result[0].links.size
-    assert_equal "link title",  result[0].title
+    assert_equal "Link Title",  result[0].title
     assert_equal "/path/test",  result[0].url
+    assert_equal true,  result[0].new_tab?
+  end
+
+  test "navigation link new_tab? defaults to false" do
+    nav_item = {
+      title: "Link Title",
+      url: "/path/test",
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal 1,  result.size
+    assert_equal "layouts/nav/link",  result[0].partial_path
+    assert_equal 1, result[0].links.size
+    assert_equal false,  result[0].new_tab?
   end
 
   test "NavBar.items should return navigation profile when nav_item has profile property" do
     nav_item = {
-      title: "profile title",
-      profile: "profile1"
+      title: "Profile Title",
+      profile: "profile1",
+      new_tab: true
     }
     expected_data_property = { method: 'post' }
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
     assert_equal "layouts/nav/link",  result[0].partial_path
     assert_equal 1, result[0].links.size
-    assert_equal "profile title",  result[0].title
-    assert_equal "/settings?settings%5Bprofile%5D=profile1",  result[0].url
+    assert_equal "Profile Title",  result[0].title
+    assert_equal Rails.application.routes.url_helpers.settings_path("settings[profile]" => "profile1"),  result[0].url
     assert_equal expected_data_property,  result[0].data
+    assert_equal true,  result[0].new_tab?
+  end
+
+  test "navigation profile new_tab? defaults to false" do
+    nav_item = {
+      title: "Profile Title",
+      profile: "profile1",
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal 1,  result.size
+    assert_equal "layouts/nav/link",  result[0].partial_path
+    assert_equal 1, result[0].links.size
     assert_equal false,  result[0].new_tab?
   end
 
   test "NavBar.items should return navigation page when nav_item has page property" do
     nav_item = {
       title: "Page Title",
-      page: "page_code"
+      page: "page_code",
+      new_tab: true,
     }
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
     assert_equal "layouts/nav/link",  result[0].partial_path
     assert_equal 1, result[0].links.size
     assert_equal "Page Title",  result[0].title
-    assert_equal "/custom/page_code",  result[0].url
+    assert_equal Rails.application.routes.url_helpers.custom_pages_path("page_code"),  result[0].url
+    assert_equal true,  result[0].new_tab?
+  end
+
+  test "navigation page new_tab? defaults to false" do
+    nav_item = {
+      title: "Page Title",
+      page: "page_code",
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal 1,  result.size
+    assert_equal "layouts/nav/link",  result[0].partial_path
+    assert_equal 1, result[0].links.size
     assert_equal false,  result[0].new_tab?
   end
 
-  test "NavBar.items should return navigation link when nav_item has app property" do
+  test "navigation page ignores empty page value" do
     nav_item = {
-      apps: "sys/bc_jupyter"
+      title: "Page Title",
+      page: "",
     }
 
-    result = NavBar.items([nav_item])
-    assert_equal 1,  result.size
-    assert_equal "layouts/nav/link",  result[0].partial_path
-    assert_equal 1,  result[0].links.size
-    assert_equal '',  result[0].links[0].category
-    assert_equal '',  result[0].links[0].subcategory
-    assert_equal "Jupyter Notebook",  result[0].title
-  end
-
-  test "NavBar.items should return navigation link when nav_item has tokens property" do
-    nav_item = {
-      apps: ["sys/bc_jupyter"]
-    }
-
-    result = NavBar.items([nav_item])
-    assert_equal 1,  result.size
-    assert_equal "layouts/nav/link",  result[0].partial_path
-    assert_equal 1,  result[0].links.size
-    assert_equal '',  result[0].links[0].category
-    assert_equal '',  result[0].links[0].subcategory
-    assert_equal "Jupyter Notebook",  result[0].title
+    assert_equal [], NavBar.items([nav_item])
   end
 
   test "NavBar should keep navigation order from configuration" do
@@ -200,18 +413,37 @@ class NavBarTest < ActiveSupport::TestCase
   end
 
   test "NavBar.items should discard invalid configuration items" do
-    valid_item = {
-      apps: "sys/bc_jupyter"
-    }
+    valid_item = "sys/bc_jupyter"
 
     result = NavBar.items([stub(), valid_item, stub()])
     assert_equal 1,  result.size
     assert_equal "Jupyter Notebook",  result[0].title
   end
 
+  test "Check supported static templates" do
+    NavBar::STATIC_TEMPLATES.each do |name, _|
+      assert_equal true,  [
+        'all_apps', 'all apps',
+        'featured_apps', 'apps', 'pinned_apps', 'pinned apps', 'featured apps',
+        'sessions', 'my_interactive_sessions', 'my interactive sessions',
+        'develop',
+        'help',
+        'log_out', 'logout', 'log out',
+        'user'].include?(name.to_s)
+    end
+  end
+
   test "Check supported static links" do
-    NavBar::STATIC_LINKS.each do |name, template|
-      assert_equal true,  [:all_apps, :featured_apps, :sessions, :log_out, :user].include?(name)
+    NavBar::STATIC_LINKS.each do |name, _|
+      assert_equal true,  [
+        'all_apps', 'all apps',
+        'sessions', 'my_interactive_sessions', 'my interactive sessions',
+        'support_ticket', 'support ticket', 'support',
+        'docs',
+        'products_dev', 'products dev',
+        'products_usr', 'products usr',
+        'log_out', 'logout', 'log out',
+        'restart'].include?(name.to_s)
     end
   end
 

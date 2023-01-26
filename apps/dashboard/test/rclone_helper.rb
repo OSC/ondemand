@@ -6,7 +6,7 @@ class ActiveSupport::TestCase
   # and posix file system
   def remote_files_conf(root_dir)
     {
-      OOD_FILES_APP_REMOTE_FILES:        'true',
+      OOD_REMOTE_FILES_ENABLED:        'true',
       RCLONE_CONFIG_LOCAL_REMOTE_TYPE:   'local',
       RCLONE_CONFIG_ALIAS_REMOTE_TYPE:   'alias',
       RCLONE_CONFIG_ALIAS_REMOTE_REMOTE: "local_remote:#{root_dir}",

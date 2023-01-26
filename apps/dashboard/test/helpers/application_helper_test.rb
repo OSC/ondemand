@@ -8,36 +8,30 @@ class ApplicationHelperTest < ActionView::TestCase
     @user_configuration = nil
   end
 
-  test "profile_links should delegate to user_configuration object" do
-    expected_result = ["a", "b", "c"]
-    @user_configuration = stub(:profile_links => expected_result)
+  test "profile_links should ignore configurations without profile property" do
+    @user_configuration = stub(:profile_links => ['a', 'b', {profile: 'test_profile', title: 'My Profile'}, {page: 'c'}])
 
-    assert_equal expected_result, profile_links
+    result = profile_links
+
+    assert_equal 1, result.size
+    assert_equal 'My Profile', result[0][:title]
   end
 
-  test "profile_link should return nil when id is missing" do
-    invalid_profile_link = {
-      name: "test name",
-      icon: "user"
-    }
+  test "profile_links should add css class for dropdown items" do
+    @user_configuration = stub(:profile_links => [{profile: 'test_profile', title: 'My Profile'}])
 
-    assert_nil profile_link(invalid_profile_link)
+    result = profile_links
+
+    assert_equal 1, result.size
+    assert_equal 'dropdown-item', result[0][:class]
   end
 
-  test "profile_link should return a link with data-method set to post containing an icon and text" do
-    profile_link = {
-      id: "test",
-      name: "test name",
-      icon: "user"
-    }
-    result = profile_link(profile_link)
+  test "profile_links should delegate to NavBar to create links" do
+    config = [{profile: 'test_profile', title: 'My Profile'}]
+    @user_configuration = stub(:profile_links => config)
 
-    html_doc = Nokogiri::HTML(result)
-
-    refute_nil html_doc.at_css('a[data-method="post"]')
-    refute_nil html_doc.at_css('a[data-method="post"] i')
-    assert_equal true, html_doc.at_css('a[data-method="post"] i')["class"].include?(profile_link[:icon])
-    assert_equal profile_link[:name], html_doc.at_css('a[data-method="post"]').text.strip
+    NavBar.expects(:items).with(config).returns([])
+    profile_links
   end
 
   test "custom_css_paths should prepend public_url to all custom css file paths" do

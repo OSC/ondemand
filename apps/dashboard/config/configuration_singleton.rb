@@ -40,10 +40,12 @@ class ConfigurationSingleton
       :csp_enabled                  => false,
       :csp_report_only              => false,
       :bc_dynamic_js                => false,
+      :bc_simple_auto_accounts      => false,
+      :bc_clean_old_dirs            => false,
       :per_cluster_dataroot         => false,
       :file_navigator               => false,
       :jobs_app_alpha               => false,
-      :files_app_remote_files       => false,
+      :remote_files_enabled         => false,
       :host_based_profiles          => false,
       :disable_bc_shell             => false,
       :cancel_session_enabled       => false,
@@ -57,9 +59,11 @@ class ConfigurationSingleton
   # @return [Hash] key/value pairs of defaults
   def string_configs
     {
-      :module_file_dir      => nil,
-      :user_settings_file   => '.ood',
-      :facl_domain => nil,
+      :module_file_dir        => nil,
+      :user_settings_file     => '.ood',
+      :facl_domain            => nil,
+      :auto_groups_filter     => nil,
+      :bc_clean_old_dirs_days => '30',
     }.freeze
   end
 

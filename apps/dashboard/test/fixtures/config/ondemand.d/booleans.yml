@@ -1,12 +1,14 @@
 csp_enabled: true
 csp_report_only: true
 bc_dynamic_js: true
+bc_simple_auto_accounts: true
 per_cluster_dataroot: true
 file_navigator: true
 jobs_app_alpha: true
-files_app_remote_files: true
+remote_files_enabled: true
 host_based_profiles: true
 disable_bc_shell: true
 cancel_session_enabled: true
 bc_clean_old_dirs: true
 hide_app_version: true
+

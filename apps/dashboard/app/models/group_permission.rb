@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Utility class for setting FACL group permissions.
 class GroupPermission < Permission
   class << self
@@ -14,6 +16,7 @@ class GroupPermission < Permission
         (e.group_entry? && e.principle.to_s == name) || (e.group_owner_entry? && owner_name == name)
       end
       raise Permission::NotFound unless entry
+
       new(product: product, name: name, owner: entry.group_owner_entry?)
     end
   end

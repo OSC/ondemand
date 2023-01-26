@@ -9,11 +9,8 @@ v2:
   login:
     host: "owens.osc.edu"
   job:
-    adapter: "torque"
-    host: "owens-batch.ten.osc.edu"
-    lib: "/opt/torque/lib64"
-    bin: "/opt/torque/bin"
-    version: "6.0.1"
+    adapter: "slurm"
+    cluster: "owens"
   custom:
     pbs:
       host: "owens-batch.ten.osc.edu"

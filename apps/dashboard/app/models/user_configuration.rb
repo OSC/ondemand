@@ -39,15 +39,6 @@ class UserConfiguration
     ConfigurationProperty.property(name: :pinned_apps_group_by, default_value: nil, read_from_env: true),
 
     # Links to change profile under the Help navigation menu
-    # example:
-    # profile_links:
-    #   - id: default
-    #     name: "Default"
-    #     icon: "cog"
-    #   - id: profile1
-    #     name: "Team2"
-    #     icon: "user"
-    #
     ConfigurationProperty.property(name: :profile_links, default_value: []),
 
     # Custom CSS files to add to the application.html.erb template
@@ -97,14 +88,14 @@ class UserConfiguration
     path.start_with?('/') ? Pathname.new(path) : Pathname.new('/public')
   end
 
-  # Filtering is controlled with NavConfig.categories_whitelist? unless the configuration property categories is defined.
+  # Filtering is controlled with NavConfig.categories_allowlist? unless the configuration property categories is defined.
   # If categories are defined, filter_nav_categories? will always be true.
   def filter_nav_categories?
     fetch(:nav_categories, nil).nil? ? NavConfig.categories_whitelist? : true
   end
 
   def nav_categories
-    fetch(:nav_categories, NavConfig.categories)
+    fetch(:nav_categories, nil) || NavConfig.categories
   end
 
   # The current user profile. Used to select the configuration properties.

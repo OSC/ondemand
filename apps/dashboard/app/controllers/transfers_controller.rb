@@ -26,7 +26,7 @@ class TransfersController < ApplicationController
 
     if from_fs == RcloneUtil::LOCAL_FS_NAME && to_fs == RcloneUtil::LOCAL_FS_NAME
       @transfer = PosixTransfer.build(action: body_params[:command], files: body_params[:files])
-    elsif ::Configuration.files_app_remote_files?
+    elsif ::Configuration.remote_files_enabled?
       @transfer = RemoteTransfer.build(action: body_params[:command], files: body_params[:files], src_remote: from_fs, dest_remote: to_fs)
     else
       render json: { error_message: "Remote file support is not enabled" }
