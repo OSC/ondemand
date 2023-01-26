@@ -80,8 +80,14 @@ module ApplicationHelper
 
   # Creates the list of links to add to the help menu
   def help_links
-    help_items = ["restart"] + @user_configuration.profile_links + @user_configuration.help_menu
+    help_items = ["restart"] + @user_configuration.help_menu
     NavBar.menu_items({ links: help_items }) unless help_items.empty?
+  end
+
+  # Creates the list of links to add to the user menu
+  def user_links
+    user_items = ["logout"] + @user_configuration.user_menu
+    NavBar.menu_items({ links: user_items }) unless user_items.empty?
   end
 
   def custom_css_paths

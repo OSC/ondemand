@@ -10,7 +10,7 @@ class ApplicationHelperTest < ActionView::TestCase
   end
 
   test 'help_links should include server restart' do
-    @user_configuration = stub({ profile_links: [], help_menu: [] })
+    @user_configuration = stub({ help_menu: [] })
 
     result = help_links
 
@@ -18,24 +18,49 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_equal I18n.t('dashboard.nav_restart_server'), result.apps[0].title
   end
 
-  test 'help_links should combine server restart with profile_links and help_menu' do
-    @user_configuration = stub({ profile_links: [{ title: 'profile link', url: '/path' }],
-                                 help_menu:     [{ title: 'help link', url: '/path' }] })
+  test 'help_links should combine server restart with help_menu' do
+    @user_configuration = stub({ help_menu: [{ title: 'help link', url: '/path' }] })
 
     result = help_links
 
-    assert_equal 3, result.apps.size
+    assert_equal 2, result.apps.size
     assert_equal I18n.t('dashboard.nav_restart_server'), result.apps[0].title
-    assert_equal 'profile link', result.apps[1].title
-    assert_equal 'help link', result.apps[2].title
+    assert_equal 'help link', result.apps[1].title
   end
 
   test 'help_links should delegate to NavBar to create links' do
     config = { links: ['restart'] }
-    @user_configuration = stub({ profile_links: [], help_menu: [] })
+    @user_configuration = stub({ help_menu: [] })
 
     NavBar.expects(:menu_items).with(config)
     help_links
+  end
+
+  test 'user_links should include user logout' do
+    @user_configuration = stub({ user_menu: [] })
+
+    result = user_links
+
+    assert_equal 1, result.apps.size
+    assert_equal I18n.t('dashboard.nav_logout'), result.apps[0].title
+  end
+
+  test 'user_links should combine user logout with user_menu' do
+    @user_configuration = stub({ user_menu: [{ title: 'user link', url: '/path' }] })
+
+    result = user_links
+
+    assert_equal 2, result.apps.size
+    assert_equal I18n.t('dashboard.nav_logout'), result.apps[0].title
+    assert_equal 'user link', result.apps[1].title
+  end
+
+  test 'user_links should delegate to NavBar to create links' do
+    config = { links: ['logout'] }
+    @user_configuration = stub({ user_menu: [] })
+
+    NavBar.expects(:menu_items).with(config)
+    user_links
   end
 
   test 'custom_css_paths should prepend public_url to all custom css file paths' do
@@ -68,7 +93,7 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_equal [], custom_css_paths
   end
 
-  test "icon_tag should should render icon tag for known icon schemas" do
+  test 'icon_tag should should render icon tag for known icon schemas' do
     @user_configuration = stub({ public_url: Pathname.new('/public') })
     ['fa', 'fas', 'far', 'fab', 'fal'].each do |icon_schema|
       image_uri = URI("#{icon_schema}://icon_name")
@@ -80,7 +105,7 @@ class ApplicationHelperTest < ActionView::TestCase
     end
   end
 
-  test "icon_tag should should render image tag prefixing relative_url_root if image URI does not start with public_url" do
+  test 'icon_tag should should render image tag prefixing relative_url_root if image URI does not start with public_url' do
     @user_configuration = stub({ public_url: Pathname.new('/public') })
     config.stubs(:relative_url_root).returns('/prefix')
     image_uri = URI('/path/to/image.png')
@@ -92,7 +117,7 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_equal '/prefix/path/to/image.png', image_html['src']
   end
 
-  test "icon_tag should should render image tag without prefixing relative_url_root if image URI starts with public_url" do
+  test 'icon_tag should should render image tag without prefixing relative_url_root if image URI starts with public_url' do
     @user_configuration = stub({ public_url: Pathname.new('/public') })
     config.stubs(:relative_url_root).returns('/prefix')
     image_uri = URI('/public/path/image.png')

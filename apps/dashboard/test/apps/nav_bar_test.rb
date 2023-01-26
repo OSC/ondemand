@@ -439,10 +439,11 @@ class NavBarTest < ActiveSupport::TestCase
         'all_apps', 'all apps',
         'featured_apps', 'apps', 'pinned_apps', 'pinned apps', 'featured apps',
         'sessions', 'my_interactive_sessions', 'my interactive sessions',
-        'develop',
+        'develop', 'development',
         'help',
         'log_out', 'logout', 'log out',
-        'user'].include?(name.to_s)
+        'user',
+        'user_dropdown', 'user dropdown'].include?(name.to_s)
     end
   end
 

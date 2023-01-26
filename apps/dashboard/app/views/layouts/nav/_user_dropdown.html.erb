@@ -1,0 +1,12 @@
+<li class="nav-item dropdown" title="<%= @user.name %>" >
+  <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+    <i class="fas fa-user" aria-hidden="true"></i><span class="d-sm-none d-md-none d-lg-inline"> <%= @user.name %></span><span class="caret"></span>
+  </a>
+
+  <ul class="dropdown-menu <%= local_assigns.fetch(:menu_alignment, 'dropdown-menu-right') %>" role="menu">
+    <%= nav_link(t('dashboard.nav_help_change_password'), "key", passwd_url, new_tab: true) %>
+    <%= nav_link(t('dashboard.nav_help_two_factor'), "mobile-alt", configure_2fa_url, new_tab: true) %>
+
+    <%= render partial: 'layouts/nav/group_items', locals: user_links.to_h %>
+  </ul>
+</li>

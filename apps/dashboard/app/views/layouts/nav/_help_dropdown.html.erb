@@ -6,8 +6,10 @@
   <ul class="dropdown-menu <%= local_assigns.fetch(:menu_alignment, 'dropdown-menu-right') %>" role="menu">
     <%= nav_link(t('dashboard.nav_help_support'), "question-circle", support_url, new_tab: true) %>
     <%= nav_link(t('dashboard.nav_help_docs'), "info-circle", docs_url, new_tab: true) %>
-    <%= nav_link(t('dashboard.nav_help_change_password'), "key", passwd_url, new_tab: true) %>
-    <%= nav_link(t('dashboard.nav_help_two_factor'), "mobile-alt", configure_2fa_url, new_tab: true) %>
+    <% unless @user_configuration.new_user_menu %>
+      <%= nav_link(t('dashboard.nav_help_change_password'), "key", passwd_url, new_tab: true) %>
+      <%= nav_link(t('dashboard.nav_help_two_factor'), "mobile-alt", configure_2fa_url, new_tab: true) %>
+    <% end %>
     <% if help_custom_url %>
       <%= nav_link(t('dashboard.nav_help_custom'), "question-circle", help_custom_url, new_tab: true) %>
     <% end %>
@@ -15,8 +17,6 @@
       <%= nav_link(t('dashboard.nav_help_support_ticket'), "medkit", support_path, new_tab: false) %>
     <% end %>
 
-    <% if help_links %>
-      <%= render partial: 'layouts/nav/group_items', locals: help_links.to_h %>
-    <% end %>
+    <%= render partial: 'layouts/nav/group_items', locals: help_links.to_h %>
   </ul>
 </li>

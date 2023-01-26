@@ -49,7 +49,6 @@ class UserConfigurationTest < ActiveSupport::TestCase
       dashboard_layout: nil,
       pinned_apps: [],
       pinned_apps_menu_length: 6,
-      profile_links: [],
       custom_css_files: [],
       dashboard_title: "Open OnDemand",
       public_url: Pathname.new("/public"),
@@ -66,7 +65,9 @@ class UserConfigurationTest < ActiveSupport::TestCase
       nav_bar: [],
       help_bar: [],
       help_menu: [],
+      user_menu: [],
       interactive_apps_menu: [],
+      new_user_menu: false,
       custom_pages: {},
       support_ticket: {},
     }

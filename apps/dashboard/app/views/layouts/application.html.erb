@@ -55,8 +55,9 @@
           <% if @help_bar.empty? %>
             <%= render partial: 'layouts/nav/develop_dropdown' if Configuration.app_development_enabled? %>
             <%= render partial: 'layouts/nav/help_dropdown' %>
-            <%= render partial: 'layouts/nav/user' %>
-            <%= render partial: 'layouts/nav/log_out' %>
+            <%= render partial: 'layouts/nav/user' unless @user_configuration.new_user_menu %>
+            <%= render partial: 'layouts/nav/log_out' unless @user_configuration.new_user_menu %>
+            <%= render partial: 'layouts/nav/user_dropdown' if @user_configuration.new_user_menu %>
           <% else %>
             <%= render partial: 'layouts/nav/custom_navigation', locals: { navigation: @help_bar, menu_alignment: 'dropdown-menu-right' }%>
           <% end %>

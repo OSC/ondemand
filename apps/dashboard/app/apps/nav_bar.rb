@@ -160,10 +160,11 @@ class NavBar
     hash[['all_apps', 'all apps']] = 'layouts/nav/all_apps'
     hash[['featured_apps', 'apps', 'pinned_apps', 'pinned apps', 'featured apps']] = 'layouts/nav/featured_apps'
     hash[['sessions', 'my_interactive_sessions', 'my interactive sessions']] = 'layouts/nav/sessions'
-    hash[['develop']] = 'layouts/nav/develop_dropdown'
+    hash[['develop', 'development']] = 'layouts/nav/develop_dropdown'
     hash[['help']] = 'layouts/nav/help_dropdown'
     hash[['log_out', 'logout', 'log out']] = 'layouts/nav/log_out'
     hash[['user']] = 'layouts/nav/user'
+    hash[['user_dropdown', 'user dropdown']] = 'layouts/nav/user_dropdown'
   end.freeze
 
   url_helpers =  Rails.application.routes.url_helpers
