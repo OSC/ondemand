@@ -609,7 +609,6 @@ function optionForFromToken(str) {
  function toggleOptionsFor(_event, elementId) {
   const options = $(`#${elementId} option`);
   let hideSelectedValue = undefined;
-  let newSelectedOption = undefined;
 
   options.each(function(_i, option) {
     // the variable 'option' is just a data structure. it has no attr, data, show
@@ -648,22 +647,16 @@ function optionForFromToken(str) {
       }
     } else {
       optionElement.show();
-
-      // just a backup if we have to choose _something_
-      if(!newSelectedOption) {
-        newSelectedOption = optionElement;
-      }
     }
   });
 
   // now that we've hidden/shown everything, let's choose what should now
-  // be the current selected value.
-
-  // first - you may have hidden what _was_ selected, so let's try to find
-  // another option of the same value.
+  // be the current selected value if you've hidden what _was_ selected.
   if(hideSelectedValue !== undefined) {
     let others = $(`#${elementId} option[value='${hideSelectedValue}']`);
+    let newSelectedOption = undefined;
 
+    // You have hidden what _was_ selected, so try to find a duplicate option that is visible
     if(others.length > 1) {
       others.each((_i, ele) => {
         if(ele.style['display'] === '') {
@@ -671,11 +664,21 @@ function optionForFromToken(str) {
           return;
         }
       });
-    }
-  }
 
-  if(newSelectedOption !== undefined) {
-    newSelectedOption.prop('selected', true);
+    // no duplciates are visible, so just pick the first visible option
+    } else {
+      others = $(`#${elementId} option`)
+      others.each((_i, ele) => {
+        if(ele.style['display'] === '') {
+          newSelectedOption = $(`#${elementId} ${nodeListToQueryString(ele.attributes)}`);
+          return;
+        }
+      });
+    }
+
+    if(newSelectedOption !== undefined) {
+      newSelectedOption.prop('selected', true);
+    }
   }
 };
 
