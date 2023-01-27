@@ -622,6 +622,12 @@ function optionForFromToken(str) {
     // something else entirely. We're going to hide this option if _any_ of the
     // option-for- directives apply.
     for (const [key, _value] of Object.entries(data)) {
+
+      // it's some other directive type, so just keep going
+      if(!key.startsWith('optionFor')) {
+        continue;
+      }
+
       let optionFor = optionForFromToken(key);
       let optionForId = idFromToken(key.replace(/^optionFor/,''));
       let optionForValue =  mountainCaseWords($(`#${optionForId}`)[0].value);
@@ -655,7 +661,6 @@ function optionForFromToken(str) {
   // first - you may have hidden what _was_ selected, so let's try to find
   // another option of the same value.
   if(hideSelectedValue !== undefined) {
-    console.log('made it here');
     let others = $(`#${elementId} option[value='${hideSelectedValue}']`);
 
     if(others.length > 1) {
