@@ -613,7 +613,7 @@ function optionForFromToken(str) {
   options.each(function(_i, option) {
     // the variable 'option' is just a data structure. it has no attr, data, show
     // or hide methods so we have to query for it again
-    let optionElement = $(`#${elementId} ${nodeListToQueryString(option.attributes)}`);
+    let optionElement = exactlyOneOption(elementId, option);
     let data = optionElement.data();
     let hide = false;
 
@@ -660,7 +660,7 @@ function optionForFromToken(str) {
     if(others.length > 1) {
       others.each((_i, ele) => {
         if(ele.style['display'] === '') {
-          newSelectedOption = $(`#${elementId} ${nodeListToQueryString(ele.attributes)}`);
+          newSelectedOption = exactlyOneOption(elementId, ele);
           return;
         }
       });
@@ -670,7 +670,7 @@ function optionForFromToken(str) {
       others = $(`#${elementId} option`)
       others.each((_i, ele) => {
         if(ele.style['display'] === '') {
-          newSelectedOption = $(`#${elementId} ${nodeListToQueryString(ele.attributes)}`);
+          newSelectedOption = exactlyOneOption(elementId, ele);
           return;
         }
       });
@@ -682,19 +682,20 @@ function optionForFromToken(str) {
   }
 };
 
-// Turn a NodeList of attributes into a query string.
-// i.e., <option data-foo='bar' value='abc123'>
-// returns option[data-foo='bar'][value='abc123']
-function nodeListToQueryString(nodeList) {
-  const len = nodeList.length;
-  let query = 'option';
+// Return exactly 1 jquery object for this id's option
+function exactlyOneOption(id, option) {
+  let optionElement = $(`#${id} option[value='${option.value}']`);
 
-  for(i = 0; i < len; i++) {
-    let item = nodeList[i];
-    query += `[${sanitizeQuery(item.name)}='${item.value}']`;
+  if(optionElement.length > 1) {
+    optionElement.each((_i, ele) => {
+      if(option.attributes == ele.attributes){
+        optionElement = $(ele);
+        return;
+      }
+    });
   }
 
-  return query;
+  return optionElement;
 }
 
 // simple function to sanitize css query strings
