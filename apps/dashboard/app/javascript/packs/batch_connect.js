@@ -623,13 +623,14 @@ function optionForFromToken(str) {
     // option-for- directives apply.
     for (const [key, _value] of Object.entries(data)) {
 
-      // it's some other directive type, so just keep going
-      if(!key.startsWith('optionFor')) {
+      let optionFor = optionForFromToken(key);
+      let optionForId = idFromToken(key.replace(/^optionFor/,''));
+
+      // it's some other directive type, so just keep going and/or not real
+      if(!key.startsWith('optionFor') || optionForId === undefined) {
         continue;
       }
 
-      let optionFor = optionForFromToken(key);
-      let optionForId = idFromToken(key.replace(/^optionFor/,''));
       let optionForValue =  mountainCaseWords($(`#${optionForId}`)[0].value);
 
       hide = data[`optionFor${optionFor}${optionForValue}`] === false;
