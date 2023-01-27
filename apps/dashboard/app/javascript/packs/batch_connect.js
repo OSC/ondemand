@@ -608,8 +608,8 @@ function optionForFromToken(str) {
  */
  function toggleOptionsFor(_event, elementId) {
   const options = $(`#${elementId} option`);
-  let firstVisibleOption = undefined;
-  let hideSelected = false;
+  let hideSelectedValue = undefined;
+  let newSelectedOption = undefined;
 
   options.each(function(_i, option) {
     // the variable 'option' is just a data structure. it has no attr, data, show
@@ -637,22 +637,39 @@ function optionForFromToken(str) {
 
       if(optionElement.prop('selected')) {
         optionElement.prop('selected', false);
-        hideSelected = true;
+        hideSelectedValue = optionElement.text();
       }
     } else {
       optionElement.show();
-      if(!firstVisibleOption) {
-        firstVisibleOption = optionElement;
+
+      // just a backup if we have to choose _something_
+      if(!newSelectedOption){
+        newSelectedOption = optionElement;
       }
     }
   });
 
-  // when de-selecting something, the default is to fallback to the very first
-  // option. But there's an edge case where you want to hide the very first option,
-  // and deselecting it does nothing.  In any case, let's select the first option
-  // we found that's visible.
-  if(hideSelected && firstVisibleOption !== undefined) {
-    firstVisibleOption.prop('selected', true);
+  // now that we've hidden/shown everything, let's choose what should now
+  // be the current selected value.
+
+  // first - you may have hidden what _was_ selected, so let's try to find
+  // another option of the same value.
+  if(hideSelectedValue !== undefined) {
+    console.log('made it here');
+    let others = $(`#${elementId} option[value='${hideSelectedValue}']`);
+
+    if(others.length > 1) {
+      others.each((_i, ele) => {
+        if(ele.style['display'] === '') {
+          newSelectedOption = $(`#${elementId} ${nodeListToQueryString(ele.attributes)}`);
+          break;
+        }
+      });
+    }
+  }
+
+  if(newSelectedOption !== undefined) {
+    newSelectedOption.prop('selected', true);
   }
 };
 
