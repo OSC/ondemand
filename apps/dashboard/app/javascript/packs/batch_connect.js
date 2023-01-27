@@ -669,9 +669,8 @@ function optionForFromToken(str) {
     } else {
       others = $(`#${elementId} option`)
       others.each((_i, ele) => {
-        if(ele.style['display'] === '') {
+        if(newSelectedOption === undefined && ele.style['display'] === '') {
           newSelectedOption = exactlyOneOption(elementId, ele);
-          return;
         }
       });
     }
