@@ -643,7 +643,7 @@ function optionForFromToken(str) {
       optionElement.show();
 
       // just a backup if we have to choose _something_
-      if(!newSelectedOption){
+      if(!newSelectedOption) {
         newSelectedOption = optionElement;
       }
     }
@@ -662,7 +662,7 @@ function optionForFromToken(str) {
       others.each((_i, ele) => {
         if(ele.style['display'] === '') {
           newSelectedOption = $(`#${elementId} ${nodeListToQueryString(ele.attributes)}`);
-          break;
+          return;
         }
       });
     }
