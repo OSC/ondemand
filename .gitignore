@@ -40,6 +40,7 @@
 /apps/*/public/.htaccess
 /apps/*/.env.production.local
 /apps/*/.env.local*
+/apps/*/.env.overload
 /apps/activejobs/config/initializers/filter.rb
 /apps/dashboard/config/initializers/ood.rb
 

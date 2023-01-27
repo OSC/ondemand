@@ -1,6 +1,7 @@
-<%= bootstrap_form_for [@project, @script] do |form| %>
+<%= bootstrap_form_for @script do |form| %>
+  <%= form.hidden_field :project_id, placeholder: "Project ID" %>
   <div class='card'>
-    <h5 class='card-header'>Scripts for Project <%= @script.project_id %></h5>
+    <h5 class='card-header'>Scripts for Project <%= @script.project_id.titleize %></h5>
       <div class='card-group'>
           <div class='card'>
             <div class='card-body'>
@@ -8,9 +9,6 @@
                 <div class="field">
                   <%= form.text_field :name, placeholder: "Script name", 
                           help: I18n.t('dashboard.jobs_project_name_validation') %>
-                </div>
-                <div class="field">
-                  <%= form.text_area :batch_connect_form, placeholder: "Batch Connect Form description" %>
                 </div>
               </div>
             </div>

@@ -1,16 +1,38 @@
-<%= bootstrap_form_tag  do |form| %>
-<hr><%= @project.directory %><hr>
 <div class='page-header text-center'>
-  <h1>Project Space</h1>
+  <h1>Project Space for <%= @project.name.titleize %></h1>
 </div> 
 <p>
   <%= link_to 'New Script', new_project_script_url(project_id: @project.directory), class: 'btn btn-default', title: 'New Script' %>
 </p>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Script Name</th>
+      <th scope="col">Script Form</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @scripts.each do |script| %>
+      <tr>
+        <th scope="row"><%= script.name.titleize %></th>
+        <td>
+          <%= link_to "Open Form", OodAppkit.editor.edit(path: "#{script.script_dataroot}/form.yml.erb").to_s, 
+          class: 'btn btn-primary btn-sm', :target => '_blank' %>
+        </td>
+        <td>
+          <%= link_to "Submit", project_script_submit_url(project_id: @project.name, script_id: script.name), :method => :put, 
+          class: 'btn btn-success btn-sm', id: "submit-button-" + script.name.to_s %>
+          <%= link_to "Delete", project_script_destroy_path(project_id: @project.name, script_id: script.name), 
+                :method => :delete, class: 'btn btn-danger btn-sm', data: {confirm: "Are you sure?"} %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
 <br>
 <div class='row row-cols-1 row-cols-md-2'>
   <p>
     <%= link_to 'Back', projects_path, class: 'btn btn-default', title: 'Return to projects page' %>
   </p>
 </div>
-
-<% end %>

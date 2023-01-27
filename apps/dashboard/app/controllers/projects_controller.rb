@@ -5,6 +5,7 @@ class ProjectsController < ApplicationController
   # GET /projects/:id
   def show
     @project = Project.find(params[:id])
+    @scripts = Script.all(params[:id])
   end
 
   # GET /projects
@@ -41,7 +42,6 @@ class ProjectsController < ApplicationController
 
   # POST /projects
   def create
-    Rails.logger.debug("Project params are: #{project_params}")
     @project = Project.new(project_params)
 
     if @project.valid? && @project.save(project_params)

@@ -4,9 +4,10 @@ Rails.application.routes.draw do
 
   if Configuration.jobs_app_alpha?
     resources :projects do
-      root 'projects#index'
+      # root 'projects#index'
       resources :scripts do
-        root 'scripts#index'
+        put "submit" => "scripts#submit"
+        delete "destroy" => "scripts#destroy"
       end
     end
   end
