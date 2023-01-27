@@ -651,7 +651,8 @@ function optionForFromToken(str) {
   });
 
   // now that we've hidden/shown everything, let's choose what should now
-  // be the current selected value if you've hidden what _was_ selected.
+  // be the current selected value.
+  // if you've hidden what _was_ selected.
   if(hideSelectedValue !== undefined) {
     let others = $(`#${elementId} option[value='${hideSelectedValue}']`);
     let newSelectedOption = undefined;
@@ -664,9 +665,10 @@ function optionForFromToken(str) {
           return;
         }
       });
+    }
 
     // no duplciates are visible, so just pick the first visible option
-    } else {
+    if(newSelectedOption === undefined) {
       others = $(`#${elementId} option`)
       others.each((_i, ele) => {
         if(newSelectedOption === undefined && ele.style['display'] === '') {
