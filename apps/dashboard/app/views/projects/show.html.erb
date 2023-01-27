@@ -1,9 +1,14 @@
 <div class='page-header text-center'>
   <h1>Project Space for <%= @project.name.titleize %></h1>
 </div> 
-<p>
-  <%= link_to 'New Script', new_project_script_url(project_id: @project.directory), class: 'btn btn-default', title: 'New Script' %>
-</p>
+<div class="row">
+  <div class="col-2">
+    <%= link_to 'New Script', new_project_script_url(project_id: @project.directory), class: 'btn btn-success', title: 'New Script' %>
+  </div>
+  <div clss="col-2">
+    <%= link_to 'Back To Projects', projects_path, class: 'btn btn-success', title: 'Return to projects page' %>
+  </div>
+</div>
 <table class="table">
   <thead>
     <tr>
@@ -31,8 +36,3 @@
   </tbody>
 </table>
 <br>
-<div class='row row-cols-1 row-cols-md-2'>
-  <p>
-    <%= link_to 'Back', projects_path, class: 'btn btn-default', title: 'Return to projects page' %>
-  </p>
-</div>
