@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 # The Controller for user level settings /dashboard/settings.
 class SettingsController < ApplicationController
-
   ALLOWED_SETTINGS = [:profile].freeze
 
   def update
@@ -22,8 +23,7 @@ class SettingsController < ApplicationController
 
   def read_settings(params)
     {}.tap do |settings|
-      params.each { |key, value| settings[key] = value } if params
+      params&.each { |key, value| settings[key] = value }
     end
   end
-
 end
