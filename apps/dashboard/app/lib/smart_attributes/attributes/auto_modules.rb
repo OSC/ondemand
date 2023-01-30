@@ -27,13 +27,24 @@ module SmartAttributes
       end
 
       def select_choices
-        HpcModule.all_versions(@hpc_module).map do |mod|
+        versions = HpcModule.all_versions(@hpc_module).map do |mod|
           data_opts = Configuration.job_clusters.map do |cluster|
             { "data-option-for-cluster-#{cluster.id}": false } unless mod.on_cluster?(cluster.id)
           end.compact
 
-          [mod.version, mod.version].concat(data_opts)
+          [mod.version, mod.to_s].concat(data_opts)
         end
+
+        if show_default?
+          versions.prepend(['default', @hpc_module])
+        else
+          versions
+        end
+      end
+
+      def show_default?
+        default = @opts[:default]
+        default.nil? ? true : default != false
       end
     end
   end
