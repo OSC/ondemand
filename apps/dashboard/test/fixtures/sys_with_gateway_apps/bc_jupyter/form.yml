@@ -179,6 +179,8 @@ attributes:
     min: 0
     max: 4
     value: 0
+  auto_modules_intel:
+    default: false
 form:
   - bc_num_hours
   - bc_num_slots
