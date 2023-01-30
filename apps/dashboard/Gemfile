@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '6.1.7'
+gem 'rails', '6.1.7.2'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
@@ -57,7 +57,7 @@ gem 'cssbundling-rails', '~> 1.1'
 # OOD specific gems
 gem 'ood_support', '~> 0.0.2'
 gem 'ood_appkit', '~> 2.1.0'
-gem 'ood_core', '~> 0.20'
+gem 'ood_core', path: '/users/PZS0714/johrstrom/ondemand/misc/core' # '~> 0.20'
 gem 'pbs', '~> 2.2.1'
 gem 'rest-client', '~> 2.0'
 

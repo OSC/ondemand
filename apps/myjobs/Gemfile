@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '6.1.7'
+gem 'rails', '6.1.7.2'
 # Use sqlite3 as the database for Active Record
 # Note that the version has been fixed due to an incompatibilty
 # https://github.com/rails/rails/issues/35153
