@@ -564,7 +564,6 @@ function minOrMax(key) {
  * @param {*} str
  * @returns
  */
-
 function idFromToken(str) {
   return formTokens.map((token) => {
     let match = str.match(`^${token}{1}`);
@@ -578,6 +577,28 @@ function idFromToken(str) {
   })[0];
 }
 
+
+/**
+ * Extract the option for out of an option for directive.
+ *
+ * @example
+ *  optionForClusterOakley -> Cluster
+ *
+ * @param {*} str
+ * @returns - the option for string
+ */
+function optionForFromToken(str) {
+  return formTokens.map((token) => {
+    let match = str.match(`^optionFor${token}`);
+
+    if (match && match.length >= 1) {
+      return token;
+    }
+  }).filter((id) => {
+    return id !== undefined;
+  })[0];
+}
+
 /**
  * Hide or show options of an element based on which cluster is
  * currently selected and the data-option-for-CLUSTER attributes
@@ -585,68 +606,97 @@ function idFromToken(str) {
  *
  * @param      {string}  element_name  The name of the element with options to toggle
  */
- function toggleOptionsFor(event, elementId) {
+ function toggleOptionsFor(_event, elementId) {
   const options = $(`#${elementId} option`);
-
-  // If I'm changing cluster to 'oakely', optionFor is 'Cluster'
-  // and optionTo is 'Oakley'.
-  const optionTo = mountainCaseWords(event.target.value);
-  const optionFor = optionForEvent(event.target);
+  let hideSelectedValue = undefined;
 
   options.each(function(_i, option) {
     // the variable 'option' is just a data structure. it has no attr, data, show
     // or hide methods so we have to query for it again
-    let optionElement = $(`#${elementId} ${nodeListToQueryString(option.attributes)}`);
+    let optionElement = exactlyOneOption(elementId, option);
     let data = optionElement.data();
-    let hide = data[`optionFor${optionFor}${optionTo}`] === false;
-    let foundNext = false;
+    let hide = false;
+
+    // even though an event occured - an option may be hidden based on the value of
+    // something else entirely. We're going to hide this option if _any_ of the
+    // option-for- directives apply.
+    for (const [key, _value] of Object.entries(data)) {
+
+      let optionFor = optionForFromToken(key);
+      let optionForId = idFromToken(key.replace(/^optionFor/,''));
+
+      // it's some other directive type, so just keep going and/or not real
+      if(!key.startsWith('optionFor') || optionForId === undefined) {
+        continue;
+      }
+
+      let optionForValue =  mountainCaseWords($(`#${optionForId}`)[0].value);
+
+      hide = data[`optionFor${optionFor}${optionForValue}`] === false;
+      if(hide === true) {
+        break;
+      }
+    }
 
     if(hide) {
       optionElement.hide();
 
       if(optionElement.prop('selected')) {
         optionElement.prop('selected', false);
-
-
-        let others = $(`#${elementId} option[value='${option.value}`);
-
-        // there could be other options of the same value, so let's
-        // select one of those if we can
-        if(others.length > 1) {
-          others.each((_i, ele) => {
-            let hideOther = ele.dataset[`optionFor${optionFor}${optionTo}`] === false;
-            if(!hideOther) {
-              ele.selected = true;
-              foundNext = true;
-            }
-          });
-
-        // when de-selecting something, the default is to fallback to the very first
-        // option. But there's an edge case where you want to hide the very first option,
-        // and deselecting it does nothing.
-        } else if(optionElement.next() && !foundNext){
-          optionElement.next().prop('selected', true);
-        }
+        hideSelectedValue = optionElement.text();
       }
     } else {
       optionElement.show();
     }
   });
+
+  // now that we've hidden/shown everything, let's choose what should now
+  // be the current selected value.
+  // if you've hidden what _was_ selected.
+  if(hideSelectedValue !== undefined) {
+    let others = $(`#${elementId} option[value='${hideSelectedValue}']`);
+    let newSelectedOption = undefined;
+
+    // You have hidden what _was_ selected, so try to find a duplicate option that is visible
+    if(others.length > 1) {
+      others.each((_i, ele) => {
+        if(ele.style['display'] === '') {
+          newSelectedOption = exactlyOneOption(elementId, ele);
+          return;
+        }
+      });
+    }
+
+    // no duplciates are visible, so just pick the first visible option
+    if(newSelectedOption === undefined) {
+      others = $(`#${elementId} option`)
+      others.each((_i, ele) => {
+        if(newSelectedOption === undefined && ele.style['display'] === '') {
+          newSelectedOption = exactlyOneOption(elementId, ele);
+        }
+      });
+    }
+
+    if(newSelectedOption !== undefined) {
+      newSelectedOption.prop('selected', true);
+    }
+  }
 };
 
-// Turn a NodeList of attributes into a query string.
-// i.e., <option data-foo='bar' value='abc123'>
-// returns option[data-foo='bar'][value='abc123']
-function nodeListToQueryString(nodeList) {
-  const len = nodeList.length;
-  let query = 'option';
+// Return exactly 1 jquery object for this id's option
+function exactlyOneOption(id, option) {
+  let optionElement = $(`#${id} option[value='${option.value}']`);
 
-  for(i = 0; i < len; i++) {
-    let item = nodeList[i];
-    query += `[${sanitizeQuery(item.name)}='${item.value}']`;
+  if(optionElement.length > 1) {
+    optionElement.each((_i, ele) => {
+      if(option.attributes == ele.attributes){
+        optionElement = $(ele);
+        return;
+      }
+    });
   }
 
-  return query;
+  return optionElement;
 }
 
 // simple function to sanitize css query strings

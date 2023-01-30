@@ -13,6 +13,10 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     find("##{bc_ele_id(ele)} option[value='#{opt}']")['style'].to_s
   end
 
+  def find_all_options(ele, opt)
+    all("##{bc_ele_id(ele)} option[value='#{opt}']")
+  end
+
   def find_max(ele)
     find("##{bc_ele_id(ele)}")['max'].to_i
   end

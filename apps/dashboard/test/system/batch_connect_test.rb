@@ -7,7 +7,6 @@ class BatchConnectTest < ApplicationSystemTestCase
     stub_sys_apps
     stub_user
     Configuration.stubs(:bc_dynamic_js?).returns(true)
-
   end
 
   def stub_sacctmgr(dir)
@@ -722,6 +721,65 @@ class BatchConnectTest < ApplicationSystemTestCase
 
       # systems queue is still not available on oakley
       assert_equal 'display: none;', find_option_style('auto_queues', 'systems')
+    end
+  end
+
+  test 'auto qos are dynamic' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol("#{dir}/app", "oakley")
+      stub_scontrol("#{dir}/app", "owens")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+          - oakley
+        form:
+          - auto_qos
+          - auto_accounts
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults
+      assert_equal 'pzs0715', find_value('auto_accounts')
+      assert_equal 'owens-default', find_value('auto_qos')
+      assert_equal 'owens', find_value('cluster')
+
+      find_all_options('auto_qos', 'ruby-default').each do |option|
+        assert_equal 'display: none;', option['style']
+      end
+
+      find_all_options('auto_qos', 'pitzer-default').each do |option|
+        assert_equal 'display: none;', option['style']
+      end
+
+      # qos' available on owens cluster, but not with the selected account
+      assert_equal 'display: none;', find_option_style('auto_qos', 'staff')
+      assert_equal 'display: none;', find_option_style('auto_qos', 'phoenix')
+      assert_equal 'display: none;', find_option_style('auto_qos', 'geophys')
+      assert_equal 'display: none;', find_option_style('auto_qos', 'hal')
+      assert_equal 'display: none;', find_option_style('auto_qos', 'gpt')
+
+      # select the right account, and now they're available
+      find("##{bc_ele_id('auto_accounts')} option[value='pzs1124'][data-option-for-cluster-oakley='false']").select_option
+      assert_equal '', find_option_style('auto_qos', 'staff')
+      assert_equal '', find_option_style('auto_qos', 'phoenix')
+      assert_equal '', find_option_style('auto_qos', 'geophys')
+      assert_equal '', find_option_style('auto_qos', 'hal')
+      assert_equal '', find_option_style('auto_qos', 'gpt')
+
+      # but the value is still the same
+      assert_equal 'owens-default', find_value('auto_qos')
+
+      # change the cluster, and qos changes but account stays the same
+      select('oakley', from: bc_ele_id('cluster'))
+      assert_equal 'oakley-default', find_value('auto_qos')
+      assert_equal 'pzs1124', find_value('auto_accounts')
     end
   end
 end

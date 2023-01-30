@@ -61,7 +61,42 @@ module AccountCache
     end
   end
 
+  def dynamic_qos
+    Rails.cache.fetch('dynamic_qos', expires_in: 4.hours) do
+      accounts.map do |account|
+        account.qos.map do |qos|
+          [account.name, account.cluster, qos]
+        end
+      end.flatten(1).map do |tuple|
+        other_accounts = account_names.reject { |acct| acct == tuple[0] }
+        other_clusters = Configuration.job_clusters.reject { |c| c.id.to_s == tuple[1] }
+
+        data = {}.tap do |hash|
+          other_clusters.each do |cluster|
+            hash["data-option-for-cluster-#{cluster.id}"] = false
+          end
+
+          other_accounts.each do |account|
+            hash["data-option-for-auto-accounts-#{account}"] = false
+          end
+        end
+
+        [
+          tuple[2], tuple[2], data
+        ]
+      end
+    end
+  end
+
   private
+
+  def unique_qos_names
+    [].tap do |arr|
+      accounts.each do |acct|
+        arr << acct.qos
+      end
+    end.flatten.uniq
+  end
 
   # do you have _any_ account that can submit to this queue?
   def blocked_queue?(queue)
