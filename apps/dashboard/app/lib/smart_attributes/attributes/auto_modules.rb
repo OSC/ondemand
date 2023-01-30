@@ -26,6 +26,10 @@ module SmartAttributes
         'select'
       end
 
+      def label(*)
+        @opts[:label] || "#{@hpc_module.titleize} version"
+      end
+
       def select_choices
         versions = HpcModule.all_versions(@hpc_module).map do |mod|
           data_opts = Configuration.job_clusters.map do |cluster|
