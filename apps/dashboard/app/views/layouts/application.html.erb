@@ -15,12 +15,12 @@
   <%= yield :head %>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta id="ood_config" data-max-file-size="<%= Configuration.file_upload_max %>">
 
   <!-- configuration options exposed to javascript -->
   <meta id="ood_config"
     data-bg-color="<%= @user_configuration.brand_bg_color %>"
     data-link-bg-color="<%= @user_configuration.brand_link_active_bg_color %>"
+    data-max-file-size="<%= Configuration.file_upload_max %>"
   />
 </head>
 <body>

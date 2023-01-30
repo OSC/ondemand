@@ -38,4 +38,11 @@ function navbarHighlight(theme, color) {
     }`;
 }
 
+function getConfigData() {
+  const cfgData = configData();
+
+  return cfgData;
+}
+
 export { setNavbarColor };
+export { getConfigData };
