@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+added configuration to hide app version for batch connects apps (#2462)\
+Fixed link for restart server on NavBar.STATIC_LINKS (#2515)\
+Auto queues (#2511)\
+add auto_accounts batch connect option (#2479)\
+lint a random file (#2509)\
+should be next, not break in this closure (#2496)\
+Remove Jquery and use dataset for data (#2506)\
+Added recently used applications widget (#2503)\
+allow for duplicate option values (#2497)\
+Update Changelog (#2504)\
+lint a random file (#2502)\
+update dependencies (#2505)
 
 ### Changed
 
