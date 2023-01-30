@@ -62,6 +62,7 @@ class UserConfigurationTest < ActiveSupport::TestCase
       nav_categories: ["Apps", "Files", "Jobs", "Clusters", "Interactive Apps"],
       nav_bar: [],
       help_bar: [],
+      help_menu: [],
       interactive_apps_menu: [],
       custom_pages: {},
     }
