@@ -313,7 +313,8 @@ class OodApp
                   elsif version_from_file.to_s.downcase == 'unknown'
                     nil
                   else
-                    (version_from_file || version_from_git).strip
+                    # Both could be null. Added null safety
+                    (version_from_file || version_from_git)&.strip
                   end
   end
 
