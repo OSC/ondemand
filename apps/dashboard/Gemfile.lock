@@ -1,11 +1,3 @@
-PATH
-  remote: /users/PZS0714/johrstrom/ondemand/misc/core
-  specs:
-    ood_core (0.23.0)
-      ffi (~> 1.9, >= 1.9.6)
-      ood_support (~> 0.0.2)
-      rexml (~> 3.2)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -174,6 +166,10 @@ GEM
       ood_core (~> 0.1)
       rails (>= 6.0.0, < 7)
       redcarpet (~> 3.2)
+    ood_core (0.23.0)
+      ffi (~> 1.9, >= 1.9.6)
+      ood_support (~> 0.0.2)
+      rexml (~> 3.2)
     ood_support (0.0.3)
     pbs (2.2.1)
       ffi (~> 1.9, >= 1.9.6)
@@ -295,7 +291,7 @@ DEPENDENCIES
   local_time (~> 1.0.3)
   mocha (~> 1.1)
   ood_appkit (~> 2.1.0)
-  ood_core!
+  ood_core (~> 0.20)
   ood_support (~> 0.0.2)
   pbs (~> 2.2.1)
   rails (= 6.1.7.2)
