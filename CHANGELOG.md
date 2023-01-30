@@ -49,7 +49,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - Min and maxes in [1441](https://github.com/OSC/ondemand/pull/1441).
   - Other fields in [1449](https://github.com/OSC/ondemand/pull/1449).
   - Add functionality for hiding or showing elements in [1529](https://github.com/OSC/ondemand/pull/1529).
+- Several automatic batch connect items have been added:
   - `auto_primary_group` added in [1964](https://github.com/OSC/ondemand/pull/1964).
+  - `auto_accounts` were added in [2479](https://github.com/OSC/ondemand/pull/2479).
+  - `auto_queues` were added in [2511](https://github.com/OSC/ondemand/pull/2511).
+  - Modules can be automatically loaded in batch connect forms in (1930)(https://github.com/OSC/ondemand/pull/1930).
 - Test cases for example files for both ood_portal and nginx_stage in [832](https://github.com/OSC/ondemand/pull/832).
 - Debian packaging in [1466](https://github.com/OSC/ondemand/pull/1466). With many many subsequent patches.
 - Automation will now push ondemand tar.gz to release page on tags in [1564](https://github.com/OSC/ondemand/pull/1564).
@@ -57,7 +61,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Apps recognize if they're preset. Preset apps don't show forms, they just launch in [#1815](https://github.com/OSC/ondemand/pull/1815).
 - Citation information for this source is now available in [1887](https://github.com/OSC/ondemand/pull/1887) and releases are made
   in [1888](https://github.com/OSC/ondemand/pull/1887).
-- Modules can be automatically loaded in batch connect forms in (1930)(https://github.com/OSC/ondemand/pull/1930).
 - Custom CSS files can be added in [2168](https://github.com/OSC/ondemand/pull/2168).
 - Cloud Storage.
   - Support cloud storage file transfers in [2186](https://github.com/OSC/ondemand/pull/2186).
@@ -76,6 +79,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - BatchConnect choices now appear in the cards if display is set to true in [2381](https://github.com/OSC/ondemand/pull/2381).
 - BatchConnect apps can now use `auto_group` attributes in Auto groups [2370](https://github.com/OSC/ondemand/pull/2370).
 - BatchConnect job directories will now be cleaned on some interval in [2482](https://github.com/OSC/ondemand/pull/2482).
+- Added recently used applications widget in [2503](https://github.com/OSC/ondemand/pull/2503).
+- Added a configuration to hide app version for batch connects apps in [2462](https://github.com/OSC/ondemand/pull/2462).
 
 ### Fixed
 
