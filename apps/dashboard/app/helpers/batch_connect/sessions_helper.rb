@@ -22,6 +22,7 @@ module BatchConnect::SessionsHelper
                   status << content_tag(:span, pluralize(num_cores, "core"), class: "badge badge-#{status_context(session)} badge-pill") unless num_cores.zero?
                 end
                 status << "#{status session}"
+                relaunch(status, session)
                 tag.span(status.join(" | ").html_safe, class: "card-text")
               end
             )
@@ -195,6 +196,28 @@ module BatchConnect::SessionsHelper
     end
   end
 
+  def relaunch(status_array, session)
+    return unless session.completed?
+
+    batch_connect_app = session.app
+    return unless batch_connect_app.valid?
+
+    user_context = session.user_context
+    params = batch_connect_app.attributes.map{|attribute| ["batch_connect_session_context[#{attribute.id}]", user_context.fetch(attribute.id, '')]}.to_h
+    title = "#{t('dashboard.batch_connect_sessions_relaunch_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}"
+    status_array << button_to(
+      batch_connect_session_contexts_path(token: batch_connect_app.token),
+      method: :post,
+      class: %w[btn px-1 py-0 btn-outline-dark relaunch],
+      form_class: %w[d-inline relaunch],
+      title: title,
+      'aria-label': title,
+      data: { toggle: "tooltip", placement: "left" },
+      params: params
+    ) do
+      "#{fa_icon('sync', classes: nil, title: '')}".html_safe
+    end
+  end
 
   def cancel_or_delete(session)
     if Configuration.cancel_session_enabled && !session.completed?
@@ -205,24 +228,28 @@ module BatchConnect::SessionsHelper
   end
 
   def delete(session)
+    title = "#{t('dashboard.batch_connect_sessions_delete_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}"
     button_to(
       batch_connect_session_path(session.id),
       method: :delete,
       class: "btn btn-danger float-right btn-delete",
-      title: "#{t('dashboard.batch_connect_sessions_delete_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}",
-      data: { confirm: t('dashboard.batch_connect_sessions_delete_confirm'), toggle: "tooltip", placement: "bottom", selector: true }
+      title: title,
+      'aria-label': title,
+      data: { confirm: t('dashboard.batch_connect_sessions_delete_confirm'), toggle: "tooltip", placement: "bottom"}
     ) do
       "#{fa_icon('times-circle', classes: nil)} <span aria-hidden='true'>#{t('dashboard.batch_connect_sessions_delete_title')}</span>".html_safe
     end
   end
 
   def cancel(session)
+    title = "#{t('dashboard.batch_connect_sessions_cancel_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}"
     button_to(
       batch_connect_cancel_session_path(session.id),
       method: :post,
       class: "btn btn-danger float-right btn-cancel",
-      title: "#{t('dashboard.batch_connect_sessions_cancel_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}",
-      data: { confirm: t('dashboard.batch_connect_sessions_cancel_confirm'), toggle: "tooltip", placement: "bottom", selector: true }
+      title: title,
+      'aria-label': title,
+      data: { confirm: t('dashboard.batch_connect_sessions_cancel_confirm'), toggle: "tooltip", placement: "bottom" }
     ) do
       "#{fa_icon('times-circle', classes: nil)} <span aria-hidden='true'>#{t('dashboard.batch_connect_sessions_cancel_title')}</span>".html_safe
     end
