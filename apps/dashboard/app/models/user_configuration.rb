@@ -101,6 +101,8 @@ class UserConfiguration
 
   # The current user profile. Used to select the configuration properties.
   def profile
+    return CurrentUser.user_settings[:profile_override].to_sym if CurrentUser.user_settings[:profile_override]
+
     if Configuration.host_based_profiles
       request_hostname
     else

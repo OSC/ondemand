@@ -31,3 +31,14 @@ function installSettingHandlers(name) {
 
 window.installSettingHandlers = installSettingHandlers;
 window.tryUpdateSetting = tryUpdateSetting;
+
+jQuery(function (){
+  function showSpinner() {
+    $('body').addClass('modal-open');
+    $('#full-page-spinner').removeClass('d-none');
+  }
+
+  $('button.relaunch').each((index, element) => {
+    $(element).on('click', showSpinner);
+  });
+});

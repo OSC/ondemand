@@ -53,10 +53,57 @@ class BatchConnect::SessionsHelperTest < ActionView::TestCase
     assert_equal delete_session_title, button['title']
   end
 
-  def create_session(state = :running)
+  test 'relaunch should ignore sessions when relaunch_session_enabled is false' do
+    Configuration.stubs(:relaunch_session_enabled).returns(false)
+    status_array = []
+    relaunch(status_array, create_session(:completed))
+    assert_equal [], status_array
+  end
+
+  test 'relaunch should ignore sessions when session is not completed' do
+    Configuration.stubs(:relaunch_session_enabled).returns(true)
+    OodCore::Job::Status.states.each do |state|
+      next if state == :completed
+
+      status_array = []
+      relaunch(status_array, create_session(state))
+      assert_equal [], status_array
+    end
+  end
+
+  test 'relaunch should ignore sessions when session application is not valid' do
+    Configuration.stubs(:relaunch_session_enabled).returns(true)
+    status_array = []
+    relaunch(status_array, create_session(:completed, valid: false))
+    assert_equal [], status_array
+  end
+
+  test 'relaunch should add relaunch form when session is completed and relaunch_session_enabled is true' do
+    Configuration.stubs(:relaunch_session_enabled).returns(true)
+    status_array = []
+    relaunch(status_array, create_session(:completed))
+
+    assert_equal 1, status_array.size
+    html = Nokogiri::HTML(status_array[0])
+    form = html.at_css('form')
+    assert_equal batch_connect_session_contexts_path(token: 'sys/token'), form['action']
+    assert_equal true, form['class'].include?('relaunch')
+
+    button = html.at_css('button')
+    assert_equal  'Relaunch AppName Session', button['title']
+    assert_equal true, button['class'].include?('relaunch')
+  end
+
+  def create_session(state = :running, valid: true)
     value = '{"id":"1234","job_id":"1","created_at":1669139262,"token":"sys/token","title":"AppName","cache_completed":false}'
     BatchConnect::Session.new.from_json(value).tap do |session|
       session.stubs(:status).returns(OodCore::Job::Status.new(state: state))
+      OpenStruct.new.tap do |sys_app|
+        sys_app.send('valid?=', valid)
+        sys_app.attributes = []
+        sys_app.token = 'sys/token'
+        session.stubs(:app).returns(sys_app)
+      end
     end
   end
 
