@@ -97,8 +97,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'should render session panel with relaunch button when relaunch_session_enabled is true' do
-    Configuration.stubs(:relaunch_session_enabled).returns(true)
+  test 'should render session panel with relaunch button' do
     value = '{"id":"1234","job_id":"1","created_at":1669139262,"token":"sys/token","title":"session title","cache_completed":true}'
     session = BatchConnect::Session.new.from_json(value)
     session.stubs(:status).returns(OodCore::Job::Status.new(state: :completed))

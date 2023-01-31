@@ -197,7 +197,7 @@ module BatchConnect::SessionsHelper
   end
 
   def relaunch(status_array, session)
-    return unless Configuration.relaunch_session_enabled && session.completed?
+    return unless session.completed?
 
     batch_connect_app = session.app
     return unless batch_connect_app.valid?
@@ -211,6 +211,7 @@ module BatchConnect::SessionsHelper
       class: %w[btn px-1 py-0 btn-outline-dark relaunch],
       form_class: %w[d-inline relaunch],
       title: title,
+      'aria-label': title,
       data: { toggle: "tooltip", placement: "left" },
       params: params
     ) do
@@ -227,24 +228,28 @@ module BatchConnect::SessionsHelper
   end
 
   def delete(session)
+    title = "#{t('dashboard.batch_connect_sessions_delete_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}"
     button_to(
       batch_connect_session_path(session.id),
       method: :delete,
       class: "btn btn-danger float-right btn-delete",
-      title: "#{t('dashboard.batch_connect_sessions_delete_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}",
-      data: { confirm: t('dashboard.batch_connect_sessions_delete_confirm'), toggle: "tooltip", placement: "bottom", selector: true }
+      title: title,
+      'aria-label': title,
+      data: { confirm: t('dashboard.batch_connect_sessions_delete_confirm'), toggle: "tooltip", placement: "bottom"}
     ) do
       "#{fa_icon('times-circle', classes: nil)} <span aria-hidden='true'>#{t('dashboard.batch_connect_sessions_delete_title')}</span>".html_safe
     end
   end
 
   def cancel(session)
+    title = "#{t('dashboard.batch_connect_sessions_cancel_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}"
     button_to(
       batch_connect_cancel_session_path(session.id),
       method: :post,
       class: "btn btn-danger float-right btn-cancel",
-      title: "#{t('dashboard.batch_connect_sessions_cancel_title')} #{session.title} #{t('dashboard.batch_connect_sessions_word')}",
-      data: { confirm: t('dashboard.batch_connect_sessions_cancel_confirm'), toggle: "tooltip", placement: "bottom", selector: true }
+      title: title,
+      'aria-label': title,
+      data: { confirm: t('dashboard.batch_connect_sessions_cancel_confirm'), toggle: "tooltip", placement: "bottom" }
     ) do
       "#{fa_icon('times-circle', classes: nil)} <span aria-hidden='true'>#{t('dashboard.batch_connect_sessions_cancel_title')}</span>".html_safe
     end

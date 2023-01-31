@@ -53,15 +53,7 @@ class BatchConnect::SessionsHelperTest < ActionView::TestCase
     assert_equal delete_session_title, button['title']
   end
 
-  test 'relaunch should ignore sessions when relaunch_session_enabled is false' do
-    Configuration.stubs(:relaunch_session_enabled).returns(false)
-    status_array = []
-    relaunch(status_array, create_session(:completed))
-    assert_equal [], status_array
-  end
-
   test 'relaunch should ignore sessions when session is not completed' do
-    Configuration.stubs(:relaunch_session_enabled).returns(true)
     OodCore::Job::Status.states.each do |state|
       next if state == :completed
 
@@ -72,14 +64,12 @@ class BatchConnect::SessionsHelperTest < ActionView::TestCase
   end
 
   test 'relaunch should ignore sessions when session application is not valid' do
-    Configuration.stubs(:relaunch_session_enabled).returns(true)
     status_array = []
     relaunch(status_array, create_session(:completed, valid: false))
     assert_equal [], status_array
   end
 
-  test 'relaunch should add relaunch form when session is completed and relaunch_session_enabled is true' do
-    Configuration.stubs(:relaunch_session_enabled).returns(true)
+  test 'relaunch should add relaunch form when session is completed' do
     status_array = []
     relaunch(status_array, create_session(:completed))
 

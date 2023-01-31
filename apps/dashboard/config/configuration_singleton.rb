@@ -50,7 +50,6 @@ class ConfigurationSingleton
       :disable_bc_shell             => false,
       :cancel_session_enabled       => false,
       :hide_app_version             => false,
-      :relaunch_session_enabled     => false,
     }.freeze
   end
 
