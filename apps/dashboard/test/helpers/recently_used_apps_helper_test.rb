@@ -30,13 +30,25 @@ class RecentlyUsedAppsHelperTest < ActionView::TestCase
   end
 
   test 'recently_used_apps should ignore applications that are not batch_connect' do
-    cache_files = create_cache_files(['rstudio.json', 'jupyter.json'])
+    cache_files = create_cache_files(['rstudio.json', 'batch_connect.json', 'jupyter.json'])
     BatchConnect::Session.stubs({ cache_root: stub({ children: cache_files, join: nil }) })
-    @sys_apps = create_batch_connect_apps(['rstudio.json', 'jupyter.json'], batch_connect: false)
+    @sys_apps = create_batch_connect_apps(['rstudio.json', 'jupyter.json'], batch_connect: false) + create_batch_connect_apps(['batch_connect.json'])
 
     result = recently_used_apps
 
-    assert_equal [], result
+    assert_equal 1, result.size
+    assert_equal 'batch_connect.json', result[0].cache_file
+  end
+
+  test 'recently_used_apps should ignore applications that are not valid' do
+    cache_files = create_cache_files(['rstudio.json', 'valid.json', 'jupyter.json'])
+    BatchConnect::Session.stubs({ cache_root: stub({ children: cache_files, join: nil }) })
+    @sys_apps = create_batch_connect_apps(['rstudio.json', 'jupyter.json'], valid: false) + create_batch_connect_apps(['valid.json'])
+
+    result = recently_used_apps
+
+    assert_equal 1, result.size
+    assert_equal 'valid.json', result[0].cache_file
   end
 
   test 'recently_used_apps should return the applications that matches the cache files' do
@@ -111,11 +123,12 @@ class RecentlyUsedAppsHelperTest < ActionView::TestCase
     end
   end
 
-  def create_batch_connect_apps(files, batch_connect: true)
+  def create_batch_connect_apps(files, batch_connect: true, valid: true)
     attributes = files.map { |filename| SmartAttributes::Attribute.new(filename, { cacheable: false }) }
     files.map do |filename|
       BatchConnectAppMock.new.tap do |sys_app|
         sys_app.send('batch_connect_app?=', batch_connect)
+        sys_app.send('valid?=', valid)
         sys_app.cache_file = filename
         sys_app.sub_app_list = [sys_app]
         sys_app.build_session_context = BatchConnect::SessionContext.new(attributes)
