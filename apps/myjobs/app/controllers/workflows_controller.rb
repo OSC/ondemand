@@ -182,8 +182,8 @@ class WorkflowsController < ApplicationController
       else
         # FIXME: instead of alert with html, better to have alert and alert_error_output on flash
         format.html do
-          redirect_to workflows_url,
-                      flash: { alert: 'Failed to submit batch job:', alert_error: @workflow.errors.to_a.join("\n") }
+          flash = { alert: 'Failed to submit batch job:', alert_error: @workflow.errors.to_a.join("\n") }
+          redirect_to(workflows_url, flash: flash)
         end
         format.json { render json: @workflow.errors, status: :internal_server_error }
       end
