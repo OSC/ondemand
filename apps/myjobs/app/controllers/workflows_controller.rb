@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class WorkflowsController < ApplicationController
   before_action :update_jobs, only: [:index, :show, :destroy]
 
@@ -5,7 +7,8 @@ class WorkflowsController < ApplicationController
   # GET /workflows.json
   def index
     if OODClusters.none?
-      flash.now[:alert] = 'There are no configured hosts that allow you to submit jobs. Please contact your system administrator.'
+      flash.now[:alert] =
+        'There are no configured hosts that allow you to submit jobs. Please contact your system administrator.'
     end
 
     @default_template = Template.default
@@ -21,7 +24,7 @@ class WorkflowsController < ApplicationController
   def show
     set_workflow
     @workflow = Workflow.find(params[:id])
-    @workflow.jobs.last.update_status! unless @workflow.jobs.last.nil?
+    @workflow.jobs.last&.update_status!
   end
 
   # GET /workflows/new
@@ -32,9 +35,7 @@ class WorkflowsController < ApplicationController
 
   def new_from_path
     @workflow = Workflow.new
-    if params[:path]
-      @workflow = Workflow.new_from_path(params[:path])
-    end
+    @workflow = Workflow.new_from_path(params[:path]) if params[:path]
   end
 
   # GET /workflows/1/edit
@@ -91,9 +92,7 @@ class WorkflowsController < ApplicationController
     @workflow.errors.add(:staging_template_dir, error) unless copy_safe
 
     # If the workflow passes validation but a name hasn't been assigned, set the name to the inputted path
-    if @workflow.errors.empty? && @workflow.name.blank?
-      @workflow.name = @workflow.staging_template_dir
-    end
+    @workflow.name = @workflow.staging_template_dir if @workflow.errors.empty? && @workflow.name.blank?
 
     respond_to do |format|
       if @workflow.errors.empty? && @workflow.save
@@ -127,7 +126,7 @@ class WorkflowsController < ApplicationController
   def stop
     set_workflow
 
-    @workflow.jobs.last.update_status! unless @workflow.jobs.last.nil?
+    @workflow.jobs.last&.update_status!
     session[:selected_id] = @workflow.id
 
     respond_to do |format|
@@ -169,9 +168,7 @@ class WorkflowsController < ApplicationController
 
     # We want to allow the user to resubmit a job that has been run or failed. This will destroy all preexisting
     # job records for this workflow when the job is no longer queued or running, which will clear the submitted state.
-    if @workflow.submitted? && !@workflow.active?
-      @workflow.jobs.destroy_all
-    end
+    @workflow.jobs.destroy_all if @workflow.submitted? && !@workflow.active?
 
     respond_to do |format|
       if @workflow.submitted?
@@ -183,8 +180,11 @@ class WorkflowsController < ApplicationController
         format.html { redirect_to workflows_url, notice: 'Job was successfully submitted.' }
         format.json { head :no_content }
       else
-        #FIXME: instead of alert with html, better to have alert and alert_error_output on flash
-        format.html { redirect_to workflows_url, flash: { alert: 'Failed to submit batch job:', alert_error: @workflow.errors.to_a.join("\n") }}
+        # FIXME: instead of alert with html, better to have alert and alert_error_output on flash
+        format.html do
+          redirect_to workflows_url,
+                      flash: { alert: 'Failed to submit batch job:', alert_error: @workflow.errors.to_a.join("\n") }
+        end
         format.json { render json: @workflow.errors, status: :internal_server_error }
       end
     end
@@ -209,18 +209,19 @@ class WorkflowsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_workflow
-      @workflow = Workflow.preload(:jobs).find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def workflow_params
-      params.require(:workflow).permit!
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_workflow
+    @workflow = Workflow.preload(:jobs).find(params[:id])
+  end
 
-    def update_jobs
-      # get all of the active workflows
-      Workflow.preload(:jobs).active.to_a.each(&:update_status!)
-    end
+  # Only allow a trusted parameter "white list" through.
+  def workflow_params
+    params.require(:workflow).permit!
+  end
+
+  def update_jobs
+    # get all of the active workflows
+    Workflow.preload(:jobs).active.to_a.each(&:update_status!)
+  end
 end
