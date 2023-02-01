@@ -7,8 +7,8 @@ class WorkflowsController < ApplicationController
   # GET /workflows.json
   def index
     if OODClusters.none?
-      flash.now[:alert] =
-        'There are no configured hosts that allow you to submit jobs. Please contact your system administrator.'
+      msg = 'There are no configured hosts that allow you to submit jobs. Please contact your system administrator.'
+      flash.now[:alert] = msg
     end
 
     @default_template = Template.default
