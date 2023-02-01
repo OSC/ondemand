@@ -96,7 +96,7 @@ input[type="file"] {
   left: 0;
   right: 0;
   background: rgba(0, 0, 0, 0.6);
-  z-index: 10;
+  z-index: 10000;
 }
 #full-page-spinner .spinner-border{
   display: block;
