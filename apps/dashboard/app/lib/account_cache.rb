@@ -118,9 +118,11 @@ module AccountCache
   end
 
   def queues_per_cluster
-    {}.tap do |hash|
-      Configuration.job_clusters.each do |cluster|
-        hash[cluster.id] = cluster.job_adapter.queues
+    Rails.cache.fetch('queues_per_cluster', expires_in: 24.hours) do
+      {}.tap do |hash|
+        Configuration.job_clusters.each do |cluster|
+          hash[cluster.id] = cluster.job_adapter.queues
+        end
       end
     end
   end
