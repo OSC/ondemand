@@ -22,5 +22,5 @@
   <% end -%>
 
  <%= f.submit( t('dashboard.batch_connect_sessions_novnc_launch', app_title: app_title), class: 'btn btn-primary', :formtarget => "_blank") %>
- <%= link_to t('dashboard.batch_connect_sessions_novnc_view_only'), novnc_link(connect, view_only: true), class: 'btn btn-light float-right', target: '_blank' %>
+ <%= link_to t('dashboard.batch_connect_sessions_novnc_view_only'), novnc_link(connect, view_only: true), class: 'btn btn-light float-right border border-dark', target: '_blank' %>
 <% end %>
