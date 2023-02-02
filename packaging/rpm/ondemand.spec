@@ -10,7 +10,7 @@
 %define runtime_version_full %{runtime_version}-%{runtime_release}%{?dist}
 %define selinux_policy_ver %(rpm --qf "%%{version}-%%{release}" -q selinux-policy)
 %global selinux_module_version %{package_version}.%{package_release}
-%global gem_home %{scl_ondemand_core_gem_home}/%{version}
+%global gem_home %{scl_ondemand_core_gem_home}/%{version}-%{package_release}
 %global gems_name ondemand-gems-%{version}-%{package_release}
 
 %define __brp_mangle_shebangs /bin/true
