@@ -13,23 +13,21 @@
   <thead>
     <tr>
       <th scope="col">Script Name</th>
-      <th scope="col">Script Form</th>
+      <!-- <th scope="col">Preview Form</th> -->
       <th scope="col">Actions</th>
     </tr>
   </thead>
   <tbody>
     <% @scripts.each do |script| %>
       <tr>
-        <th scope="row"><%= script.name.titleize %></th>
+        <th scope="row"><%= script.name %></th>
         <td>
-          <%= link_to "Open Form", OodAppkit.editor.edit(path: "#{script.script_dataroot}/form.yml.erb").to_s, 
-          class: 'btn btn-primary btn-sm', :target => '_blank' %>
-        </td>
-        <td>
-          <%= link_to "Submit", project_script_submit_url(project_id: @project.name, script_id: script.name), :method => :put, 
-          class: 'btn btn-success btn-sm', id: "submit-button-" + script.name.to_s %>
-          <%= link_to "Delete", project_script_destroy_path(project_id: @project.name, script_id: script.name), 
-                :method => :delete, class: 'btn btn-danger btn-sm', data: {confirm: "Are you sure?"} %>
+          <%= link_to "Edit", OodAppkit.editor.edit(path: "#{@project.project_dataroot}/#{script.name}").to_s, 
+            class: 'btn btn-primary btn-sm', :target => '_blank' %>
+          
+          <%= link_to 'Delete', project_script_path(@project.name, script.name), class: 'btn btn-danger', :method => :delete,
+            data: {confirm: I18n.t('dashboard.jobs_project_delete_project_confirmation')} %>
+      
         </td>
       </tr>
     <% end %>

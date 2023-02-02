@@ -32,11 +32,21 @@ class ScriptsController < ApplicationController
     redirect_to project_path({ id: params[:project_id] }), notice: I18n.t('dashboard.jobs_project_script_submitted')
   end
 
-  # DELETE /projects/:project_id/scripts/:id/destroy
+  # DELETE /projects/:project_id/scripts/:id
   def destroy
+    Rails.logger.debug("GWB: destroy1: #{script_params.inspect}")
     @project = Project.find(params[:project_id])
-
+    @script = Script.new({ project_id: params[:project_id], name: params[:id] })
+    Rails.logger.debug("GWB: destroy: #{@script.inspect}")
+    Script.delete(project_id, script_id)
     redirect_to project_path({ id: params[:project_id] }), notice: I18n.t('dashboard.jobs_project_script_deleted')
+  end
+
+  # GET /projects/:project_id/scripts/:id/preview
+  def preview
+    @project = Project.find(params[:project_id])
+    @script = Script.new({ project_id: params[:project_id], name: params[:script_id] })
+    @session_context = @script.to_session_context
   end
 
   private
@@ -45,7 +55,7 @@ class ScriptsController < ApplicationController
     params
       .require(:script)
       .permit(
-        :name, :batch_connect_form, :project_id
+        :name, :project_id
       )
   end
 end

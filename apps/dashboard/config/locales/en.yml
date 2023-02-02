@@ -208,6 +208,8 @@ en:
     jobs_project_script_submitted: "Job successfully submitted!"
     jobs_project_script_deleted: "Script successfully deleted!"
     jobs_project_script_created: "Script successfully created!"
+    jobs_project_script_form_name: "Enter the name of your script.  Do not enter the extension."
+    jobs_project_script_form_type: "Select the type of script."
     jobs_project_created: "Project successfully created!"
     jobs_project_deleted: "Project successfully deleted!"
     jobs_project_delete_project_confirmation: "Delete all contents of project directory?"

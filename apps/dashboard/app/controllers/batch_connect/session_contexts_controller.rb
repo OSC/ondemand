@@ -37,7 +37,6 @@ class BatchConnect::SessionContextsController < ApplicationController
     respond_to do |format|
       if @session.save(app: @app, context: @session_context, format: @render_format)
         cache_file.write(@session_context.to_json)  # save context to cache file
-    
         format.html { redirect_to batch_connect_sessions_url, notice: t('dashboard.batch_connect_sessions_status_blurb_create_success') }
         format.json { head :no_content }
       else
@@ -66,6 +65,8 @@ class BatchConnect::SessionContextsController < ApplicationController
 
     # Set the session context from the app
     def set_session_context
+      Rails.logger.debug("GWB: #{@app.build_session_context.inspect}")
+
       @session_context = @app.build_session_context
     end
 
