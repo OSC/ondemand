@@ -150,7 +150,7 @@ GEM
       ood_core (~> 0.1)
       rails (>= 6.0.0, < 7)
       redcarpet (~> 3.2)
-    ood_core (0.23.1)
+    ood_core (0.23.2)
       ffi (~> 1.9, >= 1.9.6)
       ood_support (~> 0.0.2)
       rexml (~> 3.2)
