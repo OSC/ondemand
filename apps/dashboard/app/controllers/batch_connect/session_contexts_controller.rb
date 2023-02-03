@@ -65,8 +65,6 @@ class BatchConnect::SessionContextsController < ApplicationController
 
     # Set the session context from the app
     def set_session_context
-      Rails.logger.debug("GWB: #{@app.build_session_context.inspect}")
-
       @session_context = @app.build_session_context
     end
 
