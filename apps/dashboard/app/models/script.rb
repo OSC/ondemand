@@ -42,10 +42,6 @@ class Script
     @project_id = attributes[:project_id]
   end
 
-  def to_session_context
-    BatchConnect::SessionContext.new({})
-  end
-
   def project!
     Project.find(@project_id) unless @project_id.nil?
   end
