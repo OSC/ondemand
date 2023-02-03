@@ -12,10 +12,10 @@ class Script
   # Static methods go inside the self block
   class << self
     def all(project_id)
-      @project = Project.find(project_id)
-      return [] unless @project.project_dataroot.directory? && @project.project_dataroot.executable? && @project.project_dataroot.readable?
+      project = Project.find(project_id)
+      return [] unless project.project_dataroot.directory? && project.project_dataroot.executable? && project.project_dataroot.readable?
 
-      @project.project_dataroot.children.map do |d|
+      project.project_dataroot.children.map do |d|
         Script.new({ name: d.basename.to_s, project_id: project_id }) if form?(d.basename.to_s)
       rescue StandardError => e
         Rails.logger.warn("Didn't create script. #{e.message}")
@@ -32,33 +32,36 @@ class Script
 
     def destroy(project_id, file_name)
       project = Project.find(project_id)
-      file_name = "#{project.project_dataroot}/#{file_name}"
-      Rails.logger.debug("GWB: destroy: #{file_name}")
+      file_name = "#{project.project_dataroot}/#{file_name}.yml.erb"
+      File.delete(file_name) if File.exist?(file_name)
     end
   end
 
   def initialize(attributes = {})
     @name = attributes[:name]
     @project_id = attributes[:project_id]
-    @@project = Project.find(@project_id)
   end
 
   def to_session_context
     BatchConnect::SessionContext.new({})
   end
 
+  def project!
+    Project.find(@project_id) unless @project_id.nil?
+  end
+
   def create_file
-    file_name = "#{@@project.project_dataroot}/#{@name}.yml.erb"
+    project = project!
+    file_name = "#{project.project_dataroot}/#{@name}.yml.erb"
     if File.new(file_name, 'w')
       true
     else
-      errors.add(:update, "Cannot create #{file_name}")
+      errors.add(:update, "Cannot script_create_file #{file_name}")
       false
     end
   end
 
   def save
-    Rails.logger.debug("GWB: save: #{@@project.inspect}")
     create_file
   end
 end

@@ -24,10 +24,8 @@
         <td>
           <%= link_to "Edit", OodAppkit.editor.edit(path: "#{@project.project_dataroot}/#{script.name}").to_s, 
             class: 'btn btn-primary btn-sm', :target => '_blank' %>
-          
-          <%= link_to 'Delete', project_script_path(@project.name, script.name), class: 'btn btn-danger', :method => :delete,
+          <%= link_to 'Delete', project_script_path(@project.name, base(script.name)), class: 'btn btn-danger', :method => :delete,
             data: {confirm: I18n.t('dashboard.jobs_project_delete_project_confirmation')} %>
-      
         </td>
       </tr>
     <% end %>
