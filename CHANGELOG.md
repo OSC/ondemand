@@ -54,6 +54,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - `auto_accounts` were added in [2479](https://github.com/OSC/ondemand/pull/2479).
   - `auto_queues` were added in [2511](https://github.com/OSC/ondemand/pull/2511).
   - Modules can be automatically loaded in batch connect forms in (1930)(https://github.com/OSC/ondemand/pull/1930).
+  - `auto_qos` was added [2516](https://github.com/OSC/ondemand/pull/2516).
 - Test cases for example files for both ood_portal and nginx_stage in [832](https://github.com/OSC/ondemand/pull/832).
 - Debian packaging in [1466](https://github.com/OSC/ondemand/pull/1466). With many many subsequent patches.
 - Automation will now push ondemand tar.gz to release page on tags in [1564](https://github.com/OSC/ondemand/pull/1564).
@@ -81,6 +82,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - BatchConnect job directories will now be cleaned on some interval in [2482](https://github.com/OSC/ondemand/pull/2482).
 - Added recently used applications widget in [2503](https://github.com/OSC/ondemand/pull/2503).
 - Added a configuration to hide app version for batch connects apps in [2462](https://github.com/OSC/ondemand/pull/2462).
+- Completed batch connect sessions can relaunch from their card in [2529](https://github.com/OSC/ondemand/pull/2529).
+- Sites can add anything to the help menu in [2514](https://github.com/OSC/ondemand/pull/2514).
 
 ### Fixed
 
