@@ -6,28 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-update dependencies (#2542)\
-Need to ensure gem path is also using release (#2541)\
-Ensure ondemand-gems name includes the release (#2540)\
-use memory store caches (#2532)\
-give this button a border (#2535)\
-better caching for scontrol (#2536)\
-Lint a random file (#2533)\
-update dependencies (#2537)\
-Fixed noVNC url + Improved spinner CSS (#2534)\
-Move max file size from inline to setting in config.js (#2525)\
-Added session relaunch feature (#2529)\
-lint a random file (#2527)\
-Updated recently_used_apps widget to only select valid applications (#2528)\
-Fixed support ticket spinner after Rails upgrade (#2530)\
-show the default module for auto_modules. and fix the form value. (#2523)\
-upgrade to rails 6.1.7.2 (#2524)\
-add auto_qos batch connect option. (#2516)\
-Added support to add links to the help menu dropdown (#2514)\
-Update Changelog (#2519)\
-Fix for OodApp.version for apps with no version (#2521)\
-lint a random file (#2518)\
-update dependencies (#2520)
 
 ### Changed
 
@@ -76,6 +54,7 @@ update dependencies (#2520)
   - `auto_accounts` were added in [2479](https://github.com/OSC/ondemand/pull/2479).
   - `auto_queues` were added in [2511](https://github.com/OSC/ondemand/pull/2511).
   - Modules can be automatically loaded in batch connect forms in (1930)(https://github.com/OSC/ondemand/pull/1930).
+  - `auto_qos` was added [2516](https://github.com/OSC/ondemand/pull/2516).
 - Test cases for example files for both ood_portal and nginx_stage in [832](https://github.com/OSC/ondemand/pull/832).
 - Debian packaging in [1466](https://github.com/OSC/ondemand/pull/1466). With many many subsequent patches.
 - Automation will now push ondemand tar.gz to release page on tags in [1564](https://github.com/OSC/ondemand/pull/1564).
@@ -103,6 +82,8 @@ update dependencies (#2520)
 - BatchConnect job directories will now be cleaned on some interval in [2482](https://github.com/OSC/ondemand/pull/2482).
 - Added recently used applications widget in [2503](https://github.com/OSC/ondemand/pull/2503).
 - Added a configuration to hide app version for batch connects apps in [2462](https://github.com/OSC/ondemand/pull/2462).
+- Completed batch connect sessions can relaunch from their card in [2529](https://github.com/OSC/ondemand/pull/2529).
+- Sites can add anything to the help menu in [2514](https://github.com/OSC/ondemand/pull/2514).
 
 ### Fixed
 
