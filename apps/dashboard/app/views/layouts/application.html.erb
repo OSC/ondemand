@@ -10,9 +10,9 @@
     <link rel="stylesheet" media="all" href="<%= path %>" nonce="<%= content_security_policy_nonce %>" />
   <% end %>
 
-  <%= csrf_meta_tags %>
-
   <%= yield :head %>
+
+  <%= csrf_meta_tags %>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="profile" content="<%= @user_configuration.profile %>">
@@ -22,6 +22,7 @@
     data-bg-color="<%= @user_configuration.brand_bg_color %>"
     data-link-bg-color="<%= @user_configuration.brand_link_active_bg_color %>"
     data-max-file-size="<%= Configuration.file_upload_max %>"
+    data-transfers-path="<%= transfers_path(format: "json") %>"
   />
 </head>
 <body>

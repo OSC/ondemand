@@ -4,7 +4,9 @@ import XHRUpload from '@uppy/xhr-upload'
 import _ from 'lodash';
 import {CONTENTID, EVENTNAME as DATATABLE_EVENTNAME} from './data_table.js';
 import { dupSafeName } from './utils.js';
-import { getConfigData } from '../config.js';
+import { maxFileSize } from '../config.js';
+import { csrf_token } from '../config.js';
+
 
 let uppy = null;
 
@@ -50,7 +52,7 @@ jQuery(function() {
           // "fullPath" should actually be the path relative to the current directory
           let filename = _.trimStart(d.fullPath, '/');
 
-          return fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token }})
+          return fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token() }})
           //TODO: parse json response verify if there was an error creating directory and handle error
 
         })).then(() => this.empty_dirs = []);
@@ -90,7 +92,7 @@ jQuery(function() {
     withCredentials: true,
     fieldName: 'file',
     limit: 1,
-    headers: { 'X-CSRF-Token': csrf_token },
+    headers: { 'X-CSRF-Token': csrf_token() },
     timeout: 128 * 1000,
   });
 
@@ -186,16 +188,3 @@ function reloadTable() {
   $(CONTENTID).trigger(DATATABLE_EVENTNAME.reloadTable,{});
 }
 
-function maxFileSize () {
-  const cfgData = getConfigData();
-
-  // Check if cfgData['maxFileSize'] is just empty string, 
-  // if so set default of maxFileUpload=10737420000 bytes.
-  if (cfgData['maxFileSize'].length == 0) {
-    return parseInt(10737420000, 10);
-  }
-  else {
-    const maxFileSize = cfgData['maxFileSize'];
-    return parseInt(maxFileSize, 10);
-  }
-}

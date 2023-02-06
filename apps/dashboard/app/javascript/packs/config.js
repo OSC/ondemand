@@ -38,11 +38,34 @@ function navbarHighlight(theme, color) {
     }`;
 }
 
-function getConfigData() {
+function maxFileSize () {
   const cfgData = configData();
 
-  return cfgData;
+  // Check if cfgData['maxFileSize'] is just empty string, 
+  // if so set default of maxFileUpload=10737420000 bytes.
+  if (cfgData['maxFileSize'].length == 0) {
+    return parseInt(10737420000, 10);
+  }
+  else {
+    const maxFileSize = cfgData['maxFileSize'];
+    return parseInt(maxFileSize, 10);
+  }
+}
+
+function transfersPath() {
+  const cfgData = configData();
+  const transfersPath = cfgData['transfersPath'];
+
+  return transfersPath;
+}
+
+function csrf_token() {
+  const csrf_token = document.querySelector('meta[name="csrf-token"]').content;
+
+  return csrf_token;
 }
 
 export { setNavbarColor };
-export { getConfigData};
+export { maxFileSize};
+export { transfersPath };
+export { csrf_token };
