@@ -478,17 +478,17 @@ data-confirm-modal@^1.6.2:
   integrity sha512-UYYgx8hS65X8Y336YRp1x6A5Gfkhh4iYkLq5jw7oS++hTcq/3yO8JOrbfHvvr7qqqQxBSPRyvUXnFEFIr4ja4w==
 
 datatables.net-bs4@>=1.12.1, datatables.net-bs4@^1.10.24:
-  version "1.13.1"
-  resolved "https://registry.yarnpkg.com/datatables.net-bs4/-/datatables.net-bs4-1.13.1.tgz#b704d9639bbe650c996e614dc37f529e8c09ff47"
-  integrity sha512-GBTOzUT8ooEUMPtjVHktvDk0MyakFGh89F8aHj8VwF1OFLbqTGEAPacO8XAgSfej/Ng3dbFJA6sjrk4gFra8kg==
+  version "1.13.2"
+  resolved "https://registry.yarnpkg.com/datatables.net-bs4/-/datatables.net-bs4-1.13.2.tgz#681b77d5dfd755019dd1266aa8fa69ca2c2513b7"
+  integrity sha512-sr5D4pV+VqIfPGPh3oKQDu+denk/bZ3ObyAYp/EbQLoLw2U6dvVJifHeccCC5M+ZhYtucHVID/qpbswx90QQHA==
   dependencies:
     datatables.net ">=1.12.1"
     jquery ">=1.7"
 
 datatables.net-bs@^1.10.23:
-  version "1.13.1"
-  resolved "https://registry.yarnpkg.com/datatables.net-bs/-/datatables.net-bs-1.13.1.tgz#db70bbb39ac556d1703add7f34c7e38fdfd5061b"
-  integrity sha512-xk7fGh4txtQWsvrkpQroHJse3YJ0Hkn3UAy1Kk1Ngok32BhVKIQ2t4ggchg73JY+o5TynBn5MgezYJpwMRU+Hg==
+  version "1.13.2"
+  resolved "https://registry.yarnpkg.com/datatables.net-bs/-/datatables.net-bs-1.13.2.tgz#369c6a7907fca9c147768ce3d8b78f54e504e3ea"
+  integrity sha512-oQuPELj7im1hm/3EbOWOCOUEigdnuV0U6MdFZd6OKFCPYKHk4RC56LHzU93mzPp78hpLZOz1WKSHACD3DSgYiA==
   dependencies:
     datatables.net ">=1.12.1"
     jquery ">=1.7"
@@ -499,26 +499,26 @@ datatables.net-plugins@^1.10.24:
   integrity sha512-4UpaRl7ZiTmStjV1QTB3x9V0EKmgdMvF7Ms+HzZ6gSzv33kPrL9Cw76/Uxxl02Z+ajergobvfMN64ndlZ9AXzA==
 
 datatables.net-select-bs4@^1.3.3:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/datatables.net-select-bs4/-/datatables.net-select-bs4-1.5.0.tgz#a4514dd49ea67c525c2083ef455c552a010ea6cb"
-  integrity sha512-x70tepWUQKDYFHejk2o1zR4HBqH7Idz4cMTemdeM8oT7lmRnGb9gbiUoYMgwc5h2S2jkDYeIkvQWWMsI17shCg==
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/datatables.net-select-bs4/-/datatables.net-select-bs4-1.6.0.tgz#56d37ba8f22bff02cf627819a76612e5625c0294"
+  integrity sha512-oHClu+R1IMpttFse0cAdUhl4uLHGgoHrFEU/QxpASOQLd1h4CtkiVnmDr0fFRvm6XZMRTNt5xgYgwr262YuXyQ==
   dependencies:
     datatables.net-bs4 ">=1.12.1"
     datatables.net-select ">=1.4.0"
     jquery ">=1.7"
 
 datatables.net-select@>=1.4.0, datatables.net-select@^1.3.3:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/datatables.net-select/-/datatables.net-select-1.5.0.tgz#e118438ad98e4857060d6dd66cb0fab215a54fda"
-  integrity sha512-PVYcX5phmu77r3a6miTyS1zF03cgX7Mx+BXH4wCJzZW+UHe2Xz9DAHgxvLQfE7j2M8LG45Ww7RxBhnkFKk1t7A==
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/datatables.net-select/-/datatables.net-select-1.6.0.tgz#e2d93943e374917e0192899bf67416effadbe449"
+  integrity sha512-1kj32GOXs/dSpjBL5iDV3pwRwHU0hhJLPnTW/NOUH8Vhv1rGR3/X3PMSCc/T+Fy7J1jCJFbk8hQDsruXQKfSzw==
   dependencies:
     datatables.net ">=1.12.1"
     jquery ">=1.7"
 
 datatables.net@>=1.12.1:
-  version "1.13.1"
-  resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.13.1.tgz#199f7cb63f4536c135e161f95254212835a1c130"
-  integrity sha512-cX5dDHsbVdLLYKsWOSE0MvuGUcV88zU5dZ/taK2puJV6F9Fw0CFsP3+U/kr+qpDSFOBLWISRyM4Q9wWWovPTNg==
+  version "1.13.2"
+  resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.13.2.tgz#48f7035b1696a29cb70909db1f2e0ebd5f946f3e"
+  integrity sha512-u5nOU+C9SBp1SyPmd6G+niozZtrBwo1E8xzdOk3JJaAkFYgX/KxF3Gd79R8YLbUfmIs2OLnLe5gaz/qs5U8UDA==
   dependencies:
     jquery ">=1.7"
 
@@ -736,9 +736,9 @@ http-https@^1.0.0:
   integrity sha512-o0PWwVCSp3O0wS6FvNr6xfBCHgt0m1tvPLFOCc2iFDKTRAXhB7m8klDf7ErowFH8POa6dVdGatKU5I1YYwzUyg==
 
 immutable@^4.0.0:
-  version "4.2.2"
-  resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.2.2.tgz#2da9ff4384a4330c36d4d1bc88e90f9e0b0ccd16"
-  integrity sha512-fTMKDwtbvO5tldky9QZ2fMX7slR0mYpY5nbnFWYp0fOzDhHqhgIw9KoYgxLWsoNTS9ZHGauHj18DTyEw6BK3Og==
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/immutable/-/immutable-4.2.3.tgz#a203cdda37a5a30bc351b982a1794c1930198815"
+  integrity sha512-IHpmvaOIX4VLJwPOuQr1NpeBr2ZG6vpIj3blsLVxXRWJscLioaJRStqC+NcBsLeCDsnGlPpXd5/WZmnE7MbsKA==
 
 is-binary-path@~2.1.0:
   version "2.1.0"
