@@ -4,7 +4,7 @@ import {CONTENTID} from './data_table.js';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 import {EVENTNAME as FILEOPS_EVENTNAME} from './file_ops.js';
 import { dupSafeName } from './utils.js';
-import { csrf_token } from '../config.js';
+import { csrfToken } from '../config.js';
 
 export {EVENTNAME};
 
@@ -134,7 +134,7 @@ class ClipBoard {
 
           const eventData = {
             'files': files,
-            'token': csrf_token(),
+            'token': csrfToken(),
             'from_fs': clipboard.from_fs,
             'to_fs': clipboard.to_fs,
           };
@@ -171,7 +171,7 @@ class ClipBoard {
 
         const eventData = {
           'files': files,
-          'token': csrf_token(),
+          'token': csrfToken(),
           'from_fs': clipboard.from_fs,
           'to_fs': clipboard.to_fs,
         };

@@ -5,7 +5,7 @@ import _ from 'lodash';
 import {CONTENTID, EVENTNAME as DATATABLE_EVENTNAME} from './data_table.js';
 import { dupSafeName } from './utils.js';
 import { maxFileSize } from '../config.js';
-import { csrf_token } from '../config.js';
+import { csrfToken } from '../config.js';
 
 
 let uppy = null;
@@ -52,7 +52,7 @@ jQuery(function() {
           // "fullPath" should actually be the path relative to the current directory
           let filename = _.trimStart(d.fullPath, '/');
 
-          return fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token() }})
+          return fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrfToken() }})
           //TODO: parse json response verify if there was an error creating directory and handle error
 
         })).then(() => this.empty_dirs = []);
@@ -92,7 +92,7 @@ jQuery(function() {
     withCredentials: true,
     fieldName: 'file',
     limit: 1,
-    headers: { 'X-CSRF-Token': csrf_token() },
+    headers: { 'X-CSRF-Token': csrfToken() },
     timeout: 128 * 1000,
   });
 

@@ -59,7 +59,7 @@ function transfersPath() {
   return transfersPath;
 }
 
-function csrf_token() {
+function csrfToken() {
   const csrf_token = document.querySelector('meta[name="csrf-token"]').content;
 
   return csrf_token;
@@ -68,4 +68,4 @@ function csrf_token() {
 export { setNavbarColor };
 export { maxFileSize};
 export { transfersPath };
-export { csrf_token };
+export { csrfToken };

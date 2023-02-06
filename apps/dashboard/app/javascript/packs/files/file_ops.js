@@ -4,7 +4,7 @@ import {EVENTNAME as CLIPBOARD_EVENTNAME} from './clip_board.js';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 import _ from 'lodash';
 import { transfersPath } from '../config.js';
-import { csrf_token } from '../config.js';
+import { csrfToken } from '../config.js';
 
 
 export {EVENTNAME};
@@ -342,7 +342,7 @@ class FileOps {
 
   newFile(filename) {
     let myFileOp = new FileOps();
-    fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?touch=true`, { method: 'put', headers: { 'X-CSRF-Token': csrf_token() } })
+    fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?touch=true`, { method: 'put', headers: { 'X-CSRF-Token': csrfToken() } })
       .then(response => this.dataFromJsonResponse(response))
       .then(function () {
         myFileOp.reloadTable();
@@ -376,7 +376,7 @@ class FileOps {
 
   newDirectory(filename) {
     let myFileOp = new FileOps();
-    fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token() }})
+    fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrfToken() }})
       .then(response => this.dataFromJsonResponse(response))
       .then(function () {
         myFileOp.reloadTable();
@@ -405,7 +405,7 @@ class FileOps {
     fetch(canDownloadReq, {
         method: 'GET',
         headers: {
-          'X-CSRF-Token': csrf_token(),
+          'X-CSRF-Token': csrfToken(),
           'Accept': 'application/json'
         }
       })
@@ -464,7 +464,7 @@ class FileOps {
   delete(files) {
     this.showSwalLoading('Deleting files...: ');
 
-    this.removeFiles(files.map(f => [history.state.currentDirectory, f].join('/')), csrf_token() );
+    this.removeFiles(files.map(f => [history.state.currentDirectory, f].join('/')), csrfToken() );
   }
 
   transferFiles(files, action, summary, from_fs, to_fs){
@@ -481,7 +481,7 @@ class FileOps {
         from_fs: from_fs,
         to_fs: to_fs,
       }),
-      headers: { 'X-CSRF-Token': csrf_token() }
+      headers: { 'X-CSRF-Token': csrfToken() }
     })
     .then(response => this.dataFromJsonResponse(response))
     .then((data) => {
