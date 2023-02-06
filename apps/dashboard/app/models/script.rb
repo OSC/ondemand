@@ -47,6 +47,8 @@ class Script
   end
 
   def create_file
+    return if @name.include?('.')
+
     project = project!
     file_name = "#{project.project_dataroot}/#{@name}.yml.erb"
     if File.new(file_name, 'w')

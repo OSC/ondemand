@@ -10,17 +10,12 @@ class ScriptsController < ApplicationController
 
   # POST /projects/:project_id/scripts
   def create
-    if params[:script][:name].include?('.')
-      flash[:alert] = 'The script name cannot include a period.'
-      redirect_to new_project_script_path(script_params)
+    @script = Script.new(script_params)
+    if @script.save
+      redirect_to project_path({ id: params[:project_id] }), notice: I18n.t('dashboard.jobs_project_script_created')
     else
-      @script = Script.new(script_params)
-      if @script.save
-        redirect_to project_path({ id: params[:project_id] }), notice: I18n.t('dashboard.jobs_project_script_created')
-      else
-        flash[:alert] = @script.errors[:name].last
-        redirect_to new_project_script_path(script_params)
-      end
+      flash[:alert] = @script.errors[:name].last
+      redirect_to new_project_script_path(script_params)
     end
   end
 
