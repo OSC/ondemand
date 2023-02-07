@@ -4,9 +4,7 @@ import XHRUpload from '@uppy/xhr-upload'
 import _ from 'lodash';
 import {CONTENTID, EVENTNAME as DATATABLE_EVENTNAME} from './data_table.js';
 import { dupSafeName } from './utils.js';
-import { maxFileSize } from '../config.js';
-import { csrfToken } from '../config.js';
-
+import { maxFileSize, csrfToken } from '../config.js';
 
 let uppy = null;
 

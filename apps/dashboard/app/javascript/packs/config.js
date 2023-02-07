@@ -65,7 +65,9 @@ function csrfToken() {
   return csrf_token;
 }
 
-export { setNavbarColor };
-export { maxFileSize};
-export { transfersPath };
-export { csrfToken };
+export { 
+  setNavbarColor, 
+  maxFileSize, 
+  transfersPath, 
+  csrfToken 
+};

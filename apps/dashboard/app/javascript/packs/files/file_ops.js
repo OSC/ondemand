@@ -3,9 +3,7 @@ import {CONTENTID, EVENTNAME as DATATABLE_EVENTNAME} from './data_table.js';
 import {EVENTNAME as CLIPBOARD_EVENTNAME} from './clip_board.js';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 import _ from 'lodash';
-import { transfersPath } from '../config.js';
-import { csrfToken } from '../config.js';
-
+import { transfersPath, csrfToken } from '../config.js';
 
 export {EVENTNAME};
 
