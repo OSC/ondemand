@@ -112,7 +112,7 @@ Listen 8080
   # Environment variables to export to the PUN pre hook.
   SetEnv OOD_PUN_PRE_HOOK_EXPORTS "OIDC_ACCESS_TOKEN,OIDC_CLAIM_EMAIL"
 
-  SetEnv ALLOWED_HOSTS "foo.example.com,test.proxy.name,test.server.name"
+  SetEnv OOD_ALLOWED_HOSTS "foo.example.com,test.proxy.name,test.server.name"
 
   #
   # Below is used for sub-uri's this Open OnDemand portal supports

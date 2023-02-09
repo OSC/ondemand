@@ -187,7 +187,7 @@ Listen <%= addr_port %>
 
   <%- end -%>
   <%- if @allowed_hosts -%>
-  SetEnv ALLOWED_HOSTS "<%= @allowed_hosts.join(',') %>"
+  SetEnv OOD_ALLOWED_HOSTS "<%= @allowed_hosts.join(',') %>"
 
   <%- end -%>
   #
