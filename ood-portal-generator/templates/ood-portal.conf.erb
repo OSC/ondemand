@@ -186,8 +186,8 @@ Listen <%= addr_port %>
   <%- end -%>
 
   <%- end -%>
-  <%- if @rails_config_hosts -%>
-  SetEnv OOD_PUN_RAILS_CONFIG_HOSTS "<%= @rails_config_hosts.join(',') %>"
+  <%- if @allowed_hosts -%>
+  SetEnv ALLOWED_HOSTS "<%= @allowed_hosts.join(',') %>"
 
   <%- end -%>
   #

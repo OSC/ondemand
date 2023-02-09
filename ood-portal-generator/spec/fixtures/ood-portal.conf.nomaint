@@ -69,7 +69,7 @@
   #
   SetEnv OOD_PUN_STAGE_CMD "sudo /opt/ood/nginx_stage/sbin/nginx_stage"
 
-  SetEnv OOD_PUN_RAILS_CONFIG_HOSTS "example.com"
+  SetEnv ALLOWED_HOSTS "example.com"
 
   #
   # Below is used for sub-uri's this Open OnDemand portal supports

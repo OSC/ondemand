@@ -143,7 +143,7 @@ module NginxStage
       # this is not a typo => the editor is /edit off of the base url
       "OOD_EDITOR_URL" => "/pun/sys/dashboard/files",
       "RAILS_LOG_TO_STDOUT" => "true",
-      "OOD_PUN_RAILS_CONFIG_HOSTS" => ENV['OOD_PUN_RAILS_CONFIG_HOSTS'],
+      "ALLOWED_HOSTS" => ENV['ALLOWED_HOSTS'],
     }.merge(pun_custom_env).merge(preserve_env_declarations.map { |k| [ k, ENV[k] ] }.to_h))
   end
 
