@@ -87,7 +87,7 @@ class Project
 
   def form
     form_dataroot.children.map do |form_path|
-      Script.new(form_path.to_s)
+      Script.new(form_path: form_path.to_s)
     end
   end
 
