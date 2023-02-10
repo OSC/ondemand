@@ -10,7 +10,7 @@ class Script
 
   attr_reader :script_path, :form_path
 
-  def initialize(:script_path script_path, :form_path form_path)
+  def initialize( script_path: nil, form_path: nil )
     @script_path = script_path
     @form_path   = form_path
   end
@@ -24,11 +24,18 @@ class Script
     File.basename(script_path)
   end
 
-  def form_attributes
-    # hash of form's attrs
+  def form
+    File.open(form_path, 'w') unless form_path.nil?
   end
 
-  def save
+  def form_attributes
+    # hash of form's attrs
+    YAML.safe_load(form)
+  end
+
+  def save_form
     # write form attrs to script
+    form
+    file.write(form_attributes)
   end
 end
