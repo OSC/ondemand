@@ -32,7 +32,7 @@ class Project
     def from_directory(project_pathname)
       return nil unless project_pathname.directory? && project_pathname.executable? && project_pathname.readable?
 
-      Project.new({ project_directory1: project_pathname.basename })
+      Project.new({ project_directory: project_pathname.basename })
     end
   end
 
