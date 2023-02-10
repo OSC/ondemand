@@ -1,24 +1,34 @@
 # frozen_string_literal: true
 
-# Script class represents the scripts in a project users can interact with.
+# Script class represents the scripts and forms in a project.
+# The scripts will sit within the project space.
+# The form will sit under the project's configuration directory
+# forms take common scheduler commands or options and insert them 
+# into scripts selected.
 class Script
   include ActiveModel::Model
 
-  attr_reader :script_path
+  attr_reader :script_path, :form_path
 
-  def initialize(script_path)
+  def initialize(:script_path script_path, :form_path form_path)
     @script_path = script_path
+    @form_path   = form_path
   end
 
-  def name
-    File.basename(script_path, '.yml')
+  def form_name
+    File.basename(form_path, '.yml')
   end
 
-  def attributes
-    # hash of file's attrs
+  def script_name
+    # include ending for now
+    File.basename(script_path)
+  end
+
+  def form_attributes
+    # hash of form's attrs
   end
 
   def save
-    # write attrs to file
+    # write form attrs to script
   end
 end
