@@ -29,7 +29,7 @@ class Script
   end
 
   def form_attributes
-    # hash of form's attrs
+    # YAML object of form's attrs
     YAML.safe_load(form)
   end
 
