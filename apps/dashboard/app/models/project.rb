@@ -81,6 +81,16 @@ class Project
     Pathname.new("#{project_dataroot}/.ondemand")
   end
 
+  def scripts_dataroot
+    configuration_directory.join('/scripts')
+  end
+
+  def scripts
+    scripts_dataroot.children.map do |script_path|
+      Script.new(script_path.to_s)
+    end
+  end
+
   def project_dataroot
     Project.dataroot.join(directory)
   end
