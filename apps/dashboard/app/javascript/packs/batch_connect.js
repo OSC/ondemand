@@ -374,9 +374,15 @@ class Table {
 function updateVisibility(event, changeId) {
   const val = event.target.value;
   const id = event.target['id'];
-  const changeElement = $(`#${changeId}`).parent();
+  let changeElement = undefined;
+  $(`#${changeId}`).parents().each(function(_i, parent) {
+    if(parent.classList.contains('form-group')) {
+      changeElement = $(parent);
+      return false;
+    }
+  });
 
-  if (changeElement.length <= 0) return;
+  if (changeElement !== undefined || changeElement.length <= 0) return;
 
   // safe to access directly?
   const hide = hideLookup[id].get(changeId, val);
