@@ -382,7 +382,7 @@ function updateVisibility(event, changeId) {
     }
   });
 
-  if (changeElement !== undefined || changeElement.length <= 0) return;
+  if (changeElement === undefined || changeElement.length <= 0) return;
 
   // safe to access directly?
   const hide = hideLookup[id].get(changeId, val);
