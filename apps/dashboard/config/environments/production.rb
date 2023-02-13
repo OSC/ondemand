@@ -100,5 +100,5 @@ Rails.application.configure do
   config.active_job.queue_adapter = ActiveJob::QueueAdapters::AsyncAdapter.new \
     min_threads: 1, max_threads: 1
 
-  config.hosts = ENV['ALLOWED_HOSTS'].nil? ? [] : ENV['ALLOWED_HOSTS'].split(',')
+  config.hosts = ENV['ALLOWED_HOSTS'].nil? ? nil : ENV['ALLOWED_HOSTS'].split(',')
 end
