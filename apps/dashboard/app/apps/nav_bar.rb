@@ -13,7 +13,7 @@ class NavBar
           extend_link(nav_link(nav_item))
         elsif nav_item[:apps] && nav_item[:title]
           matched_apps = nav_apps(nav_item, nav_item[:title], nil)
-          extend_group(OodAppGroup.new(apps: matched_apps, title: nav_item[:title], icon_uri: nav_item[:icon_uri], sort: true))
+          extend_group(OodAppGroup.new(apps: matched_apps, title: nav_item[:title], icon_uri: nav_item[:icon_uri]), sort: true)
         elsif nav_item[:profile]
           extend_link(nav_profile(nav_item))
         elsif !nav_item[:page].blank?
@@ -126,8 +126,8 @@ class NavBar
     end.flatten
   end
 
-  def self.extend_group(group)
-    group.sort = false
+  def self.extend_group(group, sort: false)
+    group.sort = sort
     NavItemDecorator.new(group, 'layouts/nav/group')
   end
 

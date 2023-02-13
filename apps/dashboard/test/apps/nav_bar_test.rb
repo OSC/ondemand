@@ -73,6 +73,7 @@ class NavBarTest < ActiveSupport::TestCase
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
     assert_equal "layouts/nav/group",  result[0].partial_path
+    assert_equal false,  result[0].sort
     assert_equal "Interactive Apps",  result[0].title
     assert_equal 4,  result[0].apps.size
   end
@@ -87,7 +88,7 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal 4,  result[0].apps.size
   end
 
-  test "NavBar.items should return navigation group when nav_item has apps and title property" do
+  test "NavBar.items should return navigation group with sort=true when nav_item has apps and title property" do
     nav_item = {
       title: "Custom Apps",
       icon_uri: "fa://test",
@@ -97,6 +98,7 @@ class NavBarTest < ActiveSupport::TestCase
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
     assert_equal "layouts/nav/group",  result[0].partial_path
+    assert_equal true,  result[0].sort
     assert_equal 1,  result[0].links.size
     assert_equal 'Custom Apps',  result[0].links[0].category
     assert_equal 'Apps',  result[0].links[0].subcategory
@@ -117,7 +119,7 @@ class NavBarTest < ActiveSupport::TestCase
     assert_nil result[0].icon_uri
   end
 
-  test "NavBar.items should return navigation group when nav_item has apps array and title property" do
+  test "NavBar.items should return navigation group with sort=true when nav_item has apps array and title property" do
     nav_item = {
       title: "Custom Apps",
       icon_uri: "fa://test",
@@ -127,6 +129,7 @@ class NavBarTest < ActiveSupport::TestCase
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
     assert_equal "layouts/nav/group",  result[0].partial_path
+    assert_equal true,  result[0].sort
     assert_equal 1,  result[0].links.size
     assert_equal 'Custom Apps',  result[0].links[0].category
     assert_equal 'Apps',  result[0].links[0].subcategory
@@ -144,6 +147,7 @@ class NavBarTest < ActiveSupport::TestCase
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
     assert_equal "layouts/nav/group",  result[0].partial_path
+    assert_equal false,  result[0].sort
     assert_equal 0,  result[0].apps.size
     assert_equal "menu title",  result[0].title
     assert_equal URI("fa://test"),  result[0].icon_uri
