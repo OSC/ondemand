@@ -21,7 +21,7 @@ function pun_proxy_handler(r)
   local pun_stage_cmd         = r.subprocess_env['OOD_PUN_STAGE_CMD']
   local pun_pre_hook_exports  = r.subprocess_env['OOD_PUN_PRE_HOOK_EXPORTS']
   local pun_pre_hook_root_cmd = r.subprocess_env['OOD_PUN_PRE_HOOK_ROOT_CMD']
-  local rails_config_hosts    = r.subprocess_env['OOD_PUN_RAILS_CONFIG_HOSTS']
+  local rails_config_hosts    = r.subprocess_env['OOD_ALLOWED_HOSTS']
   local pun_max_retries       = tonumber(r.subprocess_env['OOD_PUN_MAX_RETRIES'])
 
   -- get the system-level user name
