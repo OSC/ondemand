@@ -9,7 +9,7 @@ function logger(r)
   local user              = r.subprocess_env["MAPPED_USER"] -- set by the user mapping code
   local time_user_map     = r.subprocess_env["OOD_TIME_USER_MAP"] -- set by the user mapping code
   local time_begin_proxy  = r.subprocess_env["OOD_TIME_BEGIN_PROXY"] -- set by the proxy code
-  local rails_config_hosts = r.subprocess_env["OOD_ALLOWED_HOSTS"]
+  local allowed_hosts     = r.subprocess_env["OOD_ALLOWED_HOSTS"]
 
   -- only log authenticated users
   if user then
@@ -27,7 +27,7 @@ function logger(r)
     msg["local_user"]  = user
     msg["remote_user"] = r.user
 
-    msg["rails_config_hosts"] = rails_config_hosts
+    msg["allowed_hosts"] = allowed_hosts
 
     -- request
     msg["req_user_ip"]      = r.useragent_ip

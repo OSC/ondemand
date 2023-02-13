@@ -4,7 +4,7 @@
 
   Start PUN process for given user
 --]]
-function pun(r, bin, user, app_init_url, exports, pre_hook_root_cmd, rails_config_hosts)
+function pun(r, bin, user, app_init_url, exports, pre_hook_root_cmd, allowed_hosts)
   local cmd = bin .. " pun -u '" .. r:escape(user) .. "'"
   local err
 
@@ -14,15 +14,15 @@ function pun(r, bin, user, app_init_url, exports, pre_hook_root_cmd, rails_confi
 
   if pre_hook_root_cmd then
     local env_table = exports_to_table(r, exports)
-    if rails_config_hosts then
-      env_table["OOD_ALLOWED_HOSTS"] = rails_config_hosts
+    if allowed_hosts then
+      env_table["OOD_ALLOWED_HOSTS"] = allowed_hosts
     end
     cmd = cmd .. " -P '" .. r:escape(pre_hook_root_cmd) .. "'"
     err = capture2e_with_env(cmd, env_table)
   else
-    if rails_config_hosts then
+    if allowed_hosts then
       local posix = require 'posix'
-      posix.setenv("OOD_ALLOWED_HOSTS", rails_config_hosts)
+      posix.setenv("OOD_ALLOWED_HOSTS", allowed_hosts)
     end
     err = capture2e(cmd)
   end
