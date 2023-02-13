@@ -6,11 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-lint a random file (#2560)\
-change OOD_PUN_RAILS_CONFIG_HOSTS to ALLOWED_HOSTS (#2559)\
-Update Changelog (#2546)\
-update dependencies (#2547)\
-lint a random file (#2544)
 
 ### Changed
 
@@ -89,6 +84,7 @@ lint a random file (#2544)
 - Added a configuration to hide app version for batch connects apps in [2462](https://github.com/OSC/ondemand/pull/2462).
 - Completed batch connect sessions can relaunch from their card in [2529](https://github.com/OSC/ondemand/pull/2529).
 - Sites can add anything to the help menu in [2514](https://github.com/OSC/ondemand/pull/2514).
+- The ALLOWED_HOSTS environment variable is populated in the PUN in [2559](https://github.com/OSC/ondemand/pull/2559).
 
 ### Fixed
 
