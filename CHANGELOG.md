@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+lint a random file (#2560)\
+change OOD_PUN_RAILS_CONFIG_HOSTS to ALLOWED_HOSTS (#2559)\
+Update Changelog (#2546)\
+update dependencies (#2547)\
+lint a random file (#2544)
 
 ### Changed
 
