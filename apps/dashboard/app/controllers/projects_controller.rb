@@ -5,6 +5,7 @@ class ProjectsController < ApplicationController
   # GET /projects/:id
   def show
     @project = Project.find(params[:id])
+    @scripts = Script.all(@project.directory)
   end
 
   # GET /projects
