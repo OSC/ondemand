@@ -5,7 +5,11 @@ class ProjectsController < ApplicationController
   # GET /projects/:id
   def show
     @project = Project.find(params[:id])
-    @scripts = Script.all(@project.directory)
+    if @project.nil?
+      redirect_to(projects_path, alert: "cannot find project #{params[:id]}")
+    else
+      @scripts = Script.all(@project.directory)
+    end
   end
 
   # GET /projects

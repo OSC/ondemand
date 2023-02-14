@@ -18,9 +18,9 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should get destroy" do
-    get project_path(:id)
-    assert_response :success
+  test 'should redirect when it cannot find the project' do
+    get project_path('wont_find_this')
+    assert_response :redirect
   end
 
   test "should get edit" do
