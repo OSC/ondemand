@@ -9,6 +9,13 @@ class Script
 
   class << self
 
+    def find(id, project_dir)
+      all(project_dir).select do |script|
+        # Rails.logger.debug("#{id} == #{script.id}")
+        id == script.id
+      end.first
+    end
+
     def all(project_dir)
       Dir.glob("#{Project.dataroot}/#{project_dir}/.ondemand/scripts/*.yml").map do |file|
         Script.from_yaml(file, project_dir)

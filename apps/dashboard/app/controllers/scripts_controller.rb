@@ -4,13 +4,17 @@
 class ScriptsController < ApplicationController
 
   def new
-    @script = Script.new(project_dir: params[:project_id])
+    @script = Script.new(project_dir: show_script_params[:project_id])
+  end
+
+  def show
+    @script = Script.find(show_script_params[:id], show_script_params[:project_id])
   end
 
   # POST  /dashboard/projects/:project_id/scripts
   def create
     dir = script_params[:project_id]
-    opts = { project_dir: dir }.merge(script_params[:script])
+    opts = { project_dir: dir }.merge(create_script_params[:script])
     @script = Script.new(opts)
 
     if @script.save
@@ -22,9 +26,11 @@ class ScriptsController < ApplicationController
 
   private
 
-  def script_params
-    params.require(:project_id)
-    params.require(:script).permit(:title)
-    params.permit({ script: [:title]}, :project_id)
+  def create_script_params
+    params.permit({ script: [:title] }, :project_id)
+  end
+
+  def show_script_params
+    params.permit(:id, :project_id)
   end
 end

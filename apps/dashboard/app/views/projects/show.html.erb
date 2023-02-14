@@ -11,7 +11,7 @@
 </div>
 
 <div class='card'>
-  <h3 class='card-header'>Projects</h3>
+  <h3 class='card-header'>Scripts</h3>
   <div class='card-body'>
     <table class='table table-borderless'>
       <thead>
@@ -24,7 +24,14 @@
       <% @scripts.each do |script| %>
         <tr>
           <td><%= script.title %></td>
-          <td>TODO<td>
+          <td>
+            <%= link_to(
+                  'Show',
+                  project_script_path(@project.directory, script.id),
+                  class: 'btn btn-success'
+                )
+            %>
+          <td>
         <tr>
       <% end %>
       </tbody>
