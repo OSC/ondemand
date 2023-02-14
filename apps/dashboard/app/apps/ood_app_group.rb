@@ -65,7 +65,7 @@ class OodAppGroup
     }.map { |k,v|
       OodAppGroup.new(title: k, apps: sort ? v.sort_by { |a| a.title } : v, nav_limit: nav_limit)
     }
-    sort ? groups.sort_by { |g| [ g.title.nil? ? 1 : 0, g.title ] } : groups # make sure that the ungroupable app is always last
+    sort ? groups.sort_by { |g| [ g.title.to_s.empty? ? 1 : 0, g.title ] } : groups # make sure that the ungroupable app is always last
   end
 
   # Select a subset of groups by the specified array of titles

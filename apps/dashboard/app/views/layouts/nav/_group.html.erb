@@ -1,6 +1,6 @@
 <li class="nav-item dropdown" title="<%= group.title %>">
   <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-    <%= icon_tag(group.icon_uri, classes: nil) if group.icon_uri %><span> <%= group.title %></span><span class="caret"></span>
+    <%= icon_tag(group.icon_uri, classes: 'menu-icon') if group.icon_uri %><span> <%= group.title %></span><span class="caret"></span>
   </a>
 
   <ul class="dropdown-menu <%= local_assigns.fetch(:menu_alignment, '') %>">
