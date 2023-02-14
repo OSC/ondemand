@@ -10,14 +10,27 @@ class Script
       data = YAML.safe_load(path)
       Script.new(id, data[:title])
     end
+
+    # need to grab an integer from a lookup file to save based on
+    # indexes, so save can have "/scripts/<id>.yml" save
+    def get_id
+      id = File.read("#{Project.dataroot}/.ondemand/id_file")
+      id += 1
+
+      File.write("#{Project.dataroot}/.ondemand/id_file", id)
+
+      id
+    end
   end
 
-  def initialize(id, title)
+  def initialize(id: nil, title: nil)
     @id          = id
     @title       = title
   end
 
   def save
+    id = self.id ||= get_id
+    
     path = "#{Project.dataroot}/.ondemand/scripts/#{id}.yml"
 
     data = {
