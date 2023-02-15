@@ -13,7 +13,7 @@ class ScriptsController < ApplicationController
 
   # POST  /dashboard/projects/:project_id/scripts
   def create
-    dir = script_params[:project_id]
+    dir = create_script_params[:project_id]
     opts = { project_dir: dir }.merge(create_script_params[:script])
     @script = Script.new(opts)
 
