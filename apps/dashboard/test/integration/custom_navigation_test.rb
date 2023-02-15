@@ -30,7 +30,7 @@ class CustomNavigationTest < ActionDispatch::IntegrationTest
             ] },
           { title:    'Custom Link',
             url:      '/custom/link',
-            icon_uri: 'fa://desktop',
+            icon: 'fa://desktop',
             new_tab:  true },
           'sys/bc_paraview',
           'all_apps'
