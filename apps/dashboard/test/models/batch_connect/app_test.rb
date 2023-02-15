@@ -295,7 +295,7 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     end
   end
 
-  test 'subapps can override title, description, icon_uri, and caption from form' do
+  test 'subapps can override title, description, icon, and caption from form' do
     r = PathRouter.new('test/fixtures/usr/shared/bc_with_subapps/')
     app = BatchConnect::App.new(router: r)
     sub_apps = app.sub_app_list
