@@ -10,10 +10,8 @@ class Script
   class << self
 
     def find(id, project_dir)
-      all(project_dir).select do |script|
-        # Rails.logger.debug("#{id} == #{script.id}")
-        id == script.id
-      end.first
+      file = "#{Project.dataroot}/#{project_dir}/.ondemand/scripts/#{id}.yml"
+      Script.from_yaml(file, project_dir)
     end
 
     def all(project_dir)
@@ -24,12 +22,14 @@ class Script
 
     def from_yaml(file, project_dir)
       contents = File.read(file)
-      opts = YAML.safe_load(contents).to_h
+      raw_opts = YAML.safe_load(contents)
+
+      opts = raw_opts.to_h
       opts.merge!({ id: File.basename(file, '.yml') })
       opts.merge!({ project_dir: project_dir.to_s })
+
       new(opts)
     end
-    alias_method :from_yml, :from_yaml
 
     def next_id(project_dir)
       all(project_dir).map(&:id).map(&:to_i).max + 1
@@ -47,7 +47,6 @@ class Script
   def to_yaml
     { 'title' => title }.to_yaml
   end
-  alias_method :to_yml, :to_yaml
 
   def to_h
     {}.tap do |hsh|
@@ -59,17 +58,14 @@ class Script
   alias_method :inspect, :to_h
 
   def save
-    save!
+    @id = Script.next_id(project_dir)
+    File.write("#{Project.dataroot}/#{project_dir}/.ondemand/scripts/#{id}.yml", to_yaml)
+
     true
   rescue StandardError => e
     errors.add(:save, e.message)
     Rails.logger.warn("Cannot save script due to error: #{e.class}:#{e.message}")
     false
-  end
-
-  def save!
-    @id = Script.next_id(project_dir)
-    File.write("#{Project.dataroot}/#{project_dir}/.ondemand/scripts/#{id}.yml", to_yaml)
   end
 
   private
