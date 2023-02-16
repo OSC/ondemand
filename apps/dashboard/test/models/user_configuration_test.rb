@@ -41,6 +41,7 @@ class UserConfigurationTest < ActiveSupport::TestCase
   test "properties expected defaults" do
     defaults = {
       dashboard_header_img_logo: nil,
+      disable_dashboard_welcome_message: false,
       disable_dashboard_logo: false,
       dashboard_logo: nil,
       dashboard_logo_height: nil,

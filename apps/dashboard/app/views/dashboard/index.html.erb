@@ -2,7 +2,7 @@
   <%= javascript_include_tag 'dashboard', nonce: true %>
   <%= javascript_include_tag 'pinned_apps', nonce: true %>
 <%- end -%>
-<%= render partial: 'shared/welcome' %>
+<%= render partial: 'shared/welcome' unless @user_configuration.disable_dashboard_welcome_message%>
 
 <%- dashboard_layout.fetch(:rows, []).each do |row| -%>
 <div class="row">
