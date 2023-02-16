@@ -145,7 +145,7 @@ module NginxStage
       "RAILS_LOG_TO_STDOUT" => "true",
       # name change here because only OOD_* from apache is allowed through sudo rules
       "ALLOWED_HOSTS" => ENV['OOD_ALLOWED_HOSTS'],
-      # set the duplicate to keep clean_nginx_env impepodent
+      # set the duplicate to keep clean_nginx_env idempotent
       "OOD_ALLOWED_HOSTS" => ENV['OOD_ALLOWED_HOSTS'],
     }.merge(pun_custom_env).merge(preserve_env_declarations.map { |k| [ k, ENV[k] ] }.to_h))
   end
