@@ -22,7 +22,7 @@
     data-bg-color="<%= @user_configuration.brand_bg_color %>"
     data-link-bg-color="<%= @user_configuration.brand_link_active_bg_color %>"
     data-max-file-size="<%= Configuration.file_upload_max %>"
-    data-transfers-path="<%= transfers_path(format: "json") %>"
+    data-transfers-path="<%= transfers_path(format: "json") if respond_to?(:transfers_path) %>"
   />
 </head>
 <body>
