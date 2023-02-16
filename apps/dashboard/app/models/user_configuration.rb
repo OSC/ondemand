@@ -21,6 +21,8 @@ class UserConfiguration
 
   USER_PROPERTIES = [
     ConfigurationProperty.property(name: :dashboard_header_img_logo, read_from_env: true),
+    # Whether we display the Dashboard welcome message
+    ConfigurationProperty.property(name: :disable_dashboard_welcome_message, default_value: false),
     # Whether we display the Dashboard logo image
     ConfigurationProperty.with_boolean_mapper(name: :disable_dashboard_logo, default_value: false, read_from_env: true, env_names: ['OOD_DISABLE_DASHBOARD_LOGO', 'DISABLE_DASHBOARD_LOGO']),
     # URL to the Dashboard logo image
