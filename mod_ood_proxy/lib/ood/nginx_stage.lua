@@ -15,7 +15,8 @@ function pun(r, bin, user, app_init_url, exports, pre_hook_root_cmd, allowed_hos
   if pre_hook_root_cmd then
     local env_table = exports_to_table(r, exports)
     if allowed_hosts then
-      env_table["OOD_ALLOWED_HOSTS"] = allowed_hosts
+      -- capture2e_with_env will prefix OOD_
+      env_table["ALLOWED_HOSTS"] = allowed_hosts
     end
     cmd = cmd .. " -P '" .. r:escape(pre_hook_root_cmd) .. "'"
     err = capture2e_with_env(cmd, env_table)
