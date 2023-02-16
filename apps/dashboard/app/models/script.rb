@@ -32,7 +32,10 @@ class Script
     end
 
     def next_id(project_dir)
-      all(project_dir).map(&:id).map(&:to_i).max + 1
+      all(project_dir)
+        .map(&:id)
+        .map(&:to_i)
+        .max || 0 + 1
     end
   end
 
@@ -59,7 +62,10 @@ class Script
 
   def save
     @id = Script.next_id(project_dir)
-    File.write("#{Project.dataroot}/#{project_dir}/.ondemand/scripts/#{id}.yml", to_yaml)
+    script_dir = Pathname.new("#{Project.dataroot}/#{project_dir}/.ondemand/scripts/").tap do |path|
+      path.mkpath unless path.exist?
+    end
+    File.write("#{script_dir}/#{id}.yml", to_yaml)
 
     true
   rescue StandardError => e
