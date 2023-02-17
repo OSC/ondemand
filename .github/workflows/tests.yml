@@ -83,7 +83,7 @@ jobs:
         run: |
            TOKEN_NAME=$(kubectl describe serviceaccount ondemand -n ondemand | grep Tokens | awk '{ print $2 }')
            TOKEN=$(kubectl describe secret $TOKEN_NAME -n ondemand | grep "token:" | awk '{ print $2 }')
-           echo "::set-output name=ondemand::${TOKEN}"
+           echo "ondemand=${TOKEN}" >> $GITHUB_OUTPUT
       - name: Setup kubectl
         run: |
           kubectl config set-credentials ondemand --token="${{ steps.token.outputs.ondemand }}"
