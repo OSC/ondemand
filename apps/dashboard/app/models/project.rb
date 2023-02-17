@@ -73,6 +73,10 @@ class Project
     end
   end
 
+  def icon_class
+    manifest.icon.sub('fas://', '')
+  end
+
   def destroy!
     FileUtils.remove_dir(project_dataroot, force = true)
   end
