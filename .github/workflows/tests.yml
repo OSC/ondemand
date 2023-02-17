@@ -75,7 +75,7 @@ jobs:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v3
       - name: Create kind cluster
-        uses: container-tools/kind-action@v1
+        uses: container-tools/kind-action@v2
       - name: Apply ondemand RBAC
         run: kubectl apply -f hooks/k8s-bootstrap/ondemand.yaml
       - name: Get ondemand token
