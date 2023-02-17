@@ -74,6 +74,7 @@ class Project
   end
 
   def icon_class
+    # rails will prepopulate the tag with fa- so just the name is needed
     manifest.icon.sub('fas://', '')
   end
 
