@@ -24,6 +24,8 @@
           title: 'Edit project directory' %>
           <td><%= link_to 'Delete', project_path(project.directory), class: 'btn btn-danger', :method => :delete,
           data: {confirm: I18n.t('dashboard.jobs_project_delete_project_confirmation')} %>
+          <td><%= link_to fa_icon(project.icon_class), project_path(project.directory), class: 'btn',
+          title: 'View project directory contents' %>
         <tr>
       <% end %>
       </tbody>
