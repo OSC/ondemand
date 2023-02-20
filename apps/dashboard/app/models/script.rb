@@ -9,13 +9,19 @@ class Script
 
   class << self
 
+    def scripts_dir(project_dir)
+      @scripts_dir ||= Pathname.new("#{project_dir}/.ondemand/scripts").tap do |path|
+        path.mkpath unless path.exist?
+      end
+    end
+
     def find(id, project_dir)
-      file = "#{Project.dataroot}/#{project_dir}/.ondemand/scripts/#{id}.yml"
+      file = "#{scripts_dir(project_dir)}/#{id}.yml"
       Script.from_yaml(file, project_dir)
     end
 
     def all(project_dir)
-      Dir.glob("#{Project.dataroot}/#{project_dir}/.ondemand/scripts/*.yml").map do |file|
+      Dir.glob("#{scripts_dir(project_dir)}/*.yml").map do |file|
         Script.from_yaml(file, project_dir)
       end
     end
@@ -62,10 +68,7 @@ class Script
 
   def save
     @id = Script.next_id(project_dir)
-    script_dir = Pathname.new("#{Project.dataroot}/#{project_dir}/.ondemand/scripts/").tap do |path|
-      path.mkpath unless path.exist?
-    end
-    File.write("#{script_dir}/#{id}.yml", to_yaml)
+    File.write("#{Script.scripts_dir(project_dir)}/#{id}.yml", to_yaml)
 
     true
   rescue StandardError => e

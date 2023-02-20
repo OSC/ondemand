@@ -4,9 +4,9 @@
 class ProjectsController < ApplicationController
   # GET /projects/:id
   def show
-    @project = Project.find(params[:id])
+    @project = Project.find(show_project_params[:id])
     if @project.nil?
-      redirect_to(projects_path, alert: "cannot find project #{params[:id]}")
+      redirect_to(projects_path, alert: "Cannot find project #{show_project_params[:id]}")
     else
       @scripts = Script.all(@project.directory)
     end
@@ -29,14 +29,20 @@ class ProjectsController < ApplicationController
 
   # GET /projects/:id/edit
   def edit
-    @project = Project.find(params[:id])
+    @project = Project.find(show_project_params[:id])
+
+    if @project.nil?
+      redirect_to(projects_path, alert: "Cannot find project #{show_project_params[:id]}")
+    end
   end
 
   # PATCH /projects/:id
   def update
-    @project = Project.find(params[:id])
+    @project = Project.find(show_project_params[:id])
 
-    if @project.valid? && @project.update(project_params)
+    if @project.nil?
+      redirect_to(projects_path, alert: "Cannot find project #{show_project_params[:id]}")
+    elsif @project.valid? && @project.update(project_params)
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_manifest_updated')
     else
       flash[:alert] = @project.errors[:name].last || @project.errors[:icon].last
@@ -47,13 +53,16 @@ class ProjectsController < ApplicationController
   # POST /projects
   def create
     Rails.logger.debug("Project params are: #{project_params}")
-    @project = Project.new(project_params)
+    id = Project.next_id
+    opts = project_params.merge(id: id).to_h.with_indifferent_access
+    @project = Project.new(opts)
 
     if @project.valid? && @project.save(project_params)
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_created')
     else
+      # TODO: loop through all errors and show them instead of this
       flash[:alert] = @project.errors[:name].last || @project.errors[:icon].last
-      redirect_to new_project_path(name: params[:project][:name], icon: params[:project][:icon])
+      redirect_to new_project_path(name: project_params[:name], icon: project_params[:icon])
     end
   end
 
@@ -73,6 +82,10 @@ class ProjectsController < ApplicationController
   def project_params
     params
       .require(:project)
-      .permit(:name, :description, :icon)
+      .permit(:name, :description, :icon, :id)
+  end
+
+  def show_project_params
+    params.permit(:id)
   end
 end

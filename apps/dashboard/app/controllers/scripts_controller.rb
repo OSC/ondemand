@@ -8,13 +8,14 @@ class ScriptsController < ApplicationController
   end
 
   def show
-    @script = Script.find(show_script_params[:id], show_script_params[:project_id])
+    project = Project.find(show_script_params[:project_id])
+    @script = Script.find(show_script_params[:id], project.directory)
   end
 
   # POST  /dashboard/projects/:project_id/scripts
   def create
-    dir = create_script_params[:project_id]
-    opts = { project_dir: dir }.merge(create_script_params[:script])
+    project = Project.find(show_script_params[:project_id])
+    opts = { project_dir: project.directory }.merge(create_script_params[:script])
     @script = Script.new(opts)
 
     if @script.save

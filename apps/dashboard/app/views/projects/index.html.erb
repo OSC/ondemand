@@ -18,13 +18,13 @@
       <% @projects.each do |project| %>
         <tr>
           <td><%= project.title %></td>
-          <td><%= link_to 'Work in', project_path(project.directory), class: 'btn btn-success', 
+          <td><%= link_to 'Work in', project_path(project.id), class: 'btn btn-success',
           title: 'View project directory contents' %>
-          <td><%= link_to 'Edit', edit_project_path(project.directory), class: 'btn btn-info',
+          <td><%= link_to 'Edit', edit_project_path(project.id), class: 'btn btn-info',
           title: 'Edit project directory' %>
-          <td><%= link_to 'Delete', project_path(project.directory), class: 'btn btn-danger', :method => :delete,
+          <td><%= link_to 'Delete', project_path(project.id), class: 'btn btn-danger', :method => :delete,
           data: {confirm: I18n.t('dashboard.jobs_project_delete_project_confirmation')} %>
-          <td><%= link_to fa_icon(project.icon_class), project_path(project.directory), class: 'btn',
+          <td><%= link_to fa_icon(project.icon_class), project_path(project.id), class: 'btn',
           title: 'View project directory contents' %>
         <tr>
       <% end %>
