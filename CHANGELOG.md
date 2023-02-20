@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+lock sweetalert2 (#2591)\
+update docs for developing ood_core (#2590)\
+update dependencies (#2593)\
+Scripts models (#2573)\
+only use tranfers_path if its available (#2589)\
+fix mispellng in this comment (#2587)\
+Added configuration to disable the dashboard welcome message (#2585)\
+lint a random file (#2584)\
+bugfix in mod_ood_proxy and keep clean_nginx_env idempotent (#2570)\
+Add test and logic to set default icon (#2583)\
+Use config.js to handle js setup for configs and csrf_token (#2550)\
+Added support for empty icons for custom navigation items (#2581)\
+hide entire form group to account for help messages (#2569)\
+Added support for images from /public location (#2577)\
+Renamed icon_uri yaml property to icon to make it consistent with app manifest (#2579)\
+Fixed navbar links sorting for application links + images (#2568)\
+Update Changelog (#2564)\
+mod_ood_proxy needs to use OOD_ALLOWED_HOSTS (#2567)\
+update dependencies (#2565)\
+lint a random file (#2563)
 
 ### Changed
 
