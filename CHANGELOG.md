@@ -84,7 +84,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added a configuration to hide app version for batch connects apps in [2462](https://github.com/OSC/ondemand/pull/2462).
 - Completed batch connect sessions can relaunch from their card in [2529](https://github.com/OSC/ondemand/pull/2529).
 - Sites can add anything to the help menu in [2514](https://github.com/OSC/ondemand/pull/2514).
-- The ALLOWED_HOSTS environment variable is populated in the PUN in [2559](https://github.com/OSC/ondemand/pull/2559).
+- The ALLOWED_HOSTS environment variable is populated in the PUN in [2559](https://github.com/OSC/ondemand/pull/2559)
+  and [2567](https://github.com/OSC/ondemand/pull/2567).
+- Added support for images from /public location in [2577](https://github.com/OSC/ondemand/pull/2577).
+- Added configuration to disable the dashboard welcome message in [2585](https://github.com/OSC/ondemand/pull/2585).
 
 ### Fixed
 
