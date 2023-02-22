@@ -56,8 +56,7 @@ class Script
     @project_dir = opts[:project_dir] || raise(StandardError, 'You must set the project directory')
     @id = opts[:id]
     @title = opts[:title].to_s
-    #@smart_attributes = opts[:smart_attributes] || {}
-    @smart_attributes = {this: 'that'}
+    @smart_attributes = opts[:smart_attributes] || {}
   end
 
   def to_yaml
