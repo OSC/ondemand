@@ -21,7 +21,7 @@ function pun_proxy_handler(r)
   local pun_stage_cmd         = r.subprocess_env['OOD_PUN_STAGE_CMD']
   local pun_pre_hook_exports  = r.subprocess_env['OOD_PUN_PRE_HOOK_EXPORTS']
   local pun_pre_hook_root_cmd = r.subprocess_env['OOD_PUN_PRE_HOOK_ROOT_CMD']
-  local rails_config_hosts    = r.subprocess_env['OOD_PUN_RAILS_CONFIG_HOSTS']
+  local allowed_hosts         = r.subprocess_env['OOD_ALLOWED_HOSTS']
   local pun_max_retries       = tonumber(r.subprocess_env['OOD_PUN_MAX_RETRIES'])
 
   -- get the system-level user name
@@ -47,7 +47,7 @@ function pun_proxy_handler(r)
     local app_init_url = r.is_https and "https://" or "http://"
     app_init_url = app_init_url .. r.hostname .. ":" .. r.port .. nginx_uri .. "/init?redir=$http_x_forwarded_escaped_uri"
     -- generate user config & start PUN process
-    err = nginx_stage.pun(r, pun_stage_cmd, user, app_init_url, pun_pre_hook_exports, pun_pre_hook_root_cmd, rails_config_hosts)
+    err = nginx_stage.pun(r, pun_stage_cmd, user, app_init_url, pun_pre_hook_exports, pun_pre_hook_root_cmd, allowed_hosts)
     if err then
       r.usleep(1000000) -- sleep for 1 second before trying again
     end

@@ -61,11 +61,12 @@ class OodAppGroupTest < ActiveSupport::TestCase
     desktops = groups.last
     subgroups = OodAppGroup.groups_for(apps: desktops.apps, group_by: :subcategory)
     assert_equal 3, subgroups.count
-    assert_equal "", subgroups[0].title
-    assert_equal "IHPC", subgroups[1].title
-    assert_equal 5, subgroups[1].apps.count
-    assert_equal "VDI", subgroups[2].title
-    assert_equal 3, subgroups[2].apps.count
+    assert_equal "IHPC", subgroups[0].title
+    assert_equal 5, subgroups[0].apps.count
+    assert_equal "VDI", subgroups[1].title
+    assert_equal 3, subgroups[1].apps.count
+    assert_equal "", subgroups[2].title
+    assert_equal 1, subgroups[2].apps.count
 
     # test selecting a set of subgroups
     subgroups2 = OodAppGroup.select(titles: ["VDI", "IHPC"], groups: subgroups)

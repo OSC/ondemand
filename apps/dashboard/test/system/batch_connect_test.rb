@@ -505,6 +505,19 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal '3.6', find("##{bc_ele_id('python_version')}").value
   end
 
+  test 'help menus get hidden' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    # defaults
+    assert_equal 'any', find_value('node_type')
+    find("##{bc_ele_id('bc_email_on_started')}")
+    find('p', text: 'this is a help message should be hidden, sometimes', visible: true)
+
+    select('hugemem', from: bc_ele_id('node_type'))
+    find('p', text: 'this is a help message should be hidden, sometimes', visible: false)
+    find("##{bc_ele_id('bc_email_on_started')}", visible: false)
+  end
+
   test 'options with numbers and slashes' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 

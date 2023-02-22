@@ -73,6 +73,11 @@ class Project
     end
   end
 
+  def icon_class
+    # rails will prepopulate the tag with fa- so just the name is needed
+    manifest.icon.sub('fas://', '')
+  end
+
   def destroy!
     FileUtils.remove_dir(project_dataroot, force = true)
   end
@@ -100,12 +105,16 @@ class Project
   def valid_form_inputs?(attributes)
     icon_pattern = %r{\Afa[bsrl]://[\w-]+\z}
     name_pattern = /\A[\w-]+\z/
+
     if !attributes[:icon].nil? && !attributes[:icon].match?(icon_pattern)
       errors.add(:icon, :invalid_format, message: 'Icon format invalid or missing')
       false
     elsif !attributes[:name].match?(name_pattern)
       errors.add(:name, :invalid_format, message: 'Name format invalid')
       false
+    elsif attributes[:icon].nil?
+      attributes[:icon] = 'fas://cog'
+      true
     else
       true
     end

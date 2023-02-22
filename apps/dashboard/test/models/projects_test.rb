@@ -141,4 +141,24 @@ class ProjectsTest < ActiveSupport::TestCase
       assert_equal expected_manifest_yml, File.read(project.manifest_path.to_s)
     end
   end
+
+  test 'icon defaults to fas://cog' do
+    Dir.mktmpdir do |tmp|
+      project_path = Pathname.new(tmp)
+      OodAppkit.stubs(:dataroot).returns(project_path)
+      attrs = { name: 'test-project', description: 'test description' }
+
+      project = Project.new(attrs)
+      project.save(attrs)
+
+      manifest_yml = <<~HEREDOC
+        ---
+        name: test-project
+        description: test description
+        icon: fas://cog
+      HEREDOC
+
+      assert_equal manifest_yml, File.read(project.manifest_path.to_s)
+    end
+  end
 end

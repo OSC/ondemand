@@ -28,5 +28,4 @@ class OodAppTest < ActiveSupport::TestCase
     under_test.stubs(:version_from_file).returns(nil)
     assert_nil under_test.version
   end
-
 end

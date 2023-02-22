@@ -11,6 +11,7 @@ data - optional, data parameter for the link_to helper
 <%
   title = local_assigns.fetch(:title, 'No title')
   url = local_assigns.fetch(:url)
+  icon_uri = local_assigns.fetch(:icon_uri, URI("fas://cog"))
 %>
 <%=
   link_to(
@@ -22,7 +23,7 @@ data - optional, data parameter for the link_to helper
     data: local_assigns.fetch(:data, nil)
   ) do
 %>
-  <%= icon_tag(local_assigns.fetch(:icon_uri, URI("fas://cog"))) %>
+  <%= icon_tag(icon_uri) unless icon_uri.to_s.blank? %>
   <%= tag.span do %>
     <%= title %>
   <% end %>

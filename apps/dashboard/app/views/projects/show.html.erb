@@ -10,4 +10,39 @@
   </p>
 </div>
 
+<div class='card'>
+  <h3 class='card-header'>Scripts</h3>
+  <div class='card-body'>
+    <table class='table table-borderless'>
+      <thead>
+        <tr>
+          <th>Script Name</th>
+          <th>Actions</th>
+        <tr>
+      </thead>
+      <tbody>
+      <% @scripts.each do |script| %>
+        <tr>
+          <td><%= script.title %></td>
+          <td>
+            <%= link_to(
+                  'Show',
+                  project_script_path(@project.directory, script.id),
+                  class: 'btn btn-success'
+                )
+            %>
+          <td>
+        <tr>
+      <% end %>
+      </tbody>
+    </table>
+
+    <%= link_to('New Script', 
+          new_project_script_path(@project.directory),
+          class: 'btn btn-info',  
+          title: I18n.t('dashboard.jobs_project_create_new_project_directory'))
+    %>
+  </div>
+</div>
+
 <% end %>

@@ -1,0 +1,14 @@
+
+<%= bootstrap_form_for(@script, url: project_scripts_path) do |form| %>
+
+  <div class="field">
+    <%= form.text_field :title, label: "Name" %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit 'Save', class: 'btn btn-primary' %>
+  </div>
+<% end %>
+
+
+<%= link_to 'Back', project_path(params[:project_id]), class: 'btn btn-default mt-3',  title: 'Return to projects page' %>

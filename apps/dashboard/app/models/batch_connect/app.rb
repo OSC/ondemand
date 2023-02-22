@@ -108,7 +108,7 @@ module BatchConnect
     end
 
     def icon_uri
-      form_config.fetch(:icon_uri, ood_app.icon_uri)
+      form_config.fetch(:icon, ood_app.icon_uri)
     end
 
     def caption
