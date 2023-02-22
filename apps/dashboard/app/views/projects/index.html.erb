@@ -14,10 +14,12 @@
             <% end %>
           </div>
 
-          <%= button_to 'Delete', project_path(project.id), class: 'btn btn-danger w-100 mb-1', :method => :delete,
-              data: {confirm: I18n.t('dashboard.jobs_project_delete_project_confirmation')}
+          <%= button_to 'Delete', project_path(project.id), class: 'btn btn-danger w-80 mb-1', method: 'delete',
+              form: { class: 'button_to d-flex justify-content-center' },
+              data: { confirm: I18n.t('dashboard.jobs_project_delete_project_confirmation') }
           %>
-          <%= button_to 'Edit', edit_project_path(project.id), class: 'btn btn-info w-100', :method => :get,
+          <%= button_to 'Edit', edit_project_path(project.id), class: 'btn btn-info w-80', method: 'get',
+              form: { class: 'd-flex justify-content-center' },
               title: 'Edit project directory'
           %>
         </div>
