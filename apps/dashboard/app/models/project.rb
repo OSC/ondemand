@@ -6,19 +6,42 @@ class Project
   include ActiveModel::Validations
 
   class << self
-    def all
-      return [] unless dataroot.directory? && dataroot.executable? && dataroot.readable?
-
-      dataroot.children.map do |d|
-        Project.new({ :name => d.basename })
-      rescue StandardError => e
-        Rails.logger.warn("Didn't create project. #{e.message}")
-        nil
-      end.compact
+    def lookup_file
+      Pathname("#{dataroot}/.project_lookup").tap do |path|
+        FileUtils.touch(path.to_s) unless path.exist?
+      end
     end
 
-    def find(project_pathname)
-      from_directory(dataroot.join(project_pathname))
+    def lookup_table
+      f = File.read(lookup_file)
+      YAML.safe_load(f).to_h
+    rescue StandardError, Exception => e
+      Rails.logger.warn("cannot read #{dataroot}/.project_lookup due to error #{e}")
+      {}
+    end
+
+    def next_id
+      lookup_table.map { |id, _directory| id }
+                  .map(&:to_i)
+                  .concat([0]) # could be the first project
+                  .max + 1
+    end
+
+    def all
+      lookup_table.map do |id, directory|
+        Project.new({ id: id, directory: directory })
+      end
+    end
+
+    def find(id)
+      opts = lookup_table.select do |lookup_id, _directory|
+        lookup_id == id.to_i
+      end.map do |lookup_id, directory|
+        { id: lookup_id, directory: directory }
+      end.first
+      return nil if opts.nil?
+
+      Project.new(opts)
     end
 
     def dataroot
@@ -28,30 +51,36 @@ class Project
         Pathname.new('')
       end
     end
-
-    def from_directory(project_pathname)
-      return nil unless project_pathname.directory? && project_pathname.executable? && project_pathname.readable?
-
-      Project.new({ project_directory: project_pathname.basename })
-    end
   end
 
-  validates :directory, presence: true
   validates :name, format: {
     with:    /\A[\w-]+\z/,
     message: I18n.t('dashboard.jobs_project_name_validation')
   }
 
-  attr_reader :directory
+  attr_reader :directory, :id
 
   delegate :icon, :name, :description, to: :manifest
 
   def initialize(attributes = {})
-    @directory = attributes.delete(:project_directory) || attributes[:name].to_s.downcase.tr_s(' ', '_')
-    @manifest  = Manifest.new(attributes).merge(Manifest.load(manifest_path))
+    if attributes.empty?
+      @manifest = Manifest.new({})
+    else
+      @id = attributes.delete(:id)
+      @directory = attributes.delete(:directory) || Project.dataroot.join(id.to_s)
+
+      @manifest = Manifest.new(attributes).merge(Manifest.load(manifest_path))
+    end
   end
 
   def save(attributes)
+    if id.nil? && attributes.fetch(:id, nil).nil?
+      message = 'Project ID must be set when saving.'
+      errors.add(:save, message)
+      Rails.logger.warn(message)
+      return false
+    end
+
     make_dir
     update(attributes)
   end
@@ -61,7 +90,7 @@ class Project
       new_manifest = Manifest.load(manifest_path)
       new_manifest = new_manifest.merge(attributes)
 
-      if new_manifest.valid? && new_manifest.save(manifest_path)
+      if new_manifest.valid? && new_manifest.save(manifest_path) && add_to_lookup
         true
       else
         errors.add(:update, "Cannot save manifest to #{manifest_path}")
@@ -73,12 +102,31 @@ class Project
     end
   end
 
+  def add_to_lookup
+    new_table = Project.lookup_table.merge(Hash[id, directory.to_s])
+    File.write(Project.lookup_file, new_table.to_yaml)
+    true
+  rescue StandardError => e
+    errors.add(:update, "Cannot update lookup file lookup file with error #{e.class}:#{e.message}")
+    false
+  end
+
+  def remove_from_lookup
+    new_table = Project.lookup_table.except(id)
+    File.write(Project.lookup_file, new_table.to_yaml)
+    true
+  rescue StandardError => e
+    errors.add(:update, "Cannot update lookup file lookup file with error #{e.class}:#{e.message}")
+    false
+  end
+
   def icon_class
     # rails will prepopulate the tag with fa- so just the name is needed
     manifest.icon.sub('fas://', '')
   end
 
   def destroy!
+    remove_from_lookup
     FileUtils.remove_dir(project_dataroot, force = true)
   end
 

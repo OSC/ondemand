@@ -27,7 +27,7 @@
           <td>
             <%= link_to(
                   'Show',
-                  project_script_path(@project.directory, script.id),
+                  project_script_path(@project.id, script.id),
                   class: 'btn btn-success'
                 )
             %>
@@ -38,7 +38,7 @@
     </table>
 
     <%= link_to('New Script', 
-          new_project_script_path(@project.directory),
+          new_project_script_path(@project.id),
           class: 'btn btn-info',  
           title: I18n.t('dashboard.jobs_project_create_new_project_directory'))
     %>
