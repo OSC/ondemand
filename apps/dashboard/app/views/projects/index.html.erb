@@ -1,34 +1,39 @@
 <div class='page-header text-center'>
   <h1>Jobs App</h1>
-  <%= link_to 'New Project', new_project_path, class: 'btn btn-info', 
-  title: I18n.t('dashboard.jobs_project_create_new_project_directory') %>
 </div>
-<br>
-<div class='card'>
-  <h3 class='card-header'>Projects</h3>
-  <div class='card-body'>
-    <table class='table table-borderless'>
-      <thead>
-        <tr>
-          <th>Project Name</th>
-          <th>Actions</th>
-        <tr>
-      </thead>
-      <tbody>
+
+<div class="row mt-3">
+  <div class="col-md-9">
+    <div class="row">
       <% @projects.each do |project| %>
-        <tr>
-          <td><%= project.title %></td>
-          <td><%= link_to 'Work in', project_path(project.id), class: 'btn btn-success',
-          title: 'View project directory contents' %>
-          <td><%= link_to 'Edit', edit_project_path(project.id), class: 'btn btn-info',
-          title: 'Edit project directory' %>
-          <td><%= link_to 'Delete', project_path(project.id), class: 'btn btn-danger', :method => :delete,
-          data: {confirm: I18n.t('dashboard.jobs_project_delete_project_confirmation')} %>
-          <td><%= link_to fa_icon(project.icon_class), project_path(project.id), class: 'btn',
-          title: 'View project directory contents' %>
-        <tr>
+        <div class="col-md-3 project-icon">
+          <div class="text-center d-flex justify-content-center">
+            <%= link_to(project_path(project.id), class: 'text-dark') do %>
+              <%= icon_tag(URI.parse(project.icon)) %>
+              <%= content_tag(:p, project.title) %>
+            <% end %>
+          </div>
+
+          <%= button_to 'Delete', project_path(project.id), class: 'btn btn-danger w-100 mb-1', :method => :delete,
+              data: {confirm: I18n.t('dashboard.jobs_project_delete_project_confirmation')}
+          %>
+          <%= button_to 'Edit', edit_project_path(project.id), class: 'btn btn-info w-100', :method => :get,
+              title: 'Edit project directory'
+          %>
+        </div>
       <% end %>
-      </tbody>
-    </table>
+    </div>
+  </div>
+  <div class="col-md-3 mt-3 d-flex align-items-center">
+    <div class="col d-flex justify-content-center text-center project-icon">
+      <%= button_to(new_project_path,
+                    title: I18n.t('dashboard.jobs_project_create_new_project_directory'),
+                    class: 'text-dark btn btn-link',
+                    method: 'get') do
+      %>
+        <%= icon_tag(URI.parse("fas://plus")) %><br>
+        <%= I18n.t('dashboard.jobs_project_create_new_project_directory') %>
+      <% end %>
+    </div>
   </div>
 </div>
