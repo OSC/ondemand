@@ -34,9 +34,6 @@ class Script
       opts.merge!({ id: File.basename(file, '.yml') })
       opts.merge!({ project_dir: project_dir.to_s })
 
-      smart_attributes = opts.delete('smart_attributes') || {}
-      opts.merge!({ smart_attributes: smart_attributes })
-
       new(opts)
     end
 

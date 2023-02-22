@@ -10,7 +10,6 @@ class ScriptsController < ApplicationController
   def show
     project = Project.find(show_script_params[:project_id])
     @script = Script.find(show_script_params[:id], project.directory)
-    @smart_attributes = @script.smart_attributes
   end
 
   # POST  /dashboard/projects/:project_id/scripts

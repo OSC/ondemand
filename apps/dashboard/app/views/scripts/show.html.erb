@@ -4,6 +4,4 @@
 
 <%= link_to 'Back', project_path(params[:project_id]), class: 'btn btn-default mt-3',  title: 'Return to projects page' %>
 
-<%= form_tag project_script_path(@script.project_dir, @script.id), method: :put do %>
-<%= select_tag 'smart_attribute', options_for_select(@smart_attributes) %>
-<% end %>
+<%= @script.smart_attributes.inspect %>
