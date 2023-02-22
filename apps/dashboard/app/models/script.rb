@@ -34,6 +34,9 @@ class Script
       opts.merge!({ id: File.basename(file, '.yml') })
       opts.merge!({ project_dir: project_dir.to_s })
 
+      smart_attributes = opts.delete('smart_attributes') || {}
+      opts.merge!({ smart_attributes: smart_attributes })
+
       new(opts)
     end
 
@@ -45,12 +48,16 @@ class Script
     end
   end
 
+  attr_reader :smart_attributes, :project_dir
+
   def initialize(opts = {})
     opts = opts.to_h.with_indifferent_access
 
     @project_dir = opts[:project_dir] || raise(StandardError, 'You must set the project directory')
     @id = opts[:id]
     @title = opts[:title].to_s
+    #@smart_attributes = opts[:smart_attributes] || {}
+    @smart_attributes = {this: 'that'}
   end
 
   def to_yaml
@@ -76,8 +83,4 @@ class Script
     Rails.logger.warn("Cannot save script due to error: #{e.class}:#{e.message}")
     false
   end
-
-  private
-
-  attr_reader :project_dir
 end

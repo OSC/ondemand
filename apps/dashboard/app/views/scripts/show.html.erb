@@ -2,4 +2,8 @@
 <h1><%= @script.title %></h1>
 
 
+<%= form_tag project_script_path(@script.project_dir, @script.id), method: :put %>
+<%= select_tag 'smart_attributes', options_for_select(@smart_attributes) %>
+<%= submit_tag 'Apply' %>
+
 <%= link_to 'Back', project_path(params[:project_id]), class: 'btn btn-default mt-3',  title: 'Return to projects page' %>
