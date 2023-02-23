@@ -15,7 +15,7 @@ class ProjectsTest < ApplicationSystemTestCase
 
       assert_selector '.alert-success', text: 'Project successfully created!'
       assert_selector 'tbody tr td', text: 'Test Project'
-      assert File.directory? File.join("#{dir}/projects", 'test-project')
+      assert File.directory? File.join("#{dir}/projects", '1')
     end
   end
 
@@ -23,7 +23,7 @@ class ProjectsTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       setup_project(dir)
 
-      assert File.directory? File.join("#{dir}/projects", 'test-project/.ondemand')
+      assert File.directory? File.join("#{dir}/projects", '1/.ondemand')
     end
   end
 
@@ -37,7 +37,7 @@ class ProjectsTest < ApplicationSystemTestCase
       
       assert_selector '.alert-success', text: 'Project successfully deleted!'
       assert_no_selector 'tbody tr td', text: 'Test Project'
-      assert_not File.directory? File.join("#{dir}/projects", 'test-project')
+      assert_not File.directory? File.join("#{dir}/projects", '1')
     end
   end
 
