@@ -636,10 +636,8 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal '', find_option_style('auto_accounts', 'pas1754')
       assert_equal '', find_option_style('auto_accounts', 'pas1604')
 
-      # pzs1124 exists on both, so one should be hidden and the other available
-      id = bc_ele_id('auto_accounts')
-      assert_equal 'display: none;', find("##{id} option[data-option-for-cluster-owens='false'][value='pzs1124']")['style'].to_s
-      assert_equal '', find("##{id} option[data-option-for-cluster-oakley='false'][value='pzs1124']")['style'].to_s
+      # pzs1124 exists on both, so it's available
+      assert_equal '', find_option_style('auto_accounts', 'pzs1124')
 
       # pzs0715 is available on oakely, so switching clusters should keep the same value.
       select('oakley', from: bc_ele_id('cluster'))
@@ -649,10 +647,8 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'display: none;', find_option_style('auto_accounts', 'pas1754')
       assert_equal 'display: none;', find_option_style('auto_accounts', 'pas1604')
 
-      # pzs1124 exists on both, so now, they flip visibility
-      id = bc_ele_id('auto_accounts')
-      assert_equal '', find("##{id} option[data-option-for-cluster-owens='false'][value='pzs1124']")['style'].to_s
-      assert_equal 'display: none;', find("##{id} option[data-option-for-cluster-oakley='false'][value='pzs1124']")['style'].to_s
+      # pzs1124 exists on both, so it's still available
+      assert_equal '', find_option_style('auto_accounts', 'pzs1124')
     end
   end
 
@@ -779,7 +775,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'display: none;', find_option_style('auto_qos', 'gpt')
 
       # select the right account, and now they're available
-      find("##{bc_ele_id('auto_accounts')} option[value='pzs1124'][data-option-for-cluster-oakley='false']").select_option
+      select('pzs1124', from: bc_ele_id('auto_accounts'))
       assert_equal '', find_option_style('auto_qos', 'staff')
       assert_equal '', find_option_style('auto_qos', 'phoenix')
       assert_equal '', find_option_style('auto_qos', 'geophys')
