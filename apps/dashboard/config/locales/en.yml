@@ -190,7 +190,6 @@ en:
     development_apps_caption: "Sandbox App"
 
     active_sessions_title: 'Active interactive sessions'
-    active_sessions_no_sessions: 'You have no active sessions.'
     active_sessions_caption_html: '<a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>'
 
     recently_used_apps_title: 'Recently Used Apps'
