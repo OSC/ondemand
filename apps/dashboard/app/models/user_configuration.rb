@@ -91,6 +91,17 @@ class UserConfiguration
     path.start_with?('/') ? Pathname.new(path) : Pathname.new('/public')
   end
 
+  # The file system path to the announcements
+  # @return [Pathname, Array<Pathname>] announcement path or paths
+  def announcement_path
+    if path = ENV["OOD_ANNOUNCEMENT_PATH"]
+      Pathname.new(path)
+    else
+      paths = fetch(:announcement_path, ['/etc/ood/config/announcement.md', '/etc/ood/config/announcement.yml', '/etc/ood/config/announcements.d'])
+      Array.wrap(paths).map { |p| Pathname.new(p.to_s) }
+    end
+  end
+
   # Filtering is controlled with NavConfig.categories_allowlist? unless the configuration property categories is defined.
   # If categories are defined, filter_nav_categories? will always be true.
   def filter_nav_categories?

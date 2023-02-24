@@ -34,6 +34,7 @@ class UserConfigurationTest < ActiveSupport::TestCase
     'OOD_NAVBAR_TYPE' => [:navbar_type, "light"],
     'OOD_PINNED_APPS_GROUP_BY' => [:pinned_apps_group_by, "setup-#{SecureRandom.uuid}"],
     'OOD_PUBLIC_URL' => [:public_url, Pathname.new("/#{SecureRandom.uuid}")],
+    'OOD_ANNOUNCEMENT_PATH' => [:announcement_path, Pathname.new("/#{SecureRandom.uuid}")],
 
     'SHOW_ALL_APPS_LINK' => [:show_all_apps_link, true],
   }
@@ -52,6 +53,7 @@ class UserConfigurationTest < ActiveSupport::TestCase
       custom_css_files: [],
       dashboard_title: "Open OnDemand",
       public_url: Pathname.new("/public"),
+      announcement_path: [Pathname.new('/etc/ood/config/announcement.md'), Pathname.new('/etc/ood/config/announcement.yml'), Pathname.new('/etc/ood/config/announcements.d')],
 
       brand_bg_color: nil,
       brand_link_active_bg_color: nil,
@@ -144,6 +146,20 @@ class UserConfigurationTest < ActiveSupport::TestCase
     target = UserConfiguration.new
 
     assert_equal Pathname.new("/test/valid/path"), target.public_url
+  end
+
+  test "announcement_path supports string property" do
+    Configuration.stubs(:config).returns({announcement_path: "/string/path" })
+    target = UserConfiguration.new
+
+    assert_equal [Pathname.new("/string/path")], target.announcement_path
+  end
+
+  test "announcement_path supports array property" do
+    Configuration.stubs(:config).returns({announcement_path: ["/array/path/1", "/array/path/2"] })
+    target = UserConfiguration.new
+
+    assert_equal [Pathname.new("/array/path/1"), Pathname.new("/array/path/2")], target.announcement_path
   end
 
   test "filter_nav_categories? should return true when categories is set in config" do
