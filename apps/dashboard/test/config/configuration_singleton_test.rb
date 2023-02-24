@@ -200,23 +200,6 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
-  test "should have default announcement paths" do
-    assert_equal(
-      [
-        Pathname.new("/etc/ood/config/announcement.md"),
-        Pathname.new("/etc/ood/config/announcement.yml"),
-        Pathname.new("/etc/ood/config/announcements.d")
-      ],
-      ConfigurationSingleton.new.announcement_path
-    )
-  end
-
-  test "can configure announcement path" do
-    with_modified_env(OOD_ANNOUNCEMENT_PATH: '/path/to/announcement') do
-      assert_equal Pathname.new('/path/to/announcement'), ConfigurationSingleton.new.announcement_path
-    end
-  end
-
   test "should have default developer docs url" do
     assert_equal "https://go.osu.edu/ood-app-dev", ConfigurationSingleton.new.developer_docs_url
   end
