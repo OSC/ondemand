@@ -31,8 +31,6 @@ import 'bootstrap/dist/js/bootstrap';
 // FIXME: confim modals don't work in esbuild.
 // import 'data-confirm-modal';
 
-import { setNavbarColor } from './config';
-
 // lot's of inline scripts and stuff rely on jquery just being available
 window.jQuery = jQuery;
 window.$ = jQuery;
