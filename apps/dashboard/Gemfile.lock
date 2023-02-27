@@ -88,7 +88,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.2.0)
+    concurrent-ruby (1.2.2)
     crass (1.0.6)
     cssbundling-rails (1.1.2)
       railties (>= 6.0.0)
@@ -170,7 +170,7 @@ GEM
       ffi (~> 1.9, >= 1.9.6)
       ood_support (~> 0.0.2)
       rexml (~> 3.2)
-    ood_support (0.0.3)
+    ood_support (0.0.5)
     pbs (2.2.1)
       ffi (~> 1.9, >= 1.9.6)
     psych (5.1.0)

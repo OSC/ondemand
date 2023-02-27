@@ -78,7 +78,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.2.0)
+    concurrent-ruby (1.2.2)
     crass (1.0.6)
     date (3.3.3)
     dotenv (2.8.1)
@@ -154,7 +154,7 @@ GEM
       ffi (~> 1.9, >= 1.9.6)
       ood_support (~> 0.0.2)
       rexml (~> 3.2)
-    ood_support (0.0.3)
+    ood_support (0.0.5)
     osc-machete (2.0.0)
       mustache
       pbs (~> 2.0)
