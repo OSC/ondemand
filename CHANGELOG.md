@@ -6,18 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-update dependencies (#2611)\
-Updated sessions widget to not render if there are no active sessions (#2610)\
-Migrated announcements_path property to UserConfiguration object (#2608)\
-optimize auto_accounts so it doesnt show duplicates (#2594)\
-rework projects#index view to use icons instead of table (#2605)\
-update gh automation for deprecations (#2597)\
-projects to use numeric ids instead of directories (#2601)\
-lint a random file (#2603)\
-Update Changelog (#2599)\
-lint a random file (#2598)\
-update dependencies (#2600)\
-Job composer/project index display icon (#2595)
 
 ### Changed
 
@@ -100,6 +88,7 @@ Job composer/project index display icon (#2595)
   and [2567](https://github.com/OSC/ondemand/pull/2567).
 - Added support for images from /public location in [2577](https://github.com/OSC/ondemand/pull/2577).
 - Added configuration to disable the dashboard welcome message in [2585](https://github.com/OSC/ondemand/pull/2585).
+- `announcment_paths` are now an ondemand.d property with profile support in [2608](https://github.com/OSC/ondemand/pull/2608).
 
 ### Fixed
 
