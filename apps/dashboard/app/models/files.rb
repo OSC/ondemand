@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 # The parent class for Files (local or otherwise).
 class Files
-
   # Guards MIME types by converting types into formats
   # that are usable for previewing content in the browser.
   #
