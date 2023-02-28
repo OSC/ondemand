@@ -135,7 +135,7 @@
   <div class="col-md-offset-2 col-md-10 col-sm-12 col-xs-12">
     <div class="page-header">
       <h3>
-        <%= link_to @product.readme.title, @product.readme.edit_url.to_s, target: '_blank', title: "Edit #{@product.readme.title}", style: "color: inherit; text-decoration: inherit;" %>
+        <%= link_to @product.readme.title, @product.readme.edit_url.to_s, target: '_blank', title: "Edit #{@product.readme.title}" %>
       </h3>
     </div>
     <%= @product.readme.html %>
@@ -193,7 +193,7 @@ xargs -I % sh -c "echo % &amp;&amp; mv $APP_DIR % &amp;&amp; rm -rf %;"</pre>
         </pre>
 
         <% if ENV['X_SCLS'] %>
-        <div class="alert alert-info" style="margin-top: 10px">
+        <div class="alert alert-info mt-1">
           <p>Use the correct environment when building this app. If you copy and
           execute the command below manually, be sure to first load the correct software collections environment:
           </p>
