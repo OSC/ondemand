@@ -15,6 +15,7 @@ const SELECTNAVPATH = '#select-nav-path';
 const CONTAINERCONTENTID = "#container-directory-contents";
 let table = null;
 
+
 jQuery(function () {
     table = new DataTable();
 
@@ -23,7 +24,8 @@ jQuery(function () {
 
     /* TABLE ACTIONS */
     $(SELECTNAVPATH).on(EVENTNAME.click, function(e, options) {
-        let url = $("#batch_connect_session_context_working_dir").val() ? $("#batch_connect_session_context_working_dir").val() : "/pun/dev/dashboard/files/fs/home/gbyrket";
+        let url = $("#batch_connect_session_context_working_dir").val() ? $("#batch_connect_session_context_working_dir").val() : "/home/gbyrket";
+        url = "/pun/dev/dashboard/files/fs" + url;
         table.reloadTable(url);
         $(CONTAINERCONTENTID).show();
     });
@@ -37,8 +39,16 @@ jQuery(function () {
         table.dataFromJsonResponse(options.response);
     });
 
-    $(CONTENTID).on(EVENTNAME.goto, function (e, options) {
-        table.goto(options.path)
+
+    // table.cell( $(this).closest('tr'), 5 );
+
+    $(CONTENTID).on(EVENTNAME.click, 'td', function (e) {
+        let data = table.getTable().row(this.closest('td')).data();
+        let eventData = {
+            'url': data.url,
+        };
+    
+        $(CONTENTID).trigger(EVENTNAME.reloadTable, eventData);
     });
 
 
@@ -76,7 +86,6 @@ jQuery(function () {
 
     $.fn.dataTable.ext.search.push(
         function (settings, data, dataIndex) {
-            console.log(data);
             if(table.getShowFiles()) {
                 return table.getShowDotFiles() || !data[1].startsWith('.');
             } else {
@@ -87,8 +96,7 @@ jQuery(function () {
             }
 
         }
-    )
-
+    );    
 
 });
 
@@ -137,8 +145,16 @@ class DataTable {
                 "<'row'<'col-sm-12'<'dt-status-bar'<'datatables-status float-right'><'transfers-status'>>>>" +
                 "<'row'<'col-sm-12'tr>>", // normally this is <'row'<'col-sm-5'i><'col-sm-7'p>> but we disabled pagination so have info take whole row
             columns: [
-                { data: 'type', render: (data, type, row, meta) => data == 'd' ? '<span title="directory" class="fa fa-folder" style="color: gold"><span class="sr-only"> dir</span></span>' : '<span title="file" class="fa fa-file" style="color: lightgrey"><span class="sr-only"> file</span></span>' }, // type
-                { name: 'name', data: 'name', className: 'text-break', render: (data, type, row, meta) => `<a class="${row.type} name ${row.type == 'd' ? '' : 'view-file'}" href="${row.url}">${Handlebars.escapeExpression(data)}</a>` }, // name
+                { data: 'type', render: (data, type, row, meta) => data == 'd' ? '<span title="directory" class="fa fa-folder" style="color: gold"><span class="sr-only"> dir</span></span>' : '<span title="file" class="fa fafile" style="color: lightgrey"><span class="sr-only"> file</span></span>' }, // type
+                { 
+                    name: 'name', 
+                    data: 'name', 
+                    className: 'text-break',
+                    render: (data, type, row, meta) => {
+                        return `<span id='${row.id}' data="${row.url}">${row.name}</a>`;
+                    }
+ 
+                },
                 { visible: false, name: 'actions', orderable: false, data: null, render: (data, type, row, meta) => this.actionsBtnTemplate({ row_index: meta.row, file: row.type != 'd', data: row }) },
                 {
                     visible: false,
