@@ -40,6 +40,10 @@ class RemoteFile
         mode: "",
         dev: 0,
       }
+    end.select do |stats|
+      ascii_only = stats[:name].to_s.ascii_only?
+      Rails.logger.warn("Not showing file '#{stats[:name]}' because it is not a UTF-8 filename.") unless ascii_only
+      ascii_only
     end.sort_by { |p| p[:directory] ? 0 : 1 }
   end
 
