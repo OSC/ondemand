@@ -14,6 +14,8 @@ const CONTENTID = '#directory-contents';
 const SELECTNAVPATH = '#select-nav-path';
 const CONTAINERCONTENTID = "#container-directory-contents";
 const BREADCRUMBID = "#path-breadcrumbs";
+const BUTTONSELECTPATH = "#button-select-path";
+const WORKINGDIRECTORY = "#batch_connect_session_context_working_dir";
 let table = null;
 
 
@@ -25,7 +27,7 @@ jQuery(function () {
 
     /* TABLE ACTIONS */
     $(SELECTNAVPATH).on(EVENTNAME.click, function(e, options) {
-        let url = $("#batch_connect_session_context_working_dir").val() ? $("#batch_connect_session_context_working_dir").val() : "/home/gbyrket";
+        let url = $(WORKINGDIRECTORY).val() ? $(WORKINGDIRECTORY).val() : "/home/gbyrket";
         url = "/pun/dev/dashboard/files/navigate" + url;
         table.reloadTable(url);
         $(CONTAINERCONTENTID).show();
@@ -57,6 +59,13 @@ jQuery(function () {
         };
     
         $(CONTENTID).trigger(EVENTNAME.reloadTable, eventData);
+    });
+
+
+    $(BUTTONSELECTPATH).on(EVENTNAME.click, function (e) {
+        e.preventDefault();
+        $(WORKINGDIRECTORY).val(table._currentWorkingDirectory);
+        $(CONTAINERCONTENTID).hide();
     });
 
 
@@ -111,6 +120,7 @@ jQuery(function () {
 class DataTable {
     _table = null;
     _url = null;
+    _currentWorkingDirectory = null;
 
     constructor(url) {
         this.loadDataTable();
@@ -201,6 +211,10 @@ class DataTable {
         $('#directory-contents_filter').prepend(
             `<label style="margin-right: 20px" for="show-files">
                 <input type="checkbox" id="show-files" ${this.getShowFiles() ? 'checked' : ''}> Show Files</label>`);
+
+        $('#directory-contents_filter').prepend(
+            `<label style="margin-right: 20px" for="show-files">
+                <button id="button-select-path">Select Path</button></label>`);
         
 
     }
@@ -221,6 +235,7 @@ class DataTable {
             try {
                 const response = await fetch(request_url, { headers: { 'Accept': 'application/json' } });
                 const data = await this.dataFromJsonResponse(response);
+                this._currentWorkingDirectory = data.path;
                 $('#path-breadcrumbs').html(data.breadcrumbs_html);
                 this._table.clear();
                 this._table.rows.add(data.files);
@@ -236,10 +251,7 @@ class DataTable {
 
                 $(CONTENTID).trigger(SWAL_EVENTNAME.showError, eventData);
 
-                $('#open-in-terminal-btn').addClass('disabled');
-                
-                // Removed this as it was causing a JS Error and there is no reprocution from removing it.
-                // return await Promise.reject(e);
+                $('#open-in-terminal-btn').addClass('disabled');                
             }
         }
     }
