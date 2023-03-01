@@ -13,6 +13,7 @@ const EVENTNAME = {
 const CONTENTID = '#directory-contents';
 const SELECTNAVPATH = '#select-nav-path';
 const CONTAINERCONTENTID = "#container-directory-contents";
+const BREADCRUMBID = "#path-breadcrumbs";
 let table = null;
 
 
@@ -25,7 +26,7 @@ jQuery(function () {
     /* TABLE ACTIONS */
     $(SELECTNAVPATH).on(EVENTNAME.click, function(e, options) {
         let url = $("#batch_connect_session_context_working_dir").val() ? $("#batch_connect_session_context_working_dir").val() : "/home/gbyrket";
-        url = "/pun/dev/dashboard/files/fs" + url;
+        url = "/pun/dev/dashboard/files/navigate" + url;
         table.reloadTable(url);
         $(CONTAINERCONTENTID).show();
     });
@@ -40,12 +41,19 @@ jQuery(function () {
     });
 
 
-    // table.cell( $(this).closest('tr'), 5 );
-
     $(CONTENTID).on(EVENTNAME.click, 'td', function (e) {
         let data = table.getTable().row(this.closest('td')).data();
         let eventData = {
             'url': data.url,
+        };
+    
+        $(CONTENTID).trigger(EVENTNAME.reloadTable, eventData);
+    });
+
+
+    $(BREADCRUMBID).on(EVENTNAME.click, 'li', function (e) {
+        let eventData = {
+            'url': e.target.id,
         };
     
         $(CONTENTID).trigger(EVENTNAME.reloadTable, eventData);
@@ -151,7 +159,7 @@ class DataTable {
                     data: 'name', 
                     className: 'text-break',
                     render: (data, type, row, meta) => {
-                        return `<span id='${row.id}' data="${row.url}">${row.name}</a>`;
+                        return `<span id='${row.id}' data="${row.url}" style="cursor: pointer;">${row.name}</a>`;
                     }
  
                 },

@@ -1,0 +1,18 @@
+<% if file_counter == 0 %>
+  <li class="breadcrumb-item">
+    <span id="<%= files_path(Dir.home) %>" class="fa fa-home" style="cursor: pointer;"></span>
+  </li>
+  <li class="breadcrumb-item">
+      <span id="<%= files_path(@filesystem, full_path.parent) %>" class="fa fa-arrow-up" style="cursor: pointer;"></span>
+  </li>
+<% end %>
+
+<% if file_counter == (file_count - 1) %>
+  <li class="breadcrumb-item">
+    <%= path_segment_with_slash(file.basename.to_s, file_counter, file_count) %>
+  </li>
+<% else %>
+  <li class="breadcrumb-item">
+      <span id="<%= files_path(@filesystem, file) %>" style="cursor: pointer;"><%= path_segment_with_slash(file.basename.to_s, file_counter, file_count) %></span>
+  </li>
+<% end %>

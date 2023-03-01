@@ -110,16 +110,14 @@ class FilesController < ApplicationController
   # NAVIGATE FUNCTIONALITY ONLY
   #############
   def navigate
-    request.format = 'json'
+    request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
 
-    parse_path
-    validate_path!
-
-    if @path.directory?
-      @path.raise_if_cant_access_directory_contents
-
-      respond_to do |format|
-
+    respond_to do |format|
+      parse_path
+      validate_path!
+  
+      if @path.directory?
+        @path.raise_if_cant_access_directory_contents  
         format.json do
           @files = @path.ls
           render :navigate
@@ -199,6 +197,9 @@ class FilesController < ApplicationController
     if filesystem == 'fs'
       @path = PosixFile.new(normal_path)
       @filesystem = 'fs'
+    elsif filesystem == 'navigate'
+        @path = PosixFile.new(normal_path)
+        @filesystem = 'navigate'
     elsif ::Configuration.remote_files_enabled? && filesystem != 'fs'
       @path = RemoteFile.new(normal_path, filesystem)
       @filesystem = filesystem
