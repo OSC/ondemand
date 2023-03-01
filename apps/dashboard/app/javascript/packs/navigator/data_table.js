@@ -194,7 +194,6 @@ class DataTable {
             `<label style="margin-right: 20px" for="show-files">
                 <input type="checkbox" id="show-files" ${this.getShowFiles() ? 'checked' : ''}> Show Files</label>`);
         
-        // $('#directory-contents_filter').prepend(`<label style="margin-right: 14px" for="show-owner-mode"><input type="checkbox" id="show-owner-mode" ${this.getShowOwnerMode() ? 'checked' : ''}> Show Owner/Mode</label>`)
 
     }
 
@@ -214,6 +213,7 @@ class DataTable {
             try {
                 const response = await fetch(request_url, { headers: { 'Accept': 'application/json' } });
                 const data = await this.dataFromJsonResponse(response);
+                $('#path-breadcrumbs').html(data.breadcrumbs_html);
                 this._table.clear();
                 this._table.rows.add(data.files);
                 this._table.draw();
