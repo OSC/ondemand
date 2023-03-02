@@ -3,12 +3,12 @@ require "test_helper"
 class SupportTicketEmailServiceTest < ActiveSupport::TestCase
 
   def setup
-    Configuration.stubs(:support_ticket_config).returns({
+    config = {
       email: {
         to: "to_address@support.ticket.com"
       }
-    })
-    @target = SupportTicketEmailService.new
+    }
+    @target = SupportTicketEmailService.new(config)
     attachment_mock = stub({size: 100})
     @params = {
       username: "username",
@@ -84,14 +84,15 @@ class SupportTicketEmailServiceTest < ActiveSupport::TestCase
   end
 
   test "deliver_support_ticket should delegate to SupportTicketMailer class and return success message override when provided" do
-    Configuration.stubs(:support_ticket_config).returns({
+    config = {
       email: {
         to: "to_address@support.ticket.com",
         success_message: "success message override"
       }
-    })
+    }
+    target = SupportTicketEmailService.new(config)
     SupportTicketMailer.expects(:support_email).returns(stub(:deliver_now => nil))
-    result = @target.deliver_support_ticket(SupportTicket.new)
+    result = target.deliver_support_ticket(SupportTicket.new)
 
     assert_equal "success message override", result
   end

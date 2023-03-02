@@ -190,12 +190,8 @@ class ConfigurationSingleton
   end
 
   # Support ticket configuration
-  def support_ticket_config
-    config.fetch(:support_ticket, {})
-  end
-
   def support_ticket_enabled?
-    !support_ticket_config.empty?
+    config.has_key?(:support_ticket) || config.fetch(:profiles, {}).any? { |_, profile| profile.has_key?(:support_ticket) }
   end
 
   # Load the dotenv local files first, then the /etc dotenv files and

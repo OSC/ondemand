@@ -3,19 +3,20 @@
 # Generates the support ticket payload and sends it to a request tracker system using the API
 #
 class RequestTrackerService
-  def initialize
-    rt_config = ::Configuration.support_ticket_config.fetch(:rt_api, {})
+
+  attr_reader :rt_config, :queues, :priority
+
+  def initialize(request_tracker_config)
+    @rt_config = request_tracker_config
     @queues = rt_config[:queues]
     @priority = rt_config[:priority]
 
-    if !@queues || @queues.empty? || !@priority
+    if !queues || queues.empty? || !priority
       raise ArgumentError, 'queues and priority are required options for RequestTrackerService'
     end
   end
 
   def create_ticket(support_ticket_request, session)
-    rt_config = ::Configuration.support_ticket_config.fetch(:rt_api, {})
-
     ticket_template_context = {
       session:     session,
       description: support_ticket_request.description,
@@ -28,7 +29,7 @@ class RequestTrackerService
                                                               helpers: TemplateHelpers.new })
 
     payload = create_payload(support_ticket_request, ticket_text)
-    rt_client = RequestTrackerClient.create
+    rt_client = RequestTrackerClient.new(rt_config)
     rt_client.create(payload)
   end
 
@@ -36,9 +37,9 @@ class RequestTrackerService
 
   def create_payload(support_ticket_request, ticket_text)
     # default to first configured queue
-    queue = @queues[0]
+    queue = queues[0]
     if support_ticket_request.queue && support_ticket_request.queue != ''
-      if @queues.include?(support_ticket_request.queue)
+      if queues.include?(support_ticket_request.queue)
         queue = support_ticket_request.queue
       else
         raise ArgumentError, 'invalid queue selection'
@@ -49,7 +50,7 @@ class RequestTrackerService
       Queue:     queue,
       Requestor: support_ticket_request.email,
       Cc:        support_ticket_request.cc,
-      Priority:  @priority,
+      Priority:  priority,
       Subject:   support_ticket_request.subject,
       Text:      ticket_text
     }

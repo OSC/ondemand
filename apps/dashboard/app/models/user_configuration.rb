@@ -66,7 +66,9 @@ class UserConfiguration
     ConfigurationProperty.property(name: :interactive_apps_menu, default_value: []),
 
     # Custom pages configuration property
-    ConfigurationProperty.property(name: :custom_pages, default_value: {})
+    ConfigurationProperty.property(name: :custom_pages, default_value: {}),
+    # Support ticket configuration property
+    ConfigurationProperty.property(name: :support_ticket, default_value: {})
   ].freeze
 
   def initialize(request_hostname: nil)
@@ -118,6 +120,15 @@ class UserConfiguration
 
   def nav_categories
     fetch(:nav_categories, nil) || NavConfig.categories
+  end
+
+  # Create support ticket service class based on the configuration
+  def support_ticket_service
+    # Supported delivery mechanism
+    return SupportTicketEmailService.new(support_ticket) if support_ticket[:email]
+    return SupportTicketRtService.new(support_ticket) if support_ticket[:rt_api]
+
+    raise StandardError, 'No support ticket service class configured'
   end
 
   # The current user profile. Used to select the configuration properties.

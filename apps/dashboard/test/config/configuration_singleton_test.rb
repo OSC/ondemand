@@ -210,6 +210,24 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     end
   end
 
+  test "support_ticket_enabled? is false by default" do
+    assert_equal false, ConfigurationSingleton.new.support_ticket_enabled?
+  end
+
+  test "support_ticket_enabled? is true when support_ticket_property is defined" do
+    target = ConfigurationSingleton.new
+    target.stubs(:config).returns({support_ticket: {}})
+
+    assert_equal true, target.support_ticket_enabled?
+  end
+
+  test "support_ticket_enabled? is true when support_ticket_property is defined inside a profile" do
+    target = ConfigurationSingleton.new
+    target.stubs(:config).returns({profiles: {test: {support_ticket: {}}}})
+
+    assert_equal true, target.support_ticket_enabled?
+  end
+
   test "should have default dataroot under app if not production" do
     assert_equal Rails.root.join("data"), ConfigurationSingleton.new.dataroot
   end

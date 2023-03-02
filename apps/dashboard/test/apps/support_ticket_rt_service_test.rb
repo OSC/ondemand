@@ -3,7 +3,7 @@ require "test_helper"
 class SupportTicketRtServiceTest < ActiveSupport::TestCase
 
   def setup
-    @target = SupportTicketRtService.new
+    @target = SupportTicketRtService.new({})
     attachment_mock = stub({size: 100})
     @params = {
       username: "username",
@@ -73,13 +73,14 @@ class SupportTicketRtServiceTest < ActiveSupport::TestCase
   end
 
   test "deliver_support_ticket should delegate to RequestTrackerService class and return success message override when provided" do
-    Configuration.stubs(:support_ticket_config).returns({
-    rt_api: {
-        success_message: "success message override"
-      }
-    })
+    rt_config = {
+      rt_api: {
+          success_message: "success message override"
+        }
+    }
+    target = SupportTicketRtService.new(rt_config)
     RequestTrackerService.expects(:new).returns(stub(:create_ticket => "123"))
-    result = @target.deliver_support_ticket(SupportTicket.new)
+    result = target.deliver_support_ticket(SupportTicket.new)
 
     assert_equal "success message override", result
   end

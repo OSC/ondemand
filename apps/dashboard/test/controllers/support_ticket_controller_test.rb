@@ -17,47 +17,33 @@ class SupportTicketControllerTest < ActiveSupport::TestCase
     @controller.stubs(:root_url).returns("/home")
   end
 
+  def set_support_ticket_config(config)
+    stub_user_configuration({ support_ticket: config })
+    @controller.instance_variable_set(:@user_configuration, UserConfiguration.new)
+  end
+
   test "get_ui_template returns default template when no override is configured" do
+    set_support_ticket_config({})
     template = @controller.send(:get_ui_template)
     assert_equal "email_service_template", template
   end
 
   test "get_ui_template returns template override when configured" do
-    Configuration.stubs(:support_ticket_config).returns({ui_template: "template_override"})
+    set_support_ticket_config({ui_template: "template_override"})
     template = @controller.send(:get_ui_template)
     assert_equal "template_override", template
   end
 
-  test "create_service_class returns SupportTicketEmailService when email configuration object defined" do
-    # Configure the SupportTicketEmailService
-    Configuration.stubs(:support_ticket_config).returns({email: { }})
-    service = @controller.send(:create_service_class)
-    assert_equal "SupportTicketEmailService", service.class.name
-  end
-
-  test "create_service_class returns SupportTicketRtService when rt_api configuration object defined" do
-    # Configure the SupportTicketRtService
-    Configuration.stubs(:support_ticket_config).returns({rt_api: { }})
-    service = @controller.send(:create_service_class)
-    assert_equal "SupportTicketRtService", service.class.name
-  end
-
-  test "create_service_class throws exception when no service class configured" do
-    Configuration.stubs(:support_ticket_config).returns({})
-    assert_raise StandardError do
-      @controller.send(:create_service_class)
-    end
-  end
-
   test "new should render the default template when no override configured" do
-    Configuration.stubs(:support_ticket_config).returns({email: { }})
+    # Configure the SupportTicketEmailService
+    set_support_ticket_config({ email: {} })
     @controller.expects(:render).with() {|template| assert_equal "email_service_template", template}
 
     @controller.new
   end
 
   test "new should render the template override when configured" do
-    Configuration.stubs(:support_ticket_config).returns({ui_template: "template_override", email: { }})
+    set_support_ticket_config({ ui_template: "template_override", email: {} })
     @controller.expects(:render).with() {|template| assert_equal "template_override", template}
 
     @controller.new
@@ -65,7 +51,7 @@ class SupportTicketControllerTest < ActiveSupport::TestCase
 
   test "new should delegate to service class default_support_ticket method with request params to create @support_ticket" do
     # Configure the SupportTicketEmailService
-    Configuration.stubs(:support_ticket_config).returns({email: { }})
+    set_support_ticket_config({ email: {} })
     expected_request_params = {test: "value"}
     @controller.stubs(:params).returns(expected_request_params)
     support_ticket_mock = stub()
@@ -77,7 +63,7 @@ class SupportTicketControllerTest < ActiveSupport::TestCase
 
   test "create should delegate to service class to validate and create ticket, then redirect to homepage" do
     # Configure the SupportTicketEmailService
-    Configuration.stubs(:support_ticket_config).returns({email: { }})
+    set_support_ticket_config({ email: {} })
     # Stub a valid support ticket
     support_ticket_stub = stub("support_ticket", {errors: []})
     # We expect the service to validate the request data
@@ -92,7 +78,7 @@ class SupportTicketControllerTest < ActiveSupport::TestCase
 
   test "create should delegate to service class validate_support_ticket method and render support ticket template when validation fails" do
     # Configure the SupportTicketEmailService
-    Configuration.stubs(:support_ticket_config).returns({email: { }})
+    set_support_ticket_config({ email: {} })
     # Stub a support ticket with errors
     support_ticket_stub = stub("support_ticket", {errors: ["not_empty"]})
     SupportTicketEmailService.any_instance.stubs(:validate_support_ticket).returns(support_ticket_stub)
@@ -109,7 +95,7 @@ class SupportTicketControllerTest < ActiveSupport::TestCase
 
   test "create should log error and render the support ticket template when exception is raised" do
     # Configure the SupportTicketEmailService
-    Configuration.stubs(:support_ticket_config).returns({email: { }})
+    set_support_ticket_config({ email: {} })
     SupportTicketEmailService.any_instance.stubs(:validate_support_ticket).raises(StandardError, "General Error")
 
     # We expect to log the error

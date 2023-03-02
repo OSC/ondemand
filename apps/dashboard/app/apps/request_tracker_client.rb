@@ -15,20 +15,6 @@ require 'rest_client'
 class RequestTrackerClient
   # THIS CLIENT IS BASED ON https://github.com/uidzip/rt-client
 
-  def self.create
-    rt_config = ::Configuration.support_ticket_config.fetch(:rt_api, {})
-
-    new({
-          server:     rt_config[:server],
-          user:       rt_config[:user],
-          pass:       rt_config[:pass],
-          auth_token: rt_config[:auth_token],
-          timeout:    rt_config[:timeout],
-          verify_ssl: rt_config[:verify_ssl],
-          proxy:      rt_config[:proxy]
-        })
-  end
-
   UA = 'Open OnDemand ruby RT Client'
   attr_reader :server, :rt_client, :resource, :timeout, :verify_ssl
 
