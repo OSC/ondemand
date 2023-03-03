@@ -58,6 +58,19 @@ jQuery(function() {
     }
   });
 
+  $('#directory-contents tbody').on('click', '.download-file', function(e){
+    e.preventDefault();
+
+    const table = $(CONTENTID).DataTable();
+    const row = e.currentTarget.dataset.rowIndex;
+
+    const eventData = {
+      selection:  table.rows(row).data()
+    };
+
+    $(CONTENTID).trigger(EVENTNAME.download, eventData);
+  });
+
   $("#refresh-btn").on("click", function () {
     $(CONTENTID).trigger(DATATABLE_EVENTNAME.reloadTable);
   });
@@ -418,13 +431,8 @@ class FileOps {
         }
       })
       .catch(e => {
-        const eventData = {
-          'title': 'Error while downloading',
-          'message': e.message,
-        };
-
         this.doneLoading();
-        this.alertError('Error while downloading', data.error_message);
+        this.alertError('Error while downloading', e.message);
       })
   }
   
