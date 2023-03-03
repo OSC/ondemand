@@ -20,7 +20,7 @@
               %>
                 <%= icon_tag(link.icon_uri) %> <%=link.title %>
                 <% if link.subtitle.present? %>
-                  <%= content_tag(:small, link.subtitle, style: "text-indent: 20px", class: 'visible-xs-block visible-sm-inline visible-md-inline visible-lg-inline') %>
+                  <%= content_tag(:small, link.subtitle, class: 'visible-xs-block visible-sm-inline visible-md-inline visible-lg-inline ml-2') %>
                 <% end %>
               <% end %>
             </li>

@@ -6,6 +6,7 @@
 
   <%= javascript_include_tag 'application', nonce: true %>
   <%= stylesheet_link_tag 'application', nonce: content_security_policy_nonce, media: 'all' %>
+  <%= render partial: '/layouts/nav/styles', locals: { bg_color: @user_configuration.brand_bg_color, link_active_color:  @user_configuration.brand_link_active_bg_color } %>
   <% custom_css_paths.each do |path| %>
     <link rel="stylesheet" media="all" href="<%= path %>" nonce="<%= content_security_policy_nonce %>" />
   <% end %>

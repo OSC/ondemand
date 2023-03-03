@@ -88,6 +88,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   and [2567](https://github.com/OSC/ondemand/pull/2567).
 - Added support for images from /public location in [2577](https://github.com/OSC/ondemand/pull/2577).
 - Added configuration to disable the dashboard welcome message in [2585](https://github.com/OSC/ondemand/pull/2585).
+- `announcment_paths` are now an ondemand.d property with profile support in [2608](https://github.com/OSC/ondemand/pull/2608).
 
 ### Fixed
 
