@@ -3,12 +3,6 @@ require "test_helper"
 class SupportTicketMailerTest < ActionMailer::TestCase
 
   def setup
-    Configuration.stubs(:support_ticket_config).returns({
-      email: {
-        to: "to_address@support.ticket.com",
-      }
-    })
-
     @support_ticket = SupportTicket.from_config({})
     @support_ticket.attributes = {
       email: "user_email@example.com",
@@ -21,7 +15,12 @@ class SupportTicketMailerTest < ActionMailer::TestCase
   end
 
   test 'generates email with all expected fields' do
-    email = SupportTicketMailer.support_email(@context)
+    support_ticket_config = {
+      email: {
+        to: "to_address@support.ticket.com",
+      }
+    }
+    email = SupportTicketMailer.support_email(support_ticket_config, @context)
 
     assert_emails 1 do
       email.deliver_now
@@ -36,13 +35,13 @@ class SupportTicketMailerTest < ActionMailer::TestCase
   end
 
   test 'from address can be overridden with configuration' do
-    Configuration.stubs(:support_ticket_config).returns({
+    support_ticket_config = {
       email: {
         from: "override@example.com",
         to: "to_address@support.ticket.com",
       }
-    })
-    email = SupportTicketMailer.support_email(@context)
+    }
+    email = SupportTicketMailer.support_email(support_ticket_config, @context)
 
     assert_emails 1 do
       email.deliver_now

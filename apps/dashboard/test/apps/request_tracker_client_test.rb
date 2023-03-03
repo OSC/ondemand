@@ -71,31 +71,4 @@ class RequestTrackerClientTest < ActiveSupport::TestCase
     assert_equal(true, target.rt_client.options[:verify_ssl])
     assert_equal("proxy.com:8888", target.rt_client.options[:proxy])
   end
-
-  test "create should read properties from Configuration.support_ticket_config and create client" do
-    config = {
-      rt_api: {
-        server: "http://server.com",
-        user: "payload_username",
-        pass: "payload_password",
-        timeout: 90,
-        verify_ssl: true,
-        proxy: "proxy.com:8888",
-      }
-    }
-    Configuration.stubs(:support_ticket_config).returns(config)
-
-    expected_config = {
-      server: "http://server.com",
-      user: "payload_username",
-      pass: "payload_password",
-      timeout: 90,
-      verify_ssl: true,
-      proxy: "proxy.com:8888",
-      auth_token: nil,
-    }
-    RequestTrackerClient.expects(:new).with(expected_config)
-    RequestTrackerClient.create
-  end
-
 end

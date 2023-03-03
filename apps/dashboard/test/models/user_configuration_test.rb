@@ -68,6 +68,7 @@ class UserConfigurationTest < ActiveSupport::TestCase
       help_menu: [],
       interactive_apps_menu: [],
       custom_pages: {},
+      support_ticket: {},
     }
 
     # ensure all properties are tested
@@ -174,6 +175,25 @@ class UserConfigurationTest < ActiveSupport::TestCase
 
     NavConfig.stubs(:categories_whitelist?).returns(true)
     assert_equal true, UserConfiguration.new.filter_nav_categories?
+  end
+
+  test "create_service_class returns SupportTicketEmailService when email configuration object defined" do
+    Configuration.stubs(:config).returns({support_ticket: {email: {}}})
+    service = UserConfiguration.new.support_ticket_service
+    assert_equal "SupportTicketEmailService", service.class.name
+  end
+
+  test "create_service_class returns SupportTicketRtService when rt_api configuration object defined" do
+    Configuration.stubs(:config).returns({support_ticket: {rt_api: {}}})
+    service = UserConfiguration.new.support_ticket_service
+    assert_equal "SupportTicketRtService", service.class.name
+  end
+
+  test "create_service_class throws exception when no service class configured" do
+    Configuration.stubs(:config).returns({})
+    assert_raise StandardError do
+      UserConfiguration.new.support_ticket_service
+    end
   end
 
   test "profile should delegate to CurrentUser settings when Configuration.host_based_profiles is false" do

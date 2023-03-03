@@ -4,12 +4,15 @@ class RequestTrackerIntegrationTest < ActionDispatch::IntegrationTest
 
   def setup
     Configuration.stubs(:support_ticket_enabled?).returns(true)
-    Configuration.stubs(:support_ticket_config).returns({
-      rt_api: {
-        queues: ["queue_name"],
-        priority: 10,
-      }
-    })
+    stub_user_configuration(
+      {
+        support_ticket: {
+          rt_api: {
+            queues: ["queue_name"],
+            priority: 10,
+          }
+        }
+      })
     Rails.application.reload_routes!
   end
 
@@ -33,13 +36,12 @@ class RequestTrackerIntegrationTest < ActionDispatch::IntegrationTest
     assert_select "input[type='submit']", 1
   end
 
-  test "POST should should create support ticket via Request Tracker client" do
+  test "POST should create support ticket via Request Tracker client" do
     get support_path
     assert :success
 
     token = css_select("input[type='hidden'][name='authenticity_token']").first['value']
     headers = { 'X-CSRF-Token' => token }
-    number_of_emails = ActionMailer::Base.deliveries.size
 
     data = {
       support_ticket: {
@@ -58,7 +60,7 @@ class RequestTrackerIntegrationTest < ActionDispatch::IntegrationTest
       assert_equal "name@domain.com", payload[:Requestor]
       assert_equal "test subject", payload[:Subject]
     end.returns("ticket_id")
-    RequestTrackerClient.stubs(:create).returns(request_tracker_client)
+    RequestTrackerClient.stubs(:new).returns(request_tracker_client)
 
     post support_path, params: data, headers: headers
     # Success redirects to the homepage with the success message

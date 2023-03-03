@@ -46,7 +46,7 @@ module BatchConnect::SessionsHelper
           concat created(session)
           concat session_time(session)
           concat id(session)
-          concat support_ticket(session) if Configuration.support_ticket_enabled?
+          concat support_ticket(session) unless @user_configuration.support_ticket.empty?
           concat display_choices(session)
           safe_concat custom_info_view(session) if session.app.session_info_view
         end

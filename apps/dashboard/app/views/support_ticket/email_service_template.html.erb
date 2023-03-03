@@ -2,7 +2,7 @@
 
 <%= javascript_tag nonce: true do -%>
 
-    const SUPPORT_TICKET_RESTRICTIONS = <%= raw SupportTicketValidator.restrictions.to_json %>
+    const SUPPORT_TICKET_RESTRICTIONS = <%= raw @support_ticket.restrictions.to_json %>
     const SUPPORT_TICKET_MESSAGES = {
         "items.attachments": "<%= t('dashboard.support_ticket.validation.items.attachments_js') %>",
         "size.attachments": "<%= t('dashboard.support_ticket.validation.size.attachments_js') %>",

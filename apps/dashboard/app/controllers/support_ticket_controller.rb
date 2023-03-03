@@ -40,17 +40,12 @@ class SupportTicketController < ApplicationController
 
   private
 
-  # Load support ticket service class based on the configuration
   def create_service_class
-    # Supported delivery mechanism
-    return SupportTicketEmailService.new if ::Configuration.support_ticket_config[:email]
-    return SupportTicketRtService.new if ::Configuration.support_ticket_config[:rt_api]
-
-    raise StandardError, 'No support ticket service class configured'
+    @user_configuration.support_ticket_service
   end
 
   def get_ui_template
-    ::Configuration.support_ticket_config.fetch(:ui_template, 'email_service_template')
+    @user_configuration.support_ticket.fetch(:ui_template, 'email_service_template')
   end
 
   def read_support_ticket_from_request
