@@ -85,6 +85,10 @@ class PosixFile
   def ls
     path.each_child.map do |child_path|
       PosixFile.stat(child_path)
+    end.select do |stats|
+      valid_encoding = stats[:name].to_s.valid_encoding?
+      Rails.logger.warn("Not showing file '#{stats[:name]}' because it is not a UTF-8 filename.") unless valid_encoding
+      valid_encoding
     end.sort_by { |p| p[:directory] ? 0 : 1 }
   end
 
