@@ -33,7 +33,7 @@ class ProjectsTest < ActiveSupport::TestCase
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
 
-      attrs = { name: "test project", icon: 'fas://arrow-right', id: 1 }
+      attrs = { name: 'test project', icon: 'fas://arrow-right', id: 1 }
       project = Project.new(attrs)
       project.save(attrs)
 
