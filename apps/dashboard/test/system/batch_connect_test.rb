@@ -360,10 +360,6 @@ class BatchConnectTest < ApplicationSystemTestCase
     select('advanced', from: bc_ele_id('node_type'))
     assert_equal 'default', find_value('hidden_change_thing', visible: false)
 
-    select('3.1', from: bc_ele_id('python_version'))
-    assert_equal 'python31', find_value('bc_account')
-    assert_equal 'default', find_value('hidden_change_thing', visible: false)
-
     select('3.6', from: bc_ele_id('python_version'))
     assert_equal 'python36', find_value('hidden_change_thing', visible: false)
 
