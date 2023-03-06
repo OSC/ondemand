@@ -141,7 +141,7 @@ GEM
     mime-types-data (3.2023.0218.1)
     mini_mime (1.1.2)
     mini_portile2 (2.8.1)
-    minitest (5.17.0)
+    minitest (5.18.0)
     mocha (1.16.1)
     multi_json (1.15.0)
     mustermann (3.0.0)
@@ -166,7 +166,7 @@ GEM
       ood_core (~> 0.1)
       rails (>= 6.0.0, < 7)
       redcarpet (~> 3.2)
-    ood_core (0.23.3)
+    ood_core (0.23.4)
       ffi (~> 1.9, >= 1.9.6)
       ood_support (~> 0.0.2)
       rexml (~> 3.2)
@@ -177,7 +177,7 @@ GEM
       stringio
     public_suffix (5.0.1)
     racc (1.6.2)
-    rack (2.2.6.2)
+    rack (2.2.6.3)
     rack-protection (3.0.5)
       rack
     rack-test (2.0.2)
