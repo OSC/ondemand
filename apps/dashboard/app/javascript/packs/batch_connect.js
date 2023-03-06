@@ -689,6 +689,9 @@ function optionForFromToken(str) {
       newSelectedOption.prop('selected', true);
     }
   }
+
+  // now that we're done, propogate this change to data-set or data-hide handlers
+  $(`#${elementId}`).trigger('change');
 };
 
 // Return exactly 1 jquery object for this id's option
