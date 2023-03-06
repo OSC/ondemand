@@ -6,7 +6,9 @@
 -%>
 
 <%- unless session_selection.empty? %>
-  <%= javascript_include_tag 'sessions_poller', nonce: true %>
+  <%- content_for :head do -%>
+    <%= javascript_include_tag 'batch_connect_sessions', nonce: true %>
+  <%- end -%>
 
   <div class="active-sessions-header">
     <h3>
