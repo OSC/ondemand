@@ -357,8 +357,14 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   test 'python choice sets hidden change thing' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    select('advanced', from: bc_ele_id('node_type'))
+
+    # defaults
+    assert_equal '2.7', find_value('python_version')
+    assert_equal 'any', find_value('node_type')
     assert_equal 'default', find_value('hidden_change_thing', visible: false)
+
+    select('advanced', from: bc_ele_id('node_type'))
+    assert_equal 'python36', find_value('hidden_change_thing', visible: false)
 
     select('3.6', from: bc_ele_id('python_version'))
     assert_equal 'python36', find_value('hidden_change_thing', visible: false)
