@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+preload stylesheets (#2616)\
+filter files that have non utf-8 characters in their filenames (#2626)\
+correctly show alerts for download links (#2631)\
+Moved support_ticket configuration to UserConfiguration class (#2625)\
+rm this include to safely dl large directories (#2628)\
+remove inline styles (#2622)\
+use inline style with a nonce (#2620)\
+lint a random file (#2623)\
+lint a random file (#2621)\
+Update Changelog (#2613)\
+lint a random file (#2612)\
+update dependencies (#2614)
 
 ### Changed
 
