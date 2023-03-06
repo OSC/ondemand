@@ -646,6 +646,7 @@ function optionForFromToken(str) {
 
     if(hide) {
       optionElement.hide();
+      optionElement.prop('disabled', true);
 
       if(optionElement.prop('selected')) {
         optionElement.prop('selected', false);
@@ -653,6 +654,7 @@ function optionForFromToken(str) {
       }
     } else {
       optionElement.show();
+      optionElement.prop('disabled', false);
     }
   });
 
