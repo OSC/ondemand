@@ -73,6 +73,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Support for opening support tickets in [2292](https://github.com/OSC/ondemand/pull/2292).
   - With support for RT in [2318](https://github.com/OSC/ondemand/pull/2318).
   - Additional support for making support ticket forms in [2348](https://github.com/OSC/ondemand/pull/2348).
+  - Support tickets are also part of profiles in [2625](https://github.com/OSC/ondemand/pull/2625).
 - Added ENV override for showing/hiding job arrays in [2327](https://github.com/OSC/ondemand/pull/2327).
 - Sites can add custom pages in Custom pages feature [2353](https://github.com/OSC/ondemand/pull/2353).
 - BC apps can now display choices made in the card in [2366](https://github.com/OSC/ondemand/pull/2366).
@@ -103,6 +104,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Activejobs now correctly sorts the time column in [2420](https://github.com/OSC/ondemand/pull/2420).
 - Some sites can now disable the shell option for BC apps in [2425](https://github.com/OSC/ondemand/pull/2425), fixing [722](https://github.com/OSC/ondemand/issues/722).
 - The job composers' setup script now recoginizes a 0 byte file and attempts to fix it in [2461](https://github.com/OSC/ondemand/issues/2461).
+- The file browser now filters files with non-utf-8 characters in [2626](https://github.com/OSC/ondemand/issues/2626).
 
 ### Security
 
