@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Update Changelog (#2637)\
+also disable when hidning for Safari (#2640)\
+Fixed sessions widget JS error for novnc connections (#2639)\
+lint a random file (#2641)\
+lint a random file (#2636)\
+update dependencies (#2638)\
+preload stylesheets (#2616)\
+filter files that have non utf-8 characters in their filenames (#2626)\
+correctly show alerts for download links (#2631)\
+Moved support_ticket configuration to UserConfiguration class (#2625)\
+rm this include to safely dl large directories (#2628)\
+remove inline styles (#2622)\
+use inline style with a nonce (#2620)\
+lint a random file (#2623)
 
 ### Changed
 
