@@ -211,7 +211,7 @@ en:
     jobs_project_deleted: "Project successfully deleted!"
     jobs_project_delete_project_confirmation: "Delete all contents of project directory?"
     jobs_project_manifest_updated: "Project manifest updated!"
-    jobs_project_name_validation: "Project name may only contain letters, digits, dashes, and underscores"
+    jobs_project_name_validation: "Project name may only contain letters, digits, dashes, underscores, and spaces"
     jobs_project_create_new_project_directory: "Create a new project directory"
 
     settings_updated: "Settings updated"
