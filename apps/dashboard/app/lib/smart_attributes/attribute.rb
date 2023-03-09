@@ -119,8 +119,7 @@ module SmartAttributes
     end
 
     # Hash of field options for Rails form helpers
-    # these are assumed to be everything that isn't already defined
-    # as a method on this class, but is in the opts hash, except for
+    # these are assumed to be everything that isn't already defined    # as a method on this class, but is in the opts hash, except for
     # label, help, and required, which are defined methods on this class
     # but should be called to be included.
     #
