@@ -116,13 +116,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - nginx APIs now validate the redirect on stop requests in [#1775](https://github.com/OSC/ondemand/pull/1175).
 - Nginx PUNs correclty start with minimal environment in [2157](https://github.com/OSC/ondemand/pull/2157)
 
-## [2.0.31] - 02-07-23
+## [2.0.31] - 02-07-2023
 
 ### Fixed
 
 - The linux Host adapter is now compatabile with apptainer in [2548](https://github.com/OSC/ondemand/pull/2548).
 
-## [2.0.30] - 02-02-23
+## [2.0.30] - 02-02-2023
 
 ### Fixed
 
@@ -132,7 +132,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Maintanence pages can serve assets in [2436](https://github.com/OSC/ondemand/pull/2436).
 
-## [2.0.29] - 10-31-22
+## [2.0.29] - 10-31-2022
 
 ### Fixed
 
