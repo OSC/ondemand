@@ -45,12 +45,21 @@ class Script
     end
   end
 
+  attr_reader :project_dir, :smart_attributes
+
   def initialize(opts = {})
     opts = opts.to_h.with_indifferent_access
 
     @project_dir = opts[:project_dir] || raise(StandardError, 'You must set the project directory')
     @id = opts[:id]
     @title = opts[:title].to_s
+    @smart_attributes = build_smart_attributes(opts[:form] || [])
+  end
+
+  def build_smart_attributes(form_list)
+    form_list.map do |form_item_id|
+      SmartAttributes::AttributeFactory.build(form_item_id, {})
+    end
   end
 
   def to_yaml
@@ -78,6 +87,4 @@ class Script
   end
 
   private
-
-  attr_reader :project_dir
 end
