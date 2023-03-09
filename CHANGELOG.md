@@ -116,6 +116,40 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - nginx APIs now validate the redirect on stop requests in [#1775](https://github.com/OSC/ondemand/pull/1175).
 - Nginx PUNs correclty start with minimal environment in [2157](https://github.com/OSC/ondemand/pull/2157)
 
+## [2.0.31] - 02-07-23
+
+### Fixed
+
+- The linux Host adapter is now compatabile with apptainer in [2548](https://github.com/OSC/ondemand/pull/2548).
+
+## [2.0.30] - 02-02-23
+
+### Fixed
+
+- Dynamic batch connect apps correctly clamp to 0 in [2413](https://github.com/OSC/ondemand/pull/2413).
+
+### Added
+
+- Maintanence pages can serve assets in [2436](https://github.com/OSC/ondemand/pull/2436).
+
+## [2.0.29] - 10-31-22
+
+### Fixed
+
+- Maintanence pages are no longer the default 503 pages in [2202](https://github.com/OSC/ondemand/pull/2202).
+- Open terminal buttons do not appear when ssh to compute node is turn off in [2210](https://github.com/OSC/ondemand/pull/2210).
+- Fujitsu TCS shows in active jobs in [2208](https://github.com/OSC/ondemand/pull/2208).
+- Libraries use SHA1 instead of MD5 to support FIPS systems in [2328](https://github.com/OSC/ondemand/pull/2328).
+- Dynamic batch connect now allows for multiple min & max settings in [2337](https://github.com/OSC/ondemand/pull/2337).
+- Dynamic batch connect correctly handles keys with / in them in [2340](https://github.com/OSC/ondemand/pull/2340).
+
+### Changed
+
+- Open OnDemand now relies on NodeJS 14 (up from 12 which is EOL) in [2316](https://github.com/OSC/ondemand/pull/2316).
+- The job composer now allows for copy environment setting in [2324](https://github.com/OSC/ondemand/pull/2324).
+- Upgrade to ood_core 0.22.0 in [2349](https://github.com/OSC/ondemand/pull/2349).
+  - This adds the `vnc_container` batch connect template.
+
 ## [2.0.28] - 08-01-2022
 
 ### Fixed
