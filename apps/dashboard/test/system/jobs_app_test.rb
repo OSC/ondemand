@@ -83,7 +83,7 @@ class ProjectsTest < ApplicationSystemTestCase
   test 'create with invalid name trigers alert' do
     Dir.mktmpdir do |dir|
       OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
-      proj = 'test project'
+      proj = 'test & project'
       icon = 'fas://arrow-right'
       visit projects_path
       click_on I18n.t('dashboard.jobs_project_create_new_project_directory')
@@ -91,7 +91,7 @@ class ProjectsTest < ApplicationSystemTestCase
       find('#product_icon_select').set(icon)
       click_on 'Save'
 
-      assert_selector '.alert-danger', text: 'Project name may only contain letters, digits, dashes, and underscores'
+      assert_selector '.alert-danger', text: 'Project name may only contain letters, digits, dashes, underscores, and spaces'
     end
   end
 
