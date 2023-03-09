@@ -54,7 +54,7 @@ class Project
   end
 
   validates :name, format: {
-    with:    /\A[\w-]+\z/,
+    with:    /\A[\w\-\s]+\z/,
     message: I18n.t('dashboard.jobs_project_name_validation')
   }
 
