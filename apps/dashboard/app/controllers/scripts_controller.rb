@@ -25,6 +25,15 @@ class ScriptsController < ApplicationController
     end
   end
 
+  # POST   /projects/:project_id/scripts/:id/submit
+  # submit the job
+  def submit
+    project = Project.find(params[:project_id])
+    @script = Script.find(params[:id], project.directory)
+
+    redirect_to project_path(params[:project_id]), notice: 'TODO'
+  end
+
   private
 
   def create_script_params
