@@ -309,7 +309,7 @@ module OodPortalGenerator
           exitcode = update_ood_portal
           exit!(exitcode)
         end
-      rescue StandardError, Exception => e
+      rescue StandardError => e
         warn "#{e.class}:#{e.message}"
         warn e.backtrace
         warn "Run '#{mode} --help' to see a full list of available options."
