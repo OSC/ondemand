@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+lint a random file (#2648)\
+enable scripts (#2607)\
+Update Changelog (#2643)\
+fix #2644 by never caching the files controllers' json response (#2645)\
+Update Changelog (#2637)\
+also disable when hidning for Safari (#2640)\
+Fixed sessions widget JS error for novnc connections (#2639)\
+lint a random file (#2641)\
+lint a random file (#2636)\
+update dependencies (#2638)
 
 ## [2.1.0] - 03-09-2023
 
