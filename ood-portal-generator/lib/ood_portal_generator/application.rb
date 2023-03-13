@@ -1,9 +1,13 @@
-require "digest"
-require "fileutils"
-require "optparse"
-require "tempfile"
-require "time"
-require "yaml"
+# frozen_string_literal: true
+
+require 'English'
+require 'English'
+require 'digest'
+require 'fileutils'
+require 'optparse'
+require 'tempfile'
+require 'time'
+require 'yaml'
 
 module OodPortalGenerator
   # The command line interface for OodPortalGenerator
@@ -12,17 +16,17 @@ module OodPortalGenerator
       # The yaml configuration file used as context for template
       # @return [Pathname] path to yaml config
       def config
-        Pathname.new(@config || ENV['CONFIG'] || "/etc/ood/config/ood_portal.yml")
+        Pathname.new(@config || ENV['CONFIG'] || '/etc/ood/config/ood_portal.yml')
       end
 
       # The erb template file that will be rendered
       # @return [Pathname] path to erb template
       def template
-        Pathname.new(@template || OodPortalGenerator.root.join("templates", "ood-portal.conf.erb"))
+        Pathname.new(@template || OodPortalGenerator.root.join('templates', 'ood-portal.conf.erb'))
       end
 
       def no_auth_template
-        Pathname.new(OodPortalGenerator.root.join("templates", "no-auth.conf.erb"))
+        Pathname.new(OodPortalGenerator.root.join('templates', 'no-auth.conf.erb'))
       end
 
       # The io object that the rendered template will be written to
@@ -73,13 +77,14 @@ module OodPortalGenerator
 
       def apache
         return ENV['APACHE'] unless ENV['APACHE'].nil?
-        if OodPortalGenerator.debian?
-          path = '/etc/apache2/sites-available/ood-portal.conf'
-        elsif OodPortalGenerator.scl_apache?
-          path = '/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf'
-        else
-          path = '/etc/httpd/conf.d/ood-portal.conf'
-        end
+
+        path = if OodPortalGenerator.debian?
+                 '/etc/apache2/sites-available/ood-portal.conf'
+               elsif OodPortalGenerator.scl_apache?
+                 '/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf'
+               else
+                 '/etc/httpd/conf.d/ood-portal.conf'
+               end
         File.join(prefix, path)
       end
 
@@ -102,7 +107,7 @@ module OodPortalGenerator
       end
 
       def dex_config
-        ENV['DEX_CONFIG'] || File.join(prefix, "/etc/ood/dex/config.yaml")
+        ENV['DEX_CONFIG'] || File.join(prefix, '/etc/ood/dex/config.yaml')
       end
 
       def dex_config_bak
@@ -112,7 +117,8 @@ module OodPortalGenerator
       # return string contents of file without comments
       def read_file_omitting_comments(input)
         return '' unless File.exist?(input)
-        File.readlines(input).reject {|line| line =~ /^\s*#/ }.join('')
+
+        File.readlines(input).reject { |line| line =~ /^\s*#/ }.join('')
       end
 
       def checksum(input)
@@ -125,6 +131,7 @@ module OodPortalGenerator
 
       def checksum_matches?(input)
         return true unless checksum_exists?
+
         checksum_str = File.readlines(sum_path)[0]
         checksum = checksum_str.split(' ')[0]
 
@@ -137,18 +144,19 @@ module OodPortalGenerator
       def checksum_exists?
         return false unless File.exist?(sum_path)
         return false if File.zero?(sum_path)
-        File.readlines(sum_path).grep(apache).size == 0
+
+        File.readlines(sum_path).grep(apache).size.zero?
       end
 
       def update_replace?
         # If checksum of ood-portal.conf matches or ood-portal.conf doesn't exit, replace is possible.
         # If the checksum matches this means a site has not changed ood-portal.conf outside ood-portal-generator
-        force || (! File.exist?(apache)) || checksum_matches?(apache)
+        force || !File.exist?(apache) || checksum_matches?(apache)
       end
 
       def files_identical?(a, b)
         `cmp -s "#{a}" "#{b}" 1>/dev/null 2>&1`
-        $?.success?
+        $CHILD_STATUS.success?
       end
 
       def exit!(code)
@@ -163,17 +171,17 @@ module OodPortalGenerator
       end
 
       def apache_changed_output
-        apache_units = apache_services.map {|a| "#{a}.service"}.join(' ')
-        output = [""]
+        apache_units = apache_services.map { |a| "#{a}.service" }.join(' ')
+        output = ['']
         output << "Restart the #{apache_services[0]} service now."
-        output << ""
-        output << "Suggested command:"
+        output << ''
+        output << 'Suggested command:'
         output << "    sudo systemctl try-restart #{apache_units}"
-        output << ""
+        output << ''
         output
       end
 
-      def generate()
+      def generate
         view = View.new(context)
         dex = Dex.new(context, view, insecure)
         dex_enabled = Dex.installed? && dex.enabled?
@@ -186,7 +194,7 @@ module OodPortalGenerator
         dex_output.write(dex.render) if dex_enabled
       end
 
-      def update_ood_portal()
+      def update_ood_portal
         ret = 0
         changed = false
         dex_changed = false
@@ -194,18 +202,18 @@ module OodPortalGenerator
         @output = new_apache.path
         new_dex_config = Tempfile.new('dex_config')
         @dex_output = new_dex_config.path
-        generate()
+        generate
 
         # Create checksum file if the path to ood-portal.conf not in checksum file
         # Checksum is based on mktemp generated ood-portal.conf but using path of real ood-portal.conf
-        if ! checksum_exists?
+        unless checksum_exists?
           puts "Generating Apache config checksum file: '#{sum_path}'"
           save_checksum(new_apache.path)
         end
 
         replace = update_replace?
 
-        if ! files_identical?(new_apache.path, apache)
+        if !files_identical?(new_apache.path, apache)
           if replace
             if File.exist?(apache)
               puts "Backing up previous Apache config to: '#{apache_bak}'"
@@ -213,8 +221,9 @@ module OodPortalGenerator
             end
             puts "Generating new Apache config at: '#{apache}'"
             `cat "#{new_apache.path}" > "#{apache}"`
-            FileUtils.chown(OodPortalGenerator.chown_apache_user, OodPortalGenerator.apache_group, apache, verbose: true)
-            FileUtils.chmod(0640, apache, verbose: true)
+            FileUtils.chown(OodPortalGenerator.chown_apache_user, OodPortalGenerator.apache_group, apache,
+                            verbose: true)
+            FileUtils.chmod(0o640, apache, verbose: true)
             puts "Generating Apache config checksum file: '#{sum_path}'"
             save_checksum(apache)
             ret = change_exit
@@ -224,16 +233,17 @@ module OodPortalGenerator
             puts "WARNING: Checksum of #{apache} does not match previous value, not replacing."
             puts "Generating new Apache config at: '#{apache_new}'"
             `cat "#{new_apache.path}" > "#{apache_new}"`
-            FileUtils.chown(OodPortalGenerator.chown_apache_user, OodPortalGenerator.apache_group, apache_new, verbose: true)
-            FileUtils.chmod(0640, apache_new, verbose: true)
+            FileUtils.chown(OodPortalGenerator.chown_apache_user, OodPortalGenerator.apache_group, apache_new,
+                            verbose: true)
+            FileUtils.chmod(0o640, apache_new, verbose: true)
             ret = skip_exit
           end
         else
-          puts "No change in Apache config."
+          puts 'No change in Apache config.'
         end
 
-        if ! File.zero?(new_dex_config.path)
-          if ! files_identical?(new_dex_config.path, dex_config)
+        unless File.zero?(new_dex_config.path)
+          if !files_identical?(new_dex_config.path, dex_config)
             dex_changed = true
             if File.exist?(dex_config)
               puts "Backing up previous Dex config to: '#{dex_config_bak}'"
@@ -242,115 +252,114 @@ module OodPortalGenerator
             puts "Generating new Dex config at: #{dex_config}"
             FileUtils.mv(new_dex_config.path, dex_config, verbose: true)
             FileUtils.chown(OodPortalGenerator.dex_user, OodPortalGenerator.dex_group, dex_config, verbose: true)
-            FileUtils.chmod(0600, dex_config, verbose: true)
+            FileUtils.chmod(0o600, dex_config, verbose: true)
           else
-            puts "No change in the Dex config."
+            puts 'No change in the Dex config.'
           end
         end
 
         new_apache.unlink
 
-        if rpm || ! replace
-          return ret
-        end
+        return ret if rpm || !replace
 
-        puts "Completed successfully!"
-        if changed
-          apache_changed_output.join("\n")
-        end
+        puts 'Completed successfully!'
+        apache_changed_output.join("\n") if changed
 
         if dex_changed
-          puts ""
-          puts "Restart the ondemand-dex service now."
-          puts ""
-          puts "Suggested command:"
-          puts "    sudo systemctl restart ondemand-dex.service"
-          puts ""
+          puts ''
+          puts 'Restart the ondemand-dex service now.'
+          puts ''
+          puts 'Suggested command:'
+          puts '    sudo systemctl restart ondemand-dex.service'
+          puts ''
         end
 
-        return ret
+        ret
       end
 
       # Starts the OodPortalGenerator CLI
       # @return [void]
       def start(mode, argv = ARGV)
         # Set a cleaner process title
-        Process.setproctitle("#{mode} #{argv.join(" ")}")
+        Process.setproctitle("#{mode} #{argv.join(' ')}")
 
         # Parse CLI arguments
         OptionParser.new do |parser|
           parser.banner = "Usage: #{mode} [options]"
 
-          if mode == 'generate'
+          case mode
+          when 'generate'
             add_generate_opt_parser_attrs(parser)
-          elsif mode == 'update_ood_portal'
+          when 'update_ood_portal'
             add_update_opt_parser_attrs(parser)
           end
 
           add_shared_opt_parser_attrs(parser)
 
-          parser.separator ""
-          parser.separator "Default:"
+          parser.separator ''
+          parser.separator 'Default:'
           parser.separator "  #{mode} -c #{config} -t #{template}"
         end.parse!(argv)
 
         # Render Apache portal config
-        if mode == 'generate'
-          generate()
-        elsif mode == 'update_ood_portal'
-          exitcode = update_ood_portal()
+        case mode
+        when 'generate'
+          generate
+        when 'update_ood_portal'
+          exitcode = update_ood_portal
           exit!(exitcode)
         end
-      rescue => exception
-        $stderr.puts "#{$!.to_s}"
-        $stderr.puts exception.backtrace
-        $stderr.puts "Run '#{mode} --help' to see a full list of available options."
+      rescue StandardError => e
+        warn $ERROR_INFO.to_s
+        warn e.backtrace
+        warn "Run '#{mode} --help' to see a full list of available options."
         exit!(false)
       end
 
       def add_generate_opt_parser_attrs(parser)
-        parser.on("-o", "--output OUTPUT", String, "File that rendered template is output to") do |v|
+        parser.on('-o', '--output OUTPUT', String, 'File that rendered template is output to') do |v|
           @output = v
         end
 
-        parser.on("-d", "--dex OUTPUT", String, "File that rendered Dex config is output to") do |v|
+        parser.on('-d', '--dex OUTPUT', String, 'File that rendered Dex config is output to') do |v|
           @dex_output = v
         end
       end
 
       def add_update_opt_parser_attrs(parser)
-        parser.on("-r", "--rpm", TrueClass, "Execution performed during RPM install") do |v|
+        parser.on('-r', '--rpm', TrueClass, 'Execution performed during RPM install') do |v|
           @rpm = v
         end
 
-        parser.on("-f", "--force", TrueClass, "Force replacement of configs even if checksums differ") do |v|
+        parser.on('-f', '--force', TrueClass, 'Force replacement of configs even if checksums differ') do |v|
           @force = v
         end
 
-        parser.on("--detailed-exitcodes", TrueClass, "Exit with 3 when changes are made and 4 when changes skipped") do |v|
+        parser.on('--detailed-exitcodes', TrueClass,
+                  'Exit with 3 when changes are made and 4 when changes skipped') do |v|
           @detailed_exitcodes = v
         end
       end
 
       def add_shared_opt_parser_attrs(parser)
-        parser.on("-c", "--config CONFIG", String, "YAML config file used to render template") do |v|
+        parser.on('-c', '--config CONFIG', String, 'YAML config file used to render template') do |v|
           @config = v
         end
 
-        parser.on("-t", "--template TEMPLATE", String, "ERB template that is rendered") do |v|
+        parser.on('-t', '--template TEMPLATE', String, 'ERB template that is rendered') do |v|
           @template = v
         end
 
-        parser.on("-i", "--insecure", TrueClass, "Generate insecure configs if configured") do |v|
+        parser.on('-i', '--insecure', TrueClass, 'Generate insecure configs if configured') do |v|
           @insecure = v
         end
 
-        parser.on("-v", "--version", "Print current version") do
+        parser.on('-v', '--version', 'Print current version') do
           puts "version #{OodPortalGenerator::VERSION}"
           exit
         end
 
-        parser.on("-h", "--help", "Show this help message") do
+        parser.on('-h', '--help', 'Show this help message') do
           puts parser
           exit
         end
