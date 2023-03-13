@@ -310,7 +310,7 @@ module OodPortalGenerator
           exit!(exitcode)
         end
       rescue StandardError, Exception => e
-        warn $ERROR_INFO.to_s
+        warn "#{e.class}:#{e.message}"
         warn e.backtrace
         warn "Run '#{mode} --help' to see a full list of available options."
         exit!(false)
