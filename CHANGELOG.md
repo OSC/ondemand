@@ -6,16 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-lint a random file (#2648)\
-enable scripts (#2607)\
-Update Changelog (#2643)\
-fix #2644 by never caching the files controllers' json response (#2645)\
-Update Changelog (#2637)\
-also disable when hidning for Safari (#2640)\
-Fixed sessions widget JS error for novnc connections (#2639)\
-lint a random file (#2641)\
-lint a random file (#2636)\
-update dependencies (#2638)
 
 ## [2.1.0] - 03-09-2023
 
@@ -117,6 +107,7 @@ update dependencies (#2638)
 - Some sites can now disable the shell option for BC apps in [2425](https://github.com/OSC/ondemand/pull/2425), fixing [722](https://github.com/OSC/ondemand/issues/722).
 - The job composers' setup script now recoginizes a 0 byte file and attempts to fix it in [2461](https://github.com/OSC/ondemand/issues/2461).
 - The file browser now filters files with non-utf-8 characters in [2626](https://github.com/OSC/ondemand/issues/2626).
+- Safari disables form select options because it cannot hide them in [2640](https://github.com/OSC/ondemand/issues/2640).
 
 ### Security
 
