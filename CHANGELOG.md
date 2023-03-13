@@ -107,6 +107,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Some sites can now disable the shell option for BC apps in [2425](https://github.com/OSC/ondemand/pull/2425), fixing [722](https://github.com/OSC/ondemand/issues/722).
 - The job composers' setup script now recoginizes a 0 byte file and attempts to fix it in [2461](https://github.com/OSC/ondemand/issues/2461).
 - The file browser now filters files with non-utf-8 characters in [2626](https://github.com/OSC/ondemand/issues/2626).
+- Safari disables form select options because it cannot hide them in [2640](https://github.com/OSC/ondemand/issues/2640).
 
 ### Security
 
