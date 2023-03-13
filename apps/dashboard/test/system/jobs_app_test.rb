@@ -76,7 +76,7 @@ class ProjectsTest < ApplicationSystemTestCase
       find('#product_icon_select').set(icon)
       click_on 'Save'
 
-      assert_selector '.alert-danger:not(.close)', text: 'Project name may only contain letters, digits, dashes, and underscores'
+      assert_selector '.alert-danger:not(.close)', text: 'Project name may only contain letters, digits, dashes, underscores, and spaces'
     end
   end
 
