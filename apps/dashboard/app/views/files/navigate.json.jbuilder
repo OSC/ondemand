@@ -1,9 +1,9 @@
 # This is for navigation purposes only.
 json.path @path.to_s
-json.url files_path(@filesystem, @path).to_s
+json.url navigate_path(@filesystem, @path).to_s
 #TODO: support array of shell urls, along with the default shell url which could be above
 json.shell_url OodAppkit.shell.url(path: @path.to_s).to_s
-json.files_path files_path(@filesystem, '/')
+json.navigate_path navigate_path(@filesystem, '/')
 json.files_upload_path url_for(fs: @filesystem, action: 'upload')
 json.filesystem @filesystem
 
@@ -12,8 +12,8 @@ json.files @files do |f|
   json.type f[:directory] ? 'd' : 'f'
   json.name f[:name]
 
-  json.url files_path(@filesystem, @path.join(f[:name]).to_s)
-  json.download_url files_path(@filesystem, @path.join(f[:name]).to_s, download: '1') # FIXME: should change for directory
+  json.url navigate_path(@filesystem, @path.join(f[:name]).to_s)
+  json.download_url navigate_path(@filesystem, @path.join(f[:name]).to_s, download: '1') # FIXME: should change for directory
   json.edit_url OodAppkit.editor.edit(path: @path.join(f[:name]).to_s, fs: @filesystem).to_s
 
   json.size f[:size]
