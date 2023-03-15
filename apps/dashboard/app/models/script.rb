@@ -75,6 +75,31 @@ class Script
   end
   alias_method :inspect, :to_h
 
+  # Delegate methods to smart_attributes' getter
+  #
+  # @param method_name the method name called
+  # @param arguments the arguments to the call
+  # @param block an optional block for the call
+  def method_missing(method_name, *arguments, &block)
+    # not a bug here, we want =, not ==
+    if /^(?<id>[^=]+)$/ =~ method_name.to_s && (attribute = self[id])
+      attribute.value
+    else
+      super
+    end
+  end
+
+  def respond_to_missing?(method_name, include_private = false)
+    (/^(?<id>[^=]+)$/ =~ method_name.to_s && self[id]) || super
+  end
+
+  # Find attribute in list using the id of the attribute
+  # @param id [Object] id of attribute object
+  # @return [SmartAttribute::Attribute, nil] attribute object if found
+  def [](id)
+    smart_attributes.detect { |attribute| attribute == id }
+  end
+
   def save
     @id = Script.next_id(project_dir)
     File.write("#{Script.scripts_dir(project_dir)}/#{id}.yml", to_yaml)

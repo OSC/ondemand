@@ -2,8 +2,13 @@
 <h1><%= @script.title %></h1>
 
 
-<%= link_to 'Back', project_path(params[:project_id]), class: 'btn btn-default mt-3',  title: 'Return to projects page' %>
+<%= link_to 'Back', project_path(params[:project_id]), class: 'btn btn-default my-3',  title: 'Return to projects page' %>
 
-<hr>
-<%= @script.smart_attributes %>
-<hr>
+<%= bootstrap_form_for(@script, url: submit_project_script_path) do |f| %>
+  <% @script.smart_attributes.each do |attrib| %>
+    <%# TODO generate render_format %>
+    <%= create_widget(f, attrib, format: nil) %>
+  <% end %>
+
+  <%= f.submit t('dashboard.batch_connect_form_launch'), class: "btn btn-primary btn-block" %>
+<% end %>
