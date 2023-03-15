@@ -30,8 +30,13 @@ class ScriptsController < ApplicationController
   def submit
     project = Project.find(params[:project_id])
     @script = Script.find(params[:id], project.directory)
+    opts = submit_script_params[:script].to_h.symbolize_keys
 
-    redirect_to project_path(params[:project_id]), notice: 'TODO'
+    if (job_id = @script.submit(opts))
+      redirect_to(project_path(params[:project_id]), notice: "Successfully submited job #{job_id}.")
+    else
+      redirect_to(project_path(params[:project_id]), alert: @script.errors[:submit].last)
+    end
   end
 
   private
@@ -42,5 +47,10 @@ class ScriptsController < ApplicationController
 
   def show_script_params
     params.permit(:id, :project_id)
+  end
+
+  def submit_script_params
+    keys = @script.smart_attributes.map { |sm| sm.id.to_s }
+    params.permit({ script: keys }, :project_id, :id)
   end
 end

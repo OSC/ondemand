@@ -3,6 +3,8 @@
 class Script
   include ActiveModel::Model
 
+  class ClusterNotFound < StandardError; end
+
   attr_reader :title, :id, :project_dir, :smart_attributes
 
   class << self
@@ -121,7 +123,34 @@ class Script
     false
   end
 
+  def submit(options)
+    adapter = adapter(options[:cluster]).job_adapter
+    render_format = adapter.class.name.split('::').last.downcase
+
+    job_script = OodCore::Job::Script.new(**submit_opts(options, render_format))
+    Dir.chdir(project_dir) do
+      adapter.submit(job_script)
+    end
+  rescue StandardError => e
+    errors.add(:submit, e.message)
+    Rails.logger.error("ERROR: #{e.class} - #{e.message}")
+    nil
+  end
+
   private
+
+  def submit_opts(options, render_format)
+    smart_attributes.map do |sm|
+      sm.value = options[sm.id.to_sym]
+      sm
+    end.map do |sm|
+      sm.submit(fmt: render_format)
+    end.reduce(&:deep_merge)[:script]
+  end
+
+  def adapter(cluster_id)
+    OodAppkit.clusters[cluster_id] || raise(ClusterNotFound, "Job specifies nonexistent '#{cluster_id}' cluster id.")
+  end
 
   def add_cluster_to_form(form: [], attributes: {}, clusters: [])
     form.prepend('cluster') unless form.include?('cluster')
