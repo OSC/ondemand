@@ -53,12 +53,13 @@ class Script
     @project_dir = opts[:project_dir] || raise(StandardError, 'You must set the project directory')
     @id = opts[:id]
     @title = opts[:title].to_s
-    @smart_attributes = build_smart_attributes(opts[:form] || [])
+    @smart_attributes = build_smart_attributes(opts[:form] || [], opts[:attributes] || {})
   end
 
-  def build_smart_attributes(form_list)
+  def build_smart_attributes(form_list, attribute_hash)
     form_list.map do |form_item_id|
-      SmartAttributes::AttributeFactory.build(form_item_id, {})
+      attrs = attribute_hash[form_item_id].to_h.symbolize_keys
+      SmartAttributes::AttributeFactory.build(form_item_id, attrs)
     end
   end
 
