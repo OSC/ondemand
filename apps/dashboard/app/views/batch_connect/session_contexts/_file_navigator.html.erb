@@ -8,8 +8,8 @@ end
 <%= text_field :batch_connect_session_context, attrib.id, class: 'form-control' %>
 <%= button_tag 'Select Path', type: 'button', class: 'btn btn-primary', style: 'margin-top: 15px;', id: 'select-nav-path' %>
 <hr>
-<span id='navigate_home_dir' style="display:block;"><%= Dir.home %></span>
-<span id='navigate_url' style="display:block;"><%= ENV['RAILS_RELATIVE_URL_ROOT'] %></span>
+<span id='navigate_home_dir' style="display:none;"><%= Dir.home %></span>
+<span id='navigate_url' style="display:none;"><%= ENV['RAILS_RELATIVE_URL_ROOT'] %></span>
 <hr>
 <div id="container-directory-contents" style="display:none;">
     <ol id="path-breadcrumbs" class="breadcrumb breadcrumb-no-delimiter">

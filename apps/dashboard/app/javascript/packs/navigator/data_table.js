@@ -27,8 +27,9 @@ jQuery(function () {
 
     /* TABLE ACTIONS */
     $(SELECTNAVPATH).on(EVENTNAME.click, function(e, options) {
-        let url = $(WORKINGDIRECTORY).val() ? $(WORKINGDIRECTORY).val() : "/home/gbyrket";
-        url = "/pun/dev/dashboard/files/navigate" + url;
+        let url = $(WORKINGDIRECTORY).val() ? $(WORKINGDIRECTORY).val() : $('#navigate_home_dir').text();
+        let path = $('#navigate_url').text();
+        url = path + "/files/navigate" + url;
         table.reloadTable(url);
         $(CONTAINERCONTENTID).show();
     });

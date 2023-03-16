@@ -105,27 +105,6 @@ class FilesController < ApplicationController
     end
   end
 
-  #############
-  # NAVIGATE FUNCTIONALITY ONLY
-  #############
-  def navigate
-    request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
-
-    respond_to do |format|
-      parse_path
-      validate_path!
-  
-      if @path.directory?
-        @path.raise_if_cant_access_directory_contents  
-        format.json do
-          @files = @path.ls
-          render :navigate
-        end
-      end
-    end
-  end
-
-
   # PUT - create or update
   def update
     parse_path

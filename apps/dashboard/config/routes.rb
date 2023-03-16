@@ -9,32 +9,12 @@ Rails.application.routes.draw do
     end
   end
 
-  # if Configuration.can_access_files?
-  #   constraints filepath: /.+/, navigate: /(?!(edit|api\/v1))[^\/]+/  do
-  #     get "files/:navigate(/*filepath)" => "files#navigate", :defaults => { :fs => 'navigate', :format => 'html' }, :format => false, as: :navigate
-  #     put "files/:navigate/*filepath" => "files#update", :format => false, :defaults => { :fs => 'navigate', :format => 'json' }
-
-  #     # # TODO: deprecate these routes after updating OodAppkit to use the new routes above
-  #     # # backwards compatibility with the "api" routes that OodAppkit provides
-  #     # # and are used by File Editor and Job Composer
-  #     # get "files/api/v1/:navigate(/*filepath)" => "files#navigate", :defaults => { :fs => 'navigate', :format => 'html' }, :format => false
-  #     # put "files/api/v1/:navigate/*filepath" => "files#update", :format => false, :defaults => { :fs => 'navigate', :format => 'json' }
-  #   end
-
-  #   get "navigate", to: redirect("files/navigate#{Dir.home}")
-
-  #   resources :transfers, only: [:show, :create, :destroy]
-  # end
-
 
   # in production, if the user doesn't have access to the files app directory, we hide the routes
   if Configuration.can_access_files?
     constraints filepath: /.+/, fs: /(?!(edit|api\/v1))[^\/]+/  do
       get "files/:fs(/*filepath)" => "files#fs", :defaults => { :fs => 'fs', :format => 'html' }, :format => false, as: :files
       put "files/:fs/*filepath" => "files#update", :format => false, :defaults => { :fs => 'fs', :format => 'json' }
-
-      get "files/:navigate(/*filepath)" => "files#navigate", :defaults => { :fs => 'fs', :format => 'html' }, :format => false, as: :navigate
-      put "files/:navigate/*filepath" => "files#update", :format => false, :defaults => { :fs => 'fs', :format => 'json' }
 
       # TODO: deprecate these routes after updating OodAppkit to use the new routes above
       # backwards compatibility with the "api" routes that OodAppkit provides
