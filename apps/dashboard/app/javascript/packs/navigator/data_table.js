@@ -212,10 +212,6 @@ class DataTable {
         $('#directory-contents_filter').prepend(
             `<label style="margin-right: 20px" for="show-files">
                 <input type="checkbox" id="show-files" ${this.getShowFiles() ? 'checked' : ''}> Show Files</label>`);
-
-        $('#directory-contents_filter').prepend(
-            `<label style="margin-right: 20px" for="show-files">
-                <button id="button-select-path">Select Path</button></label>`);
         
 
     }
