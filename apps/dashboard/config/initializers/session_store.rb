@@ -2,7 +2,7 @@
 
 if Rails.application.config.session_store.nil?
   begin
-    dir = "/var/tmp/#{Etc.getlogin}"
+    dir = "/var/tmp/#{Etc.getpwuid.name}"
     Dir.mkdir(dir, 0o0700) unless Dir.exist?(dir)
 
     Rails.application.config.session_store(:cache_store, cache: ActiveSupport::Cache::FileStore.new(dir))
