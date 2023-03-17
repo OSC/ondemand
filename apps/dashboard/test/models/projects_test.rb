@@ -7,52 +7,11 @@ class ProjectsTest < ActiveSupport::TestCase
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
       OodAppkit.stubs(:dataroot).returns(projects_path)
-      attrs = { name: 'test-project', icon: 'fas://arrow-right', id: 1 }
+      attrs = { name: 'test project & stuff', icon: 'fas://arrow-right', id: 1 }
       project = Project.new(attrs)
 
       assert project.save(attrs), project.errors.inspect
       assert Dir.entries("#{projects_path}/projects").include?('1')
-    end
-  end
-
-  test 'save rejects bad name characters at validation' do
-    Dir.mktmpdir do |tmp|
-      projects_path = Pathname.new(tmp)
-      OodAppkit.stubs(:dataroot).returns(projects_path)
-
-      attrs = { name: "b@d-$ym?o|'s", icon: 'fas://arrow-right', id: 1 }
-      project = Project.new(attrs)
-
-      assert !project.save(attrs)
-      assert_equal project.errors[:name].last, 'Name format invalid'
-    end
-  end
-
-  test 'update writes manifest and rejects name with disallowed characters' do
-    Dir.mktmpdir do |tmp|
-      projects_path = Pathname.new(tmp)
-      OodAppkit.stubs(:dataroot).returns(projects_path)
-
-      attrs = { name: 'test project', icon: 'fas://arrow-right', id: 1 }
-      project = Project.new(attrs)
-      project.save(attrs)
-
-      bad_attrs = { name: 'b@d $ymbo!s' }
-
-      assert !project.update(bad_attrs)
-      assert_equal project.errors[:name].last, 'Name format invalid'
-
-      good_attrs = { name: 'good-symbols', icon: 'fas://arrow-right', id: 1 }
-      manifest_path = Pathname.new("#{project.directory}/.ondemand/manifest.yml")
-
-      expected_manifest_yml = <<~HEREDOC
-        ---
-        name: good symbols
-        icon: fas://arrow-right
-      HEREDOC
-
-      assert project.update(good_attrs), project.errors.inspect
-      assert expected_manifest_yml, File.read(manifest_path)
     end
   end
 
