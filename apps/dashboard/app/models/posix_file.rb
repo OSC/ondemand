@@ -107,10 +107,15 @@ class PosixFile
   def handle_upload(tempfile)
     path.parent.mkpath unless path.parent.directory?
 
-    FileUtils.mv tempfile, path.to_s
+    mode = if path.exist?
+             # file aleady exists, so use it's existing permissions
+             path.stat.mode
+           else
+             # Apply the user's umask on top of 0666 (-rw-rw-rw-), since the file doesn't need to be executable.
+             0o666 & (0o777 ^ File.umask)
+           end
 
-    # Apply the user's umask on top of 0666 (-rw-rw-rw-), since the file doesn't need to be executable.
-    mode = 0666 & (0777 ^ File.umask)
+    FileUtils.mv tempfile, path.to_s
     File.chmod(mode, path.to_s)
 
     path.chown(nil, path.parent.stat.gid) if path.parent.setgid?

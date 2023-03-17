@@ -3,7 +3,6 @@ import Dashboard from '@uppy/dashboard'
 import XHRUpload from '@uppy/xhr-upload'
 import _ from 'lodash';
 import {CONTENTID, EVENTNAME as DATATABLE_EVENTNAME} from './data_table.js';
-import { dupSafeName } from './utils.js';
 import { maxFileSize, csrfToken } from '../config.js';
 
 let uppy = null;
@@ -70,7 +69,6 @@ jQuery(function() {
     restrictions: {
       maxFileSize: maxFileSize(),
     },
-    onBeforeFileAdded: renameIfDuplicate,
     onBeforeUpload: updateEndpoint,
   });
   
@@ -168,12 +166,6 @@ function getEmptyDirs(entry){
       })
     }
   });
-}
-
-function renameIfDuplicate(currentFile, files) {
-  let modifiedFile = {...currentFile};
-  modifiedFile.meta.name = dupSafeName(currentFile.name);
-  return modifiedFile
 }
 
 function updateEndpoint() {
