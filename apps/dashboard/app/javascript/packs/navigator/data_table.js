@@ -204,9 +204,13 @@ class DataTable {
                 } // mode
             ]
         });
-
+        
+        /*
+            These 2 checkboxes will go away once the ability to pass in options from the form is written.
+            They are here now to show functionality of hiding/show files/directories
+        */
         $('#directory-contents_filter').prepend(
-            `<label style="margin-right: 20px" for="show-dotfiles">
+            `<label for="show-dotfiles">
                 <input type="checkbox" id="show-dotfiles" ${this.getShowDotFiles() ? 'checked' : ''}> Show Dotfiles</label>`);
 
         $('#directory-contents_filter').prepend(
