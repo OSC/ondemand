@@ -3,7 +3,6 @@
 # Generates the support ticket payload and sends it to a request tracker system using the API
 #
 class RequestTrackerService
-
   attr_reader :rt_config, :queues, :priority
 
   def initialize(request_tracker_config)
