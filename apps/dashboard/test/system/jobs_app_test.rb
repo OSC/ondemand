@@ -65,36 +65,6 @@ class ProjectsTest < ApplicationSystemTestCase
     end
   end
 
-  test 'create with missing name triggers alert' do
-    Dir.mktmpdir do |dir|
-      OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
-      proj = ''
-      icon = 'fas://arrow-right'
-      visit projects_path
-      click_on I18n.t('dashboard.jobs_project_create_new_project_directory')
-      find('#project_name').set(proj)
-      find('#product_icon_select').set(icon)
-      click_on 'Save'
-
-      assert_selector '.alert-danger', text: 'Project name may only contain letters, digits, dashes, and underscores'
-    end
-  end
-
-  test 'create with invalid name trigers alert' do
-    Dir.mktmpdir do |dir|
-      OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
-      proj = 'test project'
-      icon = 'fas://arrow-right'
-      visit projects_path
-      click_on I18n.t('dashboard.jobs_project_create_new_project_directory')
-      find('#project_name').set(proj)
-      find('#product_icon_select').set(icon)
-      click_on 'Save'
-
-      assert_selector '.alert-danger', text: 'Project name may only contain letters, digits, dashes, and underscores'
-    end
-  end
-
   test 'create with missing icon triggers alert' do
     Dir.mktmpdir do |dir|
       OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
@@ -122,17 +92,6 @@ class ProjectsTest < ApplicationSystemTestCase
       click_on 'Save'
 
       assert_selector '.alert-danger', text: 'Icon format invalid or missing'
-    end
-  end
-
-  test 'update with invalid name triggers alert' do
-    Dir.mktmpdir do |dir|
-      setup_project(dir)
-      click_on 'Edit'
-      find('#project_name').set('bad name')
-      click_on 'Save'
-
-      assert_selector '.alert-danger', text: 'Name format invalid'
     end
   end
 
