@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Chrome can once again use copy/paste in [2666](https://github.com/OSC/ondemand/pull/2647),
+  forwarded from [537](https://github.com/OSC/ondemand/pull/537).
+- SyntaxErrors in announcements safely rescue in [2647](https://github.com/OSC/ondemand/pull/2647).
+
 ## [2.1.0] - 03-09-2023
 
 ### Changed
