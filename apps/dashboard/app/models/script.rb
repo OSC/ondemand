@@ -38,7 +38,8 @@ class Script
       all(project_dir)
         .map(&:id)
         .map(&:to_i)
-        .max || 0 + 1
+        .prepend(0)
+        .max + 1
     end
 
     def batch_clusters
@@ -67,7 +68,7 @@ class Script
 
   def build_smart_attributes(form: [], attributes: {})
     form.map do |form_item_id|
-      attrs = attributes[form_item_id].to_h.symbolize_keys
+      attrs = attributes[form_item_id.to_sym].to_h.symbolize_keys
       SmartAttributes::AttributeFactory.build(form_item_id, attrs)
     end
   end
