@@ -61,7 +61,17 @@ class MotdFile
   private
 
   def load(motd_uri)
-    motd_uri ? open(motd_uri).read : nil
+    uri = URI.parse(motd_uri)
+
+    case uri.scheme
+    when 'http', 'https'
+      uri.read
+    when nil
+      File.read(uri.to_s)
+    else
+      Rails.logger.warn("Unknown scheme for #{motd_uri}. No MOTD is loaded")
+      nil
+    end
   rescue Errno::ENOENT
     Rails.logger.warn "MOTD File is missing; it was expected at #{motd_uri}"
     nil
