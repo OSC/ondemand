@@ -3,7 +3,6 @@ import Handlebars from 'handlebars';
 import {CONTENTID} from './data_table.js';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 import {EVENTNAME as FILEOPS_EVENTNAME} from './file_ops.js';
-import { dupSafeName } from './utils.js';
 import { csrfToken } from '../config.js';
 
 export {EVENTNAME};
@@ -158,16 +157,9 @@ class ClipBoard {
         // files is a hashmap with keys of file current path and value as the corresponding files desired path
         let files = {};
 
-        if (clipboard.from == clipboard.to) {
-          clipboard.files.forEach((f) => {
-            files[`${clipboard.from}/${f.name}`] = `${clipboard.to}/${dupSafeName(f.name)}`;
-          });
-        } else {
-          // Don't rename files if not copying to the same directory
-          clipboard.files.forEach((f) => {
-            files[`${clipboard.from}/${f.name}`] = `${clipboard.to}/${f.name}`;
-          })
-        }
+        clipboard.files.forEach((f) => {
+          files[`${clipboard.from}/${f.name}`] = `${clipboard.to}/${f.name}`;
+        });
 
         const eventData = {
           'files': files,
