@@ -30,7 +30,7 @@ http {
   passenger_default_user <%= user %>;
   passenger_load_shell_envvars off;
   # users can't update passenger anyhow
-  passenger_disable_security_update_check off;
+  passenger_disable_security_update_check on;
 
   <%- if disable_bundle_user_config? -%>
   passenger_env_var BUNDLE_USER_CONFIG /dev/null;
