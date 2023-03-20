@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+forward port #537 to 2.1 to have native copy/paste support for chrome (#2666)\
+lint a random file (#2662)\
+Bump rack from 2.2.6.3 to 2.2.6.4 in /apps/myjobs (#2665)\
+Bump rack from 2.2.6.3 to 2.2.6.4 in /apps/dashboard (#2664)\
+Fix Rails session store using wrong username (#2663)\
+show smart attributes in a form and start a #submit API (#2649)\
+add file to deb dependencies (#2657)\
+rescue SyntaxErrors in announcements (#2647)\
+Lint a random file (#2654)\
+Update Changelog (#2655)
 
 ## [2.1.0] - 03-09-2023
 
