@@ -45,9 +45,13 @@ class Script
     def batch_clusters
       Rails.cache.fetch('script_batch_clusters', expires_in: 4.hours) do
         Configuration.job_clusters.reject do |c|
-          c.kubernetes? || c.linux_host? || c.systemd?
+          reject_cluster?(c)
         end.map(&:id).map(&:to_s)
       end
+    end
+
+    def reject_cluster?
+      c.kubernetes? || c.linux_host? || c.systemd?
     end
   end
 
@@ -128,16 +132,24 @@ class Script
     form.prepend('cluster') unless form.include?('cluster')
 
     attributes[:cluster] = if clusters.size > 1
-                             {
-                               widget:  'select',
-                               label:   'Cluster',
-                               options: clusters
-                             }
+                             select_clusters(clusters)
                            else
-                             {
-                               value: clusters.first.id.to_s,
-                               fixed: true
-                             }
+                             fixed_cluster(clusters)
                            end
+  end
+
+  def select_clusters(clusters)
+    {
+      widget:  'select',
+      label:   'Cluster',
+      options: clusters
+    }
+  end
+
+  def fixed_cluster(clusters)
+    {
+      value: clusters.first.id.to_s,
+      fixed: true
+    }
   end
 end
