@@ -340,7 +340,11 @@ class Table {
       } else {
         const prev = this.table[xIdx];
         const newer = value;
-        this.table[xIdx] = Object.assign(prev, newer);
+        if(typeof newer == 'string' && typeof prev == 'string'){
+          this.table[xIdx] = newer;
+        } else {
+          this.table[xIdx] = Object.assign(prev, newer);
+        }
       }
     } else {
       if(this.table[xIdx][yIdx] === undefined){
@@ -348,7 +352,11 @@ class Table {
       } else {
         const prev = this.table[xIdx][yIdx];
         const newer = value;
-        this.table[xIdx][yIdx] = Object.assign(prev, newer);
+        if(typeof newer == 'string' && typeof prev == 'string'){
+          this.table[xIdx][yIdx] = newer;
+        } else {
+          this.table[xIdx][yIdx] = Object.assign(prev, newer);
+        }
       }
     }
   }
