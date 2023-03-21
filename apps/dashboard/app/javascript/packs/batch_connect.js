@@ -579,7 +579,7 @@ function minOrMax(key) {
  * @returns
  */
 function idFromToken(str) {
-  return formTokens.map((token) => {
+  elements = formTokens.map((token) => {
     let match = str.match(`^${token}{1}`);
 
     if (match && match.length >= 1) {
@@ -588,7 +588,21 @@ function idFromToken(str) {
     }
   }).filter((id) => {
     return id !== undefined;
-  })[0];
+  });
+
+  if(elements.length == 0) {
+    return undefined;
+  }else if(elements.length == 1) {
+    return elements[0];
+
+  // you matched multiple things. For example you're searching for
+  // ClusterFileystem and found both 'Cluster' and 'ClusterFileSystem'
+  } else if(elements.length > 1) {
+    const snake_case_str = snakeCaseWords(str);
+    return elements.filter((element) => {
+      return element.endsWith(snake_case_str);
+    })[0];
+  }
 }
 
 

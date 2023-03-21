@@ -117,18 +117,21 @@ attributes:
           "2.7",
           data-option-for-node-type-advanced: false,
           data-option-for-node-type-other-40ish-option: false,
+          data-set-bc-account-other: 'other_account_python27',
           data-set-bc-account: 'python27'
         ]
       - [
           "3.1",
           data-option-for-node-type-advanced: false,
           data-option-for-node-type-other-40ish-option: false,
+          data-set-bc-account-other: 'other_account_python31',
           data-set-bc-account: 'python31'
         ]
       - [
           "3.2",
           data-option-for-node-type-advanced: false,
           data-option-for-node-type-other-40ish-option: false,
+          data-set-bc-account-other: 'other_account_python32',
           data-set-bc-account: 'python32'
         ]
       - [
@@ -191,6 +194,7 @@ form:
   - node_type
   - gpus
   - bc_account
+  - bc_account_other
   - bc_email_on_started
   - python_version
   - cuda_version
