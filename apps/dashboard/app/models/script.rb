@@ -3,12 +3,9 @@
 class Script
   include ActiveModel::Model
 
-  attr_reader :title
-
-  attr_reader :id
+  attr_reader :title, :id, :project_dir, :smart_attributes
 
   class << self
-
     def scripts_dir(project_dir)
       @scripts_dir ||= Pathname.new("#{project_dir}/.ondemand/scripts").tap do |path|
         path.mkpath unless path.exist?
@@ -41,11 +38,22 @@ class Script
       all(project_dir)
         .map(&:id)
         .map(&:to_i)
-        .max || 0 + 1
+        .prepend(0)
+        .max + 1
+    end
+
+    def batch_clusters
+      Rails.cache.fetch('script_batch_clusters', expires_in: 4.hours) do
+        Configuration.job_clusters.reject do |c|
+          reject_cluster?(c)
+        end.map(&:id).map(&:to_s)
+      end
+    end
+
+    def reject_cluster?
+      c.kubernetes? || c.linux_host? || c.systemd?
     end
   end
-
-  attr_reader :project_dir, :smart_attributes
 
   def initialize(opts = {})
     opts = opts.to_h.with_indifferent_access
@@ -53,12 +61,19 @@ class Script
     @project_dir = opts[:project_dir] || raise(StandardError, 'You must set the project directory')
     @id = opts[:id]
     @title = opts[:title].to_s
-    @smart_attributes = build_smart_attributes(opts[:form] || [])
+    sm_opts = {
+      form:       opts[:form] || [],
+      attributes: opts[:attributes] || {}
+    }
+    add_cluster_to_form(**sm_opts, clusters: Script.batch_clusters)
+
+    @smart_attributes = build_smart_attributes(**sm_opts)
   end
 
-  def build_smart_attributes(form_list)
-    form_list.map do |form_item_id|
-      SmartAttributes::AttributeFactory.build(form_item_id, {})
+  def build_smart_attributes(form: [], attributes: {})
+    form.map do |form_item_id|
+      attrs = attributes[form_item_id.to_sym].to_h.symbolize_keys
+      SmartAttributes::AttributeFactory.build(form_item_id, attrs)
     end
   end
 
@@ -73,7 +88,7 @@ class Script
       end
     end
   end
-  alias_method :inspect, :to_h
+  alias inspect to_h
 
   # Delegate methods to smart_attributes' getter
   #
@@ -112,4 +127,29 @@ class Script
   end
 
   private
+
+  def add_cluster_to_form(form: [], attributes: {}, clusters: [])
+    form.prepend('cluster') unless form.include?('cluster')
+
+    attributes[:cluster] = if clusters.size > 1
+                             select_clusters(clusters)
+                           else
+                             fixed_cluster(clusters)
+                           end
+  end
+
+  def select_clusters(clusters)
+    {
+      widget:  'select',
+      label:   'Cluster',
+      options: clusters
+    }
+  end
+
+  def fixed_cluster(clusters)
+    {
+      value: clusters.first.id.to_s,
+      fixed: true
+    }
+  end
 end
