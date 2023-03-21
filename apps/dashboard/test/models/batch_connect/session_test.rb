@@ -563,6 +563,7 @@ batch_connect: { ssh_allow: true } }))
         'node_type'=>'',
         'gpus'=>'0',
         'bc_account'=>'',
+        'bc_account_other'=>'',
         'bc_email_on_started'=>'',
         'python_version'=>'',
         'cuda_version'=>'cuda_100',
