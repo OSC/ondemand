@@ -29,7 +29,7 @@ jQuery(function () {
     $(SELECTNAVPATH).on(EVENTNAME.click, function(e, options) {
         let url = $(WORKINGDIRECTORY).val() ? $(WORKINGDIRECTORY).val() : $('#navigate_home_dir').text();
         let path = $('#navigate_url').text();
-        url = path + "/files/navigate" + url;
+        url = path + url;
         table.reloadTable(url);
         $(CONTAINERCONTENTID).show();
     });

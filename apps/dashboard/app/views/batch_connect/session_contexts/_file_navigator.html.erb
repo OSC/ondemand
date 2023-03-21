@@ -9,8 +9,8 @@ end
 <button type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#modelNavigator" id='select-nav-path'>
   Select Path
 </button>
-<span id='navigate_home_dir' style="display:none;"><%= Dir.home %></span>
-<span id='navigate_url' style="display:none;"><%= ENV['RAILS_RELATIVE_URL_ROOT'] %></span>
+<span id='navigate_home_dir' class="d-none"><%= Dir.home %></span>
+<span id='navigate_url' class="d-none"><%= files_path('navigate').gsub('/fs/', '/') %></span>
 
 <!-- Modal -->
 <div class="modal fade h-75" id="modelNavigator" tabindex="-1" role="dialog" aria-labelledby="modelNavigator" aria-hidden="true">
