@@ -175,9 +175,6 @@ class FilesController < ApplicationController
     if filesystem == 'fs'
       @path = PosixFile.new(normal_path)
       @filesystem = 'fs'
-    elsif filesystem == 'path_selector'
-        @path = PosixFile.new(normal_path)
-        @filesystem = 'path_selector'
     elsif ::Configuration.remote_files_enabled? && filesystem != 'fs'
       @path = RemoteFile.new(normal_path, filesystem)
       @filesystem = filesystem

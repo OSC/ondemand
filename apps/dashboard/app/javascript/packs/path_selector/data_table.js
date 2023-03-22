@@ -237,7 +237,7 @@ class DataTable {
                 const response = await fetch(request_url, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
                 const data = await this.dataFromJsonResponse(response);
                 this._currentWorkingDirectory = data.path;
-                $('#path-breadcrumbs').html(data.breadcrumbs_html);
+                $('#path-breadcrumbs').html(data.path_selector_breadcrumbs_html);
                 this._table.clear();
                 this._table.rows.add(data.files);
                 this._table.draw();
