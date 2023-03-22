@@ -1,0 +1,46 @@
+<%
+content_for :head do
+  javascript_include_tag 'path_selector/index', nonce: true
+end
+%>
+
+<%= label attrib.id, "#{field_options[:label]}" %>
+<%= text_field :batch_connect_session_context, attrib.id, class: 'form-control' %>
+<button type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#modalPathSelector" id='select-nav-path'>
+  Select Path
+</button>
+<span id='path_selector_home_dir' class="d-none"><%= Dir.home %></span>
+<span id='path_selector_url' class="d-none"><%= files_path %></span>
+
+<!-- Modal -->
+<div class="modal fade h-75" id="modalPathSelector" tabindex="-1" role="dialog" aria-labelledby="modalPathSelector" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalPathSelectorTitle">Select Your Working Directory</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">        <div id="container-directory-contents">
+            <ol id="path-breadcrumbs" class="breadcrumb breadcrumb-no-delimiter">
+            </ol>
+            <table class="table table-striped table-condensed w-100" id="directory-contents">
+                <thead>
+                  <tr>
+                      <th>Type</th>
+                      <th>Name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="button-select-path" data-dismiss="modal">Select Path</button>
+      </div>
+    </div>
+  </div>
+</div>
