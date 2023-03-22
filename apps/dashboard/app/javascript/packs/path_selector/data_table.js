@@ -27,8 +27,8 @@ jQuery(function () {
 
     /* TABLE ACTIONS */
     $(SELECTNAVPATH).on(EVENTNAME.click, function(e, options) {
-        let url = $(WORKINGDIRECTORY).val() ? $(WORKINGDIRECTORY).val() : $('#navigate_home_dir').text();
-        let path = $('#navigate_url').text();
+        let url = $(WORKINGDIRECTORY).val() ? $(WORKINGDIRECTORY).val() : $('#path_selector_home_dir').text();
+        let path = $('#path_selector_url').text();
         url = path + url;
         table.reloadTable(url);
         $(CONTAINERCONTENTID).show();

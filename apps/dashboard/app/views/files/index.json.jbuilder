@@ -21,8 +21,8 @@ json.files @files do |f|
   json.owner f[:owner]
   json.mode f[:mode]
 end
-if @filesystem == 'navigate'
-  json.breadcrumbs_html render partial: 'navigate_breadcrumb', formats: [:html, :erb], collection: @path.descend, as: :file, locals: { file_count: @path.descend.count, full_path: @path }
+if @filesystem == 'path_selector'
+  json.breadcrumbs_html render partial: 'path_selector_breadcrumb', formats: [:html, :erb], collection: @path.descend, as: :file, locals: { file_count: @path.descend.count, full_path: @path }
 else
   json.breadcrumbs_html render partial: 'breadcrumb', formats: [:html, :erb], collection: @path.descend, as: :file, locals: { file_count: @path.descend.count, full_path: @path }
 end
