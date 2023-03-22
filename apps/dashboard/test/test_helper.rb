@@ -50,8 +50,12 @@ class ActiveSupport::TestCase
   end
 
   def stub_sys_apps
-    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
+    stub_clusters
     SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/sys_with_gateway_apps'))
+  end
+
+  def stub_clusters
+    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
   end
 
   def setup_usr_fixtures
