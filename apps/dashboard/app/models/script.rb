@@ -9,7 +9,7 @@ class Script
 
   class << self
     def scripts_dir(project_dir)
-      @scripts_dir ||= Pathname.new("#{project_dir}/.ondemand/scripts").tap do |path|
+      @scripts_dir = Pathname.new("#{project_dir}/.ondemand/scripts").tap do |path|
         path.mkpath unless path.exist?
       end
     end
@@ -52,8 +52,8 @@ class Script
       end
     end
 
-    def reject_cluster?
-      c.kubernetes? || c.linux_host? || c.systemd?
+    def reject_cluster?(cluster)
+      cluster.kubernetes? || cluster.linux_host? || cluster.systemd?
     end
   end
 

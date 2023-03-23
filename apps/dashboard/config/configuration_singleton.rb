@@ -43,7 +43,6 @@ class ConfigurationSingleton
       :bc_simple_auto_accounts      => false,
       :bc_clean_old_dirs            => false,
       :per_cluster_dataroot         => false,
-      :file_navigator               => false,
       :jobs_app_alpha               => false,
       :remote_files_enabled         => false,
       :host_based_profiles          => false,
