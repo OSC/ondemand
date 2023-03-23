@@ -26,6 +26,21 @@ class ProjectsTest < ApplicationSystemTestCase
     click_on 'Save'
   end
 
+  def script_yml(dir)
+    {
+      'title' => 'the script title',
+      'form' => [
+        'auto_scripts',
+        'auto_accounts'
+      ],
+      'attributes' => {
+        'auto_scripts' => {
+          'directory' => dir.to_s
+        }
+      }
+    }.to_yaml
+  end
+
   test 'create a new project on fs and display the table entry' do
     Dir.mktmpdir do |dir|
       setup_project(dir)
@@ -154,23 +169,9 @@ class ProjectsTest < ApplicationSystemTestCase
       `touch #{dir}/my_cooler_script.bash`
 
       # now write a new script file
-      yml = {
-        'title' => 'the script title',
-        'form' => [
-          'auto_scripts',
-          'auto_accounts'
-        ],
-        'attributes' => {
-          'auto_scripts' => {
-            'directory' => "#{dir}"
-          }
-        }
-      }
-
-      File.write("#{script_dir}/1.yml", yml.to_yaml)
+      File.write("#{script_dir}/1.yml", script_yml(dir))
 
       find('[href="/projects/1"]').click
-      refresh
       find('[href="/projects/1/scripts/1"]').click
       assert_selector('h1', text: 'the script title', count: 1)
 
@@ -183,6 +184,80 @@ class ProjectsTest < ApplicationSystemTestCase
 
       # clusters are automatically added
       assert_equal(['owens', 'oakley'].to_set, page.all('#script_cluster option').map(&:value).to_set)
+    end
+  end
+
+  test 'submitting a script with auto attributes that succeeds' do
+    Dir.mktmpdir do |dir|
+      setup_project(dir)
+
+      # init some shell scripts
+      script_dir = "#{dir}/projects/1/.ondemand/scripts"
+      `mkdir -p #{script_dir}`
+      `echo 'some_other_command' > #{dir}/my_cool_script.sh`
+      `echo 'hostname' > #{dir}/my_cooler_script.bash`
+
+      # now write a new script file
+      File.write("#{script_dir}/1.yml", script_yml(dir))
+
+      find('[href="/projects/1"]').click
+      find('[href="/projects/1/scripts/1"]').click
+      assert_selector('h1', text: 'the script title', count: 1)
+
+      # assert defaults
+      assert_equal 'oakley', find('#script_cluster').value
+      assert_equal 'pzs0715', find('#script_auto_accounts').value
+      assert_equal "#{dir}/my_cool_script.sh", find('#script_auto_scripts').value
+
+      select('owens', from: 'script_cluster')
+      select('pas2051', from: 'script_auto_accounts')
+      select('my_cooler_script.bash', from: 'script_auto_scripts')
+
+      Open3
+        .stubs(:capture3)
+        .with({}, 'sbatch', '-A', 'pas2051', '--export', 'NONE', '--parsable', '-M', 'owens',
+              { stdin_data: "hostname\n" })
+        .returns(['job-id-123', '', exit_success])
+
+      click_on 'Launch'
+      assert_selector('.alert-success', text: 'job-id-123')
+    end
+  end
+
+  test 'submitting a script with auto attributes that fails' do
+    Dir.mktmpdir do |dir|
+      setup_project(dir)
+
+      # init some shell scripts
+      script_dir = "#{dir}/projects/1/.ondemand/scripts"
+      `mkdir -p #{script_dir}`
+      `echo 'some_other_command' > #{dir}/my_cool_script.sh`
+      `echo 'hostname' > #{dir}/my_cooler_script.bash`
+
+      # now write a new script file
+      File.write("#{script_dir}/1.yml", script_yml(dir))
+
+      find('[href="/projects/1"]').click
+      find('[href="/projects/1/scripts/1"]').click
+      assert_selector('h1', text: 'the script title', count: 1)
+
+      # assert defaults
+      assert_equal 'oakley', find('#script_cluster').value
+      assert_equal 'pzs0715', find('#script_auto_accounts').value
+      assert_equal "#{dir}/my_cool_script.sh", find('#script_auto_scripts').value
+
+      select('owens', from: 'script_cluster')
+      select('pas2051', from: 'script_auto_accounts')
+      select('my_cooler_script.bash', from: 'script_auto_scripts')
+
+      Open3
+        .stubs(:capture3)
+        .with({}, 'sbatch', '-A', 'pas2051', '--export', 'NONE', '--parsable', '-M', 'owens',
+              { stdin_data: "hostname\n" })
+        .returns(['', 'some error message', exit_failure])
+
+      click_on 'Launch'
+      assert_selector('.alert-danger', text: "×\nClose\nsome error message")
     end
   end
 end
