@@ -596,7 +596,8 @@ function idFromToken(str) {
     return elements[0];
 
   // you matched multiple things. For example you're searching for
-  // ClusterFileystem and found both 'Cluster' and 'ClusterFileSystem'
+  // ClusterFilesystem and matched against both 'Cluster' and 'ClusterFilesystem'.
+  // The correrct element id ends with cluster_filesystem.
   } else if(elements.length > 1) {
     const snake_case_str = snakeCaseWords(str);
     return elements.filter((element) => {
