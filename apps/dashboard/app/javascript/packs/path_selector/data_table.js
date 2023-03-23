@@ -1,3 +1,4 @@
+import isDOMElement from '@uppy/utils/lib/isDOMElement';
 import Handlebars from 'handlebars';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 
@@ -30,6 +31,8 @@ jQuery(function () {
         let url = $(WORKINGDIRECTORY).val() ? $(WORKINGDIRECTORY).val() : $('#path_selector_home_dir').text();
         let path = $('#path_selector_url').text();
         url = path + url;
+        table._options = $('#path_selector_options').text().split(',');
+        table.setVisibility();
         table.reloadTable(url);
         $(CONTAINERCONTENTID).show();
     });
@@ -70,31 +73,6 @@ jQuery(function () {
     });
 
 
-    $('#show-dotfiles').on('change', function() {
-        table.setShowDotFiles(this.checked);
-        table.updateDotFileVisibility();
-    });
-    $('#show-dotfiles').on('keypress', function(event) {
-        if (event.which === 13) {
-          this.checked = !this.checked;
-          this.dispatchEvent(new Event('change'));
-        }
-    });
-
-
-    $('#show-files').on('change', function() {
-        table.setShowFiles(this.checked);
-        table.updateDotFileVisibility();
-    });
-
-    $('#show-files').on('keypress', function(event) {
-        if (event.which === 13) {
-          this.checked = !this.checked;
-          this.dispatchEvent(new Event('change'));
-        }
-    });
-
-
     /* END TABLE ACTIONS */
 
     /* DATATABLE LISTENERS */
@@ -104,14 +82,33 @@ jQuery(function () {
 
     $.fn.dataTable.ext.search.push(
         function (settings, data, dataIndex) {
-            if(table.getShowFiles()) {
-                return table.getShowDotFiles() || !data[1].startsWith('.');
+            let total = table.getShowDotFiles() + table.getShowFiles();
+            let isDirectory = (data[0].trim() == "dir");
+            let isFile = ! isDirectory;
+            let isHidden = data[1].startsWith('.');
+
+            if( total == 0 ) {
+                // show only non-hidden directories
+                return isDirectory && ! isHidden;
+            
+            } else if(total == 1 ) {
+                // show everything but files, even hidden
+                return ! isFile;
+            
+            } else if(total == 2 ) {
+                // show everything except hidden
+                return ! isHidden;
+            
+            } else if(total == 3 ) {
+                // show everything
+                return true;
+            
             } else {
-                if(data[0].trim() == "dir") {
-                    return table.getShowDotFiles() || !data[1].startsWith('.');
-                    return data[1];
-                }
+                return false;
             }
+            
+            // shouldn't get here, but just in case.
+            return false;
 
         }
     );    
@@ -122,6 +119,7 @@ class DataTable {
     _table = null;
     _url = null;
     _currentWorkingDirectory = null;
+    _options = [];
 
     constructor(url) {
         this.loadDataTable();
@@ -133,6 +131,7 @@ class DataTable {
     }
 
     loadDataTable() {
+    
         this._table = $(CONTENTID).on('xhr.dt', function (e, settings, json, xhr) {
             // new ajax request for new data so update date/time
             // if(json && json.time){
@@ -205,19 +204,6 @@ class DataTable {
             ]
         });
         
-        /*
-            These 2 checkboxes will go away once the ability to pass in options from the form is written.
-            They are here now to show functionality of hiding/show files/directories
-        */
-        $('#directory-contents_filter').prepend(
-            `<label for="show-dotfiles">
-                <input type="checkbox" id="show-dotfiles" ${this.getShowDotFiles() ? 'checked' : ''}> Show Dotfiles</label>`);
-
-        $('#directory-contents_filter').prepend(
-            `<label style="margin-right: 20px" for="show-files">
-                <input type="checkbox" id="show-files" ${this.getShowFiles() ? 'checked' : ''}> Show Files</label>`);
-        
-
     }
 
     async reloadTable(url) {
@@ -282,25 +268,35 @@ class DataTable {
     }
 
 
-    setShowDotFiles(visible) {
-        localStorage.setItem('show-dotfiles', new Boolean(visible));
+    setShowDotFiles(weight) {
+        localStorage.setItem('show-dotfiles', weight);
     }
 
     getShowDotFiles() {
-        return localStorage.getItem('show-dotfiles') == 'true'
+        return parseInt(localStorage.getItem('show-dotfiles'));
     }
 
-    setShowFiles(visible) {
-        localStorage.setItem('show-files', new Boolean(visible));
+    setShowFiles(weight) {
+        localStorage.setItem('show-files', weight);
     }
 
     getShowFiles() {
-        return localStorage.getItem('show-files') == 'true'
+        return parseInt(localStorage.getItem('show-files'));
     }
 
-
-    updateDotFileVisibility() {
-        this.reloadTable();
+    setVisibility() {
+        if( this._options.includes('hidden')) {
+            this.setShowDotFiles(1);
+        } else {
+            this.setShowDotFiles(0);
+        };
+    
+    
+        if( this._options.includes('files')) {
+            this.setShowFiles(2);
+        } else {
+            this.setShowFiles(0);
+        }
+    
     }
-
 }
