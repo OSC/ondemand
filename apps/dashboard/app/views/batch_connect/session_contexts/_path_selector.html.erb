@@ -11,7 +11,7 @@ end
 </button>
 <span id='path_selector_home_dir' class="d-none"><%= Dir.home %></span>
 <span id='path_selector_url' class="d-none"><%= files_path %></span>
-<span id='path_selector_options' class="d-none"><%= attrib.opts[:options].join(",") %></span>
+<span id='path_selector_options' class="d-none"><%= attrib.opts[:options].is_a?(Array) ? attrib.opts[:options].join(",") : '' %></span>
 
 <!-- Modal -->
 <div class="modal fade h-75" id="modal-path-selector" tabindex="-1" role="dialog" aria-labelledby="modal-path-selector" aria-hidden="true">
