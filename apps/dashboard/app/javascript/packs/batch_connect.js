@@ -340,7 +340,11 @@ class Table {
       } else {
         const prev = this.table[xIdx];
         const newer = value;
-        this.table[xIdx] = Object.assign(prev, newer);
+        if(typeof newer == 'string' && typeof prev == 'string'){
+          this.table[xIdx] = newer;
+        } else {
+          this.table[xIdx] = Object.assign(prev, newer);
+        }
       }
     } else {
       if(this.table[xIdx][yIdx] === undefined){
@@ -348,7 +352,11 @@ class Table {
       } else {
         const prev = this.table[xIdx][yIdx];
         const newer = value;
-        this.table[xIdx][yIdx] = Object.assign(prev, newer);
+        if(typeof newer == 'string' && typeof prev == 'string'){
+          this.table[xIdx][yIdx] = newer;
+        } else {
+          this.table[xIdx][yIdx] = Object.assign(prev, newer);
+        }
       }
     }
   }
@@ -571,7 +579,7 @@ function minOrMax(key) {
  * @returns
  */
 function idFromToken(str) {
-  return formTokens.map((token) => {
+  elements = formTokens.map((token) => {
     let match = str.match(`^${token}{1}`);
 
     if (match && match.length >= 1) {
@@ -580,7 +588,22 @@ function idFromToken(str) {
     }
   }).filter((id) => {
     return id !== undefined;
-  })[0];
+  });
+
+  if(elements.length == 0) {
+    return undefined;
+  }else if(elements.length == 1) {
+    return elements[0];
+
+  // you matched multiple things. For example you're searching for
+  // ClusterFilesystem and matched against both 'Cluster' and 'ClusterFilesystem'.
+  // The correrct element id ends with cluster_filesystem.
+  } else if(elements.length > 1) {
+    const snake_case_str = snakeCaseWords(str);
+    return elements.filter((element) => {
+      return element.endsWith(snake_case_str);
+    })[0];
+  }
 }
 
 
