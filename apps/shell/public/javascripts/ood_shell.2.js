@@ -19,7 +19,7 @@ OodShell.prototype.runTerminal = function () {
   var that = this;
 
   // Create an instance of hterm.Terminal
-  this.term = new hterm.Terminal(this.profile);
+  this.term = new hterm.Terminal({ profileId: this.profile });
 
   // Handler that fires when terminal is initialized and ready for use
   this.term.onTerminalReady = function () {
