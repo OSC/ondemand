@@ -1182,7 +1182,7 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 
 
 [Unreleased]: https://github.com/OSC/ondemand/compare/v3.0.0...HEAD
-[3.0.0]: https://github.com/OSC/ondemand/compare/v3.0.0...v2.0.32
+[3.0.0]: https://github.com/OSC/ondemand/compare/v2.0.32...v3.0.0
 [2.1.0]: https://github.com/OSC/ondemand/compare/v2.0.31...v2.1.0
 [2.0.32]: https://github.com/OSC/ondemand/compare/v2.0.31...v2.0.32
 [2.0.31]: https://github.com/OSC/ondemand/compare/v2.0.30...v2.0.31
