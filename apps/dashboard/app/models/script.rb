@@ -155,13 +155,13 @@ class Script
   def most_recent_job
     job_data.sort_by do |data|
       data['submit_time']
-    end.reverse.first
+    end.reverse.first.to_h
   end
 
   def update_job_log(job_id)
     new_job_data = job_data + [{
       'id'          => job_id,
-      'submit_time' => Time.now.utc.to_i
+      'submit_time' => Time.now.to_i
     }]
 
     File.write(job_log_file.to_s, new_job_data.to_yaml)
