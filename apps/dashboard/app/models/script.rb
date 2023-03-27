@@ -9,7 +9,7 @@ class Script
 
   class << self
     def scripts_dir(project_dir)
-      @scripts_dir = Pathname.new("#{project_dir}/.ondemand/scripts").tap do |path|
+      Pathname.new("#{project_dir}/.ondemand/scripts").tap do |path|
         path.mkpath unless path.exist?
       end
     end
@@ -133,16 +133,49 @@ class Script
     render_format = adapter.class.name.split('::').last.downcase
 
     job_script = OodCore::Job::Script.new(**submit_opts(options, render_format))
-    Dir.chdir(project_dir) do
+
+    job_id = Dir.chdir(project_dir) do
       adapter.submit(job_script)
     end
+    update_job_log(job_id)
+
+    job_id
   rescue StandardError => e
     errors.add(:submit, e.message)
     Rails.logger.error("ERROR: #{e.class} - #{e.message}")
     nil
   end
 
+  def most_recent_job_id
+    most_recent_job['id']
+  end
+
   private
+
+  def most_recent_job
+    job_data.sort_by do |data|
+      data['submit_time']
+    end.reverse.first
+  end
+
+  def update_job_log(job_id)
+    new_job_data = job_data + [{
+      'id'          => job_id,
+      'submit_time' => Time.now.utc.to_i
+    }]
+
+    File.write(job_log_file.to_s, new_job_data.to_yaml)
+  end
+
+  def job_data
+    @job_data ||= YAML.safe_load(File.read(job_log_file.to_s)).to_a
+  end
+
+  def job_log_file
+    @job_log_file ||= Pathname.new("#{Script.scripts_dir(project_dir)}/#{id}_job_log").tap do |path|
+      FileUtils.touch(path.to_s)
+    end
+  end
 
   def submit_opts(options, render_format)
     smart_attributes.map do |sm|
