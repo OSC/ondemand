@@ -7,13 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-### Fixed
-
-- Chrome can once again use copy/paste in [2666](https://github.com/OSC/ondemand/pull/2647),
-  forwarded from [537](https://github.com/OSC/ondemand/pull/537).
-- SyntaxErrors in announcements safely rescue in [2647](https://github.com/OSC/ondemand/pull/2647).
-
-## [2.1.0] - 03-09-2023
+## [3.0.0] - 03-27-2023
 
 ### Changed
 
@@ -47,7 +41,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Shared apps can now correctly set FACLs in [2398](https://github.com/OSC/ondemand/pull/2398).
 - Session info is now stored in a local filesystem instead of in cookies in [2434](https://github.com/OSC/ondemand/pull/2434).
 - NavConfig is deprecated in favor of an ondeman.d setting `nav_categories` in [2454](https://github.com/OSC/ondemand/pull/2454).
-- Passenger security update checks are disabled because users can't update outside of OSC packages in [2459](https://github.com/OSC/ondemand/pull/2459).
+- Passenger security update checks are disabled because users can't update outside of OSC packages in [2660](https://github.com/OSC/ondemand/pull/2660).
 - Sites can now server assets out of public/maintanence in [2443](https://github.com/OSC/ondemand/pull/2443).
 
 ### Added
@@ -114,6 +108,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The job composers' setup script now recoginizes a 0 byte file and attempts to fix it in [2461](https://github.com/OSC/ondemand/issues/2461).
 - The file browser now filters files with non-utf-8 characters in [2626](https://github.com/OSC/ondemand/issues/2626).
 - Safari disables form select options because it cannot hide them in [2640](https://github.com/OSC/ondemand/issues/2640).
+- RSS MOTD correctly read feeds from a url in [2681](https://github.com/OSC/ondemand/issues/2681).
+- SyntaxErrors in announcements safely rescue in [2647](https://github.com/OSC/ondemand/pull/2647).
 
 ### Security
 
@@ -122,6 +118,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Selinux updates in [1496](https://github.com/OSC/ondemand/pull/1496).
 - nginx APIs now validate the redirect on stop requests in [#1775](https://github.com/OSC/ondemand/pull/1175).
 - Nginx PUNs correclty start with minimal environment in [2157](https://github.com/OSC/ondemand/pull/2157)
+
+## [2.1.0] - 03-09-2023
+
+Similar changelog as [3.0.0]. This version was not released to the general public and indeed was renamed 3.0.0.
+
+## [2.0.32] - 03-27-2023
+
+### Fixed
+
+- Hterm has been updated to v91 in [2632](https://github.com/OSC/ondemand/pull/2632) to add support for
+  more utf-8 characters.
+- The files app correctly filters filenames with non-utf-8 characters in their name in
+  [2626](https://github.com/OSC/ondemand/pull/2626).
 
 ## [2.0.31] - 02-07-2023
 
@@ -1172,8 +1181,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v2.1.0...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/OSC/ondemand/compare/v3.0.0...v2.0.32
 [2.1.0]: https://github.com/OSC/ondemand/compare/v2.0.31...v2.1.0
+[2.0.32]: https://github.com/OSC/ondemand/compare/v2.0.31...v2.0.32
 [2.0.31]: https://github.com/OSC/ondemand/compare/v2.0.30...v2.0.31
 [2.0.30]: https://github.com/OSC/ondemand/compare/v2.0.29...v2.0.30
 [2.0.29]: https://github.com/OSC/ondemand/compare/v2.0.28...v2.0.29
