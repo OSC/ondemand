@@ -6,6 +6,29 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+fix #1659 by checking for string values (#2684)\
+add ability to launch script (#2687)\
+add some test cases for scripts and fix some bugs (#2691)\
+Merge pull request #2669 from OSC/newDirectoryPicker\
+Removed file_navigator flag from configuration_singleton\
+Jeff's awesome patch!\
+Renamed navigator to path_selector\
+Update apps/dashboard/app/javascript/packs/navigator/data_table.js\
+Removed unnecessary display:block\
+Cleaned up inline style and moved from using ENV\
+correctly read RSS feeds from a url (#2681)\
+Auto scripts (#2661)\
+only have distribution in e2e test names (#2685)\
+Change to building OnDemand 3.0 packages (#2683)\
+Update apps/dashboard/app/views/batch_connect/session_contexts/_file_navigator.html.erb\
+Update apps/dashboard/app/views/batch_connect/session_contexts/_file_navigator.html.erb\
+Re-added missing file\
+revert #2094 and overwrite files on upload (#2670)\
+update dependencies (#2676)\
+actually disable security checks (#2660)\
+Update Changelog (#2675)\
+allow spaces in regex for project name (#2646)\
+lint a random file (#2674)
 
 ### Fixed
 
