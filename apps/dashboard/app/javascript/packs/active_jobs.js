@@ -1,14 +1,14 @@
 'use strict';
 
 import oboe from 'oboe';
-import 'datatables.net';
-import 'datatables.net-bs4/js/dataTables.bootstrap4';
-import 'datatables.net-plugins/api/processing()';
+import dataTableProcessing from 'datatables.net-plugins/api/processing()';
 
 window.fetch_table_data = fetch_table_data;
 window.create_datatable = create_datatable;
 window.set_cluster_id = set_cluster_id;
 window.set_filter_id = set_filter_id;
+
+dataTableProcessing(window, jQuery);
 
 var entityMap = {
   '&': '&amp;',
