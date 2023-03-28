@@ -78,7 +78,7 @@ class ProjectsTest < ApplicationSystemTestCase
       setup_project(dir)
 
       find('[href="/projects/1"]').click
-      assert_selector 'h1', text: 'Project Space'
+      assert_selector 'h1', text: 'Test Project'
       assert_selector '.btn.btn-default', text: 'Back'
     end
   end
@@ -208,6 +208,7 @@ class ProjectsTest < ApplicationSystemTestCase
       assert_equal 'oakley', find('#script_cluster').value
       assert_equal 'pzs0715', find('#script_auto_accounts').value
       assert_equal "#{dir}/my_cool_script.sh", find('#script_auto_scripts').value
+      assert_nil YAML.safe_load(File.read("#{script_dir}/1_job_log"))
 
       select('owens', from: 'script_cluster')
       select('pas2051', from: 'script_auto_accounts')
@@ -219,8 +220,14 @@ class ProjectsTest < ApplicationSystemTestCase
               { stdin_data: "hostname\n" })
         .returns(['job-id-123', '', exit_success])
 
+      Time
+        .stubs(:now)
+        .returns(Time.at(1_679_943_564))
+
       click_on 'Launch'
       assert_selector('.alert-success', text: 'job-id-123')
+      assert_equal [{ 'id' => 'job-id-123', 'submit_time' => 1_679_943_564 }],
+                   YAML.safe_load(File.read("#{script_dir}/1_job_log"))
     end
   end
 
@@ -245,6 +252,7 @@ class ProjectsTest < ApplicationSystemTestCase
       assert_equal 'oakley', find('#script_cluster').value
       assert_equal 'pzs0715', find('#script_auto_accounts').value
       assert_equal "#{dir}/my_cool_script.sh", find('#script_auto_scripts').value
+      assert_nil YAML.safe_load(File.read("#{script_dir}/1_job_log"))
 
       select('owens', from: 'script_cluster')
       select('pas2051', from: 'script_auto_accounts')
@@ -258,6 +266,7 @@ class ProjectsTest < ApplicationSystemTestCase
 
       click_on 'Launch'
       assert_selector('.alert-danger', text: "×\nClose\nsome error message")
+      assert_nil YAML.safe_load(File.read("#{script_dir}/1_job_log"))
     end
   end
 end

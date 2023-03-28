@@ -1,7 +1,5 @@
-<%= bootstrap_form_tag  do |form| %>
-
 <div class='page-header text-center'>
-  <h1>Project Space</h1>
+  <h1><%= @project.title %></h1>
 </div> 
 <br>
 <div class='row row-cols-1 row-cols-md-2'>
@@ -13,17 +11,19 @@
 <div class='card'>
   <h3 class='card-header'>Scripts</h3>
   <div class='card-body'>
-    <table class='table table-borderless'>
+    <table class='table table-bordered table-hover'>
       <thead>
         <tr>
-          <th>Script Name</th>
-          <th>Actions</th>
-        <tr>
+          <th scope='col' class='text-center'>Job Info</th>
+          <th scope='col' class='text-center'>Script Name</th>
+          <th scope='col' class='text-center'>Actions</th>
+        </tr>
       </thead>
       <tbody>
       <% @scripts.each do |script| %>
         <tr>
-          <td><%= script.title %></td>
+          <td class='text-center'><%= script.most_recent_job_id %></td>
+          <td class='text-center'><%= script.title %></td>
           <td>
             <%= link_to(
                   'Show',
@@ -31,7 +31,7 @@
                   class: 'btn btn-success'
                 )
             %>
-          <td>
+          </td>
         <tr>
       <% end %>
       </tbody>
@@ -44,5 +44,3 @@
     %>
   </div>
 </div>
-
-<% end %>
