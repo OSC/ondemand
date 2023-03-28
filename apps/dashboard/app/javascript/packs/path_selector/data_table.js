@@ -89,15 +89,15 @@ jQuery(function () {
 
             if( total == 0 ) {
                 // show only non-hidden directories
-                return isDirectory && ! isHidden;
+                return isDirectory && !isHidden;
             
             } else if(total == 1 ) {
                 // show everything but files, even hidden
-                return ! isFile;
+                return !isFile;
             
             } else if(total == 2 ) {
                 // show everything except hidden
-                return ! isHidden;
+                return !isHidden;
             
             } else if(total == 3 ) {
                 // show everything
@@ -106,10 +106,6 @@ jQuery(function () {
             } else {
                 return false;
             }
-            
-            // shouldn't get here, but just in case.
-            return false;
-
         }
     );    
 
