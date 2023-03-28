@@ -84,7 +84,7 @@ jQuery(function () {
         function (settings, data, dataIndex) {
             let total = table.getShowDotFiles() + table.getShowFiles();
             let isDirectory = (data[0].trim() == "dir");
-            let isFile = ! isDirectory;
+            let isFile = !isDirectory;
             let isHidden = data[1].startsWith('.');
 
             if( total == 0 ) {
