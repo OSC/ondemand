@@ -31,10 +31,12 @@ jQuery(function () {
         let url = $(WORKINGDIRECTORY).val() ? $(WORKINGDIRECTORY).val() : $('#path_selector_home_dir').text();
         let path = $('#path_selector_url').text();
         url = path + url;
-        table._options = $('#path_selector_options').text().split(',');
-        table.setVisibility();
-        table.reloadTable(url);
-        $(CONTAINERCONTENTID).show();
+        
+        let eventData = {
+            'url': url,
+        }
+        
+        $(CONTENTID).trigger(EVENTNAME.reloadTable, eventData);
     });
 
     $(CONTENTID).on(EVENTNAME.reloadTable, function (e, options) {
@@ -83,6 +85,7 @@ jQuery(function () {
     $.fn.dataTable.ext.search.push(
         function (settings, data, dataIndex) {
             let total = table.getShowDotFiles() + table.getShowFiles();
+
             let isDirectory = (data[0].trim() == "dir");
             let isFile = !isDirectory;
             let isHidden = data[1].startsWith('.');
@@ -115,7 +118,6 @@ class DataTable {
     _table = null;
     _url = null;
     _currentWorkingDirectory = null;
-    _options = [];
 
     constructor(url) {
         this.loadDataTable();
@@ -263,36 +265,11 @@ class DataTable {
         $('.datatables-status').html(`${msg} - ${rows} rows selected`);
     }
 
-
-    setShowDotFiles(weight) {
-        localStorage.setItem('show-dotfiles', weight);
-    }
-
     getShowDotFiles() {
-        return parseInt(localStorage.getItem('show-dotfiles'));
-    }
-
-    setShowFiles(weight) {
-        localStorage.setItem('show-files', weight);
+        return $('#modal-path-selector').data('pathSelectorShowHidden') === true ? 1 : 0;
     }
 
     getShowFiles() {
-        return parseInt(localStorage.getItem('show-files'));
-    }
-
-    setVisibility() {
-        if( this._options.includes('hidden')) {
-            this.setShowDotFiles(1);
-        } else {
-            this.setShowDotFiles(0);
-        };
-    
-    
-        if( this._options.includes('files')) {
-            this.setShowFiles(2);
-        } else {
-            this.setShowFiles(0);
-        }
-    
+        return $('#modal-path-selector').data('pathSelectorShowFiles') === true ? 2 : 0;
     }
 }
