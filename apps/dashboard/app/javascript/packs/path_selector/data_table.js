@@ -92,7 +92,7 @@ jQuery(function () {
                 return isDirectory && !isHidden;
             
             } else if(total == 1 ) {
-                // show everything but files, even hidden
+                // show all directories, even if hidden
                 return !isFile;
             
             } else if(total == 2 ) {
