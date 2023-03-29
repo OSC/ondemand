@@ -10,6 +10,14 @@ class ScriptsController < ApplicationController
   def show
     project = Project.find(show_script_params[:project_id])
     @script = Script.find(show_script_params[:id], project.directory)
+
+    # Read and parse the saved opts from the JSON file
+    json_file_path = Rails.root.join('tmp', "#{@script.id}_opts.json")
+    if File.exist?(json_file_path)
+      @saved_opts = JSON.parse(File.read(json_file_path), symbolize_names: true)
+    else
+      @saved_opts = {}
+    end
   end
 
   # POST  /dashboard/projects/:project_id/scripts
@@ -31,6 +39,10 @@ class ScriptsController < ApplicationController
     project = Project.find(params[:project_id])
     @script = Script.find(params[:id], project.directory)
     opts = submit_script_params[:script].to_h.symbolize_keys
+    
+    # Write the opts to a JSON file
+    json_file_path = Rails.root.join('tmp', "#{@script.id}_opts.json")
+    File.write(json_file_path, opts.to_json)
 
     if (job_id = @script.submit(opts))
       redirect_to(project_path(params[:project_id]), notice: "Successfully submited job #{job_id}.")
