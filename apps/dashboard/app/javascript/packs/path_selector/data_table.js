@@ -31,7 +31,7 @@ jQuery(function () {
         let url = $(WORKINGDIRECTORY).val() ? $(WORKINGDIRECTORY).val() : $('#path_selector_home_dir').text();
         let path = $('#path_selector_url').text();
         url = path + url;
-        
+        table.weightedValue = table.getShowDotFiles() + table.getShowFiles();
         let eventData = {
             'url': url,
         }
@@ -84,25 +84,23 @@ jQuery(function () {
 
     $.fn.dataTable.ext.search.push(
         function (settings, data, dataIndex) {
-            let total = table.getShowDotFiles() + table.getShowFiles();
-
             let isDirectory = (data[0].trim() == "dir");
             let isFile = !isDirectory;
             let isHidden = data[1].startsWith('.');
 
-            if( total == 0 ) {
+            if( table.weightedValue == 0 ) {
                 // show only non-hidden directories
                 return isDirectory && !isHidden;
             
-            } else if(total == 1 ) {
+            } else if( table.weightedValue == 1 ) {
                 // show all directories, even if hidden
                 return !isFile;
             
-            } else if(total == 2 ) {
+            } else if( table.weightedValue == 2 ) {
                 // show everything except hidden
                 return !isHidden;
             
-            } else if(total == 3 ) {
+            } else if( table.weightedValue == 3 ) {
                 // show everything
                 return true;
             
@@ -118,6 +116,7 @@ class DataTable {
     _table = null;
     _url = null;
     _currentWorkingDirectory = null;
+    weightedValue = 0;
 
     constructor(url) {
         this.loadDataTable();
