@@ -137,7 +137,7 @@ class Script
     job_id = Dir.chdir(project_dir) do
       adapter.submit(job_script)
     end
-    update_job_log(job_id)
+    update_job_log(job_id, options[:cluster].to_s)
 
     job_id
   rescue StandardError => e
@@ -150,6 +150,10 @@ class Script
     most_recent_job['id']
   end
 
+  def most_recent_job_cluster
+    most_recent_job['cluster']
+  end
+
   private
 
   def most_recent_job
@@ -158,10 +162,11 @@ class Script
     end.reverse.first.to_h
   end
 
-  def update_job_log(job_id)
+  def update_job_log(job_id, cluster)
     new_job_data = job_data + [{
       'id'          => job_id,
-      'submit_time' => Time.now.to_i
+      'submit_time' => Time.now.to_i,
+      'cluster'     => cluster.to_s
     }]
 
     File.write(job_log_file.to_s, new_job_data.to_yaml)

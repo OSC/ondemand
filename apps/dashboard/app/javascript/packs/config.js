@@ -27,6 +27,11 @@ function transfersPath() {
   return transfersPath;
 }
 
+function jobsInfoPath(){
+  const cfgData = configData();
+  return cfgData['jobsInfoPath'];
+}
+
 function csrfToken() {
   const csrf_token = document.querySelector('meta[name="csrf-token"]').content;
 
@@ -34,7 +39,8 @@ function csrfToken() {
 }
 
 export {
-  maxFileSize, 
-  transfersPath, 
+  maxFileSize,
+  transfersPath,
+  jobsInfoPath,
   csrfToken 
 };
