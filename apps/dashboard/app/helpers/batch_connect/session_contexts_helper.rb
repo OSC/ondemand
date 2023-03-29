@@ -1,16 +1,26 @@
 # Helper for creating new batch connect sessions.
 module BatchConnect::SessionContextsHelper
-  def create_widget(form, attrib, format: nil, cached_values: {})
+  def create_widget(form, attrib, format: nil, cached_options: {})
     return '' if attrib.fixed?
     return '' if attrib.hide_when_empty? && attrib.value.blank?
 
     widget = attrib.widget
     field_options = attrib.field_options(fmt: format)
-    all_options = attrib.all_options(fmt: format).merge(value: cached_values[attrib.id.to_s])
+
+    Rails.logger.debug("")
+    Rails.logger.debug("cached_values are: #{cached_options}")
+    all_options = attrib.all_options(fmt: format).merge(value: cached_options[attrib.id.to_s])
+    Rails.logger.debug("all_options are: #{all_options}")
+    Rails.logger.debug("attrib are: #{attrib}")
+    Rails.logger.debug("")
 
     case widget
     when 'select'
-      form.select attrib.id, attrib.select_choices, field_options, attrib.html_options
+      if !cached_options.nil?
+        form.select attrib.id, attrib.select_choices, field_options, attrib.html_options
+      else
+        form.select attrib.id, attrib.select_choices, field_options, attrib.html_options
+      end
     when 'resolution_field'
       resolution_field(form, attrib.id, all_options)
     when 'check_box'
