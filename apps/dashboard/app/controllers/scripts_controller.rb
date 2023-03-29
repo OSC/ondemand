@@ -13,6 +13,7 @@ class ScriptsController < ApplicationController
 
     # Read and parse the saved opts from the JSON file
     json_file_path = Rails.root.join('tmp', "#{@script.id}_opts.json")
+
     if File.exist?(json_file_path)
       @saved_opts = JSON.parse(File.read(json_file_path), symbolize_names: true)
     else

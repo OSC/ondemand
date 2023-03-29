@@ -1,15 +1,12 @@
 # Helper for creating new batch connect sessions.
 module BatchConnect::SessionContextsHelper
-  def create_widget(form, attrib, format: nil)
+  def create_widget(form, attrib, format: nil, cached_values: {})
     return '' if attrib.fixed?
     return '' if attrib.hide_when_empty? && attrib.value.blank?
 
     widget = attrib.widget
     field_options = attrib.field_options(fmt: format)
-    all_options = attrib.all_options(fmt: format)
-
-    # Use the passed value if provided, otherwise use the attribute value
-    all_options[:value] = value.nil? ? attrib.value : value
+    all_options = attrib.all_options(fmt: format).merge(value: cached_values[attrib.id.to_s])
 
     case widget
     when 'select'

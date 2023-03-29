@@ -7,7 +7,7 @@
 <%= bootstrap_form_for(@script, url: submit_project_script_path) do |f| %>
   <% @script.smart_attributes.each do |attrib| %>
     <%# TODO generate render_format %>
-    <%= create_widget(f, attrib, format: nil, value: attrib.value) %>
+    <%= create_widget(f, attrib, format: nil, cached_values: @saved_opts) %>
   <% end %>
 
   <%= f.submit t('dashboard.batch_connect_form_launch'), class: "btn btn-primary btn-block" %>
