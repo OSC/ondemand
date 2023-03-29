@@ -15,9 +15,13 @@ class ScriptsController < ApplicationController
     json_file_path = Rails.root.join('tmp', "#{@script.id}_opts.json")
 
     if File.exist?(json_file_path)
-      @saved_opts = JSON.parse(File.read(json_file_path), symbolize_names: true)
+      @cached_opts = JSON.parse(File.read(json_file_path), symbolize_names: true)
+
+      @script.smart_attributes.each do |attrib|
+        attrib.value = @cached_opts[attrib.id.to_s] if @cached_opts.key?(attrib.id.to_s)
+      end
     else
-      @saved_opts = {}
+      @cached_opts = {}
     end
   end
 
