@@ -37,6 +37,7 @@ jQuery(function () {
         }
         
         $(CONTENTID).trigger(EVENTNAME.reloadTable, eventData);
+        $(CONTAINERCONTENTID).show();        
     });
 
     $(CONTENTID).on(EVENTNAME.reloadTable, function (e, options) {
