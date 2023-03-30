@@ -11,7 +11,7 @@ class ProjectsTest < ApplicationSystemTestCase
     Rails.application.reload_routes!
     Open3
       .stubs(:capture3)
-      .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc', 'format=account,cluster,partition,qos', 'where', 'user=me', { stdin_data: ''})
+      .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc', 'format=account,cluster,partition,qos', 'where', 'user=me', { stdin_data: '' })
       .returns([File.read('test/fixtures/cmd_output/sacctmgr_show_accts.txt'), '', exit_success])
   end
 
@@ -28,8 +28,8 @@ class ProjectsTest < ApplicationSystemTestCase
 
   def script_yml(dir)
     {
-      'title' => 'the script title',
-      'form' => [
+      'title'      => 'the script title',
+      'form'       => [
         'auto_scripts',
         'auto_accounts'
       ],
@@ -88,7 +88,7 @@ class ProjectsTest < ApplicationSystemTestCase
       setup_project(dir)
 
       click_on 'Edit'
-      find('#project_name').set("my-test-project")
+      find('#project_name').set('my-test-project')
       click_on 'Save'
       assert_selector '[href="/projects/1"]', text: 'My Test Project'
       click_on 'Edit'
@@ -226,7 +226,9 @@ class ProjectsTest < ApplicationSystemTestCase
 
       click_on 'Launch'
       assert_selector('.alert-success', text: 'job-id-123')
-      assert_equal [{ 'id' => 'job-id-123', 'submit_time' => 1_679_943_564 }],
+      assert_equal [{ 'id'          => 'job-id-123',
+                      'submit_time' => 1_679_943_564,
+                      'cluster'     => 'owens' }],
                    YAML.safe_load(File.read("#{script_dir}/1_job_log"))
     end
   end
