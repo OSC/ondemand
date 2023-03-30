@@ -1,5 +1,3 @@
-import isDOMElement from '@uppy/utils/lib/isDOMElement';
-import Handlebars from 'handlebars';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 
 export { CONTENTID, EVENTNAME };
