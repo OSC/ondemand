@@ -220,6 +220,9 @@ class ProjectsTest < ApplicationSystemTestCase
               { stdin_data: "hostname\n" })
         .returns(['job-id-123', '', exit_success])
 
+      OodCore::Job::Adapters::Slurm.any_instance
+                                   .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+
       Time
         .stubs(:now)
         .returns(Time.at(1_679_943_564))
