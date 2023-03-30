@@ -8,9 +8,6 @@ module BatchConnect::SessionContextsHelper
     field_options = attrib.field_options(fmt: format)
     all_options = attrib.all_options(fmt: format)
 
-    # Use the passed value if provided, otherwise use the attribute value
-    all_options[:value] = value.nil? ? attrib.value : value
-
     case widget
     when 'select'
       form.select attrib.id, attrib.select_choices, field_options, attrib.html_options
