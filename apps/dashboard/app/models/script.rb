@@ -69,12 +69,18 @@ class Script
     }
     add_cluster_to_form(**sm_opts, clusters: Script.batch_clusters)
 
-    @smart_attributes = build_smart_attributes(**sm_opts)
+    # Use cached form values if they exist
+    json_file_path = Rails.root.join('tmp', "#{id}_opts.json")
+    cached_values = File.exist?(json_file_path) ? JSON.parse(File.read(json_file_path)) : {}
+
+    @smart_attributes = build_smart_attributes(**sm_opts, cached_values: cached_values)
   end
 
-  def build_smart_attributes(form: [], attributes: {})
+  def build_smart_attributes(form: [], attributes: {}, cached_values: {})
     form.map do |form_item_id|
       attrs = attributes[form_item_id.to_sym].to_h.symbolize_keys
+      value = cached_values[form_item_id.to_s]
+      attrs[:value] = value if value.present?
       SmartAttributes::AttributeFactory.build(form_item_id, attrs)
     end
   end
