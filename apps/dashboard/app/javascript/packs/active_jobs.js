@@ -2,6 +2,7 @@
 
 import oboe from 'oboe';
 import dataTableProcessing from 'datatables.net-plugins/api/processing()';
+import { cssBadgeForState } from './utils.js'
 
 window.fetch_table_data = fetch_table_data;
 window.create_datatable = create_datatable;
@@ -133,31 +134,11 @@ function fetch_table_data(table, options){
 
 
 function status_label(status){
-  var label = "Undetermined", labelclass = "badge-default";
 
-  if(status == "completed"){
-    label = "Completed";
-    labelclass = "badge-success";
-  }
+  const labelClass = cssBadgeForState(status);
+  const label = status.toUpperCase();
 
-  if(status == "running"){
-    label = "Running";
-    labelclass = "badge-primary";
-  }
-  if(status == "queued"){
-    label = "Queued";
-    labelclass = "badge-info";
-  }
-  if(status == "queued_held"){
-    label = "Hold";
-    labelclass = "badge-warning";
-  }
-  if(status == "suspended"){
-    label = "Suspend";
-    labelclass = "badge-warning";
-  }
-
-  return `<span class="badge ${labelclass}">${escapeHtml(label)}</span>`;
+  return `<span class="badge ${labelClass}">${escapeHtml(label)}</span>`;
 }
 
 function create_datatable(options){
