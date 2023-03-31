@@ -19,10 +19,12 @@ class ProjectsController < ApplicationController
 
   # GET /projects/new
   def new
+    @templates = templates
+
     if name_or_icon_nil?
       @project = Project.new
     else
-      returned_params = { name: params[:name], icon: params[:icon] }
+      returned_params = { name: new_project_params[:name], icon: new_project_params[:icon] }
       @project = Project.new(returned_params)
     end
   end
@@ -75,8 +77,12 @@ class ProjectsController < ApplicationController
 
   private
 
+  def templates
+    return [] if new_project_params[:template] == 'true'
+  end
+
   def name_or_icon_nil?
-    params[:name].nil? || params[:icon].nil?
+    new_project_params[:name].nil? || new_project_params[:icon].nil?
   end
 
   def project_params
@@ -87,5 +93,9 @@ class ProjectsController < ApplicationController
 
   def show_project_params
     params.permit(:id)
+  end
+
+  def new_project_params
+    params.permit(:template, :icon, :name)
   end
 end

@@ -26,16 +26,29 @@
       <% end %>
     </div>
   </div>
-  <div class="col-md-3 mt-3 d-flex align-items-center">
-    <div class="col d-flex justify-content-center text-center project-icon">
-      <%= button_to(new_project_path,
-                    title: I18n.t('dashboard.jobs_project_create_new_project_directory'),
-                    class: 'text-dark btn btn-link',
-                    method: 'get') do
-      %>
-        <%= icon_tag(URI.parse("fas://plus")) %><br>
-        <%= I18n.t('dashboard.jobs_project_create_new_project_directory') %>
-      <% end %>
-    </div>
+  <div class="col-md-3">
+
+      <div class="mt-5 justify-content-center text-center project-icon">
+        <%= link_to(new_project_path,
+                      title: I18n.t('dashboard.jobs_create_blank_project'),
+                      class: 'text-dark btn btn-link',
+                      method: 'get') do
+        %>
+          <%= icon_tag(URI.parse("fas://plus")) %><br>
+          <%= I18n.t('dashboard.jobs_create_blank_project') %>
+        <% end %>
+      </div>
+
+      <div class="mt-5 justify-content-center text-center project-icon">
+        <%= link_to(new_project_path({template: true}),
+                      title: I18n.t('dashboard.jobs_create_template_project'),
+                      class: 'text-dark btn btn-link',
+                      method: 'get') do
+        %>
+          <%= icon_tag(URI.parse("fas://plus")) %><br>
+          <%= I18n.t('dashboard.jobs_create_template_project') %>
+        <% end %>
+      </div>
+
   </div>
 </div>

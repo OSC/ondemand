@@ -57,6 +57,9 @@ class Project
 
   delegate :icon, :name, :description, to: :manifest
 
+  # the template you created this project from
+  attr_accessor :template
+
   def initialize(attributes = {})
     if attributes.empty?
       @manifest = Manifest.new({})
