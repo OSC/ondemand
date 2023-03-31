@@ -39,7 +39,9 @@ function pollForJobInfo(element) {
         setTimeout(pollForJobInfo, 10000, element);
       }
     })
-    .catch((error) => { console.log(error) });
+    .catch((error) => { 
+      // TODO, show an error in the HTML
+     });
 }
 
 function jobInfoDiv(jobId, state) {
