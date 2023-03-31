@@ -1,3 +1,5 @@
+<%= javascript_include_tag 'projects', nonce: true %>
+
 <div class='page-header text-center'>
   <h1><%= @project.title %></h1>
 </div> 
@@ -22,9 +24,16 @@
       <tbody>
       <% @scripts.each do |script| %>
         <tr>
-          <td class='text-center'><%= script.most_recent_job_id %></td>
-          <td class='text-center'><%= script.title %></td>
-          <td>
+          <td
+            class='text-center col-md-4'
+            data-job-id="<%= script.most_recent_job_id %>"
+            data-job-cluster="<%= script.most_recent_job_cluster %>"
+            data-job-poller='true'
+          >
+            <div class="spinner-border"></div>
+          </td>
+          <td class='text-center col-md-4'><%= script.title %></td>
+          <td class='col-md-4'>
             <%= link_to(
                   'Show',
                   project_script_path(@project.id, script.id),
