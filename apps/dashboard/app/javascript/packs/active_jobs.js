@@ -2,7 +2,7 @@
 
 import oboe from 'oboe';
 import dataTableProcessing from 'datatables.net-plugins/api/processing()';
-import { cssBadgeForState } from './utils.js'
+import { cssBadgeForState, capitalizeFirstLetter } from './utils.js'
 
 window.fetch_table_data = fetch_table_data;
 window.create_datatable = create_datatable;
@@ -134,9 +134,14 @@ function fetch_table_data(table, options){
 
 
 function status_label(status){
-
   const labelClass = cssBadgeForState(status);
-  const label = status.toUpperCase();
+  var label = "Undetermined"
+
+  if(status === "queued_held") {
+    label = "Hold";
+  } else {
+    label = capitalizeFirstLetter(status);
+  }
 
   return `<span class="badge ${labelClass}">${escapeHtml(label)}</span>`;
 }
