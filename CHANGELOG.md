@@ -6,6 +6,27 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+add the ability search icons (#2713)\
+dont log error, instead defer and html update (#2717)\
+Add the ability to track job state in projects (#2710)\
+lint a random file (#2714)\
+Removed redundant method=get for pinned apps (#2708)\
+widen this column to take the entire space (#2707)\
+Merge pull request #2693 from OSC/path-selector-form-options\
+Cleanup\
+Fixed bug where path selector wasn't showing\
+Updated to minimize the amount of calls to the weighted value methods\
+Change some JS Functionality\
+Initialize tracking jobs (#2699)\
+fix console errors in activejobs (#2703)\
+Update data_table.js\
+Update !'s to be within standards\
+Update apps/dashboard/app/javascript/packs/path_selector/data_table.js\
+lint a random file (#2701)\
+correct 3.0.0 changlelog link (#2698)\
+Update Changelog (#2696)\
+update dependencies (#2697)\
+lint a random file (#2695)
 
 ## [3.0.0] - 03-27-2023
 
