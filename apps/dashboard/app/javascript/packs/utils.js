@@ -1,5 +1,4 @@
 
-
 export function cssBadgeForState(state){
   switch (state) {
     case 'completed':
@@ -17,4 +16,6 @@ export function cssBadgeForState(state){
   }
 }
 
-
+export function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
