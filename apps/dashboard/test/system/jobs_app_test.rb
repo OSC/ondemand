@@ -20,7 +20,7 @@ class ProjectsTest < ApplicationSystemTestCase
     proj = 'test-project'
     icon = 'fas://arrow-right'
     visit projects_path
-    click_on I18n.t('dashboard.jobs_project_create_new_project_directory')
+    click_on I18n.t('dashboard.jobs_create_blank_project')
     find('#project_name').set(proj)
     find('#product_icon_select').set(icon)
     click_on 'Save'
@@ -103,7 +103,7 @@ class ProjectsTest < ApplicationSystemTestCase
       proj = 'test-project'
       icon = ''
       visit projects_path
-      click_on I18n.t('dashboard.jobs_project_create_new_project_directory')
+      click_on I18n.t('dashboard.jobs_create_blank_project')
       find('#project_name').set(proj)
       find('#product_icon_select').set(icon)
       click_on 'Save'
@@ -118,7 +118,7 @@ class ProjectsTest < ApplicationSystemTestCase
       proj = 'test-project'
       icon = 'fas://bad&icon8'
       visit projects_path
-      click_on I18n.t('dashboard.jobs_project_create_new_project_directory')
+      click_on I18n.t('dashboard.jobs_create_blank_project')
       find('#project_name').set(proj)
       find('#product_icon_select').set(icon)
       click_on 'Save'
