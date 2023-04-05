@@ -29,7 +29,7 @@ module BatchConnectConcern
       NavBar.menu_items(@user_configuration.interactive_apps_menu)
     elsif !@nav_bar.empty?
       # Create a custom list of batch connect applications based on the custom navigation defined
-      links = @nav_bar.map(&:links).flatten.select(&:show_in_menu?)
+      links = @nav_bar.map(&:links).flatten.select(&:show_in_menu?).uniq(&:url)
       OodAppGroup.new(apps: links, title: t('dashboard.batch_connect_apps_menu_title'), sort: true)
     end
     # Return nil otherwise
