@@ -51,10 +51,8 @@ function addNodeTypeToMap(cluster, nodeType) {
 document.querySelectorAll("[id^='batch_connect_session_context']").forEach((formField) => {
   // If formField specifies a select field, populate map of options to show when cluster is set AND minMaxNodes when nodeType is set
   if (formField.tagName == 'SELECT') {
-    const formFieldOptions = formField.children;
     // For option in formField...
-    for (let i=0; i < formFieldOptions.length; i++) {
-      const option = formFieldOptions[i];
+    for (let option of formField.children) {
       // For each attribute of the option...
       for (let attr of option.attributes) {
         // If attribute specifies a cluster where option will be shown...
