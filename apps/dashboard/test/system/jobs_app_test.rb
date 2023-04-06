@@ -205,7 +205,7 @@ class ProjectsTest < ApplicationSystemTestCase
       assert_selector('h1', text: 'the script title', count: 1)
 
       # assert defaults
-      assert_equal 'oakley', find('#script_cluster').value
+      assert_equal 'owens', find('#script_cluster').value
       assert_equal 'pzs0715', find('#script_auto_accounts').value
       assert_equal "#{dir}/my_cool_script.sh", find('#script_auto_scripts').value
       assert_nil YAML.safe_load(File.read("#{script_dir}/1_job_log"))
@@ -249,8 +249,8 @@ class ProjectsTest < ApplicationSystemTestCase
       assert_selector('h1', text: 'the script title', count: 1)
 
       # assert defaults
-      assert_equal 'oakley', find('#script_cluster').value
-      assert_equal 'pzs0715', find('#script_auto_accounts').value
+      assert_equal 'owens', find('#script_cluster').value
+      assert_equal 'pas2051', find('#script_auto_accounts').value
       assert_equal "#{dir}/my_cool_script.sh", find('#script_auto_scripts').value
       assert_nil YAML.safe_load(File.read("#{script_dir}/1_job_log"))
 
