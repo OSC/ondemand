@@ -100,15 +100,23 @@ document.querySelectorAll(selectQuery).forEach((formField) => {
         } else if (attr.name.startsWith('data-min-num-cores-for-cluster-')) {
           // If 'data-min-num-cores-for-cluster-x' attribute is present, 
           const cluster = attr.name.replace('data-min-num-cores-for-cluster-', '');
-          addClusterToMap(cluster); // Ensure cluster in changeMap
+          // Ensure cluster in changeMap
+          addClusterToMap(cluster);
+          // Show option when cluster selected
           changeMap.cluster[cluster].show.add(option); // May or may not be necessary to add to show here
+          // Ensure nodeType in changeMap
           addNodeTypeToMap(cluster, option.value);
+          // Set minCores of cluster, nodeType pair
           changeMap.nodeType[cluster][option.value].minCores = Number(attr.value);
         } else if (attr.name.startsWith('data-max-num-cores-for-cluster-')) {
           const cluster = attr.name.replace('data-max-num-cores-for-cluster-', '');
-          addClusterToMap(cluster); // Ensure cluster in changeMap
+          // Ensure cluster in changeMap
+          addClusterToMap(cluster);
+          // Show option when cluster selected
           changeMap.cluster[cluster].show.add(option);
+          // Ensure nodeType in changeMap
           addNodeTypeToMap(cluster, option.value);
+          // Set maxCores of cluster, nodeType pair
           changeMap.nodeType[cluster][option.value].maxCores = Number(attr.value);
         }
       }
@@ -116,25 +124,10 @@ document.querySelectorAll(selectQuery).forEach((formField) => {
   }
 });
 
-function updateNodeTypes() {
-  // On cluster change, hide/show nodeType options
-  // Remove 'display:none' from options in show list
-  changeMap.cluster[formCluster.value]['show'].forEach((option) => option.style.display = '' ); 
-  changeMap.cluster[formCluster.value]['hide'].forEach((option) => {
-    // Add 'display:none' to options in hide list
-    option.style.display = 'none';
-    // If currently selected option is now disabled, change to first option in 'show' set
-    if (option.value == formNodeType.value) formNodeType.value = [...changeMap.cluster[formCluster.value]['show']][0].value;
-  });
-  // Update numCores to fit new cluster and nodeType pair
-  updateNumCores();
-}
-// Run updateNodeTypes on load
-updateNodeTypes();
-// UpdateNodeTypes when cluster changes
-formCluster.addEventListener('change', updateNodeTypes);
 
-
+/*
+  Update min/max and current value of numCores based on selected cluster and nodeType
+*/
 function updateNumCores() {
   // On nodeType change, set min/max cores
   formNumCores.min = changeMap.nodeType[formCluster.value][formNodeType.value].minCores;
@@ -146,3 +139,24 @@ function updateNumCores() {
 updateNumCores();
 // UpdateNumCores when nodeType changes
 formNodeType.addEventListener('change', updateNumCores);
+
+
+/*
+  Update contents of nodeType selection based on cluster selected
+*/
+function updateNodeTypes() {
+  // Remove 'display:none' from options in show list
+  changeMap.cluster[formCluster.value]['show'].forEach((option) => option.style.display = '' ); 
+  changeMap.cluster[formCluster.value]['hide'].forEach((option) => {
+    // Add 'display:none' to options in hide list
+    option.style.display = 'none';
+    // If currently selected option is now disabled, change to first option in 'show' set
+    if (option.value == formNodeType.value) formNodeType.value = [...changeMap.cluster[formCluster.value]['show']][0].value;
+  });
+  // Update numCores based on new cluster and nodeType pair
+  updateNumCores();
+}
+// Run updateNodeTypes on load
+updateNodeTypes();
+// UpdateNodeTypes when cluster changes
+formCluster.addEventListener('change', updateNodeTypes);
