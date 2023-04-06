@@ -63,9 +63,10 @@ function addClusterToMap(cluster) {
 }
 
 // Ensure that the nodeType is in the changeMap
-function addNodeTypeToMap(nodeType) {
-  // Set default min/maxCores if undefined
-  changeMap.nodeType[nodeType] ??= {
+function addNodeTypeToMap(cluster, nodeType) {
+  // Set default min/maxCores if cluster/nodeType pair is undefined
+  changeMap.nodeType[cluster] ??= {};
+  changeMap.nodeType[cluster][nodeType] ??= {
     'minCores': 1,
     'maxCores': 100
   };
@@ -87,24 +88,28 @@ document.querySelectorAll(selectQuery).forEach((formField) => {
         if (attr.name.startsWith('data-option-for-cluster-')) {
           // Add option element to list of options to show or hide when specified cluster is active
           const cluster = attr.name.replace('data-option-for-cluster-', '');
-          addClusterToMap(cluster); // Ensure cluster in changeMap
+          // Ensure cluster in changeMap
+          addClusterToMap(cluster);
           if (attr.value == 'true') {
+            // If data-option-for-cluster-x='true', add to show set
             changeMap.cluster[cluster].show.add(option);
           } else if (attr.value == 'false') {
+            // If data-option-for-cluster-x='false', add to hide set
             changeMap.cluster[cluster].hide.add(option);
           }
         } else if (attr.name.startsWith('data-min-num-cores-for-cluster-')) {
+          // If 'data-min-num-cores-for-cluster-x' attribute is present, 
           const cluster = attr.name.replace('data-min-num-cores-for-cluster-', '');
           addClusterToMap(cluster); // Ensure cluster in changeMap
           changeMap.cluster[cluster].show.add(option); // May or may not be necessary to add to show here
-          addNodeTypeToMap(`${cluster}/${option.value}`);
-          changeMap.nodeType[`${cluster}/${option.value}`].minCores = Number(attr.value);
+          addNodeTypeToMap(cluster, option.value);
+          changeMap.nodeType[cluster][option.value].minCores = Number(attr.value);
         } else if (attr.name.startsWith('data-max-num-cores-for-cluster-')) {
           const cluster = attr.name.replace('data-max-num-cores-for-cluster-', '');
           addClusterToMap(cluster); // Ensure cluster in changeMap
           changeMap.cluster[cluster].show.add(option);
-          addNodeTypeToMap(`${cluster}/${option.value}`);
-          changeMap.nodeType[`${cluster}/${option.value}`].maxCores = Number(attr.value);
+          addNodeTypeToMap(cluster, option.value);
+          changeMap.nodeType[cluster][option.value].maxCores = Number(attr.value);
         }
       }
     }
@@ -132,8 +137,8 @@ formCluster.addEventListener('change', updateNodeTypes);
 
 function updateNumCores() {
   // On nodeType change, set min/max cores
-  formNumCores.min = changeMap.nodeType[formCluster.value + '/' + formNodeType.value].minCores;
-  formNumCores.max = changeMap.nodeType[formCluster.value + '/' + formNodeType.value].maxCores;
+  formNumCores.min = changeMap.nodeType[formCluster.value][formNodeType.value].minCores;
+  formNumCores.max = changeMap.nodeType[formCluster.value][formNodeType.value].maxCores;
   if (formNumCores.value > formNumCores.max) formNumCores.value = formNumCores.max;
   else if (formNumCores.value < formNumCores.min) formNumCores.value = formNumCores.min;
 }
