@@ -42,7 +42,7 @@ module DashboardHelper
     begin
       render partial: "widgets/#{widget}"
     rescue SyntaxError, StandardError => e
-      render partial: "widget_error", locals: { error: e, widget: widget.to_s }
+      render partial: 'shared/widget_error', locals: { error: e, widget: widget.to_s }
     end
   end
 
