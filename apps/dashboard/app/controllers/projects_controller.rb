@@ -78,7 +78,18 @@ class ProjectsController < ApplicationController
   private
 
   def templates
-    return [] if new_project_params[:template] == 'true'
+    if new_project_params[:template] == 'true'
+      Project.templates.map do |project|
+        label = project.title
+        data = {
+          'data-description' => project.description,
+          'data-icon' => project.icon
+        }
+        [label, project.directory, data]
+      end
+    else
+      []
+    end
   end
 
   def name_or_icon_nil?

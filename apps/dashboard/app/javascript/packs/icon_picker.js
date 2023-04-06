@@ -14,7 +14,7 @@ function listItem(name) {
           </li>`;
 }
 
-function iconId(name) {
+export function iconId(name) {
   return `icon_${name.replaceAll('-', '_')}`;
 }
 
@@ -23,7 +23,7 @@ function iconFromId(id) {
   if(m && m[1]) { return m[1].replaceAll('_','-') };
 }
 
-function picked(event) {
+export function picked(event) {
   const icon = iconFromId(event.currentTarget.id);
   $(`#${ICON_SHOW_ID}`).attr("class", `fas fa-${icon} fa-fw app-icon`);
   $(`#${ICON_SELECT_ID}`).val(`fas://${icon}`);
