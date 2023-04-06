@@ -55,24 +55,20 @@ let changeMap = {
 
 // Ensure that the cluster name is in the changeMap
 function addClusterToMap(cluster) {
-  if (!(cluster in changeMap.cluster)) {
-    // Create empty sets in changeMap.cluster.hide and changeMap.cluster.show if not existing already
-    changeMap.cluster[cluster] = {
-      'hide': new Set(),
-      'show': new Set()
-    };
-  }
+  // Create empty sets in changeMap.cluster.hide and changeMap.cluster.show if undefined
+  changeMap.cluster[cluster] ??= {
+    'hide': new Set(),
+    'show': new Set()
+  };
 }
 
 // Ensure that the nodeType is in the changeMap
 function addNodeTypeToMap(nodeType) {
-  if (!(nodeType in changeMap.nodeType)) {
-    // Set default min/maxCores if not existing already
-    changeMap.nodeType[nodeType] = {
-      'minCores': 1,
-      'maxCores': 100
-    };
-  }
+  // Set default min/maxCores if undefined
+  changeMap.nodeType[nodeType] ??= {
+    'minCores': 1,
+    'maxCores': 100
+  };
 }
 
 // Create changeMap from option attributes
