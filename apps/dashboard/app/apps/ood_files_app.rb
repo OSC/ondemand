@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Utility class for dealing with apps that play "files" role.
 class OodFilesApp
   class << self
@@ -8,7 +10,6 @@ class OodFilesApp
   end
   self.candidate_favorite_paths = []
 
-
   # esure that [] is returned if class variable is not set
   def candidate_favorite_paths
     (self.class.candidate_favorite_paths || []).map { |path| FavoritePath.new(path) }
@@ -18,7 +19,8 @@ class OodFilesApp
   # a link to the user's home directory
   # returns an array of other paths provided as shortcuts to the user
   def favorite_paths
-    @favorite_paths ||= candidate_favorite_paths.select {|p| p.remote? || p.path.directory? && p.path.readable? && p.path.executable? }
+    @favorite_paths ||= candidate_favorite_paths.select do |p|
+      p.remote? || p.path.directory? && p.path.readable? && p.path.executable?
+    end
   end
-
 end

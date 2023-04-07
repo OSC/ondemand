@@ -3,7 +3,7 @@ import Dashboard from '@uppy/dashboard'
 import XHRUpload from '@uppy/xhr-upload'
 import _ from 'lodash';
 import {CONTENTID, EVENTNAME as DATATABLE_EVENTNAME} from './data_table.js';
-import { dupSafeName } from './utils.js';
+import { maxFileSize, csrfToken } from '../config.js';
 
 let uppy = null;
 
@@ -49,7 +49,7 @@ jQuery(function() {
           // "fullPath" should actually be the path relative to the current directory
           let filename = _.trimStart(d.fullPath, '/');
 
-          return fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token }})
+          return fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrfToken() }})
           //TODO: parse json response verify if there was an error creating directory and handle error
 
         })).then(() => this.empty_dirs = []);
@@ -67,9 +67,8 @@ jQuery(function() {
 
   uppy = new Uppy({
     restrictions: {
-      maxFileSize: maxFileSize,
+      maxFileSize: maxFileSize(),
     },
-    onBeforeFileAdded: renameIfDuplicate,
     onBeforeUpload: updateEndpoint,
   });
   
@@ -89,7 +88,7 @@ jQuery(function() {
     withCredentials: true,
     fieldName: 'file',
     limit: 1,
-    headers: { 'X-CSRF-Token': csrf_token },
+    headers: { 'X-CSRF-Token': csrfToken() },
     timeout: 128 * 1000,
   });
 
@@ -169,12 +168,6 @@ function getEmptyDirs(entry){
   });
 }
 
-function renameIfDuplicate(currentFile, files) {
-  let modifiedFile = {...currentFile};
-  modifiedFile.meta.name = dupSafeName(currentFile.name);
-  return modifiedFile
-}
-
 function updateEndpoint() {
   uppy.getPlugin('XHRUpload').setOptions({
     endpoint: history.state.currentFilesUploadPath,
@@ -184,3 +177,4 @@ function updateEndpoint() {
 function reloadTable() {
   $(CONTENTID).trigger(DATATABLE_EVENTNAME.reloadTable,{});
 }
+

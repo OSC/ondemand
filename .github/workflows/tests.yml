@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Ruby ${{ matrix.ruby }} using Bundler ${{ matrix.bundler }}
         uses: ruby/setup-ruby@v1
@@ -32,7 +32,7 @@ jobs:
           bundler: ${{ matrix.bundler }}
 
       - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/vendor/bundle
           key: ${{ runner.os }}-${{ matrix.ruby }}-unit-gems-${{ hashFiles('apps/*/Gemfile.lock', 'Gemfile.lock') }}-1
@@ -73,9 +73,9 @@ jobs:
     name: Kubernetes tests
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Create kind cluster
-        uses: container-tools/kind-action@v1
+        uses: container-tools/kind-action@v2
       - name: Apply ondemand RBAC
         run: kubectl apply -f hooks/k8s-bootstrap/ondemand.yaml
       - name: Get ondemand token
@@ -83,7 +83,7 @@ jobs:
         run: |
            TOKEN_NAME=$(kubectl describe serviceaccount ondemand -n ondemand | grep Tokens | awk '{ print $2 }')
            TOKEN=$(kubectl describe secret $TOKEN_NAME -n ondemand | grep "token:" | awk '{ print $2 }')
-           echo "::set-output name=ondemand::${TOKEN}"
+           echo "ondemand=${TOKEN}" >> $GITHUB_OUTPUT
       - name: Setup kubectl
         run: |
           kubectl config set-credentials ondemand --token="${{ steps.token.outputs.ondemand }}"
@@ -98,13 +98,13 @@ jobs:
       fail-fast: false
       matrix:
         dist: ["el7", "el8", "el9", "ubuntu-20.04", "ubuntu-22.04"]
-        version: ["2.1"]
+        version: ["3.0"]
     runs-on: "ubuntu-latest"
-    name: E2E test ${{ matrix.dist }} (ondemand-${{ matrix.version }})
+    name: E2E test ${{ matrix.dist }}
 
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 

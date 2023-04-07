@@ -32,8 +32,19 @@ module AccountCache
   def dynamic_accounts
     # raise StandardError, accounts.inspect
     Rails.cache.fetch('dynamic_account_info', expires_in: 4.hours) do
-      accounts.map do |account|
-        [account.name, account.name, data_for_account(account)]
+      job_cluster_names = Configuration.job_clusters
+                                       .map(&:id)
+                                       .map(&:to_s)
+
+      accounts.group_by(&:name).map do |account_name, grouped_accounts|
+        valid_clusters = grouped_accounts.map(&:cluster)
+        invalid_clusters = job_cluster_names - valid_clusters
+
+        data = invalid_clusters.map do |invalid_cluster|
+          ["data-option-for-cluster-#{invalid_cluster}", false]
+        end.compact.to_h
+
+        [account_name, account_name, data]
       end
     end
   end
@@ -118,23 +129,12 @@ module AccountCache
   end
 
   def queues_per_cluster
-    {}.tap do |hash|
-      Configuration.job_clusters.each do |cluster|
-        hash[cluster.id] = cluster.job_adapter.queues
+    Rails.cache.fetch('queues_per_cluster', expires_in: 24.hours) do
+      {}.tap do |hash|
+        Configuration.job_clusters.each do |cluster|
+          hash[cluster.id] = cluster.job_adapter.queues
+        end
       end
     end
-  end
-
-  def data_for_account(account)
-    data_for_clusters(account)
-  end
-
-  def data_for_clusters(account)
-    Configuration.job_clusters.map do |cluster|
-      cluster_name = cluster.id.to_s
-      next if cluster_name == account.cluster
-
-      ["data-option-for-cluster-#{cluster_name}", false]
-    end.compact.to_h
   end
 end

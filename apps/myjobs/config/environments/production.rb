@@ -105,5 +105,5 @@ Rails.application.configure do
   # config.active_record.database_resolver = ActiveRecord::Middleware::DatabaseSelector::Resolver
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
 
-  config.hosts = ENV['OOD_PUN_RAILS_CONFIG_HOSTS'].nil? ? nil : ENV['OOD_PUN_RAILS_CONFIG_HOSTS'].split(',')
+  config.hosts = ENV['ALLOWED_HOSTS'].nil? ? nil : ENV['ALLOWED_HOSTS'].split(',')
 end

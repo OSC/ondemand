@@ -1,6 +1,5 @@
 # The controller for all the files pages /dashboard/files
 class FilesController < ApplicationController
-  include ActionController::Live
   include ZipTricks::RailsStreaming
 
   def fs
@@ -21,6 +20,7 @@ class FilesController < ApplicationController
         end
 
         format.json do
+          response.headers['Cache-Control'] = 'no-store'
           if params[:can_download]
             # check to see if this directory can be downloaded as a zip
             can_download, error_message = @path.can_download_as_zip?

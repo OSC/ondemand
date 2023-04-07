@@ -5,21 +5,26 @@
   <%= favicon_link_tag 'favicon.ico', href: @user_configuration.public_url.join('favicon.ico'), skip_pipeline: true %>
 
   <%= javascript_include_tag 'application', nonce: true %>
-  <%= stylesheet_link_tag 'application', nonce: content_security_policy_nonce, media: 'all' %>
+  <%= stylesheet_link_tag 'application', nonce: content_security_policy_nonce, media: 'all', rel: 'preload stylesheet', as: 'style', type: 'text/css' %>
+  <%= render partial: '/layouts/nav/styles', locals: { bg_color: @user_configuration.brand_bg_color, link_active_color:  @user_configuration.brand_link_active_bg_color } %>
   <% custom_css_paths.each do |path| %>
     <link rel="stylesheet" media="all" href="<%= path %>" nonce="<%= content_security_policy_nonce %>" />
   <% end %>
 
-  <%= csrf_meta_tags %>
-
   <%= yield :head %>
 
+  <%= csrf_meta_tags %>
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="profile" content="<%= @user_configuration.profile %>">
 
   <!-- configuration options exposed to javascript -->
   <meta id="ood_config"
     data-bg-color="<%= @user_configuration.brand_bg_color %>"
     data-link-bg-color="<%= @user_configuration.brand_link_active_bg_color %>"
+    data-max-file-size="<%= Configuration.file_upload_max %>"
+    data-transfers-path="<%= transfers_path(format: "json") if respond_to?(:transfers_path) %>"
+    data-jobs-info-path="<%= jobs_info_path('delme', 'delme').gsub(/[\/]*delme[\/]*/,'') %>"
   />
 </head>
 <body>

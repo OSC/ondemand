@@ -85,6 +85,10 @@ class PosixFile
   def ls
     path.each_child.map do |child_path|
       PosixFile.stat(child_path)
+    end.select do |stats|
+      valid_encoding = stats[:name].to_s.valid_encoding?
+      Rails.logger.warn("Not showing file '#{stats[:name]}' because it is not a UTF-8 filename.") unless valid_encoding
+      valid_encoding
     end.sort_by { |p| p[:directory] ? 0 : 1 }
   end
 
@@ -103,10 +107,15 @@ class PosixFile
   def handle_upload(tempfile)
     path.parent.mkpath unless path.parent.directory?
 
-    FileUtils.mv tempfile, path.to_s
+    mode = if path.exist?
+             # file aleady exists, so use it's existing permissions
+             path.stat.mode
+           else
+             # Apply the user's umask on top of 0666 (-rw-rw-rw-), since the file doesn't need to be executable.
+             0o666 & (0o777 ^ File.umask)
+           end
 
-    # Apply the user's umask on top of 0666 (-rw-rw-rw-), since the file doesn't need to be executable.
-    mode = 0666 & (0777 ^ File.umask)
+    FileUtils.mv tempfile, path.to_s
     File.chmod(mode, path.to_s)
 
     path.chown(nil, path.parent.stat.gid) if path.parent.setgid?

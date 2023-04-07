@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bundler'
 
 # Inspired by heroku-buildpack-ruby (MIT Licensed).
@@ -7,8 +9,8 @@ class BundlerHelper
   def initialize(dir)
     dir = Pathname.new(dir.to_s)
 
-    @gemfile_path = dir.join("Gemfile")
-    @gemfile_lock_path = dir.join("Gemfile.lock")
+    @gemfile_path = dir.join('Gemfile')
+    @gemfile_lock_path = dir.join('Gemfile.lock')
   end
 
   def has_gem?(name)
@@ -22,7 +24,7 @@ class BundlerHelper
   end
 
   def specs
-    @specs     ||= lockfile_parser.specs.each_with_object({}) {|spec, hash| hash[spec.name] = spec }
+    @specs     ||= lockfile_parser.specs.each_with_object({}) { |spec, hash| hash[spec.name] = spec }
   end
 
   def platforms
@@ -32,7 +34,6 @@ class BundlerHelper
   def version
     Bundler::VERSION
   end
-
 
   def lockfile_parser
     @lockfile_parser ||= parse_gemfile_lock

@@ -5,9 +5,12 @@ Rails.application.routes.draw do
   if Configuration.jobs_app_alpha?
     resources :projects do
       root 'projects#index'
-      # resources :scripts
+      resources :scripts do
+        post 'submit', on: :member
+      end
     end
   end
+
 
   # in production, if the user doesn't have access to the files app directory, we hide the routes
   if Configuration.can_access_files?
@@ -87,6 +90,8 @@ Rails.application.routes.draw do
     get "/activejobs/json" => "active_jobs#json", :defaults => { :format => 'json' }
     delete "/activejobs" => "active_jobs#delete_job",  as: 'delete_job'
   end
+
+  get '/jobs/info/:cluster/:id' => 'jobs#info', :defaults => { :format => 'json' }, :as => 'jobs_info'
 
   post "settings", :to => "settings#update"
 

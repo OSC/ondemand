@@ -327,6 +327,10 @@ const UI = {
             .addEventListener('change', UI.clipboardSend);
         document.getElementById("noVNC_clipboard_clear_button")
             .addEventListener('click', UI.clipboardClear);
+
+        // osc direct clipboard support
+        document.getElementById("noVNC_clipboard_text")
+            .addEventListener('input', UI.syncClipboardPanelToLocalClipboard);
     },
 
     // Add a call to save settings when the element changes,
@@ -922,6 +926,48 @@ const UI = {
  *   CLIPBOARD
  * ------v------*/
 
+    // Read and write text to local clipboard is currently only supported in Chrome 66+ and Opera53+
+    // further information at https://developer.mozilla.org/en-US/docs/Web/API/Clipboard
+    writeLocalClipboard(text) {
+        if (typeof navigator.clipboard !== "undefined" && typeof navigator.clipboard.writeText !== "undefined" &&
+            typeof navigator.permissions !== "undefined" && typeof navigator.permissions.query !== "undefined"
+        ) {
+            navigator.permissions.query({name: 'clipboard-write'})
+                .then(() => navigator.clipboard.writeText(text))
+                .then(() => {
+                    let debugMessage = text.substr(0, 40) + "...";
+                    Log.Debug('>> UI.setClipboardText: navigator.clipboard.writeText with ' + debugMessage);
+                })
+                .catch((err) => {
+                    if(err.name !== 'TypeError'){
+                        Log.Error(">> UI.setClipboardText: Failed to write system clipboard (trying to copy from NoVNC clipboard)");
+                    }
+                });
+        }
+    },
+
+    readLocalClipboard() {
+        // navigator.clipboard and navigator.clipbaord.readText is not available in all browsers
+        if (typeof navigator.clipboard !== "undefined" && typeof navigator.clipboard.readText !== "undefined" &&
+            typeof navigator.permissions !== "undefined" && typeof navigator.permissions.query !== "undefined"
+        ) {
+            navigator.permissions.query({name: 'clipboard-read'})
+            .then(() => navigator.clipboard.readText())
+            .then((clipboardText) => {
+                const text = document.getElementById('noVNC_clipboard_text').value;
+                if (clipboardText !== text) {
+                    document.getElementById('noVNC_clipboard_text').value = clipboardText;
+                    UI.clipboardSend();
+                }
+            })
+            .catch((err) => {
+                if(err.name !== 'TypeError'){
+                Log.Warn("<< UI.readLocalClipboard: Failed to read system clipboard-: " + err);
+                }
+            });
+        }
+    },
+
     openClipboardPanel() {
         UI.closeAllPanels();
         UI.openControlbar();
@@ -951,12 +997,19 @@ const UI = {
     clipboardReceive(e) {
         Log.Debug(">> UI.clipboardReceive: " + e.detail.text.substr(0, 40) + "...");
         document.getElementById('noVNC_clipboard_text').value = e.detail.text;
+        UI.writeLocalClipboard(e.detail.text);
         Log.Debug("<< UI.clipboardReceive");
     },
 
     clipboardClear() {
         document.getElementById('noVNC_clipboard_text').value = "";
+        UI.writeLocalClipboard("");
         UI.rfb.clipboardPasteFrom("");
+    },
+
+    syncClipboardPanelToLocalClipboard() {
+        const text = document.getElementById('noVNC_clipboard_text').value;
+        UI.writeLocalClipboard(text);
     },
 
     clipboardSend() {
@@ -1042,6 +1095,7 @@ const UI = {
         UI.rfb.qualityLevel = parseInt(UI.getSetting('quality'));
         UI.rfb.compressionLevel = parseInt(UI.getSetting('compression'));
         UI.rfb.showDotCursor = UI.getSetting('show_dot');
+        UI.rfb.oncanvasfocus = UI.readLocalClipboard;
 
         UI.updateViewOnly(); // requires UI.rfb
     },

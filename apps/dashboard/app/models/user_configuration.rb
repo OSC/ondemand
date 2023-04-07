@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Manages profile based configuration properties.
 # Property values are configured in configuration files under ::Configuration.config_directory and read from ::Configuration.config object.
@@ -18,17 +20,21 @@
 #       dashboard_logo: "/public/team1.png"
 #
 class UserConfiguration
-
   USER_PROPERTIES = [
     ConfigurationProperty.property(name: :dashboard_header_img_logo, read_from_env: true),
+    # Whether we display the Dashboard welcome message
+    ConfigurationProperty.property(name: :disable_dashboard_welcome_message, default_value: false),
     # Whether we display the Dashboard logo image
-    ConfigurationProperty.with_boolean_mapper(name: :disable_dashboard_logo, default_value: false, read_from_env: true, env_names: ['OOD_DISABLE_DASHBOARD_LOGO', 'DISABLE_DASHBOARD_LOGO']),
+    ConfigurationProperty.with_boolean_mapper(name: :disable_dashboard_logo, default_value: false, read_from_env: true,
+                                              env_names: ['OOD_DISABLE_DASHBOARD_LOGO', 'DISABLE_DASHBOARD_LOGO']),
     # URL to the Dashboard logo image
     ConfigurationProperty.property(name: :dashboard_logo, read_from_env: true),
     # Dashboard logo height used to set the height style attribute
     ConfigurationProperty.property(name: :dashboard_logo_height, read_from_env: true),
-    ConfigurationProperty.property(name: :brand_bg_color, read_from_env: true, env_names: ['OOD_BRAND_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_BG', 'BOOTSTRAP_NAVBAR_INVERSE_BG']),
-    ConfigurationProperty.property(name: :brand_link_active_bg_color, read_from_env: true, env_names: ['OOD_BRAND_LINK_ACTIVE_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_LINK_ACTIVE_BG', 'BOOTSTRAP_NAVBAR_INVERSE_LINK_ACTIVE_BG']),
+    ConfigurationProperty.property(name: :brand_bg_color, read_from_env: true,
+                                   env_names: ['OOD_BRAND_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_BG', 'BOOTSTRAP_NAVBAR_INVERSE_BG']),
+    ConfigurationProperty.property(name: :brand_link_active_bg_color, read_from_env: true,
+                                   env_names: ['OOD_BRAND_LINK_ACTIVE_BG_COLOR', 'BOOTSTRAP_NAVBAR_DEFAULT_LINK_ACTIVE_BG', 'BOOTSTRAP_NAVBAR_INVERSE_LINK_ACTIVE_BG']),
 
     # The dashboard's landing page layout. Defaults to nil.
     ConfigurationProperty.property(name: :dashboard_layout),
@@ -51,7 +57,8 @@ class UserConfiguration
     ConfigurationProperty.property(name: :dashboard_title, default_value: 'Open OnDemand', read_from_env: true),
 
     # Navigation properties
-    ConfigurationProperty.with_boolean_mapper(name: :show_all_apps_link, default_value: false, read_from_env: true, env_names: ['SHOW_ALL_APPS_LINK']),
+    ConfigurationProperty.with_boolean_mapper(name: :show_all_apps_link, default_value: false, read_from_env: true,
+                                              env_names: ['SHOW_ALL_APPS_LINK']),
     # New navigation definition properties
     ConfigurationProperty.property(name: :nav_bar, default_value: []),
     ConfigurationProperty.property(name: :help_bar, default_value: []),
@@ -60,6 +67,8 @@ class UserConfiguration
 
     # Custom pages configuration property
     ConfigurationProperty.property(name: :custom_pages, default_value: {}),
+    # Support ticket configuration property
+    ConfigurationProperty.property(name: :support_ticket, default_value: {})
   ].freeze
 
   def initialize(request_hostname: nil)
@@ -74,9 +83,10 @@ class UserConfiguration
   # @return [String, 'dark'] Default to dark
   def navbar_type
     type = ENV['OOD_NAVBAR_TYPE'] || fetch(:navbar_type)
-    if type == 'inverse' || type == 'dark'
+    case type
+    when 'inverse', 'dark'
       'dark'
-    elsif type == 'default' || type == 'light'
+    when 'default', 'light'
       'light'
     else
       'dark'
@@ -89,6 +99,19 @@ class UserConfiguration
     path.start_with?('/') ? Pathname.new(path) : Pathname.new('/public')
   end
 
+  # The file system path to the announcements
+  # @return [Pathname, Array<Pathname>] announcement path or paths
+  def announcement_path
+    if path = ENV['OOD_ANNOUNCEMENT_PATH']
+      Pathname.new(path)
+    else
+      paths = fetch(:announcement_path,
+                    ['/etc/ood/config/announcement.md', '/etc/ood/config/announcement.yml',
+                     '/etc/ood/config/announcements.d'])
+      Array.wrap(paths).map { |p| Pathname.new(p.to_s) }
+    end
+  end
+
   # Filtering is controlled with NavConfig.categories_allowlist? unless the configuration property categories is defined.
   # If categories are defined, filter_nav_categories? will always be true.
   def filter_nav_categories?
@@ -99,12 +122,23 @@ class UserConfiguration
     fetch(:nav_categories, nil) || NavConfig.categories
   end
 
+  # Create support ticket service class based on the configuration
+  def support_ticket_service
+    # Supported delivery mechanism
+    return SupportTicketEmailService.new(support_ticket) if support_ticket[:email]
+    return SupportTicketRtService.new(support_ticket) if support_ticket[:rt_api]
+
+    raise StandardError, 'No support ticket service class configured'
+  end
+
   # The current user profile. Used to select the configuration properties.
   def profile
+    return CurrentUser.user_settings[:profile_override].to_sym if CurrentUser.user_settings[:profile_override]
+
     if Configuration.host_based_profiles
       request_hostname
-    else
-      CurrentUser.user_settings[:profile].to_sym if CurrentUser.user_settings[:profile]
+    elsif CurrentUser.user_settings[:profile]
+      CurrentUser.user_settings[:profile].to_sym
     end
   end
 
@@ -128,13 +162,15 @@ class UserConfiguration
   def add_property_methods
     UserConfiguration::USER_PROPERTIES.each do |property|
       define_singleton_method(property.name) do
-        environment_value = property.map_string(property.environment_names.map{|key| ENV[key]}.compact.first) if property.read_from_environment?
+        if property.read_from_environment?
+          environment_value = property.map_string(property.environment_names.map do |key|
+                                                    ENV[key]
+                                                  end.compact.first)
+        end
         environment_value.nil? ? fetch(property.name, property.default_value) : environment_value
       end
     end
   end
 
-    private
-
-    attr_reader :config, :request_hostname
+  attr_reader :config, :request_hostname
 end

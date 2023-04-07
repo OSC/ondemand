@@ -355,14 +355,40 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 'python32', find_value('bc_account')
   end
 
-  test 'python choice sets hidden change thing' do
+  # test case for https://github.com/OSC/ondemand/issues/2686
+  test 'python choice also sets near duplicate field bc_account_other' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
-    select('advanced', from: bc_ele_id('node_type'))
-    assert_equal 'default', find_value('hidden_change_thing', visible: false)
+    assert_equal 'python27', find_value('bc_account')
+    assert_equal 'other_account_python27', find_value('bc_account_other')
 
     select('3.1', from: bc_ele_id('python_version'))
     assert_equal 'python31', find_value('bc_account')
+    assert_equal 'other_account_python31', find_value('bc_account_other')
+
+    select('2.7', from: bc_ele_id('python_version'))
+    assert_equal 'python27', find_value('bc_account')
+    assert_equal 'other_account_python27', find_value('bc_account_other')
+
+    select('3.2', from: bc_ele_id('python_version'))
+    assert_equal 'python32', find_value('bc_account')
+    assert_equal 'other_account_python32', find_value('bc_account_other')
+
+    # 3.7 isn't configured to change the account, so it stays 3.2
+    select('3.7', from: bc_ele_id('python_version'))
+    assert_equal 'python32', find_value('bc_account')
+    assert_equal 'other_account_python32', find_value('bc_account_other')
+  end
+
+  test 'python choice sets hidden change thing' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    # defaults
+    assert_equal '2.7', find_value('python_version')
+    assert_equal 'any', find_value('node_type')
     assert_equal 'default', find_value('hidden_change_thing', visible: false)
+
+    select('advanced', from: bc_ele_id('node_type'))
+    assert_equal 'python36', find_value('hidden_change_thing', visible: false)
 
     select('3.6', from: bc_ele_id('python_version'))
     assert_equal 'python36', find_value('hidden_change_thing', visible: false)
@@ -505,6 +531,19 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal '3.6', find("##{bc_ele_id('python_version')}").value
   end
 
+  test 'help menus get hidden' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    # defaults
+    assert_equal 'any', find_value('node_type')
+    find("##{bc_ele_id('bc_email_on_started')}")
+    find('p', text: 'this is a help message should be hidden, sometimes', visible: true)
+
+    select('hugemem', from: bc_ele_id('node_type'))
+    find('p', text: 'this is a help message should be hidden, sometimes', visible: false)
+    find("##{bc_ele_id('bc_email_on_started')}", visible: false)
+  end
+
   test 'options with numbers and slashes' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
@@ -569,30 +608,30 @@ class BatchConnectTest < ApplicationSystemTestCase
     with_modified_env({ OOD_MODULE_FILE_DIR: 'test/fixtures/modules' }) do
       visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
-      # defaults
-      assert_equal '3.0.17', find_value('auto_modules_app_jupyter')
-      assert_equal '2021.3.0', find_value('auto_modules_intel')
+      # defaults, note that intel doesn't show the default version
+      assert_equal 'app_jupyter', find_value('auto_modules_app_jupyter')
+      assert_equal 'intel/2021.3.0', find_value('auto_modules_intel')
       assert_equal 'owens', find_value('cluster')
       # versions not available on owens
-      assert_equal 'display: none;', find_option_style('auto_modules_app_jupyter', '3.1.18')
-      assert_equal 'display: none;', find_option_style('auto_modules_app_jupyter', '1.2.16')
-      assert_equal 'display: none;', find_option_style('auto_modules_app_jupyter', '0.35.6')
-      assert_equal 'display: none;', find_option_style('auto_modules_intel', '18.0.4')
+      assert_equal 'display: none;', find_option_style('auto_modules_app_jupyter', 'app_jupyter/3.1.18')
+      assert_equal 'display: none;', find_option_style('auto_modules_app_jupyter', 'app_jupyter/1.2.16')
+      assert_equal 'display: none;', find_option_style('auto_modules_app_jupyter', 'app_jupyter/0.35.6')
+      assert_equal 'display: none;', find_option_style('auto_modules_intel', 'intel/18.0.4')
 
       # select oakley and now they're available
       select('oakley', from: bc_ele_id('cluster'))
-      assert_equal '3.0.17', find_value('auto_modules_app_jupyter')
-      assert_equal '', find_option_style('auto_modules_app_jupyter', '3.1.18')
-      assert_equal '', find_option_style('auto_modules_app_jupyter', '1.2.16')
-      assert_equal '', find_option_style('auto_modules_app_jupyter', '0.35.6')
+      assert_equal 'app_jupyter', find_value('auto_modules_app_jupyter')
+      assert_equal '', find_option_style('auto_modules_app_jupyter', 'app_jupyter/3.1.18')
+      assert_equal '', find_option_style('auto_modules_app_jupyter', 'app_jupyter/1.2.16')
+      assert_equal '', find_option_style('auto_modules_app_jupyter', 'app_jupyter/0.35.6')
 
       # and lots of intel versions aren't
-      assert_equal 'display: none;', find_option_style('auto_modules_intel', '18.0.2')
-      assert_equal 'display: none;', find_option_style('auto_modules_intel', '18.0.0')
-      assert_equal 'display: none;', find_option_style('auto_modules_intel', '17.0.5')
-      assert_equal 'display: none;', find_option_style('auto_modules_intel', '17.0.2')
-      assert_equal 'display: none;', find_option_style('auto_modules_intel', '16.0.8')
-      assert_equal 'display: none;', find_option_style('auto_modules_intel', '16.0.3')
+      assert_equal 'display: none;', find_option_style('auto_modules_intel', 'intel/18.0.2')
+      assert_equal 'display: none;', find_option_style('auto_modules_intel', 'intel/18.0.0')
+      assert_equal 'display: none;', find_option_style('auto_modules_intel', 'intel/17.0.5')
+      assert_equal 'display: none;', find_option_style('auto_modules_intel', 'intel/17.0.2')
+      assert_equal 'display: none;', find_option_style('auto_modules_intel', 'intel/16.0.8')
+      assert_equal 'display: none;', find_option_style('auto_modules_intel', 'intel/16.0.3')
     end
   end
 
@@ -623,10 +662,8 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal '', find_option_style('auto_accounts', 'pas1754')
       assert_equal '', find_option_style('auto_accounts', 'pas1604')
 
-      # pzs1124 exists on both, so one should be hidden and the other available
-      id = bc_ele_id('auto_accounts')
-      assert_equal 'display: none;', find("##{id} option[data-option-for-cluster-owens='false'][value='pzs1124']")['style'].to_s
-      assert_equal '', find("##{id} option[data-option-for-cluster-oakley='false'][value='pzs1124']")['style'].to_s
+      # pzs1124 exists on both, so it's available
+      assert_equal '', find_option_style('auto_accounts', 'pzs1124')
 
       # pzs0715 is available on oakely, so switching clusters should keep the same value.
       select('oakley', from: bc_ele_id('cluster'))
@@ -636,10 +673,8 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'display: none;', find_option_style('auto_accounts', 'pas1754')
       assert_equal 'display: none;', find_option_style('auto_accounts', 'pas1604')
 
-      # pzs1124 exists on both, so now, they flip visibility
-      id = bc_ele_id('auto_accounts')
-      assert_equal '', find("##{id} option[data-option-for-cluster-owens='false'][value='pzs1124']")['style'].to_s
-      assert_equal 'display: none;', find("##{id} option[data-option-for-cluster-oakley='false'][value='pzs1124']")['style'].to_s
+      # pzs1124 exists on both, so it's still available
+      assert_equal '', find_option_style('auto_accounts', 'pzs1124')
     end
   end
 
@@ -766,7 +801,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'display: none;', find_option_style('auto_qos', 'gpt')
 
       # select the right account, and now they're available
-      find("##{bc_ele_id('auto_accounts')} option[value='pzs1124'][data-option-for-cluster-oakley='false']").select_option
+      select('pzs1124', from: bc_ele_id('auto_accounts'))
       assert_equal '', find_option_style('auto_qos', 'staff')
       assert_equal '', find_option_style('auto_qos', 'phoenix')
       assert_equal '', find_option_style('auto_qos', 'geophys')

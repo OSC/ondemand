@@ -13,7 +13,7 @@ class NavBar
           extend_link(nav_link(nav_item))
         elsif nav_item[:apps] && nav_item[:title]
           matched_apps = nav_apps(nav_item, nav_item[:title], nil)
-          extend_group(OodAppGroup.new(apps: matched_apps, title: nav_item[:title], icon_uri: nav_item[:icon_uri], sort: true))
+          extend_group(OodAppGroup.new(apps: matched_apps, title: nav_item[:title], icon_uri: nav_item[:icon]), sort: true)
         elsif nav_item[:profile]
           extend_link(nav_profile(nav_item))
         elsif !nav_item[:page].blank?
@@ -31,7 +31,7 @@ class NavBar
 
   def self.nav_menu(hash_item)
     menu_title = hash_item.fetch(:title, '')
-    menu_icon = hash_item.fetch(:icon_uri, nil)
+    menu_icon = hash_item.fetch(:icon, nil)
     menu_items = hash_item.fetch(:links, [])
 
     group_title = ''
@@ -64,6 +64,7 @@ class NavBar
 
   def self.nav_link(item, category='', subcategory='')
     link_data = item.clone
+    link_data[:icon_uri] = item.fetch(:icon, nil)
     link_data[:new_tab] = item.fetch(:new_tab, false)
     OodAppLink.new(link_data).categorize(category: category, subcategory: subcategory)
   end
@@ -81,6 +82,7 @@ class NavBar
     profile_data = item.clone
     profile_data[:title] = item.fetch(:title, profile.titleize)
     profile_data[:url] = Rails.application.routes.url_helpers.settings_path('settings[profile]' => profile)
+    profile_data[:icon_uri] = item.fetch(:icon, nil)
     profile_data[:data] = { method: 'post' }
     profile_data[:new_tab] = item.fetch(:new_tab, false)
     OodAppLink.new(profile_data).categorize(category: category, subcategory: subcategory)
@@ -89,9 +91,10 @@ class NavBar
   def self.nav_page(item, category='', subcategory='')
     page_code = item.fetch(:page)
     page_data = item.clone
-    page_data[:title] = page_data.fetch(:title, page_code.titleize)
+    page_data[:title] = item.fetch(:title, page_code.titleize)
     page_data[:url] = Rails.application.routes.url_helpers.custom_pages_path(page_code)
-    page_data[:new_tab] = page_data.fetch(:new_tab, false)
+    page_data[:icon_uri] = item.fetch(:icon, nil)
+    page_data[:new_tab] = item.fetch(:new_tab, false)
     OodAppLink.new(page_data).categorize(category: category, subcategory: subcategory)
   end
 
@@ -126,8 +129,8 @@ class NavBar
     end.flatten
   end
 
-  def self.extend_group(group)
-    group.sort = false
+  def self.extend_group(group, sort: false)
+    group.sort = sort
     NavItemDecorator.new(group, 'layouts/nav/group')
   end
 

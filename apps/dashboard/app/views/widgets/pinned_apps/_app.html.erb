@@ -1,5 +1,4 @@
 <%- link = app.links.first -%>
-<%- link_data = {:method => "get"}.merge link.data -%>
 <%- tile_data = link.tile -%>
 
 <div class="col-sm-3 col-md-3 app-launcher-container">
@@ -9,7 +8,7 @@
       link.url.to_s,
       class: ['launcher-click', tile_data[:border_color]],
       target: link.new_tab? ? "_blank" : nil,
-      data: link_data
+      data: link.data
     ) do
   %>
       <%= render partial: "/widgets/pinned_apps/app_content", locals: { link: link } %>

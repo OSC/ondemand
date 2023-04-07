@@ -34,6 +34,7 @@ class UserConfigurationTest < ActiveSupport::TestCase
     'OOD_NAVBAR_TYPE' => [:navbar_type, "light"],
     'OOD_PINNED_APPS_GROUP_BY' => [:pinned_apps_group_by, "setup-#{SecureRandom.uuid}"],
     'OOD_PUBLIC_URL' => [:public_url, Pathname.new("/#{SecureRandom.uuid}")],
+    'OOD_ANNOUNCEMENT_PATH' => [:announcement_path, Pathname.new("/#{SecureRandom.uuid}")],
 
     'SHOW_ALL_APPS_LINK' => [:show_all_apps_link, true],
   }
@@ -41,6 +42,7 @@ class UserConfigurationTest < ActiveSupport::TestCase
   test "properties expected defaults" do
     defaults = {
       dashboard_header_img_logo: nil,
+      disable_dashboard_welcome_message: false,
       disable_dashboard_logo: false,
       dashboard_logo: nil,
       dashboard_logo_height: nil,
@@ -51,6 +53,7 @@ class UserConfigurationTest < ActiveSupport::TestCase
       custom_css_files: [],
       dashboard_title: "Open OnDemand",
       public_url: Pathname.new("/public"),
+      announcement_path: [Pathname.new('/etc/ood/config/announcement.md'), Pathname.new('/etc/ood/config/announcement.yml'), Pathname.new('/etc/ood/config/announcements.d')],
 
       brand_bg_color: nil,
       brand_link_active_bg_color: nil,
@@ -65,6 +68,7 @@ class UserConfigurationTest < ActiveSupport::TestCase
       help_menu: [],
       interactive_apps_menu: [],
       custom_pages: {},
+      support_ticket: {},
     }
 
     # ensure all properties are tested
@@ -145,6 +149,20 @@ class UserConfigurationTest < ActiveSupport::TestCase
     assert_equal Pathname.new("/test/valid/path"), target.public_url
   end
 
+  test "announcement_path supports string property" do
+    Configuration.stubs(:config).returns({announcement_path: "/string/path" })
+    target = UserConfiguration.new
+
+    assert_equal [Pathname.new("/string/path")], target.announcement_path
+  end
+
+  test "announcement_path supports array property" do
+    Configuration.stubs(:config).returns({announcement_path: ["/array/path/1", "/array/path/2"] })
+    target = UserConfiguration.new
+
+    assert_equal [Pathname.new("/array/path/1"), Pathname.new("/array/path/2")], target.announcement_path
+  end
+
   test "filter_nav_categories? should return true when categories is set in config" do
     Configuration.stubs(:config).returns({nav_categories: []})
     assert_equal true, UserConfiguration.new.filter_nav_categories?
@@ -157,6 +175,25 @@ class UserConfigurationTest < ActiveSupport::TestCase
 
     NavConfig.stubs(:categories_whitelist?).returns(true)
     assert_equal true, UserConfiguration.new.filter_nav_categories?
+  end
+
+  test "create_service_class returns SupportTicketEmailService when email configuration object defined" do
+    Configuration.stubs(:config).returns({support_ticket: {email: {}}})
+    service = UserConfiguration.new.support_ticket_service
+    assert_equal "SupportTicketEmailService", service.class.name
+  end
+
+  test "create_service_class returns SupportTicketRtService when rt_api configuration object defined" do
+    Configuration.stubs(:config).returns({support_ticket: {rt_api: {}}})
+    service = UserConfiguration.new.support_ticket_service
+    assert_equal "SupportTicketRtService", service.class.name
+  end
+
+  test "create_service_class throws exception when no service class configured" do
+    Configuration.stubs(:config).returns({})
+    assert_raise StandardError do
+      UserConfiguration.new.support_ticket_service
+    end
   end
 
   test "profile should delegate to CurrentUser settings when Configuration.host_based_profiles is false" do

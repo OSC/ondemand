@@ -28,7 +28,7 @@ class CustomHelpNavigationTest < ActionDispatch::IntegrationTest
             ] },
           { title:    'Custom Help Link',
             url:      '/custom/link',
-            icon_uri: 'fa://desktop',
+            icon: 'fa://desktop',
             new_tab:  true },
           'user',
           'log_out'

@@ -40,4 +40,13 @@ class MotdFileTest < ActiveSupport::TestCase
     assert_equal '', motd_file.content
   end
 
+  test 'when rss is a remote source' do
+    with_modified_env({ MOTD_PATH: 'https://www.osc.edu/rss.xml', MOTD_FORMAT: 'rss' }) do
+      formatter = MotdFile.new.formatter
+      assert_not_nil(formatter.title)
+      assert_not_nil(formatter.content)
+      assert_not_nil(formatter.content.items)
+    end
+  end
+
 end

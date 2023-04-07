@@ -1,7 +1,7 @@
-<%= bootstrap_form_tag  do |form| %>
+<%= javascript_include_tag 'projects', nonce: true %>
 
 <div class='page-header text-center'>
-  <h1>Project Space</h1>
+  <h1><%= @project.title %></h1>
 </div> 
 <br>
 <div class='row row-cols-1 row-cols-md-2'>
@@ -10,4 +10,46 @@
   </p>
 </div>
 
-<% end %>
+<div class='card'>
+  <h3 class='card-header'>Scripts</h3>
+  <div class='card-body'>
+    <table class='table table-bordered table-hover'>
+      <thead>
+        <tr>
+          <th scope='col' class='text-center'>Job Info</th>
+          <th scope='col' class='text-center'>Script Name</th>
+          <th scope='col' class='text-center'>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% @scripts.each do |script| %>
+        <tr>
+          <td
+            class='text-center col-md-4'
+            data-job-id="<%= script.most_recent_job_id %>"
+            data-job-cluster="<%= script.most_recent_job_cluster %>"
+            data-job-poller='true'
+          >
+            <div class="spinner-border"></div>
+          </td>
+          <td class='text-center col-md-4'><%= script.title %></td>
+          <td class='col-md-4'>
+            <%= link_to(
+                  'Show',
+                  project_script_path(@project.id, script.id),
+                  class: 'btn btn-success'
+                )
+            %>
+          </td>
+        <tr>
+      <% end %>
+      </tbody>
+    </table>
+
+    <%= link_to('New Script', 
+          new_project_script_path(@project.id),
+          class: 'btn btn-info',  
+          title: I18n.t('dashboard.jobs_project_create_new_project_directory'))
+    %>
+  </div>
+</div>

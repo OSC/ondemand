@@ -249,7 +249,7 @@ class DataTable {
         var request_url = url || history.state.currentDirectoryUrl;
 
         try {
-            const response = await fetch(request_url, { headers: { 'Accept': 'application/json' } });
+            const response = await fetch(request_url, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
             const data = await this.dataFromJsonResponse(response);
             history.state.currentFilenames = Array.from(data.files, x => x.name);
             $('#shell-wrapper').replaceWith((data.shell_dropdown_html));

@@ -4,6 +4,16 @@
 #
 # It implements the support ticket interface as defined in the SupportTicketController
 class SupportTicketEmailService
+
+  attr_reader :support_ticket_config
+
+  # Constructor
+  #
+  # @param [Hash] support_ticket_config Support ticket configuration
+  def initialize(support_ticket_config)
+    @support_ticket_config = support_ticket_config
+  end
+
   # Creates a support ticket model with default data.
   # will load an interactive session if a session_id provided in the request parameters.
   #
@@ -11,7 +21,7 @@ class SupportTicketEmailService
   #
   # @return [SupportTicket] support_ticket model
   def default_support_ticket(request_params)
-    support_ticket = SupportTicket.from_config(::Configuration.support_ticket_config)
+    support_ticket = SupportTicket.from_config(support_ticket_config)
     support_ticket.username = CurrentUser.name
     support_ticket.session_id = request_params[:session_id]
     set_session(support_ticket)
@@ -24,7 +34,7 @@ class SupportTicketEmailService
   #
   # @return [SupportTicket] support_ticket model
   def validate_support_ticket(request_data = {})
-    support_ticket = SupportTicket.from_config(::Configuration.support_ticket_config)
+    support_ticket = SupportTicket.from_config(support_ticket_config)
     support_ticket.attributes = request_data
     set_session(support_ticket)
     support_ticket.tap(&:validate)
@@ -36,14 +46,14 @@ class SupportTicketEmailService
   #
   # @return [String] success message
   def deliver_support_ticket(support_ticket)
-    email_service_config = ::Configuration.support_ticket_config.fetch(:email, {})
+    email_service_config = support_ticket_config.fetch(:email, {})
     session = get_session(support_ticket)
     context = OpenStruct.new({
                                support_ticket: support_ticket,
                                session: session,
                              })
 
-    SupportTicketMailer.support_email(context).deliver_now
+    SupportTicketMailer.support_email(support_ticket_config, context).deliver_now
     email_service_config.fetch(:success_message,
                                I18n.t('dashboard.support_ticket.creation_success', to: email_service_config.fetch(:to)))
   end

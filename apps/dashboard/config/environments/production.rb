@@ -40,7 +40,7 @@ Rails.application.configure do
   # config.log_tags = [ :request_id ]
 
   # Use a different cache store in production.
-  # config.cache_store = :mem_cache_store
+  config.cache_store = :memory_store
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
   # config.active_job.queue_adapter     = :resque
@@ -100,5 +100,5 @@ Rails.application.configure do
   config.active_job.queue_adapter = ActiveJob::QueueAdapters::AsyncAdapter.new \
     min_threads: 1, max_threads: 1
 
-  config.hosts = ENV['OOD_PUN_RAILS_CONFIG_HOSTS'].nil? ? nil : ENV['OOD_PUN_RAILS_CONFIG_HOSTS'].split(',')
+  config.hosts = ENV['ALLOWED_HOSTS'].nil? ? nil : ENV['ALLOWED_HOSTS'].split(',')
 end

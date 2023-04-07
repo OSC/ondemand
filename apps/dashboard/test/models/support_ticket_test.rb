@@ -102,7 +102,7 @@ class SupportTicketTest < ActiveSupport::TestCase
     assert_equal false, target.errors[:description].blank?
   end
 
-  test "only 4 attachments are allowed" do
+  test "only 4 attachments are allowed by default" do
     attachment_mock = stub({size: 100})
     @valid_hash[:attachments] = [attachment_mock, attachment_mock, attachment_mock, attachment_mock, attachment_mock]
     target = SupportTicket.from_config({})
@@ -112,7 +112,7 @@ class SupportTicketTest < ActiveSupport::TestCase
     assert_equal false, target.errors[:attachments].blank?
   end
 
-  test "attachments size should be smaller than 6MB" do
+  test "attachments size should be smaller than 6MB by default" do
     #10MB = 10485760
     attachment_mock = stub({size: 10485760})
     @valid_hash[:attachments] = [attachment_mock]
@@ -121,6 +121,20 @@ class SupportTicketTest < ActiveSupport::TestCase
 
     assert_equal false, target.valid?
     assert_equal false, target.errors[:attachments].blank?
+  end
+
+  test "validate default restrictions" do
+    target = SupportTicket.from_config({})
+
+    assert_equal 6_291_456, target.restrictions[:max_size]
+    assert_equal 4, target.restrictions[:max_items]
+  end
+
+  test "restrictions should be overridden from configuration" do
+    target = SupportTicket.from_config({attachments: {max_size: 1234, max_items: 100}})
+
+    assert_equal 1234, target.restrictions[:max_size]
+    assert_equal 100, target.restrictions[:max_items]
   end
 
 end

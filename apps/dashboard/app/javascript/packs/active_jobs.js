@@ -1,14 +1,15 @@
 'use strict';
 
 import oboe from 'oboe';
-import 'datatables.net';
-import 'datatables.net-bs4/js/dataTables.bootstrap4';
-import 'datatables.net-plugins/api/processing()';
+import dataTableProcessing from 'datatables.net-plugins/api/processing()';
+import { cssBadgeForState, capitalizeFirstLetter } from './utils.js'
 
 window.fetch_table_data = fetch_table_data;
 window.create_datatable = create_datatable;
 window.set_cluster_id = set_cluster_id;
 window.set_filter_id = set_filter_id;
+
+dataTableProcessing(window, jQuery);
 
 var entityMap = {
   '&': '&amp;',
@@ -133,31 +134,16 @@ function fetch_table_data(table, options){
 
 
 function status_label(status){
-  var label = "Undetermined", labelclass = "badge-default";
+  const labelClass = cssBadgeForState(status);
+  var label = "Undetermined"
 
-  if(status == "completed"){
-    label = "Completed";
-    labelclass = "badge-success";
-  }
-
-  if(status == "running"){
-    label = "Running";
-    labelclass = "badge-primary";
-  }
-  if(status == "queued"){
-    label = "Queued";
-    labelclass = "badge-info";
-  }
-  if(status == "queued_held"){
+  if(status === "queued_held") {
     label = "Hold";
-    labelclass = "badge-warning";
-  }
-  if(status == "suspended"){
-    label = "Suspend";
-    labelclass = "badge-warning";
+  } else {
+    label = capitalizeFirstLetter(status);
   }
 
-  return `<span class="badge ${labelclass}">${escapeHtml(label)}</span>`;
+  return `<span class="badge ${labelClass}">${escapeHtml(label)}</span>`;
 }
 
 function create_datatable(options){

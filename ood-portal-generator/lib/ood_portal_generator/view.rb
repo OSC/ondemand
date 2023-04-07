@@ -24,7 +24,7 @@ module OodPortalGenerator
       @servername       = opts.fetch(:servername, nil)
       @server_aliases   = opts.fetch(:server_aliases, [])
       @proxy_server     = opts.fetch(:proxy_server, servername)
-      @rails_config_hosts = rails_config_hosts
+      @allowed_hosts    = allowed_hosts
       @port             = opts.fetch(:port, @ssl ? "443" : "80")
       if OodPortalGenerator.debian?
         @logroot        = opts.fetch(:logroot, "/var/log/apache2")
@@ -129,7 +129,7 @@ module OodPortalGenerator
       "#{@logroot}/#{prefix}#{suffix}"
     end
 
-    def rails_config_hosts
+    def allowed_hosts
       config_hosts = []
       config_hosts << @servername unless @servername.nil?
       config_hosts << @proxy_server unless @proxy_server.nil?

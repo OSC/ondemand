@@ -3,6 +3,7 @@ import {CONTENTID, EVENTNAME as DATATABLE_EVENTNAME} from './data_table.js';
 import {EVENTNAME as CLIPBOARD_EVENTNAME} from './clip_board.js';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 import _ from 'lodash';
+import { transfersPath, csrfToken } from '../config.js';
 
 export {EVENTNAME};
 
@@ -55,6 +56,19 @@ jQuery(function() {
   
       $(CONTENTID).trigger(DATATABLE_EVENTNAME.goto, eventData);
     }
+  });
+
+  $('#directory-contents tbody').on('click', '.download-file', function(e){
+    e.preventDefault();
+
+    const table = $(CONTENTID).DataTable();
+    const row = e.currentTarget.dataset.rowIndex;
+
+    const eventData = {
+      selection:  table.rows(row).data()
+    };
+
+    $(CONTENTID).trigger(EVENTNAME.download, eventData);
   });
 
   $("#refresh-btn").on("click", function () {
@@ -339,7 +353,7 @@ class FileOps {
 
   newFile(filename) {
     let myFileOp = new FileOps();
-    fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?touch=true`, { method: 'put', headers: { 'X-CSRF-Token': csrf_token } })
+    fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?touch=true`, { method: 'put', headers: { 'X-CSRF-Token': csrfToken() } })
       .then(response => this.dataFromJsonResponse(response))
       .then(function () {
         myFileOp.reloadTable();
@@ -373,7 +387,7 @@ class FileOps {
 
   newDirectory(filename) {
     let myFileOp = new FileOps();
-    fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrf_token }})
+    fetch(`${history.state.currentDirectoryUrl}/${encodeURI(filename)}?dir=true`, {method: 'put', headers: { 'X-CSRF-Token': csrfToken() }})
       .then(response => this.dataFromJsonResponse(response))
       .then(function () {
         myFileOp.reloadTable();
@@ -402,7 +416,7 @@ class FileOps {
     fetch(canDownloadReq, {
         method: 'GET',
         headers: {
-          'X-CSRF-Token': csrf_token,
+          'X-CSRF-Token': csrfToken(),
           'Accept': 'application/json'
         }
       })
@@ -417,13 +431,8 @@ class FileOps {
         }
       })
       .catch(e => {
-        const eventData = {
-          'title': 'Error while downloading',
-          'message': e.message,
-        };
-
         this.doneLoading();
-        this.alertError('Error while downloading', data.error_message);
+        this.alertError('Error while downloading', e.message);
       })
   }
   
@@ -461,7 +470,7 @@ class FileOps {
   delete(files) {
     this.showSwalLoading('Deleting files...: ');
 
-    this.removeFiles(files.map(f => [history.state.currentDirectory, f].join('/')), csrf_token);
+    this.removeFiles(files.map(f => [history.state.currentDirectory, f].join('/')), csrfToken() );
   }
 
   transferFiles(files, action, summary, from_fs, to_fs){
@@ -470,7 +479,7 @@ class FileOps {
 
     this.showSwalLoading(_.startCase(summary));
   
-    return fetch(transfersPath, {
+    return fetch(transfersPath(), {
       method: 'post',
       body: JSON.stringify({
         command: action,
@@ -478,7 +487,7 @@ class FileOps {
         from_fs: from_fs,
         to_fs: to_fs,
       }),
-      headers: { 'X-CSRF-Token': csrf_token }
+      headers: { 'X-CSRF-Token': csrfToken() }
     })
     .then(response => this.dataFromJsonResponse(response))
     .then((data) => {

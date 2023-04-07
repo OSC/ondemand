@@ -8,7 +8,7 @@ class SupportTicketMailer < ActionMailer::Base
   default template_path: ['support_ticket/email']
   default template_name: 'email_layout'
 
-  def support_email(context)
+  def support_email(support_ticket_config, context)
     @context = context
 
     unless @context.support_ticket.attachments.blank?
@@ -17,7 +17,7 @@ class SupportTicketMailer < ActionMailer::Base
       end
     end
 
-    email_service_config = ::Configuration.support_ticket_config.fetch(:email, {})
+    email_service_config = support_ticket_config.fetch(:email, {})
 
     mail_data = {}.tap do |settings|
       settings[:from] = email_service_config.fetch(:from, @context.support_ticket.email)
