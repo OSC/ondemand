@@ -21,7 +21,6 @@ const formCluster = document.getElementById('batch_connect_session_context_clust
 const formNodeType = document.getElementById('batch_connect_session_context_node_type');
 const formNumCores = document.getElementById('batch_connect_session_context_num_cores');
 
-// Change maps
 // Map of nodeTypes to hide/show when specified cluster is updated
 let clusterNodeTypes = {};
 // Map of min/max cores to update when specified cluster/nodeType is updated
@@ -119,13 +118,17 @@ formNodeType.addEventListener('change', updateNumCores);
   Update contents of nodeType selection based on cluster selected
 */
 function updateNodeTypes() {
-  // Remove 'display:none' from options in show list
-  clusterNodeTypes[formCluster.value]['show'].forEach((option) => option.style.display = '' ); 
+  // Enable and remove 'display:none' from options in show list
+  clusterNodeTypes[formCluster.value]['show'].forEach((option) => {
+    option.disabled = false;
+    option.style.display = '';
+  }); 
   clusterNodeTypes[formCluster.value]['hide'].forEach((option) => {
-    // Add 'display:none' to options in hide list
-    option.style.display = 'none';
-    // If currently selected option is now disabled, change to first option in 'show' set
+    // If disabling the currently selected option, change to first option in 'show' set
     if (option.value == formNodeType.value) formNodeType.value = [...clusterNodeTypes[formCluster.value]['show']][0].value;
+    // Disable and add 'display:none' to options in hide list
+    option.disabled = true;
+    option.style.display = 'none';
   });
   // Update numCores based on new cluster and nodeType pair
   updateNumCores();
