@@ -4,36 +4,27 @@ class RequestTrackerServiceTest < ActiveSupport::TestCase
 
   test "should throw exception when queues is not provided" do
     config = {
-      rt_api: {
-        queues: nil,
-        priority: "33",
-      }
+      queues: nil,
+      priority: "33",
     }
-    Configuration.stubs(:support_ticket_config).returns(config)
 
-    assert_raises(ArgumentError) { RequestTrackerService.new }
+    assert_raises(ArgumentError) { RequestTrackerService.new(config) }
   end
 
   test "should throw exception when priority is not provided" do
     config = {
-      rt_api: {
-        queues: [ "Standard" ],
-        priority: nil,
-      }
+      queues: [ "Standard" ],
+      priority: nil,
     }
-    Configuration.stubs(:support_ticket_config).returns(config)
 
-    assert_raises(ArgumentError) { RequestTrackerService.new }
+    assert_raises(ArgumentError) { RequestTrackerService.new(config) }
   end
 
   test "create_ticket should run with no errors" do
     config = {
-      rt_api: {
-        queues: [ "Standard" ],
-        priority: "10",
-      }
+      queues: [ "Standard" ],
+      priority: "10",
     }
-    Configuration.stubs(:support_ticket_config).returns(config)
 
     support_ticket = SupportTicket.from_config({})
     support_ticket.attributes = {email: "email@example.com", cc: "cc@example.com", subject: "Subject"}
@@ -49,21 +40,18 @@ class RequestTrackerServiceTest < ActiveSupport::TestCase
     .returns("support_ticket_id")
 
     session = BatchConnect::Session.new(id: 'session', created_at: Time.now)
-    RequestTrackerClient.stubs(:create).returns(mock_rt_client)
+    RequestTrackerClient.stubs(:new).returns(mock_rt_client)
 
-    result = RequestTrackerService.new.create_ticket(support_ticket, session)
+    result = RequestTrackerService.new(config).create_ticket(support_ticket, session)
 
     assert_equal "support_ticket_id", result
   end
 
   test "create_ticket should run with no errors when selecting an alternate queue" do
     config = {
-      rt_api: {
-        queues: [ "Standard", "Alternate" ],
-        priority: "10",
-      }
+      queues: [ "Standard", "Alternate" ],
+      priority: "10",
     }
-    Configuration.stubs(:support_ticket_config).returns(config)
 
     support_ticket = SupportTicket.from_config({})
     support_ticket.attributes = {email: "email@example.com", cc: "cc@example.com", subject: "Subject", queue: "Alternate"}
@@ -79,27 +67,24 @@ class RequestTrackerServiceTest < ActiveSupport::TestCase
     .returns("support_ticket_id")
 
     session = BatchConnect::Session.new(id: 'session', created_at: Time.now)
-    RequestTrackerClient.stubs(:create).returns(mock_rt_client)
+    RequestTrackerClient.stubs(:new).returns(mock_rt_client)
 
-    result = RequestTrackerService.new.create_ticket(support_ticket, session)
+    result = RequestTrackerService.new(config).create_ticket(support_ticket, session)
 
     assert_equal "support_ticket_id", result
   end
 
   test "create_ticket should raise an error when selecting an invalid queue" do
     config = {
-      rt_api: {
-        queues: [ "Standard", "Alternate" ],
-        priority: "10",
-      }
+      queues: [ "Standard", "Alternate" ],
+      priority: "10",
     }
-    Configuration.stubs(:support_ticket_config).returns(config)
 
     support_ticket = SupportTicket.from_config({})
     support_ticket.attributes = {email: "email@example.com", cc: "cc@example.com", subject: "Subject", queue: "Not_A_Queue"}
     session = BatchConnect::Session.new(id: 'session', created_at: Time.now)
 
-    assert_raises(ArgumentError) { RequestTrackerService.new.create_ticket(support_ticket, session) }
+    assert_raises(ArgumentError) { RequestTrackerService.new(config).create_ticket(support_ticket, session) }
 
   end
 end

@@ -43,7 +43,6 @@ class ConfigurationSingleton
       :bc_simple_auto_accounts      => false,
       :bc_clean_old_dirs            => false,
       :per_cluster_dataroot         => false,
-      :file_navigator               => false,
       :jobs_app_alpha               => false,
       :remote_files_enabled         => false,
       :host_based_profiles          => false,
@@ -139,20 +138,6 @@ class ConfigurationSingleton
     to_bool(ENV["OOD_LOAD_EXTERNAL_BC_CONFIG"] || (rails_env == "production"))
   end
 
-  # The file system path to the announcements
-  # @return [Pathname, Array<Pathname>] announcement path or paths
-  def announcement_path
-    if path = ENV["OOD_ANNOUNCEMENT_PATH"]
-      Pathname.new(path)
-    else
-      [
-        "/etc/ood/config/announcement.md",
-        "/etc/ood/config/announcement.yml",
-        "/etc/ood/config/announcements.d"
-      ].map {|p| Pathname.new(p)}
-    end
-  end
-
   # The paths to the JSON files that store the quota information
   # Can be URL or File path. colon delimited string; though colon in URL is
   # ignored if URL has format: scheme://path (colons preceeding // are ignored)
@@ -204,12 +189,8 @@ class ConfigurationSingleton
   end
 
   # Support ticket configuration
-  def support_ticket_config
-    config.fetch(:support_ticket, {})
-  end
-
   def support_ticket_enabled?
-    !support_ticket_config.empty?
+    config.has_key?(:support_ticket) || config.fetch(:profiles, {}).any? { |_, profile| profile.has_key?(:support_ticket) }
   end
 
   # Load the dotenv local files first, then the /etc dotenv files and

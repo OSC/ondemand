@@ -47,6 +47,6 @@ class HpcModule
   end
 
   def on_cluster?(cluster_name)
-    HpcModule.all(cluster_name).any? { |m| m.to_s == self.to_s }
+    HpcModule.all(cluster_name).any? { |m| m.to_s == to_s }
   end
 end

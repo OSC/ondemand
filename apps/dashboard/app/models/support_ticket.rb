@@ -8,12 +8,13 @@ class SupportTicket
   include SupportTicketValidator
 
   attr_reader :attributes
+  attr_reader :restrictions
 
   validate :support_ticket_validation
 
-  def self.from_config(attributes_config)
-    local_opts = attributes_config.fetch(:attributes, {})
-    attrib_list = attributes_config.fetch(:form, default_opts.keys)
+  def self.from_config(support_ticket_config)
+    local_opts = support_ticket_config.fetch(:attributes, {})
+    attrib_list = support_ticket_config.fetch(:form, default_opts.keys)
     Rails.logger.info "SupportTicket defined attributes: #{attrib_list}"
 
     attributes = attrib_list.map do |attribute_id|
@@ -25,7 +26,17 @@ class SupportTicket
       SmartAttributes::AttributeFactory.build(attribute_id, attribute_opts)
     end
 
-    SupportTicket.new(attributes)
+    # Common file sizes
+    # 2MB = 2097152
+    # 5MB = 5242880
+    # 6MB = 6291456
+    # 10MB = 10485760
+    restrictions = {
+      max_items: support_ticket_config.dig(:attachments, :max_items) || 4,
+      max_size: support_ticket_config.dig(:attachments, :max_size) || 6_291_456,
+    }
+
+    SupportTicket.new(attributes, restrictions)
   end
 
   def attributes=(params = {})
@@ -35,8 +46,10 @@ class SupportTicket
   end
 
   # @param attributes [Array<Attribute>] list of attribute objects
-  def initialize(attributes = [])
+  # @param restrictions [Hash<>] Attachment restriction properties for validation
+  def initialize(attributes = [], restrictions = {})
     @attributes = attributes
+    @restrictions = restrictions
     @attributes.each do |attribute|
       define_singleton_method("#{attribute.id}="){ |value| attribute.value = value }
       define_singleton_method("#{attribute.id}"){ attribute.value }

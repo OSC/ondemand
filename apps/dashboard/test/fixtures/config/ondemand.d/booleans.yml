@@ -11,4 +11,3 @@ disable_bc_shell: true
 cancel_session_enabled: true
 bc_clean_old_dirs: true
 hide_app_version: true
-

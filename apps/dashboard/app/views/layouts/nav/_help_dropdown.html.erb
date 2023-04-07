@@ -11,7 +11,7 @@
     <% if help_custom_url %>
       <%= nav_link(t('dashboard.nav_help_custom'), "question-circle", help_custom_url, new_tab: true) %>
     <% end %>
-    <% if Configuration.support_ticket_enabled? %>
+    <% unless @user_configuration.support_ticket.empty? %>
       <%= nav_link(t('dashboard.nav_help_support_ticket'), "medkit", support_path, new_tab: false) %>
     <% end %>
 

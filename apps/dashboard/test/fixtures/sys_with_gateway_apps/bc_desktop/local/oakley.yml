@@ -3,7 +3,7 @@ title: "Oakley Desktop"
 tile:
   title: "Configuration Title"
   sub_caption: "Configuration Sub Caption"
-  icon_uri: fa://configuration-icon
+  icon: fa://configuration-icon
   border_color: "css_class_value"
 cluster: "oakley"
 attributes:

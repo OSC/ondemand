@@ -6,14 +6,14 @@ class AnnouncementViewsTest < ActionDispatch::IntegrationTest
     f.write %{Test announcement.}
     f.close
 
-    Configuration.stubs(:announcement_path).returns(f.path)
+    stub_user_configuration({announcement_path: [f.path]})
 
     begin
       get "/"
       assert_response :success
       assert_select "div.announcement", "Test announcement."
     ensure
-      Configuration.unstub(:announcement_path)
+      stub_user_configuration({})
     end
   end
 end

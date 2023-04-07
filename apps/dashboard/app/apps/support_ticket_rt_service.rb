@@ -4,6 +4,16 @@
 #
 # It implements the support ticket interface as defined in the SupportTicketController
 class SupportTicketRtService
+
+  attr_reader :support_ticket_config
+
+  # Constructor
+  #
+  # @param [Hash] support_ticket_config Support ticket configuration
+  def initialize(support_ticket_config)
+    @support_ticket_config = support_ticket_config
+  end
+
   # Creates a support ticket model with default data.
   # Will load an interactive session if a session_id provided in the request parameters.
   # Accepts a queue parameter to override the default. Useful for testing.
@@ -12,7 +22,7 @@ class SupportTicketRtService
   #
   # @return [SupportTicket] support_ticket model
   def default_support_ticket(request_params)
-    support_ticket = SupportTicket.from_config(::Configuration.support_ticket_config)
+    support_ticket = SupportTicket.from_config(support_ticket_config)
     support_ticket.username = CurrentUser.name
     support_ticket.session_id = request_params[:session_id]
     support_ticket.queue = request_params[:queue]
@@ -26,7 +36,7 @@ class SupportTicketRtService
   #
   # @return [SupportTicket] support_ticket model
   def validate_support_ticket(request_data = {})
-    support_ticket = SupportTicket.from_config(::Configuration.support_ticket_config)
+    support_ticket = SupportTicket.from_config(support_ticket_config)
     support_ticket.attributes = request_data
     set_session(support_ticket)
     support_ticket.tap(&:validate)
@@ -38,9 +48,9 @@ class SupportTicketRtService
   #
   # @return [String] success message
   def deliver_support_ticket(support_ticket)
-    service_config = ::Configuration.support_ticket_config.fetch(:rt_api, {})
+    service_config = support_ticket_config.fetch(:rt_api, {})
     session = get_session(support_ticket)
-    rts = RequestTrackerService.new
+    rts = RequestTrackerService.new(service_config)
     ticket_id = rts.create_ticket(support_ticket, session)
     service_config.fetch(:success_message, I18n.t('dashboard.support_ticket.rt.creation_success', ticket_id: ticket_id))
   end

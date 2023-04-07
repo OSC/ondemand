@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.0.0] - 03-27-2023
+
 ### Changed
 
 - Added support for YAML anchors and aliases when reading configuration (#2214) (#2224)
@@ -39,7 +41,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Shared apps can now correctly set FACLs in [2398](https://github.com/OSC/ondemand/pull/2398).
 - Session info is now stored in a local filesystem instead of in cookies in [2434](https://github.com/OSC/ondemand/pull/2434).
 - NavConfig is deprecated in favor of an ondeman.d setting `nav_categories` in [2454](https://github.com/OSC/ondemand/pull/2454).
-- Passenger security update checks are disabled because users can't update outside of OSC packages in [2459](https://github.com/OSC/ondemand/pull/2459).
+- Passenger security update checks are disabled because users can't update outside of OSC packages in [2660](https://github.com/OSC/ondemand/pull/2660).
 - Sites can now server assets out of public/maintanence in [2443](https://github.com/OSC/ondemand/pull/2443).
 
 ### Added
@@ -54,6 +56,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - `auto_accounts` were added in [2479](https://github.com/OSC/ondemand/pull/2479).
   - `auto_queues` were added in [2511](https://github.com/OSC/ondemand/pull/2511).
   - Modules can be automatically loaded in batch connect forms in (1930)(https://github.com/OSC/ondemand/pull/1930).
+  - `auto_qos` was added [2516](https://github.com/OSC/ondemand/pull/2516).
 - Test cases for example files for both ood_portal and nginx_stage in [832](https://github.com/OSC/ondemand/pull/832).
 - Debian packaging in [1466](https://github.com/OSC/ondemand/pull/1466). With many many subsequent patches.
 - Automation will now push ondemand tar.gz to release page on tags in [1564](https://github.com/OSC/ondemand/pull/1564).
@@ -72,6 +75,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Support for opening support tickets in [2292](https://github.com/OSC/ondemand/pull/2292).
   - With support for RT in [2318](https://github.com/OSC/ondemand/pull/2318).
   - Additional support for making support ticket forms in [2348](https://github.com/OSC/ondemand/pull/2348).
+  - Support tickets are also part of profiles in [2625](https://github.com/OSC/ondemand/pull/2625).
 - Added ENV override for showing/hiding job arrays in [2327](https://github.com/OSC/ondemand/pull/2327).
 - Sites can add custom pages in Custom pages feature [2353](https://github.com/OSC/ondemand/pull/2353).
 - BC apps can now display choices made in the card in [2366](https://github.com/OSC/ondemand/pull/2366).
@@ -81,6 +85,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - BatchConnect job directories will now be cleaned on some interval in [2482](https://github.com/OSC/ondemand/pull/2482).
 - Added recently used applications widget in [2503](https://github.com/OSC/ondemand/pull/2503).
 - Added a configuration to hide app version for batch connects apps in [2462](https://github.com/OSC/ondemand/pull/2462).
+- Completed batch connect sessions can relaunch from their card in [2529](https://github.com/OSC/ondemand/pull/2529).
+- Sites can add anything to the help menu in [2514](https://github.com/OSC/ondemand/pull/2514).
+- The ALLOWED_HOSTS environment variable is populated in the PUN in [2559](https://github.com/OSC/ondemand/pull/2559)
+  and [2567](https://github.com/OSC/ondemand/pull/2567).
+- Added support for images from /public location in [2577](https://github.com/OSC/ondemand/pull/2577).
+- Added configuration to disable the dashboard welcome message in [2585](https://github.com/OSC/ondemand/pull/2585).
+- `announcment_paths` are now an ondemand.d property with profile support in [2608](https://github.com/OSC/ondemand/pull/2608).
 
 ### Fixed
 
@@ -95,6 +106,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Activejobs now correctly sorts the time column in [2420](https://github.com/OSC/ondemand/pull/2420).
 - Some sites can now disable the shell option for BC apps in [2425](https://github.com/OSC/ondemand/pull/2425), fixing [722](https://github.com/OSC/ondemand/issues/722).
 - The job composers' setup script now recoginizes a 0 byte file and attempts to fix it in [2461](https://github.com/OSC/ondemand/issues/2461).
+- The file browser now filters files with non-utf-8 characters in [2626](https://github.com/OSC/ondemand/issues/2626).
+- Safari disables form select options because it cannot hide them in [2640](https://github.com/OSC/ondemand/issues/2640).
+- RSS MOTD correctly read feeds from a url in [2681](https://github.com/OSC/ondemand/issues/2681).
+- SyntaxErrors in announcements safely rescue in [2647](https://github.com/OSC/ondemand/pull/2647).
 
 ### Security
 
@@ -103,6 +118,53 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Selinux updates in [1496](https://github.com/OSC/ondemand/pull/1496).
 - nginx APIs now validate the redirect on stop requests in [#1775](https://github.com/OSC/ondemand/pull/1175).
 - Nginx PUNs correclty start with minimal environment in [2157](https://github.com/OSC/ondemand/pull/2157)
+
+## [2.1.0] - 03-09-2023
+
+Similar changelog as [3.0.0]. This version was not released to the general public and indeed was renamed 3.0.0.
+
+## [2.0.32] - 03-27-2023
+
+### Fixed
+
+- Hterm has been updated to v91 in [2632](https://github.com/OSC/ondemand/pull/2632) to add support for
+  more utf-8 characters.
+- The files app correctly filters filenames with non-utf-8 characters in their name in
+  [2626](https://github.com/OSC/ondemand/pull/2626).
+
+## [2.0.31] - 02-07-2023
+
+### Fixed
+
+- The linux Host adapter is now compatabile with apptainer in [2548](https://github.com/OSC/ondemand/pull/2548).
+
+## [2.0.30] - 02-02-2023
+
+### Fixed
+
+- Dynamic batch connect apps correctly clamp to 0 in [2413](https://github.com/OSC/ondemand/pull/2413).
+
+### Added
+
+- Maintanence pages can serve assets in [2436](https://github.com/OSC/ondemand/pull/2436).
+
+## [2.0.29] - 10-31-2022
+
+### Fixed
+
+- Maintanence pages are no longer the default 503 pages in [2202](https://github.com/OSC/ondemand/pull/2202).
+- Open terminal buttons do not appear when ssh to compute node is turn off in [2210](https://github.com/OSC/ondemand/pull/2210).
+- Fujitsu TCS shows in active jobs in [2208](https://github.com/OSC/ondemand/pull/2208).
+- Libraries use SHA1 instead of MD5 to support FIPS systems in [2328](https://github.com/OSC/ondemand/pull/2328).
+- Dynamic batch connect now allows for multiple min & max settings in [2337](https://github.com/OSC/ondemand/pull/2337).
+- Dynamic batch connect correctly handles keys with / in them in [2340](https://github.com/OSC/ondemand/pull/2340).
+
+### Changed
+
+- Open OnDemand now relies on NodeJS 14 (up from 12 which is EOL) in [2316](https://github.com/OSC/ondemand/pull/2316).
+- The job composer now allows for copy environment setting in [2324](https://github.com/OSC/ondemand/pull/2324).
+- Upgrade to ood_core 0.22.0 in [2349](https://github.com/OSC/ondemand/pull/2349).
+  - This adds the `vnc_container` batch connect template.
 
 ## [2.0.28] - 08-01-2022
 
@@ -1119,7 +1181,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - From 1.3.7 - 1.4.2 updated app versions
 
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v2.0.28...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/OSC/ondemand/compare/v2.0.32...v3.0.0
+[2.1.0]: https://github.com/OSC/ondemand/compare/v2.0.31...v2.1.0
+[2.0.32]: https://github.com/OSC/ondemand/compare/v2.0.31...v2.0.32
+[2.0.31]: https://github.com/OSC/ondemand/compare/v2.0.30...v2.0.31
+[2.0.30]: https://github.com/OSC/ondemand/compare/v2.0.29...v2.0.30
+[2.0.29]: https://github.com/OSC/ondemand/compare/v2.0.28...v2.0.29
 [2.0.28]: https://github.com/OSC/ondemand/compare/v2.0.27...v2.0.28
 [2.0.27]: https://github.com/OSC/ondemand/compare/v2.0.26...v2.0.27
 [2.0.26]: https://github.com/OSC/ondemand/compare/v2.0.25...v2.0.26

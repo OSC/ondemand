@@ -18,19 +18,18 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should get destroy" do
-    get project_path(:id)
-    assert_response :success
+  test 'should redirect when it cannot find the project' do
+    get project_path('wont_find_this')
+    assert_response :redirect
   end
 
-  test "should get edit" do
-    # I think the project needs to exist to edit, :dir is missing in template
+  test 'should redirect from edit when it cannot find the project' do
     Dir.mktmpdir do |dir|
-      Project.stubs(dir).returns(Pathname.new("#{dir}/projects/project_1"))
-      assert  !Dir.exist?("#{dir}/projects/project_1")
+      OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
+      assert !Dir.exist?("#{dir}/projects/1")
 
-      get edit_project_path(dir)
-      assert_response :success
+      get edit_project_path('1')
+      assert_response :redirect
     end
   end
 
@@ -42,13 +41,13 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
 
   test "makes the directory if it doesnt exist" do
     Dir.mktmpdir do |dir|
-        OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
-        assert  !Dir.exist?("#{dir}/projects")
+      OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
+      assert !Dir.exist?("#{dir}/projects")
 
-        get projects_path
-        assert_response :success
+      get projects_path
+      assert_response :success
 
-        assert Dir.exist?("#{dir}/projects")
+      assert Dir.exist?("#{dir}/projects")
     end
   end
 end

@@ -172,6 +172,47 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'uploading duplicate files' do
+    Dir.mktmpdir do |dir|
+      upload_dir = File.join(dir, 'upload')
+      FileUtils.mkpath(upload_dir)
+
+      src_file = "#{dir}/testfile.sh"
+      upload_file = "#{upload_dir}/testfile.sh"
+      `echo 'here some initial content' > #{src_file}`
+
+      visit files_url(upload_dir)
+      find('#upload-btn').click
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+
+      attach_file 'files[]', src_file, visible: false, match: :first
+      find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+      find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
+      assert File.exist?(upload_file)
+      assert_equal File.read(src_file), File.read(upload_file)
+      assert_equal File.stat(upload_file).mode, 33_188 # default 644
+
+      # now change the permissions and verify
+      `chmod 755 #{upload_file}`
+      assert_equal File.stat(upload_file).mode, 33_261 # now 755
+
+      # add something more to the original file
+      `echo 'and some more content' >> #{src_file}`
+
+      # upload the file again
+      find('#upload-btn').click
+      find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+      attach_file 'files[]', src_file, visible: false, match: :first
+      find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
+      find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
+
+      # and it's still there, now with new content and it keesp the 755 permissions
+      assert File.exist?(upload_file)
+      assert_equal File.read(src_file), File.read(upload_file)
+      assert_equal File.stat(upload_file).mode, 33_261 # still 755
+    end
+  end
+
   test "changing directory" do
     visit files_url(Rails.root.to_s)
     find('tbody a', exact_text: 'app')

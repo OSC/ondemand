@@ -169,8 +169,16 @@
     text-align: center;
     padding-top: 1rem;
     width: unset;
-    height: 1.2em;
     font-size: 6.25rem;
+  }
+
+  i {
+    height: 1.2em;
+  }
+
+  img {
+    max-width: 90%;
+    margin-bottom: 0.2em;
   }
 
   p.app-title {

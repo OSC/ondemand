@@ -26,7 +26,7 @@ jQuery(function (){
 
         //SHOW FULL PAGE SPINNER
         $("body").addClass("modal-open");
-        $("#full-page-spinner").show();
+        $("#full-page-spinner").removeClass('d-none');
     }
 
     function clearAttachmentsError() {

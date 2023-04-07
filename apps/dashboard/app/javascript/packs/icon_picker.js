@@ -26,7 +26,8 @@ function iconFromId(id) {
 function picked(event) {
   const icon = iconFromId(event.currentTarget.id);
   $(`#${ICON_SHOW_ID}`).attr("class", `fas fa-${icon} fa-fw app-icon`);
-  $(`#${ICON_SELECT_ID}`).val(`fas://${icon}`)
+  $(`#${ICON_SELECT_ID}`).val(`fas://${icon}`);
+  showAllIcons();
 }
 
 function populateList() {
@@ -43,6 +44,44 @@ function populateList() {
   });
 };
 
+function addSearch(){
+  $(`#${ICON_SELECT_ID}`).on('input', (event) => {
+    searchIcons(event);
+  });
+}
+
+function searchIcons(event){
+  const searchString = event.target.value;
+  const rex = new RegExp(searchString, "g");
+
+  ALL_ICONS.forEach(name => {
+    const ele = $(`#${iconId(name)}`)[0];
+    if(ele === undefined) {
+      return;
+    }
+
+    const show = rex.test(name);
+
+    if(show) {
+      ele.classList.remove('d-none');
+    } else {
+      ele.classList.add('d-none');
+    }
+  });
+}
+
+function showAllIcons(){
+  ALL_ICONS.forEach(name => {
+    const ele = $(`#${iconId(name)}`)[0];
+    if(ele === undefined) {
+      return;
+    }
+
+    ele.classList.remove('d-none');
+  });
+}
+
 jQuery(() => {
   populateList();
+  addSearch();
 })

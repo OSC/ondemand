@@ -70,6 +70,7 @@ attributes:
           data-option-for-cluster-oakley: "false",
           data-hide-cuda-version: true,
           data-hide-advanced-options: true,
+          data-hide-bc-email-on-started: true,
           data-max-bc-num-slots-for-cluster-owens: 42,
           data-min-bc-num-slots-for-cluster-owens: 42,
 
@@ -116,18 +117,21 @@ attributes:
           "2.7",
           data-option-for-node-type-advanced: false,
           data-option-for-node-type-other-40ish-option: false,
+          data-set-bc-account-other: 'other_account_python27',
           data-set-bc-account: 'python27'
         ]
       - [
           "3.1",
           data-option-for-node-type-advanced: false,
           data-option-for-node-type-other-40ish-option: false,
+          data-set-bc-account-other: 'other_account_python31',
           data-set-bc-account: 'python31'
         ]
       - [
           "3.2",
           data-option-for-node-type-advanced: false,
           data-option-for-node-type-other-40ish-option: false,
+          data-set-bc-account-other: 'other_account_python32',
           data-set-bc-account: 'python32'
         ]
       - [
@@ -179,6 +183,10 @@ attributes:
     min: 0
     max: 4
     value: 0
+  auto_modules_intel:
+    default: false
+  bc_email_on_started:
+    help: 'this is a help message should be hidden, sometimes'
 form:
   - bc_num_hours
   - bc_num_slots
@@ -186,6 +194,7 @@ form:
   - node_type
   - gpus
   - bc_account
+  - bc_account_other
   - bc_email_on_started
   - python_version
   - cuda_version

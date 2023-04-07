@@ -70,7 +70,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_announcements
-    @announcements = Announcements.all(::Configuration.announcement_path)
+    @announcements = Announcements.all(@user_configuration.announcement_path)
   rescue => e
     logger.warn "Error parsing announcements: #{e.message}"
     @announcements = []

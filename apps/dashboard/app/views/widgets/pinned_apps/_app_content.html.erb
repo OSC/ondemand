@@ -1,10 +1,10 @@
 <%- tile_data = link.tile -%>
 <div class="center-block text-center">
-  <%= icon_tag(URI(tile_data.fetch(:icon_uri, link.icon_uri).to_s)) %>
+  <%= icon_tag(URI(tile_data.fetch(:icon, link.icon_uri).to_s)) %>
   <%= content_tag(:p, tile_data.fetch(:title, link.title), class: "app-title") %>
 
   <% if tile_data.blank? %>
-    <%= content_tag(:p, content_tag(:span, link.caption), class: "text-muted", style: "margin-top: 20px") if link.caption %>
+    <%= content_tag(:p, content_tag(:span, link.caption), class: "text-muted mt-1") if link.caption %>
   <% else %>
     <div class="mt-2 mb-1">
       <%- tile_data.fetch(:sub_caption, "").each_line do |line| -%>

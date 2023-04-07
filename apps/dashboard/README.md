@@ -26,7 +26,7 @@ dashboard is just like any other!
 
 ## Building
 
-Prerequisites to building are ruby 2.5 and nodejs 12.  You'll also need gcc
+Prerequisites to building are ruby 3.0 and nodejs 14.  You'll also need gcc
 and g++ to build gems and node packages.  Getting these available on your systems
 is left to the reader.
 
@@ -57,6 +57,23 @@ Since we migrated to `esbuild` assets are no longer built automatically. If you 
 editing any css, javascript or images during development, you may find the
 helper script `bin/recompile_js` useful to run the asset pipeline for your changes
 to become available to the app.
+
+### Developing ood_core
+
+If you're making updates to the `ood_core` gem (or indeed any other gem that you have
+development access to) hack the Gemfile to point to the source location and issue 
+`bin/bundle update`.
+
+```
+gem 'ood_core', :path=> '/full/path/to/checked/out/ood_core'
+```
+
+Now your development dashboard will look at this location for this gem. You may
+have to restart the server from time to time to pick up the new source code as
+Rails is going to cache that code.
+
+Be sure not to commit these changes! They won't work in the CI as that location
+is likely to be specific to your HOME directory on any given machine.
 
 ## Customizing
 

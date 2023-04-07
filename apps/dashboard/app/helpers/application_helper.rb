@@ -51,9 +51,9 @@ module ApplicationHelper
     ENV['OOD_DASHBOARD_HELP_CUSTOM_URL']
   end
 
-  def fa_icon(icon, fa_style: 'fas', id: '', classes: 'app-icon')
+  def fa_icon(icon, fa_style: 'fas', id: '', classes: 'app-icon', title: "FontAwesome icon specified: #{icon}")
     content_tag(:i, '', id: id, class: [fa_style, "fa-#{icon}", 'fa-fw'].concat(Array(classes)),
-                title: "FontAwesome icon specified: #{icon}", "aria-hidden": true)
+                title: title, "aria-hidden": true)
   end
 
   def app_icon_tag(app)
@@ -71,6 +71,8 @@ module ApplicationHelper
   def icon_tag(icon_uri, classes: ['app-icon'])
     if ['fa', 'fas', 'far', 'fab', 'fal'].include?(icon_uri.scheme)
       fa_icon(icon_uri.host, fa_style: icon_uri.scheme, classes: classes)
+    elsif icon_uri.to_s.starts_with?(@user_configuration.public_url.to_s)
+      content_tag(:img, '', src: icon_uri.to_s, class: classes, title: icon_uri.to_s, "aria-hidden": true)
     else
       image_tag icon_uri.to_s, class: classes, title: icon_uri.to_s, "aria-hidden": true
     end

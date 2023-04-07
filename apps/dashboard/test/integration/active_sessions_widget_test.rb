@@ -11,13 +11,12 @@ class ActiveSessionsWidgetTest < ActionDispatch::IntegrationTest
     })
   end
 
-  test 'should render active sessions widget with empty message' do
+  test 'should not render active sessions widget when no active sessions' do
     BatchConnect::Session.stubs(:all).returns([])
 
     get '/'
 
-    assert_select 'div.active-sessions-header h3', 1
-    assert_select 'div.active-sessions-content p.lead', text: I18n.t('dashboard.active_sessions_no_sessions')
+    assert_select 'div.active-sessions-header h3', 0
   end
 
   test 'should render active sessions widget with session card' do

@@ -4,12 +4,15 @@ class SupportTicketIntegrationTest < ActionDispatch::IntegrationTest
 
   def setup
     Configuration.stubs(:support_ticket_enabled?).returns(true)
-    Configuration.stubs(:support_ticket_config).returns({
-      email: {
-        to: "to_address@support.ticket.com",
-        delivery_method: 'test'
-      }
-    })
+    stub_user_configuration(
+      {
+        support_ticket: {
+          email: {
+            to: "to_address@support.ticket.com",
+            delivery_method: 'test'
+          }
+        }
+      })
     Rails.application.reload_routes!
   end
 

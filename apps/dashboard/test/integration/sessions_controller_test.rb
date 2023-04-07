@@ -96,4 +96,19 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
       assert_equal batch_connect_cancel_session_path('1234'), form.first['action']
     end
   end
+
+  test 'should render session panel with relaunch button' do
+    value = '{"id":"1234","job_id":"1","created_at":1669139262,"token":"sys/token","title":"session title","cache_completed":true}'
+    session = BatchConnect::Session.new.from_json(value)
+    session.stubs(:status).returns(OodCore::Job::Status.new(state: :completed))
+    session.stubs(:app).returns(stub(valid?: true, token: 'sys/token', attributes: [], session_info_view: nil))
+    BatchConnect::Session.stubs(:all).returns([session])
+
+    get batch_connect_sessions_path
+    assert_response :success
+
+    assert_select 'div#id_1234 div.card-heading div.float-right form.relaunch' do |form|
+      assert_equal batch_connect_session_contexts_path(token: 'sys/token'), form.first['action']
+    end
+  end
 end

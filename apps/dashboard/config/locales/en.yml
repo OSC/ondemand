@@ -108,6 +108,7 @@ en:
     batch_connect_sessions_delete_title: "Delete"
     batch_connect_sessions_cancel_confirm: "Are you sure?"
     batch_connect_sessions_cancel_title: "Cancel"
+    batch_connect_sessions_relaunch_title: "Relaunch"
     batch_connect_sessions_errors_staging: "Failed to stage the template with the following error:"
     batch_connect_sessions_errors_submission: "Failed to submit session with the following error:"
     batch_connect_sessions_novnc_launch: "Launch %{app_title}"
@@ -189,7 +190,6 @@ en:
     development_apps_caption: "Sandbox App"
 
     active_sessions_title: 'Active interactive sessions'
-    active_sessions_no_sessions: 'You have no active sessions.'
     active_sessions_caption_html: '<a href="%{all_sessions_url}"> view all (%{number_of_sessions})</a>'
 
     recently_used_apps_title: 'Recently Used Apps'
@@ -211,8 +211,9 @@ en:
     jobs_project_deleted: "Project successfully deleted!"
     jobs_project_delete_project_confirmation: "Delete all contents of project directory?"
     jobs_project_manifest_updated: "Project manifest updated!"
-    jobs_project_name_validation: "Project name may only contain letters, digits, dashes, and underscores"
-    jobs_project_create_new_project_directory: "Create a new project directory"
+    jobs_project_name_validation: "Project name may only contain letters, digits, dashes, underscores, and spaces"
+    jobs_create_blank_project: "Create a new project"
+    jobs_create_template_project: "Create a new project from a template"
 
     settings_updated: "Settings updated"
 

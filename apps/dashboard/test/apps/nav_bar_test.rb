@@ -73,6 +73,7 @@ class NavBarTest < ActiveSupport::TestCase
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
     assert_equal "layouts/nav/group",  result[0].partial_path
+    assert_equal false,  result[0].sort
     assert_equal "Interactive Apps",  result[0].title
     assert_equal 4,  result[0].apps.size
   end
@@ -87,16 +88,17 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal 4,  result[0].apps.size
   end
 
-  test "NavBar.items should return navigation group when nav_item has apps and title property" do
+  test "NavBar.items should return navigation group with sort=true when nav_item has apps and title property" do
     nav_item = {
       title: "Custom Apps",
-      icon_uri: "fa://test",
+      icon: "fa://test",
       apps: "sys/bc_jupyter"
     }
 
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
     assert_equal "layouts/nav/group",  result[0].partial_path
+    assert_equal true,  result[0].sort
     assert_equal 1,  result[0].links.size
     assert_equal 'Custom Apps',  result[0].links[0].category
     assert_equal 'Apps',  result[0].links[0].subcategory
@@ -104,7 +106,7 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal URI("fa://test"),  result[0].icon_uri
   end
 
-  test "icon_uri should be null for apps navigation group when nav_item has no icon_uri property" do
+  test "icon_uri should be null for apps navigation group when nav_item has no icon property" do
     nav_item = {
       title: "Custom Apps",
       apps: "sys/bc_jupyter"
@@ -117,16 +119,17 @@ class NavBarTest < ActiveSupport::TestCase
     assert_nil result[0].icon_uri
   end
 
-  test "NavBar.items should return navigation group when nav_item has apps array and title property" do
+  test "NavBar.items should return navigation group with sort=true when nav_item has apps array and title property" do
     nav_item = {
       title: "Custom Apps",
-      icon_uri: "fa://test",
+      icon: "fa://test",
       apps: ["sys/bc_jupyter"]
     }
 
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
     assert_equal "layouts/nav/group",  result[0].partial_path
+    assert_equal true,  result[0].sort
     assert_equal 1,  result[0].links.size
     assert_equal 'Custom Apps',  result[0].links[0].category
     assert_equal 'Apps',  result[0].links[0].subcategory
@@ -137,19 +140,20 @@ class NavBarTest < ActiveSupport::TestCase
   test "NavBar.items should return navigation group when nav_item has links property" do
     nav_item = {
       title: "menu title",
-      icon_uri: "fa://test",
+      icon: "fa://test",
       links: []
     }
 
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
     assert_equal "layouts/nav/group",  result[0].partial_path
+    assert_equal false,  result[0].sort
     assert_equal 0,  result[0].apps.size
     assert_equal "menu title",  result[0].title
     assert_equal URI("fa://test"),  result[0].icon_uri
   end
 
-  test "icon_uri should be null for links navigation group when nav_item has no icon_uri property" do
+  test "icon_uri should be null for links navigation group when nav_item has no icon property" do
     nav_item = {
       title: "menu title",
       links: []
@@ -227,7 +231,7 @@ class NavBarTest < ActiveSupport::TestCase
       title: "menu title",
       links: [
         {group: "subcategory"},
-        {title: "link title", url: "/path"},
+        {title: "link title", url: "/path", icon: "/test/image.png"},
       ]
     }
 
@@ -240,6 +244,7 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal "subcategory",  result[0].apps[0].subcategory
     assert_equal "link title",  result[0].apps[0].title
     assert_equal "/path",  result[0].apps[0].url
+    assert_equal URI("/test/image.png"),  result[0].apps[0].icon_uri
   end
 
   test "links array should support app links" do
@@ -266,7 +271,7 @@ class NavBarTest < ActiveSupport::TestCase
       title: "menu title",
       links: [
         {group: "subcategory"},
-        {title: "link title", profile: "profile"},
+        {title: "link title", profile: "profile", icon: "/test/image.png"},
       ]
     }
 
@@ -279,6 +284,7 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal "subcategory",  result[0].apps[0].subcategory
     assert_equal "link title",  result[0].apps[0].title
     assert_equal Rails.application.routes.url_helpers.settings_path("settings[profile]" => "profile"),  result[0].apps[0].url
+    assert_equal URI("/test/image.png"),  result[0].apps[0].icon_uri
   end
 
   test "links array should support page links" do
@@ -286,7 +292,7 @@ class NavBarTest < ActiveSupport::TestCase
       title: "menu title",
       links: [
         {group: "subcategory"},
-        {title: "link title", page: "page_code"},
+        {title: "link title", page: "page_code", icon: "/test/image.png"},
       ]
     }
 
@@ -299,12 +305,14 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal "subcategory",  result[0].apps[0].subcategory
     assert_equal "link title",  result[0].apps[0].title
     assert_equal Rails.application.routes.url_helpers.custom_pages_path("page_code"),  result[0].apps[0].url
+    assert_equal URI("/test/image.png"),  result[0].apps[0].icon_uri
   end
 
   test "NavBar.items should return navigation link when nav_item has url property" do
     nav_item = {
       title: "Link Title",
       url: "/path/test",
+      icon: "/test/image.png",
       new_tab: true
     }
 
@@ -315,6 +323,7 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal "Link Title",  result[0].title
     assert_equal "/path/test",  result[0].url
     assert_equal true,  result[0].new_tab?
+    assert_equal URI("/test/image.png"),  result[0].icon_uri
   end
 
   test "navigation link new_tab? defaults to false" do
@@ -334,6 +343,7 @@ class NavBarTest < ActiveSupport::TestCase
     nav_item = {
       title: "Profile Title",
       profile: "profile1",
+      icon: "/test/image.png",
       new_tab: true
     }
     expected_data_property = { method: 'post' }
@@ -345,6 +355,7 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal Rails.application.routes.url_helpers.settings_path("settings[profile]" => "profile1"),  result[0].url
     assert_equal expected_data_property,  result[0].data
     assert_equal true,  result[0].new_tab?
+    assert_equal URI("/test/image.png"),  result[0].icon_uri
   end
 
   test "navigation profile new_tab? defaults to false" do
@@ -364,6 +375,7 @@ class NavBarTest < ActiveSupport::TestCase
     nav_item = {
       title: "Page Title",
       page: "page_code",
+      icon: "/test/image.png",
       new_tab: true,
     }
     result = NavBar.items([nav_item])
@@ -373,6 +385,7 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal "Page Title",  result[0].title
     assert_equal Rails.application.routes.url_helpers.custom_pages_path("page_code"),  result[0].url
     assert_equal true,  result[0].new_tab?
+    assert_equal URI("/test/image.png"),  result[0].icon_uri
   end
 
   test "navigation page new_tab? defaults to false" do

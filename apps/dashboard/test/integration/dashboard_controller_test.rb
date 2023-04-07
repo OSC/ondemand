@@ -99,14 +99,14 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     dditems = dropdown_list_items(dd)
     assert dditems.any?, "dropdown list items not found"
     assert_equal [
-      "Broken App", 
-      :divider,
       {header: "Apps"},
       "Jupyter Notebook",
       "Paraview",
       :divider,
       {header: "Desktops"},
-      "Oakley Desktop"], dditems
+      "Oakley Desktop",
+      :divider,
+      "Broken App"], dditems
 
     assert_select dd, "li a", "Oakley Desktop" do |link|
       assert_equal "/batch_connect/sys/bc_desktop/oakley/session_contexts/new", link.first['href'], "Desktops link is incorrect"
