@@ -57,10 +57,9 @@ document.querySelectorAll("[id^='batch_connect_session_context']").forEach((form
       // For each attribute of the option...
       for (let attr of option.attributes) {
         // Get cluster name string or undefined if not following pattern
-        const optionForCluster = attr.name.match(/^data-option-for-cluster-(.*)/)?.[1] 
-        // Get string stating 'min', 'max', or undefined if not following pattern
-        const minOrMaxCores = attr.name.match(/^data-(min|max)-num-cores-for-cluster-/)?.[1];
-        // If attribute specifies a cluster where option will be shown...
+        const optionForCluster = attr.name.match(/^data-option-for-cluster-(.*)/)?.[1];
+        // Put string stating 'min', 'max', or undefined in minOrMaxCores. Put name of cluster in clusterName
+        const [, minOrMaxCores, clusterName] = attr.name.match(/^data-(min|max)-num-cores-for-cluster-(.*)/) || [];
         if (optionForCluster) {
           // Add option element to set of options to show or hide when specified cluster is active
           addClusterToMap(optionForCluster);
@@ -73,15 +72,14 @@ document.querySelectorAll("[id^='batch_connect_session_context']").forEach((form
           }
         } else if (minOrMaxCores) {
           // If 'data-(min|max)-num-cores-for-cluster-x' attribute is present, 
-          const cluster = attr.name.replace(`data-${minOrMaxCores}-num-cores-for-cluster-`, '');
           // Ensure cluster in changeMap
-          addClusterToMap(cluster);
+          addClusterToMap(clusterName);
           // Add option to set of options to show when cluster selected
-          clusterNodeTypes[cluster].show.add(option);
+          clusterNodeTypes[clusterName].show.add(option);
           // Ensure nodeType in changeMap
-          addNodeTypeToMap(cluster, option.value);
+          addNodeTypeToMap(clusterName, option.value);
           // Set minCores or maxCores of cluster, nodeType pair
-          nodeTypeNumCores[cluster][option.value][`${minOrMaxCores}Cores`] = Number(attr.value);
+          nodeTypeNumCores[clusterName][option.value][`${minOrMaxCores}Cores`] = Number(attr.value);
         }
       }
     }
