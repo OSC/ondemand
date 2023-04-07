@@ -60,7 +60,7 @@ GEM
       minitest (>= 5.1)
       tzinfo (~> 2.0)
       zeitwerk (~> 2.3)
-    addressable (2.8.1)
+    addressable (2.8.3)
       public_suffix (>= 2.0.2, < 6.0)
     autoprefixer-rails (8.6.5)
       execjs
@@ -116,7 +116,7 @@ GEM
       activesupport (>= 4)
       railties (>= 4)
       request_store (~> 1.0)
-    loofah (2.19.1)
+    loofah (2.20.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.8.1)
@@ -140,7 +140,7 @@ GEM
       timeout
     net-smtp (0.3.3)
       net-protocol
-    nio4r (2.5.8)
+    nio4r (2.5.9)
     nokogiri (1.14.2)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
