@@ -26,7 +26,6 @@ let clusterNodeTypes = {};
 // Map of min/max cores to update when specified cluster/nodeType is updated
 let nodeTypeNumCores = {};
 
-
 // Ensure that the cluster name is in the changeMap
 function addClusterToMap(cluster) {
   // Create empty sets in clusterNodeTypes[cluster].hide and clusterNodeTypes[cluster].show if undefined
@@ -47,46 +46,38 @@ function addNodeTypeToMap(cluster, nodeType) {
   };
 }
 
-// Create changeMap from option attributes
-// Select all form fields by getting all elements whose id begins with 'batch_connect_session_context'
-document.querySelectorAll("[id^='batch_connect_session_context']").forEach((formField) => {
-  // If formField specifies a select field, populate map of options to show when cluster is set AND minMaxNodes when nodeType is set
-  if (formField.tagName == 'SELECT') {
-    // For option in formField...
-    for (let option of formField.children) {
-      // For each attribute of the option...
-      for (let attr of option.attributes) {
-        // Get cluster name string or undefined if not following pattern
-        const optionForCluster = attr.name.match(/^data-option-for-cluster-(.*)/)?.[1];
-        // Put string stating 'min', 'max', or undefined in minOrMaxCores. Put name of cluster in clusterName
-        const [, minOrMaxCores, clusterName] = attr.name.match(/^data-(min|max)-num-cores-for-cluster-(.*)/) || [];
-        if (optionForCluster) {
-          // If attribute specifies that an option is or isn't for a cluster
-          // Add option element to set of options to show or hide when specified cluster is active
-          addClusterToMap(optionForCluster);
-          if (attr.value == 'true') {
-            // If data-option-for-cluster-x='true', add to show set
-            clusterNodeTypes[optionForCluster].show.add(option);
-          } else if (attr.value == 'false') {
-            // If data-option-for-cluster-x='false', add to hide set
-            clusterNodeTypes[optionForCluster].hide.add(option);
-          }
-        } else if (minOrMaxCores) {
-          // If attribute specifies a min/max-num-cores...
-          // Ensure cluster in changeMap
-          addClusterToMap(clusterName);
-          // Add option to set of options to show when cluster selected
-          clusterNodeTypes[clusterName].show.add(option);
-          // Ensure nodeType in changeMap
-          addNodeTypeToMap(clusterName, option.value);
-          // Set minCores or maxCores of cluster, nodeType pair
-          nodeTypeNumCores[clusterName][option.value][`${minOrMaxCores}Cores`] = Number(attr.value);
-        }
+// Create change maps from formNodeType option attributes
+for (let option of formNodeType.children) {
+  // For each attribute of the option...
+  for (let attr of option.attributes) {
+    // Get cluster name string or undefined if not following pattern
+    const optionForCluster = attr.name.match(/^data-option-for-cluster-(.*)/)?.[1];
+    // Put string stating 'min', 'max', or undefined in minOrMaxCores. Put name of cluster in clusterName
+    const [, minOrMaxCores, clusterName] = attr.name.match(/^data-(min|max)-num-cores-for-cluster-(.*)/) || [];
+    if (optionForCluster) {
+      // If attribute specifies that an option is or isn't for a cluster
+      // Add option element to set of options to show or hide when specified cluster is active
+      addClusterToMap(optionForCluster);
+      if (attr.value == 'true') {
+        // If data-option-for-cluster-x='true', add to show set
+        clusterNodeTypes[optionForCluster].show.add(option);
+      } else if (attr.value == 'false') {
+        // If data-option-for-cluster-x='false', add to hide set
+        clusterNodeTypes[optionForCluster].hide.add(option);
       }
+    } else if (minOrMaxCores) {
+      // If attribute specifies a min/max-num-cores...
+      // Ensure cluster in changeMap
+      addClusterToMap(clusterName);
+      // Add option to set of options to show when cluster selected
+      clusterNodeTypes[clusterName].show.add(option);
+      // Ensure nodeType in changeMap
+      addNodeTypeToMap(clusterName, option.value);
+      // Set minCores or maxCores of cluster, nodeType pair
+      nodeTypeNumCores[clusterName][option.value][`${minOrMaxCores}Cores`] = Number(attr.value);
     }
   }
-});
-
+}
 
 /*
   Update min/max and current value of numCores based on selected cluster and nodeType
