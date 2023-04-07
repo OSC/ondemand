@@ -21,6 +21,7 @@ const formCluster = document.getElementById('batch_connect_session_context_clust
 const formNodeType = document.getElementById('batch_connect_session_context_node_type');
 const formNumCores = document.getElementById('batch_connect_session_context_num_cores');
 
+// Change maps, following the name scheme <cause_field><result_field>s
 // Map of nodeTypes to hide/show when specified cluster is updated
 let clusterNodeTypes = {};
 // Map of min/max cores to update when specified cluster/nodeType is updated
