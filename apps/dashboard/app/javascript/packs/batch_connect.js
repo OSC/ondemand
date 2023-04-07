@@ -56,40 +56,32 @@ document.querySelectorAll("[id^='batch_connect_session_context']").forEach((form
     for (let option of formField.children) {
       // For each attribute of the option...
       for (let attr of option.attributes) {
+        // Get cluster name string or undefined if not following pattern
+        const optionForCluster = attr.name.match(/^data-option-for-cluster-(.*)/)?.[1] 
+        // Get string stating 'min', 'max', or undefined if not following pattern
+        const minOrMaxCores = attr.name.match(/^data-(min|max)-num-cores-for-cluster-/)?.[1];
         // If attribute specifies a cluster where option will be shown...
-        if (attr.name.startsWith('data-option-for-cluster-')) {
-          // Add option element to list of options to show or hide when specified cluster is active
-          const cluster = attr.name.replace('data-option-for-cluster-', '');
-          // Ensure cluster in changeMap
-          addClusterToMap(cluster);
+        if (optionForCluster) {
+          // Add option element to set of options to show or hide when specified cluster is active
+          addClusterToMap(optionForCluster);
           if (attr.value == 'true') {
             // If data-option-for-cluster-x='true', add to show set
-            clusterNodeTypes[cluster].show.add(option);
+            clusterNodeTypes[optionForCluster].show.add(option);
           } else if (attr.value == 'false') {
             // If data-option-for-cluster-x='false', add to hide set
-            clusterNodeTypes[cluster].hide.add(option);
+            clusterNodeTypes[optionForCluster].hide.add(option);
           }
-        } else if (attr.name.startsWith('data-min-num-cores-for-cluster-')) {
-          // If 'data-min-num-cores-for-cluster-x' attribute is present, 
-          const cluster = attr.name.replace('data-min-num-cores-for-cluster-', '');
+        } else if (minOrMaxCores) {
+          // If 'data-(min|max)-num-cores-for-cluster-x' attribute is present, 
+          const cluster = attr.name.replace(`data-${minOrMaxCores}-num-cores-for-cluster-`, '');
           // Ensure cluster in changeMap
           addClusterToMap(cluster);
           // Add option to set of options to show when cluster selected
           clusterNodeTypes[cluster].show.add(option);
           // Ensure nodeType in changeMap
           addNodeTypeToMap(cluster, option.value);
-          // Set minCores of cluster, nodeType pair
-          nodeTypeNumCores[cluster][option.value].minCores = Number(attr.value);
-        } else if (attr.name.startsWith('data-max-num-cores-for-cluster-')) {
-          const cluster = attr.name.replace('data-max-num-cores-for-cluster-', '');
-          // Ensure cluster in changeMap
-          addClusterToMap(cluster);
-          // Add option to set of options to show when cluster selected
-          clusterNodeTypes[cluster].show.add(option);
-          // Ensure nodeType in changeMap
-          addNodeTypeToMap(cluster, option.value);
-          // Set maxCores of cluster, nodeType pair
-          nodeTypeNumCores[cluster][option.value].maxCores = Number(attr.value);
+          // Set minCores or maxCores of cluster, nodeType pair
+          nodeTypeNumCores[cluster][option.value][`${minOrMaxCores}Cores`] = Number(attr.value);
         }
       }
     }
