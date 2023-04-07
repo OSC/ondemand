@@ -61,6 +61,7 @@ document.querySelectorAll("[id^='batch_connect_session_context']").forEach((form
         // Put string stating 'min', 'max', or undefined in minOrMaxCores. Put name of cluster in clusterName
         const [, minOrMaxCores, clusterName] = attr.name.match(/^data-(min|max)-num-cores-for-cluster-(.*)/) || [];
         if (optionForCluster) {
+          // If attribute specifies that an option is or isn't for a cluster
           // Add option element to set of options to show or hide when specified cluster is active
           addClusterToMap(optionForCluster);
           if (attr.value == 'true') {
@@ -71,7 +72,7 @@ document.querySelectorAll("[id^='batch_connect_session_context']").forEach((form
             clusterNodeTypes[optionForCluster].hide.add(option);
           }
         } else if (minOrMaxCores) {
-          // If 'data-(min|max)-num-cores-for-cluster-x' attribute is present, 
+          // If attribute specifies a min/max-num-cores...
           // Ensure cluster in changeMap
           addClusterToMap(clusterName);
           // Add option to set of options to show when cluster selected
