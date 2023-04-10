@@ -2,6 +2,8 @@ require 'test_helper'
 
 class BatchConnectConcernTest < ActiveSupport::TestCase
 
+  url_helpers = Rails.application.routes.url_helpers
+
   class TestClass
     include BatchConnectConcern
 
@@ -10,6 +12,8 @@ class BatchConnectConcernTest < ActiveSupport::TestCase
 
   def setup
     # Defaults
+    SysRouter.stubs(:base_path).returns(Rails.root.join("test/fixtures/sys_with_gateway_apps"))
+    OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file("test/fixtures/config/clusters.d"))
     @target = TestClass.new
     @target.user_configuration = stub(:interactive_apps_menu => [])
     @target.nav_bar = []
@@ -31,14 +35,27 @@ class BatchConnectConcernTest < ActiveSupport::TestCase
   end
 
   test "bc_custom_apps_group should return a navigation menu based on @nav_bar when interactive_apps_menu is not defined and @nav_bar is" do
-    nav_item = OodAppGroup.new(apps: [], title: "test title")
-    @target.nav_bar = [nav_item]
+    @target.nav_bar = NavBar.items([{title: "Primary Menu", apps: "sys/bc_jupyter"}, {title: "Secondary Menu", apps: "sys/bc_paraview"}])
     @target.expects(:t).with('dashboard.batch_connect_apps_menu_title').returns('menu title from translation')
 
     result = @target.bc_custom_apps_group
 
     assert_equal 'menu title from translation', result.title
-    assert_equal [], result.apps
+    assert_equal 2, result.apps.size
+    assert_equal [url_helpers.new_batch_connect_session_context_path('sys/bc_jupyter'), url_helpers.new_batch_connect_session_context_path('sys/bc_paraview')], result.apps.map(&:links).flatten.map(&:url)
+    # Sorting should be enabled. Apps come from different menus in the navigation
+    assert_equal true, result.sort
+  end
+
+  test "bc_custom_apps_group should dedupe links when app links are based on configured @nav_bar applications" do
+    @target.nav_bar = NavBar.items([{title: "Primary Menu", apps: "sys/bc_jupyter"}, {title: "Secondary Menu", apps: "sys/bc_jupyter"}])
+    @target.expects(:t).with('dashboard.batch_connect_apps_menu_title').returns('menu title from translation')
+
+    result = @target.bc_custom_apps_group
+
+    assert_equal 'menu title from translation', result.title
+    assert_equal 1, result.apps.size
+    assert_equal [url_helpers.new_batch_connect_session_context_path("sys/bc_jupyter")], result.apps.map(&:links).flatten.map(&:url)
     # Sorting should be enabled. Apps come from different menus in the navigation
     assert_equal true, result.sort
   end
