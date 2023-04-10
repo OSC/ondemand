@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Only depend on the selinux-policy version, not full version including release (#2738)\
+update dependencies (#2733)\
+lint a random file (#2736)\
+mv this partial to shared so many controllers can use (#2731)\
+Activejobs refactor utils (#2719)\
+start support for project templates (#2721)\
+lint a random file (#2722)
 
 ## [3.0.0] - 03-27-2023
 
