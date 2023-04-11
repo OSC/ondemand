@@ -5,6 +5,9 @@ import ALL_ICONS from './icons';
 const ICON_SHOW_ID = "product_icon"
 const ICON_SELECT_ID = "product_icon_select"
 
+// simple boolean for whether there are currently any hidden icons
+let hiddenIcons = false;
+
 function listItem(name) {
   return `<li 
               id="${iconId(name)}" 
@@ -24,7 +27,7 @@ function iconFromId(id) {
 }
 
 function picked(event) {
-  const icon = iconFromId(event.target.id);
+  const icon = iconFromId(event.currentTarget.id);
   updateIcon(icon);
   showAllIcons();
 }
@@ -64,6 +67,7 @@ function addSearch(){
 function searchIcons(event){
   const searchString = event.target.value;
   const rex = new RegExp(searchString, "g");
+  hiddenIcons = true;
 
   ALL_ICONS.forEach(name => {
     const ele = $(`#${iconId(name)}`)[0];
@@ -82,6 +86,11 @@ function searchIcons(event){
 }
 
 function showAllIcons(){
+  // there are no hidden icons, so just return
+  if(hiddenIcons === false) {
+    return;
+  }
+
   ALL_ICONS.forEach(name => {
     const ele = $(`#${iconId(name)}`)[0];
     if(ele === undefined) {
@@ -90,6 +99,8 @@ function showAllIcons(){
 
     ele.classList.remove('d-none');
   });
+
+  hiddenIcons = false;
 }
 
 jQuery(() => {
