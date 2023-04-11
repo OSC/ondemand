@@ -14,7 +14,7 @@ function listItem(name) {
           </li>`;
 }
 
-export function iconId(name) {
+function iconId(name) {
   return `icon_${name.replaceAll('-', '_')}`;
 }
 
@@ -23,11 +23,15 @@ function iconFromId(id) {
   if(m && m[1]) { return m[1].replaceAll('_','-') };
 }
 
-export function picked(event) {
-  const icon = iconFromId(event.currentTarget.id);
+function picked(event) {
+  const icon = iconFromId(event.target.id);
+  updateIcon(icon);
+  showAllIcons();
+}
+
+function updateIcon(icon) {
   $(`#${ICON_SHOW_ID}`).attr("class", `fas fa-${icon} fa-fw app-icon`);
   $(`#${ICON_SELECT_ID}`).val(`fas://${icon}`);
-  showAllIcons();
 }
 
 function populateList() {
@@ -45,8 +49,15 @@ function populateList() {
 };
 
 function addSearch(){
-  $(`#${ICON_SELECT_ID}`).on('input', (event) => {
-    searchIcons(event);
+  $(`#${ICON_SELECT_ID}`).on('input change', (event) => {
+    const currentValue = event.target.value;
+
+    // template picked and set value or copy & pasted full icon uri
+    if(currentValue.startsWith('fas://')) {
+      updateIcon(currentValue.replace('fas://', ''));
+    } else {
+      searchIcons(event);
+    }
   });
 }
 
