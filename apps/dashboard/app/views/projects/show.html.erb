@@ -37,8 +37,15 @@
             <%= link_to(
                   'Show',
                   project_script_path(@project.id, script.id),
-                  class: 'btn btn-success'
+                  class: 'btn btn-success mx-1'
                 )
+            %>
+
+            <%= link_to(
+              'Edit',
+              edit_project_script_path(@project.id, script.id),
+              class: 'btn btn-primary mx-1',
+            )
             %>
           </td>
         <tr>

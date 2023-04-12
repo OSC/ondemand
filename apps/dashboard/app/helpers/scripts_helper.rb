@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
 module ScriptsHelper
-  include BatchConnect::SessionContextsHelper
+  
+  def create_editable_widget(form, attrib, format: nil)
+    create_widget(form, attrib, format: format)
+  end
 end

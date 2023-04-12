@@ -22,7 +22,15 @@ class ScriptsController < ApplicationController
     end
   end
 
+  # GET   /projects/:project_id/scripts/:id/edit
+  # edit
   def edit
+  end
+
+  # POST   /projects/:project_id/scripts/:id/save
+  # save the script after editing
+  def save
+    redirect_to project_path(params[:project_id]), notice: 'TODO'
   end
 
   # POST   /projects/:project_id/scripts/:id/submit

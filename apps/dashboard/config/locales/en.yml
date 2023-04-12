@@ -182,6 +182,7 @@ en:
 
     unknown: "Unknown"
     not_grouped: "Other Apps"
+    save: "Save"
 
     nav_limit_caption: 'showing %{subset_count} of %{total_count}'
     pinned_apps_category: "Apps"
