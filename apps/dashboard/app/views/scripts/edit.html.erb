@@ -1,5 +1,7 @@
 <h1>Editing <%= @script.title %></h1>
 
+<%= javascript_include_tag 'script_edit', nonce: true %>
+
 <%= link_to 'Back', project_path(params[:project_id]), class: 'btn btn-default my-3',  title: 'Return to projects page' %>
 
 <%= bootstrap_form_for(@script, url: save_project_script_path) do |f| %>
@@ -7,6 +9,8 @@
     <%# TODO generate render_format %>
     <%= create_editable_widget(f, attrib, format: nil) %>
   <% end %>
+
+  <%= render  partial: 'add_new_field' %>
 
   <%= f.submit t('dashboard.save'), class: "btn btn-primary btn-block" %>
 <% end %>

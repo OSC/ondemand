@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       root 'projects#index'
       resources :scripts do
         post 'submit', on: :member
+        post 'save', on: :member
       end
     end
   end
