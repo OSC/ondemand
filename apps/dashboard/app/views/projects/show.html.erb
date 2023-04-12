@@ -35,14 +35,14 @@
           <td class='text-center col-md-4'><%= script.title %></td>
           <td class='col-md-4'>
             <%= link_to(
-                  'Show',
+                t('dashboard.show'),
                   project_script_path(@project.id, script.id),
                   class: 'btn btn-success mx-1'
                 )
             %>
 
             <%= link_to(
-              'Edit',
+              t('dashboard.edit'),
               edit_project_script_path(@project.id, script.id),
               class: 'btn btn-primary mx-1',
             )
