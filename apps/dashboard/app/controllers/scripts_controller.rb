@@ -3,13 +3,10 @@
 # The controller for apps pages /dashboard/projects/:project_id/scripts
 class ScriptsController < ApplicationController
 
+  before_action :find_script, only: [:show, :edit, :submit]
+
   def new
     @script = Script.new(project_dir: show_script_params[:project_id])
-  end
-
-  def show
-    project = Project.find(show_script_params[:project_id])
-    @script = Script.find(show_script_params[:id], project.directory)
   end
 
   # POST  /dashboard/projects/:project_id/scripts
@@ -25,11 +22,12 @@ class ScriptsController < ApplicationController
     end
   end
 
+  def edit
+  end
+
   # POST   /projects/:project_id/scripts/:id/submit
   # submit the job
   def submit
-    project = Project.find(params[:project_id])
-    @script = Script.find(params[:id], project.directory)
     opts = submit_script_params[:script].to_h.symbolize_keys
 
     if (job_id = @script.submit(opts))
@@ -40,6 +38,11 @@ class ScriptsController < ApplicationController
   end
 
   private
+
+  def find_script
+    project = Project.find(show_script_params[:project_id])
+    @script = Script.find(show_script_params[:id], project.directory)
+  end
 
   def create_script_params
     params.permit({ script: [:title] }, :project_id)
