@@ -11,18 +11,14 @@ class ScriptsController < ApplicationController
     project = Project.find(show_script_params[:project_id])
     @script = Script.find(show_script_params[:id], project.directory)
 
-    # Read and parse the saved opts from the JSON file
-    # json_file_path = Rails.root.join('tmp', "#{@script.id}_opts.json")
-    cache_file = OodAppkit.dataroot.join(Project.dataroot, "#{@script.id}_opts.json")
-
-    if File.exist?(cache_file)
-      @cached_opts = JSON.parse(File.read(cache_file), symbolize_names: true)
+    if cache_file_exists?
+      @cache_opts = JSON.parse(cache_file_path, symbolize_names: true)
 
       @script.smart_attributes.each do |attrib|
-        attrib.value = @cached_opts[attrib.id.to_s] if @cached_opts.key?(attrib.id.to_s)
+        attrib.value = @cache_opts[attrib.id.to_s] if @cache_opts.key?(attrib.id.to_s)
       end
     else
-      @cached_opts = {}
+      @cache_opts = {}
     end
   end
 
@@ -48,6 +44,7 @@ class ScriptsController < ApplicationController
 
     if (job_id = @script.submit(opts))
       @script.write_job_options_to_cache(opts)
+
       redirect_to(project_path(params[:project_id]), notice: "Successfully submited job #{job_id}.")
     else
       redirect_to(project_path(params[:project_id]), alert: @script.errors[:submit].last)
@@ -58,9 +55,18 @@ class ScriptsController < ApplicationController
 
   def write_job_options_to_cache(opts)
     # Write the opts to a JSON file
+    # cache_file = OodAppkit.dataroot.join(@script.project_dir, "#{@script.id}_opts.json")
+    File.write(@script.project_dir.join("#{@script.id}_opts.json"), opts.to_json)
+  end
+
+  def cache_file_path
+    OodAppkit.dataroot.join(@script.project_dir, "#{@script.id}_opts.json")
+  end
+
+  def cache_file_exists?
+    # Read and parse the saved opts from the JSON file
     # json_file_path = Rails.root.join('tmp', "#{@script.id}_opts.json")
-    cache_file = OodAppkit.dataroot.join(Project.dataroot, "#{@script.id}_opts.json")
-    File.write(cache_file, opts.to_json)
+    cache_file_path.exist?
   end
 
   def create_script_params
