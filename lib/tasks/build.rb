@@ -29,22 +29,20 @@ namespace :build do
   end
 
   apps.each do |a|
-    if a.ruby_app?
-      depends = [:gems]
-    else
-      depends = []
-    end
-    task a.name.to_sym => depends do |t|
-      setup_path = a.path.join("bin", "setup")
-      if setup_path.exist? && setup_path.executable?
-        sh "PASSENGER_APP_ENV=#{PASSENGER_APP_ENV} #{setup_path}"
-      end
+    depends = if a.ruby_app?
+                [:gems]
+              else
+                []
+              end
+    task a.name.to_sym => depends do |_t|
+      setup_path = a.path.join('bin', 'setup')
+      sh "PASSENGER_APP_ENV=#{PASSENGER_APP_ENV} #{setup_path}" if setup_path.exist? && setup_path.executable?
     end
   end
 
-  desc "Build all apps"
-  task :all => apps.map { |a| a.name }
+  desc 'Build all apps'
+  task :all => apps.map(&:name)
 end
 
-desc "Build OnDemand"
+desc 'Build OnDemand'
 task :build => 'build:all'
