@@ -118,6 +118,12 @@ module SmartAttributes
       opts.fetch(:html_options, {})
     end
 
+    # Assign the html_options
+    # @return [Hash] key value pairs are html options
+    def html_options=(input_opts)
+      opts[:html_options] = input_opts
+    end
+
     # Hash of field options for Rails form helpers
     # these are assumed to be everything that isn't already defined    
     # as a method on this class, but is in the opts hash, except for
