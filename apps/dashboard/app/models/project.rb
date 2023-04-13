@@ -53,7 +53,8 @@ class Project
     end
 
     def templates
-      template_dir = Pathname(Configuration.project_template_dir)
+      template_dir = Pathname.new(Configuration.project_template_dir)
+      return [] if !template_dir.directory? || !template_dir.readable?
 
       template_dir.children.map do |child_directory|
         opts = {

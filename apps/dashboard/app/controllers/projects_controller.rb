@@ -15,11 +15,16 @@ class ProjectsController < ApplicationController
   # GET /projects
   def index
     @projects = Project.all
+    @templates = templates
   end
 
   # GET /projects/new
   def new
-    @templates = templates
+    @templates = if new_project_params[:template] == 'true'
+                   templates
+                 else
+                   []
+                 end
 
     if name_or_icon_nil?
       @project = Project.new
@@ -78,17 +83,13 @@ class ProjectsController < ApplicationController
   private
 
   def templates
-    if new_project_params[:template] == 'true'
-      Project.templates.map do |project|
-        label = project.title
-        data = {
-          'data-description' => project.description,
-          'data-icon' => project.icon
-        }
-        [label, project.directory, data]
-      end
-    else
-      []
+    Project.templates.map do |project|
+      label = project.title
+      data = {
+        'data-description' => project.description,
+        'data-icon' => project.icon
+      }
+      [label, project.directory, data]
     end
   end
 

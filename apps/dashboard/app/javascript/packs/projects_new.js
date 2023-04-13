@@ -2,10 +2,10 @@
 
 jQuery(function() {
   $("#project_template").on('change', (event) => templateChange(event));
+  $("#project_template").trigger('change');
 });
 
 function templateChange(event) {
-
   const choice = $(`#project_template option[value="${event.target.value}"]`)[0];
   if(choice === undefined) {
     return;
@@ -18,5 +18,7 @@ function templateChange(event) {
   $("#project_name").val(name);
   $("#project_description").val(description);
   $("#product_icon_select").val(icon);
-  $("#product_icon_select").trigger('change');
+
+  // iconpicker.js isn't not be loaded yet, so delay the change trigger.
+  setTimeout(() => { $("#product_icon_select").trigger('change'); }, 150);
 }

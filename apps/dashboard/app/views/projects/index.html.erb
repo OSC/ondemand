@@ -39,6 +39,7 @@
         <% end %>
       </div>
 
+      <%- if @templates.size.positive? -%>
       <div class="mt-5 justify-content-center text-center project-icon">
         <%= link_to(new_project_path({template: true}),
                       title: I18n.t('dashboard.jobs_create_template_project'),
@@ -49,6 +50,7 @@
           <%= I18n.t('dashboard.jobs_create_template_project') %>
         <% end %>
       </div>
+      <%- end -%>
 
   </div>
 </div>
