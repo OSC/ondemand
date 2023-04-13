@@ -9,7 +9,7 @@ const helpTextLookup = {
 }
 
 function addNewField(_event) {
-  const lastOption = $('.new_script').find('.form-group').last();
+  const lastOption = $('.new_script').find('.editable-form-field').last();
   lastOption.after(newFieldTemplate.html());
 
   const justAdded = lastOption.next();
@@ -17,7 +17,7 @@ function addNewField(_event) {
   const addButton = justAdded.find('.btn-success');
   const selectMenu = justAdded.find('select');
 
-  deleteButton.on('click', (event) => { deleteInProgressField(event) });
+  deleteButton.on('click', (event) => { removeInProgressField(event) });
   addButton.on('click', (event) => { addInProgressField(event) });
   selectMenu.on('change', (event) => { addHelpTextForOption(event) });
 
@@ -33,9 +33,41 @@ function addHelpTextForOption(event) {
   helpTextDiv.innerText = helpText;
 }
 
-function deleteInProgressField(event) {  
+function removeInProgressField(event) {
   const entireDiv = event.target.parentElement.parentElement.parentElement;
   entireDiv.remove();
+}
+
+function removeField(event) {
+  // TODO: shouldn't be able to remove cluster & script form fields.
+  const entireDiv = event.target.parentElement;
+  entireDiv.remove();
+}
+
+function showEditField(event) {
+  const entireDiv = event.target.parentElement;
+  const editField = entireDiv.querySelector('.edit-group');
+  editField.classList.remove('d-none');
+
+  const saveButton = entireDiv.querySelector('.btn-success');
+  const editButton = entireDiv.querySelector('.btn-primary');
+
+  saveButton.classList.remove('d-none');
+  editButton.disabled = true;
+
+  saveButton.onclick = (event) => { saveEdit(event) };
+}
+
+function saveEdit(event) {
+  const entireDiv = event.target.parentElement;
+  const editField = entireDiv.querySelector('.edit-group');
+  editField.classList.add('d-none');
+
+  const saveButton = entireDiv.querySelector('.btn-success');
+  const editButton = entireDiv.querySelector('.btn-primary');
+
+  saveButton.classList.add('d-none');
+  editButton.disabled = false;
 }
 
 function addInProgressField(event) {  
@@ -45,4 +77,13 @@ function addInProgressField(event) {
 jQuery(() => {
   newFieldTemplate = $('#new_field_template');
   $('#add_new_field_button').on('click', (event) => { addNewField(event) });
+  $('.new_script')
+    .find('.editable-form-field')
+    .find('.btn-danger')
+    .on('click', (event) => { removeField(event) });
+
+  $('.new_script')
+    .find('.editable-form-field')
+    .find('.btn-primary')
+    .on('click', (event) => { showEditField(event) });
 });

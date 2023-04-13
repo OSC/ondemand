@@ -1,0 +1,18 @@
+
+.editable-form-field {
+  padding: 0.3rem;
+  margin: 0.5rem;
+
+  border: 2px solid rgb(26, 118, 211);
+  // border-radius: 10%;
+
+  &:hover {
+    transform: scale(0.98);
+  }
+}
+
+// empty CSS classes to find divs while editing form fields.
+// TODO: change to data-* attributes
+.edit-group {}
+.edit-field {}
+.real-field {}

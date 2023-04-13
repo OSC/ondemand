@@ -1,0 +1,32 @@
+<%- 
+  field_id = "#{form.object_name}_#{attrib.id}"
+  min_edit_id = "min_#{field_id}"
+  min_edit_name = "#{form.object_name}[min_#{attrib.id}]"
+
+  max_edit_id = "max_#{field_id}"
+  max_edit_name = "#{form.object_name}[max_#{attrib.id}]"
+
+  current_min = attrib.field_options[:min];
+  current_max = attrib.field_options[:max];
+
+-%>
+
+<div class="editable-form-field">
+  <%=  create_widget(form, attrib, format: format) %>
+
+  <div class="d-none edit-group mb-3">
+
+    <label for="<%= min_edit_id %>">Minimum</label>
+    <input  min="1" step="1"
+            class="form-control edit-field" type="number" value="<%= current_min %>" 
+            name="<%= min_edit_name %>" id="<%= min_edit_id %>">
+
+    <label for="<%= max_edit_id %>">Maximum</label>
+    <input  min="1" step="1"
+            class="form-control edit-field" type="number" value="<%= current_max %>" 
+            name="<%= max_edit_name %>" id="<%= max_edit_id %>">
+
+  </div>
+
+  <%= render(partial: 'scripts/editable_form_fields/edit_field_buttons') %>
+</div>
