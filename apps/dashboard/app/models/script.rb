@@ -70,7 +70,9 @@ class Script
     add_cluster_to_form(**sm_opts, clusters: Script.batch_clusters)
 
     # Use cached form values if they exist
-    json_file_path = Rails.root.join('tmp', "#{id}_opts.json")
+    json_file_path = OodAppkit.dataroot.join(Script.scripts_dir("#{project_dir}/"), "#{id}_opts.json")
+    #json_file_path = Rails.root.join('tmp', "#{@script.id}_opts.json")
+
     cached_values = File.exist?(json_file_path) ? JSON.parse(File.read(json_file_path)) : {}
 
     @smart_attributes = build_smart_attributes(**sm_opts, cached_values: cached_values)
@@ -138,6 +140,7 @@ class Script
     adapter = adapter(options[:cluster]).job_adapter
     render_format = adapter.class.name.split('::').last.downcase
 
+    # i think i need to look at these options to understand where this writes out
     job_script = OodCore::Job::Script.new(**submit_opts(options, render_format))
 
     job_id = Dir.chdir(project_dir) do
@@ -190,6 +193,12 @@ class Script
     end.map do |sm|
       sm.submit(fmt: render_format)
     end.reduce(&:deep_merge)[:script]
+  end
+
+  def write_cache_file(file)
+    cache_file = filt.to_s
+    cache_path = OodAppkit.dataroot.join(Project.dataroot, '.ondemand', 'script', '')
+    File.write(cache)
   end
 
   def adapter(cluster_id)

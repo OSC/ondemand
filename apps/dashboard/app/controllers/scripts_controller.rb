@@ -12,10 +12,11 @@ class ScriptsController < ApplicationController
     @script = Script.find(show_script_params[:id], project.directory)
 
     # Read and parse the saved opts from the JSON file
-    json_file_path = Rails.root.join('tmp', "#{@script.id}_opts.json")
+    # json_file_path = Rails.root.join('tmp', "#{@script.id}_opts.json")
+    cache_file = OodAppkit.dataroot.join(Project.dataroot, "#{@script.id}_opts.json")
 
-    if File.exist?(json_file_path)
-      @cached_opts = JSON.parse(File.read(json_file_path), symbolize_names: true)
+    if File.exist?(cache_file)
+      @cached_opts = JSON.parse(File.read(cache_file), symbolize_names: true)
 
       @script.smart_attributes.each do |attrib|
         attrib.value = @cached_opts[attrib.id.to_s] if @cached_opts.key?(attrib.id.to_s)
@@ -44,12 +45,9 @@ class ScriptsController < ApplicationController
     project = Project.find(params[:project_id])
     @script = Script.find(params[:id], project.directory)
     opts = submit_script_params[:script].to_h.symbolize_keys
-    
-    # Write the opts to a JSON file
-    json_file_path = Rails.root.join('tmp', "#{@script.id}_opts.json")
-    File.write(json_file_path, opts.to_json)
 
     if (job_id = @script.submit(opts))
+      @script.write_job_options_to_cache(opts)
       redirect_to(project_path(params[:project_id]), notice: "Successfully submited job #{job_id}.")
     else
       redirect_to(project_path(params[:project_id]), alert: @script.errors[:submit].last)
@@ -57,6 +55,13 @@ class ScriptsController < ApplicationController
   end
 
   private
+
+  def write_job_options_to_cache(opts)
+    # Write the opts to a JSON file
+    # json_file_path = Rails.root.join('tmp', "#{@script.id}_opts.json")
+    cache_file = OodAppkit.dataroot.join(Project.dataroot, "#{@script.id}_opts.json")
+    File.write(cache_file, opts.to_json)
+  end
 
   def create_script_params
     params.permit({ script: [:title] }, :project_id)
