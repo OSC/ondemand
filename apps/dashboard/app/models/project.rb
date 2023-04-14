@@ -51,6 +51,19 @@ class Project
         Pathname.new('')
       end
     end
+
+    def templates
+      template_dir = Pathname.new(Configuration.project_template_dir)
+      return [] if !template_dir.directory? || !template_dir.readable?
+
+      template_dir.children.map do |child_directory|
+        opts = {
+          directory: child_directory
+        }
+
+        Project.new(**opts)
+      end
+    end
   end
 
   attr_reader :directory, :id
