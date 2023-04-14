@@ -180,7 +180,6 @@ en:
     all_apps_table_category_column: "Category"
     all_apps_table_sub_category_column: "Sub Category"
 
-    unknown: "Unknown"
     not_grouped: "Other Apps"
 
     nav_limit_caption: 'showing %{subset_count} of %{total_count}'
@@ -239,3 +238,12 @@ en:
 
     custom_pages:
       invalid: "Invalid page code: %{page}. This page has not been configured"
+
+
+    # These are basic words that many partials can use
+    unknown: "Unknown"
+    save: "Save"
+    add: "Add"
+    remove: "Remove"
+    edit: "Edit"
+    show: "Show"

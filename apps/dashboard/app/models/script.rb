@@ -34,6 +34,9 @@ class Script
       opts.merge!({ project_dir: project_dir.to_s })
 
       new(opts)
+    rescue StandardError, Errno::ENOENT => e
+      Rails.logger.warn("Did not find script due to error #{e}")
+      nil
     end
 
     def next_id(project_dir)
