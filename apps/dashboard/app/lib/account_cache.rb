@@ -13,6 +13,10 @@ module AccountCache
       # only Slurm support in ood_core
       cluster = Configuration.job_clusters.select(&:slurm?).first
       cluster.nil? ? [] : cluster.job_adapter.accounts
+    rescue StandardError => e
+      Rails.logger.warn("Did not get accounts from system with error #{e}")
+      Rails.logger.warn(e.backtrace.join("\n"))
+      []
     end
   end
 
@@ -69,6 +73,10 @@ module AccountCache
 
         [queue_name, queue_name, data]
       end
+    rescue StandardError => e
+      Rails.logger.warn("Did not get queues from system with error #{e}")
+      Rails.logger.warn(e.backtrace.join("\n"))
+      []
     end
   end
 
