@@ -34,9 +34,9 @@ class ProjectsController < ApplicationController
   def edit
     @project = Project.find(show_project_params[:id])
 
-    if @project.nil?
-      redirect_to(projects_path, alert: "Cannot find project #{show_project_params[:id]}")
-    end
+    return unless @project.nil?
+
+    redirect_to(projects_path, alert: "Cannot find project #{show_project_params[:id]}")
   end
 
   # PATCH /projects/:id
@@ -79,13 +79,19 @@ class ProjectsController < ApplicationController
   private
 
   def templates
-    Project.templates.map do |project|
+    templates = Project.templates.map do |project|
       label = project.title
       data = {
         'data-description' => project.description,
-        'data-icon' => project.icon
+        'data-icon'        => project.icon
       }
       [label, project.directory, data]
+    end
+
+    if templates.size.positive?
+      templates.prepend(['', '', { 'data-description': '', 'data-icon': '' }])
+    else
+      []
     end
   end
 

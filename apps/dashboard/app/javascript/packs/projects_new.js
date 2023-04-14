@@ -2,7 +2,6 @@
 
 jQuery(function() {
   $("#project_template").on('change', (event) => templateChange(event));
-  $("#project_template").trigger('change');
 });
 
 function templateChange(event) {
@@ -18,7 +17,5 @@ function templateChange(event) {
   $("#project_name").val(name);
   $("#project_description").val(description);
   $("#product_icon_select").val(icon);
-
-  // iconpicker.js isn't not be loaded yet, so delay the change trigger.
-  setTimeout(() => { $("#product_icon_select").trigger('change'); }, 150);
+  $("#product_icon_select").trigger('change');
 }
