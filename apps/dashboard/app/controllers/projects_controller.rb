@@ -20,11 +20,7 @@ class ProjectsController < ApplicationController
 
   # GET /projects/new
   def new
-    @templates = if new_project_params[:template] == 'true'
-                   templates
-                 else
-                   []
-                 end
+    @templates = new_project_params[:template] == 'true' ? templates : []
 
     if name_or_icon_nil?
       @project = Project.new
