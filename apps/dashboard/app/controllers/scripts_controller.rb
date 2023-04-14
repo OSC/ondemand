@@ -11,12 +11,11 @@ class ScriptsController < ApplicationController
     project = Project.find(show_script_params[:project_id])
     @script = Script.find(show_script_params[:id], project.directory)
 
-    if cache_file_exists?
-      @cache_opts = JSON.parse(cache_file_path, symbolize_names: true)
+    if @script.cache_file_exists?
+      cache_content = File.read(@script.cache_file_path)
+      @cache_opts = JSON.parse(cache_content, symbolize_names: true)
 
-      @script.smart_attributes.each do |attrib|
-        attrib.value = @cache_opts[attrib.id.to_s] if @cache_opts.key?(attrib.id.to_s)
-      end
+      @script.set_cached_values(@cache_opts)
     else
       @cache_opts = {}
     end
@@ -52,22 +51,6 @@ class ScriptsController < ApplicationController
   end
 
   private
-
-  def write_job_options_to_cache(opts)
-    # Write the opts to a JSON file
-    # cache_file = OodAppkit.dataroot.join(@script.project_dir, "#{@script.id}_opts.json")
-    File.write(@script.project_dir.join("#{@script.id}_opts.json"), opts.to_json)
-  end
-
-  def cache_file_path
-    OodAppkit.dataroot.join(@script.project_dir, "#{@script.id}_opts.json")
-  end
-
-  def cache_file_exists?
-    # Read and parse the saved opts from the JSON file
-    # json_file_path = Rails.root.join('tmp', "#{@script.id}_opts.json")
-    cache_file_path.exist?
-  end
 
   def create_script_params
     params.permit({ script: [:title] }, :project_id)
