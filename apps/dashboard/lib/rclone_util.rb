@@ -238,8 +238,7 @@ class RcloneUtil
     end
 
     def rclone_cmd
-      # TODO: Make this configurable
-      "rclone"
+      Configuration.rclone_binary
     end
 
     def rclone(*args)
