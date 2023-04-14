@@ -37,17 +37,18 @@
       )
     %>
   <%- end -%>
-  <%- dev_app_groups.each do |app_group| -%>
-    <%=
-      render(
-          partial: "batch_connect/shared/app_list",
-          locals: {
-            title: "#{app_group.title}" + t('dashboard.batch_connect_sandbox'),
-            apps: app_group.apps,
-            current_url: local_assigns[:current_url],
-            style: "sandbox-apps-header"
-          }
-      )
-    %>
-  <%- end -%>
+<%- end -%>
+
+<%- dev_app_groups.each do |app_group| -%>
+  <%=
+    render(
+        partial: "batch_connect/shared/app_list",
+        locals: {
+          title: "#{app_group.title}" + t('dashboard.batch_connect_sandbox'),
+          apps: app_group.apps,
+          current_url: local_assigns[:current_url],
+          style: "sandbox-apps-header"
+        }
+    )
+  %>
 <%- end -%>
