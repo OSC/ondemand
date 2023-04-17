@@ -6,18 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Start edit scripts (#2748)\
-continue support for project templates (#2744)\
-update dependencies (#2753)\
-catch errors from account queries (#2742)\
-upgrade rails 6.1.7.3 (#2747)\
-lint a random file (#2750)\
-Update Changelog (#2740)\
-Bump nokogiri from 1.14.2 to 1.14.3 in /apps/dashboard (#2746)\
-Bump nokogiri from 1.14.2 to 1.14.3 in /apps/myjobs (#2745)\
-update dependencies (#2743)\
-Removed duplicated applications from interactive apps menu (#2730)\
-update dependencies (#2741)
 
 ### Fixed
 
@@ -25,6 +13,17 @@ update dependencies (#2741)
   [2738](https://github.com/OSC/ondemand/pull/2738).
 - Fix [2715](https://github.com/OSC/ondemand/pull/2715) by moving the error partial in 
   [2731](https://github.com/OSC/ondemand/pull/2731).
+- Duplicate applications are now filtered in the interactive apps menu
+  in [2730](https://github.com/OSC/ondemand/pull/2730).
+- Correctly catch errors from account queries in [2742](https://github.com/OSC/ondemand/pull/2742).
+- `ood_core` bugfixes in [2740](https://github.com/OSC/ondemand/pull/2740).
+  - `activejobs` now correctly shows kubernetes jobs.
+  - `auto_accounts` now correctly works with non-standard sacctmgr commands and Slurm
+     clusters with the cluster field set.
+  
+### Changed
+
+- Upgrade to rails 6.1.7.3 in [2747](https://github.com/OSC/ondemand/pull/2747).
 
 ## [3.0.0] - 03-27-2023
 
