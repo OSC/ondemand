@@ -46,10 +46,8 @@ also test. Release candidates are considered stable, but could contain bugs.
 
 
 ## Version Timing
-The Open OnDemand team anticipates releasing new major versions every 1 to 2 years.
-Minor versions are generally released at most a few times per year.
-
-Patch versions are released as needed.
+Patch versions are released as needed.  Major and minor versions are released as
+time permits the team to develop features.
 
 All versions are typically tested first in production for at least a week at OSC
 and other early adopter sites prior to being marked as an official release.
