@@ -180,7 +180,6 @@ en:
     all_apps_table_category_column: "Category"
     all_apps_table_sub_category_column: "Sub Category"
 
-    unknown: "Unknown"
     not_grouped: "Other Apps"
 
     nav_limit_caption: 'showing %{subset_count} of %{total_count}'
@@ -212,7 +211,8 @@ en:
     jobs_project_delete_project_confirmation: "Delete all contents of project directory?"
     jobs_project_manifest_updated: "Project manifest updated!"
     jobs_project_name_validation: "Project name may only contain letters, digits, dashes, underscores, and spaces"
-    jobs_project_create_new_project_directory: "Create a new project directory"
+    jobs_create_blank_project: "Create a new project"
+    jobs_create_template_project: "Create a new project from a template"
 
     settings_updated: "Settings updated"
 
@@ -238,3 +238,12 @@ en:
 
     custom_pages:
       invalid: "Invalid page code: %{page}. This page has not been configured"
+
+
+    # These are basic words that many partials can use
+    unknown: "Unknown"
+    save: "Save"
+    add: "Add"
+    remove: "Remove"
+    edit: "Edit"
+    show: "Show"

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Only depend on the selinux-policy version, not full version including release in
+  [2738](https://github.com/OSC/ondemand/pull/2738).
+- Fix [2715](https://github.com/OSC/ondemand/pull/2715) by moving the error partial in 
+  [2731](https://github.com/OSC/ondemand/pull/2731).
+
 ## [3.0.0] - 03-27-2023
 
 ### Changed

@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       root 'projects#index'
       resources :scripts do
         post 'submit', on: :member
+        post 'save', on: :member
       end
     end
   end
@@ -90,6 +91,8 @@ Rails.application.routes.draw do
     get "/activejobs/json" => "active_jobs#json", :defaults => { :format => 'json' }
     delete "/activejobs" => "active_jobs#delete_job",  as: 'delete_job'
   end
+
+  get '/jobs/info/:cluster/:id' => 'jobs#info', :defaults => { :format => 'json' }, :as => 'jobs_info'
 
   post "settings", :to => "settings#update"
 

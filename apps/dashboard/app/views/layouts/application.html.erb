@@ -24,6 +24,7 @@
     data-link-bg-color="<%= @user_configuration.brand_link_active_bg_color %>"
     data-max-file-size="<%= Configuration.file_upload_max %>"
     data-transfers-path="<%= transfers_path(format: "json") if respond_to?(:transfers_path) %>"
+    data-jobs-info-path="<%= jobs_info_path('delme', 'delme').gsub(/[\/]*delme[\/]*/,'') %>"
   />
 </head>
 <body>

@@ -1,0 +1,27 @@
+<div>
+  <button class="btn btn-success my-3" id="add_new_field_button" type="button">
+      Add new option
+  </button>
+</div>
+
+<template id="new_field_template">
+  <div class="mb-3">
+
+    <div class="row mx-0 justify-text-center my-2">
+      <!-- help text is going to be place here in javascipt -->
+    </div>
+
+    <div class="row mx-0">
+      <select class="form-control w-50">
+        <option value="bc_num_hours">Time</option>
+        <option value="auto_queues">Queue</option>
+        <option value="bc_num_slots">Nodes</option>
+      </select>
+
+      <div class='ml-auto'>
+        <button class="btn btn-success mx-1" type="button"><%= t('dashboard.add') %></button>
+        <button class="btn btn-danger mx-1" type="button"><%= t('dashboard.remove') %></button>
+      </div>
+    </div>
+  </div>
+</template>

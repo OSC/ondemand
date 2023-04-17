@@ -34,6 +34,9 @@ class Script
       opts.merge!({ project_dir: project_dir.to_s })
 
       new(opts)
+    rescue StandardError, Errno::ENOENT => e
+      Rails.logger.warn("Did not find script due to error #{e}")
+      nil
     end
 
     def next_id(project_dir)
@@ -148,7 +151,7 @@ class Script
     job_id = Dir.chdir(project_dir) do
       adapter.submit(job_script)
     end
-    update_job_log(job_id)
+    update_job_log(job_id, options[:cluster].to_s)
 
     job_id
   rescue StandardError => e
@@ -179,6 +182,9 @@ class Script
 
   def smart_attributes
     @smart_attributes ||= build_smart_attributes(**sm_opts, cached_values: @cached_values || {})
+
+  def most_recent_job_cluster
+    most_recent_job['cluster']
   end
 
   private
@@ -189,10 +195,11 @@ class Script
     end.reverse.first.to_h
   end
 
-  def update_job_log(job_id)
+  def update_job_log(job_id, cluster)
     new_job_data = job_data + [{
       'id'          => job_id,
-      'submit_time' => Time.now.to_i
+      'submit_time' => Time.now.to_i,
+      'cluster'     => cluster.to_s
     }]
 
     File.write(job_log_file.to_s, new_job_data.to_yaml)

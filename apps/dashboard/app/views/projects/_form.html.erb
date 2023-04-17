@@ -5,7 +5,7 @@
   <div class='card-group'>
       <div class='card'>
       <div class='card-body'>
-        <div class="col-md-9">
+        <div class="col">
           <div class="field">
             <%= form.text_field :name, placeholder: "Project name", 
                     help: I18n.t('dashboard.jobs_project_name_validation') %>
@@ -13,12 +13,18 @@
           <div class="field">
             <%= form.text_area :description, placeholder: "Project description" %>
           </div>
+
+          <%- unless @templates.to_a.empty? -%>
+          <div class="field">
+            <%= form.select(:template, @templates) %>
+          </div>
+          <%- end -%>
         </div>
       </div>
       </div>
       <div class="card">
       <div class='card-body'>
-        <div class="col-md-6">
+        <div class="col">
           <div class="field">
           <%= javascript_include_tag 'icon_picker', nonce: true %>
           <%= form.text_field :icon, placeholder: "fas://cog", id: "product_icon_select" %>

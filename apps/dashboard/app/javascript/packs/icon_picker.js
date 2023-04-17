@@ -5,6 +5,9 @@ import ALL_ICONS from './icons';
 const ICON_SHOW_ID = "product_icon"
 const ICON_SELECT_ID = "product_icon_select"
 
+// simple boolean for whether there are currently any hidden icons
+let hiddenIcons = false;
+
 function listItem(name) {
   return `<li 
               id="${iconId(name)}" 
@@ -25,8 +28,13 @@ function iconFromId(id) {
 
 function picked(event) {
   const icon = iconFromId(event.currentTarget.id);
+  updateIcon(icon);
+  showAllIcons();
+}
+
+function updateIcon(icon) {
   $(`#${ICON_SHOW_ID}`).attr("class", `fas fa-${icon} fa-fw app-icon`);
-  $(`#${ICON_SELECT_ID}`).val(`fas://${icon}`)
+  $(`#${ICON_SELECT_ID}`).val(`fas://${icon}`);
 }
 
 function populateList() {
@@ -43,6 +51,59 @@ function populateList() {
   });
 };
 
+function addSearch(){
+  $(`#${ICON_SELECT_ID}`).on('input change', (event) => {
+    const currentValue = event.target.value;
+
+    // template picked and set value or copy & pasted full icon uri
+    if(currentValue.startsWith('fas://')) {
+      updateIcon(currentValue.replace('fas://', ''));
+    } else {
+      searchIcons(event);
+    }
+  });
+}
+
+function searchIcons(event){
+  const searchString = event.target.value;
+  const rex = new RegExp(searchString, "g");
+  hiddenIcons = true;
+
+  ALL_ICONS.forEach(name => {
+    const ele = $(`#${iconId(name)}`)[0];
+    if(ele === undefined) {
+      return;
+    }
+
+    const show = rex.test(name);
+
+    if(show) {
+      ele.classList.remove('d-none');
+    } else {
+      ele.classList.add('d-none');
+    }
+  });
+}
+
+function showAllIcons(){
+  // there are no hidden icons, so just return
+  if(hiddenIcons === false) {
+    return;
+  }
+
+  ALL_ICONS.forEach(name => {
+    const ele = $(`#${iconId(name)}`)[0];
+    if(ele === undefined) {
+      return;
+    }
+
+    ele.classList.remove('d-none');
+  });
+
+  hiddenIcons = false;
+}
+
 jQuery(() => {
   populateList();
+  addSearch();
 })

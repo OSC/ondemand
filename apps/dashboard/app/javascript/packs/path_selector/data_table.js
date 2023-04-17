@@ -1,4 +1,3 @@
-import Handlebars from 'handlebars';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
 
 export { CONTENTID, EVENTNAME };
@@ -30,8 +29,13 @@ jQuery(function () {
         let url = $(WORKINGDIRECTORY).val() ? $(WORKINGDIRECTORY).val() : $('#path_selector_home_dir').text();
         let path = $('#path_selector_url').text();
         url = path + url;
-        table.reloadTable(url);
-        $(CONTAINERCONTENTID).show();
+        table.weightedValue = table.getShowDotFiles() + table.getShowFiles();
+        let eventData = {
+            'url': url,
+        }
+        
+        $(CONTENTID).trigger(EVENTNAME.reloadTable, eventData);
+        $(CONTAINERCONTENTID).show();        
     });
 
     $(CONTENTID).on(EVENTNAME.reloadTable, function (e, options) {
@@ -70,31 +74,6 @@ jQuery(function () {
     });
 
 
-    $('#show-dotfiles').on('change', function() {
-        table.setShowDotFiles(this.checked);
-        table.updateDotFileVisibility();
-    });
-    $('#show-dotfiles').on('keypress', function(event) {
-        if (event.which === 13) {
-          this.checked = !this.checked;
-          this.dispatchEvent(new Event('change'));
-        }
-    });
-
-
-    $('#show-files').on('change', function() {
-        table.setShowFiles(this.checked);
-        table.updateDotFileVisibility();
-    });
-
-    $('#show-files').on('keypress', function(event) {
-        if (event.which === 13) {
-          this.checked = !this.checked;
-          this.dispatchEvent(new Event('change'));
-        }
-    });
-
-
     /* END TABLE ACTIONS */
 
     /* DATATABLE LISTENERS */
@@ -104,15 +83,29 @@ jQuery(function () {
 
     $.fn.dataTable.ext.search.push(
         function (settings, data, dataIndex) {
-            if(table.getShowFiles()) {
-                return table.getShowDotFiles() || !data[1].startsWith('.');
-            } else {
-                if(data[0].trim() == "dir") {
-                    return table.getShowDotFiles() || !data[1].startsWith('.');
-                    return data[1];
-                }
-            }
+            let isDirectory = (data[0].trim() == "dir");
+            let isFile = !isDirectory;
+            let isHidden = data[1].startsWith('.');
 
+            if( table.weightedValue == 0 ) {
+                // show only non-hidden directories
+                return isDirectory && !isHidden;
+            
+            } else if( table.weightedValue == 1 ) {
+                // show all directories, even if hidden
+                return !isFile;
+            
+            } else if( table.weightedValue == 2 ) {
+                // show everything except hidden
+                return !isHidden;
+            
+            } else if( table.weightedValue == 3 ) {
+                // show everything
+                return true;
+            
+            } else {
+                return false;
+            }
         }
     );    
 
@@ -122,6 +115,7 @@ class DataTable {
     _table = null;
     _url = null;
     _currentWorkingDirectory = null;
+    weightedValue = 0;
 
     constructor(url) {
         this.loadDataTable();
@@ -133,6 +127,7 @@ class DataTable {
     }
 
     loadDataTable() {
+    
         this._table = $(CONTENTID).on('xhr.dt', function (e, settings, json, xhr) {
             // new ajax request for new data so update date/time
             // if(json && json.time){
@@ -205,19 +200,6 @@ class DataTable {
             ]
         });
         
-        /*
-            These 2 checkboxes will go away once the ability to pass in options from the form is written.
-            They are here now to show functionality of hiding/show files/directories
-        */
-        $('#directory-contents_filter').prepend(
-            `<label for="show-dotfiles">
-                <input type="checkbox" id="show-dotfiles" ${this.getShowDotFiles() ? 'checked' : ''}> Show Dotfiles</label>`);
-
-        $('#directory-contents_filter').prepend(
-            `<label style="margin-right: 20px" for="show-files">
-                <input type="checkbox" id="show-files" ${this.getShowFiles() ? 'checked' : ''}> Show Files</label>`);
-        
-
     }
 
     async reloadTable(url) {
@@ -281,26 +263,11 @@ class DataTable {
         $('.datatables-status').html(`${msg} - ${rows} rows selected`);
     }
 
-
-    setShowDotFiles(visible) {
-        localStorage.setItem('show-dotfiles', new Boolean(visible));
-    }
-
     getShowDotFiles() {
-        return localStorage.getItem('show-dotfiles') == 'true'
-    }
-
-    setShowFiles(visible) {
-        localStorage.setItem('show-files', new Boolean(visible));
+        return $('#modal-path-selector').data('pathSelectorShowHidden') === true ? 1 : 0;
     }
 
     getShowFiles() {
-        return localStorage.getItem('show-files') == 'true'
+        return $('#modal-path-selector').data('pathSelectorShowFiles') === true ? 2 : 0;
     }
-
-
-    updateDotFileVisibility() {
-        this.reloadTable();
-    }
-
 }
