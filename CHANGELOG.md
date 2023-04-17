@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Start edit scripts (#2748)\
+continue support for project templates (#2744)\
+update dependencies (#2753)\
+catch errors from account queries (#2742)\
+upgrade rails 6.1.7.3 (#2747)\
+lint a random file (#2750)\
+Update Changelog (#2740)\
+Bump nokogiri from 1.14.2 to 1.14.3 in /apps/dashboard (#2746)\
+Bump nokogiri from 1.14.2 to 1.14.3 in /apps/myjobs (#2745)\
+update dependencies (#2743)\
+Removed duplicated applications from interactive apps menu (#2730)\
+update dependencies (#2741)
 
 ### Fixed
 
