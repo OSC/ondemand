@@ -13,9 +13,9 @@ class ScriptsController < ApplicationController
 
     if @script.cache_file_exists?
       cache_content = File.read(@script.cache_file_path)
-      @cache_opts = JSON.parse(cache_content, symbolize_names: true)
+      cache_opts = JSON.parse(cache_content, symbolize_names: true)
 
-      @script.set_cached_values(@cache_opts)
+      @script.set_cached_values(cache_opts)
     else
       @cache_opts = {}
     end

@@ -69,22 +69,20 @@ class Script
     }
 
     # Use cached form values if they exist
-    json_file_path = OodAppkit.dataroot.join(Script.scripts_dir("#{project_dir}/"), "#{id}_opts.json")
+    cache_file_path = OodAppkit.dataroot.join(Script.scripts_dir("#{project_dir}"), "#{id}_opts.json")
+    cache_file_content = File.read(cache_file_path) if File.exist?(cache_file_path)
 
-    cached_values = File.exist?(json_file_path) ? JSON.parse(File.read(json_file_path)) : {}
+    cache = File.exist?(cache_file_path) ? JSON.parse(cache_file_content) : {}
 
     add_cluster_to_form(**sm_opts, clusters: Script.batch_clusters)
-    @smart_attributes = build_smart_attributes(**sm_opts, cached_values: cached_values)
+    @smart_attributes = build_smart_attributes(**sm_opts, cache: cache)
   end
 
-  def build_smart_attributes(form: [], attributes: {}, cached_values: {})
+  def build_smart_attributes(form: [], attributes: {}, cache: {})
     form.map do |form_item_id|
-      Rails.logger.info("form_item_id: #{form_item_id}")
       attrs = attributes[form_item_id.to_sym].to_h.symbolize_keys
-      Rails.logger.info("attrs: #{attrs}")
-      value = cached_values[form_item_id.to_sym]
+      value = cache[form_item_id]
       attrs[:value] = value if value.present?
-      Rails.logger.info("attrs: #{attrs}")
       SmartAttributes::AttributeFactory.build(form_item_id, attrs)
     end
   end
@@ -170,7 +168,7 @@ class Script
   end
 
   def cache_file_path
-    Pathname.new(project_dir).join("#{id}_opts.json")
+    Pathname.new(project_dir).join(".ondemand/scripts/#{id}_opts.json")
   end
 
   def cache_file_exists?
