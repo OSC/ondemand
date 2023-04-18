@@ -51,11 +51,27 @@ class Project
         Pathname.new('')
       end
     end
+
+    def templates
+      template_dir = Pathname.new(Configuration.project_template_dir)
+      return [] if !template_dir.directory? || !template_dir.readable?
+
+      template_dir.children.map do |child_directory|
+        opts = {
+          directory: child_directory
+        }
+
+        Project.new(**opts)
+      end
+    end
   end
 
   attr_reader :directory, :id
 
   delegate :icon, :name, :description, to: :manifest
+
+  # the template you created this project from
+  attr_accessor :template
 
   def initialize(attributes = {})
     if attributes.empty?
