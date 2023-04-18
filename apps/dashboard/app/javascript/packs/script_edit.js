@@ -2,10 +2,19 @@
 
 let newFieldTemplate = undefined;
 
-const helpTextLookup = {
-  "bc_num_hours": "How long the job can run for.",
-  "auto_queues": "Which queue the job will submit too.",
-  "bc_num_slots": "How many nodes the job will run on."
+const newFieldData = {
+  "bc_num_hours": {
+    label: "Hours",
+    help: "How long the job can run for.",
+  },
+  auto_queues: {
+    label: "Queues",
+    help: "Which queue the job will submit too.",
+  },
+  bc_num_slots: {
+    label: "Nodes",
+    help: "How many nodes the job will run on."
+  }
 }
 
 function addNewField(_event) {
@@ -21,12 +30,28 @@ function addNewField(_event) {
   addButton.on('click', (event) => { addInProgressField(event) });
   selectMenu.on('change', (event) => { addHelpTextForOption(event) });
 
+  updateNewFieldOptions(selectMenu.get(0));
   // initialize the help text
   addHelpTextForOption({ target: selectMenu.get(0) });
 }
 
+function updateNewFieldOptions(selectMenu) {
+  for(var newField in newFieldData) {
+    field = document.getElementById(`script_${newField}`);
+
+    // if the field doesn't already exist, it's an option for a new field.
+    if(field === null) {
+      const option = document.createElement("option");
+      option.value = newField;
+      option.text = newFieldData[newField].label;
+
+      selectMenu.add(option);
+    }
+  }
+}
+
 function addHelpTextForOption(event) {
-  const helpText = helpTextLookup[event.target.value];
+  const helpText = newFieldData[event.target.value].help;
   const topLevelDiv = event.target.parentElement.parentElement;
 
   const helpTextDiv = topLevelDiv.firstElementChild;
