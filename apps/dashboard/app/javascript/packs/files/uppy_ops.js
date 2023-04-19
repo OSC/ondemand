@@ -3,7 +3,7 @@ import Dashboard from '@uppy/dashboard'
 import XHRUpload from '@uppy/xhr-upload'
 import _ from 'lodash';
 import {CONTENTID, EVENTNAME as DATATABLE_EVENTNAME} from './data_table.js';
-import { maxFileSize, csrfToken } from '../config.js';
+import { maxFileSize, csrfToken, uppyLocale } from '../config.js';
 
 let uppy = null;
 
@@ -70,6 +70,7 @@ jQuery(function() {
       maxFileSize: maxFileSize(),
     },
     onBeforeUpload: updateEndpoint,
+    locale: uppyLocale(),
   });
   
   uppy.use(EmptyDirCreator);
