@@ -38,9 +38,15 @@ function csrfToken() {
   return csrf_token;
 }
 
+function uppyLocale() {
+  const cfgData = configData();
+  return JSON.parse(cfgData['uppyLocale']);
+}
+
 export {
   maxFileSize,
   transfersPath,
   jobsInfoPath,
-  csrfToken 
+  csrfToken,
+  uppyLocale
 };

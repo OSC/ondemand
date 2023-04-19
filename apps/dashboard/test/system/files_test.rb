@@ -257,4 +257,37 @@ class FilesTest < ApplicationSystemTestCase
       assert_equal 'foobar', File.read(file)
     end
   end
+
+  test 'uppy localization' do
+    with_modified_env(FILE_UPLOAD_MAX: '10') do
+      Dir.mktmpdir do |dir|
+        # No localization (default)
+        visit files_url(dir)
+        find('#upload-btn').click
+        find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+
+        src_file = 'test/fixtures/files/upload/osc-logo.png'
+        attach_file 'files[]', src_file, visible: false, match: :first
+
+        find('.uppy.uppy-Informer', text: /osc-logo.png exceeds [\w ]+ size of 10 B/, wait: MAX_WAIT)
+
+        # Temporarily add localization for max upload size error
+        en = { :dashboard => { :uppy => { :strings => { :exceedsSize => 'custom error, %{file}, %{size}' } } } }
+        I18n.backend.store_translations(:en, en)
+
+        visit files_url(dir)
+        find('#upload-btn').click
+        find('.uppy-Dashboard-AddFiles', wait: MAX_WAIT)
+
+        src_file = 'test/fixtures/files/upload/osc-logo.png'
+        attach_file 'files[]', src_file, visible: false, match: :first
+
+        find('.uppy.uppy-Informer', text: 'custom error, osc-logo.png, 10 B', wait: MAX_WAIT)
+
+        I18n.backend.reload!
+        # Clear browser logs
+        page.driver.browser.logs.get(:browser)
+      end
+    end
+  end
 end
