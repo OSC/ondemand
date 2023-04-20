@@ -168,6 +168,7 @@ class Script
 
   def cache_file_path
     Pathname.new(project_dir).join(".ondemand/scripts/#{id}_opts.json")
+    # TODO: fix bug 
     #Pathname.new("#{Script.scripts_dir(project_dir)}/#{id}_cache.json")
   end
 
@@ -182,7 +183,8 @@ class Script
       
       File.exist?(cache_file_path) ? JSON.parse(cache_file_content) : {}
     rescue => exception
-      raise "Error reading from cache file: #{exception.message}"
+      Rails.logger.error("Error reading cache file: #{exception.message}")
+      {}
     end
   end
 
