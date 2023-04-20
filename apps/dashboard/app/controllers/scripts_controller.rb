@@ -13,15 +13,6 @@ class ScriptsController < ApplicationController
   def show
     project = Project.find(show_script_params[:project_id])
     @script = Script.find(show_script_params[:id], project.directory)
-
-    if @script.cache_file_exists?
-      cache_content = File.read(@script.cache_file_path)
-      cache_opts = JSON.parse(cache_content, symbolize_names: true)
-
-      @script.set_cached_values(cache_opts)
-    else
-      @cache_opts = {}
-    end
   end
 
   # POST  /dashboard/projects/:project_id/scripts
