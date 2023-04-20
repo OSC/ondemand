@@ -71,20 +71,14 @@ class Script
       attributes: opts[:attributes] || {}
     }
 
-    # Use cached form values if they exist
-    cache_file_path = OodAppkit.dataroot.join(Script.scripts_dir("#{project_dir}"), "#{id}_opts.json")
-    cache_file_content = File.read(cache_file_path) if cache_file_exists?
-
-    cache = File.exist?(cache_file_path) ? JSON.parse(cache_file_content) : {}
-
     add_cluster_to_form(**sm_opts, clusters: Script.batch_clusters)
-    @smart_attributes = build_smart_attributes(**sm_opts, cache: cache)
+    @smart_attributes = build_smart_attributes(**sm_opts)
   end
 
-  def build_smart_attributes(form: [], attributes: {}, cache: {})
+  def build_smart_attributes(form: [], attributes: {})
     form.map do |form_item_id|
       attrs = attributes[form_item_id.to_sym].to_h.symbolize_keys
-      value = cache[form_item_id]
+      value = cached_values[form_item_id]
       attrs[:value] = value if value.present?
       SmartAttributes::AttributeFactory.build(form_item_id, attrs)
     end
@@ -177,6 +171,16 @@ class Script
 
   def most_recent_job_cluster
     most_recent_job['cluster']
+  end
+
+  def cached_values
+    @cached_values ||= begin
+      cache_file_path = OodAppkit.dataroot.join(Script.scripts_dir("#{project_dir}"), "#{id}_opts.json")
+      cache_file_content = File.read(cache_file_path) if cache_file_exists?
+      cache = File.exist?(cache_file_path) ? JSON.parse(cache_file_content) : {}
+    rescue => exception
+      Rails.logger.warn("Cache values error: #{exception}")
+    end
   end
 
   private
