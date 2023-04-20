@@ -180,6 +180,7 @@ class Script
 
   def smart_attributes
     @smart_attributes ||= build_smart_attributes(**sm_opts, cached_values: @cached_values || {})
+  end
 
   def most_recent_job_cluster
     most_recent_job['cluster']
