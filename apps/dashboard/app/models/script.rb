@@ -142,8 +142,7 @@ class Script
   def submit(options)
     adapter = adapter(options[:cluster]).job_adapter
     render_format = adapter.class.name.split('::').last.downcase
-
-    # i think i need to look at these options to understand where this writes out
+    
     job_script = OodCore::Job::Script.new(**submit_opts(options, render_format))
 
     job_id = Dir.chdir(project_dir) do
@@ -168,6 +167,7 @@ class Script
 
   def cache_file_path
     Pathname.new(project_dir).join(".ondemand/scripts/#{id}_opts.json")
+    #Pathname.new("#{Script.scripts_dir(project_dir)}/#{id}_cache.json")
   end
 
   def cache_file_exists?
