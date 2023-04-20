@@ -10,10 +10,10 @@ module SmartAttributes
 
   module Attributes
     class BcNumHours < Attribute
-      # Hash of options used to define this attribute
-      # @return [Hash] attribute options
-      def opts
-        @opts.reverse_merge(min: 1, step: 1)
+
+      def initialize(id, opts)
+        super(id, opts)
+        @opts = @opts.reverse_merge(min: 1, step: 1)
       end
 
       # Value of attribute
