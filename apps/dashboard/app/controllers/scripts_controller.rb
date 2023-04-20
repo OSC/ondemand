@@ -39,8 +39,6 @@ class ScriptsController < ApplicationController
     opts = submit_script_params[:script].to_h.symbolize_keys
 
     if (job_id = @script.submit(opts))
-      @script.write_job_options_to_cache(opts)
-
       redirect_to(project_path(params[:project_id]), notice: "Successfully submited job #{job_id}.")
     else
       redirect_to(project_path(params[:project_id]), alert: @script.errors[:submit].last)

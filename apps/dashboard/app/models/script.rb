@@ -142,13 +142,14 @@ class Script
   def submit(options)
     adapter = adapter(options[:cluster]).job_adapter
     render_format = adapter.class.name.split('::').last.downcase
-    
+
     job_script = OodCore::Job::Script.new(**submit_opts(options, render_format))
 
     job_id = Dir.chdir(project_dir) do
       adapter.submit(job_script)
     end
     update_job_log(job_id, options[:cluster].to_s)
+    write_job_options_to_cache(options)
 
     job_id
   rescue StandardError => e
