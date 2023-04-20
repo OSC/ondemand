@@ -73,7 +73,7 @@ class Script
 
     # Use cached form values if they exist
     cache_file_path = OodAppkit.dataroot.join(Script.scripts_dir("#{project_dir}"), "#{id}_opts.json")
-    cache_file_content = File.read(cache_file_path) if File.exist?(cache_file_path)
+    cache_file_content = File.read(cache_file_path) if cache_file_exists?
 
     cache = File.exist?(cache_file_path) ? JSON.parse(cache_file_content) : {}
 
@@ -160,10 +160,6 @@ class Script
 
   def most_recent_job_id
     most_recent_job['id']
-  end
-
-  def set_cached_values(cached_values)
-    @cached_values = cached_values
   end
 
   def write_job_options_to_cache(opts)
