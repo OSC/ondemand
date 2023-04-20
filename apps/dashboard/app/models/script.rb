@@ -78,8 +78,8 @@ class Script
   def build_smart_attributes(form: [], attributes: {})
     form.map do |form_item_id|
       attrs = attributes[form_item_id.to_sym].to_h.symbolize_keys
-      value = cached_values[form_item_id]
-      attrs[:value] = value if value.present?
+      cache_value = cached_values[form_item_id]
+      attrs[:value] = cache_value if cache_value.present?
       SmartAttributes::AttributeFactory.build(form_item_id, attrs)
     end
   end
@@ -179,9 +179,10 @@ class Script
     @cached_values ||= begin
       cache_file_path = OodAppkit.dataroot.join(Script.scripts_dir("#{project_dir}"), "#{id}_opts.json")
       cache_file_content = File.read(cache_file_path) if cache_file_exists?
-      cache = File.exist?(cache_file_path) ? JSON.parse(cache_file_content) : {}
+      
+      File.exist?(cache_file_path) ? JSON.parse(cache_file_content) : {}
     rescue => exception
-      Rails.logger.warn("Cache values error: #{exception}")
+      raise "Error reading from cache file: #{exception.message}"
     end
   end
 
