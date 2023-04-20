@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Add localization for Uppy (#2766)\
+lint a random file (#2765)\
+Create VERSIONING_POLICY.md (#2709)\
+Update Changelog (#2760)\
+always show dev apps in my interactive sessions (#2757)\
+update dependencies (#2761)\
+lint a random file (#2759)\
+Start edit scripts (#2748)\
+continue support for project templates (#2744)\
+update dependencies (#2753)\
+catch errors from account queries (#2742)\
+upgrade rails 6.1.7.3 (#2747)\
+lint a random file (#2750)
 
 ### Fixed
 
