@@ -70,14 +70,16 @@ class Script
       form:       opts[:form] || [],
       attributes: opts[:attributes] || {}
     }
-    add_cluster_to_form(**sm_opts, clusters: Script.batch_clusters)
 
+    add_cluster_to_form(**sm_opts, clusters: Script.batch_clusters)
     @smart_attributes = build_smart_attributes(**sm_opts)
   end
 
   def build_smart_attributes(form: [], attributes: {})
     form.map do |form_item_id|
       attrs = attributes[form_item_id.to_sym].to_h.symbolize_keys
+      cache_value = cached_values[form_item_id]
+      attrs[:value] = cache_value if cache_value.present?
       SmartAttributes::AttributeFactory.build(form_item_id, attrs)
     end
   end
@@ -141,6 +143,7 @@ class Script
       adapter.submit(job_script)
     end
     update_job_log(job_id, options[:cluster].to_s)
+    write_job_options_to_cache(options)
 
     job_id
   rescue StandardError => e
@@ -158,6 +161,32 @@ class Script
   end
 
   private
+
+  def write_job_options_to_cache(opts)
+    File.write(cache_file_path, opts.to_json)
+  end
+
+  def cache_file_path
+    Pathname.new(project_dir).join(".ondemand/scripts/#{id}_opts.json")
+    # TODO: fix bug 
+    #Pathname.new("#{Script.scripts_dir(project_dir)}/#{id}_cache.json")
+  end
+
+  def cache_file_exists?
+    cache_file_path.exist?
+  end
+
+  def cached_values
+    @cached_values ||= begin
+      cache_file_path = OodAppkit.dataroot.join(Script.scripts_dir("#{project_dir}"), "#{id}_opts.json")
+      cache_file_content = File.read(cache_file_path) if cache_file_exists?
+      
+      File.exist?(cache_file_path) ? JSON.parse(cache_file_content) : {}
+    rescue => exception
+      Rails.logger.error("Error reading cache file: #{exception.message}")
+      {}
+    end
+  end
 
   def most_recent_job
     job_data.sort_by do |data|
