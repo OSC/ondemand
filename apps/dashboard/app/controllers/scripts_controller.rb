@@ -9,12 +9,6 @@ class ScriptsController < ApplicationController
     @script = Script.new(project_dir: show_script_params[:project_id])
   end
 
-
-  def show
-    project = Project.find(show_script_params[:project_id])
-    @script = Script.find(show_script_params[:id], project.directory)
-  end
-
   # POST  /dashboard/projects/:project_id/scripts
   def create
     project = Project.find(show_script_params[:project_id])
