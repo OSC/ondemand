@@ -260,7 +260,7 @@ class ProjectsTest < ApplicationSystemTestCase
       assert_nil YAML.safe_load(File.read("#{script_dir}/1_job_log"))
 
       select('owens', from: 'script_cluster')
-      select('pzs0715', from: 'script_auto_accounts')
+      select('pas2051', from: 'script_auto_accounts')
       select('my_cooler_script.bash', from: 'script_auto_scripts')
 
       Open3
