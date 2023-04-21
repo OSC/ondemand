@@ -34,6 +34,7 @@
           </td>
           <td class='text-center col-md-4'><%= script.title %></td>
           <td class='col-md-12'>
+          <div class="btn-group" data-toggle="buttons">
             <%= link_to(
                 t('dashboard.show'),
                   project_script_path(@project.id, script.id),
@@ -51,9 +52,11 @@
             <%= button_to(
               t('dashboard.batch_connect_form_launch'),
               submit_project_script_path(@project.id, script.id),
-              class: 'btn btn-primary mx-1',
+              class: 'btn btn-secondary mx-1',
+              title: 'Launch script with cached values',
             )
             %>
+            </div>
           </td>
         <tr>
       <% end %>
