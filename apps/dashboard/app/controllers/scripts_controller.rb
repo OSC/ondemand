@@ -52,6 +52,10 @@ class ScriptsController < ApplicationController
 
     if (job_id = @script.submit(opts))
       redirect_to(project_path(params[:project_id]), notice: "Successfully submited job #{job_id}.")
+    elsif @script.cached_values
+      opts = @script.cached_values.to_h.symbolize_keys
+      job_id = @script.submit(opts)
+      redirect_to(project_path(params[:project_id]), notice: "Successfully submited job #{job_id}.")
     else
       redirect_to(project_path(params[:project_id]), alert: @script.errors[:submit].last)
     end
