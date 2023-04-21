@@ -303,6 +303,7 @@ class ProjectsTest < ApplicationSystemTestCase
     end
   end
 
+<<<<<<< HEAD
   test 'editing scripts initializes correctly' do
     Dir.mktmpdir do |dir|
       setup_project(dir)
@@ -451,4 +452,39 @@ class ProjectsTest < ApplicationSystemTestCase
   #     assert_equal(expected_yml, File.read("#{dir}/projects/1/.ondemand/scripts/1.yml"))
   #   end
   # end
+=======
+  test 'quick launch button submits job and returns job data successfully' do
+    Dir.mktmpdir do |dir|
+      setup_project(dir)
+      setup_script(dir)
+
+      setup_cache(dir)
+
+      find('[href="/projects/1"]').click
+      find('[href="/projects/1/scripts/1"]').click
+
+      select('owens', from: 'script_cluster')
+      select('pas2051', from: 'script_auto_accounts')
+      select('my_cooler_script.bash', from: 'script_auto_scripts')
+      
+      Open3
+        .stubs(:capture3)
+        .with({}, 'sbatch', '-A', 'pas2051', '--export', 'NONE', '--parsable', '-M', 'owens',
+                { stdin_data: "hostname\n" })
+        .returns(['job-id-123', '', exit_success])
+      
+      OodCore::Job::Adapters::Slurm.any_instance
+                .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+      Time
+        .stubs(:now)
+        .returns(Time.at(1_679_943_564))
+
+      click_on 'Launch'
+      assert_selector('.alert-success', text: 'Successfully submited job job-id-123.')
+      # sleep for the badge to render in time
+      sleep 4
+      assert_selector('.badge')
+    end
+  end
+>>>>>>> Add test for quick launch sucess alert and badge
 end
