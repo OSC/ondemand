@@ -27,18 +27,20 @@ class ProjectsTest < ApplicationSystemTestCase
   end
 
   def setup_script(dir)
-    # init some shell scripts
+    # init shell script
     script_dir = "#{dir}/projects/1/.ondemand/scripts"
     `mkdir -p #{script_dir}`
-    `echo 'some_other_command' > #{dir}/my_cool_script.sh`
-    `echo 'hostname' > #{dir}/my_cooler_script.bash`
+    `echo 'hello world' > #{dir}/my_cool_script.sh`
     File.write("#{script_dir}/1.yml", script_yml(dir))
   end
 
   def setup_cache(dir)
-    opts = script_yml(dir).to_json
     cache_file_path = "#{dir}/projects/1/.ondemand/scripts/1_opts.json"
-    File.write(cache_file_path, opts)
+    File.write(cache_file_path, cache)
+  end
+
+  def cache(dir)
+    {"cluster":"owens","auto_scripts":"#{dir}/projects/1/.ondemand/scripts/1.yml","auto_accounts":"pzs0714"}
   end
 
   def script_yml(dir)
@@ -297,22 +299,12 @@ class ProjectsTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       setup_project(dir)
       setup_script(dir)
-
       setup_cache(dir)
 
-      find('[href="/projects/1"]').click
-
-      Open3
-        .stubs(:capture3)
-        .with({}, 'sbatch', '-A', 'pas2051', '--export', 'NONE', '--parsable', '-M', 'owens',
-                { stdin_data: "hostname\n" })
-        .returns(['job-id-123', '', exit_success])
+      visit project_path(1)
       
       OodCore::Job::Adapters::Slurm.any_instance
                 .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
-      Time
-        .stubs(:now)
-        .returns(Time.at(1_679_943_564))
 
       click_on 'Launch'
       assert_selector('.alert-success', text: 'Successfully submited job job-id-123.')
