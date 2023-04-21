@@ -301,12 +301,7 @@ class ProjectsTest < ApplicationSystemTestCase
       setup_cache(dir)
 
       find('[href="/projects/1"]').click
-      find('[href="/projects/1/scripts/1"]').click
 
-      select('owens', from: 'script_cluster')
-      select('pas2051', from: 'script_auto_accounts')
-      select('my_cooler_script.bash', from: 'script_auto_scripts')
-      
       Open3
         .stubs(:capture3)
         .with({}, 'sbatch', '-A', 'pas2051', '--export', 'NONE', '--parsable', '-M', 'owens',
