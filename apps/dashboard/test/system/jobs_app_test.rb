@@ -457,22 +457,12 @@ class ProjectsTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       setup_project(dir)
       setup_script(dir)
-
       setup_cache(dir)
 
-      find('[href="/projects/1"]').click
-
-      Open3
-        .stubs(:capture3)
-        .with({}, 'sbatch', '-A', 'pas2051', '--export', 'NONE', '--parsable', '-M', 'owens',
-                { stdin_data: "hostname\n" })
-        .returns(['job-id-123', '', exit_success])
+      visit project_path(1)
       
       OodCore::Job::Adapters::Slurm.any_instance
                 .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
-      Time
-        .stubs(:now)
-        .returns(Time.at(1_679_943_564))
 
       click_on 'Launch'
       assert_selector('.alert-success', text: 'Successfully submited job job-id-123.')
