@@ -22,37 +22,6 @@ class ProjectsTest < ApplicationSystemTestCase
     find('#project_name').set(proj)
     find('#product_icon_select').set(icon)
     click_on 'Save'
-
-    `echo 'some_other_command' > #{dir}/projects/1/my_cool_script.sh`
-    `echo 'hostname' > #{dir}/projects/1/my_cooler_script.bash`
-  end
-
-  def setup_script(project_id)
-    visit project_path(project_id)
-    click_on 'New Script'
-    find('#script_title').set('the script title')
-    click_on 'Save'
-  end
-
-  # TODO: fix tests once you can add auto_accounts through the ui
-  def hack_script(project_dir)
-    hack = <<~HEREDOC
-      ---
-      title: the script title
-      form:
-      - auto_batch_clusters
-      - auto_scripts
-      - auto_accounts
-      attributes:
-        auto_scripts:
-          directory: #{project_dir}
-        auto_batch_clusters:
-          options:
-          - oakley
-          - owens
-    HEREDOC
-
-    File.write("#{project_dir}/.ondemand/scripts/1.yml", hack)
   end
 
   def add_bc_num_hours(project_id)
@@ -459,10 +428,20 @@ class ProjectsTest < ApplicationSystemTestCase
       setup_script(dir)
       setup_cache(dir)
 
-      visit project_path(1)
-      
-      OodCore::Job::Adapters::Slurm.any_instance
-                .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+      find('[href="/projects/1"]').click
+
+      job = OodCore::Job::Info.new(id: 'job-id-123', status: :completed)
+
+      Open3
+        .stubs(:capture3)
+        .with({}, 'sbatch', '-A', 'pas2051', '--export', 'NONE', '--parsable', '-M', 'owens',
+            { stdin_data: "hostname\n" })
+        .returns(['job-id-123', '', exit_success])
+
+      OodCore::Job::Adapters::Slurm
+        .any_instance
+        .stubs(:info)
+        .returns(job)
 
       click_on 'Launch'
       assert_selector('.alert-success', text: 'Successfully submited job job-id-123.')
