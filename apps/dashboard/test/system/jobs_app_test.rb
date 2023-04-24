@@ -28,19 +28,20 @@ class ProjectsTest < ApplicationSystemTestCase
 
   def setup_script(dir)
     # init shell script
-    script_dir = "#{dir}/projects/1/.ondemand/scripts"
+    project = "#{dir}/projects/1"
+    script_dir = "#{project}/.ondemand/scripts"
     `mkdir -p #{script_dir}`
-    `echo 'hello world' > #{dir}/my_cool_script.sh`
+    `echo 'hello world' > #{project}/my_cool_script.sh`
     File.write("#{script_dir}/1.yml", script_yml(dir))
   end
 
   def setup_cache(dir)
     cache_file_path = "#{dir}/projects/1/.ondemand/scripts/1_opts.json"
-    File.write(cache_file_path, cache)
+    File.write(cache_file_path, cache(dir))
   end
 
   def cache(dir)
-    {"cluster":"owens","auto_scripts":"#{dir}/projects/1/.ondemand/scripts/1.yml","auto_accounts":"pzs0714"}
+    {"cluster":"owens","auto_scripts":"#{dir}/projects/1/my_cool_script.sh","auto_accounts":"pas2051"}
   end
 
   def script_yml(dir)
@@ -301,10 +302,20 @@ class ProjectsTest < ApplicationSystemTestCase
       setup_script(dir)
       setup_cache(dir)
 
-      visit project_path(1)
-      
-      OodCore::Job::Adapters::Slurm.any_instance
-                .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+      find('[href="/projects/1"]').click
+
+      job = OodCore::Job::Info.new(id: 'job-id-123', status: :completed)
+
+      Open3
+        .stubs(:capture3)
+        .with({}, 'sbatch', '-A', 'pas2051', '--export', 'NONE', '--parsable', '-M', 'owens',
+            { stdin_data: "hostname\n" })
+        .returns(['job-id-123', '', exit_success])
+
+      OodCore::Job::Adapters::Slurm
+        .any_instance
+        .stubs(:info)
+        .returns(job)
 
       click_on 'Launch'
       assert_selector('.alert-success', text: 'Successfully submited job job-id-123.')
