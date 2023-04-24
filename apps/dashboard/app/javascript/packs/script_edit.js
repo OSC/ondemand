@@ -17,11 +17,15 @@ const newFieldData = {
   }
 }
 
-function addNewField(_event) {
-  const lastOption = $('.new_script').find('.editable-form-field').last();
-  lastOption.after(newFieldTemplate.html());
+function lastOption() {
+  return $('.new_script').find('.editable-form-field').last();
+}
 
-  const justAdded = lastOption.next();
+function addNewField(_event) {
+  const last = lastOption();
+  last.after(newFieldTemplate.html());
+
+  const justAdded = last.next();
   const deleteButton = justAdded.find('.btn-danger');
   const addButton = justAdded.find('.btn-success');
   const selectMenu = justAdded.find('select');
@@ -96,7 +100,22 @@ function saveEdit(event) {
 }
 
 function addInProgressField(event) {  
-  console.log('TODO');
+  const selectMenu = event.target.parentElement.parentElement.firstElementChild;
+  const choice = selectMenu.value;
+  const template = $(`#${choice}_template`);
+
+  const last = lastOption();
+  last.after(template.html());
+
+  const justAdded = last.next();
+  justAdded.find('.btn-danger')
+           .on('click', (event) => { removeField(event) });
+
+  justAdded.find('.btn-primary')
+           .on('click', (event) => { showEditField(event) });
+
+  const entireDiv = event.target.parentElement.parentElement.parentElement;
+  entireDiv.remove();
 }
 
 jQuery(() => {

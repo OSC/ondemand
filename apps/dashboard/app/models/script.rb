@@ -105,7 +105,7 @@ class Script
     if /^(?<id>[^=]+)$/ =~ method_name.to_s && (attribute = self[id])
       attribute.value
     else
-      super
+      nil
     end
   end
 
