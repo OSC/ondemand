@@ -10,7 +10,19 @@
     <%= create_editable_widget(f, attrib, format: nil) %>
   <% end %>
 
-  <%= render  partial: 'add_new_field' %>
+  <%= render partial: 'add_new_field' %>
 
   <%= f.submit t('dashboard.save'), class: "btn btn-primary btn-block" %>
 <% end %>
+
+<template id="bc_num_hours_template">
+  <%= bc_num_hours_template %>
+</template>
+
+<template id="bc_num_slots_template">
+  <%= bc_num_slots_template %>
+</template>
+
+<template id="auto_queues_template">
+  <%= auto_queues_template %>
+</template>
