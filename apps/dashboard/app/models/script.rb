@@ -51,7 +51,7 @@ class Script
       Rails.cache.fetch('script_batch_clusters', expires_in: 4.hours) do
         Configuration.job_clusters.reject do |c|
           reject_cluster?(c)
-        end.map(&:id).map(&:to_s)
+        end.map(&:id).map(&:to_s).sort
       end
     end
 
