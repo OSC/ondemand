@@ -35,12 +35,16 @@ class ProjectsTest < ApplicationSystemTestCase
     {
       'title'      => 'the script title',
       'form'       => [
+        'cluster',
         'auto_scripts',
         'auto_accounts'
       ],
       'attributes' => {
         'auto_scripts' => {
-          'directory' => dir.to_s
+          'directory' => dir.to_s,
+        'cluster' => {
+          'value' => 'oakley'
+        }
         }
       }
     }.to_yaml
