@@ -1,10 +1,10 @@
 <%- 
   field_id = "#{form.object_name}_#{attrib.id}"
-  min_edit_id = "min_#{field_id}"
-  min_edit_name = "#{form.object_name}[min_#{attrib.id}]"
+  min_edit_id = "#{field_id}_min"
+  min_edit_name = "#{form.object_name}[#{attrib.id}_min]"
 
-  max_edit_id = "max_#{field_id}"
-  max_edit_name = "#{form.object_name}[max_#{attrib.id}]"
+  max_edit_id = "#{field_id}_max"
+  max_edit_name = "#{form.object_name}[#{attrib.id}_max]"
 
   current_min = attrib.field_options[:min];
   current_max = attrib.field_options[:max];
