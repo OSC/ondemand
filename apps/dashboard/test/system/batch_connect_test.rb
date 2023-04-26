@@ -9,25 +9,10 @@ class BatchConnectTest < ApplicationSystemTestCase
     Configuration.stubs(:bc_dynamic_js?).returns(true)
   end
 
-  def stub_sacctmgr(dir)
-    Open3.stubs(:capture3)
-      .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc', 'format=account,cluster,partition,qos', 'where', 'user=me', { stdin_data: ''})
-      .returns([File.read('test/fixtures/cmd_output/sacctmgr_show_accts.txt'), '', exit_success])
+  def stub_git(dir)
     Open3.stubs(:capture3)
       .with('git', 'describe', '--always', '--tags', { chdir: dir })
       .returns(['1.2.3', '', exit_success])
-  end
-
-  def stub_scontrol(dir, cluster)
-    Open3.stubs(:capture3)
-      .with({}, 'scontrol', 'show', 'part', '-o', '-M', cluster.to_s, { stdin_data: ''})
-      .returns([File.read("test/fixtures/cmd_output/scontrol_show_partitions_#{cluster}.txt"), '', exit_success])
-    Open3.stubs(:capture3)
-      .with('git', 'describe', '--always', '--tags', { chdir: dir })
-      .returns(['1.2.3', '', exit_success])
-    Open3.stubs(:capture3)
-      .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc', 'format=account,cluster,partition,qos', 'where', 'user=me', { stdin_data: ''})
-      .returns([File.read('test/fixtures/cmd_output/sacctmgr_show_accts.txt'), '', exit_success])
   end
 
   test 'cluster choice changes node types' do
@@ -639,7 +624,8 @@ class BatchConnectTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
       SysRouter.stubs(:base_path).returns(Pathname.new(dir))
-      stub_sacctmgr("#{dir}/app")
+      stub_sacctmgr
+      stub_git("#{dir}/app")
 
       form = <<~HEREDOC
         ---
@@ -683,7 +669,8 @@ class BatchConnectTest < ApplicationSystemTestCase
       Dir.mktmpdir do |dir|
         "#{dir}/app".tap { |d| Dir.mkdir(d) }
         SysRouter.stubs(:base_path).returns(Pathname.new(dir))
-        stub_sacctmgr("#{dir}/app")
+        stub_sacctmgr
+        stub_git("#{dir}/app")
 
         form = <<~HEREDOC
           ---
@@ -717,8 +704,9 @@ class BatchConnectTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
       SysRouter.stubs(:base_path).returns(Pathname.new(dir))
-      stub_scontrol("#{dir}/app", "oakley")
-      stub_scontrol("#{dir}/app", "owens")
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
 
       form = <<~HEREDOC
         ---
@@ -763,8 +751,9 @@ class BatchConnectTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
       SysRouter.stubs(:base_path).returns(Pathname.new(dir))
-      stub_scontrol("#{dir}/app", "oakley")
-      stub_scontrol("#{dir}/app", "owens")
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
 
       form = <<~HEREDOC
         ---
