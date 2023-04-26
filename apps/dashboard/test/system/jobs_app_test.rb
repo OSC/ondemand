@@ -42,9 +42,9 @@ class ProjectsTest < ApplicationSystemTestCase
       'attributes' => {
         'auto_scripts' => {
           'directory' => dir.to_s,
+        },
         'cluster' => {
           'value' => 'oakley'
-        }
         }
       }
     }.to_yaml
