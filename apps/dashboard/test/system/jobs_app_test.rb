@@ -315,6 +315,7 @@ class ProjectsTest < ApplicationSystemTestCase
       # only shows 'cluster'
       assert_equal 1, page.all('.form-group').size
       assert_not_nil find('#script_cluster')
+      select('oakley', from: 'script_cluster')
       assert_raises(Capybara::ElementNotFound) do
         find('#script_bc_num_hours')
       end
@@ -403,6 +404,7 @@ class ProjectsTest < ApplicationSystemTestCase
       assert_equal 2, page.all('.form-group').size
       assert_not_nil find('#script_cluster')
       assert_not_nil find('#script_bc_num_hours')
+      select('oakley', from: 'script_cluster')
 
       # remove bc num hours and it's not in the form
       find('#remove_script_bc_num_hours').click
