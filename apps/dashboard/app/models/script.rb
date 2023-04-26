@@ -153,21 +153,10 @@ class Script
     # reset smart attributes becuase the user could have removed some fields
     @smart_attributes = []
 
-    # deal with things that would be in the 'form' section first
-    params.reject do |key, _value|
-      key.end_with?('_min') || key.end_with?('_max')
-    end.each do |key, value|
-      self[key.to_sym] = SmartAttributes::AttributeFactory.build(key, {}) if self[key.to_sym].nil?
-      self[key.to_sym].value = value
-    end
-
-    params.select do |key, _value|
-      key.end_with?('_min') || key.end_with?('_max')
-    end.each do |key, value|
-      orig_param = original_parameter(key)
-      self[orig_param.to_sym].min = value if key.end_with?('_min') && !value.to_s.empty?
-      self[orig_param.to_sym].max = value if key.end_with?('_max') && !value.to_s.empty?
-    end
+    # deal with things that would be in the 'form' section first to initialize
+    # the individual smart attributes
+    update_form(params)
+    update_attributes(params)
   end
 
   def submit(options)
@@ -198,6 +187,27 @@ class Script
   end
 
   private
+
+  # update the 'form' portion of the yaml file given 'params' from the controller.
+  def update_form(params)
+    params.reject do |key, _value|
+      key.end_with?('_min') || key.end_with?('_max')
+    end.each do |key, value|
+      self[key.to_sym] = SmartAttributes::AttributeFactory.build(key, {}) if self[key.to_sym].nil?
+      self[key.to_sym].value = value
+    end
+  end
+
+  # update the 'attributes' portion of the yaml file given 'params' from the controller.
+  def update_attributes(params)
+    params.select do |key, _value|
+      key.end_with?('_min') || key.end_with?('_max')
+    end.each do |key, value|
+      orig_param = original_parameter(key)
+      self[orig_param.to_sym].min = value if key.end_with?('_min') && !value.to_s.empty?
+      self[orig_param.to_sym].max = value if key.end_with?('_max') && !value.to_s.empty?
+    end
+  end
 
   def write_job_options_to_cache(opts)
     File.write(cache_file_path, opts.to_json)
