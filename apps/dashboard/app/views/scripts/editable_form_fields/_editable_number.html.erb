@@ -6,9 +6,8 @@
   max_edit_id = "#{field_id}_max"
   max_edit_name = "#{form.object_name}[#{attrib.id}_max]"
 
-  current_min = attrib.field_options[:min];
-  current_max = attrib.field_options[:max];
-
+  current_min = attrib.field_options[:min]
+  current_max = attrib.field_options[:max]
 -%>
 
 <div class="editable-form-field">
@@ -28,5 +27,5 @@
 
   </div>
 
-  <%= render(partial: 'scripts/editable_form_fields/edit_field_buttons', locals: { id: field_id }) %>
+  <%= render(partial: 'scripts/editable_form_fields/edit_field_buttons', locals: { field_id: field_id }) %>
 </div>
