@@ -135,7 +135,7 @@ Listen 8080
   #     https://test.server.name:8080/configured-node/HOST/PORT/index.html
   #     #=> http://HOST:PORT/configured-node/HOST/PORT/index.html
   #
-  <LocationMatch "^/configured-node/(?<host>[\w.-]+\.site\.edu)/(?<port>\d+)(/|$)">
+  <LocationMatch "^/configured-node/(?<host>[\w.-]+\.site\.edu)/(?<port>\d+)(/|\?|$)">
     AuthType openid-connect
     Require valid-user
 

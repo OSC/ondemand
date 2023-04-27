@@ -214,7 +214,7 @@ Listen <%= addr_port %>
   #     <%= @ssl ? "https" : "http" %>://<%= @servername || "localhost" %>:<%= @port %><%= @node_uri %>/HOST/PORT/index.html
   #     #=> http://HOST:PORT<%= @node_uri %>/HOST/PORT/index.html
   #
-  <LocationMatch "^<%= @node_uri %>/(?<host><%= @host_regex %>)/(?<port>\d+)(/|$)">
+  <LocationMatch "^<%= @node_uri %>/(?<host><%= @host_regex %>)/(?<port>\d+)(/|\?|$)">
     <%- @auth.each do |line| -%>
     <%= line %>
     <%- end -%>
