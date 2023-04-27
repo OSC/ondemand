@@ -2,16 +2,13 @@
 
 ## Projects
 
-The [entire project board](https://github.com/OSC/ondemand/projects/10)
+The [entire project board](https://github.com/orgs/OSC/projects/14)
 is a very high level view of the project as a whole.
-
-Check the [projects page](https://github.com/OSC/ondemand/projects)
-for a more detailed view of the progress to a very large upcoming features.
 
 ## Next Release
 
 Check the [project milestones](https://github.com/OSC/ondemand/milestones)
-for the issues related to a specific release.
+for the every single issue related to a specific release.
 
 ## Feature Requests
 
