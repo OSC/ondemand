@@ -1,9 +1,9 @@
 <% if file_counter == 0 %>
   <li class="breadcrumb-item">
-    <span id="<%= files_path(@filesystem, Dir.home) %>" class="fa fa-home" style="cursor: pointer;"></span>
+    <span id="<%= files_path(@filesystem, Dir.home) %>" class="fa fa-home clickable"></span>
   </li>
   <li class="breadcrumb-item">
-      <span id="<%= files_path(@filesystem, full_path.parent) %>" class="fa fa-arrow-up" style="cursor: pointer;"></span>
+      <span id="<%= files_path(@filesystem, full_path.parent) %>" class="fa fa-arrow-up clickable"></span>
   </li>
 <% end %>
 
@@ -13,6 +13,6 @@
   </li>
 <% else %>
   <li class="breadcrumb-item">
-      <span id="<%= files_path(@filesystem, file) %>" style="cursor: pointer;"><%= path_segment_with_slash(file.basename.to_s, file_counter, file_count) %></span>
+      <span id="<%= files_path(@filesystem, file) %>" class="clickable"><%= path_segment_with_slash(file.basename.to_s, file_counter, file_count) %></span>
   </li>
 <% end %>
