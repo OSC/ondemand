@@ -8,7 +8,7 @@ is a very high level view of the project as a whole.
 ## Next Release
 
 Check the [project milestones](https://github.com/OSC/ondemand/milestones)
-for the every single issue related to a specific release.
+for every single issue related to a specific release.
 
 ## Feature Requests
 
