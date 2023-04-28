@@ -3,7 +3,13 @@
 # The controller for apps pages /dashboard/projects/:project_id/scripts
 class ScriptsController < ApplicationController
 
-  before_action :find_script, only: [:show, :edit, :submit]
+  before_action :find_script, only: [:show, :edit, :submit, :save]
+
+  SAVE_SCRIPT_KEYS = [
+    :cluster, :auto_accounts, :auto_scripts, :auto_queues,
+    :bc_num_slots, :bc_num_slots_min, :bc_num_slots_max,
+    :bc_num_hours, :bc_num_hours_min, :bc_num_hours_max
+  ].freeze
 
   def new
     @script = Script.new(project_dir: show_script_params[:project_id])
@@ -11,7 +17,7 @@ class ScriptsController < ApplicationController
 
   # POST  /dashboard/projects/:project_id/scripts
   def create
-    project = Project.find(show_script_params[:project_id])
+    project = Project.find(create_script_params[:project_id])
     opts = { project_dir: project.directory }.merge(create_script_params[:script])
     @script = Script.new(opts)
 
@@ -30,7 +36,13 @@ class ScriptsController < ApplicationController
   # POST   /projects/:project_id/scripts/:id/save
   # save the script after editing
   def save
-    redirect_to project_path(params[:project_id]), notice: 'TODO'
+    @script.update(save_script_params[:script])
+
+    if @script.save
+      redirect_to project_path(params[:project_id]), notice: 'sucess!'
+    else
+      redirect_to project_path(params[:project_id]), alert: @script.errors[:save].last
+    end
   end
 
   # POST   /projects/:project_id/scripts/:id/submit
@@ -68,5 +80,9 @@ class ScriptsController < ApplicationController
   def submit_script_params
     keys = @script.smart_attributes.map { |sm| sm.id.to_s }
     params.permit({ script: keys }, :project_id, :id)
+  end
+
+  def save_script_params
+    params.permit({ script: SAVE_SCRIPT_KEYS }, :project_id, :id)
   end
 end
