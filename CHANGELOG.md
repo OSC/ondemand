@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+support actually saving scripts (#2782)\
+update dependencies (#2777)\
+Script templates (#2778)\
+lint a random file (#2780)\
+lint a random file (#2775)
 
 ## [3.0.1] - 04-20-2023
 
