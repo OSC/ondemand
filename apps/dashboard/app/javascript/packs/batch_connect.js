@@ -1,5 +1,7 @@
 'use strict';
 
+import { attachPathSelectors } from './path_selector/path_selector'
+
 const bcPrefix = 'batch_connect_session_context';
 const shortNameRex = new RegExp(`${bcPrefix}_([\\w\\-]+)`);
 const tokenRex = /([A-Z][a-z]+){1}([\w\-]+)/;
@@ -746,5 +748,6 @@ function optionForEvent(target) {
 
 jQuery(function() {
   makeChangeHandlers();
+  attachPathSelectors();
   initializing = false;
 });
