@@ -68,6 +68,36 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_equal [], custom_css_paths
   end
 
+  test 'custom_javascript_paths should prepend public_url to all js file paths' do
+    @user_configuration = stub(:custom_javascript_files => ['/test.js'], :public_url => Pathname.new('/public'))
+    assert_equal ['/public/test.js'], custom_javascript_paths
+
+    @user_configuration = stub(:custom_javascript_files => ['test.js'], :public_url => Pathname.new('/public'))
+    assert_equal ['/public/test.js'], custom_javascript_paths
+
+    @user_configuration = stub(:custom_javascript_files => ['/custom/js/test.js'], :public_url => Pathname.new('/public'))
+    assert_equal ['/public/custom/js/test.js'], custom_javascript_paths
+
+    @user_configuration = stub(:custom_javascript_files => ['custom/js/test.js'], :public_url => Pathname.new('/public'))
+    assert_equal ['/public/custom/js/test.js'], custom_javascript_paths
+  end
+
+  test 'custom_javascript_paths should should handle nil and empty file paths' do
+    @user_configuration = stub(:custom_javascript_files => ['/test.js', nil, 'other.js'],
+                               :public_url       => Pathname.new('/public'))
+    assert_equal ['/public/test.js', '/public/other.js'], custom_javascript_paths
+
+    @user_configuration = stub(:custom_javascript_files => [nil], :public_url => Pathname.new('/public'))
+    assert_equal [], custom_javascript_paths
+
+    @user_configuration = stub(:custom_javascript_files => ['/test.js', '', 'other.js'],
+                               :public_url       => Pathname.new('/public'))
+    assert_equal ['/public/test.js', '/public/other.js'], custom_javascript_paths
+
+    @user_configuration = stub(:custom_javascript_files => [''], :public_url => Pathname.new('/public'))
+    assert_equal [], custom_javascript_paths
+  end
+
   test "icon_tag should should render icon tag for known icon schemas" do
     @user_configuration = stub({ public_url: Pathname.new('/public') })
     ['fa', 'fas', 'far', 'fab', 'fal'].each do |icon_schema|

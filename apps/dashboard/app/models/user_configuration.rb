@@ -53,6 +53,12 @@ class UserConfiguration
     # example:
     # custom_css_files: ["core.css", "/custom/team1.css"]
     ConfigurationProperty.property(name: :custom_css_files, default_value: []),
+    # Custom JavaScript files to add to the application.html.erb template
+    # The files need to be deployed to the Apache public directory: /var/www/ood/public
+    # The URL path will be prepended with the public_url property
+    # example:
+    # custom_css_files: ["tracking.js", "/custom/team1_scripts.js"]
+    ConfigurationProperty.property(name: :custom_javascript_files, default_value: []),
 
     ConfigurationProperty.property(name: :dashboard_title, default_value: 'Open OnDemand', read_from_env: true),
 
