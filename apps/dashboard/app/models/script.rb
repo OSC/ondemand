@@ -22,7 +22,7 @@ class Script
     def all(project_dir)
       Dir.glob("#{scripts_dir(project_dir)}/*.yml").map do |file|
         Script.from_yaml(file, project_dir)
-      end
+      end.compact
     end
 
     def from_yaml(file, project_dir)
