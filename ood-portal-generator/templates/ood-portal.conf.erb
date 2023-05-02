@@ -285,8 +285,8 @@ Listen <%= addr_port %>
     LuaHookFixups pun_proxy.lua pun_proxy_handler
 
     <%- if @analytics -%>
-    SetEnv OOD_ANALYTICS_TRACKING_URL "<%= @analytics['url'] %>"
-    SetEnv OOD_ANALYTICS_TRACKING_ID  "<%= @analytics['id']  %>"
+    SetEnv OOD_GA_API_SECRET "<%= @analytics['secret'] %>"
+    SetEnv OOD_GA_TRACKING_ID  "<%= @analytics['id']  %>"
     LuaHookLog analytics.lua analytics_handler
     <%- end -%>
   </Location>
