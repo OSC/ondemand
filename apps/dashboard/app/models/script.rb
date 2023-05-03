@@ -71,7 +71,7 @@ class Script
       attributes: opts[:attributes] || {}
     }
 
-    add_cluster_to_form(**sm_opts, clusters: Script.batch_clusters)
+    add_required_fields(**sm_opts)
     @smart_attributes = build_smart_attributes(**sm_opts)
   end
 
@@ -86,7 +86,7 @@ class Script
 
   def to_yaml
     attributes = smart_attributes.each_with_object({}) do |sm, hash|
-      hash[sm.id.to_s] = sm.all_options
+      hash[sm.id.to_s] = sm.options_to_serialize
     end.deep_stringify_keys
 
     hsh = { 'title' => title }
@@ -193,7 +193,7 @@ class Script
     params.reject do |key, _value|
       key.end_with?('_min') || key.end_with?('_max')
     end.each do |key, value|
-      self[key.to_sym] = SmartAttributes::AttributeFactory.build(key, {}) if self[key.to_sym].nil?
+      self[key.to_sym] = SmartAttributes::AttributeFactory.build(key, default_attributes(key)) if self[key.to_sym].nil?
       self[key.to_sym].value = value
     end
   end
@@ -206,6 +206,15 @@ class Script
       orig_param = original_parameter(key)
       self[orig_param.to_sym].min = value if key.end_with?('_min') && !value.to_s.empty?
       self[orig_param.to_sym].max = value if key.end_with?('_max') && !value.to_s.empty?
+    end
+  end
+
+  def default_attributes(smart_attr_id)
+    case smart_attr_id
+    when 'auto_scripts'
+      { directory: project_dir }
+    else
+      {}
     end
   end
 
@@ -274,8 +283,25 @@ class Script
     OodAppkit.clusters[cluster_id] || raise(ClusterNotFound, "Job specifies nonexistent '#{cluster_id}' cluster id.")
   end
 
-  def add_cluster_to_form(form: [], attributes: {}, clusters: [])
-    form.prepend('cluster') unless form.include?('cluster')
+  def add_required_fields(form: [], attributes: {})
+    add_cluster_to_form(form: form, attributes: attributes)
+    add_script_to_form(form: form, attributes: attributes)
+  end
+
+  def add_script_to_form(form: [], attributes: {})
+    return if form.include?('auto_scripts')
+
+    form << 'auto_scripts'
+    attributes[:auto_scripts] = {
+      directory: project_dir
+    }
+  end
+
+  def add_cluster_to_form(form: [], attributes: {})
+    return if form.include?('cluster')
+
+    clusters = Script.batch_clusters
+    form.prepend('cluster')
 
     attributes[:cluster] = if clusters.size > 1
                              select_clusters(clusters)

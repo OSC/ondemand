@@ -147,6 +147,19 @@ module SmartAttributes
       field_options(fmt: fmt).merge(html_options)
     end
 
+    # Hash of field options to serialize (to yaml). Similar to
+    # field_options, with the exception that it does not filter
+    # reserved_keys.
+    #
+    # It's basically calling opts with some keys updated for convenience.
+    def options_to_serialize(fmt: nil)
+      opts.merge({
+        label:    label(fmt: fmt),
+        help:     help_html(fmt: fmt),
+        required: required
+      }).compact
+    end
+
     # Array of choices for select fields used to build <option> tags
     # @return [Array] choices in form [name, value], [name, value]
     def select_choices
