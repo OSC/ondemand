@@ -24,17 +24,6 @@ class ProjectsTest < ApplicationSystemTestCase
     click_on 'Save'
   end
 
-  def add_bc_num_hours(project_id)
-    visit project_path(project_id)
-    find("[href='/projects/#{project_id}/scripts/1/edit']").click
-
-    # now add 'bc_num_hours'
-    click_on('Add new option')
-    select('Hours', from: 'add_new_field_select')
-    click_on(I18n.t('dashboard.add'))
-    fill_in('script_bc_num_hours', with: 1)
-  end
-
   test 'create a new project on fs and display the table entry' do
     Dir.mktmpdir do |dir|
       setup_project(dir)
@@ -271,6 +260,7 @@ class ProjectsTest < ApplicationSystemTestCase
       assert_nil YAML.safe_load(File.read("#{script_dir}/1_job_log"))
     end
   end
+<<<<<<< HEAD
 
 <<<<<<< HEAD
   test 'editing scripts initializes correctly' do
@@ -451,4 +441,6 @@ class ProjectsTest < ApplicationSystemTestCase
     end
   end
 >>>>>>> Add test for quick launch sucess alert and badge
+=======
+>>>>>>> remove tests
 end
