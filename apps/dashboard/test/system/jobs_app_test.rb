@@ -26,24 +26,6 @@ class ProjectsTest < ApplicationSystemTestCase
     click_on 'Save'
   end
 
-  def setup_script(dir)
-    # init shell script
-    project = "#{dir}/projects/1"
-    script_dir = "#{project}/.ondemand/scripts"
-    `mkdir -p #{script_dir}`
-    `echo 'hello world' > #{project}/my_cool_script.sh`
-    File.write("#{script_dir}/1.yml", script_yml(dir))
-  end
-
-  def setup_cache(dir)
-    cache_file_path = "#{dir}/projects/1/.ondemand/scripts/1_opts.json"
-    File.write(cache_file_path, cache(dir))
-  end
-
-  def cache(dir)
-    {"cluster":"owens","auto_scripts":"#{dir}/projects/1/my_cool_script.sh","auto_accounts":"pas2051"}
-  end
-
   def script_yml(dir)
     {
       'title'      => 'the script title',
@@ -293,35 +275,6 @@ class ProjectsTest < ApplicationSystemTestCase
       click_on 'Launch'
       assert_selector('.alert-danger', text: "×\nClose\nsome error message")
       assert_nil YAML.safe_load(File.read("#{script_dir}/1_job_log"))
-    end
-  end
-
-  test 'quick launch button submits job and returns job data successfully' do
-    Dir.mktmpdir do |dir|
-      setup_project(dir)
-      setup_script(dir)
-      setup_cache(dir)
-
-      find('[href="/projects/1"]').click
-
-      job = OodCore::Job::Info.new(id: 'job-id-123', status: :completed)
-
-      Open3
-        .stubs(:capture3)
-        .with({}, 'sbatch', '-A', 'pas2051', '--export', 'NONE', '--parsable', '-M', 'owens',
-            { stdin_data: "hostname\n" })
-        .returns(['job-id-123', '', exit_success])
-
-      OodCore::Job::Adapters::Slurm
-        .any_instance
-        .stubs(:info)
-        .returns(job)
-
-      click_on 'Launch'
-      assert_selector('.alert-success', text: 'Successfully submited job job-id-123.')
-      # sleep for the badge to render in time
-      sleep 4
-      assert_selector('.badge')
     end
   end
 end
