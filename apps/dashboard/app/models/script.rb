@@ -174,18 +174,6 @@ class Script
     most_recent_job['cluster']
   end
 
-  def cached_values
-    @cached_values ||= begin
-      cache_file_path = OodAppkit.dataroot.join(Script.scripts_dir("#{project_dir}"), "#{id}_opts.json")
-      cache_file_content = File.read(cache_file_path) if cache_file_exists?
-      
-      File.exist?(cache_file_path) ? JSON.parse(cache_file_content) : {}
-    rescue => exception
-      Rails.logger.error("Error reading cache file: #{exception.message}")
-      {}
-    end
-  end
-
   private
 
   # update the 'form' portion of the yaml file given 'params' from the controller.
@@ -230,6 +218,18 @@ class Script
 
   def cache_file_exists?
     cache_file_path.exist?
+  end
+
+  def cached_values
+    @cached_values ||= begin
+      cache_file_path = OodAppkit.dataroot.join(Script.scripts_dir("#{project_dir}"), "#{id}_opts.json")
+      cache_file_content = File.read(cache_file_path) if cache_file_exists?
+      
+      File.exist?(cache_file_path) ? JSON.parse(cache_file_content) : {}
+    rescue => exception
+      Rails.logger.error("Error reading cache file: #{exception.message}")
+      {}
+    end
   end
 
   def most_recent_job
