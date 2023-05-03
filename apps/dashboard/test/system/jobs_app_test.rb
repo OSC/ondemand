@@ -203,9 +203,6 @@ class ProjectsTest < ApplicationSystemTestCase
       select('pas2051', from: 'script_auto_accounts')
       select('my_cooler_script.bash', from: 'script_auto_scripts')
 
-      # stub empty cache
-      Script.any_instance.stubs(:cached_values).returns(false)
-
       Open3
         .stubs(:capture3)
         .with({}, 'sbatch', '-A', 'pas2051', '--export', 'NONE', '--parsable', '-M', 'owens',
