@@ -27,7 +27,7 @@ module BatchConnect::SessionContextsHelper
       end
     when 'path_selector'
       form.form_group attrib.id, help: field_options[:help] do
-        render :partial => "path_selector", :locals => { attrib: attrib, field_options: field_options }
+        render(partial: 'path_selector', locals: { form: form, attrib: attrib, field_options: field_options })
       end
     when 'file_attachments'
       render :partial => "batch_connect/session_contexts/file_attachments", :locals => { form: form, attrib: attrib, field_options: field_options }

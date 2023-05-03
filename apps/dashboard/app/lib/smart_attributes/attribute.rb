@@ -166,6 +166,14 @@ module SmartAttributes
       opts.fetch(:unchecked_value, "0")
     end
 
+    def min=(value)
+      @opts[:min] = value.to_i
+    end
+
+    def max=(value)
+      @opts[:max] = value.to_i
+    end
+
     private
 
     # Array of reserved keys for options that are used as methods in this class
