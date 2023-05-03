@@ -1,0 +1,13 @@
+<%- tag_id = Configuration.google_analytics_tag_id -%>
+
+<%- unless tag_id.nil? -%>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=<%= tag_id %>"></script>
+<script nonce="<%= content_security_policy_nonce %>">
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '<%= tag_id %>');
+</script>
+<%- end -%>
