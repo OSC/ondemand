@@ -49,11 +49,17 @@
             )
             %>
 
+            <%-
+              params = script.smart_attributes.map { |attr| ["batch_connect_session_context[#{attr.id}]", attr.value] }.to_h
+            -%>
+
             <%= button_to(
               t('dashboard.batch_connect_form_launch'),
               submit_project_script_path(@project.id, script.id),
               class: 'btn btn-secondary mx-1',
               title: 'Launch script with cached values',
+              data: {:method => "post"},
+              params: params
             )
             %>
             </div>
