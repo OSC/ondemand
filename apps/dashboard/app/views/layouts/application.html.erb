@@ -5,6 +5,9 @@
   <%= favicon_link_tag 'favicon.ico', href: @user_configuration.public_url.join('favicon.ico'), skip_pipeline: true %>
 
   <%= javascript_include_tag 'application', nonce: true %>
+  <% custom_javascript_paths.each do |path| %>
+    <script src="<%= path %>" nonce="<%= content_security_policy_nonce %>"></script>
+  <% end %>
   <%= stylesheet_link_tag 'application', nonce: content_security_policy_nonce, media: 'all', rel: 'preload stylesheet', as: 'style', type: 'text/css' %>
   <%= render partial: '/layouts/nav/styles', locals: { bg_color: @user_configuration.brand_bg_color, link_active_color:  @user_configuration.brand_link_active_bg_color } %>
   <% custom_css_paths.each do |path| %>

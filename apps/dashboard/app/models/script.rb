@@ -51,7 +51,7 @@ class Script
       Rails.cache.fetch('script_batch_clusters', expires_in: 4.hours) do
         Configuration.job_clusters.reject do |c|
           reject_cluster?(c)
-        end.map(&:id).map(&:to_s)
+        end.map(&:id).map(&:to_s).sort
       end
     end
 
@@ -85,7 +85,14 @@ class Script
   end
 
   def to_yaml
-    { 'title' => title }.to_yaml
+    attributes = smart_attributes.each_with_object({}) do |sm, hash|
+      hash[sm.id.to_s] = sm.all_options
+    end.deep_stringify_keys
+
+    hsh = { 'title' => title }
+    hsh.merge!({ 'form' => smart_attributes.map { |sm| sm.id.to_s } })
+    hsh.merge!({ 'attributes' => attributes })
+    hsh.to_yaml
   end
 
   def to_h
@@ -107,12 +114,17 @@ class Script
     if /^(?<id>[^=]+)$/ =~ method_name.to_s && (attribute = self[id])
       attribute.value
     else
-      super
+      nil
     end
   end
 
   def respond_to_missing?(method_name, include_private = false)
     (/^(?<id>[^=]+)$/ =~ method_name.to_s && self[id]) || super
+  end
+
+  def original_parameter(string)
+    match = /([\w_]+)_(?:min|max)/.match(string)
+    match[1]
   end
 
   # Find attribute in list using the id of the attribute
@@ -122,8 +134,12 @@ class Script
     smart_attributes.detect { |attribute| attribute == id }
   end
 
+  def []=(_id, value)
+    smart_attributes.append(value)
+  end
+
   def save
-    @id = Script.next_id(project_dir)
+    @id = Script.next_id(project_dir) if @id.nil?
     File.write("#{Script.scripts_dir(project_dir)}/#{id}.yml", to_yaml)
 
     true
@@ -131,6 +147,16 @@ class Script
     errors.add(:save, e.message)
     Rails.logger.warn("Cannot save script due to error: #{e.class}:#{e.message}")
     false
+  end
+
+  def update(params)
+    # reset smart attributes becuase the user could have removed some fields
+    @smart_attributes = []
+
+    # deal with things that would be in the 'form' section first to initialize
+    # the individual smart attributes
+    update_form(params)
+    update_attributes(params)
   end
 
   def submit(options)
@@ -173,6 +199,27 @@ class Script
   end
 
   private
+
+  # update the 'form' portion of the yaml file given 'params' from the controller.
+  def update_form(params)
+    params.reject do |key, _value|
+      key.end_with?('_min') || key.end_with?('_max')
+    end.each do |key, value|
+      self[key.to_sym] = SmartAttributes::AttributeFactory.build(key, {}) if self[key.to_sym].nil?
+      self[key.to_sym].value = value
+    end
+  end
+
+  # update the 'attributes' portion of the yaml file given 'params' from the controller.
+  def update_attributes(params)
+    params.select do |key, _value|
+      key.end_with?('_min') || key.end_with?('_max')
+    end.each do |key, value|
+      orig_param = original_parameter(key)
+      self[orig_param.to_sym].min = value if key.end_with?('_min') && !value.to_s.empty?
+      self[orig_param.to_sym].max = value if key.end_with?('_max') && !value.to_s.empty?
+    end
+  end
 
   def write_job_options_to_cache(opts)
     File.write(cache_file_path, opts.to_json)

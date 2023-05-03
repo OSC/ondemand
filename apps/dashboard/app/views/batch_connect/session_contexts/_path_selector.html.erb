@@ -1,28 +1,39 @@
 <%
-content_for :head do
-  javascript_include_tag 'path_selector/index', nonce: true
-end
-%>
-
-<%= label attrib.id, "#{field_options[:label]}" %>
-<%= text_field :batch_connect_session_context, attrib.id, class: 'form-control' %>
-<button type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#modal-path-selector" id='select-nav-path'>
-  Select Path
-</button>
-<%
   show_hidden = false
   show_files = false
   if attrib.opts[:options].is_a?(Array)
     show_hidden = attrib.opts[:options].include? 'hidden'
     show_files = attrib.opts[:options].include? 'files'
   end
+
+  input_field_id = "#{form.object_name}_#{attrib.id}"
+  path_selector_id = "#{input_field_id}_path_selector"
+  button_id = "#{path_selector_id}_button"
+  table_id = "#{path_selector_id}_table"
+  breadcrumb_id = "#{path_selector_id}_breadcrumb"
 %>
 
-<span id='path_selector_home_dir' class="d-none"><%= Dir.home %></span>
-<span id='path_selector_url' class="d-none"><%= files_path %></span>
+<%= form.text_field(attrib.id, class: 'form-control', data: { 'path-selector': true }) %>
+
+<button type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#<%= path_selector_id %>">
+  Select Path
+</button>
 
 <!-- Modal -->
-<div class="modal fade h-75" id="modal-path-selector" tabindex="-1" role="dialog" aria-labelledby="modal-path-selector" aria-hidden="true" data-path-selector-show-files="<%= show_files %>" data-path-selector-show-hidden="<%= show_hidden %>">
+<div
+    class="modal fade h-75"
+    id="<%= path_selector_id %>" tabindex="-1" role="dialog"
+    aria-labelledby="modal-path-selector" aria-hidden="true"
+    data-path-selector-show-files="<%= show_files %>"
+    data-path-selector-show-hidden="<%= show_hidden %>"
+    data-home-directory="<%= Dir.home %>"
+    data-files-path="<%= files_path %>"
+    data-table-id="<%= table_id %>"
+    data-breadcrumb-id="<%= breadcrumb_id %>"
+    data-select-button-id="<%= button_id %>"
+    data-input-field-id="<%= input_field_id %>"
+    >
+
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -32,10 +43,10 @@ end
         </button>
       </div>
       <div class="modal-body">        
-        <div id="container-directory-contents">
-            <ol id="path-breadcrumbs" class="breadcrumb breadcrumb-no-delimiter">
+        <div>
+            <ol id="<%= breadcrumb_id %>" class="breadcrumb breadcrumb-no-delimiter">
             </ol>
-            <table class="table table-striped table-condensed w-100" id="directory-contents">
+            <table class="table table-hover table-condensed d-table w-100" id="<%= table_id %>">
                 <thead>
                   <tr>
                       <th>Type</th>
@@ -47,9 +58,9 @@ end
             </table>
         </div>
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer sticky-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="button-select-path" data-dismiss="modal">Select Path</button>
+        <button type="button" class="btn btn-primary" id="<%= button_id %>">Select Path</button>
       </div>
     </div>
   </div>

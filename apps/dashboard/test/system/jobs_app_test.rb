@@ -9,10 +9,8 @@ class ProjectsTest < ApplicationSystemTestCase
     stub_user
     Configuration.stubs(:jobs_app_alpha).returns(true)
     Rails.application.reload_routes!
-    Open3
-      .stubs(:capture3)
-      .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc', 'format=account,cluster,partition,qos', 'where', 'user=me', { stdin_data: '' })
-      .returns([File.read('test/fixtures/cmd_output/sacctmgr_show_accts.txt'), '', exit_success])
+    stub_sacctmgr
+    stub_scontrol
   end
 
   def setup_project(dir)
@@ -26,16 +24,27 @@ class ProjectsTest < ApplicationSystemTestCase
     click_on 'Save'
   end
 
+  def setup_script(project_id)
+    visit project_path(project_id)
+    click_on 'New Script'
+    find('#script_title').set('the script title')
+    click_on 'Save'
+  end
+
   def script_yml(dir)
     {
       'title'      => 'the script title',
       'form'       => [
+        'cluster',
         'auto_scripts',
         'auto_accounts'
       ],
       'attributes' => {
         'auto_scripts' => {
-          'directory' => dir.to_s
+          'directory' => dir.to_s,
+        },
+        'cluster' => {
+          'value' => 'oakley',
         }
       }
     }.to_yaml
@@ -148,6 +157,13 @@ class ProjectsTest < ApplicationSystemTestCase
       expected_yml = <<~HEREDOC
         ---
         title: the script title
+        form:
+        - cluster
+        attributes:
+          cluster:
+            label: Cluster
+            help: ''
+            required: false
       HEREDOC
 
       assert_selector('.alert-success', text: "×\nClose\nsucess!")
@@ -275,6 +291,155 @@ class ProjectsTest < ApplicationSystemTestCase
       click_on 'Launch'
       assert_selector('.alert-danger', text: "×\nClose\nsome error message")
       assert_nil YAML.safe_load(File.read("#{script_dir}/1_job_log"))
+    end
+  end
+
+  test 'editing scripts initializes correctly' do
+    Dir.mktmpdir do |dir|
+      setup_project(dir)
+      setup_script('1')
+
+      visit project_path('1')
+      find('[href="/projects/1/scripts/1/edit"]').click
+
+      click_on('Add new option')
+      new_field_id = 'add_new_field_select'
+
+      actual_new_options = page.all("##{new_field_id} option").map(&:value).to_set
+      expected_new_options = ['bc_num_hours', 'auto_queues', 'bc_num_slots'].to_set
+      assert_equal expected_new_options, actual_new_options
+    end
+  end
+
+  test 'adding new fields to scripts' do
+    Dir.mktmpdir do |dir|
+      setup_project(dir)
+      setup_script('1')
+
+      visit project_path('1')
+      find('[href="/projects/1/scripts/1/edit"]').click
+
+      # only shows 'cluster'
+      assert_equal 1, page.all('.form-group').size
+      assert_not_nil find('#script_cluster')
+      select('oakley', from: 'script_cluster')
+      assert_raises(Capybara::ElementNotFound) do
+        find('#script_bc_num_hours')
+      end
+
+      # now add 'bc_num_hours'
+      click_on('Add new option')
+      select('Hours', from: 'add_new_field_select')
+      click_on(I18n.t('dashboard.add'))
+
+      # now shows 'cluster' & 'bc_num_hours'
+      assert_equal 2, page.all('.form-group').size
+      assert_not_nil find('#script_cluster')
+      assert_not_nil find('#script_bc_num_hours')
+
+      # edit default, min & max
+      find('#edit_script_bc_num_hours').click
+      fill_in('script_bc_num_hours', with: 42)
+      fill_in('script_bc_num_hours_min', with: 20)
+      fill_in('script_bc_num_hours_max', with: 101)
+      find('#save_script_bc_num_hours').click
+
+      # correctly saves
+      click_on(I18n.t('dashboard.save'))
+      assert_selector('.alert-success', text: "×\nClose\nsucess!")
+      assert_current_path '/projects/1'
+
+      # note that bc_num_hours has default, min & max
+      expected_yml = <<~HEREDOC
+        ---
+        title: the script title
+        form:
+        - cluster
+        - bc_num_hours
+        attributes:
+          cluster:
+            value: oakley
+            label: Cluster
+            help: ''
+            required: false
+          bc_num_hours:
+            min: 20
+            step: 1
+            value: '42'
+            max: 101
+            label: Number of hours
+            help: ''
+            required: true
+      HEREDOC
+
+      assert_equal(expected_yml, File.read("#{dir}/projects/1/.ondemand/scripts/1.yml"))
+    end
+  end
+
+  test 'removing script fields' do
+    Dir.mktmpdir do |dir|
+      setup_project(dir)
+      setup_script('1')
+
+      yml_with_2_fields = <<~HEREDOC
+        ---
+        title: the script title
+        form:
+        - cluster
+        - bc_num_hours
+        attributes:
+          cluster:
+            value: oakley
+            label: Cluster
+            help: ''
+            required: false
+          bc_num_hours:
+            min: 20
+            step: 1
+            value: '42'
+            max: 101
+            label: Number of hours
+            help: ''
+            required: true
+      HEREDOC
+
+      File.write("#{dir}/projects/1/.ondemand/scripts/1.yml", yml_with_2_fields)
+
+      # go to edit it and see that there is cluster and bc_num_hours
+      visit project_path('1')
+      find('[href="/projects/1/scripts/1/edit"]').click
+      assert_equal 2, page.all('.form-group').size
+      assert_not_nil find('#script_cluster')
+      assert_not_nil find('#script_bc_num_hours')
+      select('oakley', from: 'script_cluster')
+
+      # remove bc num hours and it's not in the form
+      find('#remove_script_bc_num_hours').click
+      assert_equal 1, page.all('.form-group').size
+      assert_not_nil find('#script_cluster')
+      assert_raises(Capybara::ElementNotFound) do
+        find('#script_bc_num_hours')
+      end
+
+      # correctly saves
+      click_on(I18n.t('dashboard.save'))
+      assert_selector('.alert-success', text: "×\nClose\nsucess!")
+      assert_current_path '/projects/1'
+
+      expected_yml = <<~HEREDOC
+        ---
+        title: the script title
+        form:
+        - cluster
+        attributes:
+          cluster:
+            value: oakley
+            label: Cluster
+            help: ''
+            required: false
+      HEREDOC
+
+      assert_equal(expected_yml, File.read("#{dir}/projects/1/.ondemand/scripts/1.yml"))
     end
   end
 end

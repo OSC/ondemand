@@ -84,9 +84,17 @@ module ApplicationHelper
     NavBar.menu_items({ links: help_items }) unless help_items.empty?
   end
 
+  # Creates the custom CSS paths based on user configuration and the public URL
   def custom_css_paths
     @user_configuration.custom_css_files.map do |css_file|
       css_file.to_s.empty? ? nil : File.join(@user_configuration.public_url, css_file)
+    end.compact
+  end
+
+  # Creates the custom JS paths based on user configuration and the public URL
+  def custom_javascript_paths
+    @user_configuration.custom_javascript_files.map do |js_file|
+      js_file.to_s.empty? ? nil : File.join(@user_configuration.public_url, js_file)
     end.compact
   end
 end

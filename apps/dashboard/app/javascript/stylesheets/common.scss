@@ -1,0 +1,19 @@
+
+.clickable {
+  cursor: pointer;
+}
+
+.gold {
+  color: gold;
+}
+
+.black {
+  color: black;
+}
+
+.sticky-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1100;
+  background-color: inherit;
+}

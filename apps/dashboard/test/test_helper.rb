@@ -81,7 +81,21 @@ class ActiveSupport::TestCase
     ::Configuration.unstub(:config)
 
     UserConfiguration.stubs(:new).returns(user_configuration)
+  end
 
+  def stub_scontrol
+    ['owens', 'oakley'].each do |cluster|
+      Open3
+        .stubs(:capture3)
+        .with({}, 'scontrol', 'show', 'part', '-o', '-M', cluster.to_s, { stdin_data: ''})
+        .returns([File.read("test/fixtures/cmd_output/scontrol_show_partitions_#{cluster}.txt"), '', exit_success])
+    end
+  end
+
+  def stub_sacctmgr
+    Open3.stubs(:capture3)
+      .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc', 'format=account,cluster,partition,qos', 'where', 'user=me', { stdin_data: ''})
+      .returns([File.read('test/fixtures/cmd_output/sacctmgr_show_accts.txt'), '', exit_success])
   end
 end
 

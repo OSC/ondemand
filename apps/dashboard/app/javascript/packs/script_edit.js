@@ -2,17 +2,30 @@
 
 let newFieldTemplate = undefined;
 
-const helpTextLookup = {
-  "bc_num_hours": "How long the job can run for.",
-  "auto_queues": "Which queue the job will submit too.",
-  "bc_num_slots": "How many nodes the job will run on."
+const newFieldData = {
+  "bc_num_hours": {
+    label: "Hours",
+    help: "How long the job can run for.",
+  },
+  auto_queues: {
+    label: "Queues",
+    help: "Which queue the job will submit too.",
+  },
+  bc_num_slots: {
+    label: "Nodes",
+    help: "How many nodes the job will run on."
+  }
+}
+
+function lastOption() {
+  return $('.new_script').find('.editable-form-field').last();
 }
 
 function addNewField(_event) {
-  const lastOption = $('.new_script').find('.editable-form-field').last();
-  lastOption.after(newFieldTemplate.html());
+  const last = lastOption();
+  last.after(newFieldTemplate.html());
 
-  const justAdded = lastOption.next();
+  const justAdded = last.next();
   const deleteButton = justAdded.find('.btn-danger');
   const addButton = justAdded.find('.btn-success');
   const selectMenu = justAdded.find('select');
@@ -21,12 +34,28 @@ function addNewField(_event) {
   addButton.on('click', (event) => { addInProgressField(event) });
   selectMenu.on('change', (event) => { addHelpTextForOption(event) });
 
+  updateNewFieldOptions(selectMenu.get(0));
   // initialize the help text
   addHelpTextForOption({ target: selectMenu.get(0) });
 }
 
+function updateNewFieldOptions(selectMenu) {
+  for(var newField in newFieldData) {
+    field = document.getElementById(`script_${newField}`);
+
+    // if the field doesn't already exist, it's an option for a new field.
+    if(field === null) {
+      const option = document.createElement("option");
+      option.value = newField;
+      option.text = newFieldData[newField].label;
+
+      selectMenu.add(option);
+    }
+  }
+}
+
 function addHelpTextForOption(event) {
-  const helpText = helpTextLookup[event.target.value];
+  const helpText = newFieldData[event.target.value].help;
   const topLevelDiv = event.target.parentElement.parentElement;
 
   const helpTextDiv = topLevelDiv.firstElementChild;
@@ -71,7 +100,22 @@ function saveEdit(event) {
 }
 
 function addInProgressField(event) {  
-  console.log('TODO');
+  const selectMenu = event.target.parentElement.parentElement.firstElementChild;
+  const choice = selectMenu.value;
+  const template = $(`#${choice}_template`);
+
+  const last = lastOption();
+  last.after(template.html());
+
+  const justAdded = last.next();
+  justAdded.find('.btn-danger')
+           .on('click', (event) => { removeField(event) });
+
+  justAdded.find('.btn-primary')
+           .on('click', (event) => { showEditField(event) });
+
+  const entireDiv = event.target.parentElement.parentElement.parentElement;
+  entireDiv.remove();
 }
 
 jQuery(() => {

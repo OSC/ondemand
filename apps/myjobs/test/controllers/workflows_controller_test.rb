@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class WorkflowsControllerTest < ActionController::TestCase
@@ -5,13 +7,13 @@ class WorkflowsControllerTest < ActionController::TestCase
     @workflow = workflows(:one)
   end
 
-  test "should get index" do
+  test 'should get index' do
     get :index
     assert_response :success
     assert_not_nil assigns(:workflows)
   end
 
-  test "should get new" do
+  test 'should get new' do
     get :new
     assert_response :success
   end
@@ -24,22 +26,22 @@ class WorkflowsControllerTest < ActionController::TestCase
   #   assert_redirected_to workflows_path
   # end
 
-  test "should show workflow" do
+  test 'should show workflow' do
     get :show, params: { id: @workflow }
     assert_response :success
   end
 
-  test "should get edit" do
+  test 'should get edit' do
     get :edit, params: { id: @workflow }
     assert_response :success
   end
 
-  test "should update workflow" do
+  test 'should update workflow' do
     patch :update, params: { id: @workflow, workflow: { batch_host: @workflow.batch_host, name: @workflow.name } }
     assert_redirected_to workflows_path
   end
 
-  test "should destroy workflow" do
+  test 'should destroy workflow' do
     assert_difference('Workflow.count', -1) do
       delete :destroy, params: { id: @workflow }
     end

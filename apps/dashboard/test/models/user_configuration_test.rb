@@ -51,6 +51,7 @@ class UserConfigurationTest < ActiveSupport::TestCase
       pinned_apps_menu_length: 6,
       profile_links: [],
       custom_css_files: [],
+      custom_javascript_files: [],
       dashboard_title: "Open OnDemand",
       public_url: Pathname.new("/public"),
       announcement_path: [Pathname.new('/etc/ood/config/announcement.md'), Pathname.new('/etc/ood/config/announcement.yml'), Pathname.new('/etc/ood/config/announcements.d')],
