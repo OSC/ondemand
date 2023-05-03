@@ -14,7 +14,6 @@ if Configuration.csp_enabled?
     policy.object_src  :none
     policy.script_src(*Configuration.script_sources)
     policy.style_src   :self
-    # If you are using webpack-dev-server then specify webpack-dev-server host
     policy.connect_src(*Configuration.connect_sources)
 
     # Specify URI for violation reports
