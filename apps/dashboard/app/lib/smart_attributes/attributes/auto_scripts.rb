@@ -46,6 +46,16 @@ module SmartAttributes
         content = File.read(value)
         { script: { content: content } }
       end
+
+      # Hash of both field options and html options
+      # @return [Hash] key value pairs are field and html options
+      def all_options(fmt: nil)
+        super(fmt: fmt).merge({ directory: directory })
+      end
+
+      def directory
+        opts[:directory]
+      end
     end
   end
 end
