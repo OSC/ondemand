@@ -6,11 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Update ROADMAP.md (#2783)\
-update dependencies (#2789)\
-Added support for custom JS feature (#2791)\
-refactor the path selector to accomidate variable paths. (#2787)\
-lint a random file (#2785)
+
+### Added
+- Sites can now add javascript files through `custom_javascript_files` config
+  in [2791](https://github.com/OSC/ondemand/pull/2791).
 
 ## [3.0.1] - 04-20-2023
 
