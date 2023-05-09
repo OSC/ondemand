@@ -11,6 +11,10 @@ const newFieldData = {
     label: "Queues",
     help: "Which queue the job will submit too.",
   },
+  auto_accounts: {
+    label: "Account",
+    help: "The account the job will be submitted with."
+  },
   bc_num_slots: {
     label: "Nodes",
     help: "How many nodes the job will run on."
