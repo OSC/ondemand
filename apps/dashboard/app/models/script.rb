@@ -156,7 +156,7 @@ class Script
     job_id = Dir.chdir(project_dir) do
       adapter.submit(job_script)
     end
-    update_job_log(job_id, options[:cluster].to_s)
+    update_job_log(job_id, options[:auto_batch_clusters].to_s)
     write_job_options_to_cache(options)
 
     job_id
