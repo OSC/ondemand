@@ -6,7 +6,7 @@ class ScriptsController < ApplicationController
   before_action :find_script, only: [:show, :edit, :submit, :save]
 
   SAVE_SCRIPT_KEYS = [
-    :cluster, :auto_accounts, :auto_scripts, :auto_queues,
+    :cluster, :auto_accounts, :auto_scripts, :auto_queues, :auto_batch_clusters,
     :bc_num_slots, :bc_num_slots_min, :bc_num_slots_max,
     :bc_num_hours, :bc_num_hours_min, :bc_num_hours_max
   ].freeze
