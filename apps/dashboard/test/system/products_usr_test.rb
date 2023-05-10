@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'application_system_test_case'
 
 class ProductsUsrTest < ApplicationSystemTestCase
@@ -14,7 +16,7 @@ class ProductsUsrTest < ApplicationSystemTestCase
   end
 
   test 'Index of my_shared_app can be accessed' do
-    UsrRouter.stubs(:base_path).returns(Pathname.new("test/fixtures/usr/me"))
+    UsrRouter.stubs(:base_path).returns(Pathname.new('test/fixtures/usr/me'))
     visit products_path(:usr)
   end
 
