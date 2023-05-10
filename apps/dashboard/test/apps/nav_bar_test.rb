@@ -88,53 +88,93 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal 4,  result[0].apps.size
   end
 
-  test "NavBar.items should return navigation group with sort=true when nav_item has apps and title property" do
+  test "NavBar.items should ignore nav_item when nav_item has apps token that matches multiple apps without a title property" do
+    nav_item = {
+      apps: "sys/*"
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal [],  result
+  end
+
+  test "NavBar.items should return navigation group with sort=true when nav_item has apps and title property and apps token match multiple apps" do
     nav_item = {
       title: "Custom Apps",
       icon: "fa://test",
-      apps: "sys/bc_jupyter"
+      apps: "sys/*"
     }
 
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
     assert_equal "layouts/nav/group",  result[0].partial_path
     assert_equal true,  result[0].sort
-    assert_equal 1,  result[0].links.size
-    assert_equal 'Custom Apps',  result[0].links[0].category
-    assert_equal 'Apps',  result[0].links[0].subcategory
     assert_equal 'Custom Apps',  result[0].title
     assert_equal URI("fa://test"),  result[0].icon_uri
+
+    assert_equal true,  result[0].links.size > 1, "App token should match more than one application"
+    result[0].links.each do |link|
+      assert_equal 'Custom Apps',  link.category
+    end
   end
 
   test "icon_uri should be null for apps navigation group when nav_item has no icon property" do
     nav_item = {
       title: "Custom Apps",
-      apps: "sys/bc_jupyter"
+      apps: "sys/*"
     }
 
     result = NavBar.items([nav_item])
-    assert_equal 1,  result.size
+    assert_equal true,  result[0].links.size > 1, "App token should match more than one application"
     assert_equal "layouts/nav/group",  result[0].partial_path
     assert_equal "Custom Apps",  result[0].title
     assert_nil result[0].icon_uri
   end
 
-  test "NavBar.items should return navigation group with sort=true when nav_item has apps array and title property" do
+  test "NavBar.items should return navigation group with sort=true when nav_item has apps array and title property and apps token match multiple apps" do
     nav_item = {
       title: "Custom Apps",
       icon: "fa://test",
-      apps: ["sys/bc_jupyter"]
+      apps: ["sys/*"]
     }
 
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
     assert_equal "layouts/nav/group",  result[0].partial_path
-    assert_equal true,  result[0].sort
-    assert_equal 1,  result[0].links.size
-    assert_equal 'Custom Apps',  result[0].links[0].category
-    assert_equal 'Apps',  result[0].links[0].subcategory
+    assert_equal true,  result[0].sort, "Group sorting should be true"
     assert_equal 'Custom Apps',  result[0].title
     assert_equal URI("fa://test"),  result[0].icon_uri
+
+    assert_equal true,  result[0].links.size > 1, "App token should match more than one application"
+    result[0].links.each do |link|
+      assert_equal 'Custom Apps',  link.category
+    end
+  end
+
+  test "NavBar.items should return navigation link when nav_item has apps property and apps token matches 1 app" do
+    nav_item = {
+      apps: "sys/bc_jupyter",
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal 1,  result.size
+    assert_equal "layouts/nav/link",  result[0].partial_path
+    assert_equal 1, result[0].links.size
+    assert_equal "Jupyter Notebook",  result[0].title
+  end
+
+  test "NavBar.items should return navigation link with overridden app properties when nav_item has apps property, apps token matches 1 app, and title and icon are provided" do
+    nav_item = {
+      title: "Link Title",
+      apps: "sys/bc_jupyter",
+      icon: "/test/image.png"
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal 1,  result.size
+    assert_equal "layouts/nav/link",  result[0].partial_path
+    assert_equal 1, result[0].links.size
+    assert_equal "Link Title",  result[0].title
+    assert_equal URI("/test/image.png"),  result[0].icon_uri
   end
 
   test "NavBar.items should return navigation group when nav_item has links property" do
@@ -252,7 +292,27 @@ class NavBarTest < ActiveSupport::TestCase
       title: "menu title",
       links: [
         {group: "subcategory"},
-        {apps: ["sys/bc_jupyter"]},
+        {apps: ["sys/*"]},
+      ]
+    }
+
+    result = NavBar.items([nav_item])
+    assert_equal 1,  result.size
+    assert_equal "layouts/nav/group",  result[0].partial_path
+    assert_equal "menu title",  result[0].title
+    assert_equal true,  result[0].apps.size > 1
+    result[0].apps.each do |app|
+      assert_equal "menu title",  app.category
+      assert_equal "subcategory",  app.subcategory
+    end
+  end
+
+  test "links array should support app links with overrides when token matches 1 app" do
+    nav_item = {
+      title: "menu title",
+      links: [
+        {group: "subcategory"},
+        {title: "link title", icon: "/test/image.png", apps: ["sys/bc_jupyter"]},
       ]
     }
 
@@ -263,7 +323,8 @@ class NavBarTest < ActiveSupport::TestCase
     assert_equal 1,  result[0].apps.size
     assert_equal "menu title",  result[0].apps[0].category
     assert_equal "subcategory",  result[0].apps[0].subcategory
-    assert_equal "Jupyter Notebook",  result[0].apps[0].title
+    assert_equal "link title",  result[0].apps[0].title
+    assert_equal URI("/test/image.png"),  result[0].apps[0].icon_uri
   end
 
   test "links array should support profile links" do
