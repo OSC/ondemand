@@ -40,14 +40,13 @@ class ProjectsTest < ApplicationSystemTestCase
       ---
       title: the script title
       form:
-      - cluster
+      - auto_batch_clusters
       - auto_scripts
       - auto_accounts
       attributes:
         auto_scripts:
           directory: #{project_dir}
-        cluster:
-          widget: select
+        auto_batch_clusters:
           options:
           - oakley
           - owens
@@ -173,15 +172,14 @@ class ProjectsTest < ApplicationSystemTestCase
         ---
         title: the script title
         form:
-        - cluster
+        - auto_batch_clusters
         - auto_scripts
         attributes:
-          cluster:
-            widget: select
-            label: Cluster
+          auto_batch_clusters:
             options:
             - oakley
             - owens
+            label: Cluster
             help: ''
             required: false
           auto_scripts:
@@ -222,7 +220,7 @@ class ProjectsTest < ApplicationSystemTestCase
                    page.all('#script_auto_scripts option').map(&:value).to_set)
 
       # clusters are automatically added
-      assert_equal(['owens', 'oakley'].to_set, page.all('#script_cluster option').map(&:value).to_set)
+      assert_equal(['owens', 'oakley'].to_set, page.all('#script_auto_batch_clusters option').map(&:value).to_set)
     end
   end
 
@@ -238,12 +236,12 @@ class ProjectsTest < ApplicationSystemTestCase
       assert_selector('h1', text: 'the script title', count: 1)
 
       # assert defaults
-      assert_equal 'oakley', find('#script_cluster').value
+      assert_equal 'oakley', find('#script_auto_batch_clusters').value
       assert_equal 'pzs0715', find('#script_auto_accounts').value
       assert_equal "#{project_dir}/my_cool_script.sh", find('#script_auto_scripts').value
       assert_nil YAML.safe_load(File.read("#{script_dir}/1_job_log"))
 
-      select('owens', from: 'script_cluster')
+      select('owens', from: 'script_auto_batch_clusters')
       select('pas2051', from: 'script_auto_accounts')
       select('my_cooler_script.bash', from: 'script_auto_scripts')
 
@@ -281,12 +279,12 @@ class ProjectsTest < ApplicationSystemTestCase
       assert_selector('h1', text: 'the script title', count: 1)
 
       # assert defaults
-      assert_equal 'oakley', find('#script_cluster').value
+      assert_equal 'oakley', find('#script_auto_batch_clusters').value
       assert_equal 'pzs0715', find('#script_auto_accounts').value
       assert_equal "#{project_dir}/my_cool_script.sh", find('#script_auto_scripts').value
       assert_nil YAML.safe_load(File.read("#{script_dir}/1_job_log"))
 
-      select('owens', from: 'script_cluster')
+      select('owens', from: 'script_auto_batch_clusters')
       select('pas2051', from: 'script_auto_accounts')
       select('my_cooler_script.bash', from: 'script_auto_scripts')
 
@@ -329,9 +327,9 @@ class ProjectsTest < ApplicationSystemTestCase
 
       # only shows 'cluster' & 'auto_scripts'
       assert_equal 2, page.all('.form-group').size
-      assert_not_nil find('#script_cluster')
+      assert_not_nil find('#script_auto_batch_clusters')
       assert_not_nil find('#script_auto_scripts')
-      select('oakley', from: 'script_cluster')
+      select('oakley', from: 'script_auto_batch_clusters')
       assert_raises(Capybara::ElementNotFound) do
         find('#script_bc_num_hours')
       end
@@ -341,7 +339,7 @@ class ProjectsTest < ApplicationSystemTestCase
 
       # now shows 'cluster', 'auto_scripts' & the newly added'bc_num_hours'
       assert_equal 3, page.all('.form-group').size
-      assert_not_nil find('#script_cluster')
+      assert_not_nil find('#script_auto_batch_clusters')
       assert_not_nil find('#script_auto_scripts')
       assert_not_nil find('#script_bc_num_hours')
 
@@ -362,15 +360,10 @@ class ProjectsTest < ApplicationSystemTestCase
         ---
         title: the script title
         form:
-        - cluster
         - auto_scripts
+        - auto_batch_clusters
         - bc_num_hours
         attributes:
-          cluster:
-            value: oakley
-            label: Cluster
-            help: ''
-            required: false
           auto_scripts:
             options:
             - - my_cool_script.sh
@@ -380,6 +373,14 @@ class ProjectsTest < ApplicationSystemTestCase
             directory: "#{dir}/projects/1"
             value: "#{dir}/projects/1/my_cool_script.sh"
             label: Script
+            help: ''
+            required: false
+          auto_batch_clusters:
+            options:
+            - oakley
+            - owens
+            value: oakley
+            label: Cluster
             help: ''
             required: false
           bc_num_hours:

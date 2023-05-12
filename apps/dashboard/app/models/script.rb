@@ -46,18 +46,6 @@ class Script
         .prepend(0)
         .max + 1
     end
-
-    def batch_clusters
-      Rails.cache.fetch('script_batch_clusters', expires_in: 4.hours) do
-        Configuration.job_clusters.reject do |c|
-          reject_cluster?(c)
-        end.map(&:id).map(&:to_s).sort
-      end
-    end
-
-    def reject_cluster?(cluster)
-      cluster.kubernetes? || cluster.linux_host? || cluster.systemd?
-    end
   end
 
   def initialize(opts = {})
@@ -160,7 +148,7 @@ class Script
   end
 
   def submit(options)
-    adapter = adapter(options[:cluster]).job_adapter
+    adapter = adapter(options[:auto_batch_clusters]).job_adapter
     render_format = adapter.class.name.split('::').last.downcase
 
     job_script = OodCore::Job::Script.new(**submit_opts(options, render_format))
@@ -168,7 +156,7 @@ class Script
     job_id = Dir.chdir(project_dir) do
       adapter.submit(job_script)
     end
-    update_job_log(job_id, options[:cluster].to_s)
+    update_job_log(job_id, options[:auto_batch_clusters].to_s)
     write_job_options_to_cache(options)
 
     job_id
@@ -298,30 +286,8 @@ class Script
   end
 
   def add_cluster_to_form(form: [], attributes: {})
-    return if form.include?('cluster')
+    return if form.include?('auto_batch_clusters')
 
-    clusters = Script.batch_clusters
-    form.prepend('cluster')
-
-    attributes[:cluster] = if clusters.size > 1
-                             select_clusters(clusters)
-                           else
-                             fixed_cluster(clusters)
-                           end
-  end
-
-  def select_clusters(clusters)
-    {
-      widget:  'select',
-      label:   'Cluster',
-      options: clusters
-    }
-  end
-
-  def fixed_cluster(clusters)
-    {
-      value: clusters.first.id.to_s,
-      fixed: true
-    }
+    form << 'auto_batch_clusters'
   end
 end
