@@ -4,7 +4,6 @@ import { attachPathSelectors } from './path_selector/path_selector'
 
 const bcPrefix = 'batch_connect_session_context';
 const shortNameRex = new RegExp(`${bcPrefix}_([\\w\\-]+)`);
-const tokenRex = /([A-Z][a-z]+){1}([\w\-]+)/;
 
 // @example ['NodeType', 'Cluster']
 const formTokens = [];
@@ -755,17 +754,6 @@ function exactlyOneOption(id, option) {
 
   return optionElement;
 }
-
-// simple function to sanitize css query strings
-function sanitizeQuery(item) {
-  return item.replaceAll('.', '\\.');
-}
-
-
-function optionForEvent(target) {
-  let simpleName = shortId(target['id']);
-  return mountainCaseWords(simpleName);
-};
 
 jQuery(function() {
   makeChangeHandlers();
