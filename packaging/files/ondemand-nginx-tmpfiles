@@ -1,2 +1,4 @@
 d /run/ondemand-nginx 0755 root root -   -
 Z /run/ondemand-nginx -    -    -    -   -
+d /var/tmp/ondemand-nginx 0755 root root - -
+Z /var/tmp/ondemand-nginx -    -    -    - -
