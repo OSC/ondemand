@@ -58,12 +58,13 @@ class ConfigurationSingleton
   # @return [Hash] key/value pairs of defaults
   def string_configs
     {
-      :module_file_dir        => nil,
-      :user_settings_file     => '.ood',
-      :facl_domain            => nil,
-      :auto_groups_filter     => nil,
-      :bc_clean_old_dirs_days => '30',
-      :project_template_dir   => "#{config_root}/projects"
+      :module_file_dir          => nil,
+      :user_settings_file       => '.ood',
+      :facl_domain              => nil,
+      :auto_groups_filter       => nil,
+      :bc_clean_old_dirs_days   => '30',
+      :google_analytics_tag_id  => nil,
+      :project_template_dir     => "#{config_root}/projects"
     }.freeze
   end
 
@@ -351,6 +352,22 @@ class ConfigurationSingleton
 
   def config
     @config ||= read_config
+  end
+
+  # Content security policy value for 'script-src'
+  def script_sources
+    sources = [:self]
+    sources << 'https://www.googletagmanager.com' unless google_analytics_tag_id.nil?
+
+    sources
+  end
+
+  # Content security policy value for 'connect-src'
+  def connect_sources
+    sources = [:self]
+    sources << 'https://www.google-analytics.com' unless google_analytics_tag_id.nil?
+
+    sources
   end
 
   private
