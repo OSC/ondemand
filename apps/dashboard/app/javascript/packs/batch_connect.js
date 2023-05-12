@@ -26,14 +26,11 @@ const minMaxLookup = {};
 const setValueLookup = {};
 const hideLookup = {};
 
-// the regular expression for mountain casing
-const mcRex = /[-_]([a-z])|([_-][0-9])|([\/])/g;
-
 // whether we're still initializing or not
 let initializing = true;
 
 function bcElement(name) {
-  return `${bcPrefix}_${name.toLowerCase()}`;
+  return `${bcPrefix}_${name}`;
 };
 
 // Remove bcPrefix from elementId; Return empty string if prefix not found
@@ -45,43 +42,13 @@ function shortId(elementId) {
 };
 
 /**
- * Mountain case the words from a string, by tokenizing on [-_].  In the
- * simplest case it just capitalizes.
- *
- * There is a special case where seperators are followed numbers. In this case
- * The seperator is kept as a hyphen because that's how jQuery expects it.
- *
- * @param      {string}  str     The word string to mountain case
- *
- * @example  given 'foo' this returns 'Foo'
- * @example  given 'foo-bar' this returns 'FooBar'
- * @example  given 'physics_1234' this returns 'Physics-1234'
- */
-// Convert dashed to camelCase
-function mountainCaseWords(str) {
-  const lower = str.toLowerCase();
-  const first = lower.charAt(0).toUpperCase();
-  const rest = lower.slice(1).replace(mcRex, function(_all, letter, prefixedNumber, slash) {
-    if (letter){
-      return letter.toUpperCase();
-    } else if (prefixedNumber){
-      return prefixedNumber.replace('_','-');
-    } else if (slash){
-      return '_';
-    }
-  });
-
-  return  `${first}${rest}`;
-}
-
-/**
  * Format passed string to snake_case. All characters become lowercase. Existing
  * underscores are unchanged and dashes become underscores. Underscores are added 
  * before locations where an uppercase character is followed by a lowercase character.
  *
  * @param      {string}  str     The word string to snake case
  *
- * @example  given 'MountainCase' this returns 'mountain_case'
+ * @example  given 'PascalCase' this returns 'pascal_case'
  * @example  given 'camelCase' this returns 'camel_case'
  * @example  given 'OSC_JUPYTER' this returns 'osc_jupyter'
  */
@@ -112,7 +79,7 @@ function snakeCaseWords(str) {
 
 /**
  * Get the data attributes for an element similar to jquery .data()
- * Returns a dict of all keys that start with data- after they have been mountainCased and remove data- prefix
+ * Returns a dict of all keys that start with data- after they have been snake_cased and remove data- prefix
  * Values of dict are values of attributes starting with data-
  * 
  * @param {*} element
@@ -120,7 +87,7 @@ function snakeCaseWords(str) {
 function getData(element) {
   let data = {};
   [...element.attributes].filter(x => x.name.startsWith('data-')).forEach(attr => {
-    data[mountainCaseWords(attr.name.replace('data-', ''))] = attr.value;
+    data[snakeCaseWords(attr.name.replace('data-', ''))] = attr.value;
   });
   return data;
 }
@@ -132,7 +99,7 @@ function getData(element) {
  */
  function getParents(element) {
   const parents = [];
-  let parent = document.querySelector("#myElement").parentNode;
+  let parent = element.parentNode;
   while (parent) {
     parents.push(parent);
     parent = parent.parentNode;
@@ -141,13 +108,13 @@ function getData(element) {
 }
 
 /**
- * Add all mountainCased form element ids to the formTokens list
+ * Add all snake_cased form element ids to the formTokens list
  * 
  * @param {Array} elements
  */
 function memorizeElements(elements) {
   elements.forEach(ele => {
-    formTokens.push(mountainCaseWords(shortId(ele.id)));
+    formTokens.push(snakeCaseWords(shortId(ele.id)));
     optionForHandlerCache[ele.id] = [];
   });
 };
@@ -163,14 +130,14 @@ function makeChangeHandlers(){
       options.forEach((opt) => {
         let data = getData(opt);
         Object.keys(data).forEach(key => {
-          if (key.startsWith('OptionFor')) {
-            let token = key.replace(/^OptionFor/,'');
+          if (key.startsWith('option_for_')) {
+            let token = key.replace(/^option_for_/,'');
             addOptionForHandler(idFromToken(token), element.id);
-          } else if(key.startsWith('Max') || key.startsWith('Min')) {
+          } else if(key.startsWith('max') || key.startsWith('min')) {
             addMinMaxForHandler(element.id, opt.value, key, data[key]);
-          } else if(key.startsWith('Set')) {
+          } else if(key.startsWith('set')) {
             addSetHandler(element.id, opt.value, key, data[key]);
-          } else if(key.startsWith('Hide')) {
+          } else if(key.startsWith('hide')) {
             addHideHandler(element.id, opt.value, key, data[key]);
           }
         });
@@ -180,7 +147,7 @@ function makeChangeHandlers(){
 };
 
 function addHideHandler(optionId, option, key,  configValue) {
-  const changeId = idFromToken(key.replace(/^Hide/,''));
+  const changeId = idFromToken(key.replace(/^hide_/,''));
 
   if(hideLookup[optionId] === undefined) hideLookup[optionId] = new Table(changeId, 'option_value');
   const table = hideLookup[optionId];
@@ -275,8 +242,8 @@ function addMinMaxForHandler(subjectId, option, key, configValue) {
  *        data-set-account: 'phy3005'
  *      ]
  */
-function addSetHandler(optionId, option, key,  configValue) {
-  const k = key.replace(/^Set/,'');
+function addSetHandler(optionId, option, key, configValue) {
+  const k = key.replace(/^set_/,'');
   const id = String(idFromToken(k));
   if(id === 'undefined') return;
 
@@ -526,14 +493,14 @@ function parseMinMaxFor(key) {
   let predicateValue = undefined;
   let subjectId = undefined;
 
-  if(key.startsWith('Min')) {
-    k = key.replace(/^Min/,'');
-  } else if(key.startsWith('Max')) {
-    k = key.replace(/^Max/, '')
+  if(key.startsWith('min')) {
+    k = key.replace(/^min_/,'');
+  } else if(key.startsWith('max')) {
+    k = key.replace(/^max_/, '')
   }
 
   //trying to parse maxNumCoresForClusterOwens
-  const tokens = k.match(/^(\w+)For(\w+)$/);
+  const tokens = k.match(/^(\w+)_for_(\w+)$/);
 
   if(tokens == null) {
     // the key is likely just maxNumCores with no For clause
@@ -544,7 +511,7 @@ function parseMinMaxFor(key) {
     const predicateFull = tokens[2];
     subjectId = idFromToken(subject);
 
-    const predicateTokens = predicateFull.split(/(?=[A-Z])/);
+    const predicateTokens = predicateFull.split('_');
     if(predicateTokens && predicateTokens.length >= 2) {
 
       // if there are only 2 tokens then it's like 'ClusterOwens' which is easy
@@ -557,7 +524,7 @@ function parseMinMaxFor(key) {
         let tokenString = '';
         let done = false;
         predicateTokens.forEach((pt, idx) => {
-          if(done) { return; }
+          if (done) return;
 
           tokenString = `${tokenString}${pt}`
           let tokenId = idFromToken(tokenString);
@@ -579,9 +546,9 @@ function parseMinMaxFor(key) {
 }
 
 function minOrMax(key) {
-  if(key.startsWith('Min')){
+  if(key.startsWith('min')){
     return 'min';
-  } else if(key.startsWith('Max')){
+  } else if(key.startsWith('max')){
     return 'max';
   } else {
     return null;
@@ -589,7 +556,7 @@ function minOrMax(key) {
 }
 
 /**
- * Turn a MountainCase token into a form element id
+ * Turn a snake cased token into a form element id
  *
  * @example
  * NodeType -> batch_connect_session_context_node_type
@@ -637,7 +604,7 @@ function idFromToken(str) {
  */
 function optionForFromToken(str) {
   return formTokens.map((token) => {
-    let match = str.match(`^OptionFor${token}`);
+    let match = str.match(`^option_for_${token}`);
 
     if (match && match.length >= 1) {
       return token;
@@ -667,16 +634,16 @@ function optionForFromToken(str) {
     // option-for- directives apply.
     for (let key of Object.keys(data)) {
       let optionFor = optionForFromToken(key);
-      let optionForId = idFromToken(key.replace(/^OptionFor/,''));
+      let optionForId = idFromToken(key.replace(/^option_for_/,''));
 
       // it's some other directive type, so just keep going and/or not real
-      if(!key.startsWith('OptionFor') || optionForId === undefined) {
+      if(!key.startsWith('option_for_') || optionForId === undefined) {
         continue;
       }
 
-      let optionForValue = mountainCaseWords(document.getElementById(optionForId).value);
+      let optionForValue = snakeCaseWords(document.getElementById(optionForId).value);
 
-      hide = data[`OptionFor${optionFor}${optionForValue}`] === 'false';
+      hide = data[`option_for_${optionFor}_${optionForValue}`] === 'false';
       if (hide === true) {
         break;
       }
