@@ -78,17 +78,15 @@ function snakeCaseWords(str) {
 }
 
 /**
- * Get the data attributes for an element similar to jquery .data()
- * Returns a dict of all keys that start with data- after they have been snake_cased and remove data- prefix
- * Values of dict are values of attributes starting with data-
+ * Make data map with contents of element dataset with snake cased keys
  * 
  * @param {*} element
  */
 function getData(element) {
   let data = {};
-  [...element.attributes].filter(x => x.name.startsWith('data-')).forEach(attr => {
-    data[snakeCaseWords(attr.name.replace('data-', ''))] = attr.value;
-  });
+  Object.keys(element.dataset).forEach(key => {
+    data[snakeCaseWords(key)] = element.dataset[key];
+  })
   return data;
 }
 
