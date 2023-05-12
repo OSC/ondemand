@@ -163,7 +163,6 @@ function makeChangeHandlers(){
       options.forEach((opt) => {
         let data = getData(opt);
         Object.keys(data).forEach(key => {
-          console.log(key);
           if (key.startsWith('OptionFor')) {
             let token = key.replace(/^OptionFor/,'');
             addOptionForHandler(idFromToken(token), element.id);
@@ -222,7 +221,6 @@ function addMinMaxForHandler(subjectId, option, key, configValue) {
   configValue = parseInt(configValue);
 
   const configObj = parseMinMaxFor(key);
-  console.log(configObj);
   const objectId = configObj['subjectId'];
   // this is the id of the target object we're setting the min/max for.
   // if it's undefined - there's nothing to do, it was likely configured wrong.
@@ -451,8 +449,6 @@ function toggleMinMax(event, changeId, otherId) {
 
   const changeElement = document.getElementById(changeId);
   const mm = table.get(x, y);
-  console.log(changeElement);
-  console.log(mm);
   const prev = {
     min: parseInt(changeElement.min),
     max: parseInt(changeElement.max),
@@ -538,7 +534,6 @@ function parseMinMaxFor(key) {
 
   //trying to parse maxNumCoresForClusterOwens
   const tokens = k.match(/^(\w+)For(\w+)$/);
-  console.log(tokens)
 
   if(tokens == null) {
     // the key is likely just maxNumCores with no For clause
@@ -664,10 +659,7 @@ function optionForFromToken(str) {
   let hideSelectedValue = undefined;
 
   options.forEach(option => {
-    // the variable 'option' is just a data structure. it has no attr, data, show
-    // or hide methods so we have to query for it again
-    let optionElement = exactlyOneOption(elementId, option);
-    let data = getData(optionElement);
+    let data = getData(option);
     let hide = false;
 
     // even though an event occured - an option may be hidden based on the value of
@@ -691,16 +683,16 @@ function optionForFromToken(str) {
     };
 
     if(hide) {
-      optionElement.style.display = 'none';
-      optionElement.disabled = true;
+      option.style.display = 'none';
+      option.disabled = true;
 
-      if(optionElement.selected) {
-        optionElement.selected = false;
-        hideSelectedValue = optionElement.text();
+      if(option.selected) {
+        option.selected = false;
+        hideSelectedValue = option.text();
       }
     } else {
-      optionElement.style.display = '';
-      optionElement.disabled = false;
+      option.style.display = '';
+      option.disabled = false;
     }
   });
 
@@ -715,7 +707,7 @@ function optionForFromToken(str) {
     if(others.length > 1) {
       others.forEach(ele => {
         if(ele.style.display === '') {
-          newSelectedOption = exactlyOneOption(elementId, ele);
+          newSelectedOption = ele;
           return;
         }
       });
@@ -726,7 +718,7 @@ function optionForFromToken(str) {
       others = document.querySelectorAll(`#${elementId} option`);
       others.forEach(ele => {
         if(newSelectedOption === undefined && ele.style.display === '') {
-          newSelectedOption = exactlyOneOption(elementId, ele);
+          newSelectedOption = ele;
         }
       });
     }
@@ -739,21 +731,6 @@ function optionForFromToken(str) {
   // now that we're done, propogate this change to data-set or data-hide handlers
   document.getElementById(elementId).dispatchEvent((new Event('change', { bubbles: true })));
 };
-
-// Return exactly 1 jquery object for this id's option
-function exactlyOneOption(id, option) {
-  let optionElements = [...document.querySelectorAll(`#${id} option[value='${option.value}']`)];
-  let optionElement;
-
-  optionElements.forEach(ele => {
-    if (option.attributes == ele.attributes){
-      optionElement = ele;
-      return;
-    }
-  });
-
-  return optionElement;
-}
 
 document.addEventListener('DOMContentLoaded', () => {
   makeChangeHandlers();
