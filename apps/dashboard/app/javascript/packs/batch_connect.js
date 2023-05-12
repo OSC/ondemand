@@ -755,7 +755,7 @@ function exactlyOneOption(id, option) {
   return optionElement;
 }
 
-jQuery(function() {
+document.addEventListener('DOMContentLoaded', () => {
   makeChangeHandlers();
   attachPathSelectors();
   initializing = false;
