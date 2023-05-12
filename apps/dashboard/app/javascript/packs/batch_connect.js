@@ -37,16 +37,12 @@ function bcElement(name) {
   return `${bcPrefix}_${name.toLowerCase()}`;
 };
 
-// here the simple name for 'batch_connect_session_context_cluster'
-// is just 'cluster'.
+// Remove bcPrefix from elementId; Return empty string if prefix not found
+// 'batch_connect_session_context_cluster' becomes 'cluster'
 function shortId(elementId) {
   const match = elementId.match(shortNameRex);
 
-  if (match.length >= 1) {
-    return match[1];
-  } else {
-    return '';
-  };
+  return (match.length >= 1) ? match[1] : '';
 };
 
 /**
@@ -67,11 +63,11 @@ function mountainCaseWords(str) {
   const lower = str.toLowerCase();
   const first = lower.charAt(0).toUpperCase();
   const rest = lower.slice(1).replace(mcRex, function(_all, letter, prefixedNumber, slash) {
-    if(letter){
+    if (letter){
       return letter.toUpperCase();
-    }else if(prefixedNumber){
+    } else if (prefixedNumber){
       return prefixedNumber.replace('_','-');
-    }else if(slash){
+    } else if (slash){
       return '_';
     }
   });
@@ -116,51 +112,77 @@ function snakeCaseWords(str) {
 }
 
 /**
- *
+ * Get the data attributes for an element similar to jquery .data()
+ * Returns a dict of all keys that start with data- after they have been mountainCased and remove data- prefix
+ * Values of dict are values of attributes starting with data-
+ * 
+ * @param {*} element
+ */
+function getData(element) {
+  let data = {};
+  [...element.attributes].filter(x => x.name.startsWith('data-')).forEach(attr => {
+    data[mountainCaseWords(attr.name.replace('data-', ''))] = attr.value;
+  });
+  return data;
+}
+
+/**
+ * Returns a list of all nested parentNodes of an element
+ * 
+ * @param {*} element
+ */
+ function getParents(element) {
+  const parents = [];
+  let parent = document.querySelector("#myElement").parentNode;
+  while (parent) {
+    parents.push(parent);
+    parent = parent.parentNode;
+  }
+  return parents;
+}
+
+/**
+ * Add all mountainCased form element ids to the formTokens list
+ * 
  * @param {Array} elements
  */
 function memorizeElements(elements) {
-  elements.each((_i, ele) => {
-    formTokens.push(mountainCaseWords(shortId(ele['id'])));
-    optionForHandlerCache[ele['id']] = [];
+  elements.forEach(ele => {
+    formTokens.push(mountainCaseWords(shortId(ele.id)));
+    optionForHandlerCache[ele.id] = [];
   });
 };
 
 function makeChangeHandlers(){
-  const allElements = $(`[id^=${bcPrefix}]`);
+  // Get list of all elements whose ID starts with the bcPrefix
+  const allElements = [...document.querySelectorAll(`[id^='${bcPrefix}']`)];
   memorizeElements(allElements);
 
-  allElements.each((_i, element) => {
+  allElements.forEach((element) => {
     if (element['type'] == "select-one"){
-      let optionSearch = `#${element['id']} option`;
-      let options = $(optionSearch);
-      options.each((_i, opt) => {
-          // the variable 'opt' is just a data structure, not a jQuery result. 
-          // it has no attr, data, show or hide methods so we have to query
-          // for it again
-          let data = $(`${optionSearch}[value='${opt.value}']`).data();
-          let keys = Object.keys(data);
-          if(keys.length !== 0) {
-            keys.forEach((key) => {
-              if(key.startsWith('optionFor')) {
-                let token = key.replace(/^optionFor/,'');
-                addOptionForHandler(idFromToken(token), element['id']);
-              } else if(key.startsWith('max') || key.startsWith('min')) {
-                addMinMaxForHandler(element['id'], opt.value, key, data[key]);
-              } else if(key.startsWith('set')) {
-                addSetHandler(element['id'], opt.value, key, data[key]);
-              } else if(key.startsWith('hide')) {
-                addHideHandler(element['id'], opt.value, key, data[key]);
-              }
-            });
+      let options = [...document.querySelectorAll(`#${element['id']} option`)];
+      options.forEach((opt) => {
+        let data = getData(opt);
+        Object.keys(data).forEach(key => {
+          console.log(key);
+          if (key.startsWith('OptionFor')) {
+            let token = key.replace(/^OptionFor/,'');
+            addOptionForHandler(idFromToken(token), element.id);
+          } else if(key.startsWith('Max') || key.startsWith('Min')) {
+            addMinMaxForHandler(element.id, opt.value, key, data[key]);
+          } else if(key.startsWith('Set')) {
+            addSetHandler(element.id, opt.value, key, data[key]);
+          } else if(key.startsWith('Hide')) {
+            addHideHandler(element.id, opt.value, key, data[key]);
           }
+        });
       });
     }
   });
 };
 
 function addHideHandler(optionId, option, key,  configValue) {
-  const changeId = idFromToken(key.replace(/^hide/,''));
+  const changeId = idFromToken(key.replace(/^Hide/,''));
 
   if(hideLookup[optionId] === undefined) hideLookup[optionId] = new Table(changeId, 'option_value');
   const table = hideLookup[optionId];
@@ -169,16 +191,16 @@ function addHideHandler(optionId, option, key,  configValue) {
   if(hideHandlerCache[optionId] === undefined) hideHandlerCache[optionId] = [];
 
   if(!hideHandlerCache[optionId].includes(changeId)) {
-    const changeElement = $(`#${optionId}`);
+    const changeElement = document.getElementById(optionId);
 
-    changeElement.on('change', (event) => {
+    changeElement.addEventListener('change', (event) => {
       updateVisibility(event, changeId);
     });
 
     hideHandlerCache[optionId].push(changeId);
   }
 
-  updateVisibility({ target: document.querySelector(`#${optionId}`) }, changeId);
+  updateVisibility({ target: document.getElementById(optionId) }, changeId);
 }
 
 /**
@@ -196,15 +218,16 @@ function addHideHandler(optionId, option, key,  configValue) {
  *        data-max-num-cores-for-cluster-annie-oakley: 42
  *      ]
  */
-function addMinMaxForHandler(subjectId, option, key,  configValue) {
+function addMinMaxForHandler(subjectId, option, key, configValue) {
   subjectId = String(subjectId || '');
   configValue = parseInt(configValue);
 
   const configObj = parseMinMaxFor(key);
+  console.log(configObj);
   const objectId = configObj['subjectId'];
   // this is the id of the target object we're setting the min/max for.
   // if it's undefined - there's nothing to do, it was likely configured wrong.
-  if(objectId === undefined) return;
+  if (objectId === undefined) return;
 
   const secondDimId = configObj['predicateId'];
   const secondDimValue = configObj['predicateValue'];
@@ -217,9 +240,9 @@ function addMinMaxForHandler(subjectId, option, key,  configValue) {
 
   let cacheKey = `${objectId}_${subjectId}_${secondDimId}`;
   if(!minMaxHandlerCache.includes(cacheKey)) {
-    const changeElement = $(`#${subjectId}`);
+    const changeElement = document.getElementById(subjectId);
 
-    changeElement.on('change', (event) => {
+    changeElement.addEventListener('change', (event) => {
       toggleMinMax(event, objectId, secondDimId);
     });
 
@@ -228,9 +251,9 @@ function addMinMaxForHandler(subjectId, option, key,  configValue) {
 
   cacheKey = `${objectId}_${secondDimId}_${subjectId}`;
   if(secondDimId !== undefined && !minMaxHandlerCache.includes(cacheKey)){
-    const secondEle = $(`#${secondDimId}`);
+    const secondEle = document.getElementById(secondDimId);
 
-    secondEle.on('change', (event) => {
+    secondEle.addEventListener('change', (event) => {
       toggleMinMax(event, objectId, subjectId);
     });
 
@@ -256,7 +279,7 @@ function addMinMaxForHandler(subjectId, option, key,  configValue) {
  *      ]
  */
 function addSetHandler(optionId, option, key,  configValue) {
-  const k = key.replace(/^set/,'');
+  const k = key.replace(/^Set/,'');
   const id = String(idFromToken(k));
   if(id === 'undefined') return;
 
@@ -267,9 +290,9 @@ function addSetHandler(optionId, option, key,  configValue) {
   table.put(option, undefined, configValue);
 
   if(!setHandlerCache.includes(cacheKey)) {
-    const changeElement = $(`#${optionId}`);
+    const changeElement = document.getElementById(optionId);
 
-    changeElement.on('change', (event) => {
+    changeElement.addEventListener('change', (event) => {
       setValue(event, id);
     });
 
@@ -288,9 +311,7 @@ function setValue(event, changeId) {
   const changeVal = table.get(chosenVal, undefined);
 
   if(changeVal !== undefined) {
-    const innerElement = $(`#${changeId}`);
-    innerElement.attr('value', changeVal);
-    innerElement.val(changeVal);
+    document.getElementById(changeId).value = changeVal;
   }
 }
 
@@ -369,9 +390,9 @@ class Table {
 
     if(this.table[xIdx] === undefined){
       return undefined;
-    }else if(y === undefined){
+    } else if(y === undefined){
       return this.table[xIdx];
-    }else {
+    } else {
       return this.table[xIdx][yIdx];
     }
   }
@@ -385,9 +406,9 @@ function updateVisibility(event, changeId) {
   const val = event.target.value;
   const id = event.target['id'];
   let changeElement = undefined;
-  $(`#${changeId}`).parents().each(function(_i, parent) {
+  getParents(document.getElementById(changeId)).forEach(parent => {
     if(parent.classList.contains('form-group')) {
-      changeElement = $(parent);
+      changeElement = parent;
       return false;
     }
   });
@@ -397,9 +418,9 @@ function updateVisibility(event, changeId) {
   // safe to access directly?
   const hide = hideLookup[id].get(changeId, val);
   if(hide === undefined && !initializing) {
-    changeElement.show();
+    changeElement.style.display = '';
   }else if(hide === true) {
-    changeElement.hide();
+    changeElement.style.display = 'none';
   }
 }
 
@@ -421,31 +442,32 @@ function toggleMinMax(event, changeId, otherId) {
 
   // in the example of cluster & node_type, either element can trigger a change
   // so let's figure out the axis' based on the change element's id.
-  if(event.target['id'] == table.x) {
+  if(event.target.id == table.x) {
     x = snakeCaseWords(event.target.value);
-    y = snakeCaseWords($(`#${otherId}`).val());
+    y = snakeCaseWords(document.getElementById(otherId).value);
   } else {
+    x = snakeCaseWords(document.getElementById(otherId).value);
     y = snakeCaseWords(event.target.value);
-    x = snakeCaseWords($(`#${otherId}`).val());
   }
 
-  const changeElement = $(`#${changeId}`);
+  const changeElement = document.getElementById(changeId);
   const mm = table.get(x, y);
+  console.log(changeElement);
+  console.log(mm);
   const prev = {
-    min: parseInt(changeElement.attr('min')),
-    max: parseInt(changeElement.attr('max')),
+    min: parseInt(changeElement.min),
+    max: parseInt(changeElement.max),
   };
 
   [ 'max', 'min' ].forEach((dim) => {
     if(mm && mm[dim] !== undefined) {
-      changeElement.attr(dim, mm[dim]);
+      changeElement[dim] = mm[dim];
     }
   });
 
-  const val = clamp(parseInt(changeElement.val()), prev, mm)
+  const val = clamp(parseInt(changeElement.value), prev, mm)
   if (val !== undefined) {
-    changeElement.attr('value', val);
-    changeElement.val(val);
+    changeElement.value = val;
   }
 }
 
@@ -477,18 +499,18 @@ function addOptionForHandler(causeId, targetId) {
     return;
   }
 
-  let causeElement = $(`#${causeId}`);
-
+  let causeElement = document.getElementById(causeId);
+  
   if(targetId && causeElement) {
     // cache the fact that there's a new handler here
     optionForHandlerCache[causeId].push(targetId);
 
-    causeElement.on('change', (event) => {
+    causeElement.addEventListener('change', (event) => {
       toggleOptionsFor(event, targetId);
     });
 
     // fake an event to initialize
-    toggleOptionsFor({ target: document.querySelector(`#${causeId}`) }, targetId);
+    toggleOptionsFor({ target: document.getElementById(causeId) }, targetId);
   }
 };
 
@@ -509,14 +531,15 @@ function parseMinMaxFor(key) {
   let predicateValue = undefined;
   let subjectId = undefined;
 
-  if(key.startsWith('min')) {
-    k = key.replace(/^min/,'');
-  } else if(key.startsWith('max')) {
-    k = key.replace(/^max/, '')
+  if(key.startsWith('Min')) {
+    k = key.replace(/^Min/,'');
+  } else if(key.startsWith('Max')) {
+    k = key.replace(/^Max/, '')
   }
 
   //trying to parse maxNumCoresForClusterOwens
   const tokens = k.match(/^(\w+)For(\w+)$/);
+  console.log(tokens)
 
   if(tokens == null) {
     // the key is likely just maxNumCores with no For clause
@@ -562,9 +585,9 @@ function parseMinMaxFor(key) {
 }
 
 function minOrMax(key) {
-  if(key.startsWith('min')){
+  if(key.startsWith('Min')){
     return 'min';
-  } else if(key.startsWith('max')){
+  } else if(key.startsWith('Max')){
     return 'max';
   } else {
     return null;
@@ -575,7 +598,7 @@ function minOrMax(key) {
  * Turn a MountainCase token into a form element id
  *
  * @example
- *  NodeType -> batch_connect_session_context_node_type
+ * NodeType -> batch_connect_session_context_node_type
  *
  * @param {*} str
  * @returns
@@ -620,7 +643,7 @@ function idFromToken(str) {
  */
 function optionForFromToken(str) {
   return formTokens.map((token) => {
-    let match = str.match(`^optionFor${token}`);
+    let match = str.match(`^OptionFor${token}`);
 
     if (match && match.length >= 1) {
       return token;
@@ -638,48 +661,47 @@ function optionForFromToken(str) {
  * @param      {string}  element_name  The name of the element with options to toggle
  */
  function toggleOptionsFor(_event, elementId) {
-  const options = $(`#${elementId} option`);
+  const options = [...document.querySelectorAll(`#${elementId} option`)];
   let hideSelectedValue = undefined;
 
-  options.each(function(_i, option) {
+  options.forEach(option => {
     // the variable 'option' is just a data structure. it has no attr, data, show
     // or hide methods so we have to query for it again
     let optionElement = exactlyOneOption(elementId, option);
-    let data = optionElement.data();
+    let data = getData(optionElement);
     let hide = false;
 
     // even though an event occured - an option may be hidden based on the value of
     // something else entirely. We're going to hide this option if _any_ of the
     // option-for- directives apply.
-    for (const [key, _value] of Object.entries(data)) {
-
+    for (let key of Object.keys(data)) {
       let optionFor = optionForFromToken(key);
-      let optionForId = idFromToken(key.replace(/^optionFor/,''));
+      let optionForId = idFromToken(key.replace(/^OptionFor/,''));
 
       // it's some other directive type, so just keep going and/or not real
-      if(!key.startsWith('optionFor') || optionForId === undefined) {
+      if(!key.startsWith('OptionFor') || optionForId === undefined) {
         continue;
       }
 
-      let optionForValue =  mountainCaseWords($(`#${optionForId}`)[0].value);
+      let optionForValue = mountainCaseWords(document.getElementById(optionForId).value);
 
-      hide = data[`optionFor${optionFor}${optionForValue}`] === false;
-      if(hide === true) {
+      hide = data[`OptionFor${optionFor}${optionForValue}`] === 'false';
+      if (hide === true) {
         break;
       }
-    }
+    };
 
     if(hide) {
-      optionElement.hide();
-      optionElement.prop('disabled', true);
+      optionElement.style.display = 'none';
+      optionElement.disabled = true;
 
-      if(optionElement.prop('selected')) {
-        optionElement.prop('selected', false);
+      if(optionElement.selected) {
+        optionElement.selected = false;
         hideSelectedValue = optionElement.text();
       }
     } else {
-      optionElement.show();
-      optionElement.prop('disabled', false);
+      optionElement.style.display = '';
+      optionElement.disabled = false;
     }
   });
 
@@ -687,13 +709,13 @@ function optionForFromToken(str) {
   // be the current selected value.
   // if you've hidden what _was_ selected.
   if(hideSelectedValue !== undefined) {
-    let others = $(`#${elementId} option[value='${hideSelectedValue}']`);
+    let others = [...document.querySelectorAll(`#${elementId} option[value='${hideSelectedValue}']`)];
     let newSelectedOption = undefined;
 
     // You have hidden what _was_ selected, so try to find a duplicate option that is visible
     if(others.length > 1) {
-      others.each((_i, ele) => {
-        if(ele.style['display'] === '') {
+      others.forEach(ele => {
+        if(ele.style.display === '') {
           newSelectedOption = exactlyOneOption(elementId, ele);
           return;
         }
@@ -701,36 +723,35 @@ function optionForFromToken(str) {
     }
 
     // no duplciates are visible, so just pick the first visible option
-    if(newSelectedOption === undefined) {
-      others = $(`#${elementId} option`)
-      others.each((_i, ele) => {
-        if(newSelectedOption === undefined && ele.style['display'] === '') {
+    if (newSelectedOption === undefined) {
+      others = document.querySelectorAll(`#${elementId} option`);
+      others.forEach(ele => {
+        if(newSelectedOption === undefined && ele.style.display === '') {
           newSelectedOption = exactlyOneOption(elementId, ele);
         }
       });
     }
 
-    if(newSelectedOption !== undefined) {
-      newSelectedOption.prop('selected', true);
+    if (newSelectedOption !== undefined) {
+      newSelectedOption.selected = true;
     }
   }
 
   // now that we're done, propogate this change to data-set or data-hide handlers
-  $(`#${elementId}`).trigger('change');
+  document.getElementById(elementId).dispatchEvent((new Event('change', { bubbles: true })));
 };
 
 // Return exactly 1 jquery object for this id's option
 function exactlyOneOption(id, option) {
-  let optionElement = $(`#${id} option[value='${option.value}']`);
+  let optionElements = [...document.querySelectorAll(`#${id} option[value='${option.value}']`)];
+  let optionElement;
 
-  if(optionElement.length > 1) {
-    optionElement.each((_i, ele) => {
-      if(option.attributes == ele.attributes){
-        optionElement = $(ele);
-        return;
-      }
-    });
-  }
+  optionElements.forEach(ele => {
+    if (option.attributes == ele.attributes){
+      optionElement = ele;
+      return;
+    }
+  });
 
   return optionElement;
 }
