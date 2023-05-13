@@ -102,6 +102,8 @@ function getData(element) {
     parents.push(parent);
     parent = parent.parentNode;
   }
+  // Pop HTMLDocument from top of list
+  if (parents.length > 0 && parents[parents.length-1].classList == undefined) parents.pop();
   return parents;
 }
 
@@ -385,7 +387,7 @@ function updateVisibility(event, changeId) {
     changeElement.style.display = 'none';
   }
 }
-
+23
 /**
  * Update the min & max values of `changeId` based on the
  * event, the `otherId` and the settings in minMaxLookup table.
