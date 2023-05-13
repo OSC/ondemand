@@ -670,7 +670,7 @@ function optionForFromToken(str) {
 
       if(option.selected) {
         option.selected = false;
-        hideSelectedValue = option.text();
+        hideSelectedValue = option.textContent;
       }
     } else {
       option.style.display = '';
