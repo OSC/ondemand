@@ -638,21 +638,16 @@ function optionForFromToken(str) {
  * @param      {string}  element_name  The name of the element with options to toggle
  */
  function toggleOptionsFor(_event, elementId) {
-  const options = $(`#${elementId} option`);
+  const options = [...document.querySelectorAll(`#${elementId} option`)];
   let hideSelectedValue = undefined;
 
-  options.each(function(_i, option) {
-    // the variable 'option' is just a data structure. it has no attr, data, show
-    // or hide methods so we have to query for it again
-    let optionElement = exactlyOneOption(elementId, option);
-    let data = optionElement.data();
+  options.forEach(option => {
     let hide = false;
 
     // even though an event occured - an option may be hidden based on the value of
     // something else entirely. We're going to hide this option if _any_ of the
     // option-for- directives apply.
-    for (const [key, _value] of Object.entries(data)) {
-
+    for (let key of Object.keys(option.dataset)) {
       let optionFor = optionForFromToken(key);
       let optionForId = idFromToken(key.replace(/^optionFor/,''));
 
@@ -661,25 +656,25 @@ function optionForFromToken(str) {
         continue;
       }
 
-      let optionForValue =  mountainCaseWords($(`#${optionForId}`)[0].value);
+      let optionForValue = mountainCaseWords(document.getElementById(optionForId).value);
 
-      hide = data[`optionFor${optionFor}${optionForValue}`] === false;
-      if(hide === true) {
+      hide = option.dataset[`optionFor${optionFor}${optionForValue}`] === 'false';
+      if (hide) {
         break;
       }
-    }
+    };
 
     if(hide) {
-      optionElement.hide();
-      optionElement.prop('disabled', true);
+      option.style.display = 'none';
+      option.disabled = true;
 
-      if(optionElement.prop('selected')) {
-        optionElement.prop('selected', false);
-        hideSelectedValue = optionElement.text();
+      if(option.selected) {
+        option.selected = false;
+        hideSelectedValue = option.text();
       }
     } else {
-      optionElement.show();
-      optionElement.prop('disabled', false);
+      option.style.display = '';
+      option.disabled = false;
     }
   });
 
@@ -687,53 +682,37 @@ function optionForFromToken(str) {
   // be the current selected value.
   // if you've hidden what _was_ selected.
   if(hideSelectedValue !== undefined) {
-    let others = $(`#${elementId} option[value='${hideSelectedValue}']`);
+    let others = [...document.querySelectorAll(`#${elementId} option[value='${hideSelectedValue}']`)];
     let newSelectedOption = undefined;
 
     // You have hidden what _was_ selected, so try to find a duplicate option that is visible
     if(others.length > 1) {
-      others.each((_i, ele) => {
-        if(ele.style['display'] === '') {
-          newSelectedOption = exactlyOneOption(elementId, ele);
+      others.forEach(ele => {
+        if(ele.style.display === '') {
+          newSelectedOption = ele;
           return;
         }
       });
     }
 
     // no duplciates are visible, so just pick the first visible option
-    if(newSelectedOption === undefined) {
-      others = $(`#${elementId} option`)
-      others.each((_i, ele) => {
-        if(newSelectedOption === undefined && ele.style['display'] === '') {
-          newSelectedOption = exactlyOneOption(elementId, ele);
+    if (newSelectedOption === undefined) {
+      others = document.querySelectorAll(`#${elementId} option`);
+      others.forEach(ele => {
+        if(newSelectedOption === undefined && ele.style.display === '') {
+          newSelectedOption = ele;
         }
       });
     }
 
-    if(newSelectedOption !== undefined) {
-      newSelectedOption.prop('selected', true);
+    if (newSelectedOption !== undefined) {
+      newSelectedOption.selected = true;
     }
   }
 
   // now that we're done, propogate this change to data-set or data-hide handlers
-  $(`#${elementId}`).trigger('change');
+  document.getElementById(elementId).dispatchEvent((new Event('change', { bubbles: true })));
 };
-
-// Return exactly 1 jquery object for this id's option
-function exactlyOneOption(id, option) {
-  let optionElement = $(`#${id} option[value='${option.value}']`);
-
-  if(optionElement.length > 1) {
-    optionElement.each((_i, ele) => {
-      if(option.attributes == ele.attributes){
-        optionElement = $(ele);
-        return;
-      }
-    });
-  }
-
-  return optionElement;
-}
 
 // simple function to sanitize css query strings
 function sanitizeQuery(item) {
