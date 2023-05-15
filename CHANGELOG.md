@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
   in [2791](https://github.com/OSC/ondemand/pull/2791).
