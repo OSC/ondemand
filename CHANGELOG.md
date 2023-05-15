@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Add /var/tmp/ondemand-nginx to tmpfiles (#2806)\
+Allow oidc_crypto_passphrase to be set for ood-portal-generator (#2807)\
+Added support to override title and icon on app navigation items (#2804)\
+add auto clusters (#2802)\
+embed google analytics inside the dashboard (#2795)\
+lint a random file (#2803)\
+work on script initialization and serialization. (#2796)\
+Update Changelog (#2800)\
+update dependencies (#2801)\
+lint a random file (#2799)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
