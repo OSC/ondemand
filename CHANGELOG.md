@@ -6,20 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Add /var/tmp/ondemand-nginx to tmpfiles (#2806)\
-Allow oidc_crypto_passphrase to be set for ood-portal-generator (#2807)\
-Added support to override title and icon on app navigation items (#2804)\
-add auto clusters (#2802)\
-embed google analytics inside the dashboard (#2795)\
-lint a random file (#2803)\
-work on script initialization and serialization. (#2796)\
-Update Changelog (#2800)\
-update dependencies (#2801)\
-lint a random file (#2799)
+
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
   in [2791](https://github.com/OSC/ondemand/pull/2791).
+- An option for Google analytics javascript has been added to dashboard in 
+  in [2795](https://github.com/OSC/ondemand/pull/2795).
+- `oidc_crypto_passphrase` can be set in ood_portal in [2807](https://github.com/OSC/ondemand/pull/2807).
+- Titles for menus can now be overriden in [2804](https://github.com/OSC/ondemand/pull/2804).
 
 ## [3.0.1] - 04-20-2023
 
