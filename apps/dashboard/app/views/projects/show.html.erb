@@ -50,7 +50,7 @@
             %>
 
             <%-
-              params = script.smart_attributes.map { |attr| ["batch_connect_session_context[#{attr.id}]", attr.value] }.to_h
+              params = script.smart_attributes.map { |attr| ["script[#{attr.id}]", attr.value] }.to_h
             -%>
 
             <%= button_to(
