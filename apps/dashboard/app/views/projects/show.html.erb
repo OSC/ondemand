@@ -33,7 +33,8 @@
             <div class="spinner-border"></div>
           </td>
           <td class='text-center col-md-4'><%= script.title %></td>
-          <td class='col-md-4'>
+          <td class='col-md-12 text-center'>
+          <div class="btn-group" data-toggle="buttons">
             <%= link_to(
                 t('dashboard.show'),
                   project_script_path(@project.id, script.id),
@@ -47,6 +48,21 @@
               class: 'btn btn-primary mx-1',
             )
             %>
+
+            <%-
+              params = script.smart_attributes.map { |attr| ["script[#{attr.id}]", attr.value] }.to_h
+            -%>
+
+            <%= button_to(
+              t('dashboard.batch_connect_form_launch'),
+              submit_project_script_path(@project.id, script.id),
+              class: 'btn btn-secondary mx-1',
+              title: 'Launch script with cached values',
+              data: {:method => "post"},
+              params: params
+            )
+            %>
+            </div>
           </td>
         <tr>
       <% end %>
