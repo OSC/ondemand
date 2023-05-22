@@ -58,6 +58,9 @@ http {
   passenger_pool_idle_time <%= passenger_pool_idle_time %>;
 
   <%- end -%>
+  <%- if passenger_log_file -%>
+  passenger_log_file <%= passenger_log_file %>;
+  <%- end -%>
 <%- passenger_options.to_h.each_pair do |key, value| -%>
   <%= key %> <%= value %>;
 <%- end -%>
