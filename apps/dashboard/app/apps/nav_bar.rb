@@ -11,9 +11,13 @@ class NavBar
           extend_group(nav_menu(nav_item))
         elsif nav_item[:url]
           extend_link(nav_link(nav_item))
-        elsif nav_item[:apps] && nav_item[:title]
+        elsif nav_item[:apps]
           matched_apps = nav_apps(nav_item, nav_item[:title], nil)
-          extend_group(OodAppGroup.new(apps: matched_apps, title: nav_item[:title], icon_uri: nav_item[:icon]), sort: true)
+          if matched_apps.length == 1
+            extend_link(matched_apps.first)
+          elsif nav_item[:title]
+            extend_group(OodAppGroup.new(apps: matched_apps, title: nav_item[:title], icon_uri: nav_item[:icon]), sort: true)
+          end
         elsif nav_item[:profile]
           extend_link(nav_profile(nav_item))
         elsif !nav_item[:page].blank?
@@ -71,10 +75,11 @@ class NavBar
 
   def self.nav_apps(item, category='', subcategory='')
     app_configs = Array.wrap(item.fetch(:apps, []))
-    app_configs.map do |config_string|
+    app_links = app_configs.map do |config_string|
       matched_apps = Router.pinned_apps_from_token(config_string, SysRouter.apps)
       extract_links(matched_apps, category: category, subcategory: subcategory)
     end.flatten
+    override_app_link(app_links, item)
   end
 
   def self.nav_profile(item, category='', subcategory='')
@@ -96,6 +101,18 @@ class NavBar
     page_data[:icon_uri] = item.fetch(:icon, nil)
     page_data[:new_tab] = item.fetch(:new_tab, false)
     OodAppLink.new(page_data).categorize(category: category, subcategory: subcategory)
+  end
+
+  def self.override_app_link(app_links, item)
+    if app_links.length == 1
+      app_link = app_links.first
+      data = app_link.to_h
+      data[:title] = item.fetch(:title, app_link.title)
+      data[:icon_uri] = item.fetch(:icon, app_link.icon_uri)
+      [OodAppLink.new(data).categorize(category: app_link.category, subcategory: app_link.subcategory, show_in_menu: app_link.show_in_menu?)]
+    else
+      app_links
+    end
   end
 
   def self.item_from_token(token)

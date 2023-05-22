@@ -142,7 +142,7 @@ module NginxStage
     # @param user [String] the user of the nginx process
     # @return [String] the path to the nginx access log
     def pun_access_log_path(user:)
-      File.expand_path @pun_access_log_path % {user: user}
+      expand_nginx_log_path @pun_access_log_path % {user: user}
     end
 
     attr_writer :pun_access_log_path
@@ -154,7 +154,7 @@ module NginxStage
     # @param user [String] the user of the nginx process
     # @return [String] the path to the nginx error log
     def pun_error_log_path(user:)
-      File.expand_path @pun_error_log_path % {user: user}
+      expand_nginx_log_path @pun_error_log_path % {user: user}
     end
 
     attr_writer :pun_error_log_path
@@ -528,5 +528,13 @@ module NginxStage
         return obj
       end
 
+      # Expand paths only if they are not special
+      def expand_nginx_log_path(path)
+        if path == "stderr" || path.start_with?("syslog:") || path.start_with?("memory:")
+          path
+        else
+          File.expand_path path
+        end
+      end
   end
 end

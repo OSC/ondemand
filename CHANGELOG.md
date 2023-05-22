@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
   in [2791](https://github.com/OSC/ondemand/pull/2791).
+- An option for Google analytics javascript has been added to dashboard in 
+  in [2795](https://github.com/OSC/ondemand/pull/2795).
+- `oidc_crypto_passphrase` can be set in ood_portal in [2807](https://github.com/OSC/ondemand/pull/2807).
+- Titles for menus can now be overriden in [2804](https://github.com/OSC/ondemand/pull/2804).
 
 ## [3.0.1] - 04-20-2023
 

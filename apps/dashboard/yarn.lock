@@ -1405,9 +1405,9 @@ is-buffer@^2.0.0:
   integrity sha512-i2R6zNFDwgEHJyQUtJEk0XFi1i0dPFn/oqjK3/vPCcDeJvW5NQ83V8QbicfF1SupOaB0h8ntgBC2YiE7dfyctQ==
 
 is-core-module@^2.2.0:
-  version "2.12.0"
-  resolved "https://registry.yarnpkg.com/is-core-module/-/is-core-module-2.12.0.tgz#36ad62f6f73c8253fd6472517a12483cf03e7ec4"
-  integrity sha512-RECHCBCd/viahWmwj6enj19sKbHfJrddi/6cBDsNTKbNq0f7VeaUkBo60BqzvPqo/W54ChS62Z5qyun7cfOMqQ==
+  version "2.12.1"
+  resolved "https://registry.yarnpkg.com/is-core-module/-/is-core-module-2.12.1.tgz#0c0b6885b6f80011c71541ce15c8d66cf5a4f9fd"
+  integrity sha512-Q4ZuBAe2FUsKtyQJoQHlvP8OvBERxO3jEmy1I7hcRXcJBGGHFh/aJBswbXuS9sgrDH2QUO8ilkwNPHvHMd8clg==
   dependencies:
     has "^1.0.3"
 
@@ -1481,9 +1481,9 @@ jquery-ujs@^1.2.2:
   integrity sha512-59wvfx5vcCTHMeQT1/OwFiAj+UffLIwjRIoXdpO7Z7BCFGepzq9T9oLVeoItjTqjoXfUrHJvV7QU6pUR+UzOoA==
 
 jquery@>=1.7, jquery@^3.5.1:
-  version "3.6.4"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.6.4.tgz#ba065c188142100be4833699852bf7c24dc0252f"
-  integrity sha512-v28EW9DWDFpzcD9O5iyJXg3R3+q+mET5JhnjJzQUZMHOv67bpSIHq81GEYpPNZHG+XXHsfSme3nxp/hndKEcsQ==
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.7.0.tgz#fe2c01a05da500709006d8790fe21c8a39d75612"
+  integrity sha512-umpJ0/k8X0MvD1ds0P9SfowREz2LenHsQaxSohMZ5OMNEU2r0tf8pdeEFTHMFxWVxKNyU9rTtK3CWzUCTKJUeQ==
 
 js-base64@^2.6.1:
   version "2.6.4"
@@ -1861,9 +1861,9 @@ postcss@^8.1.2:
     source-map-js "^1.0.2"
 
 preact@^10.5.13:
-  version "10.13.2"
-  resolved "https://registry.yarnpkg.com/preact/-/preact-10.13.2.tgz#2c40c73d57248b57234c4ae6cd9ab9d8186ebc0a"
-  integrity sha512-q44QFLhOhty2Bd0Y46fnYW0gD/cbVM9dUVtNTDKPcdXSMA7jfY+Jpd6rk3GB0lcQss0z5s/6CmVP0Z/hV+g6pw==
+  version "10.15.0"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.15.0.tgz#14bae0afe3547ca9d45d22fda2a4266462d31cf3"
+  integrity sha512-nZSa8M2R2m1n7nJSBlzDpxRJaIsejrTO1vlFbdpFvyC8qM1iU+On2y0otfoUm6SRB5o0lF0CKDFxg6grEFU0iQ==
 
 prettier-plugin-x@^0.0.10:
   version "0.0.10"
@@ -1993,9 +1993,9 @@ semver@^5.6.0:
   integrity sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ==
 
 semver@^7.3.2:
-  version "7.5.0"
-  resolved "https://registry.yarnpkg.com/semver/-/semver-7.5.0.tgz#ed8c5dc8efb6c629c88b23d41dc9bf40c1d96cd0"
-  integrity sha512-+XC0AD/R7Q2mPSRuy2Id0+CGTZ98+8f+KvwirxOKIEyid+XSx6HbC63p+O4IndTHuX5Z+JxQ0TghCkO5Cg/2HA==
+  version "7.5.1"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-7.5.1.tgz#c90c4d631cf74720e46b21c1d37ea07edfab91ec"
+  integrity sha512-Wvss5ivl8TMRZXXESstBA4uR5iXgEN/VC5/sOcuXdVLzcdkz4HWetIoRfG5gb5X+ij/G9rw9YoGn3QoQ8OCSpw==
   dependencies:
     lru-cache "^6.0.0"
 
