@@ -3,7 +3,7 @@
 # The controller for apps pages /dashboard/projects/:project_id/scripts
 class ScriptsController < ApplicationController
 
-  before_action :find_script, only: [:show, :edit, :submit, :save, :new]
+  before_action :find_script, only: [:show, :edit, :submit, :save]
   before_action :project_exists?, only: [:new]
 
   SAVE_SCRIPT_KEYS = [
