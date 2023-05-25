@@ -297,8 +297,8 @@ class ConfigurationSingleton
     can_access_core_app? 'file-editor'
   end
 
-  def can_access_job_composer?
-    can_access_core_app? 'job-composer'
+  def can_access_projects?
+    can_access_core_app? 'projects'
   end
 
   # Maximum file upload size that nginx will allow from clients in bytes
