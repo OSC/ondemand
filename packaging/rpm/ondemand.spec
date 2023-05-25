@@ -267,6 +267,7 @@ touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 %{_localstatedir}/www/ood/apps/sys/activejobs
 %{_localstatedir}/www/ood/apps/sys/myjobs
 %{_localstatedir}/www/ood/apps/sys/projects
+%attr(700, root, root) %{_localstatedir}/www/ood/apps/sys/projects
 %{_localstatedir}/www/ood/apps/sys/bc_desktop
 %exclude %{_localstatedir}/www/ood/apps/sys/*/tmp/*
 
