@@ -45,6 +45,8 @@ override_dh_auto_install:
 	mv $(DESTDIR)/opt/ood/apps/* $(APACHE_DIR)/apps/sys
 	rm -rf $(DESTDIR)/opt/ood/apps
 
+	chmod 700 $(APACHE_DIR)/apps/sys/projects
+
 	# ood config files
 	rake package:version > $(DESTDIR)/opt/ood/VERSION
 	install -m 644 nginx_stage/share/nginx_stage_example.yml $(CONFIG_DIR)/nginx_stage.yml
