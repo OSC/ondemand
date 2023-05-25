@@ -211,9 +211,7 @@ class Script
   end
 
   def cache_file_path
-    Pathname.new(project_dir).join(".ondemand/scripts/#{id}_opts.json")
-    # TODO: fix bug 
-    #Pathname.new("#{Script.scripts_dir(project_dir)}/#{id}_cache.json")
+    Pathname.new("#{Script.scripts_dir(project_dir)}/#{id}_cache.json")
   end
 
   def cache_file_exists?
