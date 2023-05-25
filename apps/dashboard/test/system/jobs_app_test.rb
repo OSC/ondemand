@@ -34,25 +34,15 @@ class ProjectsTest < ApplicationSystemTestCase
     click_on 'Save'
   end
 
-  # TODO: fix tests once you can add auto_accounts through the ui
-  def hack_script(project_dir)
-    hack = <<~HEREDOC
-      ---
-      title: the script title
-      form:
-      - auto_batch_clusters
-      - auto_scripts
-      - auto_accounts
-      attributes:
-        auto_scripts:
-          directory: #{project_dir}
-        auto_batch_clusters:
-          options:
-          - oakley
-          - owens
-    HEREDOC
+  def add_account(project_id)
+    visit project_path(project_id)
+    find("[href='/projects/#{project_id}/scripts/1/edit']").click
 
-    File.write("#{project_dir}/.ondemand/scripts/1.yml", hack)
+    # now add 'auto_accounts'
+    click_on('Add new option')
+    select('Account', from: 'add_new_field_select')
+    click_on(I18n.t('dashboard.add'))
+    click_on(I18n.t('dashboard.save'))
   end
 
   def add_bc_num_hours(project_id)
@@ -64,6 +54,7 @@ class ProjectsTest < ApplicationSystemTestCase
     select('Hours', from: 'add_new_field_select')
     click_on(I18n.t('dashboard.add'))
     fill_in('script_bc_num_hours', with: 1)
+    click_on(I18n.t('dashboard.save'))
   end
 
   test 'create a new project on fs and display the table entry' do
@@ -207,7 +198,7 @@ class ProjectsTest < ApplicationSystemTestCase
       setup_project(dir)
       setup_script(1)
       project_dir = "#{dir}/projects/1"
-      hack_script(project_dir)
+      add_account(1)
 
       find('[href="/projects/1/scripts/1"]').click
       assert_selector('h1', text: 'the script title', count: 1)
@@ -230,7 +221,7 @@ class ProjectsTest < ApplicationSystemTestCase
       setup_script(1)
       project_dir = "#{dir}/projects/1"
       script_dir = "#{project_dir}/.ondemand/scripts"
-      hack_script(project_dir)
+      add_account(1)
 
       find('[href="/projects/1/scripts/1"]').click
       assert_selector('h1', text: 'the script title', count: 1)
@@ -273,7 +264,7 @@ class ProjectsTest < ApplicationSystemTestCase
       setup_script(1)
       project_dir = "#{dir}/projects/1"
       script_dir = "#{project_dir}/.ondemand/scripts"
-      hack_script(project_dir)
+      add_account(1)
 
       find('[href="/projects/1/scripts/1"]').click
       assert_selector('h1', text: 'the script title', count: 1)
@@ -312,7 +303,7 @@ class ProjectsTest < ApplicationSystemTestCase
       new_field_id = 'add_new_field_select'
 
       actual_new_options = page.all("##{new_field_id} option").map(&:value).to_set
-      expected_new_options = ['bc_num_hours', 'auto_queues', 'bc_num_slots'].to_set
+      expected_new_options = ['bc_num_hours', 'auto_queues', 'bc_num_slots', 'auto_accounts'].to_set
       assert_equal expected_new_options, actual_new_options
     end
   end
@@ -336,6 +327,7 @@ class ProjectsTest < ApplicationSystemTestCase
 
       # add bc_num_hours
       add_bc_num_hours(1)
+      find('[href="/projects/1/scripts/1/edit"]').click
 
       # now shows 'cluster', 'auto_scripts' & the newly added'bc_num_hours'
       assert_equal 3, page.all('.form-group').size
@@ -397,55 +389,88 @@ class ProjectsTest < ApplicationSystemTestCase
     end
   end
 
-  # TODO: there's a bug in saving select options like 'cluster'
-  # test 'removing script fields' do
-  #   Dir.mktmpdir do |dir|
-  #     setup_project(dir)
-  #     setup_script('1')
+  test 'removing script fields' do
+    Dir.mktmpdir do |dir|
+      setup_project(dir)
+      setup_script('1')
 
-  #     # add bc_num_hours
-  #     add_bc_num_hours(1)
-  #     click_on(I18n.t('dashboard.save'))
+      # add bc_num_hours
+      add_bc_num_hours(1)
+      add_account(1)
 
-  #     puts `cat #{dir}/projects/1/.ondemand/scripts/1.yml`
+      # go to edit it and see that there is cluster and bc_num_hours
+      visit project_path('1')
+      find('[href="/projects/1/scripts/1/edit"]').click
+      # puts page.body
+      assert_equal 4, page.all('.form-group').size
+      assert_not_nil find('#script_auto_batch_clusters')
+      assert_not_nil find('#script_auto_scripts')
+      assert_not_nil find('#script_bc_num_hours')
+      assert_not_nil find('#script_auto_accounts')
+      select('oakley', from: 'script_auto_batch_clusters')
 
-  #     # go to edit it and see that there is cluster and bc_num_hours
-  #     visit project_path('1')
-  #     find('[href="/projects/1/scripts/1/edit"]').click
-  #     assert_equal 3, page.all('.form-group').size
-  #     assert_not_nil find('#script_cluster')
-  #     assert_not_nil find('#script_auto_scripts')
-  #     assert_not_nil find('#script_bc_num_hours')
-  #     select('oakley', from: 'script_cluster')
+      # remove bc num hours and it's not in the form
+      find('#remove_script_bc_num_hours').click
+      assert_equal 3, page.all('.form-group').size
+      assert_not_nil find('#script_auto_batch_clusters')
+      assert_not_nil find('#script_auto_scripts')
+      assert_not_nil find('#script_auto_accounts')
+      assert_raises(Capybara::ElementNotFound) do
+        find('#script_bc_num_hours')
+      end
 
-  #     # remove bc num hours and it's not in the form
-  #     find('#remove_script_bc_num_hours').click
-  #     assert_equal 1, page.all('.form-group').size
-  #     assert_not_nil find('#script_cluster')
-  #     assert_not_nil find('#script_auto_scripts')
-  #     assert_raises(Capybara::ElementNotFound) do
-  #       find('#script_bc_num_hours')
-  #     end
+      # correctly saves
+      click_on(I18n.t('dashboard.save'))
+      assert_selector('.alert-success', text: "×\nClose\nsucess!")
+      assert_current_path '/projects/1'
 
-  #     # correctly saves
-  #     click_on(I18n.t('dashboard.save'))
-  #     assert_selector('.alert-success', text: "×\nClose\nsucess!")
-  #     assert_current_path '/projects/1'
+      expected_yml = <<~HEREDOC
+        ---
+        title: the script title
+        form:
+        - auto_accounts
+        - auto_scripts
+        - auto_batch_clusters
+        attributes:
+          auto_accounts:
+            options:
+            - pzs0715
+            - pzs0714
+            - pzs1124
+            - pzs1118
+            - pzs1117
+            - pzs1010
+            - pde0006
+            - pas2051
+            - pas1871
+            - pas1754
+            - pas1604
+            value: pzs0715
+            label: Account
+            help: ''
+            required: false
+          auto_scripts:
+            options:
+            - - my_cool_script.sh
+              - "#{dir}/projects/1/my_cool_script.sh"
+            - - my_cooler_script.bash
+              - "#{dir}/projects/1/my_cooler_script.bash"
+            directory: "#{dir}/projects/1"
+            value: "#{dir}/projects/1/my_cool_script.sh"
+            label: Script
+            help: ''
+            required: false
+          auto_batch_clusters:
+            options:
+            - oakley
+            - owens
+            value: oakley
+            label: Cluster
+            help: ''
+            required: false
+      HEREDOC
 
-  #     expected_yml = <<~HEREDOC
-  #       ---
-  #       title: the script title
-  #       form:
-  #       - cluster
-  #       attributes:
-  #         cluster:
-  #           value: oakley
-  #           label: Cluster
-  #           help: ''
-  #           required: false
-  #     HEREDOC
-
-  #     assert_equal(expected_yml, File.read("#{dir}/projects/1/.ondemand/scripts/1.yml"))
-  #   end
-  # end
+      assert_equal(expected_yml, File.read("#{dir}/projects/1/.ondemand/scripts/1.yml"))
+    end
+  end
 end
