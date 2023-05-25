@@ -50,16 +50,16 @@ namespace :dev do
   end
 
   def docker_rt_args
-    [ '--tmpfs', '/run', '-v', '/sys/fs/cgroup:/sys/fs/cgroup:ro'].freeze
+    ['--tmpfs', '/run', '-v', '/sys/fs/cgroup:/sys/fs/cgroup:ro'].freeze
   end
 
   def podman_rt_args
     [
       '--security-opt', 'label=disable',
       "--uidmap=#{user.uid}:0:1", "--uidmap=0:1:#{user.uid}",
-      "--gidmap=#{user.gid}:0:1", "--gidmap=0:1:#{user.gid}",
+      "--gidmap=#{user.gid}:0:1", "--gidmap=0:1:#{user.gid}"
     ].tap do |arr|
-      arr.concat [ '--cap-add', 'sys_ptrace'] unless additional_caps.include?('--privileged')
+      arr.concat ['--cap-add', 'sys_ptrace'] unless additional_caps.include?('--privileged')
     end.freeze
   end
 
@@ -75,7 +75,10 @@ namespace :dev do
       '-v', "#{config_directory}:/etc/ood/config",
       '-v', "#{user.dir}/ondemand:#{user.dir}/ondemand"
     ].tap do |mnts|
-      mnts.concat(['-v', "#{proj_root}/ood-portal-generator:/opt/ood/ood-portal-generator"]) unless ENV['OOD_MNT_PORTAL'].nil?
+      unless ENV['OOD_MNT_PORTAL'].nil?
+        mnts.concat(['-v',
+                     "#{proj_root}/ood-portal-generator:/opt/ood/ood-portal-generator"])
+      end
       mnts.concat(['-v', "#{proj_root}/nginx_stage:/opt/ood/nginx_stage"]) unless ENV['OOD_MNT_NGINX'].nil?
       mnts.concat(['-v', "#{proj_root}/mod_ood_proxy:/opt/ood/mod_ood_proxy"]) unless ENV['OOD_MNT_PROXY'].nil?
     end
@@ -86,7 +89,7 @@ namespace :dev do
     return ['--privileged'] if caps.include?('privileged')
 
     caps.to_s.split(',').map do |cap|
-      [ '--cap-add', cap.downcase ]
+      ['--cap-add', cap.downcase]
     end
   end
 
