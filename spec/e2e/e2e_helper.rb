@@ -174,7 +174,7 @@ def ondemand_repo
 end
 
 def build_repo_version
-  ENV['OOD_BUILD_REPO'] || '3.0'
+  ENV['OOD_BUILD_REPO'] || '3.1'
 end
 
 def install_ondemand
