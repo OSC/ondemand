@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Check Projects Exist Before script#new (#2841)\
+remove hardcoding for script (#2842)\
+Script#edit support adding/removing accounts (#2836)\
+lint a random file (#2840)\
+Bump socket.io-parser from 4.2.2 to 4.2.3 in /apps/dashboard (#2838)\
+lint a random file (#2832)\
+update dependencies (#2834)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
