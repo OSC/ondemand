@@ -60,7 +60,7 @@
 
         <ul class="navbar-nav">
           <% if @help_bar.empty? %>
-            <%= render partial: 'layouts/nav/develop_dropdown' if Configuration.app_development_enabled? %>
+            <%= render partial: 'layouts/nav/develop_dropdown' %>
             <%= render partial: 'layouts/nav/help_dropdown' %>
             <%= render partial: 'layouts/nav/user' %>
             <%= render partial: 'layouts/nav/log_out' %>

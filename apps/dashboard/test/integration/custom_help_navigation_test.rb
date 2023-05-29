@@ -96,6 +96,28 @@ class CustomHelpNavigationTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test 'develop template should not render when Configuration.app_development_enabled? is false' do
+    stub_user_configuration(
+      {
+        nav_bar:  [{ url: '/test' }],
+        help_bar: ['develop']
+      }
+    )
+
+    Configuration.stubs(:app_development_enabled?).returns(true)
+    get root_path
+    assert_response :success
+    assert_select '#navbar li.dropdown[title]', 1
+    assert_select nav_menu(1) do |menu|
+      assert_select menu.first, 'a', text: 'Develop'
+    end
+
+    Configuration.stubs(:app_development_enabled?).returns(false)
+    get root_path
+    assert_response :success
+    assert_select '#navbar li.dropdown[title]', 0
+  end
+
   def nav_menu(order)
     "#navbar .navbar-nav li.dropdown:nth-of-type(#{order})"
   end
