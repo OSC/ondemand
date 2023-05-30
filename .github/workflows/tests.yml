@@ -18,6 +18,10 @@ jobs:
           - os: ubuntu-latest
             ruby: "3.0.2"
             bundler: "2.3.5"
+          # Test versions from Amazon Linux 2023
+          - os: ubuntu-latest
+            ruby: "3.2.2"
+            bundler: "2.4.10"
     runs-on: ${{ matrix.os }}
     name: Unit tests
 
@@ -53,7 +57,10 @@ jobs:
         run: bundle exec rake test:shellcheck
 
       - name: Run Zeitwerk check
-        run: cd apps/dashboard; bundle exec rake zeitwerk:check
+        run: |
+          cd apps/dashboard
+          bundle install
+          bundle exec rake zeitwerk:check
 
       - name: Run lint tests
         run: bundle exec rake lint || true
