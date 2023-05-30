@@ -67,6 +67,12 @@ module NginxStage
       NginxStage.passenger_pool_idle_time
     end
 
+    # The path to the Passenger log file for the user.
+    # @return [String, nil] the path for passenger_log_file
+    def passenger_log_file
+      NginxStage.passenger_log_file(user: user)
+    end
+
     # Hash of Passenger configuration options
     # @return [Hash] Hash of Passenger configuration options
     def passenger_options

@@ -68,6 +68,19 @@ module NginxStage
     # @return [Integer] the value for passenger_pool_idle_time
     attr_accessor :passenger_pool_idle_time
 
+    # Path to the user's Passenger log file
+    # @example User Bob's Passenger log
+    #   passenger_log_file(user: 'bob')
+    #   #=> "/var/log/ondemand-nginx/bob/passenger.log"
+    # @param user [String] the user of the nginx process
+    # @return [String, nil] the path to the Passenger log file for user user
+    def passenger_log_file(user:)
+      # Uses nginx error log if nil
+      @passenger_log_file&.%({ user: user })
+    end
+
+    attr_writer :passenger_log_file
+
     # Hash of Passenger configuration options
     # @return [Hash] Hash of Passenger configuration options
     attr_writer :passenger_options
@@ -437,6 +450,7 @@ module NginxStage
       self.passenger_python = "#{root}/bin/python"
 
       self.passenger_pool_idle_time = 300
+      self.passenger_log_file = nil
       self.passenger_options = {}
 
       self.pun_custom_env      = {}
