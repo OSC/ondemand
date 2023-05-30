@@ -9,8 +9,10 @@ class Script
 
   class << self
     def scripts_dir(project_dir)
-      Pathname.new("#{project_dir}/.ondemand/scripts").tap do |path|
-        path.mkpath unless path.exist?
+      if File.dirname(project_dir).to_s == Project.dataroot.to_s
+        Pathname.new("#{project_dir}/.ondemand/scripts").tap do |path|
+          path.mkpath unless path.exist?
+        end
       end
     end
 
@@ -211,9 +213,7 @@ class Script
   end
 
   def cache_file_path
-    Pathname.new(project_dir).join(".ondemand/scripts/#{id}_opts.json")
-    # TODO: fix bug 
-    #Pathname.new("#{Script.scripts_dir(project_dir)}/#{id}_cache.json")
+    Pathname.new("#{Script.scripts_dir(project_dir)}/#{id}_cache.json")
   end
 
   def cache_file_exists?
