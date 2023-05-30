@@ -1,0 +1,10 @@
+<button id="globus-btn" type="button" class="btn btn-primary btn-sm">
+  <a href="#" id="globus-btn-link" target="_blank">Globus</a>
+</button>
+<script>
+const globus_endpoints = {
+  <% Configuration.globus_endpoints.each do |key, value| %>
+    "<%= key %>": "<%= value %>",
+  <% end %>
+};
+</script>
