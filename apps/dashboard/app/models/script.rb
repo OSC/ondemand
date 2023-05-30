@@ -9,10 +9,8 @@ class Script
 
   class << self
     def scripts_dir(project_dir)
-      if File.dirname(project_dir).to_s == Project.dataroot.to_s
-        Pathname.new("#{project_dir}/.ondemand/scripts").tap do |path|
-          path.mkpath unless path.exist?
-        end
+      Pathname.new("#{project_dir}/.ondemand/scripts").tap do |path|
+        path.mkpath unless path.exist?
       end
     end
 
