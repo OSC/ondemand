@@ -357,9 +357,9 @@ describe OodPortalGenerator::Application do
           dex: true
         })
         described_class.generate()
-        expect(File.exists?(File.join(config_dir, 'cert'))).to eq(true)
+        expect(File.exist?(File.join(config_dir, 'cert'))).to eq(true)
         expect(File.read(File.join(config_dir, 'cert'))).to eq('CERT')
-        expect(File.exists?(File.join(config_dir, 'key'))).to eq(true)
+        expect(File.exist?(File.join(config_dir, 'key'))).to eq(true)
         expect(File.read(File.join(config_dir, 'key'))).to eq('KEY')
       end
 
@@ -380,8 +380,8 @@ describe OodPortalGenerator::Application do
           ]
         })
         described_class.generate()
-        expect(File.exists?(File.join(config_dir, 'cert'))).to eq(false)
-        expect(File.exists?(File.join(config_dir, 'key'))).to eq(false)
+        expect(File.exist?(File.join(config_dir, 'cert'))).to eq(false)
+        expect(File.exist?(File.join(config_dir, 'key'))).to eq(false)
       end
 
       it 'generates LDAP dex configs with SSL' do
