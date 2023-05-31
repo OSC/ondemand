@@ -473,4 +473,28 @@ class ProjectsTest < ApplicationSystemTestCase
       assert_equal(expected_yml, File.read("#{dir}/projects/1/.ondemand/scripts/1.yml"))
     end
   end
+
+  test 'cant show invalid project' do
+    visit project_path('1')
+    assert_current_path('/projects')
+    assert_selector('.alert-danger', text: 'Cannot find project 1')
+  end
+
+  test 'cant edit invalid project' do
+    visit edit_project_path('1')
+    assert_current_path('/projects')
+    assert_selector('.alert-danger', text: 'Cannot find project 1')
+  end
+
+  test 'cant show script when project is invalid' do
+    visit project_script_path('1', '1')
+    assert_current_path('/projects')
+    assert_selector('.alert-danger', text: "×\nClose\nCannot find project: 1")
+  end
+
+  test 'cant edit script when project is invalid' do
+    visit edit_project_script_path('1', '1')
+    assert_current_path('/projects')
+    assert_selector('.alert-danger', text: "×\nClose\nCannot find project: 1")
+  end
 end
