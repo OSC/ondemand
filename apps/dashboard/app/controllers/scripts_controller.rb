@@ -61,7 +61,7 @@ class ScriptsController < ApplicationController
 
   def find_script
     @script = Script.find(show_script_params[:id], @project.directory)
-    redirect_to(project_path(project.id), alert: "Cannot find script #{show_script_params[:id]}") if @script.nil?
+    redirect_to(project_path(@project.id), alert: "Cannot find script #{show_script_params[:id]}") if @script.nil?
   end
 
   def create_script_params

@@ -503,4 +503,22 @@ class ProjectsTest < ApplicationSystemTestCase
     assert_current_path('/projects')
     assert_selector('.alert-danger', text: "×\nClose\nCannot find project: 1")
   end
+
+  test 'cant show invalid script' do
+    Dir.mktmpdir do |dir|
+      setup_project(dir)
+      visit project_script_path('1', '1')
+      assert_current_path('/projects/1')
+      assert_selector('.alert-danger', text: "×\nClose\nCannot find script 1")
+    end
+  end
+
+  test 'cant edit invalid script' do
+    Dir.mktmpdir do |dir|
+      setup_project(dir)
+      visit edit_project_script_path('1', '1')
+      assert_current_path('/projects/1')
+      assert_selector('.alert-danger', text: "×\nClose\nCannot find script 1")
+    end
+  end
 end
