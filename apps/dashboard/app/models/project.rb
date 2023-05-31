@@ -4,6 +4,10 @@
 class Project
   include ActiveModel::Model
   include ActiveModel::Validations
+  
+  attr_accessor :icon
+  validates :icon, presence: true
+  validates :icon, format: { with: /\Afa[bsrl]:\/\/[\w-]+\z/, message: 'Icon format invalid or missing'}
 
   class << self
     def lookup_file
@@ -97,7 +101,7 @@ class Project
   end
 
   def update(attributes)
-    if valid_form_inputs?(attributes)
+    if valid?
       new_manifest = Manifest.load(manifest_path)
       new_manifest = new_manifest.merge(attributes)
 
@@ -160,20 +164,6 @@ class Project
   private
 
   attr_reader :manifest
-
-  def valid_form_inputs?(attributes)
-    icon_pattern = %r{\Afa[bsrl]://[\w-]+\z}
-
-    if !attributes[:icon].nil? && !attributes[:icon].match?(icon_pattern)
-      errors.add(:icon, :invalid_format, message: 'Icon format invalid or missing')
-      false
-    elsif attributes[:icon].nil?
-      attributes[:icon] = 'fas://cog'
-      true
-    else
-      true
-    end
-  end
 
   def make_dir
     project_dataroot.mkpath         unless project_dataroot.exist?
