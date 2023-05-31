@@ -372,7 +372,7 @@ module BatchConnect
       # pure function to render erb, properly setting the filename attribute
       # before rendering
       def render_erb_file(path:, contents:, binding:)
-        erb = ERB.new(contents, nil, "-")
+        erb = ERB.new(contents, trim_mode: "-")
         erb.filename = path.to_s
         erb.result(binding)
       end

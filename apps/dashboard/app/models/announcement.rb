@@ -41,7 +41,7 @@ class Announcement
                 when ".md"
                   { msg: @path.expand_path.read }
                 when ".yml"
-                  YAML.safe_load(ERB.new(@path.expand_path.read, nil, "-").result)
+                  YAML.safe_load(ERB.new(@path.expand_path.read, trim_mode: "-").result)
                 else
                   {}
                 end

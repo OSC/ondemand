@@ -133,7 +133,7 @@ module NginxStage
 
       # Use ERB to render templates
       def render(data)
-        ERB.new(data, nil, '-').result(binding)
+        ERB.new(data, trim_mode: '-').result(binding)
       end
   end
 end

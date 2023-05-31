@@ -109,7 +109,7 @@ module RakeHelper
     src = File.join(proj_root, 'packaging/files', name)
     return src unless File.extname(name) == '.erb'
 
-    content = ERB.new(File.read(src), nil, '-').result(binding)
+    content = ERB.new(File.read(src), trim_mode: '-').result(binding)
     begin
       t = Tempfile.new(name)
       t.write(content)

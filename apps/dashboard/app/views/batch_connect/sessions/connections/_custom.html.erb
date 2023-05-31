@@ -1,6 +1,6 @@
 <%=
   begin 
-    OodAppkit.markdown.render(ERB.new(view, nil, "-").result(connect.instance_eval { binding })).html_safe 
+    OodAppkit.markdown.render(ERB.new(view, trim_mode: "-").result(connect.instance_eval { binding })).html_safe 
   rescue StandardError, Exception => e
     Rails.logger.info("did not render correct connection view.html.erb because of error #{e}:#{e.message}")
     render(partial: '/batch_connect/sessions/connections/error', locals: { error: e })
