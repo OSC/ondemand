@@ -13,7 +13,8 @@ class ScriptsController < ApplicationController
   ].freeze
 
   def new
-    @script = Script.new(project_dir: show_script_params[:project_id])
+    project = Project.find(show_script_params[:project_id])
+    @script = Script.new(project_dir: project.directory)
   end
 
   # POST  /dashboard/projects/:project_id/scripts
