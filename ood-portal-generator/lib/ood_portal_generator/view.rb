@@ -151,7 +151,7 @@ module OodPortalGenerator
     # Render the provided template as a string
     # @return [String] rendered template
     def render(str)
-      ERB.new(str, nil, "-").result(binding)
+      ERB.new(str, trim_mode: "-").result(binding)
     end
 
     def update_oidc_attributes(attrs)

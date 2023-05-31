@@ -381,7 +381,7 @@ class ConfigurationSingleton
     files = Pathname.glob(config_directory.join("*.{yml,yaml,yml.erb,yaml.erb}"))
     files.each_with_object({}) do |f, conf|
       begin
-        content = ERB.new(f.read, nil, "-").result(binding)
+        content = ERB.new(f.read, trim_mode: "-").result(binding)
         yml = YAML.safe_load(content, aliases: true) || {}
         conf.deep_merge!(yml.deep_symbolize_keys)
       rescue => e
