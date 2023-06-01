@@ -97,11 +97,11 @@ class Project
   end
 
   def update(attributes)
-    if valid_form_inputs?(attributes)
-      new_manifest = Manifest.load(manifest_path)
-      new_manifest = new_manifest.merge(attributes)
+    if valid_icon?(attributes)
+      manifest = Manifest.load(manifest_path)
+                         .merge(attributes)
 
-      if new_manifest.valid? && new_manifest.save(manifest_path) && add_to_lookup
+      if manifest.valid? && manifest.save(manifest_path) && add_to_lookup
         true
       else
         errors.add(:update, "Cannot save manifest to #{manifest_path}")
@@ -161,7 +161,7 @@ class Project
 
   attr_reader :manifest
 
-  def valid_form_inputs?(attributes)
+  def valid_icon?(attributes)
     icon_pattern = %r{\Afa[bsrl]://[\w-]+\z}
 
     if !attributes[:icon].nil? && !attributes[:icon].match?(icon_pattern)
