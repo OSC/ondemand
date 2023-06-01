@@ -196,6 +196,11 @@ class ConfigurationSingleton
     config.has_key?(:support_ticket) || config.fetch(:profiles, {}).any? { |_, profile| profile.has_key?(:support_ticket) }
   end
 
+  # Globus configuration
+  def globus_endpoints
+    config.fetch(:globus_endpoints, nil)
+  end
+
   # Load the dotenv local files first, then the /etc dotenv files and
   # the .env and .env.production or .env.development files.
   #
