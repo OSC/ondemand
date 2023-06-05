@@ -6,15 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Hide develop custom menu template based on Configuration object (#2848)\
-Check In Project Dataroot Before Creating Project Path (#2852)\
-Avoid deprecation warnings with ERB.new and Ruby 3.2 (#2854)\
-lint a random file (#2853)\
-Test Ruby 3.2 to support Amazon Linux 2023 (#2850)\
-Begin packaging OnDemand 3.1 (#2849)\
-Add user parameter to passenger_log_file (#2835)\
-lint a random file (#2845)\
-update dependencies (#2846)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
@@ -23,6 +14,10 @@ update dependencies (#2846)
   in [2795](https://github.com/OSC/ondemand/pull/2795).
 - `oidc_crypto_passphrase` can be set in ood_portal in [2807](https://github.com/OSC/ondemand/pull/2807).
 - Titles for menus can now be overriden in [2804](https://github.com/OSC/ondemand/pull/2804).
+- Sites can now configure `passenger_log_file` in [2835](https://github.com/OSC/ondemand/pull/2835).
+
+### Fixed
+- Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
 
 ## [3.0.1] - 04-20-2023
 
