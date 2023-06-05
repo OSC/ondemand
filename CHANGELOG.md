@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Hide develop custom menu template based on Configuration object (#2848)\
+Check In Project Dataroot Before Creating Project Path (#2852)\
+Avoid deprecation warnings with ERB.new and Ruby 3.2 (#2854)\
+lint a random file (#2853)\
+Test Ruby 3.2 to support Amazon Linux 2023 (#2850)\
+Begin packaging OnDemand 3.1 (#2849)\
+Add user parameter to passenger_log_file (#2835)\
+lint a random file (#2845)\
+update dependencies (#2846)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
