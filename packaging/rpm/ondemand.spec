@@ -5,7 +5,7 @@
 %define git_tag_minus_v %(echo %{git_tag} | sed -r 's/^v//')
 %define major_version %(echo %{git_tag_minus_v} | cut -d. -f1)
 %define minor_version %(echo %{git_tag_minus_v} | cut -d. -f2)
-%define runtime_version %{major_version}.%{minor_version}.0
+%define runtime_version %{major_version}.%{minor_version}.1
 %define runtime_release 1
 %define runtime_version_full %{runtime_version}-%{runtime_release}%{?dist}
 %define selinux_policy_ver %(rpm --qf "%%{version}" -q selinux-policy)
@@ -14,6 +14,11 @@
 %global gems_name ondemand-gems-%{version}-%{package_release}
 
 %define __brp_mangle_shebangs /bin/true
+%if 0%{?amzn}
+# RPATH is always broken with things like nokogiri
+# but only Amazon Linux 2023 seems to care so disable the check
+%global __brp_check_rpaths /bin/true
+%endif
 
 Name:      %{package_name}
 Version:   %{package_version}
@@ -33,14 +38,14 @@ Source2:   ondemand-selinux.fc
 # Avoid duplicate build-id files between builds of ondemand-gems
 %global _build_id_links none
 
-%if 0%{?rhel} >= 8
-%bcond_with scl_apache
-%define apache_confd /etc/httpd/conf.d
-%define apache_service httpd
-%else
+%if 0%{?rhel} == 7
 %bcond_without scl_apache
 %define apache_confd /opt/rh/httpd24/root/etc/httpd/conf.d
 %define apache_service httpd24-httpd
+%else
+%bcond_with scl_apache
+%define apache_confd /etc/httpd/conf.d
+%define apache_service httpd
 %endif
 
 # Disable automatic dependencies as it causes issues with bundled gems and
@@ -55,14 +60,18 @@ BuildRequires:   ondemand-nodejs = %{runtime_version_full}
 BuildRequires:   rsync
 BuildRequires:   git
 BuildRequires:   python3
+BuildRequires:   libffi-devel
 
 Requires:        git
 Requires:        sudo, lsof, cronie, wget, curl, make, rsync, file, libxml2, libxslt, zlib, lua-posix, diffutils
 Requires:        python3
+# rclone is not available for Amazon Linux 2023
+%if 0%{?rhel}
 Requires:        rclone
+%endif
 Requires:        ondemand-apache = %{runtime_version_full}
-Requires:        ondemand-nginx = 1.20.2-1.p6.0.14.ood%{runtime_version}%{?dist}
-Requires:        ondemand-passenger = 6.0.14-1.ood%{runtime_version}%{?dist}
+Requires:        ondemand-nginx = 1.22.1-1.p6.0.17.ood%{runtime_version}%{?dist}
+Requires:        ondemand-passenger = 6.0.17-1.ood%{runtime_version}%{?dist}
 Requires:        ondemand-ruby = %{runtime_version_full}
 Requires:        ondemand-nodejs = %{runtime_version_full}
 Requires:        ondemand-runtime = %{runtime_version_full}

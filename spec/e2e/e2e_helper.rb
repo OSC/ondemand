@@ -48,6 +48,8 @@ def dist
   if host_inventory['platform'] == 'redhat'
     major_version = host_inventory['platform_version'].split('.')[0]
     "el#{major_version}"
+  elsif host_inventory['platform'] == 'amazon'
+    "amzn#{host_inventory['platform_version']}"
   elsif host_inventory['platform'] == 'ubuntu'
     "ubuntu-#{host_inventory['platform_version']}"
   end
@@ -65,39 +67,33 @@ def codename
 end
 
 def packager
-  if host_inventory['platform'] == 'redhat'
-    if host_inventory['platform_version'] =~ /^7/
-      'yum'
-    else
-      'dnf'
-    end
-  else
+  if host_inventory['platform'] == 'ubuntu'
     'DEBIAN_FRONTEND=noninteractive apt'
+  elsif host_inventory['platform'] == 'redhat' && host_inventory['platform_version'] =~ /^7/
+    'yum'
+  else
+    'dnf'
   end
 end
 
 def apache_service
-  if host_inventory['platform'] == 'redhat'
-    if host_inventory['platform_version'] =~ /^7/
-       'httpd24-httpd'
-     else
-       'httpd'
-     end
-   else
-     'apache2'
-   end
+  if host_inventory['platform'] == 'ubuntu'
+    'apache2'
+  elsif host_inventory['platform'] == 'redhat' && host_inventory['platform_version'] =~ /^7/
+    'httpd24-httpd'
+  else
+    'httpd'
+  end
 end
 
 def apache_reload
-  if host_inventory['platform'] == 'redhat'
-    if host_inventory['platform_version'] =~ /^7/
-       '/opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper $OPTIONS -k graceful'
-     else
-       '/usr/sbin/httpd $OPTIONS -k graceful'
-     end
-   else
-     '/usr/sbin/apachectl graceful'
-   end
+  if host_inventory['platform'] == 'ubuntu'
+    '/usr/sbin/apachectl graceful'
+  elsif host_inventory['platform'] == 'redhat' && host_inventory['platform_version'] =~ /^7/
+    '/opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper $OPTIONS -k graceful'
+  else
+    '/usr/sbin/httpd $OPTIONS -k graceful'
+  end
 end
 
 def apache_user
@@ -142,7 +138,7 @@ end
 
 def ondemand_repo
   on hosts, 'mkdir -p /repo'
-  if host_inventory['platform'] == 'redhat'
+  if ['redhat','amazon'].include?(host_inventory['platform'])
     install_packages(['createrepo'])
     repo_file = <<~EOS
       [ondemand-local]
@@ -178,8 +174,8 @@ def build_repo_version
 end
 
 def install_ondemand
-  if host_inventory['platform'] == 'redhat'
-    release_rpm = "https://yum.osc.edu/ondemand/latest/ondemand-release-web-#{build_repo_version}-1.noarch.rpm"
+  if ['redhat','amazon'].include?(host_inventory['platform'])
+    release_rpm = "https://yum.osc.edu/ondemand/latest/ondemand-release-web-#{build_repo_version}-1.#{dist}.noarch.rpm"
     on hosts, "[ -f /etc/yum.repos.d/ondemand-web.repo ] || #{packager} install -y #{release_rpm}"
     on hosts, "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/build/#{build_repo_version}/web|g' /etc/yum.repos.d/ondemand-web.repo"
     config_manager = if host_inventory['platform_version'] =~ /^7/
@@ -191,7 +187,7 @@ def install_ondemand
     install_packages(['ondemand', 'ondemand-dex', 'ondemand-selinux'])
   elsif host_inventory['platform'] == 'ubuntu'
     install_packages(['wget'])
-    on hosts, "wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/latest/ondemand-release-web_#{build_repo_version}.0_all.deb"
+    on hosts, "wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/latest/ondemand-release-web_#{build_repo_version}.0-#{codename}_all.deb"
     install_packages(['/tmp/ondemand-release.deb'])
     on hosts, "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/build/#{build_repo_version}/web|g' /etc/apt/sources.list.d/ondemand-web.list"
     on hosts, 'apt-get update'
@@ -208,22 +204,26 @@ def fix_apache
     default_config = '/etc/apache2/sites-enabled/000-default.conf'
     on hosts, "test -L #{default_config} && unlink #{default_config} || exit 0"
   end
+  # Avoid errors when running on non x86_64 hardware via Docker
+  on hosts, "echo 'Mutex posixsem' > #{apache_conf_dir}/mutex.conf"
 end
 
 def upload_portal_config(file)
   scp_to(hosts, portal_fixture(file), '/etc/ood/config/ood_portal.yml')
 end
 
-def host_portal_config
-  if host_inventory['platform'] == 'redhat'
-    if host_inventory['platform_version'] =~ /^7/
-       '/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf'
-     else
-      '/etc/httpd/conf.d/ood-portal.conf'
-     end
+def apache_conf_dir
+  if host_inventory['platform'] == 'ubuntu'
+    '/etc/apache2/sites-available'
+  elsif host_inventory['platform'] == 'redhat' && host_inventory['platform_version'] =~ /^7/
+    '/opt/rh/httpd24/root/etc/httpd/conf.d'
   else
-    '/etc/apache2/sites-available/ood-portal.conf'
+    '/etc/httpd/conf.d'
   end
+end
+
+def host_portal_config
+  File.join(apache_conf_dir, 'ood-portal.conf')
 end
 
 def update_ood_portal
