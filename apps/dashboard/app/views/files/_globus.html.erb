@@ -1,10 +1,7 @@
-<button id="globus-btn" type="button" class="btn btn-primary btn-sm">
-  <a href="#" id="globus-btn-link" target="_blank">Globus</a>
-</button>
+<span id="globus-wrapper">
+  <a href="#" id="globus-link" class="btn btn-primary btn-sm" target="_blank">Globus</a>
+</span>
+
 <script>
-const globus_endpoints = {
-  <% Configuration.globus_endpoints.each do |key, value| %>
-    "<%= key %>": "<%= value %>",
-  <% end %>
-};
+  const globus_endpoints = <%= Configuration.globus_endpoints.to_json.html_safe %>;
 </script>

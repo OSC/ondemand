@@ -1,7 +1,6 @@
 import Handlebars from 'handlebars';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
-import { getGlobusLink, updateGlobusButton } from './globus.js';
-
+import { getGlobusLink, updateGlobusLink } from './globus.js';
 export { CONTENTID, EVENTNAME };
 
 const EVENTNAME = {
@@ -296,9 +295,9 @@ class DataTable {
     }
 
     updateGlobus() {
-      if ($('#globus-btn').length) {
-        $('#globus-btn-link').attr('href', getGlobusLink(history.state.currentDirectory));
-        updateGlobusButton(history.state.currentDirectory, $('#globus-btn'));
+      if ($('#globus-link').length) {
+        $('#globus-link').attr('href', getGlobusLink(history.state.currentDirectory));
+        updateGlobusLink(history.state.currentDirectory, $('#globus-link'), $('#globus-wrapper'));
       }
     }
 
@@ -373,7 +372,7 @@ class DataTable {
                         currentFilesystem: data.filesystem,
                         currentFilenames: Array.from(data.files, x => x.name)
                     }, data.name, data.url);
-                }      
+                }
                 this.updateGlobus();
             }
           })
