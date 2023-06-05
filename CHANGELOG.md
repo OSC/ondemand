@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   in [2795](https://github.com/OSC/ondemand/pull/2795).
 - `oidc_crypto_passphrase` can be set in ood_portal in [2807](https://github.com/OSC/ondemand/pull/2807).
 - Titles for menus can now be overriden in [2804](https://github.com/OSC/ondemand/pull/2804).
+- Sites can now configure `passenger_log_file` in [2835](https://github.com/OSC/ondemand/pull/2835).
+
+### Fixed
+- Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
 
 ## [3.0.1] - 04-20-2023
 
