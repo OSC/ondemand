@@ -9,7 +9,7 @@ HOSTS:
     docker_cmd:
       - '/usr/sbin/init'
     docker_image_commands:
-      - 'dnf install -y dnf-utils wget which cronie iproute initscripts langpacks-en glibc-all-langpacks'
+      - 'dnf install -y net-tools dnf-utils wget which cronie iproute initscripts langpacks-en glibc-all-langpacks'
     docker_env:
       - LANG=en_US.UTF-8
       - LANGUAGE=en_US.UTF-8
