@@ -3,8 +3,8 @@
 # The controller for apps pages /dashboard/projects/:project_id/scripts
 class ScriptsController < ApplicationController
 
+  before_action :find_project
   before_action :find_script, only: [:show, :edit, :submit, :save]
-  before_action :project_exists?, only: [:new]
 
   SAVE_SCRIPT_KEYS = [
     :cluster, :auto_accounts, :auto_scripts, :auto_queues, :auto_batch_clusters,
@@ -13,14 +13,12 @@ class ScriptsController < ApplicationController
   ].freeze
 
   def new
-    project = Project.find(show_script_params[:project_id])
-    @script = Script.new(project_dir: project.directory)
+    @script = Script.new(project_dir: @project.directory)
   end
 
   # POST  /dashboard/projects/:project_id/scripts
   def create
-    project = Project.find(create_script_params[:project_id])
-    opts = { project_dir: project.directory }.merge(create_script_params[:script])
+    opts = { project_dir: @project.directory }.merge(create_script_params[:script])
     @script = Script.new(opts)
 
     if @script.save
@@ -62,13 +60,8 @@ class ScriptsController < ApplicationController
   private
 
   def find_script
-    project = Project.find(show_script_params[:project_id])
-    if project.nil?
-      redirect_to(projects_path, alert: "Cannot find project #{show_script_params[:project_id]}")
-    else
-      @script = Script.find(show_script_params[:id], project.directory)
-      redirect_to(project_path(project.id), alert: "Cannot find script #{show_script_params[:id]}") if @script.nil?
-    end
+    @script = Script.find(show_script_params[:id], @project.directory)
+    redirect_to(project_path(@project.id), alert: "Cannot find script #{show_script_params[:id]}") if @script.nil?
   end
 
   def create_script_params
@@ -88,10 +81,8 @@ class ScriptsController < ApplicationController
     params.permit({ script: SAVE_SCRIPT_KEYS }, :project_id, :id)
   end
 
-  def project_exists?
-    project = Project.find(show_script_params[:project_id])
-    if project.nil?
-      redirect_to(projects_path, alert: "Cannot find project: #{show_script_params[:project_id]}")
-    end
+  def find_project
+    @project = Project.find(show_script_params[:project_id])
+    redirect_to(projects_path, alert: "Cannot find project: #{show_script_params[:project_id]}") if @project.nil?
   end
 end
