@@ -20,12 +20,15 @@ build-nightly:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
-    - bundle exec rake package:build[$OOD_PACKAGING_DIST,true]
+    - bundle exec rake package:build[$OOD_PACKAGING_DIST,$OOD_PACKAGING_ARCH,true]
   parallel:
     matrix:
       - OOD_PACKAGING_DIST: [el7, el8]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, amzn2023, ubuntu-20.04, ubuntu-22.04]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
+  timeout: 3h
   artifacts:
     paths:
       - dist
@@ -35,13 +38,19 @@ build:
   stage: build
   rules:
     - if: $CI_COMMIT_TAG
+    # Re-enable once Gitlab instance using plugin to integrate with Github
+    # - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    - if: '$CI_COMMIT_BRANCH !~ /^(master|release_[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
   script:
-    - bundle exec rake package:build[$OOD_PACKAGING_DIST]
+    - bundle exec rake package:build[$OOD_PACKAGING_DIST,$OOD_PACKAGING_ARCH]
   parallel:
     matrix:
       - OOD_PACKAGING_DIST: [el7, el8]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, amzn2023, ubuntu-20.04, ubuntu-22.04]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
+  timeout: 3h
   artifacts:
     paths:
       - dist
