@@ -155,6 +155,9 @@ jobs:
         run: |
           DISTRO=$(echo "${{ matrix.os }}" | sed 's|\-||g')
           echo "DISTRO=${DISTRO}" >> $GITHUB_ENV
+          if [ "${{ matrix.arch }}" == "aarch64" ]; then
+            echo "PLATFORM=linux/arm64" >> $GITHUB_ENV
+          fi
 
       - name: Test OnDemand
         if: matrix.arch != 'x86_64'
@@ -172,6 +175,8 @@ jobs:
             echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
             apt update -y
             apt install -y docker-ce
+          dockerRunArgs: |
+            --platform ${{ env.PLATFORM }}
           run: |
             git config --global --add safe.directory $GITHUB_WORKSPACE
             bundle install
