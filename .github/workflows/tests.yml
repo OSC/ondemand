@@ -178,6 +178,7 @@ jobs:
             OOD_PACKAGING_DEBUG: 'true'
             BEAKER_set: ${{ matrix.dist }}
             OOD_BUILD_REPO: ${{ matrix.version }}
+            DOCKER_IN_DOCKER: 'true'
 
       - name: Debug failure
         if: failure()
