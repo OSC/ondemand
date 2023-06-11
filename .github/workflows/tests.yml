@@ -116,6 +116,10 @@ jobs:
           - x86_64
           - aarch64
         version: ["3.1"]
+        exclude:
+          # Amazon 2023 on aarch64 is very slow and will time out
+          - dist: amzn2023
+            arch: aarch64
     runs-on: ${{ matrix.os }}
     name: E2E test ${{ matrix.dist }}-${{ matrix.arch }}
 
