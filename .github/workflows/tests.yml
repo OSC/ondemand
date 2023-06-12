@@ -185,7 +185,7 @@ jobs:
           env: |
             VERSION: "${{ matrix.version }}.0"
             OOD_PACKAGING_DEBUG: 'true'
-            BEAKER_set: ${{ matrix.dist }}
+            BEAKER_set: ${{ matrix.dist }}-${{ matrix.arch }}
             OOD_BUILD_REPO: ${{ matrix.version }}
             DOCKER_IN_DOCKER: 'true'
 
