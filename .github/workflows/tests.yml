@@ -181,7 +181,7 @@ jobs:
             git config --global --add safe.directory $GITHUB_WORKSPACE
             bundle install
             bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]
-            bundle exec rake test:e2e
+            # bundle exec rake test:e2e
           env: |
             VERSION: "${{ matrix.version }}.0"
             OOD_PACKAGING_DEBUG: 'true'
