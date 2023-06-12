@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # The controller for editing a shared app's permissions
 # /dashboard/admin/usr/products/<token>/user/permissions.
 class PermissionsController < ApplicationController
@@ -28,7 +30,9 @@ class PermissionsController < ApplicationController
 
     respond_to do |format|
       if @permission.save
-        format.html { redirect_to product_url(@product.name, type: @type), notice: 'Permission was successfully created.' }
+        format.html do
+          redirect_to product_url(@product.name, type: @type), notice: 'Permission was successfully created.'
+        end
         format.json { render :show, status: :created, location: @permission }
       else
         format.html { render :new }
@@ -47,14 +51,17 @@ class PermissionsController < ApplicationController
 
     @permission.destroy
     respond_to do |format|
-      format.html { redirect_to product_url(@product.name, type: @type), notice: 'Permission was successfully destroyed.' }
+      format.html do
+        redirect_to product_url(@product.name, type: @type), notice: 'Permission was successfully destroyed.'
+      end
       format.json { head :no_content }
     end
   end
 
   private
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def permission_params
-      params.require(:permission).permit! if params[:permission]
-    end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def permission_params
+    params.require(:permission).permit! if params[:permission]
+  end
 end
