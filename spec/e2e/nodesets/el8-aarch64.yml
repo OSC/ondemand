@@ -4,7 +4,7 @@ HOSTS:
       - agent
     platform: el-8-x86_64
     hypervisor: docker
-    image: almalinux:8
+    image: arm64v8/almalinux:8
     docker_preserve_image: true
     docker_cmd:
       - '/usr/sbin/init'

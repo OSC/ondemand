@@ -44,6 +44,8 @@ override_dh_auto_install:
 
 	mv $(DESTDIR)/opt/ood/apps/* $(APACHE_DIR)/apps/sys
 	rm -rf $(DESTDIR)/opt/ood/apps
+	# Avoid x86 compiled fixtures on non-x86
+	rm -rf $(APACHE_DIR)/apps/sys/dashboard/test
 
 	# ood config files
 	rake package:version > $(DESTDIR)/opt/ood/VERSION

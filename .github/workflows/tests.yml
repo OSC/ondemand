@@ -4,6 +4,8 @@ on:
   push:
     branches: [master]
   pull_request:
+  schedule:
+    - cron: '0 2 * * *'
 
 jobs:
   unit-tests:
@@ -104,6 +106,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-22.04]
         dist:
           - el7
           - el8
@@ -111,9 +114,16 @@ jobs:
           - amzn2023
           - ubuntu-20.04
           - ubuntu-22.04
+        arch:
+          - x86_64
+          - aarch64
         version: ["3.1"]
-    runs-on: "ubuntu-latest"
-    name: E2E test ${{ matrix.dist }}
+        exclude:
+          # Amazon 2023 on aarch64 is very slow and will time out
+          - dist: amzn2023
+            arch: aarch64
+    runs-on: ${{ matrix.os }}
+    name: E2E test ${{ matrix.dist }}-${{ matrix.arch }}
 
     steps:
       - name: Checkout ${{ github.sha	}}
@@ -129,16 +139,58 @@ jobs:
           bundler-cache: true
 
       - name: Build package
-        run: bundle exec rake package:build[${{ matrix.dist }}]
+        if: matrix.arch == 'x86_64'
+        run: bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]
         env:
           VERSION: "${{ matrix.version }}.0"
           OOD_PACKAGING_DEBUG: 'true'
 
       - name: Run package tests
+        if: matrix.arch == 'x86_64'
         run: bundle exec rake test:e2e
         env:
           BEAKER_set: ${{ matrix.dist }}
           OOD_BUILD_REPO: ${{ matrix.version }}
+
+      - name: arch distro
+        if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
+        run: |
+          DISTRO=$(echo "${{ matrix.os }}" | sed 's|\-||g')
+          echo "DISTRO=${DISTRO}" >> $GITHUB_ENV
+          if [ "${{ matrix.arch }}" == "aarch64" ]; then
+            echo "PLATFORM=linux/arm64" >> $GITHUB_ENV
+          fi
+
+      - name: Test OnDemand
+        if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
+        uses: uraimo/run-on-arch-action@v2
+        with:
+          arch: ${{ matrix.arch }}
+          distro: ${{ env.DISTRO }}
+          githubToken: ${{ github.token }}
+          install: |
+            apt update -y
+            apt install -y ruby-bundler ruby-dev build-essential git \
+              apt-transport-https ca-certificates curl software-properties-common \
+              chromium-chromedriver
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+            apt update -y
+            apt install -y docker-ce
+          dockerRunArgs: |
+            --platform ${{ env.PLATFORM }}
+          run: |
+            git config --global --add safe.directory $GITHUB_WORKSPACE
+            bundle install
+            bundle exec rake package:build[${{ matrix.dist }},${{ matrix.arch }}]
+            # e2e tests fail with issues accessing chorium
+            # bundle exec rake test:e2e
+          env: |
+            VERSION: "${{ matrix.version }}.0"
+            OOD_PACKAGING_DEBUG: 'true'
+            BEAKER_set: ${{ matrix.dist }}-${{ matrix.arch }}
+            OOD_BUILD_REPO: ${{ matrix.version }}
+            DOCKER_IN_DOCKER: 'true'
 
       - name: Debug failure
         if: failure()

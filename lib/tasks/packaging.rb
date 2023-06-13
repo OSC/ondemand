@@ -40,9 +40,10 @@ namespace :package do
       t.tar_only = true
     end
     desc 'Build OnDemand package'
-    OodPackaging::RakeTask.new(:build, [:dist, :nightly]) do |t, args|
+    OodPackaging::RakeTask.new(:build, [:dist, :arch, :nightly]) do |t, args|
       t.package = proj_root
       t.dist = args[:dist]
+      t.arch = args[:arch] || 'x86_64'
       t.version = args[:nightly].to_s == 'true' ? nightly_version : ood_package_version
       t.tar = true
       t.work_dir = File.join(proj_root, 'tmp/work')
