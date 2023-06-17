@@ -10,15 +10,17 @@ export APACHE_CONF_DIR    = "$(DESTDIR)/etc/apache2"
 export CONFIG_DIR         = "$(DESTDIR)/etc/ood/config"
 export ARCH               = $(shell uname -p)
 
-ifeq ($(ARCH),ppc64le)
-	SUBSTVARS = -Vnodejs:Depends="nodejs"
-else
-	SUBSTVARS = -Vnodejs:Depends="nodejs (>= 14.0), nodejs (<< 15.0)"
-	ifeq (,$(findstring $(shell nodejs --version),v14))
-		@echo "Requires NodeJS 14"
-		exit 1
-	endif
-endif
+# Left as example of how to do dynamic dependencies
+# control would need: ${nodejs:Depends} for install dependencies
+#ifeq ($(ARCH),ppc64le)
+# 	SUBSTVARS = -Vnodejs:Depends="nodejs"
+#else
+#	SUBSTVARS = -Vnodejs:Depends="nodejs (>= 14.0), nodejs (<< 15.0)"
+#	ifeq (,$(findstring $(shell nodejs --version),v14))
+#		@echo "Requires NodeJS 14"
+#		exit 1
+#	endif
+#endif
 
 %:
 	dh $@

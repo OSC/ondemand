@@ -5,7 +5,7 @@ Maintainer: Ohio Supercomputer Center <oschelp@osc.edu>
 Build-Depends: debhelper (>=11~), curl, build-essential,
   tzdata, libxml2-dev, libxslt-dev, pkg-config, zlib1g-dev, liblzma-dev,
   ruby, ruby-dev,
-  nodejs, npm,
+  nodejs (>= 14.0), nodejs (<< 15.0),
   sqlite, libsqlite3-dev, python3
 Standards-Version: 4.1.4
 Homepage: https://openondemand.org
@@ -15,7 +15,7 @@ Architecture: any
 Multi-Arch: foreign
 Depends: ${misc:Depends}, ${shlibs:Depends},
   ruby, apache2, sudo, lsof, lua-posix, tzdata, file,
-  ${nodejs:Depends},
+  nodejs (>= 14.0), nodejs (<< 15.0),
   ondemand-nginx (= 1.22.1.p6.0.17.ood3.1), ondemand-passenger (= 6.0.17.ood3.1)
 Recommends: rclone
 Description: Open OnDemand is an open source release of the Ohio SuperComputer Center's
