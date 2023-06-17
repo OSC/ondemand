@@ -117,11 +117,21 @@ jobs:
         arch:
           - x86_64
           - aarch64
+          - ppc64le
         version: ["3.1"]
         exclude:
           # Amazon 2023 on aarch64 is very slow and will time out
           - dist: amzn2023
             arch: aarch64
+          # Amazon 2023 doesn't have ppc64le containers
+          - dist: amzn2023
+            arch: ppc64le
+          # Ubuntu doesn't have way to get NodeJS 14+ on ppc64le
+          - dist: ubuntu-20.04
+            arch: ppc64le
+          # Ubuntu doesn't have way to get NodeJS 14+ on ppc64le
+          - dist: ubuntu-22.04
+            arch: ppc64le
     runs-on: ${{ matrix.os }}
     name: E2E test ${{ matrix.dist }}-${{ matrix.arch }}
 
@@ -159,6 +169,9 @@ jobs:
           echo "DISTRO=${DISTRO}" >> $GITHUB_ENV
           if [ "${{ matrix.arch }}" == "aarch64" ]; then
             echo "PLATFORM=linux/arm64" >> $GITHUB_ENV
+          fi
+          if [ "${{ matrix.arch }}" == "ppc64le" ]; then
+            echo "PLATFORM=linux/ppc64le" >> $GITHUB_ENV
           fi
 
       - name: Test OnDemand
