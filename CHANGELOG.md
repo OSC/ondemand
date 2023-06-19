@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Support aarch64 builds (#2873)\
+lint a random file (#2876)\
+lint a random file (#2872)\
+update dependencies (#2875)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
