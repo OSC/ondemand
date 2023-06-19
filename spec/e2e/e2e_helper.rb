@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'watir'
 
 def new_browser
@@ -6,7 +7,7 @@ def new_browser
 end
 
 def ctr_base_url
-  "http://localhost:8080"
+  'http://localhost:8080'
 end
 
 def browser_login(browser)
@@ -23,8 +24,8 @@ def browser_login(browser)
   end
 
   browser.goto ctr_base_url
-  browser.text_field(id: 'username').set "ood@localhost"
-  browser.text_field(id: 'password').set "password"
+  browser.text_field(id: 'username').set 'ood@localhost'
+  browser.text_field(id: 'password').set 'password'
   browser.button(id: 'submit-login').click
 end
 
@@ -45,12 +46,13 @@ def proj_root
 end
 
 def dist
-  if host_inventory['platform'] == 'redhat'
+  case host_inventory['platform']
+  when 'redhat'
     major_version = host_inventory['platform_version'].split('.')[0]
     "el#{major_version}"
-  elsif host_inventory['platform'] == 'amazon'
+  when 'amazon'
     "amzn#{host_inventory['platform_version']}"
-  elsif host_inventory['platform'] == 'ubuntu'
+  when 'ubuntu'
     "ubuntu-#{host_inventory['platform_version']}"
   end
 end
@@ -65,8 +67,6 @@ def codename
     'jammy'
   when 'ubuntu-20.04'
     'focal'
-  else
-    nil
   end
 end
 
@@ -126,15 +126,17 @@ end
 
 def bootstrap_repos
   repos = []
-  if host_inventory['platform'] == 'redhat'
+  case host_inventory['platform']
+  when 'redhat'
     repos << 'epel-release'
-    if host_inventory['platform_version'] =~ /^7/
+    case host_inventory['platform_version']
+    when /^7/
       repos << 'centos-release-scl yum-plugin-priorities'
-    elsif host_inventory['platform_version'] =~ /^8/
+    when /^8/
       on hosts, 'dnf -y module enable ruby:3.0'
       on hosts, 'dnf -y module enable nodejs:14'
     end
-  elsif host_inventory['platform'] == 'ubuntu'
+  when 'ubuntu'
     on hosts, 'apt-get update'
   end
   install_packages(repos) unless repos.empty?
@@ -142,7 +144,7 @@ end
 
 def ondemand_repo
   on hosts, 'mkdir -p /repo'
-  if ['redhat','amazon'].include?(host_inventory['platform'])
+  if ['redhat', 'amazon'].include?(host_inventory['platform'])
     install_packages(['createrepo'])
     repo_file = <<~EOS
       [ondemand-local]
@@ -178,10 +180,11 @@ def build_repo_version
 end
 
 def install_ondemand
-  if ['redhat','amazon'].include?(host_inventory['platform'])
+  if ['redhat', 'amazon'].include?(host_inventory['platform'])
     release_rpm = "https://yum.osc.edu/ondemand/latest/ondemand-release-web-#{build_repo_version}-1.#{dist}.noarch.rpm"
     on hosts, "[ -f /etc/yum.repos.d/ondemand-web.repo ] || #{packager} install -y #{release_rpm}"
-    on hosts, "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/build/#{build_repo_version}/web|g' /etc/yum.repos.d/ondemand-web.repo"
+    on hosts,
+       "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/build/#{build_repo_version}/web|g' /etc/yum.repos.d/ondemand-web.repo"
     config_manager = if host_inventory['platform_version'] =~ /^7/
                        'yum-config-manager'
                      else
@@ -193,13 +196,14 @@ def install_ondemand
     install_packages(['wget'])
     on hosts, "wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/latest/ondemand-release-web_#{build_repo_version}.0-#{codename}_all.deb"
     install_packages(['/tmp/ondemand-release.deb'])
-    on hosts, "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/build/#{build_repo_version}/web|g' /etc/apt/sources.list.d/ondemand-web.list"
+    on hosts,
+       "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/build/#{build_repo_version}/web|g' /etc/apt/sources.list.d/ondemand-web.list"
     on hosts, 'apt-get update'
     install_packages(['ondemand', 'ondemand-dex'])
   end
   # Avoid 'update_ood_portal --rpm' so that --insecure can be used
   on hosts, "sed -i 's|--rpm|--rpm --insecure|g' /etc/systemd/system/#{apache_service}.service.d/ood-portal.conf"
-  on hosts, "systemctl daemon-reload"
+  on hosts, 'systemctl daemon-reload'
 end
 
 def fix_apache
@@ -259,7 +263,7 @@ def dl_ctr_logs
     host_dir = "#{dir}/#{host}".tap { |d| `mkdir -p #{d}` }
     {
       '/var/log/ondemand-nginx/ood' => 'error.log',
-      apache_log_dir.to_s => 'localhost_error.log',
+      apache_log_dir.to_s           => 'localhost_error.log'
     }.each do |ctr_dir, file|
       `docker cp ondemand-#{host}:#{ctr_dir}/#{file} #{host_dir}/#{file}`
     end
