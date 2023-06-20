@@ -117,11 +117,21 @@ jobs:
         arch:
           - x86_64
           - aarch64
+          - ppc64le
         version: ["3.1"]
         exclude:
           # Amazon 2023 on aarch64 is very slow and will time out
           - dist: amzn2023
             arch: aarch64
+          # Amazon 2023 doesn't have ppc64le containers
+          - dist: amzn2023
+            arch: ppc64le
+          # Ubuntu doesn't have way to get NodeJS 14+ on ppc64le
+          - dist: ubuntu-20.04
+            arch: ppc64le
+          # Ubuntu doesn't have way to get NodeJS 14+ on ppc64le
+          - dist: ubuntu-22.04
+            arch: ppc64le
     runs-on: ${{ matrix.os }}
     name: E2E test ${{ matrix.dist }}-${{ matrix.arch }}
 
@@ -160,6 +170,9 @@ jobs:
           if [ "${{ matrix.arch }}" == "aarch64" ]; then
             echo "PLATFORM=linux/arm64" >> $GITHUB_ENV
           fi
+          if [ "${{ matrix.arch }}" == "ppc64le" ]; then
+            echo "PLATFORM=linux/ppc64le" >> $GITHUB_ENV
+          fi
 
       - name: Test OnDemand
         if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
@@ -171,8 +184,9 @@ jobs:
           install: |
             apt update -y
             apt install -y ruby-bundler ruby-dev build-essential git \
-              apt-transport-https ca-certificates curl software-properties-common \
-              chromium-chromedriver
+              apt-transport-https ca-certificates curl software-properties-common
+            # Not available for ppc64le
+            # apt install -y chromium-chromedriver
             curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
             echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
             apt update -y

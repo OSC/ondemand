@@ -38,6 +38,13 @@ Source2:   ondemand-selinux.fc
 # Avoid duplicate build-id files between builds of ondemand-gems
 %global _build_id_links none
 
+# These can improve build times but increase ondemand-gems RPM size
+# Leaving in case build times become an issue
+# %%global __brp_strip /bin/true
+# %%global __brp_strip_comment_note /bin/true
+# %%global __brp_strip_static_archive /bin/true
+# %%global __os_install_post %{nil}
+
 %if 0%{?rhel} == 7
 %bcond_without scl_apache
 %define apache_confd /opt/rh/httpd24/root/etc/httpd/conf.d
@@ -130,12 +137,14 @@ set -x
 set -e
 export GEM_HOME=$(pwd)/gems-build
 export GEM_PATH=$(pwd)/gems-build:$GEM_PATH
-#%ifarch aarch64 ppc64le
 %ifarch aarch64
 %if 0%{?rhel} && 0%{?rhel} < 9
 # Nokogiri and possibly other gems will fail to build on older aarch64 and glibc
 bundle config set force_ruby_platform true
 %endif
+%endif
+%ifarch ppc64le
+bundle config set force_ruby_platform true
 %endif
 BUNDLE_WITHOUT='test package' bundle install
 rake --trace -mj%{ncpus} build

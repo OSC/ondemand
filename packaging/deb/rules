@@ -8,15 +8,34 @@ export GEM_PATH           = $(GEM_HOME):$(DESTDIR)/opt/ood/gems:$(shell printenv
 export APACHE_DIR         = "$(DESTDIR)/var/www/ood"
 export APACHE_CONF_DIR    = "$(DESTDIR)/etc/apache2"
 export CONFIG_DIR         = "$(DESTDIR)/etc/ood/config"
+export ARCH               = $(shell uname -p)
 
+# Left as example of how to do dynamic dependencies
+# control would need: ${nodejs:Depends} for install dependencies
+#ifeq ($(ARCH),ppc64le)
+# 	SUBSTVARS = -Vnodejs:Depends="nodejs"
+#else
+#	SUBSTVARS = -Vnodejs:Depends="nodejs (>= 14.0), nodejs (<< 15.0)"
+#	ifeq (,$(findstring $(shell nodejs --version),v14))
+#		@echo "Requires NodeJS 14"
+#		exit 1
+#	endif
+#endif
 
 %:
 	dh $@
+
+override_dh_gencontrol:
+	dh_gencontrol -- $(SUBSTVARS)
 
 override_dh_auto_configure:
 	# nothing to configure
 
 override_dh_auto_build:
+ifeq ($(ARCH),ppc64le)
+	bundle config set force_ruby_platform true
+	bundle config build.nokogiri --use-system-libraries
+endif
 	BUNDLE_WITHOUT='test package' bundle install
 	rake --trace -mj$(NCPUS) build
 	rm -rf $(GEM_HOME)/cache
