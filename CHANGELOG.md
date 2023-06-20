@@ -6,10 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Support aarch64 builds (#2873)\
-lint a random file (#2876)\
-lint a random file (#2872)\
-update dependencies (#2875)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
@@ -19,6 +15,7 @@ update dependencies (#2875)
 - `oidc_crypto_passphrase` can be set in ood_portal in [2807](https://github.com/OSC/ondemand/pull/2807).
 - Titles for menus can now be overriden in [2804](https://github.com/OSC/ondemand/pull/2804).
 - Sites can now configure `passenger_log_file` in [2835](https://github.com/OSC/ondemand/pull/2835).
+- Support for aarch64 builds in [2873](https://github.com/OSC/ondemand/pull/2873).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
