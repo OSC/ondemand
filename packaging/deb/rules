@@ -33,7 +33,7 @@ override_dh_auto_configure:
 
 override_dh_auto_build:
 ifeq ($(ARCH),ppc64le)
-	bundle config set force_ruby_platform true
+	bundle config set --global force_ruby_platform true
 	bundle config build.nokogiri --use-system-libraries
 endif
 	BUNDLE_WITHOUT='test package' bundle install

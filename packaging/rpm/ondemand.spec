@@ -138,16 +138,6 @@ set -x
 set -e
 export GEM_HOME=$(pwd)/gems-build
 export GEM_PATH=$(pwd)/gems-build:$GEM_PATH
-# Force downgrade of bundler to avoid bugs with 2.3.7
-# TODO: Remove if/when using dedicated ondemand-bundler RPM
-%if 0%{?rhel} && 0%{?rhel} > 7
-pushd apps/dashboard
-bundle update --bundler=2.3.6
-popd
-pushd apps/myjobs
-bundle update --bundler=2.3.6
-popd
-%endif
 %ifarch aarch64
 %if 0%{?rhel} && 0%{?rhel} < 9
 # Nokogiri and possibly other gems will fail to build on older aarch64 and glibc
