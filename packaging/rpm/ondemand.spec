@@ -68,6 +68,7 @@ BuildRequires:   rsync
 BuildRequires:   git
 BuildRequires:   python3
 BuildRequires:   libffi-devel
+BuildRequires:   libyaml-devel
 
 Requires:        git
 Requires:        sudo, lsof, cronie, wget, curl, make, rsync, file, libxml2, libxslt, zlib, lua-posix, diffutils
@@ -137,14 +138,24 @@ set -x
 set -e
 export GEM_HOME=$(pwd)/gems-build
 export GEM_PATH=$(pwd)/gems-build:$GEM_PATH
+# Force downgrade of bundler to avoid bugs with 2.3.7
+# TODO: Remove if/when using dedicated ondemand-bundler RPM
+%if 0%{?rhel} && 0%{?rhel} > 7
+pushd apps/dashboard
+bundle update --bundler=2.3.6
+popd
+pushd apps/myjobs
+bundle update --bundler=2.3.6
+popd
+%endif
 %ifarch aarch64
 %if 0%{?rhel} && 0%{?rhel} < 9
 # Nokogiri and possibly other gems will fail to build on older aarch64 and glibc
-bundle config set force_ruby_platform true
+bundle config set --global force_ruby_platform true
 %endif
 %endif
 %ifarch ppc64le
-bundle config set force_ruby_platform true
+bundle config set --global force_ruby_platform true
 %endif
 BUNDLE_WITHOUT='test package' bundle install
 rake --trace -mj%{ncpus} build
