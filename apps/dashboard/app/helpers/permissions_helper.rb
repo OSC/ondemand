@@ -1,12 +1,15 @@
+# frozen_string_literal: true
+
 # Helper for app permission pages.
 module PermissionsHelper
   def permissions_title(context)
-    if context == :user
-      "User Permissions"
-    elsif context == :group
-      "Group Permissions"
+    case context
+    when :user
+      'User Permissions'
+    when :group
+      'Group Permissions'
     else
-      "Undefined Title"
+      'Undefined Title'
     end
   end
 end
