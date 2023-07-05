@@ -11,6 +11,9 @@
     <button id="new-dir-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-folder-plus" aria-hidden="true"></i> New Directory</button>
     <button id="upload-btn" type="button" class="btn btn-primary btn-sm"><i class="fas fa-upload" aria-hidden="true"></i> Upload</button>
     <button id="download-btn" type="button" class="btn btn-primary btn-sm"><i class="fas fa-download" aria-hidden="true"></i> Download</button>
+    <% if Configuration.globus_endpoints %>
+      <%= render partial: 'globus' %>
+    <% end %>
     <button id="copy-move-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-copy" aria-hidden="true"></i> Copy/Move</button>
     <button id="delete-btn" type="button" class="btn btn-danger btn-sm"><i class="fas fa-trash" aria-hidden="true"></i> Delete</button>
 </div>

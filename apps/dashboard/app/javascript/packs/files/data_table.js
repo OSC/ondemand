@@ -1,6 +1,6 @@
 import Handlebars from 'handlebars';
 import {EVENTNAME as SWAL_EVENTNAME} from './sweet_alert.js';
-
+import { getGlobusLink, updateGlobusLink } from './globus.js';
 export { CONTENTID, EVENTNAME };
 
 const EVENTNAME = {
@@ -243,6 +243,7 @@ class DataTable {
         $('#directory-contents_filter').prepend(`<label style="margin-right: 20px" for="show-dotfiles"><input type="checkbox" id="show-dotfiles" ${this.getShowDotFiles() ? 'checked' : ''}> Show Dotfiles</label>`)
         $('#directory-contents_filter').prepend(`<label style="margin-right: 14px" for="show-owner-mode"><input type="checkbox" id="show-owner-mode" ${this.getShowOwnerMode() ? 'checked' : ''}> Show Owner/Mode</label>`)
 
+        this.updateGlobus();
     }
 
     async reloadTable(url) {
@@ -291,6 +292,13 @@ class DataTable {
 
     updateDotFileVisibility() {
         this.reloadTable();
+    }
+
+    updateGlobus() {
+      if ($('#globus-link').length) {
+        $('#globus-link').attr('href', getGlobusLink(history.state.currentDirectory));
+        updateGlobusLink(history.state.currentDirectory, $('#globus-link'), $('#globus-wrapper'));
+      }
     }
 
     updateShowOwnerModeVisibility() {
@@ -364,7 +372,8 @@ class DataTable {
                         currentFilesystem: data.filesystem,
                         currentFilenames: Array.from(data.files, x => x.name)
                     }, data.name, data.url);
-                }      
+                }
+                this.updateGlobus();
             }
           })
           .finally(() => {
