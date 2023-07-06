@@ -54,7 +54,7 @@ Listen 8080
   ServerAlias foo.example.com
 
   RewriteEngine On
-  RewriteRule ^(.*) https://%{HTTP_HOST}:8080$1 [R=301,NE,L]
+  RewriteRule ^(.*) https://test.proxy.name:8080$1 [R=301,NE,L]
 </VirtualHost>
 
 # The Open OnDemand portal VirtualHost

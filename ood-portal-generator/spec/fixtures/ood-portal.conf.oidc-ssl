@@ -47,7 +47,7 @@
   ServerName ondemand.example.com
 
   RewriteEngine On
-  RewriteRule ^(.*) https://%{HTTP_HOST}:443$1 [R=301,NE,L]
+  RewriteRule ^(.*) https://ondemand.example.com:443$1 [R=301,NE,L]
 </VirtualHost>
 
 # The Open OnDemand portal VirtualHost
