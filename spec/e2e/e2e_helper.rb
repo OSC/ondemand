@@ -132,9 +132,9 @@ def bootstrap_repos
     case host_inventory['platform_version']
     when /^7/
       repos << 'centos-release-scl yum-plugin-priorities'
-    when /^8/
-      on hosts, 'dnf -y module enable ruby:3.0'
-      on hosts, 'dnf -y module enable nodejs:14'
+    when /^(8|9)/
+      on hosts, 'dnf -y module enable ruby:3.1'
+      on hosts, 'dnf -y module enable nodejs:18'
     end
   when 'ubuntu'
     on hosts, 'apt-get update'

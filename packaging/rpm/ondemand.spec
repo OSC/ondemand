@@ -5,7 +5,7 @@
 %define git_tag_minus_v %(echo %{git_tag} | sed -r 's/^v//')
 %define major_version %(echo %{git_tag_minus_v} | cut -d. -f1)
 %define minor_version %(echo %{git_tag_minus_v} | cut -d. -f2)
-%define runtime_version %{major_version}.%{minor_version}.2
+%define runtime_version %{major_version}.%{minor_version}.3
 %define runtime_release 1
 %define runtime_version_full %{runtime_version}-%{runtime_release}%{?dist}
 %define selinux_policy_ver %(rpm --qf "%%{version}" -q selinux-policy)
@@ -68,6 +68,7 @@ BuildRequires:   rsync
 BuildRequires:   git
 BuildRequires:   python3
 BuildRequires:   libffi-devel
+BuildRequires:   libyaml-devel
 
 Requires:        git
 Requires:        sudo, lsof, cronie, wget, curl, make, rsync, file, libxml2, libxslt, zlib, lua-posix, diffutils
@@ -140,11 +141,11 @@ export GEM_PATH=$(pwd)/gems-build:$GEM_PATH
 %ifarch aarch64
 %if 0%{?rhel} && 0%{?rhel} < 9
 # Nokogiri and possibly other gems will fail to build on older aarch64 and glibc
-bundle config set force_ruby_platform true
+bundle config set --global force_ruby_platform true
 %endif
 %endif
 %ifarch ppc64le
-bundle config set force_ruby_platform true
+bundle config set --global force_ruby_platform true
 %endif
 BUNDLE_WITHOUT='test package' bundle install
 rake --trace -mj%{ncpus} build
