@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'ood_portal_generator/hash_extensions'
 require 'securerandom'
 require 'fileutils'
@@ -8,7 +10,6 @@ using OodPortalGenerator::HashExtensions
 module OodPortalGenerator
   # A view class that renders a Dex configuration
   class Dex
-
     NO_CONFIG = SecureRandom.uuid
 
     # @param opts [#to_h] the options describing the context used to render the Dex config
@@ -25,7 +26,7 @@ module OodPortalGenerator
       @dex_config[:issuer] = issuer
       @dex_config[:storage] = storage
       @dex_config[:web] = {
-        http: "#{listen}:#{http_port}",
+        http: "#{listen}:#{http_port}"
       }
       @dex_config[:web][:https] = "#{listen}:#{https_port}" if ssl?
       @dex_config[:web][:tlsCert] = tls_cert unless tls_cert.nil?
@@ -45,9 +46,7 @@ module OodPortalGenerator
       end
       @dex_config[:frontend] = frontend
       # Pass values back to main ood-portal.conf view
-      if enabled? && self.class.installed?
-        view.update_oidc_attributes(oidc_attributes)
-      end
+      view.update_oidc_attributes(oidc_attributes) if enabled? && self.class.installed?
     end
 
     # Render the config as a YAML string
@@ -86,11 +85,13 @@ module OodPortalGenerator
 
     def listen
       return 'localhost' if @view.dex_uri
+
       @config.fetch(:listen, '0.0.0.0')
     end
 
     def ssl?
       return false if @view.dex_uri
+
       @config.fetch(:ssl, !@view.ssl.nil?)
     end
 
@@ -99,11 +100,11 @@ module OodPortalGenerator
     end
 
     def http_port
-      @config.fetch(:http_port, "5556")
+      @config.fetch(:http_port, '5556')
     end
 
     def https_port
-      @config.fetch(:https_port, "5554")
+      @config.fetch(:https_port, '5554')
     end
 
     def port
@@ -129,16 +130,19 @@ module OodPortalGenerator
     def issuer_protocol
       return 'https://' if !issuer_uri.empty? && !@view.ssl.nil?
       return 'http://' if !issuer_uri.empty? && @view.ssl.nil?
-      ssl? ? "https://" : "http://"
+
+      ssl? ? 'https://' : 'http://'
     end
 
     def issuer_uri
       return @view.dex_uri if @view.dex_uri
+
       ''
     end
 
     def issuer_port
       return '' if issuer_default_https_port? || issuer_default_http_port?
+
       issuer_uri.empty? ? ":#{port}" : ":#{@view.port}"
     end
 
@@ -148,8 +152,8 @@ module OodPortalGenerator
 
     def storage
       {
-        type: 'sqlite3',
-        config: { file: storage_file },
+        type:   'sqlite3',
+        config: { file: storage_file }
       }.merge(@config.fetch(:storage, {}))
     end
 
@@ -170,7 +174,7 @@ module OodPortalGenerator
     end
 
     def client_port
-      if @view.port && ['443','80'].include?(@view.port.to_s)
+      if @view.port && ['443', '80'].include?(@view.port.to_s)
         ''
       else
         ":#{@view.port}"
@@ -195,18 +199,18 @@ module OodPortalGenerator
     end
 
     def client_name
-      @config.fetch(:client_name, "OnDemand")
+      @config.fetch(:client_name, 'OnDemand')
     end
 
     def default_secret_path
-      File.join(self.class.config_dir, "ondemand.secret")
+      File.join(self.class.config_dir, 'ondemand.secret')
     end
 
     def generate_secret
-      return default_secret_path if (File.exist?(default_secret_path) && ! File.zero?(default_secret_path))
+      return default_secret_path if File.exist?(default_secret_path) && !File.zero?(default_secret_path)
 
       secret = SecureRandom.uuid
-      File.open(default_secret_path, "w", 0600) { |f| f.write("#{secret}\n") }
+      File.open(default_secret_path, 'w', 0o600) { |f| f.write("#{secret}\n") }
       FileUtils.chown(OodPortalGenerator.dex_user, OodPortalGenerator.dex_group, default_secret_path)
       default_secret_path
     end
@@ -221,10 +225,10 @@ module OodPortalGenerator
 
     def static_clients
       ood_client = {
-        id: client_id,
+        id:           client_id,
         redirectURIs: client_redirect_uris,
-        name: client_name,
-        secret: client_secret,
+        name:         client_name,
+        secret:       client_secret
       }
       config_clients = @config.fetch(:static_clients, [])
       [ood_client] + config_clients
@@ -243,10 +247,10 @@ module OodPortalGenerator
       configured = @config.fetch(:static_passwords, nil)
       if configured.nil?
         default = {
-          email: 'ood@localhost',
-          hash: '$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W',
+          email:    'ood@localhost',
+          hash:     '$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W',
           username: 'ood',
-          userID: '08a8684b-db88-4b73-90a9-3cd1661f5466',
+          userID:   '08a8684b-db88-4b73-90a9-3cd1661f5466'
         }
         passwords << default
       else
@@ -260,16 +264,18 @@ module OodPortalGenerator
 
     def frontend
       {
-        dir: '/usr/share/ondemand-dex/web',
-        theme: 'ondemand',
+        dir:   '/usr/share/ondemand-dex/web',
+        theme: 'ondemand'
       }.merge(@config.fetch(:frontend, {}))
     end
 
     def copy_ssl_certs
-      return if !enabled? || !ssl? || @view.ssl.nil? || ! tls_cert.nil? || ! tls_key.nil?
+      return if !enabled? || !ssl? || @view.ssl.nil? || !tls_cert.nil? || !tls_key.nil?
+
       @view.ssl.each do |ssl_line|
         items = ssl_line.split(' ', 2)
         next unless items.size == 2
+
         value = items[1].gsub(/"|'/, '')
         newpath = File.join(self.class.config_dir, File.basename(value))
         case items[0].downcase
@@ -289,16 +295,16 @@ module OodPortalGenerator
 
     def oidc_attributes
       attrs = {
-        dex_http_port: http_port,
-        oidc_uri: '/oidc',
-        oidc_redirect_uri: client_redirect_uri,
+        dex_http_port:              http_port,
+        oidc_uri:                   '/oidc',
+        oidc_redirect_uri:          client_redirect_uri,
         oidc_provider_metadata_url: "#{issuer}/.well-known/openid-configuration",
-        oidc_client_id: client_id,
-        oidc_client_secret: client_secret,
+        oidc_client_id:             client_id,
+        oidc_client_secret:         client_secret
       }
       attrs[:oidc_remote_user_claim] = 'email' if connectors.nil?
       if @view.oidc_remote_user_claim == 'email' || attrs[:oidc_remote_user_claim] == 'email'
-        attrs[:user_map_match] = "^([^@]+)@.*$"
+        attrs[:user_map_match] = '^([^@]+)@.*$'
       end
       attrs[:logout_redirect] = "/oidc?logout=#{client_url}".gsub('://', '%3A%2F%2F')
       attrs
