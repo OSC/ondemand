@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+lint a random file (#2898)\
+lint a random file (#2886)\
+ood-portal-generator: Use proxy_server in http rewrites (#2870)\
+Update to NodeJS 18 and Ruby 3.1 (#2885)\
+Add a Globus button to make transfers easier (#2858)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
