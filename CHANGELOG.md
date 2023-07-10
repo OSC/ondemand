@@ -6,11 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-lint a random file (#2898)\
-lint a random file (#2886)\
-ood-portal-generator: Use proxy_server in http rewrites (#2870)\
-Update to NodeJS 18 and Ruby 3.1 (#2885)\
-Add a Globus button to make transfers easier (#2858)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
@@ -21,9 +16,14 @@ Add a Globus button to make transfers easier (#2858)
 - Titles for menus can now be overriden in [2804](https://github.com/OSC/ondemand/pull/2804).
 - Sites can now configure `passenger_log_file` in [2835](https://github.com/OSC/ondemand/pull/2835).
 - Support for aarch64 builds in [2873](https://github.com/OSC/ondemand/pull/2873).
+- The File browser now has a Globus button to link to Globus endpoints in [2858]((https://github.com/OSC/ondemand/pull/2858).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
+- ood-portal-generator correctly uses `proxy_server` in http rewrites in [2870](https://github.com/OSC/ondemand/pull/2870).
+
+### Changed
+- Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
 
 ## [3.0.1] - 04-20-2023
 
