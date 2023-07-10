@@ -31,6 +31,14 @@ module SmartAttributes
 
   module Attributes
     class AutoScripts < Attribute
+
+      # Value of auto_scripts attribute
+      # Defaults to first script path in the project
+      # @return [String] attribute value
+      def value
+        (opts[:value] || opts[:options].first.last).to_s
+      end
+      
       def widget
         'select'
       end

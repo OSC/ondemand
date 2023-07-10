@@ -32,6 +32,14 @@ module SmartAttributes
 
   module Attributes
     class AutoBatchClusters < Attribute
+
+      # Value of auto_batch_clusters attribute
+      # Defaults to first cluster in the options
+      # @return [String] attribute value
+      def value
+        (opts[:value] || opts[:options].first).to_s
+      end
+
       def widget
         'select'
       end
