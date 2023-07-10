@@ -302,6 +302,10 @@ class ConfigurationSingleton
     can_access_core_app? 'file-editor'
   end
 
+  def can_access_projects?
+    can_access_core_app? 'projects'
+  end
+
   # Maximum file upload size that nginx will allow from clients in bytes
   #
   # @example No maximum upload size supplied.

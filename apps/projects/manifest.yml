@@ -1,0 +1,9 @@
+---
+name: Projects
+description: |-
+  The Open OnDemand Jobs Composer App
+category: Jobs
+icon: fa://magic
+role: projects
+url: projects
+new_window: false

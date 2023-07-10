@@ -66,6 +66,8 @@ override_dh_auto_install:
 	# Avoid x86 compiled fixtures on non-x86
 	rm -rf $(APACHE_DIR)/apps/sys/dashboard/test
 
+	chmod 700 $(APACHE_DIR)/apps/sys/projects
+
 	# ood config files
 	rake package:version > $(DESTDIR)/opt/ood/VERSION
 	install -m 644 nginx_stage/share/nginx_stage_example.yml $(CONFIG_DIR)/nginx_stage.yml
