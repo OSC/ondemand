@@ -9,10 +9,16 @@ module ScriptsHelper
 
     case widget
     when 'number_field'
-      render(partial: 'scripts/editable_form_fields/editable_number', locals: locals)
+      render(partial: editable_partial('editable_number'), locals: locals)
+    when 'select'
+      render(partial: editable_partial('editable_select'), locals: locals)
     else
-      render(partial: 'scripts/editable_form_fields/generic', locals: locals)
+      render(partial: editable_partial('generic'), locals: locals)
     end
+  end
+
+  def editable_partial(partial)
+    "scripts/editable_form_fields/#{partial}"
   end
 
   def bc_num_hours_template
