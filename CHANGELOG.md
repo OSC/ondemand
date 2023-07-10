@@ -16,9 +16,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Titles for menus can now be overriden in [2804](https://github.com/OSC/ondemand/pull/2804).
 - Sites can now configure `passenger_log_file` in [2835](https://github.com/OSC/ondemand/pull/2835).
 - Support for aarch64 builds in [2873](https://github.com/OSC/ondemand/pull/2873).
+- The File browser now has a Globus button to link to Globus endpoints in [2858]((https://github.com/OSC/ondemand/pull/2858).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
+- ood-portal-generator correctly uses `proxy_server` in http rewrites in [2870](https://github.com/OSC/ondemand/pull/2870).
+
+### Changed
+- Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
 
 ## [3.0.1] - 04-20-2023
 
