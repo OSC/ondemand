@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module SmartAttributes
+  # This is the base class that all other, more specific, Attributes
+  # should subclass.
   class Attribute
     # Unique identifier of attribute
     # @return [String] attribute id
