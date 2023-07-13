@@ -8,9 +8,9 @@
   <div class="d-none edit-group">
     
     <ol class="list-group text-center col-md-4 mb-3">
-      <%- attrib.select_choices.each do |choice_data| %>
+      <%- attrib.select_choices.each do |select_data| %>
       <%- 
-        choice = choice_data.first
+        choice = parse_select_data(select_data)
       -%>
 
       <li class="list-group-item">

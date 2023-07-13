@@ -21,6 +21,14 @@ module ScriptsHelper
     "scripts/editable_form_fields/#{partial}"
   end
 
+  def parse_select_data(select_data)
+    if select_data.is_a?(Array)
+      select_data.first
+    else
+      select_data
+    end
+  end
+
   def bc_num_hours_template
     attrib = SmartAttributes::AttributeFactory.build_bc_num_hours({})
     create_editable_widget(script_form_double, attrib)
