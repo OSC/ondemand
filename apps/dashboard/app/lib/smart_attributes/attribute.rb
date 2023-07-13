@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SmartAttributes
   class Attribute
     # Unique identifier of attribute
@@ -29,7 +31,7 @@ module SmartAttributes
     # To support HTML file inputs, if the attribute is detected as as file input, it is not converted.
     # @return [String] attribute value
     def value
-      if %w[file_field file_attachments].include?(widget) || opts[:value].class.to_s.match(/UploadedFile/)
+      if ['file_field', 'file_attachments'].include?(widget) || opts[:value].class.to_s.match(/UploadedFile/)
         opts[:value]
       else
         opts[:value].to_s
@@ -49,8 +51,8 @@ module SmartAttributes
     def value=(other)
       @opts[:value] = other
     end
-    
-    def cacheable?(default_value) 
+
+    def cacheable?(default_value)
       if opts[:cacheable].nil?
         default_value
       else
@@ -61,7 +63,7 @@ module SmartAttributes
     # Type of form widget used for this attribute
     # @return [String] widget type
     def widget
-      (opts[:widget] || "text_field").to_s
+      (opts[:widget] || 'text_field').to_s
     end
 
     # Form label for this attribute
@@ -125,20 +127,20 @@ module SmartAttributes
     end
 
     # Hash of field options for Rails form helpers
-    # these are assumed to be everything that isn't already defined    
+    # these are assumed to be everything that isn't already defined
     # as a method on this class, but is in the opts hash, except for
     # label, help, and required, which are defined methods on this class
     # but should be called to be included.
     #
     # @return [Hash] key value pairs are field options
     def field_options(fmt: nil)
-      opts.reject { |k,v|
+      opts.reject do |k, _v|
         reserved_keys.include?(k)
-      }.merge({
-        label: label(fmt: fmt),
-        help:  help_html(fmt: fmt),
-        required: required
-      })
+      end.merge({
+                  label:    label(fmt: fmt),
+                  help:     help_html(fmt: fmt),
+                  required: required
+                })
     end
 
     # Hash of both field options and html options
@@ -154,10 +156,10 @@ module SmartAttributes
     # It's basically calling opts with some keys updated for convenience.
     def options_to_serialize(fmt: nil)
       opts.merge({
-        label:    label(fmt: fmt),
-        help:     help_html(fmt: fmt),
-        required: required
-      }).compact
+                   label:    label(fmt: fmt),
+                   help:     help_html(fmt: fmt),
+                   required: required
+                 }).compact
     end
 
     # Array of choices for select fields used to build <option> tags
@@ -170,13 +172,13 @@ module SmartAttributes
     # String value if this attribute is "checked" (relevant for checkboxes)
     # @return [String] checked value
     def checked_value
-      opts.fetch(:checked_value, "1")
+      opts.fetch(:checked_value, '1')
     end
 
     # String value if this attribute is "unchecked" (relevant for checkboxes)
     # @return [String] unchecked value
     def unchecked_value
-      opts.fetch(:unchecked_value, "0")
+      opts.fetch(:unchecked_value, '0')
     end
 
     def min=(value)
@@ -194,16 +196,19 @@ module SmartAttributes
     # instead of the underlying option
     # @return [Array<Symbol>] option keys
     def reserved_keys
-      [:widget, :fixed, :hide_when_empty, :options, :html_options, :checked_value, :unchecked_value, :required, :label, :help, :cacheable]
+      [
+        :widget, :fixed, :hide_when_empty, :options, :html_options, :checked_value, :unchecked_value,
+        :required, :label, :help, :cacheable
+      ]
     end
 
-    FALSE_VALUES=[ false, '', 0, '0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF', 'no', 'NO' ]
-    
+    FALSE_VALUES = [false, '', 0, '0', 'f', 'F', 'false', 'FALSE', 'off', 'OFF', 'no', 'NO'].freeze
+
     # Returns false if value is included among False_Values set
-    # @param value the value to be checked 
+    # @param value the value to be checked
     # @return [Boolean]
     def to_bool(value)
-      ! FALSE_VALUES.include?(value)
+      !FALSE_VALUES.include?(value)
     end
   end
 end
