@@ -73,11 +73,11 @@ namespace :test do
     uname = `uname -s`
     case uname.chomp
     when 'Darwin'
-      if `uname -m`.chomp == 'arm64'
-        file = 'chromedriver_mac_arm64.zip'
-      else
-        file = 'chromedriver_mac64.zip'
-      end
+      file = if `uname -m`.chomp == 'arm64'
+               'chromedriver_mac_arm64.zip'
+             else
+               'chromedriver_mac64.zip'
+             end
     when 'Linux'
       file = 'chromedriver_linux64.zip'
     end
