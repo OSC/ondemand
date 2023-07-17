@@ -122,6 +122,22 @@ function addInProgressField(event) {
   entireDiv.remove();
 }
 
+function enableOrDisableSelectOption(event) {
+  const toggleAction = event.target.dataset.selectToggler;
+  const li = event.target.parentElement;
+  event.target.disabled = true;
+
+  if(toggleAction == 'add') {
+    li.classList.remove('list-group-item-danger', 'text-strike');
+    const removeButton = $(li).find('[data-select-toggler="remove"]')[0];
+    removeButton.disabled = false;
+  } else {
+    li.classList.add('list-group-item-danger', 'text-strike');
+    const addButton = $(li).find('[data-select-toggler="add"]')[0];
+    addButton.disabled = false;
+  }
+}
+
 jQuery(() => {
   newFieldTemplate = $('#new_field_template');
   $('#add_new_field_button').on('click', (event) => { addNewField(event) });
@@ -134,4 +150,7 @@ jQuery(() => {
     .find('.editable-form-field')
     .find('.btn-primary')
     .on('click', (event) => { showEditField(event) });
+
+  $('[data-select-toggler]')
+    .on('click', (event) => { enableOrDisableSelectOption(event) });
 });

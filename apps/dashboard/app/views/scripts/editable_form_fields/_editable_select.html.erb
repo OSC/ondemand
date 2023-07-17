@@ -1,0 +1,35 @@
+<%-
+  field_id = "#{form.object_name}_#{attrib.id}"
+-%>
+
+<div class="editable-form-field">
+  <%=  create_widget(form, attrib, format: format) %>
+
+  <div class="d-none edit-group">
+    
+    <ol class="list-group text-center col-md-4 mb-3">
+      <%- attrib.select_choices.each do |select_data| %>
+      <%- 
+        choice = parse_select_data(select_data)
+      -%>
+
+      <li class="list-group-item">
+
+        <button class="btn btn-info float-left" data-select-toggler="add" type="button" disabled>
+          <%= t('dashboard.add') %>
+        </button>
+
+        <%= choice %>
+
+        <button class="btn btn-warning float-right" data-select-toggler="remove" type="button">
+          <%= t('dashboard.remove') %>
+        </button>
+
+      </li>
+      <%- end -%>
+    </ol>
+    
+  </div>
+
+  <%= render(partial: 'scripts/editable_form_fields/edit_field_buttons',  locals: { field_id: field_id }) %>
+</div>
