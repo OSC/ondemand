@@ -7,8 +7,6 @@ class ProjectsTest < ApplicationSystemTestCase
   def setup
     stub_clusters
     stub_user
-    Configuration.stubs(:jobs_app_alpha).returns(true)
-    Rails.application.reload_routes!
     stub_sacctmgr
     stub_scontrol
   end
