@@ -16,9 +16,9 @@
 
 import jQuery from 'jquery';
 import 'jquery-ujs';
-import datatables from 'datatables.net';
-import datatablesBs4 from 'datatables.net-bs4/js/dataTables.bootstrap4';
-import datatablesSelect from 'datatables.net-select/js/dataTables.select';
+import 'datatables.net';
+import 'datatables.net-bs4/js/dataTables.bootstrap4';
+import 'datatables.net-select/js/dataTables.select';
 
 import Rails from '@rails/ujs';
 
@@ -34,11 +34,6 @@ import 'bootstrap/dist/js/bootstrap';
 // lot's of inline scripts and stuff rely on jquery just being available
 window.jQuery = jQuery;
 window.$ = jQuery;
-
-// these plugins don't automatically load, so this loads them.
-datatables(window, jQuery);
-datatablesBs4(window, jQuery);
-datatablesSelect(window, jQuery);
 
 Rails.start();
 
