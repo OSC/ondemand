@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper_e2e'
 
 describe 'Default install' do
@@ -13,6 +15,7 @@ describe 'Default install' do
 
   describe file(host_portal_config) do
     it { is_expected.to be_file }
+
     expected = File.join(proj_root, 'ood-portal-generator/spec/fixtures/ood-portal.conf.default')
     its(:content) { is_expected.to eq(File.read(expected)) }
   end
@@ -29,5 +32,4 @@ describe 'Default install' do
       end
     end
   end
-
 end
