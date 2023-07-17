@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Lint attribute (#2912)\
+upgrade this action for GH deprecations (#2911)\
+lint a random file (#2910)\
+Bump semver from 5.7.1 to 5.7.2 in /apps/dashboard (#2907)\
+Bump semver from 5.7.1 to 5.7.2 in /apps/shell (#2906)\
+Add value method with defaults to scripts and clusters (#2865)\
+Add dropdown entry for new job composer (#2839)\
+add a nonce to the inline globus script tag (#2892)\
+Update Changelog (#2900)\
+lint a random file (#2899)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
