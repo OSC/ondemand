@@ -18,14 +18,14 @@
       <li class="list-group-item">
 
         <button class="btn btn-info float-left" type="button"
-          data-select-toggler="add" data-target="<%= exclude_id %>" disabled>
+          data-select-toggler="add" data-target="<%= exclude_id %>" data-select-id="<%= field_id %>" disabled>
           <%= t('dashboard.add') %>
         </button>
 
         <span data-select-value><%= choice %></span>
 
         <button class="btn btn-warning float-right" type="button"
-          data-select-toggler="remove" data-target="<%= exclude_id %>">
+          data-select-toggler="remove" data-target="<%= exclude_id %>" data-select-id="<%= field_id %>">
           <%= t('dashboard.remove') %>
         </button>
 
