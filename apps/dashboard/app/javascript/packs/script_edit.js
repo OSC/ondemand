@@ -151,7 +151,7 @@ function enableOrDisableSelectOption(event) {
 
 function addToExcludeInput(id, item) {
   const input = document.getElementById(id);
-  const list = input.value.split(',');
+  const list = input.value.split(',').filter(word => word != '');
   list.push(item);
 
   input.value = list.join(',');
