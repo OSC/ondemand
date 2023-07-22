@@ -2,7 +2,6 @@
 
 module SmartAttributes
   class AttributeFactory
-
     AUTO_SCRIPT_EXTENSIONS = ['sh', 'csh', 'bash', 'slurm', 'sbatch', 'qsub'].freeze
 
     # Build this attribute object. Must specify a valid directory in opts
@@ -31,14 +30,13 @@ module SmartAttributes
 
   module Attributes
     class AutoScripts < Attribute
-
       # Value of auto_scripts attribute
       # Defaults to first script path in the project
       # @return [String] attribute value
       def value
         (opts[:value] || opts[:options].first.last).to_s
       end
-      
+
       def widget
         'select'
       end
