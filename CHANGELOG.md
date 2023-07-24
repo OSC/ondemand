@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+lint a random file (#2918)\
+add initial scaffolding for disabling select options (#2903)\
+rm unused config flag for new projects app (#2905)\
+Update Dependencies (#2901)\
+lint a random file (#2913)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
