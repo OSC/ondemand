@@ -111,7 +111,7 @@ class Script
   end
 
   def original_parameter(string)
-    match = /([\w_]+)_(?:min|max)/.match(string)
+    match = /([\w_]+)_(?:min|max|exclude)/.match(string)
     match[1]
   end
 
@@ -176,10 +176,16 @@ class Script
 
   private
 
+  # parameters you got from the controller that affect the attributes, not form.
+  # i.e., mins & maxes you set in the form but get serialized to the 'attributes' section.
+  def attribute_parameter?(name)
+    name.end_with?('_min') || name.end_with?('_max') || name.end_with?('_exclude')
+  end
+
   # update the 'form' portion of the yaml file given 'params' from the controller.
   def update_form(params)
     params.reject do |key, _value|
-      key.end_with?('_min') || key.end_with?('_max')
+      attribute_parameter?(key)
     end.each do |key, value|
       self[key.to_sym] = SmartAttributes::AttributeFactory.build(key, default_attributes(key)) if self[key.to_sym].nil?
       self[key.to_sym].value = value
@@ -189,7 +195,7 @@ class Script
   # update the 'attributes' portion of the yaml file given 'params' from the controller.
   def update_attributes(params)
     params.select do |key, _value|
-      key.end_with?('_min') || key.end_with?('_max')
+      attribute_parameter?(key)
     end.each do |key, value|
       orig_param = original_parameter(key)
       self[orig_param.to_sym].min = value if key.end_with?('_min') && !value.to_s.empty?

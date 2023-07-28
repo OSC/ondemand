@@ -127,15 +127,42 @@ function enableOrDisableSelectOption(event) {
   const li = event.target.parentElement;
   event.target.disabled = true;
 
+  const inputId = event.target.dataset.target;
+  const choice = $(li).find('[data-select-value]')[0].textContent;
+
+  const select = document.getElementById(event.target.dataset.selectId);
+  const selectOptions = Array.from(select.options);
+  const optionToToggle = selectOptions.filter(opt => opt.value == choice)[0];
+
   if(toggleAction == 'add') {
     li.classList.remove('list-group-item-danger', 'text-strike');
     const removeButton = $(li).find('[data-select-toggler="remove"]')[0];
     removeButton.disabled = false;
+    removeFromExcludeInput(inputId, choice);
+    optionToToggle.disabled = false;
   } else {
     li.classList.add('list-group-item-danger', 'text-strike');
     const addButton = $(li).find('[data-select-toggler="add"]')[0];
     addButton.disabled = false;
+    addToExcludeInput(inputId, choice);
+    optionToToggle.disabled = true;
   }
+}
+
+function addToExcludeInput(id, item) {
+  const input = document.getElementById(id);
+  const list = input.value.split(',').filter(word => word != '');
+  list.push(item);
+
+  input.value = list.join(',');
+}
+
+function removeFromExcludeInput(id, item) {
+  const input = document.getElementById(id);
+  const currentList = input.value.split(',').filter(word => word != "");
+  const newList = currentList.filter(word => word != item);
+
+  input.value = newList.join(',');
 }
 
 jQuery(() => {
