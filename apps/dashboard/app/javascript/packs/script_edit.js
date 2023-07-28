@@ -165,6 +165,25 @@ function removeFromExcludeInput(id, item) {
   input.value = newList.join(',');
 }
 
+function initSelectFields(){
+  const allButtons = Array.from($('[data-select-toggler]'));
+
+  // find all the disabled 'remove' buttons
+  allButtons.filter((button) => {
+    return button.disabled && button.dataset.selectToggler == 'remove';
+
+  // now map that disabled button to the option it's disabled.
+  }).map((button) => {
+    const li = button.parentElement;
+    const optionText = $(li).find('[data-select-value]')[0].textContent;
+    return optionText;
+
+  // now disable all the options
+  }).forEach((option) => {
+    $(`select [value='${option}']`).attr('disabled', 'true')
+  });
+}
+
 jQuery(() => {
   newFieldTemplate = $('#new_field_template');
   $('#add_new_field_button').on('click', (event) => { addNewField(event) });
@@ -180,4 +199,6 @@ jQuery(() => {
 
   $('[data-select-toggler]')
     .on('click', (event) => { enableOrDisableSelectOption(event) });
+
+  initSelectFields();
 });

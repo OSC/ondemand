@@ -197,9 +197,14 @@ class Script
     params.select do |key, _value|
       attribute_parameter?(key)
     end.each do |key, value|
-      orig_param = original_parameter(key)
-      self[orig_param.to_sym].min = value if key.end_with?('_min') && !value.to_s.empty?
-      self[orig_param.to_sym].max = value if key.end_with?('_max') && !value.to_s.empty?
+      orig_param = original_parameter(key).to_sym
+      self[orig_param].min = value if key.end_with?('_min') && !value.to_s.empty?
+      self[orig_param].max = value if key.end_with?('_max') && !value.to_s.empty?
+
+      if key.end_with?('_exclude')
+        exclude_list = value.split(',').to_a
+        self[orig_param].exclude_select_choices = exclude_list unless exclude_list.empty?
+      end
     end
   end
 
