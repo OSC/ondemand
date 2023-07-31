@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Send excludeable options (#2916)\
+upgrade rails to 6.1.7.4 (#2917)\
+lint a random file (#2926)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
