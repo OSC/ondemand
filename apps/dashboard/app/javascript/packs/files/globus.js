@@ -1,3 +1,9 @@
+var globus_endpoints;
+
+$(document).ready(function() {
+    globus_endpoints = $("#globus_endpoints").data("globusEndpoints");
+});
+
 /**
  * Given a directory name, return the associated Globus endpoint and path
  * @params {string} directory Directory name
