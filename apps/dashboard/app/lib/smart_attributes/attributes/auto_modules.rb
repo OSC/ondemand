@@ -54,7 +54,7 @@ module SmartAttributes
       # normalize module names so they can be accessed through methods.
       # see https://github.com/OSC/ondemand/issues/2933
       def normalize_module(module_name)
-        module_name.gsub('-', '_')
+        module_name.to_s.gsub('-', '_')
       end
     end
   end
