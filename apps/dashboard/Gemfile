@@ -44,7 +44,7 @@ gem 'redcarpet', '~> 3.3'
 gem 'browser', '~> 2.2'
 gem 'addressable', '~> 2.4'
 gem 'bootstrap_form', '~> 4.0'
-gem 'mocha', '~> 1.1', group: :test
+gem 'mocha', '~> 2.1', group: :test
 gem 'autoprefixer-rails', '~> 10.2.5'
 gem 'dotiw'
 gem 'local_time', '~> 1.0.3'
