@@ -557,23 +557,24 @@ module BatchConnect
         ctx.attributes = { 'cluster' => 'owens', 'bc_num_hours' => 100, 'cuda_version' => 'cuda_100' }
 
         expected_user_context = {
-          'cluster'                  => 'owens',
-          'bc_num_hours'             => '100',
-          'bc_num_slots'             => '1',
-          'mode'                     => '1',
-          'node_type'                => '',
-          'gpus'                     => '0',
-          'bc_account'               => '',
-          'bc_account_other'         => '',
-          'bc_email_on_started'      => '',
-          'python_version'           => '',
-          'cuda_version'             => 'cuda_100',
-          'hidden_change_thing'      => 'default',
-          'classroom'                => '',
-          'classroom_size'           => '',
-          'advanced_options'         => '',
-          'auto_modules_app_jupyter' => '',
-          'auto_modules_intel'       => ''
+          'cluster'                     => 'owens',
+          'bc_num_hours'                => '100',
+          'bc_num_slots'                => '1',
+          'mode'                        => '1',
+          'node_type'                   => '',
+          'gpus'                        => '0',
+          'bc_account'                  => '',
+          'bc_account_other'            => '',
+          'bc_email_on_started'         => '',
+          'python_version'              => '',
+          'cuda_version'                => 'cuda_100',
+          'hidden_change_thing'         => 'default',
+          'classroom'                   => '',
+          'classroom_size'              => '',
+          'advanced_options'            => '',
+          'auto_modules_app_jupyter'    => '',
+          'auto_modules_intel'          => '',
+          'auto_modules_netcdf_serial'  => ''
         }
 
         assert session.save(app: bc_jupyter_app, context: ctx), session.errors.each(&:to_s).to_s
