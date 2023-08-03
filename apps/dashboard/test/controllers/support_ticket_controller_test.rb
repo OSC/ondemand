@@ -71,7 +71,7 @@ class SupportTicketControllerTest < ActiveSupport::TestCase
     # We expect the service to deliver the support ticket
     SupportTicketEmailService.any_instance.stubs(:deliver_support_ticket).returns("support ticket message")
 
-    @controller.expects(:redirect_to).with("/home", {:flash => {:notice => "support ticket message"}})
+    @controller.expects(:redirect_to).with("/home", flash: { notice: "support ticket message" })
 
     @controller.create
   end

@@ -77,7 +77,7 @@ class SupportTicketEmailServiceTest < ActiveSupport::TestCase
   test "deliver_support_ticket should delegate to SupportTicketMailer class and return success message" do
     SupportTicketMailer.expects(:support_email).returns(stub(:deliver_now => nil))
     I18n.stubs(:t).returns("validation message for all support ticket fields")
-    I18n.expects(:t).with('dashboard.support_ticket.creation_success', {to: "to_address@support.ticket.com"}).returns("success message")
+    I18n.expects(:t).with('dashboard.support_ticket.creation_success', to: "to_address@support.ticket.com").returns("success message")
     result = @target.deliver_support_ticket(SupportTicket.new)
 
     assert_equal "success message", result

@@ -237,7 +237,7 @@ class ProjectsTest < ApplicationSystemTestCase
       Open3
         .stubs(:capture3)
         .with({}, 'sbatch', '-A', 'pas2051', '--export', 'NONE', '--parsable', '-M', 'owens',
-              { stdin_data: "hostname\n" })
+              stdin_data: "hostname\n")
         .returns(['job-id-123', '', exit_success])
 
       OodCore::Job::Adapters::Slurm.any_instance
@@ -280,7 +280,7 @@ class ProjectsTest < ApplicationSystemTestCase
       Open3
         .stubs(:capture3)
         .with({}, 'sbatch', '-A', 'pas2051', '--export', 'NONE', '--parsable', '-M', 'owens',
-              { stdin_data: "hostname\n" })
+              stdin_data: "hostname\n")
         .returns(['', 'some error message', exit_failure])
 
       click_on 'Launch'
