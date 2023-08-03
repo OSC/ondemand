@@ -30,7 +30,7 @@ module SmartAttributes
         @opts[:label] || @hpc_module.nil? ? 'Auto modules (none given)' : "#{@hpc_module.titleize} version"
       end
 
-      def select_choices
+      def select_choices(*)
         versions = HpcModule.all_versions(@hpc_module).map do |mod|
           data_opts = Configuration.job_clusters.map do |cluster|
             { "data-option-for-cluster-#{cluster.id}": false } unless mod.on_cluster?(cluster.id)

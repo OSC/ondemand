@@ -5,27 +5,31 @@
 -%>
 
 <div class="editable-form-field">
-  <%=  create_widget(form, attrib, format: format) %>
+  <%=  create_widget(form, attrib, format: format, hide_excludable: false) %>
 
   <div class="d-none edit-group">
     
     <ol class="list-group text-center col-md-4 mb-3">
-      <%- attrib.select_choices.each do |select_data| %>
+      <%- attrib.select_choices(hide_excludable: false).each do |select_data| %>
       <%- 
         choice = parse_select_data(select_data)
+        disabled = attrib.exclude_select_choices.include?(choice)
+        li_classes = disabled ? 'list-group-item list-group-item-danger text-strike' : 'list-group-item'
       -%>
 
-      <li class="list-group-item">
+      <li class="<%= li_classes %>">
 
         <button class="btn btn-info float-left" type="button"
-          data-select-toggler="add" data-target="<%= exclude_id %>" data-select-id="<%= field_id %>" disabled>
+          data-select-toggler="add" data-target="<%= exclude_id %>" data-select-id="<%= field_id %>"
+          <%= disabled ? nil : 'disabled="true"'.html_safe %> >
           <%= t('dashboard.add') %>
         </button>
 
         <span data-select-value><%= choice %></span>
 
         <button class="btn btn-warning float-right" type="button"
-          data-select-toggler="remove" data-target="<%= exclude_id %>" data-select-id="<%= field_id %>">
+          data-select-toggler="remove" data-target="<%= exclude_id %>" data-select-id="<%= field_id %>"
+          <%= disabled ? 'disabled="true"'.html_safe : nil %> >
           <%= t('dashboard.remove') %>
         </button>
 
@@ -35,7 +39,8 @@
     
   </div>
 
-  <input type="hidden" value="" id='<%= exclude_id %>' name='<%= exclude_name %>'>
+  <input type="hidden" id='<%= exclude_id %>' name='<%= exclude_name %>'
+    value="<%= attrib.exclude_select_choices.join(',') %>">
   </input>
 
   <%= render(partial: 'scripts/editable_form_fields/edit_field_buttons',  locals: { field_id: field_id }) %>

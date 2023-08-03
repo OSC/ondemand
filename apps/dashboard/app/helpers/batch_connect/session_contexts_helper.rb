@@ -1,6 +1,6 @@
 # Helper for creating new batch connect sessions.
 module BatchConnect::SessionContextsHelper
-  def create_widget(form, attrib, format: nil)
+  def create_widget(form, attrib, format: nil, hide_excludable: true)
     return '' if attrib.fixed?
     return '' if attrib.hide_when_empty? && attrib.value.blank?
 
@@ -10,7 +10,7 @@ module BatchConnect::SessionContextsHelper
 
     case widget
     when 'select'
-      form.select attrib.id, attrib.select_choices, field_options, attrib.html_options
+      form.select(attrib.id, attrib.select_choices(hide_excludable: hide_excludable), field_options, attrib.html_options)
     when 'resolution_field'
       resolution_field(form, attrib.id, all_options)
     when 'check_box'

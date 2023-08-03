@@ -166,9 +166,23 @@ module SmartAttributes
 
     # Array of choices for select fields used to build <option> tags
     # @return [Array] choices in form [name, value], [name, value]
-    def select_choices
-      o = opts.fetch(:options, [])
-      o.nil? ? [] : o
+    def select_choices(hide_excludable: true)
+      opts.fetch(:options, []).to_a.reject do |option_data|
+        if hide_excludable
+          option = option_data.is_a?(Array) ? option_data.first : option_data
+          exclude_select_choices.include?(option)
+        else
+          false
+        end
+      end
+    end
+
+    def exclude_select_choices
+      opts.fetch(:exclude_options, []).to_a
+    end
+
+    def exclude_select_choices=(list)
+      opts[:exclude_options] = list
     end
 
     # String value if this attribute is "checked" (relevant for checkboxes)
