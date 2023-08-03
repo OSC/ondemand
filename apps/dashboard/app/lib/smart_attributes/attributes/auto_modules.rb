@@ -19,7 +19,7 @@ module SmartAttributes
         super
 
         @hpc_module = @opts[:module]
-        @id = "#{id}_#{@hpc_module}" # reset the id to be unique from other auto_module_*
+        @id = "#{id}_#{normalize_module(@hpc_module)}" # reset the id to be unique from other auto_module_*
       end
 
       def widget
@@ -49,6 +49,12 @@ module SmartAttributes
       def show_default?
         default = @opts[:default]
         default.nil? ? true : default != false
+      end
+
+      # normalize module names so they can be accessed through methods.
+      # see https://github.com/OSC/ondemand/issues/2933
+      def normalize_module(module_name)
+        module_name.to_s.gsub('-', '_')
       end
     end
   end
