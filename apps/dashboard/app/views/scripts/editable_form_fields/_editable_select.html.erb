@@ -15,11 +15,13 @@
         choice = parse_select_data(select_data)
         disabled = attrib.exclude_select_choices.include?(choice)
         li_classes = disabled ? 'list-group-item list-group-item-danger text-strike' : 'list-group-item'
+        add_id = "#{field_id}_add_#{choice}"
+        remove_id = "#{field_id}_remove_#{choice}"
       -%>
 
       <li class="<%= li_classes %>">
 
-        <button class="btn btn-info float-left" type="button"
+        <button class="btn btn-info float-left" type="button" id="<%= add_id %>"
           data-select-toggler="add" data-target="<%= exclude_id %>" data-select-id="<%= field_id %>"
           <%= disabled ? nil : 'disabled="true"'.html_safe %> >
           <%= t('dashboard.add') %>
@@ -27,7 +29,7 @@
 
         <span data-select-value><%= choice %></span>
 
-        <button class="btn btn-warning float-right" type="button"
+        <button class="btn btn-warning float-right" type="button" id="<%= remove_id %>"
           data-select-toggler="remove" data-target="<%= exclude_id %>" data-select-id="<%= field_id %>"
           <%= disabled ? 'disabled="true"'.html_safe : nil %> >
           <%= t('dashboard.remove') %>
