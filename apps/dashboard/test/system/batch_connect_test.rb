@@ -635,6 +635,24 @@ class BatchConnectTest < ApplicationSystemTestCase
     end
   end
 
+  test 'auto modules allow hyphens' do
+    with_modified_env({ OOD_MODULE_FILE_DIR: 'test/fixtures/modules' }) do
+      visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+      # defaults to the default version
+      assert_equal('netcdf-serial', find_value('auto_modules_netcdf_serial'))
+
+      select('4.3.3.1', from: bc_ele_id('auto_modules_netcdf_serial'))
+      module_value = 'netcdf-serial/4.3.3.1'
+      assert_equal(module_value, find_value('auto_modules_netcdf_serial'))
+
+      # the script.sh.erb raises the message 'context.auto_modules_netcdf_serial' (note the _ in the name)
+      # which should be 'netcdf-serial/4.3.3.1'
+      click_on('Launch')
+      verify_bc_alert('sys/bc_jupyter',  I18n.t('dashboard.batch_connect_sessions_errors_staging'), module_value)
+    end
+  end
+
   test 'auto accounts are cluster aware' do
     Dir.mktmpdir do |dir|
       "#{dir}/app".tap { |d| Dir.mkdir(d) }
