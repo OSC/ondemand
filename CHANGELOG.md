@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+lint a random file (#2943)\
+save excludable options (#2929)\
+add support for module names with hyphens in them (#2938)\
+rake update + upgrading mocha manually. (#2939)\
+Remove inline javascript related to globus configuration. The json data is now serialized and stored as a data attribute. Resolves OSC/ondemand#2890 (#2936)\
+lint a random file (#2935)\
+lint a random file (#2931)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
