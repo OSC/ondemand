@@ -6,13 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-lint a random file (#2943)\
-save excludable options (#2929)\
-add support for module names with hyphens in them (#2938)\
-rake update + upgrading mocha manually. (#2939)\
-Remove inline javascript related to globus configuration. The json data is now serialized and stored as a data attribute. Resolves OSC/ondemand#2890 (#2936)\
-lint a random file (#2935)\
-lint a random file (#2931)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
@@ -28,6 +21,7 @@ lint a random file (#2931)
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
 - ood-portal-generator correctly uses `proxy_server` in http rewrites in [2870](https://github.com/OSC/ondemand/pull/2870).
+- auto_modules now support module names with hyphens in them in [2938](https://github.com/OSC/ondemand/pull/2938).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
