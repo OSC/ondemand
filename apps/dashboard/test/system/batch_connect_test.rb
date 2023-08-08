@@ -11,7 +11,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
   def stub_git(dir)
     Open3.stubs(:capture3)
-      .with('git', 'describe', '--always', '--tags', { chdir: dir })
+      .with('git', 'describe', '--always', '--tags', chdir: dir)
       .returns(['1.2.3', '', exit_success])
   end
 
