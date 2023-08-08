@@ -524,51 +524,9 @@ class ProjectsTest < ApplicationSystemTestCase
   # creates a project & script with auto_accounts
   # excludes some of the accounts from auto_accounts in script#edit
   # asserts that they've actually been removed from script#show
-  test 'excluding select options' do
-    Dir.mktmpdir do |dir|
-      setup_project(dir)
-      setup_script(1)
-      add_account(1)
-
-      visit edit_project_script_path('1', '1')
-
-      find('#edit_script_auto_accounts').click
-      exclude_accounts = ['pas2051', 'pas1871', 'pas1754', 'pas1604']
-      exclude_accounts.each do |acct|
-        rm_btn = find("#script_auto_accounts_remove_#{acct}")
-        add_btn = find("#script_auto_accounts_add_#{acct}")
-
-        # rm is enabled and add is disabled.
-        assert(!!rm_btn[:disabled])
-        assert(add_btn[:disabled])
-        rm_btn.click
-
-        # after clicking, they toggle
-        assert(rm_btn[:disabled])
-        assert(!!add_btn[:disabled])
-      end
-
-      find("#save_script_edit").click
-      assert_current_path('/projects/1')
-      find('[href="/projects/1/scripts/1"]').click
-
-      # now let's check scripts#show to see if they've actually been excluded.
-      show_account_options = page.all("#script_auto_accounts option").map(&:value)
-      exclude_accounts.each do |acct|
-        assert(!show_account_options.include?(acct))
-      end
-    end
-  end
-
-  # this test is very similar to the one above only it adds some options
-  # back after the inital save
-  #
-  # creates a project & script with auto_accounts
-  # excludes some of the accounts from auto_accounts in script#edit
-  # asserts that they've actually been removed from script#show
   # adds some of the accounts back in script#edit
   # asserts that the _new_ list of excluded accounts have actually been removed from script#show
-  test 'adding select options back in' do
+  test 'excluding and including select optionss' do
     Dir.mktmpdir do |dir|
       setup_project(dir)
       setup_script(1)
