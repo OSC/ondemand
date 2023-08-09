@@ -237,6 +237,21 @@ class RcloneUtil
       end
     end
 
+    # Check if remote can be accessed (responds to directory listing request).
+    def valid?(remote)
+      # This gives a total max duration of 6s (2s * 3 attempts)
+      _, _, s = rclone(
+        'lsd',                 "#{remote}:",
+        '--contimeout',        '2s',
+        '--timeout',           '2s',
+        '--low-level-retries', '1',
+        '--retries',           '1'
+      )
+      s.success?
+    rescue StandardError
+      false
+    end
+
     def rclone_cmd
       # TODO: Make this configurable
       "rclone"

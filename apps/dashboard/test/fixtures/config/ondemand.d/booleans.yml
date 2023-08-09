@@ -5,6 +5,7 @@ bc_simple_auto_accounts: true
 per_cluster_dataroot: true
 file_navigator: true
 remote_files_enabled: true
+remote_files_validation: true
 host_based_profiles: true
 disable_bc_shell: true
 cancel_session_enabled: true
