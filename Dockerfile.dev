@@ -15,7 +15,7 @@ RUN cp /etc/yum.repos.d/ondemand-web.repo /etc/yum.repos.d/ondemand-nightly-web.
 RUN dnf -y update && \
     dnf install -y dnf-utils && \
     dnf config-manager --set-enabled powertools && \
-    dnf -y module enable nodejs:14 ruby:3.0 && \
+    dnf -y module enable nodejs:18 ruby:3.1 && \
     dnf install -y epel-release && \
     dnf install -y ondemand ondemand-dex && \
     dnf clean all && rm -rf /var/cache/dnf/*
