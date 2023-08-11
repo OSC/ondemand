@@ -72,6 +72,7 @@ export class PathSelectorTable {
       createdRow: function (row, data, _dataIndex) {
         row.classList.add('clickable');
         row.dataset['apiUrl'] = data.url;
+        row.dataset['pathType'] = data.type;
       },
     });
   }
@@ -104,7 +105,17 @@ export class PathSelectorTable {
   clickRow(event) {
     const row = $(event.target).closest('tr').get(0);
     const url = row.dataset['apiUrl'];
-    this.reloadTable(url);
+    const pathType = row.dataset['pathType'];
+
+    // only reload table for directories. and correct last visited
+    // if it's a file.
+    if(pathType == 'f') {
+      const currentDir = this.getLastVisited();
+      const fileName = url.split('/').slice(-1)[0];
+      this.setLastVisited(`${currentDir}/${fileName}`);
+    } else {
+      this.reloadTable(url);
+    }
   }
 
   clickBreadcrumb(event) {
