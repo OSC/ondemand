@@ -128,12 +128,23 @@ class Script
 
   def save
     @id = Script.next_id(project_dir) if @id.nil?
-    File.write("#{Script.scripts_dir(project_dir)}/#{id}.yml", to_yaml)
+    File.write(script_file, to_yaml)
 
     true
   rescue StandardError => e
     errors.add(:save, e.message)
     Rails.logger.warn("Cannot save script due to error: #{e.class}:#{e.message}")
+    false
+  end
+
+  def destroy
+    FileUtils.remove_file(script_file)
+    FileUtils.remove_file(job_log_file)
+    FileUtils.remove_file(cache_file_path) if cache_file_exists?
+    true
+  rescue StandardError => e
+    errors.add(:destroy, e.message)
+    Rails.logger.warn("Cannot delete script #{id} due to error: #{e.class}:#{e.message}")
     false
   end
 
@@ -175,6 +186,10 @@ class Script
   end
 
   private
+
+  def script_file
+    File.join(Script.scripts_dir(project_dir), "#{id}.yml")
+  end
 
   # parameters you got from the controller that affect the attributes, not form.
   # i.e., mins & maxes you set in the form but get serialized to the 'attributes' section.

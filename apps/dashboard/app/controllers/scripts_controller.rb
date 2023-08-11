@@ -4,7 +4,7 @@
 class ScriptsController < ApplicationController
 
   before_action :find_project
-  before_action :find_script, only: [:show, :edit, :submit, :save]
+  before_action :find_script, only: [:show, :edit, :destroy, :submit, :save]
 
   SAVE_SCRIPT_KEYS = [
     :cluster, :auto_accounts, :auto_accounts_exclude, :auto_scripts, :auto_scripts_exclude,
@@ -23,7 +23,7 @@ class ScriptsController < ApplicationController
     @script = Script.new(opts)
 
     if @script.save
-      redirect_to project_path(params[:project_id]), notice: 'sucess!'
+      redirect_to project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_scripts_created')
     else
       redirect_to project_path(params[:project_id]), alert: @script.errors[:save].last
     end
@@ -34,13 +34,22 @@ class ScriptsController < ApplicationController
   def edit
   end
 
+  # DELETE /projects/:project_id/scripts/:id
+  def destroy
+    if @script.destroy
+      redirect_to project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_scripts_deleted')
+    else
+      redirect_to project_path(params[:project_id]), alert: @script.errors[:destroy].last
+    end
+  end
+
   # POST   /projects/:project_id/scripts/:id/save
   # save the script after editing
   def save
     @script.update(save_script_params[:script])
 
     if @script.save
-      redirect_to project_path(params[:project_id]), notice: 'sucess!'
+      redirect_to project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_scripts_updated')
     else
       redirect_to project_path(params[:project_id]), alert: @script.errors[:save].last
     end
@@ -52,7 +61,7 @@ class ScriptsController < ApplicationController
     opts = submit_script_params[:script].to_h.symbolize_keys
 
     if (job_id = @script.submit(opts))
-      redirect_to(project_path(params[:project_id]), notice: "Successfully submited job #{job_id}.")
+      redirect_to(project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_scripts_submitted', job_id: job_id))
     else
       redirect_to(project_path(params[:project_id]), alert: @script.errors[:submit].last)
     end

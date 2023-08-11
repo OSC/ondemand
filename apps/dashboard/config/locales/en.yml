@@ -214,6 +214,13 @@ en:
     jobs_create_blank_project: "Create a new project"
     jobs_create_template_project: "Create a new project from a template"
 
+    jobs_scripts_created: "Script successfully created!"
+    jobs_scripts_updated: "Script manifest updated!"
+    jobs_scripts_not_found: "Cannot find script %{script_id}"
+    jobs_scripts_deleted: "Script successfully deleted!"
+    jobs_scripts_submitted: "Successfully submited job %{job_id}."
+    jobs_scripts_delete_script_confirmation: "Delete all contents of script?"
+
     settings_updated: "Settings updated"
 
     breadcrumbs_support_ticket: "Support Ticket"
@@ -245,5 +252,6 @@ en:
     save: "Save"
     add: "Add"
     remove: "Remove"
+    delete: "Delete"
     edit: "Edit"
     show: "Show"
