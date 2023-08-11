@@ -183,10 +183,11 @@ class ProjectsTest < ApplicationSystemTestCase
             required: false
       HEREDOC
 
-      assert_selector('.alert-success', text: "×\nClose\nsucess!")
+      success_message = I18n.t('dashboard.jobs_scripts_created')
+      assert_selector('.alert-success', text: "×\nClose\n#{success_message}")
       assert_equal(expected_yml, File.read("#{dir}/projects/1/.ondemand/scripts/1.yml"))
 
-      find('[href="/projects/1/scripts/1"]').click
+      find('[href="/projects/1/scripts/1"].btn-success').click
       assert_selector('h1', text: 'the script title', count: 1)
     end
   end
@@ -198,7 +199,7 @@ class ProjectsTest < ApplicationSystemTestCase
       project_dir = "#{dir}/projects/1"
       add_account(1)
 
-      find('[href="/projects/1/scripts/1"]').click
+      find('[href="/projects/1/scripts/1"].btn-success').click
       assert_selector('h1', text: 'the script title', count: 1)
 
       expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
@@ -213,6 +214,30 @@ class ProjectsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'deleting a script that succeeds' do
+    Dir.mktmpdir do |dir|
+      setup_project(dir)
+      setup_script(1)
+      project_dir = "#{dir}/projects/1"
+      script_dir = "#{project_dir}/.ondemand/scripts"
+      expected_script_files = ["#{script_dir}/1.yml", "#{script_dir}/1_job_log"]
+      # ASSERT EXPECTED SCRIPT FILES
+      expected_script_files.each do |file_path|
+        assert_equal true, File.exist?(file_path)
+      end
+
+      accept_confirm do
+        click_on 'Delete'
+      end
+
+      assert_selector '.alert-success', text: 'Script successfully deleted!'
+      # EXPECTED FILES SHOULD BE DELETED
+      expected_script_files.each do |file_path|
+        assert_not File.exist? file_path
+      end
+    end
+  end
+
   test 'submitting a script with auto attributes that succeeds' do
     Dir.mktmpdir do |dir|
       setup_project(dir)
@@ -221,7 +246,7 @@ class ProjectsTest < ApplicationSystemTestCase
       script_dir = "#{project_dir}/.ondemand/scripts"
       add_account(1)
 
-      find('[href="/projects/1/scripts/1"]').click
+      find('[href="/projects/1/scripts/1"].btn-success').click
       assert_selector('h1', text: 'the script title', count: 1)
 
       # assert defaults
@@ -264,7 +289,7 @@ class ProjectsTest < ApplicationSystemTestCase
       script_dir = "#{project_dir}/.ondemand/scripts"
       add_account(1)
 
-      find('[href="/projects/1/scripts/1"]').click
+      find('[href="/projects/1/scripts/1"].btn-success').click
       assert_selector('h1', text: 'the script title', count: 1)
 
       # assert defaults
@@ -342,7 +367,8 @@ class ProjectsTest < ApplicationSystemTestCase
 
       # correctly saves
       click_on(I18n.t('dashboard.save'))
-      assert_selector('.alert-success', text: "×\nClose\nsucess!")
+      success_message = I18n.t('dashboard.jobs_scripts_updated')
+      assert_selector('.alert-success', text: "×\nClose\n#{success_message}")
       assert_current_path '/projects/1'
 
       # note that bc_num_hours has default, min & max
@@ -419,7 +445,8 @@ class ProjectsTest < ApplicationSystemTestCase
 
       # correctly saves
       click_on(I18n.t('dashboard.save'))
-      assert_selector('.alert-success', text: "×\nClose\nsucess!")
+      success_message = I18n.t('dashboard.jobs_scripts_updated')
+      assert_selector('.alert-success', text: "×\nClose\n#{success_message}")
       assert_current_path '/projects/1'
 
       expected_yml = <<~HEREDOC
@@ -552,7 +579,7 @@ class ProjectsTest < ApplicationSystemTestCase
 
       find("#save_script_edit").click
       assert_current_path('/projects/1')
-      find('[href="/projects/1/scripts/1"]').click
+      find('[href="/projects/1/scripts/1"].btn-success').click
 
       # now let's check scripts#show to see if they've actually been excluded.
       show_account_options = page.all("#script_auto_accounts option").map(&:value)
@@ -579,7 +606,7 @@ class ProjectsTest < ApplicationSystemTestCase
 
       find("#save_script_edit").click
       assert_current_path('/projects/1')
-      find('[href="/projects/1/scripts/1"]').click
+      find('[href="/projects/1/scripts/1"].btn-success').click
 
       # now let's check scripts#show and they should be back.
       show_account_options = page.all("#script_auto_accounts option").map(&:value)

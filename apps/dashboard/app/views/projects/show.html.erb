@@ -49,6 +49,15 @@
             )
             %>
 
+            <%= link_to(
+              t('dashboard.delete'),
+              project_script_path(@project.id, script.id),
+              class: 'btn btn-danger mx-1',
+              method: 'delete',
+              data: { confirm: I18n.t('dashboard.jobs_scripts_delete_script_confirmation') },
+              )
+            %>
+
             <%-
               params = script.smart_attributes.map { |attr| ["script[#{attr.id}]", attr.value] }.to_h
             -%>
