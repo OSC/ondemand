@@ -28,4 +28,23 @@ class FilesAppTest < ActionDispatch::IntegrationTest
     assert_equal I18n.t('dashboard.files_remote_disabled'), json['error_message']
     assert_equal [], json['files']
   end
+
+  test 'breadcrumbs shows remote prefix for remotes only' do
+    get files_url(Rails.root.to_s)
+    # Select breadcrumb items that are not buttons (change dir, copy path, etc.).
+    local_breadcrumb = css_select('.breadcrumb-item')
+                       .select { |el| (el > ('.btn')).empty? }
+                       .map(&:inner_text).map(&:strip).join
+    local_expected = "/#{Rails.root.each_filename.map(&:to_s).join(' /')} /"
+
+    assert_equal local_expected, local_breadcrumb
+
+    get files_url('local_remote', Rails.root.to_s)
+    remote_breadcrumb = css_select('.breadcrumb-item')
+                        .select { |el| (el > ('.btn')).empty? }
+                        .map(&:inner_text).map(&:strip).join
+    remote_expected = "local_remote: /#{Rails.root.each_filename.map(&:to_s).join(' /')} /"
+
+    assert_equal remote_expected, remote_breadcrumb
+  end
 end
