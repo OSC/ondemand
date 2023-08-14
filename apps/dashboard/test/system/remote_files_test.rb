@@ -214,6 +214,49 @@ class RemoteFilesTest < ApplicationSystemTestCase
     end
   end
 
+  # Using files move test to specifically test that RcloneUtil.rclone_popen works
+  test 'moving files with remote configured in extra config' do
+    Dir.mktmpdir do |dir|
+      with_extra_rclone_conf(dir) do
+        # Test in a subdir of the temp directory
+        dir = File.join(dir, 'bucket')
+        Dir.mkdir(dir)
+
+        # copy to dest/app
+        dest = File.join(dir, 'dest')
+        FileUtils.mkpath dest
+
+        `cp -r #{Rails.root.join('app')} #{Rails.root.join('config')}  #{Rails.root.join('manifest.yml')} #{dir}`
+
+        # select dir to move
+        visit files_url('extra_remote', dir)
+        %w(app config manifest.yml).each do |f|
+          find('a', exact_text: f).ancestor('tr').click(:meta)
+        end
+        assert_selector '.selected', count: 3
+
+        find('#copy-move-btn').click
+
+        # move to new location
+        visit files_url('extra_remote', "#{dir}/dest")
+        find('#clipboard-move-to-dir').click
+        find('tbody a', exact_text: 'app', wait: MAX_WAIT)
+        find('tbody a', exact_text: 'config', wait: MAX_WAIT)
+        find('tbody a', exact_text: 'manifest.yml', wait: MAX_WAIT)
+
+        # verify contents moved
+        assert_equal '', `diff -rq #{File.join(dest, 'app')} #{Rails.root.join('app')}`.strip, 'failed to mv app and all contents'
+        assert_equal '', `diff -rq #{File.join(dest, 'config')} #{Rails.root.join('config')}`.strip, 'failed to recursively copy config dir'
+        assert_equal '', `diff -q #{File.join(dest, 'manifest.yml')} #{Rails.root.join('manifest.yml')}`.strip, 'failed to copy manifest.yml'
+
+        # verify original does not exist
+        refute File.directory?(File.join(dir, 'app'))
+        refute File.directory?(File.join(dir, 'config'))
+        refute File.directory?(File.join(dir, 'manifest.yml'))
+      end
+    end
+  end
+
   test 'removing files' do
     Dir.mktmpdir do |dir|
       with_rclone_conf(dir) do

@@ -22,4 +22,10 @@ class RcloneUtilTest < ActiveSupport::TestCase
       assert RcloneUtil.valid?('local_remote')
     end
   end
+
+  test "list_remotes handles rclone.conf, env and extra rclone config" do
+    with_extra_rclone_conf("/") do
+        assert_equal ["alias_remote", "extra_remote", "local_remote", "missing_auth", "s3"], RcloneUtil.list_remotes
+    end
+  end
 end
