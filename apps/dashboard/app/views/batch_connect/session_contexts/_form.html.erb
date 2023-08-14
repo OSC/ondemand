@@ -1,13 +1,80 @@
+<%- if !@prefill_templates.empty?() -%>
+  <div class="form-group">
+    <label class="control-label"><%= t('dashboard.batch_connect_form_prefill') %></label>
+    <select class="form-control selectpicker" id="batch_connect_session_prefill_template">
+      <option disabled selected value> -- <%= t('dashboard.batch_connect_form_select_template') %> -- </option>
+      <% @prefill_templates.each do |id, template| %>
+        <option value="<%= template %>"><%= id %></option>
+      <% end %>
+    </select>
+  </div>
+<%- end -%>
+
+<div class="modal fade" id="formPrefillError" tabindex="-1" role="dialog" aria-labelledby="formPrefillErrorLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="formPrefillErrorLabel"><%= t('dashboard.batch_connect_form_prefill_error') %></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="formPrefillErrorBody"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="chooseTemplateName" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="chooseTemplateNameLabel"><%= t('dashboard.batch_connect_form_choose_template_name') %></h5>
+      </div>
+      <div class="modal-body">
+        <select class="form-control selectpicker" id="modal_input_template_name">
+          <option selected value> -- <%= t('dashboard.batch_connect_form_save_new_template') %> -- </option>
+          <% @prefill_templates.each do |id, _| %>
+            <option value="<%= id %>"><%= id %></option>
+          <% end %>
+        </select>
+        <input type="text" class="form-control" id="modal_input_template_new_name" placeholder="<%= t('dashboard.batch_connect_form_type_new_name') %>">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="chooseTemplateNameConfirm"><%= t('dashboard.save') %></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="chooseTemplateNameError" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="chooseTemplateNameErrorLabel"><%= t('dashboard.batch_connect_form_type_new_name_error') %></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <%= bootstrap_form_for(@session_context) do |f| %>
   <% f.object.each do |attrib| %>
     <%= create_widget(f, attrib, format: @render_format) %>
   <% end %>
 
+  <div class="form-group">
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" id="batch_connect_session_save_template">
+      <label class="form-check-label" for="batch_connect_session_save_template"><%= t('dashboard.batch_connect_form_save') %></label>
+    </div>
+  </div>
   <%= f.submit t('dashboard.batch_connect_form_launch'), class: "btn btn-primary btn-block" %>
 <% end %>
 
 <%= javascript_include_tag 'batch_connect', nonce: true if Configuration.bc_dynamic_js? %>
+<%= javascript_include_tag 'batch_connect_templates_prefill' %>
 
 <% @app.custom_javascript_files.each do |jsfile| %>
   <%= javascript_tag "(function(){\n" + jsfile.read + "\n}());" %>

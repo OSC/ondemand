@@ -7,6 +7,7 @@ class BatchConnect::SessionContextsController < ApplicationController
     set_app
     set_render_format
     set_session_context
+    set_prefill_templates
 
     if @app.valid?
       begin
@@ -32,6 +33,14 @@ class BatchConnect::SessionContextsController < ApplicationController
 
     # Read in context from form parameters
     @session_context.attributes = session_contexts_param
+
+    if params[:template].present?
+      @app.prefill_templates_root.tap do |p|
+        p.mkpath unless p.exist?
+      end.join(params[:template].to_s + '.json').write(@session_context.to_json)
+    end
+
+    set_prefill_templates
 
     @session = BatchConnect::Session.new
     respond_to do |format|
@@ -72,6 +81,20 @@ class BatchConnect::SessionContextsController < ApplicationController
     # Set the rendering format for displaying attributes
     def set_render_format
       @render_format = @app.clusters.first.job_config[:adapter] unless @app.clusters.empty?
+    end
+
+    # Set the rendering format for displaying attributes
+    def set_prefill_templates
+      @prefill_templates ||= begin
+        hsh = {}
+        return hsh unless @app.valid?
+
+        json_path = @app.prefill_templates_root.join("*.json")
+        Dir.glob(json_path).map do |path|
+          hsh.store(File.basename(path)[0...-5], File.read(path))
+        end
+        hsh
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
