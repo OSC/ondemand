@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+only query the fs api if you navigate select a directory (#2951)\
+Add delete script functionality for new job composer (#2820) (#2959)\
+lint a random file (#2955)\
+add gcc to dev container (#2949)\
+Container images upgrade to NodeJS 18 and Ruby 3.1 (#2953)\
+add test for excluding options and add ids to some elements in the views (#2942)\
+Update Changelog (#2946)\
+fix mocha deprecation warnings (#2941)\
+sort ondemand.d files by name before loading (#2944)\
+update dependencies (#2947)\
+lint a random file (#2945)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
