@@ -118,10 +118,8 @@ module ActiveJobs
       attributes.push Attribute.new "Total CPUs", info.native[:cpus]
       attributes.push Attribute.new "Time Limit", info.native[:time_limit]
       attributes.push Attribute.new "Time Used", info.native[:time_used]
-      attributes.push Attribute.new "Start Time",
-        DateTime.parse(info.native[:start_time]).strftime("%Y-%m-%d %H:%M:%S") unless info.native[:start_time] == "N/A"
-      attributes.push Attribute.new "End Time",
-        DateTime.parse(info.native[:end_time]).strftime("%Y-%m-%d %H:%M:%S") unless info.native[:end_time] == "N/A"
+      attributes.push Attribute.new "Start Time", safe_parse_time(info.native[:start_time])
+      attributes.push Attribute.new "End Time", safe_parse_time(info.native[:end_time])
       attributes.push Attribute.new "Memory", info.native[:min_memory]
       attributes.push Attribute.new "GRES", info.native[:gres].gsub(/gres:/, "") unless info.native[:gres] == "N/A"
       self.native_attribs = attributes
@@ -304,6 +302,18 @@ module ActiveJobs
     end
 
     private
+
+      def safe_parse_time(time)
+        if ['N/A', 'NONE'].include?(time.to_s)
+          ''
+        else
+          begin
+            DateTime.parse(time.to_s).strftime('%Y-%m-%d %H:%M:%S')
+          rescue Date::Error
+            ''
+          end
+        end
+      end
 
       def build_file_explorer_url(path)
         writable_path = (path.writable? ? path : ENV["HOME"]).to_s
