@@ -15,12 +15,13 @@ class Script
     end
 
     def find(id, project_dir)
-      file = "#{scripts_dir(project_dir)}/#{id}.yml"
+      script_path = Script.script_path(project_dir, id)
+      file = script_form_file(script_path)
       Script.from_yaml(file, project_dir)
     end
 
     def all(project_dir)
-      Dir.glob("#{scripts_dir(project_dir)}/*.yml").map do |file|
+      Dir.glob("#{scripts_dir(project_dir).to_s}/*/form.yml").map do |file|
         Script.from_yaml(file, project_dir)
       end.compact
     end
@@ -30,7 +31,7 @@ class Script
       raw_opts = YAML.safe_load(contents)
 
       opts = raw_opts.to_h
-      opts.merge!({ id: File.basename(file, '.yml') })
+      opts.merge!({ id: File.basename(File.dirname(file)) })
       opts.merge!({ project_dir: project_dir.to_s })
 
       new(opts)
@@ -128,7 +129,9 @@ class Script
 
   def save
     @id = Script.next_id(project_dir) if @id.nil?
-    File.write(script_file, to_yaml)
+    script_path = Script.script_path(project_dir, id)
+    script_path.mkpath unless script_path.exist?
+    File.write(Script.script_form_file(script_path), to_yaml)
 
     true
   rescue StandardError => e
@@ -138,9 +141,9 @@ class Script
   end
 
   def destroy
-    FileUtils.remove_file(script_file)
-    FileUtils.remove_file(job_log_file)
-    FileUtils.remove_file(cache_file_path) if cache_file_exists?
+    return true unless id
+    script_path = Script.script_path(project_dir, id)
+    FileUtils.remove_dir(Script.script_path(project_dir, id)) if script_path.exist?
     true
   rescue StandardError => e
     errors.add(:destroy, e.message)
@@ -187,8 +190,12 @@ class Script
 
   private
 
-  def script_file
-    File.join(Script.scripts_dir(project_dir), "#{id}.yml")
+  def self.script_path(root_dir, script_id)
+    Pathname.new(File.join(Script.scripts_dir(root_dir), script_id.to_s))
+  end
+
+  def self.script_form_file(script_path)
+    File.join(script_path, "form.yml")
   end
 
   # parameters you got from the controller that affect the attributes, not form.
@@ -237,7 +244,7 @@ class Script
   end
 
   def cache_file_path
-    Pathname.new("#{Script.scripts_dir(project_dir)}/#{id}_cache.json")
+    Pathname.new(File.join(Script.script_path(project_dir, id), "cache.json"))
   end
 
   def cache_file_exists?
@@ -247,7 +254,7 @@ class Script
   def cached_values
     @cached_values ||= begin
       cache_file_path = OodAppkit.dataroot.join(Script.scripts_dir("#{project_dir}"), "#{id}_opts.json")
-      cache_file_content = File.read(cache_file_path) if cache_file_exists?
+      cache_file_content = File.read(cache_file_path) if cache_file_path.exist?
       
       File.exist?(cache_file_path) ? JSON.parse(cache_file_content) : {}
     rescue => exception
@@ -277,7 +284,7 @@ class Script
   end
 
   def job_log_file
-    @job_log_file ||= Pathname.new("#{Script.scripts_dir(project_dir)}/#{id}_job_log").tap do |path|
+    @job_log_file ||= Pathname.new(File.join(Script.script_path(project_dir, id), "job_history.log")).tap do |path|
       FileUtils.touch(path.to_s)
     end
   end
