@@ -7,7 +7,7 @@
 
 <% if file_counter == (file_count - 1) %>
   <li class="breadcrumb-item">
-    <%= path_segment_with_slash(file.basename.to_s, file_counter, file_count) %>
+    <%= path_segment_with_slash(@filesystem, file.basename.to_s, file_counter, file_count) %>
   </li>
   <li class="breadcrumb-item ml-3">
     <button id="goto-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-edit" aria-hidden="true"></i> Change directory</button>
@@ -17,6 +17,6 @@
   </li>
 <% else %>
   <li class="breadcrumb-item">
-    <%= link_to path_segment_with_slash(file.basename.to_s, file_counter, file_count), files_path(@filesystem, file), class: (file_counter == (file_count - 1) ? 'd active' : 'd')  %>
+    <%= link_to path_segment_with_slash(@filesystem, file.basename.to_s, file_counter, file_count), files_path(@filesystem, file), class: (file_counter == (file_count - 1) ? 'd active' : 'd')  %>
   </li>
 <% end %>

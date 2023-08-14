@@ -9,10 +9,10 @@
 
 <% if file_counter == (file_count - 1) %>
   <li class="breadcrumb-item">
-    <%= path_segment_with_slash(file.basename.to_s, file_counter, file_count) %>
+    <%= path_segment_with_slash(@filesystem, file.basename.to_s, file_counter, file_count) %>
   </li>
 <% else %>
   <li class="breadcrumb-item">
-      <span id="<%= files_path(@filesystem, file) %>" class="clickable"><%= path_segment_with_slash(file.basename.to_s, file_counter, file_count) %></span>
+      <span id="<%= files_path(@filesystem, file) %>" class="clickable"><%= path_segment_with_slash(@filesystem, file.basename.to_s, file_counter, file_count) %></span>
   </li>
 <% end %>
