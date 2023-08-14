@@ -44,6 +44,7 @@ class ConfigurationSingleton
       :bc_clean_old_dirs            => false,
       :per_cluster_dataroot         => false,
       :remote_files_enabled         => false,
+      :remote_files_validation      => false,
       :host_based_profiles          => false,
       :disable_bc_shell             => false,
       :cancel_session_enabled       => false,
