@@ -1,6 +1,8 @@
 'use strict';
 
 import { attachPathSelectors } from './path_selector/path_selector'
+import { prefillTemplatesHandler } from './prefill_templates/prefill_templates'
+import { prefillSubmitHandler } from './prefill_templates/prefill_submit'
 
 const bcPrefix = 'batch_connect_session_context';
 const shortNameRex = new RegExp(`${bcPrefix}_([\\w\\-]+)`);
@@ -728,5 +730,7 @@ function optionForEvent(target) {
 jQuery(function() {
   makeChangeHandlers();
   attachPathSelectors();
+  prefillTemplatesHandler();
+  prefillSubmitHandler();
   initializing = false;
 });
