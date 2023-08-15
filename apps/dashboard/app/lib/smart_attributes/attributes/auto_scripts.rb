@@ -36,6 +36,8 @@ module SmartAttributes
       # Defaults to first script path in the project
       # @return [String] attribute value
       def value
+        return nil if !opts[:value] && opts[:options].empty?
+        
         (opts[:value] || opts[:options].first.last).to_s
       end
       
