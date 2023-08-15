@@ -2,6 +2,8 @@
 class BatchConnect::SessionContextsController < ApplicationController
   include BatchConnectConcern
 
+  include ActiveModel::Serializers::JSON
+
   # GET /batch_connect/<app_token>/session_contexts/new
   def new
     set_app
@@ -35,9 +37,16 @@ class BatchConnect::SessionContextsController < ApplicationController
     @session_context.attributes = session_contexts_param
 
     if params[:template].present?
+      attrib = session_contexts_param.clone
+      @session_context.attributes.each do |k, v|
+        index = @app.attributes.find_index {|a| a.id == k }
+        if index >= 0 && @app.attributes[index].opts[:disable_prefill]
+          attrib.delete(k)
+        end
+      end
       @app.prefill_templates_root.tap do |p|
         p.mkpath unless p.exist?
-      end.join(params[:template].to_s + '.json').write(@session_context.to_json)
+      end.join(params[:template].to_s + '.json').write(JSON.pretty_generate attrib.as_json)
     end
 
     set_prefill_templates

@@ -122,6 +122,12 @@ module BatchConnect
       form_config.fetch(:caption, ood_app.caption)
     end
 
+    # Enable prefill templates for the batch connect app
+    # @return [Boolean] Whether prefilling is enabled
+    def prefill
+      form_config.fetch(:prefill, true)
+    end
+
     def tile
       ood_app.tile.merge(form_config.fetch(:tile, {}))
     end

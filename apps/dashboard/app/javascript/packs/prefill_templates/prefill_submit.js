@@ -5,7 +5,12 @@ const newNameID = "modal_input_template_new_name";
 
 export function prefillSubmitHandler() {
   const form = $("#new_batch_connect_session_context");
+
   const chooseTemplateName = $("#chooseTemplateName");
+  if (chooseTemplateName.length === 0) {
+    return;
+  }
+
   const chooseTemplateNameError = $("#chooseTemplateNameError")
   let url;
 
