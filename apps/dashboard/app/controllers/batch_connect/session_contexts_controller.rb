@@ -40,7 +40,7 @@ class BatchConnect::SessionContextsController < ApplicationController
       attrib = session_contexts_param.clone
       @session_context.attributes.each do |k, v|
         index = @app.attributes.find_index {|a| a.id == k }
-        if index >= 0 && @app.attributes[index].opts[:disable_prefill]
+        if index >= 0 && @app.attributes[index].opts[:disable_template]
           attrib.delete(k)
         end
       end
