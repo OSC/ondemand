@@ -460,4 +460,40 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test 'config files are sorted by name' do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
+        a_config = { 'nav_categories' => ['AAA', 'BBB'] }
+        z_config = { 'nav_categories' => ['YYY', 'ZZZ'] }
+
+        File.open("#{dir}/a_config.yml", 'w+') { |f| f.write(a_config.to_yaml) }
+        File.open("#{dir}/z_config.yml", 'w+') { |f| f.write(z_config.to_yaml) }
+
+        config = ConfigurationSingleton.new.config
+        nav = config.fetch(:nav_categories)
+
+        # z_config has overwritten a_config
+        assert_equal(['YYY', 'ZZZ'], nav)
+      end
+    end
+  end
+
+  test 'config files are sorted by name with numbers' do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_CONFIG_D_DIRECTORY: dir.to_s }) do
+        zero_config = { 'nav_categories' => ['AAA', 'BBB'] }
+        one_config = { 'nav_categories' => ['YYY', 'ZZZ'] }
+
+        File.open("#{dir}/00_config.yml", 'w+') { |f| f.write(zero_config.to_yaml) }
+        File.open("#{dir}/01_config.yml", 'w+') { |f| f.write(one_config.to_yaml) }
+
+        config = ConfigurationSingleton.new.config
+        nav = config.fetch(:nav_categories)
+
+        # z_config has overwritten a_config
+        assert_equal(['YYY', 'ZZZ'], nav)
+      end
+    end
+  end
 end
