@@ -3,7 +3,6 @@
 require 'application_system_test_case'
 
 class PresetAppsNavbarTest < ApplicationSystemTestCase
-
   def setup
     OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
     SysRouter.stubs(:base_path).returns(Rails.root.join('test/fixtures/apps'))
@@ -18,7 +17,7 @@ class PresetAppsNavbarTest < ApplicationSystemTestCase
     'save'
   end
 
-  # the best we can do in this test is stub out BatchConnect::Session#stage 
+  # the best we can do in this test is stub out BatchConnect::Session#stage
   # and verify that the error we threw is on the page. The link at least tries to submit.
   # TODO: get enough stubs to submit the job and get a 'queued' card to show
   test 'preset apps in navbars auto launch' do
