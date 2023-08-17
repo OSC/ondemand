@@ -25,7 +25,7 @@ class ProjectsController < ApplicationController
     if name_or_icon_nil?
       @project = Project.new
     else
-      returned_params = { name: new_project_params[:name], icon: new_project_params[:icon] }
+      returned_params = { name: new_project_params[:name], icon: new_project_params[:icon], directory: new_project_params[:directory] }
       @project = Project.new(returned_params)
     end
   end
@@ -65,7 +65,7 @@ class ProjectsController < ApplicationController
     else
       # TODO: loop through all errors and show them instead of this
       flash[:alert] = @project.errors[:name].last || @project.errors[:icon].last
-      redirect_to new_project_path(name: project_params[:name], icon: project_params[:icon])
+      redirect_to new_project_path(name: project_params[:name], directory: project_params[:directory], icon: project_params[:icon])
     end
   end
 
@@ -102,7 +102,7 @@ class ProjectsController < ApplicationController
   def project_params
     params
       .require(:project)
-      .permit(:name, :description, :icon, :id)
+      .permit(:name, :directory, :description, :icon, :id)
   end
 
   def show_project_params
@@ -110,6 +110,6 @@ class ProjectsController < ApplicationController
   end
 
   def new_project_params
-    params.permit(:template, :icon, :name)
+    params.permit(:template, :icon, :name, :directory)
   end
 end

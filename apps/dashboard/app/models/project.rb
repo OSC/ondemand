@@ -78,7 +78,8 @@ class Project
       @manifest = Manifest.new({})
     else
       @id = attributes.delete(:id)
-      @directory = attributes.delete(:directory) || Project.dataroot.join(id.to_s)
+      @directory = attributes.delete(:directory)
+      @directory = Project.dataroot.join(id.to_s).to_s if @directory.blank?
 
       @manifest = Manifest.new(attributes).merge(Manifest.load(manifest_path))
     end

@@ -11,6 +11,10 @@
                     help: I18n.t('dashboard.jobs_project_name_validation') %>
           </div>
           <div class="field">
+            <%= form.text_field :directory, readonly: action_name == "edit",
+                    help: I18n.t('dashboard.jobs_project_directory_help') %>
+          </div>
+          <div class="field">
             <%= form.text_area :description, placeholder: "Project description" %>
           </div>
 
