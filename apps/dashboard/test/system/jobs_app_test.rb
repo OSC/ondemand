@@ -83,6 +83,11 @@ class ProjectsTest < ApplicationSystemTestCase
       setup_project(dir, true)
 
       assert File.directory? File.join("#{dir}", '.ondemand')
+
+      #Cleanup to avoid side effects
+      accept_confirm do
+        click_on 'Delete'
+      end
     end
   end
 
