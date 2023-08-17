@@ -11,18 +11,23 @@ class ProjectsTest < ApplicationSystemTestCase
     stub_scontrol
   end
 
-  def setup_project(dir)
-    OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
+  def setup_project(dir, override_location = false)
+    OodAppkit.stubs(:dataroot).returns(Pathname.new(dir)) unless override_location
+
     proj = 'test-project'
+    desc = 'test-description'
     icon = 'fas://arrow-right'
     visit projects_path
     click_on I18n.t('dashboard.jobs_create_blank_project')
     find('#project_name').set(proj)
+    find('#project_directory').set(dir) if override_location
+    find('#project_description').set(desc)
     find('#product_icon_select').set(icon)
     click_on 'Save'
 
-    `echo 'some_other_command' > #{dir}/projects/1/my_cool_script.sh`
-    `echo 'hostname' > #{dir}/projects/1/my_cooler_script.bash`
+    project_dir = override_location ? dir : "#{dir}/projects/1"
+    `echo 'some_other_command' > #{project_dir}/my_cool_script.sh`
+    `echo 'hostname' > #{project_dir}/my_cooler_script.bash`
   end
 
   def setup_script(project_id)
@@ -73,6 +78,19 @@ class ProjectsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'creates project overriding default project location' do
+    Dir.mktmpdir do |dir|
+      setup_project(dir, true)
+
+      assert File.directory? File.join("#{dir}", '.ondemand')
+
+      #Cleanup to avoid side effects
+      accept_confirm do
+        click_on 'Delete'
+      end
+    end
+  end
+
   test 'delete a project from the fs and ensure no table entry' do
     Dir.mktmpdir do |dir|
       setup_project(dir)
@@ -107,6 +125,10 @@ class ProjectsTest < ApplicationSystemTestCase
       assert_selector '[href="/projects/1"]', text: 'My Test Project'
       click_on 'Edit'
       assert_selector 'h1', text: 'Editing: My Test Project'
+      assert_equal 'my-test-project', find('#project_name').value
+      assert_equal "#{dir}/projects/1", find('#project_directory').value
+      assert_equal 'test-description', find('#project_description').value
+      assert_equal 'fas://arrow-right', find('#product_icon_select').value
       assert_selector '.btn.btn-default', text: 'Back'
     end
   end
