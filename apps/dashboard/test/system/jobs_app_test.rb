@@ -185,7 +185,7 @@ class ProjectsTest < ApplicationSystemTestCase
 
       success_message = I18n.t('dashboard.jobs_scripts_created')
       assert_selector('.alert-success', text: "×\nClose\n#{success_message}")
-      assert_equal(expected_yml, File.read("#{dir}/projects/1/.ondemand/scripts/1.yml"))
+      assert_equal(expected_yml, File.read("#{dir}/projects/1/.ondemand/scripts/1/form.yml"))
 
       find('[href="/projects/1/scripts/1"].btn-success').click
       assert_selector('h1', text: 'the script title', count: 1)
@@ -219,8 +219,12 @@ class ProjectsTest < ApplicationSystemTestCase
       setup_project(dir)
       setup_script(1)
       project_dir = "#{dir}/projects/1"
-      script_dir = "#{project_dir}/.ondemand/scripts"
-      expected_script_files = ["#{script_dir}/1.yml", "#{script_dir}/1_job_log"]
+      script_dir = "#{project_dir}/.ondemand/scripts/1"
+
+      # ASSERT SCRIPT DIRECTORY IS CREATED
+      assert_equal true, File.directory?(script_dir)
+
+      expected_script_files = ["#{script_dir}/form.yml", "#{script_dir}/job_history.log"]
       # ASSERT EXPECTED SCRIPT FILES
       expected_script_files.each do |file_path|
         assert_equal true, File.exist?(file_path)
@@ -231,10 +235,8 @@ class ProjectsTest < ApplicationSystemTestCase
       end
 
       assert_selector '.alert-success', text: 'Script successfully deleted!'
-      # EXPECTED FILES SHOULD BE DELETED
-      expected_script_files.each do |file_path|
-        assert_not File.exist? file_path
-      end
+      # ASSERT SCRIPT DIRECTORY IS DELETED
+      assert_not File.directory? script_dir
     end
   end
 
@@ -243,7 +245,7 @@ class ProjectsTest < ApplicationSystemTestCase
       setup_project(dir)
       setup_script(1)
       project_dir = "#{dir}/projects/1"
-      script_dir = "#{project_dir}/.ondemand/scripts"
+      script_dir = "#{project_dir}/.ondemand/scripts/1"
       add_account(1)
 
       find('[href="/projects/1/scripts/1"].btn-success').click
@@ -253,7 +255,7 @@ class ProjectsTest < ApplicationSystemTestCase
       assert_equal 'oakley', find('#script_auto_batch_clusters').value
       assert_equal 'pzs0715', find('#script_auto_accounts').value
       assert_equal "#{project_dir}/my_cool_script.sh", find('#script_auto_scripts').value
-      assert_nil YAML.safe_load(File.read("#{script_dir}/1_job_log"))
+      assert_nil YAML.safe_load(File.read("#{script_dir}/job_history.log"))
 
       select('owens', from: 'script_auto_batch_clusters')
       select('pas2051', from: 'script_auto_accounts')
@@ -277,7 +279,7 @@ class ProjectsTest < ApplicationSystemTestCase
       assert_equal [{ 'id'          => 'job-id-123',
                       'submit_time' => 1_679_943_564,
                       'cluster'     => 'owens' }],
-                   YAML.safe_load(File.read("#{script_dir}/1_job_log"))
+                   YAML.safe_load(File.read("#{script_dir}/job_history.log"))
     end
   end
 
@@ -286,7 +288,7 @@ class ProjectsTest < ApplicationSystemTestCase
       setup_project(dir)
       setup_script(1)
       project_dir = "#{dir}/projects/1"
-      script_dir = "#{project_dir}/.ondemand/scripts"
+      script_dir = "#{project_dir}/.ondemand/scripts/1"
       add_account(1)
 
       find('[href="/projects/1/scripts/1"].btn-success').click
@@ -296,7 +298,7 @@ class ProjectsTest < ApplicationSystemTestCase
       assert_equal 'oakley', find('#script_auto_batch_clusters').value
       assert_equal 'pzs0715', find('#script_auto_accounts').value
       assert_equal "#{project_dir}/my_cool_script.sh", find('#script_auto_scripts').value
-      assert_nil YAML.safe_load(File.read("#{script_dir}/1_job_log"))
+      assert_nil YAML.safe_load(File.read("#{script_dir}/job_history.log"))
 
       select('owens', from: 'script_auto_batch_clusters')
       select('pas2051', from: 'script_auto_accounts')
@@ -310,7 +312,7 @@ class ProjectsTest < ApplicationSystemTestCase
 
       click_on 'Launch'
       assert_selector('.alert-danger', text: "×\nClose\nsome error message")
-      assert_nil YAML.safe_load(File.read("#{script_dir}/1_job_log"))
+      assert_nil YAML.safe_load(File.read("#{script_dir}/job_history.log"))
     end
   end
 
@@ -409,7 +411,7 @@ class ProjectsTest < ApplicationSystemTestCase
             required: true
       HEREDOC
 
-      assert_equal(expected_yml, File.read("#{dir}/projects/1/.ondemand/scripts/1.yml"))
+      assert_equal(expected_yml, File.read("#{dir}/projects/1/.ondemand/scripts/1/form.yml"))
     end
   end
 
@@ -495,7 +497,7 @@ class ProjectsTest < ApplicationSystemTestCase
             required: false
       HEREDOC
 
-      assert_equal(expected_yml, File.read("#{dir}/projects/1/.ondemand/scripts/1.yml"))
+      assert_equal(expected_yml, File.read("#{dir}/projects/1/.ondemand/scripts/1/form.yml"))
     end
   end
 
@@ -553,7 +555,7 @@ class ProjectsTest < ApplicationSystemTestCase
   # asserts that they've actually been removed from script#show
   # adds some of the accounts back in script#edit
   # asserts that the _new_ list of excluded accounts have actually been removed from script#show
-  test 'excluding and including select optionss' do
+  test 'excluding and including select options' do
     Dir.mktmpdir do |dir|
       setup_project(dir)
       setup_script(1)
