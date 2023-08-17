@@ -1,6 +1,7 @@
 # The controller for creating batch connect sessions.
 class BatchConnect::SessionContextsController < ApplicationController
   include BatchConnectConcern
+  include ActiveModel::Serializers::JSON
 
   # GET /batch_connect/<app_token>/session_contexts/new
   def new
@@ -39,10 +40,14 @@ class BatchConnect::SessionContextsController < ApplicationController
       if @session.save(app: @app, context: @session_context, format: @render_format)
         cache_file.write(@session_context.to_json)  # save context to cache file
         save_template
+        # We need to set the prefill templates only after storing the new one
+        # so that the new one is included / updated in the list
+        set_prefill_templates
 
         format.html { redirect_to batch_connect_sessions_url, notice: t('dashboard.batch_connect_sessions_status_blurb_create_success') }
         format.json { head :no_content }
       else
+        set_prefill_templates
         format.html do
           set_app_groups
           render :new
@@ -93,7 +98,7 @@ class BatchConnect::SessionContextsController < ApplicationController
 
       safe_name = params[:template].gsub(/[\x00\/\\:\*\?\"<>\| ]/, '_')
       path = prefill_templates_root.join(safe_name.to_s + '.json')
-      path.write(@session_context.as_json)
+      path.write(JSON.pretty_generate @session_context.as_json)
     end
 
     # Only permit certian parameters
