@@ -12,8 +12,8 @@ class ProjectsTest < ApplicationSystemTestCase
   end
 
   def setup_project(dir, override_location = false)
-    data_root = override_location ? '/tmp' : dir
-    OodAppkit.stubs(:dataroot).returns(Pathname.new(data_root))
+    OodAppkit.stubs(:dataroot).returns(Pathname.new(dir)) unless override_location
+
     proj = 'test-project'
     desc = 'test-description'
     icon = 'fas://arrow-right'
