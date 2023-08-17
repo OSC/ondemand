@@ -1,10 +1,10 @@
-<%- if !@prefill_templates.empty?() -%>
+<%- unless @prefill_templates.empty? -%>
   <div class="form-group">
     <label class="control-label"><%= t('dashboard.batch_connect_form_prefill') %></label>
     <select class="form-control selectpicker" id="batch_connect_session_prefill_template">
       <option disabled selected value> -- <%= t('dashboard.batch_connect_form_select_template') %> -- </option>
       <% @prefill_templates.each do |id, template| %>
-        <option value="<%= template %>"><%= id %></option>
+        <option value="<%= template %>"><%= id.humanize %></option>
       <% end %>
     </select>
   </div>

@@ -81,13 +81,6 @@ module BatchConnect
       Configuration.bc_config_root.join(router.name)
     end
 
-    # Root path to the prefill templates
-    # @return [Pathname] root directory of prefill templates
-    def prefill_templates_root
-      c = Configuration.per_cluster_dataroot? ? cluster_id : nil
-      OodAppkit.dataroot.join('batch_connect', c.to_s, token.to_s, "prefill_templates")
-    end
-
     # Title for the batch connect app
     # @return [String] title of app
     def title
@@ -120,12 +113,6 @@ module BatchConnect
 
     def caption
       form_config.fetch(:caption, ood_app.caption)
-    end
-
-    # Enable prefill templates for the batch connect app
-    # @return [Boolean] Whether prefilling is enabled
-    def prefill
-      form_config.fetch(:prefill, true)
     end
 
     def tile

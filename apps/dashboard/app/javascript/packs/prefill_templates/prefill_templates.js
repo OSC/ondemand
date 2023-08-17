@@ -1,14 +1,16 @@
 'use strict';
 
 const bcPrefix = 'batch_connect_session_context';
-const prefillTemplatePickerElementName = 'batch_connect_session_prefill_template';
+const templateSelectId = 'batch_connect_session_prefill_template';
 
 export function prefillTemplatesHandler() {
-  const picker = $(`#${prefillTemplatePickerElementName}`);
+  const picker = $(`#${templateSelectId}`);
   if (picker.length == 0) { return; }
+
   picker.on('change', function () {
-    const templateOption = $(`#${prefillTemplatePickerElementName} option:selected`);
+    const templateOption = $(`#${templateSelectId} option:selected`);
     if (!templateOption.val()) { return; }
+
     let json;
     try {
       json = JSON.parse(templateOption.val());
@@ -17,6 +19,7 @@ export function prefillTemplatesHandler() {
       $('#formPrefillError').modal('show');
       return;
     }
+
     let errorMsg = '';
     for (const [key, value] of Object.entries(json)) {
       let element = $(`#${bcPrefix}_${key}`);
@@ -29,6 +32,7 @@ export function prefillTemplatesHandler() {
           continue;
         }
       }
+
       if (element.is('select') && value !== '') {
         // Ensure that the option exists
         if (element.find(`option[value="${value}"]`).length == 0) {
@@ -36,6 +40,7 @@ export function prefillTemplatesHandler() {
           continue;
         }
       }
+
       switch (element.attr('type')) {
         case "checkbox":
           value === "1" ? element.prop('checked', true) : element.prop('checked', false);
@@ -50,6 +55,7 @@ export function prefillTemplatesHandler() {
       }
       element.trigger('change');
     }
+
     if (errorMsg) {
       $('#formPrefillErrorBody').html(errorMsg)
       $('#formPrefillError').modal('show');
