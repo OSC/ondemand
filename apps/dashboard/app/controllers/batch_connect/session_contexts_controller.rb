@@ -1,7 +1,6 @@
 # The controller for creating batch connect sessions.
 class BatchConnect::SessionContextsController < ApplicationController
   include BatchConnectConcern
-  include ActiveModel::Serializers::JSON
 
   # GET /batch_connect/<app_token>/session_contexts/new
   def new
@@ -98,7 +97,7 @@ class BatchConnect::SessionContextsController < ApplicationController
 
       safe_name = params[:template].gsub(/[\x00\/\\:\*\?\"<>\| ]/, '_')
       path = prefill_templates_root.join(safe_name.to_s + '.json')
-      path.write(JSON.pretty_generate @session_context.as_json)
+      path.write(@session_context.to_json)
     end
 
     # Only permit certian parameters
