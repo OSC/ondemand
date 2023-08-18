@@ -11,8 +11,9 @@ export function prefillSubmitHandler() {
     return;
   }
 
-  const chooseTemplateNameError = $("#chooseTemplateNameError")
-  let url;
+  const chooseTemplateNameError = $("#chooseTemplateNameError");
+  const templateName = $("#batch_connect_session_template_name");
+  const saveTemplate = $("#batch_connect_session_save_template");
 
   $(`#${selectorID}`).on("change", function () {
     const newName = $(`#${newNameID}`);
@@ -29,33 +30,28 @@ export function prefillSubmitHandler() {
       chooseTemplateNameError.modal('show');
       return;
     }
+
     chooseTemplateNameError.modal('hide');
-    url.searchParams.set('template', name);
-    form.attr("action", url.href);
+    templateName.val(name);
     chooseTemplateName.modal('hide');
   });
 
-  form.one("submit", function (event) {
-    const saveTemplate = $("#batch_connect_session_save_template");
-    if (!saveTemplate.is(':checked')) {
-      return;
-    }
-    event.preventDefault();
-
-    const path = form.attr("action");
-    if (path.startsWith("/")) {
-      url = new URL(`${window.location.origin}${path}`);
+  saveTemplate.change(function () {
+    if ($(this).is(':checked')) {
+      chooseTemplateName.modal('show');
     } else {
-      let cleanPrefix = `${window.location.origin}${window.location.pathname}`;
-      if (cleanPrefix.endsWith("/")) {
-        cleanPrefix = cleanPrefix.slice(0, -1);
-      }
-      url = new URL(`${cleanPrefix}/${path}`);
+      templateName.val("");
+      $(`#${selectorID}`).val("")
+      const newName = $(`#${newNameID}`);
+      newName.val("");
+      newName.show();
     }
-    chooseTemplateName.on("hidden.bs.modal", function () {
-      chooseTemplateName.off("hidden.bs.modal");
-      form.submit();
-    });
-    chooseTemplateName.modal('show');
+  });
+
+  chooseTemplateName.on('hidden.bs.modal', function () {
+    if (templateName.val() === "") {
+      saveTemplate.prop('checked', false);
+      saveTemplate.change();
+    }
   });
 }

@@ -93,9 +93,9 @@ class BatchConnect::SessionContextsController < ApplicationController
     end
 
     def save_template
-      return unless params[:template].present?
+      return unless params[:save_template].present? && params[:save_template] == "on" && params[:template_name].present?
 
-      safe_name = params[:template].gsub(/[\x00\/\\:\*\?\"<>\| ]/, '_')
+      safe_name = params[:template_name].gsub(/[\x00\/\\:\*\?\"<>\| ]/, '_')
       path = prefill_templates_root.join(safe_name.to_s + '.json')
       path.write(@session_context.to_json)
     end
