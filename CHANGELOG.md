@@ -6,17 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Merge pull request #2971 from hmdc/2558_added_implementation_for_project_path\
-Merge pull request #2964 from hmdc/script_working_directory\
-Fixing project_lookup side effects\
-Updated OodAppkit.dataroot stub when overriding projects directory\
-Added implementation for overriding project location path\
-lint a random file (#2968)\
-Added check to avoid errors when empty options array (#2966)\
-Updated script storage for new job composer\
-Show current filesystem in file browser breadcrumb (#2957)\
-update dependencies (#2963)\
-Validate Rclone remotes in initializer (#2952)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
@@ -27,7 +16,9 @@ Validate Rclone remotes in initializer (#2952)
 - Titles for menus can now be overriden in [2804](https://github.com/OSC/ondemand/pull/2804).
 - Sites can now configure `passenger_log_file` in [2835](https://github.com/OSC/ondemand/pull/2835).
 - Support for aarch64 builds in [2873](https://github.com/OSC/ondemand/pull/2873).
-- The File browser now has a Globus button to link to Globus endpoints in [2858]((https://github.com/OSC/ondemand/pull/2858).
+- The File browser now has a Globus button to link to Globus endpoints in [2858](https://github.com/OSC/ondemand/pull/2858).
+- Rclone can now validate remotes in [2952](https://github.com/OSC/ondemand/pull/2952).
+- Remote file systems now show in breadcrumbs in [2957](https://github.com/OSC/ondemand/pull/2957).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
