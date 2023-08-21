@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Merge pull request #2971 from hmdc/2558_added_implementation_for_project_path\
+Merge pull request #2964 from hmdc/script_working_directory\
+Fixing project_lookup side effects\
+Updated OodAppkit.dataroot stub when overriding projects directory\
+Added implementation for overriding project location path\
+lint a random file (#2968)\
+Added check to avoid errors when empty options array (#2966)\
+Updated script storage for new job composer\
+Show current filesystem in file browser breadcrumb (#2957)\
+update dependencies (#2963)\
+Validate Rclone remotes in initializer (#2952)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
