@@ -7,6 +7,7 @@ class BatchConnect::SessionContextsController < ApplicationController
     set_app
     set_render_format
     set_session_context
+    set_prefill_templates
 
     if @app.valid?
       begin
@@ -37,10 +38,15 @@ class BatchConnect::SessionContextsController < ApplicationController
     respond_to do |format|
       if @session.save(app: @app, context: @session_context, format: @render_format)
         cache_file.write(@session_context.to_json)  # save context to cache file
-    
+        save_template
+        # We need to set the prefill templates only after storing the new one
+        # so that the new one is included / updated in the list
+        set_prefill_templates
+
         format.html { redirect_to batch_connect_sessions_url, notice: t('dashboard.batch_connect_sessions_status_blurb_create_success') }
         format.json { head :no_content }
       else
+        set_prefill_templates
         format.html do
           set_app_groups
           render :new
@@ -74,7 +80,27 @@ class BatchConnect::SessionContextsController < ApplicationController
       @render_format = @app.clusters.first.job_config[:adapter] unless @app.clusters.empty?
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
+    # Set the rendering format for displaying attributes
+    def set_prefill_templates
+      @prefill_templates ||= begin
+        return {} unless @app.valid?
+
+        json_path = prefill_templates_root.join("*.json")
+        Dir.glob(json_path).map do |path|
+          [File.basename(path, '.json'), File.read(path)]
+        end.to_h
+      end
+    end
+
+    def save_template
+      return unless params[:save_template].present? && params[:save_template] == "on" && params[:template_name].present?
+
+      safe_name = params[:template_name].gsub(/[\x00\/\\:\*\?\"<>\| ]/, '_')
+      path = prefill_templates_root.join(safe_name.to_s + '.json')
+      path.write(@session_context.to_json)
+    end
+
+    # Only permit certian parameters
     def session_contexts_param
       params.require(:batch_connect_session_context).permit(@session_context.attributes.keys) if params[:batch_connect_session_context].present?
     end
@@ -84,5 +110,16 @@ class BatchConnect::SessionContextsController < ApplicationController
       BatchConnect::Session.cache_root.tap do |p|
         p.mkpath unless p.exist?
       end.join(@app.cache_file)
+    end
+
+    # Root path to the prefill templates
+    # @return [Pathname] root directory of prefill templates
+    def prefill_templates_root
+      cluster = ::Configuration.per_cluster_dataroot? ? cluster_id : nil
+
+      base = BatchConnect::Session.dataroot(@app.token, cluster: cluster)
+      base.join('prefill_templates').tap do |p|
+        p.mkpath unless p.exist?
+      end
     end
 end

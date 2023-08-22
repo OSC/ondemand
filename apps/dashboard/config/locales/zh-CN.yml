@@ -60,11 +60,19 @@ zh-CN:
       <pre>%{exception_trace}</pre>
     apps_system_apps_title: "系统应用"
 
+    batch_connect_form_choose_template_name: "选择模版名称"
     batch_connect_form_data_root: "数据根目录"
     batch_connect_form_launch: "启动"
+    batch_connect_form_prefill: "使用模版预填写"
+    batch_connect_form_prefill_error: "诶呀，你的模版有问题"
     batch_connect_form_reset_resolution: "重置分辨率"
+    batch_connect_form_save: "保存为模版"
+    batch_connect_form_save_new_template: "保存为一个新模版"
+    batch_connect_form_select_template: "选择一个模版"
     batch_connect_form_session_data_html: |
       * 你可以通过%{data_link_tag}来获取会话数据%{title}。
+    batch_connect_form_type_new_name: "在这里输入你的新模版名称"
+    batch_connect_form_type_new_name_error: "请输入一个有效的名称以继续"
     batch_connect_no_apps: "没有可用的互动应用程序。"
     batch_connect_no_sessions: "您没有可运行的会话。"
     batch_connect_sandbox: " [Sandbox]"
@@ -106,7 +114,6 @@ zh-CN:
     nav_help_title: "帮助"
     nav_logout: "登出"
     nav_restart_server: "重启网页服务器"
-    nav_restart_server: "重启网页服务器"
     nav_sessions: "我的交互会话"  # Note duplication with breadcrumbs_my_sessions
     nav_user: "以用户名：%{username}登陆"
 
@@ -138,5 +145,6 @@ zh-CN:
     # all_apps_table_sub_category_column: "Sub Category"
 
     # unknown: "Unknown"
+    save: "保存"
 
     # development_apps_caption: "Sandbox App"

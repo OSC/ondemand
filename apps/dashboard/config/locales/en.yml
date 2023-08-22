@@ -81,12 +81,20 @@ en:
     shell_app_title: "%{cluster_title} Shell Access"
 
     batch_connect_form_attr_cache_error: "Unable to use previously cached values, using defaults instead. (%{error_message})"
+    batch_connect_form_choose_template_name: "Choose a template name"
     batch_connect_form_data_root: "data root directory"
     batch_connect_form_launch: "Launch"
+    batch_connect_form_prefill: "Prefill with template"
+    batch_connect_form_prefill_error: "Oops... Something is wrong with your template"
     batch_connect_form_reset_resolution: "Reset Resolution"
+    batch_connect_form_save: "Save as template"
+    batch_connect_form_save_new_template: "save as a new template"
+    batch_connect_form_select_template: "select a template"
     batch_connect_form_session_data_html: |
       * The %{title} session data for this session can be accessed
         under the %{data_link_tag}.
+    batch_connect_form_type_new_name: "Type your new template name here"
+    batch_connect_form_type_new_name_error: "Please type a valid name to continue"
     batch_connect_form_invalid: "The form.yml has missing options in the %{id} form field."
     batch_connect_invalid_form_array: "'form' element in form.yml is not an Array"
     batch_connect_invalid_form_attributes: "'attributes' element in form.yml is not a Map"
@@ -147,7 +155,6 @@ en:
     nav_develop_title: "Develop"
     nav_help_title: "Help"
     nav_logout: "Log Out"
-    nav_restart_server: "Restart Web Server"
     nav_restart_server: "Restart Web Server"
     nav_sessions: "My Interactive Sessions"  # Note duplication with breadcrumbs_my_sessions
     nav_user: "Logged in as %{username}"

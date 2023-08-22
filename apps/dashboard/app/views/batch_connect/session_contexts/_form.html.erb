@@ -1,8 +1,18 @@
 
+<%= render "prefill_templates" %>
+
 <%= bootstrap_form_for(@session_context) do |f| %>
   <% f.object.each do |attrib| %>
     <%= create_widget(f, attrib, format: @render_format) %>
   <% end %>
+
+  <div class="form-group">
+    <div class="form-check">
+      <input class="form-check-input" name="save_template" type="checkbox" id="batch_connect_session_save_template">
+      <label class="form-check-label" for="batch_connect_session_save_template"><%= t('dashboard.batch_connect_form_save') %></label>
+      <input name="template_name" type="text" id="batch_connect_session_template_name" readonly>
+    </div>
+  </div>
 
   <%= f.submit t('dashboard.batch_connect_form_launch'), class: "btn btn-primary btn-block" %>
 <% end %>
