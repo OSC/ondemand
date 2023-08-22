@@ -56,6 +56,7 @@ module ActiveSupport
     end
 
     def stub_clusters
+      Configuration.instance_variable_set('@job_clusters', nil)
       OodAppkit.stubs(:clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
     end
 
