@@ -4,9 +4,10 @@
 class ProjectsController < ApplicationController
   # GET /projects/:id
   def show
-    @project = Project.find(show_project_params[:id])
+    project_id = show_project_params[:id]
+    @project = Project.find(project_id)
     if @project.nil?
-      redirect_to(projects_path, alert: "Cannot find project #{show_project_params[:id]}")
+      redirect_to(projects_path, I18n.t('dashboard.jobs_project_not_found', project_id: project_id))
     else
       @scripts = Script.all(@project.directory)
     end
@@ -22,34 +23,34 @@ class ProjectsController < ApplicationController
   def new
     @templates = new_project_params[:template] == 'true' ? templates : []
 
-    if name_or_icon_nil?
-      @project = Project.new
-    else
-      returned_params = { name: new_project_params[:name], icon: new_project_params[:icon], directory: new_project_params[:directory] }
-      @project = Project.new(returned_params)
-    end
+    @project = Project.new
   end
 
   # GET /projects/:id/edit
   def edit
-    @project = Project.find(show_project_params[:id])
+    project_id = show_project_params[:id]
+    @project = Project.find(project_id)
 
     return unless @project.nil?
 
-    redirect_to(projects_path, alert: "Cannot find project #{show_project_params[:id]}")
+    redirect_to(projects_path, alert:  I18n.t('dashboard.jobs_project_not_found', project_id: project_id))
   end
 
   # PATCH /projects/:id
   def update
-    @project = Project.find(show_project_params[:id])
+    project_id = show_project_params[:id]
+    @project = Project.find(project_id)
 
     if @project.nil?
-      redirect_to(projects_path, alert: "Cannot find project #{show_project_params[:id]}")
-    elsif @project.valid? && @project.update(project_params)
+      redirect_to(projects_path, alert: I18n.t('dashboard.jobs_project_not_found', project_id: project_id))
+      return
+    end
+
+    if @project.update(project_params)
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_manifest_updated')
     else
-      flash[:alert] = @project.errors[:name].last || @project.errors[:icon].last
-      redirect_to edit_project_path
+      flash.now[:alert] = @project.errors.full_messages.to_sentence
+      render :edit
     end
   end
 
@@ -60,18 +61,26 @@ class ProjectsController < ApplicationController
     opts = project_params.merge(id: id).to_h.with_indifferent_access
     @project = Project.new(opts)
 
-    if @project.valid? && @project.save(project_params)
+    if @project.create
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_created')
     else
       # TODO: loop through all errors and show them instead of this
-      flash[:alert] = @project.errors[:name].last || @project.errors[:icon].last
-      redirect_to new_project_path(name: project_params[:name], directory: project_params[:directory], icon: project_params[:icon])
+      flash.now[:alert] = @project.errors.full_messages.to_sentence
+      render :new
     end
   end
 
+
+
   # DELETE /projects/:id
   def destroy
-    @project = Project.find(params[:id])
+    project_id = params[:id]
+    @project = Project.find(project_id)
+
+    if @project.nil?
+      redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_not_found', project_id: project_id)
+      return
+    end
 
     redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_deleted') if @project.destroy!
   end

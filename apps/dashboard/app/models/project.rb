@@ -29,7 +29,9 @@ class Project
 
     def all
       lookup_table.map do |id, directory|
-        Project.new({ id: id, directory: directory })
+        manifest = Manifest.load(File.join(directory, '.ondemand', 'manifest.yml'))
+        manifest.to_h.merge({ id: id, directory: directory })
+        Project.new(manifest.to_h.merge({ id: id, directory: directory }))
       end
     end
 
@@ -37,7 +39,8 @@ class Project
       opts = lookup_table.select do |lookup_id, _directory|
         lookup_id == id.to_i
       end.map do |lookup_id, directory|
-        { id: lookup_id, directory: directory }
+        manifest = Manifest.load(File.join(directory, '.ondemand', 'manifest.yml'))
+        manifest.to_h.merge({ id: lookup_id, directory: directory })
       end.first
       return nil if opts.nil?
 
@@ -79,39 +82,53 @@ class Project
     else
       @id = attributes.delete(:id)
       @directory = attributes.delete(:directory)
-      @directory = Project.dataroot.join(id.to_s).to_s if @directory.blank?
+      @directory = File.expand_path(@directory) unless @directory.blank?
 
-      @manifest = Manifest.new(attributes).merge(Manifest.load(manifest_path))
+      @manifest = Manifest.new(attributes)
     end
   end
 
-  def save(attributes)
-    if id.nil? && attributes.fetch(:id, nil).nil?
-      message = 'Project ID must be set when saving.'
-      errors.add(:save, message)
-      Rails.logger.warn(message)
+  def create
+    validate_create
+    if !errors.empty?
       return false
     end
 
+    if id.blank?
+      @id = Project.next_id
+    end
+
+    if directory.blank?
+      @directory = Project.dataroot.join(id.to_s).to_s
+    end
+
+    if icon.blank?
+      @manifest = manifest.merge({ icon: 'fas://cog' })
+    end
+
+    save
+  end
+
+  def save
     make_dir
-    update(attributes)
+
+    if manifest.valid? && manifest.save(manifest_path) && add_to_lookup
+      true
+    else
+      errors.add(:update, "Cannot save manifest to #{manifest_path}")
+      false
+    end
   end
 
   def update(attributes)
-    if valid_icon?(attributes)
-      manifest = Manifest.load(manifest_path)
-                         .merge(attributes)
+    @manifest = manifest.merge(attributes)
 
-      if manifest.valid? && manifest.save(manifest_path) && add_to_lookup
-        true
-      else
-        errors.add(:update, "Cannot save manifest to #{manifest_path}")
-        false
-      end
-    else
-      errors.add(:update, 'Invalid entry')
-      false
+    validate_update
+    if !errors.empty?
+      return false
     end
+
+    save
   end
 
   def add_to_lookup
@@ -139,7 +156,11 @@ class Project
 
   def destroy!
     remove_from_lookup
-    FileUtils.remove_dir(project_dataroot, force = true)
+    if directory.to_s.include?(Project.dataroot.to_s)
+      FileUtils.remove_dir(project_dataroot, force = true)
+    else
+      FileUtils.remove_dir(configuration_directory, force = true)
+    end
   end
 
   def configuration_directory
@@ -162,17 +183,38 @@ class Project
 
   attr_reader :manifest
 
-  def valid_icon?(attributes)
-    icon_pattern = %r{\Afa[bsrl]://[\w-]+\z}
+  def common_validation
+    if name.blank?
+      errors.add(:name, message: 'Name is required')
+    end
 
-    if !attributes[:icon].nil? && !attributes[:icon].match?(icon_pattern)
+    icon_pattern = %r{\Afa[bsrl]://[\w-]+\z}
+    if !icon.blank? && !icon.match?(icon_pattern)
       errors.add(:icon, :invalid_format, message: 'Icon format invalid or missing')
-      false
-    elsif attributes[:icon].nil?
-      attributes[:icon] = 'fas://cog'
-      true
-    else
-      true
+    end
+
+    if !directory.blank? && directory.to_s === Project.dataroot.to_s
+      errors.add(:directory, 'Invalid directory')
+    end
+  end
+
+  def validate_create
+    common_validation
+
+    if !directory.blank? && Project.lookup_table.map { |_id, directory| directory }.map(&:to_s).include?(directory.to_s)
+      errors.add(:directory, 'Directory is already used')
+    end
+  end
+
+  def validate_update
+    common_validation
+
+    if directory.blank?
+      errors.add(:directory, 'Directory is required')
+    end
+
+    if icon.blank?
+      errors.add(:icon, 'Icon is required')
     end
   end
 

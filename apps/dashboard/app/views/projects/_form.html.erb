@@ -1,5 +1,3 @@
-<%= bootstrap_form_for @project do |form| %>
-
 <div class='card'>
 <h5 class='card-header'>Project Details</h5>
   <div class='card-group'>
@@ -11,7 +9,7 @@
                     help: I18n.t('dashboard.jobs_project_name_validation') %>
           </div>
           <div class="field">
-            <%= form.text_field :directory, readonly: action_name == "edit",
+            <%= form.text_field :directory, readonly: action_name != "new" && action_name != "create",
                     help: I18n.t('dashboard.jobs_project_directory_help') %>
           </div>
           <div class="field">
@@ -58,6 +56,5 @@
   <%= link_to 'Back', projects_path, class: 'btn btn-default', 
   title: 'Return to projects page' %>
 <p>
-<% end %>
 </div>
 

@@ -216,6 +216,7 @@ en:
     jobs_project_created: "Project successfully created!"
     jobs_project_deleted: "Project successfully deleted!"
     jobs_project_delete_project_confirmation: "Delete all contents of project directory?"
+    jobs_project_not_found: "Cannot find project %{project_id}"
     jobs_project_manifest_updated: "Project manifest updated!"
     jobs_project_name_validation: "Project name may only contain letters, digits, dashes, underscores, and spaces"
     jobs_project_directory_help: "Override the default location for this project"

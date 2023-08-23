@@ -6,4 +6,6 @@
 
 <br>
 
-<%= render 'form' %>
+<%= bootstrap_form_for @project do |form| %>
+  <%= render partial: "form", locals: { form: form }%>
+<% end %>
