@@ -23,7 +23,7 @@ class ProjectsController < ApplicationController
   def new
     @templates = new_project_params[:template] == 'true' ? templates : []
 
-    @project = Project.new
+    @project = ProjectRequest.new
   end
 
   # GET /projects/:id/edit
@@ -46,26 +46,45 @@ class ProjectsController < ApplicationController
       return
     end
 
-    if @project.update(project_params)
+    @project.update(project_params)
+
+    if !@project.valid?
+      flash.now[:alert] = @project.errors.full_messages.to_sentence
+      render :edit
+      return
+    end
+
+    if @project.save
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_manifest_updated')
     else
-      flash.now[:alert] = @project.errors.full_messages.to_sentence
+      flash.now[:alert] = @project.errors[:save].last
       render :edit
     end
   end
 
   # POST /projects
   def create
-    Rails.logger.debug("Project params are: #{project_params}")
-    id = Project.next_id
-    opts = project_params.merge(id: id).to_h.with_indifferent_access
-    @project = Project.new(opts)
+    @project = ProjectRequest.new(project_request_params.to_h.with_indifferent_access)
 
-    if @project.create
+    if !@project.valid?
+      flash.now[:alert] = @project.errors.full_messages.to_sentence
+      render :new
+      return
+    end
+
+    project_data = @project.to_h
+    # DEFAULT VALUES
+    id = Project.next_id
+    directory = project_data[:directory].blank? ? Project.dataroot.join(id.to_s).to_s : project_data[:directory]
+    icon = project_data[:icon].blank? ? 'fas://cog' : project_data[:icon]
+
+    opts = project_data.merge(id: id, directory: directory, icon: icon)
+    new_project = Project.new(opts)
+
+    if new_project.save
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_created')
     else
-      # TODO: loop through all errors and show them instead of this
-      flash.now[:alert] = @project.errors.full_messages.to_sentence
+      flash.now[:alert] = new_project.errors[:save].last
       render :new
     end
   end
@@ -104,14 +123,16 @@ class ProjectsController < ApplicationController
     end
   end
 
-  def name_or_icon_nil?
-    new_project_params[:name].nil? || new_project_params[:icon].nil?
-  end
-
   def project_params
     params
       .require(:project)
       .permit(:name, :directory, :description, :icon, :id)
+  end
+
+  def project_request_params
+    params
+      .require(:project_request)
+      .permit(:name, :directory, :description, :icon)
   end
 
   def show_project_params

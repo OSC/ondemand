@@ -5,6 +5,8 @@ class Project
   include ActiveModel::Model
   include ActiveModel::Validations
 
+  validate :validate_project
+
   class << self
     def lookup_file
       Pathname("#{dataroot}/.project_lookup").tap do |path|
@@ -29,9 +31,7 @@ class Project
 
     def all
       lookup_table.map do |id, directory|
-        manifest = Manifest.load(File.join(directory, '.ondemand', 'manifest.yml'))
-        manifest.to_h.merge({ id: id, directory: directory })
-        Project.new(manifest.to_h.merge({ id: id, directory: directory }))
+        Project.new({ id: id, directory: directory })
       end
     end
 
@@ -39,8 +39,7 @@ class Project
       opts = lookup_table.select do |lookup_id, _directory|
         lookup_id == id.to_i
       end.map do |lookup_id, directory|
-        manifest = Manifest.load(File.join(directory, '.ondemand', 'manifest.yml'))
-        manifest.to_h.merge({ id: lookup_id, directory: directory })
+        { id: lookup_id, directory: directory }
       end.first
       return nil if opts.nil?
 
@@ -77,36 +76,11 @@ class Project
   attr_accessor :template
 
   def initialize(attributes = {})
-    if attributes.empty?
-      @manifest = Manifest.new({})
-    else
-      @id = attributes.delete(:id)
-      @directory = attributes.delete(:directory)
-      @directory = File.expand_path(@directory) unless @directory.blank?
+    @id = attributes.delete(:id)
+    @directory = attributes.delete(:directory)
+    @directory = File.expand_path(@directory) unless @directory.blank?
 
-      @manifest = Manifest.new(attributes)
-    end
-  end
-
-  def create
-    validate_create
-    if !errors.empty?
-      return false
-    end
-
-    if id.blank?
-      @id = Project.next_id
-    end
-
-    if directory.blank?
-      @directory = Project.dataroot.join(id.to_s).to_s
-    end
-
-    if icon.blank?
-      @manifest = manifest.merge({ icon: 'fas://cog' })
-    end
-
-    save
+    @manifest = Manifest.new(attributes).merge(Manifest.load(manifest_path))
   end
 
   def save
@@ -115,20 +89,13 @@ class Project
     if manifest.valid? && manifest.save(manifest_path) && add_to_lookup
       true
     else
-      errors.add(:update, "Cannot save manifest to #{manifest_path}")
+      errors.add(:save, "Cannot save manifest to #{manifest_path}")
       false
     end
   end
 
   def update(attributes)
     @manifest = manifest.merge(attributes)
-
-    validate_update
-    if !errors.empty?
-      return false
-    end
-
-    save
   end
 
   def add_to_lookup
@@ -183,9 +150,17 @@ class Project
 
   attr_reader :manifest
 
-  def common_validation
+  def validate_project
     if name.blank?
       errors.add(:name, message: 'Name is required')
+    end
+
+    if directory.blank?
+      errors.add(:directory, 'Directory is required')
+    end
+
+    if icon.blank?
+      errors.add(:icon, 'Icon is required')
     end
 
     icon_pattern = %r{\Afa[bsrl]://[\w-]+\z}
@@ -195,26 +170,6 @@ class Project
 
     if !directory.blank? && directory.to_s === Project.dataroot.to_s
       errors.add(:directory, 'Invalid directory')
-    end
-  end
-
-  def validate_create
-    common_validation
-
-    if !directory.blank? && Project.lookup_table.map { |_id, directory| directory }.map(&:to_s).include?(directory.to_s)
-      errors.add(:directory, 'Directory is already used')
-    end
-  end
-
-  def validate_update
-    common_validation
-
-    if directory.blank?
-      errors.add(:directory, 'Directory is required')
-    end
-
-    if icon.blank?
-      errors.add(:icon, 'Icon is required')
     end
   end
 
