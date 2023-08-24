@@ -49,7 +49,7 @@ class ProjectsController < ApplicationController
     @project.update(project_params)
 
     if !@project.valid?
-      flash.now[:alert] = @project.errors.full_messages.to_sentence
+      flash.now[:alert] = I18n.t('dashboard.jobs_project_validation_error')
       render :edit
       return
     end
@@ -57,7 +57,7 @@ class ProjectsController < ApplicationController
     if @project.save
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_manifest_updated')
     else
-      flash.now[:alert] = @project.errors[:save].last
+      flash.now[:alert] = I18n.t('dashboard.jobs_project_generic_error', {error: @project.collect_errors})
       render :edit
     end
   end
@@ -67,7 +67,7 @@ class ProjectsController < ApplicationController
     @project = ProjectRequest.new(project_request_params.to_h.with_indifferent_access)
 
     if !@project.valid?
-      flash.now[:alert] = @project.errors.full_messages.to_sentence
+      flash.now[:alert] = I18n.t('dashboard.jobs_project_validation_error')
       render :new
       return
     end
@@ -84,7 +84,7 @@ class ProjectsController < ApplicationController
     if new_project.save
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_created')
     else
-      flash.now[:alert] = new_project.errors[:save].last
+      flash.now[:alert] = I18n.t('dashboard.jobs_project_generic_error', {error: new_project.collect_errors})
       render :new
     end
   end
@@ -101,7 +101,11 @@ class ProjectsController < ApplicationController
       return
     end
 
-    redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_deleted') if @project.destroy!
+    if @project.destroy!
+      redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_deleted')
+    else
+      redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_generic_error', {error: @project.collect_errors})
+    end
   end
 
   private

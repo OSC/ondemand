@@ -5,8 +5,6 @@ class Project
   include ActiveModel::Model
   include ActiveModel::Validations
 
-  validate :validate_project
-
   class << self
     def lookup_file
       Pathname("#{dataroot}/.project_lookup").tap do |path|
@@ -71,6 +69,10 @@ class Project
   attr_reader :directory, :id
 
   delegate :icon, :name, :description, to: :manifest
+
+  validates :id, :name, :directory, :icon, presence: { message: :required }
+  validates :icon, format: { with: %r{\Afa[bsrl]://[\w-]+\z}, allow_blank: true, message: :format }
+  validates :directory, exclusion: { in: [Project.dataroot.to_s], message: :invalid }
 
   # the template you created this project from
   attr_accessor :template
@@ -146,32 +148,15 @@ class Project
     File.join(configuration_directory, 'manifest.yml')
   end
 
+  def collect_errors
+    errors.map do |field_error|
+      field_error.message()
+    end.join(', ')
+  end
+
   private
 
   attr_reader :manifest
-
-  def validate_project
-    if name.blank?
-      errors.add(:name, message: 'Name is required')
-    end
-
-    if directory.blank?
-      errors.add(:directory, 'Directory is required')
-    end
-
-    if icon.blank?
-      errors.add(:icon, 'Icon is required')
-    end
-
-    icon_pattern = %r{\Afa[bsrl]://[\w-]+\z}
-    if !icon.blank? && !icon.match?(icon_pattern)
-      errors.add(:icon, :invalid_format, message: 'Icon format invalid or missing')
-    end
-
-    if !directory.blank? && directory.to_s === Project.dataroot.to_s
-      errors.add(:directory, 'Invalid directory')
-    end
-  end
 
   def make_dir
     project_dataroot.mkpath         unless project_dataroot.exist?
