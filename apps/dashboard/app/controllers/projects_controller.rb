@@ -64,11 +64,11 @@ class ProjectsController < ApplicationController
 
   # POST /projects
   def create
-    @project = ProjectRequest.new(project_request_params.to_h.with_indifferent_access)
+    @project = ProjectRequest.new(project_params.to_h.with_indifferent_access)
 
     if !@project.valid?
       flash.now[:alert] = I18n.t('dashboard.jobs_project_validation_error')
-      @templates = project_request_params.include?(:template) ? templates : []
+      @templates = project_params.include?(:template) ? templates : []
       render :new
       return
     end
@@ -131,13 +131,7 @@ class ProjectsController < ApplicationController
   def project_params
     params
       .require(:project)
-      .permit(:name, :directory, :description, :icon, :id)
-  end
-
-  def project_request_params
-    params
-      .require(:project_request)
-      .permit(:name, :directory, :description, :icon, :template)
+      .permit(:name, :directory, :description, :icon, :id, :template)
   end
 
   def show_project_params

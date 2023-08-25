@@ -14,6 +14,10 @@ class ProjectRequest
   validates :directory, exclusion: { in: [Project.dataroot.to_s], message: :invalid }
   validate :project_request_validation
 
+  def self.model_name
+    ActiveModel::Name.new(self, nil, "Project")
+  end
+
   def initialize(config = {})
     config = config.to_h.compact.symbolize_keys
 
