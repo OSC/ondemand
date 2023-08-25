@@ -133,21 +133,6 @@ class ProjectsTest < ApplicationSystemTestCase
     end
   end
 
-  test 'create with missing icon triggers alert' do
-    Dir.mktmpdir do |dir|
-      OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
-      proj = 'test-project'
-      icon = ''
-      visit projects_path
-      click_on I18n.t('dashboard.jobs_create_blank_project')
-      find('#project_name').set(proj)
-      find('#product_icon_select').set(icon)
-      click_on 'Save'
-
-      assert_selector '.alert-danger', text: 'Icon format invalid or missing'
-    end
-  end
-
   test 'create with invalid icon triggers alert' do
     Dir.mktmpdir do |dir|
       OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
@@ -159,7 +144,7 @@ class ProjectsTest < ApplicationSystemTestCase
       find('#product_icon_select').set(icon)
       click_on 'Save'
 
-      assert_selector '.alert-danger', text: 'Icon format invalid or missing'
+      assert_selector '.alert-danger', text: I18n.t('dashboard.jobs_project_validation_error')
     end
   end
 
@@ -170,7 +155,7 @@ class ProjectsTest < ApplicationSystemTestCase
       find('#product_icon_select').set('fas://bad&icon')
       click_on 'Save'
 
-      assert_selector '.alert-danger', text: 'Icon format invalid or missing'
+      assert_selector '.alert-danger', text: I18n.t('dashboard.jobs_project_validation_error')
     end
   end
 

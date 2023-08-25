@@ -7,7 +7,7 @@ class ProjectsController < ApplicationController
     project_id = show_project_params[:id]
     @project = Project.find(project_id)
     if @project.nil?
-      redirect_to(projects_path, I18n.t('dashboard.jobs_project_not_found', project_id: project_id))
+      redirect_to(projects_path, alert: I18n.t('dashboard.jobs_project_not_found', project_id: project_id))
     else
       @scripts = Script.all(@project.directory)
     end
@@ -33,7 +33,7 @@ class ProjectsController < ApplicationController
 
     return unless @project.nil?
 
-    redirect_to(projects_path, alert:  I18n.t('dashboard.jobs_project_not_found', project_id: project_id))
+    redirect_to(projects_path, alert: I18n.t('dashboard.jobs_project_not_found', project_id: project_id))
   end
 
   # PATCH /projects/:id
@@ -85,7 +85,7 @@ class ProjectsController < ApplicationController
     if new_project.save
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_created')
     else
-      flash.now[:alert] = I18n.t('dashboard.jobs_project_generic_error', {error: new_project.collect_errors})
+      flash.now[:alert] = I18n.t('dashboard.jobs_project_generic_error', error: new_project.collect_errors)
       render :new
     end
   end
@@ -105,7 +105,7 @@ class ProjectsController < ApplicationController
     if @project.destroy!
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_deleted')
     else
-      redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_generic_error', {error: @project.collect_errors})
+      redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_generic_error', error: @project.collect_errors)
     end
   end
 
