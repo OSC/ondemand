@@ -68,6 +68,7 @@ class ProjectsController < ApplicationController
 
     if !@project.valid?
       flash.now[:alert] = I18n.t('dashboard.jobs_project_validation_error')
+      @templates = project_request_params.include?(:template) ? templates : []
       render :new
       return
     end
@@ -136,7 +137,7 @@ class ProjectsController < ApplicationController
   def project_request_params
     params
       .require(:project_request)
-      .permit(:name, :directory, :description, :icon)
+      .permit(:name, :directory, :description, :icon, :template)
   end
 
   def show_project_params

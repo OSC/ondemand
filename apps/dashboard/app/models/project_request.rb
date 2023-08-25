@@ -7,6 +7,7 @@ class ProjectRequest
   attr_reader :directory
   attr_reader :icon
   attr_reader :description
+  attr_reader :template
 
   validates :name, presence: { message: :required }
   validates :icon, format: { with: %r{\Afa[bsrl]://[\w-]+\z}, allow_blank: true, message: :format }
@@ -20,6 +21,7 @@ class ProjectRequest
     @directory    = config.fetch(:directory, "").to_s
     @icon         = config.fetch(:icon, "").to_s
     @description  = config.fetch(:description, "").to_s
+    @template     = config.fetch(:template, "").to_s
   end
 
   def to_h
