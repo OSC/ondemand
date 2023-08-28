@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+lint a random file (#2977)\
+Batch connect form supports prefill with & save as templates (#2958)\
+Merge pull request #2978 from osc-bot/osc-bot/changelog-update\
+add rclone work to changelog\
+update changelog
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
