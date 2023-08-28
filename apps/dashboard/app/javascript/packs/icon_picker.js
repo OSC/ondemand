@@ -103,7 +103,16 @@ function showAllIcons(){
   hiddenIcons = false;
 }
 
+function addResetForm() {
+  $(`#${ICON_SELECT_ID}`).closest('form').on('reset', () => {
+    // show all icons if the form is reset
+    showAllIcons();
+    updateIcon('cog');
+  });
+}
+
 jQuery(() => {
   populateList();
   addSearch();
+  addResetForm();
 })
