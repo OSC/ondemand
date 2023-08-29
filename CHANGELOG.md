@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The File browser now has a Globus button to link to Globus endpoints in [2858](https://github.com/OSC/ondemand/pull/2858).
 - Rclone can now validate remotes in [2952](https://github.com/OSC/ondemand/pull/2952).
 - Remote file systems now show in breadcrumbs in [2957](https://github.com/OSC/ondemand/pull/2957).
+- Support for adding interactive app profiles in [2958](https://github.com/OSC/ondemand/pull/2958).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
