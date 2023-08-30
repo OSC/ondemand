@@ -30,6 +30,14 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+  activemodel:
+    errors:
+      messages:
+        required: "%{attribute} is required"
+        format: "%{attribute} format invalid or missing"
+        invalid: "%{attribute} is invalid"
+        used: "%{attribute} is already used"
+
   dashboard:
     # Site specific translations
     batch_connect_sessions_status_bad: "Your session has entered a bad state. Feel free to contact support for
@@ -216,11 +224,16 @@ en:
     jobs_project_created: "Project successfully created!"
     jobs_project_deleted: "Project successfully deleted!"
     jobs_project_delete_project_confirmation: "Delete all contents of project directory?"
+    jobs_project_not_found: "Cannot find project %{project_id}"
     jobs_project_manifest_updated: "Project manifest updated!"
     jobs_project_name_validation: "Project name may only contain letters, digits, dashes, underscores, and spaces"
     jobs_project_directory_help: "Override the default location for this project"
     jobs_create_blank_project: "Create a new project"
     jobs_create_template_project: "Create a new project from a template"
+
+    jobs_project_validation_error: "Invalid Request. Please review the errors below"
+    jobs_project_save_error: "Cannot save manifest to %{path}"
+    jobs_project_generic_error: "There was an error processing your request: %{error}"
 
     jobs_scripts_created: "Script successfully created!"
     jobs_scripts_updated: "Script manifest updated!"
