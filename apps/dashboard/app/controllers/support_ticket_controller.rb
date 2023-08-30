@@ -13,10 +13,14 @@ class SupportTicketController < ApplicationController
   # GET /support?session_id=<session_UUID>
   # session_id [UUID] optional session to add data to the support ticket
   def new
-    support_service = create_service_class
-    @support_ticket = support_service.default_support_ticket(params)
+    begin
+      support_service = create_service_class
+      @support_ticket = support_service.default_support_ticket(params)
 
-    render get_ui_template
+      render get_ui_template
+    rescue StandardError => e
+      redirect_to(root_url, flash: { alert: e.message })
+    end
   end
 
   # POST /support
