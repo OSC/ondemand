@@ -151,7 +151,7 @@ class Project
 
   def destroy!
     remove_from_lookup
-    FileUtils.remove_dir(configuration_directory, force = true)
+    FileUtils.remove_dir(configuration_directory, true)
   end
 
   def configuration_directory
