@@ -26,10 +26,10 @@ class CustomHelpNavigationTest < ActionDispatch::IntegrationTest
               { group: 'Docs Menu Dropdown Header' },
               { apps: ['sys/bc_jupyter'] }
             ] },
-          { title:    'Custom Help Link',
-            url:      '/custom/link',
-            icon: 'fa://desktop',
-            new_tab:  true },
+          { title:   'Custom Help Link',
+            url:     '/custom/link',
+            icon:    'fa://desktop',
+            new_tab: true },
           'user',
           'log_out'
         ]
