@@ -35,6 +35,7 @@ describe 'update_ood_portal' do
     allow(OodPortalGenerator).to receive(:apache_group).and_return('apache')
     allow(OodPortalGenerator).to receive(:debian?).and_return(false)
     allow(OodPortalGenerator).to receive(:fqdn).and_return('example.com')
+    allow(Socket).to receive(:ip_address_list).and_return([Addrinfo.ip("8.8.8.8")])
   end
 
   after(:each) do
