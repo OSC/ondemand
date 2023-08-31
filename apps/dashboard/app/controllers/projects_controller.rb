@@ -46,37 +46,24 @@ class ProjectsController < ApplicationController
       return
     end
 
-    if !@project.update(project_params)
-      flash.now[:alert] = I18n.t('dashboard.jobs_project_validation_error')
-      render :edit
-      return
-    end
-
-    if @project.save
+    if @project.update(project_params)
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_manifest_updated')
     else
-      flash.now[:alert] = I18n.t('dashboard.jobs_project_generic_error', {error: @project.collect_errors})
+      message = @project.errors[:save].empty? ? I18n.t('dashboard.jobs_project_validation_error') : I18n.t('dashboard.jobs_project_generic_error', error: @project.collect_errors)
+      flash.now[:alert] = message
       render :edit
     end
   end
 
   # POST /projects
   def create
-    @project = Project.new
-
-    if !@project.create(project_params)
-      flash.now[:alert] = I18n.t('dashboard.jobs_project_validation_error')
-      @templates = project_params.include?(:template) ? templates : []
-      render :new
-      return
-    end
-
-    @project.set_defaults
+    @project = Project.new(project_params)
 
     if @project.save
       redirect_to projects_path, notice: I18n.t('dashboard.jobs_project_created')
     else
-      flash.now[:alert] = I18n.t('dashboard.jobs_project_generic_error', error: new_project.collect_errors)
+      message = @project.errors[:save].empty? ? I18n.t('dashboard.jobs_project_validation_error') : I18n.t('dashboard.jobs_project_generic_error', error: @project.collect_errors)
+      flash.now[:alert] = message
       render :new
     end
   end

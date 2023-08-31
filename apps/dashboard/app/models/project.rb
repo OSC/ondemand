@@ -81,40 +81,49 @@ class Project
     @directory = attributes.delete(:directory)
     @directory = File.expand_path(@directory) unless @directory.blank?
 
-    @manifest = directory.blank? ? Manifest.new({} ) : Manifest.new(attributes).merge(Manifest.load(manifest_path))
+    @manifest = Manifest.new(attributes)
+    @manifest = @manifest.merge(Manifest.load(manifest_path)) unless new_record?
   end
 
-  def save
-    make_dir
+  def new_record?
+    return true if !id
+    return true if !directory
 
+    id && directory && !File.exist?(manifest_path)
+  end
+
+  def save(attributes={})
+    @id = attributes.delete(:id) if attributes.key?(:id)
+    @directory = attributes.delete(:directory) if attributes.key?(:directory)
+    @directory = File.expand_path(@directory) unless @directory.blank?
+    @manifest = manifest.merge(attributes)
+
+    return false unless valid?(:create)
+
+    # SET DEFAULTS
+    @id = Project.next_id if id.blank?
+    @directory = Project.dataroot.join(id.to_s).to_s if directory.blank?
+    @manifest = manifest.merge({ icon: 'fas://cog' }) if icon.blank?
+
+    make_dir
+    store_manifest
+  end
+
+  def update(attributes)
+    @manifest = manifest.merge(attributes)
+
+    return false unless valid?(:update)
+
+    store_manifest
+  end
+
+  def store_manifest
     if manifest.valid? && manifest.save(manifest_path) && add_to_lookup
       true
     else
       errors.add(:save, I18n.t('dashboard.jobs_project_save_error', path: manifest_path))
       false
     end
-  end
-
-  def create(attributes)
-    @id = attributes.delete(:id)
-    @directory = attributes.delete(:directory)
-    @directory = File.expand_path(@directory) unless @directory.blank?
-
-    @manifest = manifest.merge(attributes)
-
-    return valid?(:create)
-  end
-
-  def set_defaults
-    @id = Project.next_id if id.blank?
-    @directory = Project.dataroot.join(id.to_s).to_s if directory.blank?
-    @manifest = manifest.merge({ icon: 'fas://cog' }) if icon.blank?
-  end
-
-  def update(attributes)
-    @manifest = manifest.merge(attributes)
-
-    return valid?(:update)
   end
 
   def add_to_lookup
@@ -142,11 +151,7 @@ class Project
 
   def destroy!
     remove_from_lookup
-    if directory.to_s.include?(Project.dataroot.to_s)
-      FileUtils.remove_dir(project_dataroot, force = true)
-    else
-      FileUtils.remove_dir(configuration_directory, force = true)
-    end
+    FileUtils.remove_dir(configuration_directory, force = true)
   end
 
   def configuration_directory
