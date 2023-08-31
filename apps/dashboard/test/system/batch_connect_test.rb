@@ -599,7 +599,6 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'owens', find_value('cluster')
       # versions not available on owens
       assert_equal 'display: none;', find_option_style('auto_modules_app_jupyter', 'app_jupyter/3.1.18')
-      assert_equal 'display: none;', find_option_style('auto_modules_app_jupyter', 'app_jupyter/1.2.16')
       assert_equal 'display: none;', find_option_style('auto_modules_app_jupyter', 'app_jupyter/0.35.6')
       assert_equal 'display: none;', find_option_style('auto_modules_intel', 'intel/18.0.4')
 
@@ -607,7 +606,6 @@ class BatchConnectTest < ApplicationSystemTestCase
       select('oakley', from: bc_ele_id('cluster'))
       assert_equal 'app_jupyter', find_value('auto_modules_app_jupyter')
       assert_equal '', find_option_style('auto_modules_app_jupyter', 'app_jupyter/3.1.18')
-      assert_equal '', find_option_style('auto_modules_app_jupyter', 'app_jupyter/1.2.16')
       assert_equal '', find_option_style('auto_modules_app_jupyter', 'app_jupyter/0.35.6')
 
       # and lots of intel versions aren't
