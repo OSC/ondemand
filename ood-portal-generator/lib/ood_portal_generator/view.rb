@@ -1,5 +1,6 @@
 require "digest/sha1"
 require "erb"
+require 'socket'
 
 module OodPortalGenerator
   # A view class that renders an OOD portal Apache configuration file
@@ -131,11 +132,29 @@ module OodPortalGenerator
 
     def allowed_hosts
       config_hosts = []
-      config_hosts << @servername unless @servername.nil?
+
+      add_servername_or_ips(config_hosts)
       config_hosts << @proxy_server unless @proxy_server.nil?
       config_hosts.concat(@server_aliases)
+
       return nil if config_hosts.empty?
+
       config_hosts.sort.uniq
+    end
+
+    def add_servername_or_ips(config_hosts)
+      # if @servername is nil, they're trying to use ip addresses
+      if @servername.nil?
+        config_hosts.concat(ip_addresses)
+      else
+        config_hosts << @servername
+      end
+    end
+
+    def ip_addresses
+      Socket.ip_address_list.select(&:ipv4?)
+                            .reject(&:ipv4_loopback?)
+                            .map(&:ip_address)
     end
 
     # Helper method to escape IP for maintenance rewrite condition
