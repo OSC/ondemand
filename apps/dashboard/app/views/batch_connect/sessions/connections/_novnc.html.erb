@@ -6,16 +6,16 @@
 
  <div class="row">
   <div class="col-sm-6">
-   <%= f.number_field(:compressionsetting, class: 'custom-range', type: 'range', min: 0, max: 9, value: 6, label: "Compression", help: "0 (low) to 9 (high)") %>
+   <%= f.number_field(:compression, class: 'custom-range', type: 'range', min: 0, max: 9, value: 6, label: "Compression", help: "0 (low) to 9 (high)") %>
   </div>
   <div class="col-sm-6">
-   <%= f.number_field(:qualitysetting, class: 'custom-range', type: 'range', min: 0, max: 9, value: 2, label: "Image Quality", help: "0 (low) to 9 (high)") %>
+   <%= f.number_field(:quality, class: 'custom-range', type: 'range', min: 0, max: 9, value: 2, label: "Image Quality", help: "0 (low) to 9 (high)") %>
   </div>
  </div>
 
   <%= javascript_tag nonce: true do -%>
     // Functions defined in batch_connect_sessions.js
-    for(var name of ['compressionsetting', 'qualitysetting']) {
+    for(var name of ['compression', 'quality']) {
       tryUpdateSetting(name);
       installSettingHandlers(name);
     }
