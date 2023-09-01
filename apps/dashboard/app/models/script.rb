@@ -5,7 +5,7 @@ class Script
 
   class ClusterNotFound < StandardError; end
 
-  attr_reader :title, :id, :project_dir, :smart_attributes
+  attr_reader :title, :id, :created_at, :project_dir, :smart_attributes
 
   class << self
     def scripts_dir(project_dir)
@@ -23,7 +23,9 @@ class Script
     def all(project_dir)
       Dir.glob("#{scripts_dir(project_dir).to_s}/*/form.yml").map do |file|
         Script.from_yaml(file, project_dir)
-      end.compact
+      end.compact.sort_by do |s|
+        s.created_at
+      end
     end
 
     def from_yaml(file, project_dir)
@@ -40,12 +42,8 @@ class Script
       nil
     end
 
-    def next_id(project_dir)
-      all(project_dir)
-        .map(&:id)
-        .map(&:to_i)
-        .prepend(0)
-        .max + 1
+    def next_id
+      SecureRandom.alphanumeric(8).downcase
     end
   end
 
@@ -55,6 +53,7 @@ class Script
     @project_dir = opts[:project_dir] || raise(StandardError, 'You must set the project directory')
     @id = opts[:id]
     @title = opts[:title].to_s
+    @created_at = opts[:created_at]
     sm_opts = {
       form:       opts[:form] || [],
       attributes: opts[:attributes] || {}
@@ -78,7 +77,7 @@ class Script
       hash[sm.id.to_s] = sm.options_to_serialize
     end.deep_stringify_keys
 
-    hsh = { 'title' => title }
+    hsh = { 'title' => title, 'created_at' => created_at }
     hsh.merge!({ 'form' => smart_attributes.map { |sm| sm.id.to_s } })
     hsh.merge!({ 'attributes' => attributes })
     hsh.to_yaml
@@ -128,7 +127,8 @@ class Script
   end
 
   def save
-    @id = Script.next_id(project_dir) if @id.nil?
+    @id = Script.next_id if @id.nil?
+    @created_at = Time.now.to_i if @created_at.nil?
     script_path = Script.script_path(project_dir, id)
     script_path.mkpath unless script_path.exist?
     File.write(Script.script_form_file(script_path), to_yaml)

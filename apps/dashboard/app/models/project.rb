@@ -21,10 +21,7 @@ class Project
     end
 
     def next_id
-      lookup_table.map { |id, _directory| id }
-                  .map(&:to_i)
-                  .concat([0]) # could be the first project
-                  .max + 1
+      SecureRandom.alphanumeric(8).downcase
     end
 
     def all
@@ -35,7 +32,7 @@ class Project
 
     def find(id)
       opts = lookup_table.select do |lookup_id, _directory|
-        lookup_id == id.to_i
+        lookup_id == id.to_s
       end.map do |lookup_id, directory|
         { id: lookup_id, directory: directory }
       end.first

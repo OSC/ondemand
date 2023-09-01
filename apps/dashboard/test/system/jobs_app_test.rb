@@ -9,10 +9,14 @@ class ProjectsTest < ApplicationSystemTestCase
     stub_user
     stub_sacctmgr
     stub_scontrol
+
+    # Stub Time.now for created_at field
+    @expected_now = 1_679_943_564
+    Time.stubs(:now).returns(Time.at(@expected_now))
   end
 
-  def setup_project(dir, override_location = false)
-    OodAppkit.stubs(:dataroot).returns(Pathname.new(dir)) unless override_location
+  def setup_project(root_dir, override_project_dir = nil)
+    OodAppkit.stubs(:dataroot).returns(Pathname.new(root_dir))
 
     proj = 'test-project'
     desc = 'test-description'
@@ -20,14 +24,19 @@ class ProjectsTest < ApplicationSystemTestCase
     visit projects_path
     click_on I18n.t('dashboard.jobs_create_blank_project')
     find('#project_name').set(proj)
-    find('#project_directory').set(dir) if override_location
+    find('#project_directory').set(override_project_dir) if override_project_dir
     find('#project_description').set(desc)
     find('#product_icon_select').set(icon)
     click_on 'Save'
 
-    project_dir = override_location ? dir : "#{dir}/projects/1"
+    project_element = find('.project-card')
+    project_id = project_element[:id]
+
+    project_dir = override_project_dir ? override_project_dir : "#{root_dir}/projects/#{project_id}"
     `echo 'some_other_command' > #{project_dir}/my_cool_script.sh`
     `echo 'hostname' > #{project_dir}/my_cooler_script.bash`
+
+    project_id
   end
 
   def setup_script(project_id)
@@ -35,11 +44,15 @@ class ProjectsTest < ApplicationSystemTestCase
     click_on 'New Script'
     find('#script_title').set('the script title')
     click_on 'Save'
+
+    script_element = find('.script-card')
+    script_element[:id]
   end
 
-  def add_account(project_id)
+  def add_account(project_id, script_id)
     visit project_path(project_id)
-    find("[href='/projects/#{project_id}/scripts/1/edit']").click
+    edit_script_path = edit_project_script_path(project_id, script_id)
+    find(%Q{[href="#{edit_script_path}"]}).click
 
     # now add 'auto_accounts'
     click_on('Add new option')
@@ -48,9 +61,10 @@ class ProjectsTest < ApplicationSystemTestCase
     click_on(I18n.t('dashboard.save'))
   end
 
-  def add_bc_num_hours(project_id)
+  def add_bc_num_hours(project_id, script_id)
     visit project_path(project_id)
-    find("[href='/projects/#{project_id}/scripts/1/edit']").click
+    edit_script_path = edit_project_script_path(project_id, script_id)
+    find(%Q{[href="#{edit_script_path}"]}).click
 
     # now add 'bc_num_hours'
     click_on('Add new option')
@@ -62,54 +76,58 @@ class ProjectsTest < ApplicationSystemTestCase
 
   test 'create a new project on fs and display the table entry' do
     Dir.mktmpdir do |dir|
-      setup_project(dir)
+      project_id = setup_project(dir)
 
       assert_selector '.alert-success', text: 'Project successfully created!'
-      assert_selector '[href="/projects/1"]', text: 'Test Project'
-      assert File.directory? File.join("#{dir}/projects", '1')
+      assert_selector %Q{[href="/projects/#{project_id}"]}, text: 'Test Project'
+      assert File.directory? File.join("#{dir}/projects", project_id)
     end
   end
 
   test 'creates .ondemand directory with project' do
     Dir.mktmpdir do |dir|
-      setup_project(dir)
+      project_id = setup_project(dir)
 
-      assert File.directory? File.join("#{dir}/projects", '1/.ondemand')
+      assert File.directory? File.join("#{dir}/projects", project_id, '.ondemand')
     end
   end
 
-  test 'creates project overriding default project location' do
+  test 'creates project overriding project location' do
     Dir.mktmpdir do |dir|
-      setup_project(dir, true)
+      project_override_dir = File.join(dir, 'dir_override')
+      Pathname(project_override_dir).mkpath
+      setup_project(dir, project_override_dir)
 
-      assert File.directory? File.join("#{dir}", '.ondemand')
+      assert File.directory?(File.join("#{project_override_dir}", '.ondemand'))
+      assert File.exist?(File.join("#{project_override_dir}", '.ondemand', 'manifest.yml'))
 
       #Cleanup to avoid side effects
       accept_confirm do
         click_on 'Delete'
       end
+      assert_selector '.alert-success', text: 'Project successfully deleted!'
     end
   end
 
   test 'delete a project from the fs and ensure no table entry' do
     Dir.mktmpdir do |dir|
-      setup_project(dir)
+      project_id = setup_project(dir)
 
       accept_confirm do
         click_on 'Delete'
       end
 
       assert_selector '.alert-success', text: 'Project successfully deleted!'
-      assert_no_selector '[href="/projects/1"]', text: 'Test Project'
-      assert_not File.directory? File.join("#{dir}/projects", '1')
+      assert_no_selector %Q{[href="/projects/#{project_id}"]}, text: 'Test Project'
+      assert_not File.directory? File.join("#{dir}/projects", project_id)
     end
   end
 
   test 'work in a project' do
     Dir.mktmpdir do |dir|
-      setup_project(dir)
+      project_id = setup_project(dir)
 
-      find('[href="/projects/1"]').click
+      find(%Q{[href="/projects/#{project_id}"]}).click
       assert_selector 'h1', text: 'Test Project'
       assert_selector '.btn.btn-default', text: 'Back'
     end
@@ -117,16 +135,16 @@ class ProjectsTest < ApplicationSystemTestCase
 
   test 'edit a project' do
     Dir.mktmpdir do |dir|
-      setup_project(dir)
+      project_id = setup_project(dir)
 
       click_on 'Edit'
       find('#project_name').set('my-test-project')
       click_on 'Save'
-      assert_selector '[href="/projects/1"]', text: 'My Test Project'
+      assert_selector %Q{[href="/projects/#{project_id}"]}, text: 'My Test Project'
       click_on 'Edit'
       assert_selector 'h1', text: 'Editing: My Test Project'
       assert_equal 'my-test-project', find('#project_name').value
-      assert_equal "#{dir}/projects/1", find('#project_directory').value
+      assert_equal "#{dir}/projects/#{project_id}", find('#project_directory').value
       assert_equal 'test-description', find('#project_description').value
       assert_equal 'fas://arrow-right', find('#product_icon_select').value
       assert_selector '.btn.btn-default', text: 'Back'
@@ -176,12 +194,13 @@ class ProjectsTest < ApplicationSystemTestCase
 
   test 'creating and showing scripts' do
     Dir.mktmpdir do |dir|
-      setup_project(dir)
-      setup_script(1)
+      project_id = setup_project(dir)
+      script_id = setup_script(project_id)
 
       expected_yml = <<~HEREDOC
         ---
         title: the script title
+        created_at: #{@expected_now}
         form:
         - auto_batch_clusters
         - auto_scripts
@@ -196,10 +215,10 @@ class ProjectsTest < ApplicationSystemTestCase
           auto_scripts:
             options:
             - - my_cool_script.sh
-              - "#{dir}/projects/1/my_cool_script.sh"
+              - "#{dir}/projects/#{project_id}/my_cool_script.sh"
             - - my_cooler_script.bash
-              - "#{dir}/projects/1/my_cooler_script.bash"
-            directory: "#{dir}/projects/1"
+              - "#{dir}/projects/#{project_id}/my_cooler_script.bash"
+            directory: "#{dir}/projects/#{project_id}"
             label: Script
             help: ''
             required: false
@@ -207,21 +226,23 @@ class ProjectsTest < ApplicationSystemTestCase
 
       success_message = I18n.t('dashboard.jobs_scripts_created')
       assert_selector('.alert-success', text: "×\nClose\n#{success_message}")
-      assert_equal(expected_yml, File.read("#{dir}/projects/1/.ondemand/scripts/1/form.yml"))
+      assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/scripts/#{script_id}/form.yml"))
 
-      find('[href="/projects/1/scripts/1"].btn-success').click
+      script_path = project_script_path(project_id, script_id)
+      find(%Q{[href="#{script_path}"].btn-success}).click
       assert_selector('h1', text: 'the script title', count: 1)
     end
   end
 
   test 'showing scripts with auto attributes' do
     Dir.mktmpdir do |dir|
-      setup_project(dir)
-      setup_script(1)
-      project_dir = "#{dir}/projects/1"
-      add_account(1)
+      project_id = setup_project(dir)
+      script_id = setup_script(project_id)
+      project_dir = File.join(dir, 'projects', project_id)
+      add_account(project_id, script_id)
 
-      find('[href="/projects/1/scripts/1"].btn-success').click
+      script_path = project_script_path(project_id, script_id)
+      find(%Q{[href="#{script_path}"].btn-success}).click
       assert_selector('h1', text: 'the script title', count: 1)
 
       expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
@@ -238,10 +259,10 @@ class ProjectsTest < ApplicationSystemTestCase
 
   test 'deleting a script that succeeds' do
     Dir.mktmpdir do |dir|
-      setup_project(dir)
-      setup_script(1)
-      project_dir = "#{dir}/projects/1"
-      script_dir = "#{project_dir}/.ondemand/scripts/1"
+      project_id = setup_project(dir)
+      script_id = setup_script(project_id)
+      project_dir = File.join(dir, 'projects', project_id)
+      script_dir = File.join(project_dir, '.ondemand', 'scripts', script_id)
 
       # ASSERT SCRIPT DIRECTORY IS CREATED
       assert_equal true, File.directory?(script_dir)
@@ -264,13 +285,15 @@ class ProjectsTest < ApplicationSystemTestCase
 
   test 'submitting a script with auto attributes that succeeds' do
     Dir.mktmpdir do |dir|
-      setup_project(dir)
-      setup_script(1)
-      project_dir = "#{dir}/projects/1"
-      script_dir = "#{project_dir}/.ondemand/scripts/1"
-      add_account(1)
+      project_id = setup_project(dir)
+      script_id = setup_script(project_id)
+      project_dir = File.join(dir, 'projects', project_id)
+      script_dir = File.join(project_dir, '.ondemand', 'scripts', script_id)
+      add_account(project_id, script_id)
 
-      find('[href="/projects/1/scripts/1"].btn-success').click
+
+      script_path = project_script_path(project_id, script_id)
+      find(%Q{[href="#{script_path}"].btn-success}).click
       assert_selector('h1', text: 'the script title', count: 1)
 
       # assert defaults
@@ -292,14 +315,10 @@ class ProjectsTest < ApplicationSystemTestCase
       OodCore::Job::Adapters::Slurm.any_instance
                                    .stubs(:info).returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
 
-      Time
-        .stubs(:now)
-        .returns(Time.at(1_679_943_564))
-
       click_on 'Launch'
       assert_selector('.alert-success', text: 'job-id-123')
       assert_equal [{ 'id'          => 'job-id-123',
-                      'submit_time' => 1_679_943_564,
+                      'submit_time' => @expected_now,
                       'cluster'     => 'owens' }],
                    YAML.safe_load(File.read("#{script_dir}/job_history.log"))
     end
@@ -307,13 +326,14 @@ class ProjectsTest < ApplicationSystemTestCase
 
   test 'submitting a script with auto attributes that fails' do
     Dir.mktmpdir do |dir|
-      setup_project(dir)
-      setup_script(1)
-      project_dir = "#{dir}/projects/1"
-      script_dir = "#{project_dir}/.ondemand/scripts/1"
-      add_account(1)
+      project_id = setup_project(dir)
+      script_id = setup_script(project_id)
+      project_dir = File.join(dir, 'projects', project_id)
+      script_dir = File.join(project_dir, '.ondemand', 'scripts', script_id)
+      add_account(project_id, script_id)
 
-      find('[href="/projects/1/scripts/1"].btn-success').click
+      script_path = project_script_path(project_id, script_id)
+      find(%Q{[href="#{script_path}"].btn-success}).click
       assert_selector('h1', text: 'the script title', count: 1)
 
       # assert defaults
@@ -340,11 +360,13 @@ class ProjectsTest < ApplicationSystemTestCase
 
   test 'editing scripts initializes correctly' do
     Dir.mktmpdir do |dir|
-      setup_project(dir)
-      setup_script('1')
+      project_id = setup_project(dir)
+      script_id = setup_script(project_id)
 
-      visit project_path('1')
-      find('[href="/projects/1/scripts/1/edit"]').click
+      visit project_path(project_id)
+
+      edit_script_path = edit_project_script_path(project_id, script_id)
+      find(%Q{[href="#{edit_script_path}"]}).click
 
       click_on('Add new option')
       new_field_id = 'add_new_field_select'
@@ -357,11 +379,13 @@ class ProjectsTest < ApplicationSystemTestCase
 
   test 'adding new fields to scripts' do
     Dir.mktmpdir do |dir|
-      setup_project(dir)
-      setup_script('1')
+      project_id = setup_project(dir)
+      script_id = setup_script(project_id)
 
-      visit project_path('1')
-      find('[href="/projects/1/scripts/1/edit"]').click
+      visit project_path(project_id)
+
+      edit_script_path = edit_project_script_path(project_id, script_id)
+      find(%Q{[href="#{edit_script_path}"]}).click
 
       # only shows 'cluster' & 'auto_scripts'
       assert_equal 2, page.all('.form-group').size
@@ -373,8 +397,9 @@ class ProjectsTest < ApplicationSystemTestCase
       end
 
       # add bc_num_hours
-      add_bc_num_hours(1)
-      find('[href="/projects/1/scripts/1/edit"]').click
+      add_bc_num_hours(project_id, script_id)
+      script_edit_path = edit_project_script_path(project_id, script_id)
+      find(%Q{[href="#{script_edit_path}"]}).click
 
       # now shows 'cluster', 'auto_scripts' & the newly added'bc_num_hours'
       assert_equal 3, page.all('.form-group').size
@@ -393,12 +418,13 @@ class ProjectsTest < ApplicationSystemTestCase
       click_on(I18n.t('dashboard.save'))
       success_message = I18n.t('dashboard.jobs_scripts_updated')
       assert_selector('.alert-success', text: "×\nClose\n#{success_message}")
-      assert_current_path '/projects/1'
+      assert_current_path project_path(project_id)
 
       # note that bc_num_hours has default, min & max
       expected_yml = <<~HEREDOC
         ---
         title: the script title
+        created_at: #{@expected_now}
         form:
         - auto_scripts
         - auto_batch_clusters
@@ -407,11 +433,11 @@ class ProjectsTest < ApplicationSystemTestCase
           auto_scripts:
             options:
             - - my_cool_script.sh
-              - "#{dir}/projects/1/my_cool_script.sh"
+              - "#{dir}/projects/#{project_id}/my_cool_script.sh"
             - - my_cooler_script.bash
-              - "#{dir}/projects/1/my_cooler_script.bash"
-            directory: "#{dir}/projects/1"
-            value: "#{dir}/projects/1/my_cool_script.sh"
+              - "#{dir}/projects/#{project_id}/my_cooler_script.bash"
+            directory: "#{dir}/projects/#{project_id}"
+            value: "#{dir}/projects/#{project_id}/my_cool_script.sh"
             label: Script
             help: ''
             required: false
@@ -433,22 +459,23 @@ class ProjectsTest < ApplicationSystemTestCase
             required: true
       HEREDOC
 
-      assert_equal(expected_yml, File.read("#{dir}/projects/1/.ondemand/scripts/1/form.yml"))
+      assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/scripts/#{script_id}/form.yml"))
     end
   end
 
   test 'removing script fields' do
     Dir.mktmpdir do |dir|
-      setup_project(dir)
-      setup_script('1')
+      project_id = setup_project(dir)
+      script_id = setup_script(project_id)
 
       # add bc_num_hours
-      add_bc_num_hours(1)
-      add_account(1)
+      add_bc_num_hours(project_id, script_id)
+      add_account(project_id, script_id)
 
       # go to edit it and see that there is cluster and bc_num_hours
-      visit project_path('1')
-      find('[href="/projects/1/scripts/1/edit"]').click
+      visit project_path(project_id)
+      edit_script_path = edit_project_script_path(project_id, script_id)
+      find(%Q{[href="#{edit_script_path}"]}).click
       # puts page.body
       assert_equal 4, page.all('.form-group').size
       assert_not_nil find('#script_auto_batch_clusters')
@@ -471,11 +498,12 @@ class ProjectsTest < ApplicationSystemTestCase
       click_on(I18n.t('dashboard.save'))
       success_message = I18n.t('dashboard.jobs_scripts_updated')
       assert_selector('.alert-success', text: "×\nClose\n#{success_message}")
-      assert_current_path '/projects/1'
+      assert_current_path project_path(project_id)
 
       expected_yml = <<~HEREDOC
         ---
         title: the script title
+        created_at: #{@expected_now}
         form:
         - auto_accounts
         - auto_scripts
@@ -501,11 +529,11 @@ class ProjectsTest < ApplicationSystemTestCase
           auto_scripts:
             options:
             - - my_cool_script.sh
-              - "#{dir}/projects/1/my_cool_script.sh"
+              - "#{dir}/projects/#{project_id}/my_cool_script.sh"
             - - my_cooler_script.bash
-              - "#{dir}/projects/1/my_cooler_script.bash"
-            directory: "#{dir}/projects/1"
-            value: "#{dir}/projects/1/my_cool_script.sh"
+              - "#{dir}/projects/#{project_id}/my_cooler_script.bash"
+            directory: "#{dir}/projects/#{project_id}"
+            value: "#{dir}/projects/#{project_id}/my_cool_script.sh"
             label: Script
             help: ''
             required: false
@@ -519,7 +547,7 @@ class ProjectsTest < ApplicationSystemTestCase
             required: false
       HEREDOC
 
-      assert_equal(expected_yml, File.read("#{dir}/projects/1/.ondemand/scripts/1/form.yml"))
+      assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/scripts/#{script_id}/form.yml"))
     end
   end
 
@@ -555,18 +583,18 @@ class ProjectsTest < ApplicationSystemTestCase
 
   test 'cant show invalid script' do
     Dir.mktmpdir do |dir|
-      setup_project(dir)
-      visit project_script_path('1', '1')
-      assert_current_path('/projects/1')
+      project_id = setup_project(dir)
+      visit project_script_path(project_id, '1')
+      assert_current_path("/projects/#{project_id}")
       assert_selector('.alert-danger', text: "×\nClose\nCannot find script 1")
     end
   end
 
   test 'cant edit invalid script' do
     Dir.mktmpdir do |dir|
-      setup_project(dir)
-      visit edit_project_script_path('1', '1')
-      assert_current_path('/projects/1')
+      project_id = setup_project(dir)
+      visit edit_project_script_path(project_id, '1')
+      assert_current_path("/projects/#{project_id}")
       assert_selector('.alert-danger', text: "×\nClose\nCannot find script 1")
     end
   end
@@ -579,11 +607,11 @@ class ProjectsTest < ApplicationSystemTestCase
   # asserts that the _new_ list of excluded accounts have actually been removed from script#show
   test 'excluding and including select options' do
     Dir.mktmpdir do |dir|
-      setup_project(dir)
-      setup_script(1)
-      add_account(1)
+      project_id = setup_project(dir)
+      script_id = setup_script(project_id)
+      add_account(project_id, script_id)
 
-      visit edit_project_script_path('1', '1')
+      visit edit_project_script_path(project_id, script_id)
 
       find('#edit_script_auto_accounts').click
       exclude_accounts = ['pas2051', 'pas1871', 'pas1754', 'pas1604']
@@ -602,8 +630,9 @@ class ProjectsTest < ApplicationSystemTestCase
       end
 
       find("#save_script_edit").click
-      assert_current_path('/projects/1')
-      find('[href="/projects/1/scripts/1"].btn-success').click
+      assert_current_path(project_path(project_id))
+      script_path = project_script_path(project_id, script_id)
+      find(%Q{[href="#{script_path}"].btn-success}).click
 
       # now let's check scripts#show to see if they've actually been excluded.
       show_account_options = page.all("#script_auto_accounts option").map(&:value)
@@ -611,7 +640,7 @@ class ProjectsTest < ApplicationSystemTestCase
         assert(!show_account_options.include?(acct))
       end
 
-      visit edit_project_script_path('1', '1')
+      visit edit_project_script_path(project_id, script_id)
       find('#edit_script_auto_accounts').click
 
       exclude_accounts.each do |acct|
@@ -629,8 +658,9 @@ class ProjectsTest < ApplicationSystemTestCase
       end
 
       find("#save_script_edit").click
-      assert_current_path('/projects/1')
-      find('[href="/projects/1/scripts/1"].btn-success').click
+      assert_current_path(project_path(project_id))
+      script_path = project_script_path(project_id, script_id)
+      find(%Q{[href="#{script_path}"].btn-success}).click
 
       # now let's check scripts#show and they should be back.
       show_account_options = page.all("#script_auto_accounts option").map(&:value)

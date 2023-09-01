@@ -6,7 +6,7 @@
   <div class="col-md-9">
     <div class="row">
       <% @projects.each do |project| %>
-        <div class="col-md-3 project-icon">
+        <div id="<%= project.id %>" class="col-md-3 project-icon project-card">
           <div class="text-center d-flex justify-content-center">
             <%= link_to(project_path(project.id), class: 'text-dark') do %>
               <%= icon_tag(URI.parse(project.icon)) %>
