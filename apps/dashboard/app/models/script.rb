@@ -14,10 +14,6 @@ class Script
       end
     end
 
-    def creation_marker_path(script_dir)
-      File.join(script_dir, ".created.json")
-    end
-
     def find(id, project_dir)
       script_path = Script.script_path(project_dir, id)
       file = script_form_file(script_path)
@@ -46,7 +42,7 @@ class Script
       nil
     end
 
-    def next_id(project_dir)
+    def next_id
       SecureRandom.alphanumeric(8).downcase
     end
   end
@@ -131,12 +127,11 @@ class Script
   end
 
   def save
-    @id = Script.next_id(project_dir) if @id.nil?
+    @id = Script.next_id if @id.nil?
     @created_at = Time.now.to_i if @created_at.nil?
     script_path = Script.script_path(project_dir, id)
     script_path.mkpath unless script_path.exist?
     File.write(Script.script_form_file(script_path), to_yaml)
-    add_creation_marker(script_path)
 
     true
   rescue StandardError => e
@@ -254,11 +249,6 @@ class Script
 
   def cache_file_exists?
     cache_file_path.exist?
-  end
-
-  def add_creation_marker(script_dir)
-    creation_marker = Pathname.new(Script.creation_marker_path(script_dir))
-    File.write(creation_marker, { }.to_json) unless creation_marker.exist?
   end
 
   def cached_values
