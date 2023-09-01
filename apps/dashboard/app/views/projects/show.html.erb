@@ -23,7 +23,7 @@
       </thead>
       <tbody>
       <% @scripts.each do |script| %>
-        <tr>
+        <tr class="script-card" id="<%= script.id %>">
           <td
             class='text-center col-md-4'
             data-job-id="<%= script.most_recent_job_id %>"
