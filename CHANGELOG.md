@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Merge pull request #3000 from hmdc/2991_project_script_id\
+Improvements to script model after review\
+Updated project and script model to use random alphanumeric ids\
+Merge pull request #2999 from osc-bot/osc-bot/random-linted-file\
+lint a random file\
+Fixed quality and compression variable names in _novnc.html.erb (#2995)\
+lint a random file (#2993)\
+upgrade to rails 6.1.7.6 (#2986)\
+Updated icon picker to support form reset (#2983)\
+Update Changelog (#2985)\
+update dependencies (#2979)\
+lint a random file (#2984)\
+fix flaky hpc module test by reseting this instance var (#2981)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
