@@ -287,7 +287,7 @@ class RcloneUtil
       Open3.singleton_method(:capture3).call(env, rclone_cmd, *args, **kwargs)
     end
 
-    def rclone_popen(*args, stdin_data: nil, env: extra_config, **kwargs, &block)
+    def rclone_popen(*args, stdin_data: nil, env: extra_config, &block)
       # Use -q to suppress message about config file not existing
       # need it here as we check err.present?
       Open3.popen3(env, rclone_cmd, "--quiet", *args) do |i, o, e, t|
