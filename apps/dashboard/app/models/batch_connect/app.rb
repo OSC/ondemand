@@ -13,7 +13,7 @@ module BatchConnect
     # @return [String, nil] sub app
     attr_accessor :sub_app
 
-    delegate :type, :category, :subcategory, :metadata, to: :ood_app
+    delegate :type, to: :ood_app
 
     # Raised when batch connect app components could not be found
     class AppNotFound < StandardError; end
@@ -117,6 +117,18 @@ module BatchConnect
 
     def tile
       ood_app.tile.merge(form_config.fetch(:tile, {}))
+    end
+
+    def category
+      form_config.fetch(:category, ood_app.category)
+    end
+
+    def subcategory
+      form_config.fetch(:subcategory, ood_app.subcategory)
+    end
+
+    def metadata
+      ood_app.metadata.merge(form_config.fetch(:metadata, {}))
     end
 
     def link
