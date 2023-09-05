@@ -18,4 +18,10 @@ class ActiveSupport::TestCase
     conf = remote_files_conf(root_dir)
     with_modified_env(conf, &block)
   end
+
+  def with_extra_rclone_conf(root_dir, &block)
+    conf = remote_files_conf(root_dir)
+      .merge({OOD_RCLONE_EXTRA_CONFIG: Rails.root.join('test/fixtures/config/rclone/extra_config.conf').to_s})
+    with_modified_env(conf, &block)
+  end
 end

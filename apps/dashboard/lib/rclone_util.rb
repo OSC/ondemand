@@ -252,19 +252,45 @@ class RcloneUtil
       false
     end
 
+    # Gets the config from OOD_RCLONE_EXTRA_CONFIG file as a Hash of env vars.
+    # @return [Hash] environment variables corresponding to config
+    def extra_config
+      return {} if Configuration.rclone_extra_config.blank?
+
+      # Rclone config dump outputs the configured remotes as JSON.
+      # TODO: Cache these results when generating favorite paths?
+      o, _, s = rclone('config', 'dump', env: { 'RCLONE_CONFIG' => Configuration.rclone_extra_config })
+      return {} unless s.success?
+
+      remotes = JSON.parse(o)
+
+      # Combine config into a single Hash where keys and values are e.g.
+      # RCLONE_CONFIG_MYREMOTE_TYPE: "s3"
+      remotes.map do |remote_name, remote_config|
+        remote_config.transform_keys do |option|
+          "RCLONE_CONFIG_#{remote_name}_#{option}".upcase
+        end
+      end.reduce(&:merge) || {} # reduce on empty array returns nil
+    rescue StandardError => e
+      Rails.logger.error("Could not read extra Rclone configuration: #{e.message}")
+      {}
+    end
+
     def rclone_cmd
       # TODO: Make this configurable
       "rclone"
     end
 
-    def rclone(*args)
-      Open3.capture3(rclone_cmd, *args)
+    def rclone(*args, env: extra_config, **kwargs)
+      # config/initalizers/open3_extensions.rb overrides Open3.capture3 to log calls.
+      # Get a reference to the original method to avoid logging the sensitive env vars.
+      Open3.singleton_method(:capture3).call(env, rclone_cmd, *args, **kwargs)
     end
 
-    def rclone_popen(*args, stdin_data: nil, &block)
+    def rclone_popen(*args, stdin_data: nil, env: extra_config, &block)
       # Use -q to suppress message about config file not existing
       # need it here as we check err.present?
-      Open3.popen3(rclone_cmd, "--quiet", *args) do |i, o, e, t|
+      Open3.popen3(env, rclone_cmd, "--quiet", *args) do |i, o, e, t|
         if stdin_data
           i.write(stdin_data)
         end
