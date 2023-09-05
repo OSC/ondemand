@@ -1,0 +1,33 @@
+---
+cluster: "oakley"
+attributes:
+  desktop: "gnome"
+  bc_queue: null
+  bc_account:
+    help: "You can leave this blank if **not** in multiple projects."
+  node_type:
+    widget: select
+    label: "Node type"
+    help: |
+      - **any** - (*12 cores*) Chooses anyone of the available Oakley nodes.
+        This reduces the wait time as you have no requirements.
+      - **vis** - (*12 cores*) This node includes an NVIDIA Tesla M2070 GPU
+        with an X server running in the background. This allows for Hardware
+        Rendering with the GPU typically needed for 3D visualization using
+        VirtualGL. There are currently only 128 of these nodes on Oakley.
+      - **gpu** -  (*12 cores*) This node includes an NVIDIA Tesla M2070 GPU
+        allowing for CUDA computations. There are currently only 128 of these
+        nodes on Oakley. These nodes don't start an X server, so visualization
+        with hardware rendering is not possible.
+      - **bigmem** - (*12 cores*) This Oakley node comes with 192GB of
+        available RAM. There are only 8 of these nodes on Oakley.
+      - **hugemem** - (*32 cores*) This Oakley node has 1TB of available RAM as
+        well as 32 cores. There is only 1 of these nodes on Oakley. A
+        reservation may be required to use this node.
+    options:
+      - ["any", ":ppn=12"]
+      - ["vis", ":ppn=12:vis:gpus=1"]
+      - ["gpu", ":ppn=12:gpus=1"]
+      - ["bigmem", ":ppn=12:bigmem"]
+      - ["hugemem", ":ppn=32:hugemem"]
+submit: submit/pbs.yml.erb

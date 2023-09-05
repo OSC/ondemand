@@ -295,8 +295,8 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     end
   end
 
-  test 'subapps can override title, description, icon, and caption from form' do
-    r = PathRouter.new('test/fixtures/usr/shared/bc_with_subapps/')
+  test 'subapps can override title, description, icon, caption, category, subcategory, and metadata from form' do
+    r = PathRouter.new('test/fixtures/apps/bc_with_subapps/')
     app = BatchConnect::App.new(router: r)
     sub_apps = app.sub_app_list
 
@@ -305,6 +305,9 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     assert_equal'Desktops: Oakley', sub_apps[0].title
     assert_equal'BC with sub apps description', sub_apps[0].description
     assert_equal'fa://desktop', sub_apps[0].icon_uri
+    assert_equal'Interactive Apps', sub_apps[0].category
+    assert_equal'Desktops', sub_apps[0].subcategory
+    assert_equal({ 'institution' => 'OSC', 'department' => 'Engineering' }, sub_apps[0].metadata)
     assert_nil sub_apps[0].caption
 
     oakley_link = sub_apps[0].link
@@ -317,6 +320,9 @@ class BatchConnect::AppTest < ActiveSupport::TestCase
     assert_equal'Owens Desktop', sub_apps[1].title
     assert_equal'Owens Description', sub_apps[1].description
     assert_equal'fa://clock', sub_apps[1].icon_uri
+    assert_equal'Interactive Apps Overridden', sub_apps[1].category
+    assert_equal'Desktops Overridden', sub_apps[1].subcategory
+    assert_equal({ 'institution' => 'OSC', 'department' => 'Overridden' }, sub_apps[1].metadata)
     assert_equal'gnome desktop on the owens cluster', app.sub_app_list[1].caption
 
     owens_link = sub_apps[1].link

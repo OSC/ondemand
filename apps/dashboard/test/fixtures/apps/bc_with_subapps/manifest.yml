@@ -1,0 +1,9 @@
+---
+name: Desktops
+category: Interactive Apps
+subcategory: Desktops
+icon: fa://desktop
+role: batch_connect
+metadata:
+  institution: OSC
+  department: Engineering
