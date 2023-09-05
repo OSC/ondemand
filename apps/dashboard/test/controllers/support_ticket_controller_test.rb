@@ -61,6 +61,21 @@ class SupportTicketControllerTest < ActiveSupport::TestCase
     assert_equal support_ticket_mock, @controller.instance_variable_get(:@support_ticket)
   end
 
+  test "new should log error and redirect to root when exception is raised" do
+    # Configure support without service to throw exception
+    set_support_ticket_config({})
+    I18n.expects(:t).with('dashboard.user_configuration.support_ticket_error').returns('user configuration message')
+    expected_log_message = 'Could not render support ticket page. Error=user configuration message'
+
+    # We expect to log the error
+    logger_stub = stub('logger').tap { |s| s.expects(:error).with(expected_log_message) }
+    @controller.stubs(:logger).returns(logger_stub)
+    @controller.expects(:t).with('dashboard.support_ticket.generic_error', anything).returns('controller error')
+    @controller.expects(:redirect_to).with('/home', flash: { alert: 'controller error' })
+
+    @controller.new
+  end
+
   test "create should delegate to service class to validate and create ticket, then redirect to homepage" do
     # Configure the SupportTicketEmailService
     set_support_ticket_config({ email: {} })

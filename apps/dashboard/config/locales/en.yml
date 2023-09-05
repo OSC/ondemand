@@ -231,6 +231,9 @@ en:
 
     settings_updated: "Settings updated"
 
+    user_configuration:
+      support_ticket_error: "support_ticket is misconfigured. \"email\" or \"rt_api\" sections are required in the configuration YAML."
+
     breadcrumbs_support_ticket: "Support Ticket"
     support_ticket:
       title: "Support Ticket"
