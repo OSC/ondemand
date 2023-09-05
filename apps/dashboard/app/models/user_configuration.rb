@@ -134,7 +134,7 @@ class UserConfiguration
     return SupportTicketEmailService.new(support_ticket) if support_ticket[:email]
     return SupportTicketRtService.new(support_ticket) if support_ticket[:rt_api]
 
-    raise StandardError, 'No support ticket service class configured'
+    raise StandardError, I18n.t('dashboard.user_configuration.support_ticket_error')
   end
 
   # The current user profile. Used to select the configuration properties.

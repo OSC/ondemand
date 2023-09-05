@@ -17,6 +17,10 @@ class SupportTicketController < ApplicationController
     @support_ticket = support_service.default_support_ticket(params)
 
     render get_ui_template
+
+  rescue StandardError => e
+    logger.error "Could not render support ticket page. Error=#{e}"
+    redirect_to root_url, :flash => { :alert => t('dashboard.support_ticket.generic_error', error: e) }
   end
 
   # POST /support
