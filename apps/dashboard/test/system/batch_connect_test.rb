@@ -599,7 +599,6 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'owens', find_value('cluster')
       # versions not available on owens
       assert_equal 'display: none;', find_option_style('auto_modules_app_jupyter', 'app_jupyter/3.1.18')
-      assert_equal 'display: none;', find_option_style('auto_modules_app_jupyter', 'app_jupyter/1.2.16')
       assert_equal 'display: none;', find_option_style('auto_modules_app_jupyter', 'app_jupyter/0.35.6')
       assert_equal 'display: none;', find_option_style('auto_modules_intel', 'intel/18.0.4')
 
@@ -607,7 +606,6 @@ class BatchConnectTest < ApplicationSystemTestCase
       select('oakley', from: bc_ele_id('cluster'))
       assert_equal 'app_jupyter', find_value('auto_modules_app_jupyter')
       assert_equal '', find_option_style('auto_modules_app_jupyter', 'app_jupyter/3.1.18')
-      assert_equal '', find_option_style('auto_modules_app_jupyter', 'app_jupyter/1.2.16')
       assert_equal '', find_option_style('auto_modules_app_jupyter', 'app_jupyter/0.35.6')
 
       # and lots of intel versions aren't
@@ -635,6 +633,29 @@ class BatchConnectTest < ApplicationSystemTestCase
       # which should be 'netcdf-serial/4.3.3.1'
       click_on('Launch')
       verify_bc_alert('sys/bc_jupyter',  I18n.t('dashboard.batch_connect_sessions_errors_staging'), module_value)
+    end
+  end
+
+  test 'auto generated modules hide hidden modules' do
+    with_modified_env({ OOD_MODULE_FILE_DIR: 'test/fixtures/modules' }) do
+      visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+      # defaults, note that intel doesn't show the default version
+      assert_equal 'app_jupyter', find_value('auto_modules_app_jupyter')
+      assert_equal 'intel/2021.3.0', find_value('auto_modules_intel')
+      assert_equal 'owens', find_value('cluster')
+
+      # oakley has the hidden intel module 'intel/2021.4.0'
+      select('oakley', from: bc_ele_id('cluster'))
+
+      actual_options = find_all_options('auto_modules_intel', nil).map(&:text)
+
+      # '2021.4.0' is not listed here.
+      expected_options = [
+        '2021.3.0', '19.1.3', '19.0.5', '19.0.3', '18.0.4', '18.0.3', '18.0.2',
+        '18.0.0', '17.0.7', '17.0.5', '17.0.2', '16.0.8', '16.0.3'
+      ]
+      assert_equal(expected_options, actual_options)
     end
   end
 
