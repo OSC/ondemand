@@ -10,9 +10,9 @@ class HpcModule
           begin
             JSON.parse(File.read(file)).map do |name, spider_output|
               spider_output.map do |_, mod|
-                HpcModule.new(name, version: mod['Version'])
+                HpcModule.new(name, version: mod['Version'], hidden: mod['hidden'])
               end
-            end.flatten.uniq
+            end.flatten.uniq.reject(&:hidden?)
           rescue StandardError => e
             Rails.logger.warn("Did not read #{file} correctly because #{e.class}:#{e.message}")
             []
@@ -31,11 +31,13 @@ class HpcModule
     end
   end
 
-  attr_reader :name, :version
+  attr_reader :name, :version, :hidden
+  alias hidden? hidden
 
-  def initialize(name, version: nil)
+  def initialize(name, version: nil, hidden: false)
     @name = name
     @version = version.to_s if version
+    @hidden = hidden
   end
 
   def to_s
