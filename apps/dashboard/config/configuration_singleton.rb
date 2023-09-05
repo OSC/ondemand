@@ -49,6 +49,7 @@ class ConfigurationSingleton
       :disable_bc_shell             => false,
       :cancel_session_enabled       => false,
       :hide_app_version             => false,
+      :motd_render_html             => false,
     }.freeze
   end
 

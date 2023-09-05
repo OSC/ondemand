@@ -68,4 +68,15 @@ module DashboardHelper
     { rows: [{ columns: [left_column, right_column].compact }] }
   end
 
+  def render_motd_rss_item(item)
+    return '' unless item.description
+
+    content = if Configuration.motd_render_html?
+                item.description.html_safe
+              else
+                sanitize(item.description)
+              end
+
+    content_tag(:div, content)
+  end
 end
