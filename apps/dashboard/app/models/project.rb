@@ -70,8 +70,8 @@ class Project
   validates :name, presence: { message: :required }, on: [:create, :update]
   validates :id, :directory, :icon, presence: { message: :required }, on: [:update]
   validates :icon, format: { with: %r{\Afa[bsrl]://[\w-]+\z}, allow_blank: true, message: :format }, on: [:create, :update]
-  validates :directory, exclusion: { in: [Project.dataroot.to_s], message: :invalid }, on: [:create, :update]
-  validate :project_directory_validation, on: [:create]
+  validate :project_directory_invalid, on: [:create, :update]
+  validate :project_directory_exist, on: [:create]
 
   # the template you created this project from
   attr_accessor :template
@@ -187,9 +187,15 @@ class Project
     errors.add(:make_directory, "Failed to make directory: #{e.message}")
   end
 
-  def project_directory_validation
+  def project_directory_exist
     if !directory.blank? && Project.lookup_table.map { |_id, directory| directory }.map(&:to_s).include?(directory.to_s)
       errors.add(:directory, :used)
+    end
+  end
+
+  def project_directory_invalid
+    if !directory.blank? && Project.dataroot.to_s == directory
+      errors.add(:directory, :invalid)
     end
   end
 end

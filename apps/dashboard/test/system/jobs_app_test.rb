@@ -112,6 +112,7 @@ class ProjectsTest < ApplicationSystemTestCase
   test 'delete a project from the fs and ensure no table entry' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
+      assert File.directory? File.join(dir, "projects", project_id)
 
       accept_confirm do
         click_on 'Delete'
@@ -119,7 +120,8 @@ class ProjectsTest < ApplicationSystemTestCase
 
       assert_selector '.alert-success', text: 'Project successfully deleted!'
       assert_no_selector %Q{[href="/projects/#{project_id}"]}, text: 'Test Project'
-      assert_not File.directory? File.join("#{dir}/projects", project_id)
+      assert File.directory? File.join(dir, "projects", project_id)
+      assert_not File.directory? File.join(dir, "projects", project_id, '.ondemand')
     end
   end
 
