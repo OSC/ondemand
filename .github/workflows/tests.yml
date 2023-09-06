@@ -78,7 +78,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v3
         with:
-          name: system-test-failures-{{ matrix.ruby }}
+          name: system-test-failures-${{ matrix.ruby }}
           path: |
             apps/dashboard/tmp/screenshots/*.png
             apps/dashboard/log/test.log
