@@ -78,8 +78,10 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v3
         with:
-          name: system-test-failures
-          path: apps/dashboard/tmp/screenshots/*.png
+          name: system-test-failures-{{ matrix.ruby }}
+          path: |
+            apps/dashboard/tmp/screenshots/*.png
+            apps/dashboard/log/test.log
 
   k8s-tests:
     runs-on: ubuntu-latest
