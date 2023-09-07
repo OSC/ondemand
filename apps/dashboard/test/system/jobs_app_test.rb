@@ -79,7 +79,7 @@ class ProjectsTest < ApplicationSystemTestCase
       project_id = setup_project(dir)
 
       assert_selector '.alert-success', text: 'Project successfully created!'
-      assert_selector "[href='/projects/#{project_id}']}", text: 'Test Project'
+      assert_selector "[href='/projects/#{project_id}']", text: 'Test Project'
       assert File.directory? File.join("#{dir}/projects", project_id)
     end
   end
