@@ -112,6 +112,7 @@ class ProjectsTest < ApplicationSystemTestCase
   test 'delete a project from the fs and ensure no table entry' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
+      assert File.directory? File.join(dir, "projects", project_id)
 
       accept_confirm do
         click_on 'Delete'
@@ -119,7 +120,8 @@ class ProjectsTest < ApplicationSystemTestCase
 
       assert_selector '.alert-success', text: 'Project successfully deleted!'
       assert_no_selector %Q{[href="/projects/#{project_id}"]}, text: 'Test Project'
-      assert_not File.directory? File.join("#{dir}/projects", project_id)
+      assert File.directory? File.join(dir, "projects", project_id)
+      assert_not File.directory? File.join(dir, "projects", project_id, '.ondemand')
     end
   end
 
@@ -151,21 +153,6 @@ class ProjectsTest < ApplicationSystemTestCase
     end
   end
 
-  test 'create with missing icon triggers alert' do
-    Dir.mktmpdir do |dir|
-      OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
-      proj = 'test-project'
-      icon = ''
-      visit projects_path
-      click_on I18n.t('dashboard.jobs_create_blank_project')
-      find('#project_name').set(proj)
-      find('#product_icon_select').set(icon)
-      click_on 'Save'
-
-      assert_selector '.alert-danger', text: 'Icon format invalid or missing'
-    end
-  end
-
   test 'create with invalid icon triggers alert' do
     Dir.mktmpdir do |dir|
       OodAppkit.stubs(:dataroot).returns(Pathname.new(dir))
@@ -177,7 +164,7 @@ class ProjectsTest < ApplicationSystemTestCase
       find('#product_icon_select').set(icon)
       click_on 'Save'
 
-      assert_selector '.alert-danger', text: 'Icon format invalid or missing'
+      assert_selector '.alert-danger', text: I18n.t('dashboard.jobs_project_validation_error')
     end
   end
 
@@ -188,7 +175,7 @@ class ProjectsTest < ApplicationSystemTestCase
       find('#product_icon_select').set('fas://bad&icon')
       click_on 'Save'
 
-      assert_selector '.alert-danger', text: 'Icon format invalid or missing'
+      assert_selector '.alert-danger', text: I18n.t('dashboard.jobs_project_validation_error')
     end
   end
 

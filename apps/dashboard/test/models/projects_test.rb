@@ -3,26 +3,40 @@
 require 'test_helper'
 
 class ProjectsTest < ActiveSupport::TestCase
+  test 'crate project validation' do
+    Dir.mktmpdir do |tmp|
+      OodAppkit.stubs(:dataroot).returns(Pathname.new(tmp))
+
+      project = Project.new({})
+      assert_not project.save
+      assert_equal 1, project.errors.size
+      assert_not project.errors[:name].empty?
+
+      invalid_directory = Project.dataroot
+      project = Project.new({ name: 'test', icon: 'invalid_format', directory: invalid_directory.to_s })
+
+      assert_not project.save
+      assert_equal 2, project.errors.size
+      assert_not project.errors[:icon].empty?
+      assert_not project.errors[:directory].empty?
+    end
+  end
+
   test 'creates project' do
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
-      OodAppkit.stubs(:dataroot).returns(projects_path)
-      attrs = { name: 'test project & stuff', icon: 'fas://arrow-right', id: 1 }
-      project = Project.new(attrs)
+      project = create_project(projects_path)
 
-      assert project.save(attrs), project.errors.inspect
-      assert Dir.entries("#{projects_path}/projects").include?('1')
+      assert project.errors.inspect
+      assert Dir.entries("#{projects_path}/projects").include?(project.id)
     end
   end
 
   test 'creates .ondemand configuration directory' do
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
-      OodAppkit.stubs(:dataroot).returns(projects_path)
-      attrs = { name: 'test-project', icon: 'fas://arrow-right', id: 1 }
-      project = Project.new(attrs)
+      project = create_project(projects_path)
 
-      assert project.save(attrs)
       assert Dir.entries(project.directory).include?('.ondemand')
     end
   end
@@ -30,14 +44,12 @@ class ProjectsTest < ActiveSupport::TestCase
   test 'creates manifest.yml in .ondemand config directory' do
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
-      OodAppkit.stubs(:dataroot).returns(projects_path)
-      attrs = { name: 'test-project', icon: 'fas://arrow-right', id: 1 }
-      project = Project.new(attrs)
+      project = create_project(projects_path)
 
-      assert project.save(attrs), project.errors.inspect
-      assert_equal "#{projects_path}/projects/1", project.directory.to_s
+      assert project.errors.inspect
+      assert_equal "#{projects_path}/projects/#{project.id}", project.directory.to_s
 
-      manifest_path = Pathname.new("#{projects_path}/projects/1/.ondemand/manifest.yml")
+      manifest_path = Pathname.new("#{projects_path}/projects/#{project.id}/.ondemand/manifest.yml")
 
       assert File.file?(manifest_path)
 
@@ -45,56 +57,31 @@ class ProjectsTest < ActiveSupport::TestCase
         ---
         name: test-project
         icon: fas://arrow-right
+        description: description
       HEREDOC
 
       assert_equal expected_manifest_yml, File.read(manifest_path)
     end
   end
 
-  test 'creates project with directory override' do
-    Dir.mktmpdir do |project_path|
-      OodAppkit.stubs(:dataroot).returns(Pathname.new('/tmp'))
-      attrs = { name: 'directory override', directory: project_path, icon: 'fas://arrow-right', id: 1 }
-      project = Project.new(attrs)
-
-      assert_equal "#{project_path}", project.directory
-      assert project.save(attrs), project.errors.inspect
-      assert File.directory?(Pathname.new(project_path))
-      assert File.file?(Pathname.new("#{project_path}/.ondemand/manifest.yml"))
-    end
-  end
-
-  test 'creates with empty directory defaults to projects dataroot' do
-    project_path = Pathname.new('/tmp')
-    OodAppkit.stubs(:dataroot).returns(project_path)
-    attrs = { name: 'test-project', directory: ' ', id: 1 }
-
-    project = Project.new(attrs)
-    assert_equal "#{project_path}/projects/1", project.directory
-  end
-
   test 'deletes project' do
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
-      OodAppkit.stubs(:dataroot).returns(projects_path)
-      attrs = { name: 'test-project', icon: 'fas://arrow-right', id: 1 }
-      project = Project.new(attrs)
+      project = create_project(projects_path)
 
-      assert project.save(attrs)
-      assert Dir.entries("#{projects_path}/projects/").include?('1')
+      assert Dir.entries("#{projects_path}/projects/").include?(project.id)
+      assert Dir.entries("#{projects_path}/projects/#{project.id}").include?('.ondemand')
 
       project.destroy!
-      assert_not Dir.entries("#{projects_path}/projects/").include?('1')
+      assert Dir.entries("#{projects_path}/projects/").include?(project.id)
+      assert_not Dir.entries("#{projects_path}/projects/#{project.id}").include?('.ondemand')
     end
   end
 
   test 'update project manifest.yml file' do
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
-      OodAppkit.stubs(:dataroot).returns(projects_path)
-      attrs = { name: 'test-project', icon: 'fas://arrow-right', id: 1 }
-      project = Project.new(attrs)
-      assert project.save(attrs)
+      project = create_project(projects_path)
 
       name          = 'test-project-2'
       description   = 'my test project'
@@ -121,23 +108,44 @@ class ProjectsTest < ActiveSupport::TestCase
     end
   end
 
-  test 'icon defaults to fas://cog' do
+  test 'update project only updates name, icon, and description' do
     Dir.mktmpdir do |tmp|
-      project_path = Pathname.new(tmp)
-      OodAppkit.stubs(:dataroot).returns(project_path)
-      attrs = { name: 'test-project', description: 'test description', id: 1 }
+      projects_path = Pathname.new(tmp)
+      project = create_project(projects_path)
+      old_id = project.id
+      old_directory = project.directory
 
-      project = Project.new(attrs)
-      assert project.save(attrs), project.errors.inspect
+      assert project.update({ id: 'updated', name: 'updated', icon: 'fas://updated', directory: '/updated', description: 'updated' })
+      assert_equal 'updated', project.name
+      assert_equal 'fas://updated', project.icon
+      assert_equal 'updated', project.description
 
-      manifest_yml = <<~HEREDOC
-        ---
-        name: test-project
-        description: test description
-        icon: fas://cog
-      HEREDOC
-
-      assert_equal manifest_yml, File.read(project.manifest_path.to_s)
+      assert_equal old_id, project.id
+      assert_equal old_directory, project.directory
     end
   end
+
+  test 'update project validation' do
+    Dir.mktmpdir do |tmp|
+      projects_path = Pathname.new(tmp)
+      project = create_project(projects_path)
+
+      assert_not project.update({ name: nil, icon: nil })
+      assert_equal 2, project.errors.size
+      assert_not project.errors[:name].empty?
+      assert_not project.errors[:icon].empty?
+    end
+  end
+
+  def create_project(projects_path, name: 'test-project', icon: 'fas://arrow-right', description: 'description', directory: nil)
+    OodAppkit.stubs(:dataroot).returns(projects_path)
+    id = Project.next_id
+    directory = Project.dataroot.join(id.to_s).to_s if directory.blank?
+    attrs = { name: name, icon: icon, id: id, description: description, directory: directory }
+    project = Project.new(attrs)
+    assert project.save
+
+    project
+  end
+
 end

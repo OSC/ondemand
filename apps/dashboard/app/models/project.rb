@@ -67,46 +67,61 @@ class Project
 
   delegate :icon, :name, :description, to: :manifest
 
+  validates :name, presence: { message: :required }, on: [:create, :update]
+  validates :id, :directory, :icon, presence: { message: :required }, on: [:update]
+  validates :icon, format: { with: %r{\Afa[bsrl]://[\w-]+\z}, allow_blank: true, message: :format }, on: [:create, :update]
+  validate :project_directory_invalid, on: [:create, :update]
+  validate :project_directory_exist, on: [:create]
+
   # the template you created this project from
   attr_accessor :template
 
   def initialize(attributes = {})
-    if attributes.empty?
-      @manifest = Manifest.new({})
-    else
-      @id = attributes.delete(:id)
-      @directory = attributes.delete(:directory)
-      @directory = Project.dataroot.join(id.to_s).to_s if @directory.blank?
+    @id = attributes.delete(:id)
+    @directory = attributes.delete(:directory)
+    @directory = File.expand_path(@directory) unless @directory.blank?
 
-      @manifest = Manifest.new(attributes).merge(Manifest.load(manifest_path))
-    end
+    @manifest = Manifest.new(attributes)
+    @manifest = @manifest.merge(Manifest.load(manifest_path)) unless new_record?
   end
 
-  def save(attributes)
-    if id.nil? && attributes.fetch(:id, nil).nil?
-      message = 'Project ID must be set when saving.'
-      errors.add(:save, message)
-      Rails.logger.warn(message)
-      return false
-    end
+  def new_record?
+    return true if !id
+    return true if !directory
+
+    id && directory && !File.exist?(manifest_path)
+  end
+
+  def save(attributes={})
+    @id = attributes.delete(:id) if attributes.key?(:id)
+    @directory = attributes.delete(:directory) if attributes.key?(:directory)
+    @directory = File.expand_path(@directory) unless @directory.blank?
+    @manifest = manifest.merge(attributes)
+
+    return false unless valid?(:create)
+
+    # SET DEFAULTS
+    @id = Project.next_id if id.blank?
+    @directory = Project.dataroot.join(id.to_s).to_s if directory.blank?
+    @manifest = manifest.merge({ icon: 'fas://cog' }) if icon.blank?
 
     make_dir
-    update(attributes)
+    store_manifest
   end
 
   def update(attributes)
-    if valid_icon?(attributes)
-      manifest = Manifest.load(manifest_path)
-                         .merge(attributes)
+    @manifest = manifest.merge(attributes)
 
-      if manifest.valid? && manifest.save(manifest_path) && add_to_lookup
-        true
-      else
-        errors.add(:update, "Cannot save manifest to #{manifest_path}")
-        false
-      end
+    return false unless valid?(:update)
+
+    store_manifest
+  end
+
+  def store_manifest
+    if manifest.valid? && manifest.save(manifest_path) && add_to_lookup
+      true
     else
-      errors.add(:update, 'Invalid entry')
+      errors.add(:save, I18n.t('dashboard.jobs_project_save_error', path: manifest_path))
       false
     end
   end
@@ -136,7 +151,7 @@ class Project
 
   def destroy!
     remove_from_lookup
-    FileUtils.remove_dir(project_dataroot, force = true)
+    FileUtils.remove_dir(configuration_directory, true)
   end
 
   def configuration_directory
@@ -155,28 +170,32 @@ class Project
     File.join(configuration_directory, 'manifest.yml')
   end
 
+  def collect_errors
+    errors.map do |field_error|
+      field_error.message()
+    end.join(', ')
+  end
+
   private
 
   attr_reader :manifest
-
-  def valid_icon?(attributes)
-    icon_pattern = %r{\Afa[bsrl]://[\w-]+\z}
-
-    if !attributes[:icon].nil? && !attributes[:icon].match?(icon_pattern)
-      errors.add(:icon, :invalid_format, message: 'Icon format invalid or missing')
-      false
-    elsif attributes[:icon].nil?
-      attributes[:icon] = 'fas://cog'
-      true
-    else
-      true
-    end
-  end
 
   def make_dir
     project_dataroot.mkpath         unless project_dataroot.exist?
     configuration_directory.mkpath  unless configuration_directory.exist?
   rescue StandardError => e
     errors.add(:make_directory, "Failed to make directory: #{e.message}")
+  end
+
+  def project_directory_exist
+    if !directory.blank? && Project.lookup_table.map { |_id, directory| directory }.map(&:to_s).include?(directory.to_s)
+      errors.add(:directory, :used)
+    end
+  end
+
+  def project_directory_invalid
+    if !directory.blank? && Project.dataroot.to_s == directory
+      errors.add(:directory, :invalid)
+    end
   end
 end
