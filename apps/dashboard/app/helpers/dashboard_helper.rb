@@ -77,6 +77,6 @@ module DashboardHelper
                 sanitize(item.description)
               end
 
-    content_tag(:div, content)
+    content_tag(:div, content, data: { 'motd-rss-item': true })
   end
 end
