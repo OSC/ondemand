@@ -32,7 +32,7 @@ class ProjectsTest < ApplicationSystemTestCase
     project_element = find('.project-card')
     project_id = project_element[:id]
 
-    project_dir = override_project_dir ? override_project_dir : "#{root_dir}/projects/#{project_id}"
+    project_dir = override_project_dir || "#{root_dir}/projects/#{project_id}"
     `echo 'some_other_command' > #{project_dir}/my_cool_script.sh`
     `echo 'hostname' > #{project_dir}/my_cooler_script.bash`
 
@@ -52,7 +52,7 @@ class ProjectsTest < ApplicationSystemTestCase
   def add_account(project_id, script_id)
     visit project_path(project_id)
     edit_script_path = edit_project_script_path(project_id, script_id)
-    find(%Q{[href="#{edit_script_path}"]}).click
+    find("[href='#{edit_script_path}']").click
 
     # now add 'auto_accounts'
     click_on('Add new option')
@@ -64,7 +64,7 @@ class ProjectsTest < ApplicationSystemTestCase
   def add_bc_num_hours(project_id, script_id)
     visit project_path(project_id)
     edit_script_path = edit_project_script_path(project_id, script_id)
-    find(%Q{[href="#{edit_script_path}"]}).click
+    find("[href='#{edit_script_path}']").click
 
     # now add 'bc_num_hours'
     click_on('Add new option')
@@ -79,7 +79,7 @@ class ProjectsTest < ApplicationSystemTestCase
       project_id = setup_project(dir)
 
       assert_selector '.alert-success', text: 'Project successfully created!'
-      assert_selector %Q{[href="/projects/#{project_id}"]}, text: 'Test Project'
+      assert_selector "[href='/projects/#{project_id}']", text: 'Test Project'
       assert File.directory? File.join("#{dir}/projects", project_id)
     end
   end
@@ -98,10 +98,10 @@ class ProjectsTest < ApplicationSystemTestCase
       Pathname(project_override_dir).mkpath
       setup_project(dir, project_override_dir)
 
-      assert File.directory?(File.join("#{project_override_dir}", '.ondemand'))
-      assert File.exist?(File.join("#{project_override_dir}", '.ondemand', 'manifest.yml'))
+      assert File.directory?(File.join(project_override_dir.to_s, '.ondemand'))
+      assert File.exist?(File.join(project_override_dir.to_s, '.ondemand', 'manifest.yml'))
 
-      #Cleanup to avoid side effects
+      # Cleanup to avoid side effects
       accept_confirm do
         click_on 'Delete'
       end
@@ -112,16 +112,16 @@ class ProjectsTest < ApplicationSystemTestCase
   test 'delete a project from the fs and ensure no table entry' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
-      assert File.directory? File.join(dir, "projects", project_id)
+      assert File.directory? File.join(dir, 'projects', project_id)
 
       accept_confirm do
         click_on 'Delete'
       end
 
       assert_selector '.alert-success', text: 'Project successfully deleted!'
-      assert_no_selector %Q{[href="/projects/#{project_id}"]}, text: 'Test Project'
-      assert File.directory? File.join(dir, "projects", project_id)
-      assert_not File.directory? File.join(dir, "projects", project_id, '.ondemand')
+      assert_no_selector "[href='/projects/#{project_id}']", text: 'Test Project'
+      assert File.directory? File.join(dir, 'projects', project_id)
+      assert_not File.directory? File.join(dir, 'projects', project_id, '.ondemand')
     end
   end
 
@@ -129,7 +129,7 @@ class ProjectsTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
 
-      find(%Q{[href="/projects/#{project_id}"]}).click
+      find("[href='/projects/#{project_id}']").click
       assert_selector 'h1', text: 'Test Project'
       assert_selector '.btn.btn-default', text: 'Back'
     end
@@ -142,7 +142,7 @@ class ProjectsTest < ApplicationSystemTestCase
       click_on 'Edit'
       find('#project_name').set('my-test-project')
       click_on 'Save'
-      assert_selector %Q{[href="/projects/#{project_id}"]}, text: 'My Test Project'
+      assert_selector "[href='/projects/#{project_id}']", text: 'My Test Project'
       click_on 'Edit'
       assert_selector 'h1', text: 'Editing: My Test Project'
       assert_equal 'my-test-project', find('#project_name').value
@@ -216,7 +216,7 @@ class ProjectsTest < ApplicationSystemTestCase
       assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/scripts/#{script_id}/form.yml"))
 
       script_path = project_script_path(project_id, script_id)
-      find(%Q{[href="#{script_path}"].btn-success}).click
+      find("[href='#{script_path}'].btn-success").click
       assert_selector('h1', text: 'the script title', count: 1)
     end
   end
@@ -229,7 +229,7 @@ class ProjectsTest < ApplicationSystemTestCase
       add_account(project_id, script_id)
 
       script_path = project_script_path(project_id, script_id)
-      find(%Q{[href="#{script_path}"].btn-success}).click
+      find("[href='#{script_path}'].btn-success").click
       assert_selector('h1', text: 'the script title', count: 1)
 
       expected_accounts = ['pas1604', 'pas1754', 'pas1871', 'pas2051', 'pde0006', 'pzs0714', 'pzs0715', 'pzs1010',
@@ -280,7 +280,7 @@ class ProjectsTest < ApplicationSystemTestCase
 
 
       script_path = project_script_path(project_id, script_id)
-      find(%Q{[href="#{script_path}"].btn-success}).click
+      find("[href='#{script_path}'].btn-success").click
       assert_selector('h1', text: 'the script title', count: 1)
 
       # assert defaults
@@ -320,7 +320,7 @@ class ProjectsTest < ApplicationSystemTestCase
       add_account(project_id, script_id)
 
       script_path = project_script_path(project_id, script_id)
-      find(%Q{[href="#{script_path}"].btn-success}).click
+      find("[href='#{script_path}'].btn-success").click
       assert_selector('h1', text: 'the script title', count: 1)
 
       # assert defaults
@@ -353,7 +353,7 @@ class ProjectsTest < ApplicationSystemTestCase
       visit project_path(project_id)
 
       edit_script_path = edit_project_script_path(project_id, script_id)
-      find(%Q{[href="#{edit_script_path}"]}).click
+      find("[href='#{edit_script_path}']").click
 
       click_on('Add new option')
       new_field_id = 'add_new_field_select'
@@ -372,7 +372,7 @@ class ProjectsTest < ApplicationSystemTestCase
       visit project_path(project_id)
 
       edit_script_path = edit_project_script_path(project_id, script_id)
-      find(%Q{[href="#{edit_script_path}"]}).click
+      find("[href='#{edit_script_path}']").click
 
       # only shows 'cluster' & 'auto_scripts'
       assert_equal 2, page.all('.form-group').size
@@ -386,7 +386,7 @@ class ProjectsTest < ApplicationSystemTestCase
       # add bc_num_hours
       add_bc_num_hours(project_id, script_id)
       script_edit_path = edit_project_script_path(project_id, script_id)
-      find(%Q{[href="#{script_edit_path}"]}).click
+      find("[href='#{script_edit_path}']").click
 
       # now shows 'cluster', 'auto_scripts' & the newly added'bc_num_hours'
       assert_equal 3, page.all('.form-group').size
@@ -462,7 +462,7 @@ class ProjectsTest < ApplicationSystemTestCase
       # go to edit it and see that there is cluster and bc_num_hours
       visit project_path(project_id)
       edit_script_path = edit_project_script_path(project_id, script_id)
-      find(%Q{[href="#{edit_script_path}"]}).click
+      find("[href='#{edit_script_path}']").click
       # puts page.body
       assert_equal 4, page.all('.form-group').size
       assert_not_nil find('#script_auto_batch_clusters')
@@ -616,13 +616,13 @@ class ProjectsTest < ApplicationSystemTestCase
         assert(!!add_btn[:disabled])
       end
 
-      find("#save_script_edit").click
+      find('#save_script_edit').click
       assert_current_path(project_path(project_id))
       script_path = project_script_path(project_id, script_id)
-      find(%Q{[href="#{script_path}"].btn-success}).click
+      find("[href='#{script_path}'].btn-success").click
 
       # now let's check scripts#show to see if they've actually been excluded.
-      show_account_options = page.all("#script_auto_accounts option").map(&:value)
+      show_account_options = page.all('#script_auto_accounts option').map(&:value)
       exclude_accounts.each do |acct|
         assert(!show_account_options.include?(acct))
       end
@@ -644,13 +644,13 @@ class ProjectsTest < ApplicationSystemTestCase
         assert(!!rm_btn[:disabled])
       end
 
-      find("#save_script_edit").click
+      find('#save_script_edit').click
       assert_current_path(project_path(project_id))
       script_path = project_script_path(project_id, script_id)
-      find(%Q{[href="#{script_path}"].btn-success}).click
+      find("[href='#{script_path}'].btn-success").click
 
       # now let's check scripts#show and they should be back.
-      show_account_options = page.all("#script_auto_accounts option").map(&:value)
+      show_account_options = page.all('#script_auto_accounts option').map(&:value)
       exclude_accounts.each do |acct|
         assert(show_account_options.include?(acct))
       end
