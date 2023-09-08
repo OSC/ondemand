@@ -57,6 +57,15 @@ metadata:
   name: ondemand
   namespace: ondemand
 ---
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/service-account-token
+metadata:
+  name: ondemand-token
+  namespace: ondemand
+  annotations:
+    kubernetes.io/service-account.name: ondemand
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
