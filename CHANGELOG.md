@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+some small tweaks in these test cases (#3019)\
+Updated new job composer project validation - Single Project Model (#2990)\
+lint a random file (#3013)\
+update dependencies (#3012)\
+need to use $ for variables to work (#3010)\
+also upload logs when system tests fail (#3009)\
+Update Changelog (#3002)\
+Improvements to error handling for support ticket configuration (#3004)\
+support file editor syntax highlighting for fortran (#3008)\
+Add support for an extra Rclone config file (#2956)\
+Filter hidden modules (#2997)\
+Merge pull request #3006 from hmdc/3005_subapps_metadata\
+Merge pull request #3001 from osc-bot/osc-bot/random-linted-file\
+Added support to override category, subcategory, and metadata in subapps\
+lint a random file
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
