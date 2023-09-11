@@ -42,7 +42,7 @@ class PosixFile
     # accepts both String and Pathname
     # avoids converting to Pathname in every function
     @path = Pathname.new(path)
-    @stat = @path.lstat
+    @stat = @path.exist? ? @path.lstat : nil
   end
 
   def to_h
