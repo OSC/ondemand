@@ -6,21 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-some small tweaks in these test cases (#3019)\
-Updated new job composer project validation - Single Project Model (#2990)\
-lint a random file (#3013)\
-update dependencies (#3012)\
-need to use $ for variables to work (#3010)\
-also upload logs when system tests fail (#3009)\
-Update Changelog (#3002)\
-Improvements to error handling for support ticket configuration (#3004)\
-support file editor syntax highlighting for fortran (#3008)\
-Add support for an extra Rclone config file (#2956)\
-Filter hidden modules (#2997)\
-Merge pull request #3006 from hmdc/3005_subapps_metadata\
-Merge pull request #3001 from osc-bot/osc-bot/random-linted-file\
-Added support to override category, subcategory, and metadata in subapps\
-lint a random file
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
@@ -35,12 +20,16 @@ lint a random file
 - Rclone can now validate remotes in [2952](https://github.com/OSC/ondemand/pull/2952).
 - Remote file systems now show in breadcrumbs in [2957](https://github.com/OSC/ondemand/pull/2957).
 - Support for adding interactive app profiles in [2958](https://github.com/OSC/ondemand/pull/2958).
+- File editor now has syntax highlighting for fortran in [3008](https://github.com/OSC/ondemand/pull/3008).
+- Subapps can now override category, subcategory, and metadata in [3006](https://github.com/OSC/ondemand/pull/3006).
+- Rclone now supports extra configuration in [2956](https://github.com/OSC/ondemand/pull/2956).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
 - ood-portal-generator correctly uses `proxy_server` in http rewrites in [2870](https://github.com/OSC/ondemand/pull/2870).
 - auto_modules now support module names with hyphens in them in [2938](https://github.com/OSC/ondemand/pull/2938).
 - Quality and compression settings correctly set in noVNC pages in [2995](https://github.com/OSC/ondemand/pull/2995).
+- auto_modules correctly filters hidden modules in [2997](https://github.com/OSC/ondemand/pull/2997).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
