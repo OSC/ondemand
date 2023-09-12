@@ -20,12 +20,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Rclone can now validate remotes in [2952](https://github.com/OSC/ondemand/pull/2952).
 - Remote file systems now show in breadcrumbs in [2957](https://github.com/OSC/ondemand/pull/2957).
 - Support for adding interactive app profiles in [2958](https://github.com/OSC/ondemand/pull/2958).
+- File editor now has syntax highlighting for fortran in [3008](https://github.com/OSC/ondemand/pull/3008).
+- Subapps can now override category, subcategory, and metadata in [3006](https://github.com/OSC/ondemand/pull/3006).
+- Rclone now supports extra configuration in [2956](https://github.com/OSC/ondemand/pull/2956).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
 - ood-portal-generator correctly uses `proxy_server` in http rewrites in [2870](https://github.com/OSC/ondemand/pull/2870).
 - auto_modules now support module names with hyphens in them in [2938](https://github.com/OSC/ondemand/pull/2938).
 - Quality and compression settings correctly set in noVNC pages in [2995](https://github.com/OSC/ondemand/pull/2995).
+- auto_modules correctly filters hidden modules in [2997](https://github.com/OSC/ondemand/pull/2997).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
