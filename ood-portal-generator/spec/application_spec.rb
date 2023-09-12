@@ -40,6 +40,7 @@ describe OodPortalGenerator::Application do
     allow(OodPortalGenerator).to receive(:debian?).and_return(false)
     allow_any_instance_of(OodPortalGenerator::Dex).to receive(:default_secret_path).and_return(dex_secret_path.path)
     allow(SecureRandom).to receive(:uuid).and_return('83bc78b7-6f5e-4010-9d80-22f328aa6550')
+    allow(Socket).to receive(:ip_address_list).and_return([Addrinfo.ip("8.8.8.8")])
   end
 
   after(:each) do
