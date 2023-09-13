@@ -278,7 +278,6 @@ class ProjectsTest < ApplicationSystemTestCase
       script_dir = File.join(project_dir, '.ondemand', 'scripts', script_id)
       add_account(project_id, script_id)
 
-
       script_path = project_script_path(project_id, script_id)
       find("[href='#{script_path}'].btn-success").click
       assert_selector('h1', text: 'the script title', count: 1)
@@ -607,13 +606,13 @@ class ProjectsTest < ApplicationSystemTestCase
         add_btn = find("#script_auto_accounts_add_#{acct}")
 
         # rm is enabled and add is disabled.
-        assert(!!rm_btn[:disabled])
-        assert(add_btn[:disabled])
+        assert_equal('false', rm_btn[:disabled])
+        assert_equal('true', add_btn[:disabled])
         rm_btn.click
 
         # after clicking, they toggle
-        assert(rm_btn[:disabled])
-        assert(!!add_btn[:disabled])
+        assert_equal('true', rm_btn[:disabled])
+        assert_equal('false', add_btn[:disabled])
       end
 
       find('#save_script_edit').click
@@ -635,13 +634,13 @@ class ProjectsTest < ApplicationSystemTestCase
         add_btn = find("#script_auto_accounts_add_#{acct}")
 
         # now add is enabled and rm is disabled. (opposite of the above)
-        assert(!!add_btn[:disabled])
-        assert(rm_btn[:disabled])
+        assert_equal('false', add_btn[:disabled])
+        assert_equal('true', rm_btn[:disabled])
         add_btn.click
 
         # after clicking, they toggle
-        assert(add_btn[:disabled])
-        assert(!!rm_btn[:disabled])
+        assert_equal('true', add_btn[:disabled])
+        assert_equal('false', rm_btn[:disabled])
       end
 
       find('#save_script_edit').click
@@ -653,6 +652,37 @@ class ProjectsTest < ApplicationSystemTestCase
       show_account_options = page.all('#script_auto_accounts option').map(&:value)
       exclude_accounts.each do |acct|
         assert(show_account_options.include?(acct))
+      end
+    end
+  end
+
+  # this test is similar to the one above, only it captures
+  # the case when you've added the field, but haven't saved
+  # it yet. See https://github.com/OSC/ondemand/issues/3017
+  test 'excluding newly created options' do
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      script_id = setup_script(project_id)
+      visit(edit_project_script_path(project_id, script_id))
+
+      # now add 'auto_accounts'
+      click_on('Add new option')
+      select('Account', from: 'add_new_field_select')
+      click_on(I18n.t('dashboard.add'))
+      find('#edit_script_auto_accounts').click
+
+      ['pas2051', 'pas1871', 'pas1754', 'pas1604'].each do |acct|
+        rm_btn = find("#script_auto_accounts_remove_#{acct}")
+        add_btn = find("#script_auto_accounts_add_#{acct}")
+
+        # rm is enabled and add is disabled.
+        assert_equal('false', rm_btn[:disabled])
+        assert_equal('true', add_btn[:disabled])
+        rm_btn.click
+
+        # after clicking, they toggle
+        assert_equal('true', rm_btn[:disabled])
+        assert_equal('false', add_btn[:disabled])
       end
     end
   end

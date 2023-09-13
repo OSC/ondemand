@@ -118,6 +118,9 @@ function addInProgressField(event) {
   justAdded.find('.btn-primary')
            .on('click', (event) => { showEditField(event) });
 
+  justAdded.find('[data-select-toggler]')
+           .on('click', (event) => { enableOrDisableSelectOption(event) });
+
   const entireDiv = event.target.parentElement.parentElement.parentElement;
   entireDiv.remove();
 }
