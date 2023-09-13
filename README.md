@@ -28,7 +28,13 @@ Open OnDemand is an NSF-funded open-source HPC portal. The goal of Open OnDemand
 ![Open ondemand demo demonstrating integration with Open XDMOD; interactive jobs with desktops, Jupyter and visual studio code; file browsing, creation, editing and deletion.](docs/imgs/open_ondemand_demo.gif)
 
 ## Installation
-Installing Open OnDemand simple, use our prepacked RPM distributions or build from source. Get started by visiting the [installation instructions] in our documentation.
+Installing Open OnDemand simple, use our `.rpm` or `.deb` packages. Get started by visiting the [installation instructions] in our documentation.
+
+### Container demos
+
+You can use the [hpc toolset tutorial] to demonstrate Open OnDemand before installing on your systems. This `docker-compose` project
+has a full suite of applications like Slurm, Coldfront and of course Open OnDemand.  It also includes tutorials on how to use
+and update the applications.
 
 ## Architecture
 Learn more about Open OnDemand's system architecture and request lifecycle by visiting our <a href="https://osc.github.io/ood-documentation/latest/architecture.html">documentation</a>.
@@ -56,3 +62,4 @@ This project is maintained by the <a href="https://www.osc.edu">Ohio Supercomput
 [installation instructions]: https://osc.github.io/ood-documentation/latest/requirements.html
 [contributing guide]: CONTRIBUTING.md
 [Discourse]: https://discourse.osc.edu
+[hpc toolset tutorial]: https://github.com/ubccr/hpc-toolset-tutorial/
