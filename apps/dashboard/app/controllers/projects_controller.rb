@@ -64,6 +64,7 @@ class ProjectsController < ApplicationController
     else
       message = @project.errors[:save].empty? ? I18n.t('dashboard.jobs_project_validation_error') : I18n.t('dashboard.jobs_project_generic_error', error: @project.collect_errors)
       flash.now[:alert] = message
+      @templates = templates if project_params.key?(:template)
       render :new
     end
   end

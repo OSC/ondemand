@@ -55,6 +55,8 @@ class Project
 
       template_dir.children.map do |child_directory|
         opts = {
+          # Fake id is needed to make it a valid project
+          id:        '__template',
           directory: child_directory
         }
 
@@ -63,7 +65,7 @@ class Project
     end
   end
 
-  attr_reader :directory, :id
+  attr_reader :directory, :id, :template
 
   delegate :icon, :name, :description, to: :manifest
 
@@ -72,6 +74,7 @@ class Project
   validates :icon, format: { with: %r{\Afa[bsrl]://[\w-]+\z}, allow_blank: true, message: :format }, on: [:create, :update]
   validate :project_directory_invalid, on: [:create, :update]
   validate :project_directory_exist, on: [:create]
+  validate :project_template_invalid, on: [:create]
 
   # the template you created this project from
   attr_accessor :template
@@ -80,6 +83,7 @@ class Project
     @id = attributes.delete(:id)
     @directory = attributes.delete(:directory)
     @directory = File.expand_path(@directory) unless @directory.blank?
+    @template = attributes.delete(:template)
 
     @manifest = Manifest.new(attributes)
     @manifest = @manifest.merge(Manifest.load(manifest_path)) unless new_record?
@@ -105,8 +109,7 @@ class Project
     @directory = Project.dataroot.join(id.to_s).to_s if directory.blank?
     @manifest = manifest.merge({ icon: 'fas://cog' }) if icon.blank?
 
-    make_dir
-    store_manifest
+    make_dir && sync_template && store_manifest(:save)
   end
 
   def update(attributes)
@@ -114,14 +117,14 @@ class Project
 
     return false unless valid?(:update)
 
-    store_manifest
+    store_manifest(:update)
   end
 
-  def store_manifest
+  def store_manifest(operation)
     if manifest.valid? && manifest.save(manifest_path) && add_to_lookup
       true
     else
-      errors.add(:save, I18n.t('dashboard.jobs_project_save_error', path: manifest_path))
+      errors.add(operation, I18n.t('dashboard.jobs_project_save_error', path: manifest_path))
       false
     end
   end
@@ -171,9 +174,7 @@ class Project
   end
 
   def collect_errors
-    errors.map do |field_error|
-      field_error.message()
-    end.join(', ')
+    errors.map(&:message).join(', ')
   end
 
   private
@@ -183,8 +184,23 @@ class Project
   def make_dir
     project_dataroot.mkpath         unless project_dataroot.exist?
     configuration_directory.mkpath  unless configuration_directory.exist?
+    true
   rescue StandardError => e
-    errors.add(:make_directory, "Failed to make directory: #{e.message}")
+    errors.add(:save, "Failed to make directory: #{e.message}")
+    false
+  end
+
+  def sync_template
+    return true if template.blank?
+
+    # Sync the template files over
+    oe, s = Open3.capture2e("rsync", "-a", "#{template}/", "#{project_dataroot}")
+    raise oe unless s.success?
+
+    true
+  rescue StandardError => e
+    errors.add(:save, "Failed to sync template: #{e.message}")
+    false
   end
 
   def project_directory_exist
@@ -196,6 +212,13 @@ class Project
   def project_directory_invalid
     if !directory.blank? && Project.dataroot.to_s == directory
       errors.add(:directory, :invalid)
+    end
+  end
+
+  def project_template_invalid
+    # This validation is to prevent the template directory being manipulated in the form.
+    if !template.blank? && Project.templates.map { |template| template.directory.to_s }.exclude?(template.to_s)
+      errors.add(:template, :invalid)
     end
   end
 end
