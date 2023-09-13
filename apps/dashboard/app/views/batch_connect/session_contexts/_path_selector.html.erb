@@ -1,6 +1,9 @@
 <%
   show_hidden = false
   show_files = false
+
+  inital_directory = attrib.opts[:directory] || CurrentUser.home
+
   if attrib.opts[:options].is_a?(Array)
     show_hidden = attrib.opts[:options].include? 'hidden'
     show_files = attrib.opts[:options].include? 'files'
@@ -26,7 +29,7 @@
     aria-labelledby="modal-path-selector" aria-hidden="true"
     data-path-selector-show-files="<%= show_files %>"
     data-path-selector-show-hidden="<%= show_hidden %>"
-    data-home-directory="<%= Dir.home %>"
+    data-initial-directory="<%= inital_directory %>"
     data-files-path="<%= files_path %>"
     data-table-id="<%= table_id %>"
     data-breadcrumb-id="<%= breadcrumb_id %>"
@@ -34,7 +37,7 @@
     data-input-field-id="<%= input_field_id %>"
     >
 
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modal-path-selector-title">Select Your Working Directory</h5>

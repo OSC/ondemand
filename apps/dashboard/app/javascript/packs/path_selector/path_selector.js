@@ -23,13 +23,13 @@ function makeTable(element) {
 function getPathSelectorOptions(element) {
   options = {};
 
-  options.filesPath       = element.dataset['filesPath'];
-  options.homeDirectory   = element.dataset['homeDirectory'];
-  options.tableId         = element.dataset['tableId'];
-  options.breadcrumbId    = element.dataset['breadcrumbId'];
-  options.selectButtonId  = element.dataset['selectButtonId'];
-  options.inputFieldId    = element.dataset['inputFieldId'];
-  options.modalId         = element.id;
+  options.filesPath         = element.dataset['filesPath'];
+  options.initialDirectory  = element.dataset['initialDirectory'];
+  options.tableId           = element.dataset['tableId'];
+  options.breadcrumbId      = element.dataset['breadcrumbId'];
+  options.selectButtonId    = element.dataset['selectButtonId'];
+  options.inputFieldId      = element.dataset['inputFieldId'];
+  options.modalId           = element.id;
 
   return options;
 }
