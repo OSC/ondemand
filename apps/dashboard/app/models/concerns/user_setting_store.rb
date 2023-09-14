@@ -1,14 +1,13 @@
 module UserSettingStore
 
   def user_settings
-    if @user_settings.nil?
-      @user_settings = read_user_settings
-    else
-      @user_settings.clone
-    end
+    @user_settings = read_user_settings if @user_settings.nil?
+    @user_settings.clone
   end
 
   def update_user_settings(new_user_settings)
+    # Ensure @user_settings is initialized
+    user_settings
     @user_settings.deep_merge!(new_user_settings.deep_symbolize_keys)
     save_user_settings
   end
