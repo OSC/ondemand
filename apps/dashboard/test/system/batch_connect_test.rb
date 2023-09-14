@@ -845,4 +845,47 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'pzs1124', find_value('auto_accounts')
     end
   end
+
+  test 'path_selector works' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            directory: "#{Rails.root}"
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      base_id = 'batch_connect_session_context_path'
+
+      visit new_batch_connect_session_context_url('sys/app')
+      click_on('Select Path')
+      sleep 1
+
+      # assert that all the rows in the table are real. It should be showing the files in Rails.root
+      find("##{base_id}_path_selector_table").all('tbody tr') do |table_row|
+        table_datas = table_row.all('td')
+        row_text = table_datas[1].find('span').text
+        real_file = Pathname.new(Rails.root).join(row_text)
+        assert(real_file.exist?)
+      end
+
+      find('span', text: 'test').click
+      find("##{base_id}_path_selector_button").click
+
+      text_field = find("##{base_id}")
+      assert_equal("#{Rails.root}/test", text_field.value)
+    end
+  end
 end

@@ -3,22 +3,22 @@ export class PathSelectorTable {
   _table = null;
 
   // input data that should be passed into the constructor
-  tableId         = undefined;
-  filesPath       = undefined;
-  breadcrumbId    = undefined;
-  homeDirectory   = undefined;
-  selectButtonId  = undefined;
-  inputFieldId    = undefined;
-  modalId         = undefined;
+  tableId           = undefined;
+  filesPath         = undefined;
+  breadcrumbId      = undefined;
+  initialDirectory  = undefined;
+  selectButtonId    = undefined;
+  inputFieldId      = undefined;
+  modalId           = undefined;
 
   constructor(options) {
-      this.tableId        = options.tableId;
-      this.filesPath      = options.filesPath;
-      this.breadcrumbId   = options.breadcrumbId;
-      this.homeDirectory  = options.homeDirectory;
-      this.selectButtonId = options.selectButtonId;
-      this.inputFieldId   = options.inputFieldId;
-      this.modalId        = options.modalId;
+      this.tableId            = options.tableId;
+      this.filesPath          = options.filesPath;
+      this.breadcrumbId       = options.breadcrumbId;
+      this.initialDirectory   = options.initialDirectory;
+      this.selectButtonId     = options.selectButtonId;
+      this.inputFieldId       = options.inputFieldId;
+      this.modalId            = options.modalId;
 
       this.initDataTable();
       this.reloadTable(this.initialUrl());
@@ -139,7 +139,7 @@ export class PathSelectorTable {
   getLastVisited() {
     const lastVisited = localStorage.getItem(this.storageKey());
     if(lastVisited === null) {
-      return this.homeDirectory;
+      return this.initialDirectory;
     } else {
       return lastVisited;
     }
