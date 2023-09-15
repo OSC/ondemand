@@ -2,10 +2,13 @@
 
 Rails.application.config.after_initialize do
   # Since https://github.com/OSC/ondemand/pull/1526 all the batch connect cache files
-  # have moved. So, when folks upgrade to 2.1, let's sync these old files so that
+  # have moved. So, when folks upgrade to 3.0, let's sync these old files so that
   # they don't lose their cached choices.
   old_context_files = "#{Configuration.dataroot}/batch_connect/**/*/context.json"
   cache_root = BatchConnect::Session.cache_root
+
+  # kick out if you've already done this
+  next if Dir.glob("#{BatchConnect::Session.cache_root}/*.json").size.positive?
 
   Dir.glob(old_context_files).map do |old_file|
     new_filename = old_file.gsub(%r{.*/batch_connect/}, '').gsub('/context.json', '').gsub('/', '_')
