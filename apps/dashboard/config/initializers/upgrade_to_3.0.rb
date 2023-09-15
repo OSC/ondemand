@@ -8,7 +8,7 @@ Rails.application.config.after_initialize do
   cache_root = BatchConnect::Session.cache_root
 
   # kick out if you've already done this
-  next if Dir.glob("#{BatchConnect::Session.cache_root}/*.json").size.positive?
+  next if Dir.glob("#{cache_root}/*.json").size.positive?
 
   Dir.glob(old_context_files).map do |old_file|
     new_filename = old_file.gsub(%r{.*/batch_connect/}, '').gsub('/context.json', '').gsub('/', '_')
