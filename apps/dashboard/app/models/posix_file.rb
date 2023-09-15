@@ -42,10 +42,16 @@ class PosixFile
     # accepts both String and Pathname
     # avoids converting to Pathname in every function
     @path = Pathname.new(path)
-    @stat = @path.exist? ? @path.lstat : nil
+    begin
+      @stat = @path.lstat
+    rescue Errno::ENOENT, Errno::EACCES
+      @stat = nil
+    end
   end
 
   def to_h
+    return { name: basename } if stat.nil?
+
     {
       id:         "dev-#{stat.dev}-inode-#{stat.ino}",
       name:       basename,
