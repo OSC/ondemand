@@ -25,12 +25,13 @@ class HpcModuleTest < ActiveSupport::TestCase
     end
   end
 
-  test 'all versions is corrrect, sorted and unique' do
+  test 'all_versions is corrrect, sorted and unique' do
     stub_sys_apps
     with_modified_env({ OOD_MODULE_FILE_DIR: fixture_dir }) do
+      # "app_jupyter/1.2.21" in oakley.json is hidden
       expected = [
         'app_jupyter/3.1.18', 'app_jupyter/3.0.17', 'app_jupyter/2.3.2', 'app_jupyter/2.2.10',
-        'app_jupyter/1.2.21', 'app_jupyter/1.2.16', 'app_jupyter/0.35.6'
+        'app_jupyter/1.2.21', 'app_jupyter/0.35.6'
       ]
       assert_equal(expected, HpcModule.all_versions('app_jupyter').map(&:to_s))
     end
@@ -62,5 +63,17 @@ class HpcModuleTest < ActiveSupport::TestCase
     m = HpcModule.new('test', version: 9001)
     assert !m.default?
     assert_equal m.version, '9001' # we gave an int, got back a string
+  end
+
+  test 'hidden modules are filtered' do
+    stub_sys_apps
+    with_modified_env({ OOD_MODULE_FILE_DIR: fixture_dir }) do
+      # "mkl/.2019.0.5" in oakley.json is hidden
+      expected = [
+        'mkl/2019.0.5', 'mkl/2019.0.3', 'mkl/2018.0.3', 'mkl/2017.0.7',
+        'mkl/2017.0.4', 'mkl/2017.0.2', 'mkl/11.3.3'
+      ]
+      assert_equal(expected, HpcModule.all_versions('mkl').map(&:to_s))
+    end
   end
 end

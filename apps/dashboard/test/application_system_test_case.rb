@@ -14,7 +14,11 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   end
 
   def find_all_options(ele, opt)
-    all("##{bc_ele_id(ele)} option[value='#{opt}']")
+    if opt.nil?
+      all("##{bc_ele_id(ele)} option")
+    else
+      all("##{bc_ele_id(ele)} option[value='#{opt}']")
+    end
   end
 
   def find_max(ele)
