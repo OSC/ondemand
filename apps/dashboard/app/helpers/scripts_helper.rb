@@ -4,7 +4,7 @@
 module ScriptsHelper
   def create_editable_widget(form, attrib, format: nil)
     widget = attrib.widget
-    attrib.html_options = { class: 'real-field' }
+    attrib.html_options = { class: 'real-field', autocomplete: 'off' }
     locals = { form: form, attrib: attrib, format: format }
 
     case widget
