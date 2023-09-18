@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+path_selector to support initial directory w/ tests (#3041)\
+render files in situ instead of copy & rewrite (#3045)\
+Added template files sync when creating a project from a template (#3031)\
+add hpc toolset tutorial to README (#3038)\
+lint a random file (#3033)\
+scripts#edit bug fixes (#3018)\
+change config to a hidden div and put it in a partial (#2989)\
+Allow ips (#2998)\
+Update Changelog (#3023)\
+Lint a random file (#3022)\
+update dependencies (#3024)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
