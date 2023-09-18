@@ -135,7 +135,14 @@ function enableOrDisableSelectOption(event) {
 
   const select = document.getElementById(event.target.dataset.selectId);
   const selectOptions = Array.from(select.options);
-  const optionToToggle = selectOptions.filter(opt => opt.value == choice)[0];
+  const optionToToggle = selectOptions.filter(opt => opt.text == choice)[0];
+  const selectOptionsEnabled = selectOptions.filter(opt => !opt.disabled);
+
+  if(selectOptionsEnabled.length <= 1 && toggleAction == 'remove') {
+    alert("Cannot remove the last option available")
+    event.target.disabled = false;
+    return
+  }
 
   if(toggleAction == 'add') {
     li.classList.remove('list-group-item-danger', 'text-strike');
@@ -149,6 +156,11 @@ function enableOrDisableSelectOption(event) {
     addButton.disabled = false;
     addToExcludeInput(inputId, choice);
     optionToToggle.disabled = true;
+    if (optionToToggle.selected) {
+      optionToToggle.selected = false;
+      // if we can remove, there is always another option
+      selectOptionsEnabled.filter(opt => opt.text !== choice)[0].selected = true;
+    }
   }
 }
 
@@ -179,11 +191,11 @@ function initSelectFields(){
   }).map((button) => {
     const li = button.parentElement;
     const optionText = $(li).find('[data-select-value]')[0].textContent;
-    return optionText;
-
-  // now disable all the options
-  }).forEach((option) => {
-    $(`select [value='${option}']`).attr('disabled', 'true')
+    const select = document.getElementById(button.dataset.selectId);
+    const selectOptions = Array.from(select.options);
+    const optionToToggle = selectOptions.filter(opt => opt.text == optionText)[0];
+    optionToToggle.disabled = true;
+    optionToToggle.selected = false;
   });
 }
 
