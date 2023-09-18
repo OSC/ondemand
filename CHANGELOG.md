@@ -6,17 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-path_selector to support initial directory w/ tests (#3041)\
-render files in situ instead of copy & rewrite (#3045)\
-Added template files sync when creating a project from a template (#3031)\
-add hpc toolset tutorial to README (#3038)\
-lint a random file (#3033)\
-scripts#edit bug fixes (#3018)\
-change config to a hidden div and put it in a partial (#2989)\
-Allow ips (#2998)\
-Update Changelog (#3023)\
-Lint a random file (#3022)\
-update dependencies (#3024)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
@@ -41,6 +30,7 @@ update dependencies (#3024)
 - auto_modules now support module names with hyphens in them in [2938](https://github.com/OSC/ondemand/pull/2938).
 - Quality and compression settings correctly set in noVNC pages in [2995](https://github.com/OSC/ondemand/pull/2995).
 - auto_modules correctly filters hidden modules in [2997](https://github.com/OSC/ondemand/pull/2997).
+- Sites using ips instead of hostnames correctly populate allowed hosts in [2998](https://github.com/OSC/ondemand/pull/2998).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
