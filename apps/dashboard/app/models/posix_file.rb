@@ -3,7 +3,7 @@ class PosixFile
 
   attr_reader :path, :stat
 
-  delegate :basename, :descend, :parent, :join, :to_s, :read, :write, :mkdir, :directory?, to: :path
+  delegate :basename, :descend, :parent, :join, :to_s, :read, :write, :mkdir, to: :path
 
   # include to give us number_to_human_size
   include ActionView::Helpers::NumberHelper
@@ -55,9 +55,9 @@ class PosixFile
     {
       id:         "dev-#{stat.dev}-inode-#{stat.ino}",
       name:       basename,
-      size:       directory? ? nil : stat.size,
+      size:       stat.directory? ? nil : stat.size,
       human_size: human_size,
-      directory:  directory?,
+      directory:  stat.directory?,
       date:       stat.mtime.to_i,
       owner:      PosixFile.username_from_cache(stat.uid),
       mode:       stat.mode,
@@ -66,7 +66,7 @@ class PosixFile
   end
 
   def human_size
-    directory? ? '-' : number_to_human_size(stat.size, precision: 3)
+    stat.directory? ? '-' : number_to_human_size(stat.size, precision: 3)
   end
 
   def raise_if_cant_access_directory_contents
@@ -84,6 +84,10 @@ class PosixFile
     expanded.glob('**/*').map { |p|
       FileToZip.new(p.to_s, p.relative_path_from(expanded).to_s)
     }
+  end
+
+  def directory?
+    stat.directory?
   end
 
   def ls
@@ -137,7 +141,7 @@ class PosixFile
     can_download = false
     error = nil
 
-    if ! (directory? && path.readable? && path.executable?)
+    if ! (path.directory? && path.readable? && path.executable?)
       error = I18n.t('dashboard.files_directory_download_unauthorized')
     else
       # Determine the size of the directory.
