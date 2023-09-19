@@ -13,7 +13,7 @@ class OodAppLink
     @url         = config.fetch(:url, '').to_s
     @icon_uri    = URI(config.fetch(:icon_uri, 'fas://cog').to_s)
     @caption     = config.fetch(:caption, nil)
-    @new_tab     = !config.fetch(:new_tab, true).nil?
+    @new_tab     = config.fetch(:new_tab, true)
     @data        = config.fetch(:data, {}).to_h
     @tile        = config.fetch(:tile, {}).to_h.deep_symbolize_keys
   end
