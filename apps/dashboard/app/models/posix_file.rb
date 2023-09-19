@@ -1,33 +1,16 @@
 # PosixFile is a class representing a file on a local file system.
 class PosixFile
 
-  attr_reader :path
+  attr_reader :path, :stat
 
-  delegate :basename, :descend, :parent, :join, :to_s, :read, :write, :mkdir, to: :path
+  delegate :basename, :descend, :parent, :join, :to_s, :read, :write, :mkdir, :directory?, to: :path
+
+  # include to give us number_to_human_size
+  include ActionView::Helpers::NumberHelper
 
   class << self
     def stat(path)
-      path = Pathname.new(path)
-
-      # path.stat will not work for a symlink and will raise an exception
-      # if the directory or file being pointed at does not exist
-      begin
-        s = path.stat
-      rescue
-        s = path.lstat
-      end
-
-      {
-        id: "dev-#{s.dev}-inode-#{s.ino}",
-        name: path.basename,
-        size: s.directory? ? nil : s.size,
-        human_size: s.directory? ? '-' : ::ApplicationController.helpers.number_to_human_size(s.size, precision: 3),
-        directory: s.directory?,
-        date: s.mtime.to_i,
-        owner: username_from_cache(s.uid),
-        mode: s.mode,
-        dev: s.dev
-      }
+      PosixFile.new(path).to_h
     end
 
     def num_files(from, names)
@@ -59,6 +42,31 @@ class PosixFile
     # accepts both String and Pathname
     # avoids converting to Pathname in every function
     @path = Pathname.new(path)
+    begin
+      @stat = @path.lstat
+    rescue Errno::ENOENT, Errno::EACCES
+      @stat = nil
+    end
+  end
+
+  def to_h
+    return { name: basename } if stat.nil?
+
+    {
+      id:         "dev-#{stat.dev}-inode-#{stat.ino}",
+      name:       basename,
+      size:       directory? ? nil : stat.size,
+      human_size: human_size,
+      directory:  directory?,
+      date:       stat.mtime.to_i,
+      owner:      PosixFile.username_from_cache(stat.uid),
+      mode:       stat.mode,
+      dev:        stat.dev
+    }
+  end
+
+  def human_size
+    directory? ? '-' : number_to_human_size(stat.size, precision: 3)
   end
 
   def raise_if_cant_access_directory_contents
@@ -78,18 +86,22 @@ class PosixFile
     }
   end
 
-  def directory?
-    path.stat.directory?
-  end
-
   def ls
     path.each_child.map do |child_path|
-      PosixFile.stat(child_path)
-    end.select do |stats|
-      valid_encoding = stats[:name].to_s.valid_encoding?
-      Rails.logger.warn("Not showing file '#{stats[:name]}' because it is not a UTF-8 filename.") unless valid_encoding
-      valid_encoding
-    end.sort_by { |p| p[:directory] ? 0 : 1 }
+      PosixFile.new(child_path)
+    end.select(&:valid?)
+        .map(&:to_h)
+        .sort_by { |p| p[:directory] ? 0 : 1 }
+  end
+
+  def valid?
+    valid_encoding?
+  end
+
+  def valid_encoding?
+    valid = basename.to_s.valid_encoding?
+    Rails.logger.warn("Not showing file '#{stats[:name]}' because it is not a UTF-8 filename.") unless valid
+    valid
   end
 
   def editable?
@@ -125,7 +137,7 @@ class PosixFile
     can_download = false
     error = nil
 
-    if ! (path.directory? && path.readable? && path.executable?)
+    if ! (directory? && path.readable? && path.executable?)
       error = I18n.t('dashboard.files_directory_download_unauthorized')
     else
       # Determine the size of the directory.

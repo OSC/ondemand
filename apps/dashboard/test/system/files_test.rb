@@ -290,4 +290,24 @@ class FilesTest < ApplicationSystemTestCase
       end
     end
   end
+
+  test 'symlinked directories' do
+    Dir.mktmpdir do |dir|
+      `cd #{dir}; mkdir -p #{dir} real_dir`
+      `cd #{dir}; touch #{dir} real_dir/real_file`
+      `cd #{dir}; ln -s real_dir linked_dir`
+
+      visit files_url(dir)
+
+      find('tbody a', exact_text: 'real_dir')
+      find('tbody a', exact_text: 'linked_dir')
+      assert_selector('tbody span[title="directory"]', count: 2)
+
+      # click the symlink
+      find('tbody a', exact_text: 'linked_dir').click
+
+      find('tbody a', exact_text: 'real_file', wait: MAX_WAIT)
+      assert_selector('tbody span[title="file"]', count: 1)
+    end
+  end
 end
