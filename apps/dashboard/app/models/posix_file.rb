@@ -42,9 +42,11 @@ class PosixFile
     # accepts both String and Pathname
     # avoids converting to Pathname in every function
     @path = Pathname.new(path)
-
-    # can throw an error if it's not real.
-    @stat = @path.lstat
+    begin
+      @stat = @path.lstat
+    rescue Errno::ENOENT, Errno::EACCES
+      @stat = nil
+    end
   end
 
   def to_h
