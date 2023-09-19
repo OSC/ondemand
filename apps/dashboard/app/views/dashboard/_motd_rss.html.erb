@@ -5,7 +5,7 @@
     <div>
       <%= content_tag(:strong, item.pubDate.strftime("%m-%d-%Y")) if item.pubDate %>
       <h4><a href="<%= item.link %>"><%= item.title %></a></h4>
-      <%= content_tag(:p, item.description) if item.description %>
+      <%= render_motd_rss_item(item) %>
       <hr />
     </div>
   <% end %>
