@@ -4,4 +4,5 @@
   data-transfers-path="<%= transfers_path(format: "json") if respond_to?(:transfers_path) %>"
   data-jobs-info-path="<%= jobs_info_path('delme', 'delme').gsub(/[\/]*delme[\/]*/,'') %>"
   data-uppy-locale="<%= I18n.t('dashboard.uppy', :default => {}).to_json %>"
+  data-bc-dynamic-js="<%= Configuration.bc_dynamic_js %>"
 ></div>
