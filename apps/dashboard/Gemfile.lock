@@ -90,7 +90,7 @@ GEM
     coffee-script-source (1.12.2)
     concurrent-ruby (1.2.2)
     crass (1.0.6)
-    cssbundling-rails (1.2.0)
+    cssbundling-rails (1.3.2)
       railties (>= 6.0.0)
     dalli (3.2.5)
     date (3.3.3)
@@ -104,7 +104,7 @@ GEM
       activesupport
       i18n
     erubi (1.12.0)
-    execjs (2.8.1)
+    execjs (2.9.1)
     ffi (1.15.5)
     globalid (1.2.1)
       activesupport (>= 6.1)
@@ -116,7 +116,7 @@ GEM
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
-    jsbundling-rails (1.1.2)
+    jsbundling-rails (1.2.1)
       railties (>= 6.0.0)
     local_time (1.0.3)
       coffee-rails
@@ -255,7 +255,7 @@ GEM
       sprockets (>= 3.0.0)
     stringio (3.0.8)
     thor (1.2.2)
-    tilt (2.2.0)
+    tilt (2.3.0)
     timecop (0.9.8)
     timeout (0.4.0)
     tzinfo (2.0.6)
