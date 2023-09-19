@@ -325,7 +325,7 @@ class FilesTest < ApplicationSystemTestCase
         visit files_url(allowed_dir)
 
         # 3 things are actually in the directory
-        assert(3, Dir.glob("#{dir}/*").size)
+        assert_equal(3, Dir.children(dir).size)
 
         # but only 2 things are shown in the UI (symlinked_dir is missing)
         find('tbody a', exact_text: 'some_dir')
