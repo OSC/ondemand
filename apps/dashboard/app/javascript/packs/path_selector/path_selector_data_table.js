@@ -10,6 +10,8 @@ export class PathSelectorTable {
   selectButtonId    = undefined;
   inputFieldId      = undefined;
   modalId           = undefined;
+  showHidden        = undefined;
+  showFiles         = undefined;
 
   constructor(options) {
       this.tableId            = options.tableId;
@@ -19,6 +21,8 @@ export class PathSelectorTable {
       this.selectButtonId     = options.selectButtonId;
       this.inputFieldId       = options.inputFieldId;
       this.modalId            = options.modalId;
+      this.showHidden         = options.showHidden === 'true';
+      this.showFiles          = options.showFiles === 'true';
 
       this.initDataTable();
       this.reloadTable(this.initialUrl());
@@ -162,7 +166,16 @@ export class PathSelectorTable {
   // filter the response from the files API to remove things like hidden files/directories
   filterFileResponse(data) {
     const filteredFiles = data.files.filter((file) => {
-      return !file.name.startsWith('.');
+      const isHidden = file.name.startsWith('.');
+      const isFile = file.type == "f";
+
+      if(isHidden) {
+        return this.showHidden;
+      } else if(isFile) {
+        return this.showFiles;
+      } else {
+        return true;
+      }
     });
 
     data.files = filteredFiles;

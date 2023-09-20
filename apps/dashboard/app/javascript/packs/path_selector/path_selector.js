@@ -29,6 +29,8 @@ function getPathSelectorOptions(element) {
   options.breadcrumbId      = element.dataset['breadcrumbId'];
   options.selectButtonId    = element.dataset['selectButtonId'];
   options.inputFieldId      = element.dataset['inputFieldId'];
+  options.showFiles         = element.dataset['showFiles'];
+  options.showHidden        = element.dataset['showHidden'];
   options.modalId           = element.id;
 
   return options;
