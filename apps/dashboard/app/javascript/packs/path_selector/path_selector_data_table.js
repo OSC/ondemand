@@ -169,7 +169,9 @@ export class PathSelectorTable {
       const isHidden = file.name.startsWith('.');
       const isFile = file.type == "f";
 
-      if(isHidden) {
+      if(isHidden && isFile) {
+        return this.showHidden && this.showFiles;
+      } else if(isHidden) {
         return this.showHidden;
       } else if(isFile) {
         return this.showFiles;

@@ -1,7 +1,7 @@
 <%
-  show_hidden = field_options[:show_hidden] || false
-  show_files = field_options[:show_files] || true
-  inital_directory = field_options[:directory] || CurrentUser.home
+  show_hidden = field_options.fetch(:show_hidden, false)
+  show_files = field_options.fetch(:show_files, true)
+  inital_directory = field_options.fetch(:directory, CurrentUser.home)
 
   input_field_id = "#{form.object_name}_#{attrib.id}"
   path_selector_id = "#{input_field_id}_path_selector"
