@@ -6,7 +6,8 @@ class BatchConnectTest < ApplicationSystemTestCase
   def setup
     stub_sys_apps
     stub_user
-    Configuration.stubs(:bc_dynamic_js?).returns(true)
+    Configuration.stubs(:bc_dynamic_js).returns(true)
+    Configuration.stubs(:bc_dynamic_js?).returns(true) #stub the alias too
   end
 
   def stub_git(dir)

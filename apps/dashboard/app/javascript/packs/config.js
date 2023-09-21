@@ -43,7 +43,13 @@ function uppyLocale() {
   return JSON.parse(cfgData['uppyLocale']);
 }
 
+function isBCDynamicJSEnabled() {
+  const cfgData = configData();
+  return cfgData['bcDynamicJs'] == 'true'
+}
+
 export {
+  isBCDynamicJSEnabled,
   maxFileSize,
   transfersPath,
   jobsInfoPath,
