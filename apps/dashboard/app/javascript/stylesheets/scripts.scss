@@ -3,11 +3,11 @@
   padding: 0.3rem;
   margin: 0.5rem;
 
-  border: 2px solid rgb(26, 118, 211);
+  border: 0.15em solid rgb(26, 118, 211);
   // border-radius: 10%;
 
   &:hover {
-    transform: scale(0.98);
+    border: 0.4em solid rgb(26, 118, 211);
   }
 }
 
