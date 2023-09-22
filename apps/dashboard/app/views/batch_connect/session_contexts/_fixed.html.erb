@@ -1,0 +1,6 @@
+<%-
+  all_options = attrib.all_options(fmt: format)
+  all_options[:readonly] = true
+%>
+
+<%= form.text_field(attrib.id, all_options) %>

@@ -1,4 +1,4 @@
-<%- 
+<%-
   field_id = "#{form.object_name}_#{attrib.id}"
   min_edit_id = "#{field_id}_min"
   min_edit_name = "#{form.object_name}[#{attrib.id}_min]"
@@ -8,12 +8,23 @@
 
   current_min = attrib.field_options[:min]
   current_max = attrib.field_options[:max]
+
+  fixed_id = "#{field_id}_fixed"
+  fixed_name = "#{form.object_name}[#{attrib.id}_fixed]"
 -%>
 
 <div class="editable-form-field">
-  <%=  create_widget(form, attrib, format: format) %>
+  <%=  create_widget(form, attrib, format: format, hide_fixed: false) %>
 
   <div class="d-none edit-group mb-3">
+
+    <div class="list-group col-md-4">
+      <div class="list-group-item mb-3">
+        <input type="checkbox" id="<%= fixed_id %>" name="<%= fixed_name %>" value="true" <%=  fixed ? 'checked' : '' %>>
+        <label class="form-check-label" for="<%= fixed_id %>"><%= t('dashboard.jobs_scripts_static_field') %></label>
+      </div>
+    </div>
+
 
     <label for="<%= min_edit_id %>">Minimum</label>
     <input  min="1" step="1"

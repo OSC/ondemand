@@ -5,7 +5,11 @@ module ScriptsHelper
   def create_editable_widget(form, attrib, format: nil)
     widget = attrib.widget
     attrib.html_options = { class: 'real-field', autocomplete: 'off' }
-    locals = { form: form, attrib: attrib, format: format }
+    # For editable script elements, we want the standard render form even when they are fixed.
+    # We need to reset the fixed attribute to avoid being render as a read only text field.
+    fixed_attribute = attrib.fixed?
+    attrib.opts[:fixed] = false
+    locals = { form: form, attrib: attrib, format: format, fixed: fixed_attribute }
 
     case widget
     when 'number_field'
