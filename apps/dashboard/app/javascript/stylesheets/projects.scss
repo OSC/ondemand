@@ -3,11 +3,11 @@
   padding: 0.3rem;
   margin: 0.5rem;
 
-  border: 0.25em solid rgb(26, 118, 211);
+  outline: 0.25em solid rgb(26, 118, 211);
   border-radius: 10%;
 
   &:hover {
-    border: 0.4em solid rgb(26, 118, 211);
+    outline: 0.4em solid rgb(26, 118, 211);
   }
 
   a {

@@ -1,13 +1,13 @@
 
 .editable-form-field {
   padding: 0.3rem;
-  margin: 0.5rem;
+  margin-bottom: 1em;
 
-  border: 0.15em solid rgb(26, 118, 211);
+  outline: 0.15em solid rgb(26, 118, 211);
   // border-radius: 10%;
 
   &:hover {
-    border: 0.4em solid rgb(26, 118, 211);
+    outline: 0.4em solid rgb(26, 118, 211);
   }
 }
 
