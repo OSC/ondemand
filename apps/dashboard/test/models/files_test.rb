@@ -56,4 +56,65 @@ class FilesTest < ActiveSupport::TestCase
   test "Ensuring PosixFile.username(uid) returns string" do
     assert_equal "9999999", PosixFile.username(9999999)
   end
+
+  test 'files not in allowlist are invalid' do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_ALLOWLIST_PATH: "#{dir}/allowed" }) do
+        `mkdir -p #{dir}/allowed`
+        `mkdir -p #{dir}/not_allowed`
+        invalid_file = "#{dir}/not_allowed/actual_file"
+        `touch #{invalid_file}`
+
+        file = PosixFile.new(invalid_file)
+        refute(file.valid?)
+      end
+    end
+  end
+
+  test 'symlinks outside allowlist are invalid' do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_ALLOWLIST_PATH: "#{dir}/allowed" }) do
+        `mkdir -p #{dir}/allowed`
+        `mkdir -p #{dir}/not_allowed`
+        real_file = "#{dir}/not_allowed/actual_file"
+        symlink = "#{dir}/allowed/linked_file"
+        `touch #{real_file}`
+        `ln -s #{real_file} #{symlink}`
+
+        real_file = PosixFile.new(real_file)
+        symlink = PosixFile.new(symlink)
+
+        # both are invalid because they're not in the allowlist
+        refute(symlink.valid?)
+        refute(real_file.valid?)
+      end
+    end
+  end
+
+  test 'ls output does not show invalid files' do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_ALLOWLIST_PATH: "#{dir}/allowed" }) do
+        `mkdir -p #{dir}/allowed`
+        `mkdir -p #{dir}/not_allowed`
+        real_file = "#{dir}/not_allowed/actual_file"
+        symlink = "#{dir}/allowed/linked_file"
+        `touch #{real_file}`
+
+        # symlink resolves outside of allowlist
+        `ln -s #{real_file} #{symlink}`
+
+        # this file would be allowed - but is a broken symlink
+        `touch #{dir}/allowed/tmp`
+        `ln -s #{dir}/allowed/tmp #{dir}/allowed/broken_symlink`
+        `rm #{dir}/allowed/tmp`
+
+        # they exist, but cannot be seen
+        assert_equal(1, PosixFile.new(dir).ls.size)
+        assert_equal(2, Dir.children(dir).size)
+
+        assert_equal(0, PosixFile.new("#{dir}/allowed").ls.size)
+        assert_equal(2, Dir.children("#{dir}/allowed").size)
+      end
+    end
+  end
 end
