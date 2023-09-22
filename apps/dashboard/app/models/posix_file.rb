@@ -3,7 +3,7 @@ class PosixFile
 
   attr_reader :path, :stat
 
-  delegate :basename, :descend, :parent, :join, :to_s, :read, :write, :mkdir, :directory?, to: :path
+  delegate :basename, :descend, :parent, :join, :to_s, :read, :write, :mkdir, :directory?, :realpath, to: :path
 
   # include to give us number_to_human_size
   include ActionView::Helpers::NumberHelper
@@ -95,7 +95,17 @@ class PosixFile
   end
 
   def valid?
-    valid_encoding?
+    valid_realpath? && valid_encoding?
+  end
+
+  def valid_realpath?
+    return false if stat.nil? || !path.exist?
+
+    if stat.symlink?
+      AllowlistPolicy.default.permitted?(realpath) && AllowlistPolicy.default.permitted?(path)
+    else
+      AllowlistPolicy.default.permitted?(path)
+    end
   end
 
   def valid_encoding?

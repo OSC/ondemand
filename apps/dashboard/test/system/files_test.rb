@@ -310,4 +310,29 @@ class FilesTest < ApplicationSystemTestCase
       assert_selector('tbody span[title="file"]', count: 1)
     end
   end
+
+  test 'symlinked files outside of allowlist' do
+    Dir.mktmpdir do |dir|
+      allowed_dir = "#{dir}/allowed"
+      with_modified_env({ OOD_ALLOWLIST_PATH: allowed_dir }) do
+        `mkdir -p #{allowed_dir}`
+        `mkdir -p #{allowed_dir}/some_dir`
+        `touch #{allowed_dir}/some_file`
+
+        `mkdir -p #{dir}/not_allowed`
+        `ln -s #{dir}/not_allowed #{allowed_dir}/symlinked_dir`
+
+        visit files_url(allowed_dir)
+
+        # 3 things are actually in the directory
+        assert_equal(3, Dir.children(allowed_dir).size)
+
+        # but only 2 things are shown in the UI (symlinked_dir is missing)
+        find('tbody a', exact_text: 'some_dir')
+        find('tbody a', exact_text: 'some_file')
+        assert_selector('tbody span[title="directory"]', count: 1)
+        assert_selector('tbody span[title="file"]', count: 1)
+      end
+    end
+  end
 end
