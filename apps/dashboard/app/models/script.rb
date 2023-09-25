@@ -201,7 +201,7 @@ class Script
   # parameters you got from the controller that affect the attributes, not form.
   # i.e., mins & maxes you set in the form but get serialized to the 'attributes' section.
   def attribute_parameter?(name)
-    name.end_with?('_min') || name.end_with?('_max') || name.end_with?('_exclude') || name.end_with?('_fixed')
+    ['min', 'max', 'exclude', 'fixed'].any? { |postfix| name && name.end_with?("_#{postfix}") }
   end
 
   # update the 'form' portion of the yaml file given 'params' from the controller.

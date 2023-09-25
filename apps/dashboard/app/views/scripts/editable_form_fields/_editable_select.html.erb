@@ -2,9 +2,6 @@
   field_id = "#{form.object_name}_#{attrib.id}"
   exclude_id = "#{field_id}_exclude"
   exclude_name = "#{form.object_name}[#{attrib.id}_exclude]"
-
-  fixed_id = "#{field_id}_fixed"
-  fixed_name = "#{form.object_name}[#{attrib.id}_fixed]"
 -%>
 
 <div class="editable-form-field">
@@ -12,12 +9,7 @@
 
   <div class="d-none edit-group">
 
-    <div class="list-group col-md-4">
-      <div class="list-group-item mb-3">
-        <input type="checkbox" id="<%= fixed_id %>" name="<%= fixed_name %>" value="true" <%= fixed ? 'checked' : '' %>>
-        <label class="form-check-label" for="<%= fixed_id %>"><%= t('dashboard.jobs_scripts_static_field') %></label>
-      </div>
-    </div>
+    <%= render(partial: 'scripts/editable_form_fields/edit_fixed_field',  locals: { form: form, attrib: attrib, fixed: fixed }) %>
 
     <ol class="list-group text-center col-md-4 mb-3">
       <%- attrib.select_choices(hide_excludable: false).each do |select_data| %>
@@ -55,5 +47,5 @@
     value="<%= attrib.exclude_select_choices.join(',') %>">
   </input>
 
-  <%= render(partial: 'scripts/editable_form_fields/edit_field_buttons',  locals: { field_id: field_id, fixed_name: fixed_name }) %>
+  <%= render(partial: 'scripts/editable_form_fields/edit_field_buttons',  locals: { field_id: field_id }) %>
 </div>

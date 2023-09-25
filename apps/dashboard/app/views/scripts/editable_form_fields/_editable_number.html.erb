@@ -18,13 +18,7 @@
 
   <div class="d-none edit-group mb-3">
 
-    <div class="list-group col-md-4">
-      <div class="list-group-item mb-3">
-        <input type="checkbox" id="<%= fixed_id %>" name="<%= fixed_name %>" value="true" <%=  fixed ? 'checked' : '' %>>
-        <label class="form-check-label" for="<%= fixed_id %>"><%= t('dashboard.jobs_scripts_static_field') %></label>
-      </div>
-    </div>
-
+    <%= render(partial: 'scripts/editable_form_fields/edit_fixed_field',  locals: { form: form, attrib: attrib, fixed: fixed }) %>
 
     <label for="<%= min_edit_id %>">Minimum</label>
     <input  min="1" step="1"

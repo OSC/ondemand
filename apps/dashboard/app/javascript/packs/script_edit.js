@@ -125,10 +125,32 @@ function addInProgressField(event) {
   entireDiv.remove();
 }
 
+function fixedFieldEnabled(checkbox, dataElement) {
+  dataElement.disabled = true;
+  const input = $('<input>').attr('type','hidden').attr('name', dataElement.name).attr('value', dataElement.value);
+  $(checkbox).after(input);
+}
+
+function toggleFixed(event) {
+  const dataElement = document.getElementById(event.target.dataset.selectId);
+  if (event.target.checked) {
+    fixedFieldEnabled(event.target, dataElement)
+  } else {
+    dataElement.disabled = false;
+    $(`input[type=hidden][name="${dataElement.name}"]`).remove();
+  }
+}
+
 function enableOrDisableSelectOption(event) {
   const toggleAction = event.target.dataset.selectToggler;
   const li = event.target.parentElement;
   event.target.disabled = true;
+
+  if(toggleAction == 'fixed') {
+    toggleFixed(event)
+    event.target.disabled = false;
+    return
+  }
 
   const inputId = event.target.dataset.target;
   const choice = $(li).find('[data-select-value]')[0].textContent;
@@ -196,6 +218,15 @@ function initSelectFields(){
     const optionToToggle = selectOptions.filter(opt => opt.text == optionText)[0];
     optionToToggle.disabled = true;
     optionToToggle.selected = false;
+  });
+
+  // find all the enabled 'fixed' checkboxes
+  allButtons.filter((fixedFieldCheckbox) => {
+    return fixedFieldCheckbox.checked;
+    // now disable the select field
+  }).map((fixedFieldCheckbox) => {
+    const dataElement = document.getElementById(fixedFieldCheckbox.dataset.selectId);
+    fixedFieldEnabled(fixedFieldCheckbox, dataElement)
   });
 }
 
