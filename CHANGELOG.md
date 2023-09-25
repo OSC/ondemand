@@ -6,20 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-add stronger validations on symlinks (#3057)\
-thicken border on hover instead of resizing (#3062)\
-lint a random file (#3065)\
-remove unused initializers (#3064)\
-expose bc_dynamic_js to javascript so we can always load these files (#3058)\
-short circuit this glob if youve already upgraded (#3047)\
-refactor PosixFile to allow for validations (#3030)\
-Lint a random file (#3055)\
-update dependencies (#3053)\
-Update Changelog (#3052)\
-allow html to be rendered completely in some MOTD formats (#3007)\
-account for NONE time value (#2965)\
-Edit script javascript fixes for selected dropdown items (#3054)\
-lint a random file (#3051)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
@@ -37,6 +23,7 @@ lint a random file (#3051)
 - File editor now has syntax highlighting for fortran in [3008](https://github.com/OSC/ondemand/pull/3008).
 - Subapps can now override category, subcategory, and metadata in [3006](https://github.com/OSC/ondemand/pull/3006).
 - Rclone now supports extra configuration in [2956](https://github.com/OSC/ondemand/pull/2956).
+- RSS and MD MOTD formats can now render unsafe HTML in [3007](https://github.com/OSC/ondemand/pull/3007).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
@@ -45,6 +32,7 @@ lint a random file (#3051)
 - Quality and compression settings correctly set in noVNC pages in [2995](https://github.com/OSC/ondemand/pull/2995).
 - auto_modules correctly filters hidden modules in [2997](https://github.com/OSC/ondemand/pull/2997).
 - Sites using ips instead of hostnames correctly populate allowed hosts in [2998](https://github.com/OSC/ondemand/pull/2998).
+- ActiveJobs correclty parses NONE time in [2965](https://github.com/OSC/ondemand/pull/2965).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
