@@ -44,8 +44,8 @@ function addNewField(_event) {
 }
 
 function updateNewFieldOptions(selectMenu) {
-  for(var newField in newFieldData) {
-    field = document.getElementById(`script_${newField}`);
+  for(let newField in newFieldData) {
+    const field = document.getElementById(`script_${newField}`);
 
     // if the field doesn't already exist, it's an option for a new field.
     if(field === null) {
@@ -122,19 +122,21 @@ function addInProgressField(event) {
            .on('click', (event) => { enableOrDisableSelectOption(event) });
 
   justAdded.find('[data-fixed-toggler]')
-           .on('click', (event) => { toggleFixed(event) });
+           .on('click', (event) => { toggleFixedField(event) });
 
   const entireDiv = event.target.parentElement.parentElement.parentElement;
   entireDiv.remove();
 }
 
 function fixedFieldEnabled(checkbox, dataElement) {
+  // Disable the element to avoid updates from the user
   dataElement.disabled = true;
+  // As it is disabled, need to add a hidden field with the same name to send the fixed field value to the backend.
   const input = $('<input>').attr('type','hidden').attr('name', dataElement.name).attr('value', dataElement.value);
   $(checkbox).after(input);
 }
 
-function toggleFixed(event) {
+function toggleFixedField(event) {
   event.target.disabled = true;
   const elementId = event.target.dataset.fixedToggler;
   const dataElement = document.getElementById(elementId);
@@ -142,6 +144,7 @@ function toggleFixed(event) {
     fixedFieldEnabled(event.target, dataElement)
   } else {
     dataElement.disabled = false;
+    // Field enabled, remove the hidden field with the same name needed when disabled.
     $(`input[type=hidden][name="${dataElement.name}"]`).remove();
   }
 
@@ -229,7 +232,7 @@ function initFixedFields(){
   // find all the enabled 'fixed' checkboxes
   fixedCheckboxes.filter((fixedFieldCheckbox) => {
     return fixedFieldCheckbox.checked;
-    // now disable the select field
+    // now fix the value of the related field
   }).map((fixedFieldCheckbox) => {
     const dataElement = document.getElementById(fixedFieldCheckbox.dataset.fixedToggler);
     fixedFieldEnabled(fixedFieldCheckbox, dataElement)
@@ -253,7 +256,7 @@ jQuery(() => {
     .on('click', (event) => { enableOrDisableSelectOption(event) });
 
   $('[data-fixed-toggler]')
-      .on('click', (event) => { toggleFixed(event) });
+      .on('click', (event) => { toggleFixedField(event) });
 
   initSelectFields();
   initFixedFields();
