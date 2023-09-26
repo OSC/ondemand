@@ -13,11 +13,12 @@ class CurrentUser
   class << self
     delegate :name, :uid, :gid, :gecos, :dir, :shell, to: :instance
     delegate :primary_group, :primary_group_name, :group_names, :groups, to: :instance
+
+    alias_method :home, :dir
   end
 
   attr_reader :pwuid
   delegate :name, :uid, :gid, :gecos, :dir, :shell, to: :pwuid
-  alias_method :home, :dir
 
   def initialize
     @pwuid = Etc.getpwuid
