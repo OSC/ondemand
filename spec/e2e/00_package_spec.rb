@@ -102,7 +102,7 @@ describe 'OnDemand installed with packages' do
   end
 
   describe file('/var/www/ood/apps/sys/projects/manifest.yml') do
-    it { is_expected.to be_directory }
+    it { is_expected.to be_file }
     it { is_expected.to be_mode(644) }
     it { is_expected.to be_owned_by('root') }
     it { is_expected.to be_grouped_into('root') }
