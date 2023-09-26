@@ -6,7 +6,7 @@
 -%>
 <div class="list-group col-md-4">
   <div class="list-group-item mb-3">
-    <input type="checkbox" id="<%= fixed_id %>" name="<%= fixed_name %>" value="true" <%= fixed ? 'checked' : '' %>  data-select-toggler="fixed" data-select-id="<%= field_id %>">
-    <label class="form-check-label" for="<%= fixed_id %>"><%= t('dashboard.jobs_scripts_static_field') %></label>
+    <input type="checkbox" id="<%= fixed_id %>" name="<%= fixed_name %>" value="true" <%= fixed ? 'checked' : '' %> data-fixed-toggler="<%= field_id %>">
+    <label class="form-check-label" for="<%= fixed_id %>"><%= t('dashboard.jobs_scripts_fixed_field') %></label>
   </div>
 </div>

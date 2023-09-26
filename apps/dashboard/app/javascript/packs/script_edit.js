@@ -121,6 +121,9 @@ function addInProgressField(event) {
   justAdded.find('[data-select-toggler]')
            .on('click', (event) => { enableOrDisableSelectOption(event) });
 
+  justAdded.find('[data-fixed-toggler]')
+           .on('click', (event) => { toggleFixed(event) });
+
   const entireDiv = event.target.parentElement.parentElement.parentElement;
   entireDiv.remove();
 }
@@ -132,25 +135,23 @@ function fixedFieldEnabled(checkbox, dataElement) {
 }
 
 function toggleFixed(event) {
-  const dataElement = document.getElementById(event.target.dataset.selectId);
+  event.target.disabled = true;
+  const elementId = event.target.dataset.fixedToggler;
+  const dataElement = document.getElementById(elementId);
   if (event.target.checked) {
     fixedFieldEnabled(event.target, dataElement)
   } else {
     dataElement.disabled = false;
     $(`input[type=hidden][name="${dataElement.name}"]`).remove();
   }
+
+  event.target.disabled = false;
 }
 
 function enableOrDisableSelectOption(event) {
   const toggleAction = event.target.dataset.selectToggler;
   const li = event.target.parentElement;
   event.target.disabled = true;
-
-  if(toggleAction == 'fixed') {
-    toggleFixed(event)
-    event.target.disabled = false;
-    return
-  }
 
   const inputId = event.target.dataset.target;
   const choice = $(li).find('[data-select-value]')[0].textContent;
@@ -219,13 +220,18 @@ function initSelectFields(){
     optionToToggle.disabled = true;
     optionToToggle.selected = false;
   });
+}
+
+
+function initFixedFields(){
+  const fixedCheckboxes = Array.from($('[data-fixed-toggler]'));
 
   // find all the enabled 'fixed' checkboxes
-  allButtons.filter((fixedFieldCheckbox) => {
+  fixedCheckboxes.filter((fixedFieldCheckbox) => {
     return fixedFieldCheckbox.checked;
     // now disable the select field
   }).map((fixedFieldCheckbox) => {
-    const dataElement = document.getElementById(fixedFieldCheckbox.dataset.selectId);
+    const dataElement = document.getElementById(fixedFieldCheckbox.dataset.fixedToggler);
     fixedFieldEnabled(fixedFieldCheckbox, dataElement)
   });
 }
@@ -246,5 +252,9 @@ jQuery(() => {
   $('[data-select-toggler]')
     .on('click', (event) => { enableOrDisableSelectOption(event) });
 
+  $('[data-fixed-toggler]')
+      .on('click', (event) => { toggleFixed(event) });
+
   initSelectFields();
+  initFixedFields();
 });
