@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - File editor now has syntax highlighting for fortran in [3008](https://github.com/OSC/ondemand/pull/3008).
 - Subapps can now override category, subcategory, and metadata in [3006](https://github.com/OSC/ondemand/pull/3006).
 - Rclone now supports extra configuration in [2956](https://github.com/OSC/ondemand/pull/2956).
+- RSS and MD MOTD formats can now render unsafe HTML in [3007](https://github.com/OSC/ondemand/pull/3007).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
@@ -31,6 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Quality and compression settings correctly set in noVNC pages in [2995](https://github.com/OSC/ondemand/pull/2995).
 - auto_modules correctly filters hidden modules in [2997](https://github.com/OSC/ondemand/pull/2997).
 - Sites using ips instead of hostnames correctly populate allowed hosts in [2998](https://github.com/OSC/ondemand/pull/2998).
+- ActiveJobs correclty parses NONE time in [2965](https://github.com/OSC/ondemand/pull/2965).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
