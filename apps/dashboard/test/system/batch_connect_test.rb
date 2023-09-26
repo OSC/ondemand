@@ -889,4 +889,191 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal("#{Rails.root}/test", text_field.value)
     end
   end
+
+  test 'path_selector hides hidden files by default' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            directory: "#{dir}/app"
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      `mkdir -p #{dir}/app/.hidden_dir`
+      `touch #{dir}/app/.hidden_file`
+      base_id = 'batch_connect_session_context_path'
+
+      visit new_batch_connect_session_context_url('sys/app')
+      click_on('Select Path')
+      sleep 1
+
+      table_rows = find("##{base_id}_path_selector_table").all('tbody tr')
+      find('span', text: 'form.yml')
+
+      # 3 things exist in the directory - but only 1 is shown
+      # the other 2 are .hidden_dir and .hidden_file
+      assert_equal(3, Dir.children("#{dir}/app").size)
+      assert_equal(1, table_rows.size)
+    end
+  end
+
+  # similar to the test above - only it's configure to show
+  # the hidden file and directory.
+  test 'path_selector can show hidden files' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            directory: "#{dir}/app"
+            show_hidden: true
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      `mkdir -p #{dir}/app/.hidden_dir`
+      `touch #{dir}/app/.hidden_file`
+      base_id = 'batch_connect_session_context_path'
+
+      visit new_batch_connect_session_context_url('sys/app')
+      click_on('Select Path')
+      sleep 1
+
+      table_rows = find("##{base_id}_path_selector_table").all('tbody tr')
+      find('span', text: 'form.yml')
+      find('span', text: '.hidden_dir')
+
+      assert_equal(3, Dir.children("#{dir}/app").size)
+      assert_equal(3, table_rows.size)
+
+      # let's choose the hidden file just to be sure we can choose them too.
+      find('span', text: '.hidden_file').click
+      find("##{base_id}_path_selector_button").click
+
+      text_field = find("##{base_id}")
+      assert_equal("#{dir}/app/.hidden_file", text_field.value)
+    end
+  end
+
+  test 'path_selector can hide files, only showing directories' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            directory: "#{Rails.root}"
+            show_files: false
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      base_id = 'batch_connect_session_context_path'
+
+      visit new_batch_connect_session_context_url('sys/app')
+      click_on('Select Path')
+      sleep 1
+
+      # assert that all the rows in the table are real.
+      # It should only be showing the directories in Rails.root (no files).
+      find("##{base_id}_path_selector_table").all('tbody tr') do |table_row|
+        table_datas = table_row.all('td')
+        row_text = table_datas[1].find('span').text
+        real_dir = Pathname.new(Rails.root).join(row_text)
+        assert(real_dir.exist?)
+        assert(real_dir.directory?)
+      end
+
+      find('span', text: 'test').click
+      find("##{base_id}_path_selector_button").click
+
+      text_field = find("##{base_id}")
+      assert_equal("#{Rails.root}/test", text_field.value)
+    end
+  end
+
+  test 'path_selector hides hidden files but not hidden directories' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            directory: "#{dir}/app"
+            show_hidden: true
+            show_files: false
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      `mkdir -p #{dir}/app/.hidden_dir`
+      `mkdir -p #{dir}/app/other_dir`
+      `touch #{dir}/app/.hidden_file`
+      base_id = 'batch_connect_session_context_path'
+
+      visit new_batch_connect_session_context_url('sys/app')
+      click_on('Select Path')
+      sleep 1
+
+      table_rows = find("##{base_id}_path_selector_table").all('tbody tr') do |table_row|
+        table_datas = table_row.all('td')
+        row_text = table_datas[1].find('span').text
+        real_dir = Pathname.new("#{dir}/app").join(row_text)
+        assert(real_dir.exist?)
+        assert(real_dir.directory?)
+      end
+
+      # 4 things exist in the directory - but only the 2 directories are shown
+      # the other 2 are form.yml and .hidden_file
+      assert_equal(4, Dir.children("#{dir}/app").size, Dir.children("#{dir}/app").inspect)
+      assert_equal(2, table_rows.size)
+
+      # and we can select the hidden directory just for good measure.
+      find('span', text: '.hidden_dir').click
+      find("##{base_id}_path_selector_button").click
+
+      text_field = find("##{base_id}")
+      assert_equal("#{dir}/app/.hidden_dir", text_field.value)
+    end
+  end
 end

@@ -1,13 +1,7 @@
 <%
-  show_hidden = false
-  show_files = false
-
-  inital_directory = attrib.opts[:directory] || CurrentUser.home
-
-  if attrib.opts[:options].is_a?(Array)
-    show_hidden = attrib.opts[:options].include? 'hidden'
-    show_files = attrib.opts[:options].include? 'files'
-  end
+  show_hidden = field_options.fetch(:show_hidden, false)
+  show_files = field_options.fetch(:show_files, true)
+  inital_directory = field_options.fetch(:directory, CurrentUser.home)
 
   input_field_id = "#{form.object_name}_#{attrib.id}"
   path_selector_id = "#{input_field_id}_path_selector"
@@ -27,8 +21,8 @@
     class="modal fade h-75"
     id="<%= path_selector_id %>" tabindex="-1" role="dialog"
     aria-labelledby="modal-path-selector" aria-hidden="true"
-    data-path-selector-show-files="<%= show_files %>"
-    data-path-selector-show-hidden="<%= show_hidden %>"
+    data-show-files="<%= show_files %>"
+    data-show-hidden="<%= show_hidden %>"
     data-initial-directory="<%= inital_directory %>"
     data-files-path="<%= files_path %>"
     data-table-id="<%= table_id %>"
