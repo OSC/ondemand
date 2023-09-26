@@ -39,6 +39,16 @@ class UserConfigurationTest < ActiveSupport::TestCase
     'SHOW_ALL_APPS_LINK' => [:show_all_apps_link, true],
   }
 
+  def setup()
+    @test_temp_dir = Dir.mktmpdir
+    Configuration.stubs(:dataroot).returns(@test_temp_dir)
+    Configuration.stubs(:user_settings_file).returns('.user_configuration_test_settings')
+  end
+
+  def teardown
+    FileUtils.remove_entry(@test_temp_dir)
+  end
+
   test "properties expected defaults" do
     defaults = {
       dashboard_header_img_logo: nil,
@@ -128,7 +138,6 @@ class UserConfigurationTest < ActiveSupport::TestCase
     ]
 
     Configuration.stubs(:config).returns({ pinned_apps: pinned_apps })
-    CurrentUser.stubs(:user_settings).returns({})
 
     assert_equal pinned_apps, UserConfiguration.new.pinned_apps
   end
@@ -197,18 +206,18 @@ class UserConfigurationTest < ActiveSupport::TestCase
     end
   end
 
-  test "profile should delegate to CurrentUser settings when Configuration.host_based_profiles is false" do
+  test "profile should delegate to UserSettingsStore module when Configuration.host_based_profiles is false" do
     Configuration.stubs(:host_based_profiles).returns(false)
     target = UserConfiguration.new(request_hostname: "request_hostname")
-    CurrentUser.stubs(:user_settings).returns({profile: "user_settings_profile_value"})
+    target.update_user_settings({profile: "user_settings_profile_value"})
 
     assert_equal :user_settings_profile_value, target.profile
   end
 
-  test "profile should return nil when when Configuration.host_based_profiles is false and CurrentUser profile is nil" do
+  test "profile should return nil when when Configuration.host_based_profiles is false and user profile is nil" do
     Configuration.stubs(:host_based_profiles).returns(false)
-    CurrentUser.stubs(:user_settings).returns({})
     target = UserConfiguration.new
+    target.update_user_settings({profile: nil})
 
     assert_nil target.profile
   end
@@ -229,8 +238,8 @@ class UserConfigurationTest < ActiveSupport::TestCase
 
   test "fetch should use key as symbol" do
     Configuration.stubs(:config).returns(DEFAULT_CONFIG)
-    CurrentUser.stubs(:user_settings).returns({profile: "profile_test"})
     target = UserConfiguration.new
+    target.update_user_settings({profile: 'profile_test'})
 
     assert_equal "test_value_1", target.send(:fetch, "key_1")
     assert_equal "test_value_2", target.send(:fetch, "key_2")
@@ -238,8 +247,8 @@ class UserConfigurationTest < ActiveSupport::TestCase
 
   test "fetch should use the profile value when profile defines a value" do
     Configuration.stubs(:config).returns(DEFAULT_CONFIG)
-    CurrentUser.stubs(:user_settings).returns({profile: "profile_test"})
     target = UserConfiguration.new
+    target.update_user_settings({profile: 'profile_test'})
 
     assert_equal "test_value_1", target.send(:fetch, :key_1)
     assert_equal "test_value_2", target.send(:fetch, :key_2)
@@ -247,7 +256,6 @@ class UserConfigurationTest < ActiveSupport::TestCase
 
   test "fetch should use the root configuration value when profile does not define a value" do
     Configuration.stubs(:config).returns(DEFAULT_CONFIG)
-    CurrentUser.stubs(:user_settings).returns({})
     target = UserConfiguration.new
 
     assert_nil target.profile
@@ -256,31 +264,30 @@ class UserConfigurationTest < ActiveSupport::TestCase
 
   test "fetch should use the default value when the profile and root configurations do not define a value" do
     Configuration.stubs(:config).returns(DEFAULT_CONFIG)
-    CurrentUser.stubs(:user_settings).returns({profile: "profile_test"})
     target = UserConfiguration.new
+    target.update_user_settings({profile: 'profile_test'})
 
     assert_equal "default_value_argument", target.send(:fetch, :missing_key, "default_value_argument")
   end
 
   test "fetch should use the profile value when is defined with nil" do
     Configuration.stubs(:config).returns(DEFAULT_CONFIG)
-    CurrentUser.stubs(:user_settings).returns({profile: "profile_test"})
     target = UserConfiguration.new
+    target.update_user_settings({profile: 'profile_test'})
 
     assert_nil target.send(:fetch, :key_3, "default")
   end
 
   test "fetch should use the root value when is defined with nil and not defined in profile" do
     Configuration.stubs(:config).returns(DEFAULT_CONFIG)
-    CurrentUser.stubs(:user_settings).returns({profile: "profile_test"})
     target = UserConfiguration.new
+    target.update_user_settings({profile: 'profile_test'})
 
     assert_nil target.send(:fetch, :key_4, "default")
   end
 
   test "fetch should handle nil keys" do
     Configuration.stubs(:config).returns(DEFAULT_CONFIG)
-    CurrentUser.stubs(:user_settings).returns({})
     target = UserConfiguration.new
 
     assert_nil target.send(:fetch, nil)
@@ -289,7 +296,6 @@ class UserConfigurationTest < ActiveSupport::TestCase
 
   test "fetch should return nil for undefined keys" do
     Configuration.stubs(:config).returns(DEFAULT_CONFIG)
-    CurrentUser.stubs(:user_settings).returns({})
     target = UserConfiguration.new
 
     assert_nil target.send(:fetch, "missing_key")
@@ -297,7 +303,6 @@ class UserConfigurationTest < ActiveSupport::TestCase
 
   test "fetch should return objects that cannot be modified" do
     Configuration.stubs(:config).returns(DEFAULT_CONFIG)
-    CurrentUser.stubs(:user_settings).returns({})
     target = UserConfiguration.new
 
     result = target.send(:fetch, "key_array")
@@ -342,9 +347,9 @@ class UserConfigurationTest < ActiveSupport::TestCase
     value_in_profile = "profile-#{SecureRandom.uuid}"
     configuration = create_properties_configuration(value_in_profile, 'strings_profile')
     Configuration.stubs(:config).returns(configuration)
-    CurrentUser.stubs(:user_settings).returns({profile: 'strings_profile'})
 
     target = UserConfiguration.new
+    target.update_user_settings({profile: "strings_profile"})
     UserConfiguration::USER_PROPERTIES.each do |property|
       assert_equal value_in_profile, target.send(property.name), "#{property.name} should have been #{value_in_profile} through profile strings_profile in ConfigurationSingleton"
     end

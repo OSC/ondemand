@@ -8,7 +8,7 @@
 # Environment values will have precedence over values defined in configuration files.
 #
 # Property lookup is hierarchical based on a profile value.
-# The profile value will be the CurrentUser.user_settings[:profile] by default.
+# The profile value will be the user_settings[:profile] by default.
 # This can be overridden using Configuration.host_based_profiles, in which case, the current request hostname will be used.
 #
 # First the lookup is done in the profile configuration if any, if no value is defined, the root configuration is used.
@@ -20,6 +20,9 @@
 #       dashboard_logo: "/public/team1.png"
 #
 class UserConfiguration
+
+  include UserSettingStore
+
   USER_PROPERTIES = [
     ConfigurationProperty.property(name: :dashboard_header_img_logo, read_from_env: true),
     # Whether we display the Dashboard welcome message
@@ -139,12 +142,12 @@ class UserConfiguration
 
   # The current user profile. Used to select the configuration properties.
   def profile
-    return CurrentUser.user_settings[:profile_override].to_sym if CurrentUser.user_settings[:profile_override]
+    return user_settings[:profile_override].to_sym if user_settings[:profile_override]
 
     if Configuration.host_based_profiles
       request_hostname
-    elsif CurrentUser.user_settings[:profile]
-      CurrentUser.user_settings[:profile].to_sym
+    elsif user_settings[:profile]
+      user_settings[:profile].to_sym
     end
   end
 

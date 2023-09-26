@@ -32,6 +32,8 @@ module Dashboard
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
+    config.autoload_paths << Rails.root.join('lib')
+
     # Locales are handled in config/initializers/locales.rb.
 
     # Custom error pages
