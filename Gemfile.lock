@@ -96,7 +96,7 @@ GEM
     oga (3.3)
       ast
       ruby-ll (~> 2.1)
-    ood_packaging (0.11.0)
+    ood_packaging (0.12.0)
       rake (~> 13.0.1)
     open_uri_redirections (0.2.1)
     parallel (1.21.0)
@@ -177,7 +177,7 @@ DEPENDENCIES
   beaker-docker (~> 1.4.0)
   beaker-rspec
   dotenv (~> 2.1)
-  ood_packaging (~> 0.11.0)
+  ood_packaging (~> 0.12.0)
   rake
   rspec
   rubocop
