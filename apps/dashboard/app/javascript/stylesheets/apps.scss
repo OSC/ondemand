@@ -39,6 +39,14 @@ tr.app {
    font-size: 14px;
 }
 
+.app-icon.fa-fw {
+  width: 1.25em;
+}
+
+.app-icon:not(.fa-fw) {
+  margin-right: 0.25em;
+}
+
 .navbar img.menu-icon {
   width: 14px;
   height: 14px;
