@@ -241,6 +241,7 @@ en:
     jobs_scripts_deleted: "Script successfully deleted!"
     jobs_scripts_submitted: "Successfully submited job %{job_id}."
     jobs_scripts_delete_script_confirmation: "Delete all contents of script?"
+    jobs_scripts_fixed_field: "Fixed Value"
 
     settings_updated: "Settings updated"
 

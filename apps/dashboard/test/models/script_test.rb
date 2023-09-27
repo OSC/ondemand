@@ -3,6 +3,16 @@
 require 'test_helper'
 
 class ScriptTest < ActiveSupport::TestCase
+  test 'supported field postfix' do
+    target = Script.new({ project_dir: '/path/project', id: 1234, title: 'Test Script' })
+    refute target.send('attribute_parameter?', nil)
+    refute target.send('attribute_parameter?', '')
+    refute target.send('attribute_parameter?', 'account_notsupported')
+    assert target.send('attribute_parameter?', 'account_min')
+    assert target.send('attribute_parameter?', 'account_max')
+    assert target.send('attribute_parameter?', 'account_exclude')
+    assert target.send('attribute_parameter?', 'account_fixed')
+  end
   test 'creates script' do
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)

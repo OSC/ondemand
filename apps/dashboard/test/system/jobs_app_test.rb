@@ -398,6 +398,7 @@ class ProjectsTest < ApplicationSystemTestCase
       fill_in('script_bc_num_hours', with: 42)
       fill_in('script_bc_num_hours_min', with: 20)
       fill_in('script_bc_num_hours_max', with: 101)
+      find('#script_bc_num_hours_fixed').click
       find('#save_script_bc_num_hours').click
 
       # correctly saves
@@ -439,6 +440,7 @@ class ProjectsTest < ApplicationSystemTestCase
             min: 20
             step: 1
             value: '42'
+            fixed: true
             max: 101
             label: Number of hours
             help: ''

@@ -111,7 +111,7 @@ class Script
   end
 
   def original_parameter(string)
-    match = /([\w_]+)_(?:min|max|exclude)/.match(string)
+    match = /([\w_]+)_(?:min|max|exclude|fixed)/.match(string)
     match[1]
   end
 
@@ -201,7 +201,7 @@ class Script
   # parameters you got from the controller that affect the attributes, not form.
   # i.e., mins & maxes you set in the form but get serialized to the 'attributes' section.
   def attribute_parameter?(name)
-    name.end_with?('_min') || name.end_with?('_max') || name.end_with?('_exclude')
+    ['min', 'max', 'exclude', 'fixed'].any? { |postfix| name && name.end_with?("_#{postfix}") }
   end
 
   # update the 'form' portion of the yaml file given 'params' from the controller.
@@ -222,6 +222,7 @@ class Script
       orig_param = original_parameter(key).to_sym
       self[orig_param].min = value if key.end_with?('_min') && !value.to_s.empty?
       self[orig_param].max = value if key.end_with?('_max') && !value.to_s.empty?
+      self[orig_param].opts[:fixed] = true if key.end_with?('_fixed')
 
       if key.end_with?('_exclude')
         exclude_list = value.split(',').to_a

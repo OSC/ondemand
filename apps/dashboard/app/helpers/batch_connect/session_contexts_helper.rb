@@ -1,12 +1,16 @@
 # Helper for creating new batch connect sessions.
 module BatchConnect::SessionContextsHelper
-  def create_widget(form, attrib, format: nil, hide_excludable: true)
-    return '' if attrib.fixed?
+  def create_widget(form, attrib, format: nil, hide_excludable: true, hide_fixed: true)
+    return '' if hide_fixed && attrib.fixed?
     return '' if attrib.hide_when_empty? && attrib.value.blank?
 
     widget = attrib.widget
     field_options = attrib.field_options(fmt: format)
     all_options = attrib.all_options(fmt: format)
+
+    if attrib.fixed?
+      return render :partial => "batch_connect/session_contexts/fixed", :locals => { form: form, attrib: attrib, field_options: field_options, format: format }
+    end
 
     case widget
     when 'select'

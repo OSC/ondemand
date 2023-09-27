@@ -1,4 +1,4 @@
-<%- 
+<%-
   field_id = "#{form.object_name}_#{attrib.id}"
   min_edit_id = "#{field_id}_min"
   min_edit_name = "#{form.object_name}[#{attrib.id}_min]"
@@ -8,12 +8,17 @@
 
   current_min = attrib.field_options[:min]
   current_max = attrib.field_options[:max]
+
+  fixed_id = "#{field_id}_fixed"
+  fixed_name = "#{form.object_name}[#{attrib.id}_fixed]"
 -%>
 
 <div class="editable-form-field">
-  <%=  create_widget(form, attrib, format: format) %>
+  <%=  create_widget(form, attrib, format: format, hide_fixed: false) %>
 
   <div class="d-none edit-group mb-3">
+
+    <%= render(partial: 'scripts/editable_form_fields/edit_fixed_field',  locals: { form: form, attrib: attrib, fixed: fixed }) %>
 
     <label for="<%= min_edit_id %>">Minimum</label>
     <input  min="1" step="1"
