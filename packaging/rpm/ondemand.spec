@@ -187,6 +187,7 @@ echo "%{git_tag}" > %{buildroot}/opt/ood/VERSION
 %__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys
 %__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/usr
 %__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/dev
+%__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand
 %__mkdir_p %{buildroot}%{_tmppath}/ondemand-nginx
 %__mkdir_p %{buildroot}%{_rundir}/ondemand-nginx
 
@@ -321,6 +322,7 @@ touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 %config(noreplace,missingok) %{_sysconfdir}/ood/config/hook.env
 %config(noreplace) %{_sysconfdir}/ood/config/ood_portal.sha256sum
 
+%dir %attr(777, root, root) %{_sharedstatedir}/ondemand
 %dir %{_sharedstatedir}/ondemand-nginx/config
 %dir %{_sharedstatedir}/ondemand-nginx/config/puns
 %dir %{_sharedstatedir}/ondemand-nginx/config/apps

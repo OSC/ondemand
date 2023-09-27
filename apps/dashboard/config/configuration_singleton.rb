@@ -264,6 +264,12 @@ class ConfigurationSingleton
     Pathname.new(root).expand_path
   end
 
+  # The dataroot on the local filesystem, whereas dataroot is likely
+  # on an NFS storage.
+  def local_dataroot
+    Pathname.new("/var/lib/ondemand/#{CurrentUser.name}")
+  end
+
   def locale
     (ENV['OOD_LOCALE'] || 'en').to_sym
   end

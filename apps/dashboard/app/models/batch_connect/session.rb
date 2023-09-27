@@ -110,7 +110,12 @@ module BatchConnect
       # Root directory for file system database
       # @return [Pathname] root directory of file system database
       def db_root
-        dataroot.join("db").tap { |p| p.mkpath unless p.exist? }
+        if Rails.env.production?
+          # directory created in config/initializers/upgrade_to_3.1.rb
+          Configuration.local_dataroot.join('dashboard/batch_connect/db')
+        else
+          dataroot.join("db").tap { |p| p.mkpath unless p.exist? }
+        end
       end
 
       # Root directory for file system database

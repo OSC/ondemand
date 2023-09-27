@@ -82,6 +82,7 @@ override_dh_auto_install:
 
 	mkdir -p $(DESTDIR)/var/tmp/ondemand-nginx
 	mkdir -p $(DESTDIR)/var/run/ondemand-nginx
+	mkdir -p $(DESTDIR)/var/lib/ondemand
 	mkdir -p $(DESTDIR)/var/lib/ondemand-nginx/config/puns
 	mkdir -p $(DESTDIR)/var/lib/ondemand-nginx/config/apps/sys
 	mkdir -p $(DESTDIR)/var/lib/ondemand-nginx/config/apps/usr
@@ -96,3 +97,4 @@ override_dh_builddeb:
 override_dh_fixperms:
 	dh_fixperms
 	chmod 700 $(APACHE_DIR)/apps/sys/projects
+	chmod 777 $(DESTDIR)/var/lib/ondemand
