@@ -77,7 +77,6 @@ describe 'OnDemand browser test' do
 
   # personal lib directories are 700 and owned by the user.
   describe file('/var/lib/ondemand/ood') do
-    browser.goto ctr_base_url
     it { is_expected.to be_directory }
     it { is_expected.to be_mode(700) }
     it { is_expected.to be_owned_by('ood') }
