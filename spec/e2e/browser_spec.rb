@@ -74,4 +74,13 @@ describe 'OnDemand browser test' do
     expect(browser.title).to eq('Dashboard - Open OnDemand')
     expect(browser.table(id: 'directory-contents').present?).to be true
   end
+
+  # personal lib directories are 700 and owned by the user.
+  describe file('/var/lib/ondemand/ood') do
+    browser.goto ctr_base_url
+    it { is_expected.to be_directory }
+    it { is_expected.to be_mode(700) }
+    it { is_expected.to be_owned_by('ood') }
+    it { is_expected.to be_grouped_into('ood') }
+  end
 end

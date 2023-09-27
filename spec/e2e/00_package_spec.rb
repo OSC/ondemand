@@ -107,4 +107,11 @@ describe 'OnDemand installed with packages' do
     it { is_expected.to be_owned_by('root') }
     it { is_expected.to be_grouped_into('root') }
   end
+
+  describe file('/var/lib/ondemand') do
+    it { is_expected.to be_directory }
+    it { is_expected.to be_mode(777) }
+    it { is_expected.to be_owned_by('root') }
+    it { is_expected.to be_grouped_into('root') }
+  end
 end
