@@ -4,6 +4,9 @@ Rails.application.config.after_initialize do
     old_db_dir = BatchConnect::Session.dataroot.join("db")
     new_db_dir = BatchConnect::Session.db_root
 
+    # could be running this while building assets. if so, just kick out.
+    next if !new_db_dir.parent.exist?
+
     # have to prep these directories here. Package should have installed
     # Configuration.local_dataroot's parent directory.
     local_dr = Configuration.local_dataroot
