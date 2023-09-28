@@ -55,8 +55,8 @@ jobs:
 
       - name: debug
         run: |
-          which python
-          which pytyon3
+          which python || true
+          which pytyon3 || true
           npm install -g node-gyp
 
       - name: Setup rclone
