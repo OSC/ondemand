@@ -7,7 +7,7 @@
       <% OodFilesApp.new.favorite_paths.each do |p| %>
         <li class="nav-item">
           <%= link_to files_path(p.filesystem, p.path.to_s), class: "nav-link d bg-light" do %>
-          <%= fa_icon "cloud", classes: '' if p.remote? %>
+          <%= fa_icon p.icon, classes: '' %>
           <%= p.title || p.path.to_s  %>
           <% end %>
         </li>
