@@ -13,6 +13,9 @@
 %global gem_home %{scl_ondemand_core_gem_home}/%{version}-%{package_release}
 %global gems_name ondemand-gems-%{version}-%{package_release}
 
+# disregard brp-python-bytecompile errors
+%global _python_bytecompile_errors_terminate_build 0
+
 %define __brp_mangle_shebangs /bin/true
 %if 0%{?amzn}
 # RPATH is always broken with things like nokogiri
