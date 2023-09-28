@@ -53,6 +53,12 @@ jobs:
           bundle install
           gem install rake
 
+      - name: debug
+        run: |
+          which python
+          which pytyon3
+          npm install -g node-gyp
+
       - name: Setup rclone
         run: sudo apt-get update && sudo apt-get install rclone
 
