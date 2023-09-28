@@ -16,6 +16,11 @@ class FavoritePath
     filesystem != "fs"
   end
 
+  # FontAwesome icon to use for links
+  def icon
+    remote? ? 'cloud' : 'folder'
+  end
+
   def to_s
     path.to_s
   end
