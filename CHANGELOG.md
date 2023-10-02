@@ -6,19 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-disregard brp-python-bytecompile errors (#3083)\
-Add cloud icons for remote favorite paths (#3076)\
-install node-gyp in ci (#3084)\
-attempt to fix CI (#3079)\
-Functional prototype for static values in Scripts (#3059)\
-Fix fa-fw icon width in navbar (#3075)\
-alias in self to correct usage. (#3074)\
-Path selector config hide (#3066)\
-rm recursive permissions on project manager (#3067)\
-Refactor current user (#3035)\
-Update Changelog (#3069)\
-lint a random file (#3068)\
-Bump ood_packaging gem (#3072)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
@@ -37,6 +24,8 @@ Bump ood_packaging gem (#3072)
 - Subapps can now override category, subcategory, and metadata in [3006](https://github.com/OSC/ondemand/pull/3006).
 - Rclone now supports extra configuration in [2956](https://github.com/OSC/ondemand/pull/2956).
 - RSS and MD MOTD formats can now render unsafe HTML in [3007](https://github.com/OSC/ondemand/pull/3007).
+- `CurrentUser` should now be availalbe in ondemand.d config rendering in [3035](https://github.com/OSC/ondemand/pull/3035).
+- Icons are now present in favorite paths [3076](https://github.com/OSC/ondemand/pull/3076).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
