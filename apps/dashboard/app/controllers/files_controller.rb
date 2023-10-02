@@ -2,6 +2,8 @@
 class FilesController < ApplicationController
   include ZipTricks::RailsStreaming
 
+  before_action :strip_sendfile_headers, only: [:fs]
+
   def fs
     request.format = 'json' if request.headers['HTTP_ACCEPT'].split(',').include?('application/json')
 
@@ -166,6 +168,13 @@ class FilesController < ApplicationController
   end
 
   private
+
+  # set these headers to nil so that we (Rails) will read files
+  # off of disk instead of nginx.
+  def strip_sendfile_headers
+    request.headers['HTTP_X_SENDFILE_TYPE'] = nil
+    request.headers['HTTP_X_ACCEL_MAPPING'] = nil
+  end
 
   def normalized_path(path = params[:filepath])
     Pathname.new("/" + path.to_s.chomp("/").delete_prefix("/"))
