@@ -39,10 +39,6 @@ module BatchConnect
     # @return [String] session title
     attr_accessor :title
 
-    # The view used to display the connection information for this session
-    # @return [String, nil] session view
-    attr_accessor :view
-
     # Batch connect script type
     # @return [String] script type
     attr_accessor :script_type
@@ -71,13 +67,13 @@ module BatchConnect
     # Return the Batch Connect app from the session token
     # @return [BatchConnect::App]
     def app
-      BatchConnect::App.from_token(self.token)
+      @app ||= BatchConnect::App.from_token(self.token)
     end
 
     # Attributes used for serialization
     # @return [Hash] attributes to be serialized
     def attributes
-      %w(id cluster_id job_id created_at token title view script_type cache_completed).map do |attribute|
+      %w(id cluster_id job_id created_at token title script_type cache_completed).map do |attribute|
         [ attribute, nil ]
       end.to_h
     end
@@ -97,6 +93,10 @@ module BatchConnect
     rescue => e
       Rails.logger.error("ERROR: Error parsing user_context file: '#{user_defined_context_file}' --- #{e.class} - #{e.message}")
       {}
+    end
+
+    def view
+      app.session_view
     end
 
     class << self
@@ -236,7 +236,6 @@ module BatchConnect
       self.id         = SecureRandom.uuid
       self.token      = app.token
       self.title      = app.title
-      self.view       = app.session_view
       self.created_at = Time.now.to_i
       self.cluster_id = context.try(:cluster).to_s
 
