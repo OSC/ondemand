@@ -883,6 +883,7 @@ class BatchConnectTest < ApplicationSystemTestCase
       end
 
       find('span', text: 'test').click
+      sleep 3 # make sure the table has time to refresh
       find("##{base_id}_path_selector_button").click
 
       text_field = find("##{base_id}")
