@@ -335,4 +335,84 @@ class FilesTest < ApplicationSystemTestCase
       end
     end
   end
+
+  test 'can download hidden files and directories' do
+    zip_file = Rails.root.join('test_dir.zip')
+    File.delete(zip_file) if File.exist?(zip_file)
+
+    Dir.mktmpdir do |dir|
+      dir_to_dl = "#{dir}/test_dir"
+      `mkdir -p #{dir_to_dl}/first_level_dir`
+      `mkdir #{dir_to_dl}/.first_level_hidden_dir`
+      `touch #{dir_to_dl}/real_file`
+      `touch #{dir_to_dl}/first_level_dir/.second_level_hidden_file`
+      `touch #{dir_to_dl}/first_level_dir/second_level_real_file`
+      `touch #{dir_to_dl}/.first_level_hidden_dir/.another_second_level_hidden_file`
+      `touch #{dir_to_dl}/.first_level_hidden_dir/another_second_level_real_file`
+
+      visit files_url(dir)
+      find('tbody a', exact_text: 'test_dir').ancestor('tr').click
+      click_on('Download')
+
+      sleep 5 # give it enough time to download
+      assert(File.exist?(zip_file), "#{zip_file} was never downloaded!")
+
+      # unzip all the files you downloaded into a new tmp directory and iterate
+      # though them. Verify that the file you downloaded exists in the original tmpdir 'dir'.
+      Dir.mktmpdir do |unzip_tmp_dir|
+        `cd #{unzip_tmp_dir}; unzip #{zip_file}`
+        Dir.glob("#{dir_to_dl}/**/*", File::FNM_DOTMATCH).reject do |file_to_dl|
+          ['.', '..'].freeze.include?(File.basename(file_to_dl))
+
+        # get the relative path
+        end.map do |path_to_dl|
+          path_to_dl.gsub(dir_to_dl, '').delete_prefix('/')
+
+        # now combine the relative path with the new unzipped directory and verify that
+        # the file exists in the unzipped directory
+        end.each do |relative_path_to_dl|
+
+          assert(File.exist?("#{unzip_tmp_dir}/#{relative_path_to_dl}"), "#{relative_path_to_dl} was not downloaded!")
+        end
+      end
+
+      File.delete(zip_file) if File.exist?(zip_file)
+    end
+  end
+
+  test 'cannot download files outside of allowlist' do
+    zip_file = Rails.root.join('allowed.zip')
+    File.delete(zip_file) if File.exist?(zip_file)
+
+    Dir.mktmpdir do |dir|
+      allowed_dir = "#{dir}/allowed"
+      with_modified_env({ OOD_ALLOWLIST_PATH: dir }) do
+        `mkdir -p #{allowed_dir}/real_directory`
+        `touch #{allowed_dir}/real_file`
+        `touch #{allowed_dir}/real_directory/other_real_file`
+        `ln -s #{Rails.root.join('README.md')} #{allowed_dir}/sym_linked_file`
+        `ln -s #{Rails.root} #{allowed_dir}/sym_linked_directory`
+
+        visit files_url(dir)
+        find('tbody a', exact_text: 'allowed').ancestor('tr').click
+        click_on('Download')
+
+        sleep 5 # give it enough time to download
+        assert(File.exist?(zip_file), "#{zip_file} was never downloaded!")
+
+        Dir.mktmpdir do |unzip_tmp_dir|
+          `cd #{unzip_tmp_dir}; unzip #{zip_file}`
+          assert(File.exist?("#{unzip_tmp_dir}/real_directory"))
+          assert(File.directory?("#{unzip_tmp_dir}/real_directory"))
+          assert(File.exist?("#{unzip_tmp_dir}/real_directory/other_real_file"))
+          assert(File.exist?("#{unzip_tmp_dir}/real_file"))
+
+          refute(File.exist?("#{unzip_tmp_dir}/sym_linked_file"))
+          refute(File.exist?("#{unzip_tmp_dir}/sym_linked_directory"))
+        end
+      end
+    end
+
+    File.delete(zip_file) if File.exist?(zip_file)
+  end
 end

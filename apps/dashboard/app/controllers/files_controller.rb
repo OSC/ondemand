@@ -54,11 +54,11 @@ class FilesController < ApplicationController
             zip_tricks_stream do |zip|
               @path.files_to_zip.each do |file|
                 begin
-                  next unless File.readable?(file.path)
+                  next unless File.readable?(file.realpath)
 
-                  if File.file?(file.path)
+                  if File.file?(file.realpath)
                     zip.write_deflated_file(file.relative_path.to_s) do |zip_file|
-                      IO.copy_stream(file.path, zip_file)
+                      IO.copy_stream(file.realpath, zip_file)
                     end
                   else
                     zip.add_empty_directory(dirname: file.relative_path.to_s)
