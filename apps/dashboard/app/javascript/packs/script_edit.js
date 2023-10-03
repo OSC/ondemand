@@ -21,15 +21,32 @@ const newFieldData = {
   }
 }
 
-function lastOption() {
-  return $('.new_script').find('.editable-form-field').last();
+function addNewFieldButton() {
+  return $('#add_new_field_button');
+}
+
+function enableNewFieldButton() {
+  const newFieldButton = addNewFieldButton();
+  for(let newField in newFieldData) {
+    const field = document.getElementById(`script_${newField}`);
+    if(field === null) {
+      // There is at least one field to be added.
+      // Enabled add button.
+      newFieldButton.text('Add new option');
+      newFieldButton.attr('disabled', false);
+      return;
+    }
+  }
+
+  newFieldButton.text('No more options');
 }
 
 function addNewField(_event) {
-  const last = lastOption();
-  last.after(newFieldTemplate.html());
+  const newFieldButton = addNewFieldButton();
+  newFieldButton.attr('disabled', true);
+  newFieldButton.before(newFieldTemplate.html());
 
-  const justAdded = last.next();
+  const justAdded = newFieldButton.prev();
   const deleteButton = justAdded.find('.btn-danger');
   const addButton = justAdded.find('.btn-success');
   const selectMenu = justAdded.find('select');
@@ -69,12 +86,14 @@ function addHelpTextForOption(event) {
 function removeInProgressField(event) {
   const entireDiv = event.target.parentElement.parentElement.parentElement;
   entireDiv.remove();
+  enableNewFieldButton()
 }
 
 function removeField(event) {
   // TODO: shouldn't be able to remove cluster & script form fields.
   const entireDiv = event.target.parentElement;
   entireDiv.remove();
+  enableNewFieldButton();
 }
 
 function showEditField(event) {
@@ -108,10 +127,10 @@ function addInProgressField(event) {
   const choice = selectMenu.value;
   const template = $(`#${choice}_template`);
 
-  const last = lastOption();
-  last.after(template.html());
+  const newFieldButton = addNewFieldButton();
+  newFieldButton.before(template.html());
 
-  const justAdded = last.next();
+  const justAdded = newFieldButton.prev();
   justAdded.find('.btn-danger')
            .on('click', (event) => { removeField(event) });
 
@@ -126,6 +145,7 @@ function addInProgressField(event) {
 
   const entireDiv = event.target.parentElement.parentElement.parentElement;
   entireDiv.remove();
+  enableNewFieldButton();
 }
 
 function fixedFieldEnabled(checkbox, dataElement) {

@@ -60,4 +60,8 @@ module ScriptsHelper
   def script_form_double
     BootstrapForm::FormBuilder.new('script', nil, self, {})
   end
+
+  def script_remove_field_enabled(id)
+    !['script_auto_scripts'].include?(id.to_s)
+  end
 end
