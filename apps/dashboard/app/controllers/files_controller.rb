@@ -47,8 +47,6 @@ class FilesController < ApplicationController
             response.sending_file = true
             response.cache_control[:public] ||= false
 
-            # raise StandardError, @path.files_to_zip
-
             # FIXME: strategy 1: is below, use zip_tricks
             # strategy 2: use actual zip command (likely much faster) and ActionController::Live
             zip_tricks_stream do |zip|
