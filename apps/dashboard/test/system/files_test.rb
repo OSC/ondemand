@@ -379,4 +379,40 @@ class FilesTest < ApplicationSystemTestCase
       File.delete(zip_file) if File.exist?(zip_file)
     end
   end
+
+  test 'cannot download files outside of allowlist' do
+    zip_file = Rails.root.join('allowed.zip')
+    File.delete(zip_file) if File.exist?(zip_file)
+
+    Dir.mktmpdir do |dir|
+      allowed_dir = "#{dir}/allowed"
+      with_modified_env({ OOD_ALLOWLIST_PATH: dir }) do
+        `mkdir -p #{allowed_dir}/real_directory`
+        `touch #{allowed_dir}/real_file`
+        `touch #{allowed_dir}/real_directory/other_real_file`
+        `ln -s #{Rails.root.join('README.md')} #{allowed_dir}/sym_linked_file`
+        `ln -s #{Rails.root} #{allowed_dir}/sym_linked_directory`
+
+        visit files_url(dir)
+        find('tbody a', exact_text: 'allowed').ancestor('tr').click
+        click_on('Download')
+
+        sleep 5 # give it enough time to download
+        assert(File.exist?(zip_file), "#{zip_file} was never downloaded!")
+
+        Dir.mktmpdir do |unzip_tmp_dir|
+          `cd #{unzip_tmp_dir}; unzip #{zip_file}`
+          assert(File.exist?("#{unzip_tmp_dir}/real_directory"))
+          assert(File.directory?("#{unzip_tmp_dir}/real_directory"))
+          assert(File.exist?("#{unzip_tmp_dir}/real_directory/other_real_file"))
+          assert(File.exist?("#{unzip_tmp_dir}/real_file"))
+
+          refute(File.exist?("#{unzip_tmp_dir}/sym_linked_file"))
+          refute(File.exist?("#{unzip_tmp_dir}/sym_linked_directory"))
+        end
+      end
+    end
+
+    File.delete(zip_file) if File.exist?(zip_file)
+  end
 end
