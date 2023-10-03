@@ -338,7 +338,7 @@ class FilesTest < ApplicationSystemTestCase
   end
 
   test 'can download hidden files and directories' do
-    zip_file = Rails.root.join('tmp/downloads/test_dir.zip')
+    zip_file = Rails.root.join('test_dir.zip')
     File.delete(zip_file) if File.exist?(zip_file)
 
     Dir.mktmpdir do |dir|
@@ -376,6 +376,8 @@ class FilesTest < ApplicationSystemTestCase
           assert(File.exist?("#{unzip_tmp_dir}/#{relative_path_to_dl}"), "#{relative_path_to_dl} was not downloaded!")
         end
       end
+
+      File.delete(zip_file) if File.exist?(zip_file)
     end
   end
 end
