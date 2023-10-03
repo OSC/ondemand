@@ -337,7 +337,10 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
-  test 'can download hidden files & directories' do
+  test 'can download hidden files and directories' do
+    zip_file = Rails.root.join('tmp/downloads/test_dir.zip')
+    File.delete(zip_file) if File.exist?(zip_file)
+
     Dir.mktmpdir do |dir|
       dir_to_dl = "#{dir}/test_dir"
       `mkdir -p #{dir_to_dl}/first_level_dir`
@@ -353,11 +356,12 @@ class FilesTest < ApplicationSystemTestCase
       click_on('Download')
 
       sleep 5 # give it enough time to download
+      assert(File.exist?(zip_file), "#{zip_file} was never downloaded!")
 
       # unzip all the files you downloaded into a new tmp directory and iterate
       # though them. Verify that the file you downloaded exists in the original tmpdir 'dir'.
       Dir.mktmpdir do |unzip_tmp_dir|
-        `cd #{unzip_tmp_dir}; unzip #{Rails.root.join('tmp/downloads/test_dir.zip')}`
+        `cd #{unzip_tmp_dir}; unzip #{zip_file}`
         Dir.glob("#{dir_to_dl}/**/*", File::FNM_DOTMATCH).reject do |file_to_dl|
           ['.', '..'].freeze.include?(File.basename(file_to_dl))
 
