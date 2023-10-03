@@ -61,7 +61,7 @@ module ScriptsHelper
     BootstrapForm::FormBuilder.new('script', nil, self, {})
   end
 
-  def script_remove_field_enabled(id)
+  def script_removable_field?(id)
     !['script_auto_scripts'].include?(id.to_s)
   end
 end
