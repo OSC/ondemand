@@ -1,4 +1,5 @@
 require "application_system_test_case"
+require 'zip'
 
 class FilesTest < ApplicationSystemTestCase
 
@@ -332,6 +333,44 @@ class FilesTest < ApplicationSystemTestCase
         find('tbody a', exact_text: 'some_file')
         assert_selector('tbody span[title="directory"]', count: 1)
         assert_selector('tbody span[title="file"]', count: 1)
+      end
+    end
+  end
+
+  test 'can download hidden files & directories' do
+    Dir.mktmpdir do |dir|
+      dir_to_dl = "#{dir}/test_dir"
+      `mkdir -p #{dir_to_dl}/first_level_dir`
+      `mkdir #{dir_to_dl}/.first_level_hidden_dir`
+      `touch #{dir_to_dl}/real_file`
+      `touch #{dir_to_dl}/first_level_dir/.second_level_hidden_file`
+      `touch #{dir_to_dl}/first_level_dir/second_level_real_file`
+      `touch #{dir_to_dl}/.first_level_hidden_dir/.another_second_level_hidden_file`
+      `touch #{dir_to_dl}/.first_level_hidden_dir/another_second_level_real_file`
+
+      visit files_url(dir)
+      find('tbody a', exact_text: 'test_dir').ancestor('tr').click
+      click_on('Download')
+
+      sleep 5 # give it enough time to download
+
+      # unzip all the files you downloaded into a new tmp directory and iterate
+      # though them. Verify that the file you downloaded exists in the original tmpdir 'dir'.
+      Dir.mktmpdir do |unzip_tmp_dir|
+        `cd #{unzip_tmp_dir}; unzip #{Rails.root.join('tmp/downloads/test_dir.zip')}`
+        Dir.glob("#{dir_to_dl}/**/*", File::FNM_DOTMATCH).reject do |file_to_dl|
+          ['.', '..'].freeze.include?(File.basename(file_to_dl))
+
+        # get the relative path
+        end.map do |path_to_dl|
+          path_to_dl.gsub(dir_to_dl, '').delete_prefix('/')
+
+        # now combine the relative path with the new unzipped directory and verify that
+        # the file exists in the unzipped directory
+        end.each do |relative_path_to_dl|
+
+          assert(File.exist?("#{unzip_tmp_dir}/#{relative_path_to_dl}"), "#{relative_path_to_dl} was not downloaded!")
+        end
       end
     end
   end

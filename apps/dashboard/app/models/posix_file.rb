@@ -78,12 +78,15 @@ class PosixFile
   #FIXME: a more generic name for this?
   FileToZip = Struct.new(:path, :relative_path)
 
+  PATHS_TO_FILTER = ['.', '..'].freeze
   def files_to_zip
     expanded = path.expand_path
 
-    expanded.glob('**/*').map { |p|
+    expanded.glob('**/*', File::FNM_DOTMATCH).reject do |p|
+      PATHS_TO_FILTER.include?(p.basename.to_s)
+    end.map do |p|
       FileToZip.new(p.to_s, p.relative_path_from(expanded).to_s)
-    }
+    end
   end
 
   def ls
