@@ -79,6 +79,7 @@ class PosixFile
   FileToZip = Struct.new(:path, :relative_path)
 
   PATHS_TO_FILTER = ['.', '..'].freeze
+
   def files_to_zip
     expanded = path.expand_path
 
