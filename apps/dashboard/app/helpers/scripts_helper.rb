@@ -62,6 +62,6 @@ module ScriptsHelper
   end
 
   def script_removable_field?(id)
-    !['script_auto_scripts'].include?(id.to_s)
+    !['script_auto_scripts', 'script_auto_batch_clusters'].include?(id.to_s)
   end
 end
