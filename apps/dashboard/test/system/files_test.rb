@@ -126,19 +126,28 @@ class FilesTest < ApplicationSystemTestCase
     Dir.mktmpdir do |dir|
       # copy to dest/app
       src = File.join(dir, 'app')
-      `cp -r #{Rails.root.join('app').to_s} #{src}`
+      single_file = File.join(dir, 'single_file')
+      `cp -r #{Rails.root.join('app')} #{src}`
+      `touch #{single_file}`
+
+      assert File.directory?(src)
+      assert File.file?(single_file)
 
       # select dir to move
       visit files_url(dir)
-      find('tbody a', exact_text: 'app').ancestor('tr').click
+      find('tbody a', exact_text: 'app').ancestor('tr').check
+      # assert false
+      find('tbody a', exact_text: 'single_file').ancestor('tr').check
       find('#delete-btn').click
       find('button.swal2-confirm').click
 
       # verify app dir deleted according to UI
       assert_no_selector 'tbody a', exact_text: 'app', wait: 10
+      assert_no_selector 'tbody a', exact_text: 'single_file', wait: 10
 
-      # verify app dir actually deleted
-      refute File.exist?(src)
+      # verify app dir & single_file were actually deleted
+      refute(File.exist?(src), Dir.children(dir))
+      refute(File.exist?(single_file), Dir.children(dir))
     end
   end
 
