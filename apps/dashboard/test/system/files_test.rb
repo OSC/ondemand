@@ -136,7 +136,6 @@ class FilesTest < ApplicationSystemTestCase
       # select dir to move
       visit files_url(dir)
       find('tbody a', exact_text: 'app').ancestor('tr').check
-      # assert false
       find('tbody a', exact_text: 'single_file').ancestor('tr').check
       find('#delete-btn').click
       find('button.swal2-confirm').click
