@@ -12,6 +12,11 @@ module UserSettingStore
     save_user_settings
   end
 
+  def prefill_templates
+    # retrieve the templates if they exist
+    @prefill_templates = read_prefill_templates
+  end
+
   private
 
   def read_user_settings
@@ -36,5 +41,26 @@ module UserSettingStore
 
   def user_settings_path
     Pathname.new(::Configuration.dataroot).join(::Configuration.user_settings_file)
+  end
+
+  # TEMPLATES
+  def read_prefill_templates
+    prefill_templates = {}
+    return prefill_templates unless user_settings_path.exist?
+
+    begin
+      prefill_templates = JSON.load(user_settings_path.read)
+    rescue => err
+      Rails.logger.error("Can't read or load json file: #{e}")
+    end
+  end
+
+  def save_prefill_template
+    user_settings_path.dirname.tap do |path|
+      path.mkpath unless path.exist?
+      File.open(user_settings_path.to_s, "w") do |file|
+        file.write(prefill_templates)
+      end
+    end
   end
 end
