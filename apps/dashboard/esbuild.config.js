@@ -12,7 +12,7 @@ fs.readdir(faDir, (err, files) => {
 });
 
 // could just glob and pass this in the cli, but glob support is shell dependant
-entryPoints = filesFromDir('app/javascript/packs');
+entryPoints = filesFromDir('app/javascript');
 
 function filesFromDir(dir) {
   return fs.readdirSync(dir).map((file) => {
