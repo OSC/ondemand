@@ -7,6 +7,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     options.logging_prefs =  { browser: 'ALL' }
   end
 
+  Selenium::WebDriver.logger.level = :debug unless ENV['DEBUG'].nil?
   Capybara.server = :webrick
 
   def find_option_style(ele, opt)

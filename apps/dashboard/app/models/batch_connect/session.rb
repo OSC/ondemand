@@ -39,10 +39,6 @@ module BatchConnect
     # @return [String] session title
     attr_accessor :title
 
-    # The view used to display the connection information for this session
-    # @return [String, nil] session view
-    attr_accessor :view
-
     # Batch connect script type
     # @return [String] script type
     attr_accessor :script_type
@@ -71,13 +67,13 @@ module BatchConnect
     # Return the Batch Connect app from the session token
     # @return [BatchConnect::App]
     def app
-      BatchConnect::App.from_token(self.token)
+      @app ||= BatchConnect::App.from_token(self.token)
     end
 
     # Attributes used for serialization
     # @return [Hash] attributes to be serialized
     def attributes
-      %w(id cluster_id job_id created_at token title view script_type cache_completed).map do |attribute|
+      %w(id cluster_id job_id created_at token title script_type cache_completed).map do |attribute|
         [ attribute, nil ]
       end.to_h
     end
@@ -97,6 +93,10 @@ module BatchConnect
     rescue => e
       Rails.logger.error("ERROR: Error parsing user_context file: '#{user_defined_context_file}' --- #{e.class} - #{e.message}")
       {}
+    end
+
+    def view
+      app.session_view
     end
 
     class << self
@@ -236,7 +236,6 @@ module BatchConnect
       self.id         = SecureRandom.uuid
       self.token      = app.token
       self.title      = app.title
-      self.view       = app.session_view
       self.created_at = Time.now.to_i
       self.cluster_id = context.try(:cluster).to_s
 
@@ -260,7 +259,7 @@ module BatchConnect
       staged_root.tap { |p| p.mkpath unless p.exist? }
 
       # Sync the template files over
-      oe, s = Open3.capture2e("rsync", "-a", "#{root}/", "#{staged_root}")
+      oe, s = Open3.capture2e('rsync', '-av', '--exclude', '*.erb', "#{root}/", staged_root.to_s)
       raise oe unless s.success?
 
       # Output user submitted context attributes for debugging purposes
@@ -268,7 +267,8 @@ module BatchConnect
 
       # Render all template files using ERB
       render_erb_files(
-        template_files,
+        template_files(root),
+        root_dir: root,
         binding: TemplateBinding.new(self, context).get_binding
       )
       true
@@ -465,9 +465,10 @@ module BatchConnect
     end
 
     # List of template files that need to be rendered
+    # @param dir [#Pathname] the directory where the templates exist
     # @return [Array<Pathname>] list of template files
-    def template_files
-      Pathname.glob(staged_root.join("**", "*.erb")).select(&:file?)
+    def template_files(dir)
+      Pathname.glob(dir.join("**", "*.erb")).select(&:file?)
     end
 
     # Path to script that is sourced before main script is forked
@@ -596,14 +597,20 @@ module BatchConnect
         ].reject(&:blank?).join("/")
       end
 
-      # Render a list of files using ERB
-      def render_erb_files(files, binding: nil, remove_extension: true)
-        files.each do |file|
-          rendered_file = remove_extension ? file.sub_ext("") : file
+      # Render a list of files using ERB. Note the input .erb files are the system
+      # installed erb files (/var/www/ood/...). These are rendered and output into
+      # the staged_root.
+      def render_erb_files(input_files, binding: nil, remove_extension: true, output_dir: staged_root, root_dir: nil)
+        input_files.each do |file|
           template = file.read
-          rendered = ERB.new(template, nil, "-").result(binding)
-          file.rename rendered_file     # keep same file permissions
-          rendered_file.write(rendered)
+          rendered = ERB.new(template, trim_mode: "-").result(binding)
+
+          relative_fname = file.to_s.delete_prefix("#{root_dir}/")
+          output_file = output_dir.join(relative_fname)
+          output_file = remove_extension ? output_file.sub_ext('') : output_file
+
+          output_file.write(rendered)
+          output_file.chmod(file.stat.mode)
         end
       end
   end

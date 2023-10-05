@@ -526,7 +526,6 @@ module BatchConnect
           'created_at'      => now.to_i,
           'token'           => 'bc_jupyter',
           'title'           => 'Jupyter Notebook',
-          'view'            => nil,
           'script_type'     => 'basic',
           'cache_completed' => nil
         }
