@@ -42,7 +42,10 @@ class PosixTransfer < Transfer
     # a move to a different device does a cp then mv
     if action == 'mv' && mv_to_same_device?
       @steps = files.count
+    elsif remove?
+      @steps = names.size
     else
+      # TODO: num_files issues 'find' command. so likely needs optimized
       @steps = PosixFile.num_files(from, names)
       @steps *= 2 if action == 'mv'
     end
@@ -69,8 +72,8 @@ class PosixTransfer < Transfer
       commands = [args]
     elsif action == 'cp'
       commands = files.map { |src_path, dest_path| [action.to_s, '-v', '-r', src_path, dest_path] }
-    elsif action == 'rm'
-      commands = [[action.to_s, '-v', '-r'] + files.keys]
+    elsif remove?
+      # nothing to do: remove action has a new implementation.
     else
       raise "Unknown action: #{action.inspect}"
     end
@@ -84,6 +87,13 @@ class PosixTransfer < Transfer
 
     # calculate number of steps prior to starting the removal of files
     steps
+
+    # if commands are empty - that means we're using the new implementation
+    if commands.empty?
+      send(action.to_sym)
+      complete!
+      return
+    end
 
     commands.each do |command|
       Open3.popen3(*command, chdir: from) do |i, o, e, t|
@@ -138,5 +148,14 @@ class PosixTransfer < Transfer
 
   def mv_to_same_device?
     action == "mv" && from && to && PosixFile.stat(from)[:dev] == PosixFile.stat(File.dirname(to))[:dev]
+  end
+
+  def rm
+    files.keys.each_with_index do |file, idx|
+      File.directory?(file) ? FileUtils.remove_dir(file) : FileUtils.rm(file)
+      update_percent(idx + 1)
+    rescue => e
+      errors.add(:remove, e.message)
+    end
   end
 end

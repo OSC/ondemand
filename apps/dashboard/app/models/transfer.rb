@@ -19,6 +19,8 @@ class Transfer
   # files could either be an array of strings or an array of hashes (string=>string)
   attr_accessor :action, :files
 
+  REMOVE_ACTION = 'rm'.freeze
+
   class << self
     def transfers
       @transfers ||= []
@@ -114,5 +116,14 @@ class Transfer
   def perform_later
     save
     TransferLocalJob.perform_later(self)
+  end
+
+  def remove?
+    action == Transfer::REMOVE_ACTION
+  end
+
+  def complete!
+    self.exit_status = errors.any? ? 1 : 0
+    self.completed_at = Time.now.to_i
   end
 end
