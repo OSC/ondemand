@@ -24,6 +24,6 @@
   },
   "scripts": {
     "build": "node esbuild.config.js",
-    "build:css": "sass ./app/javascript/stylesheets/application.scss ./app/assets/builds/application.css --load-path=node_modules"
+    "build:css": "sass ./app/assets/stylesheets/application.scss ./app/assets/builds/application.css --load-path=node_modules"
   }
 }
