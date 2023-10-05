@@ -20,6 +20,7 @@ class Transfer
   attr_accessor :action, :files
 
   REMOVE_ACTION = 'rm'.freeze
+  COPY_ACTION   = 'cp'.freeze
 
   class << self
     def transfers
@@ -120,6 +121,10 @@ class Transfer
 
   def remove?
     action == Transfer::REMOVE_ACTION
+  end
+
+  def copy?
+    action == Transfer::COPY_ACTION
   end
 
   def complete!

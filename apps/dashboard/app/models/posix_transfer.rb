@@ -37,12 +37,12 @@ class PosixTransfer < Transfer
   def steps
     return @steps if @steps
 
-    names = files.keys.map {|f| File.basename(f)}
+    names = files.keys.map { |f| File.basename(f) }
 
     # a move to a different device does a cp then mv
     if action == 'mv' && mv_to_same_device?
       @steps = files.count
-    elsif remove?
+    elsif remove? || copy?
       @steps = names.size
     else
       # TODO: num_files issues 'find' command. so likely needs optimized
@@ -70,8 +70,8 @@ class PosixTransfer < Transfer
         args << to
       end
       commands = [args]
-    elsif action == 'cp'
-      commands = files.map { |src_path, dest_path| [action.to_s, '-v', '-r', src_path, dest_path] }
+    elsif copy?
+      # nothing to do: copy action has a new implementation.
     elsif remove?
       # nothing to do: remove action has a new implementation.
     else
@@ -156,6 +156,17 @@ class PosixTransfer < Transfer
       update_percent(idx + 1)
     rescue => e
       errors.add(:remove, e.message)
+    end
+  end
+
+  def cp
+    files.each_with_index do |cp_info, idx|
+      src = cp_info[0]
+      dest = cp_info[1]
+      FileUtils.cp_r(src, dest)
+      update_percent(idx + 1)
+    rescue => e
+      errors.add(:copy, e.message)
     end
   end
 end
