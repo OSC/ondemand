@@ -9,7 +9,7 @@ import { makeChangeHandlers } from './dynamic_forms';
 
 jQuery(function() {
   if(isBCDynamicJSEnabled()){
-    makeChangeHandlers();
+    makeChangeHandlers('batch_connect_session_context');
   }
 
   attachPathSelectors();

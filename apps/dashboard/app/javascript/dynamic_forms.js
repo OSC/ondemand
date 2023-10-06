@@ -1,7 +1,8 @@
 'use strict';
 
-const bcPrefix = 'batch_connect_session_context';
-const shortNameRex = new RegExp(`${bcPrefix}_([\\w\\-]+)`);
+// these are initialized in makeChangeHandlers
+var idPrefix = undefined;
+var shortNameRex = undefined;
 
 // @example ['NodeType', 'Cluster']
 const formTokens = [];
@@ -30,7 +31,7 @@ const mcRex = /[-_]([a-z])|([_-][0-9])|([\/])/g;
 // whether we're still initializing or not
 let initializing = true;
 
-function bcElement(name) {
+function idWithPrefix(name) {
   return `${bcPrefix}_${name.toLowerCase()}`;
 };
 
@@ -123,8 +124,13 @@ function memorizeElements(elements) {
   });
 };
 
-function makeChangeHandlers(){
-  const allElements = $(`[id^=${bcPrefix}]`);
+function makeChangeHandlers(prefix){
+
+  // initialize some global variables.
+  idPrefix = prefix;
+  shortNameRex = new RegExp(`${idPrefix}_([\\w\\-]+)`);
+
+  const allElements = $(`[id^=${idPrefix}]`);
   memorizeElements(allElements);
 
   allElements.each((_i, element) => {
@@ -585,7 +591,7 @@ function idFromToken(str) {
 
     if (match && match.length >= 1) {
       let ele = snakeCaseWords(match[0]);
-      return bcElement(ele);
+      return idWithPrefix(ele);
     }
   }).filter((id) => {
     return id !== undefined;
