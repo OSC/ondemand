@@ -32,7 +32,7 @@ const mcRex = /[-_]([a-z])|([_-][0-9])|([\/])/g;
 let initializing = true;
 
 function idWithPrefix(name) {
-  return `${bcPrefix}_${name.toLowerCase()}`;
+  return `${idPrefix}_${name.toLowerCase()}`;
 };
 
 // here the simple name for 'batch_connect_session_context_cluster'
