@@ -1,10 +1,5 @@
 'use strict';
 
-import { attachPathSelectors } from './path_selector/path_selector'
-import { prefillTemplatesHandler } from './prefill_templates/prefill_templates'
-import { prefillSubmitHandler } from './prefill_templates/prefill_submit'
-import { isBCDynamicJSEnabled } from './config';
-
 const bcPrefix = 'batch_connect_session_context';
 const shortNameRex = new RegExp(`${bcPrefix}_([\\w\\-]+)`);
 
@@ -159,6 +154,8 @@ function makeChangeHandlers(){
       });
     }
   });
+
+  initializing = false;
 };
 
 function addHideHandler(optionId, option, key,  configValue) {
@@ -716,14 +713,7 @@ function optionForFromToken(str) {
   document.getElementById(elementId).dispatchEvent((new Event('change', { bubbles: true })));
 };
 
-jQuery(function() {
-  if(isBCDynamicJSEnabled()){
-    makeChangeHandlers();
-  }
 
-  attachPathSelectors();
-  prefillTemplatesHandler();
-  prefillSubmitHandler();
-
-  initializing = false;
-});
+export {
+  makeChangeHandlers
+}
