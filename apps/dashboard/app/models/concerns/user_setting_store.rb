@@ -14,53 +14,53 @@ module UserSettingStore
 
   def prefill_templates
     # retrieve the templates if they exist
-    @prefill_templates = read_prefill_templates
+    @prefill_templates ||= read_prefill_templates
   end
 
   private
 
-  def read_user_settings
-    user_settings = {}
-    return user_settings unless user_settings_path.exist?
+  def save_all_settings(key, value)
+    settings = read_all_settings
+    settings[key] = value
 
-    begin
-      yml = YAML.safe_load(user_settings_path.read) || {}
-      user_settings = yml.deep_symbolize_keys
-    rescue => e
-      Rails.logger.error("Can't read or parse settings file: #{user_settings_path} because of error #{e}")
+    user_settings_path.tap do |path|
+      path.mkpath unless path.exist?
     end
-
-    user_settings
+    File.open(user_settings_path.to_s, "w") do |file|
+      file.write(settings.deep_stringify_keys.to_yaml)
+    end
   end
 
   def save_user_settings
-    # Ensure there is a directory to write the user settings file
-    user_settings_path.dirname.tap { |p| p.mkpath unless p.exist? }
-    File.open(user_settings_path.to_s, "w") { |file| file.write(@user_settings.deep_stringify_keys.to_yaml) }
+    save_all_settings(:user_settings, @user_settings)
+  end
+
+  def save_prefill_templates
+    save_all_settings(:prefill_templates, @prefill_templates)
+  end
+
+  def read_all_settings
+    return {} unless user_settings_path.exist?
+
+    begin
+      YAML.safe_load(user_settings_path.read) || {}
+    rescue => err
+      Rails.logger.error("Can't read or parse settings file: #{user_settings_path} because of error #{err}")
+      {}
+    end
+  end
+
+  def read_user_settings
+    all_settings = read_all_settings
+    all_settings[:user_settings] || {}
+  end
+
+  def read_prefill_templates
+    all_settings = read_all_settings
+    all_settings[:prefill_templates] || {}
   end
 
   def user_settings_path
     Pathname.new(::Configuration.dataroot).join(::Configuration.user_settings_file)
-  end
-
-  # TEMPLATES
-  def read_prefill_templates
-    prefill_templates = {}
-    return prefill_templates unless user_settings_path.exist?
-
-    begin
-      prefill_templates = JSON.load(user_settings_path.read)
-    rescue => err
-      Rails.logger.error("Can't read or load json file: #{e}")
-    end
-  end
-
-  def save_prefill_template
-    user_settings_path.dirname.tap do |path|
-      path.mkpath unless path.exist?
-      File.open(user_settings_path.to_s, "w") do |file|
-        file.write(prefill_templates)
-      end
-    end
   end
 end
