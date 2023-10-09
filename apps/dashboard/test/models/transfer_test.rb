@@ -8,11 +8,7 @@ class TransferTest < ActiveSupport::TestCase
       '/Users/efranz/dev/ondemand/apps/dashboard/manifest.yml' => '/var/folders/w7/fn8w83s10510pkc5j2wq8cpnhxtn3j/T/d20210201-68201-u3azoj/manifest.yml'
     }
 
-    expected = [
-      ['cp', '-v', '-r', '/Users/efranz/dev/ondemand/apps/dashboard/app', '/var/folders/w7/fn8w83s10510pkc5j2wq8cpnhxtn3j/T/d20210201-68201-u3azoj/app'],
-      ['cp', '-v', '-r', '/Users/efranz/dev/ondemand/apps/dashboard/config', '/var/folders/w7/fn8w83s10510pkc5j2wq8cpnhxtn3j/T/d20210201-68201-u3azoj/config'],
-      ['cp', '-v', '-r', '/Users/efranz/dev/ondemand/apps/dashboard/manifest.yml', '/var/folders/w7/fn8w83s10510pkc5j2wq8cpnhxtn3j/T/d20210201-68201-u3azoj/manifest.yml']
-    ]
+    expected = []
     assert_equal expected, transfer.commands
   end
 
@@ -41,8 +37,16 @@ class TransferTest < ActiveSupport::TestCase
     assert_equal 1, PosixTransfer.build(action: 'mv', files: { 'config.ru' => 'config.ru.2' }).steps
   end
 
-  test 'steps for cp bin' do
-    assert_equal Dir['bin/*'].count + 1, PosixTransfer.build(action: 'cp', files: { 'bin' => 'bin.2' }).steps
+  test '1 step for copying a directory' do
+    assert_equal(1, PosixTransfer.build(action: 'cp', files: { 'bin' => 'bin.2' }).steps)
+  end
+
+  test 'copying a files is 1:1 files:steps' do
+    files = Dir['bin/*'].map { |f| File.basename(f) }
+    new_files = files.map { |f| "#{f}.2" }
+    all_files = files.zip(new_files).to_h
+
+    assert_equal(files.size, PosixTransfer.build(action: 'cp', files: all_files).steps)
   end
 
   # This tests https://github.com/OSC/ondemand/issues/1337 and fails if it's not patched
