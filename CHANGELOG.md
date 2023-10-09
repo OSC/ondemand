@@ -6,19 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Refactor transfer rm (#3103)\
-mv javascript files out of the packs directory to rm webpacker (#3106)\
-Merge pull request #3105 from OSC/refactor-styles\
-move stylesheets to default rails directory\
-Disabled deleting auto_batch_clusters from edit script forms (#3100)\
-lint a random file (#3098)\
-Fixes to edit script javascript (#3095)\
-download hidden paths (#3096)\
-Update Changelog (#3089)\
-ensure the table refreshes in this test case (#3093)\
-override sendfile (#3094)\
-Stop serializing the connection view. (#3091)\
-lint a random file (#3088)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
@@ -48,9 +35,37 @@ lint a random file (#3088)
 - auto_modules correctly filters hidden modules in [2997](https://github.com/OSC/ondemand/pull/2997).
 - Sites using ips instead of hostnames correctly populate allowed hosts in [2998](https://github.com/OSC/ondemand/pull/2998).
 - ActiveJobs correclty parses NONE time in [2965](https://github.com/OSC/ondemand/pull/2965).
+- `ondemand.d` files are now sorted before loaded in (2944)[https://github.com/OSC/ondemand/pull/2944].
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
+
+## [3.0.2] - 10-06-2023
+
+### Fixed
+- `auto_modules` now supports modules with hyphens in them in [2938](https://github.com/OSC/ondemand/pull/2938).
+  Backported to 3.0.2 in [2094](https://github.com/OSC/ondemand/pull/2940).
+- `auto_modeles` filters hidden modules in [2997](https://github.com/OSC/ondemand/pull/2997).
+  Backported to 3.0.2 in [3036](https://github.com/OSC/ondemand/pull/3036).
+- The file browser will now correctly download hidden files in [3096](https://github.com/OSC/ondemand/pull/3096).
+  Backported to 3.0.2 in [3104](https://github.com/OSC/ondemand/pull/3104).
+- `ondemand.d` files are now sorted before loaded in [2944](ttps://github.com/OSC/ondemand/pull/2944).
+  Backported to 3.0.2 in [2960](https://github.com/OSC/ondemand/pull/2960).
+- noVNC compression and quality settings actually work in [2995](https://github.com/OSC/ondemand/pull/2995).
+  Backported to 3.0.2 in [2996](https://github.com/OSC/ondemand/pull/2996).
+
+### Security
+
+- Sending files is no longer done by Nginx, instead this is done by Rails so we can validate it being in the
+  `OOD_ALLOWLIST_PATH` in [3049](https://github.com/OSC/ondemand/pull/3094). Backported to 3.0.2 in [3104](https://github.com/OSC/ondemand/pull/3104).
+- ERB files in batch connect's output directory are now rendered then copied in [3045](https://github.com/OSC/ondemand/pull/3045).
+  Backported to 3.0.2 in [3104](https://github.com/OSC/ondemand/pull/3104).
+- Symlinks outside of `OOD_ALLOWLIST_PATH` will no longer show up in the file browser in [3057](https://github.com/OSC/ondemand/pull/3057).
+  Backported to 3.0.2 in [3104](https://github.com/OSC/ondemand/pull/3104).
+- Connection views are no longer saved to user writable files in [3091](https://github.com/OSC/ondemand/pull/3091).
+  Backported to 3.0.2 in [3104](https://github.com/OSC/ondemand/pull/3104).
+- The file browser will never download files outside of the `OOD_ALLOWLIST_PATH` in [3096](https://github.com/OSC/ondemand/pull/3096).
+  Backported to 3.0.2 in [3104](https://github.com/OSC/ondemand/pull/3104).
 
 ## [3.0.1] - 04-20-2023
 
