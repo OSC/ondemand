@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Refactor transfer rm (#3103)\
+mv javascript files out of the packs directory to rm webpacker (#3106)\
+Merge pull request #3105 from OSC/refactor-styles\
+move stylesheets to default rails directory\
+Disabled deleting auto_batch_clusters from edit script forms (#3100)\
+lint a random file (#3098)\
+Fixes to edit script javascript (#3095)\
+download hidden paths (#3096)\
+Update Changelog (#3089)\
+ensure the table refreshes in this test case (#3093)\
+override sendfile (#3094)\
+Stop serializing the connection view. (#3091)\
+lint a random file (#3088)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
