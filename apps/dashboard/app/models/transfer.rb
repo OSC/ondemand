@@ -131,4 +131,8 @@ class Transfer
     self.exit_status = errors.any? ? 1 : 0
     self.completed_at = Time.now.to_i
   end
+
+  def success?
+    self.exit_status.nil? ? false : self.exit_status == 0
+  end
 end
