@@ -20,6 +20,7 @@ class Transfer
   attr_accessor :action, :files
 
   REMOVE_ACTION = 'rm'.freeze
+  COPY_ACTION   = 'cp'.freeze
 
   class << self
     def transfers
@@ -122,8 +123,16 @@ class Transfer
     action == Transfer::REMOVE_ACTION
   end
 
+  def copy?
+    action == Transfer::COPY_ACTION
+  end
+
   def complete!
     self.exit_status = errors.any? ? 1 : 0
     self.completed_at = Time.now.to_i
+  end
+
+  def success?
+    self.exit_status.nil? ? false : self.exit_status == 0
   end
 end

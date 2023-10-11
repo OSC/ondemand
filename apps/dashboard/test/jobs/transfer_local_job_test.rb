@@ -61,14 +61,13 @@ class TransferLocalJobTest < ActiveJob::TestCase
         transfer = PosixTransfer.build(action: 'cp', files: {testfile => destfile})
         transfer.perform
 
-        assert transfer.stderr.present?, 'copy should have preserved stderr of job'
-        assert transfer.stderr.include?('foo/bar')
-        assert_equal 1, transfer.exit_status.exitstatus, "job exited with error #{transfer.stderr}"
-        refute transfer.exit_status.success?
+        assert_equal 1, transfer.exit_status, "job exited with error #{transfer.errors.full_messages}"
+        refute transfer.success?
         assert_equal 1, transfer.errors.count
 
-        assert File.file?(File.join(dir, 'dest/foo/foo.txt')), 'copy should have done a partial copy foo/foo.txt but skipped bar'
+        err_message = transfer.errors.full_messages[0]
 
+        assert_equal("Copy Permission denied @ dir_initialize - #{dir}/foo/bar", err_message)
       ensure
         FileUtils.chmod 0755, File.join(dir, 'foo/bar')
 
@@ -105,27 +104,24 @@ class TransferLocalJobTest < ActiveJob::TestCase
 
   # FIXME: need to change this interface to something simpler
   # and then use validations to limit the scope
-  test "copy updates progress once per file copied" do
+  test "copy updates progress once per item copied" do
     Dir.mktmpdir do |dir|
-      srcdir = Rails.root.join('app')
-      testdir = File.join(dir, 'app')
-      destdir = File.join(dir, 'dest')
-      FileUtils.mkpath destdir
-      resultdir = File.join(destdir, 'app') # so will be copied to dest/app
-
-      FileUtils.cp_r Rails.root.join('app'), testdir
+      src_paths = Rails.root.join('app').children
+      destdir = File.join(dir, 'dest').tap { |path| FileUtils.mkpath(path.to_s) }
+      dest_paths = src_paths.map { |path| "#{dir}/dest/#{File.basename(path)}" }
+      input = src_paths.zip(dest_paths).to_h
 
 
       # this tests the number of calls to update_progress
       # note: progress.percent is not called because this mocks the method
-      num_files = PosixFile.num_files(dir, ['app'])
-      transfer = PosixTransfer.build(action: 'cp', files: {testdir => File.join(destdir, 'app')})
-      transfer.expects(:percent=).times(num_files)
+      num_paths = src_paths.size
+      transfer = PosixTransfer.build(action: 'cp', files: input)
+      transfer.expects(:percent=).times(num_paths)
 
       transfer.perform
 
       assert_equal 0, transfer.exit_status, "job exited with error #{transfer.stderr}"
-      assert_equal '', `diff -r #{srcdir} #{resultdir}`.strip
+      assert_equal '', `diff -r #{destdir} #{Rails.root.join('app')}`.strip
     end
   end
 
