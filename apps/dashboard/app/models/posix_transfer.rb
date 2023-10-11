@@ -53,32 +53,9 @@ class PosixTransfer < Transfer
     @steps
   end
 
-  # array of arrays containing arguments that will be executed
+  # PosixTransfer no longer issues CLI commands to transfer files.
   def commands
-    # commands are executed in the directory containing the "from" files
-
-    commands = []
-    if action == 'mv'
-      args = [action.to_s, '-v']
-
-      if files.count == 1
-        # for renaming a single file
-        # { file_src => file_dest} changes to [file_src, file_dest] and absolute paths are fine here
-        args += files.to_a.flatten
-      else
-        args += files.keys.map { |f| File.basename(f) }
-        args << to
-      end
-      commands = [args]
-    elsif copy?
-      # nothing to do: copy action has a new implementation.
-    elsif remove?
-      # nothing to do: remove action has a new implementation.
-    else
-      raise "Unknown action: #{action.inspect}"
-    end
-
-    commands
+    []
   end
 
   def perform
@@ -88,37 +65,14 @@ class PosixTransfer < Transfer
     # calculate number of steps prior to starting the removal of files
     steps
 
-    # if commands are empty - that means we're using the new implementation
-    if commands.empty?
-      send(action.to_sym)
+    action_sym = action.to_sym
+    if respond_to?(action_sym)
+      send(action_sym)
       complete!
-      return
+    else
+      errors.add(:base, "Unknown action: #{action.inspect}")
     end
 
-    commands.each do |command|
-      Open3.popen3(*command, chdir: from) do |i, o, e, t|
-        self.pid = t.pid
-
-        err_reader = Thread.new { e.read }
-
-        o.each_line.with_index do |l, index|
-          #FIXME: slice(?).last so that we only update progress a few times per...
-          update_percent(index + 1)
-        end
-        o.close
-
-        self.exit_status = t.value
-        self.completed_at = Time.now.to_i
-
-        # FIXME: figure out what we are going to do here, since we save the stderr output twice
-        self.stderr = err_reader.value.to_s.strip
-        if self.stderr.present? || !self.exit_status.success?
-          errors.add :base, "#{self.commands} exited with status #{self.exit_status.exitstatus}\n\n#{self.stderr}"
-        end
-
-        self
-      end
-    end
   rescue => e
     errors.add :base, e.message
   ensure
@@ -152,7 +106,7 @@ class PosixTransfer < Transfer
 
   def rm
     files.keys.each_with_index do |file, idx|
-      File.directory?(file) ? FileUtils.remove_dir(file) : FileUtils.rm(file)
+      FileUtils.remove_entry_secure(file)
       update_percent(idx + 1)
     rescue => e
       errors.add(:remove, e.message)
@@ -168,5 +122,16 @@ class PosixTransfer < Transfer
     rescue => e
       errors.add(:copy, e.message)
     end
+  end
+
+  def mv
+    files.each_with_index do |cp_info, idx|
+      src = cp_info[0]
+      dest = cp_info[1]
+      FileUtils.move(src, dest, secure: true)
+      update_percent(idx + 1)
+    end
+  rescue => e
+    errors.add(:move, e.message)
   end
 end

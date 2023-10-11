@@ -21,6 +21,7 @@ class Transfer
 
   REMOVE_ACTION = 'rm'.freeze
   COPY_ACTION   = 'cp'.freeze
+  MOVE_ACTION   = 'mv'.freeze
 
   class << self
     def transfers
@@ -125,6 +126,10 @@ class Transfer
 
   def copy?
     action == Transfer::COPY_ACTION
+  end
+
+  def move?
+    action == Transfer::MOVE_ACTION
   end
 
   def complete!
