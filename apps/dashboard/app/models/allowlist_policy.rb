@@ -17,7 +17,10 @@ class AllowlistPolicy
   # @raises ArgumentError if any allowlist path or permitted? argument
   #         has the form ~user/some/path where user doesn't exist
   def permitted?(path)
-    allowlist.blank? || allowlist.any? { |parent| child?(Pathname.new(parent), real_expanded_path(path.to_s)) }
+    key = path_to_key(path)
+    Rails.cache.fetch(key) do
+      allowlist.blank? || allowlist.any? { |parent| child?(Pathname.new(parent), real_expanded_path(path.to_s)) }
+    end
   end
 
   # @raises AllowlistPolicy::Forbidden if path is not permitted by allowlist
@@ -28,6 +31,10 @@ class AllowlistPolicy
   end
 
   protected
+
+  def path_to_key(path)
+    "allowlist_permitted_#{path}"
+  end
 
   # call realpath to ensure symlinks are handled
   def real_expanded_path(path)
