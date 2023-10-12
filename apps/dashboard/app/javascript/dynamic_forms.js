@@ -1,12 +1,8 @@
 'use strict';
 
-import { attachPathSelectors } from './path_selector/path_selector'
-import { prefillTemplatesHandler } from './prefill_templates/prefill_templates'
-import { prefillSubmitHandler } from './prefill_templates/prefill_submit'
-import { isBCDynamicJSEnabled } from './config';
-
-const bcPrefix = 'batch_connect_session_context';
-const shortNameRex = new RegExp(`${bcPrefix}_([\\w\\-]+)`);
+// these are initialized in makeChangeHandlers
+var idPrefix = undefined;
+var shortNameRex = undefined;
 
 // @example ['NodeType', 'Cluster']
 const formTokens = [];
@@ -35,8 +31,8 @@ const mcRex = /[-_]([a-z])|([_-][0-9])|([\/])/g;
 // whether we're still initializing or not
 let initializing = true;
 
-function bcElement(name) {
-  return `${bcPrefix}_${name.toLowerCase()}`;
+function idWithPrefix(name) {
+  return `${idPrefix}_${name.toLowerCase()}`;
 };
 
 // here the simple name for 'batch_connect_session_context_cluster'
@@ -128,8 +124,13 @@ function memorizeElements(elements) {
   });
 };
 
-function makeChangeHandlers(){
-  const allElements = $(`[id^=${bcPrefix}]`);
+function makeChangeHandlers(prefix){
+
+  // initialize some global variables.
+  idPrefix = prefix;
+  shortNameRex = new RegExp(`${idPrefix}_([\\w\\-]+)`);
+
+  const allElements = $(`[id^=${idPrefix}]`);
   memorizeElements(allElements);
 
   allElements.each((_i, element) => {
@@ -159,6 +160,8 @@ function makeChangeHandlers(){
       });
     }
   });
+
+  initializing = false;
 };
 
 function addHideHandler(optionId, option, key,  configValue) {
@@ -588,7 +591,7 @@ function idFromToken(str) {
 
     if (match && match.length >= 1) {
       let ele = snakeCaseWords(match[0]);
-      return bcElement(ele);
+      return idWithPrefix(ele);
     }
   }).filter((id) => {
     return id !== undefined;
@@ -716,14 +719,7 @@ function optionForFromToken(str) {
   document.getElementById(elementId).dispatchEvent((new Event('change', { bubbles: true })));
 };
 
-jQuery(function() {
-  if(isBCDynamicJSEnabled()){
-    makeChangeHandlers();
-  }
 
-  attachPathSelectors();
-  prefillTemplatesHandler();
-  prefillSubmitHandler();
-
-  initializing = false;
-});
+export {
+  makeChangeHandlers
+}
