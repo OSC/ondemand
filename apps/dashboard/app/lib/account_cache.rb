@@ -74,7 +74,9 @@ module AccountCache
         cluster_queues.map do |queue|
           [queue.name, queue.name, cluster_data] unless blocked_queue?(queue)
         end.compact
-      end.flatten(1)
+      end.flatten(1).sort_by |tuple|
+        tuple[0]
+      end
 
     rescue StandardError => e
       Rails.logger.warn("Did not get queues from system with error #{e}")
