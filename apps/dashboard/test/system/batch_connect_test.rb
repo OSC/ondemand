@@ -770,8 +770,9 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal 'display: none;', find_option_style('auto_queues', 'serial-48core')
       assert_equal 'display: none;', find_option_style('auto_queues', 'gpudebug-48core')
 
-      # systems queue is not available on owens
-      assert_equal 'display: none;', find_option_style('auto_queues', 'systems')
+      # systems queue is not available anywhere and thus, doesn't show up at all.
+      # we have no account that can submit to it, on any cluster.
+      assert_selector("##{bc_ele_id('auto_queues')} option[value='systems']", count: 0)
 
       # batch exists on both clusters, so switching clusters does nothing
       select('oakley', from: bc_ele_id('cluster'))
@@ -781,9 +782,6 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal '', find_option_style('auto_queues', 'serial-40core')
       assert_equal '', find_option_style('auto_queues', 'serial-48core')
       assert_equal '', find_option_style('auto_queues', 'gpudebug-48core')
-
-      # systems queue is still not available on oakley
-      assert_equal 'display: none;', find_option_style('auto_queues', 'systems')
     end
   end
 

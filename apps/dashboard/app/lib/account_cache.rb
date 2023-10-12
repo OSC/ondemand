@@ -72,8 +72,8 @@ module AccountCache
         end.to_h
 
         cluster_queues.map do |queue|
-          [queue.name, queue.name, cluster_data]
-        end
+          [queue.name, queue.name, cluster_data] unless blocked_queue?(queue)
+        end.compact
       end.flatten(1)
 
     rescue StandardError => e
