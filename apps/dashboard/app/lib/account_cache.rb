@@ -74,7 +74,7 @@ module AccountCache
         cluster_queues.map do |queue|
           [queue.name, queue.name, cluster_data] unless blocked_queue?(queue)
         end.compact
-      end.flatten(1).sort_by |tuple|
+      end.flatten(1).sort_by do |tuple|
         tuple[0]
       end
 
