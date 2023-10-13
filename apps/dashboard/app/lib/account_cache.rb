@@ -72,8 +72,6 @@ module AccountCache
         end
 
         [queue_name, queue_name, data]
-      end.sort_by do |tuple|
-        tuple[0]
       end
     rescue StandardError => e
       Rails.logger.warn("Did not get queues from system with error #{e}")
