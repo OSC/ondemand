@@ -54,7 +54,13 @@ def dist
     "amzn#{host_inventory['platform_version']}"
   when 'ubuntu'
     "ubuntu-#{host_inventory['platform_version']}"
+  when 'debian'
+    "debian-#{host_inventory['platform_version']}"
   end
+end
+
+def apt?
+  ['ubuntu', 'debian'].include?(host_inventory['platform'])
 end
 
 def arch
@@ -67,11 +73,13 @@ def codename
     'jammy'
   when 'ubuntu-20.04'
     'focal'
+  when 'debian-12'
+    'bookworm'
   end
 end
 
 def packager
-  if host_inventory['platform'] == 'ubuntu'
+  if apt?
     'DEBIAN_FRONTEND=noninteractive apt'
   elsif host_inventory['platform'] == 'redhat' && host_inventory['platform_version'] =~ /^7/
     'yum'
@@ -81,7 +89,7 @@ def packager
 end
 
 def apache_service
-  if host_inventory['platform'] == 'ubuntu'
+  if apt?
     'apache2'
   elsif host_inventory['platform'] == 'redhat' && host_inventory['platform_version'] =~ /^7/
     'httpd24-httpd'
@@ -91,7 +99,7 @@ def apache_service
 end
 
 def apache_reload
-  if host_inventory['platform'] == 'ubuntu'
+  if apt?
     '/usr/sbin/apachectl graceful'
   elsif host_inventory['platform'] == 'redhat' && host_inventory['platform_version'] =~ /^7/
     '/opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper $OPTIONS -k graceful'
@@ -102,7 +110,7 @@ end
 
 def apache_user
   case host_inventory['platform']
-  when 'ubuntu'
+  when 'ubuntu', 'debian'
     'www-data'
   else
     'apache'
@@ -136,7 +144,7 @@ def bootstrap_repos
       on hosts, 'dnf -y module enable ruby:3.1'
       on hosts, 'dnf -y module enable nodejs:18'
     end
-  when 'ubuntu'
+  when 'ubuntu', 'debian'
     on hosts, 'apt-get update'
   end
   install_packages(repos) unless repos.empty?
@@ -157,7 +165,7 @@ def ondemand_repo
     create_remote_file(hosts, '/etc/yum.repos.d/ondemand.repo', repo_file)
     copy_files_to_dir(File.join(proj_root, "dist/#{dist}-#{arch}/*.rpm"), '/repo')
     on hosts, 'createrepo /repo'
-  elsif host_inventory['platform'] == 'ubuntu'
+  elsif apt?
     install_packages(['dpkg-dev'])
     copy_files_to_dir(File.join(proj_root, "dist/#{dist}-#{arch}/*.deb"), '/repo')
     on hosts, 'cd /repo ; dpkg-scanpackages .  | gzip -9c > Packages.gz'
@@ -192,7 +200,7 @@ def install_ondemand
                      end
     on hosts, "#{config_manager} --save --setopt ondemand-web.exclude='ondemand ondemand-gems* ondemand-selinux'"
     install_packages(['ondemand', 'ondemand-dex', 'ondemand-selinux'])
-  elsif host_inventory['platform'] == 'ubuntu'
+  elsif apt?
     install_packages(['wget'])
     on hosts, "wget -O /tmp/ondemand-release.deb https://yum.osc.edu/ondemand/latest/ondemand-release-web_#{build_repo_version}.0-#{codename}_all.deb"
     install_packages(['/tmp/ondemand-release.deb'])
@@ -207,8 +215,8 @@ def install_ondemand
 end
 
 def fix_apache
-  # ubuntu has it's own default page
-  if host_inventory['platform'] == 'ubuntu'
+  # ubuntu/debian has it's own default page
+  if apt?
     default_config = '/etc/apache2/sites-enabled/000-default.conf'
     on hosts, "test -L #{default_config} && unlink #{default_config} || exit 0"
   end
@@ -221,7 +229,7 @@ def upload_portal_config(file)
 end
 
 def apache_conf_dir
-  if host_inventory['platform'] == 'ubuntu'
+  if apt?
     '/etc/apache2/sites-available'
   elsif host_inventory['platform'] == 'redhat' && host_inventory['platform_version'] =~ /^7/
     '/opt/rh/httpd24/root/etc/httpd/conf.d'
