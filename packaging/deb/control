@@ -6,7 +6,7 @@ Build-Depends: debhelper (>=11~), curl, build-essential,
   tzdata, libxml2-dev, libxslt-dev, pkg-config, zlib1g-dev, liblzma-dev,
   ruby, ruby-dev,
   nodejs (>= 18.0), nodejs (<< 19.0),
-  sqlite3, libsqlite3-dev, python3
+  sqlite3, libsqlite3-dev, python3@EXTRA_DEPENDS@
 Standards-Version: 4.1.4
 Homepage: https://openondemand.org
 
