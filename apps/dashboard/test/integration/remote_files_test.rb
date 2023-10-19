@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 require 'rclone_helper'
 
 class RemoteFilesIntegrationTest < ActionDispatch::IntegrationTest
-
   def put_file(path, file, content_type: 'text/plain')
     # force binary encoding here, but the default utf-8 has the same behaviour
     data = File.read(file).force_encoding('BINARY')
