@@ -260,8 +260,12 @@ def bootstrap_user
 end
 
 def bootstrap_flask
-  install_packages(['python3', 'python3-pip'])
-  on hosts, 'python3 -m pip install flask'
+  if host_inventory['platform'] == 'debian'
+    install_packages(['python3', 'python3-flask'])
+  else
+    install_packages(['python3', 'python3-pip'])
+    on hosts, 'python3 -m pip install flask'
+  end
 end
 
 def dl_ctr_logs
