@@ -8,7 +8,7 @@ export GEM_PATH           = $(GEM_HOME):$(DESTDIR)/opt/ood/gems:$(shell printenv
 export APACHE_DIR         = "$(DESTDIR)/var/www/ood"
 export APACHE_CONF_DIR    = "$(DESTDIR)/etc/apache2"
 export CONFIG_DIR         = "$(DESTDIR)/etc/ood/config"
-export ARCH               = $(shell uname -p)
+export ARCH               = $(shell uname -m)
 
 # Left as example of how to do dynamic dependencies
 # control would need: ${nodejs:Depends} for install dependencies
