@@ -72,7 +72,10 @@ module AccountCache
         end.to_h
 
         cluster_queues.map do |queue|
-          [queue.name, queue.name, cluster_data] unless blocked_queue?(queue)
+          unless blocked_queue?(queue)
+            data = cluster_data.merge(queue_account_data(queue))
+            [queue.name, queue.name, data]
+          end
         end.compact
       end.flatten(1).sort_by do |tuple|
         tuple[0]
@@ -140,6 +143,22 @@ module AccountCache
           hash[cluster.id] = cluster.job_adapter.queues
         end
       end
+    end
+  end
+
+  def queue_account_data(queue)
+    account_names.map do |account|
+      ["data-option-for-auto-accounts-#{account}", false] unless account_allowed?(queue, account)
+    end.compact.to_h
+  end
+
+  def account_allowed?(queue, account_name)
+    return false if queue.deny_accounts.any? { |account| account == account_name }
+
+    if queue.allow_accounts.nil?
+      true
+    else
+      queue.allow_accounts.any? { |account| account == account_name }
     end
   end
 end
