@@ -16,6 +16,15 @@ class BatchConnectTest < ApplicationSystemTestCase
       .returns(['1.2.3', '', exit_success])
   end
 
+  def make_bc_app(dir, form)
+    SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+    app_dir = "#{dir}/app".tap { |d| Dir.mkdir(d) }
+    stub_scontrol
+    stub_sacctmgr
+    stub_git(app_dir)
+    Pathname.new(app_dir).join('form.yml').write(form)
+  end
+
   test 'cluster choice changes node types' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
@@ -782,6 +791,49 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal '', find_option_style('auto_queues', 'serial-40core')
       assert_equal '', find_option_style('auto_queues', 'serial-48core')
       assert_equal '', find_option_style('auto_queues', 'gpudebug-48core')
+    end
+  end
+
+  test 'auto queues are account aware' do
+    Dir.mktmpdir do |dir|
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+          - oakley
+        form:
+          - auto_accounts
+          - auto_queues
+      HEREDOC
+
+      make_bc_app(dir, form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults
+      assert_equal 'batch', find_value('auto_queues')
+      assert_equal 'owens', find_value('cluster')
+      assert_equal 'pzs0715', find_value('auto_accounts')
+
+      select('oakley', from: bc_ele_id('cluster'))
+
+      # condo-osumed queues are disabled, but the backfill-serial variants are.
+      assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-cpu-40core'))
+      assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-gpu-48core'))
+      assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-gpu-quad'))
+      assert_equal('', find_option_style('auto_queues', 'condo-osumed-cpu-40core-backfill-serial'))
+      assert_equal('', find_option_style('auto_queues', 'condo-osumed-gpu-48core-backfill-serial'))
+      assert_equal('', find_option_style('auto_queues', 'condo-osumed-gpu-quad-backfill-serial'))
+
+      # change the account to pas2051 and now it's flipped.
+      # this is becuase pas2051 is on the condo-osumed queues' allow list and
+      # on the backfill variants' deny list
+      select('pas2051', from: bc_ele_id('auto_accounts'))
+      assert_equal('', find_option_style('auto_queues', 'condo-osumed-cpu-40core'))
+      assert_equal('', find_option_style('auto_queues', 'condo-osumed-gpu-48core'))
+      assert_equal('', find_option_style('auto_queues', 'condo-osumed-gpu-quad'))
+      assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-cpu-40core-backfill-serial'))
+      assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-gpu-48core-backfill-serial'))
+      assert_equal('display: none;', find_option_style('auto_queues', 'condo-osumed-gpu-quad-backfill-serial'))
     end
   end
 
