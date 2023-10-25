@@ -1,4 +1,6 @@
-require "rclone_util"
+# frozen_string_literal: true
+
+require 'rclone_util'
 
 # PosixFile is a class representing a file on a remote file system.
 class RemoteFile
@@ -17,8 +19,7 @@ class RemoteFile
     @remote_type ||= RcloneUtil.remote_type(remote)
   end
 
-  def raise_if_cant_access_directory_contents
-  end
+  def raise_if_cant_access_directory_contents; end
 
   def directory?
     RcloneUtil.directory?(remote, path)
@@ -30,15 +31,20 @@ class RemoteFile
     # owner, mode and dev are not defined for remote files, leaving them empty
     files.map do |file|
       {
-        id: file["Path"],
-        name: file["Name"],
-        size: file["IsDir"] ? nil : file["Size"],
-        human_size: file["IsDir"] ? "-" : ::ApplicationController.helpers.number_to_human_size(file["Size"], precision: 3),
-        directory: file["IsDir"],
-        date: DateTime.parse(file["ModTime"]).to_time.to_i,
-        owner: "",
-        mode: "",
-        dev: 0,
+        id:         file['Path'],
+        name:       file['Name'],
+        size:       file['IsDir'] ? nil : file['Size'],
+        human_size: if file['IsDir']
+                      '-'
+                    else
+                      ::ApplicationController.helpers.number_to_human_size(file['Size'],
+                                                                           precision: 3)
+                    end,
+        directory:  file['IsDir'],
+        date:       DateTime.parse(file['ModTime']).to_time.to_i,
+        owner:      '',
+        mode:       '',
+        dev:        0
       }
     end.select do |stats|
       valid_encoding = stats[:name].to_s.valid_encoding?
@@ -48,14 +54,14 @@ class RemoteFile
   end
 
   def can_download_as_zip?(timeout: Configuration.file_download_dir_timeout, download_directory_size_limit: Configuration.file_download_dir_max)
-    [false, "Downloading remote files as zip is currently not supported"]
+    [false, 'Downloading remote files as zip is currently not supported']
   end
 
   def editable?
     # Assume file is editable if it exists and isn't a directory even though it
     # might not actually be (e.g. permissions)
     !directory?
-  rescue => e
+  rescue StandardError => e
     false
   end
 
