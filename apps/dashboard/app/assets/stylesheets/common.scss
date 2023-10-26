@@ -3,6 +3,10 @@
   cursor: pointer;
 }
 
+.clickable:hover {
+  text-decoration: underline;
+}
+
 .gold {
   color: gold;
 }
