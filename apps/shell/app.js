@@ -138,13 +138,22 @@ function detect_auth_error(requestToken, client_origin, server_origin, host) {
   }
 }
 
+function noop() {}
+
+function heartbeat() {
+  this.isAlive = true;
+}
+
 wss.on('connection', function connection (ws, req) {
   var dir,
       term,
       args,
       host,
       cmd = process.env.OOD_SSH_WRAPPER || 'ssh';
-
+  
+  ws.isAlive = true;
+  ws.on('pong', heartbeat);
+  
   console.log('Connection established');
 
   [host, dir] = host_and_dir_from_url(req.url);
@@ -165,6 +174,7 @@ wss.on('connection', function connection (ws, req) {
       cols: 80,
       rows: 30
     });
+    
 
     console.log('Opened terminal: ' + term.pid);
 
@@ -194,6 +204,15 @@ wss.on('connection', function connection (ws, req) {
     });
   }
 });
+
+const interval = setInterval(function ping() {
+  wss.clients.forEach(function each(ws) {
+    if (ws.isAlive === false) return ws.terminate();
+
+    ws.isAlive = false;
+    ws.ping(noop);
+  });
+}, 30000);
 
 server.on('upgrade', function upgrade(request, socket, head) {
   wss.handleUpgrade(request, socket, head, function done(ws) {
