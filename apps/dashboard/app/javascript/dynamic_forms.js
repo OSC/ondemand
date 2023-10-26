@@ -673,7 +673,7 @@ function optionForFromToken(str) {
       option.style.display = 'none';
       option.disabled = true;
 
-      if(option.selected) {
+      if(option.attributes['selected'] !== undefined) {
         option.selected = false;
         hideSelectedValue = option.textContent;
       }
