@@ -125,23 +125,13 @@ module BatchConnect::SessionsHelper
   end
 
   def id(session)
-    content_tag(:p) do
-      concat content_tag(:strong, t('dashboard.batch_connect_sessions_stats_session_id'))
-      concat " "
-      concat(
-        link_to(
-          session.id,
-          OodAppkit.files.url(path: session.staged_root).to_s,
-          target: "_blank"
-        )
-      )
-    end
+    render partial: 'id', locals: { session: session }
   end
 
   def support_ticket(session)
     content_tag(:p) do
       concat content_tag(:strong, t('dashboard.batch_connect_sessions_stats_support_ticket'))
-      concat " "
+      concat ' '
       concat(
         link_to(
           t('dashboard.batch_connect_sessions_stats_support_ticket_link_text'),
