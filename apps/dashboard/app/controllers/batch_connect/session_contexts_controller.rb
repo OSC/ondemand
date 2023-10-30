@@ -85,7 +85,6 @@ class BatchConnect::SessionContextsController < ApplicationController
     def set_prefill_templates
       # the prefill templates here should likely be using the UserSettingStore#prefill_templates rather than this json object
       @prefill_templates = prefill_templates
-      # include UserSettingStore instead
       # @prefill_templates ||= begin
       #   return {} unless @app.valid?
 
@@ -100,8 +99,10 @@ class BatchConnect::SessionContextsController < ApplicationController
       return unless params[:save_template].present? && params[:save_template] == "on" && params[:template_name].present?
 
       safe_name = params[:template_name].gsub(/[\x00\/\\:\*\?\"<>\| ]/, '_')
-      path = prefill_templates_root.join(safe_name.to_s + '.json')
-      path.write(@session_context.to_json)
+      # path = prefill_templates_root.join(safe_name.to_s + '.json')
+      # path.write(@session_context.to_json)
+      updated_settings = { prefill_templates: { safe_name => @session_context.to_json } }
+      update_user_settings(updated_settings)
     end
 
     # Only permit certian parameters
