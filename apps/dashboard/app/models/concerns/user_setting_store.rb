@@ -1,7 +1,7 @@
 module UserSettingStore
 
   def user_settings
-    @user_settings = read_user_settings if @user_settings.nil?
+    @user_settings = read_user_settings
     @user_settings.clone
   end
 
@@ -10,6 +10,10 @@ module UserSettingStore
     user_settings
     @user_settings.deep_merge!(new_user_settings.deep_symbolize_keys)
     save_user_settings
+  end
+
+  def prefill_templates
+    user_settings[:prefill_templates].nil? ? {} : user_settings[:prefill_templates]
   end
 
   private
