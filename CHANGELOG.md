@@ -6,10 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Set .clickable items to underline on hover (#3138)\
-Lint a random file (#3134)\
-Added heartbeat function (#3135)\
-Add Debian 12 support (#3127)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
@@ -30,6 +26,7 @@ Add Debian 12 support (#3127)
 - RSS and MD MOTD formats can now render unsafe HTML in [3007](https://github.com/OSC/ondemand/pull/3007).
 - `CurrentUser` should now be availalbe in ondemand.d config rendering in [3035](https://github.com/OSC/ondemand/pull/3035).
 - Icons are now present in favorite paths [3076](https://github.com/OSC/ondemand/pull/3076).
+- Debian 12 is now supported in [3127](https://github.com/OSC/ondemand/pull/3127).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
@@ -39,7 +36,8 @@ Add Debian 12 support (#3127)
 - auto_modules correctly filters hidden modules in [2997](https://github.com/OSC/ondemand/pull/2997).
 - Sites using ips instead of hostnames correctly populate allowed hosts in [2998](https://github.com/OSC/ondemand/pull/2998).
 - ActiveJobs correclty parses NONE time in [2965](https://github.com/OSC/ondemand/pull/2965).
-- `ondemand.d` files are now sorted before loaded in (2944)[https://github.com/OSC/ondemand/pull/2944].
+- `ondemand.d` files are now sorted before loaded in [2944](https://github.com/OSC/ondemand/pull/2944).
+- The shell app can now ping/pong to keep connections alive in [3135](https://github.com/OSC/ondemand/pull/3135).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
