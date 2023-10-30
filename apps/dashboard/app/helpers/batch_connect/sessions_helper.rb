@@ -125,7 +125,7 @@ module BatchConnect::SessionsHelper
   end
 
   def id(session)
-    render partial: 'id', locals: { session: session }
+    render(partial: 'batch_connect/sessions/card/id', locals: { session: session })
   end
 
   def support_ticket(session)
