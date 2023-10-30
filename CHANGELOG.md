@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Set .clickable items to underline on hover (#3138)\
+Lint a random file (#3134)\
+Added heartbeat function (#3135)\
+Add Debian 12 support (#3127)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
