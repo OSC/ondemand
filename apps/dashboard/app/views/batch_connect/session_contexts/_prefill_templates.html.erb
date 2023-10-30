@@ -1,4 +1,4 @@
-<%- unless @prefill_templates.empty? -%>
+<%- if @prefill_templates.key?(:prefill_template)  -%>
   <div class="form-group">
     <label class="control-label"><%= t('dashboard.batch_connect_form_prefill') %></label>
     <select class="form-control selectpicker" id="batch_connect_session_prefill_template">
