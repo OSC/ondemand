@@ -83,15 +83,17 @@ export class PathSelectorTable {
 
   async reloadTable(url) {
     try {
+      $(`#${this.tableId}_wrapper`).hide();
       $('#loading-icon').show();
       const response = await fetch(url, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
       const data = await this.dataFromJsonResponse(response);
       $(`#${this.breadcrumbId}`).html(data.path_selector_breadcrumbs_html);
       this._table.clear();
       this._table.rows.add(data.files);
-      this._table.draw();
       this.setLastVisited(data.path);
+      this._table.draw();
       $('#loading-icon').hide();
+      $(`#${this.tableId}_wrapper`).show();
     } catch (err) {
       console.log(err);
     }
