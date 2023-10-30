@@ -39,20 +39,23 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">        
+      <div class="modal-body">       
         <div>
-            <ol id="<%= breadcrumb_id %>" class="breadcrumb breadcrumb-no-delimiter">
-            </ol>
-            <table class="table table-hover table-condensed d-table w-100" id="<%= table_id %>">
-                <thead>
-                  <tr>
-                      <th>Type</th>
-                      <th>Name</th>
-                  </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+          <ol id="<%= breadcrumb_id %>" class="breadcrumb breadcrumb-no-delimiter">
+          </ol>
+          <div id="loading-icon">
+            <span class="fa fa-regular fa-spinner fa-spin"></span> 
+          </div>
+          <table class="table table-hover table-condensed d-table w-100" id="<%= table_id %>">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Name</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
         </div>
       </div>
       <div class="modal-footer sticky-footer">

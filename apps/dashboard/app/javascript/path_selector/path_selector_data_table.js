@@ -83,6 +83,7 @@ export class PathSelectorTable {
 
   async reloadTable(url) {
     try {
+      $('#loading-icon').show();
       const response = await fetch(url, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
       const data = await this.dataFromJsonResponse(response);
       $(`#${this.breadcrumbId}`).html(data.path_selector_breadcrumbs_html);
@@ -90,6 +91,7 @@ export class PathSelectorTable {
       this._table.rows.add(data.files);
       this._table.draw();
       this.setLastVisited(data.path);
+      $('#loading-icon').hide();
     } catch (err) {
       console.log(err);
     }
@@ -141,7 +143,7 @@ export class PathSelectorTable {
   // note that this is storing the file system path, not the path of the URL 
   // i.e., '/home/annie' not '/pun/sys/dashboard/files/fs/home/annie'
   getLastVisited() {
-    const lastVisited = localStorage.getItem(this.storageKey());
+    const lastVisited = null; // localStorage.getItem(this.storageKey());
     if(lastVisited === null) {
       return this.initialDirectory;
     } else {
