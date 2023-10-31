@@ -104,7 +104,7 @@ export class PathSelectorTable {
 
   resetTable() {
     $('#loading-icon').hide();
-    $(this.tableWrapper).show();
+    $(this.tableWrapper()).show();
     $('#forbidden-warning').hide();
   }
 
