@@ -1,4 +1,6 @@
-require "smart_attributes"
+# frozen_string_literal: true
+
+require 'smart_attributes'
 
 module BatchConnect
   # This is the model representing a batch connect app. It's mostly a data object
@@ -23,15 +25,15 @@ module BatchConnect
       # @param token [String] the token
       # @return [App] generated object
       def from_token(token)
-        type, *app = token.split("/")
+        type, *app = token.split('/')
         case type
-        when "dev"
+        when 'dev'
           name, sub_app = app
           router = DevRouter.new(name)
-        when "usr"
+        when 'usr'
           owner, name, sub_app = app
           router = UsrRouter.new(name, owner)
-        else  # "sys"
+        else # "sys"
           name, sub_app = app
           router = SysRouter.new(name)
         end
@@ -44,13 +46,13 @@ module BatchConnect
     # @param sub_app [String, nil] sub app
     def initialize(router:, sub_app: nil)
       @router  = router
-      @sub_app = sub_app && sub_app.to_s
+      @sub_app = sub_app&.to_s
     end
 
     # Generate a token from this object
     # @return [String] token
     def token
-      [router.token, sub_app].compact.join("/")
+      [router.token, sub_app].compact.join('/')
     end
 
     # Get the token for this app, excluding the subapp
@@ -71,7 +73,7 @@ module BatchConnect
       if Configuration.load_external_bc_config? && router.type == :sys && global_sub_app_root.directory?
         global_sub_app_root
       else
-        root.join("local")
+        root.join('local')
       end
     end
 
@@ -134,14 +136,14 @@ module BatchConnect
     def link
       OodAppLink.new(
         # FIXME: better to use default_title and "" description
-        title: title,
+        title:       title,
         description: description,
-        url: url,
-        icon_uri: icon_uri,
-        caption: caption,
-        new_tab: false,
-        data: preset? ? { 'method': 'post' } : {},
-        tile: tile
+        url:         url,
+        icon_uri:    icon_uri,
+        caption:     caption,
+        new_tab:     false,
+        data:        preset? ? { 'method': 'post' } : {},
+        tile:        tile
       )
     end
 
@@ -149,11 +151,11 @@ module BatchConnect
     # @return [Array<String>, []] the clusters the app wants to use
     def configured_clusters
       Array.wrap(form_config.fetch(:cluster, nil))
-        .select { |c| !c.to_s.strip.empty? }
-        .map { |c| c.to_s.strip }
-        .compact
+           .reject { |c| c.to_s.strip.empty? }
+           .map { |c| c.to_s.strip }
+           .compact
     end
-    
+
     # Read in context from cache file if cache is disabled and context.json exist
     def update_session_with_cache(session_context, cache_file)
       cache = cache_file.file? ? JSON.parse(cache_file.read) : {}
@@ -163,12 +165,11 @@ module BatchConnect
     end
 
     def delete_cached_cluster?(cached_cluster)
-
       # if you've cached a cluster that no longer exists
       !OodAppkit.clusters.include?(cached_cluster) ||
         # OR the app only has 1 cluster, and it's changed since the previous cluster was cached.
         # I.e., admin wants to override what you've cached.
-        (self.clusters.size == 1 && self.clusters[0] != cached_cluster)
+        (clusters.size == 1 && clusters[0] != cached_cluster)
     end
 
     # The clusters that the batch connect app can use. It's a combination
@@ -212,12 +213,12 @@ module BatchConnect
       return @validation_reason if @validation_reason
 
       if configured_clusters.empty?
-        "This app does not specify any cluster."
+        'This app does not specify any cluster.'
       elsif clusters.empty?
-        "This app requires clusters that do not exist " +
-        "or you do not have access to."
+        'This app requires clusters that do not exist ' \
+          'or you do not have access to.'
       else
-        ""
+        ''
       end
     end
 
@@ -236,7 +237,10 @@ module BatchConnect
           attribute_opts = { value: attribute_opts, fixed: true } unless attribute_opts.is_a?(Hash)
 
           # Hide resolution if not using native vnc clients
-          attribute_opts = { value: nil, fixed: true } if attribute_id.to_s == "bc_vnc_resolution" && !ENV["ENABLE_NATIVE_VNC"]
+          if attribute_id.to_s == 'bc_vnc_resolution' && !ENV['ENABLE_NATIVE_VNC']
+            attribute_opts = { value: nil,
+                               fixed: true }
+          end
 
           SmartAttributes::AttributeFactory.build(attribute_id, attribute_opts)
         end
@@ -281,22 +285,22 @@ module BatchConnect
     # View used for session if it exists
     # @return [String, nil] session view
     def session_view
-      file = root.join("view.html.erb")
+      file = root.join('view.html.erb')
       file.read if file.file?
     end
 
     # View used for session info if it exists
     # @return [String, nil] session info
     def session_info_view
-      @session_info_view ||= Pathname.new(root).glob("info.{md,html}.erb").find(&:file?).try(:read)
-    rescue
+      @session_info_view ||= Pathname.new(root).glob('info.{md,html}.erb').find(&:file?).try(:read)
+    rescue StandardError
       nil
     end
 
     # Paths to custom javascript files
     # @return [Pathname] paths to custom javascript files that exist
     def custom_javascript_files
-      files = [root.join("form.js")]
+      files = [root.join('form.js')]
       files << sub_app_root.join("#{sub_app}.js")
       files.select(&:file?)
     end
@@ -333,121 +337,128 @@ module BatchConnect
 
     private
 
-      def url
-        helpers = Rails.application.routes.url_helpers
+    def url
+      helpers = Rails.application.routes.url_helpers
 
-        if preset?
-          helpers.batch_connect_session_contexts_path(token: token)
-        else
-          helpers.new_batch_connect_session_context_path(token: token)
+      if preset?
+        helpers.batch_connect_session_contexts_path(token: token)
+      else
+        helpers.new_batch_connect_session_context_path(token: token)
+      end
+    end
+
+    def cfg_to_clusters(config)
+      c = OodAppkit.clusters[config.to_sym] || nil
+      return [c] unless c.nil?
+
+      # cluster may be a glob at this point
+      OodAppkit.clusters.select do |cluster|
+        File.fnmatch(config, cluster.id.to_s, File::FNM_EXTGLOB)
+      end
+    end
+
+    def build_sub_app_list
+      return [self] unless sub_app_root.directory? && sub_app_root.readable? && sub_app_root.executable?
+
+      list = sub_app_root.children.select(&:file?).map do |f|
+        root = f.dirname
+        name = f.basename.to_s.split('.').first
+        file = form_file(root: root, name: name)
+        self.class.new(router: router, sub_app: name) if f == file
+      end.compact
+      list.empty? ? [self] : list.sort_by(&:sub_app)
+    end
+
+    # Path to file describing form hash
+    def form_file(root:, name: 'form')
+      ["#{name}.yml.erb", "#{name}.yml"].map { |f| root.join(f) }.select(&:file?).first
+    end
+
+    # Path to file describing submission hash
+    def submit_file(root:, paths: ['submit.yml.erb', 'submit.yml'])
+      Array.wrap(paths).compact.map { |f| root.join(f) }.select(&:file?).first
+    end
+
+    # Parse an ERB and Yaml file
+    def read_yaml_erb(path:, binding: nil)
+      contents = path.read
+      contents = render_erb_file(path: path, contents: contents, binding: binding) if path.extname == '.erb'
+      YAML.safe_load(contents).to_h.deep_symbolize_keys
+    end
+
+    # pure function to render erb, properly setting the filename attribute
+    # before rendering
+    def render_erb_file(path:, contents:, binding:)
+      erb = ERB.new(contents, trim_mode: '-')
+      erb.filename = path.to_s
+      erb.result(binding)
+    end
+
+    # Hash describing the full form object
+    def form_config(binding: nil)
+      return @form_config if @form_config
+
+      raise AppNotFound, "This app does not exist under the directory '#{root}'" unless root.directory?
+
+      file = form_file(root: root)
+      raise AppNotFound, "This app does not supply a form file under the directory '#{root}'" unless file
+
+      hsh = read_yaml_erb(path: file, binding: binding)
+      if sub_app
+        file = form_file(root: sub_app_root, name: sub_app)
+        unless file
+          raise AppNotFound,
+                "This app does not supply a sub app form file under the directory '#{sub_app_root}'"
         end
+
+        hsh = hsh.deep_merge read_yaml_erb(path: file, binding: binding)
       end
+      @form_config = hsh
+    rescue AppNotFound => e
+      @validation_reason = e.message
+      {}
+    rescue StandardError, Exception => e
+      @validation_reason = "#{e.class.name}: #{e.message}"
+      {}
+    end
 
-      def cfg_to_clusters(config)
-        c = OodAppkit.clusters[config.to_sym] || nil
-        return [c] unless c.nil?
+    # Hash describing the full submission properties
+    def submit_config(binding: nil)
+      return @submit_config if @submit_config
 
-        # cluster may be a glob at this point
-        OodAppkit.clusters.select do |cluster|
-          File.fnmatch(config, cluster.id.to_s, File::FNM_EXTGLOB)
-        end
+      file = submit_file(root: root)
+      hsh = file ? read_yaml_erb(path: file, binding: binding) : {}
+      if path = form_config.fetch(:submit, nil)
+        file = submit_file(root: sub_app_root, paths: path)
+        hsh = hsh.deep_merge read_yaml_erb(path: file, binding: binding) if file
       end
+      @submit_config = hsh
+    end
 
-      def build_sub_app_list
-        return [self] unless sub_app_root.directory? && sub_app_root.readable? && sub_app_root.executable?
-        list = sub_app_root.children.select(&:file?).map do |f|
-          root = f.dirname
-          name = f.basename.to_s.split(".").first
-          file = form_file(root: root, name: name)
-          self.class.new(router: router, sub_app: name) if f == file
-        end.compact
-        list.empty? ? [self] : list.sort_by(&:sub_app)
-      end
+    # The OOD app object describing this app
+    def ood_app
+      @ood_app ||= OodApp.new(router)
+    end
 
-      # Path to file describing form hash
-      def form_file(root:, name: "form")
-        %W(#{name}.yml.erb #{name}.yml).map { |f| root.join(f) }.select(&:file?).first
-      end
+    # add a widget for choosing the cluster if one doesn't already exist
+    # and if users aren't defining they're own form.cluster and attributes.cluster
+    def add_cluster_widget(attributes, attribute_list)
+      return unless clusters.any?
 
-      # Path to file describing submission hash
-      def submit_file(root:, paths: %w(submit.yml.erb submit.yml))
-        Array.wrap(paths).compact.map { |f| root.join(f) }.select(&:file?).first
-      end
+      attribute_list.prepend('cluster') unless attribute_list.include?('cluster')
 
-      # Parse an ERB and Yaml file
-      def read_yaml_erb(path:, binding: nil)
-        contents = path.read
-        contents = render_erb_file(path: path, contents: contents, binding: binding) if path.extname == ".erb"
-        YAML.safe_load(contents).to_h.deep_symbolize_keys
-      end
-
-      # pure function to render erb, properly setting the filename attribute
-      # before rendering
-      def render_erb_file(path:, contents:, binding:)
-        erb = ERB.new(contents, trim_mode: "-")
-        erb.filename = path.to_s
-        erb.result(binding)
-      end
-
-      # Hash describing the full form object
-      def form_config(binding: nil)
-        return @form_config if @form_config
-
-        raise AppNotFound, "This app does not exist under the directory '#{root}'" unless root.directory?
-        file = form_file(root: root)
-        raise AppNotFound, "This app does not supply a form file under the directory '#{root}'" unless file
-        hsh = read_yaml_erb(path: file, binding: binding)
-        if sub_app
-          file = form_file(root: sub_app_root, name: sub_app)
-          raise AppNotFound, "This app does not supply a sub app form file under the directory '#{sub_app_root}'" unless file
-          hsh = hsh.deep_merge read_yaml_erb(path: file, binding: binding)
-        end
-        @form_config = hsh
-      rescue AppNotFound => e
-        @validation_reason = e.message
-        return {}
-      rescue StandardError, Exception => e
-        @validation_reason = "#{e.class.name}: #{e.message}"
-        return {}
-      end
-
-      # Hash describing the full submission properties
-      def submit_config(binding: nil)
-        return @submit_config if @submit_config
-
-        file = submit_file(root: root)
-        hsh = file ? read_yaml_erb(path: file, binding: binding) : {}
-        if path = form_config.fetch(:submit, nil)
-          file = submit_file(root: sub_app_root, paths: path)
-          hsh = hsh.deep_merge read_yaml_erb(path: file, binding: binding) if file
-        end
-        @submit_config = hsh
-      end
-
-      # The OOD app object describing this app
-      def ood_app
-        @ood_app ||= OodApp.new(router)
-      end
-
-      # add a widget for choosing the cluster if one doesn't already exist
-      # and if users aren't defining they're own form.cluster and attributes.cluster
-      def add_cluster_widget(attributes, attribute_list)
-        return unless clusters.any?
-
-        attribute_list.prepend("cluster") unless attribute_list.include?("cluster")
-
-        if clusters.size > 1
-          attributes[:cluster] = {
-            widget: "select",
-            label: "Cluster",
-            options: clusters.map(&:id)
-          }
-        else
-          attributes[:cluster] = {
-            value: clusters.first.id.to_s,
-            fixed: true
-          }
-        end
-      end
+      attributes[:cluster] = if clusters.size > 1
+                               {
+                                 widget:  'select',
+                                 label:   'Cluster',
+                                 options: clusters.map(&:id)
+                               }
+                             else
+                               {
+                                 value: clusters.first.id.to_s,
+                                 fixed: true
+                               }
+                             end
+    end
   end
 end
