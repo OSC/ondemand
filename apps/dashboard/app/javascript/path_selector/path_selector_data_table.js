@@ -83,7 +83,7 @@ export class PathSelectorTable {
 
   async reloadTable(url) {
     try {
-      $(`#${this.tableId}_wrapper`).hide();
+      $(this.tableWrapper()).hide();
       $('#loading-icon').show();
       const response = await fetch(url, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
       const data = await this.dataFromJsonResponse(response);
@@ -92,17 +92,20 @@ export class PathSelectorTable {
       this._table.rows.add(data.files);
       this.setLastVisited(data.path);
       this._table.draw();
-      $('#forbidden-warning').hide();
-      $('#loading-icon').hide();
-      $(`#${this.tableId}_wrapper`).show();
+      this.resetTable();
     } catch (err) {
-      $('#loading-icon').hide();
-      $(`#${this.tableId}_wrapper`).show();
+      this.resetTable();
       if (err.message.match("Permission denied")) {
         $('#forbidden-warning').show();
       }
       console.log(err);
     }
+  }
+
+  resetTable() {
+    $('#loading-icon').hide();
+    $(this.tableWrapper).show();
+    $('#forbidden-warning').hide();
   }
 
   dataFromJsonResponse(response) {
@@ -146,6 +149,10 @@ export class PathSelectorTable {
 
   storageKey() {
     return `${this.tableId}_last_visited`;
+  }
+
+  tableWrapper() {
+    return `${this.tableId}_wrapper`;
   }
 
   // note that this is storing the file system path, not the path of the URL 
