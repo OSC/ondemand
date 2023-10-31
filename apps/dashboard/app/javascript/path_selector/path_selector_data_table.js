@@ -92,11 +92,15 @@ export class PathSelectorTable {
       this._table.rows.add(data.files);
       this.setLastVisited(data.path);
       this._table.draw();
+      $('#forbidden-warning').hide();
       $('#loading-icon').hide();
       $(`#${this.tableId}_wrapper`).show();
     } catch (err) {
       $('#loading-icon').hide();
       $(`#${this.tableId}_wrapper`).show();
+      if (err.message.match("Permission denied")) {
+        $('#forbidden-warning').show();
+      }
       console.log(err);
     }
   }
