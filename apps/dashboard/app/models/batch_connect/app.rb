@@ -238,8 +238,7 @@ module BatchConnect
 
           # Hide resolution if not using native vnc clients
           if attribute_id.to_s == 'bc_vnc_resolution' && !ENV['ENABLE_NATIVE_VNC']
-            attribute_opts = { value: nil,
-                               fixed: true }
+            attribute_opts = { value: nil, fixed: true }
           end
 
           SmartAttributes::AttributeFactory.build(attribute_id, attribute_opts)
@@ -375,7 +374,9 @@ module BatchConnect
     end
 
     # Path to file describing submission hash
-    def submit_file(root:, paths: ['submit.yml.erb', 'submit.yml'])
+    # rubocop:disable Style/WordArray - solargraph has a bug with ['arrays', 'like', 'this']
+    def submit_file(root:, paths: %w[submit.yml.erb submit.yml])
+      # rubocop:enable Style/WordArray
       Array.wrap(paths).compact.map { |f| root.join(f) }.select(&:file?).first
     end
 
@@ -407,8 +408,8 @@ module BatchConnect
       if sub_app
         file = form_file(root: sub_app_root, name: sub_app)
         unless file
-          raise AppNotFound,
-                "This app does not supply a sub app form file under the directory '#{sub_app_root}'"
+          msg = "This app does not supply a sub app form file under the directory '#{sub_app_root}'"
+          raise AppNotFound, msg
         end
 
         hsh = hsh.deep_merge read_yaml_erb(path: file, binding: binding)
