@@ -22,7 +22,7 @@
     "js-yaml": "^3.14.0",
     "minimist": "^1.2.6",
     "node-notifier": "^8.0.1",
-    "node-pty": "^0.9.0",
+    "node-pty": "^1.0.0",
     "ws": ">=7.4.6"
   },
   "private": true,
