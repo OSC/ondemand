@@ -96,7 +96,8 @@ export class PathSelectorTable {
     } catch (err) {
       this.resetTable();
       if (err.message.match("Permission denied")) {
-        $('#forbidden-warning').show();
+        $('#forbidden-warning').removeClass('d-none')
+        $('#forbidden-warning').trigger('focus');
       }
       console.log(err);
     }
@@ -105,7 +106,7 @@ export class PathSelectorTable {
   resetTable() {
     $('#loading-icon').hide();
     $(this.tableWrapper()).show();
-    $('#forbidden-warning').hide();
+    $('#forbidden-warning').addClass('d-none');
   }
 
   dataFromJsonResponse(response) {
@@ -152,7 +153,7 @@ export class PathSelectorTable {
   }
 
   tableWrapper() {
-    return `${this.tableId}_wrapper`;
+    return `#${this.tableId}_wrapper`;
   }
 
   // note that this is storing the file system path, not the path of the URL 
