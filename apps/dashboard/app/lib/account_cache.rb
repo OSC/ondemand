@@ -59,20 +59,28 @@ module AccountCache
   # @return [Array] - the dynamic form options
   def queues
     Rails.cache.fetch('queues', expires_in: 4.hours) do
-      unique_queue_names.map do |queue_name|
-        data = {}
-        queues_per_cluster.each do |cluster, cluster_queues|
-          cluster_queue_names = cluster_queues.map(&:to_s)
-          queue_info = cluster_queues.find { |q| q.name == queue_name }
 
-          # if the queue doesn't exist on the cluster OR you're not allowed to use the queue
-          if !cluster_queue_names.include?(queue_name) || blocked_queue?(queue_info)
-            data["data-option-for-cluster-#{cluster}"] = false
-          end
+      queues_per_cluster.map do |cluster, cluster_queues|
+        other_clusters = queues_per_cluster.reject do |c, _queues|
+          c == cluster
+        end.map do |c, _queues|
+          c.to_s
         end
 
-        [queue_name, queue_name, data]
+        cluster_data = other_clusters.map do |other_cluster|
+          ["data-option-for-cluster-#{other_cluster}", false]
+        end.to_h
+
+        cluster_queues.map do |queue|
+          unless blocked_queue?(queue)
+            data = cluster_data.merge(queue_account_data(queue))
+            [queue.name, queue.name, data]
+          end
+        end.compact
+      end.flatten(1).sort_by do |tuple|
+        tuple[0]
       end
+
     rescue StandardError => e
       Rails.logger.warn("Did not get queues from system with error #{e}")
       Rails.logger.warn(e.backtrace.join("\n"))
@@ -128,14 +136,6 @@ module AccountCache
     end
   end
 
-  def unique_queue_names
-    [].tap do |queues|
-      queues_per_cluster.map do |_, cluster_queues|
-        queues << cluster_queues.map(&:to_s)
-      end
-    end.flatten.uniq
-  end
-
   def queues_per_cluster
     Rails.cache.fetch('queues_per_cluster', expires_in: 24.hours) do
       {}.tap do |hash|
@@ -143,6 +143,22 @@ module AccountCache
           hash[cluster.id] = cluster.job_adapter.queues
         end
       end
+    end
+  end
+
+  def queue_account_data(queue)
+    account_names.map do |account|
+      ["data-option-for-auto-accounts-#{account}", false] unless account_allowed?(queue, account)
+    end.compact.to_h
+  end
+
+  def account_allowed?(queue, account_name)
+    return false if queue.deny_accounts.any? { |account| account == account_name }
+
+    if queue.allow_accounts.nil?
+      true
+    else
+      queue.allow_accounts.any? { |account| account == account_name }
     end
   end
 end

@@ -670,13 +670,13 @@ function optionForFromToken(str) {
     };
 
     if(hide) {
-      option.style.display = 'none';
-      option.disabled = true;
-
       if(option.selected) {
         option.selected = false;
         hideSelectedValue = option.textContent;
       }
+
+      option.style.display = 'none';
+      option.disabled = true;
     } else {
       option.style.display = '';
       option.disabled = false;
