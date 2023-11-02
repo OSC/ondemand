@@ -173,7 +173,7 @@ function fixedFieldEnabled(checkbox, dataElement) {
       if (selectedOption.text == textContent) {
         enableSelectOptionConfig(configItemLi, true);
       } else {
-        disableSelectOptionConfig(configItemLi);
+        disableSelectOptionConfig(configItemLi, true);
       }
     });
   }
@@ -199,7 +199,7 @@ function toggleFixedField(event) {
   event.target.disabled = false;
 }
 
-function disableSelectOptionConfig(liElement, addButtonDisabled = true) {
+function disableSelectOptionConfig(liElement, addButtonDisabled = false) {
   liElement.classList.add('list-group-item-danger', 'text-strike');
   const addButton = $(liElement).find('[data-select-toggler="add"]')[0];
   addButton.disabled = addButtonDisabled;
@@ -296,7 +296,7 @@ function initSelect(selectElement) {
     enableSelectOptionConfig(configItem);
     const textContent = $(configItem).find('[data-select-value]')[0].textContent;
     if (excludeList.includes(textContent)) {
-      disableSelectOptionConfig(configItem, false);
+      disableSelectOptionConfig(configItem);
     }
   });
 }
