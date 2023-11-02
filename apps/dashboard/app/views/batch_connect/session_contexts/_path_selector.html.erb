@@ -43,6 +43,11 @@
         <div>
           <ol id="<%= breadcrumb_id %>" class="breadcrumb breadcrumb-no-delimiter">
           </ol>
+
+          <div class="d-none alert alert-warning" role="alert" id="forbidden-warning">
+            <%= t('dashboard.batch_connect_sessions_path_selector_forbidden_error') %>
+          </div>
+
           <div class="d-flex justify-content-center">
             <div id="loading-icon" class="spinner-border rem-5" role="status">
               <span class="sr-only">Loading...</span> 

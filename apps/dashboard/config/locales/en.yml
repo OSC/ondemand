@@ -149,6 +149,7 @@ en:
       take a few minutes.
 
     batch_connect_sessions_status_completed: "For debugging purposes, this card will be retained for %{days} more days"
+    batch_connect_sessions_path_selector_forbidden_error: "You do not have permission to select that directory or file."
     batch_connect_apps_menu_title: "Interactive Apps"
     breadcrumbs_all_apps: "All Apps"
     breadcrumbs_home: "Home"
