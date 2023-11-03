@@ -3,26 +3,28 @@ export class PathSelectorTable {
   _table = null;
 
   // input data that should be passed into the constructor
-  tableId           = undefined;
-  filesPath         = undefined;
-  breadcrumbId      = undefined;
-  initialDirectory  = undefined;
-  selectButtonId    = undefined;
-  inputFieldId      = undefined;
-  modalId           = undefined;
-  showHidden        = undefined;
-  showFiles         = undefined;
+  tableId             = undefined;
+  filesPath           = undefined;
+  breadcrumbId        = undefined;
+  initialDirectory    = undefined;
+  selectButtonId      = undefined;
+  inputFieldId        = undefined;
+  modalId             = undefined;
+  showHidden          = undefined;
+  showFiles           = undefined;
+  filePickerFavorites = undefined;
 
   constructor(options) {
-      this.tableId            = options.tableId;
-      this.filesPath          = options.filesPath;
-      this.breadcrumbId       = options.breadcrumbId;
-      this.initialDirectory   = options.initialDirectory;
-      this.selectButtonId     = options.selectButtonId;
-      this.inputFieldId       = options.inputFieldId;
-      this.modalId            = options.modalId;
-      this.showHidden         = options.showHidden === 'true';
-      this.showFiles          = options.showFiles === 'true';
+      this.tableId             = options.tableId;
+      this.filesPath           = options.filesPath;
+      this.breadcrumbId        = options.breadcrumbId;
+      this.initialDirectory    = options.initialDirectory;
+      this.selectButtonId      = options.selectButtonId;
+      this.inputFieldId        = options.inputFieldId;
+      this.modalId             = options.modalId;
+      this.showHidden          = options.showHidden === 'true';
+      this.showFiles           = options.showFiles === 'true';
+      this.filePickerFavorites = options.filePickerFavorites;
 
       this.initDataTable();
       this.reloadTable(this.initialUrl());
@@ -33,6 +35,8 @@ export class PathSelectorTable {
   }
 
   initDataTable() {
+    // FAVORITES
+    $('#favorites').append(this.favoritesList());
 
     this._table = $(`#${this.tableId}`).DataTable({
       autoWidth: false,
@@ -54,7 +58,7 @@ export class PathSelectorTable {
       // https://datatables.net/reference/option/dom
       // dom: '', dataTables_info nowrap
       //
-      // put breadcrmbs below filter!!!
+      // put breadcrumbs below filter!!!
       dom: "<'row'<'col-sm-12'f>>" + // normally <'row'<'col-sm-6'l><'col-sm-6'f>> but we disabled pagination so l is not needed (dropdown for selecting # rows)
           "<'row'<'col-sm-12'<'dt-status-bar'<'datatables-status float-right'><'transfers-status'>>>>" +
           "<'row'<'col-sm-12'tr>>", // normally this is <'row'<'col-sm-5'i><'col-sm-7'p>> but we disabled pagination so have info take whole row
@@ -79,6 +83,21 @@ export class PathSelectorTable {
         row.dataset['pathType'] = data.type;
       },
     });
+  }
+
+  favoritesList() {
+    var favorites = "";
+    const filePickerFavorites = JSON.parse(this.filePickerFavorites);
+
+    for (var file in filePickerFavorites) {
+      favorites = favorites.concat(
+        "<a role='button'><span class='fa fa-folder'>&nbsp;</span>" +
+        filePickerFavorites[file].title +
+        "</a>"
+      )
+    };
+
+    return favorites;
   }
 
   async reloadTable(url) {
@@ -159,7 +178,7 @@ export class PathSelectorTable {
   // note that this is storing the file system path, not the path of the URL 
   // i.e., '/home/annie' not '/pun/sys/dashboard/files/fs/home/annie'
   getLastVisited() {
-    const lastVisited = localStorage.getItem(this.storageKey());
+    const lastVisited = null; // localStorage.getItem(this.storageKey());
     if(lastVisited === null) {
       return this.initialDirectory;
     } else {

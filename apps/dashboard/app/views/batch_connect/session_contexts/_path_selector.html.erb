@@ -2,6 +2,7 @@
   show_hidden = field_options.fetch(:show_hidden, false)
   show_files = field_options.fetch(:show_files, true)
   inital_directory = field_options.fetch(:directory, CurrentUser.home)
+  file_picker_favorites = field_options.fetch(:file_picker_favorites, [])
 
   input_field_id = "#{form.object_name}_#{attrib.id}"
   path_selector_id = "#{input_field_id}_path_selector"
@@ -24,6 +25,7 @@
     data-show-files="<%= show_files %>"
     data-show-hidden="<%= show_hidden %>"
     data-initial-directory="<%= inital_directory %>"
+    data-file-picker-favorites="<%= file_picker_favorites %>"
     data-files-path="<%= files_path %>"
     data-table-id="<%= table_id %>"
     data-breadcrumb-id="<%= breadcrumb_id %>"
@@ -46,11 +48,7 @@
             <div class="col-sm-5">
               <div class="panel panel-default">
                 <div class="panel-heading">Favorites</div>
-                <div class="list-group text-nowrap">
-                  <a role="button">
-                    <span class="fa fa-folder">&nbsp;</span>
-                    Favorite Item
-                  </a>
+                <div id="favorites" class="list-group text-nowrap">
                 </div>
               </div>
             </div>
