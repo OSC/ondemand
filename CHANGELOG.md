@@ -38,9 +38,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - ActiveJobs correclty parses NONE time in [2965](https://github.com/OSC/ondemand/pull/2965).
 - `ondemand.d` files are now sorted before loaded in [2944](https://github.com/OSC/ondemand/pull/2944).
 - The shell app can now ping/pong to keep connections alive in [3135](https://github.com/OSC/ondemand/pull/3135).
+- auto_queues are account aware in [3123](https://github.com/OSC/ondemand/pull/3123).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
+- Packaging adds `nodistro` nodejs repos in [3158](https://github.com/OSC/ondemand/pull/3158).
 
 ## [3.0.2] - 10-06-2023
 
