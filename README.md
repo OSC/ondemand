@@ -11,6 +11,8 @@
 - Documentation: https://osc.github.io/ood-documentation/latest/
 - Main code repo: https://github.com/OSC/ondemand
 - Core library repo: https://github.com/OSC/ood_core
+- Slack: [Open OnDemand Slack]
+- Discourse: [Discourse]
 
 This work is supported by the National Science Foundation of the United States under the award [NSF SI2-SSE-1534949](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1534949) and [NSF CSSI-Frameworks-1835725](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1835725).
 
@@ -63,3 +65,4 @@ This project is maintained by the <a href="https://www.osc.edu">Ohio Supercomput
 [contributing guide]: CONTRIBUTING.md
 [Discourse]: https://discourse.osc.edu
 [hpc toolset tutorial]: https://github.com/ubccr/hpc-toolset-tutorial/
+[Open OnDemand Slack]: http://openondemand.org/slack
