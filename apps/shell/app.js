@@ -178,17 +178,13 @@ wss.on('connection', function connection (ws, req) {
 
     console.log('Opened terminal: ' + term.pid);
 
-    term.on('data', function (data) {
+    term.onData(function (data) {
       ws.send(data, function (error) {
         if (error) console.log('Send error: ' + error.message);
       });
     });
 
-    term.on('error', function (error) {
-      ws.close();
-    });
-
-    term.on('close', function () {
+    term.onExit(function (_exitData) {
       ws.close();
     });
 
