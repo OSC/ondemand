@@ -64,12 +64,31 @@ function addSearch(){
   });
 }
 
+function createHashTable(ALL_ICONS) {
+	const iconHash = new Map();
+  for (i = 0; i < ALL_ICONS.length; i++) {
+    var arr = [];
+    let tempIcon = ALLICONS[i];
+    if (iconHash.get(tempIcon.charAt(0)) != undefined) {
+      arr = iconHash.get(tempIcon.charAt(0));
+    }
+    arr.push(tempIcon);
+    iconHash.set(tempIcon.charAt(0), arr);
+  }
+  return iconHash;
+}
+
 function searchIcons(event){
+
+  const iconHash = createHashTable(ALL_ICONS);
+
   const searchString = event.target.value;
-  const rex = new RegExp(searchString, "g");
+  const rex = new RegExp(searchString, "g"); 
   hiddenIcons = true;
 
-  ALL_ICONS.forEach(name => {
+  arr = iconHash.get(searchString.charAt(0));
+
+  arr.forEach(name => {
     const ele = $(`#${iconId(name)}`)[0];
     if(ele === undefined) {
       return;
@@ -84,6 +103,27 @@ function searchIcons(event){
     }
   });
 }
+
+// function searchIcons(event){
+//   const searchString = event.target.value;
+//   const rex = new RegExp(searchString, "g");
+//   hiddenIcons = true;
+
+//   ALL_ICONS.forEach(name => {
+//     const ele = $(`#${iconId(name)}`)[0];
+//     if(ele === undefined) {
+//       return;
+//     }
+
+//     const show = rex.test(name);
+
+//     if(show) {
+//       ele.classList.remove('d-none');
+//     } else {
+//       ele.classList.add('d-none');
+//     }
+//   });
+// }
 
 function showAllIcons(){
   // there are no hidden icons, so just return
