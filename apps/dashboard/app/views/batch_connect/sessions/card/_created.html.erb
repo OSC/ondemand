@@ -1,0 +1,4 @@
+<p>
+  <strong><%= t('dashboard.batch_connect_sessions_stats_created_at') %></strong>
+  <%= Time.at(session.created_at).localtime.strftime("%Y-%m-%d %H:%M:%S %Z") %>
+</p>
