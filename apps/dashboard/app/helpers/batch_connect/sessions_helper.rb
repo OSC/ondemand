@@ -69,11 +69,7 @@ module BatchConnect::SessionsHelper
   end
 
   def created(session)
-    content_tag(:p) do
-      concat content_tag(:strong, t('dashboard.batch_connect_sessions_stats_created_at'))
-      concat " "
-      concat Time.at(session.created_at).localtime.strftime("%Y-%m-%d %H:%M:%S %Z")
-    end
+    render(partial: 'batch_connect/sessions/card/created', locals: { session: session })
   end
 
   def session_time(session)
