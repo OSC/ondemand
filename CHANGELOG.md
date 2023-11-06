@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Use latest packaging with nodistro nodejs repos (#3158)\
+start to expand data- entries for auto_queues (#3123)\
+3145 path selector error handling (#3150)\
+Update node pty (#3155)\
+refactor id method with partials (#3148)\
+Adds loading icon to path selector UI on table refresh (#3144)\
+lint a random file (#3141)\
+Update Changelog (#3143)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
