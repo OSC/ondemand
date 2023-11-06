@@ -125,16 +125,7 @@ module BatchConnect::SessionsHelper
   end
 
   def support_ticket(session)
-    content_tag(:p) do
-      concat content_tag(:strong, t('dashboard.batch_connect_sessions_stats_support_ticket'))
-      concat ' '
-      concat(
-        link_to(
-          t('dashboard.batch_connect_sessions_stats_support_ticket_link_text'),
-          support_path(session_id: session.id)
-        )
-      )
-    end
+    render(partial: 'batch_connect/sessions/card/support_ticket', locals: { session: session })
   end
 
   def display_choices(session)
