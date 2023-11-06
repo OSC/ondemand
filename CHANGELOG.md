@@ -6,14 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Use latest packaging with nodistro nodejs repos (#3158)\
-start to expand data- entries for auto_queues (#3123)\
-3145 path selector error handling (#3150)\
-Update node pty (#3155)\
-refactor id method with partials (#3148)\
-Adds loading icon to path selector UI on table refresh (#3144)\
-lint a random file (#3141)\
-Update Changelog (#3143)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
@@ -46,9 +38,11 @@ Update Changelog (#3143)
 - ActiveJobs correclty parses NONE time in [2965](https://github.com/OSC/ondemand/pull/2965).
 - `ondemand.d` files are now sorted before loaded in [2944](https://github.com/OSC/ondemand/pull/2944).
 - The shell app can now ping/pong to keep connections alive in [3135](https://github.com/OSC/ondemand/pull/3135).
+- auto_queues are account aware in [3123](https://github.com/OSC/ondemand/pull/3123).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
+- Packaging adds `nodistro` nodejs repos in [3158](https://github.com/OSC/ondemand/pull/3158).
 
 ## [3.0.2] - 10-06-2023
 
