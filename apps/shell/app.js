@@ -138,12 +138,6 @@ function detect_auth_error(requestToken, client_origin, server_origin, host) {
   }
 }
 
-function noop() {}
-
-function heartbeat() {
-  this.isAlive = true;
-}
-
 wss.on('connection', function connection (ws, req) {
   var dir,
       term,
@@ -152,7 +146,6 @@ wss.on('connection', function connection (ws, req) {
       cmd = process.env.OOD_SSH_WRAPPER || 'ssh';
   
   ws.isAlive = true;
-  ws.on('pong', heartbeat);
   
   console.log('Connection established');
 
@@ -198,6 +191,10 @@ wss.on('connection', function connection (ws, req) {
       term.end();
       console.log('Closed terminal: ' + term.pid);
     });
+
+    ws.on('pong', function () {
+      this.isAlive = true;
+    });
   }
 });
 
@@ -206,9 +203,13 @@ const interval = setInterval(function ping() {
     if (ws.isAlive === false) return ws.terminate();
 
     ws.isAlive = false;
-    ws.ping(noop);
+    ws.ping();
   });
 }, 30000);
+
+wss.on('close', function close() {
+  clearInterval(interval);
+});
 
 server.on('upgrade', function upgrade(request, socket, head) {
   wss.handleUpgrade(request, socket, head, function done(ws) {
