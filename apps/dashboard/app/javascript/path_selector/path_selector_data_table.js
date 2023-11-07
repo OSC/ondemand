@@ -30,6 +30,7 @@ export class PathSelectorTable {
       this.reloadTable(this.initialUrl());
 
       $(`#${this.tableId} tbody`).on('click', 'tr', (event) => { this.clickRow(event) });
+      $('#favorites').on('click', 'span', (event) => { this.clickRow(event) });
       $(`#${this.breadcrumbId}`).on('click', 'li', (event) => { this.clickBreadcrumb(event) });
       $(`#${this.selectButtonId}`).on('click', (event) => { this.selectPath(event) });
   }
@@ -91,9 +92,7 @@ export class PathSelectorTable {
 
     for (var file in filePickerFavorites) {
       favorites = favorites.concat(
-        "<a role='button'><span class='fa fa-folder'>&nbsp;</span>" +
-        filePickerFavorites[file].title +
-        "</a>"
+        `<span role='button' class='clickable' data-api-url='${this.filesPath}/${filePickerFavorites[file].href}'><span class='fa fa-folder'>&nbsp;</span>${filePickerFavorites[file].title}</span>`
       )
     };
 
@@ -140,7 +139,7 @@ export class PathSelectorTable {
   }
 
   clickRow(event) {
-    const row = $(event.target).closest('tr').get(0);
+    const row = $(event.target).closest('tr').get(0) || event.target;
     const url = row.dataset['apiUrl'];
     const pathType = row.dataset['pathType'];
 
