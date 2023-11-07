@@ -140,21 +140,7 @@ module BatchConnect::SessionsHelper
   end
 
   def status(session)
-    if session.starting?
-      "Starting"
-    elsif session.running?
-      "Running"
-    elsif session.queued?
-      "Queued"
-    elsif session.held?
-      "Held"
-    elsif session.suspended?
-      "Suspended"
-    elsif session.completed?
-      "Completed"
-    else
-      "Undetermined"
-    end
+    render(partial: 'batch_connect/sessions/card/status', locals: { session: session })
   end
 
   def status_context(session)

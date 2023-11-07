@@ -1,0 +1,15 @@
+ <% if session.starting? %>
+       Starting
+      <% elsif session.running? %>
+          Running
+      <% elsif session.queued? %>
+          Queued
+      <% elsif session.held? %>
+          Held
+      <% elsif session.suspended? %>
+          Suspended
+      <% elsif session.completed? %>
+          Completed
+      <% else %>
+          Undetermined
+  <% end %>
