@@ -53,7 +53,7 @@ you to `dex` the OpenID Connect provider within the container. Use the email
 ### Configuring the container
 
 In starting the container, you may see the mount
-`~/.config/ondemand/container:/etc/ood`.  This mount allows us to
+`~/.config/ondemand/container/config:/etc/ood/config`.  This mount allows us to
 completely configure this Open-OnDemand container.
 
 Create and edit files in the host's home directory and to mount in
