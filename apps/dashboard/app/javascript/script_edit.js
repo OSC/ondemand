@@ -171,9 +171,9 @@ function fixedFieldEnabled(checkbox, dataElement) {
     selectOptionsConfig.forEach(configItemLi => {
       const textContent = $(configItemLi).find('[data-select-value]')[0].textContent;
       if (selectedOption.text == textContent) {
-        enableSelectOptionConfig(configItemLi, true);
+        enableRemoveOption(configItemLi, true);
       } else {
-        disableSelectOptionConfig(configItemLi, true);
+        enableAddOption(configItemLi, true);
       }
     });
   }
@@ -199,19 +199,19 @@ function toggleFixedField(event) {
   event.target.disabled = false;
 }
 
-function disableSelectOptionConfig(liElement, addButtonDisabled = false) {
-  liElement.classList.add('list-group-item-danger', 'text-strike');
-  const addButton = $(liElement).find('[data-select-toggler="add"]')[0];
+function enableAddOption(optionLi, addButtonDisabled = false) {
+  optionLi.classList.add('list-group-item-danger', 'text-strike');
+  const addButton = $(optionLi).find('[data-select-toggler="add"]')[0];
   addButton.disabled = addButtonDisabled;
-  const removeButton = $(liElement).find('[data-select-toggler="remove"]')[0];
+  const removeButton = $(optionLi).find('[data-select-toggler="remove"]')[0];
   removeButton.disabled = true;
 }
 
-function enableSelectOptionConfig(liElement, removeButtonDisabled = false) {
-  liElement.classList.remove('list-group-item-secondary', 'list-group-item-danger', 'text-strike');
-  const addButton = $(liElement).find('[data-select-toggler="add"]')[0];
+function enableRemoveOption(optionLi, removeButtonDisabled = false) {
+  optionLi.classList.remove('list-group-item-secondary', 'list-group-item-danger', 'text-strike');
+  const addButton = $(optionLi).find('[data-select-toggler="add"]')[0];
   addButton.disabled = true;
-  const removeButton = $(liElement).find('[data-select-toggler="remove"]')[0];
+  const removeButton = $(optionLi).find('[data-select-toggler="remove"]')[0];
   removeButton.disabled = removeButtonDisabled;
 }
 
@@ -235,11 +235,11 @@ function enableOrDisableSelectOption(event) {
   }
 
   if(toggleAction == 'add') {
-    enableSelectOptionConfig(li);
+    enableRemoveOption(li);
     removeFromExcludeInput(excludeId, choice);
     optionToToggle.disabled = false;
   } else {
-    disableSelectOptionConfig(li);
+    enableAddOption(li);
     addToExcludeInput(excludeId, choice);
     optionToToggle.disabled = true;
     if (optionToToggle.selected) {
@@ -282,7 +282,7 @@ function initSelect(selectElement) {
   const excludeId = selectElement.dataset.excludeId;
   const selectOptions = Array.from(selectElement.options);
   const selectOptionsConfig = $(selectElement).parents('.editable-form-field').find('li.list-group-item').get();
-  const { excludeInput, excludeList } = getExcludeList(excludeId);
+  const { excludeList } = getExcludeList(excludeId);
 
   selectOptions.forEach(option => {
     option.disabled = false;
@@ -293,10 +293,10 @@ function initSelect(selectElement) {
   });
 
   selectOptionsConfig.forEach(configItem => {
-    enableSelectOptionConfig(configItem);
+    enableRemoveOption(configItem);
     const textContent = $(configItem).find('[data-select-value]')[0].textContent;
     if (excludeList.includes(textContent)) {
-      disableSelectOptionConfig(configItem);
+      enableAddOption(configItem);
     }
   });
 }
