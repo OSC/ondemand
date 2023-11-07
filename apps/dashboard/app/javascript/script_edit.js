@@ -148,27 +148,71 @@ function addInProgressField(event) {
   enableNewFieldButton();
 }
 
+function fixExcludeBasedOnSelect(selectElement) {
+  const excludeElementId = selectElement.dataset.excludeId;
+  const selectOptions = Array.from(selectElement.options);
+  const itemsToExclude = selectOptions.filter(opt => !opt.selected).map(opt => opt.text);
+  const excludeElement = document.getElementById(excludeElementId);
+  excludeElement.value = itemsToExclude.join(',');
+}
+
 function fixedFieldEnabled(checkbox, dataElement) {
   // Disable the element to avoid updates from the user
   dataElement.disabled = true;
   // As it is disabled, need to add a hidden field with the same name to send the fixed field value to the backend.
   const input = $('<input>').attr('type','hidden').attr('name', dataElement.name).attr('value', dataElement.value);
   $(checkbox).after(input);
+
+  if (dataElement.nodeName == 'SELECT') {
+    const selectOptions = Array.from(dataElement.options);
+    const selectedOption = selectOptions.filter(opt => opt.selected)[0];
+    const selectOptionsConfig = $(dataElement).parents('.editable-form-field').find('li.list-group-item').get();
+
+    selectOptionsConfig.forEach(configItemLi => {
+      const textContent = $(configItemLi).find('[data-select-value]')[0].textContent;
+      if (selectedOption.text == textContent) {
+        enableRemoveOption(configItemLi, true);
+      } else {
+        enableAddOption(configItemLi, true);
+      }
+    });
+  }
 }
 
 function toggleFixedField(event) {
   event.target.disabled = true;
-  const elementId = event.target.dataset.fixedToggler;
-  const dataElement = document.getElementById(elementId);
+  const targetId = event.target.dataset.fixedToggler;
+  const dataElement = document.getElementById(targetId);
   if (event.target.checked) {
     fixedFieldEnabled(event.target, dataElement)
   } else {
     dataElement.disabled = false;
     // Field enabled, remove the hidden field with the same name needed when disabled.
     $(`input[type=hidden][name="${dataElement.name}"]`).remove();
+
+    if (dataElement.nodeName == 'SELECT') {
+      fixExcludeBasedOnSelect(dataElement);
+      initSelect(dataElement);
+    }
   }
 
   event.target.disabled = false;
+}
+
+function enableAddOption(optionLi, addButtonDisabled = false) {
+  optionLi.classList.add('list-group-item-danger', 'text-strike');
+  const addButton = $(optionLi).find('[data-select-toggler="add"]')[0];
+  addButton.disabled = addButtonDisabled;
+  const removeButton = $(optionLi).find('[data-select-toggler="remove"]')[0];
+  removeButton.disabled = true;
+}
+
+function enableRemoveOption(optionLi, removeButtonDisabled = false) {
+  optionLi.classList.remove('list-group-item-secondary', 'list-group-item-danger', 'text-strike');
+  const addButton = $(optionLi).find('[data-select-toggler="add"]')[0];
+  addButton.disabled = true;
+  const removeButton = $(optionLi).find('[data-select-toggler="remove"]')[0];
+  removeButton.disabled = removeButtonDisabled;
 }
 
 function enableOrDisableSelectOption(event) {
@@ -176,10 +220,10 @@ function enableOrDisableSelectOption(event) {
   const li = event.target.parentElement;
   event.target.disabled = true;
 
-  const inputId = event.target.dataset.target;
   const choice = $(li).find('[data-select-value]')[0].textContent;
 
   const select = document.getElementById(event.target.dataset.selectId);
+  const excludeId = select.dataset.excludeId;
   const selectOptions = Array.from(select.options);
   const optionToToggle = selectOptions.filter(opt => opt.text == choice)[0];
   const selectOptionsEnabled = selectOptions.filter(opt => !opt.disabled);
@@ -191,16 +235,12 @@ function enableOrDisableSelectOption(event) {
   }
 
   if(toggleAction == 'add') {
-    li.classList.remove('list-group-item-danger', 'text-strike');
-    const removeButton = $(li).find('[data-select-toggler="remove"]')[0];
-    removeButton.disabled = false;
-    removeFromExcludeInput(inputId, choice);
+    enableRemoveOption(li);
+    removeFromExcludeInput(excludeId, choice);
     optionToToggle.disabled = false;
   } else {
-    li.classList.add('list-group-item-danger', 'text-strike');
-    const addButton = $(li).find('[data-select-toggler="add"]')[0];
-    addButton.disabled = false;
-    addToExcludeInput(inputId, choice);
+    enableAddOption(li);
+    addToExcludeInput(excludeId, choice);
     optionToToggle.disabled = true;
     if (optionToToggle.selected) {
       optionToToggle.selected = false;
@@ -210,38 +250,54 @@ function enableOrDisableSelectOption(event) {
   }
 }
 
-function addToExcludeInput(id, item) {
-  const input = document.getElementById(id);
-  const list = input.value.split(',').filter(word => word != '');
-  list.push(item);
+function getExcludeList(excludeElementId) {
+  const excludeInput = document.getElementById(excludeElementId);
+  const excludeList = excludeInput.value.split(',').filter(word => word != "");
+  return { excludeInput, excludeList };
+}
 
-  input.value = list.join(',');
+function addToExcludeInput(id, item) {
+  const { excludeInput, excludeList } = getExcludeList(id);
+  excludeList.push(item);
+
+  excludeInput.value = excludeList.join(',');
 }
 
 function removeFromExcludeInput(id, item) {
-  const input = document.getElementById(id);
-  const currentList = input.value.split(',').filter(word => word != "");
-  const newList = currentList.filter(word => word != item);
+  const { excludeInput, excludeList } = getExcludeList(id);
+  const newList = excludeList.filter(word => word != item);
 
-  input.value = newList.join(',');
+  excludeInput.value = newList.join(',');
 }
 
 function initSelectFields(){
-  const allButtons = Array.from($('[data-select-toggler]'));
+  const selectFields = Array.from($('select[data-exclude]'));
 
-  // find all the disabled 'remove' buttons
-  allButtons.filter((button) => {
-    return button.disabled && button.dataset.selectToggler == 'remove';
+  selectFields.forEach(select => {
+    initSelect(select);
+  });
+}
 
-  // now map that disabled button to the option it's disabled.
-  }).map((button) => {
-    const li = button.parentElement;
-    const optionText = $(li).find('[data-select-value]')[0].textContent;
-    const select = document.getElementById(button.dataset.selectId);
-    const selectOptions = Array.from(select.options);
-    const optionToToggle = selectOptions.filter(opt => opt.text == optionText)[0];
-    optionToToggle.disabled = true;
-    optionToToggle.selected = false;
+function initSelect(selectElement) {
+  const excludeId = selectElement.dataset.excludeId;
+  const selectOptions = Array.from(selectElement.options);
+  const selectOptionsConfig = $(selectElement).parents('.editable-form-field').find('li.list-group-item').get();
+  const { excludeList } = getExcludeList(excludeId);
+
+  selectOptions.forEach(option => {
+    option.disabled = false;
+    if (excludeList.includes(option.text)) {
+      option.disabled = true;
+      option.selected = false;
+    }
+  });
+
+  selectOptionsConfig.forEach(configItem => {
+    enableRemoveOption(configItem);
+    const textContent = $(configItem).find('[data-select-value]')[0].textContent;
+    if (excludeList.includes(textContent)) {
+      enableAddOption(configItem);
+    }
   });
 }
 

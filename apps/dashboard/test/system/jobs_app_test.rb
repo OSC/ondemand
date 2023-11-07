@@ -658,6 +658,34 @@ class ProjectsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'fixing select options' do
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+      script_id = setup_script(project_id)
+      add_account(project_id, script_id)
+
+      visit edit_project_script_path(project_id, script_id)
+
+      find('#edit_script_auto_accounts').click
+      accounts_select = find('#script_auto_accounts')
+      account_options = accounts_select.all('option')
+      find("#script_auto_accounts_fixed").click
+
+      # Validate that UI changes when field is fixed.
+      assert_equal('true', accounts_select[:disabled])
+      account_options.each do |option|
+        rm_btn = find("#script_auto_accounts_remove_#{option.text}")
+        add_btn = find("#script_auto_accounts_add_#{option.text}")
+
+        option_text_strike = option.selected? ? 0 : 1
+        assert_selector("li.text-strike > button#script_auto_accounts_add_#{option.text}", count: option_text_strike)
+        assert_equal(true, option.disabled?)
+        assert_equal('true', add_btn[:disabled])
+        assert_equal('true', rm_btn[:disabled])
+      end
+    end
+  end
+
   # this test is similar to the one above, only it captures
   # the case when you've added the field, but haven't saved
   # it yet. See https://github.com/OSC/ondemand/issues/3017
