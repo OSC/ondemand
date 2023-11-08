@@ -49,6 +49,11 @@
               <div class="panel panel-default">
                 <div class="panel-heading">Favorites</div>
                 <div id="favorites" class="list-group text-nowrap">
+                  <% OodFilesApp.new.favorite_paths.each do |path| %>
+                    <span role='button' class='clickable' data-api-url='#{path.filesystem}/#{path.path}'>
+                      <span class='fa fa-folder'>&nbsp;</span><%= path.title %>
+                    </span>
+                  <% end %>
                 </div>
               </div>
             </div>
