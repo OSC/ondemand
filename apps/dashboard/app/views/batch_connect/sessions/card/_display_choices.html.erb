@@ -1,0 +1,7 @@
+<% user_context = session.user_context %>
+<% session.app.attributes.select(&:display?).map do |attribute| %>
+  <p>
+    <strong><%= attribute.label %>:</strong>
+    <%= user_context.fetch(attribute.id, '') %>
+  </p>
+<% end %>
