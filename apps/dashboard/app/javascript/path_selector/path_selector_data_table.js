@@ -177,7 +177,7 @@ export class PathSelectorTable {
   // note that this is storing the file system path, not the path of the URL 
   // i.e., '/home/annie' not '/pun/sys/dashboard/files/fs/home/annie'
   getLastVisited() {
-    const lastVisited = null; // localStorage.getItem(this.storageKey());
+    const lastVisited = localStorage.getItem(this.storageKey());
     if(lastVisited === null) {
       return this.initialDirectory;
     } else {
