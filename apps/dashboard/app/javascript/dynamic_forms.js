@@ -293,9 +293,8 @@ function setValue(event, changeId) {
   const changeVal = table.get(chosenVal, undefined);
 
   if(changeVal !== undefined) {
-    const innerElement = $(`#${changeId}`);
-    innerElement.attr('value', changeVal);
-    innerElement.val(changeVal);
+    const innerElement = document.getElementById(changeId);
+    innerElement.value = changeVal;
   }
 }
 
