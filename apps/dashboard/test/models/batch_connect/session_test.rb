@@ -573,7 +573,8 @@ module BatchConnect
           'advanced_options'            => '',
           'auto_modules_app_jupyter'    => '',
           'auto_modules_intel'          => '',
-          'auto_modules_netcdf_serial'  => ''
+          'auto_modules_netcdf_serial'  => '',
+          'checkbox_test'               => '',
         }
 
         assert session.save(app: bc_jupyter_app, context: ctx), session.errors.each(&:to_s).to_s
