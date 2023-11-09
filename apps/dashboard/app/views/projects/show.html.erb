@@ -1,9 +1,12 @@
 <%= javascript_include_tag 'projects', nonce: true %>
 
 <div class='page-header text-center'>
-  <h1><%= @project.title %></h1>
-</div> 
-<br>
+  <h1 class="my-2"><%= @project.title %></h1>
+
+  <small class="text-muted">This is a preview of the new 'Project Manager'</small>
+</div>
+
+
 <div class='row row-cols-1 row-cols-md-2'>
   <p>
     <%= link_to 'Back', projects_path, class: 'btn btn-default', title: 'Return to projects page' %>
