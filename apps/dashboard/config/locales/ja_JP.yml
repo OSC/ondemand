@@ -1,0 +1,13 @@
+# Japanese locale
+
+ja_JP:
+  dashboard:
+    # unknown: "Unknown"
+    save: "溜める"
+    add: "付け加え"
+    remove: "抜かす"
+    delete: "消す"
+    edit: "編集する"
+    show: "見せる"
+    # project: "Project"
+    # directory: "Directory"
