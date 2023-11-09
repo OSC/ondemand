@@ -293,8 +293,21 @@ function setValue(event, changeId) {
   const changeVal = table.get(chosenVal, undefined);
 
   if(changeVal !== undefined) {
-    const innerElement = document.getElementById(changeId);
-    innerElement.value = changeVal;
+    const element = document.getElementById(changeId);
+    if(element.type == 'checkbox') {
+      setCheckboxValue(element, changeVal);
+    } else {
+      element.value = changeVal;
+    }
+  }
+}
+
+function setCheckboxValue(checkbox, value) {
+  const affirmitiveValue = checkbox.value;
+  if(value == affirmitiveValue) {
+    checkbox.checked = true;
+  } else {
+    checkbox.checked = false;
   }
 }
 
