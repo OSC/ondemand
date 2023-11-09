@@ -567,6 +567,26 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal 'display: none;', find_option_style('classroom_size', 'large')
   end
 
+  test 'options can check and uncheck' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    # defaults
+    assert_equal('small', find_value('classroom_size'))
+    refute(checked?('checkbox_test'))
+
+    # select large and it's checked
+    select('large', from: bc_ele_id('classroom_size'))
+    assert(checked?('checkbox_test'))
+
+    # back to small and it's unchanged
+    select('small', from: bc_ele_id('classroom_size'))
+    assert(checked?('checkbox_test'))
+
+    # now choose medium and it's un-checked
+    select('medium', from: bc_ele_id('classroom_size'))
+    refute(checked?('checkbox_test'))
+  end
+
   test 'stage errors are shown' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
     err_msg = 'this is a just a test for staging error messages'

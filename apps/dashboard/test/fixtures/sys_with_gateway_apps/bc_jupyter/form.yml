@@ -172,11 +172,13 @@ attributes:
           'medium', 'medium',
           data-option-for-classroom-astronomy-5678: false,
           data-option-for-classroom-astronomy-with/other-characters/8846.31.4: false,
+          data-set-checkbox-test: 0,
         ]
       - [
           'large', 'large',
           data-option-for-classroom-astronomy-5678: false,
           data-option-for-classroom-astronomy-with/other-characters/8846.31.4: false,
+          data-set-checkbox-test: 1,
         ]
   gpus:
     widget: number_field
@@ -187,6 +189,8 @@ attributes:
     default: false
   bc_email_on_started:
     help: 'this is a help message should be hidden, sometimes'
+  checkbox_test:
+    widget: check_box
 form:
   - bc_num_hours
   - bc_num_slots
@@ -205,3 +209,4 @@ form:
   - auto_modules_app_jupyter
   - auto_modules_intel
   - auto_modules_netcdf-serial
+  - checkbox_test
