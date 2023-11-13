@@ -6,25 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-add preview header to script#show as well (#3178)\
-add a japanese locale (#3180)\
-Lint fixup (#3154)\
-add a link to project directory in projects#show (#3174)\
-refactor and render display_choices method (#3175)\
-add preview mode to heading (#3172)\
-fix mount point docs (#3170)\
-Improved form fixed field UI for new Job Composer scripts (#3159)\
-lint a random file (#3169)\
-add dev dependencies back to yarn.lock (#3157)\
-simple refactor of shell's ping/pong (#3146)\
-use the real path as the cache key (#3152)\
-stop using node-pty's deprecated APIs (#3160)\
-add slack to README (#3166)\
-refactor and render support_ticket method (#3167)\
-refactor and render created method (#3165)\
-Update Changelog (#3164)\
-correctly set auto_modules' label (#3139)\
-lint a random file (#3163)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
@@ -46,6 +27,7 @@ lint a random file (#3163)
 - `CurrentUser` should now be availalbe in ondemand.d config rendering in [3035](https://github.com/OSC/ondemand/pull/3035).
 - Icons are now present in favorite paths [3076](https://github.com/OSC/ondemand/pull/3076).
 - Debian 12 is now supported in [3127](https://github.com/OSC/ondemand/pull/3127).
+- Sites can now use a japanese locale in [3180](https://github.com/OSC/ondemand/pull/3180).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
@@ -58,6 +40,7 @@ lint a random file (#3163)
 - `ondemand.d` files are now sorted before loaded in [2944](https://github.com/OSC/ondemand/pull/2944).
 - The shell app can now ping/pong to keep connections alive in [3135](https://github.com/OSC/ondemand/pull/3135).
 - auto_queues are account aware in [3123](https://github.com/OSC/ondemand/pull/3123).
+- auto_modules can correctly set their label in [3139](https://github.com/OSC/ondemand/pull/3139).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
