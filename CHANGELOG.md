@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `CurrentUser` should now be availalbe in ondemand.d config rendering in [3035](https://github.com/OSC/ondemand/pull/3035).
 - Icons are now present in favorite paths [3076](https://github.com/OSC/ondemand/pull/3076).
 - Debian 12 is now supported in [3127](https://github.com/OSC/ondemand/pull/3127).
+- Sites can now use a japanese locale in [3180](https://github.com/OSC/ondemand/pull/3180).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
@@ -39,6 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `ondemand.d` files are now sorted before loaded in [2944](https://github.com/OSC/ondemand/pull/2944).
 - The shell app can now ping/pong to keep connections alive in [3135](https://github.com/OSC/ondemand/pull/3135).
 - auto_queues are account aware in [3123](https://github.com/OSC/ondemand/pull/3123).
+- auto_modules can correctly set their label in [3139](https://github.com/OSC/ondemand/pull/3139).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
