@@ -93,7 +93,7 @@ function searchIcons(event){
 
   arr = invertedIndex.get(searchString.charAt(0));
 
-  arr.forEach(name => {
+  invertedIndex.forEach(name => {
     const ele = $(`#${iconId(name)}`)[0];
     if(ele === undefined) {
       return;
