@@ -13,5 +13,13 @@ if [[ -f "${HOME}/.config/monitors.xml" ]]; then
   mv "${HOME}/.config/monitors.xml" "${HOME}/.config/monitors.xml.bak"
 fi
 
+# gnome won't start correctly without DBUS_SESSION_BUS_ADDRESS set.
+eval $(dbus-launch --sh-syntax)
+
+# need these default values for el7. wayland crashes on OSC systems.
+export XDG_SESSION_TYPE="${XDG_SESSION_TYPE:-x11}"
+export GNOME_SHELL_SESSION_MODE="${GNOME_SHELL_SESSION_MODE:-classic}"
+export GNOME_SESSION_MODE="${GNOME_SESSION_MODE:-classic}"
+
 # Start up Gnome desktop (block until user logs out of desktop)
 /etc/X11/xinit/Xsession gnome-session
