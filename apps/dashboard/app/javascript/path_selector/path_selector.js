@@ -32,7 +32,6 @@ function getPathSelectorOptions(element) {
   options.showFiles           = element.dataset['showFiles'];
   options.showHidden          = element.dataset['showHidden'];
   options.modalId             = element.id;
-  options.filePickerFavorites = element.dataset['filePickerFavorites'];
 
   return options;
 }

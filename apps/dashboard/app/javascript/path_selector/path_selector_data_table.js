@@ -12,7 +12,6 @@ export class PathSelectorTable {
   modalId             = undefined;
   showHidden          = undefined;
   showFiles           = undefined;
-  filePickerFavorites = undefined;
 
   constructor(options) {
       this.tableId             = options.tableId;
@@ -24,7 +23,6 @@ export class PathSelectorTable {
       this.modalId             = options.modalId;
       this.showHidden          = options.showHidden === 'true';
       this.showFiles           = options.showFiles === 'true';
-      this.filePickerFavorites = options.filePickerFavorites;
 
       this.initDataTable();
       this.reloadTable(this.initialUrl());
@@ -36,9 +34,6 @@ export class PathSelectorTable {
   }
 
   initDataTable() {
-    // FAVORITES
-    $('#favorites').append(this.favoritesList());
-
     this._table = $(`#${this.tableId}`).DataTable({
       autoWidth: false,
       language: {
@@ -86,19 +81,6 @@ export class PathSelectorTable {
     });
   }
 
-  favoritesList() {
-    var favorites = "";
-    const filePickerFavorites = JSON.parse(this.filePickerFavorites);
-
-    for (var file in filePickerFavorites) {
-      favorites = favorites.concat(
-        `<span role='button' class='clickable' data-api-url='${this.filesPath}/${filePickerFavorites[file].href}'><span class='fa fa-folder'>&nbsp;</span>${filePickerFavorites[file].title}</span>`
-      )
-    };
-
-    return favorites;
-  }
-
   async reloadTable(url) {
     try {
       $(this.tableWrapper()).hide();
@@ -140,8 +122,12 @@ export class PathSelectorTable {
 
   clickRow(event) {
     const row = $(event.target).closest('tr').get(0) || event.target;
-    const url = row.dataset['apiUrl'];
+    var url = row.dataset['apiUrl'];
     const pathType = row.dataset['pathType'];
+
+    if (!url.match(this.filesPath)) {
+      url = `${this.filesPath}${url}`
+    }
 
     // only reload table for directories. and correct last visited
     // if it's a file.
