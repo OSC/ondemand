@@ -1,3 +1,4 @@
 #!/bin/bash
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 0 */2 * * * root [ -f /opt/ood/nginx_stage/sbin/nginx_stage ] && /opt/ood/nginx_stage/sbin/nginx_stage nginx_clean 2>&1 | logger -t nginx_clean
+0 */8 * * * root [ -f /opt/ood/utils/k8s_token_refresh ] && /opt/ood/utils/k8s_token_refresh | logger -t ood_k8s_refresh

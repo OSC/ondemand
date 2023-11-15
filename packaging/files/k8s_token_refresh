@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+
+if command -v kubectl >/dev/null 2>&1;
+then
+  CMD_USER=$(whoami)
+  if [ "$CMD_USER" == "root" ]; then
+    TOKEN=$(kubectl create token ondemand --namespace=ondemand --duration 9h)
+    kubectl config set-credentials ondemand@kubernetes --token=$TOKEN
+  else
+    >&2 echo "this program needs to run as 'root' and you are $CMD_USER."
+    exit 1
+  fi
+fi
