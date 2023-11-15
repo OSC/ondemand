@@ -54,6 +54,7 @@ namespace :test do
     sh 'shellcheck -x nginx_stage/sbin/nginx_stage'
     sh 'shellcheck nginx_stage/sbin/update_nginx_stage'
     sh 'shellcheck hooks/k8s-bootstrap/*.sh'
+    sh 'shellcheck packaging/files/k8s_token_refresh'
   end
 
   begin
