@@ -122,7 +122,7 @@ export class PathSelectorTable {
 
   clickRow(event) {
     const row = $(event.target).closest('tr').get(0) || event.target;
-    var url = row.dataset['apiUrl'];
+    const url = row.dataset['apiUrl'];
     const pathType = row.dataset['pathType'];
 
     // only reload table for directories. and correct last visited
