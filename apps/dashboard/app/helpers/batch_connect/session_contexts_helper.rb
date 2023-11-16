@@ -138,10 +138,7 @@ module BatchConnect::SessionContextsHelper
   end
 
   def parse_favorites(favorites)
-    if favorites.is_a?(String)
-      JSON.parse(favorites).map do |f|
-        FavoritePath.new(f["href"], title: f["title"])
-      end
-    end
+    return favorites if favorites.any? { |f| f.is_a?(FavoritePath) }
+    favorites.map { |f| FavoritePath.new(f) }
   end
 end

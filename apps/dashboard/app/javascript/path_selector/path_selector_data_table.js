@@ -28,7 +28,7 @@ export class PathSelectorTable {
       this.reloadTable(this.initialUrl());
 
       $(`#${this.tableId} tbody`).on('click', 'tr', (event) => { this.clickRow(event) });
-      $('#favorites').on('click', 'span', (event) => { this.clickRow(event) });
+      $('#favorites').on('click', 'li', (event) => { this.clickRow(event) });
       $(`#${this.breadcrumbId}`).on('click', 'li', (event) => { this.clickBreadcrumb(event) });
       $(`#${this.selectButtonId}`).on('click', (event) => { this.selectPath(event) });
   }
@@ -124,10 +124,6 @@ export class PathSelectorTable {
     const row = $(event.target).closest('tr').get(0) || event.target;
     var url = row.dataset['apiUrl'];
     const pathType = row.dataset['pathType'];
-
-    if (!url.match(this.filesPath)) {
-      url = `${this.filesPath}${url}`
-    }
 
     // only reload table for directories. and correct last visited
     // if it's a file.

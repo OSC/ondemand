@@ -2,7 +2,7 @@
   show_hidden = field_options.fetch(:show_hidden, false)
   show_files = field_options.fetch(:show_files, true)
   inital_directory = field_options.fetch(:directory, CurrentUser.home)
-  file_picker_favorites = field_options.fetch(:file_picker_favorites, OodFilesApp.new.favorite_paths)
+  favorites = field_options.fetch(:favorites, OodFilesApp.new.favorite_paths)
 
   input_field_id = "#{form.object_name}_#{attrib.id}"
   path_selector_id = "#{input_field_id}_path_selector"
@@ -47,9 +47,9 @@
             <div class="col-sm-5">
               <div class="panel panel-default">
                 <div class="panel-heading">Favorites</div>
-                <div id="favorites" class="list-group text-nowrap">
-                  <%= render partial: 'favorites', collection: parse_favorites(file_picker_favorites), as: :path %>
-                </div>
+                <ol id="favorites" class="list-group text-nowrap">
+                  <%= render partial: 'favorites', collection: parse_favorites(favorites), as: :path %>
+                </ol>
               </div>
             </div>
         

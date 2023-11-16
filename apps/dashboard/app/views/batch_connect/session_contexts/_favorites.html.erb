@@ -1,5 +1,5 @@
-<span role='button'
-  class='clickable text-wrap' 
-  data-api-url=<%= path.path %>>
-  <span class='fa fa-folder'>&nbsp;</span><%= path.title || path.path %>
-</span>
+<li role='button'
+  class='clickable text-wrap list-group-item' 
+  data-api-url=<%= files_path(path.to_s, fs: path.filesystem || 'fs') %>>
+  <span class='fa fa-folder'>&nbsp;</span><%= path %>
+</li>
