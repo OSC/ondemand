@@ -53,4 +53,29 @@ class AllowlistPolicyTest < ActiveSupport::TestCase
       assert_nil allowlist.validate!(permitted_path)
     end
   end
+
+  test 'files under symlinks that dont exist' do
+    with_modified_env({ OOD_ALLOWLIST_PATH: Dir.home.to_s }) do
+      Dir.mktmpdir do |dir|
+        bad_dir = 'bad_dir'
+        bad_file = 'out_of_allowlist_file.txt'
+
+        `ln -s #{dir} #{bad_dir}`
+        `touch #{dir}/#{bad_file}`
+        assert(AllowlistPolicy.default.permitted?(Rails.root.to_s))
+        refute(AllowlistPolicy.default.permitted?("#{Rails.root}/#{bad_dir}"))
+
+        # bad file exists, but is actually in the symlinked directory.
+        refute(AllowlistPolicy.default.permitted?("#{Rails.root}/#{bad_dir}/#{bad_file}"))
+
+        # some_other_file doesn't even exist yet.
+        refute(AllowlistPolicy.default.permitted?("#{Rails.root}/#{bad_dir}/some_other_file"))
+
+        # foo/some_other_file doesn't exist yet either.
+        refute(AllowlistPolicy.default.permitted?("#{Rails.root}/#{bad_dir}/foo/some_other_file"))
+      ensure
+        `unlink #{bad_dir}`
+      end
+    end
+  end
 end
