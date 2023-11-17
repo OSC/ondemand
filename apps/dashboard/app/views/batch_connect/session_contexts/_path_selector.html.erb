@@ -2,7 +2,7 @@
   show_hidden = field_options.fetch(:show_hidden, false)
   show_files = field_options.fetch(:show_files, true)
   inital_directory = field_options.fetch(:directory, CurrentUser.home)
-  favorites = pathselector_favorites(field_options.try(:favorites))
+  favorites = pathselector_favorites(field_options.try(:[], :favorites))
 
   input_field_id = "#{form.object_name}_#{attrib.id}"
   path_selector_id = "#{input_field_id}_path_selector"
