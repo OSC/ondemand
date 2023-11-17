@@ -138,9 +138,10 @@ module BatchConnect::SessionContextsHelper
   end
 
   def pathselector_favorites(favorites)
+    # If favorites is false, return nil
     if favorites.nil?
       OodFilesApp.new.favorite_paths.reject(&:remote?)
-    else
+    elsif favorites
       favorites.map { |f| FavoritePath.new(f) }
     end
   end
