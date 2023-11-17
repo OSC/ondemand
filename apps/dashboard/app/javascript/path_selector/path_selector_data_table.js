@@ -3,37 +3,37 @@ export class PathSelectorTable {
   _table = null;
 
   // input data that should be passed into the constructor
-  tableId           = undefined;
-  filesPath         = undefined;
-  breadcrumbId      = undefined;
-  initialDirectory  = undefined;
-  selectButtonId    = undefined;
-  inputFieldId      = undefined;
-  modalId           = undefined;
-  showHidden        = undefined;
-  showFiles         = undefined;
+  tableId             = undefined;
+  filesPath           = undefined;
+  breadcrumbId        = undefined;
+  initialDirectory    = undefined;
+  selectButtonId      = undefined;
+  inputFieldId        = undefined;
+  modalId             = undefined;
+  showHidden          = undefined;
+  showFiles           = undefined;
 
   constructor(options) {
-      this.tableId            = options.tableId;
-      this.filesPath          = options.filesPath;
-      this.breadcrumbId       = options.breadcrumbId;
-      this.initialDirectory   = options.initialDirectory;
-      this.selectButtonId     = options.selectButtonId;
-      this.inputFieldId       = options.inputFieldId;
-      this.modalId            = options.modalId;
-      this.showHidden         = options.showHidden === 'true';
-      this.showFiles          = options.showFiles === 'true';
+      this.tableId             = options.tableId;
+      this.filesPath           = options.filesPath;
+      this.breadcrumbId        = options.breadcrumbId;
+      this.initialDirectory    = options.initialDirectory;
+      this.selectButtonId      = options.selectButtonId;
+      this.inputFieldId        = options.inputFieldId;
+      this.modalId             = options.modalId;
+      this.showHidden          = options.showHidden === 'true';
+      this.showFiles           = options.showFiles === 'true';
 
       this.initDataTable();
       this.reloadTable(this.initialUrl());
 
       $(`#${this.tableId} tbody`).on('click', 'tr', (event) => { this.clickRow(event) });
+      $('#favorites').on('click', 'li', (event) => { this.clickRow(event) });
       $(`#${this.breadcrumbId}`).on('click', 'li', (event) => { this.clickBreadcrumb(event) });
       $(`#${this.selectButtonId}`).on('click', (event) => { this.selectPath(event) });
   }
 
   initDataTable() {
-
     this._table = $(`#${this.tableId}`).DataTable({
       autoWidth: false,
       language: {
@@ -54,7 +54,7 @@ export class PathSelectorTable {
       // https://datatables.net/reference/option/dom
       // dom: '', dataTables_info nowrap
       //
-      // put breadcrmbs below filter!!!
+      // put breadcrumbs below filter!!!
       dom: "<'row'<'col-sm-12'f>>" + // normally <'row'<'col-sm-6'l><'col-sm-6'f>> but we disabled pagination so l is not needed (dropdown for selecting # rows)
           "<'row'<'col-sm-12'<'dt-status-bar'<'datatables-status float-right'><'transfers-status'>>>>" +
           "<'row'<'col-sm-12'tr>>", // normally this is <'row'<'col-sm-5'i><'col-sm-7'p>> but we disabled pagination so have info take whole row
@@ -121,7 +121,7 @@ export class PathSelectorTable {
   }
 
   clickRow(event) {
-    const row = $(event.target).closest('tr').get(0);
+    const row = $(event.target).closest('tr').get(0) || event.target;
     const url = row.dataset['apiUrl'];
     const pathType = row.dataset['pathType'];
 
