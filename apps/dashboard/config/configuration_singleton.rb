@@ -287,6 +287,10 @@ class ConfigurationSingleton
     to_bool(config.fetch(:files_enable_shell_button, true))
   end
 
+  def files_enable_download_upload_button
+    to_bool(config.fetch(:files_enable_download_upload_button, true))
+  end
+
   # Report performance of activejobs table rendering
   def console_log_performance_report?
     dataroot.join("debug").file? || rails_env != 'production'
