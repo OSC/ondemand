@@ -526,7 +526,7 @@ function parseCheckedWhen(key) {
     return {
       'key': tokens[1],
       'value': tokens[2].toLowerCase() == 'checked' ? 'checked' : 'unchecked'
-    }
+    };
   } else {
     return undefined;
   }
