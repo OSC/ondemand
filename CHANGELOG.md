@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+add nc to development container (#3192)\
+3032 support favorites in path selector (#3173)\
+lint a random file (#3191)\
+Update Changelog (#3184)\
+lint a random file (#3183)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
