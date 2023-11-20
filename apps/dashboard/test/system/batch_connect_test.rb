@@ -493,6 +493,91 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert find("##{bc_ele_id('advanced_options')}").visible?
   end
 
+  test 'hiding using check boxes based on when checked' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - gpus
+          - checkbox_test
+        attributes:
+          gpus:
+            widget: 'number_field'
+          checkbox_test:
+            widget: 'check_box'
+            html_options:
+              data:
+                hide-gpus-when-checked: true
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults
+      refute(find("##{bc_ele_id('checkbox_test')}").checked?)
+      assert(find("##{bc_ele_id('gpus')}").visible?)
+
+      # check the checkbox, and 'gpus' is hidden
+      check(bc_ele_id('checkbox_test'))
+      refute(find("##{bc_ele_id('gpus')}", visible: :hidden).visible?)
+
+      # un-check the checkbox, and 'gpus' is back
+      uncheck(bc_ele_id('checkbox_test'))
+      assert(find("##{bc_ele_id('gpus')}").visible?)
+    end
+  end
+
+
+  test 'hiding using check boxes based on when unchecked' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - gpus
+          - checkbox_test
+        attributes:
+          gpus:
+            widget: 'number_field'
+          checkbox_test:
+            widget: 'check_box'
+            html_options:
+              data:
+                hide-gpus-when-not-checked: true
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      visit new_batch_connect_session_context_url('sys/app')
+
+      # defaults
+      refute(find("##{bc_ele_id('checkbox_test')}").checked?)
+      refute(find("##{bc_ele_id('gpus')}", visible: :hidden).visible?)
+
+      # check the checkbox, and 'gpus' is visible
+      check(bc_ele_id('checkbox_test'))
+      assert(find("##{bc_ele_id('gpus')}").visible?)
+
+      # un-check the checkbox, and 'gpus' is back to being hidden
+      uncheck(bc_ele_id('checkbox_test'))
+      refute(find("##{bc_ele_id('gpus')}", visible: :hidden).visible?)
+    end
+  end
+
   test 'options with hyphens set min & max' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
