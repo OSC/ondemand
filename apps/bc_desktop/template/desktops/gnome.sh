@@ -13,5 +13,33 @@ if [[ -f "${HOME}/.config/monitors.xml" ]]; then
   mv "${HOME}/.config/monitors.xml" "${HOME}/.config/monitors.xml.bak"
 fi
 
+# gnome won't start correctly without DBUS_SESSION_BUS_ADDRESS set.
+eval $(dbus-launch --sh-syntax)
+
+source /etc/os-release
+
+function classic(){
+  export XDG_SESSION_TYPE="${XDG_SESSION_TYPE:-x11}"
+  export GNOME_SHELL_SESSION_MODE="${GNOME_SHELL_SESSION_MODE:-classic}"
+  export GNOME_SESSION_MODE="${GNOME_SESSION_MODE:-classic}"
+}
+
+function wayland() {
+  export XDG_SESSION_TYPE="${XDG_SESSION_TYPE:-x11}"
+  export GNOME_SHELL_SESSION_MODE="${GNOME_SHELL_SESSION_MODE:-wayland}"
+  export GNOME_SESSION_MODE="${GNOME_SESSION_MODE:-wayland}"
+}
+
+if [[ "$ID_LIKE" =~ "fedora" ]]; then
+  if [[ "$VERSION_ID" < "8.0" ]]; then
+    # el7 will crash using wayland.
+    classic
+  else
+    wayland
+  fi
+else
+  wayland
+fi
+
 # Start up Gnome desktop (block until user logs out of desktop)
 /etc/X11/xinit/Xsession gnome-session
