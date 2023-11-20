@@ -294,7 +294,7 @@ function setValue(event, changeId) {
 
   if(changeVal !== undefined) {
     const element = document.getElementById(changeId);
-    if(element.type == 'checkbox') {
+    if(element['type'] == 'checkbox') {
       setCheckboxValue(element, changeVal);
     } else {
       element.value = changeVal;
