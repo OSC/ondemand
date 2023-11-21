@@ -58,12 +58,14 @@ class ConfigurationSingleton
   # @return [Hash] key/value pairs of defaults
   def string_configs
     {
-      :module_file_dir        => nil,
-      :user_settings_file     => '.ood',
-      :facl_domain            => nil,
-      :auto_groups_filter     => nil,
-      :bc_clean_old_dirs_days => '30',
-      :project_template_dir   => "#{config_root}/projects"
+      :module_file_dir          => nil,
+      :user_settings_file       => '.ood',
+      :facl_domain              => nil,
+      :auto_groups_filter       => nil,
+      :bc_clean_old_dirs_days   => '30',
+      :google_analytics_tag_id  => nil,
+      :project_template_dir     => "#{config_root}/projects",
+      :default_profile          => nil
     }.freeze
   end
 

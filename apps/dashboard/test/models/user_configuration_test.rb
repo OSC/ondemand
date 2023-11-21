@@ -204,7 +204,16 @@ class UserConfigurationTest < ActiveSupport::TestCase
     assert_equal :user_settings_profile_value, target.profile
   end
 
-  test "profile should return nil when when Configuration.host_based_profiles is false and CurrentUser profile is nil" do
+  test "profile should return default_profile when when Configuration.host_based_profiles is false and user profile is nil" do
+    Configuration.stubs(:host_based_profiles).returns(false)
+    Configuration.stubs(:default_profile).returns('myprofile')
+    target = UserConfiguration.new
+    target.update_user_settings({profile: nil})
+
+    assert_equal :myprofile, target.profile
+  end
+
+  test "profile should return nil when when Configuration.host_based_profiles is false, user profile is nil, and default_profile not set" do
     Configuration.stubs(:host_based_profiles).returns(false)
     CurrentUser.stubs(:user_settings).returns({})
     target = UserConfiguration.new

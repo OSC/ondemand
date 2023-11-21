@@ -137,8 +137,10 @@ class UserConfiguration
 
     if Configuration.host_based_profiles
       request_hostname
-    elsif CurrentUser.user_settings[:profile]
-      CurrentUser.user_settings[:profile].to_sym
+    elsif user_settings[:profile]
+      user_settings[:profile].to_sym
+    elsif Configuration.default_profile
+      Configuration.default_profile.to_sym
     end
   end
 
