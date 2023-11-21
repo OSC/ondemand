@@ -256,7 +256,7 @@ module BatchConnect
     # @param context [Object] context available when rendering staged files
     # @return [Boolean] whether staged successfully
     def stage(root, context: nil)
-      staged_root.tap { |p| p.mkpath(mode: 0o0700) unless p.exist? }
+      staged_root.tap { |p| FileUtils.mkdir_p(p.to_s, mode: 0o0700) unless p.exist? }
 
       # Sync the template files over
       oe, s = Open3.capture2e('rsync', '-av', '--exclude', '*.erb', "#{root}/", staged_root.to_s)
