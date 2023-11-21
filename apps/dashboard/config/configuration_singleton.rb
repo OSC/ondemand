@@ -66,7 +66,8 @@ class ConfigurationSingleton
       :bc_clean_old_dirs_days   => '30',
       :google_analytics_tag_id  => nil,
       :project_template_dir     => "#{config_root}/projects",
-      :rclone_extra_config      => nil
+      :rclone_extra_config      => nil,
+      :default_profile          => nil
     }.freeze
   end
 

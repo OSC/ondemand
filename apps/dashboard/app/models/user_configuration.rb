@@ -148,6 +148,8 @@ class UserConfiguration
       request_hostname
     elsif user_settings[:profile]
       user_settings[:profile].to_sym
+    elsif Configuration.default_profile
+      Configuration.default_profile.to_sym
     end
   end
 
