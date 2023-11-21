@@ -124,6 +124,7 @@ export class PathSelectorTable {
     const row = $(event.target).closest('tr').get(0) || event.target;
     const url = row.dataset['apiUrl'];
     const pathType = row.dataset['pathType'];
+    this.activateFavorite(row);
 
     // only reload table for directories. and correct last visited
     // if it's a file.
@@ -136,8 +137,19 @@ export class PathSelectorTable {
     }
   }
 
+  activateFavorite(currentlyClicked) {
+    $('li.active').each((_idx, ele) => {
+      ele.classList.remove('active');
+    });
+
+    if(currentlyClicked.tagName == "LI") {
+      currentlyClicked.classList.add('active');
+    }
+  }
+
   clickBreadcrumb(event) {
     const path = event.target.id;
+    this.activateFavorite(event.target);
     this.reloadTable(path);
   }
 
@@ -168,7 +180,9 @@ export class PathSelectorTable {
   }
 
   setLastVisited(path) {
-    localStorage.setItem(this.storageKey(), path);
+    if(path) {
+      localStorage.setItem(this.storageKey(), path);
+    }
   }
 
   initialUrl() {
