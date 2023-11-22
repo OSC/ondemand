@@ -34,6 +34,10 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     find("##{bc_ele_id(ele)}", visible: visible).value
   end
 
+  def checked?(ele)
+    find("##{bc_ele_id(ele)}").checked?
+  end
+
   def find_css_class(id)
     find("##{id}")['class'].to_s
   end

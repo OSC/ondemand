@@ -306,9 +306,21 @@ function setValue(event, changeId) {
   const changeVal = table.get(chosenVal, undefined);
 
   if(changeVal !== undefined) {
-    const innerElement = $(`#${changeId}`);
-    innerElement.attr('value', changeVal);
-    innerElement.val(changeVal);
+    const element = document.getElementById(changeId);
+    if(element['type'] == 'checkbox') {
+      setCheckboxValue(element, changeVal);
+    } else {
+      element.value = changeVal;
+    }
+  }
+}
+
+function setCheckboxValue(checkbox, value) {
+  const positiveValue = checkbox.value;
+  if(value == positiveValue) {
+    checkbox.checked = true;
+  } else {
+    checkbox.checked = false;
   }
 }
 
