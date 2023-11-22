@@ -556,7 +556,9 @@ module BatchConnect
     # Whether to allow SSH to node running the job
     # @return [Boolean] whether to allow SSH to node running the job
     def ssh_to_compute_node?
-      if !cluster_ssh_to_compute_node?.nil?
+      if app_ssh_to_compute_node?
+        return app_ssh_to_compute_node?
+      elsif !cluster_ssh_to_compute_node?.nil?
         return cluster_ssh_to_compute_node?
       else
         return global_ssh_to_compute_node?
@@ -568,6 +570,11 @@ module BatchConnect
       cluster.batch_connect_ssh_allow?
     rescue ClusterNotFound
       return nil
+    end
+
+    # @return [Boolean]
+    def app_ssh_to_compute_node?
+      app.ssh_allow
     end
 
     # @return [Boolean]

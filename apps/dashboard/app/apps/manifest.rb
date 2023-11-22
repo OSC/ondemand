@@ -101,6 +101,13 @@ category: OSC
     @manifest_options[:url] || ""
   end
 
+  # Return ssh_allow Boolean
+  #
+  # @return [Boolean]
+  def ssh_allow
+    @manifest_options[:ssh_allow].nil? ? true : @manifest_options[:ssh_allow]
+  end
+
   # Return the app category
   #
   # @return [String] category as string

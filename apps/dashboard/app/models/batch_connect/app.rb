@@ -133,6 +133,10 @@ module BatchConnect
       ood_app.metadata.merge(form_config.fetch(:metadata, {}))
     end
 
+    def ssh_allow
+      ood_app.ssh_allow
+    end
+
     def link
       OodAppLink.new(
         # FIXME: better to use default_title and "" description
