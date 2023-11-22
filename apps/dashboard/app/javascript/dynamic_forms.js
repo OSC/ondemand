@@ -158,16 +158,29 @@ function makeChangeHandlers(prefix){
             });
           }
       });
+    } else if(element['type'] == "checkbox") {
+      let data = $(element).data();
+      let keys = Object.keys(data);
+      if(keys.length !== 0) {
+        keys.forEach((key) => {
+          if(key.startsWith('hide')) {
+            let tokens = parseCheckedWhen(key);
+            if(tokens !== undefined){
+              addHideHandler(element['id'], tokens['value'], tokens['key'], data[key]);
+            }
+          }
+        });
+      }
     }
   });
 
   initializing = false;
 };
 
-function addHideHandler(optionId, option, key,  configValue) {
+function addHideHandler(optionId, option, key, configValue) {
   const changeId = idFromToken(key.replace(/^hide/,''));
 
-  if(hideLookup[optionId] === undefined) hideLookup[optionId] = new Table(changeId, 'option_value');
+  if(hideLookup[optionId] === undefined) hideLookup[optionId] = new Table(changeId, undefined);
   const table = hideLookup[optionId];
   table.put(changeId, option, configValue);
 
@@ -260,7 +273,7 @@ function addMinMaxForHandler(subjectId, option, key,  configValue) {
  *        data-set-account: 'phy3005'
  *      ]
  */
-function addSetHandler(optionId, option, key,  configValue) {
+function addSetHandler(optionId, option, key, configValue) {
   const k = key.replace(/^set/,'');
   const id = String(idFromToken(k));
   if(id === 'undefined') return;
@@ -387,7 +400,7 @@ class Table {
  * event and what's in the hideLookup table.
  */
 function updateVisibility(event, changeId) {
-  const val = event.target.value;
+  const val = valueFromEvent(event);
   const id = event.target['id'];
   let changeElement = undefined;
   $(`#${changeId}`).parents().each(function(_i, parent) {
@@ -408,6 +421,15 @@ function updateVisibility(event, changeId) {
   }
 }
 
+// extract the value from the event. With checkbox being
+// handleded specially.
+function valueFromEvent(event) {
+  if(event.target['type'] == 'checkbox') {
+    return event.target.checked ? 'checked' : 'unchecked';
+  } else {
+    return event.target.value;
+  }
+}
 /**
  * Update the min & max values of `changeId` based on the
  * event, the `otherId` and the settings in minMaxLookup table.
@@ -496,6 +518,19 @@ function addOptionForHandler(causeId, targetId) {
     toggleOptionsFor({ target: document.querySelector(`#${causeId}`) }, targetId);
   }
 };
+
+function parseCheckedWhen(key) {
+  const tokens = key.match(/^hide(\w+)When(\w+)$/);
+
+  if(tokens !== undefined && tokens.length && tokens.length == 3) {
+    return {
+      'key': tokens[1],
+      'value': tokens[2].toLowerCase() == 'checked' ? 'checked' : 'unchecked'
+    };
+  } else {
+    return undefined;
+  }
+}
 
 /**
  *
