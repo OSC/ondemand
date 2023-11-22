@@ -303,8 +303,8 @@ function setValue(event, changeId) {
 }
 
 function setCheckboxValue(checkbox, value) {
-  const affirmitiveValue = checkbox.value;
-  if(value == affirmitiveValue) {
+  const positiveValue = checkbox.value;
+  if(value == positiveValue) {
     checkbox.checked = true;
   } else {
     checkbox.checked = false;
