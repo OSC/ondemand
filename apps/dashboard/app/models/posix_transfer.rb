@@ -1,10 +1,14 @@
 # PosixTransfer is a class for transfering local files.
 class PosixTransfer < Transfer
 
-  validates_each :files do |record, attr, files|
-    if record.action == 'mv' || record.action == 'cp'
+  validates_each :files do |record, _attr, files|
+
+    if record.move? || record.copy?
       conflicts = files.values.select { |f| File.exist?(f) }
       record.errors.add :files, "these files already exist: #{conflicts.join(', ')}" if conflicts.present?
+
+      non_existant = files.keys.reject { |f| File.exist?(f) }
+      record.errors.add :files, "cannot copy or move files that do not exist: #{non_existant.join(', ')}" if non_existant.present?
     end
 
     files.each do |k, v|
@@ -117,6 +121,8 @@ class PosixTransfer < Transfer
     files.each_with_index do |cp_info, idx|
       src = cp_info[0]
       dest = cp_info[1]
+      AllowlistPolicy.default.validate!(src)
+      AllowlistPolicy.default.validate!(dest)
       FileUtils.cp_r(src, dest)
       update_percent(idx + 1)
     rescue => e
