@@ -572,17 +572,17 @@ module BatchConnect
 
     # @return [Boolean]
     def use_global_ssh_to_compute_node_setting?
-      cluster_ssh_to_compute_node?.nil? && app_ssh_to_compute_node.nil?
+      cluster_ssh_to_compute_node?.nil? && app_ssh_to_compute_node?.nil?
     end
 
     # @return [Boolean]
     def use_cluster_ssh_to_compute_node_setting?
-      !cluster_ssh_to_compute_node?.nil? && app_ssh_to_compute_node.nil?
+      !cluster_ssh_to_compute_node?.nil? && app_ssh_to_compute_node?.nil?
     end
 
     # @return [Boolean]
     def use_app_ssh_to_compute_node_setting?
-      cluster_ssh_to_compute_node.nil? && !app_ssh_to_compute_node.nil?
+      cluster_ssh_to_compute_node?.nil? && !app_ssh_to_compute_node?.nil?
     end
 
     # @return [Boolean]
