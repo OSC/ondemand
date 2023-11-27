@@ -556,15 +556,33 @@ module BatchConnect
     # Whether to allow SSH to node running the job
     # @return [Boolean] whether to allow SSH to node running the job
     def ssh_to_compute_node?
-      if cluster_ssh_to_compute_node?.nil? && app_ssh_to_compute_node?.nil?
+      if use_global_ssh_to_compute_node_setting?
         return global_ssh_to_compute_node?
-      elsif !cluster_ssh_to_compute_node?.nil? && app_ssh_to_compute_node?.nil?
+
+      elsif use_cluster_ssh_to_compute_node_setting?
         return cluster_ssh_to_compute_node?
-      elsif !app_ssh_to_compute_node?.nil? && cluster_ssh_to_compute_node?.nil?
+
+      elsif use_app_ssh_to_compute_node_setting?
         return app_ssh_to_compute_node?
+
       else
         return app_ssh_to_compute_node? && cluster_ssh_to_compute_node?
       end
+    end
+
+    # @return [Boolean]
+    def use_global_ssh_to_compute_node_setting?
+      cluster_ssh_to_compute_node?.nil? && app_ssh_to_compute_node.nil?
+    end
+
+    # @return [Boolean]
+    def use_cluster_ssh_to_compute_node_setting?
+      !cluster_ssh_to_compute_node?.nil? && app_ssh_to_compute_node.nil?
+    end
+
+    # @return [Boolean]
+    def use_app_ssh_to_compute_node_setting?
+      cluster_ssh_to_compute_node.nil? && !app_ssh_to_compute_node.nil?
     end
 
     # @return [Boolean]
