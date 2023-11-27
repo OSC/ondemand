@@ -28,6 +28,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Icons are now present in favorite paths [3076](https://github.com/OSC/ondemand/pull/3076).
 - Debian 12 is now supported in [3127](https://github.com/OSC/ondemand/pull/3127).
 - Sites can now use a japanese locale in [3180](https://github.com/OSC/ondemand/pull/3180).
+- Checkboxes can now use `data-hide-` directives in [3199](https://github.com/OSC/ondemand/pull/3199).
+- select options can now toggle checkboxes through `data-set-` directives in [3181](https://github.com/OSC/ondemand/pull/3181).
+- Admins can now set a `default_profile` in [3200](https://github.com/OSC/ondemand/pull/3200).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
@@ -41,6 +44,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The shell app can now ping/pong to keep connections alive in [3135](https://github.com/OSC/ondemand/pull/3135).
 - auto_queues are account aware in [3123](https://github.com/OSC/ondemand/pull/3123).
 - auto_modules can correctly set their label in [3139](https://github.com/OSC/ondemand/pull/3139).
+- Gnome desktops correctly work in [3188](https://github.com/OSC/ondemand/pull/3188).
+- `staged_root` is created as 700 to ensure it's writable by the user in [3202](https://github.com/OSC/ondemand/pull/3202).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
