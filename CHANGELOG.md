@@ -6,14 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-support for dynamic checkboxes (#3181)\
-add the ability for data-hide- directives on checkboxes (#3199)\
-ensure staged_root has is writable by the user (#3202)\
-lint a random file (#3203)\
-some small fixups for path selector (#3201)\
-Added default_profile setting to allow admins to select the default profile for users (#3200)\
-update dependencies (#3185)\
-Fix gnome desktop (#3188)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
@@ -36,6 +28,9 @@ Fix gnome desktop (#3188)
 - Icons are now present in favorite paths [3076](https://github.com/OSC/ondemand/pull/3076).
 - Debian 12 is now supported in [3127](https://github.com/OSC/ondemand/pull/3127).
 - Sites can now use a japanese locale in [3180](https://github.com/OSC/ondemand/pull/3180).
+- Checkboxes can now use `data-hide-` directives in [3199](https://github.com/OSC/ondemand/pull/3199).
+- select options can now toggle checkboxes through `data-set-` directives in [3181](https://github.com/OSC/ondemand/pull/3181).
+- Admins can now set a `default_profile` in [3200](https://github.com/OSC/ondemand/pull/3200).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
@@ -49,6 +44,8 @@ Fix gnome desktop (#3188)
 - The shell app can now ping/pong to keep connections alive in [3135](https://github.com/OSC/ondemand/pull/3135).
 - auto_queues are account aware in [3123](https://github.com/OSC/ondemand/pull/3123).
 - auto_modules can correctly set their label in [3139](https://github.com/OSC/ondemand/pull/3139).
+- Gnome desktops correctly work in [3188](https://github.com/OSC/ondemand/pull/3188).
+- `staged_root` is created as 700 to ensure it's writable by the user in [3202](https://github.com/OSC/ondemand/pull/3202).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
