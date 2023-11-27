@@ -281,3 +281,5 @@ en:
     delete: "Delete"
     edit: "Edit"
     show: "Show"
+    project: "Project"
+    directory: "Directory"

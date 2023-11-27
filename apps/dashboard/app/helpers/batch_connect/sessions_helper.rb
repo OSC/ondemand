@@ -129,14 +129,7 @@ module BatchConnect::SessionsHelper
   end
 
   def display_choices(session)
-    user_context = session.user_context
-    session.app.attributes.select(&:display?).map do |attribute|
-      content_tag(:p) do
-        concat content_tag(:strong, "#{attribute.label}:")
-        concat " "
-        concat user_context.fetch(attribute.id, '')
-      end
-    end.join.html_safe
+    render(partial: 'batch_connect/sessions/card/display_choices', locals: { session: session })
   end
 
   def status(session)
