@@ -76,9 +76,6 @@ class Project
   validate :project_directory_exist, on: [:create]
   validate :project_template_invalid, on: [:create]
 
-  # the template you created this project from
-  attr_accessor :template
-
   def initialize(attributes = {})
     @id = attributes.delete(:id)
     @directory = attributes.delete(:directory)
@@ -194,13 +191,37 @@ class Project
     return true if template.blank?
 
     # Sync the template files over
-    oe, s = Open3.capture2e("rsync", "-a", "#{template}/", "#{project_dataroot}")
+    oe, s = Open3.capture2e(*rsync_args)
     raise oe unless s.success?
 
-    true
+    save_new_scripts
   rescue StandardError => e
     errors.add(:save, "Failed to sync template: #{e.message}")
     false
+  end
+
+  # When copying a project from a template, we need new Script objects
+  # that point to the _new_ project directory, not the template's directory.
+  # This creates them _and_ serializes them to yml in the new directory.
+  def save_new_scripts
+    dir = Script.scripts_dir(template)
+    Dir.glob("#{dir}/*/form.yml").map do |script_yml|
+      Script.from_yaml(script_yml, project_dataroot)
+    end.map do |script|
+      saved_successfully = script.save
+      errors.add(:save, script.errors.full_messages) unless saved_successfully
+
+      saved_successfully
+    end.none? do |saved_successfully|
+      saved_successfully == false
+    end
+  end
+
+  def rsync_args
+    [
+      'rsync', '-a', '--exclude', 'scripts/*',
+      "#{template}/", project_dataroot.to_s
+    ]
   end
 
   def project_directory_exist

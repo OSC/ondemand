@@ -309,9 +309,8 @@ class Script
   end
 
   def add_script_to_form(form: [], attributes: {})
-    return if form.include?('auto_scripts')
+    form << 'auto_scripts' unless form.include?('auto_scripts')
 
-    form << 'auto_scripts'
     attributes[:auto_scripts] = {
       directory: project_dir
     }
