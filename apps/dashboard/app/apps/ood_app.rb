@@ -206,10 +206,6 @@ class OodApp
     manifest.metadata
   end
 
-  def ssh_allow
-    manifest.ssh_allow
-  end
-
   def manifest
     @manifest ||= Manifest.load(manifest_path)
   end
