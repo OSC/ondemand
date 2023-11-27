@@ -133,8 +133,8 @@ module BatchConnect
       ood_app.metadata.merge(form_config.fetch(:metadata, {}))
     end
 
-    def ssh_allow
-      form_config[:ssh_allow].nil? ? true : form_config[:ssh_allow]
+    def ssh_allow?
+      form_config[:ssh_allow]
     end
 
     def link
