@@ -33,16 +33,16 @@
   integrity sha512-pCvdmea/F3Tn4hAtHqNXmjcixSaroJJ+L3STXlYJdir1g1m2mRQpWbN8a4SvgQtaw2930Ckhdx8qXdXBFMKbAA==
 
 "@types/jquery@^3.5.16":
-  version "3.5.27"
-  resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-3.5.27.tgz#d9d67a003d0292a36fe35868a618c82f8fd12b19"
-  integrity sha512-TR28Y8ezIGgfyA02UOh9x+Fy16/1qWYAnvtRd2gTBJuccX/vmddyti0MezLkTv7f+OLofVc2T961VPyKv1tXJQ==
+  version "3.5.29"
+  resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-3.5.29.tgz#3c06a1f519cd5fc3a7a108971436c00685b5dcea"
+  integrity sha512-oXQQC9X9MOPRrMhPHHOsXqeQDnWeCDT3PelUIg/Oy8FAbzSZtFHRjc7IpbfFVmpLtJ+UOoywpRsuO5Jxjybyeg==
   dependencies:
     "@types/sizzle" "*"
 
 "@types/sizzle@*":
-  version "2.3.6"
-  resolved "https://registry.yarnpkg.com/@types/sizzle/-/sizzle-2.3.6.tgz#e39b7123dac4631001939bd4c2a26d46010f2275"
-  integrity sha512-m04Om5Gz6kbjUwAQ7XJJQ30OdEFsSmAVsvn4NYwcTRyMVpKKa1aPuESw1n2CxS5fYkOQv3nHgDKeNa8e76fUkw==
+  version "2.3.8"
+  resolved "https://registry.yarnpkg.com/@types/sizzle/-/sizzle-2.3.8.tgz#518609aefb797da19bf222feb199e8f653ff7627"
+  integrity sha512-0vWLNK2D5MT9dg0iOo8GlKguPAU02QjmZitPEsXRuJXU/OGIOt9vT9Fc26wtYuavLxtO45v9PGleoL9Z0k1LHg==
 
 "@uppy/audio@^0.3.3":
   version "0.3.3"
