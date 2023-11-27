@@ -64,7 +64,8 @@ function addSearch(){
   });
 }
 
-/** Creates an inverted index of ALL_ICONS.
+/**
+ * Creates an inverted index of ALL_ICONS.
  * Returns an array type.
  **/
  function createInvertedIndex(arr) {
@@ -82,26 +83,33 @@ function addSearch(){
 
   return invertedIndex;
 }
+ 
+let invertedIndex = createInvertedIndex(ALL_ICONS);
 
-function searchIcons(event){
+function searchIcons(event) {
+  const searchString = event.target.value.toLowerCase(); // Convert input to lowercase for case-insensitive search
+  const iconIds = Object.keys(invertedIndex); // Get all keys (characters) from the inverted index
+  const resultIndices = new Set(); // Set to store indices of matching icons
 
-  const invertedIndex = createInvertedIndex(ALL_ICONS);
+  iconIds.forEach(char => {
+    const indices = invertedIndex[char]; // Get indices for the character in the inverted index
+    indices.forEach(index => {
+      const str = ALL_ICONS[index].toLowerCase();
+      if (str.includes(searchString)) {
+        resultIndices.add(index);
+      }
+    });
+  });
 
-  const searchString = event.target.value;
-  const rex = new RegExp(searchString, "g"); 
-  hiddenIcons = true;
-
-  arr = invertedIndex.get(searchString.charAt(0));
-
-  invertedIndex.forEach(name => {
+  ALL_ICONS.forEach((name, idx) => {
     const ele = $(`#${iconId(name)}`)[0];
-    if(ele === undefined) {
+    if (ele === undefined) {
       return;
     }
 
-    const show = rex.test(name);
+    const show = resultIndices.has(idx);
 
-    if(show) {
+    if (show) {
       ele.classList.remove('d-none');
     } else {
       ele.classList.add('d-none');
