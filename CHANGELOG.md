@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+support for dynamic checkboxes (#3181)\
+add the ability for data-hide- directives on checkboxes (#3199)\
+ensure staged_root has is writable by the user (#3202)\
+lint a random file (#3203)\
+some small fixups for path selector (#3201)\
+Added default_profile setting to allow admins to select the default profile for users (#3200)\
+update dependencies (#3185)\
+Fix gnome desktop (#3188)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
