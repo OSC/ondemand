@@ -56,7 +56,7 @@ jQuery(function () {
         }
     });
 
-    $('#select-all').on('click', function() {
+    $('#select_all').on('click', function() {
         if ($(this).is(":checked")) {
             table.getTable().rows().select();
         } else {
