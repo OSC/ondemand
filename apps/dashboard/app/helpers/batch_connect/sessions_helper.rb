@@ -98,26 +98,7 @@ module BatchConnect::SessionsHelper
   end
 
   def host(session)
-    if session.ssh_to_compute_node?
-      content_tag(:p) do
-        concat content_tag(:strong, t('dashboard.batch_connect_sessions_stats_host'))
-        concat " "
-        concat(
-          session.connect.host ? link_to(
-            session.connect.host, OodAppkit.shell.url(
-              host: session.connect.host).to_s,
-              target: "_blank",
-              class: "btn btn-primary btn-sm fas fa-terminal"
-            ) : t('dashboard.batch_connect_sessions_stats_undetermined_host')
-        )
-      end if session.running?
-    else
-      content_tag(:p) do
-        concat content_tag(:strong, t('dashboard.batch_connect_sessions_stats_host'))
-        concat " "
-        concat session.connect.host || t('dashboard.batch_connect_sessions_stats_undetermined_host')
-      end if session.running?
-    end
+    render(partial: 'batch_connect/sessions/card/host', locals: { session: session })
   end
 
   def id(session)

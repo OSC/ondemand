@@ -1,0 +1,15 @@
+<% if session.ssh_to_compute_node? %>
+  <p>
+    <strong><%= t('dashboard.batch_connect_sessions_stats_host') %></strong>  
+    <%= session.connect.host ? link_to(
+        session.connect.host, OodAppkit.shell.url(
+        host: session.connect.host).to_s, target: "_blank", 
+        class: "btn btn-primary btn-sm fas fa-terminal"
+       ) : t('dashboard.batch_connect_sessions_stats_undetermined_host') %>
+  </p>
+<% else %>  
+    <p>
+      <strong><%= t('dashboard.batch_connect_sessions_stats_host') %></strong>
+      <%= session.connect.host || t('dashboard.batch_connect_sessions_stats_undetermined_host') %>
+    </p>  
+<% end %>
