@@ -2,7 +2,7 @@
   <p>
     <strong><%= t('dashboard.batch_connect_sessions_stats_host') %></strong>  
     <% if session.connect.host %>
-      <a href = "<%= OodAppkit.shell.url(host: session.connect.host).to_s %>" target = "_blank" class = "btn btn-primary btn-sm fas fa-terminal"> 
+      <a href="<%= OodAppkit.shell.url(host: session.connect.host).to_s %>" target="_blank" class="btn btn-primary btn-sm fas fa-terminal"> 
         <%= session.connect.host %> 
       </a>
     <% else %> 
