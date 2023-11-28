@@ -134,7 +134,7 @@ module BatchConnect
     end
 
     def ssh_allow?
-      form_config[:ssh_allow]
+      form_config[:ssh_allow].nil? ? true : form_config[:ssh_allow]
     end
 
     def link
