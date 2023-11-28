@@ -8,7 +8,7 @@ class BatchConnect::SessionContextsController < ApplicationController
     set_app
     set_render_format
     set_session_context
-    set_prefill_templates
+    get_prefill_templates
 
     if @app.valid?
       begin
@@ -42,7 +42,7 @@ class BatchConnect::SessionContextsController < ApplicationController
         save_template
         # We need to set the prefill templates only after storing the new one
         # so that the new one is included / updated in the list
-        set_prefill_templates
+        get_prefill_templates
 
         format.html { redirect_to batch_connect_sessions_url, notice: t('dashboard.batch_connect_sessions_status_blurb_create_success') }
         format.json { head :no_content }
@@ -81,33 +81,46 @@ class BatchConnect::SessionContextsController < ApplicationController
       @render_format = @app.clusters.first.job_config[:adapter] unless @app.clusters.empty?
     end
 
-    # Set the rendering format for displaying attributes
-    def set_prefill_templates
-      # the prefill templates here should likely be using the UserSettingStore#prefill_templates rather than this json object
-      @prefill_templates = prefill_templates
-      # @prefill_templates ||= begin
-      #   return {} unless @app.valid?
+    def get_prefill_templates
+      Rails.logger.debug("")
+      Rails.logger.debug("template_name.class: #{template_name.class}")
+      Rails.logger.debug("user_prefill_templates(template_name): #{user_prefill_templates(template_name)}")
+      Rails.logger.debug("")
+      Rails.logger.debug("")
+      @prefill_templates = user_prefill_templates(template_name).nil? ? {} : user_prefill_templates(template_name)
+    end
 
-      #   json_path = prefill_templates_root.join("*.json")
-      #   Dir.glob(json_path).map do |path|
-      #     [File.basename(path, '.json'), File.read(path)]
-      #   end.to_h
-      # end
+    def template_name
+      # fails here, params[:template_name] is nil, why? allowed it below to be sure...
+      Rails.logger.debug("")
+      Rails.logger.debug("")
+      Rails.logger.debug("params: #{params}")
+      # currently outputting
+      # => params: {"controller"=>"batch_connect/session_contexts", "action"=>"new", "token"=>"dev/bc_classroom_blender"}
+      Rails.logger.debug("")
+      Rails.logger.debug("")
+      return {fail: "fix me"} if params[:template_name].nil? 
+      params[:template_name]
+    end
+
+    def json_session_context
+      @session_context.to_json
     end
 
     def save_template
-      return unless params[:save_template].present? && params[:save_template] == "on" && params[:template_name].present?
+      return unless template_saveable?
 
-      safe_name = params[:template_name].gsub(/[\x00\/\\:\*\?\"<>\| ]/, '_')
-      # path = prefill_templates_root.join(safe_name.to_s + '.json')
-      # path.write(@session_context.to_json)
-      updated_settings = { prefill_templates: { safe_name => @session_context.to_json } }
-      update_user_settings(updated_settings)
+      json_session_context = @session_context.to_json
+      update_user_settings(template_name, json_session_context)
+    end
+
+    def template_saveable?
+      params[:save_template].present? && params[:save_template] == "on" && params[:template_name].present?
     end
 
     # Only permit certian parameters
     def session_contexts_param
-      params.require(:batch_connect_session_context).permit(@session_context.attributes.keys) if params[:batch_connect_session_context].present?
+      params.require(:batch_connect_session_context).permit(@session_context.attributes.keys + [:template_name]) if params[:batch_connect_session_context].present?
     end
 
     # Store session context into a cache file
