@@ -56,6 +56,14 @@ jQuery(function () {
         }
     });
 
+    $('#select-all').on('click', function() {
+        if ($(this).is(":checked")) {
+            table.getTable().rows().select();
+        } else {
+            table.getTable().rows().deselect();
+        }
+    })
+
     /* END TABLE ACTIONS */
 
     /* DATATABLE LISTENERS */
