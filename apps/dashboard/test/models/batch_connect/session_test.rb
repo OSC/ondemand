@@ -463,6 +463,17 @@ module BatchConnect
       refute session.ssh_to_compute_node?
     end
 
+    test 'ssh_to_compute_node? disabled globally disabled for cluster but allowed for app' do
+      session = BatchConnect::Session.new
+      session.stubs(:token).returns('rstudio')
+      session.stubs(:cluster).returns(OodCore::Cluster.new({ id: 'owens', job: { foo: 'bar' },
+  batch_connect: { ssh_allow: false } }))
+      session.stubs(:app_ssh_to_compute_node?).returns(true)
+      Configuration.stubs(:ood_bc_ssh_to_compute_node).returns(false)
+      refute session.ssh_to_compute_node?
+    end
+
+
     test 'ssh_to_compute_node? handles non-existant cluster and disabled globally' do
       session = BatchConnect::Session.new
       session.stubs(:token).returns('rstudio')
