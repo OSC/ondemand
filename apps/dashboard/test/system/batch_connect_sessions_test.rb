@@ -2,6 +2,9 @@
 
 require 'application_system_test_case'
 
+# unclear why this is needed, but it is.
+require 'ood_core/job/adapters/slurm'
+
 class BatchConnectSessionsTest < ApplicationSystemTestCase
 
   def setup
@@ -10,9 +13,9 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
 
   def test_data
     {
-      'id':              'abc-123',
+      'id':              test_bc_id,
       'cluster_id':      'owens',
-      "job_id":          '123456',
+      "job_id":          test_job_id,
       "created_at":      1_701_184_869,
       "token":           'sys/bc_paraview',
       "title":           'Code Server',
@@ -21,9 +24,22 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
     }
   end
 
+  def test_job_id
+    '1234'
+  end
+
+  def test_bc_id
+    'abc-123'
+  end
+
   def create_test_file(dir)
     BatchConnect::Session.stubs(:db_root).returns(Pathname.new(dir))
-    File.write("#{dir}/abc-123", test_data.to_json)
+    File.write("#{dir}/#{test_bc_id}", test_data.to_json)
+  end
+
+  def stub_scheduler(state)
+    info = OodCore::Job::Info.new(id: test_job_id, status: state.to_sym)
+    OodCore::Job::Adapters::Slurm.any_instance.stubs(:info).returns(info)
   end
 
   test 'no sessions' do
@@ -35,8 +51,14 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
   test 'queued session' do
     Dir.mktmpdir do |dir|
       create_test_file(dir)
+      stub_scheduler(:queued)
       visit(batch_connect_sessions_path)
-      assert(false)
+      
+      card = find("#id_#{test_bc_id}")
+      assert_not_nil(card)
+
+      header_text = card.find('h5').text
+      assert_equal("Code Server (#{test_job_id})\nQueued", header_text)
     end
   end
 end
