@@ -270,6 +270,10 @@ class DataTable {
             $('#open-in-terminal-btn').attr('href', data.shell_url);
             $('#open-in-terminal-btn').removeClass('disabled');
 
+            if ($('#select_all').is(':checked')) {
+                $('#select_all').click();
+            }
+
             let result = await Promise.resolve(data);
             $('td input[type=checkbox]').on('keypress', function(event) {
                 if (event.which === 13) {
