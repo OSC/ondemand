@@ -2,7 +2,7 @@ require 'ostruct'
 
 # The controller for apps pages /dashboard/apps
 class AppsController < ApplicationController
-
+  include MotdConcern
   def index
     @sys_apps = sys_app_groups
     @dev_apps = OodAppGroup.groups_for(apps: nav_dev_apps)
@@ -16,7 +16,7 @@ class AppsController < ApplicationController
     else
       @title = nil
       @groups = OodAppGroup.groups_for(apps: nav_usr_apps)
-      @motd = MotdFile.new.formatter
+      set_motd
       set_my_quotas
     end
   end
