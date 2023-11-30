@@ -101,7 +101,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     value = '{"id":"1234","job_id":"1","created_at":1669139262,"token":"sys/token","title":"session title","cache_completed":true}'
     session = BatchConnect::Session.new.from_json(value)
     session.stubs(:status).returns(OodCore::Job::Status.new(state: :completed))
-    session.stubs(:app).returns(stub(valid?: true, token: 'sys/token', attributes: [], session_info_view: nil))
+    session.stubs(:app).returns(stub(valid?: true, token: 'sys/token', attributes: [], session_info_view: nil, ssh_allow?: true))
     BatchConnect::Session.stubs(:all).returns([session])
 
     get batch_connect_sessions_path
