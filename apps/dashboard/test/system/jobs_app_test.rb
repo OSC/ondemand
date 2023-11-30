@@ -179,6 +179,20 @@ class ProjectsTest < ApplicationSystemTestCase
     end
   end
 
+  test 'all icons show initially' do
+    visit(new_project_path)
+    icons = find('#icon_picker_list').all('i')
+    assert_equal(990, icons.size)
+  end
+
+  test 'searching icons works' do
+    # TODO
+  end
+
+  test 'all icons show after clearing input field' do
+    # TODO
+  end
+
   test 'creating and showing scripts' do
     Dir.mktmpdir do |dir|
       project_id = setup_project(dir)
