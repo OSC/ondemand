@@ -556,12 +556,12 @@ module BatchConnect
     # Whether to allow SSH to node running the job
     # @return [Boolean] whether to allow SSH to node running the job
     def ssh_to_compute_node?
-      return cluster_and_app_ssh_to_compute_node? if override_global_ssh_to_compute_node?
+      return cluster_and_app_ssh? if override_global_ssh_to_compute_node?
       global_ssh_to_compute_node?
     end
 
-    def cluster_and_app_ssh_to_compute_node?
-      cluster_ssh_to_compute_node? && app_ssh_to_compute_node?
+    def cluster_and_app_ssh?
+      cluster_ssh_to_compute_node && app_ssh_to_compute_node
     end
 
     def override_global_ssh_to_compute_node?
@@ -569,24 +569,24 @@ module BatchConnect
     end
 
     def cluster_override_ssh_to_compute_node?
-      !cluster_ssh_to_compute_node?.nil? &&
-        cluster_ssh_to_compute_node? != global_ssh_to_compute_node?
+      !cluster_ssh_to_compute_node.nil? &&
+        cluster_ssh_to_compute_node != global_ssh_to_compute_node?
     end
 
     def app_override_ssh_to_compute_node?
-      !app_ssh_to_compute_node?.nil? &&
-        app_ssh_to_compute_node? != global_ssh_to_compute_node?
+      !app_ssh_to_compute_node.nil? &&
+        app_ssh_to_compute_node != global_ssh_to_compute_node?
     end
 
     # @return [Boolean]
-    def cluster_ssh_to_compute_node?
+    def cluster_ssh_to_compute_node
       cluster.batch_connect_ssh_allow?
     rescue ClusterNotFound
       return nil
     end
 
     # @return [Boolean]
-    def app_ssh_to_compute_node?
+    def app_ssh_to_compute_node
       token.nil? ? true : app.ssh_allow?
     end
 
