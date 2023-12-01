@@ -753,7 +753,10 @@ class ProjectsTest < ApplicationSystemTestCase
 
       # every auto_scripts option was copied and has the _new_ project location.
       new_auto_scripts = new_form['attributes']['auto_scripts']['options']
-      new_auto_scripts.sort.each_with_index do |option, idx|
+      new_auto_scripts.sort_by do |option|
+        # ruby 2.7 doesn't sort the same way
+        option[0].match('\d').to_s.to_i
+      end.each_with_index do |option, idx|
         filename = "assignment_#{idx + 1}.sh"
         full_path = "#{abs_project_dir}/#{filename}"
         assert_equal(filename, option[0])
