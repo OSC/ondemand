@@ -745,7 +745,12 @@ class ProjectsTest < ApplicationSystemTestCase
       orig_form = "#{Rails.root}/test/fixtures/projects/chemistry-5533/.ondemand/scripts/8woi7ghd/form.yml"
       orig_form = YAML.safe_load(File.read(orig_form))
 
-      new_form = YAML.safe_load(File.read(forms.first))
+      # ruby 2.7 globs differently
+      new_form = if RUBY_VERSION > '3.0'
+                   YAML.safe_load(File.read(forms.first))
+                 else
+                   YAML.safe_load(File.read(forms.last))
+                 end
 
       # 'form' & 'title' are the same
       assert_equal(orig_form['form'], new_form['form'])
