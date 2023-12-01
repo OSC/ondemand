@@ -716,4 +716,49 @@ class ProjectsTest < ApplicationSystemTestCase
       end
     end
   end
+
+  test 'creating project from template updates forms' do
+    Dir.mktmpdir do |dir|
+      Project.stubs(:dataroot).returns(Pathname.new(dir))
+      Configuration.stubs(:project_template_dir).returns("#{Rails.root}/test/fixtures/projects")
+
+      visit(projects_root_path)
+      click_on(I18n.t('dashboard.jobs_create_template_project'))
+
+      select('Chemistry 5533', from: 'project_template')
+
+      # nothing in the users' project directory yet.
+      assert_equal(['.project_lookup'], Dir.children(dir))
+      assert_equal('', File.read("#{dir}/.project_lookup"))
+
+      click_on(I18n.t('dashboard.save'))
+
+      assert_equal(2, Dir.children(dir).size)
+      project_dir = Dir.children(dir).select { |path| File.directory?("#{dir}/#{path}") }.first
+      abs_project_dir = "#{dir}/#{project_dir}"
+
+      # 3 shell scripts, 3 forms were copied
+      assert_equal(3, Dir.glob("#{abs_project_dir}/*.sh").size)
+      forms = Dir.glob("#{abs_project_dir}/.ondemand/**/*/form.yml")
+      assert_equal(3, forms.size)
+
+      orig_form = "#{Rails.root}/test/fixtures/projects/chemistry-5533/.ondemand/scripts/8woi7ghd/form.yml"
+      orig_form = YAML.safe_load(File.read(orig_form))
+
+      new_form = YAML.safe_load(File.read(forms.first))
+
+      # 'form' & 'title' are the same
+      assert_equal(orig_form['form'], new_form['form'])
+      assert_equal(orig_form['title'], new_form['title'])
+
+      # every auto_scripts option was copied and has the _new_ project location.
+      new_auto_scripts = new_form['attributes']['auto_scripts']['options']
+      new_auto_scripts.each_with_index do |option, idx|
+        filename = "assignment_#{idx + 1}.sh"
+        full_path = "#{abs_project_dir}/#{filename}"
+        assert_equal(filename, option[0])
+        assert_equal(full_path, option[1])
+      end
+    end
+  end
 end

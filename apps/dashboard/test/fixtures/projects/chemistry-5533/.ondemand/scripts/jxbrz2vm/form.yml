@@ -1,0 +1,57 @@
+---
+title: Assignment 3
+created_at: 1699456963
+form:
+- auto_accounts
+- auto_scripts
+- auto_batch_clusters
+attributes:
+  auto_accounts:
+    options:
+    - - pzs0715
+      - pzs0715
+      - {}
+    - - pzs1118
+      - pzs1118
+      - {}
+    - - pzs0714
+      - pzs0714
+      - {}
+    - - pzs1117
+      - pzs1117
+      - data-option-for-cluster-ascend: false
+    - - pas1604
+      - pas1604
+      - data-option-for-cluster-ascend: false
+    value: pzs0715
+    fixed: true
+    label: Account
+    help: ''
+    required: false
+  auto_scripts:
+    options:
+    - - assignment_1.sh
+      - "/users/PZS0714/johrstrom/ondemand/src/apps/dashboard/data/projects/cmtgfxfi/assignment_1.sh"
+    - - assignment_2.sh
+      - "/users/PZS0714/johrstrom/ondemand/src/apps/dashboard/data/projects/cmtgfxfi/assignment_2.sh"
+    - - assignment_3.sh
+      - "/users/PZS0714/johrstrom/ondemand/src/apps/dashboard/data/projects/cmtgfxfi/assignment_3.sh"
+    directory: "/users/PZS0714/johrstrom/ondemand/src/apps/dashboard/data/projects/cmtgfxfi"
+    value: "/users/PZS0714/johrstrom/ondemand/src/apps/dashboard/data/projects/cmtgfxfi/assignment_3.sh"
+    exclude_options:
+    - assignment_2.sh
+    - assignment_1.sh
+    fixed: true
+    label: Script
+    help: ''
+    required: false
+  auto_batch_clusters:
+    options:
+    - ascend
+    - owens
+    - pitzer
+    value: owens
+    fixed: true
+    label: Cluster
+    help: ''
+    required: false
