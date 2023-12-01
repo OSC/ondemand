@@ -84,18 +84,20 @@ function addSearch(){
   return invertedIndex;
 }
  
-let invertedIndex = createInvertedIndex(ALL_ICONS);
+const invertedIndex = createInvertedIndex(ALL_ICONS);
 
 function searchIcons(event) {
   const searchString = event.target.value.toLowerCase(); // Convert input to lowercase for case-insensitive search
-  const iconIds = Object.keys(invertedIndex); // Get all keys (characters) from the inverted index
+  const indexKeys = Object.keys(invertedIndex); // Get all keys (characters) from the inverted index
   const resultIndices = new Set(); // Set to store indices of matching icons
+  const uniqueSearchCharacters = new Set(searchString.split(''));
+  const searchCharacters = [...uniqueSearchCharacters].filter((char) => indexKeys.includes(char));
 
-  iconIds.forEach(char => {
+  searchCharacters.forEach(char => {
     const indices = invertedIndex[char]; // Get indices for the character in the inverted index
     indices.forEach(index => {
-      const str = ALL_ICONS[index].toLowerCase();
-      if (str.includes(searchString)) {
+      const iconStr = ALL_ICONS[index].toLowerCase();
+      if (iconStr.includes(searchString)) {
         resultIndices.add(index);
       }
     });
