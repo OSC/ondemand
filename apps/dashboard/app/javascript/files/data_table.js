@@ -14,13 +14,17 @@ const CONTENTID = '#directory-contents';
 let table = null;
 
 jQuery(function () {
-    table = new DataTable();
 
+    table = new DataTable();
 
     /* END BUTTON ACTIONS */
 
     /* TABLE ACTIONS */
     
+    window.onpopstate = function(event) {
+      table.reloadTable(location.href)
+    };
+
     $(CONTENTID).on(EVENTNAME.reloadTable, function (e, options) {
         let url = $.isEmptyObject(options) ? '' : options.url;
         table.reloadTable(url);
