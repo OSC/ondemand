@@ -100,7 +100,7 @@ namespace :test do
       puts 'There are no DOS encoded files in this project.'
     else
       dos_files.each { |f| warn f }
-      abort('"text:unix" failed! These files are dos encoded.')
+      abort('"text:unix" failed! These files are DOS encoded.')
     end
   end
 
