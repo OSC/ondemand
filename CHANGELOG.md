@@ -6,14 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Fix Debian builds on ppc64le (#3215)\
-Refactor host partial (#3211)\
-Add some tests (#3214)\
-Makes 'ssh_allow' an optional form.yml key (#3206)\
-Adds select all option to files table (#3212)\
-update dependencies (#3209)\
-Update Changelog (#3208)\
-lint a random file (#3207)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
@@ -39,6 +31,8 @@ lint a random file (#3207)
 - Checkboxes can now use `data-hide-` directives in [3199](https://github.com/OSC/ondemand/pull/3199).
 - select options can now toggle checkboxes through `data-set-` directives in [3181](https://github.com/OSC/ondemand/pull/3181).
 - Admins can now set a `default_profile` in [3200](https://github.com/OSC/ondemand/pull/3200).
+- The files table now has a select all checkbox in [3212](https://github.com/OSC/ondemand/pull/3212).
+- Centers can now disable shell links at the app level in [3206](https://github.com/OSC/ondemand/pull/3206).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
