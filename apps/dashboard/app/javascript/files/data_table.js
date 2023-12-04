@@ -21,7 +21,7 @@ jQuery(function () {
     /* TABLE ACTIONS */
     
     window.onpopstate = function(event) {
-      table.reloadTable(location.href)
+      table.goto(location.href)
     };
 
     $(CONTENTID).on(EVENTNAME.reloadTable, function (e, options) {
