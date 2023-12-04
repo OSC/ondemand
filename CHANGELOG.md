@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Fix Debian builds on ppc64le (#3215)\
+Refactor host partial (#3211)\
+Add some tests (#3214)\
+Makes 'ssh_allow' an optional form.yml key (#3206)\
+Adds select all option to files table (#3212)\
+update dependencies (#3209)\
+Update Changelog (#3208)\
+lint a random file (#3207)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
