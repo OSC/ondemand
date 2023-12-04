@@ -16,11 +16,14 @@ let table = null;
 jQuery(function () {
     table = new DataTable();
 
-
     /* END BUTTON ACTIONS */
 
     /* TABLE ACTIONS */
     
+    window.onpopstate = function(event) {
+      table.goto(location.href)
+    };
+
     $(CONTENTID).on(EVENTNAME.reloadTable, function (e, options) {
         let url = $.isEmptyObject(options) ? '' : options.url;
         table.reloadTable(url);
