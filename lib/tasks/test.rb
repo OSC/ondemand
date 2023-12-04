@@ -88,5 +88,21 @@ namespace :test do
     end
   end
 
+  task :unix do
+    dos_files = Dir.glob('*/**/*.{rb,js,scss,html,erb}').reject do |file|
+      file.include?('vendor/') || file.include?('node_modules/')
+    end.map do |file|
+      dos_encoded = `file #{file} | grep -q CRLF; echo $?`.chomp.to_i
+      dos_encoded.positive? ? nil : file
+    end.compact
+
+    if dos_files.empty?
+      puts 'There are no DOS encoded files in this project.'
+    else
+      dos_files.each { |f| warn f }
+      abort('"text:unix" failed! These files are dos encoded.')
+    end
+  end
+
   task :all => [:unit, :shellcheck]
 end
