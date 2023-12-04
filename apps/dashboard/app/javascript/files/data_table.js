@@ -14,7 +14,6 @@ const CONTENTID = '#directory-contents';
 let table = null;
 
 jQuery(function () {
-
     table = new DataTable();
 
     /* END BUTTON ACTIONS */
