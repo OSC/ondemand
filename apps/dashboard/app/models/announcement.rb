@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 # Announcements show up on the dashboard to convey a message to users.
 class Announcement
   # List of valid announcement types
-  TYPES = [:warning, :info, :success, :danger]
+  TYPES = [:warning, :info, :success, :danger].freeze
 
   # @param opts [#to_h, #to_s] the announcement object or path
   # @option opts [#to_sym] :type (:warning) Type of announcement (:info,
@@ -25,7 +27,7 @@ class Announcement
   # The announcement's message
   # @return [String, nil] the announcement's message if it exists
   def msg
-    msg = opts.fetch(:msg, "").to_s
+    msg = opts.fetch(:msg, '').to_s
     msg.blank? ? nil : msg
   end
 
@@ -36,20 +38,21 @@ class Announcement
   end
 
   private
-    def opts
-      @opts ||= case @path.extname
-                when ".md"
-                  { msg: @path.expand_path.read }
-                when ".yml"
-                  YAML.safe_load(ERB.new(@path.expand_path.read, trim_mode: "-").result)
-                else
-                  {}
-                end
-      @opts.symbolize_keys.compact
-    rescue Errno::ENOENT, SyntaxError # File does not exist or syntax errors
-      @opts = {}
-    rescue => e
-      Rails.logger.warn "Error parsing announcement file '#{@path}': #{e.message}"
-      @opts = {}
-    end
+
+  def opts
+    @opts ||= case @path.extname
+              when '.md'
+                { msg: @path.expand_path.read }
+              when '.yml'
+                YAML.safe_load(ERB.new(@path.expand_path.read, trim_mode: '-').result)
+              else
+                {}
+              end
+    @opts.symbolize_keys.compact
+  rescue Errno::ENOENT, SyntaxError # File does not exist or syntax errors
+    @opts = {}
+  rescue StandardError => e
+    Rails.logger.warn "Error parsing announcement file '#{@path}': #{e.message}"
+    @opts = {}
+  end
 end
