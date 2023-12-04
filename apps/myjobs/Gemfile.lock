@@ -141,7 +141,7 @@ GEM
       timeout
     net-smtp (0.4.0)
       net-protocol
-    nio4r (2.6.1)
+    nio4r (2.7.0)
     nokogiri (1.15.5)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
@@ -151,7 +151,7 @@ GEM
       ood_core (~> 0.1)
       rails (>= 6.0.0, < 7)
       redcarpet (~> 3.2)
-    ood_core (0.23.5)
+    ood_core (0.24.1)
       ffi (~> 1.9, >= 1.9.6)
       ood_support (~> 0.0.2)
       rexml (~> 3.2)
