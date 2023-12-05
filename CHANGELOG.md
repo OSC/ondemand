@@ -31,6 +31,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Checkboxes can now use `data-hide-` directives in [3199](https://github.com/OSC/ondemand/pull/3199).
 - select options can now toggle checkboxes through `data-set-` directives in [3181](https://github.com/OSC/ondemand/pull/3181).
 - Admins can now set a `default_profile` in [3200](https://github.com/OSC/ondemand/pull/3200).
+- The files table now has a select all checkbox in [3212](https://github.com/OSC/ondemand/pull/3212).
+- Centers can now disable shell links at the app level in [3206](https://github.com/OSC/ondemand/pull/3206).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
