@@ -16,7 +16,7 @@
   <% else %>
     <% if time_limit %>
       <strong> 
-        <%= t('dashboard.batch_connect_sessions_stats_time_used') %>
+        <%= t('dashboard.batch_connect_sessions_stats_time_requested') %>
       </strong>
       <%= distance_of_time_in_words(time_limit, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours) %>
     <% end %>
