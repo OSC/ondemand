@@ -73,28 +73,7 @@ module BatchConnect::SessionsHelper
   end
 
   def session_time(session)
-    time_limit = session.info.wallclock_limit
-    time_used  = session.info.wallclock_time
-
-    content_tag(:p) do
-      if session.starting? || session.running?
-        if time_limit && time_used
-          concat content_tag(:strong, t('dashboard.batch_connect_sessions_stats_time_remaining'))
-          concat " "
-          concat distance_of_time_in_words(time_limit - time_used, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)
-        elsif time_used
-          concat content_tag(:strong, t('dashboard.batch_connect_sessions_stats_time_used'))
-          concat " "
-          concat distance_of_time_in_words(time_used, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)
-        end
-      else  # not starting or running
-        if time_limit
-          concat content_tag(:strong, t('dashboard.batch_connect_sessions_stats_time_requested'))
-          concat " "
-          concat distance_of_time_in_words(time_limit, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)
-        end
-      end
-    end
+    render(partial: 'batch_connect/sessions/card/session_time', locals: { session: session })
   end
 
   def host(session)
