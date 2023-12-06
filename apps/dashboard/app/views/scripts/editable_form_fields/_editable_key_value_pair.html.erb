@@ -1,0 +1,13 @@
+<%-
+  field_id = "#{form.object_name}_#{attrib.id}"
+-%>
+
+<div class="editable-form-field">
+
+KEY VALUE PAIR FORM: <%= field_id %>
+
+  <div class="d-none edit-group">
+  </div>
+
+  <%= render(partial: 'scripts/editable_form_fields/edit_field_buttons',  locals: { field_id: field_id }) %>
+</div>
