@@ -10,17 +10,6 @@ class AppsController < ApplicationController
     set_metadata_columns
   end
 
-  def featured
-    if OodSupport::Process.groups_changed?
-      redirect_to apps_restart_url
-    else
-      @title = nil
-      @groups = OodAppGroup.groups_for(apps: nav_usr_apps)
-      set_motd
-      set_my_quotas
-    end
-  end
-
   def restart
   end
 

@@ -61,7 +61,6 @@ Rails.application.routes.draw do
 
   if Configuration.app_sharing_enabled?
     get "apps/restart" => "apps#restart"
-    get "apps/featured" => "apps#featured"
   end
 
   root "dashboard#index"
