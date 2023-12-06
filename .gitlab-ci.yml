@@ -23,7 +23,7 @@ build-nightly:
     - bundle exec rake package:build[$OOD_PACKAGING_DIST,$OOD_PACKAGING_ARCH,true]
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el7, el8]
+      - OOD_PACKAGING_DIST: [el8]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, debian-12]
@@ -51,7 +51,7 @@ build:
     - bundle exec rake package:build[$OOD_PACKAGING_DIST,$OOD_PACKAGING_ARCH]
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el7, el8]
+      - OOD_PACKAGING_DIST: [el8]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, debian-12]
