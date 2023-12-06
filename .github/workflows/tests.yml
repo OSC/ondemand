@@ -114,7 +114,6 @@ jobs:
       matrix:
         os: [ubuntu-22.04]
         dist:
-          - el7
           - el8
           - el9
           - amzn2023

@@ -79,33 +79,15 @@ def codename
 end
 
 def packager
-  if apt?
-    'DEBIAN_FRONTEND=noninteractive apt'
-  elsif host_inventory['platform'] == 'redhat' && host_inventory['platform_version'] =~ /^7/
-    'yum'
-  else
-    'dnf'
-  end
+  apt? ? 'DEBIAN_FRONTEND=noninteractive apt' : 'dnf'
 end
 
 def apache_service
-  if apt?
-    'apache2'
-  elsif host_inventory['platform'] == 'redhat' && host_inventory['platform_version'] =~ /^7/
-    'httpd24-httpd'
-  else
-    'httpd'
-  end
+  apt? ? 'apache2' : 'httpd'
 end
 
 def apache_reload
-  if apt?
-    '/usr/sbin/apachectl graceful'
-  elsif host_inventory['platform'] == 'redhat' && host_inventory['platform_version'] =~ /^7/
-    '/opt/rh/httpd24/root/usr/sbin/httpd-scl-wrapper $OPTIONS -k graceful'
-  else
-    '/usr/sbin/httpd $OPTIONS -k graceful'
-  end
+  apt? ? '/usr/sbin/apachectl graceful' : '/usr/sbin/httpd $OPTIONS -k graceful'
 end
 
 def apache_user
@@ -137,13 +119,8 @@ def bootstrap_repos
   case host_inventory['platform']
   when 'redhat'
     repos << 'epel-release'
-    case host_inventory['platform_version']
-    when /^7/
-      repos << 'centos-release-scl yum-plugin-priorities'
-    when /^(8|9)/
-      on hosts, 'dnf -y module enable ruby:3.1'
-      on hosts, 'dnf -y module enable nodejs:18'
-    end
+    on hosts, 'dnf -y module enable ruby:3.1'
+    on hosts, 'dnf -y module enable nodejs:18'
   when 'ubuntu', 'debian'
     on hosts, 'apt-get update'
   end
@@ -193,12 +170,7 @@ def install_ondemand
     on hosts, "[ -f /etc/yum.repos.d/ondemand-web.repo ] || #{packager} install -y #{release_rpm}"
     on hosts,
        "sed -i 's|ondemand/#{build_repo_version}/web|ondemand/build/#{build_repo_version}/web|g' /etc/yum.repos.d/ondemand-web.repo"
-    config_manager = if host_inventory['platform_version'] =~ /^7/
-                       'yum-config-manager'
-                     else
-                       'dnf config-manager'
-                     end
-    on hosts, "#{config_manager} --save --setopt ondemand-web.exclude='ondemand ondemand-gems* ondemand-selinux'"
+    on hosts, "dnf config-manager --save --setopt ondemand-web.exclude='ondemand ondemand-gems* ondemand-selinux'"
     install_packages(['ondemand', 'ondemand-dex', 'ondemand-selinux'])
   elsif apt?
     install_packages(['wget'])
@@ -229,13 +201,7 @@ def upload_portal_config(file)
 end
 
 def apache_conf_dir
-  if apt?
-    '/etc/apache2/sites-available'
-  elsif host_inventory['platform'] == 'redhat' && host_inventory['platform_version'] =~ /^7/
-    '/opt/rh/httpd24/root/etc/httpd/conf.d'
-  else
-    '/etc/httpd/conf.d'
-  end
+  apt? ? '/etc/apache2/sites-available' : '/etc/httpd/conf.d'
 end
 
 def host_portal_config
