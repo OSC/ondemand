@@ -1,7 +1,12 @@
 #!/bin/bash
 
-export RAILS_ENV='development'
-export RAILS_RELATIVE_URL_ROOT='/pun/dev/dashboard'
+if [[ -n "$1" ]]; then
+  export RAILS_ENV='test'
+  export RAILS_RELATIVE_URL_ROOT='/'
+else
+  export RAILS_ENV='development'
+  export RAILS_RELATIVE_URL_ROOT='/pun/dev/dashboard'
+fi
 
 bin/rails assets:clobber
 bin/rails assets:precompile
