@@ -157,7 +157,7 @@ class Script
   end
 
   def update(params)
-    # reset smart attributes becuase the user could have removed some fields
+    # reset smart attributes because the user could have removed some fields
     @smart_attributes = []
 
     # deal with things that would be in the 'form' section first to initialize

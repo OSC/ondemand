@@ -396,6 +396,18 @@ class ProjectsTest < ApplicationSystemTestCase
         find('#script_bc_num_hours')
       end
 
+      # add auto_environment_variable
+      click_on('Add new option')
+      select('Environment Variable', from: 'add_new_field_select')
+      click_on(I18n.t('dashboard.add'))
+      assert find('#auto_environment_variable_name')
+      assert find('#auto_environment_variable_value')
+
+      fill_in('auto_environment_variable_name', with: 'SOME_VARIABLE')
+      fill_in('auto_environment_variable_value', with: 'some_value')
+
+      byebug
+
       # add bc_num_hours
       add_bc_num_hours(project_id, script_id)
       script_edit_path = edit_project_script_path(project_id, script_id)
