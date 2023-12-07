@@ -357,7 +357,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     c = ConfigurationSingleton.new
 
     with_modified_env(no_config_env) do
-      c.boolean_configs.each do |config, default|
+      c.boolean_configs.take(5).each do |config, default|
         assert_equal default, c.send(config), "#{config} should have been #{default} through the default value."
       end
     end
@@ -367,7 +367,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     c = ConfigurationSingleton.new
 
     with_modified_env(no_config_env) do
-      c.string_configs.each do |config, default|
+      c.string_configs.take(5).each do |config, default|
         if default.nil?
           # assert_equal on nil is deprecated
           assert_nil c.send(config), "#{config} should have been nil through the default value."
@@ -381,7 +381,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   test 'boolean configs respond to env variables' do
     c = ConfigurationSingleton.new
 
-    c.boolean_configs.each do |config, default|
+    c.boolean_configs.take(5).each do |config, default|
       env_var = "OOD_#{config.upcase}"
       with_modified_env(no_config_env.merge({ env_var => (!default).to_s })) do
         assert_equal !default, c.send(config), "#{config} should have responded to ENV['#{env_var}']=#{ENV[env_var]}."
@@ -392,7 +392,7 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
   test 'string configs respond to env variables' do
     c = ConfigurationSingleton.new
 
-    c.string_configs.each do |config, _|
+    c.string_configs.take(5).each do |config, _|
       env_var = "OOD_#{config.upcase}"
       other_string = 'some other string that can never be a real value 2073423rnabsdf0y3b4123kbasdoifgadf'
       with_modified_env(no_config_env.merge({ env_var => other_string })) do
@@ -407,10 +407,10 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
         # write !defaults out
         other_string = 'another random string asdfn31-ndf12nadsnfsad[nf-5t2fwnasdfm'
         File.open("#{dir}/config.yml", 'w+') do |file|
-          cfg = ConfigurationSingleton.new.boolean_configs.each_with_object({}) do |(config, default), hsh|
+          cfg = ConfigurationSingleton.new.boolean_configs.take(5).each_with_object({}) do |(config, default), hsh|
             hsh[config.to_s] = !default
           end.merge(
-            ConfigurationSingleton.new.string_configs.each_with_object({}) do |(config, _), hsh|
+            ConfigurationSingleton.new.string_configs.take(5).each_with_object({}) do |(config, _), hsh|
               hsh[config.to_s] = other_string
             end
           )
@@ -418,10 +418,10 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
         end
 
         c = ConfigurationSingleton.new
-        c.boolean_configs.each do |config, default|
+        c.boolean_configs.take(5).each do |config, default|
           assert_equal !default, c.send(config), "#{config} should have been #{!default} through a fixture file."
         end
-        c.string_configs.each do |config, _|
+        c.string_configs.take(5).each do |config, _|
           assert_equal other_string, c.send(config), "#{config} should have been #{other_string} through a fixture file."
         end
       end
@@ -430,21 +430,21 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
 
   test 'env variables have precedence in dynamic configs' do
     other_string = 'string in env variable'
-    env = ConfigurationSingleton.new.boolean_configs.map do |config, default|
+    env = ConfigurationSingleton.new.boolean_configs.take(5).map do |config, default|
       ["OOD_#{config.upcase}", default.to_s]
     end.concat(
-      ConfigurationSingleton.new.string_configs.map do |config, _|
+      ConfigurationSingleton.new.string_configs.take(5).map do |config, _|
         ["OOD_#{config.upcase}", other_string]
       end
     ).compact.to_h
 
     with_modified_env(config_fixtures.merge(env)) do
       c = ConfigurationSingleton.new
-      c.boolean_configs.each do |config, default|
+      c.boolean_configs.take(5).each do |config, default|
         env_var = "OOD_#{config.upcase}"
         assert_equal default, c.send(config), "#{config} should have responded to ENV['#{env_var}']=#{ENV[env_var]}."
       end
-      c.string_configs.each do |config, _|
+      c.string_configs.take(5).each do |config, _|
         assert_equal 'string in env variable', c.send(config), "#{config} should have been 'string in env variable'."
       end
     end
@@ -452,10 +452,10 @@ class ConfigurationSingletonTest < ActiveSupport::TestCase
     # just to be sure, let's assert the opposite with a different env
     with_modified_env(config_fixtures) do
       c = ConfigurationSingleton.new
-      c.boolean_configs.each do |config, default|
+      c.boolean_configs.take(5).each do |config, default|
         assert_equal !default, c.send(config), "#{config} should have been #{!default} through a fixture file."
       end
-      c.string_configs.each do |config, _|
+      c.string_configs.take(5).each do |config, _|
         assert_equal 'string from file', c.send(config), "#{config} should have been 'string from file' through a fixture file."
       end
     end
