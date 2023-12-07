@@ -219,7 +219,7 @@ class Project
 
   def rsync_args
     [
-      'rsync', '-a', '--exclude', 'scripts/*',
+      'rsync', '-rltp', '--exclude', 'scripts/*',
       "#{template}/", project_dataroot.to_s
     ]
   end
