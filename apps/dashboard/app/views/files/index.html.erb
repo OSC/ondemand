@@ -9,8 +9,8 @@
     <button id="refresh-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fa fa-rotate-right" aria-hidden="true"></i> Refresh</button>
     <button id="new-file-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-plus" aria-hidden="true"></i> New File</button>
     <button id="new-dir-btn" type="button" class="btn btn-outline-dark btn-sm"><i class="fas fa-folder-plus" aria-hidden="true"></i> New Directory</button>
-    <button id="upload-btn" type="button" class="btn btn-primary btn-sm"><i class="fas fa-upload" aria-hidden="true"></i> Upload</button>
-    <button id="download-btn" type="button" class="btn btn-primary btn-sm"><i class="fas fa-download" aria-hidden="true"></i> Download</button>
+    <%= render(partial: 'upload_button') %>
+    <%= render(partial: 'download_button') %>
     <% if Configuration.globus_endpoints %>
       <%= render partial: 'globus' %>
     <% end %>

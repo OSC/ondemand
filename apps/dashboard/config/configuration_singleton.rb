@@ -50,6 +50,8 @@ class ConfigurationSingleton
       :cancel_session_enabled       => false,
       :hide_app_version             => false,
       :motd_render_html             => false,
+      :upload_enabled               => true,
+      :download_enabled             => true,
     }.freeze
   end
 
