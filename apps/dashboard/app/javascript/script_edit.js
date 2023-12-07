@@ -98,6 +98,7 @@ function removeField(event) {
   // TODO: shouldn't be able to remove cluster & script form fields.
   const entireDiv = event.target.parentElement;
   entireDiv.remove();
+  updateMultiple(event);
   enableNewFieldButton();
 }
 
@@ -148,9 +149,31 @@ function addInProgressField(event) {
   justAdded.find('[data-fixed-toggler]')
            .on('click', (event) => { toggleFixedField(event) });
 
+  justAdded.find('[data-multiple-input]')
+           .on('change', (event) => { updateMultiple(event) });
+
   const entireDiv = event.target.parentElement.parentElement.parentElement;
   entireDiv.remove();
   enableNewFieldButton();
+}
+
+function updateMultiple(event) {
+  $('#auto_environment_variable_multiple').value = "";
+  let list = {};
+
+  for (let index in $('[data-multiple-input="group"]')) {
+    if (index < 2) {
+      let group = $('[data-multiple-input="group"')[index];
+      let name = group.children[0].value;
+      let value = group.children[1].value;
+
+      if (name != "") {
+        list[name] = value;
+      }
+    }
+  }
+
+  $('#auto_environment_variable_multiple')[0].value = JSON.stringify(list);
 }
 
 function fixExcludeBasedOnSelect(selectElement) {
