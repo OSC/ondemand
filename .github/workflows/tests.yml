@@ -62,6 +62,9 @@ jobs:
       - name: Run ShellCheck
         run: bundle exec rake test:shellcheck
 
+      - name: Check file encodings
+        run: bundle exec rake test:unix
+
       - name: Run Zeitwerk check
         run: |
           cd apps/dashboard
