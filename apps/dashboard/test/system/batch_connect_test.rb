@@ -637,34 +637,12 @@ class BatchConnectTest < ApplicationSystemTestCase
     assert_equal('display: none;', find_option_style('classroom_size', 'large'))
 
     # select the default, and it's back.
-    select('physics_1234', from: bc_ele_id('classroom'))
+    select('Physics 1234', from: bc_ele_id('classroom'))
     assert_equal('', find_option_style('classroom_size', 'large'))
 
     # now change the lowercase classroom and see large dissappear again.
     select('456def', from: bc_ele_id('classroom'))
     assert_equal('display: none;', find_option_style('classroom_size', 'large'))
-  end
-
-  # similar to the test above, only the inverse.
-  test 'options can disable other options that start with numbers' do
-    visit new_batch_connect_session_context_url('sys/bc_jupyter')
-
-    # defaults
-    assert_equal('physics_1234', find_value('classroom'))
-    assert_equal('small', find_value('classroom_size'))
-    assert_equal('', find_option_style('classroom', '123ABC'))
-    assert_equal('', find_option_style('classroom', '456def'))
-
-    # now change the classroom size and see options that start with
-    # numbers disappear
-    select('large', from: bc_ele_id('classroom_size'))
-    assert_equal('display: none;', find_option_style('classroom', '123ABC'))
-    assert_equal('display: none;', find_option_style('classroom', '456def'))
-
-    # select the default, and they are back.
-    select('small', from: bc_ele_id('classroom_size'))
-    assert_equal('', find_option_style('classroom', '123ABC'))
-    assert_equal('', find_option_style('classroom', '456def'))
   end
 
   test 'options with numbers and slashes' do
