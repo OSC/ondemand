@@ -709,6 +709,11 @@ function optionForFromToken(str) {
       }
 
       let optionForValue = mountainCaseWords(document.getElementById(optionForId).value);
+      // handle special case where the very first token here is a number.
+      // browsers expect a prefix of hyphens as if it's the next token.
+      if (optionForValue.match(/^\d/)) {
+        optionForValue = `-${optionForValue}`;
+      }
 
       hide = option.dataset[`optionFor${optionFor}${optionForValue}`] === 'false';
       if (hide) {
