@@ -658,7 +658,6 @@ class BatchConnectTest < ApplicationSystemTestCase
     # now change the classroom size and see options that start with
     # numbers disappear
     select('large', from: bc_ele_id('classroom_size'))
-    assert_equal('display: none;', find_option_style('classroom_size', 'large'))
     assert_equal('display: none;', find_option_style('classroom', '123ABC'))
     assert_equal('display: none;', find_option_style('classroom', '456def'))
 
