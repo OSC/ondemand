@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+enhance this helper for building test assets (#3238)\
+add test for DOS encoded files (#3228)\
+remove featured routes and views (#3231)\
+lint a random file (#3234)\
+remove el7 from the CI (#3232)\
+Update Changelog (#3221)\
+add a rake task to determine file format (#3227)\
+Icon picker fix (#3187)\
+use pr-labler version 4.3.0 (#3225)\
+Adds onpopstate listener to capture back/forward button changes (#3224)\
+Sets up MotdConcern for shared use (#3216)\
+update dependencies (#3222)\
+lint a random file (#3220)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
