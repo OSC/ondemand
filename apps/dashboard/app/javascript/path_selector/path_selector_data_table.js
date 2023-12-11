@@ -129,9 +129,8 @@ export class PathSelectorTable {
     // only reload table for directories. and correct last visited
     // if it's a file.
     if(pathType == 'f') {
-      const currentDir = this.getLastVisited();
-      const fileName = url.split('/').slice(-1)[0];
-      this.setLastVisited(`${currentDir}/${fileName}`);
+      const path = url.replace(this.filesPath, '');
+      this.setLastVisited(path);
     } else {
       this.reloadTable(url);
     }
@@ -161,7 +160,8 @@ export class PathSelectorTable {
   }
 
   storageKey() {
-    return `${this.tableId}_last_visited`;
+    const underscore_path = window.location.pathname.replaceAll('/', '_');
+    return `${this.tableId}${underscore_path}_last_visited`;
   }
 
   tableWrapper() {
