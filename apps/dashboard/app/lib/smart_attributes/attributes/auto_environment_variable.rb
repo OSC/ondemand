@@ -16,6 +16,10 @@ module SmartAttributes
       def label(*)
         (opts[:label] || 'Environment Variable').to_s
       end
+
+      def options_to_serialize(fmt: nil)
+        opts[:job_environment]
+      end
     end
   end
 end

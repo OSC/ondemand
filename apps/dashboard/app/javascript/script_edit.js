@@ -157,11 +157,13 @@ function addInProgressField(event) {
 }
 
 function updateMultiple(event) {
-  const group = event.target.parentElement;
+  const group = event.target.parentElement.parentElement;
   event.target.id += `_${event.target.value}`
+  event.target.name = `script[${event.target.id.replace("script_", "")}]`;
 
-  let valueInput = group.children[1];
-  valueInput.id = event.target.id + "_value";
+  let valueInput = group.children[1].children[1];
+  valueInput.id = event.target.id.replace("_name", "") + "_value";
+  valueInput.name = `script[${valueInput.id.replace("script_", "")}]`;
 }
 
 function fixExcludeBasedOnSelect(selectElement) {
