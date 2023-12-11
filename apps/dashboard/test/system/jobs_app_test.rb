@@ -396,18 +396,6 @@ class ProjectsTest < ApplicationSystemTestCase
         find('#script_bc_num_hours')
       end
 
-      # add auto_environment_variable
-      click_on('Add new option')
-      select('Environment Variable', from: 'add_new_field_select')
-      click_on(I18n.t('dashboard.add'))
-      assert find('#auto_environment_variable_name')
-      assert find('#auto_environment_variable_value')
-
-      fill_in('auto_environment_variable_name', with: 'SOME_VARIABLE')
-      fill_in('auto_environment_variable_value', with: 'some_value')
-
-      byebug
-
       # add bc_num_hours
       add_bc_num_hours(project_id, script_id)
       script_edit_path = edit_project_script_path(project_id, script_id)
@@ -426,6 +414,18 @@ class ProjectsTest < ApplicationSystemTestCase
       fill_in('script_bc_num_hours_max', with: 101)
       find('#script_bc_num_hours_fixed').click
       find('#save_script_bc_num_hours').click
+
+      # add auto_environment_variable
+      click_on('Add new option')
+      select('Environment Variable', from: 'add_new_field_select')
+      click_on(I18n.t('dashboard.add'))
+      assert find('#script_auto_environment_variable_name')
+      
+      fill_in('script_auto_environment_variable_name', with: 'SOME_VARIABLE')
+      fill_in('script_auto_environment_variable_value', with: 'some_value')
+      
+      assert find('#script_auto_environment_variable_name_SOME_VARIABLE')
+      assert find('#script_auto_environment_variable_SOME_VARIABLE_value')
 
       # correctly saves
       click_on(I18n.t('dashboard.save'))
@@ -471,9 +471,13 @@ class ProjectsTest < ApplicationSystemTestCase
             label: Number of hours
             help: ''
             required: true
+        job_environment:
+          SOME_VARIABLE: some_value
       HEREDOC
+      
+      file = File.read("#{dir}/projects/#{project_id}/.ondemand/scripts/#{script_id}/form.yml")
 
-      assert_equal(expected_yml, File.read("#{dir}/projects/#{project_id}/.ondemand/scripts/#{script_id}/form.yml"))
+      assert_equal(expected_yml, file)
     end
   end
 

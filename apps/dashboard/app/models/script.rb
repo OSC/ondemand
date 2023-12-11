@@ -65,6 +65,7 @@ class Script
     }
 
     add_required_fields(**sm_opts)
+
     @smart_attributes = build_smart_attributes(**sm_opts)
   end
 
@@ -78,13 +79,25 @@ class Script
   end
 
   def to_yaml
-    attributes = smart_attributes.each_with_object({}) do |sm, hash|
+    attributes = smart_attributes.reject do |attr|
+      attr.id == "auto_environment_variable"
+    end.each_with_object({}) do |sm, hash|
       hash[sm.id.to_s] = sm.options_to_serialize
     end.deep_stringify_keys
 
+    job_environment = {}
+    
+    smart_attributes.select do |attr|
+      attr.id == "auto_environment_variable"
+    end.map do |env_var|
+      job_environment[env_var.opts[:name]] = env_var.opts[:value]
+    end
+    
     hsh = { 'title' => title, 'created_at' => created_at }
-    hsh.merge!({ 'form' => smart_attributes.map { |sm| sm.id.to_s } })
+    hsh.merge!({ 'form' => smart_attributes.map { |sm| sm.id.to_s unless sm.id.to_s == "auto_environment_variable" }.compact })
     hsh.merge!({ 'attributes' => attributes })
+    hsh.merge!({ 'job_environment' => job_environment })
+
     hsh.to_yaml
   end
 
@@ -116,8 +129,12 @@ class Script
   end
 
   def original_parameter(string)
-    match = /([\w_]+)_(?:min|max|exclude|fixed)/.match(string)
-    match[1]
+    if string.match('auto_environment_variable')
+      'auto_environment_variable'
+    else
+      match = /([\w_]+)_(?:min|max|exclude|fixed)/.match(string)
+      match[1]
+    end
   end
 
   # Find attribute in list using the id of the attribute
@@ -164,6 +181,7 @@ class Script
     # the individual smart attributes
     update_form(params)
     update_attributes(params)
+    update_job_environment(params)
   end
 
   def submit(options)
@@ -206,7 +224,8 @@ class Script
   # parameters you got from the controller that affect the attributes, not form.
   # i.e., mins & maxes you set in the form but get serialized to the 'attributes' section.
   def attribute_parameter?(name)
-    ['min', 'max', 'exclude', 'fixed'].any? { |postfix| name && name.end_with?("_#{postfix}") }
+    ['min', 'max', 'exclude', 'fixed'].any? { |postfix| name && name.end_with?("_#{postfix}") } ||
+      name.match?('auto_environment_variable')
   end
 
   # update the 'form' portion of the yaml file given 'params' from the controller.
@@ -234,6 +253,16 @@ class Script
         self[orig_param].exclude_select_choices = exclude_list unless exclude_list.empty?
       end
     end
+  end
+
+  def update_job_environment(params)
+    env_var_names = params.select { |k, _| k.match?('auto_environment_variable_name_') }
+    return if env_var_names.empty?
+
+    env_var_name = env_var_names.values.first
+    env_var_value = params["auto_environment_variable_#{env_var_name}_value"]
+
+    self[:auto_environment_variable] = SmartAttributes::AttributeFactory.build('auto_environment_variable', { name: env_var_name, value: env_var_value })
   end
 
   def default_attributes(smart_attr_id)

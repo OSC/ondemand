@@ -3,10 +3,9 @@
 -%>
 
 <div class="editable-form-field">
-
   <div data-multiple-input="group">
-    NAME: <input id="auto_environment_variable" data-multiple-input="name"></input>
-    VALUE: <input data-multiple-input="value"></input>
+    <%= form.text_field :auto_environment_variable_name, data: { multiple_input: 'name' } %>
+    <%= form.text_field :auto_environment_variable_value, data: { multiple_input: 'value' } %>
   </div>
   
   <div class="d-none edit-group">
