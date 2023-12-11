@@ -1232,4 +1232,44 @@ class BatchConnectTest < ApplicationSystemTestCase
       assert_equal("#{dir}/app/.hidden_dir", text_field.value)
     end
   end
+
+  # test for bug https://github.com/OSC/ondemand/issues/3246
+  test 'path selector can reselect files' do
+    Dir.mktmpdir do |dir|
+      "#{dir}/app".tap { |d| Dir.mkdir(d) }
+      SysRouter.stubs(:base_path).returns(Pathname.new(dir))
+      stub_scontrol
+      stub_sacctmgr
+      stub_git("#{dir}/app")
+
+      form = <<~HEREDOC
+        ---
+        cluster:
+          - owens
+        form:
+          - path
+        attributes:
+          path:
+            widget: 'path_selector'
+            directory: "#{Rails.root}"
+      HEREDOC
+
+      Pathname.new("#{dir}/app/").join('form.yml').write(form)
+      base_id = 'batch_connect_session_context_path'
+
+      visit new_batch_connect_session_context_url('sys/app')
+      click_on('Select Path')
+
+      gem = find('span', exact_text: 'Gemfile')
+      gem_lock = find('span', exact_text: 'Gemfile.lock')
+
+      gem.click
+      gem_lock.click
+      gem.click
+
+      find("##{base_id}_path_selector_button").click
+      text_field = find("##{base_id}")
+      assert_equal("#{Rails.root}/Gemfile", text_field.value)
+    end
+  end
 end
