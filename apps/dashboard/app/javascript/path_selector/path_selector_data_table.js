@@ -129,7 +129,7 @@ export class PathSelectorTable {
     // only reload table for directories. and correct last visited
     // if it's a file.
     if(pathType == 'f') {
-      const path = url.replace(this.filesPath, '');
+      const path = url.replace(this.filesPath, '').replaceAll('//','/');
       this.setLastVisited(path);
     } else {
       this.reloadTable(url);
