@@ -6,19 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-enhance this helper for building test assets (#3238)\
-add test for DOS encoded files (#3228)\
-remove featured routes and views (#3231)\
-lint a random file (#3234)\
-remove el7 from the CI (#3232)\
-Update Changelog (#3221)\
-add a rake task to determine file format (#3227)\
-Icon picker fix (#3187)\
-use pr-labler version 4.3.0 (#3225)\
-Adds onpopstate listener to capture back/forward button changes (#3224)\
-Sets up MotdConcern for shared use (#3216)\
-update dependencies (#3222)\
-lint a random file (#3220)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
@@ -46,6 +33,7 @@ lint a random file (#3220)
 - Admins can now set a `default_profile` in [3200](https://github.com/OSC/ondemand/pull/3200).
 - The files table now has a select all checkbox in [3212](https://github.com/OSC/ondemand/pull/3212).
 - Centers can now disable shell links at the app level in [3206](https://github.com/OSC/ondemand/pull/3206).
+- Added a rake task to determine ensure unix file formats in [3227](https://github.com/OSC/ondemand/pull/3227).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
@@ -61,6 +49,8 @@ lint a random file (#3220)
 - auto_modules can correctly set their label in [3139](https://github.com/OSC/ondemand/pull/3139).
 - Gnome desktops correctly work in [3188](https://github.com/OSC/ondemand/pull/3188).
 - `staged_root` is created as 700 to ensure it's writable by the user in [3202](https://github.com/OSC/ondemand/pull/3202).
+- MOTD correclty shows up in custom pages in [3216](https://github.com/OSC/ondemand/pull/3216).
+- Open OnDemand no longer builds el7 packages in [3232](https://github.com/OSC/ondemand/pull/3232).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
