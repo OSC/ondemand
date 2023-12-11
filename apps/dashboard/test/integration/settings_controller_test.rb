@@ -12,7 +12,7 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
     @headers = { 'X-CSRF-Token' => @token }
   end
 
-  test "should call Configuration.update_user_settings when posting settings data" do
+  test "should save user_settings when posting settings data" do
     data = {
       settings: {
         profile: "test_profile"
@@ -20,27 +20,37 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
     }
     Dir.mktmpdir {|temp_data_dir|
       Configuration.stubs(:dataroot).returns(temp_data_dir)
-      CurrentUser.expects(:update_user_settings).with({ "profile" => "test_profile" }).once
 
       post settings_path, params: data, headers: @headers
       assert_response :redirect
+      assert_equal "test_profile", TestUserSettings.new.user_settings[:profile]
     }
   end
 
-  test "should not call Configuration.update_user_settings when no data" do
-    data = { settings: { } }
-    CurrentUser.expects(:update_user_settings).never
+  test "should not save user settings when no data" do
+    data = { settings: {} }
 
-    post settings_path, params: data, headers: @headers
-    assert_response :redirect
+    Dir.mktmpdir {|temp_data_dir|
+      Configuration.stubs(:dataroot).returns(temp_data_dir)
+      post settings_path, params: data, headers: @headers
+      assert_response :redirect
+      assert_nil TestUserSettings.new.user_settings[:profile]
+    }
   end
 
-  test "parameters outside the settings namespace should be ignored" do
+  test "should not save user_settings whne parameters are outside the settings namespace" do
     data = { profile: "root_value" }
-    CurrentUser.expects(:update_user_settings).never
 
-    post settings_path, params: data, headers: @headers
-    assert_response :redirect
+    Dir.mktmpdir {|temp_data_dir|
+      Configuration.stubs(:dataroot).returns(temp_data_dir)
+      post settings_path, params: data, headers: @headers
+      assert_response :redirect
+      assert_nil TestUserSettings.new.user_settings[:profile]
+    }
+  end
+
+  class TestUserSettings
+    include UserSettingStore
   end
 
 end
