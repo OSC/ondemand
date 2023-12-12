@@ -23,7 +23,7 @@ function pollForJobInfo(element) {
     .then((response) => { 
       if (!response.ok) {
         if(response.status === 404) {
-          // TODO
+          throw new Error('404 response while looking for job', { cause: response });
         } else{
           throw new Error('Not 2xx response while looking for job', { cause: response });
         }
@@ -39,14 +39,15 @@ function pollForJobInfo(element) {
         setTimeout(pollForJobInfo, 10000, element);
       }
     })
-    .catch((error) => { 
-      // TODO, show an error in the HTML
+    .catch((error) => {
+      element.innerHTML = jobInfoDiv(jobId, 'undetermined', error.message, 'Unable to find the job details');
      });
 }
 
-function jobInfoDiv(jobId, state) {
-  return `<div>
+function jobInfoDiv(jobId, state, stateTitle='', stateDescription='') {
+  return `<div class="job-info">
             <span class="mr-2">${jobId}</span>
-            <span class="badge ${cssBadgeForState(state)}">${state.toUpperCase()}</span>
+            <span class="job-info-title badge ${cssBadgeForState(state)}" title="${stateTitle}">${state.toUpperCase()}</span>
+            <span class="job-info-description text-muted">${stateDescription}</span>
           </div>`;
 }
