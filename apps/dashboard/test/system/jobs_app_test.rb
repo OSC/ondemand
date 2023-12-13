@@ -427,6 +427,18 @@ class ProjectsTest < ApplicationSystemTestCase
       assert find('#script_auto_environment_variable_name_SOME_VARIABLE')
       assert find('#script_auto_environment_variable_SOME_VARIABLE_value')
 
+      # add multiple auto_environment_variables
+      click_on('Add new option')
+      select('Environment Variable', from: 'add_new_field_select')
+      click_on(I18n.t('dashboard.add'))
+      assert find('#script_auto_environment_variable_name')
+
+      fill_in('script_auto_environment_variable_name', with: 'ANOTHER_VARIABLE')
+      fill_in('script_auto_environment_variable_value', with: 'some_other_value')
+
+      assert find('#script_auto_environment_variable_name_ANOTHER_VARIABLE')
+      assert find('#script_auto_environment_variable_ANOTHER_VARIABLE_value')
+
       # correctly saves
       click_on(I18n.t('dashboard.save'))
       success_message = I18n.t('dashboard.jobs_scripts_updated')
@@ -473,6 +485,7 @@ class ProjectsTest < ApplicationSystemTestCase
             required: true
         job_environment:
           SOME_VARIABLE: some_value
+          ANOTHER_VARIABLE: some_other_value
       HEREDOC
       
       file = File.read("#{dir}/projects/#{project_id}/.ondemand/scripts/#{script_id}/form.yml")
