@@ -80,18 +80,12 @@ class Script
       hash[sm.id.to_s] = sm.options_to_serialize
     end.deep_stringify_keys
 
-    job_environment = {}
-    
-    smart_attributes.select do |attr|
-      attr.id == "auto_environment_variable"
-    end.map do |env_var|
-      job_environment[env_var.opts[:name]] = env_var.opts[:value]
-    end
-    
+    job_environment = smart_attributes.select { |attr| attr.id == "auto_environment_variable" }.first.try(:opts) || {}
+
     hsh = { 'title' => title, 'created_at' => created_at }
     hsh.merge!({ 'form' => smart_attributes.map { |sm| sm.id.to_s unless sm.id.to_s == "auto_environment_variable" }.compact })
     hsh.merge!({ 'attributes' => attributes })
-    hsh.merge!({ 'job_environment' => job_environment })
+    hsh.merge!({ 'job_environment' => job_environment.deep_stringify_keys })
 
     hsh.to_yaml
   end
@@ -254,10 +248,18 @@ class Script
     env_var_names = params.select { |k, _| k.match?('auto_environment_variable_name_') }
     return if env_var_names.empty?
 
-    env_var_name = env_var_names.values.first
-    env_var_value = params["auto_environment_variable_#{env_var_name}_value"]
+    env_var_values = params.select do |param|
+      param.match?(/\Aauto_environment_variable_(.*)_value\Z/)
+    end
 
-    self[:auto_environment_variable] = SmartAttributes::AttributeFactory.build('auto_environment_variable', { name: env_var_name, value: env_var_value })
+    job_environment_hash = {}
+
+    env_var_values.each do |key, value|
+      variable_name = key.match(/\Aauto_environment_variable_(.*)_value\Z/)[1]
+      job_environment_hash[variable_name.to_s] = value.to_s
+    end
+
+    self[:auto_environment_variable] = SmartAttributes::AttributeFactory.build('auto_environment_variable', job_environment_hash)
   end
 
   def default_attributes(smart_attr_id)
