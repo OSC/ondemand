@@ -85,7 +85,7 @@ class Script
     hsh = { 'title' => title, 'created_at' => created_at }
     hsh.merge!({ 'form' => smart_attributes.map { |sm| sm.id.to_s unless sm.id.to_s == "auto_environment_variable" }.compact })
     hsh.merge!({ 'attributes' => attributes })
-    hsh.merge!({ 'job_environment' => job_environment.deep_stringify_keys })
+    hsh.merge!({ 'job_environment' => job_environment.deep_stringify_keys }) unless job_environment.empty?
 
     hsh.to_yaml
   end
@@ -214,7 +214,7 @@ class Script
   # i.e., mins & maxes you set in the form but get serialized to the 'attributes' section.
   def attribute_parameter?(name)
     ['min', 'max', 'exclude', 'fixed'].any? { |postfix| name && name.end_with?("_#{postfix}") } ||
-      name.match?('auto_environment_variable')
+      (name && name.match?('auto_environment_variable'))
   end
 
   # update the 'form' portion of the yaml file given 'params' from the controller.
