@@ -206,40 +206,54 @@ class UserConfigurationTest < ActiveSupport::TestCase
     end
   end
 
-  test "profile should delegate to UserSettingsStore module when Configuration.host_based_profiles is false" do
-    Configuration.stubs(:host_based_profiles).returns(false)
-    target = UserConfiguration.new(request_hostname: "request_hostname")
-    target.update_user_settings({profile: "user_settings_profile_value"})
+  test "profile - Configuration.host_based_profiles should enforce request_hostname as profile" do
+    Configuration.stubs(:config).returns({ profiles: { my_profile: {}, request_hostname_profile: {}, user_settings_profile: {} } })
+    Configuration.stubs(:host_based_profiles).returns(true)
+    Configuration.stubs(:default_profile).returns('my_profile')
+    target = UserConfiguration.new(request_hostname: "request_hostname_profile")
+    target.update_user_settings({profile: "user_settings_profile"})
 
-    assert_equal :user_settings_profile_value, target.profile
+    assert_equal :request_hostname_profile, target.profile
   end
 
-  test "profile should return default_profile when when Configuration.host_based_profiles is false and user profile is nil" do
-    Configuration.stubs(:host_based_profiles).returns(false)
-    Configuration.stubs(:default_profile).returns('myprofile')
-    target = UserConfiguration.new
-    target.update_user_settings({profile: nil})
+  test "profile - UserSettingsStore should take precedence over other profile configurations when it is defined" do
+    Configuration.stubs(:config).returns({ profiles: { my_profile: {}, request_hostname_profile: {}, user_settings_profile: {} } })
+    Configuration.stubs(:default_profile).returns('my_profile')
+    target = UserConfiguration.new(request_hostname: "request_hostname_profile")
+    target.update_user_settings({profile: "user_settings_profile"})
 
-    assert_equal :myprofile, target.profile
+    assert_equal :user_settings_profile, target.profile
   end
 
-  test "profile should return nil when when Configuration.host_based_profiles is false, user profile is nil, and default_profile not set" do
-    Configuration.stubs(:host_based_profiles).returns(false)
-    target = UserConfiguration.new
-    target.update_user_settings({profile: nil})
+  test "profile - Host Based profile should take precedence over other profile configurations when it is defined and UserSettingsStore profile is not defined" do
+    Configuration.stubs(:config).returns({ profiles: { my_profile: {}, request_hostname_profile: {} } })
+    Configuration.stubs(:default_profile).returns('my_profile')
+    target = UserConfiguration.new(request_hostname: "request_hostname_profile")
+    target.update_user_settings({profile: "user_settings_profile"})
+
+    assert_equal :request_hostname_profile, target.profile
+  end
+
+  test "profile - Default profile should be selected when it is defined in configuration and no other profiles defined" do
+    Configuration.stubs(:config).returns({ profiles: { my_profile: {} } })
+    Configuration.stubs(:default_profile).returns('my_profile')
+    target = UserConfiguration.new(request_hostname: "request_hostname_profile")
+    target.update_user_settings({profile: "user_settings_profile"})
+
+    assert_equal :my_profile, target.profile
+  end
+
+  test "profile should return nil when no profiles are defined" do
+    Configuration.stubs(:config).returns({})
+    Configuration.stubs(:default_profile).returns('my_profile')
+    target = UserConfiguration.new(request_hostname: "request_hostname_profile")
+    target.update_user_settings({profile: "user_settings_profile"})
 
     assert_nil target.profile
   end
 
-  test "profile should delegate to request_hostname when Configuration.host_based_profiles is true" do
-    Configuration.stubs(:host_based_profiles).returns(true)
-    target = UserConfiguration.new(request_hostname: "request_hostname")
-
-    assert_equal :request_hostname, target.profile
-  end
-
-  test "profile should return nil when when Configuration.host_based_profiles is true and request_hostname is nil" do
-    Configuration.stubs(:host_based_profiles).returns(true)
+  test "profile should return nil when no profile configuration are defined" do
+    Configuration.stubs(:config).returns({ profiles: { my_profile: {}, request_hostname_profile: {}, user_settings_profile: {} } })
     target = UserConfiguration.new
 
     assert_nil target.profile
