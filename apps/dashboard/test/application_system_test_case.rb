@@ -4,7 +4,9 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
   driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1400] do |options|
     # only chrome has support for browser logs
-    options.logging_prefs =  { browser: 'ALL' }
+    options.logging_prefs = { browser: 'ALL' }
+    options.add_argument('--headless=new')
+    options.browser_version = 'stable'
   end
 
   Selenium::WebDriver.logger.level = :debug unless ENV['DEBUG'].nil?
