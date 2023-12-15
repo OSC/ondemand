@@ -2,7 +2,7 @@
 <html lang="<%= Configuration.locale %>">
 <head>
   <title><%= content_for?(:title) ? yield(:title) : "Dashboard - #{@user_configuration.dashboard_title}" %></title>
-  <%= favicon_link_tag 'favicon.ico', href: @user_configuration.public_url.join('favicon.ico'), skip_pipeline: true %>
+  <%= favicon %>
 
   <%= javascript_include_tag 'application', nonce: true %>
   <% custom_javascript_paths.each do |path| %>

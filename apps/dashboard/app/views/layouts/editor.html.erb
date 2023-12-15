@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 
   <title><%= "File Editor - #{@user_configuration.dashboard_title}" %><%= @path.nil? ? "" : " - #{@path.basename.to_s}" %></title>
-  <%= favicon_link_tag 'favicon.ico', href: @user_configuration.public_url.join('favicon.ico'), skip_pipeline: true %>
+  <%= favicon %>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <%= javascript_include_tag 'application', nonce: true %>

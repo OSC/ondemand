@@ -56,6 +56,14 @@ module ApplicationHelper
                 title: title, "aria-hidden": true)
   end
 
+  def favicon
+    if Rails.env.production?
+      favicon_link_tag('favicon.ico', href: @user_configuration.public_url.join('favicon.ico'), skip_pipeline: true)
+    else
+      favicon_link_tag('favicon.ico')
+    end
+  end
+
   def app_icon_tag(app)
     if app.image_icon?
       image_tag app.icon_uri, class: 'app-icon', title: app.icon_path
