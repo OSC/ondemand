@@ -48,7 +48,7 @@ class Script
 
     def clusters?
       cluster_attribute = SmartAttributes::AttributeFactory.build('auto_batch_clusters', {})
-      !cluster_attribute.select_choices(hide_excludable: false).empty?
+      cluster_attribute.select_choices(hide_excludable: false).any?
     end
   end
 
