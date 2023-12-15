@@ -1,4 +1,8 @@
 <%= javascript_include_tag 'projects', nonce: true %>
+<%-
+  disabled = !@valid_project
+  disabled_class = disabled ? 'disabled' : ''
+-%>
 
 <div class='page-header text-center'>
   <h1 class="my-2"><%= @project.title %></h1>
@@ -48,21 +52,21 @@
             <%= link_to(
                 t('dashboard.show'),
                   project_script_path(@project.id, script.id),
-                  class: 'btn btn-success mx-1'
+                  class: "btn btn-success mx-1 #{disabled_class}"
                 )
             %>
 
             <%= link_to(
               t('dashboard.edit'),
               edit_project_script_path(@project.id, script.id),
-              class: 'btn btn-primary mx-1',
+              class: "btn btn-primary mx-1 #{disabled_class}",
             )
             %>
 
             <%= link_to(
               t('dashboard.delete'),
               project_script_path(@project.id, script.id),
-              class: 'btn btn-danger mx-1',
+              class: "btn btn-danger mx-1 #{disabled_class}",
               method: 'delete',
               data: { confirm: I18n.t('dashboard.jobs_scripts_delete_script_confirmation') },
               )
@@ -75,9 +79,10 @@
             <%= button_to(
               t('dashboard.batch_connect_form_launch'),
               submit_project_script_path(@project.id, script.id),
-              class: 'btn btn-secondary mx-1',
+              class: "btn btn-secondary mx-1",
               title: 'Launch script with cached values',
               data: {:method => "post"},
+              disabled: disabled,
               params: params
             )
             %>
@@ -88,9 +93,9 @@
       </tbody>
     </table>
 
-    <%= link_to('New Script', 
+    <%= link_to('New Script',
           new_project_script_path(@project.id),
-          class: 'btn btn-info',  
+          class: "btn btn-info #{disabled_class}",
           title: I18n.t('dashboard.jobs_project_create_new_project_directory'))
     %>
   </div>

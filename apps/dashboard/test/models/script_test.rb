@@ -13,6 +13,19 @@ class ScriptTest < ActiveSupport::TestCase
     assert target.send('attribute_parameter?', 'account_exclude')
     assert target.send('attribute_parameter?', 'account_fixed')
   end
+
+  test 'clusters? return false when auto_batch_clusters returns no clusters' do
+    Configuration.stubs(:job_clusters).returns([])
+
+    assert_equal false, Script.clusters?
+  end
+
+  test 'clusters? return true when auto_batch_clusters returns clusters' do
+    Configuration.stubs(:job_clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
+
+    assert_equal true, Script.clusters?
+  end
+
   test 'creates script' do
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
