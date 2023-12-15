@@ -2,11 +2,18 @@ require "test_helper"
 
 class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
+  DOWNLOAD_DIRECTORY = Rails.root.join('tmp', 'downloads')
+
   driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1400] do |options|
     # only chrome has support for browser logs
     options.logging_prefs = { browser: 'ALL' }
     options.add_argument('--headless=new')
     options.browser_version = 'stable'
+
+    profile = Selenium::WebDriver::Chrome::Profile.new
+    profile['download.default_directory'] = DOWNLOAD_DIRECTORY
+
+    options.profile = profile
   end
 
   Selenium::WebDriver.logger.level = :debug unless ENV['DEBUG'].nil?
