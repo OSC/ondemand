@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Display errors in projects show page when fetching job information (#3249)\
+lint a random file (#3250)\
+lint a random file (#3243)\
+fix cache key for path selector (#3247)\
+Fixes to SettingsController after CurrentUser settings refactoring (#3248)\
+Update Changelog (#3244)\
+update dependencies (#3245)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
