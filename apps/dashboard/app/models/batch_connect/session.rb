@@ -259,7 +259,7 @@ module BatchConnect
       staged_root.tap { |p| FileUtils.mkdir_p(p.to_s, mode: 0o0700) unless p.exist? }
 
       # Sync the template files over
-      oe, s = Open3.capture2e('rsync', '-av', '--exclude', '*.erb', "#{root}/", staged_root.to_s)
+      oe, s = Open3.capture2e('rsync', '-rlpv', '--exclude', '*.erb', "#{root}/", staged_root.to_s)
       raise oe unless s.success?
 
       # Output user submitted context attributes for debugging purposes
