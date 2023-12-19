@@ -357,7 +357,6 @@ class RemoteFilesTest < ApplicationSystemTestCase
           find('#editor').click
           find('textarea.ace_text-input', visible: false).send_keys 'foobar'
 
-          find('.navbar-toggler').click
           find('#save-button').click
         end
 

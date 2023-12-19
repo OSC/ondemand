@@ -4,6 +4,11 @@ class FilesTest < ApplicationSystemTestCase
 
   MAX_WAIT = 120
 
+  def setup
+    FileUtils.rm_rf(DOWNLOAD_DIRECTORY.to_s)
+    FileUtils.mkdir_p(DOWNLOAD_DIRECTORY.to_s)
+  end
+
   test "visiting files app doesn't raise js errors" do
     visit files_url(Rails.root.to_s)
 
@@ -182,6 +187,7 @@ class FilesTest < ApplicationSystemTestCase
 
   test 'uploading duplicate files' do
     Dir.mktmpdir do |dir|
+      File.stubs(:umask).returns(18) # ensure default umask is 644
       upload_dir = File.join(dir, 'upload')
       FileUtils.mkpath(upload_dir)
 
@@ -198,11 +204,11 @@ class FilesTest < ApplicationSystemTestCase
       find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
       assert File.exist?(upload_file)
       assert_equal File.read(src_file), File.read(upload_file)
-      assert_equal File.stat(upload_file).mode, 33_188 # default 644
+      assert_equal(33_188, File.stat(upload_file).mode) # default 644
 
       # now change the permissions and verify
       `chmod 755 #{upload_file}`
-      assert_equal File.stat(upload_file).mode, 33_261 # now 755
+      assert_equal(33_261, File.stat(upload_file).mode) # now 755
 
       # add something more to the original file
       `echo 'and some more content' >> #{src_file}`
@@ -214,7 +220,7 @@ class FilesTest < ApplicationSystemTestCase
       find('.uppy-StatusBar-actionBtn--upload', wait: MAX_WAIT).click
       find('tbody a', exact_text: File.basename(src_file), wait: MAX_WAIT)
 
-      # and it's still there, now with new content and it keesp the 755 permissions
+      # and it's still there, now with new content and it keeps the 755 permissions
       assert File.exist?(upload_file)
       assert_equal File.read(src_file), File.read(upload_file)
       assert_equal File.stat(upload_file).mode, 33_261 # still 755
@@ -255,9 +261,8 @@ class FilesTest < ApplicationSystemTestCase
 
       within_window edit_window do
         find('#editor').click
-        find('textarea.ace_text-input', visible: false).send_keys 'foobar'
+        find('textarea.ace_text-input', visible: false).send_keys('foobar')
 
-        find('.navbar-toggler').click
         find('#save-button').click
       end
 
@@ -345,7 +350,7 @@ class FilesTest < ApplicationSystemTestCase
   end
 
   test 'can download hidden files and directories' do
-    zip_file = Rails.root.join('test_dir.zip')
+    zip_file = DOWNLOAD_DIRECTORY.join('test_dir.zip')
     File.delete(zip_file) if File.exist?(zip_file)
 
     Dir.mktmpdir do |dir|
@@ -389,7 +394,7 @@ class FilesTest < ApplicationSystemTestCase
   end
 
   test 'cannot download files outside of allowlist' do
-    zip_file = Rails.root.join('allowed.zip')
+    zip_file = DOWNLOAD_DIRECTORY.join('allowed.zip')
     File.delete(zip_file) if File.exist?(zip_file)
 
     Dir.mktmpdir do |dir|
