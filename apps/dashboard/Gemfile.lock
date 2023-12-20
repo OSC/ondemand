@@ -211,7 +211,7 @@ GEM
       rake (>= 12.2)
       thor (~> 1.0)
     rake (13.1.0)
-    rdoc (6.6.1)
+    rdoc (6.6.2)
       psych (>= 4.0.0)
     redcarpet (3.6.0)
     regexp_parser (2.8.3)
