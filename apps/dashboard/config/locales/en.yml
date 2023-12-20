@@ -235,6 +235,7 @@ en:
     jobs_project_validation_error: "Invalid Request. Please review the errors below"
     jobs_project_save_error: "Cannot save manifest to %{path}"
     jobs_project_generic_error: "There was an error processing your request: %{error}"
+    jobs_project_invalid_configuration_clusters: "An HPC cluster is required. Contact your administrator to add one to the system."
 
     jobs_scripts_created: "Script successfully created!"
     jobs_scripts_updated: "Script manifest updated!"
