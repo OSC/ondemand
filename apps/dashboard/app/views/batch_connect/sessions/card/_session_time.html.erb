@@ -1,25 +1,5 @@
-<% time_limit = session.info.wallclock_limit %>
-<% time_used  = session.info.wallclock_time %>
+<% label, value = session_time_helper(session) %>
 <p>
-  <% if session.starting? || session.running? %>
-    <% if time_limit && time_used %>
-      <strong> 
-        <%= t('dashboard.batch_connect_sessions_stats_time_remaining') %> 
-      </strong>
-      <%= distance_of_time_in_words(time_limit - time_used, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours) %>
-    <% elsif time_used %>
-      <strong> 
-        <%= t('dashboard.batch_connect_sessions_stats_time_used') %>
-      </strong>
-      <%= distance_of_time_in_words(time_used, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours) %>
-    <% end %>
-  <% else %>
-    <% if time_limit %>
-      <strong> 
-        <%= t('dashboard.batch_connect_sessions_stats_time_requested') %>
-      </strong>
-      <%= distance_of_time_in_words(time_limit, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours) %>
-    <% end %>
-  <% end %>
+  <strong><%= label %></strong> <%= value %>
 </p>
 
