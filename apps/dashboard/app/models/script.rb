@@ -45,6 +45,11 @@ class Script
     def next_id
       SecureRandom.alphanumeric(8).downcase
     end
+
+    def clusters?
+      cluster_attribute = SmartAttributes::AttributeFactory.build('auto_batch_clusters', {})
+      cluster_attribute.select_choices(hide_excludable: false).any?
+    end
   end
 
   def initialize(opts = {})
