@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+update dependencies (#3261)\
+only test the first 5 so we dont have to update these all the time (#3237)\
+Added cluster validation to projects.show page to disable script actions (#3257)\
+bc apps rsync with safer args (#3239)\
+fix the CI for new chrome version (#3256)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
