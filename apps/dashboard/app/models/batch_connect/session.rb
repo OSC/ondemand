@@ -54,6 +54,10 @@ module BatchConnect
     # @return [String] error message
     attr_reader :render_info_view_error_message
 
+    # Error message about failing to parse completed view ERB template.
+    # @return [String] error message
+    attr_reader :render_completed_view_error_message
+
     # Return parsed markdown from info.{md, html}.erb
     # @return [String, nil] return HTML if no error while parsing, else return nil
     def render_info_view
@@ -61,6 +65,15 @@ module BatchConnect
     rescue => e
       @render_info_view_error_message = "Error when rendering info view: #{e.class} - #{e.message}"
       Rails.logger.error(@render_info_view_error_message)
+      nil
+    end
+
+    # Return parsed markdown from completed.{md, html}.erb
+    # @return [String, nil] return HTML if no error while parsing, else return nil
+    def render_completed_view
+      @render_completed_view ||= OodAppkit.markdown.render(ERB.new(self.app.session_completed_view, nil, "-").result(binding)).html_safe if self.app.session_completed_view
+    rescue => e      @render_completed_view_error_message = "Error when rendering completed view: #{e.class} - #{e.message}"
+      Rails.logger.error(@render_completed_view_error_message)
       nil
     end
 
