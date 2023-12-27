@@ -6,11 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-update dependencies (#3261)\
-only test the first 5 so we dont have to update these all the time (#3237)\
-Added cluster validation to projects.show page to disable script actions (#3257)\
-bc apps rsync with safer args (#3239)\
-fix the CI for new chrome version (#3256)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
@@ -56,6 +51,7 @@ fix the CI for new chrome version (#3256)
 - `staged_root` is created as 700 to ensure it's writable by the user in [3202](https://github.com/OSC/ondemand/pull/3202).
 - MOTD correclty shows up in custom pages in [3216](https://github.com/OSC/ondemand/pull/3216).
 - Open OnDemand no longer builds el7 packages in [3232](https://github.com/OSC/ondemand/pull/3232).
+- BatchConnect apps now use rsync with safer arguments in [3239](https://github.com/OSC/ondemand/pull/3239).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
