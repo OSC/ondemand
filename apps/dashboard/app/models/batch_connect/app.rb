@@ -300,6 +300,14 @@ module BatchConnect
       nil
     end
 
+    # Completed view used for session info if it exists
+    # @return [String, nil] session info
+    def session_completed_view
+      @session_completed_view ||= Pathname.new(root).glob("completed.{md,html}.erb").find(&:file?).try(:read)
+    rescue
+      nil
+    end
+
     # Paths to custom javascript files
     # @return [Pathname] paths to custom javascript files that exist
     def custom_javascript_files
