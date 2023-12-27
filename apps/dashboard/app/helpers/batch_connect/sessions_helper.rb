@@ -49,6 +49,7 @@ module BatchConnect::SessionsHelper
           concat support_ticket(session) unless @user_configuration.support_ticket.empty?
           concat display_choices(session)
           safe_concat custom_info_view(session) if session.app.session_info_view
+          safe_concat completed_view(session) if session.app.session_completed_view && session.completed?          
         end
       )
       concat content_tag(:div) { yield }
@@ -63,6 +64,19 @@ module BatchConnect::SessionsHelper
       if session.render_info_view_error_message
         content_tag(:div, class: "alert alert-danger", role: "alert") do
           concat tag.p session.render_info_view_error_message
+        end
+      end
+    end
+  end
+ 
+  def completed_view(session)
+    concat tag.hr
+    content_tag(:div) do
+      concat session.render_completed_view
+
+      if session.render_completed_view_error_message
+        content_tag(:div, class: "alert alert-danger", role: "alert") do
+          concat tag.p session.render_completed_view_error_message
         end
       end
     end
