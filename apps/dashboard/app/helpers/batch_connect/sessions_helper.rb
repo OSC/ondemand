@@ -44,7 +44,7 @@ module BatchConnect::SessionsHelper
           concat content_tag(:div, cancel_or_delete(session), class: 'float-right')
           concat host(session)
           concat created(session)
-          concat session_time(session)
+          concat render_session_time(session)
           concat id(session)
           concat support_ticket(session) unless @user_configuration.support_ticket.empty?
           concat display_choices(session)
@@ -72,23 +72,23 @@ module BatchConnect::SessionsHelper
     render(partial: 'batch_connect/sessions/card/created', locals: { session: session })
   end
 
-  def session_time_helper(session)
+  def session_time(session)
     time_limit = session.info.wallclock_limit
     time_used  = session.info.wallclock_time
-    if session.starting? || session.running? 
-      if time_limit && time_used 
+    if session.starting? || session.running?
+      if time_limit && time_used
         [t('dashboard.batch_connect_sessions_stats_time_remaining'), distance_of_time_in_words(time_limit - time_used, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)] 
-      elsif time_used 
+      elsif time_used
         [t('dashboard.batch_connect_sessions_stats_time_used'), distance_of_time_in_words(time_used, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)] 
       end
     else
-      if time_limit 
+      if time_limit
         [t('dashboard.batch_connect_sessions_stats_time_requested'), distance_of_time_in_words(time_limit, 0, false, :only => [:minutes, :hours], :accumulate_on => :hours)]
-      end 
-    end 
+      end
+    end
   end
 
-  def session_time(session)
+  def render_session_time(session)
     render(partial: 'batch_connect/sessions/card/session_time', locals: { session: session })
   end
 
