@@ -51,6 +51,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `staged_root` is created as 700 to ensure it's writable by the user in [3202](https://github.com/OSC/ondemand/pull/3202).
 - MOTD correclty shows up in custom pages in [3216](https://github.com/OSC/ondemand/pull/3216).
 - Open OnDemand no longer builds el7 packages in [3232](https://github.com/OSC/ondemand/pull/3232).
+- BatchConnect apps now use rsync with safer arguments in [3239](https://github.com/OSC/ondemand/pull/3239).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
