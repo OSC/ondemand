@@ -164,6 +164,8 @@ attributes:
           data-min-bc-num-hours-for-cluster-oakley: 111,
         ]
       - [ 'Economics 8846', 'astronomy-with/other-characters/8846.31.4' ]
+      - [ '123ABC', '123ABC' ]
+      - [ '456def', '456def' ]
   classroom_size:
     widget: select
     options:
@@ -179,6 +181,8 @@ attributes:
           data-option-for-classroom-astronomy-5678: false,
           data-option-for-classroom-astronomy-with/other-characters/8846.31.4: false,
           data-set-checkbox-test: 1,
+          data-option-for-classroom-123ABC: false,
+          data-option-for-classroom-456def: false,
         ]
   gpus:
     widget: number_field

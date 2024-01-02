@@ -624,6 +624,27 @@ class BatchConnectTest < ApplicationSystemTestCase
     find("##{bc_ele_id('bc_email_on_started')}", visible: false)
   end
 
+  test 'options that start with numbers hide other options' do
+    visit new_batch_connect_session_context_url('sys/bc_jupyter')
+
+    # defaults
+    assert_equal('physics_1234', find_value('classroom'))
+    assert_equal('small', find_value('classroom_size'))
+    assert_equal('', find_option_style('classroom_size', 'large'))
+
+    # now change the classroom and see large dissappear
+    select('123ABC', from: bc_ele_id('classroom'))
+    assert_equal('display: none;', find_option_style('classroom_size', 'large'))
+
+    # select the default, and it's back.
+    select('Physics 1234', from: bc_ele_id('classroom'))
+    assert_equal('', find_option_style('classroom_size', 'large'))
+
+    # now change the lowercase classroom and see large dissappear again.
+    select('456def', from: bc_ele_id('classroom'))
+    assert_equal('display: none;', find_option_style('classroom_size', 'large'))
+  end
+
   test 'options with numbers and slashes' do
     visit new_batch_connect_session_context_url('sys/bc_jupyter')
 
