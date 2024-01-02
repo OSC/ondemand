@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - The files table now has a select all checkbox in [3212](https://github.com/OSC/ondemand/pull/3212).
 - Centers can now disable shell links at the app level in [3206](https://github.com/OSC/ondemand/pull/3206).
 - Added a rake task to determine ensure unix file formats in [3227](https://github.com/OSC/ondemand/pull/3227).
+- Batch Connect apps can now provide a completed.{md, html}.erb in [3269](https://github.com/OSC/ondemand/pull/3269).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
