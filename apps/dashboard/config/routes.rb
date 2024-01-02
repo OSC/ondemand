@@ -25,7 +25,7 @@ Rails.application.routes.draw do
       get "files/api/v1/:fs(/*filepath)" => "files#fs", :defaults => { :fs => 'fs', :format => 'html' }, :format => false
       put "files/api/v1/:fs/*filepath" => "files#update", :format => false, :defaults => { :fs => 'fs', :format => 'json' }
     end
-    post "files/upload/:fs" => "files#upload", :defaults => { :fs => 'fs' }
+    post "files/upload/:fs" => "files#upload", :defaults => { :fs => 'fs' } if Configuration.upload_enabled?
 
     get "files", to: redirect("files/fs#{Dir.home}")
 

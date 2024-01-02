@@ -3,7 +3,7 @@ json.url files_path(@filesystem, @path).to_s
 #TODO: support array of shell urls, along with the default shell url which could be above
 json.shell_url OodAppkit.shell.url(path: @path.to_s).to_s
 json.files_path files_path(@filesystem, '/')
-json.files_upload_path url_for(fs: @filesystem, action: 'upload')
+json.files_upload_path url_for(fs: @filesystem, action: 'upload') if Configuration.upload_enabled?
 json.filesystem @filesystem
 
 json.files @files do |f|

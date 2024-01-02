@@ -6,7 +6,7 @@ history.replaceState({
   currentDirectoryUrl: '<%= files_path(@filesystem, @path) %>',
   currentDirectoryUpdatedAt: '<%= Time.now.to_i %>',
   currentFilesPath: '<%= files_path(@filesystem, '/') %>',
-  currentFilesUploadPath: '<%= url_for(fs: @filesystem, action: 'upload') %>',
+  currentFilesUploadPath: '<%= url_for(fs: @filesystem, action: 'upload') if Configuration.upload_enabled? %>',
   currentFilesystem: '<%= @filesystem %>'
 }, null);
 

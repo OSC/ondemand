@@ -13,7 +13,7 @@ class FilesController < ApplicationController
     if @path.directory?
       @path.raise_if_cant_access_directory_contents
 
-      request.format = 'zip' if params[:download]
+      request.format = 'zip' if download?
 
       respond_to do |format|
 
@@ -25,7 +25,12 @@ class FilesController < ApplicationController
           response.headers['Cache-Control'] = 'no-store'
           if params[:can_download]
             # check to see if this directory can be downloaded as a zip
-            can_download, error_message = @path.can_download_as_zip?
+            can_download, error_message = if ::Configuration.download_enabled?
+                                            @path.can_download_as_zip?
+                                          else
+                                            [false, t('dashboard.files_download_not_enabled')]
+                                          end
+
             render json: { can_download: can_download, error_message: error_message }
           else
             @files = @path.ls
@@ -39,7 +44,11 @@ class FilesController < ApplicationController
         # and we can avoid rescuing in a block so we can reintroduce
         # the block braces which is the Rails convention with the respond_to formats.
         format.zip do
-          can_download, error_message = @path.can_download_as_zip?
+          can_download, error_message = if ::Configuration.download_enabled?
+                                          @path.can_download_as_zip?
+                                        else
+                                          raise(StandardError, t('dashboard.files_download_not_enabled'))
+                                        end
 
           if can_download
             zipname = @path.basename.to_s.gsub('"', '\"') + '.zip'
@@ -211,6 +220,10 @@ class FilesController < ApplicationController
     @path.is_a?(PosixFile)
   end
 
+  def download?
+    params[:download]
+  end
+
   def uppy_upload_path
     # careful:
     #
@@ -226,6 +239,8 @@ class FilesController < ApplicationController
   end
 
   def show_file
+    raise(StandardError, t('dashboard.files_download_not_enabled')) unless ::Configuration.download_enabled?
+
     if posix_file?
       send_posix_file
     else
@@ -237,7 +252,7 @@ class FilesController < ApplicationController
     type = Files.mime_type_by_extension(@path).presence || PosixFile.new(@path).mime_type
 
     # svgs aren't safe to view until we update our CSP
-    if params[:download] || type.to_s == 'image/svg+xml'
+    if download? || type.to_s == 'image/svg+xml'
       type = 'text/plain; charset=utf-8' if type.to_s == 'image/svg+xml'
       send_file @path, type: type
     else
@@ -261,7 +276,7 @@ class FilesController < ApplicationController
     end
 
     # svgs aren't safe to view until we update our CSP
-    download = params[:download] || type.to_s == "image/svg+xml"
+    download = download? || type.to_s == "image/svg+xml"
     type = "text/plain; charset=utf-8" if type.to_s == "image/svg+xml"
 
     response.set_header('X-Accel-Buffering', 'no')
