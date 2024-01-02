@@ -83,6 +83,7 @@ class UserConfiguration
   def initialize(request_hostname: nil)
     @config = ::Configuration.config
     @request_hostname = request_hostname.to_sym if request_hostname
+    @defined_profiles = config.fetch(:profiles, {}).keys
     add_property_methods
   end
 
@@ -142,13 +143,13 @@ class UserConfiguration
 
   # The current user profile. Used to select the configuration properties.
   def profile
-    return user_settings[:profile_override].to_sym if user_settings[:profile_override]
-
     if Configuration.host_based_profiles
       request_hostname
-    elsif user_settings[:profile]
+    elsif user_settings[:profile] && defined_profiles.include?(user_settings[:profile].to_sym)
       user_settings[:profile].to_sym
-    elsif Configuration.default_profile
+    elsif defined_profiles.include?(request_hostname)
+      request_hostname
+    elsif Configuration.default_profile && defined_profiles.include?(Configuration.default_profile.to_sym)
       Configuration.default_profile.to_sym
     end
   end
@@ -183,5 +184,5 @@ class UserConfiguration
     end
   end
 
-  attr_reader :config, :request_hostname
+  attr_reader :config, :defined_profiles, :request_hostname
 end
