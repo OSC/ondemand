@@ -130,7 +130,7 @@ export class PathSelectorTable {
     // if it's a file.
     if(pathType == 'f') {
       const path = url.replace(this.filesPath, '').replaceAll('//','/');
-      this.setLastVisited(path);
+      this.setLastVisited(path, pathType);
     } else {
       this.reloadTable(url);
     }
@@ -153,9 +153,9 @@ export class PathSelectorTable {
   }
 
   selectPath(_event) {
-    const currentPath = this.getLastVisited();
+    const last = this.getLastVisited();
     const inputField = document.getElementById(this.inputFieldId);
-    inputField.value = currentPath;
+    inputField.value = last.path;
     $(`#${this.modalId}`).modal('hide');
   }
 
@@ -173,25 +173,35 @@ export class PathSelectorTable {
   getLastVisited() {
     const lastVisited = localStorage.getItem(this.storageKey());
     if(lastVisited === null) {
-      return this.initialDirectory;
+      return { path: this.initialDirectory, type: 'd' };
     } else {
-      return lastVisited;
+      return JSON.parse(lastVisited);
     }
   }
 
-  setLastVisited(path) {
+  setLastVisited(path, pathType = 'd') {
+    const item = { path: path, type: pathType };
     if(path) {
-      localStorage.setItem(this.storageKey(), path);
+      localStorage.setItem(this.storageKey(), JSON.stringify(item));
     }
   }
 
   initialUrl() {
     const last = this.getLastVisited();
+    let path = undefined;
 
-    if(last.startsWith('/')) {
-      return `${this.filesPath}${last}`;
+    // if the last visisted was a file, then set the initial
+    // url to the file's directory.
+    if(last.type == 'f') {
+      path = last.path.split('/').slice(0, -1).join('/');
     } else {
-      return `${this.filesPath}/${last}`;
+      path = last.path;
+    }
+
+    if(path.startsWith('/')) {
+      return `${this.filesPath}${path}`;
+    } else {
+      return `${this.filesPath}/${path}`;
     }
   }
 
