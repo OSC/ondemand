@@ -14,18 +14,6 @@ class ScriptTest < ActiveSupport::TestCase
     assert target.send('attribute_parameter?', 'account_fixed')
   end
 
-  test 'clusters? return false when auto_batch_clusters returns no clusters' do
-    Configuration.stubs(:job_clusters).returns([])
-
-    assert_equal false, Script.clusters?
-  end
-
-  test 'clusters? return true when auto_batch_clusters returns clusters' do
-    Configuration.stubs(:job_clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
-
-    assert_equal true, Script.clusters?
-  end
-
   test 'creates script' do
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
@@ -51,6 +39,18 @@ class ScriptTest < ActiveSupport::TestCase
     end
   end
 
+  test 'clusters? return false when auto_batch_clusters returns no clusters' do
+    Configuration.stubs(:job_clusters).returns([])
+
+    assert_equal false, Script.clusters?
+  end
+
+  test 'clusters? return true when auto_batch_clusters returns clusters' do
+    Configuration.stubs(:job_clusters).returns(OodCore::Clusters.load_file('test/fixtures/config/clusters.d'))
+
+    assert_equal true, Script.clusters?
+  end
+
   test 'deletes script should succeed when directory does not exists' do
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
@@ -65,6 +65,58 @@ class ScriptTest < ActiveSupport::TestCase
       assert target.destroy
       assert Dir.entries("#{projects_path}/.ondemand/scripts").include?('1234')
       assert_not Dir.entries("#{projects_path}/.ondemand/scripts").include?('33')
+    end
+  end
+
+  test 'scripts? returns true when there are scripts in the project directory' do
+    Dir.mktmpdir do |tmp|
+      projects_path = Pathname.new(tmp)
+      OodAppkit.stubs(:dataroot).returns(projects_path)
+
+      script_content = <<~TEST_SCRIPT
+        echo "Testing Scripts"
+      TEST_SCRIPT
+      File.open(File.join(projects_path, 'test_script.sh'), 'w+') { |file| file.write(script_content) }
+
+      assert_equal true, Script.scripts?(projects_path)
+    end
+  end
+
+  test 'scripts? returns false when there are no scripts in the project directory' do
+    Dir.mktmpdir do |tmp|
+      projects_path = Pathname.new(tmp)
+      OodAppkit.stubs(:dataroot).returns(projects_path)
+
+      assert_equal false, Script.scripts?(projects_path)
+    end
+  end
+
+  test 'create_default_script should create hello_world.sh script' do
+    Dir.mktmpdir do |tmp|
+      projects_path = Pathname.new(tmp)
+      OodAppkit.stubs(:dataroot).returns(projects_path)
+
+      target = Script.new({ project_dir: projects_path.to_s, id: 1234, title: 'Default Script' })
+      target.create_default_script
+
+      assert_equal true, Pathname(File.join(projects_path, 'hello_world.sh')).exist?
+    end
+  end
+
+  test 'create_default_script should not create hello_world.sh script if there is an script already in the project' do
+    Dir.mktmpdir do |tmp|
+      projects_path = Pathname.new(tmp)
+      OodAppkit.stubs(:dataroot).returns(projects_path)
+
+      script_content = <<~TEST_SCRIPT
+        echo "Testing Scripts"
+      TEST_SCRIPT
+      File.open(File.join(projects_path, 'test_script.sh'), 'w+') { |file| file.write(script_content) }
+
+      target = Script.new({ project_dir: projects_path.to_s, id: 1234, title: 'With Script' })
+      target.create_default_script
+
+      assert_equal false, Pathname(File.join(projects_path, 'hello_world.sh')).exist?
     end
   end
 end

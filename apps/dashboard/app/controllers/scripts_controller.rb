@@ -17,6 +17,7 @@ class ScriptsController < ApplicationController
 
   def new
     @script = Script.new(project_dir: @project.directory)
+    @script.create_default_script
   end
 
   # POST  /dashboard/projects/:project_id/scripts
