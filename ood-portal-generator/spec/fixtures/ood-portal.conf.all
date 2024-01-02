@@ -67,6 +67,7 @@ Listen 8080
   CustomLog "/path/to/my/logs/test.server.name_access_ssl.log" combined
 
   RewriteEngine On
+  RewriteCond %{HTTP_HOST} !^(foo.example.com(:8080)?)?$ [NC]
   RewriteCond %{HTTP_HOST} !^(test.proxy.name(:8080)?)?$ [NC]
   RewriteRule ^(.*) https://test.proxy.name:8080$1 [R=301,NE,L]
 
