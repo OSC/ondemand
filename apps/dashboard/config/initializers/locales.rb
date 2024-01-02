@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Setup locales by adding to the locale path, setting the default and setting fallbacks
 
 extra_locales = ::Configuration.locales_root.join('*.{yml,rb}')
