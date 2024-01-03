@@ -1,57 +1,39 @@
 module UserSettingStore
 
-  def user_settings
-    @user_settings = read_user_settings
-    @user_settings
-  end
+  def update_user_settings(app_name, template_key, json_session_context)
+    apps = find_app_templates(app_name)
 
-  def update_user_settings(template_name, json_session_context)
-    # Ensure @user_settings is initialized
-    user_settings
-    template_key = template_name.gsub(/[\x00\/\\:\*\?\"<>\| ]/, '_').to_sym
-    #updated_settings = { prefill_templates: { template_key => json_session_context }}
-    if user_settings[:prefill_templates][template_key].nil? 
-      create_app_key(template_key, json_session_context)
+    if apps
+      apps[app_name] << { template_key => json_session_context}
     else
-      context = user_settings[:prefill_templates][template_key]
-      @user_settings[:prefill_templates][template_key] = json_session_context
-      save_user_settings
+      prefill_templates_apps << { app_name => { template_key => json_session_context } }
+    end
+
+    begin
+      File.write(user_settings_path, Psych.dump(user_settings))
+    rescue => e
+      # Log the error or handle it accordingly
+      Rails.log.error("Error writing to file: #{e.message}")
     end
   end
 
-  def user_prefill_templates(template_name)
-    Rails.logger.debug("")
-    Rails.logger.debug("UserSettingStore::template_name.class: #{template_name.class}")
-    Rails.logger.debug("template_name: #{template_name}")
-    Rails.logger.debug("")
-    Rails.logger.debug("")
-    user_settings[:prefill_templates][template_name]
+  def user_settings
+    begin
+      Psych.load_file(user_settings_path)
+    rescue => e
+      Rails.logger.error("Cannot find user settings file at #{user_settings_path}: #{e.message}")
+    end
+  end
+
+  def prefill_templates_apps(app)
+    Rails.logger.debug("user settings['prefill_templates']['apps']: #{user_settings['prefill_templates']['apps']}")
+    user_settings['prefill_templates'].nil? ? [] :  user_settings['prefill_templates']['apps']
   end
 
   private
 
-  def create_app_key(template_key, json_session_context)
-    user_settings[:prefill_templates][template_key] = json_session_context
-  end
-
-  def read_user_settings
-    user_settings = {}
-    return user_settings unless user_settings_path.exist?
-
-    begin
-      yml = YAML.safe_load(user_settings_path.read) || {}
-      user_settings = yml.deep_symbolize_keys
-    rescue => e
-      Rails.logger.error("Can't read or parse settings file: #{user_settings_path} because of error #{e}")
-    end
-
-    user_settings
-  end
-
-  def save_user_settings
-    # Ensure there is a directory to write the user settings file
-    user_settings_path.dirname.tap { |p| p.mkpath unless p.exist? }
-    File.open(user_settings_path.to_s, "w") { |file| file.write(@user_settings.deep_stringify_keys.to_yaml) }
+  def find_app_templates(app_name)
+    prefill_templates_apps.find { |app| app.key?(app_name) }
   end
 
   def user_settings_path

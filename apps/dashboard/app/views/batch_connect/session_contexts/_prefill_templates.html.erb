@@ -1,4 +1,4 @@
-<%- unless @prefill_templates.empty?  -%>
+<%- unless @prefill_templates.nil?  -%>
   <div class="form-group">
     <label class="control-label"><%= t('dashboard.batch_connect_form_prefill') %></label>
     <select class="form-control selectpicker" id="batch_connect_session_prefill_template">
@@ -33,9 +33,11 @@
       <div class="modal-body">
         <select class="form-control selectpicker" id="modal_input_template_name">
           <option selected value> -- <%= t('dashboard.batch_connect_form_save_new_template') %> -- </option>
-          <% @prefill_templates.each do |id, _| %>
-            <option value="<%= id %>"><%= id %></option>
-          <% end %>
+          <%- unless @prefill_templates.nil? -%>
+            <% @prefill_templates.each do |id, _| %>
+              <option value="<%= id %>"><%= id %></option>
+            <% end %>
+          <%- end -%>
         </select>
         <input type="text" class="form-control" id="modal_input_template_new_name" placeholder="<%= t('dashboard.batch_connect_form_type_new_name') %>">
       </div>
