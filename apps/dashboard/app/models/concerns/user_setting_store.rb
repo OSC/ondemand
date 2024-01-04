@@ -47,7 +47,6 @@ module UserSettingStore
     user_settings[BC_TEMPLATES][app_token.to_sym].to_h
   end
 
-  # save_bc_template(@app.token, params[:template_name], @session_context.to_h)
   def save_bc_template(app_token, name, key_values)
     current_templates = user_settings[BC_TEMPLATES] || {}
     current_app_templates = current_templates[app_token.to_sym] || {}
