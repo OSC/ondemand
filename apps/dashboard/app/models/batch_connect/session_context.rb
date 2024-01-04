@@ -66,8 +66,12 @@ module BatchConnect
       self.attributes = cache.select { |k,v| self[k.to_sym] && self[k.to_sym].cacheable?(app_specific_cache_enabled?)  }
    end 
 
+  def to_h
+    Hash[*map { |a| [a.id.to_sym, a.value] }.flatten]
+  end
+
   def to_openstruct(addons: {})
-    context_attrs = Hash[*map { |a| [a.id.to_sym, a.value] }.flatten]
+    context_attrs = to_h
     illegal_attrs = OpenStruct.new.methods & context_attrs.keys
 
     raise ArgumentError, "#{illegal_attrs.inspect} are keywords that cannot be used as names for form items" unless illegal_attrs.empty?

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'application_system_test_case'
+require 'ood_core/job/adapters/slurm'
 
 class BatchConnectTest < ApplicationSystemTestCase
   def setup
@@ -1291,6 +1292,37 @@ class BatchConnectTest < ApplicationSystemTestCase
       find("##{base_id}_path_selector_button").click
       text_field = find("##{base_id}")
       assert_equal("#{Rails.root}/Gemfile", text_field.value)
+    end
+  end
+
+  test 'saves settings as a template' do
+    with_modified_env({ ENABLE_NATIVE_VNC: 'true' }) do
+      Dir.mktmpdir do |dir|
+        Configuration.stubs(:dataroot).returns(Pathname.new(dir))
+        BatchConnect::Session.any_instance.stubs(:save).returns(true)
+        BatchConnect::Session.any_instance.stubs(:job_id).returns('job-id-123')
+        OodCore::Job::Adapters::Slurm.any_instance
+                                     .stubs(:info)
+                                     .returns(OodCore::Job::Info.new(id: 'job-id-123', status: :running))
+
+        visit new_batch_connect_session_context_url('sys/bc_paraview')
+
+        fill_in(bc_ele_id('bc_num_hours'), with: 5)
+        fill_in(bc_ele_id('bc_account'), with: 'abc123')
+        fill_in('bc_vnc_resolution_x_field', with: '500')
+        fill_in('bc_vnc_resolution_y_field', with: '600')
+
+        check('batch_connect_session_save_template')
+        fill_in('modal_input_template_new_name', with: 'test template')
+        sleep 5 # modal needs to sleep?
+        click_on('Save')
+
+        click_on('Launch', wait: 30)
+        expected = output_fixture('user_settings/simple_bc_test.yml')
+        actual = File.read("#{dir}/.ood")
+
+        assert_equal(expected, actual)
+      end
     end
   end
 end

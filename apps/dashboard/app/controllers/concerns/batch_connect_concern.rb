@@ -2,6 +2,8 @@
 module BatchConnectConcern
   extend ActiveSupport::Concern
 
+  BC_TEMPLATE_NAME_KEY = :ood_bc_template_name
+
   def bc_sys_app_groups
     OodAppGroup.groups_for(
       apps: nav_sys_apps.select(&:batch_connect_app?)
