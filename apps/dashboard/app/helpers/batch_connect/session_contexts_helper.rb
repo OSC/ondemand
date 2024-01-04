@@ -8,7 +8,6 @@ module BatchConnect::SessionContextsHelper
     field_options = attrib.field_options(fmt: format)
     all_options = attrib.all_options(fmt: format)
 
-
     if attrib.fixed?
       return render :partial => "batch_connect/session_contexts/fixed", :locals => { form: form, attrib: attrib, field_options: field_options, format: format }
     end
