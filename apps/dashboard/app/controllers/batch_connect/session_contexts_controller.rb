@@ -90,9 +90,7 @@ class BatchConnect::SessionContextsController < ApplicationController
     def save_template
       return unless params[:save_template].present? && params[:save_template] == "on" && params[:template_name].present?
 
-      # save the template name as part of the data structure and reject it in a view or just have js disregard.
-      template = @session_context.to_h.merge(Hash[BC_TEMPLATE_NAME_KEY, params[:template_name]])
-      save_bc_template(@app.token, template)
+      save_bc_template(@app.token, params[:template_name], @session_context.to_h)
     end
 
     # Only permit certian parameters

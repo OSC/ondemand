@@ -3,9 +3,8 @@
     <label class="control-label"><%= t('dashboard.batch_connect_form_prefill') %></label>
     <select class="form-control selectpicker" id="batch_connect_session_prefill_template">
       <option selected value> -- <%= t('dashboard.batch_connect_form_select_template') %> -- </option>
-      <% @prefill_templates.each do |template| %>
-        <%- data = template.reject { |key, _value| key == BatchConnectConcern::BC_TEMPLATE_NAME_KEY }.to_json -%>
-        <option value="<%= data %>"><%= template[BatchConnectConcern::BC_TEMPLATE_NAME_KEY] %></option>
+      <% @prefill_templates.each do |name, template_data| %>
+        <option value="<%= template_data.to_json %>"><%= name %></option>
       <% end %>
     </select>
   </div>
@@ -34,8 +33,7 @@
       <div class="modal-body">
         <select class="form-control selectpicker" id="modal_input_template_name">
           <option selected value> -- <%= t('dashboard.batch_connect_form_save_new_template') %> -- </option>
-          <% @prefill_templates.each do |template| %>
-          <%- name = template[BatchConnectConcern::BC_TEMPLATE_NAME_KEY] -%>
+          <% @prefill_templates.each do |name, template_data| %>
             <option value="<%= name %>"><%= name %></option>
           <% end %>
         </select>

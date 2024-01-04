@@ -47,12 +47,17 @@ module UserSettingStore
     user_settings[BC_TEMPLATES][app_token.to_sym].to_a
   end
 
-  def save_bc_template(app_token, key_values)
+  # save_bc_template(@app.token, params[:template_name], @session_context.to_h)
+  def save_bc_template(app_token, name, key_values)
     current_templates = user_settings[BC_TEMPLATES] || {}
-    app_templates = current_templates[app_token.to_sym] || []
+    current_app_templates = current_templates[app_token.to_sym] || {}
+
+    new_template = {}
+    new_template[name.to_sym] = key_values
+
     new_settings = {}
     new_settings[BC_TEMPLATES] = {}
-    new_settings[BC_TEMPLATES][app_token.to_sym] = app_templates << key_values.to_h
+    new_settings[BC_TEMPLATES][app_token.to_sym] = current_app_templates.merge(new_template)
 
     update_user_settings(new_settings)
   end
