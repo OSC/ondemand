@@ -42,9 +42,9 @@ module UserSettingStore
 
   def bc_templates(app_token)
     templates = user_settings[BC_TEMPLATES]
-    return [] if templates.nil? || templates.empty?
+    return {} if templates.nil? || templates.empty?
 
-    user_settings[BC_TEMPLATES][app_token.to_sym].to_a
+    user_settings[BC_TEMPLATES][app_token.to_sym].to_h
   end
 
   # save_bc_template(@app.token, params[:template_name], @session_context.to_h)
