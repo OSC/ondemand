@@ -43,7 +43,7 @@ jobs:
           asset_name: ondemand-${{ steps.version.outputs.version }}.tar.gz
           asset_content_type: application/gzip
       - name: Upload to Zenodo
-        uses: rseng/zenodo-release@0.0.17
+        uses: rseng/zenodo-release@main
         with:
           token: ${{ secrets.OSC_ROBOT_ZENODO_TOKEN }}
           version: ${{ steps.version.outputs.version }}
