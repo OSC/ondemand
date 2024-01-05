@@ -68,18 +68,9 @@ module BatchConnect::SessionsHelper
       end
     end
   end
- 
-  def completed_view(session)
-    concat tag.hr
-    content_tag(:div) do
-      concat session.render_completed_view
 
-      if session.render_completed_view_error_message
-        content_tag(:div, class: "alert alert-danger", role: "alert") do
-          concat tag.p session.render_completed_view_error_message
-        end
-      end
-    end
+  def completed_view(session)
+    render(partial: 'batch_connect/sessions/card/completed_view', locals: { session: session })
   end
 
   def created(session)
