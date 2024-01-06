@@ -1,0 +1,9 @@
+<hr>
+<div>
+  <%= session.render_info_view %>
+  <% if session.render_info_view_error_message %>
+    <div class="alert alert-danger" role="alert">
+      <p><%= session.render_info_view_error_message %></p>
+    </div>
+  <% end %>
+</div>
