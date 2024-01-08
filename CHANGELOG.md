@@ -6,16 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-refactor completed_view method (#3277)\
-path selector bugfix (#3274)\
-add the config option to disable uploads and downloads (#3236)\
-correctly handle options that start with numbers (#3241)\
-refactor session_time method with partial (#3229)\
-Added support for multiple domains for  Apache config in portal generator (#3264)\
-Improvements to automatic profile selection (#3252)\
-Update Changelog (#3271)\
-lint a random file (#3270)\
-update dependencies (#3272)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
@@ -45,6 +35,7 @@ update dependencies (#3272)
 - Centers can now disable shell links at the app level in [3206](https://github.com/OSC/ondemand/pull/3206).
 - Added a rake task to determine ensure unix file formats in [3227](https://github.com/OSC/ondemand/pull/3227).
 - Batch Connect apps can now provide a completed.{md, html}.erb in [3269](https://github.com/OSC/ondemand/pull/3269).
+- Sites can now disable uploads and downloads in [3236](https://github.com/OSC/ondemand/pull/3236).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
@@ -63,6 +54,8 @@ update dependencies (#3272)
 - MOTD correclty shows up in custom pages in [3216](https://github.com/OSC/ondemand/pull/3216).
 - Open OnDemand no longer builds el7 packages in [3232](https://github.com/OSC/ondemand/pull/3232).
 - BatchConnect apps now use rsync with safer arguments in [3239](https://github.com/OSC/ondemand/pull/3239).
+- Dynamic forms correctly handle options that start with numbers in [3241](https://github.com/OSC/ondemand/pull/3241).
+- Multiple domains corrrectly redirect in [3264](https://github.com/OSC/ondemand/pull/3264).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
