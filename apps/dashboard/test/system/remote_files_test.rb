@@ -188,7 +188,7 @@ class RemoteFilesTest < ApplicationSystemTestCase
         # select dir to move
         visit files_url('alias_remote', '/bucket')
         %w(app config manifest.yml).each do |f|
-          find('a', exact_text: f).ancestor('tr').click(:meta)
+          find('a', exact_text: f).ancestor('tr').find('input[type="checkbox"]').click
         end
         assert_selector '.selected', count: 3
 
@@ -231,7 +231,7 @@ class RemoteFilesTest < ApplicationSystemTestCase
         # select dir to move
         visit files_url('extra_remote', dir)
         %w(app config manifest.yml).each do |f|
-          find('a', exact_text: f).ancestor('tr').click(:meta)
+          find('a', exact_text: f).ancestor('tr').find('input[type="checkbox"]').click
         end
         assert_selector '.selected', count: 3
 
@@ -271,8 +271,8 @@ class RemoteFilesTest < ApplicationSystemTestCase
 
         # select dir to move
         visit files_url('alias_remote', '/bucket')
-        find('a', exact_text: 'app').ancestor('tr').click(:meta)
-        find('a', exact_text: 'foo.txt').ancestor('tr').click(:meta)
+        find('a', exact_text: 'app').ancestor('tr').find('input[type="checkbox"]').click
+        find('a', exact_text: 'foo.txt').ancestor('tr').find('input[type="checkbox"]').click
         find('#delete-btn').click
         find('button.swal2-confirm').click
 
