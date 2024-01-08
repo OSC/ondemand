@@ -111,6 +111,15 @@ describe OodPortalGenerator::Application do
       test_generate('input/both_lists.yml', 'output/allowlist.conf')
     end
 
+    it 'disable logs when disable_logs is set' do
+      test_generate('input/no_logs.yml', 'output/no_logs.conf')
+    end
+
+    # similar to test above, only input file has acceslog and logformat configured.
+    it 'disable logs when disable_logs is set and other log config is set' do
+      test_generate('input/no_logs_w_log_config.yml', 'output/no_logs.conf')
+    end
+
     it 'generates full OIDC config' do
       config = {
         servername: 'ondemand.example.com',

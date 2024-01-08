@@ -34,6 +34,7 @@ module OodPortalGenerator
       end
       access_log        = opts.fetch(:accesslog, nil)
       error_log         = opts.fetch(:errorlog, nil)
+      @disable_logs     = opts.fetch(:disable_logs, false)
       @accesslog        = log_filename(access_log,"access")
       @errorlog         = log_filename(error_log,"error")
       @logformat        = opts.fetch(:logformat, nil)

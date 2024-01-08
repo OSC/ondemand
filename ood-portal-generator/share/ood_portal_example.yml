@@ -41,6 +41,13 @@
 # Default: null (no SSL support)
 #ssl: null
 
+# Disable logging entirely. With this you can have custom log directives
+# in a seperate configuration file.
+# Example:
+#     disable_logs: true
+# Default: false (logs are enabled)
+#disable_logs: false
+
 # Root directory of log files (can be relative ServerRoot)
 # Example:
 #     logroot: '/path/to/my/logs'
