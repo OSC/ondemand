@@ -116,7 +116,7 @@ GEM
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
-    jsbundling-rails (1.2.1)
+    jsbundling-rails (1.2.2)
       railties (>= 6.0.0)
     local_time (1.0.3)
       coffee-rails
@@ -136,7 +136,7 @@ GEM
     marcel (1.0.2)
     matrix (0.4.2)
     method_source (1.0.0)
-    mime-types (3.5.1)
+    mime-types (3.5.2)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2023.1205)
     mini_mime (1.1.5)
@@ -154,7 +154,7 @@ GEM
       net-protocol
     net-protocol (0.2.2)
       timeout
-    net-smtp (0.4.0)
+    net-smtp (0.4.0.1)
       net-protocol
     netrc (0.11.0)
     nio4r (2.7.0)
@@ -216,7 +216,7 @@ GEM
     rdoc (6.6.2)
       psych (>= 4.0.0)
     redcarpet (3.6.0)
-    regexp_parser (2.8.3)
+    regexp_parser (2.9.0)
     request_store (1.5.1)
       rack (>= 1.4)
     rest-client (2.1.0)
