@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+refactor completed_view method (#3277)\
+path selector bugfix (#3274)\
+add the config option to disable uploads and downloads (#3236)\
+correctly handle options that start with numbers (#3241)\
+refactor session_time method with partial (#3229)\
+Added support for multiple domains for  Apache config in portal generator (#3264)\
+Improvements to automatic profile selection (#3252)\
+Update Changelog (#3271)\
+lint a random file (#3270)\
+update dependencies (#3272)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
