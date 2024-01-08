@@ -45,7 +45,7 @@ class ScriptsController < ApplicationController
     end
   end
 
-  # POST   /projects/:project_id/scripts/:id/save
+  # POST   /projects/:project_id/:id/save
   # save the script after editing
   def save
     @script.update(save_script_params[:script])

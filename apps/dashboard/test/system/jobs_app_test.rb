@@ -491,6 +491,13 @@ class ProjectsTest < ApplicationSystemTestCase
       file = File.read("#{dir}/projects/#{project_id}/.ondemand/scripts/#{script_id}/form.yml")
 
       assert_equal(expected_yml, file)
+
+      # correctly rebuilds form
+      find("[href='#{edit_script_path}']").click
+
+      # shows all previously input fields
+      assert find('#script_auto_environment_variable_name_SOME_VARIABLE')
+      assert find('#script_auto_environment_variable_SOME_VARIABLE_value')
     end
   end
 

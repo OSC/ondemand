@@ -11,6 +11,8 @@ module ScriptsHelper
     attrib.opts[:fixed] = false
     locals = { form: form, attrib: attrib, format: format, fixed: fixed_attribute }
 
+    binding.pry if attrib.id == "auto_environment_variable"
+
     case widget
     when 'number_field'
       render(partial: editable_partial('editable_number'), locals: locals)
