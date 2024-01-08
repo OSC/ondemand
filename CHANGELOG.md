@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Centers can now disable shell links at the app level in [3206](https://github.com/OSC/ondemand/pull/3206).
 - Added a rake task to determine ensure unix file formats in [3227](https://github.com/OSC/ondemand/pull/3227).
 - Batch Connect apps can now provide a completed.{md, html}.erb in [3269](https://github.com/OSC/ondemand/pull/3269).
+- Sites can now disable uploads and downloads in [3236](https://github.com/OSC/ondemand/pull/3236).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
@@ -53,6 +54,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - MOTD correclty shows up in custom pages in [3216](https://github.com/OSC/ondemand/pull/3216).
 - Open OnDemand no longer builds el7 packages in [3232](https://github.com/OSC/ondemand/pull/3232).
 - BatchConnect apps now use rsync with safer arguments in [3239](https://github.com/OSC/ondemand/pull/3239).
+- Dynamic forms correctly handle options that start with numbers in [3241](https://github.com/OSC/ondemand/pull/3241).
+- Multiple domains corrrectly redirect in [3264](https://github.com/OSC/ondemand/pull/3264).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
