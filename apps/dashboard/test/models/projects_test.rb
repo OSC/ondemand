@@ -101,9 +101,10 @@ class ProjectsTest < ActiveSupport::TestCase
 
       expected_manifest_yml = <<~HEREDOC
         ---
+        id: #{project.id}
         name: test-project
-        icon: fas://arrow-right
         description: description
+        icon: fas://arrow-right
       HEREDOC
 
       assert_equal expected_manifest_yml, File.read(manifest_path)
@@ -137,9 +138,10 @@ class ProjectsTest < ActiveSupport::TestCase
 
       expected_manifest_yml = <<~HEREDOC
         ---
+        id: #{project.id}
         name: test-project-2
-        icon: fas://arrow-left
         description: my test project
+        icon: fas://arrow-left
       HEREDOC
 
       assert project.update(test_attributes)
