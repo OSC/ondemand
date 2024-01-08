@@ -19,9 +19,9 @@ class FilesTest < ApplicationSystemTestCase
 
   test "visiting files app directory" do
     visit files_url(Rails.root.to_s)
-    find('tbody a', exact_text: 'app').ancestor('tr').click
+    find('tbody a', exact_text: 'app').ancestor('tr').find('input[type="checkbox"]').click
     assert_selector '.selected', count: 1
-    find('tbody a', exact_text: 'config').ancestor('tr').click(:meta)
+    find('tbody a', exact_text: 'config').ancestor('tr').find('input[type="checkbox"]').click
     assert_selector '.selected', count: 2
   end
 
@@ -50,7 +50,7 @@ class FilesTest < ApplicationSystemTestCase
   test "copying files" do
     visit files_url(Rails.root.to_s)
     %w(app config manifest.yml).each do |f|
-      find('a', exact_text: f).ancestor('tr').click(:meta)
+      find('a', exact_text: f).ancestor('tr').find('input[type="checkbox"]').click
     end
     assert_selector '.selected', count: 3
 
