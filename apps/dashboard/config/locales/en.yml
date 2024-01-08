@@ -98,6 +98,7 @@ en:
     batch_connect_form_save: "Save as template"
     batch_connect_form_save_new_template: "save as a new template"
     batch_connect_form_select_template: "select a template"
+    batch_connect_form_template_name_label: "template name"
     batch_connect_form_session_data_html: |
       * The %{title} session data for this session can be accessed
         under the %{data_link_tag}.
