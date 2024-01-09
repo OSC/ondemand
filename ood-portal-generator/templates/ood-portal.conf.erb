@@ -195,7 +195,10 @@ Listen <%= addr_port %>
   <%- end -%>
 
   <%- if @custom_vhost_directives -%>
-  <%= @custom_vhost_directives %>
+  <%- @custom_vhost_directives.each_line do |line| -%>
+  <%= line -%>
+  <%- end -%>
+
   <%- end -%>
   #
   # Below is used for sub-uri's this Open OnDemand portal supports
@@ -227,7 +230,9 @@ Listen <%= addr_port %>
     <%- end -%>
 
     <%- if @custom_location_directives -%>
-    <%= @custom_location_directives %>
+    <%- @custom_location_directives.each_line do |line| -%>
+    <%= line -%>
+    <%- end -%>
     <%- end -%>
 
     # ProxyPassReverse implementation
@@ -256,7 +261,9 @@ Listen <%= addr_port %>
     <%- end -%>
 
     <%- if @custom_location_directives -%>
-    <%= @custom_location_directives %>
+    <%- @custom_location_directives.each_line do |line| -%>
+    <%= line -%>
+    <%- end -%>
     <%- end -%>
 
     # ProxyPassReverse implementation
@@ -286,7 +293,9 @@ Listen <%= addr_port %>
     <%- end -%>
 
     <%- if @custom_location_directives -%>
-    <%= @custom_location_directives %>
+    <%- @custom_location_directives.each_line do |line| -%>
+    <%= line -%>
+    <%- end -%>
     <%- end -%>
 
     ProxyPreserveHost On
@@ -323,7 +332,9 @@ Listen <%= addr_port %>
     <%- end -%>
 
     <%- if @custom_location_directives -%>
-    <%= @custom_location_directives %>
+    <%- @custom_location_directives.each_line do |line| -%>
+    <%= line -%>
+    <%- end -%>
     <%- end -%>
 
     LuaHookFixups nginx.lua nginx_handler
@@ -360,7 +371,9 @@ Listen <%= addr_port %>
     <%- end -%>
 
     <%- if @custom_location_directives -%>
-    <%= @custom_location_directives %>
+    <%- @custom_location_directives.each_line do |line| -%>
+    <%= line -%>
+    <%- end -%>
     <%- end -%>
   </Location>
   <%- end -%>
