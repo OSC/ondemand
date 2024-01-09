@@ -115,6 +115,7 @@ Listen 8080
 
   SetEnv OOD_ALLOWED_HOSTS "foo.example.com,test.proxy.name,test.server.name"
 
+
   #
   # Below is used for sub-uri's this Open OnDemand portal supports
   #
@@ -140,6 +141,7 @@ Listen 8080
     AuthType openid-connect
     Require valid-user
 
+
     # ProxyPassReverse implementation
     Header edit Location "^[^/]+//[^/]+" ""
 
@@ -161,6 +163,7 @@ Listen 8080
   <LocationMatch "^/configured-rnode/(?<host>[\w.-]+\.site\.edu)/(?<port>\d+)(?<uri>/.*|)">
     AuthType openid-connect
     Require valid-user
+
 
     # ProxyPassReverse implementation
     Header edit Location "^([^/]+//[^/]+)|(?=/)|^([\./]{1,}(?<!/))" "/configured-rnode/%{MATCH_HOST}e/%{MATCH_PORT}e"
@@ -184,6 +187,7 @@ Listen 8080
   <Location "/my_pun_apps">
     AuthType openid-connect
     Require valid-user
+
 
     ProxyPreserveHost On
     ProxyAddHeaders On
@@ -215,6 +219,7 @@ Listen 8080
     AuthType openid-connect
     Require valid-user
 
+
     LuaHookFixups nginx.lua nginx_handler
   </Location>
 
@@ -240,6 +245,7 @@ Listen 8080
   <Location "/oidc">
     AuthType openid-connect
     Require valid-user
+
   </Location>
 
   # Maintenance location

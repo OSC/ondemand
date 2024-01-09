@@ -47,6 +47,10 @@ module OodPortalGenerator
       @map_fail_uri     = opts.fetch(:map_fail_uri, nil)
       @pun_stage_cmd    = opts.fetch(:pun_stage_cmd, "sudo /opt/ood/nginx_stage/sbin/nginx_stage")
 
+      # custom directives
+      @custom_vhost_directives     = opts.fetch(:custom_vhost_directives, nil)
+      @custom_location_directives  = opts.fetch(:custom_location_directives, nil)
+
       # Maintenance configuration
       @use_maintenance          = opts.fetch(:use_maintenance, true)
       @maintenance_ip_allowlist = Array(opts.fetch(:maintenance_ip_allowlist, nil) || opts.fetch(:maintenance_ip_whitelist, []))
