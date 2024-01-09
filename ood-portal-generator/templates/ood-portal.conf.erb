@@ -192,7 +192,6 @@ Listen <%= addr_port %>
   <%- end -%>
   <%- if @allowed_hosts -%>
   SetEnv OOD_ALLOWED_HOSTS "<%= @allowed_hosts.join(',') %>"
-
   <%- end -%>
 
   <%- if @custom_vhost_directives -%>

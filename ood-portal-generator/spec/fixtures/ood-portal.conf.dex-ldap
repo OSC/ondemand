@@ -118,7 +118,6 @@
 
   SetEnv OOD_ALLOWED_HOSTS "example.com"
 
-
   #
   # Below is used for sub-uri's this Open OnDemand portal supports
   #

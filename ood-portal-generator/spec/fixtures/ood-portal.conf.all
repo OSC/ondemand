@@ -115,7 +115,6 @@ Listen 8080
 
   SetEnv OOD_ALLOWED_HOSTS "foo.example.com,test.proxy.name,test.server.name"
 
-
   #
   # Below is used for sub-uri's this Open OnDemand portal supports
   #
