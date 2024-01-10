@@ -11,7 +11,12 @@ class ProjectsController < ApplicationController
     else
       @scripts = Script.all(@project.directory)
       @valid_project = Script.clusters?
-      flash.now[:alert] = I18n.t("dashboard.jobs_project_invalid_configuration_clusters") unless @valid_project
+      @valid_scripts = Script.scripts?(@project.directory)
+
+      alert_messages = []
+      alert_messages << I18n.t('dashboard.jobs_project_invalid_configuration_clusters') unless @valid_project
+      alert_messages << I18n.t('dashboard.jobs_project_invalid_configuration_scripts') if @scripts.any? && !@valid_scripts
+      flash.now[:alert] = alert_messages.join(' ') if alert_messages.any?
     end
   end
 

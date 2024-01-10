@@ -23,9 +23,12 @@ class ScriptsController < ApplicationController
   def create
     opts = { project_dir: @project.directory }.merge(create_script_params[:script])
     @script = Script.new(opts)
+    default_script_created = @script.create_default_script
 
     if @script.save
-      redirect_to project_path(params[:project_id]), notice: I18n.t('dashboard.jobs_scripts_created')
+      notice_messages = [I18n.t('dashboard.jobs_scripts_created')]
+      notice_messages << I18n.t('dashboard.jobs_scripts_default_created') if default_script_created
+      redirect_to project_path(params[:project_id]), notice: notice_messages.join(' ')
     else
       redirect_to project_path(params[:project_id]), alert: @script.errors[:save].last
     end

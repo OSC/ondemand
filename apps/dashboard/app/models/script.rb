@@ -50,6 +50,11 @@ class Script
       cluster_attribute = SmartAttributes::AttributeFactory.build('auto_batch_clusters', {})
       cluster_attribute.select_choices(hide_excludable: false).any?
     end
+
+    def scripts?(project_dir)
+      script_attribute = SmartAttributes::AttributeFactory.build('auto_scripts', { directory: project_dir })
+      script_attribute.select_choices(hide_excludable: false).any?
+    end
   end
 
   def initialize(opts = {})
@@ -193,10 +198,26 @@ class Script
     most_recent_job['cluster']
   end
 
+  def create_default_script
+    return false if Script.scripts?(project_dir) || default_script_path.exist?
+
+    script_content = <<~DEFAULT_SCRIPT
+      #!/bin/bash
+      # Sample script to configure project defaults. Delete when other scripts are available.
+      echo "Hello World"
+    DEFAULT_SCRIPT
+    File.open(default_script_path, 'w+') { |file| file.write(script_content) }
+    true
+  end
+
   private
 
   def self.script_path(root_dir, script_id)
     Pathname.new(File.join(Script.scripts_dir(root_dir), script_id.to_s))
+  end
+
+  def default_script_path
+    Pathname(File.join(project_dir, 'hello_world.sh'))
   end
 
   def self.script_form_file(script_path)

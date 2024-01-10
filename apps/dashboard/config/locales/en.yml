@@ -237,12 +237,14 @@ en:
     jobs_project_save_error: "Cannot save manifest to %{path}"
     jobs_project_generic_error: "There was an error processing your request: %{error}"
     jobs_project_invalid_configuration_clusters: "An HPC cluster is required. Contact your administrator to add one to the system."
+    jobs_project_invalid_configuration_scripts: "An executable script is required for your project. Upload a script using the file application."
 
     jobs_scripts_created: "Script successfully created!"
+    jobs_scripts_default_created: "A 'hello_world.sh' was also added to this project."
     jobs_scripts_updated: "Script manifest updated!"
     jobs_scripts_not_found: "Cannot find script %{script_id}"
     jobs_scripts_deleted: "Script successfully deleted!"
-    jobs_scripts_submitted: "Successfully submited job %{job_id}."
+    jobs_scripts_submitted: "Successfully submitted job %{job_id}."
     jobs_scripts_delete_script_confirmation: "Delete all contents of script?"
     jobs_scripts_fixed_field: "Fixed Value"
 
