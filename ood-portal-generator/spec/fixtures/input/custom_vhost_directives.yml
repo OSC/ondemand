@@ -3,7 +3,7 @@ auth:
  - 'AuthType openid-connect'
  - 'Require valid-user'
 
-custom_vhost_directives: |
-  SetEnv SPECIAL_VHOST_ENV_VAR custom_vhost
-  SetEnv SECOND_VHOST_VAR custom_vhost2
+custom_vhost_directives:
+  - SetEnv SPECIAL_VHOST_ENV_VAR custom_vhost
+  - SetEnv SECOND_VHOST_VAR custom_vhost2
   

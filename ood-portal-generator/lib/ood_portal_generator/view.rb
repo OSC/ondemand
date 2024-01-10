@@ -48,8 +48,8 @@ module OodPortalGenerator
       @pun_stage_cmd    = opts.fetch(:pun_stage_cmd, "sudo /opt/ood/nginx_stage/sbin/nginx_stage")
 
       # custom directives
-      @custom_vhost_directives     = opts.fetch(:custom_vhost_directives, nil)
-      @custom_location_directives  = opts.fetch(:custom_location_directives, nil)
+      @custom_vhost_directives     = opts.fetch(:custom_vhost_directives, [])
+      @custom_location_directives  = opts.fetch(:custom_location_directives, [])
 
       # Maintenance configuration
       @use_maintenance          = opts.fetch(:use_maintenance, true)

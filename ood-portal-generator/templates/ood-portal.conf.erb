@@ -194,12 +194,10 @@ Listen <%= addr_port %>
   SetEnv OOD_ALLOWED_HOSTS "<%= @allowed_hosts.join(',') %>"
   <%- end -%>
 
-  <%- if @custom_vhost_directives -%>
-  <%- @custom_vhost_directives.each_line do |line| -%>
-  <%= line -%>
+  <%- @custom_vhost_directives.to_a.each do |line| -%>
+  <%= line %>
   <%- end -%>
 
-  <%- end -%>
   #
   # Below is used for sub-uri's this Open OnDemand portal supports
   #
@@ -229,10 +227,8 @@ Listen <%= addr_port %>
     <%= line %>
     <%- end -%>
 
-    <%- if @custom_location_directives -%>
-    <%- @custom_location_directives.each_line do |line| -%>
-    <%= line -%>
-    <%- end -%>
+    <%- @custom_location_directives.to_a.each do |line| -%>
+    <%= line %>
     <%- end -%>
 
     # ProxyPassReverse implementation
@@ -260,10 +256,8 @@ Listen <%= addr_port %>
     <%= line %>
     <%- end -%>
 
-    <%- if @custom_location_directives -%>
-    <%- @custom_location_directives.each_line do |line| -%>
-    <%= line -%>
-    <%- end -%>
+    <%- @custom_location_directives.to_a.each do |line| -%>
+    <%= line %>
     <%- end -%>
 
     # ProxyPassReverse implementation
@@ -292,10 +286,8 @@ Listen <%= addr_port %>
     <%= line %>
     <%- end -%>
 
-    <%- if @custom_location_directives -%>
-    <%- @custom_location_directives.each_line do |line| -%>
-    <%= line -%>
-    <%- end -%>
+    <%- @custom_location_directives.to_a.each do |line| -%>
+    <%= line %>
     <%- end -%>
 
     ProxyPreserveHost On
@@ -331,10 +323,8 @@ Listen <%= addr_port %>
     <%= line %>
     <%- end -%>
 
-    <%- if @custom_location_directives -%>
-    <%- @custom_location_directives.each_line do |line| -%>
-    <%= line -%>
-    <%- end -%>
+    <%- @custom_location_directives.to_a.each do |line| -%>
+    <%= line %>
     <%- end -%>
 
     LuaHookFixups nginx.lua nginx_handler
@@ -370,10 +360,8 @@ Listen <%= addr_port %>
     <%= line %>
     <%- end -%>
 
-    <%- if @custom_location_directives -%>
-    <%- @custom_location_directives.each_line do |line| -%>
-    <%= line -%>
-    <%- end -%>
+    <%- @custom_location_directives.to_a.each do |line| -%>
+    <%= line %>
     <%- end -%>
   </Location>
   <%- end -%>
