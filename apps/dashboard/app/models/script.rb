@@ -199,15 +199,15 @@ class Script
   end
 
   def create_default_script
-    return if Script.scripts?(project_dir)
-    return if default_script_path.exist?
+    return false if Script.scripts?(project_dir) || default_script_path.exist?
 
-    script_content = <<~EOF
+    script_content = <<~DEFAULT_SCRIPT
       #!/bin/bash
-      # Sample script to configure project defaults. Delete when other scrips available.
+      # Sample script to configure project defaults. Delete when other scripts are available.
       echo "Hello World"
-    EOF
+    DEFAULT_SCRIPT
     File.open(default_script_path, 'w+') { |file| file.write(script_content) }
+    true
   end
 
   private

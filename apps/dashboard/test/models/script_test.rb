@@ -97,8 +97,9 @@ class ScriptTest < ActiveSupport::TestCase
       OodAppkit.stubs(:dataroot).returns(projects_path)
 
       target = Script.new({ project_dir: projects_path.to_s, id: 1234, title: 'Default Script' })
-      target.create_default_script
+      created_script = target.create_default_script
 
+      assert_equal true, created_script
       assert_equal true, Pathname(File.join(projects_path, 'hello_world.sh')).exist?
     end
   end
@@ -114,8 +115,9 @@ class ScriptTest < ActiveSupport::TestCase
       File.open(File.join(projects_path, 'test_script.sh'), 'w+') { |file| file.write(script_content) }
 
       target = Script.new({ project_dir: projects_path.to_s, id: 1234, title: 'With Script' })
-      target.create_default_script
+      created_script = target.create_default_script
 
+      assert_equal false, created_script
       assert_equal false, Pathname(File.join(projects_path, 'hello_world.sh')).exist?
     end
   end
