@@ -4,7 +4,6 @@
 #
 # It implements the support ticket interface as defined in the SupportTicketController
 class SupportTicketEmailService
-
   attr_reader :support_ticket_config
 
   # Constructor
@@ -50,7 +49,7 @@ class SupportTicketEmailService
     session = get_session(support_ticket)
     context = OpenStruct.new({
                                support_ticket: support_ticket,
-                               session: session,
+                               session:        session
                              })
 
     SupportTicketMailer.support_email(support_ticket_config, context).deliver_now
@@ -63,7 +62,7 @@ class SupportTicketEmailService
   def set_session(support_ticket)
     session = get_session(support_ticket)
     if session
-      created_at = session.created_at ? Time.at(session.created_at).localtime.strftime("%Y-%m-%d %H:%M:%S %Z") : "N/A"
+      created_at = session.created_at ? Time.at(session.created_at).localtime.strftime('%Y-%m-%d %H:%M:%S %Z') : 'N/A'
       support_ticket.session_description = "#{session.title}(#{session.job_id}) - #{session.status} - #{created_at}"
     end
 
