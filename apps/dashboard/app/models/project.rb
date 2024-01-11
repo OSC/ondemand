@@ -65,9 +65,7 @@ class Project
     end
   end
 
-  attr_reader :directory, :id, :template
-
-  delegate :icon, :name, :description, to: :manifest
+  attr_reader :id, :name, :description, :icon, :directory, :template
 
   validates :name, presence: { message: :required }, on: [:create, :update]
   validates :id, :directory, :icon, presence: { message: :required }, on: [:update]
@@ -80,40 +78,44 @@ class Project
   attr_accessor :template
 
   def initialize(attributes = {})
-    @id = attributes.delete(:id)
-    @directory = attributes.delete(:directory)
+    @id = attributes.fetch(:id, Project.next_id)
+    update_attrs(attributes)
+    @directory = attributes[:directory]
     @directory = File.expand_path(@directory) unless @directory.blank?
-    @template = attributes.delete(:template)
+    @template = attributes[:template]
 
-    @manifest = Manifest.new(attributes)
-    @manifest = @manifest.merge(Manifest.load(manifest_path)) unless new_record?
+    return if new_record?
+
+    contents = File.read(manifest_path)
+    raw_opts = YAML.safe_load(contents)
+    update_attrs(raw_opts.symbolize_keys)
+  end
+
+  def to_h
+    {
+      :id => id,
+      :name => name,
+      :description => description,
+      :icon => icon,
+    }
   end
 
   def new_record?
-    return true if !id
-    return true if !directory
-
-    id && directory && !File.exist?(manifest_path)
+    !File.exist?(manifest_path)
   end
 
-  def save(attributes={})
-    @id = attributes.delete(:id) if attributes.key?(:id)
-    @directory = attributes.delete(:directory) if attributes.key?(:directory)
-    @directory = File.expand_path(@directory) unless @directory.blank?
-    @manifest = manifest.merge(attributes)
-
+  def save
     return false unless valid?(:create)
 
     # SET DEFAULTS
-    @id = Project.next_id if id.blank?
     @directory = Project.dataroot.join(id.to_s).to_s if directory.blank?
-    @manifest = manifest.merge({ icon: 'fas://cog' }) if icon.blank?
+    @icon = 'fas://cog' if icon.blank?
 
     make_dir && sync_template && store_manifest(:save)
   end
 
   def update(attributes)
-    @manifest = manifest.merge(attributes)
+    update_attrs(attributes)
 
     return false unless valid?(:update)
 
@@ -121,20 +123,25 @@ class Project
   end
 
   def store_manifest(operation)
-    if manifest.valid? && manifest.save(manifest_path) && add_to_lookup
-      true
-    else
-      errors.add(operation, I18n.t('dashboard.jobs_project_save_error', path: manifest_path))
-      false
-    end
+    save_manifest(operation) && add_to_lookup(operation)
   end
 
-  def add_to_lookup
+  def save_manifest(operation)
+    Pathname(manifest_path).write(to_h.deep_stringify_keys.compact.to_yaml)
+
+    true
+  rescue StandardError => e
+    errors.add(operation, I18n.t('dashboard.jobs_project_save_error', path: manifest_path))
+    Rails.logger.warn "Cannot save project manifest: #{manifest_path} with error #{e.class}:#{e.message}"
+    false
+  end
+
+  def add_to_lookup(operation)
     new_table = Project.lookup_table.merge(Hash[id, directory.to_s])
     File.write(Project.lookup_file, new_table.to_yaml)
     true
   rescue StandardError => e
-    errors.add(:update, "Cannot update lookup file lookup file with error #{e.class}:#{e.message}")
+    errors.add(operation, "Cannot update lookup file lookup file with error #{e.class}:#{e.message}")
     false
   end
 
@@ -149,7 +156,7 @@ class Project
 
   def icon_class
     # rails will prepopulate the tag with fa- so just the name is needed
-    manifest.icon.sub('fas://', '')
+    icon.sub('fas://', '')
   end
 
   def destroy!
@@ -162,7 +169,7 @@ class Project
   end
 
   def project_dataroot
-    Project.dataroot.join(directory)
+    Project.dataroot.join(directory.to_s)
   end
 
   def title
@@ -178,8 +185,12 @@ class Project
   end
 
   private
-
-  attr_reader :manifest
+  
+  def update_attrs(attributes)
+    [:name, :description, :icon].each do |attribute|
+      instance_variable_set("@#{attribute}".to_sym, attributes.fetch(attribute, ''))
+    end
+  end
 
   def make_dir
     project_dataroot.mkpath         unless project_dataroot.exist?
