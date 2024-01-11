@@ -78,7 +78,8 @@ class Project
   attr_accessor :template
 
   def initialize(attributes = {})
-    set_data(attributes)
+    @id = attributes.fetch(:id, Project.next_id)
+    update_attrs(attributes)
     @directory = attributes[:directory]
     @directory = File.expand_path(@directory) unless @directory.blank?
     @template = attributes[:template]
@@ -87,7 +88,7 @@ class Project
 
     contents = File.read(manifest_path)
     raw_opts = YAML.safe_load(contents)
-    set_data(raw_opts.symbolize_keys)
+    update_attrs(raw_opts.symbolize_keys)
   end
 
   def to_h
@@ -100,17 +101,13 @@ class Project
   end
 
   def new_record?
-    return true if !id
-    return true if !directory
-
-    id && directory && !File.exist?(manifest_path)
+    !File.exist?(manifest_path)
   end
 
   def save
     return false unless valid?(:create)
 
     # SET DEFAULTS
-    @id = Project.next_id if id.blank?
     @directory = Project.dataroot.join(id.to_s).to_s if directory.blank?
     @icon = 'fas://cog' if icon.blank?
 
@@ -118,9 +115,7 @@ class Project
   end
 
   def update(attributes)
-    # ensure id is not updated
-    attributes.delete(:id)
-    set_data(attributes)
+    update_attrs(attributes)
 
     return false unless valid?(:update)
 
@@ -174,7 +169,7 @@ class Project
   end
 
   def project_dataroot
-    Project.dataroot.join(directory)
+    Project.dataroot.join(directory.to_s)
   end
 
   def title
@@ -191,11 +186,10 @@ class Project
 
   private
   
-  def set_data(attributes)
-    @id = attributes[:id] if attributes.key?(:id)
-    @name = attributes.fetch(:name, '')
-    @description = attributes.fetch(:description, '')
-    @icon = attributes.fetch(:icon, '')
+  def update_attrs(attributes)
+    [:name, :description, :icon].each do |attribute|
+      instance_variable_set("@#{attribute}".to_sym, attributes.fetch(attribute, ''))
+    end
   end
 
   def make_dir

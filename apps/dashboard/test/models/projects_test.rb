@@ -6,7 +6,7 @@ class ProjectsTest < ActiveSupport::TestCase
   test 'create empty project' do
     project = Project.new
 
-    assert_nil project.id
+    assert_not_empty project.id
     assert_nil project.directory
     assert_equal '', project.name
     assert_equal '', project.description
