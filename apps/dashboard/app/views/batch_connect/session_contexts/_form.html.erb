@@ -6,12 +6,10 @@
     <%= create_widget(f, attrib, format: @render_format) %>
   <% end %>
 
-  <div class="form-group">
-    <div class="form-check">
-      <input class="form-check-input" name="save_template" type="checkbox" id="batch_connect_session_save_template">
-      <label class="form-check-label" for="batch_connect_session_save_template"><%= t('dashboard.batch_connect_form_save') %></label>
-      <input name="template_name" type="text" id="batch_connect_session_template_name" readonly>
-    </div>
+  <div class="form-group form-check d-flex">
+      <input class="form-check-input align-self-center" name="save_template" type="checkbox" id="batch_connect_session_save_template">
+      <label class="form-check-label align-self-center" for="batch_connect_session_save_template"><%= t('dashboard.batch_connect_form_save') %></label>
+      <input class="ml-auto" name="template_name" type="text" id="batch_connect_session_template_name" aria-label="<%= t('dashboard.batch_connect_form_template_name_label') %>" readonly>
   </div>
 
   <%= f.submit t('dashboard.batch_connect_form_launch'), class: "btn btn-primary btn-block" %>

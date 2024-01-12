@@ -15,8 +15,8 @@ export function prefillTemplatesHandler() {
     try {
       json = JSON.parse(templateOption.val());
     } catch (error) {
-      $('#formPrefillErrorBody').text(error.message)
-      $('#formPrefillError').modal('show');
+      $('#batch_connect_session_template_form_error_modal').text(error.message)
+      $('#batch_connect_session_template_form_error_modal_body').modal('show');
       return;
     }
 
@@ -57,8 +57,8 @@ export function prefillTemplatesHandler() {
     }
 
     if (errorMsg) {
-      $('#formPrefillErrorBody').html(errorMsg)
-      $('#formPrefillError').modal('show');
+      $('#batch_connect_session_template_form_error_modal_body').html(errorMsg)
+      $('#batch_connect_session_template_form_error_modal').modal('show');
     }
   });
 }

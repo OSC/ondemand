@@ -4,14 +4,13 @@ const selectorID = "modal_input_template_name";
 const newNameID = "modal_input_template_new_name";
 
 export function prefillSubmitHandler() {
-  const form = $("#new_batch_connect_session_context");
 
   const chooseTemplateName = $("#chooseTemplateName");
   if (chooseTemplateName.length === 0) {
     return;
   }
 
-  const chooseTemplateNameError = $("#chooseTemplateNameError");
+  const chooseTemplateNameError = $("#batch_connect_session_template_name_error_modal");
   const templateName = $("#batch_connect_session_template_name");
   const saveTemplate = $("#batch_connect_session_save_template");
 
@@ -24,7 +23,7 @@ export function prefillSubmitHandler() {
     }
   });
 
-  $("#chooseTemplateNameConfirm").on("click", function () {
+  $("#batch_connect_session_template_choose_name_button").on("click", function () {
     const name = $(`#${selectorID}`).val() || $(`#${newNameID}`).val();
     if (name === "") {
       chooseTemplateNameError.modal('show');
@@ -36,7 +35,7 @@ export function prefillSubmitHandler() {
     chooseTemplateName.modal('hide');
   });
 
-  saveTemplate.change(function () {
+  saveTemplate.on('change', function () {
     if ($(this).is(':checked')) {
       chooseTemplateName.modal('show');
     } else {
@@ -51,7 +50,7 @@ export function prefillSubmitHandler() {
   chooseTemplateName.on('hidden.bs.modal', function () {
     if (templateName.val() === "") {
       saveTemplate.prop('checked', false);
-      saveTemplate.change();
+      saveTemplate.trigger('change');
     }
   });
 }
