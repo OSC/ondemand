@@ -77,12 +77,14 @@ Listen <%= addr_port %>
   ServerAlias <%= serveralias %>
   <%- end -%>
 
+  <%- unless @disable_logs -%>
   ErrorLog  "<%= @errorlog %>"
   <%- if @logformat -%>
   LogFormat <%= @logformat %>
   TransferLog "<%= @accesslog %>"
   <%- else -%>
   CustomLog "<%= @accesslog %>" combined
+  <%- end -%>
   <%- end -%>
 
   <%- if @servername && @use_rewrites -%>

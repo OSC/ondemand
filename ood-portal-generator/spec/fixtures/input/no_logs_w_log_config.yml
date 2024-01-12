@@ -1,0 +1,10 @@
+---
+auth:
+ - 'AuthType openid-connect'
+ - 'Require valid-user'
+
+disable_logs: true
+
+# note these configs shouldn't be used
+logformat: '"%v %h \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %{SSL_PROTOCOL}x %T"'
+accesslog: 'my_cool_access.log'

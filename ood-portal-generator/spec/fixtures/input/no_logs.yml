@@ -1,0 +1,6 @@
+---
+auth:
+ - 'AuthType openid-connect'
+ - 'Require valid-user'
+
+disable_logs: true
