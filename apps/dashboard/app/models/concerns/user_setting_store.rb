@@ -1,5 +1,7 @@
 module UserSettingStore
 
+  BC_TEMPLATES = :batch_connect_templates
+
   def user_settings
     @user_settings = read_user_settings if @user_settings.nil?
     @user_settings.clone
@@ -36,5 +38,26 @@ module UserSettingStore
 
   def user_settings_path
     Pathname.new(::Configuration.dataroot).join(::Configuration.user_settings_file)
+  end
+
+  def bc_templates(app_token)
+    templates = user_settings[BC_TEMPLATES]
+    return {} if templates.nil? || templates.empty?
+
+    user_settings[BC_TEMPLATES][app_token.to_sym].to_h
+  end
+
+  def save_bc_template(app_token, name, key_values)
+    current_templates = user_settings[BC_TEMPLATES] || {}
+    current_app_templates = current_templates[app_token.to_sym] || {}
+
+    new_template = {}
+    new_template[name.to_sym] = key_values
+
+    new_settings = {}
+    new_settings[BC_TEMPLATES] = {}
+    new_settings[BC_TEMPLATES][app_token.to_sym] = current_app_templates.merge(new_template)
+
+    update_user_settings(new_settings)
   end
 end

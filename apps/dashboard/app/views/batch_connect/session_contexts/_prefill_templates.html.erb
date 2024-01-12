@@ -3,8 +3,8 @@
     <label class="control-label"><%= t('dashboard.batch_connect_form_prefill') %></label>
     <select class="form-control selectpicker" id="batch_connect_session_prefill_template">
       <option selected value> -- <%= t('dashboard.batch_connect_form_select_template') %> -- </option>
-      <% @prefill_templates.each do |id, template| %>
-        <option value="<%= template %>"><%= id.humanize %></option>
+      <% @prefill_templates.each do |name, template_data| %>
+        <option value="<%= template_data.to_json %>"><%= name %></option>
       <% end %>
     </select>
   </div>
@@ -33,8 +33,8 @@
       <div class="modal-body">
         <select class="form-control selectpicker" id="modal_input_template_name">
           <option selected value> -- <%= t('dashboard.batch_connect_form_save_new_template') %> -- </option>
-          <% @prefill_templates.each do |id, _| %>
-            <option value="<%= id %>"><%= id %></option>
+          <% @prefill_templates.each do |name, template_data| %>
+            <option value="<%= name %>"><%= name %></option>
           <% end %>
         </select>
         <input type="text" class="form-control" id="modal_input_template_new_name" placeholder="<%= t('dashboard.batch_connect_form_type_new_name') %>">

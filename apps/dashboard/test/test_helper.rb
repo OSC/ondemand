@@ -99,6 +99,10 @@ module ActiveSupport
            .with({}, 'sacctmgr', '-nP', 'show', 'users', 'withassoc', 'format=account,cluster,partition,qos', 'where', 'user=me', stdin_data: '')
            .returns([File.read('test/fixtures/cmd_output/sacctmgr_show_accts.txt'), '', exit_success])
     end
+
+    def output_fixture(file)
+      File.read("#{Rails.root}/test/fixtures/file_output/#{file}")
+    end
   end
 end
 
