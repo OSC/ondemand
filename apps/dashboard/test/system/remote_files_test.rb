@@ -16,15 +16,15 @@ class RemoteFilesTest < ApplicationSystemTestCase
   test 'visiting files app directory' do
     with_rclone_conf(Rails.root.to_s) do
       visit files_url('alias_remote', '/')
-      find('tbody a', exact_text: 'app').ancestor('tr').click
+      find('tbody a', exact_text: 'app').ancestor('tr').find('input[type="checkbox"]').click
       assert_selector '.selected', count: 1
-      find('tbody a', exact_text: 'config').ancestor('tr').click(:meta)
+      find('tbody a', exact_text: 'config').ancestor('tr').find('input[type="checkbox"]').click
       assert_selector '.selected', count: 2
 
       visit files_url('local_remote', Rails.root.to_s)
-      find('tbody a', exact_text: 'app').ancestor('tr').click
+      find('tbody a', exact_text: 'app').ancestor('tr').find('input[type="checkbox"]').click
       assert_selector '.selected', count: 1
-      find('tbody a', exact_text: 'config').ancestor('tr').click(:meta)
+      find('tbody a', exact_text: 'config').ancestor('tr').find('input[type="checkbox"]').click
       assert_selector '.selected', count: 2
     end
   end
@@ -61,7 +61,7 @@ class RemoteFilesTest < ApplicationSystemTestCase
   test 'copying files' do
     visit files_url(Rails.root.to_s)
     %w(app config manifest.yml).each do |f|
-      find('a', exact_text: f).ancestor('tr').click(:meta)
+      find('a', exact_text: f).ancestor('tr').find('input[type="checkbox"]').click
     end
     assert_selector '.selected', count: 3
 
@@ -188,7 +188,7 @@ class RemoteFilesTest < ApplicationSystemTestCase
         # select dir to move
         visit files_url('alias_remote', '/bucket')
         %w(app config manifest.yml).each do |f|
-          find('a', exact_text: f).ancestor('tr').click(:meta)
+          find('a', exact_text: f).ancestor('tr').find('input[type="checkbox"]').click
         end
         assert_selector '.selected', count: 3
 
@@ -231,7 +231,7 @@ class RemoteFilesTest < ApplicationSystemTestCase
         # select dir to move
         visit files_url('extra_remote', dir)
         %w(app config manifest.yml).each do |f|
-          find('a', exact_text: f).ancestor('tr').click(:meta)
+          find('a', exact_text: f).ancestor('tr').find('input[type="checkbox"]').click
         end
         assert_selector '.selected', count: 3
 
@@ -271,8 +271,8 @@ class RemoteFilesTest < ApplicationSystemTestCase
 
         # select dir to move
         visit files_url('alias_remote', '/bucket')
-        find('a', exact_text: 'app').ancestor('tr').click(:meta)
-        find('a', exact_text: 'foo.txt').ancestor('tr').click(:meta)
+        find('a', exact_text: 'app').ancestor('tr').find('input[type="checkbox"]').click
+        find('a', exact_text: 'foo.txt').ancestor('tr').find('input[type="checkbox"]').click
         find('#delete-btn').click
         find('button.swal2-confirm').click
 

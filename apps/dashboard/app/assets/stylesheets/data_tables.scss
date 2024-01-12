@@ -1,8 +1,30 @@
 
+// get rid of jquery's default sorting icons.
+// so we can put them in a span below.
 th.sorting::before {
-  bottom: 52% !important;
+  content: "" !important;
 }
 
 th.sorting::after {
-  top: 52% !important;
+  content: "" !important;
+}
+
+table.dataTable th:hover {
+  background-color: darkgrey;
+}
+
+table.dataTable th[aria-sort="descending"] span::after {
+  content: "▼";
+  margin-left: 1.5rem !important;
+  color: currentcolor;
+  font-size: 100%;
+  top: 0;
+}
+
+table.dataTable th[aria-sort="ascending"] span::after {
+  content: "▲";
+  margin-left: 1.5rem !important;
+  color: currentcolor;
+  font-size: 100%;
+  top: 0;
 }
