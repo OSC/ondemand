@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+small fixups for bc templates (#3289)\
+Bc templates (#3280)\
+change sorting css styles to be more accessible (#3282)\
+add disable_logs to disable logs in apache (#3290)\
+Updated projects to serliaze id into projects manifest (#3288)\
+Created default executable script on new Script and added validation (#3273)\
+lint a random file (#3294)\
+Only patch the autostart .desktop files that are installed on the system (#3291)\
+refactor custom_info_view method (#3283)\
+Update Changelog (#3285)\
+lint a random file (#3284)\
+update dependencies (#3286)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
