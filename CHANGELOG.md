@@ -6,18 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-small fixups for bc templates (#3289)\
-Bc templates (#3280)\
-change sorting css styles to be more accessible (#3282)\
-add disable_logs to disable logs in apache (#3290)\
-Updated projects to serliaze id into projects manifest (#3288)\
-Created default executable script on new Script and added validation (#3273)\
-lint a random file (#3294)\
-Only patch the autostart .desktop files that are installed on the system (#3291)\
-refactor custom_info_view method (#3283)\
-Update Changelog (#3285)\
-lint a random file (#3284)\
-update dependencies (#3286)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
@@ -48,6 +36,7 @@ update dependencies (#3286)
 - Added a rake task to determine ensure unix file formats in [3227](https://github.com/OSC/ondemand/pull/3227).
 - Batch Connect apps can now provide a completed.{md, html}.erb in [3269](https://github.com/OSC/ondemand/pull/3269).
 - Sites can now disable uploads and downloads in [3236](https://github.com/OSC/ondemand/pull/3236).
+- Sites can now use disable_logs in ood_portal.yml to disable logs in apache in [3290](https://github.com/OSC/ondemand/pull/3290).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
@@ -68,6 +57,8 @@ update dependencies (#3286)
 - BatchConnect apps now use rsync with safer arguments in [3239](https://github.com/OSC/ondemand/pull/3239).
 - Dynamic forms correctly handle options that start with numbers in [3241](https://github.com/OSC/ondemand/pull/3241).
 - Multiple domains corrrectly redirect in [3264](https://github.com/OSC/ondemand/pull/3264).
+- MATE desktop will only patch the autostart .desktop files if they exist in [3291](https://github.com/OSC/ondemand/pull/3291).
+
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
