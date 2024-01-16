@@ -1,7 +1,7 @@
 <% if @featured_group.present? %>
   <% group = @featured_group %>
   <li class="nav-item dropdown" title="<%= group.title %>" >
-    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= group.title %><span class="caret"></span></a>
+    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= group.title %><span class="caret"></span></a>
 
     <ul class="dropdown-menu">
       <% OodAppGroup.groups_for(apps: group.apps, group_by: :subcategory, nav_limit: group.nav_limit).each_with_index do |g, index| %>
