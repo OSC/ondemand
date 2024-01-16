@@ -27,7 +27,7 @@
 </head>
 <body>
   <header>
-    <nav class="navbar navbar-expand-md shadow-sm navbar-color navbar-<%= @user_configuration.navbar_type %>" aria-label="Navigation">
+    <nav class="navbar navbar-expand-md shadow-sm navbar-color navbar-<%= @user_configuration.navbar_type %>">
     <% if @user_configuration.dashboard_header_img_logo %>
       <a class="navbar-brand navbar-brand-logo" href="<%= root_path %>"><img class="img-fluid" src="<%= @user_configuration.dashboard_header_img_logo %>" alt="<%= @user_configuration.dashboard_title %>"></a>
     <% else %>
