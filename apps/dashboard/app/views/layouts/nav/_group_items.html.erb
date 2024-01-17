@@ -3,7 +3,7 @@
   <%= content_tag(:li, g.title, class: ["dropdown-header"]) unless g.title.empty? %>
   <% g.apps.each do |app| %>
     <% app.links.each do |link| %>
-      <li>
+      <li role="none">
         <%=
           link_to(
             link.url.to_s,
@@ -11,6 +11,7 @@
             class: "dropdown-item",
             target: link.new_tab? ? "_blank" : nil,
             aria: ({ current: ('page' if (current_page?(link.url))) }),
+            role: 'menuitem',
             data: link.data
           ) do
         %>

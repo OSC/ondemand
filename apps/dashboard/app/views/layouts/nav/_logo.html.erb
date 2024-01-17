@@ -1,0 +1,14 @@
+
+<%- 
+  aria = current_page?(root_path) ? "aria-current=page" : ''
+-%>
+
+<li role="none" >
+<% if @user_configuration.dashboard_header_img_logo %>
+  <a class="navbar-brand navbar-brand-logo" href="<%= root_path %>" <%= aria %> role='menuitem'>
+    <img class="img-fluid" src="<%= @user_configuration.dashboard_header_img_logo %>" alt="<%= @user_configuration.dashboard_title %>">
+  </a>
+<% else %>
+  <a class="navbar-brand" <%= aria %> role='menuitem' href="<%= root_path %>"><%= @user_configuration.dashboard_title %></a>
+<% end %>
+</li>

@@ -1,20 +1,21 @@
 <% if @featured_group.present? %>
   <% group = @featured_group %>
-  <li class="nav-item dropdown" title="<%= group.title %>" >
-    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= group.title %><span class="caret"></span></a>
+  <li class="nav-item dropdown" role="none">
+    <a role="menuitem" href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= group.title %><span class="caret"></span></a>
 
-    <ul class="dropdown-menu">
+    <ul class="dropdown-menu" role="menu" title="<%= group.title %>">
       <% OodAppGroup.groups_for(apps: group.apps, group_by: :subcategory, nav_limit: group.nav_limit).each_with_index do |g, index| %>
         <%= content_tag "li", "", class: "dropdown-divider", role: "separator" if index > 0 %>
         <%= content_tag "li", g.title_with_nav_limit_caption, class: "dropdown-header" unless g.title_with_nav_limit_caption.empty? %>
         <% g.apps.take(g.nav_limit).map { |app| app.links.first }.compact.each do |link| %>
-            <li>
+            <li role="none">
               <%=
                 link_to(
                   link.url.to_s,
                   title: link.title,
                   class: "dropdown-item",
                   target: link.new_tab? ? "_blank" : nil,
+                  role: 'menuitem',
                   data: link.data
                 ) do
               %>
@@ -28,8 +29,8 @@
       <% end %>
 
       <%= content_tag "li", "", class: "dropdown-divider", role: "separator" %>
-      <li title="<%= t('dashboard.nav_all_apps') %>">
-        <a href="<%= apps_index_path %>" class="dropdown-item">
+      <li title="<%= t('dashboard.nav_all_apps') %>" role="none">
+        <a href="<%= apps_index_path %>" class="dropdown-item" role="menuitem" tabindex="-1">
           <i class="fas fa-th" aria-hidden="true"></i> <%= t('dashboard.nav_all_apps') %>
         </a>
       </li>

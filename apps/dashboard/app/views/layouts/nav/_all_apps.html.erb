@@ -1,5 +1,17 @@
-<li class="nav-item" title="<%= t('dashboard.nav_all_apps') %>">
-  <%= tag.a class: 'nav-link', href: apps_index_path, aria: ({ current: ('page' if (current_page?(controller: '/apps', action: 'index' ))) }) do %>
-    <i class="fas fa-th" aria-hidden="true"></i><span class="d-sm-none d-md-none d-lg-inline"> <%= t('dashboard.nav_all_apps') %></span>
-  <% end %>
+<%-
+  aria =  if current_page?(controller: '/apps', action: 'index')
+            "aria-current=page"
+          else
+            ""
+          end
+-%>
+
+<li class="nav-item" role="none">
+  <a title="<%= t('dashboard.nav_all_apps') %>" class="nav-link"
+     role="menuitem" href="<%= apps_index_path %>"
+     <%= aria %>
+    >
+    <i class="fas fa-th" aria-hidden="true"></i>
+    <span class="d-sm-none d-md-none d-lg-inline"> <%= t('dashboard.nav_all_apps') %></span>
+  </a>
 </li>

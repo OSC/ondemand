@@ -1,5 +1,17 @@
-<li class="nav-item" title="<%= t('dashboard.breadcrumbs_my_sessions') %>">
-  <%= tag.a class: 'nav-link', href: batch_connect_sessions_path, aria: ({ current: ('page' if (current_page?(controller: 'batch_connect/sessions', action: 'index'))) }) do %>
-    <i class="fas fa-window-restore" aria-hidden="true"></i><span class="d-sm-none d-md-none d-lg-inline"> <%= t('dashboard.nav_sessions') %></span>
-  <% end %>
+<%-
+  aria =  if current_page?(controller: 'batch_connect/sessions', action: 'index')
+            "aria-current=page"
+          else
+            ""
+          end
+-%>
+
+<li class="nav-item" role="none">
+  <a title="<%= t('dashboard.breadcrumbs_my_sessions') %>" class="nav-link"
+     role="menuitem" href="<%= batch_connect_sessions_path %>"
+     <%= aria %>
+    >
+    <i class="fas fa-window-restore" aria-hidden="true"></i>
+    <span class="d-sm-none d-md-none d-lg-inline"> <%= t('dashboard.nav_sessions') %></span>
+  </a>
 </li>

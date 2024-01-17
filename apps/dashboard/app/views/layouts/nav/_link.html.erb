@@ -13,13 +13,15 @@ data - optional, data parameter for the link_to helper
   url = local_assigns.fetch(:url)
   icon_uri = local_assigns.fetch(:icon_uri, URI("fas://cog"))
 %>
+<li role="none">
 <%=
   link_to(
     url,
     title: title,
-    class: "#{local_assigns.fetch(:class, 'nav-link')} #{local_assigns.fetch(:role, nil)}",
+    class: "#{local_assigns.fetch(:class, 'nav-link')}",
     target: local_assigns.fetch(:new_tab, false) ? "_blank" : nil,
     aria: ({ current: ('page' if (current_page?(url))) }),
+    role: 'menuitem',
     data: local_assigns.fetch(:data, nil)
   ) do
 %>
@@ -28,3 +30,4 @@ data - optional, data parameter for the link_to helper
     <%= title %>
   <% end %>
 <% end %>
+</li>

@@ -28,18 +28,14 @@
 <body>
   <header>
     <nav class="navbar navbar-expand-md shadow-sm navbar-color navbar-<%= @user_configuration.navbar_type %>">
-    <% if @user_configuration.dashboard_header_img_logo %>
-      <a class="navbar-brand navbar-brand-logo" href="<%= root_path %>"><img class="img-fluid" src="<%= @user_configuration.dashboard_header_img_logo %>" alt="<%= @user_configuration.dashboard_title %>"></a>
-    <% else %>
-      <a class="navbar-brand" href="<%= root_path %>"><%= @user_configuration.dashboard_title %></a>
-    <% end %>
+      <ul class="navbar-nav w-100" role="menubar">
+        <%= render partial: 'layouts/nav/logo' %>
       
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-      <div class="collapse navbar-collapse" id="navbar">
-        <ul class="navbar-nav mr-auto">
+        <div class="collapse navbar-collapse" id="navbar">
           <% if @nav_bar.empty? %>
             <%= render partial: 'layouts/nav/featured_apps' %>
             <%= render partial: 'layouts/nav/group', collection: @nav_groups %>
@@ -48,19 +44,19 @@
           <% else %>
             <%= render partial: 'layouts/nav/custom_navigation', locals: { navigation: @nav_bar }%>
           <% end %>
-        </ul>
 
-        <ul class="navbar-nav">
-          <% if @help_bar.empty? %>
-            <%= render partial: 'layouts/nav/develop_dropdown' %>
-            <%= render partial: 'layouts/nav/help_dropdown' %>
-            <%= render partial: 'layouts/nav/user' %>
-            <%= render partial: 'layouts/nav/log_out' %>
-          <% else %>
-            <%= render partial: 'layouts/nav/custom_navigation', locals: { navigation: @help_bar, menu_alignment: 'dropdown-menu-right' }%>
-          <% end %>
-        </ul>
-      </div>
+          <div class="ml-auto d-flex">
+            <% if @help_bar.empty? %>
+              <%= render partial: 'layouts/nav/develop_dropdown' %>
+              <%= render partial: 'layouts/nav/help_dropdown' %>
+              <%= render partial: 'layouts/nav/user' %>
+              <%= render partial: 'layouts/nav/log_out' %>
+            <% else %>
+              <%= render partial: 'layouts/nav/custom_navigation', locals: { navigation: @help_bar, menu_alignment: 'dropdown-menu-right' }%>
+            <% end %>
+          </div>
+        </div>
+      </ul>
     </nav>
   </header>
 
