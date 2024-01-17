@@ -112,6 +112,7 @@
 
   SetEnv OOD_ALLOWED_HOSTS "example.com"
 
+
   #
   # Below is used for sub-uri's this Open OnDemand portal supports
   #
@@ -140,6 +141,7 @@
     AuthType openid-connect
     Require valid-user
 
+
     ProxyPreserveHost On
     ProxyAddHeaders On
     ProxyPassReverse "http://localhost/pun"
@@ -167,6 +169,7 @@
     AuthType openid-connect
     Require valid-user
 
+
     LuaHookFixups nginx.lua nginx_handler
   </Location>
 
@@ -192,6 +195,7 @@
   <Location "/oidc">
     AuthType openid-connect
     Require valid-user
+
   </Location>
 
   # Maintenance location

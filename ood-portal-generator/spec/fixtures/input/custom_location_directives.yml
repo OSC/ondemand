@@ -1,0 +1,8 @@
+---
+auth:
+ - 'AuthType openid-connect'
+ - 'Require valid-user'
+
+custom_location_directives:
+  - SetEnv SPECIAL_LOCATION_ENV_VAR custom_location
+  - SetEnv SECOND_LOCATION_VAR custom_location2

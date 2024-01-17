@@ -120,6 +120,18 @@ describe OodPortalGenerator::Application do
       test_generate('input/no_logs_w_log_config.yml', 'output/no_logs.conf')
     end
 
+    it 'templates custom vhost directives' do
+      test_generate('input/custom_vhost_directives.yml', 'output/custom_vhost_directives.conf')
+    end
+
+    it 'templates custom location directives' do
+      test_generate('input/custom_location_directives.yml', 'output/custom_location_directives.conf')
+    end
+
+    it 'templates custom location and vhost directives' do
+      test_generate('input/custom_directives.yml', 'output/custom_directives.conf')
+    end
+
     it 'generates full OIDC config' do
       config = {
         servername: 'ondemand.example.com',

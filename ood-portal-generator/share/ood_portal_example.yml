@@ -162,6 +162,22 @@
 #  - 'AuthType openid-connect'
 #  - 'Require valid-user'
 
+# List of custom apache directives to apply to the entire vhost.
+# Note this is an array of strings.
+# Example:
+#     custom_vhost_directives:
+#       - 'SetEnv SPECIAL_ENV_VAR custom'
+# Default: [] (no custom directives)
+#custom_vhost_directives: []
+
+# List of custom apache directives to apply to the Locations.
+# Note this is an array of strings.
+# Example:
+#     custom_location_directives:
+#       - 'SetEnv SPECIAL_ENV_VAR custom'
+# Default: [] (no custom directives)
+#custom_location_directives: []
+
 # Redirect user to the following URI when accessing root URI
 # Example:
 #     root_uri: '/my_uri'

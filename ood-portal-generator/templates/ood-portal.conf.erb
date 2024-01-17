@@ -192,8 +192,12 @@ Listen <%= addr_port %>
   <%- end -%>
   <%- if @allowed_hosts -%>
   SetEnv OOD_ALLOWED_HOSTS "<%= @allowed_hosts.join(',') %>"
-
   <%- end -%>
+
+  <%- @custom_vhost_directives.to_a.each do |line| -%>
+  <%= line %>
+  <%- end -%>
+
   #
   # Below is used for sub-uri's this Open OnDemand portal supports
   #
@@ -223,6 +227,10 @@ Listen <%= addr_port %>
     <%= line %>
     <%- end -%>
 
+    <%- @custom_location_directives.to_a.each do |line| -%>
+    <%= line %>
+    <%- end -%>
+
     # ProxyPassReverse implementation
     Header edit Location "^[^/]+//[^/]+" ""
 
@@ -245,6 +253,10 @@ Listen <%= addr_port %>
   #
   <LocationMatch "^<%= @rnode_uri %>/(?<host><%= @host_regex || "[^/]+" %>)/(?<port>\d+)(?<uri>/.*|)">
     <%- @auth.each do |line| -%>
+    <%= line %>
+    <%- end -%>
+
+    <%- @custom_location_directives.to_a.each do |line| -%>
     <%= line %>
     <%- end -%>
 
@@ -271,6 +283,10 @@ Listen <%= addr_port %>
   SetEnv OOD_PUN_URI "<%= @pun_uri %>"
   <Location "<%= @pun_uri %>">
     <%- @auth.each do |line| -%>
+    <%= line %>
+    <%- end -%>
+
+    <%- @custom_location_directives.to_a.each do |line| -%>
     <%= line %>
     <%- end -%>
 
@@ -307,6 +323,10 @@ Listen <%= addr_port %>
     <%= line %>
     <%- end -%>
 
+    <%- @custom_location_directives.to_a.each do |line| -%>
+    <%= line %>
+    <%- end -%>
+
     LuaHookFixups nginx.lua nginx_handler
   </Location>
   <%- end -%>
@@ -337,6 +357,10 @@ Listen <%= addr_port %>
   #
   <Location "<%= @oidc_uri %>">
     <%- @auth.each do |line| -%>
+    <%= line %>
+    <%- end -%>
+
+    <%- @custom_location_directives.to_a.each do |line| -%>
     <%= line %>
     <%- end -%>
   </Location>

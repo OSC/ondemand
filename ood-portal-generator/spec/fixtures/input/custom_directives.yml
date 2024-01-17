@@ -1,0 +1,18 @@
+---
+auth:
+ - 'AuthType openid-connect'
+ - 'Require valid-user'
+
+custom_location_directives:
+  - 'SetEnv SPECIAL_LOCATION_ENV_VAR custom_location'
+  - 'SetEnv SECOND_LOCATION_VAR custom_location2'
+  - '  SetEnv INDENTED_LOCATION_VAR custom_location3'
+
+custom_vhost_directives:
+  - SetEnv SPECIAL_VHOST_ENV_VAR custom_vhost
+  - SetEnv SECOND_VHOST_VAR custom_vhost2
+  - '  SetEnv INDENTED_VHOST_VAR custom_vhost3'
+  - '<Location "/foo">'
+  - '  SetEnv SPECIAL_VHOST_LOCATION_ENV_VAR custom_vhost4'
+  - '</Location>'
+  
