@@ -42,6 +42,7 @@ class ConfigurationSingleton
       :bc_dynamic_js                => false,
       :bc_simple_auto_accounts      => false,
       :bc_clean_old_dirs            => false,
+      :bc_saved_settings            => false,
       :per_cluster_dataroot         => false,
       :remote_files_enabled         => false,
       :remote_files_validation      => false,
