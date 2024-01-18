@@ -1,0 +1,15 @@
+<%-
+  field_id = "#{form.object_name}_#{attrib.id}"
+-%>
+
+<div class="editable-form-field">
+  <div data-multiple-input="group">
+    <%= form.text_field :auto_environment_variable_name, data: { multiple_input: 'name' } %>
+    <%= form.text_field :auto_environment_variable_value, data: { multiple_input: 'value' } %>
+  </div>
+  
+  <div class="d-none edit-group">
+  </div>
+
+  <%= render(partial: 'scripts/editable_form_fields/edit_field_buttons',  locals: { field_id: field_id }) %>
+</div>

@@ -18,6 +18,10 @@ const newFieldData = {
   bc_num_slots: {
     label: "Nodes",
     help: "How many nodes the job will run on."
+  },
+  auto_environment_variable: {
+    label: "Environment Variable",
+    help: "Add an environment variable."
   }
 }
 
@@ -65,7 +69,8 @@ function updateNewFieldOptions(selectMenu) {
     const field = document.getElementById(`script_${newField}`);
 
     // if the field doesn't already exist, it's an option for a new field.
-    if(field === null) {
+    // TODO: maybe JS equiv of ALLOW_MULTIPLE_FIELDS.include?(newField)
+    if(field === null || newField == "auto_environment_variable") {
       const option = document.createElement("option");
       option.value = newField;
       option.text = newFieldData[newField].label;
@@ -143,9 +148,22 @@ function addInProgressField(event) {
   justAdded.find('[data-fixed-toggler]')
            .on('click', (event) => { toggleFixedField(event) });
 
+  justAdded.find('[data-multiple-input="name"]')
+           .on('change', (event) => { updateMultiple(event) });
+
   const entireDiv = event.target.parentElement.parentElement.parentElement;
   entireDiv.remove();
   enableNewFieldButton();
+}
+
+function updateMultiple(event) {
+  const group = event.target.parentElement.parentElement;
+  event.target.id += `_${event.target.value}`
+  event.target.name = `script[${event.target.id.replace("script_", "")}]`;
+
+  let valueInput = group.children[1].children[1];
+  valueInput.id = event.target.id.replace("_name", "") + "_value";
+  valueInput.name = `script[${valueInput.id.replace("script_", "")}]`;
 }
 
 function fixExcludeBasedOnSelect(selectElement) {

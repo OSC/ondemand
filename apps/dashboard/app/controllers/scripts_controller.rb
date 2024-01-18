@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+require 'pry'
 # The controller for apps pages /dashboard/projects/:project_id/scripts
 class ScriptsController < ApplicationController
 
@@ -45,7 +45,7 @@ class ScriptsController < ApplicationController
     end
   end
 
-  # POST   /projects/:project_id/scripts/:id/save
+  # POST   /projects/:project_id/:id/save
   # save the script after editing
   def save
     @script.update(save_script_params[:script])
@@ -90,7 +90,11 @@ class ScriptsController < ApplicationController
   end
 
   def save_script_params
-    params.permit({ script: SAVE_SCRIPT_KEYS }, :project_id, :id)
+    params.permit({ script: SAVE_SCRIPT_KEYS + auto_environment_variable_params }, :project_id, :id)
+  end
+
+  def auto_environment_variable_params
+    params[:script].keys.select { |key| key.match("auto_environment_variable") }
   end
 
   def find_project

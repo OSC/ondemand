@@ -11,11 +11,15 @@ module ScriptsHelper
     attrib.opts[:fixed] = false
     locals = { form: form, attrib: attrib, format: format, fixed: fixed_attribute }
 
+    binding.pry if attrib.id == "auto_environment_variable"
+
     case widget
     when 'number_field'
       render(partial: editable_partial('editable_number'), locals: locals)
     when 'select'
       render(partial: editable_partial('editable_select'), locals: locals)
+    when 'key_value_pair'
+      render(partial: editable_partial('editable_key_value_pair'), locals: locals)
     else
       render(partial: editable_partial('generic'), locals: locals)
     end
@@ -50,6 +54,11 @@ module ScriptsHelper
 
   def auto_accounts_template
     attrib = SmartAttributes::AttributeFactory.build_auto_accounts
+    create_editable_widget(script_form_double, attrib)
+  end
+
+  def auto_environment_variable_template
+    attrib = SmartAttributes::AttributeFactory.build_auto_environment_variable
     create_editable_widget(script_form_double, attrib)
   end
 
