@@ -28,7 +28,7 @@
 <body>
   <header>
     <nav class="navbar navbar-expand-md shadow-sm navbar-color navbar-<%= @user_configuration.navbar_type %>">
-      <ul class="navbar-nav w-100" role="menubar">
+      <ul class="navbar-nav w-100 align-items-center" role="menubar">
         <%= render partial: 'layouts/nav/logo' %>
       
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,16 +45,17 @@
             <%= render partial: 'layouts/nav/custom_navigation', locals: { navigation: @nav_bar }%>
           <% end %>
 
-          <div class="ml-auto d-flex">
-            <% if @help_bar.empty? %>
-              <%= render partial: 'layouts/nav/develop_dropdown' %>
-              <%= render partial: 'layouts/nav/help_dropdown' %>
-              <%= render partial: 'layouts/nav/user' %>
-              <%= render partial: 'layouts/nav/log_out' %>
-            <% else %>
-              <%= render partial: 'layouts/nav/custom_navigation', locals: { navigation: @help_bar, menu_alignment: 'dropdown-menu-right' }%>
-            <% end %>
-          </div>
+          <!-- add some space between nav_bar and help_menu -->
+          <div class="ml-auto"></div>
+
+          <% if @help_bar.empty? %>
+            <%= render partial: 'layouts/nav/develop_dropdown' %>
+            <%= render partial: 'layouts/nav/help_dropdown' %>
+            <%= render partial: 'layouts/nav/user' %>
+            <%= render partial: 'layouts/nav/log_out' %>
+          <% else %>
+            <%= render partial: 'layouts/nav/custom_navigation', locals: { navigation: @help_bar, menu_alignment: 'dropdown-menu-right' }%>
+          <% end %>
         </div>
       </ul>
     </nav>
