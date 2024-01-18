@@ -12,7 +12,7 @@ module ScriptsHelper
     locals = { form: form, attrib: attrib, format: format, fixed: fixed_attribute }
 
     case widget
-    when 'number_field'
+    when 'number_field' 
       render(partial: editable_partial('editable_number'), locals: locals)
     when 'select'
       render(partial: editable_partial('editable_select'), locals: locals)
