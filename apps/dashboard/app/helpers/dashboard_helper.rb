@@ -11,9 +11,9 @@ module DashboardHelper
     if url
       uri = Addressable::URI.parse(url)
       uri.query_values = (uri.query_values || {}).merge({timestamp: Time.now.to_i})
-      tag.img(src: uri, alt: "logo", height: @user_configuration.dashboard_logo_height, class: 'py-2')
+      tag.img(src: uri, alt: "logo", height: @user_configuration.dashboard_logo_height, class: 'py-2 w-100')
     else # default logo image
-      image_tag("OpenOnDemand_stack_RGB.svg", alt: "logo", height: "85", class: 'py-2')
+      image_tag("OpenOnDemand_stack_RGB.svg", alt: "logo", height: "85", class: 'py-2 w-100')
     end
   end
 
