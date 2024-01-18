@@ -212,8 +212,8 @@ class Project
       errors.add(:save, script.errors.full_messages) unless saved_successfully
 
       saved_successfully
-    end.none? do |saved_successfully|
-      saved_successfully == false
+    end.all? do |saved_successfully|
+      saved_successfully == true
     end
   end
 
