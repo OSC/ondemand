@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'pry'
+
 # The controller for apps pages /dashboard/projects/:project_id/scripts
 class ScriptsController < ApplicationController
 
