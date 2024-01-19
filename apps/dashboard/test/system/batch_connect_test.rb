@@ -1296,7 +1296,7 @@ class BatchConnectTest < ApplicationSystemTestCase
   end
 
   test 'saves settings as a template' do
-    with_modified_env({ ENABLE_NATIVE_VNC: 'true' }) do
+    with_modified_env({ ENABLE_NATIVE_VNC: 'true', OOD_BC_SAVED_SETTINGS: true }) do
       Dir.mktmpdir do |dir|
         Configuration.stubs(:dataroot).returns(Pathname.new(dir))
         BatchConnect::Session.any_instance.stubs(:save).returns(true)
