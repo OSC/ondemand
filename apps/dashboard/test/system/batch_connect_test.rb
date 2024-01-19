@@ -1298,7 +1298,7 @@ class BatchConnectTest < ApplicationSystemTestCase
   test 'saves settings as a template' do
     with_modified_env({ ENABLE_NATIVE_VNC: 'true' }) do
       Dir.mktmpdir do |dir|
-        Configuration.stubs(:dataroot).returns(Pathname.new(dir))
+        Configuration.stubs(:user_settings_file).returns(Pathname.new("#{dir}/settings.yml"))
         BatchConnect::Session.any_instance.stubs(:save).returns(true)
         BatchConnect::Session.any_instance.stubs(:job_id).returns('job-id-123')
         OodCore::Job::Adapters::Slurm.any_instance
@@ -1319,7 +1319,7 @@ class BatchConnectTest < ApplicationSystemTestCase
 
         click_on('Launch', wait: 30)
         expected = output_fixture('user_settings/simple_bc_test.yml')
-        actual = File.read("#{dir}/.ood")
+        actual = File.read("#{dir}/settings.yml")
 
         assert_equal(expected, actual)
       end
