@@ -37,9 +37,7 @@ module UserSettingStore
   end
 
   def user_settings_path
-    Pathname.new(::Configuration.user_settings_file).tap do |path|
-      FileUtils.mkdir_p(path.to_s) unless File.exist?(path.parent.to_s)
-    end
+    Pathname.new(::Configuration.user_settings_file)
   end
 
   def bc_templates(app_token)
