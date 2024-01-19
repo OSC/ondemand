@@ -749,7 +749,7 @@ class ProjectsTest < ApplicationSystemTestCase
       new_form = if RUBY_VERSION > '3.0'
                    YAML.safe_load(File.read(forms.first))
                  else
-                   YAML.safe_load(File.read(forms[1]))
+                   YAML.safe_load(File.read(forms[0]))
                  end
 
       # 'form' & 'title' are the same
