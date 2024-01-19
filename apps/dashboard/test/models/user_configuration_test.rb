@@ -41,8 +41,7 @@ class UserConfigurationTest < ActiveSupport::TestCase
 
   def setup()
     @test_temp_dir = Dir.mktmpdir
-    Configuration.stubs(:dataroot).returns(@test_temp_dir)
-    Configuration.stubs(:user_settings_file).returns('.user_configuration_test_settings')
+    Configuration.stubs(:user_settings_file).returns("#{@test_temp_dir}/settings.yml")
   end
 
   def teardown
