@@ -121,8 +121,11 @@ class PosixTransfer < Transfer
     files.each_with_index do |cp_info, idx|
       src = cp_info[0]
       dest = cp_info[1]
+
+      # last chance to validate just to be sure it wasn't symlinked out from under us.
       AllowlistPolicy.default.validate!(src)
       AllowlistPolicy.default.validate!(dest)
+
       FileUtils.cp_r(src, dest)
       update_percent(idx + 1)
     rescue => e
