@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+logo fixup (#3304)\
+Arbitrary apache conf (#3293)\
+use updated rseng/zenodo-release (#3279)\
+Update Changelog (#3296)\
+touch up the navbar for accessibility (#3299)\
+update dependencies (#3297)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
