@@ -59,7 +59,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Dynamic forms correctly handle options that start with numbers in [3241](https://github.com/OSC/ondemand/pull/3241).
 - Multiple domains corrrectly redirect in [3264](https://github.com/OSC/ondemand/pull/3264).
 - MATE desktop will only patch the autostart .desktop files if they exist in [3291](https://github.com/OSC/ondemand/pull/3291).
-- The navigation bar now implements the menubar pattern for accessibility in [3299](https://github.com/OSC/ondemand/pull/3299).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
