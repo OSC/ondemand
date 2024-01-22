@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Batch Connect apps can now provide a completed.{md, html}.erb in [3269](https://github.com/OSC/ondemand/pull/3269).
 - Sites can now disable uploads and downloads in [3236](https://github.com/OSC/ondemand/pull/3236).
 - Sites can now use disable_logs in ood_portal.yml to disable logs in apache in [3290](https://github.com/OSC/ondemand/pull/3290).
+- Sites can now set arbitrary vhost and location directives in Arbitrary apache conf [3293](https://github.com/OSC/ondemand/pull/3293).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
@@ -58,7 +59,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Dynamic forms correctly handle options that start with numbers in [3241](https://github.com/OSC/ondemand/pull/3241).
 - Multiple domains corrrectly redirect in [3264](https://github.com/OSC/ondemand/pull/3264).
 - MATE desktop will only patch the autostart .desktop files if they exist in [3291](https://github.com/OSC/ondemand/pull/3291).
-
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
