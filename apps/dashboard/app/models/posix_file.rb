@@ -116,7 +116,7 @@ class PosixFile
 
   def valid_encoding?
     valid = basename.to_s.valid_encoding?
-    Rails.logger.warn("Not showing file '#{stats[:name]}' because it is not a UTF-8 filename.") unless valid
+    Rails.logger.warn("Not showing file '#{basename}' because it is not a UTF-8 filename.") unless valid
     valid
   end
 

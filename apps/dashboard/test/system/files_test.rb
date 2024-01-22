@@ -428,4 +428,19 @@ class FilesTest < ApplicationSystemTestCase
 
     File.delete(zip_file) if File.exist?(zip_file)
   end
+
+  test 'handles files with non utf-8 characters' do
+    Dir.mktmpdir do |dir|
+      prefix = [255, 1, 2, 3].pack('C*')
+      bad_file = "#{prefix}-test.txt"
+      `touch #{dir}/#{bad_file}`
+      `touch #{dir}/good_file.txt`
+
+      visit files_url(dir)
+
+      # only 1 file and it's the good one.
+      assert_selector('tbody a', count: 1)
+      find('tbody a', exact_text: 'good_file.txt')
+    end
+  end
 end
