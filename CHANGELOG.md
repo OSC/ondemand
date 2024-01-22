@@ -6,12 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-logo fixup (#3304)\
-Arbitrary apache conf (#3293)\
-use updated rseng/zenodo-release (#3279)\
-Update Changelog (#3296)\
-touch up the navbar for accessibility (#3299)\
-update dependencies (#3297)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
@@ -43,6 +37,7 @@ update dependencies (#3297)
 - Batch Connect apps can now provide a completed.{md, html}.erb in [3269](https://github.com/OSC/ondemand/pull/3269).
 - Sites can now disable uploads and downloads in [3236](https://github.com/OSC/ondemand/pull/3236).
 - Sites can now use disable_logs in ood_portal.yml to disable logs in apache in [3290](https://github.com/OSC/ondemand/pull/3290).
+- Sites can now set arbitrary vhost and location directives in Arbitrary apache conf [3293](https://github.com/OSC/ondemand/pull/3293).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
@@ -64,7 +59,7 @@ update dependencies (#3297)
 - Dynamic forms correctly handle options that start with numbers in [3241](https://github.com/OSC/ondemand/pull/3241).
 - Multiple domains corrrectly redirect in [3264](https://github.com/OSC/ondemand/pull/3264).
 - MATE desktop will only patch the autostart .desktop files if they exist in [3291](https://github.com/OSC/ondemand/pull/3291).
-
+- The navigation bar now implements the menubar pattern for accessibility in [3299](https://github.com/OSC/ondemand/pull/3299).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
