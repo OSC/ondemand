@@ -4,37 +4,7 @@
 # active batch connect sessions.
 module BatchConnect::SessionsHelper
   def session_panel(session)
-    content_tag(:div, id: "id_#{session.id}", class: "card session-panel mb-4", data: { id: session.id, hash: session.to_hash }) do
-      concat(
-        content_tag(:div, class: "card-heading") do
-          content_tag(:h5, class: "card-header overflow-auto alert-#{status_context(session)}") do
-            concat link_to(content_tag(:span, session.title, class: "card-text alert-#{status_context(session)}"), new_batch_connect_session_context_path(token: session.token))
-            concat tag.span(" (#{session.job_id})", class: 'card-text')
-            concat(
-              content_tag(:div, class: "float-right") do
-                num_nodes = session.info.allocated_nodes.size
-                num_cores = session.info.procs.to_i
-
-                # Generate nice status display
-                status = []
-                if session.starting? || session.running?
-                  status << content_tag(:span, pluralize(num_nodes, "node"), class: "badge badge-#{status_context(session)} badge-pill") unless num_nodes.zero?
-                  status << content_tag(:span, pluralize(num_cores, "core"), class: "badge badge-#{status_context(session)} badge-pill") unless num_cores.zero?
-                end
-                status << "#{status session}"
-                relaunch(status, session)
-                tag.span(status.join(" | ").html_safe, class: "card-text")
-              end
-            )
-          end
-        end
-      )
-      concat(
-        content_tag(:div, class: "card-body") do
-          yield
-        end
-      )
-    end
+    render(partial: 'batch_connect/sessions/card/session_panel', locals: { session: session })
   end
 
   def session_view(session)
@@ -43,7 +13,7 @@ module BatchConnect::SessionsHelper
         content_tag(:div) do
           concat content_tag(:div, cancel_or_delete(session), class: 'float-right')
           concat host(session)
-          concat created(session)
+          concat creaxted(session)
           concat render_session_time(session)
           concat id(session)
           concat support_ticket(session) unless @user_configuration.support_ticket.empty?
