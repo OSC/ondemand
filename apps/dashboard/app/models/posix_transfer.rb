@@ -119,17 +119,40 @@ class PosixTransfer < Transfer
 
   def cp
     files.each_with_index do |cp_info, idx|
-      src = cp_info[0]
-      dest = cp_info[1]
+      src = Pathname.new(cp_info[0])
+      dest = Pathname.new(cp_info[1])
 
-      # last chance to validate just to be sure it wasn't symlinked out from under us.
-      AllowlistPolicy.default.validate!(src)
-      AllowlistPolicy.default.validate!(dest)
-
-      FileUtils.cp_r(src, dest)
+      cp_r(src, dest)
       update_percent(idx + 1)
     rescue => e
       errors.add(:copy, e.message)
+    end
+  end
+
+  def cp_r(src, dest, original_src = nil)
+    original_src = src if original_src.nil?
+
+    src.each_child do |child|
+      if child.directory?
+        cp_r(child, dest, original_src)
+      else
+        child_dest = child.to_s.gsub("#{original_src}/", '')
+        child_dest = dest.join(child_dest)
+        cp_single(child, child_dest)
+      end
+    end
+  end
+
+  def cp_single(src, dest)
+    dest_parent = dest.parent.to_s
+    FileUtils.mkdir_p(dest_parent) unless File.exist?(dest_parent)
+
+    if src.symlink?
+      FileUtils.symlink(src.readlink, dest)
+    else
+      real_src = src.real_path
+      AllowlistPolicy.validate!(real_src.to_s)
+      FileUtils.cp(real_src, dest)
     end
   end
 
