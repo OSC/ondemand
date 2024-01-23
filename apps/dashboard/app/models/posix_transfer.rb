@@ -145,13 +145,16 @@ class PosixTransfer < Transfer
 
   def cp_single(src, dest)
     dest_parent = dest.parent.to_s
+    # TODO probably need to preserve permissions here.
     FileUtils.mkdir_p(dest_parent) unless File.exist?(dest_parent)
 
     if src.symlink?
       FileUtils.symlink(src.readlink, dest)
     else
+      # have to get the real path, validate and copy _it_
+      # in case it's under a symlink outside of the allowlist.
       real_src = src.real_path
-      AllowlistPolicy.validate!(real_src.to_s)
+      AllowlistPolicy.default.validate!(real_src.to_s)
       FileUtils.cp(real_src, dest)
     end
   end
