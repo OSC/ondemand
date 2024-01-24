@@ -132,20 +132,24 @@ class PosixTransfer < Transfer
   def cp_r(src, dest, original_src = nil)
     original_src = src if original_src.nil?
 
-    src.each_child do |child|
-      if child.directory?
-        cp_r(child, dest, original_src)
-      else
-        child_dest = child.to_s.gsub("#{original_src}/", '')
-        child_dest = dest.join(child_dest)
-        cp_single(child, child_dest)
+    if src.directory?
+      src.each_child do |child|
+        if child.directory?
+          cp_r(child, dest, original_src)
+        else
+          child_dest = child.to_s.gsub("#{original_src}/", '')
+          child_dest = dest.join(child_dest)
+          cp_single(child, child_dest)
+        end
       end
+    else
+      cp_single(src, dest)
     end
   end
 
   def cp_single(src, dest)
     dest_parent = dest.parent.to_s
-    # TODO probably need to preserve permissions here.
+    # TODO: probably need to preserve permissions here.
     FileUtils.mkdir_p(dest_parent) unless File.exist?(dest_parent)
 
     if src.symlink?
@@ -153,7 +157,7 @@ class PosixTransfer < Transfer
     else
       # have to get the real path, validate and copy _it_
       # in case it's under a symlink outside of the allowlist.
-      real_src = src.real_path
+      real_src = src.realpath
       AllowlistPolicy.default.validate!(real_src.to_s)
       FileUtils.cp(real_src, dest)
     end
