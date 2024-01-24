@@ -156,7 +156,8 @@ acls: [{ adapter: :group, groups: ['GROUP'] }] }
 
     get root_path
     assert_response :success
-    assert_select '.navbar-collapse > .nav li.dropdown[title]', 0
+    assert_select dropdown_links, 1 # +1 here is 'Help'
+    assert_select dropdown_link(1), text: 'Help' # ensure is Help
   end
 
   test 'should exclude gateway apps if NavConfig.categories is set to default and whitelist is enabled' do
@@ -167,7 +168,12 @@ acls: [{ adapter: :group, groups: ['GROUP'] }] }
 
     get root_path
     assert_response :success
-    assert_select ".navbar-collapse > .nav li.dropdown[title='Gateway Apps']", 0
+    assert_select  dropdown_links, 5 # +1 here is 'Help'
+    assert_select  dropdown_link(1), text: 'Files'
+    assert_select  dropdown_link(2), text: 'Jobs'
+    assert_select  dropdown_link(3), text: 'Clusters'
+    assert_select  dropdown_link(4), text: 'Interactive Apps'
+    assert_select  dropdown_link(5), text: 'Help'
   end
 
   test 'uses NavConfig.categories as sort order if whitelist is false' do
@@ -178,7 +184,7 @@ acls: [{ adapter: :group, groups: ['GROUP'] }] }
 
     get root_path
     assert_response :success
-    assert_select '.navbar-expand-md > #navbar li.dropdown[title]', 6 # +1 here is 'Help'
+    assert_select  dropdown_links, 6 # +1 here is 'Help'
     assert_select  dropdown_link(1), text: 'Jobs'
     assert_select  dropdown_link(2), text: 'Interactive Apps'
     assert_select  dropdown_link(3), text: 'Files'
@@ -198,7 +204,7 @@ acls: [{ adapter: :group, groups: ['GROUP'] }] }
 
     get root_path
     assert_response :success
-    assert_select '.navbar-expand-md > #navbar li.dropdown[title]', 4 # +1 here is 'Help'
+    assert_select dropdown_links, 4 # +1 here is 'Help'
     assert_select  dropdown_link(1), text: 'Files'
     assert_select  dropdown_link(2), text: 'Interactive Apps'
     assert_select  dropdown_link(3), text: 'Clusters'
@@ -216,7 +222,8 @@ acls: [{ adapter: :group, groups: ['GROUP'] }] }
 
     get root_path
     assert_response :success
-    assert_select '.navbar-collapse > .nav li.dropdown[title]', 0
+    assert_select dropdown_links, 1 # +1 here is 'Help'
+    assert_select dropdown_link(1), text: 'Help' # ensure is Help
   end
 
   test 'verify default values for NavConfig' do
@@ -232,7 +239,7 @@ acls: [{ adapter: :group, groups: ['GROUP'] }] }
 
     get root_path
     assert_response :success
-    assert_select '.navbar-expand-md > #navbar li.dropdown[title]', 6 # +1 here is 'Help'
+    assert_select dropdown_links, 6 # +1 here is 'Help'
 
     assert_select dropdown_link(1), text: 'Clusters'
     assert_select dropdown_link(2), text: 'Files'

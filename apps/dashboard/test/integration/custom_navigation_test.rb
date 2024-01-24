@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'test_helper'
+require 'html_helper'
 
 class CustomNavigationTest < ActionDispatch::IntegrationTest
   def setup
@@ -40,52 +41,59 @@ class CustomNavigationTest < ActionDispatch::IntegrationTest
 
     get root_path
     assert_response :success
+
     # Check nav menus
-    assert_select '#navbar li.dropdown[title]', 3 # +1 here is 'Help'
-    # Check nav links
-    assert_select '#navbar > ul > a.nav-link[title]', 2
+    assert_select dropdown_links, 3
+    assert_select dropdown_link(1), text: 'Custom Menu'
+    assert_select dropdown_link(2), text: 'Custom Apps'
+    assert_select dropdown_link(3), text: 'Help'
 
-    assert_select nav_menu(1), text: 'Custom Menu'
-    assert_select nav_menu_header('Custom Menu'), text: 'Custom Menu Dropdown Header'
-    assert_select nav_menu_links('Custom Menu') do |elements|
-      assert_equal 2, elements.size
-      assert_match(/Menu Link/, elements[0].text)
-      assert_equal '/menu/link', elements[0]['href']
-      assert_nil elements[0]['target']
-      check_icon(elements[0], 'fa-cog')
+    menu_items = dropdown_list('Custom Menu')
+    menu_links = css_select(menu_items, 'a')
+    assert_equal 2, menu_links.size
+    # Check first expected link
+    assert_match(/Menu Link/, menu_links[0].text)
+    assert_equal '/menu/link', menu_links[0]['href']
+    assert_nil menu_links[0]['target']
+    check_icon(menu_links[0], 'fa-cog')
+    # Check second expected link
+    assert_match(/Profile Link/, menu_links[1].text)
+    assert_equal settings_path("settings[profile]" => "profile1"), menu_links[1]['href']
+    assert_nil menu_links[1]['target']
+    check_icon(menu_links[1], 'fa-cog')
 
-      assert_match(/Profile Link/, elements[1].text)
-      assert_equal '/settings?settings%5Bprofile%5D=profile1', elements[1]['href']
-      assert_nil elements[1]['target']
-      check_icon(elements[1], 'fa-cog')
-    end
+    menu_headers = css_select(menu_items, 'li.dropdown-header')
+    assert_equal 1, menu_headers.size
+    assert_match(/Custom Menu Dropdown Header/, menu_headers[0].text)
 
-    assert_select nav_menu(2), text: 'Custom Apps'
-    assert_select nav_menu_header('Custom Apps'), text: 'Custom Apps Dropdown Header'
-    assert_select nav_menu_links('Custom Apps') do |elements|
-      assert_equal 1, elements.size
-      assert_match(/Jupyter Notebook/, elements[0].text)
-      assert_equal '/batch_connect/sys/bc_jupyter/session_contexts/new', elements[0]['href']
-      assert_nil elements[0]['target']
-      check_icon(elements[0], 'fa-gear')
-    end
+    menu_items = dropdown_list('Custom Apps')
+    menu_links = css_select(menu_items, 'a')
+    assert_equal 1, menu_links.size
+    # Check first expected link
+    assert_match(/Jupyter Notebook/, menu_links[0].text)
+    assert_equal '/batch_connect/sys/bc_jupyter/session_contexts/new', menu_links[0]['href']
+    assert_nil menu_links[0]['target']
+    check_icon(menu_links[0], 'fa-gear')
 
-    assert_select nav_link('Paraview'), text: 'Paraview'
-    assert_select nav_link('Paraview') do |link|
-      assert_equal '/batch_connect/sys/bc_paraview/session_contexts/new', link.first['href']
-      assert_nil link.first['target']
-      check_icon(link.first, 'fa-gear')
-    end
+    menu_headers = css_select(menu_items, 'li.dropdown-header')
+    assert_equal 1, menu_headers.size
+    assert_match(/Custom Apps Dropdown Header/, menu_headers[0].text)
 
-    assert_select nav_link('Custom Link'), text: 'Custom Link'
-    assert_select nav_link('Custom Link') do |link|
-      assert_equal '/custom/link', link.first['href']
-      assert_equal '_blank', link.first['target']
-      check_icon(link.first, 'fa-desktop')
-    end
+    # Check custom links
+    link = nav_link('Paraview')[0]
+    assert_match /Paraview/, link.text
+    assert_equal '/batch_connect/sys/bc_paraview/session_contexts/new', link['href']
+    assert_nil link['target']
+    check_icon(link, 'fa-gear')
+
+    link = nav_link('Custom Link')[0]
+    assert_match /Custom Link/, link.text
+    assert_equal '/custom/link', link['href']
+    assert_equal '_blank', link['target']
+    check_icon(link, 'fa-desktop')
 
     # Check all_apps static link.
-    assert_select "#navbar .navbar-nav li.nav-item[title='All Apps']", text: 'All Apps'
+    assert_equal 1, nav_link('All Apps').length
   end
 
   test 'featured_apps template should not break navigation when no pinned_apps defined' do
@@ -98,22 +106,6 @@ class CustomNavigationTest < ActionDispatch::IntegrationTest
 
     get root_path
     assert_response :success
-  end
-
-  def nav_menu(order)
-    "#navbar .navbar-nav li.dropdown:nth-of-type(#{order}) a"
-  end
-
-  def nav_menu_links(title)
-    "#navbar .navbar-nav li.dropdown[title='#{title}'] ul.dropdown-menu a"
-  end
-
-  def nav_menu_header(title)
-    "#navbar .navbar-nav li.dropdown[title='#{title}'] ul.dropdown-menu li.dropdown-header"
-  end
-
-  def nav_link(title)
-    "#navbar .navbar-nav a.nav-link[title='#{title}']"
   end
 
   def check_icon(parent_element, icon_class)

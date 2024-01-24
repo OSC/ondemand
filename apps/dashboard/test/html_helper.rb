@@ -2,12 +2,20 @@
 # integration tests.
 class ActiveSupport::TestCase
 
+  def nav_link(title)
+    css_select("nav a.nav-link[title='#{title}']")
+  end
+
   def dropdown_list(title)
-    css_select("li.dropdown[title='#{title}'] ul")
+    css_select("nav a.nav-link.dropdown-toggle[title='#{title}'] + ul")
+  end
+
+  def dropdown_links
+    'nav a.nav-link.dropdown-toggle[title]'
   end
 
   def dropdown_link(order)
-    ".navbar-expand-md > #navbar li.dropdown:nth-of-type(#{order}) a"
+    "nav #navbar li.dropdown:nth-of-type(#{order}) a[title]"
   end
 
   # given a dropdown list, return the list items as an array of strings
