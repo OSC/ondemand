@@ -92,17 +92,17 @@ en:
     batch_connect_form_choose_template_name: "Choose a template name"
     batch_connect_form_data_root: "data root directory"
     batch_connect_form_launch: "Launch"
-    batch_connect_form_prefill: "Prefill with template"
+    batch_connect_form_prefill: "Use saved settings"
     batch_connect_form_prefill_error: "Oops... Something is wrong with your template"
     batch_connect_form_reset_resolution: "Reset Resolution"
-    batch_connect_form_save: "Save as template"
-    batch_connect_form_save_new_template: "save as a new template"
-    batch_connect_form_select_template: "select a template"
-    batch_connect_form_template_name_label: "template name"
+    batch_connect_form_save: "Save settings"
+    batch_connect_form_save_new_template: "save new settings"
+    batch_connect_form_select_template: "select saved settings"
+    batch_connect_form_template_name_label: "setting name"
     batch_connect_form_session_data_html: |
       * The %{title} session data for this session can be accessed
         under the %{data_link_tag}.
-    batch_connect_form_type_new_name: "Type your new template name here"
+    batch_connect_form_type_new_name: "App settings name"
     batch_connect_form_type_new_name_error: "Please type a valid name to continue"
     batch_connect_form_invalid: "The form.yml has missing options in the %{id} form field."
     batch_connect_invalid_form_array: "'form' element in form.yml is not an Array"
