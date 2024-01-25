@@ -170,6 +170,10 @@ class PosixTransfer < Transfer
   # to the destination path (dest) using relative path one/two/three/foo.txt
   # (relative to the orginal_src which is /tmp/dir)
   def translate_cp_path(src, dest, original_src)
+
+    # no translation needed if you're not descending into a directory
+    return dest if src == original_src
+
     relative_path = src.to_s.gsub("#{original_src}/", '')
     dest.join(relative_path)
   end
