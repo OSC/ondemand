@@ -131,19 +131,15 @@ class PosixTransfer < Transfer
 
   def cp_r(src, dest, original_src = nil)
     original_src = src if original_src.nil?
+    new_dest = translate_cp_path(src, dest, original_src)
 
-    if src.directory?
-      src.each_child do |child|
-        if child.directory?
-          cp_r(child, dest, original_src)
-        else
-          child_dest = child.to_s.gsub("#{original_src}/", '')
-          child_dest = dest.join(child_dest)
-          cp_single(child, child_dest)
-        end
-      end
-    else
-      cp_single(src, dest)
+    if src.file? || src.symlink?
+      cp_single(src, new_dest)
+    elsif src.directory? && src.empty?
+      # TODO: probably need to preserve permissions here.
+      FileUtils.mkdir_p(new_dest)
+    elsif src.directory? && !src.empty?
+      src.each_child { |child| cp_r(child, dest, original_src) }
     end
   end
 
@@ -153,6 +149,11 @@ class PosixTransfer < Transfer
     FileUtils.mkdir_p(dest_parent) unless File.exist?(dest_parent)
 
     if src.symlink?
+
+      # you're symlinking a directory, but the name of the link can differ
+      # from the actual directory, so we have to ensure that the name
+      # of the new link we're making is the same name as the original
+      dest = dest.join(src.basename) if dest.directory?
       FileUtils.symlink(src.readlink, dest)
     else
       # have to get the real path, validate and copy _it_
@@ -161,6 +162,16 @@ class PosixTransfer < Transfer
       AllowlistPolicy.default.validate!(real_src.to_s)
       FileUtils.cp(real_src, dest)
     end
+  end
+
+  # you're copying /tmp/dir to /home/users/foo
+  # you've descended /tmp/dir down to say /tmp/dir/one/two/three/foo.txt
+  # So you want to translate the src - /tmp/dir/one/two/three/foo.txt
+  # to the destination path (dest) using relative path one/two/three/foo.txt
+  # (relative to the orginal_src which is /tmp/dir)
+  def translate_cp_path(src, dest, original_src)
+    relative_path = src.to_s.gsub("#{original_src}/", '')
+    dest.join(relative_path)
   end
 
   def mv
