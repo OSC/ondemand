@@ -37,7 +37,7 @@ module UserSettingStore
   end
 
   def user_settings_path
-    Pathname.new(::Configuration.dataroot).join(::Configuration.user_settings_file)
+    Pathname.new(::Configuration.user_settings_file)
   end
 
   def bc_templates(app_token)

@@ -63,7 +63,7 @@ class ConfigurationSingleton
   def string_configs
     {
       :module_file_dir          => nil,
-      :user_settings_file       => '.ood',
+      :user_settings_file       => Pathname.new("~/.config/ondemand/settings.yml").expand_path.to_s,
       :facl_domain              => nil,
       :auto_groups_filter       => nil,
       :bc_clean_old_dirs_days   => '30',

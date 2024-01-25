@@ -19,7 +19,7 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
       }
     }
     Dir.mktmpdir {|temp_data_dir|
-      Configuration.stubs(:dataroot).returns(temp_data_dir)
+      Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
 
       post settings_path, params: data, headers: @headers
       assert_response :redirect
@@ -31,18 +31,18 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
     data = { settings: {} }
 
     Dir.mktmpdir {|temp_data_dir|
-      Configuration.stubs(:dataroot).returns(temp_data_dir)
+      Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
       post settings_path, params: data, headers: @headers
       assert_response :redirect
       assert_nil TestUserSettings.new.user_settings[:profile]
     }
   end
 
-  test "should not save user_settings whne parameters are outside the settings namespace" do
+  test "should not save user_settings when parameters are outside the settings namespace" do
     data = { profile: "root_value" }
 
     Dir.mktmpdir {|temp_data_dir|
-      Configuration.stubs(:dataroot).returns(temp_data_dir)
+      Configuration.stubs(:user_settings_file).returns("#{temp_data_dir}/settings.yml")
       post settings_path, params: data, headers: @headers
       assert_response :redirect
       assert_nil TestUserSettings.new.user_settings[:profile]
