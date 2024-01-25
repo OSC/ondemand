@@ -28,7 +28,11 @@ class AllowlistPolicy
   # @raises ArgumentError if any allowlist path or permitted? argument
   #         has the form ~user/some/path where user doesn't exist
   def validate!(path)
-    raise AllowlistPolicy::Forbidden, "#{path} does not have an ancestor directory specified in ALLOWLIST_PATH" unless permitted?(path.to_s)
+    return if permitted?(path.to_s)
+
+    msg = "#{path} does not have an ancestor directory specified in ALLOWLIST_PATH"
+    Rails.logger.warn(msg)
+    raise AllowlistPolicy::Forbidden, msg
   end
 
   protected
