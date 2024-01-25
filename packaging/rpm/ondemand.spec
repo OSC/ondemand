@@ -5,7 +5,7 @@
 %define git_tag_minus_v %(echo %{git_tag} | sed -r 's/^v//')
 %define major_version %(echo %{git_tag_minus_v} | cut -d. -f1)
 %define minor_version %(echo %{git_tag_minus_v} | cut -d. -f2)
-%define runtime_version %{major_version}.%{minor_version}.3
+%define runtime_version %{major_version}.%{minor_version}.4
 %define runtime_release 1
 %define runtime_version_full %{runtime_version}-%{runtime_release}%{?dist}
 %define selinux_policy_ver %(rpm --qf "%%{version}" -q selinux-policy)
@@ -48,15 +48,8 @@ Source2:   ondemand-selinux.fc
 # %%global __brp_strip_static_archive /bin/true
 # %%global __os_install_post %{nil}
 
-%if 0%{?rhel} == 7
-%bcond_without scl_apache
-%define apache_confd /opt/rh/httpd24/root/etc/httpd/conf.d
-%define apache_service httpd24-httpd
-%else
-%bcond_with scl_apache
 %define apache_confd /etc/httpd/conf.d
 %define apache_service httpd
-%endif
 
 # Disable automatic dependencies as it causes issues with bundled gems and
 # node.js packages used in the apps
@@ -215,13 +208,6 @@ touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/myjobs.conf
 EOS
 
 %post
-%if %{with scl_apache}
-if [ "$1" -eq 2 ]; then
-%__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24"/' \
-    /opt/rh/httpd24/service-environment
-fi
-%endif
-
 /bin/systemctl daemon-reload &>/dev/null || :
 
 # These NGINX app configs need to exist before rebuilding them
