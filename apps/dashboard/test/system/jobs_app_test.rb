@@ -760,7 +760,7 @@ class ProjectsTest < ApplicationSystemTestCase
       orig_form = "#{Rails.root}/test/fixtures/projects/chemistry-5533/.ondemand/scripts/#{script_id}/form.yml"
       orig_form = YAML.safe_load(File.read(orig_form))
 
-      new_form = "#{abs_project_dir}/ondemand/.scripts/#{script_id}/form.yml"
+      new_form = "#{abs_project_dir}/.ondemand/scripts/#{script_id}/form.yml"
       new_form = YAML.safe_load(File.read(new_form))
 
       # 'form' & 'title' are the same
