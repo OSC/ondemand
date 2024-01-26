@@ -46,7 +46,11 @@ class PosixTransfer < Transfer
     # a move to a different device does a cp then mv
     if action == 'mv' && mv_to_same_device?
       @steps = files.count
-    elsif remove? || copy?
+    elsif copy?
+      @steps = files.keys.map do |source|
+        Dir["#{source}/**/*"].length
+      end.sum
+    elsif remove?
       @steps = names.size
     else
       # TODO: num_files issues 'find' command. so likely needs optimized
@@ -118,13 +122,14 @@ class PosixTransfer < Transfer
   end
 
   def cp
-    files.each_with_index do |cp_info, idx|
+    files.each do |cp_info|
       src = Pathname.new(cp_info[0])
       dest = Pathname.new(cp_info[1])
 
+      @current_cp_step = 0
       cp_r(src, dest)
-      update_percent(idx + 1)
     rescue => e
+      Rails.logger.warn("error encountered during copy: #{e}")
       errors.add(:copy, e.message)
     end
   end
@@ -162,6 +167,11 @@ class PosixTransfer < Transfer
       AllowlistPolicy.default.validate!(real_src.to_s)
       FileUtils.cp(real_src, dest)
     end
+
+    # FIXME: copy commands are the only thing that use their own variable
+    # for how many steps it's taken. We should find a way to refactor this.
+    @current_cp_step += 1
+    update_percent(@current_cp_step)
   end
 
   # you're copying /tmp/dir to /home/users/foo
