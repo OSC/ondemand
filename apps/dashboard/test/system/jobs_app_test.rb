@@ -756,15 +756,12 @@ class ProjectsTest < ApplicationSystemTestCase
       forms = Dir.glob("#{abs_project_dir}/.ondemand/**/*/form.yml")
       assert_equal(3, forms.size)
 
-      orig_form = "#{Rails.root}/test/fixtures/projects/chemistry-5533/.ondemand/scripts/8woi7ghd/form.yml"
+      script_id = '8woi7ghd'
+      orig_form = "#{Rails.root}/test/fixtures/projects/chemistry-5533/.ondemand/scripts/#{script_id}/form.yml"
       orig_form = YAML.safe_load(File.read(orig_form))
 
-      # ruby 2.7 globs differently
-      new_form = if RUBY_VERSION > '3.0'
-                   YAML.safe_load(File.read(forms.first))
-                 else
-                   YAML.safe_load(File.read(forms[2]))
-                 end
+      new_form = "#{abs_project_dir}/ondemand/.scripts/#{script_id}/form.yml"
+      new_form = YAML.safe_load(File.read(new_form))
 
       # 'form' & 'title' are the same
       assert_equal(orig_form['form'], new_form['form'])
