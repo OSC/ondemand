@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Added external lib folder to autoload to allow custom class to be loaded into OnDemand (#3307)\
+log a warning when paths are not allowed (#3316)\
+mv the user settings file off the dataroot (#3308)\
+refactor navbar to be menubar (#3300)\
+add config for prefill templates (#3305)\
+update scripts when copying from templates (#3210)\
+Update Changelog (#3311)\
+Fix non utf8 file (#3314)\
+update dependencies (#3312)\
+lint a random file (#3310)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
