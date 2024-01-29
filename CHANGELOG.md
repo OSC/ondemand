@@ -6,16 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Added external lib folder to autoload to allow custom class to be loaded into OnDemand (#3307)\
-log a warning when paths are not allowed (#3316)\
-mv the user settings file off the dataroot (#3308)\
-refactor navbar to be menubar (#3300)\
-add config for prefill templates (#3305)\
-update scripts when copying from templates (#3210)\
-Update Changelog (#3311)\
-Fix non utf8 file (#3314)\
-update dependencies (#3312)\
-lint a random file (#3310)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
@@ -48,6 +38,8 @@ lint a random file (#3310)
 - Sites can now disable uploads and downloads in [3236](https://github.com/OSC/ondemand/pull/3236).
 - Sites can now use disable_logs in ood_portal.yml to disable logs in apache in [3290](https://github.com/OSC/ondemand/pull/3290).
 - Sites can now set arbitrary vhost and location directives in Arbitrary apache conf [3293](https://github.com/OSC/ondemand/pull/3293).
+- Warnings will now be logged for items that are not in the allowlist in [3316](https://github.com/OSC/ondemand/pull/3316).
+- The dashboard will now load ruby files in config_root/lib in [3307](https://github.com/OSC/ondemand/pull/3307).
 
 ### Fixed
 - Develop menu now correctly shows/hides when given a configuration in [2848](https://github.com/OSC/ondemand/pull/2848).
@@ -69,10 +61,12 @@ lint a random file (#3310)
 - Dynamic forms correctly handle options that start with numbers in [3241](https://github.com/OSC/ondemand/pull/3241).
 - Multiple domains corrrectly redirect in [3264](https://github.com/OSC/ondemand/pull/3264).
 - MATE desktop will only patch the autostart .desktop files if they exist in [3291](https://github.com/OSC/ondemand/pull/3291).
+- The navigation bar now follows the menubar pattern to increase accessibility in [3300](https://github.com/OSC/ondemand/pull/3300).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
 - Packaging adds `nodistro` nodejs repos in [3158](https://github.com/OSC/ondemand/pull/3158).
+- The user usetting file is now in an XDG dirrectory instead of the dataroot in [3308](https://github.com/OSC/ondemand/pull/3308).
 
 ## [3.0.2] - 10-06-2023
 
