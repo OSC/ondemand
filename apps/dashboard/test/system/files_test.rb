@@ -162,7 +162,7 @@ class FilesTest < ApplicationSystemTestCase
       with_modified_env({ OOD_ALLOWLIST_PATH: dir }) do
         FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
         `touch #{dir}/src/real_file`
-        `ln -s /etc/os-release #{dir}/src/link`
+        `ln -s /etc/passwd #{dir}/src/link`
         `cd #{dir}/src; ln -s /var/log linked_dir`
 
         visit files_url(dir)
@@ -185,7 +185,7 @@ class FilesTest < ApplicationSystemTestCase
         # the symlink is copied as a symlink as points to the the file outside the allowlist
         sym = Pathname.new("#{dir}/dest/src/link")
         assert(sym.symlink?)
-        assert_equal('/etc/os-release', sym.realpath.to_s)
+        assert_equal('/etc/passwd', sym.realpath.to_s)
         assert(Pathname.new("#{dir}/dest/src/real_file").file?)
 
         sym = Pathname.new("#{dir}/dest/src/linked_dir")
