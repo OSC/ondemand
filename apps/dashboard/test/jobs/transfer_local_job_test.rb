@@ -139,22 +139,20 @@ class TransferLocalJobTest < ActiveJob::TestCase
       with_modified_env({ OOD_ALLOWLIST_PATH: dir }) do
         FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
         `cd #{dir}/src; ln -s /etc`
-        input = { "#{dir}/src/etc/os-release" => "#{dir}/dest" }
+        input = { "#{dir}/src/etc/passwd" => "#{dir}/dest" }
 
         transfer = PosixTransfer.build(action: 'cp', files: input)
         transfer.perform
         sleep 3 # give it a second to copy
 
         dest = Pathname.new("#{dir}/dest")
-        src = Pathname.new("#{dir}/src/etc/os-release")
-        puts "#{src.realpath} and #{src.symlink?}"
         assert(dest.empty?, "#{dest} is not empty, contains #{dest.children}")
         assert_equal(1, transfer.exit_status, "job exited with error #{transfer.errors.full_messages}")
         refute(transfer.success?)
         assert_equal(1, transfer.errors.count)
 
         actual = transfer.errors.full_messages[0]
-        expected = 'Copy /etc/os-release does not have an ancestor directory specified in ALLOWLIST_PATH'
+        expected = 'Copy /etc/passwd does not have an ancestor directory specified in ALLOWLIST_PATH'
 
         assert_equal(expected, actual)
       end
