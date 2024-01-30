@@ -83,8 +83,8 @@ class FilesTest < ApplicationSystemTestCase
 
   test 'copying empty directories' do
     Dir.mktmpdir do |dir|
-      `mkdir -p #{dir}/{src,dest}`
-      `mkdir -p #{dir}/src/dir/one/two`
+      FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
+      FileUtils.mkdir_p("#{dir}/src/dir/one/two")
 
       visit files_url(dir)
       find('tbody a', exact_text: 'src').ancestor('tr').click
@@ -120,7 +120,7 @@ class FilesTest < ApplicationSystemTestCase
 
   test 'copying symlinks' do
     Dir.mktmpdir do |dir|
-      `mkdir -p #{dir}/{src,dest}`
+      FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
       `touch #{dir}/src/real_file`
       `ln -s #{dir}/src/real_file #{dir}/src/link`
       `ln -s #{Rails.root} #{dir}/src/linked_dir`
@@ -160,7 +160,7 @@ class FilesTest < ApplicationSystemTestCase
   test 'copying symlinked files outside of allowlist' do
     Dir.mktmpdir do |dir|
       with_modified_env({ OOD_ALLOWLIST_PATH: dir }) do
-        `mkdir -p #{dir}/{src,dest}`
+        FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
         `touch #{dir}/src/real_file`
         `ln -s /etc/os-release #{dir}/src/link`
         `cd #{dir}/src; ln -s /var/log linked_dir`
@@ -197,7 +197,7 @@ class FilesTest < ApplicationSystemTestCase
 
   test 'copying  relative symlinks' do
     Dir.mktmpdir do |dir|
-      `mkdir -p #{dir}/{src,dest}`
+      FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
       `mkdir -p #{dir}/src/real_dir`
       `touch #{dir}/src/real_file`
       `cd #{dir}/src; ln -s real_file link`
