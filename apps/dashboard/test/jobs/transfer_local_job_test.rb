@@ -145,6 +145,9 @@ class TransferLocalJobTest < ActiveJob::TestCase
         transfer.perform
         sleep 3 # give it a second to copy
 
+        puts `cat /etc/os-release`
+        puts AllowlistPolicy.default.allowlist
+
         dest = Pathname.new("#{dir}/dest")
         assert(dest.empty?, "#{dest} is not empty, contains #{dest.children}")
         assert_equal(1, transfer.exit_status, "job exited with error #{transfer.errors.full_messages}")
