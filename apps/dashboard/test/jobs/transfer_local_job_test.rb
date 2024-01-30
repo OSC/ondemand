@@ -137,7 +137,7 @@ class TransferLocalJobTest < ActiveJob::TestCase
   test 'will not copy symlinks that point outside of allowlist' do
     Dir.mktmpdir do |dir|
       with_modified_env({ OOD_ALLOWLIST_PATH: dir }) do
-        `mkdir -p #{dir}/{src,dest}`
+        FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
         `cd #{dir}/src; ln -s /etc`
         input = { "#{dir}/src/etc/os-release" => "#{dir}/dest" }
 
