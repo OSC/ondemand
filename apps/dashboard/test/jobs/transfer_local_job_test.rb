@@ -146,8 +146,8 @@ class TransferLocalJobTest < ActiveJob::TestCase
         sleep 3 # give it a second to copy
 
         dest = Pathname.new("#{dir}/dest")
-        src = Pathname.new("#{dir}/src/etc/os-release" )
-        puts src.realpath
+        src = Pathname.new("#{dir}/src/etc/os-release")
+        puts "#{src.realpath} and #{src.symlink?}"
         assert(dest.empty?, "#{dest} is not empty, contains #{dest.children}")
         assert_equal(1, transfer.exit_status, "job exited with error #{transfer.errors.full_messages}")
         refute(transfer.success?)
