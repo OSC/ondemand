@@ -121,7 +121,7 @@ class TransferLocalJobTest < ActiveJob::TestCase
       assert_equal(num_paths, transfer.steps)
       # FIXME: This is a littly buggy - it's updating percent for all the parent
       # directories + 1 more time.
-      transfer.expects(:percent=).times(num_paths + src_paths.length + 1)
+      transfer.expects(:percent=).times(num_paths..num_paths + src_paths.length + 1)
 
       transfer.perform
 
