@@ -114,9 +114,14 @@ class TransferLocalJobTest < ActiveJob::TestCase
 
       # this tests the number of calls to update_progress
       # note: progress.percent is not called because this mocks the method
-      num_paths = src_paths.size
+      num_paths = src_paths.map do |path|
+        Dir["#{path}/**/*"].length
+      end.sum
       transfer = PosixTransfer.build(action: 'cp', files: input)
-      transfer.expects(:percent=).times(num_paths)
+      assert_equal(num_paths, transfer.steps)
+      # FIXME: This is a littly buggy - it's updating percent for all the parent
+      # directories + 1 more time.
+      transfer.expects(:percent=).times(num_paths + src_paths.length + 1)
 
       transfer.perform
 

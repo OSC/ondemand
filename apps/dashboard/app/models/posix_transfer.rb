@@ -48,7 +48,8 @@ class PosixTransfer < Transfer
       @steps = files.count
     elsif copy?
       @steps = files.keys.map do |source|
-        Dir["#{source}/**/*"].length
+        path = Pathname.new(source)
+        path.directory? ? Dir["#{source}/**/*"].length : 1
       end.sum
     elsif remove?
       @steps = names.size
@@ -122,11 +123,12 @@ class PosixTransfer < Transfer
   end
 
   def cp
+    @current_cp_step = 0
+
     files.each do |cp_info|
       src = Pathname.new(cp_info[0])
       dest = Pathname.new(cp_info[1])
 
-      @current_cp_step = 0
       cp_r(src, dest)
     rescue => e
       Rails.logger.warn("error encountered during copy: #{e}")
@@ -141,6 +143,7 @@ class PosixTransfer < Transfer
     if src.file? || src.symlink?
       cp_single(src, new_dest)
     elsif src.directory? && src.empty?
+      inc_cp_percent
       # TODO: probably need to preserve permissions here.
       FileUtils.mkdir_p(new_dest)
     elsif src.directory? && !src.empty?
@@ -151,7 +154,10 @@ class PosixTransfer < Transfer
   def cp_single(src, dest)
     dest_parent = dest.parent.to_s
     # TODO: probably need to preserve permissions here.
-    FileUtils.mkdir_p(dest_parent) unless File.exist?(dest_parent)
+    unless File.exist?(dest_parent)
+      FileUtils.mkdir_p(dest_parent)
+      inc_cp_percent
+    end
 
     if src.symlink?
 
@@ -168,10 +174,7 @@ class PosixTransfer < Transfer
       FileUtils.cp(real_src, dest)
     end
 
-    # FIXME: copy commands are the only thing that use their own variable
-    # for how many steps it's taken. We should find a way to refactor this.
-    @current_cp_step += 1
-    update_percent(@current_cp_step)
+    inc_cp_percent
   end
 
   # you're copying /tmp/dir to /home/users/foo
@@ -186,6 +189,13 @@ class PosixTransfer < Transfer
 
     relative_path = src.to_s.gsub("#{original_src}/", '')
     dest.join(relative_path)
+  end
+
+  # FIXME: copy commands are the only thing that use their own variable
+  # for how many steps it's taken. We should find a way to refactor this.
+  def inc_cp_percent
+    @current_cp_step += 1
+    update_percent(@current_cp_step)
   end
 
   def mv
