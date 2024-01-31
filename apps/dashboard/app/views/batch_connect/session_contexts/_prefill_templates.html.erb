@@ -14,8 +14,8 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="formPrefillErrorLabel"><%= t('dashboard.batch_connect_form_prefill_error') %></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <div class="modal-title h5" id="formPrefillErrorLabel"><%= t('dashboard.batch_connect_form_prefill_error') %></div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="<%= t('dashboard.close') %>">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -28,7 +28,10 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="chooseTemplateNameLabel"><%= t('dashboard.batch_connect_form_choose_template_name') %></h5>
+        <div class="modal-title h5" id="chooseTemplateNameLabel"><%= t('dashboard.batch_connect_form_choose_template_name') %></div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="<%= t('dashboard.close') %>">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
       <div class="modal-body">
         <select class="form-control selectpicker" id="modal_input_template_name">
@@ -41,6 +44,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" id="batch_connect_session_template_choose_name_button"><%= t('dashboard.save') %></button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal"><%= t('dashboard.close') %></button>
       </div>
     </div>
   </div>
@@ -50,7 +54,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title"><%= t('dashboard.batch_connect_form_type_new_name_error') %></h5>
+        <div class="modal-title h5"><%= t('dashboard.batch_connect_form_type_new_name_error') %></div>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
