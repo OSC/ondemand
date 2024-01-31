@@ -87,7 +87,7 @@
   OIDCRedirectURI https://example.com/oidc
   OIDCRemoteUserClaim preferred_username
   OIDCScope "openid profile email"
-  OIDCCryptoPassphrase 0caaf24ab1a0c33440c06afe99df986365b0781f
+  OIDCCryptoPassphrase "exec:/bin/bash -c \"head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32\""
   OIDCSessionInactivityTimeout 28800
   OIDCSessionMaxDuration 28800
   OIDCStateMaxNumberOfCookies 10 true

@@ -110,12 +110,16 @@ module OodPortalGenerator
       @oidc_redirect_uri                = "#{protocol}#{servername}#{@oidc_uri}"
       @oidc_remote_user_claim           = opts.fetch(:oidc_remote_user_claim, 'preferred_username')
       @oidc_scope                       = opts.fetch(:oidc_scope, "openid profile email")
-      @oidc_crypto_passphrase           = opts.fetch(:oidc_crypto_passphrase, Digest::SHA1.hexdigest(servername))
+      @oidc_crypto_passphrase           = opts.fetch(:oidc_crypto_passphrase, default_oidc_crypto_passphrase)
       @oidc_session_inactivity_timeout  = opts.fetch(:oidc_session_inactivity_timeout, 28800)
       @oidc_session_max_duration        = opts.fetch(:oidc_session_max_duration, 28800)
       @oidc_state_max_number_of_cookies = opts.fetch(:oidc_state_max_number_of_cookies, '10 true')
       @oidc_cookie_same_site            = opts.fetch(:oidc_cookie_same_site, @ssl ? 'Off' : 'On')
       @oidc_settings                    = opts.fetch(:oidc_settings, {})
+    end
+
+    def default_oidc_crypto_passphrase
+      '"exec:/bin/bash -c \"head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32\""'
     end
 
     def servername
