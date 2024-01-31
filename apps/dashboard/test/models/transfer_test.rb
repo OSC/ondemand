@@ -37,10 +37,6 @@ class TransferTest < ActiveSupport::TestCase
     assert_equal 1, PosixTransfer.build(action: 'mv', files: { 'config.ru' => 'config.ru.2' }).steps
   end
 
-  test '1 step for copying a directory' do
-    assert_equal(1, PosixTransfer.build(action: 'cp', files: { 'bin' => 'bin.2' }).steps)
-  end
-
   test 'copying a files is 1:1 files:steps' do
     files = Dir['bin/*'].map { |f| File.basename(f) }
     new_files = files.map { |f| "#{f}.2" }

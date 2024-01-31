@@ -81,6 +81,156 @@ class FilesTest < ApplicationSystemTestCase
     end
   end
 
+  test 'copying empty directories' do
+    Dir.mktmpdir do |dir|
+      FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
+      FileUtils.mkdir_p("#{dir}/src/dir/one/two")
+
+      visit files_url(dir)
+      find('tbody a', exact_text: 'src').ancestor('tr').click
+
+      find('#copy-move-btn').click
+      visit files_url("#{dir}/dest")
+      find('#clipboard-copy-to-dir').click
+
+      # now step through all the empty directories and see they're there.
+      visit files_url("#{dir}/dest")
+      find('tbody a', exact_text: 'src', wait: MAX_WAIT)
+
+      visit files_url("#{dir}/dest/src")
+      find('tbody a', exact_text: 'dir')
+
+      visit files_url("#{dir}/dest/src/dir")
+      find('tbody a', exact_text: 'one')
+
+      visit files_url("#{dir}/dest/src/dir/one")
+      find('tbody a', exact_text: 'two')
+
+      visit files_url("#{dir}/dest/src/dir/one/two")
+      # one row: No data available in table
+      assert_selector('#directory-contents tbody tr', count: 1)
+
+      # just to be sure, check the actual file system
+      dest = Pathname.new("#{dir}/dest/src/dir/one/two")
+      assert(dest.exist?)
+      assert(dest.directory?)
+      assert(dest.empty?)
+    end
+  end
+
+  test 'copying symlinks' do
+    Dir.mktmpdir do |dir|
+      FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
+      `touch #{dir}/src/real_file`
+      `ln -s #{dir}/src/real_file #{dir}/src/link`
+      `ln -s #{Rails.root} #{dir}/src/linked_dir`
+
+      visit files_url(dir)
+      find('a', exact_text: 'src').ancestor('tr').find('input[type="checkbox"]').click
+      find('#copy-move-btn').click
+
+      visit files_url("#{dir}/dest")
+      # one row: No data available in table
+      assert_selector '#directory-contents tbody tr', count: 1
+      find('#clipboard-copy-to-dir').click
+
+      # src directory is copied
+      find('tbody a', exact_text: 'src', wait: MAX_WAIT)
+
+      # and has real file and the symlinks
+      visit files_url("#{dir}/dest/src")
+      assert_selector '#directory-contents tbody tr', count: 3
+      find('tbody a', exact_text: 'real_file', wait: MAX_WAIT)
+      find('tbody a', exact_text: 'link', wait: MAX_WAIT)
+      find('tbody a.d', exact_text: 'linked_dir', wait: MAX_WAIT)
+
+      # the symlinks are copied as a symlinks and they still point to the same realpath
+      sym_file = Pathname.new("#{dir}/dest/src/link")
+      sym_dir = Pathname.new("#{dir}/dest/src/linked_dir")
+      assert(sym_file.symlink?)
+      assert(sym_dir.symlink?)
+      assert_equal("#{dir}/src/real_file", sym_file.realpath.to_s)
+      assert_equal(Rails.root.to_s, sym_dir.realpath.to_s)
+      assert(Pathname.new("#{dir}/dest/src/real_file").file?)
+    end
+  end
+
+  # similar to the test above, but the symlink is outside of the
+  # allowlist. it gets copied, but does not show in the ui.
+  test 'copying symlinked files outside of allowlist' do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_ALLOWLIST_PATH: dir }) do
+        FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
+        `touch #{dir}/src/real_file`
+        `ln -s /etc/passwd #{dir}/src/link`
+        `cd #{dir}/src; ln -s /var/log linked_dir`
+
+        visit files_url(dir)
+        find('a', exact_text: 'src').ancestor('tr').find('input[type="checkbox"]').click
+        find('#copy-move-btn').click
+
+        visit files_url("#{dir}/dest")
+        # one row: No data available in table
+        assert_selector '#directory-contents tbody tr', count: 1
+        find('#clipboard-copy-to-dir').click
+
+        # src directory is copied
+        find('tbody a', exact_text: 'src', wait: MAX_WAIT)
+
+        # but it only shows the real file (no symlinks)
+        visit files_url("#{dir}/dest/src")
+        assert_selector '#directory-contents tbody tr', count: 1
+        find('tbody a', exact_text: 'real_file', wait: MAX_WAIT)
+
+        # the symlink is copied as a symlink as points to the the file outside the allowlist
+        sym = Pathname.new("#{dir}/dest/src/link")
+        assert(sym.symlink?)
+        assert_equal('/etc/passwd', sym.realpath.to_s)
+        assert(Pathname.new("#{dir}/dest/src/real_file").file?)
+
+        sym = Pathname.new("#{dir}/dest/src/linked_dir")
+        assert(sym.symlink?)
+        assert_equal('/var/log', sym.realpath.to_s)
+      end
+    end
+  end
+
+  test 'copying  relative symlinks' do
+    Dir.mktmpdir do |dir|
+      FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
+      `mkdir -p #{dir}/src/real_dir`
+      `touch #{dir}/src/real_file`
+      `cd #{dir}/src; ln -s real_file link`
+      `cd #{dir}/src; ln -s real_dir linked_dir`
+
+      visit files_url(dir)
+      find('a', exact_text: 'src').ancestor('tr').find('input[type="checkbox"]').click
+      find('#copy-move-btn').click
+
+      visit files_url("#{dir}/dest")
+      # one row: No data available in table
+      assert_selector('#directory-contents tbody tr', count: 1)
+      find('#clipboard-copy-to-dir').click
+
+      # src directory is copied
+      find('tbody a', exact_text: 'src', wait: MAX_WAIT)
+      visit files_url("#{dir}/dest/src")
+
+      # assert_selector('#directory-contents tbody tr', count: 4)
+      find('tbody a', exact_text: 'real_dir', wait: MAX_WAIT)
+      find('tbody a', exact_text: 'real_file', wait: MAX_WAIT)
+      find('tbody a', exact_text: 'link', wait: MAX_WAIT)
+      find('tbody a', exact_text: 'linked_dir', wait: MAX_WAIT)
+
+      sym_file = Pathname.new("#{dir}/dest/src/link")
+      sym_dir = Pathname.new("#{dir}/dest/src/linked_dir")
+      assert(sym_file.symlink?)
+      assert(sym_dir.symlink?)
+      assert_equal('real_file', sym_file.readlink.to_s)
+      assert_equal('real_dir', sym_dir.readlink.to_s)
+    end
+  end
+
   test "rename file" do
     Dir.mktmpdir do |dir|
       FileUtils.touch File.join(dir, 'foo.txt')

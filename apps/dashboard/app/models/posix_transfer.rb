@@ -1,10 +1,14 @@
 # PosixTransfer is a class for transfering local files.
 class PosixTransfer < Transfer
 
-  validates_each :files do |record, attr, files|
-    if record.action == 'mv' || record.action == 'cp'
+  validates_each :files do |record, _attr, files|
+
+    if record.move? || record.copy?
       conflicts = files.values.select { |f| File.exist?(f) }
       record.errors.add :files, "these files already exist: #{conflicts.join(', ')}" if conflicts.present?
+
+      non_existant = files.keys.reject { |f| File.exist?(f) }
+      record.errors.add :files, "cannot copy or move files that do not exist: #{non_existant.join(', ')}" if non_existant.present?
     end
 
     files.each do |k, v|
@@ -42,7 +46,12 @@ class PosixTransfer < Transfer
     # a move to a different device does a cp then mv
     if action == 'mv' && mv_to_same_device?
       @steps = files.count
-    elsif remove? || copy?
+    elsif copy?
+      @steps = files.keys.map do |source|
+        path = Pathname.new(source)
+        path.directory? ? Dir["#{source}/**/*"].length : 1
+      end.sum
+    elsif remove?
       @steps = names.size
     else
       # TODO: num_files issues 'find' command. so likely needs optimized
@@ -114,14 +123,79 @@ class PosixTransfer < Transfer
   end
 
   def cp
-    files.each_with_index do |cp_info, idx|
-      src = cp_info[0]
-      dest = cp_info[1]
-      FileUtils.cp_r(src, dest)
-      update_percent(idx + 1)
+    @current_cp_step = 0
+
+    files.each do |cp_info|
+      src = Pathname.new(cp_info[0])
+      dest = Pathname.new(cp_info[1])
+
+      cp_r(src, dest)
     rescue => e
+      Rails.logger.warn("error encountered during copy: #{e}")
       errors.add(:copy, e.message)
     end
+  end
+
+  def cp_r(src, dest, original_src = nil)
+    original_src = src if original_src.nil?
+    new_dest = translate_cp_path(src, dest, original_src)
+
+    if src.file? || src.symlink?
+      cp_single(src, new_dest)
+    elsif src.directory? && src.empty?
+      inc_cp_percent
+      # TODO: probably need to preserve permissions here.
+      FileUtils.mkdir_p(new_dest)
+    elsif src.directory? && !src.empty?
+      src.each_child { |child| cp_r(child, dest, original_src) }
+    end
+  end
+
+  def cp_single(src, dest)
+    dest_parent = dest.parent.to_s
+    # TODO: probably need to preserve permissions here.
+    unless File.exist?(dest_parent)
+      FileUtils.mkdir_p(dest_parent)
+      inc_cp_percent
+    end
+
+    if src.symlink?
+
+      # you're symlinking a directory, but the name of the link can differ
+      # from the actual directory, so we have to ensure that the name
+      # of the new link we're making is the same name as the original
+      dest = dest.join(src.basename) if dest.directory?
+      FileUtils.symlink(src.readlink, dest)
+    else
+      # have to get the real path, validate and copy _it_
+      # in case it's under a symlink outside of the allowlist.
+      real_src = src.realpath
+      AllowlistPolicy.default.validate!(real_src.to_s)
+      FileUtils.cp(real_src, dest)
+    end
+
+    inc_cp_percent
+  end
+
+  # you're copying /tmp/dir to /home/users/foo
+  # you've descended /tmp/dir down to say /tmp/dir/one/two/three/foo.txt
+  # So you want to translate the src - /tmp/dir/one/two/three/foo.txt
+  # to the destination path (dest) using relative path one/two/three/foo.txt
+  # (relative to the orginal_src which is /tmp/dir)
+  def translate_cp_path(src, dest, original_src)
+
+    # no translation needed if you're not descending into a directory
+    return dest if src == original_src
+
+    relative_path = src.to_s.gsub("#{original_src}/", '')
+    dest.join(relative_path)
+  end
+
+  # FIXME: copy commands are the only thing that use their own variable
+  # for how many steps it's taken. We should find a way to refactor this.
+  def inc_cp_percent
+    @current_cp_step += 1
+    update_percent(@current_cp_step)
   end
 
   def mv

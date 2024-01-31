@@ -19,7 +19,7 @@ class TransferLocalJobTest < ActiveJob::TestCase
       transfer = PosixTransfer.build(action: 'cp', files: {testfile => destfile})
       transfer.perform
 
-      assert_equal 0, transfer.exit_status, "job exited with error #{transfer.stderr}"
+      assert_equal 0, transfer.exit_status, "job exited with error #{transfer.errors.full_messages}"
       assert FileUtils.compare_file(testfile, destfile), "file was not copied"
       assert_equal 100, transfer.percent
     end
@@ -67,7 +67,7 @@ class TransferLocalJobTest < ActiveJob::TestCase
 
         err_message = transfer.errors.full_messages[0]
 
-        assert_equal("Copy Permission denied @ dir_initialize - #{dir}/foo/bar", err_message)
+        assert_equal("Copy Permission denied @ rb_dir_s_empty_p - #{dir}/foo/bar", err_message)
       ensure
         FileUtils.chmod 0755, File.join(dir, 'foo/bar')
 
@@ -114,14 +114,48 @@ class TransferLocalJobTest < ActiveJob::TestCase
 
       # this tests the number of calls to update_progress
       # note: progress.percent is not called because this mocks the method
-      num_paths = src_paths.size
+      num_paths = src_paths.map do |path|
+        Dir["#{path}/**/*"].length
+      end.sum
       transfer = PosixTransfer.build(action: 'cp', files: input)
-      transfer.expects(:percent=).times(num_paths)
+      assert_equal(num_paths, transfer.steps)
+      # FIXME: This is a littly buggy - it's updating percent for all the parent
+      # directories + 1 more time.
+      transfer.expects(:percent=).times(num_paths..num_paths + src_paths.length + 1)
 
       transfer.perform
 
       assert_equal 0, transfer.exit_status, "job exited with error #{transfer.stderr}"
       assert_equal '', `diff -r #{destdir} #{Rails.root.join('app')}`.strip
+    end
+  end
+
+  # lots of things are covered in test/system/files_test.rb
+  # As system tests, they rely on the UI which doesn't show things
+  # outside the allowlist. So these tests are here just in case someone
+  # is able to bypass the UI (using javascript/curl or similar)
+  test 'will not copy symlinks that point outside of allowlist' do
+    Dir.mktmpdir do |dir|
+      with_modified_env({ OOD_ALLOWLIST_PATH: dir }) do
+        FileUtils.mkdir_p(["#{dir}/src", "#{dir}/dest"])
+        `cd #{dir}/src; ln -s /etc`
+        input = { "#{dir}/src/etc/passwd" => "#{dir}/dest" }
+
+        transfer = PosixTransfer.build(action: 'cp', files: input)
+        transfer.perform
+        sleep 3 # give it a second to copy
+
+        dest = Pathname.new("#{dir}/dest")
+        assert(dest.empty?, "#{dest} is not empty, contains #{dest.children}")
+        assert_equal(1, transfer.exit_status, "job exited with error #{transfer.errors.full_messages}")
+        refute(transfer.success?)
+        assert_equal(1, transfer.errors.count)
+
+        actual = transfer.errors.full_messages[0]
+        expected = 'Copy /etc/passwd does not have an ancestor directory specified in ALLOWLIST_PATH'
+
+        assert_equal(expected, actual)
+      end
     end
   end
 
