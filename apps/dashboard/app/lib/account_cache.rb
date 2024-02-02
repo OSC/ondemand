@@ -68,8 +68,11 @@ module AccountCache
         end
 
         cluster_data = other_clusters.map do |other_cluster|
-          ["data-option-for-cluster-#{other_cluster}", false]
-        end.to_h
+          [
+            ["data-option-for-cluster-#{other_cluster}", false],
+            ["data-option-for-auto-batch-clusters-#{other_cluster}", false]
+          ]
+        end.flatten(1).to_h
 
         cluster_queues.map do |queue|
           unless blocked_queue?(queue)
