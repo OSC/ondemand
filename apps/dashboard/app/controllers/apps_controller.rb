@@ -27,7 +27,7 @@ class AppsController < ApplicationController
 
     if params[:path]
       # if a path in the app is provided, append this to the url
-      app_uri = uri(app_url)
+      app_uri = URI.parse(app_url)
       app_uri.path = Pathname.new(app_uri.path).join(params[:path]).to_s
       app_url = app_uri.to_s
     end
