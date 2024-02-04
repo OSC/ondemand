@@ -24,7 +24,7 @@ module SmartAttributes
 
       Dir.glob("#{dir}/*.{#{AUTO_SCRIPT_EXTENSIONS.join(',')}}").map do |file|
         [File.basename(file), file]
-      end
+      end.sort_by { |options| options.first }
     end
   end
 
