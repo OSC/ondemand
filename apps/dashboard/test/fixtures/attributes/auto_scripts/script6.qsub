@@ -1,0 +1,7 @@
+#!/bin/sh
+#PBS -N HelloWorldTest
+#PBS -l nodes=1,walltime=01:00:00
+#PBS -q np_workq
+#PBS -m abe
+
+echo 'Hello World'
