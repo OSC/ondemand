@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+add close buttons to this modal (#3328)\
+enable dynamic forms in the scripts#show page (#3330)\
+Transfer fix (#3325)\
+update dependencies (#3324)\
+Update Changelog (#3323)\
+Use latest ood_packaging gem and cleanup some EL7 things (#3321)\
+lint a random file (#3326)\
+stop globbing and just use the script id (#3322)
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
