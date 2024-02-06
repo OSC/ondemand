@@ -100,6 +100,14 @@ module ActiveSupport
            .returns([File.read('test/fixtures/cmd_output/sacctmgr_show_accts.txt'), '', exit_success])
     end
 
+    def stub_du(directory = nil)
+      directory ||= anything
+      Open3
+        .stubs(:capture3)
+        .with('timeout', "#{Configuration.project_size_timeout}s", 'du', '-s', '-b', directory)
+        .returns(['2097152 /directory/path', '', exit_success])
+    end
+
     def output_fixture(file)
       File.read("#{Rails.root}/test/fixtures/file_output/#{file}")
     end

@@ -181,6 +181,13 @@ class Project
     errors.map(&:message).join(', ')
   end
 
+  def size
+    if Dir.exist? project_dataroot
+      o, e, s = Open3.capture3('timeout', "#{Configuration.project_size_timeout}s", 'du', '-s', '-b', project_dataroot.to_s)
+      o.split('/')[0].to_i
+    end
+  end
+
   private
   
   def update_attrs(attributes)

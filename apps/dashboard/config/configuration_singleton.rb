@@ -70,7 +70,8 @@ class ConfigurationSingleton
       :google_analytics_tag_id  => nil,
       :project_template_dir     => "#{config_root}/projects",
       :rclone_extra_config      => nil,
-      :default_profile          => nil
+      :default_profile          => nil,
+      :project_size_timeout     => '15'
     }.freeze
   end
 

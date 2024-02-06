@@ -9,6 +9,7 @@ class ProjectsTest < ApplicationSystemTestCase
     stub_user
     stub_sacctmgr
     stub_scontrol
+    stub_du
 
     # Stub Time.now for created_at field
     @expected_now = 1_679_943_564

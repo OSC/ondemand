@@ -17,6 +17,10 @@ class ProjectsController < ApplicationController
       alert_messages << I18n.t('dashboard.jobs_project_invalid_configuration_clusters') unless @valid_project
       alert_messages << I18n.t('dashboard.jobs_project_invalid_configuration_scripts') if @scripts.any? && !@valid_scripts
       flash.now[:alert] = alert_messages.join(' ') if alert_messages.any?
+      respond_to do |format|
+        format.html
+        format.json { render :show }
+      end
     end
   end
 
