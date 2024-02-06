@@ -6,6 +6,10 @@ jQuery(function() {
   $('[data-job-poller="true"]').each((_index, ele) => {
     pollForJobInfo(ele);
   });
+
+  $("[data-toggle='project']").each((_index, ele) => {
+    updateProjectSize(ele);
+  });
 });
 
 function pollForJobInfo(element) {
@@ -50,4 +54,26 @@ function jobInfoDiv(jobId, state, stateTitle='', stateDescription='') {
             <span class="job-info-title badge ${cssBadgeForState(state)}" title="${stateTitle}">${state.toUpperCase()}</span>
             <span class="job-info-description text-muted">${stateDescription}</span>
           </div>`;
+}
+
+function updateProjectSize(element) {
+  const UNDETERMINED = 'Undetermined Size';
+  const $container = $(element);
+
+  const projectPath = $container.data('url');
+  $.ajax({
+    url: projectPath,
+    type: 'GET',
+    headers: {
+      'Accept': 'application/json'
+    },
+    success: function (projectData) {
+      const projectSize = projectData.size === 0 ? UNDETERMINED : projectData.human_size;
+      $container.text(`(${projectSize})`);
+    },
+    error: function (request, status, error) {
+      console.log("An error occurred getting project size!\n" + error);
+      $container.text(`(${UNDETERMINED})`);
+    }
+  });
 }

@@ -20,7 +20,7 @@
 <div class="row my-2">
   <a id="new-dir-btn" class="btn btn-outline-dark" href="<%= files_path(fs: 'fs', filepath: @project.directory ) %>">
     <i class="fas fa-folder-open" aria-hidden="true"></i>
-    <%= t('dashboard.project') %> <%= t('dashboard.directory') %>
+    <%= t('dashboard.project') %> <%= t('dashboard.directory') %> <span data-toggle="project" data-url="<%= project_path(@project.id) %>"></span>
   </a>
 </div>
 
