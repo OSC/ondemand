@@ -34,12 +34,20 @@ class ProjectsTest < ActiveSupport::TestCase
   end
 
   test 'creates project' do
+    stub_du
     Dir.mktmpdir do |tmp|
       projects_path = Pathname.new(tmp)
-      project = create_project(projects_path)
+      project_id = Project.next_id
+      project = create_project(projects_path, id: project_id, name: 'MyLocalName', description: 'MyLocalDescription', icon: 'fas://test')
 
       assert project.errors.inspect
-      assert Dir.entries("#{projects_path}/projects").include?(project.id)
+      assert Dir.entries("#{projects_path}/projects").include?(project_id)
+      assert_equal project_id, project.id
+      assert_equal 'MyLocalName', project.name
+      assert_equal "#{projects_path}/projects/#{project_id}", project.directory
+      assert_equal 'MyLocalDescription', project.description
+      assert_equal 'fas://test', project.icon
+      assert_equal 2097152, project.size
     end
   end
 
@@ -182,9 +190,9 @@ class ProjectsTest < ActiveSupport::TestCase
     end
   end
 
-  def create_project(projects_path, name: 'test-project', icon: 'fas://arrow-right', description: 'description', directory: nil, template: nil)
+  def create_project(projects_path, id: nil, name: 'test-project', icon: 'fas://arrow-right', description: 'description', directory: nil, template: nil)
     OodAppkit.stubs(:dataroot).returns(projects_path)
-    id = Project.next_id
+    id ||= Project.next_id
     attrs = { name: name, icon: icon, id: id, description: description, directory: directory, template: template }
     project = Project.new(attrs)
     assert project.save, project.collect_errors
