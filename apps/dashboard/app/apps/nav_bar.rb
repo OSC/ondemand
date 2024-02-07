@@ -134,7 +134,7 @@ class NavBar
       group = OodAppGroup.groups_for(apps: SysRouter.apps).select { |g| g.title.downcase == token.downcase }.first
       return nil if group.nil?
       group.apps = extract_links(group.apps)
-      extend_group(group)
+      extend_group(group, sort: true)
     end
   end
 
