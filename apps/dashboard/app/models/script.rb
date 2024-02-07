@@ -61,8 +61,7 @@ class Script
     @created_at = opts[:created_at]
     sm_opts = {
       form:       opts[:form] || [],
-      attributes: opts[:attributes] || {},
-      job_environment: opts[:job_environment] || {},
+      attributes: opts[:attributes] || {}
     }
 
     add_required_fields(**sm_opts)
@@ -82,18 +81,13 @@ class Script
   end
 
   def to_yaml
-    attributes = smart_attributes.reject do |attr|
-      attr.id == "auto_environment_variable"
-    end.each_with_object({}) do |sm, hash|
+    attributes = smart_attributes.each_with_object({}) do |sm, hash|
       hash[sm.id.to_s] = sm.options_to_serialize
     end.deep_stringify_keys
 
-    job_environment = smart_attributes.select { |attr| attr.id == "auto_environment_variable" }.first.try(:opts) || {}
-
     hsh = { 'title' => title, 'created_at' => created_at }
-    hsh.merge!({ 'form' => smart_attributes.map { |sm| sm.id.to_s unless sm.id.to_s == "auto_environment_variable" }.compact })
+    hsh.merge!({ 'form' => smart_attributes.map { |sm| sm.id.to_s }.compact })
     hsh.merge!({ 'attributes' => attributes })
-    hsh.merge!({ 'job_environment' => job_environment.deep_stringify_keys }) unless job_environment.empty?
 
     hsh.to_yaml
   end
@@ -126,12 +120,8 @@ class Script
   end
 
   def original_parameter(string)
-    if string.match('auto_environment_variable')
-      'auto_environment_variable'
-    else
-      match = /([\w_]+)_(?:min|max|exclude|fixed)/.match(string)
-      match[1]
-    end
+    match = /([\w_]+)_(?:min|max|exclude|fixed)/.match(string)
+    match[1]
   end
 
   # Find attribute in list using the id of the attribute
@@ -178,7 +168,6 @@ class Script
     # the individual smart attributes
     update_form(params)
     update_attributes(params)
-    update_job_environment(params)
   end
 
   def submit(options)
@@ -221,8 +210,7 @@ class Script
   # parameters you got from the controller that affect the attributes, not form.
   # i.e., mins & maxes you set in the form but get serialized to the 'attributes' section.
   def attribute_parameter?(name)
-    ['min', 'max', 'exclude', 'fixed'].any? { |postfix| name && name.end_with?("_#{postfix}") } ||
-      (name && name.match?('auto_environment_variable'))
+    ['min', 'max', 'exclude', 'fixed'].any? { |postfix| name && name.end_with?("_#{postfix}") }
   end
 
   # update the 'form' portion of the yaml file given 'params' from the controller.
@@ -250,24 +238,6 @@ class Script
         self[orig_param].exclude_select_choices = exclude_list unless exclude_list.empty?
       end
     end
-  end
-
-  def update_job_environment(params)
-    env_var_names = params.select { |k, _| k.match?('auto_environment_variable_name_') }
-    return if env_var_names.empty?
-
-    env_var_values = params.select do |param|
-      param.match?(/\Aauto_environment_variable_(.*)_value\Z/)
-    end
-
-    job_environment_hash = {}
-
-    env_var_values.each do |key, value|
-      variable_name = key.match(/\Aauto_environment_variable_(.*)_value\Z/)[1]
-      job_environment_hash[variable_name.to_s] = value.to_s
-    end
-
-    self[:auto_environment_variable] = SmartAttributes::AttributeFactory.build('auto_environment_variable', job_environment_hash)
   end
 
   def default_attributes(smart_attr_id)
@@ -342,7 +312,7 @@ class Script
     OodAppkit.clusters[cluster_id] || raise(ClusterNotFound, "Job specifies nonexistent '#{cluster_id}' cluster id.")
   end
 
-  def add_required_fields(form: [], attributes: {}, job_environment: {})
+  def add_required_fields(form: [], attributes: {})
     add_cluster_to_form(form: form, attributes: attributes)
     add_script_to_form(form: form, attributes: attributes)
   end
