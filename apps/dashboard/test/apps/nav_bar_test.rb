@@ -73,7 +73,8 @@ class NavBarTest < ActiveSupport::TestCase
     result = NavBar.items([nav_item])
     assert_equal 1,  result.size
     assert_equal "layouts/nav/group",  result[0].partial_path
-    assert_equal false,  result[0].sort
+    # sort should be true to order subcategories
+    assert_equal true,  result[0].sort
     assert_equal "Interactive Apps",  result[0].title
     assert_equal 4,  result[0].apps.size
   end
