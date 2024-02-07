@@ -133,6 +133,25 @@ class ProjectsTest < ApplicationSystemTestCase
       find("[href='/projects/#{project_id}']").click
       assert_selector 'h1', text: 'Test Project'
       assert_selector '.btn.btn-default', text: 'Back'
+      # project size is hardcoded to 2MB with stub_du
+      assert_selector '#new-dir-btn', text: 'Project Directory (2 MB)'
+    end
+  end
+
+  test 'project show should support JSON' do
+    Dir.mktmpdir do |dir|
+      project_id = setup_project(dir)
+
+      visit project_path(project_id, format: :json)
+      json_response = find('body').text
+      project_data = JSON.parse(json_response, symbolize_names: true)
+      assert_equal project_id, project_data[:id]
+      assert_equal 'test-project', project_data[:name]
+      assert_equal 'test-description', project_data[:description]
+      assert_equal 'fas://arrow-right', project_data[:icon]
+      assert_equal "#{dir}/projects/#{project_id}", project_data[:directory]
+      assert_equal 2097152, project_data[:size]
+      assert_equal '2 MB', project_data[:human_size]
     end
   end
 
