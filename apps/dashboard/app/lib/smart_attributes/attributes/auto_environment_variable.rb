@@ -9,6 +9,13 @@ module SmartAttributes
 
   module Attributes
     class AutoEnvironmentVariable < Attribute
+      def initialize(id, opts = {})
+        super
+
+        @key = @opts[:key]
+        @id = "#{id}_#{normalize_module(@key)}" # reset the id to be unique from other auto_environment_variable_*
+      end
+
       def widget
         'key_value_pair'
       end
@@ -17,8 +24,8 @@ module SmartAttributes
         (opts[:label] || 'Environment Variable').to_s
       end
 
-      def options_to_serialize(fmt: nil)
-        opts[:job_environment]
+      def normalize_module(module_name)
+        module_name.to_s.gsub('-', '_')
       end
     end
   end

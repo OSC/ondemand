@@ -483,9 +483,10 @@ class ProjectsTest < ApplicationSystemTestCase
             label: Number of hours
             help: ''
             required: true
-        job_environment:
-          SOME_VARIABLE: some_value
-          ANOTHER_VARIABLE: some_other_value
+        auto_environment_variable_SOME_VARIABLE:
+          value: some_value
+        auto_environment_variable_ANOTHER_VARIABLE:
+          value: some_other_value
       HEREDOC
       
       file = File.read("#{dir}/projects/#{project_id}/.ondemand/scripts/#{script_id}/form.yml")

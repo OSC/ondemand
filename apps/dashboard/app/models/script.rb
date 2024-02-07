@@ -70,16 +70,12 @@ class Script
     @smart_attributes = build_smart_attributes(**sm_opts)
   end
 
-  def build_smart_attributes(form: [], attributes: {}, job_environment: {})
+  def build_smart_attributes(form: [], attributes: {})
     attrs = form.map do |form_item_id|
       attrs = attributes[form_item_id.to_sym].to_h.symbolize_keys
       cache_value = cached_values[form_item_id]
       attrs[:value] = cache_value if cache_value.present?
       SmartAttributes::AttributeFactory.build(form_item_id, attrs)
-    end
-
-    unless job_environment.blank?
-      attrs << SmartAttributes::AttributeFactory.build('auto_environment_variable', job_environment)
     end
 
     attrs
