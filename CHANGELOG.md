@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.1.0] - 02-08-2024
+
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
   in [2791](https://github.com/OSC/ondemand/pull/2791).
@@ -62,11 +64,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Multiple domains corrrectly redirect in [3264](https://github.com/OSC/ondemand/pull/3264).
 - MATE desktop will only patch the autostart .desktop files if they exist in [3291](https://github.com/OSC/ondemand/pull/3291).
 - The navigation bar now follows the menubar pattern to increase accessibility in [3300](https://github.com/OSC/ondemand/pull/3300).
+- nav_bar configurations correctly sort menu items in [3344](https://github.com/OSC/ondemand/pull/3344).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
 - Packaging adds `nodistro` nodejs repos in [3158](https://github.com/OSC/ondemand/pull/3158).
 - The user usetting file is now in an XDG dirrectory instead of the dataroot in [3308](https://github.com/OSC/ondemand/pull/3308).
+
+## [3.0.3] - 11-09-2023
+
+### Fixed 
+
+- Fixed markdown MOTD in [3119](https://github.com/OSC/ondemand/pull/3119).
 
 ## [3.0.2] - 10-06-2023
 
@@ -1295,7 +1304,10 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v3.0.1...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v3.1.0...HEAD
+[3.1.0]: https://github.com/OSC/ondemand/compare/v3.0.3...v3.1.0
+[3.0.3]: https://github.com/OSC/ondemand/compare/v3.0.2...v3.0.3
+[3.0.2]: https://github.com/OSC/ondemand/compare/v3.0.1...v3.0.2
 [3.0.1]: https://github.com/OSC/ondemand/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/OSC/ondemand/compare/v2.0.32...v3.0.0
 [2.1.0]: https://github.com/OSC/ondemand/compare/v2.0.31...v2.1.0
