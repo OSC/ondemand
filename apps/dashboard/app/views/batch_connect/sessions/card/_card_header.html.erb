@@ -1,0 +1,29 @@
+<%- 
+  session_class = status_context(session)
+  badge_class = "badge-#{session_class}"
+  alert_class = "alert-#{session_class}"
+  num_nodes = session.info.allocated_nodes.size
+  num_cores = session.info.procs.to_i
+-%>
+
+<div class="card-heading">
+  <div class="h5 card-header overflow-auto <%= alert_class %>">
+    <a href="<%= new_batch_connect_session_context_path(token: session.token) %>">
+      <span class="card-text <%= alert_class %>"><%= session.title %></span>
+    </a>
+    <span class="card-text"> (<%= session.job_id %>)</span>
+    <div class="float-right">
+      <%- if session.starting? || session.running? -%>
+      <span class="badge <%= badge_class %> badge-pill"><%= pluralize(num_nodes, "node") %></span>
+      <span class="card-text"> | </span>
+      <span class="badge <%= badge_class %> badge-pill"><%= pluralize(num_nodes, "core") %></span>
+      <span class="card-text"> | </span>
+      <%- end -%>
+      <%= status(session) %>
+      <%- if session.completed? -%>
+      <span class="card-text"> | </span>
+      <%= relaunch(session) %>
+      <%- end -%>
+    </div>
+  </div>
+</div>
