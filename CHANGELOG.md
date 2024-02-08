@@ -6,15 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Fixes to the nav_bar group selection subcategory order (#3344)\
-Improved testing for Project size feature (#3342)\
-lint a random file (#3341)\
-Add project directory size to project show page via AJAX (#3334)\
-Use latest ondemand-runtime for RPM builds (#3340)\
-initial commit; updating controllers; fixed an error (#3335)\
-Added unit tests for auto_batch_clusters and auto_scripts SmartAttributes (#3331)\
-add close buttons to this modal (#3328)\
-enable dynamic forms in the scripts#show page (#3330)
+
+## [3.1.0] - 02-08-2024
 
 ### Added
 - Sites can now add javascript files through `custom_javascript_files` config
@@ -71,11 +64,18 @@ enable dynamic forms in the scripts#show page (#3330)
 - Multiple domains corrrectly redirect in [3264](https://github.com/OSC/ondemand/pull/3264).
 - MATE desktop will only patch the autostart .desktop files if they exist in [3291](https://github.com/OSC/ondemand/pull/3291).
 - The navigation bar now follows the menubar pattern to increase accessibility in [3300](https://github.com/OSC/ondemand/pull/3300).
+- nav_bar configurations correctly sort menu items in [3344](https://github.com/OSC/ondemand/pull/3344).
 
 ### Changed
 - Open OnDemand now requires NodeJS 18 and Ruby 3.1 on applicable platforms in [2885](https://github.com/OSC/ondemand/pull/2885).
 - Packaging adds `nodistro` nodejs repos in [3158](https://github.com/OSC/ondemand/pull/3158).
 - The user usetting file is now in an XDG dirrectory instead of the dataroot in [3308](https://github.com/OSC/ondemand/pull/3308).
+
+## [3.0.3] - 11-09-2023
+
+### Fixed 
+
+- Fixed markdown MOTD in [3119](https://github.com/OSC/ondemand/pull/3119).
 
 ## [3.0.2] - 10-06-2023
 
@@ -1304,7 +1304,10 @@ Similar changelog as [3.0.0]. This version was not released to the general publi
 ### Changed
 - From 1.3.7 - 1.4.2 updated app versions
 
-[Unreleased]: https://github.com/OSC/ondemand/compare/v3.0.1...HEAD
+[Unreleased]: https://github.com/OSC/ondemand/compare/v3.1.0...HEAD
+[3.1.0]: https://github.com/OSC/ondemand/compare/v3.0.3...v3.1.0
+[3.0.3]: https://github.com/OSC/ondemand/compare/v3.0.2...v3.0.3
+[3.0.2]: https://github.com/OSC/ondemand/compare/v3.0.1...v3.0.2
 [3.0.1]: https://github.com/OSC/ondemand/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/OSC/ondemand/compare/v2.0.32...v3.0.0
 [2.1.0]: https://github.com/OSC/ondemand/compare/v2.0.31...v2.1.0
