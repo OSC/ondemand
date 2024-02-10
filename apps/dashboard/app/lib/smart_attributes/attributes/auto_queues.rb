@@ -2,7 +2,6 @@
 
 module SmartAttributes
   class AttributeFactory
-
     extend AccountCache
 
     # Build this attribute object. No 'options' are used as this Attribute
@@ -12,7 +11,6 @@ module SmartAttributes
     # @param opts [Hash] attribute's options
     # @return [Attributes::AutoQueues] the attribute object
     def self.build_auto_queues(opts = {})
-
       static_opts = {
         options: queues
       }.merge(opts.without(:options).to_h)
