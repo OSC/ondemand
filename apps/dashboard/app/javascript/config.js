@@ -57,7 +57,8 @@ export function xdmodUrl(){
   return url == "" ? null : url;
 }
 
-export function baseAnalyticsPath(){
+export function analyticsPath(type){
   const cfgData = configData();
-  return cfgData['baseAnalyticsPath'];
+  const basePath = cfgData['baseAnalyticsPath']
+  return `${basePath}/${type}`;
 }
