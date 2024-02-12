@@ -425,9 +425,9 @@ buffer-from@^1.1.2:
   integrity sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==
 
 "chokidar@>=3.0.0 <4.0.0":
-  version "3.5.3"
-  resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.5.3.tgz#1cf37c8707b932bd1af1ae22c0432e2acd1903bd"
-  integrity sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw==
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.6.0.tgz#197c6cc669ef2a8dc5e7b4d97ee4e092c3eb0d5b"
+  integrity sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==
   dependencies:
     anymatch "~3.1.2"
     braces "~3.0.2"
@@ -490,19 +490,19 @@ data-confirm-modal@^1.6.2:
   integrity sha512-UYYgx8hS65X8Y336YRp1x6A5Gfkhh4iYkLq5jw7oS++hTcq/3yO8JOrbfHvvr7qqqQxBSPRyvUXnFEFIr4ja4w==
 
 datatables.net-bs4@>=1.13.4, datatables.net-bs4@^1.10.24:
-  version "1.13.8"
-  resolved "https://registry.yarnpkg.com/datatables.net-bs4/-/datatables.net-bs4-1.13.8.tgz#7a28023437bd86c85070f373f96c87cf54e7012c"
-  integrity sha512-9LQ4UMb28balB2xK9MhxbsDjUzAUjc0bNjxvtkysdMbb9FhNOTDkmt1I4ZzfiJiDMN8CH1vzZsgCh835LkX7SQ==
+  version "1.13.10"
+  resolved "https://registry.yarnpkg.com/datatables.net-bs4/-/datatables.net-bs4-1.13.10.tgz#fa3970d1e57daa64ce8df444517bf3c1df14d435"
+  integrity sha512-t6zTyuoUhOwr7ONJGYQdN57st/G3iA6Ju9A56Q2vtoJO03XBeFjpAK3sZ0R02Yz35qtzZXgBtSU8bdOiXL2xwA==
   dependencies:
     datatables.net "1.13.8"
     jquery ">=1.7"
 
 datatables.net-bs@^1.10.23:
-  version "1.13.8"
-  resolved "https://registry.yarnpkg.com/datatables.net-bs/-/datatables.net-bs-1.13.8.tgz#59e541e7d3399f42bc5b7f1f592f7343c33e83f3"
-  integrity sha512-KJ1ePUXVHi/l3qP+r2uan3NJPIwtHP2hep9H7oP2UrEEq9Ibkhm5HHr6Pce+qpQbMd1x0584Grxydz4Zx/SqBg==
+  version "1.13.10"
+  resolved "https://registry.yarnpkg.com/datatables.net-bs/-/datatables.net-bs-1.13.10.tgz#d9999d8ea518c218aafbee89622eed963405ed39"
+  integrity sha512-dmRn09ygtOMYJvxPBocl1lI3vJZbkjfMfpDW7VZXjBxo40Mv0Pp6f5EMuc/nt6vf85UwJ49A6ADNZX46PlaNGQ==
   dependencies:
-    datatables.net "1.13.8"
+    datatables.net "1.13.10"
     jquery ">=1.7"
 
 datatables.net-plugins@^1.10.24:
@@ -530,7 +530,14 @@ datatables.net-select@>=1.6.2, datatables.net-select@^1.3.3:
     datatables.net ">=1.13.4"
     jquery ">=1.7"
 
-datatables.net@1.13.8, datatables.net@>=1.13.4, datatables.net@^1.13.2:
+datatables.net@1.13.10, datatables.net@>=1.13.4, datatables.net@^1.13.2:
+  version "1.13.10"
+  resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.13.10.tgz#4527e2b5428394732331c8b7db8fa20a56c0cc7b"
+  integrity sha512-lVjpXGX9VzOpiPYnJ/KxOsYMAVa3oc3UniYGGo6pLBVCyajzMo80yisgXRz8J392wkZOc3bpp6VPs2pDbpKlyw==
+  dependencies:
+    jquery ">=1.7"
+
+datatables.net@1.13.8:
   version "1.13.8"
   resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.13.8.tgz#05a2fb5a036b0b65b66d1bb1eae0ba018aaea8a3"
   integrity sha512-2pDamr+GUwPTby2OgriVB9dR9ftFKD2AQyiuCXzZIiG4d9KkKFQ7gqPfNmG7uj9Tc5kDf+rGj86do4LAb/V71g==
@@ -561,9 +568,9 @@ engine.io-client@~6.5.2:
     xmlhttprequest-ssl "~2.0.0"
 
 engine.io-parser@~5.2.1:
-  version "5.2.1"
-  resolved "https://registry.yarnpkg.com/engine.io-parser/-/engine.io-parser-5.2.1.tgz#9f213c77512ff1a6cc0c7a86108a7ffceb16fcfb"
-  integrity sha512-9JktcM3u18nU9N2Lz3bWeBgxVgOKpw7yhRaoxQA3FUDZzzw+9WlA6p4G4u0RixNkg14fH7EfEc/RhpurtiROTQ==
+  version "5.2.2"
+  resolved "https://registry.yarnpkg.com/engine.io-parser/-/engine.io-parser-5.2.2.tgz#37b48e2d23116919a3453738c5720455e64e1c49"
+  integrity sha512-RcyUFKA93/CXH20l4SoVvzZfrSDMOTUS3bWVpTt2FuFP+XYrL8i8oonHP7WInRyVHXh0n/ORtoeiE1os+8qkSw==
 
 esbuild-android-64@0.14.54:
   version "0.14.54"
@@ -929,9 +936,9 @@ popper.js@^1.16.1:
   integrity sha512-Wb4p1J4zyFTbM+u6WuO4XstYx4Ky9Cewe4DWrel7B0w6VVICvPwdOpotjzcf6eD8TsckVnIMNONQyPIUFOUbCQ==
 
 preact@^10.5.13:
-  version "10.19.3"
-  resolved "https://registry.yarnpkg.com/preact/-/preact-10.19.3.tgz#7a7107ed2598a60676c943709ea3efb8aaafa899"
-  integrity sha512-nHHTeFVBTHRGxJXKkKu5hT8C/YWBkPso4/Gad6xuj5dbptt9iF9NZr9pHbPhBrnT2klheu7mHTxTZ/LjwJiEiQ==
+  version "10.19.4"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.19.4.tgz#735d331d5b1bd2182cc36f2ba481fd6f0da3fe3b"
+  integrity sha512-dwaX5jAh0Ga8uENBX1hSOujmKWgx9RtL80KaKUFLc6jb4vCEAc3EeZ0rnQO/FO4VgjfPMfoLFWnNG8bHuZ9VLw==
 
 promise-queue@^2.2.5:
   version "2.2.5"
