@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Update Changelog (#3347)\
+Fixes to the nav_bar group selection subcategory order (#3344)\
+Improved testing for Project size feature (#3342)\
+lint a random file (#3341)\
+Add project directory size to project show page via AJAX (#3334)\
+Use latest ondemand-runtime for RPM builds (#3340)\
+initial commit; updating controllers; fixed an error (#3335)\
+Added unit tests for auto_batch_clusters and auto_scripts SmartAttributes (#3331)
 
 ## [3.1.0] - 02-08-2024
 
