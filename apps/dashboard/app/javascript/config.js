@@ -2,11 +2,11 @@
 
 const CONFIG_ID = 'ood_config'
 
-function configData() {
+export function configData() {
   return document.getElementById(CONFIG_ID).dataset;
 }
 
-function maxFileSize () {
+export function maxFileSize () {
   const cfgData = configData();
 
   // Check if cfgData['maxFileSize'] is just empty string, 
@@ -20,39 +20,44 @@ function maxFileSize () {
   }
 }
 
-function transfersPath() {
+export function transfersPath() {
   const cfgData = configData();
   const transfersPath = cfgData['transfersPath'];
 
   return transfersPath;
 }
 
-function jobsInfoPath(){
+export function jobsInfoPath(){
   const cfgData = configData();
   return cfgData['jobsInfoPath'];
 }
 
-function csrfToken() {
+export function csrfToken() {
   const csrf_token = document.querySelector('meta[name="csrf-token"]').content;
 
   return csrf_token;
 }
 
-function uppyLocale() {
+export function uppyLocale() {
   const cfgData = configData();
   return JSON.parse(cfgData['uppyLocale']);
 }
 
-function isBCDynamicJSEnabled() {
+export function isBCDynamicJSEnabled() {
   const cfgData = configData();
   return cfgData['bcDynamicJs'] == 'true'
 }
 
-export {
-  isBCDynamicJSEnabled,
-  maxFileSize,
-  transfersPath,
-  jobsInfoPath,
-  csrfToken,
-  uppyLocale
-};
+/*
+  Will return null if xdmod integration is not enabled.
+*/
+export function xdmodUrl(){
+  const cfgData = configData();
+  const url = cfgData['xdmodUrl'];
+  return url == "" ? null : url;
+}
+
+export function baseAnalyticsPath(){
+  const cfgData = configData();
+  return cfgData['baseAnalyticsPath'];
+}
