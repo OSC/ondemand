@@ -5,7 +5,7 @@
     <%= render_card_partial('created', session) %>
     <%= render_card_partial('session_time', session) %>
     <%= render_card_partial('id', session) %>
-    <%= render_card_partial('support_ticket', session) %>
+    <%= render_card_partial('support_ticket', session) if Configuration.support_ticket_enabled? %>
     <%= render_card_partial('display_choices', session) %>
     <%= render_connection(session) %>
   </div>
