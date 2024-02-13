@@ -32,6 +32,6 @@ class ActiveSessionsWidgetTest < ActionDispatch::IntegrationTest
       assert_equal  true, widget_header.first.text.include?(I18n.t('dashboard.active_sessions_title')), 'Should display the widget title'
       assert_equal  true, widget_header.first.text.include?('(1)'), 'Should display the total number of active sessions'
     end
-    assert_select 'div#id_1234 h5 a span', text: 'session title'
+    assert_select 'div#id_1234[class="h5"] a span', text: 'session title'
   end
 end
