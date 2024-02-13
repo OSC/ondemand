@@ -57,7 +57,7 @@ class BatchConnectSessionsTest < ApplicationSystemTestCase
       card = find("#id_#{test_bc_id}")
       assert_not_nil(card)
 
-      header_text = card.find('h5').text
+      header_text = card.find('div[class="h5"]').text
       assert_equal("Code Server (#{test_job_id})\nQueued", header_text)
     end
   end
