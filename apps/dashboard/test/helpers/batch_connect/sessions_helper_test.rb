@@ -54,7 +54,7 @@ class BatchConnect::SessionsHelperTest < ActionView::TestCase
   end
 
   test 'relaunch should add relaunch form when session is completed' do
-    button = relaunch(status_array, create_session(:completed))
+    button = relaunch(create_session(:completed))
 
     html = Nokogiri::HTML(button)
     form = html.at_css('form')
