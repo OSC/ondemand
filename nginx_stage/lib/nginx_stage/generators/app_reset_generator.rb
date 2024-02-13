@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module NginxStage
   # This generator resets all app configs with the most current app config
   # template.
@@ -39,16 +41,17 @@ module NginxStage
           self.env = env
           self.owner = h[:owner]
           self.name = h[:name]
-          template "app.conf.erb", app_config_path
+          template 'app.conf.erb', app_config_path
           puts app_config_path
         end
       end
     end
 
     private
-      # NGINX app config path
-      def app_config_path
-        NginxStage.app_config_path(env: env, owner: owner, name: name)
-      end
+
+    # NGINX app config path
+    def app_config_path
+      NginxStage.app_config_path(env: env, owner: owner, name: name)
+    end
   end
 end
