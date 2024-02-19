@@ -384,6 +384,7 @@ class ConfigurationSingleton
   def connect_sources
     sources = [:self]
     sources << 'https://www.google-analytics.com' unless google_analytics_tag_id.nil?
+    sources << xdmod_host if xdmod_integration_enabled?
 
     sources
   end
