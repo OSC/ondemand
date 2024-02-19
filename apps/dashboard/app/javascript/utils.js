@@ -19,3 +19,24 @@ export function cssBadgeForState(state){
 export function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+export function startOfYear() {
+  const now = new Date();
+  const past = new Date();
+  past.setDate(1);
+  past.setMonth(0);
+  past.setFullYear(now.getFullYear());
+  return `${past.getFullYear()}-${past.getMonth()+1}-${past.getDate()}`;
+}
+
+export function thirtyDaysAgo() {
+  const now = new Date();
+  const past = new Date();
+  past.setDate(now.getDate() - 30);
+  return `${past.getFullYear()}-${past.getMonth()+1}-${past.getDate()}`;
+}
+
+export function today() {
+  const now = new Date();
+  return `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
+}

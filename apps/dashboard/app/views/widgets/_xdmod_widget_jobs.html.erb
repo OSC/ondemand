@@ -1,164 +1,59 @@
+<%=  javascript_include_tag 'xdmod', nonce: true %>
+
 <div class="xdmod">
-<div id="jobsPanelDiv"></div>
+  <div id="jobsPanelDiv"></div>
 
-<script id="jobs-template" type="text/x-handlebars-template">
-<div class="card mt-3">
+  <script id="jobs-template" type="text/x-handlebars-template">
+    <div class="card mt-3">
 
-  <div class="card-header">
-    <a href="{{xdmod_url}}" class="float-right">Open XDMoD <span class="fa fa-external-link-square-alt"></span></a>
-    <h3>{{title}} - {{date_range}}</h3>
-  </div>
-
-  {{#if error}}
-    <div class="card-body">
-      <div class="alert alert-danger mb-0">{{error}} Please ensure you are <a href="{{xdmod_url}}">logged into Open XDMoD first</a>, and then try again.</div>
-    </div>
-  {{else}}
-  {{#if loading}}
-    <div class="card-body">
-      <p class="card-text">LOADING...</p>
-    </div>
-  {{else}}
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-sm table-striped table-condensed">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Date</th>
-              <th>CPU</th>
-            </tr>
-          </thead>
-          <tbody>
-            {{#each results}}
-            <tr title="{{job_name}} - {{local_job_id}}">
-              <td class="text-nowrap"><a target="_blank" href="{{job_url}}">{{local_job_id}}&nbsp;<span class="fa fa-external-link-square-alt"></span></a></td>
-              <td class="overflow-hidden d-inline-block text-truncate mw-150px">{{job_name}}</td>
-              <td>{{date}}</td>
-              <td>{{cpu_label cpu_user}}</td>
-            </tr>
-            {{else}}
-            <tr><td colspan="7">No data available.</td></tr>
-            {{/each}}
-          </tbody>
-        </table>
+      <div class="card-header">
+        <a href="{{xdmod_url}}" class="float-right">Open XDMoD <span class="fa fa-external-link-square-alt"></span></a>
+        <h3>{{title}} - {{date_range}}</h3>
       </div>
+
+      {{#if error}}
+        <div class="card-body">
+          <div class="alert alert-danger mb-0">{{error}} Please ensure you are <a href="{{xdmod_url}}">logged into Open XDMoD first</a>, and then try again.</div>
+        </div>
+      {{else}}
+      {{#if loading}}
+        <div class="card-body">
+          <p class="card-text">LOADING...</p>
+        </div>
+      {{else}}
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-sm table-striped table-condensed">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Date</th>
+                  <th>CPU</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each results}}
+                <tr title="{{job_name}} - {{local_job_id}}">
+                  <td class="text-nowrap"><a target="_blank" href="{{job_url}}">{{local_job_id}}&nbsp;<span class="fa fa-external-link-square-alt"></span></a></td>
+                  <td class="overflow-hidden d-inline-block text-truncate mw-150px">{{job_name}}</td>
+                  <td>{{date}}</td>
+                  <td>{{cpu_label cpu_user}}</td>
+                </tr>
+                {{else}}
+                <tr><td colspan="7">No data available.</td></tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          Showing first {{page_limit}} of {{totalCount}} jobs. See <a href="{{xdmod_url}}">your Open XDMoD dashboard&nbsp;<span class="fa fa-external-link-square-alt"></span></a> for more information.
+        </div>
+        {{/if}}
+      {{/if}}
     </div>
+  </script>
 
-    <div class="card-footer">
-      Showing first {{page_limit}} of {{totalCount}} jobs. See <a href="{{xdmod_url}}">your Open XDMoD dashboard&nbsp;<span class="fa fa-external-link-square-alt"></span></a> for more information.
-    </div>
-    {{/if}}
-  {{/if}}
-</div>
-</script>
-
-
-<%= javascript_tag nonce: true do -%>
-(function(){
-
-var startOfYear = '<%= Date.today.beginning_of_year.strftime("%Y-%m-%d") %>',
-     thirtyDaysAgo = '<%= 30.days.ago.strftime("%Y-%m-%d") %>',
-     today = '<%= Date.today.strftime("%Y-%m-%d") %>';
-
-var jobsPageLimit = 10;
-
-function jobsUrl(user){
-  var url = new URL('<%= Configuration.xdmod_host %>/rest/v1/warehouse/search/jobs');
-  url.searchParams.set('_dc', Date.now());
-  url.searchParams.set('start_date', thirtyDaysAgo);
-  url.searchParams.set('end_date', today);
-  url.searchParams.set('realm', user?.results?.raw_data_allowed_realms?.includes('SUPREMM') ? 'SUPREMM' : 'Jobs');
-  url.searchParams.set('limit', jobsPageLimit);
-  url.searchParams.set('start', 0);
-  url.searchParams.set('verbose', true);
-  url.searchParams.set('params', JSON.stringify({person: user?.results?.person_id}));
-  return url;
-}
-
-var template_source = $('#jobs-template').html();
-var template = Handlebars.compile(template_source);
-var helpers = {
-  title: function(){
-    return "Recently Completed Jobs";
-  },
-  date_range: function() {
-    return thirtyDaysAgo + " to " + today;
-  },
-  page_limit: function(){
-    return Math.min(jobsPageLimit, parseInt(this.totalCount));
-  },
-  xdmod_url: function(){
-    return '<%= Configuration.xdmod_host %>';
-  },
-  start_time: function(){ return new Date(this.start_time_ts*1000).toLocaleString(); },
-  end_time: function(){ return new Date(this.end_time_ts*1000).toLocaleString(); },
-  //FIXME: would be nice to use 1 representation of walltime across all of OnDemand
-  // but this is in hours and minutes
-  walltime: function(){
-    let duration = this.end_time_ts - this.start_time_ts;
-    let hours = Math.floor(duration / (60 * 60));
-    duration -= hours * (60 * 60);
-    let minutes = Math.floor(duration / (60));
-    duration -= minutes * (60);
-    let seconds = Math.floor(duration);
-
-    return hours.toString().padStart(2, "0") + ":" +
-           minutes.toString().padStart(2, "0") + ":" +
-           seconds.toString().padStart(2, "0");
-  },
-  date: function(){
-    // month/day
-    let d = new Date(this.start_time_ts*1000),
-        month = d.getMonth()+1,
-        day = d.getUTCDate();
-
-    return `${month}/${day}`;
-  },
-  job_url: function(){ return "<%= Configuration.xdmod_host %>/#job_viewer?action=show&realm=SUPREMM&jobref=" + this.jobid;  },
-  cpu_label: function(cpu){
-    let value = (parseFloat(cpu)*100).toFixed(1),
-        label = "N/A";
-
-    if(! isNaN(value)){
-      let severity = "warning";
-
-      if(cpu > 0.74){
-        severity = "success";
-      }
-      else if(cpu < 0.25){
-        severity = "danger";
-      }
-
-      label = `<span class="badge badge-${severity}">${Handlebars.escapeExpression(value.toString().padStart(4,0))}</span>`;
-    }
-
-    return new Handlebars.SafeString(label);
-  }
-};
-
-var render_template = function(context){
-  $('#jobsPanelDiv').html(template(context, {helpers: helpers}));
-}
-
-render_template({loading: true});
-
-var xdmodUrl = '<%= Configuration.xdmod_host %>';
-promiseLoggedIntoXDMoD(xdmodUrl)
-  .then((user_data) => fetch(jobsUrl(user_data), { credentials: 'include' }))
-  .then(response => response.ok ? Promise.resolve(response) : Promise.reject(new Error(response.statusText)))
-  .then(response => response.json())
-  .then((data) => render_template(data))
-  .catch((error) => {
-    console.error(error);
-    render_template({error: error});
-
-    // error - report back for analytics purposes
-    let analyticsUrl = new URL("<%= analytics_url(type: 'xdmod_jobs_widget_error') %>");
-    analyticsUrl.searchParams.append('error', error);
-    fetch(analyticsUrl);
-  });
-}());
-<%- end -%>
 </div>
