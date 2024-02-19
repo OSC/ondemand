@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+Fixed app-icon margin for Pinned Apps after update in #3075 PR (#3357)\
+lint a random file (#3355)\
+lint a random file (#3349)
 
 ## [3.1.0] - 02-08-2024
 
