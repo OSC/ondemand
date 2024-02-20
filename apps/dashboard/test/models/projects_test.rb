@@ -6,7 +6,7 @@ class ProjectsTest < ActiveSupport::TestCase
   test 'create empty project' do
     project = Project.new
 
-    assert_not_empty project.id
+    assert_nil project.id
     assert_nil project.directory
     assert_equal '', project.name
     assert_equal '', project.description
@@ -30,6 +30,36 @@ class ProjectsTest < ActiveSupport::TestCase
       assert_not project.errors[:icon].empty?
       assert_not project.errors[:directory].empty?
       assert_not project.errors[:template].empty?
+    end
+  end
+
+  test 'creates project should not load manifest if directory points to another project' do
+    stub_du
+    Dir.mktmpdir do |tmp|
+      projects_path = Pathname.new(tmp)
+      existing_project = create_project(projects_path, name: 'Existing Project', description: 'Existing Description', icon: 'fas://existing')
+
+      new_project = Project.new({ directory: existing_project.directory })
+
+      # Check id and directory defaults
+      assert_nil new_project.id
+      assert_equal '', new_project.name
+      assert_equal '', new_project.description
+      assert_equal '', new_project.icon
+      assert_equal existing_project.directory, new_project.directory
+    end
+  end
+
+  test 'creates project defaults' do
+    stub_du
+    Dir.mktmpdir do |tmp|
+      projects_path = Pathname.new(tmp)
+      project = create_project(projects_path, name: 'MyLocalName', description: 'MyLocalDescription', icon: nil)
+
+      # Check id and directory defaults
+      assert_not_nil project.id
+      assert_equal "#{projects_path}/projects/#{project.id}", project.directory
+      assert_equal 'fas://cog', project.icon
     end
   end
 
@@ -192,7 +222,6 @@ class ProjectsTest < ActiveSupport::TestCase
 
   def create_project(projects_path, id: nil, name: 'test-project', icon: 'fas://arrow-right', description: 'description', directory: nil, template: nil)
     OodAppkit.stubs(:dataroot).returns(projects_path)
-    id ||= Project.next_id
     attrs = { name: name, icon: icon, id: id, description: description, directory: directory, template: template }
     project = Project.new(attrs)
     assert project.save, project.collect_errors
