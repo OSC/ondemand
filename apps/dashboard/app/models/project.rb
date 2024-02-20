@@ -75,7 +75,7 @@ class Project
   validate :project_template_invalid, on: [:create]
 
   def initialize(attributes = {})
-    @id = attributes.fetch(:id, Project.next_id)
+    @id = attributes[:id]
     update_attrs(attributes)
     @directory = attributes[:directory]
     @directory = File.expand_path(@directory) unless @directory.blank?
@@ -98,13 +98,17 @@ class Project
   end
 
   def new_record?
-    !File.exist?(manifest_path)
+    return true unless id
+    return true unless directory
+
+    id && directory && !File.exist?(manifest_path)
   end
 
   def save
     return false unless valid?(:create)
 
     # SET DEFAULTS
+    @id = Project.next_id if id.blank?
     @directory = Project.dataroot.join(id.to_s).to_s if directory.blank?
     @icon = 'fas://cog' if icon.blank?
 
