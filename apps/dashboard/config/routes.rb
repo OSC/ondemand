@@ -15,7 +15,7 @@ Rails.application.routes.draw do
 
   # in production, if the user doesn't have access to the files app directory, we hide the routes
   if Configuration.can_access_files?
-    constraints(FilePathConstraint) do
+    constraints(FilePathConstraint.new) do
       get "files/:fs(/*filepath)" => "files#fs", :defaults => { :fs => 'fs', :format => 'html' }, :format => false, as: :files
       put "files/:fs/*filepath" => "files#update", :format => false, :defaults => { :fs => 'fs', :format => 'json' }
 

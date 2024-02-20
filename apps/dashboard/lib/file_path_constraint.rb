@@ -5,6 +5,6 @@
 # https://github.com/rails/rails/issues/47244
 class FilePathConstraint
   def matches?(request)
-    request.params[:filepath].match?(/.+/) && request.params[:fs].match?(/(?!(edit|api\/v1))[^\/]+/)
+    request.params[:fs].to_s.match?(/(?!(edit|api\/v1))[^\/]+/)
   end
 end
