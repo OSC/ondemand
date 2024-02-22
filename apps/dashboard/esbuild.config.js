@@ -27,7 +27,7 @@ const prepPlugin = {
 
       // FIXME probably a better way to do this? build below already recognizes the filetypes.
       fs.readdir(faDir, (err, files) => {
-        if(err) throw `${faDir} has to exist for to compile. Did you run 'bin/setup'?`;
+        if(err) throw `${faDir} has to exist for assets to compile. Did you run 'bin/setup'?`;
 
         files.forEach(file => {
           fs.copyFileSync(`${faDir}/${file}`, `${buildDir}/${file}`);
