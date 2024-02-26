@@ -11,7 +11,7 @@
   breadcrumb_id = "#{path_selector_id}_breadcrumb"
 %>
 
-<%= form.text_field(attrib.id, class: 'form-control', data: { 'path-selector': true }) %>
+<%= form.text_field(attrib.id, class: 'form-control', data: { 'path-selector': true }, label: field_options[:label]) %>
 
 <button type="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#<%= path_selector_id %>">
   Select Path
