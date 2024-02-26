@@ -5,4 +5,6 @@
   data-jobs-info-path="<%= jobs_info_path('delme', 'delme').gsub(/[\/]*delme[\/]*/,'') %>"
   data-uppy-locale="<%= I18n.t('dashboard.uppy', :default => {}).to_json %>"
   data-bc-dynamic-js="<%= Configuration.bc_dynamic_js? %>"
+  data-xdmod-url="<%= Configuration.xdmod_host %>"
+  data-base-analytics-path="<%= analytics_path('delme').gsub(/[\/]*delme[\/]*/,'') %>"
 ></div>
